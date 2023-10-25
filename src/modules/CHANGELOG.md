@@ -1,54 +1,14 @@
-## [1.0.112](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.120...v1.0.112) (2023-10-24)
+## [1.0.123](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.122...v1.0.123) (2023-10-25)
+
+## [1.0.122](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.120...v1.0.122) (2023-10-24)
 
 
 ### Bug Fixes
 
 * dynamic templates and fixes vm-1222 ([be667b4](https://github.com/VirtoCommerce/vendor-portal/commit/be667b46c32ed19593561599f7a06f545088a0c3))
-
-
+* empty image link ([2dfd822](https://github.com/VirtoCommerce/vendor-portal/commit/2dfd8227b91a6c373800941487f99462caf91261))
 
 ## [1.0.120](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.119...v1.0.120) (2023-10-17)
-
-
-### Bug Fixes
-
-* *offers-details* added defaultCurrency ([21b6ddb](https://github.com/VirtoCommerce/vendor-portal/commit/21b6ddbb3f34cbd950e16ab7399d9376765a1492))
-* added editor in products-edit ([d2cb770](https://github.com/VirtoCommerce/vendor-portal/commit/d2cb770607b7aba6dc077b5d147fe5460d003411))
-* api generation ([6d8b1cd](https://github.com/VirtoCommerce/vendor-portal/commit/6d8b1cd07588da901e664dac3c8e6c86f723e30a))
-* assetRemoveHandler added ([0daab1a](https://github.com/VirtoCommerce/vendor-portal/commit/0daab1a02c386457d1fcc57bab27232c5c7e5fd8))
-* assets methods moved to module, fixed assets blade opening ([7d0a933](https://github.com/VirtoCommerce/vendor-portal/commit/7d0a93332e77338dfd15acde8dccfc6c398798e6))
-* catalog.ts moved to vendor-portal ([07bd7fc](https://github.com/VirtoCommerce/vendor-portal/commit/07bd7fc58e2a8f4bc7779b014a0e119fb9f6b8dd))
-* changed locale texts ([603ea16](https://github.com/VirtoCommerce/vendor-portal/commit/603ea16ae2498843f3e210e04118b960965141a1))
-* changed navigation props names ([d5d6ee3](https://github.com/VirtoCommerce/vendor-portal/commit/d5d6ee3cc60dd6cad7ce666cf0160ea35eb3ec00))
-* code review improvements ([99154fa](https://github.com/VirtoCommerce/vendor-portal/commit/99154fa686a585f66a59337e831c93d22e3fd094))
-* code review improvements ([91f969e](https://github.com/VirtoCommerce/vendor-portal/commit/91f969e011870d013a786209b6be62383dd73fce))
-* console ([2bdc91c](https://github.com/VirtoCommerce/vendor-portal/commit/2bdc91cc3400af58a2dd88a38f1cdfd877e40f6b))
-* console ([2bdc91c](https://github.com/VirtoCommerce/vendor-portal/commit/2bdc91cc3400af58a2dd88a38f1cdfd877e40f6b))
-* dashboard review table centered ([3aba9dd](https://github.com/VirtoCommerce/vendor-portal/commit/3aba9dd93696d6dcd19c9319001e55a6233baa7e))
-* description fix in dynamic products ([d27d631](https://github.com/VirtoCommerce/vendor-portal/commit/d27d631d4b492fc24b747c65f3f815cbaa495ef4))
-* disabled button ([b3527d2](https://github.com/VirtoCommerce/vendor-portal/commit/b3527d22b8c24d289e79181f70f6843a05a28b0a))
-* dynamic properties fix ([731cef7](https://github.com/VirtoCommerce/vendor-portal/commit/731cef75a878cdcfd514ab3717de293ed34e4642))
-* fixed assets disabled state ([bebbbe7](https://github.com/VirtoCommerce/vendor-portal/commit/bebbbe70e5674c4947d3b86d80fa396e856d0aad))
-* fixed import profile edit ([6ef10b0](https://github.com/VirtoCommerce/vendor-portal/commit/6ef10b03639ae873299cc486f0a1d450740cc220))
-* fixes for asset manager ([8ad5e7f](https://github.com/VirtoCommerce/vendor-portal/commit/8ad5e7fbdf0559fd13ecf483ea5d3615855c590a))
-* gallery update fix, filters in orders fix ([0324087](https://github.com/VirtoCommerce/vendor-portal/commit/0324087683a7c18bd0f836324155168cb761fd3a))
-* increase allowed line length to 120 ([a643aa9](https://github.com/VirtoCommerce/vendor-portal/commit/a643aa9b8ffd87cb47e9838f6d98740074a66bdf))
-* lodash treeshaking ([38a5fda](https://github.com/VirtoCommerce/vendor-portal/commit/38a5fda85094c681c5df3ffce313cdd51afa2e33))
-* lost localization ([7919436](https://github.com/VirtoCommerce/vendor-portal/commit/79194361633ecfa1ccdc8de09dc5864cb0ed6628))
-* multiselect fix ([70ae527](https://github.com/VirtoCommerce/vendor-portal/commit/70ae527e717dbb8fbf8813d7216ea07ac4659a3f))
-* notificationClick navigation fix ([b63120b](https://github.com/VirtoCommerce/vendor-portal/commit/b63120b84b22b2e4c6b45c5700a2fea032ab6eae))
-* orders filter fix, table items fix ([6f15eec](https://github.com/VirtoCommerce/vendor-portal/commit/6f15eecd864b2a9b51011f3d1372868be41338e8))
-* other fixes and refactors ([36b489b](https://github.com/VirtoCommerce/vendor-portal/commit/36b489b4e0c67341fd2f0ea83dae3a9196ab8bbc))
-* products/offers reload after delete ([915211a](https://github.com/VirtoCommerce/vendor-portal/commit/915211ad2836c3b9a7517eb501166d9fd82d4119))
-* removed variable ([eb21596](https://github.com/VirtoCommerce/vendor-portal/commit/eb21596a5d3e2d170ba7dc6a52dc821fb5e4f06b))
-* reviews dashboard open item fix ([47ca2b9](https://github.com/VirtoCommerce/vendor-portal/commit/47ca2b9846bfaf0590d195c4f019f249aef8248e))
-* reviews permission fix ([5024973](https://github.com/VirtoCommerce/vendor-portal/commit/502497313fa8ec4624a10ceab0d856d271816548))
-* small fixes ([227ccb5](https://github.com/VirtoCommerce/vendor-portal/commit/227ccb524e4c6ee52cf304e3f04aafbe047ff548))
-* sorting ([60cce53](https://github.com/VirtoCommerce/vendor-portal/commit/60cce53a1ec5bf5d0f5b3124d200e626e02d034d))
-* table search increased debounce ([6acae8f](https://github.com/VirtoCommerce/vendor-portal/commit/6acae8f64442c66753a388a530031afcc48bf2a2))
-* table sorting ([9e01af7](https://github.com/VirtoCommerce/vendor-portal/commit/9e01af7c5d69af5b6c5ac8c85da25f9a729d204a))
-* updated exports ([0bdebff](https://github.com/VirtoCommerce/vendor-portal/commit/0bdebff83bea6b4ac052ad67ccdba97f03aebc31))
-* vm-1121 ([92a11e9](https://github.com/VirtoCommerce/vendor-portal/commit/92a11e98264d52ceed4cce8c4ba157d0736c2d09))
 
 
 ### Features
@@ -98,13 +58,47 @@
 * vm-874 nullref in dict locale ([fe9aaf4](https://github.com/VirtoCommerce/vendor-portal/commit/fe9aaf4dfb18ac0aac64d2df4cad88fd926d6c9d))
 
 
-
-## [1.0.58](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.57...v1.0.58) (2023-03-02)
-
-
 ### Bug Fixes
 
-* revert unwanted changes ([3f055ab](https://github.com/VirtoCommerce/vendor-portal/commit/3f055ab45108fd5ae4558935a7bec937edfb69f9))
+* *offers-details* added defaultCurrency ([21b6ddb](https://github.com/VirtoCommerce/vendor-portal/commit/21b6ddbb3f34cbd950e16ab7399d9376765a1492))
+* added editor in products-edit ([d2cb770](https://github.com/VirtoCommerce/vendor-portal/commit/d2cb770607b7aba6dc077b5d147fe5460d003411))
+* api generation ([6d8b1cd](https://github.com/VirtoCommerce/vendor-portal/commit/6d8b1cd07588da901e664dac3c8e6c86f723e30a))
+* assetRemoveHandler added ([0daab1a](https://github.com/VirtoCommerce/vendor-portal/commit/0daab1a02c386457d1fcc57bab27232c5c7e5fd8))
+* assets methods moved to module, fixed assets blade opening ([7d0a933](https://github.com/VirtoCommerce/vendor-portal/commit/7d0a93332e77338dfd15acde8dccfc6c398798e6))
+* catalog.ts moved to vendor-portal ([07bd7fc](https://github.com/VirtoCommerce/vendor-portal/commit/07bd7fc58e2a8f4bc7779b014a0e119fb9f6b8dd))
+* changed locale texts ([603ea16](https://github.com/VirtoCommerce/vendor-portal/commit/603ea16ae2498843f3e210e04118b960965141a1))
+* changed navigation props names ([d5d6ee3](https://github.com/VirtoCommerce/vendor-portal/commit/d5d6ee3cc60dd6cad7ce666cf0160ea35eb3ec00))
+* code review improvements ([99154fa](https://github.com/VirtoCommerce/vendor-portal/commit/99154fa686a585f66a59337e831c93d22e3fd094))
+* code review improvements ([91f969e](https://github.com/VirtoCommerce/vendor-portal/commit/91f969e011870d013a786209b6be62383dd73fce))
+* console ([2bdc91c](https://github.com/VirtoCommerce/vendor-portal/commit/2bdc91cc3400af58a2dd88a38f1cdfd877e40f6b))
+* console ([2bdc91c](https://github.com/VirtoCommerce/vendor-portal/commit/2bdc91cc3400af58a2dd88a38f1cdfd877e40f6b))
+* dashboard review table centered ([3aba9dd](https://github.com/VirtoCommerce/vendor-portal/commit/3aba9dd93696d6dcd19c9319001e55a6233baa7e))
+* description fix in dynamic products ([d27d631](https://github.com/VirtoCommerce/vendor-portal/commit/d27d631d4b492fc24b747c65f3f815cbaa495ef4))
+* disabled button ([b3527d2](https://github.com/VirtoCommerce/vendor-portal/commit/b3527d22b8c24d289e79181f70f6843a05a28b0a))
+* dynamic properties fix ([731cef7](https://github.com/VirtoCommerce/vendor-portal/commit/731cef75a878cdcfd514ab3717de293ed34e4642))
+* fixed assets disabled state ([bebbbe7](https://github.com/VirtoCommerce/vendor-portal/commit/bebbbe70e5674c4947d3b86d80fa396e856d0aad))
+* fixed import profile edit ([6ef10b0](https://github.com/VirtoCommerce/vendor-portal/commit/6ef10b03639ae873299cc486f0a1d450740cc220))
+* fixes for asset manager ([8ad5e7f](https://github.com/VirtoCommerce/vendor-portal/commit/8ad5e7fbdf0559fd13ecf483ea5d3615855c590a))
+* gallery update fix, filters in orders fix ([0324087](https://github.com/VirtoCommerce/vendor-portal/commit/0324087683a7c18bd0f836324155168cb761fd3a))
+* increase allowed line length to 120 ([a643aa9](https://github.com/VirtoCommerce/vendor-portal/commit/a643aa9b8ffd87cb47e9838f6d98740074a66bdf))
+* lodash treeshaking ([38a5fda](https://github.com/VirtoCommerce/vendor-portal/commit/38a5fda85094c681c5df3ffce313cdd51afa2e33))
+* lost localization ([7919436](https://github.com/VirtoCommerce/vendor-portal/commit/79194361633ecfa1ccdc8de09dc5864cb0ed6628))
+* multiselect fix ([70ae527](https://github.com/VirtoCommerce/vendor-portal/commit/70ae527e717dbb8fbf8813d7216ea07ac4659a3f))
+* notificationClick navigation fix ([b63120b](https://github.com/VirtoCommerce/vendor-portal/commit/b63120b84b22b2e4c6b45c5700a2fea032ab6eae))
+* orders filter fix, table items fix ([6f15eec](https://github.com/VirtoCommerce/vendor-portal/commit/6f15eecd864b2a9b51011f3d1372868be41338e8))
+* other fixes and refactors ([36b489b](https://github.com/VirtoCommerce/vendor-portal/commit/36b489b4e0c67341fd2f0ea83dae3a9196ab8bbc))
+* products/offers reload after delete ([915211a](https://github.com/VirtoCommerce/vendor-portal/commit/915211ad2836c3b9a7517eb501166d9fd82d4119))
+* removed variable ([eb21596](https://github.com/VirtoCommerce/vendor-portal/commit/eb21596a5d3e2d170ba7dc6a52dc821fb5e4f06b))
+* reviews dashboard open item fix ([47ca2b9](https://github.com/VirtoCommerce/vendor-portal/commit/47ca2b9846bfaf0590d195c4f019f249aef8248e))
+* reviews permission fix ([5024973](https://github.com/VirtoCommerce/vendor-portal/commit/502497313fa8ec4624a10ceab0d856d271816548))
+* small fixes ([227ccb5](https://github.com/VirtoCommerce/vendor-portal/commit/227ccb524e4c6ee52cf304e3f04aafbe047ff548))
+* sorting ([60cce53](https://github.com/VirtoCommerce/vendor-portal/commit/60cce53a1ec5bf5d0f5b3124d200e626e02d034d))
+* table search increased debounce ([6acae8f](https://github.com/VirtoCommerce/vendor-portal/commit/6acae8f64442c66753a388a530031afcc48bf2a2))
+* table sorting ([9e01af7](https://github.com/VirtoCommerce/vendor-portal/commit/9e01af7c5d69af5b6c5ac8c85da25f9a729d204a))
+* updated exports ([0bdebff](https://github.com/VirtoCommerce/vendor-portal/commit/0bdebff83bea6b4ac052ad67ccdba97f03aebc31))
+* vm-1121 ([92a11e9](https://github.com/VirtoCommerce/vendor-portal/commit/92a11e98264d52ceed4cce8c4ba157d0736c2d09))
+
+## [1.0.58](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.57...v1.0.58) (2023-03-02)
 
 
 ### Features
@@ -113,6 +107,9 @@
 * **import:** estimating remaining time ([#29](https://github.com/VirtoCommerce/vendor-portal/issues/29)) ([8cd9a59](https://github.com/VirtoCommerce/vendor-portal/commit/8cd9a5994226beaf22fd2d06033dc76be262bb6c))
 
 
+### Bug Fixes
+
+* revert unwanted changes ([3f055ab](https://github.com/VirtoCommerce/vendor-portal/commit/3f055ab45108fd5ae4558935a7bec937edfb69f9))
 
 ## [1.0.52](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.49...v1.0.52) (2023-02-22)
 
@@ -122,9 +119,33 @@
 * offers page save/price fix ([d7c17cf](https://github.com/VirtoCommerce/vendor-portal/commit/d7c17cf8b782d352598146f3ab703616f3f6c6bd))
 * types fix ([afa1727](https://github.com/VirtoCommerce/vendor-portal/commit/afa1727ed397bae63522bf2ad55e1c3e42fe2509))
 
-
-
 ## [1.0.49](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.48...v1.0.49) (2023-02-14)
+
+
+### Features
+
+* app switcher ([31e7214](https://github.com/VirtoCommerce/vendor-portal/commit/31e7214d9c2370f58e964b56bc0f4cf59b787625))
+* app switcher, tailwind class refactoring ([47d61f7](https://github.com/VirtoCommerce/vendor-portal/commit/47d61f75172ceba4dcbbc89bebc2368e8b3ea516))
+* baseUrl ([aceee46](https://github.com/VirtoCommerce/vendor-portal/commit/aceee4608a75803060b7d4d3174979fd68c5225e))
+* bulk delete products ([#19](https://github.com/VirtoCommerce/vendor-portal/issues/19)) ([6dce2ae](https://github.com/VirtoCommerce/vendor-portal/commit/6dce2aebc01a85f5c2fbe8bdc1afc4c9c6085c1d))
+* completed ui inputs refactoring ([7fc13bd](https://github.com/VirtoCommerce/vendor-portal/commit/7fc13bdffe11fce1a12030730142fc8b4c6363a3))
+* completed validation refactoring ([d8f2859](https://github.com/VirtoCommerce/vendor-portal/commit/d8f28591aa3a845e4a28fc23c8e4276b6d4c7703))
+* extended customization ([97da866](https://github.com/VirtoCommerce/vendor-portal/commit/97da866d4c9ef9e73521a02fb5c034f9112393d4))
+* gtin validation on product ([74e6915](https://github.com/VirtoCommerce/vendor-portal/commit/74e6915861af99cad99aaf3eefae5d63cdb902ac))
+* merge ([fcf8d86](https://github.com/VirtoCommerce/vendor-portal/commit/fcf8d8620aef07e1d9fc82c5304671066327ea55))
+* merged framework library ([7421e51](https://github.com/VirtoCommerce/vendor-portal/commit/7421e51520cb02dba53ec5ca85d91b1e8a0c6451))
+* multicurrency offer ([#9](https://github.com/VirtoCommerce/vendor-portal/issues/9)) ([5e03e5d](https://github.com/VirtoCommerce/vendor-portal/commit/5e03e5da5d4ba48dd60c553242c78747e09fa5a7))
+* navigation and component types, fixes and improvements ([d260bef](https://github.com/VirtoCommerce/vendor-portal/commit/d260bef82761605134c46254a566fceac93438c3))
+* new mp-products module, combined vue router and custom routing system, removed api factories ([4409d87](https://github.com/VirtoCommerce/vendor-portal/commit/4409d878d91c23cfbdef6231a2c6a4cc4cf57f68))
+* new mp-products module, combined vue router and custom routing system, removed api factories ([9dad707](https://github.com/VirtoCommerce/vendor-portal/commit/9dad70736c693b5dd53af01db6317005b2e670aa))
+* permission to isolate vendor products ([1343822](https://github.com/VirtoCommerce/vendor-portal/commit/1343822dd1b4daec010c781892e15127817cf70a))
+* rating & reviews ([#3](https://github.com/VirtoCommerce/vendor-portal/issues/3)) ([bf8f8ec](https://github.com/VirtoCommerce/vendor-portal/commit/bf8f8ec8d116975fa7736f8c61dd05859d1edb3f))
+* removed languages, Login page custom logo, main logo fix ([5229e8c](https://github.com/VirtoCommerce/vendor-portal/commit/5229e8ce9b459f65aadad202686f7db1ca60518f))
+* request refactoring ([ae5ea35](https://github.com/VirtoCommerce/vendor-portal/commit/ae5ea3523188834d3ae8cd329ace06bd696569a9))
+* small refactoring ([9a9f81b](https://github.com/VirtoCommerce/vendor-portal/commit/9a9f81be738dac8bafb9ad8d706be7fc6f3e5bd1))
+* tw prefix, new components setup ([1cc2e12](https://github.com/VirtoCommerce/vendor-portal/commit/1cc2e12ee87acda185d914c9eb77b674045b0fbb))
+* validation draft ([7eb0c6b](https://github.com/VirtoCommerce/vendor-portal/commit/7eb0c6b1c19a16c6e2e2e5ba226e21e5a98fce23))
+* validation draft ([181af89](https://github.com/VirtoCommerce/vendor-portal/commit/181af892ca00427383bd404ce060b2c588bf6cfe))
 
 
 ### Bug Fixes
@@ -140,32 +161,6 @@
 * some fixes ([7916f73](https://github.com/VirtoCommerce/vendor-portal/commit/7916f73c10e7e89ee1f5a2f5c0dc405114388587))
 * typo ([0ce50ba](https://github.com/VirtoCommerce/vendor-portal/commit/0ce50ba9599f8bdee0e79d2382b2fad29e3313c9))
 
-
-### Features
-
-* app switcher ([31e7214](https://github.com/VirtoCommerce/vendor-portal/commit/31e7214d9c2370f58e964b56bc0f4cf59b787625))
-* app switcher, tailwind class refactoring ([47d61f7](https://github.com/VirtoCommerce/vendor-portal/commit/47d61f75172ceba4dcbbc89bebc2368e8b3ea516))
-* baseUrl ([aceee46](https://github.com/VirtoCommerce/vendor-portal/commit/aceee4608a75803060b7d4d3174979fd68c5225e))
-* bulk delete products ([#19](https://github.com/VirtoCommerce/vendor-portal/issues/19)) ([6dce2ae](https://github.com/VirtoCommerce/vendor-portal/commit/6dce2aebc01a85f5c2fbe8bdc1afc4c9c6085c1d))
-* completed ui inputs refactoring ([7fc13bd](https://github.com/VirtoCommerce/vendor-portal/commit/7fc13bdffe11fce1a12030730142fc8b4c6363a3))
-* completed validation refactoring ([d8f2859](https://github.com/VirtoCommerce/vendor-portal/commit/d8f28591aa3a845e4a28fc23c8e4276b6d4c7703))
-* extended customization ([97da866](https://github.com/VirtoCommerce/vendor-portal/commit/97da866d4c9ef9e73521a02fb5c034f9112393d4))
-* merge ([fcf8d86](https://github.com/VirtoCommerce/vendor-portal/commit/fcf8d8620aef07e1d9fc82c5304671066327ea55))
-* merged framework library ([7421e51](https://github.com/VirtoCommerce/vendor-portal/commit/7421e51520cb02dba53ec5ca85d91b1e8a0c6451))
-* navigation and component types, fixes and improvements ([d260bef](https://github.com/VirtoCommerce/vendor-portal/commit/d260bef82761605134c46254a566fceac93438c3))
-* new mp-products module, combined vue router and custom routing system, removed api factories ([4409d87](https://github.com/VirtoCommerce/vendor-portal/commit/4409d878d91c23cfbdef6231a2c6a4cc4cf57f68))
-* new mp-products module, combined vue router and custom routing system, removed api factories ([9dad707](https://github.com/VirtoCommerce/vendor-portal/commit/9dad70736c693b5dd53af01db6317005b2e670aa))
-* permission to isolate vendor products ([1343822](https://github.com/VirtoCommerce/vendor-portal/commit/1343822dd1b4daec010c781892e15127817cf70a))
-* rating & reviews ([#3](https://github.com/VirtoCommerce/vendor-portal/issues/3)) ([bf8f8ec](https://github.com/VirtoCommerce/vendor-portal/commit/bf8f8ec8d116975fa7736f8c61dd05859d1edb3f))
-* removed languages, Login page custom logo, main logo fix ([5229e8c](https://github.com/VirtoCommerce/vendor-portal/commit/5229e8ce9b459f65aadad202686f7db1ca60518f))
-* request refactoring ([ae5ea35](https://github.com/VirtoCommerce/vendor-portal/commit/ae5ea3523188834d3ae8cd329ace06bd696569a9))
-* small refactoring ([9a9f81b](https://github.com/VirtoCommerce/vendor-portal/commit/9a9f81be738dac8bafb9ad8d706be7fc6f3e5bd1))
-* tw prefix, new components setup ([1cc2e12](https://github.com/VirtoCommerce/vendor-portal/commit/1cc2e12ee87acda185d914c9eb77b674045b0fbb))
-* validation draft ([7eb0c6b](https://github.com/VirtoCommerce/vendor-portal/commit/7eb0c6b1c19a16c6e2e2e5ba226e21e5a98fce23))
-* validation draft ([181af89](https://github.com/VirtoCommerce/vendor-portal/commit/181af892ca00427383bd404ce060b2c588bf6cfe))
-
-
-
 ## [1.0.30](https://github.com/VirtoCommerce/vendor-portal/compare/v0.0.3...v1.0.30) (2022-09-29)
 
 
@@ -173,6 +168,4 @@
 
 * decoupling done ([7cbf0cf](https://github.com/VirtoCommerce/vendor-portal/commit/7cbf0cfa60af0b617c389a90741b0c131f3486bc))
 * split vendor portal ([2dc4f75](https://github.com/VirtoCommerce/vendor-portal/commit/2dc4f75cde1add88cca0374f642af656fe09ba3a))
-
-
 

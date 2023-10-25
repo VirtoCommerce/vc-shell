@@ -1,6 +1,6 @@
 {
   "name": "vc-sample-modules",
-  "version": "1.0.112",
+  "version": "1.0.113",
   "module": "./dist/index.mjs",
   "types": "./dist/types/index.d.ts",
   "files": [
@@ -14,7 +14,7 @@
     }
   },
   "peerDependencies": {
-    "vc-marketplacevendor-api": "^1.0.112"
+    "vc-marketplacevendor-api": "^1.0.113"
   },
   "scripts": {
     "publish": "npm publish"

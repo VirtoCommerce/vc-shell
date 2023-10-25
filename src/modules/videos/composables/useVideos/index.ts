@@ -1,13 +1,11 @@
 import { Ref, ref, computed, watch } from "vue";
 import { useUser } from "@vc-shell/framework";
+import { IVideo, Video, VideoSearchResult } from "vcmp-vendor-portal-api/catalog";
 import {
-  CatalogModuleVideosClient,
-  IVideo,
-  Video,
-  IVideoSearchCriteria,
-  VideoSearchCriteria,
-  VideoSearchResult,
-} from "vcmp-vendor-portal-api/catalog";
+  VcmpSellerCatalogClient,
+  ISearchVideosQuery,
+  SearchVideosQuery,
+} from "vcmp-vendor-portal-api/marketplacevendor";
 import * as _ from "lodash-es";
 
 interface IUseVideos {
@@ -16,9 +14,9 @@ interface IUseVideos {
   readonly pages: Ref<number>;
   readonly loading: Ref<boolean>;
   readonly modified: Ref<boolean>;
-  searchQuery: Ref<IVideoSearchCriteria>;
+  searchQuery: Ref<ISearchVideosQuery>;
   currentPage: Ref<number>;
-  searchVideos: (query: IVideoSearchCriteria) => Promise<VideoSearchResult>;
+  searchVideos: (query: ISearchVideosQuery) => Promise<VideoSearchResult>;
   saveVideos: (videosList: IVideo[]) => Promise<void>;
   deleteVideos: (videoIds: string[]) => Promise<void>;
 }
@@ -31,7 +29,7 @@ interface IUseVideosOptions {
 
 export default (options?: IUseVideosOptions): IUseVideos => {
   const pageSize = options?.pageSize || 20;
-  const searchQuery = ref<IVideoSearchCriteria>({
+  const searchQuery = ref<ISearchVideosQuery>({
     take: pageSize,
     sort: options?.sort,
     keyword: options?.keyword,
@@ -50,14 +48,14 @@ export default (options?: IUseVideosOptions): IUseVideos => {
     { deep: true }
   );
 
-  async function getApiClient(): Promise<CatalogModuleVideosClient> {
+  async function getApiClient(): Promise<VcmpSellerCatalogClient> {
     const { getAccessToken } = useUser();
-    const client = new CatalogModuleVideosClient();
+    const client = new VcmpSellerCatalogClient();
     client.setAuthToken(await getAccessToken());
     return client;
   }
 
-  async function searchVideos(query: IVideoSearchCriteria): Promise<VideoSearchResult> {
+  async function searchVideos(query: ISearchVideosQuery): Promise<VideoSearchResult> {
     console.info(`Load videos ${query?.skip || 1} sort by ${query?.sort || "default"}`);
     searchQuery.value = { ...searchQuery.value, ...query };
     const client = await getApiClient();
@@ -65,7 +63,7 @@ export default (options?: IUseVideosOptions): IUseVideos => {
       loading.value = true;
       searchResult.value = await client.searchVideos({
         ...searchQuery.value,
-      } as VideoSearchCriteria);
+      } as SearchVideosQuery);
       videos.value = searchResult.value?.results;
       videosCopy = _.cloneDeep(videos.value);
       return searchResult.value;

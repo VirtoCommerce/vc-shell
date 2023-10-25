@@ -260,6 +260,7 @@ export const useProductDetails = (args: {
     setCategory,
     declineReasonVisibility,
     statusText,
+    markProductDirty,
     propertiesCardVisibility: computed(() => !!item.value?.id || !!currentCategory.value),
     galleryVisibility: computed(() => !!item.value?.categoryId),
     productTypeDisabled: computed(() => !!item.value?.id),
@@ -345,6 +346,11 @@ export const useProductDetails = (args: {
       validationState.value.resetModified(getMappedDetails(item), true);
     }
   });
+
+  async function markProductDirty() {
+    item.value.hasStagedChanges = true;
+    await saveChangesWrapper({ ...item.value }, false);
+  }
 
   return {
     load: loadWrapper,

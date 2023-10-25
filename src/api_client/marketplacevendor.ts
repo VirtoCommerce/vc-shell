@@ -1673,6 +1673,185 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
     }
 
     /**
+     * @param body (optional) 
+     * @return Success
+     */
+    createVideo(body?: CreateVideoCommand | undefined): Promise<Video> {
+        let url_ = this.baseUrl + "/api/vcmp/seller/videos/create";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json-patch+json",
+                "Accept": "text/plain"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processCreateVideo(_response);
+        });
+    }
+
+    protected processCreateVideo(response: Response): Promise<Video> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = Video.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<Video>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return Success
+     */
+    searchVideos(body?: SearchVideosQuery | undefined): Promise<VideoSearchResult> {
+        let url_ = this.baseUrl + "/api/vcmp/seller/videos/search";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json-patch+json",
+                "Accept": "text/plain"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processSearchVideos(_response);
+        });
+    }
+
+    protected processSearchVideos(response: Response): Promise<VideoSearchResult> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = VideoSearchResult.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<VideoSearchResult>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return Success
+     */
+    update(body?: Video[] | undefined): Promise<Video[]> {
+        let url_ = this.baseUrl + "/api/vcmp/seller/videos";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json-patch+json",
+                "Accept": "text/plain"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processUpdate(_response);
+        });
+    }
+
+    protected processUpdate(response: Response): Promise<Video[]> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(Video.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<Video[]>(null as any);
+    }
+
+    /**
+     * @param ids (optional) 
+     * @return Success
+     */
+    delete(ids?: string[] | undefined): Promise<void> {
+        let url_ = this.baseUrl + "/api/vcmp/seller/videos?";
+        if (ids === null)
+            throw new Error("The parameter 'ids' cannot be null.");
+        else if (ids !== undefined)
+            ids && ids.forEach(item => { url_ += "ids=" + encodeURIComponent("" + item) + "&"; });
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "DELETE",
+            headers: {
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processDelete(_response);
+        });
+    }
+
+    protected processDelete(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
      * @return Success
      */
     getAvailableLanguages(): Promise<string[]> {
@@ -5881,6 +6060,58 @@ export interface ICreateStateMachineDefinitionCommand {
     definition?: StateMachineDefinition | undefined;
 }
 
+export class CreateVideoCommand implements ICreateVideoCommand {
+    contentUrl!: string;
+    sortOrder?: number | undefined;
+    languageCode?: string | undefined;
+    ownerId!: string;
+    ownerType!: string;
+
+    constructor(data?: ICreateVideoCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.contentUrl = _data["contentUrl"];
+            this.sortOrder = _data["sortOrder"];
+            this.languageCode = _data["languageCode"];
+            this.ownerId = _data["ownerId"];
+            this.ownerType = _data["ownerType"];
+        }
+    }
+
+    static fromJS(data: any): CreateVideoCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateVideoCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["contentUrl"] = this.contentUrl;
+        data["sortOrder"] = this.sortOrder;
+        data["languageCode"] = this.languageCode;
+        data["ownerId"] = this.ownerId;
+        data["ownerType"] = this.ownerType;
+        return data;
+    }
+}
+
+export interface ICreateVideoCommand {
+    contentUrl: string;
+    sortOrder?: number | undefined;
+    languageCode?: string | undefined;
+    ownerId: string;
+    ownerType: string;
+}
+
 export class CustomerAddress implements ICustomerAddress {
     addressType?: CustomerAddressAddressType;
     key?: string | undefined;
@@ -8637,12 +8868,12 @@ export enum InventoryStatus {
 
 export class IOperation implements IIOperation {
     operationType?: string | undefined;
-    parentOperationId?: string | undefined;
     number?: string | undefined;
     isApproved?: boolean;
     status?: string | undefined;
     comment?: string | undefined;
     currency?: string | undefined;
+    parentOperationId?: string | undefined;
     childrenOperations?: IOperation[] | undefined;
     id?: string | undefined;
 
@@ -8658,12 +8889,12 @@ export class IOperation implements IIOperation {
     init(_data?: any) {
         if (_data) {
             this.operationType = _data["operationType"];
-            this.parentOperationId = _data["parentOperationId"];
             this.number = _data["number"];
             this.isApproved = _data["isApproved"];
             this.status = _data["status"];
             this.comment = _data["comment"];
             this.currency = _data["currency"];
+            this.parentOperationId = _data["parentOperationId"];
             if (Array.isArray(_data["childrenOperations"])) {
                 this.childrenOperations = [] as any;
                 for (let item of _data["childrenOperations"])
@@ -8683,12 +8914,12 @@ export class IOperation implements IIOperation {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["operationType"] = this.operationType;
-        data["parentOperationId"] = this.parentOperationId;
         data["number"] = this.number;
         data["isApproved"] = this.isApproved;
         data["status"] = this.status;
         data["comment"] = this.comment;
         data["currency"] = this.currency;
+        data["parentOperationId"] = this.parentOperationId;
         if (Array.isArray(this.childrenOperations)) {
             data["childrenOperations"] = [];
             for (let item of this.childrenOperations)
@@ -8701,12 +8932,12 @@ export class IOperation implements IIOperation {
 
 export interface IIOperation {
     operationType?: string | undefined;
-    parentOperationId?: string | undefined;
     number?: string | undefined;
     isApproved?: boolean;
     status?: string | undefined;
     comment?: string | undefined;
     currency?: string | undefined;
+    parentOperationId?: string | undefined;
     childrenOperations?: IOperation[] | undefined;
     id?: string | undefined;
 }
@@ -14837,6 +15068,130 @@ export interface ISearchStateMachineInstancesResult {
     results?: StateMachineInstance[] | undefined;
 }
 
+export class SearchVideosQuery implements ISearchVideosQuery {
+    ownerIds?: string[] | undefined;
+    ownerType?: string | undefined;
+    responseGroup?: string | undefined;
+    /** Search object type */
+    objectType?: string | undefined;
+    objectTypes?: string[] | undefined;
+    objectIds?: string[] | undefined;
+    /** Search phrase */
+    keyword?: string | undefined;
+    /** Property is left for backward compatibility */
+    searchPhrase?: string | undefined;
+    /** Search phrase language */
+    languageCode?: string | undefined;
+    sort?: string | undefined;
+    readonly sortInfos?: SortInfo[] | undefined;
+    skip?: number;
+    take?: number;
+
+    constructor(data?: ISearchVideosQuery) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["ownerIds"])) {
+                this.ownerIds = [] as any;
+                for (let item of _data["ownerIds"])
+                    this.ownerIds!.push(item);
+            }
+            this.ownerType = _data["ownerType"];
+            this.responseGroup = _data["responseGroup"];
+            this.objectType = _data["objectType"];
+            if (Array.isArray(_data["objectTypes"])) {
+                this.objectTypes = [] as any;
+                for (let item of _data["objectTypes"])
+                    this.objectTypes!.push(item);
+            }
+            if (Array.isArray(_data["objectIds"])) {
+                this.objectIds = [] as any;
+                for (let item of _data["objectIds"])
+                    this.objectIds!.push(item);
+            }
+            this.keyword = _data["keyword"];
+            this.searchPhrase = _data["searchPhrase"];
+            this.languageCode = _data["languageCode"];
+            this.sort = _data["sort"];
+            if (Array.isArray(_data["sortInfos"])) {
+                (<any>this).sortInfos = [] as any;
+                for (let item of _data["sortInfos"])
+                    (<any>this).sortInfos!.push(SortInfo.fromJS(item));
+            }
+            this.skip = _data["skip"];
+            this.take = _data["take"];
+        }
+    }
+
+    static fromJS(data: any): SearchVideosQuery {
+        data = typeof data === 'object' ? data : {};
+        let result = new SearchVideosQuery();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.ownerIds)) {
+            data["ownerIds"] = [];
+            for (let item of this.ownerIds)
+                data["ownerIds"].push(item);
+        }
+        data["ownerType"] = this.ownerType;
+        data["responseGroup"] = this.responseGroup;
+        data["objectType"] = this.objectType;
+        if (Array.isArray(this.objectTypes)) {
+            data["objectTypes"] = [];
+            for (let item of this.objectTypes)
+                data["objectTypes"].push(item);
+        }
+        if (Array.isArray(this.objectIds)) {
+            data["objectIds"] = [];
+            for (let item of this.objectIds)
+                data["objectIds"].push(item);
+        }
+        data["keyword"] = this.keyword;
+        data["searchPhrase"] = this.searchPhrase;
+        data["languageCode"] = this.languageCode;
+        data["sort"] = this.sort;
+        if (Array.isArray(this.sortInfos)) {
+            data["sortInfos"] = [];
+            for (let item of this.sortInfos)
+                data["sortInfos"].push(item.toJSON());
+        }
+        data["skip"] = this.skip;
+        data["take"] = this.take;
+        return data;
+    }
+}
+
+export interface ISearchVideosQuery {
+    ownerIds?: string[] | undefined;
+    ownerType?: string | undefined;
+    responseGroup?: string | undefined;
+    /** Search object type */
+    objectType?: string | undefined;
+    objectTypes?: string[] | undefined;
+    objectIds?: string[] | undefined;
+    /** Search phrase */
+    keyword?: string | undefined;
+    /** Property is left for backward compatibility */
+    searchPhrase?: string | undefined;
+    /** Search phrase language */
+    languageCode?: string | undefined;
+    sort?: string | undefined;
+    sortInfos?: SortInfo[] | undefined;
+    skip?: number;
+    take?: number;
+}
+
 export class Seller implements ISeller {
     registrationId?: string | undefined;
     readonly logo?: string | undefined;
@@ -17503,6 +17858,152 @@ export interface IVariation {
     createdBy?: string | undefined;
     modifiedBy?: string | undefined;
     id?: string | undefined;
+}
+
+/** Video content information */
+export class Video implements IVideo {
+    name?: string | undefined;
+    description?: string | undefined;
+    sortOrder?: number;
+    uploadDate?: Date | undefined;
+    thumbnailUrl?: string | undefined;
+    contentUrl?: string | undefined;
+    embedUrl?: string | undefined;
+    duration?: string | undefined;
+    languageCode?: string | undefined;
+    ownerId?: string | undefined;
+    ownerType?: string | undefined;
+    createdDate?: Date;
+    modifiedDate?: Date | undefined;
+    createdBy?: string | undefined;
+    modifiedBy?: string | undefined;
+    id?: string | undefined;
+
+    constructor(data?: IVideo) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.name = _data["name"];
+            this.description = _data["description"];
+            this.sortOrder = _data["sortOrder"];
+            this.uploadDate = _data["uploadDate"] ? new Date(_data["uploadDate"].toString()) : <any>undefined;
+            this.thumbnailUrl = _data["thumbnailUrl"];
+            this.contentUrl = _data["contentUrl"];
+            this.embedUrl = _data["embedUrl"];
+            this.duration = _data["duration"];
+            this.languageCode = _data["languageCode"];
+            this.ownerId = _data["ownerId"];
+            this.ownerType = _data["ownerType"];
+            this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>undefined;
+            this.modifiedDate = _data["modifiedDate"] ? new Date(_data["modifiedDate"].toString()) : <any>undefined;
+            this.createdBy = _data["createdBy"];
+            this.modifiedBy = _data["modifiedBy"];
+            this.id = _data["id"];
+        }
+    }
+
+    static fromJS(data: any): Video {
+        data = typeof data === 'object' ? data : {};
+        let result = new Video();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["name"] = this.name;
+        data["description"] = this.description;
+        data["sortOrder"] = this.sortOrder;
+        data["uploadDate"] = this.uploadDate ? this.uploadDate.toISOString() : <any>undefined;
+        data["thumbnailUrl"] = this.thumbnailUrl;
+        data["contentUrl"] = this.contentUrl;
+        data["embedUrl"] = this.embedUrl;
+        data["duration"] = this.duration;
+        data["languageCode"] = this.languageCode;
+        data["ownerId"] = this.ownerId;
+        data["ownerType"] = this.ownerType;
+        data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>undefined;
+        data["modifiedDate"] = this.modifiedDate ? this.modifiedDate.toISOString() : <any>undefined;
+        data["createdBy"] = this.createdBy;
+        data["modifiedBy"] = this.modifiedBy;
+        data["id"] = this.id;
+        return data;
+    }
+}
+
+/** Video content information */
+export interface IVideo {
+    name?: string | undefined;
+    description?: string | undefined;
+    sortOrder?: number;
+    uploadDate?: Date | undefined;
+    thumbnailUrl?: string | undefined;
+    contentUrl?: string | undefined;
+    embedUrl?: string | undefined;
+    duration?: string | undefined;
+    languageCode?: string | undefined;
+    ownerId?: string | undefined;
+    ownerType?: string | undefined;
+    createdDate?: Date;
+    modifiedDate?: Date | undefined;
+    createdBy?: string | undefined;
+    modifiedBy?: string | undefined;
+    id?: string | undefined;
+}
+
+export class VideoSearchResult implements IVideoSearchResult {
+    totalCount?: number;
+    results?: Video[] | undefined;
+
+    constructor(data?: IVideoSearchResult) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.totalCount = _data["totalCount"];
+            if (Array.isArray(_data["results"])) {
+                this.results = [] as any;
+                for (let item of _data["results"])
+                    this.results!.push(Video.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): VideoSearchResult {
+        data = typeof data === 'object' ? data : {};
+        let result = new VideoSearchResult();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["totalCount"] = this.totalCount;
+        if (Array.isArray(this.results)) {
+            data["results"] = [];
+            for (let item of this.results)
+                data["results"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export interface IVideoSearchResult {
+    totalCount?: number;
+    results?: Video[] | undefined;
 }
 
 export enum CaptureCancelledState {

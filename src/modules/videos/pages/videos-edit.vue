@@ -165,7 +165,7 @@
                     :label="$t('VIDEOS.PAGES.DETAILS.FIELDS.NAME.TITLE')"
                     :placeholder="$t('VIDEOS.PAGES.DETAILS.FIELDS.NAME.PLACEHOLDER')"
                     required
-                    :disabled="!isNew"
+                    :disabled="true"
                     :error="!!errors.length"
                     :error-message="errorMessage"
                     @update:model-value="handleChange"
@@ -184,7 +184,7 @@
                     class="tw-grow tw-basis-0"
                     :label="t('VIDEOS.PAGES.DETAILS.FIELDS.DESCRIPTION.TITLE')"
                     :placeholder="t('VIDEOS.PAGES.DETAILS.FIELDS.DESCRIPTION.PLACEHOLDER')"
-                    :disabled="!isNew"
+                    :disabled="true"
                     :error="!!errors.length"
                     :error-message="errorMessage"
                     @update:model-value="handleChange"
@@ -221,7 +221,8 @@
 import { computed, ref, onMounted } from "vue";
 import { useI18n } from "vue-i18n";
 import { IParentCallArgs, IBladeToolbar, usePopup } from "@vc-shell/framework";
-import { IVideo, VideoCreateRequest } from "vcmp-vendor-portal-api/catalog";
+import { IVideo } from "vcmp-vendor-portal-api/catalog";
+import { CreateVideoCommand } from "vcmp-vendor-portal-api/marketplacevendor";
 import { useVideo, useVideos } from "../composables";
 import { Field } from "vee-validate";
 import moment from "moment/moment";
@@ -243,10 +244,6 @@ export interface Emits {
   (event: "collapse:blade"): void;
   (event: "expand:blade"): void;
 }
-
-defineOptions({
-  url: "/video",
-});
 
 const props = withDefaults(defineProps<Props>(), {
   expanded: true,
@@ -292,6 +289,9 @@ const bladeToolbar = ref<IBladeToolbar[]>([
       emit("parent:call", {
         method: "reload",
       });
+      emit("parent:call", {
+        method: "markProductDirty",
+      });
       emit("close:blade");
     },
     disabled: computed(() => !modified.value && !videoDetails.value),
@@ -307,6 +307,9 @@ const bladeToolbar = ref<IBladeToolbar[]>([
         emit("parent:call", {
           method: "reload",
         });
+        emit("parent:call", {
+          method: "markProductDirty",
+        });
         emit("close:blade");
       }
     },
@@ -315,7 +318,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
 ]);
 
 async function getVideo() {
-  const command = new VideoCreateRequest({
+  const command = new CreateVideoCommand({
     contentUrl: videoUrl.value,
     languageCode: "en-US",
     ownerId: productId.value,

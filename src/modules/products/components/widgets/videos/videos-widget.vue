@@ -12,7 +12,11 @@
 <script setup lang="ts">
 import { VcWidget, useApiClient, useAsync, useBladeNavigation } from "@vc-shell/framework";
 import { UnwrapNestedRefs, onMounted, ref } from "vue";
-import { CatalogModuleVideosClient, IVideoSearchCriteria, VideoSearchCriteria } from "vcmp-vendor-portal-api/catalog";
+import {
+  VcmpSellerCatalogClient,
+  ISearchVideosQuery,
+  SearchVideosQuery,
+} from "vcmp-vendor-portal-api/marketplacevendor";
 
 interface Props {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -21,7 +25,7 @@ interface Props {
 
 const props = defineProps<Props>();
 
-const { getApiClient } = useApiClient(CatalogModuleVideosClient);
+const { getApiClient } = useApiClient(VcmpSellerCatalogClient);
 const client = getApiClient();
 
 const { openBlade, resolveBladeByName } = useBladeNavigation();
@@ -33,7 +37,7 @@ function clickHandler() {
   if (!widgetOpened.value) {
     openBlade({
       blade: resolveBladeByName("VideosList"),
-      param: props.modelValue?.item?.publishedProductDataId ?? props.modelValue?.item?.stagedProductDataId,
+      param: props.modelValue?.item?.stagedProductDataId,
       onOpen() {
         widgetOpened.value = true;
       },
@@ -44,17 +48,15 @@ function clickHandler() {
   }
 }
 
-const { loading, action: getCount } = useAsync<IVideoSearchCriteria, number | undefined>(async (query) => {
-  return (await client).searchVideos(new VideoSearchCriteria(query)).then((res) => res.totalCount);
+const { loading, action: getCount } = useAsync<ISearchVideosQuery, number | undefined>(async (query) => {
+  return (await client).searchVideos(new SearchVideosQuery(query)).then((res) => res.totalCount);
 });
 
 onMounted(async () => {
   if (props.modelValue?.item?.id) {
     count.value = await getCount({
       take: 0,
-      ownerIds: props.modelValue?.item?.publishedProductDataId
-        ? [props.modelValue?.item?.publishedProductDataId]
-        : [props.modelValue?.item?.stagedProductDataId],
+      ownerIds: [props.modelValue?.item?.stagedProductDataId],
     });
   }
 });

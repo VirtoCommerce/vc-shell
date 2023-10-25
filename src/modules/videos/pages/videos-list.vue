@@ -123,10 +123,6 @@ export interface Emits {
   (event: "close:children"): void;
 }
 
-defineOptions({
-  url: "/videos",
-});
-
 const props = withDefaults(defineProps<Props>(), {
   expanded: true,
   closable: true,
@@ -170,6 +166,11 @@ const reload = async () => {
   });
 };
 
+const markProductDirty = async () => {
+  emit("parent:call", {
+    method: "markProductDirty",
+  });
+};
 const bladeToolbar = ref<IBladeToolbar[]>([
   {
     id: "save",
@@ -178,6 +179,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     async clickHandler() {
       await saveVideos(videos.value);
       await reload();
+      await markProductDirty();
     },
     disabled: computed(() => !modified.value),
   },
@@ -195,6 +197,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     icon: "fas fa-trash",
     async clickHandler() {
       await deleteSelectedVideos();
+      await markProductDirty();
     },
     disabled: computed(() => !selectedVideosIds.value?.length),
   },
@@ -305,6 +308,7 @@ const actionBuilder = (): IActionBuilderResult[] => {
     async clickHandler(item: IVideo) {
       selectedVideosIds.value = [item.id];
       await deleteSelectedVideos();
+      await markProductDirty();
     },
   });
   return result;
@@ -333,5 +337,6 @@ function addVideo() {
 
 defineExpose({
   reload,
+  markProductDirty,
 });
 </script>

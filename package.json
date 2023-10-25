@@ -18,7 +18,7 @@
     "build-cli:config": "yarn workspace @vc-shell/config-generator run build",
     "build-cli:api-client": "yarn workspace @vc-shell/api-client-generator run build",
     "build-cli:create-vc-app": "yarn workspace @vc-shell/create-vc-app run build",
-    "generate:api-client": "yarn workspace @vc-shell/framework exec cross-env api-client-generator --stream --no-prefix --color",
+    "generate:api-client": "yarn workspace @vc-shell/framework exec cross-env api-client-generator --stream --no-prefix --color -- APP_PLATFORM_MODULES='[Platform]' APP_API_CLIENT_DIRECTORY=./core/api/",
     "storybook-build": "cross-env APP_ENV=production storybook build -s .storybook/assets",
     "storybook-serve": "storybook dev .storybook/assets -p 6006"
   },
@@ -76,9 +76,9 @@
     "vite-plugin-checker": "^0.6.0",
     "vite-plugin-mkcert": "^1.15.0",
     "vite-plugin-pwa": "^0.14.7",
-    "vue": "^3.3.4",
+    "vue": "^3.3.7",
     "vue-eslint-parser": "^9.3.0",
-    "vue-tsc": "^1.8.19"
+    "vue-tsc": "^1.8.20"
   },
   "lint-staged": {
     "*.{js,ts,vue}": "eslint --fix"

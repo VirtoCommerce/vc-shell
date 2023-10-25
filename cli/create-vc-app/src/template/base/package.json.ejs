@@ -11,7 +11,7 @@
     "build:types": "vue-tsc --declaration --emitDeclarationOnly --outDir dist/types",
     "type-check": "vue-tsc --noEmit",
     "lint-staged": "lint-staged",
-    "generate-api-client": "cross-env api-client-generator --color",
+    "generate:api-client": "cross-env api-client-generator --color -- APP_PLATFORM_MODULES='[]' APP_API_CLIENT_DIRECTORY=./src/api_client/",
     "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0",
     "bump": "cross-env-shell 'f() { yarn workspaces foreach --topological version --deferred \"$@\" && yarn version apply --all && yarn run changelog && yarn workspaces foreach -v exec git add . && yarn run commit-release && yarn create:tag ; }; f'",
     "commit-release": "cross-env-shell 'git commit -m v$npm_package_version'",
@@ -51,7 +51,7 @@
     "vite-plugin-mkcert": "^1.15.0",
     "vite-plugin-pwa": "^0.16.5",
     "vue-eslint-parser": "^9.3.0",
-    "vue-tsc": "^1.8.19"
+    "vue-tsc": "^1.8.20"
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.3",
@@ -62,8 +62,8 @@
     "moment": "^2.29.4",
     "roboto-fontface": "^0.10.0",
     "vee-validate": "^4.9.4",
-    "vue": "^3.3.4",
-    "vue-router": "^4.2.1",
+    "vue": "^3.3.7",
+    "vue-router": "^4.2.7",
     "yarn": "^1.22.19"
   },
   "lint-staged": {

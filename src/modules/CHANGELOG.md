@@ -1,3 +1,10 @@
+## [1.0.124](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.123...v1.0.124) (2023-10-25)
+
+
+### Features
+
+* vm-1215 videos with new controller ([ef07568](https://github.com/VirtoCommerce/vendor-portal/commit/ef0756806cae821009def7e90b9a5e03e59de501))
+
 ## [1.0.123](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.122...v1.0.123) (2023-10-25)
 
 ## [1.0.122](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.120...v1.0.122) (2023-10-24)

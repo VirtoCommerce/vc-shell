@@ -1,9 +1,20 @@
-## [1.0.112](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.111...v1.0.112) (2023-10-24)
+## [1.0.113](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.111...v1.0.113) (2023-10-25)
 
 
 ### Bug Fixes
 
 * add searchable prop to dynamic select ([9cfc810](https://github.com/VirtoCommerce/vc-shell/commit/9cfc810a7b7d30eef65581ece7a7c309fba53bb1))
+
+
+### Features
+
+* **@vc-shell/api-client:** Replace .env variables to command line args ([4bcfade](https://github.com/VirtoCommerce/vc-shell/commit/4bcfade6f0eee7f6e2b74ed898d5b90da1198da8))
+
+
+### BREAKING CHANGES
+
+* **@vc-shell/api-client:** api client generator now uses
+command line arguments instead of environment variables
 
 
 

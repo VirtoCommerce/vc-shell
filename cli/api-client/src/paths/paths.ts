@@ -9,11 +9,11 @@ export class Paths {
   apiClientDirectory: string;
   nswagPaths: NswagPaths;
 
-  constructor() {
+  constructor(apiDirectory: string) {
     this.workingDirectory = process.cwd();
     this.generatorDirectory = resolve(__dirname, "../..");
     this.assetsDirectory = join(this.generatorDirectory, "public", "assets");
-    this.apiClientDirectory = resolve(this.workingDirectory, process.env.APP_API_CLIENT_DIRECTORY);
+    this.apiClientDirectory = resolve(this.workingDirectory, apiDirectory);
     this.nswagPaths = {
       configuration: join(relative(this.workingDirectory, this.assetsDirectory), "config.nswag"),
       authApiBase: "authApiBase.ts",

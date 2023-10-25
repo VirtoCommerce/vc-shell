@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+import { join } from "path";
 import { default as chalk } from "chalk";
 import { spawnSync } from "child_process";
 import { resolveConfig } from "vite";
@@ -7,10 +7,44 @@ import { Paths } from "./paths/paths";
 async function generateApiClient(): Promise<void> {
   await resolveConfig({}, "build");
 
-  const paths = new Paths();
+  const parseArgs = (args) => {
+    const parsedArgs = {};
 
-  const platformUrl = process.env.APP_PLATFORM_URL;
-  const platformModules = JSON.parse(process.env.APP_PLATFORM_MODULES) as string[];
+    args.forEach((arg) => {
+      const parts = arg.split("=");
+
+      parsedArgs[parts[0]] = parts[1];
+    });
+
+    return parsedArgs;
+  };
+
+  const parsedArgs = parseArgs(process.argv.slice(2)) as {
+    APP_PLATFORM_MODULES: string;
+    APP_API_CLIENT_DIRECTORY: string;
+    APP_PLATFORM_URL: string;
+  };
+
+  const platformUrl = process.env.APP_PLATFORM_URL ?? parsedArgs.APP_PLATFORM_URL;
+
+  if (!platformUrl) {
+    return console.log(
+      chalk.red("error"),
+      "api-client-generator APP_PLATFORM_URL is required in .env config or as api-client-generator argument"
+    );
+  }
+
+  if (!parsedArgs.APP_PLATFORM_MODULES) {
+    return console.log(chalk.red("error"), "api-client-generator modules command is required");
+  }
+
+  if (!parsedArgs.APP_API_CLIENT_DIRECTORY) {
+    return console.log(chalk.red("error"), "api-client-generator outDir command is required");
+  }
+
+  const paths = new Paths(parsedArgs.APP_API_CLIENT_DIRECTORY);
+
+  const platformModules = parsedArgs?.APP_PLATFORM_MODULES.replace(/[[\]]/g, "").split(",");
 
   for (const platformModule of platformModules) {
     const apiClientPaths = paths.resolveApiClientPaths(platformModule);

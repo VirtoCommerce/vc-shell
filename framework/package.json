@@ -1,6 +1,6 @@
 {
   "name": "@vc-shell/framework",
-  "version": "1.0.112",
+  "version": "1.0.113",
   "main": "./dist/framework.mjs",
   "module": "./dist/framework.mjs",
   "types": "./dist/index.d.ts",
@@ -47,22 +47,22 @@
     "swiper": "^6.8.4",
     "url-pattern": "^1.0.3",
     "vee-validate": "^4.9.4",
-    "vue": "^3.3.4",
+    "vue": "^3.3.7",
     "vue-currency-input": "^3.0.5",
     "vue-i18n": "^9.2.2",
-    "vue-router": "^4.2.1",
+    "vue-router": "^4.2.5",
     "vue3-ace-editor": "^2.2.2",
     "vue3-touch-events": "^4.1.2",
     "whatwg-fetch": "^3.6.2"
   },
   "devDependencies": {
-    "@vc-shell/api-client-generator": "^1.0.112",
-    "@vc-shell/config-generator": "^1.0.112",
+    "@vc-shell/api-client-generator": "^1.0.113",
+    "@vc-shell/config-generator": "^1.0.113",
     "@vitejs/plugin-vue": "^4.2.3",
     "sass": "^1.62.1",
     "typescript": "~5.0.4",
     "vite": "^4.3.9",
-    "vue-tsc": "^1.8.19"
+    "vue-tsc": "^1.8.20"
   },
   "publishConfig": {
     "access": "public",

@@ -260,6 +260,7 @@ async function onBeforeClose() {
 defineExpose({
   title: bladeTitle,
   onBeforeClose,
+  ...scope.value,
 });
 </script>
 

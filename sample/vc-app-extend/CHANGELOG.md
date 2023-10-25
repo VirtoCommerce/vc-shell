@@ -1,4 +1,13 @@
-## [1.0.121](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.111...v1.0.121) (2023-10-25)
+## [1.0.114](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.113...v1.0.114) (2023-10-25)
+
+
+### Features
+
+* vm-1215 expose in dynamic blade ([58cf7ef](https://github.com/VirtoCommerce/vc-shell/commit/58cf7effba8b48865373ce444fc2c7902ae16669))
+
+
+
+## [1.0.113](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.111...v1.0.113) (2023-10-25)
 
 
 ### Bug Fixes

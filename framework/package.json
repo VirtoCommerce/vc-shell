@@ -1,6 +1,6 @@
 {
   "name": "@vc-shell/framework",
-  "version": "1.0.112",
+  "version": "1.0.113",
   "main": "./dist/framework.mjs",
   "module": "./dist/framework.mjs",
   "types": "./dist/index.d.ts",
@@ -56,8 +56,8 @@
     "whatwg-fetch": "^3.6.2"
   },
   "devDependencies": {
-    "@vc-shell/api-client-generator": "^1.0.112",
-    "@vc-shell/config-generator": "^1.0.112",
+    "@vc-shell/api-client-generator": "^1.0.113",
+    "@vc-shell/config-generator": "^1.0.113",
     "@vitejs/plugin-vue": "^4.2.3",
     "sass": "^1.62.1",
     "typescript": "~5.0.4",

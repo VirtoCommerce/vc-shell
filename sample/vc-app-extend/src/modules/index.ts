@@ -1,2 +1,2 @@
-import ExtendedOffers from "./offers-extend";
-export { ExtendedOffers };
+import Offers from "./offers";
+export { Offers };

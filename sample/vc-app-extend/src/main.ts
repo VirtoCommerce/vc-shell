@@ -3,7 +3,7 @@ import { createApp } from "vue";
 import { router } from "./router";
 import * as locales from "./locales";
 import { RouterView } from "vue-router";
-import { ExtendedOffers } from "./modules";
+import { Offers } from "./modules";
 
 // Load required CSS
 import "./styles/index.scss";
@@ -18,7 +18,7 @@ async function startApp() {
 
   const app = createApp(RouterView);
   app.use(VirtoShellFramework);
-  app.use(ExtendedOffers, { router });
+  app.use(Offers, { router });
   app.use(router);
 
   Object.entries(locales).forEach(([key, message]) => {

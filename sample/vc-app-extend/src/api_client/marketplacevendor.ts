@@ -9276,7 +9276,7 @@ export class Offer implements IOffer {
     createdBy?: string | undefined;
     modifiedBy?: string | undefined;
     id?: string | undefined;
-    mockInputData?: string;
+    newField?: string;
 
     constructor(data?: IOffer) {
         if (data) {
@@ -9289,7 +9289,7 @@ export class Offer implements IOffer {
 
     init(_data?: any) {
         if (_data) {
-            this.mockInputData = 'REPLACED API MOCKED INPUT'
+            this.newField = 'Generated API client newField data'
             this.isSuspended = _data["isSuspended"];
             this.isActive = _data["isActive"];
             this.outerId = _data["outerId"];

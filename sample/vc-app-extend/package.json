@@ -1,6 +1,6 @@
 {
   "name": "vc-app-extend",
-  "version": "1.0.121",
+  "version": "1.0.113",
   "private": true,
   "scripts": {
     "bootstrap": "yarn build:api",

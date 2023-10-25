@@ -9,7 +9,7 @@
     "lint": "eslint --fix 'framework/**/*.{ts,vue}' 'import-module/**/*.{ts,vue}'",
     "lint-staged": "lint-staged",
     "changelog": "yarn workspaces foreach -v --from '{@vc-shell/config-generator,@vc-shell/api-client-generator,@vc-shell/framework,@vc-shell/create-vc-app,@vc-shell/import-module}' exec -- 'conventional-changelog --preset angular --release-count 0 --commit-path $INIT_CWD --pkg $INIT_CWD/package.json --outfile $INIT_CWD/CHANGELOG.md'",
-    "bump": "cross-env-shell 'f() { yarn workspaces foreach --topological version --deferred \"$@\" && yarn version apply --all && yarn workspaces foreach -v run changelog && yarn workspaces foreach -v exec git add . && yarn workspaces foreach -v run commit-release && yarn workspaces foreach -v run create:tag ; }; f'",
+    "bump": "cross-env-shell 'f() { yarn workspaces foreach --topological version --deferred \"$@\" && yarn version apply --all && yarn workspaces foreach -v run changelog && yarn workspaces foreach -v --exclude sample/* exec git add . && yarn workspaces foreach -v --exclude sample/* run commit-release && yarn workspaces foreach -v --exclude sample/* run create:tag ; }; f'",
     "create:tag": "PACKAGE_VERSION=$(cat package.json | grep \\\"version\\\" | head -1 | awk -F: '{ print $2 }' | sed 's/[\",]//g' | tr -d '[[:space:]]') && git tag v$PACKAGE_VERSION && git push --tags",
     "commit-release": "cross-env-shell 'git commit -m v$npm_package_version'",
     "build": "yarn workspaces foreach -v --from '{@vc-shell/config-generator,@vc-shell/api-client-generator,@vc-shell/create-vc-app,@vc-shell/framework,@vc-shell/import-module}' run build",

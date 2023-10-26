@@ -36,7 +36,7 @@ const count = ref(0);
 function clickHandler() {
   if (!widgetOpened.value) {
     openBlade({
-      blade: resolveBladeByName("VideosList"),
+      blade: resolveBladeByName("Videos"),
       param: props.modelValue?.item?.stagedProductDataId,
       onOpen() {
         widgetOpened.value = true;

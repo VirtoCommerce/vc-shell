@@ -245,6 +245,12 @@ watch(
       openBlade({
         blade: markRaw(OrdersEdit),
         param: newVal,
+        onOpen() {
+          selectedItemId.value = newVal;
+        },
+        onClose() {
+          selectedItemId.value = undefined;
+        },
       });
     }
   },

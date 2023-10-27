@@ -7,17 +7,17 @@
     "skipLibCheck": true,
     "esModuleInterop": true,
     "lib": ["esnext"],
-    "module": "commonjs",
-    "moduleResolution": "node",
-    "target": "esnext",
+    "module": "ES2020",
+    "moduleResolution": "bundler",
+    "target": "ES2022",
     "jsx": "preserve",
     "isolatedModules": true,
     "useDefineForClassFields": true,
     "rootDir": "./",
     "strict": false,
     "composite": true,
-    "types": ["vite/client", "node"]
+    "types": ["node"]
   },
   "include": ["src/index.ts"],
-  "exclude": ["node_modules", "dist", "src/template"]
+  "exclude": ["node_modules", "dist", "src/templates"]
 }

@@ -9,9 +9,7 @@
   ],
   "vue3snippets.enable-compile-vue-file-on-did-save-code": false,
   "i18n-ally.localesPaths": [
-    "boilerplate/src/locales",
     "framework/ui/locales",
-    "apps/vendor-portal/src/locales",
     "framework/core/plugins/i18n",
     "framework/shared/modules/assets-manager/locales",
     "framework/shared/modules/assets/locales",
@@ -20,14 +18,6 @@
     "framework/shared/pages/InvitePage/locales",
     "framework/shared/pages/LoginPage/locales",
     "framework/shared/pages/ResetPasswordPage/locales",
-    "apps/vendor-portal/src/modules/import/locales",
-    "apps/vendor-portal/src/modules/marketplace-products/locales",
-    "apps/vendor-portal/src/modules/offers/locales",
-    "apps/vendor-portal/src/modules/products/locales",
-    "apps/vendor-portal/src/modules/orders/locales",
-    "apps/vendor-portal/src/modules/rating/locales",
-    "apps/vendor-portal/src/modules/settings/locales",
-    "apps/vendor-portal/src/modules/dynamic/locales",
     "import-module/src/locales",
     "sample/vc-app/src/locales",
     "sample/vc-app-extend/src/locales",
@@ -35,8 +25,6 @@
     "apps/vendor-portal/src/modules/newProducts/locales",
     "apps/vendor-portal/src/modules/newTeam/locales",
     "sample/vc-app/src/modules/sample/locales",
-    "cli/create-vc-app/src/template/base/src/locales",
-    "cli/create-vc-app/src/template/code/blade/src/modules/default/locales",
     "sample/vc-app/src/modules/legacy-sample/locales"
   ],
   "i18n-ally.keystyle": "nested",
@@ -45,5 +33,6 @@
   "cSpell.words": [
     "GTIN",
     "Vcmp"
-  ]
+  ],
+  "npm.exclude": "**/cli/create-vc-app/src/templates/**"
 }

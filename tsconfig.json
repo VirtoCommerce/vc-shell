@@ -24,6 +24,9 @@
       "@vc-shell/config-generator": [
         "cli/config"
       ],
+      "@vc-shell/release-config": [
+        "cli/release-config"
+      ],
       "@vc-shell/api-client-generator": [
         "cli/api-client"
       ],
@@ -47,6 +50,9 @@
     },
     {
       "path": "cli/create-vc-app/"
+    },
+    {
+      "path": "cli/release-config/"
     },
     {
       "path": "import-module/"

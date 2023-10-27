@@ -5,16 +5,9 @@ import minimist from "minimist";
 import { default as chalk } from "chalk";
 import path from "path";
 import fs from "fs";
-import * as ejs from "ejs";
+import { fileURLToPath } from "node:url";
 
-interface Config {
-  appName?: string;
-  packageName?: string;
-  dashboard?: boolean;
-  commonPages?: boolean;
-  bladeModuleStarter?: boolean;
-  bladeModuleName?: string;
-}
+type Config = prompts.Answers<"appName" | "packageName" | "variant">;
 
 function isValidName(appName: string) {
   return /^(?:@[a-z0-9-*~][a-z0-9-*._~]*\/)?[a-z0-9-~][a-z0-9-._~]*$/.test(appName);
@@ -35,38 +28,49 @@ function emptyDir(dir) {
   }
 }
 
-async function renderTemplate(src: string, dest: string, config: Config) {
-  const stats = fs.statSync(src);
-
-  if (stats.isDirectory()) {
-    if (path.basename(src) === "node_modules") {
-      return;
-    }
-
-    fs.mkdirSync(dest, { recursive: true });
-    for (const file of fs.readdirSync(src)) {
-      if (path.parse(file).ext === ".ejs") {
-        try {
-          const rendered = await ejs.renderFile(path.resolve(src, file), config);
-          fs.writeFileSync(path.resolve(`${dest}/${path.parse(file).name}`), rendered);
-
-          continue;
-        } catch (e) {
-          console.log(e);
-        }
-      }
-      renderTemplate(path.resolve(src, file), path.resolve(dest, file), config);
-    }
-    return;
-  }
-
-  if (fs.existsSync(dest)) {
-    fs.writeFileSync(dest, fs.readFileSync(src, "utf8"));
-    return;
-  }
-
-  fs.copyFileSync(src, dest);
+function isEmpty(path: string) {
+  const files = fs.readdirSync(path);
+  return files.length === 0 || (files.length === 1 && files[0] === ".git");
 }
+
+function copy(src: string, dest: string) {
+  const stat = fs.statSync(src);
+  if (stat.isDirectory()) {
+    copyDir(src, dest);
+  } else {
+    fs.copyFileSync(src, dest);
+  }
+}
+
+function copyDir(srcDir: string, destDir: string) {
+  fs.mkdirSync(destDir, { recursive: true });
+  for (const file of fs.readdirSync(srcDir)) {
+    const srcFile = path.resolve(srcDir, file);
+    const destFile = path.resolve(destDir, file);
+    copy(srcFile, destFile);
+  }
+}
+
+const AppVariants = [
+  {
+    name: "classic",
+    display: "Classic modules boilerplate",
+  },
+  {
+    name: "dynamic",
+    display: "Dynamic modules boilerplate",
+  },
+  {
+    name: "both",
+    display: "Classic modules + Dynamic modules boilerplate",
+  },
+];
+
+const variantMap = {
+  both: "variants/both",
+  classic: "variants/classic",
+  dynamic: "variants/dynamic",
+};
 
 async function create() {
   const cwd = process.cwd();
@@ -74,8 +78,9 @@ async function create() {
   const args = minimist(process.argv.slice(2));
   let dir = args._[0];
   const defaultAppName = !dir ? "vc-app" : dir;
+  const getProjectName = () => (dir === "." ? path.basename(path.resolve()) : dir);
 
-  let config: Config = {};
+  let config: Config;
 
   try {
     config = await prompts(
@@ -83,52 +88,49 @@ async function create() {
         {
           name: "appName",
           type: dir ? null : "text",
-          message: "App name:",
+          message: chalk.reset("Project name:"),
           initial: defaultAppName,
           onState: (state) => (dir = toValidName(String(state.value).trim()) || defaultAppName),
           format: (value) => toValidName(String(value).trim()),
         },
         {
+          type: () => (!fs.existsSync(dir) || isEmpty(dir) ? null : "confirm"),
+          name: "overwrite",
+          message: () =>
+            (dir === "." ? "Current directory" : `Target directory "${dir}"`) +
+            ` is not empty. Remove existing files and continue?`,
+        },
+        {
+          type: (_, { overwrite }: { overwrite?: boolean }) => {
+            if (overwrite === false) {
+              throw new Error(chalk.red("✖") + " Operation cancelled");
+            }
+            return null;
+          },
+          name: "overwriteChecker",
+        },
+        {
           name: "packageName",
-          type: () => (isValidName(dir) ? null : "text"),
-          message: "Package name:",
-          initial: () => toValidName(dir),
+          type: () => (isValidName(getProjectName()) ? null : "text"),
+          message: chalk.reset("Package name:"),
+          initial: () => toValidName(getProjectName()),
           validate: (dir) => isValidName(dir) || "Invalid package.json name",
         },
         {
-          name: "dashboard",
-          type: "toggle",
-          message: "Add Dashboard page?",
-          initial: false,
-          active: "Yes",
-          inactive: "No",
-        },
-        {
-          name: "commonPages",
-          type: "toggle",
-          message: "Add Login/Invite/Reset password pages?",
-          initial: false,
-          active: "Yes",
-          inactive: "No",
-        },
-        {
-          name: "bladeModuleStarter",
-          type: "toggle",
-          message: "Add module starter?",
-          initial: false,
-          active: "Yes",
-          inactive: "No",
-        },
-        {
-          name: "bladeModuleName",
-          type: (prev) => (prev ? "text" : null),
-          message: "Module starter name:",
-          format: (value) => String(value).trim().replace(/\s+/g, "").replace(/^[._]/, ""),
+          type: "select",
+          name: "variant",
+          message: chalk.reset("Select module variant:"),
+          choices: AppVariants.map((variant) => {
+            return {
+              title: variant.display,
+              value: variant.name,
+            };
+          }),
         },
       ],
       {
         onCancel: () => {
-          throw new Error(chalk.red("Creation cancelled"));
+          throw new Error(chalk.red("✖") + " Creation cancelled");
         },
       }
     );
@@ -137,7 +139,7 @@ async function create() {
     process.exit(1);
   }
 
-  const { dashboard, commonPages, bladeModuleStarter } = config;
+  const { packageName, variant } = config;
 
   const root = path.join(cwd, dir);
 
@@ -149,28 +151,33 @@ async function create() {
 
   console.log(`\nScaffolding app in ${root}...`);
 
-  const templateRoot = path.resolve(__dirname, "template");
+  const templateRoot = path.resolve(fileURLToPath(import.meta.url), "../templates");
+
+  const write = (file: string, content?: string) => {
+    if (content) {
+      fs.writeFileSync(path.join(root, file), content);
+    } else {
+      copy(file, root);
+    }
+  };
 
   const render = (templateName) => {
     const templateDir = path.resolve(templateRoot, templateName);
-    renderTemplate(templateDir, root, config);
+    write(templateDir);
   };
 
   render("base");
 
-  if (dashboard) {
-    render("code/dashboard");
-  }
+  render(variantMap[variant]);
 
-  if (commonPages) {
-    render("code/commonPages");
-  }
+  const pkg = JSON.parse(fs.readFileSync(path.join(templateRoot, `./base/package.json`), "utf-8"));
 
-  if (bladeModuleStarter) {
-    render("code/blade");
-  }
+  pkg.name = packageName || getProjectName();
+
+  write("package.json", JSON.stringify(pkg, null, 2) + "\n");
 
   console.log(`\nDone. You can now run application:\n`);
+
   if (root !== cwd) {
     const cdProjectName = path.relative(cwd, root);
     console.log(

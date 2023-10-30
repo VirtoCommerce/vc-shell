@@ -9,6 +9,7 @@ import EditorField from "./fields/EditorField";
 import GalleryField from "./fields/GalleryField";
 import Button from "./fields/Button";
 import StatusField from "./fields/StatusField";
+import ContentField from "./fields/ContentField";
 
 const FIELD_MAP = {
   "vc-select": SelectField,
@@ -22,6 +23,7 @@ const FIELD_MAP = {
   "vc-gallery": GalleryField,
   "vc-button": Button,
   "vc-status": StatusField,
+  "vc-field": ContentField,
 };
 
 export default FIELD_MAP;

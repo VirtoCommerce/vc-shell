@@ -12,3 +12,4 @@ export * from "./vc-select";
 export * from "./vc-slider";
 export * from "./vc-textarea";
 export * from "./vc-multivalue";
+export * from "./vc-field";

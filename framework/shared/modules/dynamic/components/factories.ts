@@ -6,6 +6,7 @@ import {
   VcCheckbox,
   VcDynamicProperty,
   VcEditor,
+  VcField,
   VcGallery,
   VcInput,
   VcInputCurrency,
@@ -26,6 +27,7 @@ import {
   IFieldset,
   IControlBaseOptions,
   IStatusField,
+  IContentField,
 } from "../types/models";
 
 export const ControlBase = ({ visibility = undefined }: IControlBaseOptions): IControlBaseOptions => ({
@@ -78,6 +80,15 @@ export const StatusField = ({ props, slots, options }: Partial<IStatusField>): I
 
 export const InputField = ({ props, options }: Partial<IInputField>): IInputField => ({
   component: markRaw(VcInput),
+  props: {
+    ...ControlBaseProps(props),
+    ...props,
+  },
+  options: ControlBase(options),
+});
+
+export const ContentField = ({ props, options }: Partial<IInputField>): IContentField => ({
+  component: markRaw(VcField),
   props: {
     ...ControlBaseProps(props),
     ...props,

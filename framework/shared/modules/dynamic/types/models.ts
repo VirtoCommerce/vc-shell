@@ -6,6 +6,7 @@ import {
   VcCheckbox,
   VcDynamicProperty,
   VcEditor,
+  VcField,
   VcGallery,
   VcInput,
   VcInputCurrency,
@@ -44,7 +45,8 @@ export type ControlType =
   | ICheckbox
   | IButton
   | IInputCurrency
-  | IStatusField;
+  | IStatusField
+  | IContentField;
 
 export type ControlTypeWithSlots = Extract<
   ControlType,
@@ -91,6 +93,11 @@ export type IInputField = {
   props: ComponentProps<typeof VcInput> | IControlBaseProps;
   options: IControlBaseOptions;
 } & FieldOpts<typeof VcInput>;
+
+export type IContentField = {
+  props: ComponentProps<typeof VcField> | IControlBaseProps;
+  options: IControlBaseOptions;
+} & FieldOpts<typeof VcField>;
 
 export type IInputCurrency = {
   props: Partial<ComponentProps<typeof VcInputCurrency>> | IControlBaseProps;

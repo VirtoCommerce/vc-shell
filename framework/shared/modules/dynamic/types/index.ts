@@ -1,4 +1,4 @@
-import { VcButton, VcIcon, VcInput, VcStatus } from "./../../../../ui/components";
+import { VcButton, VcField, VcIcon, VcInput, VcStatus } from "./../../../../ui/components";
 import { ITableColumns, IValidationRules } from "../../../../core/types";
 import type { ComponentProps, ComponentEmit, ComponentSlots } from "vue-component-type-helpers";
 
@@ -150,6 +150,12 @@ export interface InputSchema extends SchemaBase {
   clearable?: boolean;
 }
 
+export interface FieldSchema extends SchemaBase {
+  component: "vc-field";
+  variant?: ComponentProps<typeof VcField>["type"];
+  copyable?: boolean;
+}
+
 export interface StatusSchema extends SchemaBase {
   component: "vc-status";
   outline?: boolean;
@@ -237,7 +243,8 @@ export type ControlSchema =
   | FieldsetSchema
   | ButtonSchema
   | InputCurrencySchema
-  | StatusSchema;
+  | StatusSchema
+  | FieldSchema;
 
 export interface FilterBase {
   columns: {

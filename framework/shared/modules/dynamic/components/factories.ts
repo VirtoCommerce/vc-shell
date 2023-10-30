@@ -89,7 +89,7 @@ export const InputField = ({ props, options }: Partial<IInputField>): IInputFiel
   options: ControlBase(options),
 });
 
-export const ContentField = ({ props, options }: Partial<IInputField>): IContentField => ({
+export const ContentField = ({ props, options }: Partial<IContentField>): IContentField => ({
   component: markRaw(VcField),
   props: {
     ...ControlBaseProps(props),

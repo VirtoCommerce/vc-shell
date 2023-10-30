@@ -12,6 +12,7 @@ import {
   VcInputCurrency,
   VcSelect,
   VcStatus,
+  VcVideo,
 } from "../../../../ui/components";
 import {
   IControlBaseProps,
@@ -28,6 +29,7 @@ import {
   IControlBaseOptions,
   IStatusField,
   IContentField,
+  IVideoField,
 } from "../types/models";
 
 export const ControlBase = ({ visibility = undefined }: IControlBaseOptions): IControlBaseOptions => ({
@@ -89,6 +91,15 @@ export const InputField = ({ props, options }: Partial<IInputField>): IInputFiel
 
 export const ContentField = ({ props, options }: Partial<IInputField>): IContentField => ({
   component: markRaw(VcField),
+  props: {
+    ...ControlBaseProps(props),
+    ...props,
+  },
+  options: ControlBase(options),
+});
+
+export const VideoField = ({ props, options }: Partial<IInputField>): IVideoField => ({
+  component: markRaw(VcVideo),
   props: {
     ...ControlBaseProps(props),
     ...props,

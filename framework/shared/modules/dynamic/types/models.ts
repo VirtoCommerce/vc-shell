@@ -12,6 +12,7 @@ import {
   VcInputCurrency,
   VcSelect,
   VcStatus,
+  VcVideo,
 } from "../../../../ui/components";
 import type { ComponentProps, ComponentEmit, ComponentSlots } from "vue-component-type-helpers";
 
@@ -98,6 +99,11 @@ export type IContentField = {
   props: ComponentProps<typeof VcField> | IControlBaseProps;
   options: IControlBaseOptions;
 } & FieldOpts<typeof VcField>;
+
+export type IVideoField = {
+  props: ComponentProps<typeof VcVideo> | IControlBaseProps;
+  options: IControlBaseOptions;
+} & FieldOpts<typeof VcVideo>;
 
 export type IInputCurrency = {
   props: Partial<ComponentProps<typeof VcInputCurrency>> | IControlBaseProps;

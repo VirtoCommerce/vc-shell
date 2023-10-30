@@ -4,7 +4,7 @@ import componentProps from "./props";
 import { FieldSchema } from "../../types";
 
 export default {
-  name: "InputField",
+  name: "ContentField",
   props: componentProps,
   setup(props: ExtractPropTypes<typeof componentProps> & { element: FieldSchema }) {
     return () => {

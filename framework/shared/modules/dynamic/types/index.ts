@@ -1,4 +1,4 @@
-import { VcButton, VcField, VcIcon, VcInput, VcStatus } from "./../../../../ui/components";
+import { VcButton, VcField, VcIcon, VcInput, VcStatus, VcVideo } from "./../../../../ui/components";
 import { ITableColumns, IValidationRules } from "../../../../core/types";
 import type { ComponentProps, ComponentEmit, ComponentSlots } from "vue-component-type-helpers";
 
@@ -150,6 +150,14 @@ export interface InputSchema extends SchemaBase {
   clearable?: boolean;
 }
 
+export interface VideoSchema extends SchemaBase {
+  component: "vc-video";
+  size?: ComponentProps<typeof VcVideo>["size"];
+  rounded?: boolean;
+  bordered?: boolean;
+  clickable?: boolean;
+}
+
 export interface FieldSchema extends SchemaBase {
   component: "vc-field";
   variant?: ComponentProps<typeof VcField>["type"];
@@ -244,7 +252,8 @@ export type ControlSchema =
   | ButtonSchema
   | InputCurrencySchema
   | StatusSchema
-  | FieldSchema;
+  | FieldSchema
+  | VideoSchema;
 
 export interface FilterBase {
   columns: {

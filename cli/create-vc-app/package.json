@@ -14,18 +14,17 @@
     "postbuild": "shx cp -R src/templates dist/"
   },
   "devDependencies": {
-    "@types/minimist": "^1.2.2",
     "@types/prompts": "^2.4.4",
     "copyfiles": "^2.4.1",
     "cross-env": "^7.0.3",
     "shx": "^0.3.4",
-    "typescript": "~5.0.4"
+    "typescript": "^5.2.2"
   },
   "dependencies": {
     "chalk": "^2.4.2",
-    "minimist": "^1.2.8",
     "prompts": "^2.4.2",
-    "tslib": "^2.5.3"
+    "tslib": "^2.5.3",
+    "mri": "^1.2.0"
   },
   "publishConfig": {
     "access": "public",

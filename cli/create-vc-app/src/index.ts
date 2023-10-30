@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import prompts from "prompts";
-import minimist from "minimist";
+import mri from "mri";
 import { default as chalk } from "chalk";
 import path from "path";
 import fs from "fs";
@@ -75,7 +75,7 @@ const variantMap = {
 async function create() {
   const cwd = process.cwd();
 
-  const args = minimist(process.argv.slice(2));
+  const args = mri(process.argv.slice(2));
   let dir = args._[0];
   const defaultAppName = !dir ? "vc-app" : dir;
   const getProjectName = () => (dir === "." ? path.basename(path.resolve()) : dir);

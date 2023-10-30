@@ -8,6 +8,7 @@ import {
   VcEditor,
   VcField,
   VcGallery,
+  VcImage,
   VcInput,
   VcInputCurrency,
   VcSelect,
@@ -30,6 +31,7 @@ import {
   IStatusField,
   IContentField,
   IVideoField,
+  IImageField,
 } from "../types/models";
 
 export const ControlBase = ({ visibility = undefined }: IControlBaseOptions): IControlBaseOptions => ({
@@ -91,6 +93,15 @@ export const InputField = ({ props, options }: Partial<IInputField>): IInputFiel
 
 export const ContentField = ({ props, options }: Partial<IContentField>): IContentField => ({
   component: markRaw(VcField),
+  props: {
+    ...ControlBaseProps(props),
+    ...props,
+  },
+  options: ControlBase(options),
+});
+
+export const ImageField = ({ props, options }: Partial<IImageField>): IImageField => ({
+  component: markRaw(VcImage),
   props: {
     ...ControlBaseProps(props),
     ...props,

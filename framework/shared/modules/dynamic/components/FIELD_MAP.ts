@@ -11,6 +11,7 @@ import Button from "./fields/Button";
 import StatusField from "./fields/StatusField";
 import ContentField from "./fields/ContentField";
 import VideoField from "./fields/VideoField";
+import ImageField from "./fields/ImageField";
 
 const FIELD_MAP = {
   "vc-select": SelectField,
@@ -26,6 +27,7 @@ const FIELD_MAP = {
   "vc-status": StatusField,
   "vc-field": ContentField,
   "vc-video": VideoField,
+  "vc-image": ImageField,
 };
 
 export default FIELD_MAP;

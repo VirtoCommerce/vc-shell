@@ -8,6 +8,7 @@ import {
   VcEditor,
   VcField,
   VcGallery,
+  VcImage,
   VcInput,
   VcInputCurrency,
   VcSelect,
@@ -47,7 +48,8 @@ export type ControlType =
   | IButton
   | IInputCurrency
   | IStatusField
-  | IContentField;
+  | IContentField
+  | IImageField;
 
 export type ControlTypeWithSlots = Extract<
   ControlType,
@@ -104,6 +106,11 @@ export type IVideoField = {
   props: ComponentProps<typeof VcVideo> | IControlBaseProps;
   options: IControlBaseOptions;
 } & FieldOpts<typeof VcVideo>;
+
+export type IImageField = {
+  props: ComponentProps<typeof VcImage> | IControlBaseProps;
+  options: IControlBaseOptions;
+} & FieldOpts<typeof VcImage>;
 
 export type IInputCurrency = {
   props: Partial<ComponentProps<typeof VcInputCurrency>> | IControlBaseProps;

@@ -28,7 +28,7 @@
     "@vc-shell/api-client-generator": "^1.0.114",
     "@vc-shell/config-generator": "^1.0.114",
     "cross-env": "^7.0.3",
-    "typescript": "~5.0.4",
+    "typescript": "^5.2.2",
     "vite": "^4.3.9",
     "vue-tsc": "^1.8.20"
   },

@@ -19,7 +19,11 @@ async function startApp() {
   const app = createApp(RouterView);
   app.use(VirtoShellFramework);
 
+  // Initialize dynamic views module
   app.use(modules.Offers.default, { router });
+
+  // Initialize classic views module
+  app.use(modules.OffersClassic.default, { router });
 
   app.use(router);
 

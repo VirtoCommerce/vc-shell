@@ -17,7 +17,7 @@
     "useDefineForClassFields": true,
     "outDir": "dist",
     "rootDir": "src",
-    "strict": false,
+
     "lib": [
       "esnext",
       "dom"
@@ -26,8 +26,8 @@
       "vite/client",
       ],
     "paths": {
-      "vcmp-vendor-portal-modules": ["src/modules"],
-      "vcmp-vendor-portal-api": ["src/api_client"]
+      "@vcmp-vendor-portal/modules": ["src/modules"],
+      "@vcmp-vendor-portal/api": ["src/api_client"]
     }
   },
   "include": [

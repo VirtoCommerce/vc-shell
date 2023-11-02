@@ -1,5 +1,6 @@
 import { release } from "@vc-shell/release-config";
 import { spawnSync } from "child_process";
+import { updateBoilerplatePkgVersions } from "./utils";
 
 release({
   packages: [
@@ -22,6 +23,8 @@ release({
     await spawnSync("yarn", versionApplyArgs);
   },
   generateChangelog: async (pkgName, pkgVersion, workspaceName) => {
+    if (pkgName === "@vc-shell/create-vc-app") await updateBoilerplatePkgVersions();
+
     const changelogArgs = ["conventional-changelog", "-p", "angular", "-i", "CHANGELOG.md", "-s", "--commit-path", "."];
     if (workspaceName) {
       changelogArgs.push("--lerna-package", workspaceName);

@@ -17,7 +17,7 @@ import {
   VcmpSellerCatalogClient,
   ISearchOffersQuery,
   SearchOffersQuery,
-} from "vcmp-vendor-portal-api/marketplacevendor";
+} from "@vcmp-vendor-portal/api/marketplacevendor";
 
 interface Props {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

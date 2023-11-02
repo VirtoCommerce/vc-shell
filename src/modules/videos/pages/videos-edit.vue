@@ -221,8 +221,8 @@
 import { computed, ref, onMounted } from "vue";
 import { useI18n } from "vue-i18n";
 import { IParentCallArgs, IBladeToolbar, usePopup } from "@vc-shell/framework";
-import { IVideo } from "vcmp-vendor-portal-api/catalog";
-import { CreateVideoCommand } from "vcmp-vendor-portal-api/marketplacevendor";
+import { IVideo } from "@vcmp-vendor-portal/api/catalog";
+import { CreateVideoCommand } from "@vcmp-vendor-portal/api/marketplacevendor";
 import { useVideo, useVideos } from "../composables";
 import { Field } from "vee-validate";
 import moment from "moment/moment";

@@ -17,7 +17,6 @@
     "isolatedModules": true,
     "useDefineForClassFields": true,
     "outDir": "dist",
-    "strict": false,
     "composite": true,
     "rootDir": "./",
     "lib": ["esnext", "dom", "dom.iterable"],

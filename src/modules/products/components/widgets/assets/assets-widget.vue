@@ -12,7 +12,7 @@
 <script setup lang="ts">
 import { DetailsBladeContext, VcWidget, useBladeNavigation, usePopup } from "@vc-shell/framework";
 import { UnwrapNestedRefs, computed, ref, watch } from "vue";
-import { Asset } from "vcmp-vendor-portal-api/marketplacevendor";
+import { Asset } from "@vcmp-vendor-portal/api/marketplacevendor";
 import { useI18n } from "vue-i18n";
 import * as _ from "lodash-es";
 import { useAssets } from "../../../../common";

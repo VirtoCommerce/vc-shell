@@ -1,11 +1,11 @@
 import { Ref, ref, computed, watch } from "vue";
 import { useUser } from "@vc-shell/framework";
-import { IVideo, Video, VideoSearchResult } from "vcmp-vendor-portal-api/catalog";
+import { IVideo, Video, VideoSearchResult } from "@vcmp-vendor-portal/api/catalog";
 import {
   VcmpSellerCatalogClient,
   ISearchVideosQuery,
   SearchVideosQuery,
-} from "vcmp-vendor-portal-api/marketplacevendor";
+} from "@vcmp-vendor-portal/api/marketplacevendor";
 import * as _ from "lodash-es";
 
 interface IUseVideos {

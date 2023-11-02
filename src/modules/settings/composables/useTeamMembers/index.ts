@@ -13,7 +13,7 @@ import {
   ValidateSellerUserQuery,
   ValidationFailure,
   VcmpSellerSecurityClient,
-} from "vcmp-vendor-portal-api/marketplacevendor";
+} from "@vcmp-vendor-portal/api/marketplacevendor";
 import { computed, Ref, ref, watch } from "vue";
 import * as _ from "lodash-es";
 

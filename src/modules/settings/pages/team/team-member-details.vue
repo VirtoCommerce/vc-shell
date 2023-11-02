@@ -149,7 +149,7 @@ import { computed, ref, onMounted, unref } from "vue";
 import { useUser, IParentCallArgs, IBladeToolbar, usePopup } from "@vc-shell/framework";
 import useTeamMembers from "../../composables/useTeamMembers";
 import { useIsFormValid, Field, useForm, useIsFormDirty } from "vee-validate";
-import { ISellerUser } from "vcmp-vendor-portal-api/marketplacevendor";
+import { ISellerUser } from "@vcmp-vendor-portal/api/marketplacevendor";
 import { useI18n } from "vue-i18n";
 
 export interface Props {

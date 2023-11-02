@@ -103,7 +103,7 @@ import {
   usePopup,
   IParentCallArgs,
 } from "@vc-shell/framework";
-import { IVideo } from "vcmp-vendor-portal-api/catalog";
+import { IVideo } from "@vcmp-vendor-portal/api/catalog";
 import moment from "moment";
 import { useVideos } from "../composables";
 import { VideosEdit } from "./";

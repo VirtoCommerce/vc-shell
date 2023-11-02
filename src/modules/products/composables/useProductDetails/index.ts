@@ -17,7 +17,7 @@ import {
   Image,
   ValidateProductQuery,
   ValidationFailure,
-} from "vcmp-vendor-portal-api/marketplacevendor";
+} from "@vcmp-vendor-portal/api/marketplacevendor";
 import {
   IBladeToolbar,
   useApiClient,

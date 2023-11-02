@@ -20,7 +20,7 @@ import {
   OfferPrice,
   SearchOfferProductsResult,
   Image,
-} from "vcmp-vendor-portal-api/marketplacevendor";
+} from "@vcmp-vendor-portal/api/marketplacevendor";
 import { Ref, computed, nextTick, onMounted, reactive, ref, watch } from "vue";
 import { useFulfillmentCenters, useMarketplaceSettings } from "../../../settings";
 import { useI18n } from "vue-i18n";

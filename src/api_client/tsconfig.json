@@ -18,10 +18,8 @@
     "useDefineForClassFields": true,
     "outDir": "dist",
     "rootDir": "./",
-    "strict": false,
     "composite": true,
-    "lib": ["esnext", "dom"],
-    "types": ["vite/client"]
+    "lib": ["esnext"],
   },
   "files": ["package.json"],
   "include": [

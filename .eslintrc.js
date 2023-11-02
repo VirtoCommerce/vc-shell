@@ -16,15 +16,8 @@ module.exports = {
   ],
   parser: "vue-eslint-parser",
   parserOptions: {
-    project: [
-      "cli/*/tsconfig.json",
-      "framework/tsconfig.json",
-      "import-module/tsconfig.json",
-      "apps/*/tsconfig.json",
-      "sample/*/tsconfig.json",
-    ],
-    node: true,
-    tsconfigRootDir: __dirname,
+    sourceType: "module",
+    ecmaVersion: 2022,
   },
   settings: {
     "import/parsers": {
@@ -38,13 +31,12 @@ module.exports = {
           "import-module/tsconfig.json",
           "apps/*/tsconfig.json",
           "sample/*/tsconfig.json",
+          "configs/*/tsconfig.json",
         ],
       },
     },
   },
   rules: {
-    "no-console": process.env.NODE_ENV === "production" ? "warn" : "off",
-    "no-debugger": process.env.NODE_ENV === "production" ? "warn" : "off",
     "@typescript-eslint/ban-ts-comment": "warn",
     "@typescript-eslint/no-unused-vars": "warn",
     "vue/multi-word-component-names": "off",
@@ -52,4 +44,4 @@ module.exports = {
     "vue/no-v-html": "off",
     "vue/no-template-shadow": "off",
   },
-};
+}

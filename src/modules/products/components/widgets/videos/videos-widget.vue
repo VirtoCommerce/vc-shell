@@ -37,7 +37,9 @@ function clickHandler() {
   if (!widgetOpened.value) {
     openBlade({
       blade: resolveBladeByName("Videos"),
-      param: props.modelValue?.item?.stagedProductDataId,
+      options: {
+        catalogProduct: props.modelValue?.item,
+      },
       onOpen() {
         widgetOpened.value = true;
       },

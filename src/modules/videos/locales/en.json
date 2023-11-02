@@ -37,6 +37,7 @@
       },
       "DETAILS": {
         "TITLE": "Video details",
+        "TITLE_ADD": "Add video",
         "TOOLBAR": {
           "SAVE": "Save",
           "DELETE": "Delete video"
@@ -46,7 +47,8 @@
             "TITLE": "Video URL",
             "PLACEHOLDER": "Enter video URL",
             "HINT": "Enter full URL to the video you like to attach to the product, e.g. https://www.youtube.com/watch?v=xyz",
-            "ADD_BUTTON": "Preview"
+            "ADD_BUTTON": "Preview",
+            "ERROR": "The Video Url is not valid"
           },
           "DURATION": {
             "TITLE": "Length"

@@ -127,24 +127,6 @@ export const details: DynamicDetailsSchema = {
                 method: "validateGtin",
               },
             },
-            {
-              id: "description",
-              component: "vc-editor",
-              label: "Description",
-              property: "description",
-              placeholder: "Enter product description",
-              multilanguage: true,
-              rules: {
-                required: true,
-              },
-            },
-            {
-              id: "productDynamicProperties",
-              component: "vc-dynamic-properties",
-              label: "Dynamic",
-              property: "properties",
-              exclude: ["Category", "Variation"],
-            },
           ],
         },
         {

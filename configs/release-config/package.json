@@ -1,17 +1,12 @@
 {
   "name": "@vc-shell/release-config",
   "version": "1.0.114",
+  "type": "module",
   "main": "dist/index.js",
-  "module": "dist/index.js",
+  "types": "./dist/index.d.ts",
   "files": [
     "dist"
   ],
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
-    }
-  },
   "scripts": {
     "build": "tsc -p src"
   },

@@ -15,8 +15,8 @@ if (isDryRun) {
   console.log();
 }
 
-export function getPackageInfo(pkgName: string, getPkgDir: ((pkg: string) => string) | undefined = (pkg) => `${pkg}`) {
-  const pkgDir = path.resolve(getPkgDir(pkgName));
+export function getPackageInfo(pkgName: string) {
+  const pkgDir = path.resolve(pkgName);
   const pkgPath = path.resolve(pkgDir, "package.json");
   const pkg = JSON.parse(readFileSync(pkgPath, "utf-8")) as {
     name: string;

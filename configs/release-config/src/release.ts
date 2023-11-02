@@ -8,18 +8,16 @@ export const release = async ({
   bumpVersion,
   generateChangelog,
   toTag,
-  getPkgDir,
 }: {
   packages: string[];
   bumpVersion: (pkgName: string, version: string) => void | Promise<void>;
   generateChangelog: (pkgName: string, version: string, workspaceName?: string) => void | Promise<void>;
   toTag: (version: string) => string;
-  getPkgDir?: (pkgName: string) => string;
 }) => {
   let targetVersion: string | undefined;
 
   // Get root package.json info
-  const { pkg, pkgPath } = getPackageInfo("", getPkgDir);
+  const { pkg, pkgPath } = getPackageInfo("");
 
   if (!targetVersion) {
     const { release }: { release: string } = await prompts({
@@ -56,15 +54,15 @@ export const release = async ({
 
   if (!yes) return;
 
-  step(`\nUpdating root workspace ${chalk.green(pkg.name)} package version to ${chalk.green(targetVersion)}...`);
+  step(`\nUpdating ${chalk.green(pkg.name)} package version to ${chalk.green(targetVersion)}...`);
   updateVersion(pkgPath, targetVersion);
 
-  step(`\nGenerating root workspace ${chalk.green(pkg.name)} changelog...`);
+  step(`\nGenerating ${chalk.green(pkg.name)} changelog...`);
   await generateChangelog(pkg.name, targetVersion);
 
   for (let index = 0; index < packages.length; index++) {
     const element = packages[index];
-    const { pkg } = getPackageInfo(element, getPkgDir);
+    const { pkg } = getPackageInfo(element);
 
     step(`\nUpdating ${chalk.green(pkg.name)} package version to ${chalk.green(targetVersion)}...`);
     await bumpVersion(pkg.name, targetVersion);

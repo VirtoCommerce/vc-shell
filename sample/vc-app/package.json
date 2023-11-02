@@ -17,10 +17,7 @@
     "type-check": "vue-tsc --noEmit",
     "lint-staged": "lint-staged",
     "generate:api-client": "cross-env api-client-generator --color -- APP_PLATFORM_MODULES='[MarketplaceVendor]' APP_API_CLIENT_DIRECTORY=./src/api_client/",
-    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0",
-    "bump": "cross-env-shell 'f() { yarn workspaces foreach --topological version --deferred \"$@\" && yarn version apply --all && yarn run changelog && yarn workspaces foreach -v exec git add . && yarn run commit-release && yarn create:tag ; }; f'",
-    "commit-release": "cross-env-shell 'git commit -m v$npm_package_version'",
-    "create:tag": "PACKAGE_VERSION=$(cat package.json | grep \\\"version\\\" | head -1 | awk -F: '{ print $2 }' | sed 's/[\",]//g' | tr -d '[[:space:]]') && git tag v$PACKAGE_VERSION && git push --tags"
+    "release": "tsx scripts/release.ts --dry"
   },
   "workspaces": [
     "src/api_client",
@@ -34,6 +31,7 @@
     "@typescript-eslint/eslint-plugin": "^5.59.7",
     "@typescript-eslint/parser": "^5.59.7",
     "@vc-shell/api-client-generator": "^1.0.115",
+    "@vc-shell/release-config": "^1.0.115",
     "@vc-shell/ts-config": "^1.0.115",
     "@vitejs/plugin-vue": "^4.2.3",
     "@vue/eslint-config-prettier": "^7.1.0",
@@ -55,6 +53,7 @@
     "querystring-es3": "^0.2.1",
     "sass": "^1.62.1",
     "tailwindcss": "^3.3.2",
+    "tsx": "^3.13.0",
     "typescript": "^5.2.2",
     "vite": "^4.3.9",
     "vite-plugin-checker": "^0.6.0",

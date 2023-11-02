@@ -4,5 +4,5 @@
     "rootDir": ".",
     "outDir": "../dist/"
   },
-  "exclude": ["template/*.ts"],
+  "exclude": ["templates/*.ts"],
 }

@@ -1,29 +1,8 @@
 {
+  "extends": "@vc-shell/ts-config/tsconfig.json",
   "compilerOptions": {
     "baseUrl": ".",
-    "declaration": true,
-    "declarationMap": true,
-    "sourceMap": true,
-    "importHelpers": true,
-    "resolveJsonModule": true,
-    "allowSyntheticDefaultImports": true,
-    "skipLibCheck": true,
-    "esModuleInterop": true,
-    "module": "esnext",
-    "moduleResolution": "node",
-    "target": "esnext",
-    "jsx": "preserve",
-    "isolatedModules": true,
-    "useDefineForClassFields": true,
     "outDir": "dist",
-    "strict": false,
-    "composite": true,
-    "lib": [
-      "esnext",
-      "dom",
-      "dom.iterable",
-      "scripthost"
-    ],
     "types": [
       "vite/client",
     ],
@@ -31,6 +10,7 @@
   "include": [
     "*.ts",
     "typings",
+
     "core/**/*.ts",
     "core/api/*.ts",
 
@@ -43,9 +23,5 @@
     "shared/**/*.vue",
     "shared/**/*.ts",
     "shared/**/*.json",
-  ],
-  "exclude": [
-    "node_modules",
-    "dist"
-  ],
+  ]
 }

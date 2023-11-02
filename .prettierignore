@@ -2,3 +2,4 @@ node_modules
 dist
 *.js
 api-client.ts
+cli/create-vc-app/src/templates

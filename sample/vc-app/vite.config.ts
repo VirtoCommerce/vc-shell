@@ -7,9 +7,8 @@ const mode = process.env.APP_ENV as string;
 export default getApplicationConfiguration({
   resolve: {
     alias: {
-      "vc-sample-modules": mode === "development" ? "src/modules/index.ts" : "vc-sample-modules",
-      "vc-marketplacevendor-api":
-        mode === "development" ? "src/api_client/marketplacevendor.ts" : "vc-marketplacevendor-api",
+      "@vc-app/modules": mode === "development" ? "src/modules/index.ts" : "@vc-app/modules",
+      "@vc-app/api": mode === "development" ? "src/api_client/marketplacevendor.ts" : "@vc-app/api",
     },
   },
   plugins: [

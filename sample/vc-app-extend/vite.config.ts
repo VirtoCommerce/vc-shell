@@ -7,7 +7,7 @@ const mode = process.env.APP_ENV as string;
 export default getApplicationConfiguration({
   resolve: {
     alias: {
-      "vc-marketplacevendor-api": "vc-marketplacevendor-api-extended",
+      "@vc-app/api": "@vc-app-extend/api",
     },
   },
   plugins: [

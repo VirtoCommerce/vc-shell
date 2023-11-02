@@ -1,14 +1,14 @@
 {
   "name": "@vc-shell/config-generator",
   "description": "Generate Vite configurations",
-  "version": "1.0.114",
+  "version": "1.0.115",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "files": [
     "dist"
   ],
   "scripts": {
-    "build": "tsc -p src"
+    "build": "tsc"
   },
   "dependencies": {
     "@vitejs/plugin-vue": "^4.2.3",
@@ -18,7 +18,8 @@
     "vue": "^3.3.7"
   },
   "devDependencies": {
-    "typescript": "~5.0.4"
+    "@vc-shell/ts-config": "^1.0.115",
+    "typescript": "^5.2.2"
   },
   "publishConfig": {
     "access": "public",

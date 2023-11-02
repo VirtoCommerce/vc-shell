@@ -1,0 +1,13 @@
+{
+  "name": "@vc-shell/ts-config",
+  "version": "1.0.115",
+  "main": "./tsconfig.json",
+  "files": [
+    "tsconfig.json"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "packageManager": "yarn@3.6.4"
+}

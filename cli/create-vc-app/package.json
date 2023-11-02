@@ -1,28 +1,29 @@
 {
   "name": "@vc-shell/create-vc-app",
   "description": "Application scaffolding",
-  "version": "1.0.114",
+  "version": "1.0.115",
+  "type": "module",
   "bin": "./dist/index.js",
   "files": [
-    "src/template",
+    "index.js",
+    "src/templates",
     "dist"
   ],
   "scripts": {
-    "build": "tsc -p src && yarn postbuild",
-    "postbuild": "shx cp -R src/template dist/"
+    "build": "shx rm -rf dist && tsc -p src && yarn postbuild",
+    "postbuild": "shx cp -R src/templates dist/"
   },
   "devDependencies": {
-    "@types/minimist": "^1.2.2",
     "@types/prompts": "^2.4.4",
+    "@vc-shell/ts-config": "^1.0.115",
     "copyfiles": "^2.4.1",
     "cross-env": "^7.0.3",
     "shx": "^0.3.4",
-    "typescript": "~5.0.4"
+    "typescript": "^5.2.2"
   },
   "dependencies": {
     "chalk": "^2.4.2",
-    "ejs": "^3.1.9",
-    "minimist": "^1.2.8",
+    "mri": "^1.2.0",
     "prompts": "^2.4.2",
     "tslib": "^2.5.3"
   },

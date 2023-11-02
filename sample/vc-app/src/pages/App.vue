@@ -226,6 +226,12 @@ const menuItems = reactive(
       component: resolveBladeByName("Offers"),
     },
     {
+      title: "Classic Offers",
+      icon: "fas fa-file-invoice",
+      isVisible: true,
+      component: resolveBladeByName("OffersList"),
+    },
+    {
       title: computed(() => t("SHELL.ACCOUNT.LOGOUT")),
       icon: "fas fa-sign-out-alt",
       isVisible: isMobile,

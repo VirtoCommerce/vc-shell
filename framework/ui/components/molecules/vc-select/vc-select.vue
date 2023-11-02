@@ -74,12 +74,15 @@
                         </div>
                         <template v-else-if="selectedScope && selectedScope.length && hasValue">
                           <template v-if="$slots['selected-item']">
-                            <slot
+                            <template
                               v-for="(item, i) in selectedScope"
-                              v-bind="item"
                               :key="i"
-                              name="selected-item"
-                            ></slot>
+                            >
+                              <slot
+                                v-bind="item"
+                                name="selected-item"
+                              ></slot>
+                            </template>
                           </template>
                           <template v-else>
                             <div class="tw-flex tw-flex-wrap tw-gap-1 tw-py-1">

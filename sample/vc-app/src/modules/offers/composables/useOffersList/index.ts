@@ -12,7 +12,7 @@ import {
   Offer,
   ISearchOffersQuery,
   BulkOffersDeleteCommand,
-} from "vc-marketplacevendor-api";
+} from "@vc-app/api";
 import { computed, onMounted, ref } from "vue";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface

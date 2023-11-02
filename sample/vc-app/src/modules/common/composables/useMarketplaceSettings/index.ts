@@ -1,6 +1,6 @@
 import { Ref, ref } from "vue";
 import { useUser } from "@vc-shell/framework";
-import { MarketplaceSettings, VcmpCommonClient } from "vc-marketplacevendor-api";
+import { MarketplaceSettings, VcmpCommonClient } from "@vc-app/api";
 
 export interface ICurrency {
   title: string;

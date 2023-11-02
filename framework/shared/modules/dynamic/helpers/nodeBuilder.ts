@@ -1,4 +1,4 @@
-import { unref, computed, toValue, h, UnwrapNestedRefs, MaybeRef, reactive } from "vue";
+import { unref, computed, toValue, h, UnwrapNestedRefs, MaybeRef, reactive, Ref } from "vue";
 import FIELD_MAP from "../components/FIELD_MAP";
 import { ControlSchema } from "../types";
 import { IControlBaseProps, IControlBaseOptions } from "../types/models";
@@ -7,6 +7,7 @@ import { setModel } from "./setters";
 import { unwrapInterpolation } from "./unwrapInterpolation";
 import { DetailsBladeContext } from "../factories";
 import * as _ from "lodash-es";
+import { unrefNested } from "./unrefNested";
 
 function disabledHandler(
   disabled: { method?: string } | boolean,
@@ -22,7 +23,7 @@ function disabledHandler(
 function nodeBuilder<Context, BContext extends UnwrapNestedRefs<DetailsBladeContext>, FormData>(args: {
   controlSchema: ControlSchema;
   parentId: string | number;
-  internalContext: Context;
+  internalContext: MaybeRef<Context>;
   bladeContext: BContext;
   currentLocale: MaybeRef<string>;
   formData: FormData;
@@ -32,7 +33,7 @@ function nodeBuilder<Context, BContext extends UnwrapNestedRefs<DetailsBladeCont
 
   const baseProps = reactive<IControlBaseProps>({
     key: `${parentId}`,
-    label: controlSchema.label ? unref(unwrapInterpolation(controlSchema.label, internalContext)) : undefined,
+    label: controlSchema.label ? unref(unwrapInterpolation(controlSchema.label, toValue(internalContext))) : undefined,
     disabled:
       ("disabled" in bladeContext.scope && bladeContext.scope.disabled) ||
       disabledHandler("disabled" in controlSchema && controlSchema.disabled, bladeContext),
@@ -40,14 +41,14 @@ function nodeBuilder<Context, BContext extends UnwrapNestedRefs<DetailsBladeCont
     rules: controlSchema.rules,
     placeholder: controlSchema.placeholder,
     required: controlSchema.rules?.required,
-    modelValue: getModel(controlSchema.property, internalContext),
+    modelValue: getModel(controlSchema.property, toValue(internalContext)),
     "onUpdate:modelValue": (e) => {
-      setModel({ property: controlSchema.property, value: e, context: internalContext });
+      setModel({ property: controlSchema.property, value: e, context: toValue(internalContext) });
 
       if (_.has(controlSchema, "update.method")) {
         controlSchema.update.method in bladeContext.scope &&
         typeof bladeContext.scope[controlSchema.update.method] === "function"
-          ? bladeContext.scope[controlSchema.update.method](e, controlSchema.property, internalContext)
+          ? bladeContext.scope[controlSchema.update.method](e, controlSchema.property, toValue(internalContext))
           : undefined;
       }
     },
@@ -65,7 +66,7 @@ function nodeBuilder<Context, BContext extends UnwrapNestedRefs<DetailsBladeCont
 
   const fieldsHandler = computed(() => {
     if (!("fields" in controlSchema)) return null;
-    const fieldsModel = getModel(controlSchema.property, internalContext);
+    const fieldsModel = getModel(controlSchema.property, toValue(internalContext));
 
     if (toValue(fieldsModel) && Array.isArray(toValue(fieldsModel))) {
       return toValue(fieldsModel).map((model) =>
@@ -106,7 +107,7 @@ function nodeBuilder<Context, BContext extends UnwrapNestedRefs<DetailsBladeCont
     fieldContext: internalContext,
   };
 
-  return h(component, elProps);
+  return h(component, unrefNested(elProps));
 }
 
 export { nodeBuilder };

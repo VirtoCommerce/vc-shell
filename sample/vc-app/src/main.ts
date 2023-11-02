@@ -3,7 +3,7 @@ import { createApp } from "vue";
 import { router } from "./router";
 import * as locales from "./locales";
 import { RouterView } from "vue-router";
-import modules from "vc-sample-modules";
+import modules from "@vc-app/modules";
 
 // Load required CSS
 import "./styles/index.scss";

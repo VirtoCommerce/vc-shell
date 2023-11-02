@@ -1,7 +1,7 @@
 import { Ref, computed, ref } from "vue";
 import * as _ from "lodash-es";
 import { AssetsHandler, useUser } from "@vc-shell/framework";
-import { Asset, Image } from "vc-marketplacevendor-api";
+import { Asset, Image } from "@vc-app/api";
 
 export function useAssets<T extends Asset | Image, A extends Asset | Image>(assetFactory: {
   new (data?: A): T;

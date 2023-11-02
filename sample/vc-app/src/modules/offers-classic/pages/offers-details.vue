@@ -525,16 +525,9 @@ import {
 } from "@vc-shell/framework";
 import { useOffer } from "../composables";
 import * as _ from "lodash-es";
-import {
-  OfferPrice,
-  InventoryInfo,
-  ISellerProduct,
-  Image,
-  IImage,
-  IOfferDetails,
-} from "../../../api_client/marketplacevendor";
+import { OfferPrice, InventoryInfo, ISellerProduct, Image, IImage, IOfferDetails } from "@vc-app/api";
 import { Form, useIsFormValid, Field, useIsFormDirty, useForm } from "vee-validate";
-import moment from "moment/moment";
+import moment from "moment";
 import { useI18n } from "vue-i18n";
 import { useDynamicProperties, useFulfillmentCenters, useMarketplaceSettings, useMultilanguage } from "../../common";
 

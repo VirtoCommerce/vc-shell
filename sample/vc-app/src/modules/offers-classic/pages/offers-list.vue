@@ -115,7 +115,7 @@ import {
   usePopup,
 } from "@vc-shell/framework";
 import moment from "moment";
-import { IOffer, ISellerProduct } from "../../../api_client/marketplacevendor";
+import { IOffer, ISellerProduct } from "@vc-app/api";
 import { useOffers } from "../composables";
 import OffersDetails from "./offers-details.vue";
 // eslint-disable-next-line import/no-unresolved
@@ -363,7 +363,7 @@ const notfound = reactive({
 
 const title = computed(() => t("OFFERS.PAGES.LIST.TITLE"));
 
-const onItemClick = (item: { id: string }) => {
+const onItemClick = (item: IOffer) => {
   openBlade({
     blade: markRaw(OffersDetails),
     param: item.id,

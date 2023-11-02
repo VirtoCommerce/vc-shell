@@ -20,7 +20,7 @@ import {
   OfferPrice,
   SearchOfferProductsResult,
   Image,
-} from "vc-marketplacevendor-api";
+} from "@vc-app/api";
 import { Ref, computed, nextTick, onMounted, reactive, ref, watch } from "vue";
 import {
   useFulfillmentCenters,

@@ -8,7 +8,7 @@ import {
   SearchOffersResult,
   IBulkOffersDeleteCommand,
   BulkOffersDeleteCommand,
-} from "../../../../api_client/marketplacevendor";
+} from "@vc-app/api";
 
 interface IUseOffers {
   readonly offers: Ref<IOffer[]>;

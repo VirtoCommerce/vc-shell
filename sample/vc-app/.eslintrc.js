@@ -17,7 +17,7 @@ module.exports = {
   parserOptions: {
     parser: "@typescript-eslint/parser",
     sourceType: "module",
-    node: true,
+    ecmaVersion: 2022,
   },
   settings: {
     "import/parsers": {
@@ -30,8 +30,6 @@ module.exports = {
     },
   },
   rules: {
-    "no-console": process.env.NODE_ENV === "production" ? "warn" : "off",
-    "no-debugger": process.env.NODE_ENV === "production" ? "warn" : "off",
     "@typescript-eslint/ban-ts-comment": "warn",
     "@typescript-eslint/no-unused-vars": "warn",
     "vue/multi-word-component-names": "off",

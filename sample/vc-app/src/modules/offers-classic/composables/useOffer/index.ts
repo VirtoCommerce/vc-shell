@@ -13,7 +13,7 @@ import {
   VcmpSellerCatalogClient,
   Property,
   PropertyValue,
-} from "../../../../api_client/marketplacevendor";
+} from "@vc-app/api";
 import * as _ from "lodash-es";
 
 export type TextOfferDetails = IOfferDetails & {

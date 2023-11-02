@@ -1,3 +1,12 @@
+## [1.0.116](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.115...v1.0.116) (2023-11-02)
+
+
+### Features
+
+* updated release in boilerplate and sample ([382265b](https://github.com/VirtoCommerce/vc-shell/commit/382265b1a740504b5a4de89cbb7cba38b3d74539))
+
+
+
 ## [1.0.115](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.114...v1.0.115) (2023-11-02)
 
 

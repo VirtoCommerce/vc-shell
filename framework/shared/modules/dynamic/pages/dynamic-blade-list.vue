@@ -234,8 +234,7 @@ const {
 const bladeContext = ref<ListBladeContext>({
   load,
   remove,
-  items,
-  mutatedItems: itemsProxy,
+  items: computed(() => itemsProxy.value),
   loading,
   pagination,
   query,

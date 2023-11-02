@@ -24,6 +24,7 @@ export type BladePageComponent = BladeConstructor;
 
 export type CoreComponentData = {
   isBladeComponent?: boolean;
+  isWorkspace?: boolean;
 };
 
 export type CoreBladeAdditionalSettings = {

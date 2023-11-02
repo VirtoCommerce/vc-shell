@@ -66,6 +66,7 @@ const register = (
   const defineBladeComponent = defineComponent({
     ...bladeComponent,
     name: bladeName,
+    isWorkspace: "isWorkspace" in json.settings && json.settings.isWorkspace,
     setup: (props, ctx) =>
       (bladeComponent as DefineComponent).setup(
         reactiveComputed(() => ({

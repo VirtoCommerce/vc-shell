@@ -175,11 +175,11 @@ import {
   PushNotification,
 } from "@vc-shell/framework";
 import moment from "moment";
-import { CustomerOrder } from "vcmp-vendor-portal-api/marketplacevendor";
+import { CustomerOrder } from "@vcmp-vendor-portal/api/marketplacevendor";
 import { useOrders } from "../composables";
 import OrdersDetails from "./orders-edit.vue";
 // eslint-disable-next-line import/no-unresolved
-import emptyImage from "./../../../../public/assets/empty.png";
+import emptyImage from "/assets/empty.png?url";
 import { useI18n } from "vue-i18n";
 
 export interface Props {
@@ -245,6 +245,12 @@ watch(
       openBlade({
         blade: markRaw(OrdersEdit),
         param: newVal,
+        onOpen() {
+          selectedItemId.value = newVal;
+        },
+        onClose() {
+          selectedItemId.value = undefined;
+        },
       });
     }
   },

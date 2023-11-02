@@ -367,7 +367,7 @@ import { onMounted, ref, computed, unref } from "vue";
 import { UserPermissions } from "../../../types";
 import { useUser, IBladeToolbar, usePopup } from "@vc-shell/framework";
 import useSellerDetails from "../../composables/useSellerDetails";
-import { Image } from "vcmp-vendor-portal-api/marketplacevendor";
+import { Image } from "@vcmp-vendor-portal/api/marketplacevendor";
 import { useIsFormValid, Field, useIsFormDirty, useForm } from "vee-validate";
 import { useI18n } from "vue-i18n";
 

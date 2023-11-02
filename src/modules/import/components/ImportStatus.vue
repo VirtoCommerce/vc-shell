@@ -6,7 +6,7 @@
 
 <script lang="ts" setup>
 import { computed } from "vue";
-import { IImportRunHistory } from "vcmp-vendor-portal-api/marketplacevendor";
+import { IImportRunHistory } from "@vcmp-vendor-portal/api/marketplacevendor";
 import { camelToSnake } from "@vc-shell/framework";
 
 export interface Props {

@@ -10,7 +10,7 @@ import {
   PropertyValue,
   PropertyValueValueType,
   VcmpSellerCatalogClient,
-} from "vcmp-vendor-portal-api/marketplacevendor";
+} from "@vcmp-vendor-portal/api/marketplacevendor";
 
 const { getApiClient } = useApiClient(VcmpSellerCatalogClient);
 

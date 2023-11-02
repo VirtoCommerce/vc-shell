@@ -95,6 +95,7 @@ export interface ListContentSchema extends SchemaBase {
     type?: string;
     customTemplate?: GridTemplateOverride;
   })[];
+  reorderableRows?: boolean;
   mobileTemplate?: {
     component: string;
   };

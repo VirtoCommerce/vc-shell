@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ComputedRef, MaybeRef, Ref, UnwrapNestedRefs } from "vue";
+import { ComputedRef, MaybeRef, Ref, UnwrapNestedRefs, UnwrapRef } from "vue";
 import { AsyncAction } from "../../../../../core/composables";
 import { SettingsSchema } from "../../types";
 import { Asset, AssetsHandler, IBladeToolbar, IImage } from "../../../../../core/types";
@@ -100,4 +100,5 @@ export interface DetailsBladeContext extends UseDetails<Record<string, any>, Det
 
 export interface ListBladeContext extends UseList<Record<string, any>[], Record<string, any>, ListBaseBladeScope> {
   settings: ComputedRef<SettingsSchema>;
+  mutatedItems?: Ref<Record<string, any>[]>;
 }

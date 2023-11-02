@@ -1,3 +1,18 @@
+## [1.0.125](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.124...v1.0.125) (2023-11-02)
+
+
+### Bug Fixes
+
+* emptyImage path fix ([5b8e6f0](https://github.com/VirtoCommerce/vendor-portal/commit/5b8e6f0529947f8cd9c0aa4b704ab7ce7a63c743))
+
+
+### Features
+
+* new release workflow ([e554892](https://github.com/VirtoCommerce/vendor-portal/commit/e554892bc7b9e65e946b30dcbea89b966d4dd7c7))
+* tsconfig update ([8dd7f25](https://github.com/VirtoCommerce/vendor-portal/commit/8dd7f25dfd8a40c58ad40d362303fa8cf2c5e4fa))
+
+
+
 ## [1.0.123](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.122...v1.0.123) (2023-10-25)
 
 

@@ -16,10 +16,10 @@
     "build:modules": "vite build --config ./src/modules/vite.config.ts",
     "build:types-modules": "vue-tsc --declaration --emitDeclarationOnly --p ./src/modules/tsconfig.json --outDir ./src/modules/dist/types",
     "type-check": "vue-tsc --noEmit",
-    "lint": "eslint --fix '*.{ts,vue}'",
+    "lint": "eslint --fix --cache '*.{ts,vue}'",
     "lint-staged": "lint-staged",
     "generate:api-client": "cross-env api-client-generator --APP_PLATFORM_MODULES='[MarketplaceVendor,Orders,Catalog]' --APP_API_CLIENT_DIRECTORY=./src/api_client/",
-    "release": "tsx scripts/release.ts --dry"
+    "release": "tsx scripts/release.ts"
   },
   "workspaces": [
     "src/api_client",
@@ -79,7 +79,7 @@
     "vue-router": "^4.2.5"
   },
   "lint-staged": {
-    "*.{js,ts,vue}": "eslint --fix"
+    "*.{js,ts,vue}": "eslint --fix --cache"
   },
   "packageManager": "yarn@3.6.4"
 }

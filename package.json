@@ -33,6 +33,7 @@
     "@typescript-eslint/eslint-plugin": "^5.59.6",
     "@typescript-eslint/parser": "^5.59.6",
     "@vc-shell/api-client-generator": "^1.0.114",
+    "@vc-shell/release-config": "^1.0.114",
     "@vc-shell/ts-config": "^1.0.114",
     "@vitejs/plugin-vue": "^4.2.3",
     "@vue/eslint-config-prettier": "^7.1.0",

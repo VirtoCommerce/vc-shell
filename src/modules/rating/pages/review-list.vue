@@ -45,6 +45,7 @@ export interface Emits {
 
 defineOptions({
   url: "/reviews",
+  isWorkspace: true,
   permissions: UserPermissions.ManageSellerReviews,
 });
 

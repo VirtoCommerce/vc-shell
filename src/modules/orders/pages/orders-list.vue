@@ -207,6 +207,7 @@ defineEmits<Emits>();
 
 defineOptions({
   url: "/orders",
+  isWorkspace: true,
   // scope: {
   //   notificationClick(notification: INewOrderPushNotification) {
   //     if (notification.notifyType !== "OrderCreatedEventHandler") return;

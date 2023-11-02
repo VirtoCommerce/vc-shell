@@ -117,6 +117,7 @@ export interface Emits {
 
 defineOptions({
   url: "/team",
+  isWorkspace: true,
   permissions: [UserPermissions.SellerUsersManage],
 });
 

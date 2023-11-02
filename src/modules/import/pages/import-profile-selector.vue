@@ -120,6 +120,7 @@ export interface Emits {
 
 defineOptions({
   url: "/import",
+  isWorkspace: true,
 });
 
 const props = withDefaults(defineProps<Props>(), {

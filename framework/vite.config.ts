@@ -31,9 +31,4 @@ export default getLibraryConfiguration({
     },
   },
   envPrefix: "APP_",
-  optimizeDeps: {
-    esbuildOptions: {
-      target: ["es2020", "safari14"],
-    },
-  },
 });

@@ -7,12 +7,12 @@ const packageJson = fs.readFileSync(process.cwd() + "/package.json");
 const name = JSON.parse(packageJson.toString()).name;
 const version = JSON.parse(packageJson.toString()).version;
 
-export function getLibraryConfiguration(options: UserConfig = {}) {
+function getLibraryConfiguration(options: UserConfig = {}) {
   console.log(`Building library ${name} v.${version} ...`);
   return getConfiguration(libraryConfiguration, options);
 }
 
-export function getApplicationConfiguration(options: UserConfig = {}) {
+function getApplicationConfiguration(options: UserConfig = {}) {
   console.log(`Building application ${name} v.${version} ...`);
   return getConfiguration(applicationConfiguration, options);
 }
@@ -20,3 +20,5 @@ export function getApplicationConfiguration(options: UserConfig = {}) {
 function getConfiguration(configuration: UserConfig = {}, options: UserConfig) {
   return mergeConfig(configuration, options);
 }
+
+export { getLibraryConfiguration, getApplicationConfiguration };

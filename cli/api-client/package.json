@@ -11,6 +11,7 @@
     "build": "tsc -p src"
   },
   "devDependencies": {
+    "@vc-shell/ts-config": "^1.0.114",
     "typescript": "^5.2.2"
   },
   "dependencies": {

@@ -1,5 +1,5 @@
 import { createDynamicAppModule } from "@vc-shell/framework";
-import modules from "vc-sample-modules";
+import modules from "@vc-app/modules";
 import overrides from "./schemaOverride";
 import { useOfferDetails } from "./composables";
 

@@ -1,5 +1,5 @@
 import { IBladeToolbar } from "@vc-shell/framework";
-import modules from "vc-sample-modules";
+import modules from "@vc-app/modules";
 import { Ref, UnwrapRef, computed, ref } from "vue";
 import * as _ from "lodash-es";
 

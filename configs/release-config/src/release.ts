@@ -77,7 +77,7 @@ export const release = async ({
   if (stdout) {
     step("\nCommitting changes...");
     await runIfNotDry("git", ["add", "-A"]);
-    await runIfNotDry("git", ["commit", "-m", `v${tag}`]);
+    await runIfNotDry("git", ["commit", "-m", `release: ${tag}`, "--no-verify"]);
     await runIfNotDry("git", ["tag", tag]);
   } else {
     console.log("No changes to commit.");

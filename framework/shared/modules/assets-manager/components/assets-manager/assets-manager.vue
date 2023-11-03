@@ -271,7 +271,7 @@ onMounted(() => {
   assetsCopy = _.cloneDeep(props.options?.assets);
 });
 
-function sortAssets(event: { dragIndex: number; dropIndex: number; value: Asset[] }) {
+async function sortAssets(event: { dragIndex: number; dropIndex: number; value: Asset[] }) {
   if (
     props.options.assetsEditHandler &&
     typeof props.options.assetsEditHandler === "function" &&
@@ -282,7 +282,7 @@ function sortAssets(event: { dragIndex: number; dropIndex: number; value: Asset[
       return item;
     });
 
-    defaultAssets.value = props.options.assetsEditHandler(sorted);
+    defaultAssets.value = await props.options.assetsEditHandler(sorted);
   }
 }
 

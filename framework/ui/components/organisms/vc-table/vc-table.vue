@@ -529,7 +529,7 @@ interface ITableItemRef {
 const emit = defineEmits<{
   paginationClick: [page: number];
   selectionChanged: [values: T[]];
-  "search:change": [value: string | number | Date];
+  "search:change": [value: string | number | Date | null];
   headerClick;
   value: [Record<string, unknown>];
   itemClick: [item: T];
@@ -883,13 +883,13 @@ function onColumnResizeEnd() {
 
   const minWidth = 15;
 
-  if (columnWidth + delta > parseInt(minWidth.toString(), 10)) {
+  if (columnWidth + delta > parseInt(minWidth.toString(), 10) && resizeColumnElement.value) {
     nextColumn.value = filteredCols.value[filteredCols.value.indexOf(resizeColumnElement.value) + 1];
 
     if (nextColumn.value) {
-      const nextColElement: HTMLElement = table.value.querySelector(`#${nextColumn.value.id}`);
+      const nextColElement = table.value.querySelector(`#${nextColumn.value.id}`);
 
-      const nextColumnWidth = nextColElement.offsetWidth - delta;
+      const nextColumnWidth = (nextColElement as HTMLElement).offsetWidth - delta;
       if (newColumnWidth > 15 && nextColumnWidth > 15) {
         resizeTableCells(newColumnWidth, nextColumnWidth);
       }
@@ -907,8 +907,12 @@ function onColumnResizeEnd() {
 }
 
 function resizeTableCells(newColumnWidth: number, nextColumnWidth: number) {
-  resizeColumnElement.value.width = newColumnWidth + "px";
-  nextColumn.value.width = nextColumnWidth + "px";
+  if (resizeColumnElement.value) {
+    resizeColumnElement.value.width = newColumnWidth + "px";
+  }
+  if (nextColumn.value) {
+    nextColumn.value.width = nextColumnWidth + "px";
+  }
 }
 
 function onColumnHeaderDragStart(event: DragEvent, item: ITableColumns) {
@@ -919,7 +923,9 @@ function onColumnHeaderDragStart(event: DragEvent, item: ITableColumns) {
 
   draggedColumn.value = item;
   draggedElement.value = event.target as HTMLElement;
-  event.dataTransfer.setData("text", "reorder");
+  if (event.dataTransfer) {
+    event.dataTransfer.setData("text", "reorder");
+  }
 }
 
 function findParentHeader(element: HTMLElement) {
@@ -928,7 +934,7 @@ function findParentHeader(element: HTMLElement) {
   } else {
     let parent = element.parentElement;
 
-    while (parent.nodeName !== "TH") {
+    while (parent && parent.nodeName !== "TH") {
       parent = parent.parentElement;
       if (!parent) break;
     }
@@ -945,7 +951,7 @@ function onColumnHeaderDragOver(event: DragEvent) {
     const containerOffset = getOffset(table.value as HTMLElement);
     const dropHeaderOffset = getOffset(dropHeader);
 
-    if (draggedElement.value !== dropHeader) {
+    if (draggedElement.value !== dropHeader && reorderRef.value && tableRef.value) {
       const targetLeft = dropHeaderOffset.left - containerOffset.left;
       const columnCenter = dropHeaderOffset.left + dropHeader.offsetWidth / 2;
 
@@ -969,7 +975,9 @@ function onColumnHeaderDragLeave(event: DragEvent) {
   if (props.reorderableColumns && draggedColumn.value) {
     event.preventDefault();
 
-    reorderRef.value.style.display = "none";
+    if (reorderRef.value != undefined) {
+      reorderRef.value.style.display = "none";
+    }
   }
 }
 
@@ -998,8 +1006,12 @@ function onColumnHeaderDrop(event: DragEvent, item: ITableColumns) {
       }
     }
 
-    reorderRef.value.style.display = "none";
-    draggedElement.value.draggable = false;
+    if (reorderRef.value) {
+      reorderRef.value.style.display = "none";
+    }
+    if (draggedElement.value) {
+      draggedElement.value.draggable = false;
+    }
     draggedColumn.value = null;
     dropPosition.value = null;
   }
@@ -1019,10 +1031,14 @@ function restoreState() {
   console.debug("[@vc-shell/framewok#vc-table.vue] - Restore state");
   if (Object.keys(state.value).length) {
     defaultColumns.value = state.value.map((item) => {
-      return {
-        ...item,
-        title: defaultColumns.value.find((x) => x.id === item.id).title,
-      };
+      const column = defaultColumns.value.find((x) => x.id === item.id);
+      if (column) {
+        return {
+          ...item,
+          title: column.title,
+        };
+      }
+      return item;
     });
   }
 }
@@ -1038,9 +1054,9 @@ function reorderArray(value: unknown[], from: number, to: number) {
   }
 }
 
-function onColumnHeaderMouseDown(event: MouseEvent & { currentTarget?: { draggable: boolean } }) {
+function onColumnHeaderMouseDown(event: MouseEvent) {
   if (props.reorderableColumns) {
-    event.currentTarget.draggable = true;
+    (event.currentTarget as HTMLElement).draggable = true;
   }
 }
 
@@ -1059,9 +1075,9 @@ function toggleColumn(item: ITableColumns) {
   }
 }
 
-function onRowMouseDown(event: MouseEvent & { currentTarget?: { draggable: boolean } }) {
+function onRowMouseDown(event: MouseEvent) {
   if (props.reorderableRows) {
-    event.currentTarget.draggable = true;
+    (event.currentTarget as HTMLElement).draggable = true;
   }
 }
 
@@ -1072,7 +1088,9 @@ function onRowDragStart(event: DragEvent, item: T) {
   rowDragged.value = true;
   draggedRow.value = item;
   draggedRowIndex.value = props.items.indexOf(item);
-  event.dataTransfer.setData("text", "row-reorder");
+  if (event.dataTransfer) {
+    event.dataTransfer.setData("text", "row-reorder");
+  }
 }
 
 function onRowDragOver(event: DragEvent, item: T) {
@@ -1127,13 +1145,13 @@ function onRowDragLeave(event: DragEvent) {
 
 function onRowDragEnd(event: DragEvent & { currentTarget?: { draggable: boolean } }) {
   rowDragged.value = false;
-  draggedRowIndex.value = null;
-  droppedRowIndex.value = null;
+  draggedRowIndex.value = undefined;
+  droppedRowIndex.value = undefined;
   event.currentTarget.draggable = false;
 }
 
 function onRowDrop(event: DragEvent) {
-  if (droppedRowIndex.value != null) {
+  if (droppedRowIndex.value !== undefined && draggedRowIndex.value !== undefined) {
     const dropIndex =
       draggedRowIndex.value > droppedRowIndex.value
         ? droppedRowIndex.value

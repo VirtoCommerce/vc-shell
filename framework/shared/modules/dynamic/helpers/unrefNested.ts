@@ -1,10 +1,10 @@
 import { unref } from "vue";
 
-export function unrefNested<T>(field: T) {
+export function unrefNested<T extends Record<string, unknown>>(field: T) {
   const unreffedProps = {} as T;
 
   if (field) {
-    Object.keys(field).forEach((key) => {
+    Object.keys(field).forEach((key: keyof T) => {
       unreffedProps[key] = unref(field[key]);
     });
 

@@ -143,7 +143,7 @@
 
 <script setup lang="ts">
 import { Asset, IActionBuilderResult, IBladeToolbar, ITableColumns } from "../../../../../core/types";
-import { ref, computed, onMounted, unref, watch, markRaw } from "vue";
+import { ref, computed, onMounted, unref, watch, markRaw, UnwrapNestedRefs } from "vue";
 import { useI18n } from "vue-i18n";
 import moment from "moment";
 import Assets from "./../../../assets/components/assets-details/assets-details.vue";
@@ -187,7 +187,7 @@ const uploader = ref();
 const loading = ref(false);
 const selectedItems = ref([]);
 const readonly = computed(() => props.options.disabled);
-let assetsCopy;
+let assetsCopy: Asset[];
 const modified = ref(false);
 
 const { openBlade } = useBladeNavigation();
@@ -271,7 +271,7 @@ onMounted(() => {
   assetsCopy = _.cloneDeep(props.options?.assets);
 });
 
-function sortAssets(event: { dragIndex: number; dropIndex: number; value: Asset[] }) {
+async function sortAssets(event: { dragIndex: number; dropIndex: number; value: Asset[] }) {
   if (
     props.options.assetsEditHandler &&
     typeof props.options.assetsEditHandler === "function" &&
@@ -282,7 +282,7 @@ function sortAssets(event: { dragIndex: number; dropIndex: number; value: Asset[
       return item;
     });
 
-    defaultAssets.value = props.options.assetsEditHandler(sorted);
+    defaultAssets.value = await props.options.assetsEditHandler(sorted);
   }
 }
 
@@ -363,12 +363,13 @@ const onSelectionChanged = (items: Asset[]) => {
   selectedItems.value = items;
 };
 
-const actionBuilder = (): IActionBuilderResult[] => {
-  const result = [];
+const actionBuilder = (): IActionBuilderResult<Asset>[] => {
+  const result: IActionBuilderResult<Asset>[] = [];
 
   result.push({
     icon: "fas fa-edit",
     title: computed(() => t("ASSETS_MANAGER.TABLE.ACTIONS.EDIT")),
+    variant: "success",
     clickHandler(item: Asset) {
       onItemClick(item);
     },

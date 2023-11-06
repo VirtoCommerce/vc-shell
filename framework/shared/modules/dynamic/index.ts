@@ -66,6 +66,7 @@ const register = (
   const defineBladeComponent = defineComponent({
     ...bladeComponent,
     name: bladeName,
+    isWorkspace: "isWorkspace" in json.settings && json.settings.isWorkspace,
     setup: (props, ctx) =>
       (bladeComponent as DefineComponent).setup(
         reactiveComputed(() => ({
@@ -139,7 +140,7 @@ export const createDynamicAppModule = <T extends BladeMenu>(args: {
           const blade = register(
             {
               app,
-              component: bladePages[JsonSchema.settings.component],
+              component: bladePages[JsonSchema.settings.component as keyof typeof bladePages],
               composables: { ...args.composables },
               json: JsonSchema,
               options,

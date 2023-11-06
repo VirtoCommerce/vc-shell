@@ -2,8 +2,8 @@ import { useUser } from "../useUser";
 
 export interface IAuthApiBase {
   authToken: string;
-  setAuthToken(token: string);
-  getBaseUrl(defaultUrl: string, baseUrl: string);
+  setAuthToken(token: string): void;
+  getBaseUrl(defaultUrl: string, baseUrl: string): string;
 }
 
 interface UseApiClient<ApiClient extends IAuthApiBase> {

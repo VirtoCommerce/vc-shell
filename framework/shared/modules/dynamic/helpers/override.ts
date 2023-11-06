@@ -1,7 +1,7 @@
 import * as _ from "lodash-es";
 import { DynamicSchema, OverridesSchema, OverridesUpsert } from "../types";
 
-export const handleOverrides = (overrides, schemaCopy: { [key: string]: DynamicSchema }) => {
+export const handleOverrides = (overrides: OverridesSchema, schemaCopy: { [key: string]: DynamicSchema }) => {
   let schema = _.cloneDeep(schemaCopy);
 
   // REMOVE
@@ -49,10 +49,10 @@ const upsertHelper = (overrides: OverridesSchema, schemaCopy: { [key: string]: D
       );
     obj[name] = clonedSchema;
     return obj;
-  }, {});
+  }, {} as Record<string, DynamicSchema>);
 };
 
-const removeHelper = (overrides, schemaCopy: { [key: string]: DynamicSchema }) => {
+const removeHelper = (overrides: OverridesSchema, schemaCopy: { [key: string]: DynamicSchema }) => {
   return Object.entries(schemaCopy).reduce((obj, [name, schema]) => {
     const clonedSchema = _.cloneDeep(schema);
     overrides.remove
@@ -66,5 +66,5 @@ const removeHelper = (overrides, schemaCopy: { [key: string]: DynamicSchema }) =
       }, {});
     obj[name] = clonedSchema;
     return obj;
-  }, {});
+  }, {} as Record<string, DynamicSchema>);
 };

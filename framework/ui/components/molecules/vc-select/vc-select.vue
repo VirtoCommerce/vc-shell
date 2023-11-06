@@ -262,12 +262,12 @@ import { ref, computed, watch, nextTick, Ref, toRefs, MaybeRef, unref } from "vu
 import { vOnClickOutside } from "@vueuse/components";
 import * as _ from "lodash-es";
 import { useIntersectionObserver } from "@vueuse/core";
-import { useFloating, UseFloatingReturn, offset, flip, shift, autoUpdate } from "@floating-ui/vue";
+import { useFloating, UseFloatingReturn, offset, flip, shift, autoUpdate, MiddlewareState } from "@floating-ui/vue";
 import { VcLabel, VcContainer, VcHint, VcIcon } from "./../../";
 import { useI18n } from "vue-i18n";
 
 export type OptionProp<T> = ((option: T) => string) | string | undefined;
-
+type MaybeArray<T> = T | T[];
 type FloatingInstanceType = UseFloatingReturn & {
   middlewareData: {
     sameWidthChangeBorders: {
@@ -360,6 +360,7 @@ defineSlots<{
      */
     toggleOption: (opt: any) => void;
   }) => any;
+  "no-options": (props: any) => any;
 }>();
 
 const props = withDefaults(
@@ -474,7 +475,7 @@ const props = withDefaults(
     name: "Field",
     emitValue: true,
     mapOptions: true,
-    options: () => [],
+    options: (): T[] => [],
   }
 );
 
@@ -483,7 +484,9 @@ const emit = defineEmits<{
    * Emitted when the component needs to change the model; Is also used by v-model
    */
 
-  "update:modelValue": [inputValue: Option | string | (Option | string)[]];
+  "update:modelValue": [
+    inputValue: MaybeArray<string | Option | (T & P["results"][number] & object)[keyof T | keyof P["results"][number]]>
+  ];
   /**
    * Emitted when user wants to filter a value
    */
@@ -518,7 +521,7 @@ const optionsTemp = ref<Option[]>([]) as Ref<Option[]>;
 const totalItems = ref();
 
 let emitValueFn;
-let emitTimer;
+let emitTimer: NodeJS.Timeout;
 let innerValueCache: Option[];
 
 useIntersectionObserver(
@@ -552,7 +555,7 @@ watch(
         } else if (props.modelValue && typeof props.modelValue === "object") {
           return optionsList.value.includes(props.modelValue);
         } else {
-          return x[props.optionLabel as string] === props.modelValue;
+          return x[props.optionLabel as keyof Option] === props.modelValue;
         }
       });
 
@@ -565,9 +568,9 @@ watch(
             undefined,
             Array.isArray(props.modelValue) ? props.modelValue : [props.modelValue]
           );
-          defaultValue.value = data.results?.filter((x) => x[props.optionValue as string] === props.modelValue);
+          defaultValue.value = data.results?.filter((x) => x[props.optionValue as keyof T] === props.modelValue);
         } else if (props.options && Array.isArray(props.options)) {
-          defaultValue.value = props.options.filter((x) => x[props.optionValue as string] === props.modelValue);
+          defaultValue.value = props.options.filter((x) => x[props.optionValue as keyof T] === props.modelValue);
         }
       }
     }
@@ -702,16 +705,16 @@ const dropdownStyle = computed(() => {
   };
 });
 
-function getPropValueFn(propValue: OptionProp<Option>, defaultVal: OptionProp<Option>): (opt: Option) => string {
+function getPropValueFn(propValue: OptionProp<Option>, defaultVal: OptionProp<Option>) {
   const val = propValue !== undefined ? propValue : defaultVal;
 
   return typeof val === "function"
     ? val
-    : (opt: Option) => (opt !== null && typeof opt === "object" && val in opt ? opt[val] : opt);
+    : (opt: Option) => (opt !== null && typeof opt === "object" && val in opt ? opt[val as keyof Option] : opt);
 }
 
 function getOption(value: Option, valueCache: Option[]) {
-  const fn = (opt) => _.isEqual(getOptionValue.value(opt), value);
+  const fn = (opt: Option) => _.isEqual(getOptionValue.value(opt), value);
   return defaultValue.value.find(fn) || optionsList.value.find(fn) || valueCache.find(fn) || value;
 }
 
@@ -775,7 +778,7 @@ async function toggleDropdown() {
 function sameWidthChangeBorders() {
   return {
     name: "sameWidthChangeBorders",
-    fn: ({ rects, placement, x, y }) => {
+    fn: ({ rects, placement, x, y }: MiddlewareState) => {
       let borderTop;
       let borderBottom;
       let borderRadius;
@@ -853,8 +856,8 @@ async function onSearch(value: string) {
       listLoading.value = false;
     }
   } else {
-    optionsTemp.value = optionsList.value.filter((x) => {
-      return x[props.optionLabel as string].toLowerCase().includes(filterString.value.toLowerCase());
+    optionsTemp.value = optionsList.value.filter((x: Option) => {
+      return (x[props.optionLabel as keyof Option] as string).toLowerCase().includes(filterString.value.toLowerCase());
     });
   }
 }

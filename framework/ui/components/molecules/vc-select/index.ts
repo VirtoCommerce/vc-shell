@@ -1,3 +1,1 @@
-import _Select from "./vc-select.vue";
-
-export const VcSelect = _Select;
+export { default as VcSelect } from "./vc-select.vue";

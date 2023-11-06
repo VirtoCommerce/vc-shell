@@ -190,7 +190,10 @@ const bladeMultilanguage = reactiveComputed(() => {
 });
 
 const bladeWidgets = computed(() => {
-  return widgets.value?.children?.map((x) => resolveComponent(x));
+  return widgets.value?.children?.map((x) => {
+    if (typeof x === "string") return resolveComponent(x);
+    else throw new Error(`Component is required in widget: ${x}`);
+  });
 });
 
 const bladeOptions = reactive({

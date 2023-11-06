@@ -40,35 +40,33 @@
   </div>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts">
 import { VcIcon } from "./../../";
 import VcPopupWarning from "./_internal/vc-popup-warning/vc-popup-warning.vue";
 import VcPopupError from "./_internal/vc-popup-error/vc-popup-error.vue";
+import { defineComponent, PropType } from "vue";
 
-export interface Props {
-  title?: string;
-  closable?: boolean;
-  variant?: "small" | "medium" | "fullscreen";
-  type?: "default" | "error" | "warning" | "success";
-}
-
-export interface Emits {
-  (event: "close"): void;
-  (event: "confirm"): void;
-}
-
-withDefaults(defineProps<Props>(), {
-  closable: true,
-  variant: "fullscreen",
-  type: "default",
+export default defineComponent({
+  props: {
+    title: {
+      type: String,
+      default: "",
+    },
+    closable: {
+      type: Boolean,
+      default: true,
+    },
+    variant: {
+      type: String as PropType<"small" | "medium" | "fullscreen">,
+      default: "fullscreen",
+    },
+    type: {
+      type: String as PropType<"default" | "error" | "warning" | "success">,
+      default: "default",
+    },
+  },
+  emits: ["close", "confirm"],
 });
-
-defineEmits<Emits>();
-
-defineSlots<{
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  default: (props: any) => any;
-}>();
 </script>
 
 <style lang="scss">

@@ -2,7 +2,7 @@ import { release } from "@vc-shell/release-config";
 import { spawnSync } from "child_process";
 
 release({
-  packages: [],
+  packages: ["."],
   toTag: (version) => `v${version}`,
   bumpVersion: async (pkgName, pkgVersion) => {
     const bumpArgs = ["workspace", pkgName, "version", pkgVersion, "--deferred"];
@@ -13,9 +13,6 @@ release({
   },
   generateChangelog: async (pkgName, pkgVersion, workspaceName) => {
     const changelogArgs = ["conventional-changelog", "-p", "angular", "-i", "CHANGELOG.md", "-s", "--commit-path", "."];
-    if (workspaceName) {
-      changelogArgs.push("--lerna-package", workspaceName);
-    }
     await spawnSync("npx", changelogArgs, { cwd: workspaceName ? `${workspaceName}` : "." });
   },
 });

@@ -15,8 +15,8 @@ if (isDryRun) {
   console.log();
 }
 
-export function getPackageInfo(pkgName: string, getPkgDir: ((pkg: string) => string) | undefined = (pkg) => `${pkg}`) {
-  const pkgDir = path.resolve(getPkgDir(pkgName));
+export function getPackageInfo(pkgName: string) {
+  const pkgDir = path.resolve(pkgName);
   const pkgPath = path.resolve(pkgDir, "package.json");
   const pkg = JSON.parse(readFileSync(pkgPath, "utf-8")) as {
     name: string;
@@ -69,10 +69,4 @@ export function getVersionChoices(currentVersion: string): VersionChoice[] {
   });
 
   return versionChoices;
-}
-
-export function updateVersion(pkgPath: string, version: string): void {
-  const pkg = JSON.parse(readFileSync(pkgPath, "utf-8"));
-  pkg.version = version;
-  writeFileSync(pkgPath, JSON.stringify(pkg, null, 2) + "\n");
 }

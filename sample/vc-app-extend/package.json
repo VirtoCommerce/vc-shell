@@ -65,7 +65,7 @@
     "@vueuse/integrations": "^10.1.2",
     "moment": "^2.29.4",
     "roboto-fontface": "^0.10.0",
-    "vee-validate": "^4.9.4",
+    "vee-validate": "^4.11.8",
     "vue": "^3.3.7",
     "vue-router": "^4.2.5"
   },

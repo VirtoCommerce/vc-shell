@@ -15,7 +15,9 @@ export const toolbarReducer = (args: {
   const toolbarMethodsMerge = _.merge(ref({}), ref(args.defaultToolbarBindings), ref(args.customToolbarConfig));
   return computed(() =>
     args.defaultToolbarSchema.reduce((acc, curr) => {
-      const toolbarItemCtx = toolbarMethodsMerge.value[curr.method];
+      const toolbarItemCtx = toolbarMethodsMerge.value[
+        curr.method as keyof typeof toolbarMethodsMerge.value
+      ] as IBladeToolbar;
       if (toolbarItemCtx) {
         const context =
           typeof toolbarItemCtx === "function"

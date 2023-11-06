@@ -41,7 +41,7 @@
           class="vc-multivalue__field-value"
         >
           <span class="tw-truncate">{{
-            type === "number" ? Number(item[props.emitLabel]).toFixed(3) : item[props.emitLabel]
+            type === "number" ? Number(item[props.emitLabel as keyof T]).toFixed(3) : item[props.emitLabel as keyof T]
           }}</span>
           <VcIcon
             v-if="!disabled"
@@ -87,7 +87,7 @@
                   <slot
                     name="item"
                     :item="item"
-                    >{{ item[optionLabel] }}</slot
+                    >{{ item[optionLabel as keyof T] }}</slot
                   >
                 </div>
               </VcContainer>
@@ -118,10 +118,10 @@
   </div>
 </template>
 
-<script lang="ts" setup generic="T extends {id?: string; alias?: string, languageCode?: string, value?:string}">
+<script lang="ts" setup generic="T extends {id?: string; alias?: string, languageCode?: string, value?: string}">
 import { unref, nextTick, ref, computed } from "vue";
 import { vOnClickOutside } from "@vueuse/components";
-import { useFloating, UseFloatingReturn, offset, flip, shift, autoUpdate } from "@floating-ui/vue";
+import { useFloating, UseFloatingReturn, offset, flip, shift, autoUpdate, MiddlewareState } from "@floating-ui/vue";
 import { generateId } from "../../../../core/utilities";
 
 export interface Props<T> {
@@ -203,7 +203,7 @@ const dropdownStyle = computed(() => {
 
 const slicedDictionary = computed(() => {
   return props.options?.filter((x) => {
-    return !props.modelValue?.find((item) => item[props.emitValue] === x[props.optionValue]);
+    return !props.modelValue?.find((item) => item[props.emitValue as keyof T] === x[props.optionValue as keyof T]);
   });
 });
 
@@ -220,8 +220,8 @@ function onInput(e: KeyboardEvent) {
 function onItemSelect(item: T) {
   emit("update:model-value", [
     ...props.modelValue,
-    { [props.emitValue]: item[props.optionValue], [props.emitLabel]: item[props.optionLabel] } as T,
-  ]);
+    { [props.emitValue]: item[props.optionValue as keyof T], [props.emitLabel]: item[props.optionLabel as keyof T] },
+  ] as T[]);
   emit("close");
   closeDropdown();
 }
@@ -236,7 +236,7 @@ function onDelete(i: number) {
 function sameWidthChangeBorders() {
   return {
     name: "sameWidthChangeBorders",
-    fn: ({ rects, placement, x, y }) => {
+    fn: ({ rects, placement, x, y }: MiddlewareState) => {
       let borderTop;
       let borderBottom;
       let borderRadius;

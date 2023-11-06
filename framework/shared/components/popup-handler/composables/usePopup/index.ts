@@ -1,6 +1,18 @@
 import { VcPopup } from "./../../../../../ui/components";
-import { markRaw, getCurrentInstance, inject, reactive, shallowRef, nextTick, Ref, watch, MaybeRef, unref } from "vue";
-import { UsePopupInternal, UsePopupProps } from "./../../types";
+import {
+  markRaw,
+  getCurrentInstance,
+  inject,
+  reactive,
+  shallowRef,
+  nextTick,
+  Ref,
+  watch,
+  MaybeRef,
+  unref,
+  DefineComponent,
+} from "vue";
+import { ComponentPublicInstanceConstructor, PopupPlugin, UsePopupInternal, UsePopupProps } from "./../../types";
 import { popupPluginInstance } from "./../../plugin";
 import { useI18n } from "vue-i18n";
 
@@ -11,21 +23,23 @@ interface IUsePopup {
   showError(message: string | Ref<string>): void;
 }
 
-export function usePopup<T = InstanceType<typeof VcPopup>["$props"]>(props?: MaybeRef<UsePopupProps<T>>): IUsePopup {
+export function usePopup<T extends ComponentPublicInstanceConstructor<any> = typeof VcPopup>(
+  options?: MaybeRef<UsePopupProps<T>>
+): IUsePopup {
   const { t } = useI18n({ useScope: "global" });
   const instance = getCurrentInstance();
-  const popupInstance = (instance && inject("popupPlugin")) || popupPluginInstance;
-  let rawPopup = createInstance(unref(props));
+  const popupInstance: PopupPlugin = (instance && inject("popupPlugin")) || popupPluginInstance;
+  let rawPopup = createInstance(unref(options));
 
   watch(
-    () => props,
+    () => options,
     (newVal) => {
       rawPopup = createInstance(unref(newVal));
     },
     { deep: true }
   );
 
-  async function open(customInstance?: UsePopupProps<unknown>) {
+  async function open(customInstance?: UsePopupProps<DefineComponent>) {
     let activeInstance;
     await nextTick();
     if (popupInstance) {
@@ -35,7 +49,7 @@ export function usePopup<T = InstanceType<typeof VcPopup>["$props"]>(props?: May
     activeInstance.popups.push(rawPopup || customInstance);
   }
 
-  function close(customInstance?: UsePopupProps<unknown>) {
+  function close(customInstance?: UsePopupProps<DefineComponent>) {
     let activeInstance;
     if (popupInstance) {
       activeInstance = popupInstance;
@@ -45,7 +59,7 @@ export function usePopup<T = InstanceType<typeof VcPopup>["$props"]>(props?: May
   }
 
   async function showConfirmation(message: string | Ref<string>): Promise<boolean> {
-    let resolvePromise;
+    let resolvePromise: (value: boolean | PromiseLike<boolean>) => void;
     const confirmation = createInstance({
       component: VcPopup,
       props: {
@@ -96,15 +110,17 @@ export function usePopup<T = InstanceType<typeof VcPopup>["$props"]>(props?: May
     popupInstance.popups.push(confirmation);
   }
 
-  function createInstance<T>(props: UsePopupProps<T>) {
+  function createInstance<T extends ComponentPublicInstanceConstructor<any> = typeof VcPopup>(
+    options: UsePopupProps<T>
+  ) {
     return (
-      props &&
+      options &&
       (reactive({
         id: Symbol("usePopup"),
-        ...createComponent(props),
+        ...createComponent(options),
         close: close,
         open: open,
-      }) as UsePopupProps<unknown> & UsePopupInternal)
+      }) as UsePopupProps<DefineComponent> & UsePopupInternal)
     );
   }
 
@@ -116,12 +132,14 @@ export function usePopup<T = InstanceType<typeof VcPopup>["$props"]>(props?: May
   };
 }
 
-function createComponent<T>(props: UsePopupProps<T>) {
+function createComponent<T extends ComponentPublicInstanceConstructor<any> = typeof VcPopup>(
+  options: UsePopupProps<T>
+) {
   const slots =
-    typeof props.slots === "undefined"
+    typeof options.slots === "undefined"
       ? {}
       : Object.fromEntries(
-          Object.entries(props.slots).map(([slotName, slotContent]) => {
+          Object.entries(options.slots).map(([slotName, slotContent]) => {
             if (typeof slotContent === "string") {
               return [slotName, slotContent];
             }
@@ -130,8 +148,8 @@ function createComponent<T>(props: UsePopupProps<T>) {
         );
 
   return {
-    ...props,
+    ...options,
     slots,
-    component: markRaw(shallowRef(props.component)),
+    component: markRaw(shallowRef(options.component)),
   };
 }

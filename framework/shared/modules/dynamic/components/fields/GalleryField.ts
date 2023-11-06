@@ -13,7 +13,7 @@ import { setModel } from "../../helpers/setters";
 export default {
   name: "GalleryField",
   props: componentProps,
-  setup(props: ExtractPropTypes<typeof componentProps> & { element: GallerySchema }, ctx) {
+  setup(props: ExtractPropTypes<typeof componentProps> & { element: GallerySchema }) {
     if (!_.has(props.bladeContext.scope, "assetsHandler.images")) {
       throw new Error(
         `There is no assetsHandler.images config provided in blade scope: ${JSON.stringify(

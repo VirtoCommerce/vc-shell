@@ -85,11 +85,11 @@
 <script lang="ts" setup>
 import { VcRating, VcTable, ITableColumns } from "@vc-shell/framework";
 import { computed, onMounted, ref, watch } from "vue";
-import { CustomerReview } from "vcmp-vendor-portal-api/marketplacevendor";
+import { CustomerReview } from "@vcmp-vendor-portal/api/marketplacevendor";
 import { Status } from "../components";
 import { useReviews } from "../composables";
 // eslint-disable-next-line import/no-unresolved
-import emptyImage from "./../../../../public/assets/empty.png";
+import emptyImage from "/assets/empty.png?url";
 import moment from "moment";
 import { useI18n } from "vue-i18n";
 

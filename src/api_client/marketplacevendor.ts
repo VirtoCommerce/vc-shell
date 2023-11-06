@@ -15646,15 +15646,11 @@ export class SearchVideosQuery implements ISearchVideosQuery {
     ownerIds?: string[] | undefined;
     ownerType?: string | undefined;
     responseGroup?: string | undefined;
-    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
-    /** Search phrase */
     keyword?: string | undefined;
-    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
-    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     readonly sortInfos?: SortInfo[] | undefined;
@@ -15750,15 +15746,11 @@ export interface ISearchVideosQuery {
     ownerIds?: string[] | undefined;
     ownerType?: string | undefined;
     responseGroup?: string | undefined;
-    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
-    /** Search phrase */
     keyword?: string | undefined;
-    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
-    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     sortInfos?: SortInfo[] | undefined;
@@ -18546,7 +18538,6 @@ If set to false, the product is considered in stock without any inventory limita
     id?: string | undefined;
 }
 
-/** Video content information */
 export class Video implements IVideo {
     name?: string | undefined;
     description?: string | undefined;
@@ -18624,7 +18615,6 @@ export class Video implements IVideo {
     }
 }
 
-/** Video content information */
 export interface IVideo {
     name?: string | undefined;
     description?: string | undefined;

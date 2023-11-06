@@ -18,7 +18,7 @@
 
 <script lang="ts" setup>
 import { useBladeNavigation } from "@vc-shell/framework";
-import { ImportPushNotification } from "vcmp-vendor-portal-api/marketplacevendor";
+import { ImportPushNotification } from "@vcmp-vendor-portal/api/marketplacevendor";
 import { computed } from "vue";
 
 export interface Props {

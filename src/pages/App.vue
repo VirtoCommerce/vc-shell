@@ -73,7 +73,7 @@ import {
 import { computed, inject, onMounted, reactive, ref, Ref, watch, markRaw, defineComponent, provide } from "vue";
 import { useRoute, useRouter } from "vue-router";
 // import { ImportProfileSelector } from "../modules/import";
-import * as modules from "vcmp-vendor-portal-modules";
+import * as modules from "@vcmp-vendor-portal/modules";
 import { UserPermissions } from "./../modules/types";
 // eslint-disable-next-line import/no-unresolved
 import avatarImage from "/assets/avatar.jpg";
@@ -89,8 +89,16 @@ const { t, locale: currentLocale, availableLocales, getLocaleMessage } = useI18n
 const { user, signOut, isAdministrator } = useUser();
 const { hasAccess } = usePermissions();
 const { getUiCustomizationSettings, uiSettings, applySettings } = useSettings();
-const { blades, bladesRefs, workspaceOptions, workspaceParam, closeBlade, onParentCall, resolveLastBlade } =
-  useBladeNavigation();
+const {
+  blades,
+  bladesRefs,
+  workspaceOptions,
+  workspaceParam,
+  closeBlade,
+  onParentCall,
+  resolveLastBlade,
+  resolveBladeByName,
+} = useBladeNavigation();
 const { navigationMenuComposer, toolbarComposer } = useMenuComposer();
 const { appsList, switchApp, getApps } = useAppSwitcher();
 const { sellerDetails, getCurrentSeller } = modules.default.Settings.UseSellerDetails();
@@ -234,7 +242,7 @@ const mobileMenuItems = computed(() =>
     },
   ])
 );
-const { resolveBladeByName } = useBladeNavigation();
+
 const menuItems = reactive(
   navigationMenuComposer([
     {

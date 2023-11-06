@@ -64,6 +64,7 @@ export interface Emits {
 
 defineOptions({
   url: "/fulfillment-centers-list",
+  isWorkspace: true,
   permissions: [UserPermissions.SellerDetailsEdit],
 });
 

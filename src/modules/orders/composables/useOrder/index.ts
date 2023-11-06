@@ -1,11 +1,11 @@
 import { computed, Ref, ref } from "vue";
 import { AsyncAction, useApiClient, useAsync, useLoading } from "@vc-shell/framework";
-import { OrderModuleClient } from "vcmp-vendor-portal-api/orders";
+import { OrderModuleClient } from "@vcmp-vendor-portal/api/orders";
 import {
   VcmpSellerOrdersClient,
   CustomerOrder,
   OrderAddressAddressType,
-} from "vcmp-vendor-portal-api/marketplacevendor";
+} from "@vcmp-vendor-portal/api/marketplacevendor";
 interface IShippingInfo {
   label: string;
   name?: string;

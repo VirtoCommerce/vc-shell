@@ -21,7 +21,7 @@
 import { computed, ref, markRaw, onMounted, watch } from "vue";
 import { IBladeToolbar, useBladeNavigation } from "@vc-shell/framework";
 import { ReviewDetails } from ".";
-import { CustomerReview } from "vcmp-vendor-portal-api/marketplacevendor";
+import { CustomerReview } from "@vcmp-vendor-portal/api/marketplacevendor";
 import { ReviewTable } from "../components";
 import { useReviews } from "../composables";
 import { useI18n } from "vue-i18n";
@@ -45,6 +45,7 @@ export interface Emits {
 
 defineOptions({
   url: "/reviews",
+  isWorkspace: true,
   permissions: UserPermissions.ManageSellerReviews,
 });
 

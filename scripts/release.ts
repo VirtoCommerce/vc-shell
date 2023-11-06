@@ -4,6 +4,7 @@ import { updateBoilerplatePkgVersions } from "./utils";
 
 release({
   packages: [
+    ".", // root
     "framework",
     "import-module",
     "cli/api-client",
@@ -26,9 +27,6 @@ release({
     if (pkgName === "@vc-shell/create-vc-app") await updateBoilerplatePkgVersions();
 
     const changelogArgs = ["conventional-changelog", "-p", "angular", "-i", "CHANGELOG.md", "-s", "--commit-path", "."];
-    if (workspaceName) {
-      changelogArgs.push("--lerna-package", workspaceName);
-    }
     await spawnSync("npx", changelogArgs, { cwd: workspaceName ? `${workspaceName}` : "." });
   },
 });

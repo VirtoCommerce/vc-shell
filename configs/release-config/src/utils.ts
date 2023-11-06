@@ -70,9 +70,3 @@ export function getVersionChoices(currentVersion: string): VersionChoice[] {
 
   return versionChoices;
 }
-
-export function updateVersion(pkgPath: string, version: string): void {
-  const pkg = JSON.parse(readFileSync(pkgPath, "utf-8"));
-  pkg.version = version;
-  writeFileSync(pkgPath, JSON.stringify(pkg, null, 2) + "\n");
-}

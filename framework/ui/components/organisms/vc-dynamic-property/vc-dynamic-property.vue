@@ -222,9 +222,9 @@ const props = withDefaults(
       languageCode?: string;
     }[];
     rules?: {
-      min: number;
-      max: number;
-      regex: string;
+      min?: number;
+      max?: number;
+      regex?: string;
     };
     disabled?: boolean;
     placeholder?: string;
@@ -305,7 +305,7 @@ onMounted(async () => {
   await getOptions();
 });
 
-async function getOptions(keyword = null) {
+async function getOptions(keyword: string = null) {
   if (props.optionsGetter) {
     try {
       loading.value = true;

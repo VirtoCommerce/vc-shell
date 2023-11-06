@@ -1,23 +1,9 @@
 {
+  "extends": "@vc-shell/ts-config/tsconfig.json",
   "compilerOptions": {
     "baseUrl": ".",
-    "importHelpers": true,
-    "resolveJsonModule": true,
-    "allowSyntheticDefaultImports": true,
-    "skipLibCheck": true,
-    "esModuleInterop": true,
-    "lib": ["esnext"],
-    "module": "commonjs",
-    "moduleResolution": "node",
-    "target": "esnext",
-    "jsx": "preserve",
-    "isolatedModules": true,
-    "useDefineForClassFields": true,
-    "rootDir": "./",
-    "strict": false,
-    "composite": true,
-    "types": ["vite/client", "node"]
+    "rootDir": "./"
   },
   "include": ["src/index.ts"],
-  "exclude": ["node_modules", "dist", "src/template"]
+  "exclude": ["node_modules", "dist", "src/templates"]
 }

@@ -165,8 +165,10 @@ export function useContainer(): IUseContainer {
         if (item) {
           for (const name in option) {
             if (name in option) {
-              const value = option[name];
-              item[name] = value;
+              const newKey = name as keyof NotificationOptions;
+              const value = option[newKey];
+
+              (item as Record<typeof newKey, unknown>)[newKey] = value;
             }
           }
         }

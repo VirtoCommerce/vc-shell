@@ -1,0 +1,369 @@
+<template>
+  <VcLoading
+    v-if="!isReady"
+    active
+    class="app__loader"
+  />
+  <VcApp
+    v-else
+    :menu-items="menuItems"
+    :mobile-menu-items="mobileMenuItems"
+    :toolbar-items="toolbarItems"
+    :is-ready="isReady"
+    :is-authorized="isAuthorized"
+    :logo="uiSettings.logo"
+    :title="uiSettings.title"
+    :version="version"
+    :pages="pages"
+    :blades-refs="bladesRefs"
+    @backlink:click="closeBlade($event)"
+    @close="closeBlade($event)"
+    @logo:click="openDashboard"
+  >
+    <!-- App Switcher -->
+    <template
+      v-if="appsList && appsList.length"
+      #appSwitcher
+    >
+      <VcAppSwitcher
+        :apps-list="appsList"
+        @on-click="switchApp($event)"
+      />
+    </template>
+
+    <template
+      v-if="isAuthorized"
+      #bladeNavigation
+    >
+      <VcBladeNavigation
+        ref="bladeNavigationRefs"
+        :blades="blades"
+        :workspace-options="workspaceOptions"
+        :workspace-param="workspaceParam"
+        @on-close="closeBlade($event)"
+        @on-parent-call="(e) => onParentCall(e.id, e.args)"
+        @vue:mounted="resolveLastBlade(pages)"
+      ></VcBladeNavigation>
+    </template>
+
+    <template #modals>
+      <VcPopupContainer />
+    </template>
+  </VcApp>
+</template>
+
+<script lang="ts" setup>
+import {
+  useAppSwitcher,
+  useNotifications,
+  useSettings,
+  useUser,
+  useBladeNavigation,
+  VcNotificationDropdown,
+  usePopup,
+  useMenuComposer,
+  ChangePassword,
+  LanguageSelector,
+  UserDropdownButton,
+  BladePageComponent,
+} from "@vc-shell/framework";
+import { computed, inject, onMounted, reactive, ref, Ref, markRaw, watch, defineComponent, provide } from "vue";
+import { useRoute, useRouter } from "vue-router";
+// eslint-disable-next-line import/no-unresolved
+import avatarImage from "/assets/avatar.jpg";
+// eslint-disable-next-line import/no-unresolved
+import logoImage from "/assets/logo.svg";
+import { useI18n } from "vue-i18n";
+import { List } from "./../modules/classic-module";
+
+const { open } = usePopup({
+  component: ChangePassword,
+});
+
+const { t, locale: currentLocale, availableLocales, getLocaleMessage } = useI18n({ useScope: "global" });
+const { user, signOut } = useUser();
+const { getUiCustomizationSettings, uiSettings, applySettings } = useSettings();
+const {
+  blades,
+  bladesRefs,
+  workspaceOptions,
+  workspaceParam,
+  closeBlade,
+  onParentCall,
+  resolveLastBlade,
+  resolveBladeByName,
+} = useBladeNavigation();
+const { navigationMenuComposer, toolbarComposer } = useMenuComposer();
+const { appsList, switchApp, getApps } = useAppSwitcher();
+
+const { notifications, loadFromHistory, markAllAsRead } = useNotifications();
+const route = useRoute();
+const router = useRouter();
+const isAuthorized = ref(true);
+const isReady = ref(false);
+const pages = inject<BladePageComponent[]>("pages");
+const isDesktop = inject<Ref<boolean>>("isDesktop");
+const isMobile = inject<Ref<boolean>>("isMobile");
+const version = import.meta.env.PACKAGE_VERSION;
+const bladeNavigationRefs = ref();
+const internalRoutes = inject("bladeRoutes");
+provide("internalRoutes", internalRoutes);
+
+onMounted(async () => {
+  try {
+    await getApps();
+    langInit();
+    await customizationHandler();
+    await loadFromHistory();
+
+    isReady.value = true;
+  } catch (e) {
+    console.log(e);
+    throw e;
+  }
+});
+
+watch(
+  () => bladeNavigationRefs.value?.bladesRefs,
+  (newVal) => {
+    bladesRefs.value = newVal;
+  },
+  { deep: true }
+);
+
+console.debug(`Initializing App`);
+
+const toolbarItems = computed(() =>
+  toolbarComposer([
+    {
+      component: markRaw(LanguageSelector),
+      options: {
+        value: currentLocale.value as string,
+        title: t("SHELL.TOOLBAR.LANGUAGE"),
+        languageItems: availableLocales.map((locale: string) => ({
+          lang: locale,
+          title: (getLocaleMessage(locale) as { language_name: string }).language_name,
+          clickHandler(lang: string) {
+            currentLocale.value = lang;
+            localStorage.setItem("VC_LANGUAGE_SETTINGS", lang);
+          },
+        })),
+      },
+      isVisible: isDesktop.value ? isDesktop.value : isMobile.value ? route.path === "/" : false,
+    },
+    {
+      isAccent: notifications.value.some((item) => item.isNew),
+      component: markRaw(VcNotificationDropdown),
+      options: {
+        title: t("SHELL.TOOLBAR.NOTIFICATIONS"),
+        notifications: notifications.value,
+        onOpen() {
+          if (notifications.value.some((x) => x.isNew)) {
+            markAllAsRead();
+          }
+        },
+      },
+    },
+    {
+      component: markRaw(UserDropdownButton),
+      options: {
+        avatar: avatarImage,
+        name: user.value?.userName,
+        role: user.value?.isAdministrator ? "Administrator" : "Seller account",
+        menuItems: [
+          {
+            title: t("SHELL.ACCOUNT.CHANGE_PASSWORD"),
+            clickHandler() {
+              open();
+            },
+          },
+          {
+            title: t("SHELL.ACCOUNT.LOGOUT"),
+            async clickHandler() {
+              const isPrevented = await closeBlade(0);
+              if (!isPrevented) {
+                signOut();
+                router.push({ name: "Login" });
+              }
+            },
+          },
+        ],
+      },
+      isVisible: isDesktop.value,
+    },
+  ])
+);
+
+const mobileMenuItems = computed(() =>
+  toolbarComposer([
+    {
+      component: markRaw(UserDropdownButton),
+      options: {
+        avatar: avatarImage,
+        name: user.value?.userName,
+        role: user.value?.isAdministrator ? "Administrator" : "Seller account",
+      },
+      isVisible: isMobile.value,
+    },
+  ])
+);
+
+const menuItems = reactive(
+  navigationMenuComposer([
+    {
+      title: computed(() => t("SHELL.MENU.DASHBOARD")),
+      icon: "fas fa-home",
+      isVisible: true,
+      component: defineComponent({
+        url: "/",
+      }),
+      clickHandler() {
+        openDashboard();
+      },
+    },
+    {
+      title: computed(() => t("SHELL.ACCOUNT.CHANGE_PASSWORD")),
+      icon: "fas fa-key",
+      isVisible: isMobile.value,
+      clickHandler() {
+        open();
+      },
+    },
+    {
+      title: computed(() => t("MODULE.MENU.TITLE")),
+      icon: "fas fa-file-alt",
+      isVisible: true,
+      component: markRaw(List),
+    },
+    {
+      title: computed(() => t("DYNAMICMODULE.MENU.TITLE")),
+      icon: "fas fa-file-alt",
+      isVisible: true,
+      component: resolveBladeByName("DynamicItems"),
+    },
+    {
+      title: computed(() => t("SHELL.ACCOUNT.LOGOUT")),
+      icon: "fas fa-sign-out-alt",
+      isVisible: isMobile,
+      async clickHandler() {
+        const isPrevented = await closeBlade(0);
+        if (!isPrevented) {
+          signOut();
+          router.push({ name: "Login" });
+        }
+      },
+    },
+  ])
+);
+
+function langInit() {
+  const lang = localStorage.getItem("VC_LANGUAGE_SETTINGS");
+
+  if (lang) {
+    currentLocale.value = lang;
+  } else {
+    currentLocale.value = "en";
+  }
+}
+const openDashboard = async () => {
+  console.debug(`openDashboard() called.`);
+
+  // Close all opened pages with onBeforeClose callback
+  const isPrevented = await closeBlade(0);
+
+  !isPrevented && router.push("/");
+};
+
+async function customizationHandler() {
+  await getUiCustomizationSettings();
+
+  if (!uiSettings.value.logo) {
+    applySettings({ logo: logoImage });
+  }
+  if (!uiSettings.value.title) {
+    applySettings({ title: undefined });
+  }
+}
+</script>
+
+<style lang="scss">
+.vc-theme_light {
+  --background-color: #f5f6f9;
+  --top-bar-color: #161d25;
+  --basic-black-color: #333333;
+  --tooltips-color: #a5a5a5;
+
+  --primary-color: #43b0e6;
+  --primary-color-hover: #319ed4;
+  --primary-color-disabled: #a9ddf6;
+
+  --special-color: #f89406;
+  --special-color-hover: #eb8b03;
+  --special-color-disabled: #fed498;
+
+  /* Layout variables */
+  --app-bar-height: 60px;
+  --app-bar-background-color: var(--top-bar-color);
+  --app-bar-toolbar-icon-background-hover: #2e3d4e;
+  --app-bar-toolbar-item-width: 50px;
+  --app-bar-divider-color: #2e3d4e;
+  --app-bar-toolbar-icon-color: #7e8e9d;
+  --app-bar-account-info-role-color: #838d9a;
+}
+
+html,
+body,
+#app {
+  @apply tw-font-roboto tw-h-full tw-w-full tw-m-0 tw-fixed tw-overflow-hidden tw-overscroll-y-none;
+}
+
+body {
+  @apply tw-text-base;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+button,
+input,
+select,
+textarea {
+  @apply tw-font-roboto;
+}
+::-webkit-input-placeholder {
+  @apply tw-font-roboto;
+}
+:-moz-placeholder {
+  @apply tw-font-roboto;
+}
+::-moz-placeholder {
+  @apply tw-font-roboto;
+}
+:-ms-input-placeholder {
+  @apply tw-font-roboto;
+}
+
+.vc-app.vc-theme_light {
+  --background-color: #f2f2f2;
+  --top-bar-color: #ffffff;
+  --app-background: linear-gradient(180deg, #e4f5fb 5.06%, #e8f3f2 100%), linear-gradient(0deg, #e8f2f3, #e8f2f3),
+    #eef2f8;
+  --app-bar-background-color: #ffffff;
+  --app-bar-divider-color: #ffffff;
+  --app-bar-toolbar-item-width: 50px;
+  --app-bar-toolbar-icon-color: #7e8e9d;
+  --app-bar-toolbar-icon-color-hover: #465769;
+  --app-bar-toolbar-icon-background-hover: #ffffff;
+  --app-bar-account-info-name-color: #161d25;
+  --app-bar-account-info-role-color: #7e8e9d;
+}
+
+.app {
+  &__loader {
+    background: var(--app-background);
+  }
+}
+</style>

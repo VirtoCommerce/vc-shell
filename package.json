@@ -1,31 +1,30 @@
 {
   "name": "@vc-shell/root",
-  "version": "1.0.114",
+  "version": "1.0.117",
   "private": true,
   "repository": "https://github.com/VirtoCommerce/vc-shell",
   "scripts": {
     "postinstall": "husky install",
-    "publish": "yarn workspaces foreach -v --from '{@vc-shell/config-generator,@vc-shell/api-client-generator,@vc-shell/framework,@vc-shell/create-vc-app,@vc-shell/import-module}' npm publish",
-    "lint": "eslint --fix 'framework/**/*.{ts,vue}' 'import-module/**/*.{ts,vue}'",
+    "publish": "yarn workspaces foreach -v --from '{@vc-shell/config-generator,@vc-shell/api-client-generator,@vc-shell/framework,@vc-shell/create-vc-app,@vc-shell/import-module,@vc-shell/release-config,@vc-shell/ts-config}' npm publish",
+    "lint": "eslint --fix --cache 'framework/**/*.{ts,vue}' 'import-module/**/*.{ts,vue}'",
     "lint-staged": "lint-staged",
-    "changelog": "yarn workspaces foreach -v --from '{@vc-shell/config-generator,@vc-shell/api-client-generator,@vc-shell/framework,@vc-shell/create-vc-app,@vc-shell/import-module}' exec -- 'conventional-changelog --preset angular --release-count 0 --commit-path $INIT_CWD --pkg $INIT_CWD/package.json --outfile $INIT_CWD/CHANGELOG.md'",
-    "bump": "cross-env-shell 'f() { yarn workspaces foreach --topological version --deferred \"$@\" && yarn version apply --all && yarn workspaces foreach -v --exclude vc-app* run changelog && yarn workspaces foreach -v --exclude vc-app* exec git add . && yarn workspaces foreach -v --exclude vc-app* run commit-release && yarn workspaces foreach -v --exclude vc-app* run create:tag ; }; f'",
-    "create:tag": "PACKAGE_VERSION=$(cat package.json | grep \\\"version\\\" | head -1 | awk -F: '{ print $2 }' | sed 's/[\",]//g' | tr -d '[[:space:]]') && git tag v$PACKAGE_VERSION && git push --tags",
-    "commit-release": "cross-env-shell 'git commit -m v$npm_package_version'",
-    "build": "yarn workspaces foreach -v --from '{@vc-shell/config-generator,@vc-shell/api-client-generator,@vc-shell/create-vc-app,@vc-shell/framework,@vc-shell/import-module}' run build",
+    "build": "yarn workspaces foreach -v --from '{@vc-shell/config-generator,@vc-shell/api-client-generator,@vc-shell/create-vc-app,@vc-shell/framework,@vc-shell/import-module,@vc-shell/release-config}' run build",
     "build-framework": "yarn workspace @vc-shell/framework run build",
     "build:import-module": "yarn workspace @vc-shell/import-module run build",
     "build-cli:config": "yarn workspace @vc-shell/config-generator run build",
     "build-cli:api-client": "yarn workspace @vc-shell/api-client-generator run build",
     "build-cli:create-vc-app": "yarn workspace @vc-shell/create-vc-app run build",
-    "generate:api-client": "yarn workspace @vc-shell/framework exec cross-env api-client-generator --stream --no-prefix --color -- APP_PLATFORM_MODULES='[Platform]' APP_API_CLIENT_DIRECTORY=./core/api/",
+    "build-config:release-config": "yarn workspace @vc-shell/release-config run build",
+    "generate:api-client": "yarn workspace @vc-shell/framework exec cross-env api-client-generator --APP_PLATFORM_MODULES='[Platform]' --APP_API_CLIENT_DIRECTORY=./core/api/",
     "storybook-build": "cross-env APP_ENV=production storybook build -s .storybook/assets",
-    "storybook-serve": "storybook dev .storybook/assets -p 6006"
+    "storybook-serve": "storybook dev .storybook/assets -p 6006",
+    "release": "tsx scripts/release.ts"
   },
   "workspaces": [
     "apps/*",
     "framework",
     "cli/*",
+    "configs/*",
     "import-module",
     "sample/*"
   ],
@@ -54,6 +53,7 @@
     "conventional-changelog-cli": "^2.2.2",
     "cross-env": "^7.0.3",
     "eslint": "^8.41.0",
+    "eslint-define-config": "^1.24.1",
     "eslint-import-resolver-typescript": "^3.5.5",
     "eslint-plugin-import": "^2.27.5",
     "eslint-plugin-prettier": "^4.2.1",
@@ -71,7 +71,8 @@
     "shx": "^0.3.4",
     "storybook": "^7.0.17",
     "tailwindcss": "^3.3.2",
-    "typescript": "~5.0.4",
+    "tsx": "^3.13.0",
+    "typescript": "^5.2.2",
     "vite": "^4.3.9",
     "vite-plugin-checker": "^0.6.0",
     "vite-plugin-mkcert": "^1.15.0",
@@ -81,7 +82,8 @@
     "vue-tsc": "^1.8.20"
   },
   "lint-staged": {
-    "*.{js,ts,vue}": "eslint --fix"
+    "*.{js,ts,html,css}": "prettier --write",
+    "*.{js,ts,vue}": "eslint --fix --cache"
   },
   "packageManager": "yarn@3.6.4"
 }

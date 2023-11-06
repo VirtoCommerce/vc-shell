@@ -1,9 +1,9 @@
-import { App, shallowReactive } from "vue";
+import { App, shallowReactive, DefineComponent } from "vue";
 import * as components from "./components";
 import { PopupPlugin, UsePopupProps, UsePopupInternal } from "./types";
 import { createModule } from "./../../../core/plugins";
 
-export let popupPluginInstance;
+export let popupPluginInstance: PopupPlugin;
 
 export const VcPopupHandler = {
   install(app: App) {
@@ -11,7 +11,7 @@ export const VcPopupHandler = {
     createModule(components).install(app);
 
     // Plugin
-    const popups = shallowReactive<(UsePopupProps<unknown> & UsePopupInternal)[]>([]);
+    const popups = shallowReactive<(UsePopupProps<DefineComponent> & UsePopupInternal)[]>([]);
 
     const popupPlugin: PopupPlugin = {
       popups,

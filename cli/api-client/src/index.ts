@@ -1,25 +1,13 @@
-import { join } from "path";
 import { default as chalk } from "chalk";
 import { spawnSync } from "child_process";
 import { resolveConfig } from "vite";
 import { Paths } from "./paths/paths";
+import mri from "mri";
 
 async function generateApiClient(): Promise<void> {
   await resolveConfig({}, "build");
 
-  const parseArgs = (args) => {
-    const parsedArgs = {};
-
-    args.forEach((arg) => {
-      const parts = arg.split("=");
-
-      parsedArgs[parts[0]] = parts[1];
-    });
-
-    return parsedArgs;
-  };
-
-  const parsedArgs = parseArgs(process.argv.slice(2)) as {
+  const parsedArgs = mri(process.argv.slice(2)) as {
     APP_PLATFORM_MODULES: string;
     APP_API_CLIENT_DIRECTORY: string;
     APP_PLATFORM_URL: string;

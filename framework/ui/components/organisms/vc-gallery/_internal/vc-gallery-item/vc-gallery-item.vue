@@ -10,7 +10,7 @@
   >
     <VcImage
       aspect="1x1"
-      :src="image['url']"
+      :src="image.url"
       background="contain"
     ></VcImage>
     <div class="vc-gallery-item__overlay">
@@ -23,9 +23,9 @@
         ></VcIcon>
         <div
           class="tw-truncate"
-          :title="image['name']"
+          :title="image.name"
         >
-          {{ image["name"] }}
+          {{ image.name }}
         </div>
       </div>
       <div class="tw-flex tw-grow tw-basis-0 tw-items-center tw-justify-around">
@@ -89,6 +89,7 @@ export interface Props {
 }
 
 withDefaults(defineProps<Props>(), {
+  image: () => ({} as IImage),
   readonly: false,
   actions: () => ({
     name: undefined,

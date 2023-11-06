@@ -1,4 +1,4 @@
-import { unref, computed, toValue, h, UnwrapNestedRefs, MaybeRef, reactive, Ref } from "vue";
+import { unref, computed, toValue, h, UnwrapNestedRefs, MaybeRef, reactive, Ref, VNode } from "vue";
 import FIELD_MAP from "../components/FIELD_MAP";
 import { ControlSchema } from "../types";
 import { IControlBaseProps, IControlBaseOptions } from "../types/models";
@@ -27,7 +27,7 @@ function nodeBuilder<Context, BContext extends UnwrapNestedRefs<DetailsBladeCont
   bladeContext: BContext;
   currentLocale: MaybeRef<string>;
   formData: FormData;
-}) {
+}): VNode | false {
   const { controlSchema, parentId, internalContext, bladeContext, currentLocale, formData } = args;
   if (!controlSchema) return false;
 
@@ -62,14 +62,14 @@ function nodeBuilder<Context, BContext extends UnwrapNestedRefs<DetailsBladeCont
     ),
   });
 
-  const component = FIELD_MAP[controlSchema.component];
+  const component = FIELD_MAP[controlSchema.component as keyof typeof FIELD_MAP];
 
   const fieldsHandler = computed(() => {
     if (!("fields" in controlSchema)) return null;
     const fieldsModel = getModel(controlSchema.property, toValue(internalContext));
 
     if (toValue(fieldsModel) && Array.isArray(toValue(fieldsModel))) {
-      return toValue(fieldsModel).map((model) =>
+      return toValue(fieldsModel).map((model: { [x: string]: unknown; id: string }) =>
         controlSchema.fields.map((fieldItem) =>
           nodeBuilder({
             controlSchema: fieldItem,

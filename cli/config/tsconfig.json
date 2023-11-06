@@ -1,37 +1,12 @@
 {
+  "extends": "@vc-shell/ts-config/tsconfig.json",
   "compilerOptions": {
+    "module": "CommonJS",
     "baseUrl": ".",
-    "declaration": true,
-    "declarationMap": true,
-    "sourceMap": true,
-    "importHelpers": true,
-    "resolveJsonModule": true,
-    "allowSyntheticDefaultImports": true,
-    "skipLibCheck": true,
-    "esModuleInterop": true,
-    "module": "commonjs",
-    "moduleResolution": "node",
-    "target": "esnext",
-    "jsx": "preserve",
-    "isolatedModules": true,
-    "useDefineForClassFields": true,
     "outDir": "./dist",
-    "rootDir": "./",
-    "strict": false,
-    "composite": true,
-    "lib": [
-      "esnext",
-      "dom"
-    ]
+    "rootDir": "./src",
   },
-  "files": [
-    "package.json",
-  ],
   "include": [
-    "src"
-  ],
-  "exclude": [
-    "node_modules",
-    "dist"
+    "src/**/*"
   ]
 }

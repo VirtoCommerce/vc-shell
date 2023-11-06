@@ -16,7 +16,7 @@
     "isolatedModules": true,
     "useDefineForClassFields": true,
     "outDir": "dist",
-    "strict": false,
+
     "composite": true,
     "lib": [
       "esnext",

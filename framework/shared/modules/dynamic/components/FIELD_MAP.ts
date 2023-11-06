@@ -13,7 +13,13 @@ import ContentField from "./fields/ContentField";
 import VideoField from "./fields/VideoField";
 import ImageField from "./fields/ImageField";
 
-const FIELD_MAP = {
+import { ControlSchema } from "../types";
+import { ConcreteComponent } from "vue";
+
+type AvailableComponents = Exclude<ControlSchema["component"], "vc-widgets">;
+type TFieldMap = Record<AvailableComponents, ConcreteComponent>;
+
+const FIELD_MAP: TFieldMap = {
   "vc-select": SelectField,
   "vc-card": Card,
   "vc-input": InputField,

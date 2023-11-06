@@ -12,7 +12,7 @@ export default {
   setup(props: ExtractPropTypes<typeof componentProps> & { element: CardSchema }) {
     const isMounted = useMounted();
 
-    const commentRecursiveNodeCheck = (node: VNodeChild | VNodeNormalizedChildren) => {
+    const commentRecursiveNodeCheck = (node: VNodeChild | VNodeNormalizedChildren): boolean => {
       return _.every(Array.isArray(node) ? node : [node], (nodeItem) => {
         if (typeof nodeItem === "object") {
           if (
@@ -52,7 +52,7 @@ export default {
           header: props.element.label,
           isCollapsable: props.element.collapsible,
           isCollapsed: restoreCollapsed(props.element.id),
-          "onState:collapsed": (e) => handleCollapsed(props.element.id, e),
+          "onState:collapsed": (e: boolean) => handleCollapsed(props.element.id, e),
         },
         options: props.baseOptions,
 

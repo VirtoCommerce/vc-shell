@@ -45,6 +45,7 @@ export const createAppModule = (
           component: page,
           route: page.url,
           name: key,
+          isWorkspace: page.isWorkspace || false,
         });
 
         // Dynamically add pages to vue router

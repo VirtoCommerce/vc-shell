@@ -1,4 +1,4 @@
-import { computed, h, unref, useSlots, defineComponent } from "vue";
+import { computed, h, unref, useSlots, defineComponent, ComputedRef } from "vue";
 import { unrefNested } from "../../helpers/unrefNested";
 import { Field } from "vee-validate";
 import { reactify } from "@vueuse/core";
@@ -20,7 +20,7 @@ export default defineComponent({
         : String(props.props.key)
     );
 
-    const fieldNameLang = reactify((name) => {
+    const fieldNameLang = reactify((name: string) => {
       return props.props.multilanguage ? name + "_" + props.props.currentLanguage : name;
     });
 
@@ -37,7 +37,7 @@ export default defineComponent({
           ).value,
         },
         {
-          default: ({ errorMessage, errors }) => {
+          default: ({ errorMessage, errors }: { errorMessage: ComputedRef<string | undefined>; errors: string[] }) => {
             return slots.default().map((slot) =>
               h(slot, {
                 ...props.props,

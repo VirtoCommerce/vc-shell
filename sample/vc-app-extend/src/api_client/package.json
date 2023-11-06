@@ -1,23 +1,9 @@
 {
-  "name": "vc-marketplacevendor-api-extended",
+  "name": "@vc-app-extend/api",
   "version": "1.0.113",
-  "module": "./dist/marketplacevendor.js",
-  "types": "./dist/types/marketplacevendor.d.ts",
-  "files": [
-    "dist",
-    "package.json"
-  ],
+  "type": "module",
   "exports": {
-    ".": {
-      "import": "./dist/marketplacevendor.js",
-      "types": "./dist/types/marketplacevendor.d.ts"
-    }
+    ".": "./marketplacevendor.ts"
   },
-  "scripts": {
-    "publish": "npm publish"
-  },
-  "publishConfig": {
-    "access": "public",
-    "registry": "https://registry.npmjs.org/"
-  }
+  "packageManager": "yarn@3.6.4"
 }

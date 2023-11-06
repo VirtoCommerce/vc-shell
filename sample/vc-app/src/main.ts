@@ -3,7 +3,7 @@ import { createApp } from "vue";
 import { router } from "./router";
 import * as locales from "./locales";
 import { RouterView } from "vue-router";
-import modules from "vc-sample-modules";
+import modules from "@vc-app/modules";
 
 // Load required CSS
 import "./styles/index.scss";
@@ -19,7 +19,11 @@ async function startApp() {
   const app = createApp(RouterView);
   app.use(VirtoShellFramework);
 
+  // Initialize dynamic views module
   app.use(modules.Offers.default, { router });
+
+  // Initialize classic views module
+  app.use(modules.OffersClassic.default, { router });
 
   app.use(router);
 

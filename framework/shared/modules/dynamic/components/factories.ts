@@ -138,7 +138,7 @@ export const CardCollection = ({ props, options, slots }: Partial<ICardCollectio
 });
 
 export const DynamicProperties = ({ props, options }: Partial<IDynamicProperties>): IDynamicProperties => ({
-  component: markRaw(VcDynamicProperty) as any,
+  component: markRaw(VcDynamicProperty),
   props: {
     ...props,
     ...ControlBaseProps(props),

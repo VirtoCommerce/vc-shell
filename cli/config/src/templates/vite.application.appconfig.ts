@@ -113,7 +113,7 @@ export default {
   optimizeDeps: {
     exclude: ["@vc-shell/*"],
     esbuildOptions: {
-      target: ["es2020", "safari14"],
+      target: ["esnext", "safari14"],
     },
   },
   build: {

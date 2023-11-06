@@ -1,0 +1,8 @@
+{
+  "extends": "@vc-shell/ts-config/tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "rootDir": "./"
+  },
+  "include": ["src/*.ts"]
+}

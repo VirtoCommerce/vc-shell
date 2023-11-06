@@ -18,11 +18,11 @@ const schemeRenderProps = {
   uiSchema: {
     type: Array as PropType<ControlSchema[]>,
     required: true,
-    default: () => [],
+    default: (): ControlSchema[] => [],
   },
   currentLocale: {
     type: String,
-    default: undefined,
+    default: "",
   },
 };
 
@@ -54,7 +54,7 @@ export default defineComponent({
       { deep: true }
     );
 
-    function emitChange(newVal) {
+    function emitChange(newVal: unknown) {
       ctx.emit("update:modelValue", newVal);
     }
 

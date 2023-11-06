@@ -1,5 +1,5 @@
 import { AsyncAction, useApiClient, useAsync, useLoading } from "@vc-shell/framework";
-import { VcmpSellerCatalogClient } from "vc-marketplacevendor-api";
+import { VcmpSellerCatalogClient } from "@vc-app/api";
 import { ComputedRef, Ref, onBeforeUnmount, onMounted, ref } from "vue";
 import { useI18n } from "vue-i18n";
 

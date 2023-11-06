@@ -1,3 +1,40 @@
+## [1.0.117](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.116...v1.0.117) (2023-11-06)
+
+
+### Features
+
+* **@vc-shell/framework:** isWorkspace blade option ([8647e66](https://github.com/VirtoCommerce/vc-shell/commit/8647e66ab6eed51efbfcb1e8f01323fba5dd7579))
+* **@vc-shell:** boilerplate versioning ([e402b4e](https://github.com/VirtoCommerce/vc-shell/commit/e402b4e7a770f8ec88ee7fad6af8c13ad3d39880))
+
+
+
+## [1.0.116](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.115...v1.0.116) (2023-11-02)
+
+
+### Features
+
+* updated release in boilerplate and sample ([382265b](https://github.com/VirtoCommerce/vc-shell/commit/382265b1a740504b5a4de89cbb7cba38b3d74539))
+
+
+
+## [1.0.115](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.114...v1.0.115) (2023-11-02)
+
+
+### Bug Fixes
+
+* **@vc-shell/framework:** vc-select slot fix ([62953b9](https://github.com/VirtoCommerce/vc-shell/commit/62953b94bbbb7e081c813177c45e8ae49183b1c8))
+
+
+### Features
+
+* **@vc-shell/create-vc-app:** changed boilerplate ([740915b](https://github.com/VirtoCommerce/vc-shell/commit/740915baea40f4ac25375679dac9e9a209ae1937))
+* **@vc-shell/framework:** updated tsconfigs ([921d000](https://github.com/VirtoCommerce/vc-shell/commit/921d000de8a0ca1b3eed4712eb5cc87e6d6a6616))
+* extended vc-app sample ([1b9da1e](https://github.com/VirtoCommerce/vc-shell/commit/1b9da1e146b8e25604f3c708a8d204ff5beb98a8))
+* release-config and ts-config packages ([c901ebf](https://github.com/VirtoCommerce/vc-shell/commit/c901ebffa19569f647a351de484e3d807425b920))
+* **vc-app:** classic Offers module ([8af2996](https://github.com/VirtoCommerce/vc-shell/commit/8af2996d0439d303926a3f3160bf2be15a05021f))
+
+
+
 ## [1.0.114](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.113...v1.0.114) (2023-10-25)
 
 

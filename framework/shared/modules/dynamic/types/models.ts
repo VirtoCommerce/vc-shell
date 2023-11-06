@@ -59,7 +59,7 @@ export type ControlTypeCtr = Extract<ControlType, ISelectField | IInputField | I
 
 export interface IControlBaseProps {
   key?: string | number | symbol;
-  rules?: string | Record<string, unknown>;
+  rules?: Record<string, unknown>;
   label?: string;
   placeholder?: string;
   disabled?: boolean;
@@ -132,7 +132,8 @@ export type ICheckbox = {
 export type IDynamicProperties = {
   props:
     | (ComponentProps<typeof VcDynamicProperty> & FromGenericEventsToProps<ComponentEmit<typeof VcDynamicProperty>>)
-    | IControlBaseProps;
+    | (ComponentProps<typeof VcDynamicProperty> &
+        Omit<IControlBaseProps, keyof ComponentProps<typeof VcDynamicProperty> | "onUpdate:modelValue" | "rules">);
   options: IControlBaseOptions;
 } & FieldOpts<typeof VcDynamicProperty>;
 
@@ -142,7 +143,7 @@ export type IEditorField = {
 } & FieldOpts<typeof VcEditor>;
 
 export type IGallery = {
-  props: ComponentProps<typeof VcGallery> | IControlBaseProps;
+  props: (ComponentProps<typeof VcGallery> & { rules: Record<string, unknown> }) | IControlBaseProps;
   options: IControlBaseOptions;
 } & FieldOpts<typeof VcGallery>;
 

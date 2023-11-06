@@ -9,6 +9,10 @@ import EditorField from "./fields/EditorField";
 import GalleryField from "./fields/GalleryField";
 import Button from "./fields/Button";
 import StatusField from "./fields/StatusField";
+import ContentField from "./fields/ContentField";
+import VideoField from "./fields/VideoField";
+import ImageField from "./fields/ImageField";
+
 import { ControlSchema } from "../types";
 import { ConcreteComponent } from "vue";
 
@@ -27,6 +31,9 @@ const FIELD_MAP: TFieldMap = {
   "vc-gallery": GalleryField,
   "vc-button": Button,
   "vc-status": StatusField,
+  "vc-field": ContentField,
+  "vc-video": VideoField,
+  "vc-image": ImageField,
 };
 
 export default FIELD_MAP;

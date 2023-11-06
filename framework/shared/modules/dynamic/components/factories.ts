@@ -6,11 +6,14 @@ import {
   VcCheckbox,
   VcDynamicProperty,
   VcEditor,
+  VcField,
   VcGallery,
+  VcImage,
   VcInput,
   VcInputCurrency,
   VcSelect,
   VcStatus,
+  VcVideo,
 } from "../../../../ui/components";
 import {
   IControlBaseProps,
@@ -26,6 +29,9 @@ import {
   IFieldset,
   IControlBaseOptions,
   IStatusField,
+  IContentField,
+  IVideoField,
+  IImageField,
 } from "../types/models";
 
 export const ControlBase = ({ visibility = undefined }: IControlBaseOptions): IControlBaseOptions => ({
@@ -78,6 +84,33 @@ export const StatusField = ({ props, slots, options }: Partial<IStatusField>): I
 
 export const InputField = ({ props, options }: Partial<IInputField>): IInputField => ({
   component: markRaw(VcInput),
+  props: {
+    ...ControlBaseProps(props),
+    ...props,
+  },
+  options: ControlBase(options),
+});
+
+export const ContentField = ({ props, options }: Partial<IContentField>): IContentField => ({
+  component: markRaw(VcField),
+  props: {
+    ...ControlBaseProps(props),
+    ...props,
+  },
+  options: ControlBase(options),
+});
+
+export const ImageField = ({ props, options }: Partial<IImageField>): IImageField => ({
+  component: markRaw(VcImage),
+  props: {
+    ...ControlBaseProps(props),
+    ...props,
+  },
+  options: ControlBase(options),
+});
+
+export const VideoField = ({ props, options }: Partial<IInputField>): IVideoField => ({
+  component: markRaw(VcVideo),
   props: {
     ...ControlBaseProps(props),
     ...props,

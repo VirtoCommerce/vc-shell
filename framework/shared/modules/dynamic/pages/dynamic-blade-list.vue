@@ -15,7 +15,7 @@
       :expanded="expanded"
       v-bind="bladeOptions?.table"
       :state-key="tableData?.id"
-      :items="items"
+      :items="itemsProxy"
       :multiselect="tableData?.multiselect"
       :header="tableData?.header"
       :sort="sort"
@@ -26,6 +26,7 @@
       :total-label="$t(`${settings.localizationPrefix.trim().toUpperCase()}.PAGES.LIST.TABLE.TOTALS`)"
       :total-count="pagination?.totalCount"
       :active-filter-count="activeFilterCount"
+      :reorderable-rows="tableData?.reorderableRows"
       @item-click="onItemClick"
       @pagination-click="onPaginationClick"
       @selection-changed="onSelectionChanged"
@@ -33,6 +34,7 @@
       @load:change="onSearchList"
       @scroll:ptr="reload"
       @search:change="onSearchList"
+      @row:reorder="sortRows"
     >
       <template
         v-if="isFilterVisible"
@@ -133,6 +135,8 @@ import { ITableColumns } from "../../../../core/types";
 import { toolbarReducer } from "../helpers/toolbarReducer";
 import { notification, usePopup } from "../../../components";
 import { ListBaseBladeScope, ListBladeContext, UseList } from "../factories/types";
+import { IParentCallArgs } from "../../../index";
+import * as _ from "lodash-es";
 
 export interface Props {
   expanded?: boolean;
@@ -144,6 +148,7 @@ export interface Props {
 }
 
 export interface Emits {
+  (event: "parent:call", args: IParentCallArgs): void;
   (event: "close:blade"): void;
   (event: "collapse:blade"): void;
   (event: "expand:blade"): void;
@@ -174,6 +179,8 @@ const selectedItemId = ref();
 const sort = ref("createdDate:DESC");
 const selectedIds = ref<string[]>([]);
 const isDesktop = inject<Ref<boolean>>("isDesktop");
+const itemsProxy = ref<Record<string, any>[]>();
+const modified = ref(false);
 
 const { moduleNotifications, markAsRead } = useNotifications(settings.value.pushNotificationType);
 
@@ -231,7 +238,7 @@ const {
 const bladeContext = ref<ListBladeContext>({
   load,
   remove,
-  items,
+  items: computed(() => itemsProxy.value),
   loading,
   pagination,
   query,
@@ -242,6 +249,12 @@ const bladeContext = ref<ListBladeContext>({
 const toolbarComputed = toolbarReducer({
   defaultToolbarSchema: settings.value.toolbar,
   defaultToolbarBindings: {
+    save: {
+      clickHandler() {
+        emit("close:blade");
+      },
+      disabled: computed(() => !modified.value),
+    },
     openAddBlade: {
       async clickHandler() {
         if (
@@ -274,8 +287,20 @@ onMounted(async () => {
   await load({ ...query.value, sort: sort.value });
 });
 
+watch(
+  () => itemsProxy.value,
+  (newVal) => {
+    modified.value = !_.isEqual(newVal, items.value);
+  },
+  { deep: true }
+);
+
 watch(sort, async (value) => {
   await load({ ...query.value, sort: value });
+});
+
+watch(items, (newVal) => {
+  itemsProxy.value = newVal;
 });
 
 watch(
@@ -465,8 +490,20 @@ function resolveTemplateComponent(name: keyof ListContentSchema) {
   }
 }
 
+function sortRows(event: { dragIndex: number; dropIndex: number; value: any[] }) {
+  if (event.dragIndex !== event.dropIndex) {
+    const sorted = event.value.map((item, index) => {
+      item.sortOrder = index;
+      return item;
+    });
+
+    itemsProxy.value = sorted;
+  }
+}
+
 defineExpose({
   reload,
   title,
+  ...scope.value,
 });
 </script>

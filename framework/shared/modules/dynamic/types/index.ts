@@ -1,4 +1,4 @@
-import { VcButton, VcIcon, VcInput, VcStatus } from "./../../../../ui/components";
+import { VcButton, VcField, VcIcon, VcImage, VcInput, VcStatus, VcVideo } from "./../../../../ui/components";
 import { ITableColumns, IValidationRules } from "../../../../core/types";
 import type { ComponentProps, ComponentEmit, ComponentSlots } from "vue-component-type-helpers";
 
@@ -95,6 +95,7 @@ export interface ListContentSchema extends SchemaBase {
     type?: string;
     customTemplate?: GridTemplateOverride;
   })[];
+  reorderableRows?: boolean;
   mobileTemplate?: {
     component: string;
   };
@@ -148,6 +149,30 @@ export interface InputSchema extends SchemaBase {
   component: "vc-input";
   variant?: ComponentProps<typeof VcInput>["type"];
   clearable?: boolean;
+}
+
+export interface VideoSchema extends SchemaBase {
+  component: "vc-video";
+  size?: ComponentProps<typeof VcVideo>["size"];
+  rounded?: boolean;
+  bordered?: boolean;
+  clickable?: boolean;
+}
+
+export interface FieldSchema extends SchemaBase {
+  component: "vc-field";
+  variant?: ComponentProps<typeof VcField>["type"];
+  copyable?: boolean;
+}
+
+export interface ImageSchema extends SchemaBase {
+  component: "vc-image";
+  aspect?: ComponentProps<typeof VcImage>["aspect"];
+  size?: ComponentProps<typeof VcImage>["size"];
+  background?: ComponentProps<typeof VcImage>["background"];
+  rounded?: boolean;
+  bordered?: boolean;
+  clickable?: boolean;
 }
 
 export interface StatusSchema extends SchemaBase {
@@ -237,7 +262,10 @@ export type ControlSchema =
   | FieldsetSchema
   | ButtonSchema
   | InputCurrencySchema
-  | StatusSchema;
+  | StatusSchema
+  | FieldSchema
+  | VideoSchema
+  | ImageSchema;
 
 export interface FilterBase {
   columns: {

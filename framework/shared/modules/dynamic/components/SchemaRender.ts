@@ -68,10 +68,10 @@ export default defineComponent({
             nodeBuilder({
               controlSchema: field,
               parentId: field.id,
-              internalContext: internalFormData.value,
+              internalContext: internalFormData,
               bladeContext: props.context,
-              currentLocale: currentLocale.value,
-              formData: internalFormData.value,
+              currentLocale: currentLocale,
+              formData: internalFormData,
             }),
           ],
           []

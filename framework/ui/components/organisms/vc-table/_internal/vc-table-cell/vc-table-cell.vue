@@ -100,9 +100,11 @@ const locale = window.navigator.language;
 const value = computed(() => {
   return (props.cell.field || props.cell.id).split(".").reduce((p: { [x: string]: unknown }, c: string) => {
     if (p && Array.isArray(p) && p.length) {
-      return (p && p[0][c]) || null;
+      const val = p && p[0][c];
+      return val !== undefined ? val : null;
     }
-    return (p && p[c]) || null;
+    const val = p && p[c];
+    return val !== undefined ? val : null;
   }, props.item);
 });
 </script>

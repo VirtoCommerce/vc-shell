@@ -1,3 +1,22 @@
+## [1.0.118](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.117...v1.0.118) (2023-11-06)
+
+
+### Bug Fixes
+
+* **@vc-shell/framework:** refactor bladeContext ([1588cee](https://github.com/VirtoCommerce/vc-shell/commit/1588cee760719081b7c60d3c3fb6791bac4de17d))
+* **framework:** vc-table-cell condition fix ([b96dbcc](https://github.com/VirtoCommerce/vc-shell/commit/b96dbcc9adb671542b27d285c648fafd93cd8dfb))
+* nodeBuilder reactivity loss fix ([ace445e](https://github.com/VirtoCommerce/vc-shell/commit/ace445e3525355b879cb59cdac4a2876421e594c))
+
+
+### Features
+
+* **@vc-shell/framework:** dynamic vc-image ([a04dc2f](https://github.com/VirtoCommerce/vc-shell/commit/a04dc2f0d8a53ad5cd797b4403d1c2f20bb07062))
+* **@vc-shell/framework:** dynamic vc-video ([433384d](https://github.com/VirtoCommerce/vc-shell/commit/433384d99ba7ff78fdb143e4e64cb0eb124a4765))
+* **@vc-shell/framework:** reorderable table ([eae2236](https://github.com/VirtoCommerce/vc-shell/commit/eae2236119cac231ed846bb32d0b9f6e50a7cc11))
+* **@vc-shell/framework:** vc-field component ([67d04d0](https://github.com/VirtoCommerce/vc-shell/commit/67d04d04a495c124e9490157c773eace0bef21a0))
+
+
+
 ## [1.0.117](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.116...v1.0.117) (2023-11-06)
 
 

@@ -39,6 +39,7 @@ declare module "vue" {
     VcSlider: (typeof VcShellComponents)["VcSlider"];
     VcTextarea: (typeof VcShellComponents)["VcTextarea"];
     VcMultivalue: (typeof VcShellComponents)["VcMultivalue"];
+    VcField: (typeof VcShellComponents)["VcField"];
 
     // organisms
     VcApp: (typeof VcShellComponents)["VcApp"];

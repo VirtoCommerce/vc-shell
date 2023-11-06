@@ -12,16 +12,21 @@ export const signalR = {
       .configureLogging(LogLevel.Information)
       .build();
 
-    let startedPromise = null;
-
     function start() {
-      startedPromise = connection.start().catch((err) => {
-        console.error("Failed to connect", err);
-        return new Promise((resolve, reject) => setTimeout(() => start().then(resolve).catch(reject), 5000));
-      });
-      return startedPromise;
+      connection
+        .start()
+        .then(() => {
+          console.log("SignalR Connected.");
+        })
+        .catch((err) => {
+          console.log("SignalR Connection Error: ", err);
+          setTimeout(() => start(), 5000);
+        });
     }
-    connection.onclose(() => start());
+
+    connection.onclose(() => {
+      start();
+    });
 
     start();
 

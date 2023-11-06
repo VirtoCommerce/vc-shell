@@ -4613,7 +4613,7 @@ __metadata:
     "@vc-shell/config-generator": ^1.0.116
     "@vc-shell/ts-config": ^1.0.116
     "@vee-validate/i18n": ^4.9.4
-    "@vee-validate/rules": ^4.9.4
+    "@vee-validate/rules": ^4.11.8
     "@vitejs/plugin-vue": ^4.2.3
     "@vueup/vue-quill": ^1.2.0
     "@vueuse/components": ^10.1.2
@@ -4631,9 +4631,10 @@ __metadata:
     swiper: ^6.8.4
     typescript: ^5.2.2
     url-pattern: ^1.0.3
-    vee-validate: ^4.9.4
+    vee-validate: ^4.11.8
     vite: ^4.3.9
     vue: ^3.3.7
+    vue-component-type-helpers: ^1.8.22
     vue-currency-input: ^3.0.5
     vue-i18n: ^9.2.2
     vue-router: ^4.2.5
@@ -4761,7 +4762,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vee-validate/rules@npm:^4.9.4":
+"@vee-validate/rules@npm:^4.11.8":
   version: 4.11.8
   resolution: "@vee-validate/rules@npm:4.11.8"
   dependencies:
@@ -5475,7 +5476,7 @@ __metadata:
     tailwindcss: ^3.3.2
     tsx: ^3.13.0
     typescript: ^5.2.2
-    vee-validate: ^4.9.4
+    vee-validate: ^4.11.8
     vite: ^4.3.9
     vite-plugin-checker: ^0.6.0
     vite-plugin-mkcert: ^1.15.0
@@ -14191,7 +14192,7 @@ __metadata:
     tailwindcss: ^3.3.2
     tsx: ^3.13.0
     typescript: ^5.2.2
-    vee-validate: ^4.9.4
+    vee-validate: ^4.11.8
     vite: ^4.3.9
     vite-plugin-checker: ^0.6.0
     vite-plugin-mkcert: ^1.15.0
@@ -14247,7 +14248,7 @@ __metadata:
     tailwindcss: ^3.3.2
     tsx: ^3.13.0
     typescript: ^5.2.2
-    vee-validate: ^4.9.4
+    vee-validate: ^4.11.8
     vite: ^4.3.9
     vite-plugin-checker: ^0.6.0
     vite-plugin-mkcert: ^1.15.0
@@ -14259,7 +14260,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"vee-validate@npm:4.11.8, vee-validate@npm:^4.9.4":
+"vee-validate@npm:4.11.8, vee-validate@npm:^4.11.8":
   version: 4.11.8
   resolution: "vee-validate@npm:4.11.8"
   dependencies:
@@ -14477,6 +14478,13 @@ __metadata:
   version: 3.0.8
   resolution: "vscode-uri@npm:3.0.8"
   checksum: 514249126850c0a41a7d8c3c2836cab35983b9dc1938b903cfa253b9e33974c1416d62a00111385adcfa2b98df456437ab704f709a2ecca76a90134ef5eb4832
+  languageName: node
+  linkType: hard
+
+"vue-component-type-helpers@npm:^1.8.22":
+  version: 1.8.22
+  resolution: "vue-component-type-helpers@npm:1.8.22"
+  checksum: 50cada55013c1579278e25c47cc4e338f4cbca65642a939962cff349dac0fa8d12cbb8214f80234173f77a1c91901c174929fca0249eb000b87c56e5bd0a0b60
   languageName: node
   linkType: hard
 

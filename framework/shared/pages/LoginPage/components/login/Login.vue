@@ -185,11 +185,13 @@ import AzureAdIcon from "./../../../../../assets/img/AzureAd.svg";
 import { ExternalSignInProviderInfo } from "./../../../../../core/api/platform";
 import { useI18n } from "vue-i18n";
 
+type ForgotPasswordFunc = (args: { loginOrEmail: string }) => Promise<void>;
+
 export interface Props {
   logo: string;
   background: string;
   title: string;
-  composable?: () => { forgotPassword: (args: { loginOrEmail: string }) => Promise<void> };
+  composable?: () => { forgotPassword: ForgotPasswordFunc };
 }
 
 const props = defineProps<Props>();
@@ -210,7 +212,7 @@ const isDirty = useIsFormDirty();
 const customizationLoading = ref(false);
 const loadingForgotPassword = ref(false);
 const loginProviders = ref<ExternalSignInProviderInfo[]>();
-let forgotPassword;
+let forgotPassword: ForgotPasswordFunc;
 
 if (props.composable && typeof props.composable === "function") {
   useLogin = props.composable;

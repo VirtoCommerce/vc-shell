@@ -530,7 +530,7 @@ const emit = defineEmits<{
   paginationClick: [page: number];
   selectionChanged: [values: T[]];
   "search:change": [value: string | number | Date | null];
-  headerClick;
+  headerClick: [item: ITableColumns];
   value: [Record<string, unknown>];
   itemClick: [item: T];
   "scroll:ptr": [];
@@ -547,8 +547,8 @@ const reorderRef = ref<HTMLElement | null>();
 const tableRef = ref<HTMLElement | null>();
 
 // event listeners
-let columnResizeListener = null;
-let columnResizeEndListener = null;
+let columnResizeListener: (...args: any[]) => any = null;
+let columnResizeEndListener: (...args: any[]) => any = null;
 
 const selection = ref<T[]>([]) as Ref<T[]>;
 const allSelected = ref(false);
@@ -558,7 +558,7 @@ const tooltip = ref<ComputePositionReturn>();
 const scrollContainer = ref<typeof VcContainer>();
 const actionToggleRefs = ref<ITableItemRef[]>([]);
 
-const itemActions = ref<IActionBuilderResult[][]>([]);
+const itemActions: Ref<IActionBuilderResult[][]> = ref([]);
 const mobileSwipeItem = ref<string>();
 const columnResizing = ref(false);
 const resizeColumnElement = ref<ITableColumns>();
@@ -629,7 +629,7 @@ const headerCheckbox = computed({
     return props.items ? selection.value.length === props.items.length : false;
   },
   set(checked: boolean) {
-    let _selected = [];
+    let _selected: T[] = [];
 
     if (checked) {
       _selected = props.items;
@@ -829,7 +829,7 @@ function bindColumnResizeEvents() {
       if (columnResizing.value) {
         onColumnResize(event);
       }
-    });
+    }) as unknown as typeof document.addEventListener;
   }
   if (!columnResizeEndListener) {
     columnResizeEndListener = document.addEventListener("mouseup", () => {
@@ -837,7 +837,7 @@ function bindColumnResizeEvents() {
         columnResizing.value = false;
         onColumnResizeEnd();
       }
-    });
+    }) as unknown as typeof document.addEventListener;
   }
 }
 

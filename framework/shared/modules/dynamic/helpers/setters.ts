@@ -9,7 +9,7 @@ function setModel(args: {
 }) {
   const { property, value, option, context } = args;
 
-  _.set(context, property, option ? value[option] : value);
+  _.set(context, property, option ? value[option as keyof typeof value] : value);
 }
 
 export { setModel };

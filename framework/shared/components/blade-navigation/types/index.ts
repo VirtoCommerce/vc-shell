@@ -37,6 +37,7 @@ export type CoreBladeNavigationData = {
 };
 
 export interface CoreBladeExposed {
+  [x: string]: any;
   title?: string;
   onBeforeClose?: () => Promise<boolean>;
   reloadParent?: () => void;
@@ -44,7 +45,7 @@ export interface CoreBladeExposed {
 }
 
 export interface IParentCallArgs {
-  method: string;
+  method: keyof CoreBladeExposed;
   args?: unknown;
   callback?: (args: unknown) => void;
 }

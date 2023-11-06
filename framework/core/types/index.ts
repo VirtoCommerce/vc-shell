@@ -109,7 +109,7 @@ export type NotificationTemplateConstructor = ComponentInstanceConstructor & {
 // eslint-disable-next-line @typescript-eslint/ban-types
 export interface IActionBuilderResult<T = {}> {
   icon: string;
-  title: string;
+  title: string | Ref<string>;
   variant: string;
   leftActions?: boolean;
   clickHandler(item?: T): void;

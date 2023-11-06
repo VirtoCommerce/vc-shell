@@ -9,8 +9,13 @@ import EditorField from "./fields/EditorField";
 import GalleryField from "./fields/GalleryField";
 import Button from "./fields/Button";
 import StatusField from "./fields/StatusField";
+import { ControlSchema } from "../types";
+import { ConcreteComponent } from "vue";
 
-const FIELD_MAP = {
+type AvailableComponents = Exclude<ControlSchema["component"], "vc-widgets">;
+type TFieldMap = Record<AvailableComponents, ConcreteComponent>;
+
+const FIELD_MAP: TFieldMap = {
   "vc-select": SelectField,
   "vc-card": Card,
   "vc-input": InputField,

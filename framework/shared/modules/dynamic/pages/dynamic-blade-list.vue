@@ -122,6 +122,8 @@ import {
   unref,
   watch,
   UnwrapRef,
+  ShallowRef,
+  ConcreteComponent,
 } from "vue";
 import { useI18n } from "vue-i18n";
 import { DynamicGridSchema, ListContentSchema } from "../types";
@@ -429,7 +431,7 @@ async function resetSearch() {
   });
 }
 
-function templateOverrideComponents(): Record<string, VNode> {
+function templateOverrideComponents(): Record<string, ShallowRef<ConcreteComponent>> {
   return {
     ...table.value.columns?.reduce((acc, curr) => {
       if ("customTemplate" in curr) {
@@ -446,17 +448,20 @@ function templateOverrideComponents(): Record<string, VNode> {
         }
       }
       return acc;
-    }, {}),
+    }, {} as Record<string, ShallowRef<ConcreteComponent>>),
   };
 }
 
-function resolveTemplateComponent(name: string) {
+function resolveTemplateComponent(name: keyof ListContentSchema) {
   if (!tableData.value) return;
-  const componentName = tableData.value[name]?.component;
-  if (componentName) {
-    const component = resolveComponent(componentName);
+  const value = tableData.value[name];
+  if (value && typeof value === "object" && "component" in value) {
+    const componentName = value.component;
+    if (componentName) {
+      const component = resolveComponent(componentName);
 
-    if (component && typeof component !== "string") return shallowRef(component);
+      if (component && typeof component !== "string") return shallowRef(component);
+    }
   }
 }
 

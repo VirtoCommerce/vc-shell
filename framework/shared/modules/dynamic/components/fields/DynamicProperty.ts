@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ExtractPropTypes, computed, h, inject, ref, toRefs, toValue, unref, watch, Comment } from "vue";
+import { ExtractPropTypes, computed, h, ref, toValue, watch, UnwrapNestedRefs } from "vue";
 import { DynamicProperties } from "../factories";
 import componentProps from "./props";
 import { unrefNested } from "../../helpers/unrefNested";
@@ -7,6 +7,24 @@ import { reactify, reactiveComputed } from "@vueuse/core";
 import * as _ from "lodash-es";
 import { DynamicPropertiesSchema } from "../../types";
 import { setModel } from "../../helpers/setters";
+import { IDynamicProperties } from "../../types/models";
+
+interface IProperty {
+  [x: string]: unknown;
+  type: string;
+  required: boolean;
+  multivalue?: boolean;
+  multilanguage?: boolean;
+  valueType: string;
+  dictionary?: boolean;
+  name: string;
+  displayNames: { name?: string; languageCode?: string }[];
+  validationRule?: {
+    charCountMin: number;
+    charCountMax: number;
+    regExp: string;
+  };
+}
 
 export default {
   name: "DynamicProperty",
@@ -35,23 +53,25 @@ export default {
       { deep: true, immediate: true }
     );
 
-    const filteredProps = reactify((prop: any, { include, exclude }) => {
-      if (prop) {
-        return prop.filter((x) => {
-          if (include) return include?.includes(x.type);
-          if (exclude) return !exclude?.includes(x.type);
-          else return true;
-        });
+    const filteredProps = reactify(
+      (prop: IProperty[], { include, exclude }: { include: string[]; exclude: string[] }) => {
+        if (prop) {
+          return prop.filter((x) => {
+            if (include) return include?.includes(x.type);
+            if (exclude) return !exclude?.includes(x.type);
+            else return true;
+          });
+        }
+        return null;
       }
-      return null;
-    });
+    );
 
     const dynamicProps = filteredProps(internalModel, {
       include: props.element?.include,
       exclude: props.element?.exclude,
     });
 
-    const properties = reactiveComputed(() => {
+    const properties: UnwrapNestedRefs<IDynamicProperties[]> = reactiveComputed(() => {
       return (dynamicProps.value || [])?.map((prop) =>
         DynamicProperties({
           props: {

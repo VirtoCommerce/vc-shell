@@ -60,7 +60,7 @@ export default <Query>(args: { data: Data; query: MaybeRef<Query>; load: AsyncAc
   const _data = args.data;
 
   const isFilterVisible = ref(true);
-  const filter = reactive({});
+  const filter: Record<string, unknown> = reactive({});
 
   const controls = ref<Control[]>([]);
 
@@ -74,20 +74,26 @@ export default <Query>(args: { data: Data; query: MaybeRef<Query>; load: AsyncAc
   onMounted(() => createFilterControls());
 
   function isItemSelected(value: string, field: string) {
-    return filter[field]?.some((x) => x === value);
+    const item = filter[field];
+    if (Array.isArray(item) && typeof item !== "string") {
+      return item.some((x) => x === value);
+    }
   }
 
   function selectFilterItem(e: boolean, value: string, field: string) {
-    const isSelected = filter[field]?.includes(value);
+    const item = filter[field];
+    let isSelected = false;
 
-    if (!Array.isArray(filter[field])) {
+    if (Array.isArray(item)) {
+      isSelected = item.includes(value);
+
+      if (e && !isSelected) {
+        item.push(value);
+      } else if (!e && isSelected) {
+        filter[field] = item.filter((x) => x !== value);
+      }
+    } else {
       filter[field] = [];
-    }
-
-    if (e && !isSelected) {
-      filter[field]?.push(value);
-    } else if (!e && isSelected) {
-      filter[field] = filter[field].filter((x) => x !== value);
     }
   }
 
@@ -109,7 +115,7 @@ export default <Query>(args: { data: Data; query: MaybeRef<Query>; load: AsyncAc
         }
 
         return obj;
-      }, {});
+      }, {} as Record<string, ReturnType<typeof Checkbox> | ReturnType<typeof InputField>>);
 
       return {
         title: item.title,
@@ -125,7 +131,7 @@ export default <Query>(args: { data: Data; query: MaybeRef<Query>; load: AsyncAc
         props: {
           classNames: "tw-mb-2",
           modelValue: computed(() => isItemSelected(currC.value, control.field)),
-          "onUpdate:modelValue": (e) => selectFilterItem(e, currC.value, control.field),
+          "onUpdate:modelValue": (e: boolean) => selectFilterItem(e, currC.value, control.field),
         },
         slots: {
           default: () => currC.displayName,
@@ -136,7 +142,7 @@ export default <Query>(args: { data: Data; query: MaybeRef<Query>; load: AsyncAc
       });
 
       return obj;
-    }, {});
+    }, {} as Record<string, ReturnType<typeof Checkbox>>);
   }
 
   function createInput(control: RawControl) {
@@ -146,7 +152,7 @@ export default <Query>(args: { data: Data; query: MaybeRef<Query>; load: AsyncAc
         classNames: "tw-mb-3",
         label: control.label,
         modelValue: computed(() => filter[control.field]),
-        "onUpdate:modelValue": (e) => (filter[control.field] = e),
+        "onUpdate:modelValue": (e: unknown) => (filter[control.field] = e),
       },
       options: {
         visibility: computed(() => true),

@@ -1,8 +1,14 @@
-import { h, resolveComponent, ExtractPropTypes, Component } from "vue";
+import { h, resolveComponent, ExtractPropTypes, Component, VNode } from "vue";
 import { SelectField } from "../factories";
 import componentProps from "./props";
 import ValidationField from "./ValidationField";
 import { SelectSchema } from "../../types";
+import { VcSelect } from "../../../../../ui/components";
+import type { ComponentSlots } from "vue-component-type-helpers";
+
+type TScope =
+  | Parameters<ComponentSlots<typeof VcSelect>["option"]>["0"]
+  | Parameters<ComponentSlots<typeof VcSelect>["selected-item"]>["0"];
 
 export default {
   name: "SelectField",
@@ -25,10 +31,10 @@ export default {
         slots:
           props.element.customTemplate &&
           ["selected-item", "option"].reduce((obj, slot) => {
-            obj[slot] = (scope) =>
+            obj[slot] = (scope: TScope) =>
               h(resolveComponent(props.element.customTemplate.component), { context: scope, slotName: slot });
             return obj;
-          }, {}),
+          }, {} as Record<string, (scope: TScope) => VNode>),
       });
 
       const render = h(field.component as unknown as Component, field.props, field.slots);

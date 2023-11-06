@@ -1,9 +1,9 @@
 import { defineRule } from "vee-validate";
-/*eslint import/namespace: ['error', { allowComputed: true }]*/
 import * as AllRules from "@vee-validate/rules";
 
-Object.keys(AllRules).forEach((rule) => {
-  defineRule(rule, AllRules[rule]);
+Object.keys(AllRules).forEach((rule: string) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  defineRule(rule, (AllRules as Record<string, any>)[rule]);
 });
 
 /**

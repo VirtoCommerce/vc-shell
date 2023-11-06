@@ -329,7 +329,7 @@ defineSlots<{
   hint: (props: any) => any;
 }>();
 
-let emitTimer;
+let emitTimer: NodeJS.Timeout;
 let emitValueFn;
 const temp = ref();
 const inputRef = ref();

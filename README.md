@@ -44,14 +44,9 @@
 # install and configure package dependencies and git hooks
 $ yarn
 
-# build application
-$ yarn build
+# bootstrap modules and API client
+$ yarn bootstrap
 
 # start application with hot reload at localhost:8080
 $ yarn serve
-```
-
-#### Version bumping
-```bash
-$ yarn bump patch/minor/major
 ```

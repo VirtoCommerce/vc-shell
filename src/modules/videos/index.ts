@@ -7,7 +7,7 @@
 // export * from "./pages";
 // export * from "./composables";
 
-//import * as components from "./components";
+import * as components from "./components";
 import * as schema from "./pages";
 import * as locales from "./locales";
 import * as composables from "./composables";
@@ -17,9 +17,9 @@ import { createDynamicAppModule } from "@vc-shell/framework";
 export default createDynamicAppModule({
   schema,
   composables,
-  //  moduleComponents: components,
+  moduleComponents: components,
   //  notificationTemplates,
   locales,
 });
 
-export { /*components, */ schema, locales, composables /*, notificationTemplates*/ };
+export { components, schema, locales, composables /*, notificationTemplates*/ };

@@ -10,7 +10,8 @@
         },
         "EMPTY": {
           "ADD": "Add video",
-          "NO_VIDEOS": "Product has no videos yet"
+          "NO_VIDEOS": "Product has no videos yet",
+          "NO_ITEMS": "No videos"
         },
         "SEARCH": {
           "PLACEHOLDER": "Search"
@@ -78,9 +79,12 @@
           },
           "COPY": "Copy link"
         },
-        "DELETE_CONFIRMATION": {
-          "MESSAGE": "Are you sure you want to delete this video?"
+        "ALERTS": {
+          "DELETE": "Are you sure you want to delete this video?"
         }
+      },
+      "ALERTS":{
+        "CLOSE_CONFIRMATION": "You have unsaved changes. Close anyway?"
       }
     }
   }

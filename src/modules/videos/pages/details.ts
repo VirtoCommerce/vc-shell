@@ -28,33 +28,29 @@ export const details: DynamicDetailsSchema = {
       component: "vc-form",
       children: [
         {
-          id: "videoUrlFieldset",
-          component: "vc-fieldset",
-          columns: 2,
+          id: "videoUrl",
+          component: "vc-input",
+          label: "Video Url",
+          property: "videoUrl",
+          placeholder: "Enter video Url",
+          update: {
+            method: "validateUrl",
+          },
+          rules: {
+            min: 1,
+          },
           visibility: {
             method: "needShowUrl",
           },
-          fields: [
-            {
-              id: "videoUrl",
-              component: "vc-input",
-              label: "Video Url",
-              property: "videoUrl",
-              placeholder: "Enter video Url",
-              update: {
-                method: "validateUrl",
-              },
-              rules: {
-                min: 1,
-              },
-            },
-            {
-              id: "addVideoButton",
-              component: "vc-button",
-              method: "createVideo",
-              content: "Preview",
-            },
-          ],
+        },
+        {
+          id: "addVideoButton",
+          component: "vc-button",
+          method: "createVideo",
+          content: "Preview",
+          visibility: {
+            method: "needShowUrl",
+          },
         },
         {
           id: "videoThumbnailFieldset",
@@ -64,14 +60,6 @@ export const details: DynamicDetailsSchema = {
             method: "needShowFields",
           },
           fields: [
-            {
-              id: "contentUrl1",
-              component: "vc-input",
-              label: "Video Url",
-              property: "contentUrl",
-              variant: "link",
-              copyable: true,
-            },
             {
               id: "thumbnail",
               component: "vc-image",

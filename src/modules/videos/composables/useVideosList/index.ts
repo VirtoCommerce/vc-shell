@@ -2,28 +2,26 @@ import {
   useApiClient,
   useBladeNavigation,
   useLoading,
-  useUser,
   UseList,
   DynamicBladeList,
   useListFactory,
   ListBaseBladeScope,
+  IBladeToolbar,
 } from "@vc-shell/framework";
 import {
   VcmpSellerCatalogClient,
   ISearchVideosQuery,
   SearchVideosQuery,
 } from "vcmp-vendor-portal-api/marketplacevendor";
-import { IVideo, Video, VideoSearchResult } from "vcmp-vendor-portal-api/catalog";
-
+import { Video } from "vcmp-vendor-portal-api/catalog";
 import { computed, ref, onMounted } from "vue";
 
 const { getApiClient } = useApiClient(VcmpSellerCatalogClient);
 
 export interface VideosListScope extends ListBaseBladeScope {
   toolbarOverrides: {
-    openAddBlade: {
-      clickHandler: () => Promise<void>;
-    };
+    save: IBladeToolbar;
+    openAddBlade: IBladeToolbar;
   };
 }
 
@@ -32,10 +30,14 @@ export const useVideosList = (args: {
   emit: InstanceType<typeof DynamicBladeList>["$emit"];
 }): UseList<Video[], ISearchVideosQuery, VideosListScope> => {
   const listFactory = useListFactory<Video[], ISearchVideosQuery>({
-    load: async (query) => (await getApiClient()).searchVideos(new SearchVideosQuery(query)),
+    load: async (query) => {
+      query.sort = "sortOrder:ASC";
+      return (await getApiClient()).searchVideos(new SearchVideosQuery(query));
+    },
     remove: async (query, customQuery) => {
       const videoIds = customQuery.ids;
-      return (await getApiClient()).delete(videoIds);
+      (await getApiClient()).delete(videoIds);
+      await markProductDirty();
     },
   });
 
@@ -51,15 +53,33 @@ export const useVideosList = (args: {
     });
   }
 
+  async function openAddBlade() {
+    openBlade({
+      blade: resolveBladeByName("Video"),
+      options: { productId: query.value.ownerIds?.find((o) => true) },
+    });
+  }
+
+  async function markProductDirty() {
+    args.emit("parent:call", {
+      method: "markProductDirty",
+    });
+  }
+
   const scope = ref<VideosListScope>({
     openDetailsBlade,
+    markProductDirty,
     toolbarOverrides: {
+      save: {
+        async clickHandler(args) {
+          await (await getApiClient()).update(args.items);
+          await markProductDirty();
+          await load(query.value);
+        },
+      },
       openAddBlade: {
         async clickHandler() {
-          openBlade({
-            blade: resolveBladeByName("Video"),
-            options: { productId: query.value.ownerIds?.find((o) => true) },
-          });
+          await openAddBlade();
         },
       },
     },

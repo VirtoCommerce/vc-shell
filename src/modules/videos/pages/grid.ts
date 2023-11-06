@@ -11,10 +11,10 @@ export const grid: DynamicGridSchema = {
     component: "DynamicBladeList",
     toolbar: [
       {
-        id: "refresh",
-        icon: "fas fa-sync-alt",
-        title: "Refresh",
-        method: "refresh",
+        id: "save",
+        icon: "fas fa-save",
+        title: "Save",
+        method: "save",
       },
       {
         id: "add",
@@ -35,6 +35,7 @@ export const grid: DynamicGridSchema = {
       id: "videosGrid",
       component: "vc-table",
       multiselect: true,
+      reorderableRows: true,
       mobileTemplate: {
         component: "VideosMobileGridView",
       },
@@ -43,6 +44,11 @@ export const grid: DynamicGridSchema = {
       },
       emptyTemplate: {
         component: "VideosEmptyGridTemplate",
+        context: {
+          opt: {
+            catalogProductId: "ARRRR!",
+          },
+        },
       },
       columns: [
         {
@@ -70,6 +76,7 @@ export const grid: DynamicGridSchema = {
           id: "sortOrder",
           title: "Sort order",
           sortable: true,
+          type: "number",
         },
       ],
     },

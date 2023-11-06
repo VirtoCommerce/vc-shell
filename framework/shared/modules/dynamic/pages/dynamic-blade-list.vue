@@ -133,6 +133,7 @@ import { ITableColumns } from "../../../../core/types";
 import { toolbarReducer } from "../helpers/toolbarReducer";
 import { notification, usePopup } from "../../../components";
 import { ListBaseBladeScope, ListBladeContext, UseList } from "../factories/types";
+import { IParentCallArgs } from "../../../index";
 import * as _ from "lodash-es";
 
 export interface Props {
@@ -145,6 +146,7 @@ export interface Props {
 }
 
 export interface Emits {
+  (event: "parent:call", args: IParentCallArgs): void;
   (event: "close:blade"): void;
   (event: "collapse:blade"): void;
   (event: "expand:blade"): void;
@@ -497,5 +499,6 @@ function sortRows(event: { dragIndex: number; dropIndex: number; value: any[] })
 defineExpose({
   reload,
   title,
+  ...scope.value,
 });
 </script>

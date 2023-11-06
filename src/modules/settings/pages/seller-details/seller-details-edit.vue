@@ -383,6 +383,7 @@ export interface Emits {
 
 defineOptions({
   url: "/seller-details-edit",
+  isWorkspace: true,
   permissions: [UserPermissions.SellerDetailsEdit],
 });
 

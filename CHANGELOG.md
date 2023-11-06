@@ -1,3 +1,13 @@
+## [1.0.117](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.116...v1.0.117) (2023-11-06)
+
+
+### Features
+
+* **@vc-shell/framework:** isWorkspace blade option ([8647e66](https://github.com/VirtoCommerce/vc-shell/commit/8647e66ab6eed51efbfcb1e8f01323fba5dd7579))
+* **@vc-shell:** boilerplate versioning ([e402b4e](https://github.com/VirtoCommerce/vc-shell/commit/e402b4e7a770f8ec88ee7fad6af8c13ad3d39880))
+
+
+
 ## [1.0.116](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.115...v1.0.116) (2023-11-02)
 
 

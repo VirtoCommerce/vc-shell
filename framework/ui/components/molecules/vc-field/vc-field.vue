@@ -9,22 +9,22 @@
         >{{ tooltip }}</template
       ></VcLabel
     >
-    <div>
-      <VcFieldType
-        :value="modelValue"
-        :type="type"
-      >
-        <VcButton
-          v-if="copyable"
-          icon="far fa-copy"
-          size="m"
-          class="tw-ml-2"
-          text
-          @click="copy(modelValue)"
-        ></VcButton>
-      </VcFieldType>
-    </div>
+    <!-- <div> -->
+    <VcFieldType
+      :value="modelValue"
+      :type="type"
+    >
+      <VcButton
+        v-if="copyable"
+        icon="far fa-copy"
+        size="m"
+        class="tw-ml-2"
+        text
+        @click="copy(modelValue)"
+      ></VcButton>
+    </VcFieldType>
   </div>
+  <!-- </div> -->
 </template>
 
 <script lang="ts" setup>

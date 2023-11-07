@@ -1,4 +1,4 @@
-import { ExtractPropTypes, computed, h, markRaw, reactive, ref, toRefs, toValue, watch } from "vue";
+import { ExtractPropTypes, computed, h, markRaw, reactive, ref, toRefs, toValue, unref, watch } from "vue";
 import { Gallery } from "../factories";
 import componentProps from "./props";
 import { IImage } from "../../../../../core/types";
@@ -45,14 +45,17 @@ export default {
       const imageHandlers = {
         loading,
         async edit(image: IImage) {
-          internalModel.value[props.element.property] = await edit.value(props.formData[props.element.property], image);
+          internalModel.value[props.element.property] = await edit.value(
+            unref(props.formData)[props.element.property] as IImage[],
+            image
+          );
           await editImages(internalModel.value[props.element.property]);
         },
         async upload(files: FileList) {
           internalModel.value[props.element.property] = await upload.value(
             files,
-            props.formData[props.element.property],
-            props.formData.id || props.formData.categoryId,
+            unref(props.formData)[props.element.property] as IImage[],
+            (unref(props.formData).id as string) || (unref(props.formData).categoryId as string),
             props.element.uploadFolder
           );
 
@@ -75,7 +78,7 @@ export default {
             )
           ) {
             internalModel.value[props.element.property] = await remove.value(
-              props.formData[props.element.property],
+              unref(props.formData)[props.element.property] as IImage[],
               image
             );
             await editImages(internalModel.value[props.element.property]);

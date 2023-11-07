@@ -1,6 +1,6 @@
 <template>
   <div class="tw-flex tw-flex-nowrap tw-font-bold tw-relative">
-    <span><slot></slot></span>
+    <span class="tw-truncate"><slot></slot></span>
     <span
       v-if="required"
       class="tw-text-[color:var(--label-required-color)] tw-ml-1"

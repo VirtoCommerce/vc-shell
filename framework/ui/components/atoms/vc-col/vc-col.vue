@@ -15,12 +15,17 @@ export interface Props {
 withDefaults(defineProps<Props>(), {
   size: "1",
 });
+
+defineSlots<{
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  default: (props: any) => any;
+}>();
 </script>
 
 <style lang="scss">
-.vc-col {
-  .vc-app_mobile & {
-    @apply tw-grow #{!important};
-  }
-}
+// .vc-col {
+//   .vc-app_mobile & {
+//     @apply tw-grow #{!important};
+//   }
+// }
 </style>

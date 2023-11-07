@@ -1,4 +1,4 @@
-import { unref, computed, toValue, h, UnwrapNestedRefs, MaybeRef, reactive, Ref, VNode } from "vue";
+import { unref, computed, toValue, h, UnwrapNestedRefs, MaybeRef, reactive, VNode } from "vue";
 import FIELD_MAP from "../components/FIELD_MAP";
 import { ControlSchema } from "../types";
 import { IControlBaseProps, IControlBaseOptions } from "../types/models";
@@ -7,7 +7,6 @@ import { setModel } from "./setters";
 import { unwrapInterpolation } from "./unwrapInterpolation";
 import { DetailsBladeContext } from "../factories";
 import * as _ from "lodash-es";
-import { unrefNested } from "./unrefNested";
 
 function disabledHandler(
   disabled: { method?: string } | boolean,
@@ -20,7 +19,11 @@ function disabledHandler(
   return false;
 }
 
-function nodeBuilder<Context, BContext extends UnwrapNestedRefs<DetailsBladeContext>, FormData>(args: {
+function nodeBuilder<
+  Context extends Record<string, unknown>,
+  BContext extends UnwrapNestedRefs<DetailsBladeContext>,
+  FormData
+>(args: {
   controlSchema: ControlSchema;
   parentId: string | number;
   internalContext: MaybeRef<Context>;
@@ -42,7 +45,7 @@ function nodeBuilder<Context, BContext extends UnwrapNestedRefs<DetailsBladeCont
     placeholder: controlSchema.placeholder,
     required: controlSchema.rules?.required,
     modelValue: getModel(controlSchema.property, toValue(internalContext)),
-    "onUpdate:modelValue": (e) => {
+    "onUpdate:modelValue": (e: unknown) => {
       setModel({ property: controlSchema.property, value: e, context: toValue(internalContext) });
 
       if (_.has(controlSchema, "update.method")) {
@@ -58,7 +61,7 @@ function nodeBuilder<Context, BContext extends UnwrapNestedRefs<DetailsBladeCont
 
   const baseOptions = reactive<IControlBaseOptions>({
     visibility: computed(() =>
-      controlSchema.visibility?.method ? toValue(bladeContext.scope[controlSchema.visibility?.method]) : true
+      controlSchema.visibility?.method ? bladeContext.scope[controlSchema.visibility?.method] : true
     ),
   });
 
@@ -68,8 +71,9 @@ function nodeBuilder<Context, BContext extends UnwrapNestedRefs<DetailsBladeCont
     if (!("fields" in controlSchema)) return null;
     const fieldsModel = getModel(controlSchema.property, toValue(internalContext));
 
-    if (toValue(fieldsModel) && Array.isArray(toValue(fieldsModel))) {
-      return toValue(fieldsModel).map((model: { [x: string]: unknown; id: string }) =>
+    const model = toValue(fieldsModel);
+    if (model && Array.isArray(model)) {
+      return model.map((model: { [x: string]: unknown; id: string }) =>
         controlSchema.fields.map((fieldItem) =>
           nodeBuilder({
             controlSchema: fieldItem,
@@ -87,7 +91,7 @@ function nodeBuilder<Context, BContext extends UnwrapNestedRefs<DetailsBladeCont
         nodeBuilder({
           controlSchema: field,
           parentId: `fieldset-${parentId}-${field.id}`,
-          internalContext,
+          internalContext: reactive(unref(internalContext)),
           bladeContext,
           currentLocale,
           formData,
@@ -101,13 +105,13 @@ function nodeBuilder<Context, BContext extends UnwrapNestedRefs<DetailsBladeCont
     baseOptions,
     bladeContext,
     element: controlSchema,
-    currentLocale,
+    currentLocale: unref(currentLocale),
     fields: fieldsHandler,
     formData,
-    fieldContext: internalContext,
+    fieldContext: reactive(unref(internalContext)),
   };
 
-  return h(component, unrefNested(elProps));
+  return h(component, elProps);
 }
 
 export { nodeBuilder };

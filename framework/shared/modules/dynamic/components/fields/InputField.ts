@@ -1,8 +1,16 @@
-import { ExtractPropTypes, h } from "vue";
+import { ExtractPropTypes, h, VNode } from "vue";
 import { InputField } from "../factories";
 import componentProps from "./props";
 import ValidationField from "./ValidationField";
-import { InputSchema } from "../../types";
+import { InputSchema, ControlSchema } from "../../types";
+import { nodeBuilder } from "../../helpers/nodeBuilder";
+
+const slotsMap = {
+  append: "append",
+  prepend: "prepend",
+  appendInner: "append-inner",
+  prependInner: "prepend-inner",
+};
 
 export default {
   name: "InputField",
@@ -17,9 +25,23 @@ export default {
           clearable: props.element.clearable || false,
         },
         options: props.baseOptions,
+        slots: Object.entries(slotsMap).reduce((acc, [key, value]: [keyof InputSchema, keyof InputSchema]) => {
+          if (props.element[key]) {
+            acc[value] = () =>
+              nodeBuilder({
+                controlSchema: props.element[key] as ControlSchema,
+                parentId: `${(props.element[key] as ControlSchema).id}`,
+                internalContext: props.fieldContext,
+                bladeContext: props.bladeContext,
+                currentLocale: props.currentLocale,
+                formData: props.formData,
+              });
+          }
+          return acc;
+        }, {} as Record<keyof InputSchema, () => VNode | false>),
       });
 
-      const render = h(field.component, field.props);
+      const render = h(field.component, field.props, field.slots);
 
       if (field.props.rules) {
         return props.baseOptions.visibility

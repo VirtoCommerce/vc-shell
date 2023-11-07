@@ -1,3 +1,21 @@
+## [1.0.119](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.118...v1.0.119) (2023-11-07)
+
+
+### Bug Fixes
+
+* **framework:** dynamic view reactivity loss fix ([9cea9f0](https://github.com/VirtoCommerce/vc-shell/commit/9cea9f09a5ff6ada715d2e37d1bf13253dbbb1ca))
+* **framework:** vc-popup error/warning binding ([d380ae1](https://github.com/VirtoCommerce/vc-shell/commit/d380ae12d2df1a16476fa25654ff40ce17b0cf1f))
+* **framewrok:** vc-field removed redundant div wrapper ([1b35c20](https://github.com/VirtoCommerce/vc-shell/commit/1b35c2066bfe9b28060d672fdbd7429010d62ffc))
+
+
+### Features
+
+* **framework:** append, append-inner, prepend, prepend-inner slots in dynamic vc-input component ([f7d58cf](https://github.com/VirtoCommerce/vc-shell/commit/f7d58cf4a4949b675f11e957a4cbf09c0cfed95a))
+* **framework:** aspectRatio in dynamic fieldset ([11436cc](https://github.com/VirtoCommerce/vc-shell/commit/11436cc4fe5266ff4b5b346ae49a469da00af2d0))
+* **framework:** vc-label truncate css ([78e34d3](https://github.com/VirtoCommerce/vc-shell/commit/78e34d30dbed8432ff5717d3e02df6c9a4f1eaa9))
+
+
+
 ## [1.0.118](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.117...v1.0.118) (2023-11-06)
 
 

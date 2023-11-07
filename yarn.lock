@@ -2179,6 +2179,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@laynezh/vite-plugin-lib-assets@npm:^0.5.6":
+  version: 0.5.6
+  resolution: "@laynezh/vite-plugin-lib-assets@npm:0.5.6"
+  dependencies:
+    loader-utils: ^3.2.1
+    mrmime: ^1.0.1
+  checksum: f230e5ef26baf09dd23b6224a24ea4d40767ce3a85441d6fc3e8aa0ee214b21400c4217593acc834aa7d173568bda35133cafa51bcb751f32f048ffbaeed90d2
+  languageName: node
+  linkType: hard
+
 "@mdx-js/react@npm:^2.1.5":
   version: 2.3.0
   resolution: "@mdx-js/react@npm:2.3.0"
@@ -4741,17 +4751,17 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vcmp-vendor-portal/api@^1.0.126, @vcmp-vendor-portal/api@workspace:apps/vendor-portal/src/api_client":
+"@vcmp-vendor-portal/api@^1.0.127, @vcmp-vendor-portal/api@workspace:apps/vendor-portal/src/api_client":
   version: 0.0.0-use.local
   resolution: "@vcmp-vendor-portal/api@workspace:apps/vendor-portal/src/api_client"
   languageName: unknown
   linkType: soft
 
-"@vcmp-vendor-portal/modules@^1.0.126, @vcmp-vendor-portal/modules@workspace:apps/vendor-portal/src/modules":
+"@vcmp-vendor-portal/modules@^1.0.127, @vcmp-vendor-portal/modules@workspace:apps/vendor-portal/src/modules":
   version: 0.0.0-use.local
   resolution: "@vcmp-vendor-portal/modules@workspace:apps/vendor-portal/src/modules"
   peerDependencies:
-    "@vcmp-vendor-portal/api": ^1.0.126
+    "@vcmp-vendor-portal/api": ^1.0.127
   languageName: unknown
   linkType: soft
 
@@ -5439,6 +5449,7 @@ __metadata:
     "@commitlint/cli": ^17.6.3
     "@commitlint/config-conventional": ^17.6.3
     "@fortawesome/fontawesome-free": ^5.15.3
+    "@laynezh/vite-plugin-lib-assets": ^0.5.6
     "@rollup/plugin-typescript": ^11.1.1
     "@types/lodash-es": ^4.17.7
     "@typescript-eslint/eslint-plugin": ^5.59.6
@@ -5448,8 +5459,8 @@ __metadata:
     "@vc-shell/framework": ^1.0.119
     "@vc-shell/release-config": ^1.0.119
     "@vc-shell/ts-config": ^1.0.119
-    "@vcmp-vendor-portal/api": ^1.0.126
-    "@vcmp-vendor-portal/modules": ^1.0.126
+    "@vcmp-vendor-portal/api": ^1.0.127
+    "@vcmp-vendor-portal/modules": ^1.0.127
     "@vitejs/plugin-vue": ^4.2.3
     "@vue/eslint-config-prettier": ^7.1.0
     "@vue/eslint-config-typescript": ^11.0.3
@@ -9895,6 +9906,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"loader-utils@npm:^3.2.1":
+  version: 3.2.1
+  resolution: "loader-utils@npm:3.2.1"
+  checksum: 4e3ea054cdc8be1ab1f1238f49f42fdf0483039eff920fb1d442039f3f0ad4ebd11fb8e584ccdf2cb7e3c56b3d40c1832416e6408a55651b843da288960cc792
+  languageName: node
+  linkType: hard
+
 "locate-path@npm:^2.0.0":
   version: 2.0.0
   resolution: "locate-path@npm:2.0.0"
@@ -10565,6 +10583,13 @@ __metadata:
   version: 1.2.0
   resolution: "mri@npm:1.2.0"
   checksum: 83f515abbcff60150873e424894a2f65d68037e5a7fcde8a9e2b285ee9c13ac581b63cfc1e6826c4732de3aeb84902f7c1e16b7aff46cd3f897a0f757a894e85
+  languageName: node
+  linkType: hard
+
+"mrmime@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "mrmime@npm:1.0.1"
+  checksum: cc979da44bbbffebaa8eaf7a45117e851f2d4cb46a3ada6ceb78130466a04c15a0de9a9ce1c8b8ba6f6e1b8618866b1352992bf1757d241c0ddca558b9f28a77
   languageName: node
   linkType: hard
 

@@ -119,7 +119,7 @@ import { IOffer, ISellerProduct } from "@vc-app/api";
 import { useOffers } from "../composables";
 import OffersDetails from "./offers-details.vue";
 // eslint-disable-next-line import/no-unresolved
-import emptyImage from "/assets/empty.png?url";
+import emptyImage from "/assets/empty.png";
 import { useI18n } from "vue-i18n";
 
 export interface Props {

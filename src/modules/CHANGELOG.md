@@ -1,3 +1,12 @@
+## [1.0.128](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.127...v1.0.128) (2023-11-07)
+
+
+### Bug Fixes
+
+* static assets extract ([7e89e5f](https://github.com/VirtoCommerce/vendor-portal/commit/7e89e5f134a2868177243f9caea2ff54a9f70bc3))
+
+
+
 ## [1.0.127](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.126...v1.0.127) (2023-11-07)
 
 

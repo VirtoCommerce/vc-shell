@@ -18,6 +18,7 @@ import {
   ISearchOffersQuery,
   SearchOffersQuery,
 } from "@vcmp-vendor-portal/api/marketplacevendor";
+import { watchDebounced } from "@vueuse/core";
 
 interface Props {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -55,12 +56,24 @@ const { loading, action: getCount } = useAsync<ISearchOffersQuery, number | unde
   return (await client).searchOffers(new SearchOffersQuery(query)).then((res) => res.totalCount);
 });
 
+watchDebounced(
+  () => props.modelValue?.item,
+  async () => {
+    await populateCounter();
+  },
+  { debounce: 500, maxWait: 1000 }
+);
+
+async function populateCounter() {
+  count.value = await getCount({
+    take: 0,
+    sellerProductId: props.modelValue?.item?.id,
+  });
+}
+
 onMounted(async () => {
   if (props.modelValue?.item?.id) {
-    count.value = await getCount({
-      take: 0,
-      sellerProductId: props.modelValue?.item?.id,
-    });
+    await populateCounter();
   }
 });
 </script>

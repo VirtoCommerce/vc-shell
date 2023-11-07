@@ -49,6 +49,7 @@ export const useVideosList = (args: {
   function openDetailsBlade(args?: Omit<Parameters<typeof openBlade>["0"], "blade">) {
     openBlade({
       blade: resolveBladeByName("Video"),
+      options: { productId: query.value.ownerIds?.find(() => true) },
       ...args,
     });
   }

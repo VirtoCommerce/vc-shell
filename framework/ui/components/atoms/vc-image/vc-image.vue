@@ -99,7 +99,7 @@ $paddings: xs, s, m, l, xl, xxl;
 
   @each $padding in $paddings {
     &_#{$padding} {
-      @apply tw-w-[var(--image-size-#{$padding})];
+      @apply tw-w-[var(--image-size-#{$padding})] tw-max-w-full tw-min-w-0;
     }
   }
 

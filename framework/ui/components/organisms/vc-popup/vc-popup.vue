@@ -47,6 +47,11 @@ import VcPopupError from "./_internal/vc-popup-error/vc-popup-error.vue";
 import { defineComponent, PropType } from "vue";
 
 export default defineComponent({
+  components: {
+    VcIcon,
+    VcPopupWarning,
+    VcPopupError,
+  },
   props: {
     title: {
       type: String,

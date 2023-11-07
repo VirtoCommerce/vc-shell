@@ -6,7 +6,7 @@
 
 
 
-## 1.0.125 (2023-11-02)
+## [1.0.125](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.124...v1.0.125) (2023-11-02)
 
 
 ### Features
@@ -15,11 +15,7 @@
 
 
 
-## 1.0.124 (2023-10-25)
-
-
-
-## 1.0.123 (2023-10-25)
+## [1.0.124](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.123...v1.0.124) (2023-10-25)
 
 
 ### Features
@@ -28,7 +24,11 @@
 
 
 
-## 1.0.122 (2023-10-24)
+## [1.0.123](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.122...v1.0.123) (2023-10-25)
+
+
+
+## [1.0.122](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.120...v1.0.122) (2023-10-24)
 
 
 ### Bug Fixes
@@ -37,7 +37,7 @@
 
 
 
-## 1.0.120 (2023-10-17)
+## [1.0.120](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.119...v1.0.120) (2023-10-17)
 
 
 ### Bug Fixes
@@ -53,7 +53,7 @@
 
 
 
-## 1.0.92 (2023-06-23)
+## [1.0.92](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.91...v1.0.92) (2023-06-23)
 
 
 ### Bug Fixes
@@ -77,7 +77,7 @@
 
 
 
-## 1.0.30 (2022-09-29)
+## [1.0.30](https://github.com/VirtoCommerce/vendor-portal/compare/v0.0.3...v1.0.30) (2022-09-29)
 
 
 ### Features

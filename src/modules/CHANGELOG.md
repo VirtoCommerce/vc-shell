@@ -16,7 +16,7 @@
 
 
 
-## 1.0.125 (2023-11-02)
+## [1.0.125](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.124...v1.0.125) (2023-11-02)
 
 
 ### Bug Fixes
@@ -30,11 +30,7 @@
 
 
 
-## 1.0.124 (2023-10-25)
-
-
-
-## 1.0.123 (2023-10-25)
+## [1.0.124](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.123...v1.0.124) (2023-10-25)
 
 
 ### Features
@@ -43,7 +39,11 @@
 
 
 
-## 1.0.122 (2023-10-24)
+## [1.0.123](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.122...v1.0.123) (2023-10-25)
+
+
+
+## [1.0.122](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.120...v1.0.122) (2023-10-24)
 
 
 ### Bug Fixes
@@ -53,7 +53,7 @@
 
 
 
-## 1.0.120 (2023-10-17)
+## [1.0.120](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.119...v1.0.120) (2023-10-17)
 
 
 ### Bug Fixes
@@ -68,6 +68,7 @@
 * changed navigation props names ([d5d6ee3](https://github.com/VirtoCommerce/vendor-portal/commit/d5d6ee3cc60dd6cad7ce666cf0160ea35eb3ec00))
 * code review improvements ([99154fa](https://github.com/VirtoCommerce/vendor-portal/commit/99154fa686a585f66a59337e831c93d22e3fd094))
 * code review improvements ([91f969e](https://github.com/VirtoCommerce/vendor-portal/commit/91f969e011870d013a786209b6be62383dd73fce))
+* console ([2bdc91c](https://github.com/VirtoCommerce/vendor-portal/commit/2bdc91cc3400af58a2dd88a38f1cdfd877e40f6b))
 * console ([2bdc91c](https://github.com/VirtoCommerce/vendor-portal/commit/2bdc91cc3400af58a2dd88a38f1cdfd877e40f6b))
 * dashboard review table centered ([3aba9dd](https://github.com/VirtoCommerce/vendor-portal/commit/3aba9dd93696d6dcd19c9319001e55a6233baa7e))
 * description fix in dynamic products ([d27d631](https://github.com/VirtoCommerce/vendor-portal/commit/d27d631d4b492fc24b747c65f3f815cbaa495ef4))
@@ -111,6 +112,7 @@
 * fixes and new editor component ([fbe70bb](https://github.com/VirtoCommerce/vendor-portal/commit/fbe70bb6414b1d356551000a30f2e7f2a69059e7))
 * global components refactoring, removed logger, new development flow, removed unnecessary deps ([dbeca25](https://github.com/VirtoCommerce/vendor-portal/commit/dbeca2506bef6d4f9f9c2f7dfcb46c1173ce3506))
 * import external url ([59f5d11](https://github.com/VirtoCommerce/vendor-portal/commit/59f5d113f30754c02e4a879ffc1f01d80b73e4cb))
+* import external url ([59f5d11](https://github.com/VirtoCommerce/vendor-portal/commit/59f5d113f30754c02e4a879ffc1f01d80b73e4cb))
 * improved blade-nav ([cc323cf](https://github.com/VirtoCommerce/vendor-portal/commit/cc323cfc3b2bd366c21480cc303a353500803d78))
 * link to import template file ([b1e2fda](https://github.com/VirtoCommerce/vendor-portal/commit/b1e2fdad8a701ba03b6d66b2a50ef5c5c6bc6147))
 * mp_products vm-1129 fix ([84ae857](https://github.com/VirtoCommerce/vendor-portal/commit/84ae857d9a73f5447171c3a9d077469738057553))
@@ -128,6 +130,7 @@
 * styles for lang selector ([7f98409](https://github.com/VirtoCommerce/vendor-portal/commit/7f984099417015c709044bf4ffac8c3d19b49ea4))
 * updated table improvements ([6971d1d](https://github.com/VirtoCommerce/vendor-portal/commit/6971d1d3652bce0694b98643a9aec3059eebdd80))
 * validation and refactoring ([a6a5ddb](https://github.com/VirtoCommerce/vendor-portal/commit/a6a5ddba12b2a9c43ca5984aec82a2b7fb34c11f))
+* validation and refactoring ([a6a5ddb](https://github.com/VirtoCommerce/vendor-portal/commit/a6a5ddba12b2a9c43ca5984aec82a2b7fb34c11f))
 * vc-editor assets-folder prop added ([1fb5e08](https://github.com/VirtoCommerce/vendor-portal/commit/1fb5e08f49b500bc362c710954ac55e62643933e))
 * vm-1127 ([7b16976](https://github.com/VirtoCommerce/vendor-portal/commit/7b1697673b280b9ec1e7e550e5b9df4ad9da406a))
 * vm-1129 ([990bbd4](https://github.com/VirtoCommerce/vendor-portal/commit/990bbd423b8d7154ab6884df77a0723c01ce986a))
@@ -142,7 +145,7 @@
 
 
 
-## 1.0.58 (2023-03-02)
+## [1.0.58](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.57...v1.0.58) (2023-03-02)
 
 
 ### Bug Fixes
@@ -157,7 +160,7 @@
 
 
 
-## 1.0.52 (2023-02-22)
+## [1.0.52](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.49...v1.0.52) (2023-02-22)
 
 
 ### Bug Fixes
@@ -167,7 +170,7 @@
 
 
 
-## 1.0.49 (2023-02-14)
+## [1.0.49](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.48...v1.0.49) (2023-02-14)
 
 
 ### Bug Fixes
@@ -209,7 +212,7 @@
 
 
 
-## 1.0.30 (2022-09-29)
+## [1.0.30](https://github.com/VirtoCommerce/vendor-portal/compare/v0.0.3...v1.0.30) (2022-09-29)
 
 
 ### Features

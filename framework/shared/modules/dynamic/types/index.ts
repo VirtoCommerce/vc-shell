@@ -149,6 +149,10 @@ export interface InputSchema extends SchemaBase {
   component: "vc-input";
   variant?: ComponentProps<typeof VcInput>["type"];
   clearable?: boolean;
+  prepend?: ControlSchema;
+  append?: ControlSchema;
+  appendInner?: ControlSchema;
+  prependInner?: ControlSchema;
 }
 
 export interface VideoSchema extends SchemaBase {
@@ -234,6 +238,7 @@ export interface CheckboxSchema extends SchemaBase {
 export interface FieldsetSchema extends SchemaBase {
   component: "vc-fieldset";
   columns?: number;
+  aspectRatio?: number[];
   fields: Exclude<ControlSchema[], FieldsetSchema>;
   remove?: {
     method: string;

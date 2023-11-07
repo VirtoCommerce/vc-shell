@@ -82,13 +82,14 @@ export const StatusField = ({ props, slots, options }: Partial<IStatusField>): I
   slots,
 });
 
-export const InputField = ({ props, options }: Partial<IInputField>): IInputField => ({
+export const InputField = ({ props, options, slots }: Partial<IInputField>): IInputField => ({
   component: markRaw(VcInput),
   props: {
     ...ControlBaseProps(props),
     ...props,
   },
   options: ControlBase(options),
+  slots,
 });
 
 export const ContentField = ({ props, options }: Partial<IContentField>): IContentField => ({

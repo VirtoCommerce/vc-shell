@@ -95,6 +95,7 @@ export type IStatusField = {
 export type IInputField = {
   props: ComponentProps<typeof VcInput> | IControlBaseProps;
   options: IControlBaseOptions;
+  slots?: Partial<Pick<ComponentSlots<typeof VcInput>, "append" | "prepend" | "append-inner" | "prepend-inner">>;
 } & FieldOpts<typeof VcInput>;
 
 export type IContentField = {

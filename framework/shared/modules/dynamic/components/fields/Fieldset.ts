@@ -1,4 +1,4 @@
-import { Ref, h, inject, nextTick, toRefs, ExtractPropTypes } from "vue";
+import { Ref, h, inject, nextTick, toRefs, ExtractPropTypes, toValue } from "vue";
 import componentProps from "./props";
 import * as _ from "lodash-es";
 import { VcButton, VcCol, VcRow } from "../../../../../ui/components";
@@ -14,23 +14,28 @@ export default {
 
     return () =>
       props.baseOptions.visibility
-        ? fieldsetFields.value.map((fields, index, arr) => {
+        ? toValue(fieldsetFields.value).map((fields, index, arr) => {
             const divideByCols = Array.isArray(fields) && _.chunk(fields, props.element.columns || 1);
 
             return h(
               "div",
               {
-                class: "tw-flex tw-row tw-relative",
+                class: "tw-flex tw-row tw-relative test ",
                 key: `fieldset-${index}`,
               },
               [
-                h("div", { class: "tw-flex-1 tw-gap-4 tw-flex tw-flex-col" }, [
+                h("div", { class: "tw-flex-1 tw-gap-4 tw-flex tw-flex-col tw-min-w-0" }, [
                   divideByCols.map((itemsArr, colIndex) => {
                     return h(
                       VcRow,
                       {
                         key: `col-${colIndex}-${index}`,
-                        class: "tw-relative tw-gap-4",
+                        class: {
+                          "tw-relative": true,
+                          "tw-gap-4": true,
+                          "!tw-flex-wrap": true,
+                          "!tw-flex !tw-flex-row": !!props.element.aspectRatio,
+                        },
                       },
                       () => [
                         ...itemsArr.map((item, itemIndex) => {
@@ -38,6 +43,8 @@ export default {
                             VcCol,
                             {
                               key: `col-${itemIndex}-${colIndex}-${index}`,
+                              size:
+                                "aspectRatio" in props.element ? props.element.aspectRatio[itemIndex].toString() : "1",
                             },
                             () => {
                               if (typeof item === "object") {

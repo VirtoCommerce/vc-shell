@@ -12,8 +12,8 @@ import {
   VcmpSellerCatalogClient,
   ISearchVideosQuery,
   SearchVideosQuery,
-} from "vcmp-vendor-portal-api/marketplacevendor";
-import { Video } from "vcmp-vendor-portal-api/catalog";
+} from "@vcmp-vendor-portal/api/marketplacevendor";
+import { Video } from "@vcmp-vendor-portal/api/catalog";
 import { computed, ref, onMounted } from "vue";
 
 const { getApiClient } = useApiClient(VcmpSellerCatalogClient);
@@ -56,7 +56,7 @@ export const useVideosList = (args: {
   async function openAddBlade() {
     openBlade({
       blade: resolveBladeByName("Video"),
-      options: { productId: query.value.ownerIds?.find((o) => true) },
+      options: { productId: query.value.ownerIds?.find(() => true) },
     });
   }
 
@@ -91,6 +91,7 @@ export const useVideosList = (args: {
       args.props &&
       "options" in args.props &&
       args.props.options &&
+      typeof args.props.options === "object" &&
       "catalogProduct" in args.props.options &&
       args.props.options?.catalogProduct
     )

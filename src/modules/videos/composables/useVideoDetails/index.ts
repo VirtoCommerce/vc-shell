@@ -1,6 +1,6 @@
 import { useDebounceFn } from "@vueuse/core";
-import { VcmpSellerCatalogClient, CreateVideoCommand } from "vcmp-vendor-portal-api/marketplacevendor";
-import { IVideo, Video } from "vcmp-vendor-portal-api/catalog";
+import { VcmpSellerCatalogClient, CreateVideoCommand } from "@vcmp-vendor-portal/api/marketplacevendor";
+import { IVideo, Video } from "@vcmp-vendor-portal/api/catalog";
 import {
   IBladeToolbar,
   useApiClient,
@@ -16,6 +16,7 @@ import { useMultilanguage } from "../../../common";
 
 export interface VideoDetailsScope extends DetailsBaseBladeScope {
   createVideo: (command: CreateVideoCommand) => Promise<void>;
+  previewDisabled: ComputedRef<boolean>;
   videoDisabled: ComputedRef<boolean>;
   needShowUrl: ComputedRef<boolean>;
   needShowFields: ComputedRef<boolean>;
@@ -31,7 +32,7 @@ export const useVideoDetails = (args: {
   props: InstanceType<typeof DynamicBladeForm>["$props"];
   emit: InstanceType<typeof DynamicBladeForm>["$emit"];
 }): UseDetails<IVideo, VideoDetailsScope> => {
-  const detailsFactory = useDetailsFactory<IVideo>({
+  const detailsFactory = useDetailsFactory<IVideo & { videoUrl?: string }>({
     load: async ({ id }) => await (await getApiClient()).getVideoById(id),
     saveChanges: async (videoItem) => {
       await (await getApiClient()).update([videoItem as Video]);
@@ -71,11 +72,13 @@ export const useVideoDetails = (args: {
   }
 
   async function createVideo(): Promise<void> {
-    const command = new CreateVideoCommand();
-    command.contentUrl = item.value.videoUrl;
-    command.languageCode = currentLocale.value;
-    command.ownerType = "Product";
-    command.ownerId = args.props.options.productId;
+    const command = new CreateVideoCommand({
+      contentUrl: item.value.videoUrl,
+      languageCode: currentLocale.value,
+      ownerType: "Product",
+      ownerId: args.props.options.productId as string,
+    });
+
     const client = await getApiClient();
     try {
       videoLoading.value = true;
@@ -85,22 +88,24 @@ export const useVideoDetails = (args: {
       newVideoLoaded.value = true;
       validationState.value.modified = true;
     } catch (e) {
+      console.log(e);
       videoLoadedWithoutErrors.value = false;
       newVideoLoaded.value = false;
     } finally {
       videoLoading.value = false;
+      validateUrl();
     }
   }
 
-  const validateUrl = useDebounceFn(async (value: string, property, context) => {
+  const validateUrl = async () => {
     {
       if (!videoLoadedWithoutErrors.value) {
-        validationState.value.setFieldError(property, t(`VIDEOS.PAGES.DETAILS.FIELDS.ADD.ERROR`));
+        validationState.value.setFieldError("videoUrl", t(`VIDEOS.PAGES.DETAILS.FIELDS.ADD.ERROR`));
       } else {
-        validationState.value.setFieldError(property, null);
+        validationState.value.setFieldError("videoUrl", null);
       }
     }
-  }, 1000);
+  };
 
   async function markProductDirty() {
     args.emit("parent:call", {
@@ -110,10 +115,10 @@ export const useVideoDetails = (args: {
 
   const scope = ref<VideoDetailsScope>({
     videoDisabled: computed(() => true),
+    previewDisabled: computed(() => validationState.value.disabled),
     needShowUrl: computed(() => !args.props.param),
     needShowFields: computed(() => !!args.props.param || newVideoLoaded.value),
     createVideo,
-    validateUrl,
     toolbarOverrides: {
       saveChanges: {
         isVisible: computed(() => !args.props.param),

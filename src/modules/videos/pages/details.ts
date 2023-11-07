@@ -42,20 +42,24 @@ export const details: DynamicDetailsSchema = {
           visibility: {
             method: "needShowUrl",
           },
-        },
-        {
-          id: "addVideoButton",
-          component: "vc-button",
-          method: "createVideo",
-          content: "Preview",
-          visibility: {
-            method: "needShowUrl",
+          appendInner: {
+            id: "addVideoButton",
+            component: "vc-button",
+            method: "createVideo",
+            content: "Preview",
+            visibility: {
+              method: "needShowUrl",
+            },
+            disabled: {
+              method: "previewDisabled",
+            },
           },
         },
         {
           id: "videoThumbnailFieldset",
           component: "vc-fieldset",
           columns: 2,
+          aspectRatio: [1, 2],
           visibility: {
             method: "needShowFields",
           },
@@ -64,6 +68,9 @@ export const details: DynamicDetailsSchema = {
               id: "thumbnail",
               component: "vc-image",
               property: "thumbnailUrl",
+              size: "xl",
+              background: "contain",
+              bordered: true,
             },
             {
               id: "videoLinksFieldset",

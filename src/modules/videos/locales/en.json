@@ -13,6 +13,10 @@
           "NO_VIDEOS": "Product has no videos yet",
           "NO_ITEMS": "No videos"
         },
+        "NOT_FOUND": {
+          "EMPTY": "No products found.",
+          "RESET": "Reset search"
+        },
         "SEARCH": {
           "PLACEHOLDER": "Search"
         },

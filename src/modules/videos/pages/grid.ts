@@ -44,11 +44,6 @@ export const grid: DynamicGridSchema = {
       },
       emptyTemplate: {
         component: "VideosEmptyGridTemplate",
-        context: {
-          opt: {
-            catalogProductId: "ARRRR!",
-          },
-        },
       },
       columns: [
         {

@@ -1,10 +1,7 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { h, ExtractPropTypes } from "vue";
+import { h, ExtractPropTypes, Component, unref } from "vue";
 import { EditorField } from "../factories";
 import componentProps from "./props";
 import ValidationField from "./ValidationField";
-import { unrefNested } from "../../helpers/unrefNested";
-import { getModel } from "../../helpers/getters";
 
 export default {
   name: "EditorField",
@@ -15,12 +12,12 @@ export default {
         props: {
           ...props.baseProps,
           currentLanguage: props.currentLocale,
-          assetsFolder: props.formData.id || props.formData.categoryId,
+          assetsFolder: unref(props.formData).id || unref(props.formData).categoryId,
         },
         options: props.baseOptions,
       });
 
-      const render = h(field.component as any, field.props);
+      const render = h(field.component as Component, field.props);
 
       if (field.props.rules) {
         return props.baseOptions.visibility

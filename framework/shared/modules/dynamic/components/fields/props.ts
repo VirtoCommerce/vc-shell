@@ -1,4 +1,4 @@
-import { ComputedRef, PropType, UnwrapNestedRefs, VNodeArrayChildren } from "vue";
+import { ComputedRef, MaybeRef, PropType, UnwrapNestedRefs, VNode, VNodeArrayChildren } from "vue";
 import { DetailsBladeContext } from "../../factories";
 import { IControlBaseOptions, IControlBaseProps } from "../../types/models";
 import { ControlSchema } from "../../types";
@@ -21,12 +21,12 @@ export default {
     default: () => ({} as DetailsBladeContext),
   },
   fields: {
-    type: Object as PropType<ComputedRef<VNodeArrayChildren>>,
-    default: () => ({} as ComputedRef<VNodeArrayChildren>),
+    type: Object as PropType<ComputedRef<VNode[][]>>,
+    default: () => ({} as ComputedRef<VNode[][]>),
   },
   formData: {
-    type: Object,
-    default: () => ({}),
+    type: Object as PropType<MaybeRef<Record<string, unknown>>>,
+    default: () => ({} as MaybeRef<Record<string, unknown>>),
   },
   fieldContext: {
     type: Object,

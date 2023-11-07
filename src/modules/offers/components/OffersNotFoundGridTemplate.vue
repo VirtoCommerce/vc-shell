@@ -10,7 +10,7 @@
 
 <script setup lang="ts">
 // eslint-disable-next-line import/no-unresolved
-import emptyImage from "/assets/empty.png?url";
+import emptyImage from "/assets/empty.png";
 import { VcButton } from "@vc-shell/framework";
 
 export interface Emits {

@@ -10,7 +10,7 @@
 
 <script setup lang="ts">
 // eslint-disable-next-line import/no-unresolved
-import emptyImage from "/assets/empty.png?url";
+import emptyImage from "/assets/empty.png";
 
 export interface Emits {
   (event: "add"): void;

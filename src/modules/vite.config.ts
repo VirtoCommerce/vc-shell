@@ -1,8 +1,15 @@
 import path, { resolve } from "path";
 import vue from "@vitejs/plugin-vue";
+import libAssetsPlugin from "@laynezh/vite-plugin-lib-assets";
 
 export default {
+  resolve: {
+    alias: {
+      "/assets/empty.png": path.resolve(__dirname, "../../public/assets/empty.png"),
+    },
+  },
   build: {
+    copyPublicDir: false,
     lib: {
       entry: resolve(__dirname, "./index.ts"),
       fileName: (format, name) => `${name}.mjs`,
@@ -26,5 +33,5 @@ export default {
       ],
     },
   },
-  plugins: [vue()],
+  plugins: [libAssetsPlugin(), vue()],
 };

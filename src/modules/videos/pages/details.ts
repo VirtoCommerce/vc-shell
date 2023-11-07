@@ -42,7 +42,7 @@ export const details: DynamicDetailsSchema = {
           visibility: {
             method: "needShowUrl",
           },
-          appendInner: {
+          append: {
             id: "addVideoButton",
             component: "vc-button",
             method: "createVideo",

@@ -1,3 +1,12 @@
+## [1.0.130](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.129...v1.0.130) (2023-11-07)
+
+
+### Bug Fixes
+
+* **video:** widgets count, pass productId in openDetailsBlade ([2f70a9c](https://github.com/VirtoCommerce/vendor-portal/commit/2f70a9ce734ae26d4c8bdf8da1f1bd12a2871bca))
+
+
+
 ## [1.0.129](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.128...v1.0.129) (2023-11-07)
 
 

@@ -4751,17 +4751,17 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vcmp-vendor-portal/api@^1.0.127, @vcmp-vendor-portal/api@workspace:apps/vendor-portal/src/api_client":
+"@vcmp-vendor-portal/api@^1.0.130, @vcmp-vendor-portal/api@workspace:apps/vendor-portal/src/api_client":
   version: 0.0.0-use.local
   resolution: "@vcmp-vendor-portal/api@workspace:apps/vendor-portal/src/api_client"
   languageName: unknown
   linkType: soft
 
-"@vcmp-vendor-portal/modules@^1.0.127, @vcmp-vendor-portal/modules@workspace:apps/vendor-portal/src/modules":
+"@vcmp-vendor-portal/modules@^1.0.130, @vcmp-vendor-portal/modules@workspace:apps/vendor-portal/src/modules":
   version: 0.0.0-use.local
   resolution: "@vcmp-vendor-portal/modules@workspace:apps/vendor-portal/src/modules"
   peerDependencies:
-    "@vcmp-vendor-portal/api": ^1.0.127
+    "@vcmp-vendor-portal/api": ^1.0.130
   languageName: unknown
   linkType: soft
 
@@ -5459,8 +5459,8 @@ __metadata:
     "@vc-shell/framework": ^1.0.119
     "@vc-shell/release-config": ^1.0.119
     "@vc-shell/ts-config": ^1.0.119
-    "@vcmp-vendor-portal/api": ^1.0.127
-    "@vcmp-vendor-portal/modules": ^1.0.127
+    "@vcmp-vendor-portal/api": ^1.0.130
+    "@vcmp-vendor-portal/modules": ^1.0.130
     "@vitejs/plugin-vue": ^4.2.3
     "@vue/eslint-config-prettier": ^7.1.0
     "@vue/eslint-config-typescript": ^11.0.3

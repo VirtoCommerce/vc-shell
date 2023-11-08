@@ -63,6 +63,10 @@ export function getVersionChoices(currentVersion: string): VersionChoice[] {
       title: "major",
       value: inc("major"),
     },
+    {
+      value: "custom",
+      title: "custom",
+    },
   ].map((i) => {
     i.title = `${i.title} (${i.value})`;
     return i;

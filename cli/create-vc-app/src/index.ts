@@ -9,6 +9,23 @@ import { fileURLToPath } from "node:url";
 
 type Config = prompts.Answers<"appName" | "packageName" | "variant">;
 
+const renameFiles: Record<string, string | undefined> = {
+  _gitignore: ".gitignore",
+  "_yarnrc.yml": ".yarnrc.yml",
+  _browserslistrc: ".browserslistrc",
+  "_commitlintrc.json": ".commitlintrc.json",
+  _editorconfig: ".editorconfig",
+  _env: ".env",
+  _eslintignore: ".eslintignore",
+  _prettierignore: ".prettierignore",
+  _prettierrc: ".prettierrc",
+  "_eslintrc.js": ".eslintrc.js",
+  _github: "github",
+  _husky: ".husky",
+  _vscode: ".vscode",
+  _yarn: ".yarn",
+};
+
 function isValidName(appName: string) {
   return /^(?:@[a-z0-9-*~][a-z0-9-*._~]*\/)?[a-z0-9-~][a-z0-9-._~]*$/.test(appName);
 }
@@ -151,19 +168,23 @@ async function create() {
 
   console.log(`\nScaffolding app in ${root}...`);
 
-  const templateRoot = path.resolve(fileURLToPath(import.meta.url), "../templates");
+  const templateRoot = path.resolve(fileURLToPath(import.meta.url), "..", "templates");
 
-  const write = (file: string, content?: string) => {
+  const write = (file: string, templateName?: string, content?: string) => {
+    const targetPath = path.join(root, renameFiles[file] ?? file);
     if (content) {
-      fs.writeFileSync(path.join(root, file), content);
+      fs.writeFileSync(targetPath, content);
     } else {
-      copy(file, root);
+      copy(path.join(templateRoot, templateName, file), targetPath);
     }
   };
 
   const render = (templateName) => {
     const templateDir = path.resolve(templateRoot, templateName);
-    write(templateDir);
+    const files = fs.readdirSync(templateDir);
+    for (const file of files.filter((f) => f !== "package.json")) {
+      write(file, templateName);
+    }
   };
 
   render("base");
@@ -174,7 +195,7 @@ async function create() {
 
   pkg.name = packageName || getProjectName();
 
-  write("package.json", JSON.stringify(pkg, null, 2) + "\n");
+  write("package.json", "", JSON.stringify(pkg, null, 2) + "\n");
 
   console.log(`\nDone. You can now run application:\n`);
 

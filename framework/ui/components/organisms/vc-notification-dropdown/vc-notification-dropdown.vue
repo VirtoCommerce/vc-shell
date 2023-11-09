@@ -65,7 +65,7 @@
           >
             <NotificationItem
               :notification="item"
-              :templates="templates"
+              :templates="templates || []"
               @on-click="() => (isDropdownVisible = false)"
             />
           </div>

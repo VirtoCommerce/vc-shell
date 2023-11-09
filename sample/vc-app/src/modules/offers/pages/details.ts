@@ -186,7 +186,6 @@ export const details: DynamicDetailsSchema = {
             {
               id: "validityDatesFieldset",
               component: "vc-fieldset",
-              label: "Validity dates",
               columns: 2,
               fields: [
                 {

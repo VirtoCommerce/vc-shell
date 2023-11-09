@@ -143,7 +143,7 @@
               >
                 <div
                   class="tw-flex tw-items-center tw-flex-nowrap tw-truncate tw-px-3"
-                  :class="tableAlignment[item.align]"
+                  :class="item.align ? tableAlignment[item.align as keyof typeof tableAlignment] : ''"
                 >
                   <div class="tw-truncate">
                     <slot :name="`header_${item.id}`">{{ item.title }}</slot>
@@ -187,7 +187,7 @@
                 class="tw-sticky tw-h-[42px] tw-z-[1] tw-right-0 tw-top-0 tw-table-cell tw-align-middle tw-w-0"
               >
                 <VcTableColumnSwitcher
-                  :items="toggleCols"
+                  :items="toggleCols.filter((col): col is  ITableColumns => col !== undefined)"
                   @change="toggleColumn"
                 ></VcTableColumnSwitcher>
               </div>
@@ -547,8 +547,8 @@ const reorderRef = ref<HTMLElement | null>();
 const tableRef = ref<HTMLElement | null>();
 
 // event listeners
-let columnResizeListener: (...args: any[]) => any = null;
-let columnResizeEndListener: (...args: any[]) => any = null;
+let columnResizeListener: ((...args: any[]) => any) | null = null;
+let columnResizeEndListener: ((...args: any[]) => any) | null = null;
 
 const selection = ref<T[]>([]) as Ref<T[]>;
 const allSelected = ref(false);
@@ -732,9 +732,9 @@ function setActionToggleRefs(el: Element, id: string) {
 
 function setTooltipArrowRefs(el: Element, id: string) {
   if (el) {
-    const isExists = tooltipArrowRefs.value.some((item) => item.id === id);
+    const isExists = tooltipArrowRefs.value?.some((item) => item.id === id);
     if (!isExists) {
-      tooltipArrowRefs.value.push({ element: el, id });
+      tooltipArrowRefs.value?.push({ element: el, id });
     }
   }
 }
@@ -748,9 +748,9 @@ function showActions(item: T, index: string) {
 
     selectedRow.value = item.id;
 
-    const toggleRef = actionToggleRefs.value.find((item) => item.id === index).element;
-    const tooltipRef = tooltipRefs.value.find((item) => item.id === index).element;
-    const tooltipArrowRef = tooltipArrowRefs.value.find((item) => item.id === index).element;
+    const toggleRef = actionToggleRefs.value.find((item) => item.id === index)?.element;
+    const tooltipRef = tooltipRefs.value.find((item) => item.id === index)?.element;
+    const tooltipArrowRef = tooltipArrowRefs.value?.find((item) => item.id === index)?.element;
 
     if (toggleRef && tooltipRef && tooltipArrowRef) {
       nextTick(() => {
@@ -868,42 +868,44 @@ function getOffset(element: HTMLElement) {
   const rect = element.getBoundingClientRect();
   const win = element.ownerDocument.defaultView;
   return {
-    top: rect.top + win.pageYOffset,
-    left: rect.left + win.pageXOffset,
+    top: rect.top + ((win && win.scrollY) ?? 0),
+    left: rect.left + ((win && win.scrollX) ?? 0),
   };
 }
 
 function onColumnResizeEnd() {
-  const delta = resizer.value.offsetLeft - lastResize.value;
+  const delta = resizer.value.offsetLeft - (lastResize.value ?? 0);
 
-  const columnElement: HTMLElement = table.value.querySelector(`#${resizeColumnElement.value.id}`);
+  const columnElement: HTMLElement | null = table.value.querySelector(`#${resizeColumnElement.value?.id}`);
 
-  const columnWidth = columnElement.offsetWidth;
-  const newColumnWidth = columnWidth + delta;
+  if (columnElement) {
+    const columnWidth = columnElement.offsetWidth;
+    const newColumnWidth = columnWidth + delta;
 
-  const minWidth = 15;
+    const minWidth = 15;
 
-  if (columnWidth + delta > parseInt(minWidth.toString(), 10) && resizeColumnElement.value) {
-    nextColumn.value = filteredCols.value[filteredCols.value.indexOf(resizeColumnElement.value) + 1];
+    if (columnWidth + delta > parseInt(minWidth.toString(), 10) && resizeColumnElement.value) {
+      nextColumn.value = filteredCols.value[filteredCols.value.indexOf(resizeColumnElement.value) + 1];
 
-    if (nextColumn.value) {
-      const nextColElement = table.value.querySelector(`#${nextColumn.value.id}`);
+      if (nextColumn.value) {
+        const nextColElement = table.value.querySelector(`#${nextColumn.value.id}`);
 
-      const nextColumnWidth = (nextColElement as HTMLElement).offsetWidth - delta;
-      if (newColumnWidth > 15 && nextColumnWidth > 15) {
-        resizeTableCells(newColumnWidth, nextColumnWidth);
-      }
-    } else {
-      if (newColumnWidth > 15) {
-        resizeColumnElement.value.width = newColumnWidth + "px";
+        const nextColumnWidth = (nextColElement as HTMLElement).offsetWidth - delta;
+        if (newColumnWidth > 15 && nextColumnWidth > 15) {
+          resizeTableCells(newColumnWidth, nextColumnWidth);
+        }
+      } else {
+        if (newColumnWidth > 15) {
+          resizeColumnElement.value.width = newColumnWidth + "px";
+        }
       }
     }
+    resizer.value.style.display = "none";
+
+    unbindColumnResizeEvents();
+
+    saveState();
   }
-  resizer.value.style.display = "none";
-
-  unbindColumnResizeEvents();
-
-  saveState();
 }
 
 function resizeTableCells(newColumnWidth: number, nextColumnWidth: number) {

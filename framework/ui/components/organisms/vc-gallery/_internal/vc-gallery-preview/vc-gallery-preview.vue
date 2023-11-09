@@ -7,7 +7,7 @@
     <template #title>
       <div>
         <span>{{ currentImage.name }} (</span>
-        <VcLink @click="copyLink(currentImage.url)">{{
+        <VcLink @click="copyLink(currentImage.url ?? '')">{{
           t("COMPONENTS.ORGANISMS.VC_GALLERY.INTERNAL.VC_GALLERY_PREVIEW.COPY_IMAGE_LINK")
         }}</VcLink>
         <span>)</span>

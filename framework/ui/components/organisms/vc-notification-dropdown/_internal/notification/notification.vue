@@ -7,7 +7,7 @@
       <template v-else>
         <VcNotificationTemplate
           :color="notificationStyle.color"
-          :title="notification.title"
+          :title="notification.title ?? ''"
           :icon="notificationStyle.icon"
         >
           <VcHint
@@ -42,9 +42,7 @@ export interface Emits {
   (event: "onClick"): void;
 }
 
-const props = withDefaults(defineProps<Props>(), {
-  notification: undefined,
-});
+const props = defineProps<Props>();
 
 const emit = defineEmits<Emits>();
 

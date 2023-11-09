@@ -10,6 +10,11 @@
       :required="required"
     >
       <span>{{ label }}</span>
+      <template
+        v-if="tooltip"
+        #tooltip
+        >{{ tooltip }}</template
+      >
     </VcLabel>
     <label class="vc-checkbox__label">
       <input
@@ -57,6 +62,7 @@ export interface Props {
   trueValue?: boolean;
   falseValue?: boolean;
   label?: string;
+  tooltip?: string;
 }
 
 export interface Emits {

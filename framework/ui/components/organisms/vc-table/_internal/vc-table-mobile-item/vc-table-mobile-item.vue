@@ -17,7 +17,7 @@
       <div
         class="tw-flex tw-grow tw-basis-[1] tw-flex-col tw-justify-center tw-items-center tw-text-white"
         :class="[`vc-table-mobile__item-action_${leftSwipeActions[0].variant}`]"
-        @click.stop="leftSwipeActions[0].clickHandler(item)"
+        @click.stop="leftSwipeActions[0].clickHandler(item as T)"
       >
         <VcIcon :icon="leftSwipeActions[0].icon"></VcIcon>
         <div class="tw-mt-1 tw-text-lg">
@@ -40,7 +40,7 @@
       <div
         class="tw-flex tw-grow tw-basis-[1] tw-flex-col tw-justify-center tw-items-center tw-text-white"
         :class="[`vc-table-mobile__item-action_${rightSwipeActions[0].variant}`]"
-        @click.stop="rightSwipeActions[0].clickHandler(item)"
+        @click.stop="rightSwipeActions[0].clickHandler(item as T)"
       >
         <VcIcon :icon="rightSwipeActions[0].icon"></VcIcon>
         <div class="vc-table-mobile__item-action-text">
@@ -53,7 +53,7 @@
         v-if="rightSwipeActions.length === 2"
         class="tw-flex tw-grow tw-basis-[1] tw-flex-col tw-justify-center tw-items-center tw-text-white"
         :class="[`vc-table-mobile__item-action_${rightSwipeActions[1].variant}`]"
-        @click.stop="rightSwipeActions[1].clickHandler(item)"
+        @click.stop="rightSwipeActions[1].clickHandler(item as T)"
       >
         <VcIcon :icon="rightSwipeActions[1].icon"></VcIcon>
         <div class="tw-mt-1 tw-text-lg">
@@ -99,7 +99,7 @@
                   v-for="(itemAction, i) in itemActions"
                   :key="i"
                   class="tw-flex tw-grow tw-shrink-0 tw-flex-col tw-items-center tw-text-[#319ed4] tw-my-2 tw-box-border tw-p-1 tw-max-w-[80px]"
-                  @click="itemAction.clickHandler(item)"
+                  @click="itemAction.clickHandler(item as T)"
                 >
                   <VcIcon
                     :icon="itemAction.icon"
@@ -119,7 +119,7 @@
 </template>
 
 <script lang="ts" setup generic="T extends TableItem | string">
-import { computed, ref, watch } from "vue";
+import { Ref, computed, ref, watch } from "vue";
 import { IActionBuilderResult } from "./../../../../../../core/types";
 import { useI18n } from "vue-i18n";
 
@@ -130,19 +130,15 @@ export interface Emits {
 export interface TableItem {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [x: string]: any;
+  id: string;
   actions?: IActionBuilderResult[];
 }
 
-const props = withDefaults(
-  defineProps<{
-    item: T;
-    actionBuilder?: (item: T) => IActionBuilderResult[];
-    swipingItem?: string;
-  }>(),
-  {
-    swipingItem: null,
-  }
-);
+const props = defineProps<{
+  item: T;
+  actionBuilder?: (item: T) => IActionBuilderResult[];
+  swipingItem?: string;
+}>();
 
 const emit = defineEmits<Emits>();
 const { t } = useI18n({ useScope: "global" });
@@ -154,7 +150,7 @@ const isMoving = ref(false);
 const threshold = 10;
 const maxWidth = 80;
 const isActionsPopupVisible = ref(false);
-const itemActions = ref([]);
+const itemActions: Ref<IActionBuilderResult<T>[]> = ref([]);
 
 watch(
   () => props.swipingItem,

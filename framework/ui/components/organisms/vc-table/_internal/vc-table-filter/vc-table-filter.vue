@@ -58,7 +58,7 @@
 
 <script lang="ts" setup>
 import { ref, watch, computed, nextTick } from "vue";
-import { offset, computePosition, ComputePositionReturn } from "@floating-ui/vue";
+import { offset, computePosition, ComputePositionReturn, ReferenceElement } from "@floating-ui/vue";
 
 export interface Props {
   title?: string;
@@ -100,10 +100,12 @@ function openPanel(isMobile: boolean) {
   if (!isMobile) {
     if (isPanelVisible.value) {
       nextTick(() => {
-        computePosition(filterToggle.value, filterPanel.value, {
-          placement: "bottom-end",
-          middleware: [offset(10)],
-        }).then((item) => (popper.value = item));
+        if (filterToggle.value && filterPanel.value) {
+          computePosition(filterToggle.value as ReferenceElement, filterPanel.value, {
+            placement: "bottom-end",
+            middleware: [offset(10)],
+          }).then((item) => (popper.value = item));
+        }
       });
     }
   }

@@ -175,7 +175,7 @@ function onItemDragStart(event: DragEvent, item: IImage) {
   if (!props.disableDrag && !props.disabled) {
     draggedItem.value = item;
     draggedElement.value = event.target as HTMLElement;
-    event.dataTransfer.setData("text", "gallery_reorder");
+    event.dataTransfer?.setData("text", "gallery_reorder");
   }
 }
 
@@ -185,33 +185,35 @@ function onItemDragOver(event: DragEvent) {
   if (!props.disableDrag && !props.disabled && draggedItem.value && dropItem) {
     event.preventDefault();
 
-    const containerOffset = galleryRef.value.getBoundingClientRect();
+    const containerOffset = galleryRef.value?.getBoundingClientRect();
     const dropItemOffset = dropItem.getBoundingClientRect();
 
-    if (draggedElement.value !== dropItem) {
+    if (draggedElement.value !== dropItem && containerOffset) {
       const elementStyle = getComputedStyle(dropItem);
       const dropItemOffsetWidth = dropItem.offsetWidth + parseFloat(elementStyle.marginLeft);
       const targetLeft = dropItemOffset.left - containerOffset.left;
       const columnCenter = dropItemOffset.left + dropItemOffsetWidth / 2;
 
-      reorderGalleryRef.value.style.top = dropItemOffset.top - containerOffset.top + "px";
-      reorderGalleryRef.value.style.height = dropItem.offsetHeight + "px";
+      if (reorderGalleryRef.value) {
+        reorderGalleryRef.value.style.top = dropItemOffset.top - containerOffset.top + "px";
+        reorderGalleryRef.value.style.height = dropItem.offsetHeight + "px";
 
-      if (event.pageX > columnCenter) {
-        reorderGalleryRef.value.style.left = targetLeft + dropItemOffsetWidth + "px";
-        dropPosition.value = 1;
-      } else {
-        reorderGalleryRef.value.style.left = targetLeft - parseFloat(elementStyle.marginLeft) + "px";
-        dropPosition.value = -1;
+        if (event.pageX > columnCenter) {
+          reorderGalleryRef.value.style.left = targetLeft + dropItemOffsetWidth + "px";
+          dropPosition.value = 1;
+        } else {
+          reorderGalleryRef.value.style.left = targetLeft - parseFloat(elementStyle.marginLeft) + "px";
+          dropPosition.value = -1;
+        }
+
+        reorderGalleryRef.value.style.display = "block";
       }
-
-      reorderGalleryRef.value.style.display = "block";
     }
   }
 }
 
 function onItemDragLeave(event: DragEvent) {
-  if (!props.disableDrag && !props.disabled && draggedItem.value) {
+  if (!props.disableDrag && !props.disabled && draggedItem.value && reorderGalleryRef.value) {
     event.preventDefault();
 
     reorderGalleryRef.value.style.display = "none";
@@ -241,10 +243,12 @@ function onItemDrop(event: DragEvent, item: IImage) {
       updateOrder();
     }
 
-    reorderGalleryRef.value.style.display = "none";
-    draggedElement.value.draggable = false;
-    draggedItem.value = null;
-    dropPosition.value = null;
+    if (reorderGalleryRef.value && draggedElement.value) {
+      reorderGalleryRef.value.style.display = "none";
+      draggedElement.value.draggable = false;
+      draggedItem.value = undefined;
+      dropPosition.value = undefined;
+    }
   }
 }
 
@@ -265,8 +269,8 @@ function findParentElement(element: HTMLElement) {
   } else {
     let parent = element.parentElement;
 
-    while (!parent.classList.contains("vc-gallery__item")) {
-      parent = parent.parentElement;
+    while (!(parent && parent.classList.contains("vc-gallery__item"))) {
+      parent = parent?.parentElement || null;
       if (!parent) break;
     }
     return parent;

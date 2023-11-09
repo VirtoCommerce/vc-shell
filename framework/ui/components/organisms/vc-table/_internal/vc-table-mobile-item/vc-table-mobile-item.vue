@@ -130,7 +130,6 @@ export interface Emits {
 export interface TableItem {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [x: string]: any;
-  id: string;
   actions?: IActionBuilderResult[];
 }
 

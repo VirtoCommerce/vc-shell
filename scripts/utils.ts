@@ -7,7 +7,9 @@ export async function updateBoilerplatePkgVersions() {
   const boilerplatePkgPath = "cli/create-vc-app/src/templates/base/package.json";
   const boilerplatePkg = fs.readJsonSync(boilerplatePkgPath);
 
-  ["@vc-shell/api-client-generator"].forEach((dep) => (boilerplatePkg.devDependencies[dep] = "^" + version));
+  ["@vc-shell/api-client-generator", "@vc-shell/ts-config"].forEach(
+    (dep) => (boilerplatePkg.devDependencies[dep] = "^" + version)
+  );
   ["@vc-shell/config-generator", "@vc-shell/framework"].forEach(
     (dep) => (boilerplatePkg.dependencies[dep] = "^" + version)
   );

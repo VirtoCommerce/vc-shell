@@ -1,3 +1,19 @@
+## [1.0.120](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.119...v1.0.120) (2023-11-09)
+
+
+### Bug Fixes
+
+* **create-vc-app:** fix copy dot named files ([d05ca55](https://github.com/VirtoCommerce/vc-shell/commit/d05ca5560e1a405c4250265875a9c2cf3302955f))
+* **scripts/utils:** added @vc-shell/ts-config in boilerplate version bumping ([ddce9f8](https://github.com/VirtoCommerce/vc-shell/commit/ddce9f8f8a5ed8d211a668f5decdb6688a630cdb))
+* **vc-app:** static assets extract ([71559b6](https://github.com/VirtoCommerce/vc-shell/commit/71559b6f9aa2a997809104f89a6297d3d62b9ac2))
+
+
+### Features
+
+* **release-config:** custom version ([40ffc20](https://github.com/VirtoCommerce/vc-shell/commit/40ffc202f5cf89aa32456bff713b3787d2e7e7cb))
+
+
+
 ## [1.0.119](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.118...v1.0.119) (2023-11-07)
 
 

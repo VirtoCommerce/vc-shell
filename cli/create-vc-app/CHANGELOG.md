@@ -1,3 +1,12 @@
+## [1.0.120](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.119...v1.0.120) (2023-11-09)
+
+
+### Bug Fixes
+
+* **create-vc-app:** fix copy dot named files ([d05ca55](https://github.com/VirtoCommerce/vc-shell/commit/d05ca5560e1a405c4250265875a9c2cf3302955f))
+
+
+
 ## [1.0.119](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.118...v1.0.119) (2023-11-07)
 
 

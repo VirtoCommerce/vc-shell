@@ -1,6 +1,6 @@
 {
   "name": "@vc-shell/release-config",
-  "version": "1.0.119",
+  "version": "1.0.120",
   "type": "module",
   "main": "dist/index.js",
   "types": "./dist/index.d.ts",
@@ -19,7 +19,7 @@
   "devDependencies": {
     "@types/prompts": "^2.4.7",
     "@types/semver": "^7.5.4",
-    "@vc-shell/ts-config": "^1.0.119",
+    "@vc-shell/ts-config": "^1.0.120",
     "typescript": "^5.2.2"
   },
   "publishConfig": {

@@ -7,6 +7,8 @@ export type KeysOfUnion<T> = T extends T ? keyof T : never;
 export type Composable<T> = T[keyof T];
 
 export type DynamicSchema = DynamicGridSchema | DynamicDetailsSchema;
+type PartialBy<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
+type RequiredBy<T, K extends keyof T> = Omit<T, K> & Required<Pick<T, K>>;
 
 export interface DynamicGridSchema {
   /**
@@ -82,7 +84,8 @@ export interface SettingsBase {
   pushNotificationType?: string | string[];
 }
 
-export interface ListContentSchema extends SchemaBase {
+export interface ListContentSchema {
+  id: string;
   component: "vc-table";
   filter?: FilterSchema;
   multiselect?: boolean;
@@ -107,7 +110,8 @@ export interface ListContentSchema extends SchemaBase {
   };
 }
 
-export interface FormContentSchema extends SchemaBase {
+export interface FormContentSchema {
+  id: string;
   component: "vc-form";
   children: ControlSchema[];
 }
@@ -116,19 +120,58 @@ export interface GridTemplateOverride {
   component?: string;
 }
 
-export interface VisibilityOptions {
-  method: string;
-}
+/**
+ * Base component schema interface.
+ */
 export interface SchemaBase {
+  /** Unique identifier for component.
+   * @type {string}
+   */
   id: string;
+  /** Control label.
+   * @type {string}
+   */
   label?: string;
-  property?: string;
+  /** Property name to populate the component with data.
+   * @type {string}
+   */
+  property: string;
+  /** Vee-validate and custom validation rules for the schema.
+   *
+   * Available rules - {@link IValidationRules}
+   * @type {IValidationRules}
+   */
   rules?: IValidationRules;
+  /** Placeholder text for component.
+   * @type {string}
+   */
   placeholder?: string;
+  /** Disabled state for component.
+   * @description Method should be defined in the blade `scope`.
+   * Method should return boolean value.
+   * @type {{ method: string }}
+   */
   disabled?: { method: string };
+  /** Tooltip text for component.
+   * @type {string}
+   */
   tooltip?: string;
-  visibility?: VisibilityOptions;
+  /** Visibility options for component.
+   * @description Method should be defined in the blade `scope`.
+   * Method should return boolean value.
+   * @type {{ method: string }}
+   */
+  visibility?: {
+    method: string;
+  };
+  /** Flag to indicate if the component supports multilanguage.
+   * @type {boolean}
+   */
   multilanguage?: boolean;
+  /** Additional method that is called when the modelValue of the component changes
+   * @description Method should be defined in the blade `scope`.
+   * @type {{ method: string }}
+   */
   update?: { method: string };
 }
 
@@ -155,7 +198,8 @@ export interface InputSchema extends SchemaBase {
   prependInner?: ControlSchema;
 }
 
-export interface VideoSchema extends SchemaBase {
+export interface VideoSchema
+  extends Pick<SchemaBase, "id" | "property" | "label" | "visibility" | "tooltip" | "update"> {
   component: "vc-video";
   size?: ComponentProps<typeof VcVideo>["size"];
   rounded?: boolean;
@@ -163,13 +207,13 @@ export interface VideoSchema extends SchemaBase {
   clickable?: boolean;
 }
 
-export interface FieldSchema extends SchemaBase {
+export interface FieldSchema extends Pick<SchemaBase, "id" | "property" | "label" | "visibility" | "tooltip"> {
   component: "vc-field";
   variant?: ComponentProps<typeof VcField>["type"];
   copyable?: boolean;
 }
 
-export interface ImageSchema extends SchemaBase {
+export interface ImageSchema extends Pick<SchemaBase, "id" | "property" | "visibility" | "update"> {
   component: "vc-image";
   aspect?: ComponentProps<typeof VcImage>["aspect"];
   size?: ComponentProps<typeof VcImage>["size"];
@@ -179,7 +223,7 @@ export interface ImageSchema extends SchemaBase {
   clickable?: boolean;
 }
 
-export interface StatusSchema extends SchemaBase {
+export interface StatusSchema extends Pick<SchemaBase, "id" | "visibility"> {
   component: "vc-status";
   outline?: boolean;
   extend?: boolean;
@@ -193,7 +237,7 @@ export interface StatusSchema extends SchemaBase {
   };
 }
 
-export interface InputCurrencySchema extends SchemaBase {
+export interface InputCurrencySchema extends Omit<SchemaBase, "multilanguage"> {
   component: "vc-input-currency";
   optionProperty: string;
   optionValue?: string;
@@ -205,37 +249,57 @@ export interface EditorSchema extends SchemaBase {
   component: "vc-editor";
 }
 
-export interface DynamicPropertiesSchema extends SchemaBase {
+export interface DynamicPropertiesSchema extends Omit<SchemaBase, "rules" | "placeholder"> {
   component: "vc-dynamic-properties";
   exclude?: string[];
   include?: string[];
 }
 
-export interface GallerySchema extends SchemaBase {
+export interface GallerySchema extends Omit<SchemaBase, "placeholder" | "multilanguage"> {
   component: "vc-gallery";
   uploadFolder: string;
 }
 
-export interface CardSchema extends SchemaBase {
+/**
+ * Interface for a card schema.
+ * @interface
+ */
+export interface CardSchema extends RequiredBy<Pick<SchemaBase, "id" | "label" | "visibility">, "label"> {
+  /**
+   * Component type for the card.
+   * @type {"vc-card"}
+   */
   component: "vc-card";
+  /**
+   * Array of control schemas for the fields in the card.
+   * @type {ControlSchema[]}
+   */
   fields: ControlSchema[];
+  /**
+   * Button schema for the action button in the card, along with the action method to use.
+   * @type {ButtonSchema & { method: string }}
+   */
   action?: ButtonSchema & { method: string };
+  /**
+   * Whether the card is collapsible or not.
+   * @type {boolean}
+   */
   collapsible?: boolean;
 }
 
-export interface WidgetsSchema extends SchemaBase {
+export interface WidgetsSchema extends Pick<SchemaBase, "id"> {
   component: "vc-widgets";
   children: string[];
 }
 
-export interface CheckboxSchema extends SchemaBase {
+export interface CheckboxSchema extends Omit<SchemaBase, "multilanguage"> {
   component: "vc-checkbox";
   content: string;
   trueValue?: boolean;
   falseValue?: boolean;
 }
 
-export interface FieldsetSchema extends SchemaBase {
+export interface FieldsetSchema extends PartialBy<Pick<SchemaBase, "id" | "property" | "visibility">, "property"> {
   component: "vc-fieldset";
   columns?: number;
   aspectRatio?: number[];
@@ -245,13 +309,45 @@ export interface FieldsetSchema extends SchemaBase {
   };
 }
 
-export interface ButtonSchema extends SchemaBase {
+/**
+ * Button schema interface.
+ */
+export interface ButtonSchema extends Pick<SchemaBase, "id" | "disabled" | "visibility"> {
+  /**
+   * Component type.
+   * @type {"vc-button"}
+   */
   component: "vc-button";
+  /**
+   * Button inner text.
+   * @type {string}
+   */
   content: string;
+  /**
+   * Small sized button.
+   * @type {boolean}
+   */
   small?: boolean;
+  /**
+   * Button icon.
+   * @type {string}
+   */
   icon?: string;
+  /**
+   * Size of the button icon.
+   * @type {ComponentProps<typeof VcIcon>["size"]}
+   */
   iconSize?: ComponentProps<typeof VcIcon>["size"];
+  /**
+   * Button as text without overlay.
+   * @type {boolean}
+   */
   text?: boolean;
+  /**
+   * Method to be called when the button is clicked.
+   * @description Method should be defined in the blade `scope`.
+   * @type {string}
+   */
   method?: string;
 }
 

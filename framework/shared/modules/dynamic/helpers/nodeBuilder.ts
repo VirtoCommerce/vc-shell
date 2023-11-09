@@ -19,11 +19,25 @@ function disabledHandler(
   return false;
 }
 
+type AllKeys<T> = T extends unknown ? keyof T : never;
+type FilterByKnownKey<T, K extends PropertyKey> = T extends unknown ? (K extends keyof T ? T : never) : never;
+
+function safeIn<K extends AllKeys<T>, T extends object>(key: K, obj: T): obj is FilterByKnownKey<T, K> {
+  return key in obj ?? undefined;
+}
+
 function nodeBuilder<
   Context extends Record<string, unknown>,
   BContext extends UnwrapNestedRefs<DetailsBladeContext>,
   FormData
->(args: {
+>({
+  controlSchema,
+  parentId,
+  internalContext,
+  bladeContext,
+  currentLocale,
+  formData,
+}: {
   controlSchema: ControlSchema;
   parentId: string | number;
   internalContext: MaybeRef<Context>;
@@ -31,37 +45,57 @@ function nodeBuilder<
   currentLocale: MaybeRef<string>;
   formData: FormData;
 }): VNode | false {
-  const { controlSchema, parentId, internalContext, bladeContext, currentLocale, formData } = args;
   if (!controlSchema) return false;
 
-  const baseProps = reactive<IControlBaseProps>({
-    key: `${parentId}`,
-    label: controlSchema.label ? unref(unwrapInterpolation(controlSchema.label, toValue(internalContext))) : undefined,
-    disabled:
-      ("disabled" in bladeContext.scope && bladeContext.scope.disabled) ||
-      disabledHandler("disabled" in controlSchema && controlSchema.disabled, bladeContext),
-    name: controlSchema.id,
-    rules: controlSchema.rules,
-    placeholder: controlSchema.placeholder,
-    required: controlSchema.rules?.required,
-    modelValue: getModel(controlSchema.property, toValue(internalContext)),
-    "onUpdate:modelValue": (e: unknown) => {
+  const name = controlSchema.id;
+  const rules = (safeIn("rules", controlSchema) && controlSchema.rules) || undefined;
+  const placeholder = (safeIn("placeholder", controlSchema) && controlSchema.placeholder) || undefined;
+  const required = safeIn("rules", controlSchema) && controlSchema.rules?.required;
+  const modelValue =
+    (safeIn("property", controlSchema) && getModel(controlSchema.property, toValue(internalContext))) || undefined;
+  const tooltip = (safeIn("tooltip", controlSchema) && controlSchema.tooltip) || undefined;
+  const multilanguage = safeIn("multilanguage", controlSchema) && controlSchema.multilanguage;
+
+  const label = safeIn("label", controlSchema)
+    ? unref(unwrapInterpolation(controlSchema.label, toValue(internalContext)))
+    : undefined;
+
+  const disabled =
+    (safeIn("disabled", bladeContext.scope) && bladeContext.scope.disabled) ||
+    disabledHandler("disabled" in controlSchema && controlSchema.disabled, bladeContext);
+
+  const onUpdateModelValue = (e: unknown) => {
+    if (safeIn("property", controlSchema)) {
       setModel({ property: controlSchema.property, value: e, context: toValue(internalContext) });
 
       if (_.has(controlSchema, "update.method")) {
-        controlSchema.update.method in bladeContext.scope &&
-        typeof bladeContext.scope[controlSchema.update.method] === "function"
-          ? bladeContext.scope[controlSchema.update.method](e, controlSchema.property, toValue(internalContext))
-          : undefined;
+        const updateMethod = safeIn("update", controlSchema) && controlSchema.update.method;
+        if (safeIn(updateMethod, bladeContext.scope) && typeof bladeContext.scope[updateMethod] === "function") {
+          bladeContext.scope[updateMethod](e, controlSchema.property, toValue(internalContext));
+        }
       }
-    },
-    tooltip: controlSchema.tooltip,
-    multilanguage: controlSchema.multilanguage,
+    }
+  };
+
+  const baseProps: IControlBaseProps = reactive({
+    key: `${parentId}`,
+    label,
+    disabled,
+    name,
+    rules,
+    placeholder,
+    required,
+    modelValue,
+    "onUpdate:modelValue": onUpdateModelValue,
+    tooltip,
+    multilanguage,
   });
 
-  const baseOptions = reactive<IControlBaseOptions>({
+  const baseOptions: IControlBaseOptions = reactive({
     visibility: computed(() =>
-      controlSchema.visibility?.method ? bladeContext.scope[controlSchema.visibility?.method] : true
+      safeIn("visibility", controlSchema) && controlSchema.visibility?.method
+        ? bladeContext.scope[controlSchema.visibility?.method]
+        : true
     ),
   });
 
@@ -69,16 +103,18 @@ function nodeBuilder<
 
   const fieldsHandler = computed(() => {
     if (!("fields" in controlSchema)) return null;
-    const fieldsModel = getModel(controlSchema.property, toValue(internalContext));
+
+    const fieldsModel = safeIn("property", controlSchema) && getModel(controlSchema.property, toValue(internalContext));
 
     const model = toValue(fieldsModel);
+
     if (model && Array.isArray(model)) {
-      return model.map((model: { [x: string]: unknown; id: string }) =>
+      return model.map((modelItem: { [x: string]: unknown; id: string }) =>
         controlSchema.fields.map((fieldItem) =>
           nodeBuilder({
             controlSchema: fieldItem,
-            parentId: `fieldset-${fieldItem.id}-${model.id}`,
-            internalContext: model,
+            parentId: `fieldset-${fieldItem.id}-${modelItem.id}`,
+            internalContext: modelItem,
             bladeContext,
             currentLocale,
             formData,
@@ -86,6 +122,7 @@ function nodeBuilder<
         )
       );
     }
+
     return [
       controlSchema.fields.map((field) =>
         nodeBuilder({

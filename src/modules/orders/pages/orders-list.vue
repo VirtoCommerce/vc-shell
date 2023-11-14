@@ -164,7 +164,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, reactive, ref, watch, markRaw } from "vue";
+import { computed, onMounted, reactive, ref, watch, markRaw, Ref } from "vue";
 import { OrdersEdit } from "./";
 import {
   IBladeToolbar,
@@ -222,7 +222,7 @@ const { openBlade } = useBladeNavigation();
 const { orders, loadOrders, loading, pages, currentPage, totalCount, changeOrderStatus, PaymentStatus } = useOrders();
 const { debounce } = useFunctions();
 const { t } = useI18n({ useScope: "global" });
-const filter = ref<{ status: string }>({ status: undefined });
+const filter: Ref<{ status: string | undefined }> = ref({ status: undefined });
 const appliedFilter = ref({});
 const searchValue = ref();
 const selectedItemId = ref();

@@ -10,7 +10,7 @@ import {
   useDetailsFactory,
   DetailsBaseBladeScope,
 } from "@vc-shell/framework";
-import { ref, computed, reactive, onMounted, ComputedRef } from "vue";
+import { ref, computed, reactive, onMounted, ComputedRef, Ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { useMultilanguage } from "../../../common";
 
@@ -31,6 +31,7 @@ const { getApiClient } = useApiClient(VcmpSellerCatalogClient);
 export const useVideoDetails = (args: {
   props: InstanceType<typeof DynamicBladeForm>["$props"];
   emit: InstanceType<typeof DynamicBladeForm>["$emit"];
+  mounted: Ref<boolean>;
 }): UseDetails<IVideo, VideoDetailsScope> => {
   const detailsFactory = useDetailsFactory<IVideo & { videoUrl?: string }>({
     load: async ({ id }) => await (await getApiClient()).getVideoById(id),
@@ -130,13 +131,16 @@ export const useVideoDetails = (args: {
     },
   });
 
-  onMounted(async () => {
-    if (!args.props.param) {
-      item.value = reactive(new Video());
+  watch(
+    () => args?.mounted.value,
+    async () => {
+      if (!args.props.param) {
+        item.value = reactive(new Video());
+      }
+      validationState.value.modified = false;
+      validationState.value.dirty = false;
     }
-    validationState.value.modified = false;
-    validationState.value.dirty = false;
-  });
+  );
 
   return {
     load: loadWrapper,

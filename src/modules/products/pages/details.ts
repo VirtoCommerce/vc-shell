@@ -141,7 +141,6 @@ export const details: DynamicDetailsSchema = {
             {
               id: "productDynamicProperties",
               component: "vc-dynamic-properties",
-              label: "Dynamic",
               property: "properties",
               exclude: ["Category", "Variation"],
             },
@@ -160,6 +159,7 @@ export const details: DynamicDetailsSchema = {
               component: "vc-gallery",
               property: "images",
               uploadFolder: "catalog",
+              multiple: true,
             },
           ],
         },

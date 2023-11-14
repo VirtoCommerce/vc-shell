@@ -3,6 +3,7 @@
     :color="notificationStyle.color"
     :title="notification.title"
     :icon="notificationStyle.icon"
+    :notification="notification"
   >
     <VcHint
       v-if="notification.description"

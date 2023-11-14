@@ -27,7 +27,7 @@ import {
   useDetailsFactory,
   DetailsBaseBladeScope,
 } from "@vc-shell/framework";
-import { ref, computed, reactive, onMounted, ComputedRef, Ref } from "vue";
+import { ref, computed, reactive, onMounted, ComputedRef, Ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { useDynamicProperties, useMultilanguage, useAssets } from "../../../common";
 import * as _ from "lodash-es";
@@ -60,6 +60,7 @@ const { getApiClient } = useApiClient(VcmpSellerCatalogClient);
 export const useProductDetails = (args: {
   props: InstanceType<typeof DynamicBladeForm>["$props"];
   emit: InstanceType<typeof DynamicBladeForm>["$emit"];
+  mounted: Ref<boolean>;
 }): UseDetails<ISellerProduct & IProductDetails, ProductDetailsScope> => {
   const detailsFactory = useDetailsFactory<ISellerProduct & IProductDetails>({
     load: async ({ id }) => (await getApiClient()).getProductById(id),
@@ -316,36 +317,39 @@ export const useProductDetails = (args: {
     },
   });
 
-  onMounted(async () => {
-    await getLanguages();
-    await loadSettings();
+  watch(
+    () => args?.mounted.value,
+    async () => {
+      await getLanguages();
+      await loadSettings();
 
-    productTypeOptions.value = productTypes.value?.map((x) => ({
-      label: t(`PRODUCTS.PAGES.DETAILS.FIELDS.PRODUCT_TYPE.${x}`, x),
-      value: x,
-    }));
+      productTypeOptions.value = productTypes.value?.map((x) => ({
+        label: t(`PRODUCTS.PAGES.DETAILS.FIELDS.PRODUCT_TYPE.${x}`, x),
+        value: x,
+      }));
 
-    if (!args.props.param) {
-      item.value = reactive(new SellerProduct());
+      if (!args.props.param) {
+        item.value = reactive(new SellerProduct());
 
-      item.value = Object.assign(item.value, { descriptions: [] });
+        item.value = Object.assign(item.value, { descriptions: [] });
 
-      item.value.descriptions = item.value.descriptions.concat(
-        languages.value.map(
-          (x) =>
-            new EditorialReview({
-              languageCode: x,
-              content: "",
-              reviewType: "QuickReview",
-            })
-        )
-      );
+        item.value.descriptions = item.value.descriptions.concat(
+          languages.value.map(
+            (x) =>
+              new EditorialReview({
+                languageCode: x,
+                content: "",
+                reviewType: "QuickReview",
+              })
+          )
+        );
 
-      item.value.productData = new ProductDetails({ productType: defaultProductType.value });
+        item.value.productData = new ProductDetails({ productType: defaultProductType.value });
 
-      validationState.value.resetModified(getMappedDetails(item), true);
+        validationState.value.resetModified(getMappedDetails(item), true);
+      }
     }
-  });
+  );
 
   async function markProductDirty() {
     item.value.hasStagedChanges = true;

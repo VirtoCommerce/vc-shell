@@ -72,7 +72,7 @@ import { computed, onMounted, ref, unref } from "vue";
 import { IBladeToolbar, IParentCallArgs, usePopup } from "@vc-shell/framework";
 import useFulfillmentCenters from "../../composables/useFulfillmentCenters";
 import { Field, useIsFormValid, useIsFormDirty, useForm } from "vee-validate";
-import useSellerDetails from "../../composables/useSellerDetails";
+import { useSellerDetails } from "./../../../seller-details/composables";
 import { useI18n } from "vue-i18n";
 
 export interface Props {
@@ -108,7 +108,7 @@ const {
   handleFulfillmentCenterItem,
 } = useFulfillmentCenters();
 
-const { getCurrentSeller, sellerDetails } = useSellerDetails();
+const { item } = useSellerDetails();
 
 const title = computed(() =>
   props.param ? fulfillmentCenterDetails.value.name : t("SETTINGS.FULFILLMENT_CENTERS.PAGES.DETAILS.TITLE")
@@ -169,8 +169,7 @@ onMounted(async () => {
   if (props.param) {
     await getFulfillmentCenter(props.param);
   } else {
-    await getCurrentSeller();
-    fulfillmentCenterDetails.value.organizationId = sellerDetails.value?.id;
+    fulfillmentCenterDetails.value.organizationId = item.value?.id;
   }
   handleFulfillmentCenterItem(fulfillmentCenterDetails.value);
 });

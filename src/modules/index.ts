@@ -6,6 +6,7 @@ import * as Products from "./products";
 import * as MarketplaceProducts from "./mp-products";
 import * as Import from "./import";
 import * as Videos from "./videos";
+import * as SellerDetails from "./seller-details";
 
 export default {
   Offers,
@@ -16,6 +17,7 @@ export default {
   MarketplaceProducts,
   Import,
   Videos,
+  SellerDetails,
 };
 
 export * from "./types";

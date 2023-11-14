@@ -13,7 +13,7 @@ import {
   ISearchOffersQuery,
   BulkOffersDeleteCommand,
 } from "@vcmp-vendor-portal/api/marketplacevendor";
-import { computed, onMounted, ref } from "vue";
+import { Ref, computed, onMounted, ref, watch } from "vue";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface OffersListScope extends ListBaseBladeScope {}
@@ -24,6 +24,7 @@ export const useOffersList = (args: {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   props: InstanceType<typeof DynamicBladeList>["$props"] & { options: { sellerProduct: any } };
   emit: InstanceType<typeof DynamicBladeList>["$emit"];
+  mounted: Ref<boolean>;
 }): UseList<Offer[], ISearchOffersQuery, OffersListScope> => {
   const factory = useListFactory<Offer[], ISearchOffersQuery>({
     load: async (query) => (await getApiClient()).searchOffers(new SearchOffersQuery(query)),
@@ -58,17 +59,20 @@ export const useOffersList = (args: {
     openDetailsBlade,
   });
 
-  onMounted(() => {
-    if (
-      args &&
-      args.props &&
-      "options" in args.props &&
-      args.props.options &&
-      "sellerProduct" in args.props.options &&
-      args.props.options?.sellerProduct
-    )
-      query.value.sellerProductId = args.props.options?.sellerProduct["id"];
-  });
+  watch(
+    () => args?.mounted.value,
+    async () => {
+      if (
+        args &&
+        args.props &&
+        "options" in args.props &&
+        args.props.options &&
+        "sellerProduct" in args.props.options &&
+        args.props.options?.sellerProduct
+      )
+        query.value.sellerProductId = args.props.options?.sellerProduct["id"];
+    }
+  );
 
   return {
     load,

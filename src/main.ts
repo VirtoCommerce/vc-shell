@@ -33,11 +33,11 @@ async function startApp() {
 
   app.provide("platformUrl", import.meta.env.APP_PLATFORM_URL);
 
-  app.config.errorHandler = (err) => {
-    notification.error(err.toString(), {
-      timeout: 5000,
-    });
-  };
+  // app.config.errorHandler = (err) => {
+  //   notification.error(err.toString(), {
+  //     timeout: 5000,
+  //   });
+  // };
 
   await router.isReady();
 

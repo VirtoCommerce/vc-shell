@@ -111,7 +111,6 @@ export const details: DynamicDetailsSchema = {
             {
               id: "dynamicProps",
               component: "vc-dynamic-properties",
-              label: "Properties",
               property: "properties",
               include: ["Variation"],
             },
@@ -187,7 +186,6 @@ export const details: DynamicDetailsSchema = {
             {
               id: "validityDatesFieldset",
               component: "vc-fieldset",
-              label: "Validity dates",
               columns: 2,
               fields: [
                 {
@@ -221,6 +219,7 @@ export const details: DynamicDetailsSchema = {
               component: "vc-gallery",
               property: "images",
               uploadFolder: "offers",
+              multiple: true,
             },
           ],
         },

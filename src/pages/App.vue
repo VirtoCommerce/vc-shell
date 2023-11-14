@@ -67,7 +67,7 @@ import {
   ChangePassword,
   LanguageSelector,
   UserDropdownButton,
-  BladePageComponent,
+  BladeInstanceConstructor,
   NotificationTemplateConstructor,
 } from "@vc-shell/framework";
 import { computed, inject, onMounted, reactive, ref, Ref, watch, markRaw, defineComponent, provide } from "vue";
@@ -101,14 +101,14 @@ const {
 } = useBladeNavigation();
 const { navigationMenuComposer, toolbarComposer } = useMenuComposer();
 const { appsList, switchApp, getApps } = useAppSwitcher();
-const { sellerDetails, getCurrentSeller } = modules.default.Settings.UseSellerDetails();
+const { item: sellerDetails, load: getCurrentSeller } = modules.default.SellerDetails.composables.useSellerDetails();
 const { moduleNotifications, notifications, markAsRead, loadFromHistory, markAllAsRead } =
   useNotifications("OrderCreatedEventHandler");
 const route = useRoute();
 const router = useRouter();
 const isAuthorized = ref(false);
 const isReady = ref(false);
-const pages = inject<BladePageComponent[]>("pages");
+const pages = inject<BladeInstanceConstructor[]>("pages");
 const internalRoutes = inject("bladeRoutes");
 provide("internalRoutes", internalRoutes);
 const notificationTemplates = inject<NotificationTemplateConstructor[]>("notificationTemplates");
@@ -319,7 +319,7 @@ const menuItems = reactive(
         },
         {
           title: computed(() => t("SETTINGS.MENU.SELLER_DETAILS")),
-          component: modules.default.Settings.SellerDetails,
+          component: resolveBladeByName("SellerDetails"),
           isVisible: computed(() => hasAccess(UserPermissions.SellerDetailsEdit)),
         },
       ],
@@ -372,13 +372,13 @@ async function customizationHandler() {
   }
   await getUiCustomizationSettings();
 
-  if (sellerDetails.value.logo) {
+  if (sellerDetails.value?.logo) {
     applySettings({ logo: sellerDetails.value.logo });
   } else {
     applySettings({ logo: logoImage });
   }
 
-  if (sellerDetails.value.name) {
+  if (sellerDetails.value?.name) {
     applySettings({ title: sellerDetails.value.name });
   } else {
     applySettings({ title: "Vendor Portal" });

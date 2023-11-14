@@ -15,7 +15,7 @@ import {
   SearchProductsQuery,
   BulkProductsDeleteCommand,
 } from "@vcmp-vendor-portal/api/marketplacevendor";
-import { computed, ref } from "vue";
+import { Ref, computed, ref } from "vue";
 
 const { getApiClient } = useApiClient(VcmpSellerCatalogClient);
 
@@ -30,6 +30,7 @@ export interface ProductListScope extends ListBaseBladeScope {
 export const useProductsList = (args: {
   props: InstanceType<typeof DynamicBladeList>["$props"];
   emit: InstanceType<typeof DynamicBladeList>["$emit"];
+  mounted: Ref<boolean>;
 }): UseList<SellerProduct[], ISearchProductsQuery, ProductListScope> => {
   const listFactory = useListFactory<SellerProduct[], ISearchProductsQuery>({
     load: async (query) => (await getApiClient()).searchProducts(new SearchProductsQuery(query)),

@@ -1,10 +1,11 @@
 import { DynamicBladeList, useBladeNavigation } from "@vc-shell/framework";
 import { useProductsList } from "../../../products/composables/useProductsList";
-import { ref } from "vue";
+import { Ref, ref } from "vue";
 
 export const useProductsListExtended = (args: {
   props: InstanceType<typeof DynamicBladeList>["$props"];
   emit: InstanceType<typeof DynamicBladeList>["$emit"];
+  mounted: Ref<boolean>;
 }) => {
   const { items, load, loading, query, pagination, remove, scope } = useProductsList(args);
   const { openBlade, resolveBladeByName } = useBladeNavigation();

@@ -3,6 +3,7 @@
     :color="notificationStyle.color.value"
     :title="notificationTitle"
     :icon="notificationStyle.icon"
+    :notification="notification"
     @click="onClick"
   >
     <VcHint

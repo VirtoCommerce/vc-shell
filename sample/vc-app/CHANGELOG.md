@@ -1,3 +1,12 @@
+## [1.0.122](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.121...v1.0.122) (2023-11-14)
+
+
+### Bug Fixes
+
+* **vc-app:** changed hook in useOffersList ([7b7cd54](https://github.com/VirtoCommerce/vc-shell/commit/7b7cd5422514a685999a67050d27ff4c32acfaf3))
+
+
+
 ## [1.0.121](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.120...v1.0.121) (2023-11-14)
 
 

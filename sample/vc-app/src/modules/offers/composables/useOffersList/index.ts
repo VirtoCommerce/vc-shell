@@ -13,7 +13,7 @@ import {
   ISearchOffersQuery,
   BulkOffersDeleteCommand,
 } from "@vc-app/api";
-import { Ref, computed, ref, watch } from "vue";
+import { Ref, computed, onBeforeMount, ref, watch } from "vue";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface OffersListScope extends ListBaseBladeScope {}
@@ -58,20 +58,17 @@ export const useOffersList = (args: {
     openDetailsBlade,
   });
 
-  watch(
-    () => args?.mounted.value,
-    async () => {
-      if (
-        args &&
-        args.props &&
-        "options" in args.props &&
-        args.props.options &&
-        "sellerProduct" in args.props.options &&
-        args.props.options?.sellerProduct
-      )
-        query.value.sellerProductId = args.props.options?.sellerProduct["id"];
-    }
-  );
+  onBeforeMount(async () => {
+    if (
+      args &&
+      args.props &&
+      "options" in args.props &&
+      args.props.options &&
+      "sellerProduct" in args.props.options &&
+      args.props.options?.sellerProduct
+    )
+      query.value.sellerProductId = args.props.options?.sellerProduct["id"];
+  });
 
   return {
     load,

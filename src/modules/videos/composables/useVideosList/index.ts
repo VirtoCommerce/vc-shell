@@ -14,7 +14,7 @@ import {
   SearchVideosQuery,
 } from "@vcmp-vendor-portal/api/marketplacevendor";
 import { Video } from "@vcmp-vendor-portal/api/catalog";
-import { computed, ref, Ref, onMounted, watch } from "vue";
+import { computed, ref, Ref, onMounted, watch, onBeforeMount } from "vue";
 
 const { getApiClient } = useApiClient(VcmpSellerCatalogClient);
 
@@ -87,21 +87,19 @@ export const useVideosList = (args: {
     },
   });
 
-  watch(
-    () => args?.mounted.value,
-    async () => {
-      if (
-        args &&
-        args.props &&
-        "options" in args.props &&
-        args.props.options &&
-        typeof args.props.options === "object" &&
-        "catalogProduct" in args.props.options &&
-        args.props.options?.catalogProduct
-      )
-        query.value.ownerIds = [args.props.options?.catalogProduct["stagedProductDataId"]];
+  onBeforeMount(async () => {
+    if (
+      args &&
+      args.props &&
+      "options" in args.props &&
+      args.props.options &&
+      typeof args.props.options === "object" &&
+      "catalogProduct" in args.props.options &&
+      args.props.options?.catalogProduct
+    ) {
+      query.value.ownerIds = [args.props.options?.catalogProduct["stagedProductDataId"]];
     }
-  );
+  });
 
   return {
     loading: useLoading(loading, isExporting),

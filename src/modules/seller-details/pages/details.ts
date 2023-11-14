@@ -51,7 +51,7 @@ export const details: DynamicDetailsSchema = {
                   property: "name",
                 },
                 {
-                  id: "comissionFee",
+                  id: "commissionFee",
                   component: "vc-field",
                   label: "Commission fee",
                   variant: "normal",

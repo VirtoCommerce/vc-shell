@@ -1,3 +1,12 @@
+## [1.0.132](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.131...v1.0.132) (2023-11-14)
+
+
+### Bug Fixes
+
+* changed hooks in useOffersList/useVideosList ([b269cdc](https://github.com/VirtoCommerce/vendor-portal/commit/b269cdc134d9d2015f4af279f3155a845d8187c2))
+
+
+
 ## [1.0.131](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.130...v1.0.131) (2023-11-14)
 
 

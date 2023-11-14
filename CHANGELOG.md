@@ -1,3 +1,12 @@
+## [1.0.131](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.130...v1.0.131) (2023-11-14)
+
+
+### Features
+
+* dynamic seller details ([4aedc85](https://github.com/VirtoCommerce/vendor-portal/commit/4aedc85e457542a03e366d35ca59ce10c684b5dc))
+
+
+
 ## [1.0.130](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.129...v1.0.130) (2023-11-07)
 
 

@@ -1,3 +1,12 @@
+## [1.0.121](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.120...v1.0.121) (2023-11-14)
+
+
+### Features
+
+* strict type check in framework ([4e46e67](https://github.com/VirtoCommerce/vc-shell/commit/4e46e679154da42b4f0194c193708ee581be2f1b))
+
+
+
 ## [1.0.120](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.119...v1.0.120) (2023-11-09)
 
 

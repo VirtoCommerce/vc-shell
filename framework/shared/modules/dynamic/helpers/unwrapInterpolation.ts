@@ -1,6 +1,7 @@
 import { getModel } from "./getters";
 
-function unwrapInterpolation<T>(property: string, context: T) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function unwrapInterpolation<T extends Record<string, any>>(property: string, context: T) {
   const pattern = /{(.*)}/g;
 
   const match = property.match(pattern);

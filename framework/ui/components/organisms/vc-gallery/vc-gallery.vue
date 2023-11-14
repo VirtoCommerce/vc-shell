@@ -33,7 +33,7 @@
             @drop="onItemDrop($event, image)"
           ></VcGalleryItem>
           <VcFileUpload
-            v-if="!disabled && !hideAfterUpload"
+            v-if="!disabled && !defaultImages.length"
             class="tw-m-2"
             :icon="uploadIcon"
             :variant="variant"
@@ -84,8 +84,6 @@ export interface Props {
     edit: boolean;
     remove: boolean;
   };
-  disableDrag?: boolean;
-  hideAfterUpload?: boolean;
   rules?: string | Record<string, unknown>;
   name?: string;
   loading?: boolean;
@@ -123,6 +121,7 @@ const reorderGalleryRef = ref<HTMLElement>();
 const dropPosition = ref<number>();
 
 const currentIndex = computed(() => previewImageIndex.value);
+const disableDrag = computed(() => defaultImages.value.length <= 1);
 
 const { open } = usePopup(
   computed(() => ({
@@ -165,14 +164,14 @@ const updateOrder = () => {
 };
 
 function onItemMouseDown(event: MouseEvent & { currentTarget?: { draggable: boolean } }) {
-  if (!props.disableDrag && !props.disabled) {
+  if (!disableDrag.value && !props.disabled) {
     event.currentTarget.draggable = true;
     return;
   }
 }
 
 function onItemDragStart(event: DragEvent, item: IImage) {
-  if (!props.disableDrag && !props.disabled) {
+  if (!disableDrag.value && !props.disabled) {
     draggedItem.value = item;
     draggedElement.value = event.target as HTMLElement;
     event.dataTransfer?.setData("text", "gallery_reorder");
@@ -182,7 +181,7 @@ function onItemDragStart(event: DragEvent, item: IImage) {
 function onItemDragOver(event: DragEvent) {
   const dropItem = findParentElement(event.target as HTMLElement);
 
-  if (!props.disableDrag && !props.disabled && draggedItem.value && dropItem) {
+  if (!disableDrag.value && !props.disabled && draggedItem.value && dropItem) {
     event.preventDefault();
 
     const containerOffset = galleryRef.value?.getBoundingClientRect();
@@ -213,7 +212,7 @@ function onItemDragOver(event: DragEvent) {
 }
 
 function onItemDragLeave(event: DragEvent) {
-  if (!props.disableDrag && !props.disabled && draggedItem.value && reorderGalleryRef.value) {
+  if (!disableDrag.value && !props.disabled && draggedItem.value && reorderGalleryRef.value) {
     event.preventDefault();
 
     reorderGalleryRef.value.style.display = "none";

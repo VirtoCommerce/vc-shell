@@ -55,10 +55,9 @@
 
 <script lang="ts" setup>
 import { useCurrencyInput, CurrencyDisplay } from "vue-currency-input";
-import { MaybeRef, unref, watch } from "vue";
+import { unref, watch } from "vue";
 import { VcSelect, VcInput } from "./../../";
-
-export type OptionProp = ((option: string | Record<string, unknown>) => string) | string | undefined;
+import { OptionProp } from "../vc-select/vc-select.vue";
 
 export interface Props {
   /**
@@ -147,14 +146,14 @@ export interface Props {
    * @param option The current option being processed
    * @returns Value of the current option
    */
-  optionValue?: OptionProp;
+  optionValue?: OptionProp<unknown>;
   /**
    * Property of option which holds the 'label'
    * Default value: title
    * @param option The current option being processed
    * @returns Label of the current option
    */
-  optionLabel?: OptionProp;
+  optionLabel?: OptionProp<unknown>;
 }
 
 export interface Emits {
@@ -183,12 +182,13 @@ const { inputRef, setOptions, numberValue } = useCurrencyInput(
 watch(
   () => props.option,
   (newVal) => {
-    setOptions({
-      locale: navigator.language,
-      currency: newVal,
-      currencyDisplay: CurrencyDisplay.hidden,
-      hideGroupingSeparatorOnFocus: false,
-    });
+    if (newVal)
+      setOptions({
+        locale: navigator.language,
+        currency: newVal,
+        currencyDisplay: CurrencyDisplay.hidden,
+        hideGroupingSeparatorOnFocus: false,
+      });
   }
 );
 

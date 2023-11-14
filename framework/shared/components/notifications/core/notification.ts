@@ -19,7 +19,7 @@ function checkPending(limit?: number) {
 }
 
 function resolvePending(options: InternalNotificationOptions) {
-  if (checkPending(options.limit)) {
+  if (checkPending(options.limit) && options.notificationId) {
     pending.items.push({
       notificationId: options.notificationId,
       notificationProps: options,
@@ -89,7 +89,7 @@ notification.update = (notificationId: string | number, options: NotificationOpt
     const content = updatedOptions.content || item.content;
     delete updatedOptions.content;
 
-    showNotification(content, updatedOptions);
+    if (content) showNotification(content, updatedOptions);
   }
 };
 

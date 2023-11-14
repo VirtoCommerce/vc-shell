@@ -1,27 +1,24 @@
+import { TextareaField } from "./../factories";
+import { TextareaSchema } from "./../../types/index";
 import { ExtractPropTypes, h, Component } from "vue";
-import { Checkbox } from "../factories";
 import componentProps from "./props";
 import ValidationField from "./ValidationField";
-import { CheckboxSchema } from "../../types";
 
 export default {
-  name: "Checkbox",
+  name: "TextareaField",
   props: componentProps,
-  setup(props: ExtractPropTypes<typeof componentProps> & { element: CheckboxSchema }) {
+  setup(props: ExtractPropTypes<typeof componentProps> & { element: TextareaSchema }) {
     return () => {
-      const field = Checkbox({
+      const field = TextareaField({
         props: {
           ...props.baseProps,
-          trueValue: props.element.trueValue,
-          falseValue: props.element.falseValue,
+          currentLanguage: props.currentLocale,
+          clearable: props.element.clearable || false,
         },
         options: props.baseOptions,
-        slots: {
-          default: () => props.element.content,
-        },
       });
 
-      const render = h(field.component as Component, field.props, field.slots);
+      const render = h(field.component as Component, field.props);
 
       if (field.props.rules) {
         return props.baseOptions.visibility
@@ -29,9 +26,9 @@ export default {
               ValidationField,
               {
                 props: field.props,
-                slots: field.slots,
                 index: props.elIndex,
                 rows: props.rows,
+                key: `${String(field.props.key)}_validation`,
               },
               () => render
             )

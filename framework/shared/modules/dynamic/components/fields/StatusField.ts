@@ -1,4 +1,4 @@
-import { ExtractPropTypes, computed, h, unref } from "vue";
+import { Component, ExtractPropTypes, computed, h, unref } from "vue";
 import componentProps from "./props";
 import { StatusSchema } from "../../types";
 import { StatusField } from "../factories";
@@ -13,7 +13,7 @@ export default {
         if (props.element.content && typeof props.element.content === "string") {
           return props.element.content;
         } else if (props.element.content?.method) {
-          const method = unref(props.bladeContext.scope)[props.element.content?.method];
+          const method = unref(props.bladeContext.scope)?.[props.element.content?.method];
           if (method === "function") {
             return method();
           } else {
@@ -48,7 +48,7 @@ export default {
       });
 
       return props.baseOptions.visibility
-        ? h(field.component, { ...field.props, class: "tw-w-full tw-box-border" }, field.slots)
+        ? h(field.component as Component, { ...field.props, class: "tw-w-full tw-box-border" }, field.slots)
         : null;
     };
   },

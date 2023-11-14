@@ -13,9 +13,9 @@
       class="tw-grow tw-basis-0"
       :loading="loading"
       :expanded="expanded"
-      v-bind="bladeOptions?.table"
-      :state-key="tableData?.id"
-      :items="itemsProxy"
+      :columns="(tableData?.columns as ITableColumns[])"
+      :state-key="(tableData?.id as string)"
+      :items="(itemsProxy as Record<string, any>[])"
       :multiselect="tableData?.multiselect"
       :header="tableData?.header"
       :sort="sort"
@@ -23,7 +23,7 @@
       :current-page="pagination?.currentPage"
       :search-value="searchValue"
       :selected-item-id="selectedItemId"
-      :total-label="$t(`${settings.localizationPrefix.trim().toUpperCase()}.PAGES.LIST.TABLE.TOTALS`)"
+      :total-label="$t(`${settings?.localizationPrefix.trim().toUpperCase()}.PAGES.LIST.TABLE.TOTALS`)"
       :total-count="pagination?.totalCount"
       :active-filter-count="activeFilterCount"
       :reorderable-rows="tableData?.reorderableRows"
@@ -54,12 +54,12 @@
         <template v-else>
           <div class="tw-w-full tw-h-full tw-box-border tw-flex tw-flex-col tw-items-center tw-justify-center">
             <div class="tw-m-4 tw-text-xl tw-font-medium">
-              {{ $t(`${settings.localizationPrefix.trim().toUpperCase()}.PAGES.LIST.NOT_FOUND.EMPTY`) }}
+              {{ $t(`${settings?.localizationPrefix.trim().toUpperCase()}.PAGES.LIST.NOT_FOUND.EMPTY`) }}
             </div>
             <VcButton
               v-if="isFilterVisible"
               @click="resetSearch"
-              >{{ $t(`${settings.localizationPrefix.trim().toUpperCase()}.PAGES.LIST.NOT_FOUND.RESET`) }}</VcButton
+              >{{ $t(`${settings?.localizationPrefix.trim().toUpperCase()}.PAGES.LIST.NOT_FOUND.RESET`) }}</VcButton
             >
           </div>
         </template>
@@ -76,7 +76,7 @@
         <template v-else>
           <div class="tw-w-full tw-h-full tw-box-border tw-flex tw-flex-col tw-items-center tw-justify-center">
             <div class="tw-m-4 tw-text-xl tw-font-medium">
-              {{ $t(`${settings.localizationPrefix.trim().toUpperCase()}.PAGES.LIST.EMPTY.NO_ITEMS`) }}
+              {{ $t(`${settings?.localizationPrefix.trim().toUpperCase()}.PAGES.LIST.EMPTY.NO_ITEMS`) }}
             </div>
           </div>
         </template>
@@ -126,9 +126,10 @@ import {
   UnwrapRef,
   ShallowRef,
   ConcreteComponent,
+  ComputedRef,
 } from "vue";
 import { useI18n } from "vue-i18n";
-import { DynamicGridSchema, ListContentSchema } from "../types";
+import { DynamicGridSchema, ListContentSchema, SettingsSchema } from "../types";
 import { useFilterBuilder } from "../composables";
 import { useFunctions, useNotifications } from "../../../../core/composables";
 import { ITableColumns } from "../../../../core/types";
@@ -137,6 +138,7 @@ import { notification, usePopup } from "../../../components";
 import { ListBaseBladeScope, ListBladeContext, UseList } from "../factories/types";
 import { IParentCallArgs } from "../../../index";
 import * as _ from "lodash-es";
+import { useMounted } from "@vueuse/core";
 
 export interface Props {
   expanded?: boolean;
@@ -178,21 +180,23 @@ const searchValue = ref();
 const selectedItemId = ref();
 const sort = ref("createdDate:DESC");
 const selectedIds = ref<string[]>([]);
-const isDesktop = inject<Ref<boolean>>("isDesktop");
+const isDesktop = inject("isDesktop") as Ref<boolean>;
 const itemsProxy = ref<Record<string, any>[]>();
 const modified = ref(false);
 
-const { moduleNotifications, markAsRead } = useNotifications(settings.value.pushNotificationType);
+const { moduleNotifications, markAsRead } = useNotifications(settings.value?.pushNotificationType);
 
 watch(
   moduleNotifications,
   (newVal) => {
     newVal.forEach((message) => {
-      notification.success(message.title, {
-        onClose() {
-          markAsRead(message);
-        },
-      });
+      if (message.title) {
+        notification.success(message.title, {
+          onClose() {
+            markAsRead(message);
+          },
+        });
+      }
     });
   },
   { deep: true }
@@ -216,12 +220,13 @@ const bladeOptions = reactive({
   empty: resolveTemplateComponent("emptyTemplate"),
 });
 
-const { load, remove, items, loading, pagination, query, scope } = props.composables[props.model?.settings?.composable](
-  {
-    emit,
-    props,
-  }
-) as UseList<Record<string, any>[], Record<string, any>, ListBaseBladeScope>;
+const { load, remove, items, loading, pagination, query, scope } = props.composables?.[
+  props.model?.settings?.composable ?? ""
+]({
+  emit,
+  props,
+  mounted: useMounted(),
+}) as UseList<Record<string, any>[], Record<string, any>, ListBaseBladeScope>;
 
 const {
   filterComponent,
@@ -238,16 +243,16 @@ const {
 const bladeContext = ref<ListBladeContext>({
   load,
   remove,
-  items: computed(() => itemsProxy.value),
+  items: computed(() => itemsProxy.value ?? []),
   loading,
   pagination,
   query,
   scope,
-  settings,
+  settings: settings as ComputedRef<SettingsSchema>,
 });
 
 const toolbarComputed = toolbarReducer({
-  defaultToolbarSchema: settings.value.toolbar,
+  defaultToolbarSchema: settings.value?.toolbar ?? [],
   defaultToolbarBindings: {
     save: {
       clickHandler() {
@@ -258,6 +263,7 @@ const toolbarComputed = toolbarReducer({
     openAddBlade: {
       async clickHandler() {
         if (
+          scope &&
           "openDetailsBlade" in toValue(scope) &&
           toValue(scope).openDetailsBlade &&
           typeof toValue(scope).openDetailsBlade === "function"
@@ -308,6 +314,7 @@ watch(
   (newVal) => {
     if (newVal) {
       if (
+        scope &&
         "openDetailsBlade" in toValue(scope) &&
         toValue(scope).openDetailsBlade &&
         typeof toValue(scope).openDetailsBlade === "function"
@@ -329,6 +336,7 @@ watch(
 
 const openDetailsBlade = () => {
   if (
+    scope &&
     "openDetailsBlade" in toValue(scope) &&
     toValue(scope).openDetailsBlade &&
     typeof toValue(scope).openDetailsBlade === "function"
@@ -337,8 +345,9 @@ const openDetailsBlade = () => {
   }
 };
 
-const onItemClick = (item: { id: string }) => {
+const onItemClick = (item: { [x: string]: any; id?: string }) => {
   if (
+    scope &&
     "openDetailsBlade" in toValue(scope) &&
     toValue(scope).openDetailsBlade &&
     typeof toValue(scope).openDetailsBlade === "function"
@@ -366,17 +375,20 @@ const onSelectionChanged = (i: UnwrapRef<typeof items>) => {
 async function removeItems() {
   if (
     await showConfirmation(
-      t(`${settings.value.localizationPrefix.trim().toUpperCase()}.PAGES.LIST.DELETE_SELECTED_CONFIRMATION.MESSAGE`, {
+      t(`${settings.value?.localizationPrefix.trim().toUpperCase()}.PAGES.LIST.DELETE_SELECTED_CONFIRMATION.MESSAGE`, {
         count: allSelected.value
-          ? t(`${settings.value.localizationPrefix.trim().toUpperCase()}.PAGES.LIST.DELETE_SELECTED_CONFIRMATION.ALL`, {
-              totalCount: pagination.value.totalCount,
-            })
+          ? t(
+              `${settings.value?.localizationPrefix.trim().toUpperCase()}.PAGES.LIST.DELETE_SELECTED_CONFIRMATION.ALL`,
+              {
+                totalCount: pagination.value.totalCount,
+              }
+            )
           : selectedIds.value.length,
       })
     )
   ) {
     emit("close:children");
-    await remove({ allSelected: allSelected.value, ids: selectedIds.value });
+    if (remove) await remove({ allSelected: allSelected.value, ids: selectedIds.value });
     if (query.value.skip && query.value.take) {
       if (query.value.skip >= query.value.take) {
         if (allSelected.value) {
@@ -459,12 +471,12 @@ async function resetSearch() {
 function templateOverrideComponents(): Record<string, ShallowRef<ConcreteComponent>> {
   return {
     ...table.value.columns?.reduce((acc, curr) => {
-      if ("customTemplate" in curr) {
+      if ("customTemplate" in curr && curr.customTemplate) {
         if (!("component" in curr.customTemplate)) {
           throw new Error(
             `Component name must be provided in 'customTemplate' property, column: ${JSON.stringify(curr)}`
           );
-        } else {
+        } else if ("component" in curr.customTemplate && curr.customTemplate.component) {
           const component = resolveComponent(curr.customTemplate.component);
 
           if (typeof component !== "string") {
@@ -504,6 +516,6 @@ function sortRows(event: { dragIndex: number; dropIndex: number; value: any[] })
 defineExpose({
   reload,
   title,
-  ...scope.value,
+  ...scope?.value,
 });
 </script>

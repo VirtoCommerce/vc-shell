@@ -8,14 +8,14 @@ export default {
   name: "Fieldset",
   props: componentProps,
   setup(props: ExtractPropTypes<typeof componentProps> & { element: FieldsetSchema }) {
-    const isMobile = inject<Ref<boolean>>("isMobile");
+    const isMobile = inject("isMobile") as Ref<boolean>;
 
     const { fields: fieldsetFields } = toRefs(props);
 
     return () =>
       props.baseOptions.visibility
         ? toValue(fieldsetFields.value).map((fields, index, arr) => {
-            const divideByCols = Array.isArray(fields) && _.chunk(fields, props.element.columns || 1);
+            const divideByCols = _.chunk(fields, props.element.columns || 1) ?? [];
 
             return h(
               "div",
@@ -44,7 +44,9 @@ export default {
                             {
                               key: `col-${itemIndex}-${colIndex}-${index}`,
                               size:
-                                "aspectRatio" in props.element ? props.element.aspectRatio[itemIndex].toString() : "1",
+                                "aspectRatio" in props.element
+                                  ? props.element.aspectRatio?.[itemIndex].toString()
+                                  : "1",
                             },
                             () => {
                               if (typeof item === "object") {
@@ -72,7 +74,8 @@ export default {
                         "!tw-hidden": arr.length === 1,
                       },
                       onClick: () => {
-                        props.bladeContext.scope[props.element.remove?.method](index);
+                        if (props.element.remove?.method)
+                          props.bladeContext.scope?.[props.element.remove?.method](index);
                       },
                     })
                   : undefined,

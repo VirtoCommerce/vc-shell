@@ -9,7 +9,7 @@ export default {
     default: () => ({} as IControlBaseProps),
   },
   baseOptions: {
-    type: Object as PropType<UnwrapNestedRefs<IControlBaseOptions>>,
+    type: Object as PropType<IControlBaseOptions>,
     default: () => ({} as IControlBaseOptions),
   },
   element: {
@@ -30,7 +30,6 @@ export default {
   },
   fieldContext: {
     type: Object,
-    default: undefined,
   },
   nodeBuilder: {
     type: Function,

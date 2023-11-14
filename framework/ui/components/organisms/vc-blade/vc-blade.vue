@@ -110,7 +110,7 @@ const { open } = usePopup({
     title: t("COMPONENTS.ORGANISMS.VC_BLADE.ERROR_POPUP.TITLE"),
   },
   slots: {
-    default: computed(() => error.value),
+    default: computed(() => error?.value),
   },
 });
 

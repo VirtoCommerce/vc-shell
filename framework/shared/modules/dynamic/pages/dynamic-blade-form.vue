@@ -35,7 +35,7 @@
               v-model="item"
               :ui-schema="form.children"
               :context="bladeContext"
-              :current-locale="scope.multilanguage?.currentLocale"
+              :current-locale="scope?.multilanguage?.currentLocale"
             ></SchemaRender>
           </VcForm>
         </div>
@@ -72,12 +72,11 @@ import {
   unref,
   watch,
   onBeforeMount,
-  UnwrapRef,
+  ComputedRef,
+  type Component,
 } from "vue";
-import { DynamicDetailsSchema, FormContentSchema } from "../types";
-import { reactiveComputed } from "@vueuse/core";
-import * as _ from "lodash-es";
-import { IBladeToolbar } from "../../../../core/types";
+import { DynamicDetailsSchema, FormContentSchema, SettingsSchema } from "../types";
+import { reactiveComputed, useMounted } from "@vueuse/core";
 import { DetailsBladeContext, DetailsBaseBladeScope, IParentCallArgs, UseDetails, usePopup } from "../../../index";
 import SchemaRender from "../components/SchemaRender";
 import { VcSelect } from "../../../../ui/components";
@@ -116,15 +115,15 @@ const { t } = useI18n({ useScope: "global" });
 
 const { showConfirmation } = usePopup();
 
-const { loading, item, validationState, scope, load, remove, saveChanges, bladeTitle } = props.composables[
-  props.model?.settings?.composable
-]({ emit, props }) as UseDetails<Record<string, any>, DetailsBaseBladeScope>;
+const { loading, item, validationState, scope, load, remove, saveChanges, bladeTitle } = props.composables?.[
+  props.model?.settings?.composable ?? ""
+]({ emit, props, mounted: useMounted() }) as UseDetails<Record<string, any>, DetailsBaseBladeScope>;
 
 const title = ref();
 const isReady = ref(false);
 
 const unwatchTitle = watch(
-  () => bladeTitle.value,
+  () => bladeTitle?.value,
   (newVal) => {
     if (newVal) {
       title.value = newVal;
@@ -138,10 +137,10 @@ const unwatchTitle = watch(
 const settings = computed(() => props.model?.settings);
 
 const form = computed(
-  (): FormContentSchema => props.model?.content.find((x) => x.component === "vc-form") as FormContentSchema
+  (): FormContentSchema => props.model?.content.find((x) => x?.component === "vc-form") as FormContentSchema
 );
 
-const widgets = computed(() => props.model.content.find((x) => x.component === "vc-widgets"));
+const widgets = computed(() => props.model?.content.find((x) => x?.component === "vc-widgets"));
 
 const bladeContext = ref<DetailsBladeContext>({
   loading,
@@ -152,11 +151,11 @@ const bladeContext = ref<DetailsBladeContext>({
   remove,
   saveChanges,
   bladeTitle,
-  settings,
+  settings: settings as ComputedRef<SettingsSchema>,
 });
 
 const bladeStatus = computed(() => {
-  if ("status" in props.model.settings && props.model.settings.status) {
+  if (props.model && "status" in props.model.settings && props.model.settings.status) {
     if (!("component" in props.model.settings.status))
       throw new Error(`Component is required in status: ${props.model.settings.status}`);
     return reactive(h(resolveComponent(props.model.settings.status.component), { context: bladeContext.value }));
@@ -166,23 +165,24 @@ const bladeStatus = computed(() => {
 });
 
 const bladeMultilanguage = reactiveComputed(() => {
-  if ("multilanguage" in toValue(scope) && toValue(scope).multilanguage) {
+  if (scope && "multilanguage" in toValue(scope) && toValue(scope).multilanguage) {
     return {
-      component: () =>
-        h(VcSelect as any, {
+      component: () => {
+        return h(VcSelect as Component, {
           name: "currentLocale",
-          modelValue: toValue(scope).multilanguage.currentLocale,
-          options: toValue(scope).multilanguage.localesOptions,
+          modelValue: toValue(scope).multilanguage?.currentLocale,
+          options: toValue(scope).multilanguage?.localesOptions,
           optionValue: "value",
           optionLabel: "label",
           disabled: "disabled" in toValue(scope) && toValue(scope).disabled,
           required: true,
           clearable: false,
           "onUpdate:modelValue": (e: string) => {
-            toValue(scope).multilanguage.setLocale(e);
+            toValue(scope).multilanguage?.setLocale(e);
           },
-        }),
-      currentLocale: toValue(scope).multilanguage.currentLocale,
+        });
+      },
+      currentLocale: toValue(scope).multilanguage?.currentLocale,
     };
   }
 
@@ -202,17 +202,19 @@ const bladeOptions = reactive({
 });
 
 const toolbarComputed = toolbarReducer({
-  defaultToolbarSchema: settings.value.toolbar,
+  defaultToolbarSchema: settings.value?.toolbar ?? [],
   defaultToolbarBindings: {
     saveChanges: {
       async clickHandler() {
-        await saveChanges(item.value);
+        if (item.value) {
+          await saveChanges(item.value);
 
-        emit("parent:call", {
-          method: "reload",
-        });
-        if (!props.param) {
-          emit("close:blade");
+          emit("parent:call", {
+            method: "reload",
+          });
+          if (!props.param) {
+            emit("close:blade");
+          }
         }
       },
       disabled: computed(() => !validationState.value.validated),
@@ -225,7 +227,7 @@ const toolbarComputed = toolbarReducer({
           )
         ) {
           if (props.param) {
-            await remove({ id: props.param });
+            await remove?.({ id: props.param });
             emit("parent:call", {
               method: "reload",
             });
@@ -263,7 +265,7 @@ async function onBeforeClose() {
 defineExpose({
   title: bladeTitle,
   onBeforeClose,
-  ...scope.value,
+  ...scope?.value,
 });
 </script>
 

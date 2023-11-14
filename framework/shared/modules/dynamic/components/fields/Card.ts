@@ -1,4 +1,14 @@
-import { ExtractPropTypes, computed, h, toValue, VNodeChild, VNodeNormalizedChildren, watch, VNode } from "vue";
+import {
+  ExtractPropTypes,
+  computed,
+  h,
+  toValue,
+  VNodeChild,
+  VNodeNormalizedChildren,
+  watch,
+  VNode,
+  Component,
+} from "vue";
 import { CardCollection } from "../factories";
 import componentProps from "./props";
 import { CardSchema } from "../../types";
@@ -14,7 +24,7 @@ export default {
 
     const commentRecursiveNodeCheck = (node: VNodeChild | VNodeNormalizedChildren): boolean => {
       return _.every(Array.isArray(node) ? node : [node], (nodeItem) => {
-        if (typeof nodeItem === "object") {
+        if (nodeItem && typeof nodeItem === "object") {
           if (
             "children" in nodeItem &&
             nodeItem.children &&
@@ -24,12 +34,13 @@ export default {
             return commentRecursiveNodeCheck(nodeItem.children);
           }
           if (
+            nodeItem &&
             "el" in nodeItem &&
             nodeItem.el &&
-            "nodeType" in (nodeItem.el as VNode["el"]) &&
-            (nodeItem.el as VNode["el"]).nodeType
+            "nodeType" in (nodeItem.el as VNode["el"] as HTMLElement) &&
+            (nodeItem.el as VNode["el"] as HTMLElement).nodeType
           ) {
-            return (nodeItem.el as VNode["el"]).nodeType !== 8;
+            return (nodeItem.el as VNode["el"] as HTMLElement).nodeType !== 8;
           } else return true;
         } else return true;
       });
@@ -59,15 +70,17 @@ export default {
         slots: {
           default: () => h("div", { class: "tw-flex tw-flex-col tw-p-4 tw-gap-4" }, toValue(props.fields)),
           actions: () => {
-            const elem = nodeBuilder({
-              controlSchema: props.element.action,
-              parentId: `${props.element.id}`,
-              internalContext: props.fieldContext,
-              bladeContext: props.bladeContext,
-              currentLocale: props.currentLocale,
-              formData: props.formData,
-            });
-            return elem;
+            if (props.element.action && props.fieldContext && props.currentLocale) {
+              const elem = nodeBuilder({
+                controlSchema: props.element.action,
+                parentId: `${props.element.id}`,
+                internalContext: props.fieldContext,
+                bladeContext: props.bladeContext,
+                currentLocale: props.currentLocale,
+                formData: props.formData,
+              });
+              return elem;
+            }
           },
         },
       });
@@ -80,7 +93,9 @@ export default {
         return localStorage?.getItem(key) === "true";
       }
 
-      return props.baseOptions.visibility && isNotEmpty.value ? h(field.component, field.props, field.slots) : null;
+      return props.baseOptions.visibility && isNotEmpty.value
+        ? h(field.component as Component, field.props, field.slots)
+        : null;
     };
   },
 };

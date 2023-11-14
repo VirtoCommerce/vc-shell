@@ -1,4 +1,4 @@
-import { ComputedRef, Raw } from "vue";
+import { ComputedRef, Raw, Component } from "vue";
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   VcButton,
@@ -14,6 +14,7 @@ import {
   VcSelect,
   VcStatus,
   VcVideo,
+  VcTextarea,
 } from "../../../../ui/components";
 import type { ComponentProps, ComponentEmit, ComponentSlots } from "vue-component-type-helpers";
 
@@ -49,7 +50,9 @@ export type ControlType =
   | IInputCurrency
   | IStatusField
   | IContentField
-  | IImageField;
+  | IImageField
+  | ITextareaField
+  | IVideoField;
 
 export type ControlTypeWithSlots = Extract<
   ControlType,
@@ -77,7 +80,7 @@ export type WithRequiredProperty<Type, Key extends keyof Type> = Type & {
 };
 
 export interface IControlBaseOptions {
-  visibility?: ComputedRef<boolean>;
+  visibility?: ComputedRef<boolean | undefined>;
 }
 
 export type ISelectField = {
@@ -160,3 +163,8 @@ export type IFieldset = {
   remove?: { method?: string };
   fields?: ControlType[];
 };
+
+export type ITextareaField = {
+  props: ComponentProps<typeof VcTextarea> | IControlBaseProps;
+  options: IControlBaseOptions;
+} & FieldOpts<typeof VcTextarea>;

@@ -3,9 +3,7 @@ import * as _ from "lodash-es";
 import { AssetsHandler, useUser } from "@vc-shell/framework";
 import { Asset, Image } from "@vc-app/api";
 
-export function useAssets<T extends Asset | Image, A extends Asset | Image>(assetFactory: {
-  new (data?: A): T;
-}): AssetsHandler<T, A> {
+export function useAssets<T extends Asset | Image>(assetFactory: { new (data?: T): T }): AssetsHandler<T> {
   const { getAccessToken } = useUser();
 
   const loading = ref(false);
@@ -52,7 +50,7 @@ export function useAssets<T extends Asset | Image, A extends Asset | Image>(asse
     }
   }
 
-  async function edit(assetsArr: T[], asset: A) {
+  async function edit(assetsArr: T[], asset: T) {
     const assets = _.cloneDeep(assetsArr) || [];
     const image = new assetFactory(asset);
     if (assets.length) {
@@ -64,11 +62,11 @@ export function useAssets<T extends Asset | Image, A extends Asset | Image>(asse
     }
   }
 
-  function editBulk(assets: A[]) {
+  function editBulk(assets: T[]) {
     return assets.map((item) => new assetFactory(item));
   }
 
-  async function remove(assetArr: T[], asset: A) {
+  async function remove(assetArr: T[], asset: T) {
     const assetArrCopy = _.cloneDeep(assetArr) || [];
 
     if (assetArrCopy && assetArrCopy.length) {

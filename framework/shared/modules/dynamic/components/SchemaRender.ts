@@ -8,7 +8,7 @@ import { nodeBuilder } from "../helpers/nodeBuilder";
 const schemeRenderProps = {
   context: {
     type: Object as PropType<UnwrapNestedRefs<DetailsBladeContext>>,
-    default: () => ({}),
+    default: () => ({} as DetailsBladeContext),
   },
   modelValue: {
     type: Object as PropType<Record<string, any>>,
@@ -74,7 +74,7 @@ export default defineComponent({
               formData: internalFormData,
             }),
           ],
-          []
+          [] as VNode[]
         )
       );
   },

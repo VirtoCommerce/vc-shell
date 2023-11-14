@@ -15,17 +15,19 @@ function getExtension(fileName: string) {
   return fileName.split(".").pop()?.toLowerCase();
 }
 
-function isImage(name: string) {
-  return imageExtensions.has(getExtension(name));
+function isImage(name: string | undefined) {
+  if (!name) return false;
+  return imageExtensions.has(getExtension(name) ?? "");
 }
 
-function getFileThumbnail(name: string) {
+function getFileThumbnail(name: string | undefined) {
+  if (!name) return "fas fa-file";
   return (
     fileThumbnails.find((thumb) => thumb.extensions.some((ext) => ext === getExtension(name)))?.image || "fas fa-file"
   );
 }
 
-function readableSize(bytes: number, decimals = 2) {
+function readableSize(bytes: number | undefined, decimals = 2) {
   if (!bytes) return "0 Bytes";
 
   const k = 1024;

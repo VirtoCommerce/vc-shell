@@ -14,6 +14,7 @@ import {
   VcSelect,
   VcStatus,
   VcVideo,
+  VcTextarea,
 } from "../../../../ui/components";
 import {
   IControlBaseProps,
@@ -32,6 +33,7 @@ import {
   IContentField,
   IVideoField,
   IImageField,
+  ITextareaField,
 } from "../types/models";
 
 export const ControlBase = ({ visibility = undefined }: IControlBaseOptions): IControlBaseOptions => ({
@@ -62,7 +64,7 @@ export const ControlBaseProps = ({
   ...rest,
 });
 
-export const SelectField = ({ props, slots, options }: Partial<ISelectField>): ISelectField => ({
+export const SelectField = ({ props, slots, options }: ISelectField): ISelectField => ({
   component: markRaw(VcSelect) as any,
   props: {
     ...ControlBaseProps(props),
@@ -72,7 +74,7 @@ export const SelectField = ({ props, slots, options }: Partial<ISelectField>): I
   slots,
 });
 
-export const StatusField = ({ props, slots, options }: Partial<IStatusField>): IStatusField => ({
+export const StatusField = ({ props, slots, options }: IStatusField): IStatusField => ({
   component: markRaw(VcStatus),
   props: {
     ...ControlBaseProps(props),
@@ -82,7 +84,7 @@ export const StatusField = ({ props, slots, options }: Partial<IStatusField>): I
   slots,
 });
 
-export const InputField = ({ props, options, slots }: Partial<IInputField>): IInputField => ({
+export const InputField = ({ props, options, slots }: IInputField): IInputField => ({
   component: markRaw(VcInput),
   props: {
     ...ControlBaseProps(props),
@@ -92,7 +94,16 @@ export const InputField = ({ props, options, slots }: Partial<IInputField>): IIn
   slots,
 });
 
-export const ContentField = ({ props, options }: Partial<IContentField>): IContentField => ({
+export const TextareaField = ({ props, options }: ITextareaField): ITextareaField => ({
+  component: markRaw(VcTextarea),
+  props: {
+    ...ControlBaseProps(props),
+    ...props,
+  },
+  options: ControlBase(options),
+});
+
+export const ContentField = ({ props, options }: IContentField): IContentField => ({
   component: markRaw(VcField),
   props: {
     ...ControlBaseProps(props),
@@ -101,7 +112,7 @@ export const ContentField = ({ props, options }: Partial<IContentField>): IConte
   options: ControlBase(options),
 });
 
-export const ImageField = ({ props, options }: Partial<IImageField>): IImageField => ({
+export const ImageField = ({ props, options }: IImageField): IImageField => ({
   component: markRaw(VcImage),
   props: {
     ...ControlBaseProps(props),
@@ -110,7 +121,7 @@ export const ImageField = ({ props, options }: Partial<IImageField>): IImageFiel
   options: ControlBase(options),
 });
 
-export const VideoField = ({ props, options }: Partial<IInputField>): IVideoField => ({
+export const VideoField = ({ props, options }: IInputField): IVideoField => ({
   component: markRaw(VcVideo),
   props: {
     ...ControlBaseProps(props),
@@ -119,7 +130,7 @@ export const VideoField = ({ props, options }: Partial<IInputField>): IVideoFiel
   options: ControlBase(options),
 });
 
-export const InputCurrency = ({ props, options }: Partial<IInputCurrency>): IInputCurrency => ({
+export const InputCurrency = ({ props, options }: IInputCurrency): IInputCurrency => ({
   component: markRaw(VcInputCurrency),
   props: {
     ...ControlBaseProps(props),
@@ -128,7 +139,7 @@ export const InputCurrency = ({ props, options }: Partial<IInputCurrency>): IInp
   options: ControlBase(options),
 });
 
-export const CardCollection = ({ props, options, slots }: Partial<ICardCollection>): ICardCollection => ({
+export const CardCollection = ({ props, options, slots }: ICardCollection): ICardCollection => ({
   component: markRaw(VcCard),
   props: {
     ...props,
@@ -138,7 +149,7 @@ export const CardCollection = ({ props, options, slots }: Partial<ICardCollectio
   slots,
 });
 
-export const DynamicProperties = ({ props, options }: Partial<IDynamicProperties>): IDynamicProperties => ({
+export const DynamicProperties = ({ props, options }: IDynamicProperties): IDynamicProperties => ({
   component: markRaw(VcDynamicProperty),
   props: {
     ...props,
@@ -147,7 +158,7 @@ export const DynamicProperties = ({ props, options }: Partial<IDynamicProperties
   options: ControlBase(options),
 });
 
-export const EditorField = ({ props, options }: Partial<IEditorField>): IEditorField => ({
+export const EditorField = ({ props, options }: IEditorField): IEditorField => ({
   component: markRaw(VcEditor),
   props: {
     ...ControlBaseProps(props),
@@ -156,7 +167,7 @@ export const EditorField = ({ props, options }: Partial<IEditorField>): IEditorF
   options: ControlBase(options),
 });
 
-export const Gallery = ({ props, options }: Partial<IGallery>): IGallery => ({
+export const Gallery = ({ props, options }: IGallery): IGallery => ({
   component: markRaw(VcGallery),
   props: {
     ...ControlBaseProps(props),
@@ -165,7 +176,7 @@ export const Gallery = ({ props, options }: Partial<IGallery>): IGallery => ({
   options: ControlBase(options),
 });
 
-export const Checkbox = ({ props, options, slots }: Partial<ICheckbox>): ICheckbox => ({
+export const Checkbox = ({ props, options, slots }: ICheckbox): ICheckbox => ({
   component: markRaw(VcCheckbox),
   props: {
     ...ControlBaseProps(props),
@@ -175,7 +186,7 @@ export const Checkbox = ({ props, options, slots }: Partial<ICheckbox>): ICheckb
   slots,
 });
 
-export const Button = ({ props, options, slots }: Partial<IButton>): IButton => ({
+export const Button = ({ props, options, slots }: IButton): IButton => ({
   component: markRaw(VcButton),
   props: {
     ...ControlBaseProps(props),

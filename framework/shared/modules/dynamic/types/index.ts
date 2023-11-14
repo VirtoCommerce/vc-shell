@@ -1,4 +1,4 @@
-import { VcButton, VcField, VcIcon, VcImage, VcInput, VcStatus, VcVideo } from "./../../../../ui/components";
+import { VcButton, VcField, VcGallery, VcIcon, VcImage, VcInput, VcStatus, VcVideo } from "./../../../../ui/components";
 import { ITableColumns, IValidationRules } from "../../../../core/types";
 import type { ComponentProps, ComponentEmit, ComponentSlots } from "vue-component-type-helpers";
 
@@ -43,27 +43,27 @@ export interface SettingsDetails extends SettingsBase {
 
 export interface SettingsBase {
   /**
-   * @description Blade url
+   * Blade url
    */
   url?: string;
   /**
-   * @description Locale key for VueI18n locale files
+   * Locale key for VueI18n locale files
    */
   localizationPrefix: string;
   /**
-   * @description Required component id
+   * Required component id
    */
   id: string;
   /**
-   * @description Blade default header title
+   * Blade default header title
    */
   titleTemplate: string;
   /**
-   * @description Composable to use at {@link SettingsBase.model } blade component view
+   * Composable to use at {@link SettingsBase.model } blade component view
    */
   composable: string;
   /**
-   * @description Toolbar items array
+   * Toolbar items array
    * @default 'save', 'delete' in {@link SettingsDetails}
    * @default 'refresh', 'add' in {@link SettingsWorkspace}
    */
@@ -74,11 +74,11 @@ export interface SettingsBase {
     method: string;
   }[];
   /**
-   * @description Blade component
+   * Blade component
    */
   component: string;
   /**
-   * @description Blade permissions
+   * Blade permissions
    */
   permissions?: string | string[];
   pushNotificationType?: string | string[];
@@ -129,6 +129,8 @@ export interface SchemaBase {
    */
   id: string;
   /** Control label.
+   * To show label based on some bound property - use interpolation {} syntax.
+   * @example {someProperty}
    * @type {string}
    */
   label?: string;
@@ -175,89 +177,361 @@ export interface SchemaBase {
   update?: { method: string };
 }
 
+/**
+ * Select schema interface.
+ * @interface
+ */
 export interface SelectSchema extends SchemaBase {
+  /**
+   * Component type for select.
+   * @type {"vc-select"}
+   */
   component: "vc-select";
+  /**
+   * Property of optionProperty which holds the `value`
+   * @default id
+   * @type {string}
+   */
   optionValue: string;
+  /**
+   * Property of optionProperty which holds the `label`
+   * @default title
+   * @type {string}
+   */
   optionLabel: string;
+  /**
+   * Method that is used to get select options.
+   * @description Method should be defined in the blade `scope`.
+   * @type {string}
+   */
   optionsMethod: string;
+  /**
+   * Name of custom template to display data in select.
+   * Component should be registered globally.
+   * @type {{component: string}}
+   */
   customTemplate?: {
     component: string;
   };
+  /**
+   * Whether the select is clearable or not.
+   * @type {boolean}
+   */
   clearable?: boolean;
+  /**
+   * Update model with the value of the selected option instead of the whole option
+   * @default true
+   * @example true
+   * only value will be emitted
+   * @example false
+   * whole option will be emitted
+   * {
+   *  value: "someValue",
+   *  label: "someLabel"
+   * }
+   */
   emitValue?: boolean;
+  /**
+   * Whether the select is searchable or not.
+   * @type {boolean}
+   */
   searchable?: boolean;
 }
 
-export interface InputSchema extends SchemaBase {
-  component: "vc-input";
-  variant?: ComponentProps<typeof VcInput>["type"];
+export interface TextareaSchema extends SchemaBase {
+  /**
+   * Component type for textarea.
+   * @type {"vc-textarea"}
+   */
+  component: "vc-textarea";
+  /**
+   * Whether the textarea is clearable or not.
+   * @type {boolean}
+   */
   clearable?: boolean;
+}
+
+/**
+ * Input schema interface.
+ * @interface
+ */
+export interface InputSchema extends SchemaBase {
+  /**
+   * Component type for input.
+   * @type {"vc-input"}
+   */
+  component: "vc-input";
+  /**
+   * Input type.
+   * @type {"number" | "text" | "password" | "email" | "tel" | "url" | "time" | "date" | "datetime-local"}
+   */
+  variant?: ComponentProps<typeof VcInput>["type"];
+  /**
+   * Whether the input is clearable or not.
+   * @type {boolean}
+   */
+  clearable?: boolean;
+  /**
+   * Schema of component to be displayed before the input.
+   * @type {ControlSchema}
+   */
   prepend?: ControlSchema;
+  /**
+   * Schema of component to be displayed after the input
+   * @type {ControlSchema}
+   */
   append?: ControlSchema;
+  /**
+   * Schema of component to be displayed inside the input after the value.
+   * @type {ControlSchema}
+   */
   appendInner?: ControlSchema;
+  /**
+   * Schema of component to be displayed inside the input before the value.
+   * @type {ControlSchema}
+   */
   prependInner?: ControlSchema;
 }
 
+/**
+ *  Video schema interface.
+ * @interface
+ */
 export interface VideoSchema
   extends Pick<SchemaBase, "id" | "property" | "label" | "visibility" | "tooltip" | "update"> {
+  /**
+   * Component type for video.
+   * @type {"vc-video"}
+   */
   component: "vc-video";
+  /**
+   * Video size.
+   * @type {"auto" | "xs" | "s" | "m" | "l" | "xl" | "xxl"}
+   */
   size?: ComponentProps<typeof VcVideo>["size"];
-  rounded?: boolean;
-  bordered?: boolean;
-  clickable?: boolean;
 }
 
+/**
+ * Data field schema interface.
+ * @interface
+ */
 export interface FieldSchema extends Pick<SchemaBase, "id" | "property" | "label" | "visibility" | "tooltip"> {
+  /**
+   * Component type for field.
+   * @type {"vc-field"}
+   */
   component: "vc-field";
+  /**
+   * Field variant.
+   * @type {"text" | "normal" | "date" | "date-ago" | "link"}
+   */
   variant?: ComponentProps<typeof VcField>["type"];
+  /**
+   * Whether the field is copyable or not.
+   * @type {boolean}
+   */
   copyable?: boolean;
 }
 
+/**
+ * Image schema interface.
+ * @interface
+ */
 export interface ImageSchema extends Pick<SchemaBase, "id" | "property" | "visibility" | "update"> {
+  /**
+   * Component type for image.
+   * @type {"vc-image"}
+   */
   component: "vc-image";
+  /**
+   * Image aspect ratio.
+   * @type {"1x1" | "16x9" | "4x3" | "3x2"}
+   */
   aspect?: ComponentProps<typeof VcImage>["aspect"];
+  /**
+   * Image size.
+   * @type {"auto" | "xs" | "s" | "m" | "l" | "xl" | "xxl"}
+   */
   size?: ComponentProps<typeof VcImage>["size"];
+  /**
+   * Size of the element's background image. Accepts auto, cover, contain CSS background-size value.
+   * @type {"auto" | "contain" | "cover"}
+   */
   background?: ComponentProps<typeof VcImage>["background"];
+  /**
+   * Whether the image is rounded or not.
+   * @type {boolean}
+   */
   rounded?: boolean;
+  /**
+   * Whether the image is bordered or not.
+   * @type {boolean}
+   */
   bordered?: boolean;
+  /**
+   * Whether the image has preview on click or not.
+   * @type {boolean}
+   */
   clickable?: boolean;
 }
 
+/**
+ * Status schema interface.
+ * @interface
+ */
 export interface StatusSchema extends Pick<SchemaBase, "id" | "visibility"> {
+  /**
+   * Component type for status.
+   * @type {"vc-status"}
+   */
   component: "vc-status";
+  /**
+   * Whether the status is outlined or not.
+   * @type {boolean}
+   */
   outline?: boolean;
+  /**
+   * Whether the status is extendable or not.
+   * @type {boolean}
+   */
   extend?: boolean;
+  /**
+   * Status variant.
+   * @type {"info" | "warning" | "danger" | "success" | "light-danger"}
+   */
   variant?: ComponentProps<typeof VcStatus>["variant"];
+  /**
+   * Status icon.
+   * @type {string}
+   */
   icon?: string;
+  /**
+   * Status icon size.
+   * @type {"xs" | "s" | "m" | "l" | "xl" | "xxl" | "xxxl"}
+   */
   iconSize?: ComponentProps<typeof VcIcon>["size"];
+  /**
+   * Status icon variant.
+   * @type {"warning" | "danger" | "success"}
+   */
   iconVariant?: ComponentProps<typeof VcIcon>["variant"];
+  /**
+   * Status title.
+   * @type {string}
+   */
   title?: string;
+  /**
+   * Method to call to get status content.
+   * @description Method should be defined in the blade `scope`.
+   * @type {{ method: string }}
+   */
   content: {
     method: string;
   };
 }
 
+/**
+ * Input-currency schema interface.
+ * @interface
+ */
 export interface InputCurrencySchema extends Omit<SchemaBase, "multilanguage"> {
+  /**
+   * Component type for input-currency.
+   * @type {"vc-input-currency"}
+   */
   component: "vc-input-currency";
+  /**
+   * Property that holds available currency options.
+   * @type {string}
+   */
   optionProperty: string;
+  /**
+   * Property of optionProperty which holds the `value`
+   * @default id
+   * @type {string}
+   */
   optionValue?: string;
+  /**
+   * Property of optionProperty which holds the `label`
+   * @default title
+   * @type {string}
+   */
   optionLabel?: string;
+  /**
+   * Whether the input-currency is clearable or not.
+   * @type {boolean}
+   */
   clearable?: boolean;
 }
 
+/**
+ * Editor schema interface.
+ * @interface
+ */
 export interface EditorSchema extends SchemaBase {
+  /**
+   * Component type for editor.
+   * @type {"vc-editor"}
+   */
   component: "vc-editor";
 }
 
-export interface DynamicPropertiesSchema extends Omit<SchemaBase, "rules" | "placeholder"> {
+/**
+ * Interface for dynamic properties schema.
+ * @interface
+ */
+export interface DynamicPropertiesSchema extends Pick<SchemaBase, "id" | "disabled" | "property" | "visibility"> {
+  /**
+   * The component type for dynamic properties.
+   * @type {"vc-dynamic-properties"}
+   */
   component: "vc-dynamic-properties";
+  /**
+   * An array of property names to exclude from the dynamic properties schema.
+   * @type {string[]}
+   */
   exclude?: string[];
+  /**
+   * An array of property names to include in the dynamic properties schema.
+   * @type {string[]}
+   */
   include?: string[];
 }
 
+/**
+ * Gallery schema interface.
+ * @interface
+ */
 export interface GallerySchema extends Omit<SchemaBase, "placeholder" | "multilanguage"> {
+  /**
+   * Component type for the gallery.
+   * @type {"vc-gallery"}
+   */
   component: "vc-gallery";
+  /**
+   * Folder name for files upload.
+   * @type {string}
+   */
   uploadFolder: string;
+  /**
+   * Gallery type
+   * @type {"gallery" | "file-upload"}
+   */
+  variant?: ComponentProps<typeof VcGallery>["variant"];
+  /**
+   * Whether the gallery has multiple files upload or not.
+   * @type {boolean}
+   */
+  multiple?: boolean;
+  /**
+   * Gallery item button actions on hover.
+   * @type {{
+      preview: boolean;
+      edit: boolean;
+      remove: boolean;
+    }}
+   */
+  actions?: ComponentProps<typeof VcGallery>["itemActions"];
 }
 
 /**
@@ -292,18 +566,49 @@ export interface WidgetsSchema extends Pick<SchemaBase, "id"> {
   children: string[];
 }
 
-export interface CheckboxSchema extends Omit<SchemaBase, "multilanguage"> {
+export interface CheckboxSchema extends Omit<SchemaBase, "multilanguage" | "placeholder"> {
   component: "vc-checkbox";
   content: string;
   trueValue?: boolean;
   falseValue?: boolean;
 }
 
+/**
+ * Fieldset schema interface.
+ * @interface
+ */
 export interface FieldsetSchema extends PartialBy<Pick<SchemaBase, "id" | "property" | "visibility">, "property"> {
+  /**
+   * Component type for the fieldset.
+   * @type {"vc-fieldset"}
+   */
   component: "vc-fieldset";
+  /**
+   * Number of columns to display the fields in.
+   * @type {number}
+   */
   columns?: number;
+  /**
+   * Array of numbers that define the aspect ratio of each column.
+   * @example Set to [1, 1] to make all columns equal width.
+   * @description Uses CSS flex-grow property.
+   * @type {number[]}
+   */
   aspectRatio?: number[];
-  fields: Exclude<ControlSchema[], FieldsetSchema>;
+  /**
+   * Array of control schemas to be displayed in the fieldset.
+   * @type {ControlSchema[]}
+   */
+  fields: ControlSchema[];
+  /**
+   * Method to call to remove field from the fieldset. When set - activates remove button.
+   *
+   * Used for property-based fieldsets.
+   *
+   * Allows to remove selected fieldset.
+   * @description Method should be defined in the blade `scope`.
+   * @type {{ method: string }}
+   */
   remove?: {
     method: string;
   };
@@ -348,7 +653,7 @@ export interface ButtonSchema extends Pick<SchemaBase, "id" | "disabled" | "visi
    * @description Method should be defined in the blade `scope`.
    * @type {string}
    */
-  method?: string;
+  method: string;
 }
 
 export type ControlSchema =
@@ -366,7 +671,8 @@ export type ControlSchema =
   | StatusSchema
   | FieldSchema
   | VideoSchema
-  | ImageSchema;
+  | ImageSchema
+  | TextareaSchema;
 
 export interface FilterBase {
   columns: {

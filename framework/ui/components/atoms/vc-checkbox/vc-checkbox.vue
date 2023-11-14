@@ -54,7 +54,7 @@
 import { MaybeRef, computed, unref } from "vue";
 import { VcHint } from "./../vc-hint";
 export interface Props {
-  modelValue?: MaybeRef<boolean>;
+  modelValue: MaybeRef<boolean>;
   disabled?: boolean;
   required?: boolean;
   name?: string;
@@ -81,7 +81,7 @@ const value = computed({
   get() {
     return unref(props.modelValue);
   },
-  set(newValue: boolean) {
+  set(newValue) {
     emit("update:modelValue", newValue);
   },
 });

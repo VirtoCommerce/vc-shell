@@ -17,7 +17,8 @@ export function useApiClient<ApiClient extends IAuthApiBase>(
 
   async function getApiClient() {
     const client = new c();
-    client.setAuthToken(await getAccessToken());
+    const token = await getAccessToken();
+    if (token) client.setAuthToken(token);
     return client;
   }
 

@@ -270,7 +270,7 @@
                   class="vc-table__body-actions-container tw-relative tw-flex tw-justify-center tw-items-center tw-group"
                 >
                   <button
-                    :ref="(el: Element) => setActionToggleRefs(el, item.id)"
+                    :ref="(el) => setActionToggleRefs(el, item.id)"
                     class="tw-text-[#41afe6] tw-cursor-pointer tw-border-none tw-bg-transparent disabled:tw-text-[gray] tw-w-full"
                     :class="{
                       'group-hover:tw-text-[#319ed4]': itemActions[itemIndex] && itemActions[itemIndex].length,
@@ -285,7 +285,7 @@
                   </button>
                   <div
                     v-show="selectedRow === item.id"
-                    :ref="(el: Element) => setTooltipRefs(el, item.id)"
+                    :ref="(el) => setTooltipRefs(el, item.id)"
                     class="vc-table__body-tooltip tw-bg-white tw-rounded-[4px] tw-p-[15px] tw-z-[1] tw-absolute tw-right-0 tw-drop-shadow-[1px_3px_14px_rgba(111,122,131,0.25)] tw-w-max"
                     :style="tooltipStyle"
                     @mouseleave="closeActions"
@@ -314,7 +314,7 @@
                       </div>
                     </div>
                     <div
-                      :ref="(el: Element) => setTooltipArrowRefs(el, item.id)"
+                      :ref="(el) => setTooltipArrowRefs(el, item.id)"
                       class="vc-table__body-tooltip-arrow"
                       :style="arrowStyle"
                     ></div>
@@ -435,13 +435,14 @@ import {
   onBeforeMount,
   nextTick,
   MaybeRef,
+  ComponentPublicInstance,
 } from "vue";
 import VcTableCounter from "./_internal/vc-table-counter/vc-table-counter.vue";
 import VcTableFilter from "./_internal/vc-table-filter/vc-table-filter.vue";
 import VcTableMobileItem from "./_internal/vc-table-mobile-item/vc-table-mobile-item.vue";
 import VcTableCell from "./_internal/vc-table-cell/vc-table-cell.vue";
 import VcTableColumnSwitcher from "./_internal/vc-table-column-switcher/vc-table-column-switcher.vue";
-import { offset, flip, arrow, computePosition, ComputePositionReturn } from "@floating-ui/vue";
+import { offset, flip, arrow, computePosition, ComputePositionReturn, ReferenceElement } from "@floating-ui/vue";
 import { IActionBuilderResult, ITableColumns } from "./../../../../core/types";
 import { useLocalStorage, useCurrentElement } from "@vueuse/core";
 import { VcContainer, VcInput, VcCheckbox, VcIcon, VcPagination, VcButton } from "./../../";
@@ -522,7 +523,7 @@ const props = withDefaults(
 );
 
 interface ITableItemRef {
-  element: Element;
+  element: Element | ComponentPublicInstance;
   id: string;
 }
 
@@ -712,7 +713,7 @@ function rowCheckbox(item: T) {
   }
 }
 
-function setTooltipRefs(el: Element, id: string) {
+function setTooltipRefs(el: Element | ComponentPublicInstance | null, id: string) {
   if (el) {
     const isExists = tooltipRefs.value.some((item) => item.id === id);
     if (!isExists) {
@@ -721,7 +722,7 @@ function setTooltipRefs(el: Element, id: string) {
   }
 }
 
-function setActionToggleRefs(el: Element, id: string) {
+function setActionToggleRefs(el: Element | ComponentPublicInstance | null, id: string) {
   if (el) {
     const isExists = actionToggleRefs.value.some((item) => item.id === id);
     if (!isExists) {
@@ -730,7 +731,7 @@ function setActionToggleRefs(el: Element, id: string) {
   }
 }
 
-function setTooltipArrowRefs(el: Element, id: string) {
+function setTooltipArrowRefs(el: Element | ComponentPublicInstance | null, id: string) {
   if (el) {
     const isExists = tooltipArrowRefs.value?.some((item) => item.id === id);
     if (!isExists) {
@@ -754,7 +755,7 @@ function showActions(item: T, index: string) {
 
     if (toggleRef && tooltipRef && tooltipArrowRef) {
       nextTick(() => {
-        computePosition(toggleRef, tooltipRef as HTMLElement, {
+        computePosition(toggleRef as ReferenceElement, tooltipRef as HTMLElement, {
           placement: "bottom",
           middleware: [
             flip({ fallbackPlacements: ["top", "bottom"] }),
@@ -1145,11 +1146,11 @@ function onRowDragLeave(event: DragEvent) {
   rowElement.classList.remove("vc-table__drag-row-bottom");
 }
 
-function onRowDragEnd(event: DragEvent & { currentTarget?: { draggable: boolean } }) {
+function onRowDragEnd(event: DragEvent) {
   rowDragged.value = false;
   draggedRowIndex.value = undefined;
   droppedRowIndex.value = undefined;
-  event.currentTarget.draggable = false;
+  (event.currentTarget as HTMLElement).draggable = false;
 }
 
 function onRowDrop(event: DragEvent) {

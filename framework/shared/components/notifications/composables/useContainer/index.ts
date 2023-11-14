@@ -27,7 +27,7 @@ interface IUseContainer {
   getAllNotifications(): NotificationOptions[];
   appendInstance(options: NotificationOptions): void;
   generateNotificationId(): string;
-  getNotification(notificationId: string): NotificationOptions;
+  getNotification(notificationId: string | number): NotificationOptions | undefined;
 }
 
 const pending = reactive<PendingContainer>({ items: [] });
@@ -53,7 +53,7 @@ export function useContainer(): IUseContainer {
   function appendFromPending() {
     if (pending.items.length > 0) {
       const append = pending.items.shift();
-      appendInstance(append?.notificationProps);
+      if (append?.notificationProps) appendInstance(append?.notificationProps);
     }
   }
 

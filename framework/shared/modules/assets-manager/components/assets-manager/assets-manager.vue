@@ -24,7 +24,7 @@
         :items="defaultAssets"
         :header="false"
         :footer="false"
-        :item-action-builder="!readonly && actionBuilder"
+        :item-action-builder="!readonly ? actionBuilder : undefined"
         :multiselect="!readonly"
         class="tw-h-full tw-w-full"
         @item-click="onItemClick"
@@ -48,14 +48,14 @@
         <!-- Override size column -->
         <template #item_size="{ item }">
           <div>
-            {{ readableSize(item.size) }}
+            {{ readableSize(item.size ?? 0) }}
           </div>
         </template>
 
         <!-- Override url column -->
         <template #item_url="{ item }">
           <div class="tw-flex tw-items-center tw-justify-center">
-            <template v-if="isImage(item.name)">
+            <template v-if="isImage(item.name ?? '')">
               <VcImage
                 :bordered="true"
                 size="s"
@@ -66,7 +66,7 @@
             </template>
             <template v-else>
               <VcIcon
-                :icon="getFileThumbnail(item.name)"
+                :icon="getFileThumbnail(item.name ?? '')"
                 class="tw-text-[#a9bfd2] tw-text-[38px]"
               ></VcIcon>
             </template>
@@ -83,7 +83,7 @@
         <!-- Mobile -->
         <template #mobile-item="{ item }">
           <div class="tw-border-b tw-border-solid tw-border-b-[#e3e7ec] tw-p-3 tw-flex tw-flex-nowrap">
-            <template v-if="isImage(item.name)">
+            <template v-if="isImage(item.name ?? '')">
               <VcImage
                 :bordered="true"
                 size="s"
@@ -95,7 +95,7 @@
             <template v-else>
               <div class="tw-w-12 tw-flex tw-items-center tw-justify-center">
                 <VcIcon
-                  :icon="getFileThumbnail(item.name)"
+                  :icon="getFileThumbnail(item.name ?? '')"
                   class="tw-text-[#a9bfd2] tw-w-12 tw-text-[48px]"
                 ></VcIcon>
               </div>
@@ -108,7 +108,7 @@
                 <div class="tw-truncate tw-grow tw-basis-0 tw-mr-2">
                   <VcHint>{{ t("ASSETS_MANAGER.TABLE.HEADER.SIZE") }}</VcHint>
                   <div class="tw-truncate tw-mt-1">
-                    {{ readableSize(item.size) }}
+                    {{ readableSize(item.size ?? 0) }}
                   </div>
                 </div>
                 <div class="tw-truncate tw-grow tw-basis-0 tw-mr-2">
@@ -143,10 +143,10 @@
 
 <script setup lang="ts">
 import { Asset, IActionBuilderResult, IBladeToolbar, ITableColumns } from "../../../../../core/types";
-import { ref, computed, onMounted, unref, watch, markRaw, UnwrapNestedRefs } from "vue";
+import { ref, computed, onMounted, unref, watch, markRaw, Ref } from "vue";
 import { useI18n } from "vue-i18n";
 import moment from "moment";
-import Assets from "./../../../assets/components/assets-details/assets-details.vue";
+import { AssetsDetails as Assets } from "./../../../assets/components/assets-details";
 import { isImage, getFileThumbnail, readableSize } from "./../../../../utilities/assets";
 import * as _ from "lodash-es";
 import { IParentCallArgs, useBladeNavigation } from "../../../../components";
@@ -185,7 +185,7 @@ const defaultAssets = ref<Asset[]>([]);
 const isDragging = ref(false);
 const uploader = ref();
 const loading = ref(false);
-const selectedItems = ref([]);
+const selectedItems: Ref<Asset[]> = ref([]);
 const readonly = computed(() => props.options.disabled);
 let assetsCopy: Asset[];
 const modified = ref(false);

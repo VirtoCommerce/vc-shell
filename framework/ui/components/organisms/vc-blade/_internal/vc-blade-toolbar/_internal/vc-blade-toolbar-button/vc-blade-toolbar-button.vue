@@ -2,7 +2,7 @@
   <div
     class="vc-blade-toolbar-button"
     :class="{ 'vc-blade-toolbar-button_disabled': disabled || isWaiting }"
-    :title="title as string"
+    :title="title"
     @click="onClick"
   >
     <div ref="dropButtonRef">
@@ -56,7 +56,7 @@ import { IBladeDropdownItem } from "./../../../../../../../../core/types";
 export interface Props {
   isExpanded: boolean;
   icon?: string | (() => string);
-  title?: string | unknown;
+  title?: string;
   options?: Record<string, unknown>;
   disabled?: boolean;
   dropdownItems?: IBladeDropdownItem[];

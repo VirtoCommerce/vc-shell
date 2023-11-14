@@ -24,7 +24,7 @@ export function useSettings(): IUseSettings {
 
   async function getApiClient() {
     const client = new SettingClient();
-    client.setAuthToken(await getAccessToken());
+    client.setAuthToken((await getAccessToken()) ?? "");
     return client;
   }
 

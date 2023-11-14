@@ -113,7 +113,6 @@ export interface Props {
 export interface Emits {
   (event: "logo:click"): void;
   (event: "backlink:click"): void;
-  (event: "toolbarbutton:click"): void;
   (event: "menubutton:click"): void;
   (event: "button:click", item: IBladeToolbar): void;
 }

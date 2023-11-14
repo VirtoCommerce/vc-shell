@@ -284,11 +284,11 @@ defineSlots<{
     /**
      * Field is editable
      */
-    editable: boolean;
+    editable: boolean | undefined;
     /**
      * Field has focus
      */
-    focused: boolean;
+    focused: boolean | undefined;
     /**
      * Field's value
      */
@@ -371,13 +371,13 @@ function onInput(e: Event) {
   emitValue(newValue);
 }
 
-function emitValue(val: string) {
+function emitValue(val: string | number | Date | null) {
   emitValueFn = () => {
     if (mutatedModel.value !== val) {
       let value;
       if (internalType.value === "datetime-local" || internalType.value === "date") {
         value = moment(val).toDate();
-      } else if (internalType.value === "number") {
+      } else if (internalType.value === "number" && val !== null) {
         value = +val;
       } else {
         value = val;

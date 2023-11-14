@@ -1,10 +1,10 @@
+import { ComponentSlots } from "../../../../utilities/vueUtils";
 import { h, resolveComponent, ExtractPropTypes, Component, VNode } from "vue";
 import { SelectField } from "../factories";
 import componentProps from "./props";
 import ValidationField from "./ValidationField";
 import { SelectSchema } from "../../types";
 import { VcSelect } from "../../../../../ui/components";
-import type { ComponentSlots } from "vue-component-type-helpers";
 
 type TScope =
   | Parameters<ComponentSlots<typeof VcSelect>["option"]>["0"]
@@ -21,7 +21,7 @@ export default {
           optionValue: props.element.optionValue,
           optionLabel: props.element.optionLabel,
           emitValue: props.element.emitValue,
-          options: props.bladeContext.scope[props.element.optionsMethod],
+          options: props.bladeContext.scope?.[props.element.optionsMethod],
           currentLanguage: props.currentLocale,
           clearable: props.element.clearable || false,
           searchable: props.element.searchable || false,
@@ -32,7 +32,10 @@ export default {
           props.element.customTemplate &&
           ["selected-item", "option"].reduce((obj, slot) => {
             obj[slot] = (scope: TScope) =>
-              h(resolveComponent(props.element.customTemplate.component), { context: scope, slotName: slot });
+              h(resolveComponent(props.element.customTemplate?.component as string), {
+                context: scope,
+                slotName: slot,
+              });
             return obj;
           }, {} as Record<string, (scope: TScope) => VNode>),
       });

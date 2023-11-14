@@ -1,4 +1,4 @@
-import { ExtractPropTypes, h } from "vue";
+import { ExtractPropTypes, h, Component } from "vue";
 import { ContentField } from "../factories";
 import componentProps from "./props";
 import { FieldSchema } from "../../types";
@@ -17,7 +17,7 @@ export default {
         options: props.baseOptions,
       });
 
-      const render = h(field.component, field.props);
+      const render = h(field.component as Component, field.props);
 
       return props.baseOptions.visibility ? render : null;
     };

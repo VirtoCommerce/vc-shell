@@ -285,7 +285,7 @@ function closeDropdown() {
   emit("close");
 }
 
-function onSearch(event: InputEvent) {
+function onSearch(event: Event) {
   emit("search", (event.target as HTMLInputElement).value);
 }
 </script>

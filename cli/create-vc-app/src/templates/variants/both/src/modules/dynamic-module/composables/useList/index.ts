@@ -1,5 +1,5 @@
 /* eslint-disable import/no-unresolved */
-import { computed, ref } from "vue";
+import { computed, ref, Ref } from "vue";
 import img1 from "/assets/1.jpeg";
 import img2 from "/assets/2.jpg";
 import img3 from "/assets/3.jpg";
@@ -11,6 +11,7 @@ export interface DynamicItemsScope extends ListBaseBladeScope {}
 export default (args: {
   props: InstanceType<typeof DynamicBladeList>["$props"];
   emit: InstanceType<typeof DynamicBladeList>["$emit"];
+  mounted: Ref<boolean>;
 }) => {
   const factory = useListFactory({
     load: async () => {

@@ -7,8 +7,8 @@
     @mouseleave="onMouseLeave"
   >
     <VcIcon
-      :icon="types[type]?.icon"
-      :style="{ color: types[type]?.color }"
+      :icon="types[type ?? 'default']?.icon"
+      :style="{ color: types[type ?? 'default']?.color }"
       size="l"
       class="tw-mr-2"
     ></VcIcon>
@@ -27,7 +27,7 @@
 <script lang="ts" setup>
 import { NotificationType } from "./../../../../shared/components/notifications";
 import { VcIcon } from "./../../";
-import { onMounted, ref, toRefs, watch } from "vue";
+import { Ref, onMounted, ref, toRefs, watch } from "vue";
 
 export interface Props {
   content?: string;
@@ -42,7 +42,7 @@ export interface Props {
 
 const props = defineProps<Props>();
 
-const types = {
+const types: Record<NotificationType, { icon: string; color: string }> = {
   default: { icon: "fas fa-info-circle", color: "var(--notification-info)" },
   success: { icon: "fas fa-check-circle", color: "var(--notification-success)" },
   error: { icon: "fas fa-exclamation-circle", color: "var(--notification-error)" },
@@ -53,11 +53,11 @@ const { timeout } = toRefs(props);
 const timer = ref();
 
 watch(
-  timeout,
+  timeout as Ref<number | boolean>,
   (newVal) => {
     if (newVal) {
       timer.value = Timer(() => {
-        props.closeNotification();
+        props.closeNotification?.();
       }, props.timeout as number);
 
       timer.value.start();

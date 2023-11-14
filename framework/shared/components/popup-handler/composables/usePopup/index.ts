@@ -12,9 +12,10 @@ import {
   unref,
   DefineComponent,
 } from "vue";
-import { ComponentPublicInstanceConstructor, PopupPlugin, UsePopupInternal, UsePopupProps } from "./../../types";
+import { PopupPlugin, UsePopupInternal, UsePopupProps } from "./../../types";
 import { popupPluginInstance } from "./../../plugin";
 import { useI18n } from "vue-i18n";
+import { ComponentPublicInstanceConstructor } from "../../../../utilities/vueUtils";
 
 interface IUsePopup {
   open(): void;
@@ -29,12 +30,18 @@ export function usePopup<T extends ComponentPublicInstanceConstructor<any> = typ
   const { t } = useI18n({ useScope: "global" });
   const instance = getCurrentInstance();
   const popupInstance: PopupPlugin = (instance && inject("popupPlugin")) || popupPluginInstance;
-  let rawPopup = createInstance(unref(options));
+  let rawPopup: UsePopupProps<DefineComponent> & UsePopupInternal;
+
+  if (options) {
+    rawPopup = createInstance(unref(options));
+  }
 
   watch(
     () => options,
     (newVal) => {
-      rawPopup = createInstance(unref(newVal));
+      if (newVal) {
+        rawPopup = createInstance(unref(newVal));
+      }
     },
     { deep: true }
   );
@@ -46,7 +53,7 @@ export function usePopup<T extends ComponentPublicInstanceConstructor<any> = typ
       activeInstance = popupInstance;
     }
 
-    activeInstance.popups.push(rawPopup || customInstance);
+    activeInstance?.popups.push(rawPopup || customInstance);
   }
 
   function close(customInstance?: UsePopupProps<DefineComponent>) {
@@ -54,8 +61,8 @@ export function usePopup<T extends ComponentPublicInstanceConstructor<any> = typ
     if (popupInstance) {
       activeInstance = popupInstance;
     }
-    const index = activeInstance.popups.indexOf(rawPopup || customInstance);
-    if (index !== -1) activeInstance.popups.splice(index, 1);
+    const index = activeInstance?.popups.indexOf(rawPopup || customInstance);
+    if (index !== undefined && index !== -1) activeInstance?.popups.splice(index, 1);
   }
 
   async function showConfirmation(message: string | Ref<string>): Promise<boolean> {

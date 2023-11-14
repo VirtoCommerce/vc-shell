@@ -13,7 +13,7 @@
           v-if="item.isVisible === undefined || item.isVisible"
           :is-expanded="isExpanded"
           :icon="item.icon"
-          :title="item.title"
+          :title="unref(item.title)"
           :options="item.options"
           :disabled="item.disabled as boolean"
           :dropdown-items="item.dropdownItems"
@@ -31,7 +31,7 @@
 
 <script lang="ts" setup>
 import { IBladeToolbar } from "./../../../../../../core/types";
-import { ref } from "vue";
+import { ref, unref } from "vue";
 import VcBladeToolbarButton from "./_internal/vc-blade-toolbar-button/vc-blade-toolbar-button.vue";
 import { VcIcon } from "./../../../../";
 

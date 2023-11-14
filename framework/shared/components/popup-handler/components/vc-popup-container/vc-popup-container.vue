@@ -1,10 +1,10 @@
 <template>
   <component
     :is="popup.component"
-    v-for="popup in popupPlugin.popups"
+    v-for="popup in popupPlugin?.popups"
     :key="popup.id"
     v-bind="{ ...popup.props, ...popup.emits }"
-    @close="() => popup.close()"
+    @close="() => popup.close?.()"
   >
     <template
       v-for="(slot, key) in popup.slots"

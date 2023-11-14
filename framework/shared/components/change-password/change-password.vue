@@ -4,7 +4,7 @@
     :title="t('COMPONENTS.CHANGE_PASSWORD.TITLE')"
     @close="$emit('close')"
   >
-    <div class="tw-p-3">
+    <div class="change-password tw-p-3 tw-overflow-scroll">
       <VcForm>
         <Field
           v-slot="{ field, errorMessage, errors }"
@@ -144,10 +144,10 @@ const isDisabled = computed(() => {
 
 async function changePassword() {
   const result = await changeUserPassword(form.currentPassword, form.password);
-  if (result.succeeded) {
+  if (result?.succeeded) {
     emit("close");
-  } else {
-    form.errors = result.errors;
+  } else if (result?.errors) {
+    form.errors = result?.errors;
     form.isValid = form.errors.length == 0;
   }
 }
@@ -155,7 +155,7 @@ async function changePassword() {
 function validate() {
   nextTick(async () => {
     if (form.password || form.confirmPassword) {
-      form.errors = (await validatePassword(form.password)).errors;
+      form.errors = (await validatePassword(form.password)).errors ?? [];
       if (form.confirmPassword !== form.password) {
         (form.errors as IIdentityError[]).push({ code: "Repeat-password" });
       }
@@ -167,3 +167,30 @@ function validate() {
   });
 }
 </script>
+
+<style lang="scss">
+:root {
+  --change-password-scroll-color: #e1eff9;
+  --change-password-scroll-color-hover: #cce4f5;
+  --change-password-scroll-width: 8px;
+  --change-password-scroll-padding: 8px;
+  --change-password-scroll-shadow: 0 3px 2px rgba(0, 0, 0, 0.1) inset, 0 -3px 2px rgba(0, 0, 0, 0.1) inset;
+}
+
+.change-password {
+  &::-webkit-scrollbar {
+    @apply tw-w-[var(--change-password-scroll-width)] tw-bg-transparent;
+  }
+
+  &::-webkit-scrollbar-track {
+    @apply tw-bg-transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    @apply tw-bg-[color:var(--change-password-scroll-color)]
+      tw-rounded-[calc(var(--change-password-scroll-width)/2)]
+      tw-overflow-x-hidden
+      hover:tw-bg-[color:var(--change-password-scroll-color-hover)];
+  }
+}
+</style>

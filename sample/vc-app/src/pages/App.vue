@@ -259,10 +259,10 @@ function langInit() {
 async function customizationHandler() {
   await getUiCustomizationSettings();
 
-  if (!uiSettings.value.logo) {
+  if (!uiSettings.value?.logo) {
     applySettings({ logo: logoImage });
   }
-  if (!uiSettings.value.title) {
+  if (!uiSettings.value?.title) {
     applySettings({ title: undefined });
   }
 }

@@ -22,12 +22,12 @@
           :key="item.id"
           class="tw-flex tw-flex-row tw-items-center tw-cursor-pointer tw-group"
           :class="{
-            '[&>p]:tw-font-extrabold': locationHandler(item.relativeUrl),
+            '[&>p]:tw-font-extrabold': locationHandler(item.relativeUrl ?? ''),
           }"
           @click="switchApp(item)"
         >
           <img
-            :src="imageUrl(item.iconUrl)"
+            :src="imageUrl(item.iconUrl ?? '')"
             :alt="`icon_${item.id}`"
             class="tw-w-5 tw-h-5 tw-mr-2 tw-shrink-0"
           />
@@ -62,7 +62,7 @@ const base = inject<string>("platformUrl");
 
 const isVisible = ref(false);
 
-const imageUrl = (url: string) => base.replace(/\/+$/, "") + url;
+const imageUrl = (url: string) => base?.replace(/\/+$/, "") + url;
 
 const locationHandler = (url: string) => {
   const cleanUrl = window.location.pathname.replace(/\/+$/, "");

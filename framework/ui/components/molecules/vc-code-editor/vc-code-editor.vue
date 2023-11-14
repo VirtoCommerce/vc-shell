@@ -62,9 +62,7 @@ export interface Emits {
   (event: "update:modelValue", value: string | number | Date | null | undefined): void;
 }
 
-const props = withDefaults(defineProps<Props>(), {
-  modelValue: null,
-});
+const props = defineProps<Props>();
 
 const emit = defineEmits<Emits>();
 const content = ref();

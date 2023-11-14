@@ -6,24 +6,27 @@ import * as _ from "lodash-es";
 import { handleOverrides } from "./helpers/override";
 import { reactiveComputed } from "@vueuse/core";
 import { kebabToPascal } from "../../../core/utilities";
-import { BladeConstructor } from "../../index";
+import { BladeInstanceConstructor } from "../../index";
 import { createAppModule } from "../../../core/plugins";
 import { BladeMenu, NavigationMenu } from "../../../core/types";
+import { ComponentProps } from "./../../utilities/vueUtils";
 
 interface Registered {
-  component: BladeConstructor;
+  component: BladeInstanceConstructor;
   name: string;
   model: DynamicSchema;
 }
 
 const createAppModuleWrapper = (args: {
   bladeName: string;
-  bladeComponent: BladeConstructor;
-  appModuleContent: {
-    locales?: { [key: string]: object };
-    notificationTemplates?: { [key: string]: Component };
-    moduleComponents?: { [key: string]: Component };
-  };
+  bladeComponent: BladeInstanceConstructor;
+  appModuleContent:
+    | {
+        locales?: { [key: string]: object };
+        notificationTemplates?: { [key: string]: Component };
+        moduleComponents?: { [key: string]: Component };
+      }
+    | undefined;
 }) => {
   const { bladeName, bladeComponent, appModuleContent } = args;
   return createAppModule(
@@ -37,16 +40,18 @@ const createAppModuleWrapper = (args: {
 const register = (
   args: {
     app: App;
-    component: BladeConstructor;
+    component: BladeInstanceConstructor;
     composables: { [key: string]: (...args: any[]) => any };
     json: DynamicSchema;
     options?: { router: any };
   },
-  appModuleContent: {
-    locales?: { [key: string]: object };
-    notificationTemplates?: { [key: string]: Component };
-    moduleComponents?: { [key: string]: Component };
-  }
+  appModuleContent:
+    | {
+        locales?: { [key: string]: object };
+        notificationTemplates?: { [key: string]: Component };
+        moduleComponents?: { [key: string]: Component };
+      }
+    | undefined
 ): Registered => {
   const { app, component, json, options } = args;
   const bladeComponent = _.cloneDeep(component);
@@ -63,31 +68,33 @@ const register = (
     bladeComponent.permissions = json.settings.permissions;
   }
 
-  const defineBladeComponent = defineComponent({
+  const BladeInstanceConstructor = defineComponent({
     ...bladeComponent,
     name: bladeName,
     isWorkspace: "isWorkspace" in json.settings && json.settings.isWorkspace,
-    setup: (props, ctx) =>
-      (bladeComponent as DefineComponent).setup(
-        reactiveComputed(() => ({
-          ...props,
-          model: json,
-          composables: args.composables,
-        })),
-        reactiveComputed(() => ctx)
-      ),
+    setup: (props: ComponentProps<typeof bladeComponent>, ctx) =>
+      (bladeComponent?.setup &&
+        bladeComponent.setup(
+          reactiveComputed(() => ({
+            ...props,
+            model: json,
+            composables: args.composables,
+          })) as any,
+          reactiveComputed(() => ctx) as any
+        )) ??
+      {},
   });
 
   const module = createAppModuleWrapper({
     bladeName,
-    bladeComponent: defineBladeComponent,
+    bladeComponent: BladeInstanceConstructor,
     appModuleContent,
   });
 
   module.install(app, options);
 
   return {
-    component: defineBladeComponent,
+    component: BladeInstanceConstructor,
     name: bladeName,
     model: json,
   };
@@ -111,7 +118,7 @@ export const createDynamicAppModule = <T extends BladeMenu>(args: {
   notificationTemplates?: { [key: string]: Component };
 }) => {
   const moduleInitializer = _.findKey(args.schema, (o) => "isWorkspace" in o.settings && o.settings.isWorkspace);
-  const everyHasTemplate = _.every(Object.values(args.schema), (o) => o.settings.component);
+  const everyHasTemplate = _.every(Object.values(args.schema), (o) => o?.settings?.component);
 
   if (!everyHasTemplate) handleError("component", args.schema, "must be included in 'settings' of every file");
   if (!moduleInitializer)
@@ -136,11 +143,13 @@ export const createDynamicAppModule = <T extends BladeMenu>(args: {
           notificationTemplates: args?.notificationTemplates,
           moduleComponents: args?.moduleComponents,
         };
-        Object.entries(schemaCopy).forEach(([JsonName, JsonSchema], index) => {
+        Object.entries(schemaCopy).forEach(([, JsonSchema], index) => {
           const blade = register(
             {
               app,
-              component: bladePages[JsonSchema.settings.component as keyof typeof bladePages],
+              component: bladePages[
+                JsonSchema.settings.component as keyof typeof bladePages
+              ] as BladeInstanceConstructor,
               composables: { ...args.composables },
               json: JsonSchema,
               options,

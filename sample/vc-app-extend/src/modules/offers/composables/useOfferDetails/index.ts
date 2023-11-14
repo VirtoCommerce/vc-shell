@@ -1,4 +1,4 @@
-import { IBladeToolbar } from "@vc-shell/framework";
+import { IBladeToolbar, DynamicBladeForm } from "@vc-shell/framework";
 import modules from "@vc-app/modules";
 import { Ref, UnwrapRef, computed, ref } from "vue";
 import * as _ from "lodash-es";
@@ -11,7 +11,11 @@ export type ExtendedOfferDetailsScope = UnwrapRef<
   };
 };
 
-export const useOfferDetails = (args) => {
+export const useOfferDetails = (args: {
+  props: InstanceType<typeof DynamicBladeForm>["$props"];
+  emit: InstanceType<typeof DynamicBladeForm>["$emit"];
+  mounted: Ref<boolean>;
+}) => {
   const { load, saveChanges, remove, loading, item, validationState, scope, bladeTitle } =
     modules.Offers.composables.useOfferDetails(args);
 

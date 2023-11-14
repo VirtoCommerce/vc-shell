@@ -1,4 +1,4 @@
-import { ExtractPropTypes, h, unref } from "vue";
+import { Component, ExtractPropTypes, h, unref } from "vue";
 import { Button } from "../factories";
 import componentProps from "./props";
 import { ButtonSchema } from "../../types";
@@ -16,7 +16,7 @@ export default {
           iconSize: props.element?.iconSize,
           text: props.element?.text,
           onClick: () => {
-            unref(props.bladeContext.scope)[props.element.method]();
+            unref(props.bladeContext.scope)?.[props.element.method]();
           },
         },
         options: props.baseOptions,
@@ -25,7 +25,7 @@ export default {
         },
       });
 
-      return props.baseOptions.visibility ? h(field.component, field.props, field.slots) : null;
+      return props.baseOptions.visibility ? h(field.component as Component, field.props, field.slots) : null;
     };
   },
 };

@@ -6,9 +6,9 @@ import type { ItemId, IValidationState, UseDetails } from "../types";
 import { createUnrefFn } from "@vueuse/core";
 
 export interface UseDetailsFactoryParams<Item> {
-  load: (args: ItemId) => Promise<Item>;
-  saveChanges: (details: Item) => Promise<Item>;
-  remove: (args: ItemId) => Promise<void>;
+  load: (args?: ItemId) => Promise<Item>;
+  saveChanges: (details: Item) => Promise<Item | void>;
+  remove?: (args: ItemId) => Promise<void>;
 }
 
 export const useDetailsFactory = <Item>(factoryParams: UseDetailsFactoryParams<Item>) => {
@@ -23,20 +23,20 @@ export const useDetailsFactory = <Item>(factoryParams: UseDetailsFactoryParams<I
     const isDirty = useIsFormDirty();
     const isDisabled = computed(() => !isDirty.value || !isFormValid.value);
 
-    const { loading: itemLoading, action: load } = useAsync<ItemId>(async (args) => {
+    const { loading: itemLoading, action: load } = useAsync<ItemId>(async (args?: ItemId) => {
       item.value = await factoryParams.load(args);
       resetModified(item.value);
     });
 
     const { loading: manageLoading, action: saveChanges } = useAsync<Item>(async (item) => {
       if (validationState.value.valid) {
-        await factoryParams.saveChanges(item);
+        await factoryParams.saveChanges(item as Item);
         isModified.value = false;
       } else throw new Error("Form is not valid");
     });
 
     const { loading: removeLoading, action: remove } = useAsync<ItemId>(async (args) => {
-      await factoryParams.remove(args);
+      await factoryParams.remove?.(args as ItemId);
     });
 
     const loading = useLoading(itemLoading, manageLoading, removeLoading);
@@ -48,6 +48,7 @@ export const useDetailsFactory = <Item>(factoryParams: UseDetailsFactoryParams<I
         modified: isModified.value,
         disabled: isDisabled.value,
         validated: !isDisabled.value && isModified.value,
+        cachedValue: itemTemp.value,
         setFieldError,
         setErrors,
         resetModified,

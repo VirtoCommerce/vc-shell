@@ -113,7 +113,7 @@ const compare = (
     second_date = new Date(target);
   }
 
-  if (first_date?.getTime() > 0 && second_date?.getTime() > 0) {
+  if (first_date?.getTime && first_date?.getTime() > 0 && second_date?.getTime && second_date?.getTime() > 0) {
     if (comparer(second_date.getTime(), first_date.getTime())) {
       return errorMessage;
     }

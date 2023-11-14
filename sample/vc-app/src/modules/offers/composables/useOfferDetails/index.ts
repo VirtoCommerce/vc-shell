@@ -52,6 +52,7 @@ const { getApiClient } = useApiClient(VcmpSellerCatalogClient);
 export const useOfferDetails = (args: {
   props: InstanceType<typeof DynamicBladeForm>["$props"];
   emit: InstanceType<typeof DynamicBladeForm>["$emit"];
+  mounted: Ref<boolean>;
 }): UseDetails<IOffer, OfferDetailsScope> => {
   const { user } = useUser();
   const { t } = useI18n({ useScope: "global" });
@@ -243,36 +244,39 @@ export const useOfferDetails = (args: {
     return !item.value?.trackInventory;
   }
 
-  onMounted(async () => {
-    try {
-      offerLoading.value = true;
-      await loadSettings();
-      if (!args.props.param) {
-        item.value = reactive(new Offer());
-        item.value.trackInventory = true;
-        item.value.sku = generateSku();
-        await addEmptyInventory();
-        await addPrice();
-      }
+  watch(
+    () => args?.mounted.value,
+    async () => {
+      try {
+        offerLoading.value = true;
+        await loadSettings();
+        if (!args.props.param) {
+          item.value = reactive(new Offer());
+          item.value.trackInventory = true;
+          item.value.sku = generateSku();
+          await addEmptyInventory();
+          await addPrice();
+        }
 
-      const resolveId = (value: string) =>
-        args.props.options &&
-        "sellerProduct" in args.props.options &&
-        args.props.options.sellerProduct &&
-        typeof args.props.options.sellerProduct === "object" &&
-        value in args.props.options.sellerProduct &&
-        (args.props.options?.sellerProduct[value] as string);
+        const resolveId = (value: string) =>
+          args.props.options &&
+          "sellerProduct" in args.props.options &&
+          args.props.options.sellerProduct &&
+          typeof args.props.options.sellerProduct === "object" &&
+          value in args.props.options.sellerProduct &&
+          (args.props.options?.sellerProduct[value] as string);
 
-      const searchableProductId =
-        item.value?.productId || resolveId("publishedProductDataId") || resolveId("stagedProductDataId");
-      if (searchableProductId) {
-        await setProductItem(searchableProductId);
+        const searchableProductId =
+          item.value?.productId || resolveId("publishedProductDataId") || resolveId("stagedProductDataId");
+        if (searchableProductId) {
+          await setProductItem(searchableProductId);
+        }
+      } finally {
+        offerLoading.value = false;
+        validationState.value.resetModified(item.value, true);
       }
-    } finally {
-      offerLoading.value = false;
-      validationState.value.resetModified(item.value, true);
     }
-  });
+  );
 
   const scope = ref<OfferDetailsScope>({
     fetchProducts,

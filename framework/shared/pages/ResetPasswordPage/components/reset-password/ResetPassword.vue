@@ -86,7 +86,7 @@
           class="tw-mt-3 !tw-text-[#f14e4e]"
         >
           <!-- TODO: stylizing-->
-          {{ t(`PASSWORDRESET.ERRORS.${error}`) }}
+          {{ t(`PASSWORDRESET.ERRORS.${+error}`) }}
         </VcHint>
       </VcForm>
     </VcLoginForm>
@@ -100,26 +100,24 @@ import { Field, useForm } from "vee-validate";
 import { useUser } from "./../../../../../core/composables";
 import { useI18n } from "vue-i18n";
 
-const props = defineProps({
-  userId: {
-    type: String,
-    default: undefined,
-  },
-  userName: {
-    type: String,
-    default: undefined,
-  },
-  token: {
-    type: String,
-    default: undefined,
-  },
-});
+const props = defineProps<{
+  userId: string;
+  userName: string;
+  token: string;
+}>();
+
 const { validateToken, validatePassword, resetPasswordByToken, signIn, loading } = useUser();
 const router = useRouter();
 const { t } = useI18n({ useScope: "global" });
 const { validate: veeValidate } = useForm({ validateOnMount: false });
 
-const form = reactive({
+const form = reactive<{
+  isValid: boolean;
+  tokenIsValid: boolean;
+  errors: string[];
+  password: string;
+  confirmPassword: string;
+}>({
   isValid: false,
   tokenIsValid: false,
   errors: [],
@@ -141,7 +139,7 @@ const disableButton = computed(() => {
 const validate = async () => {
   if (form.tokenIsValid) {
     const errors = (await validatePassword(form.password)).errors;
-    form.errors = errors.map((x) => x.code);
+    form.errors = errors?.map((x) => x.code) as string[];
     if (form.confirmPassword !== form.password) {
       form.errors.push("Repeat-password");
     }
@@ -158,10 +156,10 @@ const resetPassword = async () => {
       if (result.succeeded) {
         router.push("/");
       } else {
-        form.errors = [result.errorCode];
+        form.errors = [result.errorCode as string];
       }
     } else {
-      form.errors = result.errors;
+      form.errors = result.errors as string[];
     }
   }
 };

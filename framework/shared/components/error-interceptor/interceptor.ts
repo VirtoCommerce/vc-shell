@@ -1,5 +1,5 @@
 import { useErrorHandler } from "./../../../core/composables";
-import { SetupContext, defineComponent, VNode } from "vue";
+import { defineComponent, VNode } from "vue";
 
 export interface Props {
   capture?: boolean;
@@ -12,7 +12,7 @@ export interface Emits {
 
 export type Slots = {
   slots: {
-    default: (args: { error: string; reset: () => void }) => VNode[];
+    default: (args: { error: string | null; reset: () => void }) => VNode[];
   };
 };
 
@@ -31,11 +31,11 @@ export default defineComponent({
       return true;
     },
   },
-  setup(props, { slots }: SetupContext & Slots) {
+  setup(props, { slots }) {
     const { error, reset } = useErrorHandler(props.capture);
 
     return () =>
-      slots.default({
+      slots.default?.({
         error: error.value,
         reset,
       });

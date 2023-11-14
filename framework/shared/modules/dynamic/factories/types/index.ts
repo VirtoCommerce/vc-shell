@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ComputedRef, MaybeRef, Ref, UnwrapNestedRefs, UnwrapRef } from "vue";
+import { ComputedRef, MaybeRef, Ref, UnwrapNestedRefs } from "vue";
 import { AsyncAction } from "../../../../../core/composables";
 import { SettingsSchema } from "../../types";
 import { Asset, AssetsHandler, IBladeToolbar, IImage } from "../../../../../core/types";
 import { useBladeNavigation } from "../../../../components";
+import { FormContext } from "vee-validate";
 
 export type ItemId = { id: string };
 
@@ -20,10 +21,11 @@ export interface IValidationState<Item> {
   disabled: boolean;
   modified: boolean;
   validated: boolean;
-  setFieldError: (field: string, message: string | string[]) => void;
-  setErrors: (fields: Record<string, string>) => void;
+  cachedValue: Item | undefined;
+  setFieldError: FormContext["setFieldError"];
+  setErrors: FormContext["setErrors"];
   resetModified: (data: MaybeRef<Item>, updateInitial?: MaybeRef<boolean>) => void;
-  validate: () => Promise<{ valid: boolean; errors: Record<string, string> }>;
+  validate: FormContext["validate"];
 }
 
 export type CustomQuery = { ids: string[] | null; allSelected?: boolean };
@@ -31,9 +33,9 @@ export type CustomQuery = { ids: string[] | null; allSelected?: boolean };
 export interface UseDetails<Item, Scope extends DetailsBaseBladeScope = DetailsBaseBladeScope> {
   load: AsyncAction<ItemId>;
   saveChanges: AsyncAction<Item>;
-  remove: AsyncAction<ItemId>;
+  remove?: AsyncAction<ItemId>;
   loading: ComputedRef<boolean>;
-  item: Ref<Item>;
+  item: Ref<Item | undefined>;
   validationState: ComputedRef<IValidationState<Item>>;
   scope?: ComputedRef<UnwrapNestedRefs<Scope>>;
   bladeTitle?: ComputedRef<string>;
@@ -64,7 +66,7 @@ export interface ListBaseBladeScope extends BaseBladeScope {
 }
 
 export interface DetailsBaseBladeScope extends BaseBladeScope {
-  disabled?: ComputedRef<boolean>;
+  disabled?: ComputedRef<boolean | undefined>;
   multilanguage?: {
     loading: ComputedRef<boolean>;
     currentLocale: Ref<string>;
@@ -89,8 +91,8 @@ export interface DetailsBaseBladeScope extends BaseBladeScope {
     }) => void;
   };
   assetsHandler?: {
-    assets?: AssetsHandler<Asset, Asset>;
-    images?: AssetsHandler<IImage, IImage>;
+    assets?: AssetsHandler<Asset>;
+    images?: AssetsHandler<IImage>;
   };
 }
 

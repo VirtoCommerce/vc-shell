@@ -21,7 +21,7 @@ const getIntlNumberFormat = (unit: momentUnit) => {
 
 // Workaround because of lacking precise (1 hour 42 minutes 35 seconds)
 // duration formatting in moment and Intl
-export function humanize(this: Duration & number, withSuffix: boolean): string {
+export function humanize(this: Duration & number, withSuffix?: boolean): string {
   const localeData = moment.localeData();
 
   const units = _.clone(momentUnits);
@@ -50,8 +50,8 @@ export function humanize(this: Duration & number, withSuffix: boolean): string {
   }));
   // add value of last unit as double-precision float, if it's greater than 0
   map.push({
-    unit: lastUnit,
-    value: this.get(lastUnit) > 0 ? this.as(lastUnit) : 0,
+    unit: lastUnit as momentUnit,
+    value: this.get(lastUnit as momentUnit) > 0 ? this.as(lastUnit as momentUnit) : 0,
   });
 
   // drop zero values from the beginning and the end of the array

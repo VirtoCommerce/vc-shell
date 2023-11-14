@@ -5,7 +5,6 @@ import ValidationField from "./ValidationField";
 import { getModel } from "../../helpers/getters";
 import { setModel } from "../../helpers/setters";
 import { InputCurrencySchema } from "../../types";
-import { unrefNested } from "../../helpers/unrefNested";
 
 export default {
   name: "InputCurrency",
@@ -15,12 +14,17 @@ export default {
       const field = InputCurrency({
         props: {
           ...props.baseProps,
-          option: getModel(props.element.optionProperty, props.fieldContext).value,
+          option: getModel(props.element.optionProperty, props.fieldContext ?? {}).value,
           optionLabel: props.element.optionLabel,
           optionValue: props.element.optionValue,
-          options: unref(props.bladeContext.scope)["currencies"],
+          options: unref(props.bladeContext.scope)?.["currencies"],
           "onUpdate:option": (e: string | number | Record<string, unknown>) => {
-            setModel({ value: e, property: props.element.optionProperty, context: props.fieldContext });
+            setModel({
+              value: e,
+              property: props.element.optionProperty,
+              context: props.fieldContext ?? {},
+              scope: props.bladeContext.scope,
+            });
           },
           clearable: props.element.clearable || false,
         },

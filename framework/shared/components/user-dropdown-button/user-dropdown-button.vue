@@ -38,7 +38,7 @@
         v-for="(item, i) in menuItems"
         :key="`menu_item_${i}`"
         class="user-dropdown-button__menu-item"
-        @click="item.hasOwnProperty('clickHandler') ? item.clickHandler() : null"
+        @click="item.hasOwnProperty('clickHandler') ? item.clickHandler?.() : null"
       >
         {{ item.title }}
       </div>

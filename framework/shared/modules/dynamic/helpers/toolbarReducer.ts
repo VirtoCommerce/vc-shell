@@ -10,7 +10,7 @@ export const toolbarReducer = (args: {
   defaultToolbarBindings: BaseBladeScope["toolbarOverrides"];
   customToolbarConfig: BaseBladeScope["toolbarOverrides"];
   context: UnwrapNestedRefs<DetailsBladeContext> | UnwrapNestedRefs<ListBladeContext>;
-}): UnwrapNestedRefs<ComputedRef<IBladeToolbar[]>> => {
+}): UnwrapNestedRefs<ComputedRef<IBladeToolbar[]>> | undefined => {
   if (!args) return;
   const toolbarMethodsMerge = _.merge(ref({}), ref(args.defaultToolbarBindings), ref(args.customToolbarConfig));
   return computed(() =>
@@ -27,7 +27,7 @@ export const toolbarReducer = (args: {
             : {
                 ...toolbarItemCtx,
                 clickHandler() {
-                  return toolbarItemCtx.clickHandler.call(null, args.context);
+                  return toolbarItemCtx.clickHandler?.call(null, args.context);
                 },
               };
 
@@ -38,6 +38,6 @@ export const toolbarReducer = (args: {
       }
 
       return acc;
-    }, [])
+    }, [] as IBladeToolbar[])
   );
 };

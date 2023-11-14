@@ -26,7 +26,7 @@
 
     <!-- Editor field -->
     <QuillEditor
-      :key="disabled.toString()"
+      :key="disabled?.toString()"
       v-model:content="content"
       class="quill-editor tw-border tw-border-solid tw-border-[color:var(--editor-border-color)] tw-rounded-b-[var(--editor-border-radius)] tw-h-[200px]"
       :class="{ 'tw-bg-[#fafafa] tw-text-[#424242] tw-cursor-default': disabled }"
@@ -35,6 +35,7 @@
       :modules="modules"
       content-type="html"
       :read-only="disabled"
+      :placeholder="placeholder"
       @update:content="onInput"
     />
     <slot
@@ -47,12 +48,12 @@
     </slot>
   </div>
 </template>
-
+<!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
 import { QuillEditor } from "@vueup/vue-quill";
 import "@vueup/vue-quill/dist/vue-quill.snow.css";
 import { useUser } from "./../../../../core/composables";
-import { ref, unref, watch } from "vue";
+import { ref, unref, watch, onMounted } from "vue";
 import ImageUploader from "quill-image-uploader";
 import { VcLabel, VcHint } from "./../../";
 
@@ -75,10 +76,7 @@ export interface Emits {
 
 const { getAccessToken } = useUser();
 
-const props = withDefaults(defineProps<Props>(), {
-  modelValue: null,
-  disabled: false,
-});
+const props = defineProps<Props>();
 
 const emit = defineEmits<Emits>();
 
@@ -130,6 +128,14 @@ const modules = {
     },
   },
 };
+
+onMounted(() => {
+  // fixes quill editor placeholder visibility issue when content is not empty
+  const editor = document.querySelector(".ql-editor.ql-blank");
+  if (editor && content.value) {
+    editor.classList.remove("ql-blank");
+  }
+});
 
 watch(
   () => props.modelValue,

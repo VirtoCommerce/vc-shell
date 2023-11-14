@@ -50,7 +50,7 @@
         </Field>
 
         <div
-          v-if="forgotPassword"
+          v-if="!!forgotPassword"
           class="tw-flex tw-justify-end tw-items-center tw-pt-2"
         >
           <VcButton
@@ -85,10 +85,10 @@
             v-for="external in loginProviders"
             :key="external.authenticationType"
             outline
-            @click="externalSignOn(external.authenticationType)"
+            @click="externalSignOn(external.authenticationType ?? '')"
             ><div class="tw-flex tw-flex-row tw-items-center">
               <img
-                :src="externalAuthIcon(external.authenticationType)"
+                :src="externalAuthIcon(external.authenticationType ?? '')"
                 :alt="external.authenticationType"
                 class="tw-h-5 tw-mr-2"
               />{{ external.displayName }}
@@ -239,11 +239,9 @@ const externalAuthIcon = (authenticationType: string) => {
 };
 
 const customization = computed(() => {
-  return (
-    !customizationLoading.value && {
-      logo: uiSettings.value?.logo || props.logo,
-    }
-  );
+  return {
+    logo: !customizationLoading.value ? uiSettings.value?.logo || props.logo : "",
+  };
 });
 
 const isDisabled = computed(() => {

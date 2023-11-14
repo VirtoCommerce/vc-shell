@@ -9,6 +9,7 @@
           :color="notificationStyle.color"
           :title="notification.title ?? ''"
           :icon="notificationStyle.icon"
+          :notification="notification"
         >
           <VcHint
             v-if="notification.description"
@@ -17,18 +18,12 @@
           >
         </VcNotificationTemplate>
       </template>
-      <div class="tw-flex tw-shrink-0">
-        <p class="tw-text-s tw-leading-[18px] tw-text-[#8e8e8e] tw-m-0">
-          {{ pushTime }}
-        </p>
-      </div>
     </VcRow>
   </div>
 </template>
 
 <script lang="ts" setup>
 import { computed, h } from "vue";
-import moment from "moment";
 import { PushNotification } from "./../../../../../../core/api/platform";
 import { VcRow, VcNotificationTemplate } from "./../../../../";
 import { NotificationTemplateConstructor } from "./../../../../../../core/types";
@@ -46,16 +41,10 @@ const props = defineProps<Props>();
 
 const emit = defineEmits<Emits>();
 
-const locale = window.navigator.language;
-
 const notificationStyle = computed(() => ({
   color: "#A9BCCD",
   icon: "fas fa-info",
 }));
-
-const pushTime = computed(() => {
-  return moment(props.notification.created).locale(locale).format("L LT");
-});
 
 const currentTemplate = computed(() => props.templates?.find((x) => x?.notifyType === props.notification.notifyType));
 

@@ -65,8 +65,13 @@ export interface Props {
 }
 
 export interface Emits {
-  (event: "update:modelValue", value: string): void;
+  (event: "update:modelValue", value: string | undefined): void;
 }
+
+defineSlots<{
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  error: (props: any) => any;
+}>();
 
 const props = withDefaults(defineProps<Props>(), {
   name: "Field",

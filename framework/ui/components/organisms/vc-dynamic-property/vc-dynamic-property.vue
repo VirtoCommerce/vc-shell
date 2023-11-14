@@ -191,7 +191,7 @@
 
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup generic="T extends {[x:string]: any; id?: string}">
-import { ref, onMounted, computed, watch } from "vue";
+import { ref, onMounted, computed, Ref } from "vue";
 import { Field } from "vee-validate";
 import { useI18n } from "vue-i18n";
 import { VcSelect, VcInput, VcTextarea, VcCheckbox } from "./../../";
@@ -244,7 +244,7 @@ const emit = defineEmits<{
 
 const { locale, te, t } = useI18n({ useScope: "global" });
 
-const items = ref([]);
+const items: Ref<any[]> = ref([]);
 const loading = ref(false);
 
 const computedProperty = computed(() => {
@@ -305,7 +305,7 @@ onMounted(async () => {
   await getOptions();
 });
 
-async function getOptions(keyword: string = null) {
+async function getOptions(keyword: string | undefined = undefined) {
   if (props.optionsGetter) {
     try {
       loading.value = true;

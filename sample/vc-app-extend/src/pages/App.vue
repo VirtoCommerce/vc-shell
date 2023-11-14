@@ -64,7 +64,7 @@ import {
   ChangePassword,
   LanguageSelector,
   UserDropdownButton,
-  BladePageComponent,
+  BladeInstanceConstructor,
 } from "@vc-shell/framework";
 import { computed, inject, onMounted, reactive, ref, Ref, markRaw, watch, provide } from "vue";
 import { useRoute, useRouter } from "vue-router";
@@ -99,7 +99,7 @@ const route = useRoute();
 const router = useRouter();
 const isAuthorized = ref(true);
 const isReady = ref(false);
-const pages = inject<BladePageComponent[]>("pages");
+const pages = inject<BladeInstanceConstructor[]>("pages");
 const internalRoutes = inject("bladeRoutes");
 provide("internalRoutes", internalRoutes);
 const isDesktop = inject<Ref<boolean>>("isDesktop");
@@ -257,10 +257,10 @@ function langInit() {
 async function customizationHandler() {
   await getUiCustomizationSettings();
 
-  if (!uiSettings.value.logo) {
+  if (!uiSettings.value?.logo) {
     applySettings({ logo: logoImage });
   }
-  if (!uiSettings.value.title) {
+  if (!uiSettings.value?.title) {
     applySettings({ title: undefined });
   }
 }

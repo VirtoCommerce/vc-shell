@@ -1,4 +1,5 @@
 import { Component, ComponentPublicInstance, DefineComponent, Slot as VueSlot } from "vue";
+import { ComponentPublicInstanceConstructor } from "../../../utilities/vueUtils";
 
 export type RawProps<T extends ComponentPublicInstanceConstructor<any>> = Omit<
   InstanceType<T>["$props"],
@@ -18,13 +19,6 @@ export interface UsePopupInternal {
 
 export interface PopupPlugin {
   popups: Partial<UsePopupProps<DefineComponent> & UsePopupInternal>[];
-}
-
-export interface ComponentPublicInstanceConstructor<T extends ComponentPublicInstance> {
-  __isFragment?: never;
-  __isTeleport?: never;
-  __isSuspense?: never;
-  new (...args: unknown[]): T;
 }
 
 export interface UsePopupProps<T extends ComponentPublicInstanceConstructor<any>> {

@@ -1,3 +1,1 @@
-import _StatusIcon from "./vc-status-icon.vue";
-
-export const VcStatusIcon = _StatusIcon as typeof _StatusIcon;
+export { default as VcStatusIcon } from "./vc-status-icon.vue";

@@ -38,18 +38,18 @@ export const useListFactory = <Items extends Record<string, any>[], Query extend
 
     const { loading: itemsLoading, action: load } = useAsync<Query>(async (query) => {
       searchQuery.value = { ...searchQuery.value, ...query };
-      searchResult.value = await factoryParams.load(query);
+      searchResult.value = await factoryParams.load?.(query as Query);
     });
 
     const { loading: itemsDelete, action: remove } = useAsync<CustomQuery>(async (customQuery) => {
-      await factoryParams.remove(searchQuery.value, customQuery);
+      await factoryParams.remove?.(searchQuery.value, customQuery as CustomQuery);
     });
 
     const loading = useLoading(itemsLoading, itemsDelete);
 
     const pagination = computed(() => ({
       currentPage: (searchQuery.value?.skip || 0) / Math.max(1, searchQuery?.value.take || 20) + 1,
-      totalCount: searchResult.value?.totalCount,
+      totalCount: searchResult.value?.totalCount || 0,
       pageSize: pageSize,
       get pages() {
         return Math.ceil(this.totalCount / this.pageSize);
@@ -57,7 +57,7 @@ export const useListFactory = <Items extends Record<string, any>[], Query extend
     }));
 
     return {
-      items: computed(() => searchResult.value?.results),
+      items: computed(() => searchResult.value?.results as Items),
       query: searchQuery,
       loading,
       pagination,

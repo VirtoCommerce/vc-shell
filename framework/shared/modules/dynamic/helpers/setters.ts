@@ -6,10 +6,19 @@ function setModel(args: {
   value: string | number | Record<string, any>;
   option?: string;
   context: Record<string, any>;
+  scope?: Record<string, any>;
 }) {
-  const { property, value, option, context } = args;
+  const { property, value, option, context, scope } = args;
 
-  _.set(context, property, option ? value[option as keyof typeof value] : value);
+  if (_.has(context, property)) {
+    _.set(context, property, option ? value[option as keyof typeof value] : value);
+  } else if (scope && _.has(scope, property)) {
+    if (typeof scope[property] === "function") {
+      scope[property](value);
+    } else {
+      scope[property] = value;
+    }
+  }
 }
 
 export { setModel };

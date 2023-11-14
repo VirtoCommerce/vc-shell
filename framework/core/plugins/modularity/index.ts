@@ -1,10 +1,14 @@
 import { App, Component } from "vue";
 import { i18n } from "./../i18n";
 import { Router } from "vue-router";
-import { BladeConstructor } from "./../../../shared/components/blade-navigation/types";
+import { BladeInstanceConstructor } from "./../../../shared/components/blade-navigation/types";
 import { kebabToPascal } from "./../../utilities";
 
-export const createModule = (components: unknown, locales?: unknown, isBladeComponent?: boolean) => ({
+export const createModule = (
+  components: { [key: string]: BladeInstanceConstructor },
+  locales?: unknown,
+  isBladeComponent?: boolean
+) => ({
   install(app: App): void {
     // Register components
     Object.entries(components).forEach(([componentName, component]) => {
@@ -21,7 +25,7 @@ export const createModule = (components: unknown, locales?: unknown, isBladeComp
 });
 
 export const createAppModule = (
-  pages: { [key: string]: BladeConstructor },
+  pages: { [key: string]: BladeInstanceConstructor },
   locales?: { [key: string]: object },
   notificationTemplates?: { [key: string]: Component },
   moduleComponents?: { [key: string]: Component }

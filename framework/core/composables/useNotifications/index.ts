@@ -95,11 +95,10 @@ export function useNotifications(notifyType?: string | string[]): INotifications
 
   const moduleNotifications = computed(
     () =>
-      (notifyType &&
-        pushNotifications.value.filter(
-          (item: PushNotification) => item.isNew && notifyType.includes(item.notifyType)
-        )) ??
-      []
+      pushNotifications.value.filter(
+        (item: PushNotification) =>
+          item.isNew && !!item.notifyType && !!notifyType && notifyType.includes(item.notifyType)
+      ) ?? []
   );
 
   return {

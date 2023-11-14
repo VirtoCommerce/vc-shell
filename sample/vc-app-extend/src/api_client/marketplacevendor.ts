@@ -3120,7 +3120,6 @@ export class VcmpSellerSecurityClient extends AuthApiBase {
         return this.transformOptions(options_).then(transformedOptions_ => {
             return this.http.fetch(url_, transformedOptions_);
         }).then((_response: Response) => {
-          console.log('SEARCH')
             return this.processSearchSellerUsers(_response);
         });
     }

@@ -17,7 +17,6 @@
       :blades="bladesRefs"
       :buttons="toolbarItems"
       :title="title"
-      @toolbarbutton:click="onToolbarButtonClick"
       @menubutton:click="($refs.menu as Record<'isMobileVisible', boolean>).isMobileVisible = true"
       @backlink:click="$emit('backlink:click', bladesRefs.length - 2)"
       @logo:click="$emit('logo:click')"
@@ -61,16 +60,16 @@ import { getCurrentInstance, markRaw } from "vue";
 import { BladeMenu, IBladeToolbar } from "../../../../core/types";
 import VcAppBar from "./_internal/vc-app-bar/vc-app-bar.vue";
 import VcAppMenu from "./_internal/vc-app-menu/vc-app-menu.vue";
-import { BladePageComponent, IBladeRef, useBladeNavigation } from "./../../../../shared";
+import { BladeInstanceConstructor, IBladeRef, useBladeNavigation } from "./../../../../shared";
 
 export interface Props {
-  pages?: BladePageComponent[];
+  pages?: BladeInstanceConstructor[];
   menuItems?: BladeMenu[];
   mobileMenuItems?: IBladeToolbar[];
   toolbarItems?: IBladeToolbar[];
   isReady?: boolean;
   isAuthorized?: boolean;
-  logo?: string;
+  logo: string;
   version?: string;
   theme?: "light" | "dark";
   bladesRefs?: IBladeRef[];
@@ -109,25 +108,18 @@ const onMenuItemClick = function ({ item }: { item: BladeMenu }) {
   if (item.clickHandler && typeof item.clickHandler === "function") {
     item.clickHandler(instance?.exposed);
   } else {
-    openBlade(
-      {
-        blade: markRaw(item.component),
-      },
-      true
-    );
-  }
-};
-
-const onToolbarButtonClick = function (item: Record<string, unknown>) {
-  console.debug(`vc-app#onToolbarButtonClick() called.`);
-
-  if (item.clickHandler && typeof item.clickHandler === "function") {
-    item.clickHandler(instance?.proxy);
+    if (item.component) {
+      openBlade(
+        {
+          blade: markRaw(item.component),
+        },
+        true
+      );
+    }
   }
 };
 
 defineExpose({
-  onToolbarButtonClick,
   onMenuItemClick,
 });
 </script>

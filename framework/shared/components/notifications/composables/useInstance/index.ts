@@ -7,7 +7,7 @@ interface IUseInstance {
   clearContainer(): void;
 }
 
-const containerInstance: Ref<App<Element>> = ref();
+const containerInstance: Ref<App<Element> | undefined> = ref();
 
 export function useInstance(): IUseInstance {
   const { pending, notificationContainer } = useContainer();
@@ -21,7 +21,7 @@ export function useInstance(): IUseInstance {
 
   function unmountComponent() {
     try {
-      containerInstance.value.unmount();
+      containerInstance.value?.unmount();
       document.getElementById("notification")?.remove();
       containerInstance.value = undefined;
       notificationContainer.value = [];

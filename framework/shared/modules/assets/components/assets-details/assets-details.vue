@@ -149,14 +149,14 @@ const isDirty = useIsFormDirty();
 const { t } = useI18n({ useScope: "global" });
 const defaultAsset = ref<Asset>({ ...props.options?.asset });
 
-const readonly = computed(() => props.options.disabled);
+const readonly = computed(() => props.options?.disabled);
 
 const assetNameClean = computed({
   get() {
-    return defaultAsset.value.name.split(".").shift();
+    return defaultAsset.value.name?.split(".").shift();
   },
-  set(value: string) {
-    const fileExtension = defaultAsset.value.name.split(".").pop();
+  set(value) {
+    const fileExtension = defaultAsset.value.name?.split(".").pop();
     defaultAsset.value.name = value + "." + fileExtension;
   },
 });
@@ -194,7 +194,10 @@ const bladeToolbar = ref<IBladeToolbar[]>([
 
 const assetType = computed(() => defaultAsset.value?.typeId);
 
-function copyLink(link: string) {
+function copyLink(link: string | undefined) {
+  if (!link) {
+    return;
+  }
   if (link.charAt(0) === "/") {
     navigator.clipboard?.writeText(`${location.origin}${link}`);
   } else {
@@ -202,7 +205,10 @@ function copyLink(link: string) {
   }
 }
 
-function openLink(link: string) {
+function openLink(link: string | undefined) {
+  if (!link) {
+    return;
+  }
   location.href = link;
 }
 </script>

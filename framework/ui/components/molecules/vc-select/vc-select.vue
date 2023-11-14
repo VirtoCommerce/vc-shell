@@ -257,8 +257,8 @@
 </template>
 
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
-<script lang="ts" setup generic="T, P extends {results?: T[]; totalCount?: number }">
-import { ref, computed, watch, nextTick, Ref, toRefs, MaybeRef, unref } from "vue";
+<script lang="ts" setup generic="T, P extends {results: T[]; totalCount: number }">
+import { ref, computed, watch, nextTick, Ref, toRefs } from "vue";
 import { vOnClickOutside } from "@vueuse/components";
 import * as _ from "lodash-es";
 import { useIntersectionObserver } from "@vueuse/core";
@@ -485,7 +485,9 @@ const emit = defineEmits<{
    */
 
   "update:modelValue": [
-    inputValue: MaybeArray<string | Option | (T & P["results"][number] & object)[keyof T | keyof P["results"][number]]>
+    inputValue: MaybeArray<
+      string | Option | (T & P["results"][number] & object)[keyof T | keyof P["results"][number]]
+    > | null
   ];
   /**
    * Emitted when user wants to filter a value
@@ -710,7 +712,7 @@ function getPropValueFn(propValue: OptionProp<Option>, defaultVal: OptionProp<Op
 
   return typeof val === "function"
     ? val
-    : (opt: Option) => (opt !== null && typeof opt === "object" && val in opt ? opt[val as keyof Option] : opt);
+    : (opt: Option) => (opt !== null && typeof opt === "object" && val && val in opt ? opt[val as keyof Option] : opt);
 }
 
 function getOption(value: Option, valueCache: Option[]) {

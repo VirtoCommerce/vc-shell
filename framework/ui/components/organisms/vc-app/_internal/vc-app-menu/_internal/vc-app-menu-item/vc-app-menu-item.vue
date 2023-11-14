@@ -10,8 +10,8 @@
           :is-active="isExactActive"
           :children="children"
           :sticky="sticky"
-          :icon="icon"
-          :title="title"
+          :icon="icon ?? ''"
+          :title="title ?? ''"
           @on-click="onMenuItemClick"
         />
       </router-link>
@@ -20,8 +20,8 @@
       <vc-app-menu-link
         :children="children"
         :sticky="sticky"
-        :icon="icon"
-        :title="title"
+        :icon="icon ?? ''"
+        :title="title ?? ''"
         @on-click="onMenuItemClick"
       />
 
@@ -36,7 +36,7 @@
         >
           <router-link
             v-slot="{ isActive }"
-            :to="nested.component.url"
+            :to="(nested.component?.url as string)"
             custom
           >
             <div
@@ -64,12 +64,12 @@ import { onMounted, ref } from "vue";
 import { BladeMenu } from "./../../../../../../../../core/types";
 import VcAppMenuLink from "./_internal/vc-app-menu-link.vue";
 import { useRoute } from "vue-router";
-import { BladeConstructor } from "./../../../../../../../../shared";
+import { BladeInstanceConstructor } from "./../../../../../../../../shared";
 
 export interface Props {
   sticky?: boolean;
   isVisible?: boolean;
-  component?: BladeConstructor;
+  component?: BladeInstanceConstructor;
   icon?: string;
   title?: string;
   children?: BladeMenu[];

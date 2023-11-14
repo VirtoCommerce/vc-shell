@@ -1,4 +1,4 @@
-import { ExtractPropTypes, h, VNode } from "vue";
+import { ExtractPropTypes, h, VNode, Component } from "vue";
 import { InputField } from "../factories";
 import componentProps from "./props";
 import ValidationField from "./ValidationField";
@@ -25,15 +25,15 @@ export default {
           clearable: props.element.clearable || false,
         },
         options: props.baseOptions,
-        slots: Object.entries(slotsMap).reduce((acc, [key, value]: [keyof InputSchema, keyof InputSchema]) => {
-          if (props.element[key]) {
-            acc[value] = () =>
+        slots: Object.entries(slotsMap).reduce((acc, [key, value]) => {
+          if (props.element[key as keyof InputSchema]) {
+            acc[value as keyof InputSchema] = () =>
               nodeBuilder({
-                controlSchema: props.element[key] as ControlSchema,
-                parentId: `${(props.element[key] as ControlSchema).id}`,
-                internalContext: props.fieldContext,
+                controlSchema: props.element[key as keyof InputSchema] as ControlSchema,
+                parentId: `${(props.element[key as keyof InputSchema] as ControlSchema).id}`,
+                internalContext: props.fieldContext ?? {},
                 bladeContext: props.bladeContext,
-                currentLocale: props.currentLocale,
+                currentLocale: props.currentLocale ?? "en-US",
                 formData: props.formData,
               });
           }
@@ -41,7 +41,7 @@ export default {
         }, {} as Record<keyof InputSchema, () => VNode | false>),
       });
 
-      const render = h(field.component, field.props, field.slots);
+      const render = h(field.component as Component, field.props, field.slots);
 
       if (field.props.rules) {
         return props.baseOptions.visibility

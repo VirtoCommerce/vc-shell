@@ -1,11 +1,6 @@
-import { ComponentPublicInstance, ComputedRef, Ref } from "vue";
-import {
-  CoreBladeExposed,
-  BladeConstructor,
-  ExtractedBladeOptions,
-  ComponentInstanceConstructor,
-  BladeInstanceConstructor,
-} from "./../../shared";
+import { ComponentPublicInstance, ComputedRef, DefineComponent, Ref, UnwrapRef, Component } from "vue";
+import { CoreBladeExposed, ExtractedBladeOptions, BladeInstanceConstructor } from "./../../shared";
+import { ComponentPublicInstanceConstructor } from "../../shared/utilities/vueUtils";
 
 // Type instead of interface here is workaround for:
 // https://github.com/microsoft/TypeScript/issues/15300
@@ -55,15 +50,15 @@ export interface IBladeDropdownItem {
   clickHandler?(): void;
 }
 
-export interface BladeMenu<T extends ComponentPublicInstance = ComponentPublicInstance> {
+export interface BladeMenu<T extends Component = Component> {
   title?: string | Ref<string>;
   icon?: string;
   isVisible?: boolean | Ref<boolean>;
-  component?: BladeConstructor<T>;
+  component?: BladeInstanceConstructor<T>;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  clickHandler?(app?: Record<string, any> | CoreBladeExposed): void;
+  clickHandler?(app?: Record<string, any> | CoreBladeExposed | null): void;
   children?: BladeMenu<T>[];
-  options?: ExtractedBladeOptions<InstanceType<BladeConstructor<T>>["$props"], "options">;
+  options?: ExtractedBladeOptions<InstanceType<BladeInstanceConstructor<T>>["$props"], "options">;
 }
 
 export interface IBladeToolbar<T extends ComponentPublicInstance = ComponentPublicInstance>
@@ -71,10 +66,10 @@ export interface IBladeToolbar<T extends ComponentPublicInstance = ComponentPubl
   id?: string;
   icon?: string | (() => string);
   isAccent?: boolean | ComputedRef<boolean>;
-  component?: ComponentInstanceConstructor<T>;
-  disabled?: boolean | ComputedRef<boolean>;
+  component?: ComponentPublicInstanceConstructor<T>;
+  disabled?: boolean | ComputedRef<boolean | undefined>;
   dropdownItems?: IBladeDropdownItem[];
-  options?: InstanceType<ComponentInstanceConstructor<T>>["$props"];
+  options?: InstanceType<ComponentPublicInstanceConstructor<T>>["$props"];
 }
 
 export type NavigationMenu<T> = T extends {
@@ -94,15 +89,15 @@ export type NavigationMenu<T> = T extends {
   : T & { component?: BladeInstanceConstructor };
 
 export type ToolbarMenu<T> = T extends {
-  component?: infer C extends ComponentInstanceConstructor;
+  component?: infer C extends ComponentPublicInstanceConstructor;
 }
   ? {
       component?: C;
       options?: InstanceType<C>["$props"];
     } & IBladeToolbar
-  : T & { component?: ComponentInstanceConstructor };
+  : T & { component?: ComponentPublicInstanceConstructor };
 
-export type NotificationTemplateConstructor = ComponentInstanceConstructor & {
+export type NotificationTemplateConstructor = ComponentPublicInstanceConstructor & {
   notifyType: string;
 };
 
@@ -115,13 +110,13 @@ export interface IActionBuilderResult<T = {}> {
   clickHandler(item?: T): void;
 }
 
-export interface AssetsHandler<T, A> {
-  loading: Ref<boolean>;
-  upload: (files: FileList, assetArr: T[], uploadCatalog: string, uploadFolder: string) => Promise<T[]>;
-  edit: (assetsArr: T[], asset: A) => Promise<T[]>;
-  editBulk: (assets: A[]) => T[];
-  remove: (assetArr: T[], asset: A) => Promise<T[]>;
-  removeBulk: (assetArr: T[], assetsArrEdited: T[]) => Promise<T[]>;
+export interface AssetsHandler<T> {
+  loading?: Ref<boolean>;
+  upload?: (files: FileList, assetArr: T[], uploadCatalog: string, uploadFolder: string) => Promise<T[] | void> | void;
+  edit?: (assetsArr: T[], asset: T) => Promise<T[] | void> | void;
+  editBulk?: (assets: T[]) => T[];
+  remove?: (assetArr: T[], asset: T) => Promise<T[] | void> | void;
+  removeBulk?: (assetArr: T[], assetsArrEdited: T[]) => Promise<T[] | void> | void;
 }
 
 export interface IImage {

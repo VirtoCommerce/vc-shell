@@ -1,4 +1,4 @@
-import { ExtractPropTypes, h } from "vue";
+import { Component, ExtractPropTypes, h } from "vue";
 import { VideoField } from "../factories";
 import componentProps from "./props";
 import { VideoSchema } from "../../types";
@@ -13,14 +13,11 @@ export default {
           ...props.baseProps,
           source: props.baseProps.modelValue,
           size: props.element.size,
-          rounded: props.element.rounded,
-          bordered: props.element.bordered,
-          clickable: props.element.clickable,
         },
         options: props.baseOptions,
       });
 
-      const render = h(field.component, field.props);
+      const render = h(field.component as Component, field.props);
 
       return props.baseOptions.visibility ? render : null;
     };

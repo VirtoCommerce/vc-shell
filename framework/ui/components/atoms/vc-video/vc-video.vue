@@ -15,17 +15,7 @@
       >
     </VcLabel>
 
-    <div
-      :class="[
-        `vc-video_auto`,
-        {
-          'tw-rounded-full tw-pb-[var(--video-padding-bottom-1x1)]': rounded,
-          'tw-rounded-[3px] tw-border tw-border-solid tw-border-[color:#efefef]': bordered,
-          'tw-cursor-pointer': clickable,
-        },
-        'tw-relative',
-      ]"
-    >
+    <div :class="[`vc-video_auto`, 'tw-relative']">
       <div v-if="source">
         <iframe
           :src="`${source}`"
@@ -56,9 +46,6 @@ import { VcIcon, VcLabel } from "./../../";
 export interface Props {
   label?: string;
   tooltip?: string;
-  rounded?: boolean;
-  bordered?: boolean;
-  clickable?: boolean;
   source?: string;
   size?: "auto" | "xs" | "s" | "m" | "l" | "xl" | "xxl";
 }

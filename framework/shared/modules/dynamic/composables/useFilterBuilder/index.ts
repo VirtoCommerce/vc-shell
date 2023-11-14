@@ -40,14 +40,16 @@ interface Data {
 }
 
 export interface UseFilterBuilder {
-  filterComponent: (slotMethods: { close: () => void }) => VNode<
-    RendererNode,
-    RendererElement,
-    {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      [key: string]: any;
-    }
-  >;
+  filterComponent: (slotMethods: { close: () => void }) =>
+    | VNode<
+        RendererNode,
+        RendererElement,
+        {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          [key: string]: any;
+        }
+      >
+    | undefined;
   activeFilterCount: ComputedRef<number>;
   isFilterVisible: ComputedRef<boolean>;
   reset: () => Promise<void>;
@@ -55,7 +57,11 @@ export interface UseFilterBuilder {
   readonly filter: Record<string, any>;
 }
 
-export default <Query>(args: { data: Data; query: MaybeRef<Query>; load: AsyncAction<Query> }): UseFilterBuilder => {
+export default <Query>(args: {
+  data: Data | undefined;
+  query: MaybeRef<Query>;
+  load: AsyncAction<Query>;
+}): UseFilterBuilder => {
   const _search = args.load;
   const _data = args.data;
 
@@ -108,7 +114,9 @@ export default <Query>(args: { data: Data; query: MaybeRef<Query>; load: AsyncAc
           const filterData = control.data;
           const fields = createCheckboxFromData(filterData, control);
 
-          obj = fields;
+          if (fields) {
+            obj = fields;
+          }
         }
         if (control.component === "vc-input") {
           obj[control.field] = createInput(control);

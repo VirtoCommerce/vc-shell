@@ -12,12 +12,13 @@ import StatusField from "./fields/StatusField";
 import ContentField from "./fields/ContentField";
 import VideoField from "./fields/VideoField";
 import ImageField from "./fields/ImageField";
+import TextareaField from "./fields/TextareaField";
 
 import { ControlSchema } from "../types";
-import { ConcreteComponent } from "vue";
 
 type AvailableComponents = Exclude<ControlSchema["component"], "vc-widgets">;
-type TFieldMap = Record<AvailableComponents, ConcreteComponent>;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type TFieldMap = Record<AvailableComponents, any>;
 
 const FIELD_MAP: TFieldMap = {
   "vc-select": SelectField,
@@ -34,6 +35,7 @@ const FIELD_MAP: TFieldMap = {
   "vc-field": ContentField,
   "vc-video": VideoField,
   "vc-image": ImageField,
+  "vc-textarea": TextareaField,
 };
 
 export default FIELD_MAP;

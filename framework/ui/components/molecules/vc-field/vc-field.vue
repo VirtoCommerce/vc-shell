@@ -43,7 +43,7 @@ export interface Props {
   /**
    * Field type
    */
-  type?: "text" | "date" | "date-ago" | "link";
+  type?: "text" | "normal" | "date" | "date-ago" | "link";
   /**
    * Field content
    */

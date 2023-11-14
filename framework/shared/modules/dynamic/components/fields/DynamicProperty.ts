@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ExtractPropTypes, computed, h, ref, toValue, watch, UnwrapNestedRefs } from "vue";
+import { ExtractPropTypes, computed, h, ref, toValue, watch, UnwrapNestedRefs, Component } from "vue";
 import { DynamicProperties } from "../factories";
 import componentProps from "./props";
 import { unrefNested } from "../../helpers/unrefNested";
@@ -31,7 +31,7 @@ export default {
   props: componentProps,
   emits: ["setModelData"],
   setup(props: ExtractPropTypes<typeof componentProps> & { element: DynamicPropertiesSchema }) {
-    if (!props.bladeContext.scope.dynamicProperties) {
+    if (!props.bladeContext.scope?.dynamicProperties) {
       throw new Error(
         `There is no DynamicProperties config provided in blade scope: ${JSON.stringify(
           props.bladeContext.scope,
@@ -54,7 +54,7 @@ export default {
     );
 
     const filteredProps = reactify(
-      (prop: IProperty[], { include, exclude }: { include: string[]; exclude: string[] }) => {
+      (prop: IProperty[], { include, exclude }: { include?: string[]; exclude?: string[] }) => {
         if (prop) {
           return prop.filter((x) => {
             if (include) return include?.includes(x.type);
@@ -75,20 +75,30 @@ export default {
       return (dynamicProps.value || [])?.map((prop) =>
         DynamicProperties({
           props: {
-            disabled: "disabled" in props.bladeContext.scope && props.bladeContext.scope.disabled,
+            disabled:
+              props.bladeContext.scope && "disabled" in props.bladeContext.scope && props.bladeContext.scope.disabled,
             property: prop,
             modelValue: computed(() =>
-              props.bladeContext.scope.dynamicProperties.getPropertyValue(prop, toValue(props.currentLocale))
+              props.bladeContext.scope?.dynamicProperties?.getPropertyValue(
+                prop,
+                toValue(props.currentLocale ?? "en-US")
+              )
             ),
-            optionsGetter: props.bladeContext.scope.dynamicProperties.loadDictionaries,
+            optionsGetter: props.bladeContext.scope?.dynamicProperties?.loadDictionaries as (
+              property: Record<string, any>,
+              keyword?: string | undefined,
+              locale?: string | undefined
+            ) => Promise<Record<string, any>[]>,
             "onUpdate:model-value": (args: {
               property: Record<string, any>;
               value: string | Record<string, any>[];
               dictionary?: Record<string, any>[];
               locale?: string;
             }) => {
-              props.bladeContext.scope.dynamicProperties.setPropertyValue(args);
-              setModel({ context: props.fieldContext, property: props.element.property, value: internalModel.value });
+              props.bladeContext.scope?.dynamicProperties?.setPropertyValue(args);
+              if (props.fieldContext) {
+                setModel({ context: props.fieldContext, property: props.element.property, value: internalModel.value });
+              }
             },
             required: prop.required,
             multivalue: prop.multivalue,
@@ -112,7 +122,7 @@ export default {
 
     return () => {
       return properties && properties.length && props.baseOptions.visibility
-        ? properties?.map((field) => h(field.component, unrefNested(field.props)))
+        ? properties?.map((field) => h(field.component as Component, unrefNested(field.props)))
         : null;
     };
   },

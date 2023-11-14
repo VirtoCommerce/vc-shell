@@ -110,7 +110,6 @@ export const details: DynamicDetailsSchema = {
             {
               id: "dynamicProps",
               component: "vc-dynamic-properties",
-              label: "Properties",
               property: "properties",
               include: ["Variation"],
             },

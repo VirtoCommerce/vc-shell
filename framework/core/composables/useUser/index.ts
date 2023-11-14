@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { computed, Ref, ref, ComputedRef } from "vue";
 import ClientOAuth2 from "client-oauth2";
 import {
@@ -19,9 +20,9 @@ import { useLocalStorage } from "@vueuse/core";
 //and the user application that is hosted in the same domain as the sub application.
 const VC_AUTH_DATA_KEY = "ls.authenticationData";
 
-const user: Ref<UserDetail> = ref();
+const user: Ref<UserDetail | undefined> = ref();
 const loading: Ref<boolean> = ref(false);
-const authData: Ref<AuthData> = ref();
+const authData: Ref<AuthData | undefined> = ref();
 const authClient = new ClientOAuth2({
   accessTokenUri: `/connect/token`,
   scopes: ["offline_access"],
@@ -29,10 +30,10 @@ const authClient = new ClientOAuth2({
 const securityClient = new SecurityClient();
 
 interface IUseUser {
-  user: ComputedRef<UserDetail | null>;
+  user: ComputedRef<UserDetail | undefined>;
   loading: ComputedRef<boolean>;
-  isAdministrator: ComputedRef<boolean>;
-  getAccessToken: () => Promise<string | null>;
+  isAdministrator: ComputedRef<boolean | undefined>;
+  getAccessToken: () => Promise<string | undefined>;
   loadUser: () => Promise<UserDetail>;
   signIn: (username: string, password: string) => Promise<SignInResults>;
   signOut: () => Promise<void>;
@@ -40,8 +41,8 @@ interface IUseUser {
   validatePassword: (password: string) => Promise<IdentityResult>;
   resetPasswordByToken: (userId: string, password: string, token: string) => Promise<SecurityResult>;
   requestPasswordReset: (loginOrEmail: string) => Promise<RequestPasswordResult>;
-  changeUserPassword: (oldPassword: string, newPassword: string) => Promise<SecurityResult>;
-  getExternalLoginProviders: () => Promise<ExternalSignInProviderInfo[]>;
+  changeUserPassword: (oldPassword: string, newPassword: string) => Promise<SecurityResult | undefined>;
+  getExternalLoginProviders: () => Promise<ExternalSignInProviderInfo[] | undefined>;
   externalSignIn: (authenticationType?: string | undefined, returnUrl?: string | undefined) => void;
   getLoginType: () => Promise<LoginType[]>;
   isAuthenticated: () => Promise<boolean>;
@@ -50,7 +51,9 @@ interface IUseUser {
 export function useUser(): IUseUser {
   const base = window.location.origin + "/";
   const externalSecurityClient = new ExternalSignInClient(base);
-  const externalSignInStorage = useLocalStorage<{ providerType: string }>("externalSignIn", { providerType: null });
+  const externalSignInStorage = useLocalStorage<{ providerType: string | undefined }>("externalSignIn", {
+    providerType: undefined,
+  });
 
   const isAuthenticated = async () => {
     return !!((externalSignInStorage.value && externalSignInStorage.value.providerType) ?? (await getAccessToken()));
@@ -143,7 +146,7 @@ export function useUser(): IUseUser {
     return { ...user.value } as UserDetail;
   }
 
-  async function getAccessToken(): Promise<string | null> {
+  async function getAccessToken(): Promise<string | undefined> {
     console.debug(`[@vc-shell/framework#useUser:getAccessToken] - Entry point`);
     if (!authData.value || Object.keys(authData.value).length === 0) {
       authData.value = await readAuthData();
@@ -202,7 +205,7 @@ export function useUser(): IUseUser {
     }
   }
 
-  async function changeUserPassword(oldPassword: string, newPassword: string): Promise<SecurityResult> {
+  async function changeUserPassword(oldPassword: string, newPassword: string): Promise<SecurityResult | undefined> {
     const token = await getAccessToken();
     let result;
 
@@ -215,7 +218,7 @@ export function useUser(): IUseUser {
         });
 
         result = await securityClient.changeCurrentUserPassword(command);
-      } catch (e) {
+      } catch (e: any) {
         return { succeeded: false, errors: [e.message] } as SecurityResult;
       } finally {
         loading.value = false;
@@ -225,8 +228,8 @@ export function useUser(): IUseUser {
     return result;
   }
 
-  async function getLoginType(): Promise<LoginType[]> {
-    let result = null as LoginType[];
+  async function getLoginType() {
+    let result: LoginType[] | null = null;
     try {
       result = await securityClient.getLoginTypes();
     } catch (e) {
@@ -237,18 +240,19 @@ export function useUser(): IUseUser {
     return result;
   }
 
-  async function getExternalLoginProviders(): Promise<ExternalSignInProviderInfo[]> {
-    let result = null as ExternalSignInProviderInfo[];
+  async function getExternalLoginProviders() {
+    let result: ExternalSignInProviderInfo[] | undefined = undefined;
     try {
       result = await externalSecurityClient.getExternalLoginProviders();
     } catch (e) {
       console.error(e);
+      // TODO check error in app!!!
     }
 
     return result;
   }
 
-  async function externalSignIn(authenticationType: string, returnUrl: string) {
+  async function externalSignIn(authenticationType: string | undefined, returnUrl: string | undefined) {
     try {
       let url_ = base + "externalsignin?";
 
@@ -288,7 +292,7 @@ export function useUser(): IUseUser {
   return {
     user: computed(() => user.value),
     loading: computed(() => loading.value),
-    isAdministrator: computed(() => user.value.isAdministrator),
+    isAdministrator: computed(() => user.value?.isAdministrator),
     isAuthenticated,
     getAccessToken,
     loadUser,

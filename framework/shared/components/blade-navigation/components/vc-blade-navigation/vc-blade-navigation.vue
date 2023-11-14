@@ -15,7 +15,7 @@
         :ref="(el: CoreBladeExposed) => setParentRef(el, Component)"
         v-element-hover="
           (state) => {
-            setActiveBlade(state, Component.type as Component);
+            setActiveBlade(state, Component.type as BladeInstanceConstructor<ComponentPublicInstance>);
           }
         "
         :closable="false"
@@ -46,7 +46,7 @@
         :ref="(el: CoreBladeExposed) => setBladesRef(el, blade)"
         v-element-hover="
           (state) => {
-            setActiveBlade(state, blade.blade);
+            if (blade.blade) setActiveBlade(state, blade.blade);
           }
         "
         :param="blade.param"
@@ -69,7 +69,7 @@
 
 <script lang="ts" setup>
 import { computed, ref, VNode, nextTick } from "vue";
-import type { Component } from "vue";
+import type { Component, ComponentPublicInstance } from "vue";
 import { useRoute } from "vue-router";
 import {
   IBladeContainer,
@@ -77,7 +77,7 @@ import {
   IBladeEvent,
   IParentCallArgs,
   IBladeRef,
-  BladeConstructor,
+  BladeInstanceConstructor,
 } from "./../../../../../shared";
 import { ErrorInterceptor } from "./../../../error-interceptor";
 import { vElementHover } from "@vueuse/components";
@@ -123,7 +123,7 @@ const setActiveBlade = (state: boolean, el: Component) => {
   }
 };
 
-function handleMaximizeBlade(id: number, expand: boolean) {
+function handleMaximizeBlade(id: number | undefined, expand: boolean) {
   state.value = visibleBlades.value?.map((x: IBladeRef) => {
     if (x.blade.idx === id) {
       x.expanded = expand;
@@ -132,7 +132,7 @@ function handleMaximizeBlade(id: number, expand: boolean) {
   });
 }
 
-function findStateById(id: number) {
+function findStateById(id: number | undefined) {
   return state.value?.find((item) => item.blade.idx === id)?.expanded;
 }
 
@@ -144,7 +144,7 @@ async function setParentRef(el: CoreBladeExposed, bladeNode: VNode) {
           active: _.isEqual(activeBlade.value, bladeNode.type),
           exposed: el,
           blade: {
-            blade: bladeNode.type as BladeConstructor,
+            blade: bladeNode.type as BladeInstanceConstructor,
             param: bladeNode.props?.param as string,
             idx: 0,
           },

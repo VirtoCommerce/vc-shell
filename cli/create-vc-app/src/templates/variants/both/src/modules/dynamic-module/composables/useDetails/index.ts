@@ -1,5 +1,5 @@
 /* eslint-disable import/no-unresolved */
-import { computed, ref } from "vue";
+import { computed, ref, Ref } from "vue";
 import img1 from "/assets/1.jpeg";
 import img2 from "/assets/2.jpg";
 import img3 from "/assets/3.jpg";
@@ -19,6 +19,7 @@ export interface DynamicItemScope extends DetailsBaseBladeScope {
 export default (args: {
   props: InstanceType<typeof DynamicBladeForm>["$props"];
   emit: InstanceType<typeof DynamicBladeForm>["$emit"];
+  mounted: Ref<boolean>;
 }) => {
   const factory = useDetailsFactory<{ imgSrc: string; name: string; createdDate: Date; id: string }>({
     load: async (payload) => {

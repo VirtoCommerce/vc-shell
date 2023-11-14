@@ -1,17 +1,23 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ComponentPublicInstance, VNode, ComponentInternalInstance, VNodeTypes, Ref } from "vue";
+import {
+  AppContext,
+  Component,
+  ComponentOptionsBase,
+  ComponentOptionsMixin,
+  ComponentPublicInstance,
+  ComputedOptions,
+  VNode,
+  ComponentInternalInstance,
+  VNodeTypes,
+  Ref,
+  MethodOptions,
+} from "vue";
+import { ComponentPublicInstanceConstructor } from "../../../utilities/vueUtils";
 
-export type BladeInstanceConstructor<T extends ComponentPublicInstance = ComponentPublicInstance> = {
-  new (...args: any[]): T & { $: ComponentInternalInstance & { exposed: CoreBladeExposed & T["$"]["exposed"] } } & {
-    $props: T["$props"] & CoreBladeComponentProps;
-  };
-} & CoreComponentData &
-  CoreBladeAdditionalSettings &
-  CoreBladeNavigationData;
-
-export type ComponentInstanceConstructor<T = any> = {
-  new (...args: any[]): T;
-};
+/**
+ * @deprecated use `ComponentPublicInstanceConstructor` interface instead
+ */
+export type ComponentInstanceConstructor<T = any> = ComponentPublicInstanceConstructor<T>;
 
 export type CoreBladeComponentProps = {
   expanded?: boolean;
@@ -20,16 +26,24 @@ export type CoreBladeComponentProps = {
   options?: Record<string, any>;
 };
 
-export type BladePageComponent = BladeConstructor;
+export type CoreDynamicBladeComponentProps = {
+  model?: any;
+  composables?: any;
+};
+
+/**
+ * @deprecated use `BladeInstanceConstructor` interface instead
+ */
+export type BladePageComponent = BladeInstanceConstructor;
 
 export type CoreComponentData = {
   isBladeComponent?: boolean;
-  isWorkspace?: boolean;
 };
 
 export type CoreBladeAdditionalSettings = {
   url?: `/${string}`;
   permissions?: string | string[];
+  isWorkspace?: boolean;
 };
 
 export type CoreBladeNavigationData = {
@@ -56,15 +70,33 @@ export interface IBladeContainer extends IBladeEvent {
 
 export interface BladeComponentInternalInstance extends ComponentInternalInstance {
   vnode: VNode & { type: VNodeTypes & CoreBladeAdditionalSettings & CoreBladeNavigationData };
+  appContext: AppContext & { components: Record<string, BladeInstanceConstructor> };
 }
 
 export type ExtractedBladeOptions<T, U extends keyof T> = T[U];
 
+/**
+ * @deprecated use `BladeInstanceConstructor` interface instead
+ */
 export type BladeConstructor<T extends ComponentPublicInstance = ComponentPublicInstance> = BladeInstanceConstructor<T>;
 
-export interface IBladeEvent<T extends ComponentPublicInstance = ComponentPublicInstance> {
-  blade?: BladeConstructor<T>;
-  options?: ExtractedBladeOptions<InstanceType<BladeConstructor<T>>["$props"], "options">;
+type Extractor<T> = Extract<T, ComponentPublicInstanceConstructor>;
+
+export type BladeInstanceConstructor<T extends Component = Component> = Extractor<T> & {
+  new (...args: any[]): InstanceType<Extractor<T>> & {
+    $: ComponentInternalInstance & {
+      exposed: CoreBladeExposed | InstanceType<Extractor<T>>["$"]["exposed"];
+    };
+    $props: InstanceType<Extractor<T>>["$props"] & CoreBladeComponentProps;
+  };
+} & ComponentOptionsBase<any, any, any, any, ComponentOptionsMixin, ComponentOptionsMixin, any, any, any> &
+  CoreComponentData &
+  CoreBladeAdditionalSettings &
+  CoreBladeNavigationData;
+
+export interface IBladeEvent<T extends Component = Component> {
+  blade: BladeInstanceConstructor<T>;
+  options?: ExtractedBladeOptions<InstanceType<BladeInstanceConstructor<T>>["$props"], "options">;
   param?: string;
   onOpen?: () => void;
   onClose?: () => void;

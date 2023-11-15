@@ -1,5 +1,4 @@
-import { useI18n } from "vue-i18n";
-import { ComputedRef, Ref, WritableComputedRef, computed, ref, watch, onMounted, unref } from "vue";
+import { Ref, WritableComputedRef, computed, ref, watch } from "vue";
 import {
   useDetailsFactory,
   UseDetails,
@@ -7,19 +6,17 @@ import {
   DynamicBladeForm,
   useUser,
   DetailsBaseBladeScope,
-  usePopup,
+  useAssets,
 } from "@vc-shell/framework";
 import {
   CustomerAddress,
   ISeller,
   ISellerDetails,
-  Seller,
   SellerDetails,
   UpdateSellerCommand,
   VcmpSellerSecurityClient,
   Image,
 } from "@vcmp-vendor-portal/api/marketplacevendor";
-import { useAssets } from "../../../common";
 import * as _ from "lodash-es";
 
 interface SellerDetailsScope extends DetailsBaseBladeScope {
@@ -56,7 +53,7 @@ export const useSellerDetails = (args?: {
 
   const { load, item, saveChanges, remove, loading, validationState } = detailsFactory();
   const { user, getAccessToken } = useUser();
-  const imageHandler = useAssets(Image);
+  const { upload: uploadImage, remove: removeImage, loading: imageLoading } = useAssets();
 
   const countriesList = ref<ILocation[]>([]);
   const regionsList = ref<ILocation[]>([]);
@@ -167,9 +164,12 @@ export const useSellerDetails = (args?: {
     computedFee,
     assetsHandler: {
       images: {
-        loading: imageHandler.loading,
-        async upload(files, assetArr: Image[], uploadCatalog, uploadFolder) {
-          return await imageHandler.upload(files, assetArr, uploadCatalog, uploadFolder);
+        loading: imageLoading,
+        async upload(files: FileList) {
+          return (await uploadImage(files, `sellers/${item.value.id}`)).map((x) => new Image(x));
+        },
+        remove: async (files: Image[]) => {
+          return await removeImage(files, logoHandler.value);
         },
       },
     },

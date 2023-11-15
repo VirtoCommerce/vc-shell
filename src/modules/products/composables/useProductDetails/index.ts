@@ -26,10 +26,11 @@ import {
   UseDetails,
   useDetailsFactory,
   DetailsBaseBladeScope,
+  useAssets,
 } from "@vc-shell/framework";
-import { ref, computed, reactive, onMounted, ComputedRef, Ref, watch } from "vue";
+import { ref, computed, reactive, ComputedRef, Ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
-import { useDynamicProperties, useMultilanguage, useAssets } from "../../../common";
+import { useDynamicProperties, useMultilanguage } from "../../../common";
 import * as _ from "lodash-es";
 import { useMarketplaceSettings } from "../../../settings";
 
@@ -46,7 +47,7 @@ export interface ProductDetailsScope extends DetailsBaseBladeScope {
   propertiesCardVisibility: ComputedRef<boolean>;
   statusText: ComputedRef<string | null>;
   setCategory: (selectedCategory: Category) => Promise<void>;
-  assetsHandler: { images: ReturnType<typeof useAssets> };
+  // assetsHandler: AssetsHandler<Image>;
   toolbarOverrides: {
     saveChanges: IBladeToolbar;
     remove: IBladeToolbar;
@@ -81,6 +82,7 @@ export const useProductDetails = (args: {
 
   const { load, saveChanges, remove, loading, item, validationState } = detailsFactory();
   const { defaultProductType, productTypes, loadSettings } = useMarketplaceSettings();
+  const { upload: imageUpload, remove: imageRemove, edit: imageEdit, loading: imageLoading } = useAssets();
 
   const { t } = useI18n({ useScope: "global" });
 
@@ -313,7 +315,18 @@ export const useProductDetails = (args: {
     dynamicProperties: useDynamicProperties(),
     multilanguage: useMultilanguage(),
     assetsHandler: {
-      images: useAssets(Image),
+      images: {
+        loading: imageLoading,
+        async upload(files, lastSortOrder) {
+          return (await imageUpload(files, `products/${item.value.id}`, lastSortOrder)).map((x) => new Image(x));
+        },
+        async remove(files) {
+          return imageRemove(files, item.value.images);
+        },
+        edit(files) {
+          return imageEdit(files, item.value.images).map((x) => new Image(x));
+        },
+      },
     },
   });
 

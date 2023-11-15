@@ -106,6 +106,7 @@ export const details: DynamicDetailsSchema = {
                         edit: false,
                         remove: true,
                       },
+                      hideAfterUpload: true,
                     },
                   ],
                 },

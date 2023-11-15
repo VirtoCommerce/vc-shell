@@ -7,6 +7,7 @@ import {
   DynamicBladeForm,
   useDetailsFactory,
   DetailsBaseBladeScope,
+  useAssets,
 } from "@vc-shell/framework";
 import {
   VcmpSellerCatalogClient,
@@ -25,7 +26,7 @@ import { Ref, computed, nextTick, onMounted, reactive, ref, watch } from "vue";
 import { useFulfillmentCenters, useMarketplaceSettings } from "../../../settings";
 import { useI18n } from "vue-i18n";
 import { ICurrency } from "../../../settings/composables/useMarketplaceSettings";
-import { useAssets, useDynamicProperties, useMultilanguage } from "../../../common";
+import { useDynamicProperties, useMultilanguage } from "../../../common";
 
 export interface OfferDetailsScope extends DetailsBaseBladeScope {
   fetchProducts: (keyword?: string, skip?: number, ids?: string[]) => Promise<SearchOfferProductsResult>;
@@ -57,6 +58,7 @@ export const useOfferDetails = (args: {
   const { fulfillmentCentersList, searchFulfillmentCenters } = useFulfillmentCenters();
 
   const { currencies, loadSettings } = useMarketplaceSettings();
+  const { upload: imageUpload, remove: imageRemove, edit: imageEdit, loading: imageLoading } = useAssets();
 
   const detailsFactory = useDetailsFactory<IOffer>({
     load: async ({ id }) => (await getApiClient()).getOfferByIdGET(id),
@@ -305,7 +307,18 @@ export const useOfferDetails = (args: {
     dynamicProperties: useDynamicProperties(),
     multilanguage: useMultilanguage(),
     assetsHandler: {
-      images: useAssets(Image),
+      images: {
+        loading: imageLoading,
+        async upload(files, lastSortOrder) {
+          return (await imageUpload(files, `products/${item.value.id}`, lastSortOrder)).map((x) => new Image(x));
+        },
+        async remove(files) {
+          return imageRemove(files, item.value.images);
+        },
+        edit(files) {
+          return imageEdit(files, item.value.images).map((x) => new Image(x));
+        },
+      },
     },
   });
 

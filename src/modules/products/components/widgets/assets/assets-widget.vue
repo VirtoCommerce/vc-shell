@@ -9,29 +9,25 @@
   </VcWidget>
 </template>
 
-<script setup lang="ts">
-import { DetailsBladeContext, VcWidget, useBladeNavigation, usePopup } from "@vc-shell/framework";
+<script setup lang="ts" generic="T extends UnwrapNestedRefs<DetailsBladeContext & { item: { assets?: Asset[] } }>">
+import { DetailsBladeContext, VcWidget, useBladeNavigation, usePopup, useAssets } from "@vc-shell/framework";
 import { UnwrapNestedRefs, computed, ref, watch } from "vue";
 import { Asset } from "@vcmp-vendor-portal/api/marketplacevendor";
 import { useI18n } from "vue-i18n";
 import * as _ from "lodash-es";
-import { useAssets } from "../../../../common";
 
-interface Props {
-  modelValue: UnwrapNestedRefs<DetailsBladeContext & { item: { assets?: Asset[] } }>;
-}
+const props = defineProps<{
+  modelValue: T;
+}>();
 
-interface Emits {
-  (event: "update:modelValue", context);
-}
-
-const props = defineProps<Props>();
-const emit = defineEmits<Emits>();
+const emit = defineEmits<{
+  (event: "update:modelValue", context: T);
+}>();
 
 const { openBlade, resolveBladeByName } = useBladeNavigation();
 const { showConfirmation } = usePopup();
 const { t } = useI18n({ useScope: "global" });
-const { editBulk, upload, removeBulk, loading } = useAssets(Asset);
+const { edit, upload, remove, loading } = useAssets();
 const modelValue = ref(props.modelValue);
 const widgetOpened = ref(false);
 const internalModel = ref();
@@ -53,6 +49,7 @@ function clickHandler() {
       blade: resolveBladeByName("AssetsManager"),
       options: {
         assets: modelValue.value?.item?.assets,
+        loading: assetsHandler?.loading,
         assetsEditHandler: assetsHandler?.edit,
         assetsUploadHandler: assetsHandler?.upload,
         assetsRemoveHandler: assetsHandler?.remove,
@@ -69,30 +66,30 @@ function clickHandler() {
 
 const assetsHandler = {
   loading: computed(() => loading.value),
-  edit: async (assetsArr: Asset[]) => {
-    internalModel.value.item.assets = editBulk(assetsArr);
+  edit: (files: Asset[]) => {
+    internalModel.value.item.assets = edit(files, internalModel.value.item.assets);
     emitAssets();
     return internalModel.value.item.assets;
   },
-  async upload(files: FileList) {
-    internalModel.value.item.assets = await upload(
-      files,
-      internalModel.value.item.assets,
-      internalModel.value.item.id || internalModel.value.item.categoryId,
-      "catalog"
+  async upload(files: FileList, lastSortOrder?: number) {
+    const uploaded = (await upload(files, `catalog/${internalModel.value.item.id}`, lastSortOrder)).map(
+      (x) => new Asset(x)
     );
+
+    internalModel.value.item.assets = internalModel.value.item.assets.concat(uploaded);
+
     files = null;
 
     emitAssets();
     return internalModel.value.item.assets;
   },
-  async remove(assetsArr: Asset[]) {
+  async remove(files: Asset[]) {
     if (
       await showConfirmation(
-        computed(() => t("PRODUCTS.PAGES.DETAILS.ALERTS.DELETE_CONFIRMATION_ASSET", { count: assetsArr.length }))
+        computed(() => t("PRODUCTS.PAGES.DETAILS.ALERTS.DELETE_CONFIRMATION_ASSET", { count: files.length }))
       )
     ) {
-      internalModel.value.item.assets = await removeBulk(internalModel.value.item.assets, assetsArr);
+      internalModel.value.item.assets = (await remove(files, internalModel.value.item.assets)).map((x) => new Asset(x));
     }
     emitAssets();
     return internalModel.value.item.assets;

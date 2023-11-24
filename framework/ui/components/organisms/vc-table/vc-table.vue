@@ -65,7 +65,7 @@
         ref="scrollContainer"
         :no-padding="true"
         class="tw-grow tw-basis-0"
-        :use-ptr="!!$attrs['onScroll:ptr']"
+        :use-ptr="pullToReload"
         @scroll:ptr="$emit('scroll:ptr')"
       >
         <!-- Mobile table view -->
@@ -492,7 +492,7 @@ const props = withDefaults(
     footer?: boolean;
     activeFilterCount?: number;
     selectedItemId?: string;
-    scrolling?: boolean;
+    pullToReload?: boolean;
     resizableColumns?: boolean;
     reorderableColumns?: boolean;
     reorderableRows?: boolean;

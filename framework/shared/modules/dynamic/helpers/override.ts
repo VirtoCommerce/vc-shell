@@ -1,5 +1,6 @@
 import * as _ from "lodash-es";
 import { DynamicSchema, OverridesSchema } from "../types";
+import "core-js/actual/array/to-spliced";
 
 export const handleOverrides = (overrides: OverridesSchema, schemaCopy: { [key: string]: DynamicSchema }) => {
   let schema = _.cloneDeep(schemaCopy);

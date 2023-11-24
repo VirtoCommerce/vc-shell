@@ -24,7 +24,6 @@
       :columns="columns"
       :items="items"
       :header="false"
-      :scrolling="true"
       :footer="false"
       state-key="import_popup"
     ></VcTable>

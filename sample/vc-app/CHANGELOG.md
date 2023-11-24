@@ -1,3 +1,12 @@
+## [1.0.123](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.122...v1.0.123) (2023-11-24)
+
+
+### Features
+
+* **vc-app:** added templates in grid schema ([41abaa7](https://github.com/VirtoCommerce/vc-shell/commit/41abaa773bad669d3a3472e81fe106c151c598a2))
+
+
+
 ## [1.0.122](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.121...v1.0.122) (2023-11-14)
 
 

@@ -1,3 +1,20 @@
+## [1.0.123](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.122...v1.0.123) (2023-11-24)
+
+
+### Bug Fixes
+
+* **dynamic:** nodeBuilder modelValue fix to prevent unnecessary updates ([63cfe00](https://github.com/VirtoCommerce/vc-shell/commit/63cfe00395f1ad69d3406d636448b7cf25fd6183))
+* **dynamic:** toSpliced polyfill ([4aaf109](https://github.com/VirtoCommerce/vc-shell/commit/4aaf1091613f51be52531fbdffa1ad066c21cf2a))
+* **framework:** vc-card redundant css class fix ([10d4cc1](https://github.com/VirtoCommerce/vc-shell/commit/10d4cc172e7daae41fbe7ea8d89ffde5f9f70795))
+* **framework:** vc-table pullToReload fix ([10007c5](https://github.com/VirtoCommerce/vc-shell/commit/10007c53f2a278a629efc780243c2abadb642cfa))
+
+
+### Features
+
+* **dynamic:** blade as dashboard widget ([fa660f5](https://github.com/VirtoCommerce/vc-shell/commit/fa660f5a1dd16e9fa805c6a4ae0bb2a9dc7e6a7b))
+
+
+
 ## [1.0.122](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.121...v1.0.122) (2023-11-14)
 
 

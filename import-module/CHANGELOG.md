@@ -1,3 +1,12 @@
+## [1.0.123](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.122...v1.0.123) (2023-11-24)
+
+
+### Bug Fixes
+
+* **import-module:** remove redundant prop ([a241945](https://github.com/VirtoCommerce/vc-shell/commit/a241945d56e1059110836f2f964e67665ea8695c))
+
+
+
 ## [1.0.122](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.121...v1.0.122) (2023-11-14)
 
 

@@ -1,3 +1,18 @@
+## [1.0.133](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.132...v1.0.133) (2023-11-24)
+
+
+### Bug Fixes
+
+* some props fix ([bd5dfc5](https://github.com/VirtoCommerce/vendor-portal/commit/bd5dfc5cca2d0ce27905b830062050355e84051b))
+* videoUrlHandler to fix video url input ([ffe3752](https://github.com/VirtoCommerce/vendor-portal/commit/ffe3752f432bd53dccbcc13e14ea3f20345550a9))
+
+
+### Features
+
+* offers and products dashboard card, small refactor ([98535a6](https://github.com/VirtoCommerce/vendor-portal/commit/98535a6622359410767b5b92042c659940963865))
+
+
+
 ## [1.0.132](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.131...v1.0.132) (2023-11-14)
 
 

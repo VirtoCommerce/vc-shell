@@ -66,11 +66,11 @@
 <script lang="ts" setup>
 import { computed, ref } from "vue";
 import { VcPopup, VcLink, VcIcon, VcImage } from "../../../../";
-import { IImage } from "./../../../../../../core/types";
+import { ICommonAsset } from "./../../../../../../core/types";
 import { useI18n } from "vue-i18n";
 
 export interface Props {
-  images?: IImage[];
+  images?: ICommonAsset[];
   index: number;
 }
 

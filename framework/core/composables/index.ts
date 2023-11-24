@@ -9,3 +9,4 @@ export * from "./useApiClient";
 export * from "./useLoading";
 export * from "./useErrorHandler";
 export * from "./useMenuComposer";
+export { useAssets } from "./useAssets";

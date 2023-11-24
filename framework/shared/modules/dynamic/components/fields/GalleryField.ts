@@ -1,7 +1,7 @@
-import { Component, ExtractPropTypes, computed, h, markRaw, reactive, ref, toRefs, toValue, unref, watch } from "vue";
+import { Component, ExtractPropTypes, computed, h, markRaw, ref, toRefs, watch } from "vue";
 import { Gallery } from "../factories";
 import componentProps from "./props";
-import { IImage } from "../../../../../core/types";
+import { ICommonAsset } from "../../../../../core/types";
 import { useBladeNavigation, usePopup } from "./../../../../components";
 import { useI18n } from "vue-i18n";
 import { default as AssetsDetails } from "../../../assets/components/assets-details/assets-details.vue";
@@ -52,31 +52,31 @@ export default {
 
     return () => {
       const imageHandlers = {
-        loading: imagesHandler.loading,
-        async edit(image: IImage) {
-          internalModel.value[props.element.property] = await imagesHandler.edit?.value?.(
-            unref(props.formData)[props.element.property] as IImage[],
-            image
-          );
-          await editImages(internalModel.value[props.element.property]);
-        },
-        async upload(files: FileList | null) {
-          if (files) {
-            internalModel.value[props.element.property] = await imagesHandler.upload?.value?.(
-              files,
-              unref(props.formData)[props.element.property] as IImage[],
-              (unref(props.formData).id as string) || (unref(props.formData).categoryId as string),
-              props.element.uploadFolder
-            );
+        loading: imagesHandler.loading ?? false,
+        async edit(image: ICommonAsset) {
+          if (!imagesHandler.edit?.value) throw new Error("Edit handler is not provided");
+          const edited = await imagesHandler.edit?.value?.([image]);
 
+          await editImages(edited);
+        },
+        async upload(files: FileList | null, lastSortOrder?: number) {
+          if (!imagesHandler.upload?.value) throw new Error("Upload handler is not provided");
+          if (files) {
+            const uploaded = await imagesHandler.upload?.value?.(files, lastSortOrder);
+
+            let addToExisting: ICommonAsset[];
+            if (Array.isArray(uploaded) && Array.isArray(internalModel.value[props.element.property])) {
+              addToExisting = internalModel.value[props.element.property].concat(uploaded);
+            } else {
+              addToExisting = uploaded;
+            }
             files = null;
 
-            await editImages(internalModel.value[props.element.property]);
-
-            return internalModel.value[props.element.property];
+            await editImages(addToExisting);
           }
         },
-        async remove(image: IImage) {
+        async remove(image: ICommonAsset) {
+          if (!imagesHandler.remove?.value) throw new Error("Remove handler is not provided");
           if (
             await showConfirmation(
               computed(() =>
@@ -88,17 +88,13 @@ export default {
               )
             )
           ) {
-            internalModel.value[props.element.property] = await imagesHandler.remove?.value?.(
-              unref(props.formData)[props.element.property] as IImage[],
-              image
-            );
-            await editImages(internalModel.value[props.element.property]);
+            const edited = await imagesHandler.remove?.value?.([image]);
+            await editImages(edited);
           }
-          return internalModel.value[props.element.property];
         },
       };
 
-      function onGalleryItemEdit(item: IImage) {
+      function onGalleryItemEdit(item: ICommonAsset) {
         openBlade({
           blade: markRaw(AssetsDetails),
           options: {
@@ -109,7 +105,7 @@ export default {
         });
       }
 
-      async function editImages(args: IImage[]) {
+      async function editImages(args: ICommonAsset[]) {
         if (props.fieldContext) {
           internalModel.value[props.element.property] = args;
           setModel({
@@ -134,6 +130,7 @@ export default {
           onRemove: imageHandlers.remove,
           onEdit: onGalleryItemEdit,
           onSort: editImages,
+          hideAfterUpload: props.element.hideAfterUpload,
         },
         options: props.baseOptions,
       });

@@ -70,26 +70,23 @@
 <script lang="ts" setup>
 import { ref } from "vue";
 import { vOnClickOutside } from "@vueuse/components";
-import { IImage } from "./../../../../../../core/types";
+import { ICommonAsset } from "./../../../../../../core/types";
 import { VcImage, VcIcon } from "./../../../../";
 import { useI18n } from "vue-i18n";
 
 export interface Props {
-  image: IImage;
+  image: ICommonAsset;
   readonly?: boolean | undefined;
-  actions?:
-    | {
-        name?: string | undefined;
-        preview: boolean | undefined;
-        edit: boolean | undefined;
-        remove: boolean | undefined;
-      }
-    | undefined;
+  actions?: {
+    preview: boolean | undefined;
+    edit: boolean | undefined;
+    remove: boolean | undefined;
+  };
   disableDrag?: boolean | undefined;
 }
 
 withDefaults(defineProps<Props>(), {
-  image: () => ({} as IImage),
+  image: () => ({} as ICommonAsset),
   readonly: false,
   actions: () => ({
     name: undefined,

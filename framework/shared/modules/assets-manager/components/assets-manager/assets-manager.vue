@@ -10,7 +10,7 @@
     @collapse="$emit('collapse:blade')"
   >
     <div
-      v-loading="loading"
+      v-loading="options.loading"
       class="tw-relative tw-h-full"
       @dragover.prevent.stop="dragOver"
       @dragleave.prevent="dragLeave"
@@ -142,7 +142,7 @@
 </template>
 
 <script setup lang="ts">
-import { Asset, IActionBuilderResult, IBladeToolbar, ITableColumns } from "../../../../../core/types";
+import { ICommonAsset, IActionBuilderResult, IBladeToolbar, ITableColumns } from "../../../../../core/types";
 import { ref, computed, onMounted, unref, watch, markRaw, Ref } from "vue";
 import { useI18n } from "vue-i18n";
 import moment from "moment";
@@ -155,10 +155,11 @@ export interface Props {
   expanded?: boolean;
   closable?: boolean;
   options: {
-    assets: Asset[];
-    assetsEditHandler: (assets: Asset[]) => Asset[];
-    assetsUploadHandler: (files: FileList) => Promise<Asset[]>;
-    assetsRemoveHandler: (assets: Asset[]) => Promise<Asset[]>;
+    assets: ICommonAsset[];
+    loading: Ref<boolean>;
+    assetsEditHandler: (assets: ICommonAsset[]) => ICommonAsset[];
+    assetsUploadHandler: (files: FileList) => Promise<ICommonAsset[]>;
+    assetsRemoveHandler: (assets: ICommonAsset[]) => Promise<ICommonAsset[]>;
     disabled: boolean;
   };
 }
@@ -180,14 +181,13 @@ const emit = defineEmits<Emits>();
 
 const { t } = useI18n({ useScope: "global" });
 
-const defaultAssets = ref<Asset[]>([]);
+const defaultAssets = ref<ICommonAsset[]>([]);
 
 const isDragging = ref(false);
 const uploader = ref();
-const loading = ref(false);
-const selectedItems: Ref<Asset[]> = ref([]);
+const selectedItems: Ref<ICommonAsset[]> = ref([]);
 const readonly = computed(() => props.options.disabled);
-let assetsCopy: Asset[];
+let assetsCopy: ICommonAsset[];
 const modified = ref(false);
 
 const { openBlade } = useBladeNavigation();
@@ -271,7 +271,7 @@ onMounted(() => {
   assetsCopy = _.cloneDeep(props.options?.assets);
 });
 
-async function sortAssets(event: { dragIndex: number; dropIndex: number; value: Asset[] }) {
+async function sortAssets(event: { dragIndex: number; dropIndex: number; value: ICommonAsset[] }) {
   if (
     props.options.assetsEditHandler &&
     typeof props.options.assetsEditHandler === "function" &&
@@ -316,12 +316,8 @@ function toggleUploader() {
 
 async function upload(files: FileList) {
   if (files && files.length) {
-    try {
-      loading.value = true;
+    if (props.options.assetsUploadHandler && typeof props.options.assetsUploadHandler === "function")
       defaultAssets.value = await props.options.assetsUploadHandler(files);
-    } finally {
-      loading.value = false;
-    }
   }
 }
 
@@ -334,43 +330,38 @@ async function inputUpload(event: Event) {
   }
 }
 
-function onItemClick(item: Asset) {
+function onItemClick(item: ICommonAsset) {
   openBlade({
     blade: markRaw(Assets),
     options: {
       asset: unref(item),
       disabled: readonly.value,
-      assetEditHandler: async (asset: Asset) => {
-        const mutated = defaultAssets.value.map((x) => {
-          if (x.id === asset.id || x.url === asset.url) {
-            return asset;
-          }
-          return x;
-        });
-
+      assetEditHandler: (asset: ICommonAsset) => {
         if (props.options.assetsEditHandler && typeof props.options.assetsEditHandler === "function") {
-          defaultAssets.value = props.options.assetsEditHandler(mutated);
-        }
+          defaultAssets.value = props.options.assetsEditHandler([asset]);
+        } else throw new Error("Asset edit handler is not defined");
       },
-      assetRemoveHandler: async (asset: Asset) => {
-        defaultAssets.value = await props.options.assetsRemoveHandler([asset]);
+      assetRemoveHandler: async (asset: ICommonAsset) => {
+        if (props.options.assetsRemoveHandler && typeof props.options.assetsRemoveHandler === "function") {
+          defaultAssets.value = await props.options.assetsRemoveHandler([asset]);
+        } else throw new Error("Asset remove handler is not defined");
       },
     },
   });
 }
 
-const onSelectionChanged = (items: Asset[]) => {
+const onSelectionChanged = (items: ICommonAsset[]) => {
   selectedItems.value = items;
 };
 
-const actionBuilder = (): IActionBuilderResult<Asset>[] => {
-  const result: IActionBuilderResult<Asset>[] = [];
+const actionBuilder = (): IActionBuilderResult<ICommonAsset>[] => {
+  const result: IActionBuilderResult<ICommonAsset>[] = [];
 
   result.push({
     icon: "fas fa-edit",
     title: computed(() => t("ASSETS_MANAGER.TABLE.ACTIONS.EDIT")),
     variant: "success",
-    clickHandler(item: Asset) {
+    clickHandler(item: ICommonAsset) {
       onItemClick(item);
     },
   });
@@ -380,7 +371,7 @@ const actionBuilder = (): IActionBuilderResult<Asset>[] => {
     title: computed(() => t("ASSETS_MANAGER.TABLE.ACTIONS.DELETE")),
     variant: "danger",
     leftActions: true,
-    async clickHandler(item: Asset) {
+    async clickHandler(item: ICommonAsset) {
       defaultAssets.value = await props.options.assetsRemoveHandler([item]);
       selectedItems.value = [];
     },

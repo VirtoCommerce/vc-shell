@@ -1,14 +1,4 @@
-import {
-  ExtractPropTypes,
-  computed,
-  h,
-  toValue,
-  VNodeChild,
-  VNodeNormalizedChildren,
-  watch,
-  VNode,
-  Component,
-} from "vue";
+import { ExtractPropTypes, h, toValue, VNodeChild, VNodeNormalizedChildren, watch, Component, ref } from "vue";
 import { CardCollection } from "../factories";
 import componentProps from "./props";
 import { CardSchema } from "../../types";
@@ -21,40 +11,35 @@ export default {
   props: componentProps,
   setup(props: ExtractPropTypes<typeof componentProps> & { element: CardSchema }) {
     const isMounted = useMounted();
+    const hasNoComment = ref(true);
 
-    const commentRecursiveNodeCheck = (node: VNodeChild | VNodeNormalizedChildren): boolean => {
-      return _.every(Array.isArray(node) ? node : [node], (nodeItem) => {
-        if (nodeItem && typeof nodeItem === "object") {
-          if (
-            "children" in nodeItem &&
-            nodeItem.children &&
-            Array.isArray(nodeItem.children) &&
-            !!nodeItem.children.length
-          ) {
-            return commentRecursiveNodeCheck(nodeItem.children);
+    watch(isMounted, (newVal) => {
+      if (newVal) {
+        hasNoComment.value = hasNoCommentNodes(toValue(props.fields));
+      }
+    });
+
+    const hasNoCommentNodes = (components: (VNodeChild | VNodeNormalizedChildren)[]): boolean => {
+      const vnodeIterable = Array.isArray(components) ? components : [components];
+      return _.every(vnodeIterable, (component) => {
+        if (Array.isArray(component) && component.length > 0) {
+          return hasNoCommentNodes(component);
+        }
+
+        if (component && typeof component === "object" && !Array.isArray(component)) {
+          if (Array.isArray(component.children) && component.children.length > 0) {
+            // Рекурсивная проверка для вложенных компонентов
+            return hasNoCommentNodes(component.children);
           }
-          if (
-            nodeItem &&
-            "el" in nodeItem &&
-            nodeItem.el &&
-            "nodeType" in (nodeItem.el as VNode["el"] as HTMLElement) &&
-            (nodeItem.el as VNode["el"] as HTMLElement).nodeType
-          ) {
-            return (nodeItem.el as VNode["el"] as HTMLElement).nodeType !== 8;
-          } else return true;
-        } else return true;
+
+          if (component.el && (component.el as HTMLElement).nodeType === 8) {
+            return false;
+          }
+        }
+
+        return true;
       });
     };
-
-    const isNotEmpty = computed(() => {
-      if (isMounted.value) {
-        const fields = toValue(props.fields);
-        if (fields && Array.isArray(fields) && fields.length) {
-          return _.every(fields, (w) => commentRecursiveNodeCheck(w));
-        }
-      }
-      return true;
-    });
 
     return () => {
       const field = CardCollection({
@@ -93,7 +78,7 @@ export default {
         return localStorage?.getItem(key) === "true";
       }
 
-      return props.baseOptions.visibility && isNotEmpty.value
+      return props.baseOptions.visibility && hasNoComment.value
         ? h(field.component as Component, field.props, field.slots)
         : null;
     };

@@ -112,7 +112,7 @@
 </template>
 
 <script lang="ts" setup>
-import { Asset, IBladeToolbar } from "./../../../../../core/types";
+import { ICommonAsset, IBladeToolbar } from "./../../../../../core/types";
 import { computed, ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { VcBlade, VcContainer, VcForm, VcImage, VcInput, VcTextarea } from "./../../../../../ui/components";
@@ -124,10 +124,10 @@ export interface Props {
   expanded?: boolean;
   closable?: boolean;
   options?: {
-    asset: Asset;
+    asset: ICommonAsset;
     disabled?: boolean;
-    assetEditHandler?: (defaultAsset: Asset) => Promise<void>;
-    assetRemoveHandler?: (defaultAsset: Asset) => Promise<void>;
+    assetEditHandler?: (defaultAsset: ICommonAsset) => void;
+    assetRemoveHandler?: (defaultAsset: ICommonAsset) => Promise<void>;
   };
 }
 
@@ -147,7 +147,7 @@ useForm({ validateOnMount: false });
 const isValid = useIsFormValid();
 const isDirty = useIsFormDirty();
 const { t } = useI18n({ useScope: "global" });
-const defaultAsset = ref<Asset>({ ...props.options?.asset });
+const defaultAsset = ref<ICommonAsset>({ ...props.options?.asset });
 
 const readonly = computed(() => props.options?.disabled);
 

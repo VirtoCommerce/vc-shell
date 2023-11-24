@@ -110,35 +110,27 @@ export interface IActionBuilderResult<T = {}> {
   clickHandler(item?: T): void;
 }
 
-export interface AssetsHandler<T> {
+export interface AssetsHandler<T extends ICommonAsset> {
   loading?: Ref<boolean>;
-  upload?: (files: FileList, assetArr: T[], uploadCatalog: string, uploadFolder: string) => Promise<T[] | void> | void;
-  edit?: (assetsArr: T[], asset: T) => Promise<T[] | void> | void;
-  editBulk?: (assets: T[]) => T[];
-  remove?: (assetArr: T[], asset: T) => Promise<T[] | void> | void;
-  removeBulk?: (assetArr: T[], assetsArrEdited: T[]) => Promise<T[] | void> | void;
+  upload?: (files: FileList, startingSortOrder?: number) => Promise<T[]>;
+  edit?: (files: T[]) => T[];
+  remove?: (files: T[]) => T[];
 }
 
-export interface IImage {
+export interface ICommonAsset {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [x: string]: any;
   sortOrder?: number;
   title?: string | undefined;
   name?: string | undefined;
   url?: string | undefined;
-}
-
-export interface Asset {
   readableSize?: string;
   relativeUrl?: string;
-  url?: string;
   description?: string;
-  name?: string;
   modifiedDate?: Date;
   id?: string;
   altText?: string;
   typeId?: string;
-  sortOrder?: number;
   size?: number;
   createdDate?: Date;
 }

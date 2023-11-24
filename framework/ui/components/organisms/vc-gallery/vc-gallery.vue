@@ -33,7 +33,7 @@
             @drop="onItemDrop($event, image)"
           ></VcGalleryItem>
           <VcFileUpload
-            v-if="!disabled && !defaultImages.length"
+            v-if="!disabled && !uploadHidden"
             class="tw-m-2"
             :icon="uploadIcon"
             :variant="variant"
@@ -61,7 +61,7 @@
 
 <script lang="ts" setup>
 import { MaybeRef, computed, ref, unref, watch } from "vue";
-import { IImage } from "../../../../core/types";
+import { ICommonAsset } from "../../../../core/types";
 import { VcLabel, VcFileUpload, VcHint } from "./../../";
 import VcGalleryItem from "./_internal/vc-gallery-item/vc-gallery-item.vue";
 import VcGalleryPreview from "./_internal/vc-gallery-preview/vc-gallery-preview.vue";
@@ -69,7 +69,7 @@ import { usePopup } from "./../../../../shared/components/popup-handler/composab
 import { useI18n } from "vue-i18n";
 
 export interface Props {
-  images?: IImage[];
+  images?: ICommonAsset[];
   disabled?: boolean;
   required?: boolean;
   label?: string;
@@ -79,21 +79,21 @@ export interface Props {
   multiple?: boolean;
   variant?: "gallery" | "file-upload";
   itemActions?: {
-    name?: string;
     preview: boolean;
     edit: boolean;
     remove: boolean;
   };
+  hideAfterUpload?: boolean;
   rules?: string | Record<string, unknown>;
   name?: string;
   loading?: boolean;
 }
 
 export interface Emits {
-  (event: "upload", files: FileList): void;
-  (event: "sort", sorted: IImage[]): void;
-  (event: "edit", image: IImage): void;
-  (event: "remove", image: IImage): void;
+  (event: "upload", files: FileList, startingSortOrder?: number): void;
+  (event: "sort", sorted: ICommonAsset[]): void;
+  (event: "edit", image: ICommonAsset): void;
+  (event: "remove", image: ICommonAsset): void;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -113,8 +113,8 @@ const emit = defineEmits<Emits>();
 const { t } = useI18n({ useScope: "global" });
 const previewImageIndex = ref<number>();
 
-const defaultImages = ref<MaybeRef<IImage[]>>([]);
-const draggedItem = ref<IImage>();
+const defaultImages = ref<MaybeRef<ICommonAsset[]>>([]);
+const draggedItem = ref<ICommonAsset>();
 const draggedElement = ref<HTMLElement>();
 const galleryRef = ref<HTMLElement>();
 const reorderGalleryRef = ref<HTMLElement>();
@@ -122,6 +122,7 @@ const dropPosition = ref<number>();
 
 const currentIndex = computed(() => previewImageIndex.value);
 const disableDrag = computed(() => defaultImages.value.length <= 1);
+const uploadHidden = ref(false);
 
 const { open } = usePopup(
   computed(() => ({
@@ -137,13 +138,17 @@ watch(
   () => props.images,
   (newVal) => {
     defaultImages.value = unref(newVal);
+
+    if (props.hideAfterUpload) {
+      uploadHidden.value = !!defaultImages.value.length;
+    }
   },
   { deep: true, immediate: true }
 );
 
 const onUpload = (files: FileList) => {
   if (files && files.length) {
-    emit("upload", files);
+    emit("upload", files, props.images[props.images.length - 1]?.sortOrder);
   }
 };
 
@@ -170,7 +175,7 @@ function onItemMouseDown(event: MouseEvent & { currentTarget?: { draggable: bool
   }
 }
 
-function onItemDragStart(event: DragEvent, item: IImage) {
+function onItemDragStart(event: DragEvent, item: ICommonAsset) {
   if (!disableDrag.value && !props.disabled) {
     draggedItem.value = item;
     draggedElement.value = event.target as HTMLElement;
@@ -219,7 +224,7 @@ function onItemDragLeave(event: DragEvent) {
   }
 }
 
-function onItemDrop(event: DragEvent, item: IImage) {
+function onItemDrop(event: DragEvent, item: ICommonAsset) {
   event.preventDefault();
 
   if (draggedItem.value) {

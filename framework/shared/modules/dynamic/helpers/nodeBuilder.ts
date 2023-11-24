@@ -1,4 +1,4 @@
-import { unref, computed, toValue, h, UnwrapNestedRefs, MaybeRef, reactive, VNode } from "vue";
+import { unref, computed, toValue, h, UnwrapNestedRefs, MaybeRef, reactive, VNode, ref } from "vue";
 import FIELD_MAP from "../components/FIELD_MAP";
 import { ControlSchema } from "../types";
 import { IControlBaseProps, IControlBaseOptions } from "../types/models";
@@ -50,17 +50,15 @@ function nodeBuilder<
   const contextProperty =
     safeIn("property", controlSchema) &&
     controlSchema.property &&
-    _.has(toValue(internalContext), controlSchema.property) &&
     getModel(controlSchema.property, toValue(internalContext));
 
   const scopedProperty =
     safeIn("property", controlSchema) &&
     controlSchema.property &&
     bladeContext.scope &&
-    _.has(bladeContext.scope, controlSchema.property) &&
     bladeContext.scope[controlSchema.property];
 
-  const modelValue = contextProperty || scopedProperty || undefined;
+  const modelValue = scopedProperty || contextProperty || undefined;
 
   const tooltip = (safeIn("tooltip", controlSchema) && controlSchema.tooltip) || undefined;
   const multilanguage = safeIn("multilanguage", controlSchema) && controlSchema.multilanguage;

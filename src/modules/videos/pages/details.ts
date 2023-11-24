@@ -31,7 +31,7 @@ export const details: DynamicDetailsSchema = {
           id: "videoUrl",
           component: "vc-input",
           label: "Video Url",
-          property: "videoUrl",
+          property: "videoUrlHandler",
           placeholder: "Enter video Url",
           update: {
             method: "validateUrl",
@@ -47,9 +47,6 @@ export const details: DynamicDetailsSchema = {
             component: "vc-button",
             method: "createVideo",
             content: "Preview",
-            visibility: {
-              method: "needShowUrl",
-            },
             disabled: {
               method: "previewDisabled",
             },

@@ -1,4 +1,3 @@
-import { useDebounceFn } from "@vueuse/core";
 import { VcmpSellerCatalogClient, CreateVideoCommand } from "@vcmp-vendor-portal/api/marketplacevendor";
 import { IVideo, Video } from "@vcmp-vendor-portal/api/catalog";
 import {
@@ -10,11 +9,12 @@ import {
   useDetailsFactory,
   DetailsBaseBladeScope,
 } from "@vc-shell/framework";
-import { ref, computed, reactive, onMounted, ComputedRef, Ref, watch } from "vue";
+import { ref, computed, reactive, ComputedRef, Ref, watch, WritableComputedRef } from "vue";
 import { useI18n } from "vue-i18n";
 import { useMultilanguage } from "../../../common";
 
 export interface VideoDetailsScope extends DetailsBaseBladeScope {
+  videoUrlHandler: WritableComputedRef<string>;
   createVideo: (command: CreateVideoCommand) => Promise<void>;
   previewDisabled: ComputedRef<boolean>;
   videoDisabled: ComputedRef<boolean>;
@@ -33,7 +33,7 @@ export const useVideoDetails = (args: {
   emit: InstanceType<typeof DynamicBladeForm>["$emit"];
   mounted: Ref<boolean>;
 }): UseDetails<IVideo, VideoDetailsScope> => {
-  const detailsFactory = useDetailsFactory<IVideo & { videoUrl?: string }>({
+  const detailsFactory = useDetailsFactory<IVideo>({
     load: async ({ id }) => await (await getApiClient()).getVideoById(id),
     saveChanges: async (videoItem) => {
       await (await getApiClient()).update([videoItem as Video]);
@@ -53,10 +53,20 @@ export const useVideoDetails = (args: {
   const videoLoading = ref(false);
   const videoLoadedWithoutErrors = ref(true);
   const newVideoLoaded = ref(false);
+  const videoUrl = ref("");
 
   const bladeTitle = computed(() =>
     args.props.param ? t("VIDEOS.PAGES.DETAILS.TITLE") : t("VIDEOS.PAGES.DETAILS.TITLE_ADD")
   );
+
+  const videoUrlHandler = computed({
+    get() {
+      return videoUrl.value;
+    },
+    set(value) {
+      videoUrl.value = value;
+    },
+  });
 
   async function loadWrapper(args: { id: string }) {
     if (args) {
@@ -74,7 +84,7 @@ export const useVideoDetails = (args: {
 
   async function createVideo(): Promise<void> {
     const command = new CreateVideoCommand({
-      contentUrl: item.value.videoUrl,
+      contentUrl: videoUrl.value,
       languageCode: currentLocale.value,
       ownerType: "Product",
       ownerId: args.props.options.productId as string,
@@ -115,6 +125,7 @@ export const useVideoDetails = (args: {
   }
 
   const scope = ref<VideoDetailsScope>({
+    videoUrlHandler,
     videoDisabled: computed(() => true),
     previewDisabled: computed(() => validationState.value.disabled),
     needShowUrl: computed(() => !args.props.param),

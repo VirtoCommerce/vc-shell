@@ -49,7 +49,7 @@ export const useOffersList = (args: {
     openBlade({
       blade: resolveBladeByName("Offer"),
       options: {
-        sellerProduct: args.props.options.sellerProduct,
+        sellerProduct: args.props?.options?.sellerProduct,
       },
       ...data,
     });

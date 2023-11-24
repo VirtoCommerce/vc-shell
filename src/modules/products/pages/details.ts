@@ -158,7 +158,6 @@ export const details: DynamicDetailsSchema = {
               id: "productGallery",
               component: "vc-gallery",
               property: "images",
-              uploadFolder: "catalog",
               multiple: true,
             },
           ],

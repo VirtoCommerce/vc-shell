@@ -11,7 +11,7 @@
 
 <script setup lang="ts">
 import { VcWidget, useApiClient, useAsync, useBladeNavigation } from "@vc-shell/framework";
-import { UnwrapNestedRefs, onMounted, ref } from "vue";
+import { onMounted, ref } from "vue";
 import {
   VcmpSellerCatalogClient,
   ISearchVideosQuery,
@@ -21,7 +21,7 @@ import { watchDebounced } from "@vueuse/core";
 
 interface Props {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  modelValue: UnwrapNestedRefs<{ [x: string]: any; id?: string }>;
+  modelValue: { [x: string]: any; item: { id: string; stagedProductDataId: string } };
 }
 
 const props = defineProps<Props>();

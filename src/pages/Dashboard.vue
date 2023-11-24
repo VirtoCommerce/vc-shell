@@ -91,71 +91,7 @@
             size="3"
             class="tw-p-2"
           >
-            <VcCard
-              v-if="$isDesktop.value"
-              :header="$t('SHELL.DASHBOARD.PRODUCTS.TITLE')"
-              icon="fas fa-box-open"
-            >
-              <template #actions>
-                <vc-button
-                  small
-                  outline
-                  @click="open('products-list')"
-                  >{{ $t("SHELL.DASHBOARD.PRODUCTS.ALL") }}</vc-button
-                >
-              </template>
-
-              <VcTable
-                class="tw-w-full tw-h-full tw-box-border"
-                :loading="productsLoading"
-                :items="products"
-                :columns="productsColumns"
-                :header="false"
-                :footer="false"
-                state-key="dashboard_products"
-                @item-click="productsClick"
-              >
-                <!-- Empty template -->
-                <template #empty>
-                  <div
-                    class="tw-w-full tw-h-full tw-box-border tw-flex tw-flex-col tw-items-center tw-justify-center tw-p-5"
-                  >
-                    <img src="/assets/empty.png" />
-                    <div class="tw-m-4 tw-text-xl tw-font-medium">
-                      {{ $t("SHELL.DASHBOARD.PRODUCTS.EMPTY") }}
-                    </div>
-                    <vc-button @click="open('products-add')">{{ $t("SHELL.DASHBOARD.PRODUCTS.ADD") }}</vc-button>
-                  </div>
-                </template>
-
-                <!-- Override name column template -->
-                <template #item_name="itemData">
-                  <div class="tw-flex tw-flex-col">
-                    <div class="tw-truncate">
-                      {{ itemData.item.name }}
-                    </div>
-                    <VcHint class="tw-truncate tw-mt-1">
-                      {{ itemData.item.path }}
-                    </VcHint>
-                  </div>
-                </template>
-
-                <!-- Override status column template -->
-                <template #item_status="itemData">
-                  <mp-product-status :context="{ item: { status: itemData.item.status } }" />
-                </template>
-              </VcTable>
-            </VcCard>
-            <VcCard
-              v-else
-              class="tw-mb-4"
-              :header="$t('SHELL.DASHBOARD.PRODUCTS.TITLE')"
-              icon="fas fa-box-open"
-              @click="open('products-list')"
-            >
-              <div class="tw-h-px tw-bg-[#e3e7ec]"></div>
-              <div class="tw-my-4 dashboard-counters__value">49</div>
-            </VcCard>
+            <modules.Products.components.ProductsDashboardCard></modules.Products.components.ProductsDashboardCard>
           </VcCol>
 
           <!-- Offers block -->
@@ -163,71 +99,7 @@
             size="4"
             class="tw-p-2"
           >
-            <VcCard
-              v-if="$isDesktop.value"
-              :header="$t('SHELL.DASHBOARD.OFFERS.TITLE')"
-              icon="fas fa-file-invoice"
-            >
-              <template #actions>
-                <vc-button
-                  small
-                  class="tw-mr-3"
-                  @click="open('offers-add')"
-                  >{{ $t("SHELL.DASHBOARD.OFFERS.ADD") }}</vc-button
-                >
-                <vc-button
-                  small
-                  outline
-                  @click="open('offers-list')"
-                  >{{ $t("SHELL.DASHBOARD.OFFERS.ALL") }}</vc-button
-                >
-              </template>
-
-              <VcRow>
-                <VcCol style="display: block">
-                  <VcTable
-                    class="tw-w-full tw-h-full tw-box-border"
-                    :loading="offersLoading"
-                    :items="offers"
-                    :columns="offersColumns"
-                    :header="false"
-                    :footer="false"
-                    state-key="dashboard_offers"
-                    @item-click="offersClick"
-                  >
-                    <!-- Empty template -->
-                    <template #empty>
-                      <div
-                        class="tw-w-full tw-h-full tw-box-border tw-flex tw-flex-col tw-items-center tw-justify-center tw-p-5"
-                      >
-                        <img src="/assets/empty.png" />
-                        <div class="tw-m-4 tw-text-xl tw-font-medium">
-                          {{ $t("SHELL.DASHBOARD.OFFERS.EMPTY") }}
-                        </div>
-                        <vc-button @click="open('offers-add')">{{ $t("SHELL.DASHBOARD.OFFERS.ADD") }}</vc-button>
-                      </div>
-                    </template>
-
-                    <!-- Override alwaysInStock column template -->
-                    <template #item_alwaysInStock="itemData">
-                      <div class="tw-flex tw-justify-center">
-                        <VcStatusIcon :status="!itemData"></VcStatusIcon>
-                      </div>
-                    </template>
-                  </VcTable>
-                </VcCol>
-              </VcRow>
-            </VcCard>
-            <VcCard
-              v-else
-              class="tw-mb-4"
-              :header="$t('SHELL.DASHBOARD.OFFERS.TITLE')"
-              icon="fas fa-file-invoice"
-              @click="open('offers-list')"
-            >
-              <div class="tw-h-px tw-bg-[#e3e7ec]"></div>
-              <div class="tw-my-4 dashboard-counters__value">206</div>
-            </VcCard>
+            <modules.Offers.components.OffersDashboardCard></modules.Offers.components.OffersDashboardCard>
           </VcCol>
         </VcRow>
       </VcCol>
@@ -237,48 +109,17 @@
 
 <script lang="ts" setup>
 import { useBladeNavigation, ITableColumns, notification, useErrorHandler } from "@vc-shell/framework";
-import { computed, onMounted, ref, watch, markRaw } from "vue";
-import { Offer, OrderLineItem, SellerProduct } from "@vcmp-vendor-portal/api/marketplacevendor";
+import { computed, onMounted, ref, watch } from "vue";
+import { OrderLineItem } from "@vcmp-vendor-portal/api/marketplacevendor";
 import { useI18n } from "vue-i18n";
 import { default as modules, UserPermissions } from "@vcmp-vendor-portal/modules";
 import { CustomerOrder } from "@vcmp-vendor-portal/api/orders";
 
 const { t } = useI18n({ useScope: "global" });
-const {
-  items: products,
-  load: loadProducts,
-  loading: productsLoading,
-} = modules.Products.composables.useProductsList(undefined);
 const { orders, loadOrders, loading: ordersLoading } = modules.Orders.useOrders();
-const { items: offers, load: loadOffers, loading: offersLoading } = modules.Offers.composables.useOffersList(undefined);
 
 const { openBlade, resolveBladeByName } = useBladeNavigation();
 const { error, reset } = useErrorHandler(true);
-
-const productsColumns = ref<ITableColumns[]>([
-  {
-    id: "imgSrc",
-    title: computed(() => t("PRODUCTS.PAGES.LIST.TABLE.HEADER.IMAGE")),
-    width: "20%",
-    type: "image",
-  },
-  {
-    id: "name",
-    title: computed(() => t("PRODUCTS.PAGES.LIST.TABLE.HEADER.NAME")),
-    width: "25%",
-  },
-  {
-    id: "createdDate",
-    title: computed(() => t("PRODUCTS.PAGES.LIST.TABLE.HEADER.CREATED_DATE")),
-    width: "25%",
-    type: "date-ago",
-  },
-  {
-    id: "status",
-    title: computed(() => t("PRODUCTS.PAGES.LIST.TABLE.HEADER.STATUS")),
-    width: "40%",
-  },
-]);
 
 const ordersColumns = ref<ITableColumns[]>([
   {
@@ -302,65 +143,6 @@ const ordersColumns = ref<ITableColumns[]>([
     title: computed(() => t("ORDERS.PAGES.LIST.TABLE.HEADER.CREATED")),
     width: "40%",
     type: "date-ago",
-  },
-]);
-
-const offersColumns = ref<ITableColumns[]>([
-  {
-    id: "imgSrc",
-    title: computed(() => t("OFFERS.PAGES.LIST.TABLE.HEADER.PRODUCT_IMAGE")),
-    width: 60,
-    type: "image",
-  },
-  {
-    id: "name",
-    field: "name",
-    title: computed(() => t("OFFERS.PAGES.LIST.TABLE.HEADER.PRODUCT_NAME")),
-    width: 120,
-  },
-  {
-    id: "createdDate",
-    title: computed(() => t("OFFERS.PAGES.LIST.TABLE.HEADER.CREATED_DATE")),
-    width: 100,
-    type: "date-ago",
-  },
-  {
-    id: "sku",
-    title: computed(() => t("OFFERS.PAGES.LIST.TABLE.HEADER.SKU")),
-    width: 120,
-  },
-  {
-    id: "alwaysInStock",
-    field: "trackInventory",
-    title: computed(() => t("OFFERS.PAGES.LIST.TABLE.HEADER.ALWAYS_IN_STOCK")),
-    width: 80,
-  },
-  {
-    id: "inStockQuantity",
-    title: computed(() => t("OFFERS.PAGES.LIST.TABLE.HEADER.QTY")),
-    width: 80,
-    type: "number",
-  },
-  {
-    id: "availQuantity",
-    title: computed(() => t("OFFERS.PAGES.LIST.TABLE.HEADER.AVAIL_QTY")),
-    width: 80,
-    sortable: true,
-    type: "number",
-  },
-  {
-    id: "validFrom",
-    field: "startDate",
-    title: computed(() => t("OFFERS.PAGES.LIST.TABLE.HEADER.VALID_FROM")),
-    width: 100,
-    type: "date-time",
-  },
-  {
-    id: "validTo",
-    field: "endDate",
-    title: computed(() => t("OFFERS.PAGES.LIST.TABLE.HEADER.VALID_TO")),
-    width: 100,
-    type: "date-time",
   },
 ]);
 
@@ -406,8 +188,6 @@ watch(error, (newVal) => {
 
 onMounted(async () => {
   loadOrders({ take: 5 });
-  loadProducts({ take: 5 });
-  loadOffers({ take: 5 });
 });
 
 function open(key: string): void {
@@ -420,41 +200,6 @@ function open(key: string): void {
         true
       );
       break;
-    case "products-list":
-      openBlade(
-        {
-          blade: resolveBladeByName("Products"),
-        },
-        true
-      );
-      break;
-    case "products-add":
-      openBlade(
-        {
-          blade: resolveBladeByName("Products"),
-        },
-        true
-      );
-      break;
-    case "offers-list":
-      openBlade(
-        {
-          blade: resolveBladeByName("Offers"),
-        },
-        true
-      );
-      break;
-    case "offers-add":
-      openBlade(
-        {
-          blade: resolveBladeByName("Offers"),
-          options: {
-            addOffer: true,
-          },
-        },
-        true
-      );
-      break;
   }
 }
 
@@ -462,26 +207,6 @@ function ordersClick(item: CustomerOrder): void {
   openBlade(
     {
       blade: resolveBladeByName("OrdersJ"),
-      param: item.id,
-    },
-    true
-  );
-}
-
-function productsClick(item: SellerProduct): void {
-  openBlade(
-    {
-      blade: resolveBladeByName("Products"),
-      param: item.id,
-    },
-    true
-  );
-}
-
-function offersClick(item: Offer): void {
-  openBlade(
-    {
-      blade: resolveBladeByName("Offers"),
       param: item.id,
     },
     true
@@ -526,31 +251,6 @@ function calcQty(items: OrderLineItem[]) {
 
   &-review-header {
     @apply tw-text-[#319ed4] tw-font-medium tw-text-lg tw-my-1;
-  }
-
-  &-offers {
-    &__counter {
-      @apply tw-grow tw-text-center tw-flex tw-flex-col tw-items-center
-        tw-justify-center tw-border-l tw-border-solid tw-border-l-[#e5e5e5]
-        tw-p-5 tw-border-b tw-border-b-[#e5e5e5] last:tw-border-b-0
-        first:tw-border-t first:tw-border-solid first:tw-border-t-[#e5e5e5];
-
-      &-value {
-        @apply tw-text-[32px] tw-font-medium tw-mb-2;
-
-        &_error {
-          @apply tw-text-[#ff4a4a];
-        }
-
-        &_warning {
-          @apply tw-text-[#f89406];
-        }
-      }
-
-      &-title {
-        @apply tw-font-bold tw-text-[#6b7987];
-      }
-    }
   }
 }
 

@@ -317,10 +317,10 @@ export const useProductDetails = (args: {
     assetsHandler: {
       images: {
         loading: imageLoading,
-        async upload(files, lastSortOrder) {
-          return (await imageUpload(files, `products/${item.value.id}`, lastSortOrder)).map((x) => new Image(x));
+        async upload(files, startingSortOrder) {
+          return (await imageUpload(files, `products/${item.value.id}`, startingSortOrder)).map((x) => new Image(x));
         },
-        async remove(files) {
+        remove(files) {
           return imageRemove(files, item.value.images);
         },
         edit(files) {

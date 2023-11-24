@@ -3,6 +3,15 @@
     "MENU": {
       "TITLE": "Offers"
     },
+    "WIDGET": {
+      "TITLE": "Offers",
+      "ADD": "Add offer",
+      "ALL": "All offers",
+      "EMPTY": "No offers yet",
+      "ENDING": "Offers ending soon",
+      "LOW_STOCK": "Low stock",
+      "OUT_STOCK": "Out of stock"
+    },
     "PAGES": {
       "LIST": {
         "TITLE": "My Offers",
@@ -145,7 +154,7 @@
             "TITLE": "Offer image"
           }
         },
-        "LANGUAGES":{
+        "LANGUAGES": {
           "en-US": "English",
           "de-DE": "German",
           "fr-FR": "French"

@@ -1,7 +1,6 @@
 <template>
   <VcWidget
     v-loading="loading"
-    v-bind="props"
     :value="count"
     :title="$t('PRODUCTS.PAGES.DETAILS.WIDGETS.OFFERS')"
     icon="fas fa-tags"
@@ -12,7 +11,7 @@
 
 <script setup lang="ts">
 import { VcWidget, useApiClient, useAsync, useBladeNavigation } from "@vc-shell/framework";
-import { UnwrapNestedRefs, onMounted, ref } from "vue";
+import { onMounted, ref } from "vue";
 import {
   VcmpSellerCatalogClient,
   ISearchOffersQuery,
@@ -22,7 +21,7 @@ import { watchDebounced } from "@vueuse/core";
 
 interface Props {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  modelValue: UnwrapNestedRefs<{ [x: string]: any; id?: string }>;
+  modelValue: { item: { [x: string]: any; id: string } };
 }
 
 const props = defineProps<Props>();

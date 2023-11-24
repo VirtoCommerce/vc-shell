@@ -4,6 +4,7 @@ import ProductsMobileGridView from "./ProductsMobileGridView.vue";
 import GridName from "./GridName.vue";
 import ProductsEmptyGridTemplate from "./ProductsEmptyGridTemplate.vue";
 import ProductNotFoundGridTemplate from "./ProductNotFoundGridTemplate.vue";
+import ProductsDashboardCard from "./ProductsDashboardCard.vue";
 
 export * from "./widgets";
 export {
@@ -13,4 +14,5 @@ export {
   GridName,
   ProductsEmptyGridTemplate,
   ProductNotFoundGridTemplate,
+  ProductsDashboardCard,
 };

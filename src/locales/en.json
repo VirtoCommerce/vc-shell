@@ -31,21 +31,6 @@
         "ALL": "All orders",
         "EMPTY": "There are no orders yet"
       },
-      "PRODUCTS": {
-        "TITLE": "Products",
-        "ALL": "All products",
-        "EMPTY": "There are no products yet",
-        "ADD": "Add product"
-      },
-      "OFFERS": {
-        "TITLE": "Offers",
-        "ADD": "Add offer",
-        "ALL": "All offers",
-        "EMPTY": "There are no offers yet",
-        "ENDING": "Offers ending soon",
-        "LOW_STOCK": "Low stock",
-        "OUT_STOCK": "Out of stock"
-      },
       "COUNTERS": {
         "REVENUE": "Revenue, USD",
         "DAY": "Day",

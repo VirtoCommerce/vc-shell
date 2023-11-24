@@ -8,6 +8,12 @@
       "HAS_STAGED_CHANGES": "Has staged changes",
       "NONE": "New"
     },
+    "WIDGET": {
+      "TITLE": "Products",
+      "ALL": "All products",
+      "EMPTY": "There are no products yet",
+      "ADD": "Add product"
+    },
     "MENU": {
       "TITLE": "Products",
       "MARKETPLACE_PRODUCTS": "Marketplace Products",
@@ -83,7 +89,8 @@
         "DELETE_SELECTED_CONFIRMATION": {
           "MESSAGE": "Are you sure you want to delete {count} selected products?",
           "ALL": "all {totalCount}"
-        }      },
+        }
+      },
       "DETAILS": {
         "TITLE": "Add product",
         "TOOLBAR": {
@@ -122,7 +129,7 @@
             "TITLE": "Description",
             "PLACEHOLDER": "Enter product description"
           },
-          "ASSETS":{
+          "ASSETS": {
             "TITLE": "Assets"
           },
           "IMAGES": {
@@ -132,8 +139,8 @@
             "TITLE": "Product type",
             "PLACEHOLDER": "Select product type",
             "TOOLTIP": "Product type: Physical or Digital",
-            "PHYSICAL":"Physical",
-            "DIGITAL":"Digital"
+            "PHYSICAL": "Physical",
+            "DIGITAL": "Digital"
           }
         },
         "ERRORS": {
@@ -146,9 +153,9 @@
           "DELETE_CONFIRMATION_ASSET": "Are you sure you want to delete {count} selected assets?"
         },
         "WIDGETS": {
-            "OFFERS":"Offers",
-            "VIDEOS": "Videos",
-            "ASSETS":"Assets"
+          "OFFERS": "Offers",
+          "VIDEOS": "Videos",
+          "ASSETS": "Assets"
         }
       },
       "ALERTS": {

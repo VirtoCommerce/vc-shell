@@ -21,6 +21,7 @@ import {
   OfferPrice,
   SearchOfferProductsResult,
   Image,
+  SellerProduct,
 } from "@vcmp-vendor-portal/api/marketplacevendor";
 import { Ref, computed, nextTick, onMounted, reactive, ref, watch } from "vue";
 import { useFulfillmentCenters, useMarketplaceSettings } from "../../../settings";
@@ -45,7 +46,7 @@ export interface OfferDetailsScope extends DetailsBaseBladeScope {
 const { getApiClient } = useApiClient(VcmpSellerCatalogClient);
 
 export const useOfferDetails = (args: {
-  props: InstanceType<typeof DynamicBladeForm>["$props"];
+  props: InstanceType<typeof DynamicBladeForm>["$props"] & { options: { sellerProduct: SellerProduct } };
   emit: InstanceType<typeof DynamicBladeForm>["$emit"];
   mounted: Ref<boolean>;
 }): UseDetails<IOffer, OfferDetailsScope> => {
@@ -58,6 +59,7 @@ export const useOfferDetails = (args: {
   const { fulfillmentCentersList, searchFulfillmentCenters } = useFulfillmentCenters();
 
   const { currencies, loadSettings } = useMarketplaceSettings();
+  const { getLanguages, loading: languagesLoading } = useMultilanguage();
   const { upload: imageUpload, remove: imageRemove, edit: imageEdit, loading: imageLoading } = useAssets();
 
   const detailsFactory = useDetailsFactory<IOffer>({
@@ -245,6 +247,7 @@ export const useOfferDetails = (args: {
     async () => {
       try {
         offerLoading.value = true;
+        await getLanguages();
         await loadSettings();
         if (!args.props.param) {
           item.value = reactive(new Offer());
@@ -254,13 +257,8 @@ export const useOfferDetails = (args: {
           await addPrice();
         }
 
-        const resolveId = (value: string) =>
-          args.props.options &&
-          "sellerProduct" in args.props.options &&
-          args.props.options.sellerProduct &&
-          typeof args.props.options.sellerProduct === "object" &&
-          value in args.props.options.sellerProduct &&
-          (args.props.options?.sellerProduct[value] as string);
+        const resolveId = (value: keyof Pick<SellerProduct, "publishedProductDataId" | "stagedProductDataId">) =>
+          args.props?.options?.sellerProduct?.[value];
 
         const searchableProductId =
           item.value?.productId || resolveId("publishedProductDataId") || resolveId("stagedProductDataId");
@@ -309,10 +307,10 @@ export const useOfferDetails = (args: {
     assetsHandler: {
       images: {
         loading: imageLoading,
-        async upload(files, lastSortOrder) {
-          return (await imageUpload(files, `products/${item.value.id}`, lastSortOrder)).map((x) => new Image(x));
+        async upload(files, startingSortOrder) {
+          return (await imageUpload(files, `offers/${item.value.id}`, startingSortOrder)).map((x) => new Image(x));
         },
-        async remove(files) {
+        remove(files) {
           return imageRemove(files, item.value.images);
         },
         edit(files) {
@@ -327,7 +325,7 @@ export const useOfferDetails = (args: {
     remove,
     saveChanges,
     scope: computed(() => scope.value),
-    loading: useLoading(loading, offerLoading, productLoading),
+    loading: useLoading(loading, offerLoading, productLoading, languagesLoading),
     item,
     validationState,
     bladeTitle,

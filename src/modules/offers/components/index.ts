@@ -2,6 +2,7 @@ import OfferProductsSelectCategoryTemplate from "./OfferProductsSelectCategoryTe
 import OffersMobileGridView from "./OffersMobileGridView.vue";
 import OffersEmptyGridTemplate from "./OffersEmptyGridTemplate.vue";
 import OffersNotFoundGridTemplate from "./OffersNotFoundGridTemplate.vue";
+import OffersDashboardCard from "./OffersDashboardCard.vue";
 
 export * from "./notifications";
 export {
@@ -9,4 +10,5 @@ export {
   OffersMobileGridView,
   OffersEmptyGridTemplate,
   OffersNotFoundGridTemplate,
+  OffersDashboardCard,
 };

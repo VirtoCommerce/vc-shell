@@ -29,6 +29,7 @@ export const grid: DynamicGridSchema = {
         method: "removeItems",
       },
     ],
+    pushNotificationType: "OfferDeletedDomainEvent",
   },
   content: [
     {
@@ -36,6 +37,12 @@ export const grid: DynamicGridSchema = {
       component: "vc-table",
       mobileTemplate: {
         component: "OffersMobileGridView",
+      },
+      emptyTemplate: {
+        component: "OffersEmptyGridTemplate",
+      },
+      notFoundTemplate: {
+        component: "OffersNotFoundGridTemplate",
       },
       multiselect: true,
       columns: [

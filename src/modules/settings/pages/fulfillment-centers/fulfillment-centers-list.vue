@@ -20,6 +20,7 @@
       :total-count="totalCount"
       :header="false"
       :selected-item-id="selectedItemId"
+      :pull-to-reload="true"
       state-key="fulfillment_centers_list"
       @header-click="onHeaderClick"
       @item-click="onItemClick"

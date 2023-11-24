@@ -82,7 +82,7 @@ export const useDynamicProperties = () => {
       return undefined;
     }
 
-    if (dictionaryItem["value"]) {
+    if ("value" in dictionaryItem && dictionaryItem["value"]) {
       valueValue = dictionaryItem["value"];
     } else {
       valueValue = dictionaryItem.alias;

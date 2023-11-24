@@ -14,6 +14,7 @@
     :total-label="$t('RATING.REVIEW_TABLE.TOTALS')"
     :total-count="totalCount"
     state-key="review_table"
+    :pull-to-reload="true"
     @header-click="onHeaderClick"
     @item-click="onItemClick"
     @pagination-click="onPaginationClick"

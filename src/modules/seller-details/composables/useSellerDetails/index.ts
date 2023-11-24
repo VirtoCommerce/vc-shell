@@ -166,10 +166,10 @@ export const useSellerDetails = (args?: {
       images: {
         loading: imageLoading,
         async upload(files: FileList) {
-          return (await uploadImage(files, `sellers/${item.value.id}`)).map((x) => new Image(x));
+          return (await uploadImage(files, `seller_logos/${item.value.id}`)).map((x) => new Image(x));
         },
-        remove: async (files: Image[]) => {
-          return await removeImage(files, logoHandler.value);
+        remove: (files: Image[]) => {
+          return removeImage(files, logoHandler.value);
         },
       },
     },

@@ -96,7 +96,6 @@ export const details: DynamicDetailsSchema = {
                       variant: "file-upload",
                       multiple: false,
                       property: "logoHandler",
-                      uploadFolder: "seller_logos",
                       rules: {
                         mindimensions: [120, 120],
                         fileWeight: 1024,

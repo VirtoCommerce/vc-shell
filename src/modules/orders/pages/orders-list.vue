@@ -25,6 +25,7 @@
       :active-filter-count="activeFilterCount"
       :selected-item-id="selectedItemId"
       :current-page="currentPage"
+      :pull-to-reload="true"
       state-key="orders_list"
       @search:change="onSearchList"
       @item-click="onItemClick"
@@ -222,7 +223,11 @@ const { openBlade } = useBladeNavigation();
 const { orders, loadOrders, loading, pages, currentPage, totalCount, changeOrderStatus, PaymentStatus } = useOrders();
 const { debounce } = useFunctions();
 const { t } = useI18n({ useScope: "global" });
-const filter: Ref<{ status: string | undefined }> = ref({ status: undefined });
+const filter: Ref<{ startDate?: Date; endDate?: Date; status?: string }> = ref({
+  startDate: undefined,
+  endDate: undefined,
+  status: undefined,
+});
 const appliedFilter = ref({});
 const searchValue = ref();
 const selectedItemId = ref();
@@ -477,17 +482,17 @@ const onSelectionChanged = (items: CustomerOrder[]) => {
   selectedOrdersIds.value = items.map((item) => item.id);
 };
 
-function setFilterDate(key: string, value: string) {
+function setFilterDate(key: keyof typeof filter.value, value: string) {
   const date = moment(value).toDate();
-  if (date instanceof Date && !isNaN(date.valueOf())) {
+  if (date instanceof Date && !isNaN(date.valueOf()) && key !== "status") {
     filter.value[key] = date;
   } else {
     filter.value[key] = undefined;
   }
 }
 
-function getFilterDate(key: string) {
-  const date = filter.value && (filter.value[key] as Date);
+function getFilterDate(key: keyof Omit<typeof filter.value, "status">) {
+  const date = filter.value && filter.value[key];
   if (date) {
     return moment(date).format("YYYY-MM-DD");
   }
@@ -496,7 +501,7 @@ function getFilterDate(key: string) {
 
 async function resetSearch() {
   searchValue.value = "";
-  Object.keys(filter.value).forEach((key: string) => (filter.value[key] = undefined));
+  Object.keys(filter.value).forEach((key: keyof typeof filter.value) => (filter.value[key] = undefined));
   await loadOrders({
     ...filter.value,
     keyword: "",
@@ -515,7 +520,7 @@ async function applyFilters(closePanel: () => void) {
 }
 async function resetFilters(closePanel: () => void) {
   closePanel();
-  Object.keys(filter.value).forEach((key: string) => (filter.value[key] = undefined));
+  Object.keys(filter.value).forEach((key: keyof typeof filter.value) => (filter.value[key] = undefined));
   await loadOrders({
     ...filter.value,
   });

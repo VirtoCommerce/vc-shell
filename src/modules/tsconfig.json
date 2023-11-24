@@ -1,7 +1,7 @@
 {
   "extends": "@vc-shell/ts-config/tsconfig.json",
   "compilerOptions": {
-     // "alwaysStrict": true,
+    //  "alwaysStrict": true,
     //  "noImplicitAny": true,
     //  "strictNullChecks": true,
      // "strictPropertyInitialization": true,

@@ -4,7 +4,7 @@
     "baseUrl": ".",
     "declarationDir": "dist/types",
     "outDir": "dist",
-    "rootDir": "./"
+    "rootDir": "./",
   },
   "files": ["package.json"],
   "include": [

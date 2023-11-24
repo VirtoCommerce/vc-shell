@@ -1,6 +1,6 @@
-import { VcButton, VcField, VcGallery, VcIcon, VcImage, VcInput, VcStatus, VcVideo } from "./../../../../ui/components";
+import { VcField, VcGallery, VcIcon, VcImage, VcInput, VcStatus, VcVideo } from "./../../../../ui/components";
 import { ITableColumns, IValidationRules } from "../../../../core/types";
-import type { ComponentProps, ComponentEmit, ComponentSlots } from "vue-component-type-helpers";
+import type { ComponentProps } from "./../../../utilities/vueUtils";
 
 export type KeysOfUnion<T> = T extends T ? keyof T : never;
 
@@ -14,7 +14,7 @@ export interface DynamicGridSchema {
   /**
    * @description Blade settings
    */
-  settings: SettingsSchema;
+  settings: SettingsGrid;
   content: [ListContentSchema];
 }
 
@@ -22,24 +22,27 @@ export interface DynamicDetailsSchema {
   /**
    * @description Blade settings
    */
-  settings: SettingsSchema;
+  settings: SettingsDetails;
   /**
    * @description Blade content
    */
   content: [FormContentSchema, WidgetsSchema?];
 }
 
-export type SettingsSchema = SettingsWorkspace | SettingsDetails;
+export type SettingsSchema = SettingsGrid | SettingsDetails;
 
-export interface SettingsWorkspace extends SettingsBase {
-  isWorkspace: boolean;
+export interface SettingsGrid extends SettingsBase {
+  component: "DynamicBladeList";
 }
 
 export interface SettingsDetails extends SettingsBase {
+  component: "DynamicBladeForm";
   status?: {
     component: string;
   };
 }
+
+export type IViewComponentName = "DynamicBladeForm" | "DynamicBladeList";
 
 export interface SettingsBase {
   /**
@@ -64,8 +67,12 @@ export interface SettingsBase {
   composable: string;
   /**
    * Toolbar items array
-   * @default 'save', 'delete' in {@link SettingsDetails}
-   * @default 'refresh', 'add' in {@link SettingsWorkspace}
+   *
+   *  Defaults:
+   *
+   * [`saveChanges`, `remove`] methods in `DynamicBladeForm`
+   *
+   * [`openAddBlade`, `refresh`, `removeItems`, `save`] methods in `DynamicBladeList`
    */
   toolbar: {
     id: string;
@@ -76,12 +83,20 @@ export interface SettingsBase {
   /**
    * Blade component
    */
-  component: string;
+  component: IViewComponentName;
   /**
    * Blade permissions
    */
   permissions?: string | string[];
+  /**
+   * The push notification types associated with the view.
+   */
   pushNotificationType?: string | string[];
+  /**
+   * Indicates whether the view is a workspace.
+   * This option is used to determine which view should be the default view.
+   */
+  isWorkspace?: boolean;
 }
 
 export interface ListContentSchema {
@@ -509,11 +524,6 @@ export interface GallerySchema extends Omit<SchemaBase, "placeholder" | "multila
    */
   component: "vc-gallery";
   /**
-   * Folder name for files upload.
-   * @type {string}
-   */
-  uploadFolder: string;
-  /**
    * Gallery type
    * @type {"gallery" | "file-upload"}
    */
@@ -532,6 +542,11 @@ export interface GallerySchema extends Omit<SchemaBase, "placeholder" | "multila
     }}
    */
   actions?: ComponentProps<typeof VcGallery>["itemActions"];
+  /**
+   * Whether the upload is hides after upload or not.
+   * @type {boolean}
+   */
+  hideAfterUpload?: boolean;
 }
 
 /**

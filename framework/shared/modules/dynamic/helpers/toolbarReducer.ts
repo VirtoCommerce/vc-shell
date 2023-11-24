@@ -2,11 +2,11 @@
 import { IBladeToolbar } from "../../../../core/types";
 import * as _ from "lodash-es";
 import { UnwrapNestedRefs, computed, ref, ComputedRef } from "vue";
-import { SettingsBase } from "../types";
+import { SettingsSchema } from "../types";
 import { BaseBladeScope, DetailsBladeContext, ListBladeContext } from "../factories/types";
 
 export const toolbarReducer = (args: {
-  defaultToolbarSchema: SettingsBase["toolbar"];
+  defaultToolbarSchema: SettingsSchema["toolbar"];
   defaultToolbarBindings: BaseBladeScope["toolbarOverrides"];
   customToolbarConfig: BaseBladeScope["toolbarOverrides"];
   context: UnwrapNestedRefs<DetailsBladeContext> | UnwrapNestedRefs<ListBladeContext>;

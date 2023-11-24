@@ -4632,6 +4632,7 @@ __metadata:
     ace-builds: ^1.27.0
     buffer-esm: ^1.2.0
     client-oauth2: ^4.3.3
+    core-js: ^3.33.2
     moment: ^2.29.4
     normalize.css: ^8.0.1
     querystring-es3: ^0.2.1
@@ -4751,17 +4752,17 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vcmp-vendor-portal/api@^1.0.131, @vcmp-vendor-portal/api@workspace:apps/vendor-portal/src/api_client":
+"@vcmp-vendor-portal/api@^1.0.132, @vcmp-vendor-portal/api@workspace:apps/vendor-portal/src/api_client":
   version: 0.0.0-use.local
   resolution: "@vcmp-vendor-portal/api@workspace:apps/vendor-portal/src/api_client"
   languageName: unknown
   linkType: soft
 
-"@vcmp-vendor-portal/modules@^1.0.131, @vcmp-vendor-portal/modules@workspace:apps/vendor-portal/src/modules":
+"@vcmp-vendor-portal/modules@^1.0.132, @vcmp-vendor-portal/modules@workspace:apps/vendor-portal/src/modules":
   version: 0.0.0-use.local
   resolution: "@vcmp-vendor-portal/modules@workspace:apps/vendor-portal/src/modules"
   peerDependencies:
-    "@vcmp-vendor-portal/api": ^1.0.131
+    "@vcmp-vendor-portal/api": ^1.0.132
   languageName: unknown
   linkType: soft
 
@@ -5459,8 +5460,8 @@ __metadata:
     "@vc-shell/framework": ^1.0.122
     "@vc-shell/release-config": ^1.0.122
     "@vc-shell/ts-config": ^1.0.122
-    "@vcmp-vendor-portal/api": ^1.0.131
-    "@vcmp-vendor-portal/modules": ^1.0.131
+    "@vcmp-vendor-portal/api": ^1.0.132
+    "@vcmp-vendor-portal/modules": ^1.0.132
     "@vitejs/plugin-vue": ^4.2.3
     "@vue/eslint-config-prettier": ^7.1.0
     "@vue/eslint-config-typescript": ^11.0.3
@@ -6779,6 +6780,13 @@ __metadata:
   dependencies:
     browserslist: ^4.22.1
   checksum: 39329daf135a3d8fdd86cf61d4fb2e868d1d9a60308cd98fccd0296d5e40b040c107e9aaa8a87163d8c058c69fbd441bc0a7a035aebd2d0978275bd0b257df15
+  languageName: node
+  linkType: hard
+
+"core-js@npm:^3.33.2":
+  version: 3.33.2
+  resolution: "core-js@npm:3.33.2"
+  checksum: 71de081acbd060ff985afdcdf2552de4a00ab3ac4695c77f3535b72ddf4526920dcd0cb73e72e57c2ae16e384838a6d55790e138f0a19d60afcf851f89d0064d
   languageName: node
   linkType: hard
 

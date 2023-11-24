@@ -2,7 +2,7 @@
 import { ComputedRef, MaybeRef, Ref, UnwrapNestedRefs } from "vue";
 import { AsyncAction } from "../../../../../core/composables";
 import { SettingsSchema } from "../../types";
-import { Asset, AssetsHandler, IBladeToolbar, IImage } from "../../../../../core/types";
+import { AssetsHandler, IBladeToolbar, ICommonAsset } from "../../../../../core/types";
 import { useBladeNavigation } from "../../../../components";
 import { FormContext } from "vee-validate";
 
@@ -91,8 +91,8 @@ export interface DetailsBaseBladeScope extends BaseBladeScope {
     }) => void;
   };
   assetsHandler?: {
-    assets?: AssetsHandler<Asset>;
-    images?: AssetsHandler<IImage>;
+    assets?: AssetsHandler<ICommonAsset>;
+    images?: AssetsHandler<ICommonAsset>;
   };
 }
 

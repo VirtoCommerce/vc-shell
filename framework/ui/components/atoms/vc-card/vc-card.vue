@@ -31,7 +31,7 @@
     <transition name="fade">
       <div
         v-show="!isCollapsedInternal"
-        :class="[{ 'vc-flex': fill }, 'vc-card__body']"
+        :class="[{ 'tw-flex': fill }, 'vc-card__body']"
       >
         <slot></slot>
       </div>

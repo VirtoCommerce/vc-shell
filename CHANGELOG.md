@@ -1,3 +1,12 @@
+## [1.0.125](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.124...v1.0.125) (2023-11-27)
+
+
+### Features
+
+* **dynamic:** vc-multivalue component for dynamic views ([9b9befc](https://github.com/VirtoCommerce/vc-shell/commit/9b9befc7b2caa3413c6af317322394e79f0cc9ad))
+
+
+
 ## [1.0.124](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.123...v1.0.124) (2023-11-27)
 
 

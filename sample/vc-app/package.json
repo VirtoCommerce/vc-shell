@@ -6,7 +6,7 @@
     "bootstrap": "yarn build:api && yarn build:modules-library",
     "serve": "cross-env APP_ENV=development vite --force",
     "preview": "vite preview",
-    "build": "yarn bootstrap && yarn build:app & yarn build:types",
+    "build": "yarn bootstrap && yarn build:app && yarn build:types",
     "build:app": "cross-env APP_ENV=production vite build",
     "build:types": "vue-tsc --declaration --emitDeclarationOnly --outDir dist/types",
     "build:api": "tsc -p ./src/api_client",

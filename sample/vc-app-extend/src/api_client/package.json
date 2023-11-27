@@ -2,8 +2,15 @@
   "name": "@vc-app-extend/api",
   "version": "1.0.113",
   "type": "module",
+  "types": "./dist/types/marketplacevendor.d.ts",
   "exports": {
     ".": "./marketplacevendor.ts"
+  },
+  "scripts": {
+    "generate-types": "tsc --emitDeclarationOnly --declaration"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.2"
   },
   "packageManager": "yarn@3.6.4"
 }

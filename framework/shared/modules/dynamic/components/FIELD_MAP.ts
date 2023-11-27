@@ -13,6 +13,7 @@ import ContentField from "./fields/ContentField";
 import VideoField from "./fields/VideoField";
 import ImageField from "./fields/ImageField";
 import TextareaField from "./fields/TextareaField";
+import MultivalueField from "./fields/MultivalueField";
 
 import { ControlSchema } from "../types";
 
@@ -36,6 +37,7 @@ const FIELD_MAP: TFieldMap = {
   "vc-video": VideoField,
   "vc-image": ImageField,
   "vc-textarea": TextareaField,
+  "vc-multivalue": MultivalueField,
 };
 
 export default FIELD_MAP;

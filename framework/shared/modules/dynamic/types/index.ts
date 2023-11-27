@@ -1,4 +1,13 @@
-import { VcField, VcGallery, VcIcon, VcImage, VcInput, VcStatus, VcVideo } from "./../../../../ui/components";
+import {
+  VcField,
+  VcGallery,
+  VcIcon,
+  VcImage,
+  VcInput,
+  VcMultivalue,
+  VcStatus,
+  VcVideo,
+} from "./../../../../ui/components";
 import { ITableColumns, IValidationRules } from "../../../../core/types";
 import type { ComponentProps } from "./../../../utilities/vueUtils";
 
@@ -203,13 +212,13 @@ export interface SelectSchema extends SchemaBase {
    */
   component: "vc-select";
   /**
-   * Property of optionProperty which holds the `value`
+   * Property which holds the `value`
    * @default id
    * @type {string}
    */
   optionValue: string;
   /**
-   * Property of optionProperty which holds the `label`
+   * Property which holds the `label`
    * @default title
    * @type {string}
    */
@@ -251,6 +260,60 @@ export interface SelectSchema extends SchemaBase {
    * @type {boolean}
    */
   searchable?: boolean;
+}
+
+export interface MultivalueSchema extends SchemaBase {
+  /**
+   * Component type for multivalue.
+   * @type {"vc-multivalue"}
+   */
+  component: "vc-multivalue";
+  /**
+   * Property which holds the `value`
+   * @default id
+   * @type {string}
+   */
+  optionValue: string;
+  /**
+   * Property which holds the `label`
+   * @default title
+   * @type {string}
+   */
+  optionLabel: string;
+  /**
+   * Array with multivalue dictionary.
+   * @description Array should be defined in the blade `scope`.
+   * @type {string}
+   */
+  options?: string;
+  /**
+   * Key of emmited object on select from dictionary.
+   * @default `valueId`
+   */
+  emitValue?: boolean;
+  /**
+   * Key of emmited object on input.
+   * @default `value`
+   */
+  emitLabel?: boolean;
+  /**
+   * Whether the select is multivalue or not.
+   * @type {boolean}
+   */
+  multivalue?: boolean;
+  /**
+   * Multivalue type
+   * @default `text`
+   */
+  variant?: ComponentProps<typeof VcMultivalue>["type"];
+  /**
+   * Name of custom template to display dictionary data in multivalue.
+   * Component should be registered globally.
+   * @type {{component: string}}
+   */
+  customTemplate?: {
+    component: string;
+  };
 }
 
 export interface TextareaSchema extends SchemaBase {
@@ -687,7 +750,8 @@ export type ControlSchema =
   | FieldSchema
   | VideoSchema
   | ImageSchema
-  | TextareaSchema;
+  | TextareaSchema
+  | MultivalueSchema;
 
 export interface FilterBase {
   columns: {

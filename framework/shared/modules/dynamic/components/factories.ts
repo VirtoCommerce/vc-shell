@@ -1,22 +1,5 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { markRaw } from "vue";
 import {
-  VcButton,
-  VcCard,
-  VcCheckbox,
-  VcDynamicProperty,
-  VcEditor,
-  VcField,
-  VcGallery,
-  VcImage,
-  VcInput,
-  VcInputCurrency,
-  VcSelect,
-  VcStatus,
-  VcVideo,
-  VcTextarea,
-} from "../../../../ui/components";
-import {
+  IMultivalueField,
   IControlBaseProps,
   ISelectField,
   IInputField,
@@ -34,7 +17,26 @@ import {
   IVideoField,
   IImageField,
   ITextareaField,
-} from "../types/models";
+} from "./../types/models";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { markRaw } from "vue";
+import {
+  VcButton,
+  VcCard,
+  VcCheckbox,
+  VcDynamicProperty,
+  VcEditor,
+  VcField,
+  VcGallery,
+  VcImage,
+  VcInput,
+  VcInputCurrency,
+  VcSelect,
+  VcStatus,
+  VcVideo,
+  VcTextarea,
+  VcMultivalue,
+} from "../../../../ui/components";
 
 export const ControlBase = ({ visibility = undefined }: IControlBaseOptions): IControlBaseOptions => ({
   visibility,
@@ -62,6 +64,16 @@ export const ControlBaseProps = ({
   classNames,
   tooltip,
   ...rest,
+});
+
+export const MultivalueField = ({ props, slots, options }: IMultivalueField): IMultivalueField => ({
+  component: markRaw(VcMultivalue),
+  props: {
+    ...ControlBaseProps(props),
+    ...props,
+  },
+  options: ControlBase(options),
+  slots,
 });
 
 export const SelectField = ({ props, slots, options }: ISelectField): ISelectField => ({

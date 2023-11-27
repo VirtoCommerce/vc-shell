@@ -117,7 +117,7 @@
     </slot>
   </div>
 </template>
-
+<!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup generic="T extends {id?: string; alias?: string, languageCode?: string, value?: string}">
 import { unref, nextTick, ref, computed } from "vue";
 import { vOnClickOutside } from "@vueuse/components";
@@ -174,6 +174,10 @@ const props = withDefaults(defineProps<Props<T>>(), {
 });
 
 const emit = defineEmits<Emits<T>>();
+defineSlots<{
+  item: (args: { item: T }) => any;
+  error: (props: any) => any;
+}>();
 
 const dropdownToggleRef = ref();
 const dropdownRef = ref();

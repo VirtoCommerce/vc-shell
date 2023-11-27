@@ -15,6 +15,7 @@ import {
   VcStatus,
   VcVideo,
   VcTextarea,
+  VcMultivalue,
 } from "../../../../ui/components";
 import type { ComponentProps, ComponentEmit, ComponentSlots } from "vue-component-type-helpers";
 
@@ -52,7 +53,8 @@ export type ControlType =
   | IContentField
   | IImageField
   | ITextareaField
-  | IVideoField;
+  | IVideoField
+  | IMultivalueField;
 
 export type ControlTypeWithSlots = Extract<
   ControlType,
@@ -82,6 +84,12 @@ export type WithRequiredProperty<Type, Key extends keyof Type> = Type & {
 export interface IControlBaseOptions {
   visibility?: ComputedRef<boolean | undefined>;
 }
+
+export type IMultivalueField = {
+  props: ComponentProps<typeof VcMultivalue> | IControlBaseProps;
+  slots?: Partial<ComponentSlots<typeof VcMultivalue>>;
+  options: IControlBaseOptions;
+} & FieldOpts<typeof VcMultivalue>;
 
 export type ISelectField = {
   props: ComponentProps<typeof VcSelect> | IControlBaseProps;

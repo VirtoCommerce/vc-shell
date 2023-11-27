@@ -1,3 +1,17 @@
+## [1.0.124](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.123...v1.0.124) (2023-11-27)
+
+
+### Bug Fixes
+
+* **framework:** Fix defaultValue assignment in vc-select.vue ([516a749](https://github.com/VirtoCommerce/vc-shell/commit/516a74980fb3c52ec1a322f19233fc5298a0f0fd))
+
+
+### Features
+
+* **vc-app:** Update build scripts and add TypeScript generation for API client ([93f2b7e](https://github.com/VirtoCommerce/vc-shell/commit/93f2b7e79f04e2d8e4b2cd57aa0d17625db76ed3))
+
+
+
 ## [1.0.123](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.122...v1.0.123) (2023-11-24)
 
 

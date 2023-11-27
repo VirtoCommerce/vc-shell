@@ -570,7 +570,12 @@ watch(
             undefined,
             Array.isArray(props.modelValue) ? props.modelValue : [props.modelValue]
           );
-          defaultValue.value = data.results?.filter((x) => x[props.optionValue as keyof T] === props.modelValue);
+
+          if (typeof data === "object" && !Array.isArray(data) && "results" in data) {
+            defaultValue.value = data.results?.filter((x) => x[props.optionValue as keyof T] === props.modelValue);
+          } else if (Array.isArray(data)) {
+            defaultValue.value = data?.filter((x) => x[props.optionValue as keyof T] === props.modelValue);
+          }
         } else if (props.options && Array.isArray(props.options)) {
           defaultValue.value = props.options.filter((x) => x[props.optionValue as keyof T] === props.modelValue);
         }

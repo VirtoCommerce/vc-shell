@@ -1,3 +1,12 @@
+## [1.0.126](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.125...v1.0.126) (2023-11-28)
+
+
+### Bug Fixes
+
+* **dynamic:** multivalueschema emitValue emitLabel type ([ecd5f61](https://github.com/VirtoCommerce/vc-shell/commit/ecd5f61fe3afbfc9c9685d6596223936f20e7e4c))
+
+
+
 ## [1.0.125](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.124...v1.0.125) (2023-11-27)
 
 

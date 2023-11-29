@@ -86,7 +86,7 @@ const { open } = usePopup({
 });
 
 const { t, locale: currentLocale, availableLocales, getLocaleMessage } = useI18n({ useScope: "global" });
-const { user, signOut, isAdministrator } = useUser();
+const { user, signOut, isAdministrator, isAuthenticated } = useUser();
 const { hasAccess } = usePermissions();
 const { getUiCustomizationSettings, uiSettings, applySettings } = useSettings();
 const {
@@ -119,6 +119,7 @@ const bladeNavigationRefs = ref();
 
 onMounted(async () => {
   try {
+    isAuthorized.value = await isAuthenticated();
     if (isAuthorized.value) {
       await getApps();
       langInit();
@@ -147,14 +148,6 @@ watch(
     });
   },
   { deep: true }
-);
-
-watch(
-  user,
-  (value) => {
-    isAuthorized.value = !!value?.userName;
-  },
-  { immediate: true }
 );
 
 watch(

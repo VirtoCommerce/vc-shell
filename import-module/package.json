@@ -1,6 +1,6 @@
 {
   "name": "@vc-shell/import-module",
-  "version": "1.0.126",
+  "version": "1.0.127",
   "description": "Import module",
   "main": "./dist/import-module.mjs",
   "module": "./dist/import-module.mjs",
@@ -25,16 +25,16 @@
     "generate:api-client": "cross-env api-client-generator --color -- APP_PLATFORM_MODULES='[Import]' APP_API_CLIENT_DIRECTORY=./src/api_client/"
   },
   "devDependencies": {
-    "@vc-shell/api-client-generator": "^1.0.126",
-    "@vc-shell/config-generator": "^1.0.126",
-    "@vc-shell/ts-config": "^1.0.126",
+    "@vc-shell/api-client-generator": "^1.0.127",
+    "@vc-shell/config-generator": "^1.0.127",
+    "@vc-shell/ts-config": "^1.0.127",
     "cross-env": "^7.0.3",
     "typescript": "^5.2.2",
     "vite": "^4.3.9",
     "vue-tsc": "^1.8.20"
   },
   "dependencies": {
-    "@vc-shell/framework": "^1.0.126",
+    "@vc-shell/framework": "^1.0.127",
     "vue": "^3.3.7",
     "vue-router": "^4.2.5"
   },

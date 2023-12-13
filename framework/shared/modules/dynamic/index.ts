@@ -70,17 +70,19 @@ const register = (
 
   const BladeInstanceConstructor = defineComponent({
     ...bladeComponent,
-    name: bladeName,
     isWorkspace: "isWorkspace" in json.settings && json.settings.isWorkspace,
     setup: (props: ComponentProps<typeof bladeComponent>, ctx) =>
       (bladeComponent?.setup &&
         bladeComponent.setup(
-          reactiveComputed(() => ({
-            ...props,
-            model: json,
-            composables: args.composables,
-          })) as any,
-          reactiveComputed(() => ctx) as any
+          Object.assign(
+            {},
+            reactiveComputed(() => props),
+            {
+              model: json,
+              composables: args.composables,
+            } as any
+          ),
+          ctx
         )) ??
       {},
   });

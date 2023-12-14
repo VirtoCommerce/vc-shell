@@ -247,14 +247,10 @@ const calculateColumns = (columns: ListContentSchema["columns"]) => {
           ? scope?.value[column.visible?.method]()
           : scope?.value[column.visible?.method];
 
-      console.log("result", result);
-
       column.visible = result;
     }
     return column;
   });
-
-  console.log(result);
 
   return result;
 };

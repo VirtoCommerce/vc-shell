@@ -21,6 +21,8 @@
 
     "shared/**/*.vue",
     "shared/**/*.ts",
-    "shared/**/*.json"
+    "shared/**/*.json",
+
+    "utils/*.ts",
   ],
 }

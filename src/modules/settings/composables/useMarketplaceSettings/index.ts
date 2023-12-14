@@ -15,6 +15,7 @@ export interface IUseSettings {
   currentLanguage: Ref<string>;
   defaultProductType: Ref<string>;
   productTypes: Ref<string[]>;
+  settingUseDefaultOffer: Ref<boolean>;
   loadSettings: () => Promise<void>;
 }
 
@@ -29,6 +30,7 @@ export default (): IUseSettings => {
   const currentLanguage = ref<string>();
   const defaultProductType = ref<string>();
   const productTypes = ref<string[]>([]);
+  const settingUseDefaultOffer = ref<boolean>(true);
 
   async function loadSettings() {
     const token = await getAccessToken();
@@ -57,6 +59,7 @@ export default (): IUseSettings => {
 
         defaultProductType.value = settings.value.defaultProductType;
         productTypes.value = settings.value.productTypes;
+        settingUseDefaultOffer.value = settings.value.useDefaultOffer;
       } catch (e) {
         console.error(e);
         throw e;
@@ -72,6 +75,7 @@ export default (): IUseSettings => {
     currentLanguage,
     defaultProductType,
     productTypes,
+    settingUseDefaultOffer,
     loadSettings,
   };
 };

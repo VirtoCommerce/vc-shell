@@ -22,6 +22,7 @@ import {
   SearchOfferProductsResult,
   Image,
   SellerProduct,
+  ChangeOfferDefaultCommand,
 } from "@vcmp-vendor-portal/api/marketplacevendor";
 import { Ref, computed, nextTick, onMounted, reactive, ref, watch } from "vue";
 import { useFulfillmentCenters, useMarketplaceSettings } from "../../../settings";
@@ -40,6 +41,7 @@ export interface OfferDetailsScope extends DetailsBaseBladeScope {
     saveChanges: IBladeToolbar;
     enable: IBladeToolbar;
     disable: IBladeToolbar;
+    setDefault: IBladeToolbar;
   };
 }
 
@@ -58,7 +60,7 @@ export const useOfferDetails = (args: {
   const productLoading = ref(false);
   const { fulfillmentCentersList, searchFulfillmentCenters } = useFulfillmentCenters();
 
-  const { currencies, loadSettings } = useMarketplaceSettings();
+  const { currencies, settingUseDefaultOffer, loadSettings } = useMarketplaceSettings();
   const { getLanguages, loading: languagesLoading } = useMultilanguage();
   const { upload: imageUpload, remove: imageRemove, edit: imageEdit, loading: imageLoading } = useAssets();
 
@@ -300,6 +302,21 @@ export const useOfferDetails = (args: {
           }
         },
         isVisible: computed(() => !!args.props.param && item.value?.isActive),
+      },
+      setDefault: {
+        async clickHandler() {
+          const command = new ChangeOfferDefaultCommand({
+            offerId: item.value?.id,
+            isDefault: true,
+          });
+          (await getApiClient()).changeOfferDefault(command);
+          item.value.isDefault = true;
+          args.emit("parent:call", {
+            method: "reload",
+          });
+        },
+        disabled: computed(() => item.value?.isDefault),
+        isVisible: computed(() => settingUseDefaultOffer.value),
       },
     },
     dynamicProperties: useDynamicProperties(),

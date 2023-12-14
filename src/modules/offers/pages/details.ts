@@ -28,6 +28,12 @@ export const details: DynamicDetailsSchema = {
         method: "disable",
       },
       {
+        id: "setDefault",
+        icon: "fas fa-marker",
+        title: "Set default",
+        method: "setDefault",
+      },
+      {
         id: "delete",
         icon: "fas fa-trash",
         title: "Delete",

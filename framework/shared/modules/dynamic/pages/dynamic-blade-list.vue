@@ -27,7 +27,7 @@
         class="tw-grow tw-basis-0"
         :loading="loading"
         :expanded="expanded"
-        :columns="(tableData?.columns as ITableColumns[])"
+        :columns="(table?.columns as ITableColumns[])"
         :state-key="stateKey"
         :items="(itemsProxy as Record<string, any>[])"
         :multiselect="isWidgetView ? false : tableData?.multiselect"
@@ -156,6 +156,7 @@ import { ListBaseBladeScope, ListBladeContext, UseList } from "../factories/type
 import { IParentCallArgs } from "../../../index";
 import * as _ from "lodash-es";
 import { useMounted } from "@vueuse/core";
+import { safeIn } from "../helpers/safeIn";
 
 export interface Props {
   expanded?: boolean;
@@ -205,6 +206,13 @@ const itemsProxy = ref<Record<string, any>[]>();
 const modified = ref(false);
 
 const { moduleNotifications, markAsRead } = useNotifications(settings.value?.pushNotificationType);
+const { load, remove, items, loading, pagination, query, scope } = props.composables?.[
+  props.model?.settings?.composable ?? ""
+]({
+  emit,
+  props,
+  mounted: useMounted(),
+}) as UseList<Record<string, any>[], Record<string, any>, ListBaseBladeScope>;
 
 watch(
   moduleNotifications,
@@ -230,9 +238,30 @@ const stateKey = computed(() => {
 
   throw new Error('Table id is not defined. Please provide "id" property in table schema');
 });
+
+const calculateColumns = (columns: ListContentSchema["columns"]) => {
+  const result = columns?.map((column) => {
+    if (typeof column.visible !== "boolean" && column.visible?.method) {
+      const result =
+        typeof scope?.value[column.visible?.method] === "function"
+          ? scope?.value[column.visible?.method]()
+          : scope?.value[column.visible?.method];
+
+      console.log("result", result);
+
+      column.visible = result;
+    }
+    return column;
+  });
+
+  console.log(result);
+
+  return result;
+};
+
 const table = computed(() => {
   const tableScope = {
-    columns: tableData.value?.columns,
+    columns: calculateColumns(tableData.value?.columns),
   };
 
   return tableScope;
@@ -246,14 +275,6 @@ const bladeOptions = reactive({
   notFound: resolveTemplateComponent("notFoundTemplate"),
   empty: resolveTemplateComponent("emptyTemplate"),
 });
-
-const { load, remove, items, loading, pagination, query, scope } = props.composables?.[
-  props.model?.settings?.composable ?? ""
-]({
-  emit,
-  props,
-  mounted: useMounted(),
-}) as UseList<Record<string, any>[], Record<string, any>, ListBaseBladeScope>;
 
 if (props.isWidgetView) {
   query.value.take = 5;

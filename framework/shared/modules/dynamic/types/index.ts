@@ -114,13 +114,18 @@ export interface ListContentSchema {
   filter?: FilterSchema;
   multiselect?: boolean;
   header?: boolean;
-  columns?: (ITableColumns & {
+  columns?: (Omit<ITableColumns, "visible"> & {
     id: string;
     title: string;
     sortable?: boolean;
     alwaysVisible?: boolean;
     type?: string;
     customTemplate?: GridTemplateOverride;
+    visible?:
+      | boolean
+      | {
+          method: string;
+        };
   })[];
   reorderableRows?: boolean;
   mobileTemplate?: {

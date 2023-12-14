@@ -643,9 +643,13 @@ const headerCheckbox = computed({
 
 const filteredCols = computed(() => {
   return defaultColumns.value.filter((x) => {
-    if (("visible" in x && x.visible) || !("visible" in x)) {
-      return props.expanded ? x : x.alwaysVisible;
+    if (x.visible === false) {
+      return false;
     }
+    if (!props.expanded) {
+      return x.alwaysVisible;
+    }
+    return x;
   });
 });
 
@@ -1039,6 +1043,10 @@ function restoreState() {
         return {
           ...item,
           title: column.title,
+          visible: column.visible,
+          sortable: column.sortable,
+          alwaysVisible: column.alwaysVisible,
+          type: column.type,
         };
       }
       return item;

@@ -158,6 +158,14 @@ watch(
   { deep: true }
 );
 
+watch(
+  user,
+  (value) => {
+    isAuthorized.value = !!value?.userName;
+  },
+  { immediate: true }
+);
+
 console.debug(`Initializing App`);
 
 const toolbarItems = computed(() =>

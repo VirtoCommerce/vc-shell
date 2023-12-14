@@ -7,6 +7,7 @@ import { i18n, permissions, signalR } from "./core/plugins";
 import { SharedModule } from "./shared";
 import * as componentLocales from "./ui/locales";
 import * as sharedPages from "./shared/pages/plugin";
+import "./utils/isInDemoMode";
 
 import "normalize.css";
 import "./assets/styles/index.scss";

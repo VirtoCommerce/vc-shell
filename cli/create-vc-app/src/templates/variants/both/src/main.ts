@@ -29,7 +29,7 @@ async function startApp() {
     app.config.globalProperties.$mergeLocaleMessage(key, message);
   });
 
-  app.provide("platformUrl", import.meta.env.APP_PLATFORM_URL);
+  // app.provide("platformUrl", import.meta.env.APP_PLATFORM_URL);
 
   app.config.errorHandler = (err) => {
     notification.error(err.toString(), {

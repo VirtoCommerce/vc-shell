@@ -32,7 +32,7 @@ export function useAppSwitcher(): IUseAppSwitcher {
   }
 
   function switchApp(app: AppDescriptor) {
-    if (app.permission && hasAccess(app.permission)) {
+    if (hasAccess(app.permission)) {
       if (app.relativeUrl) {
         window.location.href = window.location.origin + app.relativeUrl;
       }

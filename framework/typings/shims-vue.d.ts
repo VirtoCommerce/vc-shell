@@ -27,4 +27,10 @@ declare module "@vue/runtime-core" {
   }
 }
 
+declare global {
+  interface Window {
+    __DEMO_MODE__: boolean;
+  }
+}
+
 export {};

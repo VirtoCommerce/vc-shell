@@ -98,7 +98,7 @@ const { appsList, switchApp, getApps } = useAppSwitcher();
 const { notifications, loadFromHistory, markAllAsRead } = useNotifications();
 const route = useRoute();
 const router = useRouter();
-const isAuthorized = ref(true);
+const isAuthorized = ref(false);
 const isReady = ref(false);
 const pages = inject<BladeInstanceConstructor[]>("pages");
 const isDesktop = inject<Ref<boolean>>("isDesktop");
@@ -128,6 +128,15 @@ watch(
     bladesRefs.value = newVal;
   },
   { deep: true }
+);
+
+
+watch(
+  user,
+  (value) => {
+    isAuthorized.value = !!value?.userName;
+  },
+  { immediate: true }
 );
 
 console.debug(`Initializing App`);

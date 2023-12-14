@@ -78,6 +78,14 @@ export const grid: DynamicGridSchema = {
           type: "status-icon",
         },
         {
+          id: "isDefault",
+          title: "Default",
+          sortable: true,
+          alwaysVisible: true,
+          type: "status-icon",
+          visible: { method: "needShowIsDefault" },
+        },
+        {
           id: "prices.salePrice",
           title: "Sale price",
           sortable: true,

@@ -14,9 +14,9 @@ export function useAppSwitcher(): IUseAppSwitcher {
   const appsList = ref<AppDescriptor[]>([]);
 
   async function getApiClient(): Promise<AppsClient> {
-    const { getAccessToken } = useUser();
+    // const { getAccessToken } = useUser();
     const client = new AppsClient();
-    client.setAuthToken((await getAccessToken()) as string);
+    // client.setAuthToken((await getAccessToken()) as string);
     return client;
   }
 
@@ -32,7 +32,7 @@ export function useAppSwitcher(): IUseAppSwitcher {
   }
 
   function switchApp(app: AppDescriptor) {
-    if (app.permission && hasAccess(app.permission)) {
+    if (hasAccess(app.permission)) {
       if (app.relativeUrl) {
         window.location.href = window.location.origin + app.relativeUrl;
       }

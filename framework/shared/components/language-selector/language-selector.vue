@@ -6,7 +6,7 @@
       }
     "
     class="tw-relative"
-    :title="title"
+    :title="$t('COMPONENTS.LANGUAGE_SELECTOR.TITLE')"
     @click.stop="isDropActive = !isDropActive"
   >
     <div
@@ -43,18 +43,18 @@
 import { VcIcon } from "./../../../ui/components";
 import { ref } from "vue";
 import { vOnClickOutside } from "@vueuse/components";
+import { useI18n } from "vue-i18n";
 
-export interface Props {
-  title: string;
-  value: string;
-  languageItems: { lang: string; title: string; clickHandler: (lang: string) => void }[];
-}
-
-withDefaults(defineProps<Props>(), {
-  title: "",
-  value: "",
-  languageItems: () => [],
-});
+const { locale: currentLocale, availableLocales, getLocaleMessage } = useI18n({ useScope: "global" });
 
 const isDropActive = ref(false);
+
+const languageItems = availableLocales.map((locale: string) => ({
+  lang: locale,
+  title: (getLocaleMessage(locale) as { language_name: string }).language_name,
+  clickHandler(lang: string) {
+    currentLocale.value = lang;
+    localStorage.setItem("VC_LANGUAGE_SETTINGS", lang);
+  },
+}));
 </script>

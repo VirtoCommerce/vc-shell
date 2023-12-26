@@ -1,7 +1,7 @@
 {
-  "OFFERS": {
+  "OFFERSCLASSIC": {
     "MENU": {
-      "TITLE": "Offers"
+      "TITLE": "Offers legacy"
     },
     "PAGES": {
       "LIST": {

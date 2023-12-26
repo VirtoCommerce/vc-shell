@@ -37,7 +37,7 @@ export const useOfferDetails = (args: {
           isVisible: true,
         },
       },
-    })
+    }),
   ) as Ref<ExtendedOfferDetailsScope>;
 
   return {

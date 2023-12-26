@@ -1,5 +1,5 @@
 <template>
-  <VcNotificationTemplate
+  <NotificationTemplate
     :color="notificationStyle.color"
     :title="notification.title"
     :icon="notificationStyle.icon"
@@ -10,11 +10,11 @@
       class="tw-mb-1"
       >{{ notification.description }}</VcHint
     >
-  </VcNotificationTemplate>
+  </NotificationTemplate>
 </template>
 
 <script lang="ts" setup>
-import { PushNotification } from "@vc-shell/framework";
+import { PushNotification, NotificationTemplate } from "@vc-shell/framework";
 export interface Props {
   notification: PushNotification;
 }

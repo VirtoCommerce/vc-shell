@@ -2,7 +2,7 @@
   "extends": "@vc-shell/ts-config/tsconfig.json",
   "compilerOptions": {
     "baseUrl": ".",
-    "declarationDir": "dist/types",
+    "declarationDir": ".",
     "rootDir": "."
   },
   "files": [
@@ -10,5 +10,6 @@
   ],
   "include": [
     "*.ts",
-  ]
+  ],
+  "exclude": ["./marketplacevendor.d.ts", "./marketplacevendor.d.ts.map"]
 }

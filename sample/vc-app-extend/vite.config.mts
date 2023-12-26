@@ -1,21 +1,17 @@
 import { getApplicationConfiguration } from "@vc-shell/config-generator";
 import { VitePWA } from "vite-plugin-pwa";
-import { splitVendorChunkPlugin } from "vite";
-
-const mode = process.env.APP_ENV as string;
 
 export default getApplicationConfiguration({
   resolve: {
     alias: {
-      "@vc-app/modules": mode === "development" ? "src/modules/index.ts" : "@vc-app/modules",
-      "@vc-app/api": mode === "development" ? "src/api_client/marketplacevendor.ts" : "@vc-app/api",
+      "@vc-app/api": "@vc-app-extend/api",
     },
   },
   plugins: [
     VitePWA({
       includeAssets: ["favicon.ico", "apple-touch-icon.png"],
       manifest: {
-        name: "vc-app",
+        name: "vc-app-extend",
         theme_color: "#319ED4",
         display: "fullscreen",
         start_url: "/index.html",
@@ -45,12 +41,5 @@ export default getApplicationConfiguration({
         ],
       },
     }),
-    splitVendorChunkPlugin(),
   ],
-  optimizeDeps: {
-    include:
-      mode === "development"
-        ? ["ace-builds", "client-oauth2", "quill-delta", "quill", "url-pattern", "vee-validate"]
-        : [],
-  },
 });

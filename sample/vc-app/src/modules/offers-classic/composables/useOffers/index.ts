@@ -37,9 +37,9 @@ export default (options?: IUseOffersOptions): IUseOffers => {
   const loading = ref<boolean>(false);
 
   async function getApiClient(): Promise<VcmpSellerCatalogClient> {
-    const { getAccessToken } = useUser();
+    // const { getAccessToken } = useUser();
     const client = new VcmpSellerCatalogClient();
-    client.setAuthToken(await getAccessToken());
+    // client.setAuthToken(await getAccessToken());
     return client;
   }
 

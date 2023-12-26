@@ -15,7 +15,7 @@
         <VcBladeView
           v-slot="{ blade }"
           :key="blade.type?.name || key"
-          :blade="Component"
+          :blade="Component as BladeVNode"
           :name="key"
           :idx="index"
         >
@@ -41,7 +41,7 @@
 <script lang="ts" setup>
 import { computed } from "vue";
 import { useRouter } from "vue-router";
-import { useBladeNavigation } from "./../../../../../shared";
+import { BladeVNode, useBladeNavigation } from "./../../../../../shared";
 import { ErrorInterceptor } from "./../../../error-interceptor";
 import { VcBladeView } from "./../vc-blade-view/vc-blade-view";
 import { useTemplateRefsList } from "@vueuse/core";

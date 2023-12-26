@@ -7,7 +7,7 @@ export const VcBladeView = defineComponent({
   inheritAttrs: false,
   props: {
     blade: {
-      type: Object as PropType<BladeVNode | VNode>,
+      type: Object as PropType<BladeVNode>,
     },
     name: {
       type: String,
@@ -18,7 +18,7 @@ export const VcBladeView = defineComponent({
     },
   },
   setup(props, { attrs, slots }) {
-    provide(navigationViewLocation, props.blade);
+    provide(navigationViewLocation, props.blade!);
 
     return () => {
       /**

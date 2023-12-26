@@ -174,15 +174,15 @@
     </VcHint>
   </VcLoginForm>
 </template>
-
+<!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
-import { ref, reactive, computed, onMounted } from "vue";
+import { ref, reactive, computed, onMounted, Ref } from "vue";
 import { useRouter } from "vue-router";
 import { useIsFormValid, Field, useIsFormDirty, useForm } from "vee-validate";
 import { useSettings, useUser } from "./../../../../../core/composables";
-import { RequestPasswordResult, SignInResults } from "./../../../../../core/types";
+import { RequestPasswordResult } from "./../../../../../core/types";
 import AzureAdIcon from "./../../../../../assets/img/AzureAd.svg";
-import { ExternalSignInProviderInfo } from "./../../../../../core/api/platform";
+import { ExternalSignInProviderInfo, SignInResult } from "./../../../../../core/api/platform";
 import { useI18n } from "vue-i18n";
 
 type ForgotPasswordFunc = (args: { loginOrEmail: string }) => Promise<void>;
@@ -199,17 +199,17 @@ const props = defineProps<Props>();
 const router = useRouter();
 
 useForm({ validateOnMount: false });
-const { getUiCustomizationSettings, uiSettings } = useSettings();
+const { uiSettings, loading: customizationLoading } = useSettings();
 const { t } = useI18n({ useScope: "global" });
 let useLogin;
-const signInResult = ref<SignInResults>({ succeeded: true });
+const signInResult = ref({ succeeded: true }) as Ref<SignInResult & { status?: number; error?: any }>;
 const requestPassResult = ref<RequestPasswordResult>({ succeeded: true });
 const forgotPasswordRequestSent = ref(false);
 const { signIn, loading, externalSignIn, getExternalLoginProviders, isAuthenticated } = useUser();
 const isLogin = ref(true);
 const isValid = useIsFormValid();
 const isDirty = useIsFormDirty();
-const customizationLoading = ref(false);
+
 const loadingForgotPassword = ref(false);
 const loginProviders = ref<ExternalSignInProviderInfo[]>();
 let forgotPassword: ForgotPasswordFunc;
@@ -224,13 +224,7 @@ if (props.composable && typeof props.composable === "function") {
 }
 
 onMounted(async () => {
-  try {
-    customizationLoading.value = true;
-    loginProviders.value = await getExternalLoginProviders();
-    await getUiCustomizationSettings();
-  } finally {
-    customizationLoading.value = false;
-  }
+  loginProviders.value = await getExternalLoginProviders();
 });
 
 const externalAuthIcon = (authenticationType: string) => {
@@ -259,10 +253,24 @@ const forgotPasswordForm = reactive({
 
 const login = async () => {
   if (isValid.value) {
-    signInResult.value = await signIn(form.username, form.password);
+    signInResult.value = (await signIn(form.username, form.password)) as SignInResult & {
+      status?: number;
+      error?: any;
+    };
 
+    console.log(signInResult.value);
     if (signInResult.value.succeeded) {
-      router.push("/");
+      await router.push("/");
+    } else {
+      if (signInResult.value.status) {
+        if (signInResult.value.status === 401) {
+          signInResult.value.error = "The login or password is incorrect.";
+        } else {
+          signInResult.value.error = "Authentication error (code: " + signInResult.value.status + ").";
+        }
+      } else {
+        signInResult.value.error = "Authentication error " + signInResult.value;
+      }
     }
   }
 };

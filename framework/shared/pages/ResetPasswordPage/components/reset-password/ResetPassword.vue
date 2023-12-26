@@ -152,11 +152,11 @@ const resetPassword = async () => {
   if (valid) {
     const result = await resetPasswordByToken(props.userId, form.password, props.token);
     if (result.succeeded) {
-      const result = await signIn(props.userName, form.password);
-      if (result.succeeded) {
+      const loginResult = await signIn(props.userName, form.password);
+      if (loginResult.succeeded) {
         router.push("/");
       } else {
-        form.errors = [result.errorCode as string];
+        form.errors = ("error" in loginResult && [loginResult.error as string]) || [];
       }
     } else {
       form.errors = result.errors as string[];

@@ -1,7 +1,7 @@
-import { App, ref } from "vue";
-import { createModule } from "./../../../core/plugins";
+import { Router } from "vue-router";
+import { App } from "vue";
 import * as components from "./components";
-import { BladeNavigationPlugin, IBladeContainer, IBladeRef } from "./types";
+import { BladeNavigationPlugin } from "./types";
 
 // Declare globally
 declare module "@vue/runtime-core" {
@@ -13,17 +13,15 @@ declare module "@vue/runtime-core" {
 export let bladeNavigationInstance: BladeNavigationPlugin;
 
 export const VcBladeNavigationComponent = {
-  install(app: App) {
+  install(app: App, args: { router: Router }) {
     // Register components
-    createModule(components).install(app);
+    Object.entries(components).forEach(([componentName, component]) => {
+      app.component(componentName, component);
+    });
 
     // Plugin
-    const blades = ref<IBladeContainer[]>([]);
-    const bladesRefs = ref<IBladeRef[]>([]);
-
     const bladeNavigationPlugin: BladeNavigationPlugin = {
-      blades,
-      bladesRefs,
+      router: args.router,
     };
 
     app.config.globalProperties.$bladeNavigationPlugin = bladeNavigationPlugin;

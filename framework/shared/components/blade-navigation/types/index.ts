@@ -1,23 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { RouteRecordNormalized, Router } from "vue-router";
 import {
   AppContext,
   Component,
   ComponentOptionsBase,
   ComponentOptionsMixin,
-  ComponentPublicInstance,
-  ComputedOptions,
   VNode,
   ComponentInternalInstance,
   VNodeTypes,
-  Ref,
-  MethodOptions,
+  ComponentPublicInstance,
 } from "vue";
 import { ComponentPublicInstanceConstructor } from "../../../utilities/vueUtils";
-
-/**
- * @deprecated use `ComponentPublicInstanceConstructor` interface instead
- */
-export type ComponentInstanceConstructor<T = any> = ComponentPublicInstanceConstructor<T>;
 
 export type CoreBladeComponentProps = {
   expanded?: boolean;
@@ -31,29 +24,38 @@ export type CoreDynamicBladeComponentProps = {
   composables?: any;
 };
 
-/**
- * @deprecated use `BladeInstanceConstructor` interface instead
- */
-export type BladePageComponent = BladeInstanceConstructor;
-
-export type CoreComponentData = {
-  isBladeComponent?: boolean;
-};
+export interface MenuItemConfig {
+  id?: string;
+  /**
+   * Menu item title.
+   */
+  title: string;
+  /**
+   * Menu item icon.
+   */
+  icon: string;
+  /**
+   * Menu item group. Is used to group menu items with it's provided name.
+   *
+   * If the path is not specified, the menu item is added to the root of the menu.
+   */
+  group?: string;
+  /**
+   * Position priority.
+   */
+  priority: number;
+}
 
 export type CoreBladeAdditionalSettings = {
   url?: `/${string}`;
   permissions?: string | string[];
   isWorkspace?: boolean;
+  name?: string;
+  menuItem?: MenuItemConfig;
 };
-
-export type CoreBladeNavigationData = {
-  idx?: number;
-};
-
 export interface CoreBladeExposed {
   [x: string]: any;
   title?: string;
-  onBeforeClose?: () => Promise<boolean>;
   reloadParent?: () => void;
   reload?: () => void;
 }
@@ -64,21 +66,12 @@ export interface IParentCallArgs {
   callback?: (args: unknown) => void;
 }
 
-export interface IBladeContainer extends IBladeEvent {
-  idx?: number;
-}
-
 export interface BladeComponentInternalInstance extends ComponentInternalInstance {
-  vnode: VNode & { type: VNodeTypes & CoreBladeAdditionalSettings & CoreBladeNavigationData };
+  vnode: VNode & BladeVNode;
   appContext: AppContext & { components: Record<string, BladeInstanceConstructor> };
 }
 
 export type ExtractedBladeOptions<T, U extends keyof T> = T[U];
-
-/**
- * @deprecated use `BladeInstanceConstructor` interface instead
- */
-export type BladeConstructor<T extends ComponentPublicInstance = ComponentPublicInstance> = BladeInstanceConstructor<T>;
 
 type Extractor<T> = Extract<T, ComponentPublicInstanceConstructor>;
 
@@ -90,9 +83,7 @@ export type BladeInstanceConstructor<T extends Component = Component> = Extracto
     $props: InstanceType<Extractor<T>>["$props"] & CoreBladeComponentProps;
   };
 } & ComponentOptionsBase<any, any, any, any, ComponentOptionsMixin, ComponentOptionsMixin, any, any, any> &
-  CoreComponentData &
-  CoreBladeAdditionalSettings &
-  CoreBladeNavigationData;
+  CoreBladeAdditionalSettings;
 
 export interface IBladeEvent<T extends Component = Component> {
   blade: BladeInstanceConstructor<T>;
@@ -102,14 +93,32 @@ export interface IBladeEvent<T extends Component = Component> {
   onClose?: () => void;
 }
 
-export interface IBladeRef {
-  exposed: CoreBladeExposed;
-  blade: IBladeContainer;
-  expanded?: boolean;
-  active?: boolean;
+export interface BladeNavigationPlugin {
+  router: Router;
 }
 
-export interface BladeNavigationPlugin {
-  blades: Ref<IBladeContainer[]>;
-  bladesRefs: Ref<IBladeRef[]>;
+type VNodeMountHook = (vnode: BladeVNode | VNode) => void;
+export interface BladeVNode extends VNode {
+  props: {
+    navigation: {
+      onOpen?: () => void;
+      onClose?: () => void;
+      fullPath: string;
+      bladePath?: string;
+      idx: number;
+      uniqueRouteKey: string;
+    };
+    onVnodeUnmounted?: VNodeMountHook | VNodeMountHook[];
+    onVnodeMounted?: VNodeMountHook | VNodeMountHook[];
+  } & Omit<VNode["props"], "onVnodeUnmounted" | "onVnodeMounted"> &
+    CoreBladeComponentProps;
+  type: VNodeTypes & BladeInstanceConstructor;
+}
+
+export interface BladeRouteRecordLocationNormalized extends RouteRecordNormalized {
+  components: Record<string, BladeVNode>;
+  instances: Record<
+    string,
+    ComponentPublicInstance<CoreBladeExposed, any, CoreBladeExposed, any, CoreBladeExposed, any, any, any, any, any>
+  >;
 }

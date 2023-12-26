@@ -9,19 +9,26 @@
     @click.stop="toggleAccountMenuVisible"
   >
     <div
+      v-if="avatarUrl"
       class="user-dropdown-button__avatar"
       :style="imageHandler"
     ></div>
+    <VcIcon
+      v-else
+      icon="fas fa-user-circle"
+      size="xxl"
+      class="tw-text-[color:var(--app-bar-button-color)]"
+    />
     <div class="tw-grow tw-basis-0 tw-ml-3 tw-overflow-hidden">
       <div class="user-dropdown-button__name tw-truncate">
-        {{ name }}
+        {{ name || user?.userName }}
       </div>
       <div class="user-dropdown-button__role">
-        {{ role }}
+        {{ role || (user?.isAdministrator ? "Administrator" : "") }}
       </div>
     </div>
     <div
-      v-if="menuItems && menuItems.length"
+      v-if="menu && menu.length && !$isMobile.value"
       class="user-dropdown-button__chevron"
     >
       <VcIcon
@@ -30,12 +37,12 @@
       ></VcIcon>
     </div>
     <div
-      v-if="menuItems && accountMenuVisible"
+      v-if="menu && accountMenuVisible"
       class="user-dropdown-button__menu"
       @click.stop="accountMenuVisible = false"
     >
       <div
-        v-for="(item, i) in menuItems"
+        v-for="(item, i) in menu"
         :key="`menu_item_${i}`"
         class="user-dropdown-button__menu-item"
         @click="item.hasOwnProperty('clickHandler') ? item.clickHandler?.() : null"
@@ -47,31 +54,58 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from "vue";
+import { Ref, computed, inject, ref } from "vue";
 import { vOnClickOutside } from "@vueuse/components";
-import { BladeMenu } from "./../../../core/types";
+import { useUser } from "../../../core/composables";
+import { useBladeNavigation } from "../blade-navigation";
+import { useRouter } from "vue-router";
+import { useI18n } from "vue-i18n";
+import { VcIcon } from "../../../ui/components";
+import { BladeMenu } from "../../../core/types";
+import { usePopup } from "../popup-handler/composables/usePopup";
+import { ChangePassword } from "../change-password";
 
 export interface Props {
-  avatar: string;
-  name: string;
-  role: string;
+  avatarUrl?: string | undefined;
+  name?: string | undefined;
+  role?: string | undefined;
   menuItems?: BladeMenu[];
 }
 const props = withDefaults(defineProps<Props>(), {
   menuItems: () => [],
 });
 
-const imageHandler = computed(() => {
-  if (props.avatar) {
-    return `background-image: url(${CSS.escape(props.avatar)})`;
-  }
-  return undefined;
+const isMobile = inject("isMobile") as Ref<boolean>;
+
+const { user, signOut } = useUser();
+const { closeBlade } = useBladeNavigation();
+const router = useRouter();
+const { t } = useI18n({ useScope: "global" });
+
+const { open } = usePopup({
+  component: ChangePassword,
 });
 
 const accountMenuVisible = ref(false);
+const menu = computed(() => [
+  ...props.menuItems,
+  {
+    title: t("Change password"),
+    clickHandler() {
+      open();
+    },
+  },
+  {
+    title: t("Log Out"),
+    async clickHandler() {
+      await signOut();
+      router.push({ name: "Login" });
+    },
+  },
+]);
 
 const toggleAccountMenuVisible = () => {
-  if (props.menuItems && props.menuItems.length) {
+  if (menu.value && menu.value.length && !isMobile.value) {
     accountMenuVisible.value = !accountMenuVisible.value;
   }
 };
@@ -79,6 +113,13 @@ const toggleAccountMenuVisible = () => {
 const onClose = () => {
   accountMenuVisible.value = false;
 };
+
+const imageHandler = computed(() => {
+  if (props.avatarUrl) {
+    return `background-image: url(${CSS.escape(props.avatarUrl)})`;
+  }
+  return undefined;
+});
 </script>
 
 <style lang="scss">
@@ -109,7 +150,7 @@ const onClose = () => {
   }
 
   &__chevron {
-    @apply tw-text-[#7e8e9d] [transition:transform_0.2s_ease] [transition:color_0.2s_ease];
+    @apply tw-text-[#7e8e9d] [transition:color_0.2s_ease];
   }
 
   &:hover &__chevron {

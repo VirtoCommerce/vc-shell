@@ -18,31 +18,24 @@ const notifications = ref<PushNotification[]>([]);
 const pushNotifications = ref<PushNotification[]>([]);
 
 export function useNotifications(notifyType?: string | string[]): INotifications {
-  const { getAccessToken } = useUser();
-
   async function loadFromHistory(take = 10) {
-    const token = await getAccessToken();
-    if (token) {
-      // TODO temporary workaround to get push notifications without base type
-      try {
-        notificationsClient.setAuthToken(token);
-        const result = await fetch("/api/platform/pushnotifications", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json-patch+json",
-            Accept: "application/json",
-            authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({ take }),
-        });
+    // TODO temporary workaround to get push notifications without base type
+    try {
+      const result = await fetch("/api/platform/pushnotifications", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json-patch+json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({ take }),
+      });
 
-        result.text().then((response) => {
-          notifications.value = <PushNotification[]>JSON.parse(response).notifyEvents ?? [];
-        });
-      } catch (e) {
-        console.error(e);
-        throw e;
-      }
+      result.text().then((response) => {
+        notifications.value = <PushNotification[]>JSON.parse(response).notifyEvents ?? [];
+      });
+    } catch (e) {
+      console.error(e);
+      throw e;
     }
   }
 
@@ -75,21 +68,17 @@ export function useNotifications(notifyType?: string | string[]): INotifications
   }
 
   async function markAllAsRead() {
-    const token = await getAccessToken();
-    if (token) {
-      notificationsClient.setAuthToken(token);
-      try {
-        await notificationsClient.markAllAsRead();
-        notifications.value = notifications.value.map((x) => {
-          if (x.isNew) {
-            x.isNew = false;
-          }
-          return x;
-        });
-      } catch (e) {
-        console.error(e);
-        throw e;
-      }
+    try {
+      await notificationsClient.markAllAsRead();
+      notifications.value = notifications.value.map((x) => {
+        if (x.isNew) {
+          x.isNew = false;
+        }
+        return x;
+      });
+    } catch (e) {
+      console.error(e);
+      throw e;
     }
   }
 
@@ -97,8 +86,8 @@ export function useNotifications(notifyType?: string | string[]): INotifications
     () =>
       pushNotifications.value.filter(
         (item: PushNotification) =>
-          item.isNew && !!item.notifyType && !!notifyType && notifyType.includes(item.notifyType)
-      ) ?? []
+          item.isNew && !!item.notifyType && !!notifyType && notifyType.includes(item.notifyType),
+      ) ?? [],
   );
 
   return {

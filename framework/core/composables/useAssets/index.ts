@@ -11,7 +11,6 @@ export interface IUseAssets {
 }
 
 export function useAssets(): IUseAssets {
-  const { getAccessToken } = useUser();
   const loading = ref(false);
 
   async function upload(files: FileList, uploadPath: string, startingSortOrder?: number): Promise<ICommonAsset[]> {
@@ -19,8 +18,6 @@ export function useAssets(): IUseAssets {
       loading.value = true;
 
       const uploadedAssets: Ref<ICommonAsset[]> = ref([]);
-      const authToken = await getAccessToken();
-
       for (let i = 0; i < files.length; i++) {
         const formData = new FormData();
         formData.append("file", files[i]);
@@ -28,9 +25,6 @@ export function useAssets(): IUseAssets {
         const result = await fetch(`/api/assets?folderUrl=/${uploadPath}`, {
           method: "POST",
           body: formData,
-          headers: {
-            Authorization: `Bearer ${authToken}`,
-          },
         });
 
         const response = await result.json();

@@ -192,7 +192,7 @@ defineExpose({
   &__inner {
     @apply tw-relative tw-overflow-y-auto tw-overflow-x-hidden
     tw-flex-1 tw-p-[var(--container-scroll-padding)]
-     tw-transition-transform [scrollbar-color:var(--container-scroll-color)] [scrollbar-width:thin];
+    tw-transition-transform [scrollbar-color:var(--container-scroll-color)] [scrollbar-width:thin];
 
     &::-webkit-scrollbar {
       @apply tw-w-[var(--container-scroll-width)] tw-bg-transparent;

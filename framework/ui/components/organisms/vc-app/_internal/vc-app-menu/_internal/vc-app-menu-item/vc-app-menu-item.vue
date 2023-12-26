@@ -1,14 +1,13 @@
 <template>
   <div>
-    <template v-if="component && component.url">
+    <template v-if="url">
       <router-link
-        v-slot="{ isExactActive }"
-        :to="component.url"
+        :to="url"
         custom
       >
         <vc-app-menu-link
-          :is-active="isExactActive"
-          :children="children"
+          :is-active="isActive(url)"
+          :has-children="!!children.length"
           :sticky="sticky"
           :icon="icon ?? ''"
           :title="title ?? ''"
@@ -18,7 +17,7 @@
     </template>
     <template v-else>
       <vc-app-menu-link
-        :children="children"
+        :has-children="!!children.length"
         :sticky="sticky"
         :icon="icon ?? ''"
         :title="title ?? ''"
@@ -35,16 +34,14 @@
           :key="i"
         >
           <router-link
-            v-slot="{ isActive }"
-            :to="(nested.component?.url as string)"
+            :to="nested.url"
             custom
           >
             <div
-              v-if="nested.isVisible === undefined || nested.isVisible"
               :key="i"
               :class="[
                 {
-                  'vc-app-menu-item__child-item_active': isActive,
+                  'vc-app-menu-item__child-item_active': isActive(nested.url),
                 },
                 'vc-app-menu-item__child-item',
               ]"
@@ -60,19 +57,18 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref } from "vue";
-import { BladeMenu } from "./../../../../../../../../core/types";
+import { ref, watch } from "vue";
 import VcAppMenuLink from "./_internal/vc-app-menu-link.vue";
 import { useRoute } from "vue-router";
-import { BladeInstanceConstructor } from "./../../../../../../../../shared";
+import { MenuItem } from "../../../../../../../../core/types";
 
 export interface Props {
   sticky?: boolean;
   isVisible?: boolean;
-  component?: BladeInstanceConstructor;
+  url?: string;
   icon?: string;
   title?: string;
-  children?: BladeMenu[];
+  children?: MenuItem[];
 }
 
 export interface Emits {
@@ -82,8 +78,8 @@ export interface Emits {
     {
       item,
     }: {
-      item: BladeMenu;
-    }
+      item: MenuItem;
+    },
   ): void;
 }
 
@@ -98,11 +94,15 @@ const emit = defineEmits<Emits>();
 
 const isOpened = ref(false);
 
-onMounted(() => {
-  if (props.children && props.children.length && props.children.find((x) => x.component?.url === route?.path)) {
-    isOpened.value = true;
-  }
-});
+watch(
+  () => route.path,
+  () => {
+    if (props.children && props.children.length && props.children.find((x) => x?.url === route?.path)) {
+      isOpened.value = true;
+    }
+  },
+  { immediate: true },
+);
 
 function onMenuItemClick() {
   if (!props.children?.length) {
@@ -111,6 +111,13 @@ function onMenuItemClick() {
     isOpened.value = !isOpened.value;
   }
 }
+
+const isActive = (url: string) => {
+  if (url) {
+    const splitted = url.split("/").filter((part) => part !== "");
+    return route.path.split("/").filter((part) => part !== "")[0] === splitted[0];
+  } else return false;
+};
 </script>
 
 <style lang="scss">

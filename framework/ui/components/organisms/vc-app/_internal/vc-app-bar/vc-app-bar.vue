@@ -3,9 +3,9 @@
     class="tw-relative tw-flex tw-items-center tw-content-between tw-h-[var(--app-bar-height)] tw-bg-[color:var(--app-bar-background-color)] tw-px-4"
     :class="{ '!tw-pr-0 !tw-pl-[10px]': $isMobile.value }"
   >
-    <slot name="appSwitcher"></slot>
+    <slot name="app-switcher"></slot>
 
-    <template v-if="!$isMobile.value || blades.length === 0">
+    <template v-if="!$isMobile.value || quantity === 0">
       <!-- Logo -->
       <img
         class="tw-h-1/2 tw-cursor-pointer tw-mx-3"
@@ -26,15 +26,15 @@
     <template v-if="$isMobile.value">
       <!-- Show blades name when at least one blade is opened -->
       <div
-        v-if="blades.length === 1"
+        v-if="quantity === 1"
         class="tw-overflow-ellipsis tw-overflow-hidden tw-whitespace-nowrap tw-text-2xl tw-leading-header tw-ml-2"
       >
-        {{ blades[0].exposed.title }}
+        {{ viewTitle || "" }}
       </div>
 
       <!-- Show back link when more than one blade is opened -->
       <VcLink
-        v-else-if="blades.length > 1"
+        v-else-if="quantity > 1"
         class="tw-ml-3"
         @click="$emit('backlink:click')"
       >
@@ -51,39 +51,7 @@
 
     <!-- Toolbar container -->
     <div class="tw-flex tw-h-full tw-box-border">
-      <template
-        v-for="(item, index) in buttons"
-        :key="index"
-      >
-        <template v-if="item.isVisible === undefined || item.isVisible">
-          <!-- Draw custom component is it is passed -->
-          <component
-            :is="item.component"
-            v-if="item.component"
-            v-bind="item.options"
-            :is-accent="item.isAccent"
-          ></component>
-
-          <!-- Otherwise draw default toolbar button -->
-          <div
-            v-else
-            class="tw-relative tw-flex tw-items-center tw-justify-center tw-w-[var(--app-bar-button-width)] tw-border-l tw-border-solid tw-border-[color:var(--app-bar-button-border-color)] tw-cursor-pointer tw-text-[color: var(--app-bar-button-color)] tw-bg-[color:var(--app-bar-button-background-color)] tw-transition-[color] tw-duration-200 hover:tw-text-[color:var(--app-bar-button-color-hover)] hover:tw-bg-[color:var(--app-bar-button-background-color-hover)]"
-            :title="item.title as string"
-            @click="$emit('button:click', item)"
-          >
-            <VcIcon
-              :icon="typeof item.icon === 'function' ? item.icon() : item.icon"
-              size="xl"
-            ></VcIcon>
-            <div
-              :class="{
-                'tw-block tw-absolute tw-right-3 tw-top-[18px] tw-w-[7px] tw-h-[7px] tw-bg-[#ff4a4a] tw-rounded-full tw-z-[1]':
-                  item.isAccent,
-              }"
-            ></div>
-          </div>
-        </template>
-      </template>
+      <slot name="toolbar"></slot>
     </div>
 
     <!-- Show menu toggler on mobile devices -->
@@ -101,12 +69,11 @@
 import { useI18n } from "vue-i18n";
 import { VcIcon, VcLink } from "./../../../../";
 import { IBladeToolbar } from "./../../../../../../core/types";
-import { IBladeRef } from "./../../../../../../shared";
+import { useBladeNavigation } from "./../../../../../../shared";
+import { ref, watch, nextTick } from "vue";
 
 export interface Props {
   logo: string;
-  blades: IBladeRef[];
-  buttons: IBladeToolbar[];
   title?: string;
 }
 
@@ -122,6 +89,22 @@ defineProps<Props>();
 defineEmits<Emits>();
 
 const { t } = useI18n({ useScope: "global" });
+
+const { blades } = useBladeNavigation();
+
+const viewTitle = ref();
+const quantity = ref();
+
+watch(
+  () => blades,
+  async (newVal) => {
+    await nextTick(() => {
+      viewTitle.value = Object.values(newVal.value?.instances || {})[0]?.title;
+      quantity.value = Object.values(newVal.value?.components || {}).length;
+    });
+  },
+  { deep: true, immediate: true, flush: "post" },
+);
 </script>
 
 <style lang="scss">

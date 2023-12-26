@@ -1,10 +1,7 @@
 <template>
   <div
     class="vc-app-menu-item"
-    :class="[
-      { 'vc-app-menu-item_active': isActive && !children?.length },
-      { 'vc-app-menu-item_no-hover': children?.length },
-    ]"
+    :class="[{ 'vc-app-menu-item_active': isActive && !hasChildren }, { 'vc-app-menu-item_no-hover': hasChildren }]"
     @click="$emit('onClick')"
   >
     <div
@@ -28,7 +25,7 @@
     <div class="vc-app-menu-item__title">
       {{ title }}
       <VcIcon
-        v-if="children?.length"
+        v-if="hasChildren"
         class="vc-app-menu-item__title-icon"
         icon="fas fa-chevron-down"
         size="xs"
@@ -37,15 +34,14 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { BladeMenu } from "./../../../../../../../../../core/types";
 import { VcIcon } from "./../../../../../../../";
 
 export interface Props {
   isActive?: boolean;
-  children?: BladeMenu[];
+  hasChildren?: boolean;
   sticky?: boolean;
   icon: string;
-  title: string;
+  title?: string;
 }
 
 export interface Emits {
@@ -90,7 +86,7 @@ defineEmits<Emits>();
     tw-text-center tw-invisible tw-shrink-0;
 
     &_enabled {
-      @apply tw-cursor-move;
+      @apply tw-cursor-move #{!important};
     }
   }
 
@@ -147,7 +143,7 @@ defineEmits<Emits>();
 
   &:hover &__handler {
     &_enabled {
-      @apply tw-invisible;
+      @apply tw-visible #{!important};
     }
   }
 }

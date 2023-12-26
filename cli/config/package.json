@@ -2,24 +2,26 @@
   "name": "@vc-shell/config-generator",
   "description": "Generate Vite configurations",
   "version": "1.0.126",
+  "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "files": [
     "dist"
   ],
   "scripts": {
-    "build": "tsc"
+    "build": "tsc && tsc-alias"
   },
   "dependencies": {
-    "@vitejs/plugin-vue": "^4.2.3",
-    "vite": "^4.3.9",
+    "@vitejs/plugin-vue": "^4.5.1",
+    "vite": "4.5.0",
     "vite-plugin-checker": "^0.6.0",
     "vite-plugin-mkcert": "^1.15.0",
-    "vue": "^3.3.7"
+    "vue": "3.3.13"
   },
   "devDependencies": {
     "@vc-shell/ts-config": "^1.0.126",
-    "typescript": "^5.2.2"
+    "tsc-alias": "^1.8.8",
+    "typescript": "5.3.3"
   },
   "publishConfig": {
     "access": "public",

@@ -10,7 +10,7 @@
     @collapse="$emit('collapse:blade')"
   >
     <div
-      v-loading="options.loading"
+      v-loading="options?.loading"
       class="tw-relative tw-h-full"
       @dragover.prevent.stop="dragOver"
       @dragleave.prevent="dragLeave"
@@ -146,7 +146,6 @@ import { ICommonAsset, IActionBuilderResult, IBladeToolbar, ITableColumns } from
 import { ref, computed, onMounted, unref, watch, markRaw, Ref } from "vue";
 import { useI18n } from "vue-i18n";
 import moment from "moment";
-import { AssetsDetails as Assets } from "./../../../assets/components/assets-details";
 import { isImage, getFileThumbnail, readableSize } from "./../../../../utilities/assets";
 import * as _ from "lodash-es";
 import { IParentCallArgs, useBladeNavigation } from "../../../../components";
@@ -179,6 +178,10 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<Emits>();
 
+defineOptions({
+  name: "AssetsManager",
+});
+
 const { t } = useI18n({ useScope: "global" });
 
 const defaultAssets = ref<ICommonAsset[]>([]);
@@ -190,7 +193,7 @@ const readonly = computed(() => props.options.disabled);
 let assetsCopy: ICommonAsset[];
 const modified = ref(false);
 
-const { openBlade } = useBladeNavigation();
+const { openBlade, resolveBladeByName } = useBladeNavigation();
 
 const bladeToolbar = ref<IBladeToolbar[]>([
   {
@@ -263,7 +266,7 @@ watch(
   (newVal) => {
     modified.value = !_.isEqual(newVal, assetsCopy);
   },
-  { deep: true }
+  { deep: true },
 );
 
 onMounted(() => {
@@ -332,7 +335,7 @@ async function inputUpload(event: Event) {
 
 function onItemClick(item: ICommonAsset) {
   openBlade({
-    blade: markRaw(Assets),
+    blade: resolveBladeByName("AssetsDetails"),
     options: {
       asset: unref(item),
       disabled: readonly.value,

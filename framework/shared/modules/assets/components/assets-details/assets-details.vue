@@ -143,6 +143,11 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const emit = defineEmits<Emits>();
+
+defineOptions({
+  name: "AssetsDetails",
+});
+
 useForm({ validateOnMount: false });
 const isValid = useIsFormValid();
 const isDirty = useIsFormDirty();

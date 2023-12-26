@@ -17,6 +17,11 @@ export const grid: DynamicGridSchema = {
         method: "refresh",
       },
     ],
+    menuItem: {
+      title: 'DYNAMICMODULE.MENU.TITLE',
+      icon: "fas fa-file-alt",
+      priority: 1,
+    }
   },
   content: [
     {

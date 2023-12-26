@@ -3,9 +3,10 @@
 import prompts from "prompts";
 import mri from "mri";
 import { default as chalk } from "chalk";
-import path from "path";
-import fs from "fs";
+import path from "node:path";
+import fs from "node:fs";
 import { fileURLToPath } from "node:url";
+import { cwd as processCwd, argv, exit } from "node:process";
 
 type Config = prompts.Answers<"appName" | "packageName" | "variant">;
 
@@ -90,9 +91,9 @@ const variantMap = {
 };
 
 async function create() {
-  const cwd = process.cwd();
+  const cwd = processCwd();
 
-  const args = mri(process.argv.slice(2));
+  const args = mri(argv.slice(2));
   let dir = args._[0];
   const defaultAppName = !dir ? "vc-app" : dir;
   const getProjectName = () => (dir === "." ? path.basename(path.resolve()) : dir);
@@ -149,11 +150,11 @@ async function create() {
         onCancel: () => {
           throw new Error(chalk.red("✖") + " Creation cancelled");
         },
-      }
+      },
     );
   } catch (e) {
     console.log(e.message);
-    process.exit(1);
+    exit(1);
   }
 
   const { packageName, variant } = config;
@@ -202,7 +203,7 @@ async function create() {
   if (root !== cwd) {
     const cdProjectName = path.relative(cwd, root);
     console.log(
-      `  ${chalk.bold(chalk.green(`cd ${cdProjectName.includes(" ") ? `"${cdProjectName}"` : cdProjectName}`))}`
+      `  ${chalk.bold(chalk.green(`cd ${cdProjectName.includes(" ") ? `"${cdProjectName}"` : cdProjectName}`))}`,
     );
   }
   console.log(`  ${chalk.bold(chalk.green("yarn"))}`);

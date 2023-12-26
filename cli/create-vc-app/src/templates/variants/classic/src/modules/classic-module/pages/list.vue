@@ -93,6 +93,13 @@ export interface Emits {
 
 defineOptions({
   url: "/classic-module-list",
+  name: "ClassicModuleList",
+  isWorkspace: true,
+  menuItem: {
+    title: 'MODULE.MENU.TITLE',
+    icon: "fas fa-file-alt",
+    priority: 1,
+  }
 });
 
 const props = withDefaults(defineProps<Props>(), {

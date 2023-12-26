@@ -39,12 +39,5 @@ export default getApplicationConfiguration({
         ],
       },
     }),
-    splitVendorChunkPlugin(),
   ],
-  optimizeDeps: {
-    include:
-      mode === "development"
-        ? ["ace-builds", "client-oauth2", "quill-delta", "quill", "url-pattern", "vee-validate"]
-        : [],
-  },
 });

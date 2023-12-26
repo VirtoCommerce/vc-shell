@@ -17,7 +17,10 @@ async function startApp() {
   await loadUser();
 
   const app = createApp(RouterView)
-    .use(VirtoShellFramework)
+    .use(VirtoShellFramework, {
+      router,
+      platformUrl: import.meta.env.APP_PLATFORM_URL,
+    })
     // Classic module based on composables, pages and components
     .use(ClassicModule, { router })
     .use(router);
@@ -25,8 +28,6 @@ async function startApp() {
   Object.entries(locales).forEach(([key, message]) => {
     app.config.globalProperties.$mergeLocaleMessage(key, message);
   });
-
-  app.provide("platformUrl", import.meta.env.APP_PLATFORM_URL);
 
   app.config.errorHandler = (err) => {
     notification.error(err.toString(), {

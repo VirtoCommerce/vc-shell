@@ -2,25 +2,27 @@
   "name": "@vc-shell/release-config",
   "version": "1.0.126",
   "type": "module",
-  "main": "dist/index.js",
+  "main": "dist/release-config.js",
   "types": "./dist/index.d.ts",
   "files": [
     "dist"
   ],
   "scripts": {
-    "build": "tsc -p src"
+    "build": "vite build"
   },
   "dependencies": {
     "chalk": "^2.4.2",
     "mri": "^1.2.0",
     "prompts": "^2.4.2",
-    "semver": "^7.5.4"
+    "semver": "^7.5.4",
+    "vite": "4.5.0"
   },
   "devDependencies": {
     "@types/prompts": "^2.4.7",
     "@types/semver": "^7.5.4",
     "@vc-shell/ts-config": "^1.0.126",
-    "typescript": "^5.2.2"
+    "typescript": "5.3.3",
+    "vite-plugin-dts": "^3.6.4"
   },
   "publishConfig": {
     "access": "public",

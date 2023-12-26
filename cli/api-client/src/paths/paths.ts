@@ -1,6 +1,11 @@
-import { join, resolve, relative } from "path";
+import { join, resolve, relative, dirname } from "node:path";
 import { ApiClientPaths } from "./api-client";
 import { NswagPaths } from "./nswag";
+import { fileURLToPath } from "node:url";
+import { cwd } from "node:process";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 export class Paths {
   workingDirectory: string;
@@ -10,10 +15,13 @@ export class Paths {
   nswagPaths: NswagPaths;
 
   constructor(apiDirectory: string) {
-    this.workingDirectory = process.cwd();
-    this.generatorDirectory = resolve(__dirname, "../..");
+    this.workingDirectory = cwd();
+    this.generatorDirectory = resolve(__dirname, "..");
     this.assetsDirectory = join(this.generatorDirectory, "public", "assets");
     this.apiClientDirectory = resolve(this.workingDirectory, apiDirectory);
+
+    console.log(this.workingDirectory, this.assetsDirectory);
+
     this.nswagPaths = {
       configuration: join(relative(this.workingDirectory, this.assetsDirectory), "config.nswag"),
       authApiBase: "authApiBase.ts",

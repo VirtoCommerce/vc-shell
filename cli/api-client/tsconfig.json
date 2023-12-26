@@ -1,7 +1,6 @@
 {
   "extends": "@vc-shell/ts-config/tsconfig.json",
   "compilerOptions": {
-    "module": "commonjs",
     "outDir": "./dist",
     "rootDir": "./",
   },

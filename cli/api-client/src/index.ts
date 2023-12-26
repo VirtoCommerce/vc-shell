@@ -1,5 +1,5 @@
 import { default as chalk } from "chalk";
-import { spawnSync } from "child_process";
+import { spawnSync } from "node:child_process";
 import { resolveConfig } from "vite";
 import { Paths } from "./paths/paths";
 import mri from "mri";
@@ -18,7 +18,7 @@ async function generateApiClient(): Promise<void> {
   if (!platformUrl) {
     return console.log(
       chalk.red("error"),
-      "api-client-generator APP_PLATFORM_URL is required in .env config or as api-client-generator argument"
+      "api-client-generator APP_PLATFORM_URL is required in .env config or as api-client-generator argument",
     );
   }
 
@@ -41,7 +41,7 @@ async function generateApiClient(): Promise<void> {
       "api-client-generator %s Generating API client for %s module on %s environment",
       chalk.green("info"),
       chalk.whiteBright(platformModule),
-      chalk.whiteBright(platformUrl)
+      chalk.whiteBright(platformUrl),
     );
 
     const nswag = spawnSync(
@@ -55,20 +55,20 @@ async function generateApiClient(): Promise<void> {
       {
         stdio: ["ignore", "inherit", "ignore"],
         shell: true,
-      }
+      },
     );
 
     if (nswag.status === 0) {
       console.log(
         "api-client-generator %s Successfully generated %s",
         chalk.greenBright("success"),
-        chalk.whiteBright(apiClientPaths.console)
+        chalk.whiteBright(apiClientPaths.console),
       );
     } else {
       console.error(
         "api-client-generator %s Failed to generate %s",
         chalk.red("error"),
-        chalk.whiteBright(apiClientPaths.console)
+        chalk.whiteBright(apiClientPaths.console),
       );
     }
   }

@@ -1869,6 +1869,7 @@ export class CustomerOrder implements ICustomerOrder {
     feeTotalWithTax?: number;
     handlingTotal?: number;
     handlingTotalWithTax?: number;
+    isAnonymous?: boolean;
     taxType?: string | undefined;
     taxTotal?: number;
     taxPercentRate?: number;
@@ -1990,6 +1991,7 @@ export class CustomerOrder implements ICustomerOrder {
             this.feeTotalWithTax = _data["feeTotalWithTax"];
             this.handlingTotal = _data["handlingTotal"];
             this.handlingTotalWithTax = _data["handlingTotalWithTax"];
+            this.isAnonymous = _data["isAnonymous"];
             this.taxType = _data["taxType"];
             this.taxTotal = _data["taxTotal"];
             this.taxPercentRate = _data["taxPercentRate"];
@@ -2119,6 +2121,7 @@ export class CustomerOrder implements ICustomerOrder {
         data["feeTotalWithTax"] = this.feeTotalWithTax;
         data["handlingTotal"] = this.handlingTotal;
         data["handlingTotalWithTax"] = this.handlingTotalWithTax;
+        data["isAnonymous"] = this.isAnonymous;
         data["taxType"] = this.taxType;
         data["taxTotal"] = this.taxTotal;
         data["taxPercentRate"] = this.taxPercentRate;
@@ -2209,6 +2212,7 @@ export interface ICustomerOrder {
     feeTotalWithTax?: number;
     handlingTotal?: number;
     handlingTotalWithTax?: number;
+    isAnonymous?: boolean;
     taxType?: string | undefined;
     taxTotal?: number;
     taxPercentRate?: number;
@@ -3361,6 +3365,7 @@ export class ObjectSettingEntry implements IObjectSettingEntry {
     allowedValues?: any[] | undefined;
     defaultValue?: any | undefined;
     isDictionary?: boolean;
+    isLocalizable?: boolean;
 
     constructor(data?: IObjectSettingEntry) {
         if (data) {
@@ -3394,6 +3399,7 @@ export class ObjectSettingEntry implements IObjectSettingEntry {
             }
             this.defaultValue = _data["defaultValue"];
             this.isDictionary = _data["isDictionary"];
+            this.isLocalizable = _data["isLocalizable"];
         }
     }
 
@@ -3427,6 +3433,7 @@ export class ObjectSettingEntry implements IObjectSettingEntry {
         }
         data["defaultValue"] = this.defaultValue;
         data["isDictionary"] = this.isDictionary;
+        data["isLocalizable"] = this.isLocalizable;
         return data;
     }
 }
@@ -3449,6 +3456,7 @@ export interface IObjectSettingEntry {
     allowedValues?: any[] | undefined;
     defaultValue?: any | undefined;
     isDictionary?: boolean;
+    isLocalizable?: boolean;
 }
 
 export class OperationLog implements IOperationLog {

@@ -1382,6 +1382,50 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
      * @param body (optional) 
      * @return Success
      */
+    changeOfferDefault(body?: ChangeOfferDefaultCommand | undefined): Promise<Offer> {
+        let url_ = this.baseUrl + "/api/vcmp/seller/offers/default";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json-patch+json",
+                "Accept": "text/plain"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processChangeOfferDefault(_response);
+        });
+    }
+
+    protected processChangeOfferDefault(response: Response): Promise<Offer> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = Offer.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<Offer>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return Success
+     */
     updateOffer(body?: UpdateOfferCommand | undefined): Promise<Offer> {
         let url_ = this.baseUrl + "/api/vcmp/seller/offers";
         url_ = url_.replace(/[?&]$/, "");
@@ -5388,6 +5432,54 @@ export interface ICategorySearchResult {
     results?: Category[] | undefined;
 }
 
+export class ChangeOfferDefaultCommand implements IChangeOfferDefaultCommand {
+    sellerId?: string | undefined;
+    sellerName?: string | undefined;
+    offerId!: string;
+    isDefault!: boolean;
+
+    constructor(data?: IChangeOfferDefaultCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.sellerId = _data["sellerId"];
+            this.sellerName = _data["sellerName"];
+            this.offerId = _data["offerId"];
+            this.isDefault = _data["isDefault"];
+        }
+    }
+
+    static fromJS(data: any): ChangeOfferDefaultCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new ChangeOfferDefaultCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["sellerId"] = this.sellerId;
+        data["sellerName"] = this.sellerName;
+        data["offerId"] = this.offerId;
+        data["isDefault"] = this.isDefault;
+        return data;
+    }
+}
+
+export interface IChangeOfferDefaultCommand {
+    sellerId?: string | undefined;
+    sellerName?: string | undefined;
+    offerId: string;
+    isDefault: boolean;
+}
+
 export class ChangeOfferStateCommand implements IChangeOfferStateCommand {
     sellerId?: string | undefined;
     sellerName?: string | undefined;
@@ -6324,6 +6416,7 @@ export class CustomerOrder implements ICustomerOrder {
     feeTotalWithTax?: number;
     handlingTotal?: number;
     handlingTotalWithTax?: number;
+    isAnonymous?: boolean;
     taxType?: string | undefined;
     taxTotal?: number;
     taxPercentRate?: number;
@@ -6445,6 +6538,7 @@ export class CustomerOrder implements ICustomerOrder {
             this.feeTotalWithTax = _data["feeTotalWithTax"];
             this.handlingTotal = _data["handlingTotal"];
             this.handlingTotalWithTax = _data["handlingTotalWithTax"];
+            this.isAnonymous = _data["isAnonymous"];
             this.taxType = _data["taxType"];
             this.taxTotal = _data["taxTotal"];
             this.taxPercentRate = _data["taxPercentRate"];
@@ -6574,6 +6668,7 @@ export class CustomerOrder implements ICustomerOrder {
         data["feeTotalWithTax"] = this.feeTotalWithTax;
         data["handlingTotal"] = this.handlingTotal;
         data["handlingTotalWithTax"] = this.handlingTotalWithTax;
+        data["isAnonymous"] = this.isAnonymous;
         data["taxType"] = this.taxType;
         data["taxTotal"] = this.taxTotal;
         data["taxPercentRate"] = this.taxPercentRate;
@@ -6664,6 +6759,7 @@ export interface ICustomerOrder {
     feeTotalWithTax?: number;
     handlingTotal?: number;
     handlingTotalWithTax?: number;
+    isAnonymous?: boolean;
     taxType?: string | undefined;
     taxTotal?: number;
     taxPercentRate?: number;
@@ -9046,6 +9142,7 @@ export class MarketplaceSettings implements IMarketplaceSettings {
     masterCatalogId!: string;
     storeId!: string;
     vendorPortalUrl?: string | undefined;
+    useDefaultOffer?: boolean;
 
     constructor(data?: IMarketplaceSettings) {
         if (data) {
@@ -9079,6 +9176,7 @@ export class MarketplaceSettings implements IMarketplaceSettings {
             this.masterCatalogId = _data["masterCatalogId"];
             this.storeId = _data["storeId"];
             this.vendorPortalUrl = _data["vendorPortalUrl"];
+            this.useDefaultOffer = _data["useDefaultOffer"];
         }
     }
 
@@ -9112,6 +9210,7 @@ export class MarketplaceSettings implements IMarketplaceSettings {
         data["masterCatalogId"] = this.masterCatalogId;
         data["storeId"] = this.storeId;
         data["vendorPortalUrl"] = this.vendorPortalUrl;
+        data["useDefaultOffer"] = this.useDefaultOffer;
         return data;
     }
 }
@@ -9126,6 +9225,7 @@ export interface IMarketplaceSettings {
     masterCatalogId: string;
     storeId: string;
     vendorPortalUrl?: string | undefined;
+    useDefaultOffer?: boolean;
 }
 
 export class ObjectSettingEntry implements IObjectSettingEntry {
@@ -9146,6 +9246,7 @@ export class ObjectSettingEntry implements IObjectSettingEntry {
     allowedValues?: any[] | undefined;
     defaultValue?: any | undefined;
     isDictionary?: boolean;
+    isLocalizable?: boolean;
 
     constructor(data?: IObjectSettingEntry) {
         if (data) {
@@ -9179,6 +9280,7 @@ export class ObjectSettingEntry implements IObjectSettingEntry {
             }
             this.defaultValue = _data["defaultValue"];
             this.isDictionary = _data["isDictionary"];
+            this.isLocalizable = _data["isLocalizable"];
         }
     }
 
@@ -9212,6 +9314,7 @@ export class ObjectSettingEntry implements IObjectSettingEntry {
         }
         data["defaultValue"] = this.defaultValue;
         data["isDictionary"] = this.isDictionary;
+        data["isLocalizable"] = this.isLocalizable;
         return data;
     }
 }
@@ -9234,11 +9337,13 @@ export interface IObjectSettingEntry {
     allowedValues?: any[] | undefined;
     defaultValue?: any | undefined;
     isDictionary?: boolean;
+    isLocalizable?: boolean;
 }
 
 export class Offer implements IOffer {
     isSuspended?: boolean;
     isActive?: boolean;
+    isDefault?: boolean;
     outerId?: string | undefined;
     sellerId?: string | undefined;
     sellerName?: string | undefined;
@@ -9284,6 +9389,7 @@ export class Offer implements IOffer {
         if (_data) {
             this.isSuspended = _data["isSuspended"];
             this.isActive = _data["isActive"];
+            this.isDefault = _data["isDefault"];
             this.outerId = _data["outerId"];
             this.sellerId = _data["sellerId"];
             this.sellerName = _data["sellerName"];
@@ -9345,6 +9451,7 @@ export class Offer implements IOffer {
         data = typeof data === 'object' ? data : {};
         data["isSuspended"] = this.isSuspended;
         data["isActive"] = this.isActive;
+        data["isDefault"] = this.isDefault;
         data["outerId"] = this.outerId;
         data["sellerId"] = this.sellerId;
         data["sellerName"] = this.sellerName;
@@ -9399,6 +9506,7 @@ export class Offer implements IOffer {
 export interface IOffer {
     isSuspended?: boolean;
     isActive?: boolean;
+    isDefault?: boolean;
     outerId?: string | undefined;
     sellerId?: string | undefined;
     sellerName?: string | undefined;
@@ -9435,6 +9543,7 @@ export interface IOffer {
 export class OfferDetails implements IOfferDetails {
     productId?: string | undefined;
     isActive?: boolean;
+    isDefault?: boolean;
     outerId?: string | undefined;
     name?: string | undefined;
     sku!: string;
@@ -9461,6 +9570,7 @@ export class OfferDetails implements IOfferDetails {
         if (_data) {
             this.productId = _data["productId"];
             this.isActive = _data["isActive"];
+            this.isDefault = _data["isDefault"];
             this.outerId = _data["outerId"];
             this.name = _data["name"];
             this.sku = _data["sku"];
@@ -9503,6 +9613,7 @@ export class OfferDetails implements IOfferDetails {
         data = typeof data === 'object' ? data : {};
         data["productId"] = this.productId;
         data["isActive"] = this.isActive;
+        data["isDefault"] = this.isDefault;
         data["outerId"] = this.outerId;
         data["name"] = this.name;
         data["sku"] = this.sku;
@@ -9538,6 +9649,7 @@ export class OfferDetails implements IOfferDetails {
 export interface IOfferDetails {
     productId?: string | undefined;
     isActive?: boolean;
+    isDefault?: boolean;
     outerId?: string | undefined;
     name?: string | undefined;
     sku: string;
@@ -16065,6 +16177,7 @@ export class SettingDescriptor implements ISettingDescriptor {
     allowedValues?: any[] | undefined;
     defaultValue?: any | undefined;
     isDictionary?: boolean;
+    isLocalizable?: boolean;
 
     constructor(data?: ISettingDescriptor) {
         if (data) {
@@ -16093,6 +16206,7 @@ export class SettingDescriptor implements ISettingDescriptor {
             }
             this.defaultValue = _data["defaultValue"];
             this.isDictionary = _data["isDictionary"];
+            this.isLocalizable = _data["isLocalizable"];
         }
     }
 
@@ -16121,6 +16235,7 @@ export class SettingDescriptor implements ISettingDescriptor {
         }
         data["defaultValue"] = this.defaultValue;
         data["isDictionary"] = this.isDictionary;
+        data["isLocalizable"] = this.isLocalizable;
         return data;
     }
 }
@@ -16138,6 +16253,7 @@ export interface ISettingDescriptor {
     allowedValues?: any[] | undefined;
     defaultValue?: any | undefined;
     isDictionary?: boolean;
+    isLocalizable?: boolean;
 }
 
 export enum SettingValueType {

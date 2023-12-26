@@ -10,6 +10,7 @@ import {
 } from "./../../../../ui/components";
 import { ITableColumns, IValidationRules } from "../../../../core/types";
 import type { ComponentProps } from "./../../../utilities/vueUtils";
+import { MenuItemConfig } from "../../../components/blade-navigation/types";
 
 export type KeysOfUnion<T> = T extends T ? keyof T : never;
 
@@ -106,6 +107,20 @@ export interface SettingsBase {
    * This option is used to determine which view should be the default view.
    */
   isWorkspace?: boolean;
+  /**
+   * Blade menu item
+   * @description If not set - blade will not be added to the menu
+   *
+   * @example
+   * {
+   *  title: "Products",
+   *  icon: "fas fa-box-open",
+   *  group: "Products",
+   * }
+   * @type {{title: string, icon: string, path: string/string}}
+   * @default undefined
+   */
+  menuItem?: MenuItemConfig;
 }
 
 export interface ListContentSchema {
@@ -793,7 +808,7 @@ export interface OverridesUpsert extends OverridesReplace {
 export interface OverridesReplace {
   path: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  value: ControlSchema | SettingsSchema["toolbar"][number] | string | boolean;
+  value: ControlSchema | SettingsSchema["toolbar"][number] | SettingsSchema["menuItem"] | string | boolean;
   id: string;
 }
 

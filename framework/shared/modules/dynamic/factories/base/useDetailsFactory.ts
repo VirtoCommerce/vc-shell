@@ -13,7 +13,7 @@ export interface UseDetailsFactoryParams<Item> {
 
 export const useDetailsFactory = <Item>(factoryParams: UseDetailsFactoryParams<Item>) => {
   return function useDetails(): UseDetails<Item> {
-    const { setFieldError, setErrors, validate } = useForm({
+    const { setFieldError, setErrors, validate, setFieldValue, setValues } = useForm({
       validateOnMount: false,
     });
     const item = ref<Item>();
@@ -51,9 +51,11 @@ export const useDetailsFactory = <Item>(factoryParams: UseDetailsFactoryParams<I
         cachedValue: itemTemp.value,
         setFieldError,
         setErrors,
+        setFieldValue,
+        setValues,
         resetModified,
         validate,
-      })
+      }),
     );
 
     watch(
@@ -61,7 +63,7 @@ export const useDetailsFactory = <Item>(factoryParams: UseDetailsFactoryParams<I
       ([state, stateCopy]) => {
         isModified.value = !_.isEqual(stateCopy.value, state.value);
       },
-      { deep: true }
+      { deep: true },
     );
 
     const resetModified = createUnrefFn((data: Item, updateInitial = false) => {

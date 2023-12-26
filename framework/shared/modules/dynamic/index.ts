@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import * as pages from "./pages";
-import { App, Component, DefineComponent, defineComponent } from "vue";
+import { App, Component, defineComponent } from "vue";
 import { DynamicSchema, OverridesSchema } from "./types";
 import * as _ from "lodash-es";
 import { handleOverrides } from "./helpers/override";
@@ -8,7 +8,7 @@ import { reactiveComputed } from "@vueuse/core";
 import { kebabToPascal } from "../../../core/utilities";
 import { BladeInstanceConstructor } from "../../index";
 import { createAppModule } from "../../../core/plugins";
-import { BladeMenu, NavigationMenu } from "../../../core/types";
+import { BladeMenu } from "../../../core/types";
 import { ComponentProps } from "./../../utilities/vueUtils";
 
 interface Registered {
@@ -33,7 +33,7 @@ const createAppModuleWrapper = (args: {
     { [bladeName]: bladeComponent },
     appModuleContent?.locales,
     appModuleContent?.notificationTemplates,
-    appModuleContent?.moduleComponents
+    appModuleContent?.moduleComponents,
   );
 };
 
@@ -51,7 +51,7 @@ const register = (
         notificationTemplates?: { [key: string]: Component };
         moduleComponents?: { [key: string]: Component };
       }
-    | undefined
+    | undefined,
 ): Registered => {
   const { app, component, json, options } = args;
   const bladeComponent = _.cloneDeep(component);
@@ -72,15 +72,19 @@ const register = (
     ...bladeComponent,
     name: bladeName,
     isWorkspace: "isWorkspace" in json.settings && json.settings.isWorkspace,
+    menuItem: ("menuItem" in json.settings && json.settings.menuItem) ?? undefined,
     setup: (props: ComponentProps<typeof bladeComponent>, ctx) =>
       (bladeComponent?.setup &&
         bladeComponent.setup(
-          reactiveComputed(() => ({
-            ...props,
-            model: json,
-            composables: args.composables,
-          })) as any,
-          reactiveComputed(() => ctx) as any
+          Object.assign(
+            {},
+            reactiveComputed(() => props),
+            {
+              model: json,
+              composables: args.composables,
+            } as any,
+          ),
+          ctx,
         )) ??
       {},
   });
@@ -103,15 +107,14 @@ const register = (
 const handleError = (errorKey: string, schema: { [key: string]: DynamicSchema }, text?: string) => {
   console.error(
     `Module initialization aborted. '${errorKey}' key not found in files: ${Object.keys(schema).join(
-      ", "
-    )}. '${errorKey}' key ${text}`
+      ", ",
+    )}. '${errorKey}' key ${text}`,
   );
 };
 
-export const createDynamicAppModule = <T extends BladeMenu>(args: {
+export const createDynamicAppModule = (args: {
   schema: { [key: string]: DynamicSchema };
   composables: { [key: string]: (...args: any[]) => any };
-  menuConfig?: { [I in keyof T]: NavigationMenu<T[I]> };
   overrides?: OverridesSchema;
   moduleComponents?: { [key: string]: Component };
   locales?: { [key: string]: object };
@@ -125,7 +128,7 @@ export const createDynamicAppModule = <T extends BladeMenu>(args: {
     handleError(
       "isWorkspace",
       args.schema,
-      "must be included in one of this files to initialize module workspace blade"
+      "must be included in one of this files to initialize module workspace blade",
     );
 
   if (moduleInitializer && everyHasTemplate) {
@@ -154,7 +157,7 @@ export const createDynamicAppModule = <T extends BladeMenu>(args: {
               json: JsonSchema,
               options,
             },
-            index === 0 ? appModuleContent : undefined
+            index === 0 ? appModuleContent : undefined,
           );
 
           if (!blade) {

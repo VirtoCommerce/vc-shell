@@ -1,3 +1,4 @@
+import { Router } from "vue-router";
 import { App } from "vue";
 import { AssetsDetailsModule } from "./modules/assets";
 import { VcAppSwitcherComponent } from "./components/app-switcher";
@@ -8,7 +9,7 @@ import * as locales from "./locales";
 import { i18n } from "./../core/plugins";
 
 export const SharedModule = {
-  install(app: App): void {
+  install(app: App, args: { router: Router }): void {
     // Load locales
     if (locales) {
       Object.entries(locales).forEach(([key, message]) => {
@@ -19,7 +20,7 @@ export const SharedModule = {
     app
       .use(AssetsDetailsModule)
       .use(AssetsManagerModule)
-      .use(VcBladeNavigationComponent)
+      .use(VcBladeNavigationComponent, { router: args.router })
       .use(VcAppSwitcherComponent)
       .use(VcPopupHandler);
   },

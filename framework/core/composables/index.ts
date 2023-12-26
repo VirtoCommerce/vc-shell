@@ -8,5 +8,6 @@ export * from "./useAsync";
 export * from "./useApiClient";
 export * from "./useLoading";
 export * from "./useErrorHandler";
-export * from "./useMenuComposer";
 export { useAssets } from "./useAssets";
+export { useMenuService } from "./useMenuService";
+export { useBeforeUnload } from "./useBeforeUnload";

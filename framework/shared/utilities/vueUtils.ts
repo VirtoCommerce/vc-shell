@@ -12,24 +12,24 @@ type EmitsExtractor<T> = RemoveOnVnodePrefix<Pick<T, Extract<keyof T, `on${strin
 export type ComponentProps<T> = T extends new () => { $props: infer P }
   ? NonNullable<P>
   : T extends (props: infer P, ...args: any) => any
-  ? P
-  : {};
+    ? P
+    : {};
 
 export type ComponentSlots<T> = T extends (...args: any) => any
   ? ReturnType<T> extends { [x: string]: any; __ctx?: { [x: string]: any; slots: infer Slots } }
     ? NonNullable<Slots>
     : {}
   : T extends new () => { $slots: infer S }
-  ? NonNullable<S>
-  : {};
+    ? NonNullable<S>
+    : {};
 
 export type ComponentEmit<T> = T extends (...args: any) => any
   ? ReturnType<T> extends { [x: string]: any; __ctx?: { [x: string]: any; props: infer Props } }
     ? EmitsExtractor<Props>
     : {}
   : T extends new () => { $props: infer Props }
-  ? EmitsExtractor<Props>
-  : never;
+    ? EmitsExtractor<Props>
+    : never;
 
 export type ComponentPublicInstanceConstructor<
   T extends ComponentPublicInstance<Props, RawBindings, D, C, M> = ComponentPublicInstance<any>,
@@ -37,7 +37,7 @@ export type ComponentPublicInstanceConstructor<
   RawBindings = any,
   D = any,
   C extends ComputedOptions = ComputedOptions,
-  M extends MethodOptions = MethodOptions
+  M extends MethodOptions = MethodOptions,
 > = {
   __isFragment?: never;
   __isTeleport?: never;

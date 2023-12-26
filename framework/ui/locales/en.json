@@ -13,7 +13,7 @@
       "VC_GALLERY":{
         "INTERNAL": {
           "VC_GALLERY_ITEM":{
-            "FULLSCREEN":"Fullscreen",
+            "FULLSCREEN": "Fullscreen",
             "EDIT":"Edit",
             "DELETE":"Delete"
           },
@@ -44,9 +44,7 @@
         "ALL_ACTIONS": "All actions",
         "ALL_FILTERS": "Filters"
       },
-      "VC_NOTIFICATION_DROPDOWN": {
-        "EMPTY": "No notifications yet"
-      },
+
       "VC_POPUP": {
         "OK":"OK",
         "CONFIRM":"Confirm",

@@ -5,9 +5,9 @@
 }
 
 .v-loading::before {
-  content: '';
+  content: "";
   position: absolute;
-  z-index: 99998;
+  z-index: 9998;
   top: 0;
   right: 0;
   bottom: 0;
@@ -17,9 +17,9 @@
 }
 
 .v-loading::after {
-  content: '';
+  content: "";
   position: absolute;
-  z-index: 99999;
+  z-index: 9999;
   width: 30px;
   height: 30px;
   border: 4px solid #319ed4;
@@ -33,6 +33,6 @@
 
 @keyframes v-loading {
   to {
-      transform: rotate(360deg);
+    transform: rotate(360deg);
   }
 }

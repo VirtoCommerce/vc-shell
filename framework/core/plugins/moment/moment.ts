@@ -1,4 +1,4 @@
-import { Duration, default as moment, argAccuracy } from "moment";
+import { Duration, default as moment, argAccuracy as argAcc } from "moment";
 import { humanize } from "./humanize";
 
 declare module "moment" {
@@ -23,7 +23,7 @@ moment.duration.fn.humanize = function (...args: unknown[]): string {
     return humanize.apply(this as Duration & number, args as [withSuffix?: boolean | undefined]);
   }
 
-  return humanizeOriginal.apply(this, args as [argAccuracy?: argAccuracy | undefined]);
+  return humanizeOriginal.apply(this, args as [argAccuracy?: argAcc | undefined]);
 };
 
 export default moment;

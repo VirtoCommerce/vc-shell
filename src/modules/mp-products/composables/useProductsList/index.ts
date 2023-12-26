@@ -16,8 +16,8 @@ export const useProductsListExtended = (args: {
     await load(query.value);
   };
 
-  function openDetailsBlade(args?: Omit<Parameters<typeof openBlade>["0"], "blade">) {
-    openBlade({
+  async function openDetailsBlade(args?: Omit<Parameters<typeof openBlade>["0"], "blade">) {
+    await openBlade({
       blade: resolveBladeByName("MpProduct"),
       ...args,
     });

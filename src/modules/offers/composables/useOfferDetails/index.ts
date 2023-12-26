@@ -71,14 +71,14 @@ export const useOfferDetails = (args: {
               sellerName: user.value.userName,
               offerId: details.id,
               offerDetails: new OfferDetails({ ...details, sku: details.sku }),
-            })
+            }),
           )
         : (await getApiClient()).createNewOffer(
             new CreateNewOfferCommand({
               sellerName: user.value.userName,
               productId: details.productId,
               details: new OfferDetails({ ...details, sku: details.sku }),
-            })
+            }),
           );
     },
     remove: async ({ id }) => (await getApiClient()).deleteOffers([id]),
@@ -103,7 +103,7 @@ export const useOfferDetails = (args: {
         keyword: keyword,
         skip: skip || 0,
         take: 20,
-      })
+      }),
     );
   };
 
@@ -116,7 +116,7 @@ export const useOfferDetails = (args: {
         }
       });
     },
-    { deep: true }
+    { deep: true },
   );
 
   watch(
@@ -145,7 +145,7 @@ export const useOfferDetails = (args: {
         pricingEqual.value = !!dupes.length;
       });
     },
-    { deep: true }
+    { deep: true },
   );
 
   watch(duplicates, (newVal, oldVal) => {
@@ -153,14 +153,14 @@ export const useOfferDetails = (args: {
       Object.values(oldVal).reduce((obj, curr) => {
         obj[curr] = undefined;
         return obj;
-      }, {})
+      }, {}),
     );
 
     validationState.value.setErrors(
       Object.values(newVal).reduce((obj, curr) => {
         obj[curr] = "Min quantity can't be the same";
         return obj;
-      }, {})
+      }, {}),
     );
   });
 
@@ -188,7 +188,7 @@ export const useOfferDetails = (args: {
         currency: "USD",
         listPrice: null,
         minQuantity: null,
-      })
+      }),
     );
   }
 
@@ -269,7 +269,7 @@ export const useOfferDetails = (args: {
         offerLoading.value = false;
         validationState.value.resetModified(item.value, true);
       }
-    }
+    },
   );
 
   const scope = ref<OfferDetailsScope>({

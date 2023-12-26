@@ -45,8 +45,8 @@ export const useOffersList = (args: {
   const { load, remove, items, query, loading, pagination } = factory();
   const { openBlade, resolveBladeByName } = useBladeNavigation();
 
-  function openDetailsBlade(data?: Omit<Parameters<typeof openBlade>["0"], "blade">) {
-    openBlade({
+  async function openDetailsBlade(data?: Omit<Parameters<typeof openBlade>["0"], "blade">) {
+    await openBlade({
       blade: resolveBladeByName("Offer"),
       options: {
         sellerProduct: args.props?.options?.sellerProduct,

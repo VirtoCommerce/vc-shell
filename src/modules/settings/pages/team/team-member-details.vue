@@ -146,11 +146,12 @@
 
 <script lang="ts" setup>
 import { computed, ref, onMounted, unref } from "vue";
-import { useUser, IParentCallArgs, IBladeToolbar, usePopup } from "@vc-shell/framework";
+import { useUser, IParentCallArgs, IBladeToolbar, usePopup, useBeforeUnload } from "@vc-shell/framework";
 import useTeamMembers from "../../composables/useTeamMembers";
 import { useIsFormValid, Field, useForm, useIsFormDirty } from "vee-validate";
 import { ISellerUser } from "@vcmp-vendor-portal/api/marketplacevendor";
 import { useI18n } from "vue-i18n";
+import { onBeforeRouteLeave } from "vue-router";
 
 export interface Props {
   expanded?: boolean;
@@ -173,6 +174,10 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<Emits>();
 
+defineOptions({
+  name: "TeamMemberDetails",
+});
+
 useForm({ validateOnMount: false });
 const { user } = useUser();
 
@@ -192,12 +197,14 @@ const {
 const { showError, showConfirmation } = usePopup();
 
 const title = computed(() =>
-  props.param ? userDetails.value.firstName + " " + userDetails.value.lastName : t("SETTINGS.TEAM.PAGES.DETAILS.TITLE")
+  props.param ? userDetails.value.firstName + " " + userDetails.value.lastName : t("SETTINGS.TEAM.PAGES.DETAILS.TITLE"),
 );
 
 const sendInviteStatus = ref(false);
 const isValid = useIsFormValid();
 const isDirty = useIsFormDirty();
+
+useBeforeUnload(computed(() => !isDisabled.value && modified.value));
 
 const isOwnerReadonly = computed(() => userDetails.value.role === "vcmp-owner-role");
 
@@ -309,7 +316,7 @@ const roles = [
 ];
 
 const role = computed(
-  () => roles.find((x) => x.id === userDetails.value.role) || roles.find((x) => x.id === "vcmp-agent-role")
+  () => roles.find((x) => x.id === userDetails.value.role) || roles.find((x) => x.id === "vcmp-agent-role"),
 );
 
 const isActive = computed({
@@ -335,11 +342,17 @@ onMounted(async () => {
   }
 });
 
+onBeforeRouteLeave(async (to, from) => {
+  if (modified.value) {
+    return await showConfirmation(unref(computed(() => t("SETTINGS.TEAM.ALERTS.CLOSE_CONFIRMATION"))));
+  }
+});
+
 function showEmailExistsError() {
   showError(
     t("SETTINGS.TEAM.PAGES.DETAILS.POPUP.ERROR.MESSAGE.USER_EXIST", {
       email: userDetails.value.email,
-    })
+    }),
   );
 }
 
@@ -352,14 +365,4 @@ async function removeUser() {
     emit("close:blade");
   }
 }
-
-async function onBeforeClose() {
-  if (modified.value) {
-    return await showConfirmation(unref(computed(() => t("SETTINGS.TEAM.ALERTS.CLOSE_CONFIRMATION"))));
-  }
-}
-
-defineExpose({
-  onBeforeClose,
-});
 </script>

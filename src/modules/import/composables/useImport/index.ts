@@ -83,7 +83,7 @@ interface IUseImport {
 
 export default (): IUseImport => {
   const { notifications } = useNotifications();
-  const { getAccessToken, user } = useUser();
+  const { user } = useUser();
   const loading = ref(false);
   const uploadedFile = ref<IUploadedFile>();
   const historySearchResult = ref<SearchImportRunHistoryResult>();
@@ -105,7 +105,7 @@ export default (): IUseImport => {
     ([newNotifications, isStarted]) => {
       if (isStarted.value && importStatus.value) {
         const notification = newNotifications.value.find(
-          (x) => x.id === importStatus.value.notification.id
+          (x) => x.id === importStatus.value.notification.id,
         ) as ImportPushNotification;
 
         if (notification) {
@@ -116,7 +116,7 @@ export default (): IUseImport => {
       if (profileSearchResult.value && profileSearchResult.value.results && profileSearchResult.value.results.length) {
         profileSearchResult.value.results = profileSearchResult.value.results.map((res) => {
           const notification = newNotifications.value.find(
-            (x: ImportPushNotification) => x.profileId === res.id
+            (x: ImportPushNotification) => x.profileId === res.id,
           ) as ImportPushNotification;
 
           if (notification) {
@@ -128,7 +128,7 @@ export default (): IUseImport => {
         });
       }
     },
-    { deep: true, immediate: true }
+    { deep: true, immediate: true },
   );
 
   watch(
@@ -136,7 +136,7 @@ export default (): IUseImport => {
     (state) => {
       modified.value = !_.isEqual(profileDetailsCopy, state.value);
     },
-    { deep: true }
+    { deep: true },
   );
 
   async function fetchImportHistory(query?: ISearchImportRunHistoryQuery) {
@@ -176,7 +176,7 @@ export default (): IUseImport => {
 
   async function getApiClient() {
     const client = new VcmpSellerImportClient();
-    client.setAuthToken(await getAccessToken());
+    // client.setAuthToken(await getAccessToken());
     return client;
   }
 

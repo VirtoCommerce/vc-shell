@@ -173,12 +173,10 @@ import {
   ITableColumns,
   IActionBuilderResult,
   useBladeNavigation,
-  PushNotification,
 } from "@vc-shell/framework";
 import moment from "moment";
 import { CustomerOrder } from "@vcmp-vendor-portal/api/marketplacevendor";
 import { useOrders } from "../composables";
-import OrdersDetails from "./orders-edit.vue";
 // eslint-disable-next-line import/no-unresolved
 import emptyImage from "/assets/empty.png";
 import { useI18n } from "vue-i18n";
@@ -195,10 +193,6 @@ export interface Emits {
   (event: "close:blade"): void;
 }
 
-interface INewOrderPushNotification extends PushNotification {
-  orderId?: string;
-}
-
 const props = withDefaults(defineProps<Props>(), {
   expanded: true,
   closable: true,
@@ -208,18 +202,16 @@ defineEmits<Emits>();
 
 defineOptions({
   url: "/orders",
+  name: "OrdersList",
   isWorkspace: true,
-  // scope: {
-  //   notificationClick(notification: INewOrderPushNotification) {
-  //     if (notification.notifyType !== "OrderCreatedEventHandler") return;
-  //     return {
-  //       param: notification.orderId,
-  //     };
-  //   },
-  // },
+  menuItem: {
+    icon: "fas fa-shopping-cart",
+    title: "ORDERS.MENU.TITLE",
+    priority: 1,
+  },
 });
 
-const { openBlade } = useBladeNavigation();
+const { openBlade, resolveBladeByName } = useBladeNavigation();
 const { orders, loadOrders, loading, pages, currentPage, totalCount, changeOrderStatus, PaymentStatus } = useOrders();
 const { debounce } = useFunctions();
 const { t } = useI18n({ useScope: "global" });
@@ -242,27 +234,6 @@ const applyFiltersReset = computed(() => {
   return !activeFilters.length;
 });
 
-watch(
-  () => props.param,
-  (newVal) => {
-    if (newVal) {
-      selectedItemId.value = newVal;
-
-      openBlade({
-        blade: markRaw(OrdersEdit),
-        param: newVal,
-        onOpen() {
-          selectedItemId.value = newVal;
-        },
-        onClose() {
-          selectedItemId.value = undefined;
-        },
-      });
-    }
-  },
-  { immediate: true }
-);
-
 onMounted(async () => {
   await loadOrders();
 });
@@ -274,6 +245,27 @@ watch(sort, async (value) => {
     sort: value,
   });
 });
+
+watch(
+  () => props.param,
+  async (newVal) => {
+    if (newVal) {
+      selectedItemId.value = newVal;
+
+      await openBlade({
+        blade: resolveBladeByName("OrderEdit"),
+        param: newVal,
+        onOpen() {
+          selectedItemId.value = newVal;
+        },
+        onClose() {
+          selectedItemId.value = undefined;
+        },
+      });
+    }
+  },
+  { immediate: true },
+);
 
 const bladeToolbar = ref<IBladeToolbar[]>([
   {
@@ -344,7 +336,7 @@ const title = computed(() => t("ORDERS.PAGES.LIST.TITLE"));
 
 const onItemClick = (item: CustomerOrder) => {
   openBlade({
-    blade: markRaw(OrdersDetails),
+    blade: resolveBladeByName("OrderEdit"),
     param: item.id,
     onOpen() {
       selectedItemId.value = item.id;

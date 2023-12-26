@@ -40,7 +40,7 @@ watch(
       internalModel.value = newVal;
     }
   },
-  { deep: true, immediate: true }
+  { deep: true, immediate: true },
 );
 
 function clickHandler() {
@@ -73,7 +73,7 @@ const assetsHandler = {
   },
   async upload(files: FileList, lastSortOrder?: number) {
     const uploaded = (await upload(files, `catalog/${internalModel.value.item.id}`, lastSortOrder)).map(
-      (x) => new Asset(x)
+      (x) => new Asset(x),
     );
 
     internalModel.value.item.assets = internalModel.value.item.assets.concat(uploaded);
@@ -86,7 +86,7 @@ const assetsHandler = {
   async remove(files: Asset[]) {
     if (
       await showConfirmation(
-        computed(() => t("PRODUCTS.PAGES.DETAILS.ALERTS.DELETE_CONFIRMATION_ASSET", { count: files.length }))
+        computed(() => t("PRODUCTS.PAGES.DETAILS.ALERTS.DELETE_CONFIRMATION_ASSET", { count: files.length })),
       )
     ) {
       internalModel.value.item.assets = (await remove(files, internalModel.value.item.assets)).map((x) => new Asset(x));

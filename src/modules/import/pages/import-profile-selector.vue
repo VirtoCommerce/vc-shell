@@ -1,6 +1,5 @@
 <template>
   <VcBlade
-    v-loading="loading"
     :title="$t('IMPORT.PAGES.PROFILE_SELECTOR.TITLE')"
     :width="bladeWidth + '%'"
     :toolbar-items="bladeToolbar"
@@ -19,6 +18,7 @@
           :navigation="true"
           :overflow="true"
           :slides="importProfiles"
+          :loading="loading"
         >
           <template #default="{ slide }">
             <div class="tw-relative">
@@ -45,6 +45,11 @@
           </template>
         </VcSlider>
       </div>
+      <div
+        v-else
+        v-loading="loading"
+        class="tw-my-4"
+      ></div>
       <VcCard
         :header="$t('IMPORT.PAGES.LAST_EXECUTIONS')"
         class="import__archive tw-m-3"
@@ -82,7 +87,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, ref, markRaw, watch } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import {
   IBladeToolbar,
   ITableColumns,
@@ -97,9 +102,7 @@ import {
   useBladeNavigation,
 } from "@vc-shell/framework";
 import useImport from "../composables/useImport";
-import ImportProfileDetails from "./import-profile-details.vue";
-import ImportNew from "./import-new.vue";
-import { ImportPushNotification, ImportRunHistory } from "@vcmp-vendor-portal/api/marketplacevendor";
+import { ImportRunHistory } from "@vcmp-vendor-portal/api/marketplacevendor";
 import ImportStatus from "../components/ImportStatus.vue";
 import { UserPermissions } from "../../types";
 import { useI18n } from "vue-i18n";
@@ -120,7 +123,13 @@ export interface Emits {
 
 defineOptions({
   url: "/import",
+  name: "ImportProfileSelector",
   isWorkspace: true,
+  menuItem: {
+    title: "IMPORT.MENU.TITLE",
+    icon: "fas fa-file-import",
+    priority: 4,
+  },
 });
 
 const props = withDefaults(defineProps<Props>(), {
@@ -130,7 +139,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 defineEmits<Emits>();
 
-const { openBlade } = useBladeNavigation();
+const { openBlade, resolveBladeByName } = useBladeNavigation();
 
 const { t } = useI18n({ useScope: "global" });
 const { hasAccess } = usePermissions();
@@ -203,16 +212,17 @@ const columns = ref<ITableColumns[]>([
 const title = computed(() => t("IMPORT.PAGES.PROFILE_SELECTOR.TITLE"));
 
 watch(
-  () => props.param,
-  (newVal) => {
-    if (newVal && props.options && props.options.importJobId) {
-      selectedItemId.value = newVal;
-
-      openBlade({
-        blade: markRaw(ImportNew),
+  () => [props.param, props.options] as const,
+  async ([newParam, newOptions]) => {
+    if (newParam && newOptions && newOptions.importJobId) {
+      await openBlade({
+        blade: resolveBladeByName("ImportNew"),
         param: props.param,
         options: {
-          importJobId: props.options.importJobId,
+          importJobId: newOptions.importJobId,
+        },
+        onOpen() {
+          selectedItemId.value = newParam;
         },
         onClose() {
           selectedItemId.value = undefined;
@@ -220,7 +230,7 @@ watch(
       });
     }
   },
-  { immediate: true }
+  { immediate: true },
 );
 
 onMounted(async () => {
@@ -245,7 +255,7 @@ function newProfile() {
   bladeWidth.value = 70;
 
   openBlade({
-    blade: markRaw(ImportProfileDetails),
+    blade: resolveBladeByName("ImportProfileDetails"),
   });
 }
 
@@ -255,7 +265,7 @@ function openImporter(profileId: string) {
   const profile = importProfiles.value.find((profile) => profile.id === profileId);
 
   openBlade({
-    blade: markRaw(ImportNew),
+    blade: resolveBladeByName("ImportNew"),
     param: profileId,
     options: {
       importJobId: profile && profile.inProgress ? profile.jobId : undefined,
@@ -273,7 +283,7 @@ function onItemClick(item: ImportRunHistory) {
   bladeWidth.value = 50;
 
   openBlade({
-    blade: markRaw(ImportNew),
+    blade: resolveBladeByName("ImportNew"),
     param: item.profileId,
     options: {
       importJobId: item.jobId,

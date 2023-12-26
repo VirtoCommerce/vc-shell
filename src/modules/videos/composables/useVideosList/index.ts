@@ -47,18 +47,11 @@ export const useVideosList = (args: {
 
   const isExporting = ref(false);
 
-  function openDetailsBlade(args?: Omit<Parameters<typeof openBlade>["0"], "blade">) {
-    openBlade({
+  async function openDetailsBlade(args?: Omit<Parameters<typeof openBlade>["0"], "blade">) {
+    await openBlade({
       blade: resolveBladeByName("Video"),
       options: { productId: query.value.ownerIds?.find(() => true) },
       ...args,
-    });
-  }
-
-  async function openAddBlade() {
-    openBlade({
-      blade: resolveBladeByName("Video"),
-      options: { productId: query.value.ownerIds?.find(() => true) },
     });
   }
 
@@ -81,7 +74,7 @@ export const useVideosList = (args: {
       },
       openAddBlade: {
         async clickHandler() {
-          await openAddBlade();
+          await openDetailsBlade();
         },
       },
     },

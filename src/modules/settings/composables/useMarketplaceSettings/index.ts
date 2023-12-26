@@ -19,7 +19,7 @@ export interface IUseSettings {
 }
 
 export default (): IUseSettings => {
-  const { getAccessToken } = useUser();
+  // const { getAccessToken } = useUser();
 
   const settings = ref<MarketplaceSettings>();
   const defaultCurrency = ref<ICurrency>();
@@ -31,37 +31,37 @@ export default (): IUseSettings => {
   const productTypes = ref<string[]>([]);
 
   async function loadSettings() {
-    const token = await getAccessToken();
+    // const token = await getAccessToken();
     const client = new VcmpCommonClient();
-    client.setAuthToken(await getAccessToken());
+    // client.setAuthToken(await getAccessToken());
 
-    if (token) {
-      try {
-        settings.value = await client.getVcmpSettings();
+    // if (token) {
+    try {
+      settings.value = await client.getVcmpSettings();
 
-        defaultCurrency.value = {
-          title: settings.value.defaultCurrency,
-          value: settings.value.defaultCurrency,
-        };
-        currencies.value = settings.value.currencies?.map((currency) => ({
-          title: currency,
-          value: currency,
-        }));
+      defaultCurrency.value = {
+        title: settings.value.defaultCurrency,
+        value: settings.value.defaultCurrency,
+      };
+      currencies.value = settings.value.currencies?.map((currency) => ({
+        title: currency,
+        value: currency,
+      }));
 
-        defaultLanguage.value = settings.value.defaultLanguage;
-        languages.value = settings.value.languages;
+      defaultLanguage.value = settings.value.defaultLanguage;
+      languages.value = settings.value.languages;
 
-        if (!currentLanguage.value) {
-          currentLanguage.value = defaultLanguage.value;
-        }
-
-        defaultProductType.value = settings.value.defaultProductType;
-        productTypes.value = settings.value.productTypes;
-      } catch (e) {
-        console.error(e);
-        throw e;
+      if (!currentLanguage.value) {
+        currentLanguage.value = defaultLanguage.value;
       }
+
+      defaultProductType.value = settings.value.defaultProductType;
+      productTypes.value = settings.value.productTypes;
+    } catch (e) {
+      console.error(e);
+      throw e;
     }
+    // }
   }
 
   return {

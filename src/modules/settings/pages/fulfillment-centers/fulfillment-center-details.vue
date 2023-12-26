@@ -69,11 +69,12 @@
 
 <script lang="ts" setup>
 import { computed, onMounted, ref, unref } from "vue";
-import { IBladeToolbar, IParentCallArgs, usePopup } from "@vc-shell/framework";
+import { IBladeToolbar, IParentCallArgs, usePopup, useBeforeUnload } from "@vc-shell/framework";
 import useFulfillmentCenters from "../../composables/useFulfillmentCenters";
 import { Field, useIsFormValid, useIsFormDirty, useForm } from "vee-validate";
 import { useSellerDetails } from "./../../../seller-details/composables";
 import { useI18n } from "vue-i18n";
+import { onBeforeRouteLeave } from "vue-router";
 
 export interface Props {
   expanded?: boolean;
@@ -93,6 +94,11 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const emit = defineEmits<Emits>();
+
+defineOptions({
+  name: "FulfillmentCenterDetails",
+});
+
 useForm({ validateOnMount: false });
 
 const { showError, showConfirmation } = usePopup();
@@ -111,12 +117,13 @@ const {
 const { item } = useSellerDetails();
 
 const title = computed(() =>
-  props.param ? fulfillmentCenterDetails.value.name : t("SETTINGS.FULFILLMENT_CENTERS.PAGES.DETAILS.TITLE")
+  props.param ? fulfillmentCenterDetails.value.name : t("SETTINGS.FULFILLMENT_CENTERS.PAGES.DETAILS.TITLE"),
 );
 
 const errorMessage = ref("");
 const isValid = useIsFormValid();
 const isDirty = useIsFormDirty();
+useBeforeUnload(computed(() => !isDisabled.value && modified.value));
 
 const isDisabled = computed(() => {
   return !isDirty.value || !isValid.value;
@@ -184,13 +191,9 @@ async function removeFulfillmentCenter() {
   }
 }
 
-async function onBeforeClose() {
+onBeforeRouteLeave(async (to, from) => {
   if (modified.value) {
     return await showConfirmation(unref(computed(() => t("SETTINGS.FULFILLMENT_CENTERS.ALERTS.CLOSE_CONFIRMATION"))));
   }
-}
-
-defineExpose({
-  onBeforeClose,
 });
 </script>

@@ -223,6 +223,7 @@ export interface Emits {
 
 defineOptions({
   url: "/order",
+  name: "OrderEdit",
 });
 
 const props = withDefaults(defineProps<Props>(), {

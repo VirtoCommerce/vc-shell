@@ -71,10 +71,10 @@ export const useProductDetails = (args: {
             new UpdateProductDetailsCommand({
               sellerProductId: details.id,
               productDetails: new ProductDetails(details),
-            })
+            }),
           )
         : (await getApiClient()).createNewProduct(
-            new CreateNewProductCommand({ productDetails: new ProductDetails(details) })
+            new CreateNewProductCommand({ productDetails: new ProductDetails(details) }),
           );
     },
     remove: async ({ id }) => (await getApiClient()).deleteProducts([id]),
@@ -146,8 +146,8 @@ export const useProductDetails = (args: {
         descriptions: item.value.productData?.reviews?.filter((x) => x.reviewType == "QuickReview"),
       });
 
-      const notReviewedLangs = languages.value.filter((x) =>
-        item.value.descriptions?.every((d) => d.languageCode !== x)
+      const notReviewedLangs = languages.value.filter(
+        (x) => item.value.descriptions?.every((d) => d.languageCode !== x),
       );
       item.value.descriptions = item.value.descriptions?.concat(
         notReviewedLangs.map(
@@ -156,8 +156,8 @@ export const useProductDetails = (args: {
               languageCode: x,
               content: "",
               reviewType: "QuickReview",
-            })
-        )
+            }),
+        ),
       );
 
       const mapped = getMappedDetails(item);
@@ -202,7 +202,7 @@ export const useProductDetails = (args: {
         keyword,
         skip,
         take: 20,
-      })
+      }),
     );
   }
 
@@ -249,9 +249,9 @@ export const useProductDetails = (args: {
         .map((error) =>
           t(`PRODUCTS.PAGES.DETAILS.ERRORS.${error?.errorCode}`, {
             value: error?.attemptedValue,
-          })
+          }),
         )
-        .join("\n")
+        .join("\n"),
     );
   }, 1000);
 
@@ -296,7 +296,7 @@ export const useProductDetails = (args: {
         disabled: computed(
           () =>
             !validationState.value.valid ||
-            !(item.value?.canBeModified && (item.value?.hasStagedChanges || validationState.value.modified))
+            !(item.value?.canBeModified && (item.value?.hasStagedChanges || validationState.value.modified)),
         ),
       },
       revertStagedChanges: {
@@ -308,7 +308,7 @@ export const useProductDetails = (args: {
           });
         },
         disabled: computed(
-          () => !(item.value?.isPublished && item.value?.hasStagedChanges && item.value?.canBeModified)
+          () => !(item.value?.isPublished && item.value?.hasStagedChanges && item.value?.canBeModified),
         ),
       },
     },
@@ -353,15 +353,15 @@ export const useProductDetails = (args: {
                 languageCode: x,
                 content: "",
                 reviewType: "QuickReview",
-              })
-          )
+              }),
+          ),
         );
 
         item.value.productData = new ProductDetails({ productType: defaultProductType.value });
 
         validationState.value.resetModified(getMappedDetails(item), true);
       }
-    }
+    },
   );
 
   async function markProductDirty() {

@@ -109,6 +109,10 @@ const props = withDefaults(defineProps<Props>(), {
 
 defineEmits<Emits>();
 
+defineOptions({
+  name: "ReviewDetails",
+});
+
 onMounted(async () => {
   if (props.param && props.options.review) {
     handleCustomerReviewItem(props.options.review);

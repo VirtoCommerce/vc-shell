@@ -1,6 +1,8 @@
 <template>
-  <div class="tw-relative">
-    <VcLoading :active="loading"></VcLoading>
+  <div
+    v-loading="loading"
+    class="tw-relative"
+  >
     <VcRating
       v-if="rating"
       :rating="rating"
@@ -19,7 +21,7 @@
 </template>
 
 <script lang="ts" setup>
-import { VcLoading, VcRating } from "@vc-shell/framework";
+import { VcRating } from "@vc-shell/framework";
 import { onMounted } from "vue";
 import { useRating } from "../composables";
 

@@ -19,8 +19,8 @@
                 importStarted
                   ? $t('IMPORT.PAGES.PRODUCT_IMPORTER.FILE_UPLOAD.IMPORT_RESULTS')
                   : uploadedFile && uploadedFile.url
-                  ? $t('IMPORT.PAGES.PRODUCT_IMPORTER.FILE_UPLOAD.TITLE_UPLOADED')
-                  : $t('IMPORT.PAGES.PRODUCT_IMPORTER.FILE_UPLOAD.TITLE')
+                    ? $t('IMPORT.PAGES.PRODUCT_IMPORTER.FILE_UPLOAD.TITLE_UPLOADED')
+                    : $t('IMPORT.PAGES.PRODUCT_IMPORTER.FILE_UPLOAD.TITLE')
               "
             >
               <!-- File upload -->
@@ -313,6 +313,7 @@ interface IImportBadges {
 
 defineOptions({
   url: "/importer",
+  name: "ImportNew",
 });
 
 const props = withDefaults(defineProps<Props>(), {
@@ -322,11 +323,11 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<Emits>();
 
-const { openBlade } = useBladeNavigation();
+const { openBlade, resolveBladeByName } = useBladeNavigation();
 
 const { t } = useI18n({ useScope: "global" });
 const { hasAccess } = usePermissions();
-const { getAccessToken } = useUser();
+// const { getAccessToken } = useUser();
 const {
   loading: importLoading,
   importHistory,
@@ -398,7 +399,7 @@ watch(
       }
     });
   },
-  { deep: true }
+  { deep: true },
 );
 
 const bladeToolbar = ref<IBladeToolbar[]>([
@@ -408,7 +409,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     icon: "fas fa-pencil-alt",
     clickHandler() {
       openBlade({
-        blade: markRaw(ImportProfileDetails),
+        blade: resolveBladeByName("ImportProfileDetails"),
         options: {
           importer: profileDetails.value.importer,
         },
@@ -524,14 +525,14 @@ const importBadges = computed((): IImportBadges[] => {
         ("created" in importStatus.value.notification
           ? moment(importStatus.value.notification.created).locale(locale).format("LTS")
           : "createdDate" in importStatus.value.notification
-          ? moment(importStatus.value.notification.createdDate).locale(locale).format("LTS")
-          : null),
+            ? moment(importStatus.value.notification.createdDate).locale(locale).format("LTS")
+            : null),
       description:
         "created" in importStatus.value.notification
           ? moment(importStatus.value.notification.created).locale(locale).fromNow()
           : "createdDate" in importStatus.value.notification
-          ? moment(importStatus.value.notification.createdDate).locale(locale).fromNow()
-          : null,
+            ? moment(importStatus.value.notification.createdDate).locale(locale).fromNow()
+            : null,
     },
     {
       id: "linesRead",
@@ -550,10 +551,10 @@ const importBadges = computed((): IImportBadges[] => {
             ? importStatus.value.notification.processedCount - importStatus.value.notification.errorCount
             : 0
           : "errorsCount" in importStatus.value.notification
-          ? importStatus.value.notification.processedCount - importStatus.value.notification.errorsCount >= 0
-            ? importStatus.value.notification.processedCount - importStatus.value.notification.errorsCount
-            : 0
-          : 0,
+            ? importStatus.value.notification.processedCount - importStatus.value.notification.errorsCount >= 0
+              ? importStatus.value.notification.processedCount - importStatus.value.notification.errorsCount
+              : 0
+            : 0,
       description: t("IMPORT.PAGES.PRODUCT_IMPORTER.UPLOAD_STATUS.IMPORTED"),
     },
     {
@@ -564,8 +565,8 @@ const importBadges = computed((): IImportBadges[] => {
         "errorCount" in importStatus.value.notification
           ? importStatus.value.notification.errorCount
           : "errorsCount" in importStatus.value.notification
-          ? importStatus.value.notification.errorsCount
-          : 0,
+            ? importStatus.value.notification.errorsCount
+            : 0,
       description: t("IMPORT.PAGES.PRODUCT_IMPORTER.UPLOAD_STATUS.SKIPPED"),
     },
   ];
@@ -664,7 +665,7 @@ watch(
     if (newVal === false) {
       emit("parent:call", { method: "reload" });
     }
-  }
+  },
 );
 
 onMounted(async () => {
@@ -695,13 +696,9 @@ async function uploadCsv(files: FileList) {
     fileLoading.value = true;
     const formData = new FormData();
     formData.append("file", files[0]);
-    const authToken = await getAccessToken();
     const result = await fetch(`/api/assets?folderUrl=/tmp`, {
       method: "POST",
       body: formData,
-      headers: {
-        Authorization: `Bearer ${authToken}`,
-      },
     });
     const response = await result.json();
     if (response?.length) {
@@ -721,14 +718,10 @@ async function uploadCsv(files: FileList) {
 }
 
 async function saveExternalUrl() {
-  //const response = await fetch(profile.value.importFileUrl, {
-  //  method: "HEAD",
-  //  mode: "cors",
-  //});
   setFile({
     name: profile.value.importFileUrl.substring(profile.value.importFileUrl.lastIndexOf("/") + 1),
     url: profile.value.importFileUrl,
-    size: Number(0 /*response.headers.get("content-length")*/),
+    size: Number(0),
   });
 }
 

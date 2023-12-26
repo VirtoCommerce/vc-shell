@@ -46,13 +46,13 @@ export const useSellerDetails = (args?: {
             addresses: seller.addresses.map((address) => new CustomerAddress(address)),
           }),
           commissionFeeId: seller.commissionFee.id,
-        })
+        }),
       );
     },
   });
 
   const { load, item, saveChanges, remove, loading, validationState } = detailsFactory();
-  const { user, getAccessToken } = useUser();
+  const { user } = useUser();
   const { upload: uploadImage, remove: removeImage, loading: imageLoading } = useAssets();
 
   const countriesList = ref<ILocation[]>([]);
@@ -81,49 +81,49 @@ export const useSellerDetails = (args?: {
   });
 
   async function getCountries() {
-    const token = await getAccessToken();
-    if (token) {
-      try {
-        const result = await fetch("/api/platform/common/countries", {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json-patch+json",
-            Accept: "application/json",
-            authorization: `Bearer ${token}`,
-          },
-        });
+    // const token = await getAccessToken();
+    // if (token) {
+    try {
+      const result = await fetch("/api/platform/common/countries", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json-patch+json",
+          Accept: "application/json",
+          // authorization: `Bearer ${token}`,
+        },
+      });
 
-        result.text().then((response) => {
-          countriesList.value = JSON.parse(response);
-        });
-      } catch (e) {
-        console.error(e);
-        throw e;
-      }
+      result.text().then((response) => {
+        countriesList.value = JSON.parse(response);
+      });
+    } catch (e) {
+      console.error(e);
+      throw e;
     }
+    // }
   }
 
   async function getRegions(countryId: string) {
-    const token = await getAccessToken();
-    if (token) {
-      try {
-        const result = await fetch(`/api/platform/common/countries/${countryId}/regions`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json-patch+json",
-            Accept: "application/json",
-            authorization: `Bearer ${token}`,
-          },
-        });
+    // const token = await getAccessToken();
+    // if (token) {
+    try {
+      const result = await fetch(`/api/platform/common/countries/${countryId}/regions`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json-patch+json",
+          Accept: "application/json",
+          // authorization: `Bearer ${token}`,
+        },
+      });
 
-        result.text().then((response) => {
-          regionsList.value = JSON.parse(response);
-        });
-      } catch (e) {
-        console.error(e);
-        throw e;
-      }
+      result.text().then((response) => {
+        regionsList.value = JSON.parse(response);
+      });
+    } catch (e) {
+      console.error(e);
+      throw e;
     }
+    // }
   }
 
   function setCountry(countryId: string) {
@@ -195,7 +195,7 @@ export const useSellerDetails = (args?: {
       if (item.value?.addresses[0]?.countryCode) {
         await getRegions(item.value?.addresses[0]?.countryCode);
       }
-    }
+    },
   );
 
   return {

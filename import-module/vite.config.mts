@@ -12,12 +12,6 @@ export default getLibraryConfiguration({
       vueTsc: true,
     }),
   ],
-  resolve: {
-    alias: {
-      querystring: "querystring-es3",
-      "safe-buffer": "buffer-esm",
-    },
-  },
   build: {
     minify: false,
     target: "esnext",

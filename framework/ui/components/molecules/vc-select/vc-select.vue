@@ -257,7 +257,7 @@
 </template>
 
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
-<script lang="ts" setup generic="T, P extends {results: T[]; totalCount: number }">
+<script lang="ts" setup generic="T, P extends { results?: T[] | any; totalCount?: number }">
 import { ref, computed, watch, nextTick, Ref, toRefs } from "vue";
 import { vOnClickOutside } from "@vueuse/components";
 import * as _ from "lodash-es";
@@ -476,7 +476,7 @@ const props = withDefaults(
     emitValue: true,
     mapOptions: true,
     options: (): T[] => [],
-  }
+  },
 );
 
 const emit = defineEmits<{
@@ -487,7 +487,7 @@ const emit = defineEmits<{
   "update:modelValue": [
     inputValue: MaybeArray<
       string | Option | (T & P["results"][number] & object)[keyof T | keyof P["results"][number]]
-    > | null
+    > | null,
   ];
   /**
    * Emitted when user wants to filter a value
@@ -533,7 +533,7 @@ useIntersectionObserver(
       onLoadMore();
     }
   },
-  { threshold: 1, root: root.value?.component }
+  { threshold: 1, root: root.value?.component },
 );
 
 const popper = useFloating(dropdownToggleRef, dropdownRef, {
@@ -568,11 +568,11 @@ watch(
           const data = await props.options(
             undefined,
             undefined,
-            Array.isArray(props.modelValue) ? props.modelValue : [props.modelValue]
+            Array.isArray(props.modelValue) ? props.modelValue : [props.modelValue],
           );
 
           if (typeof data === "object" && !Array.isArray(data) && "results" in data) {
-            defaultValue.value = data.results?.filter((x) => x[props.optionValue as keyof T] === props.modelValue);
+            defaultValue.value = data.results?.filter((x: any) => x[props.optionValue as keyof T] === props.modelValue);
           } else if (Array.isArray(data)) {
             defaultValue.value = data?.filter((x) => x[props.optionValue as keyof T] === props.modelValue);
           }
@@ -582,7 +582,7 @@ watch(
       }
     }
   },
-  { immediate: true }
+  { immediate: true },
 );
 
 watch(
@@ -601,7 +601,7 @@ watch(
       optionsList.value = props.options;
     }
   },
-  { immediate: true }
+  { immediate: true },
 );
 
 watch(
@@ -609,7 +609,7 @@ watch(
   (newVal) => {
     optionsTemp.value = newVal;
   },
-  { immediate: true, deep: true }
+  { immediate: true, deep: true },
 );
 
 watch(
@@ -618,7 +618,7 @@ watch(
     if (newVal) {
       popper.update();
     }
-  }
+  },
 );
 
 async function onLoadMore() {
@@ -667,7 +667,7 @@ watch(
   (val) => {
     innerValueCache = val;
   },
-  { immediate: true }
+  { immediate: true },
 );
 
 const selectedScope = computed(
@@ -685,7 +685,7 @@ const selectedScope = computed(
       toggleOption,
       removeAtIndex,
     }));
-  }
+  },
 );
 
 const hasValue = computed(() => fieldValueIsFilled(innerValue.value));
@@ -825,8 +825,8 @@ function toggleOption(opt: Option) {
   if (props.multiple !== true) {
     if (innerValue.value.length === 0 || _.isEqual(getOptionValue.value(innerValue.value[0]), optValue) !== true) {
       emit("update:modelValue", props.emitValue === true ? optValue : opt);
-      isOpened.value = false;
     }
+    isOpened.value = false;
     return;
   }
 

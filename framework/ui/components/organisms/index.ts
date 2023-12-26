@@ -5,5 +5,3 @@ export * from "./vc-gallery";
 export * from "./vc-login-form";
 export * from "./vc-popup";
 export * from "./vc-table";
-export * from "./vc-notification-dropdown";
-export * from "./vc-notification-template";

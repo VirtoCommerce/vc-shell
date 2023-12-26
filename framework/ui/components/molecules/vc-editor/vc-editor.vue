@@ -74,7 +74,7 @@ export interface Emits {
   (event: "update:modelValue", value: string | number | Date | null | undefined): void;
 }
 
-const { getAccessToken } = useUser();
+// const { getAccessToken } = useUser();
 
 const props = defineProps<Props>();
 
@@ -108,17 +108,12 @@ const modules = {
   module: ImageUploader,
   options: {
     upload: async (file: File) => {
-      const authToken = await getAccessToken();
-
       const formData = new FormData();
       formData.append("image", file);
 
       const result = await fetch(`/api/assets?folderUrl=/catalog/${props.assetsFolder}`, {
         method: "POST",
         body: formData,
-        headers: {
-          Authorization: `Bearer ${authToken}`,
-        },
       });
 
       const response = await result.json();
@@ -142,7 +137,7 @@ watch(
   (value) => {
     content.value = unref(value);
   },
-  { immediate: true }
+  { immediate: true },
 );
 
 function onInput() {

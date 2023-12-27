@@ -8,4 +8,7 @@ export default defineConfig({
       formats: ["es"],
     } as LibraryOptions,
   },
+  esbuild: {
+    drop: ["console", "debugger"],
+  },
 });

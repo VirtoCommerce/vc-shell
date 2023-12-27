@@ -19,12 +19,6 @@ process.env = {
 
 const isMonorepo = fs.existsSync(path.resolve(process.cwd(), "./../../framework/package.json"));
 
-// "Not so smart" override: https://github.com/bevacqua/dragula/issues/602#issuecomment-912863804
-// const _define: { global?: unknown } = {};
-// if (mode !== "production") {
-//   _define.global = {};
-// }
-
 const getProxy = (target: ProxyOptions["target"], options: Omit<ProxyOptions, "target"> = {}): ProxyOptions => {
   const dontTrustSelfSignedCertificate = false;
   return {
@@ -77,8 +71,6 @@ export default defineConfig({
     splitVendorChunkPlugin(),
   ],
   define: {
-    // ..._define,
-
     "import.meta.env.PACKAGE_VERSION": `"${version}"`,
     "import.meta.env.APP_PLATFORM_URL": `"${process.env.APP_PLATFORM_URL ? process.env.APP_PLATFORM_URL : ""}"`,
     "import.meta.env.APP_LOG_ENABLED": `"${process.env.APP_LOG_ENABLED}"`,
@@ -116,15 +108,14 @@ export default defineConfig({
     esbuildOptions: {
       target: ["esnext", "safari14"],
     },
-    // include:
-    //   mode === "development"
-    //     ? ["ace-builds", "quill-delta", "quill", "url-pattern", "vee-validate", "moment"]
-    //     : [],
   },
   build: {
     target: "esnext",
     minify: true,
     sourcemap: mode === "development",
     emptyOutDir: true,
+  },
+  esbuild: {
+    drop: ["console", "debugger"],
   },
 });

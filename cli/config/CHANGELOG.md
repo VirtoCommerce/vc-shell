@@ -1,3 +1,17 @@
+## [1.0.129](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.128...v1.0.129) (2023-12-27)
+
+
+### Bug Fixes
+
+* **config:** drop console logs in production ([c2242f1](https://github.com/VirtoCommerce/vc-shell/commit/c2242f1155e4d85865419d71734b4934fb0ceb7b))
+
+
+### Features
+
+* **config:** update dependencies and build scripts ([588aa47](https://github.com/VirtoCommerce/vc-shell/commit/588aa47dbed000cdbc417844447b19391bda7541))
+
+
+
 ## [1.0.128](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.127...v1.0.128) (2023-12-14)
 
 

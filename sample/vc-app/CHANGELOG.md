@@ -1,3 +1,17 @@
+## [1.0.129](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.128...v1.0.129) (2023-12-27)
+
+
+### Bug Fixes
+
+* **sample:** update dependencies in package.json ([5c3e4a0](https://github.com/VirtoCommerce/vc-shell/commit/5c3e4a0ada021acc60480f1f57a0f599fa11a2db))
+
+
+### Features
+
+* **sample:** add postcss.config.cjs and settings.json files ([432ab8f](https://github.com/VirtoCommerce/vc-shell/commit/432ab8ff8d9fe99e4c60f2cca29d4869c742ed10))
+
+
+
 ## [1.0.128](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.127...v1.0.128) (2023-12-14)
 
 

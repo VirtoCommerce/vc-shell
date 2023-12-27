@@ -1,3 +1,17 @@
+## [1.0.129](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.128...v1.0.129) (2023-12-27)
+
+
+### Bug Fixes
+
+* **sample:** update dependencies in package.json ([5c3e4a0](https://github.com/VirtoCommerce/vc-shell/commit/5c3e4a0ada021acc60480f1f57a0f599fa11a2db))
+
+
+### Features
+
+* **create-vc-app:** build as es6 module ([0452713](https://github.com/VirtoCommerce/vc-shell/commit/04527133e1e6351f1d5f6440b50e57b2b6fa1966))
+
+
+
 ## [1.0.128](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.127...v1.0.128) (2023-12-14)
 
 

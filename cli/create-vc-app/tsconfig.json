@@ -5,5 +5,5 @@
     "rootDir": "./"
   },
   "include": ["src/index.ts"],
-  "exclude": ["node_modules", "dist", "src/templates"]
+  "exclude": ["node_modules", "dist", "./src/templates"]
 }

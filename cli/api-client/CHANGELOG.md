@@ -1,3 +1,12 @@
+## [1.0.129](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.128...v1.0.129) (2023-12-27)
+
+
+### Features
+
+* **api-client:** update dependencies and build configuration ([cfb7929](https://github.com/VirtoCommerce/vc-shell/commit/cfb7929c703622daddd5152eff95d58582d2a662))
+
+
+
 ## [1.0.128](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.127...v1.0.128) (2023-12-14)
 
 

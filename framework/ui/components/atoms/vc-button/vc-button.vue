@@ -156,7 +156,7 @@ $variants: primary, warning, danger;
       }
 
       &.vc-button_raised {
-        @apply tw-shadow-[1px_4px_10px_rgba(197,206,214,0.24)] tw-px-[var(--button-padding-hor)] tw-py-[var(--button-padding-vert)];
+        @apply tw-shadow-[1px_4px_10px_rgba(197,206,214,1)] tw-px-[var(--button-padding-hor)] tw-py-[var(--button-padding-vert)];
 
         &.vc-button_text:not(:disabled) {
           &:hover,

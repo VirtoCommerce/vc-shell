@@ -93,7 +93,7 @@
           style="color: #f14e4e"
         >
           <!-- TODO: stylizing-->
-          {{ t(`INVITATION.ERRORS.${+error}`) }}
+          {{ t(`INVITATION.ERRORS.${error}`) }}
         </VcHint>
       </VcForm>
     </VcLoginForm>
@@ -163,7 +163,7 @@ const acceptInvitation = async () => {
     if (result.succeeded) {
       router.push("/");
     } else {
-      form.errors = [result.errorCode as string];
+      // form.errors = [result.errorCode as string];
     }
   } else {
     form.errors = result.errors as string[];

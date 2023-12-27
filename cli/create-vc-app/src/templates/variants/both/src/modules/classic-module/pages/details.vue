@@ -48,6 +48,7 @@ export interface Emits {
 
 defineOptions({
   url: "/classic-module-details",
+  name: "ClassicModuleDetails",
 });
 
 const props = withDefaults(defineProps<Props>(), {

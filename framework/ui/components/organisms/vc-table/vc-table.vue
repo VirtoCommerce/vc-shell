@@ -187,7 +187,7 @@
                 class="tw-sticky tw-h-[42px] tw-z-[1] tw-right-0 tw-top-0 tw-table-cell tw-align-middle tw-w-0"
               >
                 <VcTableColumnSwitcher
-                  :items="toggleCols.filter((col): col is  ITableColumns => col !== undefined)"
+                  :items="toggleCols.filter((col): col is ITableColumns => col !== undefined)"
                   @change="toggleColumn"
                 ></VcTableColumnSwitcher>
               </div>
@@ -519,7 +519,7 @@ const props = withDefaults(
     activeFilterCount: 0,
     resizableColumns: true,
     reorderableColumns: true,
-  }
+  },
 );
 
 interface ITableItemRef {
@@ -664,7 +664,7 @@ watch(
 
     selection.value = selection.value.filter((selection) => newVal.includes(selection));
   },
-  { deep: true, immediate: true }
+  { deep: true, immediate: true },
 );
 
 watch(
@@ -672,7 +672,7 @@ watch(
   (newVal) => {
     emit("selectionChanged", newVal);
   },
-  { deep: true }
+  { deep: true },
 );
 
 watch(
@@ -684,14 +684,14 @@ watch(
       saveState();
     }
   },
-  { deep: true, immediate: true }
+  { deep: true, immediate: true },
 );
 
 watch(
   () => allSelected.value,
   (newVal) => {
     emit("select:all", newVal);
-  }
+  },
 );
 
 function handleSelectAll() {
@@ -763,7 +763,7 @@ function showActions(item: T, index: string) {
           placement: "bottom",
           middleware: [
             flip({ fallbackPlacements: ["top", "bottom"] }),
-            offset({ crossAxis: 15, mainAxis: 15 }),
+            offset({ crossAxis: 35, mainAxis: 15 }),
             arrow({ element: tooltipArrowRef as HTMLElement }),
           ],
         }).then((item) => (tooltip.value = item));
@@ -1167,8 +1167,8 @@ function onRowDrop(event: DragEvent) {
       draggedRowIndex.value > droppedRowIndex.value
         ? droppedRowIndex.value
         : droppedRowIndex.value === 0
-        ? 0
-        : droppedRowIndex.value - 1;
+          ? 0
+          : droppedRowIndex.value - 1;
 
     const processedItems = [...props.items];
 

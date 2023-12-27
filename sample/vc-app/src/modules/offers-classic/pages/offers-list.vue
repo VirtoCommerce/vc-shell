@@ -1,6 +1,6 @@
 <template>
   <VcBlade
-    :title="$t('OFFERS.PAGES.LIST.TITLE')"
+    :title="$t('OFFERSCLASSIC.PAGES.LIST.TITLE')"
     width="50%"
     :expanded="expanded"
     :closable="closable"
@@ -18,14 +18,14 @@
       class="tw-grow tw-basis-0"
       multiselect
       :columns="tableColumns"
-      :items="(offers as unknown as IOfferUnwrappedPrice[])"
+      :items="offers as unknown as IOfferUnwrappedPrice[]"
       :item-action-builder="actionBuilder"
       :sort="sort"
       :pages="pages"
       :current-page="currentPage"
       :search-value="searchValue"
-      :search-placeholder="$t('OFFERS.PAGES.LIST.SEARCH.PLACEHOLDER')"
-      :total-label="$t('OFFERS.PAGES.LIST.TABLE.TOTALS')"
+      :search-placeholder="$t('OFFERSCLASSIC.PAGES.LIST.SEARCH.PLACEHOLDER')"
+      :total-label="$t('OFFERSCLASSIC.PAGES.LIST.TABLE.TOTALS')"
       :total-count="totalCount"
       :selected-item-id="selectedItemId"
       select-all
@@ -63,13 +63,13 @@
           </div>
           <div class="tw-mt-3 tw-w-full tw-flex tw-justify-between">
             <div class="tw-truncate tw-grow tw-basis-0 tw-mr-2">
-              <VcHint>{{ $t("OFFERS.PAGES.LIST.MOBILE.SKU") }}</VcHint>
+              <VcHint>{{ $t("OFFERSCLASSIC.PAGES.LIST.MOBILE.SKU") }}</VcHint>
               <div class="tw-truncate tw-mt-1">
                 {{ itemData.item.sku }}
               </div>
             </div>
             <div class="tw-truncate tw-grow-[2] tw-basis-0">
-              <VcHint>{{ $t("OFFERS.PAGES.LIST.MOBILE.QUANTITY") }}</VcHint>
+              <VcHint>{{ $t("OFFERSCLASSIC.PAGES.LIST.MOBILE.QUANTITY") }}</VcHint>
               <div class="tw-truncate tw-mt-1">
                 {{ itemData.item.inStockQuantity }}
               </div>
@@ -77,19 +77,19 @@
           </div>
           <div class="tw-mt-3 tw-w-full tw-flex tw-justify-between">
             <div class="tw-truncate tw-grow-[2] tw-basis-0 tw-mr-2">
-              <VcHint>{{ $t("OFFERS.PAGES.LIST.MOBILE.LIST_PRICE") }}</VcHint>
+              <VcHint>{{ $t("OFFERSCLASSIC.PAGES.LIST.MOBILE.LIST_PRICE") }}</VcHint>
               <div class="tw-truncate tw-mt-1">
                 {{ itemData.item.listPrice && itemData.item.listPrice.toFixed(2) }}
               </div>
             </div>
             <div class="tw-truncate tw-grow-[2] tw-basis-0 tw-mr-2">
-              <VcHint>{{ $t("OFFERS.PAGES.LIST.MOBILE.SALE_PRICE") }}</VcHint>
+              <VcHint>{{ $t("OFFERSCLASSIC.PAGES.LIST.MOBILE.SALE_PRICE") }}</VcHint>
               <div class="tw-truncate tw-mt-1">
                 {{ handleSalePrice(itemData.item.salePrice) }}
               </div>
             </div>
             <div class="tw-truncate tw-grow-[2] tw-basis-0">
-              <VcHint>{{ $t("OFFERS.PAGES.LIST.MOBILE.CREATED") }}</VcHint>
+              <VcHint>{{ $t("OFFERSCLASSIC.PAGES.LIST.MOBILE.CREATED") }}</VcHint>
               <div class="tw-truncate tw-mt-1">
                 {{ itemData.item.createdDate && moment(itemData.item.createdDate).fromNow() }}
               </div>
@@ -147,6 +147,13 @@ interface IOfferUnwrappedPrice extends IOffer {
 
 defineOptions({
   url: "/offers-cls",
+  name: "OffersListClassic",
+  isWorkspace: true,
+  menuItem: {
+    title: "OFFERSCLASSIC.MENU.TITLE",
+    icon: "fas fa-file-invoice",
+    priority: 3,
+  },
 });
 
 const props = withDefaults(defineProps<Props>(), {
@@ -182,7 +189,7 @@ watch(
       });
     });
   },
-  { deep: true }
+  { deep: true },
 );
 
 watch(sort, async (value) => {
@@ -207,7 +214,7 @@ watch(
       }
     }
   },
-  { immediate: true }
+  { immediate: true },
 );
 
 onMounted(async () => {
@@ -239,7 +246,7 @@ const onSearchList = debounce(async (keyword: string) => {
 const bladeToolbar = ref<IBladeToolbar[]>([
   {
     id: "refresh",
-    title: computed(() => t("OFFERS.PAGES.LIST.TOOLBAR.REFRESH")),
+    title: computed(() => t("OFFERSCLASSIC.PAGES.LIST.TOOLBAR.REFRESH")),
     icon: "fas fa-sync-alt",
     async clickHandler() {
       await reload();
@@ -247,7 +254,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
   },
   {
     id: "add",
-    title: computed(() => t("OFFERS.PAGES.LIST.TOOLBAR.ADD")),
+    title: computed(() => t("OFFERSCLASSIC.PAGES.LIST.TOOLBAR.ADD")),
     icon: "fas fa-plus",
     clickHandler() {
       addOffer();
@@ -255,7 +262,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
   },
   {
     id: "deleteSelected",
-    title: computed(() => t("OFFERS.PAGES.LIST.TOOLBAR.DELETE")),
+    title: computed(() => t("OFFERSCLASSIC.PAGES.LIST.TOOLBAR.DELETE")),
     icon: "fas fa-trash",
     async clickHandler() {
       removeOffers();
@@ -268,7 +275,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
 const tableColumns = ref<ITableColumns[]>([
   {
     id: "imgSrc",
-    title: computed(() => t("OFFERS.PAGES.LIST.TABLE.HEADER.PRODUCT_IMAGE")),
+    title: computed(() => t("OFFERSCLASSIC.PAGES.LIST.TABLE.HEADER.PRODUCT_IMAGE")),
     width: 60,
     alwaysVisible: true,
     type: "image",
@@ -276,27 +283,27 @@ const tableColumns = ref<ITableColumns[]>([
   {
     id: "name",
     field: "name",
-    title: computed(() => t("OFFERS.PAGES.LIST.TABLE.HEADER.PRODUCT_NAME")),
+    title: computed(() => t("OFFERSCLASSIC.PAGES.LIST.TABLE.HEADER.PRODUCT_NAME")),
     sortable: true,
     alwaysVisible: true,
   },
   {
     id: "createdDate",
-    title: computed(() => t("OFFERS.PAGES.LIST.TABLE.HEADER.CREATED_DATE")),
+    title: computed(() => t("OFFERSCLASSIC.PAGES.LIST.TABLE.HEADER.CREATED_DATE")),
     width: 140,
     sortable: true,
     type: "date-ago",
   },
   {
     id: "sku",
-    title: computed(() => t("OFFERS.PAGES.LIST.TABLE.HEADER.SKU")),
+    title: computed(() => t("OFFERSCLASSIC.PAGES.LIST.TABLE.HEADER.SKU")),
     width: 120,
     sortable: true,
     alwaysVisible: true,
   },
   {
     id: "isActive",
-    title: computed(() => t("OFFERS.PAGES.LIST.TABLE.HEADER.ENABLED")),
+    title: computed(() => t("OFFERSCLASSIC.PAGES.LIST.TABLE.HEADER.ENABLED")),
     width: 120,
     sortable: true,
     alwaysVisible: true,
@@ -304,35 +311,35 @@ const tableColumns = ref<ITableColumns[]>([
   },
   {
     id: "prices.salePrice",
-    title: computed(() => t("OFFERS.PAGES.LIST.TABLE.HEADER.SALE_PRICE")),
+    title: computed(() => t("OFFERSCLASSIC.PAGES.LIST.TABLE.HEADER.SALE_PRICE")),
     width: 100,
     sortable: true,
     type: "money",
   },
   {
     id: "prices.listPrice",
-    title: computed(() => t("OFFERS.PAGES.LIST.TABLE.HEADER.LIST_PRICE")),
+    title: computed(() => t("OFFERSCLASSIC.PAGES.LIST.TABLE.HEADER.LIST_PRICE")),
     width: 100,
     sortable: true,
     type: "money",
   },
   {
     id: "minQuantity",
-    title: computed(() => t("OFFERS.PAGES.LIST.TABLE.HEADER.MIN_QTY")),
+    title: computed(() => t("OFFERSCLASSIC.PAGES.LIST.TABLE.HEADER.MIN_QTY")),
     width: 80,
     sortable: true,
     type: "number",
   },
   {
     id: "inStockQuantity",
-    title: computed(() => t("OFFERS.PAGES.LIST.TABLE.HEADER.QTY")),
+    title: computed(() => t("OFFERSCLASSIC.PAGES.LIST.TABLE.HEADER.QTY")),
     width: 80,
     sortable: true,
     type: "number",
   },
   {
     id: "availQuantity",
-    title: computed(() => t("OFFERS.PAGES.LIST.TABLE.HEADER.AVAIL_QTY")),
+    title: computed(() => t("OFFERSCLASSIC.PAGES.LIST.TABLE.HEADER.AVAIL_QTY")),
     width: 80,
     sortable: true,
     type: "number",
@@ -341,8 +348,8 @@ const tableColumns = ref<ITableColumns[]>([
 
 const empty = reactive({
   image: emptyImage,
-  text: computed(() => t("OFFERS.PAGES.LIST.TABLE.EMPTY.TITLE")),
-  action: computed(() => t("OFFERS.PAGES.LIST.TABLE.EMPTY.ACTION")),
+  text: computed(() => t("OFFERSCLASSIC.PAGES.LIST.TABLE.EMPTY.TITLE")),
+  action: computed(() => t("OFFERSCLASSIC.PAGES.LIST.TABLE.EMPTY.ACTION")),
   clickHandler: () => {
     addOffer();
   },
@@ -350,8 +357,8 @@ const empty = reactive({
 
 const notfound = reactive({
   image: emptyImage,
-  text: computed(() => t("OFFERS.PAGES.LIST.TABLE.NOT_FOUND.TITLE")),
-  action: computed(() => t("OFFERS.PAGES.LIST.TABLE.NOT_FOUND.ACTION")),
+  text: computed(() => t("OFFERSCLASSIC.PAGES.LIST.TABLE.NOT_FOUND.TITLE")),
+  action: computed(() => t("OFFERSCLASSIC.PAGES.LIST.TABLE.NOT_FOUND.ACTION")),
   clickHandler: async () => {
     searchValue.value = "";
     await loadOffers({
@@ -361,7 +368,7 @@ const notfound = reactive({
   },
 });
 
-const title = computed(() => t("OFFERS.PAGES.LIST.TITLE"));
+const title = computed(() => t("OFFERSCLASSIC.PAGES.LIST.TITLE"));
 
 const onItemClick = (item: IOffer) => {
   openBlade({
@@ -447,11 +454,11 @@ const actionBuilder = (): IActionBuilderResult[] => {
 async function removeOffers() {
   if (
     await showConfirmation(
-      t("OFFERS.PAGES.LIST.DELETE_SELECTED_CONFIRMATION.MESSAGE", {
+      t("OFFERSCLASSIC.PAGES.LIST.DELETE_SELECTED_CONFIRMATION.MESSAGE", {
         count: allSelected.value
-          ? t("OFFERS.PAGES.LIST.DELETE_SELECTED_CONFIRMATION.ALL", { totalCount: totalCount.value })
+          ? t("OFFERSCLASSIC.PAGES.LIST.DELETE_SELECTED_CONFIRMATION.ALL", { totalCount: totalCount.value })
           : selectedOfferIds.value.length,
-      })
+      }),
     )
   ) {
     emit("close:children");

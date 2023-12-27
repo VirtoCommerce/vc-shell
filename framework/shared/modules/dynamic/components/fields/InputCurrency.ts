@@ -6,6 +6,7 @@ import { getModel } from "../../helpers/getters";
 import { setModel } from "../../helpers/setters";
 import { InputCurrencySchema } from "../../types";
 
+// TODO fix disabling when blades is disabled
 export default {
   name: "InputCurrency",
   props: componentProps,
@@ -42,7 +43,7 @@ export default {
                 rows: props.rows,
                 key: `${String(field.props.key)}_validation`,
               },
-              () => render
+              () => render,
             )
           : null;
       } else {

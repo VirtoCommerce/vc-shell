@@ -43,7 +43,7 @@
             <!-- Product selector -->
             <Field
               v-slot="{ field, errorMessage, handleChange, errors }"
-              :label="$t('OFFERS.PAGES.DETAILS.FIELDS.PRODUCT.TITLE')"
+              :label="$t('OFFERSCLASSIC.PAGES.DETAILS.FIELDS.PRODUCT.TITLE')"
               :model-value="offerDetails.productId"
               name="product"
               rules="required"
@@ -52,10 +52,10 @@
                 v-bind="field"
                 v-model="offerDetails.productId"
                 class="tw-mb-4"
-                :label="$t('OFFERS.PAGES.DETAILS.FIELDS.PRODUCT.TITLE')"
+                :label="$t('OFFERSCLASSIC.PAGES.DETAILS.FIELDS.PRODUCT.TITLE')"
                 required
                 searchable
-                :placeholder="$t('OFFERS.PAGES.DETAILS.FIELDS.PRODUCT.PLACEHOLDER')"
+                :placeholder="$t('OFFERSCLASSIC.PAGES.DETAILS.FIELDS.PRODUCT.PLACEHOLDER')"
                 :options="fetchProducts"
                 option-value="id"
                 option-label="name"
@@ -84,7 +84,7 @@
                         {{ scope.opt.name }}
                       </div>
                       <VcHint class="tw-truncate tw-mt-1">
-                        {{ $t("OFFERS.PAGES.DETAILS.FIELDS.CODE") }}:
+                        {{ $t("OFFERSCLASSIC.PAGES.DETAILS.FIELDS.CODE") }}:
                         {{ scope.opt.sku }}
                       </VcHint>
                     </div>
@@ -104,7 +104,7 @@
                         {{ scope.opt.name }}
                       </div>
                       <VcHint class="tw-truncate tw-mt-1">
-                        {{ $t("OFFERS.PAGES.DETAILS.FIELDS.CODE") }}:
+                        {{ $t("OFFERSCLASSIC.PAGES.DETAILS.FIELDS.CODE") }}:
                         {{ scope.opt.sku }}
                       </VcHint>
                     </div>
@@ -114,7 +114,7 @@
             </Field>
 
             <VcCard
-              :header="$t('OFFERS.PAGES.DETAILS.FIELDS.INVENTORY.TITLE')"
+              :header="$t('OFFERSCLASSIC.PAGES.DETAILS.FIELDS.INVENTORY.TITLE')"
               class="tw-mb-4"
             >
               <div class="tw-p-4">
@@ -122,7 +122,7 @@
                 <div class="tw-mb-4 tw-flex tw-flex-row tw-items-center">
                   <Field
                     v-slot="{ field, errorMessage, handleChange, errors }"
-                    :label="$t('OFFERS.PAGES.DETAILS.FIELDS.SKU.TITLE')"
+                    :label="$t('OFFERSCLASSIC.PAGES.DETAILS.FIELDS.SKU.TITLE')"
                     :model-value="offerDetails.sku"
                     rules="required|min:3"
                     name="sku"
@@ -131,8 +131,8 @@
                       v-bind="field"
                       v-model="offerDetails.sku"
                       class="tw-grow tw-basis-0"
-                      :label="$t('OFFERS.PAGES.DETAILS.FIELDS.SKU.TITLE')"
-                      :placeholder="$t('OFFERS.PAGES.DETAILS.FIELDS.SKU.PLACEHOLDER')"
+                      :label="$t('OFFERSCLASSIC.PAGES.DETAILS.FIELDS.SKU.TITLE')"
+                      :placeholder="$t('OFFERSCLASSIC.PAGES.DETAILS.FIELDS.SKU.PLACEHOLDER')"
                       :disabled="readonly"
                       required
                       clearable
@@ -148,7 +148,7 @@
                   class="tw-mb-2"
                   :required="true"
                 >
-                  <span>{{ $t("OFFERS.PAGES.DETAILS.FIELDS.QTY.TITLE") }}</span>
+                  <span>{{ $t("OFFERSCLASSIC.PAGES.DETAILS.FIELDS.QTY.TITLE") }}</span>
                 </VcLabel>
 
                 <VcRow>
@@ -163,7 +163,7 @@
                       name="alwaysinstock"
                       @update:model-value="offerDetails.trackInventory = !$event"
                     >
-                      {{ $t("OFFERS.PAGES.DETAILS.FIELDS.ALWAYS_IN_STOCK.TITLE") }}
+                      {{ $t("OFFERSCLASSIC.PAGES.DETAILS.FIELDS.ALWAYS_IN_STOCK.TITLE") }}
                     </VcCheckbox>
                   </VcCol>
                 </VcRow>
@@ -173,7 +173,7 @@
                     <VcRow>
                       <VcCol size="2">
                         <VcLabel class="tw-my-2">
-                          <span>{{ $t("OFFERS.PAGES.DETAILS.FIELDS.FULFILLMENT_CENTER.TITLE") }}</span>
+                          <span>{{ $t("OFFERSCLASSIC.PAGES.DETAILS.FIELDS.FULFILLMENT_CENTER.TITLE") }}</span>
                         </VcLabel>
                       </VcCol>
                       <VcCol size="2">
@@ -181,7 +181,7 @@
                           class="tw-my-2"
                           :required="true"
                         >
-                          <span>{{ $t("OFFERS.PAGES.DETAILS.FIELDS.AVAIL_QTY.TITLE") }}</span>
+                          <span>{{ $t("OFFERSCLASSIC.PAGES.DETAILS.FIELDS.AVAIL_QTY.TITLE") }}</span>
                         </VcLabel>
                       </VcCol>
                     </VcRow>
@@ -216,7 +216,7 @@
                                 v-bind="field"
                                 v-model="item.inStockQuantity"
                                 type="number"
-                                :placeholder="$t('OFFERS.PAGES.DETAILS.FIELDS.AVAIL_QTY.PLACEHOLDER')"
+                                :placeholder="$t('OFFERSCLASSIC.PAGES.DETAILS.FIELDS.AVAIL_QTY.PLACEHOLDER')"
                                 :disabled="readonly || !offerDetails.trackInventory"
                                 required
                                 clearable
@@ -301,7 +301,7 @@
 
             <VcCard
               class="tw-mb-4"
-              :header="$t('OFFERS.PAGES.DETAILS.FIELDS.PRICING.TITLE')"
+              :header="$t('OFFERSCLASSIC.PAGES.DETAILS.FIELDS.PRICING.TITLE')"
             >
               <template #actions>
                 <VcButton
@@ -309,7 +309,7 @@
                   small
                   @click="addPrice(true)"
                 >
-                  {{ $t("OFFERS.PAGES.DETAILS.FIELDS.PRICING.ADD_PRICE") }}
+                  {{ $t("OFFERSCLASSIC.PAGES.DETAILS.FIELDS.PRICING.ADD_PRICE") }}
                 </VcButton>
               </template>
 
@@ -332,7 +332,7 @@
                           <!-- List price field -->
                           <Field
                             v-slot="{ errorMessage, handleChange, errors }"
-                            :label="$t('OFFERS.PAGES.DETAILS.FIELDS.LIST_PRICE.TITLE')"
+                            :label="$t('OFFERSCLASSIC.PAGES.DETAILS.FIELDS.LIST_PRICE.TITLE')"
                             :model-value="item.listPrice"
                             :name="`listprice_${i}`"
                             rules="required"
@@ -340,8 +340,8 @@
                             <VcInputCurrency
                               v-model:modelValue.number="item.listPrice"
                               v-model:option="item.currency"
-                              :label="$t('OFFERS.PAGES.DETAILS.FIELDS.LIST_PRICE.TITLE')"
-                              :placeholder="$t('OFFERS.PAGES.DETAILS.FIELDS.LIST_PRICE.PLACEHOLDER')"
+                              :label="$t('OFFERSCLASSIC.PAGES.DETAILS.FIELDS.LIST_PRICE.TITLE')"
+                              :placeholder="$t('OFFERSCLASSIC.PAGES.DETAILS.FIELDS.LIST_PRICE.PLACEHOLDER')"
                               :disabled="readonly"
                               required
                               :clearable="false"
@@ -360,8 +360,8 @@
                           <VcInputCurrency
                             v-model:modelValue.number="item.salePrice"
                             v-model:option="item.currency"
-                            :label="$t('OFFERS.PAGES.DETAILS.FIELDS.SALE_PRICE.TITLE')"
-                            :placeholder="$t('OFFERS.PAGES.DETAILS.FIELDS.SALE_PRICE.PLACEHOLDER')"
+                            :label="$t('OFFERSCLASSIC.PAGES.DETAILS.FIELDS.SALE_PRICE.TITLE')"
+                            :placeholder="$t('OFFERSCLASSIC.PAGES.DETAILS.FIELDS.SALE_PRICE.PLACEHOLDER')"
                             :disabled="readonly"
                             :clearable="false"
                             :options="currencies"
@@ -378,7 +378,7 @@
                       <!-- Minimum quantity field -->
                       <Field
                         v-slot="{ field, errorMessage, handleChange, errors }"
-                        :label="$t('OFFERS.PAGES.DETAILS.FIELDS.MIN_QTY.TITLE')"
+                        :label="$t('OFFERSCLASSIC.PAGES.DETAILS.FIELDS.MIN_QTY.TITLE')"
                         :model-value="item.minQuantity"
                         :name="`minqty_${i}`"
                         rules="required|bigint"
@@ -387,8 +387,8 @@
                           v-bind="field"
                           v-model.number="item.minQuantity"
                           type="number"
-                          :label="$t('OFFERS.PAGES.DETAILS.FIELDS.MIN_QTY.TITLE')"
-                          :placeholder="$t('OFFERS.PAGES.DETAILS.FIELDS.MIN_QTY.PLACEHOLDER')"
+                          :label="$t('OFFERSCLASSIC.PAGES.DETAILS.FIELDS.MIN_QTY.TITLE')"
+                          :placeholder="$t('OFFERSCLASSIC.PAGES.DETAILS.FIELDS.MIN_QTY.PLACEHOLDER')"
                           :disabled="readonly"
                           required
                           clearable
@@ -423,7 +423,7 @@
                     class="tw-px-2 !tw-text-[#f14e4e]"
                   >
                     <!-- TODO: stylizing-->
-                    {{ $t(`OFFERS.PAGES.DETAILS.FIELDS.PRICING.ERRORS.SIMILAR`) }}
+                    {{ $t(`OFFERSCLASSIC.PAGES.DETAILS.FIELDS.PRICING.ERRORS.SIMILAR`) }}
                   </VcHint>
                 </div>
               </template>
@@ -431,45 +431,43 @@
                 v-else
                 class="tw-p-5 tw-flex tw-justify-center"
               >
-                <VcHint>{{ $t("OFFERS.PAGES.DETAILS.FIELDS.PRICING.EMPTY") }}</VcHint>
+                <VcHint>{{ $t("OFFERSCLASSIC.PAGES.DETAILS.FIELDS.PRICING.EMPTY") }}</VcHint>
               </div>
             </VcCard>
-            <VcCard :header="$t('OFFERS.PAGES.DETAILS.FIELDS.DATES.TITLE')">
+            <VcCard :header="$t('OFFERSCLASSIC.PAGES.DETAILS.FIELDS.DATES.TITLE')">
               <div class="tw-p-2">
                 <Form>
                   <VcRow>
                     <VcCol class="tw-p-2">
                       <Field
                         v-slot="{ field, errorMessage, errors }"
-                        :label="$t('OFFERS.PAGES.DETAILS.FIELDS.DATES.VALID_FROM')"
+                        :label="$t('OFFERSCLASSIC.PAGES.DETAILS.FIELDS.DATES.VALID_FROM')"
                         :model-value="getFilterDate('startDate')"
                         name="startDate"
                       >
                         <VcInput
                           v-bind="field"
-                          :label="$t('OFFERS.PAGES.DETAILS.FIELDS.DATES.VALID_FROM')"
+                          :label="$t('OFFERSCLASSIC.PAGES.DETAILS.FIELDS.DATES.VALID_FROM')"
                           type="datetime-local"
                           :model-value="getFilterDate('startDate')"
                           :disabled="readonly"
                           :error="!!errors.length"
                           :error-message="errorMessage"
-                          @update:model-value="
-                            (e: string) => setFilterDate('startDate', e)
-                          "
+                          @update:model-value="(e: string) => setFilterDate('startDate', e)"
                         ></VcInput>
                       </Field>
                     </VcCol>
                     <VcCol class="tw-p-2">
                       <Field
                         v-slot="{ field, errorMessage, errors }"
-                        :label="$t('OFFERS.PAGES.DETAILS.FIELDS.DATES.VALID_TO')"
+                        :label="$t('OFFERSCLASSIC.PAGES.DETAILS.FIELDS.DATES.VALID_TO')"
                         :model-value="getFilterDate('endDate')"
                         name="endDate"
                         rules="after:@startDate"
                       >
                         <VcInput
                           v-bind="field"
-                          :label="$t('OFFERS.PAGES.DETAILS.FIELDS.DATES.VALID_TO')"
+                          :label="$t('OFFERSCLASSIC.PAGES.DETAILS.FIELDS.DATES.VALID_TO')"
                           type="datetime-local"
                           :model-value="getFilterDate('endDate')"
                           :disabled="readonly"
@@ -485,7 +483,7 @@
             </VcCard>
             <VcCard
               v-if="offerDetails.id"
-              :header="$t('OFFERS.PAGES.DETAILS.FIELDS.IMAGES.TITLE')"
+              :header="$t('OFFERSCLASSIC.PAGES.DETAILS.FIELDS.IMAGES.TITLE')"
               class="tw-my-3 tw-relative"
               is-collapsable
               :is-collapsed="restoreCollapsed('offer_gallery')"
@@ -519,9 +517,9 @@ import {
   useNotifications,
   notification,
   AssetsDetails,
-  useUser,
   useBladeNavigation,
   usePopup,
+  useBeforeUnload,
 } from "@vc-shell/framework";
 import { useOffer } from "../composables";
 import * as _ from "lodash-es";
@@ -530,6 +528,7 @@ import { Form, useIsFormValid, Field, useIsFormDirty, useForm } from "vee-valida
 import moment from "moment";
 import { useI18n } from "vue-i18n";
 import { useDynamicProperties, useFulfillmentCenters, useMarketplaceSettings, useMultilanguage } from "../../common";
+import { onBeforeRouteLeave } from "vue-router";
 
 export interface Props {
   expanded: boolean;
@@ -548,6 +547,7 @@ export interface Emits {
 }
 defineOptions({
   url: "/offer-cls",
+  name: "OffersClassic",
 });
 
 const props = withDefaults(defineProps<Props>(), {
@@ -563,8 +563,11 @@ const { t } = useI18n({ useScope: "global" });
 
 const { createOffer, updateOffer, offerDetails, fetchProducts, offer, loadOffer, loading, makeCopy, deleteOffer } =
   useOffer();
+const { currentBladeNavigationData } = useBladeNavigation();
+useBeforeUnload(
+  computed(() => offerDetails.value.prices && offerDetails.value.prices.length && !isDisabled.value && modified.value),
+);
 
-const { getAccessToken } = useUser();
 const { showError, showConfirmation } = usePopup();
 const { setFieldError } = useForm({
   validateOnMount: false,
@@ -601,7 +604,7 @@ watch(
       modified.value = !_.isEqual(offerDetailsCopy, state.value);
     }
   },
-  { deep: true }
+  { deep: true },
 );
 
 onMounted(async () => {
@@ -643,9 +646,9 @@ const readonly = false;
 const title = computed(() => {
   return props.param
     ? offerDetails.value?.name
-      ? offerDetails.value.name + " " + t("OFFERS.PAGES.DETAILS.OFFER_DETAILS")
+      ? offerDetails.value.name + " " + t("OFFERSCLASSIC.PAGES.DETAILS.OFFER_DETAILS")
       : ""
-    : t("OFFERS.PAGES.DETAILS.TITLE");
+    : t("OFFERSCLASSIC.PAGES.DETAILS.TITLE");
 });
 
 const isDisabled = computed(() => {
@@ -663,14 +666,14 @@ watch(
       });
     });
   },
-  { deep: true }
+  { deep: true },
 );
 
 watch(
   () => offerDetails.value?.prices,
   () => {
     scrollToLastPrice();
-  }
+  },
 );
 
 watch(
@@ -682,7 +685,7 @@ watch(
       }
     });
   },
-  { deep: true }
+  { deep: true },
 );
 
 watch(
@@ -710,7 +713,7 @@ watch(
       pricingEqual.value = !!dupes.length;
     });
   },
-  { deep: true }
+  { deep: true },
 );
 
 watch(duplicates, (newVal, oldVal) => {
@@ -721,7 +724,7 @@ watch(duplicates, (newVal, oldVal) => {
 const bladeToolbar = ref<IBladeToolbar[]>([
   {
     id: "save",
-    title: computed(() => t("OFFERS.PAGES.DETAILS.TOOLBAR.SAVE")),
+    title: computed(() => t("OFFERSCLASSIC.PAGES.DETAILS.TOOLBAR.SAVE")),
     icon: "fas fa-save",
     async clickHandler() {
       if (isFormValid.value) {
@@ -741,17 +744,17 @@ const bladeToolbar = ref<IBladeToolbar[]>([
         });
         emit("close:blade");
       } else {
-        showError(unref(computed(() => t("OFFERS.PAGES.ALERTS.NOT_VALID"))));
+        showError(unref(computed(() => t("OFFERSCLASSIC.PAGES.ALERTS.NOT_VALID"))));
       }
     },
     isVisible: true,
     disabled: computed(
-      () => !(offerDetails.value.prices && offerDetails.value.prices.length && !isDisabled.value && modified.value)
+      () => !(offerDetails.value.prices && offerDetails.value.prices.length && !isDisabled.value && modified.value),
     ),
   },
   {
     id: "enable",
-    title: t("OFFERS.PAGES.DETAILS.TOOLBAR.ENABLE"),
+    title: t("OFFERSCLASSIC.PAGES.DETAILS.TOOLBAR.ENABLE"),
     icon: "fa fa-eye",
     async clickHandler() {
       if (offerDetails.value.id) {
@@ -762,7 +765,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
   },
   {
     id: "disable",
-    title: t("OFFERS.PAGES.DETAILS.TOOLBAR.DISABLE"),
+    title: t("OFFERSCLASSIC.PAGES.DETAILS.TOOLBAR.DISABLE"),
     icon: "fa fa-eye-slash",
     async clickHandler() {
       if (offerDetails.value.id) {
@@ -773,10 +776,10 @@ const bladeToolbar = ref<IBladeToolbar[]>([
   },
   {
     id: "delete",
-    title: t("OFFERS.PAGES.DETAILS.TOOLBAR.DELETE"),
+    title: t("OFFERSCLASSIC.PAGES.DETAILS.TOOLBAR.DELETE"),
     icon: "fas fa-trash",
     async clickHandler() {
-      if (await showConfirmation(unref(computed(() => t("OFFERS.PAGES.ALERTS.DELETE_OFFER"))))) {
+      if (await showConfirmation(unref(computed(() => t("OFFERSCLASSIC.PAGES.ALERTS.DELETE_OFFER"))))) {
         await deleteOffer({ id: props.param });
         emit("parent:call", {
           method: "reload",
@@ -820,7 +823,7 @@ function addPrice(scroll = false) {
       currency: defaultCurrency.value.value,
       listPrice: null,
       minQuantity: null,
-    })
+    }),
   );
   if (scroll) {
     scrollToLastPrice();
@@ -905,12 +908,6 @@ function getProductItem() {
   }
 }
 
-async function onBeforeClose() {
-  if (!isDisabled.value && modified.value) {
-    return await showConfirmation(unref(computed(() => t("OFFERS.PAGES.ALERTS.CLOSE_CONFIRMATION"))));
-  }
-}
-
 const onGalleryItemEdit = (item: Image) => {
   openBlade({
     blade: markRaw(AssetsDetails),
@@ -943,7 +940,7 @@ const onGallerySort = (images: Image[]) => {
 };
 
 const onGalleryImageRemove = async (image: Image) => {
-  if (await showConfirmation(unref(computed(() => t("OFFERS.PAGES.ALERTS.IMAGE_DELETE_CONFIRMATION"))))) {
+  if (await showConfirmation(unref(computed(() => t("OFFERSCLASSIC.PAGES.ALERTS.IMAGE_DELETE_CONFIRMATION"))))) {
     const imageIndex = offerDetails.value.images.findIndex((img) => {
       if (img.id && image.id) {
         return img.id === image.id;
@@ -961,13 +958,10 @@ const onGalleryUpload = async (files: FileList) => {
     for (let i = 0; i < files.length; i++) {
       const formData = new FormData();
       formData.append("file", files[i]);
-      const authToken = await getAccessToken();
+      // const authToken = await getAccessToken();
       const result = await fetch(`/api/assets?folderUrl=/offers/${offerDetails.value.id}`, {
         method: "POST",
         body: formData,
-        headers: {
-          Authorization: `Bearer ${authToken}`,
-        },
       });
       const response = await result.json();
       if (response?.length) {
@@ -992,8 +986,18 @@ const onGalleryUpload = async (files: FileList) => {
   files = null;
 };
 
+onBeforeRouteLeave(async (to) => {
+  if (
+    currentBladeNavigationData.value?.fullPath &&
+    !to.path.includes(currentBladeNavigationData.value?.fullPath) &&
+    !isDisabled.value &&
+    modified.value
+  ) {
+    return await showConfirmation(unref(computed(() => t("OFFERSCLASSIC.PAGES.ALERTS.CLOSE_CONFIRMATION"))));
+  }
+});
+
 defineExpose({
-  onBeforeClose,
   title,
 });
 </script>

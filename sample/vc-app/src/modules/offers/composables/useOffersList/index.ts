@@ -21,6 +21,7 @@ export interface OffersListScope extends ListBaseBladeScope {}
 const { getApiClient } = useApiClient(VcmpSellerCatalogClient);
 
 export const useOffersList = (args: {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   props: InstanceType<typeof DynamicBladeList>["$props"] & { options: { sellerProduct: any } };
   emit: InstanceType<typeof DynamicBladeList>["$emit"];
   mounted: Ref<boolean>;
@@ -44,11 +45,11 @@ export const useOffersList = (args: {
   const { load, remove, items, query, loading, pagination } = factory();
   const { openBlade, resolveBladeByName } = useBladeNavigation();
 
-  function openDetailsBlade(data?: Omit<Parameters<typeof openBlade>["0"], "blade">) {
-    openBlade({
+  async function openDetailsBlade(data?: Omit<Parameters<typeof openBlade>["0"], "blade">) {
+    await openBlade({
       blade: resolveBladeByName("Offer"),
       options: {
-        sellerProduct: args.props.options.sellerProduct,
+        sellerProduct: args.props?.options?.sellerProduct,
       },
       ...data,
     });

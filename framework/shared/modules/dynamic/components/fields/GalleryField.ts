@@ -28,8 +28,8 @@ export default {
         `There is no assetsHandler.images config provided in blade scope: ${JSON.stringify(
           props.bladeContext.scope,
           null,
-          2
-        )}`
+          2,
+        )}`,
       );
     }
 
@@ -47,7 +47,7 @@ export default {
           internalModel.value = _.cloneDeep(newVal);
         }
       },
-      { deep: true, immediate: true }
+      { deep: true, immediate: true },
     );
 
     return () => {
@@ -83,9 +83,9 @@ export default {
                 t(
                   `${props.bladeContext.settings.localizationPrefix
                     .trim()
-                    .toUpperCase()}.PAGES.DETAILS.ALERTS.DELETE_CONFIRMATION`
-                )
-              )
+                    .toUpperCase()}.PAGES.DETAILS.ALERTS.DELETE_CONFIRMATION`,
+                ),
+              ),
             )
           ) {
             const edited = await imagesHandler.remove?.value?.([image]);
@@ -114,7 +114,7 @@ export default {
             context: props.fieldContext,
             scope: props.bladeContext.scope,
           });
-          await props.bladeContext.validationState.validate();
+          await props.bladeContext.validationState.setFieldValue(props.element.id, args);
         }
       }
 

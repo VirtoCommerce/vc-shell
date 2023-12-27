@@ -1,5 +1,11 @@
 <template>
+  <VcLoading
+    v-if="!isReady"
+    active
+    class="vc-app__loader"
+  />
   <div
+    v-else
     class="vc-app tw-flex tw-flex-col tw-w-full tw-h-full tw-box-border tw-m-0 tw-overflow-hidden tw-text-base"
     :class="[
       `vc-theme_${theme}`,
@@ -14,18 +20,43 @@
     <VcAppBar
       class="tw-shrink-0"
       :logo="logo"
-      :blades="bladesRefs"
-      :buttons="toolbarItems"
       :title="title"
       @menubutton:click="($refs.menu as Record<'isMobileVisible', boolean>).isMobileVisible = true"
-      @backlink:click="$emit('backlink:click', bladesRefs.length - 2)"
-      @logo:click="$emit('logo:click')"
+      @backlink:click="closeBlade(Object.keys(blades?.components || {}).length - 1)"
+      @logo:click="openRoot"
     >
-      <template
-        v-if="$slots['appSwitcher']"
-        #appSwitcher
-      >
-        <slot name="appSwitcher"></slot>
+      <template #app-switcher>
+        <slot
+          v-if="!$slots['app-switcher']"
+          name="app-switcher"
+        >
+          <VcAppSwitcher
+            :apps-list="appsList"
+            @on-click="switchApp($event)"
+          />
+        </slot>
+      </template>
+
+      <!-- Toolbar slot -->
+      <template #toolbar>
+        <slot
+          v-if="$slots['toolbar:prepend']"
+          name="toolbar:prepend"
+        ></slot>
+        <slot
+          v-if="!$slots['toolbar:language-selector']"
+          name="toolbar:language-selector"
+        >
+          <LanguageSelector v-if="$isDesktop.value ? $isDesktop.value : $isMobile.value ? route.path === '/' : false" />
+        </slot>
+        <slot name="toolbar:notifications-dropdown">
+          <NotificationDropdown />
+        </slot>
+        <template v-if="$isDesktop.value">
+          <slot name="toolbar:user-dropdown">
+            <UserDropdownButton />
+          </slot>
+        </template>
       </template>
     </VcAppBar>
 
@@ -34,100 +65,126 @@
       <VcAppMenu
         ref="menu"
         class="tw-shrink-0"
-        :items="menuItems"
         :version="version"
-        :mobile-menu-items="mobileMenuItems"
         @item:click="onMenuItemClick"
-      ></VcAppMenu>
+      >
+        <template #mobile>
+          <UserDropdownButton class="tw-p-0 tw-mb-2 tw-w-full tw-h-auto" />
+        </template>
+      </VcAppMenu>
 
-      <!-- Workspace blades -->
+      <!-- Blade navigation -->
       <div
-        v-if="$slots['bladeNavigation']"
+        v-if="isAuthenticated"
         class="vc-app__workspace tw-px-2 tw-w-full tw-overflow-hidden !tw-flex tw-grow tw-basis-0 tw-relative"
       >
-        <slot name="bladeNavigation"></slot>
+        <slot name="blade-navigation">
+          <VcBladeNavigation />
+        </slot>
       </div>
 
-      <div v-if="$slots['modals']">
-        <slot name="modals"></slot>
-      </div>
+      <!-- Popup container -->
+      <VcPopupContainer />
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { getCurrentInstance, markRaw } from "vue";
-import { BladeMenu, IBladeToolbar } from "../../../../core/types";
+import { inject, provide } from "vue";
 import VcAppBar from "./_internal/vc-app-bar/vc-app-bar.vue";
 import VcAppMenu from "./_internal/vc-app-menu/vc-app-menu.vue";
-import { BladeInstanceConstructor, IBladeRef, useBladeNavigation } from "./../../../../shared";
+import {
+  VcPopupContainer,
+  LanguageSelector,
+  UserDropdownButton,
+  useAppSwitcher,
+  useBladeNavigation,
+  NotificationDropdown,
+} from "./../../../../shared/components";
+import { useI18n } from "vue-i18n";
+import { useNotifications, useUser } from "../../../../core/composables";
+import { useRoute, useRouter } from "vue-router";
+import { watchOnce } from "@vueuse/core";
+import { MenuItem } from "../../../../core/types";
 
 export interface Props {
-  pages?: BladeInstanceConstructor[];
-  menuItems?: BladeMenu[];
-  mobileMenuItems?: IBladeToolbar[];
-  toolbarItems?: IBladeToolbar[];
-  isReady?: boolean;
-  isAuthorized?: boolean;
+  isReady: boolean;
   logo: string;
   version?: string;
   theme?: "light" | "dark";
-  bladesRefs?: IBladeRef[];
   title?: string;
-}
-
-export interface Emits {
-  (event: "close", index: number): void;
-  (event: "backlink:click", index: number): void;
-  (event: "logo:click"): void;
 }
 
 defineOptions({
   inheritAttrs: false,
 });
 
-withDefaults(defineProps<Props>(), {
-  pages: () => [],
-  menuItems: () => [],
-  mobileMenuItems: () => [],
-  toolbarItems: () => [],
-  theme: "light",
-  bladesRefs: () => [],
-});
+defineSlots<{
+  "app-switcher": void;
+  toolbar: void;
+  "toolbar:prepend": void;
+  "toolbar:language-selector": void;
+  "toolbar:notifications-dropdown": void;
+  "toolbar:user-dropdown": void;
+  "blade-navigation": void;
+}>();
 
-defineEmits<Emits>();
+const props = defineProps<Props>();
 
 console.debug("vc-app: Init vc-app");
 
-const { openBlade } = useBladeNavigation();
+const internalRoutes = inject("bladeRoutes");
+const router = useRouter();
 
-const instance = getCurrentInstance();
+const { openBlade, closeBlade, resolveBladeByName, blades } = useBladeNavigation();
+const { appsList, switchApp, getApps } = useAppSwitcher();
+const { locale: currentLocale } = useI18n({ useScope: "global" });
+const { loadFromHistory } = useNotifications();
+const route = useRoute();
+const { isAuthenticated } = useUser();
 
-const onMenuItemClick = function ({ item }: { item: BladeMenu }) {
+const onMenuItemClick = function (item: MenuItem) {
   console.debug(`vc-app#onMenuItemClick() called.`);
-  if (item.clickHandler && typeof item.clickHandler === "function") {
-    item.clickHandler(instance?.exposed);
+
+  if (item.routeId) {
+    openBlade(
+      {
+        blade: resolveBladeByName(item.routeId),
+      },
+      true,
+    );
   } else {
-    if (item.component) {
-      openBlade(
-        {
-          blade: markRaw(item.component),
-        },
-        true
-      );
-    }
+    router.push(item.url);
   }
 };
 
-defineExpose({
-  onMenuItemClick,
-});
+function langInit() {
+  currentLocale.value = localStorage.getItem("VC_LANGUAGE_SETTINGS") ?? "en";
+}
+
+const openRoot = async () => {
+  const root = router.getRoutes().find((route) => route.meta?.root);
+
+  router.push(root?.path ?? "/");
+};
+
+watchOnce(
+  () => props.isReady,
+  async (newVal) => {
+    if (isAuthenticated.value && newVal) {
+      langInit();
+      await loadFromHistory();
+      await getApps();
+    }
+  },
+);
+
+provide("internalRoutes", internalRoutes);
 </script>
 
 <style lang="scss">
 :root {
-  --app-background: linear-gradient(180deg, #e4f5fb 5.06%, #e8f3f2 100%), linear-gradient(0deg, #e8f2f3, #e8f2f3),
-    #eef2f8;
+  --app-background: #eff2fa;
 }
 
 .vc-app {
@@ -137,6 +194,10 @@ defineExpose({
     .vc-app_mobile & {
       @apply tw-p-0;
     }
+  }
+
+  &__loader {
+    background: var(--app-background);
   }
 }
 </style>

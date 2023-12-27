@@ -1,5 +1,5 @@
-import { ComponentPublicInstance, ComputedRef, DefineComponent, Ref, UnwrapRef, Component } from "vue";
-import { CoreBladeExposed, ExtractedBladeOptions, BladeInstanceConstructor } from "./../../shared";
+import { Component, ComponentPublicInstance, ComputedRef, Ref } from "vue";
+import { BladeInstanceConstructor, CoreBladeExposed, ExtractedBladeOptions } from "./../../shared";
 import { ComponentPublicInstanceConstructor } from "../../shared/utilities/vueUtils";
 
 // Type instead of interface here is workaround for:
@@ -61,8 +61,7 @@ export interface BladeMenu<T extends Component = Component> {
   options?: ExtractedBladeOptions<InstanceType<BladeInstanceConstructor<T>>["$props"], "options">;
 }
 
-export interface IBladeToolbar<T extends ComponentPublicInstance = ComponentPublicInstance>
-  extends Omit<BladeMenu, "children" | "icon" | "options" | "component"> {
+export interface IBladeToolbar<T extends ComponentPublicInstance = ComponentPublicInstance> {
   id?: string;
   icon?: string | (() => string);
   isAccent?: boolean | ComputedRef<boolean>;
@@ -70,23 +69,11 @@ export interface IBladeToolbar<T extends ComponentPublicInstance = ComponentPubl
   disabled?: boolean | ComputedRef<boolean | undefined>;
   dropdownItems?: IBladeDropdownItem[];
   options?: InstanceType<ComponentPublicInstanceConstructor<T>>["$props"];
+  title?: string | Ref<string>;
+  isVisible?: boolean | Ref<boolean>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  clickHandler?(app?: Record<string, any> | CoreBladeExposed | null): void;
 }
-
-export type NavigationMenu<T> = T extends {
-  component?: infer C extends BladeInstanceConstructor;
-}
-  ? {
-      component?: C;
-      options?: ExtractedBladeOptions<InstanceType<C>["$props"], "options">;
-    } & BladeMenu
-  : T extends {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      children?: infer P extends [] | readonly any[];
-    } & BladeMenu
-  ? {
-      children?: readonly [...{ [I in keyof P]: NavigationMenu<P[I]> }];
-    } & BladeMenu
-  : T & { component?: BladeInstanceConstructor };
 
 export type ToolbarMenu<T> = T extends {
   component?: infer C extends ComponentPublicInstanceConstructor;
@@ -135,21 +122,6 @@ export interface ICommonAsset {
   createdDate?: Date;
 }
 
-export interface AuthData {
-  accessToken?: string;
-  //alias for accessToken is used by platform and is required for sharing auth data between platform and custom apps
-  token?: string;
-  refreshToken?: string;
-  userName?: string;
-  expiresAt?: number;
-}
-
-export interface SignInResults {
-  succeeded: boolean;
-  error?: string;
-  errorCode?: string;
-}
-
 export interface RequestPasswordResult {
   succeeded: boolean;
   error?: string;
@@ -169,3 +141,14 @@ export type ITableColumns = {
   align?: "start" | "end" | "center" | "between" | "around" | "evenly";
   visible?: boolean;
 };
+
+export interface MenuItem {
+  icon: string;
+  id: number;
+  priority: number;
+  routeId: string;
+  title: ComputedRef<string> | string;
+  url: string;
+  groupId?: string;
+  children: MenuItem[];
+}

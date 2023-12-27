@@ -1,6 +1,6 @@
 import applicationConfiguration from "./templates/vite.application.appconfig";
 import libraryConfiguration from "./templates/vite.library.appconfig";
-import fs from "fs";
+import * as fs from "node:fs";
 import { mergeConfig, UserConfig } from "vite";
 
 const packageJson = fs.readFileSync(process.cwd() + "/package.json");

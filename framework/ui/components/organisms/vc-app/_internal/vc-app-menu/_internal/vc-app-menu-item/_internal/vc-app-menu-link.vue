@@ -2,10 +2,13 @@
   <div
     class="vc-app-menu-item"
     :class="[
-      { 'vc-app-menu-item_active': isActive && !children?.length },
-      { 'vc-app-menu-item_no-hover': children?.length },
+      {
+        'vc-app-menu-item_active': isActive(url ?? '') && !children?.length,
+        'vc-app-menu-item_no-hover': !children?.length,
+        'vc-app-menu-item_child-opened': isOpened,
+      },
     ]"
-    @click="$emit('onClick')"
+    @click="onMenuItemClick"
   >
     <div
       class="vc-app-menu-item__handler"
@@ -25,63 +28,141 @@
         size="m"
       />
     </div>
-    <div class="vc-app-menu-item__title">
+    <div class="vc-app-menu-item__title tw-capitalize">
       {{ title }}
       <VcIcon
-        v-if="children?.length"
+        v-if="!!children?.length || false"
         class="vc-app-menu-item__title-icon"
-        icon="fas fa-chevron-down"
+        :icon="`fas fa-chevron-${isOpened ? 'up' : 'down'}`"
         size="xs"
       ></VcIcon>
     </div>
   </div>
+  <!-- Nested menu items -->
+  <div
+    v-show="isOpened"
+    class="vc-app-menu-item__child"
+  >
+    <template
+      v-for="(nested, i) in children"
+      :key="i"
+    >
+      <router-link
+        :to="nested.url"
+        custom
+      >
+        <div
+          :key="i"
+          :class="[
+            {
+              'vc-app-menu-item__child-item_active': isActive(nested.url),
+            },
+            'vc-app-menu-item__child-item',
+          ]"
+          @click="$emit('onClick', nested)"
+        >
+          {{ nested.title }}
+        </div>
+      </router-link>
+    </template>
+  </div>
 </template>
 <script lang="ts" setup>
-import { BladeMenu } from "./../../../../../../../../../core/types";
+import { ref, watch } from "vue";
+import { MenuItem } from "../../../../../../../../../core/types";
 import { VcIcon } from "./../../../../../../../";
+import { useRoute } from "vue-router";
 
 export interface Props {
-  isActive?: boolean;
-  children?: BladeMenu[];
+  children?: MenuItem[];
   sticky?: boolean;
   icon: string;
-  title: string;
+  title?: string;
+  url?: string;
 }
 
 export interface Emits {
-  (event: "onClick"): void;
+  (event: "onClick", item?: MenuItem): void;
 }
 
-withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<Props>(), {
   sticky: true,
 });
 
-defineEmits<Emits>();
+const emit = defineEmits<Emits>();
+
+const isOpened = ref(false);
+const route = useRoute();
+
+watch(
+  () => route.path,
+  () => {
+    if (props.children && props.children.length && props.children.find((x) => x?.url === route?.path)) {
+      isOpened.value = true;
+    }
+  },
+  { immediate: true },
+);
+
+function onMenuItemClick() {
+  if (!props.children?.length) {
+    emit("onClick");
+  } else {
+    isOpened.value = !isOpened.value;
+  }
+}
+
+const isActive = (url: string) => {
+  if (url) {
+    const splitted = url.split("/").filter((part) => part !== "");
+    const active = route.path.split("/").filter((part) => part !== "")[0] === splitted[0];
+
+    if (active && props.children?.length) {
+      isOpened.value = true;
+    }
+
+    return active;
+  } else return false;
+};
 </script>
 
 <style lang="scss">
 :root {
-  --app-menu-item-height: 38px;
+  --app-menu-item-height: 36px;
   --app-menu-item-icon-width: 20px;
-  --app-menu-item-icon-color: #337599;
+  --app-menu-item-icon-color: #82a6bd;
   --app-menu-item-icon-color-active: #ffffff;
   --app-menu-item-handler-width: 10px;
-  --app-menu-item-background-color-hover: #337599;
+  --app-menu-item-background-color-hover: rgba(130, 166, 189, 0.5);
+  --app-menu-item-background-color-active: #82a6bd;
   --app-menu-item-hover-radius: 4px;
   --app-menu-item-title-color: #465769;
   --app-menu-item-title-color-active: #ffffff;
   --app-menu-item-handler-color: #bdd1df;
+
+  --app-menu-item-active-text: #2e3d4e;
+  --app-menu-item-active-icon: #2e3d4e;
 }
 
 .vc-app-menu-item {
   @apply tw-flex tw-items-center tw-w-full tw-h-[var(--app-menu-item-height)]
   tw-border-none
-  tw-flex-nowrap tw-box-border tw-cursor-pointer tw-relative tw-uppercase;
+  tw-flex-nowrap tw-box-border tw-cursor-pointer tw-relative tw-uppercase tw-select-none;
 
   &_active {
-    @apply tw-bg-[color:var(--app-menu-item-background-color-hover)]
+    @apply tw-bg-[color:var(--app-menu-item-background-color-active)]
     tw-rounded-[var(--app-menu-item-hover-radius)]
     before:tw-opacity-100;
+  }
+
+  &_child-opened {
+    .vc-app-menu-item__title {
+      @apply tw-font-bold tw-text-[color:var(--app-menu-item-active-text)] #{!important};
+    }
+
+    .vc-app-menu-item__icon {
+      @apply tw-text-[color:var(--app-menu-item-active-icon)]  #{!important};
+    }
   }
 
   &__handler {
@@ -90,7 +171,7 @@ defineEmits<Emits>();
     tw-text-center tw-invisible tw-shrink-0;
 
     &_enabled {
-      @apply tw-cursor-move;
+      @apply tw-cursor-move #{!important};
     }
   }
 
@@ -109,10 +190,10 @@ defineEmits<Emits>();
     @apply tw-truncate
     tw-text-lg
     tw-font-medium
-    tw-px-3
+    tw-px-2
     tw-text-[color:var(--app-menu-item-title-color)]
-    [transition:color_0.2s_ease] [transition:opacity_0.1s_ease]
-    tw-opacity-100 tw-w-full;
+    [transition:color_0.2s_ease]
+    tw-opacity-100 tw-w-full tw-flex tw-justify-between tw-items-center;
   }
 
   &__title-icon {
@@ -128,8 +209,25 @@ defineEmits<Emits>();
     @apply tw-text-[color:var(--app-menu-item-icon-color-active)];
   }
 
-  &:hover {
-    @apply tw-bg-[color:var(--app-menu-item-background-color-hover)]
+  &__child {
+    @apply tw-ml-[32px] tw-gap-[4px] tw-mt-[4px] tw-flex tw-flex-col;
+  }
+
+  &__child-item {
+    @apply tw-cursor-pointer tw-w-fit tw-py-[4px] tw-px-[6px] tw-rounded-[4px]
+    hover:tw-bg-[color:var(--app-menu-item-background-color-hover)]
+    hover:tw-text-[color:var(--app-menu-item-title-color-active)];
+
+    &_active {
+      @apply tw-bg-[color:var(--app-menu-item-background-color-active)]
+      tw-text-[color:var(--app-menu-item-title-color-active)] tw-font-bold
+      hover:tw-bg-[color:var(--app-menu-item-background-color-active)]
+      hover:tw-text-[color:var(--app-menu-item-title-color-active)];
+    }
+  }
+
+  &:hover:not(.vc-app-menu-item_active) {
+    @apply tw-bg-[color:var(--app-menu-item-background-color-hover)] tw-bg-opacity-50
     tw-rounded-[var(--app-menu-item-hover-radius)];
   }
 
@@ -147,7 +245,7 @@ defineEmits<Emits>();
 
   &:hover &__handler {
     &_enabled {
-      @apply tw-invisible;
+      @apply tw-visible #{!important};
     }
   }
 }

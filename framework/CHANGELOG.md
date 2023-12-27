@@ -1,3 +1,37 @@
+## [1.0.129](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.128...v1.0.129) (2023-12-27)
+
+
+### Bug Fixes
+
+* **dynamic:** small calculateColumns fix ([38a5d76](https://github.com/VirtoCommerce/vc-shell/commit/38a5d764711386e6a18458f54dfe5f7f93a23e23))
+* **shell:** app-switcher fixes ([05bb4d7](https://github.com/VirtoCommerce/vc-shell/commit/05bb4d787329c42832ced9ca1afee95bf6e03977))
+* **shell:** fix loading issue in assetmanager component, component names ([2d3f483](https://github.com/VirtoCommerce/vc-shell/commit/2d3f4831a2087478f1a7392b82f6ea2622084563))
+* **shell:** fix vc-blade expandable property ([29697d7](https://github.com/VirtoCommerce/vc-shell/commit/29697d7ae36b8a34dcf23b057d079bb61c229b3c))
+* **shell:** navigation glitch fix ([bc9d784](https://github.com/VirtoCommerce/vc-shell/commit/bc9d78406630fab1d7e31d649a1b04c32bac9ac3))
+* **shell:** update button shadow color in vc-button.vue ([dd60721](https://github.com/VirtoCommerce/vc-shell/commit/dd60721bd490fe28b0f98392fcaa901c7dd2a99e))
+* **shell:** update offset values in showActions function in vc-table ([3ecf218](https://github.com/VirtoCommerce/vc-shell/commit/3ecf218692fd64f6e6d220a2b9dca8dfc8145214))
+
+
+### Features
+
+* **dynamic:** added new validation methods from vee-validate, dynamic pages errors prevent,  fixes ([931440b](https://github.com/VirtoCommerce/vc-shell/commit/931440bc5ad218328274a6a832babdf9ae3fba74))
+* **shell:** add format fallback messages option to i18n plugin ([fe1135e](https://github.com/VirtoCommerce/vc-shell/commit/fe1135e7da33e080b25f3afe8c0d1190b8784af5))
+* **shell:** Add postcss.config.cjs and notification components ([03418b8](https://github.com/VirtoCommerce/vc-shell/commit/03418b81b224d5a324698208f18160c9a309066d))
+* **shell:** add router guards and HTTP interceptors to shell init file ([986148b](https://github.com/VirtoCommerce/vc-shell/commit/986148b44591417abcc397245a8259aa6e2af632))
+* **shell:** add usepopupinternal function and destroy method in usepopup composable ([119d15b](https://github.com/VirtoCommerce/vc-shell/commit/119d15bfd1d926336de44f3f0fd24672f337c7f1))
+* **shell:** auto global components ([5f40f38](https://github.com/VirtoCommerce/vc-shell/commit/5f40f385ba0d291af633de0e89b0c97d84059446))
+* **shell:** improved blade navigation, based on Vue router ([841fa0b](https://github.com/VirtoCommerce/vc-shell/commit/841fa0bbf233ec785f97764752f14cb41b438345))
+* **shell:** new navigation  menu css styles ([d6acd52](https://github.com/VirtoCommerce/vc-shell/commit/d6acd529fdeb57f47f91a982039edc8ece9cab4e))
+* **shell:** notifications templates improvements ([1a74a07](https://github.com/VirtoCommerce/vc-shell/commit/1a74a078df0ad004c90cdfec351644cb622d221d))
+* **shell:** refactored useUser composable, 401 interceptor, get rid of tokens in some composables ([967626b](https://github.com/VirtoCommerce/vc-shell/commit/967626b4266b5b6271f4bc9f2b1eea8d6d7075e1))
+* **shell:** signalR connecting only when user authorized ([f9572de](https://github.com/VirtoCommerce/vc-shell/commit/f9572de42a4d38c3da858c6117804742f3cd37db))
+* **shell:** update common pages to new auth flow ([99364c2](https://github.com/VirtoCommerce/vc-shell/commit/99364c2db150c0496414c9215858a5653a7d938b))
+* **shell:** useBeforeUnload composable for onbeforeunload event handling ([129a109](https://github.com/VirtoCommerce/vc-shell/commit/129a1092ed54ea1277c42afac332446d4b55c65b))
+* **shell:** useMenuService, auto add modules to navigation menu ([d3ff217](https://github.com/VirtoCommerce/vc-shell/commit/d3ff21717bc272414bfbcd9c5c8a5cc1a18ddb6d))
+* **shell:** vc-card/vc-blade css update ([3f59f36](https://github.com/VirtoCommerce/vc-shell/commit/3f59f363b09777591f5d99a13127c7aab7142234))
+
+
+
 ## [1.0.128](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.127...v1.0.128) (2023-12-14)
 
 

@@ -6,3 +6,5 @@ export * from "./popup-handler";
 export * from "./change-password";
 export * from "./language-selector";
 export * from "./user-dropdown-button";
+export * from "./notification-dropdown";
+export * from "./notification-template";

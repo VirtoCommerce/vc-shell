@@ -49,8 +49,8 @@ export default (args: {
   const { load, items, pagination, loading, query } = factory();
   const { openBlade, resolveBladeByName } = useBladeNavigation();
 
-  function openDetailsBlade(data?: Omit<Parameters<typeof openBlade>["0"], "blade">) {
-    openBlade({
+  async function openDetailsBlade(data?: Omit<Parameters<typeof openBlade>["0"], "blade">) {
+    await openBlade({
       blade: resolveBladeByName("DynamicItem"),
       ...data,
     });

@@ -23,6 +23,8 @@ export interface IValidationState<Item> {
   validated: boolean;
   cachedValue: Item | undefined;
   setFieldError: FormContext["setFieldError"];
+  setFieldValue: FormContext["setFieldValue"];
+  setValues: FormContext["setValues"];
   setErrors: FormContext["setErrors"];
   resetModified: (data: MaybeRef<Item>, updateInitial?: MaybeRef<boolean>) => void;
   validate: FormContext["validate"];
@@ -62,7 +64,9 @@ export interface BaseBladeScope {
 }
 
 export interface ListBaseBladeScope extends BaseBladeScope {
-  openDetailsBlade: (args?: Omit<Parameters<ReturnType<typeof useBladeNavigation>["openBlade"]>["0"], "blade">) => void;
+  openDetailsBlade: (
+    args?: Omit<Parameters<ReturnType<typeof useBladeNavigation>["openBlade"]>["0"], "blade">,
+  ) => Promise<void>;
 }
 
 export interface DetailsBaseBladeScope extends BaseBladeScope {
@@ -80,7 +84,7 @@ export interface DetailsBaseBladeScope extends BaseBladeScope {
     loadDictionaries: (
       property: Record<string, any>,
       keyword?: string,
-      locale?: string
+      locale?: string,
     ) => Promise<Record<string, any>[]>;
     getPropertyValue: (property: Record<string, any>, locale: string) => any;
     setPropertyValue: (data: {

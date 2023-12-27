@@ -1,12 +1,12 @@
 <template>
   <div
-    class="vc-blade tw-relative tw-flex tw-shrink-0 tw-flex-col tw-bg-[color:var(--blade-background-color)] tw-rounded-[var(--blade-border-radius)] tw-shadow-[2px_2px_8px_rgba(126,142,157,0.14)] tw-my-4 tw-mx-2 tw-overflow-hidden tw-transition-[width] tw-duration-200"
+    class="vc-blade tw-relative tw-flex tw-shrink-0 tw-flex-col tw-bg-[color:var(--blade-background-color)] tw-rounded-[var(--blade-border-radius)] tw-shadow-[2px_2px_8px_rgba(54,84,117,0.14)] tw-my-4 tw-mx-2 tw-overflow-hidden tw-transition-[width] tw-duration-200"
     :class="[
       $attrs.class,
       {
         '!tw-w-full': $isMobile.value,
         '!tw-w-full !tw-shrink': expanded,
-        '!tw-absolute !tw-z-[2] !tw-top-0 !tw-bottom-0 !tw-left-0 ![width:-webkit-fill-available] !tw-mx-4 !tw-shrink':
+        '!tw-absolute !tw-z-[2] !tw-top-0 !tw-bottom-0 !tw-left-0 ![width:-webkit-fill-available] !tw-shrink':
           maximized,
       },
     ]"
@@ -17,7 +17,7 @@
       v-if="!$isMobile.value || closable"
       class="tw-shrink-0"
       :maximized="maximized"
-      :expandable="isExpandable"
+      :expandable="expandable"
       :closable="closable"
       :icon="icon"
       :title="title"
@@ -62,7 +62,7 @@
 <script lang="ts" setup>
 import { computed, Ref, reactive, useAttrs, toRefs } from "vue";
 import { IBladeToolbar } from "../../../../core/types";
-import { IBladeContainer, usePopup } from "./../../../../shared";
+import { usePopup } from "./../../../../shared";
 import { useI18n } from "vue-i18n";
 import VcBladeHeader from "./_internal/vc-blade-header/vc-blade-header.vue";
 import VcBladeToolbar from "./_internal/vc-blade-toolbar/vc-blade-toolbar.vue";
@@ -98,8 +98,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 defineEmits<Emits>();
 const attrs = useAttrs();
-const { blades, maximized, error }: { blades?: Ref<IBladeContainer[]>; maximized?: Ref<boolean>; error?: Ref<string> } =
-  toRefs(reactive(attrs));
+const { maximized, error }: { maximized?: Ref<boolean>; error?: Ref<string> } = toRefs(reactive(attrs));
 const { t } = useI18n({ useScope: "global" });
 
 const { open } = usePopup({
@@ -112,13 +111,6 @@ const { open } = usePopup({
   slots: {
     default: computed(() => error?.value),
   },
-});
-
-const isExpandable = computed(() => {
-  if (!props.expandable) {
-    return props.expandable;
-  }
-  return blades?.value && blades.value.length !== 0;
 });
 </script>
 

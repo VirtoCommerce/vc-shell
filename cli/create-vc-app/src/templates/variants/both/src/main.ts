@@ -13,12 +13,15 @@ import "roboto-fontface/css/roboto/roboto-fontface.css";
 import "@vc-shell/framework/dist/index.css";
 
 async function startApp() {
-  const { loadUser } = useUser();
-
-  await loadUser();
+  /** !!! uncomment these lines when adding APP_PLATFORM_URL in .env */
+  // const { loadUser } = useUser();
+  // await loadUser();
 
   const app = createApp(RouterView)
-    .use(VirtoShellFramework)
+    .use(VirtoShellFramework, {
+      router,
+      platformUrl: import.meta.env.APP_PLATFORM_URL,
+    })
     // Classic module based on composables, pages and components
     .use(ClassicModule, { router })
     // Dynamic module based on page schemas
@@ -28,8 +31,6 @@ async function startApp() {
   Object.entries(locales).forEach(([key, message]) => {
     app.config.globalProperties.$mergeLocaleMessage(key, message);
   });
-
-  // app.provide("platformUrl", import.meta.env.APP_PLATFORM_URL);
 
   app.config.errorHandler = (err) => {
     notification.error(err.toString(), {

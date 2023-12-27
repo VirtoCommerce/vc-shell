@@ -1,12 +1,13 @@
 import { readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import chalk from "chalk";
-import { spawnSync } from "child_process";
+import { SpawnSyncOptionsWithStringEncoding, spawnSync } from "node:child_process";
 import type { ReleaseType } from "semver";
 import { inc as semverInc } from "semver";
 import mri from "mri";
+import { argv } from "node:process";
 
-export const args = mri(process.argv.slice(2));
+export const args = mri(argv.slice(2));
 
 export const isDryRun = !!args.dry;
 
@@ -26,11 +27,15 @@ export function getPackageInfo(pkgName: string) {
   return { pkg, pkgDir, pkgPath };
 }
 
-export async function run(bin: string, args: string[], opts?: any) {
+export async function run(bin: string, args: string[], opts?: Partial<SpawnSyncOptionsWithStringEncoding>) {
   return spawnSync(bin, args, { stdio: "inherit", ...opts });
 }
 
-export async function dryRun(bin: string, args: string[], opts?: any): Promise<void> {
+export async function dryRun(
+  bin: string,
+  args: string[],
+  opts?: Partial<SpawnSyncOptionsWithStringEncoding>,
+): Promise<void> {
   return console.log(chalk.blue(`[dryrun] ${bin} ${args.join(" ")}`), opts || "");
 }
 

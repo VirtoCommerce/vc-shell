@@ -1,12 +1,13 @@
 {
   "extends": "@vc-shell/ts-config/tsconfig.json",
   "compilerOptions": {
-    "module": "CommonJS",
     "baseUrl": ".",
     "outDir": "./dist",
     "rootDir": "./src",
   },
-  "include": [
-    "src/**/*"
-  ]
+  "tsc-alias": {
+    "resolveFullPaths": true,
+    "verbose": false
+  },
+  "include": ["src"]
 }

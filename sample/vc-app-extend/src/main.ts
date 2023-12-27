@@ -17,7 +17,10 @@ async function startApp() {
   await loadUser();
 
   const app = createApp(RouterView);
-  app.use(VirtoShellFramework);
+  app.use(VirtoShellFramework, {
+    router,
+    platformUrl: import.meta.env.APP_PLATFORM_URL,
+  });
   app.use(Offers, { router });
   app.use(router);
 
@@ -25,8 +28,7 @@ async function startApp() {
     app.config.globalProperties.$mergeLocaleMessage(key, message);
   });
 
-  app.provide("platformUrl", import.meta.env.APP_PLATFORM_URL);
-
+  // Global error handler
   app.config.errorHandler = (err) => {
     notification.error(err.toString(), {
       timeout: 5000,

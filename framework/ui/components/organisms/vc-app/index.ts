@@ -1,12 +1,1 @@
-import { VNode } from "vue";
-import _App from "./vc-app.vue";
-
-export const VcApp = _App as typeof _App & {
-  new (): {
-    $slots: {
-      appSwitcher: () => VNode[];
-      bladeNavigation: () => VNode[];
-      passwordChange: () => VNode[];
-    };
-  };
-};
+export { default as VcApp } from "./vc-app.vue";

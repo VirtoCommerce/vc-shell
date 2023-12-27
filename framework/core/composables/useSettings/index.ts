@@ -1,6 +1,8 @@
-import { useUser } from "./../useUser";
-import { computed, inject, Ref, ref } from "vue";
+import { useAsync } from "./../useAsync";
+import { useApiClient } from "./../useApiClient";
+import { computed, inject, onBeforeMount, Ref, ref, ComputedRef } from "vue";
 import { SettingClient } from "./../../api/platform";
+import { useLoading } from "../useLoading";
 
 interface IUISetting {
   contrast_logo?: string;
@@ -10,52 +12,44 @@ interface IUISetting {
 
 interface IUseSettings {
   readonly uiSettings: Ref<IUISetting>;
-  getUiCustomizationSettings: () => void;
+  readonly loading: ComputedRef<boolean>;
   applySettings: (args: { logo?: string; title?: string }) => void;
 }
 
-const uiSettings = ref<IUISetting>({
-  logo: undefined,
-  title: undefined,
-});
+const uiSettings = ref<IUISetting | undefined>();
 export function useSettings(): IUseSettings {
-  const { getAccessToken } = useUser();
   const base = inject("platformUrl");
 
-  async function getApiClient() {
-    const client = new SettingClient();
-    client.setAuthToken((await getAccessToken()) ?? "");
-    return client;
-  }
+  const { getApiClient } = useApiClient(SettingClient);
 
-  async function getUiCustomizationSettings() {
-    const client = await getApiClient();
+  const { loading, action: getUiCustomizationSettings } = useAsync(async () => {
+    const result = await (await getApiClient()).getUICustomizationSetting();
+    const settings = await JSON.parse(result.defaultValue ?? null);
 
-    try {
-      const result = await client.getUICustomizationSetting();
-      const settings = JSON.parse(result.defaultValue);
+    if (settings) {
       uiSettings.value = {
         contrast_logo: base + settings.contrast_logo,
         logo: base + settings.logo,
         title: settings.title,
       };
-    } catch (e) {
-      console.error(e);
     }
-  }
+  });
 
   function applySettings(args: { logo?: string; title?: string }) {
-    if (args.logo) {
-      uiSettings.value.logo = args.logo;
-    }
-    if (args.title) {
-      uiSettings.value.title = args.title;
-    }
+    uiSettings.value = {
+      ...uiSettings.value,
+      logo: args.logo,
+      title: args.title,
+    };
   }
 
+  onBeforeMount(async () => {
+    await getUiCustomizationSettings();
+  });
+
   return {
-    uiSettings: computed(() => uiSettings.value),
-    getUiCustomizationSettings,
+    uiSettings: computed(() => uiSettings.value ?? {}),
     applySettings,
+    loading: useLoading(loading),
   };
 }

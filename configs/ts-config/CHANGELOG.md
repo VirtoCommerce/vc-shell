@@ -1,3 +1,12 @@
+## [1.0.129](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.128...v1.0.129) (2023-12-27)
+
+
+### Features
+
+* **configs:** update release-config package.json and utils.ts ([cd932ce](https://github.com/VirtoCommerce/vc-shell/commit/cd932cea266840df372dbddd9d0cfd339a54ed51))
+
+
+
 ## [1.0.128](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.127...v1.0.128) (2023-12-14)
 
 

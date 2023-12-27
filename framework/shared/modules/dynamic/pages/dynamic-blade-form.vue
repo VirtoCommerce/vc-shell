@@ -1,5 +1,6 @@
 <template>
   <VcBlade
+    v-if="!composables"
     v-loading="loading"
     :expanded="expanded"
     :closable="closable"
@@ -77,10 +78,21 @@ import {
 } from "vue";
 import { DynamicDetailsSchema, FormContentSchema, SettingsSchema } from "../types";
 import { reactiveComputed, useMounted } from "@vueuse/core";
-import { DetailsBladeContext, DetailsBaseBladeScope, IParentCallArgs, UseDetails, usePopup } from "../../../index";
+import {
+  DetailsBladeContext,
+  DetailsBaseBladeScope,
+  IParentCallArgs,
+  UseDetails,
+  usePopup,
+  useBladeNavigation,
+} from "../../../index";
 import SchemaRender from "../components/SchemaRender";
 import { VcSelect } from "../../../../ui/components";
 import { toolbarReducer } from "../helpers/toolbarReducer";
+import { onBeforeRouteLeave } from "vue-router";
+import { useBeforeUnload } from "../../../../core/composables/useBeforeUnload";
+import * as _ from "lodash-es";
+import { IBladeToolbar } from "../../../../core/types";
 
 interface Props {
   expanded?: boolean;
@@ -105,19 +117,29 @@ const props = withDefaults(defineProps<Props>(), {
   closable: true,
 });
 
-defineOptions({
-  isBladeComponent: true,
-});
-
 const emit = defineEmits<Emits>();
 
 const { t } = useI18n({ useScope: "global" });
 
 const { showConfirmation } = usePopup();
 
-const { loading, item, validationState, scope, load, remove, saveChanges, bladeTitle } = props.composables?.[
-  props.model?.settings?.composable ?? ""
-]({ emit, props, mounted: useMounted() }) as UseDetails<Record<string, any>, DetailsBaseBladeScope>;
+const { currentBladeNavigationData } = useBladeNavigation();
+
+const { loading, item, validationState, scope, load, remove, saveChanges, bladeTitle } = props.composables
+  ? (props.composables?.[props.model?.settings?.composable ?? ""]({ emit, props, mounted: useMounted() }) as UseDetails<
+      Record<string, any>,
+      DetailsBaseBladeScope
+    >)
+  : ({
+      loading: true,
+      item: undefined,
+      validationState: undefined,
+      scope: undefined,
+      load: undefined,
+      remove: undefined,
+      saveChanges: undefined,
+      bladeTitle: undefined,
+    } as unknown as UseDetails<Record<string, any>, DetailsBaseBladeScope>);
 
 const title = ref();
 const isReady = ref(false);
@@ -125,19 +147,26 @@ const isReady = ref(false);
 const unwatchTitle = watch(
   () => bladeTitle?.value,
   (newVal) => {
-    if (newVal) {
+    if (newVal && props.composables) {
       title.value = newVal;
 
       nextTick(() => unwatchTitle());
     }
   },
-  { immediate: true }
+  { immediate: true },
+);
+
+useBeforeUnload(
+  computed(() => {
+    const toolBarSave = _.get(toValue(scope)?.toolbarOverrides, "saveChanges") as unknown as IBladeToolbar;
+    return !unref(toolBarSave && "disabled" in toolBarSave && toolBarSave.disabled) || validationState.value.validated;
+  }),
 );
 
 const settings = computed(() => props.model?.settings);
 
 const form = computed(
-  (): FormContentSchema => props.model?.content.find((x) => x?.component === "vc-form") as FormContentSchema
+  (): FormContentSchema => props.model?.content.find((x) => x?.component === "vc-form") as FormContentSchema,
 );
 
 const widgets = computed(() => props.model?.content.find((x) => x?.component === "vc-widgets"));
@@ -201,48 +230,69 @@ const bladeOptions = reactive({
   status: bladeStatus,
 });
 
-const toolbarComputed = toolbarReducer({
-  defaultToolbarSchema: settings.value?.toolbar ?? [],
-  defaultToolbarBindings: {
-    saveChanges: {
-      async clickHandler() {
-        if (item.value) {
-          await saveChanges(item.value);
+const toolbarComputed =
+  props.composables &&
+  toolbarReducer({
+    defaultToolbarSchema: settings.value?.toolbar ?? [],
+    defaultToolbarBindings: {
+      saveChanges: {
+        async clickHandler() {
+          if (item.value) {
+            await saveChanges(item.value);
 
-          emit("parent:call", {
-            method: "reload",
-          });
-          if (!props.param) {
-            emit("close:blade");
-          }
-        }
-      },
-      disabled: computed(() => !validationState.value.validated),
-    },
-    remove: {
-      async clickHandler() {
-        if (
-          await showConfirmation(
-            computed(() => t(`${settings.value?.localizationPrefix.trim().toUpperCase()}.PAGES.DETAILS.ALERTS.DELETE`))
-          )
-        ) {
-          if (props.param) {
-            await remove?.({ id: props.param });
             emit("parent:call", {
               method: "reload",
             });
-            emit("close:blade");
+            if (!props.param) {
+              emit("close:blade");
+            }
           }
-        }
+        },
+        // TODO validate fields without validation
+        disabled: computed(() => !validationState.value.validated),
       },
-      disabled: computed(() => toValue(scope)?.disabled),
+      remove: {
+        async clickHandler() {
+          if (
+            await showConfirmation(
+              computed(() => t(`${settings.value?.localizationPrefix.trim().toUpperCase()}.PAGES.ALERTS.DELETE`)),
+            )
+          ) {
+            if (props.param) {
+              await remove?.({ id: props.param });
+              emit("parent:call", {
+                method: "reload",
+              });
+              emit("close:blade");
+            }
+          }
+        },
+        disabled: computed(() => toValue(scope)?.disabled),
+      },
     },
-  },
-  customToolbarConfig: toValue(scope)?.toolbarOverrides,
-  context: bladeContext.value,
-});
+    customToolbarConfig: toValue(scope)?.toolbarOverrides,
+    context: bladeContext.value,
+  });
 
 onBeforeMount(async () => {
+  if (props.composables) await init();
+});
+
+onBeforeRouteLeave(async (to, from) => {
+  if (
+    currentBladeNavigationData.value?.fullPath &&
+    !to.path.includes(currentBladeNavigationData.value?.fullPath) &&
+    validationState.value.modified
+  ) {
+    return await showConfirmation(
+      unref(
+        computed(() => t(`${settings.value?.localizationPrefix.trim().toUpperCase()}.PAGES.ALERTS.CLOSE_CONFIRMATION`)),
+      ),
+    );
+  }
+});
+
+async function init() {
   if (props.param) {
     await load({ id: props.param });
   }
@@ -250,21 +300,10 @@ onBeforeMount(async () => {
   await nextTick(() => {
     isReady.value = true;
   });
-});
-
-async function onBeforeClose() {
-  if (validationState.value.modified) {
-    return await showConfirmation(
-      unref(
-        computed(() => t(`${settings.value?.localizationPrefix.trim().toUpperCase()}.PAGES.ALERTS.CLOSE_CONFIRMATION`))
-      )
-    );
-  }
 }
 
 defineExpose({
-  title: bladeTitle,
-  onBeforeClose,
+  title: bladeTitle ?? "",
   ...scope?.value,
 });
 </script>

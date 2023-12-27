@@ -109,21 +109,24 @@ export default <Query>(args: {
       return;
     }
     controls.value = _data.columns.map((item): Control => {
-      const ctr = item.controls.reduce((obj, control) => {
-        if (control.component === "vc-checkbox") {
-          const filterData = control.data;
-          const fields = createCheckboxFromData(filterData, control);
+      const ctr = item.controls.reduce(
+        (obj, control) => {
+          if (control.component === "vc-checkbox") {
+            const filterData = control.data;
+            const fields = createCheckboxFromData(filterData, control);
 
-          if (fields) {
-            obj = fields;
+            if (fields) {
+              obj = fields;
+            }
           }
-        }
-        if (control.component === "vc-input") {
-          obj[control.field] = createInput(control);
-        }
+          if (control.component === "vc-input") {
+            obj[control.field] = createInput(control);
+          }
 
-        return obj;
-      }, {} as Record<string, ReturnType<typeof Checkbox> | ReturnType<typeof InputField>>);
+          return obj;
+        },
+        {} as Record<string, ReturnType<typeof Checkbox> | ReturnType<typeof InputField>>,
+      );
 
       return {
         title: item.title,
@@ -134,23 +137,26 @@ export default <Query>(args: {
 
   function createCheckboxFromData(data: RawControl["data"], control: RawControl) {
     if (!(data && data.length)) return;
-    return data.reduce((obj, currC) => {
-      obj[currC.value] = Checkbox({
-        props: {
-          classNames: "tw-mb-2",
-          modelValue: computed(() => isItemSelected(currC.value, control.field)),
-          "onUpdate:modelValue": (e: boolean) => selectFilterItem(e, currC.value, control.field),
-        },
-        slots: {
-          default: () => currC.displayName,
-        },
-        options: {
-          visibility: computed(() => true),
-        },
-      });
+    return data.reduce(
+      (obj, currC) => {
+        obj[currC.value] = Checkbox({
+          props: {
+            classNames: "tw-mb-2",
+            modelValue: computed(() => isItemSelected(currC.value, control.field)),
+            "onUpdate:modelValue": (e: boolean) => selectFilterItem(e, currC.value, control.field),
+          },
+          slots: {
+            default: () => currC.displayName,
+          },
+          options: {
+            visibility: computed(() => true),
+          },
+        });
 
-      return obj;
-    }, {} as Record<string, ReturnType<typeof Checkbox>>);
+        return obj;
+      },
+      {} as Record<string, ReturnType<typeof Checkbox>>,
+    );
   }
 
   function createInput(control: RawControl) {
@@ -202,12 +208,12 @@ export default <Query>(args: {
                 return h(
                   item.component as Component,
                   { ...item.props, class: item.props.classNames },
-                  "slots" in item && item.slots ? { ...item.slots } : {}
+                  "slots" in item && item.slots ? { ...item.slots } : {},
                 );
               }
             }),
-          ])
-        )
+          ]),
+        ),
       ),
       h(VcRow, () =>
         h(VcCol, { class: "tw-p-2" }, () =>
@@ -220,15 +226,15 @@ export default <Query>(args: {
                 disabled: disabled.value,
                 onClick: () => resetFilters(slotMethods.close),
               },
-              () => "Reset"
+              () => "Reset",
             ),
             h(
               VcButton,
               { disabled: disable.value, onClick: () => applyFilters(slotMethods.close) },
-              () => "Apply filters"
+              () => "Apply filters",
             ),
-          ])
-        )
+          ]),
+        ),
       ),
     ]);
   }

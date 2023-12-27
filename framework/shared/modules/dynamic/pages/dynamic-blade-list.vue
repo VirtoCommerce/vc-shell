@@ -1,6 +1,7 @@
 <template>
   <component
     :is="isWidgetView ? 'template' : 'VcBlade'"
+    v-if="!composables"
     :expanded="expanded"
     :closable="closable"
     width="50%"
@@ -27,9 +28,9 @@
         class="tw-grow tw-basis-0"
         :loading="loading"
         :expanded="expanded"
-        :columns="(table?.columns as ITableColumns[])"
-        :state-key="stateKey"
-        :items="(itemsProxy as Record<string, any>[])"
+        :columns="(tableData?.columns as ITableColumns[]) ?? []"
+        :state-key="stateKey ?? ''"
+        :items="itemsProxy as Record<string, any>[]"
         :multiselect="isWidgetView ? false : tableData?.multiselect"
         :header="isWidgetView ? false : tableData?.header"
         :footer="!isWidgetView"
@@ -61,7 +62,7 @@
 
         <!-- Not found template -->
         <template #notfound>
-          <template v-if="bladeOptions.notFound">
+          <template v-if="bladeOptions?.notFound">
             <component
               :is="bladeOptions.notFound"
               @reset="resetSearch"
@@ -83,9 +84,12 @@
 
         <!-- Empty template -->
         <template #empty>
-          <template v-if="bladeOptions.empty">
+          <template v-if="bladeOptions?.empty">
             <component
               :is="bladeOptions.empty"
+              :class="{
+                'tw-py-6': isWidgetView,
+              }"
               @add="openDetailsBlade"
             ></component>
           </template>
@@ -113,7 +117,7 @@
         <!-- Override table mobile view -->
 
         <template
-          v-if="bladeOptions.mobileView"
+          v-if="bladeOptions?.mobileView"
           #mobile-item="itemData"
         >
           <component
@@ -129,7 +133,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Ref,
-  VNode,
   computed,
   inject,
   onMounted,
@@ -144,6 +147,7 @@ import {
   ShallowRef,
   ConcreteComponent,
   ComputedRef,
+  onBeforeMount,
 } from "vue";
 import { useI18n } from "vue-i18n";
 import { DynamicGridSchema, ListContentSchema, SettingsSchema } from "../types";
@@ -156,7 +160,6 @@ import { ListBaseBladeScope, ListBladeContext, UseList } from "../factories/type
 import { IParentCallArgs } from "../../../index";
 import * as _ from "lodash-es";
 import { useMounted } from "@vueuse/core";
-import { safeIn } from "../helpers/safeIn";
 
 export interface Props {
   expanded?: boolean;
@@ -190,35 +193,24 @@ const { debounce } = useFunctions();
 
 const emit = defineEmits<Emits>();
 
-defineOptions({
-  isBladeComponent: true,
-});
-
 const settings = computed(() => props.model?.settings);
 const title = computed(() => settings.value?.titleTemplate);
 const allSelected = ref(false);
 const searchValue = ref();
-const selectedItemId = ref();
-const sort = ref("createdDate:DESC");
-const selectedIds = ref<string[]>([]);
+const selectedItemId = shallowRef();
+const sort = shallowRef("createdDate:DESC");
+const selectedIds = shallowRef<string[]>([]);
 const isDesktop = inject("isDesktop") as Ref<boolean>;
 const itemsProxy = ref<Record<string, any>[]>();
-const modified = ref(false);
+const modified = shallowRef(false);
 
 const { moduleNotifications, markAsRead } = useNotifications(settings.value?.pushNotificationType);
-const { load, remove, items, loading, pagination, query, scope } = props.composables?.[
-  props.model?.settings?.composable ?? ""
-]({
-  emit,
-  props,
-  mounted: useMounted(),
-}) as UseList<Record<string, any>[], Record<string, any>, ListBaseBladeScope>;
 
 watch(
   moduleNotifications,
   (newVal) => {
     newVal.forEach((message) => {
-      if (message.title) {
+      if (message.title && props.composables) {
         notification.success(message.title, {
           onClose() {
             markAsRead(message);
@@ -227,17 +219,41 @@ watch(
       }
     });
   },
-  { deep: true }
+  { deep: true },
 );
 
-const tableData = computed(() => props.model?.content.find((type: ListContentSchema) => type.component === "vc-table"));
-const stateKey = computed(() => {
-  if (tableData.value?.id) {
-    return tableData.value?.id + props.isWidgetView ? "_dashboard" : "";
-  }
+const tableData =
+  props.composables &&
+  computed(() => props.model?.content.find((type: ListContentSchema) => type.component === "vc-table"));
+const stateKey =
+  props.composables &&
+  computed(() => {
+    if (tableData?.value?.id) {
+      return tableData.value?.id + props.isWidgetView ? "_dashboard" : "";
+    }
 
-  throw new Error('Table id is not defined. Please provide "id" property in table schema');
-});
+    throw new Error('Table id is not defined. Please provide "id" property in table schema');
+  });
+
+const { load, remove, items, loading, pagination, query, scope } = props.composables
+  ? (props.composables?.[props.model?.settings?.composable ?? ""]({
+      emit,
+      props,
+      mounted: useMounted(),
+    }) as UseList<Record<string, any>[], Record<string, any>, ListBaseBladeScope>)
+  : ({
+      load: ref(true),
+      remove: undefined,
+      items: undefined,
+      loading: undefined,
+      pagination: undefined,
+      query: undefined,
+      scope: undefined,
+    } as unknown as UseList<Record<string, any>[], Record<string, any>, ListBaseBladeScope>);
+
+if (props.isWidgetView) {
+  query.value.take = 5;
+}
 
 const calculateColumns = (columns: ListContentSchema["columns"]) => {
   const result = columns?.map((column) => {
@@ -255,13 +271,15 @@ const calculateColumns = (columns: ListContentSchema["columns"]) => {
   return result;
 };
 
-const table = computed(() => {
-  const tableScope = {
-    columns: calculateColumns(tableData.value?.columns),
-  };
+const table =
+  props.composables &&
+  computed(() => {
+    const tableScope = {
+      columns: calculateColumns(tableData?.value?.columns),
+    };
 
-  return tableScope;
-});
+    return tableScope;
+  });
 
 const bladeOptions = reactive({
   tableData,
@@ -271,10 +289,6 @@ const bladeOptions = reactive({
   notFound: resolveTemplateComponent("notFoundTemplate"),
   empty: resolveTemplateComponent("emptyTemplate"),
 });
-
-if (props.isWidgetView) {
-  query.value.take = 5;
-}
 
 const {
   filterComponent,
@@ -299,67 +313,53 @@ const bladeContext = ref<ListBladeContext>({
   settings: settings as ComputedRef<SettingsSchema>,
 });
 
-const toolbarComputed = toolbarReducer({
-  defaultToolbarSchema: settings.value?.toolbar ?? [],
-  defaultToolbarBindings: {
-    save: {
-      clickHandler() {
-        emit("close:blade");
+const toolbarComputed =
+  props.composables &&
+  toolbarReducer({
+    defaultToolbarSchema: settings.value?.toolbar ?? [],
+    defaultToolbarBindings: {
+      save: {
+        clickHandler() {
+          emit("close:blade");
+        },
+        disabled: computed(() => !modified.value),
       },
-      disabled: computed(() => !modified.value),
-    },
-    openAddBlade: {
-      async clickHandler() {
-        if (
-          scope &&
-          "openDetailsBlade" in toValue(scope) &&
-          toValue(scope).openDetailsBlade &&
-          typeof toValue(scope).openDetailsBlade === "function"
-        ) {
-          toValue(scope).openDetailsBlade();
-        } else throw new Error("openDetailsBlade method is not defined in scope");
+      openAddBlade: {
+        async clickHandler() {
+          if (
+            scope &&
+            "openDetailsBlade" in toValue(scope) &&
+            toValue(scope).openDetailsBlade &&
+            typeof toValue(scope).openDetailsBlade === "function"
+          ) {
+            toValue(scope).openDetailsBlade();
+          } else throw new Error("openDetailsBlade method is not defined in scope");
+        },
+      },
+      refresh: {
+        async clickHandler() {
+          await reload();
+        },
+      },
+      removeItems: {
+        async clickHandler() {
+          removeItems();
+        },
+        disabled: computed(() => !selectedIds.value?.length),
+        isVisible: isDesktop.value,
       },
     },
-    refresh: {
-      async clickHandler() {
-        await reload();
-      },
-    },
-    removeItems: {
-      async clickHandler() {
-        removeItems();
-      },
-      disabled: computed(() => !selectedIds.value?.length),
-      isVisible: isDesktop.value,
-    },
-  },
-  customToolbarConfig: toValue(scope)?.toolbarOverrides,
-  context: bladeContext.value,
-});
+    customToolbarConfig: toValue(scope)?.toolbarOverrides,
+    context: bladeContext.value,
+  });
 
-onMounted(async () => {
-  await load({ ...query.value, sort: sort.value });
-});
-
-watch(
-  () => itemsProxy.value,
-  (newVal) => {
-    modified.value = !_.isEqual(newVal, items.value);
-  },
-  { deep: true }
-);
-
-watch(sort, async (value) => {
-  await load({ ...query.value, sort: value });
-});
-
-watch(items, (newVal) => {
-  itemsProxy.value = newVal;
+onBeforeMount(async () => {
+  if (props.composables) await load({ ...query.value, sort: sort.value });
 });
 
 watch(
   () => props.param,
-  (newVal) => {
+  async (newVal) => {
     if (newVal) {
       if (
         scope &&
@@ -367,7 +367,7 @@ watch(
         toValue(scope).openDetailsBlade &&
         typeof toValue(scope).openDetailsBlade === "function"
       ) {
-        toValue(scope).openDetailsBlade({
+        await toValue(scope).openDetailsBlade({
           param: newVal,
           onOpen() {
             selectedItemId.value = newVal;
@@ -379,10 +379,26 @@ watch(
       }
     }
   },
-  { immediate: true }
+  { immediate: true },
 );
 
-const openDetailsBlade = () => {
+watch(
+  () => itemsProxy.value,
+  (newVal) => {
+    modified.value = !_.isEqual(newVal, items.value);
+  },
+  { deep: true },
+);
+
+watch(sort, async (value) => {
+  await load({ ...query.value, sort: value });
+});
+
+watch(items, (newVal) => {
+  itemsProxy.value = newVal;
+});
+
+const openDetailsBlade = async () => {
   if (!props.isWidgetView) {
     if (
       scope &&
@@ -390,7 +406,7 @@ const openDetailsBlade = () => {
       toValue(scope).openDetailsBlade &&
       typeof toValue(scope).openDetailsBlade === "function"
     ) {
-      toValue(scope).openDetailsBlade();
+      await toValue(scope).openDetailsBlade();
     }
   } else {
     emit("add");
@@ -437,10 +453,10 @@ async function removeItems() {
               `${settings.value?.localizationPrefix.trim().toUpperCase()}.PAGES.LIST.DELETE_SELECTED_CONFIRMATION.ALL`,
               {
                 totalCount: pagination.value.totalCount,
-              }
+              },
             )
           : selectedIds.value.length,
-      })
+      }),
     )
   ) {
     emit("close:children");
@@ -526,27 +542,30 @@ async function resetSearch() {
 
 function templateOverrideComponents(): Record<string, ShallowRef<ConcreteComponent>> {
   return {
-    ...table.value.columns?.reduce((acc, curr) => {
-      if ("customTemplate" in curr && curr.customTemplate) {
-        if (!("component" in curr.customTemplate)) {
-          throw new Error(
-            `Component name must be provided in 'customTemplate' property, column: ${JSON.stringify(curr)}`
-          );
-        } else if ("component" in curr.customTemplate && curr.customTemplate.component) {
-          const component = resolveComponent(curr.customTemplate.component);
+    ...table?.value.columns?.reduce(
+      (acc, curr) => {
+        if ("customTemplate" in curr && curr.customTemplate) {
+          if (!("component" in curr.customTemplate)) {
+            throw new Error(
+              `Component name must be provided in 'customTemplate' property, column: ${JSON.stringify(curr)}`,
+            );
+          } else if ("component" in curr.customTemplate && curr.customTemplate.component) {
+            const component = resolveComponent(curr.customTemplate.component);
 
-          if (typeof component !== "string") {
-            acc[curr.id] = shallowRef(component);
+            if (typeof component !== "string") {
+              acc[curr.id] = shallowRef(component);
+            }
           }
         }
-      }
-      return acc;
-    }, {} as Record<string, ShallowRef<ConcreteComponent>>),
+        return acc;
+      },
+      {} as Record<string, ShallowRef<ConcreteComponent>>,
+    ),
   };
 }
 
 function resolveTemplateComponent(name: keyof ListContentSchema) {
-  if (!tableData.value) return;
+  if (!tableData?.value) return;
   const value = tableData.value[name];
   if (value && typeof value === "object" && "component" in value) {
     const componentName = value.component;

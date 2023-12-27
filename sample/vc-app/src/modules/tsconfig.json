@@ -15,5 +15,5 @@
   ],
   "include": [
     "index.ts", "**/*.ts", "**/*.vue", "**/*.json"
-  ]
+, "vite.config.mts"  ]
 }

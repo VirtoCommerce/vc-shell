@@ -12,7 +12,7 @@
       size="l"
       class="tw-mr-2"
     ></VcIcon>
-    <div class="tw-text-[color:var(--notification-content-color)]">
+    <div class="tw-text-[color:var(--notification-content-color)] tw-whitespace-pre-line">
       {{ content }}
     </div>
     <VcIcon
@@ -63,7 +63,7 @@ watch(
       timer.value.start();
     }
   },
-  { immediate: true }
+  { immediate: true },
 );
 
 onMounted(() => {

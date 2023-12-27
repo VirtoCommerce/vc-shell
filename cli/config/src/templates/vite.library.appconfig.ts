@@ -1,10 +1,14 @@
-import { LibraryOptions, UserConfig } from "vite";
+import { LibraryOptions, defineConfig } from "vite";
+import { cwd } from "node:process";
 
-export default {
+export default defineConfig({
   build: {
     lib: {
-      entry: process.cwd() + "/src/index.ts",
+      entry: cwd() + "/src/index.ts",
       formats: ["es"],
     } as LibraryOptions,
   },
-} as UserConfig;
+  esbuild: {
+    drop: process.env.APP_ENV === "production" ? ["console", "debugger"] : [],
+  },
+});

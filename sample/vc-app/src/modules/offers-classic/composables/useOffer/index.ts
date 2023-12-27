@@ -52,14 +52,12 @@ export default (): IUseOffer => {
     ([state, stateCopy]) => {
       modified.value = !_.isEqual(stateCopy.value, state.value);
     },
-    { deep: true }
+    { deep: true },
   );
 
   //TODO: move to utils
   async function getApiClient(): Promise<VcmpSellerCatalogClient> {
-    const { getAccessToken } = useUser();
     const client = new VcmpSellerCatalogClient();
-    client.setAuthToken(await getAccessToken());
     return client;
   }
   async function fetchProducts(keyword?: string, skip = 0, ids?: string[]): Promise<SearchOfferProductsResult> {
@@ -86,7 +84,7 @@ export default (): IUseOffer => {
             new Property({
               ...x,
               values: x.values.map((v) => new PropertyValue(v)),
-            })
+            }),
         ),
       }),
     });

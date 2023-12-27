@@ -1,19 +1,25 @@
+import { Router } from "vue-router";
 import { App, Component } from "vue";
 import * as components from "./ui/components";
 import * as directives from "./core/directives";
 import { useBreakpoints } from "@vueuse/core";
 import Vue3TouchEvents from "vue3-touch-events";
 import { i18n, permissions, signalR } from "./core/plugins";
-import { SharedModule } from "./shared";
+import { SharedModule, notification } from "./shared";
 import * as componentLocales from "./ui/locales";
 import * as sharedPages from "./shared/pages/plugin";
-import "./utils/isInDemoMode";
+import { registerInterceptors } from "./core/interceptors";
 
 import "normalize.css";
 import "./assets/styles/index.scss";
+import { usePermissions } from "./core/composables/usePermissions";
+import { useUser } from "./core/composables/useUser";
 
 export default {
-  install(app: App): void {
+  install(app: App, args: { router: Router; platformUrl: string }): void {
+    // HTTP Interceptors
+    window.fetch = registerInterceptors(args.router);
+
     app.use(i18n);
     // Left for backward compatibility
     app.config.globalProperties.$mergeLocaleMessage = i18n.global.mergeLocaleMessage;
@@ -67,7 +73,7 @@ export default {
     app.provide("notificationTemplates", app.config.globalProperties.notificationTemplates);
 
     // Shared module
-    app.use(SharedModule);
+    app.use(SharedModule, { router: args.router });
 
     // SignalR
     app.use(signalR);
@@ -78,6 +84,37 @@ export default {
     // Common pages
     Object.values(sharedPages).forEach((page) => {
       app.use(page);
+    });
+
+    app.provide("platformUrl", args.platformUrl);
+
+    // Router guards
+    // TODO add check if app has login page
+    args.router.beforeEach(async (to) => {
+      const { isAuthenticated } = useUser();
+
+      if (to.name !== "Login" && to.name !== "ResetPassword" && to.name !== "Invite") {
+        try {
+          if (!isAuthenticated.value) {
+            return { name: "Login" };
+          } else return true;
+        } catch (e) {
+          return { name: "Login" };
+        }
+      } else return true;
+    });
+
+    args.router.beforeEach((to, from) => {
+      const { hasAccess } = usePermissions();
+      if (!to.meta.permissions) {
+        return true;
+      } else if (hasAccess(to.meta.permissions as string | string[])) return true;
+      else {
+        notification.error("Access restricted", {
+          timeout: 3000,
+        });
+        return from.path;
+      }
     });
   },
 };

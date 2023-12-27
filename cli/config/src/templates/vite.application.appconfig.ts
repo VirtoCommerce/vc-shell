@@ -1,9 +1,10 @@
 import vue from "@vitejs/plugin-vue";
-import * as fs from "fs";
-import { loadEnv, ProxyOptions, UserConfig, searchForWorkspaceRoot } from "vite";
+import * as fs from "node:fs";
+import { loadEnv, ProxyOptions, defineConfig, searchForWorkspaceRoot, splitVendorChunkPlugin } from "vite";
 import mkcert from "vite-plugin-mkcert";
-import path from "path";
+import path from "node:path";
 import { checker } from "vite-plugin-checker";
+// import process from "node:process";
 
 // Get actual package version from package.json
 const packageJson = fs.readFileSync(process.cwd() + "/package.json");
@@ -17,12 +18,6 @@ process.env = {
 };
 
 const isMonorepo = fs.existsSync(path.resolve(process.cwd(), "./../../framework/package.json"));
-
-// "Not so smart" override: https://github.com/bevacqua/dragula/issues/602#issuecomment-912863804
-const _define: { global?: unknown } = {};
-if (mode !== "production") {
-  _define.global = {};
-}
 
 const getProxy = (target: ProxyOptions["target"], options: Omit<ProxyOptions, "target"> = {}): ProxyOptions => {
   const dontTrustSelfSignedCertificate = false;
@@ -60,10 +55,10 @@ const aliasResolver = () => {
   }
 };
 
-export default {
+export default defineConfig({
   mode,
   resolve: {
-    alias: Object.assign({ querystring: "querystring-es3", "safe-buffer": "buffer-esm" }, aliasResolver()),
+    alias: aliasResolver(),
   },
   envPrefix: "APP_",
   base: process.env.APP_BASE_PATH,
@@ -73,10 +68,9 @@ export default {
     checker({
       vueTsc: true,
     }),
+    splitVendorChunkPlugin(),
   ],
   define: {
-    ..._define,
-
     "import.meta.env.PACKAGE_VERSION": `"${version}"`,
     "import.meta.env.APP_PLATFORM_URL": `"${process.env.APP_PLATFORM_URL ? process.env.APP_PLATFORM_URL : ""}"`,
     "import.meta.env.APP_LOG_ENABLED": `"${process.env.APP_LOG_ENABLED}"`,
@@ -99,7 +93,6 @@ export default {
     },
     host: "0.0.0.0",
     port: 8080,
-    https: true,
     proxy: {
       "/api": getProxy(`${process.env.APP_PLATFORM_URL}`),
       "/connect/token": getProxy(`${process.env.APP_PLATFORM_URL}`),
@@ -122,4 +115,7 @@ export default {
     sourcemap: mode === "development",
     emptyOutDir: true,
   },
-} as UserConfig;
+  esbuild: {
+    drop: mode === "production" ? ["console", "debugger"] : [],
+  },
+});

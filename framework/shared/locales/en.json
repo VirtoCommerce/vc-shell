@@ -30,6 +30,13 @@
         "Incorrect password.": "You entered an incorrect password",
         "You have used this password in the past. Choose another one.": "You have used this password in the past. Choose another one."
       }
+    },
+    "NOTIFICATION_DROPDOWN": {
+      "TITLE": "Notifications",
+      "EMPTY": "No notifications yet"
+    },
+    "LANGUAGE_SELECTOR": {
+      "TITLE": "Language selector"
     }
   }
 }

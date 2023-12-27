@@ -5,6 +5,7 @@ const i18n = createI18n({
   globalInjection: true,
   locale: "en",
   fallbackLocale: "en",
+  formatFallbackMessages: true,
 });
 
 export { i18n };

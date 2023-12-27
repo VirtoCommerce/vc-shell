@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { computed, Ref, ref, ComputedRef } from "vue";
-import ClientOAuth2 from "client-oauth2";
 import {
   UserDetail,
   SecurityClient,
@@ -12,29 +11,21 @@ import {
   ChangePasswordRequest,
   LoginType,
   ExternalSignInProviderInfo,
+  LoginRequest,
+  SignInResult,
 } from "./../../api/platform";
-import { AuthData, RequestPasswordResult, SignInResults } from "./../../types";
-import { useLocalStorage, useStorage } from "@vueuse/core";
-//The Platform Manager uses the same key to store authorization data in the
-//local storage, so we can exchange authorization data between the Platform Manager
-//and the user application that is hosted in the same domain as the sub application.
-const VC_AUTH_DATA_KEY = "ls.authenticationData";
+import { RequestPasswordResult } from "./../../types";
+import { createSharedComposable, useLocalStorage } from "@vueuse/core";
 
-const user: Ref<UserDetail | undefined> = ref();
-const loading: Ref<boolean> = ref(false);
-const authClient = new ClientOAuth2({
-  accessTokenUri: `/connect/token`,
-  scopes: ["offline_access"],
-});
-const securityClient = new SecurityClient();
+const VC_EXTERNAL_AUTH_DATA_KEY = "externalSignIn";
 
 interface IUseUser {
   user: ComputedRef<UserDetail | undefined>;
   loading: ComputedRef<boolean>;
   isAdministrator: ComputedRef<boolean | undefined>;
-  getAccessToken: () => Promise<string | undefined>;
+  // getAccessToken: () => Promise<string | undefined>;
   loadUser: () => Promise<UserDetail>;
-  signIn: (username: string, password: string) => Promise<SignInResults>;
+  signIn: (username: string, password: string) => Promise<SignInResult | { succeeded: boolean; error?: any }>;
   signOut: () => Promise<void>;
   validateToken: (userId: string, token: string) => Promise<boolean>;
   validatePassword: (password: string) => Promise<IdentityResult>;
@@ -44,28 +35,25 @@ interface IUseUser {
   getExternalLoginProviders: () => Promise<ExternalSignInProviderInfo[] | undefined>;
   externalSignIn: (authenticationType?: string | undefined, returnUrl?: string | undefined) => void;
   getLoginType: () => Promise<LoginType[]>;
-  isAuthenticated: () => Promise<boolean>;
+  isAuthenticated: ComputedRef<boolean>;
 }
+const user: Ref<UserDetail | undefined> = ref();
+function useUserFn(): IUseUser {
+  const loading: Ref<boolean> = ref(false);
 
-const simulateLogin = async () => {
-  return {
-    accessToken: "testToken",
-    refreshToken: "testTokenRefresh",
-    data: { expires_in: new Date(new Date().setDate(new Date().getDate() + 1)) },
-  };
-};
-
-export function useUser(): IUseUser {
-  const authData: Ref<AuthData | null> = useStorage(VC_AUTH_DATA_KEY, {});
+  const securityClient = new SecurityClient();
   const base = window.location.origin + "/";
   const externalSecurityClient = new ExternalSignInClient(base);
-  const externalSignInStorage = useLocalStorage<{ providerType: string | undefined }>("externalSignIn", {
-    providerType: undefined,
-  });
+  const externalSignInStorage = useLocalStorage<{ providerType?: string | undefined }>(
+    VC_EXTERNAL_AUTH_DATA_KEY,
+    {},
+    {
+      listenToStorageChanges: true,
+      deep: true,
+    },
+  );
 
-  const isAuthenticated = async () => {
-    return !!((externalSignInStorage.value && externalSignInStorage.value.providerType) ?? (await getAccessToken()));
-  };
+  const isAuthenticated = computed(() => user.value?.userName != null);
 
   async function validateToken(userId: string, token: string): Promise<boolean> {
     let result = false;
@@ -93,118 +81,60 @@ export function useUser(): IUseUser {
     } as ResetPasswordConfirmRequest);
   }
 
-  async function signIn(username: string, password: string): Promise<SignInResults> {
+  async function signIn(
+    username: string,
+    password: string,
+  ): Promise<SignInResult | { succeeded: boolean; error?: any }> {
     console.debug(`[@vc-shell/framework#useUser:signIn] - Entry point`);
-    let token = undefined;
     try {
       loading.value = true;
-      token = !window.__DEMO_MODE__ ? await authClient.owner.getToken(username, password) : await simulateLogin();
-    } catch (e) {
+      const result = await securityClient.login(new LoginRequest({ userName: username, password }));
+      return await securityClient
+        .getCurrentUser()
+        .then((res) => {
+          if (res) {
+            user.value = res;
+            return result;
+          }
+          throw { succeeded: false };
+        })
+        .catch((e) => {
+          throw e;
+        });
+    } catch (e: any) {
       //TODO: log error
-      return { succeeded: false, error: e as string };
+      console.log(e);
+      return { succeeded: false, error: e.message };
     } finally {
       loading.value = false;
     }
-
-    if (token) {
-      authData.value = {
-        accessToken: token.accessToken,
-        refreshToken: token.refreshToken,
-        expiresAt: addOffsetToCurrentDate(Number(token.data?.["expires_in"])),
-        userName: username,
-      };
-      console.log("[useUser]: an access token has been obtained successfully", authData.value);
-
-      storeAuthData(authData.value);
-    }
-
-    await loadUser();
-    return { succeeded: true };
   }
 
   async function signOut(): Promise<void> {
     console.debug(`[@vc-shell/framework#useUser:signOut] - Entry point`);
 
-    if (externalSignInStorage.value && externalSignInStorage.value.providerType) {
-      externalSignOut(externalSignInStorage.value.providerType);
+    if (externalSignInStorage.value?.providerType) {
+      await externalSignOut(externalSignInStorage.value.providerType);
     } else {
       user.value = undefined;
-      authData.value = null;
-      storeAuthData(null);
+      securityClient.logout();
     }
   }
 
   async function loadUser(): Promise<UserDetail> {
     console.debug(`[@vc-shell/framework#useUser:loadUser] - Entry point`);
 
-    if (!externalSignInStorage.value?.providerType) {
-      const token = await getAccessToken();
-      if (token) {
-        securityClient.setAuthToken(token);
-      }
-    }
-
     try {
       loading.value = true;
-      user.value = !window.__DEMO_MODE__
-        ? await securityClient.getCurrentUser()
-        : ({
-            id: "testUserId",
-            userName: "testUserName",
-          } as UserDetail);
-
+      user.value = await securityClient.getCurrentUser();
       console.log("[useUser]: an user details has been loaded", user.value);
     } catch (e: any) {
-      console.dir(e);
+      console.error(e);
     } finally {
       loading.value = false;
     }
 
     return { ...user.value } as UserDetail;
-  }
-
-  async function getAccessToken(): Promise<string | undefined> {
-    console.debug(`[@vc-shell/framework#useUser:getAccessToken] - Entry point`);
-    if (authData.value) {
-      if (Date.now() >= (authData.value.expiresAt ?? 0)) {
-        const token = authClient.createToken(
-          authData.value.accessToken ?? authData.value.token ?? "",
-          authData.value.refreshToken ?? "",
-          {}
-        );
-
-        console.log("[useUser]: an access token is expired, using refresh token to receive a new");
-        try {
-          const newToken = await token.refresh();
-          if (newToken) {
-            authData.value = {
-              ...authData.value,
-              accessToken: newToken.accessToken,
-              token: newToken.accessToken,
-              refreshToken: newToken.refreshToken,
-              expiresAt: addOffsetToCurrentDate(Number(newToken.data["expires_in"])),
-            };
-            storeAuthData(authData.value);
-          }
-        } catch (e: any) {
-          console.log("[useUser]: getAccessToken() returns error", e);
-        }
-      }
-
-      return authData.value?.accessToken ?? authData.value?.token;
-    }
-  }
-
-  function storeAuthData(data: AuthData | null) {
-    authData.value = data;
-  }
-
-  async function readAuthData(): Promise<AuthData> {
-    return (await JSON.parse(localStorage.getItem(VC_AUTH_DATA_KEY) || "{}")) as AuthData;
-  }
-
-  function addOffsetToCurrentDate(offsetInSeconds: number): number {
-    return Date.now() + offsetInSeconds * 1000;
   }
 
   async function requestPasswordReset(loginOrEmail: string): Promise<RequestPasswordResult> {
@@ -221,23 +151,20 @@ export function useUser(): IUseUser {
   }
 
   async function changeUserPassword(oldPassword: string, newPassword: string): Promise<SecurityResult | undefined> {
-    const token = await getAccessToken();
     let result;
 
-    if (token) {
-      try {
-        loading.value = true;
-        const command = new ChangePasswordRequest({
-          oldPassword,
-          newPassword,
-        });
+    try {
+      loading.value = true;
+      const command = new ChangePasswordRequest({
+        oldPassword,
+        newPassword,
+      });
 
-        result = await securityClient.changeCurrentUserPassword(command);
-      } catch (e: any) {
-        return { succeeded: false, errors: [e.message] } as SecurityResult;
-      } finally {
-        loading.value = false;
-      }
+      result = await securityClient.changeCurrentUserPassword(command);
+    } catch (e: any) {
+      return { succeeded: false, errors: [e.message] } as SecurityResult;
+    } finally {
+      loading.value = false;
     }
 
     return result;
@@ -297,7 +224,7 @@ export function useUser(): IUseUser {
     try {
       externalSecurityClient.signOut(authenticationType);
 
-      externalSignInStorage.value = null;
+      externalSignInStorage.value = {};
     } catch (e) {
       console.error(e);
       throw e;
@@ -309,7 +236,7 @@ export function useUser(): IUseUser {
     loading: computed(() => loading.value),
     isAdministrator: computed(() => user.value?.isAdministrator),
     isAuthenticated,
-    getAccessToken,
+    // getAccessToken,
     loadUser,
     signIn,
     signOut,
@@ -323,3 +250,5 @@ export function useUser(): IUseUser {
     getLoginType,
   };
 }
+
+export const useUser = createSharedComposable(() => useUserFn());

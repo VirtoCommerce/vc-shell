@@ -235,6 +235,26 @@ const stateKey =
     throw new Error('Table id is not defined. Please provide "id" property in table schema');
   });
 
+const { load, remove, items, loading, pagination, query, scope } = props.composables
+  ? (props.composables?.[props.model?.settings?.composable ?? ""]({
+      emit,
+      props,
+      mounted: useMounted(),
+    }) as UseList<Record<string, any>[], Record<string, any>, ListBaseBladeScope>)
+  : ({
+      load: ref(true),
+      remove: undefined,
+      items: undefined,
+      loading: undefined,
+      pagination: undefined,
+      query: undefined,
+      scope: undefined,
+    } as unknown as UseList<Record<string, any>[], Record<string, any>, ListBaseBladeScope>);
+
+if (props.isWidgetView) {
+  query.value.take = 5;
+}
+
 const calculateColumns = (columns: ListContentSchema["columns"]) => {
   const result = columns?.map((column) => {
     if (typeof column.visible !== "boolean" && column.visible?.method) {
@@ -269,26 +289,6 @@ const bladeOptions = reactive({
   notFound: resolveTemplateComponent("notFoundTemplate"),
   empty: resolveTemplateComponent("emptyTemplate"),
 });
-
-const { load, remove, items, loading, pagination, query, scope } = props.composables
-  ? (props.composables?.[props.model?.settings?.composable ?? ""]({
-      emit,
-      props,
-      mounted: useMounted(),
-    }) as UseList<Record<string, any>[], Record<string, any>, ListBaseBladeScope>)
-  : ({
-      load: ref(true),
-      remove: undefined,
-      items: undefined,
-      loading: undefined,
-      pagination: undefined,
-      query: undefined,
-      scope: undefined,
-    } as unknown as UseList<Record<string, any>[], Record<string, any>, ListBaseBladeScope>);
-
-if (props.isWidgetView) {
-  query.value.take = 5;
-}
 
 const {
   filterComponent,

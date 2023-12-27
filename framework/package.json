@@ -7,7 +7,7 @@
   "style": "./dist/index.css",
   "files": [
     "dist",
-    "tailwind.config.js",
+    "tailwind.config.ts",
     "ui",
     "core",
     "shared"
@@ -18,7 +18,7 @@
       "types": "./dist/index.d.ts"
     },
     "./dist/index.css": "./dist/index.css",
-    "./tailwind.config": "./tailwind.config.js",
+    "./tailwind.config": "./tailwind.config.ts",
     "./*": "./*"
   },
   "scripts": {

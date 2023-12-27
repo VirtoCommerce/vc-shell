@@ -116,6 +116,6 @@ export default defineConfig({
     emptyOutDir: true,
   },
   esbuild: {
-    drop: ["console", "debugger"],
+    drop: mode === "production" ? ["console", "debugger"] : [],
   },
 });

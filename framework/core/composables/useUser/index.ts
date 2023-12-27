@@ -15,13 +15,8 @@ import {
   SignInResult,
 } from "./../../api/platform";
 import { RequestPasswordResult } from "./../../types";
-import * as _ from "lodash-es";
 import { createSharedComposable, useLocalStorage } from "@vueuse/core";
 
-//The Platform Manager uses the same key to store authorization data in the
-//local storage, so we can exchange authorization data between the Platform Manager
-//and the user application that is hosted in the same domain as the sub application.
-// const VC_AUTH_DATA_KEY = "ls.authenticationData";
 const VC_EXTERNAL_AUTH_DATA_KEY = "externalSignIn";
 
 interface IUseUser {
@@ -94,7 +89,7 @@ function useUserFn(): IUseUser {
     try {
       loading.value = true;
       const result = await securityClient.login(new LoginRequest({ userName: username, password }));
-      const test = await securityClient
+      return await securityClient
         .getCurrentUser()
         .then((res) => {
           if (res) {
@@ -106,13 +101,10 @@ function useUserFn(): IUseUser {
         .catch((e) => {
           throw e;
         });
-
-      console.log(test);
-      return test;
     } catch (e: any) {
       //TODO: log error
       console.log(e);
-      return { succeeded: false, error: e };
+      return { succeeded: false, error: e.message };
     } finally {
       loading.value = false;
     }

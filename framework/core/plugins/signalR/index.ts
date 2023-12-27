@@ -16,7 +16,7 @@ export const signalR = {
       .configureLogging(LogLevel.Information)
       .build();
 
-    function start() {
+    const start = () => {
       connection
         .start()
         .then(() => {
@@ -26,7 +26,7 @@ export const signalR = {
           console.log("SignalR Connection Error: ", err);
           setTimeout(() => start(), 5000);
         });
-    }
+    };
 
     async function stop() {
       await connection.stop();

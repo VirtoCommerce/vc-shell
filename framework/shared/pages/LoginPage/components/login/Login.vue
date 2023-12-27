@@ -258,7 +258,6 @@ const login = async () => {
       error?: any;
     };
 
-    console.log(signInResult.value);
     if (signInResult.value.succeeded) {
       await router.push("/");
     } else {
@@ -269,7 +268,7 @@ const login = async () => {
           signInResult.value.error = "Authentication error (code: " + signInResult.value.status + ").";
         }
       } else {
-        signInResult.value.error = "Authentication error " + signInResult.value;
+        signInResult.value.error = "Authentication error: " + signInResult.value.error;
       }
     }
   }

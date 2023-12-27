@@ -234,11 +234,28 @@ const stateKey =
 
     throw new Error('Table id is not defined. Please provide "id" property in table schema');
   });
+
+const calculateColumns = (columns: ListContentSchema["columns"]) => {
+  const result = columns?.map((column) => {
+    if (typeof column.visible !== "boolean" && column.visible?.method) {
+      const result =
+        typeof scope?.value[column.visible?.method] === "function"
+          ? scope?.value[column.visible?.method]()
+          : scope?.value[column.visible?.method];
+
+      column.visible = result;
+    }
+    return column;
+  });
+
+  return result;
+};
+
 const table =
   props.composables &&
   computed(() => {
     const tableScope = {
-      columns: tableData?.value?.columns,
+      columns: calculateColumns(tableData?.value?.columns),
     };
 
     return tableScope;

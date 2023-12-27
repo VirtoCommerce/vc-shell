@@ -1,7 +1,7 @@
 {
   "name": "@vc-shell/api-client-generator",
   "description": "Tool for API clients generation",
-  "version": "1.0.126",
+  "version": "1.0.128",
   "type": "module",
   "bin": "./dist/api-client-generator.js",
   "files": [
@@ -12,8 +12,8 @@
     "build": "vite build"
   },
   "devDependencies": {
-    "@vc-shell/ts-config": "^1.0.126",
-    "typescript": "5.3.3"
+    "@vc-shell/ts-config": "^1.0.128",
+    "typescript": "^5.3.3"
   },
   "dependencies": {
     "chalk": "^2.4.2",

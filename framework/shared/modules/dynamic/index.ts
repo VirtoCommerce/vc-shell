@@ -70,7 +70,6 @@ const register = (
 
   const BladeInstanceConstructor = defineComponent({
     ...bladeComponent,
-    name: bladeName,
     isWorkspace: "isWorkspace" in json.settings && json.settings.isWorkspace,
     menuItem: ("menuItem" in json.settings && json.settings.menuItem) ?? undefined,
     setup: (props: ComponentProps<typeof bladeComponent>, ctx) =>

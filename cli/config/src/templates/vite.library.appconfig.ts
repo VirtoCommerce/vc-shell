@@ -9,6 +9,6 @@ export default defineConfig({
     } as LibraryOptions,
   },
   esbuild: {
-    drop: ["console", "debugger"],
+    drop: process.env.APP_ENV === "production" ? ["console", "debugger"] : [],
   },
 });

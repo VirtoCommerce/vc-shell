@@ -1,3 +1,21 @@
+## [1.0.128](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.127...v1.0.128) (2023-12-14)
+
+
+### Features
+
+* **dynamic:** ability to add custom visibility method to columns schema ([68922fd](https://github.com/VirtoCommerce/vc-shell/commit/68922fda60310f1f85d5c34122248693897354e4))
+
+
+
+## [1.0.127](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.126...v1.0.127) (2023-12-13)
+
+
+### Bug Fixes
+
+* **dynamic:** props pass to created component instance ([29331fb](https://github.com/VirtoCommerce/vc-shell/commit/29331fb60bacf142d48eccc1af117a0b8fc299dd))
+
+
+
 ## [1.0.126](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.125...v1.0.126) (2023-11-28)
 
 

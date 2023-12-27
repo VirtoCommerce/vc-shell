@@ -1,2 +1,2 @@
-APP_PLATFORM_URL=https://vcmp-dev.paas.govirto.com/
+#APP_PLATFORM_URL=add_platform_url_here
 APP_BASE_PATH=/apps/application/

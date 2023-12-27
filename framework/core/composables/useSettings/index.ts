@@ -24,12 +24,15 @@ export function useSettings(): IUseSettings {
 
   const { loading, action: getUiCustomizationSettings } = useAsync(async () => {
     const result = await (await getApiClient()).getUICustomizationSetting();
-    const settings = JSON.parse(result.defaultValue);
-    uiSettings.value = {
-      contrast_logo: base + settings.contrast_logo,
-      logo: base + settings.logo,
-      title: settings.title,
-    };
+    const settings = await JSON.parse(result.defaultValue ?? null);
+
+    if (settings) {
+      uiSettings.value = {
+        contrast_logo: base + settings.contrast_logo,
+        logo: base + settings.logo,
+        title: settings.title,
+      };
+    }
   });
 
   function applySettings(args: { logo?: string; title?: string }) {

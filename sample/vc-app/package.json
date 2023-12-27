@@ -1,6 +1,6 @@
 {
   "name": "vc-app",
-  "version": "1.0.126",
+  "version": "1.0.128",
   "private": true,
   "scripts": {
     "bootstrap": "yarn build:api && yarn build:modules-library",
@@ -31,9 +31,9 @@
     "@types/lodash-es": "^4.17.7",
     "@typescript-eslint/eslint-plugin": "^6.13.2",
     "@typescript-eslint/parser": "^6.13.2",
-    "@vc-shell/api-client-generator": "^1.0.126",
-    "@vc-shell/release-config": "^1.0.126",
-    "@vc-shell/ts-config": "^1.0.126",
+    "@vc-shell/api-client-generator": "^1.0.128",
+    "@vc-shell/release-config": "^1.0.128",
+    "@vc-shell/ts-config": "^1.0.128",
     "@vitejs/plugin-vue": "^4.5.1",
     "@vue/eslint-config-prettier": "^8.0.0",
     "@vue/eslint-config-typescript": "^12.0.0",

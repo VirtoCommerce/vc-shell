@@ -4,7 +4,7 @@
     "strict": true,
     "baseUrl": ".",
     "outDir": "dist",
-    "types": ["vite/client", "./declarations.d.ts"]
+    "types": ["vite/client", "./typings/declarations.d.ts"]
   },
   "include": [
     "*.ts",
@@ -21,6 +21,8 @@
 
     "shared/**/*.vue",
     "shared/**/*.ts",
-    "shared/**/*.json"
+    "shared/**/*.json",
+
+    "utils/*.ts",
   ],
 }

@@ -1,5 +1,8 @@
 <template>
-  <VcContainer class="dashboard tw-w-full tw-h-full tw-box-border">
+  <VcContainer
+    class="dashboard tw-w-full tw-h-full tw-box-border"
+    no-padding
+  >
     <div
       v-if="$isDesktop.value"
       class="dashboard-header"
@@ -223,7 +226,7 @@ function calcQty(items: OrderLineItem[]) {
   --card-header-background: transparent;
 
   &-header {
-    @apply tw-text-[25px] tw-text-[#333333] tw-my-3 tw-px-2;
+    @apply tw-text-[25px] tw-text-[#333333] tw-mb-3 tw-pt-[22px] tw-px-2;
   }
 
   .vc-row {

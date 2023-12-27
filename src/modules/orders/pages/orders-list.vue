@@ -250,8 +250,6 @@ watch(
   () => props.param,
   async (newVal) => {
     if (newVal) {
-      selectedItemId.value = newVal;
-
       await openBlade({
         blade: resolveBladeByName("OrderEdit"),
         param: newVal,

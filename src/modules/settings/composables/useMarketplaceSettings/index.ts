@@ -15,12 +15,11 @@ export interface IUseSettings {
   currentLanguage: Ref<string>;
   defaultProductType: Ref<string>;
   productTypes: Ref<string[]>;
+  settingUseDefaultOffer: Ref<boolean>;
   loadSettings: () => Promise<void>;
 }
 
 export default (): IUseSettings => {
-  // const { getAccessToken } = useUser();
-
   const settings = ref<MarketplaceSettings>();
   const defaultCurrency = ref<ICurrency>();
   const currencies = ref<ICurrency[]>([]);
@@ -29,13 +28,11 @@ export default (): IUseSettings => {
   const currentLanguage = ref<string>();
   const defaultProductType = ref<string>();
   const productTypes = ref<string[]>([]);
+  const settingUseDefaultOffer = ref<boolean>(true);
 
   async function loadSettings() {
-    // const token = await getAccessToken();
     const client = new VcmpCommonClient();
-    // client.setAuthToken(await getAccessToken());
 
-    // if (token) {
     try {
       settings.value = await client.getVcmpSettings();
 
@@ -57,11 +54,11 @@ export default (): IUseSettings => {
 
       defaultProductType.value = settings.value.defaultProductType;
       productTypes.value = settings.value.productTypes;
+      settingUseDefaultOffer.value = settings.value.useDefaultOffer;
     } catch (e) {
       console.error(e);
       throw e;
     }
-    // }
   }
 
   return {
@@ -72,6 +69,7 @@ export default (): IUseSettings => {
     currentLanguage,
     defaultProductType,
     productTypes,
+    settingUseDefaultOffer,
     loadSettings,
   };
 };

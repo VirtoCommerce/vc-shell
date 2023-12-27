@@ -1,3 +1,12 @@
+## [1.0.134](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.133...v1.0.134) (2023-12-14)
+
+
+### Bug Fixes
+
+* azureAd login fix ([c83cb7c](https://github.com/VirtoCommerce/vendor-portal/commit/c83cb7c78c58e70395b44c9478ecd00cb14cca71))
+
+
+
 ## [1.0.133](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.132...v1.0.133) (2023-11-24)
 
 

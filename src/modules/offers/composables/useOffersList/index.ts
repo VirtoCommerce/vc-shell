@@ -14,6 +14,7 @@ import {
   BulkOffersDeleteCommand,
 } from "@vcmp-vendor-portal/api/marketplacevendor";
 import { Ref, computed, ref, onBeforeMount } from "vue";
+import { useMarketplaceSettings } from "../../../settings";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface OffersListScope extends ListBaseBladeScope {}
@@ -44,6 +45,7 @@ export const useOffersList = (args: {
 
   const { load, remove, items, query, loading, pagination } = factory();
   const { openBlade, resolveBladeByName } = useBladeNavigation();
+  const { settingUseDefaultOffer, loadSettings } = useMarketplaceSettings();
 
   async function openDetailsBlade(data?: Omit<Parameters<typeof openBlade>["0"], "blade">) {
     await openBlade({
@@ -55,8 +57,13 @@ export const useOffersList = (args: {
     });
   }
 
+  function needShowIsDefault(): boolean {
+    return settingUseDefaultOffer.value;
+  }
+
   const scope = ref<OffersListScope>({
     openDetailsBlade,
+    needShowIsDefault,
   });
 
   onBeforeMount(async () => {
@@ -69,6 +76,7 @@ export const useOffersList = (args: {
       args.props.options?.sellerProduct
     )
       query.value.sellerProductId = args.props.options?.sellerProduct["id"];
+    await loadSettings();
   });
 
   return {

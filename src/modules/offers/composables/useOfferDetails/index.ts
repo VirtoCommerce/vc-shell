@@ -22,6 +22,7 @@ import {
   SearchOfferProductsResult,
   Image,
   SellerProduct,
+  ChangeOfferDefaultCommand,
 } from "@vcmp-vendor-portal/api/marketplacevendor";
 import { Ref, computed, nextTick, onMounted, reactive, ref, watch } from "vue";
 import { useFulfillmentCenters, useMarketplaceSettings } from "../../../settings";
@@ -40,6 +41,7 @@ export interface OfferDetailsScope extends DetailsBaseBladeScope {
     saveChanges: IBladeToolbar;
     enable: IBladeToolbar;
     disable: IBladeToolbar;
+    setDefault: IBladeToolbar;
   };
 }
 
@@ -56,9 +58,10 @@ export const useOfferDetails = (args: {
   const duplicates = ref([]);
   const pricingEqual = ref(false);
   const productLoading = ref(false);
+  const alreadyDefault = ref(false);
   const { fulfillmentCentersList, searchFulfillmentCenters } = useFulfillmentCenters();
 
-  const { currencies, loadSettings } = useMarketplaceSettings();
+  const { currencies, settingUseDefaultOffer, loadSettings } = useMarketplaceSettings();
   const { getLanguages, loading: languagesLoading } = useMultilanguage();
   const { upload: imageUpload, remove: imageRemove, edit: imageEdit, loading: imageLoading } = useAssets();
 
@@ -247,6 +250,7 @@ export const useOfferDetails = (args: {
     async () => {
       try {
         offerLoading.value = true;
+        alreadyDefault.value = false;
         await getLanguages();
         await loadSettings();
         if (!args.props.param) {
@@ -300,6 +304,23 @@ export const useOfferDetails = (args: {
           }
         },
         isVisible: computed(() => !!args.props.param && item.value?.isActive),
+      },
+      setDefault: {
+        async clickHandler() {
+          offerLoading.value = true;
+          const command = new ChangeOfferDefaultCommand({
+            offerId: item.value?.id,
+            isDefault: true,
+          });
+          await (await getApiClient()).changeOfferDefault(command);
+          args.emit("parent:call", {
+            method: "reload",
+          });
+          alreadyDefault.value = true;
+          offerLoading.value = false;
+        },
+        disabled: computed(() => item.value?.isDefault || alreadyDefault.value),
+        isVisible: computed(() => settingUseDefaultOffer.value),
       },
     },
     dynamicProperties: useDynamicProperties(),

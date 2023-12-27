@@ -99,7 +99,7 @@ $variants: success, danger;
 .vc-card {
   @apply tw-bg-[color:var(--card-background)] tw-border
   tw-border-[color:#eef0f2] tw-border-solid tw-box-border
-  tw-shadow-[1px_1px_7px_rgba(126,142,157,0.15)]
+  tw-shadow-[var(--card-box-shadow)]
   tw-rounded-[var(--card-border-radius)] tw-overflow-hidden
   tw-flex-grow tw-flex tw-flex-col;
 

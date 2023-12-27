@@ -47,6 +47,16 @@ export const overrides: OverridesSchema = {
       path: "settings.permissions",
       value: "seller:products:search_from_all_sellers",
     },
+    {
+      id: "Products",
+      path: "settings.menuItem",
+      value: {
+        title: "PRODUCTS.MENU.MARKETPLACE_PRODUCTS",
+        icon: "fas fa-box-open",
+        group: "PRODUCTS.MENU.TITLE",
+        priority: 2,
+      },
+    },
   ],
   remove: [
     {

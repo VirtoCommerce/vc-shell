@@ -34,7 +34,7 @@ export const useDynamicProperties = () => {
             propertyId: property.id,
             languageCode: locale,
             valueType: property.valueType as unknown as PropertyValueValueType,
-          })
+          }),
         );
       }
 
@@ -64,7 +64,7 @@ export const useDynamicProperties = () => {
     });
     if (locale) {
       dictionaryItems = dictionaryItems.map((x) =>
-        Object.assign(x, { value: x.localizedValues.find((v) => v.languageCode == locale)?.value ?? x.alias })
+        Object.assign(x, { value: x.localizedValues.find((v) => v.languageCode == locale)?.value ?? x.alias }),
       );
     }
     return dictionaryItems;
@@ -74,7 +74,7 @@ export const useDynamicProperties = () => {
     property: IProperty,
     valueId: string,
     dictionary: PropertyDictionaryItem[],
-    locale?: string
+    locale?: string,
   ) {
     let valueValue;
     const dictionaryItem = dictionary.find((x) => x.id === valueId);
@@ -115,8 +115,8 @@ export const useDynamicProperties = () => {
                   property,
                   item.valueId,
                   dictionary.map((x) => new PropertyDictionaryItem(x)),
-                  locale
-                )
+                  locale,
+                ),
               );
             } else {
               return new PropertyValue(item);
@@ -129,8 +129,8 @@ export const useDynamicProperties = () => {
                 property,
                 value,
                 dictionary.map((x) => new PropertyDictionaryItem(x)),
-                locale
-              )
+                locale,
+              ),
             ),
           ];
         }
@@ -141,7 +141,7 @@ export const useDynamicProperties = () => {
                 const handledValue = handleDictionaryValue(
                   property,
                   item.id,
-                  dictionary.map((x) => new PropertyDictionaryItem(x))
+                  dictionary.map((x) => new PropertyDictionaryItem(x)),
                 );
                 return new PropertyValue(handledValue);
               } else return new PropertyValue(item);
@@ -151,8 +151,8 @@ export const useDynamicProperties = () => {
                 handleDictionaryValue(
                   property,
                   value,
-                  dictionary.map((x) => new PropertyDictionaryItem(x))
-                )
+                  dictionary.map((x) => new PropertyDictionaryItem(x)),
+                ),
               ),
             ];
       }
@@ -174,8 +174,8 @@ export const useDynamicProperties = () => {
         property.values = Array.isArray(value)
           ? value.map((item) => new PropertyValue(item))
           : property.values[0]
-          ? [Object.assign(property.values[0], { value: value })]
-          : [new PropertyValue({ value: value, isInherited: false })];
+            ? [Object.assign(property.values[0], { value: value })]
+            : [new PropertyValue({ value: value, isInherited: false })];
       }
     }
   }

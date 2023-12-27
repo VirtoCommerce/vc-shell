@@ -5,6 +5,7 @@ import * as modules from "@vcmp-vendor-portal/modules";
 import { router } from "./router";
 import * as locales from "./locales";
 import { RouterView } from "vue-router";
+import { bootstrap } from "./bootstrap";
 
 // Load required CSS
 import "./styles/index.scss";
@@ -14,10 +15,13 @@ import "@vc-shell/framework/dist/index.css";
 
 async function startApp() {
   const { loadUser } = useUser();
-
   await loadUser();
+  const app = createApp(RouterView);
 
-  const app = createApp(RouterView).use(VirtoShellFramework);
+  app.use(VirtoShellFramework, {
+    router,
+    platformUrl: import.meta.env.APP_PLATFORM_URL,
+  });
 
   Object.values(modules.default).forEach((module) => {
     app.use(module.default, { router });
@@ -27,17 +31,18 @@ async function startApp() {
 
   app.use(router);
 
+  bootstrap(app);
+
   Object.entries(locales).forEach(([key, message]) => {
     app.config.globalProperties.$mergeLocaleMessage(key, message);
   });
 
-  app.provide("platformUrl", import.meta.env.APP_PLATFORM_URL);
-
-  // app.config.errorHandler = (err) => {
-  //   notification.error(err.toString(), {
-  //     timeout: 5000,
-  //   });
-  // };
+  // Global error handler
+  app.config.errorHandler = (err) => {
+    notification.error(err.toString(), {
+      timeout: 5000,
+    });
+  };
 
   await router.isReady();
 

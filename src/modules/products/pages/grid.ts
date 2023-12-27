@@ -35,6 +35,12 @@ export const grid: DynamicGridSchema = {
         method: "removeItems",
       },
     ],
+    menuItem: {
+      title: "PRODUCTS.MENU.MY_PRODUCTS",
+      icon: "fas fa-box-open",
+      group: "PRODUCTS.MENU.TITLE",
+      priority: 2,
+    },
   },
   content: [
     {

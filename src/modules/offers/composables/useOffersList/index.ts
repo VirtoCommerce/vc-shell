@@ -47,8 +47,8 @@ export const useOffersList = (args: {
   const { openBlade, resolveBladeByName } = useBladeNavigation();
   const { settingUseDefaultOffer, loadSettings } = useMarketplaceSettings();
 
-  function openDetailsBlade(data?: Omit<Parameters<typeof openBlade>["0"], "blade">) {
-    openBlade({
+  async function openDetailsBlade(data?: Omit<Parameters<typeof openBlade>["0"], "blade">) {
+    await openBlade({
       blade: resolveBladeByName("Offer"),
       options: {
         sellerProduct: args.props?.options?.sellerProduct,

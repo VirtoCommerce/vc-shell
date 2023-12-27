@@ -1,5 +1,5 @@
 <template>
-  <VcNotificationTemplate
+  <NotificationTemplate
     :color="notificationStyle.color.value"
     :title="notificationTitle"
     :icon="notificationStyle.icon"
@@ -11,11 +11,11 @@
       :style="{ color: variant }"
       >{{ notificationDescription }}</VcHint
     >
-  </VcNotificationTemplate>
+  </NotificationTemplate>
 </template>
 
 <script lang="ts" setup>
-import { PushNotification, useBladeNavigation } from "@vc-shell/framework";
+import { PushNotification, useBladeNavigation, NotificationTemplate } from "@vc-shell/framework";
 import { computed } from "vue";
 import { useI18n } from "vue-i18n";
 
@@ -90,7 +90,7 @@ function onClick() {
         blade: resolveBladeByName("ProductsList"),
         param: props.notification.productId,
       },
-      true
+      true,
     );
   }
 }

@@ -15,9 +15,9 @@ export default (): IUseRating => {
   const reviewCount = ref<number>(undefined);
 
   async function getApiClient() {
-    const { getAccessToken } = useUser();
+    // const { getAccessToken } = useUser();
     const client = new VcmpSellerRatingAndReviewsClient();
-    client.setAuthToken(await getAccessToken());
+    // client.setAuthToken(await getAccessToken());
     return client;
   }
 

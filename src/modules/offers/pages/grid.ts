@@ -30,6 +30,11 @@ export const grid: DynamicGridSchema = {
       },
     ],
     pushNotificationType: "OfferDeletedDomainEvent",
+    menuItem: {
+      title: "OFFERS.MENU.TITLE",
+      icon: "fas fa-file-invoice",
+      priority: 3,
+    },
   },
   content: [
     {

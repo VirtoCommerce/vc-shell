@@ -116,11 +116,14 @@ import {
   VcCol,
   VcDynamicProperty,
   usePopup,
+  useBladeNavigation,
+  useBeforeUnload,
 } from "@vc-shell/framework";
 import useImport from "../composables/useImport";
 import { IDataImporter, ObjectSettingEntry } from "@vcmp-vendor-portal/api/marketplacevendor";
 import { useIsFormValid, Field, useForm, useIsFormDirty } from "vee-validate";
 import { useI18n } from "vue-i18n";
+import { onBeforeRouteLeave } from "vue-router";
 
 export interface Props {
   expanded?: boolean;
@@ -140,6 +143,7 @@ export interface Emits {
 
 defineOptions({
   url: "/import-profile-details",
+  name: "ImportProfileDetails",
 });
 
 const props = withDefaults(defineProps<Props>(), {
@@ -169,6 +173,9 @@ const {
 useForm({ validateOnMount: false });
 const isValid = useIsFormValid();
 const isDirty = useIsFormDirty();
+const { currentBladeNavigationData } = useBladeNavigation();
+
+useBeforeUnload(computed(() => !isDisabled.value || modified.value));
 
 const isDisabled = computed(() => {
   return !isDirty.value || !isValid.value;
@@ -196,7 +203,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
       }
     },
     disabled: computed(() => {
-      return isDisabled.value || (props.param && !modified.value) || (!props.param && !modified.value);
+      return isDisabled.value || !modified.value;
     }),
   },
   {
@@ -216,7 +223,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     async clickHandler() {
       if (
         await showConfirmation(
-          computed(() => t("IMPORT.PAGES.PROFILE_DETAILS.CONFIRM_POPUP.DELETE_IMPORTER.DESCRIPTION"))
+          computed(() => t("IMPORT.PAGES.PROFILE_DETAILS.CONFIRM_POPUP.DELETE_IMPORTER.DESCRIPTION")),
         )
       ) {
         deleteProfile();
@@ -230,12 +237,12 @@ const sampleTemplateUrl = computed(() => {
   return profile.value.importer
     ? profile.value.importer.metadata && profile.value.importer.metadata.sampleCsvUrl
     : importer
-    ? importer.metadata && importer.metadata.sampleCsvUrl
-    : "#";
+      ? importer.metadata && importer.metadata.sampleCsvUrl
+      : "#";
 });
 
 const title = computed(() =>
-  props.options.importer ? props.options.importer.typeName : t("IMPORT.PAGES.PROFILE_DETAILS.TITLE")
+  props.options.importer ? props.options.importer.typeName : t("IMPORT.PAGES.PROFILE_DETAILS.TITLE"),
 );
 
 onMounted(async () => {
@@ -275,14 +282,17 @@ async function deleteProfile() {
   emit("close:blade");
 }
 
-async function onBeforeClose() {
-  if (modified.value) {
+onBeforeRouteLeave(async (to, from) => {
+  if (
+    currentBladeNavigationData.value?.fullPath &&
+    !to.path.includes(currentBladeNavigationData.value?.fullPath) &&
+    modified.value
+  ) {
     return await showConfirmation(unref(computed(() => t("IMPORT.PAGES.PROFILE_DETAILS.ALERTS.CLOSE_CONFIRMATION"))));
   }
-}
+});
 
 defineExpose({
-  onBeforeClose,
   title,
 });
 </script>

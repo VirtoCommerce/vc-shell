@@ -1,32 +1,22 @@
 {
   "name": "@vcmp-vendor-portal/api",
-  "version": "1.0.134",
+  "version": "1.0.135",
   "files": [
     "dist",
     "package.json"
   ],
-  "typesVersions": {
-    "*": {
-      "marketplacevendor": [
-        "./dist/types/marketplacevendor.d.ts"
-      ],
-      "orders": [
-        "./dist/types/orders.d.ts"
-      ],
-      "catalog": [
-        "./dist/types/catalog.d.ts"
-      ]
-    }
-  },
   "exports": {
     "./marketplacevendor": {
-      "import": "./dist/marketplacevendor.js"
+      "import": "./dist/marketplacevendor.js",
+      "types": "./dist/types/marketplacevendor.d.ts"
     },
     "./orders": {
-      "import": "./dist/orders.js"
+      "import": "./dist/orders.js",
+      "types": "./dist/types/orders.d.ts"
     },
     "./catalog": {
-      "import": "./dist/catalog.js"
+      "import": "./dist/catalog.js",
+      "types": "./dist/types/catalog.d.ts"
     }
   },
   "scripts": {

@@ -48,7 +48,6 @@ import { ref, computed, watch, onMounted, markRaw } from "vue";
 import { UserPermissions } from "../../../types";
 import { IBladeToolbar, ITableColumns, useBladeNavigation } from "@vc-shell/framework";
 import useFulfillmentCenters from "../../composables/useFulfillmentCenters";
-import FulfillmentCenterDetails from "./fulfillment-center-details.vue";
 import { useI18n } from "vue-i18n";
 
 export interface Props {
@@ -65,8 +64,15 @@ export interface Emits {
 
 defineOptions({
   url: "/fulfillment-centers-list",
+  name: "FulfillmentCentersList",
   isWorkspace: true,
   permissions: [UserPermissions.SellerDetailsEdit],
+  menuItem: {
+    title: "SETTINGS.MENU.FULFILLMENT_CENTERS",
+    icon: "fas fa-sliders-h",
+    group: "SETTINGS.MENU.TITLE",
+    priority: 6,
+  },
 });
 
 const props = withDefaults(defineProps<Props>(), {
@@ -76,7 +82,7 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 defineEmits<Emits>();
-const { openBlade } = useBladeNavigation();
+const { openBlade, resolveBladeByName } = useBladeNavigation();
 const { t } = useI18n({ useScope: "global" });
 const { searchQuery, loading, currentPage, pages, totalCount, fulfillmentCentersList, searchFulfillmentCenters } =
   useFulfillmentCenters();
@@ -100,7 +106,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     icon: "fas fa-plus",
     clickHandler() {
       openBlade({
-        blade: markRaw(FulfillmentCenterDetails),
+        blade: resolveBladeByName("FulfillmentCenterDetails"),
       });
     },
   },
@@ -124,7 +130,7 @@ watch(
   () => {
     selectedItemId.value = props.param;
   },
-  { immediate: true }
+  { immediate: true },
 );
 
 onMounted(async () => {
@@ -177,7 +183,7 @@ const onPaginationClick = async (page: number) => {
 
 const onItemClick = (item: { id?: string }) => {
   openBlade({
-    blade: markRaw(FulfillmentCenterDetails),
+    blade: resolveBladeByName("FulfillmentCenterDetails"),
     param: item.id,
     onOpen() {
       selectedItemId.value = item.id;

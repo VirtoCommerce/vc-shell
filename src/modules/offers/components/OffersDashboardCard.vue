@@ -48,24 +48,24 @@ import { useBladeNavigation } from "@vc-shell/framework";
 
 const { openBlade, resolveBladeByName } = useBladeNavigation();
 
-function onItemClick(args?: { param: string } | Event) {
-  openBlade(
+async function onItemClick(args?: { param: string } | Event) {
+  await openBlade(
     {
       blade: resolveBladeByName("Offers"),
       param: "param" in args && args.param,
     },
-    true
+    true,
   );
 }
 
-function addItem() {
-  openBlade(
+async function addItem() {
+  await openBlade(
     {
       blade: resolveBladeByName("Offers"),
     },
-    true
+    true,
   );
-  openBlade({
+  await openBlade({
     blade: resolveBladeByName("Offer"),
   });
 }

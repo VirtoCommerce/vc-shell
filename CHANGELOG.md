@@ -1,3 +1,17 @@
+## [1.0.135](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.134...v1.0.135) (2023-12-27)
+
+
+### Features
+
+* modules updates ([1a1c6bc](https://github.com/VirtoCommerce/vendor-portal/commit/1a1c6bca4564855e42a2fb926c775af31350717b))
+* reduced App.vue code and router config ([2cf36f8](https://github.com/VirtoCommerce/vendor-portal/commit/2cf36f83ae898f675fac681ddd414c3a1562c090))
+* update dependencies and configuration files ([b3f77c4](https://github.com/VirtoCommerce/vendor-portal/commit/b3f77c4bb75bdd892fee3c6146a2e8b188ce0435))
+* update package.json and Dashboard.vue, add useMenuService and bootstrap ([b2b8212](https://github.com/VirtoCommerce/vendor-portal/commit/b2b82129a08a467ca83658fc6992303cd911ecee))
+* vm-1230 corrected isDefault behaviour ([7e5f657](https://github.com/VirtoCommerce/vendor-portal/commit/7e5f6575d84626683e9c1e0628251352523f037d))
+* vm-1230 use default offer ([4d7f4eb](https://github.com/VirtoCommerce/vendor-portal/commit/4d7f4eb382902e1f81a601d6ff31ccff377715c7))
+
+
+
 ## [1.0.134](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.133...v1.0.134) (2023-12-14)
 
 

@@ -1,6 +1,7 @@
 import { useProductsListExtended } from "./composables/useProductsList";
 import { createDynamicAppModule } from "@vc-shell/framework";
 import { schema, composables, locales } from "./../products";
+import * as mpLocales from "./locales";
 import overrides from "./schemaOverride";
 
 export default createDynamicAppModule({
@@ -10,5 +11,8 @@ export default createDynamicAppModule({
     useProductsList: useProductsListExtended,
   },
   overrides,
-  locales,
+  locales: {
+    ...locales,
+    ...mpLocales,
+  },
 });

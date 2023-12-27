@@ -54,8 +54,8 @@ export const useProductsList = (args: {
   const isExporting = ref(false);
 
   async function exportCategories() {
-    const { getAccessToken } = useUser();
-    const authToken = await getAccessToken();
+    // const { getAccessToken } = useUser();
+    // const authToken = await getAccessToken();
 
     try {
       isExporting.value = true;
@@ -63,7 +63,7 @@ export const useProductsList = (args: {
         method: "POST",
         body: JSON.stringify({}),
         headers: {
-          Authorization: `Bearer ${authToken}`,
+          // Authorization: `Bearer ${authToken}`,
           "Content-Type": "application/json-patch+json",
         },
       });
@@ -89,8 +89,8 @@ export const useProductsList = (args: {
     }
   }
 
-  function openDetailsBlade(args?: Omit<Parameters<typeof openBlade>["0"], "blade">) {
-    openBlade({
+  async function openDetailsBlade(args?: Omit<Parameters<typeof openBlade>["0"], "blade">) {
+    await openBlade({
       blade: resolveBladeByName("Product"),
       ...args,
     });

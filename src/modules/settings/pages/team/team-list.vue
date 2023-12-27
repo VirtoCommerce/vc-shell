@@ -98,11 +98,10 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, watch, onMounted, markRaw } from "vue";
+import { ref, computed, watch, onMounted } from "vue";
 import { UserPermissions } from "../../../types";
 import { IBladeToolbar, ITableColumns, useBladeNavigation } from "@vc-shell/framework";
 import useTeamMembers from "../../composables/useTeamMembers";
-import TeamMemberDetails from "./team-member-details.vue";
 import { useI18n } from "vue-i18n";
 
 export interface Props {
@@ -118,8 +117,15 @@ export interface Emits {
 
 defineOptions({
   url: "/team",
+  name: "Team",
   isWorkspace: true,
   permissions: [UserPermissions.SellerUsersManage],
+  menuItem: {
+    title: "SETTINGS.MENU.MY_TEAM",
+    icon: "fas fa-sliders-h",
+    group: "SETTINGS.MENU.TITLE",
+    priority: 6,
+  },
 });
 
 const props = withDefaults(defineProps<Props>(), {
@@ -129,7 +135,7 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 defineEmits<Emits>();
-const { openBlade } = useBladeNavigation();
+const { openBlade, resolveBladeByName } = useBladeNavigation();
 const { t } = useI18n({ useScope: "global" });
 const { getTeamMembers, searchQuery, loading, membersList, currentPage, pages, totalCount } = useTeamMembers();
 
@@ -167,7 +173,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     icon: "fas fa-plus",
     clickHandler() {
       openBlade({
-        blade: markRaw(TeamMemberDetails),
+        blade: resolveBladeByName("TeamMemberDetails"),
       });
     },
   },
@@ -212,7 +218,7 @@ watch(
   () => {
     selectedItemId.value = props.param;
   },
-  { immediate: true }
+  { immediate: true },
 );
 
 onMounted(async () => {
@@ -265,7 +271,7 @@ const onPaginationClick = async (page: number) => {
 
 const onItemClick = (item: { id?: string }) => {
   openBlade({
-    blade: markRaw(TeamMemberDetails),
+    blade: resolveBladeByName("TeamMemberDetails"),
     param: item.id,
     options: {
       user: item,

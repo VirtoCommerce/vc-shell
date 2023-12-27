@@ -58,13 +58,13 @@ export default (options?: IUseTeamMembersOptions): IUseTeamMembers => {
     (state) => {
       modified.value = !_.isEqual(userDetailsCopy, state.value);
     },
-    { deep: true }
+    { deep: true },
   );
 
   async function getApiClient() {
-    const { getAccessToken } = useUser();
+    // const { getAccessToken } = useUser();
     const client = new VcmpSellerSecurityClient();
-    client.setAuthToken(await getAccessToken());
+    // client.setAuthToken(await getAccessToken());
     return client;
   }
 

@@ -38,16 +38,16 @@ export default (options?: IUseReviewsOptions): IUseReviews => {
         take: pageSize,
         skip: (currentPage.value - 1) * pageSize,
         sort: sort.value,
-      } as ISearchCustomerReviewsQuery)
+      }) as ISearchCustomerReviewsQuery,
   );
   const searchResult = ref<SearchCustomerReviewsResult>();
 
   const customerReview = ref(new CustomerReview());
 
   async function getApiClient() {
-    const { getAccessToken } = useUser();
+    // const { getAccessToken } = useUser();
     const client = new VcmpSellerRatingAndReviewsClient();
-    client.setAuthToken(await getAccessToken());
+    // client.setAuthToken(await getAccessToken());
     return client;
   }
 

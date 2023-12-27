@@ -23,6 +23,12 @@ export const details: DynamicDetailsSchema = {
         method: "reset",
       },
     ],
+    menuItem: {
+      title: "SETTINGS.MENU.SELLER_DETAILS",
+      icon: "fas fa-sliders-h",
+      group: "SETTINGS.MENU.TITLE",
+      priority: 6,
+    },
   },
   content: [
     {

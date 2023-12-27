@@ -45,8 +45,14 @@ export interface Emits {
 
 defineOptions({
   url: "/reviews",
+  name: "Reviews",
   isWorkspace: true,
   permissions: UserPermissions.ManageSellerReviews,
+  menuItem: {
+    title: "Rating & Reviews",
+    icon: "fas fa-star",
+    priority: 5,
+  },
 });
 
 const props = withDefaults(defineProps<Props>(), {
@@ -56,7 +62,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 defineEmits<Emits>();
 
-const { openBlade } = useBladeNavigation();
+const { openBlade, resolveBladeByName } = useBladeNavigation();
 
 const { t } = useI18n({ useScope: "global" });
 
@@ -72,12 +78,12 @@ const selectedItemId = ref();
 
 watch(
   () => props.param,
-  (newVal) => {
+  async (newVal) => {
     if (newVal && props.options) {
-      onItemClick(props.options.review);
+      await onItemClick(props.options.review);
     }
   },
-  { immediate: true }
+  { immediate: true },
 );
 
 const bladeToolbar = ref<IBladeToolbar[]>([
@@ -91,9 +97,9 @@ const bladeToolbar = ref<IBladeToolbar[]>([
   },
 ]);
 
-function onItemClick(item: CustomerReview) {
-  openBlade({
-    blade: markRaw(ReviewDetails),
+async function onItemClick(item: CustomerReview) {
+  await openBlade({
+    blade: resolveBladeByName("ReviewDetails"),
     param: item.id,
     options: {
       review: item,

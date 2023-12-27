@@ -42,41 +42,36 @@
 </template>
 
 <script lang="ts" setup>
-import { IBladeEvent, VcButton, VcCard } from "@vc-shell/framework";
+import { VcButton, VcCard, useBladeNavigation } from "@vc-shell/framework";
 import { CustomerReview } from "@vcmp-vendor-portal/api/marketplacevendor";
 import { Rating, ReviewTable } from "../components";
 import { ReviewList } from "../pages";
-import { markRaw } from "vue";
 
 // Component
 
-export interface Props {
-  openPage: (page: IBladeEvent, isWorkspace?: boolean) => void;
-}
-
-const props = defineProps<Props>();
+const { openBlade, resolveBladeByName } = useBladeNavigation();
 
 // Card
 
 const openAllReviews = () => {
-  props.openPage(
+  openBlade(
     {
       blade: ReviewList,
     },
-    true
+    true,
   );
 };
 
-const onItemClick = (item: CustomerReview) => {
-  props.openPage(
+const onItemClick = async (item: CustomerReview) => {
+  await openBlade(
     {
-      blade: markRaw(ReviewList),
+      blade: resolveBladeByName("Reviews"),
       param: item.id,
       options: {
         review: item,
       },
     },
-    true
+    true,
   );
 };
 </script>

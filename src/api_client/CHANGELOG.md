@@ -1,3 +1,13 @@
+## [1.0.135](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.134...v1.0.135) (2023-12-27)
+
+
+### Features
+
+* update package.json and Dashboard.vue, add useMenuService and bootstrap ([b2b8212](https://github.com/VirtoCommerce/vendor-portal/commit/b2b82129a08a467ca83658fc6992303cd911ecee))
+* vm-1230 use default offer ([4d7f4eb](https://github.com/VirtoCommerce/vendor-portal/commit/4d7f4eb382902e1f81a601d6ff31ccff377715c7))
+
+
+
 ## [1.0.134](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.133...v1.0.134) (2023-12-14)
 
 

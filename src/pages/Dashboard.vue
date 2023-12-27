@@ -1,5 +1,8 @@
 <template>
-  <VcContainer class="dashboard tw-w-full tw-h-full tw-box-border">
+  <VcContainer
+    class="dashboard tw-w-full tw-h-full tw-box-border"
+    no-padding
+  >
     <div
       v-if="$isDesktop.value"
       class="dashboard-header"
@@ -81,7 +84,7 @@
             size="4"
             class="tw-p-2"
           >
-            <modules.Rating.RatingDashboardCard :open-page="openBlade"></modules.Rating.RatingDashboardCard>
+            <modules.Rating.RatingDashboardCard></modules.Rating.RatingDashboardCard>
           </VcCol>
         </VcRow>
 
@@ -108,7 +111,7 @@
 </template>
 
 <script lang="ts" setup>
-import { useBladeNavigation, ITableColumns, notification, useErrorHandler } from "@vc-shell/framework";
+import { useBladeNavigation, ITableColumns, notification, useErrorHandler, useMenuService } from "@vc-shell/framework";
 import { computed, onMounted, ref, watch } from "vue";
 import { OrderLineItem } from "@vcmp-vendor-portal/api/marketplacevendor";
 import { useI18n } from "vue-i18n";
@@ -197,19 +200,19 @@ function open(key: string): void {
         {
           blade: resolveBladeByName("OrdersList"),
         },
-        true
+        true,
       );
       break;
   }
 }
 
-function ordersClick(item: CustomerOrder): void {
-  openBlade(
+async function ordersClick(item: CustomerOrder) {
+  await openBlade(
     {
-      blade: resolveBladeByName("OrdersJ"),
+      blade: resolveBladeByName("OrdersList"),
       param: item.id,
     },
-    true
+    true,
   );
 }
 
@@ -223,7 +226,7 @@ function calcQty(items: OrderLineItem[]) {
   --card-header-background: transparent;
 
   &-header {
-    @apply tw-text-[25px] tw-text-[#333333] tw-my-3 tw-px-2;
+    @apply tw-text-[25px] tw-text-[#333333] tw-mb-3 tw-pt-[22px] tw-px-2;
   }
 
   .vc-row {

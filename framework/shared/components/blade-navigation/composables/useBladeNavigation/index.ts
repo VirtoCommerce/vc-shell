@@ -231,7 +231,7 @@ export function useBladeNavigation(): IUseBladeNavigation {
     if (bladeByIndex && bladeByIndex?.props?.navigation?.bladePath) {
       const path = removeSubstring(bladeByIndex.props.navigation.fullPath, bladeByIndex.props.navigation?.bladePath);
 
-      return changeLocation && (await router.push(path));
+      return changeLocation && (await router.replace(path));
     }
 
     const routeWithNamedBlade = router.getRoutes().find((r) => r.path === bladeByIndex?.props?.navigation?.fullPath);
@@ -298,7 +298,7 @@ export function useBladeNavigation(): IUseBladeNavigation {
     return routes.find((route) => route.path === to.path);
   }
 
-  function generateRoute(to: RouteLocationNormalized, routes: RouteRecordNormalized[]) {
+  async function generateRoute(to: RouteLocationNormalized, routes: RouteRecordNormalized[]) {
     const parsedRoutes: TParsedRoute[] = parseRoutes(to.path, routes);
 
     const workspace = parsedRoutes[0];
@@ -315,13 +315,15 @@ export function useBladeNavigation(): IUseBladeNavigation {
             ?.default;
 
           if (registeredRouteComponent && parsedRoute.name) {
-            children[parsedRoute.name] = h(registeredRouteComponent, {
-              param: parsedRoute.param,
-              navigation: {
-                bladePath: parsedRoute.blade + (parsedRoute.param ? "/" + parsedRoute.param : ""),
-                fullPath: parsedRoute.name,
-                idx: index + 1,
-                uniqueRouteKey: generateId(),
+            children[parsedRoute.name] = _.merge(registeredRouteComponent, {
+              props: {
+                param: parsedRoute.param,
+                navigation: {
+                  bladePath: parsedRoute.blade + (parsedRoute.param ? "/" + parsedRoute.param : ""),
+                  fullPath: parsedRoute.name,
+                  idx: index + 1,
+                  uniqueRouteKey: generateId(),
+                },
               },
             }) as BladeVNode;
 
@@ -349,7 +351,7 @@ export function useBladeNavigation(): IUseBladeNavigation {
         name: to.path,
         path: to.path,
         components: {
-          default: h(workspaceComponent, { param: Object.values(children)[0].props?.param }),
+          default: _.merge(workspaceComponent, { props: { param: Object.values(children)[0].props?.param } }),
           ...children,
         },
         meta: {
@@ -357,7 +359,7 @@ export function useBladeNavigation(): IUseBladeNavigation {
         },
       });
 
-      return router.push(to.fullPath);
+      return router.push(to.path);
     } else return router.push({ name: mainRouteName });
   }
 

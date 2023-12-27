@@ -1,7 +1,7 @@
 <template>
   <div
     v-if="isMenuVisible"
-    class="tw-relative tw-w-[var(--app-menu-width)] tw-transition tw-duration-100 tw-pt-4"
+    class="tw-relative tw-w-[var(--app-menu-width)] tw-transition tw-duration-100 tw-pt-[22px]"
     :class="{
       'vc-app-menu_mobile tw-hidden !tw-fixed !tw-left-0 !tw-top-0 !tw-w-full !tw-bottom-0 !tw-z-[9999]':
         $isMobile.value,
@@ -32,7 +32,7 @@
         :no-padding="true"
         class="tw-grow tw-basis-0"
       >
-        <div class="tw-gap-[5px] tw-flex tw-flex-col tw-px-4 tw-h-full">
+        <div class="tw-gap-[5px] tw-flex tw-flex-col tw-px-6 tw-h-full">
           <slot
             v-if="!$isDesktop.value"
             name="mobile"
@@ -47,14 +47,8 @@
             :title="item.title as string"
             :children="item.children"
             @click="
-              () => {
-                $emit('item:click', { item });
-                isMobileVisible = false;
-              }
-            "
-            @child:click="
-              ({ item: blade }) => {
-                $emit('item:click', { item: blade });
+              (event) => {
+                $emit('item:click', event ? event : item);
                 isMobileVisible = false;
               }
             "
@@ -83,7 +77,7 @@ export interface Props {
 }
 
 export interface Emits {
-  (event: "item:click", { item }: { item: MenuItem }): void;
+  (event: "item:click", item: MenuItem): void;
   (event: "version:click"): void;
 }
 

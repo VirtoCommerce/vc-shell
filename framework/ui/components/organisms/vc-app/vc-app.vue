@@ -143,7 +143,7 @@ const { loadFromHistory } = useNotifications();
 const route = useRoute();
 const { isAuthenticated } = useUser();
 
-const onMenuItemClick = function ({ item }: { item: MenuItem }) {
+const onMenuItemClick = function (item: MenuItem) {
   console.debug(`vc-app#onMenuItemClick() called.`);
 
   if (item.routeId) {

@@ -257,7 +257,7 @@
 </template>
 
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
-<script lang="ts" setup generic="T, P extends { results?: T[] | any; totalCount?: number }">
+<script lang="ts" setup generic="T, P extends { results?: T[]; totalCount?: number }">
 import { ref, computed, watch, nextTick, Ref, toRefs } from "vue";
 import { vOnClickOutside } from "@vueuse/components";
 import * as _ from "lodash-es";
@@ -278,8 +278,8 @@ type FloatingInstanceType = UseFloatingReturn & {
     };
   };
 };
-
-type Option = T & P["results"][number];
+type ArrayElementType<T> = T extends Array<infer U> ? U : never;
+type Option = T & ArrayElementType<Required<P>["results"]>;
 
 defineSlots<{
   /**
@@ -484,11 +484,7 @@ const emit = defineEmits<{
    * Emitted when the component needs to change the model; Is also used by v-model
    */
 
-  "update:modelValue": [
-    inputValue: MaybeArray<
-      string | Option | (T & P["results"][number] & object)[keyof T | keyof P["results"][number]]
-    > | null,
-  ];
+  "update:modelValue": [inputValue: MaybeArray<string | Option> | null];
   /**
    * Emitted when user wants to filter a value
    */
@@ -572,12 +568,16 @@ watch(
           );
 
           if (typeof data === "object" && !Array.isArray(data) && "results" in data) {
-            defaultValue.value = data.results?.filter((x: any) => x[props.optionValue as keyof T] === props.modelValue);
+            defaultValue.value = data.results?.filter(
+              (x) => x[props.optionValue as keyof T] === props.modelValue,
+            ) as Option[];
           } else if (Array.isArray(data)) {
             defaultValue.value = data?.filter((x) => x[props.optionValue as keyof T] === props.modelValue);
           }
         } else if (props.options && Array.isArray(props.options)) {
-          defaultValue.value = props.options.filter((x) => x[props.optionValue as keyof T] === props.modelValue);
+          defaultValue.value = props.options.filter(
+            (x) => x[props.optionValue as keyof T] === props.modelValue,
+          ) as Option[];
         }
       }
     }
@@ -592,13 +592,13 @@ watch(
       try {
         listLoading.value = true;
         const data = await props.options();
-        optionsList.value = data.results;
+        optionsList.value = data.results as Option[];
         totalItems.value = data.totalCount;
       } finally {
         listLoading.value = false;
       }
     } else if (props.options && Array.isArray(props.options)) {
-      optionsList.value = props.options;
+      optionsList.value = props.options as Option[];
     }
   },
   { immediate: true },
@@ -626,7 +626,7 @@ async function onLoadMore() {
     try {
       listLoading.value = true;
       const data = await props.options(filterString.value, optionsList.value.length);
-      optionsList.value.push(...data.results);
+      optionsList.value.push(...(data.results as Option[]));
     } finally {
       listLoading.value = false;
     }
@@ -820,7 +820,7 @@ function toggleOption(opt: Option) {
     return;
   }
 
-  const optValue = getOptionValue.value(opt);
+  const optValue = getOptionValue.value(opt) as Option[];
 
   if (props.multiple !== true) {
     if (innerValue.value.length === 0 || _.isEqual(getOptionValue.value(innerValue.value[0]), optValue) !== true) {
@@ -832,7 +832,7 @@ function toggleOption(opt: Option) {
 
   if (innerValue.value.length === 0) {
     const val = props.emitValue === true ? optValue : opt;
-    emit("update:modelValue", props.multiple === true ? [val] : val);
+    emit("update:modelValue", props.multiple === true ? ([val] as Option[]) : (val as Option));
     return;
   }
 

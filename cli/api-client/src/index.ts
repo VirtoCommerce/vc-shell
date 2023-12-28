@@ -49,7 +49,7 @@ async function generateApiClient(): Promise<void> {
       [
         "run",
         paths.nswagPaths.configuration,
-        `/variables:APP_PLATFORM_URL=${platformUrl},APP_PLATFORM_MODULE=${platformModule},APP_AUTH_API_BASE_PATH=${paths.nswagPaths.authApiBase},APP_API_CLIENT_PATH=${apiClientPaths.nswag}`,
+        `/variables:APP_PLATFORM_URL=${platformUrl},APP_PLATFORM_MODULE=${platformModule},APP_AUTH_API_BASE_PATH=${paths.nswagPaths.authApiBase},APP_TEMPLATE_DIRECTORY=${paths.nswagPaths.templates},APP_API_CLIENT_PATH=${apiClientPaths.nswag}`,
         "/runtime:Net60",
       ],
       {

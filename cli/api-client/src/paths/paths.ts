@@ -20,11 +20,10 @@ export class Paths {
     this.assetsDirectory = join(this.generatorDirectory, "public", "assets");
     this.apiClientDirectory = resolve(this.workingDirectory, apiDirectory);
 
-    console.log(this.workingDirectory, this.assetsDirectory);
-
     this.nswagPaths = {
       configuration: join(relative(this.workingDirectory, this.assetsDirectory), "config.nswag"),
       authApiBase: "authApiBase.ts",
+      templates: "templates",
     };
   }
 

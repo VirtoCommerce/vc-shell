@@ -6,7 +6,7 @@ export default defineConfig({
   build: {
     lib: {
       entry: "./src/index.ts",
-      formats: ["es"], // pure ESM package
+      formats: ["es"],
     },
     rollupOptions: {
       external: [...Object.keys(pkg.dependencies), /^node:.*/],

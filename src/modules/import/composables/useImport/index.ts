@@ -33,7 +33,7 @@ export interface IImportStatus {
 export interface IUploadedFile {
   contentType?: string;
   createdDate?: string;
-  name: string;
+  name?: string;
   relativeUrl?: string;
   size: number | string;
   type?: string;
@@ -52,15 +52,15 @@ export interface ISearchProfile extends ISearchImportRunHistoryQuery {
 
 interface IUseImport {
   readonly loading: Ref<boolean>;
-  readonly uploadedFile: Ref<IUploadedFile>;
-  readonly importStatus: Ref<IImportStatus>;
+  readonly uploadedFile: Ref<IUploadedFile | undefined>;
+  readonly importStatus: Ref<IImportStatus | undefined>;
   readonly isValid: Ref<boolean>;
-  readonly importHistory: Ref<ImportRunHistory[]>;
+  readonly importHistory: Ref<ImportRunHistory[] | undefined>;
   readonly dataImporters: Ref<IDataImporter[]>;
-  readonly importProfiles: Ref<ExtProfile[]>;
+  readonly importProfiles: Ref<ExtProfile[] | undefined>;
   readonly profile: Ref<ExtProfile>;
   readonly modified: Ref<boolean>;
-  readonly totalHistoryCount: Ref<number>;
+  readonly totalHistoryCount: Ref<number | undefined>;
   readonly historyPages: Ref<number>;
   readonly currentPage: Ref<number>;
   profileDetails: Ref<ImportProfile>;
@@ -68,15 +68,15 @@ interface IUseImport {
   setImporter(typeName: string): void;
   fetchDataImporters(): Promise<IDataImporter[]>;
   previewData(): Promise<ImportDataPreview>;
-  startImport(extProfile: ExtProfile): Promise<void>;
+  startImport(extProfile?: ExtProfile): Promise<void>;
   cancelImport(): Promise<void>;
   clearImport(): void;
   fetchImportHistory(query?: ISearchImportRunHistoryQuery): void;
   fetchImportProfiles(): void;
   loadImportProfile(args: { id: string }): Promise<void>;
-  createImportProfile(details: ImportProfile): void;
-  updateImportProfile(details: ImportProfile): void;
-  deleteImportProfile(args: { id: string }): void;
+  createImportProfile(details: ImportProfile): Promise<void>;
+  updateImportProfile(details: ImportProfile): Promise<void>;
+  deleteImportProfile(args: { id: string }): Promise<void>;
   updateStatus(notification: ImportPushNotification | ImportRunHistory): void;
   getLongRunning(args: { id: string }): void;
 }
@@ -95,7 +95,7 @@ export default (): IUseImport => {
   const modified = ref(false);
   const importStarted = ref(false);
   const currentPage = ref(1);
-  const importStatus = ref<IImportStatus>({
+  const importStatus = ref<IImportStatus | undefined>({
     inProgress: false,
   });
 
@@ -105,7 +105,7 @@ export default (): IUseImport => {
     ([newNotifications, isStarted]) => {
       if (isStarted.value && importStatus.value) {
         const notification = newNotifications.value.find(
-          (x) => x.id === importStatus.value.notification.id,
+          (x) => x.id === importStatus.value?.notification?.id,
         ) as ImportPushNotification;
 
         if (notification) {
@@ -168,7 +168,7 @@ export default (): IUseImport => {
       notification: notification,
       jobId: notification.jobId,
       inProgress: !notification.finished,
-      progress: (notification.processedCount / notification.totalCount) * 100 || 0,
+      progress: (notification.processedCount! / notification.totalCount!) * 100 || 0,
       estimatingRemaining: pushNotifcation.estimatingRemaining,
       estimatedRemaining: pushNotifcation.estimatedRemaining,
     };
@@ -228,7 +228,7 @@ export default (): IUseImport => {
     }
   }
 
-  async function startImport(extProfile: ExtProfile) {
+  async function startImport(extProfile?: ExtProfile) {
     const client = await getApiClient();
 
     try {
@@ -249,8 +249,8 @@ export default (): IUseImport => {
   async function cancelImport() {
     const client = await getApiClient();
     try {
-      if (importStatus.value.inProgress) {
-        await client.cancelJob(new ImportCancellationRequest({ jobId: importStatus.value.jobId }));
+      if (importStatus.value?.inProgress) {
+        await client.cancelJob(new ImportCancellationRequest({ jobId: importStatus.value?.jobId }));
       }
     } catch (e) {
       console.error(e);
@@ -293,7 +293,7 @@ export default (): IUseImport => {
       const importer = dataImporters.value.find((importer) => importer.typeName === typeName);
       if (importer) {
         profileDetails.value.settings = [
-          ...(importer?.availSettings.map((x) => {
+          ...(importer?.availSettings?.map((x) => {
             const entry = new ObjectSettingEntry(x as unknown as IObjectSettingEntry);
             if (entry.defaultValue) {
               entry.value = entry.defaultValue;
@@ -309,7 +309,7 @@ export default (): IUseImport => {
     const client = await getApiClient();
 
     const command = new UpdateProfileCommand({
-      importProfileId: updatedProfile.id,
+      importProfileId: updatedProfile.id!,
       importProfile: updatedProfile,
     });
 
@@ -317,7 +317,7 @@ export default (): IUseImport => {
       loading.value = true;
 
       await client.updateImportProfile(command);
-      await loadImportProfile({ id: updatedProfile.id });
+      await loadImportProfile({ id: updatedProfile.id! });
     } catch (e) {
       console.error(e);
       throw e;
@@ -329,17 +329,17 @@ export default (): IUseImport => {
   async function createImportProfile(newProfile: ImportProfile) {
     const client = await getApiClient();
 
-    newProfile.userName = user.value.userName;
-    newProfile.userId = user.value.id;
+    newProfile.userName = user.value?.userName;
+    newProfile.userId = user.value?.id;
     const command = new ImportProfile({
       ...newProfile,
-      settings: newProfile.settings.map((setting) => new ObjectSettingEntry(setting)),
+      settings: newProfile.settings?.map((setting) => new ObjectSettingEntry(setting)),
     });
 
     try {
       loading.value = true;
       const newProfileWithId = await client.createImportProfile(command);
-      await loadImportProfile({ id: newProfileWithId.id });
+      await loadImportProfile({ id: newProfileWithId.id! });
     } catch (e) {
       console.error(e);
       throw e;
@@ -384,7 +384,7 @@ export default (): IUseImport => {
     modified: computed(() => modified.value),
     profile: computed(() => profile.value),
     totalHistoryCount: computed(() => historySearchResult.value?.totalCount),
-    historyPages: computed(() => Math.ceil(historySearchResult.value?.totalCount / 15)),
+    historyPages: computed(() => Math.ceil(historySearchResult.value?.totalCount ?? 1 / 15)),
     currentPage: computed(() => currentPage.value),
     profileDetails,
     setFile,

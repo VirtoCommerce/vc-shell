@@ -57,7 +57,7 @@
         <VcTable
           :loading="loading"
           :columns="columns"
-          :items="importHistory"
+          :items="importHistory ?? []"
           :header="false"
           :selected-item-id="selectedItemId"
           :total-count="totalHistoryCount"
@@ -212,7 +212,7 @@ const columns = ref<ITableColumns[]>([
 const title = computed(() => t("IMPORT.PAGES.PROFILE_SELECTOR.TITLE"));
 
 watch(
-  () => [props.param] as const,
+  () => [props.param],
   async ([newParam]) => {
     if (newParam && props.options && props.options.importJobId) {
       await openBlade({
@@ -239,7 +239,7 @@ onMounted(async () => {
     selectedProfileId.value = props.param;
   }
   if (props.options && props.options.importJobId) {
-    const historyItem = importHistory.value.find((x) => x.jobId === props.options.importJobId);
+    const historyItem = importHistory.value?.find((x) => x.jobId === props.options?.importJobId);
     if (historyItem) {
       selectedItemId.value = historyItem.id;
     }
@@ -262,7 +262,7 @@ function newProfile() {
 function openImporter(profileId: string) {
   bladeWidth.value = 50;
 
-  const profile = importProfiles.value.find((profile) => profile.id === profileId);
+  const profile = importProfiles.value?.find((profile) => profile.id === profileId);
 
   openBlade({
     blade: resolveBladeByName("ImportNew"),

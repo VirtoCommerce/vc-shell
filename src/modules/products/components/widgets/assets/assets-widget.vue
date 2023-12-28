@@ -21,7 +21,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-  (event: "update:modelValue", context: T);
+  (event: "update:modelValue", context: T): void;
 }>();
 
 const { openBlade, resolveBladeByName } = useBladeNavigation();
@@ -71,17 +71,19 @@ const assetsHandler = {
     emitAssets();
     return internalModel.value.item.assets;
   },
-  async upload(files: FileList, lastSortOrder?: number) {
-    const uploaded = (await upload(files, `catalog/${internalModel.value.item.id}`, lastSortOrder)).map(
-      (x) => new Asset(x),
-    );
+  async upload(files: FileList | null, lastSortOrder?: number) {
+    if (files) {
+      const uploaded = (await upload(files, `catalog/${internalModel.value.item.id}`, lastSortOrder)).map(
+        (x) => new Asset(x),
+      );
 
-    internalModel.value.item.assets = internalModel.value.item.assets.concat(uploaded);
+      internalModel.value.item.assets = internalModel.value.item.assets.concat(uploaded);
 
-    files = null;
+      files = null;
 
-    emitAssets();
-    return internalModel.value.item.assets;
+      emitAssets();
+      return internalModel.value.item.assets;
+    }
   },
   async remove(files: Asset[]) {
     if (

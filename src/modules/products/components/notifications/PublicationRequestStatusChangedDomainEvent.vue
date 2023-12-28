@@ -36,7 +36,6 @@ interface IProductPushNotification extends PushNotification {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  notification: undefined,
   variant: "#A9BCCD",
 });
 

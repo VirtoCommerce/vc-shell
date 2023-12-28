@@ -27,13 +27,13 @@ interface IUseTeamMembers {
   searchQuery: Ref<ISearchSellerUsersQuery>;
   userDetails: Ref<SellerUserDetails & { id?: string }>;
   userDetailsCopy: Ref<SellerUserDetails>;
-  getTeamMembers: (query: ISearchSellerUsersQuery) => void;
-  createTeamMember: (details: ISellerUser, inviteStatus: boolean) => void;
-  handleUserDetailsItem: (user: ISellerUser) => void;
-  resetEntries: () => void;
-  deleteTeamMember: (args: { id: string }) => void;
-  updateTeamMember: (details: ISellerUser) => void;
-  sendTeamMemberInvitation: (args: { id: string }) => void;
+  getTeamMembers: (query: ISearchSellerUsersQuery) => Promise<void>;
+  createTeamMember: (details: ISellerUser, inviteStatus: boolean) => Promise<void>;
+  handleUserDetailsItem: (user: ISellerUser) => Promise<void>;
+  resetEntries: () => Promise<void>;
+  deleteTeamMember: (args: { id: string }) => Promise<void>;
+  updateTeamMember: (details: ISellerUser) => Promise<void>;
+  sendTeamMemberInvitation: (args: { id: string }) => Promise<void>;
 }
 
 interface IUseTeamMembersOptions {
@@ -86,17 +86,17 @@ export default (options?: IUseTeamMembersOptions): IUseTeamMembers => {
     }
   }
 
-  async function createTeamMember(details: ISellerUserDetails, inviteStatus: boolean) {
+  async function createTeamMember(details: ISellerUser, inviteStatus: boolean) {
     const client = await getApiClient();
 
     const command = new CreateSellerUserCommand({
-      userDetails: new SellerUserDetails(details),
+      userDetails: new SellerUserDetails(details as ISellerUserDetails),
       sendInvitation: inviteStatus,
     });
 
     try {
       loading.value = true;
-      const validationResult = await validateTeamMember(command.userDetails);
+      const validationResult = await validateTeamMember(command.userDetails!);
       if (validationResult.length && validationResult[0].errorCode === "EMAIL_ALREADY_EXISTS") {
         throw validationResult[0].errorCode;
       }
@@ -116,7 +116,7 @@ export default (options?: IUseTeamMembersOptions): IUseTeamMembers => {
 
     const command = new UpdateSellerUserCommand({
       sellerId: details.sellerId,
-      sellerUserId: details.id,
+      sellerUserId: details.id!,
       userDetails: new SellerUserDetails(details as ISellerUserDetails),
     });
 
@@ -187,11 +187,11 @@ export default (options?: IUseTeamMembersOptions): IUseTeamMembers => {
 
   return {
     loading: computed(() => loading.value),
-    membersList: computed(() => searchResult.value?.results),
-    totalCount: computed(() => searchResult.value?.totalCount),
+    membersList: computed(() => searchResult.value?.results ?? []),
+    totalCount: computed(() => searchResult.value?.totalCount ?? 1),
     currentPage: computed(() => (searchQuery.value?.skip || 0) / Math.max(1, pageSize) + 1),
     userDetailsCopy: computed(() => userDetailsCopy),
-    pages: computed(() => Math.ceil(searchResult.value?.totalCount / pageSize)),
+    pages: computed(() => Math.ceil((searchResult.value?.totalCount ?? 1) / pageSize)),
     modified: computed(() => modified.value),
     userDetails,
     searchQuery,

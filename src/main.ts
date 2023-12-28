@@ -38,8 +38,8 @@ async function startApp() {
   });
 
   // Global error handler
-  app.config.errorHandler = (err) => {
-    notification.error(err.toString(), {
+  app.config.errorHandler = (err: unknown) => {
+    notification.error((err as Error).toString(), {
       timeout: 5000,
     });
   };

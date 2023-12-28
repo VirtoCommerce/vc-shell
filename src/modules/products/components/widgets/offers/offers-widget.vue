@@ -60,14 +60,15 @@ watchDebounced(
   async () => {
     await populateCounter();
   },
-  { debounce: 500, maxWait: 1000 }
+  { debounce: 500, maxWait: 1000 },
 );
 
 async function populateCounter() {
-  count.value = await getCount({
-    take: 0,
-    sellerProductId: props.modelValue?.item?.id,
-  });
+  count.value =
+    (await getCount({
+      take: 0,
+      sellerProductId: props.modelValue?.item?.id,
+    })) ?? 0;
 }
 
 onMounted(async () => {

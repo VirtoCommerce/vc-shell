@@ -20,12 +20,14 @@ export default (): IUseStateMachines => {
 
   async function searchStateMachines(query: ISearchStateMachineInstancesQuery) {
     const client = await getApiClient();
-    stateMachine.value = await (
-      await client.searchInstance({
-        take: 20,
-        ...(query || {}),
-      } as SearchStateMachineInstancesQuery)
-    ).results.find(() => true);
+    const res = await await client.searchInstance({
+      take: 20,
+      ...(query || {}),
+    } as SearchStateMachineInstancesQuery);
+
+    if (res.results) {
+      stateMachine.value = res.results.find(() => true)!;
+    }
   }
 
   async function fireTrigger(smInstanceId: string, trigger: string, orderId: string) {

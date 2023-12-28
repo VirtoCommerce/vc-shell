@@ -2,7 +2,6 @@ import {
   useApiClient,
   useBladeNavigation,
   useLoading,
-  useUser,
   UseList,
   DynamicBladeList,
   useListFactory,
@@ -37,11 +36,11 @@ export const useProductsList = (args: {
     remove: async (query, customQuery) => {
       const command = new BulkProductsDeleteCommand({
         query: new SearchProductsQuery(query),
-        productIds: customQuery.ids,
+        productIds: customQuery.ids ?? [],
         all: customQuery.allSelected,
       });
       if (customQuery.allSelected) {
-        command.productIds = null;
+        command.productIds = undefined;
       }
 
       return (await getApiClient()).bulkDeleteProducts(command);
@@ -54,16 +53,12 @@ export const useProductsList = (args: {
   const isExporting = ref(false);
 
   async function exportCategories() {
-    // const { getAccessToken } = useUser();
-    // const authToken = await getAccessToken();
-
     try {
       isExporting.value = true;
       const result = await fetch("/api/vcmp/seller/categories/export", {
         method: "POST",
         body: JSON.stringify({}),
         headers: {
-          // Authorization: `Bearer ${authToken}`,
           "Content-Type": "application/json-patch+json",
         },
       });
@@ -78,7 +73,7 @@ export const useProductsList = (args: {
       link.setAttribute("download", `exported-categories.csv`);
       document.body.appendChild(link);
       link.click();
-      link.parentNode.removeChild(link);
+      link.parentNode?.removeChild(link);
 
       window.URL.revokeObjectURL(blobUrl);
     } catch (e) {

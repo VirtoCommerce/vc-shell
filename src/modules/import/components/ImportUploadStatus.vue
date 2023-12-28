@@ -58,8 +58,8 @@ import { INotificationActions } from "../types";
 export interface Props {
   uploadActions: INotificationActions[];
   uploadedFile: {
-    name: string;
-    size: number | string;
+    name?: string;
+    size?: number | string;
   };
   isUploaded: boolean;
   isStarted: boolean;
@@ -67,9 +67,6 @@ export interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
   uploadActions: () => [],
-  uploadedFile: undefined,
-  isUploaded: false,
-  isStarted: false,
 });
 
 const filteredActions = computed(() => props.uploadActions.filter((action) => action.isVisible));

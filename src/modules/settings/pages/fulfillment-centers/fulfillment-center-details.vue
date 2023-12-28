@@ -146,7 +146,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
       }
     },
     isVisible: true,
-    disabled: computed(() => props.param && !(!isDisabled.value && modified.value)),
+    disabled: computed(() => !!props.param && !(!isDisabled.value && modified.value)),
   },
   {
     id: "reset",
@@ -156,7 +156,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
       resetEntries();
     },
     isVisible: !!props.param,
-    disabled: computed(() => props.param && !modified.value),
+    disabled: computed(() => !!props.param && !modified.value),
   },
   {
     id: "delete",

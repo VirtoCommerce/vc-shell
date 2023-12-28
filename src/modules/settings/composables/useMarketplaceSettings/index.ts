@@ -1,5 +1,4 @@
 import { Ref, ref } from "vue";
-import { useUser } from "@vc-shell/framework";
 import { MarketplaceSettings, VcmpCommonClient } from "@vcmp-vendor-portal/api/marketplacevendor";
 
 export interface ICurrency {
@@ -21,12 +20,12 @@ export interface IUseSettings {
 
 export default (): IUseSettings => {
   const settings = ref<MarketplaceSettings>();
-  const defaultCurrency = ref<ICurrency>();
+  const defaultCurrency = ref() as Ref<ICurrency>;
   const currencies = ref<ICurrency[]>([]);
-  const defaultLanguage = ref<string>();
+  const defaultLanguage = ref() as Ref<string>;
   const languages = ref<string[]>([]);
-  const currentLanguage = ref<string>();
-  const defaultProductType = ref<string>();
+  const currentLanguage = ref() as Ref<string>;
+  const defaultProductType = ref() as Ref<string>;
   const productTypes = ref<string[]>([]);
   const settingUseDefaultOffer = ref<boolean>(true);
 
@@ -37,24 +36,25 @@ export default (): IUseSettings => {
       settings.value = await client.getVcmpSettings();
 
       defaultCurrency.value = {
-        title: settings.value.defaultCurrency,
-        value: settings.value.defaultCurrency,
+        title: settings.value.defaultCurrency ?? "USD",
+        value: settings.value.defaultCurrency ?? "USD",
       };
-      currencies.value = settings.value.currencies?.map((currency) => ({
-        title: currency,
-        value: currency,
-      }));
+      currencies.value =
+        settings.value.currencies?.map((currency) => ({
+          title: currency,
+          value: currency,
+        })) ?? [];
 
-      defaultLanguage.value = settings.value.defaultLanguage;
-      languages.value = settings.value.languages;
+      defaultLanguage.value = settings.value.defaultLanguage!;
+      languages.value = settings.value.languages ?? [];
 
       if (!currentLanguage.value) {
         currentLanguage.value = defaultLanguage.value;
       }
 
-      defaultProductType.value = settings.value.defaultProductType;
-      productTypes.value = settings.value.productTypes;
-      settingUseDefaultOffer.value = settings.value.useDefaultOffer;
+      defaultProductType.value = settings.value.defaultProductType!;
+      productTypes.value = settings.value.productTypes ?? [];
+      settingUseDefaultOffer.value = settings.value.useDefaultOffer!;
     } catch (e) {
       console.error(e);
       throw e;

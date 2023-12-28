@@ -22,13 +22,13 @@ const status = computed(() => {
   let status = undefined;
   switch (props.reviewStatus) {
     case CustomerReviewReviewStatus.New:
-      status = "warning";
+      status = "warning" as const;
       break;
     case CustomerReviewReviewStatus.Approved:
-      status = "success";
+      status = "success" as const;
       break;
     case CustomerReviewReviewStatus.Rejected:
-      status = "danger";
+      status = "danger" as const;
       break;
   }
   return status;

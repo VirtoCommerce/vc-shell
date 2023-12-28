@@ -1,18 +1,11 @@
 {
   "extends": "@vc-shell/ts-config/tsconfig.json",
   "compilerOptions": {
-    //  "alwaysStrict": true,
-    //  "noImplicitAny": true,
-    //  "strictNullChecks": true,
-    // "strictPropertyInitialization": true,
-    // "strictFunctionTypes": true,
-    // "noImplicitThis": true,
-    // "strictBindCallApply": true,
     "baseUrl": ".",
     "declarationDir": "dist/types",
     "outDir": "dist",
     "rootDir": "./",
-    "types": ["vite/client", "../shims-vue.d.ts"],
+    "types": ["vite/client", "../shims-vue.d.ts"]
   },
   "files": ["package.json"],
   "include": ["index.ts", "**/*.ts", "**/*.vue", "**/*.json"]

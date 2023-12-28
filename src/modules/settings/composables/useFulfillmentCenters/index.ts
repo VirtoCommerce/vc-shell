@@ -136,11 +136,11 @@ export default (options?: IUseFulfillmentCentersOptions): IUseFulfillmentCenters
 
   return {
     loading: computed(() => loading.value),
-    totalCount: computed(() => searchResult.value?.totalCount),
-    pages: computed(() => Math.ceil(searchResult.value?.totalCount / pageSize)),
+    totalCount: computed(() => searchResult.value?.totalCount ?? 0),
+    pages: computed(() => Math.ceil(searchResult.value?.totalCount ?? 1 / pageSize)),
     modified: computed(() => modified.value),
     currentPage: computed(() => (searchQuery.value?.skip || 0) / Math.max(1, pageSize) + 1),
-    fulfillmentCentersList: computed(() => searchResult.value?.results),
+    fulfillmentCentersList: computed(() => searchResult.value?.results ?? []),
     fulfillmentCenterDetails,
     fulfillmentCenterDetailsCopy: computed(() => fulfillmentCenterDetailsCopy),
     searchQuery,

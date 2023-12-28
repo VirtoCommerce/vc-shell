@@ -40,7 +40,7 @@ watch(
   moduleNotifications,
   (newVal) => {
     newVal.forEach((message) => {
-      notification(message.title, {
+      notification(message.title ?? "", {
         onClose() {
           markAsRead(message);
         },

@@ -12,9 +12,10 @@ import {
   VcmpSellerCatalogClient,
   ISearchVideosQuery,
   SearchVideosQuery,
+  SellerProduct,
 } from "@vcmp-vendor-portal/api/marketplacevendor";
 import { Video } from "@vcmp-vendor-portal/api/catalog";
-import { computed, ref, Ref, onMounted, watch, onBeforeMount } from "vue";
+import { computed, ref, Ref, onBeforeMount } from "vue";
 
 const { getApiClient } = useApiClient(VcmpSellerCatalogClient);
 
@@ -26,7 +27,7 @@ export interface VideosListScope extends ListBaseBladeScope {
 }
 
 export const useVideosList = (args: {
-  props: InstanceType<typeof DynamicBladeList>["$props"];
+  props: InstanceType<typeof DynamicBladeList>["$props"] & { options: { catalogProduct: SellerProduct } };
   emit: InstanceType<typeof DynamicBladeList>["$emit"];
   mounted: Ref<boolean>;
 }): UseList<Video[], ISearchVideosQuery, VideosListScope> => {
@@ -37,8 +38,10 @@ export const useVideosList = (args: {
     },
     remove: async (query, customQuery) => {
       const videoIds = customQuery.ids;
-      (await getApiClient()).delete(videoIds);
-      await markProductDirty();
+      if (videoIds) {
+        (await getApiClient()).delete(videoIds);
+        await markProductDirty();
+      }
     },
   });
 
@@ -67,7 +70,7 @@ export const useVideosList = (args: {
     toolbarOverrides: {
       save: {
         async clickHandler(args) {
-          await (await getApiClient()).update(args.items);
+          await (await getApiClient()).update(args?.items);
           await markProductDirty();
           await load(query.value);
         },
@@ -90,7 +93,9 @@ export const useVideosList = (args: {
       "catalogProduct" in args.props.options &&
       args.props.options?.catalogProduct
     ) {
-      query.value.ownerIds = [args.props.options?.catalogProduct["stagedProductDataId"]];
+      if (args.props.options.catalogProduct["stagedProductDataId"]) {
+        query.value.ownerIds = [args.props.options.catalogProduct["stagedProductDataId"]];
+      }
     }
   });
 

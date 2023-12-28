@@ -11,7 +11,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, toRefs, unref } from "vue";
+import { computed, toRefs } from "vue";
 import { camelToSnake } from "@vc-shell/framework";
 import { ISellerProduct, SellerProductStatus2 } from "@vcmp-vendor-portal/api/marketplacevendor";
 
@@ -33,8 +33,8 @@ const { context } = toRefs(props);
 
 const itemStatus = computed(() => context.value?.item?.status);
 
-const statusStyles = {
-  RequestChanges: {
+const statusStyles: Omit<Record<keyof typeof SellerProductStatus2, Record<string, unknown>>, "None"> = {
+  RequiresChanges: {
     outline: true,
     variant: "danger",
   },
@@ -59,12 +59,14 @@ const statusStyles = {
     variant: "success",
   },
 };
-const statuses = computed(() =>
-  itemStatus.value
-    ?.split(",")
-    .map((item) => {
-      return item.trim();
-    })
-    .filter((x) => x !== "Published")
-);
+
+const statuses = computed(
+  () =>
+    itemStatus.value
+      ?.split(",")
+      .map((item) => {
+        return item.trim();
+      })
+      .filter((x) => x !== "Published"),
+) as unknown as (keyof typeof statusStyles)[];
 </script>

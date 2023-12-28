@@ -24,7 +24,7 @@ import {
   SellerProduct,
   ChangeOfferDefaultCommand,
 } from "@vcmp-vendor-portal/api/marketplacevendor";
-import { Ref, computed, nextTick, onMounted, reactive, ref, watch } from "vue";
+import { Ref, computed, nextTick, reactive, ref, watch } from "vue";
 import { useFulfillmentCenters, useMarketplaceSettings } from "../../../settings";
 import { useI18n } from "vue-i18n";
 import { ICurrency } from "../../../settings/composables/useMarketplaceSettings";
@@ -55,7 +55,7 @@ export const useOfferDetails = (args: {
   const { user } = useUser();
   const { t } = useI18n({ useScope: "global" });
   const offerLoading = ref(false);
-  const duplicates = ref([]);
+  const duplicates = ref<string[]>([]);
   const pricingEqual = ref(false);
   const productLoading = ref(false);
   const alreadyDefault = ref(false);
@@ -66,21 +66,25 @@ export const useOfferDetails = (args: {
   const { upload: imageUpload, remove: imageRemove, edit: imageEdit, loading: imageLoading } = useAssets();
 
   const detailsFactory = useDetailsFactory<IOffer>({
-    load: async ({ id }) => (await getApiClient()).getOfferByIdGET(id),
+    load: async (item) => {
+      if (item?.id) {
+        return (await getApiClient()).getOfferByIdGET(item.id);
+      }
+    },
     saveChanges: async (details) => {
       return details.id
         ? (await getApiClient()).updateOffer(
             new UpdateOfferCommand({
-              sellerName: user.value.userName,
+              sellerName: user.value?.userName,
               offerId: details.id,
-              offerDetails: new OfferDetails({ ...details, sku: details.sku }),
+              offerDetails: new OfferDetails({ ...details, sku: details.sku ?? "" }),
             }),
           )
         : (await getApiClient()).createNewOffer(
             new CreateNewOfferCommand({
-              sellerName: user.value.userName,
+              sellerName: user.value?.userName,
               productId: details.productId,
-              details: new OfferDetails({ ...details, sku: details.sku }),
+              details: new OfferDetails({ ...details, sku: details.sku ?? "" }),
             }),
           );
     },
@@ -126,7 +130,7 @@ export const useOfferDetails = (args: {
     () => item.value?.prices,
     (newVal) => {
       nextTick(() => {
-        const dupes = [];
+        const dupes: string[] = [];
 
         newVal?.forEach((o, idx) => {
           if (
@@ -153,44 +157,52 @@ export const useOfferDetails = (args: {
 
   watch(duplicates, (newVal, oldVal) => {
     validationState.value.setErrors(
-      Object.values(oldVal).reduce((obj, curr) => {
-        obj[curr] = undefined;
-        return obj;
-      }, {}),
+      Object.values(oldVal).reduce(
+        (obj, curr) => {
+          obj[curr] = undefined;
+          return obj;
+        },
+        {} as Record<string, undefined>,
+      ),
     );
 
     validationState.value.setErrors(
-      Object.values(newVal).reduce((obj, curr) => {
-        obj[curr] = "Min quantity can't be the same";
-        return obj;
-      }, {}),
+      Object.values(newVal).reduce(
+        (obj, curr) => {
+          obj[curr] = "Min quantity can't be the same";
+          return obj;
+        },
+        {} as Record<string, string>,
+      ),
     );
   });
 
   const addEmptyInventory = async () => {
-    item.value.inventory = [];
-    await searchFulfillmentCenters({});
-    fulfillmentCentersList.value.forEach((x) => {
-      const inventoryInfo = new InventoryInfo();
-      inventoryInfo.id = x.name;
-      inventoryInfo.fulfillmentCenter = x;
-      inventoryInfo.fulfillmentCenterId = x.id;
-      inventoryInfo.fulfillmentCenterName = x.name;
-      inventoryInfo.inStockQuantity = 0;
-      inventoryInfo.createdDate = new Date();
-      item.value.inventory.push(inventoryInfo);
-    });
+    if (item.value) {
+      item.value.inventory = [];
+      await searchFulfillmentCenters({});
+      fulfillmentCentersList.value.forEach((x) => {
+        const inventoryInfo = new InventoryInfo();
+        inventoryInfo.id = x.name;
+        inventoryInfo.fulfillmentCenter = x;
+        inventoryInfo.fulfillmentCenterId = x.id;
+        inventoryInfo.fulfillmentCenterName = x.name;
+        inventoryInfo.inStockQuantity = 0;
+        inventoryInfo.createdDate = new Date();
+        item.value?.inventory?.push(inventoryInfo);
+      });
+    }
   };
 
   function addPrice() {
-    if (!item.value.prices) {
+    if (item.value && !item.value.prices) {
       item.value.prices = [];
     }
-    item.value.prices.push(
+    item.value?.prices?.push(
       new OfferPrice({
         currency: "USD",
-        listPrice: null,
-        minQuantity: null,
+        listPrice: 0,
+        minQuantity: 0,
       }),
     );
   }
@@ -215,7 +227,7 @@ export const useOfferDetails = (args: {
       productLoading.value = true;
       const fetchedProduct = (await fetchProducts(undefined, 0, [id])).results;
 
-      if (fetchedProduct && fetchedProduct.length) {
+      if (fetchedProduct && fetchedProduct.length && item.value) {
         const currentProduct = fetchedProduct[0];
 
         if (!args.props.param) {
@@ -238,7 +250,7 @@ export const useOfferDetails = (args: {
   }
 
   function removePrice(idx: number) {
-    item.value?.prices.splice(idx, 1);
+    item.value?.prices?.splice(idx, 1);
   }
 
   function trackInventory() {
@@ -271,7 +283,7 @@ export const useOfferDetails = (args: {
         }
       } finally {
         offerLoading.value = false;
-        validationState.value.resetModified(item.value, true);
+        validationState.value.resetModified(item.value!, true);
       }
     },
   );
@@ -286,7 +298,12 @@ export const useOfferDetails = (args: {
     toolbarOverrides: {
       saveChanges: {
         disabled: computed(() => {
-          return !(item.value?.prices?.length > 0 && validationState.value.valid && validationState.value.modified);
+          return !(
+            item.value?.prices &&
+            item.value?.prices?.length > 0 &&
+            validationState.value.valid &&
+            validationState.value.modified
+          );
         }),
       },
       enable: {
@@ -308,16 +325,18 @@ export const useOfferDetails = (args: {
       setDefault: {
         async clickHandler() {
           offerLoading.value = true;
-          const command = new ChangeOfferDefaultCommand({
-            offerId: item.value?.id,
-            isDefault: true,
-          });
-          await (await getApiClient()).changeOfferDefault(command);
-          args.emit("parent:call", {
-            method: "reload",
-          });
-          alreadyDefault.value = true;
-          offerLoading.value = false;
+          if (item.value?.id) {
+            const command = new ChangeOfferDefaultCommand({
+              offerId: item.value?.id,
+              isDefault: true,
+            });
+            await (await getApiClient()).changeOfferDefault(command);
+            args.emit("parent:call", {
+              method: "reload",
+            });
+            alreadyDefault.value = true;
+            offerLoading.value = false;
+          }
         },
         disabled: computed(() => item.value?.isDefault || alreadyDefault.value),
         isVisible: computed(() => settingUseDefaultOffer.value),
@@ -329,13 +348,13 @@ export const useOfferDetails = (args: {
       images: {
         loading: imageLoading,
         async upload(files, startingSortOrder) {
-          return (await imageUpload(files, `offers/${item.value.id}`, startingSortOrder)).map((x) => new Image(x));
+          return (await imageUpload(files, `offers/${item.value?.id}`, startingSortOrder)).map((x) => new Image(x));
         },
         remove(files) {
-          return imageRemove(files, item.value.images);
+          return imageRemove(files, item.value?.images ?? []);
         },
         edit(files) {
-          return imageEdit(files, item.value.images).map((x) => new Image(x));
+          return imageEdit(files, item.value?.images ?? []).map((x) => new Image(x));
         },
       },
     },

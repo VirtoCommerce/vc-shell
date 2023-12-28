@@ -24,7 +24,7 @@ export const useProductsListExtended = (args: {
   }
 
   const extendedScope = ref({
-    ...scope.value,
+    ...scope?.value,
     openDetailsBlade,
   });
 

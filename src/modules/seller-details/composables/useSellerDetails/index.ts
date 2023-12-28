@@ -16,6 +16,7 @@ import {
   UpdateSellerCommand,
   VcmpSellerSecurityClient,
   Image,
+  IImage,
 } from "@vcmp-vendor-portal/api/marketplacevendor";
 import * as _ from "lodash-es";
 
@@ -40,12 +41,12 @@ export const useSellerDetails = (args?: {
     saveChanges: async (seller) => {
       return (await getApiClient()).updateSeller(
         new UpdateSellerCommand({
-          sellerId: seller.id,
+          sellerId: seller.id!,
           sellerDetails: new SellerDetails({
             ...(seller as ISellerDetails),
-            addresses: seller.addresses.map((address) => new CustomerAddress(address)),
+            addresses: seller.addresses!.map((address) => new CustomerAddress(address)),
           }),
-          commissionFeeId: seller.commissionFee.id,
+          commissionFeeId: seller.commissionFee!.id!,
         }),
       );
     },
@@ -60,13 +61,13 @@ export const useSellerDetails = (args?: {
 
   const logoHandler = computed({
     get() {
-      return item.value?.logo ? [{ url: item.value.logo, name: user.value.userName, title: "" }] : [];
+      return item.value?.logo ? [{ url: item.value.logo, name: user.value?.userName ?? "", title: "" }] : [];
     },
     set(value) {
       if (value) {
-        item.value.logo = value.find(() => true)?.url;
+        item.value!.logo = value.find(() => true)?.url;
       } else {
-        item.value.logo = undefined;
+        item.value!.logo = undefined;
       }
     },
   });
@@ -81,15 +82,12 @@ export const useSellerDetails = (args?: {
   });
 
   async function getCountries() {
-    // const token = await getAccessToken();
-    // if (token) {
     try {
       const result = await fetch("/api/platform/common/countries", {
         method: "GET",
         headers: {
           "Content-Type": "application/json-patch+json",
           Accept: "application/json",
-          // authorization: `Bearer ${token}`,
         },
       });
 
@@ -100,19 +98,15 @@ export const useSellerDetails = (args?: {
       console.error(e);
       throw e;
     }
-    // }
   }
 
   async function getRegions(countryId: string) {
-    // const token = await getAccessToken();
-    // if (token) {
     try {
       const result = await fetch(`/api/platform/common/countries/${countryId}/regions`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json-patch+json",
           Accept: "application/json",
-          // authorization: `Bearer ${token}`,
         },
       });
 
@@ -123,15 +117,14 @@ export const useSellerDetails = (args?: {
       console.error(e);
       throw e;
     }
-    // }
   }
 
   function setCountry(countryId: string) {
     if (countryId) {
       const countryInfo = countriesList.value.find((x) => x.id === countryId);
-      if (countryInfo) {
-        item.value.addresses[0].countryCode = countryInfo.id;
-        item.value.addresses[0].countryName = countryInfo.name;
+      if (countryInfo && item.value!.addresses) {
+        item.value!.addresses[0].countryCode = countryInfo.id;
+        item.value!.addresses[0].countryName = countryInfo.name;
       }
     }
   }
@@ -139,14 +132,14 @@ export const useSellerDetails = (args?: {
   function setRegion(regionId: string) {
     if (regionId) {
       const regionInfo = regionsList.value.find((x) => x.id === regionId);
-      if (regionInfo) {
-        item.value.addresses[0].regionId = regionInfo.id;
-        item.value.addresses[0].regionName = regionInfo.name;
+      if (regionInfo && item.value!.addresses) {
+        item.value!.addresses[0].regionId = regionInfo.id;
+        item.value!.addresses[0].regionName = regionInfo.name;
       }
     }
   }
 
-  async function onCountryChange(e) {
+  async function onCountryChange(e: string) {
     setCountry(e);
     getRegions(e);
   }
@@ -166,9 +159,9 @@ export const useSellerDetails = (args?: {
       images: {
         loading: imageLoading,
         async upload(files: FileList) {
-          return (await uploadImage(files, `seller_logos/${item.value.id}`)).map((x) => new Image(x));
+          return (await uploadImage(files, `seller_logos/${item.value!.id}`)).map((x) => new Image(x));
         },
-        remove: (files: Image[]) => {
+        remove: (files: IImage[]) => {
           return removeImage(files, logoHandler.value);
         },
       },
@@ -192,7 +185,7 @@ export const useSellerDetails = (args?: {
       await load();
       await getCountries();
 
-      if (item.value?.addresses[0]?.countryCode) {
+      if (item.value?.addresses && item.value?.addresses[0]?.countryCode) {
         await getRegions(item.value?.addresses[0]?.countryCode);
       }
     },

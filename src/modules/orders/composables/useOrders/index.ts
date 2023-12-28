@@ -62,19 +62,19 @@ export default (): IUseOrders => {
     async (payload) => {
       const client = await getApiClient();
       const command = new ChangeOrderStatusCommand({
-        orderId: payload.orderId,
-        newStatus: payload.newStatus,
+        orderId: payload?.orderId ?? "",
+        newStatus: payload?.newStatus ?? "",
       });
       await client.updateOrderStatus(command);
-    }
+    },
   );
 
   const loading = useLoading(ordersLoading, changeOrderStatusLoading);
 
   return {
-    orders: computed(() => orders.value?.results),
-    totalCount: computed(() => orders.value?.totalCount),
-    pages: computed(() => Math.ceil(orders.value?.totalCount / 20)),
+    orders: computed(() => orders.value?.results ?? []),
+    totalCount: computed(() => orders.value?.totalCount ?? 0),
+    pages: computed(() => Math.ceil((orders.value?.totalCount ?? 1) / 20)),
     loading,
     currentPage: computed(() => currentPage.value),
     PaymentStatus: computed(() => statuses.value),

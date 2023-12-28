@@ -228,7 +228,7 @@ onMounted(async () => {
 const reload = async () => {
   await getTeamMembers({
     ...searchQuery.value,
-    skip: (currentPage.value - 1) * searchQuery.value.take,
+    skip: (currentPage.value - 1) * (searchQuery.value.take ?? 10),
     sort: sort.value,
   });
 };
@@ -265,7 +265,7 @@ const onHeaderClick = (item: ITableColumns) => {
 const onPaginationClick = async (page: number) => {
   await getTeamMembers({
     ...searchQuery.value,
-    skip: (page - 1) * searchQuery.value.take,
+    skip: (page - 1) * (searchQuery.value.take ?? 10),
   });
 };
 

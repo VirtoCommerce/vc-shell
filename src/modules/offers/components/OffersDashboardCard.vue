@@ -17,7 +17,7 @@
       <vc-button
         small
         outline
-        @click="onItemClick"
+        @click="() => onItemClick()"
         >{{ $t("OFFERS.WIDGET.ALL") }}</vc-button
       >
     </template>
@@ -48,11 +48,11 @@ import { useBladeNavigation } from "@vc-shell/framework";
 
 const { openBlade, resolveBladeByName } = useBladeNavigation();
 
-async function onItemClick(args?: { param: string } | Event) {
+async function onItemClick(args?: { param: string }) {
   await openBlade(
     {
       blade: resolveBladeByName("Offers"),
-      param: "param" in args && args.param,
+      param: args?.param,
     },
     true,
   );

@@ -60,14 +60,15 @@ watchDebounced(
   async () => {
     await populateCounter();
   },
-  { debounce: 500, maxWait: 1000 }
+  { debounce: 500, maxWait: 1000 },
 );
 
 async function populateCounter() {
-  count.value = await getCount({
-    take: 0,
-    ownerIds: [props.modelValue?.item?.stagedProductDataId],
-  });
+  count.value =
+    (await getCount({
+      take: 0,
+      ownerIds: [props.modelValue?.item?.stagedProductDataId],
+    })) ?? 0;
 }
 
 onMounted(async () => {

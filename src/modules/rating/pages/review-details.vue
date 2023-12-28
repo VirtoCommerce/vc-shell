@@ -114,7 +114,7 @@ defineOptions({
 });
 
 onMounted(async () => {
-  if (props.param && props.options.review) {
+  if (props.param && props.options?.review) {
     handleCustomerReviewItem(props.options.review);
   } else {
     handleCustomerReviewItem(customerReview.value);
@@ -132,7 +132,7 @@ const { customerReview, handleReview: handleCustomerReviewItem } = useReviews();
 const title = t("RATING.PAGES.REVIEW_DETAILS.TITLE");
 
 const createdDate = computed(() => {
-  const date = new Date(customerReview.value?.createdDate);
+  const date = new Date(customerReview.value?.createdDate ?? "");
   return moment(date).locale(locale).format("L LT");
 });
 </script>

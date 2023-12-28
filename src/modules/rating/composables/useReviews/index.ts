@@ -1,4 +1,3 @@
-import { useUser } from "@vc-shell/framework";
 import { computed, ref, Ref } from "vue";
 import {
   CustomerReview,
@@ -16,7 +15,7 @@ interface IUseReviewsOptions {
 
 interface IUseReviews {
   readonly loading: Ref<boolean>;
-  readonly reviews: Ref<ICustomerReview[]>;
+  readonly reviews: Ref<CustomerReview[]>;
   readonly customerReview: Ref<CustomerReview>;
   readonly totalCount: Ref<number>;
   readonly pages: Ref<number>;
@@ -45,9 +44,7 @@ export default (options?: IUseReviewsOptions): IUseReviews => {
   const customerReview = ref(new CustomerReview());
 
   async function getApiClient() {
-    // const { getAccessToken } = useUser();
     const client = new VcmpSellerRatingAndReviewsClient();
-    // client.setAuthToken(await getAccessToken());
     return client;
   }
 
@@ -73,10 +70,10 @@ export default (options?: IUseReviewsOptions): IUseReviews => {
 
   return {
     loading: computed(() => loading.value),
-    reviews: computed(() => searchResult.value?.results),
+    reviews: computed(() => searchResult.value?.results ?? []),
     customerReview: computed(() => customerReview.value),
-    totalCount: computed(() => searchResult.value?.totalCount),
-    pages: computed(() => Math.ceil(searchResult.value?.totalCount / pageSize)),
+    totalCount: computed(() => searchResult.value?.totalCount ?? 0),
+    pages: computed(() => Math.ceil(searchResult.value?.totalCount ?? 1 / pageSize)),
     currentPage,
     sort,
     loadReviews,

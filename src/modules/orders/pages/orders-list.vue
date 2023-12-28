@@ -69,13 +69,13 @@
                   type="date"
                   class="tw-mb-3"
                   :model-value="getFilterDate('startDate')"
-                  @update:model-value="(e: string) => setFilterDate('startDate', e)"
+                  @update:model-value="(e) => setFilterDate('startDate', e as string)"
                 ></VcInput>
                 <VcInput
                   :label="$t('ORDERS.PAGES.LIST.FILTERS.END_DATE')"
                   type="date"
                   :model-value="getFilterDate('endDate')"
-                  @update:model-value="(e: string) => setFilterDate('endDate', e)"
+                  @update:model-value="(e) => setFilterDate('endDate', e as string)"
                 ></VcInput>
               </div>
             </VcCol>
@@ -223,7 +223,7 @@ const filter: Ref<{ startDate?: Date; endDate?: Date; status?: string }> = ref({
 const appliedFilter = ref({});
 const searchValue = ref();
 const selectedItemId = ref();
-const selectedOrdersIds = ref([]);
+const selectedOrdersIds = ref<string[]>([]);
 const sort = ref("createdDate:DESC");
 const applyFiltersDisable = computed(() => {
   const activeFilters = filter.value && Object.values(filter.value).filter((x) => x !== undefined);
@@ -389,8 +389,10 @@ const actionBuilder = (item: CustomerOrder): IActionBuilderResult[] => {
       title: computed(() => t("ORDERS.PAGES.LIST.TABLE.ACTIONS.ACCEPT")),
       variant: "success",
       async clickHandler() {
-        await changeOrderStatus({ orderId: item.id, newStatus: "Accepted" });
-        await reload();
+        if (item.id) {
+          await changeOrderStatus({ orderId: item.id, newStatus: "Accepted" });
+          await reload();
+        }
       },
     });
   }
@@ -401,8 +403,10 @@ const actionBuilder = (item: CustomerOrder): IActionBuilderResult[] => {
       title: computed(() => t("ORDERS.PAGES.LIST.TABLE.ACTIONS.CANCEL")),
       variant: "danger",
       async clickHandler() {
-        await changeOrderStatus({ orderId: item.id, newStatus: "Cancelled" });
-        await reload();
+        if (item.id) {
+          await changeOrderStatus({ orderId: item.id, newStatus: "Cancelled" });
+          await reload();
+        }
       },
     });
   }
@@ -413,10 +417,11 @@ const actionBuilder = (item: CustomerOrder): IActionBuilderResult[] => {
       title: computed(() => t("ORDERS.PAGES.LIST.TABLE.ACTIONS.SHIP")),
       variant: "danger",
       async clickHandler() {
-        item.status = "Shipped";
-        item.status = "Shipped";
-        await changeOrderStatus({ orderId: item.id, newStatus: "Cancelled" });
-        await reload();
+        if (item.id) {
+          item.status = "Shipped";
+          await changeOrderStatus({ orderId: item.id, newStatus: "Cancelled" });
+          await reload();
+        }
       },
     });
   }
@@ -469,7 +474,7 @@ const onHeaderClick = (item: ITableColumns) => {
 };
 
 const onSelectionChanged = (items: CustomerOrder[]) => {
-  selectedOrdersIds.value = items.map((item) => item.id);
+  selectedOrdersIds.value = items.map((item) => item.id!);
 };
 
 function setFilterDate(key: keyof typeof filter.value, value: string) {
@@ -491,7 +496,7 @@ function getFilterDate(key: keyof Omit<typeof filter.value, "status">) {
 
 async function resetSearch() {
   searchValue.value = "";
-  Object.keys(filter.value).forEach((key: keyof typeof filter.value) => (filter.value[key] = undefined));
+  Object.keys(filter.value).forEach((key) => (filter.value[key as keyof typeof filter.value] = undefined));
   await loadOrders({
     ...filter.value,
     keyword: "",
@@ -510,7 +515,7 @@ async function applyFilters(closePanel: () => void) {
 }
 async function resetFilters(closePanel: () => void) {
   closePanel();
-  Object.keys(filter.value).forEach((key: keyof typeof filter.value) => (filter.value[key] = undefined));
+  Object.keys(filter.value).forEach((key) => (filter.value[key as keyof typeof filter.value] = undefined));
   await loadOrders({
     ...filter.value,
   });

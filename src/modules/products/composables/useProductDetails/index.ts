@@ -28,7 +28,7 @@ import {
   DetailsBaseBladeScope,
   useAssets,
 } from "@vc-shell/framework";
-import { ref, computed, reactive, ComputedRef, Ref, watch } from "vue";
+import { ref, computed, reactive, ComputedRef, Ref, watch, MaybeRef } from "vue";
 import { useI18n } from "vue-i18n";
 import { useDynamicProperties, useMultilanguage } from "../../../common";
 import * as _ from "lodash-es";
@@ -64,7 +64,11 @@ export const useProductDetails = (args: {
   mounted: Ref<boolean>;
 }): UseDetails<ISellerProduct & IProductDetails, ProductDetailsScope> => {
   const detailsFactory = useDetailsFactory<ISellerProduct & IProductDetails>({
-    load: async ({ id }) => (await getApiClient()).getProductById(id),
+    load: async (item) => {
+      if (item?.id) {
+        return (await getApiClient()).getProductById(item.id);
+      }
+    },
     saveChanges: async (details) => {
       return details.id
         ? (await getApiClient()).updateProductDetails(
@@ -86,7 +90,7 @@ export const useProductDetails = (args: {
 
   const { t } = useI18n({ useScope: "global" });
 
-  const disabled = computed(() => args.props.param && !item.value?.canBeModified);
+  const disabled = computed(() => !!args.props.param && !item.value?.canBeModified);
 
   const revertLoading = ref(false);
   const productTypeOptions = ref<IProductType[]>([]);
@@ -99,14 +103,16 @@ export const useProductDetails = (args: {
   const declineReasonVisibility = computed(() => statusText.value && item.value?.status !== "Published");
   const statusText = computed(() => {
     if (item.value?.publicationRequests && item.value?.publicationRequests.length) {
-      return _.orderBy(item.value.publicationRequests, ["createdDate"], ["desc"])[0].comment;
+      return _.orderBy(item.value.publicationRequests, ["createdDate"], ["desc"])[0].comment ?? "";
     }
     return null;
   });
 
-  const bladeTitle = computed(() => (args.props.param ? item.value?.name : t("PRODUCTS.PAGES.DETAILS.TITLE")));
+  const bladeTitle = computed(() =>
+    args.props.param && item.value?.name ? item.value?.name : t("PRODUCTS.PAGES.DETAILS.TITLE"),
+  );
 
-  const getMappedDetails = reactify((details: ISellerProduct & IProductDetails) => {
+  const getMappedDetails = reactify((details: (ISellerProduct & IProductDetails) | undefined) => {
     if (details) {
       return reactive({
         publicationRequests: details.publicationRequests,
@@ -126,19 +132,27 @@ export const useProductDetails = (args: {
         stagedProductDataId: details.stagedProductDataId,
         description: computed({
           get() {
-            return useArrayFind(details.descriptions, (x) => x.languageCode == currentLocale.value).value.content;
+            return useArrayFind(details.descriptions ?? [], (x) => x.languageCode == currentLocale.value).value
+              ?.content;
           },
           set(value) {
-            useArrayFind(details.descriptions, (x) => x.languageCode == currentLocale.value).value.content = value;
+            const foundItem = useArrayFind(
+              details.descriptions ?? [],
+              (x) => x.languageCode == currentLocale.value,
+            ).value;
+            if (foundItem) {
+              foundItem.content = value;
+            }
           },
         }),
         productType: details.productData?.productType,
         status: details.status,
-      });
+      }) as ISellerProduct & IProductDetails;
     }
+    return details;
   });
 
-  async function loadWrapper(args: { id: string }) {
+  async function loadWrapper(args?: { id: string }) {
     await load(args);
 
     if (item.value) {
@@ -147,7 +161,7 @@ export const useProductDetails = (args: {
       });
 
       const notReviewedLangs = languages.value.filter(
-        (x) => item.value.descriptions?.every((d) => d.languageCode !== x),
+        (x) => item.value?.descriptions?.every((d) => d.languageCode !== x),
       );
       item.value.descriptions = item.value.descriptions?.concat(
         notReviewedLangs.map(
@@ -166,10 +180,10 @@ export const useProductDetails = (args: {
     }
   }
 
-  async function saveChangesWrapper(details: IProductDetails, sendToApprove = false) {
+  async function saveChangesWrapper(details?: IProductDetails, sendToApprove = false) {
     await saveChanges({ ...details, id: item.value?.id });
 
-    if (sendToApprove) {
+    if (sendToApprove && item.value?.id) {
       const newRequestCommand = new CreateNewPublicationRequestCommand({
         productId: item.value?.id,
       });
@@ -222,18 +236,20 @@ export const useProductDetails = (args: {
   }
 
   const setCategory = async (selectedCategory: Category) => {
-    currentCategory.value = selectedCategory;
-    item.value.categoryId = selectedCategory.id;
-    const currentProperties = [...(item.value?.properties || [])];
-    item.value.properties = [
-      ...(selectedCategory.properties?.map((prop) => new Property({ ...prop, isReadOnly: false })) || []),
-    ];
-    item.value.properties.forEach((property) => {
-      const previousPropertyValue = currentProperties?.find((item) => item.id === property.id);
-      if (previousPropertyValue) {
-        property.values = previousPropertyValue.values.map((item) => new PropertyValue(item));
-      }
-    });
+    if (item.value) {
+      currentCategory.value = selectedCategory;
+      item.value.categoryId = selectedCategory.id;
+      const currentProperties = [...(item.value?.properties || [])];
+      item.value.properties = [
+        ...(selectedCategory.properties?.map((prop) => new Property({ ...prop, isReadOnly: false })) || []),
+      ];
+      item.value.properties.forEach((property) => {
+        const previousPropertyValue = currentProperties?.find((item) => item.id === property.id);
+        if (previousPropertyValue) {
+          property.values = previousPropertyValue.values?.map((item) => new PropertyValue(item));
+        }
+      });
+    }
   };
 
   const validateGtin = useDebounceFn(async (value: string, property, context) => {
@@ -242,7 +258,7 @@ export const useProductDetails = (args: {
       gtin: value,
     } as ISellerProduct;
     const productErrors = await validateProduct(sellerProduct);
-    const errors = productErrors?.filter((error) => error.propertyName.toLowerCase() === "gtin");
+    const errors = productErrors?.filter((error) => error.propertyName?.toLowerCase() === "gtin");
     validationState.value.setFieldError(
       property,
       errors
@@ -302,7 +318,7 @@ export const useProductDetails = (args: {
       revertStagedChanges: {
         isVisible: computed(() => !!args.props.param),
         async clickHandler() {
-          await revertStagedChanges(item.value.id);
+          await revertStagedChanges(item.value?.id ?? "");
           args.emit("parent:call", {
             method: "reload",
           });
@@ -318,13 +334,13 @@ export const useProductDetails = (args: {
       images: {
         loading: imageLoading,
         async upload(files, startingSortOrder) {
-          return (await imageUpload(files, `products/${item.value.id}`, startingSortOrder)).map((x) => new Image(x));
+          return (await imageUpload(files, `products/${item.value?.id}`, startingSortOrder)).map((x) => new Image(x));
         },
         remove(files) {
-          return imageRemove(files, item.value.images);
+          return imageRemove(files, item.value?.images ?? []);
         },
         edit(files) {
-          return imageEdit(files, item.value.images).map((x) => new Image(x));
+          return imageEdit(files, item.value?.images ?? []).map((x) => new Image(x));
         },
       },
     },
@@ -346,7 +362,7 @@ export const useProductDetails = (args: {
 
         item.value = Object.assign(item.value, { descriptions: [] });
 
-        item.value.descriptions = item.value.descriptions.concat(
+        item.value.descriptions = item.value.descriptions?.concat(
           languages.value.map(
             (x) =>
               new EditorialReview({
@@ -365,8 +381,10 @@ export const useProductDetails = (args: {
   );
 
   async function markProductDirty() {
-    item.value.hasStagedChanges = true;
-    await saveChangesWrapper({ ...item.value }, false);
+    if (item.value) {
+      item.value.hasStagedChanges = true;
+      await saveChangesWrapper({ ...item.value }, false);
+    }
   }
 
   return {

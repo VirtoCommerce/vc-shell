@@ -1,4 +1,3 @@
-import { useUser } from "@vc-shell/framework";
 import { VcmpSellerRatingAndReviewsClient } from "@vcmp-vendor-portal/api/marketplacevendor";
 import { ref, Ref } from "vue";
 
@@ -11,13 +10,11 @@ interface IUseRating {
 
 export default (): IUseRating => {
   const loading = ref(false);
-  const rating = ref<number>(undefined);
-  const reviewCount = ref<number>(undefined);
+  const rating = ref() as Ref<number>;
+  const reviewCount = ref<number>() as Ref<number>;
 
   async function getApiClient() {
-    // const { getAccessToken } = useUser();
     const client = new VcmpSellerRatingAndReviewsClient();
-    // client.setAuthToken(await getAccessToken());
     return client;
   }
 
@@ -27,8 +24,8 @@ export default (): IUseRating => {
     try {
       loading.value = true;
       const currentSellerRating = await client.getCurrentSellerRating();
-      rating.value = currentSellerRating?.rating;
-      reviewCount.value = currentSellerRating?.reviewCount;
+      rating.value = currentSellerRating?.rating ?? 0;
+      reviewCount.value = currentSellerRating?.reviewCount ?? 0;
     } catch (e) {
       console.error(e);
       throw e;

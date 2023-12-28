@@ -225,11 +225,11 @@ const bladeToolbar = ref<IBladeToolbar[]>([
             method: "reload",
           });
           emit("close:blade");
-        } catch (e) {
+        } catch (e: unknown) {
           if (e === "EMAIL_ALREADY_EXISTS") {
             showEmailExistsError();
           } else {
-            throw new Error(e.message);
+            throw e;
           }
         }
       } else {
@@ -261,7 +261,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
       }
     },
     isVisible: !!props.param,
-    disabled: computed(() => props.param && !(!isDisabled.value && modified.value)),
+    disabled: computed(() => !!props.param && !(!isDisabled.value && modified.value)),
   },
   {
     id: "reset",
@@ -271,7 +271,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
       resetEntries();
     },
     isVisible: !!props.param,
-    disabled: computed(() => props.param && !modified.value),
+    disabled: computed(() => !!props.param && !modified.value),
   },
   {
     id: "delete",
@@ -283,7 +283,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
       }
     },
     isVisible: !!props.param,
-    disabled: computed(() => isOwnerReadonly.value || user.value?.userName === props.options.user?.userName),
+    disabled: computed(() => isOwnerReadonly.value || user.value?.userName === props.options?.user?.userName),
   },
   {
     id: "resend",
@@ -292,10 +292,11 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     async clickHandler() {
       if (props.options && props.options.user && props.options.user.sellerId) {
         try {
-          await sendTeamMemberInvitation({ id: props.options.user.id });
+          await sendTeamMemberInvitation({ id: props.options.user.id! });
           emit("close:blade");
         } catch (e) {
-          throw new Error(e.message);
+          console.error(e);
+          throw e;
         }
       }
     },
@@ -327,7 +328,7 @@ const isActive = computed({
 });
 
 onMounted(async () => {
-  if (props.param && props.options.user) {
+  if (props.param && props.options?.user) {
     handleUserDetailsItem(props.options.user);
 
     if (props.options.user.role === "vcmp-owner-role") {
@@ -337,7 +338,7 @@ onMounted(async () => {
       });
     }
   } else {
-    userDetails.value.role = role.value.id;
+    userDetails.value.role = role.value?.id ?? "";
     handleUserDetailsItem(userDetails.value);
   }
 });

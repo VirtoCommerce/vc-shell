@@ -86,11 +86,11 @@
                 :property="setting"
                 :dictionary="setting.isDictionary"
                 :disabled="setting.isReadOnly"
-                :name="setting.name"
+                :name="setting.name ?? ''"
                 :options-getter="loadDictionaries"
                 :model-value="setting.value"
-                :required="setting.isRequired"
-                :value-type="setting.valueType"
+                :required="setting.isRequired ?? false"
+                :value-type="setting.valueType ?? ''"
                 :placeholder="setting.defaultValue"
                 @update:model-value="setSettingsValue"
               >
@@ -242,7 +242,7 @@ const sampleTemplateUrl = computed(() => {
 });
 
 const title = computed(() =>
-  props.options.importer ? props.options.importer.typeName : t("IMPORT.PAGES.PROFILE_DETAILS.TITLE"),
+  props.options?.importer ? props.options?.importer.typeName : t("IMPORT.PAGES.PROFILE_DETAILS.TITLE"),
 );
 
 onMounted(async () => {
@@ -257,7 +257,7 @@ function setSettingsValue(data: { property: ObjectSettingEntry; value: string | 
 
   const mutatedSetting = new ObjectSettingEntry({ ...property, value });
 
-  profileDetails.value.settings.forEach((x) => {
+  profileDetails.value.settings?.forEach((x) => {
     if (x.id === property.id) {
       Object.assign(x, mutatedSetting);
     }
@@ -271,15 +271,18 @@ function loadDictionaries(setting: ObjectSettingEntry) {
       alias: val,
     }));
   }
+  throw new Error(`Error in: ${setting}. 'allowedValues' is empty.`);
 }
 
 async function deleteProfile() {
-  await deleteImportProfile({ id: props.param });
+  if (props.param) {
+    await deleteImportProfile({ id: props.param });
 
-  emit("parent:call", {
-    method: "reloadParent",
-  });
-  emit("close:blade");
+    emit("parent:call", {
+      method: "reloadParent",
+    });
+    emit("close:blade");
+  }
 }
 
 onBeforeRouteLeave(async (to, from) => {

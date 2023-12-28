@@ -46,7 +46,7 @@
           <div class="tw-mt-3 tw-w-full tw-flex tw-justify-between">
             <div class="tw-truncate tw-grow tw-basis-0 tw-mr-2">
               <VcHint>Rating</VcHint>
-              <VcRating :rating="item.rating"></VcRating>
+              <VcRating :rating="item.rating ?? 0"></VcRating>
             </div>
             <div class="tw-truncate tw-grow tw-basis-0 tw-mr-2">
               <VcHint>Created date</VcHint>
@@ -73,7 +73,7 @@
 
     <!-- Override rating column template -->
     <template #item_rating="itemData">
-      <VcRating :rating="itemData.item.rating"></VcRating>
+      <VcRating :rating="itemData.item.rating ?? 0"></VcRating>
     </template>
 
     <!-- Override status column template -->

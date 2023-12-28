@@ -100,7 +100,7 @@
             <VcTable
               :multiselect="false"
               :columns="columns"
-              :items="items"
+              :items="items ?? []"
               :header="false"
               :footer="false"
               state-key="orders_edit"
@@ -119,7 +119,7 @@
 
               <template #item_fee="itemData">
                 <div
-                  v-if="itemData.item.feeDetails.length"
+                  v-if="itemData.item.feeDetails?.length"
                   class="tw-flex tw-flex-col"
                 >
                   <div>{{ itemData.item.feeDetails[0].description }}</div>
@@ -174,7 +174,7 @@
                       </div>
                     </div>
                     <div
-                      v-if="itemData.item.feeDetails.length"
+                      v-if="itemData.item.feeDetails?.length"
                       class="tw-truncate tw-grow-[2] tw-basis-0"
                     >
                       <VcHint>{{ $t("ORDERS.PAGES.EDIT.ITEMS_LIST.COMMISSION") }}</VcHint>
@@ -239,7 +239,7 @@ const { loading: loadingOrders } = useOrders();
 const locale = window.navigator.language;
 const items = computed(() => order.value?.items);
 const createdDate = computed(() => {
-  const date = new Date(order.value?.createdDate);
+  const date = new Date(order.value?.createdDate ?? "");
   return moment(date).locale(locale).format("L LT");
 });
 
@@ -274,12 +274,12 @@ const refreshToolbar = (sm: StateMachineInstance) => {
     },
     disabled: !props.param,
   });
-  sm.currentState.transitions.forEach((transition) => {
+  sm.currentState?.transitions?.forEach((transition) => {
     bladeToolbar.value.push({
       title: transition.trigger,
       icon: transition.icon ?? "fas fa-tasks",
       async clickHandler() {
-        const currentStateMachine = await fireTrigger(sm.id, transition.trigger, props.param);
+        const currentStateMachine = await fireTrigger(sm.id!, transition.trigger!, props.param!);
         emit("parent:call", {
           method: "reload",
         });

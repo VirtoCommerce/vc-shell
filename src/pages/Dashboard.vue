@@ -217,7 +217,7 @@ async function ordersClick(item: CustomerOrder) {
 }
 
 function calcQty(items: OrderLineItem[]) {
-  return items.reduce((acc, item) => acc + item.quantity, 0);
+  return items.reduce((acc, item) => acc + (item.quantity ?? 0), 0);
 }
 </script>
 

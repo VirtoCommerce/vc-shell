@@ -103,16 +103,16 @@
                     <VcCol class="tw-text-[#a1c0d4]">
                       {{ $t("IMPORT.PAGES.PRODUCT_IMPORTER.UPLOAD_STATUS.IN_PROGRESS") }}
                       <VcProgress
-                        :key="importStatus.progress"
+                        :key="importStatus?.progress"
                         class="tw-mt-3"
-                        :value="importStatus.progress"
+                        :value="importStatus?.progress"
                         :variant="progressbarVariant"
                       ></VcProgress>
                       <VcHint
-                        v-if="importStatus.estimatingRemaining || importStatus.estimatedRemaining"
+                        v-if="importStatus?.estimatingRemaining || importStatus?.estimatedRemaining"
                         class="tw-py-3"
                       >
-                        <template v-if="importStatus.estimatingRemaining">
+                        <template v-if="importStatus?.estimatingRemaining">
                           {{ $t("IMPORT.PAGES.PRODUCT_IMPORTER.UPLOAD_STATUS.ESTIMATING") }}
                         </template>
                         <template v-else>
@@ -164,7 +164,7 @@
         </div>
         <!-- Skipped details table -->
         <VcCol
-          v-if="importStarted && reversedErrors.length"
+          v-if="importStarted && reversedErrors?.length"
           class="tw-p-3"
         >
           <VcCard
@@ -177,7 +177,7 @@
               :columns="skippedColumns"
               :header="false"
               :footer="false"
-              :items="reversedErrors"
+              :items="reversedErrors ?? []"
               state-key="import_errors"
             >
               <!-- Override errors column template -->
@@ -204,7 +204,7 @@
           >
             <VcTable
               :columns="columns"
-              :items="importHistory"
+              :items="importHistory ?? []"
               :header="false"
               :loading="importLoading"
               :total-count="totalHistoryCount"
@@ -365,7 +365,7 @@ watch(
   (newVal: ImportPushNotification[]) => {
     newVal.forEach((message) => {
       if (!message.finished) {
-        if (!notificationId.value) {
+        if (!notificationId.value && message.title) {
           notificationId.value = notification(message.title, {
             timeout: false,
           });
@@ -459,11 +459,11 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     async clickHandler() {
       const historyItem =
         importHistory.value && importHistory.value.find((x) => x.jobId === props.options?.importJobId);
-      if (historyItem.fileUrl) {
+      if (historyItem?.fileUrl) {
         const correctedProfile = profile?.value;
         correctedProfile.importFileUrl = historyItem.fileUrl;
         correctedProfile.inProgress = false;
-        correctedProfile.jobId = null;
+        correctedProfile.jobId = undefined;
         await start(correctedProfile);
       }
     },
@@ -522,23 +522,23 @@ const importBadges = computed((): IImportBadges[] => {
       title:
         t("IMPORT.PAGES.PRODUCT_IMPORTER.UPLOAD_STATUS.STARTED_AT") +
         " " +
-        ("created" in importStatus.value.notification
+        (importStatus.value && importStatus.value.notification && "created" in importStatus.value.notification
           ? moment(importStatus.value.notification.created).locale(locale).format("LTS")
-          : "createdDate" in importStatus.value.notification
+          : importStatus.value && importStatus.value.notification && "createdDate" in importStatus.value.notification
             ? moment(importStatus.value.notification.createdDate).locale(locale).format("LTS")
             : null),
       description:
-        "created" in importStatus.value.notification
+        importStatus.value && importStatus.value.notification && "created" in importStatus.value.notification
           ? moment(importStatus.value.notification.created).locale(locale).fromNow()
-          : "createdDate" in importStatus.value.notification
+          : importStatus.value && importStatus.value.notification && "createdDate" in importStatus.value.notification
             ? moment(importStatus.value.notification.createdDate).locale(locale).fromNow()
-            : null,
+            : undefined,
     },
     {
       id: "linesRead",
       icon: "fas fa-check-circle",
       color: "#87B563",
-      title: importStatus.value.notification.totalCount,
+      title: importStatus.value?.notification?.totalCount,
       description: t("IMPORT.PAGES.PRODUCT_IMPORTER.UPLOAD_STATUS.LINES_READ"),
     },
     {
@@ -546,11 +546,19 @@ const importBadges = computed((): IImportBadges[] => {
       icon: "fas fa-check-circle",
       color: "#87B563",
       title:
-        "errorCount" in importStatus.value.notification
+        importStatus.value &&
+        importStatus.value.notification &&
+        "errorCount" in importStatus.value.notification &&
+        importStatus.value.notification.errorCount &&
+        importStatus.value.notification.processedCount
           ? importStatus.value.notification.processedCount - importStatus.value.notification.errorCount >= 0
             ? importStatus.value.notification.processedCount - importStatus.value.notification.errorCount
             : 0
-          : "errorsCount" in importStatus.value.notification
+          : importStatus.value &&
+              importStatus.value.notification &&
+              "errorsCount" in importStatus.value.notification &&
+              importStatus.value.notification.errorsCount &&
+              importStatus.value.notification.processedCount
             ? importStatus.value.notification.processedCount - importStatus.value.notification.errorsCount >= 0
               ? importStatus.value.notification.processedCount - importStatus.value.notification.errorsCount
               : 0
@@ -562,9 +570,15 @@ const importBadges = computed((): IImportBadges[] => {
       icon: "fas fa-exclamation-circle",
       color: "#FFBB0D",
       title:
-        "errorCount" in importStatus.value.notification
+        importStatus.value &&
+        importStatus.value.notification &&
+        "errorCount" in importStatus.value.notification &&
+        importStatus.value.notification.errorCount
           ? importStatus.value.notification.errorCount
-          : "errorsCount" in importStatus.value.notification
+          : importStatus.value &&
+              importStatus.value.notification &&
+              "errorsCount" in importStatus.value.notification &&
+              importStatus.value.notification.errorsCount
             ? importStatus.value.notification.errorsCount
             : 0,
       description: t("IMPORT.PAGES.PRODUCT_IMPORTER.UPLOAD_STATUS.SKIPPED"),
@@ -603,8 +617,8 @@ const uploadActions = ref<INotificationActions[]>([
           });
           importPreview.value = true;
         }
-      } catch (e) {
-        errorMessage.value = e.message;
+      } catch (e: unknown) {
+        errorMessage.value = (e as Error).message;
         throw e;
       }
     },
@@ -614,7 +628,7 @@ const uploadActions = ref<INotificationActions[]>([
   {
     name: computed(() => t("IMPORT.PAGES.ACTIONS.UPLOADER.ACTIONS.START_IMPORT")),
     async clickHandler() {
-      await start(null);
+      await start();
     },
     outline: false,
     isVisible: computed(() => isValid.value && !importStarted.value),
@@ -652,9 +666,9 @@ const estimatedRemaining = computed(() => {
 const previewTotalNum = computed(() => preview.value?.totalCount);
 
 const reversedErrors = computed(() => {
-  const errors = _.cloneDeep(importStatus.value.notification.errors);
+  const errors = _.cloneDeep(importStatus.value?.notification?.errors);
 
-  return errors.reverse();
+  return errors?.reverse();
 });
 
 const reportUrl = computed(() => importStatus.value?.notification?.reportUrl);
@@ -677,7 +691,7 @@ onMounted(async () => {
       jobId: props.options?.importJobId,
     });
   }
-  if (props.options && props.options?.importJobId) {
+  if (props.param && props.options && props.options?.importJobId) {
     const historyItem = importHistory.value && importHistory.value.find((x) => x.jobId === props.options?.importJobId);
     if (historyItem) {
       updateStatus(historyItem);
@@ -691,53 +705,56 @@ function clearErrorMessage() {
   errorMessage.value = "";
 }
 
-async function uploadCsv(files: FileList) {
-  try {
-    fileLoading.value = true;
-    const formData = new FormData();
-    formData.append("file", files[0]);
-    const result = await fetch(`/api/assets?folderUrl=/tmp`, {
-      method: "POST",
-      body: formData,
-    });
-    const response = await result.json();
-    if (response?.length) {
-      setFile(response[0]);
+async function uploadCsv(files: FileList | null) {
+  if (files && files.length) {
+    try {
+      fileLoading.value = true;
+      const formData = new FormData();
+      formData.append("file", files[0]);
+      const result = await fetch(`/api/assets?folderUrl=/tmp`, {
+        method: "POST",
+        body: formData,
+      });
+      const response = await result.json();
+      if (response?.length) {
+        setFile(response[0]);
+      }
+      files = null;
+    } catch (e: unknown) {
+      errorMessage.value = (e as Error).message;
+      if (files)
+        setFile({
+          name: files[0].name,
+          size: files[0].size / (1024 * 1024),
+        });
+      throw e;
+    } finally {
+      fileLoading.value = false;
     }
-    files = null;
-  } catch (e) {
-    errorMessage.value = e.message;
-    setFile({
-      name: files[0].name,
-      size: files[0].size / (1024 * 1024),
-    });
-    throw e;
-  } finally {
-    fileLoading.value = false;
   }
 }
 
 async function saveExternalUrl() {
   setFile({
-    name: profile.value.importFileUrl.substring(profile.value.importFileUrl.lastIndexOf("/") + 1),
+    name: profile.value.importFileUrl?.substring(profile.value.importFileUrl.lastIndexOf("/") + 1),
     url: profile.value.importFileUrl,
     size: Number(0),
   });
 }
 
-async function start(profile: ExtProfile) {
+async function start(profile?: ExtProfile) {
   try {
     errorMessage.value = "";
     await startImport(profile);
-  } catch (e) {
-    errorMessage.value = e.message;
+  } catch (e: unknown) {
+    errorMessage.value = (e as Error).message;
     throw e;
   }
 }
 
 function initializeImporting() {
   importPreview.value = false;
-  start(null);
+  start();
 }
 
 function reloadParent() {

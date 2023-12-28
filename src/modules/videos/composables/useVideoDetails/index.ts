@@ -29,12 +29,16 @@ export interface VideoDetailsScope extends DetailsBaseBladeScope {
 const { getApiClient } = useApiClient(VcmpSellerCatalogClient);
 
 export const useVideoDetails = (args: {
-  props: InstanceType<typeof DynamicBladeForm>["$props"];
+  props: InstanceType<typeof DynamicBladeForm>["$props"] & { options: { productId: string } };
   emit: InstanceType<typeof DynamicBladeForm>["$emit"];
   mounted: Ref<boolean>;
 }): UseDetails<IVideo, VideoDetailsScope> => {
   const detailsFactory = useDetailsFactory<IVideo>({
-    load: async ({ id }) => await (await getApiClient()).getVideoById(id),
+    load: async (item) => {
+      if (item?.id) {
+        return await (await getApiClient()).getVideoById(item.id);
+      }
+    },
     saveChanges: async (videoItem) => {
       await (await getApiClient()).update([videoItem as Video]);
       await markProductDirty();
@@ -56,7 +60,7 @@ export const useVideoDetails = (args: {
   const videoUrl = ref("");
 
   const bladeTitle = computed(() =>
-    args.props.param ? t("VIDEOS.PAGES.DETAILS.TITLE") : t("VIDEOS.PAGES.DETAILS.TITLE_ADD")
+    args.props.param ? t("VIDEOS.PAGES.DETAILS.TITLE") : t("VIDEOS.PAGES.DETAILS.TITLE_ADD"),
   );
 
   const videoUrlHandler = computed({
@@ -68,13 +72,13 @@ export const useVideoDetails = (args: {
     },
   });
 
-  async function loadWrapper(args: { id: string }) {
+  async function loadWrapper(args?: { id: string }) {
     if (args) {
       await load(args);
     }
   }
 
-  async function saveChangesWrapper(video: IVideo) {
+  async function saveChangesWrapper(video?: IVideo) {
     await saveChanges(video);
 
     if (item.value?.id) {
@@ -87,7 +91,7 @@ export const useVideoDetails = (args: {
       contentUrl: videoUrl.value,
       languageCode: currentLocale.value,
       ownerType: "Product",
-      ownerId: args.props.options.productId as string,
+      ownerId: args.props.options?.productId,
     });
 
     const client = await getApiClient();
@@ -113,7 +117,7 @@ export const useVideoDetails = (args: {
       if (!videoLoadedWithoutErrors.value) {
         validationState.value.setFieldError("videoUrl", t(`VIDEOS.PAGES.DETAILS.FIELDS.ADD.ERROR`));
       } else {
-        validationState.value.setFieldError("videoUrl", null);
+        validationState.value.setFieldError("videoUrl", undefined);
       }
     }
   };
@@ -150,7 +154,7 @@ export const useVideoDetails = (args: {
       }
       validationState.value.modified = false;
       validationState.value.dirty = false;
-    }
+    },
   );
 
   return {

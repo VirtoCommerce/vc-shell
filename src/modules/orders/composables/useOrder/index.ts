@@ -33,7 +33,9 @@ export default (): IUseOrder => {
 
   const { loading: orderLoading, action: loadOrder } = useAsync<GetOrderByIdPayload>(async (payload) => {
     const client = await getSellerOrdersApiClient();
-    order.value = await client.getById(payload.id);
+    if (payload) {
+      order.value = await client.getById(payload.id);
+    }
   });
 
   // TODO: Remove after PT-10642 will be fixed
@@ -41,16 +43,18 @@ export default (): IUseOrder => {
 
   const { loading: pdfLoading, action: loadPdf } = useAsync(async () => {
     const client = await getOrderApiClient();
-    const response = await client.getInvoicePdf(order.value.number);
-    const dataType = response.data.type;
-    const binaryData = [];
-    binaryData.push(response.data);
-    const downloadLink = document.createElement("a");
-    downloadLink.href = window.URL.createObjectURL(new Blob(binaryData, { type: dataType }));
-    downloadLink.setAttribute("download", response.fileName || `Invoice ${order.value.number}`);
-    document.body.appendChild(downloadLink);
-    downloadLink.click();
-    document.body.removeChild(downloadLink);
+    if (order.value.number) {
+      const response = await client.getInvoicePdf(order.value.number);
+      const dataType = response.data.type;
+      const binaryData = [];
+      binaryData.push(response.data);
+      const downloadLink = document.createElement("a");
+      downloadLink.href = window.URL.createObjectURL(new Blob(binaryData, { type: dataType }));
+      downloadLink.setAttribute("download", response.fileName || `Invoice ${order.value.number}`);
+      document.body.appendChild(downloadLink);
+      downloadLink.click();
+      document.body.removeChild(downloadLink);
+    }
   });
 
   const loading = useLoading(orderLoading, pdfLoading);
@@ -84,7 +88,7 @@ export default (): IUseOrder => {
               break;
           }
           return acc;
-        }, []);
+        }, [] as IShippingInfo[]);
       return info && info.length ? info : [{ label: "Sold to" }, { label: "Ship to" }];
     }),
     loadOrder,

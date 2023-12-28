@@ -1,7 +1,7 @@
 <template>
   <NotificationTemplate
     :color="notificationStyle.color"
-    :title="notification.title"
+    :title="notification.title ?? ''"
     :icon="notificationStyle.icon"
     :notification="notification"
   >

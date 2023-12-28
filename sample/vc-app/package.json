@@ -16,7 +16,7 @@
     "build:types-modules": "vue-tsc --declaration --emitDeclarationOnly --p ./src/modules/tsconfig.json --outDir dist/modules/types",
     "type-check": "vue-tsc --noEmit",
     "lint-staged": "lint-staged",
-    "generate:api-client": "cross-env api-client-generator --color -- APP_PLATFORM_MODULES='[MarketplaceVendor]' APP_API_CLIENT_DIRECTORY=./src/api_client/",
+    "generate:api-client": "cross-env api-client-generator  --APP_PLATFORM_MODULES='[MarketplaceVendor]' --APP_API_CLIENT_DIRECTORY=./src/api_client/",
     "release": "tsx scripts/release.ts --dry"
   },
   "workspaces": [

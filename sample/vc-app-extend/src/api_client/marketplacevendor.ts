@@ -6,6 +6,7 @@
 
 /* tslint:disable */
 /* eslint-disable */
+// @ts-nocheck
 // ReSharper disable InconsistentNaming
 
 export class AuthApiBase {

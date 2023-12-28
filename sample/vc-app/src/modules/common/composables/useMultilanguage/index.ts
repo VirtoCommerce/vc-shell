@@ -16,7 +16,7 @@ const { getApiClient } = useApiClient(VcmpSellerCatalogClient);
 
 const currentLocale = ref("en-US");
 const languages = ref<string[]>([]);
-const localesOptions = ref([]);
+const localesOptions = ref<{ label: string; value: string }[]>([]);
 
 export const useMultilanguage = (): UseMultilanguage => {
   const { loading: languagesLoading, action: getLanguages } = useAsync(async () => {

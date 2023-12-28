@@ -174,7 +174,7 @@ const { moduleNotifications, markAsRead } = useNotifications("OfferDeletedDomain
 const sort = ref("createdDate:DESC");
 const searchValue = ref();
 const selectedItemId = ref<string>();
-const selectedOfferIds = ref([]);
+const selectedOfferIds = ref([]) as Ref<string[]>;
 const allSelected = ref(false);
 const isDesktop = inject<Ref<boolean>>("isDesktop");
 
@@ -182,7 +182,7 @@ watch(
   moduleNotifications,
   (newVal) => {
     newVal.forEach((message) => {
-      notification.success(message.title, {
+      notification.success(message.title ?? "", {
         onClose() {
           markAsRead(message);
         },
@@ -226,7 +226,7 @@ const reload = async () => {
   selectedOfferIds.value = [];
   await loadOffers({
     ...searchQuery.value,
-    skip: (currentPage.value - 1) * searchQuery.value.take,
+    skip: (currentPage.value - 1) * (searchQuery.value.take ?? 10),
     sort: sort.value,
   });
   emit("parent:call", {
@@ -416,7 +416,7 @@ const addOffer = () => {
   openBlade({
     blade: markRaw(OffersDetails),
     options: {
-      sellerProduct: props.options.sellerProduct,
+      sellerProduct: props.options?.sellerProduct ?? {},
     },
   });
 };
@@ -424,12 +424,12 @@ const addOffer = () => {
 const onPaginationClick = async (page: number) => {
   await loadOffers({
     ...searchQuery.value,
-    skip: (page - 1) * searchQuery.value.take,
+    skip: (page - 1) * (searchQuery.value.take ?? 10),
   });
 };
 
 const onSelectionChanged = (items: IOffer[]) => {
-  selectedOfferIds.value = items.map((item) => item.id);
+  selectedOfferIds.value = items.map((item) => item.id!);
 };
 
 const actionBuilder = (): IActionBuilderResult[] => {
@@ -440,11 +440,13 @@ const actionBuilder = (): IActionBuilderResult[] => {
     variant: "danger",
     leftActions: true,
     clickHandler(item: IOffer) {
-      if (!selectedOfferIds.value.includes(item.id)) {
-        selectedOfferIds.value.push(item.id);
+      if (item.id) {
+        if (!selectedOfferIds.value.includes(item.id)) {
+          selectedOfferIds.value.push(item.id);
+        }
+        removeOffers();
+        selectedOfferIds.value = [];
       }
-      removeOffers();
-      selectedOfferIds.value = [];
     },
   });
 
@@ -463,7 +465,7 @@ async function removeOffers() {
   ) {
     emit("close:children");
     await deleteOffers(allSelected.value, selectedOfferIds.value);
-    if (searchQuery.value.skip >= searchQuery.value.take) {
+    if (searchQuery.value.skip && searchQuery.value.take && searchQuery.value.skip >= searchQuery.value.take) {
       if (allSelected.value) {
         searchQuery.value.skip = 0;
       } else {

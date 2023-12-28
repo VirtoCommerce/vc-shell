@@ -1,12 +1,10 @@
 import { Ref, ref, computed } from "vue";
-import { useUser } from "@vc-shell/framework";
 import {
   VcmpSellerCatalogClient,
   IOffer,
   ISearchOffersQuery,
   SearchOffersQuery,
   SearchOffersResult,
-  IBulkOffersDeleteCommand,
   BulkOffersDeleteCommand,
 } from "@vc-app/api";
 
@@ -37,9 +35,7 @@ export default (options?: IUseOffersOptions): IUseOffers => {
   const loading = ref<boolean>(false);
 
   async function getApiClient(): Promise<VcmpSellerCatalogClient> {
-    // const { getAccessToken } = useUser();
     const client = new VcmpSellerCatalogClient();
-    // client.setAuthToken(await getAccessToken());
     return client;
   }
 
@@ -84,7 +80,7 @@ export default (options?: IUseOffersOptions): IUseOffers => {
       all: allSelected,
     });
     if (allSelected) {
-      command.offerIds = null;
+      command.offerIds = undefined;
     }
 
     try {
@@ -99,9 +95,9 @@ export default (options?: IUseOffersOptions): IUseOffers => {
   }
 
   return {
-    offers: computed(() => searchResult.value?.results),
-    totalCount: computed(() => searchResult.value?.totalCount),
-    pages: computed(() => Math.ceil(searchResult.value?.totalCount / pageSize)),
+    offers: computed(() => searchResult.value?.results ?? []),
+    totalCount: computed(() => searchResult.value?.totalCount ?? 0),
+    pages: computed(() => Math.ceil((searchResult.value?.totalCount ?? 1) / pageSize)),
     currentPage: computed(() => (searchQuery.value?.skip || 0) / Math.max(1, pageSize) + 1),
     loading: computed(() => loading.value),
     searchQuery,

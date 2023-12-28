@@ -31,12 +31,12 @@ export const useOffersList = (args: {
     remove: async (query, customQuery) => {
       const command = new BulkOffersDeleteCommand({
         query: new SearchOffersQuery(query),
-        offerIds: customQuery.ids,
+        offerIds: customQuery.ids ?? [],
         all: customQuery.allSelected,
       });
 
       if (customQuery.allSelected) {
-        command.offerIds = null;
+        command.offerIds = undefined;
       }
       return (await getApiClient()).bulkDeleteOffers(command);
     },

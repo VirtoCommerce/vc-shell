@@ -16,7 +16,7 @@ const { getApiClient } = useApiClient(VcmpSellerCatalogClient);
 export const useDynamicProperties = () => {
   const { loading: dictionaryItemsLoading, action: searchDictionaryItems } = useAsync<
     IPropertyDictionaryItemSearchCriteria,
-    IPropertyDictionaryItem[]
+    IPropertyDictionaryItem[] | undefined
   >(async (args) => {
     return (await (await getApiClient()).searchPropertyDictionaryItems(new PropertyDictionaryItemSearchCriteria(args)))
       .results;
@@ -25,55 +25,56 @@ export const useDynamicProperties = () => {
   function getPropertyValue(property: IProperty, locale: string) {
     if (property.multilanguage) {
       if (property.multivalue) {
-        return property.values.filter((x) => x.languageCode == locale);
-      } else if (property.values.find((x) => x.languageCode == locale) == undefined) {
-        property.values.push(
+        return property.values?.filter((x) => x.languageCode == locale);
+      } else if (property.values?.find((x) => x.languageCode == locale) == undefined) {
+        property.values?.push(
           new PropertyValue({
             propertyName: property.name,
             propertyId: property.id,
             languageCode: locale,
             valueType: property.valueType as unknown as PropertyValueValueType,
-          })
+          }),
         );
       }
 
+      const propValue = property.values?.find((x) => x.languageCode == locale);
       if (property.dictionary) {
-        return (
-          property.values.find((x) => x.languageCode == locale) &&
-          property.values.find((x) => x.languageCode == locale).valueId
-        );
+        return propValue && propValue?.valueId;
       }
-      return property.values.find((x) => x.languageCode == locale).value;
+      return propValue?.value;
     } else {
       if (property.multivalue) {
         return property.values;
       }
       if (property.dictionary) {
-        return property.values[0] && property.values[0].valueId;
+        return property.values && property.values[0] && property.values[0].valueId;
       }
-      return property.values[0] && property.values[0].value;
+      return property.values && property.values[0] && property.values[0].value;
     }
   }
 
   async function loadDictionaries(property: IProperty, keyword?: string, locale?: string) {
-    let dictionaryItems = await searchDictionaryItems({
-      propertyIds: [property.id],
-      keyword,
-      skip: 0,
-    });
-    if (locale) {
-      dictionaryItems = dictionaryItems.map((x) =>
-        Object.assign(x, { value: x.localizedValues.find((v) => v.languageCode == locale)?.value ?? x.alias })
-      );
+    if (property.id) {
+      let dictionaryItems = await searchDictionaryItems({
+        propertyIds: [property.id],
+        keyword,
+        skip: 0,
+      });
+      if (locale) {
+        dictionaryItems = dictionaryItems?.map((x) =>
+          Object.assign(x, { value: x.localizedValues?.find((v) => v.languageCode == locale)?.value ?? x.alias }),
+        );
+      }
+      return dictionaryItems!;
     }
-    return dictionaryItems;
+    throw new Error("Could not load dictionary.");
   }
 
   function handleDictionaryValue(
     property: IProperty,
     valueId: string,
     dictionary: PropertyDictionaryItem[],
-    locale?: string
+    locale?: string,
   ) {
     let valueValue;
     const dictionaryItem = dictionary.find((x) => x.id === valueId);
@@ -81,7 +82,7 @@ export const useDynamicProperties = () => {
       return undefined;
     }
 
-    if (dictionaryItem["value"]) {
+    if ("value" in dictionaryItem && dictionaryItem["value"]) {
       valueValue = dictionaryItem["value"];
     } else {
       valueValue = dictionaryItem.alias;
@@ -112,10 +113,10 @@ export const useDynamicProperties = () => {
               return new PropertyValue(
                 handleDictionaryValue(
                   property,
-                  item.valueId,
+                  item.valueId!,
                   dictionary.map((x) => new PropertyDictionaryItem(x)),
-                  locale
-                )
+                  locale,
+                ),
               );
             } else {
               return new PropertyValue(item);
@@ -128,8 +129,8 @@ export const useDynamicProperties = () => {
                 property,
                 value,
                 dictionary.map((x) => new PropertyDictionaryItem(x)),
-                locale
-              )
+                locale,
+              ),
             ),
           ];
         }
@@ -139,8 +140,8 @@ export const useDynamicProperties = () => {
               if (dictionary.find((x) => x.id === item.id)) {
                 const handledValue = handleDictionaryValue(
                   property,
-                  item.id,
-                  dictionary.map((x) => new PropertyDictionaryItem(x))
+                  item.id!,
+                  dictionary.map((x) => new PropertyDictionaryItem(x)),
                 );
                 return new PropertyValue(handledValue);
               } else return new PropertyValue(item);
@@ -150,21 +151,22 @@ export const useDynamicProperties = () => {
                 handleDictionaryValue(
                   property,
                   value,
-                  dictionary.map((x) => new PropertyDictionaryItem(x))
-                )
+                  dictionary.map((x) => new PropertyDictionaryItem(x)),
+                ),
               ),
             ];
       }
     } else {
       if (property.multilanguage) {
         if (Array.isArray(value)) {
-          property.values = [
+          property.values = property.values && [
             ...property.values.filter((x) => x.languageCode !== locale),
             ...value.map((item) => new PropertyValue(item)),
           ];
         } else {
-          if (property.values.find((x) => x.languageCode == locale)) {
-            property.values.find((x) => x.languageCode == locale).value = value;
+          const propValue = property.values?.find((x) => x.languageCode == locale);
+          if (propValue) {
+            propValue.value = value;
           } else {
             property.values = [new PropertyValue({ value: value, isInherited: false, languageCode: locale })];
           }
@@ -172,9 +174,9 @@ export const useDynamicProperties = () => {
       } else {
         property.values = Array.isArray(value)
           ? value.map((item) => new PropertyValue(item))
-          : property.values[0]
-          ? [Object.assign(property.values[0], { value: value })]
-          : [new PropertyValue({ value: value, isInherited: false })];
+          : property.values?.[0]
+            ? [Object.assign(property.values[0], { value: value })]
+            : [new PropertyValue({ value: value, isInherited: false })];
       }
     }
   }

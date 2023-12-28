@@ -22,8 +22,8 @@
             required
             :clearable="false"
             @update:model-value="
-              (e: string) => {
-                setLocale(e);
+              (e) => {
+                setLocale(e as string);
               }
             "
           >
@@ -255,13 +255,13 @@
                         :property="property"
                         :model-value="getPropertyValue(property, currentLocale)"
                         :options-getter="loadDictionaries"
-                        :required="property.required"
+                        :required="property.required ?? false"
                         :multivalue="property.multivalue"
                         :multilanguage="true"
                         :current-language="lang.value"
-                        :value-type="property.valueType"
+                        :value-type="property.valueType ?? ''"
                         :dictionary="property.dictionary"
-                        :name="property.name"
+                        :name="property.name ?? ''"
                         :rules="{
                           min: property.validationRule?.charCountMin,
                           max: property.validationRule?.charCountMax,
@@ -279,12 +279,12 @@
                       :property="property"
                       :model-value="getPropertyValue(property, currentLocale)"
                       :options-getter="loadDictionaries"
-                      :required="property.required"
+                      :required="property.required ?? false"
                       :multivalue="property.multivalue"
                       :multilanguage="false"
-                      :value-type="property.valueType"
+                      :value-type="property.valueType ?? ''"
                       :dictionary="property.dictionary"
-                      :name="property.name"
+                      :name="property.name ?? ''"
                       :rules="{
                         min: property.validationRule?.charCountMin,
                         max: property.validationRule?.charCountMax,
@@ -317,7 +317,7 @@
                 <div :class="{ 'tw-p-2': $isDesktop.value }">
                   <VcRow
                     v-for="(item, i) in offerDetails.prices"
-                    :ref="setPriceRefs"
+                    :ref="setPriceRefs as any"
                     :key="`${item.id}${i}`"
                     :class="[
                       {
@@ -453,7 +453,7 @@
                           :disabled="readonly"
                           :error="!!errors.length"
                           :error-message="errorMessage"
-                          @update:model-value="(e: string) => setFilterDate('startDate', e)"
+                          @update:model-value="(e) => setFilterDate('startDate', e as string)"
                         ></VcInput>
                       </Field>
                     </VcCol>
@@ -473,7 +473,7 @@
                           :disabled="readonly"
                           :error="!!errors.length"
                           :error-message="errorMessage"
-                          @update:model-value="(e: string) => setFilterDate('endDate', e)"
+                          @update:model-value="(e) => setFilterDate('endDate', e as string)"
                         ></VcInput>
                       </Field>
                     </VcCol>
@@ -510,7 +510,20 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, onMounted, onBeforeUpdate, nextTick, unref, watch, markRaw } from "vue";
+import {
+  computed,
+  ref,
+  onMounted,
+  onBeforeUpdate,
+  nextTick,
+  unref,
+  watch,
+  markRaw,
+  Ref,
+  VNodeRef,
+  Component,
+  ComponentPublicInstance,
+} from "vue";
 import {
   IParentCallArgs,
   IBladeToolbar,
@@ -565,7 +578,9 @@ const { createOffer, updateOffer, offerDetails, fetchProducts, offer, loadOffer,
   useOffer();
 const { currentBladeNavigationData } = useBladeNavigation();
 useBeforeUnload(
-  computed(() => offerDetails.value.prices && offerDetails.value.prices.length && !isDisabled.value && modified.value),
+  computed(
+    () => !!offerDetails.value.prices && !!offerDetails.value.prices.length && !isDisabled.value && modified.value,
+  ),
 );
 
 const { showError, showConfirmation } = usePopup();
@@ -576,12 +591,12 @@ const { setFieldError } = useForm({
 const { moduleNotifications, markAsRead } = useNotifications(["OfferCreatedDomainEvent", "OfferDeletedDomainEvent"]);
 const isFormValid = useIsFormValid();
 const isDirty = useIsFormDirty();
-const priceRefs = ref([]);
+const priceRefs = ref<VNodeRef[]>([]);
 const container = ref();
 const offerLoading = ref(false);
 const productLoading = ref(false);
 const pricingEqual = ref(false);
-const duplicates = ref([]);
+const duplicates = ref([]) as Ref<string[]>;
 const imageUploading = ref(false);
 
 let offerDetailsCopy: IOfferDetails;
@@ -590,7 +605,7 @@ const modified = ref(false);
 const filterTypes = ["Variation"];
 
 const filteredProps = computed(() => {
-  return offerDetails.value?.properties?.filter((x) => filterTypes.includes(x.type));
+  return offerDetails.value?.properties?.filter((x) => filterTypes.includes(x.type!));
 });
 
 const { fulfillmentCentersList, searchFulfillmentCenters } = useFulfillmentCenters();
@@ -659,7 +674,7 @@ watch(
   moduleNotifications,
   (newVal) => {
     newVal.forEach((message) => {
-      notification.success(message.title, {
+      notification.success(message.title ?? "", {
         onClose() {
           markAsRead(message);
         },
@@ -679,7 +694,7 @@ watch(
 watch(
   () => offerDetails.value.inventory,
   () => {
-    offerDetails.value.inventory.forEach((x) => {
+    offerDetails.value.inventory?.forEach((x) => {
       if (!x.inStockQuantity) {
         x.inStockQuantity = 0;
       }
@@ -692,8 +707,8 @@ watch(
   () => offerDetails.value.prices,
   (newVal) => {
     nextTick(() => {
-      const dupes = [];
-      newVal.forEach((o, idx) => {
+      const dupes: string[] = [];
+      newVal?.forEach((o, idx) => {
         if (
           newVal.some((o2, idx2) => {
             return (
@@ -780,11 +795,13 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     icon: "fas fa-trash",
     async clickHandler() {
       if (await showConfirmation(unref(computed(() => t("OFFERSCLASSIC.PAGES.ALERTS.DELETE_OFFER"))))) {
-        await deleteOffer({ id: props.param });
-        emit("parent:call", {
-          method: "reload",
-        });
-        emit("close:blade");
+        if (props.param) {
+          await deleteOffer({ id: props.param });
+          emit("parent:call", {
+            method: "reload",
+          });
+          emit("close:blade");
+        }
       }
     },
     isVisible: computed(() => !!props.param && !offerLoading.value),
@@ -793,7 +810,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
 
 function scrollToLastPrice() {
   nextTick(() => {
-    const element = priceRefs.value[priceRefs.value.length - 1].$el;
+    const element = (priceRefs.value[priceRefs.value.length - 1] as unknown as ComponentPublicInstance).$el;
     const top = element.offsetTop;
     container.value.$el.firstChild.scrollTo({ top, behavior: "smooth" });
   });
@@ -810,7 +827,7 @@ const addEmptyInventory = async () => {
     inventoryInfo.fulfillmentCenterName = x.name;
     inventoryInfo.inStockQuantity = 0;
     inventoryInfo.createdDate = new Date();
-    offerDetails.value.inventory.push(inventoryInfo);
+    offerDetails.value.inventory?.push(inventoryInfo);
   });
 };
 
@@ -821,8 +838,8 @@ function addPrice(scroll = false) {
   offerDetails.value.prices.push(
     new OfferPrice({
       currency: defaultCurrency.value.value,
-      listPrice: null,
-      minQuantity: null,
+      listPrice: 0,
+      minQuantity: 0,
     }),
   );
   if (scroll) {
@@ -831,11 +848,11 @@ function addPrice(scroll = false) {
 }
 
 function removePrice(idx: number) {
-  offerDetails.value.prices.splice(idx, 1);
+  offerDetails.value.prices?.splice(idx, 1);
   priceRefs.value.splice(idx, 1);
 }
 
-function setPriceRefs(el: HTMLDivElement) {
+function setPriceRefs(el: VNodeRef) {
   if (el) {
     priceRefs.value.push(el);
   }
@@ -856,17 +873,17 @@ function generateSku(): string {
   return result;
 }
 
-function setFilterDate(key: string, value: string) {
+function setFilterDate(key: keyof typeof offerDetails.value, value: string) {
   const date = moment(value).toDate();
   if (date instanceof Date && !isNaN(date.valueOf())) {
-    offerDetails.value[key] = date;
+    (offerDetails.value[key] as Date) = date;
   } else {
-    offerDetails.value[key] = undefined;
+    (offerDetails.value[key] as undefined) = undefined;
   }
 }
 
 function getFilterDate(key: string) {
-  const date = offerDetails.value[key] as Date;
+  const date = offerDetails.value[key as keyof typeof offerDetails.value] as Date;
   if (date) {
     return moment(date).format("YYYY-MM-DDTHH:mm");
   }
@@ -922,7 +939,7 @@ const onGalleryItemEdit = (item: Image) => {
 async function sortImage(localImage: IImage) {
   const images = offerDetails.value.images;
   const image = new Image(localImage);
-  if (images.length) {
+  if (images && images.length) {
     const imageIndex = images.findIndex((img) => img.id === localImage.id);
 
     images[imageIndex] = image;
@@ -935,55 +952,60 @@ const editImages = (args: Image[]) => {
   offerDetails.value.images = args;
 };
 
-const onGallerySort = (images: Image[]) => {
-  offerDetails.value.images = images;
+const onGallerySort = (images: IImage[]) => {
+  offerDetails.value.images = images.map((x) => new Image(x));
 };
 
-const onGalleryImageRemove = async (image: Image) => {
+const onGalleryImageRemove = async (image: IImage) => {
   if (await showConfirmation(unref(computed(() => t("OFFERSCLASSIC.PAGES.ALERTS.IMAGE_DELETE_CONFIRMATION"))))) {
-    const imageIndex = offerDetails.value.images.findIndex((img) => {
+    const imageIndex = offerDetails.value.images?.findIndex((img) => {
       if (img.id && image.id) {
         return img.id === image.id;
       } else {
         return img.url === image.url;
       }
     });
-    offerDetails.value.images.splice(imageIndex, 1);
+
+    if (imageIndex) {
+      offerDetails.value.images?.splice(imageIndex, 1);
+    }
   }
 };
 
-const onGalleryUpload = async (files: FileList) => {
-  try {
-    imageUploading.value = true;
-    for (let i = 0; i < files.length; i++) {
-      const formData = new FormData();
-      formData.append("file", files[i]);
-      // const authToken = await getAccessToken();
-      const result = await fetch(`/api/assets?folderUrl=/offers/${offerDetails.value.id}`, {
-        method: "POST",
-        body: formData,
-      });
-      const response = await result.json();
-      if (response?.length) {
-        const image = new Image(response[0]);
-        image.createdDate = new Date();
-        if (offerDetails.value.images && offerDetails.value.images.length) {
-          const lastImageSortOrder = offerDetails.value.images[offerDetails.value.images.length - 1].sortOrder;
-          image.sortOrder = lastImageSortOrder + 1;
-        } else {
-          image.sortOrder = 0;
+const onGalleryUpload = async (files: FileList | null) => {
+  if (files) {
+    try {
+      imageUploading.value = true;
+      for (let i = 0; i < files.length; i++) {
+        const formData = new FormData();
+        formData.append("file", files[i]);
+        // const authToken = await getAccessToken();
+        const result = await fetch(`/api/assets?folderUrl=/offers/${offerDetails.value.id}`, {
+          method: "POST",
+          body: formData,
+        });
+        const response = await result.json();
+        if (response?.length) {
+          const image = new Image(response[0]);
+          image.createdDate = new Date();
+          if (offerDetails.value.images && offerDetails.value.images.length) {
+            const lastImageSortOrder = offerDetails.value.images[offerDetails.value.images.length - 1].sortOrder;
+            image.sortOrder = (lastImageSortOrder ?? 0) + 1;
+          } else {
+            image.sortOrder = 0;
+          }
+          offerDetails.value.images?.push(image);
         }
-        offerDetails.value.images.push(image);
       }
+    } catch (e) {
+      console.log(e);
+      throw e;
+    } finally {
+      imageUploading.value = false;
     }
-  } catch (e) {
-    console.log(e);
-    throw e;
-  } finally {
-    imageUploading.value = false;
-  }
 
-  files = null;
+    files = null;
+  }
 };
 
 onBeforeRouteLeave(async (to) => {

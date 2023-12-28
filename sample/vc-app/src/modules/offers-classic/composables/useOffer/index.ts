@@ -16,25 +16,25 @@ import {
 } from "@vc-app/api";
 import * as _ from "lodash-es";
 
-export type TextOfferDetails = IOfferDetails & {
+export interface TextOfferDetails extends IOfferDetails {
   product?: IOfferProduct;
   salePrice?: number;
   listPrice?: number;
   minQuantity?: number;
   id?: string;
   properties?: Property[];
-};
+}
 
 interface IUseOffer {
   offer: Ref<IOffer>;
   loading: Ref<boolean>;
   modified: Ref<boolean>;
   offerDetails: Ref<TextOfferDetails>;
-  loadOffer: (args: { id: string }) => void;
+  loadOffer: (args: { id: string }) => Promise<void>;
   fetchProducts: (keyword?: string, skip?: number, ids?: string[]) => Promise<SearchOfferProductsResult>;
-  createOffer: (details: TextOfferDetails) => void;
-  updateOffer: (details: TextOfferDetails) => void;
-  deleteOffer: (args: { id: string }) => void;
+  createOffer: (details: TextOfferDetails) => Promise<void>;
+  updateOffer: (details: TextOfferDetails) => Promise<void>;
+  deleteOffer: (args: { id: string }) => Promise<void>;
   makeCopy: () => void;
 }
 
@@ -42,7 +42,7 @@ export default (): IUseOffer => {
   const { user } = useUser();
   const offer = ref<IOffer>({});
   const offerDetails = ref<TextOfferDetails>({} as TextOfferDetails);
-  const offerDetailsCopy: Ref<TextOfferDetails> = ref();
+  const offerDetailsCopy = ref() as Ref<TextOfferDetails>;
   const modified = ref(false);
 
   const loading = ref(false);
@@ -75,7 +75,7 @@ export default (): IUseOffer => {
 
     const client = await getApiClient();
     const command = new CreateNewOfferCommand({
-      sellerName: user.value.userName,
+      sellerName: user.value?.userName,
       productId: details.productId,
       details: new OfferDetails({
         ...details,
@@ -83,7 +83,7 @@ export default (): IUseOffer => {
           (x) =>
             new Property({
               ...x,
-              values: x.values.map((v) => new PropertyValue(v)),
+              values: x.values?.map((v) => new PropertyValue(v)),
             }),
         ),
       }),
@@ -106,7 +106,7 @@ export default (): IUseOffer => {
 
     const client = await getApiClient();
     const command = new UpdateOfferCommand({
-      sellerName: user.value.userName,
+      sellerName: user.value?.userName,
       offerId: (details as IOffer).id,
       offerDetails: new OfferDetails(details),
     });

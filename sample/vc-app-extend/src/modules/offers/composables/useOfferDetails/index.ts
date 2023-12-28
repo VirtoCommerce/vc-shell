@@ -27,7 +27,7 @@ export const useOfferDetails = (args: {
   // Extending useOfferDetails 'scope' and adding a new 'showAlert' method representing 'method' key of new toolbar button:
   const extendedScope = _.merge(
     ref({}),
-    ref(scope.value),
+    ref(scope?.value),
     ref({
       toolbarOverrides: {
         showAlert: {

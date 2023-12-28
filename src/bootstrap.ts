@@ -2,6 +2,7 @@ import { useMenuService } from "@vc-shell/framework";
 import "./pages/Dashboard.vue";
 import { App } from "vue";
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function bootstrap(app: App) {
   const { addMenuItem } = useMenuService();
 

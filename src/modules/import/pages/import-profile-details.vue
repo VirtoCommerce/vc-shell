@@ -285,7 +285,7 @@ async function deleteProfile() {
   }
 }
 
-onBeforeRouteLeave(async (to, from) => {
+onBeforeRouteLeave(async (to) => {
   if (
     currentBladeNavigationData.value?.fullPath &&
     !to.path.includes(currentBladeNavigationData.value?.fullPath) &&

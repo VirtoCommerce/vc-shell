@@ -191,7 +191,7 @@ async function removeFulfillmentCenter() {
   }
 }
 
-onBeforeRouteLeave(async (to, from) => {
+onBeforeRouteLeave(async () => {
   if (modified.value) {
     return await showConfirmation(unref(computed(() => t("SETTINGS.FULFILLMENT_CENTERS.ALERTS.CLOSE_CONFIRMATION"))));
   }

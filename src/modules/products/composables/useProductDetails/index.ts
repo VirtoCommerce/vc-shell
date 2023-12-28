@@ -28,7 +28,7 @@ import {
   DetailsBaseBladeScope,
   useAssets,
 } from "@vc-shell/framework";
-import { ref, computed, reactive, ComputedRef, Ref, watch, MaybeRef } from "vue";
+import { ref, computed, reactive, ComputedRef, Ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { useDynamicProperties, useMultilanguage } from "../../../common";
 import * as _ from "lodash-es";
@@ -252,7 +252,7 @@ export const useProductDetails = (args: {
     }
   };
 
-  const validateGtin = useDebounceFn(async (value: string, property, context) => {
+  const validateGtin = useDebounceFn(async (value: string, property) => {
     const sellerProduct = {
       ...item.value,
       gtin: value,

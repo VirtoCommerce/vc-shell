@@ -111,7 +111,7 @@
 </template>
 
 <script lang="ts" setup>
-import { useBladeNavigation, ITableColumns, notification, useErrorHandler, useMenuService } from "@vc-shell/framework";
+import { useBladeNavigation, ITableColumns, notification, useErrorHandler } from "@vc-shell/framework";
 import { computed, onMounted, ref, watch } from "vue";
 import { OrderLineItem } from "@vcmp-vendor-portal/api/marketplacevendor";
 import { useI18n } from "vue-i18n";

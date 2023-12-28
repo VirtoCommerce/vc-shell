@@ -343,7 +343,7 @@ onMounted(async () => {
   }
 });
 
-onBeforeRouteLeave(async (to, from) => {
+onBeforeRouteLeave(async () => {
   if (modified.value) {
     return await showConfirmation(unref(computed(() => t("SETTINGS.TEAM.ALERTS.CLOSE_CONFIRMATION"))));
   }

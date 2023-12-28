@@ -18,9 +18,8 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, markRaw, onMounted, watch } from "vue";
+import { computed, ref, watch } from "vue";
 import { IBladeToolbar, useBladeNavigation } from "@vc-shell/framework";
-import { ReviewDetails } from ".";
 import { CustomerReview } from "@vcmp-vendor-portal/api/marketplacevendor";
 import { ReviewTable } from "../components";
 import { useReviews } from "../composables";

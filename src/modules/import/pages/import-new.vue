@@ -243,13 +243,11 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, ref, watch, markRaw, ComputedRef } from "vue";
+import { computed, onMounted, ref, watch, ComputedRef } from "vue";
 import * as _ from "lodash-es";
-import ImportProfileDetails from "./import-profile-details.vue";
 import {
   IParentCallArgs,
   moment,
-  useUser,
   VcContainer,
   VcCol,
   VcRow,

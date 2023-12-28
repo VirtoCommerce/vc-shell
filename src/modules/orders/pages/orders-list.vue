@@ -165,8 +165,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, reactive, ref, watch, markRaw, Ref } from "vue";
-import { OrdersEdit } from "./";
+import { computed, onMounted, reactive, ref, watch, Ref } from "vue";
 import {
   IBladeToolbar,
   useFunctions,

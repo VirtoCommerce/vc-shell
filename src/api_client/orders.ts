@@ -25,6200 +25,6141 @@ export class AuthApiBase {
 
   protected transformOptions(options: any): Promise<any> {
     if (this.authToken) {
-      options.headers['authorization'] =  `Bearer ${this.authToken}`;
+      options.headers["authorization"] = `Bearer ${this.authToken}`;
     }
     return Promise.resolve(options);
   }
 }
 
 export class OrderModuleClient extends AuthApiBase {
-    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
-    private baseUrl: string;
-    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+  private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+  private baseUrl: string;
+  protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
 
-    constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
-        super();
-        this.http = http ? http : window as any;
-        this.baseUrl = this.getBaseUrl("", baseUrl);
+  constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+    super();
+    this.http = http ? http : (window as any);
+    this.baseUrl = this.getBaseUrl("", baseUrl);
+  }
+
+  /**
+   * @param body (optional)
+   * @return Success
+   */
+  searchCustomerOrder(body?: CustomerOrderSearchCriteria | undefined): Promise<CustomerOrderSearchResult> {
+    let url_ = this.baseUrl + "/api/order/customerOrders/search";
+    url_ = url_.replace(/[?&]$/, "");
+
+    const content_ = JSON.stringify(body);
+
+    let options_: RequestInit = {
+      body: content_,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json-patch+json",
+        Accept: "text/plain",
+      },
+    };
+
+    return this.transformOptions(options_)
+      .then((transformedOptions_) => {
+        return this.http.fetch(url_, transformedOptions_);
+      })
+      .then((_response: Response) => {
+        return this.processSearchCustomerOrder(_response);
+      });
+  }
+
+  protected processSearchCustomerOrder(response: Response): Promise<CustomerOrderSearchResult> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
     }
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = CustomerOrderSearchResult.fromJS(resultData200);
+        return result200;
+      });
+    } else if (status === 401) {
+      return response.text().then((_responseText) => {
+        return throwException("Unauthorized", status, _responseText, _headers);
+      });
+    } else if (status === 403) {
+      return response.text().then((_responseText) => {
+        return throwException("Forbidden", status, _responseText, _headers);
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
+    }
+    return Promise.resolve<CustomerOrderSearchResult>(null as any);
+  }
 
-    /**
-     * @param body (optional) 
-     * @return Success
-     */
-    searchCustomerOrder(body?: CustomerOrderSearchCriteria | undefined): Promise<CustomerOrderSearchResult> {
-        let url_ = this.baseUrl + "/api/order/customerOrders/search";
-        url_ = url_.replace(/[?&]$/, "");
+  /**
+   * @param respGroup (optional)
+   * @return Success
+   */
+  getByNumber(number: string, respGroup?: string | undefined): Promise<CustomerOrder> {
+    let url_ = this.baseUrl + "/api/order/customerOrders/number/{number}?";
+    if (number === undefined || number === null) throw new Error("The parameter 'number' must be defined.");
+    url_ = url_.replace("{number}", encodeURIComponent("" + number));
+    if (respGroup === null) throw new Error("The parameter 'respGroup' cannot be null.");
+    else if (respGroup !== undefined) url_ += "respGroup=" + encodeURIComponent("" + respGroup) + "&";
+    url_ = url_.replace(/[?&]$/, "");
 
-        const content_ = JSON.stringify(body);
+    let options_: RequestInit = {
+      method: "GET",
+      headers: {
+        Accept: "text/plain",
+      },
+    };
 
-        let options_: RequestInit = {
-            body: content_,
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json-patch+json",
-                "Accept": "text/plain"
-            }
-        };
+    return this.transformOptions(options_)
+      .then((transformedOptions_) => {
+        return this.http.fetch(url_, transformedOptions_);
+      })
+      .then((_response: Response) => {
+        return this.processGetByNumber(_response);
+      });
+  }
 
-        return this.transformOptions(options_).then(transformedOptions_ => {
-            return this.http.fetch(url_, transformedOptions_);
-        }).then((_response: Response) => {
-            return this.processSearchCustomerOrder(_response);
+  protected processGetByNumber(response: Response): Promise<CustomerOrder> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+    }
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = CustomerOrder.fromJS(resultData200);
+        return result200;
+      });
+    } else if (status === 401) {
+      return response.text().then((_responseText) => {
+        return throwException("Unauthorized", status, _responseText, _headers);
+      });
+    } else if (status === 403) {
+      return response.text().then((_responseText) => {
+        return throwException("Forbidden", status, _responseText, _headers);
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
+    }
+    return Promise.resolve<CustomerOrder>(null as any);
+  }
+
+  /**
+   * @param respGroup (optional)
+   * @return Success
+   */
+  getById(id: string, respGroup?: string | undefined): Promise<CustomerOrder> {
+    let url_ = this.baseUrl + "/api/order/customerOrders/{id}?";
+    if (id === undefined || id === null) throw new Error("The parameter 'id' must be defined.");
+    url_ = url_.replace("{id}", encodeURIComponent("" + id));
+    if (respGroup === null) throw new Error("The parameter 'respGroup' cannot be null.");
+    else if (respGroup !== undefined) url_ += "respGroup=" + encodeURIComponent("" + respGroup) + "&";
+    url_ = url_.replace(/[?&]$/, "");
+
+    let options_: RequestInit = {
+      method: "GET",
+      headers: {
+        Accept: "text/plain",
+      },
+    };
+
+    return this.transformOptions(options_)
+      .then((transformedOptions_) => {
+        return this.http.fetch(url_, transformedOptions_);
+      })
+      .then((_response: Response) => {
+        return this.processGetById(_response);
+      });
+  }
+
+  protected processGetById(response: Response): Promise<CustomerOrder> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+    }
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = CustomerOrder.fromJS(resultData200);
+        return result200;
+      });
+    } else if (status === 401) {
+      return response.text().then((_responseText) => {
+        return throwException("Unauthorized", status, _responseText, _headers);
+      });
+    } else if (status === 403) {
+      return response.text().then((_responseText) => {
+        return throwException("Forbidden", status, _responseText, _headers);
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
+    }
+    return Promise.resolve<CustomerOrder>(null as any);
+  }
+
+  /**
+   * @param body (optional)
+   * @return Success
+   */
+  calculateTotals(body?: CustomerOrder | undefined): Promise<CustomerOrder> {
+    let url_ = this.baseUrl + "/api/order/customerOrders/recalculate";
+    url_ = url_.replace(/[?&]$/, "");
+
+    const content_ = JSON.stringify(body);
+
+    let options_: RequestInit = {
+      body: content_,
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json-patch+json",
+        Accept: "text/plain",
+      },
+    };
+
+    return this.transformOptions(options_)
+      .then((transformedOptions_) => {
+        return this.http.fetch(url_, transformedOptions_);
+      })
+      .then((_response: Response) => {
+        return this.processCalculateTotals(_response);
+      });
+  }
+
+  protected processCalculateTotals(response: Response): Promise<CustomerOrder> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+    }
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = CustomerOrder.fromJS(resultData200);
+        return result200;
+      });
+    } else if (status === 401) {
+      return response.text().then((_responseText) => {
+        return throwException("Unauthorized", status, _responseText, _headers);
+      });
+    } else if (status === 403) {
+      return response.text().then((_responseText) => {
+        return throwException("Forbidden", status, _responseText, _headers);
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
+    }
+    return Promise.resolve<CustomerOrder>(null as any);
+  }
+
+  /**
+   * @param body (optional)
+   * @return Success
+   */
+  processOrderPayments(
+    orderId: string,
+    paymentId: string,
+    body?: BankCardInfo | undefined,
+  ): Promise<ProcessPaymentRequestResult> {
+    let url_ = this.baseUrl + "/api/order/customerOrders/{orderId}/processPayment/{paymentId}";
+    if (orderId === undefined || orderId === null) throw new Error("The parameter 'orderId' must be defined.");
+    url_ = url_.replace("{orderId}", encodeURIComponent("" + orderId));
+    if (paymentId === undefined || paymentId === null) throw new Error("The parameter 'paymentId' must be defined.");
+    url_ = url_.replace("{paymentId}", encodeURIComponent("" + paymentId));
+    url_ = url_.replace(/[?&]$/, "");
+
+    const content_ = JSON.stringify(body);
+
+    let options_: RequestInit = {
+      body: content_,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "text/plain",
+      },
+    };
+
+    return this.transformOptions(options_)
+      .then((transformedOptions_) => {
+        return this.http.fetch(url_, transformedOptions_);
+      })
+      .then((_response: Response) => {
+        return this.processProcessOrderPayments(_response);
+      });
+  }
+
+  protected processProcessOrderPayments(response: Response): Promise<ProcessPaymentRequestResult> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+    }
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = ProcessPaymentRequestResult.fromJS(resultData200);
+        return result200;
+      });
+    } else if (status === 401) {
+      return response.text().then((_responseText) => {
+        return throwException("Unauthorized", status, _responseText, _headers);
+      });
+    } else if (status === 403) {
+      return response.text().then((_responseText) => {
+        return throwException("Forbidden", status, _responseText, _headers);
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
+    }
+    return Promise.resolve<ProcessPaymentRequestResult>(null as any);
+  }
+
+  /**
+   * @return Success
+   */
+  createOrderFromCart(cartId: string): Promise<CustomerOrder> {
+    let url_ = this.baseUrl + "/api/order/customerOrders/{cartId}";
+    if (cartId === undefined || cartId === null) throw new Error("The parameter 'cartId' must be defined.");
+    url_ = url_.replace("{cartId}", encodeURIComponent("" + cartId));
+    url_ = url_.replace(/[?&]$/, "");
+
+    let options_: RequestInit = {
+      method: "POST",
+      headers: {
+        Accept: "text/plain",
+      },
+    };
+
+    return this.transformOptions(options_)
+      .then((transformedOptions_) => {
+        return this.http.fetch(url_, transformedOptions_);
+      })
+      .then((_response: Response) => {
+        return this.processCreateOrderFromCart(_response);
+      });
+  }
+
+  protected processCreateOrderFromCart(response: Response): Promise<CustomerOrder> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+    }
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = CustomerOrder.fromJS(resultData200);
+        return result200;
+      });
+    } else if (status === 401) {
+      return response.text().then((_responseText) => {
+        return throwException("Unauthorized", status, _responseText, _headers);
+      });
+    } else if (status === 403) {
+      return response.text().then((_responseText) => {
+        return throwException("Forbidden", status, _responseText, _headers);
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
+    }
+    return Promise.resolve<CustomerOrder>(null as any);
+  }
+
+  /**
+   * @param body (optional)
+   * @return Success
+   */
+  createOrder(body?: CustomerOrder | undefined): Promise<CustomerOrder> {
+    let url_ = this.baseUrl + "/api/order/customerOrders";
+    url_ = url_.replace(/[?&]$/, "");
+
+    const content_ = JSON.stringify(body);
+
+    let options_: RequestInit = {
+      body: content_,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json-patch+json",
+        Accept: "text/plain",
+      },
+    };
+
+    return this.transformOptions(options_)
+      .then((transformedOptions_) => {
+        return this.http.fetch(url_, transformedOptions_);
+      })
+      .then((_response: Response) => {
+        return this.processCreateOrder(_response);
+      });
+  }
+
+  protected processCreateOrder(response: Response): Promise<CustomerOrder> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+    }
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = CustomerOrder.fromJS(resultData200);
+        return result200;
+      });
+    } else if (status === 401) {
+      return response.text().then((_responseText) => {
+        return throwException("Unauthorized", status, _responseText, _headers);
+      });
+    } else if (status === 403) {
+      return response.text().then((_responseText) => {
+        return throwException("Forbidden", status, _responseText, _headers);
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
+    }
+    return Promise.resolve<CustomerOrder>(null as any);
+  }
+
+  /**
+   * @param body (optional)
+   * @return Success
+   */
+  updateOrder(body?: CustomerOrder | undefined): Promise<void> {
+    let url_ = this.baseUrl + "/api/order/customerOrders";
+    url_ = url_.replace(/[?&]$/, "");
+
+    const content_ = JSON.stringify(body);
+
+    let options_: RequestInit = {
+      body: content_,
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json-patch+json",
+      },
+    };
+
+    return this.transformOptions(options_)
+      .then((transformedOptions_) => {
+        return this.http.fetch(url_, transformedOptions_);
+      })
+      .then((_response: Response) => {
+        return this.processUpdateOrder(_response);
+      });
+  }
+
+  protected processUpdateOrder(response: Response): Promise<void> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+    }
+    if (status === 204) {
+      return response.text().then((_responseText) => {
+        return;
+      });
+    } else if (status === 401) {
+      return response.text().then((_responseText) => {
+        return throwException("Unauthorized", status, _responseText, _headers);
+      });
+    } else if (status === 403) {
+      return response.text().then((_responseText) => {
+        return throwException("Forbidden", status, _responseText, _headers);
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
+    }
+    return Promise.resolve<void>(null as any);
+  }
+
+  /**
+   * @param ids (optional)
+   * @return Success
+   */
+  deleteOrdersByIds(ids?: string[] | undefined): Promise<void> {
+    let url_ = this.baseUrl + "/api/order/customerOrders?";
+    if (ids === null) throw new Error("The parameter 'ids' cannot be null.");
+    else if (ids !== undefined)
+      ids &&
+        ids.forEach((item) => {
+          url_ += "ids=" + encodeURIComponent("" + item) + "&";
         });
-    }
+    url_ = url_.replace(/[?&]$/, "");
 
-    protected processSearchCustomerOrder(response: Response): Promise<CustomerOrderSearchResult> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = CustomerOrderSearchResult.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status === 401) {
-            return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
-            });
-        } else if (status === 403) {
-            return response.text().then((_responseText) => {
-            return throwException("Forbidden", status, _responseText, _headers);
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
+    let options_: RequestInit = {
+      method: "DELETE",
+      headers: {},
+    };
+
+    return this.transformOptions(options_)
+      .then((transformedOptions_) => {
+        return this.http.fetch(url_, transformedOptions_);
+      })
+      .then((_response: Response) => {
+        return this.processDeleteOrdersByIds(_response);
+      });
+  }
+
+  protected processDeleteOrdersByIds(response: Response): Promise<void> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+    }
+    if (status === 204) {
+      return response.text().then((_responseText) => {
+        return;
+      });
+    } else if (status === 401) {
+      return response.text().then((_responseText) => {
+        return throwException("Unauthorized", status, _responseText, _headers);
+      });
+    } else if (status === 403) {
+      return response.text().then((_responseText) => {
+        return throwException("Forbidden", status, _responseText, _headers);
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
+    }
+    return Promise.resolve<void>(null as any);
+  }
+
+  /**
+   * @return Success
+   */
+  getNewShipment(id: string): Promise<OrderShipment> {
+    let url_ = this.baseUrl + "/api/order/customerOrders/{id}/shipments/new";
+    if (id === undefined || id === null) throw new Error("The parameter 'id' must be defined.");
+    url_ = url_.replace("{id}", encodeURIComponent("" + id));
+    url_ = url_.replace(/[?&]$/, "");
+
+    let options_: RequestInit = {
+      method: "GET",
+      headers: {
+        Accept: "text/plain",
+      },
+    };
+
+    return this.transformOptions(options_)
+      .then((transformedOptions_) => {
+        return this.http.fetch(url_, transformedOptions_);
+      })
+      .then((_response: Response) => {
+        return this.processGetNewShipment(_response);
+      });
+  }
+
+  protected processGetNewShipment(response: Response): Promise<OrderShipment> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+    }
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = OrderShipment.fromJS(resultData200);
+        return result200;
+      });
+    } else if (status === 401) {
+      return response.text().then((_responseText) => {
+        return throwException("Unauthorized", status, _responseText, _headers);
+      });
+    } else if (status === 403) {
+      return response.text().then((_responseText) => {
+        return throwException("Forbidden", status, _responseText, _headers);
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
+    }
+    return Promise.resolve<OrderShipment>(null as any);
+  }
+
+  /**
+   * @return Success
+   */
+  getNewPayment(id: string): Promise<PaymentIn> {
+    let url_ = this.baseUrl + "/api/order/customerOrders/{id}/payments/new";
+    if (id === undefined || id === null) throw new Error("The parameter 'id' must be defined.");
+    url_ = url_.replace("{id}", encodeURIComponent("" + id));
+    url_ = url_.replace(/[?&]$/, "");
+
+    let options_: RequestInit = {
+      method: "GET",
+      headers: {
+        Accept: "text/plain",
+      },
+    };
+
+    return this.transformOptions(options_)
+      .then((transformedOptions_) => {
+        return this.http.fetch(url_, transformedOptions_);
+      })
+      .then((_response: Response) => {
+        return this.processGetNewPayment(_response);
+      });
+  }
+
+  protected processGetNewPayment(response: Response): Promise<PaymentIn> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+    }
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = PaymentIn.fromJS(resultData200);
+        return result200;
+      });
+    } else if (status === 401) {
+      return response.text().then((_responseText) => {
+        return throwException("Unauthorized", status, _responseText, _headers);
+      });
+    } else if (status === 403) {
+      return response.text().then((_responseText) => {
+        return throwException("Forbidden", status, _responseText, _headers);
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
+    }
+    return Promise.resolve<PaymentIn>(null as any);
+  }
+
+  /**
+   * @param start (optional)
+   * @param end (optional)
+   * @return Success
+   */
+  getDashboardStatistics(start?: Date | undefined, end?: Date | undefined): Promise<DashboardStatisticsResult> {
+    let url_ = this.baseUrl + "/api/order/dashboardStatistics?";
+    if (start === null) throw new Error("The parameter 'start' cannot be null.");
+    else if (start !== undefined) url_ += "start=" + encodeURIComponent(start ? "" + start.toISOString() : "") + "&";
+    if (end === null) throw new Error("The parameter 'end' cannot be null.");
+    else if (end !== undefined) url_ += "end=" + encodeURIComponent(end ? "" + end.toISOString() : "") + "&";
+    url_ = url_.replace(/[?&]$/, "");
+
+    let options_: RequestInit = {
+      method: "GET",
+      headers: {
+        Accept: "text/plain",
+      },
+    };
+
+    return this.transformOptions(options_)
+      .then((transformedOptions_) => {
+        return this.http.fetch(url_, transformedOptions_);
+      })
+      .then((_response: Response) => {
+        return this.processGetDashboardStatistics(_response);
+      });
+  }
+
+  protected processGetDashboardStatistics(response: Response): Promise<DashboardStatisticsResult> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+    }
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = DashboardStatisticsResult.fromJS(resultData200);
+        return result200;
+      });
+    } else if (status === 401) {
+      return response.text().then((_responseText) => {
+        return throwException("Unauthorized", status, _responseText, _headers);
+      });
+    } else if (status === 403) {
+      return response.text().then((_responseText) => {
+        return throwException("Forbidden", status, _responseText, _headers);
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
+    }
+    return Promise.resolve<DashboardStatisticsResult>(null as any);
+  }
+
+  /**
+   * @param body (optional)
+   * @return Success
+   */
+  postProcessPayment(body?: PaymentCallbackParameters | undefined): Promise<PostProcessPaymentRequestResult> {
+    let url_ = this.baseUrl + "/api/paymentcallback";
+    url_ = url_.replace(/[?&]$/, "");
+
+    const content_ = JSON.stringify(body);
+
+    let options_: RequestInit = {
+      body: content_,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json-patch+json",
+        Accept: "text/plain",
+      },
+    };
+
+    return this.transformOptions(options_)
+      .then((transformedOptions_) => {
+        return this.http.fetch(url_, transformedOptions_);
+      })
+      .then((_response: Response) => {
+        return this.processPostProcessPayment(_response);
+      });
+  }
+
+  protected processPostProcessPayment(response: Response): Promise<PostProcessPaymentRequestResult> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+    }
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = PostProcessPaymentRequestResult.fromJS(resultData200);
+        return result200;
+      });
+    } else if (status === 401) {
+      return response.text().then((_responseText) => {
+        return throwException("Unauthorized", status, _responseText, _headers);
+      });
+    } else if (status === 403) {
+      return response.text().then((_responseText) => {
+        return throwException("Forbidden", status, _responseText, _headers);
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
+    }
+    return Promise.resolve<PostProcessPaymentRequestResult>(null as any);
+  }
+
+  /**
+   * @return OK
+   */
+  getInvoicePdf(orderNumber: string): Promise<FileResponse> {
+    let url_ = this.baseUrl + "/api/order/customerOrders/invoice/{orderNumber}";
+    if (orderNumber === undefined || orderNumber === null)
+      throw new Error("The parameter 'orderNumber' must be defined.");
+    url_ = url_.replace("{orderNumber}", encodeURIComponent("" + orderNumber));
+    url_ = url_.replace(/[?&]$/, "");
+
+    let options_: RequestInit = {
+      method: "GET",
+      headers: {
+        Accept: "application/octet-stream",
+      },
+    };
+
+    return this.transformOptions(options_)
+      .then((transformedOptions_) => {
+        return this.http.fetch(url_, transformedOptions_);
+      })
+      .then((_response: Response) => {
+        return this.processGetInvoicePdf(_response);
+      });
+  }
+
+  protected processGetInvoicePdf(response: Response): Promise<FileResponse> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+    }
+    if (status === 200 || status === 206) {
+      const contentDisposition = response.headers ? response.headers.get("content-disposition") : undefined;
+      let fileNameMatch = contentDisposition
+        ? /filename\*=(?:(\\?['"])(.*?)\1|(?:[^\s]+'.*?')?([^;\n]*))/g.exec(contentDisposition)
+        : undefined;
+      let fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[3] || fileNameMatch[2] : undefined;
+      if (fileName) {
+        fileName = decodeURIComponent(fileName);
+      } else {
+        fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
+        fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
+      }
+      return response.blob().then((blob) => {
+        return { fileName: fileName, data: blob, status: status, headers: _headers };
+      });
+    } else if (status === 401) {
+      return response.text().then((_responseText) => {
+        return throwException("Unauthorized", status, _responseText, _headers);
+      });
+    } else if (status === 403) {
+      return response.text().then((_responseText) => {
+        return throwException("Forbidden", status, _responseText, _headers);
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
+    }
+    return Promise.resolve<FileResponse>(null as any);
+  }
+
+  /**
+   * @return Success
+   */
+  getOrderChanges(id: string): Promise<OperationLog[]> {
+    let url_ = this.baseUrl + "/api/order/customerOrders/{id}/changes";
+    if (id === undefined || id === null) throw new Error("The parameter 'id' must be defined.");
+    url_ = url_.replace("{id}", encodeURIComponent("" + id));
+    url_ = url_.replace(/[?&]$/, "");
+
+    let options_: RequestInit = {
+      method: "GET",
+      headers: {
+        Accept: "text/plain",
+      },
+    };
+
+    return this.transformOptions(options_)
+      .then((transformedOptions_) => {
+        return this.http.fetch(url_, transformedOptions_);
+      })
+      .then((_response: Response) => {
+        return this.processGetOrderChanges(_response);
+      });
+  }
+
+  protected processGetOrderChanges(response: Response): Promise<OperationLog[]> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+    }
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+        if (Array.isArray(resultData200)) {
+          result200 = [] as any;
+          for (let item of resultData200) result200!.push(OperationLog.fromJS(item));
+        } else {
+          result200 = <any>null;
         }
-        return Promise.resolve<CustomerOrderSearchResult>(null as any);
+        return result200;
+      });
+    } else if (status === 401) {
+      return response.text().then((_responseText) => {
+        return throwException("Unauthorized", status, _responseText, _headers);
+      });
+    } else if (status === 403) {
+      return response.text().then((_responseText) => {
+        return throwException("Forbidden", status, _responseText, _headers);
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
     }
+    return Promise.resolve<OperationLog[]>(null as any);
+  }
 
-    /**
-     * @param respGroup (optional) 
-     * @return Success
-     */
-    getByNumber(number: string, respGroup?: string | undefined): Promise<CustomerOrder> {
-        let url_ = this.baseUrl + "/api/order/customerOrders/number/{number}?";
-        if (number === undefined || number === null)
-            throw new Error("The parameter 'number' must be defined.");
-        url_ = url_.replace("{number}", encodeURIComponent("" + number));
-        if (respGroup === null)
-            throw new Error("The parameter 'respGroup' cannot be null.");
-        else if (respGroup !== undefined)
-            url_ += "respGroup=" + encodeURIComponent("" + respGroup) + "&";
-        url_ = url_.replace(/[?&]$/, "");
+  /**
+   * @param body (optional)
+   * @return Success
+   */
+  searchOrderChanges(body?: CustomerOrderHistorySearchCriteria | undefined): Promise<ChangeLogSearchResult> {
+    let url_ = this.baseUrl + "/api/order/customerOrders/searchChanges";
+    url_ = url_.replace(/[?&]$/, "");
 
-        let options_: RequestInit = {
-            method: "GET",
-            headers: {
-                "Accept": "text/plain"
-            }
-        };
+    const content_ = JSON.stringify(body);
 
-        return this.transformOptions(options_).then(transformedOptions_ => {
-            return this.http.fetch(url_, transformedOptions_);
-        }).then((_response: Response) => {
-            return this.processGetByNumber(_response);
-        });
+    let options_: RequestInit = {
+      body: content_,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json-patch+json",
+        Accept: "text/plain",
+      },
+    };
+
+    return this.transformOptions(options_)
+      .then((transformedOptions_) => {
+        return this.http.fetch(url_, transformedOptions_);
+      })
+      .then((_response: Response) => {
+        return this.processSearchOrderChanges(_response);
+      });
+  }
+
+  protected processSearchOrderChanges(response: Response): Promise<ChangeLogSearchResult> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
     }
-
-    protected processGetByNumber(response: Response): Promise<CustomerOrder> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = CustomerOrder.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status === 401) {
-            return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
-            });
-        } else if (status === 403) {
-            return response.text().then((_responseText) => {
-            return throwException("Forbidden", status, _responseText, _headers);
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<CustomerOrder>(null as any);
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = ChangeLogSearchResult.fromJS(resultData200);
+        return result200;
+      });
+    } else if (status === 401) {
+      return response.text().then((_responseText) => {
+        return throwException("Unauthorized", status, _responseText, _headers);
+      });
+    } else if (status === 403) {
+      return response.text().then((_responseText) => {
+        return throwException("Forbidden", status, _responseText, _headers);
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
     }
+    return Promise.resolve<ChangeLogSearchResult>(null as any);
+  }
 
-    /**
-     * @param respGroup (optional) 
-     * @return Success
-     */
-    getById(id: string, respGroup?: string | undefined): Promise<CustomerOrder> {
-        let url_ = this.baseUrl + "/api/order/customerOrders/{id}?";
-        if (id === undefined || id === null)
-            throw new Error("The parameter 'id' must be defined.");
-        url_ = url_.replace("{id}", encodeURIComponent("" + id));
-        if (respGroup === null)
-            throw new Error("The parameter 'respGroup' cannot be null.");
-        else if (respGroup !== undefined)
-            url_ += "respGroup=" + encodeURIComponent("" + respGroup) + "&";
-        url_ = url_.replace(/[?&]$/, "");
+  /**
+   * @return Success
+   */
+  getOrderFullTextSearchEnabled(): Promise<void> {
+    let url_ = this.baseUrl + "/api/order/customerOrders/indexed/searchEnabled";
+    url_ = url_.replace(/[?&]$/, "");
 
-        let options_: RequestInit = {
-            method: "GET",
-            headers: {
-                "Accept": "text/plain"
-            }
-        };
+    let options_: RequestInit = {
+      method: "GET",
+      headers: {},
+    };
 
-        return this.transformOptions(options_).then(transformedOptions_ => {
-            return this.http.fetch(url_, transformedOptions_);
-        }).then((_response: Response) => {
-            return this.processGetById(_response);
-        });
+    return this.transformOptions(options_)
+      .then((transformedOptions_) => {
+        return this.http.fetch(url_, transformedOptions_);
+      })
+      .then((_response: Response) => {
+        return this.processGetOrderFullTextSearchEnabled(_response);
+      });
+  }
+
+  protected processGetOrderFullTextSearchEnabled(response: Response): Promise<void> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
     }
-
-    protected processGetById(response: Response): Promise<CustomerOrder> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = CustomerOrder.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status === 401) {
-            return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
-            });
-        } else if (status === 403) {
-            return response.text().then((_responseText) => {
-            return throwException("Forbidden", status, _responseText, _headers);
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<CustomerOrder>(null as any);
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        return;
+      });
+    } else if (status === 401) {
+      return response.text().then((_responseText) => {
+        return throwException("Unauthorized", status, _responseText, _headers);
+      });
+    } else if (status === 403) {
+      return response.text().then((_responseText) => {
+        return throwException("Forbidden", status, _responseText, _headers);
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
     }
+    return Promise.resolve<void>(null as any);
+  }
 
-    /**
-     * @param body (optional) 
-     * @return Success
-     */
-    calculateTotals(body?: CustomerOrder | undefined): Promise<CustomerOrder> {
-        let url_ = this.baseUrl + "/api/order/customerOrders/recalculate";
-        url_ = url_.replace(/[?&]$/, "");
+  /**
+   * @param body (optional)
+   * @return Success
+   */
+  searchCustomerOrderIndexed(
+    body?: CustomerOrderIndexedSearchCriteria | undefined,
+  ): Promise<CustomerOrderSearchResult> {
+    let url_ = this.baseUrl + "/api/order/customerOrders/indexed/search";
+    url_ = url_.replace(/[?&]$/, "");
 
-        const content_ = JSON.stringify(body);
+    const content_ = JSON.stringify(body);
 
-        let options_: RequestInit = {
-            body: content_,
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json-patch+json",
-                "Accept": "text/plain"
-            }
-        };
+    let options_: RequestInit = {
+      body: content_,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json-patch+json",
+        Accept: "text/plain",
+      },
+    };
 
-        return this.transformOptions(options_).then(transformedOptions_ => {
-            return this.http.fetch(url_, transformedOptions_);
-        }).then((_response: Response) => {
-            return this.processCalculateTotals(_response);
-        });
+    return this.transformOptions(options_)
+      .then((transformedOptions_) => {
+        return this.http.fetch(url_, transformedOptions_);
+      })
+      .then((_response: Response) => {
+        return this.processSearchCustomerOrderIndexed(_response);
+      });
+  }
+
+  protected processSearchCustomerOrderIndexed(response: Response): Promise<CustomerOrderSearchResult> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
     }
-
-    protected processCalculateTotals(response: Response): Promise<CustomerOrder> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = CustomerOrder.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status === 401) {
-            return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
-            });
-        } else if (status === 403) {
-            return response.text().then((_responseText) => {
-            return throwException("Forbidden", status, _responseText, _headers);
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<CustomerOrder>(null as any);
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = CustomerOrderSearchResult.fromJS(resultData200);
+        return result200;
+      });
+    } else if (status === 401) {
+      return response.text().then((_responseText) => {
+        return throwException("Unauthorized", status, _responseText, _headers);
+      });
+    } else if (status === 403) {
+      return response.text().then((_responseText) => {
+        return throwException("Forbidden", status, _responseText, _headers);
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
     }
-
-    /**
-     * @param body (optional) 
-     * @return Success
-     */
-    processOrderPayments(orderId: string, paymentId: string, body?: BankCardInfo | undefined): Promise<ProcessPaymentRequestResult> {
-        let url_ = this.baseUrl + "/api/order/customerOrders/{orderId}/processPayment/{paymentId}";
-        if (orderId === undefined || orderId === null)
-            throw new Error("The parameter 'orderId' must be defined.");
-        url_ = url_.replace("{orderId}", encodeURIComponent("" + orderId));
-        if (paymentId === undefined || paymentId === null)
-            throw new Error("The parameter 'paymentId' must be defined.");
-        url_ = url_.replace("{paymentId}", encodeURIComponent("" + paymentId));
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "text/plain"
-            }
-        };
-
-        return this.transformOptions(options_).then(transformedOptions_ => {
-            return this.http.fetch(url_, transformedOptions_);
-        }).then((_response: Response) => {
-            return this.processProcessOrderPayments(_response);
-        });
-    }
-
-    protected processProcessOrderPayments(response: Response): Promise<ProcessPaymentRequestResult> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ProcessPaymentRequestResult.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status === 401) {
-            return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
-            });
-        } else if (status === 403) {
-            return response.text().then((_responseText) => {
-            return throwException("Forbidden", status, _responseText, _headers);
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<ProcessPaymentRequestResult>(null as any);
-    }
-
-    /**
-     * @return Success
-     */
-    createOrderFromCart(cartId: string): Promise<CustomerOrder> {
-        let url_ = this.baseUrl + "/api/order/customerOrders/{cartId}";
-        if (cartId === undefined || cartId === null)
-            throw new Error("The parameter 'cartId' must be defined.");
-        url_ = url_.replace("{cartId}", encodeURIComponent("" + cartId));
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_: RequestInit = {
-            method: "POST",
-            headers: {
-                "Accept": "text/plain"
-            }
-        };
-
-        return this.transformOptions(options_).then(transformedOptions_ => {
-            return this.http.fetch(url_, transformedOptions_);
-        }).then((_response: Response) => {
-            return this.processCreateOrderFromCart(_response);
-        });
-    }
-
-    protected processCreateOrderFromCart(response: Response): Promise<CustomerOrder> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = CustomerOrder.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status === 401) {
-            return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
-            });
-        } else if (status === 403) {
-            return response.text().then((_responseText) => {
-            return throwException("Forbidden", status, _responseText, _headers);
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<CustomerOrder>(null as any);
-    }
-
-    /**
-     * @param body (optional) 
-     * @return Success
-     */
-    createOrder(body?: CustomerOrder | undefined): Promise<CustomerOrder> {
-        let url_ = this.baseUrl + "/api/order/customerOrders";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json-patch+json",
-                "Accept": "text/plain"
-            }
-        };
-
-        return this.transformOptions(options_).then(transformedOptions_ => {
-            return this.http.fetch(url_, transformedOptions_);
-        }).then((_response: Response) => {
-            return this.processCreateOrder(_response);
-        });
-    }
-
-    protected processCreateOrder(response: Response): Promise<CustomerOrder> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = CustomerOrder.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status === 401) {
-            return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
-            });
-        } else if (status === 403) {
-            return response.text().then((_responseText) => {
-            return throwException("Forbidden", status, _responseText, _headers);
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<CustomerOrder>(null as any);
-    }
-
-    /**
-     * @param body (optional) 
-     * @return Success
-     */
-    updateOrder(body?: CustomerOrder | undefined): Promise<void> {
-        let url_ = this.baseUrl + "/api/order/customerOrders";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json-patch+json",
-            }
-        };
-
-        return this.transformOptions(options_).then(transformedOptions_ => {
-            return this.http.fetch(url_, transformedOptions_);
-        }).then((_response: Response) => {
-            return this.processUpdateOrder(_response);
-        });
-    }
-
-    protected processUpdateOrder(response: Response): Promise<void> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 204) {
-            return response.text().then((_responseText) => {
-            return;
-            });
-        } else if (status === 401) {
-            return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
-            });
-        } else if (status === 403) {
-            return response.text().then((_responseText) => {
-            return throwException("Forbidden", status, _responseText, _headers);
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<void>(null as any);
-    }
-
-    /**
-     * @param ids (optional) 
-     * @return Success
-     */
-    deleteOrdersByIds(ids?: string[] | undefined): Promise<void> {
-        let url_ = this.baseUrl + "/api/order/customerOrders?";
-        if (ids === null)
-            throw new Error("The parameter 'ids' cannot be null.");
-        else if (ids !== undefined)
-            ids && ids.forEach(item => { url_ += "ids=" + encodeURIComponent("" + item) + "&"; });
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_: RequestInit = {
-            method: "DELETE",
-            headers: {
-            }
-        };
-
-        return this.transformOptions(options_).then(transformedOptions_ => {
-            return this.http.fetch(url_, transformedOptions_);
-        }).then((_response: Response) => {
-            return this.processDeleteOrdersByIds(_response);
-        });
-    }
-
-    protected processDeleteOrdersByIds(response: Response): Promise<void> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 204) {
-            return response.text().then((_responseText) => {
-            return;
-            });
-        } else if (status === 401) {
-            return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
-            });
-        } else if (status === 403) {
-            return response.text().then((_responseText) => {
-            return throwException("Forbidden", status, _responseText, _headers);
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<void>(null as any);
-    }
-
-    /**
-     * @return Success
-     */
-    getNewShipment(id: string): Promise<OrderShipment> {
-        let url_ = this.baseUrl + "/api/order/customerOrders/{id}/shipments/new";
-        if (id === undefined || id === null)
-            throw new Error("The parameter 'id' must be defined.");
-        url_ = url_.replace("{id}", encodeURIComponent("" + id));
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_: RequestInit = {
-            method: "GET",
-            headers: {
-                "Accept": "text/plain"
-            }
-        };
-
-        return this.transformOptions(options_).then(transformedOptions_ => {
-            return this.http.fetch(url_, transformedOptions_);
-        }).then((_response: Response) => {
-            return this.processGetNewShipment(_response);
-        });
-    }
-
-    protected processGetNewShipment(response: Response): Promise<OrderShipment> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = OrderShipment.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status === 401) {
-            return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
-            });
-        } else if (status === 403) {
-            return response.text().then((_responseText) => {
-            return throwException("Forbidden", status, _responseText, _headers);
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<OrderShipment>(null as any);
-    }
-
-    /**
-     * @return Success
-     */
-    getNewPayment(id: string): Promise<PaymentIn> {
-        let url_ = this.baseUrl + "/api/order/customerOrders/{id}/payments/new";
-        if (id === undefined || id === null)
-            throw new Error("The parameter 'id' must be defined.");
-        url_ = url_.replace("{id}", encodeURIComponent("" + id));
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_: RequestInit = {
-            method: "GET",
-            headers: {
-                "Accept": "text/plain"
-            }
-        };
-
-        return this.transformOptions(options_).then(transformedOptions_ => {
-            return this.http.fetch(url_, transformedOptions_);
-        }).then((_response: Response) => {
-            return this.processGetNewPayment(_response);
-        });
-    }
-
-    protected processGetNewPayment(response: Response): Promise<PaymentIn> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = PaymentIn.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status === 401) {
-            return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
-            });
-        } else if (status === 403) {
-            return response.text().then((_responseText) => {
-            return throwException("Forbidden", status, _responseText, _headers);
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<PaymentIn>(null as any);
-    }
-
-    /**
-     * @param start (optional) 
-     * @param end (optional) 
-     * @return Success
-     */
-    getDashboardStatistics(start?: Date | undefined, end?: Date | undefined): Promise<DashboardStatisticsResult> {
-        let url_ = this.baseUrl + "/api/order/dashboardStatistics?";
-        if (start === null)
-            throw new Error("The parameter 'start' cannot be null.");
-        else if (start !== undefined)
-            url_ += "start=" + encodeURIComponent(start ? "" + start.toISOString() : "") + "&";
-        if (end === null)
-            throw new Error("The parameter 'end' cannot be null.");
-        else if (end !== undefined)
-            url_ += "end=" + encodeURIComponent(end ? "" + end.toISOString() : "") + "&";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_: RequestInit = {
-            method: "GET",
-            headers: {
-                "Accept": "text/plain"
-            }
-        };
-
-        return this.transformOptions(options_).then(transformedOptions_ => {
-            return this.http.fetch(url_, transformedOptions_);
-        }).then((_response: Response) => {
-            return this.processGetDashboardStatistics(_response);
-        });
-    }
-
-    protected processGetDashboardStatistics(response: Response): Promise<DashboardStatisticsResult> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = DashboardStatisticsResult.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status === 401) {
-            return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
-            });
-        } else if (status === 403) {
-            return response.text().then((_responseText) => {
-            return throwException("Forbidden", status, _responseText, _headers);
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<DashboardStatisticsResult>(null as any);
-    }
-
-    /**
-     * @param body (optional) 
-     * @return Success
-     */
-    postProcessPayment(body?: PaymentCallbackParameters | undefined): Promise<PostProcessPaymentRequestResult> {
-        let url_ = this.baseUrl + "/api/paymentcallback";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json-patch+json",
-                "Accept": "text/plain"
-            }
-        };
-
-        return this.transformOptions(options_).then(transformedOptions_ => {
-            return this.http.fetch(url_, transformedOptions_);
-        }).then((_response: Response) => {
-            return this.processPostProcessPayment(_response);
-        });
-    }
-
-    protected processPostProcessPayment(response: Response): Promise<PostProcessPaymentRequestResult> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = PostProcessPaymentRequestResult.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status === 401) {
-            return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
-            });
-        } else if (status === 403) {
-            return response.text().then((_responseText) => {
-            return throwException("Forbidden", status, _responseText, _headers);
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<PostProcessPaymentRequestResult>(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    getInvoicePdf(orderNumber: string): Promise<FileResponse> {
-        let url_ = this.baseUrl + "/api/order/customerOrders/invoice/{orderNumber}";
-        if (orderNumber === undefined || orderNumber === null)
-            throw new Error("The parameter 'orderNumber' must be defined.");
-        url_ = url_.replace("{orderNumber}", encodeURIComponent("" + orderNumber));
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_: RequestInit = {
-            method: "GET",
-            headers: {
-                "Accept": "application/octet-stream"
-            }
-        };
-
-        return this.transformOptions(options_).then(transformedOptions_ => {
-            return this.http.fetch(url_, transformedOptions_);
-        }).then((_response: Response) => {
-            return this.processGetInvoicePdf(_response);
-        });
-    }
-
-    protected processGetInvoicePdf(response: Response): Promise<FileResponse> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200 || status === 206) {
-            const contentDisposition = response.headers ? response.headers.get("content-disposition") : undefined;
-            let fileNameMatch = contentDisposition ? /filename\*=(?:(\\?['"])(.*?)\1|(?:[^\s]+'.*?')?([^;\n]*))/g.exec(contentDisposition) : undefined;
-            let fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[3] || fileNameMatch[2] : undefined;
-            if (fileName) {
-                fileName = decodeURIComponent(fileName);
-            } else {
-                fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
-                fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
-            }
-            return response.blob().then(blob => { return { fileName: fileName, data: blob, status: status, headers: _headers }; });
-        } else if (status === 401) {
-            return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
-            });
-        } else if (status === 403) {
-            return response.text().then((_responseText) => {
-            return throwException("Forbidden", status, _responseText, _headers);
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<FileResponse>(null as any);
-    }
-
-    /**
-     * @return Success
-     */
-    getOrderChanges(id: string): Promise<OperationLog[]> {
-        let url_ = this.baseUrl + "/api/order/customerOrders/{id}/changes";
-        if (id === undefined || id === null)
-            throw new Error("The parameter 'id' must be defined.");
-        url_ = url_.replace("{id}", encodeURIComponent("" + id));
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_: RequestInit = {
-            method: "GET",
-            headers: {
-                "Accept": "text/plain"
-            }
-        };
-
-        return this.transformOptions(options_).then(transformedOptions_ => {
-            return this.http.fetch(url_, transformedOptions_);
-        }).then((_response: Response) => {
-            return this.processGetOrderChanges(_response);
-        });
-    }
-
-    protected processGetOrderChanges(response: Response): Promise<OperationLog[]> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            if (Array.isArray(resultData200)) {
-                result200 = [] as any;
-                for (let item of resultData200)
-                    result200!.push(OperationLog.fromJS(item));
-            }
-            else {
-                result200 = <any>null;
-            }
-            return result200;
-            });
-        } else if (status === 401) {
-            return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
-            });
-        } else if (status === 403) {
-            return response.text().then((_responseText) => {
-            return throwException("Forbidden", status, _responseText, _headers);
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<OperationLog[]>(null as any);
-    }
-
-    /**
-     * @param body (optional) 
-     * @return Success
-     */
-    searchOrderChanges(body?: CustomerOrderHistorySearchCriteria | undefined): Promise<ChangeLogSearchResult> {
-        let url_ = this.baseUrl + "/api/order/customerOrders/searchChanges";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json-patch+json",
-                "Accept": "text/plain"
-            }
-        };
-
-        return this.transformOptions(options_).then(transformedOptions_ => {
-            return this.http.fetch(url_, transformedOptions_);
-        }).then((_response: Response) => {
-            return this.processSearchOrderChanges(_response);
-        });
-    }
-
-    protected processSearchOrderChanges(response: Response): Promise<ChangeLogSearchResult> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ChangeLogSearchResult.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status === 401) {
-            return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
-            });
-        } else if (status === 403) {
-            return response.text().then((_responseText) => {
-            return throwException("Forbidden", status, _responseText, _headers);
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<ChangeLogSearchResult>(null as any);
-    }
-
-    /**
-     * @return Success
-     */
-    getOrderFullTextSearchEnabled(): Promise<void> {
-        let url_ = this.baseUrl + "/api/order/customerOrders/indexed/searchEnabled";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_: RequestInit = {
-            method: "GET",
-            headers: {
-            }
-        };
-
-        return this.transformOptions(options_).then(transformedOptions_ => {
-            return this.http.fetch(url_, transformedOptions_);
-        }).then((_response: Response) => {
-            return this.processGetOrderFullTextSearchEnabled(_response);
-        });
-    }
-
-    protected processGetOrderFullTextSearchEnabled(response: Response): Promise<void> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            return;
-            });
-        } else if (status === 401) {
-            return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
-            });
-        } else if (status === 403) {
-            return response.text().then((_responseText) => {
-            return throwException("Forbidden", status, _responseText, _headers);
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<void>(null as any);
-    }
-
-    /**
-     * @param body (optional) 
-     * @return Success
-     */
-    searchCustomerOrderIndexed(body?: CustomerOrderIndexedSearchCriteria | undefined): Promise<CustomerOrderSearchResult> {
-        let url_ = this.baseUrl + "/api/order/customerOrders/indexed/search";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json-patch+json",
-                "Accept": "text/plain"
-            }
-        };
-
-        return this.transformOptions(options_).then(transformedOptions_ => {
-            return this.http.fetch(url_, transformedOptions_);
-        }).then((_response: Response) => {
-            return this.processSearchCustomerOrderIndexed(_response);
-        });
-    }
-
-    protected processSearchCustomerOrderIndexed(response: Response): Promise<CustomerOrderSearchResult> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = CustomerOrderSearchResult.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status === 401) {
-            return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
-            });
-        } else if (status === 403) {
-            return response.text().then((_responseText) => {
-            return throwException("Forbidden", status, _responseText, _headers);
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<CustomerOrderSearchResult>(null as any);
-    }
+    return Promise.resolve<CustomerOrderSearchResult>(null as any);
+  }
 }
 
 export class OrderModulePaymentsClient extends AuthApiBase {
-    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
-    private baseUrl: string;
-    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+  private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+  private baseUrl: string;
+  protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
 
-    constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
-        super();
-        this.http = http ? http : window as any;
-        this.baseUrl = this.getBaseUrl("", baseUrl);
+  constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+    super();
+    this.http = http ? http : (window as any);
+    this.baseUrl = this.getBaseUrl("", baseUrl);
+  }
+
+  /**
+   * @param body (optional)
+   * @return Success
+   */
+  searchOrderPayments(body?: PaymentSearchCriteria | undefined): Promise<PaymentSearchResult> {
+    let url_ = this.baseUrl + "/api/order/payments/search";
+    url_ = url_.replace(/[?&]$/, "");
+
+    const content_ = JSON.stringify(body);
+
+    let options_: RequestInit = {
+      body: content_,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json-patch+json",
+        Accept: "text/plain",
+      },
+    };
+
+    return this.transformOptions(options_)
+      .then((transformedOptions_) => {
+        return this.http.fetch(url_, transformedOptions_);
+      })
+      .then((_response: Response) => {
+        return this.processSearchOrderPayments(_response);
+      });
+  }
+
+  protected processSearchOrderPayments(response: Response): Promise<PaymentSearchResult> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
     }
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = PaymentSearchResult.fromJS(resultData200);
+        return result200;
+      });
+    } else if (status === 401) {
+      return response.text().then((_responseText) => {
+        return throwException("Unauthorized", status, _responseText, _headers);
+      });
+    } else if (status === 403) {
+      return response.text().then((_responseText) => {
+        return throwException("Forbidden", status, _responseText, _headers);
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
+    }
+    return Promise.resolve<PaymentSearchResult>(null as any);
+  }
 
-    /**
-     * @param body (optional) 
-     * @return Success
-     */
-    searchOrderPayments(body?: PaymentSearchCriteria | undefined): Promise<PaymentSearchResult> {
-        let url_ = this.baseUrl + "/api/order/payments/search";
-        url_ = url_.replace(/[?&]$/, "");
+  /**
+   * @param respGroup (optional)
+   * @return Success
+   */
+  getById(id: string, respGroup?: string | undefined): Promise<PaymentIn> {
+    let url_ = this.baseUrl + "/api/order/payments/{id}?";
+    if (id === undefined || id === null) throw new Error("The parameter 'id' must be defined.");
+    url_ = url_.replace("{id}", encodeURIComponent("" + id));
+    if (respGroup === null) throw new Error("The parameter 'respGroup' cannot be null.");
+    else if (respGroup !== undefined) url_ += "respGroup=" + encodeURIComponent("" + respGroup) + "&";
+    url_ = url_.replace(/[?&]$/, "");
 
-        const content_ = JSON.stringify(body);
+    let options_: RequestInit = {
+      method: "GET",
+      headers: {
+        Accept: "text/plain",
+      },
+    };
 
-        let options_: RequestInit = {
-            body: content_,
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json-patch+json",
-                "Accept": "text/plain"
-            }
-        };
+    return this.transformOptions(options_)
+      .then((transformedOptions_) => {
+        return this.http.fetch(url_, transformedOptions_);
+      })
+      .then((_response: Response) => {
+        return this.processGetById(_response);
+      });
+  }
 
-        return this.transformOptions(options_).then(transformedOptions_ => {
-            return this.http.fetch(url_, transformedOptions_);
-        }).then((_response: Response) => {
-            return this.processSearchOrderPayments(_response);
+  protected processGetById(response: Response): Promise<PaymentIn> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+    }
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = PaymentIn.fromJS(resultData200);
+        return result200;
+      });
+    } else if (status === 401) {
+      return response.text().then((_responseText) => {
+        return throwException("Unauthorized", status, _responseText, _headers);
+      });
+    } else if (status === 403) {
+      return response.text().then((_responseText) => {
+        return throwException("Forbidden", status, _responseText, _headers);
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
+    }
+    return Promise.resolve<PaymentIn>(null as any);
+  }
+
+  /**
+   * @param body (optional)
+   * @return Success
+   */
+  createPayment(body?: PaymentIn | undefined): Promise<CustomerOrder> {
+    let url_ = this.baseUrl + "/api/order/payments";
+    url_ = url_.replace(/[?&]$/, "");
+
+    const content_ = JSON.stringify(body);
+
+    let options_: RequestInit = {
+      body: content_,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json-patch+json",
+        Accept: "text/plain",
+      },
+    };
+
+    return this.transformOptions(options_)
+      .then((transformedOptions_) => {
+        return this.http.fetch(url_, transformedOptions_);
+      })
+      .then((_response: Response) => {
+        return this.processCreatePayment(_response);
+      });
+  }
+
+  protected processCreatePayment(response: Response): Promise<CustomerOrder> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+    }
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = CustomerOrder.fromJS(resultData200);
+        return result200;
+      });
+    } else if (status === 401) {
+      return response.text().then((_responseText) => {
+        return throwException("Unauthorized", status, _responseText, _headers);
+      });
+    } else if (status === 403) {
+      return response.text().then((_responseText) => {
+        return throwException("Forbidden", status, _responseText, _headers);
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
+    }
+    return Promise.resolve<CustomerOrder>(null as any);
+  }
+
+  /**
+   * @param body (optional)
+   * @return Success
+   */
+  updatePayment(body?: PaymentIn | undefined): Promise<CustomerOrder> {
+    let url_ = this.baseUrl + "/api/order/payments";
+    url_ = url_.replace(/[?&]$/, "");
+
+    const content_ = JSON.stringify(body);
+
+    let options_: RequestInit = {
+      body: content_,
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json-patch+json",
+        Accept: "text/plain",
+      },
+    };
+
+    return this.transformOptions(options_)
+      .then((transformedOptions_) => {
+        return this.http.fetch(url_, transformedOptions_);
+      })
+      .then((_response: Response) => {
+        return this.processUpdatePayment(_response);
+      });
+  }
+
+  protected processUpdatePayment(response: Response): Promise<CustomerOrder> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+    }
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = CustomerOrder.fromJS(resultData200);
+        return result200;
+      });
+    } else if (status === 401) {
+      return response.text().then((_responseText) => {
+        return throwException("Unauthorized", status, _responseText, _headers);
+      });
+    } else if (status === 403) {
+      return response.text().then((_responseText) => {
+        return throwException("Forbidden", status, _responseText, _headers);
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
+    }
+    return Promise.resolve<CustomerOrder>(null as any);
+  }
+
+  /**
+   * @param ids (optional)
+   * @return Success
+   */
+  deleteOrderPaymentsByIds(ids?: string[] | undefined): Promise<void> {
+    let url_ = this.baseUrl + "/api/order/payments?";
+    if (ids === null) throw new Error("The parameter 'ids' cannot be null.");
+    else if (ids !== undefined)
+      ids &&
+        ids.forEach((item) => {
+          url_ += "ids=" + encodeURIComponent("" + item) + "&";
         });
+    url_ = url_.replace(/[?&]$/, "");
+
+    let options_: RequestInit = {
+      method: "DELETE",
+      headers: {},
+    };
+
+    return this.transformOptions(options_)
+      .then((transformedOptions_) => {
+        return this.http.fetch(url_, transformedOptions_);
+      })
+      .then((_response: Response) => {
+        return this.processDeleteOrderPaymentsByIds(_response);
+      });
+  }
+
+  protected processDeleteOrderPaymentsByIds(response: Response): Promise<void> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
     }
-
-    protected processSearchOrderPayments(response: Response): Promise<PaymentSearchResult> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = PaymentSearchResult.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status === 401) {
-            return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
-            });
-        } else if (status === 403) {
-            return response.text().then((_responseText) => {
-            return throwException("Forbidden", status, _responseText, _headers);
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<PaymentSearchResult>(null as any);
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        return;
+      });
+    } else if (status === 401) {
+      return response.text().then((_responseText) => {
+        return throwException("Unauthorized", status, _responseText, _headers);
+      });
+    } else if (status === 403) {
+      return response.text().then((_responseText) => {
+        return throwException("Forbidden", status, _responseText, _headers);
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
     }
+    return Promise.resolve<void>(null as any);
+  }
 
-    /**
-     * @param respGroup (optional) 
-     * @return Success
-     */
-    getById(id: string, respGroup?: string | undefined): Promise<PaymentIn> {
-        let url_ = this.baseUrl + "/api/order/payments/{id}?";
-        if (id === undefined || id === null)
-            throw new Error("The parameter 'id' must be defined.");
-        url_ = url_.replace("{id}", encodeURIComponent("" + id));
-        if (respGroup === null)
-            throw new Error("The parameter 'respGroup' cannot be null.");
-        else if (respGroup !== undefined)
-            url_ += "respGroup=" + encodeURIComponent("" + respGroup) + "&";
-        url_ = url_.replace(/[?&]$/, "");
+  /**
+   * @param body (optional)
+   * @return Success
+   */
+  capturePayment(body?: CaptureOrderPaymentRequest | undefined): Promise<void> {
+    let url_ = this.baseUrl + "/api/order/payments/payment/capture";
+    url_ = url_.replace(/[?&]$/, "");
 
-        let options_: RequestInit = {
-            method: "GET",
-            headers: {
-                "Accept": "text/plain"
-            }
-        };
+    const content_ = JSON.stringify(body);
 
-        return this.transformOptions(options_).then(transformedOptions_ => {
-            return this.http.fetch(url_, transformedOptions_);
-        }).then((_response: Response) => {
-            return this.processGetById(_response);
-        });
+    let options_: RequestInit = {
+      body: content_,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json-patch+json",
+      },
+    };
+
+    return this.transformOptions(options_)
+      .then((transformedOptions_) => {
+        return this.http.fetch(url_, transformedOptions_);
+      })
+      .then((_response: Response) => {
+        return this.processCapturePayment(_response);
+      });
+  }
+
+  protected processCapturePayment(response: Response): Promise<void> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
     }
-
-    protected processGetById(response: Response): Promise<PaymentIn> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = PaymentIn.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status === 401) {
-            return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
-            });
-        } else if (status === 403) {
-            return response.text().then((_responseText) => {
-            return throwException("Forbidden", status, _responseText, _headers);
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<PaymentIn>(null as any);
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        return;
+      });
+    } else if (status === 401) {
+      return response.text().then((_responseText) => {
+        return throwException("Unauthorized", status, _responseText, _headers);
+      });
+    } else if (status === 403) {
+      return response.text().then((_responseText) => {
+        return throwException("Forbidden", status, _responseText, _headers);
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
     }
+    return Promise.resolve<void>(null as any);
+  }
 
-    /**
-     * @param body (optional) 
-     * @return Success
-     */
-    createPayment(body?: PaymentIn | undefined): Promise<CustomerOrder> {
-        let url_ = this.baseUrl + "/api/order/payments";
-        url_ = url_.replace(/[?&]$/, "");
+  /**
+   * @param body (optional)
+   * @return Success
+   */
+  refundPayment(body?: RefundOrderPaymentRequest | undefined): Promise<void> {
+    let url_ = this.baseUrl + "/api/order/payments/payment/refund";
+    url_ = url_.replace(/[?&]$/, "");
 
-        const content_ = JSON.stringify(body);
+    const content_ = JSON.stringify(body);
 
-        let options_: RequestInit = {
-            body: content_,
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json-patch+json",
-                "Accept": "text/plain"
-            }
-        };
+    let options_: RequestInit = {
+      body: content_,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json-patch+json",
+      },
+    };
 
-        return this.transformOptions(options_).then(transformedOptions_ => {
-            return this.http.fetch(url_, transformedOptions_);
-        }).then((_response: Response) => {
-            return this.processCreatePayment(_response);
-        });
+    return this.transformOptions(options_)
+      .then((transformedOptions_) => {
+        return this.http.fetch(url_, transformedOptions_);
+      })
+      .then((_response: Response) => {
+        return this.processRefundPayment(_response);
+      });
+  }
+
+  protected processRefundPayment(response: Response): Promise<void> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
     }
-
-    protected processCreatePayment(response: Response): Promise<CustomerOrder> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = CustomerOrder.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status === 401) {
-            return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
-            });
-        } else if (status === 403) {
-            return response.text().then((_responseText) => {
-            return throwException("Forbidden", status, _responseText, _headers);
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<CustomerOrder>(null as any);
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        return;
+      });
+    } else if (status === 401) {
+      return response.text().then((_responseText) => {
+        return throwException("Unauthorized", status, _responseText, _headers);
+      });
+    } else if (status === 403) {
+      return response.text().then((_responseText) => {
+        return throwException("Forbidden", status, _responseText, _headers);
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
     }
-
-    /**
-     * @param body (optional) 
-     * @return Success
-     */
-    updatePayment(body?: PaymentIn | undefined): Promise<CustomerOrder> {
-        let url_ = this.baseUrl + "/api/order/payments";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json-patch+json",
-                "Accept": "text/plain"
-            }
-        };
-
-        return this.transformOptions(options_).then(transformedOptions_ => {
-            return this.http.fetch(url_, transformedOptions_);
-        }).then((_response: Response) => {
-            return this.processUpdatePayment(_response);
-        });
-    }
-
-    protected processUpdatePayment(response: Response): Promise<CustomerOrder> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = CustomerOrder.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status === 401) {
-            return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
-            });
-        } else if (status === 403) {
-            return response.text().then((_responseText) => {
-            return throwException("Forbidden", status, _responseText, _headers);
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<CustomerOrder>(null as any);
-    }
-
-    /**
-     * @param ids (optional) 
-     * @return Success
-     */
-    deleteOrderPaymentsByIds(ids?: string[] | undefined): Promise<void> {
-        let url_ = this.baseUrl + "/api/order/payments?";
-        if (ids === null)
-            throw new Error("The parameter 'ids' cannot be null.");
-        else if (ids !== undefined)
-            ids && ids.forEach(item => { url_ += "ids=" + encodeURIComponent("" + item) + "&"; });
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_: RequestInit = {
-            method: "DELETE",
-            headers: {
-            }
-        };
-
-        return this.transformOptions(options_).then(transformedOptions_ => {
-            return this.http.fetch(url_, transformedOptions_);
-        }).then((_response: Response) => {
-            return this.processDeleteOrderPaymentsByIds(_response);
-        });
-    }
-
-    protected processDeleteOrderPaymentsByIds(response: Response): Promise<void> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            return;
-            });
-        } else if (status === 401) {
-            return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
-            });
-        } else if (status === 403) {
-            return response.text().then((_responseText) => {
-            return throwException("Forbidden", status, _responseText, _headers);
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<void>(null as any);
-    }
-
-    /**
-     * @param body (optional) 
-     * @return Success
-     */
-    capturePayment(body?: CaptureOrderPaymentRequest | undefined): Promise<void> {
-        let url_ = this.baseUrl + "/api/order/payments/payment/capture";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json-patch+json",
-            }
-        };
-
-        return this.transformOptions(options_).then(transformedOptions_ => {
-            return this.http.fetch(url_, transformedOptions_);
-        }).then((_response: Response) => {
-            return this.processCapturePayment(_response);
-        });
-    }
-
-    protected processCapturePayment(response: Response): Promise<void> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            return;
-            });
-        } else if (status === 401) {
-            return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
-            });
-        } else if (status === 403) {
-            return response.text().then((_responseText) => {
-            return throwException("Forbidden", status, _responseText, _headers);
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<void>(null as any);
-    }
-
-    /**
-     * @param body (optional) 
-     * @return Success
-     */
-    refundPayment(body?: RefundOrderPaymentRequest | undefined): Promise<void> {
-        let url_ = this.baseUrl + "/api/order/payments/payment/refund";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json-patch+json",
-            }
-        };
-
-        return this.transformOptions(options_).then(transformedOptions_ => {
-            return this.http.fetch(url_, transformedOptions_);
-        }).then((_response: Response) => {
-            return this.processRefundPayment(_response);
-        });
-    }
-
-    protected processRefundPayment(response: Response): Promise<void> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            return;
-            });
-        } else if (status === 401) {
-            return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
-            });
-        } else if (status === 403) {
-            return response.text().then((_responseText) => {
-            return throwException("Forbidden", status, _responseText, _headers);
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<void>(null as any);
-    }
+    return Promise.resolve<void>(null as any);
+  }
 }
 
 export class OrderModuleShipmentsClient extends AuthApiBase {
-    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
-    private baseUrl: string;
-    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+  private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+  private baseUrl: string;
+  protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
 
-    constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
-        super();
-        this.http = http ? http : window as any;
-        this.baseUrl = this.getBaseUrl("", baseUrl);
+  constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+    super();
+    this.http = http ? http : (window as any);
+    this.baseUrl = this.getBaseUrl("", baseUrl);
+  }
+
+  /**
+   * @param body (optional)
+   * @return Success
+   */
+  updateShipment(body?: OrderShipment | undefined): Promise<void> {
+    let url_ = this.baseUrl + "/api/order/shipments";
+    url_ = url_.replace(/[?&]$/, "");
+
+    const content_ = JSON.stringify(body);
+
+    let options_: RequestInit = {
+      body: content_,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json-patch+json",
+      },
+    };
+
+    return this.transformOptions(options_)
+      .then((transformedOptions_) => {
+        return this.http.fetch(url_, transformedOptions_);
+      })
+      .then((_response: Response) => {
+        return this.processUpdateShipment(_response);
+      });
+  }
+
+  protected processUpdateShipment(response: Response): Promise<void> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
     }
-
-    /**
-     * @param body (optional) 
-     * @return Success
-     */
-    updateShipment(body?: OrderShipment | undefined): Promise<void> {
-        let url_ = this.baseUrl + "/api/order/shipments";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json-patch+json",
-            }
-        };
-
-        return this.transformOptions(options_).then(transformedOptions_ => {
-            return this.http.fetch(url_, transformedOptions_);
-        }).then((_response: Response) => {
-            return this.processUpdateShipment(_response);
-        });
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        return;
+      });
+    } else if (status === 401) {
+      return response.text().then((_responseText) => {
+        return throwException("Unauthorized", status, _responseText, _headers);
+      });
+    } else if (status === 403) {
+      return response.text().then((_responseText) => {
+        return throwException("Forbidden", status, _responseText, _headers);
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
     }
-
-    protected processUpdateShipment(response: Response): Promise<void> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            return;
-            });
-        } else if (status === 401) {
-            return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
-            });
-        } else if (status === 403) {
-            return response.text().then((_responseText) => {
-            return throwException("Forbidden", status, _responseText, _headers);
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<void>(null as any);
-    }
+    return Promise.resolve<void>(null as any);
+  }
 }
 
 export enum AddressType {
-    Undefined = "Undefined",
-    Billing = "Billing",
-    Shipping = "Shipping",
-    BillingAndShipping = "BillingAndShipping",
-    Pickup = "Pickup",
+  Undefined = "Undefined",
+  Billing = "Billing",
+  Shipping = "Shipping",
+  BillingAndShipping = "BillingAndShipping",
+  Pickup = "Pickup",
 }
 
 export class BankCardInfo implements IBankCardInfo {
-    bankCardNumber?: string | undefined;
-    bankCardType?: string | undefined;
-    bankCardMonth?: number;
-    bankCardYear?: number;
-    bankCardCVV2?: string | undefined;
-    cardholderName?: string | undefined;
+  bankCardNumber?: string | undefined;
+  bankCardType?: string | undefined;
+  bankCardMonth?: number;
+  bankCardYear?: number;
+  bankCardCVV2?: string | undefined;
+  cardholderName?: string | undefined;
 
-    constructor(data?: IBankCardInfo) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
+  constructor(data?: IBankCardInfo) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property)) (<any>this)[property] = (<any>data)[property];
+      }
     }
+  }
 
-    init(_data?: any) {
-        if (_data) {
-            this.bankCardNumber = _data["bankCardNumber"];
-            this.bankCardType = _data["bankCardType"];
-            this.bankCardMonth = _data["bankCardMonth"];
-            this.bankCardYear = _data["bankCardYear"];
-            this.bankCardCVV2 = _data["bankCardCVV2"];
-            this.cardholderName = _data["cardholderName"];
-        }
+  init(_data?: any) {
+    if (_data) {
+      this.bankCardNumber = _data["bankCardNumber"];
+      this.bankCardType = _data["bankCardType"];
+      this.bankCardMonth = _data["bankCardMonth"];
+      this.bankCardYear = _data["bankCardYear"];
+      this.bankCardCVV2 = _data["bankCardCVV2"];
+      this.cardholderName = _data["cardholderName"];
     }
+  }
 
-    static fromJS(data: any): BankCardInfo {
-        data = typeof data === 'object' ? data : {};
-        let result = new BankCardInfo();
-        result.init(data);
-        return result;
-    }
+  static fromJS(data: any): BankCardInfo {
+    data = typeof data === "object" ? data : {};
+    let result = new BankCardInfo();
+    result.init(data);
+    return result;
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["bankCardNumber"] = this.bankCardNumber;
-        data["bankCardType"] = this.bankCardType;
-        data["bankCardMonth"] = this.bankCardMonth;
-        data["bankCardYear"] = this.bankCardYear;
-        data["bankCardCVV2"] = this.bankCardCVV2;
-        data["cardholderName"] = this.cardholderName;
-        return data;
-    }
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    data["bankCardNumber"] = this.bankCardNumber;
+    data["bankCardType"] = this.bankCardType;
+    data["bankCardMonth"] = this.bankCardMonth;
+    data["bankCardYear"] = this.bankCardYear;
+    data["bankCardCVV2"] = this.bankCardCVV2;
+    data["cardholderName"] = this.cardholderName;
+    return data;
+  }
 }
 
 export interface IBankCardInfo {
-    bankCardNumber?: string | undefined;
-    bankCardType?: string | undefined;
-    bankCardMonth?: number;
-    bankCardYear?: number;
-    bankCardCVV2?: string | undefined;
-    cardholderName?: string | undefined;
+  bankCardNumber?: string | undefined;
+  bankCardType?: string | undefined;
+  bankCardMonth?: number;
+  bankCardYear?: number;
+  bankCardCVV2?: string | undefined;
+  cardholderName?: string | undefined;
 }
 
 export enum CancelledState {
-    Undefined = "Undefined",
-    Requested = "Requested",
-    Completed = "Completed",
+  Undefined = "Undefined",
+  Requested = "Requested",
+  Completed = "Completed",
 }
 
 export class Capture implements ICapture {
-    objectType?: string | undefined;
-    amount?: number;
-    vendorId?: string | undefined;
-    transactionId?: string | undefined;
-    customerOrderId?: string | undefined;
-    paymentId?: string | undefined;
-    items?: CaptureItem[] | undefined;
-    operationType?: string | undefined;
-    parentOperationId?: string | undefined;
-    number?: string | undefined;
-    isApproved?: boolean;
-    status?: string | undefined;
-    comment?: string | undefined;
-    currency?: string | undefined;
-    sum?: number;
-    outerId?: string | undefined;
-    cancelledState?: CaptureCancelledState;
-    isCancelled?: boolean;
-    cancelledDate?: Date | undefined;
-    cancelReason?: string | undefined;
-    dynamicProperties?: DynamicObjectProperty[] | undefined;
-    operationsLog?: OperationLog[] | undefined;
-    createdDate?: Date;
-    modifiedDate?: Date | undefined;
-    createdBy?: string | undefined;
-    modifiedBy?: string | undefined;
-    id?: string | undefined;
+  objectType?: string | undefined;
+  amount?: number;
+  vendorId?: string | undefined;
+  transactionId?: string | undefined;
+  customerOrderId?: string | undefined;
+  paymentId?: string | undefined;
+  items?: CaptureItem[] | undefined;
+  operationType?: string | undefined;
+  parentOperationId?: string | undefined;
+  number?: string | undefined;
+  isApproved?: boolean;
+  status?: string | undefined;
+  comment?: string | undefined;
+  currency?: string | undefined;
+  sum?: number;
+  outerId?: string | undefined;
+  cancelledState?: CaptureCancelledState;
+  isCancelled?: boolean;
+  cancelledDate?: Date | undefined;
+  cancelReason?: string | undefined;
+  dynamicProperties?: DynamicObjectProperty[] | undefined;
+  operationsLog?: OperationLog[] | undefined;
+  createdDate?: Date;
+  modifiedDate?: Date | undefined;
+  createdBy?: string | undefined;
+  modifiedBy?: string | undefined;
+  id?: string | undefined;
 
-    constructor(data?: ICapture) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
+  constructor(data?: ICapture) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property)) (<any>this)[property] = (<any>data)[property];
+      }
     }
+  }
 
-    init(_data?: any) {
-        if (_data) {
-            this.objectType = _data["objectType"];
-            this.amount = _data["amount"];
-            this.vendorId = _data["vendorId"];
-            this.transactionId = _data["transactionId"];
-            this.customerOrderId = _data["customerOrderId"];
-            this.paymentId = _data["paymentId"];
-            if (Array.isArray(_data["items"])) {
-                this.items = [] as any;
-                for (let item of _data["items"])
-                    this.items!.push(CaptureItem.fromJS(item));
-            }
-            this.operationType = _data["operationType"];
-            this.parentOperationId = _data["parentOperationId"];
-            this.number = _data["number"];
-            this.isApproved = _data["isApproved"];
-            this.status = _data["status"];
-            this.comment = _data["comment"];
-            this.currency = _data["currency"];
-            this.sum = _data["sum"];
-            this.outerId = _data["outerId"];
-            this.cancelledState = _data["cancelledState"];
-            this.isCancelled = _data["isCancelled"];
-            this.cancelledDate = _data["cancelledDate"] ? new Date(_data["cancelledDate"].toString()) : <any>undefined;
-            this.cancelReason = _data["cancelReason"];
-            if (Array.isArray(_data["dynamicProperties"])) {
-                this.dynamicProperties = [] as any;
-                for (let item of _data["dynamicProperties"])
-                    this.dynamicProperties!.push(DynamicObjectProperty.fromJS(item));
-            }
-            if (Array.isArray(_data["operationsLog"])) {
-                this.operationsLog = [] as any;
-                for (let item of _data["operationsLog"])
-                    this.operationsLog!.push(OperationLog.fromJS(item));
-            }
-            this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>undefined;
-            this.modifiedDate = _data["modifiedDate"] ? new Date(_data["modifiedDate"].toString()) : <any>undefined;
-            this.createdBy = _data["createdBy"];
-            this.modifiedBy = _data["modifiedBy"];
-            this.id = _data["id"];
-        }
+  init(_data?: any) {
+    if (_data) {
+      this.objectType = _data["objectType"];
+      this.amount = _data["amount"];
+      this.vendorId = _data["vendorId"];
+      this.transactionId = _data["transactionId"];
+      this.customerOrderId = _data["customerOrderId"];
+      this.paymentId = _data["paymentId"];
+      if (Array.isArray(_data["items"])) {
+        this.items = [] as any;
+        for (let item of _data["items"]) this.items!.push(CaptureItem.fromJS(item));
+      }
+      this.operationType = _data["operationType"];
+      this.parentOperationId = _data["parentOperationId"];
+      this.number = _data["number"];
+      this.isApproved = _data["isApproved"];
+      this.status = _data["status"];
+      this.comment = _data["comment"];
+      this.currency = _data["currency"];
+      this.sum = _data["sum"];
+      this.outerId = _data["outerId"];
+      this.cancelledState = _data["cancelledState"];
+      this.isCancelled = _data["isCancelled"];
+      this.cancelledDate = _data["cancelledDate"] ? new Date(_data["cancelledDate"].toString()) : <any>undefined;
+      this.cancelReason = _data["cancelReason"];
+      if (Array.isArray(_data["dynamicProperties"])) {
+        this.dynamicProperties = [] as any;
+        for (let item of _data["dynamicProperties"]) this.dynamicProperties!.push(DynamicObjectProperty.fromJS(item));
+      }
+      if (Array.isArray(_data["operationsLog"])) {
+        this.operationsLog = [] as any;
+        for (let item of _data["operationsLog"]) this.operationsLog!.push(OperationLog.fromJS(item));
+      }
+      this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>undefined;
+      this.modifiedDate = _data["modifiedDate"] ? new Date(_data["modifiedDate"].toString()) : <any>undefined;
+      this.createdBy = _data["createdBy"];
+      this.modifiedBy = _data["modifiedBy"];
+      this.id = _data["id"];
     }
+  }
 
-    static fromJS(data: any): Capture {
-        data = typeof data === 'object' ? data : {};
-        let result = new Capture();
-        result.init(data);
-        return result;
-    }
+  static fromJS(data: any): Capture {
+    data = typeof data === "object" ? data : {};
+    let result = new Capture();
+    result.init(data);
+    return result;
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["objectType"] = this.objectType;
-        data["amount"] = this.amount;
-        data["vendorId"] = this.vendorId;
-        data["transactionId"] = this.transactionId;
-        data["customerOrderId"] = this.customerOrderId;
-        data["paymentId"] = this.paymentId;
-        if (Array.isArray(this.items)) {
-            data["items"] = [];
-            for (let item of this.items)
-                data["items"].push(item.toJSON());
-        }
-        data["operationType"] = this.operationType;
-        data["parentOperationId"] = this.parentOperationId;
-        data["number"] = this.number;
-        data["isApproved"] = this.isApproved;
-        data["status"] = this.status;
-        data["comment"] = this.comment;
-        data["currency"] = this.currency;
-        data["sum"] = this.sum;
-        data["outerId"] = this.outerId;
-        data["cancelledState"] = this.cancelledState;
-        data["isCancelled"] = this.isCancelled;
-        data["cancelledDate"] = this.cancelledDate ? this.cancelledDate.toISOString() : <any>undefined;
-        data["cancelReason"] = this.cancelReason;
-        if (Array.isArray(this.dynamicProperties)) {
-            data["dynamicProperties"] = [];
-            for (let item of this.dynamicProperties)
-                data["dynamicProperties"].push(item.toJSON());
-        }
-        if (Array.isArray(this.operationsLog)) {
-            data["operationsLog"] = [];
-            for (let item of this.operationsLog)
-                data["operationsLog"].push(item.toJSON());
-        }
-        data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>undefined;
-        data["modifiedDate"] = this.modifiedDate ? this.modifiedDate.toISOString() : <any>undefined;
-        data["createdBy"] = this.createdBy;
-        data["modifiedBy"] = this.modifiedBy;
-        data["id"] = this.id;
-        return data;
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    data["objectType"] = this.objectType;
+    data["amount"] = this.amount;
+    data["vendorId"] = this.vendorId;
+    data["transactionId"] = this.transactionId;
+    data["customerOrderId"] = this.customerOrderId;
+    data["paymentId"] = this.paymentId;
+    if (Array.isArray(this.items)) {
+      data["items"] = [];
+      for (let item of this.items) data["items"].push(item.toJSON());
     }
+    data["operationType"] = this.operationType;
+    data["parentOperationId"] = this.parentOperationId;
+    data["number"] = this.number;
+    data["isApproved"] = this.isApproved;
+    data["status"] = this.status;
+    data["comment"] = this.comment;
+    data["currency"] = this.currency;
+    data["sum"] = this.sum;
+    data["outerId"] = this.outerId;
+    data["cancelledState"] = this.cancelledState;
+    data["isCancelled"] = this.isCancelled;
+    data["cancelledDate"] = this.cancelledDate ? this.cancelledDate.toISOString() : <any>undefined;
+    data["cancelReason"] = this.cancelReason;
+    if (Array.isArray(this.dynamicProperties)) {
+      data["dynamicProperties"] = [];
+      for (let item of this.dynamicProperties) data["dynamicProperties"].push(item.toJSON());
+    }
+    if (Array.isArray(this.operationsLog)) {
+      data["operationsLog"] = [];
+      for (let item of this.operationsLog) data["operationsLog"].push(item.toJSON());
+    }
+    data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>undefined;
+    data["modifiedDate"] = this.modifiedDate ? this.modifiedDate.toISOString() : <any>undefined;
+    data["createdBy"] = this.createdBy;
+    data["modifiedBy"] = this.modifiedBy;
+    data["id"] = this.id;
+    return data;
+  }
 }
 
 export interface ICapture {
-    objectType?: string | undefined;
-    amount?: number;
-    vendorId?: string | undefined;
-    transactionId?: string | undefined;
-    customerOrderId?: string | undefined;
-    paymentId?: string | undefined;
-    items?: CaptureItem[] | undefined;
-    operationType?: string | undefined;
-    parentOperationId?: string | undefined;
-    number?: string | undefined;
-    isApproved?: boolean;
-    status?: string | undefined;
-    comment?: string | undefined;
-    currency?: string | undefined;
-    sum?: number;
-    outerId?: string | undefined;
-    cancelledState?: CaptureCancelledState;
-    isCancelled?: boolean;
-    cancelledDate?: Date | undefined;
-    cancelReason?: string | undefined;
-    dynamicProperties?: DynamicObjectProperty[] | undefined;
-    operationsLog?: OperationLog[] | undefined;
-    createdDate?: Date;
-    modifiedDate?: Date | undefined;
-    createdBy?: string | undefined;
-    modifiedBy?: string | undefined;
-    id?: string | undefined;
+  objectType?: string | undefined;
+  amount?: number;
+  vendorId?: string | undefined;
+  transactionId?: string | undefined;
+  customerOrderId?: string | undefined;
+  paymentId?: string | undefined;
+  items?: CaptureItem[] | undefined;
+  operationType?: string | undefined;
+  parentOperationId?: string | undefined;
+  number?: string | undefined;
+  isApproved?: boolean;
+  status?: string | undefined;
+  comment?: string | undefined;
+  currency?: string | undefined;
+  sum?: number;
+  outerId?: string | undefined;
+  cancelledState?: CaptureCancelledState;
+  isCancelled?: boolean;
+  cancelledDate?: Date | undefined;
+  cancelReason?: string | undefined;
+  dynamicProperties?: DynamicObjectProperty[] | undefined;
+  operationsLog?: OperationLog[] | undefined;
+  createdDate?: Date;
+  modifiedDate?: Date | undefined;
+  createdBy?: string | undefined;
+  modifiedBy?: string | undefined;
+  id?: string | undefined;
 }
 
 export class CaptureItem implements ICaptureItem {
-    quantity?: number;
-    lineItemId?: string | undefined;
-    lineItem?: OrderLineItem | undefined;
-    captureId?: string | undefined;
-    outerId?: string | undefined;
-    createdDate?: Date;
-    modifiedDate?: Date | undefined;
-    createdBy?: string | undefined;
-    modifiedBy?: string | undefined;
-    id?: string | undefined;
+  quantity?: number;
+  lineItemId?: string | undefined;
+  lineItem?: OrderLineItem | undefined;
+  captureId?: string | undefined;
+  outerId?: string | undefined;
+  createdDate?: Date;
+  modifiedDate?: Date | undefined;
+  createdBy?: string | undefined;
+  modifiedBy?: string | undefined;
+  id?: string | undefined;
 
-    constructor(data?: ICaptureItem) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
+  constructor(data?: ICaptureItem) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property)) (<any>this)[property] = (<any>data)[property];
+      }
     }
+  }
 
-    init(_data?: any) {
-        if (_data) {
-            this.quantity = _data["quantity"];
-            this.lineItemId = _data["lineItemId"];
-            this.lineItem = _data["lineItem"] ? OrderLineItem.fromJS(_data["lineItem"]) : <any>undefined;
-            this.captureId = _data["captureId"];
-            this.outerId = _data["outerId"];
-            this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>undefined;
-            this.modifiedDate = _data["modifiedDate"] ? new Date(_data["modifiedDate"].toString()) : <any>undefined;
-            this.createdBy = _data["createdBy"];
-            this.modifiedBy = _data["modifiedBy"];
-            this.id = _data["id"];
-        }
+  init(_data?: any) {
+    if (_data) {
+      this.quantity = _data["quantity"];
+      this.lineItemId = _data["lineItemId"];
+      this.lineItem = _data["lineItem"] ? OrderLineItem.fromJS(_data["lineItem"]) : <any>undefined;
+      this.captureId = _data["captureId"];
+      this.outerId = _data["outerId"];
+      this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>undefined;
+      this.modifiedDate = _data["modifiedDate"] ? new Date(_data["modifiedDate"].toString()) : <any>undefined;
+      this.createdBy = _data["createdBy"];
+      this.modifiedBy = _data["modifiedBy"];
+      this.id = _data["id"];
     }
+  }
 
-    static fromJS(data: any): CaptureItem {
-        data = typeof data === 'object' ? data : {};
-        let result = new CaptureItem();
-        result.init(data);
-        return result;
-    }
+  static fromJS(data: any): CaptureItem {
+    data = typeof data === "object" ? data : {};
+    let result = new CaptureItem();
+    result.init(data);
+    return result;
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["quantity"] = this.quantity;
-        data["lineItemId"] = this.lineItemId;
-        data["lineItem"] = this.lineItem ? this.lineItem.toJSON() : <any>undefined;
-        data["captureId"] = this.captureId;
-        data["outerId"] = this.outerId;
-        data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>undefined;
-        data["modifiedDate"] = this.modifiedDate ? this.modifiedDate.toISOString() : <any>undefined;
-        data["createdBy"] = this.createdBy;
-        data["modifiedBy"] = this.modifiedBy;
-        data["id"] = this.id;
-        return data;
-    }
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    data["quantity"] = this.quantity;
+    data["lineItemId"] = this.lineItemId;
+    data["lineItem"] = this.lineItem ? this.lineItem.toJSON() : <any>undefined;
+    data["captureId"] = this.captureId;
+    data["outerId"] = this.outerId;
+    data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>undefined;
+    data["modifiedDate"] = this.modifiedDate ? this.modifiedDate.toISOString() : <any>undefined;
+    data["createdBy"] = this.createdBy;
+    data["modifiedBy"] = this.modifiedBy;
+    data["id"] = this.id;
+    return data;
+  }
 }
 
 export interface ICaptureItem {
-    quantity?: number;
-    lineItemId?: string | undefined;
-    lineItem?: OrderLineItem | undefined;
-    captureId?: string | undefined;
-    outerId?: string | undefined;
-    createdDate?: Date;
-    modifiedDate?: Date | undefined;
-    createdBy?: string | undefined;
-    modifiedBy?: string | undefined;
-    id?: string | undefined;
+  quantity?: number;
+  lineItemId?: string | undefined;
+  lineItem?: OrderLineItem | undefined;
+  captureId?: string | undefined;
+  outerId?: string | undefined;
+  createdDate?: Date;
+  modifiedDate?: Date | undefined;
+  createdBy?: string | undefined;
+  modifiedBy?: string | undefined;
+  id?: string | undefined;
 }
 
 export class CaptureOrderPaymentRequest implements ICaptureOrderPaymentRequest {
-    captureDetails?: string | undefined;
-    orderId?: string | undefined;
-    paymentId?: string | undefined;
-    transactionId?: string | undefined;
-    outerId?: string | undefined;
-    amount?: number | undefined;
+  captureDetails?: string | undefined;
+  orderId?: string | undefined;
+  paymentId?: string | undefined;
+  transactionId?: string | undefined;
+  outerId?: string | undefined;
+  amount?: number | undefined;
 
-    constructor(data?: ICaptureOrderPaymentRequest) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
+  constructor(data?: ICaptureOrderPaymentRequest) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property)) (<any>this)[property] = (<any>data)[property];
+      }
     }
+  }
 
-    init(_data?: any) {
-        if (_data) {
-            this.captureDetails = _data["captureDetails"];
-            this.orderId = _data["orderId"];
-            this.paymentId = _data["paymentId"];
-            this.transactionId = _data["transactionId"];
-            this.outerId = _data["outerId"];
-            this.amount = _data["amount"];
-        }
+  init(_data?: any) {
+    if (_data) {
+      this.captureDetails = _data["captureDetails"];
+      this.orderId = _data["orderId"];
+      this.paymentId = _data["paymentId"];
+      this.transactionId = _data["transactionId"];
+      this.outerId = _data["outerId"];
+      this.amount = _data["amount"];
     }
+  }
 
-    static fromJS(data: any): CaptureOrderPaymentRequest {
-        data = typeof data === 'object' ? data : {};
-        let result = new CaptureOrderPaymentRequest();
-        result.init(data);
-        return result;
-    }
+  static fromJS(data: any): CaptureOrderPaymentRequest {
+    data = typeof data === "object" ? data : {};
+    let result = new CaptureOrderPaymentRequest();
+    result.init(data);
+    return result;
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["captureDetails"] = this.captureDetails;
-        data["orderId"] = this.orderId;
-        data["paymentId"] = this.paymentId;
-        data["transactionId"] = this.transactionId;
-        data["outerId"] = this.outerId;
-        data["amount"] = this.amount;
-        return data;
-    }
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    data["captureDetails"] = this.captureDetails;
+    data["orderId"] = this.orderId;
+    data["paymentId"] = this.paymentId;
+    data["transactionId"] = this.transactionId;
+    data["outerId"] = this.outerId;
+    data["amount"] = this.amount;
+    return data;
+  }
 }
 
 export interface ICaptureOrderPaymentRequest {
-    captureDetails?: string | undefined;
-    orderId?: string | undefined;
-    paymentId?: string | undefined;
-    transactionId?: string | undefined;
-    outerId?: string | undefined;
-    amount?: number | undefined;
+  captureDetails?: string | undefined;
+  orderId?: string | undefined;
+  paymentId?: string | undefined;
+  transactionId?: string | undefined;
+  outerId?: string | undefined;
+  amount?: number | undefined;
 }
 
 export class ChangeLogSearchResult implements IChangeLogSearchResult {
-    totalCount?: number;
-    results?: OperationLog[] | undefined;
+  totalCount?: number;
+  results?: OperationLog[] | undefined;
 
-    constructor(data?: IChangeLogSearchResult) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
+  constructor(data?: IChangeLogSearchResult) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property)) (<any>this)[property] = (<any>data)[property];
+      }
     }
+  }
 
-    init(_data?: any) {
-        if (_data) {
-            this.totalCount = _data["totalCount"];
-            if (Array.isArray(_data["results"])) {
-                this.results = [] as any;
-                for (let item of _data["results"])
-                    this.results!.push(OperationLog.fromJS(item));
-            }
-        }
+  init(_data?: any) {
+    if (_data) {
+      this.totalCount = _data["totalCount"];
+      if (Array.isArray(_data["results"])) {
+        this.results = [] as any;
+        for (let item of _data["results"]) this.results!.push(OperationLog.fromJS(item));
+      }
     }
+  }
 
-    static fromJS(data: any): ChangeLogSearchResult {
-        data = typeof data === 'object' ? data : {};
-        let result = new ChangeLogSearchResult();
-        result.init(data);
-        return result;
-    }
+  static fromJS(data: any): ChangeLogSearchResult {
+    data = typeof data === "object" ? data : {};
+    let result = new ChangeLogSearchResult();
+    result.init(data);
+    return result;
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["totalCount"] = this.totalCount;
-        if (Array.isArray(this.results)) {
-            data["results"] = [];
-            for (let item of this.results)
-                data["results"].push(item.toJSON());
-        }
-        return data;
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    data["totalCount"] = this.totalCount;
+    if (Array.isArray(this.results)) {
+      data["results"] = [];
+      for (let item of this.results) data["results"].push(item.toJSON());
     }
+    return data;
+  }
 }
 
 export interface IChangeLogSearchResult {
-    totalCount?: number;
-    results?: OperationLog[] | undefined;
+  totalCount?: number;
+  results?: OperationLog[] | undefined;
 }
 
 export class CustomerOrder implements ICustomerOrder {
-    rowVersion?: string | undefined;
-    customerId?: string | undefined;
-    customerName?: string | undefined;
-    channelId?: string | undefined;
-    storeId?: string | undefined;
-    storeName?: string | undefined;
-    organizationId?: string | undefined;
-    organizationName?: string | undefined;
-    employeeId?: string | undefined;
-    employeeName?: string | undefined;
-    shoppingCartId?: string | undefined;
-    isPrototype?: boolean;
-    purchaseOrderNumber?: string | undefined;
-    subscriptionNumber?: string | undefined;
-    subscriptionId?: string | undefined;
-    objectType?: string | undefined;
-    addresses?: OrderAddress[] | undefined;
-    inPayments?: PaymentIn[] | undefined;
-    items?: OrderLineItem[] | undefined;
-    shipments?: OrderShipment[] | undefined;
-    feeDetails?: FeeDetail[] | undefined;
-    discounts?: Discount[] | undefined;
-    discountAmount?: number;
-    taxDetails?: TaxDetail[] | undefined;
-    scopes?: string[] | undefined;
-    total?: number;
-    subTotal?: number;
-    subTotalWithTax?: number;
-    subTotalDiscount?: number;
-    subTotalDiscountWithTax?: number;
-    subTotalTaxTotal?: number;
-    shippingTotal?: number;
-    shippingTotalWithTax?: number;
-    shippingSubTotal?: number;
-    shippingSubTotalWithTax?: number;
-    shippingDiscountTotal?: number;
-    shippingDiscountTotalWithTax?: number;
-    shippingTaxTotal?: number;
-    paymentTotal?: number;
-    paymentTotalWithTax?: number;
-    paymentSubTotal?: number;
-    paymentSubTotalWithTax?: number;
-    paymentDiscountTotal?: number;
-    paymentDiscountTotalWithTax?: number;
-    paymentTaxTotal?: number;
-    discountTotal?: number;
-    discountTotalWithTax?: number;
-    fee?: number;
-    feeWithTax?: number;
-    feeTotal?: number;
-    feeTotalWithTax?: number;
-    handlingTotal?: number;
-    handlingTotalWithTax?: number;
-    isAnonymous?: boolean;
-    taxType?: string | undefined;
-    taxTotal?: number;
-    taxPercentRate?: number;
-    languageCode?: string | undefined;
-    operationType?: string | undefined;
-    parentOperationId?: string | undefined;
-    number?: string | undefined;
-    isApproved?: boolean;
-    status?: string | undefined;
-    comment?: string | undefined;
-    currency?: string | undefined;
-    sum?: number;
-    outerId?: string | undefined;
-    cancelledState?: CustomerOrderCancelledState;
-    isCancelled?: boolean;
-    cancelledDate?: Date | undefined;
-    cancelReason?: string | undefined;
-    dynamicProperties?: DynamicObjectProperty[] | undefined;
-    operationsLog?: OperationLog[] | undefined;
-    createdDate?: Date;
-    modifiedDate?: Date | undefined;
-    createdBy?: string | undefined;
-    modifiedBy?: string | undefined;
-    id?: string | undefined;
+  rowVersion?: string | undefined;
+  customerId?: string | undefined;
+  customerName?: string | undefined;
+  channelId?: string | undefined;
+  storeId?: string | undefined;
+  storeName?: string | undefined;
+  organizationId?: string | undefined;
+  organizationName?: string | undefined;
+  employeeId?: string | undefined;
+  employeeName?: string | undefined;
+  shoppingCartId?: string | undefined;
+  isPrototype?: boolean;
+  purchaseOrderNumber?: string | undefined;
+  subscriptionNumber?: string | undefined;
+  subscriptionId?: string | undefined;
+  objectType?: string | undefined;
+  addresses?: OrderAddress[] | undefined;
+  inPayments?: PaymentIn[] | undefined;
+  items?: OrderLineItem[] | undefined;
+  shipments?: OrderShipment[] | undefined;
+  feeDetails?: FeeDetail[] | undefined;
+  discounts?: Discount[] | undefined;
+  discountAmount?: number;
+  taxDetails?: TaxDetail[] | undefined;
+  scopes?: string[] | undefined;
+  total?: number;
+  subTotal?: number;
+  subTotalWithTax?: number;
+  subTotalDiscount?: number;
+  subTotalDiscountWithTax?: number;
+  subTotalTaxTotal?: number;
+  shippingTotal?: number;
+  shippingTotalWithTax?: number;
+  shippingSubTotal?: number;
+  shippingSubTotalWithTax?: number;
+  shippingDiscountTotal?: number;
+  shippingDiscountTotalWithTax?: number;
+  shippingTaxTotal?: number;
+  paymentTotal?: number;
+  paymentTotalWithTax?: number;
+  paymentSubTotal?: number;
+  paymentSubTotalWithTax?: number;
+  paymentDiscountTotal?: number;
+  paymentDiscountTotalWithTax?: number;
+  paymentTaxTotal?: number;
+  discountTotal?: number;
+  discountTotalWithTax?: number;
+  fee?: number;
+  feeWithTax?: number;
+  feeTotal?: number;
+  feeTotalWithTax?: number;
+  handlingTotal?: number;
+  handlingTotalWithTax?: number;
+  isAnonymous?: boolean;
+  taxType?: string | undefined;
+  taxTotal?: number;
+  taxPercentRate?: number;
+  languageCode?: string | undefined;
+  operationType?: string | undefined;
+  parentOperationId?: string | undefined;
+  number?: string | undefined;
+  isApproved?: boolean;
+  status?: string | undefined;
+  comment?: string | undefined;
+  currency?: string | undefined;
+  sum?: number;
+  outerId?: string | undefined;
+  cancelledState?: CustomerOrderCancelledState;
+  isCancelled?: boolean;
+  cancelledDate?: Date | undefined;
+  cancelReason?: string | undefined;
+  dynamicProperties?: DynamicObjectProperty[] | undefined;
+  operationsLog?: OperationLog[] | undefined;
+  createdDate?: Date;
+  modifiedDate?: Date | undefined;
+  createdBy?: string | undefined;
+  modifiedBy?: string | undefined;
+  id?: string | undefined;
 
-    constructor(data?: ICustomerOrder) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
+  constructor(data?: ICustomerOrder) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property)) (<any>this)[property] = (<any>data)[property];
+      }
     }
+  }
 
-    init(_data?: any) {
-        if (_data) {
-            this.rowVersion = _data["rowVersion"];
-            this.customerId = _data["customerId"];
-            this.customerName = _data["customerName"];
-            this.channelId = _data["channelId"];
-            this.storeId = _data["storeId"];
-            this.storeName = _data["storeName"];
-            this.organizationId = _data["organizationId"];
-            this.organizationName = _data["organizationName"];
-            this.employeeId = _data["employeeId"];
-            this.employeeName = _data["employeeName"];
-            this.shoppingCartId = _data["shoppingCartId"];
-            this.isPrototype = _data["isPrototype"];
-            this.purchaseOrderNumber = _data["purchaseOrderNumber"];
-            this.subscriptionNumber = _data["subscriptionNumber"];
-            this.subscriptionId = _data["subscriptionId"];
-            this.objectType = _data["objectType"];
-            if (Array.isArray(_data["addresses"])) {
-                this.addresses = [] as any;
-                for (let item of _data["addresses"])
-                    this.addresses!.push(OrderAddress.fromJS(item));
-            }
-            if (Array.isArray(_data["inPayments"])) {
-                this.inPayments = [] as any;
-                for (let item of _data["inPayments"])
-                    this.inPayments!.push(PaymentIn.fromJS(item));
-            }
-            if (Array.isArray(_data["items"])) {
-                this.items = [] as any;
-                for (let item of _data["items"])
-                    this.items!.push(OrderLineItem.fromJS(item));
-            }
-            if (Array.isArray(_data["shipments"])) {
-                this.shipments = [] as any;
-                for (let item of _data["shipments"])
-                    this.shipments!.push(OrderShipment.fromJS(item));
-            }
-            if (Array.isArray(_data["feeDetails"])) {
-                this.feeDetails = [] as any;
-                for (let item of _data["feeDetails"])
-                    this.feeDetails!.push(FeeDetail.fromJS(item));
-            }
-            if (Array.isArray(_data["discounts"])) {
-                this.discounts = [] as any;
-                for (let item of _data["discounts"])
-                    this.discounts!.push(Discount.fromJS(item));
-            }
-            this.discountAmount = _data["discountAmount"];
-            if (Array.isArray(_data["taxDetails"])) {
-                this.taxDetails = [] as any;
-                for (let item of _data["taxDetails"])
-                    this.taxDetails!.push(TaxDetail.fromJS(item));
-            }
-            if (Array.isArray(_data["scopes"])) {
-                this.scopes = [] as any;
-                for (let item of _data["scopes"])
-                    this.scopes!.push(item);
-            }
-            this.total = _data["total"];
-            this.subTotal = _data["subTotal"];
-            this.subTotalWithTax = _data["subTotalWithTax"];
-            this.subTotalDiscount = _data["subTotalDiscount"];
-            this.subTotalDiscountWithTax = _data["subTotalDiscountWithTax"];
-            this.subTotalTaxTotal = _data["subTotalTaxTotal"];
-            this.shippingTotal = _data["shippingTotal"];
-            this.shippingTotalWithTax = _data["shippingTotalWithTax"];
-            this.shippingSubTotal = _data["shippingSubTotal"];
-            this.shippingSubTotalWithTax = _data["shippingSubTotalWithTax"];
-            this.shippingDiscountTotal = _data["shippingDiscountTotal"];
-            this.shippingDiscountTotalWithTax = _data["shippingDiscountTotalWithTax"];
-            this.shippingTaxTotal = _data["shippingTaxTotal"];
-            this.paymentTotal = _data["paymentTotal"];
-            this.paymentTotalWithTax = _data["paymentTotalWithTax"];
-            this.paymentSubTotal = _data["paymentSubTotal"];
-            this.paymentSubTotalWithTax = _data["paymentSubTotalWithTax"];
-            this.paymentDiscountTotal = _data["paymentDiscountTotal"];
-            this.paymentDiscountTotalWithTax = _data["paymentDiscountTotalWithTax"];
-            this.paymentTaxTotal = _data["paymentTaxTotal"];
-            this.discountTotal = _data["discountTotal"];
-            this.discountTotalWithTax = _data["discountTotalWithTax"];
-            this.fee = _data["fee"];
-            this.feeWithTax = _data["feeWithTax"];
-            this.feeTotal = _data["feeTotal"];
-            this.feeTotalWithTax = _data["feeTotalWithTax"];
-            this.handlingTotal = _data["handlingTotal"];
-            this.handlingTotalWithTax = _data["handlingTotalWithTax"];
-            this.isAnonymous = _data["isAnonymous"];
-            this.taxType = _data["taxType"];
-            this.taxTotal = _data["taxTotal"];
-            this.taxPercentRate = _data["taxPercentRate"];
-            this.languageCode = _data["languageCode"];
-            this.operationType = _data["operationType"];
-            this.parentOperationId = _data["parentOperationId"];
-            this.number = _data["number"];
-            this.isApproved = _data["isApproved"];
-            this.status = _data["status"];
-            this.comment = _data["comment"];
-            this.currency = _data["currency"];
-            this.sum = _data["sum"];
-            this.outerId = _data["outerId"];
-            this.cancelledState = _data["cancelledState"];
-            this.isCancelled = _data["isCancelled"];
-            this.cancelledDate = _data["cancelledDate"] ? new Date(_data["cancelledDate"].toString()) : <any>undefined;
-            this.cancelReason = _data["cancelReason"];
-            if (Array.isArray(_data["dynamicProperties"])) {
-                this.dynamicProperties = [] as any;
-                for (let item of _data["dynamicProperties"])
-                    this.dynamicProperties!.push(DynamicObjectProperty.fromJS(item));
-            }
-            if (Array.isArray(_data["operationsLog"])) {
-                this.operationsLog = [] as any;
-                for (let item of _data["operationsLog"])
-                    this.operationsLog!.push(OperationLog.fromJS(item));
-            }
-            this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>undefined;
-            this.modifiedDate = _data["modifiedDate"] ? new Date(_data["modifiedDate"].toString()) : <any>undefined;
-            this.createdBy = _data["createdBy"];
-            this.modifiedBy = _data["modifiedBy"];
-            this.id = _data["id"];
-        }
+  init(_data?: any) {
+    if (_data) {
+      this.rowVersion = _data["rowVersion"];
+      this.customerId = _data["customerId"];
+      this.customerName = _data["customerName"];
+      this.channelId = _data["channelId"];
+      this.storeId = _data["storeId"];
+      this.storeName = _data["storeName"];
+      this.organizationId = _data["organizationId"];
+      this.organizationName = _data["organizationName"];
+      this.employeeId = _data["employeeId"];
+      this.employeeName = _data["employeeName"];
+      this.shoppingCartId = _data["shoppingCartId"];
+      this.isPrototype = _data["isPrototype"];
+      this.purchaseOrderNumber = _data["purchaseOrderNumber"];
+      this.subscriptionNumber = _data["subscriptionNumber"];
+      this.subscriptionId = _data["subscriptionId"];
+      this.objectType = _data["objectType"];
+      if (Array.isArray(_data["addresses"])) {
+        this.addresses = [] as any;
+        for (let item of _data["addresses"]) this.addresses!.push(OrderAddress.fromJS(item));
+      }
+      if (Array.isArray(_data["inPayments"])) {
+        this.inPayments = [] as any;
+        for (let item of _data["inPayments"]) this.inPayments!.push(PaymentIn.fromJS(item));
+      }
+      if (Array.isArray(_data["items"])) {
+        this.items = [] as any;
+        for (let item of _data["items"]) this.items!.push(OrderLineItem.fromJS(item));
+      }
+      if (Array.isArray(_data["shipments"])) {
+        this.shipments = [] as any;
+        for (let item of _data["shipments"]) this.shipments!.push(OrderShipment.fromJS(item));
+      }
+      if (Array.isArray(_data["feeDetails"])) {
+        this.feeDetails = [] as any;
+        for (let item of _data["feeDetails"]) this.feeDetails!.push(FeeDetail.fromJS(item));
+      }
+      if (Array.isArray(_data["discounts"])) {
+        this.discounts = [] as any;
+        for (let item of _data["discounts"]) this.discounts!.push(Discount.fromJS(item));
+      }
+      this.discountAmount = _data["discountAmount"];
+      if (Array.isArray(_data["taxDetails"])) {
+        this.taxDetails = [] as any;
+        for (let item of _data["taxDetails"]) this.taxDetails!.push(TaxDetail.fromJS(item));
+      }
+      if (Array.isArray(_data["scopes"])) {
+        this.scopes = [] as any;
+        for (let item of _data["scopes"]) this.scopes!.push(item);
+      }
+      this.total = _data["total"];
+      this.subTotal = _data["subTotal"];
+      this.subTotalWithTax = _data["subTotalWithTax"];
+      this.subTotalDiscount = _data["subTotalDiscount"];
+      this.subTotalDiscountWithTax = _data["subTotalDiscountWithTax"];
+      this.subTotalTaxTotal = _data["subTotalTaxTotal"];
+      this.shippingTotal = _data["shippingTotal"];
+      this.shippingTotalWithTax = _data["shippingTotalWithTax"];
+      this.shippingSubTotal = _data["shippingSubTotal"];
+      this.shippingSubTotalWithTax = _data["shippingSubTotalWithTax"];
+      this.shippingDiscountTotal = _data["shippingDiscountTotal"];
+      this.shippingDiscountTotalWithTax = _data["shippingDiscountTotalWithTax"];
+      this.shippingTaxTotal = _data["shippingTaxTotal"];
+      this.paymentTotal = _data["paymentTotal"];
+      this.paymentTotalWithTax = _data["paymentTotalWithTax"];
+      this.paymentSubTotal = _data["paymentSubTotal"];
+      this.paymentSubTotalWithTax = _data["paymentSubTotalWithTax"];
+      this.paymentDiscountTotal = _data["paymentDiscountTotal"];
+      this.paymentDiscountTotalWithTax = _data["paymentDiscountTotalWithTax"];
+      this.paymentTaxTotal = _data["paymentTaxTotal"];
+      this.discountTotal = _data["discountTotal"];
+      this.discountTotalWithTax = _data["discountTotalWithTax"];
+      this.fee = _data["fee"];
+      this.feeWithTax = _data["feeWithTax"];
+      this.feeTotal = _data["feeTotal"];
+      this.feeTotalWithTax = _data["feeTotalWithTax"];
+      this.handlingTotal = _data["handlingTotal"];
+      this.handlingTotalWithTax = _data["handlingTotalWithTax"];
+      this.isAnonymous = _data["isAnonymous"];
+      this.taxType = _data["taxType"];
+      this.taxTotal = _data["taxTotal"];
+      this.taxPercentRate = _data["taxPercentRate"];
+      this.languageCode = _data["languageCode"];
+      this.operationType = _data["operationType"];
+      this.parentOperationId = _data["parentOperationId"];
+      this.number = _data["number"];
+      this.isApproved = _data["isApproved"];
+      this.status = _data["status"];
+      this.comment = _data["comment"];
+      this.currency = _data["currency"];
+      this.sum = _data["sum"];
+      this.outerId = _data["outerId"];
+      this.cancelledState = _data["cancelledState"];
+      this.isCancelled = _data["isCancelled"];
+      this.cancelledDate = _data["cancelledDate"] ? new Date(_data["cancelledDate"].toString()) : <any>undefined;
+      this.cancelReason = _data["cancelReason"];
+      if (Array.isArray(_data["dynamicProperties"])) {
+        this.dynamicProperties = [] as any;
+        for (let item of _data["dynamicProperties"]) this.dynamicProperties!.push(DynamicObjectProperty.fromJS(item));
+      }
+      if (Array.isArray(_data["operationsLog"])) {
+        this.operationsLog = [] as any;
+        for (let item of _data["operationsLog"]) this.operationsLog!.push(OperationLog.fromJS(item));
+      }
+      this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>undefined;
+      this.modifiedDate = _data["modifiedDate"] ? new Date(_data["modifiedDate"].toString()) : <any>undefined;
+      this.createdBy = _data["createdBy"];
+      this.modifiedBy = _data["modifiedBy"];
+      this.id = _data["id"];
     }
+  }
 
-    static fromJS(data: any): CustomerOrder {
-        data = typeof data === 'object' ? data : {};
-        let result = new CustomerOrder();
-        result.init(data);
-        return result;
-    }
+  static fromJS(data: any): CustomerOrder {
+    data = typeof data === "object" ? data : {};
+    let result = new CustomerOrder();
+    result.init(data);
+    return result;
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["rowVersion"] = this.rowVersion;
-        data["customerId"] = this.customerId;
-        data["customerName"] = this.customerName;
-        data["channelId"] = this.channelId;
-        data["storeId"] = this.storeId;
-        data["storeName"] = this.storeName;
-        data["organizationId"] = this.organizationId;
-        data["organizationName"] = this.organizationName;
-        data["employeeId"] = this.employeeId;
-        data["employeeName"] = this.employeeName;
-        data["shoppingCartId"] = this.shoppingCartId;
-        data["isPrototype"] = this.isPrototype;
-        data["purchaseOrderNumber"] = this.purchaseOrderNumber;
-        data["subscriptionNumber"] = this.subscriptionNumber;
-        data["subscriptionId"] = this.subscriptionId;
-        data["objectType"] = this.objectType;
-        if (Array.isArray(this.addresses)) {
-            data["addresses"] = [];
-            for (let item of this.addresses)
-                data["addresses"].push(item.toJSON());
-        }
-        if (Array.isArray(this.inPayments)) {
-            data["inPayments"] = [];
-            for (let item of this.inPayments)
-                data["inPayments"].push(item.toJSON());
-        }
-        if (Array.isArray(this.items)) {
-            data["items"] = [];
-            for (let item of this.items)
-                data["items"].push(item.toJSON());
-        }
-        if (Array.isArray(this.shipments)) {
-            data["shipments"] = [];
-            for (let item of this.shipments)
-                data["shipments"].push(item.toJSON());
-        }
-        if (Array.isArray(this.feeDetails)) {
-            data["feeDetails"] = [];
-            for (let item of this.feeDetails)
-                data["feeDetails"].push(item.toJSON());
-        }
-        if (Array.isArray(this.discounts)) {
-            data["discounts"] = [];
-            for (let item of this.discounts)
-                data["discounts"].push(item.toJSON());
-        }
-        data["discountAmount"] = this.discountAmount;
-        if (Array.isArray(this.taxDetails)) {
-            data["taxDetails"] = [];
-            for (let item of this.taxDetails)
-                data["taxDetails"].push(item.toJSON());
-        }
-        if (Array.isArray(this.scopes)) {
-            data["scopes"] = [];
-            for (let item of this.scopes)
-                data["scopes"].push(item);
-        }
-        data["total"] = this.total;
-        data["subTotal"] = this.subTotal;
-        data["subTotalWithTax"] = this.subTotalWithTax;
-        data["subTotalDiscount"] = this.subTotalDiscount;
-        data["subTotalDiscountWithTax"] = this.subTotalDiscountWithTax;
-        data["subTotalTaxTotal"] = this.subTotalTaxTotal;
-        data["shippingTotal"] = this.shippingTotal;
-        data["shippingTotalWithTax"] = this.shippingTotalWithTax;
-        data["shippingSubTotal"] = this.shippingSubTotal;
-        data["shippingSubTotalWithTax"] = this.shippingSubTotalWithTax;
-        data["shippingDiscountTotal"] = this.shippingDiscountTotal;
-        data["shippingDiscountTotalWithTax"] = this.shippingDiscountTotalWithTax;
-        data["shippingTaxTotal"] = this.shippingTaxTotal;
-        data["paymentTotal"] = this.paymentTotal;
-        data["paymentTotalWithTax"] = this.paymentTotalWithTax;
-        data["paymentSubTotal"] = this.paymentSubTotal;
-        data["paymentSubTotalWithTax"] = this.paymentSubTotalWithTax;
-        data["paymentDiscountTotal"] = this.paymentDiscountTotal;
-        data["paymentDiscountTotalWithTax"] = this.paymentDiscountTotalWithTax;
-        data["paymentTaxTotal"] = this.paymentTaxTotal;
-        data["discountTotal"] = this.discountTotal;
-        data["discountTotalWithTax"] = this.discountTotalWithTax;
-        data["fee"] = this.fee;
-        data["feeWithTax"] = this.feeWithTax;
-        data["feeTotal"] = this.feeTotal;
-        data["feeTotalWithTax"] = this.feeTotalWithTax;
-        data["handlingTotal"] = this.handlingTotal;
-        data["handlingTotalWithTax"] = this.handlingTotalWithTax;
-        data["isAnonymous"] = this.isAnonymous;
-        data["taxType"] = this.taxType;
-        data["taxTotal"] = this.taxTotal;
-        data["taxPercentRate"] = this.taxPercentRate;
-        data["languageCode"] = this.languageCode;
-        data["operationType"] = this.operationType;
-        data["parentOperationId"] = this.parentOperationId;
-        data["number"] = this.number;
-        data["isApproved"] = this.isApproved;
-        data["status"] = this.status;
-        data["comment"] = this.comment;
-        data["currency"] = this.currency;
-        data["sum"] = this.sum;
-        data["outerId"] = this.outerId;
-        data["cancelledState"] = this.cancelledState;
-        data["isCancelled"] = this.isCancelled;
-        data["cancelledDate"] = this.cancelledDate ? this.cancelledDate.toISOString() : <any>undefined;
-        data["cancelReason"] = this.cancelReason;
-        if (Array.isArray(this.dynamicProperties)) {
-            data["dynamicProperties"] = [];
-            for (let item of this.dynamicProperties)
-                data["dynamicProperties"].push(item.toJSON());
-        }
-        if (Array.isArray(this.operationsLog)) {
-            data["operationsLog"] = [];
-            for (let item of this.operationsLog)
-                data["operationsLog"].push(item.toJSON());
-        }
-        data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>undefined;
-        data["modifiedDate"] = this.modifiedDate ? this.modifiedDate.toISOString() : <any>undefined;
-        data["createdBy"] = this.createdBy;
-        data["modifiedBy"] = this.modifiedBy;
-        data["id"] = this.id;
-        return data;
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    data["rowVersion"] = this.rowVersion;
+    data["customerId"] = this.customerId;
+    data["customerName"] = this.customerName;
+    data["channelId"] = this.channelId;
+    data["storeId"] = this.storeId;
+    data["storeName"] = this.storeName;
+    data["organizationId"] = this.organizationId;
+    data["organizationName"] = this.organizationName;
+    data["employeeId"] = this.employeeId;
+    data["employeeName"] = this.employeeName;
+    data["shoppingCartId"] = this.shoppingCartId;
+    data["isPrototype"] = this.isPrototype;
+    data["purchaseOrderNumber"] = this.purchaseOrderNumber;
+    data["subscriptionNumber"] = this.subscriptionNumber;
+    data["subscriptionId"] = this.subscriptionId;
+    data["objectType"] = this.objectType;
+    if (Array.isArray(this.addresses)) {
+      data["addresses"] = [];
+      for (let item of this.addresses) data["addresses"].push(item.toJSON());
     }
+    if (Array.isArray(this.inPayments)) {
+      data["inPayments"] = [];
+      for (let item of this.inPayments) data["inPayments"].push(item.toJSON());
+    }
+    if (Array.isArray(this.items)) {
+      data["items"] = [];
+      for (let item of this.items) data["items"].push(item.toJSON());
+    }
+    if (Array.isArray(this.shipments)) {
+      data["shipments"] = [];
+      for (let item of this.shipments) data["shipments"].push(item.toJSON());
+    }
+    if (Array.isArray(this.feeDetails)) {
+      data["feeDetails"] = [];
+      for (let item of this.feeDetails) data["feeDetails"].push(item.toJSON());
+    }
+    if (Array.isArray(this.discounts)) {
+      data["discounts"] = [];
+      for (let item of this.discounts) data["discounts"].push(item.toJSON());
+    }
+    data["discountAmount"] = this.discountAmount;
+    if (Array.isArray(this.taxDetails)) {
+      data["taxDetails"] = [];
+      for (let item of this.taxDetails) data["taxDetails"].push(item.toJSON());
+    }
+    if (Array.isArray(this.scopes)) {
+      data["scopes"] = [];
+      for (let item of this.scopes) data["scopes"].push(item);
+    }
+    data["total"] = this.total;
+    data["subTotal"] = this.subTotal;
+    data["subTotalWithTax"] = this.subTotalWithTax;
+    data["subTotalDiscount"] = this.subTotalDiscount;
+    data["subTotalDiscountWithTax"] = this.subTotalDiscountWithTax;
+    data["subTotalTaxTotal"] = this.subTotalTaxTotal;
+    data["shippingTotal"] = this.shippingTotal;
+    data["shippingTotalWithTax"] = this.shippingTotalWithTax;
+    data["shippingSubTotal"] = this.shippingSubTotal;
+    data["shippingSubTotalWithTax"] = this.shippingSubTotalWithTax;
+    data["shippingDiscountTotal"] = this.shippingDiscountTotal;
+    data["shippingDiscountTotalWithTax"] = this.shippingDiscountTotalWithTax;
+    data["shippingTaxTotal"] = this.shippingTaxTotal;
+    data["paymentTotal"] = this.paymentTotal;
+    data["paymentTotalWithTax"] = this.paymentTotalWithTax;
+    data["paymentSubTotal"] = this.paymentSubTotal;
+    data["paymentSubTotalWithTax"] = this.paymentSubTotalWithTax;
+    data["paymentDiscountTotal"] = this.paymentDiscountTotal;
+    data["paymentDiscountTotalWithTax"] = this.paymentDiscountTotalWithTax;
+    data["paymentTaxTotal"] = this.paymentTaxTotal;
+    data["discountTotal"] = this.discountTotal;
+    data["discountTotalWithTax"] = this.discountTotalWithTax;
+    data["fee"] = this.fee;
+    data["feeWithTax"] = this.feeWithTax;
+    data["feeTotal"] = this.feeTotal;
+    data["feeTotalWithTax"] = this.feeTotalWithTax;
+    data["handlingTotal"] = this.handlingTotal;
+    data["handlingTotalWithTax"] = this.handlingTotalWithTax;
+    data["isAnonymous"] = this.isAnonymous;
+    data["taxType"] = this.taxType;
+    data["taxTotal"] = this.taxTotal;
+    data["taxPercentRate"] = this.taxPercentRate;
+    data["languageCode"] = this.languageCode;
+    data["operationType"] = this.operationType;
+    data["parentOperationId"] = this.parentOperationId;
+    data["number"] = this.number;
+    data["isApproved"] = this.isApproved;
+    data["status"] = this.status;
+    data["comment"] = this.comment;
+    data["currency"] = this.currency;
+    data["sum"] = this.sum;
+    data["outerId"] = this.outerId;
+    data["cancelledState"] = this.cancelledState;
+    data["isCancelled"] = this.isCancelled;
+    data["cancelledDate"] = this.cancelledDate ? this.cancelledDate.toISOString() : <any>undefined;
+    data["cancelReason"] = this.cancelReason;
+    if (Array.isArray(this.dynamicProperties)) {
+      data["dynamicProperties"] = [];
+      for (let item of this.dynamicProperties) data["dynamicProperties"].push(item.toJSON());
+    }
+    if (Array.isArray(this.operationsLog)) {
+      data["operationsLog"] = [];
+      for (let item of this.operationsLog) data["operationsLog"].push(item.toJSON());
+    }
+    data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>undefined;
+    data["modifiedDate"] = this.modifiedDate ? this.modifiedDate.toISOString() : <any>undefined;
+    data["createdBy"] = this.createdBy;
+    data["modifiedBy"] = this.modifiedBy;
+    data["id"] = this.id;
+    return data;
+  }
 }
 
 export interface ICustomerOrder {
-    rowVersion?: string | undefined;
-    customerId?: string | undefined;
-    customerName?: string | undefined;
-    channelId?: string | undefined;
-    storeId?: string | undefined;
-    storeName?: string | undefined;
-    organizationId?: string | undefined;
-    organizationName?: string | undefined;
-    employeeId?: string | undefined;
-    employeeName?: string | undefined;
-    shoppingCartId?: string | undefined;
-    isPrototype?: boolean;
-    purchaseOrderNumber?: string | undefined;
-    subscriptionNumber?: string | undefined;
-    subscriptionId?: string | undefined;
-    objectType?: string | undefined;
-    addresses?: OrderAddress[] | undefined;
-    inPayments?: PaymentIn[] | undefined;
-    items?: OrderLineItem[] | undefined;
-    shipments?: OrderShipment[] | undefined;
-    feeDetails?: FeeDetail[] | undefined;
-    discounts?: Discount[] | undefined;
-    discountAmount?: number;
-    taxDetails?: TaxDetail[] | undefined;
-    scopes?: string[] | undefined;
-    total?: number;
-    subTotal?: number;
-    subTotalWithTax?: number;
-    subTotalDiscount?: number;
-    subTotalDiscountWithTax?: number;
-    subTotalTaxTotal?: number;
-    shippingTotal?: number;
-    shippingTotalWithTax?: number;
-    shippingSubTotal?: number;
-    shippingSubTotalWithTax?: number;
-    shippingDiscountTotal?: number;
-    shippingDiscountTotalWithTax?: number;
-    shippingTaxTotal?: number;
-    paymentTotal?: number;
-    paymentTotalWithTax?: number;
-    paymentSubTotal?: number;
-    paymentSubTotalWithTax?: number;
-    paymentDiscountTotal?: number;
-    paymentDiscountTotalWithTax?: number;
-    paymentTaxTotal?: number;
-    discountTotal?: number;
-    discountTotalWithTax?: number;
-    fee?: number;
-    feeWithTax?: number;
-    feeTotal?: number;
-    feeTotalWithTax?: number;
-    handlingTotal?: number;
-    handlingTotalWithTax?: number;
-    isAnonymous?: boolean;
-    taxType?: string | undefined;
-    taxTotal?: number;
-    taxPercentRate?: number;
-    languageCode?: string | undefined;
-    operationType?: string | undefined;
-    parentOperationId?: string | undefined;
-    number?: string | undefined;
-    isApproved?: boolean;
-    status?: string | undefined;
-    comment?: string | undefined;
-    currency?: string | undefined;
-    sum?: number;
-    outerId?: string | undefined;
-    cancelledState?: CustomerOrderCancelledState;
-    isCancelled?: boolean;
-    cancelledDate?: Date | undefined;
-    cancelReason?: string | undefined;
-    dynamicProperties?: DynamicObjectProperty[] | undefined;
-    operationsLog?: OperationLog[] | undefined;
-    createdDate?: Date;
-    modifiedDate?: Date | undefined;
-    createdBy?: string | undefined;
-    modifiedBy?: string | undefined;
-    id?: string | undefined;
+  rowVersion?: string | undefined;
+  customerId?: string | undefined;
+  customerName?: string | undefined;
+  channelId?: string | undefined;
+  storeId?: string | undefined;
+  storeName?: string | undefined;
+  organizationId?: string | undefined;
+  organizationName?: string | undefined;
+  employeeId?: string | undefined;
+  employeeName?: string | undefined;
+  shoppingCartId?: string | undefined;
+  isPrototype?: boolean;
+  purchaseOrderNumber?: string | undefined;
+  subscriptionNumber?: string | undefined;
+  subscriptionId?: string | undefined;
+  objectType?: string | undefined;
+  addresses?: OrderAddress[] | undefined;
+  inPayments?: PaymentIn[] | undefined;
+  items?: OrderLineItem[] | undefined;
+  shipments?: OrderShipment[] | undefined;
+  feeDetails?: FeeDetail[] | undefined;
+  discounts?: Discount[] | undefined;
+  discountAmount?: number;
+  taxDetails?: TaxDetail[] | undefined;
+  scopes?: string[] | undefined;
+  total?: number;
+  subTotal?: number;
+  subTotalWithTax?: number;
+  subTotalDiscount?: number;
+  subTotalDiscountWithTax?: number;
+  subTotalTaxTotal?: number;
+  shippingTotal?: number;
+  shippingTotalWithTax?: number;
+  shippingSubTotal?: number;
+  shippingSubTotalWithTax?: number;
+  shippingDiscountTotal?: number;
+  shippingDiscountTotalWithTax?: number;
+  shippingTaxTotal?: number;
+  paymentTotal?: number;
+  paymentTotalWithTax?: number;
+  paymentSubTotal?: number;
+  paymentSubTotalWithTax?: number;
+  paymentDiscountTotal?: number;
+  paymentDiscountTotalWithTax?: number;
+  paymentTaxTotal?: number;
+  discountTotal?: number;
+  discountTotalWithTax?: number;
+  fee?: number;
+  feeWithTax?: number;
+  feeTotal?: number;
+  feeTotalWithTax?: number;
+  handlingTotal?: number;
+  handlingTotalWithTax?: number;
+  isAnonymous?: boolean;
+  taxType?: string | undefined;
+  taxTotal?: number;
+  taxPercentRate?: number;
+  languageCode?: string | undefined;
+  operationType?: string | undefined;
+  parentOperationId?: string | undefined;
+  number?: string | undefined;
+  isApproved?: boolean;
+  status?: string | undefined;
+  comment?: string | undefined;
+  currency?: string | undefined;
+  sum?: number;
+  outerId?: string | undefined;
+  cancelledState?: CustomerOrderCancelledState;
+  isCancelled?: boolean;
+  cancelledDate?: Date | undefined;
+  cancelReason?: string | undefined;
+  dynamicProperties?: DynamicObjectProperty[] | undefined;
+  operationsLog?: OperationLog[] | undefined;
+  createdDate?: Date;
+  modifiedDate?: Date | undefined;
+  createdBy?: string | undefined;
+  modifiedBy?: string | undefined;
+  id?: string | undefined;
 }
 
 export class CustomerOrderHistorySearchCriteria implements ICustomerOrderHistorySearchCriteria {
-    orderId?: string | undefined;
-    responseGroup?: string | undefined;
-    objectType?: string | undefined;
-    objectTypes?: string[] | undefined;
-    objectIds?: string[] | undefined;
-    keyword?: string | undefined;
-    searchPhrase?: string | undefined;
-    languageCode?: string | undefined;
-    sort?: string | undefined;
-    readonly sortInfos?: SortInfo[] | undefined;
-    skip?: number;
-    take?: number;
+  orderId?: string | undefined;
+  responseGroup?: string | undefined;
+  objectType?: string | undefined;
+  objectTypes?: string[] | undefined;
+  objectIds?: string[] | undefined;
+  keyword?: string | undefined;
+  searchPhrase?: string | undefined;
+  languageCode?: string | undefined;
+  sort?: string | undefined;
+  readonly sortInfos?: SortInfo[] | undefined;
+  skip?: number;
+  take?: number;
 
-    constructor(data?: ICustomerOrderHistorySearchCriteria) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
+  constructor(data?: ICustomerOrderHistorySearchCriteria) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property)) (<any>this)[property] = (<any>data)[property];
+      }
     }
+  }
 
-    init(_data?: any) {
-        if (_data) {
-            this.orderId = _data["orderId"];
-            this.responseGroup = _data["responseGroup"];
-            this.objectType = _data["objectType"];
-            if (Array.isArray(_data["objectTypes"])) {
-                this.objectTypes = [] as any;
-                for (let item of _data["objectTypes"])
-                    this.objectTypes!.push(item);
-            }
-            if (Array.isArray(_data["objectIds"])) {
-                this.objectIds = [] as any;
-                for (let item of _data["objectIds"])
-                    this.objectIds!.push(item);
-            }
-            this.keyword = _data["keyword"];
-            this.searchPhrase = _data["searchPhrase"];
-            this.languageCode = _data["languageCode"];
-            this.sort = _data["sort"];
-            if (Array.isArray(_data["sortInfos"])) {
-                (<any>this).sortInfos = [] as any;
-                for (let item of _data["sortInfos"])
-                    (<any>this).sortInfos!.push(SortInfo.fromJS(item));
-            }
-            this.skip = _data["skip"];
-            this.take = _data["take"];
-        }
+  init(_data?: any) {
+    if (_data) {
+      this.orderId = _data["orderId"];
+      this.responseGroup = _data["responseGroup"];
+      this.objectType = _data["objectType"];
+      if (Array.isArray(_data["objectTypes"])) {
+        this.objectTypes = [] as any;
+        for (let item of _data["objectTypes"]) this.objectTypes!.push(item);
+      }
+      if (Array.isArray(_data["objectIds"])) {
+        this.objectIds = [] as any;
+        for (let item of _data["objectIds"]) this.objectIds!.push(item);
+      }
+      this.keyword = _data["keyword"];
+      this.searchPhrase = _data["searchPhrase"];
+      this.languageCode = _data["languageCode"];
+      this.sort = _data["sort"];
+      if (Array.isArray(_data["sortInfos"])) {
+        (<any>this).sortInfos = [] as any;
+        for (let item of _data["sortInfos"]) (<any>this).sortInfos!.push(SortInfo.fromJS(item));
+      }
+      this.skip = _data["skip"];
+      this.take = _data["take"];
     }
+  }
 
-    static fromJS(data: any): CustomerOrderHistorySearchCriteria {
-        data = typeof data === 'object' ? data : {};
-        let result = new CustomerOrderHistorySearchCriteria();
-        result.init(data);
-        return result;
-    }
+  static fromJS(data: any): CustomerOrderHistorySearchCriteria {
+    data = typeof data === "object" ? data : {};
+    let result = new CustomerOrderHistorySearchCriteria();
+    result.init(data);
+    return result;
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["orderId"] = this.orderId;
-        data["responseGroup"] = this.responseGroup;
-        data["objectType"] = this.objectType;
-        if (Array.isArray(this.objectTypes)) {
-            data["objectTypes"] = [];
-            for (let item of this.objectTypes)
-                data["objectTypes"].push(item);
-        }
-        if (Array.isArray(this.objectIds)) {
-            data["objectIds"] = [];
-            for (let item of this.objectIds)
-                data["objectIds"].push(item);
-        }
-        data["keyword"] = this.keyword;
-        data["searchPhrase"] = this.searchPhrase;
-        data["languageCode"] = this.languageCode;
-        data["sort"] = this.sort;
-        if (Array.isArray(this.sortInfos)) {
-            data["sortInfos"] = [];
-            for (let item of this.sortInfos)
-                data["sortInfos"].push(item.toJSON());
-        }
-        data["skip"] = this.skip;
-        data["take"] = this.take;
-        return data;
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    data["orderId"] = this.orderId;
+    data["responseGroup"] = this.responseGroup;
+    data["objectType"] = this.objectType;
+    if (Array.isArray(this.objectTypes)) {
+      data["objectTypes"] = [];
+      for (let item of this.objectTypes) data["objectTypes"].push(item);
     }
+    if (Array.isArray(this.objectIds)) {
+      data["objectIds"] = [];
+      for (let item of this.objectIds) data["objectIds"].push(item);
+    }
+    data["keyword"] = this.keyword;
+    data["searchPhrase"] = this.searchPhrase;
+    data["languageCode"] = this.languageCode;
+    data["sort"] = this.sort;
+    if (Array.isArray(this.sortInfos)) {
+      data["sortInfos"] = [];
+      for (let item of this.sortInfos) data["sortInfos"].push(item.toJSON());
+    }
+    data["skip"] = this.skip;
+    data["take"] = this.take;
+    return data;
+  }
 }
 
 export interface ICustomerOrderHistorySearchCriteria {
-    orderId?: string | undefined;
-    responseGroup?: string | undefined;
-    objectType?: string | undefined;
-    objectTypes?: string[] | undefined;
-    objectIds?: string[] | undefined;
-    keyword?: string | undefined;
-    searchPhrase?: string | undefined;
-    languageCode?: string | undefined;
-    sort?: string | undefined;
-    sortInfos?: SortInfo[] | undefined;
-    skip?: number;
-    take?: number;
+  orderId?: string | undefined;
+  responseGroup?: string | undefined;
+  objectType?: string | undefined;
+  objectTypes?: string[] | undefined;
+  objectIds?: string[] | undefined;
+  keyword?: string | undefined;
+  searchPhrase?: string | undefined;
+  languageCode?: string | undefined;
+  sort?: string | undefined;
+  sortInfos?: SortInfo[] | undefined;
+  skip?: number;
+  take?: number;
 }
 
 export class CustomerOrderIndexedSearchCriteria implements ICustomerOrderIndexedSearchCriteria {
-    responseGroup?: string | undefined;
-    objectType?: string | undefined;
-    objectTypes?: string[] | undefined;
-    objectIds?: string[] | undefined;
-    keyword?: string | undefined;
-    searchPhrase?: string | undefined;
-    languageCode?: string | undefined;
-    sort?: string | undefined;
-    readonly sortInfos?: SortInfo[] | undefined;
-    skip?: number;
-    take?: number;
+  responseGroup?: string | undefined;
+  objectType?: string | undefined;
+  objectTypes?: string[] | undefined;
+  objectIds?: string[] | undefined;
+  keyword?: string | undefined;
+  searchPhrase?: string | undefined;
+  languageCode?: string | undefined;
+  sort?: string | undefined;
+  readonly sortInfos?: SortInfo[] | undefined;
+  skip?: number;
+  take?: number;
 
-    constructor(data?: ICustomerOrderIndexedSearchCriteria) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
+  constructor(data?: ICustomerOrderIndexedSearchCriteria) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property)) (<any>this)[property] = (<any>data)[property];
+      }
     }
+  }
 
-    init(_data?: any) {
-        if (_data) {
-            this.responseGroup = _data["responseGroup"];
-            this.objectType = _data["objectType"];
-            if (Array.isArray(_data["objectTypes"])) {
-                this.objectTypes = [] as any;
-                for (let item of _data["objectTypes"])
-                    this.objectTypes!.push(item);
-            }
-            if (Array.isArray(_data["objectIds"])) {
-                this.objectIds = [] as any;
-                for (let item of _data["objectIds"])
-                    this.objectIds!.push(item);
-            }
-            this.keyword = _data["keyword"];
-            this.searchPhrase = _data["searchPhrase"];
-            this.languageCode = _data["languageCode"];
-            this.sort = _data["sort"];
-            if (Array.isArray(_data["sortInfos"])) {
-                (<any>this).sortInfos = [] as any;
-                for (let item of _data["sortInfos"])
-                    (<any>this).sortInfos!.push(SortInfo.fromJS(item));
-            }
-            this.skip = _data["skip"];
-            this.take = _data["take"];
-        }
+  init(_data?: any) {
+    if (_data) {
+      this.responseGroup = _data["responseGroup"];
+      this.objectType = _data["objectType"];
+      if (Array.isArray(_data["objectTypes"])) {
+        this.objectTypes = [] as any;
+        for (let item of _data["objectTypes"]) this.objectTypes!.push(item);
+      }
+      if (Array.isArray(_data["objectIds"])) {
+        this.objectIds = [] as any;
+        for (let item of _data["objectIds"]) this.objectIds!.push(item);
+      }
+      this.keyword = _data["keyword"];
+      this.searchPhrase = _data["searchPhrase"];
+      this.languageCode = _data["languageCode"];
+      this.sort = _data["sort"];
+      if (Array.isArray(_data["sortInfos"])) {
+        (<any>this).sortInfos = [] as any;
+        for (let item of _data["sortInfos"]) (<any>this).sortInfos!.push(SortInfo.fromJS(item));
+      }
+      this.skip = _data["skip"];
+      this.take = _data["take"];
     }
+  }
 
-    static fromJS(data: any): CustomerOrderIndexedSearchCriteria {
-        data = typeof data === 'object' ? data : {};
-        let result = new CustomerOrderIndexedSearchCriteria();
-        result.init(data);
-        return result;
-    }
+  static fromJS(data: any): CustomerOrderIndexedSearchCriteria {
+    data = typeof data === "object" ? data : {};
+    let result = new CustomerOrderIndexedSearchCriteria();
+    result.init(data);
+    return result;
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["responseGroup"] = this.responseGroup;
-        data["objectType"] = this.objectType;
-        if (Array.isArray(this.objectTypes)) {
-            data["objectTypes"] = [];
-            for (let item of this.objectTypes)
-                data["objectTypes"].push(item);
-        }
-        if (Array.isArray(this.objectIds)) {
-            data["objectIds"] = [];
-            for (let item of this.objectIds)
-                data["objectIds"].push(item);
-        }
-        data["keyword"] = this.keyword;
-        data["searchPhrase"] = this.searchPhrase;
-        data["languageCode"] = this.languageCode;
-        data["sort"] = this.sort;
-        if (Array.isArray(this.sortInfos)) {
-            data["sortInfos"] = [];
-            for (let item of this.sortInfos)
-                data["sortInfos"].push(item.toJSON());
-        }
-        data["skip"] = this.skip;
-        data["take"] = this.take;
-        return data;
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    data["responseGroup"] = this.responseGroup;
+    data["objectType"] = this.objectType;
+    if (Array.isArray(this.objectTypes)) {
+      data["objectTypes"] = [];
+      for (let item of this.objectTypes) data["objectTypes"].push(item);
     }
+    if (Array.isArray(this.objectIds)) {
+      data["objectIds"] = [];
+      for (let item of this.objectIds) data["objectIds"].push(item);
+    }
+    data["keyword"] = this.keyword;
+    data["searchPhrase"] = this.searchPhrase;
+    data["languageCode"] = this.languageCode;
+    data["sort"] = this.sort;
+    if (Array.isArray(this.sortInfos)) {
+      data["sortInfos"] = [];
+      for (let item of this.sortInfos) data["sortInfos"].push(item.toJSON());
+    }
+    data["skip"] = this.skip;
+    data["take"] = this.take;
+    return data;
+  }
 }
 
 export interface ICustomerOrderIndexedSearchCriteria {
-    responseGroup?: string | undefined;
-    objectType?: string | undefined;
-    objectTypes?: string[] | undefined;
-    objectIds?: string[] | undefined;
-    keyword?: string | undefined;
-    searchPhrase?: string | undefined;
-    languageCode?: string | undefined;
-    sort?: string | undefined;
-    sortInfos?: SortInfo[] | undefined;
-    skip?: number;
-    take?: number;
+  responseGroup?: string | undefined;
+  objectType?: string | undefined;
+  objectTypes?: string[] | undefined;
+  objectIds?: string[] | undefined;
+  keyword?: string | undefined;
+  searchPhrase?: string | undefined;
+  languageCode?: string | undefined;
+  sort?: string | undefined;
+  sortInfos?: SortInfo[] | undefined;
+  skip?: number;
+  take?: number;
 }
 
 export class CustomerOrderSearchCriteria implements ICustomerOrderSearchCriteria {
-    withPrototypes?: boolean;
-    onlyRecurring?: boolean;
-    subscriptionId?: string | undefined;
-    subscriptionIds?: string[] | undefined;
-    operationId?: string | undefined;
-    customerId?: string | undefined;
-    customerIds?: string[] | undefined;
-    organizationId?: string | undefined;
-    organizationIds?: string[] | undefined;
-    ids?: string[] | undefined;
-    hasParentOperation?: boolean | undefined;
-    parentOperationId?: string | undefined;
-    employeeId?: string | undefined;
-    storeIds?: string[] | undefined;
-    status?: string | undefined;
-    statuses?: string[] | undefined;
-    number?: string | undefined;
-    numbers?: string[] | undefined;
-    startDate?: Date | undefined;
-    endDate?: Date | undefined;
-    responseGroup?: string | undefined;
-    objectType?: string | undefined;
-    objectTypes?: string[] | undefined;
-    objectIds?: string[] | undefined;
-    keyword?: string | undefined;
-    searchPhrase?: string | undefined;
-    languageCode?: string | undefined;
-    sort?: string | undefined;
-    readonly sortInfos?: SortInfo[] | undefined;
-    skip?: number;
-    take?: number;
+  withPrototypes?: boolean;
+  onlyRecurring?: boolean;
+  subscriptionId?: string | undefined;
+  subscriptionIds?: string[] | undefined;
+  operationId?: string | undefined;
+  customerId?: string | undefined;
+  customerIds?: string[] | undefined;
+  organizationId?: string | undefined;
+  organizationIds?: string[] | undefined;
+  ids?: string[] | undefined;
+  hasParentOperation?: boolean | undefined;
+  parentOperationId?: string | undefined;
+  employeeId?: string | undefined;
+  storeIds?: string[] | undefined;
+  status?: string | undefined;
+  statuses?: string[] | undefined;
+  number?: string | undefined;
+  numbers?: string[] | undefined;
+  startDate?: Date | undefined;
+  endDate?: Date | undefined;
+  responseGroup?: string | undefined;
+  objectType?: string | undefined;
+  objectTypes?: string[] | undefined;
+  objectIds?: string[] | undefined;
+  keyword?: string | undefined;
+  searchPhrase?: string | undefined;
+  languageCode?: string | undefined;
+  sort?: string | undefined;
+  readonly sortInfos?: SortInfo[] | undefined;
+  skip?: number;
+  take?: number;
 
-    constructor(data?: ICustomerOrderSearchCriteria) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
+  constructor(data?: ICustomerOrderSearchCriteria) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property)) (<any>this)[property] = (<any>data)[property];
+      }
     }
+  }
 
-    init(_data?: any) {
-        if (_data) {
-            this.withPrototypes = _data["withPrototypes"];
-            this.onlyRecurring = _data["onlyRecurring"];
-            this.subscriptionId = _data["subscriptionId"];
-            if (Array.isArray(_data["subscriptionIds"])) {
-                this.subscriptionIds = [] as any;
-                for (let item of _data["subscriptionIds"])
-                    this.subscriptionIds!.push(item);
-            }
-            this.operationId = _data["operationId"];
-            this.customerId = _data["customerId"];
-            if (Array.isArray(_data["customerIds"])) {
-                this.customerIds = [] as any;
-                for (let item of _data["customerIds"])
-                    this.customerIds!.push(item);
-            }
-            this.organizationId = _data["organizationId"];
-            if (Array.isArray(_data["organizationIds"])) {
-                this.organizationIds = [] as any;
-                for (let item of _data["organizationIds"])
-                    this.organizationIds!.push(item);
-            }
-            if (Array.isArray(_data["ids"])) {
-                this.ids = [] as any;
-                for (let item of _data["ids"])
-                    this.ids!.push(item);
-            }
-            this.hasParentOperation = _data["hasParentOperation"];
-            this.parentOperationId = _data["parentOperationId"];
-            this.employeeId = _data["employeeId"];
-            if (Array.isArray(_data["storeIds"])) {
-                this.storeIds = [] as any;
-                for (let item of _data["storeIds"])
-                    this.storeIds!.push(item);
-            }
-            this.status = _data["status"];
-            if (Array.isArray(_data["statuses"])) {
-                this.statuses = [] as any;
-                for (let item of _data["statuses"])
-                    this.statuses!.push(item);
-            }
-            this.number = _data["number"];
-            if (Array.isArray(_data["numbers"])) {
-                this.numbers = [] as any;
-                for (let item of _data["numbers"])
-                    this.numbers!.push(item);
-            }
-            this.startDate = _data["startDate"] ? new Date(_data["startDate"].toString()) : <any>undefined;
-            this.endDate = _data["endDate"] ? new Date(_data["endDate"].toString()) : <any>undefined;
-            this.responseGroup = _data["responseGroup"];
-            this.objectType = _data["objectType"];
-            if (Array.isArray(_data["objectTypes"])) {
-                this.objectTypes = [] as any;
-                for (let item of _data["objectTypes"])
-                    this.objectTypes!.push(item);
-            }
-            if (Array.isArray(_data["objectIds"])) {
-                this.objectIds = [] as any;
-                for (let item of _data["objectIds"])
-                    this.objectIds!.push(item);
-            }
-            this.keyword = _data["keyword"];
-            this.searchPhrase = _data["searchPhrase"];
-            this.languageCode = _data["languageCode"];
-            this.sort = _data["sort"];
-            if (Array.isArray(_data["sortInfos"])) {
-                (<any>this).sortInfos = [] as any;
-                for (let item of _data["sortInfos"])
-                    (<any>this).sortInfos!.push(SortInfo.fromJS(item));
-            }
-            this.skip = _data["skip"];
-            this.take = _data["take"];
-        }
+  init(_data?: any) {
+    if (_data) {
+      this.withPrototypes = _data["withPrototypes"];
+      this.onlyRecurring = _data["onlyRecurring"];
+      this.subscriptionId = _data["subscriptionId"];
+      if (Array.isArray(_data["subscriptionIds"])) {
+        this.subscriptionIds = [] as any;
+        for (let item of _data["subscriptionIds"]) this.subscriptionIds!.push(item);
+      }
+      this.operationId = _data["operationId"];
+      this.customerId = _data["customerId"];
+      if (Array.isArray(_data["customerIds"])) {
+        this.customerIds = [] as any;
+        for (let item of _data["customerIds"]) this.customerIds!.push(item);
+      }
+      this.organizationId = _data["organizationId"];
+      if (Array.isArray(_data["organizationIds"])) {
+        this.organizationIds = [] as any;
+        for (let item of _data["organizationIds"]) this.organizationIds!.push(item);
+      }
+      if (Array.isArray(_data["ids"])) {
+        this.ids = [] as any;
+        for (let item of _data["ids"]) this.ids!.push(item);
+      }
+      this.hasParentOperation = _data["hasParentOperation"];
+      this.parentOperationId = _data["parentOperationId"];
+      this.employeeId = _data["employeeId"];
+      if (Array.isArray(_data["storeIds"])) {
+        this.storeIds = [] as any;
+        for (let item of _data["storeIds"]) this.storeIds!.push(item);
+      }
+      this.status = _data["status"];
+      if (Array.isArray(_data["statuses"])) {
+        this.statuses = [] as any;
+        for (let item of _data["statuses"]) this.statuses!.push(item);
+      }
+      this.number = _data["number"];
+      if (Array.isArray(_data["numbers"])) {
+        this.numbers = [] as any;
+        for (let item of _data["numbers"]) this.numbers!.push(item);
+      }
+      this.startDate = _data["startDate"] ? new Date(_data["startDate"].toString()) : <any>undefined;
+      this.endDate = _data["endDate"] ? new Date(_data["endDate"].toString()) : <any>undefined;
+      this.responseGroup = _data["responseGroup"];
+      this.objectType = _data["objectType"];
+      if (Array.isArray(_data["objectTypes"])) {
+        this.objectTypes = [] as any;
+        for (let item of _data["objectTypes"]) this.objectTypes!.push(item);
+      }
+      if (Array.isArray(_data["objectIds"])) {
+        this.objectIds = [] as any;
+        for (let item of _data["objectIds"]) this.objectIds!.push(item);
+      }
+      this.keyword = _data["keyword"];
+      this.searchPhrase = _data["searchPhrase"];
+      this.languageCode = _data["languageCode"];
+      this.sort = _data["sort"];
+      if (Array.isArray(_data["sortInfos"])) {
+        (<any>this).sortInfos = [] as any;
+        for (let item of _data["sortInfos"]) (<any>this).sortInfos!.push(SortInfo.fromJS(item));
+      }
+      this.skip = _data["skip"];
+      this.take = _data["take"];
     }
+  }
 
-    static fromJS(data: any): CustomerOrderSearchCriteria {
-        data = typeof data === 'object' ? data : {};
-        let result = new CustomerOrderSearchCriteria();
-        result.init(data);
-        return result;
-    }
+  static fromJS(data: any): CustomerOrderSearchCriteria {
+    data = typeof data === "object" ? data : {};
+    let result = new CustomerOrderSearchCriteria();
+    result.init(data);
+    return result;
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["withPrototypes"] = this.withPrototypes;
-        data["onlyRecurring"] = this.onlyRecurring;
-        data["subscriptionId"] = this.subscriptionId;
-        if (Array.isArray(this.subscriptionIds)) {
-            data["subscriptionIds"] = [];
-            for (let item of this.subscriptionIds)
-                data["subscriptionIds"].push(item);
-        }
-        data["operationId"] = this.operationId;
-        data["customerId"] = this.customerId;
-        if (Array.isArray(this.customerIds)) {
-            data["customerIds"] = [];
-            for (let item of this.customerIds)
-                data["customerIds"].push(item);
-        }
-        data["organizationId"] = this.organizationId;
-        if (Array.isArray(this.organizationIds)) {
-            data["organizationIds"] = [];
-            for (let item of this.organizationIds)
-                data["organizationIds"].push(item);
-        }
-        if (Array.isArray(this.ids)) {
-            data["ids"] = [];
-            for (let item of this.ids)
-                data["ids"].push(item);
-        }
-        data["hasParentOperation"] = this.hasParentOperation;
-        data["parentOperationId"] = this.parentOperationId;
-        data["employeeId"] = this.employeeId;
-        if (Array.isArray(this.storeIds)) {
-            data["storeIds"] = [];
-            for (let item of this.storeIds)
-                data["storeIds"].push(item);
-        }
-        data["status"] = this.status;
-        if (Array.isArray(this.statuses)) {
-            data["statuses"] = [];
-            for (let item of this.statuses)
-                data["statuses"].push(item);
-        }
-        data["number"] = this.number;
-        if (Array.isArray(this.numbers)) {
-            data["numbers"] = [];
-            for (let item of this.numbers)
-                data["numbers"].push(item);
-        }
-        data["startDate"] = this.startDate ? this.startDate.toISOString() : <any>undefined;
-        data["endDate"] = this.endDate ? this.endDate.toISOString() : <any>undefined;
-        data["responseGroup"] = this.responseGroup;
-        data["objectType"] = this.objectType;
-        if (Array.isArray(this.objectTypes)) {
-            data["objectTypes"] = [];
-            for (let item of this.objectTypes)
-                data["objectTypes"].push(item);
-        }
-        if (Array.isArray(this.objectIds)) {
-            data["objectIds"] = [];
-            for (let item of this.objectIds)
-                data["objectIds"].push(item);
-        }
-        data["keyword"] = this.keyword;
-        data["searchPhrase"] = this.searchPhrase;
-        data["languageCode"] = this.languageCode;
-        data["sort"] = this.sort;
-        if (Array.isArray(this.sortInfos)) {
-            data["sortInfos"] = [];
-            for (let item of this.sortInfos)
-                data["sortInfos"].push(item.toJSON());
-        }
-        data["skip"] = this.skip;
-        data["take"] = this.take;
-        return data;
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    data["withPrototypes"] = this.withPrototypes;
+    data["onlyRecurring"] = this.onlyRecurring;
+    data["subscriptionId"] = this.subscriptionId;
+    if (Array.isArray(this.subscriptionIds)) {
+      data["subscriptionIds"] = [];
+      for (let item of this.subscriptionIds) data["subscriptionIds"].push(item);
     }
+    data["operationId"] = this.operationId;
+    data["customerId"] = this.customerId;
+    if (Array.isArray(this.customerIds)) {
+      data["customerIds"] = [];
+      for (let item of this.customerIds) data["customerIds"].push(item);
+    }
+    data["organizationId"] = this.organizationId;
+    if (Array.isArray(this.organizationIds)) {
+      data["organizationIds"] = [];
+      for (let item of this.organizationIds) data["organizationIds"].push(item);
+    }
+    if (Array.isArray(this.ids)) {
+      data["ids"] = [];
+      for (let item of this.ids) data["ids"].push(item);
+    }
+    data["hasParentOperation"] = this.hasParentOperation;
+    data["parentOperationId"] = this.parentOperationId;
+    data["employeeId"] = this.employeeId;
+    if (Array.isArray(this.storeIds)) {
+      data["storeIds"] = [];
+      for (let item of this.storeIds) data["storeIds"].push(item);
+    }
+    data["status"] = this.status;
+    if (Array.isArray(this.statuses)) {
+      data["statuses"] = [];
+      for (let item of this.statuses) data["statuses"].push(item);
+    }
+    data["number"] = this.number;
+    if (Array.isArray(this.numbers)) {
+      data["numbers"] = [];
+      for (let item of this.numbers) data["numbers"].push(item);
+    }
+    data["startDate"] = this.startDate ? this.startDate.toISOString() : <any>undefined;
+    data["endDate"] = this.endDate ? this.endDate.toISOString() : <any>undefined;
+    data["responseGroup"] = this.responseGroup;
+    data["objectType"] = this.objectType;
+    if (Array.isArray(this.objectTypes)) {
+      data["objectTypes"] = [];
+      for (let item of this.objectTypes) data["objectTypes"].push(item);
+    }
+    if (Array.isArray(this.objectIds)) {
+      data["objectIds"] = [];
+      for (let item of this.objectIds) data["objectIds"].push(item);
+    }
+    data["keyword"] = this.keyword;
+    data["searchPhrase"] = this.searchPhrase;
+    data["languageCode"] = this.languageCode;
+    data["sort"] = this.sort;
+    if (Array.isArray(this.sortInfos)) {
+      data["sortInfos"] = [];
+      for (let item of this.sortInfos) data["sortInfos"].push(item.toJSON());
+    }
+    data["skip"] = this.skip;
+    data["take"] = this.take;
+    return data;
+  }
 }
 
 export interface ICustomerOrderSearchCriteria {
-    withPrototypes?: boolean;
-    onlyRecurring?: boolean;
-    subscriptionId?: string | undefined;
-    subscriptionIds?: string[] | undefined;
-    operationId?: string | undefined;
-    customerId?: string | undefined;
-    customerIds?: string[] | undefined;
-    organizationId?: string | undefined;
-    organizationIds?: string[] | undefined;
-    ids?: string[] | undefined;
-    hasParentOperation?: boolean | undefined;
-    parentOperationId?: string | undefined;
-    employeeId?: string | undefined;
-    storeIds?: string[] | undefined;
-    status?: string | undefined;
-    statuses?: string[] | undefined;
-    number?: string | undefined;
-    numbers?: string[] | undefined;
-    startDate?: Date | undefined;
-    endDate?: Date | undefined;
-    responseGroup?: string | undefined;
-    objectType?: string | undefined;
-    objectTypes?: string[] | undefined;
-    objectIds?: string[] | undefined;
-    keyword?: string | undefined;
-    searchPhrase?: string | undefined;
-    languageCode?: string | undefined;
-    sort?: string | undefined;
-    sortInfos?: SortInfo[] | undefined;
-    skip?: number;
-    take?: number;
+  withPrototypes?: boolean;
+  onlyRecurring?: boolean;
+  subscriptionId?: string | undefined;
+  subscriptionIds?: string[] | undefined;
+  operationId?: string | undefined;
+  customerId?: string | undefined;
+  customerIds?: string[] | undefined;
+  organizationId?: string | undefined;
+  organizationIds?: string[] | undefined;
+  ids?: string[] | undefined;
+  hasParentOperation?: boolean | undefined;
+  parentOperationId?: string | undefined;
+  employeeId?: string | undefined;
+  storeIds?: string[] | undefined;
+  status?: string | undefined;
+  statuses?: string[] | undefined;
+  number?: string | undefined;
+  numbers?: string[] | undefined;
+  startDate?: Date | undefined;
+  endDate?: Date | undefined;
+  responseGroup?: string | undefined;
+  objectType?: string | undefined;
+  objectTypes?: string[] | undefined;
+  objectIds?: string[] | undefined;
+  keyword?: string | undefined;
+  searchPhrase?: string | undefined;
+  languageCode?: string | undefined;
+  sort?: string | undefined;
+  sortInfos?: SortInfo[] | undefined;
+  skip?: number;
+  take?: number;
 }
 
 export class CustomerOrderSearchResult implements ICustomerOrderSearchResult {
-    totalCount?: number;
-    results?: CustomerOrder[] | undefined;
+  totalCount?: number;
+  results?: CustomerOrder[] | undefined;
 
-    constructor(data?: ICustomerOrderSearchResult) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
+  constructor(data?: ICustomerOrderSearchResult) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property)) (<any>this)[property] = (<any>data)[property];
+      }
     }
+  }
 
-    init(_data?: any) {
-        if (_data) {
-            this.totalCount = _data["totalCount"];
-            if (Array.isArray(_data["results"])) {
-                this.results = [] as any;
-                for (let item of _data["results"])
-                    this.results!.push(CustomerOrder.fromJS(item));
-            }
-        }
+  init(_data?: any) {
+    if (_data) {
+      this.totalCount = _data["totalCount"];
+      if (Array.isArray(_data["results"])) {
+        this.results = [] as any;
+        for (let item of _data["results"]) this.results!.push(CustomerOrder.fromJS(item));
+      }
     }
+  }
 
-    static fromJS(data: any): CustomerOrderSearchResult {
-        data = typeof data === 'object' ? data : {};
-        let result = new CustomerOrderSearchResult();
-        result.init(data);
-        return result;
-    }
+  static fromJS(data: any): CustomerOrderSearchResult {
+    data = typeof data === "object" ? data : {};
+    let result = new CustomerOrderSearchResult();
+    result.init(data);
+    return result;
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["totalCount"] = this.totalCount;
-        if (Array.isArray(this.results)) {
-            data["results"] = [];
-            for (let item of this.results)
-                data["results"].push(item.toJSON());
-        }
-        return data;
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    data["totalCount"] = this.totalCount;
+    if (Array.isArray(this.results)) {
+      data["results"] = [];
+      for (let item of this.results) data["results"].push(item.toJSON());
     }
+    return data;
+  }
 }
 
 export interface ICustomerOrderSearchResult {
-    totalCount?: number;
-    results?: CustomerOrder[] | undefined;
+  totalCount?: number;
+  results?: CustomerOrder[] | undefined;
 }
 
 export class DashboardMoney implements IDashboardMoney {
-    currency?: string | undefined;
-    amount?: number;
+  currency?: string | undefined;
+  amount?: number;
 
-    constructor(data?: IDashboardMoney) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
+  constructor(data?: IDashboardMoney) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property)) (<any>this)[property] = (<any>data)[property];
+      }
     }
+  }
 
-    init(_data?: any) {
-        if (_data) {
-            this.currency = _data["currency"];
-            this.amount = _data["amount"];
-        }
+  init(_data?: any) {
+    if (_data) {
+      this.currency = _data["currency"];
+      this.amount = _data["amount"];
     }
+  }
 
-    static fromJS(data: any): DashboardMoney {
-        data = typeof data === 'object' ? data : {};
-        let result = new DashboardMoney();
-        result.init(data);
-        return result;
-    }
+  static fromJS(data: any): DashboardMoney {
+    data = typeof data === "object" ? data : {};
+    let result = new DashboardMoney();
+    result.init(data);
+    return result;
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["currency"] = this.currency;
-        data["amount"] = this.amount;
-        return data;
-    }
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    data["currency"] = this.currency;
+    data["amount"] = this.amount;
+    return data;
+  }
 }
 
 export interface IDashboardMoney {
-    currency?: string | undefined;
-    amount?: number;
+  currency?: string | undefined;
+  amount?: number;
 }
 
 export class DashboardStatisticsResult implements IDashboardStatisticsResult {
-    startDate?: Date;
-    endDate?: Date;
-    revenue?: DashboardMoney[] | undefined;
-    revenuePeriodDetails?: QuarterPeriodMoney[] | undefined;
-    orderCount?: number;
-    customersCount?: number;
-    revenuePerCustomer?: DashboardMoney[] | undefined;
-    avgOrderValue?: DashboardMoney[] | undefined;
-    avgOrderValuePeriodDetails?: QuarterPeriodMoney[] | undefined;
-    itemsPurchased?: number;
-    lineItemsPerOrder?: number;
+  startDate?: Date;
+  endDate?: Date;
+  revenue?: DashboardMoney[] | undefined;
+  revenuePeriodDetails?: QuarterPeriodMoney[] | undefined;
+  orderCount?: number;
+  customersCount?: number;
+  revenuePerCustomer?: DashboardMoney[] | undefined;
+  avgOrderValue?: DashboardMoney[] | undefined;
+  avgOrderValuePeriodDetails?: QuarterPeriodMoney[] | undefined;
+  itemsPurchased?: number;
+  lineItemsPerOrder?: number;
 
-    constructor(data?: IDashboardStatisticsResult) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
+  constructor(data?: IDashboardStatisticsResult) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property)) (<any>this)[property] = (<any>data)[property];
+      }
     }
+  }
 
-    init(_data?: any) {
-        if (_data) {
-            this.startDate = _data["startDate"] ? new Date(_data["startDate"].toString()) : <any>undefined;
-            this.endDate = _data["endDate"] ? new Date(_data["endDate"].toString()) : <any>undefined;
-            if (Array.isArray(_data["revenue"])) {
-                this.revenue = [] as any;
-                for (let item of _data["revenue"])
-                    this.revenue!.push(DashboardMoney.fromJS(item));
-            }
-            if (Array.isArray(_data["revenuePeriodDetails"])) {
-                this.revenuePeriodDetails = [] as any;
-                for (let item of _data["revenuePeriodDetails"])
-                    this.revenuePeriodDetails!.push(QuarterPeriodMoney.fromJS(item));
-            }
-            this.orderCount = _data["orderCount"];
-            this.customersCount = _data["customersCount"];
-            if (Array.isArray(_data["revenuePerCustomer"])) {
-                this.revenuePerCustomer = [] as any;
-                for (let item of _data["revenuePerCustomer"])
-                    this.revenuePerCustomer!.push(DashboardMoney.fromJS(item));
-            }
-            if (Array.isArray(_data["avgOrderValue"])) {
-                this.avgOrderValue = [] as any;
-                for (let item of _data["avgOrderValue"])
-                    this.avgOrderValue!.push(DashboardMoney.fromJS(item));
-            }
-            if (Array.isArray(_data["avgOrderValuePeriodDetails"])) {
-                this.avgOrderValuePeriodDetails = [] as any;
-                for (let item of _data["avgOrderValuePeriodDetails"])
-                    this.avgOrderValuePeriodDetails!.push(QuarterPeriodMoney.fromJS(item));
-            }
-            this.itemsPurchased = _data["itemsPurchased"];
-            this.lineItemsPerOrder = _data["lineItemsPerOrder"];
-        }
+  init(_data?: any) {
+    if (_data) {
+      this.startDate = _data["startDate"] ? new Date(_data["startDate"].toString()) : <any>undefined;
+      this.endDate = _data["endDate"] ? new Date(_data["endDate"].toString()) : <any>undefined;
+      if (Array.isArray(_data["revenue"])) {
+        this.revenue = [] as any;
+        for (let item of _data["revenue"]) this.revenue!.push(DashboardMoney.fromJS(item));
+      }
+      if (Array.isArray(_data["revenuePeriodDetails"])) {
+        this.revenuePeriodDetails = [] as any;
+        for (let item of _data["revenuePeriodDetails"])
+          this.revenuePeriodDetails!.push(QuarterPeriodMoney.fromJS(item));
+      }
+      this.orderCount = _data["orderCount"];
+      this.customersCount = _data["customersCount"];
+      if (Array.isArray(_data["revenuePerCustomer"])) {
+        this.revenuePerCustomer = [] as any;
+        for (let item of _data["revenuePerCustomer"]) this.revenuePerCustomer!.push(DashboardMoney.fromJS(item));
+      }
+      if (Array.isArray(_data["avgOrderValue"])) {
+        this.avgOrderValue = [] as any;
+        for (let item of _data["avgOrderValue"]) this.avgOrderValue!.push(DashboardMoney.fromJS(item));
+      }
+      if (Array.isArray(_data["avgOrderValuePeriodDetails"])) {
+        this.avgOrderValuePeriodDetails = [] as any;
+        for (let item of _data["avgOrderValuePeriodDetails"])
+          this.avgOrderValuePeriodDetails!.push(QuarterPeriodMoney.fromJS(item));
+      }
+      this.itemsPurchased = _data["itemsPurchased"];
+      this.lineItemsPerOrder = _data["lineItemsPerOrder"];
     }
+  }
 
-    static fromJS(data: any): DashboardStatisticsResult {
-        data = typeof data === 'object' ? data : {};
-        let result = new DashboardStatisticsResult();
-        result.init(data);
-        return result;
-    }
+  static fromJS(data: any): DashboardStatisticsResult {
+    data = typeof data === "object" ? data : {};
+    let result = new DashboardStatisticsResult();
+    result.init(data);
+    return result;
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["startDate"] = this.startDate ? this.startDate.toISOString() : <any>undefined;
-        data["endDate"] = this.endDate ? this.endDate.toISOString() : <any>undefined;
-        if (Array.isArray(this.revenue)) {
-            data["revenue"] = [];
-            for (let item of this.revenue)
-                data["revenue"].push(item.toJSON());
-        }
-        if (Array.isArray(this.revenuePeriodDetails)) {
-            data["revenuePeriodDetails"] = [];
-            for (let item of this.revenuePeriodDetails)
-                data["revenuePeriodDetails"].push(item.toJSON());
-        }
-        data["orderCount"] = this.orderCount;
-        data["customersCount"] = this.customersCount;
-        if (Array.isArray(this.revenuePerCustomer)) {
-            data["revenuePerCustomer"] = [];
-            for (let item of this.revenuePerCustomer)
-                data["revenuePerCustomer"].push(item.toJSON());
-        }
-        if (Array.isArray(this.avgOrderValue)) {
-            data["avgOrderValue"] = [];
-            for (let item of this.avgOrderValue)
-                data["avgOrderValue"].push(item.toJSON());
-        }
-        if (Array.isArray(this.avgOrderValuePeriodDetails)) {
-            data["avgOrderValuePeriodDetails"] = [];
-            for (let item of this.avgOrderValuePeriodDetails)
-                data["avgOrderValuePeriodDetails"].push(item.toJSON());
-        }
-        data["itemsPurchased"] = this.itemsPurchased;
-        data["lineItemsPerOrder"] = this.lineItemsPerOrder;
-        return data;
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    data["startDate"] = this.startDate ? this.startDate.toISOString() : <any>undefined;
+    data["endDate"] = this.endDate ? this.endDate.toISOString() : <any>undefined;
+    if (Array.isArray(this.revenue)) {
+      data["revenue"] = [];
+      for (let item of this.revenue) data["revenue"].push(item.toJSON());
     }
+    if (Array.isArray(this.revenuePeriodDetails)) {
+      data["revenuePeriodDetails"] = [];
+      for (let item of this.revenuePeriodDetails) data["revenuePeriodDetails"].push(item.toJSON());
+    }
+    data["orderCount"] = this.orderCount;
+    data["customersCount"] = this.customersCount;
+    if (Array.isArray(this.revenuePerCustomer)) {
+      data["revenuePerCustomer"] = [];
+      for (let item of this.revenuePerCustomer) data["revenuePerCustomer"].push(item.toJSON());
+    }
+    if (Array.isArray(this.avgOrderValue)) {
+      data["avgOrderValue"] = [];
+      for (let item of this.avgOrderValue) data["avgOrderValue"].push(item.toJSON());
+    }
+    if (Array.isArray(this.avgOrderValuePeriodDetails)) {
+      data["avgOrderValuePeriodDetails"] = [];
+      for (let item of this.avgOrderValuePeriodDetails) data["avgOrderValuePeriodDetails"].push(item.toJSON());
+    }
+    data["itemsPurchased"] = this.itemsPurchased;
+    data["lineItemsPerOrder"] = this.lineItemsPerOrder;
+    return data;
+  }
 }
 
 export interface IDashboardStatisticsResult {
-    startDate?: Date;
-    endDate?: Date;
-    revenue?: DashboardMoney[] | undefined;
-    revenuePeriodDetails?: QuarterPeriodMoney[] | undefined;
-    orderCount?: number;
-    customersCount?: number;
-    revenuePerCustomer?: DashboardMoney[] | undefined;
-    avgOrderValue?: DashboardMoney[] | undefined;
-    avgOrderValuePeriodDetails?: QuarterPeriodMoney[] | undefined;
-    itemsPurchased?: number;
-    lineItemsPerOrder?: number;
+  startDate?: Date;
+  endDate?: Date;
+  revenue?: DashboardMoney[] | undefined;
+  revenuePeriodDetails?: QuarterPeriodMoney[] | undefined;
+  orderCount?: number;
+  customersCount?: number;
+  revenuePerCustomer?: DashboardMoney[] | undefined;
+  avgOrderValue?: DashboardMoney[] | undefined;
+  avgOrderValuePeriodDetails?: QuarterPeriodMoney[] | undefined;
+  itemsPurchased?: number;
+  lineItemsPerOrder?: number;
 }
 
 export class Discount implements IDiscount {
-    promotionId?: string | undefined;
-    currency?: string | undefined;
-    discountAmount?: number;
-    discountAmountWithTax?: number;
-    coupon?: string | undefined;
-    description?: string | undefined;
-    id?: string | undefined;
+  promotionId?: string | undefined;
+  currency?: string | undefined;
+  discountAmount?: number;
+  discountAmountWithTax?: number;
+  coupon?: string | undefined;
+  description?: string | undefined;
+  id?: string | undefined;
 
-    constructor(data?: IDiscount) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
+  constructor(data?: IDiscount) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property)) (<any>this)[property] = (<any>data)[property];
+      }
     }
+  }
 
-    init(_data?: any) {
-        if (_data) {
-            this.promotionId = _data["promotionId"];
-            this.currency = _data["currency"];
-            this.discountAmount = _data["discountAmount"];
-            this.discountAmountWithTax = _data["discountAmountWithTax"];
-            this.coupon = _data["coupon"];
-            this.description = _data["description"];
-            this.id = _data["id"];
-        }
+  init(_data?: any) {
+    if (_data) {
+      this.promotionId = _data["promotionId"];
+      this.currency = _data["currency"];
+      this.discountAmount = _data["discountAmount"];
+      this.discountAmountWithTax = _data["discountAmountWithTax"];
+      this.coupon = _data["coupon"];
+      this.description = _data["description"];
+      this.id = _data["id"];
     }
+  }
 
-    static fromJS(data: any): Discount {
-        data = typeof data === 'object' ? data : {};
-        let result = new Discount();
-        result.init(data);
-        return result;
-    }
+  static fromJS(data: any): Discount {
+    data = typeof data === "object" ? data : {};
+    let result = new Discount();
+    result.init(data);
+    return result;
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["promotionId"] = this.promotionId;
-        data["currency"] = this.currency;
-        data["discountAmount"] = this.discountAmount;
-        data["discountAmountWithTax"] = this.discountAmountWithTax;
-        data["coupon"] = this.coupon;
-        data["description"] = this.description;
-        data["id"] = this.id;
-        return data;
-    }
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    data["promotionId"] = this.promotionId;
+    data["currency"] = this.currency;
+    data["discountAmount"] = this.discountAmount;
+    data["discountAmountWithTax"] = this.discountAmountWithTax;
+    data["coupon"] = this.coupon;
+    data["description"] = this.description;
+    data["id"] = this.id;
+    return data;
+  }
 }
 
 export interface IDiscount {
-    promotionId?: string | undefined;
-    currency?: string | undefined;
-    discountAmount?: number;
-    discountAmountWithTax?: number;
-    coupon?: string | undefined;
-    description?: string | undefined;
-    id?: string | undefined;
+  promotionId?: string | undefined;
+  currency?: string | undefined;
+  discountAmount?: number;
+  discountAmountWithTax?: number;
+  coupon?: string | undefined;
+  description?: string | undefined;
+  id?: string | undefined;
 }
 
 export class DynamicObjectProperty implements IDynamicObjectProperty {
-    objectId?: string | undefined;
-    values?: DynamicPropertyObjectValue[] | undefined;
-    name?: string | undefined;
-    description?: string | undefined;
-    objectType?: string | undefined;
-    isArray?: boolean;
-    isDictionary?: boolean;
-    isMultilingual?: boolean;
-    isRequired?: boolean;
-    displayOrder?: number | undefined;
-    valueType?: DynamicObjectPropertyValueType;
-    displayNames?: DynamicPropertyName[] | undefined;
-    createdDate?: Date;
-    modifiedDate?: Date | undefined;
-    createdBy?: string | undefined;
-    modifiedBy?: string | undefined;
-    id?: string | undefined;
+  objectId?: string | undefined;
+  values?: DynamicPropertyObjectValue[] | undefined;
+  name?: string | undefined;
+  description?: string | undefined;
+  objectType?: string | undefined;
+  isArray?: boolean;
+  isDictionary?: boolean;
+  isMultilingual?: boolean;
+  isRequired?: boolean;
+  displayOrder?: number | undefined;
+  valueType?: DynamicObjectPropertyValueType;
+  displayNames?: DynamicPropertyName[] | undefined;
+  createdDate?: Date;
+  modifiedDate?: Date | undefined;
+  createdBy?: string | undefined;
+  modifiedBy?: string | undefined;
+  id?: string | undefined;
 
-    constructor(data?: IDynamicObjectProperty) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
+  constructor(data?: IDynamicObjectProperty) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property)) (<any>this)[property] = (<any>data)[property];
+      }
     }
+  }
 
-    init(_data?: any) {
-        if (_data) {
-            this.objectId = _data["objectId"];
-            if (Array.isArray(_data["values"])) {
-                this.values = [] as any;
-                for (let item of _data["values"])
-                    this.values!.push(DynamicPropertyObjectValue.fromJS(item));
-            }
-            this.name = _data["name"];
-            this.description = _data["description"];
-            this.objectType = _data["objectType"];
-            this.isArray = _data["isArray"];
-            this.isDictionary = _data["isDictionary"];
-            this.isMultilingual = _data["isMultilingual"];
-            this.isRequired = _data["isRequired"];
-            this.displayOrder = _data["displayOrder"];
-            this.valueType = _data["valueType"];
-            if (Array.isArray(_data["displayNames"])) {
-                this.displayNames = [] as any;
-                for (let item of _data["displayNames"])
-                    this.displayNames!.push(DynamicPropertyName.fromJS(item));
-            }
-            this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>undefined;
-            this.modifiedDate = _data["modifiedDate"] ? new Date(_data["modifiedDate"].toString()) : <any>undefined;
-            this.createdBy = _data["createdBy"];
-            this.modifiedBy = _data["modifiedBy"];
-            this.id = _data["id"];
-        }
+  init(_data?: any) {
+    if (_data) {
+      this.objectId = _data["objectId"];
+      if (Array.isArray(_data["values"])) {
+        this.values = [] as any;
+        for (let item of _data["values"]) this.values!.push(DynamicPropertyObjectValue.fromJS(item));
+      }
+      this.name = _data["name"];
+      this.description = _data["description"];
+      this.objectType = _data["objectType"];
+      this.isArray = _data["isArray"];
+      this.isDictionary = _data["isDictionary"];
+      this.isMultilingual = _data["isMultilingual"];
+      this.isRequired = _data["isRequired"];
+      this.displayOrder = _data["displayOrder"];
+      this.valueType = _data["valueType"];
+      if (Array.isArray(_data["displayNames"])) {
+        this.displayNames = [] as any;
+        for (let item of _data["displayNames"]) this.displayNames!.push(DynamicPropertyName.fromJS(item));
+      }
+      this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>undefined;
+      this.modifiedDate = _data["modifiedDate"] ? new Date(_data["modifiedDate"].toString()) : <any>undefined;
+      this.createdBy = _data["createdBy"];
+      this.modifiedBy = _data["modifiedBy"];
+      this.id = _data["id"];
     }
+  }
 
-    static fromJS(data: any): DynamicObjectProperty {
-        data = typeof data === 'object' ? data : {};
-        let result = new DynamicObjectProperty();
-        result.init(data);
-        return result;
-    }
+  static fromJS(data: any): DynamicObjectProperty {
+    data = typeof data === "object" ? data : {};
+    let result = new DynamicObjectProperty();
+    result.init(data);
+    return result;
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["objectId"] = this.objectId;
-        if (Array.isArray(this.values)) {
-            data["values"] = [];
-            for (let item of this.values)
-                data["values"].push(item.toJSON());
-        }
-        data["name"] = this.name;
-        data["description"] = this.description;
-        data["objectType"] = this.objectType;
-        data["isArray"] = this.isArray;
-        data["isDictionary"] = this.isDictionary;
-        data["isMultilingual"] = this.isMultilingual;
-        data["isRequired"] = this.isRequired;
-        data["displayOrder"] = this.displayOrder;
-        data["valueType"] = this.valueType;
-        if (Array.isArray(this.displayNames)) {
-            data["displayNames"] = [];
-            for (let item of this.displayNames)
-                data["displayNames"].push(item.toJSON());
-        }
-        data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>undefined;
-        data["modifiedDate"] = this.modifiedDate ? this.modifiedDate.toISOString() : <any>undefined;
-        data["createdBy"] = this.createdBy;
-        data["modifiedBy"] = this.modifiedBy;
-        data["id"] = this.id;
-        return data;
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    data["objectId"] = this.objectId;
+    if (Array.isArray(this.values)) {
+      data["values"] = [];
+      for (let item of this.values) data["values"].push(item.toJSON());
     }
+    data["name"] = this.name;
+    data["description"] = this.description;
+    data["objectType"] = this.objectType;
+    data["isArray"] = this.isArray;
+    data["isDictionary"] = this.isDictionary;
+    data["isMultilingual"] = this.isMultilingual;
+    data["isRequired"] = this.isRequired;
+    data["displayOrder"] = this.displayOrder;
+    data["valueType"] = this.valueType;
+    if (Array.isArray(this.displayNames)) {
+      data["displayNames"] = [];
+      for (let item of this.displayNames) data["displayNames"].push(item.toJSON());
+    }
+    data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>undefined;
+    data["modifiedDate"] = this.modifiedDate ? this.modifiedDate.toISOString() : <any>undefined;
+    data["createdBy"] = this.createdBy;
+    data["modifiedBy"] = this.modifiedBy;
+    data["id"] = this.id;
+    return data;
+  }
 }
 
 export interface IDynamicObjectProperty {
-    objectId?: string | undefined;
-    values?: DynamicPropertyObjectValue[] | undefined;
-    name?: string | undefined;
-    description?: string | undefined;
-    objectType?: string | undefined;
-    isArray?: boolean;
-    isDictionary?: boolean;
-    isMultilingual?: boolean;
-    isRequired?: boolean;
-    displayOrder?: number | undefined;
-    valueType?: DynamicObjectPropertyValueType;
-    displayNames?: DynamicPropertyName[] | undefined;
-    createdDate?: Date;
-    modifiedDate?: Date | undefined;
-    createdBy?: string | undefined;
-    modifiedBy?: string | undefined;
-    id?: string | undefined;
+  objectId?: string | undefined;
+  values?: DynamicPropertyObjectValue[] | undefined;
+  name?: string | undefined;
+  description?: string | undefined;
+  objectType?: string | undefined;
+  isArray?: boolean;
+  isDictionary?: boolean;
+  isMultilingual?: boolean;
+  isRequired?: boolean;
+  displayOrder?: number | undefined;
+  valueType?: DynamicObjectPropertyValueType;
+  displayNames?: DynamicPropertyName[] | undefined;
+  createdDate?: Date;
+  modifiedDate?: Date | undefined;
+  createdBy?: string | undefined;
+  modifiedBy?: string | undefined;
+  id?: string | undefined;
 }
 
 export class DynamicPropertyName implements IDynamicPropertyName {
-    locale?: string | undefined;
-    name?: string | undefined;
+  locale?: string | undefined;
+  name?: string | undefined;
 
-    constructor(data?: IDynamicPropertyName) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
+  constructor(data?: IDynamicPropertyName) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property)) (<any>this)[property] = (<any>data)[property];
+      }
     }
+  }
 
-    init(_data?: any) {
-        if (_data) {
-            this.locale = _data["locale"];
-            this.name = _data["name"];
-        }
+  init(_data?: any) {
+    if (_data) {
+      this.locale = _data["locale"];
+      this.name = _data["name"];
     }
+  }
 
-    static fromJS(data: any): DynamicPropertyName {
-        data = typeof data === 'object' ? data : {};
-        let result = new DynamicPropertyName();
-        result.init(data);
-        return result;
-    }
+  static fromJS(data: any): DynamicPropertyName {
+    data = typeof data === "object" ? data : {};
+    let result = new DynamicPropertyName();
+    result.init(data);
+    return result;
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["locale"] = this.locale;
-        data["name"] = this.name;
-        return data;
-    }
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    data["locale"] = this.locale;
+    data["name"] = this.name;
+    return data;
+  }
 }
 
 export interface IDynamicPropertyName {
-    locale?: string | undefined;
-    name?: string | undefined;
+  locale?: string | undefined;
+  name?: string | undefined;
 }
 
 export class DynamicPropertyObjectValue implements IDynamicPropertyObjectValue {
-    objectType?: string | undefined;
-    objectId?: string | undefined;
-    locale?: string | undefined;
-    value?: any | undefined;
-    valueId?: string | undefined;
-    valueType?: DynamicPropertyObjectValueValueType;
-    propertyId?: string | undefined;
-    propertyName?: string | undefined;
+  objectType?: string | undefined;
+  objectId?: string | undefined;
+  locale?: string | undefined;
+  value?: any | undefined;
+  valueId?: string | undefined;
+  valueType?: DynamicPropertyObjectValueValueType;
+  propertyId?: string | undefined;
+  propertyName?: string | undefined;
 
-    constructor(data?: IDynamicPropertyObjectValue) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
+  constructor(data?: IDynamicPropertyObjectValue) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property)) (<any>this)[property] = (<any>data)[property];
+      }
     }
+  }
 
-    init(_data?: any) {
-        if (_data) {
-            this.objectType = _data["objectType"];
-            this.objectId = _data["objectId"];
-            this.locale = _data["locale"];
-            this.value = _data["value"];
-            this.valueId = _data["valueId"];
-            this.valueType = _data["valueType"];
-            this.propertyId = _data["propertyId"];
-            this.propertyName = _data["propertyName"];
-        }
+  init(_data?: any) {
+    if (_data) {
+      this.objectType = _data["objectType"];
+      this.objectId = _data["objectId"];
+      this.locale = _data["locale"];
+      this.value = _data["value"];
+      this.valueId = _data["valueId"];
+      this.valueType = _data["valueType"];
+      this.propertyId = _data["propertyId"];
+      this.propertyName = _data["propertyName"];
     }
+  }
 
-    static fromJS(data: any): DynamicPropertyObjectValue {
-        data = typeof data === 'object' ? data : {};
-        let result = new DynamicPropertyObjectValue();
-        result.init(data);
-        return result;
-    }
+  static fromJS(data: any): DynamicPropertyObjectValue {
+    data = typeof data === "object" ? data : {};
+    let result = new DynamicPropertyObjectValue();
+    result.init(data);
+    return result;
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["objectType"] = this.objectType;
-        data["objectId"] = this.objectId;
-        data["locale"] = this.locale;
-        data["value"] = this.value;
-        data["valueId"] = this.valueId;
-        data["valueType"] = this.valueType;
-        data["propertyId"] = this.propertyId;
-        data["propertyName"] = this.propertyName;
-        return data;
-    }
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    data["objectType"] = this.objectType;
+    data["objectId"] = this.objectId;
+    data["locale"] = this.locale;
+    data["value"] = this.value;
+    data["valueId"] = this.valueId;
+    data["valueType"] = this.valueType;
+    data["propertyId"] = this.propertyId;
+    data["propertyName"] = this.propertyName;
+    return data;
+  }
 }
 
 export interface IDynamicPropertyObjectValue {
-    objectType?: string | undefined;
-    objectId?: string | undefined;
-    locale?: string | undefined;
-    value?: any | undefined;
-    valueId?: string | undefined;
-    valueType?: DynamicPropertyObjectValueValueType;
-    propertyId?: string | undefined;
-    propertyName?: string | undefined;
+  objectType?: string | undefined;
+  objectId?: string | undefined;
+  locale?: string | undefined;
+  value?: any | undefined;
+  valueId?: string | undefined;
+  valueType?: DynamicPropertyObjectValueValueType;
+  propertyId?: string | undefined;
+  propertyName?: string | undefined;
 }
 
 export enum DynamicPropertyValueType {
-    Undefined = "Undefined",
-    ShortText = "ShortText",
-    LongText = "LongText",
-    Integer = "Integer",
-    Decimal = "Decimal",
-    DateTime = "DateTime",
-    Boolean = "Boolean",
-    Html = "Html",
-    Image = "Image",
+  Undefined = "Undefined",
+  ShortText = "ShortText",
+  LongText = "LongText",
+  Integer = "Integer",
+  Decimal = "Decimal",
+  DateTime = "DateTime",
+  Boolean = "Boolean",
+  Html = "Html",
+  Image = "Image",
 }
 
 export enum EntryState {
-    Detached = "Detached",
-    Unchanged = "Unchanged",
-    Added = "Added",
-    Deleted = "Deleted",
-    Modified = "Modified",
+  Detached = "Detached",
+  Unchanged = "Unchanged",
+  Added = "Added",
+  Deleted = "Deleted",
+  Modified = "Modified",
 }
 
 export class FeeDetail implements IFeeDetail {
-    feeId?: string | undefined;
-    currency?: string | undefined;
-    amount?: number;
-    description?: string | undefined;
+  feeId?: string | undefined;
+  currency?: string | undefined;
+  amount?: number;
+  description?: string | undefined;
 
-    constructor(data?: IFeeDetail) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
+  constructor(data?: IFeeDetail) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property)) (<any>this)[property] = (<any>data)[property];
+      }
     }
+  }
 
-    init(_data?: any) {
-        if (_data) {
-            this.feeId = _data["feeId"];
-            this.currency = _data["currency"];
-            this.amount = _data["amount"];
-            this.description = _data["description"];
-        }
+  init(_data?: any) {
+    if (_data) {
+      this.feeId = _data["feeId"];
+      this.currency = _data["currency"];
+      this.amount = _data["amount"];
+      this.description = _data["description"];
     }
+  }
 
-    static fromJS(data: any): FeeDetail {
-        data = typeof data === 'object' ? data : {};
-        let result = new FeeDetail();
-        result.init(data);
-        return result;
-    }
+  static fromJS(data: any): FeeDetail {
+    data = typeof data === "object" ? data : {};
+    let result = new FeeDetail();
+    result.init(data);
+    return result;
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["feeId"] = this.feeId;
-        data["currency"] = this.currency;
-        data["amount"] = this.amount;
-        data["description"] = this.description;
-        return data;
-    }
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    data["feeId"] = this.feeId;
+    data["currency"] = this.currency;
+    data["amount"] = this.amount;
+    data["description"] = this.description;
+    return data;
+  }
 }
 
 export interface IFeeDetail {
-    feeId?: string | undefined;
-    currency?: string | undefined;
-    amount?: number;
-    description?: string | undefined;
+  feeId?: string | undefined;
+  currency?: string | undefined;
+  amount?: number;
+  description?: string | undefined;
 }
 
 export class IOperation implements IIOperation {
-    operationType?: string | undefined;
-    parentOperationId?: string | undefined;
-    number?: string | undefined;
-    isApproved?: boolean;
-    status?: string | undefined;
-    comment?: string | undefined;
-    currency?: string | undefined;
-    childrenOperations?: IOperation[] | undefined;
-    id?: string | undefined;
+  operationType?: string | undefined;
+  parentOperationId?: string | undefined;
+  number?: string | undefined;
+  isApproved?: boolean;
+  status?: string | undefined;
+  comment?: string | undefined;
+  currency?: string | undefined;
+  childrenOperations?: IOperation[] | undefined;
+  id?: string | undefined;
 
-    constructor(data?: IIOperation) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
+  constructor(data?: IIOperation) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property)) (<any>this)[property] = (<any>data)[property];
+      }
     }
+  }
 
-    init(_data?: any) {
-        if (_data) {
-            this.operationType = _data["operationType"];
-            this.parentOperationId = _data["parentOperationId"];
-            this.number = _data["number"];
-            this.isApproved = _data["isApproved"];
-            this.status = _data["status"];
-            this.comment = _data["comment"];
-            this.currency = _data["currency"];
-            if (Array.isArray(_data["childrenOperations"])) {
-                this.childrenOperations = [] as any;
-                for (let item of _data["childrenOperations"])
-                    this.childrenOperations!.push(IOperation.fromJS(item));
-            }
-            this.id = _data["id"];
-        }
+  init(_data?: any) {
+    if (_data) {
+      this.operationType = _data["operationType"];
+      this.parentOperationId = _data["parentOperationId"];
+      this.number = _data["number"];
+      this.isApproved = _data["isApproved"];
+      this.status = _data["status"];
+      this.comment = _data["comment"];
+      this.currency = _data["currency"];
+      if (Array.isArray(_data["childrenOperations"])) {
+        this.childrenOperations = [] as any;
+        for (let item of _data["childrenOperations"]) this.childrenOperations!.push(IOperation.fromJS(item));
+      }
+      this.id = _data["id"];
     }
+  }
 
-    static fromJS(data: any): IOperation {
-        data = typeof data === 'object' ? data : {};
-        let result = new IOperation();
-        result.init(data);
-        return result;
-    }
+  static fromJS(data: any): IOperation {
+    data = typeof data === "object" ? data : {};
+    let result = new IOperation();
+    result.init(data);
+    return result;
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["operationType"] = this.operationType;
-        data["parentOperationId"] = this.parentOperationId;
-        data["number"] = this.number;
-        data["isApproved"] = this.isApproved;
-        data["status"] = this.status;
-        data["comment"] = this.comment;
-        data["currency"] = this.currency;
-        if (Array.isArray(this.childrenOperations)) {
-            data["childrenOperations"] = [];
-            for (let item of this.childrenOperations)
-                data["childrenOperations"].push(item.toJSON());
-        }
-        data["id"] = this.id;
-        return data;
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    data["operationType"] = this.operationType;
+    data["parentOperationId"] = this.parentOperationId;
+    data["number"] = this.number;
+    data["isApproved"] = this.isApproved;
+    data["status"] = this.status;
+    data["comment"] = this.comment;
+    data["currency"] = this.currency;
+    if (Array.isArray(this.childrenOperations)) {
+      data["childrenOperations"] = [];
+      for (let item of this.childrenOperations) data["childrenOperations"].push(item.toJSON());
     }
+    data["id"] = this.id;
+    return data;
+  }
 }
 
 export interface IIOperation {
-    operationType?: string | undefined;
-    parentOperationId?: string | undefined;
-    number?: string | undefined;
-    isApproved?: boolean;
-    status?: string | undefined;
-    comment?: string | undefined;
-    currency?: string | undefined;
-    childrenOperations?: IOperation[] | undefined;
-    id?: string | undefined;
+  operationType?: string | undefined;
+  parentOperationId?: string | undefined;
+  number?: string | undefined;
+  isApproved?: boolean;
+  status?: string | undefined;
+  comment?: string | undefined;
+  currency?: string | undefined;
+  childrenOperations?: IOperation[] | undefined;
+  id?: string | undefined;
 }
 
 export class KeyValuePair implements IKeyValuePair {
-    key?: string | undefined;
-    value?: string | undefined;
+  key?: string | undefined;
+  value?: string | undefined;
 
-    constructor(data?: IKeyValuePair) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
+  constructor(data?: IKeyValuePair) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property)) (<any>this)[property] = (<any>data)[property];
+      }
     }
+  }
 
-    init(_data?: any) {
-        if (_data) {
-            this.key = _data["key"];
-            this.value = _data["value"];
-        }
+  init(_data?: any) {
+    if (_data) {
+      this.key = _data["key"];
+      this.value = _data["value"];
     }
+  }
 
-    static fromJS(data: any): KeyValuePair {
-        data = typeof data === 'object' ? data : {};
-        let result = new KeyValuePair();
-        result.init(data);
-        return result;
-    }
+  static fromJS(data: any): KeyValuePair {
+    data = typeof data === "object" ? data : {};
+    let result = new KeyValuePair();
+    result.init(data);
+    return result;
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["key"] = this.key;
-        data["value"] = this.value;
-        return data;
-    }
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    data["key"] = this.key;
+    data["value"] = this.value;
+    return data;
+  }
 }
 
 export interface IKeyValuePair {
-    key?: string | undefined;
-    value?: string | undefined;
+  key?: string | undefined;
+  value?: string | undefined;
 }
 
 export class ObjectSettingEntry implements IObjectSettingEntry {
-    readonly itHasValues?: boolean;
-    objectId?: string | undefined;
-    objectType?: string | undefined;
-    isReadOnly?: boolean;
-    value?: any | undefined;
-    id?: string | undefined;
-    restartRequired?: boolean;
-    moduleId?: string | undefined;
-    groupName?: string | undefined;
-    name?: string | undefined;
-    displayName?: string | undefined;
-    isRequired?: boolean;
-    isHidden?: boolean;
-    valueType?: ObjectSettingEntryValueType;
-    allowedValues?: any[] | undefined;
-    defaultValue?: any | undefined;
-    isDictionary?: boolean;
-    isLocalizable?: boolean;
+  readonly itHasValues?: boolean;
+  objectId?: string | undefined;
+  objectType?: string | undefined;
+  isReadOnly?: boolean;
+  value?: any | undefined;
+  id?: string | undefined;
+  restartRequired?: boolean;
+  moduleId?: string | undefined;
+  groupName?: string | undefined;
+  name?: string | undefined;
+  displayName?: string | undefined;
+  isRequired?: boolean;
+  isHidden?: boolean;
+  valueType?: ObjectSettingEntryValueType;
+  allowedValues?: any[] | undefined;
+  defaultValue?: any | undefined;
+  isDictionary?: boolean;
+  isLocalizable?: boolean;
 
-    constructor(data?: IObjectSettingEntry) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
+  constructor(data?: IObjectSettingEntry) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property)) (<any>this)[property] = (<any>data)[property];
+      }
     }
+  }
 
-    init(_data?: any) {
-        if (_data) {
-            (<any>this).itHasValues = _data["itHasValues"];
-            this.objectId = _data["objectId"];
-            this.objectType = _data["objectType"];
-            this.isReadOnly = _data["isReadOnly"];
-            this.value = _data["value"];
-            this.id = _data["id"];
-            this.restartRequired = _data["restartRequired"];
-            this.moduleId = _data["moduleId"];
-            this.groupName = _data["groupName"];
-            this.name = _data["name"];
-            this.displayName = _data["displayName"];
-            this.isRequired = _data["isRequired"];
-            this.isHidden = _data["isHidden"];
-            this.valueType = _data["valueType"];
-            if (Array.isArray(_data["allowedValues"])) {
-                this.allowedValues = [] as any;
-                for (let item of _data["allowedValues"])
-                    this.allowedValues!.push(item);
-            }
-            this.defaultValue = _data["defaultValue"];
-            this.isDictionary = _data["isDictionary"];
-            this.isLocalizable = _data["isLocalizable"];
-        }
+  init(_data?: any) {
+    if (_data) {
+      (<any>this).itHasValues = _data["itHasValues"];
+      this.objectId = _data["objectId"];
+      this.objectType = _data["objectType"];
+      this.isReadOnly = _data["isReadOnly"];
+      this.value = _data["value"];
+      this.id = _data["id"];
+      this.restartRequired = _data["restartRequired"];
+      this.moduleId = _data["moduleId"];
+      this.groupName = _data["groupName"];
+      this.name = _data["name"];
+      this.displayName = _data["displayName"];
+      this.isRequired = _data["isRequired"];
+      this.isHidden = _data["isHidden"];
+      this.valueType = _data["valueType"];
+      if (Array.isArray(_data["allowedValues"])) {
+        this.allowedValues = [] as any;
+        for (let item of _data["allowedValues"]) this.allowedValues!.push(item);
+      }
+      this.defaultValue = _data["defaultValue"];
+      this.isDictionary = _data["isDictionary"];
+      this.isLocalizable = _data["isLocalizable"];
     }
+  }
 
-    static fromJS(data: any): ObjectSettingEntry {
-        data = typeof data === 'object' ? data : {};
-        let result = new ObjectSettingEntry();
-        result.init(data);
-        return result;
-    }
+  static fromJS(data: any): ObjectSettingEntry {
+    data = typeof data === "object" ? data : {};
+    let result = new ObjectSettingEntry();
+    result.init(data);
+    return result;
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["itHasValues"] = this.itHasValues;
-        data["objectId"] = this.objectId;
-        data["objectType"] = this.objectType;
-        data["isReadOnly"] = this.isReadOnly;
-        data["value"] = this.value;
-        data["id"] = this.id;
-        data["restartRequired"] = this.restartRequired;
-        data["moduleId"] = this.moduleId;
-        data["groupName"] = this.groupName;
-        data["name"] = this.name;
-        data["displayName"] = this.displayName;
-        data["isRequired"] = this.isRequired;
-        data["isHidden"] = this.isHidden;
-        data["valueType"] = this.valueType;
-        if (Array.isArray(this.allowedValues)) {
-            data["allowedValues"] = [];
-            for (let item of this.allowedValues)
-                data["allowedValues"].push(item);
-        }
-        data["defaultValue"] = this.defaultValue;
-        data["isDictionary"] = this.isDictionary;
-        data["isLocalizable"] = this.isLocalizable;
-        return data;
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    data["itHasValues"] = this.itHasValues;
+    data["objectId"] = this.objectId;
+    data["objectType"] = this.objectType;
+    data["isReadOnly"] = this.isReadOnly;
+    data["value"] = this.value;
+    data["id"] = this.id;
+    data["restartRequired"] = this.restartRequired;
+    data["moduleId"] = this.moduleId;
+    data["groupName"] = this.groupName;
+    data["name"] = this.name;
+    data["displayName"] = this.displayName;
+    data["isRequired"] = this.isRequired;
+    data["isHidden"] = this.isHidden;
+    data["valueType"] = this.valueType;
+    if (Array.isArray(this.allowedValues)) {
+      data["allowedValues"] = [];
+      for (let item of this.allowedValues) data["allowedValues"].push(item);
     }
+    data["defaultValue"] = this.defaultValue;
+    data["isDictionary"] = this.isDictionary;
+    data["isLocalizable"] = this.isLocalizable;
+    return data;
+  }
 }
 
 export interface IObjectSettingEntry {
-    itHasValues?: boolean;
-    objectId?: string | undefined;
-    objectType?: string | undefined;
-    isReadOnly?: boolean;
-    value?: any | undefined;
-    id?: string | undefined;
-    restartRequired?: boolean;
-    moduleId?: string | undefined;
-    groupName?: string | undefined;
-    name?: string | undefined;
-    displayName?: string | undefined;
-    isRequired?: boolean;
-    isHidden?: boolean;
-    valueType?: ObjectSettingEntryValueType;
-    allowedValues?: any[] | undefined;
-    defaultValue?: any | undefined;
-    isDictionary?: boolean;
-    isLocalizable?: boolean;
+  itHasValues?: boolean;
+  objectId?: string | undefined;
+  objectType?: string | undefined;
+  isReadOnly?: boolean;
+  value?: any | undefined;
+  id?: string | undefined;
+  restartRequired?: boolean;
+  moduleId?: string | undefined;
+  groupName?: string | undefined;
+  name?: string | undefined;
+  displayName?: string | undefined;
+  isRequired?: boolean;
+  isHidden?: boolean;
+  valueType?: ObjectSettingEntryValueType;
+  allowedValues?: any[] | undefined;
+  defaultValue?: any | undefined;
+  isDictionary?: boolean;
+  isLocalizable?: boolean;
 }
 
 export class OperationLog implements IOperationLog {
-    objectType?: string | undefined;
-    objectId?: string | undefined;
-    operationType?: OperationLogOperationType;
-    detail?: string | undefined;
-    createdDate?: Date;
-    modifiedDate?: Date | undefined;
-    createdBy?: string | undefined;
-    modifiedBy?: string | undefined;
-    id?: string | undefined;
+  objectType?: string | undefined;
+  objectId?: string | undefined;
+  operationType?: OperationLogOperationType;
+  detail?: string | undefined;
+  createdDate?: Date;
+  modifiedDate?: Date | undefined;
+  createdBy?: string | undefined;
+  modifiedBy?: string | undefined;
+  id?: string | undefined;
 
-    constructor(data?: IOperationLog) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
+  constructor(data?: IOperationLog) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property)) (<any>this)[property] = (<any>data)[property];
+      }
     }
+  }
 
-    init(_data?: any) {
-        if (_data) {
-            this.objectType = _data["objectType"];
-            this.objectId = _data["objectId"];
-            this.operationType = _data["operationType"];
-            this.detail = _data["detail"];
-            this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>undefined;
-            this.modifiedDate = _data["modifiedDate"] ? new Date(_data["modifiedDate"].toString()) : <any>undefined;
-            this.createdBy = _data["createdBy"];
-            this.modifiedBy = _data["modifiedBy"];
-            this.id = _data["id"];
-        }
+  init(_data?: any) {
+    if (_data) {
+      this.objectType = _data["objectType"];
+      this.objectId = _data["objectId"];
+      this.operationType = _data["operationType"];
+      this.detail = _data["detail"];
+      this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>undefined;
+      this.modifiedDate = _data["modifiedDate"] ? new Date(_data["modifiedDate"].toString()) : <any>undefined;
+      this.createdBy = _data["createdBy"];
+      this.modifiedBy = _data["modifiedBy"];
+      this.id = _data["id"];
     }
+  }
 
-    static fromJS(data: any): OperationLog {
-        data = typeof data === 'object' ? data : {};
-        let result = new OperationLog();
-        result.init(data);
-        return result;
-    }
+  static fromJS(data: any): OperationLog {
+    data = typeof data === "object" ? data : {};
+    let result = new OperationLog();
+    result.init(data);
+    return result;
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["objectType"] = this.objectType;
-        data["objectId"] = this.objectId;
-        data["operationType"] = this.operationType;
-        data["detail"] = this.detail;
-        data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>undefined;
-        data["modifiedDate"] = this.modifiedDate ? this.modifiedDate.toISOString() : <any>undefined;
-        data["createdBy"] = this.createdBy;
-        data["modifiedBy"] = this.modifiedBy;
-        data["id"] = this.id;
-        return data;
-    }
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    data["objectType"] = this.objectType;
+    data["objectId"] = this.objectId;
+    data["operationType"] = this.operationType;
+    data["detail"] = this.detail;
+    data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>undefined;
+    data["modifiedDate"] = this.modifiedDate ? this.modifiedDate.toISOString() : <any>undefined;
+    data["createdBy"] = this.createdBy;
+    data["modifiedBy"] = this.modifiedBy;
+    data["id"] = this.id;
+    return data;
+  }
 }
 
 export interface IOperationLog {
-    objectType?: string | undefined;
-    objectId?: string | undefined;
-    operationType?: OperationLogOperationType;
-    detail?: string | undefined;
-    createdDate?: Date;
-    modifiedDate?: Date | undefined;
-    createdBy?: string | undefined;
-    modifiedBy?: string | undefined;
-    id?: string | undefined;
+  objectType?: string | undefined;
+  objectId?: string | undefined;
+  operationType?: OperationLogOperationType;
+  detail?: string | undefined;
+  createdDate?: Date;
+  modifiedDate?: Date | undefined;
+  createdBy?: string | undefined;
+  modifiedBy?: string | undefined;
+  id?: string | undefined;
 }
 
 export class OrderAddress implements IOrderAddress {
-    addressType?: OrderAddressAddressType;
-    key?: string | undefined;
-    name?: string | undefined;
-    organization?: string | undefined;
-    countryCode?: string | undefined;
-    countryName?: string | undefined;
-    city?: string | undefined;
-    postalCode?: string | undefined;
-    zip?: string | undefined;
-    line1?: string | undefined;
-    line2?: string | undefined;
-    regionId?: string | undefined;
-    regionName?: string | undefined;
-    firstName?: string | undefined;
-    middleName?: string | undefined;
-    lastName?: string | undefined;
-    phone?: string | undefined;
-    email?: string | undefined;
-    outerId?: string | undefined;
-    isDefault?: boolean;
-    description?: string | undefined;
+  addressType?: OrderAddressAddressType;
+  key?: string | undefined;
+  name?: string | undefined;
+  organization?: string | undefined;
+  countryCode?: string | undefined;
+  countryName?: string | undefined;
+  city?: string | undefined;
+  postalCode?: string | undefined;
+  zip?: string | undefined;
+  line1?: string | undefined;
+  line2?: string | undefined;
+  regionId?: string | undefined;
+  regionName?: string | undefined;
+  firstName?: string | undefined;
+  middleName?: string | undefined;
+  lastName?: string | undefined;
+  phone?: string | undefined;
+  email?: string | undefined;
+  outerId?: string | undefined;
+  isDefault?: boolean;
+  description?: string | undefined;
 
-    constructor(data?: IOrderAddress) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
+  constructor(data?: IOrderAddress) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property)) (<any>this)[property] = (<any>data)[property];
+      }
     }
+  }
 
-    init(_data?: any) {
-        if (_data) {
-            this.addressType = _data["addressType"];
-            this.key = _data["key"];
-            this.name = _data["name"];
-            this.organization = _data["organization"];
-            this.countryCode = _data["countryCode"];
-            this.countryName = _data["countryName"];
-            this.city = _data["city"];
-            this.postalCode = _data["postalCode"];
-            this.zip = _data["zip"];
-            this.line1 = _data["line1"];
-            this.line2 = _data["line2"];
-            this.regionId = _data["regionId"];
-            this.regionName = _data["regionName"];
-            this.firstName = _data["firstName"];
-            this.middleName = _data["middleName"];
-            this.lastName = _data["lastName"];
-            this.phone = _data["phone"];
-            this.email = _data["email"];
-            this.outerId = _data["outerId"];
-            this.isDefault = _data["isDefault"];
-            this.description = _data["description"];
-        }
+  init(_data?: any) {
+    if (_data) {
+      this.addressType = _data["addressType"];
+      this.key = _data["key"];
+      this.name = _data["name"];
+      this.organization = _data["organization"];
+      this.countryCode = _data["countryCode"];
+      this.countryName = _data["countryName"];
+      this.city = _data["city"];
+      this.postalCode = _data["postalCode"];
+      this.zip = _data["zip"];
+      this.line1 = _data["line1"];
+      this.line2 = _data["line2"];
+      this.regionId = _data["regionId"];
+      this.regionName = _data["regionName"];
+      this.firstName = _data["firstName"];
+      this.middleName = _data["middleName"];
+      this.lastName = _data["lastName"];
+      this.phone = _data["phone"];
+      this.email = _data["email"];
+      this.outerId = _data["outerId"];
+      this.isDefault = _data["isDefault"];
+      this.description = _data["description"];
     }
+  }
 
-    static fromJS(data: any): OrderAddress {
-        data = typeof data === 'object' ? data : {};
-        let result = new OrderAddress();
-        result.init(data);
-        return result;
-    }
+  static fromJS(data: any): OrderAddress {
+    data = typeof data === "object" ? data : {};
+    let result = new OrderAddress();
+    result.init(data);
+    return result;
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["addressType"] = this.addressType;
-        data["key"] = this.key;
-        data["name"] = this.name;
-        data["organization"] = this.organization;
-        data["countryCode"] = this.countryCode;
-        data["countryName"] = this.countryName;
-        data["city"] = this.city;
-        data["postalCode"] = this.postalCode;
-        data["zip"] = this.zip;
-        data["line1"] = this.line1;
-        data["line2"] = this.line2;
-        data["regionId"] = this.regionId;
-        data["regionName"] = this.regionName;
-        data["firstName"] = this.firstName;
-        data["middleName"] = this.middleName;
-        data["lastName"] = this.lastName;
-        data["phone"] = this.phone;
-        data["email"] = this.email;
-        data["outerId"] = this.outerId;
-        data["isDefault"] = this.isDefault;
-        data["description"] = this.description;
-        return data;
-    }
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    data["addressType"] = this.addressType;
+    data["key"] = this.key;
+    data["name"] = this.name;
+    data["organization"] = this.organization;
+    data["countryCode"] = this.countryCode;
+    data["countryName"] = this.countryName;
+    data["city"] = this.city;
+    data["postalCode"] = this.postalCode;
+    data["zip"] = this.zip;
+    data["line1"] = this.line1;
+    data["line2"] = this.line2;
+    data["regionId"] = this.regionId;
+    data["regionName"] = this.regionName;
+    data["firstName"] = this.firstName;
+    data["middleName"] = this.middleName;
+    data["lastName"] = this.lastName;
+    data["phone"] = this.phone;
+    data["email"] = this.email;
+    data["outerId"] = this.outerId;
+    data["isDefault"] = this.isDefault;
+    data["description"] = this.description;
+    return data;
+  }
 }
 
 export interface IOrderAddress {
-    addressType?: OrderAddressAddressType;
-    key?: string | undefined;
-    name?: string | undefined;
-    organization?: string | undefined;
-    countryCode?: string | undefined;
-    countryName?: string | undefined;
-    city?: string | undefined;
-    postalCode?: string | undefined;
-    zip?: string | undefined;
-    line1?: string | undefined;
-    line2?: string | undefined;
-    regionId?: string | undefined;
-    regionName?: string | undefined;
-    firstName?: string | undefined;
-    middleName?: string | undefined;
-    lastName?: string | undefined;
-    phone?: string | undefined;
-    email?: string | undefined;
-    outerId?: string | undefined;
-    isDefault?: boolean;
-    description?: string | undefined;
+  addressType?: OrderAddressAddressType;
+  key?: string | undefined;
+  name?: string | undefined;
+  organization?: string | undefined;
+  countryCode?: string | undefined;
+  countryName?: string | undefined;
+  city?: string | undefined;
+  postalCode?: string | undefined;
+  zip?: string | undefined;
+  line1?: string | undefined;
+  line2?: string | undefined;
+  regionId?: string | undefined;
+  regionName?: string | undefined;
+  firstName?: string | undefined;
+  middleName?: string | undefined;
+  lastName?: string | undefined;
+  phone?: string | undefined;
+  email?: string | undefined;
+  outerId?: string | undefined;
+  isDefault?: boolean;
+  description?: string | undefined;
 }
 
 export class OrderLineItem implements IOrderLineItem {
-    priceId?: string | undefined;
-    currency?: string | undefined;
-    price?: number;
-    priceWithTax?: number;
-    placedPrice?: number;
-    placedPriceWithTax?: number;
-    extendedPrice?: number;
-    extendedPriceWithTax?: number;
-    discountAmount?: number;
-    discountAmountWithTax?: number;
-    discountTotal?: number;
-    discountTotalWithTax?: number;
-    fee?: number;
-    feeWithTax?: number;
-    taxType?: string | undefined;
-    taxTotal?: number;
-    taxPercentRate?: number;
-    reserveQuantity?: number;
-    quantity?: number;
-    productId?: string | undefined;
-    sku?: string | undefined;
-    productType?: string | undefined;
-    catalogId?: string | undefined;
-    categoryId?: string | undefined;
-    name?: string | undefined;
-    productOuterId?: string | undefined;
-    comment?: string | undefined;
-    status?: string | undefined;
-    imageUrl?: string | undefined;
-    isGift?: boolean | undefined;
-    shippingMethodCode?: string | undefined;
-    fulfillmentLocationCode?: string | undefined;
-    fulfillmentCenterId?: string | undefined;
-    fulfillmentCenterName?: string | undefined;
-    outerId?: string | undefined;
-    feeDetails?: FeeDetail[] | undefined;
-    vendorId?: string | undefined;
-    weightUnit?: string | undefined;
-    weight?: number | undefined;
-    measureUnit?: string | undefined;
-    height?: number | undefined;
-    length?: number | undefined;
-    width?: number | undefined;
-    isCancelled?: boolean;
-    cancelledDate?: Date | undefined;
-    cancelReason?: string | undefined;
-    readonly objectType?: string | undefined;
-    dynamicProperties?: DynamicObjectProperty[] | undefined;
-    discounts?: Discount[] | undefined;
-    taxDetails?: TaxDetail[] | undefined;
-    createdDate?: Date;
-    modifiedDate?: Date | undefined;
-    createdBy?: string | undefined;
-    modifiedBy?: string | undefined;
-    id?: string | undefined;
+  priceId?: string | undefined;
+  currency?: string | undefined;
+  price?: number;
+  priceWithTax?: number;
+  placedPrice?: number;
+  placedPriceWithTax?: number;
+  extendedPrice?: number;
+  extendedPriceWithTax?: number;
+  discountAmount?: number;
+  discountAmountWithTax?: number;
+  discountTotal?: number;
+  discountTotalWithTax?: number;
+  fee?: number;
+  feeWithTax?: number;
+  taxType?: string | undefined;
+  taxTotal?: number;
+  taxPercentRate?: number;
+  reserveQuantity?: number;
+  quantity?: number;
+  productId?: string | undefined;
+  sku?: string | undefined;
+  productType?: string | undefined;
+  catalogId?: string | undefined;
+  categoryId?: string | undefined;
+  name?: string | undefined;
+  productOuterId?: string | undefined;
+  comment?: string | undefined;
+  status?: string | undefined;
+  imageUrl?: string | undefined;
+  isGift?: boolean | undefined;
+  shippingMethodCode?: string | undefined;
+  fulfillmentLocationCode?: string | undefined;
+  fulfillmentCenterId?: string | undefined;
+  fulfillmentCenterName?: string | undefined;
+  outerId?: string | undefined;
+  feeDetails?: FeeDetail[] | undefined;
+  vendorId?: string | undefined;
+  weightUnit?: string | undefined;
+  weight?: number | undefined;
+  measureUnit?: string | undefined;
+  height?: number | undefined;
+  length?: number | undefined;
+  width?: number | undefined;
+  isCancelled?: boolean;
+  cancelledDate?: Date | undefined;
+  cancelReason?: string | undefined;
+  readonly objectType?: string | undefined;
+  dynamicProperties?: DynamicObjectProperty[] | undefined;
+  discounts?: Discount[] | undefined;
+  taxDetails?: TaxDetail[] | undefined;
+  createdDate?: Date;
+  modifiedDate?: Date | undefined;
+  createdBy?: string | undefined;
+  modifiedBy?: string | undefined;
+  id?: string | undefined;
 
-    constructor(data?: IOrderLineItem) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
+  constructor(data?: IOrderLineItem) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property)) (<any>this)[property] = (<any>data)[property];
+      }
     }
+  }
 
-    init(_data?: any) {
-        if (_data) {
-            this.priceId = _data["priceId"];
-            this.currency = _data["currency"];
-            this.price = _data["price"];
-            this.priceWithTax = _data["priceWithTax"];
-            this.placedPrice = _data["placedPrice"];
-            this.placedPriceWithTax = _data["placedPriceWithTax"];
-            this.extendedPrice = _data["extendedPrice"];
-            this.extendedPriceWithTax = _data["extendedPriceWithTax"];
-            this.discountAmount = _data["discountAmount"];
-            this.discountAmountWithTax = _data["discountAmountWithTax"];
-            this.discountTotal = _data["discountTotal"];
-            this.discountTotalWithTax = _data["discountTotalWithTax"];
-            this.fee = _data["fee"];
-            this.feeWithTax = _data["feeWithTax"];
-            this.taxType = _data["taxType"];
-            this.taxTotal = _data["taxTotal"];
-            this.taxPercentRate = _data["taxPercentRate"];
-            this.reserveQuantity = _data["reserveQuantity"];
-            this.quantity = _data["quantity"];
-            this.productId = _data["productId"];
-            this.sku = _data["sku"];
-            this.productType = _data["productType"];
-            this.catalogId = _data["catalogId"];
-            this.categoryId = _data["categoryId"];
-            this.name = _data["name"];
-            this.productOuterId = _data["productOuterId"];
-            this.comment = _data["comment"];
-            this.status = _data["status"];
-            this.imageUrl = _data["imageUrl"];
-            this.isGift = _data["isGift"];
-            this.shippingMethodCode = _data["shippingMethodCode"];
-            this.fulfillmentLocationCode = _data["fulfillmentLocationCode"];
-            this.fulfillmentCenterId = _data["fulfillmentCenterId"];
-            this.fulfillmentCenterName = _data["fulfillmentCenterName"];
-            this.outerId = _data["outerId"];
-            if (Array.isArray(_data["feeDetails"])) {
-                this.feeDetails = [] as any;
-                for (let item of _data["feeDetails"])
-                    this.feeDetails!.push(FeeDetail.fromJS(item));
-            }
-            this.vendorId = _data["vendorId"];
-            this.weightUnit = _data["weightUnit"];
-            this.weight = _data["weight"];
-            this.measureUnit = _data["measureUnit"];
-            this.height = _data["height"];
-            this.length = _data["length"];
-            this.width = _data["width"];
-            this.isCancelled = _data["isCancelled"];
-            this.cancelledDate = _data["cancelledDate"] ? new Date(_data["cancelledDate"].toString()) : <any>undefined;
-            this.cancelReason = _data["cancelReason"];
-            (<any>this).objectType = _data["objectType"];
-            if (Array.isArray(_data["dynamicProperties"])) {
-                this.dynamicProperties = [] as any;
-                for (let item of _data["dynamicProperties"])
-                    this.dynamicProperties!.push(DynamicObjectProperty.fromJS(item));
-            }
-            if (Array.isArray(_data["discounts"])) {
-                this.discounts = [] as any;
-                for (let item of _data["discounts"])
-                    this.discounts!.push(Discount.fromJS(item));
-            }
-            if (Array.isArray(_data["taxDetails"])) {
-                this.taxDetails = [] as any;
-                for (let item of _data["taxDetails"])
-                    this.taxDetails!.push(TaxDetail.fromJS(item));
-            }
-            this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>undefined;
-            this.modifiedDate = _data["modifiedDate"] ? new Date(_data["modifiedDate"].toString()) : <any>undefined;
-            this.createdBy = _data["createdBy"];
-            this.modifiedBy = _data["modifiedBy"];
-            this.id = _data["id"];
-        }
+  init(_data?: any) {
+    if (_data) {
+      this.priceId = _data["priceId"];
+      this.currency = _data["currency"];
+      this.price = _data["price"];
+      this.priceWithTax = _data["priceWithTax"];
+      this.placedPrice = _data["placedPrice"];
+      this.placedPriceWithTax = _data["placedPriceWithTax"];
+      this.extendedPrice = _data["extendedPrice"];
+      this.extendedPriceWithTax = _data["extendedPriceWithTax"];
+      this.discountAmount = _data["discountAmount"];
+      this.discountAmountWithTax = _data["discountAmountWithTax"];
+      this.discountTotal = _data["discountTotal"];
+      this.discountTotalWithTax = _data["discountTotalWithTax"];
+      this.fee = _data["fee"];
+      this.feeWithTax = _data["feeWithTax"];
+      this.taxType = _data["taxType"];
+      this.taxTotal = _data["taxTotal"];
+      this.taxPercentRate = _data["taxPercentRate"];
+      this.reserveQuantity = _data["reserveQuantity"];
+      this.quantity = _data["quantity"];
+      this.productId = _data["productId"];
+      this.sku = _data["sku"];
+      this.productType = _data["productType"];
+      this.catalogId = _data["catalogId"];
+      this.categoryId = _data["categoryId"];
+      this.name = _data["name"];
+      this.productOuterId = _data["productOuterId"];
+      this.comment = _data["comment"];
+      this.status = _data["status"];
+      this.imageUrl = _data["imageUrl"];
+      this.isGift = _data["isGift"];
+      this.shippingMethodCode = _data["shippingMethodCode"];
+      this.fulfillmentLocationCode = _data["fulfillmentLocationCode"];
+      this.fulfillmentCenterId = _data["fulfillmentCenterId"];
+      this.fulfillmentCenterName = _data["fulfillmentCenterName"];
+      this.outerId = _data["outerId"];
+      if (Array.isArray(_data["feeDetails"])) {
+        this.feeDetails = [] as any;
+        for (let item of _data["feeDetails"]) this.feeDetails!.push(FeeDetail.fromJS(item));
+      }
+      this.vendorId = _data["vendorId"];
+      this.weightUnit = _data["weightUnit"];
+      this.weight = _data["weight"];
+      this.measureUnit = _data["measureUnit"];
+      this.height = _data["height"];
+      this.length = _data["length"];
+      this.width = _data["width"];
+      this.isCancelled = _data["isCancelled"];
+      this.cancelledDate = _data["cancelledDate"] ? new Date(_data["cancelledDate"].toString()) : <any>undefined;
+      this.cancelReason = _data["cancelReason"];
+      (<any>this).objectType = _data["objectType"];
+      if (Array.isArray(_data["dynamicProperties"])) {
+        this.dynamicProperties = [] as any;
+        for (let item of _data["dynamicProperties"]) this.dynamicProperties!.push(DynamicObjectProperty.fromJS(item));
+      }
+      if (Array.isArray(_data["discounts"])) {
+        this.discounts = [] as any;
+        for (let item of _data["discounts"]) this.discounts!.push(Discount.fromJS(item));
+      }
+      if (Array.isArray(_data["taxDetails"])) {
+        this.taxDetails = [] as any;
+        for (let item of _data["taxDetails"]) this.taxDetails!.push(TaxDetail.fromJS(item));
+      }
+      this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>undefined;
+      this.modifiedDate = _data["modifiedDate"] ? new Date(_data["modifiedDate"].toString()) : <any>undefined;
+      this.createdBy = _data["createdBy"];
+      this.modifiedBy = _data["modifiedBy"];
+      this.id = _data["id"];
     }
+  }
 
-    static fromJS(data: any): OrderLineItem {
-        data = typeof data === 'object' ? data : {};
-        let result = new OrderLineItem();
-        result.init(data);
-        return result;
-    }
+  static fromJS(data: any): OrderLineItem {
+    data = typeof data === "object" ? data : {};
+    let result = new OrderLineItem();
+    result.init(data);
+    return result;
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["priceId"] = this.priceId;
-        data["currency"] = this.currency;
-        data["price"] = this.price;
-        data["priceWithTax"] = this.priceWithTax;
-        data["placedPrice"] = this.placedPrice;
-        data["placedPriceWithTax"] = this.placedPriceWithTax;
-        data["extendedPrice"] = this.extendedPrice;
-        data["extendedPriceWithTax"] = this.extendedPriceWithTax;
-        data["discountAmount"] = this.discountAmount;
-        data["discountAmountWithTax"] = this.discountAmountWithTax;
-        data["discountTotal"] = this.discountTotal;
-        data["discountTotalWithTax"] = this.discountTotalWithTax;
-        data["fee"] = this.fee;
-        data["feeWithTax"] = this.feeWithTax;
-        data["taxType"] = this.taxType;
-        data["taxTotal"] = this.taxTotal;
-        data["taxPercentRate"] = this.taxPercentRate;
-        data["reserveQuantity"] = this.reserveQuantity;
-        data["quantity"] = this.quantity;
-        data["productId"] = this.productId;
-        data["sku"] = this.sku;
-        data["productType"] = this.productType;
-        data["catalogId"] = this.catalogId;
-        data["categoryId"] = this.categoryId;
-        data["name"] = this.name;
-        data["productOuterId"] = this.productOuterId;
-        data["comment"] = this.comment;
-        data["status"] = this.status;
-        data["imageUrl"] = this.imageUrl;
-        data["isGift"] = this.isGift;
-        data["shippingMethodCode"] = this.shippingMethodCode;
-        data["fulfillmentLocationCode"] = this.fulfillmentLocationCode;
-        data["fulfillmentCenterId"] = this.fulfillmentCenterId;
-        data["fulfillmentCenterName"] = this.fulfillmentCenterName;
-        data["outerId"] = this.outerId;
-        if (Array.isArray(this.feeDetails)) {
-            data["feeDetails"] = [];
-            for (let item of this.feeDetails)
-                data["feeDetails"].push(item.toJSON());
-        }
-        data["vendorId"] = this.vendorId;
-        data["weightUnit"] = this.weightUnit;
-        data["weight"] = this.weight;
-        data["measureUnit"] = this.measureUnit;
-        data["height"] = this.height;
-        data["length"] = this.length;
-        data["width"] = this.width;
-        data["isCancelled"] = this.isCancelled;
-        data["cancelledDate"] = this.cancelledDate ? this.cancelledDate.toISOString() : <any>undefined;
-        data["cancelReason"] = this.cancelReason;
-        data["objectType"] = this.objectType;
-        if (Array.isArray(this.dynamicProperties)) {
-            data["dynamicProperties"] = [];
-            for (let item of this.dynamicProperties)
-                data["dynamicProperties"].push(item.toJSON());
-        }
-        if (Array.isArray(this.discounts)) {
-            data["discounts"] = [];
-            for (let item of this.discounts)
-                data["discounts"].push(item.toJSON());
-        }
-        if (Array.isArray(this.taxDetails)) {
-            data["taxDetails"] = [];
-            for (let item of this.taxDetails)
-                data["taxDetails"].push(item.toJSON());
-        }
-        data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>undefined;
-        data["modifiedDate"] = this.modifiedDate ? this.modifiedDate.toISOString() : <any>undefined;
-        data["createdBy"] = this.createdBy;
-        data["modifiedBy"] = this.modifiedBy;
-        data["id"] = this.id;
-        return data;
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    data["priceId"] = this.priceId;
+    data["currency"] = this.currency;
+    data["price"] = this.price;
+    data["priceWithTax"] = this.priceWithTax;
+    data["placedPrice"] = this.placedPrice;
+    data["placedPriceWithTax"] = this.placedPriceWithTax;
+    data["extendedPrice"] = this.extendedPrice;
+    data["extendedPriceWithTax"] = this.extendedPriceWithTax;
+    data["discountAmount"] = this.discountAmount;
+    data["discountAmountWithTax"] = this.discountAmountWithTax;
+    data["discountTotal"] = this.discountTotal;
+    data["discountTotalWithTax"] = this.discountTotalWithTax;
+    data["fee"] = this.fee;
+    data["feeWithTax"] = this.feeWithTax;
+    data["taxType"] = this.taxType;
+    data["taxTotal"] = this.taxTotal;
+    data["taxPercentRate"] = this.taxPercentRate;
+    data["reserveQuantity"] = this.reserveQuantity;
+    data["quantity"] = this.quantity;
+    data["productId"] = this.productId;
+    data["sku"] = this.sku;
+    data["productType"] = this.productType;
+    data["catalogId"] = this.catalogId;
+    data["categoryId"] = this.categoryId;
+    data["name"] = this.name;
+    data["productOuterId"] = this.productOuterId;
+    data["comment"] = this.comment;
+    data["status"] = this.status;
+    data["imageUrl"] = this.imageUrl;
+    data["isGift"] = this.isGift;
+    data["shippingMethodCode"] = this.shippingMethodCode;
+    data["fulfillmentLocationCode"] = this.fulfillmentLocationCode;
+    data["fulfillmentCenterId"] = this.fulfillmentCenterId;
+    data["fulfillmentCenterName"] = this.fulfillmentCenterName;
+    data["outerId"] = this.outerId;
+    if (Array.isArray(this.feeDetails)) {
+      data["feeDetails"] = [];
+      for (let item of this.feeDetails) data["feeDetails"].push(item.toJSON());
     }
+    data["vendorId"] = this.vendorId;
+    data["weightUnit"] = this.weightUnit;
+    data["weight"] = this.weight;
+    data["measureUnit"] = this.measureUnit;
+    data["height"] = this.height;
+    data["length"] = this.length;
+    data["width"] = this.width;
+    data["isCancelled"] = this.isCancelled;
+    data["cancelledDate"] = this.cancelledDate ? this.cancelledDate.toISOString() : <any>undefined;
+    data["cancelReason"] = this.cancelReason;
+    data["objectType"] = this.objectType;
+    if (Array.isArray(this.dynamicProperties)) {
+      data["dynamicProperties"] = [];
+      for (let item of this.dynamicProperties) data["dynamicProperties"].push(item.toJSON());
+    }
+    if (Array.isArray(this.discounts)) {
+      data["discounts"] = [];
+      for (let item of this.discounts) data["discounts"].push(item.toJSON());
+    }
+    if (Array.isArray(this.taxDetails)) {
+      data["taxDetails"] = [];
+      for (let item of this.taxDetails) data["taxDetails"].push(item.toJSON());
+    }
+    data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>undefined;
+    data["modifiedDate"] = this.modifiedDate ? this.modifiedDate.toISOString() : <any>undefined;
+    data["createdBy"] = this.createdBy;
+    data["modifiedBy"] = this.modifiedBy;
+    data["id"] = this.id;
+    return data;
+  }
 }
 
 export interface IOrderLineItem {
-    priceId?: string | undefined;
-    currency?: string | undefined;
-    price?: number;
-    priceWithTax?: number;
-    placedPrice?: number;
-    placedPriceWithTax?: number;
-    extendedPrice?: number;
-    extendedPriceWithTax?: number;
-    discountAmount?: number;
-    discountAmountWithTax?: number;
-    discountTotal?: number;
-    discountTotalWithTax?: number;
-    fee?: number;
-    feeWithTax?: number;
-    taxType?: string | undefined;
-    taxTotal?: number;
-    taxPercentRate?: number;
-    reserveQuantity?: number;
-    quantity?: number;
-    productId?: string | undefined;
-    sku?: string | undefined;
-    productType?: string | undefined;
-    catalogId?: string | undefined;
-    categoryId?: string | undefined;
-    name?: string | undefined;
-    productOuterId?: string | undefined;
-    comment?: string | undefined;
-    status?: string | undefined;
-    imageUrl?: string | undefined;
-    isGift?: boolean | undefined;
-    shippingMethodCode?: string | undefined;
-    fulfillmentLocationCode?: string | undefined;
-    fulfillmentCenterId?: string | undefined;
-    fulfillmentCenterName?: string | undefined;
-    outerId?: string | undefined;
-    feeDetails?: FeeDetail[] | undefined;
-    vendorId?: string | undefined;
-    weightUnit?: string | undefined;
-    weight?: number | undefined;
-    measureUnit?: string | undefined;
-    height?: number | undefined;
-    length?: number | undefined;
-    width?: number | undefined;
-    isCancelled?: boolean;
-    cancelledDate?: Date | undefined;
-    cancelReason?: string | undefined;
-    objectType?: string | undefined;
-    dynamicProperties?: DynamicObjectProperty[] | undefined;
-    discounts?: Discount[] | undefined;
-    taxDetails?: TaxDetail[] | undefined;
-    createdDate?: Date;
-    modifiedDate?: Date | undefined;
-    createdBy?: string | undefined;
-    modifiedBy?: string | undefined;
-    id?: string | undefined;
+  priceId?: string | undefined;
+  currency?: string | undefined;
+  price?: number;
+  priceWithTax?: number;
+  placedPrice?: number;
+  placedPriceWithTax?: number;
+  extendedPrice?: number;
+  extendedPriceWithTax?: number;
+  discountAmount?: number;
+  discountAmountWithTax?: number;
+  discountTotal?: number;
+  discountTotalWithTax?: number;
+  fee?: number;
+  feeWithTax?: number;
+  taxType?: string | undefined;
+  taxTotal?: number;
+  taxPercentRate?: number;
+  reserveQuantity?: number;
+  quantity?: number;
+  productId?: string | undefined;
+  sku?: string | undefined;
+  productType?: string | undefined;
+  catalogId?: string | undefined;
+  categoryId?: string | undefined;
+  name?: string | undefined;
+  productOuterId?: string | undefined;
+  comment?: string | undefined;
+  status?: string | undefined;
+  imageUrl?: string | undefined;
+  isGift?: boolean | undefined;
+  shippingMethodCode?: string | undefined;
+  fulfillmentLocationCode?: string | undefined;
+  fulfillmentCenterId?: string | undefined;
+  fulfillmentCenterName?: string | undefined;
+  outerId?: string | undefined;
+  feeDetails?: FeeDetail[] | undefined;
+  vendorId?: string | undefined;
+  weightUnit?: string | undefined;
+  weight?: number | undefined;
+  measureUnit?: string | undefined;
+  height?: number | undefined;
+  length?: number | undefined;
+  width?: number | undefined;
+  isCancelled?: boolean;
+  cancelledDate?: Date | undefined;
+  cancelReason?: string | undefined;
+  objectType?: string | undefined;
+  dynamicProperties?: DynamicObjectProperty[] | undefined;
+  discounts?: Discount[] | undefined;
+  taxDetails?: TaxDetail[] | undefined;
+  createdDate?: Date;
+  modifiedDate?: Date | undefined;
+  createdBy?: string | undefined;
+  modifiedBy?: string | undefined;
+  id?: string | undefined;
 }
 
 export class OrderShipment implements IOrderShipment {
-    organizationId?: string | undefined;
-    organizationName?: string | undefined;
-    fulfillmentCenterId?: string | undefined;
-    fulfillmentCenterName?: string | undefined;
-    employeeId?: string | undefined;
-    employeeName?: string | undefined;
-    shipmentMethodCode?: string | undefined;
-    shipmentMethodOption?: string | undefined;
-    shippingMethod?: ShippingMethod | undefined;
-    customerOrderId?: string | undefined;
-    customerOrder?: CustomerOrder | undefined;
-    items?: OrderShipmentItem[] | undefined;
-    packages?: ShipmentPackage[] | undefined;
-    inPayments?: PaymentIn[] | undefined;
-    feeDetails?: FeeDetail[] | undefined;
-    weightUnit?: string | undefined;
-    weight?: number | undefined;
-    measureUnit?: string | undefined;
-    height?: number | undefined;
-    length?: number | undefined;
-    width?: number | undefined;
-    discounts?: Discount[] | undefined;
-    deliveryAddress?: OrderAddress | undefined;
-    price?: number;
-    priceWithTax?: number;
-    total?: number;
-    totalWithTax?: number;
-    discountAmount?: number;
-    discountAmountWithTax?: number;
-    fee?: number;
-    feeWithTax?: number;
-    trackingNumber?: string | undefined;
-    trackingUrl?: string | undefined;
-    deliveryDate?: Date | undefined;
-    objectType?: string | undefined;
-    vendorId?: string | undefined;
-    taxType?: string | undefined;
-    taxTotal?: number;
-    taxPercentRate?: number;
-    taxDetails?: TaxDetail[] | undefined;
-    operationType?: string | undefined;
-    parentOperationId?: string | undefined;
-    number?: string | undefined;
-    isApproved?: boolean;
-    status?: string | undefined;
-    comment?: string | undefined;
-    currency?: string | undefined;
-    sum?: number;
-    outerId?: string | undefined;
-    cancelledState?: OrderShipmentCancelledState;
-    isCancelled?: boolean;
-    cancelledDate?: Date | undefined;
-    cancelReason?: string | undefined;
-    dynamicProperties?: DynamicObjectProperty[] | undefined;
-    operationsLog?: OperationLog[] | undefined;
-    createdDate?: Date;
-    modifiedDate?: Date | undefined;
-    createdBy?: string | undefined;
-    modifiedBy?: string | undefined;
-    id?: string | undefined;
+  organizationId?: string | undefined;
+  organizationName?: string | undefined;
+  fulfillmentCenterId?: string | undefined;
+  fulfillmentCenterName?: string | undefined;
+  employeeId?: string | undefined;
+  employeeName?: string | undefined;
+  shipmentMethodCode?: string | undefined;
+  shipmentMethodOption?: string | undefined;
+  shippingMethod?: ShippingMethod | undefined;
+  customerOrderId?: string | undefined;
+  customerOrder?: CustomerOrder | undefined;
+  items?: OrderShipmentItem[] | undefined;
+  packages?: ShipmentPackage[] | undefined;
+  inPayments?: PaymentIn[] | undefined;
+  feeDetails?: FeeDetail[] | undefined;
+  weightUnit?: string | undefined;
+  weight?: number | undefined;
+  measureUnit?: string | undefined;
+  height?: number | undefined;
+  length?: number | undefined;
+  width?: number | undefined;
+  discounts?: Discount[] | undefined;
+  deliveryAddress?: OrderAddress | undefined;
+  price?: number;
+  priceWithTax?: number;
+  total?: number;
+  totalWithTax?: number;
+  discountAmount?: number;
+  discountAmountWithTax?: number;
+  fee?: number;
+  feeWithTax?: number;
+  trackingNumber?: string | undefined;
+  trackingUrl?: string | undefined;
+  deliveryDate?: Date | undefined;
+  objectType?: string | undefined;
+  vendorId?: string | undefined;
+  taxType?: string | undefined;
+  taxTotal?: number;
+  taxPercentRate?: number;
+  taxDetails?: TaxDetail[] | undefined;
+  operationType?: string | undefined;
+  parentOperationId?: string | undefined;
+  number?: string | undefined;
+  isApproved?: boolean;
+  status?: string | undefined;
+  comment?: string | undefined;
+  currency?: string | undefined;
+  sum?: number;
+  outerId?: string | undefined;
+  cancelledState?: OrderShipmentCancelledState;
+  isCancelled?: boolean;
+  cancelledDate?: Date | undefined;
+  cancelReason?: string | undefined;
+  dynamicProperties?: DynamicObjectProperty[] | undefined;
+  operationsLog?: OperationLog[] | undefined;
+  createdDate?: Date;
+  modifiedDate?: Date | undefined;
+  createdBy?: string | undefined;
+  modifiedBy?: string | undefined;
+  id?: string | undefined;
 
-    constructor(data?: IOrderShipment) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
+  constructor(data?: IOrderShipment) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property)) (<any>this)[property] = (<any>data)[property];
+      }
     }
+  }
 
-    init(_data?: any) {
-        if (_data) {
-            this.organizationId = _data["organizationId"];
-            this.organizationName = _data["organizationName"];
-            this.fulfillmentCenterId = _data["fulfillmentCenterId"];
-            this.fulfillmentCenterName = _data["fulfillmentCenterName"];
-            this.employeeId = _data["employeeId"];
-            this.employeeName = _data["employeeName"];
-            this.shipmentMethodCode = _data["shipmentMethodCode"];
-            this.shipmentMethodOption = _data["shipmentMethodOption"];
-            this.shippingMethod = _data["shippingMethod"] ? ShippingMethod.fromJS(_data["shippingMethod"]) : <any>undefined;
-            this.customerOrderId = _data["customerOrderId"];
-            this.customerOrder = _data["customerOrder"] ? CustomerOrder.fromJS(_data["customerOrder"]) : <any>undefined;
-            if (Array.isArray(_data["items"])) {
-                this.items = [] as any;
-                for (let item of _data["items"])
-                    this.items!.push(OrderShipmentItem.fromJS(item));
-            }
-            if (Array.isArray(_data["packages"])) {
-                this.packages = [] as any;
-                for (let item of _data["packages"])
-                    this.packages!.push(ShipmentPackage.fromJS(item));
-            }
-            if (Array.isArray(_data["inPayments"])) {
-                this.inPayments = [] as any;
-                for (let item of _data["inPayments"])
-                    this.inPayments!.push(PaymentIn.fromJS(item));
-            }
-            if (Array.isArray(_data["feeDetails"])) {
-                this.feeDetails = [] as any;
-                for (let item of _data["feeDetails"])
-                    this.feeDetails!.push(FeeDetail.fromJS(item));
-            }
-            this.weightUnit = _data["weightUnit"];
-            this.weight = _data["weight"];
-            this.measureUnit = _data["measureUnit"];
-            this.height = _data["height"];
-            this.length = _data["length"];
-            this.width = _data["width"];
-            if (Array.isArray(_data["discounts"])) {
-                this.discounts = [] as any;
-                for (let item of _data["discounts"])
-                    this.discounts!.push(Discount.fromJS(item));
-            }
-            this.deliveryAddress = _data["deliveryAddress"] ? OrderAddress.fromJS(_data["deliveryAddress"]) : <any>undefined;
-            this.price = _data["price"];
-            this.priceWithTax = _data["priceWithTax"];
-            this.total = _data["total"];
-            this.totalWithTax = _data["totalWithTax"];
-            this.discountAmount = _data["discountAmount"];
-            this.discountAmountWithTax = _data["discountAmountWithTax"];
-            this.fee = _data["fee"];
-            this.feeWithTax = _data["feeWithTax"];
-            this.trackingNumber = _data["trackingNumber"];
-            this.trackingUrl = _data["trackingUrl"];
-            this.deliveryDate = _data["deliveryDate"] ? new Date(_data["deliveryDate"].toString()) : <any>undefined;
-            this.objectType = _data["objectType"];
-            this.vendorId = _data["vendorId"];
-            this.taxType = _data["taxType"];
-            this.taxTotal = _data["taxTotal"];
-            this.taxPercentRate = _data["taxPercentRate"];
-            if (Array.isArray(_data["taxDetails"])) {
-                this.taxDetails = [] as any;
-                for (let item of _data["taxDetails"])
-                    this.taxDetails!.push(TaxDetail.fromJS(item));
-            }
-            this.operationType = _data["operationType"];
-            this.parentOperationId = _data["parentOperationId"];
-            this.number = _data["number"];
-            this.isApproved = _data["isApproved"];
-            this.status = _data["status"];
-            this.comment = _data["comment"];
-            this.currency = _data["currency"];
-            this.sum = _data["sum"];
-            this.outerId = _data["outerId"];
-            this.cancelledState = _data["cancelledState"];
-            this.isCancelled = _data["isCancelled"];
-            this.cancelledDate = _data["cancelledDate"] ? new Date(_data["cancelledDate"].toString()) : <any>undefined;
-            this.cancelReason = _data["cancelReason"];
-            if (Array.isArray(_data["dynamicProperties"])) {
-                this.dynamicProperties = [] as any;
-                for (let item of _data["dynamicProperties"])
-                    this.dynamicProperties!.push(DynamicObjectProperty.fromJS(item));
-            }
-            if (Array.isArray(_data["operationsLog"])) {
-                this.operationsLog = [] as any;
-                for (let item of _data["operationsLog"])
-                    this.operationsLog!.push(OperationLog.fromJS(item));
-            }
-            this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>undefined;
-            this.modifiedDate = _data["modifiedDate"] ? new Date(_data["modifiedDate"].toString()) : <any>undefined;
-            this.createdBy = _data["createdBy"];
-            this.modifiedBy = _data["modifiedBy"];
-            this.id = _data["id"];
-        }
+  init(_data?: any) {
+    if (_data) {
+      this.organizationId = _data["organizationId"];
+      this.organizationName = _data["organizationName"];
+      this.fulfillmentCenterId = _data["fulfillmentCenterId"];
+      this.fulfillmentCenterName = _data["fulfillmentCenterName"];
+      this.employeeId = _data["employeeId"];
+      this.employeeName = _data["employeeName"];
+      this.shipmentMethodCode = _data["shipmentMethodCode"];
+      this.shipmentMethodOption = _data["shipmentMethodOption"];
+      this.shippingMethod = _data["shippingMethod"] ? ShippingMethod.fromJS(_data["shippingMethod"]) : <any>undefined;
+      this.customerOrderId = _data["customerOrderId"];
+      this.customerOrder = _data["customerOrder"] ? CustomerOrder.fromJS(_data["customerOrder"]) : <any>undefined;
+      if (Array.isArray(_data["items"])) {
+        this.items = [] as any;
+        for (let item of _data["items"]) this.items!.push(OrderShipmentItem.fromJS(item));
+      }
+      if (Array.isArray(_data["packages"])) {
+        this.packages = [] as any;
+        for (let item of _data["packages"]) this.packages!.push(ShipmentPackage.fromJS(item));
+      }
+      if (Array.isArray(_data["inPayments"])) {
+        this.inPayments = [] as any;
+        for (let item of _data["inPayments"]) this.inPayments!.push(PaymentIn.fromJS(item));
+      }
+      if (Array.isArray(_data["feeDetails"])) {
+        this.feeDetails = [] as any;
+        for (let item of _data["feeDetails"]) this.feeDetails!.push(FeeDetail.fromJS(item));
+      }
+      this.weightUnit = _data["weightUnit"];
+      this.weight = _data["weight"];
+      this.measureUnit = _data["measureUnit"];
+      this.height = _data["height"];
+      this.length = _data["length"];
+      this.width = _data["width"];
+      if (Array.isArray(_data["discounts"])) {
+        this.discounts = [] as any;
+        for (let item of _data["discounts"]) this.discounts!.push(Discount.fromJS(item));
+      }
+      this.deliveryAddress = _data["deliveryAddress"] ? OrderAddress.fromJS(_data["deliveryAddress"]) : <any>undefined;
+      this.price = _data["price"];
+      this.priceWithTax = _data["priceWithTax"];
+      this.total = _data["total"];
+      this.totalWithTax = _data["totalWithTax"];
+      this.discountAmount = _data["discountAmount"];
+      this.discountAmountWithTax = _data["discountAmountWithTax"];
+      this.fee = _data["fee"];
+      this.feeWithTax = _data["feeWithTax"];
+      this.trackingNumber = _data["trackingNumber"];
+      this.trackingUrl = _data["trackingUrl"];
+      this.deliveryDate = _data["deliveryDate"] ? new Date(_data["deliveryDate"].toString()) : <any>undefined;
+      this.objectType = _data["objectType"];
+      this.vendorId = _data["vendorId"];
+      this.taxType = _data["taxType"];
+      this.taxTotal = _data["taxTotal"];
+      this.taxPercentRate = _data["taxPercentRate"];
+      if (Array.isArray(_data["taxDetails"])) {
+        this.taxDetails = [] as any;
+        for (let item of _data["taxDetails"]) this.taxDetails!.push(TaxDetail.fromJS(item));
+      }
+      this.operationType = _data["operationType"];
+      this.parentOperationId = _data["parentOperationId"];
+      this.number = _data["number"];
+      this.isApproved = _data["isApproved"];
+      this.status = _data["status"];
+      this.comment = _data["comment"];
+      this.currency = _data["currency"];
+      this.sum = _data["sum"];
+      this.outerId = _data["outerId"];
+      this.cancelledState = _data["cancelledState"];
+      this.isCancelled = _data["isCancelled"];
+      this.cancelledDate = _data["cancelledDate"] ? new Date(_data["cancelledDate"].toString()) : <any>undefined;
+      this.cancelReason = _data["cancelReason"];
+      if (Array.isArray(_data["dynamicProperties"])) {
+        this.dynamicProperties = [] as any;
+        for (let item of _data["dynamicProperties"]) this.dynamicProperties!.push(DynamicObjectProperty.fromJS(item));
+      }
+      if (Array.isArray(_data["operationsLog"])) {
+        this.operationsLog = [] as any;
+        for (let item of _data["operationsLog"]) this.operationsLog!.push(OperationLog.fromJS(item));
+      }
+      this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>undefined;
+      this.modifiedDate = _data["modifiedDate"] ? new Date(_data["modifiedDate"].toString()) : <any>undefined;
+      this.createdBy = _data["createdBy"];
+      this.modifiedBy = _data["modifiedBy"];
+      this.id = _data["id"];
     }
+  }
 
-    static fromJS(data: any): OrderShipment {
-        data = typeof data === 'object' ? data : {};
-        let result = new OrderShipment();
-        result.init(data);
-        return result;
-    }
+  static fromJS(data: any): OrderShipment {
+    data = typeof data === "object" ? data : {};
+    let result = new OrderShipment();
+    result.init(data);
+    return result;
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["organizationId"] = this.organizationId;
-        data["organizationName"] = this.organizationName;
-        data["fulfillmentCenterId"] = this.fulfillmentCenterId;
-        data["fulfillmentCenterName"] = this.fulfillmentCenterName;
-        data["employeeId"] = this.employeeId;
-        data["employeeName"] = this.employeeName;
-        data["shipmentMethodCode"] = this.shipmentMethodCode;
-        data["shipmentMethodOption"] = this.shipmentMethodOption;
-        data["shippingMethod"] = this.shippingMethod ? this.shippingMethod.toJSON() : <any>undefined;
-        data["customerOrderId"] = this.customerOrderId;
-        data["customerOrder"] = this.customerOrder ? this.customerOrder.toJSON() : <any>undefined;
-        if (Array.isArray(this.items)) {
-            data["items"] = [];
-            for (let item of this.items)
-                data["items"].push(item.toJSON());
-        }
-        if (Array.isArray(this.packages)) {
-            data["packages"] = [];
-            for (let item of this.packages)
-                data["packages"].push(item.toJSON());
-        }
-        if (Array.isArray(this.inPayments)) {
-            data["inPayments"] = [];
-            for (let item of this.inPayments)
-                data["inPayments"].push(item.toJSON());
-        }
-        if (Array.isArray(this.feeDetails)) {
-            data["feeDetails"] = [];
-            for (let item of this.feeDetails)
-                data["feeDetails"].push(item.toJSON());
-        }
-        data["weightUnit"] = this.weightUnit;
-        data["weight"] = this.weight;
-        data["measureUnit"] = this.measureUnit;
-        data["height"] = this.height;
-        data["length"] = this.length;
-        data["width"] = this.width;
-        if (Array.isArray(this.discounts)) {
-            data["discounts"] = [];
-            for (let item of this.discounts)
-                data["discounts"].push(item.toJSON());
-        }
-        data["deliveryAddress"] = this.deliveryAddress ? this.deliveryAddress.toJSON() : <any>undefined;
-        data["price"] = this.price;
-        data["priceWithTax"] = this.priceWithTax;
-        data["total"] = this.total;
-        data["totalWithTax"] = this.totalWithTax;
-        data["discountAmount"] = this.discountAmount;
-        data["discountAmountWithTax"] = this.discountAmountWithTax;
-        data["fee"] = this.fee;
-        data["feeWithTax"] = this.feeWithTax;
-        data["trackingNumber"] = this.trackingNumber;
-        data["trackingUrl"] = this.trackingUrl;
-        data["deliveryDate"] = this.deliveryDate ? this.deliveryDate.toISOString() : <any>undefined;
-        data["objectType"] = this.objectType;
-        data["vendorId"] = this.vendorId;
-        data["taxType"] = this.taxType;
-        data["taxTotal"] = this.taxTotal;
-        data["taxPercentRate"] = this.taxPercentRate;
-        if (Array.isArray(this.taxDetails)) {
-            data["taxDetails"] = [];
-            for (let item of this.taxDetails)
-                data["taxDetails"].push(item.toJSON());
-        }
-        data["operationType"] = this.operationType;
-        data["parentOperationId"] = this.parentOperationId;
-        data["number"] = this.number;
-        data["isApproved"] = this.isApproved;
-        data["status"] = this.status;
-        data["comment"] = this.comment;
-        data["currency"] = this.currency;
-        data["sum"] = this.sum;
-        data["outerId"] = this.outerId;
-        data["cancelledState"] = this.cancelledState;
-        data["isCancelled"] = this.isCancelled;
-        data["cancelledDate"] = this.cancelledDate ? this.cancelledDate.toISOString() : <any>undefined;
-        data["cancelReason"] = this.cancelReason;
-        if (Array.isArray(this.dynamicProperties)) {
-            data["dynamicProperties"] = [];
-            for (let item of this.dynamicProperties)
-                data["dynamicProperties"].push(item.toJSON());
-        }
-        if (Array.isArray(this.operationsLog)) {
-            data["operationsLog"] = [];
-            for (let item of this.operationsLog)
-                data["operationsLog"].push(item.toJSON());
-        }
-        data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>undefined;
-        data["modifiedDate"] = this.modifiedDate ? this.modifiedDate.toISOString() : <any>undefined;
-        data["createdBy"] = this.createdBy;
-        data["modifiedBy"] = this.modifiedBy;
-        data["id"] = this.id;
-        return data;
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    data["organizationId"] = this.organizationId;
+    data["organizationName"] = this.organizationName;
+    data["fulfillmentCenterId"] = this.fulfillmentCenterId;
+    data["fulfillmentCenterName"] = this.fulfillmentCenterName;
+    data["employeeId"] = this.employeeId;
+    data["employeeName"] = this.employeeName;
+    data["shipmentMethodCode"] = this.shipmentMethodCode;
+    data["shipmentMethodOption"] = this.shipmentMethodOption;
+    data["shippingMethod"] = this.shippingMethod ? this.shippingMethod.toJSON() : <any>undefined;
+    data["customerOrderId"] = this.customerOrderId;
+    data["customerOrder"] = this.customerOrder ? this.customerOrder.toJSON() : <any>undefined;
+    if (Array.isArray(this.items)) {
+      data["items"] = [];
+      for (let item of this.items) data["items"].push(item.toJSON());
     }
+    if (Array.isArray(this.packages)) {
+      data["packages"] = [];
+      for (let item of this.packages) data["packages"].push(item.toJSON());
+    }
+    if (Array.isArray(this.inPayments)) {
+      data["inPayments"] = [];
+      for (let item of this.inPayments) data["inPayments"].push(item.toJSON());
+    }
+    if (Array.isArray(this.feeDetails)) {
+      data["feeDetails"] = [];
+      for (let item of this.feeDetails) data["feeDetails"].push(item.toJSON());
+    }
+    data["weightUnit"] = this.weightUnit;
+    data["weight"] = this.weight;
+    data["measureUnit"] = this.measureUnit;
+    data["height"] = this.height;
+    data["length"] = this.length;
+    data["width"] = this.width;
+    if (Array.isArray(this.discounts)) {
+      data["discounts"] = [];
+      for (let item of this.discounts) data["discounts"].push(item.toJSON());
+    }
+    data["deliveryAddress"] = this.deliveryAddress ? this.deliveryAddress.toJSON() : <any>undefined;
+    data["price"] = this.price;
+    data["priceWithTax"] = this.priceWithTax;
+    data["total"] = this.total;
+    data["totalWithTax"] = this.totalWithTax;
+    data["discountAmount"] = this.discountAmount;
+    data["discountAmountWithTax"] = this.discountAmountWithTax;
+    data["fee"] = this.fee;
+    data["feeWithTax"] = this.feeWithTax;
+    data["trackingNumber"] = this.trackingNumber;
+    data["trackingUrl"] = this.trackingUrl;
+    data["deliveryDate"] = this.deliveryDate ? this.deliveryDate.toISOString() : <any>undefined;
+    data["objectType"] = this.objectType;
+    data["vendorId"] = this.vendorId;
+    data["taxType"] = this.taxType;
+    data["taxTotal"] = this.taxTotal;
+    data["taxPercentRate"] = this.taxPercentRate;
+    if (Array.isArray(this.taxDetails)) {
+      data["taxDetails"] = [];
+      for (let item of this.taxDetails) data["taxDetails"].push(item.toJSON());
+    }
+    data["operationType"] = this.operationType;
+    data["parentOperationId"] = this.parentOperationId;
+    data["number"] = this.number;
+    data["isApproved"] = this.isApproved;
+    data["status"] = this.status;
+    data["comment"] = this.comment;
+    data["currency"] = this.currency;
+    data["sum"] = this.sum;
+    data["outerId"] = this.outerId;
+    data["cancelledState"] = this.cancelledState;
+    data["isCancelled"] = this.isCancelled;
+    data["cancelledDate"] = this.cancelledDate ? this.cancelledDate.toISOString() : <any>undefined;
+    data["cancelReason"] = this.cancelReason;
+    if (Array.isArray(this.dynamicProperties)) {
+      data["dynamicProperties"] = [];
+      for (let item of this.dynamicProperties) data["dynamicProperties"].push(item.toJSON());
+    }
+    if (Array.isArray(this.operationsLog)) {
+      data["operationsLog"] = [];
+      for (let item of this.operationsLog) data["operationsLog"].push(item.toJSON());
+    }
+    data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>undefined;
+    data["modifiedDate"] = this.modifiedDate ? this.modifiedDate.toISOString() : <any>undefined;
+    data["createdBy"] = this.createdBy;
+    data["modifiedBy"] = this.modifiedBy;
+    data["id"] = this.id;
+    return data;
+  }
 }
 
 export interface IOrderShipment {
-    organizationId?: string | undefined;
-    organizationName?: string | undefined;
-    fulfillmentCenterId?: string | undefined;
-    fulfillmentCenterName?: string | undefined;
-    employeeId?: string | undefined;
-    employeeName?: string | undefined;
-    shipmentMethodCode?: string | undefined;
-    shipmentMethodOption?: string | undefined;
-    shippingMethod?: ShippingMethod | undefined;
-    customerOrderId?: string | undefined;
-    customerOrder?: CustomerOrder | undefined;
-    items?: OrderShipmentItem[] | undefined;
-    packages?: ShipmentPackage[] | undefined;
-    inPayments?: PaymentIn[] | undefined;
-    feeDetails?: FeeDetail[] | undefined;
-    weightUnit?: string | undefined;
-    weight?: number | undefined;
-    measureUnit?: string | undefined;
-    height?: number | undefined;
-    length?: number | undefined;
-    width?: number | undefined;
-    discounts?: Discount[] | undefined;
-    deliveryAddress?: OrderAddress | undefined;
-    price?: number;
-    priceWithTax?: number;
-    total?: number;
-    totalWithTax?: number;
-    discountAmount?: number;
-    discountAmountWithTax?: number;
-    fee?: number;
-    feeWithTax?: number;
-    trackingNumber?: string | undefined;
-    trackingUrl?: string | undefined;
-    deliveryDate?: Date | undefined;
-    objectType?: string | undefined;
-    vendorId?: string | undefined;
-    taxType?: string | undefined;
-    taxTotal?: number;
-    taxPercentRate?: number;
-    taxDetails?: TaxDetail[] | undefined;
-    operationType?: string | undefined;
-    parentOperationId?: string | undefined;
-    number?: string | undefined;
-    isApproved?: boolean;
-    status?: string | undefined;
-    comment?: string | undefined;
-    currency?: string | undefined;
-    sum?: number;
-    outerId?: string | undefined;
-    cancelledState?: OrderShipmentCancelledState;
-    isCancelled?: boolean;
-    cancelledDate?: Date | undefined;
-    cancelReason?: string | undefined;
-    dynamicProperties?: DynamicObjectProperty[] | undefined;
-    operationsLog?: OperationLog[] | undefined;
-    createdDate?: Date;
-    modifiedDate?: Date | undefined;
-    createdBy?: string | undefined;
-    modifiedBy?: string | undefined;
-    id?: string | undefined;
+  organizationId?: string | undefined;
+  organizationName?: string | undefined;
+  fulfillmentCenterId?: string | undefined;
+  fulfillmentCenterName?: string | undefined;
+  employeeId?: string | undefined;
+  employeeName?: string | undefined;
+  shipmentMethodCode?: string | undefined;
+  shipmentMethodOption?: string | undefined;
+  shippingMethod?: ShippingMethod | undefined;
+  customerOrderId?: string | undefined;
+  customerOrder?: CustomerOrder | undefined;
+  items?: OrderShipmentItem[] | undefined;
+  packages?: ShipmentPackage[] | undefined;
+  inPayments?: PaymentIn[] | undefined;
+  feeDetails?: FeeDetail[] | undefined;
+  weightUnit?: string | undefined;
+  weight?: number | undefined;
+  measureUnit?: string | undefined;
+  height?: number | undefined;
+  length?: number | undefined;
+  width?: number | undefined;
+  discounts?: Discount[] | undefined;
+  deliveryAddress?: OrderAddress | undefined;
+  price?: number;
+  priceWithTax?: number;
+  total?: number;
+  totalWithTax?: number;
+  discountAmount?: number;
+  discountAmountWithTax?: number;
+  fee?: number;
+  feeWithTax?: number;
+  trackingNumber?: string | undefined;
+  trackingUrl?: string | undefined;
+  deliveryDate?: Date | undefined;
+  objectType?: string | undefined;
+  vendorId?: string | undefined;
+  taxType?: string | undefined;
+  taxTotal?: number;
+  taxPercentRate?: number;
+  taxDetails?: TaxDetail[] | undefined;
+  operationType?: string | undefined;
+  parentOperationId?: string | undefined;
+  number?: string | undefined;
+  isApproved?: boolean;
+  status?: string | undefined;
+  comment?: string | undefined;
+  currency?: string | undefined;
+  sum?: number;
+  outerId?: string | undefined;
+  cancelledState?: OrderShipmentCancelledState;
+  isCancelled?: boolean;
+  cancelledDate?: Date | undefined;
+  cancelReason?: string | undefined;
+  dynamicProperties?: DynamicObjectProperty[] | undefined;
+  operationsLog?: OperationLog[] | undefined;
+  createdDate?: Date;
+  modifiedDate?: Date | undefined;
+  createdBy?: string | undefined;
+  modifiedBy?: string | undefined;
+  id?: string | undefined;
 }
 
 export class OrderShipmentItem implements IOrderShipmentItem {
-    lineItemId?: string | undefined;
-    lineItem?: OrderLineItem | undefined;
-    barCode?: string | undefined;
-    quantity?: number;
-    outerId?: string | undefined;
-    status?: string | undefined;
-    createdDate?: Date;
-    modifiedDate?: Date | undefined;
-    createdBy?: string | undefined;
-    modifiedBy?: string | undefined;
-    id?: string | undefined;
+  lineItemId?: string | undefined;
+  lineItem?: OrderLineItem | undefined;
+  barCode?: string | undefined;
+  quantity?: number;
+  outerId?: string | undefined;
+  status?: string | undefined;
+  createdDate?: Date;
+  modifiedDate?: Date | undefined;
+  createdBy?: string | undefined;
+  modifiedBy?: string | undefined;
+  id?: string | undefined;
 
-    constructor(data?: IOrderShipmentItem) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
+  constructor(data?: IOrderShipmentItem) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property)) (<any>this)[property] = (<any>data)[property];
+      }
     }
+  }
 
-    init(_data?: any) {
-        if (_data) {
-            this.lineItemId = _data["lineItemId"];
-            this.lineItem = _data["lineItem"] ? OrderLineItem.fromJS(_data["lineItem"]) : <any>undefined;
-            this.barCode = _data["barCode"];
-            this.quantity = _data["quantity"];
-            this.outerId = _data["outerId"];
-            this.status = _data["status"];
-            this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>undefined;
-            this.modifiedDate = _data["modifiedDate"] ? new Date(_data["modifiedDate"].toString()) : <any>undefined;
-            this.createdBy = _data["createdBy"];
-            this.modifiedBy = _data["modifiedBy"];
-            this.id = _data["id"];
-        }
+  init(_data?: any) {
+    if (_data) {
+      this.lineItemId = _data["lineItemId"];
+      this.lineItem = _data["lineItem"] ? OrderLineItem.fromJS(_data["lineItem"]) : <any>undefined;
+      this.barCode = _data["barCode"];
+      this.quantity = _data["quantity"];
+      this.outerId = _data["outerId"];
+      this.status = _data["status"];
+      this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>undefined;
+      this.modifiedDate = _data["modifiedDate"] ? new Date(_data["modifiedDate"].toString()) : <any>undefined;
+      this.createdBy = _data["createdBy"];
+      this.modifiedBy = _data["modifiedBy"];
+      this.id = _data["id"];
     }
+  }
 
-    static fromJS(data: any): OrderShipmentItem {
-        data = typeof data === 'object' ? data : {};
-        let result = new OrderShipmentItem();
-        result.init(data);
-        return result;
-    }
+  static fromJS(data: any): OrderShipmentItem {
+    data = typeof data === "object" ? data : {};
+    let result = new OrderShipmentItem();
+    result.init(data);
+    return result;
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["lineItemId"] = this.lineItemId;
-        data["lineItem"] = this.lineItem ? this.lineItem.toJSON() : <any>undefined;
-        data["barCode"] = this.barCode;
-        data["quantity"] = this.quantity;
-        data["outerId"] = this.outerId;
-        data["status"] = this.status;
-        data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>undefined;
-        data["modifiedDate"] = this.modifiedDate ? this.modifiedDate.toISOString() : <any>undefined;
-        data["createdBy"] = this.createdBy;
-        data["modifiedBy"] = this.modifiedBy;
-        data["id"] = this.id;
-        return data;
-    }
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    data["lineItemId"] = this.lineItemId;
+    data["lineItem"] = this.lineItem ? this.lineItem.toJSON() : <any>undefined;
+    data["barCode"] = this.barCode;
+    data["quantity"] = this.quantity;
+    data["outerId"] = this.outerId;
+    data["status"] = this.status;
+    data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>undefined;
+    data["modifiedDate"] = this.modifiedDate ? this.modifiedDate.toISOString() : <any>undefined;
+    data["createdBy"] = this.createdBy;
+    data["modifiedBy"] = this.modifiedBy;
+    data["id"] = this.id;
+    return data;
+  }
 }
 
 export interface IOrderShipmentItem {
-    lineItemId?: string | undefined;
-    lineItem?: OrderLineItem | undefined;
-    barCode?: string | undefined;
-    quantity?: number;
-    outerId?: string | undefined;
-    status?: string | undefined;
-    createdDate?: Date;
-    modifiedDate?: Date | undefined;
-    createdBy?: string | undefined;
-    modifiedBy?: string | undefined;
-    id?: string | undefined;
+  lineItemId?: string | undefined;
+  lineItem?: OrderLineItem | undefined;
+  barCode?: string | undefined;
+  quantity?: number;
+  outerId?: string | undefined;
+  status?: string | undefined;
+  createdDate?: Date;
+  modifiedDate?: Date | undefined;
+  createdBy?: string | undefined;
+  modifiedBy?: string | undefined;
+  id?: string | undefined;
 }
 
 export class PaymentCallbackParameters implements IPaymentCallbackParameters {
-    parameters?: KeyValuePair[] | undefined;
+  parameters?: KeyValuePair[] | undefined;
 
-    constructor(data?: IPaymentCallbackParameters) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
+  constructor(data?: IPaymentCallbackParameters) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property)) (<any>this)[property] = (<any>data)[property];
+      }
     }
+  }
 
-    init(_data?: any) {
-        if (_data) {
-            if (Array.isArray(_data["parameters"])) {
-                this.parameters = [] as any;
-                for (let item of _data["parameters"])
-                    this.parameters!.push(KeyValuePair.fromJS(item));
-            }
-        }
+  init(_data?: any) {
+    if (_data) {
+      if (Array.isArray(_data["parameters"])) {
+        this.parameters = [] as any;
+        for (let item of _data["parameters"]) this.parameters!.push(KeyValuePair.fromJS(item));
+      }
     }
+  }
 
-    static fromJS(data: any): PaymentCallbackParameters {
-        data = typeof data === 'object' ? data : {};
-        let result = new PaymentCallbackParameters();
-        result.init(data);
-        return result;
-    }
+  static fromJS(data: any): PaymentCallbackParameters {
+    data = typeof data === "object" ? data : {};
+    let result = new PaymentCallbackParameters();
+    result.init(data);
+    return result;
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        if (Array.isArray(this.parameters)) {
-            data["parameters"] = [];
-            for (let item of this.parameters)
-                data["parameters"].push(item.toJSON());
-        }
-        return data;
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    if (Array.isArray(this.parameters)) {
+      data["parameters"] = [];
+      for (let item of this.parameters) data["parameters"].push(item.toJSON());
     }
+    return data;
+  }
 }
 
 export interface IPaymentCallbackParameters {
-    parameters?: KeyValuePair[] | undefined;
+  parameters?: KeyValuePair[] | undefined;
 }
 
 export class PaymentGatewayTransaction implements IPaymentGatewayTransaction {
-    amount?: number;
-    currencyCode?: string | undefined;
-    isProcessed?: boolean;
-    processedDate?: Date | undefined;
-    processError?: string | undefined;
-    processAttemptCount?: number;
-    requestData?: string | undefined;
-    responseData?: string | undefined;
-    responseCode?: string | undefined;
-    gatewayIpAddress?: string | undefined;
-    type?: string | undefined;
-    status?: string | undefined;
-    note?: string | undefined;
-    createdDate?: Date;
-    modifiedDate?: Date | undefined;
-    createdBy?: string | undefined;
-    modifiedBy?: string | undefined;
-    id?: string | undefined;
+  amount?: number;
+  currencyCode?: string | undefined;
+  isProcessed?: boolean;
+  processedDate?: Date | undefined;
+  processError?: string | undefined;
+  processAttemptCount?: number;
+  requestData?: string | undefined;
+  responseData?: string | undefined;
+  responseCode?: string | undefined;
+  gatewayIpAddress?: string | undefined;
+  type?: string | undefined;
+  status?: string | undefined;
+  note?: string | undefined;
+  createdDate?: Date;
+  modifiedDate?: Date | undefined;
+  createdBy?: string | undefined;
+  modifiedBy?: string | undefined;
+  id?: string | undefined;
 
-    constructor(data?: IPaymentGatewayTransaction) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
+  constructor(data?: IPaymentGatewayTransaction) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property)) (<any>this)[property] = (<any>data)[property];
+      }
     }
+  }
 
-    init(_data?: any) {
-        if (_data) {
-            this.amount = _data["amount"];
-            this.currencyCode = _data["currencyCode"];
-            this.isProcessed = _data["isProcessed"];
-            this.processedDate = _data["processedDate"] ? new Date(_data["processedDate"].toString()) : <any>undefined;
-            this.processError = _data["processError"];
-            this.processAttemptCount = _data["processAttemptCount"];
-            this.requestData = _data["requestData"];
-            this.responseData = _data["responseData"];
-            this.responseCode = _data["responseCode"];
-            this.gatewayIpAddress = _data["gatewayIpAddress"];
-            this.type = _data["type"];
-            this.status = _data["status"];
-            this.note = _data["note"];
-            this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>undefined;
-            this.modifiedDate = _data["modifiedDate"] ? new Date(_data["modifiedDate"].toString()) : <any>undefined;
-            this.createdBy = _data["createdBy"];
-            this.modifiedBy = _data["modifiedBy"];
-            this.id = _data["id"];
-        }
+  init(_data?: any) {
+    if (_data) {
+      this.amount = _data["amount"];
+      this.currencyCode = _data["currencyCode"];
+      this.isProcessed = _data["isProcessed"];
+      this.processedDate = _data["processedDate"] ? new Date(_data["processedDate"].toString()) : <any>undefined;
+      this.processError = _data["processError"];
+      this.processAttemptCount = _data["processAttemptCount"];
+      this.requestData = _data["requestData"];
+      this.responseData = _data["responseData"];
+      this.responseCode = _data["responseCode"];
+      this.gatewayIpAddress = _data["gatewayIpAddress"];
+      this.type = _data["type"];
+      this.status = _data["status"];
+      this.note = _data["note"];
+      this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>undefined;
+      this.modifiedDate = _data["modifiedDate"] ? new Date(_data["modifiedDate"].toString()) : <any>undefined;
+      this.createdBy = _data["createdBy"];
+      this.modifiedBy = _data["modifiedBy"];
+      this.id = _data["id"];
     }
+  }
 
-    static fromJS(data: any): PaymentGatewayTransaction {
-        data = typeof data === 'object' ? data : {};
-        let result = new PaymentGatewayTransaction();
-        result.init(data);
-        return result;
-    }
+  static fromJS(data: any): PaymentGatewayTransaction {
+    data = typeof data === "object" ? data : {};
+    let result = new PaymentGatewayTransaction();
+    result.init(data);
+    return result;
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["amount"] = this.amount;
-        data["currencyCode"] = this.currencyCode;
-        data["isProcessed"] = this.isProcessed;
-        data["processedDate"] = this.processedDate ? this.processedDate.toISOString() : <any>undefined;
-        data["processError"] = this.processError;
-        data["processAttemptCount"] = this.processAttemptCount;
-        data["requestData"] = this.requestData;
-        data["responseData"] = this.responseData;
-        data["responseCode"] = this.responseCode;
-        data["gatewayIpAddress"] = this.gatewayIpAddress;
-        data["type"] = this.type;
-        data["status"] = this.status;
-        data["note"] = this.note;
-        data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>undefined;
-        data["modifiedDate"] = this.modifiedDate ? this.modifiedDate.toISOString() : <any>undefined;
-        data["createdBy"] = this.createdBy;
-        data["modifiedBy"] = this.modifiedBy;
-        data["id"] = this.id;
-        return data;
-    }
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    data["amount"] = this.amount;
+    data["currencyCode"] = this.currencyCode;
+    data["isProcessed"] = this.isProcessed;
+    data["processedDate"] = this.processedDate ? this.processedDate.toISOString() : <any>undefined;
+    data["processError"] = this.processError;
+    data["processAttemptCount"] = this.processAttemptCount;
+    data["requestData"] = this.requestData;
+    data["responseData"] = this.responseData;
+    data["responseCode"] = this.responseCode;
+    data["gatewayIpAddress"] = this.gatewayIpAddress;
+    data["type"] = this.type;
+    data["status"] = this.status;
+    data["note"] = this.note;
+    data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>undefined;
+    data["modifiedDate"] = this.modifiedDate ? this.modifiedDate.toISOString() : <any>undefined;
+    data["createdBy"] = this.createdBy;
+    data["modifiedBy"] = this.modifiedBy;
+    data["id"] = this.id;
+    return data;
+  }
 }
 
 export interface IPaymentGatewayTransaction {
-    amount?: number;
-    currencyCode?: string | undefined;
-    isProcessed?: boolean;
-    processedDate?: Date | undefined;
-    processError?: string | undefined;
-    processAttemptCount?: number;
-    requestData?: string | undefined;
-    responseData?: string | undefined;
-    responseCode?: string | undefined;
-    gatewayIpAddress?: string | undefined;
-    type?: string | undefined;
-    status?: string | undefined;
-    note?: string | undefined;
-    createdDate?: Date;
-    modifiedDate?: Date | undefined;
-    createdBy?: string | undefined;
-    modifiedBy?: string | undefined;
-    id?: string | undefined;
+  amount?: number;
+  currencyCode?: string | undefined;
+  isProcessed?: boolean;
+  processedDate?: Date | undefined;
+  processError?: string | undefined;
+  processAttemptCount?: number;
+  requestData?: string | undefined;
+  responseData?: string | undefined;
+  responseCode?: string | undefined;
+  gatewayIpAddress?: string | undefined;
+  type?: string | undefined;
+  status?: string | undefined;
+  note?: string | undefined;
+  createdDate?: Date;
+  modifiedDate?: Date | undefined;
+  createdBy?: string | undefined;
+  modifiedBy?: string | undefined;
+  id?: string | undefined;
 }
 
 export class PaymentIn implements IPaymentIn {
-    orderId?: string | undefined;
-    purpose?: string | undefined;
-    gatewayCode?: string | undefined;
-    paymentMethod?: PaymentMethod | undefined;
-    organizationId?: string | undefined;
-    organizationName?: string | undefined;
-    customerId?: string | undefined;
-    customerName?: string | undefined;
-    incomingDate?: Date | undefined;
-    billingAddress?: OrderAddress | undefined;
-    paymentStatus?: PaymentInPaymentStatus;
-    authorizedDate?: Date | undefined;
-    capturedDate?: Date | undefined;
-    voidedDate?: Date | undefined;
-    processPaymentResult?: ProcessPaymentRequestResult | undefined;
-    price?: number;
-    priceWithTax?: number;
-    total?: number;
-    totalWithTax?: number;
-    discountAmount?: number;
-    discountAmountWithTax?: number;
-    objectType?: string | undefined;
-    feeDetails?: FeeDetail[] | undefined;
-    vendorId?: string | undefined;
-    taxType?: string | undefined;
-    taxTotal?: number;
-    taxPercentRate?: number;
-    taxDetails?: TaxDetail[] | undefined;
-    discounts?: Discount[] | undefined;
-    transactions?: PaymentGatewayTransaction[] | undefined;
-    refunds?: Refund[] | undefined;
-    captures?: Capture[] | undefined;
-    operationType?: string | undefined;
-    parentOperationId?: string | undefined;
-    number?: string | undefined;
-    isApproved?: boolean;
-    status?: string | undefined;
-    comment?: string | undefined;
-    currency?: string | undefined;
-    sum?: number;
-    outerId?: string | undefined;
-    cancelledState?: PaymentInCancelledState;
-    isCancelled?: boolean;
-    cancelledDate?: Date | undefined;
-    cancelReason?: string | undefined;
-    dynamicProperties?: DynamicObjectProperty[] | undefined;
-    operationsLog?: OperationLog[] | undefined;
-    createdDate?: Date;
-    modifiedDate?: Date | undefined;
-    createdBy?: string | undefined;
-    modifiedBy?: string | undefined;
-    id?: string | undefined;
+  orderId?: string | undefined;
+  purpose?: string | undefined;
+  gatewayCode?: string | undefined;
+  paymentMethod?: PaymentMethod | undefined;
+  organizationId?: string | undefined;
+  organizationName?: string | undefined;
+  customerId?: string | undefined;
+  customerName?: string | undefined;
+  incomingDate?: Date | undefined;
+  billingAddress?: OrderAddress | undefined;
+  paymentStatus?: PaymentInPaymentStatus;
+  authorizedDate?: Date | undefined;
+  capturedDate?: Date | undefined;
+  voidedDate?: Date | undefined;
+  processPaymentResult?: ProcessPaymentRequestResult | undefined;
+  price?: number;
+  priceWithTax?: number;
+  total?: number;
+  totalWithTax?: number;
+  discountAmount?: number;
+  discountAmountWithTax?: number;
+  objectType?: string | undefined;
+  feeDetails?: FeeDetail[] | undefined;
+  vendorId?: string | undefined;
+  taxType?: string | undefined;
+  taxTotal?: number;
+  taxPercentRate?: number;
+  taxDetails?: TaxDetail[] | undefined;
+  discounts?: Discount[] | undefined;
+  transactions?: PaymentGatewayTransaction[] | undefined;
+  refunds?: Refund[] | undefined;
+  captures?: Capture[] | undefined;
+  operationType?: string | undefined;
+  parentOperationId?: string | undefined;
+  number?: string | undefined;
+  isApproved?: boolean;
+  status?: string | undefined;
+  comment?: string | undefined;
+  currency?: string | undefined;
+  sum?: number;
+  outerId?: string | undefined;
+  cancelledState?: PaymentInCancelledState;
+  isCancelled?: boolean;
+  cancelledDate?: Date | undefined;
+  cancelReason?: string | undefined;
+  dynamicProperties?: DynamicObjectProperty[] | undefined;
+  operationsLog?: OperationLog[] | undefined;
+  createdDate?: Date;
+  modifiedDate?: Date | undefined;
+  createdBy?: string | undefined;
+  modifiedBy?: string | undefined;
+  id?: string | undefined;
 
-    constructor(data?: IPaymentIn) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
+  constructor(data?: IPaymentIn) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property)) (<any>this)[property] = (<any>data)[property];
+      }
     }
+  }
 
-    init(_data?: any) {
-        if (_data) {
-            this.orderId = _data["orderId"];
-            this.purpose = _data["purpose"];
-            this.gatewayCode = _data["gatewayCode"];
-            this.paymentMethod = _data["paymentMethod"] ? PaymentMethod.fromJS(_data["paymentMethod"]) : <any>undefined;
-            this.organizationId = _data["organizationId"];
-            this.organizationName = _data["organizationName"];
-            this.customerId = _data["customerId"];
-            this.customerName = _data["customerName"];
-            this.incomingDate = _data["incomingDate"] ? new Date(_data["incomingDate"].toString()) : <any>undefined;
-            this.billingAddress = _data["billingAddress"] ? OrderAddress.fromJS(_data["billingAddress"]) : <any>undefined;
-            this.paymentStatus = _data["paymentStatus"];
-            this.authorizedDate = _data["authorizedDate"] ? new Date(_data["authorizedDate"].toString()) : <any>undefined;
-            this.capturedDate = _data["capturedDate"] ? new Date(_data["capturedDate"].toString()) : <any>undefined;
-            this.voidedDate = _data["voidedDate"] ? new Date(_data["voidedDate"].toString()) : <any>undefined;
-            this.processPaymentResult = _data["processPaymentResult"] ? ProcessPaymentRequestResult.fromJS(_data["processPaymentResult"]) : <any>undefined;
-            this.price = _data["price"];
-            this.priceWithTax = _data["priceWithTax"];
-            this.total = _data["total"];
-            this.totalWithTax = _data["totalWithTax"];
-            this.discountAmount = _data["discountAmount"];
-            this.discountAmountWithTax = _data["discountAmountWithTax"];
-            this.objectType = _data["objectType"];
-            if (Array.isArray(_data["feeDetails"])) {
-                this.feeDetails = [] as any;
-                for (let item of _data["feeDetails"])
-                    this.feeDetails!.push(FeeDetail.fromJS(item));
-            }
-            this.vendorId = _data["vendorId"];
-            this.taxType = _data["taxType"];
-            this.taxTotal = _data["taxTotal"];
-            this.taxPercentRate = _data["taxPercentRate"];
-            if (Array.isArray(_data["taxDetails"])) {
-                this.taxDetails = [] as any;
-                for (let item of _data["taxDetails"])
-                    this.taxDetails!.push(TaxDetail.fromJS(item));
-            }
-            if (Array.isArray(_data["discounts"])) {
-                this.discounts = [] as any;
-                for (let item of _data["discounts"])
-                    this.discounts!.push(Discount.fromJS(item));
-            }
-            if (Array.isArray(_data["transactions"])) {
-                this.transactions = [] as any;
-                for (let item of _data["transactions"])
-                    this.transactions!.push(PaymentGatewayTransaction.fromJS(item));
-            }
-            if (Array.isArray(_data["refunds"])) {
-                this.refunds = [] as any;
-                for (let item of _data["refunds"])
-                    this.refunds!.push(Refund.fromJS(item));
-            }
-            if (Array.isArray(_data["captures"])) {
-                this.captures = [] as any;
-                for (let item of _data["captures"])
-                    this.captures!.push(Capture.fromJS(item));
-            }
-            this.operationType = _data["operationType"];
-            this.parentOperationId = _data["parentOperationId"];
-            this.number = _data["number"];
-            this.isApproved = _data["isApproved"];
-            this.status = _data["status"];
-            this.comment = _data["comment"];
-            this.currency = _data["currency"];
-            this.sum = _data["sum"];
-            this.outerId = _data["outerId"];
-            this.cancelledState = _data["cancelledState"];
-            this.isCancelled = _data["isCancelled"];
-            this.cancelledDate = _data["cancelledDate"] ? new Date(_data["cancelledDate"].toString()) : <any>undefined;
-            this.cancelReason = _data["cancelReason"];
-            if (Array.isArray(_data["dynamicProperties"])) {
-                this.dynamicProperties = [] as any;
-                for (let item of _data["dynamicProperties"])
-                    this.dynamicProperties!.push(DynamicObjectProperty.fromJS(item));
-            }
-            if (Array.isArray(_data["operationsLog"])) {
-                this.operationsLog = [] as any;
-                for (let item of _data["operationsLog"])
-                    this.operationsLog!.push(OperationLog.fromJS(item));
-            }
-            this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>undefined;
-            this.modifiedDate = _data["modifiedDate"] ? new Date(_data["modifiedDate"].toString()) : <any>undefined;
-            this.createdBy = _data["createdBy"];
-            this.modifiedBy = _data["modifiedBy"];
-            this.id = _data["id"];
-        }
+  init(_data?: any) {
+    if (_data) {
+      this.orderId = _data["orderId"];
+      this.purpose = _data["purpose"];
+      this.gatewayCode = _data["gatewayCode"];
+      this.paymentMethod = _data["paymentMethod"] ? PaymentMethod.fromJS(_data["paymentMethod"]) : <any>undefined;
+      this.organizationId = _data["organizationId"];
+      this.organizationName = _data["organizationName"];
+      this.customerId = _data["customerId"];
+      this.customerName = _data["customerName"];
+      this.incomingDate = _data["incomingDate"] ? new Date(_data["incomingDate"].toString()) : <any>undefined;
+      this.billingAddress = _data["billingAddress"] ? OrderAddress.fromJS(_data["billingAddress"]) : <any>undefined;
+      this.paymentStatus = _data["paymentStatus"];
+      this.authorizedDate = _data["authorizedDate"] ? new Date(_data["authorizedDate"].toString()) : <any>undefined;
+      this.capturedDate = _data["capturedDate"] ? new Date(_data["capturedDate"].toString()) : <any>undefined;
+      this.voidedDate = _data["voidedDate"] ? new Date(_data["voidedDate"].toString()) : <any>undefined;
+      this.processPaymentResult = _data["processPaymentResult"]
+        ? ProcessPaymentRequestResult.fromJS(_data["processPaymentResult"])
+        : <any>undefined;
+      this.price = _data["price"];
+      this.priceWithTax = _data["priceWithTax"];
+      this.total = _data["total"];
+      this.totalWithTax = _data["totalWithTax"];
+      this.discountAmount = _data["discountAmount"];
+      this.discountAmountWithTax = _data["discountAmountWithTax"];
+      this.objectType = _data["objectType"];
+      if (Array.isArray(_data["feeDetails"])) {
+        this.feeDetails = [] as any;
+        for (let item of _data["feeDetails"]) this.feeDetails!.push(FeeDetail.fromJS(item));
+      }
+      this.vendorId = _data["vendorId"];
+      this.taxType = _data["taxType"];
+      this.taxTotal = _data["taxTotal"];
+      this.taxPercentRate = _data["taxPercentRate"];
+      if (Array.isArray(_data["taxDetails"])) {
+        this.taxDetails = [] as any;
+        for (let item of _data["taxDetails"]) this.taxDetails!.push(TaxDetail.fromJS(item));
+      }
+      if (Array.isArray(_data["discounts"])) {
+        this.discounts = [] as any;
+        for (let item of _data["discounts"]) this.discounts!.push(Discount.fromJS(item));
+      }
+      if (Array.isArray(_data["transactions"])) {
+        this.transactions = [] as any;
+        for (let item of _data["transactions"]) this.transactions!.push(PaymentGatewayTransaction.fromJS(item));
+      }
+      if (Array.isArray(_data["refunds"])) {
+        this.refunds = [] as any;
+        for (let item of _data["refunds"]) this.refunds!.push(Refund.fromJS(item));
+      }
+      if (Array.isArray(_data["captures"])) {
+        this.captures = [] as any;
+        for (let item of _data["captures"]) this.captures!.push(Capture.fromJS(item));
+      }
+      this.operationType = _data["operationType"];
+      this.parentOperationId = _data["parentOperationId"];
+      this.number = _data["number"];
+      this.isApproved = _data["isApproved"];
+      this.status = _data["status"];
+      this.comment = _data["comment"];
+      this.currency = _data["currency"];
+      this.sum = _data["sum"];
+      this.outerId = _data["outerId"];
+      this.cancelledState = _data["cancelledState"];
+      this.isCancelled = _data["isCancelled"];
+      this.cancelledDate = _data["cancelledDate"] ? new Date(_data["cancelledDate"].toString()) : <any>undefined;
+      this.cancelReason = _data["cancelReason"];
+      if (Array.isArray(_data["dynamicProperties"])) {
+        this.dynamicProperties = [] as any;
+        for (let item of _data["dynamicProperties"]) this.dynamicProperties!.push(DynamicObjectProperty.fromJS(item));
+      }
+      if (Array.isArray(_data["operationsLog"])) {
+        this.operationsLog = [] as any;
+        for (let item of _data["operationsLog"]) this.operationsLog!.push(OperationLog.fromJS(item));
+      }
+      this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>undefined;
+      this.modifiedDate = _data["modifiedDate"] ? new Date(_data["modifiedDate"].toString()) : <any>undefined;
+      this.createdBy = _data["createdBy"];
+      this.modifiedBy = _data["modifiedBy"];
+      this.id = _data["id"];
     }
+  }
 
-    static fromJS(data: any): PaymentIn {
-        data = typeof data === 'object' ? data : {};
-        let result = new PaymentIn();
-        result.init(data);
-        return result;
-    }
+  static fromJS(data: any): PaymentIn {
+    data = typeof data === "object" ? data : {};
+    let result = new PaymentIn();
+    result.init(data);
+    return result;
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["orderId"] = this.orderId;
-        data["purpose"] = this.purpose;
-        data["gatewayCode"] = this.gatewayCode;
-        data["paymentMethod"] = this.paymentMethod ? this.paymentMethod.toJSON() : <any>undefined;
-        data["organizationId"] = this.organizationId;
-        data["organizationName"] = this.organizationName;
-        data["customerId"] = this.customerId;
-        data["customerName"] = this.customerName;
-        data["incomingDate"] = this.incomingDate ? this.incomingDate.toISOString() : <any>undefined;
-        data["billingAddress"] = this.billingAddress ? this.billingAddress.toJSON() : <any>undefined;
-        data["paymentStatus"] = this.paymentStatus;
-        data["authorizedDate"] = this.authorizedDate ? this.authorizedDate.toISOString() : <any>undefined;
-        data["capturedDate"] = this.capturedDate ? this.capturedDate.toISOString() : <any>undefined;
-        data["voidedDate"] = this.voidedDate ? this.voidedDate.toISOString() : <any>undefined;
-        data["processPaymentResult"] = this.processPaymentResult ? this.processPaymentResult.toJSON() : <any>undefined;
-        data["price"] = this.price;
-        data["priceWithTax"] = this.priceWithTax;
-        data["total"] = this.total;
-        data["totalWithTax"] = this.totalWithTax;
-        data["discountAmount"] = this.discountAmount;
-        data["discountAmountWithTax"] = this.discountAmountWithTax;
-        data["objectType"] = this.objectType;
-        if (Array.isArray(this.feeDetails)) {
-            data["feeDetails"] = [];
-            for (let item of this.feeDetails)
-                data["feeDetails"].push(item.toJSON());
-        }
-        data["vendorId"] = this.vendorId;
-        data["taxType"] = this.taxType;
-        data["taxTotal"] = this.taxTotal;
-        data["taxPercentRate"] = this.taxPercentRate;
-        if (Array.isArray(this.taxDetails)) {
-            data["taxDetails"] = [];
-            for (let item of this.taxDetails)
-                data["taxDetails"].push(item.toJSON());
-        }
-        if (Array.isArray(this.discounts)) {
-            data["discounts"] = [];
-            for (let item of this.discounts)
-                data["discounts"].push(item.toJSON());
-        }
-        if (Array.isArray(this.transactions)) {
-            data["transactions"] = [];
-            for (let item of this.transactions)
-                data["transactions"].push(item.toJSON());
-        }
-        if (Array.isArray(this.refunds)) {
-            data["refunds"] = [];
-            for (let item of this.refunds)
-                data["refunds"].push(item.toJSON());
-        }
-        if (Array.isArray(this.captures)) {
-            data["captures"] = [];
-            for (let item of this.captures)
-                data["captures"].push(item.toJSON());
-        }
-        data["operationType"] = this.operationType;
-        data["parentOperationId"] = this.parentOperationId;
-        data["number"] = this.number;
-        data["isApproved"] = this.isApproved;
-        data["status"] = this.status;
-        data["comment"] = this.comment;
-        data["currency"] = this.currency;
-        data["sum"] = this.sum;
-        data["outerId"] = this.outerId;
-        data["cancelledState"] = this.cancelledState;
-        data["isCancelled"] = this.isCancelled;
-        data["cancelledDate"] = this.cancelledDate ? this.cancelledDate.toISOString() : <any>undefined;
-        data["cancelReason"] = this.cancelReason;
-        if (Array.isArray(this.dynamicProperties)) {
-            data["dynamicProperties"] = [];
-            for (let item of this.dynamicProperties)
-                data["dynamicProperties"].push(item.toJSON());
-        }
-        if (Array.isArray(this.operationsLog)) {
-            data["operationsLog"] = [];
-            for (let item of this.operationsLog)
-                data["operationsLog"].push(item.toJSON());
-        }
-        data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>undefined;
-        data["modifiedDate"] = this.modifiedDate ? this.modifiedDate.toISOString() : <any>undefined;
-        data["createdBy"] = this.createdBy;
-        data["modifiedBy"] = this.modifiedBy;
-        data["id"] = this.id;
-        return data;
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    data["orderId"] = this.orderId;
+    data["purpose"] = this.purpose;
+    data["gatewayCode"] = this.gatewayCode;
+    data["paymentMethod"] = this.paymentMethod ? this.paymentMethod.toJSON() : <any>undefined;
+    data["organizationId"] = this.organizationId;
+    data["organizationName"] = this.organizationName;
+    data["customerId"] = this.customerId;
+    data["customerName"] = this.customerName;
+    data["incomingDate"] = this.incomingDate ? this.incomingDate.toISOString() : <any>undefined;
+    data["billingAddress"] = this.billingAddress ? this.billingAddress.toJSON() : <any>undefined;
+    data["paymentStatus"] = this.paymentStatus;
+    data["authorizedDate"] = this.authorizedDate ? this.authorizedDate.toISOString() : <any>undefined;
+    data["capturedDate"] = this.capturedDate ? this.capturedDate.toISOString() : <any>undefined;
+    data["voidedDate"] = this.voidedDate ? this.voidedDate.toISOString() : <any>undefined;
+    data["processPaymentResult"] = this.processPaymentResult ? this.processPaymentResult.toJSON() : <any>undefined;
+    data["price"] = this.price;
+    data["priceWithTax"] = this.priceWithTax;
+    data["total"] = this.total;
+    data["totalWithTax"] = this.totalWithTax;
+    data["discountAmount"] = this.discountAmount;
+    data["discountAmountWithTax"] = this.discountAmountWithTax;
+    data["objectType"] = this.objectType;
+    if (Array.isArray(this.feeDetails)) {
+      data["feeDetails"] = [];
+      for (let item of this.feeDetails) data["feeDetails"].push(item.toJSON());
     }
+    data["vendorId"] = this.vendorId;
+    data["taxType"] = this.taxType;
+    data["taxTotal"] = this.taxTotal;
+    data["taxPercentRate"] = this.taxPercentRate;
+    if (Array.isArray(this.taxDetails)) {
+      data["taxDetails"] = [];
+      for (let item of this.taxDetails) data["taxDetails"].push(item.toJSON());
+    }
+    if (Array.isArray(this.discounts)) {
+      data["discounts"] = [];
+      for (let item of this.discounts) data["discounts"].push(item.toJSON());
+    }
+    if (Array.isArray(this.transactions)) {
+      data["transactions"] = [];
+      for (let item of this.transactions) data["transactions"].push(item.toJSON());
+    }
+    if (Array.isArray(this.refunds)) {
+      data["refunds"] = [];
+      for (let item of this.refunds) data["refunds"].push(item.toJSON());
+    }
+    if (Array.isArray(this.captures)) {
+      data["captures"] = [];
+      for (let item of this.captures) data["captures"].push(item.toJSON());
+    }
+    data["operationType"] = this.operationType;
+    data["parentOperationId"] = this.parentOperationId;
+    data["number"] = this.number;
+    data["isApproved"] = this.isApproved;
+    data["status"] = this.status;
+    data["comment"] = this.comment;
+    data["currency"] = this.currency;
+    data["sum"] = this.sum;
+    data["outerId"] = this.outerId;
+    data["cancelledState"] = this.cancelledState;
+    data["isCancelled"] = this.isCancelled;
+    data["cancelledDate"] = this.cancelledDate ? this.cancelledDate.toISOString() : <any>undefined;
+    data["cancelReason"] = this.cancelReason;
+    if (Array.isArray(this.dynamicProperties)) {
+      data["dynamicProperties"] = [];
+      for (let item of this.dynamicProperties) data["dynamicProperties"].push(item.toJSON());
+    }
+    if (Array.isArray(this.operationsLog)) {
+      data["operationsLog"] = [];
+      for (let item of this.operationsLog) data["operationsLog"].push(item.toJSON());
+    }
+    data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>undefined;
+    data["modifiedDate"] = this.modifiedDate ? this.modifiedDate.toISOString() : <any>undefined;
+    data["createdBy"] = this.createdBy;
+    data["modifiedBy"] = this.modifiedBy;
+    data["id"] = this.id;
+    return data;
+  }
 }
 
 export interface IPaymentIn {
-    orderId?: string | undefined;
-    purpose?: string | undefined;
-    gatewayCode?: string | undefined;
-    paymentMethod?: PaymentMethod | undefined;
-    organizationId?: string | undefined;
-    organizationName?: string | undefined;
-    customerId?: string | undefined;
-    customerName?: string | undefined;
-    incomingDate?: Date | undefined;
-    billingAddress?: OrderAddress | undefined;
-    paymentStatus?: PaymentInPaymentStatus;
-    authorizedDate?: Date | undefined;
-    capturedDate?: Date | undefined;
-    voidedDate?: Date | undefined;
-    processPaymentResult?: ProcessPaymentRequestResult | undefined;
-    price?: number;
-    priceWithTax?: number;
-    total?: number;
-    totalWithTax?: number;
-    discountAmount?: number;
-    discountAmountWithTax?: number;
-    objectType?: string | undefined;
-    feeDetails?: FeeDetail[] | undefined;
-    vendorId?: string | undefined;
-    taxType?: string | undefined;
-    taxTotal?: number;
-    taxPercentRate?: number;
-    taxDetails?: TaxDetail[] | undefined;
-    discounts?: Discount[] | undefined;
-    transactions?: PaymentGatewayTransaction[] | undefined;
-    refunds?: Refund[] | undefined;
-    captures?: Capture[] | undefined;
-    operationType?: string | undefined;
-    parentOperationId?: string | undefined;
-    number?: string | undefined;
-    isApproved?: boolean;
-    status?: string | undefined;
-    comment?: string | undefined;
-    currency?: string | undefined;
-    sum?: number;
-    outerId?: string | undefined;
-    cancelledState?: PaymentInCancelledState;
-    isCancelled?: boolean;
-    cancelledDate?: Date | undefined;
-    cancelReason?: string | undefined;
-    dynamicProperties?: DynamicObjectProperty[] | undefined;
-    operationsLog?: OperationLog[] | undefined;
-    createdDate?: Date;
-    modifiedDate?: Date | undefined;
-    createdBy?: string | undefined;
-    modifiedBy?: string | undefined;
-    id?: string | undefined;
+  orderId?: string | undefined;
+  purpose?: string | undefined;
+  gatewayCode?: string | undefined;
+  paymentMethod?: PaymentMethod | undefined;
+  organizationId?: string | undefined;
+  organizationName?: string | undefined;
+  customerId?: string | undefined;
+  customerName?: string | undefined;
+  incomingDate?: Date | undefined;
+  billingAddress?: OrderAddress | undefined;
+  paymentStatus?: PaymentInPaymentStatus;
+  authorizedDate?: Date | undefined;
+  capturedDate?: Date | undefined;
+  voidedDate?: Date | undefined;
+  processPaymentResult?: ProcessPaymentRequestResult | undefined;
+  price?: number;
+  priceWithTax?: number;
+  total?: number;
+  totalWithTax?: number;
+  discountAmount?: number;
+  discountAmountWithTax?: number;
+  objectType?: string | undefined;
+  feeDetails?: FeeDetail[] | undefined;
+  vendorId?: string | undefined;
+  taxType?: string | undefined;
+  taxTotal?: number;
+  taxPercentRate?: number;
+  taxDetails?: TaxDetail[] | undefined;
+  discounts?: Discount[] | undefined;
+  transactions?: PaymentGatewayTransaction[] | undefined;
+  refunds?: Refund[] | undefined;
+  captures?: Capture[] | undefined;
+  operationType?: string | undefined;
+  parentOperationId?: string | undefined;
+  number?: string | undefined;
+  isApproved?: boolean;
+  status?: string | undefined;
+  comment?: string | undefined;
+  currency?: string | undefined;
+  sum?: number;
+  outerId?: string | undefined;
+  cancelledState?: PaymentInCancelledState;
+  isCancelled?: boolean;
+  cancelledDate?: Date | undefined;
+  cancelReason?: string | undefined;
+  dynamicProperties?: DynamicObjectProperty[] | undefined;
+  operationsLog?: OperationLog[] | undefined;
+  createdDate?: Date;
+  modifiedDate?: Date | undefined;
+  createdBy?: string | undefined;
+  modifiedBy?: string | undefined;
+  id?: string | undefined;
 }
 
 export class PaymentMethod implements IPaymentMethod {
-    code?: string | undefined;
-    name?: string | undefined;
-    logoUrl?: string | undefined;
-    isActive?: boolean;
-    priority?: number;
-    isAvailableForPartial?: boolean;
-    allowDeferredPayment?: boolean;
-    currency?: string | undefined;
-    price?: number;
-    readonly priceWithTax?: number;
-    readonly total?: number;
-    readonly totalWithTax?: number;
-    discountAmount?: number;
-    readonly discountAmountWithTax?: number;
-    storeId?: string | undefined;
-    description?: string | undefined;
-    readonly typeName?: string | undefined;
-    settings?: ObjectSettingEntry[] | undefined;
-    taxType?: string | undefined;
-    readonly taxTotal?: number;
-    taxPercentRate?: number;
-    taxDetails?: TaxDetail[] | undefined;
-    readonly paymentMethodType?: PaymentMethodType2;
-    readonly paymentMethodGroupType?: PaymentMethodGroupType2;
-    id?: string | undefined;
+  code?: string | undefined;
+  name?: string | undefined;
+  logoUrl?: string | undefined;
+  isActive?: boolean;
+  priority?: number;
+  isAvailableForPartial?: boolean;
+  allowDeferredPayment?: boolean;
+  currency?: string | undefined;
+  price?: number;
+  readonly priceWithTax?: number;
+  readonly total?: number;
+  readonly totalWithTax?: number;
+  discountAmount?: number;
+  readonly discountAmountWithTax?: number;
+  storeId?: string | undefined;
+  description?: string | undefined;
+  readonly typeName?: string | undefined;
+  settings?: ObjectSettingEntry[] | undefined;
+  taxType?: string | undefined;
+  readonly taxTotal?: number;
+  taxPercentRate?: number;
+  taxDetails?: TaxDetail[] | undefined;
+  readonly paymentMethodType?: PaymentMethodType2;
+  readonly paymentMethodGroupType?: PaymentMethodGroupType2;
+  id?: string | undefined;
 
-    constructor(data?: IPaymentMethod) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
+  constructor(data?: IPaymentMethod) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property)) (<any>this)[property] = (<any>data)[property];
+      }
     }
+  }
 
-    init(_data?: any) {
-        if (_data) {
-            this.code = _data["code"];
-            this.name = _data["name"];
-            this.logoUrl = _data["logoUrl"];
-            this.isActive = _data["isActive"];
-            this.priority = _data["priority"];
-            this.isAvailableForPartial = _data["isAvailableForPartial"];
-            this.allowDeferredPayment = _data["allowDeferredPayment"];
-            this.currency = _data["currency"];
-            this.price = _data["price"];
-            (<any>this).priceWithTax = _data["priceWithTax"];
-            (<any>this).total = _data["total"];
-            (<any>this).totalWithTax = _data["totalWithTax"];
-            this.discountAmount = _data["discountAmount"];
-            (<any>this).discountAmountWithTax = _data["discountAmountWithTax"];
-            this.storeId = _data["storeId"];
-            this.description = _data["description"];
-            (<any>this).typeName = _data["typeName"];
-            if (Array.isArray(_data["settings"])) {
-                this.settings = [] as any;
-                for (let item of _data["settings"])
-                    this.settings!.push(ObjectSettingEntry.fromJS(item));
-            }
-            this.taxType = _data["taxType"];
-            (<any>this).taxTotal = _data["taxTotal"];
-            this.taxPercentRate = _data["taxPercentRate"];
-            if (Array.isArray(_data["taxDetails"])) {
-                this.taxDetails = [] as any;
-                for (let item of _data["taxDetails"])
-                    this.taxDetails!.push(TaxDetail.fromJS(item));
-            }
-            (<any>this).paymentMethodType = _data["paymentMethodType"];
-            (<any>this).paymentMethodGroupType = _data["paymentMethodGroupType"];
-            this.id = _data["id"];
-        }
+  init(_data?: any) {
+    if (_data) {
+      this.code = _data["code"];
+      this.name = _data["name"];
+      this.logoUrl = _data["logoUrl"];
+      this.isActive = _data["isActive"];
+      this.priority = _data["priority"];
+      this.isAvailableForPartial = _data["isAvailableForPartial"];
+      this.allowDeferredPayment = _data["allowDeferredPayment"];
+      this.currency = _data["currency"];
+      this.price = _data["price"];
+      (<any>this).priceWithTax = _data["priceWithTax"];
+      (<any>this).total = _data["total"];
+      (<any>this).totalWithTax = _data["totalWithTax"];
+      this.discountAmount = _data["discountAmount"];
+      (<any>this).discountAmountWithTax = _data["discountAmountWithTax"];
+      this.storeId = _data["storeId"];
+      this.description = _data["description"];
+      (<any>this).typeName = _data["typeName"];
+      if (Array.isArray(_data["settings"])) {
+        this.settings = [] as any;
+        for (let item of _data["settings"]) this.settings!.push(ObjectSettingEntry.fromJS(item));
+      }
+      this.taxType = _data["taxType"];
+      (<any>this).taxTotal = _data["taxTotal"];
+      this.taxPercentRate = _data["taxPercentRate"];
+      if (Array.isArray(_data["taxDetails"])) {
+        this.taxDetails = [] as any;
+        for (let item of _data["taxDetails"]) this.taxDetails!.push(TaxDetail.fromJS(item));
+      }
+      (<any>this).paymentMethodType = _data["paymentMethodType"];
+      (<any>this).paymentMethodGroupType = _data["paymentMethodGroupType"];
+      this.id = _data["id"];
     }
+  }
 
-    static fromJS(data: any): PaymentMethod {
-        data = typeof data === 'object' ? data : {};
-        let result = new PaymentMethod();
-        result.init(data);
-        return result;
-    }
+  static fromJS(data: any): PaymentMethod {
+    data = typeof data === "object" ? data : {};
+    let result = new PaymentMethod();
+    result.init(data);
+    return result;
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["code"] = this.code;
-        data["name"] = this.name;
-        data["logoUrl"] = this.logoUrl;
-        data["isActive"] = this.isActive;
-        data["priority"] = this.priority;
-        data["isAvailableForPartial"] = this.isAvailableForPartial;
-        data["allowDeferredPayment"] = this.allowDeferredPayment;
-        data["currency"] = this.currency;
-        data["price"] = this.price;
-        data["priceWithTax"] = this.priceWithTax;
-        data["total"] = this.total;
-        data["totalWithTax"] = this.totalWithTax;
-        data["discountAmount"] = this.discountAmount;
-        data["discountAmountWithTax"] = this.discountAmountWithTax;
-        data["storeId"] = this.storeId;
-        data["description"] = this.description;
-        data["typeName"] = this.typeName;
-        if (Array.isArray(this.settings)) {
-            data["settings"] = [];
-            for (let item of this.settings)
-                data["settings"].push(item.toJSON());
-        }
-        data["taxType"] = this.taxType;
-        data["taxTotal"] = this.taxTotal;
-        data["taxPercentRate"] = this.taxPercentRate;
-        if (Array.isArray(this.taxDetails)) {
-            data["taxDetails"] = [];
-            for (let item of this.taxDetails)
-                data["taxDetails"].push(item.toJSON());
-        }
-        data["paymentMethodType"] = this.paymentMethodType;
-        data["paymentMethodGroupType"] = this.paymentMethodGroupType;
-        data["id"] = this.id;
-        return data;
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    data["code"] = this.code;
+    data["name"] = this.name;
+    data["logoUrl"] = this.logoUrl;
+    data["isActive"] = this.isActive;
+    data["priority"] = this.priority;
+    data["isAvailableForPartial"] = this.isAvailableForPartial;
+    data["allowDeferredPayment"] = this.allowDeferredPayment;
+    data["currency"] = this.currency;
+    data["price"] = this.price;
+    data["priceWithTax"] = this.priceWithTax;
+    data["total"] = this.total;
+    data["totalWithTax"] = this.totalWithTax;
+    data["discountAmount"] = this.discountAmount;
+    data["discountAmountWithTax"] = this.discountAmountWithTax;
+    data["storeId"] = this.storeId;
+    data["description"] = this.description;
+    data["typeName"] = this.typeName;
+    if (Array.isArray(this.settings)) {
+      data["settings"] = [];
+      for (let item of this.settings) data["settings"].push(item.toJSON());
     }
+    data["taxType"] = this.taxType;
+    data["taxTotal"] = this.taxTotal;
+    data["taxPercentRate"] = this.taxPercentRate;
+    if (Array.isArray(this.taxDetails)) {
+      data["taxDetails"] = [];
+      for (let item of this.taxDetails) data["taxDetails"].push(item.toJSON());
+    }
+    data["paymentMethodType"] = this.paymentMethodType;
+    data["paymentMethodGroupType"] = this.paymentMethodGroupType;
+    data["id"] = this.id;
+    return data;
+  }
 }
 
 export interface IPaymentMethod {
-    code?: string | undefined;
-    name?: string | undefined;
-    logoUrl?: string | undefined;
-    isActive?: boolean;
-    priority?: number;
-    isAvailableForPartial?: boolean;
-    allowDeferredPayment?: boolean;
-    currency?: string | undefined;
-    price?: number;
-    priceWithTax?: number;
-    total?: number;
-    totalWithTax?: number;
-    discountAmount?: number;
-    discountAmountWithTax?: number;
-    storeId?: string | undefined;
-    description?: string | undefined;
-    typeName?: string | undefined;
-    settings?: ObjectSettingEntry[] | undefined;
-    taxType?: string | undefined;
-    taxTotal?: number;
-    taxPercentRate?: number;
-    taxDetails?: TaxDetail[] | undefined;
-    paymentMethodType?: PaymentMethodType2;
-    paymentMethodGroupType?: PaymentMethodGroupType2;
-    id?: string | undefined;
+  code?: string | undefined;
+  name?: string | undefined;
+  logoUrl?: string | undefined;
+  isActive?: boolean;
+  priority?: number;
+  isAvailableForPartial?: boolean;
+  allowDeferredPayment?: boolean;
+  currency?: string | undefined;
+  price?: number;
+  priceWithTax?: number;
+  total?: number;
+  totalWithTax?: number;
+  discountAmount?: number;
+  discountAmountWithTax?: number;
+  storeId?: string | undefined;
+  description?: string | undefined;
+  typeName?: string | undefined;
+  settings?: ObjectSettingEntry[] | undefined;
+  taxType?: string | undefined;
+  taxTotal?: number;
+  taxPercentRate?: number;
+  taxDetails?: TaxDetail[] | undefined;
+  paymentMethodType?: PaymentMethodType2;
+  paymentMethodGroupType?: PaymentMethodGroupType2;
+  id?: string | undefined;
 }
 
 export enum PaymentMethodGroupType {
-    Paypal = "Paypal",
-    BankCard = "BankCard",
-    Alternative = "Alternative",
-    Manual = "Manual",
+  Paypal = "Paypal",
+  BankCard = "BankCard",
+  Alternative = "Alternative",
+  Manual = "Manual",
 }
 
 export enum PaymentMethodType {
-    Unknown = "Unknown",
-    Standard = "Standard",
-    Redirection = "Redirection",
-    PreparedForm = "PreparedForm",
+  Unknown = "Unknown",
+  Standard = "Standard",
+  Redirection = "Redirection",
+  PreparedForm = "PreparedForm",
 }
 
 export class PaymentSearchCriteria implements IPaymentSearchCriteria {
-    orderId?: string | undefined;
-    orderNumber?: string | undefined;
-    customerId?: string | undefined;
-    capturedStartDate?: Date | undefined;
-    capturedEndDate?: Date | undefined;
-    authorizedStartDate?: Date | undefined;
-    authorizedEndDate?: Date | undefined;
-    ids?: string[] | undefined;
-    hasParentOperation?: boolean | undefined;
-    parentOperationId?: string | undefined;
-    employeeId?: string | undefined;
-    storeIds?: string[] | undefined;
-    status?: string | undefined;
-    statuses?: string[] | undefined;
-    number?: string | undefined;
-    numbers?: string[] | undefined;
-    startDate?: Date | undefined;
-    endDate?: Date | undefined;
-    responseGroup?: string | undefined;
-    objectType?: string | undefined;
-    objectTypes?: string[] | undefined;
-    objectIds?: string[] | undefined;
-    keyword?: string | undefined;
-    searchPhrase?: string | undefined;
-    languageCode?: string | undefined;
-    sort?: string | undefined;
-    readonly sortInfos?: SortInfo[] | undefined;
-    skip?: number;
-    take?: number;
+  orderId?: string | undefined;
+  orderNumber?: string | undefined;
+  customerId?: string | undefined;
+  capturedStartDate?: Date | undefined;
+  capturedEndDate?: Date | undefined;
+  authorizedStartDate?: Date | undefined;
+  authorizedEndDate?: Date | undefined;
+  ids?: string[] | undefined;
+  hasParentOperation?: boolean | undefined;
+  parentOperationId?: string | undefined;
+  employeeId?: string | undefined;
+  storeIds?: string[] | undefined;
+  status?: string | undefined;
+  statuses?: string[] | undefined;
+  number?: string | undefined;
+  numbers?: string[] | undefined;
+  startDate?: Date | undefined;
+  endDate?: Date | undefined;
+  responseGroup?: string | undefined;
+  objectType?: string | undefined;
+  objectTypes?: string[] | undefined;
+  objectIds?: string[] | undefined;
+  keyword?: string | undefined;
+  searchPhrase?: string | undefined;
+  languageCode?: string | undefined;
+  sort?: string | undefined;
+  readonly sortInfos?: SortInfo[] | undefined;
+  skip?: number;
+  take?: number;
 
-    constructor(data?: IPaymentSearchCriteria) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
+  constructor(data?: IPaymentSearchCriteria) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property)) (<any>this)[property] = (<any>data)[property];
+      }
     }
+  }
 
-    init(_data?: any) {
-        if (_data) {
-            this.orderId = _data["orderId"];
-            this.orderNumber = _data["orderNumber"];
-            this.customerId = _data["customerId"];
-            this.capturedStartDate = _data["capturedStartDate"] ? new Date(_data["capturedStartDate"].toString()) : <any>undefined;
-            this.capturedEndDate = _data["capturedEndDate"] ? new Date(_data["capturedEndDate"].toString()) : <any>undefined;
-            this.authorizedStartDate = _data["authorizedStartDate"] ? new Date(_data["authorizedStartDate"].toString()) : <any>undefined;
-            this.authorizedEndDate = _data["authorizedEndDate"] ? new Date(_data["authorizedEndDate"].toString()) : <any>undefined;
-            if (Array.isArray(_data["ids"])) {
-                this.ids = [] as any;
-                for (let item of _data["ids"])
-                    this.ids!.push(item);
-            }
-            this.hasParentOperation = _data["hasParentOperation"];
-            this.parentOperationId = _data["parentOperationId"];
-            this.employeeId = _data["employeeId"];
-            if (Array.isArray(_data["storeIds"])) {
-                this.storeIds = [] as any;
-                for (let item of _data["storeIds"])
-                    this.storeIds!.push(item);
-            }
-            this.status = _data["status"];
-            if (Array.isArray(_data["statuses"])) {
-                this.statuses = [] as any;
-                for (let item of _data["statuses"])
-                    this.statuses!.push(item);
-            }
-            this.number = _data["number"];
-            if (Array.isArray(_data["numbers"])) {
-                this.numbers = [] as any;
-                for (let item of _data["numbers"])
-                    this.numbers!.push(item);
-            }
-            this.startDate = _data["startDate"] ? new Date(_data["startDate"].toString()) : <any>undefined;
-            this.endDate = _data["endDate"] ? new Date(_data["endDate"].toString()) : <any>undefined;
-            this.responseGroup = _data["responseGroup"];
-            this.objectType = _data["objectType"];
-            if (Array.isArray(_data["objectTypes"])) {
-                this.objectTypes = [] as any;
-                for (let item of _data["objectTypes"])
-                    this.objectTypes!.push(item);
-            }
-            if (Array.isArray(_data["objectIds"])) {
-                this.objectIds = [] as any;
-                for (let item of _data["objectIds"])
-                    this.objectIds!.push(item);
-            }
-            this.keyword = _data["keyword"];
-            this.searchPhrase = _data["searchPhrase"];
-            this.languageCode = _data["languageCode"];
-            this.sort = _data["sort"];
-            if (Array.isArray(_data["sortInfos"])) {
-                (<any>this).sortInfos = [] as any;
-                for (let item of _data["sortInfos"])
-                    (<any>this).sortInfos!.push(SortInfo.fromJS(item));
-            }
-            this.skip = _data["skip"];
-            this.take = _data["take"];
-        }
+  init(_data?: any) {
+    if (_data) {
+      this.orderId = _data["orderId"];
+      this.orderNumber = _data["orderNumber"];
+      this.customerId = _data["customerId"];
+      this.capturedStartDate = _data["capturedStartDate"]
+        ? new Date(_data["capturedStartDate"].toString())
+        : <any>undefined;
+      this.capturedEndDate = _data["capturedEndDate"] ? new Date(_data["capturedEndDate"].toString()) : <any>undefined;
+      this.authorizedStartDate = _data["authorizedStartDate"]
+        ? new Date(_data["authorizedStartDate"].toString())
+        : <any>undefined;
+      this.authorizedEndDate = _data["authorizedEndDate"]
+        ? new Date(_data["authorizedEndDate"].toString())
+        : <any>undefined;
+      if (Array.isArray(_data["ids"])) {
+        this.ids = [] as any;
+        for (let item of _data["ids"]) this.ids!.push(item);
+      }
+      this.hasParentOperation = _data["hasParentOperation"];
+      this.parentOperationId = _data["parentOperationId"];
+      this.employeeId = _data["employeeId"];
+      if (Array.isArray(_data["storeIds"])) {
+        this.storeIds = [] as any;
+        for (let item of _data["storeIds"]) this.storeIds!.push(item);
+      }
+      this.status = _data["status"];
+      if (Array.isArray(_data["statuses"])) {
+        this.statuses = [] as any;
+        for (let item of _data["statuses"]) this.statuses!.push(item);
+      }
+      this.number = _data["number"];
+      if (Array.isArray(_data["numbers"])) {
+        this.numbers = [] as any;
+        for (let item of _data["numbers"]) this.numbers!.push(item);
+      }
+      this.startDate = _data["startDate"] ? new Date(_data["startDate"].toString()) : <any>undefined;
+      this.endDate = _data["endDate"] ? new Date(_data["endDate"].toString()) : <any>undefined;
+      this.responseGroup = _data["responseGroup"];
+      this.objectType = _data["objectType"];
+      if (Array.isArray(_data["objectTypes"])) {
+        this.objectTypes = [] as any;
+        for (let item of _data["objectTypes"]) this.objectTypes!.push(item);
+      }
+      if (Array.isArray(_data["objectIds"])) {
+        this.objectIds = [] as any;
+        for (let item of _data["objectIds"]) this.objectIds!.push(item);
+      }
+      this.keyword = _data["keyword"];
+      this.searchPhrase = _data["searchPhrase"];
+      this.languageCode = _data["languageCode"];
+      this.sort = _data["sort"];
+      if (Array.isArray(_data["sortInfos"])) {
+        (<any>this).sortInfos = [] as any;
+        for (let item of _data["sortInfos"]) (<any>this).sortInfos!.push(SortInfo.fromJS(item));
+      }
+      this.skip = _data["skip"];
+      this.take = _data["take"];
     }
+  }
 
-    static fromJS(data: any): PaymentSearchCriteria {
-        data = typeof data === 'object' ? data : {};
-        let result = new PaymentSearchCriteria();
-        result.init(data);
-        return result;
-    }
+  static fromJS(data: any): PaymentSearchCriteria {
+    data = typeof data === "object" ? data : {};
+    let result = new PaymentSearchCriteria();
+    result.init(data);
+    return result;
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["orderId"] = this.orderId;
-        data["orderNumber"] = this.orderNumber;
-        data["customerId"] = this.customerId;
-        data["capturedStartDate"] = this.capturedStartDate ? this.capturedStartDate.toISOString() : <any>undefined;
-        data["capturedEndDate"] = this.capturedEndDate ? this.capturedEndDate.toISOString() : <any>undefined;
-        data["authorizedStartDate"] = this.authorizedStartDate ? this.authorizedStartDate.toISOString() : <any>undefined;
-        data["authorizedEndDate"] = this.authorizedEndDate ? this.authorizedEndDate.toISOString() : <any>undefined;
-        if (Array.isArray(this.ids)) {
-            data["ids"] = [];
-            for (let item of this.ids)
-                data["ids"].push(item);
-        }
-        data["hasParentOperation"] = this.hasParentOperation;
-        data["parentOperationId"] = this.parentOperationId;
-        data["employeeId"] = this.employeeId;
-        if (Array.isArray(this.storeIds)) {
-            data["storeIds"] = [];
-            for (let item of this.storeIds)
-                data["storeIds"].push(item);
-        }
-        data["status"] = this.status;
-        if (Array.isArray(this.statuses)) {
-            data["statuses"] = [];
-            for (let item of this.statuses)
-                data["statuses"].push(item);
-        }
-        data["number"] = this.number;
-        if (Array.isArray(this.numbers)) {
-            data["numbers"] = [];
-            for (let item of this.numbers)
-                data["numbers"].push(item);
-        }
-        data["startDate"] = this.startDate ? this.startDate.toISOString() : <any>undefined;
-        data["endDate"] = this.endDate ? this.endDate.toISOString() : <any>undefined;
-        data["responseGroup"] = this.responseGroup;
-        data["objectType"] = this.objectType;
-        if (Array.isArray(this.objectTypes)) {
-            data["objectTypes"] = [];
-            for (let item of this.objectTypes)
-                data["objectTypes"].push(item);
-        }
-        if (Array.isArray(this.objectIds)) {
-            data["objectIds"] = [];
-            for (let item of this.objectIds)
-                data["objectIds"].push(item);
-        }
-        data["keyword"] = this.keyword;
-        data["searchPhrase"] = this.searchPhrase;
-        data["languageCode"] = this.languageCode;
-        data["sort"] = this.sort;
-        if (Array.isArray(this.sortInfos)) {
-            data["sortInfos"] = [];
-            for (let item of this.sortInfos)
-                data["sortInfos"].push(item.toJSON());
-        }
-        data["skip"] = this.skip;
-        data["take"] = this.take;
-        return data;
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    data["orderId"] = this.orderId;
+    data["orderNumber"] = this.orderNumber;
+    data["customerId"] = this.customerId;
+    data["capturedStartDate"] = this.capturedStartDate ? this.capturedStartDate.toISOString() : <any>undefined;
+    data["capturedEndDate"] = this.capturedEndDate ? this.capturedEndDate.toISOString() : <any>undefined;
+    data["authorizedStartDate"] = this.authorizedStartDate ? this.authorizedStartDate.toISOString() : <any>undefined;
+    data["authorizedEndDate"] = this.authorizedEndDate ? this.authorizedEndDate.toISOString() : <any>undefined;
+    if (Array.isArray(this.ids)) {
+      data["ids"] = [];
+      for (let item of this.ids) data["ids"].push(item);
     }
+    data["hasParentOperation"] = this.hasParentOperation;
+    data["parentOperationId"] = this.parentOperationId;
+    data["employeeId"] = this.employeeId;
+    if (Array.isArray(this.storeIds)) {
+      data["storeIds"] = [];
+      for (let item of this.storeIds) data["storeIds"].push(item);
+    }
+    data["status"] = this.status;
+    if (Array.isArray(this.statuses)) {
+      data["statuses"] = [];
+      for (let item of this.statuses) data["statuses"].push(item);
+    }
+    data["number"] = this.number;
+    if (Array.isArray(this.numbers)) {
+      data["numbers"] = [];
+      for (let item of this.numbers) data["numbers"].push(item);
+    }
+    data["startDate"] = this.startDate ? this.startDate.toISOString() : <any>undefined;
+    data["endDate"] = this.endDate ? this.endDate.toISOString() : <any>undefined;
+    data["responseGroup"] = this.responseGroup;
+    data["objectType"] = this.objectType;
+    if (Array.isArray(this.objectTypes)) {
+      data["objectTypes"] = [];
+      for (let item of this.objectTypes) data["objectTypes"].push(item);
+    }
+    if (Array.isArray(this.objectIds)) {
+      data["objectIds"] = [];
+      for (let item of this.objectIds) data["objectIds"].push(item);
+    }
+    data["keyword"] = this.keyword;
+    data["searchPhrase"] = this.searchPhrase;
+    data["languageCode"] = this.languageCode;
+    data["sort"] = this.sort;
+    if (Array.isArray(this.sortInfos)) {
+      data["sortInfos"] = [];
+      for (let item of this.sortInfos) data["sortInfos"].push(item.toJSON());
+    }
+    data["skip"] = this.skip;
+    data["take"] = this.take;
+    return data;
+  }
 }
 
 export interface IPaymentSearchCriteria {
-    orderId?: string | undefined;
-    orderNumber?: string | undefined;
-    customerId?: string | undefined;
-    capturedStartDate?: Date | undefined;
-    capturedEndDate?: Date | undefined;
-    authorizedStartDate?: Date | undefined;
-    authorizedEndDate?: Date | undefined;
-    ids?: string[] | undefined;
-    hasParentOperation?: boolean | undefined;
-    parentOperationId?: string | undefined;
-    employeeId?: string | undefined;
-    storeIds?: string[] | undefined;
-    status?: string | undefined;
-    statuses?: string[] | undefined;
-    number?: string | undefined;
-    numbers?: string[] | undefined;
-    startDate?: Date | undefined;
-    endDate?: Date | undefined;
-    responseGroup?: string | undefined;
-    objectType?: string | undefined;
-    objectTypes?: string[] | undefined;
-    objectIds?: string[] | undefined;
-    keyword?: string | undefined;
-    searchPhrase?: string | undefined;
-    languageCode?: string | undefined;
-    sort?: string | undefined;
-    sortInfos?: SortInfo[] | undefined;
-    skip?: number;
-    take?: number;
+  orderId?: string | undefined;
+  orderNumber?: string | undefined;
+  customerId?: string | undefined;
+  capturedStartDate?: Date | undefined;
+  capturedEndDate?: Date | undefined;
+  authorizedStartDate?: Date | undefined;
+  authorizedEndDate?: Date | undefined;
+  ids?: string[] | undefined;
+  hasParentOperation?: boolean | undefined;
+  parentOperationId?: string | undefined;
+  employeeId?: string | undefined;
+  storeIds?: string[] | undefined;
+  status?: string | undefined;
+  statuses?: string[] | undefined;
+  number?: string | undefined;
+  numbers?: string[] | undefined;
+  startDate?: Date | undefined;
+  endDate?: Date | undefined;
+  responseGroup?: string | undefined;
+  objectType?: string | undefined;
+  objectTypes?: string[] | undefined;
+  objectIds?: string[] | undefined;
+  keyword?: string | undefined;
+  searchPhrase?: string | undefined;
+  languageCode?: string | undefined;
+  sort?: string | undefined;
+  sortInfos?: SortInfo[] | undefined;
+  skip?: number;
+  take?: number;
 }
 
 export class PaymentSearchResult implements IPaymentSearchResult {
-    totalCount?: number;
-    results?: PaymentIn[] | undefined;
+  totalCount?: number;
+  results?: PaymentIn[] | undefined;
 
-    constructor(data?: IPaymentSearchResult) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
+  constructor(data?: IPaymentSearchResult) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property)) (<any>this)[property] = (<any>data)[property];
+      }
     }
+  }
 
-    init(_data?: any) {
-        if (_data) {
-            this.totalCount = _data["totalCount"];
-            if (Array.isArray(_data["results"])) {
-                this.results = [] as any;
-                for (let item of _data["results"])
-                    this.results!.push(PaymentIn.fromJS(item));
-            }
-        }
+  init(_data?: any) {
+    if (_data) {
+      this.totalCount = _data["totalCount"];
+      if (Array.isArray(_data["results"])) {
+        this.results = [] as any;
+        for (let item of _data["results"]) this.results!.push(PaymentIn.fromJS(item));
+      }
     }
+  }
 
-    static fromJS(data: any): PaymentSearchResult {
-        data = typeof data === 'object' ? data : {};
-        let result = new PaymentSearchResult();
-        result.init(data);
-        return result;
-    }
+  static fromJS(data: any): PaymentSearchResult {
+    data = typeof data === "object" ? data : {};
+    let result = new PaymentSearchResult();
+    result.init(data);
+    return result;
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["totalCount"] = this.totalCount;
-        if (Array.isArray(this.results)) {
-            data["results"] = [];
-            for (let item of this.results)
-                data["results"].push(item.toJSON());
-        }
-        return data;
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    data["totalCount"] = this.totalCount;
+    if (Array.isArray(this.results)) {
+      data["results"] = [];
+      for (let item of this.results) data["results"].push(item.toJSON());
     }
+    return data;
+  }
 }
 
 export interface IPaymentSearchResult {
-    totalCount?: number;
-    results?: PaymentIn[] | undefined;
+  totalCount?: number;
+  results?: PaymentIn[] | undefined;
 }
 
 export enum PaymentStatus {
-    New = "New",
-    Pending = "Pending",
-    Authorized = "Authorized",
-    Paid = "Paid",
-    PartiallyRefunded = "PartiallyRefunded",
-    Refunded = "Refunded",
-    Voided = "Voided",
-    Custom = "Custom",
-    Cancelled = "Cancelled",
-    Declined = "Declined",
-    Error = "Error",
+  New = "New",
+  Pending = "Pending",
+  Authorized = "Authorized",
+  Paid = "Paid",
+  PartiallyRefunded = "PartiallyRefunded",
+  Refunded = "Refunded",
+  Voided = "Voided",
+  Custom = "Custom",
+  Cancelled = "Cancelled",
+  Declined = "Declined",
+  Error = "Error",
 }
 
 export class PostProcessPaymentRequestResult implements IPostProcessPaymentRequestResult {
-    returnUrl?: string | undefined;
-    orderId?: string | undefined;
-    outerId?: string | undefined;
-    paymentMethod?: PaymentMethod | undefined;
-    isSuccess?: boolean;
-    errorMessage?: string | undefined;
-    newPaymentStatus?: PostProcessPaymentRequestResultNewPaymentStatus;
-    publicParameters?: { [key: string]: string; } | undefined;
+  returnUrl?: string | undefined;
+  orderId?: string | undefined;
+  outerId?: string | undefined;
+  paymentMethod?: PaymentMethod | undefined;
+  isSuccess?: boolean;
+  errorMessage?: string | undefined;
+  newPaymentStatus?: PostProcessPaymentRequestResultNewPaymentStatus;
+  publicParameters?: { [key: string]: string } | undefined;
 
-    constructor(data?: IPostProcessPaymentRequestResult) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
+  constructor(data?: IPostProcessPaymentRequestResult) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property)) (<any>this)[property] = (<any>data)[property];
+      }
+    }
+  }
+
+  init(_data?: any) {
+    if (_data) {
+      this.returnUrl = _data["returnUrl"];
+      this.orderId = _data["orderId"];
+      this.outerId = _data["outerId"];
+      this.paymentMethod = _data["paymentMethod"] ? PaymentMethod.fromJS(_data["paymentMethod"]) : <any>undefined;
+      this.isSuccess = _data["isSuccess"];
+      this.errorMessage = _data["errorMessage"];
+      this.newPaymentStatus = _data["newPaymentStatus"];
+      if (_data["publicParameters"]) {
+        this.publicParameters = {} as any;
+        for (let key in _data["publicParameters"]) {
+          if (_data["publicParameters"].hasOwnProperty(key))
+            (<any>this.publicParameters)![key] = _data["publicParameters"][key];
         }
+      }
     }
+  }
 
-    init(_data?: any) {
-        if (_data) {
-            this.returnUrl = _data["returnUrl"];
-            this.orderId = _data["orderId"];
-            this.outerId = _data["outerId"];
-            this.paymentMethod = _data["paymentMethod"] ? PaymentMethod.fromJS(_data["paymentMethod"]) : <any>undefined;
-            this.isSuccess = _data["isSuccess"];
-            this.errorMessage = _data["errorMessage"];
-            this.newPaymentStatus = _data["newPaymentStatus"];
-            if (_data["publicParameters"]) {
-                this.publicParameters = {} as any;
-                for (let key in _data["publicParameters"]) {
-                    if (_data["publicParameters"].hasOwnProperty(key))
-                        (<any>this.publicParameters)![key] = _data["publicParameters"][key];
-                }
-            }
-        }
-    }
+  static fromJS(data: any): PostProcessPaymentRequestResult {
+    data = typeof data === "object" ? data : {};
+    let result = new PostProcessPaymentRequestResult();
+    result.init(data);
+    return result;
+  }
 
-    static fromJS(data: any): PostProcessPaymentRequestResult {
-        data = typeof data === 'object' ? data : {};
-        let result = new PostProcessPaymentRequestResult();
-        result.init(data);
-        return result;
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    data["returnUrl"] = this.returnUrl;
+    data["orderId"] = this.orderId;
+    data["outerId"] = this.outerId;
+    data["paymentMethod"] = this.paymentMethod ? this.paymentMethod.toJSON() : <any>undefined;
+    data["isSuccess"] = this.isSuccess;
+    data["errorMessage"] = this.errorMessage;
+    data["newPaymentStatus"] = this.newPaymentStatus;
+    if (this.publicParameters) {
+      data["publicParameters"] = {};
+      for (let key in this.publicParameters) {
+        if (this.publicParameters.hasOwnProperty(key))
+          (<any>data["publicParameters"])[key] = (<any>this.publicParameters)[key];
+      }
     }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["returnUrl"] = this.returnUrl;
-        data["orderId"] = this.orderId;
-        data["outerId"] = this.outerId;
-        data["paymentMethod"] = this.paymentMethod ? this.paymentMethod.toJSON() : <any>undefined;
-        data["isSuccess"] = this.isSuccess;
-        data["errorMessage"] = this.errorMessage;
-        data["newPaymentStatus"] = this.newPaymentStatus;
-        if (this.publicParameters) {
-            data["publicParameters"] = {};
-            for (let key in this.publicParameters) {
-                if (this.publicParameters.hasOwnProperty(key))
-                    (<any>data["publicParameters"])[key] = (<any>this.publicParameters)[key];
-            }
-        }
-        return data;
-    }
+    return data;
+  }
 }
 
 export interface IPostProcessPaymentRequestResult {
-    returnUrl?: string | undefined;
-    orderId?: string | undefined;
-    outerId?: string | undefined;
-    paymentMethod?: PaymentMethod | undefined;
-    isSuccess?: boolean;
-    errorMessage?: string | undefined;
-    newPaymentStatus?: PostProcessPaymentRequestResultNewPaymentStatus;
-    publicParameters?: { [key: string]: string; } | undefined;
+  returnUrl?: string | undefined;
+  orderId?: string | undefined;
+  outerId?: string | undefined;
+  paymentMethod?: PaymentMethod | undefined;
+  isSuccess?: boolean;
+  errorMessage?: string | undefined;
+  newPaymentStatus?: PostProcessPaymentRequestResultNewPaymentStatus;
+  publicParameters?: { [key: string]: string } | undefined;
 }
 
 export class ProcessPaymentRequestResult implements IProcessPaymentRequestResult {
-    redirectUrl?: string | undefined;
-    htmlForm?: string | undefined;
-    outerId?: string | undefined;
-    paymentMethod?: PaymentMethod | undefined;
-    isSuccess?: boolean;
-    errorMessage?: string | undefined;
-    newPaymentStatus?: ProcessPaymentRequestResultNewPaymentStatus;
-    publicParameters?: { [key: string]: string; } | undefined;
+  redirectUrl?: string | undefined;
+  htmlForm?: string | undefined;
+  outerId?: string | undefined;
+  paymentMethod?: PaymentMethod | undefined;
+  isSuccess?: boolean;
+  errorMessage?: string | undefined;
+  newPaymentStatus?: ProcessPaymentRequestResultNewPaymentStatus;
+  publicParameters?: { [key: string]: string } | undefined;
 
-    constructor(data?: IProcessPaymentRequestResult) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
+  constructor(data?: IProcessPaymentRequestResult) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property)) (<any>this)[property] = (<any>data)[property];
+      }
+    }
+  }
+
+  init(_data?: any) {
+    if (_data) {
+      this.redirectUrl = _data["redirectUrl"];
+      this.htmlForm = _data["htmlForm"];
+      this.outerId = _data["outerId"];
+      this.paymentMethod = _data["paymentMethod"] ? PaymentMethod.fromJS(_data["paymentMethod"]) : <any>undefined;
+      this.isSuccess = _data["isSuccess"];
+      this.errorMessage = _data["errorMessage"];
+      this.newPaymentStatus = _data["newPaymentStatus"];
+      if (_data["publicParameters"]) {
+        this.publicParameters = {} as any;
+        for (let key in _data["publicParameters"]) {
+          if (_data["publicParameters"].hasOwnProperty(key))
+            (<any>this.publicParameters)![key] = _data["publicParameters"][key];
         }
+      }
     }
+  }
 
-    init(_data?: any) {
-        if (_data) {
-            this.redirectUrl = _data["redirectUrl"];
-            this.htmlForm = _data["htmlForm"];
-            this.outerId = _data["outerId"];
-            this.paymentMethod = _data["paymentMethod"] ? PaymentMethod.fromJS(_data["paymentMethod"]) : <any>undefined;
-            this.isSuccess = _data["isSuccess"];
-            this.errorMessage = _data["errorMessage"];
-            this.newPaymentStatus = _data["newPaymentStatus"];
-            if (_data["publicParameters"]) {
-                this.publicParameters = {} as any;
-                for (let key in _data["publicParameters"]) {
-                    if (_data["publicParameters"].hasOwnProperty(key))
-                        (<any>this.publicParameters)![key] = _data["publicParameters"][key];
-                }
-            }
-        }
-    }
+  static fromJS(data: any): ProcessPaymentRequestResult {
+    data = typeof data === "object" ? data : {};
+    let result = new ProcessPaymentRequestResult();
+    result.init(data);
+    return result;
+  }
 
-    static fromJS(data: any): ProcessPaymentRequestResult {
-        data = typeof data === 'object' ? data : {};
-        let result = new ProcessPaymentRequestResult();
-        result.init(data);
-        return result;
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    data["redirectUrl"] = this.redirectUrl;
+    data["htmlForm"] = this.htmlForm;
+    data["outerId"] = this.outerId;
+    data["paymentMethod"] = this.paymentMethod ? this.paymentMethod.toJSON() : <any>undefined;
+    data["isSuccess"] = this.isSuccess;
+    data["errorMessage"] = this.errorMessage;
+    data["newPaymentStatus"] = this.newPaymentStatus;
+    if (this.publicParameters) {
+      data["publicParameters"] = {};
+      for (let key in this.publicParameters) {
+        if (this.publicParameters.hasOwnProperty(key))
+          (<any>data["publicParameters"])[key] = (<any>this.publicParameters)[key];
+      }
     }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["redirectUrl"] = this.redirectUrl;
-        data["htmlForm"] = this.htmlForm;
-        data["outerId"] = this.outerId;
-        data["paymentMethod"] = this.paymentMethod ? this.paymentMethod.toJSON() : <any>undefined;
-        data["isSuccess"] = this.isSuccess;
-        data["errorMessage"] = this.errorMessage;
-        data["newPaymentStatus"] = this.newPaymentStatus;
-        if (this.publicParameters) {
-            data["publicParameters"] = {};
-            for (let key in this.publicParameters) {
-                if (this.publicParameters.hasOwnProperty(key))
-                    (<any>data["publicParameters"])[key] = (<any>this.publicParameters)[key];
-            }
-        }
-        return data;
-    }
+    return data;
+  }
 }
 
 export interface IProcessPaymentRequestResult {
-    redirectUrl?: string | undefined;
-    htmlForm?: string | undefined;
-    outerId?: string | undefined;
-    paymentMethod?: PaymentMethod | undefined;
-    isSuccess?: boolean;
-    errorMessage?: string | undefined;
-    newPaymentStatus?: ProcessPaymentRequestResultNewPaymentStatus;
-    publicParameters?: { [key: string]: string; } | undefined;
+  redirectUrl?: string | undefined;
+  htmlForm?: string | undefined;
+  outerId?: string | undefined;
+  paymentMethod?: PaymentMethod | undefined;
+  isSuccess?: boolean;
+  errorMessage?: string | undefined;
+  newPaymentStatus?: ProcessPaymentRequestResultNewPaymentStatus;
+  publicParameters?: { [key: string]: string } | undefined;
 }
 
 export class QuarterPeriodMoney implements IQuarterPeriodMoney {
-    year?: number;
-    quarter?: number;
-    currency?: string | undefined;
-    amount?: number;
+  year?: number;
+  quarter?: number;
+  currency?: string | undefined;
+  amount?: number;
 
-    constructor(data?: IQuarterPeriodMoney) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
+  constructor(data?: IQuarterPeriodMoney) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property)) (<any>this)[property] = (<any>data)[property];
+      }
     }
+  }
 
-    init(_data?: any) {
-        if (_data) {
-            this.year = _data["year"];
-            this.quarter = _data["quarter"];
-            this.currency = _data["currency"];
-            this.amount = _data["amount"];
-        }
+  init(_data?: any) {
+    if (_data) {
+      this.year = _data["year"];
+      this.quarter = _data["quarter"];
+      this.currency = _data["currency"];
+      this.amount = _data["amount"];
     }
+  }
 
-    static fromJS(data: any): QuarterPeriodMoney {
-        data = typeof data === 'object' ? data : {};
-        let result = new QuarterPeriodMoney();
-        result.init(data);
-        return result;
-    }
+  static fromJS(data: any): QuarterPeriodMoney {
+    data = typeof data === "object" ? data : {};
+    let result = new QuarterPeriodMoney();
+    result.init(data);
+    return result;
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["year"] = this.year;
-        data["quarter"] = this.quarter;
-        data["currency"] = this.currency;
-        data["amount"] = this.amount;
-        return data;
-    }
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    data["year"] = this.year;
+    data["quarter"] = this.quarter;
+    data["currency"] = this.currency;
+    data["amount"] = this.amount;
+    return data;
+  }
 }
 
 export interface IQuarterPeriodMoney {
-    year?: number;
-    quarter?: number;
-    currency?: string | undefined;
-    amount?: number;
+  year?: number;
+  quarter?: number;
+  currency?: string | undefined;
+  amount?: number;
 }
 
 export class Refund implements IRefund {
-    objectType?: string | undefined;
-    amount?: number;
-    reasonCode?: RefundReasonCode2;
-    refundStatus?: RefundStatus2;
-    reasonMessage?: string | undefined;
-    rejectReasonMessage?: string | undefined;
-    vendorId?: string | undefined;
-    transactionId?: string | undefined;
-    customerOrderId?: string | undefined;
-    paymentId?: string | undefined;
-    items?: RefundItem[] | undefined;
-    operationType?: string | undefined;
-    parentOperationId?: string | undefined;
-    number?: string | undefined;
-    isApproved?: boolean;
-    status?: string | undefined;
-    comment?: string | undefined;
-    currency?: string | undefined;
-    sum?: number;
-    outerId?: string | undefined;
-    cancelledState?: RefundCancelledState;
-    isCancelled?: boolean;
-    cancelledDate?: Date | undefined;
-    cancelReason?: string | undefined;
-    dynamicProperties?: DynamicObjectProperty[] | undefined;
-    operationsLog?: OperationLog[] | undefined;
-    createdDate?: Date;
-    modifiedDate?: Date | undefined;
-    createdBy?: string | undefined;
-    modifiedBy?: string | undefined;
-    id?: string | undefined;
+  objectType?: string | undefined;
+  amount?: number;
+  reasonCode?: RefundReasonCode2;
+  refundStatus?: RefundStatus2;
+  reasonMessage?: string | undefined;
+  rejectReasonMessage?: string | undefined;
+  vendorId?: string | undefined;
+  transactionId?: string | undefined;
+  customerOrderId?: string | undefined;
+  paymentId?: string | undefined;
+  items?: RefundItem[] | undefined;
+  operationType?: string | undefined;
+  parentOperationId?: string | undefined;
+  number?: string | undefined;
+  isApproved?: boolean;
+  status?: string | undefined;
+  comment?: string | undefined;
+  currency?: string | undefined;
+  sum?: number;
+  outerId?: string | undefined;
+  cancelledState?: RefundCancelledState;
+  isCancelled?: boolean;
+  cancelledDate?: Date | undefined;
+  cancelReason?: string | undefined;
+  dynamicProperties?: DynamicObjectProperty[] | undefined;
+  operationsLog?: OperationLog[] | undefined;
+  createdDate?: Date;
+  modifiedDate?: Date | undefined;
+  createdBy?: string | undefined;
+  modifiedBy?: string | undefined;
+  id?: string | undefined;
 
-    constructor(data?: IRefund) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
+  constructor(data?: IRefund) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property)) (<any>this)[property] = (<any>data)[property];
+      }
     }
+  }
 
-    init(_data?: any) {
-        if (_data) {
-            this.objectType = _data["objectType"];
-            this.amount = _data["amount"];
-            this.reasonCode = _data["reasonCode"];
-            this.refundStatus = _data["refundStatus"];
-            this.reasonMessage = _data["reasonMessage"];
-            this.rejectReasonMessage = _data["rejectReasonMessage"];
-            this.vendorId = _data["vendorId"];
-            this.transactionId = _data["transactionId"];
-            this.customerOrderId = _data["customerOrderId"];
-            this.paymentId = _data["paymentId"];
-            if (Array.isArray(_data["items"])) {
-                this.items = [] as any;
-                for (let item of _data["items"])
-                    this.items!.push(RefundItem.fromJS(item));
-            }
-            this.operationType = _data["operationType"];
-            this.parentOperationId = _data["parentOperationId"];
-            this.number = _data["number"];
-            this.isApproved = _data["isApproved"];
-            this.status = _data["status"];
-            this.comment = _data["comment"];
-            this.currency = _data["currency"];
-            this.sum = _data["sum"];
-            this.outerId = _data["outerId"];
-            this.cancelledState = _data["cancelledState"];
-            this.isCancelled = _data["isCancelled"];
-            this.cancelledDate = _data["cancelledDate"] ? new Date(_data["cancelledDate"].toString()) : <any>undefined;
-            this.cancelReason = _data["cancelReason"];
-            if (Array.isArray(_data["dynamicProperties"])) {
-                this.dynamicProperties = [] as any;
-                for (let item of _data["dynamicProperties"])
-                    this.dynamicProperties!.push(DynamicObjectProperty.fromJS(item));
-            }
-            if (Array.isArray(_data["operationsLog"])) {
-                this.operationsLog = [] as any;
-                for (let item of _data["operationsLog"])
-                    this.operationsLog!.push(OperationLog.fromJS(item));
-            }
-            this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>undefined;
-            this.modifiedDate = _data["modifiedDate"] ? new Date(_data["modifiedDate"].toString()) : <any>undefined;
-            this.createdBy = _data["createdBy"];
-            this.modifiedBy = _data["modifiedBy"];
-            this.id = _data["id"];
-        }
+  init(_data?: any) {
+    if (_data) {
+      this.objectType = _data["objectType"];
+      this.amount = _data["amount"];
+      this.reasonCode = _data["reasonCode"];
+      this.refundStatus = _data["refundStatus"];
+      this.reasonMessage = _data["reasonMessage"];
+      this.rejectReasonMessage = _data["rejectReasonMessage"];
+      this.vendorId = _data["vendorId"];
+      this.transactionId = _data["transactionId"];
+      this.customerOrderId = _data["customerOrderId"];
+      this.paymentId = _data["paymentId"];
+      if (Array.isArray(_data["items"])) {
+        this.items = [] as any;
+        for (let item of _data["items"]) this.items!.push(RefundItem.fromJS(item));
+      }
+      this.operationType = _data["operationType"];
+      this.parentOperationId = _data["parentOperationId"];
+      this.number = _data["number"];
+      this.isApproved = _data["isApproved"];
+      this.status = _data["status"];
+      this.comment = _data["comment"];
+      this.currency = _data["currency"];
+      this.sum = _data["sum"];
+      this.outerId = _data["outerId"];
+      this.cancelledState = _data["cancelledState"];
+      this.isCancelled = _data["isCancelled"];
+      this.cancelledDate = _data["cancelledDate"] ? new Date(_data["cancelledDate"].toString()) : <any>undefined;
+      this.cancelReason = _data["cancelReason"];
+      if (Array.isArray(_data["dynamicProperties"])) {
+        this.dynamicProperties = [] as any;
+        for (let item of _data["dynamicProperties"]) this.dynamicProperties!.push(DynamicObjectProperty.fromJS(item));
+      }
+      if (Array.isArray(_data["operationsLog"])) {
+        this.operationsLog = [] as any;
+        for (let item of _data["operationsLog"]) this.operationsLog!.push(OperationLog.fromJS(item));
+      }
+      this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>undefined;
+      this.modifiedDate = _data["modifiedDate"] ? new Date(_data["modifiedDate"].toString()) : <any>undefined;
+      this.createdBy = _data["createdBy"];
+      this.modifiedBy = _data["modifiedBy"];
+      this.id = _data["id"];
     }
+  }
 
-    static fromJS(data: any): Refund {
-        data = typeof data === 'object' ? data : {};
-        let result = new Refund();
-        result.init(data);
-        return result;
-    }
+  static fromJS(data: any): Refund {
+    data = typeof data === "object" ? data : {};
+    let result = new Refund();
+    result.init(data);
+    return result;
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["objectType"] = this.objectType;
-        data["amount"] = this.amount;
-        data["reasonCode"] = this.reasonCode;
-        data["refundStatus"] = this.refundStatus;
-        data["reasonMessage"] = this.reasonMessage;
-        data["rejectReasonMessage"] = this.rejectReasonMessage;
-        data["vendorId"] = this.vendorId;
-        data["transactionId"] = this.transactionId;
-        data["customerOrderId"] = this.customerOrderId;
-        data["paymentId"] = this.paymentId;
-        if (Array.isArray(this.items)) {
-            data["items"] = [];
-            for (let item of this.items)
-                data["items"].push(item.toJSON());
-        }
-        data["operationType"] = this.operationType;
-        data["parentOperationId"] = this.parentOperationId;
-        data["number"] = this.number;
-        data["isApproved"] = this.isApproved;
-        data["status"] = this.status;
-        data["comment"] = this.comment;
-        data["currency"] = this.currency;
-        data["sum"] = this.sum;
-        data["outerId"] = this.outerId;
-        data["cancelledState"] = this.cancelledState;
-        data["isCancelled"] = this.isCancelled;
-        data["cancelledDate"] = this.cancelledDate ? this.cancelledDate.toISOString() : <any>undefined;
-        data["cancelReason"] = this.cancelReason;
-        if (Array.isArray(this.dynamicProperties)) {
-            data["dynamicProperties"] = [];
-            for (let item of this.dynamicProperties)
-                data["dynamicProperties"].push(item.toJSON());
-        }
-        if (Array.isArray(this.operationsLog)) {
-            data["operationsLog"] = [];
-            for (let item of this.operationsLog)
-                data["operationsLog"].push(item.toJSON());
-        }
-        data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>undefined;
-        data["modifiedDate"] = this.modifiedDate ? this.modifiedDate.toISOString() : <any>undefined;
-        data["createdBy"] = this.createdBy;
-        data["modifiedBy"] = this.modifiedBy;
-        data["id"] = this.id;
-        return data;
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    data["objectType"] = this.objectType;
+    data["amount"] = this.amount;
+    data["reasonCode"] = this.reasonCode;
+    data["refundStatus"] = this.refundStatus;
+    data["reasonMessage"] = this.reasonMessage;
+    data["rejectReasonMessage"] = this.rejectReasonMessage;
+    data["vendorId"] = this.vendorId;
+    data["transactionId"] = this.transactionId;
+    data["customerOrderId"] = this.customerOrderId;
+    data["paymentId"] = this.paymentId;
+    if (Array.isArray(this.items)) {
+      data["items"] = [];
+      for (let item of this.items) data["items"].push(item.toJSON());
     }
+    data["operationType"] = this.operationType;
+    data["parentOperationId"] = this.parentOperationId;
+    data["number"] = this.number;
+    data["isApproved"] = this.isApproved;
+    data["status"] = this.status;
+    data["comment"] = this.comment;
+    data["currency"] = this.currency;
+    data["sum"] = this.sum;
+    data["outerId"] = this.outerId;
+    data["cancelledState"] = this.cancelledState;
+    data["isCancelled"] = this.isCancelled;
+    data["cancelledDate"] = this.cancelledDate ? this.cancelledDate.toISOString() : <any>undefined;
+    data["cancelReason"] = this.cancelReason;
+    if (Array.isArray(this.dynamicProperties)) {
+      data["dynamicProperties"] = [];
+      for (let item of this.dynamicProperties) data["dynamicProperties"].push(item.toJSON());
+    }
+    if (Array.isArray(this.operationsLog)) {
+      data["operationsLog"] = [];
+      for (let item of this.operationsLog) data["operationsLog"].push(item.toJSON());
+    }
+    data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>undefined;
+    data["modifiedDate"] = this.modifiedDate ? this.modifiedDate.toISOString() : <any>undefined;
+    data["createdBy"] = this.createdBy;
+    data["modifiedBy"] = this.modifiedBy;
+    data["id"] = this.id;
+    return data;
+  }
 }
 
 export interface IRefund {
-    objectType?: string | undefined;
-    amount?: number;
-    reasonCode?: RefundReasonCode2;
-    refundStatus?: RefundStatus2;
-    reasonMessage?: string | undefined;
-    rejectReasonMessage?: string | undefined;
-    vendorId?: string | undefined;
-    transactionId?: string | undefined;
-    customerOrderId?: string | undefined;
-    paymentId?: string | undefined;
-    items?: RefundItem[] | undefined;
-    operationType?: string | undefined;
-    parentOperationId?: string | undefined;
-    number?: string | undefined;
-    isApproved?: boolean;
-    status?: string | undefined;
-    comment?: string | undefined;
-    currency?: string | undefined;
-    sum?: number;
-    outerId?: string | undefined;
-    cancelledState?: RefundCancelledState;
-    isCancelled?: boolean;
-    cancelledDate?: Date | undefined;
-    cancelReason?: string | undefined;
-    dynamicProperties?: DynamicObjectProperty[] | undefined;
-    operationsLog?: OperationLog[] | undefined;
-    createdDate?: Date;
-    modifiedDate?: Date | undefined;
-    createdBy?: string | undefined;
-    modifiedBy?: string | undefined;
-    id?: string | undefined;
+  objectType?: string | undefined;
+  amount?: number;
+  reasonCode?: RefundReasonCode2;
+  refundStatus?: RefundStatus2;
+  reasonMessage?: string | undefined;
+  rejectReasonMessage?: string | undefined;
+  vendorId?: string | undefined;
+  transactionId?: string | undefined;
+  customerOrderId?: string | undefined;
+  paymentId?: string | undefined;
+  items?: RefundItem[] | undefined;
+  operationType?: string | undefined;
+  parentOperationId?: string | undefined;
+  number?: string | undefined;
+  isApproved?: boolean;
+  status?: string | undefined;
+  comment?: string | undefined;
+  currency?: string | undefined;
+  sum?: number;
+  outerId?: string | undefined;
+  cancelledState?: RefundCancelledState;
+  isCancelled?: boolean;
+  cancelledDate?: Date | undefined;
+  cancelReason?: string | undefined;
+  dynamicProperties?: DynamicObjectProperty[] | undefined;
+  operationsLog?: OperationLog[] | undefined;
+  createdDate?: Date;
+  modifiedDate?: Date | undefined;
+  createdBy?: string | undefined;
+  modifiedBy?: string | undefined;
+  id?: string | undefined;
 }
 
 export class RefundItem implements IRefundItem {
-    quantity?: number;
-    lineItemId?: string | undefined;
-    lineItem?: OrderLineItem | undefined;
-    refundId?: string | undefined;
-    outerId?: string | undefined;
-    createdDate?: Date;
-    modifiedDate?: Date | undefined;
-    createdBy?: string | undefined;
-    modifiedBy?: string | undefined;
-    id?: string | undefined;
+  quantity?: number;
+  lineItemId?: string | undefined;
+  lineItem?: OrderLineItem | undefined;
+  refundId?: string | undefined;
+  outerId?: string | undefined;
+  createdDate?: Date;
+  modifiedDate?: Date | undefined;
+  createdBy?: string | undefined;
+  modifiedBy?: string | undefined;
+  id?: string | undefined;
 
-    constructor(data?: IRefundItem) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
+  constructor(data?: IRefundItem) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property)) (<any>this)[property] = (<any>data)[property];
+      }
     }
+  }
 
-    init(_data?: any) {
-        if (_data) {
-            this.quantity = _data["quantity"];
-            this.lineItemId = _data["lineItemId"];
-            this.lineItem = _data["lineItem"] ? OrderLineItem.fromJS(_data["lineItem"]) : <any>undefined;
-            this.refundId = _data["refundId"];
-            this.outerId = _data["outerId"];
-            this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>undefined;
-            this.modifiedDate = _data["modifiedDate"] ? new Date(_data["modifiedDate"].toString()) : <any>undefined;
-            this.createdBy = _data["createdBy"];
-            this.modifiedBy = _data["modifiedBy"];
-            this.id = _data["id"];
-        }
+  init(_data?: any) {
+    if (_data) {
+      this.quantity = _data["quantity"];
+      this.lineItemId = _data["lineItemId"];
+      this.lineItem = _data["lineItem"] ? OrderLineItem.fromJS(_data["lineItem"]) : <any>undefined;
+      this.refundId = _data["refundId"];
+      this.outerId = _data["outerId"];
+      this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>undefined;
+      this.modifiedDate = _data["modifiedDate"] ? new Date(_data["modifiedDate"].toString()) : <any>undefined;
+      this.createdBy = _data["createdBy"];
+      this.modifiedBy = _data["modifiedBy"];
+      this.id = _data["id"];
     }
+  }
 
-    static fromJS(data: any): RefundItem {
-        data = typeof data === 'object' ? data : {};
-        let result = new RefundItem();
-        result.init(data);
-        return result;
-    }
+  static fromJS(data: any): RefundItem {
+    data = typeof data === "object" ? data : {};
+    let result = new RefundItem();
+    result.init(data);
+    return result;
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["quantity"] = this.quantity;
-        data["lineItemId"] = this.lineItemId;
-        data["lineItem"] = this.lineItem ? this.lineItem.toJSON() : <any>undefined;
-        data["refundId"] = this.refundId;
-        data["outerId"] = this.outerId;
-        data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>undefined;
-        data["modifiedDate"] = this.modifiedDate ? this.modifiedDate.toISOString() : <any>undefined;
-        data["createdBy"] = this.createdBy;
-        data["modifiedBy"] = this.modifiedBy;
-        data["id"] = this.id;
-        return data;
-    }
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    data["quantity"] = this.quantity;
+    data["lineItemId"] = this.lineItemId;
+    data["lineItem"] = this.lineItem ? this.lineItem.toJSON() : <any>undefined;
+    data["refundId"] = this.refundId;
+    data["outerId"] = this.outerId;
+    data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>undefined;
+    data["modifiedDate"] = this.modifiedDate ? this.modifiedDate.toISOString() : <any>undefined;
+    data["createdBy"] = this.createdBy;
+    data["modifiedBy"] = this.modifiedBy;
+    data["id"] = this.id;
+    return data;
+  }
 }
 
 export interface IRefundItem {
-    quantity?: number;
-    lineItemId?: string | undefined;
-    lineItem?: OrderLineItem | undefined;
-    refundId?: string | undefined;
-    outerId?: string | undefined;
-    createdDate?: Date;
-    modifiedDate?: Date | undefined;
-    createdBy?: string | undefined;
-    modifiedBy?: string | undefined;
-    id?: string | undefined;
+  quantity?: number;
+  lineItemId?: string | undefined;
+  lineItem?: OrderLineItem | undefined;
+  refundId?: string | undefined;
+  outerId?: string | undefined;
+  createdDate?: Date;
+  modifiedDate?: Date | undefined;
+  createdBy?: string | undefined;
+  modifiedBy?: string | undefined;
+  id?: string | undefined;
 }
 
 export class RefundOrderPaymentRequest implements IRefundOrderPaymentRequest {
-    reasonCode?: string | undefined;
-    reasonMessage?: string | undefined;
-    orderId?: string | undefined;
-    paymentId?: string | undefined;
-    transactionId?: string | undefined;
-    outerId?: string | undefined;
-    amount?: number | undefined;
+  reasonCode?: string | undefined;
+  reasonMessage?: string | undefined;
+  orderId?: string | undefined;
+  paymentId?: string | undefined;
+  transactionId?: string | undefined;
+  outerId?: string | undefined;
+  amount?: number | undefined;
 
-    constructor(data?: IRefundOrderPaymentRequest) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
+  constructor(data?: IRefundOrderPaymentRequest) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property)) (<any>this)[property] = (<any>data)[property];
+      }
     }
+  }
 
-    init(_data?: any) {
-        if (_data) {
-            this.reasonCode = _data["reasonCode"];
-            this.reasonMessage = _data["reasonMessage"];
-            this.orderId = _data["orderId"];
-            this.paymentId = _data["paymentId"];
-            this.transactionId = _data["transactionId"];
-            this.outerId = _data["outerId"];
-            this.amount = _data["amount"];
-        }
+  init(_data?: any) {
+    if (_data) {
+      this.reasonCode = _data["reasonCode"];
+      this.reasonMessage = _data["reasonMessage"];
+      this.orderId = _data["orderId"];
+      this.paymentId = _data["paymentId"];
+      this.transactionId = _data["transactionId"];
+      this.outerId = _data["outerId"];
+      this.amount = _data["amount"];
     }
+  }
 
-    static fromJS(data: any): RefundOrderPaymentRequest {
-        data = typeof data === 'object' ? data : {};
-        let result = new RefundOrderPaymentRequest();
-        result.init(data);
-        return result;
-    }
+  static fromJS(data: any): RefundOrderPaymentRequest {
+    data = typeof data === "object" ? data : {};
+    let result = new RefundOrderPaymentRequest();
+    result.init(data);
+    return result;
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["reasonCode"] = this.reasonCode;
-        data["reasonMessage"] = this.reasonMessage;
-        data["orderId"] = this.orderId;
-        data["paymentId"] = this.paymentId;
-        data["transactionId"] = this.transactionId;
-        data["outerId"] = this.outerId;
-        data["amount"] = this.amount;
-        return data;
-    }
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    data["reasonCode"] = this.reasonCode;
+    data["reasonMessage"] = this.reasonMessage;
+    data["orderId"] = this.orderId;
+    data["paymentId"] = this.paymentId;
+    data["transactionId"] = this.transactionId;
+    data["outerId"] = this.outerId;
+    data["amount"] = this.amount;
+    return data;
+  }
 }
 
 export interface IRefundOrderPaymentRequest {
-    reasonCode?: string | undefined;
-    reasonMessage?: string | undefined;
-    orderId?: string | undefined;
-    paymentId?: string | undefined;
-    transactionId?: string | undefined;
-    outerId?: string | undefined;
-    amount?: number | undefined;
+  reasonCode?: string | undefined;
+  reasonMessage?: string | undefined;
+  orderId?: string | undefined;
+  paymentId?: string | undefined;
+  transactionId?: string | undefined;
+  outerId?: string | undefined;
+  amount?: number | undefined;
 }
 
 export enum RefundReasonCode {
-    Duplicate = "Duplicate",
-    Fraudulent = "Fraudulent",
-    RequestedByCustomer = "RequestedByCustomer",
-    Other = "Other",
+  Duplicate = "Duplicate",
+  Fraudulent = "Fraudulent",
+  RequestedByCustomer = "RequestedByCustomer",
+  Other = "Other",
 }
 
 export enum RefundStatus {
-    Pending = "Pending",
-    Rejected = "Rejected",
-    Processed = "Processed",
+  Pending = "Pending",
+  Rejected = "Rejected",
+  Processed = "Processed",
 }
 
 export enum SettingValueType {
-    ShortText = "ShortText",
-    LongText = "LongText",
-    Integer = "Integer",
-    Decimal = "Decimal",
-    DateTime = "DateTime",
-    Boolean = "Boolean",
-    SecureString = "SecureString",
-    Json = "Json",
-    PositiveInteger = "PositiveInteger",
+  ShortText = "ShortText",
+  LongText = "LongText",
+  Integer = "Integer",
+  Decimal = "Decimal",
+  DateTime = "DateTime",
+  Boolean = "Boolean",
+  SecureString = "SecureString",
+  Json = "Json",
+  PositiveInteger = "PositiveInteger",
 }
 
 export class ShipmentPackage implements IShipmentPackage {
-    barCode?: string | undefined;
-    packageType?: string | undefined;
-    items?: OrderShipmentItem[] | undefined;
-    weightUnit?: string | undefined;
-    weight?: number | undefined;
-    measureUnit?: string | undefined;
-    height?: number | undefined;
-    length?: number | undefined;
-    width?: number | undefined;
-    createdDate?: Date;
-    modifiedDate?: Date | undefined;
-    createdBy?: string | undefined;
-    modifiedBy?: string | undefined;
-    id?: string | undefined;
+  barCode?: string | undefined;
+  packageType?: string | undefined;
+  items?: OrderShipmentItem[] | undefined;
+  weightUnit?: string | undefined;
+  weight?: number | undefined;
+  measureUnit?: string | undefined;
+  height?: number | undefined;
+  length?: number | undefined;
+  width?: number | undefined;
+  createdDate?: Date;
+  modifiedDate?: Date | undefined;
+  createdBy?: string | undefined;
+  modifiedBy?: string | undefined;
+  id?: string | undefined;
 
-    constructor(data?: IShipmentPackage) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
+  constructor(data?: IShipmentPackage) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property)) (<any>this)[property] = (<any>data)[property];
+      }
     }
+  }
 
-    init(_data?: any) {
-        if (_data) {
-            this.barCode = _data["barCode"];
-            this.packageType = _data["packageType"];
-            if (Array.isArray(_data["items"])) {
-                this.items = [] as any;
-                for (let item of _data["items"])
-                    this.items!.push(OrderShipmentItem.fromJS(item));
-            }
-            this.weightUnit = _data["weightUnit"];
-            this.weight = _data["weight"];
-            this.measureUnit = _data["measureUnit"];
-            this.height = _data["height"];
-            this.length = _data["length"];
-            this.width = _data["width"];
-            this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>undefined;
-            this.modifiedDate = _data["modifiedDate"] ? new Date(_data["modifiedDate"].toString()) : <any>undefined;
-            this.createdBy = _data["createdBy"];
-            this.modifiedBy = _data["modifiedBy"];
-            this.id = _data["id"];
-        }
+  init(_data?: any) {
+    if (_data) {
+      this.barCode = _data["barCode"];
+      this.packageType = _data["packageType"];
+      if (Array.isArray(_data["items"])) {
+        this.items = [] as any;
+        for (let item of _data["items"]) this.items!.push(OrderShipmentItem.fromJS(item));
+      }
+      this.weightUnit = _data["weightUnit"];
+      this.weight = _data["weight"];
+      this.measureUnit = _data["measureUnit"];
+      this.height = _data["height"];
+      this.length = _data["length"];
+      this.width = _data["width"];
+      this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>undefined;
+      this.modifiedDate = _data["modifiedDate"] ? new Date(_data["modifiedDate"].toString()) : <any>undefined;
+      this.createdBy = _data["createdBy"];
+      this.modifiedBy = _data["modifiedBy"];
+      this.id = _data["id"];
     }
+  }
 
-    static fromJS(data: any): ShipmentPackage {
-        data = typeof data === 'object' ? data : {};
-        let result = new ShipmentPackage();
-        result.init(data);
-        return result;
-    }
+  static fromJS(data: any): ShipmentPackage {
+    data = typeof data === "object" ? data : {};
+    let result = new ShipmentPackage();
+    result.init(data);
+    return result;
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["barCode"] = this.barCode;
-        data["packageType"] = this.packageType;
-        if (Array.isArray(this.items)) {
-            data["items"] = [];
-            for (let item of this.items)
-                data["items"].push(item.toJSON());
-        }
-        data["weightUnit"] = this.weightUnit;
-        data["weight"] = this.weight;
-        data["measureUnit"] = this.measureUnit;
-        data["height"] = this.height;
-        data["length"] = this.length;
-        data["width"] = this.width;
-        data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>undefined;
-        data["modifiedDate"] = this.modifiedDate ? this.modifiedDate.toISOString() : <any>undefined;
-        data["createdBy"] = this.createdBy;
-        data["modifiedBy"] = this.modifiedBy;
-        data["id"] = this.id;
-        return data;
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    data["barCode"] = this.barCode;
+    data["packageType"] = this.packageType;
+    if (Array.isArray(this.items)) {
+      data["items"] = [];
+      for (let item of this.items) data["items"].push(item.toJSON());
     }
+    data["weightUnit"] = this.weightUnit;
+    data["weight"] = this.weight;
+    data["measureUnit"] = this.measureUnit;
+    data["height"] = this.height;
+    data["length"] = this.length;
+    data["width"] = this.width;
+    data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>undefined;
+    data["modifiedDate"] = this.modifiedDate ? this.modifiedDate.toISOString() : <any>undefined;
+    data["createdBy"] = this.createdBy;
+    data["modifiedBy"] = this.modifiedBy;
+    data["id"] = this.id;
+    return data;
+  }
 }
 
 export interface IShipmentPackage {
-    barCode?: string | undefined;
-    packageType?: string | undefined;
-    items?: OrderShipmentItem[] | undefined;
-    weightUnit?: string | undefined;
-    weight?: number | undefined;
-    measureUnit?: string | undefined;
-    height?: number | undefined;
-    length?: number | undefined;
-    width?: number | undefined;
-    createdDate?: Date;
-    modifiedDate?: Date | undefined;
-    createdBy?: string | undefined;
-    modifiedBy?: string | undefined;
-    id?: string | undefined;
+  barCode?: string | undefined;
+  packageType?: string | undefined;
+  items?: OrderShipmentItem[] | undefined;
+  weightUnit?: string | undefined;
+  weight?: number | undefined;
+  measureUnit?: string | undefined;
+  height?: number | undefined;
+  length?: number | undefined;
+  width?: number | undefined;
+  createdDate?: Date;
+  modifiedDate?: Date | undefined;
+  createdBy?: string | undefined;
+  modifiedBy?: string | undefined;
+  id?: string | undefined;
 }
 
 export class ShippingMethod implements IShippingMethod {
-    code?: string | undefined;
-    name?: string | undefined;
-    description?: string | undefined;
-    logoUrl?: string | undefined;
-    isActive?: boolean;
-    priority?: number;
-    taxType?: string | undefined;
-    storeId?: string | undefined;
-    settings?: ObjectSettingEntry[] | undefined;
-    readonly typeName?: string | undefined;
-    id?: string | undefined;
+  code?: string | undefined;
+  name?: string | undefined;
+  description?: string | undefined;
+  logoUrl?: string | undefined;
+  isActive?: boolean;
+  priority?: number;
+  taxType?: string | undefined;
+  storeId?: string | undefined;
+  settings?: ObjectSettingEntry[] | undefined;
+  readonly typeName?: string | undefined;
+  id?: string | undefined;
 
-    constructor(data?: IShippingMethod) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
+  constructor(data?: IShippingMethod) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property)) (<any>this)[property] = (<any>data)[property];
+      }
     }
+  }
 
-    init(_data?: any) {
-        if (_data) {
-            this.code = _data["code"];
-            this.name = _data["name"];
-            this.description = _data["description"];
-            this.logoUrl = _data["logoUrl"];
-            this.isActive = _data["isActive"];
-            this.priority = _data["priority"];
-            this.taxType = _data["taxType"];
-            this.storeId = _data["storeId"];
-            if (Array.isArray(_data["settings"])) {
-                this.settings = [] as any;
-                for (let item of _data["settings"])
-                    this.settings!.push(ObjectSettingEntry.fromJS(item));
-            }
-            (<any>this).typeName = _data["typeName"];
-            this.id = _data["id"];
-        }
+  init(_data?: any) {
+    if (_data) {
+      this.code = _data["code"];
+      this.name = _data["name"];
+      this.description = _data["description"];
+      this.logoUrl = _data["logoUrl"];
+      this.isActive = _data["isActive"];
+      this.priority = _data["priority"];
+      this.taxType = _data["taxType"];
+      this.storeId = _data["storeId"];
+      if (Array.isArray(_data["settings"])) {
+        this.settings = [] as any;
+        for (let item of _data["settings"]) this.settings!.push(ObjectSettingEntry.fromJS(item));
+      }
+      (<any>this).typeName = _data["typeName"];
+      this.id = _data["id"];
     }
+  }
 
-    static fromJS(data: any): ShippingMethod {
-        data = typeof data === 'object' ? data : {};
-        let result = new ShippingMethod();
-        result.init(data);
-        return result;
-    }
+  static fromJS(data: any): ShippingMethod {
+    data = typeof data === "object" ? data : {};
+    let result = new ShippingMethod();
+    result.init(data);
+    return result;
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["code"] = this.code;
-        data["name"] = this.name;
-        data["description"] = this.description;
-        data["logoUrl"] = this.logoUrl;
-        data["isActive"] = this.isActive;
-        data["priority"] = this.priority;
-        data["taxType"] = this.taxType;
-        data["storeId"] = this.storeId;
-        if (Array.isArray(this.settings)) {
-            data["settings"] = [];
-            for (let item of this.settings)
-                data["settings"].push(item.toJSON());
-        }
-        data["typeName"] = this.typeName;
-        data["id"] = this.id;
-        return data;
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    data["code"] = this.code;
+    data["name"] = this.name;
+    data["description"] = this.description;
+    data["logoUrl"] = this.logoUrl;
+    data["isActive"] = this.isActive;
+    data["priority"] = this.priority;
+    data["taxType"] = this.taxType;
+    data["storeId"] = this.storeId;
+    if (Array.isArray(this.settings)) {
+      data["settings"] = [];
+      for (let item of this.settings) data["settings"].push(item.toJSON());
     }
+    data["typeName"] = this.typeName;
+    data["id"] = this.id;
+    return data;
+  }
 }
 
 export interface IShippingMethod {
-    code?: string | undefined;
-    name?: string | undefined;
-    description?: string | undefined;
-    logoUrl?: string | undefined;
-    isActive?: boolean;
-    priority?: number;
-    taxType?: string | undefined;
-    storeId?: string | undefined;
-    settings?: ObjectSettingEntry[] | undefined;
-    typeName?: string | undefined;
-    id?: string | undefined;
+  code?: string | undefined;
+  name?: string | undefined;
+  description?: string | undefined;
+  logoUrl?: string | undefined;
+  isActive?: boolean;
+  priority?: number;
+  taxType?: string | undefined;
+  storeId?: string | undefined;
+  settings?: ObjectSettingEntry[] | undefined;
+  typeName?: string | undefined;
+  id?: string | undefined;
 }
 
 export enum SortDirection {
-    Ascending = "Ascending",
-    Descending = "Descending",
+  Ascending = "Ascending",
+  Descending = "Descending",
 }
 
 export class SortInfo implements ISortInfo {
-    sortColumn?: string | undefined;
-    sortDirection?: SortInfoSortDirection;
+  sortColumn?: string | undefined;
+  sortDirection?: SortInfoSortDirection;
 
-    constructor(data?: ISortInfo) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
+  constructor(data?: ISortInfo) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property)) (<any>this)[property] = (<any>data)[property];
+      }
     }
+  }
 
-    init(_data?: any) {
-        if (_data) {
-            this.sortColumn = _data["sortColumn"];
-            this.sortDirection = _data["sortDirection"];
-        }
+  init(_data?: any) {
+    if (_data) {
+      this.sortColumn = _data["sortColumn"];
+      this.sortDirection = _data["sortDirection"];
     }
+  }
 
-    static fromJS(data: any): SortInfo {
-        data = typeof data === 'object' ? data : {};
-        let result = new SortInfo();
-        result.init(data);
-        return result;
-    }
+  static fromJS(data: any): SortInfo {
+    data = typeof data === "object" ? data : {};
+    let result = new SortInfo();
+    result.init(data);
+    return result;
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["sortColumn"] = this.sortColumn;
-        data["sortDirection"] = this.sortDirection;
-        return data;
-    }
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    data["sortColumn"] = this.sortColumn;
+    data["sortDirection"] = this.sortDirection;
+    return data;
+  }
 }
 
 export interface ISortInfo {
-    sortColumn?: string | undefined;
-    sortDirection?: SortInfoSortDirection;
+  sortColumn?: string | undefined;
+  sortDirection?: SortInfoSortDirection;
 }
 
 export class TaxDetail implements ITaxDetail {
-    rate?: number;
-    amount?: number;
-    name?: string | undefined;
+  rate?: number;
+  amount?: number;
+  name?: string | undefined;
 
-    constructor(data?: ITaxDetail) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
+  constructor(data?: ITaxDetail) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property)) (<any>this)[property] = (<any>data)[property];
+      }
     }
+  }
 
-    init(_data?: any) {
-        if (_data) {
-            this.rate = _data["rate"];
-            this.amount = _data["amount"];
-            this.name = _data["name"];
-        }
+  init(_data?: any) {
+    if (_data) {
+      this.rate = _data["rate"];
+      this.amount = _data["amount"];
+      this.name = _data["name"];
     }
+  }
 
-    static fromJS(data: any): TaxDetail {
-        data = typeof data === 'object' ? data : {};
-        let result = new TaxDetail();
-        result.init(data);
-        return result;
-    }
+  static fromJS(data: any): TaxDetail {
+    data = typeof data === "object" ? data : {};
+    let result = new TaxDetail();
+    result.init(data);
+    return result;
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["rate"] = this.rate;
-        data["amount"] = this.amount;
-        data["name"] = this.name;
-        return data;
-    }
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    data["rate"] = this.rate;
+    data["amount"] = this.amount;
+    data["name"] = this.name;
+    return data;
+  }
 }
 
 export interface ITaxDetail {
-    rate?: number;
-    amount?: number;
-    name?: string | undefined;
+  rate?: number;
+  amount?: number;
+  name?: string | undefined;
 }
 
 export enum CaptureCancelledState {
-    Undefined = "Undefined",
-    Requested = "Requested",
-    Completed = "Completed",
+  Undefined = "Undefined",
+  Requested = "Requested",
+  Completed = "Completed",
 }
 
 export enum CustomerOrderCancelledState {
-    Undefined = "Undefined",
-    Requested = "Requested",
-    Completed = "Completed",
+  Undefined = "Undefined",
+  Requested = "Requested",
+  Completed = "Completed",
 }
 
 export enum DynamicObjectPropertyValueType {
-    Undefined = "Undefined",
-    ShortText = "ShortText",
-    LongText = "LongText",
-    Integer = "Integer",
-    Decimal = "Decimal",
-    DateTime = "DateTime",
-    Boolean = "Boolean",
-    Html = "Html",
-    Image = "Image",
+  Undefined = "Undefined",
+  ShortText = "ShortText",
+  LongText = "LongText",
+  Integer = "Integer",
+  Decimal = "Decimal",
+  DateTime = "DateTime",
+  Boolean = "Boolean",
+  Html = "Html",
+  Image = "Image",
 }
 
 export enum DynamicPropertyObjectValueValueType {
-    Undefined = "Undefined",
-    ShortText = "ShortText",
-    LongText = "LongText",
-    Integer = "Integer",
-    Decimal = "Decimal",
-    DateTime = "DateTime",
-    Boolean = "Boolean",
-    Html = "Html",
-    Image = "Image",
+  Undefined = "Undefined",
+  ShortText = "ShortText",
+  LongText = "LongText",
+  Integer = "Integer",
+  Decimal = "Decimal",
+  DateTime = "DateTime",
+  Boolean = "Boolean",
+  Html = "Html",
+  Image = "Image",
 }
 
 export enum ObjectSettingEntryValueType {
-    ShortText = "ShortText",
-    LongText = "LongText",
-    Integer = "Integer",
-    Decimal = "Decimal",
-    DateTime = "DateTime",
-    Boolean = "Boolean",
-    SecureString = "SecureString",
-    Json = "Json",
-    PositiveInteger = "PositiveInteger",
+  ShortText = "ShortText",
+  LongText = "LongText",
+  Integer = "Integer",
+  Decimal = "Decimal",
+  DateTime = "DateTime",
+  Boolean = "Boolean",
+  SecureString = "SecureString",
+  Json = "Json",
+  PositiveInteger = "PositiveInteger",
 }
 
 export enum OperationLogOperationType {
-    Detached = "Detached",
-    Unchanged = "Unchanged",
-    Added = "Added",
-    Deleted = "Deleted",
-    Modified = "Modified",
+  Detached = "Detached",
+  Unchanged = "Unchanged",
+  Added = "Added",
+  Deleted = "Deleted",
+  Modified = "Modified",
 }
 
 export enum OrderAddressAddressType {
-    Undefined = "Undefined",
-    Billing = "Billing",
-    Shipping = "Shipping",
-    BillingAndShipping = "BillingAndShipping",
-    Pickup = "Pickup",
+  Undefined = "Undefined",
+  Billing = "Billing",
+  Shipping = "Shipping",
+  BillingAndShipping = "BillingAndShipping",
+  Pickup = "Pickup",
 }
 
 export enum OrderShipmentCancelledState {
-    Undefined = "Undefined",
-    Requested = "Requested",
-    Completed = "Completed",
+  Undefined = "Undefined",
+  Requested = "Requested",
+  Completed = "Completed",
 }
 
 export enum PaymentInPaymentStatus {
-    New = "New",
-    Pending = "Pending",
-    Authorized = "Authorized",
-    Paid = "Paid",
-    PartiallyRefunded = "PartiallyRefunded",
-    Refunded = "Refunded",
-    Voided = "Voided",
-    Custom = "Custom",
-    Cancelled = "Cancelled",
-    Declined = "Declined",
-    Error = "Error",
+  New = "New",
+  Pending = "Pending",
+  Authorized = "Authorized",
+  Paid = "Paid",
+  PartiallyRefunded = "PartiallyRefunded",
+  Refunded = "Refunded",
+  Voided = "Voided",
+  Custom = "Custom",
+  Cancelled = "Cancelled",
+  Declined = "Declined",
+  Error = "Error",
 }
 
 export enum PaymentInCancelledState {
-    Undefined = "Undefined",
-    Requested = "Requested",
-    Completed = "Completed",
+  Undefined = "Undefined",
+  Requested = "Requested",
+  Completed = "Completed",
 }
 
 export enum PaymentMethodType2 {
-    Unknown = "Unknown",
-    Standard = "Standard",
-    Redirection = "Redirection",
-    PreparedForm = "PreparedForm",
+  Unknown = "Unknown",
+  Standard = "Standard",
+  Redirection = "Redirection",
+  PreparedForm = "PreparedForm",
 }
 
 export enum PaymentMethodGroupType2 {
-    Paypal = "Paypal",
-    BankCard = "BankCard",
-    Alternative = "Alternative",
-    Manual = "Manual",
+  Paypal = "Paypal",
+  BankCard = "BankCard",
+  Alternative = "Alternative",
+  Manual = "Manual",
 }
 
 export enum PostProcessPaymentRequestResultNewPaymentStatus {
-    New = "New",
-    Pending = "Pending",
-    Authorized = "Authorized",
-    Paid = "Paid",
-    PartiallyRefunded = "PartiallyRefunded",
-    Refunded = "Refunded",
-    Voided = "Voided",
-    Custom = "Custom",
-    Cancelled = "Cancelled",
-    Declined = "Declined",
-    Error = "Error",
+  New = "New",
+  Pending = "Pending",
+  Authorized = "Authorized",
+  Paid = "Paid",
+  PartiallyRefunded = "PartiallyRefunded",
+  Refunded = "Refunded",
+  Voided = "Voided",
+  Custom = "Custom",
+  Cancelled = "Cancelled",
+  Declined = "Declined",
+  Error = "Error",
 }
 
 export enum ProcessPaymentRequestResultNewPaymentStatus {
-    New = "New",
-    Pending = "Pending",
-    Authorized = "Authorized",
-    Paid = "Paid",
-    PartiallyRefunded = "PartiallyRefunded",
-    Refunded = "Refunded",
-    Voided = "Voided",
-    Custom = "Custom",
-    Cancelled = "Cancelled",
-    Declined = "Declined",
-    Error = "Error",
+  New = "New",
+  Pending = "Pending",
+  Authorized = "Authorized",
+  Paid = "Paid",
+  PartiallyRefunded = "PartiallyRefunded",
+  Refunded = "Refunded",
+  Voided = "Voided",
+  Custom = "Custom",
+  Cancelled = "Cancelled",
+  Declined = "Declined",
+  Error = "Error",
 }
 
 export enum RefundReasonCode2 {
-    Duplicate = "Duplicate",
-    Fraudulent = "Fraudulent",
-    RequestedByCustomer = "RequestedByCustomer",
-    Other = "Other",
+  Duplicate = "Duplicate",
+  Fraudulent = "Fraudulent",
+  RequestedByCustomer = "RequestedByCustomer",
+  Other = "Other",
 }
 
 export enum RefundStatus2 {
-    Pending = "Pending",
-    Rejected = "Rejected",
-    Processed = "Processed",
+  Pending = "Pending",
+  Rejected = "Rejected",
+  Processed = "Processed",
 }
 
 export enum RefundCancelledState {
-    Undefined = "Undefined",
-    Requested = "Requested",
-    Completed = "Completed",
+  Undefined = "Undefined",
+  Requested = "Requested",
+  Completed = "Completed",
 }
 
 export enum SortInfoSortDirection {
-    Ascending = "Ascending",
-    Descending = "Descending",
+  Ascending = "Ascending",
+  Descending = "Descending",
 }
 
 export interface FileResponse {
-    data: Blob;
-    status: number;
-    fileName?: string;
-    headers?: { [name: string]: any };
+  data: Blob;
+  status: number;
+  fileName?: string;
+  headers?: { [name: string]: any };
 }
 
 export class ApiException extends Error {
-    override message: string;
-    status: number;
-    response: string;
-    headers: { [key: string]: any; };
-    result: any;
+  override message: string;
+  status: number;
+  response: string;
+  headers: { [key: string]: any };
+  result: any;
 
-    constructor(message: string, status: number, response: string, headers: { [key: string]: any; }, result: any) {
-        super();
+  constructor(message: string, status: number, response: string, headers: { [key: string]: any }, result: any) {
+    super();
 
-        this.message = message;
-        this.status = status;
-        this.response = response;
-        this.headers = headers;
-        this.result = result;
-    }
+    this.message = message;
+    this.status = status;
+    this.response = response;
+    this.headers = headers;
+    this.result = result;
+  }
 
-    protected isApiException = true;
+  protected isApiException = true;
 
-    static isApiException(obj: any): obj is ApiException {
-        return obj.isApiException === true;
-    }
+  static isApiException(obj: any): obj is ApiException {
+    return obj.isApiException === true;
+  }
 }
 
-function throwException(message: string, status: number, response: string, headers: { [key: string]: any; }, result?: any): any {
-    if (result !== null && result !== undefined)
-        throw result;
-    else
-        throw new ApiException(message, status, response, headers, null);
+function throwException(
+  message: string,
+  status: number,
+  response: string,
+  headers: { [key: string]: any },
+  result?: any,
+): any {
+  if (result !== null && result !== undefined) throw result;
+  else throw new ApiException(message, status, response, headers, null);
 }
 
 /* eslint-disable */

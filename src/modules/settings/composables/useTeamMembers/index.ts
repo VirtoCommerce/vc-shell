@@ -1,4 +1,3 @@
-import { useUser } from "@vc-shell/framework";
 import {
   CreateSellerUserCommand,
   ISearchSellerUsersQuery,
@@ -62,9 +61,7 @@ export default (options?: IUseTeamMembersOptions): IUseTeamMembers => {
   );
 
   async function getApiClient() {
-    // const { getAccessToken } = useUser();
     const client = new VcmpSellerSecurityClient();
-    // client.setAuthToken(await getAccessToken());
     return client;
   }
 

@@ -26,6 +26,7 @@ export interface ProductListScope extends ListBaseBladeScope {
   };
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const useProductsList = (args: {
   props: InstanceType<typeof DynamicBladeList>["$props"];
   emit: InstanceType<typeof DynamicBladeList>["$emit"];

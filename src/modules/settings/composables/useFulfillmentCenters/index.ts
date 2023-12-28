@@ -1,4 +1,3 @@
-import { useUser } from "@vc-shell/framework";
 import {
   IFulfillmentCenter,
   FulfillmentCenter,
@@ -55,9 +54,7 @@ export default (options?: IUseFulfillmentCentersOptions): IUseFulfillmentCenters
   );
 
   async function getApiClient() {
-    // const { getAccessToken } = useUser();
     const client = new VcmpSellerCatalogClient();
-    // client.setAuthToken(await getAccessToken());
     return client;
   }
 

@@ -4,7 +4,6 @@ import {
   SearchCustomerReviewsQuery,
   SearchCustomerReviewsResult,
   VcmpSellerRatingAndReviewsClient,
-  ICustomerReview,
   ISearchCustomerReviewsQuery,
 } from "@vcmp-vendor-portal/api/marketplacevendor";
 

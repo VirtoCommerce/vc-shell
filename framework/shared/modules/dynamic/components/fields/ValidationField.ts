@@ -1,5 +1,4 @@
 import { computed, h, unref, useSlots, defineComponent, ComputedRef } from "vue";
-import { unrefNested } from "../../helpers/unrefNested";
 import { Field } from "vee-validate";
 import { reactify } from "@vueuse/core";
 
@@ -17,7 +16,7 @@ export default defineComponent({
     const fieldKey = computed(() =>
       unref(props.props)?.multilanguage
         ? `${String(props.props?.key)}_${unref(props.props?.currentLanguage)}`
-        : String(props.props?.key)
+        : String(props.props?.key),
     );
 
     const fieldNameLang = reactify((name: string) => {
@@ -33,7 +32,9 @@ export default defineComponent({
           label: props.props?.label,
           key: fieldKey.value,
           name: fieldNameLang(
-            (props.rows ?? 1) > 1 && (props.index ?? 0) >= 0 ? props.props?.name + "_" + props.index : props.props?.name
+            (props.rows ?? 1) > 1 && (props.index ?? 0) >= 0
+              ? props.props?.name + "_" + props.index
+              : props.props?.name,
           ).value,
         },
         {
@@ -44,10 +45,10 @@ export default defineComponent({
                 error: !!errors.length,
                 errorMessage,
                 key: fieldKey.value + "_control",
-              })
+              }),
             );
           },
-        }
+        },
       );
   },
 });

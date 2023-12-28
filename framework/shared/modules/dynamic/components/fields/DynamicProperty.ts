@@ -36,8 +36,8 @@ export default {
         `There is no DynamicProperties config provided in blade scope: ${JSON.stringify(
           props.bladeContext.scope,
           null,
-          2
-        )}`
+          2,
+        )}`,
       );
     }
 
@@ -50,7 +50,7 @@ export default {
           internalModel.value = _.cloneDeep(newVal);
         }
       },
-      { deep: true, immediate: true }
+      { deep: true, immediate: true },
     );
 
     const filteredProps = reactify(
@@ -63,7 +63,7 @@ export default {
           });
         }
         return null;
-      }
+      },
     );
 
     const dynamicProps = filteredProps(internalModel, {
@@ -78,16 +78,17 @@ export default {
             disabled:
               props.bladeContext.scope && "disabled" in props.bladeContext.scope && props.bladeContext.scope.disabled,
             property: prop,
-            modelValue: computed(() =>
-              props.bladeContext.scope?.dynamicProperties?.getPropertyValue(
-                prop,
-                toValue(props.currentLocale ?? "en-US")
-              )
+            modelValue: computed(
+              () =>
+                props.bladeContext.scope?.dynamicProperties?.getPropertyValue(
+                  prop,
+                  toValue(props.currentLocale ?? "en-US"),
+                ),
             ),
             optionsGetter: props.bladeContext.scope?.dynamicProperties?.loadDictionaries as (
               property: Record<string, any>,
               keyword?: string | undefined,
-              locale?: string | undefined
+              locale?: string | undefined,
             ) => Promise<Record<string, any>[]>,
             "onUpdate:model-value": (args: {
               property: Record<string, any>;
@@ -116,7 +117,7 @@ export default {
             currentLanguage: props.currentLocale,
           },
           options: props.baseOptions,
-        })
+        }),
       );
     });
 

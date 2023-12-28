@@ -86,7 +86,7 @@ watch(
   () => props.parentExpanded,
   () => {
     closePanel();
-  }
+  },
 );
 
 const filterStyle = computed(() => ({

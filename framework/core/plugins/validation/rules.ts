@@ -88,7 +88,7 @@ const compare = (
   value: string | Date,
   [target]: string[] | Date[],
   comparer: (first: number, second: number) => boolean,
-  errorMessage: string
+  errorMessage: string,
 ): boolean | string => {
   // The field is empty so it should pass
   if (!value || (typeof value == "string" && !value.length)) {

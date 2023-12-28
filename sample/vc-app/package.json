@@ -16,6 +16,7 @@
     "build:types-modules": "vue-tsc --declaration --emitDeclarationOnly --p ./src/modules/tsconfig.json --outDir dist/modules/types",
     "type-check": "vue-tsc --noEmit",
     "lint-staged": "lint-staged",
+    "lint": "eslint --fix --cache '**/*.{ts,vue}'",
     "generate:api-client": "cross-env api-client-generator  --APP_PLATFORM_MODULES='[MarketplaceVendor]' --APP_API_CLIENT_DIRECTORY=./src/api_client/",
     "release": "tsx scripts/release.ts --dry"
   },
@@ -76,7 +77,8 @@
     "vue-router": "^4.2.5"
   },
   "lint-staged": {
-    "*.{js,ts,vue}": "eslint --fix"
+    "*.{js,ts,html,css}": "prettier --write '**/*.{ts,vue}'",
+    "*.{js,ts,vue}": "eslint --fix --cache '**/*.{ts,vue}'"
   },
   "packageManager": "yarn@3.6.4"
 }

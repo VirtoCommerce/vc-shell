@@ -118,7 +118,7 @@
   </div>
 </template>
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
-<script lang="ts" setup generic="T extends {id?: string; alias?: string, languageCode?: string, value?: string}">
+<script lang="ts" setup generic="T extends { id?: string; alias?: string; languageCode?: string; value?: string }">
 import { unref, nextTick, ref, computed } from "vue";
 import { vOnClickOutside } from "@vueuse/components";
 import { useFloating, UseFloatingReturn, offset, flip, shift, autoUpdate, MiddlewareState } from "@floating-ui/vue";

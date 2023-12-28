@@ -8,7 +8,7 @@ export interface UseAsync<Payload = void, Result = void> extends HasLoading {
 }
 
 export function useAsync<Payload = void, Result = void>(
-  innerAction: AsyncAction<Payload, Result>
+  innerAction: AsyncAction<Payload, Result>,
 ): UseAsync<Payload, Result> {
   const loading = ref(false);
 

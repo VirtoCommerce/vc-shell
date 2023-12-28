@@ -51,7 +51,7 @@ const statusStyles = computed(
         variant: "warning",
       }
     );
-  }
+  },
 );
 
 const statusText = computed(() => {

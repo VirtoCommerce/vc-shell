@@ -84,7 +84,7 @@ watch(
   () => props.modelValue,
   (value) => {
     emit("update:modelValue", value);
-  }
+  },
 );
 
 // Handle input event to propertly validate value and emit changes

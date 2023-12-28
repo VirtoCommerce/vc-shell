@@ -1,4 +1,4 @@
-import { Ref, h, inject, nextTick, toRefs, ExtractPropTypes, toValue } from "vue";
+import { Ref, h, inject, toRefs, ExtractPropTypes, toValue } from "vue";
 import componentProps from "./props";
 import * as _ from "lodash-es";
 import { VcButton, VcCol, VcRow } from "../../../../../ui/components";
@@ -56,10 +56,10 @@ export default {
                                   key: `item-${itemIndex}-${colIndex}-${index}`,
                                 });
                               }
-                            }
+                            },
                           );
                         }),
-                      ]
+                      ],
                     );
                   }),
                 ]),
@@ -79,7 +79,7 @@ export default {
                       },
                     })
                   : undefined,
-              ]
+              ],
             );
           })
         : null;

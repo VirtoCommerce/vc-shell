@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/vue3";
 import { VcInputCurrency } from "./";
-import { VcSelect, VcInput } from "./../../";
 import { ref } from "vue";
 
 const meta: Meta<typeof VcInputCurrency> = {

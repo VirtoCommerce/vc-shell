@@ -47,7 +47,7 @@
       :bordered="true"
       size="s"
       aspect="1x1"
-      :src="(value as string)"
+      :src="value as string"
       background="contain"
     />
   </template>
@@ -62,7 +62,7 @@
     v-else-if="cell.type === 'status-icon'"
     class="tw-flex tw-justify-center"
   >
-    <VcStatusIcon :status="(value as boolean)"></VcStatusIcon>
+    <VcStatusIcon :status="value as boolean"></VcStatusIcon>
   </div>
 
   <!-- Number cell -->

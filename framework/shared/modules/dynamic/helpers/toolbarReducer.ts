@@ -38,6 +38,6 @@ export const toolbarReducer = (args: {
       }
 
       return acc;
-    }, [] as IBladeToolbar[])
+    }, [] as IBladeToolbar[]),
   );
 };

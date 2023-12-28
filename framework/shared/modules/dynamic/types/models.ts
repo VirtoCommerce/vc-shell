@@ -1,5 +1,5 @@
-import { ComputedRef, Raw, Component } from "vue";
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { ComputedRef, Raw } from "vue";
 import {
   VcButton,
   VcCard,

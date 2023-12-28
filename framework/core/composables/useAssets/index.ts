@@ -1,6 +1,5 @@
 import { Ref, computed, ref, ComputedRef } from "vue";
 import * as _ from "lodash-es";
-import { useUser } from "../useUser";
 import { ICommonAsset } from "../../types";
 
 export interface IUseAssets {

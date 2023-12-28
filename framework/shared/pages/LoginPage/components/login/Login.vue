@@ -205,7 +205,7 @@ let useLogin;
 const signInResult = ref({ succeeded: true }) as Ref<SignInResult & { status?: number; error?: any }>;
 const requestPassResult = ref<RequestPasswordResult>({ succeeded: true });
 const forgotPasswordRequestSent = ref(false);
-const { signIn, loading, externalSignIn, getExternalLoginProviders, isAuthenticated } = useUser();
+const { signIn, loading, externalSignIn, getExternalLoginProviders } = useUser();
 const isLogin = ref(true);
 const isValid = useIsFormValid();
 const isDirty = useIsFormDirty();

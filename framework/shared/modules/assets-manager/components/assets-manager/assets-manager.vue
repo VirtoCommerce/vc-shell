@@ -143,7 +143,7 @@
 
 <script setup lang="ts">
 import { ICommonAsset, IActionBuilderResult, IBladeToolbar, ITableColumns } from "../../../../../core/types";
-import { ref, computed, onMounted, unref, watch, markRaw, Ref } from "vue";
+import { ref, computed, onMounted, unref, watch, Ref } from "vue";
 import { useI18n } from "vue-i18n";
 import moment from "moment";
 import { isImage, getFileThumbnail, readableSize } from "./../../../../utilities/assets";

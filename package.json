@@ -6,7 +6,7 @@
   "scripts": {
     "postinstall": "husky install",
     "publish": "yarn workspaces foreach -v --from '{@vc-shell/config-generator,@vc-shell/api-client-generator,@vc-shell/framework,@vc-shell/create-vc-app,@vc-shell/import-module,@vc-shell/release-config,@vc-shell/ts-config}' npm publish",
-    "lint": "eslint --fix --cache 'framework/**/*.{ts,vue}' 'import-module/**/*.{ts,vue}'",
+    "lint": "eslint --fix --cache 'framework/**/*.{ts,vue}' 'import-module/**/*.{ts,vue}' 'cli/**/*.{ts,vue}' 'configs/**/*.{ts,vue}'",
     "lint-staged": "lint-staged",
     "build": "yarn workspaces foreach -v --from '{@vc-shell/config-generator,@vc-shell/api-client-generator,@vc-shell/create-vc-app,@vc-shell/framework,@vc-shell/import-module,@vc-shell/release-config}' run build",
     "build-framework": "yarn workspace @vc-shell/framework run build",
@@ -84,8 +84,8 @@
     "vue-tsc": "^1.8.25"
   },
   "lint-staged": {
-    "*.{js,ts,html,css}": "prettier --write",
-    "*.{js,ts,vue}": "eslint --fix --cache"
+    "*.{js,ts,html,css}": "prettier --write 'framework/**/*.{ts,vue}' 'import-module/**/*.{ts,vue}' 'cli/**/*.{ts,vue}' 'configs/**/*.{ts,vue}'",
+    "*.{js,ts,vue}": "eslint --fix --cache 'framework/**/*.{ts,vue}' 'import-module/**/*.{ts,vue}' 'cli/**/*.{ts,vue}' 'configs/**/*.{ts,vue}'"
   },
   "packageManager": "yarn@3.6.4"
 }

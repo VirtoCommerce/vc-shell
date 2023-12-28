@@ -216,7 +216,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     async clickHandler() {
       if (
         await showConfirmation(
-          computed(() => t("IMPORT.PAGES.PROFILE_DETAILS.CONFIRM_POPUP.DELETE_IMPORTER.DESCRIPTION"))
+          computed(() => t("IMPORT.PAGES.PROFILE_DETAILS.CONFIRM_POPUP.DELETE_IMPORTER.DESCRIPTION")),
         )
       ) {
         deleteProfile();
@@ -230,12 +230,12 @@ const sampleTemplateUrl = computed(() => {
   return profile.value.importer
     ? profile.value.importer.metadata && profile.value.importer.metadata.sampleCsvUrl
     : importer
-    ? importer.metadata && importer.metadata.sampleCsvUrl
-    : "#";
+      ? importer.metadata && importer.metadata.sampleCsvUrl
+      : "#";
 });
 
 const title = computed(() =>
-  props.options.importer ? props.options.importer.typeName : t("IMPORT.PAGES.PROFILE_DETAILS.TITLE")
+  props.options.importer ? props.options.importer.typeName : t("IMPORT.PAGES.PROFILE_DETAILS.TITLE"),
 );
 
 onMounted(async () => {

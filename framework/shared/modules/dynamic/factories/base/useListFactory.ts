@@ -26,7 +26,7 @@ export interface IUseListOptions extends Pick<IQuery, "sort"> {
 }
 
 export const useListFactory = <Items extends Record<string, any>[], Query extends IQuery>(
-  factoryParams: UseListFactoryParams<Items, Query>
+  factoryParams: UseListFactoryParams<Items, Query>,
 ) => {
   return function useList(options?: IUseListOptions): UseList<Items, Query> {
     const pageSize = options?.pageSize || 20;

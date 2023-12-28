@@ -30,7 +30,7 @@ export default {
                 rows: props.rows,
                 key: `${String(field.props.key)}_validation`,
               },
-              () => render
+              () => render,
             )
           : null;
       } else {

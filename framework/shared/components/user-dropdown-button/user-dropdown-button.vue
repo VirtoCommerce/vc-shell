@@ -57,7 +57,6 @@
 import { Ref, computed, inject, ref } from "vue";
 import { vOnClickOutside } from "@vueuse/components";
 import { useUser } from "../../../core/composables";
-import { useBladeNavigation } from "../blade-navigation";
 import { useRouter } from "vue-router";
 import { useI18n } from "vue-i18n";
 import { VcIcon } from "../../../ui/components";
@@ -78,7 +77,6 @@ const props = withDefaults(defineProps<Props>(), {
 const isMobile = inject("isMobile") as Ref<boolean>;
 
 const { user, signOut } = useUser();
-const { closeBlade } = useBladeNavigation();
 const router = useRouter();
 const { t } = useI18n({ useScope: "global" });
 

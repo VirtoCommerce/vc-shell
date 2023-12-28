@@ -36,18 +36,22 @@ withDefaults(defineProps<Props>(), {
 
 @keyframes change {
   from {
-    background-position: 0 0, left;
+    background-position:
+      0 0,
+      left;
   }
   to {
-    background-position: 30px 0, left;
+    background-position:
+      30px 0,
+      left;
   }
 }
 
 .vc-progress {
   &.striped {
     .vc-progress__value {
-      background: linear-gradient(45deg, transparent 50%, #acd2f2 50%, #acd2f2 75%, transparent 75%) left/30px 30px
-          repeat-x,
+      background:
+        linear-gradient(45deg, transparent 50%, #acd2f2 50%, #acd2f2 75%, transparent 75%) left/30px 30px repeat-x,
         #e1f0fe;
       animation: change 1s linear infinite;
     }

@@ -278,7 +278,7 @@ onBeforeMount(async () => {
   if (props.composables) await init();
 });
 
-onBeforeRouteLeave(async (to, from) => {
+onBeforeRouteLeave(async (to) => {
   if (
     currentBladeNavigationData.value?.fullPath &&
     !to.path.includes(currentBladeNavigationData.value?.fullPath) &&

@@ -8,7 +8,7 @@ import { nodeBuilder } from "../helpers/nodeBuilder";
 const schemeRenderProps = {
   context: {
     type: Object as PropType<UnwrapNestedRefs<DetailsBladeContext>>,
-    default: () => ({} as DetailsBladeContext),
+    default: () => ({}) as DetailsBladeContext,
   },
   modelValue: {
     type: Object as PropType<Record<string, any>>,
@@ -41,7 +41,7 @@ export default defineComponent({
           internalFormData.value = newVal;
         }
       },
-      { deep: true, immediate: true }
+      { deep: true, immediate: true },
     );
 
     watch(
@@ -51,7 +51,7 @@ export default defineComponent({
           emitChange(newVal);
         }
       },
-      { deep: true }
+      { deep: true },
     );
 
     function emitChange(newVal: unknown) {
@@ -74,8 +74,8 @@ export default defineComponent({
               formData: internalFormData,
             }),
           ],
-          [] as VNode[]
-        )
+          [] as VNode[],
+        ),
       );
   },
 });

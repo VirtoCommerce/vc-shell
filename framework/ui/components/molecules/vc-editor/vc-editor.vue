@@ -52,7 +52,6 @@
 <script lang="ts" setup>
 import { QuillEditor } from "@vueup/vue-quill";
 import "@vueup/vue-quill/dist/vue-quill.snow.css";
-import { useUser } from "./../../../../core/composables";
 import { ref, unref, watch, onMounted } from "vue";
 import ImageUploader from "quill-image-uploader";
 import { VcLabel, VcHint } from "./../../";

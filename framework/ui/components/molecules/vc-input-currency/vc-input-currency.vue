@@ -175,7 +175,7 @@ const { inputRef, setOptions, numberValue } = useCurrencyInput(
     currencyDisplay: CurrencyDisplay.hidden,
     hideGroupingSeparatorOnFocus: false,
   },
-  false
+  false,
 );
 
 // Change currency settings
@@ -189,7 +189,7 @@ watch(
         currencyDisplay: CurrencyDisplay.hidden,
         hideGroupingSeparatorOnFocus: false,
       });
-  }
+  },
 );
 
 watch(numberValue, (value) => {

@@ -49,8 +49,8 @@ withDefaults(defineProps<Props>(), {
 });
 
 defineSlots<{
-  default: (props: any) => any;
-  tooltip?: (props: any) => any;
+  default: void;
+  tooltip?: void;
 }>();
 
 const tooltipVisible = ref(false);

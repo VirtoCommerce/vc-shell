@@ -25,20 +25,23 @@ export default {
           clearable: props.element.clearable || false,
         },
         options: props.baseOptions,
-        slots: Object.entries(slotsMap).reduce((acc, [key, value]) => {
-          if (props.element[key as keyof InputSchema]) {
-            acc[value as keyof InputSchema] = () =>
-              nodeBuilder({
-                controlSchema: props.element[key as keyof InputSchema] as ControlSchema,
-                parentId: `${(props.element[key as keyof InputSchema] as ControlSchema).id}`,
-                internalContext: props.fieldContext ?? {},
-                bladeContext: props.bladeContext,
-                currentLocale: props.currentLocale ?? "en-US",
-                formData: props.formData,
-              });
-          }
-          return acc;
-        }, {} as Record<keyof InputSchema, () => VNode | false>),
+        slots: Object.entries(slotsMap).reduce(
+          (acc, [key, value]) => {
+            if (props.element[key as keyof InputSchema]) {
+              acc[value as keyof InputSchema] = () =>
+                nodeBuilder({
+                  controlSchema: props.element[key as keyof InputSchema] as ControlSchema,
+                  parentId: `${(props.element[key as keyof InputSchema] as ControlSchema).id}`,
+                  internalContext: props.fieldContext ?? {},
+                  bladeContext: props.bladeContext,
+                  currentLocale: props.currentLocale ?? "en-US",
+                  formData: props.formData,
+                });
+            }
+            return acc;
+          },
+          {} as Record<keyof InputSchema, () => VNode | false>,
+        ),
       });
 
       const render = h(field.component as Component, field.props, field.slots);
@@ -53,7 +56,7 @@ export default {
                 rows: props.rows,
                 key: `${String(field.props.key)}_validation`,
               },
-              () => render
+              () => render,
             )
           : null;
       } else {

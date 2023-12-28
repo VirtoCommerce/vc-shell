@@ -1,4 +1,4 @@
-import { readFileSync, writeFileSync } from "node:fs";
+import { readFileSync } from "node:fs";
 import path from "node:path";
 import chalk from "chalk";
 import { SpawnSyncOptionsWithStringEncoding, spawnSync } from "node:child_process";
@@ -47,7 +47,7 @@ export function step(msg: string): void {
 
 interface VersionChoice {
   title: string;
-  value: string;
+  value: string | null;
 }
 
 export function getVersionChoices(currentVersion: string): VersionChoice[] {

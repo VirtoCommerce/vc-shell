@@ -23,1947 +23,1950 @@ export class AuthApiBase {
 
   protected transformOptions(options: any): Promise<any> {
     if (this.authToken) {
-      options.headers['authorization'] =  `Bearer ${this.authToken}`;
+      options.headers["authorization"] = `Bearer ${this.authToken}`;
     }
     return Promise.resolve(options);
   }
 }
 
 export class ImportClient extends AuthApiBase {
-    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
-    private baseUrl: string;
-    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+  private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+  private baseUrl: string;
+  protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
 
-    constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
-        super();
-        this.http = http ? http : window as any;
-        this.baseUrl = this.getBaseUrl("", baseUrl);
+  constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+    super();
+    this.http = http ? http : (window as any);
+    this.baseUrl = this.getBaseUrl("", baseUrl);
+  }
+
+  /**
+   * @param body (optional)
+   * @return Success
+   */
+  runImport(body?: ImportProfile | undefined): Promise<ImportPushNotification> {
+    let url_ = this.baseUrl + "/api/import/run";
+    url_ = url_.replace(/[?&]$/, "");
+
+    const content_ = JSON.stringify(body);
+
+    let options_: RequestInit = {
+      body: content_,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json-patch+json",
+        Accept: "text/plain",
+      },
+    };
+
+    return this.transformOptions(options_)
+      .then((transformedOptions_) => {
+        return this.http.fetch(url_, transformedOptions_);
+      })
+      .then((_response: Response) => {
+        return this.processRunImport(_response);
+      });
+  }
+
+  protected processRunImport(response: Response): Promise<ImportPushNotification> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
     }
-
-    /**
-     * @param body (optional) 
-     * @return Success
-     */
-    runImport(body?: ImportProfile | undefined): Promise<ImportPushNotification> {
-        let url_ = this.baseUrl + "/api/import/run";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json-patch+json",
-                "Accept": "text/plain"
-            }
-        };
-
-        return this.transformOptions(options_).then(transformedOptions_ => {
-            return this.http.fetch(url_, transformedOptions_);
-        }).then((_response: Response) => {
-            return this.processRunImport(_response);
-        });
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = ImportPushNotification.fromJS(resultData200);
+        return result200;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
     }
+    return Promise.resolve<ImportPushNotification>(null as any);
+  }
 
-    protected processRunImport(response: Response): Promise<ImportPushNotification> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ImportPushNotification.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
+  /**
+   * @param body (optional)
+   * @return Success
+   */
+  cancelJob(body?: ImportCancellationRequest | undefined): Promise<void> {
+    let url_ = this.baseUrl + "/api/import/task/cancel";
+    url_ = url_.replace(/[?&]$/, "");
+
+    const content_ = JSON.stringify(body);
+
+    let options_: RequestInit = {
+      body: content_,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json-patch+json",
+      },
+    };
+
+    return this.transformOptions(options_)
+      .then((transformedOptions_) => {
+        return this.http.fetch(url_, transformedOptions_);
+      })
+      .then((_response: Response) => {
+        return this.processCancelJob(_response);
+      });
+  }
+
+  protected processCancelJob(response: Response): Promise<void> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+    }
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        return;
+      });
+    } else if (status === 401) {
+      return response.text().then((_responseText) => {
+        return throwException("Unauthorized", status, _responseText, _headers);
+      });
+    } else if (status === 403) {
+      return response.text().then((_responseText) => {
+        return throwException("Forbidden", status, _responseText, _headers);
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
+    }
+    return Promise.resolve<void>(null as any);
+  }
+
+  /**
+   * @param body (optional)
+   * @return Success
+   */
+  preview(body?: ImportProfile | undefined): Promise<ImportDataPreview> {
+    let url_ = this.baseUrl + "/api/import/preview";
+    url_ = url_.replace(/[?&]$/, "");
+
+    const content_ = JSON.stringify(body);
+
+    let options_: RequestInit = {
+      body: content_,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json-patch+json",
+        Accept: "text/plain",
+      },
+    };
+
+    return this.transformOptions(options_)
+      .then((transformedOptions_) => {
+        return this.http.fetch(url_, transformedOptions_);
+      })
+      .then((_response: Response) => {
+        return this.processPreview(_response);
+      });
+  }
+
+  protected processPreview(response: Response): Promise<ImportDataPreview> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+    }
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = ImportDataPreview.fromJS(resultData200);
+        return result200;
+      });
+    } else if (status === 401) {
+      return response.text().then((_responseText) => {
+        return throwException("Unauthorized", status, _responseText, _headers);
+      });
+    } else if (status === 403) {
+      return response.text().then((_responseText) => {
+        return throwException("Forbidden", status, _responseText, _headers);
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
+    }
+    return Promise.resolve<ImportDataPreview>(null as any);
+  }
+
+  /**
+   * @param body (optional)
+   * @return Success
+   */
+  validate(body?: ImportProfile | undefined): Promise<ValidationResult> {
+    let url_ = this.baseUrl + "/api/import/validate";
+    url_ = url_.replace(/[?&]$/, "");
+
+    const content_ = JSON.stringify(body);
+
+    let options_: RequestInit = {
+      body: content_,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json-patch+json",
+        Accept: "text/plain",
+      },
+    };
+
+    return this.transformOptions(options_)
+      .then((transformedOptions_) => {
+        return this.http.fetch(url_, transformedOptions_);
+      })
+      .then((_response: Response) => {
+        return this.processValidate(_response);
+      });
+  }
+
+  protected processValidate(response: Response): Promise<ValidationResult> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+    }
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = ValidationResult.fromJS(resultData200);
+        return result200;
+      });
+    } else if (status === 401) {
+      return response.text().then((_responseText) => {
+        return throwException("Unauthorized", status, _responseText, _headers);
+      });
+    } else if (status === 403) {
+      return response.text().then((_responseText) => {
+        return throwException("Forbidden", status, _responseText, _headers);
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
+    }
+    return Promise.resolve<ValidationResult>(null as any);
+  }
+
+  /**
+   * @return Success
+   */
+  getImporters(): Promise<IDataImporter[]> {
+    let url_ = this.baseUrl + "/api/import/importers";
+    url_ = url_.replace(/[?&]$/, "");
+
+    let options_: RequestInit = {
+      method: "GET",
+      headers: {
+        Accept: "text/plain",
+      },
+    };
+
+    return this.transformOptions(options_)
+      .then((transformedOptions_) => {
+        return this.http.fetch(url_, transformedOptions_);
+      })
+      .then((_response: Response) => {
+        return this.processGetImporters(_response);
+      });
+  }
+
+  protected processGetImporters(response: Response): Promise<IDataImporter[]> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+    }
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+        if (Array.isArray(resultData200)) {
+          result200 = [] as any;
+          for (let item of resultData200) result200!.push(IDataImporter.fromJS(item));
+        } else {
+          result200 = <any>null;
         }
-        return Promise.resolve<ImportPushNotification>(null as any);
+        return result200;
+      });
+    } else if (status === 401) {
+      return response.text().then((_responseText) => {
+        return throwException("Unauthorized", status, _responseText, _headers);
+      });
+    } else if (status === 403) {
+      return response.text().then((_responseText) => {
+        return throwException("Forbidden", status, _responseText, _headers);
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
     }
+    return Promise.resolve<IDataImporter[]>(null as any);
+  }
 
-    /**
-     * @param body (optional) 
-     * @return Success
-     */
-    cancelJob(body?: ImportCancellationRequest | undefined): Promise<void> {
-        let url_ = this.baseUrl + "/api/import/task/cancel";
-        url_ = url_.replace(/[?&]$/, "");
+  /**
+   * @return Success
+   */
+  getImportProfileById(profileId: string): Promise<ImportProfile> {
+    let url_ = this.baseUrl + "/api/import/profiles/{profileId}";
+    if (profileId === undefined || profileId === null) throw new Error("The parameter 'profileId' must be defined.");
+    url_ = url_.replace("{profileId}", encodeURIComponent("" + profileId));
+    url_ = url_.replace(/[?&]$/, "");
 
-        const content_ = JSON.stringify(body);
+    let options_: RequestInit = {
+      method: "GET",
+      headers: {
+        Accept: "text/plain",
+      },
+    };
 
-        let options_: RequestInit = {
-            body: content_,
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json-patch+json",
-            }
-        };
+    return this.transformOptions(options_)
+      .then((transformedOptions_) => {
+        return this.http.fetch(url_, transformedOptions_);
+      })
+      .then((_response: Response) => {
+        return this.processGetImportProfileById(_response);
+      });
+  }
 
-        return this.transformOptions(options_).then(transformedOptions_ => {
-            return this.http.fetch(url_, transformedOptions_);
-        }).then((_response: Response) => {
-            return this.processCancelJob(_response);
-        });
+  protected processGetImportProfileById(response: Response): Promise<ImportProfile> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
     }
-
-    protected processCancelJob(response: Response): Promise<void> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            return;
-            });
-        } else if (status === 401) {
-            return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
-            });
-        } else if (status === 403) {
-            return response.text().then((_responseText) => {
-            return throwException("Forbidden", status, _responseText, _headers);
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<void>(null as any);
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = ImportProfile.fromJS(resultData200);
+        return result200;
+      });
+    } else if (status === 401) {
+      return response.text().then((_responseText) => {
+        return throwException("Unauthorized", status, _responseText, _headers);
+      });
+    } else if (status === 403) {
+      return response.text().then((_responseText) => {
+        return throwException("Forbidden", status, _responseText, _headers);
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
     }
+    return Promise.resolve<ImportProfile>(null as any);
+  }
 
-    /**
-     * @param body (optional) 
-     * @return Success
-     */
-    preview(body?: ImportProfile | undefined): Promise<ImportDataPreview> {
-        let url_ = this.baseUrl + "/api/import/preview";
-        url_ = url_.replace(/[?&]$/, "");
+  /**
+   * @param body (optional)
+   * @return Success
+   */
+  createImportProfile(body?: ImportProfile | undefined): Promise<ImportProfile> {
+    let url_ = this.baseUrl + "/api/import/profiles";
+    url_ = url_.replace(/[?&]$/, "");
 
-        const content_ = JSON.stringify(body);
+    const content_ = JSON.stringify(body);
 
-        let options_: RequestInit = {
-            body: content_,
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json-patch+json",
-                "Accept": "text/plain"
-            }
-        };
+    let options_: RequestInit = {
+      body: content_,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json-patch+json",
+        Accept: "text/plain",
+      },
+    };
 
-        return this.transformOptions(options_).then(transformedOptions_ => {
-            return this.http.fetch(url_, transformedOptions_);
-        }).then((_response: Response) => {
-            return this.processPreview(_response);
-        });
+    return this.transformOptions(options_)
+      .then((transformedOptions_) => {
+        return this.http.fetch(url_, transformedOptions_);
+      })
+      .then((_response: Response) => {
+        return this.processCreateImportProfile(_response);
+      });
+  }
+
+  protected processCreateImportProfile(response: Response): Promise<ImportProfile> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
     }
-
-    protected processPreview(response: Response): Promise<ImportDataPreview> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ImportDataPreview.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status === 401) {
-            return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
-            });
-        } else if (status === 403) {
-            return response.text().then((_responseText) => {
-            return throwException("Forbidden", status, _responseText, _headers);
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<ImportDataPreview>(null as any);
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = ImportProfile.fromJS(resultData200);
+        return result200;
+      });
+    } else if (status === 401) {
+      return response.text().then((_responseText) => {
+        return throwException("Unauthorized", status, _responseText, _headers);
+      });
+    } else if (status === 403) {
+      return response.text().then((_responseText) => {
+        return throwException("Forbidden", status, _responseText, _headers);
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
     }
+    return Promise.resolve<ImportProfile>(null as any);
+  }
 
-    /**
-     * @param body (optional) 
-     * @return Success
-     */
-    validate(body?: ImportProfile | undefined): Promise<ValidationResult> {
-        let url_ = this.baseUrl + "/api/import/validate";
-        url_ = url_.replace(/[?&]$/, "");
+  /**
+   * @param body (optional)
+   * @return Success
+   */
+  updateImportProfile(body?: ImportProfile | undefined): Promise<ImportProfile> {
+    let url_ = this.baseUrl + "/api/import/profiles";
+    url_ = url_.replace(/[?&]$/, "");
 
-        const content_ = JSON.stringify(body);
+    const content_ = JSON.stringify(body);
 
-        let options_: RequestInit = {
-            body: content_,
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json-patch+json",
-                "Accept": "text/plain"
-            }
-        };
+    let options_: RequestInit = {
+      body: content_,
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json-patch+json",
+        Accept: "text/plain",
+      },
+    };
 
-        return this.transformOptions(options_).then(transformedOptions_ => {
-            return this.http.fetch(url_, transformedOptions_);
-        }).then((_response: Response) => {
-            return this.processValidate(_response);
-        });
+    return this.transformOptions(options_)
+      .then((transformedOptions_) => {
+        return this.http.fetch(url_, transformedOptions_);
+      })
+      .then((_response: Response) => {
+        return this.processUpdateImportProfile(_response);
+      });
+  }
+
+  protected processUpdateImportProfile(response: Response): Promise<ImportProfile> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
     }
-
-    protected processValidate(response: Response): Promise<ValidationResult> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ValidationResult.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status === 401) {
-            return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
-            });
-        } else if (status === 403) {
-            return response.text().then((_responseText) => {
-            return throwException("Forbidden", status, _responseText, _headers);
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<ValidationResult>(null as any);
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = ImportProfile.fromJS(resultData200);
+        return result200;
+      });
+    } else if (status === 401) {
+      return response.text().then((_responseText) => {
+        return throwException("Unauthorized", status, _responseText, _headers);
+      });
+    } else if (status === 403) {
+      return response.text().then((_responseText) => {
+        return throwException("Forbidden", status, _responseText, _headers);
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
     }
+    return Promise.resolve<ImportProfile>(null as any);
+  }
 
-    /**
-     * @return Success
-     */
-    getImporters(): Promise<IDataImporter[]> {
-        let url_ = this.baseUrl + "/api/import/importers";
-        url_ = url_.replace(/[?&]$/, "");
+  /**
+   * @param profileId (optional)
+   * @return Success
+   */
+  deleteProfile(profileId?: string | undefined): Promise<void> {
+    let url_ = this.baseUrl + "/api/import/profiles?";
+    if (profileId === null) throw new Error("The parameter 'profileId' cannot be null.");
+    else if (profileId !== undefined) url_ += "profileId=" + encodeURIComponent("" + profileId) + "&";
+    url_ = url_.replace(/[?&]$/, "");
 
-        let options_: RequestInit = {
-            method: "GET",
-            headers: {
-                "Accept": "text/plain"
-            }
-        };
+    let options_: RequestInit = {
+      method: "DELETE",
+      headers: {},
+    };
 
-        return this.transformOptions(options_).then(transformedOptions_ => {
-            return this.http.fetch(url_, transformedOptions_);
-        }).then((_response: Response) => {
-            return this.processGetImporters(_response);
-        });
+    return this.transformOptions(options_)
+      .then((transformedOptions_) => {
+        return this.http.fetch(url_, transformedOptions_);
+      })
+      .then((_response: Response) => {
+        return this.processDeleteProfile(_response);
+      });
+  }
+
+  protected processDeleteProfile(response: Response): Promise<void> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
     }
-
-    protected processGetImporters(response: Response): Promise<IDataImporter[]> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            if (Array.isArray(resultData200)) {
-                result200 = [] as any;
-                for (let item of resultData200)
-                    result200!.push(IDataImporter.fromJS(item));
-            }
-            else {
-                result200 = <any>null;
-            }
-            return result200;
-            });
-        } else if (status === 401) {
-            return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
-            });
-        } else if (status === 403) {
-            return response.text().then((_responseText) => {
-            return throwException("Forbidden", status, _responseText, _headers);
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<IDataImporter[]>(null as any);
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        return;
+      });
+    } else if (status === 401) {
+      return response.text().then((_responseText) => {
+        return throwException("Unauthorized", status, _responseText, _headers);
+      });
+    } else if (status === 403) {
+      return response.text().then((_responseText) => {
+        return throwException("Forbidden", status, _responseText, _headers);
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
     }
+    return Promise.resolve<void>(null as any);
+  }
 
-    /**
-     * @return Success
-     */
-    getImportProfileById(profileId: string): Promise<ImportProfile> {
-        let url_ = this.baseUrl + "/api/import/profiles/{profileId}";
-        if (profileId === undefined || profileId === null)
-            throw new Error("The parameter 'profileId' must be defined.");
-        url_ = url_.replace("{profileId}", encodeURIComponent("" + profileId));
-        url_ = url_.replace(/[?&]$/, "");
+  /**
+   * @param body (optional)
+   * @return Success
+   */
+  searchImportProfiles(body?: SearchImportProfilesCriteria | undefined): Promise<SearchImportProfilesResult> {
+    let url_ = this.baseUrl + "/api/import/profiles/search";
+    url_ = url_.replace(/[?&]$/, "");
 
-        let options_: RequestInit = {
-            method: "GET",
-            headers: {
-                "Accept": "text/plain"
-            }
-        };
+    const content_ = JSON.stringify(body);
 
-        return this.transformOptions(options_).then(transformedOptions_ => {
-            return this.http.fetch(url_, transformedOptions_);
-        }).then((_response: Response) => {
-            return this.processGetImportProfileById(_response);
-        });
+    let options_: RequestInit = {
+      body: content_,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json-patch+json",
+        Accept: "text/plain",
+      },
+    };
+
+    return this.transformOptions(options_)
+      .then((transformedOptions_) => {
+        return this.http.fetch(url_, transformedOptions_);
+      })
+      .then((_response: Response) => {
+        return this.processSearchImportProfiles(_response);
+      });
+  }
+
+  protected processSearchImportProfiles(response: Response): Promise<SearchImportProfilesResult> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
     }
-
-    protected processGetImportProfileById(response: Response): Promise<ImportProfile> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ImportProfile.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status === 401) {
-            return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
-            });
-        } else if (status === 403) {
-            return response.text().then((_responseText) => {
-            return throwException("Forbidden", status, _responseText, _headers);
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<ImportProfile>(null as any);
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = SearchImportProfilesResult.fromJS(resultData200);
+        return result200;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
     }
+    return Promise.resolve<SearchImportProfilesResult>(null as any);
+  }
 
-    /**
-     * @param body (optional) 
-     * @return Success
-     */
-    createImportProfile(body?: ImportProfile | undefined): Promise<ImportProfile> {
-        let url_ = this.baseUrl + "/api/import/profiles";
-        url_ = url_.replace(/[?&]$/, "");
+  /**
+   * @param body (optional)
+   * @return Success
+   */
+  searchImportRunHistory(body?: SearchImportRunHistoryCriteria | undefined): Promise<SearchImportRunHistoryResult> {
+    let url_ = this.baseUrl + "/api/import/profiles/execution/history/search";
+    url_ = url_.replace(/[?&]$/, "");
 
-        const content_ = JSON.stringify(body);
+    const content_ = JSON.stringify(body);
 
-        let options_: RequestInit = {
-            body: content_,
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json-patch+json",
-                "Accept": "text/plain"
-            }
-        };
+    let options_: RequestInit = {
+      body: content_,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json-patch+json",
+        Accept: "text/plain",
+      },
+    };
 
-        return this.transformOptions(options_).then(transformedOptions_ => {
-            return this.http.fetch(url_, transformedOptions_);
-        }).then((_response: Response) => {
-            return this.processCreateImportProfile(_response);
-        });
+    return this.transformOptions(options_)
+      .then((transformedOptions_) => {
+        return this.http.fetch(url_, transformedOptions_);
+      })
+      .then((_response: Response) => {
+        return this.processSearchImportRunHistory(_response);
+      });
+  }
+
+  protected processSearchImportRunHistory(response: Response): Promise<SearchImportRunHistoryResult> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
     }
-
-    protected processCreateImportProfile(response: Response): Promise<ImportProfile> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ImportProfile.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status === 401) {
-            return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
-            });
-        } else if (status === 403) {
-            return response.text().then((_responseText) => {
-            return throwException("Forbidden", status, _responseText, _headers);
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<ImportProfile>(null as any);
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = SearchImportRunHistoryResult.fromJS(resultData200);
+        return result200;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
     }
-
-    /**
-     * @param body (optional) 
-     * @return Success
-     */
-    updateImportProfile(body?: ImportProfile | undefined): Promise<ImportProfile> {
-        let url_ = this.baseUrl + "/api/import/profiles";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json-patch+json",
-                "Accept": "text/plain"
-            }
-        };
-
-        return this.transformOptions(options_).then(transformedOptions_ => {
-            return this.http.fetch(url_, transformedOptions_);
-        }).then((_response: Response) => {
-            return this.processUpdateImportProfile(_response);
-        });
-    }
-
-    protected processUpdateImportProfile(response: Response): Promise<ImportProfile> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ImportProfile.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status === 401) {
-            return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
-            });
-        } else if (status === 403) {
-            return response.text().then((_responseText) => {
-            return throwException("Forbidden", status, _responseText, _headers);
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<ImportProfile>(null as any);
-    }
-
-    /**
-     * @param profileId (optional) 
-     * @return Success
-     */
-    deleteProfile(profileId?: string | undefined): Promise<void> {
-        let url_ = this.baseUrl + "/api/import/profiles?";
-        if (profileId === null)
-            throw new Error("The parameter 'profileId' cannot be null.");
-        else if (profileId !== undefined)
-            url_ += "profileId=" + encodeURIComponent("" + profileId) + "&";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_: RequestInit = {
-            method: "DELETE",
-            headers: {
-            }
-        };
-
-        return this.transformOptions(options_).then(transformedOptions_ => {
-            return this.http.fetch(url_, transformedOptions_);
-        }).then((_response: Response) => {
-            return this.processDeleteProfile(_response);
-        });
-    }
-
-    protected processDeleteProfile(response: Response): Promise<void> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            return;
-            });
-        } else if (status === 401) {
-            return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
-            });
-        } else if (status === 403) {
-            return response.text().then((_responseText) => {
-            return throwException("Forbidden", status, _responseText, _headers);
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<void>(null as any);
-    }
-
-    /**
-     * @param body (optional) 
-     * @return Success
-     */
-    searchImportProfiles(body?: SearchImportProfilesCriteria | undefined): Promise<SearchImportProfilesResult> {
-        let url_ = this.baseUrl + "/api/import/profiles/search";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json-patch+json",
-                "Accept": "text/plain"
-            }
-        };
-
-        return this.transformOptions(options_).then(transformedOptions_ => {
-            return this.http.fetch(url_, transformedOptions_);
-        }).then((_response: Response) => {
-            return this.processSearchImportProfiles(_response);
-        });
-    }
-
-    protected processSearchImportProfiles(response: Response): Promise<SearchImportProfilesResult> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = SearchImportProfilesResult.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<SearchImportProfilesResult>(null as any);
-    }
-
-    /**
-     * @param body (optional) 
-     * @return Success
-     */
-    searchImportRunHistory(body?: SearchImportRunHistoryCriteria | undefined): Promise<SearchImportRunHistoryResult> {
-        let url_ = this.baseUrl + "/api/import/profiles/execution/history/search";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json-patch+json",
-                "Accept": "text/plain"
-            }
-        };
-
-        return this.transformOptions(options_).then(transformedOptions_ => {
-            return this.http.fetch(url_, transformedOptions_);
-        }).then((_response: Response) => {
-            return this.processSearchImportRunHistory(_response);
-        });
-    }
-
-    protected processSearchImportRunHistory(response: Response): Promise<SearchImportRunHistoryResult> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = SearchImportRunHistoryResult.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<SearchImportRunHistoryResult>(null as any);
-    }
+    return Promise.resolve<SearchImportRunHistoryResult>(null as any);
+  }
 }
 
 export class OrganizationClient extends AuthApiBase {
-    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
-    private baseUrl: string;
-    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+  private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+  private baseUrl: string;
+  protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
 
-    constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
-        super();
-        this.http = http ? http : window as any;
-        this.baseUrl = this.getBaseUrl("", baseUrl);
+  constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+    super();
+    this.http = http ? http : (window as any);
+    this.baseUrl = this.getBaseUrl("", baseUrl);
+  }
+
+  /**
+   * @param organizationId (optional)
+   * @return Success
+   */
+  getOrganizationInfo(organizationId?: string | undefined): Promise<OrganizationInfo> {
+    let url_ = this.baseUrl + "/api/import/organization?";
+    if (organizationId === null) throw new Error("The parameter 'organizationId' cannot be null.");
+    else if (organizationId !== undefined) url_ += "organizationId=" + encodeURIComponent("" + organizationId) + "&";
+    url_ = url_.replace(/[?&]$/, "");
+
+    let options_: RequestInit = {
+      method: "GET",
+      headers: {
+        Accept: "text/plain",
+      },
+    };
+
+    return this.transformOptions(options_)
+      .then((transformedOptions_) => {
+        return this.http.fetch(url_, transformedOptions_);
+      })
+      .then((_response: Response) => {
+        return this.processGetOrganizationInfo(_response);
+      });
+  }
+
+  protected processGetOrganizationInfo(response: Response): Promise<OrganizationInfo> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
     }
-
-    /**
-     * @param organizationId (optional) 
-     * @return Success
-     */
-    getOrganizationInfo(organizationId?: string | undefined): Promise<OrganizationInfo> {
-        let url_ = this.baseUrl + "/api/import/organization?";
-        if (organizationId === null)
-            throw new Error("The parameter 'organizationId' cannot be null.");
-        else if (organizationId !== undefined)
-            url_ += "organizationId=" + encodeURIComponent("" + organizationId) + "&";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_: RequestInit = {
-            method: "GET",
-            headers: {
-                "Accept": "text/plain"
-            }
-        };
-
-        return this.transformOptions(options_).then(transformedOptions_ => {
-            return this.http.fetch(url_, transformedOptions_);
-        }).then((_response: Response) => {
-            return this.processGetOrganizationInfo(_response);
-        });
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = OrganizationInfo.fromJS(resultData200);
+        return result200;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
     }
-
-    protected processGetOrganizationInfo(response: Response): Promise<OrganizationInfo> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = OrganizationInfo.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<OrganizationInfo>(null as any);
-    }
+    return Promise.resolve<OrganizationInfo>(null as any);
+  }
 }
 
 export class IAuthorizationRequirement implements IIAuthorizationRequirement {
-
-    constructor(data?: IIAuthorizationRequirement) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
+  constructor(data?: IIAuthorizationRequirement) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property)) (<any>this)[property] = (<any>data)[property];
+      }
     }
+  }
 
-    init(_data?: any) {
-    }
+  init(_data?: any) {}
 
-    static fromJS(data: any): IAuthorizationRequirement {
-        data = typeof data === 'object' ? data : {};
-        let result = new IAuthorizationRequirement();
-        result.init(data);
-        return result;
-    }
+  static fromJS(data: any): IAuthorizationRequirement {
+    data = typeof data === "object" ? data : {};
+    let result = new IAuthorizationRequirement();
+    result.init(data);
+    return result;
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        return data;
-    }
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    return data;
+  }
 }
 
-export interface IIAuthorizationRequirement {
-}
+export interface IIAuthorizationRequirement {}
 
 export class IDataImporter implements IIDataImporter {
-    readonly typeName?: string | undefined;
-    readonly metadata?: { [key: string]: string; } | undefined;
-    availSettings?: SettingDescriptor[] | undefined;
-    authorizationRequirement?: IAuthorizationRequirement | undefined;
+  readonly typeName?: string | undefined;
+  readonly metadata?: { [key: string]: string } | undefined;
+  availSettings?: SettingDescriptor[] | undefined;
+  authorizationRequirement?: IAuthorizationRequirement | undefined;
 
-    constructor(data?: IIDataImporter) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
+  constructor(data?: IIDataImporter) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property)) (<any>this)[property] = (<any>data)[property];
+      }
     }
+  }
 
-    init(_data?: any) {
-        if (_data) {
-            (<any>this).typeName = _data["typeName"];
-            if (_data["metadata"]) {
-                (<any>this).metadata = {} as any;
-                for (let key in _data["metadata"]) {
-                    if (_data["metadata"].hasOwnProperty(key))
-                        (<any>(<any>this).metadata)![key] = _data["metadata"][key];
-                }
-            }
-            if (Array.isArray(_data["availSettings"])) {
-                this.availSettings = [] as any;
-                for (let item of _data["availSettings"])
-                    this.availSettings!.push(SettingDescriptor.fromJS(item));
-            }
-            this.authorizationRequirement = _data["authorizationRequirement"] ? IAuthorizationRequirement.fromJS(_data["authorizationRequirement"]) : <any>undefined;
+  init(_data?: any) {
+    if (_data) {
+      (<any>this).typeName = _data["typeName"];
+      if (_data["metadata"]) {
+        (<any>this).metadata = {} as any;
+        for (let key in _data["metadata"]) {
+          if (_data["metadata"].hasOwnProperty(key)) (<any>(<any>this).metadata)![key] = _data["metadata"][key];
         }
+      }
+      if (Array.isArray(_data["availSettings"])) {
+        this.availSettings = [] as any;
+        for (let item of _data["availSettings"]) this.availSettings!.push(SettingDescriptor.fromJS(item));
+      }
+      this.authorizationRequirement = _data["authorizationRequirement"]
+        ? IAuthorizationRequirement.fromJS(_data["authorizationRequirement"])
+        : <any>undefined;
     }
+  }
 
-    static fromJS(data: any): IDataImporter {
-        data = typeof data === 'object' ? data : {};
-        let result = new IDataImporter();
-        result.init(data);
-        return result;
-    }
+  static fromJS(data: any): IDataImporter {
+    data = typeof data === "object" ? data : {};
+    let result = new IDataImporter();
+    result.init(data);
+    return result;
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["typeName"] = this.typeName;
-        if (this.metadata) {
-            data["metadata"] = {};
-            for (let key in this.metadata) {
-                if (this.metadata.hasOwnProperty(key))
-                    (<any>data["metadata"])[key] = (<any>this.metadata)[key];
-            }
-        }
-        if (Array.isArray(this.availSettings)) {
-            data["availSettings"] = [];
-            for (let item of this.availSettings)
-                data["availSettings"].push(item.toJSON());
-        }
-        data["authorizationRequirement"] = this.authorizationRequirement ? this.authorizationRequirement.toJSON() : <any>undefined;
-        return data;
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    data["typeName"] = this.typeName;
+    if (this.metadata) {
+      data["metadata"] = {};
+      for (let key in this.metadata) {
+        if (this.metadata.hasOwnProperty(key)) (<any>data["metadata"])[key] = (<any>this.metadata)[key];
+      }
     }
+    if (Array.isArray(this.availSettings)) {
+      data["availSettings"] = [];
+      for (let item of this.availSettings) data["availSettings"].push(item.toJSON());
+    }
+    data["authorizationRequirement"] = this.authorizationRequirement
+      ? this.authorizationRequirement.toJSON()
+      : <any>undefined;
+    return data;
+  }
 }
 
 export interface IIDataImporter {
-    typeName?: string | undefined;
-    metadata?: { [key: string]: string; } | undefined;
-    availSettings?: SettingDescriptor[] | undefined;
-    authorizationRequirement?: IAuthorizationRequirement | undefined;
+  typeName?: string | undefined;
+  metadata?: { [key: string]: string } | undefined;
+  availSettings?: SettingDescriptor[] | undefined;
+  authorizationRequirement?: IAuthorizationRequirement | undefined;
 }
 
 export class ImportCancellationRequest implements IImportCancellationRequest {
-    jobId?: string | undefined;
+  jobId?: string | undefined;
 
-    constructor(data?: IImportCancellationRequest) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
+  constructor(data?: IImportCancellationRequest) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property)) (<any>this)[property] = (<any>data)[property];
+      }
     }
+  }
 
-    init(_data?: any) {
-        if (_data) {
-            this.jobId = _data["jobId"];
-        }
+  init(_data?: any) {
+    if (_data) {
+      this.jobId = _data["jobId"];
     }
+  }
 
-    static fromJS(data: any): ImportCancellationRequest {
-        data = typeof data === 'object' ? data : {};
-        let result = new ImportCancellationRequest();
-        result.init(data);
-        return result;
-    }
+  static fromJS(data: any): ImportCancellationRequest {
+    data = typeof data === "object" ? data : {};
+    let result = new ImportCancellationRequest();
+    result.init(data);
+    return result;
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["jobId"] = this.jobId;
-        return data;
-    }
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    data["jobId"] = this.jobId;
+    return data;
+  }
 }
 
 export interface IImportCancellationRequest {
-    jobId?: string | undefined;
+  jobId?: string | undefined;
 }
 
 export class ImportDataPreview implements IImportDataPreview {
-    totalCount?: number;
-    fileName?: string | undefined;
-    records?: any[] | undefined;
-    errors?: string[] | undefined;
+  totalCount?: number;
+  fileName?: string | undefined;
+  records?: any[] | undefined;
+  errors?: string[] | undefined;
 
-    constructor(data?: IImportDataPreview) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
+  constructor(data?: IImportDataPreview) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property)) (<any>this)[property] = (<any>data)[property];
+      }
     }
+  }
 
-    init(_data?: any) {
-        if (_data) {
-            this.totalCount = _data["totalCount"];
-            this.fileName = _data["fileName"];
-            if (Array.isArray(_data["records"])) {
-                this.records = [] as any;
-                for (let item of _data["records"])
-                    this.records!.push(item);
-            }
-            if (Array.isArray(_data["errors"])) {
-                this.errors = [] as any;
-                for (let item of _data["errors"])
-                    this.errors!.push(item);
-            }
-        }
+  init(_data?: any) {
+    if (_data) {
+      this.totalCount = _data["totalCount"];
+      this.fileName = _data["fileName"];
+      if (Array.isArray(_data["records"])) {
+        this.records = [] as any;
+        for (let item of _data["records"]) this.records!.push(item);
+      }
+      if (Array.isArray(_data["errors"])) {
+        this.errors = [] as any;
+        for (let item of _data["errors"]) this.errors!.push(item);
+      }
     }
+  }
 
-    static fromJS(data: any): ImportDataPreview {
-        data = typeof data === 'object' ? data : {};
-        let result = new ImportDataPreview();
-        result.init(data);
-        return result;
-    }
+  static fromJS(data: any): ImportDataPreview {
+    data = typeof data === "object" ? data : {};
+    let result = new ImportDataPreview();
+    result.init(data);
+    return result;
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["totalCount"] = this.totalCount;
-        data["fileName"] = this.fileName;
-        if (Array.isArray(this.records)) {
-            data["records"] = [];
-            for (let item of this.records)
-                data["records"].push(item);
-        }
-        if (Array.isArray(this.errors)) {
-            data["errors"] = [];
-            for (let item of this.errors)
-                data["errors"].push(item);
-        }
-        return data;
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    data["totalCount"] = this.totalCount;
+    data["fileName"] = this.fileName;
+    if (Array.isArray(this.records)) {
+      data["records"] = [];
+      for (let item of this.records) data["records"].push(item);
     }
+    if (Array.isArray(this.errors)) {
+      data["errors"] = [];
+      for (let item of this.errors) data["errors"].push(item);
+    }
+    return data;
+  }
 }
 
 export interface IImportDataPreview {
-    totalCount?: number;
-    fileName?: string | undefined;
-    records?: any[] | undefined;
-    errors?: string[] | undefined;
+  totalCount?: number;
+  fileName?: string | undefined;
+  records?: any[] | undefined;
+  errors?: string[] | undefined;
 }
 
 export class ImportProfile implements IImportProfile {
-    name?: string | undefined;
-    dataImporterType?: string | undefined;
-    userId?: string | undefined;
-    userName?: string | undefined;
-    settings?: ObjectSettingEntry[] | undefined;
-    readonly typeName?: string | undefined;
-    profileType?: string | undefined;
-    importFileUrl?: string | undefined;
-    importReportUrl?: string | undefined;
-    importReporterType?: string | undefined;
-    previewObjectCount?: number;
-    createdDate?: Date;
-    modifiedDate?: Date | undefined;
-    createdBy?: string | undefined;
-    modifiedBy?: string | undefined;
-    id?: string | undefined;
+  name?: string | undefined;
+  dataImporterType?: string | undefined;
+  userId?: string | undefined;
+  userName?: string | undefined;
+  settings?: ObjectSettingEntry[] | undefined;
+  readonly typeName?: string | undefined;
+  profileType?: string | undefined;
+  importFileUrl?: string | undefined;
+  importReportUrl?: string | undefined;
+  importReporterType?: string | undefined;
+  previewObjectCount?: number;
+  createdDate?: Date;
+  modifiedDate?: Date | undefined;
+  createdBy?: string | undefined;
+  modifiedBy?: string | undefined;
+  id?: string | undefined;
 
-    constructor(data?: IImportProfile) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
+  constructor(data?: IImportProfile) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property)) (<any>this)[property] = (<any>data)[property];
+      }
     }
+  }
 
-    init(_data?: any) {
-        if (_data) {
-            this.name = _data["name"];
-            this.dataImporterType = _data["dataImporterType"];
-            this.userId = _data["userId"];
-            this.userName = _data["userName"];
-            if (Array.isArray(_data["settings"])) {
-                this.settings = [] as any;
-                for (let item of _data["settings"])
-                    this.settings!.push(ObjectSettingEntry.fromJS(item));
-            }
-            (<any>this).typeName = _data["typeName"];
-            this.profileType = _data["profileType"];
-            this.importFileUrl = _data["importFileUrl"];
-            this.importReportUrl = _data["importReportUrl"];
-            this.importReporterType = _data["importReporterType"];
-            this.previewObjectCount = _data["previewObjectCount"];
-            this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>undefined;
-            this.modifiedDate = _data["modifiedDate"] ? new Date(_data["modifiedDate"].toString()) : <any>undefined;
-            this.createdBy = _data["createdBy"];
-            this.modifiedBy = _data["modifiedBy"];
-            this.id = _data["id"];
-        }
+  init(_data?: any) {
+    if (_data) {
+      this.name = _data["name"];
+      this.dataImporterType = _data["dataImporterType"];
+      this.userId = _data["userId"];
+      this.userName = _data["userName"];
+      if (Array.isArray(_data["settings"])) {
+        this.settings = [] as any;
+        for (let item of _data["settings"]) this.settings!.push(ObjectSettingEntry.fromJS(item));
+      }
+      (<any>this).typeName = _data["typeName"];
+      this.profileType = _data["profileType"];
+      this.importFileUrl = _data["importFileUrl"];
+      this.importReportUrl = _data["importReportUrl"];
+      this.importReporterType = _data["importReporterType"];
+      this.previewObjectCount = _data["previewObjectCount"];
+      this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>undefined;
+      this.modifiedDate = _data["modifiedDate"] ? new Date(_data["modifiedDate"].toString()) : <any>undefined;
+      this.createdBy = _data["createdBy"];
+      this.modifiedBy = _data["modifiedBy"];
+      this.id = _data["id"];
     }
+  }
 
-    static fromJS(data: any): ImportProfile {
-        data = typeof data === 'object' ? data : {};
-        let result = new ImportProfile();
-        result.init(data);
-        return result;
-    }
+  static fromJS(data: any): ImportProfile {
+    data = typeof data === "object" ? data : {};
+    let result = new ImportProfile();
+    result.init(data);
+    return result;
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["name"] = this.name;
-        data["dataImporterType"] = this.dataImporterType;
-        data["userId"] = this.userId;
-        data["userName"] = this.userName;
-        if (Array.isArray(this.settings)) {
-            data["settings"] = [];
-            for (let item of this.settings)
-                data["settings"].push(item.toJSON());
-        }
-        data["typeName"] = this.typeName;
-        data["profileType"] = this.profileType;
-        data["importFileUrl"] = this.importFileUrl;
-        data["importReportUrl"] = this.importReportUrl;
-        data["importReporterType"] = this.importReporterType;
-        data["previewObjectCount"] = this.previewObjectCount;
-        data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>undefined;
-        data["modifiedDate"] = this.modifiedDate ? this.modifiedDate.toISOString() : <any>undefined;
-        data["createdBy"] = this.createdBy;
-        data["modifiedBy"] = this.modifiedBy;
-        data["id"] = this.id;
-        return data;
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    data["name"] = this.name;
+    data["dataImporterType"] = this.dataImporterType;
+    data["userId"] = this.userId;
+    data["userName"] = this.userName;
+    if (Array.isArray(this.settings)) {
+      data["settings"] = [];
+      for (let item of this.settings) data["settings"].push(item.toJSON());
     }
+    data["typeName"] = this.typeName;
+    data["profileType"] = this.profileType;
+    data["importFileUrl"] = this.importFileUrl;
+    data["importReportUrl"] = this.importReportUrl;
+    data["importReporterType"] = this.importReporterType;
+    data["previewObjectCount"] = this.previewObjectCount;
+    data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>undefined;
+    data["modifiedDate"] = this.modifiedDate ? this.modifiedDate.toISOString() : <any>undefined;
+    data["createdBy"] = this.createdBy;
+    data["modifiedBy"] = this.modifiedBy;
+    data["id"] = this.id;
+    return data;
+  }
 }
 
 export interface IImportProfile {
-    name?: string | undefined;
-    dataImporterType?: string | undefined;
-    userId?: string | undefined;
-    userName?: string | undefined;
-    settings?: ObjectSettingEntry[] | undefined;
-    typeName?: string | undefined;
-    profileType?: string | undefined;
-    importFileUrl?: string | undefined;
-    importReportUrl?: string | undefined;
-    importReporterType?: string | undefined;
-    previewObjectCount?: number;
-    createdDate?: Date;
-    modifiedDate?: Date | undefined;
-    createdBy?: string | undefined;
-    modifiedBy?: string | undefined;
-    id?: string | undefined;
+  name?: string | undefined;
+  dataImporterType?: string | undefined;
+  userId?: string | undefined;
+  userName?: string | undefined;
+  settings?: ObjectSettingEntry[] | undefined;
+  typeName?: string | undefined;
+  profileType?: string | undefined;
+  importFileUrl?: string | undefined;
+  importReportUrl?: string | undefined;
+  importReporterType?: string | undefined;
+  previewObjectCount?: number;
+  createdDate?: Date;
+  modifiedDate?: Date | undefined;
+  createdBy?: string | undefined;
+  modifiedBy?: string | undefined;
+  id?: string | undefined;
 }
 
 export class ImportPushNotification implements IImportPushNotification {
-    profileId?: string | undefined;
-    profileName?: string | undefined;
-    jobId?: string | undefined;
-    estimatingRemaining?: boolean;
-    estimatedRemaining?: string | undefined;
-    finished?: Date | undefined;
-    totalCount?: number;
-    processedCount?: number;
-    readonly errorCount?: number;
-    errors?: string[] | undefined;
-    reportUrl?: string | undefined;
-    serverId?: string | undefined;
-    creator?: string | undefined;
-    created?: Date;
-    isNew?: boolean;
-    notifyType?: string | undefined;
-    description?: string | undefined;
-    title?: string | undefined;
-    repeatCount?: number;
-    id?: string | undefined;
+  profileId?: string | undefined;
+  profileName?: string | undefined;
+  jobId?: string | undefined;
+  estimatingRemaining?: boolean;
+  estimatedRemaining?: string | undefined;
+  finished?: Date | undefined;
+  totalCount?: number;
+  processedCount?: number;
+  readonly errorCount?: number;
+  errors?: string[] | undefined;
+  reportUrl?: string | undefined;
+  serverId?: string | undefined;
+  creator?: string | undefined;
+  created?: Date;
+  isNew?: boolean;
+  notifyType?: string | undefined;
+  description?: string | undefined;
+  title?: string | undefined;
+  repeatCount?: number;
+  id?: string | undefined;
 
-    constructor(data?: IImportPushNotification) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
+  constructor(data?: IImportPushNotification) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property)) (<any>this)[property] = (<any>data)[property];
+      }
     }
+  }
 
-    init(_data?: any) {
-        if (_data) {
-            this.profileId = _data["profileId"];
-            this.profileName = _data["profileName"];
-            this.jobId = _data["jobId"];
-            this.estimatingRemaining = _data["estimatingRemaining"];
-            this.estimatedRemaining = _data["estimatedRemaining"];
-            this.finished = _data["finished"] ? new Date(_data["finished"].toString()) : <any>undefined;
-            this.totalCount = _data["totalCount"];
-            this.processedCount = _data["processedCount"];
-            (<any>this).errorCount = _data["errorCount"];
-            if (Array.isArray(_data["errors"])) {
-                this.errors = [] as any;
-                for (let item of _data["errors"])
-                    this.errors!.push(item);
-            }
-            this.reportUrl = _data["reportUrl"];
-            this.serverId = _data["serverId"];
-            this.creator = _data["creator"];
-            this.created = _data["created"] ? new Date(_data["created"].toString()) : <any>undefined;
-            this.isNew = _data["isNew"];
-            this.notifyType = _data["notifyType"];
-            this.description = _data["description"];
-            this.title = _data["title"];
-            this.repeatCount = _data["repeatCount"];
-            this.id = _data["id"];
-        }
+  init(_data?: any) {
+    if (_data) {
+      this.profileId = _data["profileId"];
+      this.profileName = _data["profileName"];
+      this.jobId = _data["jobId"];
+      this.estimatingRemaining = _data["estimatingRemaining"];
+      this.estimatedRemaining = _data["estimatedRemaining"];
+      this.finished = _data["finished"] ? new Date(_data["finished"].toString()) : <any>undefined;
+      this.totalCount = _data["totalCount"];
+      this.processedCount = _data["processedCount"];
+      (<any>this).errorCount = _data["errorCount"];
+      if (Array.isArray(_data["errors"])) {
+        this.errors = [] as any;
+        for (let item of _data["errors"]) this.errors!.push(item);
+      }
+      this.reportUrl = _data["reportUrl"];
+      this.serverId = _data["serverId"];
+      this.creator = _data["creator"];
+      this.created = _data["created"] ? new Date(_data["created"].toString()) : <any>undefined;
+      this.isNew = _data["isNew"];
+      this.notifyType = _data["notifyType"];
+      this.description = _data["description"];
+      this.title = _data["title"];
+      this.repeatCount = _data["repeatCount"];
+      this.id = _data["id"];
     }
+  }
 
-    static fromJS(data: any): ImportPushNotification {
-        data = typeof data === 'object' ? data : {};
-        let result = new ImportPushNotification();
-        result.init(data);
-        return result;
-    }
+  static fromJS(data: any): ImportPushNotification {
+    data = typeof data === "object" ? data : {};
+    let result = new ImportPushNotification();
+    result.init(data);
+    return result;
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["profileId"] = this.profileId;
-        data["profileName"] = this.profileName;
-        data["jobId"] = this.jobId;
-        data["estimatingRemaining"] = this.estimatingRemaining;
-        data["estimatedRemaining"] = this.estimatedRemaining;
-        data["finished"] = this.finished ? this.finished.toISOString() : <any>undefined;
-        data["totalCount"] = this.totalCount;
-        data["processedCount"] = this.processedCount;
-        data["errorCount"] = this.errorCount;
-        if (Array.isArray(this.errors)) {
-            data["errors"] = [];
-            for (let item of this.errors)
-                data["errors"].push(item);
-        }
-        data["reportUrl"] = this.reportUrl;
-        data["serverId"] = this.serverId;
-        data["creator"] = this.creator;
-        data["created"] = this.created ? this.created.toISOString() : <any>undefined;
-        data["isNew"] = this.isNew;
-        data["notifyType"] = this.notifyType;
-        data["description"] = this.description;
-        data["title"] = this.title;
-        data["repeatCount"] = this.repeatCount;
-        data["id"] = this.id;
-        return data;
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    data["profileId"] = this.profileId;
+    data["profileName"] = this.profileName;
+    data["jobId"] = this.jobId;
+    data["estimatingRemaining"] = this.estimatingRemaining;
+    data["estimatedRemaining"] = this.estimatedRemaining;
+    data["finished"] = this.finished ? this.finished.toISOString() : <any>undefined;
+    data["totalCount"] = this.totalCount;
+    data["processedCount"] = this.processedCount;
+    data["errorCount"] = this.errorCount;
+    if (Array.isArray(this.errors)) {
+      data["errors"] = [];
+      for (let item of this.errors) data["errors"].push(item);
     }
+    data["reportUrl"] = this.reportUrl;
+    data["serverId"] = this.serverId;
+    data["creator"] = this.creator;
+    data["created"] = this.created ? this.created.toISOString() : <any>undefined;
+    data["isNew"] = this.isNew;
+    data["notifyType"] = this.notifyType;
+    data["description"] = this.description;
+    data["title"] = this.title;
+    data["repeatCount"] = this.repeatCount;
+    data["id"] = this.id;
+    return data;
+  }
 }
 
 export interface IImportPushNotification {
-    profileId?: string | undefined;
-    profileName?: string | undefined;
-    jobId?: string | undefined;
-    estimatingRemaining?: boolean;
-    estimatedRemaining?: string | undefined;
-    finished?: Date | undefined;
-    totalCount?: number;
-    processedCount?: number;
-    errorCount?: number;
-    errors?: string[] | undefined;
-    reportUrl?: string | undefined;
-    serverId?: string | undefined;
-    creator?: string | undefined;
-    created?: Date;
-    isNew?: boolean;
-    notifyType?: string | undefined;
-    description?: string | undefined;
-    title?: string | undefined;
-    repeatCount?: number;
-    id?: string | undefined;
+  profileId?: string | undefined;
+  profileName?: string | undefined;
+  jobId?: string | undefined;
+  estimatingRemaining?: boolean;
+  estimatedRemaining?: string | undefined;
+  finished?: Date | undefined;
+  totalCount?: number;
+  processedCount?: number;
+  errorCount?: number;
+  errors?: string[] | undefined;
+  reportUrl?: string | undefined;
+  serverId?: string | undefined;
+  creator?: string | undefined;
+  created?: Date;
+  isNew?: boolean;
+  notifyType?: string | undefined;
+  description?: string | undefined;
+  title?: string | undefined;
+  repeatCount?: number;
+  id?: string | undefined;
 }
 
 export class ImportRunHistory implements IImportRunHistory {
-    userId?: string | undefined;
-    userName?: string | undefined;
-    jobId?: string | undefined;
-    profileId?: string | undefined;
-    profileName?: string | undefined;
-    executed?: Date;
-    finished?: Date | undefined;
-    totalCount?: number;
-    processedCount?: number;
-    errorsCount?: number;
-    errors?: string[] | undefined;
-    fileUrl?: string | undefined;
-    reportUrl?: string | undefined;
-    readonly typeName?: string | undefined;
-    settings?: ObjectSettingEntry[] | undefined;
-    createdDate?: Date;
-    modifiedDate?: Date | undefined;
-    createdBy?: string | undefined;
-    modifiedBy?: string | undefined;
-    id?: string | undefined;
+  userId?: string | undefined;
+  userName?: string | undefined;
+  jobId?: string | undefined;
+  profileId?: string | undefined;
+  profileName?: string | undefined;
+  executed?: Date;
+  finished?: Date | undefined;
+  totalCount?: number;
+  processedCount?: number;
+  errorsCount?: number;
+  errors?: string[] | undefined;
+  fileUrl?: string | undefined;
+  reportUrl?: string | undefined;
+  readonly typeName?: string | undefined;
+  settings?: ObjectSettingEntry[] | undefined;
+  createdDate?: Date;
+  modifiedDate?: Date | undefined;
+  createdBy?: string | undefined;
+  modifiedBy?: string | undefined;
+  id?: string | undefined;
 
-    constructor(data?: IImportRunHistory) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
+  constructor(data?: IImportRunHistory) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property)) (<any>this)[property] = (<any>data)[property];
+      }
     }
+  }
 
-    init(_data?: any) {
-        if (_data) {
-            this.userId = _data["userId"];
-            this.userName = _data["userName"];
-            this.jobId = _data["jobId"];
-            this.profileId = _data["profileId"];
-            this.profileName = _data["profileName"];
-            this.executed = _data["executed"] ? new Date(_data["executed"].toString()) : <any>undefined;
-            this.finished = _data["finished"] ? new Date(_data["finished"].toString()) : <any>undefined;
-            this.totalCount = _data["totalCount"];
-            this.processedCount = _data["processedCount"];
-            this.errorsCount = _data["errorsCount"];
-            if (Array.isArray(_data["errors"])) {
-                this.errors = [] as any;
-                for (let item of _data["errors"])
-                    this.errors!.push(item);
-            }
-            this.fileUrl = _data["fileUrl"];
-            this.reportUrl = _data["reportUrl"];
-            (<any>this).typeName = _data["typeName"];
-            if (Array.isArray(_data["settings"])) {
-                this.settings = [] as any;
-                for (let item of _data["settings"])
-                    this.settings!.push(ObjectSettingEntry.fromJS(item));
-            }
-            this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>undefined;
-            this.modifiedDate = _data["modifiedDate"] ? new Date(_data["modifiedDate"].toString()) : <any>undefined;
-            this.createdBy = _data["createdBy"];
-            this.modifiedBy = _data["modifiedBy"];
-            this.id = _data["id"];
-        }
+  init(_data?: any) {
+    if (_data) {
+      this.userId = _data["userId"];
+      this.userName = _data["userName"];
+      this.jobId = _data["jobId"];
+      this.profileId = _data["profileId"];
+      this.profileName = _data["profileName"];
+      this.executed = _data["executed"] ? new Date(_data["executed"].toString()) : <any>undefined;
+      this.finished = _data["finished"] ? new Date(_data["finished"].toString()) : <any>undefined;
+      this.totalCount = _data["totalCount"];
+      this.processedCount = _data["processedCount"];
+      this.errorsCount = _data["errorsCount"];
+      if (Array.isArray(_data["errors"])) {
+        this.errors = [] as any;
+        for (let item of _data["errors"]) this.errors!.push(item);
+      }
+      this.fileUrl = _data["fileUrl"];
+      this.reportUrl = _data["reportUrl"];
+      (<any>this).typeName = _data["typeName"];
+      if (Array.isArray(_data["settings"])) {
+        this.settings = [] as any;
+        for (let item of _data["settings"]) this.settings!.push(ObjectSettingEntry.fromJS(item));
+      }
+      this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>undefined;
+      this.modifiedDate = _data["modifiedDate"] ? new Date(_data["modifiedDate"].toString()) : <any>undefined;
+      this.createdBy = _data["createdBy"];
+      this.modifiedBy = _data["modifiedBy"];
+      this.id = _data["id"];
     }
+  }
 
-    static fromJS(data: any): ImportRunHistory {
-        data = typeof data === 'object' ? data : {};
-        let result = new ImportRunHistory();
-        result.init(data);
-        return result;
-    }
+  static fromJS(data: any): ImportRunHistory {
+    data = typeof data === "object" ? data : {};
+    let result = new ImportRunHistory();
+    result.init(data);
+    return result;
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["userId"] = this.userId;
-        data["userName"] = this.userName;
-        data["jobId"] = this.jobId;
-        data["profileId"] = this.profileId;
-        data["profileName"] = this.profileName;
-        data["executed"] = this.executed ? this.executed.toISOString() : <any>undefined;
-        data["finished"] = this.finished ? this.finished.toISOString() : <any>undefined;
-        data["totalCount"] = this.totalCount;
-        data["processedCount"] = this.processedCount;
-        data["errorsCount"] = this.errorsCount;
-        if (Array.isArray(this.errors)) {
-            data["errors"] = [];
-            for (let item of this.errors)
-                data["errors"].push(item);
-        }
-        data["fileUrl"] = this.fileUrl;
-        data["reportUrl"] = this.reportUrl;
-        data["typeName"] = this.typeName;
-        if (Array.isArray(this.settings)) {
-            data["settings"] = [];
-            for (let item of this.settings)
-                data["settings"].push(item.toJSON());
-        }
-        data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>undefined;
-        data["modifiedDate"] = this.modifiedDate ? this.modifiedDate.toISOString() : <any>undefined;
-        data["createdBy"] = this.createdBy;
-        data["modifiedBy"] = this.modifiedBy;
-        data["id"] = this.id;
-        return data;
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    data["userId"] = this.userId;
+    data["userName"] = this.userName;
+    data["jobId"] = this.jobId;
+    data["profileId"] = this.profileId;
+    data["profileName"] = this.profileName;
+    data["executed"] = this.executed ? this.executed.toISOString() : <any>undefined;
+    data["finished"] = this.finished ? this.finished.toISOString() : <any>undefined;
+    data["totalCount"] = this.totalCount;
+    data["processedCount"] = this.processedCount;
+    data["errorsCount"] = this.errorsCount;
+    if (Array.isArray(this.errors)) {
+      data["errors"] = [];
+      for (let item of this.errors) data["errors"].push(item);
     }
+    data["fileUrl"] = this.fileUrl;
+    data["reportUrl"] = this.reportUrl;
+    data["typeName"] = this.typeName;
+    if (Array.isArray(this.settings)) {
+      data["settings"] = [];
+      for (let item of this.settings) data["settings"].push(item.toJSON());
+    }
+    data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>undefined;
+    data["modifiedDate"] = this.modifiedDate ? this.modifiedDate.toISOString() : <any>undefined;
+    data["createdBy"] = this.createdBy;
+    data["modifiedBy"] = this.modifiedBy;
+    data["id"] = this.id;
+    return data;
+  }
 }
 
 export interface IImportRunHistory {
-    userId?: string | undefined;
-    userName?: string | undefined;
-    jobId?: string | undefined;
-    profileId?: string | undefined;
-    profileName?: string | undefined;
-    executed?: Date;
-    finished?: Date | undefined;
-    totalCount?: number;
-    processedCount?: number;
-    errorsCount?: number;
-    errors?: string[] | undefined;
-    fileUrl?: string | undefined;
-    reportUrl?: string | undefined;
-    typeName?: string | undefined;
-    settings?: ObjectSettingEntry[] | undefined;
-    createdDate?: Date;
-    modifiedDate?: Date | undefined;
-    createdBy?: string | undefined;
-    modifiedBy?: string | undefined;
-    id?: string | undefined;
+  userId?: string | undefined;
+  userName?: string | undefined;
+  jobId?: string | undefined;
+  profileId?: string | undefined;
+  profileName?: string | undefined;
+  executed?: Date;
+  finished?: Date | undefined;
+  totalCount?: number;
+  processedCount?: number;
+  errorsCount?: number;
+  errors?: string[] | undefined;
+  fileUrl?: string | undefined;
+  reportUrl?: string | undefined;
+  typeName?: string | undefined;
+  settings?: ObjectSettingEntry[] | undefined;
+  createdDate?: Date;
+  modifiedDate?: Date | undefined;
+  createdBy?: string | undefined;
+  modifiedBy?: string | undefined;
+  id?: string | undefined;
 }
 
 export class ObjectSettingEntry implements IObjectSettingEntry {
-    readonly itHasValues?: boolean;
-    /** Setting may belong to any object in system */
-    objectId?: string | undefined;
-    objectType?: string | undefined;
-    /** Flag indicates the this setting is read only and can't be changed */
-    isReadOnly?: boolean;
-    value?: any | undefined;
-    id?: string | undefined;
-    /** The flag indicates that you need to restart the application to apply this setting changes. */
-    restartRequired?: boolean;
-    /** The module id which setting belong to */
-    moduleId?: string | undefined;
-    /** Setting group name */
-    groupName?: string | undefined;
-    /** Setting name */
-    name?: string | undefined;
-    /** Display setting name */
-    displayName?: string | undefined;
-    isRequired?: boolean;
-    /** Flag indicates that this setting doesn't need to be displayed on the UI */
-    isHidden?: boolean;
-    valueType?: ObjectSettingEntryValueType;
-    allowedValues?: any[] | undefined;
-    defaultValue?: any | undefined;
-    /** The flag indicates what current setting is just editable dictionary and hasn't any concrete value */
-    isDictionary?: boolean;
+  readonly itHasValues?: boolean;
+  /** Setting may belong to any object in system */
+  objectId?: string | undefined;
+  objectType?: string | undefined;
+  /** Flag indicates the this setting is read only and can't be changed */
+  isReadOnly?: boolean;
+  value?: any | undefined;
+  id?: string | undefined;
+  /** The flag indicates that you need to restart the application to apply this setting changes. */
+  restartRequired?: boolean;
+  /** The module id which setting belong to */
+  moduleId?: string | undefined;
+  /** Setting group name */
+  groupName?: string | undefined;
+  /** Setting name */
+  name?: string | undefined;
+  /** Display setting name */
+  displayName?: string | undefined;
+  isRequired?: boolean;
+  /** Flag indicates that this setting doesn't need to be displayed on the UI */
+  isHidden?: boolean;
+  valueType?: ObjectSettingEntryValueType;
+  allowedValues?: any[] | undefined;
+  defaultValue?: any | undefined;
+  /** The flag indicates what current setting is just editable dictionary and hasn't any concrete value */
+  isDictionary?: boolean;
 
-    constructor(data?: IObjectSettingEntry) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
+  constructor(data?: IObjectSettingEntry) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property)) (<any>this)[property] = (<any>data)[property];
+      }
     }
+  }
 
-    init(_data?: any) {
-        if (_data) {
-            (<any>this).itHasValues = _data["itHasValues"];
-            this.objectId = _data["objectId"];
-            this.objectType = _data["objectType"];
-            this.isReadOnly = _data["isReadOnly"];
-            this.value = _data["value"];
-            this.id = _data["id"];
-            this.restartRequired = _data["restartRequired"];
-            this.moduleId = _data["moduleId"];
-            this.groupName = _data["groupName"];
-            this.name = _data["name"];
-            this.displayName = _data["displayName"];
-            this.isRequired = _data["isRequired"];
-            this.isHidden = _data["isHidden"];
-            this.valueType = _data["valueType"];
-            if (Array.isArray(_data["allowedValues"])) {
-                this.allowedValues = [] as any;
-                for (let item of _data["allowedValues"])
-                    this.allowedValues!.push(item);
-            }
-            this.defaultValue = _data["defaultValue"];
-            this.isDictionary = _data["isDictionary"];
-        }
+  init(_data?: any) {
+    if (_data) {
+      (<any>this).itHasValues = _data["itHasValues"];
+      this.objectId = _data["objectId"];
+      this.objectType = _data["objectType"];
+      this.isReadOnly = _data["isReadOnly"];
+      this.value = _data["value"];
+      this.id = _data["id"];
+      this.restartRequired = _data["restartRequired"];
+      this.moduleId = _data["moduleId"];
+      this.groupName = _data["groupName"];
+      this.name = _data["name"];
+      this.displayName = _data["displayName"];
+      this.isRequired = _data["isRequired"];
+      this.isHidden = _data["isHidden"];
+      this.valueType = _data["valueType"];
+      if (Array.isArray(_data["allowedValues"])) {
+        this.allowedValues = [] as any;
+        for (let item of _data["allowedValues"]) this.allowedValues!.push(item);
+      }
+      this.defaultValue = _data["defaultValue"];
+      this.isDictionary = _data["isDictionary"];
     }
+  }
 
-    static fromJS(data: any): ObjectSettingEntry {
-        data = typeof data === 'object' ? data : {};
-        let result = new ObjectSettingEntry();
-        result.init(data);
-        return result;
-    }
+  static fromJS(data: any): ObjectSettingEntry {
+    data = typeof data === "object" ? data : {};
+    let result = new ObjectSettingEntry();
+    result.init(data);
+    return result;
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["itHasValues"] = this.itHasValues;
-        data["objectId"] = this.objectId;
-        data["objectType"] = this.objectType;
-        data["isReadOnly"] = this.isReadOnly;
-        data["value"] = this.value;
-        data["id"] = this.id;
-        data["restartRequired"] = this.restartRequired;
-        data["moduleId"] = this.moduleId;
-        data["groupName"] = this.groupName;
-        data["name"] = this.name;
-        data["displayName"] = this.displayName;
-        data["isRequired"] = this.isRequired;
-        data["isHidden"] = this.isHidden;
-        data["valueType"] = this.valueType;
-        if (Array.isArray(this.allowedValues)) {
-            data["allowedValues"] = [];
-            for (let item of this.allowedValues)
-                data["allowedValues"].push(item);
-        }
-        data["defaultValue"] = this.defaultValue;
-        data["isDictionary"] = this.isDictionary;
-        return data;
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    data["itHasValues"] = this.itHasValues;
+    data["objectId"] = this.objectId;
+    data["objectType"] = this.objectType;
+    data["isReadOnly"] = this.isReadOnly;
+    data["value"] = this.value;
+    data["id"] = this.id;
+    data["restartRequired"] = this.restartRequired;
+    data["moduleId"] = this.moduleId;
+    data["groupName"] = this.groupName;
+    data["name"] = this.name;
+    data["displayName"] = this.displayName;
+    data["isRequired"] = this.isRequired;
+    data["isHidden"] = this.isHidden;
+    data["valueType"] = this.valueType;
+    if (Array.isArray(this.allowedValues)) {
+      data["allowedValues"] = [];
+      for (let item of this.allowedValues) data["allowedValues"].push(item);
     }
+    data["defaultValue"] = this.defaultValue;
+    data["isDictionary"] = this.isDictionary;
+    return data;
+  }
 }
 
 export interface IObjectSettingEntry {
-    itHasValues?: boolean;
-    /** Setting may belong to any object in system */
-    objectId?: string | undefined;
-    objectType?: string | undefined;
-    /** Flag indicates the this setting is read only and can't be changed */
-    isReadOnly?: boolean;
-    value?: any | undefined;
-    id?: string | undefined;
-    /** The flag indicates that you need to restart the application to apply this setting changes. */
-    restartRequired?: boolean;
-    /** The module id which setting belong to */
-    moduleId?: string | undefined;
-    /** Setting group name */
-    groupName?: string | undefined;
-    /** Setting name */
-    name?: string | undefined;
-    /** Display setting name */
-    displayName?: string | undefined;
-    isRequired?: boolean;
-    /** Flag indicates that this setting doesn't need to be displayed on the UI */
-    isHidden?: boolean;
-    valueType?: ObjectSettingEntryValueType;
-    allowedValues?: any[] | undefined;
-    defaultValue?: any | undefined;
-    /** The flag indicates what current setting is just editable dictionary and hasn't any concrete value */
-    isDictionary?: boolean;
+  itHasValues?: boolean;
+  /** Setting may belong to any object in system */
+  objectId?: string | undefined;
+  objectType?: string | undefined;
+  /** Flag indicates the this setting is read only and can't be changed */
+  isReadOnly?: boolean;
+  value?: any | undefined;
+  id?: string | undefined;
+  /** The flag indicates that you need to restart the application to apply this setting changes. */
+  restartRequired?: boolean;
+  /** The module id which setting belong to */
+  moduleId?: string | undefined;
+  /** Setting group name */
+  groupName?: string | undefined;
+  /** Setting name */
+  name?: string | undefined;
+  /** Display setting name */
+  displayName?: string | undefined;
+  isRequired?: boolean;
+  /** Flag indicates that this setting doesn't need to be displayed on the UI */
+  isHidden?: boolean;
+  valueType?: ObjectSettingEntryValueType;
+  allowedValues?: any[] | undefined;
+  defaultValue?: any | undefined;
+  /** The flag indicates what current setting is just editable dictionary and hasn't any concrete value */
+  isDictionary?: boolean;
 }
 
 export class OrganizationInfo implements IOrganizationInfo {
-    organizationId?: string | undefined;
-    organizationName?: string | undefined;
-    organizationLogoUrl?: string | undefined;
+  organizationId?: string | undefined;
+  organizationName?: string | undefined;
+  organizationLogoUrl?: string | undefined;
 
-    constructor(data?: IOrganizationInfo) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
+  constructor(data?: IOrganizationInfo) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property)) (<any>this)[property] = (<any>data)[property];
+      }
     }
+  }
 
-    init(_data?: any) {
-        if (_data) {
-            this.organizationId = _data["organizationId"];
-            this.organizationName = _data["organizationName"];
-            this.organizationLogoUrl = _data["organizationLogoUrl"];
-        }
+  init(_data?: any) {
+    if (_data) {
+      this.organizationId = _data["organizationId"];
+      this.organizationName = _data["organizationName"];
+      this.organizationLogoUrl = _data["organizationLogoUrl"];
     }
+  }
 
-    static fromJS(data: any): OrganizationInfo {
-        data = typeof data === 'object' ? data : {};
-        let result = new OrganizationInfo();
-        result.init(data);
-        return result;
-    }
+  static fromJS(data: any): OrganizationInfo {
+    data = typeof data === "object" ? data : {};
+    let result = new OrganizationInfo();
+    result.init(data);
+    return result;
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["organizationId"] = this.organizationId;
-        data["organizationName"] = this.organizationName;
-        data["organizationLogoUrl"] = this.organizationLogoUrl;
-        return data;
-    }
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    data["organizationId"] = this.organizationId;
+    data["organizationName"] = this.organizationName;
+    data["organizationLogoUrl"] = this.organizationLogoUrl;
+    return data;
+  }
 }
 
 export interface IOrganizationInfo {
-    organizationId?: string | undefined;
-    organizationName?: string | undefined;
-    organizationLogoUrl?: string | undefined;
+  organizationId?: string | undefined;
+  organizationName?: string | undefined;
+  organizationLogoUrl?: string | undefined;
 }
 
 export class SearchImportProfilesCriteria implements ISearchImportProfilesCriteria {
-    userId?: string | undefined;
-    userName?: string | undefined;
-    name?: string | undefined;
-    responseGroup?: string | undefined;
-    /** Search object type */
-    objectType?: string | undefined;
-    objectTypes?: string[] | undefined;
-    objectIds?: string[] | undefined;
-    /** Search phrase */
-    keyword?: string | undefined;
-    /** Property is left for backward compatibility */
-    searchPhrase?: string | undefined;
-    /** Search phrase language */
-    languageCode?: string | undefined;
-    sort?: string | undefined;
-    readonly sortInfos?: SortInfo[] | undefined;
-    skip?: number;
-    take?: number;
+  userId?: string | undefined;
+  userName?: string | undefined;
+  name?: string | undefined;
+  responseGroup?: string | undefined;
+  /** Search object type */
+  objectType?: string | undefined;
+  objectTypes?: string[] | undefined;
+  objectIds?: string[] | undefined;
+  /** Search phrase */
+  keyword?: string | undefined;
+  /** Property is left for backward compatibility */
+  searchPhrase?: string | undefined;
+  /** Search phrase language */
+  languageCode?: string | undefined;
+  sort?: string | undefined;
+  readonly sortInfos?: SortInfo[] | undefined;
+  skip?: number;
+  take?: number;
 
-    constructor(data?: ISearchImportProfilesCriteria) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
+  constructor(data?: ISearchImportProfilesCriteria) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property)) (<any>this)[property] = (<any>data)[property];
+      }
     }
+  }
 
-    init(_data?: any) {
-        if (_data) {
-            this.userId = _data["userId"];
-            this.userName = _data["userName"];
-            this.name = _data["name"];
-            this.responseGroup = _data["responseGroup"];
-            this.objectType = _data["objectType"];
-            if (Array.isArray(_data["objectTypes"])) {
-                this.objectTypes = [] as any;
-                for (let item of _data["objectTypes"])
-                    this.objectTypes!.push(item);
-            }
-            if (Array.isArray(_data["objectIds"])) {
-                this.objectIds = [] as any;
-                for (let item of _data["objectIds"])
-                    this.objectIds!.push(item);
-            }
-            this.keyword = _data["keyword"];
-            this.searchPhrase = _data["searchPhrase"];
-            this.languageCode = _data["languageCode"];
-            this.sort = _data["sort"];
-            if (Array.isArray(_data["sortInfos"])) {
-                (<any>this).sortInfos = [] as any;
-                for (let item of _data["sortInfos"])
-                    (<any>this).sortInfos!.push(SortInfo.fromJS(item));
-            }
-            this.skip = _data["skip"];
-            this.take = _data["take"];
-        }
+  init(_data?: any) {
+    if (_data) {
+      this.userId = _data["userId"];
+      this.userName = _data["userName"];
+      this.name = _data["name"];
+      this.responseGroup = _data["responseGroup"];
+      this.objectType = _data["objectType"];
+      if (Array.isArray(_data["objectTypes"])) {
+        this.objectTypes = [] as any;
+        for (let item of _data["objectTypes"]) this.objectTypes!.push(item);
+      }
+      if (Array.isArray(_data["objectIds"])) {
+        this.objectIds = [] as any;
+        for (let item of _data["objectIds"]) this.objectIds!.push(item);
+      }
+      this.keyword = _data["keyword"];
+      this.searchPhrase = _data["searchPhrase"];
+      this.languageCode = _data["languageCode"];
+      this.sort = _data["sort"];
+      if (Array.isArray(_data["sortInfos"])) {
+        (<any>this).sortInfos = [] as any;
+        for (let item of _data["sortInfos"]) (<any>this).sortInfos!.push(SortInfo.fromJS(item));
+      }
+      this.skip = _data["skip"];
+      this.take = _data["take"];
     }
+  }
 
-    static fromJS(data: any): SearchImportProfilesCriteria {
-        data = typeof data === 'object' ? data : {};
-        let result = new SearchImportProfilesCriteria();
-        result.init(data);
-        return result;
-    }
+  static fromJS(data: any): SearchImportProfilesCriteria {
+    data = typeof data === "object" ? data : {};
+    let result = new SearchImportProfilesCriteria();
+    result.init(data);
+    return result;
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["userId"] = this.userId;
-        data["userName"] = this.userName;
-        data["name"] = this.name;
-        data["responseGroup"] = this.responseGroup;
-        data["objectType"] = this.objectType;
-        if (Array.isArray(this.objectTypes)) {
-            data["objectTypes"] = [];
-            for (let item of this.objectTypes)
-                data["objectTypes"].push(item);
-        }
-        if (Array.isArray(this.objectIds)) {
-            data["objectIds"] = [];
-            for (let item of this.objectIds)
-                data["objectIds"].push(item);
-        }
-        data["keyword"] = this.keyword;
-        data["searchPhrase"] = this.searchPhrase;
-        data["languageCode"] = this.languageCode;
-        data["sort"] = this.sort;
-        if (Array.isArray(this.sortInfos)) {
-            data["sortInfos"] = [];
-            for (let item of this.sortInfos)
-                data["sortInfos"].push(item.toJSON());
-        }
-        data["skip"] = this.skip;
-        data["take"] = this.take;
-        return data;
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    data["userId"] = this.userId;
+    data["userName"] = this.userName;
+    data["name"] = this.name;
+    data["responseGroup"] = this.responseGroup;
+    data["objectType"] = this.objectType;
+    if (Array.isArray(this.objectTypes)) {
+      data["objectTypes"] = [];
+      for (let item of this.objectTypes) data["objectTypes"].push(item);
     }
+    if (Array.isArray(this.objectIds)) {
+      data["objectIds"] = [];
+      for (let item of this.objectIds) data["objectIds"].push(item);
+    }
+    data["keyword"] = this.keyword;
+    data["searchPhrase"] = this.searchPhrase;
+    data["languageCode"] = this.languageCode;
+    data["sort"] = this.sort;
+    if (Array.isArray(this.sortInfos)) {
+      data["sortInfos"] = [];
+      for (let item of this.sortInfos) data["sortInfos"].push(item.toJSON());
+    }
+    data["skip"] = this.skip;
+    data["take"] = this.take;
+    return data;
+  }
 }
 
 export interface ISearchImportProfilesCriteria {
-    userId?: string | undefined;
-    userName?: string | undefined;
-    name?: string | undefined;
-    responseGroup?: string | undefined;
-    /** Search object type */
-    objectType?: string | undefined;
-    objectTypes?: string[] | undefined;
-    objectIds?: string[] | undefined;
-    /** Search phrase */
-    keyword?: string | undefined;
-    /** Property is left for backward compatibility */
-    searchPhrase?: string | undefined;
-    /** Search phrase language */
-    languageCode?: string | undefined;
-    sort?: string | undefined;
-    sortInfos?: SortInfo[] | undefined;
-    skip?: number;
-    take?: number;
+  userId?: string | undefined;
+  userName?: string | undefined;
+  name?: string | undefined;
+  responseGroup?: string | undefined;
+  /** Search object type */
+  objectType?: string | undefined;
+  objectTypes?: string[] | undefined;
+  objectIds?: string[] | undefined;
+  /** Search phrase */
+  keyword?: string | undefined;
+  /** Property is left for backward compatibility */
+  searchPhrase?: string | undefined;
+  /** Search phrase language */
+  languageCode?: string | undefined;
+  sort?: string | undefined;
+  sortInfos?: SortInfo[] | undefined;
+  skip?: number;
+  take?: number;
 }
 
 export class SearchImportProfilesResult implements ISearchImportProfilesResult {
-    totalCount?: number;
-    results?: ImportProfile[] | undefined;
+  totalCount?: number;
+  results?: ImportProfile[] | undefined;
 
-    constructor(data?: ISearchImportProfilesResult) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
+  constructor(data?: ISearchImportProfilesResult) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property)) (<any>this)[property] = (<any>data)[property];
+      }
     }
+  }
 
-    init(_data?: any) {
-        if (_data) {
-            this.totalCount = _data["totalCount"];
-            if (Array.isArray(_data["results"])) {
-                this.results = [] as any;
-                for (let item of _data["results"])
-                    this.results!.push(ImportProfile.fromJS(item));
-            }
-        }
+  init(_data?: any) {
+    if (_data) {
+      this.totalCount = _data["totalCount"];
+      if (Array.isArray(_data["results"])) {
+        this.results = [] as any;
+        for (let item of _data["results"]) this.results!.push(ImportProfile.fromJS(item));
+      }
     }
+  }
 
-    static fromJS(data: any): SearchImportProfilesResult {
-        data = typeof data === 'object' ? data : {};
-        let result = new SearchImportProfilesResult();
-        result.init(data);
-        return result;
-    }
+  static fromJS(data: any): SearchImportProfilesResult {
+    data = typeof data === "object" ? data : {};
+    let result = new SearchImportProfilesResult();
+    result.init(data);
+    return result;
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["totalCount"] = this.totalCount;
-        if (Array.isArray(this.results)) {
-            data["results"] = [];
-            for (let item of this.results)
-                data["results"].push(item.toJSON());
-        }
-        return data;
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    data["totalCount"] = this.totalCount;
+    if (Array.isArray(this.results)) {
+      data["results"] = [];
+      for (let item of this.results) data["results"].push(item.toJSON());
     }
+    return data;
+  }
 }
 
 export interface ISearchImportProfilesResult {
-    totalCount?: number;
-    results?: ImportProfile[] | undefined;
+  totalCount?: number;
+  results?: ImportProfile[] | undefined;
 }
 
 export class SearchImportRunHistoryCriteria implements ISearchImportRunHistoryCriteria {
-    userId?: string | undefined;
-    userName?: string | undefined;
-    profileId?: string | undefined;
-    jobId?: string | undefined;
-    responseGroup?: string | undefined;
-    /** Search object type */
-    objectType?: string | undefined;
-    objectTypes?: string[] | undefined;
-    objectIds?: string[] | undefined;
-    /** Search phrase */
-    keyword?: string | undefined;
-    /** Property is left for backward compatibility */
-    searchPhrase?: string | undefined;
-    /** Search phrase language */
-    languageCode?: string | undefined;
-    sort?: string | undefined;
-    readonly sortInfos?: SortInfo[] | undefined;
-    skip?: number;
-    take?: number;
+  userId?: string | undefined;
+  userName?: string | undefined;
+  profileId?: string | undefined;
+  jobId?: string | undefined;
+  responseGroup?: string | undefined;
+  /** Search object type */
+  objectType?: string | undefined;
+  objectTypes?: string[] | undefined;
+  objectIds?: string[] | undefined;
+  /** Search phrase */
+  keyword?: string | undefined;
+  /** Property is left for backward compatibility */
+  searchPhrase?: string | undefined;
+  /** Search phrase language */
+  languageCode?: string | undefined;
+  sort?: string | undefined;
+  readonly sortInfos?: SortInfo[] | undefined;
+  skip?: number;
+  take?: number;
 
-    constructor(data?: ISearchImportRunHistoryCriteria) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
+  constructor(data?: ISearchImportRunHistoryCriteria) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property)) (<any>this)[property] = (<any>data)[property];
+      }
     }
+  }
 
-    init(_data?: any) {
-        if (_data) {
-            this.userId = _data["userId"];
-            this.userName = _data["userName"];
-            this.profileId = _data["profileId"];
-            this.jobId = _data["jobId"];
-            this.responseGroup = _data["responseGroup"];
-            this.objectType = _data["objectType"];
-            if (Array.isArray(_data["objectTypes"])) {
-                this.objectTypes = [] as any;
-                for (let item of _data["objectTypes"])
-                    this.objectTypes!.push(item);
-            }
-            if (Array.isArray(_data["objectIds"])) {
-                this.objectIds = [] as any;
-                for (let item of _data["objectIds"])
-                    this.objectIds!.push(item);
-            }
-            this.keyword = _data["keyword"];
-            this.searchPhrase = _data["searchPhrase"];
-            this.languageCode = _data["languageCode"];
-            this.sort = _data["sort"];
-            if (Array.isArray(_data["sortInfos"])) {
-                (<any>this).sortInfos = [] as any;
-                for (let item of _data["sortInfos"])
-                    (<any>this).sortInfos!.push(SortInfo.fromJS(item));
-            }
-            this.skip = _data["skip"];
-            this.take = _data["take"];
-        }
+  init(_data?: any) {
+    if (_data) {
+      this.userId = _data["userId"];
+      this.userName = _data["userName"];
+      this.profileId = _data["profileId"];
+      this.jobId = _data["jobId"];
+      this.responseGroup = _data["responseGroup"];
+      this.objectType = _data["objectType"];
+      if (Array.isArray(_data["objectTypes"])) {
+        this.objectTypes = [] as any;
+        for (let item of _data["objectTypes"]) this.objectTypes!.push(item);
+      }
+      if (Array.isArray(_data["objectIds"])) {
+        this.objectIds = [] as any;
+        for (let item of _data["objectIds"]) this.objectIds!.push(item);
+      }
+      this.keyword = _data["keyword"];
+      this.searchPhrase = _data["searchPhrase"];
+      this.languageCode = _data["languageCode"];
+      this.sort = _data["sort"];
+      if (Array.isArray(_data["sortInfos"])) {
+        (<any>this).sortInfos = [] as any;
+        for (let item of _data["sortInfos"]) (<any>this).sortInfos!.push(SortInfo.fromJS(item));
+      }
+      this.skip = _data["skip"];
+      this.take = _data["take"];
     }
+  }
 
-    static fromJS(data: any): SearchImportRunHistoryCriteria {
-        data = typeof data === 'object' ? data : {};
-        let result = new SearchImportRunHistoryCriteria();
-        result.init(data);
-        return result;
-    }
+  static fromJS(data: any): SearchImportRunHistoryCriteria {
+    data = typeof data === "object" ? data : {};
+    let result = new SearchImportRunHistoryCriteria();
+    result.init(data);
+    return result;
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["userId"] = this.userId;
-        data["userName"] = this.userName;
-        data["profileId"] = this.profileId;
-        data["jobId"] = this.jobId;
-        data["responseGroup"] = this.responseGroup;
-        data["objectType"] = this.objectType;
-        if (Array.isArray(this.objectTypes)) {
-            data["objectTypes"] = [];
-            for (let item of this.objectTypes)
-                data["objectTypes"].push(item);
-        }
-        if (Array.isArray(this.objectIds)) {
-            data["objectIds"] = [];
-            for (let item of this.objectIds)
-                data["objectIds"].push(item);
-        }
-        data["keyword"] = this.keyword;
-        data["searchPhrase"] = this.searchPhrase;
-        data["languageCode"] = this.languageCode;
-        data["sort"] = this.sort;
-        if (Array.isArray(this.sortInfos)) {
-            data["sortInfos"] = [];
-            for (let item of this.sortInfos)
-                data["sortInfos"].push(item.toJSON());
-        }
-        data["skip"] = this.skip;
-        data["take"] = this.take;
-        return data;
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    data["userId"] = this.userId;
+    data["userName"] = this.userName;
+    data["profileId"] = this.profileId;
+    data["jobId"] = this.jobId;
+    data["responseGroup"] = this.responseGroup;
+    data["objectType"] = this.objectType;
+    if (Array.isArray(this.objectTypes)) {
+      data["objectTypes"] = [];
+      for (let item of this.objectTypes) data["objectTypes"].push(item);
     }
+    if (Array.isArray(this.objectIds)) {
+      data["objectIds"] = [];
+      for (let item of this.objectIds) data["objectIds"].push(item);
+    }
+    data["keyword"] = this.keyword;
+    data["searchPhrase"] = this.searchPhrase;
+    data["languageCode"] = this.languageCode;
+    data["sort"] = this.sort;
+    if (Array.isArray(this.sortInfos)) {
+      data["sortInfos"] = [];
+      for (let item of this.sortInfos) data["sortInfos"].push(item.toJSON());
+    }
+    data["skip"] = this.skip;
+    data["take"] = this.take;
+    return data;
+  }
 }
 
 export interface ISearchImportRunHistoryCriteria {
-    userId?: string | undefined;
-    userName?: string | undefined;
-    profileId?: string | undefined;
-    jobId?: string | undefined;
-    responseGroup?: string | undefined;
-    /** Search object type */
-    objectType?: string | undefined;
-    objectTypes?: string[] | undefined;
-    objectIds?: string[] | undefined;
-    /** Search phrase */
-    keyword?: string | undefined;
-    /** Property is left for backward compatibility */
-    searchPhrase?: string | undefined;
-    /** Search phrase language */
-    languageCode?: string | undefined;
-    sort?: string | undefined;
-    sortInfos?: SortInfo[] | undefined;
-    skip?: number;
-    take?: number;
+  userId?: string | undefined;
+  userName?: string | undefined;
+  profileId?: string | undefined;
+  jobId?: string | undefined;
+  responseGroup?: string | undefined;
+  /** Search object type */
+  objectType?: string | undefined;
+  objectTypes?: string[] | undefined;
+  objectIds?: string[] | undefined;
+  /** Search phrase */
+  keyword?: string | undefined;
+  /** Property is left for backward compatibility */
+  searchPhrase?: string | undefined;
+  /** Search phrase language */
+  languageCode?: string | undefined;
+  sort?: string | undefined;
+  sortInfos?: SortInfo[] | undefined;
+  skip?: number;
+  take?: number;
 }
 
 export class SearchImportRunHistoryResult implements ISearchImportRunHistoryResult {
-    totalCount?: number;
-    results?: ImportRunHistory[] | undefined;
+  totalCount?: number;
+  results?: ImportRunHistory[] | undefined;
 
-    constructor(data?: ISearchImportRunHistoryResult) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
+  constructor(data?: ISearchImportRunHistoryResult) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property)) (<any>this)[property] = (<any>data)[property];
+      }
     }
+  }
 
-    init(_data?: any) {
-        if (_data) {
-            this.totalCount = _data["totalCount"];
-            if (Array.isArray(_data["results"])) {
-                this.results = [] as any;
-                for (let item of _data["results"])
-                    this.results!.push(ImportRunHistory.fromJS(item));
-            }
-        }
+  init(_data?: any) {
+    if (_data) {
+      this.totalCount = _data["totalCount"];
+      if (Array.isArray(_data["results"])) {
+        this.results = [] as any;
+        for (let item of _data["results"]) this.results!.push(ImportRunHistory.fromJS(item));
+      }
     }
+  }
 
-    static fromJS(data: any): SearchImportRunHistoryResult {
-        data = typeof data === 'object' ? data : {};
-        let result = new SearchImportRunHistoryResult();
-        result.init(data);
-        return result;
-    }
+  static fromJS(data: any): SearchImportRunHistoryResult {
+    data = typeof data === "object" ? data : {};
+    let result = new SearchImportRunHistoryResult();
+    result.init(data);
+    return result;
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["totalCount"] = this.totalCount;
-        if (Array.isArray(this.results)) {
-            data["results"] = [];
-            for (let item of this.results)
-                data["results"].push(item.toJSON());
-        }
-        return data;
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    data["totalCount"] = this.totalCount;
+    if (Array.isArray(this.results)) {
+      data["results"] = [];
+      for (let item of this.results) data["results"].push(item.toJSON());
     }
+    return data;
+  }
 }
 
 export interface ISearchImportRunHistoryResult {
-    totalCount?: number;
-    results?: ImportRunHistory[] | undefined;
+  totalCount?: number;
+  results?: ImportRunHistory[] | undefined;
 }
 
 /** Represent setting meta description */
 export class SettingDescriptor implements ISettingDescriptor {
-    id?: string | undefined;
-    /** The flag indicates that you need to restart the application to apply this setting changes. */
-    restartRequired?: boolean;
-    /** The module id which setting belong to */
-    moduleId?: string | undefined;
-    /** Setting group name */
-    groupName?: string | undefined;
-    /** Setting name */
-    name?: string | undefined;
-    /** Display setting name */
-    displayName?: string | undefined;
-    isRequired?: boolean;
-    /** Flag indicates that this setting doesn't need to be displayed on the UI */
-    isHidden?: boolean;
-    valueType?: SettingDescriptorValueType;
-    allowedValues?: any[] | undefined;
-    defaultValue?: any | undefined;
-    /** The flag indicates what current setting is just editable dictionary and hasn't any concrete value */
-    isDictionary?: boolean;
+  id?: string | undefined;
+  /** The flag indicates that you need to restart the application to apply this setting changes. */
+  restartRequired?: boolean;
+  /** The module id which setting belong to */
+  moduleId?: string | undefined;
+  /** Setting group name */
+  groupName?: string | undefined;
+  /** Setting name */
+  name?: string | undefined;
+  /** Display setting name */
+  displayName?: string | undefined;
+  isRequired?: boolean;
+  /** Flag indicates that this setting doesn't need to be displayed on the UI */
+  isHidden?: boolean;
+  valueType?: SettingDescriptorValueType;
+  allowedValues?: any[] | undefined;
+  defaultValue?: any | undefined;
+  /** The flag indicates what current setting is just editable dictionary and hasn't any concrete value */
+  isDictionary?: boolean;
 
-    constructor(data?: ISettingDescriptor) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
+  constructor(data?: ISettingDescriptor) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property)) (<any>this)[property] = (<any>data)[property];
+      }
     }
+  }
 
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["id"];
-            this.restartRequired = _data["restartRequired"];
-            this.moduleId = _data["moduleId"];
-            this.groupName = _data["groupName"];
-            this.name = _data["name"];
-            this.displayName = _data["displayName"];
-            this.isRequired = _data["isRequired"];
-            this.isHidden = _data["isHidden"];
-            this.valueType = _data["valueType"];
-            if (Array.isArray(_data["allowedValues"])) {
-                this.allowedValues = [] as any;
-                for (let item of _data["allowedValues"])
-                    this.allowedValues!.push(item);
-            }
-            this.defaultValue = _data["defaultValue"];
-            this.isDictionary = _data["isDictionary"];
-        }
+  init(_data?: any) {
+    if (_data) {
+      this.id = _data["id"];
+      this.restartRequired = _data["restartRequired"];
+      this.moduleId = _data["moduleId"];
+      this.groupName = _data["groupName"];
+      this.name = _data["name"];
+      this.displayName = _data["displayName"];
+      this.isRequired = _data["isRequired"];
+      this.isHidden = _data["isHidden"];
+      this.valueType = _data["valueType"];
+      if (Array.isArray(_data["allowedValues"])) {
+        this.allowedValues = [] as any;
+        for (let item of _data["allowedValues"]) this.allowedValues!.push(item);
+      }
+      this.defaultValue = _data["defaultValue"];
+      this.isDictionary = _data["isDictionary"];
     }
+  }
 
-    static fromJS(data: any): SettingDescriptor {
-        data = typeof data === 'object' ? data : {};
-        let result = new SettingDescriptor();
-        result.init(data);
-        return result;
-    }
+  static fromJS(data: any): SettingDescriptor {
+    data = typeof data === "object" ? data : {};
+    let result = new SettingDescriptor();
+    result.init(data);
+    return result;
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
-        data["restartRequired"] = this.restartRequired;
-        data["moduleId"] = this.moduleId;
-        data["groupName"] = this.groupName;
-        data["name"] = this.name;
-        data["displayName"] = this.displayName;
-        data["isRequired"] = this.isRequired;
-        data["isHidden"] = this.isHidden;
-        data["valueType"] = this.valueType;
-        if (Array.isArray(this.allowedValues)) {
-            data["allowedValues"] = [];
-            for (let item of this.allowedValues)
-                data["allowedValues"].push(item);
-        }
-        data["defaultValue"] = this.defaultValue;
-        data["isDictionary"] = this.isDictionary;
-        return data;
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    data["id"] = this.id;
+    data["restartRequired"] = this.restartRequired;
+    data["moduleId"] = this.moduleId;
+    data["groupName"] = this.groupName;
+    data["name"] = this.name;
+    data["displayName"] = this.displayName;
+    data["isRequired"] = this.isRequired;
+    data["isHidden"] = this.isHidden;
+    data["valueType"] = this.valueType;
+    if (Array.isArray(this.allowedValues)) {
+      data["allowedValues"] = [];
+      for (let item of this.allowedValues) data["allowedValues"].push(item);
     }
+    data["defaultValue"] = this.defaultValue;
+    data["isDictionary"] = this.isDictionary;
+    return data;
+  }
 }
 
 /** Represent setting meta description */
 export interface ISettingDescriptor {
-    id?: string | undefined;
-    /** The flag indicates that you need to restart the application to apply this setting changes. */
-    restartRequired?: boolean;
-    /** The module id which setting belong to */
-    moduleId?: string | undefined;
-    /** Setting group name */
-    groupName?: string | undefined;
-    /** Setting name */
-    name?: string | undefined;
-    /** Display setting name */
-    displayName?: string | undefined;
-    isRequired?: boolean;
-    /** Flag indicates that this setting doesn't need to be displayed on the UI */
-    isHidden?: boolean;
-    valueType?: SettingDescriptorValueType;
-    allowedValues?: any[] | undefined;
-    defaultValue?: any | undefined;
-    /** The flag indicates what current setting is just editable dictionary and hasn't any concrete value */
-    isDictionary?: boolean;
+  id?: string | undefined;
+  /** The flag indicates that you need to restart the application to apply this setting changes. */
+  restartRequired?: boolean;
+  /** The module id which setting belong to */
+  moduleId?: string | undefined;
+  /** Setting group name */
+  groupName?: string | undefined;
+  /** Setting name */
+  name?: string | undefined;
+  /** Display setting name */
+  displayName?: string | undefined;
+  isRequired?: boolean;
+  /** Flag indicates that this setting doesn't need to be displayed on the UI */
+  isHidden?: boolean;
+  valueType?: SettingDescriptorValueType;
+  allowedValues?: any[] | undefined;
+  defaultValue?: any | undefined;
+  /** The flag indicates what current setting is just editable dictionary and hasn't any concrete value */
+  isDictionary?: boolean;
 }
 
 export enum SettingValueType {
-    ShortText = "ShortText",
-    LongText = "LongText",
-    Integer = "Integer",
-    Decimal = "Decimal",
-    DateTime = "DateTime",
-    Boolean = "Boolean",
-    SecureString = "SecureString",
-    Json = "Json",
-    PositiveInteger = "PositiveInteger",
+  ShortText = "ShortText",
+  LongText = "LongText",
+  Integer = "Integer",
+  Decimal = "Decimal",
+  DateTime = "DateTime",
+  Boolean = "Boolean",
+  SecureString = "SecureString",
+  Json = "Json",
+  PositiveInteger = "PositiveInteger",
 }
 
 export enum SortDirection {
-    Ascending = "Ascending",
-    Descending = "Descending",
+  Ascending = "Ascending",
+  Descending = "Descending",
 }
 
 export class SortInfo implements ISortInfo {
-    sortColumn?: string | undefined;
-    sortDirection?: SortInfoSortDirection;
+  sortColumn?: string | undefined;
+  sortDirection?: SortInfoSortDirection;
 
-    constructor(data?: ISortInfo) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
+  constructor(data?: ISortInfo) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property)) (<any>this)[property] = (<any>data)[property];
+      }
     }
+  }
 
-    init(_data?: any) {
-        if (_data) {
-            this.sortColumn = _data["sortColumn"];
-            this.sortDirection = _data["sortDirection"];
-        }
+  init(_data?: any) {
+    if (_data) {
+      this.sortColumn = _data["sortColumn"];
+      this.sortDirection = _data["sortDirection"];
     }
+  }
 
-    static fromJS(data: any): SortInfo {
-        data = typeof data === 'object' ? data : {};
-        let result = new SortInfo();
-        result.init(data);
-        return result;
-    }
+  static fromJS(data: any): SortInfo {
+    data = typeof data === "object" ? data : {};
+    let result = new SortInfo();
+    result.init(data);
+    return result;
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["sortColumn"] = this.sortColumn;
-        data["sortDirection"] = this.sortDirection;
-        return data;
-    }
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    data["sortColumn"] = this.sortColumn;
+    data["sortDirection"] = this.sortDirection;
+    return data;
+  }
 }
 
 export interface ISortInfo {
-    sortColumn?: string | undefined;
-    sortDirection?: SortInfoSortDirection;
+  sortColumn?: string | undefined;
+  sortDirection?: SortInfoSortDirection;
 }
 
 export class ValidationResult implements IValidationResult {
-    errors?: string[] | undefined;
-    readonly errorsCount?: number;
+  errors?: string[] | undefined;
+  readonly errorsCount?: number;
 
-    constructor(data?: IValidationResult) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
+  constructor(data?: IValidationResult) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property)) (<any>this)[property] = (<any>data)[property];
+      }
     }
+  }
 
-    init(_data?: any) {
-        if (_data) {
-            if (Array.isArray(_data["errors"])) {
-                this.errors = [] as any;
-                for (let item of _data["errors"])
-                    this.errors!.push(item);
-            }
-            (<any>this).errorsCount = _data["errorsCount"];
-        }
+  init(_data?: any) {
+    if (_data) {
+      if (Array.isArray(_data["errors"])) {
+        this.errors = [] as any;
+        for (let item of _data["errors"]) this.errors!.push(item);
+      }
+      (<any>this).errorsCount = _data["errorsCount"];
     }
+  }
 
-    static fromJS(data: any): ValidationResult {
-        data = typeof data === 'object' ? data : {};
-        let result = new ValidationResult();
-        result.init(data);
-        return result;
-    }
+  static fromJS(data: any): ValidationResult {
+    data = typeof data === "object" ? data : {};
+    let result = new ValidationResult();
+    result.init(data);
+    return result;
+  }
 
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        if (Array.isArray(this.errors)) {
-            data["errors"] = [];
-            for (let item of this.errors)
-                data["errors"].push(item);
-        }
-        data["errorsCount"] = this.errorsCount;
-        return data;
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    if (Array.isArray(this.errors)) {
+      data["errors"] = [];
+      for (let item of this.errors) data["errors"].push(item);
     }
+    data["errorsCount"] = this.errorsCount;
+    return data;
+  }
 }
 
 export interface IValidationResult {
-    errors?: string[] | undefined;
-    errorsCount?: number;
+  errors?: string[] | undefined;
+  errorsCount?: number;
 }
 
 export enum ObjectSettingEntryValueType {
-    ShortText = "ShortText",
-    LongText = "LongText",
-    Integer = "Integer",
-    Decimal = "Decimal",
-    DateTime = "DateTime",
-    Boolean = "Boolean",
-    SecureString = "SecureString",
-    Json = "Json",
-    PositiveInteger = "PositiveInteger",
+  ShortText = "ShortText",
+  LongText = "LongText",
+  Integer = "Integer",
+  Decimal = "Decimal",
+  DateTime = "DateTime",
+  Boolean = "Boolean",
+  SecureString = "SecureString",
+  Json = "Json",
+  PositiveInteger = "PositiveInteger",
 }
 
 export enum SettingDescriptorValueType {
-    ShortText = "ShortText",
-    LongText = "LongText",
-    Integer = "Integer",
-    Decimal = "Decimal",
-    DateTime = "DateTime",
-    Boolean = "Boolean",
-    SecureString = "SecureString",
-    Json = "Json",
-    PositiveInteger = "PositiveInteger",
+  ShortText = "ShortText",
+  LongText = "LongText",
+  Integer = "Integer",
+  Decimal = "Decimal",
+  DateTime = "DateTime",
+  Boolean = "Boolean",
+  SecureString = "SecureString",
+  Json = "Json",
+  PositiveInteger = "PositiveInteger",
 }
 
 export enum SortInfoSortDirection {
-    Ascending = "Ascending",
-    Descending = "Descending",
+  Ascending = "Ascending",
+  Descending = "Descending",
 }
 
 export class ApiException extends Error {
-    override message: string;
-    status: number;
-    response: string;
-    headers: { [key: string]: any; };
-    result: any;
+  override message: string;
+  status: number;
+  response: string;
+  headers: { [key: string]: any };
+  result: any;
 
-    constructor(message: string, status: number, response: string, headers: { [key: string]: any; }, result: any) {
-        super();
+  constructor(message: string, status: number, response: string, headers: { [key: string]: any }, result: any) {
+    super();
 
-        this.message = message;
-        this.status = status;
-        this.response = response;
-        this.headers = headers;
-        this.result = result;
-    }
+    this.message = message;
+    this.status = status;
+    this.response = response;
+    this.headers = headers;
+    this.result = result;
+  }
 
-    protected isApiException = true;
+  protected isApiException = true;
 
-    static isApiException(obj: any): obj is ApiException {
-        return obj.isApiException === true;
-    }
+  static isApiException(obj: any): obj is ApiException {
+    return obj.isApiException === true;
+  }
 }
 
-function throwException(message: string, status: number, response: string, headers: { [key: string]: any; }, result?: any): any {
-    if (result !== null && result !== undefined)
-        throw result;
-    else
-        throw new ApiException(message, status, response, headers, null);
+function throwException(
+  message: string,
+  status: number,
+  response: string,
+  headers: { [key: string]: any },
+  result?: any,
+): any {
+  if (result !== null && result !== undefined) throw result;
+  else throw new ApiException(message, status, response, headers, null);
 }
 
 /* eslint-disable */

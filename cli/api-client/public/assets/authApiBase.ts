@@ -14,7 +14,7 @@ export class AuthApiBase {
 
   protected transformOptions(options: any): Promise<any> {
     if (this.authToken) {
-      options.headers['authorization'] =  `Bearer ${this.authToken}`;
+      options.headers["authorization"] = `Bearer ${this.authToken}`;
     }
     return Promise.resolve(options);
   }

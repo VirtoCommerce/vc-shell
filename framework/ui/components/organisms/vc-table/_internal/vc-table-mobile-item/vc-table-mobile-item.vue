@@ -157,20 +157,20 @@ watch(
     if (typeof props.item !== "string" && newVal !== props.item.id) {
       handleOffset();
     }
-  }
+  },
 );
 
 const rightSwipeActions = computed(
   () =>
     itemActions.value &&
     itemActions.value.length &&
-    itemActions.value.filter((actions: IActionBuilderResult) => !actions.leftActions)
+    itemActions.value.filter((actions: IActionBuilderResult) => !actions.leftActions),
 );
 const leftSwipeActions = computed(
   () =>
     itemActions.value &&
     itemActions.value.length &&
-    itemActions.value.filter((actions: IActionBuilderResult) => actions.leftActions)
+    itemActions.value.filter((actions: IActionBuilderResult) => actions.leftActions),
 );
 
 function handleOffset() {

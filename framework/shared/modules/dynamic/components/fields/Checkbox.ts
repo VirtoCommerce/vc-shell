@@ -33,7 +33,7 @@ export default {
                 index: props.elIndex,
                 rows: props.rows,
               },
-              () => render
+              () => render,
             )
           : null;
       } else {

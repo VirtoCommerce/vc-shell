@@ -57,7 +57,7 @@ function toggleToolbar() {
 
 function isToolbarVisible() {
   const visibleItems = (props.items as { isVisible: boolean }[]).filter(
-    (item) => item.isVisible === undefined || item.isVisible
+    (item) => item.isVisible === undefined || item.isVisible,
   );
   return !!visibleItems.length;
 }

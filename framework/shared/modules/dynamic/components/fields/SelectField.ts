@@ -30,14 +30,17 @@ export default {
 
         slots:
           props.element.customTemplate &&
-          ["selected-item", "option"].reduce((obj, slot) => {
-            obj[slot] = (scope: TScope) =>
-              h(resolveComponent(props.element.customTemplate?.component as string), {
-                context: scope,
-                slotName: slot,
-              });
-            return obj;
-          }, {} as Record<string, (scope: TScope) => VNode>),
+          ["selected-item", "option"].reduce(
+            (obj, slot) => {
+              obj[slot] = (scope: TScope) =>
+                h(resolveComponent(props.element.customTemplate?.component as string), {
+                  context: scope,
+                  slotName: slot,
+                });
+              return obj;
+            },
+            {} as Record<string, (scope: TScope) => VNode>,
+          ),
       });
 
       const render = h(field.component as unknown as Component, field.props, field.slots);
@@ -52,7 +55,7 @@ export default {
                 rows: props.rows,
                 key: `${String(field.props.key)}_validation`,
               },
-              () => render
+              () => render,
             )
           : null;
       } else {

@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+// eslint-disable-next-line import/no-named-as-default
 import prompts from "prompts";
 import mri from "mri";
 import { default as chalk } from "chalk";
@@ -40,7 +41,7 @@ function toValidName(appName: string) {
     .replace(/[^a-z0-9-~]+/g, "-");
 }
 
-function emptyDir(dir) {
+function emptyDir(dir: string) {
   if (!fs.existsSync(dir)) {
     return;
   }
@@ -153,7 +154,7 @@ async function create() {
       },
     );
   } catch (e) {
-    console.log(e.message);
+    console.log((e as Error).message);
     exit(1);
   }
 
@@ -171,7 +172,7 @@ async function create() {
 
   const templateRoot = path.resolve(fileURLToPath(import.meta.url), "..", "templates");
 
-  const write = (file: string, templateName?: string, content?: string) => {
+  const write = (file: string, templateName: string, content?: string) => {
     const targetPath = path.join(root, renameFiles[file] ?? file);
     if (content) {
       fs.writeFileSync(targetPath, content);
@@ -180,7 +181,7 @@ async function create() {
     }
   };
 
-  const render = (templateName) => {
+  const render = (templateName: string) => {
     const templateDir = path.resolve(templateRoot, templateName);
     const files = fs.readdirSync(templateDir);
     for (const file of files.filter((f) => f !== "package.json")) {
@@ -190,7 +191,7 @@ async function create() {
 
   render("base");
 
-  render(variantMap[variant]);
+  render(variantMap[variant as keyof typeof variantMap]);
 
   const pkg = JSON.parse(fs.readFileSync(path.join(templateRoot, `./base/package.json`), "utf-8"));
 

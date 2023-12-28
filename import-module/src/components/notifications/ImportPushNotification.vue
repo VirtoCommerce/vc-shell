@@ -47,8 +47,8 @@ const notificationStyle = computed(() => ({
     return notification.finished && !(notification.errors && notification.errors.length)
       ? "#87b563"
       : !(notification.errors && notification.errors.length) && !notification.finished
-      ? "#A9BCCD"
-      : "#F14E4E";
+        ? "#A9BCCD"
+        : "#F14E4E";
   }),
   icon: "fas fa-download",
 }));

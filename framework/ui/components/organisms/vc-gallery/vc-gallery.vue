@@ -131,7 +131,7 @@ const { open } = usePopup(
       images: props.images,
       index: currentIndex.value,
     },
-  }))
+  })),
 );
 
 watch(
@@ -143,7 +143,7 @@ watch(
       uploadHidden.value = !!defaultImages.value.length;
     }
   },
-  { deep: true, immediate: true }
+  { deep: true, immediate: true },
 );
 
 const onUpload = (files: FileList) => {

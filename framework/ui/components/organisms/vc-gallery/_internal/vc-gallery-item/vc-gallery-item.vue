@@ -86,7 +86,7 @@ export interface Props {
 }
 
 withDefaults(defineProps<Props>(), {
-  image: () => ({} as ICommonAsset),
+  image: () => ({}) as ICommonAsset,
   readonly: false,
   actions: () => ({
     name: undefined,

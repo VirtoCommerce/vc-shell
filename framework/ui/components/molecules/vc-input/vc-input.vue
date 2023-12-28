@@ -170,7 +170,7 @@
 </template>
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
-import { computed, ref, unref, watch, MaybeRef } from "vue";
+import { computed, ref, unref, watch } from "vue";
 import { VcLabel, VcIcon, VcHint } from "./../../";
 import moment from "moment";
 
@@ -358,7 +358,7 @@ watch(
       temp.value = mutatedModel.value;
     }
   },
-  { immediate: true }
+  { immediate: true },
 );
 
 // Handle input event and emit changes
@@ -444,7 +444,9 @@ function onReset() {
   &__input {
     &:-webkit-autofill,
     &:-webkit-autofill:focus {
-      transition: background-color 600000s 0s, color 600000s 0s;
+      transition:
+        background-color 600000s 0s,
+        color 600000s 0s;
     }
     &[data-autocompleted] {
       background-color: transparent !important;

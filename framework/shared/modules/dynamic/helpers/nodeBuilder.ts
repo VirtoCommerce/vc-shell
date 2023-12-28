@@ -1,4 +1,4 @@
-import { unref, computed, toValue, h, UnwrapNestedRefs, MaybeRef, reactive, VNode, ref } from "vue";
+import { unref, computed, toValue, h, UnwrapNestedRefs, MaybeRef, reactive, VNode } from "vue";
 import FIELD_MAP from "../components/FIELD_MAP";
 import { ControlSchema } from "../types";
 import { IControlBaseProps, IControlBaseOptions } from "../types/models";
@@ -6,12 +6,11 @@ import { getModel } from "./getters";
 import { setModel } from "./setters";
 import { unwrapInterpolation } from "./unwrapInterpolation";
 import { DetailsBladeContext } from "../factories";
-import * as _ from "lodash-es";
 import { safeIn } from "./safeIn";
 
 function disabledHandler(
   disabled: { method?: string } | boolean,
-  context: UnwrapNestedRefs<DetailsBladeContext>
+  context: UnwrapNestedRefs<DetailsBladeContext>,
 ): boolean {
   if (!disabled) return false;
   if (typeof disabled === "boolean") return disabled;
@@ -24,7 +23,7 @@ function disabledHandler(
 function nodeBuilder<
   Context extends Record<string, unknown>,
   BContext extends UnwrapNestedRefs<DetailsBladeContext>,
-  FormData
+  FormData,
 >({
   controlSchema,
   parentId,
@@ -116,7 +115,7 @@ function nodeBuilder<
     visibility: computed(() =>
       safeIn("visibility", controlSchema) && controlSchema.visibility?.method
         ? bladeContext.scope?.[controlSchema.visibility?.method]
-        : true
+        : true,
     ),
   });
 
@@ -142,8 +141,8 @@ function nodeBuilder<
             bladeContext,
             currentLocale,
             formData,
-          })
-        )
+          }),
+        ),
       );
     }
 
@@ -156,7 +155,7 @@ function nodeBuilder<
           bladeContext,
           currentLocale,
           formData,
-        })
+        }),
       ),
     ];
   });

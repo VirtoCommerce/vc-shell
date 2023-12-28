@@ -1,3 +1,17 @@
+## [1.0.132](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.131...v1.0.132) (2023-12-28)
+
+
+### Bug Fixes
+
+* **shell:** vc-select fixed generic ([b1f9f88](https://github.com/VirtoCommerce/vc-shell/commit/b1f9f88adde894dbbb7dc766179c3c95a8c22ce3))
+
+
+### Features
+
+* **shell:** added exposed component to toolbar:user-dropdown slot ([f136903](https://github.com/VirtoCommerce/vc-shell/commit/f1369035b3be01e11a167a1a29b6aa968913d130))
+
+
+
 ## [1.0.131](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.130...v1.0.131) (2023-12-28)
 
 

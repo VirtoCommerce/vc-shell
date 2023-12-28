@@ -1,3 +1,12 @@
+## [1.0.132](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.131...v1.0.132) (2023-12-28)
+
+
+### Features
+
+* **sample:** strict true ([f182b42](https://github.com/VirtoCommerce/vc-shell/commit/f182b42db1ce1c504d2ae7352610cb062a63bdb0))
+
+
+
 ## [1.0.131](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.130...v1.0.131) (2023-12-28)
 
 

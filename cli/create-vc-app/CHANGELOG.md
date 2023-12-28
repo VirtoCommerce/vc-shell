@@ -1,3 +1,12 @@
+## [1.0.132](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.131...v1.0.132) (2023-12-28)
+
+
+### Features
+
+* **create-vc-app:** strict types ([f336f8d](https://github.com/VirtoCommerce/vc-shell/commit/f336f8daaddd5268f0c68a625bcb1dc7719f542f))
+
+
+
 ## [1.0.131](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.130...v1.0.131) (2023-12-28)
 
 

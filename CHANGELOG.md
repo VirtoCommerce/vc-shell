@@ -1,3 +1,21 @@
+## [1.0.132](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.131...v1.0.132) (2023-12-28)
+
+
+### Bug Fixes
+
+* **api-client-generator:** add [@ts-nocheck](https://github.com/ts-nocheck) to every generated api-client ([ec63e8d](https://github.com/VirtoCommerce/vc-shell/commit/ec63e8dadb252ae29294632357bced6725d5c8c9))
+* **shell:** vc-select fixed generic ([b1f9f88](https://github.com/VirtoCommerce/vc-shell/commit/b1f9f88adde894dbbb7dc766179c3c95a8c22ce3))
+
+
+### Features
+
+* **create-vc-app:** strict types ([f336f8d](https://github.com/VirtoCommerce/vc-shell/commit/f336f8daaddd5268f0c68a625bcb1dc7719f542f))
+* **sample:** strict true ([f182b42](https://github.com/VirtoCommerce/vc-shell/commit/f182b42db1ce1c504d2ae7352610cb062a63bdb0))
+* **shell:** added exposed component to toolbar:user-dropdown slot ([f136903](https://github.com/VirtoCommerce/vc-shell/commit/f1369035b3be01e11a167a1a29b6aa968913d130))
+* **ts-config:** always strict ([09ba244](https://github.com/VirtoCommerce/vc-shell/commit/09ba2444add7e9717e0cc097141f16585b490b23))
+
+
+
 ## [1.0.131](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.130...v1.0.131) (2023-12-28)
 
 

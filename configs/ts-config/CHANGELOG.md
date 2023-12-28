@@ -1,3 +1,12 @@
+## [1.0.132](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.131...v1.0.132) (2023-12-28)
+
+
+### Features
+
+* **ts-config:** always strict ([09ba244](https://github.com/VirtoCommerce/vc-shell/commit/09ba2444add7e9717e0cc097141f16585b490b23))
+
+
+
 ## [1.0.131](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.130...v1.0.131) (2023-12-28)
 
 

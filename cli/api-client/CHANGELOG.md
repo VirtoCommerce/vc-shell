@@ -1,3 +1,12 @@
+## [1.0.132](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.131...v1.0.132) (2023-12-28)
+
+
+### Bug Fixes
+
+* **api-client-generator:** add [@ts-nocheck](https://github.com/ts-nocheck) to every generated api-client ([ec63e8d](https://github.com/VirtoCommerce/vc-shell/commit/ec63e8dadb252ae29294632357bced6725d5c8c9))
+
+
+
 ## [1.0.131](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.130...v1.0.131) (2023-12-28)
 
 

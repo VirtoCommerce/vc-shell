@@ -4,7 +4,7 @@ import { useUser } from "../composables/useUser";
 import { notification } from "../../shared";
 
 export function registerInterceptors(router: Router) {
-  const { fetch } = window;
+  const { fetch: originalFetch } = window;
   const { signOut, isAuthenticated } = useUser();
 
   window.fetch = async (...args) => {
@@ -29,7 +29,7 @@ export function registerInterceptors(router: Router) {
           });
         } else if (args[0] === "/api/platform/security/currentuser") {
           notification.warning(
-            "You are currently in DEMO mode until the first page refresh. \n All API calls are disabled. Please log out and add APP_PLATFORM_URL to your application's .env file to enable API calls.",
+            "You are currently in DEMO mode until the first page refresh. \n All API calls are disabled. Please add APP_PLATFORM_URL to your application's .env file to enable API calls.",
             {
               timeout: 10000,
             },
@@ -46,7 +46,7 @@ export function registerInterceptors(router: Router) {
         }
       });
     } else {
-      const response = await fetch(...args);
+      const response = await originalFetch(...args);
 
       /**
        * If the response is unauthorized, logout the user

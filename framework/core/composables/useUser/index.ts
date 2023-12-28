@@ -113,10 +113,11 @@ function useUserFn(): IUseUser {
   async function signOut(): Promise<void> {
     console.debug(`[@vc-shell/framework#useUser:signOut] - Entry point`);
 
+    user.value = undefined;
+
     if (externalSignInStorage.value?.providerType) {
       await externalSignOut(externalSignInStorage.value.providerType);
     } else {
-      user.value = undefined;
       securityClient.logout();
     }
   }
@@ -236,7 +237,6 @@ function useUserFn(): IUseUser {
     loading: computed(() => loading.value),
     isAdministrator: computed(() => user.value?.isAdministrator),
     isAuthenticated,
-    // getAccessToken,
     loadUser,
     signIn,
     signOut,

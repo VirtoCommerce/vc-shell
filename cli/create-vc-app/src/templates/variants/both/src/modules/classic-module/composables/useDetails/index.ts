@@ -1,17 +1,17 @@
 /* eslint-disable import/no-unresolved */
-import { computed, ref } from "vue";
+import { Ref, computed, ref } from "vue";
 import img1 from "/assets/1.jpeg";
 import img2 from "/assets/2.jpg";
 import img3 from "/assets/3.jpg";
 import { useAsync, useLoading } from "@vc-shell/framework";
 
 export default () => {
-  const item = ref({
-    imgSrc: undefined,
-    name: undefined,
-    createdDate: undefined,
-    id: undefined,
-  });
+  const item = ref({}) as Ref<{
+    imgSrc: string;
+    name: string;
+    createdDate: Date;
+    id: string;
+  }>;
 
   // Example mocked method for 'fetching' list data
   const { loading: itemLoading, action: getItem } = useAsync<{ id: string }>(async (payload) => {
@@ -36,8 +36,10 @@ export default () => {
             createdDate: new Date(),
             id: "item-id-3",
           },
-        ].find((x) => x.id === payload.id);
-        resolve(findMockedItem);
+        ].find((x) => x.id === payload?.id);
+        if (findMockedItem) {
+          resolve(findMockedItem);
+        }
       }, 1000);
     });
   });

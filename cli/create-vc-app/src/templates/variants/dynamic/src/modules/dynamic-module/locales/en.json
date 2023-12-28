@@ -40,6 +40,9 @@
         "EMPTY": {
           "NO_ITEMS": "There are no items yet"
         }
+      },
+      "ALERTS": {
+        "CLOSE_CONFIRMATION": "You have unsaved changes\nClose anyway?"
       }
     }
   }

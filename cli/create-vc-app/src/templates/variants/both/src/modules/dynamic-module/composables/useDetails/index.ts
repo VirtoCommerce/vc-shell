@@ -3,12 +3,7 @@ import { computed, ref, Ref } from "vue";
 import img1 from "/assets/1.jpeg";
 import img2 from "/assets/2.jpg";
 import img3 from "/assets/3.jpg";
-import {
-  DetailsBaseBladeScope,
-  DynamicBladeForm,
-  IBladeToolbar,
-  useDetailsFactory,
-} from "@vc-shell/framework";
+import { DetailsBaseBladeScope, DynamicBladeForm, IBladeToolbar, useDetailsFactory } from "@vc-shell/framework";
 
 export interface DynamicItemScope extends DetailsBaseBladeScope {
   toolbarOverrides: {
@@ -44,7 +39,7 @@ export default (args: {
               createdDate: new Date(),
               id: "item-id-3",
             },
-          ].find((x) => x.id === payload.id);
+          ].find((x) => x.id === payload?.id);
           resolve(findMockedItem);
         }, 1000);
       });
@@ -59,18 +54,13 @@ export default (args: {
 
   const { load, saveChanges, remove, loading, item, validationState } = factory();
 
-  // const item = ref({
-  //   imgSrc: undefined,
-  //   name: undefined,
-  //   createdDate: undefined,
-  //   id: undefined,
-  // });
-
   const scope = ref<DynamicItemScope>({
     toolbarOverrides: {
       refresh: {
         async clickHandler() {
-          await load({ id: args.props.param });
+          if (args.props.param) {
+            await load({ id: args.props.param });
+          }
         },
       },
     },

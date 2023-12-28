@@ -1,12 +1,19 @@
 /* eslint-disable import/no-unresolved */
-import { computed, ref } from "vue";
+import { Ref, computed, ref } from "vue";
 import img1 from "/assets/1.jpeg";
 import img2 from "/assets/2.jpg";
 import img3 from "/assets/3.jpg";
 import { useAsync, useLoading } from "@vc-shell/framework";
 
 export default () => {
-  const data = ref([]);
+  const data = ref([]) as Ref<
+    {
+      imgSrc: string;
+      name: string;
+      createdDate: Date;
+      id: string;
+    }[]
+  >;
 
   // Example mocked method for 'fetching' list data
   const { loading: itemLoading, action: getItems } = useAsync(async (payload) => {
@@ -33,7 +40,7 @@ export default () => {
               id: "item-id-3",
             },
           ]),
-        1000
+        1000,
       );
     });
   });

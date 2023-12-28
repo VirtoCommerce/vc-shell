@@ -5,6 +5,13 @@ import img2 from "/assets/2.jpg";
 import img3 from "/assets/3.jpg";
 import { DynamicBladeList, ListBaseBladeScope, useBladeNavigation, useListFactory } from "@vc-shell/framework";
 
+interface MockedItem {
+  imgSrc: string;
+  name: string;
+  createdDate: Date;
+  id: string;
+}
+
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface DynamicItemsScope extends ListBaseBladeScope {}
 
@@ -15,7 +22,7 @@ export default (args: {
 }) => {
   const factory = useListFactory({
     load: async () => {
-      return await new Promise((resolve) => {
+      return await new Promise((resolve: (value: MockedItem[]) => void) => {
         setTimeout(
           () =>
             resolve([
@@ -38,9 +45,9 @@ export default (args: {
                 id: "item-id-3",
               },
             ]),
-          1000
+          1000,
         );
-      }).then((res: any[]) => {
+      }).then((res) => {
         return { results: res, totalCount: res.length };
       });
     },

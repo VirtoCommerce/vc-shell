@@ -69,7 +69,9 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     title: computed(() => t("MODULE.PAGES.LIST.TOOLBAR.REFRESH")),
     icon: "fas fa-sync-alt",
     async clickHandler() {
-      await getItem({ id: props.param });
+      if (props.param) {
+        await getItem({ id: props.param });
+      }
     },
   },
 ]);

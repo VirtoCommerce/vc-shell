@@ -87,7 +87,7 @@ export interface Emits {
   (event: "parent:call", args: IParentCallArgs): void;
   (event: "collapse:blade"): void;
   (event: "expand:blade"): void;
-  (event: "open:blade", blade: IBladeEvent);
+  (event: "open:blade", blade: IBladeEvent): void;
   (event: "close:blade"): void;
 }
 
@@ -96,10 +96,10 @@ defineOptions({
   name: "ClassicModuleList",
   isWorkspace: true,
   menuItem: {
-    title: 'MODULE.MENU.TITLE',
+    title: "MODULE.MENU.TITLE",
     icon: "fas fa-file-alt",
     priority: 1,
-  }
+  },
 });
 
 const props = withDefaults(defineProps<Props>(), {
@@ -135,7 +135,7 @@ watch(
       });
     }
   },
-  { immediate: true }
+  { immediate: true },
 );
 
 onMounted(async () => {
@@ -247,7 +247,7 @@ const onHeaderClick = (item: ITableColumns) => {
   }
 };
 
-const actionBuilder = (item: { status: string }): IActionBuilderResult[] => {
+const actionBuilder = (item: (typeof data.value)[number]): IActionBuilderResult[] => {
   const result = [];
 
   result.push({
@@ -255,7 +255,9 @@ const actionBuilder = (item: { status: string }): IActionBuilderResult[] => {
     title: "Delete",
     variant: "danger",
     leftActions: true,
-    // clickHandler() {},
+    clickHandler() {
+      throw new Error("Function is not implemented.");
+    },
   });
 
   return result;

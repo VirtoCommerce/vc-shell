@@ -33,7 +33,7 @@ async function startApp() {
   });
 
   app.config.errorHandler = (err) => {
-    notification.error(err.toString(), {
+    notification.error((err as Error).toString(), {
       timeout: 5000,
     });
   };

@@ -13,12 +13,6 @@ The project is originated to create a replacement of the current vc-platform man
 - **Yarn berry** (managing monorepo and its packages dependencies).
 - **Vue 3** as background for our solution.
 - **Vite** for easy build and deployment.
-- **storybook** for interactive documentation.
-
-## Demo
-
-- [Demo Manager](https://demo-manager.govirto.com/)
-- [UI Kit Storybook](https://ui-kit.govirto.com/)
 
 ## Getting started
 
@@ -34,21 +28,10 @@ $ yarn build
 $ yarn build-framework
 $ yarn build-cli:config
 $ yarn build-cli:api-client
-$ yarn build-cli:import-module
+$ yarn build-cli:create-vc-app
+$ yarn build:import-module
+$ yarn build-config:release-config
 
 # generate api clients (require .NET Core 6 on Mac OS or Linux)
 yarn generate-api-client:api-client
-
-# run interactive documentation
-$ yarn storybook-serve
-
-# or build it
-$ yarn storybook-build
 ```
-
-#### Version bumping
-```bash
-$ yarn bump patch/minor/major
-```
-
-

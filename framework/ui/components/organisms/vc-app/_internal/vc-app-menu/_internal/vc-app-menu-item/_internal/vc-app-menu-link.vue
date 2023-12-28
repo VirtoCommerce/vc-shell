@@ -48,14 +48,15 @@
       :key="i"
     >
       <router-link
-        :to="nested.url"
+        v-if="$hasAccess(nested.permissions!)"
+        :to="nested.url!"
         custom
       >
         <div
           :key="i"
           :class="[
             {
-              'vc-app-menu-item__child-item_active': isActive(nested.url),
+              'vc-app-menu-item__child-item_active': isActive(nested.url!),
             },
             'vc-app-menu-item__child-item',
           ]"

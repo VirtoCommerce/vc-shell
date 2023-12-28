@@ -2,28 +2,27 @@ import { createSharedComposable, createUnrefFn, useArrayFind } from "@vueuse/cor
 import { Ref, ref, computed } from "vue";
 import * as _ from "lodash-es";
 import { i18n } from "./../../plugins/i18n";
-import { MenuItemConfig } from "../../../shared/components/blade-navigation/types";
 import { MenuItem } from "../../types";
 
 export interface IUseMenuService {
-  addMenuItem: MenuItemConfig;
+  addMenuItem: (item: MenuItem) => void;
   menuItems: Ref<MenuItem[]>;
   removeMenuItem: (item: MenuItem) => void;
 }
 
 const menuItems: Ref<MenuItem[]> = ref([]);
-const rawMenu: Ref<Record<string, unknown>[]> = ref([]);
+const rawMenu: Ref<MenuItem[]> = ref([]);
 
-function useMenuServiceFn() {
+function useMenuServiceFn(): IUseMenuService {
   const { t } = i18n.global;
 
-  function addMenuItem(item: Record<string, unknown>) {
+  function addMenuItem(item: MenuItem) {
     rawMenu.value.push(item);
 
     constructMenu();
   }
 
-  const upsert = createUnrefFn((array: Record<string, unknown>[], element: Record<string, unknown>) => {
+  const upsert = createUnrefFn((array: MenuItem[], element: MenuItem) => {
     const i = array.findIndex((_element) => _.isEqual(_element, element));
     if (i > -1) array[i] = { ...element };
     else array.push({ ...element });
@@ -37,10 +36,10 @@ function useMenuServiceFn() {
   }
 
   function constructMenu() {
-    const constructedMenu = ref<MenuItem[]>([]);
+    const constructedMenu = ref([]) as Ref<MenuItem[]>;
 
     rawMenu.value.forEach((item) => {
-      let group;
+      let group: MenuItem;
       if (item.group) {
         const isGroupExist = useArrayFind(constructedMenu, (m) => m.groupId === "group_" + item.group);
 
@@ -52,7 +51,7 @@ function useMenuServiceFn() {
           "group",
         );
 
-        if (isGroupExist.value) {
+        if (isGroupExist.value && isGroupExist.value.children) {
           upsert(isGroupExist.value.children, groupItem);
         } else {
           group = {
@@ -75,7 +74,7 @@ function useMenuServiceFn() {
     });
 
     menuItems.value = constructedMenu.value
-      .map((x, index) => ({ ...x, title: computed(() => t(x.title as string)), id: index }))
+      .map((x, index): MenuItem => ({ ...x, title: computed(() => t(x.title as string)), id: index }))
       .sort(sortByPriority);
   }
 

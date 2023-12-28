@@ -6,6 +6,7 @@
         custom
       >
         <vc-app-menu-link
+          v-if="isVisible"
           :sticky="sticky"
           :icon="icon ?? ''"
           :title="title ?? ''"
@@ -16,6 +17,7 @@
     </template>
     <template v-else>
       <vc-app-menu-link
+        v-if="isVisible"
         :children="children"
         :sticky="sticky"
         :icon="icon ?? ''"

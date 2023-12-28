@@ -37,7 +37,7 @@ export const createAppModule = (
       }
 
       // Register pages
-      Object.entries(pages).forEach(([key, page]) => {
+      Object.values(pages).forEach((page) => {
         if (!page.url) {
           app.config.globalProperties.pages?.push(page);
 
@@ -46,11 +46,6 @@ export const createAppModule = (
             name: page?.name,
             isWorkspace: page.isWorkspace || false,
           });
-
-          // Add to menu
-          if (page.menuItem) {
-            app.config.globalProperties.menuItems?.push({ ...page.menuItem, url: page.url, routeId: key });
-          }
 
           app.component(page.name, page);
         }
@@ -98,6 +93,7 @@ export const createAppModule = (
               ...page.menuItem,
               url: page.url,
               routeId: routeName,
+              permissions: page.permissions,
             });
           }
         }

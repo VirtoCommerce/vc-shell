@@ -1,3 +1,4 @@
+import { permissions } from "./../plugins/permissions/index";
 import { Component, ComponentPublicInstance, ComputedRef, Ref } from "vue";
 import { BladeInstanceConstructor, CoreBladeExposed, ExtractedBladeOptions } from "./../../shared";
 import { ComponentPublicInstanceConstructor } from "../../shared/utilities/vueUtils";
@@ -142,13 +143,35 @@ export type ITableColumns = {
   visible?: boolean;
 };
 
-export interface MenuItem {
-  icon: string;
-  id: number;
+export interface MenuItem extends Omit<MenuItemConfig, "title" | "id"> {
   priority: number;
-  routeId: string;
+  routeId?: string;
   title: ComputedRef<string> | string;
-  url: string;
+  url?: string;
   groupId?: string;
-  children: MenuItem[];
+  children?: MenuItem[];
+  permissions?: string | string[];
+  id?: number | string;
+}
+
+export interface MenuItemConfig {
+  id?: string;
+  /**
+   * Menu item title.
+   */
+  title: string;
+  /**
+   * Menu item icon.
+   */
+  icon: string;
+  /**
+   * Menu item group. Is used to group menu items with it's provided name.
+   *
+   * If the path is not specified, the menu item is added to the root of the menu.
+   */
+  group?: string;
+  /**
+   * Position priority.
+   */
+  priority: number;
 }

@@ -84,6 +84,9 @@ export function useBladeNavigation(): IUseBladeNavigation {
           components: {
             default: createdComponent,
           },
+          meta: {
+            permissions: createdComponent.type?.permissions,
+          },
         });
 
         return await router.push({ path: createdComponent.type?.url as string });

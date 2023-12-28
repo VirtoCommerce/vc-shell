@@ -84,7 +84,7 @@ function useUserFn(): IUseUser {
   async function signIn(
     username: string,
     password: string,
-  ): Promise<SignInResult | { succeeded: boolean; error?: any }> {
+  ): Promise<SignInResult | { succeeded: boolean; error?: any; status?: number }> {
     console.debug(`[@vc-shell/framework#useUser:signIn] - Entry point`);
     try {
       loading.value = true;
@@ -104,7 +104,7 @@ function useUserFn(): IUseUser {
     } catch (e: any) {
       //TODO: log error
       console.log(e);
-      return { succeeded: false, error: e.message };
+      return { succeeded: false, error: e.message, status: e.status };
     } finally {
       loading.value = false;
     }

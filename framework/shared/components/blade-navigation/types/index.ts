@@ -11,6 +11,7 @@ import {
   ComponentPublicInstance,
 } from "vue";
 import { ComponentPublicInstanceConstructor } from "../../../utilities/vueUtils";
+import { MenuItemConfig } from "../../../../core/types";
 
 export type CoreBladeComponentProps = {
   expanded?: boolean;
@@ -23,28 +24,6 @@ export type CoreDynamicBladeComponentProps = {
   model?: any;
   composables?: any;
 };
-
-export interface MenuItemConfig {
-  id?: string;
-  /**
-   * Menu item title.
-   */
-  title: string;
-  /**
-   * Menu item icon.
-   */
-  icon: string;
-  /**
-   * Menu item group. Is used to group menu items with it's provided name.
-   *
-   * If the path is not specified, the menu item is added to the root of the menu.
-   */
-  group?: string;
-  /**
-   * Position priority.
-   */
-  priority: number;
-}
 
 export type CoreBladeAdditionalSettings = {
   url?: `/${string}`;

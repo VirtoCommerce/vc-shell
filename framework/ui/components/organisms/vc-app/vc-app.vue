@@ -156,7 +156,7 @@ const onMenuItemClick = function (item: MenuItem) {
       },
       true,
     );
-  } else {
+  } else if (!item.routeId && item.url) {
     router.push(item.url);
   }
 };

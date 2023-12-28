@@ -8,9 +8,8 @@ import {
   VcStatus,
   VcVideo,
 } from "./../../../../ui/components";
-import { ITableColumns, IValidationRules } from "../../../../core/types";
+import { ITableColumns, IValidationRules, MenuItemConfig } from "../../../../core/types";
 import type { ComponentProps } from "./../../../utilities/vueUtils";
-import { MenuItemConfig } from "../../../components/blade-navigation/types";
 
 export type KeysOfUnion<T> = T extends T ? keyof T : never;
 

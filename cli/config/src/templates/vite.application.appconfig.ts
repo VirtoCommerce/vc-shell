@@ -33,32 +33,22 @@ const workspaceRoot = isMonorepo
   ? searchForWorkspaceRoot(path.resolve(process.cwd(), "./../../framework/package.json"))
   : searchForWorkspaceRoot(process.cwd());
 
-const aliasResolver = () => {
-  if (isMonorepo) {
-    if (mode === "development") {
-      return {
-        "@vc-shell/framework/dist/index.css": "@vc-shell/framework/dist/index.css",
-        "@vc-shell/framework": "@vc-shell/framework/index.ts",
-      };
-    }
-    return {};
-  } else {
-    if (mode === "development") {
-      return {
-        "@vc-shell/framework/dist/index.css": "@vc-shell/framework/dist/index.css",
-        "vue-router": "vue-router/dist/vue-router.cjs.js",
-        "vee-validate": "vee-validate/dist/vee-validate.js",
-      };
-    } else {
-      return {};
-    }
-  }
-};
-
 export default defineConfig({
   mode,
   resolve: {
-    alias: aliasResolver(),
+    alias:
+      mode === "development"
+        ? isMonorepo
+          ? {
+              "@vc-shell/framework/dist/index.css": "@vc-shell/framework/dist/index.css",
+              "@vc-shell/framework": "@vc-shell/framework/index.ts",
+            }
+          : {
+              "@vc-shell/framework/dist/index.css": "@vc-shell/framework/dist/index.css",
+              "vue-router": "vue-router/dist/vue-router.cjs.js",
+              "vee-validate": "vee-validate/dist/vee-validate.js",
+            }
+        : undefined,
   },
   envPrefix: "APP_",
   base: process.env.APP_BASE_PATH,
@@ -73,8 +63,6 @@ export default defineConfig({
   define: {
     "import.meta.env.PACKAGE_VERSION": `"${version}"`,
     "import.meta.env.APP_PLATFORM_URL": `"${process.env.APP_PLATFORM_URL ? process.env.APP_PLATFORM_URL : ""}"`,
-    "import.meta.env.APP_LOG_ENABLED": `"${process.env.APP_LOG_ENABLED}"`,
-    "import.meta.env.APP_LOG_LEVEL": `"${process.env.APP_LOG_LEVEL}"`,
     "import.meta.env.APP_BASE_PATH": `"${process.env.APP_BASE_PATH}"`,
 
     // https://vue-i18n.intlify.dev/guide/advanced/optimization.html#reduce-bundle-size-with-feature-build-flags
@@ -94,13 +82,15 @@ export default defineConfig({
     host: "0.0.0.0",
     port: 8080,
     proxy: {
-      "/api": getProxy(`${process.env.APP_PLATFORM_URL}`),
-      "/connect/token": getProxy(`${process.env.APP_PLATFORM_URL}`),
-      "/pushNotificationHub": getProxy(`${process.env.APP_PLATFORM_URL}`),
-      "^/pushNotificationHub": getProxy(`${process.env.APP_PLATFORM_URL}`, {
-        ws: true,
-      }),
-      "/Modules": getProxy(`${process.env.APP_PLATFORM_URL}`),
+      "/api": process.env.APP_PLATFORM_URL ? getProxy(`${process.env.APP_PLATFORM_URL}`) : "",
+      "/connect/token": process.env.APP_PLATFORM_URL ? getProxy(`${process.env.APP_PLATFORM_URL}`) : "",
+      "/pushNotificationHub": process.env.APP_PLATFORM_URL ? getProxy(`${process.env.APP_PLATFORM_URL}`) : "",
+      "^/pushNotificationHub": process.env.APP_PLATFORM_URL
+        ? getProxy(`${process.env.APP_PLATFORM_URL} `, {
+            ws: true,
+          })
+        : "",
+      "/Modules": process.env.APP_PLATFORM_URL ? getProxy(`${process.env.APP_PLATFORM_URL}`) : "",
     },
   },
   optimizeDeps: {

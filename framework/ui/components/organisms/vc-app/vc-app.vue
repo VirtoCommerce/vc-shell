@@ -53,7 +53,10 @@
           <NotificationDropdown />
         </slot>
         <template v-if="$isDesktop.value">
-          <slot name="toolbar:user-dropdown">
+          <slot
+            name="toolbar:user-dropdown"
+            :user-dropdown="UserDropdownButton"
+          >
             <UserDropdownButton />
           </slot>
         </template>
@@ -109,7 +112,7 @@ import { MenuItem } from "../../../../core/types";
 
 export interface Props {
   isReady: boolean;
-  logo: string;
+  logo?: string;
   version?: string;
   theme?: "light" | "dark";
   title?: string;
@@ -125,7 +128,7 @@ defineSlots<{
   "toolbar:prepend": void;
   "toolbar:language-selector": void;
   "toolbar:notifications-dropdown": void;
-  "toolbar:user-dropdown": void;
+  "toolbar:user-dropdown": (props: { userDropdown: typeof UserDropdownButton }) => void;
   "blade-navigation": void;
 }>();
 

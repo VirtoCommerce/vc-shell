@@ -26,7 +26,10 @@ export interface IValidationState<Item> {
   setFieldValue: FormContext["setFieldValue"];
   setValues: FormContext["setValues"];
   setErrors: FormContext["setErrors"];
-  resetModified: (data: MaybeRef<Item>, updateInitial?: MaybeRef<boolean>) => void;
+  resetModified: (
+    data: MaybeRef<Item | undefined> | ComputedRef<Item | undefined>,
+    updateInitial?: MaybeRef<boolean>,
+  ) => void;
   validate: FormContext["validate"];
 }
 
@@ -85,7 +88,7 @@ export interface DetailsBaseBladeScope extends BaseBladeScope {
       property: Record<string, any>,
       keyword?: string,
       locale?: string,
-    ) => Promise<Record<string, any>[]>;
+    ) => Promise<Record<string, any>[] | undefined>;
     getPropertyValue: (property: Record<string, any>, locale: string) => any;
     setPropertyValue: (data: {
       property: Record<string, any>;

@@ -73,7 +73,7 @@ import { useBladeNavigation } from "./../../../../../../shared";
 import { ref, watch, nextTick } from "vue";
 
 export interface Props {
-  logo: string;
+  logo?: string;
   title?: string;
 }
 

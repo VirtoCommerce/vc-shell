@@ -70,7 +70,7 @@ export interface IBladeToolbar<T extends ComponentPublicInstance = ComponentPubl
   dropdownItems?: IBladeDropdownItem[];
   options?: InstanceType<ComponentPublicInstanceConstructor<T>>["$props"];
   title?: string | Ref<string>;
-  isVisible?: boolean | Ref<boolean>;
+  isVisible?: boolean | Ref<boolean | undefined> | ComputedRef<boolean | undefined>;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   clickHandler?(app?: Record<string, any> | CoreBladeExposed | null): void;
 }

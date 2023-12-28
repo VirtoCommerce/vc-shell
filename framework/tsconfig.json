@@ -1,7 +1,6 @@
 {
   "extends": "@vc-shell/ts-config/tsconfig.json",
   "compilerOptions": {
-    "strict": true,
     "baseUrl": ".",
     "outDir": "dist",
     "types": ["vite/client", "./typings/declarations.d.ts"]

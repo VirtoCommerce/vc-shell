@@ -8,7 +8,6 @@ import { reactiveComputed } from "@vueuse/core";
 import { kebabToPascal } from "../../../core/utilities";
 import { BladeInstanceConstructor } from "../../index";
 import { createAppModule } from "../../../core/plugins";
-import { BladeMenu } from "../../../core/types";
 import { ComponentProps } from "./../../utilities/vueUtils";
 
 interface Registered {
@@ -70,6 +69,7 @@ const register = (
 
   const BladeInstanceConstructor = defineComponent({
     ...bladeComponent,
+    name: bladeName,
     isWorkspace: "isWorkspace" in json.settings && json.settings.isWorkspace,
     menuItem: ("menuItem" in json.settings && json.settings.menuItem) ?? undefined,
     setup: (props: ComponentProps<typeof bladeComponent>, ctx) =>
@@ -104,7 +104,7 @@ const register = (
 };
 
 const handleError = (errorKey: string, schema: { [key: string]: DynamicSchema }, text?: string) => {
-  console.error(
+  return console.error(
     `Module initialization aborted. '${errorKey}' key not found in files: ${Object.keys(schema).join(
       ", ",
     )}. '${errorKey}' key ${text}`,
@@ -130,42 +130,38 @@ export const createDynamicAppModule = (args: {
       "must be included in one of this files to initialize module workspace blade",
     );
 
-  if (moduleInitializer && everyHasTemplate) {
-    let schemaCopy = _.cloneDeep({ ...args.schema });
+  let schemaCopy = _.cloneDeep({ ...args.schema });
 
-    if (args.overrides) {
-      schemaCopy = handleOverrides(args.overrides, schemaCopy);
-    }
-
-    return {
-      install(app: App, options: { router: any }) {
-        const bladePages = { ...pages };
-        const appModuleContent = {
-          locales: args?.locales,
-          notificationTemplates: args?.notificationTemplates,
-          moduleComponents: args?.moduleComponents,
-        };
-        Object.entries(schemaCopy).forEach(([, JsonSchema], index) => {
-          const blade = register(
-            {
-              app,
-              component: bladePages[
-                JsonSchema.settings.component as keyof typeof bladePages
-              ] as BladeInstanceConstructor,
-              composables: { ...args.composables },
-              json: JsonSchema,
-              options,
-            },
-            index === 0 ? appModuleContent : undefined,
-          );
-
-          if (!blade) {
-            return;
-          }
-        });
-      },
-    };
+  if (args.overrides) {
+    schemaCopy = handleOverrides(args.overrides, schemaCopy);
   }
+
+  return {
+    install(app: App, options: { router: any }) {
+      const bladePages = { ...pages };
+      const appModuleContent = {
+        locales: args?.locales,
+        notificationTemplates: args?.notificationTemplates,
+        moduleComponents: args?.moduleComponents,
+      };
+      Object.entries(schemaCopy).forEach(([, JsonSchema], index) => {
+        const blade = register(
+          {
+            app,
+            component: bladePages[JsonSchema.settings.component as keyof typeof bladePages] as BladeInstanceConstructor,
+            composables: { ...args.composables },
+            json: JsonSchema,
+            options,
+          },
+          index === 0 ? appModuleContent : undefined,
+        );
+
+        if (!blade) {
+          return;
+        }
+      });
+    },
+  };
 };
 
 export * from "./pages";

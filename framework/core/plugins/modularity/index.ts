@@ -1,11 +1,9 @@
-import { App, Component, defineComponent, h } from "vue";
+import { App, Component, h } from "vue";
 import { i18n } from "./../i18n";
 import { Router } from "vue-router";
 import { BladeInstanceConstructor } from "./../../../shared/components/blade-navigation/types";
 import { kebabToPascal } from "./../../utilities";
 import { useMenuService } from "../../composables";
-import { ComponentProps } from "../../../shared/utilities/vueUtils";
-import { reactiveComputed } from "@vueuse/core";
 
 export const createModule = (components: { [key: string]: BladeInstanceConstructor }, locales?: unknown) => ({
   install(app: App): void {

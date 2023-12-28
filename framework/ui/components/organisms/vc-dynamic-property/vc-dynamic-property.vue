@@ -190,7 +190,7 @@
 </template>
 
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
-<script lang="ts" setup generic="T extends {[x:string]: any; id?: string}">
+<script lang="ts" setup generic="T extends { [x: string]: any; id?: string }">
 import { ref, onMounted, computed, Ref } from "vue";
 import { Field } from "vee-validate";
 import { useI18n } from "vue-i18n";
@@ -233,12 +233,12 @@ const props = withDefaults(
     optionsValue: "id",
     optionsLabel: "value",
     disabled: false,
-  }
+  },
 );
 
 const emit = defineEmits<{
   "update:model-value": [
-    data: { readonly property: T; readonly value: any; readonly dictionary?: any[]; readonly locale?: string }
+    data: { readonly property: T; readonly value: any; readonly dictionary?: any[]; readonly locale?: string },
   ];
 }>();
 

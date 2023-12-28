@@ -1,4 +1,4 @@
-import { computed, ref, watch } from "vue";
+import { ComputedRef, MaybeRef, computed, ref, watch } from "vue";
 import * as _ from "lodash-es";
 import { useForm, useIsFormDirty, useIsFormValid } from "vee-validate";
 import { useAsync, useLoading } from "../../../../../core/composables";
@@ -6,7 +6,7 @@ import type { ItemId, IValidationState, UseDetails } from "../types";
 import { createUnrefFn } from "@vueuse/core";
 
 export interface UseDetailsFactoryParams<Item> {
-  load: (args?: ItemId) => Promise<Item>;
+  load: (args?: ItemId) => Promise<Item | undefined>;
   saveChanges: (details: Item) => Promise<Item | void>;
   remove?: (args: ItemId) => Promise<void>;
 }
@@ -25,7 +25,7 @@ export const useDetailsFactory = <Item>(factoryParams: UseDetailsFactoryParams<I
 
     const { loading: itemLoading, action: load } = useAsync<ItemId>(async (args?: ItemId) => {
       item.value = await factoryParams.load(args);
-      resetModified(item.value);
+      item.value && resetModified(item.value);
     });
 
     const { loading: manageLoading, action: saveChanges } = useAsync<Item>(async (item) => {
@@ -72,7 +72,7 @@ export const useDetailsFactory = <Item>(factoryParams: UseDetailsFactoryParams<I
       }
 
       itemTemp.value = _.cloneDeep(data);
-    });
+    }) as (data: MaybeRef<Item | undefined> | ComputedRef<Item | undefined>, updateInitial?: MaybeRef<boolean>) => void;
 
     return {
       load,

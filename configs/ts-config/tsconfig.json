@@ -15,7 +15,8 @@
     "isolatedModules": true,
     "useDefineForClassFields": true,
     "composite": true,
-    "lib": ["ES2020", "DOM", "DOM.Iterable"]
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "strict": true
   },
   // Base excludes
   "exclude": ["node_modules", "dist"]

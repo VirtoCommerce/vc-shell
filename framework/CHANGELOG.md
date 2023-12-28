@@ -1,3 +1,12 @@
+## [1.0.131](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.130...v1.0.131) (2023-12-28)
+
+
+### Bug Fixes
+
+* **shell:** interceptor method name fix ([293ba14](https://github.com/VirtoCommerce/vc-shell/commit/293ba14952c779141b6be417653e317afd2e98e9))
+
+
+
 ## [1.0.130](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.129...v1.0.130) (2023-12-27)
 
 

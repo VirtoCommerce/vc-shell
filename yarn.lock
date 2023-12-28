@@ -4558,11 +4558,11 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vc-shell/api-client-generator@^1.0.130, @vc-shell/api-client-generator@workspace:cli/api-client":
+"@vc-shell/api-client-generator@^1.0.131, @vc-shell/api-client-generator@workspace:cli/api-client":
   version: 0.0.0-use.local
   resolution: "@vc-shell/api-client-generator@workspace:cli/api-client"
   dependencies:
-    "@vc-shell/ts-config": ^1.0.130
+    "@vc-shell/ts-config": ^1.0.131
     chalk: ^2.4.2
     nswag: ^13.20.0
     typescript: ^5.3.3
@@ -4573,11 +4573,11 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vc-shell/config-generator@^1.0.130, @vc-shell/config-generator@workspace:cli/config":
+"@vc-shell/config-generator@^1.0.131, @vc-shell/config-generator@workspace:cli/config":
   version: 0.0.0-use.local
   resolution: "@vc-shell/config-generator@workspace:cli/config"
   dependencies:
-    "@vc-shell/ts-config": ^1.0.130
+    "@vc-shell/ts-config": ^1.0.131
     "@vitejs/plugin-vue": ^4.5.1
     tsc-alias: ^1.8.8
     typescript: 5.3.3
@@ -4593,7 +4593,7 @@ __metadata:
   resolution: "@vc-shell/create-vc-app@workspace:cli/create-vc-app"
   dependencies:
     "@types/prompts": ^2.4.4
-    "@vc-shell/ts-config": ^1.0.130
+    "@vc-shell/ts-config": ^1.0.131
     chalk: ^2.4.2
     copyfiles: ^2.4.1
     cross-env: ^7.0.3
@@ -4609,15 +4609,15 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vc-shell/framework@^1.0.130, @vc-shell/framework@workspace:framework":
+"@vc-shell/framework@^1.0.131, @vc-shell/framework@workspace:framework":
   version: 0.0.0-use.local
   resolution: "@vc-shell/framework@workspace:framework"
   dependencies:
     "@floating-ui/vue": ^1.0.0
     "@microsoft/signalr": ^8.0.0
-    "@vc-shell/api-client-generator": ^1.0.130
-    "@vc-shell/config-generator": ^1.0.130
-    "@vc-shell/ts-config": ^1.0.130
+    "@vc-shell/api-client-generator": ^1.0.131
+    "@vc-shell/config-generator": ^1.0.131
+    "@vc-shell/ts-config": ^1.0.131
     "@vee-validate/i18n": ^4.9.4
     "@vee-validate/rules": ^4.11.8
     "@vitejs/plugin-vue": ^4.5.1
@@ -4652,10 +4652,10 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@vc-shell/import-module@workspace:import-module"
   dependencies:
-    "@vc-shell/api-client-generator": ^1.0.130
-    "@vc-shell/config-generator": ^1.0.130
-    "@vc-shell/framework": ^1.0.130
-    "@vc-shell/ts-config": ^1.0.130
+    "@vc-shell/api-client-generator": ^1.0.131
+    "@vc-shell/config-generator": ^1.0.131
+    "@vc-shell/framework": ^1.0.131
+    "@vc-shell/ts-config": ^1.0.131
     cross-env: ^7.0.3
     typescript: 5.3.3
     vite: 4.5.0
@@ -4665,13 +4665,13 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vc-shell/release-config@^1.0.130, @vc-shell/release-config@workspace:configs/release-config":
+"@vc-shell/release-config@^1.0.131, @vc-shell/release-config@workspace:configs/release-config":
   version: 0.0.0-use.local
   resolution: "@vc-shell/release-config@workspace:configs/release-config"
   dependencies:
     "@types/prompts": ^2.4.7
     "@types/semver": ^7.5.4
-    "@vc-shell/ts-config": ^1.0.130
+    "@vc-shell/ts-config": ^1.0.131
     chalk: ^2.4.2
     mri: ^1.2.0
     prompts: ^2.4.2
@@ -4742,7 +4742,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vc-shell/ts-config@^1.0.130, @vc-shell/ts-config@workspace:configs/ts-config":
+"@vc-shell/ts-config@^1.0.131, @vc-shell/ts-config@workspace:configs/ts-config":
   version: 0.0.0-use.local
   resolution: "@vc-shell/ts-config@workspace:configs/ts-config"
   languageName: unknown
@@ -5355,11 +5355,11 @@ __metadata:
     "@types/lodash-es": ^4.17.7
     "@typescript-eslint/eslint-plugin": ^6.13.2
     "@typescript-eslint/parser": ^6.13.2
-    "@vc-shell/api-client-generator": ^1.0.130
-    "@vc-shell/config-generator": ^1.0.130
-    "@vc-shell/framework": ^1.0.130
-    "@vc-shell/release-config": ^1.0.130
-    "@vc-shell/ts-config": ^1.0.130
+    "@vc-shell/api-client-generator": ^1.0.131
+    "@vc-shell/config-generator": ^1.0.131
+    "@vc-shell/framework": ^1.0.131
+    "@vc-shell/release-config": ^1.0.131
+    "@vc-shell/ts-config": ^1.0.131
     "@vcmp-vendor-portal/api": ^1.0.135
     "@vcmp-vendor-portal/modules": ^1.0.135
     "@vitejs/plugin-vue": ^4.5.1
@@ -14036,11 +14036,11 @@ __metadata:
     "@typescript-eslint/parser": ^6.13.2
     "@vc-app-extend/api": ^1.0.113
     "@vc-app/modules": ^1.0.113
-    "@vc-shell/api-client-generator": ^1.0.130
-    "@vc-shell/config-generator": ^1.0.130
-    "@vc-shell/framework": ^1.0.130
-    "@vc-shell/release-config": ^1.0.130
-    "@vc-shell/ts-config": ^1.0.130
+    "@vc-shell/api-client-generator": ^1.0.131
+    "@vc-shell/config-generator": ^1.0.131
+    "@vc-shell/framework": ^1.0.131
+    "@vc-shell/release-config": ^1.0.131
+    "@vc-shell/ts-config": ^1.0.131
     "@vitejs/plugin-vue": ^4.5.1
     "@vue/eslint-config-prettier": ^8.0.0
     "@vue/eslint-config-typescript": ^12.0.0
@@ -14091,11 +14091,11 @@ __metadata:
     "@typescript-eslint/parser": ^6.13.2
     "@vc-app/api": ^1.0.113
     "@vc-app/modules": ^1.0.113
-    "@vc-shell/api-client-generator": ^1.0.130
-    "@vc-shell/config-generator": ^1.0.130
-    "@vc-shell/framework": ^1.0.130
-    "@vc-shell/release-config": ^1.0.130
-    "@vc-shell/ts-config": ^1.0.130
+    "@vc-shell/api-client-generator": ^1.0.131
+    "@vc-shell/config-generator": ^1.0.131
+    "@vc-shell/framework": ^1.0.131
+    "@vc-shell/release-config": ^1.0.131
+    "@vc-shell/ts-config": ^1.0.131
     "@vitejs/plugin-vue": ^4.5.1
     "@vue/eslint-config-prettier": ^8.0.0
     "@vue/eslint-config-typescript": ^12.0.0

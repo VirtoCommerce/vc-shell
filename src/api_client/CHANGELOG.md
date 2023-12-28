@@ -1,3 +1,12 @@
+## [1.0.137](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.136...v1.0.137) (2023-12-28)
+
+
+### Features
+
+* strict types ([509d0e1](https://github.com/VirtoCommerce/vendor-portal/commit/509d0e1552e3fa0b2a9bf828849cac18ce43395a))
+
+
+
 ## [1.0.136](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.135...v1.0.136) (2023-12-28)
 
 

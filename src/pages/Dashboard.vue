@@ -84,7 +84,7 @@
             size="4"
             class="tw-p-2"
           >
-            <modules.Rating.RatingDashboardCard></modules.Rating.RatingDashboardCard>
+            <component :is="modules.Rating.RatingDashboardCard"></component>
           </VcCol>
         </VcRow>
 
@@ -94,7 +94,7 @@
             size="3"
             class="tw-p-2"
           >
-            <modules.Products.components.ProductsDashboardCard></modules.Products.components.ProductsDashboardCard>
+            <component :is="modules.Products.components.ProductsDashboardCard"></component>
           </VcCol>
 
           <!-- Offers block -->
@@ -102,7 +102,7 @@
             size="4"
             class="tw-p-2"
           >
-            <modules.Offers.components.OffersDashboardCard></modules.Offers.components.OffersDashboardCard>
+            <component :is="modules.Offers.components.OffersDashboardCard"></component>
           </VcCol>
         </VcRow>
       </VcCol>

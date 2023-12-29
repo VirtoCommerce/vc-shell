@@ -3,7 +3,6 @@ import { App, Component } from "vue";
 import * as components from "./ui/components";
 import * as directives from "./core/directives";
 import { useBreakpoints } from "@vueuse/core";
-import Vue3TouchEvents from "vue3-touch-events";
 import { i18n, permissions, signalR } from "./core/plugins";
 import { SharedModule, notification } from "./shared";
 import * as componentLocales from "./ui/locales";
@@ -30,7 +29,6 @@ export default {
     });
 
     // Install libraries
-    app.use(Vue3TouchEvents);
 
     // Register exported components
     Object.entries(components).forEach(([name, component]) => {

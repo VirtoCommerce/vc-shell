@@ -12,11 +12,11 @@
     "build": "tsc && tsc-alias"
   },
   "dependencies": {
-    "@vitejs/plugin-vue": "^4.5.1",
+    "@vitejs/plugin-vue": "^5.0.0",
     "vite": "4.5.0",
-    "vite-plugin-checker": "^0.6.0",
-    "vite-plugin-mkcert": "^1.15.0",
-    "vue": "3.3.13"
+    "vite-plugin-checker": "^0.6.2",
+    "vite-plugin-mkcert": "^1.17.1",
+    "vue": "3.4.0"
   },
   "devDependencies": {
     "@vc-shell/ts-config": "^1.0.133",

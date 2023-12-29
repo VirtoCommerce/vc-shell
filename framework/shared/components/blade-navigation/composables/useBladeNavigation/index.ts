@@ -182,6 +182,7 @@ export function useBladeNavigation(): IUseBladeNavigation {
 
         return await router.push({
           path: url,
+          replace: !blade.url,
         });
       }
     } catch (e) {

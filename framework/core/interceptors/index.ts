@@ -51,18 +51,11 @@ export function registerInterceptors(router: Router) {
       /**
        * If the response is unauthorized, logout the user
        */
-      if (response.status === 401) {
+      if (response.status === 401 || (response.status === 500 && args[0] === "/api/vcmp/security/seller")) {
         //logout user
         if (isAuthenticated.value) {
           signOut().then(() => {
-            // redirect to login page if it exists
-            if (router && router.getRoutes().some((route) => route.path === "/login" || route.name === "Login")) {
-              router.currentRoute.value.path !== "/login" && router.push("/login");
-            } else {
-              // Use the origin to redirect to the root of the application if no login page exists.
-              // Usually this is the case when the application is used as a module.
-              window.location.href = window.location.origin + "/";
-            }
+            redirect(router);
           });
         }
       }
@@ -72,4 +65,15 @@ export function registerInterceptors(router: Router) {
   };
 
   return window.fetch;
+}
+
+function redirect(router: Router) {
+  // redirect to login page if it exists
+  if (router && router.getRoutes().some((route) => route.path === "/login" || route.name === "Login")) {
+    router.currentRoute.value.path !== "/login" && router.push("/login");
+  } else {
+    // Use the origin to redirect to the root of the application if no login page exists.
+    // Usually this is the case when the application is used as a module.
+    window.location.href = window.location.origin + "/";
+  }
 }

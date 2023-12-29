@@ -55,7 +55,7 @@
 
                 <!-- Override qty column template -->
                 <template #item_items="itemData">
-                  {{ calcQty(itemData.item.items as OrderLineItem[]) }}
+                  {{ calcQty(itemData.item.items ?? []) }}
                 </template>
 
                 <!-- Override status column template -->
@@ -74,7 +74,7 @@
               @click="open('orders-list')"
             >
               <div class="tw-h-px tw-bg-[#e3e7ec]"></div>
-              <div class="tw-my-4 dashboard-counters__value">3,334</div>
+              <div class="tw-my-4 dashboard-counters__value">{{ orders.length }}</div>
             </VcCard>
           </VcCol>
 

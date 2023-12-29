@@ -1,3 +1,13 @@
+## [1.0.134](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.133...v1.0.134) (2023-12-29)
+
+
+### Features
+
+* **shell:** intercept seller load error ([9f94420](https://github.com/VirtoCommerce/vc-shell/commit/9f94420aad2aaac02ca4efc56c5e22c885662c93))
+* **shell:** refactor vc-notification component styling to support scrolling ([93345c5](https://github.com/VirtoCommerce/vc-shell/commit/93345c59d415d27dee20e3abc6642b3f2ea07da1))
+
+
+
 ## [1.0.133](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.132...v1.0.133) (2023-12-28)
 
 

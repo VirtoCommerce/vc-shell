@@ -1,3 +1,12 @@
+## [1.0.136](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.135...v1.0.136) (2024-01-03)
+
+
+### Bug Fixes
+
+* **dynamic:** nested fields context reactivity fix ([9613105](https://github.com/VirtoCommerce/vc-shell/commit/9613105f6c1b4c7dc47b386203603763c75595b1))
+
+
+
 ## [1.0.135](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.134...v1.0.135) (2024-01-03)
 
 

@@ -1,3 +1,4 @@
+import { IOfferPrice } from "./../../../../api_client/dist/types/marketplacevendor.d";
 import {
   IBladeToolbar,
   useApiClient,
@@ -201,9 +202,9 @@ export const useOfferDetails = (args: {
     item.value?.prices?.push(
       new OfferPrice({
         currency: "USD",
-        listPrice: 0,
-        minQuantity: 0,
-      }),
+        listPrice: null,
+        minQuantity: null,
+      } as unknown as IOfferPrice),
     );
   }
 
@@ -270,7 +271,7 @@ export const useOfferDetails = (args: {
           item.value.trackInventory = true;
           item.value.sku = generateSku();
           await addEmptyInventory();
-          await addPrice();
+          addPrice();
         }
 
         const resolveId = (value: keyof Pick<SellerProduct, "publishedProductDataId" | "stagedProductDataId">) =>

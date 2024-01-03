@@ -1,3 +1,15 @@
+## [1.0.135](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.134...v1.0.135) (2024-01-03)
+
+
+### Bug Fixes
+
+* **dynamic:** remove unused emitValue and emitLabel properties from MultivalueField.ts ([3edcf8b](https://github.com/VirtoCommerce/vc-shell/commit/3edcf8b3402a9379913d8f75baf815dc1c557fbe))
+* **shell:** refactor vc-label layout ([ab6ad07](https://github.com/VirtoCommerce/vc-shell/commit/ab6ad070fdf9aef2be4be10d28d3c964a50c807f))
+* **shell:** refactor vc-multivalue component to improve readability and maintainability ([e49fd74](https://github.com/VirtoCommerce/vc-shell/commit/e49fd74f23e14d252d0969773edb169a7556eddb))
+* **shell:** replace url if blade have no url ([bb97100](https://github.com/VirtoCommerce/vc-shell/commit/bb97100aa94bdc76d0d8c1b01560d35593ce8dfa))
+
+
+
 ## [1.0.134](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.133...v1.0.134) (2023-12-29)
 
 

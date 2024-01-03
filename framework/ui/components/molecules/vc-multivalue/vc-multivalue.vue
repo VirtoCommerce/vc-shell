@@ -41,7 +41,9 @@
           class="vc-multivalue__field-value"
         >
           <span class="tw-truncate">{{
-            type === "number" ? Number(item[props.emitLabel as keyof T]).toFixed(3) : item[props.emitLabel as keyof T]
+            type === "number"
+              ? Number(item[props.optionLabel as keyof T]).toFixed(3)
+              : item[props.optionLabel as keyof T]
           }}</span>
           <VcIcon
             v-if="!disabled"
@@ -118,11 +120,12 @@
   </div>
 </template>
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
-<script lang="ts" setup generic="T extends { id?: string; alias?: string; languageCode?: string; value?: string }">
+<script lang="ts" setup generic="T extends { id?: string }">
 import { unref, nextTick, ref, computed } from "vue";
 import { vOnClickOutside } from "@vueuse/components";
 import { useFloating, UseFloatingReturn, offset, flip, shift, autoUpdate, MiddlewareState } from "@floating-ui/vue";
 import { generateId } from "../../../../core/utilities";
+import * as _ from "lodash-es";
 
 export interface Props<T> {
   placeholder?: string;
@@ -136,8 +139,6 @@ export interface Props<T> {
   options?: T[];
   optionValue?: string;
   optionLabel?: string;
-  emitValue?: string;
-  emitLabel?: string;
   multivalue?: boolean;
   error?: boolean;
   errorMessage?: string;
@@ -169,8 +170,6 @@ const props = withDefaults(defineProps<Props<T>>(), {
   options: () => [],
   optionValue: "id",
   optionLabel: "title",
-  emitValue: "valueId",
-  emitLabel: "value",
 });
 
 const emit = defineEmits<Emits<T>>();
@@ -207,30 +206,24 @@ const dropdownStyle = computed(() => {
 
 const slicedDictionary = computed(() => {
   return props.options?.filter((x) => {
-    return !props.modelValue?.find((item) => item[props.emitValue as keyof T] === x[props.optionValue as keyof T]);
+    return !props.modelValue?.find((item) => {
+      return item[props.optionValue as keyof T] === x[props.optionValue as keyof T];
+    });
   });
 });
 
-// Handle input event to propertly validate value and emit changes
 function onInput(e: KeyboardEvent) {
   const newValue = (e.target as HTMLInputElement).value;
-  emit("update:model-value", [
-    ...props.modelValue,
-    { [props.emitLabel]: newValue, languageCode: props.currentLanguage } as T,
-  ]);
+  emit("update:model-value", [...props.modelValue, { [props.optionLabel]: newValue } as T]);
   value.value = undefined;
 }
 
 function onItemSelect(item: T) {
-  emit("update:model-value", [
-    ...props.modelValue,
-    { [props.emitValue]: item[props.optionValue as keyof T], [props.emitLabel]: item[props.optionLabel as keyof T] },
-  ] as T[]);
+  emit("update:model-value", [...props.modelValue, item]);
   emit("close");
   closeDropdown();
 }
 
-// Handle event to propertly remove particular value and emit changes
 function onDelete(i: number) {
   const result = unref(props.modelValue);
   result.splice(i, 1);

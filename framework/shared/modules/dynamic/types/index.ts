@@ -306,16 +306,6 @@ export interface MultivalueSchema extends SchemaBase {
    */
   options?: string;
   /**
-   * Key of emmited object on select from dictionary.
-   * @default `valueId`
-   */
-  emitValue?: string;
-  /**
-   * Key of emmited object on input.
-   * @default `value`
-   */
-  emitLabel?: string;
-  /**
    * Whether the select is multivalue or not.
    * @type {boolean}
    */

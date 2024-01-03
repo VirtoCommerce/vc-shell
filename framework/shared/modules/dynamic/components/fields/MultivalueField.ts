@@ -20,8 +20,6 @@ export default {
           type: props.element.variant,
           optionValue: props.element.optionValue,
           optionLabel: props.element.optionLabel,
-          emitValue: props.element.emitValue,
-          emitLabel: props.element.emitLabel,
           options: props.element.options ? props.bladeContext.scope?.[props.element.options] : undefined,
           currentLanguage: props.currentLocale,
         },

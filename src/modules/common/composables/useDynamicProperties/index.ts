@@ -109,6 +109,7 @@ export const useDynamicProperties = () => {
       if (property.multilanguage) {
         if (Array.isArray(value)) {
           property.values = value.map((item) => {
+            item.languageCode = locale;
             if (dictionary.find((x) => x.id === item.valueId)) {
               return new PropertyValue(
                 handleDictionaryValue(
@@ -137,6 +138,7 @@ export const useDynamicProperties = () => {
       } else {
         property.values = Array.isArray(value)
           ? value.map((item) => {
+              item.languageCode = locale;
               if (dictionary.find((x) => x.id === item.id)) {
                 const handledValue = handleDictionaryValue(
                   property,
@@ -161,7 +163,7 @@ export const useDynamicProperties = () => {
         if (Array.isArray(value)) {
           property.values = property.values && [
             ...property.values.filter((x) => x.languageCode !== locale),
-            ...value.map((item) => new PropertyValue(item)),
+            ...value.map((item) => new PropertyValue({ ...item, languageCode: locale })),
           ];
         } else {
           const propValue = property.values?.find((x) => x.languageCode == locale);
@@ -173,7 +175,7 @@ export const useDynamicProperties = () => {
         }
       } else {
         property.values = Array.isArray(value)
-          ? value.map((item) => new PropertyValue(item))
+          ? value.map((item) => new PropertyValue({ ...item, languageCode: locale }))
           : property.values?.[0]
             ? [Object.assign(property.values[0], { value: value })]
             : [new PropertyValue({ value: value, isInherited: false })];

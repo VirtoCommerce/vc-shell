@@ -1,3 +1,1 @@
-import _Label from "./vc-label.vue";
-
-export const VcLabel = _Label as typeof _Label;
+export { default as VcLabel } from "./vc-label.vue";

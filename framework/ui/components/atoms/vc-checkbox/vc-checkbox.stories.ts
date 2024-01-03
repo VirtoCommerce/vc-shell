@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/vue3";
 import { VcCheckbox } from "./";
+import { VcLabel } from "../vc-label";
 
 const meta: Meta<typeof VcCheckbox> = {
   title: "atoms/VcCheckbox",
@@ -11,13 +12,14 @@ type Story = StoryObj<typeof VcCheckbox>;
 
 export const Primary: Story = {
   render: (args) => ({
-    components: { VcCheckbox },
+    components: { VcCheckbox, VcLabel },
     setup() {
       return { args };
     },
-    template: '<vc-checkbox v-bind="args"></vc-checkbox>',
+    template: '<vc-checkbox v-bind="args">Checkbox text content</vc-checkbox>',
   }),
   args: {
     modelValue: true,
+    label: "Checkbox label",
   },
 };

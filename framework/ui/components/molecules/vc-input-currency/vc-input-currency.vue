@@ -166,6 +166,19 @@ const props = withDefaults(defineProps<Props>(), {
   debounce: 0,
 });
 
+defineSlots<{
+  /**
+   * Slot for custom dropdown open handler
+   */
+  button: (scope: {
+    /**
+     * Dropdown open/close handler
+     */
+    toggleHandler: () => void;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  }) => any;
+}>();
+
 const emit = defineEmits<Emits>();
 
 const { inputRef, setOptions, numberValue } = useCurrencyInput(

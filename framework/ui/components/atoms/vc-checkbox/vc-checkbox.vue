@@ -53,6 +53,7 @@
 <script lang="ts" setup>
 import { MaybeRef, computed, unref } from "vue";
 import { VcHint } from "./../vc-hint";
+import { VcLabel } from "../vc-label";
 export interface Props {
   modelValue: MaybeRef<boolean>;
   disabled?: boolean;

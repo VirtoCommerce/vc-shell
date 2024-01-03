@@ -67,7 +67,6 @@
         :option-label="multilanguage ? 'value' : 'alias'"
         option-value="id"
         :multivalue="computedProperty.multivalue"
-        :emit-label="multilanguage ? 'value' : 'alias'"
         @search="onSearch"
         @close="onClose"
       ></VcMultivalue>

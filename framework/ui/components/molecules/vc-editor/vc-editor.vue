@@ -73,14 +73,11 @@ export interface Emits {
   (event: "update:modelValue", value: string | number | Date | null | undefined): void;
 }
 
-// const { getAccessToken } = useUser();
-
 const props = defineProps<Props>();
 
 const emit = defineEmits<Emits>();
 
 defineSlots<{
-  default: (props: any) => any;
   error?: (props: any) => any;
 }>();
 

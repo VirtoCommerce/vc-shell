@@ -150,7 +150,7 @@ const unwatchTitle = watch(
     if (newVal && props.composables) {
       title.value = newVal;
 
-      nextTick(() => unwatchTitle());
+      // nextTick(() => unwatchTitle());
     }
   },
   { immediate: true },

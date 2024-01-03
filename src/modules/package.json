@@ -1,6 +1,6 @@
 {
   "name": "@vcmp-vendor-portal/modules",
-  "version": "1.0.140",
+  "version": "1.0.141",
   "type": "module",
   "main": "./dist/index.mjs",
   "types": "./dist/types/index.d.ts",
@@ -15,7 +15,7 @@
     }
   },
   "peerDependencies": {
-    "@vcmp-vendor-portal/api": "^1.0.140"
+    "@vcmp-vendor-portal/api": "^1.0.141"
   },
   "scripts": {
     "publish": "npm publish"

@@ -1,3 +1,12 @@
+## [1.0.141](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.140...v1.0.141) (2024-01-03)
+
+
+### Reverts
+
+* addPrice with null ([d5f86db](https://github.com/VirtoCommerce/vendor-portal/commit/d5f86db3fd14a95f676eb8462fb3fd524911afad))
+
+
+
 ## [1.0.140](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.139...v1.0.140) (2024-01-03)
 
 

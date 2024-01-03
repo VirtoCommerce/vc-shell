@@ -1,3 +1,13 @@
+## [1.0.140](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.139...v1.0.140) (2024-01-03)
+
+
+### Bug Fixes
+
+* dashboard components error in serve mode fix ([bb881a0](https://github.com/VirtoCommerce/vendor-portal/commit/bb881a0417244abca98a749bb008375f217f85f1))
+* orders quantity mobile ([5d95565](https://github.com/VirtoCommerce/vendor-portal/commit/5d95565a5481ce7fa6800e8d83c8cee00e6142c7))
+
+
+
 ## [1.0.139](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.138...v1.0.139) (2023-12-29)
 
 

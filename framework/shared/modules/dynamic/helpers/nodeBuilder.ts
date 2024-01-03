@@ -151,7 +151,7 @@ function nodeBuilder<
         nodeBuilder({
           controlSchema: field,
           parentId: `fieldset-${parentId}-${field.id}`,
-          internalContext: reactive(unref(internalContext)),
+          internalContext,
           bladeContext,
           currentLocale,
           formData,

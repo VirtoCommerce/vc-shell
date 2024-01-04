@@ -1,3 +1,13 @@
+## [1.0.137](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.136...v1.0.137) (2024-01-04)
+
+
+### Bug Fixes
+
+* **dynamic:** refactored condition on route leave ([25f23e5](https://github.com/VirtoCommerce/vc-shell/commit/25f23e5311c4754e26c125f1ea717fe6d196a79b))
+* **ui:** remove unused options property from vc-blade-toolbar-button.vue ([4fc462b](https://github.com/VirtoCommerce/vc-shell/commit/4fc462b28dabe384689ebd3b9a4d5f5eab114ed9))
+
+
+
 ## [1.0.136](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.135...v1.0.136) (2024-01-03)
 
 

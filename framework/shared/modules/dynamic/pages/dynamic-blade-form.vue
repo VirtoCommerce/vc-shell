@@ -156,12 +156,15 @@ const unwatchTitle = watch(
   { immediate: true },
 );
 
-useBeforeUnload(
-  computed(() => {
-    const toolBarSave = _.get(toValue(scope)?.toolbarOverrides, "saveChanges") as unknown as IBladeToolbar;
-    return !unref(toolBarSave && "disabled" in toolBarSave && toolBarSave.disabled) || validationState.value.validated;
-  }),
-);
+/**
+ * Validated state. Uses 'disabled' property from toolbarOverrides.saveChanges OR validationState.validated
+ */
+const validated = computed(() => {
+  const toolBarSave = _.get(toValue(scope)?.toolbarOverrides, "saveChanges") as unknown as IBladeToolbar;
+  return !unref(toolBarSave && "disabled" in toolBarSave && toolBarSave.disabled) || validationState.value.validated;
+});
+
+useBeforeUnload(validated);
 
 const settings = computed(() => props.model?.settings);
 
@@ -280,9 +283,10 @@ onBeforeMount(async () => {
 
 onBeforeRouteLeave(async (to) => {
   if (
-    currentBladeNavigationData.value?.fullPath &&
-    !to.path.includes(currentBladeNavigationData.value?.fullPath) &&
-    validationState.value.modified
+    (settings.value?.url
+      ? currentBladeNavigationData.value?.fullPath && !to.path.includes(currentBladeNavigationData.value?.fullPath)
+      : true) &&
+    unref(validated)
   ) {
     return await showConfirmation(
       unref(

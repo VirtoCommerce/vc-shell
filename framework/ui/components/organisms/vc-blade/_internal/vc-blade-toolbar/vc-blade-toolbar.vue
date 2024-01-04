@@ -14,7 +14,6 @@
           :is-expanded="isExpanded"
           :icon="item.icon"
           :title="unref(item.title)"
-          :options="item.options"
           :disabled="item.disabled as boolean"
           :dropdown-items="item.dropdownItems"
           :click-handler="item.clickHandler"

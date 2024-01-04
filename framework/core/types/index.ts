@@ -62,14 +62,11 @@ export interface BladeMenu<T extends Component = Component> {
   options?: ExtractedBladeOptions<InstanceType<BladeInstanceConstructor<T>>["$props"], "options">;
 }
 
-export interface IBladeToolbar<T extends ComponentPublicInstance = ComponentPublicInstance> {
+export interface IBladeToolbar {
   id?: string;
   icon?: string | (() => string);
-  isAccent?: boolean | ComputedRef<boolean>;
-  component?: ComponentPublicInstanceConstructor<T>;
   disabled?: boolean | ComputedRef<boolean | undefined>;
   dropdownItems?: IBladeDropdownItem[];
-  options?: InstanceType<ComponentPublicInstanceConstructor<T>>["$props"];
   title?: string | Ref<string>;
   isVisible?: boolean | Ref<boolean | undefined> | ComputedRef<boolean | undefined>;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -1,3 +1,12 @@
+## [1.0.139](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.138...v1.0.139) (2024-01-08)
+
+
+### Features
+
+* **shell:** update optionsGetter signature in vc-dynamic-property.vue ([0c71460](https://github.com/VirtoCommerce/vc-shell/commit/0c71460d2d3c785cd5d8fe2b0b58ebc2c3020248))
+
+
+
 ## [1.0.138](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.137...v1.0.138) (2024-01-08)
 
 

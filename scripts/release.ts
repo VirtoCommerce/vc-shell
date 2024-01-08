@@ -6,7 +6,6 @@ release({
   packages: [
     ".", // root
     "framework",
-    "import-module",
     "cli/api-client",
     "cli/config",
     "cli/create-vc-app",

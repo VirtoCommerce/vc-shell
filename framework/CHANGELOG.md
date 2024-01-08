@@ -1,3 +1,17 @@
+## [1.0.138](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.137...v1.0.138) (2024-01-08)
+
+
+### Bug Fixes
+
+* **shell:** base url param support, routes injection in navigation plugin ([414fe2d](https://github.com/VirtoCommerce/vc-shell/commit/414fe2d0509b0642b1afe5aac96d83f0975ddd95))
+
+
+### Features
+
+* **shell:** navigation menu slot in vc-app ([fc0c185](https://github.com/VirtoCommerce/vc-shell/commit/fc0c185b42ee34f39bee0cd14c2633416ea6d0c5))
+
+
+
 ## [1.0.137](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.136...v1.0.137) (2024-01-04)
 
 

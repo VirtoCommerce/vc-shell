@@ -64,17 +64,19 @@
     </VcAppBar>
 
     <div class="tw-overflow-hidden tw-flex tw-grow tw-basis-0">
-      <!-- Init main menu -->
-      <VcAppMenu
-        ref="menu"
-        class="tw-shrink-0"
-        :version="version"
-        @item:click="onMenuItemClick"
-      >
-        <template #mobile>
-          <UserDropdownButton class="tw-p-0 tw-mb-2 tw-w-full tw-h-auto" />
-        </template>
-      </VcAppMenu>
+      <slot name="navigation-menu">
+        <!-- Init main menu -->
+        <VcAppMenu
+          ref="menu"
+          class="tw-shrink-0"
+          :version="version"
+          @item:click="onMenuItemClick"
+        >
+          <template #mobile>
+            <UserDropdownButton class="tw-p-0 tw-mb-2 tw-w-full tw-h-auto" />
+          </template>
+        </VcAppMenu>
+      </slot>
 
       <!-- Blade navigation -->
       <div
@@ -103,6 +105,7 @@ import {
   useAppSwitcher,
   useBladeNavigation,
   NotificationDropdown,
+  BladeRoutesRecord,
 } from "./../../../../shared/components";
 import { useI18n } from "vue-i18n";
 import { useNotifications, useUser } from "../../../../core/composables";
@@ -125,6 +128,7 @@ defineOptions({
 defineSlots<{
   "app-switcher": void;
   toolbar: void;
+  "navigation-menu": void;
   "toolbar:prepend": void;
   "toolbar:language-selector": void;
   "toolbar:notifications-dropdown": void;
@@ -136,7 +140,7 @@ const props = defineProps<Props>();
 
 console.debug("vc-app: Init vc-app");
 
-const internalRoutes = inject("bladeRoutes");
+const internalRoutes = inject("bladeRoutes") as BladeRoutesRecord[];
 const router = useRouter();
 
 const { openBlade, closeBlade, resolveBladeByName, blades } = useBladeNavigation();
@@ -166,9 +170,7 @@ function langInit() {
 }
 
 const openRoot = async () => {
-  const root = router.getRoutes().find((route) => route.meta?.root);
-
-  router.push(root?.path ?? "/");
+  router.push("/");
 };
 
 watchOnce(

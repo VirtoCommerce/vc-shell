@@ -4575,7 +4575,7 @@ __metadata:
     vite: 4.5.0
     vite-plugin-checker: ^0.6.2
     vite-plugin-mkcert: ^1.17.1
-    vue: 3.4.0
+    vue: 3.4.5
   languageName: unknown
   linkType: soft
 
@@ -4627,7 +4627,7 @@ __metadata:
     typescript: 5.3.3
     vee-validate: ^4.12.4
     vite: 4.5.0
-    vue: 3.4.0
+    vue: 3.4.5
     vue-component-type-helpers: ^1.8.27
     vue-currency-input: ^3.0.5
     vue-i18n: ^9.8.0
@@ -4649,7 +4649,7 @@ __metadata:
     cross-env: ^7.0.3
     typescript: 5.3.3
     vite: 4.5.0
-    vue: 3.4.0
+    vue: 3.4.5
     vue-router: ^4.2.5
     vue-tsc: ^1.8.27
   languageName: unknown
@@ -4726,7 +4726,7 @@ __metadata:
     vite-plugin-checker: ^0.6.2
     vite-plugin-mkcert: ^1.17.1
     vite-plugin-pwa: ^0.17.4
-    vue: 3.4.0
+    vue: 3.4.5
     vue-eslint-parser: ^9.3.2
     vue-tsc: ^1.8.27
   languageName: unknown
@@ -4738,17 +4738,31 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vcmp-vendor-portal/api@^1.0.141, @vcmp-vendor-portal/api@workspace:apps/vendor-portal/src/api_client":
+"@vcmp-vendor-portal/api@^1.0.142, @vcmp-vendor-portal/api@workspace:apps/vendor-portal/src/api_client":
   version: 0.0.0-use.local
   resolution: "@vcmp-vendor-portal/api@workspace:apps/vendor-portal/src/api_client"
   languageName: unknown
   linkType: soft
 
-"@vcmp-vendor-portal/modules@^1.0.141, @vcmp-vendor-portal/modules@workspace:apps/vendor-portal/src/modules":
+"@vcmp-vendor-portal/modules@^1.0.142, @vcmp-vendor-portal/modules@workspace:apps/vendor-portal/src/modules":
   version: 0.0.0-use.local
   resolution: "@vcmp-vendor-portal/modules@workspace:apps/vendor-portal/src/modules"
   peerDependencies:
-    "@vcmp-vendor-portal/api": ^1.0.141
+    "@vcmp-vendor-portal/api": ^1.0.142
+  languageName: unknown
+  linkType: soft
+
+"@vcmp/import-module-api@workspace:apps/import-app/src/api_client":
+  version: 0.0.0-use.local
+  resolution: "@vcmp/import-module-api@workspace:apps/import-app/src/api_client"
+  dependencies:
+    typescript: 5.3.3
+  languageName: unknown
+  linkType: soft
+
+"@vcmp/import-module@workspace:apps/import-app/src/modules":
+  version: 0.0.0-use.local
+  resolution: "@vcmp/import-module@workspace:apps/import-app/src/modules"
   languageName: unknown
   linkType: soft
 
@@ -4828,16 +4842,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vue/compiler-core@npm:3.4.0":
-  version: 3.4.0
-  resolution: "@vue/compiler-core@npm:3.4.0"
+"@vue/compiler-core@npm:3.4.5":
+  version: 3.4.5
+  resolution: "@vue/compiler-core@npm:3.4.5"
   dependencies:
     "@babel/parser": ^7.23.6
-    "@vue/shared": 3.4.0
+    "@vue/shared": 3.4.5
     entities: ^4.5.0
     estree-walker: ^2.0.2
     source-map-js: ^1.0.2
-  checksum: 22cf9319e7d9acfda8fdc93182eba082183aeb982edf0ca3c9031ac55596d999069f11852dadb1970d4f547d7812751b8575fbcf14ca23d00c365a8be2db0573
+  checksum: c8d917d09a9c911bb6451235d5d6db8450905cfbba855939c3f27dcdf29b2a67230372cfa5cd9d1f64d125eacd42b87997ff82319ee5dcbe3a725fa1e1e68f2a
   languageName: node
   linkType: hard
 
@@ -4851,30 +4865,30 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vue/compiler-dom@npm:3.4.0":
-  version: 3.4.0
-  resolution: "@vue/compiler-dom@npm:3.4.0"
+"@vue/compiler-dom@npm:3.4.5":
+  version: 3.4.5
+  resolution: "@vue/compiler-dom@npm:3.4.5"
   dependencies:
-    "@vue/compiler-core": 3.4.0
-    "@vue/shared": 3.4.0
-  checksum: c6f3e87b864984836c7003695e3e531bdcd03111966807c504e3a43dd1f15ccd7b2cbfd34812412e2c5baa0d1da717ea50a8a51f9f5f2a9aba732218f5a58c76
+    "@vue/compiler-core": 3.4.5
+    "@vue/shared": 3.4.5
+  checksum: 4e7177ff2a3e12002c0360c4287bfae1235330921cf4730bf23cdd67bd0f5900334d5a59c091d279ce1c0ebff7a6b90f647094367eab29598312e75bf400893b
   languageName: node
   linkType: hard
 
-"@vue/compiler-sfc@npm:3.4.0":
-  version: 3.4.0
-  resolution: "@vue/compiler-sfc@npm:3.4.0"
+"@vue/compiler-sfc@npm:3.4.5":
+  version: 3.4.5
+  resolution: "@vue/compiler-sfc@npm:3.4.5"
   dependencies:
     "@babel/parser": ^7.23.6
-    "@vue/compiler-core": 3.4.0
-    "@vue/compiler-dom": 3.4.0
-    "@vue/compiler-ssr": 3.4.0
-    "@vue/shared": 3.4.0
+    "@vue/compiler-core": 3.4.5
+    "@vue/compiler-dom": 3.4.5
+    "@vue/compiler-ssr": 3.4.5
+    "@vue/shared": 3.4.5
     estree-walker: ^2.0.2
     magic-string: ^0.30.5
     postcss: ^8.4.32
     source-map-js: ^1.0.2
-  checksum: a37a1de0d54890be84ae73f589587f730816b1ca72fb64ba7dd24407cf5ac7cac1941392eb89db4c64e0b8f7d9bc01b8d71327669952ccfdaa316789e4932e23
+  checksum: 2b37b51133f84709fcace36e83d411b4feeb320d69bb5a8c77d1e4f782e6d6600f36b199d2889e9e6f1434c8a159585145ea142536f708e5683093fe3c013dea
   languageName: node
   linkType: hard
 
@@ -4906,13 +4920,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vue/compiler-ssr@npm:3.4.0":
-  version: 3.4.0
-  resolution: "@vue/compiler-ssr@npm:3.4.0"
+"@vue/compiler-ssr@npm:3.4.5":
+  version: 3.4.5
+  resolution: "@vue/compiler-ssr@npm:3.4.5"
   dependencies:
-    "@vue/compiler-dom": 3.4.0
-    "@vue/shared": 3.4.0
-  checksum: f4222b9a6912008273529d4e779aa4b19f2ccff34ebfea84f4d5425b118e4fb3baf26bd7b6052faccfcce0cbcecf49c16f6bd59d06aedb18cd7ea3c5544de080
+    "@vue/compiler-dom": 3.4.5
+    "@vue/shared": 3.4.5
+  checksum: 091704226210d273d23669334f25a0bb06ebcb29b494acb0d7d2a09faa19f122abfcd066ea31022cd816c0103a43ac7111e1ead4e7ed910a31bc364a01112dc7
   languageName: node
   linkType: hard
 
@@ -4989,45 +5003,45 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vue/reactivity@npm:3.4.0":
-  version: 3.4.0
-  resolution: "@vue/reactivity@npm:3.4.0"
+"@vue/reactivity@npm:3.4.5":
+  version: 3.4.5
+  resolution: "@vue/reactivity@npm:3.4.5"
   dependencies:
-    "@vue/shared": 3.4.0
-  checksum: 0b57252d9e5096e8c09a67dac80b6a7ca39da307e4aebfaf712f1b0378a00f3d209865a0c69b1e50c2ea14375c529b1e88b075a313bbf8ef8d33419b46910f80
+    "@vue/shared": 3.4.5
+  checksum: 1f86fd6036d075a22490c357bc5c318ee2ac045622c7756f256dee5237b4ec6e31b856e9e62e00b87b9d5628497c57a8880b499355e5802fc182754ceea53dbb
   languageName: node
   linkType: hard
 
-"@vue/runtime-core@npm:3.4.0":
-  version: 3.4.0
-  resolution: "@vue/runtime-core@npm:3.4.0"
+"@vue/runtime-core@npm:3.4.5":
+  version: 3.4.5
+  resolution: "@vue/runtime-core@npm:3.4.5"
   dependencies:
-    "@vue/reactivity": 3.4.0
-    "@vue/shared": 3.4.0
-  checksum: c158e2971bec9c8cc550955868213104cbbefa782351b17b7ea889f13c14825bef6c7bd191e513122c3e286ea4b25ecf2dc21a1e861e95d1c0d54ad95ccbd875
+    "@vue/reactivity": 3.4.5
+    "@vue/shared": 3.4.5
+  checksum: 9e6052872a1c767e88dcf52205b0f94a99ee7892e3287322630b73121fa8da59f19c0f452bdb30d6ff9d52355edbe3d1bf5b6ed18faaeb4bc7d04acea5c219e0
   languageName: node
   linkType: hard
 
-"@vue/runtime-dom@npm:3.4.0":
-  version: 3.4.0
-  resolution: "@vue/runtime-dom@npm:3.4.0"
+"@vue/runtime-dom@npm:3.4.5":
+  version: 3.4.5
+  resolution: "@vue/runtime-dom@npm:3.4.5"
   dependencies:
-    "@vue/runtime-core": 3.4.0
-    "@vue/shared": 3.4.0
+    "@vue/runtime-core": 3.4.5
+    "@vue/shared": 3.4.5
     csstype: ^3.1.3
-  checksum: aa224205489ad84a3f55fa60c81b94cfea2045cd04c0a5722ce7cbee091c01eed38a472ff5267bbd62cef2c32406f5d16a90b2acd918b4c2a8dac3ad9b682fe8
+  checksum: 316056d9500be23404b59e66b08ef4ec658d1d1cb4464248298cfbf209bb7919665668094470c3323f38644e9daf5e7f7279388951bfa09cfa049945152b7a76
   languageName: node
   linkType: hard
 
-"@vue/server-renderer@npm:3.4.0":
-  version: 3.4.0
-  resolution: "@vue/server-renderer@npm:3.4.0"
+"@vue/server-renderer@npm:3.4.5":
+  version: 3.4.5
+  resolution: "@vue/server-renderer@npm:3.4.5"
   dependencies:
-    "@vue/compiler-ssr": 3.4.0
-    "@vue/shared": 3.4.0
+    "@vue/compiler-ssr": 3.4.5
+    "@vue/shared": 3.4.5
   peerDependencies:
-    vue: 3.4.0
-  checksum: 37c645b64c93fe6a3ef5ef2b7a9f0e76a5d374d3c26c309527099c2da481052cef5a426406c87e314feef9189bcc57e4196769f7f989f5771426a08a5d0e5d65
+    vue: 3.4.5
+  checksum: e5cf41e52756f40b479d057ef84ab55d7d917417f74c5801fcbb63b2853f5db8277326ec244021eaab1540803666527330c826c66f0dfe9d5f6771aef009d682
   languageName: node
   linkType: hard
 
@@ -5038,10 +5052,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vue/shared@npm:3.4.0":
-  version: 3.4.0
-  resolution: "@vue/shared@npm:3.4.0"
-  checksum: 090feb89359fe6ba3c0b531db7020b6c0b075321cd5223f858c6fe6ea68b9b51172f380e4dff62268c82998e7f374601903b031f0faa76a0be7b716f7de1b6a2
+"@vue/shared@npm:3.4.5":
+  version: 3.4.5
+  resolution: "@vue/shared@npm:3.4.5"
+  checksum: 32b9008e6222326d69d941a34119101f30eb2104952a720df75db972ac2e41f073a57ad9c325a47be5117b00f9e17a81417c0a54586205a6c0be227b07cd33ea
   languageName: node
   linkType: hard
 
@@ -5417,8 +5431,8 @@ __metadata:
     "@vc-shell/framework": ^1.0.137
     "@vc-shell/release-config": ^1.0.137
     "@vc-shell/ts-config": ^1.0.137
-    "@vcmp-vendor-portal/api": ^1.0.141
-    "@vcmp-vendor-portal/modules": ^1.0.141
+    "@vcmp-vendor-portal/api": ^1.0.142
+    "@vcmp-vendor-portal/modules": ^1.0.142
     "@vitejs/plugin-vue": ^5.0.0
     "@vue/eslint-config-prettier": ^9.0.0
     "@vue/eslint-config-typescript": ^12.0.0
@@ -5449,7 +5463,7 @@ __metadata:
     vite-plugin-checker: ^0.6.2
     vite-plugin-mkcert: ^1.17.1
     vite-plugin-pwa: ^0.17.4
-    vue: 3.4.0
+    vue: 3.4.5
     vue-eslint-parser: ^9.3.2
     vue-router: ^4.2.5
     vue-tsc: ^1.8.27
@@ -8806,6 +8820,60 @@ __metadata:
   checksum: de3edd964c394bab83432429d3fb0b4816b42f56050f2ca913ba520bd3068ec3e504230d0800332d3abc478616e8f55d3787424a90d0952e6aba864524f1afc3
   languageName: node
   linkType: hard
+
+"import-app@workspace:apps/import-app":
+  version: 0.0.0-use.local
+  resolution: "import-app@workspace:apps/import-app"
+  dependencies:
+    "@commitlint/cli": ^18.4.3
+    "@commitlint/config-conventional": ^18.4.3
+    "@fortawesome/fontawesome-free": ^5.15.3
+    "@laynezh/vite-plugin-lib-assets": ^0.5.13
+    "@rollup/plugin-typescript": ^11.1.5
+    "@types/lodash-es": ^4.17.12
+    "@typescript-eslint/eslint-plugin": ^6.16.0
+    "@typescript-eslint/parser": ^6.16.0
+    "@vc-shell/api-client-generator": ^1.0.137
+    "@vc-shell/config-generator": ^1.0.137
+    "@vc-shell/framework": ^1.0.137
+    "@vc-shell/release-config": ^1.0.137
+    "@vc-shell/ts-config": ^1.0.137
+    "@vitejs/plugin-vue": ^5.0.0
+    "@vue/eslint-config-prettier": ^9.0.0
+    "@vue/eslint-config-typescript": ^12.0.0
+    "@vueuse/core": ^10.7.1
+    "@vueuse/integrations": ^10.7.1
+    autoprefixer: ^10.4.16
+    conventional-changelog-cli: ^4.1.0
+    cross-env: ^7.0.3
+    eslint: ^8.56.0
+    eslint-import-resolver-typescript: ^3.6.1
+    eslint-plugin-import: ^2.29.1
+    eslint-plugin-prettier: ^5.1.2
+    eslint-plugin-vue: ^9.19.2
+    husky: ^8.0.3
+    lint-staged: ^15.2.0
+    lodash-es: ^4.17.21
+    moment: ^2.30.1
+    postcss: ^8.4.32
+    prettier: ^3.1.1
+    querystring-es3: ^0.2.1
+    roboto-fontface: ^0.10.0
+    sass: ^1.69.6
+    tailwindcss: ^3.4.0
+    tsx: ^3.13.0
+    typescript: 5.3.3
+    vee-validate: ^4.12.4
+    vite: 4.5.0
+    vite-plugin-checker: ^0.6.2
+    vite-plugin-mkcert: ^1.17.1
+    vite-plugin-pwa: ^0.17.4
+    vue: 3.4.5
+    vue-eslint-parser: ^9.3.2
+    vue-router: ^4.2.5
+    vue-tsc: ^1.8.27
+  languageName: unknown
+  linkType: soft
 
 "import-fresh@npm:^3.0.0, import-fresh@npm:^3.2.1, import-fresh@npm:^3.3.0":
   version: 3.3.0
@@ -14062,7 +14130,7 @@ __metadata:
     vite-plugin-checker: ^0.6.2
     vite-plugin-mkcert: ^1.17.1
     vite-plugin-pwa: ^0.17.4
-    vue: 3.4.0
+    vue: 3.4.5
     vue-eslint-parser: ^9.3.2
     vue-router: ^4.2.5
     vue-tsc: ^1.8.27
@@ -14117,7 +14185,7 @@ __metadata:
     vite-plugin-checker: ^0.6.2
     vite-plugin-mkcert: ^1.17.1
     vite-plugin-pwa: ^0.17.4
-    vue: 3.4.0
+    vue: 3.4.5
     vue-eslint-parser: ^9.3.2
     vue-router: ^4.2.5
     vue-tsc: ^1.8.27
@@ -14486,21 +14554,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vue@npm:3.4.0":
-  version: 3.4.0
-  resolution: "vue@npm:3.4.0"
+"vue@npm:3.4.5":
+  version: 3.4.5
+  resolution: "vue@npm:3.4.5"
   dependencies:
-    "@vue/compiler-dom": 3.4.0
-    "@vue/compiler-sfc": 3.4.0
-    "@vue/runtime-dom": 3.4.0
-    "@vue/server-renderer": 3.4.0
-    "@vue/shared": 3.4.0
+    "@vue/compiler-dom": 3.4.5
+    "@vue/compiler-sfc": 3.4.5
+    "@vue/runtime-dom": 3.4.5
+    "@vue/server-renderer": 3.4.5
+    "@vue/shared": 3.4.5
   peerDependencies:
     typescript: "*"
   peerDependenciesMeta:
     typescript:
       optional: true
-  checksum: 0a866f198f3ed8860f73c95deaa6f5b23566fc167d589c9c0c663f9a2980bb543fa71eaa0f1d621557e65141faf6629544f4671dda1c5491cb29b8cdd370611f
+  checksum: f6fb73f8098588639705bf814f92b7e9c97398336a347f1ca78615c4235aa4c992da38eba51b14e36d2980f961c6ae584222065361845ef37d2d120a552880c0
   languageName: node
   linkType: hard
 

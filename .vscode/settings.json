@@ -34,5 +34,6 @@
     "GTIN",
     "Vcmp"
   ],
-  "npm.exclude": "**/cli/create-vc-app/src/templates/**"
+  "npm.exclude": "**/cli/create-vc-app/src/templates/**",
+  "docwriter.style": "JSDoc"
 }

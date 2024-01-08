@@ -28,7 +28,6 @@ module.exports = {
         project: [
           "cli/*/tsconfig.json",
           "framework/tsconfig.json",
-          "import-module/tsconfig.json",
           "apps/*/tsconfig.json",
           "sample/*/tsconfig.json",
           "configs/*/tsconfig.json",

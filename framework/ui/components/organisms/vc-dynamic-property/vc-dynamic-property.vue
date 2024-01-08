@@ -308,7 +308,11 @@ async function getOptions(keyword: string | undefined = undefined) {
   if (props.optionsGetter) {
     try {
       loading.value = true;
-      items.value = await props.optionsGetter(props.property, keyword, props.currentLanguage);
+      const res = await props.optionsGetter(props.property, keyword, props.currentLanguage);
+
+      if (res) {
+        items.value = res;
+      }
     } finally {
       loading.value = false;
     }

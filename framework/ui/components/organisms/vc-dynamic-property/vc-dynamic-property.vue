@@ -206,7 +206,7 @@ const props = withDefaults(
   defineProps<{
     property: T;
     modelValue: any;
-    optionsGetter: (property: T, keyword?: string, locale?: string) => Promise<any[]> | any[];
+    optionsGetter: (property: T, keyword?: string, locale?: string) => Promise<any[]> | any[] | undefined;
     required: boolean;
     multivalue?: boolean;
     multilanguage?: boolean;

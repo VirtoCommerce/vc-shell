@@ -74,6 +74,14 @@ export interface IBladeEvent<T extends Component = Component> {
 
 export interface BladeNavigationPlugin {
   router: Router;
+  internalRoutes: BladeRoutesRecord[];
+}
+
+export interface BladeRoutesRecord {
+  component: BladeVNode;
+  name: string;
+  isWorkspace: boolean;
+  route: string;
 }
 
 type VNodeMountHook = (vnode: BladeVNode | VNode) => void;

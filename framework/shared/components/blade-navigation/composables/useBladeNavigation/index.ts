@@ -1,8 +1,15 @@
+import { resolve } from "node:path";
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { reactiveComputed } from "@vueuse/core";
 import { computed, getCurrentInstance, inject, warn, Component, watch, isVNode, h, shallowRef, ComputedRef } from "vue";
 import * as _ from "lodash-es";
-import { RouteLocationNormalized, useRoute, RouteRecordNormalized, NavigationFailure } from "vue-router";
+import {
+  RouteLocationNormalized,
+  useRoute,
+  RouteRecordNormalized,
+  NavigationFailure,
+  createRouterMatcher,
+} from "vue-router";
 import { bladeNavigationInstance } from "../../plugin";
 import {
   BladeComponentInternalInstance,
@@ -12,6 +19,7 @@ import {
   IParentCallArgs,
   BladeInstanceConstructor,
   BladeRouteRecordLocationNormalized,
+  BladeRoutesRecord,
 } from "../../types";
 import { navigationViewLocation } from "../../injectionKeys";
 import { generateId } from "../../../../../core/utilities";
@@ -37,7 +45,7 @@ interface IUseBladeNavigation {
 }
 
 const activeWorkspace = shallowRef<BladeVNode>();
-
+const baseUrl = shallowRef<string>();
 export function useBladeNavigation(): IUseBladeNavigation {
   const navigationView = inject(navigationViewLocation, undefined) as BladeVNode;
 
@@ -49,9 +57,7 @@ export function useBladeNavigation(): IUseBladeNavigation {
 
   const router = navigationInstance?.router;
 
-  const routes = router.getRoutes();
-
-  const mainRouteName = router.getRoutes().find((r) => r.meta?.root)?.name as string;
+  const mainRoute = router.getRoutes().find((r) => r.meta?.root)!;
 
   const blades = computed(() => {
     return router.getRoutes().find((routeItem) => {
@@ -59,12 +65,23 @@ export function useBladeNavigation(): IUseBladeNavigation {
     });
   }) as ComputedRef<BladeRouteRecordLocationNormalized>;
 
+  function parseWorkspaceUrl(path: string): string {
+    // Object.values(route.params)[0] will always be base path of the app
+    if (!baseUrl.value) {
+      baseUrl.value = "/" + (Object.values(route.params)?.[0] ?? "");
+    }
+    const pathWithoutBase = path.startsWith(baseUrl.value) ? path.slice(baseUrl.value.length) : path;
+    const segments = pathWithoutBase.split("/").filter(Boolean);
+    const workspaceUrl = segments.slice(0, 1).join("/");
+    return "/" + workspaceUrl;
+  }
+
   watch(
     () => route.path,
     (newVal) => {
-      const workspaceUrl = newVal.split("/").slice(0, 2).join("/");
+      const workspaceUrl = parseWorkspaceUrl(newVal);
 
-      const wsRouteComponent = routes.find((x) => x.path === workspaceUrl)?.components?.default as BladeVNode;
+      const wsRouteComponent = router.resolve({ path: workspaceUrl })?.matched?.[1]?.components?.default as BladeVNode;
 
       if (wsRouteComponent && wsRouteComponent.type?.isWorkspace) {
         activeWorkspace.value = wsRouteComponent;
@@ -73,12 +90,18 @@ export function useBladeNavigation(): IUseBladeNavigation {
     { immediate: true },
   );
 
+  /**
+   * The function `openWorkspace` adds a route to the router and pushes the route to navigate to a
+   * specific workspace component.
+   * @param  - - `blade`: The component to be rendered in the workspace.
+   * @returns the result of the `router.push()` method, which is a Promise.
+   */
   async function openWorkspace<Blade extends Component>({ blade, param, options }: IBladeEvent<Blade>) {
     const createdComponent = h(blade, { param, options }) as BladeVNode;
 
     try {
       if (createdComponent.type?.url) {
-        router.addRoute(mainRouteName, {
+        router.addRoute(mainRoute.name as string, {
           name: createdComponent.type?.name,
           path: createdComponent.type?.url,
           components: {
@@ -97,6 +120,13 @@ export function useBladeNavigation(): IUseBladeNavigation {
     }
   }
 
+  /**
+   * The `openBlade` function is used to open a blade component in a workspace or navigation view.
+   * @param  - - `blade`: The component that represents the blade to be opened.
+   * @param [isWorkspace=false] - A boolean value indicating whether the blade is being opened as a
+   * workspace or not.
+   * @returns a Promise that resolves to the result of the `router.push()` method.
+   */
   async function openBlade<Blade extends Component>(
     { blade, param, options, onOpen, onClose }: IBladeEvent<Blade>,
     isWorkspace = false,
@@ -110,21 +140,20 @@ export function useBladeNavigation(): IUseBladeNavigation {
       return await openWorkspace({ blade, param, options });
     }
 
-    const allRoutes = router.getRoutes();
-
     try {
       const instanceComponent = navigationView || activeWorkspace.value;
 
-      if (instanceComponent) {
-        const initialBlade = allRoutes.find(
-          (x) =>
-            x?.path ===
-            (instanceComponent.props?.navigation?.fullPath
-              ? instanceComponent.props?.navigation?.fullPath
-              : activeWorkspace.value?.type.url),
-        );
+      if (instanceComponent && activeWorkspace.value) {
+        const initialBlade = router.resolve({
+          path: instanceComponent.props?.navigation?.fullPath ?? instanceComponent.type.url,
+        })?.matched[1];
 
-        const url = initialBlade?.path + (blade.url ? blade.url + (param ? "/" + param : "") : "");
+        const base =
+          router.resolve({ name: initialBlade?.name }).path + (blade.url ? blade.url + (param ? "/" + param : "") : "");
+
+        const url = (baseUrl.value === "/" ? "" : baseUrl.value) + base;
+
+        const rawRouterUrl = mainRoute.path + base;
 
         /**
          * Removes routes without paths and default route from next route.
@@ -160,9 +189,9 @@ export function useBladeNavigation(): IUseBladeNavigation {
           ),
         );
 
-        router.addRoute(mainRouteName, {
+        router.addRoute(mainRoute.name as string, {
           name: isInitialBlade ? activeWorkspace.value?.type.name : url,
-          path: url,
+          path: rawRouterUrl,
           components: Object.assign(
             {},
             { default: activeWorkspace.value },
@@ -184,12 +213,22 @@ export function useBladeNavigation(): IUseBladeNavigation {
           path: url,
           replace: !blade.url,
         });
+      } else {
+        throw new Error("No workspace found");
       }
     } catch (e) {
       console.error(e);
     }
   }
 
+  /**
+   * The function merges the permissions of a workspace blade and a child blade.
+   * @param {BladeVNode} workspaceBlade - The `workspaceBlade` parameter is a BladeVNode object
+   * representing the workspace blade.
+   * @param {BladeVNode | BladeInstanceConstructor} childBlade - The `childBlade` parameter is either a
+   * `BladeVNode` or a `BladeInstanceConstructor`.
+   * @returns an array of permissions.
+   */
   function mergePermissions(workspaceBlade: BladeVNode, childBlade: BladeVNode | BladeInstanceConstructor) {
     const child = (isVNode(childBlade) ? childBlade : h(childBlade)) as BladeVNode;
     if (child && child.type?.permissions) {
@@ -207,11 +246,27 @@ export function useBladeNavigation(): IUseBladeNavigation {
     } else return workspaceBlade.type.permissions;
   }
 
+  /**
+   * The function removes a specified substring from a given input string.
+   * @param {string} inputString - The input string from which the substring will be removed.
+   * @param {string} substringToRemove - The `substringToRemove` parameter is a string that represents
+   * the substring that you want to remove from the `inputString`.
+   * @returns the input string with the specified substring removed.
+   */
   function removeSubstring(inputString: string, substringToRemove: string) {
     const regex = new RegExp(`${substringToRemove}+$`);
     return inputString.replace(regex, "");
   }
 
+  /**
+   * The `closeBlade` function is used to close a blade and update the router location if necessary.
+   * @param {number} index - The `index` parameter is a number that represents the index of the blade
+   * to be closed.
+   * @param [changeLocation=true] - A boolean value indicating whether the location should be changed
+   * when closing the blade. The default value is `true`.
+   * @returns a Promise that resolves to a boolean value if `changeLocation` is true and the router
+   * successfully replaces the path, otherwise it returns undefined.
+   */
   async function closeBlade(index: number, changeLocation = true) {
     console.debug(`[@vc-shell/framework#useBladeNavigation] - closeBlade called.`);
 
@@ -230,7 +285,7 @@ export function useBladeNavigation(): IUseBladeNavigation {
     if (routeWithNamedBlade) {
       const isInitialBlade = activeWorkspace.value?.type.name === routeWithNamedBlade.name;
 
-      router.addRoute(mainRouteName, {
+      router.addRoute(mainRoute.name as string, {
         name: isInitialBlade ? routeWithNamedBlade?.name : routeWithNamedBlade?.path,
         path: routeWithNamedBlade?.path,
         components: _.omitBy(routeWithNamedBlade?.components, (value: BladeVNode) => {
@@ -244,6 +299,15 @@ export function useBladeNavigation(): IUseBladeNavigation {
     }
   }
 
+  /**
+   * The function `onParentCall` handles method calls from a parent component and executes the
+   * corresponding method if it exists, otherwise it logs an error message.
+   * @param parentExposedMethods - parentExposedMethods is an object that contains the methods exposed
+   * by the parent blade. Each method is represented as a key-value pair, where the key is the method
+   * name and the value is the method itself.
+   * @param {IParentCallArgs} args - The `args` parameter is an object that contains the following
+   * properties:
+   */
   async function onParentCall(parentExposedMethods: Record<string, any>, args: IParentCallArgs) {
     console.debug(`vc-app#onParentCall({ method: ${args.method} }) called.`);
 
@@ -260,6 +324,13 @@ export function useBladeNavigation(): IUseBladeNavigation {
     }
   }
 
+  /**
+   * The function `resolveBladeByName` resolves a Blade component by its name and returns its
+   * constructor.
+   * @param {string} name - The `name` parameter is a string that represents the name of a Blade
+   * component.
+   * @returns a BladeInstanceConstructor, which is the constructor function for a Blade instance.
+   */
   function resolveBladeByName(name: string): BladeInstanceConstructor {
     if (!instance) {
       warn("resolveComponentByName can only be used in setup().");
@@ -279,22 +350,49 @@ export function useBladeNavigation(): IUseBladeNavigation {
     }
   }
 
+  /**
+   * The function `routeResolver` checks if a necessary route exists and generates a route if it
+   * doesn't.
+   * @param {RouteLocationNormalized} to - The `to` parameter is of type `RouteLocationNormalized`,
+   * which represents the target route that needs to be resolved. It contains information about the
+   * target route, such as the path, query parameters, and hash.
+   * @returns the result of the `generateRoute` function if the `hasNecessaryRoute` function returns
+   * false.
+   */
   function routeResolver(to: RouteLocationNormalized) {
     if (!hasNecessaryRoute(to)) {
-      return generateRoute(to, router.getRoutes());
+      return generateRoute(to, navigationInstance.internalRoutes);
     }
   }
 
+  /**
+   * The function checks if a given route exists in a list of routes.
+   * @param {RouteLocationNormalized} to - The "to" parameter is of type RouteLocationNormalized, which
+   * represents the destination route location.
+   * @returns a route object from the `routes` array that has a matching `path` property with the
+   * `to.path` value.
+   */
   function hasNecessaryRoute(to: RouteLocationNormalized) {
-    return routes.find((route) => route.path === to.path);
+    return router.getRoutes().find((route) => route.path === to.path);
   }
 
-  async function generateRoute(to: RouteLocationNormalized, routes: RouteRecordNormalized[]) {
+  /**
+   * The function generates a route based on the provided destination and routes, and then pushes the
+   * generated route to the router.
+   * @param {RouteLocationNormalized} to - The `to` parameter is of type `RouteLocationNormalized` and
+   * represents the destination route that we want to generate. It contains information about the path,
+   * query parameters, and other route-related data.
+   * @param {RouteRecordNormalized[]} routes - The `routes` parameter is an array of
+   * `RouteRecordNormalized` objects. Each object represents a route in the application and contains
+   * information such as the route path, components to render, and any meta information associated with
+   * the route.
+   * @returns the result of the `router.push()` method.
+   */
+  async function generateRoute(to: RouteLocationNormalized, routes: BladeRoutesRecord[]) {
     const parsedRoutes: TParsedRoute[] = parseRoutes(to.path, routes);
 
     const workspace = parsedRoutes[0];
-    const workspaceComponent = routes.find((route) => route.path === workspace.blade)?.components
-      ?.default as BladeVNode;
+    const workspaceComponent = routes.find((route) => route.route === workspace.blade)?.component;
 
     if (workspaceComponent) {
       const children: Record<string, BladeVNode> = {};
@@ -302,11 +400,10 @@ export function useBladeNavigation(): IUseBladeNavigation {
       parsedRoutes
         .filter((r) => r !== workspace)
         .forEach((parsedRoute, index) => {
-          const registeredRouteComponent = routes.find((route) => route.path === parsedRoute.blade)?.components
-            ?.default;
+          const registeredRouteComponent = routes.find((route) => route.route === parsedRoute.blade)?.component;
 
           if (registeredRouteComponent && parsedRoute.name) {
-            children[parsedRoute.name] = _.merge(registeredRouteComponent, {
+            children[parsedRoute.name] = _.merge({}, registeredRouteComponent, {
               props: {
                 param: parsedRoute.param,
                 navigation: {
@@ -319,11 +416,11 @@ export function useBladeNavigation(): IUseBladeNavigation {
             }) as BladeVNode;
 
             // Add routes one by one
-            router.addRoute(mainRouteName, {
+            router.addRoute(mainRoute.name as string, {
               name: parsedRoute.name,
               path: parsedRoute.name,
               components: {
-                default: workspaceComponent,
+                default: workspaceComponent, // { param: Object.values(children)[0].props?.param }),
                 ...children,
               },
               meta: {
@@ -338,11 +435,11 @@ export function useBladeNavigation(): IUseBladeNavigation {
         .flatMap((comp) => mergePermissions(workspaceComponent, comp));
 
       // Add summary route
-      router.addRoute(mainRouteName, {
+      router.addRoute(mainRoute.name as string, {
         name: to.path,
         path: to.path,
         components: {
-          default: _.merge(workspaceComponent, { props: { param: Object.values(children)[0].props?.param } }),
+          default: workspaceComponent,
           ...children,
         },
         meta: {
@@ -351,10 +448,21 @@ export function useBladeNavigation(): IUseBladeNavigation {
       });
 
       return router.push(to.path);
-    } else return router.push({ name: mainRouteName });
+    } else return router.push({ name: mainRoute.name as string });
   }
 
-  function parseRoutes(route: string, commonRoutes: RouteRecordNormalized[]) {
+  /**
+   * The function `parseRoutes` takes a route string and an array of common routes, and returns an
+   * array of route objects with blade, param, and name properties.
+   * @param {string} route - The `route` parameter is a string representing a route path. It is the
+   * route that needs to be parsed into its individual parts.
+   * @param {RouteRecordNormalized[]} commonRoutes - commonRoutes is an array of RouteRecordNormalized
+   * objects. Each object represents a common route in the application and has properties like "path"
+   * which represents the route path.
+   * @returns The function `parseRoutes` returns an array of objects. Each object in the array
+   * represents a part of the route and contains the following properties: blade, param, and name.
+   */
+  function parseRoutes(route: string, commonRoutes: BladeRoutesRecord[]) {
     const parts: string[] = route.split("/").filter((part) => part !== "");
     const result = [];
     let currentBlade = "";
@@ -362,13 +470,22 @@ export function useBladeNavigation(): IUseBladeNavigation {
 
     for (let i = 0; i < parts.length; i++) {
       currentBlade = "/" + parts[i];
+
+      /**
+       * If current blade is not registered in routes, then it's a param
+       */
+      if (!navigationInstance.internalRoutes.some((x) => currentBlade === x?.route)) {
+        baseUrl.value = currentBlade;
+        continue;
+      }
+
       let currentParam = null;
 
       if (i + 1 < parts.length) {
         const nextPart = "/" + parts.slice(i + 1, i + 2).join("/");
         currentName += currentBlade;
 
-        if (!commonRoutes.some((route) => nextPart === route.path)) {
+        if (!commonRoutes.some((route) => nextPart === route.route)) {
           currentParam = parts[i + 1];
           currentName += "/" + currentParam;
           i++; // Skip the next part as it's a param
@@ -388,6 +505,10 @@ export function useBladeNavigation(): IUseBladeNavigation {
     return result;
   }
 
+  /**
+   * The function getCurrentBlade returns the current BladeVNode instance's vnode.
+   * @returns the `vnode` property of the `instance` object, which is of type `BladeVNode`.
+   */
   function getCurrentBlade(): BladeVNode {
     return instance.vnode;
   }

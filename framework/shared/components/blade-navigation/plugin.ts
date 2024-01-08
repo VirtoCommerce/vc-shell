@@ -1,7 +1,7 @@
 import { Router } from "vue-router";
-import { App } from "vue";
+import { App, inject } from "vue";
 import * as components from "./components";
-import { BladeNavigationPlugin } from "./types";
+import { BladeNavigationPlugin, BladeRoutesRecord } from "./types";
 
 // Declare globally
 declare module "@vue/runtime-core" {
@@ -19,9 +19,12 @@ export const VcBladeNavigationComponent = {
       app.component(componentName, component);
     });
 
+    const internalRoutes = app.runWithContext(() => inject("bladeRoutes")) as BladeRoutesRecord[];
+
     // Plugin
     const bladeNavigationPlugin: BladeNavigationPlugin = {
       router: args.router,
+      internalRoutes,
     };
 
     app.config.globalProperties.$bladeNavigationPlugin = bladeNavigationPlugin;

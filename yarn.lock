@@ -4748,10 +4748,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@virtocommerce/import-app@npm:^1.0.142":
-  version: 1.0.142
-  resolution: "@virtocommerce/import-app@npm:1.0.142"
-  checksum: 91f842b8b38b09c7b88b3e711db182ad3360072120772a6b8a88fc0814c5f36116d44dade8642d8a34b6f5ff57b297934dfff29f9c0762416dd3e4b9979ba828
+"@virtocommerce/import-app@npm:^1.0.145":
+  version: 1.0.145
+  resolution: "@virtocommerce/import-app@npm:1.0.145"
+  checksum: 0479656adf7754362daecdc5a02f37a9d4229aedaea0e0a17842a288e3901a15457e8c1a1cf636ed2ed685b29353b708153a00ad791b538caec55f1bf01b924a
   languageName: node
   linkType: hard
 
@@ -5317,6 +5317,7 @@ __metadata:
     "@laynezh/vite-plugin-lib-assets": "npm:^0.5.13"
     "@rollup/plugin-typescript": "npm:^11.1.5"
     "@types/lodash-es": "npm:^4.17.12"
+    "@types/node": "npm:^20.10.5"
     "@typescript-eslint/eslint-plugin": "npm:^6.16.0"
     "@typescript-eslint/parser": "npm:^6.16.0"
     "@vc-shell/api-client-generator": "npm:^1.0.140"
@@ -5326,7 +5327,7 @@ __metadata:
     "@vc-shell/ts-config": "npm:^1.0.140"
     "@vcmp-vendor-portal/api": "npm:^1.0.142"
     "@vcmp-vendor-portal/modules": "npm:^1.0.142"
-    "@virtocommerce/import-app": "npm:^1.0.142"
+    "@virtocommerce/import-app": "npm:^1.0.145"
     "@vitejs/plugin-vue": "npm:^4.6.2"
     "@vue/eslint-config-prettier": "npm:^9.0.0"
     "@vue/eslint-config-typescript": "npm:^12.0.0"
@@ -13917,6 +13918,7 @@ __metadata:
     "@laynezh/vite-plugin-lib-assets": "npm:^0.5.13"
     "@rollup/plugin-typescript": "npm:^11.1.5"
     "@types/lodash-es": "npm:^4.17.12"
+    "@types/node": "npm:^20.10.5"
     "@typescript-eslint/eslint-plugin": "npm:^6.16.0"
     "@typescript-eslint/parser": "npm:^6.16.0"
     "@vc-app-extend/api": "npm:^1.0.113"
@@ -13972,6 +13974,7 @@ __metadata:
     "@laynezh/vite-plugin-lib-assets": "npm:^0.5.13"
     "@rollup/plugin-typescript": "npm:^11.1.5"
     "@types/lodash-es": "npm:^4.17.12"
+    "@types/node": "npm:^20.10.5"
     "@typescript-eslint/eslint-plugin": "npm:^6.16.0"
     "@typescript-eslint/parser": "npm:^6.16.0"
     "@vc-app/api": "npm:^1.0.113"

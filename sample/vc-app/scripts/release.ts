@@ -1,5 +1,5 @@
 import { release } from "@vc-shell/release-config";
-import { spawnSync } from "child_process";
+import { spawnSync } from "node:child_process";
 
 release({
   packages: [".", "src/api_client", "src/modules"],

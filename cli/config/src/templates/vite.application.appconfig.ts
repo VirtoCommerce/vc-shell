@@ -4,7 +4,6 @@ import { loadEnv, ProxyOptions, defineConfig, searchForWorkspaceRoot, splitVendo
 import mkcert from "vite-plugin-mkcert";
 import path from "node:path";
 import { checker } from "vite-plugin-checker";
-// import process from "node:process";
 
 // Get actual package version from package.json
 const packageJson = fs.readFileSync(process.cwd() + "/package.json");
@@ -94,7 +93,7 @@ export default defineConfig({
     },
   },
   optimizeDeps: {
-    exclude: ["@vc-shell/*"],
+    exclude: ["@vc-shell/framework"],
     esbuildOptions: {
       target: ["esnext", "safari14"],
     },

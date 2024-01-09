@@ -1,3 +1,12 @@
+## [1.0.143](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.142...v1.0.143) (2024-01-09)
+
+
+### Features
+
+* import module package from import-app; yarn version up ([84ab231](https://github.com/VirtoCommerce/vendor-portal/commit/84ab23104b0c9febb0e176c7b70c8f68172c3721))
+
+
+
 ## [1.0.142](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.141...v1.0.142) (2024-01-04)
 
 

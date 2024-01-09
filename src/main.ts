@@ -1,7 +1,7 @@
 import VirtoShellFramework, { notification, useUser } from "@vc-shell/framework";
 import { createApp } from "vue";
 import * as modules from "@vcmp-vendor-portal/modules";
-// import ImportModule from "@vc-shell/import-module";
+import ImportModule from "@virtocommerce/import-app";
 import { router } from "./router";
 import * as locales from "./locales";
 import { RouterView } from "vue-router";
@@ -12,6 +12,7 @@ import "./styles/index.scss";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import "roboto-fontface/css/roboto/roboto-fontface.css";
 import "@vc-shell/framework/dist/index.css";
+import "@virtocommerce/import-app/dist/style.css";
 
 async function startApp() {
   const { loadUser } = useUser();
@@ -27,7 +28,7 @@ async function startApp() {
     app.use(module.default, { router });
   });
 
-  // app.use(ImportModule, { router });
+  app.use(ImportModule.Import.default, { router });
 
   app.use(router);
 

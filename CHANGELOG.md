@@ -1,3 +1,12 @@
+## [1.0.140](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.139...v1.0.140) (2024-01-09)
+
+
+### Bug Fixes
+
+* condition in getOptions ([c363f13](https://github.com/VirtoCommerce/vc-shell/commit/c363f134da870341e4840d132f1d5d5e9a0fa2d7))
+
+
+
 ## [1.0.139](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.138...v1.0.139) (2024-01-08)
 
 

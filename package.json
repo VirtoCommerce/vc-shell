@@ -5,10 +5,10 @@
   "repository": "https://github.com/VirtoCommerce/vc-shell",
   "scripts": {
     "postinstall": "husky install",
-    "publish": "yarn workspaces foreach -v --from '{@vc-shell/config-generator,@vc-shell/api-client-generator,@vc-shell/framework,@vc-shell/create-vc-app,@vc-shell/release-config,@vc-shell/ts-config}' npm publish",
+    "publish": "yarn workspaces foreach -v --worktree --from '{@vc-shell/config-generator,@vc-shell/api-client-generator,@vc-shell/framework,@vc-shell/create-vc-app,@vc-shell/release-config,@vc-shell/ts-config}' npm publish",
     "lint": "eslint --fix --cache 'framework/**/*.{ts,vue}' 'cli/**/*.{ts,vue}' 'configs/**/*.{ts,vue}'",
     "lint-staged": "lint-staged",
-    "build": "yarn workspaces foreach -v --from '{@vc-shell/config-generator,@vc-shell/api-client-generator,@vc-shell/create-vc-app,@vc-shell/framework,@vc-shell/release-config}' run build",
+    "build": "yarn workspaces foreach -v --worktree --from '{@vc-shell/config-generator,@vc-shell/api-client-generator,@vc-shell/create-vc-app,@vc-shell/framework,@vc-shell/release-config}' run build",
     "build-framework": "yarn workspace @vc-shell/framework run build",
     "build-cli:config": "yarn workspace @vc-shell/config-generator run build",
     "build-cli:api-client": "yarn workspace @vc-shell/api-client-generator run build",

@@ -34,7 +34,7 @@ export interface OfferDetailsScope extends DetailsBaseBladeScope {
   removePrice: (idx: number) => void;
   addPrice: (scroll?: boolean) => void;
   getProductItem: () => void;
-  trackInventory: () => boolean;
+  trackInventoryFn: () => boolean;
   currencies: Ref<ICurrency[]>;
   toolbarOverrides: {
     saveChanges: IBladeToolbar;
@@ -252,7 +252,7 @@ export const useOfferDetails = (args: {
     item.value?.prices?.splice(idx, 1);
   }
 
-  function trackInventory() {
+  function trackInventoryFn() {
     return !item.value?.trackInventory;
   }
 
@@ -292,7 +292,7 @@ export const useOfferDetails = (args: {
     removePrice,
     addPrice,
     getProductItem,
-    trackInventory,
+    trackInventoryFn,
     currencies,
     toolbarOverrides: {
       saveChanges: {

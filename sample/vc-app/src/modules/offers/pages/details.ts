@@ -96,7 +96,7 @@ export const details: DynamicDetailsSchema = {
                     bigint: true,
                     min_value: 0,
                   },
-                  disabled: { method: "trackInventory" },
+                  disabled: { method: "trackInventoryFn" },
                 },
               ],
             },

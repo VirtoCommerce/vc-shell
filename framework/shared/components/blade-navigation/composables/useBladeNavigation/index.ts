@@ -1,15 +1,8 @@
-import { resolve } from "node:path";
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { reactiveComputed } from "@vueuse/core";
 import { computed, getCurrentInstance, inject, warn, Component, watch, isVNode, h, shallowRef, ComputedRef } from "vue";
 import * as _ from "lodash-es";
-import {
-  RouteLocationNormalized,
-  useRoute,
-  RouteRecordNormalized,
-  NavigationFailure,
-  createRouterMatcher,
-} from "vue-router";
+import { RouteLocationNormalized, useRoute, NavigationFailure } from "vue-router";
 import { bladeNavigationInstance } from "../../plugin";
 import {
   BladeComponentInternalInstance,

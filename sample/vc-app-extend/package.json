@@ -28,7 +28,7 @@
     "@vc-shell/api-client-generator": "^1.0.139",
     "@vc-shell/release-config": "^1.0.139",
     "@vc-shell/ts-config": "^1.0.139",
-    "@vitejs/plugin-vue": "^5.0.0",
+    "@vitejs/plugin-vue": "^4.6.2",
     "@vue/eslint-config-prettier": "^9.0.0",
     "@vue/eslint-config-typescript": "^12.0.0",
     "autoprefixer": "^10.4.16",
@@ -47,8 +47,8 @@
     "sass": "^1.69.6",
     "tailwindcss": "^3.4.0",
     "tsx": "^3.13.0",
-    "typescript": "5.3.3",
-    "vite": "4.5.0",
+    "typescript": "^5.3.3",
+    "vite": "^4.5.0",
     "vite-plugin-checker": "^0.6.2",
     "vite-plugin-mkcert": "^1.17.1",
     "vite-plugin-pwa": "^0.17.4",
@@ -66,12 +66,12 @@
     "moment": "^2.30.1",
     "roboto-fontface": "^0.10.0",
     "vee-validate": "^4.12.4",
-    "vue": "3.4.5",
+    "vue": "^3.4.7",
     "vue-router": "^4.2.5"
   },
   "lint-staged": {
     "*.{js,ts,html,css}": "prettier --write '**/*.{ts,vue}'",
     "*.{js,ts,vue}": "eslint --fix --cache '**/*.{ts,vue}'"
   },
-  "packageManager": "yarn@3.6.4"
+  "packageManager": "yarn@4.0.2"
 }

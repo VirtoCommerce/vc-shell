@@ -1,3 +1,12 @@
+## [1.0.142](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.141...v1.0.142) (2024-01-10)
+
+
+### Bug Fixes
+
+* **shell:** navigation slash duplication fix ([370fe03](https://github.com/VirtoCommerce/vc-shell/commit/370fe0398ef6626c541a4af5b2f7895fad49b874))
+
+
+
 ## [1.0.141](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.140...v1.0.141) (2024-01-10)
 
 

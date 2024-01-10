@@ -146,7 +146,7 @@ export function useBladeNavigation(): IUseBladeNavigation {
 
         const url = (baseUrl.value === "/" ? "" : baseUrl.value) + base;
 
-        const rawRouterUrl = mainRoute.path + base;
+        const rawRouterUrl = (mainRoute.path === "/" ? "" : mainRoute.path) + base;
 
         /**
          * Removes routes without paths and default route from next route.

@@ -27,7 +27,7 @@
         <!-- Table search input -->
         <VcInput
           class="tw-grow tw-basis-0"
-          :placeholder="searchPlaceholder"
+          :placeholder="searchPlaceholder || $t('COMPONENTS.ORGANISMS.VC_TABLE.SEARCH')"
           clearable
           name="table_search"
           :model-value="searchValue"
@@ -362,7 +362,7 @@
               :src="notfound.image"
             />
             <div class="tw-m-4 vc-table__empty-text">
-              {{ notfound.text }}
+              {{ notfound.text || t("COMPONENTS.ORGANISMS.VC_TABLE.NOT_FOUND") }}
             </div>
             <VcButton
               v-if="notfound.action"
@@ -384,7 +384,9 @@
               v-if="empty.image"
               :src="empty.image"
             />
-            <div class="tw-m-4 tw-text-xl tw-font-medium">{{ empty.text }}</div>
+            <div class="tw-m-4 tw-text-xl tw-font-medium">
+              {{ empty.text || t("COMPONENTS.ORGANISMS.VC_TABLE.EMPTY") }}
+            </div>
             <VcButton
               v-if="empty.action"
               @click="empty.clickHandler"
@@ -414,7 +416,7 @@
 
         <!-- Table counter -->
         <VcTableCounter
-          :label="totalLabel"
+          :label="totalLabel || $t('COMPONENTS.ORGANISMS.VC_TABLE.TOTALS')"
           :value="totalCount"
         ></VcTableCounter>
       </div>
@@ -450,7 +452,7 @@ import { useI18n } from "vue-i18n";
 
 export interface StatusImage {
   image?: string;
-  text: string;
+  text: string | Ref<string>;
   action?: string;
   clickHandler?: () => void;
 }
@@ -501,19 +503,11 @@ const props = withDefaults(
   }>(),
   {
     items: () => [],
-    totalLabel: "Totals:",
     totalCount: 0,
     pages: 0,
     expanded: true,
     currentPage: 0,
     selectedItemId: undefined,
-    searchPlaceholder: "Search...",
-    empty: () => ({
-      text: "List is empty.",
-    }),
-    notfound: () => ({
-      text: "Nothing found.",
-    }),
     header: true,
     footer: true,
     activeFilterCount: 0,

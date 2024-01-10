@@ -5,7 +5,6 @@ import * as directives from "./core/directives";
 import { useBreakpoints } from "@vueuse/core";
 import { i18n, permissions, signalR } from "./core/plugins";
 import { SharedModule, notification } from "./shared";
-import * as componentLocales from "./ui/locales";
 import * as sharedPages from "./shared/pages/plugin";
 import { registerInterceptors } from "./core/interceptors";
 
@@ -22,11 +21,6 @@ export default {
     app.use(i18n);
     // Left for backward compatibility
     app.config.globalProperties.$mergeLocaleMessage = i18n.global.mergeLocaleMessage;
-
-    // Components locales
-    Object.entries(componentLocales).forEach(([key, message]) => {
-      i18n.global.mergeLocaleMessage(key, message);
-    });
 
     // Install libraries
 

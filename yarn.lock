@@ -4970,17 +4970,17 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vcmp-vendor-portal/api@npm:^1.0.144, @vcmp-vendor-portal/api@workspace:apps/vendor-portal/src/api_client":
+"@vcmp-vendor-portal/api@npm:^1.0.145, @vcmp-vendor-portal/api@workspace:apps/vendor-portal/src/api_client":
   version: 0.0.0-use.local
   resolution: "@vcmp-vendor-portal/api@workspace:apps/vendor-portal/src/api_client"
   languageName: unknown
   linkType: soft
 
-"@vcmp-vendor-portal/modules@npm:^1.0.144, @vcmp-vendor-portal/modules@workspace:apps/vendor-portal/src/modules":
+"@vcmp-vendor-portal/modules@npm:^1.0.145, @vcmp-vendor-portal/modules@workspace:apps/vendor-portal/src/modules":
   version: 0.0.0-use.local
   resolution: "@vcmp-vendor-portal/modules@workspace:apps/vendor-portal/src/modules"
   peerDependencies:
-    "@vcmp-vendor-portal/api": ^1.0.144
+    "@vcmp-vendor-portal/api": ^1.0.145
   languageName: unknown
   linkType: soft
 
@@ -5000,10 +5000,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@virtocommerce/import-app@npm:^1.0.145":
-  version: 1.0.145
-  resolution: "@virtocommerce/import-app@npm:1.0.145"
-  checksum: 0479656adf7754362daecdc5a02f37a9d4229aedaea0e0a17842a288e3901a15457e8c1a1cf636ed2ed685b29353b708153a00ad791b538caec55f1bf01b924a
+"@virtocommerce/import-app@npm:^1.0.147":
+  version: 1.0.147
+  resolution: "@virtocommerce/import-app@npm:1.0.147"
+  checksum: 3590a544d3640ae807ae0833e0fb3b287e7b85b3560041caf54021d572dcdf67f430b38f516aa672b33c20917adb4066993cc9edaa291af60cd0051f5e86e2a0
   languageName: node
   linkType: hard
 
@@ -5587,9 +5587,9 @@ __metadata:
     "@vc-shell/framework": "npm:^1.0.142"
     "@vc-shell/release-config": "npm:^1.0.142"
     "@vc-shell/ts-config": "npm:^1.0.142"
-    "@vcmp-vendor-portal/api": "npm:^1.0.144"
-    "@vcmp-vendor-portal/modules": "npm:^1.0.144"
-    "@virtocommerce/import-app": "npm:^1.0.145"
+    "@vcmp-vendor-portal/api": "npm:^1.0.145"
+    "@vcmp-vendor-portal/modules": "npm:^1.0.145"
+    "@virtocommerce/import-app": "npm:^1.0.147"
     "@vitejs/plugin-vue": "npm:^5.0.3"
     "@vue/eslint-config-prettier": "npm:^9.0.0"
     "@vue/eslint-config-typescript": "npm:^12.0.0"

@@ -24,7 +24,9 @@
         {{ name || user?.userName }}
       </div>
       <div class="user-dropdown-button__role">
-        {{ role || (user?.isAdministrator ? "Administrator" : "") }}
+        {{
+          (role && $t(`SHELL.USER.ROLE.${role}`)) || (user?.isAdministrator ? $t("SHELL.USER.ROLE.ADMINISTRATOR") : "")
+        }}
       </div>
     </div>
     <div
@@ -88,13 +90,13 @@ const accountMenuVisible = ref(false);
 const menu = computed(() => [
   ...props.menuItems,
   {
-    title: t("Change password"),
+    title: t("SHELL.ACCOUNT.CHANGE_PASSWORD"),
     clickHandler() {
       open();
     },
   },
   {
-    title: t("Log Out"),
+    title: t("SHELL.ACCOUNT.LOGOUT"),
     async clickHandler() {
       await signOut();
       router.push({ name: "Login" });

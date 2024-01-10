@@ -1,6 +1,6 @@
 import { useAsync } from "./../useAsync";
 import { useApiClient } from "./../useApiClient";
-import { computed, inject, onBeforeMount, Ref, ref, ComputedRef } from "vue";
+import { computed, inject, Ref, ref, ComputedRef, onMounted } from "vue";
 import { SettingClient } from "./../../api/platform";
 import { useLoading } from "../useLoading";
 
@@ -43,8 +43,10 @@ export function useSettings(): IUseSettings {
     };
   }
 
-  onBeforeMount(async () => {
-    await getUiCustomizationSettings();
+  onMounted(async () => {
+    if (!uiSettings.value) {
+      await getUiCustomizationSettings();
+    }
   });
 
   return {

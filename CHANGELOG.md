@@ -1,3 +1,12 @@
+## [1.0.147](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.146...v1.0.147) (2024-01-10)
+
+
+### Features
+
+* common pages locales ([41d0170](https://github.com/VirtoCommerce/vendor-portal/commit/41d01705a91032c4deab78e1219d73f5cde5fe4b))
+
+
+
 ## [1.0.146](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.145...v1.0.146) (2024-01-10)
 
 

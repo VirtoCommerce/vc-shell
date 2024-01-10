@@ -1,3 +1,13 @@
+## [1.0.143](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.142...v1.0.143) (2024-01-10)
+
+
+### Features
+
+* **dynamic:** table columns localized titles support ([dfccb58](https://github.com/VirtoCommerce/vc-shell/commit/dfccb58492ad126402858974d84a50f3dbf09152))
+* locales moved to app scope ([ee08999](https://github.com/VirtoCommerce/vc-shell/commit/ee089996fd204ada7b8320218680d47f3418dc68))
+
+
+
 ## [1.0.142](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.141...v1.0.142) (2024-01-10)
 
 

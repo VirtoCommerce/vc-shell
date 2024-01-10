@@ -33,7 +33,7 @@ export const routes: RouteRecordRaw[] = [
       composable: useLogin,
       logo: whiteLogoImage,
       background: bgImage,
-      title: "Vendor Portal",
+      title: "Scaffolded App",
     }),
   },
   {

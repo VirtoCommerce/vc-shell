@@ -1,3 +1,12 @@
+## [1.0.141](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.140...v1.0.141) (2024-01-10)
+
+
+### Features
+
+* **dynamic:** using locale key as blade title ([057a188](https://github.com/VirtoCommerce/vc-shell/commit/057a188dbb9d73611e609d7fd6064502a1f95560))
+
+
+
 ## [1.0.140](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.139...v1.0.140) (2024-01-09)
 
 

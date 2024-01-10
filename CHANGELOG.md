@@ -1,3 +1,17 @@
+## [1.0.141](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.140...v1.0.141) (2024-01-10)
+
+
+### Bug Fixes
+
+* **config:** exclude @vc-shell/framework from optimization to prevent context dupes ([02b7d6e](https://github.com/VirtoCommerce/vc-shell/commit/02b7d6e1df3cd0039ddb73e858a62bb58768507b))
+
+
+### Features
+
+* **dynamic:** using locale key as blade title ([057a188](https://github.com/VirtoCommerce/vc-shell/commit/057a188dbb9d73611e609d7fd6064502a1f95560))
+
+
+
 ## [1.0.140](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.139...v1.0.140) (2024-01-09)
 
 

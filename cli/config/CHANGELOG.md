@@ -1,3 +1,12 @@
+## [1.0.141](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.140...v1.0.141) (2024-01-10)
+
+
+### Bug Fixes
+
+* **config:** exclude @vc-shell/framework from optimization to prevent context dupes ([02b7d6e](https://github.com/VirtoCommerce/vc-shell/commit/02b7d6e1df3cd0039ddb73e858a62bb58768507b))
+
+
+
 ## [1.0.140](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.139...v1.0.140) (2024-01-09)
 
 

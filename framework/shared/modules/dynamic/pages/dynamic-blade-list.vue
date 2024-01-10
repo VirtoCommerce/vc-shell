@@ -193,7 +193,7 @@ const { debounce } = useFunctions();
 const emit = defineEmits<Emits>();
 
 const settings = computed(() => props.model?.settings);
-const title = computed(() => settings.value?.titleTemplate);
+const title = computed(() => t(settings.value?.titleTemplate as string));
 const allSelected = ref(false);
 const searchValue = ref();
 const selectedItemId = shallowRef();

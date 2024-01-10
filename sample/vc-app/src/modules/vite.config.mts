@@ -1,8 +1,12 @@
-import path, { resolve } from "path";
+import path, { resolve, dirname } from "node:path";
 import vue from "@vitejs/plugin-vue";
 import libAssetsPlugin from "@laynezh/vite-plugin-lib-assets";
+import { fileURLToPath } from "node:url";
+import { defineConfig } from "vite";
 
-export default {
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
+export default defineConfig({
   resolve: {
     alias: {
       "/assets/empty.png": path.resolve(__dirname, "../../public/assets/empty.png"),
@@ -32,4 +36,4 @@ export default {
     },
   },
   plugins: [libAssetsPlugin(), vue()],
-};
+});

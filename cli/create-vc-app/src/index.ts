@@ -1,5 +1,3 @@
-#!/usr/bin/env node
-
 // eslint-disable-next-line import/no-named-as-default
 import prompts from "prompts";
 import mri from "mri";

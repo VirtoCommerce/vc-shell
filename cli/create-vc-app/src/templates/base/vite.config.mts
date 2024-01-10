@@ -1,6 +1,5 @@
 import { getApplicationConfiguration } from "@vc-shell/config-generator";
 import { VitePWA } from "vite-plugin-pwa";
-import { splitVendorChunkPlugin } from "vite";
 
 // Remove it after you added APP_PLATFORM_URL to .env file. Demo mode works only with yarn serve
 const isDemo = !process.env.APP_PLATFORM_URL;

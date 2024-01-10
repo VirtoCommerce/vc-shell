@@ -9,14 +9,14 @@
     "skipLibCheck": true,
     "esModuleInterop": true,
     "module": "esnext",
-    "moduleResolution": "node",
+    "moduleResolution": "Bundler",
     "target": "es2020",
     "jsx": "preserve",
     "isolatedModules": true,
     "useDefineForClassFields": true,
     "composite": true,
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
-    "strict": true
+    "strict": true,
   },
   // Base excludes
   "exclude": ["node_modules", "dist"]

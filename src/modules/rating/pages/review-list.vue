@@ -48,7 +48,7 @@ defineOptions({
   isWorkspace: true,
   permissions: UserPermissions.ManageSellerReviews,
   menuItem: {
-    title: "Rating & Reviews",
+    title: "RATING.MENU.TITLE",
     icon: "fas fa-star",
     priority: 5,
   },

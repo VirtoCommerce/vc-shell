@@ -12,12 +12,10 @@
     "MENU": {
       "DASHBOARD": "Home"
     },
-    "TOOLBAR": {
-      "LOGIN": "Log In",
-      "SETTINGS": "Settings",
-      "HELP": "Help",
-      "NOTIFICATIONS": "Notifications",
-      "LANGUAGE": "Language selector"
+    "USER": {
+      "ROLE": {
+        "ADMINISTRATOR": "Administrator"
+      }
     },
     "ACCOUNT": {
       "CHANGE_PASSWORD": "Change password",
@@ -44,6 +42,105 @@
         "TITLE": "Latest review",
         "MORE": "More reviews"
       }
+    }
+  },
+  "COMPONENTS": {
+    "MOLECULES": {
+      "VC_SELECT": {
+        "CLICK_TO_SELECT": "Click to select..."
+      },
+      "VC_FILE_UPLOAD": {
+        "DRAG_HERE": "Drag and drop file here or",
+        "BROWSE": "browse your files"
+      }
+    },
+    "ORGANISMS": {
+      "VC_GALLERY": {
+        "INTERNAL": {
+          "VC_GALLERY_ITEM": {
+            "FULLSCREEN": "Fullscreen",
+            "EDIT": "Edit",
+            "DELETE": "Delete"
+          },
+          "VC_GALLERY_PREVIEW": {
+            "COPY_IMAGE_LINK": "copy image link"
+          }
+        },
+        "GALLERY_IS_EMPTY": "Gallery is empty"
+      },
+      "VC_APP": {
+        "INTERNAL": {
+          "VC_APP_BAR": {
+            "BACK": "Back"
+          }
+        }
+      },
+      "VC_BLADE": {
+        "SEE_DETAILS": "See details",
+        "ERROR_POPUP": {
+          "TITLE": "Error details"
+        }
+      },
+      "VC_TABLE": {
+        "CURRENT_PAGE_SELECTED": "All items in this page are selected.",
+        "SELECT_ALL": "Select all items",
+        "ALL_SELECTED": "All items are selected.",
+        "CANCEL": "Cancel selection",
+        "ALL_ACTIONS": "All actions",
+        "ALL_FILTERS": "Filters",
+        "SEARCH": "Search...",
+        "EMPTY":"List is empty.",
+        "NOT_FOUND":"Nothing found.",
+        "TOTALS": "Totals:"
+      },
+
+      "VC_POPUP": {
+        "OK": "OK",
+        "CONFIRM": "Confirm",
+        "CANCEL": "Cancel",
+        "TITLE": {
+          "CONFIRMATION": "Confirmation",
+          "ERROR": "Error"
+        }
+      }
+    },
+    "CHANGE_PASSWORD": {
+      "TITLE": "Change password",
+      "CURRENT_PASSWORD": {
+        "LABEL": "Current password",
+        "PLACEHOLDER": "Enter password"
+      },
+      "NEW_PASSWORD": {
+        "LABEL": "New password",
+        "PLACEHOLDER": "Enter password"
+      },
+      "CONFIRM_PASSWORD": {
+        "LABEL": "Confirm password",
+        "PLACEHOLDER": "Confirm password"
+      },
+      "CANCEL": "Cancel",
+      "SAVE": "Update",
+      "ERRORS": {
+        "Repeat-password": "Passwords are not same",
+        "Equal-passwords": "The new password must not match the old one",
+        "Invalid-token": "Token is invalid or expired",
+        "Password-too-weak": "New password does not comply one or more password security policies:",
+        "PasswordTooShort": "Passwords too short",
+        "PasswordRequiresUniqueChars": "Passwords must use different characters",
+        "PasswordRequiresLower": "Passwords must have at least one lowercase ('a'-'z')",
+        "PasswordRequiresUpper": "Passwords must have at least one uppercase ('A'-'Z')",
+        "PasswordRequiresDigit": "Passwords must have at least one digit ('0'-'9')",
+        "PasswordRequiresNonAlphanumeric": "Passwords must have at least one non alphanumeric character",
+        "Incorrect password.": "You entered an incorrect password",
+        "You have used this password in the past. Choose another one.": "You have used this password in the past. Choose another one."
+      }
+    },
+    "NOTIFICATION_DROPDOWN": {
+      "TITLE": "Notifications",
+      "EMPTY": "No notifications yet"
+    },
+    "LANGUAGE_SELECTOR": {
+      "TITLE": "Language selector"
     }
   }
 }

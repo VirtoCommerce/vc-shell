@@ -1,5 +1,4 @@
 import { createModule } from "./../../../core/plugins";
 import * as components from "./components";
-import * as locales from "./locales";
 
-export const LoginPage = createModule(components, locales);
+export const LoginPage = createModule(components);

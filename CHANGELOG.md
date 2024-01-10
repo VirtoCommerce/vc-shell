@@ -1,3 +1,12 @@
+## [1.0.146](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.145...v1.0.146) (2024-01-10)
+
+
+### Features
+
+* locale files ([8101379](https://github.com/VirtoCommerce/vendor-portal/commit/81013799c0f72faf13aff02ff03976a83dc4cefd))
+
+
+
 ## [1.0.145](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.144...v1.0.145) (2024-01-10)
 
 

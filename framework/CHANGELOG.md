@@ -1,3 +1,12 @@
+## [1.0.145](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.144...v1.0.145) (2024-01-10)
+
+
+### Features
+
+* **shell:** base navigator.language i18n locale ([8a59a63](https://github.com/VirtoCommerce/vc-shell/commit/8a59a636643f94ffac282ac37514a4f253007c7a))
+
+
+
 ## [1.0.144](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.143...v1.0.144) (2024-01-10)
 
 

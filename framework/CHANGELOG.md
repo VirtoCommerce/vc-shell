@@ -1,3 +1,12 @@
+## [1.0.144](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.143...v1.0.144) (2024-01-10)
+
+
+### Bug Fixes
+
+* **shell:** removed common pages locales ([e8d54e5](https://github.com/VirtoCommerce/vc-shell/commit/e8d54e5bea8746a678e17b6a79ebbdc59da6e3c3))
+
+
+
 ## [1.0.143](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.142...v1.0.143) (2024-01-10)
 
 

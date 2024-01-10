@@ -1,3 +1,12 @@
+## [1.0.144](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.143...v1.0.144) (2024-01-10)
+
+
+### Features
+
+* **sample:** common pages locales ([53457fa](https://github.com/VirtoCommerce/vc-shell/commit/53457faca78d0a2d940a6ea82769420cf40379ac))
+
+
+
 ## [1.0.143](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.142...v1.0.143) (2024-01-10)
 
 

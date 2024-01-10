@@ -1,3 +1,12 @@
+## [1.0.144](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.143...v1.0.144) (2024-01-10)
+
+
+### Features
+
+* **create-vc-app:** update base favicon; common pages locales ([b284f33](https://github.com/VirtoCommerce/vc-shell/commit/b284f331f17b58c472fdc4c6c671962a646388b3))
+
+
+
 ## [1.0.143](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.142...v1.0.143) (2024-01-10)
 
 

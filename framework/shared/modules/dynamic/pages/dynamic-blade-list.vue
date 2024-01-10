@@ -28,7 +28,7 @@
         class="tw-grow tw-basis-0"
         :loading="loading"
         :expanded="expanded"
-        :columns="(tableData?.columns as ITableColumns[]) ?? []"
+        :columns="(tableColsWithLocales as ITableColumns[]) ?? []"
         :state-key="stateKey ?? ''"
         :items="itemsProxy as Record<string, any>[]"
         :multiselect="isWidgetView ? false : tableData?.multiselect"
@@ -224,6 +224,9 @@ watch(
 const tableData =
   props.composables &&
   computed(() => props.model?.content.find((type: ListContentSchema) => type.component === "vc-table"));
+
+const tableColsWithLocales = tableData?.value?.columns?.map((col) => ({ ...col, title: computed(() => t(col.title)) }));
+
 const stateKey =
   props.composables &&
   computed(() => {

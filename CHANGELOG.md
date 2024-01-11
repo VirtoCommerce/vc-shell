@@ -1,3 +1,13 @@
+## [1.0.146](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.145...v1.0.146) (2024-01-11)
+
+
+### Bug Fixes
+
+* **dynamic:** modified as base disabled state in saveChanges method ([9895efb](https://github.com/VirtoCommerce/vc-shell/commit/9895efb16aa70f1b1d5e90359084a25c7237a56e))
+* **useMenuService:** prevent duplication ([1c35bb7](https://github.com/VirtoCommerce/vc-shell/commit/1c35bb72b2c6cd2a035d8c370218b1e869f65044))
+
+
+
 ## [1.0.145](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.144...v1.0.145) (2024-01-10)
 
 

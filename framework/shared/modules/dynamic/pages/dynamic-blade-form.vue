@@ -144,24 +144,23 @@ const { loading, item, validationState, scope, load, remove, saveChanges, bladeT
 const title = ref();
 const isReady = ref(false);
 
-const unwatchTitle = watch(
+watch(
   () => bladeTitle?.value,
   (newVal) => {
     if (newVal && props.composables) {
       title.value = newVal;
-
-      // nextTick(() => unwatchTitle());
     }
   },
   { immediate: true },
 );
 
 /**
- * Validated state. Uses 'disabled' property from toolbarOverrides.saveChanges OR validationState.validated
+ * Validated state. Uses 'disabled' property from toolbarOverrides.saveChanges OR validationState.modified
  */
 const validated = computed(() => {
-  const toolBarSave = _.get(toValue(scope)?.toolbarOverrides, "saveChanges") as unknown as IBladeToolbar;
-  return !unref(toolBarSave && "disabled" in toolBarSave && toolBarSave.disabled) || validationState.value.validated;
+  const toolbarSave = _.get(toValue(scope)?.toolbarOverrides, "saveChanges") as unknown as IBladeToolbar;
+
+  return (toolbarSave && !unref("disabled" in toolbarSave && toolbarSave.disabled)) || validationState.value.modified;
 });
 
 useBeforeUnload(validated);
@@ -251,8 +250,7 @@ const toolbarComputed =
             }
           }
         },
-        // TODO validate fields without validation
-        disabled: computed(() => !validationState.value.validated),
+        disabled: computed(() => !validationState.value.modified),
       },
       remove: {
         async clickHandler() {

@@ -24,7 +24,7 @@ function useMenuServiceFn(): IUseMenuService {
 
   const upsert = createUnrefFn((array: MenuItem[], element: MenuItem) => {
     const i = array.findIndex((_element) => {
-      return _.isEqual(_element, element) || _element.url === element.url;
+      return _.isEqual(_element, element);
     });
     if (i > -1) array[i] = { ...element };
     else array.push({ ...element });

@@ -1,3 +1,12 @@
+## [1.0.148](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.147...v1.0.148) (2024-01-16)
+
+
+### Bug Fixes
+
+* **api-client:** remove default prefix ([c6f1c37](https://github.com/VirtoCommerce/vc-shell/commit/c6f1c375b7acb95c73d2eeef4b22e3ceacc39885))
+
+
+
 ## [1.0.147](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.146...v1.0.147) (2024-01-12)
 
 

@@ -21,6 +21,7 @@
       class="tw-shrink-0"
       :logo="logo"
       :title="title"
+      :disable-menu="disableMenu"
       @menubutton:click="($refs.menu as Record<'isMobileVisible', boolean>).isMobileVisible = true"
       @backlink:click="closeBlade(blades.length - 1)"
       @logo:click="openRoot"
@@ -64,19 +65,18 @@
     </VcAppBar>
 
     <div class="tw-overflow-hidden tw-flex tw-grow tw-basis-0">
-      <slot name="navigation-menu">
-        <!-- Init main menu -->
-        <VcAppMenu
-          ref="menu"
-          class="tw-shrink-0"
-          :version="version"
-          @item:click="onMenuItemClick"
-        >
-          <template #mobile>
-            <UserDropdownButton class="tw-p-0 tw-mb-2 tw-w-full tw-h-auto" />
-          </template>
-        </VcAppMenu>
-      </slot>
+      <!-- Init main menu -->
+      <VcAppMenu
+        v-if="!disableMenu"
+        ref="menu"
+        class="tw-shrink-0"
+        :version="version"
+        @item:click="onMenuItemClick"
+      >
+        <template #mobile>
+          <UserDropdownButton class="tw-p-0 tw-mb-2 tw-w-full tw-h-auto" />
+        </template>
+      </VcAppMenu>
 
       <!-- Blade navigation -->
       <div
@@ -118,6 +118,7 @@ export interface Props {
   version?: string;
   theme?: "light" | "dark";
   title?: string;
+  disableMenu?: boolean;
 }
 
 defineOptions({
@@ -127,7 +128,6 @@ defineOptions({
 defineSlots<{
   "app-switcher": void;
   toolbar: void;
-  "navigation-menu": void;
   "toolbar:prepend": void;
   "toolbar:language-selector": void;
   "toolbar:notifications-dropdown": void;

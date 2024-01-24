@@ -56,7 +56,7 @@
 
     <!-- Show menu toggler on mobile devices -->
     <div
-      v-if="$isMobile.value"
+      v-if="!disableMenu && $isMobile.value"
       class="tw-text-[#319ed4] tw-w-[var(--app-bar-button-width)] tw-flex tw-items-center tw-justify-center tw-h-full tw-box-border tw-cursor-pointer"
       @click="$emit('menubutton:click')"
     >
@@ -75,6 +75,7 @@ import { toValue } from "vue";
 export interface Props {
   logo?: string;
   title?: string;
+  disableMenu?: boolean;
 }
 
 export interface Emits {

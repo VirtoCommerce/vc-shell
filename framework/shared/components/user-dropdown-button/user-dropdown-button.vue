@@ -5,7 +5,7 @@
     :class="{
       'user-dropdown-button_active': accountMenuVisible,
     }"
-    @click.stop="toggleAccountMenuVisible"
+    @click.stop="!disabled ? toggleAccountMenuVisible : null"
   >
     <div class="user-dropdown-button__wrap tw-flex tw-justify-between tw-items-center tw-flex-auto">
       <div
@@ -31,7 +31,7 @@
         </div>
       </div>
       <div
-        v-if="menu && menu.length"
+        v-if="!disabled && menu && menu.length"
         class="user-dropdown-button__chevron"
       >
         <VcIcon
@@ -74,6 +74,7 @@ export interface Props {
   name?: string | undefined;
   role?: string | undefined;
   menuItems?: BladeMenu[];
+  disabled?: boolean;
 }
 const props = withDefaults(defineProps<Props>(), {
   menuItems: () => [],

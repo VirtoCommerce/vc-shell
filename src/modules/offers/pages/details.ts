@@ -3,9 +3,9 @@ import { DynamicDetailsSchema } from "@vc-shell/framework";
 export const details: DynamicDetailsSchema = {
   settings: {
     url: "/offer",
+    routable: false,
     id: "Offer",
     localizationPrefix: "Offers",
-    titleTemplate: "Offer details",
     composable: "useOfferDetails",
     component: "DynamicBladeForm",
     toolbar: [

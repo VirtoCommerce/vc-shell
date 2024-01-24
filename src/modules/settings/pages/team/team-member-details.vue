@@ -146,12 +146,18 @@
 
 <script lang="ts" setup>
 import { computed, ref, onMounted, unref } from "vue";
-import { useUser, IParentCallArgs, IBladeToolbar, usePopup, useBeforeUnload } from "@vc-shell/framework";
+import {
+  useUser,
+  IParentCallArgs,
+  IBladeToolbar,
+  usePopup,
+  useBeforeUnload,
+  useBladeNavigation,
+} from "@vc-shell/framework";
 import useTeamMembers from "../../composables/useTeamMembers";
 import { useIsFormValid, Field, useForm, useIsFormDirty } from "vee-validate";
 import { ISellerUser } from "@vcmp-vendor-portal/api/marketplacevendor";
 import { useI18n } from "vue-i18n";
-import { onBeforeRouteLeave } from "vue-router";
 
 export interface Props {
   expanded?: boolean;
@@ -195,6 +201,8 @@ const {
 } = useTeamMembers();
 
 const { showError, showConfirmation } = usePopup();
+
+const { onBeforeClose } = useBladeNavigation();
 
 const title = computed(() =>
   props.param ? userDetails.value.firstName + " " + userDetails.value.lastName : t("SETTINGS.TEAM.PAGES.DETAILS.TITLE"),
@@ -343,7 +351,7 @@ onMounted(async () => {
   }
 });
 
-onBeforeRouteLeave(async () => {
+onBeforeClose(async () => {
   if (modified.value) {
     return await showConfirmation(unref(computed(() => t("SETTINGS.TEAM.ALERTS.CLOSE_CONFIRMATION"))));
   }

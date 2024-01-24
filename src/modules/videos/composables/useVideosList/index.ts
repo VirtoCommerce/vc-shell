@@ -39,8 +39,8 @@ export const useVideosList = (args: {
     remove: async (query, customQuery) => {
       const videoIds = customQuery.ids;
       if (videoIds) {
-        (await getApiClient()).delete(videoIds);
-        await markProductDirty();
+        markProductDirty();
+        return (await getApiClient()).delete(videoIds);
       }
     },
   });

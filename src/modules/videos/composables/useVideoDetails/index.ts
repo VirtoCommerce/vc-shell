@@ -40,6 +40,7 @@ export const useVideoDetails = (args: {
       }
     },
     saveChanges: async (videoItem) => {
+      newVideoLoaded.value = false;
       await (await getApiClient()).update([videoItem as Video]);
       await markProductDirty();
       return videoItem;

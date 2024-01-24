@@ -3,7 +3,6 @@ import { DynamicDetailsSchema } from "@vc-shell/framework";
 export const details: DynamicDetailsSchema = {
   settings: {
     id: "Video",
-    titleTemplate: "Video details",
     localizationPrefix: "Videos",
     composable: "useVideoDetails",
     component: "DynamicBladeForm",

@@ -2,7 +2,6 @@ import { DynamicGridSchema } from "@vc-shell/framework";
 
 export const grid: DynamicGridSchema = {
   settings: {
-    url: "/videos",
     id: "Videos",
     titleTemplate: "Videos",
     localizationPrefix: "Videos",

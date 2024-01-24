@@ -5,7 +5,6 @@ export const details: DynamicDetailsSchema = {
     url: "/seller-details-edit",
     id: "SellerDetails",
     isWorkspace: true,
-    titleTemplate: "Seller Details",
     localizationPrefix: "SELLER_DETAILS",
     composable: "useSellerDetails",
     component: "DynamicBladeForm",

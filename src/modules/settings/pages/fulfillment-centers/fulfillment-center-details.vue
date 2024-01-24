@@ -69,12 +69,11 @@
 
 <script lang="ts" setup>
 import { computed, onMounted, ref, unref } from "vue";
-import { IBladeToolbar, IParentCallArgs, usePopup, useBeforeUnload } from "@vc-shell/framework";
+import { IBladeToolbar, IParentCallArgs, usePopup, useBeforeUnload, useBladeNavigation } from "@vc-shell/framework";
 import useFulfillmentCenters from "../../composables/useFulfillmentCenters";
 import { Field, useIsFormValid, useIsFormDirty, useForm } from "vee-validate";
 import { useSellerDetails } from "./../../../seller-details/composables";
 import { useI18n } from "vue-i18n";
-import { onBeforeRouteLeave } from "vue-router";
 
 export interface Props {
   expanded?: boolean;
@@ -123,6 +122,7 @@ const title = computed(() =>
 const errorMessage = ref("");
 const isValid = useIsFormValid();
 const isDirty = useIsFormDirty();
+const { onBeforeClose } = useBladeNavigation();
 useBeforeUnload(computed(() => !isDisabled.value && modified.value));
 
 const isDisabled = computed(() => {
@@ -191,7 +191,7 @@ async function removeFulfillmentCenter() {
   }
 }
 
-onBeforeRouteLeave(async () => {
+onBeforeClose(async () => {
   if (modified.value) {
     return await showConfirmation(unref(computed(() => t("SETTINGS.FULFILLMENT_CENTERS.ALERTS.CLOSE_CONFIRMATION"))));
   }

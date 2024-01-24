@@ -38,6 +38,13 @@ export const createAppModule = (
 
       // Register pages
       Object.values(pages).forEach((page) => {
+        if (!("routable" in page)) {
+          page.routable = true;
+        }
+
+        // all components registered through this plugin are blades
+        page.isBlade = true;
+
         if (!page.url) {
           app.config.globalProperties.pages?.push(page);
 
@@ -62,7 +69,9 @@ export const createAppModule = (
 
           const BladeInstanceConstructor = Object.assign({}, page, { name: routeName });
 
-          const bladeVNode = h(BladeInstanceConstructor);
+          const bladeVNode = h(BladeInstanceConstructor, {
+            navigation: {},
+          });
 
           if (routerInstance && mainRouteName) {
             routerInstance.addRoute(mainRouteName, {

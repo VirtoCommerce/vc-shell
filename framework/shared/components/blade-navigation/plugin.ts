@@ -1,5 +1,5 @@
 import { Router } from "vue-router";
-import { App, inject } from "vue";
+import { App, inject, ref } from "vue";
 import * as components from "./components";
 import { BladeNavigationPlugin, BladeRoutesRecord } from "./types";
 
@@ -25,6 +25,7 @@ export const VcBladeNavigationComponent = {
     const bladeNavigationPlugin: BladeNavigationPlugin = {
       router: args.router,
       internalRoutes,
+      blades: ref([]),
     };
 
     app.config.globalProperties.$bladeNavigationPlugin = bladeNavigationPlugin;

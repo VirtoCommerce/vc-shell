@@ -1,6 +1,7 @@
-import { Slot, defineComponent, h, provide, ref, VNode, PropType, Component } from "vue";
+import { Slot, defineComponent, h, provide, ref, VNode, PropType, Component, watch } from "vue";
 import { navigationViewLocation } from "./../../injectionKeys";
-import { BladeVNode } from "../../types";
+import { BladeVNode, CoreBladeExposed } from "../../types";
+import { toRef } from "@vueuse/core";
 
 export const VcBladeView = defineComponent({
   name: "BladeView",
@@ -9,16 +10,21 @@ export const VcBladeView = defineComponent({
     blade: {
       type: Object as PropType<BladeVNode>,
     },
-    name: {
-      type: String,
-    },
-
-    idx: {
-      type: Number,
-    },
   },
   setup(props, { attrs, slots }) {
     provide(navigationViewLocation, props.blade!);
+
+    const viewRef = ref<CoreBladeExposed>();
+
+    watch(
+      () => [viewRef.value, props.blade] as const,
+      ([instance, blade]) => {
+        if (blade && blade.props?.navigation) {
+          blade.props.navigation.instance = toRef(instance);
+        }
+      },
+      { flush: "post" },
+    );
 
     return () => {
       /**
@@ -59,6 +65,7 @@ export const VcBladeView = defineComponent({
         const component = h(
           props.blade as Component,
           Object.assign({}, attrs, {
+            ref: viewRef,
             onVnodeUnmounted,
             onVnodeMounted,
             "onExpand:blade": onExpand,
@@ -67,14 +74,14 @@ export const VcBladeView = defineComponent({
           }),
         );
 
-        return normalizeSlot(slots.default, { blade: component });
+        return normalizeSlot(slots.default, { Component: component });
       }
       return null;
     };
   },
 });
 
-function normalizeSlot(slot: Slot | undefined, data: { blade: VNode }) {
+function normalizeSlot(slot: Slot | undefined, data: { Component: VNode }) {
   if (!slot) return null;
   const slotContent = slot(data);
   return slotContent.length === 1 ? slotContent[0] : slotContent;

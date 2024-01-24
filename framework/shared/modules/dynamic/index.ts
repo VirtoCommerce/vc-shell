@@ -72,6 +72,7 @@ const register = (
     name: bladeName,
     isWorkspace: "isWorkspace" in json.settings && json.settings.isWorkspace,
     menuItem: ("menuItem" in json.settings && json.settings.menuItem) ?? undefined,
+    routable: json.settings.routable ?? true,
     setup: (props: ComponentProps<typeof bladeComponent>, ctx) =>
       (bladeComponent?.setup &&
         bladeComponent.setup(

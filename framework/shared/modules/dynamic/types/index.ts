@@ -42,6 +42,10 @@ export type SettingsSchema = SettingsGrid | SettingsDetails;
 
 export interface SettingsGrid extends SettingsBase {
   component: "DynamicBladeList";
+  /**
+   * Blade default header title
+   */
+  titleTemplate: string;
 }
 
 export interface SettingsDetails extends SettingsBase {
@@ -59,6 +63,15 @@ export interface SettingsBase {
    */
   url?: string;
   /**
+   * Determines whether you can navigate to the blade directly
+   * without parameters or options.
+   *
+   * @example Blade is not workspace and use context (passed `options` or `params` in openBlade method) to load data - then set `routable` to `false`
+   *
+   * @default true
+   */
+  routable?: boolean;
+  /**
    * Locale key for VueI18n locale files
    */
   localizationPrefix: string;
@@ -66,10 +79,6 @@ export interface SettingsBase {
    * Required component id
    */
   id: string;
-  /**
-   * Blade default header title
-   */
-  titleTemplate: string;
   /**
    * Composable to use at {@link SettingsBase.model } blade component view
    */

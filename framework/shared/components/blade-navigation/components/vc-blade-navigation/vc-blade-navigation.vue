@@ -1,32 +1,24 @@
 <template>
   <div class="tw-w-full tw-overflow-hidden tw-flex tw-grow tw-basis-0 tw-relative">
     <ErrorInterceptor
-      v-for="(blade, key, index) in blades?.components"
+      v-for="(bladeVNode, index) in blades"
       v-slot="{ error, reset }"
-      :key="key"
+      :key="index"
       capture
     >
-      <router-view
-        v-show="index >= quantity - ($isMobile.value ? 1 : 2)"
-        v-slot="{ Component }"
-        :key="key"
-        :name="key"
-      >
+      <router-view v-show="index >= quantity - ($isMobile.value ? 1 : 2)">
         <VcBladeView
-          v-slot="{ blade }"
-          :key="blade.type?.name || key"
-          :blade="Component as BladeVNode"
-          :name="key"
-          :idx="index"
+          v-slot="{ Component }"
+          :key="bladeVNode.type?.name || `blade_${index}`"
+          :blade="bladeVNode"
         >
           <component
-            :is="blade"
+            :is="Component"
             :ref="refs.set"
-            :key="blade.props.navigation?.uniqueRouteKey ?? 0"
             :error="error"
             :closable="index >= 1"
-            :expandable="Object.keys(blades?.components || {}).length > 1"
-            :expanded="index === Object.keys(blades?.components || {}).length - 1"
+            :expandable="quantity > 1"
+            :expanded="index === quantity - 1"
             @close:blade="closeBlade(index)"
             @parent:call="onParentCall(refs[index - 1], $event)"
             @vue:before-unmount="reset"
@@ -40,22 +32,16 @@
 
 <script lang="ts" setup>
 import { computed } from "vue";
-import { useRouter } from "vue-router";
-import { BladeVNode, useBladeNavigation } from "./../../../../../shared";
+import { RouterView } from "vue-router";
+import { useBladeNavigation } from "./../../../../../shared";
 import { ErrorInterceptor } from "./../../../error-interceptor";
 import { VcBladeView } from "./../vc-blade-view/vc-blade-view";
 import { useTemplateRefsList } from "@vueuse/core";
 
 const { blades, closeBlade, onParentCall } = useBladeNavigation();
 
-const router = useRouter();
-
 const quantity = computed(() => {
-  return (
-    (router.currentRoute.value.matched[1]?.components &&
-      Object.keys(router.currentRoute.value.matched[1].components).length) ||
-    0
-  );
+  return blades.value.length || 0;
 });
 
 const refs = useTemplateRefsList<HTMLDivElement>();

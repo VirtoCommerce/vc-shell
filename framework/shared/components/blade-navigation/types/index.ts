@@ -8,7 +8,7 @@ import {
   VNode,
   ComponentInternalInstance,
   VNodeTypes,
-  ComponentPublicInstance,
+  Ref,
 } from "vue";
 import { ComponentPublicInstanceConstructor } from "../../../utilities/vueUtils";
 import { MenuItemConfig } from "../../../../core/types";
@@ -27,6 +27,7 @@ export type CoreDynamicBladeComponentProps = {
 
 export type CoreBladeAdditionalSettings = {
   url?: `/${string}`;
+  routable?: boolean;
   permissions?: string | string[];
   isWorkspace?: boolean;
   name?: string;
@@ -75,6 +76,7 @@ export interface IBladeEvent<T extends Component = Component> {
 export interface BladeNavigationPlugin {
   router: Router;
   internalRoutes: BladeRoutesRecord[];
+  blades: Ref<BladeVNode[]>;
 }
 
 export interface BladeRoutesRecord {
@@ -90,22 +92,14 @@ export interface BladeVNode extends VNode {
     navigation: {
       onOpen?: () => void;
       onClose?: () => void;
+      onBeforeClose?: () => Promise<boolean | undefined>;
+      instance: Ref<CoreBladeExposed | undefined | null>;
       fullPath: string;
-      bladePath?: string;
       idx: number;
-      uniqueRouteKey: string;
     };
     onVnodeUnmounted?: VNodeMountHook | VNodeMountHook[];
     onVnodeMounted?: VNodeMountHook | VNodeMountHook[];
   } & Omit<VNode["props"], "onVnodeUnmounted" | "onVnodeMounted"> &
     CoreBladeComponentProps;
   type: VNodeTypes & BladeInstanceConstructor;
-}
-
-export interface BladeRouteRecordLocationNormalized extends RouteRecordNormalized {
-  components: Record<string, BladeVNode>;
-  instances: Record<
-    string,
-    ComponentPublicInstance<CoreBladeExposed, any, CoreBladeExposed, any, CoreBladeExposed, any, any, any, any, any>
-  >;
 }

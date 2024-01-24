@@ -6,7 +6,6 @@
 
 /* tslint:disable */
 /* eslint-disable */
-
 // ReSharper disable InconsistentNaming
 // @ts-nocheck
 
@@ -9771,6 +9770,7 @@ export interface IOffer {
 
 export class OfferDetails implements IOfferDetails {
   productId?: string | undefined;
+  productGtin?: string | undefined;
   isActive?: boolean;
   isDefault?: boolean;
   outerId?: string | undefined;
@@ -9797,6 +9797,7 @@ export class OfferDetails implements IOfferDetails {
   init(_data?: any) {
     if (_data) {
       this.productId = _data["productId"];
+      this.productGtin = _data["productGtin"];
       this.isActive = _data["isActive"];
       this.isDefault = _data["isDefault"];
       this.outerId = _data["outerId"];
@@ -9836,6 +9837,7 @@ export class OfferDetails implements IOfferDetails {
   toJSON(data?: any) {
     data = typeof data === "object" ? data : {};
     data["productId"] = this.productId;
+    data["productGtin"] = this.productGtin;
     data["isActive"] = this.isActive;
     data["isDefault"] = this.isDefault;
     data["outerId"] = this.outerId;
@@ -9868,6 +9870,7 @@ export class OfferDetails implements IOfferDetails {
 
 export interface IOfferDetails {
   productId?: string | undefined;
+  productGtin?: string | undefined;
   isActive?: boolean;
   isDefault?: boolean;
   outerId?: string | undefined;

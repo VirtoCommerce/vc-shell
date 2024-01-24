@@ -1,5 +1,5 @@
 import * as _ from "lodash-es";
-import { DynamicSchema, OverridesSchema } from "../types";
+import { DynamicSchema, OverridesRemove, OverridesSchema } from "../types";
 import "core-js/actual/array/to-spliced";
 
 export const handleOverrides = (overrides: OverridesSchema, schemaCopy: { [key: string]: DynamicSchema }) => {
@@ -43,22 +43,40 @@ const upsertHelper = (overrides: OverridesSchema, schemaCopy: { [key: string]: D
   );
 };
 
-const removeHelper = (overrides: OverridesSchema, schemaCopy: { [key: string]: DynamicSchema }) => {
+const removeHelper = (overrides: OverridesSchema, schemaCopy: Record<string, DynamicSchema>) => {
   return Object.entries(schemaCopy).reduce(
     (obj, [name, schema]) => {
       const clonedSchema = _.cloneDeep(schema);
-      overrides.remove
-        ?.filter((x) => clonedSchema.settings.id === x.id)
-        .forEach(({ path }) => {
-          if (path) {
-            const parentPath = path.slice(0, path.lastIndexOf("["));
-            _.unset(clonedSchema, path);
-            _.update(clonedSchema, parentPath, _.compact);
-          }
-        }, {});
+      sortByMaxIndexPath(overrides.remove?.filter((x) => schema.settings.id === x.id)).forEach(({ path }) => {
+        if (path) {
+          removePath(clonedSchema, path);
+        }
+      });
       obj[name] = clonedSchema;
       return obj;
     },
     {} as Record<string, DynamicSchema>,
   );
 };
+
+function removePath(obj: DynamicSchema, path: string) {
+  const parentPath = path.slice(0, path.lastIndexOf("["));
+  _.unset(obj, path);
+  _.update(obj, parentPath, _.compact);
+}
+
+// this part sorts paths with indexes in descending order to avoid deleting items with already changed indexes
+function sortByMaxIndexPath(items: { path: string }[] | undefined) {
+  return (items || []).sort((a, b) => getMaxIndexFromPath(b.path) - getMaxIndexFromPath(a.path));
+}
+
+function getMaxIndexFromPath(path: string): number {
+  const matches = path.match(/\[(\d+)\]/g);
+
+  if (matches) {
+    const indexes = matches.map((match) => parseInt(match.slice(1, -1), 10));
+    return Math.max(...indexes);
+  }
+
+  return Infinity;
+}

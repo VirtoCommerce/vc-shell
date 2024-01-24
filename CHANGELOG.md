@@ -1,3 +1,12 @@
+## [1.0.150](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.149...v1.0.150) (2024-01-24)
+
+
+### Features
+
+* **framework:** possibility to disable menu ([65b1eb0](https://github.com/VirtoCommerce/vc-shell/commit/65b1eb0ad71026e992a7bcecb0a7616415115a6e))
+
+
+
 ## [1.0.149](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.148...v1.0.149) (2024-01-24)
 
 

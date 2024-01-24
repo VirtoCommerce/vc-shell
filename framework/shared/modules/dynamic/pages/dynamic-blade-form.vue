@@ -50,7 +50,9 @@
           >
             <component
               :is="item"
+              :ref="(el: HTMLElement) => widgetsRefs.set({ component: item, el })"
               v-model="bladeContext"
+              @click="setActiveWidget(item)"
             ></component>
           </div>
         </div>
@@ -75,9 +77,10 @@ import {
   onBeforeMount,
   ComputedRef,
   type Component,
+  ConcreteComponent,
 } from "vue";
 import { DynamicDetailsSchema, FormContentSchema, SettingsSchema } from "../types";
-import { reactiveComputed, useMounted } from "@vueuse/core";
+import { reactiveComputed, useMounted, useTemplateRefsList } from "@vueuse/core";
 import {
   DetailsBladeContext,
   DetailsBaseBladeScope,
@@ -85,11 +88,11 @@ import {
   UseDetails,
   usePopup,
   useBladeNavigation,
+  CoreBladeExposed,
 } from "../../../index";
 import SchemaRender from "../components/SchemaRender";
 import { VcSelect } from "../../../../ui/components";
 import { toolbarReducer } from "../helpers/toolbarReducer";
-import { onBeforeRouteLeave } from "vue-router";
 import { useBeforeUnload } from "../../../../core/composables/useBeforeUnload";
 import * as _ from "lodash-es";
 import { IBladeToolbar } from "../../../../core/types";
@@ -123,7 +126,9 @@ const { t } = useI18n({ useScope: "global" });
 
 const { showConfirmation } = usePopup();
 
-const { currentBladeNavigationData } = useBladeNavigation();
+const { onBeforeClose } = useBladeNavigation();
+
+const widgetsRefs = useTemplateRefsList<{ el: HTMLDivElement; component: ConcreteComponent }>();
 
 const { loading, item, validationState, scope, load, remove, saveChanges, bladeTitle } = props.composables
   ? (props.composables?.[props.model?.settings?.composable ?? ""]({ emit, props, mounted: useMounted() }) as UseDetails<
@@ -143,6 +148,7 @@ const { loading, item, validationState, scope, load, remove, saveChanges, bladeT
 
 const title = ref();
 const isReady = ref(false);
+const activeWidgetExposed = ref<CoreBladeExposed>();
 
 watch(
   () => bladeTitle?.value,
@@ -245,6 +251,11 @@ const toolbarComputed =
             emit("parent:call", {
               method: "reload",
             });
+
+            emit("parent:call", {
+              method: "updateActiveWidgetCount",
+            });
+
             if (!props.param) {
               emit("close:blade");
             }
@@ -264,6 +275,10 @@ const toolbarComputed =
               emit("parent:call", {
                 method: "reload",
               });
+              emit("parent:call", {
+                method: "updateActiveWidgetCount",
+              });
+
               emit("close:blade");
             }
           }
@@ -275,24 +290,24 @@ const toolbarComputed =
     context: bladeContext.value,
   });
 
-onBeforeMount(async () => {
-  if (props.composables) await init();
-});
+async function setActiveWidget(widget: string | ConcreteComponent) {
+  const component = typeof widget === "string" ? resolveComponent(widget) : widget;
 
-onBeforeRouteLeave(async (to) => {
-  if (
-    (settings.value?.url
-      ? currentBladeNavigationData.value?.fullPath && !to.path.includes(currentBladeNavigationData.value?.fullPath)
-      : true) &&
-    unref(validated)
-  ) {
-    return await showConfirmation(
-      unref(
-        computed(() => t(`${settings.value?.localizationPrefix.trim().toUpperCase()}.PAGES.ALERTS.CLOSE_CONFIRMATION`)),
-      ),
+  if (typeof component !== "string") {
+    await nextTick(
+      () => (activeWidgetExposed.value = widgetsRefs.value.find((x) => _.isEqual(x.component, component))?.el),
     );
   }
-});
+}
+
+async function updateActiveWidgetCount() {
+  if (
+    activeWidgetExposed.value?.updateActiveWidgetCount &&
+    typeof activeWidgetExposed.value?.updateActiveWidgetCount === "function"
+  ) {
+    await activeWidgetExposed.value.updateActiveWidgetCount();
+  }
+}
 
 async function init() {
   if (props.param) {
@@ -304,8 +319,23 @@ async function init() {
   });
 }
 
+onBeforeMount(async () => {
+  if (props.composables) await init();
+});
+
+onBeforeClose(async () => {
+  if (unref(validated)) {
+    return await showConfirmation(
+      unref(
+        computed(() => t(`${settings.value?.localizationPrefix.trim().toUpperCase()}.PAGES.ALERTS.CLOSE_CONFIRMATION`)),
+      ),
+    );
+  }
+});
+
 defineExpose({
   title: bladeTitle ?? "",
+  updateActiveWidgetCount,
   ...scope?.value,
 });
 </script>

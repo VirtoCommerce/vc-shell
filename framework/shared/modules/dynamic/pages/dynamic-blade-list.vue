@@ -345,7 +345,7 @@ const toolbarComputed =
       },
       removeItems: {
         async clickHandler() {
-          removeItems();
+          await removeItems();
         },
         disabled: computed(() => !selectedIds.value?.length),
         isVisible: isDesktop.value,
@@ -472,6 +472,9 @@ async function removeItems() {
         }
       }
     }
+    emit("parent:call", {
+      method: "updateActiveWidgetCount",
+    });
     await reload();
   }
 }
@@ -590,9 +593,16 @@ function sortRows(event: { dragIndex: number; dropIndex: number; value: any[] })
   }
 }
 
+function updateActiveWidgetCount() {
+  emit("parent:call", {
+    method: "updateActiveWidgetCount",
+  });
+}
+
 defineExpose({
   reload,
   title,
+  updateActiveWidgetCount,
   ...scope?.value,
 });
 </script>

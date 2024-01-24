@@ -1,3 +1,12 @@
+## [1.0.149](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.148...v1.0.149) (2024-01-24)
+
+
+### Features
+
+* **config:** environment variables for internationalization ([f96dd26](https://github.com/VirtoCommerce/vc-shell/commit/f96dd26c37caad4f56cc823a9f69392d86b19eed))
+
+
+
 ## [1.0.148](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.147...v1.0.148) (2024-01-16)
 
 

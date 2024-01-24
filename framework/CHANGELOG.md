@@ -1,3 +1,20 @@
+## [1.0.149](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.148...v1.0.149) (2024-01-24)
+
+
+### Bug Fixes
+
+* **dynamic:** fixed overrides remove order ([a3e5980](https://github.com/VirtoCommerce/vc-shell/commit/a3e59801c1d8fd963cb5f4fe4e445dab0e2d5d32))
+* **framework:** fix ui styling issues in multiple components ([61f56d6](https://github.com/VirtoCommerce/vc-shell/commit/61f56d603b15f385c32d0270c939d539b606b37c))
+
+
+### Features
+
+* **dynamic:** updateActiveWidgetCount event ([808d31d](https://github.com/VirtoCommerce/vc-shell/commit/808d31df475e3c29386d7742fbc5f6ee7645a9bc))
+* **framework:** updated localization setup, i18n locales config, dynamic modules localization ([209b92f](https://github.com/VirtoCommerce/vc-shell/commit/209b92fe2bf95379d908064d553ab59e16928569))
+* **framework:** updated navigation, added routable config for blades ([7c538c6](https://github.com/VirtoCommerce/vc-shell/commit/7c538c6dfab70cc6c85dd453e516d84395e1166c))
+
+
+
 ## [1.0.148](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.147...v1.0.148) (2024-01-16)
 
 

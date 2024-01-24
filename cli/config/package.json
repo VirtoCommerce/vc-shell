@@ -16,7 +16,7 @@
     "vite": "^5.0.11",
     "vite-plugin-checker": "^0.6.2",
     "vite-plugin-mkcert": "^1.17.1",
-    "vue": "^3.4.7"
+    "vue": "^3.4.14"
   },
   "devDependencies": {
     "@vc-shell/ts-config": "^1.0.148",

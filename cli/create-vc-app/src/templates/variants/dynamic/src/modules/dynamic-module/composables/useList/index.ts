@@ -51,9 +51,12 @@ export default (args: {
         return { results: res, totalCount: res.length };
       });
     },
+    remove: () => {
+      throw new Error("Function not implemented.");
+    }
   });
 
-  const { load, items, pagination, loading, query } = factory();
+  const { load, remove, items, pagination, loading, query } = factory();
   const { openBlade, resolveBladeByName } = useBladeNavigation();
 
   async function openDetailsBlade(data?: Omit<Parameters<typeof openBlade>["0"], "blade">) {
@@ -70,6 +73,7 @@ export default (args: {
   return {
     items,
     load,
+    remove,
     loading,
     pagination,
     query,

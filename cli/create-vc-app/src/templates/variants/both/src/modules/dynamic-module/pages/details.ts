@@ -5,7 +5,6 @@ export const details: DynamicDetailsSchema = {
     url: "/dynamic-module-details",
     id: "DynamicItem",
     localizationPrefix: "DynamicModule",
-    titleTemplate: "Dynamic module details",
     composable: "useDetails",
     component: "DynamicBladeForm",
     toolbar: [

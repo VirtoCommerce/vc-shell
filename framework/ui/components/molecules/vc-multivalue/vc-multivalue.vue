@@ -59,6 +59,7 @@
         <div class="vc-multivalue__field vc-multivalue__field_dictionary tw-grow tw-basis-0 tw-p-2">
           <VcButton
             small
+            :disabled="disabled"
             @click.stop="toggleDropdown"
             >Add +</VcButton
           >

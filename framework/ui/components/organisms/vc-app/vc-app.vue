@@ -22,7 +22,7 @@
       :logo="logo"
       :title="title"
       @menubutton:click="($refs.menu as Record<'isMobileVisible', boolean>).isMobileVisible = true"
-      @backlink:click="closeBlade(Object.keys(blades?.components || {}).length - 1)"
+      @backlink:click="closeBlade(blades.length - 1)"
       @logo:click="openRoot"
     >
       <template #app-switcher>
@@ -107,7 +107,6 @@ import {
   NotificationDropdown,
   BladeRoutesRecord,
 } from "./../../../../shared/components";
-import { useI18n } from "vue-i18n";
 import { useNotifications, useUser } from "../../../../core/composables";
 import { useRoute, useRouter } from "vue-router";
 import { watchOnce } from "@vueuse/core";
@@ -145,7 +144,7 @@ const router = useRouter();
 
 const { openBlade, closeBlade, resolveBladeByName, blades } = useBladeNavigation();
 const { appsList, switchApp, getApps } = useAppSwitcher();
-const { locale: currentLocale } = useI18n({ useScope: "global" });
+
 const { loadFromHistory } = useNotifications();
 const route = useRoute();
 const { isAuthenticated } = useUser();
@@ -165,10 +164,6 @@ const onMenuItemClick = function (item: MenuItem) {
   }
 };
 
-function langInit() {
-  currentLocale.value = localStorage.getItem("VC_LANGUAGE_SETTINGS") ?? "en";
-}
-
 const openRoot = async () => {
   router.push("/");
 };
@@ -177,7 +172,6 @@ watchOnce(
   () => props.isReady,
   async (newVal) => {
     if (isAuthenticated.value && newVal) {
-      langInit();
       await loadFromHistory();
       await getApps();
     }

@@ -4,39 +4,41 @@
     class="user-dropdown-button"
     :class="{
       'user-dropdown-button_active': accountMenuVisible,
-      'user-dropdown-button_no-pointer': $isMobile.value,
     }"
     @click.stop="toggleAccountMenuVisible"
   >
-    <div
-      v-if="avatarUrl"
-      class="user-dropdown-button__avatar"
-      :style="imageHandler"
-    ></div>
-    <VcIcon
-      v-else
-      icon="fas fa-user-circle"
-      size="xxl"
-      class="tw-text-[color:var(--app-bar-button-color)]"
-    />
-    <div class="tw-grow tw-basis-0 tw-ml-3 tw-overflow-hidden">
-      <div class="user-dropdown-button__name tw-truncate">
-        {{ name || user?.userName }}
-      </div>
-      <div class="user-dropdown-button__role">
-        {{
-          (role && $t(`SHELL.USER.ROLE.${role}`)) || (user?.isAdministrator ? $t("SHELL.USER.ROLE.ADMINISTRATOR") : "")
-        }}
-      </div>
-    </div>
-    <div
-      v-if="menu && menu.length && !$isMobile.value"
-      class="user-dropdown-button__chevron"
-    >
+    <div class="user-dropdown-button__wrap tw-flex tw-justify-between tw-items-center tw-flex-auto">
+      <div
+        v-if="avatarUrl"
+        class="user-dropdown-button__avatar"
+        :style="imageHandler"
+      ></div>
       <VcIcon
-        icon="fas fa-chevron-down"
-        size="xl"
-      ></VcIcon>
+        v-else
+        icon="fas fa-user-circle"
+        size="xxl"
+        class="tw-text-[color:var(--app-bar-button-color)]"
+      />
+      <div class="tw-grow tw-basis-0 tw-ml-3 tw-overflow-hidden">
+        <div class="user-dropdown-button__name tw-truncate">
+          {{ name || user?.userName }}
+        </div>
+        <div class="user-dropdown-button__role">
+          {{
+            (role && $t(`SHELL.USER.ROLE.${role}`)) ||
+            (user?.isAdministrator ? $t("SHELL.USER.ROLE.ADMINISTRATOR") : "")
+          }}
+        </div>
+      </div>
+      <div
+        v-if="menu && menu.length"
+        class="user-dropdown-button__chevron"
+      >
+        <VcIcon
+          icon="fas fa-chevron-down"
+          size="xl"
+        ></VcIcon>
+      </div>
     </div>
     <div
       v-if="menu && accountMenuVisible"
@@ -56,7 +58,7 @@
 </template>
 
 <script lang="ts" setup>
-import { Ref, computed, inject, ref } from "vue";
+import { computed, ref } from "vue";
 import { vOnClickOutside } from "@vueuse/components";
 import { useUser } from "../../../core/composables";
 import { useRouter } from "vue-router";
@@ -65,6 +67,7 @@ import { VcIcon } from "../../../ui/components";
 import { BladeMenu } from "../../../core/types";
 import { usePopup } from "../popup-handler/composables/usePopup";
 import { ChangePassword } from "../change-password";
+import { useBladeNavigation } from "..";
 
 export interface Props {
   avatarUrl?: string | undefined;
@@ -76,8 +79,6 @@ const props = withDefaults(defineProps<Props>(), {
   menuItems: () => [],
 });
 
-const isMobile = inject("isMobile") as Ref<boolean>;
-
 const { user, signOut } = useUser();
 const router = useRouter();
 const { t } = useI18n({ useScope: "global" });
@@ -85,7 +86,7 @@ const { t } = useI18n({ useScope: "global" });
 const { open } = usePopup({
   component: ChangePassword,
 });
-
+const { closeBlade } = useBladeNavigation();
 const accountMenuVisible = ref(false);
 const menu = computed(() => [
   ...props.menuItems,
@@ -98,14 +99,18 @@ const menu = computed(() => [
   {
     title: t("SHELL.ACCOUNT.LOGOUT"),
     async clickHandler() {
-      await signOut();
-      router.push({ name: "Login" });
+      const isPrevented = await closeBlade(0);
+
+      if (!isPrevented) {
+        await signOut();
+        router.push({ name: "Login" });
+      }
     },
   },
 ]);
 
 const toggleAccountMenuVisible = () => {
-  if (menu.value && menu.value.length && !isMobile.value) {
+  if (menu.value && menu.value.length) {
     accountMenuVisible.value = !accountMenuVisible.value;
   }
 };
@@ -125,11 +130,7 @@ const imageHandler = computed(() => {
 <style lang="scss">
 .user-dropdown-button {
   @apply tw-w-[240px] tw-border-l tw-border-solid tw-border-l-[color:var(--app-bar-divider-color)] tw-px-4 tw-cursor-pointer
-    tw-relative tw-flex tw-justify-between tw-items-center tw-h-full;
-
-  &_no-pointer {
-    @apply tw-cursor-default;
-  }
+    tw-relative tw-flex tw-h-full tw-flex-col tw-select-none;
 
   &:hover,
   &_active {
@@ -166,6 +167,20 @@ const imageHandler = computed(() => {
 
     &-item {
       @apply tw-p-3 tw-text-lg tw-text-black tw-border-l tw-border-solid tw-border-l-[#eef0f2] tw-border-b tw-border-b-[#eef0f2] tw-bg-white hover:tw-bg-[#eff7fc];
+    }
+  }
+
+  .vc-app_mobile & {
+    &__wrap {
+      height: var(--app-bar-height);
+    }
+
+    &__menu {
+      @apply tw-static tw-shadow-none #{!important};
+    }
+
+    &__menu-item {
+      @apply tw-border-none #{!important};
     }
   }
 }

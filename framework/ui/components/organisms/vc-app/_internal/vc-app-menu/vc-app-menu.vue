@@ -18,7 +18,7 @@
       <!-- Show menu close handler on mobile devices -->
       <div
         v-if="$isMobile.value"
-        class="tw-text-[#319ed4] tw-flex tw-justify-end tw-items-center tw-p-4"
+        class="tw-text-[#319ed4] tw-flex tw-justify-end tw-items-center tw-p-4 tw-cursor-pointer"
       >
         <VcIcon
           icon="fas fa-times"

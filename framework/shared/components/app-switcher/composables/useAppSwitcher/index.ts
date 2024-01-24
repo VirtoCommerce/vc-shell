@@ -2,6 +2,7 @@ import { computed, Ref, ref } from "vue";
 import { AppDescriptor, AppsClient } from "../../../../../core/api/platform";
 import { usePermissions } from "../../../../../core/composables";
 import { notification } from "./../../../notifications";
+import { i18n } from "../../../../../core/plugins";
 
 interface IUseAppSwitcher {
   readonly appsList: Ref<AppDescriptor[]>;
@@ -37,7 +38,7 @@ export function useAppSwitcher(): IUseAppSwitcher {
         window.location.href = window.location.origin + app.relativeUrl;
       }
     } else {
-      notification.error("Access restricted", {
+      notification.error(i18n.global.t("PERMISSION_MESSAGES.ACCESS_RESTRICTED"), {
         timeout: 3000,
       });
     }

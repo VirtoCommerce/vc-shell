@@ -126,6 +126,9 @@
             "TITLE": "End date",
             "PLACEHOLDER": ""
           },
+          "PROPERTIES": {
+            "TITLE": "Properties"
+          },
           "CODE": "CODE",
           "DATES": {
             "TITLE": "Validity dates",
@@ -144,11 +147,6 @@
           "IMAGES": {
             "TITLE": "Offer image"
           }
-        },
-        "LANGUAGES":{
-          "en-US": "English",
-          "de-DE": "German",
-          "fr-FR": "French"
         }
       },
       "ALERTS": {

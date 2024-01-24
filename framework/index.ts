@@ -7,22 +7,37 @@ import { i18n, permissions, signalR } from "./core/plugins";
 import { SharedModule, notification } from "./shared";
 import * as sharedPages from "./shared/pages/plugin";
 import { registerInterceptors } from "./core/interceptors";
-
-import "normalize.css";
-import "./assets/styles/index.scss";
 import { usePermissions } from "./core/composables/usePermissions";
 import { useUser } from "./core/composables/useUser";
 
+import "normalize.css";
+import "./assets/styles/index.scss";
+
 export default {
-  install(app: App, args: { router: Router; platformUrl: string }): void {
+  install(
+    app: App,
+    args: {
+      router: Router;
+      platformUrl: string;
+      i18n?: {
+        locale: string;
+        fallbackLocale: string;
+      };
+    },
+  ): void {
     // HTTP Interceptors
     window.fetch = registerInterceptors(args.router);
 
-    app.use(i18n);
-    // Left for backward compatibility
-    app.config.globalProperties.$mergeLocaleMessage = i18n.global.mergeLocaleMessage;
+    if (args.i18n?.locale) {
+      i18n.global.locale.value = args.i18n.locale;
+    }
+    if (args.i18n?.fallbackLocale) {
+      i18n.global.fallbackLocale.value = args.i18n.fallbackLocale;
+    }
 
-    // Install libraries
+    app.use(i18n);
+
+    app.config.globalProperties.$mergeLocaleMessage = i18n.global.mergeLocaleMessage;
 
     // Register exported components
     Object.entries(components).forEach(([name, component]) => {
@@ -80,7 +95,12 @@ export default {
 
     app.provide("platformUrl", args.platformUrl);
 
+    args.router.listening = false;
+
     // Router guards
+    /**
+     * Check if user is authenticated and redirect to login page if not.
+     */
     // TODO add check if app has login page
     args.router.beforeEach(async (to) => {
       const { isAuthenticated } = useUser();
@@ -96,13 +116,17 @@ export default {
       } else return true;
     });
 
+    /**
+     * Check if user has access to the page and redirect to previous path if not.
+     */
     args.router.beforeEach((to, from) => {
       const { hasAccess } = usePermissions();
       if (!to.meta.permissions) {
         return true;
       } else if (hasAccess(to.meta.permissions as string | string[])) return true;
       else {
-        notification.error("Access restricted", {
+        // TODO move to locales
+        notification.error(i18n.global.t("PERMISSION_MESSAGES.ACCESS_RESTRICTED"), {
           timeout: 3000,
         });
         return from.path;

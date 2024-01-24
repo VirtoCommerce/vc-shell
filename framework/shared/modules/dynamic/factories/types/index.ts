@@ -79,7 +79,7 @@ export interface DetailsBaseBladeScope extends BaseBladeScope {
     currentLocale: Ref<string>;
     languages: Ref<string[]>;
     setLocale: (locale: string) => void;
-    localesOptions: Ref<{ label: string; value: string }[]>;
+    localesOptions: Ref<{ label: string | undefined; value: string }[]>;
     getLanguages: AsyncAction<void, void>;
   };
   dynamicProperties?: {

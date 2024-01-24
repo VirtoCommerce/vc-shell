@@ -1,2 +1,4 @@
 #APP_PLATFORM_URL=add_platform_url_here
 APP_BASE_PATH=/apps/application/
+APP_I18N_LOCALE=en
+APP_I18N_FALLBACK_LOCALE=en

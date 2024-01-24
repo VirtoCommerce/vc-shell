@@ -7,6 +7,7 @@ import { setModel } from "./setters";
 import { unwrapInterpolation } from "./unwrapInterpolation";
 import { DetailsBladeContext } from "../factories";
 import { safeIn } from "./safeIn";
+import { i18n } from "./../../../../core/plugins/i18n";
 
 function disabledHandler(
   disabled: { method?: string } | boolean,
@@ -40,6 +41,8 @@ function nodeBuilder<
   formData: FormData;
 }): VNode {
   if (!controlSchema) throw new Error("There is no controlSchema provided");
+
+  const { t } = i18n.global;
 
   const name = controlSchema.id;
   const rules = (safeIn("rules", controlSchema) && controlSchema.rules) || undefined;
@@ -99,15 +102,15 @@ function nodeBuilder<
 
   const baseProps: IControlBaseProps = reactive({
     key: `${parentId}`,
-    label,
+    label: unref(computed(() => (label ? t(label) : undefined))),
     disabled,
     name,
     rules,
-    placeholder,
+    placeholder: unref(computed(() => (placeholder ? t(placeholder) : undefined))),
     required,
     modelValue,
     "onUpdate:modelValue": onUpdateModelValue,
-    tooltip,
+    tooltip: unref(computed(() => (tooltip ? t(tooltip) : undefined))),
     multilanguage,
   });
 

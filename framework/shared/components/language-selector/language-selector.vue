@@ -44,17 +44,19 @@ import { VcIcon } from "./../../../ui/components";
 import { ref } from "vue";
 import { vOnClickOutside } from "@vueuse/components";
 import { useI18n } from "vue-i18n";
+import { useLanguages } from "../../../core/composables";
 
-const { locale: currentLocale, availableLocales, getLocaleMessage } = useI18n({ useScope: "global" });
-
+const { availableLocales, getLocaleMessage } = useI18n({ useScope: "global" });
+const { setLocale } = useLanguages();
 const isDropActive = ref(false);
 
-const languageItems = availableLocales.map((locale: string) => ({
-  lang: locale,
-  title: (getLocaleMessage(locale) as { language_name: string }).language_name,
-  clickHandler(lang: string) {
-    currentLocale.value = lang;
-    localStorage.setItem("VC_LANGUAGE_SETTINGS", lang);
-  },
-}));
+const languageItems = availableLocales
+  .map((locale: string) => ({
+    lang: locale,
+    title: (getLocaleMessage(locale) as { language_name: string }).language_name,
+    clickHandler(lang: string) {
+      setLocale(lang);
+    },
+  }))
+  .filter((item) => item.title);
 </script>

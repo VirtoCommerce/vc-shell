@@ -4,6 +4,7 @@ import { router } from "./router";
 import * as locales from "./locales";
 import { RouterView } from "vue-router";
 import DynamicModule from "./modules/dynamic-module";
+import { bootstrap } from "./bootstrap";
 
 // Load required CSS
 import "./styles/index.scss";
@@ -20,10 +21,16 @@ async function startApp() {
     .use(VirtoShellFramework, {
       router,
       platformUrl: import.meta.env.APP_PLATFORM_URL,
+      i18n: {
+        locale: import.meta.env.APP_I18N_LOCALE,
+        fallbackLocale: import.meta.env.APP_I18N_FALLBACK_LOCALE,
+      },
     })
     // Dynamic module based on page schemas
     .use(DynamicModule, { router })
     .use(router);
+
+  bootstrap(app);
 
   Object.entries(locales).forEach(([key, message]) => {
     app.config.globalProperties.$mergeLocaleMessage(key, message);

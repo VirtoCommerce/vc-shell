@@ -1,5 +1,4 @@
 export * from "./useFunctions";
-export * from "./useI18n";
 export * from "./useUser";
 export * from "./useNotifications";
 export * from "./useSettings";
@@ -11,3 +10,4 @@ export * from "./useErrorHandler";
 export { useAssets } from "./useAssets";
 export { useMenuService } from "./useMenuService";
 export { useBeforeUnload } from "./useBeforeUnload";
+export { useLanguages } from "./useLanguages";

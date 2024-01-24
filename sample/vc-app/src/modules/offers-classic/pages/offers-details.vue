@@ -235,9 +235,9 @@
             </VcCard>
 
             <VcCard
-              v-if="filteredProps"
+              v-if="filteredProps?.length"
               class="tw-mb-4"
-              :header="$t('PRODUCTS.PAGES.DETAILS.FIELDS.TITLE')"
+              :header="$t('OFFERSCLASSIC.PAGES.DETAILS.FIELDS.PROPERTIES.TITLE')"
             >
               <div class="tw-p-4">
                 <div
@@ -521,7 +521,6 @@ import {
   markRaw,
   Ref,
   VNodeRef,
-  Component,
   ComponentPublicInstance,
 } from "vue";
 import {
@@ -541,7 +540,6 @@ import { Form, useIsFormValid, Field, useIsFormDirty, useForm } from "vee-valida
 import moment from "moment";
 import { useI18n } from "vue-i18n";
 import { useDynamicProperties, useFulfillmentCenters, useMarketplaceSettings, useMultilanguage } from "../../common";
-import { onBeforeRouteLeave } from "vue-router";
 
 export interface Props {
   expanded: boolean;
@@ -576,7 +574,7 @@ const { t } = useI18n({ useScope: "global" });
 
 const { createOffer, updateOffer, offerDetails, fetchProducts, offer, loadOffer, loading, makeCopy, deleteOffer } =
   useOffer();
-const { currentBladeNavigationData } = useBladeNavigation();
+const { onBeforeClose } = useBladeNavigation();
 useBeforeUnload(
   computed(
     () => !!offerDetails.value.prices && !!offerDetails.value.prices.length && !isDisabled.value && modified.value,
@@ -1008,13 +1006,8 @@ const onGalleryUpload = async (files: FileList | null) => {
   }
 };
 
-onBeforeRouteLeave(async (to) => {
-  if (
-    currentBladeNavigationData.value?.fullPath &&
-    !to.path.includes(currentBladeNavigationData.value?.fullPath) &&
-    !isDisabled.value &&
-    modified.value
-  ) {
+onBeforeClose(async () => {
+  if (!isDisabled.value && modified.value) {
     return await showConfirmation(unref(computed(() => t("OFFERSCLASSIC.PAGES.ALERTS.CLOSE_CONFIRMATION"))));
   }
 });

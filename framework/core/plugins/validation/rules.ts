@@ -1,3 +1,4 @@
+import { i18n } from "..";
 import { defineRule } from "vee-validate";
 import * as AllRules from "@vee-validate/rules";
 
@@ -25,7 +26,7 @@ export const mindimensions = (images: HTMLInputElement, [width, height]: [string
         if (isValid) {
           resolve(true);
         } else {
-          resolve(`Image dimensions must be greater than ${height}*${width}`);
+          resolve(i18n.global.t("messages.min_dimensions.error", { width, height }));
         }
       };
 
@@ -36,7 +37,7 @@ export const mindimensions = (images: HTMLInputElement, [width, height]: [string
   const fileList = images.files;
   for (let i = 0; i < fileList.length; i++) {
     if (!/\.(jpg|svg|jpeg|png|bmp|gif)$/i.test(fileList[i].name)) {
-      return Promise.resolve("Not image file");
+      return Promise.resolve(i18n.global.t("messages.min_dimensions.not_image_error"));
     }
 
     list.push(fileList[i]);
@@ -76,7 +77,7 @@ export const fileWeight = (file: HTMLInputElement, [size]: [number]) => {
 
   const isInvalid = checker.find((x) => x === true);
   if (isInvalid) {
-    return `File size must be maximum ${size} kb`;
+    return i18n.global.t("messages.file_weight", { size });
   } else {
     return true;
   }
@@ -124,12 +125,12 @@ const compare = (
 
 // before
 export const before = (value: string, [target]: string[]) =>
-  compare(value, [target], (first, second) => first < second, "End date must be earlier than start date");
+  compare(value, [target], (first, second) => first < second, i18n.global.t("messages.before"));
 defineRule("before", before);
 
 // after
 export const after = (value: string, [target]: string[]) =>
-  compare(value, [target], (first, second) => first > second, "End date must be later than start date");
+  compare(value, [target], (first, second) => first > second, i18n.global.t("messages.after"));
 
 defineRule("after", after);
 
@@ -137,7 +138,7 @@ export const bigInt = (value: string) => {
   if (Number.isSafeInteger(parseInt(value))) {
     return true;
   } else {
-    return "Unsupported number";
+    return i18n.global.t("messages.bigint");
   }
 };
 

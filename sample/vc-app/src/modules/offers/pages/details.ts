@@ -5,7 +5,6 @@ export const details: DynamicDetailsSchema = {
     url: "/offer",
     id: "Offer",
     localizationPrefix: "Offers",
-    titleTemplate: "Offer details",
     composable: "useOfferDetails",
     component: "DynamicBladeForm",
     toolbar: [

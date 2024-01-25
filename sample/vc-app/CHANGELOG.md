@@ -1,3 +1,12 @@
+## [1.0.151](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.150...v1.0.151) (2024-01-25)
+
+
+### Features
+
+* **sample:** added routable config for details blades ([dddc3a6](https://github.com/VirtoCommerce/vc-shell/commit/dddc3a68a733f860c0608faa78423b0a2bb1e93e))
+
+
+
 ## [1.0.150](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.149...v1.0.150) (2024-01-24)
 
 

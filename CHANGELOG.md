@@ -1,3 +1,18 @@
+## [1.0.151](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.150...v1.0.151) (2024-01-25)
+
+
+### Bug Fixes
+
+* **framework:** user-dropdown-button disabling fix ([2f9cb62](https://github.com/VirtoCommerce/vc-shell/commit/2f9cb62e326152a64d9fd3d719b01a5043c195ca))
+
+
+### Features
+
+* **framework:** added support of URL with base param ([fe9649e](https://github.com/VirtoCommerce/vc-shell/commit/fe9649e7348032fd8f9e0253d9688f6d93057c96))
+* **sample:** added routable config for details blades ([dddc3a6](https://github.com/VirtoCommerce/vc-shell/commit/dddc3a68a733f860c0608faa78423b0a2bb1e93e))
+
+
+
 ## [1.0.150](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.149...v1.0.150) (2024-01-24)
 
 

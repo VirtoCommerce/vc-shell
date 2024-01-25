@@ -559,6 +559,7 @@ export interface Emits {
 defineOptions({
   url: "/offer-cls",
   name: "OffersClassic",
+  routable: false,
 });
 
 const props = withDefaults(defineProps<Props>(), {

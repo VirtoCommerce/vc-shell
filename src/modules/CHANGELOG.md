@@ -1,3 +1,14 @@
+## [1.0.150](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.149...v1.0.150) (2024-01-25)
+
+
+### Features
+
+* localization config and updates ([f40a2b3](https://github.com/VirtoCommerce/vendor-portal/commit/f40a2b31690c8bd9d1df8adf353071033caacbd9))
+* modules updates ([7c15bb1](https://github.com/VirtoCommerce/vendor-portal/commit/7c15bb12bb347c1bda678911e8b51d40475ab14c))
+* refactor widget components to support count updates ([d34ca10](https://github.com/VirtoCommerce/vendor-portal/commit/d34ca1054a8fc00cf4ef1c1ec101be6377d93b09))
+
+
+
 ## [1.0.149](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.148...v1.0.149) (2024-01-12)
 
 

@@ -1,3 +1,12 @@
+## [1.0.150](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.149...v1.0.150) (2024-01-25)
+
+
+### Features
+
+* update api clients, import-app dep up ([3e13432](https://github.com/VirtoCommerce/vendor-portal/commit/3e134329f2e200458d33256c997d99bd15985f04))
+
+
+
 ## [1.0.149](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.148...v1.0.149) (2024-01-12)
 
 

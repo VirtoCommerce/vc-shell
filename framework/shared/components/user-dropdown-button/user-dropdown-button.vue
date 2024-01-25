@@ -5,7 +5,7 @@
     :class="{
       'user-dropdown-button_active': accountMenuVisible,
     }"
-    @click.stop="!disabled ? toggleAccountMenuVisible : null"
+    @click.stop="toggleAccountMenuVisible"
   >
     <div class="user-dropdown-button__wrap tw-flex tw-justify-between tw-items-center tw-flex-auto">
       <div
@@ -111,7 +111,7 @@ const menu = computed(() => [
 ]);
 
 const toggleAccountMenuVisible = () => {
-  if (menu.value && menu.value.length) {
+  if (!props.disabled && menu.value && menu.value.length) {
     accountMenuVisible.value = !accountMenuVisible.value;
   }
 };

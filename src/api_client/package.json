@@ -7,16 +7,16 @@
   ],
   "exports": {
     "./marketplacevendor": {
-      "import": "./dist/marketplacevendor.js",
-      "types": "./dist/types/marketplacevendor.d.ts"
+      "import": "./dist/virtocommerce.marketplacevendor.js",
+      "types": "./dist/types/virtocommerce.marketplacevendor.d.ts"
     },
     "./orders": {
-      "import": "./dist/orders.js",
-      "types": "./dist/types/orders.d.ts"
+      "import": "./dist/virtocommerce.orders.js",
+      "types": "./dist/types/virtocommerce.orders.d.ts"
     },
     "./catalog": {
-      "import": "./dist/catalog.js",
-      "types": "./dist/types/catalog.d.ts"
+      "import": "./dist/virtocommerce.catalog.js",
+      "types": "./dist/types/virtocommerce.catalog.d.ts"
     }
   },
   "scripts": {

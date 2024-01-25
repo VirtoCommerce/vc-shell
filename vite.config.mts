@@ -11,13 +11,13 @@ export default getApplicationConfiguration({
       "@vcmp-vendor-portal/modules":
         mode === "development" ? resolve("src/modules/index.ts") : "@vcmp-vendor-portal/modules",
       "@vcmp-vendor-portal/api/orders":
-        mode === "development" ? resolve("src/api_client/orders.ts") : "@vcmp-vendor-portal/api/orders",
+        mode === "development" ? resolve("src/api_client/virtocommerce.orders.ts") : "@vcmp-vendor-portal/api/orders",
       "@vcmp-vendor-portal/api/marketplacevendor":
         mode === "development"
-          ? resolve("src/api_client/marketplacevendor.ts")
+          ? resolve("src/api_client/virtocommerce.marketplacevendor.ts")
           : "@vcmp-vendor-portal/api/marketplacevendor",
       "@vcmp-vendor-portal/api/catalog":
-        mode === "development" ? resolve("src/api_client/catalog.ts") : "@vcmp-vendor-portal/api/catalog",
+        mode === "development" ? resolve("src/api_client/virtocommerce.catalog.ts") : "@vcmp-vendor-portal/api/catalog",
     },
   },
   plugins: [

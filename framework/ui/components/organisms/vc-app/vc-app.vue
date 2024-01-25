@@ -165,7 +165,14 @@ const onMenuItemClick = function (item: MenuItem) {
 };
 
 const openRoot = async () => {
-  router.push("/");
+  const isPrevented = await closeBlade(1);
+
+  if (!isPrevented) {
+    const mainRoute = router.getRoutes().find((route) => route.meta?.root);
+    const mainRouteAlias = router.getRoutes().find((route) => route.aliasOf?.path === mainRoute?.path) ?? mainRoute;
+
+    router.replace({ name: mainRouteAlias?.name, params: route.params });
+  }
 };
 
 watchOnce(

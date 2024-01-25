@@ -30,6 +30,7 @@ export type CoreBladeAdditionalSettings = {
   routable?: boolean;
   permissions?: string | string[];
   isWorkspace?: boolean;
+  isBlade?: boolean;
   name?: string;
   menuItem?: MenuItemConfig;
 };

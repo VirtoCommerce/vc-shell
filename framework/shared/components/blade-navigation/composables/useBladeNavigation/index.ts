@@ -48,7 +48,7 @@ interface IUseBladeNavigation {
 }
 
 const activeWorkspace = shallowRef<BladeVNode>();
-const baseUrl = shallowRef<string>();
+const mainRouteBaseParamURL = shallowRef<string>();
 
 function parseUrl(url: string) {
   const urlRegex = /^\/([a-zA-Z0-9_-]+)(?:\/([a-zA-Z0-9_-]+))?(?:\/([a-zA-Z0-9_-]+))?$/;
@@ -78,10 +78,12 @@ const useBladeNavigationSingleton = createSharedComposable(() => {
 
   function parseWorkspaceUrl(path: string): string {
     // Object.values(route.params)[0] will always be base path of the app
-    if (!baseUrl.value) {
-      baseUrl.value = "/" + (Object.values(route.params)?.[0] ?? "");
+    if (!mainRouteBaseParamURL.value) {
+      mainRouteBaseParamURL.value = "/" + (Object.values(route.params)?.[0] ?? "");
     }
-    const pathWithoutBase = path.startsWith(baseUrl.value) ? path.slice(baseUrl.value.length) : path;
+    const pathWithoutBase = path.startsWith(mainRouteBaseParamURL.value)
+      ? path.slice(mainRouteBaseParamURL.value.length)
+      : path;
     const segments = pathWithoutBase.split("/").filter(Boolean);
     const workspaceUrl = segments.slice(0, 1).join("/");
     return "/" + workspaceUrl;
@@ -97,7 +99,8 @@ const useBladeNavigationSingleton = createSharedComposable(() => {
         (router.resolve({ path: workspaceUrl })?.matched?.[1]?.components?.default as BladeVNode);
 
       if (wsRouteComponent !== undefined) {
-        if (isVNode(wsRouteComponent)) {
+        if (isVNode(wsRouteComponent) && wsRouteComponent.type.isBlade) {
+          //&& wsRouteComponent.type.isBlade
           navigationInstance.blades.value[0] = markRaw(wsRouteComponent);
           activeWorkspace.value = wsRouteComponent;
         } else {
@@ -106,7 +109,7 @@ const useBladeNavigationSingleton = createSharedComposable(() => {
           if (!isPrevented) {
             // add not blade page to blades array to show simple routes as
             // we use only one router-view for all routes
-            navigationInstance.blades.value = [markRaw(wsRouteComponent)];
+            navigationInstance.blades.value = [];
           } else {
             if (oldVal) router.replace({ path: oldVal });
           }
@@ -149,7 +152,13 @@ const useBladeNavigationSingleton = createSharedComposable(() => {
           url = wsBladeUrl;
         }
 
-        if (url) history.replaceState({}, "", "#" + url);
+        if (url) {
+          router.options.history.replace(
+            (mainRouteBaseParamURL.value && !url.startsWith(mainRouteBaseParamURL.value)
+              ? mainRouteBaseParamURL.value
+              : "") + url,
+          );
+        }
       }
     },
     { deep: true },
@@ -331,33 +340,73 @@ export function useBladeNavigation(): IUseBladeNavigation {
     return router.getRoutes().find((route) => route.path === to.path);
   }
 
+  /**
+   * Generates and handles navigation for dynamic routes based on the provided route information.
+   *
+   * Supports App component URLs with variable like '/:userId?'.
+   * @link https://router.vuejs.org/guide/essentials/dynamic-matching.html
+   *
+   * @param to - The target route.
+   * @param routes - The array of BladeRoutesRecord containing the registered routes.
+   */
   async function generateRoute(to: RouteLocationNormalized, routes: BladeRoutesRecord[]) {
-    const parsedRoutes = parseUrl(to.path);
+    // Extract parameters excluding "pathMatch". This is necessary if a variable is used as the App component URL, for example, /:userId?
+    const params = Object.entries(to.params)
+      .filter(([key]) => key !== "pathMatch")
+      .reduce(
+        (acc, [key, value]) => {
+          acc[key] = value;
+          return acc;
+        },
+        {} as Record<string, string | string[]>,
+      );
+
+    // Get the raw path of the main route.
+    const parentRawPath = router.getRoutes().find((route) => route.name === mainRoute.name)!.path!;
+
+    // Determine the parent path based on the parameters.
+    const parentPath = parentRawPath.includes(Object.keys(params)?.[0] as string)
+      ? "/" + (Object.values(params)?.[0] ?? "")
+      : "";
+
+    // Set the base param value.
+    mainRouteBaseParamURL.value = parentPath;
+
+    // Check if the current path matches the parent path.
+    const isCorrectParentPath = parentRawPath !== "/" && to.path.startsWith(parentPath);
+
+    // Check if the current route is a parent route.
+    const isRouteParent = router.getRoutes().find((x) => x.path.endsWith(parentPath));
+
+    // Parse the URL to extract relevant route information.
+    const parsedRoutes = parseUrl(!isRouteParent ? to.path.slice(parentPath.length) : to.path);
 
     if (parsedRoutes) {
-      // here we check if route is registered in bladeRoutes
+      // Find the registered route component.
       const registeredRouteComponent = routes.find((route) => route.route === "/" + parsedRoutes?.blade)?.component;
 
       if (registeredRouteComponent) {
         if (registeredRouteComponent.type?.isWorkspace) {
-          // if route is workspace we just push it to router
+          // If the route is a workspace, navigate to it directly.
           router.replace({ path: registeredRouteComponent.type.url as string });
         } else {
-          // if route is not workspace we need to add it to router and push
+          // If the route is not a workspace, add it to the router and navigate to it.
           const url =
+            (!isRouteParent ? parentPath : "") +
             "/" +
             parsedRoutes?.workspace +
             "/" +
             parsedRoutes.blade +
             (parsedRoutes.param ? "/" + parsedRoutes.param : "");
 
-          // if route is not routable we will redirect to workspace
+          // If the route is not routable, redirect to the workspace.
           if (!parsedRoutes.param && !registeredRouteComponent.type?.routable) {
             return router.replace("/" + parsedRoutes?.workspace);
           } else {
+            // Add the route to the router.
             router.addRoute(mainRoute.name as string, {
               name: url,
-              path: url,
+              path: parentRawPath !== "/" ? parentRawPath + url : "" + url,
               components: {
                 default: _.merge({}, registeredRouteComponent, {
                   props: {
@@ -374,10 +423,12 @@ export function useBladeNavigation(): IUseBladeNavigation {
               },
             });
 
-            return router.replace(url);
+            // Navigate to the newly added route.
+            return router.replace({ name: url, params: isCorrectParentPath ? params : {} });
           }
         }
       } else {
+        // If the registered route component is not found, navigate to the main route.
         return router.replace({ name: mainRoute.name as string });
       }
     }

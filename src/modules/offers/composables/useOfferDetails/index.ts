@@ -1,4 +1,3 @@
-import { IOfferPrice } from "./../../../../api_client/dist/types/marketplacevendor.d";
 import {
   IBladeToolbar,
   useApiClient,
@@ -23,6 +22,7 @@ import {
   SearchOfferProductsResult,
   Image,
   SellerProduct,
+  IOfferPrice,
   ChangeOfferDefaultCommand,
 } from "@vcmp-vendor-portal/api/marketplacevendor";
 import { Ref, computed, nextTick, reactive, ref, watch } from "vue";

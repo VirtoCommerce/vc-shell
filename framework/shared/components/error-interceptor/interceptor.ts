@@ -17,6 +17,7 @@ export type Slots = {
 };
 
 export default defineComponent({
+  name: "ErrorInterceptor",
   props: {
     capture: {
       default: false,

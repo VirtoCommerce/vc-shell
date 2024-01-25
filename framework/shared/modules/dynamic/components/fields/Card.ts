@@ -28,7 +28,7 @@ export default {
 
         if (component && typeof component === "object" && !Array.isArray(component)) {
           if (Array.isArray(component.children) && component.children.length > 0) {
-            // Рекурсивная проверка для вложенных компонентов
+            // Recursive check for nested components
             return hasNoCommentNodes(component.children);
           }
 

@@ -59,12 +59,12 @@ Add the dependencies to your project's **package.json**:
     |-----------------------------	|----------------------------------------------------------------	|------------------------------------------------------------	|
     | `--APP_PLATFORM_MODULES`     	| Platform modules to generate API client.<br>{==string[]==} <br> Customize the `--APP_PLATFORM_MODULES` list<br>to match your project's requirements.	| `--APP_PLATFORM_MODULES='[MarketplaceVendor,Orders,Catalog]'` 	|
     | `--APP_API_CLIENT_DIRECTORY` 	| Output directory for generated API clients. <br>{==string==} 	| `--APP_API_CLIENT_DIRECTORY=./src/api_client/`                	|
-    | `--APP_PLATFORM_URL`         	| Platform URL to obtain client API configs. <br>{==string==} 	    | `--APP_PLATFORM_URL=https://vcmp-dev.paas.govirto.com/`       	|
+    | `--APP_PLATFORM_URL`         	| Platform URL to obtain client API configs. <br>{==string==} 	    | `--APP_PLATFORM_URL=https://vcmp-dev.govirto.com/`       	|
 
 3. Configure Platform URL to ensure your project can access the platform's API configurations. Add the platform URL to your project's **.env** file:
 
     ```title="vc-app-extend/.env"
-    APP_PLATFORM_URL=https://vcmp-dev.paas.govirto.com/
+    APP_PLATFORM_URL=https://vcmp-dev.govirto.com/
     ```
 
     !!! note

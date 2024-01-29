@@ -1,3 +1,12 @@
+## [1.0.152](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.151...v1.0.152) (2024-01-29)
+
+
+### Bug Fixes
+
+* seller details permissions ([090457e](https://github.com/VirtoCommerce/vendor-portal/commit/090457edcf08d161108206b5b590bb5bc6dfb5a1))
+
+
+
 ## [1.0.151](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.150...v1.0.151) (2024-01-29)
 
 

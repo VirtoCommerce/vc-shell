@@ -196,6 +196,7 @@ const useBladeNavigationSingleton = createSharedComposable(() => {
   return {
     navigationInstance,
     router,
+    route,
     closeBlade,
   };
 });
@@ -207,7 +208,7 @@ export function useBladeNavigation(): IUseBladeNavigation {
 
   const instance: BladeComponentInternalInstance = getCurrentInstance() as BladeComponentInternalInstance;
 
-  const { router, navigationInstance, closeBlade } = useBladeNavigationSingleton();
+  const { router, route, navigationInstance, closeBlade } = useBladeNavigationSingleton();
 
   const mainRoute = router.getRoutes().find((r) => r.meta?.root)!;
 
@@ -429,7 +430,10 @@ export function useBladeNavigation(): IUseBladeNavigation {
         }
       } else {
         // If the registered route component is not found, navigate to the main route.
-        return router.replace({ name: mainRoute.name as string });
+        const mainRoute = router.getRoutes().find((route) => route.meta?.root);
+        const mainRouteAlias = router.getRoutes().find((route) => route.aliasOf?.path === mainRoute?.path) ?? mainRoute;
+
+        router.replace({ name: mainRouteAlias?.name, params: route.params });
       }
     }
   }

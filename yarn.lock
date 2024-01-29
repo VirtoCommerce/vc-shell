@@ -4971,17 +4971,17 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vcmp-vendor-portal/api@npm:^1.0.149, @vcmp-vendor-portal/api@workspace:apps/vendor-portal/src/api_client":
+"@vcmp-vendor-portal/api@npm:^1.0.150, @vcmp-vendor-portal/api@workspace:apps/vendor-portal/src/api_client":
   version: 0.0.0-use.local
   resolution: "@vcmp-vendor-portal/api@workspace:apps/vendor-portal/src/api_client"
   languageName: unknown
   linkType: soft
 
-"@vcmp-vendor-portal/modules@npm:^1.0.149, @vcmp-vendor-portal/modules@workspace:apps/vendor-portal/src/modules":
+"@vcmp-vendor-portal/modules@npm:^1.0.150, @vcmp-vendor-portal/modules@workspace:apps/vendor-portal/src/modules":
   version: 0.0.0-use.local
   resolution: "@vcmp-vendor-portal/modules@workspace:apps/vendor-portal/src/modules"
   peerDependencies:
-    "@vcmp-vendor-portal/api": ^1.0.149
+    "@vcmp-vendor-portal/api": ^1.0.150
   languageName: unknown
   linkType: soft
 
@@ -5001,26 +5001,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@virtocommerce/import-app-api@workspace:apps/import-app/src/api_client":
-  version: 0.0.0-use.local
-  resolution: "@virtocommerce/import-app-api@workspace:apps/import-app/src/api_client"
-  dependencies:
-    typescript: "npm:5.3.3"
-  languageName: unknown
-  linkType: soft
-
-"@virtocommerce/import-app@npm:^1.0.147":
-  version: 1.0.147
-  resolution: "@virtocommerce/import-app@npm:1.0.147"
-  checksum: 3590a544d3640ae807ae0833e0fb3b287e7b85b3560041caf54021d572dcdf67f430b38f516aa672b33c20917adb4066993cc9edaa291af60cd0051f5e86e2a0
+"@virtocommerce/import-app@npm:^1.0.148":
+  version: 1.0.148
+  resolution: "@virtocommerce/import-app@npm:1.0.148"
+  checksum: ea4f08fd013cfc02cbbf79f10ce684cc66cad2934b4975869482008a63317c51d8efbadd42fd192128801e702922332cc4c434c1951ef194d9b151546fe60512
   languageName: node
   linkType: hard
-
-"@virtocommerce/import-app@workspace:apps/import-app/src/modules":
-  version: 0.0.0-use.local
-  resolution: "@virtocommerce/import-app@workspace:apps/import-app/src/modules"
-  languageName: unknown
-  linkType: soft
 
 "@vitejs/plugin-vue@npm:^4.0.0":
   version: 4.6.2
@@ -5659,9 +5645,9 @@ __metadata:
     "@vc-shell/framework": "npm:^1.0.151"
     "@vc-shell/release-config": "npm:^1.0.151"
     "@vc-shell/ts-config": "npm:^1.0.151"
-    "@vcmp-vendor-portal/api": "npm:^1.0.149"
-    "@vcmp-vendor-portal/modules": "npm:^1.0.149"
-    "@virtocommerce/import-app": "npm:^1.0.147"
+    "@vcmp-vendor-portal/api": "npm:^1.0.150"
+    "@vcmp-vendor-portal/modules": "npm:^1.0.150"
+    "@virtocommerce/import-app": "npm:^1.0.148"
     "@vitejs/plugin-vue": "npm:^5.0.3"
     "@vue/eslint-config-prettier": "npm:^9.0.0"
     "@vue/eslint-config-typescript": "npm:^12.0.0"
@@ -9129,61 +9115,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"import-app@workspace:apps/import-app":
-  version: 0.0.0-use.local
-  resolution: "import-app@workspace:apps/import-app"
-  dependencies:
-    "@commitlint/cli": "npm:^18.4.3"
-    "@commitlint/config-conventional": "npm:^18.4.3"
-    "@fortawesome/fontawesome-free": "npm:^5.15.3"
-    "@laynezh/vite-plugin-lib-assets": "npm:^0.5.13"
-    "@rollup/plugin-typescript": "npm:^11.1.5"
-    "@types/lodash-es": "npm:^4.17.12"
-    "@types/node": "npm:^20.10.5"
-    "@typescript-eslint/eslint-plugin": "npm:^6.16.0"
-    "@typescript-eslint/parser": "npm:^6.16.0"
-    "@vc-shell/api-client-generator": "npm:^1.0.151"
-    "@vc-shell/config-generator": "npm:^1.0.151"
-    "@vc-shell/framework": "npm:^1.0.151"
-    "@vc-shell/release-config": "npm:^1.0.151"
-    "@vc-shell/ts-config": "npm:^1.0.151"
-    "@vitejs/plugin-vue": "npm:^5.0.3"
-    "@vue/eslint-config-prettier": "npm:^9.0.0"
-    "@vue/eslint-config-typescript": "npm:^12.0.0"
-    "@vueuse/core": "npm:^10.7.1"
-    "@vueuse/integrations": "npm:^10.7.1"
-    autoprefixer: "npm:^10.4.16"
-    conventional-changelog-cli: "npm:^4.1.0"
-    cross-env: "npm:^7.0.3"
-    eslint: "npm:^8.56.0"
-    eslint-import-resolver-typescript: "npm:^3.6.1"
-    eslint-plugin-import: "npm:^2.29.1"
-    eslint-plugin-prettier: "npm:^5.1.2"
-    eslint-plugin-vue: "npm:^9.19.2"
-    husky: "npm:^8.0.3"
-    lint-staged: "npm:^15.2.0"
-    lodash-es: "npm:^4.17.21"
-    moment: "npm:^2.30.1"
-    postcss: "npm:^8.4.32"
-    prettier: "npm:^3.1.1"
-    querystring-es3: "npm:^0.2.1"
-    roboto-fontface: "npm:^0.10.0"
-    sass: "npm:^1.69.6"
-    tailwindcss: "npm:^3.4.0"
-    tsx: "npm:^3.13.0"
-    typescript: "npm:^5.3.3"
-    vee-validate: "npm:^4.12.4"
-    vite: "npm:^5.0.11"
-    vite-plugin-checker: "npm:^0.6.2"
-    vite-plugin-mkcert: "npm:^1.17.1"
-    vite-plugin-pwa: "npm:^0.17.4"
-    vue: "npm:^3.4.14"
-    vue-eslint-parser: "npm:^9.3.2"
-    vue-router: "npm:^4.2.5"
-    vue-tsc: "npm:^1.8.27"
-  languageName: unknown
-  linkType: soft
-
 "import-fresh@npm:^3.0.0, import-fresh@npm:^3.2.1, import-fresh@npm:^3.3.0":
   version: 3.3.0
   resolution: "import-fresh@npm:3.3.0"
@@ -12039,13 +11970,6 @@ __metadata:
   dependencies:
     side-channel: "npm:^1.0.4"
   checksum: f2321d0796664d0f94e92447ccd3bdfd6b6f3a50b6b762aa79d7f5b1ea3a7a9f94063ba896b82bc2a877ed6a7426d4081e4f16568fdb04f0ee188cca9d8505b4
-  languageName: node
-  linkType: hard
-
-"querystring-es3@npm:^0.2.1":
-  version: 0.2.1
-  resolution: "querystring-es3@npm:0.2.1"
-  checksum: c99fccfe1a9c4c25ea6194fa7a559fdb83d2628f118f898af6f0ac02c4ffcd7e0576997bb80e7dfa892d193988b60e23d4968122426351819f87051862af991c
   languageName: node
   linkType: hard
 

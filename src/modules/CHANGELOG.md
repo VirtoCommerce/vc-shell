@@ -1,3 +1,12 @@
+## [1.0.151](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.150...v1.0.151) (2024-01-29)
+
+
+### Bug Fixes
+
+* remove redundant import ([f285789](https://github.com/VirtoCommerce/vendor-portal/commit/f28578918e059d899be57aaf424c2e658850fa1a))
+
+
+
 ## [1.0.150](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.149...v1.0.150) (2024-01-25)
 
 

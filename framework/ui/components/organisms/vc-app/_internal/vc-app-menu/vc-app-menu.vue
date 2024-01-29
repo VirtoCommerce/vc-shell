@@ -41,7 +41,9 @@
           <VcAppMenuItem
             v-for="item in menuItems"
             :key="item?.id"
-            :is-visible="$hasAccess(item.permissions!)"
+            :is-visible="
+              $hasAccess(item.permissions!) && (item.children?.some((child) => $hasAccess(child.permissions!)) ?? true)
+            "
             :url="item.url"
             :icon="item.icon"
             :title="item.title as string"

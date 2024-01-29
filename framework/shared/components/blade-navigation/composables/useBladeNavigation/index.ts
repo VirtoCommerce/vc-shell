@@ -225,9 +225,14 @@ export function useBladeNavigation(): IUseBladeNavigation {
       const isPrevented = await closeBlade(0);
 
       if (!isPrevented && createdComponent.type?.url) {
-        navigationInstance.blades.value = [createdComponent];
+        if (hasAccess(blade.permissions)) {
+          navigationInstance.blades.value = [createdComponent];
 
-        return await router.replace({ path: createdComponent.type?.url as string });
+          return await router.replace({ path: createdComponent.type?.url as string });
+        } else
+          notification.error(i18n.global.t("PERMISSION_MESSAGES.ACCESS_RESTRICTED"), {
+            timeout: 3000,
+          });
       }
     } catch (e) {
       console.log(e);

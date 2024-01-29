@@ -1,3 +1,12 @@
+## [1.0.153](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.152...v1.0.153) (2024-01-29)
+
+
+### Bug Fixes
+
+* **framework:** menu permissions hide fix ([43a0e98](https://github.com/VirtoCommerce/vc-shell/commit/43a0e98db361bdcb296239fd6fc6e3bc967a6246))
+
+
+
 ## [1.0.152](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.151...v1.0.152) (2024-01-29)
 
 

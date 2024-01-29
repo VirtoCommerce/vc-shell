@@ -7,6 +7,7 @@ export const details: DynamicDetailsSchema = {
     isWorkspace: true,
     localizationPrefix: "SELLER_DETAILS",
     composable: "useSellerDetails",
+    permissions: "seller:details:edit",
     component: "DynamicBladeForm",
     toolbar: [
       {

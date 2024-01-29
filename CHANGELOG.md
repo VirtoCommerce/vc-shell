@@ -1,3 +1,12 @@
+## [1.0.152](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.151...v1.0.152) (2024-01-29)
+
+
+### Bug Fixes
+
+* **framework:** redirect to root fix ([cfd7e43](https://github.com/VirtoCommerce/vc-shell/commit/cfd7e43903cd46af87b31106b4a0fcadfc24cddd))
+
+
+
 ## [1.0.151](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.150...v1.0.151) (2024-01-25)
 
 

@@ -24,7 +24,7 @@ export const details: DynamicDetailsSchema = {
       },
     ],
     menuItem: {
-      title: "SETTINGS.MENU.SELLER_DETAILS",
+      title: "SELLER_DETAILS.MENU.TITLE",
       icon: "fas fa-sliders-h",
       group: "SETTINGS.MENU.TITLE",
       priority: 6,
@@ -60,7 +60,7 @@ export const details: DynamicDetailsSchema = {
                   id: "commissionFee",
                   component: "vc-field",
                   label: "Commission fee",
-                  variant: "normal",
+                  variant: "text",
                   property: "computedFee",
                 },
                 {
@@ -152,6 +152,7 @@ export const details: DynamicDetailsSchema = {
                       optionsMethod: "countriesList",
                       optionValue: "id",
                       optionLabel: "name",
+                      searchable: true,
                       update: {
                         method: "onCountryChange",
                       },
@@ -185,6 +186,7 @@ export const details: DynamicDetailsSchema = {
                       optionsMethod: "regionsList",
                       optionValue: "id",
                       optionLabel: "name",
+                      searchable: true,
                       update: {
                         method: "setRegion",
                       },

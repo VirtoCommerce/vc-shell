@@ -100,7 +100,7 @@ export const useProductDetails = (args: {
 
   // const assetsDisabled = computed(() => disabled.value || item.value.createdBy !== user.value?.userName);
 
-  const declineReasonVisibility = computed(() => statusText.value && item.value?.status !== "Published");
+  const declineReasonVisibility = computed(() => !!statusText.value && item.value?.status !== "Published");
   const statusText = computed(() => {
     if (item.value?.publicationRequests && item.value?.publicationRequests.length) {
       return _.orderBy(item.value.publicationRequests, ["createdDate"], ["desc"])[0].comment ?? "";

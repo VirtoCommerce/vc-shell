@@ -1,84 +1,53 @@
-import { computed, Ref, ref } from "vue";
-import { AsyncAction, useApiClient, useAsync, useLoading, useUser } from "@vc-shell/framework";
 import {
-  VcmpSellerOrdersClient,
-  CustomerOrderSearchResult,
-  SearchOrdersQuery,
-  ISearchOrdersQuery,
-  CustomerOrder,
-  ChangeOrderStatusCommand,
-} from "@vcmp-vendor-portal/api/marketplacevendor";
+  useApiClient,
+  useBladeNavigation,
+  useListFactory,
+  DynamicBladeList,
+  ListBaseBladeScope,
+  useUser,
+} from "@vc-shell/framework";
+import { SearchOrdersQuery, VcmpSellerOrdersClient } from "@vcmp-vendor-portal/api/marketplacevendor";
+import { computed, ref } from "vue";
 
-interface IPaymentStatus {
-  [key: string]: string;
-}
-enum PaymentStatus {
-  Unpaid = "Unpaid",
-  Paid = "Paid",
-  Accepted = "Accepted",
-  Shipped = "Shipped",
-  Cancelled = "Cancelled",
-}
+const { getApiClient } = useApiClient(VcmpSellerOrdersClient);
 
-interface ChangeOrderStatusPayload {
-  orderId: string;
-  newStatus: string;
-}
-
-interface IUseOrders {
-  readonly orders: Ref<CustomerOrder[]>;
-  readonly totalCount: Ref<number>;
-  readonly pages: Ref<number>;
-  readonly loading: Ref<boolean>;
-  readonly currentPage: Ref<number>;
-  PaymentStatus: Ref<IPaymentStatus>;
-  loadOrders(query?: ISearchOrdersQuery): void;
-  changeOrderStatus: AsyncAction<ChangeOrderStatusPayload>;
-}
-
-export default (): IUseOrders => {
+export const useOrders = (args?: {
+  props: InstanceType<typeof DynamicBladeList>["$props"];
+  emit: InstanceType<typeof DynamicBladeList>["$emit"];
+}) => {
   const { user } = useUser();
-  const orders = ref(new CustomerOrderSearchResult({ results: [] }));
-  const currentPage = ref(1);
-  const statuses = computed(() => {
-    const statusKey = Object.entries(PaymentStatus);
-    return Object.fromEntries(statusKey);
-  });
 
-  const { getApiClient } = useApiClient(VcmpSellerOrdersClient);
-
-  const { loading: ordersLoading, action: loadOrders } = useAsync<ISearchOrdersQuery>(async (query) => {
-    const client = await getApiClient();
-    orders.value = await client.searchOrders({
-      take: 20,
-      ...(query || {}),
-      employeeId: user.value?.id,
-    } as SearchOrdersQuery);
-    currentPage.value = (query?.skip || 0) / Math.max(1, query?.take || 20) + 1;
-  });
-
-  // TODO: Support multiple ordes
-  const { loading: changeOrderStatusLoading, action: changeOrderStatus } = useAsync<ChangeOrderStatusPayload>(
-    async (payload) => {
-      const client = await getApiClient();
-      const command = new ChangeOrderStatusCommand({
-        orderId: payload?.orderId ?? "",
-        newStatus: payload?.newStatus ?? "",
-      });
-      await client.updateOrderStatus(command);
+  const factory = useListFactory({
+    load: async (query) => {
+      return (await getApiClient()).searchOrders(
+        new SearchOrdersQuery({
+          ...query,
+          employeeId: user.value?.id,
+        }),
+      );
     },
-  );
+  });
 
-  const loading = useLoading(ordersLoading, changeOrderStatusLoading);
+  const { load, loading, items, query, pagination } = factory();
+  const { openBlade, resolveBladeByName } = useBladeNavigation();
+
+  async function openDetailsBlade(args?: Omit<Parameters<typeof openBlade>["0"], "blade">) {
+    await openBlade({
+      blade: resolveBladeByName("OrderDetails"),
+      ...args,
+    });
+  }
+
+  const scope = ref<ListBaseBladeScope>({
+    openDetailsBlade,
+  });
 
   return {
-    orders: computed(() => orders.value?.results ?? []),
-    totalCount: computed(() => orders.value?.totalCount ?? 0),
-    pages: computed(() => Math.ceil((orders.value?.totalCount ?? 1) / 20)),
+    load,
     loading,
-    currentPage: computed(() => currentPage.value),
-    PaymentStatus: computed(() => statuses.value),
-    loadOrders,
-    changeOrderStatus,
+    items,
+    query,
+    pagination,
+    scope: computed(() => scope.value),
   };
 };

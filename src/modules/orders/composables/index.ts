@@ -1,2 +1,2 @@
-export { default as useOrders } from "./useOrders";
-export { default as useOrder } from "./useOrder";
+export { useOrder } from "./useOrder";
+export { useOrders } from "./useOrders";

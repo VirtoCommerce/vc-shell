@@ -1,4 +1,4 @@
-import VirtoShellFramework, { notification, useUser } from "@vc-shell/framework";
+import VirtoShellFramework, { notification, useLanguages, useUser } from "@vc-shell/framework";
 import { createApp } from "vue";
 import * as modules from "@vcmp-vendor-portal/modules";
 import ImportModule from "@virtocommerce/import-app";
@@ -17,6 +17,9 @@ import "@virtocommerce/import-app/dist/style.css";
 async function startApp() {
   const { loadUser } = useUser();
   await loadUser();
+
+  const { currentLocale, setLocale } = useLanguages();
+
   const app = createApp(RouterView);
 
   app.use(VirtoShellFramework, {
@@ -41,6 +44,8 @@ async function startApp() {
   Object.entries(locales).forEach(([key, message]) => {
     app.config.globalProperties.$mergeLocaleMessage(key, message);
   });
+
+  setLocale(currentLocale.value);
 
   // Global error handler
   app.config.errorHandler = (err: unknown) => {

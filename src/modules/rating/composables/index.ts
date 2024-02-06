@@ -1,2 +1,3 @@
-export { default as useRating } from "./useRating";
-export { default as useReviews } from "./useReviews";
+export { useReview } from "./useReview";
+export { useReviews } from "./useReviews";
+export { useRating } from "./useRating";

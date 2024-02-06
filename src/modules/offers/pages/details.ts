@@ -61,6 +61,9 @@ export const details: DynamicDetailsSchema = {
             component: "OfferProductsSelectCategoryTemplate",
           },
           searchable: true,
+          update: {
+            method: "getProductItem",
+          },
         },
         {
           id: "inventoryCard",

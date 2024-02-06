@@ -55,6 +55,7 @@ export const overrides: OverridesSchema = {
         icon: "fas fa-box-open",
         group: "PRODUCTS.MENU.TITLE",
         priority: 2,
+        inGroupPriority: 1,
       },
     },
   ],

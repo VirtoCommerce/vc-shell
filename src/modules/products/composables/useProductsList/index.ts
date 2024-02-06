@@ -13,6 +13,7 @@ import {
   ISearchProductsQuery,
   SearchProductsQuery,
   BulkProductsDeleteCommand,
+  SellerProductStatus,
 } from "@vcmp-vendor-portal/api/marketplacevendor";
 import { Ref, computed, ref } from "vue";
 

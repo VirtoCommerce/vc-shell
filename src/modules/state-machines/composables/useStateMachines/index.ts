@@ -10,7 +10,7 @@ import {
 
 interface IUseStateMachines {
   readonly stateMachine: Ref<StateMachineInstance>;
-  searchStateMachines(query?: ISearchStateMachineInstancesQuery): void;
+  searchStateMachines(query?: ISearchStateMachineInstancesQuery): Promise<void>;
   fireTrigger(smInstanceId: string, trigger: string, orderId: string): Promise<StateMachineInstance>;
 }
 

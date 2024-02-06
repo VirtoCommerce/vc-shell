@@ -123,8 +123,15 @@ export const useSellerDetails = (args?: {
     if (countryId) {
       const countryInfo = countriesList.value.find((x) => x.id === countryId);
       if (countryInfo && item.value!.addresses) {
-        item.value!.addresses[0].countryCode = countryInfo.id;
-        item.value!.addresses[0].countryName = countryInfo.name;
+        item.value!.addresses = [
+          new CustomerAddress({
+            ...item.value!.addresses[0],
+            countryCode: countryInfo.id,
+            countryName: countryInfo.name,
+          }),
+        ];
+        item.value!.addresses[0].regionName = undefined;
+        item.value!.addresses[0].regionId = undefined;
       }
     }
   }
@@ -141,7 +148,6 @@ export const useSellerDetails = (args?: {
 
   async function onCountryChange(e: string) {
     setCountry(e);
-    getRegions(e);
   }
 
   async function resetEntries() {
@@ -178,6 +184,16 @@ export const useSellerDetails = (args?: {
       },
     },
   });
+
+  watch(
+    () => item.value?.addresses?.[0],
+    (newVal) => {
+      if (newVal && newVal.countryCode) {
+        getRegions(newVal.countryCode);
+      }
+    },
+    { deep: true },
+  );
 
   watch(
     () => args?.mounted.value,

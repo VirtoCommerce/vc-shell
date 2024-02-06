@@ -26,10 +26,11 @@ import {
   ChangeOfferDefaultCommand,
 } from "@vcmp-vendor-portal/api/marketplacevendor";
 import { Ref, computed, nextTick, reactive, ref, watch } from "vue";
-import { useFulfillmentCenters, useMarketplaceSettings } from "../../../settings";
+import { useMarketplaceSettings } from "../../../settings";
 import { useI18n } from "vue-i18n";
 import { ICurrency } from "../../../settings/composables/useMarketplaceSettings";
 import { useDynamicProperties, useMultilanguage } from "../../../common";
+import { useFulfillmentCenters } from "../../../fulfillment-centers/composables";
 
 export interface OfferDetailsScope extends DetailsBaseBladeScope {
   fetchProducts: (keyword?: string, skip?: number, ids?: string[]) => Promise<SearchOfferProductsResult>;
@@ -60,7 +61,7 @@ export const useOfferDetails = (args: {
   const pricingEqual = ref(false);
   const productLoading = ref(false);
   const alreadyDefault = ref(false);
-  const { fulfillmentCentersList, searchFulfillmentCenters } = useFulfillmentCenters();
+  const { items: fulfillmentCentersList, load: searchFulfillmentCenters } = useFulfillmentCenters();
 
   const { currencies, settingUseDefaultOffer, loadSettings } = useMarketplaceSettings();
   const { getLanguages, loading: languagesLoading } = useMultilanguage();

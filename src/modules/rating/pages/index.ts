@@ -1,5 +1,4 @@
-import _ReviewList from "./review-list.vue";
-import _ReviewDetails from "./review-details.vue";
+import { grid as teamList } from "./grid";
+import { details as teamDetails } from "./details";
 
-export const ReviewList = _ReviewList as typeof _ReviewList;
-export const ReviewDetails = _ReviewDetails as typeof _ReviewDetails;
+export { teamList, teamDetails };

@@ -3,40 +3,42 @@
     "MENU": {
       "TITLE": "Rating & Reviews"
     },
+    "WIDGET": {
+      "TITLE": "Rating & Reviews",
+      "ALL": "All reviews",
+      "EMPTY": "There are no reviews yet"
+    },
     "RATING": {
       "EMPTY": "No rating yet",
       "REVIEWS": "({ count } reviews)"
     },
-    "DASHBOARD_CARD": {
-      "TITLE": "Rating & Reviews",
-      "ALL_REVIEWS": "All reviews"
-    },
-    "REVIEW_TABLE": {
-      "EMPTY": "There is no rating left for you yet",
-      "TOTALS": "Total:",
-      "HEADER": {
-        "TITLE": "Title",
-        "REVIEW": "Review",
-        "RATING": "Rating",
-        "STATUS": "Status",
-        "CREATEDDATE": "Created date",
-        "CREATEDBY": "Created by"
-      }
-    },
     "PAGES": {
-      "REVIEW_LIST": {
+      "LIST": {
         "TITLE": "Rating & Reviews",
         "TOOLBAR": {
           "REFRESH": "Refresh"
+        },
+        "TABLE": {
+          "TOTALS": "Total:",
+          "HEADER": {
+            "TITLE": "Title",
+            "REVIEW": "Review",
+            "RATING": "Rating",
+            "STATUS": "Status",
+            "CREATEDDATE": "Created date",
+            "CREATEDBY": "Created by"
+          }
+        },
+        "EMPTY": {
+          "NO_ITEMS": "There is no rating left for you yet"
         }
       },
-      "REVIEW_DETAILS": {
-        "TITLE": "Review Details",
+      "DETAILS": {
         "FORM": {
-          "CREATEDBY": {
+          "CREATED_BY": {
             "LABEL": "Created by"
           },
-          "CREATEDDATE": {
+          "CREATED_DATE": {
             "LABEL": "Created date"
           },
           "RATING": {
@@ -54,7 +56,8 @@
             "LABEL": "Review",
             "PLACEHOLDER": "No review"
           }
-        }
+        },
+        "TITLE": "Review Details"
       }
     }
   }

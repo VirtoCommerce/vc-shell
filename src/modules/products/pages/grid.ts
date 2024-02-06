@@ -40,6 +40,7 @@ export const grid: DynamicGridSchema = {
       icon: "fas fa-box-open",
       group: "PRODUCTS.MENU.TITLE",
       priority: 2,
+      inGroupPriority: 2,
     },
   },
   content: [

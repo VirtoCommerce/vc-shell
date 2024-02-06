@@ -1,0 +1,45 @@
+{
+  "FULFILLMENT_CENTERS": {
+    "MENU": {
+      "TITLE": "Fulfillment Centers"
+    },
+    "PAGES": {
+      "LIST": {
+        "TITLE": "Fulfillment Centers",
+        "TABLE": {
+          "TOTALS": "Total: ",
+          "HEADER": {
+            "NAME": "Name"
+          }
+        },
+        "TOOLBAR": {
+          "REFRESH": "Refresh",
+          "ADD_FULFILLMENT_CENTER": "Add Fulfillment Center"
+        },
+        "EMPTY": {
+          "NO_ITEMS": "There are no Fulfillment Centers yet"
+        }
+      },
+      "DETAILS": {
+        "TITLE": "Fulfillment Center",
+        "TOOLBAR": {
+          "SAVE": "Save",
+          "RESET": "Reset",
+          "DELETE": "Delete"
+        },
+        "FORM": {
+          "ERROR": "Error",
+          "NAME": {
+            "LABEL": "Name",
+            "PLACEHOLDER": "Enter fulfillment center name"
+          },
+          "NOT_VALID": "Form is not valid.\nPlease, check highlighted fields."
+        }
+      },
+      "ALERTS": {
+        "CLOSE_CONFIRMATION": "You have unsaved changes\nClose anyway?",
+        "FC_DELETE": "This action can not be undone. Are you sure you want to delete Fulfillment Center? "
+      }
+    }
+  }
+}

@@ -4,7 +4,7 @@ import * as _ from "lodash-es";
 import { i18n } from "./../../plugins/i18n";
 import { MenuItem } from "../../types";
 
-export interface IUseMenuService {
+interface MenuService {
   addMenuItem: (item: MenuItem) => void;
   menuItems: Ref<MenuItem[]>;
   removeMenuItem: (item: MenuItem) => void;
@@ -13,35 +13,37 @@ export interface IUseMenuService {
 const menuItems: Ref<MenuItem[]> = ref([]);
 const rawMenu: Ref<MenuItem[]> = ref([]);
 
-function useMenuServiceFn(): IUseMenuService {
+function useMenuServiceFn(): MenuService {
   const { t } = i18n.global;
 
-  function addMenuItem(item: MenuItem) {
+  function addMenuItem(item: MenuItem): void {
     rawMenu.value.push(item);
-
     constructMenu();
   }
 
   const upsert = createUnrefFn((array: MenuItem[], element: MenuItem) => {
-    const i = array.findIndex((_element) => {
-      return _.isEqual(_element, element);
-    });
-    if (i > -1) array[i] = { ...element };
-    else array.push({ ...element });
+    const index = array.findIndex((_element) => _.isEqual(_element, element));
+    if (index > -1) {
+      array[index] = { ...element };
+    } else {
+      array.push({ ...element });
+    }
   });
 
-  function sortByPriority(a: MenuItem, b: MenuItem) {
-    const priorityA = a.priority !== undefined ? a.priority : Infinity;
-    const priorityB = b.priority !== undefined ? b.priority : Infinity;
-
-    return priorityA - priorityB;
+  function sortByPriority(a: MenuItem, b: MenuItem): number {
+    const getPriority = (item: MenuItem): number => item.priority ?? Infinity;
+    return getPriority(a) - getPriority(b);
   }
 
-  function constructMenu() {
-    const constructedMenu = ref([]) as Ref<MenuItem[]>;
+  function sortByGroupPriority(a: MenuItem, b: MenuItem): number {
+    const getGroupPriority = (item: MenuItem): number => item.inGroupPriority ?? Infinity;
+    return getGroupPriority(a) - getGroupPriority(b);
+  }
+
+  function constructMenu(): void {
+    const constructedMenu: Ref<MenuItem[]> = ref([]);
 
     rawMenu.value.forEach((item) => {
-      let group: MenuItem;
       if (item.group) {
         const isGroupExist = useArrayFind(constructedMenu, (m) => m.groupId === "group_" + item.group);
 
@@ -56,7 +58,7 @@ function useMenuServiceFn(): IUseMenuService {
         if (isGroupExist.value && isGroupExist.value.children) {
           upsert(isGroupExist.value.children, groupItem);
         } else {
-          group = {
+          const group: MenuItem = {
             groupId: "group_" + item.group,
             icon: item.icon,
             title: computed(() => t(item.group as string)),
@@ -66,21 +68,25 @@ function useMenuServiceFn(): IUseMenuService {
           upsert(constructedMenu.value, group);
         }
       } else {
-        if (item && item.title) {
-          upsert(constructedMenu.value, {
-            ...item,
-            title: item.title,
-          });
+        if (item.title) {
+          upsert(constructedMenu.value, { ...item });
         }
       }
     });
 
     menuItems.value = constructedMenu.value
-      .map((x, index): MenuItem => ({ ...x, title: computed(() => t(x.title as string)), id: index }))
+      .map(
+        (x, index): MenuItem => ({
+          ...x,
+          title: computed(() => t(x.title as string)),
+          id: index,
+          children: x.children?.sort(sortByGroupPriority),
+        }),
+      )
       .sort(sortByPriority);
   }
 
-  function removeMenuItem(item: MenuItem) {
+  function removeMenuItem(item: MenuItem): void {
     const index = menuItems.value.indexOf(item);
     menuItems.value.splice(index, 1);
   }

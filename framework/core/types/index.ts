@@ -67,7 +67,7 @@ export interface IBladeToolbar {
   icon?: string | (() => string);
   disabled?: boolean | ComputedRef<boolean | undefined>;
   dropdownItems?: IBladeDropdownItem[];
-  title?: string | Ref<string>;
+  title?: string | Ref<string> | ComputedRef<string>;
   isVisible?: boolean | Ref<boolean | undefined> | ComputedRef<boolean | undefined>;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   clickHandler?(app?: Record<string, any> | CoreBladeExposed | null): void;
@@ -171,4 +171,8 @@ export interface MenuItemConfig {
    * Position priority.
    */
   priority: number;
+  /**
+   * Position priority in group
+   */
+  inGroupPriority?: number;
 }

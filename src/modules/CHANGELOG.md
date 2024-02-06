@@ -1,3 +1,12 @@
+## [1.0.153](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.152...v1.0.153) (2024-02-06)
+
+
+### Features
+
+* all modules refactored to dynamic views ([1146017](https://github.com/VirtoCommerce/vendor-portal/commit/1146017150d319aaf2288589ab14065705c5c06f))
+
+
+
 ## [1.0.152](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.151...v1.0.152) (2024-01-29)
 
 

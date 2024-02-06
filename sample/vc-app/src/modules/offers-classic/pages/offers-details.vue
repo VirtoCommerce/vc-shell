@@ -153,7 +153,7 @@
 
                 <VcRow>
                   <VcCol
-                    size="1"
+                    :size="1"
                     class="self-center tw-mr-2 tw-my-2"
                   >
                     <!-- Always in stock -->
@@ -171,12 +171,12 @@
                 <template v-if="offerDetails.inventory && offerDetails.inventory.length">
                   <div>
                     <VcRow>
-                      <VcCol size="2">
+                      <VcCol :size="2">
                         <VcLabel class="tw-my-2">
                           <span>{{ $t("OFFERSCLASSIC.PAGES.DETAILS.FIELDS.FULFILLMENT_CENTER.TITLE") }}</span>
                         </VcLabel>
                       </VcCol>
-                      <VcCol size="2">
+                      <VcCol :size="2">
                         <VcLabel
                           class="tw-my-2"
                           :required="true"
@@ -195,7 +195,7 @@
                         },
                       ]"
                     >
-                      <VcCol size="2">
+                      <VcCol :size="2">
                         <div class="tw-flex">
                           <VcCol>
                             <!-- Fulfillment center label -->
@@ -326,7 +326,7 @@
                       },
                     ]"
                   >
-                    <VcCol size="2">
+                    <VcCol :size="2">
                       <div class="tw-flex">
                         <VcCol class="tw-p-2">
                           <!-- List price field -->

@@ -115,6 +115,10 @@
     },
     "LANGUAGE_SELECTOR": {
       "TITLE": "Language selector"
+    },
+    "FILTERS": {
+      "APPLY": "Apply filters",
+      "RESET": "Reset"
     }
   },
   "INVITATION": {

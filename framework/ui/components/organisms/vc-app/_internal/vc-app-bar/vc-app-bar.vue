@@ -5,7 +5,7 @@
   >
     <slot name="app-switcher"></slot>
 
-    <template v-if="!$isMobile.value || blades.length === 0">
+    <template v-if="!$isMobile.value || quantity === 0">
       <!-- Logo -->
       <img
         class="tw-h-1/2 tw-cursor-pointer tw-mx-3"
@@ -26,15 +26,15 @@
     <template v-if="$isMobile.value">
       <!-- Show blades name when at least one blade is opened -->
       <div
-        v-if="blades.length === 1"
+        v-if="quantity === 1"
         class="tw-overflow-ellipsis tw-overflow-hidden tw-whitespace-nowrap tw-text-2xl tw-leading-header tw-ml-2"
       >
-        {{ toValue(blades[blades.length - 1]?.props?.navigation?.instance)?.title || "" }}
+        {{ viewTitle }}
       </div>
 
       <!-- Show back link when more than one blade is opened -->
       <VcLink
-        v-else-if="blades.length > 1"
+        v-else-if="quantity > 1"
         class="tw-ml-3"
         @click="$emit('backlink:click')"
       >
@@ -70,7 +70,7 @@ import { useI18n } from "vue-i18n";
 import { VcIcon, VcLink } from "./../../../../";
 import { IBladeToolbar } from "./../../../../../../core/types";
 import { useBladeNavigation } from "./../../../../../../shared";
-import { toValue } from "vue";
+import { Ref, nextTick, ref, toRef, unref, watch } from "vue";
 
 export interface Props {
   logo?: string;
@@ -92,6 +92,24 @@ defineEmits<Emits>();
 const { t } = useI18n({ useScope: "global" });
 
 const { blades } = useBladeNavigation();
+
+let viewTitle: Ref<string>;
+const quantity = ref();
+
+watch(
+  () => blades,
+  async (newVal) => {
+    await nextTick().then(() => {
+      viewTitle = toRef(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        unref(newVal.value[newVal.value.length - 1]?.props?.navigation?.instance) as Record<string, any>,
+        "title",
+      );
+      quantity.value = newVal.value.length;
+    });
+  },
+  { deep: true, immediate: true, flush: "post" },
+);
 </script>
 
 <style lang="scss">

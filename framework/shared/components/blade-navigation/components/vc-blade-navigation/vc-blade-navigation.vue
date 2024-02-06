@@ -5,12 +5,11 @@
 </template>
 
 <script lang="ts" setup>
-import { Ref, computed, inject, withDirectives, h, vShow } from "vue";
+import { Ref, computed, inject, withDirectives, h, vShow, nextTick } from "vue";
 import { RouterView } from "vue-router";
 import { BladeVNode, IParentCallArgs, useBladeNavigation } from "./../../../../../shared";
 import { ErrorInterceptor } from "./../../../error-interceptor";
 import { VcBladeView } from "./../vc-blade-view/vc-blade-view";
-import { useTemplateRefsList } from "@vueuse/core";
 
 const { blades, closeBlade, onParentCall } = useBladeNavigation();
 
@@ -19,8 +18,6 @@ const quantity = computed(() => {
 });
 
 const isMobile = inject("isMobile") as Ref<boolean>;
-
-const refs = useTemplateRefsList<HTMLDivElement>();
 
 const render = () => {
   if (!blades.value.length) {
@@ -39,11 +36,10 @@ const render = () => {
             return withDirectives(
               h(
                 VcBladeView,
-                { key: bladeVNode.type?.name || `blade_${index}`, blade: bladeVNode },
+                { key: `${bladeVNode.type?.name}_${index}` || `blade_${index}`, blade: bladeVNode },
                 {
-                  default: ({ Component }: { Component: BladeVNode }) =>
-                    h(Component, {
-                      ref: refs.value.set,
+                  default: ({ Component }: { Component: BladeVNode }) => {
+                    return h(Component, {
                       error,
                       closable: index >= 1,
                       expandable: quantity.value > 1,
@@ -54,9 +50,13 @@ const render = () => {
                         }
                       },
                       "onClose:blade": () => closeBlade(index),
-                      "onParent:call": (args: IParentCallArgs) => onParentCall(refs.value[index - 1], args),
-                      "onVue:before-unmount": reset,
-                    }),
+                      "onParent:call": (args: IParentCallArgs) => {
+                        const instance = blades.value?.[index - 1]?.props?.navigation?.instance.value;
+                        if (instance) onParentCall(instance, args);
+                      },
+                      onVnodeUnmounted: reset,
+                    });
+                  },
                 },
               ),
 

@@ -37,6 +37,9 @@ export const grid: DynamicGridSchema = {
       component: "vc-table",
       header: false,
       multiselect: false,
+      mobileTemplate: {
+        component: "TeamGridMobileView",
+      },
       columns: [
         {
           id: "firstName",

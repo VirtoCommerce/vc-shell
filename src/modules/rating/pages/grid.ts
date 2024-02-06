@@ -30,6 +30,9 @@ export const grid: DynamicGridSchema = {
       id: "reviewsGrid",
       component: "vc-table",
       header: false,
+      mobileTemplate: {
+        component: "RatingMobileGridView",
+      },
       columns: [
         {
           id: "title",

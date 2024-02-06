@@ -13,26 +13,26 @@
           {{ context.item.name }}
         </div>
         <VcHint class="tw-mt-1">
-          {{ $t("ORDERS.PAGES.EDIT.ITEMS_LIST.SKU") }}:
+          {{ $t("ORDERS.PAGES.DETAILS.FORM.ITEMS_LIST.SKU") }}:
           {{ context.item.sku }}
         </VcHint>
       </div>
     </div>
     <div class="tw-mt-3 tw-w-full tw-flex tw-justify-between">
       <div class="tw-truncate tw-grow-[2] tw-basis-0">
-        <VcHint>{{ $t("ORDERS.PAGES.EDIT.ITEMS_LIST.QUANTITY") }}</VcHint>
+        <VcHint>{{ $t("ORDERS.PAGES.DETAILS.FORM.ITEMS_LIST.QUANTITY") }}</VcHint>
         <div class="tw-truncate tw-mt-1">
           {{ context.item.quantity }}
         </div>
       </div>
       <div class="tw-truncate tw-grow-[2] tw-basis-0">
-        <VcHint>{{ $t("ORDERS.PAGES.EDIT.ITEMS_LIST.UNIT_PRICE") }}</VcHint>
+        <VcHint>{{ $t("ORDERS.PAGES.DETAILS.FORM.ITEMS_LIST.UNIT_PRICE") }}</VcHint>
         <div class="tw-truncate tw-mt-1">
           {{ context.item.price && context.item.price.toFixed(2) }}
         </div>
       </div>
       <div class="tw-truncate tw-grow-[2] tw-basis-0">
-        <VcHint>{{ $t("ORDERS.PAGES.EDIT.ITEMS_LIST.TOTAL") }}</VcHint>
+        <VcHint>{{ $t("ORDERS.PAGES.DETAILS.FORM.ITEMS_LIST.TOTAL") }}</VcHint>
         <div class="tw-truncate tw-mt-1">
           {{ context.item.extendedPrice && context.item.extendedPrice.toFixed(2) }}
         </div>
@@ -41,7 +41,7 @@
         v-if="context.item.feeDetails?.length"
         class="tw-truncate tw-grow-[2] tw-basis-0"
       >
-        <VcHint>{{ $t("ORDERS.PAGES.EDIT.ITEMS_LIST.COMMISSION") }}</VcHint>
+        <VcHint>{{ $t("ORDERS.PAGES.DETAILS.FORM.ITEMS_LIST.COMMISSION") }}</VcHint>
 
         <div class="tw-mt-1 tw-truncate">
           <div class="tw-truncate">

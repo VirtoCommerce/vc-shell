@@ -4,7 +4,11 @@
 import { ComponentPublicInstance, ComputedOptions, MethodOptions } from "vue";
 
 type RemoveOnVnodePrefix<T> = {
-  [K in keyof T as K extends `onVnode${string}` ? never : K extends `on${infer Event}` ? Uncapitalize<Event> : K]: T[K];
+  [K in keyof T as K extends `onVnode${string}`
+    ? never
+    : K extends `on${infer Event}`
+      ? Uncapitalize<`on${Event}`>
+      : K]: T[K];
 };
 
 type EmitsExtractor<T> = RemoveOnVnodePrefix<Pick<T, Extract<keyof T, `on${string}`>>>;

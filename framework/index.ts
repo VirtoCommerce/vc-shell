@@ -125,7 +125,6 @@ export default {
         return true;
       } else if (hasAccess(to.meta.permissions as string | string[])) return true;
       else {
-        // TODO move to locales
         notification.error(i18n.global.t("PERMISSION_MESSAGES.ACCESS_RESTRICTED"), {
           timeout: 3000,
         });

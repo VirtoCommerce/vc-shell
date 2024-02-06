@@ -31,7 +31,6 @@ export default {
           outline: props.element.outline,
           extend: props.element.extend,
         },
-        options: props.baseOptions,
         slots: {
           default: () => {
             return h("div", { class: "tw-flex tw-flex-row tw-items-center" }, [
@@ -47,9 +46,7 @@ export default {
         },
       });
 
-      return props.baseOptions.visibility
-        ? h(field.component as Component, { ...field.props, class: "tw-w-full tw-box-border" }, field.slots)
-        : null;
+      return h(field.component as Component, { ...field.props, class: "tw-w-full tw-box-border" }, field.slots);
     };
   },
 };

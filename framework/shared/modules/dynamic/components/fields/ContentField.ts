@@ -13,13 +13,13 @@ export default {
           ...props.baseProps,
           type: props.element.variant,
           copyable: props.element.copyable || false,
+          orientation: props.element.orientation,
         },
-        options: props.baseOptions,
       });
 
       const render = h(field.component as Component, field.props);
 
-      return props.baseOptions.visibility ? render : null;
+      return render;
     };
   },
 };

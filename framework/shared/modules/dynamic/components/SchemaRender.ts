@@ -4,6 +4,9 @@ import { ControlSchema } from "../types";
 import * as _ from "lodash-es";
 import { DetailsBladeContext } from "../factories/types";
 import { nodeBuilder } from "../helpers/nodeBuilder";
+import { visibilityHandler } from "../helpers/visibilityHandler";
+import { toValue } from "@vueuse/core";
+import { safeIn } from "../helpers/safeIn";
 
 const schemeRenderProps = {
   context: {
@@ -62,8 +65,16 @@ export default defineComponent({
       h(
         "div",
         { class: "tw-flex tw-flex-col tw-gap-4" },
-        props.uiSchema.reduce(
-          (arr, field): VNode[] => [
+        props.uiSchema.reduce((arr, field): VNode[] => {
+          if (
+            safeIn("visibility", field) &&
+            field.visibility?.method &&
+            !visibilityHandler(toValue(props.context?.scope)?.[field.visibility.method], props.context, field)
+          ) {
+            return arr;
+          }
+
+          return [
             ...arr,
             nodeBuilder({
               controlSchema: field,
@@ -73,9 +84,8 @@ export default defineComponent({
               currentLocale: currentLocale,
               formData: internalFormData,
             }),
-          ],
-          [] as VNode[],
-        ),
+          ];
+        }, [] as VNode[]),
       );
   },
 });

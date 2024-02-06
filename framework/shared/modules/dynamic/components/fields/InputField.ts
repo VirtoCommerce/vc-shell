@@ -24,7 +24,6 @@ export default {
           currentLanguage: props.currentLocale,
           clearable: props.element.clearable || false,
         },
-        options: props.baseOptions,
         slots: Object.entries(slotsMap).reduce(
           (acc, [key, value]) => {
             if (props.element[key as keyof InputSchema]) {
@@ -47,20 +46,18 @@ export default {
       const render = h(field.component as Component, field.props, field.slots);
 
       if (field.props.rules) {
-        return props.baseOptions.visibility
-          ? h(
-              ValidationField,
-              {
-                props: field.props,
-                index: props.elIndex,
-                rows: props.rows,
-                key: `${String(field.props.key)}_validation`,
-              },
-              () => render,
-            )
-          : null;
+        return h(
+          ValidationField,
+          {
+            props: field.props,
+            index: props.elIndex,
+            rows: props.rows,
+            key: `${String(field.props.key)}_validation`,
+          },
+          () => render,
+        );
       } else {
-        return props.baseOptions.visibility ? render : null;
+        return render;
       }
     };
   },

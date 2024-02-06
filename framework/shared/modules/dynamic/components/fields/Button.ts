@@ -19,13 +19,12 @@ export default {
             unref(props.bladeContext.scope)?.[props.element.method]();
           },
         },
-        options: props.baseOptions,
         slots: {
           default: () => props.element.content,
         },
       });
 
-      return props.baseOptions.visibility ? h(field.component as Component, field.props, field.slots) : null;
+      return h(field.component as Component, field.props, field.slots);
     };
   },
 };

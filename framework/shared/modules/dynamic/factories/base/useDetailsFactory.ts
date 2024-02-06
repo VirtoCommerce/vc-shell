@@ -7,7 +7,7 @@ import { createUnrefFn } from "@vueuse/core";
 
 export interface UseDetailsFactoryParams<Item> {
   load: (args?: ItemId) => Promise<Item | undefined>;
-  saveChanges: (details: Item) => Promise<Item | void>;
+  saveChanges?: (details: Item) => Promise<Item | void>;
   remove?: (args: ItemId) => Promise<void>;
 }
 
@@ -30,7 +30,7 @@ export const useDetailsFactory = <Item>(factoryParams: UseDetailsFactoryParams<I
 
     const { loading: manageLoading, action: saveChanges } = useAsync<Item>(async (item) => {
       if (validationState.value.valid) {
-        await factoryParams.saveChanges(item as Item);
+        await factoryParams.saveChanges?.(item as Item);
         isModified.value = false;
       } else throw new Error("Form is not valid");
     });

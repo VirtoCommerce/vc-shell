@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ComputedRef, Raw } from "vue";
+import { Raw } from "vue";
 import {
   VcButton,
   VcCard,
@@ -16,6 +16,9 @@ import {
   VcVideo,
   VcTextarea,
   VcMultivalue,
+  VcSwitch,
+  VcTable,
+  VcRating,
 } from "../../../../ui/components";
 import type { ComponentProps, ComponentEmit, ComponentSlots } from "vue-component-type-helpers";
 
@@ -81,63 +84,52 @@ export type WithRequiredProperty<Type, Key extends keyof Type> = Type & {
   [Property in Key]-?: Type[Property];
 };
 
-export interface IControlBaseOptions {
-  visibility?: ComputedRef<boolean | undefined>;
-}
-
 export type IMultivalueField = {
   props: ComponentProps<typeof VcMultivalue> | IControlBaseProps;
   slots?: Partial<ComponentSlots<typeof VcMultivalue>>;
-  options: IControlBaseOptions;
 } & FieldOpts<typeof VcMultivalue>;
 
 export type ISelectField = {
   props: ComponentProps<typeof VcSelect> | IControlBaseProps;
   slots?: Partial<ComponentSlots<typeof VcSelect>>;
-  options: IControlBaseOptions;
 } & FieldOpts<typeof VcSelect>;
 
 export type IStatusField = {
-  props: ComponentProps<typeof VcStatus> & IControlBaseOptions;
+  props: ComponentProps<typeof VcStatus>;
   slots?: Partial<Pick<ComponentSlots<typeof VcButton>, "default">>;
-  options: IControlBaseOptions;
 } & FieldOpts<typeof VcStatus>;
 
 export type IInputField = {
   props: ComponentProps<typeof VcInput> | IControlBaseProps;
-  options: IControlBaseOptions;
+
   slots?: Partial<Pick<ComponentSlots<typeof VcInput>, "append" | "prepend" | "append-inner" | "prepend-inner">>;
 } & FieldOpts<typeof VcInput>;
 
 export type IContentField = {
   props: ComponentProps<typeof VcField> | IControlBaseProps;
-  options: IControlBaseOptions;
 } & FieldOpts<typeof VcField>;
 
 export type IVideoField = {
   props: ComponentProps<typeof VcVideo> | IControlBaseProps;
-  options: IControlBaseOptions;
 } & FieldOpts<typeof VcVideo>;
 
 export type IImageField = {
   props: ComponentProps<typeof VcImage> | IControlBaseProps;
-  options: IControlBaseOptions;
 } & FieldOpts<typeof VcImage>;
 
 export type IInputCurrency = {
   props: Partial<ComponentProps<typeof VcInputCurrency>> | IControlBaseProps;
-  options: IControlBaseOptions;
 } & FieldOpts<typeof VcInputCurrency>;
 
 export type ICardCollection = {
   props: ComponentProps<typeof VcCard> | IControlBaseProps;
-  options: IControlBaseOptions;
+
   slots?: Partial<Pick<ComponentSlots<typeof VcCard>, "default" | "actions">>;
 } & FieldOpts<typeof VcCard>;
 
 export type ICheckbox = {
   props: ComponentProps<typeof VcCheckbox> | IControlBaseProps;
-  options: IControlBaseOptions;
+
   slots?: Partial<Pick<ComponentSlots<typeof VcCheckbox>, "default" | "error">>;
 } & FieldOpts<typeof VcCheckbox>;
 
@@ -146,22 +138,19 @@ export type IDynamicProperties = {
     | (ComponentProps<typeof VcDynamicProperty> & FromGenericEventsToProps<ComponentEmit<typeof VcDynamicProperty>>)
     | (ComponentProps<typeof VcDynamicProperty> &
         Omit<IControlBaseProps, keyof ComponentProps<typeof VcDynamicProperty> | "onUpdate:modelValue" | "rules">);
-  options: IControlBaseOptions;
 } & FieldOpts<typeof VcDynamicProperty>;
 
 export type IEditorField = {
   props: ComponentProps<typeof VcEditor> | IControlBaseProps;
-  options: IControlBaseOptions;
 } & FieldOpts<typeof VcEditor>;
 
 export type IGallery = {
   props: (ComponentProps<typeof VcGallery> & { rules: Record<string, unknown> }) | IControlBaseProps;
-  options: IControlBaseOptions;
 } & FieldOpts<typeof VcGallery>;
 
 export type IButton = {
   props: ComponentProps<typeof VcButton>;
-  options: IControlBaseOptions;
+
   slots?: Partial<Pick<ComponentSlots<typeof VcButton>, "default">>;
 } & FieldOpts<typeof VcButton>;
 
@@ -174,5 +163,17 @@ export type IFieldset = {
 
 export type ITextareaField = {
   props: ComponentProps<typeof VcTextarea> | IControlBaseProps;
-  options: IControlBaseOptions;
 } & FieldOpts<typeof VcTextarea>;
+
+export type ISwitch = {
+  props: ComponentProps<typeof VcSwitch> | IControlBaseProps;
+} & FieldOpts<typeof VcSwitch>;
+
+export type ITable = {
+  props: ComponentProps<typeof VcTable> | IControlBaseProps;
+  slots: Partial<Pick<ComponentSlots<typeof VcTable>, `item_${string}` | "notfound" | "mobile-item" | "empty">>;
+} & FieldOpts<typeof VcTable>;
+
+export type IRating = {
+  props: ComponentProps<typeof VcRating> | IControlBaseProps;
+} & FieldOpts<typeof VcRating>;

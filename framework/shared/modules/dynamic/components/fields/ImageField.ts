@@ -19,12 +19,11 @@ export default {
           size: props.element.size,
           background: props.element.background,
         },
-        options: props.baseOptions,
       });
 
       const render = h(field.component as Component, field.props);
 
-      return props.baseOptions.visibility ? render : null;
+      return render;
     };
   },
 };

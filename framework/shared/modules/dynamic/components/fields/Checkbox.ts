@@ -1,8 +1,10 @@
-import { ExtractPropTypes, h, Component } from "vue";
+import { ExtractPropTypes, h, Component, unref } from "vue";
 import { Checkbox } from "../factories";
 import componentProps from "./props";
 import ValidationField from "./ValidationField";
 import { CheckboxSchema } from "../../types";
+import { unwrapInterpolation } from "../../helpers/unwrapInterpolation";
+import { toValue } from "@vueuse/core";
 
 export default {
   name: "Checkbox",
@@ -15,29 +17,26 @@ export default {
           trueValue: props.element.trueValue,
           falseValue: props.element.falseValue,
         },
-        options: props.baseOptions,
         slots: {
-          default: () => props.element.content,
+          default: () => unref(unwrapInterpolation(props.element.content, toValue(props.fieldContext!))),
         },
       });
 
       const render = h(field.component as Component, field.props, field.slots);
 
       if (field.props.rules) {
-        return props.baseOptions.visibility
-          ? h(
-              ValidationField,
-              {
-                props: field.props,
-                slots: field.slots,
-                index: props.elIndex,
-                rows: props.rows,
-              },
-              () => render,
-            )
-          : null;
+        return h(
+          ValidationField,
+          {
+            props: field.props,
+            slots: field.slots,
+            index: props.elIndex,
+            rows: props.rows,
+          },
+          () => render,
+        );
       } else {
-        return props.baseOptions.visibility ? render : null;
+        return render;
       }
     };
   },

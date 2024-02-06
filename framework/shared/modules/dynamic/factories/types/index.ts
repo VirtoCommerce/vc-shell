@@ -63,7 +63,7 @@ export interface UseList<Items, Query, Scope extends ListBaseBladeScope = ListBa
 
 export interface BaseBladeScope {
   [x: string]: any;
-  toolbarOverrides?: { [x: string]: IBladeToolbar } | ((...args: any[]) => any);
+  toolbarOverrides?: MaybeRef<{ [x: string]: IBladeToolbar }> | ((...args: any[]) => any) | MaybeRef<IBladeToolbar[]>;
 }
 
 export interface ListBaseBladeScope extends BaseBladeScope {

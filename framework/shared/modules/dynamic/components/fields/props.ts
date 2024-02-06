@@ -1,16 +1,12 @@
 import { ComputedRef, MaybeRef, PropType, UnwrapNestedRefs, VNode } from "vue";
 import { DetailsBladeContext } from "../../factories";
-import { IControlBaseOptions, IControlBaseProps } from "../../types/models";
+import { IControlBaseProps } from "../../types/models";
 import { ControlSchema } from "../../types";
 
 export default {
   baseProps: {
     type: Object as PropType<UnwrapNestedRefs<IControlBaseProps>>,
     default: () => ({}) as IControlBaseProps,
-  },
-  baseOptions: {
-    type: Object as PropType<IControlBaseOptions>,
-    default: () => ({}) as IControlBaseOptions,
   },
   element: {
     type: Object as PropType<ControlSchema>,

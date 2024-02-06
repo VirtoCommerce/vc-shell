@@ -4,7 +4,7 @@
     v-if="!composables"
     :expanded="expanded"
     :closable="closable"
-    width="50%"
+    :width="settings?.width || '50%'"
     :toolbar-items="toolbarComputed"
     :title="title"
     :class="{
@@ -62,9 +62,9 @@
 
         <!-- Not found template -->
         <template #notfound>
-          <template v-if="bladeOptions?.notFound">
+          <template v-if="tableTemplates?.notFound">
             <component
-              :is="bladeOptions.notFound"
+              :is="tableTemplates.notFound"
               @reset="resetSearch"
             ></component>
           </template>
@@ -84,9 +84,9 @@
 
         <!-- Empty template -->
         <template #empty>
-          <template v-if="bladeOptions?.empty">
+          <template v-if="tableTemplates?.empty">
             <component
-              :is="bladeOptions.empty"
+              :is="tableTemplates.empty"
               :class="{
                 'tw-py-6': isWidgetView,
               }"
@@ -104,7 +104,7 @@
 
         <!-- Override table templates-->
         <template
-          v-for="(component, key, index) in bladeOptions?.templateOverrideComponents"
+          v-for="(component, key, index) in tableTemplates?.templateOverrideComponents"
           #[`item_${key}`]="itemData"
           :key="`template_override_${index}`"
         >
@@ -117,11 +117,11 @@
         <!-- Override table mobile view -->
 
         <template
-          v-if="bladeOptions?.mobileView"
+          v-if="tableTemplates?.mobileView"
           #mobile-item="itemData"
         >
           <component
-            :is="bladeOptions.mobileView"
+            :is="tableTemplates.mobileView"
             :context="itemData"
           ></component>
         </template>
@@ -137,23 +137,20 @@ import {
   inject,
   reactive,
   ref,
-  resolveComponent,
   shallowRef,
   toValue,
   unref,
   watch,
   UnwrapRef,
-  ShallowRef,
-  ConcreteComponent,
   ComputedRef,
   onBeforeMount,
 } from "vue";
 import { useI18n } from "vue-i18n";
 import { DynamicGridSchema, ListContentSchema, SettingsSchema } from "../types";
-import { useFilterBuilder } from "../composables";
+import { useFilterBuilder, useTableTemplates } from "../composables";
 import { useFunctions, useNotifications } from "../../../../core/composables";
 import { ITableColumns } from "../../../../core/types";
-import { toolbarReducer } from "../helpers/toolbarReducer";
+import { useToolbarReducer } from "../composables/useToolbarReducer";
 import { notification, usePopup } from "../../../components";
 import { ListBaseBladeScope, ListBladeContext, UseList } from "../factories/types";
 import { IParentCallArgs } from "../../../index";
@@ -231,7 +228,7 @@ const stateKey =
   props.composables &&
   computed(() => {
     if (tableData?.value?.id) {
-      return tableData.value?.id + props.isWidgetView ? "_dashboard" : "";
+      return tableData.value?.id && props.isWidgetView ? tableData.value?.id + "_dashboard" : tableData.value?.id;
     }
 
     throw new Error('Table id is not defined. Please provide "id" property in table schema');
@@ -256,6 +253,8 @@ const { load, remove, items, loading, pagination, query, scope } = props.composa
 if (props.isWidgetView) {
   query.value.take = 5;
 }
+
+const { tableTemplates } = useTableTemplates(tableData);
 
 const calculateColumns = (columns: ListContentSchema["columns"]) => {
   const result = columns?.map((column) => {
@@ -286,10 +285,6 @@ const table =
 const bladeOptions = reactive({
   tableData,
   table,
-  templateOverrideComponents: templateOverrideComponents(),
-  mobileView: resolveTemplateComponent("mobileTemplate"),
-  notFound: resolveTemplateComponent("notFoundTemplate"),
-  empty: resolveTemplateComponent("emptyTemplate"),
 });
 
 const {
@@ -316,44 +311,46 @@ const bladeContext = ref<ListBladeContext>({
 });
 
 const toolbarComputed =
-  props.composables &&
-  toolbarReducer({
-    defaultToolbarSchema: settings.value?.toolbar ?? [],
-    defaultToolbarBindings: {
-      save: {
-        clickHandler() {
-          emit("close:blade");
+  (props.composables &&
+    useToolbarReducer({
+      defaultToolbarSchema: settings.value?.toolbar ?? [],
+      defaultToolbarBindings: {
+        save: {
+          clickHandler() {
+            emit("close:blade");
+          },
+          disabled: computed(() => !modified.value),
         },
-        disabled: computed(() => !modified.value),
-      },
-      openAddBlade: {
-        async clickHandler() {
-          if (
-            scope &&
-            "openDetailsBlade" in toValue(scope) &&
-            toValue(scope).openDetailsBlade &&
-            typeof toValue(scope).openDetailsBlade === "function"
-          ) {
-            toValue(scope).openDetailsBlade();
-          } else throw new Error("openDetailsBlade method is not defined in scope");
+        openAddBlade: {
+          async clickHandler() {
+            if (
+              scope &&
+              "openDetailsBlade" in toValue(scope) &&
+              toValue(scope).openDetailsBlade &&
+              typeof toValue(scope).openDetailsBlade === "function"
+            ) {
+              toValue(scope).openDetailsBlade();
+            } else throw new Error("openDetailsBlade method is not defined in scope");
+          },
+        },
+        refresh: {
+          async clickHandler() {
+            await reload();
+          },
+        },
+        removeItems: {
+          async clickHandler() {
+            await removeItems();
+          },
+          disabled: computed(() => !selectedIds.value?.length),
+          isVisible: isDesktop.value,
         },
       },
-      refresh: {
-        async clickHandler() {
-          await reload();
-        },
-      },
-      removeItems: {
-        async clickHandler() {
-          await removeItems();
-        },
-        disabled: computed(() => !selectedIds.value?.length),
-        isVisible: isDesktop.value,
-      },
-    },
-    customToolbarConfig: toValue(scope)?.toolbarOverrides,
-    context: bladeContext.value,
-  });
+      customToolbarConfig: toValue(scope)?.toolbarOverrides,
+      context: bladeContext.value,
+      scope,
+    })) ??
+  [];
 
 onBeforeMount(async () => {
   if (props.composables) await load({ ...query.value, sort: sort.value });
@@ -543,43 +540,6 @@ async function resetSearch() {
     ...filter,
     keyword: "",
   });
-}
-
-function templateOverrideComponents(): Record<string, ShallowRef<ConcreteComponent>> {
-  return {
-    ...table?.value.columns?.reduce(
-      (acc, curr) => {
-        if ("customTemplate" in curr && curr.customTemplate) {
-          if (!("component" in curr.customTemplate)) {
-            throw new Error(
-              `Component name must be provided in 'customTemplate' property, column: ${JSON.stringify(curr)}`,
-            );
-          } else if ("component" in curr.customTemplate && curr.customTemplate.component) {
-            const component = resolveComponent(curr.customTemplate.component);
-
-            if (typeof component !== "string") {
-              acc[curr.id] = shallowRef(component);
-            }
-          }
-        }
-        return acc;
-      },
-      {} as Record<string, ShallowRef<ConcreteComponent>>,
-    ),
-  };
-}
-
-function resolveTemplateComponent(name: keyof ListContentSchema) {
-  if (!tableData?.value) return;
-  const value = tableData.value[name];
-  if (value && typeof value === "object" && "component" in value) {
-    const componentName = value.component;
-    if (componentName) {
-      const component = resolveComponent(componentName);
-
-      if (component && typeof component !== "string") return shallowRef(component);
-    }
-  }
 }
 
 function sortRows(event: { dragIndex: number; dropIndex: number; value: any[] }) {

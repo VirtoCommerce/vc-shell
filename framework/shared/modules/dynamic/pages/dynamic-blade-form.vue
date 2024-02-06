@@ -4,7 +4,7 @@
     v-loading="loading"
     :expanded="expanded"
     :closable="closable"
-    width="50%"
+    :width="settings?.width || '50%'"
     :toolbar-items="toolbarComputed"
     :title="title"
     @close="$emit('close:blade')"
@@ -33,6 +33,7 @@
         <div class="item-details__content">
           <VcForm class="tw-grow tw-p-4">
             <SchemaRender
+              :key="`${loading}`"
               v-model="item"
               :ui-schema="form.children"
               :context="bladeContext"
@@ -78,6 +79,7 @@ import {
   ComputedRef,
   type Component,
   ConcreteComponent,
+  toRefs,
 } from "vue";
 import { DynamicDetailsSchema, FormContentSchema, SettingsSchema } from "../types";
 import { reactiveComputed, useMounted, useTemplateRefsList } from "@vueuse/core";
@@ -92,10 +94,11 @@ import {
 } from "../../../index";
 import SchemaRender from "../components/SchemaRender";
 import { VcSelect } from "../../../../ui/components";
-import { toolbarReducer } from "../helpers/toolbarReducer";
+import { useToolbarReducer } from "../composables/useToolbarReducer";
 import { useBeforeUnload } from "../../../../core/composables/useBeforeUnload";
 import * as _ from "lodash-es";
 import { IBladeToolbar } from "../../../../core/types";
+import { toRef } from "vue";
 
 interface Props {
   expanded?: boolean;
@@ -239,56 +242,58 @@ const bladeOptions = reactive({
 });
 
 const toolbarComputed =
-  props.composables &&
-  toolbarReducer({
-    defaultToolbarSchema: settings.value?.toolbar ?? [],
-    defaultToolbarBindings: {
-      saveChanges: {
-        async clickHandler() {
-          if (item.value) {
-            await saveChanges(item.value);
+  (props.composables &&
+    useToolbarReducer({
+      defaultToolbarSchema: settings.value?.toolbar ?? [],
+      defaultToolbarBindings: {
+        saveChanges: {
+          async clickHandler() {
+            if (item.value) {
+              await saveChanges(item.value);
 
-            emit("parent:call", {
-              method: "reload",
-            });
-
-            emit("parent:call", {
-              method: "updateActiveWidgetCount",
-            });
-
-            if (!props.param) {
-              emit("close:blade");
-            }
-          }
-        },
-        disabled: computed(() => !validationState.value.modified),
-      },
-      remove: {
-        async clickHandler() {
-          if (
-            await showConfirmation(
-              computed(() => t(`${settings.value?.localizationPrefix.trim().toUpperCase()}.PAGES.ALERTS.DELETE`)),
-            )
-          ) {
-            if (props.param) {
-              await remove?.({ id: props.param });
               emit("parent:call", {
                 method: "reload",
               });
+
               emit("parent:call", {
                 method: "updateActiveWidgetCount",
               });
 
-              emit("close:blade");
+              if (!props.param) {
+                emit("close:blade");
+              }
             }
-          }
+          },
+          disabled: computed(() => !validationState.value.modified),
         },
-        disabled: computed(() => toValue(scope)?.disabled),
+        remove: {
+          async clickHandler() {
+            if (
+              await showConfirmation(
+                computed(() => t(`${settings.value?.localizationPrefix.trim().toUpperCase()}.PAGES.ALERTS.DELETE`)),
+              )
+            ) {
+              if (props.param) {
+                await remove?.({ id: props.param });
+                emit("parent:call", {
+                  method: "reload",
+                });
+                emit("parent:call", {
+                  method: "updateActiveWidgetCount",
+                });
+
+                emit("close:blade");
+              }
+            }
+          },
+          disabled: computed(() => toValue(scope)?.disabled),
+        },
       },
-    },
-    customToolbarConfig: toValue(scope)?.toolbarOverrides,
-    context: bladeContext.value,
-  });
+      customToolbarConfig: toValue(scope)?.toolbarOverrides,
+      context: bladeContext.value,
+      scope,
+    })) ??
+  [];
 
 async function setActiveWidget(widget: string | ConcreteComponent) {
   const component = typeof widget === "string" ? resolveComponent(widget) : widget;

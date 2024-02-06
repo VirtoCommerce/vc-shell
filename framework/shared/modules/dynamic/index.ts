@@ -9,6 +9,7 @@ import { kebabToPascal } from "../../../core/utilities";
 import { BladeInstanceConstructor } from "../../index";
 import { createAppModule } from "../../../core/plugins";
 import { ComponentProps } from "./../../utilities/vueUtils";
+import { Router } from "vue-router";
 
 interface Registered {
   component: BladeInstanceConstructor;
@@ -138,7 +139,7 @@ export const createDynamicAppModule = (args: {
   }
 
   return {
-    install(app: App, options: { router: any }) {
+    install(app: App, options: { router: Router }) {
       const bladePages = { ...pages };
       const appModuleContent = {
         locales: args?.locales,

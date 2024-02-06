@@ -26,7 +26,6 @@ export default {
           clearable: props.element.clearable || false,
           searchable: props.element.searchable || false,
         },
-        options: props.baseOptions,
 
         slots:
           props.element.customTemplate &&
@@ -46,20 +45,18 @@ export default {
       const render = h(field.component as unknown as Component, field.props, field.slots);
 
       if (field.props.rules) {
-        return props.baseOptions.visibility
-          ? h(
-              ValidationField,
-              {
-                props: field.props,
-                index: props.elIndex,
-                rows: props.rows,
-                key: `${String(field.props.key)}_validation`,
-              },
-              () => render,
-            )
-          : null;
+        return h(
+          ValidationField,
+          {
+            props: field.props,
+            index: props.elIndex,
+            rows: props.rows,
+            key: `${String(field.props.key)}_validation`,
+          },
+          () => render,
+        );
       } else {
-        return props.baseOptions.visibility ? render : null;
+        return render;
       }
     };
   },

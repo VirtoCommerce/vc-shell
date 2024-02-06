@@ -45,15 +45,26 @@ export default {
       const field = CardCollection({
         props: {
           ...props.baseProps,
-          header: props.element.label,
+          header: props.baseProps.label,
           isCollapsable: props.element.collapsible,
           isCollapsed: restoreCollapsed(props.element.id),
           "onState:collapsed": (e: boolean) => handleCollapsed(props.element.id, e),
         },
-        options: props.baseOptions,
 
         slots: {
-          default: () => h("div", { class: "tw-flex tw-flex-col tw-p-4 tw-gap-4" }, toValue(props.fields)),
+          default: () =>
+            h(
+              "div",
+              {
+                class: {
+                  "tw-flex": true,
+                  "tw-flex-col": true,
+                  "tw-p-4": !!props.element.removePadding === true ? false : true,
+                  "tw-gap-4": true,
+                },
+              },
+              toValue(props.fields),
+            ),
           actions: () => {
             if (props.element.action && props.fieldContext && props.currentLocale) {
               const elem = nodeBuilder({
@@ -78,9 +89,7 @@ export default {
         return localStorage?.getItem(key) === "true";
       }
 
-      return props.baseOptions.visibility && hasNoComment.value
-        ? h(field.component as Component, field.props, field.slots)
-        : null;
+      return hasNoComment.value ? h(field.component as Component, field.props, field.slots) : null;
     };
   },
 };

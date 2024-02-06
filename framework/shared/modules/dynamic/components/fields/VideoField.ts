@@ -14,12 +14,11 @@ export default {
           source: props.baseProps.modelValue,
           size: props.element.size,
         },
-        options: props.baseOptions,
       });
 
       const render = h(field.component as Component, field.props);
 
-      return props.baseOptions.visibility ? render : null;
+      return render;
     };
   },
 };

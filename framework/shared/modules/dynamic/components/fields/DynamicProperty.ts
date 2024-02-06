@@ -116,13 +116,12 @@ export default {
             key: prop.multilanguage ? prop.name + "_" + prop.id + "_" + props.currentLocale : prop.name + "_" + prop.id,
             currentLanguage: props.currentLocale,
           },
-          options: props.baseOptions,
         }),
       );
     });
 
     return () => {
-      return properties && properties.length && props.baseOptions.visibility
+      return properties && properties.length
         ? properties?.map((field) => h(field.component as Component, unrefNested(field.props)))
         : null;
     };

@@ -5,6 +5,7 @@ import {
   VcImage,
   VcInput,
   VcMultivalue,
+  VcRating,
   VcStatus,
   VcVideo,
 } from "./../../../../ui/components";
@@ -57,6 +58,13 @@ export interface SettingsDetails extends SettingsBase {
 
 export type IViewComponentName = "DynamicBladeForm" | "DynamicBladeList";
 
+type ToolbarSchema = {
+  id: string;
+  title: string;
+  icon: string;
+  method: string;
+};
+
 export interface SettingsBase {
   /**
    * Blade url
@@ -91,13 +99,10 @@ export interface SettingsBase {
    * [`saveChanges`, `remove`] methods in `DynamicBladeForm`
    *
    * [`openAddBlade`, `refresh`, `removeItems`, `save`] methods in `DynamicBladeList`
+   *
+   * If not set - toolbar data will try to consume from composable, if not found - toolbar will not be added
    */
-  toolbar: {
-    id: string;
-    title: string;
-    icon: string;
-    method: string;
-  }[];
+  toolbar?: ToolbarSchema[];
   /**
    * Blade component
    */
@@ -129,6 +134,12 @@ export interface SettingsBase {
    * @default undefined
    */
   menuItem?: MenuItemConfig;
+  /**
+   * Collapsed blade width in percentage
+   * @default "50%"
+   */
+  // TODO Add to documentation
+  width?: `${number}%`;
 }
 
 export interface ListContentSchema {
@@ -137,6 +148,7 @@ export interface ListContentSchema {
   filter?: FilterSchema;
   multiselect?: boolean;
   header?: boolean;
+  footer?: boolean;
   columns?: (Omit<ITableColumns, "visible"> & {
     id: string;
     title: string;
@@ -227,6 +239,10 @@ export interface SchemaBase {
    * @type {{ method: string }}
    */
   update?: { method: string };
+  /**
+   * Adds horizontal separator after component.
+   */
+  horizontalSeparator?: boolean;
 }
 
 /**
@@ -411,7 +427,9 @@ export interface VideoSchema
  * Data field schema interface.
  * @interface
  */
-export interface FieldSchema extends Pick<SchemaBase, "id" | "property" | "label" | "visibility" | "tooltip"> {
+// TODO update documentation
+export interface FieldSchema
+  extends Pick<SchemaBase, "id" | "property" | "label" | "visibility" | "tooltip" | "horizontalSeparator"> {
   /**
    * Component type for field.
    * @type {"vc-field"}
@@ -427,13 +445,26 @@ export interface FieldSchema extends Pick<SchemaBase, "id" | "property" | "label
    * @type {boolean}
    */
   copyable?: boolean;
+  /**
+   * Field orientation.
+   * @type {"horizontal" | "vertical"}
+   * @default "vertical"
+   */
+  orientation?: "horizontal" | "vertical";
+  /**
+   * Field columns aspect ratio.
+   * @description Uses CSS flex-grow property.
+   * @type {[number, number]}
+   */
+  aspectRatio?: [number, number];
 }
 
 /**
  * Image schema interface.
  * @interface
  */
-export interface ImageSchema extends Pick<SchemaBase, "id" | "property" | "visibility" | "update"> {
+export interface ImageSchema
+  extends Pick<SchemaBase, "id" | "property" | "visibility" | "update" | "horizontalSeparator"> {
   /**
    * Component type for image.
    * @type {"vc-image"}
@@ -475,7 +506,7 @@ export interface ImageSchema extends Pick<SchemaBase, "id" | "property" | "visib
  * Status schema interface.
  * @interface
  */
-export interface StatusSchema extends Pick<SchemaBase, "id" | "visibility"> {
+export interface StatusSchema extends Pick<SchemaBase, "id" | "visibility" | "horizontalSeparator"> {
   /**
    * Component type for status.
    * @type {"vc-status"}
@@ -576,7 +607,8 @@ export interface EditorSchema extends SchemaBase {
  * Interface for dynamic properties schema.
  * @interface
  */
-export interface DynamicPropertiesSchema extends Pick<SchemaBase, "id" | "disabled" | "property" | "visibility"> {
+export interface DynamicPropertiesSchema
+  extends Pick<SchemaBase, "id" | "disabled" | "property" | "visibility" | "horizontalSeparator"> {
   /**
    * The component type for dynamic properties.
    * @type {"vc-dynamic-properties"}
@@ -634,7 +666,8 @@ export interface GallerySchema extends Omit<SchemaBase, "placeholder" | "multila
  * Interface for a card schema.
  * @interface
  */
-export interface CardSchema extends RequiredBy<Pick<SchemaBase, "id" | "label" | "visibility">, "label"> {
+export interface CardSchema
+  extends RequiredBy<Pick<SchemaBase, "id" | "label" | "visibility" | "horizontalSeparator">, "label"> {
   /**
    * Component type for the card.
    * @type {"vc-card"}
@@ -655,17 +688,38 @@ export interface CardSchema extends RequiredBy<Pick<SchemaBase, "id" | "label" |
    * @type {boolean}
    */
   collapsible?: boolean;
+  /**
+   * Removes internal padding from the card.
+   * @type {boolean}
+   * @default false
+   */
+  removePadding?: boolean;
 }
 
-export interface WidgetsSchema extends Pick<SchemaBase, "id"> {
+export interface WidgetsSchema extends Pick<SchemaBase, "id" | "horizontalSeparator"> {
   component: "vc-widgets";
   children: string[];
 }
 
 export interface CheckboxSchema extends Omit<SchemaBase, "multilanguage" | "placeholder"> {
+  /**
+   * Component type for checkbox.
+   * @type {"vc-checkbox"}
+   */
   component: "vc-checkbox";
+  /**
+   * Checkbox text content.
+   */
   content: string;
+  /**
+   * True value for the switch.
+   * @type {boolean}
+   */
   trueValue?: boolean;
+  /**
+   * False value for the switch.
+   * @type {boolean}
+   */
   falseValue?: boolean;
 }
 
@@ -673,7 +727,8 @@ export interface CheckboxSchema extends Omit<SchemaBase, "multilanguage" | "plac
  * Fieldset schema interface.
  * @interface
  */
-export interface FieldsetSchema extends PartialBy<Pick<SchemaBase, "id" | "property" | "visibility">, "property"> {
+export interface FieldsetSchema
+  extends PartialBy<Pick<SchemaBase, "id" | "property" | "visibility" | "horizontalSeparator">, "property"> {
   /**
    * Component type for the fieldset.
    * @type {"vc-fieldset"}
@@ -711,9 +766,36 @@ export interface FieldsetSchema extends PartialBy<Pick<SchemaBase, "id" | "prope
 }
 
 /**
- * Button schema interface.
+ * Switch schema interface.
+ * @interface
  */
-export interface ButtonSchema extends Pick<SchemaBase, "id" | "disabled" | "visibility"> {
+// TODO add to documentation
+export interface SwitchSchema extends Omit<SchemaBase, "placeholder" | "multilanguage"> {
+  /**
+   * Component type for switch.
+   * @type {"vc-switch"}
+   */
+  component: "vc-switch";
+  /**
+   * True value for the switch.
+   * @type {boolean}
+   */
+  trueValue?: boolean;
+  /**
+   * False value for the switch.
+   * @type {boolean}
+   */
+  falseValue?: boolean;
+}
+
+// TODO add to documentation
+export type TableSchema = Omit<ListContentSchema, "filter"> & Pick<SchemaBase, "id" | "property" | "visibility">;
+
+/**
+ * Button schema interface.
+ * @interface
+ */
+export interface ButtonSchema extends Pick<SchemaBase, "id" | "disabled" | "visibility" | "horizontalSeparator"> {
   /**
    * Component type.
    * @type {"vc-button"}
@@ -752,6 +834,49 @@ export interface ButtonSchema extends Pick<SchemaBase, "id" | "disabled" | "visi
   method: string;
 }
 
+/**
+ * Custom component schema interface.
+ * @interface
+ */
+// TODO add to documentation
+export interface CustomComponentSchema extends Pick<SchemaBase, "id" | "visibility"> {
+  /**
+   * Component type for custom component.
+   * @type {vc-custom}
+   */
+  component: "vc-custom";
+  /**
+   * Component name of custom component. Component should be registered globally.
+   */
+  name: string;
+}
+
+/**
+ * Rating schema interface.
+ * @interface
+ */
+export interface RatingSchema
+  extends Pick<
+    SchemaBase,
+    "id" | "visibility" | "label" | "property" | "tooltip" | "horizontalSeparator" | "placeholder"
+  > {
+  /**
+   * Component type for rating.
+   * @type {"vc-rating"}
+   */
+  component: "vc-rating";
+  /**
+   * Maximal rating size.
+   * @type {number}
+   */
+  max?: number;
+  /**
+   * Rating component display variant.
+   * @type {"text" | "stars" | "star-and-text"}
+   */
+  type?: ComponentProps<typeof VcRating>["variant"];
+}
+
 export type ControlSchema =
   | SelectSchema
   | InputSchema
@@ -769,35 +894,36 @@ export type ControlSchema =
   | VideoSchema
   | ImageSchema
   | TextareaSchema
-  | MultivalueSchema;
+  | MultivalueSchema
+  | SwitchSchema
+  | TableSchema
+  | CustomComponentSchema
+  | RatingSchema;
 
 export interface FilterBase {
   columns: {
     title: string;
-    controls: {
-      field: string;
-      component: InputSchema["component"] | CheckboxSchema["component"];
-    }[];
+    id: string;
+    controls: (FilterCheckbox | FilterDateInput)[];
   }[];
 }
 
-export type FilterCheckbox = FilterBase & {
-  columns: {
-    controls: {
-      data?: { value: string; displayName: string }[];
-    }[];
-  }[];
+export type FilterCheckbox = {
+  id: string;
+  field: string;
+  multiple?: boolean;
+  data?: { value: string; displayName: string }[];
+  component: CheckboxSchema["component"];
 };
 
-export type FilterDateInput = FilterBase & {
-  columns: {
-    controls: {
-      label?: string;
-    }[];
-  }[];
+export type FilterDateInput = {
+  id: string;
+  field: string;
+  label?: string;
+  component: InputSchema["component"];
 };
 
-export type FilterSchema = FilterCheckbox | FilterDateInput;
+export type FilterSchema = FilterBase;
 
 export interface OverridesSchema {
   upsert?: (OverridesUpsert | OverridesReplace)[];
@@ -810,8 +936,7 @@ export interface OverridesUpsert extends OverridesReplace {
 
 export interface OverridesReplace {
   path: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  value: ControlSchema | SettingsSchema["toolbar"][number] | SettingsSchema["menuItem"] | string | boolean;
+  value: ControlSchema | ToolbarSchema | SettingsSchema["menuItem"] | string | boolean;
   id: string;
 }
 

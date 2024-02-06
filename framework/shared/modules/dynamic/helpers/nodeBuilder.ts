@@ -1,13 +1,15 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { unref, computed, toValue, h, UnwrapNestedRefs, MaybeRef, reactive, VNode } from "vue";
 import FIELD_MAP from "../components/FIELD_MAP";
 import { ControlSchema } from "../types";
-import { IControlBaseProps, IControlBaseOptions } from "../types/models";
+import { IControlBaseProps } from "../types/models";
 import { getModel } from "./getters";
 import { setModel } from "./setters";
 import { unwrapInterpolation } from "./unwrapInterpolation";
 import { DetailsBladeContext } from "../factories";
 import { safeIn } from "./safeIn";
 import { i18n } from "./../../../../core/plugins/i18n";
+import { visibilityHandler } from "./visibilityHandler";
 
 function disabledHandler(
   disabled: { method?: string } | boolean,
@@ -50,9 +52,7 @@ function nodeBuilder<
   const required = safeIn("rules", controlSchema) && controlSchema.rules?.required;
 
   const contextProperty =
-    safeIn("property", controlSchema) &&
-    controlSchema.property &&
-    getModel(controlSchema.property, toValue(internalContext));
+    safeIn("property", controlSchema) && controlSchema.property && getModel(controlSchema.property, internalContext);
 
   const scopedProperty =
     safeIn("property", controlSchema) &&
@@ -77,7 +77,7 @@ function nodeBuilder<
       disabledHandler(controlSchema.disabled, bladeContext));
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const onUpdateModelValue = (e: any) => {
+  const onUpdateModelValue = async (e: any) => {
     if (safeIn("property", controlSchema) && controlSchema.property) {
       setModel({
         property: controlSchema.property,
@@ -94,7 +94,7 @@ function nodeBuilder<
       ) {
         const updateMethod = controlSchema.update.method;
         if (safeIn(updateMethod, bladeContext.scope) && typeof bladeContext.scope[updateMethod] === "function") {
-          bladeContext.scope[updateMethod](e, controlSchema.property, toValue(internalContext));
+          await bladeContext.scope[updateMethod](e, controlSchema.property, toValue(internalContext));
         }
       }
     }
@@ -102,24 +102,20 @@ function nodeBuilder<
 
   const baseProps: IControlBaseProps = reactive({
     key: `${parentId}`,
-    label: unref(computed(() => (label ? t(label) : undefined))),
+    label: computed(() => (label ? t(label) : undefined)),
     disabled,
     name,
     rules,
-    placeholder: unref(computed(() => (placeholder ? t(placeholder) : undefined))),
+    placeholder: computed(() => (placeholder ? t(placeholder) : undefined)),
     required,
     modelValue,
     "onUpdate:modelValue": onUpdateModelValue,
-    tooltip: unref(computed(() => (tooltip ? t(tooltip) : undefined))),
+    tooltip: computed(() => (tooltip ? t(tooltip) : undefined)),
     multilanguage,
-  });
-
-  const baseOptions: IControlBaseOptions = reactive({
-    visibility: computed(() =>
-      safeIn("visibility", controlSchema) && controlSchema.visibility?.method
-        ? bladeContext.scope?.[controlSchema.visibility?.method]
-        : true,
-    ),
+    class:
+      "horizontalSeparator" in controlSchema && controlSchema.horizontalSeparator
+        ? "tw-border-b tw-border-solid tw-border-b-[#e5e5e5] tw-mb-[5px] tw-pb-[21px]"
+        : "",
   });
 
   const component = FIELD_MAP[controlSchema.component as keyof typeof FIELD_MAP];
@@ -127,45 +123,70 @@ function nodeBuilder<
   const fieldsHandler = computed(() => {
     if (!("fields" in controlSchema)) return null;
 
-    const fieldsModel =
+    const contextFieldModel =
       safeIn("property", controlSchema) &&
       controlSchema.property &&
       getModel(controlSchema.property, toValue(internalContext));
 
-    const model = toValue(fieldsModel);
+    const scopedFieldModel =
+      safeIn("property", controlSchema) &&
+      controlSchema.property &&
+      getModel(controlSchema.property, toValue(bladeContext.scope ?? {}));
+
+    const model = toValue(scopedFieldModel) || toValue(contextFieldModel);
 
     if (model && Array.isArray(model)) {
       return model.map((modelItem: { [x: string]: unknown; id: string }) =>
-        controlSchema.fields.map((fieldItem) =>
-          nodeBuilder({
-            controlSchema: fieldItem,
-            parentId: `fieldset-${fieldItem.id}-${modelItem.id}`,
-            internalContext: modelItem,
-            bladeContext,
-            currentLocale,
-            formData,
-          }),
-        ),
+        controlSchema.fields.reduce((arr, fieldItem) => {
+          if (
+            safeIn("visibility", fieldItem) &&
+            fieldItem.visibility?.method &&
+            !visibilityHandler(bladeContext.scope?.[fieldItem.visibility?.method], toValue(modelItem), fieldItem)
+          ) {
+            return arr;
+          }
+          return [
+            ...arr,
+            nodeBuilder({
+              controlSchema: fieldItem,
+              parentId: `fieldset-${fieldItem.id}-${modelItem.id}`,
+              internalContext: modelItem,
+              bladeContext,
+              currentLocale,
+              formData,
+            }),
+          ];
+        }, [] as VNode[]),
       );
     }
 
     return [
-      controlSchema.fields.map((field) =>
-        nodeBuilder({
-          controlSchema: field,
-          parentId: `fieldset-${parentId}-${field.id}`,
-          internalContext,
-          bladeContext,
-          currentLocale,
-          formData,
-        }),
-      ),
+      controlSchema.fields.reduce((arr, field) => {
+        if (
+          safeIn("visibility", field) &&
+          field.visibility?.method &&
+          !visibilityHandler(bladeContext.scope?.[field.visibility?.method], toValue(internalContext), field)
+        ) {
+          return arr;
+        }
+
+        return [
+          ...arr,
+          nodeBuilder({
+            controlSchema: field,
+            parentId: `fieldset-${parentId}-${field.id}`,
+            internalContext,
+            bladeContext,
+            currentLocale,
+            formData,
+          }),
+        ];
+      }, [] as VNode[]),
     ];
   });
 
   const elProps = {
     baseProps,
-    baseOptions,
     bladeContext,
     element: controlSchema,
     currentLocale: unref(currentLocale),

@@ -14,8 +14,12 @@ import VideoField from "./fields/VideoField";
 import ImageField from "./fields/ImageField";
 import TextareaField from "./fields/TextareaField";
 import MultivalueField from "./fields/MultivalueField";
+import SwitchField from "./fields/SwitchField";
+import Table from "./fields/Table";
 
 import { ControlSchema } from "../types";
+import CustomComponent from "./fields/CustomComponent";
+import RatingField from "./fields/RatingField";
 
 type AvailableComponents = Exclude<ControlSchema["component"], "vc-widgets">;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -38,6 +42,10 @@ const FIELD_MAP: TFieldMap = {
   "vc-image": ImageField,
   "vc-textarea": TextareaField,
   "vc-multivalue": MultivalueField,
+  "vc-switch": SwitchField,
+  "vc-table": Table,
+  "vc-custom": CustomComponent,
+  "vc-rating": RatingField,
 };
 
 export default FIELD_MAP;

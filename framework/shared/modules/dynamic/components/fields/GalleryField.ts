@@ -132,10 +132,9 @@ export default {
           onSort: editImages,
           hideAfterUpload: props.element.hideAfterUpload,
         },
-        options: props.baseOptions,
       });
 
-      return props.baseOptions.visibility ? h(field.component as Component, unrefNested(field.props)) : null;
+      return h(field.component as Component, unrefNested(field.props));
     };
   },
 };

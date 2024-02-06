@@ -11,12 +11,14 @@ import {
   IButton,
   IInputCurrency,
   IFieldset,
-  IControlBaseOptions,
   IStatusField,
   IContentField,
   IVideoField,
   IImageField,
   ITextareaField,
+  ISwitch,
+  ITable,
+  IRating,
 } from "./../types/models";
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { markRaw } from "vue";
@@ -36,11 +38,10 @@ import {
   VcVideo,
   VcTextarea,
   VcMultivalue,
+  VcSwitch,
+  VcTable,
+  VcRating,
 } from "../../../../ui/components";
-
-export const ControlBase = ({ visibility = undefined }: IControlBaseOptions): IControlBaseOptions => ({
-  visibility,
-});
 
 export const ControlBaseProps = ({
   rules = undefined,
@@ -66,146 +67,146 @@ export const ControlBaseProps = ({
   ...rest,
 });
 
-export const MultivalueField = ({ props, slots, options }: IMultivalueField): IMultivalueField => ({
+export const MultivalueField = ({ props, slots }: IMultivalueField): IMultivalueField => ({
   component: markRaw(VcMultivalue),
   props: {
     ...ControlBaseProps(props),
     ...props,
   },
-  options: ControlBase(options),
+
   slots,
 });
 
-export const SelectField = ({ props, slots, options }: ISelectField): ISelectField => ({
+export const SelectField = ({ props, slots }: ISelectField): ISelectField => ({
   component: markRaw(VcSelect) as any,
   props: {
     ...ControlBaseProps(props),
     ...props,
   },
-  options: ControlBase(options),
+
   slots,
 });
 
-export const StatusField = ({ props, slots, options }: IStatusField): IStatusField => ({
+export const StatusField = ({ props, slots }: IStatusField): IStatusField => ({
   component: markRaw(VcStatus),
   props: {
     ...ControlBaseProps(props),
     ...props,
   },
-  options: ControlBase(options),
+
   slots,
 });
 
-export const InputField = ({ props, options, slots }: IInputField): IInputField => ({
+export const InputField = ({ props, slots }: IInputField): IInputField => ({
   component: markRaw(VcInput),
   props: {
     ...ControlBaseProps(props),
     ...props,
   },
-  options: ControlBase(options),
+
   slots,
 });
 
-export const TextareaField = ({ props, options }: ITextareaField): ITextareaField => ({
+export const TextareaField = ({ props }: ITextareaField): ITextareaField => ({
   component: markRaw(VcTextarea),
   props: {
     ...ControlBaseProps(props),
     ...props,
   },
-  options: ControlBase(options),
 });
 
-export const ContentField = ({ props, options }: IContentField): IContentField => ({
+export const ContentField = ({ props }: IContentField): IContentField => ({
   component: markRaw(VcField),
   props: {
     ...ControlBaseProps(props),
     ...props,
   },
-  options: ControlBase(options),
 });
 
-export const ImageField = ({ props, options }: IImageField): IImageField => ({
+export const ImageField = ({ props }: IImageField): IImageField => ({
   component: markRaw(VcImage),
   props: {
     ...ControlBaseProps(props),
     ...props,
   },
-  options: ControlBase(options),
 });
 
-export const VideoField = ({ props, options }: IInputField): IVideoField => ({
+export const VideoField = ({ props }: IInputField): IVideoField => ({
   component: markRaw(VcVideo),
   props: {
     ...ControlBaseProps(props),
     ...props,
   },
-  options: ControlBase(options),
 });
 
-export const InputCurrency = ({ props, options }: IInputCurrency): IInputCurrency => ({
+export const InputCurrency = ({ props }: IInputCurrency): IInputCurrency => ({
   component: markRaw(VcInputCurrency),
   props: {
     ...ControlBaseProps(props),
     ...props,
   },
-  options: ControlBase(options),
 });
 
-export const CardCollection = ({ props, options, slots }: ICardCollection): ICardCollection => ({
+export const CardCollection = ({ props, slots }: ICardCollection): ICardCollection => ({
   component: markRaw(VcCard),
   props: {
     ...props,
     ...ControlBaseProps(props),
   },
-  options: ControlBase(options),
+
   slots,
 });
 
-export const DynamicProperties = ({ props, options }: IDynamicProperties): IDynamicProperties => ({
+export const DynamicProperties = ({ props }: IDynamicProperties): IDynamicProperties => ({
   component: markRaw(VcDynamicProperty),
   props: {
     ...props,
     ...ControlBaseProps(props),
   },
-  options: ControlBase(options),
 });
 
-export const EditorField = ({ props, options }: IEditorField): IEditorField => ({
+export const EditorField = ({ props }: IEditorField): IEditorField => ({
   component: markRaw(VcEditor),
   props: {
     ...ControlBaseProps(props),
     ...props,
   },
-  options: ControlBase(options),
 });
 
-export const Gallery = ({ props, options }: IGallery): IGallery => ({
+export const Gallery = ({ props }: IGallery): IGallery => ({
   component: markRaw(VcGallery),
   props: {
     ...ControlBaseProps(props),
     ...props,
   },
-  options: ControlBase(options),
 });
 
-export const Checkbox = ({ props, options, slots }: ICheckbox): ICheckbox => ({
+export const Checkbox = ({ props, slots }: ICheckbox): ICheckbox => ({
   component: markRaw(VcCheckbox),
   props: {
     ...ControlBaseProps(props),
     ...props,
   },
-  options: ControlBase(options),
+
   slots,
 });
 
-export const Button = ({ props, options, slots }: IButton): IButton => ({
+export const Button = ({ props, slots }: IButton): IButton => ({
   component: markRaw(VcButton),
   props: {
     ...ControlBaseProps(props),
     ...props,
   },
-  options: ControlBase(options),
+
   slots,
+});
+
+export const Switch = ({ props }: ISwitch): ISwitch => ({
+  component: markRaw(VcSwitch),
+  props: {
+    ...ControlBaseProps(props),
+    ...props,
+  },
 });
 
 export const Fieldset = ({ columns, fields, property, remove }: IFieldset): IFieldset => ({
@@ -213,4 +214,21 @@ export const Fieldset = ({ columns, fields, property, remove }: IFieldset): IFie
   fields,
   property,
   remove,
+});
+
+export const Table = ({ props, slots }: ITable): ITable => ({
+  component: markRaw(VcTable),
+  props: {
+    ...ControlBaseProps(props),
+    ...props,
+  },
+  slots,
+});
+
+export const Rating = ({ props }: IRating): IRating => ({
+  component: markRaw(VcRating),
+  props: {
+    ...ControlBaseProps(props),
+    ...props,
+  },
 });

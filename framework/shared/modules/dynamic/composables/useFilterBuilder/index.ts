@@ -17,11 +17,14 @@ import * as _ from "lodash-es";
 import { Checkbox, InputField } from "../../components/factories";
 import { AsyncAction } from "../../../../../core/composables";
 import { VcButton, VcCol, VcContainer, VcRow } from "../../../../../ui/components";
+import { createUnrefFn } from "@vueuse/core";
+import { useI18n } from "vue-i18n";
 
 interface RawControl {
   field: string;
   component: string;
   label?: string;
+  multiple?: boolean;
   data?: { value: string; displayName: string }[];
 }
 
@@ -67,15 +70,17 @@ export default <Query>(args: {
 
   const isFilterVisible = ref(true);
   const filter: Record<string, unknown> = reactive({});
+  const { t } = useI18n({ useScope: "global" });
 
   const controls = ref<Control[]>([]);
 
   const appliedFilter = ref({});
   const activeFilterCount = computed(() => Object.values(appliedFilter.value).filter((item) => !!item).length);
 
-  const disable = computed(() => !Object.keys(filter).length || _.some(filter, _.isEmpty));
-
-  const disabled = computed(() => !Object.keys(appliedFilter.value).length || _.some(appliedFilter.value, _.isEmpty));
+  const isDisabled = createUnrefFn((filterObj: Record<string, unknown>) => {
+    const filterKeys = Object.keys(filterObj);
+    return filterKeys.length === 0 || filterKeys.every((key) => !filterObj[key]);
+  });
 
   onMounted(() => createFilterControls());
 
@@ -83,23 +88,20 @@ export default <Query>(args: {
     const item = filter[field];
     if (Array.isArray(item) && typeof item !== "string") {
       return item.some((x) => x === value);
+    } else {
+      return item === value;
     }
   }
 
-  function selectFilterItem(e: boolean, value: string, field: string) {
-    const item = filter[field];
-    let isSelected = false;
+  function selectFilterItem(e: boolean, value: string, field: string, multiple = true) {
+    if (multiple) {
+      filter[field] = e
+        ? [...((filter[field] as string[]) || []), value]
+        : ((filter[field] as string[]) || []).filter((x) => x !== value);
 
-    if (Array.isArray(item)) {
-      isSelected = item.includes(value);
-
-      if (e && !isSelected) {
-        item.push(value);
-      } else if (!e && isSelected) {
-        filter[field] = item.filter((x) => x !== value);
-      }
+      if (!(filter[field] as string[]).length) filter[field] = undefined;
     } else {
-      filter[field] = [];
+      filter[field] = e ? value : undefined;
     }
   }
 
@@ -143,13 +145,10 @@ export default <Query>(args: {
           props: {
             classNames: "tw-mb-2",
             modelValue: computed(() => isItemSelected(currC.value, control.field)),
-            "onUpdate:modelValue": (e: boolean) => selectFilterItem(e, currC.value, control.field),
+            "onUpdate:modelValue": (e: boolean) => selectFilterItem(e, currC.value, control.field, control.multiple),
           },
           slots: {
             default: () => currC.displayName,
-          },
-          options: {
-            visibility: computed(() => true),
           },
         });
 
@@ -167,9 +166,6 @@ export default <Query>(args: {
         label: control.label,
         modelValue: computed(() => filter[control.field]),
         "onUpdate:modelValue": (e: unknown) => (filter[control.field] = e),
-      },
-      options: {
-        visibility: computed(() => true),
       },
     });
   }
@@ -223,15 +219,18 @@ export default <Query>(args: {
               {
                 outline: true,
                 class: "tw-mr-4",
-                disabled: disabled.value,
+                disabled: isDisabled(appliedFilter),
                 onClick: () => resetFilters(slotMethods.close),
               },
-              () => "Reset",
+              () => t("COMPONENTS.FILTERS.RESET"),
             ),
             h(
               VcButton,
-              { disabled: disable.value, onClick: () => applyFilters(slotMethods.close) },
-              () => "Apply filters",
+              {
+                disabled: isDisabled(filter),
+                onClick: () => applyFilters(slotMethods.close),
+              },
+              () => t("COMPONENTS.FILTERS.APPLY"),
             ),
           ]),
         ),

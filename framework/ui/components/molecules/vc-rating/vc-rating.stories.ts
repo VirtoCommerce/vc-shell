@@ -18,6 +18,6 @@ export const Primary: Story = {
     template: '<vc-rating v-bind="args"></vc-rating>',
   }),
   args: {
-    rating: 4,
+    modelValue: 4,
   },
 };

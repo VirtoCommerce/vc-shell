@@ -325,7 +325,7 @@
               <td
                 v-for="cell in filteredCols"
                 :key="`${(typeof item === 'object' && 'id' in item && item.id) || itemIndex}_${cell.id}`"
-                class="tw-box-border tw-overflow-hidden tw-px-3 [&~:not(.vc-image)]:tw-truncate"
+                class="tw-box-border tw-overflow-hidden tw-px-3 [&~:not(.vc-image):not(.vc-status)]:tw-truncate"
                 :class="cell.class"
                 :style="{ maxWidth: cell.width, width: cell.width }"
               >
@@ -524,7 +524,7 @@ interface ITableItemRef {
 const emit = defineEmits<{
   paginationClick: [page: number];
   selectionChanged: [values: T[]];
-  "search:change": [value: string | number | Date | null];
+  "search:change": [value: string | number | Date | null | undefined];
   headerClick: [item: ITableColumns];
   value: [Record<string, unknown>];
   itemClick: [item: T];
@@ -672,9 +672,10 @@ watch(
 watch(
   () => props.columns,
   (newVal) => {
-    defaultColumns.value = newVal;
+    restoreState();
 
     if (newVal.length !== state.value.length) {
+      defaultColumns.value = newVal.map((col) => ({ ...col, visible: col.visible ?? true }));
       saveState();
     }
   },
@@ -1032,12 +1033,12 @@ function restoreState() {
   console.debug("[@vc-shell/framewok#vc-table.vue] - Restore state");
   if (Object.keys(state.value).length) {
     defaultColumns.value = state.value.map((item) => {
-      const column = defaultColumns.value.find((x) => x.id === item.id);
+      const column = props.columns.find((x) => x.id === item.id);
       if (column) {
         return {
           ...item,
           title: column.title,
-          visible: column.visible,
+          // visible: column.visible,
           sortable: column.sortable,
           alwaysVisible: column.alwaysVisible,
           type: column.type,

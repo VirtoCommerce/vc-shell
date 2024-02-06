@@ -15,16 +15,16 @@
     </VcLabel>
 
     <!-- Rating icon -->
-    <template v-if="rating">
+    <template v-if="modelValue">
       <template v-if="variant == 'stars'">
         <VcIcon
-          v-for="index in rating"
+          v-for="index in modelValue"
           :key="index"
           icon="fas fa-star"
           class="vc-rating__icon"
         ></VcIcon>
         <VcIcon
-          v-for="index in max - rating"
+          v-for="index in max - modelValue"
           :key="index"
           icon="far fa-star"
           class="vc-rating__icon"
@@ -36,7 +36,7 @@
           icon="fas fa-star"
           class="vc-rating__icon"
         ></VcIcon>
-        <span class="vc-rating__rating">{{ rating }}/{{ max }}</span>
+        <span class="vc-rating__rating">{{ modelValue }}/{{ max }}</span>
         <slot name="details"></slot>
       </template>
     </template>
@@ -47,18 +47,23 @@
 </template>
 
 <script lang="ts" setup>
+import { VNode } from "vue";
 import { VcLabel, VcIcon } from "./../../";
 
 export interface Props {
   label?: string;
   placeholder?: string;
   tooltip?: string;
-  rating: number;
+  modelValue: number;
   max?: number;
   variant?: "stars" | "star-and-text" | "text";
 }
 
 withDefaults(defineProps<Props>(), { max: 5, variant: "stars" });
+
+defineSlots<{
+  details: VNode[];
+}>();
 </script>
 
 <style lang="scss">

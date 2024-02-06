@@ -22,7 +22,7 @@
           {{ title }}
         </div>
       </div>
-      <teleport to="#app">
+      <teleport to="body">
         <div
           v-if="isDropActive"
           ref="bladeDropRef"

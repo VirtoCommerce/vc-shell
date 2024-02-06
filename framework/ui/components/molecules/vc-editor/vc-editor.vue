@@ -26,7 +26,7 @@
 
     <!-- Editor field -->
     <QuillEditor
-      :key="disabled?.toString()"
+      :key="`${disabled}`"
       v-model:content="content"
       class="quill-editor tw-border tw-border-solid tw-border-[color:var(--editor-border-color)] tw-rounded-b-[var(--editor-border-radius)] tw-h-[200px]"
       :class="{ 'tw-bg-[#fafafa] tw-text-[#424242] tw-cursor-default': disabled }"
@@ -52,7 +52,7 @@
 <script lang="ts" setup>
 import { QuillEditor } from "@vueup/vue-quill";
 import "@vueup/vue-quill/dist/vue-quill.snow.css";
-import { ref, unref, watch, onMounted } from "vue";
+import { ref, unref, watch, onMounted, onUpdated } from "vue";
 import ImageUploader from "quill-image-uploader";
 import { VcLabel, VcHint } from "./../../";
 
@@ -121,11 +121,11 @@ const modules = {
 };
 
 onMounted(() => {
-  // fixes quill editor placeholder visibility issue when content is not empty
-  const editor = document.querySelector(".ql-editor.ql-blank");
-  if (editor && content.value) {
-    editor.classList.remove("ql-blank");
-  }
+  removeBlankClass();
+});
+
+onUpdated(() => {
+  removeBlankClass();
 });
 
 watch(
@@ -135,6 +135,14 @@ watch(
   },
   { immediate: true },
 );
+
+function removeBlankClass() {
+  // fixes quill editor placeholder visibility issue when content is not empty
+  const editor = document.querySelector(".ql-editor.ql-blank");
+  if (editor && content.value) {
+    editor.classList.remove("ql-blank");
+  }
+}
 
 function onInput() {
   if (isQuillEmpty(content.value)) {

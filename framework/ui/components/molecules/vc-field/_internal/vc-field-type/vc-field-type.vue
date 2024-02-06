@@ -1,18 +1,9 @@
 <template>
-  <!-- Normal -->
-  <template v-if="type === 'normal'">
-    <div class="tw-flex tw-flex-row tw-justify-stretch tw-truncate tw-mt-1">
-      <div class="tw-truncate">
-        <p>{{ value }}</p>
-      </div>
-    </div>
-  </template>
-
   <!-- Text -->
   <template v-if="type === 'text'">
     <div class="tw-flex tw-flex-row tw-justify-stretch tw-truncate">
-      <div class="tw-truncate">
-        <VcHint class="!tw-text-s">{{ value }}</VcHint>
+      <div class="tw-text-wrap">
+        <p>{{ value }}</p>
       </div>
     </div>
   </template>
@@ -20,8 +11,8 @@
   <!-- Date -->
   <template v-if="type === 'date'">
     <div class="tw-flex tw-flex-row tw-justify-stretch tw-truncate">
-      <div class="tw-truncate">
-        <VcHint class="!tw-text-s"> {{ value.toLocaleDateString() }}</VcHint>
+      <div class="tw-text-wrap">
+        <p>{{ value.toLocaleDateString() }}</p>
       </div>
     </div>
   </template>
@@ -29,8 +20,8 @@
   <!-- Date ago -->
   <template v-if="type === 'date-ago'">
     <div class="tw-flex tw-flex-row tw-justify-stretch tw-truncate">
-      <div class="tw-truncate">
-        <VcHint class="!tw-text-s"> {{ moment(value).fromNow() ?? "N/A" }}</VcHint>
+      <div class="tw-text-wrap">
+        <p>{{ moment(value).fromNow() ?? "N/A" }}</p>
       </div>
     </div>
   </template>
@@ -38,11 +29,25 @@
   <!-- Link -->
   <template v-if="type === 'link'">
     <div class="tw-flex tw-flex-row tw-justify-stretch tw-truncate">
-      <div class="tw-truncate">
+      <div class="tw-truncate tw-text-wrap">
         <VcLink
           class="vc-link !tw-text-s tw-truncate tw-w-full"
           @click="onLinkClick"
           >{{ value }}</VcLink
+        >
+      </div>
+      <slot></slot>
+    </div>
+  </template>
+
+  <!-- Email -->
+  <template v-if="type === 'email'">
+    <div class="tw-flex tw-flex-row tw-justify-stretch tw-truncate">
+      <div class="tw-text-wrap">
+        <a
+          :href="`mailto:${value}`"
+          class="vc-link !tw-text-s tw-truncate tw-w-full"
+          >{{ value }}</a
         >
       </div>
       <slot></slot>
@@ -54,7 +59,7 @@
 import moment from "moment";
 
 export interface Props {
-  type: "text" | "date" | "date-ago" | "link" | "normal";
+  type: "text" | "date" | "date-ago" | "link" | "email";
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   value: any;
 }

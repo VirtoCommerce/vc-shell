@@ -1,7 +1,7 @@
 <template>
   <div
     class="vc-col tw-flex tw-flex-col tw-min-w-0 tw-basis-0"
-    :style="{ flexGrow: parseInt(size) }"
+    :style="{ flexGrow: size }"
   >
     <slot></slot>
   </div>
@@ -9,11 +9,11 @@
 
 <script lang="ts" setup>
 export interface Props {
-  size?: string;
+  size?: number;
 }
 
 withDefaults(defineProps<Props>(), {
-  size: "1",
+  size: 1,
 });
 
 defineSlots<{

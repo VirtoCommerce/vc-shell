@@ -204,7 +204,7 @@
         </slot>
       </div>
 
-      <teleport to="#app">
+      <teleport to="body">
         <div
           v-if="isOpened"
           ref="dropdownRef"
@@ -752,17 +752,16 @@ function isOptionSelected(opt: Option) {
 }
 
 function closeDropdown() {
+  onDropdownClose();
   isOpened.value = false;
   emit("close");
-
-  onDropdownClose();
 }
 
 const onDropdownClose = async () => {
   if (props.options && typeof props.options === "function") {
-    optionsList.value = (await props.options()).results as Option[];
+    optionsTemp.value = (await props.options()).results as Option[];
   } else {
-    optionsList.value = props.options as Option[];
+    optionsTemp.value = props.options as Option[];
   }
 
   filterString.value = undefined;

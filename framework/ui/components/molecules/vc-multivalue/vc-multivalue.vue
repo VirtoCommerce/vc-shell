@@ -63,7 +63,7 @@
             @click.stop="toggleDropdown"
             >Add +</VcButton
           >
-          <teleport to="#app">
+          <teleport to="body">
             <div
               v-if="isOpened"
               ref="dropdownRef"

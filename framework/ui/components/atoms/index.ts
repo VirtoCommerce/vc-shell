@@ -6,7 +6,6 @@ export * from "./vc-col";
 export * from "./vc-container";
 export * from "./vc-hint";
 export * from "./vc-icon";
-export * from "./vc-info-row";
 export * from "./vc-image";
 export * from "./vc-label";
 export * from "./vc-link";

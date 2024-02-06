@@ -264,7 +264,7 @@ export interface Emits {
   /**
    * Emitted when the component needs to change the model; Is also used by v-model
    */
-  (event: "update:modelValue", value: string | number | Date | null): void;
+  (event: "update:modelValue", value: string | number | Date | null | undefined): void;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -342,14 +342,12 @@ const rawModel = computed(() => unref(props.modelValue));
 const mutatedModel = ref();
 
 watch(
-  () => rawModel.value,
+  rawModel,
   (newVal) => {
-    if (internalType.value === "datetime-local" || internalType.value === "date") {
-      if (newVal instanceof Date && !isNaN(newVal.valueOf())) {
-        mutatedModel.value = moment(newVal).format("YYYY-MM-DDTHH:mm");
-      } else {
-        mutatedModel.value = undefined;
-      }
+    if (internalType.value === "datetime-local" && newVal instanceof Date && !isNaN(newVal.valueOf())) {
+      mutatedModel.value = moment(newVal).format("YYYY-MM-DDTHH:mm");
+    } else if (internalType.value === "date" && newVal instanceof Date && !isNaN(newVal.valueOf())) {
+      mutatedModel.value = moment(newVal).format("YYYY-MM-DD");
     } else {
       mutatedModel.value = newVal;
     }
@@ -376,7 +374,7 @@ function emitValue(val: string | number | Date | null) {
     if (mutatedModel.value !== val) {
       let value;
       if (internalType.value === "datetime-local" || internalType.value === "date") {
-        value = moment(val).toDate();
+        value = val ? moment(val).toDate() : undefined;
       } else if (internalType.value === "number" && val !== null) {
         value = +val;
       } else {

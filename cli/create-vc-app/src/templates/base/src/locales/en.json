@@ -70,8 +70,8 @@
         "ALL_ACTIONS": "All actions",
         "ALL_FILTERS": "Filters",
         "SEARCH": "Search...",
-        "EMPTY":"List is empty.",
-        "NOT_FOUND":"Nothing found.",
+        "EMPTY": "List is empty.",
+        "NOT_FOUND": "Nothing found.",
         "TOTALS": "Totals:"
       },
 
@@ -122,6 +122,10 @@
     },
     "LANGUAGE_SELECTOR": {
       "TITLE": "Language selector"
+    },
+    "FILTERS": {
+      "APPLY": "Apply filters",
+      "RESET": "Reset"
     }
   },
   "INVITATION": {

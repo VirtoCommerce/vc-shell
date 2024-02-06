@@ -1,4 +1,4 @@
-import VirtoShellFramework, { notification, useUser } from "@vc-shell/framework";
+import VirtoShellFramework, { notification, useUser, useLanguages } from "@vc-shell/framework";
 import { createApp } from "vue";
 import { router } from "./router";
 import * as locales from "./locales";
@@ -17,6 +17,8 @@ async function startApp() {
   /** !!! uncomment these lines when adding APP_PLATFORM_URL in .env */
   // const { loadUser } = useUser();
   // await loadUser();
+
+  const { currentLocale, setLocale } = useLanguages();
 
   const app = createApp(RouterView)
     .use(VirtoShellFramework, {
@@ -38,6 +40,8 @@ async function startApp() {
   Object.entries(locales).forEach(([key, message]) => {
     app.config.globalProperties.$mergeLocaleMessage(key, message);
   });
+
+  setLocale(currentLocale.value);
 
   app.config.errorHandler = (err) => {
     notification.error((err as Error).toString(), {

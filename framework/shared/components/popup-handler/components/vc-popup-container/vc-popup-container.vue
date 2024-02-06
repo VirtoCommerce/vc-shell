@@ -10,7 +10,10 @@
       v-for="(slot, key) in popup.slots"
       :key="key"
     >
-      <div v-if="typeof slot === 'string'">{{ slot }}</div>
+      <div
+        v-if="typeof slot === 'string'"
+        v-html="slot"
+      ></div>
       <component
         :is="slot"
         v-else

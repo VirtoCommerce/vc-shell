@@ -1,3 +1,12 @@
+## [1.0.154](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.153...v1.0.154) (2024-02-06)
+
+
+### Features
+
+* **create-vc-app:** updated configs and locales ([e46ccf6](https://github.com/VirtoCommerce/vc-shell/commit/e46ccf680a12e82400ec03c3d7c72e4f5e3c2c68))
+
+
+
 ## [1.0.153](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.152...v1.0.153) (2024-01-29)
 
 

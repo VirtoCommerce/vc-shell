@@ -1,3 +1,22 @@
+## [1.0.154](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.153...v1.0.154) (2024-02-06)
+
+
+### Bug Fixes
+
+* **framework:** fixed parent blade calling ([ab59609](https://github.com/VirtoCommerce/vc-shell/commit/ab59609d615534a3dc9cc617d080886970d8040a))
+
+
+### Features
+
+* **create-vc-app:** updated configs and locales ([e46ccf6](https://github.com/VirtoCommerce/vc-shell/commit/e46ccf680a12e82400ec03c3d7c72e4f5e3c2c68))
+* **dynamic:** updated/new components, fixes and improvements ([6c2a746](https://github.com/VirtoCommerce/vc-shell/commit/6c2a74601ae21ba9377bd59ea34279583a424d20))
+* **framework:** ability to add html in popup slot, fixed inferring of emits types ([cf52cf7](https://github.com/VirtoCommerce/vc-shell/commit/cf52cf741ed09c652755f9a78eb4c8ec732b9e8e))
+* **framework:** Refactor useMenuServiceFn and add inGroupPriority to MenuItemConfig ([c6ef313](https://github.com/VirtoCommerce/vc-shell/commit/c6ef313d6619b761ea624655eb0ffcea0cc37679))
+* **sample:** config and locales updates ([28c7085](https://github.com/VirtoCommerce/vc-shell/commit/28c70856774d5b0f5efcb3af72b17958d76a126b))
+* **ui:** components fixes and refactors ([01ba0fe](https://github.com/VirtoCommerce/vc-shell/commit/01ba0fed91973c9624ca5e66e56750b5336fe6aa))
+
+
+
 ## [1.0.153](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.152...v1.0.153) (2024-01-29)
 
 

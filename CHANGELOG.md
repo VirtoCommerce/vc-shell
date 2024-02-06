@@ -1,3 +1,12 @@
+## [1.0.154](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.153...v1.0.154) (2024-02-06)
+
+
+### Features
+
+* added mobile grid templates ([1b62ce9](https://github.com/VirtoCommerce/vendor-portal/commit/1b62ce98cad5b9407a6b0604f350468b1e3f1b1f))
+
+
+
 ## [1.0.153](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.152...v1.0.153) (2024-02-06)
 
 

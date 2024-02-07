@@ -74,18 +74,7 @@ export const useOrder = (args: {
   const { t } = useI18n({ useScope: "global" });
   const { searchStateMachines, stateMachine, fireTrigger } = useStateMachines();
 
-  const toolbar = ref([
-    {
-      title: computed(() => t("ORDERS.PAGES.DETAILS.TOOLBAR.DL_PDF")),
-      icon: "fas fa-file-pdf",
-      async clickHandler() {
-        if (args.props.param) {
-          await loadPdf();
-        }
-      },
-      disabled: !args.props.param,
-    },
-  ]) as Ref<IBladeToolbar[]>;
+  const toolbar = ref([]) as Ref<IBladeToolbar[]>;
 
   const shippingInfo = computed(() => {
     const info =
@@ -179,16 +168,25 @@ export const useOrder = (args: {
           ],
           objectIds: [args.props.param],
         });
-        if (stateMachine.value) {
-          refreshToolbar(stateMachine.value);
-        }
+
+        refreshToolbar(stateMachine.value ?? {});
       }
     },
   );
 
   const refreshToolbar = (sm: StateMachineInstance) => {
     toolbar.value.splice(0);
-    sm.currentState?.transitions?.forEach((transition) => {
+    toolbar.value.push({
+      title: computed(() => t("ORDERS.PAGES.DETAILS.TOOLBAR.DL_PDF")),
+      icon: "fas fa-file-pdf",
+      async clickHandler() {
+        if (args.props.param) {
+          await loadPdf();
+        }
+      },
+      disabled: !args.props.param,
+    });
+    sm?.currentState?.transitions?.forEach((transition) => {
       toolbar.value.push({
         title: computed(() => t(`ORDERS.PAGES.DETAILS.TOOLBAR.${transition.trigger?.toUpperCase()}`)),
         icon: transition.icon ?? "fas fa-tasks",

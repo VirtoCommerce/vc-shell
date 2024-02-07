@@ -1,3 +1,12 @@
+## [1.0.157](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.156...v1.0.157) (2024-02-07)
+
+
+### Bug Fixes
+
+* load pdf button fix ([052469d](https://github.com/VirtoCommerce/vendor-portal/commit/052469dc93c9d71afaf777f0a4113de1b00c0cf7))
+
+
+
 ## [1.0.156](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.155...v1.0.156) (2024-02-07)
 
 

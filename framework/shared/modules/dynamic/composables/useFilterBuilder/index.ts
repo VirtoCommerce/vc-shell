@@ -12,6 +12,7 @@ import {
   VNode,
   ComputedRef,
   readonly,
+  toValue,
 } from "vue";
 import * as _ from "lodash-es";
 import { Checkbox, InputField } from "../../components/factories";
@@ -163,7 +164,7 @@ export default <Query>(args: {
       props: {
         type: "date",
         classNames: "tw-mb-3",
-        label: control.label,
+        label: toValue(computed(() => t(control.label ?? ""))),
         modelValue: computed(() => filter[control.field]),
         "onUpdate:modelValue": (e: unknown) => (filter[control.field] = e),
       },

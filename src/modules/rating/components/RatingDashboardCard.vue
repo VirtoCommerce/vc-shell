@@ -47,7 +47,7 @@
 
 <script setup lang="ts">
 import { useBladeNavigation } from "@vc-shell/framework";
-import Rating from "./Rating.vue";
+import Rating from "./rating.vue";
 
 const { openBlade, resolveBladeByName } = useBladeNavigation();
 

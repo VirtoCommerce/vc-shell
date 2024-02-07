@@ -16,11 +16,11 @@
     <div>
       <div class="tw-mt-3 tw-w-full tw-flex tw-justify-between">
         <div class="tw-truncate tw-grow tw-basis-0 tw-mr-2">
-          <VcHint>{{ $t("ORDERS.PAGES.LIST.STATUS.TOTAL") }}</VcHint>
+          <VcHint>{{ $t("ORDERS.PAGES.LIST.TABLE.HEADER.TOTAL") }}</VcHint>
           <div class="tw-truncate tw-mt-1">{{ context.item.total }} {{ context.item.currency }}</div>
         </div>
         <div class="tw-truncate tw-grow tw-basis-0 tw-mr-2">
-          <VcHint>{{ $t("ORDERS.PAGES.LIST.STATUS.CREATED") }}</VcHint>
+          <VcHint>{{ $t("ORDERS.PAGES.LIST.TABLE.HEADER.CREATED") }}</VcHint>
           <div class="tw-truncate tw-mt-1">
             {{ context.item.createdDate && moment(context.item.createdDate).fromNow() }}
           </div>

@@ -1,3 +1,12 @@
+## [1.0.159](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.158...v1.0.159) (2024-02-07)
+
+
+### Bug Fixes
+
+* rating grid wrapping ([c153c69](https://github.com/VirtoCommerce/vendor-portal/commit/c153c69ea92b69569c2fa9621a197f61661acc72))
+
+
+
 ## [1.0.158](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.157...v1.0.158) (2024-02-07)
 
 

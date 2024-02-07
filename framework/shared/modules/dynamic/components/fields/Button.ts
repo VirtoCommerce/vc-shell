@@ -1,12 +1,14 @@
-import { Component, ExtractPropTypes, h, unref } from "vue";
+import { Component, ExtractPropTypes, computed, h, unref } from "vue";
 import { Button } from "../factories";
 import componentProps from "./props";
 import { ButtonSchema } from "../../types";
+import { useI18n } from "vue-i18n";
 
 export default {
   name: "ButtonEl",
   props: componentProps,
   setup(props: ExtractPropTypes<typeof componentProps> & { element: ButtonSchema }) {
+    const { t } = useI18n({ useScope: "global" });
     return () => {
       const field = Button({
         props: {
@@ -20,7 +22,7 @@ export default {
           },
         },
         slots: {
-          default: () => props.element.content,
+          default: () => unref(computed(() => t(props.element.content))),
         },
       });
 

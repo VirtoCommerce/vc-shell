@@ -1,14 +1,17 @@
 <template>
   <!-- Money cell -->
   <template v-if="cell.type === 'money'">
-    <template v-if="typeof Number(value) === 'number' && Number(value) > 0">
-      <span>{{ Math.trunc(Number(value)) }}</span
-      ><span class="tw-text-[#a5a5a5] tw-text-xs"
+    <div
+      v-if="typeof Number(value) === 'number' && Number(value) > 0"
+      class="tw-truncate"
+    >
+      <span class="tw-truncate">{{ Math.trunc(Number(value)) }}</span
+      ><span class="tw-text-[#a5a5a5] tw-text-xs tw-truncate"
         >.{{ `${(Number(value) * 100) % 100}`.padEnd(2, "0").slice(0, 2) }}</span
       >
-    </template>
+    </div>
     <template v-else>
-      <span>N/A</span>
+      <div class="tw-truncate">N/A</div>
     </template>
   </template>
 
@@ -17,29 +20,60 @@
     v-else-if="cell.type === 'date-ago'"
     class="tw-text-[#a5a5a5]"
   >
-    <template v-if="value">
+    <div
+      v-if="value"
+      class="tw-truncate"
+    >
       {{ moment(value).fromNow() }}
-    </template>
-    <template v-else>N/A</template>
+    </div>
+    <div
+      v-else
+      class="tw-truncate"
+    >
+      N/A
+    </div>
   </span>
 
   <!-- Date exact cell -->
-  <span
+  <dvi
     v-else-if="cell.type === 'date' || cell.type === 'time' || cell.type === 'date-time'"
-    class="tw-text-[#a5a5a5]"
+    class="tw-text-[#a5a5a5] tw-truncate"
   >
     <template v-if="value">
-      <template v-if="cell.format">
+      <div
+        v-if="cell.format"
+        class="tw-truncate"
+      >
         {{ moment(value).locale(locale).format(cell.format) }}
-      </template>
+      </div>
       <template v-else>
-        <template v-if="cell.type === 'date'">{{ value instanceof Date && value.toLocaleDateString() }}</template>
-        <template v-if="cell.type === 'time'">{{ value instanceof Date && value.toLocaleTimeString() }}</template>
-        <template v-if="cell.type === 'date-time'">{{ value.toLocaleString() }}</template>
+        <div
+          v-if="cell.type === 'date'"
+          class="tw-truncate"
+        >
+          {{ value instanceof Date && value.toLocaleDateString() }}
+        </div>
+        <div
+          v-if="cell.type === 'time'"
+          class="tw-truncate"
+        >
+          {{ value instanceof Date && value.toLocaleTimeString() }}
+        </div>
+        <p
+          v-if="cell.type === 'date-time'"
+          class="tw-truncate"
+        >
+          {{ value.toLocaleString() }}
+        </p>
       </template>
     </template>
-    <template v-else>N/A</template>
-  </span>
+    <div
+      v-else
+      class="tw-truncate"
+    >
+      N/A
+    </div>
+  </dvi>
 
   <!-- Image cell -->
   <template v-else-if="cell.type === 'image'">
@@ -66,22 +100,25 @@
   </div>
 
   <!-- Number cell -->
-  <span
+  <div
     v-else-if="cell.type === 'number'"
-    class="tw-text-right"
+    class="tw-text-right tw-truncate"
   >
     {{ Number(value).toFixed(0) }}
-  </span>
+  </div>
 
   <!-- Link cell -->
   <template v-else-if="cell.type === 'link'">
-    <VcLink>{{ value }}</VcLink>
+    <VcLink class="tw-truncate">{{ value }}</VcLink>
   </template>
 
   <!-- Default cell -->
-  <span v-else>
+  <div
+    v-else
+    class="tw-truncate"
+  >
     {{ value }}
-  </span>
+  </div>
 </template>
 
 <script lang="ts" setup>

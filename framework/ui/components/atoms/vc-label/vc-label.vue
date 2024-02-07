@@ -46,7 +46,7 @@
 <script lang="ts" setup>
 import { VcIcon } from "./../../../components";
 import { ref } from "vue";
-import { useFloating, shift, flip } from "@floating-ui/vue";
+import { useFloating, shift } from "@floating-ui/vue";
 
 export interface Props {
   required?: boolean;
@@ -70,7 +70,7 @@ const tooltipRef = ref<HTMLElement | null>(null);
 
 const { floatingStyles } = useFloating(tooltipIconRef, tooltipRef, {
   placement: "top-start",
-  middleware: [flip({ fallbackPlacements: ["top-start", "bottom-start"] }), shift({ mainAxis: false })],
+  middleware: [shift()],
 });
 </script>
 

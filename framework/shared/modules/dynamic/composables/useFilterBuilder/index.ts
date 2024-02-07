@@ -148,7 +148,7 @@ export default <Query>(args: {
             "onUpdate:modelValue": (e: boolean) => selectFilterItem(e, currC.value, control.field, control.multiple),
           },
           slots: {
-            default: () => currC.displayName,
+            default: () => unref(computed(() => t(currC.displayName))),
           },
         });
 
@@ -198,7 +198,11 @@ export default <Query>(args: {
       h(VcRow, () =>
         Object.values(controls.value).map(({ title, fields }) =>
           h(VcCol, { class: "tw-p-2" }, () => [
-            h("div", { class: "tw-mb-4 tw-text-[#a1c0d4] tw-font-bold tw-text-[17px]" }, title),
+            h(
+              "div",
+              { class: "tw-mb-4 tw-text-[#a1c0d4] tw-font-bold tw-text-[17px]" },
+              unref(computed(() => t(title))),
+            ),
             Object.values(fields).map((item) => {
               if ("component" in item && item.component) {
                 return h(

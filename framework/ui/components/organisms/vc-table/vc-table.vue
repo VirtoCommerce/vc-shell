@@ -325,7 +325,7 @@
               <td
                 v-for="cell in filteredCols"
                 :key="`${(typeof item === 'object' && 'id' in item && item.id) || itemIndex}_${cell.id}`"
-                class="tw-box-border tw-overflow-hidden tw-px-3 [&~:not(.vc-image):not(.vc-status)]:tw-truncate"
+                class="tw-box-border tw-overflow-hidden tw-px-3"
                 :class="cell.class"
                 :style="{ maxWidth: cell.width, width: cell.width }"
               >

@@ -1,3 +1,12 @@
+## [1.0.156](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.155...v1.0.156) (2024-02-07)
+
+
+### Features
+
+* added lost localization in modules ([5470ca2](https://github.com/VirtoCommerce/vendor-portal/commit/5470ca221ad7c8ff92d3aafc98422e6e5ce077e4))
+
+
+
 ## [1.0.155](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.154...v1.0.155) (2024-02-07)
 
 

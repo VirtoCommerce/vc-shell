@@ -25,6 +25,22 @@
             "QTY": "Qty",
             "STATUS": "Status",
             "CREATED": "Created"
+          },
+          "FILTER": {
+            "STATUS": {
+              "TITLE": "Status filter",
+              "None": "None",
+              "Unpaid": "Unpaid",
+              "Paid": "Paid",
+              "Shipped": "Shipped",
+              "Accepted": "Accepted",
+              "Cancelled": "Cancelled"
+            },
+            "DATE": {
+              "TITLE": "Order date",
+              "START_DATE": "Start date",
+              "END_DATE": "End date"
+            }
           }
         },
         "NOT_FOUND": {

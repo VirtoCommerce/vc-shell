@@ -1,3 +1,12 @@
+## [1.0.158](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.157...v1.0.158) (2024-02-07)
+
+
+### Features
+
+* filters localization update ([13e0afe](https://github.com/VirtoCommerce/vendor-portal/commit/13e0afec9aad9fcfe26036ab993d4e53790eed40))
+
+
+
 ## [1.0.157](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.156...v1.0.157) (2024-02-07)
 
 

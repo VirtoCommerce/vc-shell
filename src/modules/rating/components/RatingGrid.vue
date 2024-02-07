@@ -1,5 +1,8 @@
 <template>
-  <VcRating :model-value="context?.item?.rating ?? 0"></VcRating>
+  <VcRating
+    :model-value="context?.item?.rating ?? 0"
+    class="tw-flex"
+  ></VcRating>
 </template>
 
 <script lang="ts" setup>

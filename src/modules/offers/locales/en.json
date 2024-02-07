@@ -32,6 +32,7 @@
             "STATUS": "Status",
             "SKU": "SKU#",
             "ENABLED": "Enabled",
+            "DEFAULT": "Default",
             "ALWAYS_IN_STOCK": "Always in stock",
             "QTY": "Initial Quantity",
             "AVAIL_QTY": "Current Quantity",
@@ -75,7 +76,8 @@
           "CLOSE": "Close",
           "ENABLE": "Enable",
           "DISABLE": "Disable",
-          "DELETE": "Delete"
+          "DELETE": "Delete",
+          "DEFAULT": "Set default"
         },
         "FIELDS": {
           "PRODUCT": {
@@ -102,6 +104,9 @@
           "AVAIL_QTY": {
             "TITLE": "Current Quantity",
             "PLACEHOLDER": "Product current quantity"
+          },
+          "PROPERTIES": {
+            "TITLE": "Properties"
           },
           "LIST_PRICE": {
             "TITLE": "List price",
@@ -152,6 +157,9 @@
           },
           "IMAGES": {
             "TITLE": "Offer image"
+          },
+          "GALLERY": {
+            "TITLE": "Gallery"
           }
         }
       },

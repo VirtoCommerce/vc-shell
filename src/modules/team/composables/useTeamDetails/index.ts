@@ -8,6 +8,7 @@ import {
   IBladeToolbar,
   useAsync,
   useLoading,
+  useUser,
 } from "@vc-shell/framework";
 import {
   CreateSellerUserCommand,
@@ -85,10 +86,12 @@ export const useTeamDetails = (args: {
 
   const { load, saveChanges, remove, loading, item, validationState } = factory();
   const { showError, showConfirmation } = usePopup();
+  const { user } = useUser();
   const { t } = useI18n({ useScope: "global" });
 
   const sendInviteStatus = ref(false);
   const isOwnerReadonly = computed(() => item.value?.role === "vcmp-owner-role");
+  const isCurrentUser = computed(() => item.value?.userName === user.value?.userName);
 
   const role = computed(
     () => roles.value.find((x) => x.id === item.value?.role) || roles.value.find((x) => x.id === "vcmp-agent-role"),
@@ -105,6 +108,7 @@ export const useTeamDetails = (args: {
     sendInviteStatus,
     isActive,
     isOwnerReadonly,
+    disableOnCurrent: computed(() => isCurrentUser.value || isOwnerReadonly.value),
     isActiveSwitchVisible: computed(() => !!item.value?.id),
     isActiveSwitchHidden: computed(() => !item.value?.id),
     roles: computed(() =>
@@ -165,7 +169,7 @@ export const useTeamDetails = (args: {
           }
         },
         isVisible: !!args.props.param,
-        disabled: computed(() => isOwnerReadonly.value),
+        disabled: computed(() => isOwnerReadonly.value || isCurrentUser.value),
       },
       resendInvite: {
         clickHandler: async () => {
@@ -180,7 +184,7 @@ export const useTeamDetails = (args: {
           }
         },
         isVisible: !!args.props.param,
-        disabled: computed(() => isOwnerReadonly.value) || !!item.value?.email,
+        disabled: computed(() => isOwnerReadonly.value || !!item.value?.email),
       },
     },
   });

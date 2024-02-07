@@ -12,25 +12,25 @@ export const details: DynamicDetailsSchema = {
       {
         id: "save",
         icon: "fas fa-save",
-        title: "Save",
+        title: "PRODUCTS.PAGES.DETAILS.TOOLBAR.SAVE",
         method: "saveChanges",
       },
       {
         id: "saveAndSendToApprove",
         icon: "fas fa-share-square",
-        title: "Send changes to approve",
+        title: "PRODUCTS.PAGES.DETAILS.TOOLBAR.SAVEANDAPPROVE",
         method: "saveAndSendToApprove",
       },
       {
         id: "revertStagedChanges",
         icon: "fas fa-undo",
-        title: "Revert staged changes",
+        title: "PRODUCTS.PAGES.DETAILS.TOOLBAR.REVERT",
         method: "revertStagedChanges",
       },
       {
         id: "delete",
         icon: "fas fa-trash",
-        title: "Delete",
+        title: "PRODUCTS.PAGES.DETAILS.TOOLBAR.DELETE",
         method: "remove",
       },
     ],
@@ -51,7 +51,7 @@ export const details: DynamicDetailsSchema = {
           variant: "light-danger",
           icon: "fas fa-exclamation-circle",
           iconSize: "xxl",
-          title: "Decline reason",
+          title: "PRODUCTS.PAGES.DETAILS.DECLINE_REASON",
           iconVariant: "danger",
           content: {
             method: "statusText",
@@ -63,12 +63,12 @@ export const details: DynamicDetailsSchema = {
         {
           id: "productType",
           component: "vc-select",
-          label: "Product type",
+          label: "PRODUCTS.PAGES.DETAILS.FIELDS.PRODUCT_TYPE.TITLE",
           property: "productType",
           optionValue: "value",
           optionLabel: "label",
           optionsMethod: "productTypeOptions",
-          tooltip: "Product type: Physical or Digital",
+          tooltip: "PRODUCTS.PAGES.DETAILS.FIELDS.PRODUCT_TYPE.TOOLTIP",
           rules: {
             required: true,
           },
@@ -79,9 +79,9 @@ export const details: DynamicDetailsSchema = {
         {
           id: "name",
           component: "vc-input",
-          label: "Product name",
+          label: "PRODUCTS.PAGES.DETAILS.FIELDS.NAME.TITLE",
           property: "name",
-          placeholder: "Enter product name",
+          placeholder: "PRODUCTS.PAGES.DETAILS.FIELDS.NAME.PLACEHOLDER",
           rules: {
             required: true,
           },
@@ -89,7 +89,9 @@ export const details: DynamicDetailsSchema = {
         {
           id: "categoryId",
           component: "vc-select",
-          label: "Select category",
+          label: "PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.TITLE",
+          tooltip: "PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.TOOLTIP",
+          placeholder: "PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.PLACEHOLDER",
           property: "categoryId",
           optionValue: "id",
           optionLabel: "name",
@@ -107,7 +109,7 @@ export const details: DynamicDetailsSchema = {
         {
           id: "propertiesCard",
           component: "vc-card",
-          label: "Properties",
+          label: "PRODUCTS.PAGES.DETAILS.FIELDS.TITLE",
           collapsible: true,
           visibility: {
             method: "propertiesCardVisibility",
@@ -116,9 +118,10 @@ export const details: DynamicDetailsSchema = {
             {
               id: "gtin",
               component: "vc-input",
-              label: "GTIN",
+              label: "PRODUCTS.PAGES.DETAILS.FIELDS.GTIN.TITLE",
+              tooltip: "PRODUCTS.PAGES.DETAILS.FIELDS.GTIN.TOOLTIP",
               property: "gtin",
-              placeholder: "Enter product identifier",
+              placeholder: "PRODUCTS.PAGES.DETAILS.FIELDS.GTIN.PLACEHOLDER",
               rules: {
                 required: true,
                 min: 3,
@@ -130,9 +133,9 @@ export const details: DynamicDetailsSchema = {
             {
               id: "description",
               component: "vc-editor",
-              label: "Description",
+              label: "PRODUCTS.PAGES.DETAILS.FIELDS.DESCRIPTION.TITLE",
               property: "description",
-              placeholder: "Enter product description",
+              placeholder: "PRODUCTS.PAGES.DETAILS.FIELDS.DESCRIPTION.PLACEHOLDER",
               multilanguage: true,
               rules: {
                 required: true,
@@ -149,7 +152,7 @@ export const details: DynamicDetailsSchema = {
         {
           id: "productGalleryCard",
           component: "vc-card",
-          label: "Gallery",
+          label: "PRODUCTS.PAGES.DETAILS.FIELDS.IMAGES.TITLE",
           visibility: {
             method: "galleryVisibility",
           },

@@ -13,13 +13,13 @@ export const details: DynamicDetailsSchema = {
       {
         id: "save",
         icon: "fas fa-save",
-        title: "Save",
+        title: "SELLER_DETAILS.TOOLBAR.SAVE",
         method: "saveChanges",
       },
       {
         id: "reset",
         icon: "fas fa-undo",
-        title: "Reset",
+        title: "SELLER_DETAILS.TOOLBAR.RESET",
         method: "reset",
       },
     ],
@@ -48,8 +48,8 @@ export const details: DynamicDetailsSchema = {
                 {
                   id: "companyName",
                   component: "vc-input",
-                  label: "Company Name",
-                  placeholder: "Enter company name",
+                  label: "SELLER_DETAILS.CARDS.INFO.FORM.COMPANY_NAME.LABEL",
+                  placeholder: "SELLER_DETAILS.CARDS.INFO.FORM.COMPANY_NAME.PLACEHOLDER",
                   rules: {
                     required: true,
                     max: 254,
@@ -59,7 +59,7 @@ export const details: DynamicDetailsSchema = {
                 {
                   id: "commissionFee",
                   component: "vc-field",
-                  label: "Commission fee",
+                  label: "SELLER_DETAILS.CARDS.INFO.FORM.COMMISSION.LABEL",
                   variant: "text",
                   property: "computedFee",
                 },
@@ -75,9 +75,9 @@ export const details: DynamicDetailsSchema = {
                         {
                           id: "companyRegistrationNum",
                           component: "vc-input",
-                          label: "Company Registration #",
+                          label: "SELLER_DETAILS.CARDS.INFO.FORM.COMPANY_REG_NUM.LABEL",
                           property: "registrationId",
-                          placeholder: "Enter registration number",
+                          placeholder: "SELLER_DETAILS.CARDS.INFO.FORM.COMPANY_REG_NUM.PLACEHOLDER",
                           rules: {
                             max: 128,
                           },
@@ -86,9 +86,9 @@ export const details: DynamicDetailsSchema = {
                         {
                           id: "companyOuterId",
                           component: "vc-input",
-                          label: "Company Outer Id",
+                          label: "SELLER_DETAILS.CARDS.INFO.FORM.COMPANY_OUTER_ID.LABEL",
                           property: "outerId",
-                          placeholder: "Enter outer Id",
+                          placeholder: "SELLER_DETAILS.CARDS.INFO.FORM.COMPANY_OUTER_ID.PLACEHOLDER",
                           rules: {
                             max: 128,
                           },
@@ -118,16 +118,16 @@ export const details: DynamicDetailsSchema = {
                 {
                   id: "aboutCompany",
                   component: "vc-textarea",
-                  label: "About company",
-                  placeholder: "Please enter value",
+                  label: "SELLER_DETAILS.CARDS.INFO.FORM.ABOUT.LABEL",
+                  placeholder: "SELLER_DETAILS.CARDS.INFO.FORM.ABOUT.PLACEHOLDER",
                   property: "description",
                   clearable: true,
                 },
                 {
                   id: "deliveryTime",
                   component: "vc-textarea",
-                  label: "Average Delivery Time",
-                  placeholder: "Please enter value",
+                  label: "SELLER_DETAILS.CARDS.INFO.FORM.DELIVERY.LABEL",
+                  placeholder: "SELLER_DETAILS.CARDS.INFO.FORM.DELIVERY.PLACEHOLDER",
                   property: "deliveryTime",
                   clearable: true,
                 },
@@ -136,7 +136,7 @@ export const details: DynamicDetailsSchema = {
             {
               id: "basicInfoCard",
               component: "vc-card",
-              label: "Company address",
+              label: "SELLER_DETAILS.CARDS.ADDRESS.TITLE",
               fields: [
                 {
                   id: "companyAddressFirst",
@@ -146,9 +146,9 @@ export const details: DynamicDetailsSchema = {
                     {
                       id: "country",
                       component: "vc-select",
-                      label: "Country",
+                      label: "SELLER_DETAILS.CARDS.ADDRESS.FORM.COUNTRY.LABEL",
                       property: "addresses[0].countryCode",
-                      placeholder: "Select country",
+                      placeholder: "SELLER_DETAILS.CARDS.ADDRESS.FORM.COUNTRY.PLACEHOLDER",
                       optionsMethod: "countriesList",
                       optionValue: "id",
                       optionLabel: "name",
@@ -163,8 +163,8 @@ export const details: DynamicDetailsSchema = {
                     {
                       id: "zipCode",
                       component: "vc-input",
-                      placeholder: "Enter postal/zip code",
-                      label: "Postal/ZIP code",
+                      placeholder: "SELLER_DETAILS.CARDS.ADDRESS.FORM.ZIP.PLACEHOLDER",
+                      label: "SELLER_DETAILS.CARDS.ADDRESS.FORM.ZIP.LABEL",
                       property: "addresses[0].postalCode",
                       rules: {
                         required: true,
@@ -181,7 +181,8 @@ export const details: DynamicDetailsSchema = {
                     {
                       id: "state",
                       component: "vc-select",
-                      label: "State/Province",
+                      label: "SELLER_DETAILS.CARDS.ADDRESS.FORM.STATE.LABEL",
+                      placeholder: "SELLER_DETAILS.CARDS.ADDRESS.FORM.STATE.PLACEHOLDER",
                       property: "addresses[0].regionId",
                       optionsMethod: "regionsList",
                       optionValue: "id",
@@ -194,8 +195,8 @@ export const details: DynamicDetailsSchema = {
                     {
                       id: "city",
                       component: "vc-input",
-                      placeholder: "Enter value",
-                      label: "City",
+                      placeholder: "SELLER_DETAILS.CARDS.ADDRESS.FORM.CITY.PLACEHOLDER",
+                      label: "SELLER_DETAILS.CARDS.ADDRESS.FORM.CITY.LABEL",
                       rules: {
                         required: true,
                         max: 128,
@@ -208,8 +209,8 @@ export const details: DynamicDetailsSchema = {
                   id: "addressLine1",
                   component: "vc-input",
                   property: "addresses[0].line1",
-                  label: "Address line 1",
-                  placeholder: "Enter value",
+                  label: "SELLER_DETAILS.CARDS.ADDRESS.FORM.ADDRESS_1.LABEL",
+                  placeholder: "SELLER_DETAILS.CARDS.ADDRESS.FORM.ADDRESS_1.PLACEHOLDER",
                   rules: {
                     required: true,
                     max: 128,
@@ -219,8 +220,8 @@ export const details: DynamicDetailsSchema = {
                   id: "addressLine2",
                   component: "vc-input",
                   property: "addresses[0].line2",
-                  label: "Address line 1",
-                  placeholder: "Enter value",
+                  label: "SELLER_DETAILS.CARDS.ADDRESS.FORM.ADDRESS_2.LABEL",
+                  placeholder: "SELLER_DETAILS.CARDS.ADDRESS.FORM.ADDRESS_2.PLACEHOLDER",
                   rules: {
                     max: 128,
                   },
@@ -229,14 +230,14 @@ export const details: DynamicDetailsSchema = {
                   id: "location",
                   component: "vc-input",
                   property: "location",
-                  label: "Location (latitude & longitude)",
-                  placeholder: "Enter value",
+                  label: "SELLER_DETAILS.CARDS.ADDRESS.FORM.LONGLAT.LABEL",
+                  placeholder: "SELLER_DETAILS.CARDS.ADDRESS.FORM.LONGLAT.PLACEHOLDER",
                   rules: {
                     max: 512,
                     regex:
                       /^([-+]?(?:[1-8]?\d(?:\.\d+)?|90(?:\.0+)?)),\s*([-+]?(?:180(?:\.0+)?|(?:(?:1[0-7]\d)|(?:[1-9]?\d))(?:\.\d+)?))$/,
                   },
-                  tooltip: "Enter longitude and latitude separated by comma, eg: 34.059761, -118.276802",
+                  tooltip: "SELLER_DETAILS.CARDS.ADDRESS.FORM.LONGLAT.DESCRIPTION",
                 },
                 {
                   id: "contactInfo",
@@ -246,8 +247,8 @@ export const details: DynamicDetailsSchema = {
                     {
                       id: "phone",
                       component: "vc-input",
-                      label: "Contact Phone Number",
-                      placeholder: "Enter value",
+                      label: "SELLER_DETAILS.CARDS.ADDRESS.FORM.PHONE.LABEL",
+                      placeholder: "SELLER_DETAILS.CARDS.ADDRESS.FORM.PHONE.PLACEHOLDER",
                       rules: {
                         max: 64,
                       },
@@ -257,8 +258,8 @@ export const details: DynamicDetailsSchema = {
                     {
                       id: "email",
                       component: "vc-input",
-                      label: "Contact E-mail Address",
-                      placeholder: "Enter value",
+                      label: "SELLER_DETAILS.CARDS.ADDRESS.FORM.EMAIL.LABEL",
+                      placeholder: "SELLER_DETAILS.CARDS.ADDRESS.FORM.EMAIL.PLACEHOLDER",
                       rules: {
                         max: 256,
                       },

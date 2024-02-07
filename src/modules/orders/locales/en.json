@@ -40,7 +40,8 @@
           "DL_PDF": "Download PDF",
           "CONFIRM": "Confirm",
           "CANCEL": "Cancel",
-          "SHIP": "Ship order"
+          "SHIP": "Ship order",
+          "PACK": "Pack"
         },
         "FORM": {
           "ORDER_INFO": {

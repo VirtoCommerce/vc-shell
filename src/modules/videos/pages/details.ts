@@ -10,13 +10,13 @@ export const details: DynamicDetailsSchema = {
       {
         id: "save",
         icon: "fas fa-save",
-        title: "Save",
+        title: "VIDEOS.PAGES.DETAILS.TOOLBAR.SAVE",
         method: "saveChanges",
       },
       {
         id: "delete",
         icon: "fas fa-trash",
-        title: "Delete",
+        title: "VIDEOS.PAGES.DETAILS.TOOLBAR.DELETE",
         method: "remove",
       },
     ],
@@ -29,9 +29,9 @@ export const details: DynamicDetailsSchema = {
         {
           id: "videoUrl",
           component: "vc-input",
-          label: "Video Url",
+          label: "VIDEOS.PAGES.DETAILS.FIELDS.ADD.TITLE",
           property: "videoUrlHandler",
-          placeholder: "Enter video Url",
+          placeholder: "VIDEOS.PAGES.DETAILS.FIELDS.ADD.PLACEHOLDER",
           update: {
             method: "validateUrl",
           },
@@ -45,7 +45,7 @@ export const details: DynamicDetailsSchema = {
             id: "addVideoButton",
             component: "vc-button",
             method: "createVideo",
-            content: "Preview",
+            content: "VIDEOS.PAGES.DETAILS.FIELDS.ADD.ADD_BUTTON",
             disabled: {
               method: "previewDisabled",
             },
@@ -75,14 +75,14 @@ export const details: DynamicDetailsSchema = {
                 {
                   id: "uploadDate",
                   component: "vc-field",
-                  label: "Created date",
+                  label: "VIDEOS.PAGES.DETAILS.FIELDS.CREATED_DATE.TITLE",
                   property: "uploadDate",
                   variant: "date-ago",
                 },
                 {
                   id: "contentUrl",
                   component: "vc-field",
-                  label: "Video Url",
+                  label: "VIDEOS.PAGES.DETAILS.FIELDS.CONTENT_URL.TITLE",
                   property: "contentUrl",
                   variant: "link",
                   copyable: true,
@@ -90,7 +90,7 @@ export const details: DynamicDetailsSchema = {
                 {
                   id: "embeddedUrl",
                   component: "vc-field",
-                  label: "Embedded Url",
+                  label: "VIDEOS.PAGES.DETAILS.FIELDS.EMBED_URL.TITLE",
                   property: "embedUrl",
                   variant: "link",
                   copyable: true,
@@ -98,7 +98,7 @@ export const details: DynamicDetailsSchema = {
                 {
                   id: "thumbnailUrl",
                   component: "vc-field",
-                  label: "Thumbnail Url",
+                  label: "VIDEOS.PAGES.DETAILS.FIELDS.THUMBNAIL_URL.TITLE",
                   property: "thumbnailUrl",
                   variant: "link",
                   copyable: true,
@@ -110,9 +110,9 @@ export const details: DynamicDetailsSchema = {
         {
           id: "name",
           component: "vc-input",
-          label: "Name",
+          label: "VIDEOS.PAGES.DETAILS.FIELDS.NAME.TITLE",
           property: "name",
-          placeholder: "Enter video name",
+          placeholder: "VIDEOS.PAGES.DETAILS.FIELDS.NAME.PLACEHOLDER",
           visibility: {
             method: "needShowFields",
           },
@@ -123,9 +123,9 @@ export const details: DynamicDetailsSchema = {
         {
           id: "description",
           component: "vc-input",
-          label: "Description",
+          label: "VIDEOS.PAGES.DETAILS.FIELDS.DESCRIPTION.TITLE",
           property: "description",
-          placeholder: "Enter video description",
+          placeholder: "VIDEOS.PAGES.DETAILS.FIELDS.DESCRIPTION.PLACEHOLDER",
           visibility: {
             method: "needShowFields",
           },
@@ -136,7 +136,7 @@ export const details: DynamicDetailsSchema = {
         {
           id: "preview",
           component: "vc-video",
-          label: "Preview",
+          label: "VIDEOS.PAGES.DETAILS.FIELDS.PREVIEW.TITLE",
           property: "embedUrl",
           visibility: {
             method: "needShowFields",

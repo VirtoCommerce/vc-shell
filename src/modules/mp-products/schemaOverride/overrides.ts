@@ -15,7 +15,7 @@ export const overrides: OverridesSchema = {
     {
       id: "Products",
       path: "settings.titleTemplate",
-      value: "Marketplace Products",
+      value: "PRODUCTS.MENU.MARKETPLACE_PRODUCTS",
     },
     {
       id: "Products",
@@ -40,7 +40,7 @@ export const overrides: OverridesSchema = {
     {
       id: "Product",
       path: "settings.titleTemplate",
-      value: "Marketplace Product",
+      value: "PRODUCTS.PAGES.DETAILS.MP_PRODUCT_TITLE",
     },
     {
       id: "Product",

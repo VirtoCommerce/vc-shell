@@ -12,31 +12,31 @@ export const details: DynamicDetailsSchema = {
       {
         id: "save",
         icon: "fas fa-save",
-        title: "Save",
+        title: "OFFERS.PAGES.DETAILS.TOOLBAR.SAVE",
         method: "saveChanges",
       },
       {
         id: "enable",
         icon: "fa fa-eye",
-        title: "Enable",
+        title: "OFFERS.PAGES.DETAILS.TOOLBAR.ENABLE",
         method: "enable",
       },
       {
         id: "disable",
         icon: "fa fa-eye-slash",
-        title: "Disable",
+        title: "OFFERS.PAGES.DETAILS.TOOLBAR.DISABLE",
         method: "disable",
       },
       {
         id: "setDefault",
         icon: "fas fa-marker",
-        title: "Set default",
+        title: "OFFERS.PAGES.DETAILS.TOOLBAR.DEFAULT",
         method: "setDefault",
       },
       {
         id: "delete",
         icon: "fas fa-trash",
-        title: "Delete",
+        title: "OFFERS.PAGES.DETAILS.TOOLBAR.DELETE",
         method: "remove",
       },
     ],
@@ -49,7 +49,8 @@ export const details: DynamicDetailsSchema = {
         {
           id: "productId",
           component: "vc-select",
-          label: "Product",
+          label: "OFFERS.PAGES.DETAILS.FIELDS.PRODUCT.TITLE",
+          placeholder: "OFFERS.PAGES.DETAILS.FIELDS.PRODUCT.PLACEHOLDER",
           property: "productId",
           optionValue: "id",
           optionLabel: "name",
@@ -68,12 +69,12 @@ export const details: DynamicDetailsSchema = {
         {
           id: "inventoryCard",
           component: "vc-card",
-          label: "Inventory",
+          label: "OFFERS.PAGES.DETAILS.FIELDS.INVENTORY.TITLE",
           fields: [
             {
               id: "sku",
               component: "vc-input",
-              label: "SKU",
+              label: "OFFERS.PAGES.DETAILS.FIELDS.SKU.TITLE",
               property: "sku",
               rules: {
                 required: true,
@@ -86,7 +87,7 @@ export const details: DynamicDetailsSchema = {
               content: "Always in stock",
               trueValue: false,
               falseValue: true,
-              label: "Quantity in stock",
+              label: "OFFERS.PAGES.DETAILS.FIELDS.QTY.TITLE",
             },
             {
               id: "inventoryFieldset",
@@ -98,7 +99,7 @@ export const details: DynamicDetailsSchema = {
                   component: "vc-input",
                   property: "inStockQuantity",
                   label: "{fulfillmentCenterName}",
-                  placeholder: "Product current quantity",
+                  placeholder: "OFFERS.PAGES.DETAILS.FIELDS.AVAIL_QTY.PLACEHOLDER",
                   clearable: true,
                   variant: "number",
                   rules: {
@@ -115,7 +116,7 @@ export const details: DynamicDetailsSchema = {
         {
           id: "propertiesCard",
           component: "vc-card",
-          label: "Properties",
+          label: "OFFERS.PAGES.DETAILS.FIELDS.PROPERTIES.TITLE",
           fields: [
             {
               id: "dynamicProps",
@@ -128,11 +129,11 @@ export const details: DynamicDetailsSchema = {
         {
           id: "pricingCard",
           component: "vc-card",
-          label: "Pricing",
+          label: "OFFERS.PAGES.DETAILS.FIELDS.PRICING.TITLE",
           action: {
             id: "addPrice",
             component: "vc-button",
-            content: "Add price",
+            content: "OFFERS.PAGES.DETAILS.FIELDS.PRICING.ADD_PRICE",
             small: true,
             method: "addPrice",
           },
@@ -149,9 +150,9 @@ export const details: DynamicDetailsSchema = {
                 {
                   id: "listPrice",
                   component: "vc-input-currency",
-                  label: "List price",
+                  label: "OFFERS.PAGES.DETAILS.FIELDS.LIST_PRICE.TITLE",
                   property: "listPrice",
-                  placeholder: "Set list price",
+                  placeholder: "OFFERS.PAGES.DETAILS.FIELDS.LIST_PRICE.PLACEHOLDER",
                   optionProperty: "currency",
                   optionValue: "value",
                   optionLabel: "title",
@@ -163,9 +164,9 @@ export const details: DynamicDetailsSchema = {
                 {
                   id: "salePrice",
                   component: "vc-input-currency",
-                  label: "Sales price",
+                  label: "OFFERS.PAGES.DETAILS.FIELDS.SALE_PRICE.TITLE",
                   property: "salePrice",
-                  placeholder: "Set product sales price",
+                  placeholder: "OFFERS.PAGES.DETAILS.FIELDS.SALE_PRICE.PLACEHOLDER",
                   optionProperty: "currency",
                   optionValue: "value",
                   optionLabel: "title",
@@ -173,9 +174,9 @@ export const details: DynamicDetailsSchema = {
                 {
                   id: "minQuantity",
                   component: "vc-input",
-                  label: "Minimum quantity",
+                  label: "OFFERS.PAGES.DETAILS.FIELDS.MIN_QTY.TITLE",
                   property: "minQuantity",
-                  placeholder: "Enter product minimal quantity in order",
+                  placeholder: "OFFERS.PAGES.DETAILS.FIELDS.MIN_QTY.PLACEHOLDER",
                   clearable: true,
                   rules: {
                     required: true,
@@ -190,7 +191,7 @@ export const details: DynamicDetailsSchema = {
         {
           id: "validityDatesCard",
           component: "vc-card",
-          label: "Validity dates",
+          label: "OFFERS.PAGES.DETAILS.FIELDS.DATES.TITLE",
           fields: [
             {
               id: "validityDatesFieldset",
@@ -200,7 +201,7 @@ export const details: DynamicDetailsSchema = {
                 {
                   id: "startDate",
                   component: "vc-input",
-                  label: "Validity from",
+                  label: "OFFERS.PAGES.DETAILS.FIELDS.DATES.VALID_FROM",
                   variant: "datetime-local",
                   property: "startDate",
                   rules: { before: "@endDate" },
@@ -208,7 +209,7 @@ export const details: DynamicDetailsSchema = {
                 {
                   id: "endDate",
                   component: "vc-input",
-                  label: "Validity to",
+                  label: "OFFERS.PAGES.DETAILS.FIELDS.DATES.VALID_TO",
                   variant: "datetime-local",
                   property: "endDate",
                   rules: { after: "@startDate" },
@@ -220,7 +221,7 @@ export const details: DynamicDetailsSchema = {
         {
           id: "galleryCard",
           component: "vc-card",
-          label: "Gallery",
+          label: "OFFERS.PAGES.DETAILS.FIELDS.GALLERY.TITLE",
           collapsible: true,
           fields: [
             {

@@ -3,7 +3,7 @@ import { DynamicGridSchema } from "@vc-shell/framework";
 export const grid: DynamicGridSchema = {
   settings: {
     id: "Videos",
-    titleTemplate: "Videos",
+    titleTemplate: "VIDEOS.PAGES.LIST.TITLE",
     localizationPrefix: "Videos",
     isWorkspace: true,
     composable: "useVideosList",
@@ -12,19 +12,19 @@ export const grid: DynamicGridSchema = {
       {
         id: "save",
         icon: "fas fa-save",
-        title: "Save",
+        title: "VIDEOS.PAGES.LIST.TOOLBAR.SAVE",
         method: "save",
       },
       {
         id: "add",
         icon: "fas fa-plus",
-        title: "Add",
+        title: "VIDEOS.PAGES.LIST.TOOLBAR.ADD",
         method: "openAddBlade",
       },
       {
         id: "deleteSelected",
         icon: "fas fa-trash",
-        title: "Delete selected",
+        title: "VIDEOS.PAGES.LIST.TOOLBAR.DELETE",
         method: "removeItems",
       },
     ],
@@ -47,13 +47,13 @@ export const grid: DynamicGridSchema = {
       columns: [
         {
           id: "thumbnailUrl",
-          title: "Thumbnail",
+          title: "VIDEOS.PAGES.LIST.TABLE.HEADER.THUMBNAIL",
           type: "image",
           alwaysVisible: true,
         },
         {
           id: "name",
-          title: "Name",
+          title: "VIDEOS.PAGES.LIST.TABLE.HEADER.NAME",
           sortable: true,
           alwaysVisible: true,
           customTemplate: {
@@ -62,13 +62,13 @@ export const grid: DynamicGridSchema = {
         },
         {
           id: "uploadDate",
-          title: "Upload date",
+          title: "VIDEOS.PAGES.LIST.TABLE.HEADER.UPLOAD_DATE",
           sortable: true,
           type: "date-ago",
         },
         {
           id: "sortOrder",
-          title: "Sort order",
+          title: "VIDEOS.PAGES.LIST.TABLE.HEADER.SORT_ORDER",
           sortable: true,
           type: "number",
         },

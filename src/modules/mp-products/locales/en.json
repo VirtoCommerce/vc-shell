@@ -2,6 +2,11 @@
   "PRODUCTS": {
     "MENU": {
       "MARKETPLACE_PRODUCTS": "Marketplace Products"
+    },
+    "PAGES": {
+      "DETAILS": {
+        "MP_PRODUCT_TITLE": "Marketplace Product"
+      }
     }
   }
 }

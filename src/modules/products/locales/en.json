@@ -39,23 +39,13 @@
             "CREATED_DATE": "Created Date",
             "STATUS": "Status",
             "GTIN": "Code",
-            "PUBLISHED": "Published",
+            "PUBLISHED": "Is published",
             "PRODUCT_TYPE": "Product type"
           }
         },
         "FILTERS": {
           "TITLE": "Filters",
           "STATUS_FILTER": "Status filter",
-          "PRICE_BETWEEN": {
-            "TITLE": "Price between",
-            "FROM": "From",
-            "TO": "To"
-          },
-          "CREATED_DATE": {
-            "TITLE": "Created date",
-            "START_DATE": "Start date",
-            "END_DATE": "End date"
-          },
           "STATUS": {
             "None": "New",
             "Published": "Published",
@@ -63,9 +53,7 @@
             "WaitForApproval": "Wait for approval",
             "RequiresChanges": "Requires changes",
             "Rejected": "Rejected"
-          },
-          "RESET_FILTERS": "Reset filters",
-          "APPLY": "Apply"
+          }
         },
         "NOT_FOUND": {
           "EMPTY": "No products found.",
@@ -93,14 +81,8 @@
       "DETAILS": {
         "TITLE": "Add product",
         "TOOLBAR": {
-          "SAVE": {
-            "TITLE": "Save",
-            "NOT_VALID": "Form is not valid.\nPlease, check highlighted fields."
-          },
-          "SAVEANDAPPROVE": {
-            "TITLE": "Send changes to approve",
-            "NOT_VALID": "Form is not valid.\nPlease, check highlighted fields."
-          },
+          "SAVE": "Save",
+          "SAVEANDAPPROVE": "Send changes to approve",
           "CLOSE": "Close",
           "REVERT": "Revert staged changes",
           "APPROVE": "Approve (test only)",

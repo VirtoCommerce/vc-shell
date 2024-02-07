@@ -4,7 +4,7 @@ export const grid: DynamicGridSchema = {
   settings: {
     url: "/products",
     id: "Products",
-    titleTemplate: "Products",
+    titleTemplate: "PRODUCTS.PAGES.LIST.TITLE",
     localizationPrefix: "Products",
     isWorkspace: true,
     composable: "useProductsList",
@@ -13,25 +13,25 @@ export const grid: DynamicGridSchema = {
       {
         id: "refresh",
         icon: "fas fa-sync-alt",
-        title: "Refresh",
+        title: "PRODUCTS.PAGES.LIST.TOOLBAR.REFRESH",
         method: "refresh",
       },
       {
         id: "add",
         icon: "fas fa-plus",
-        title: "Add",
+        title: "PRODUCTS.PAGES.LIST.TOOLBAR.ADD",
         method: "openAddBlade",
       },
       {
         id: "export",
         icon: "fas fa-file-export",
-        title: "Export categories",
+        title: "PRODUCTS.PAGES.LIST.TOOLBAR.EXPORT_CATEGORIES",
         method: "exportCategories",
       },
       {
         id: "deleteSelected",
         icon: "fas fa-trash",
-        title: "Delete selected",
+        title: "PRODUCTS.PAGES.LIST.TOOLBAR.DELETE",
         method: "removeItems",
       },
     ],
@@ -61,7 +61,7 @@ export const grid: DynamicGridSchema = {
         columns: [
           {
             id: "statusFilter",
-            title: "Status filter",
+            title: "PRODUCTS.PAGES.LIST.FILTERS.STATUS_FILTER",
             controls: [
               {
                 id: "statusCheckbox",
@@ -70,13 +70,13 @@ export const grid: DynamicGridSchema = {
                 data: [
                   {
                     value: "None",
-                    displayName: "None",
+                    displayName: "PRODUCTS.PAGES.LIST.FILTERS.STATUS.None",
                   },
-                  { value: "Published", displayName: "Published" },
-                  { value: "HasStagedChanges", displayName: "Has staged changes" },
-                  { value: "WaitForApproval", displayName: "Wait for approval" },
-                  { value: "RequiresChanges", displayName: "Requires changes" },
-                  { value: "Rejected", displayName: "Rejected" },
+                  { value: "Published", displayName: "PRODUCTS.PAGES.LIST.FILTERS.STATUS.Published" },
+                  { value: "HasStagedChanges", displayName: "PRODUCTS.PAGES.LIST.FILTERS.STATUS.HasStagedChanges" },
+                  { value: "WaitForApproval", displayName: "PRODUCTS.PAGES.LIST.FILTERS.STATUS.WaitForApproval" },
+                  { value: "RequiresChanges", displayName: "PRODUCTS.PAGES.LIST.FILTERS.STATUS.RequiresChanges" },
+                  { value: "Rejected", displayName: "PRODUCTS.PAGES.LIST.FILTERS.STATUS.Rejected" },
                 ],
               },
             ],
@@ -86,12 +86,12 @@ export const grid: DynamicGridSchema = {
       columns: [
         {
           id: "imgSrc",
-          title: "Image",
+          title: "PRODUCTS.PAGES.LIST.TABLE.HEADER.IMAGE",
           type: "image",
         },
         {
           id: "name",
-          title: "Name",
+          title: "PRODUCTS.PAGES.LIST.TABLE.HEADER.NAME",
           sortable: true,
           alwaysVisible: true,
           customTemplate: {
@@ -100,19 +100,19 @@ export const grid: DynamicGridSchema = {
         },
         {
           id: "createdDate",
-          title: "Created date",
+          title: "PRODUCTS.PAGES.LIST.TABLE.HEADER.CREATED_DATE",
           sortable: true,
           type: "date-ago",
         },
         {
           id: "isPublished",
-          title: "Is published",
+          title: "PRODUCTS.PAGES.LIST.TABLE.HEADER.PUBLISHED",
           sortable: true,
           type: "status-icon",
         },
         {
           id: "status",
-          title: "Status",
+          title: "PRODUCTS.PAGES.LIST.TABLE.HEADER.STATUS",
           sortable: true,
           alwaysVisible: true,
           customTemplate: {
@@ -122,13 +122,13 @@ export const grid: DynamicGridSchema = {
         {
           id: "gtin",
           field: "productData.gtin",
-          title: "GTIN",
+          title: "PRODUCTS.PAGES.LIST.TABLE.HEADER.GTIN",
           alwaysVisible: true,
         },
         {
           id: "productType",
           field: "productData.productType",
-          title: "Product type",
+          title: "PRODUCTS.PAGES.LIST.TABLE.HEADER.PRODUCT_TYPE",
         },
       ],
     },

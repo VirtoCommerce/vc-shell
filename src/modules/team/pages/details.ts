@@ -88,7 +88,7 @@ export const details: DynamicDetailsSchema = {
           optionsMethod: "roles",
           rules: { required: true },
           disabled: {
-            method: "isOwnerReadonly",
+            method: "disableOnCurrent",
           },
         },
         {
@@ -102,7 +102,7 @@ export const details: DynamicDetailsSchema = {
             method: "isActiveSwitchVisible",
           },
           disabled: {
-            method: "isOwnerReadonly",
+            method: "disableOnCurrent",
           },
         },
         {

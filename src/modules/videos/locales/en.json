@@ -2,7 +2,7 @@
   "VIDEOS": {
     "PAGES": {
       "LIST": {
-        "TITLE": "Product videos",
+        "TITLE": "Videos",
         "TOOLBAR": {
           "SAVE": "Save",
           "ADD": "Add video",
@@ -26,7 +26,8 @@
             "NAME": "Name",
             "DURATION": "Duration",
             "SORT_ORDER": "Sort order",
-            "CREATED_DATE": "Created date"
+            "CREATED_DATE": "Created date",
+            "UPLOAD_DATE": "Upload date"
           },
           "TOTALS": "Total"
         },
@@ -72,11 +73,11 @@
           },
           "NAME": {
             "TITLE": "Name",
-            "PLACEHOLDER": "Name"
+            "PLACEHOLDER": "Enter video name"
           },
           "DESCRIPTION": {
             "TITLE": "Description",
-            "PLACEHOLDER": "Description"
+            "PLACEHOLDER": "Enter video description"
           },
           "PREVIEW": {
             "TITLE": "Preview"
@@ -87,7 +88,7 @@
           "DELETE": "Are you sure you want to delete this video?"
         }
       },
-      "ALERTS":{
+      "ALERTS": {
         "CLOSE_CONFIRMATION": "You have unsaved changes. Close anyway?"
       }
     }

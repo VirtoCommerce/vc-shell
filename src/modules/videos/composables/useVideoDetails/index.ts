@@ -152,9 +152,8 @@ export const useVideoDetails = (args: {
     async () => {
       if (!args.props.param) {
         item.value = reactive(new Video());
+        validationState.value.resetModified(item.value, true);
       }
-      validationState.value.modified = false;
-      validationState.value.dirty = false;
     },
   );
 

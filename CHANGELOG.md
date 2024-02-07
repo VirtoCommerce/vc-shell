@@ -1,3 +1,12 @@
+## [1.0.157](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.156...v1.0.157) (2024-02-07)
+
+
+### Features
+
+* **framework:** useFilterBuilder localization update ([75a387d](https://github.com/VirtoCommerce/vc-shell/commit/75a387db7da5e07d3e6538b9217d2e1b270b694d))
+
+
+
 ## [1.0.156](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.155...v1.0.156) (2024-02-07)
 
 

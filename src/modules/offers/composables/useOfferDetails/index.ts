@@ -232,9 +232,7 @@ export const useOfferDetails = (args: {
       if (fetchedProduct && fetchedProduct.length && item.value) {
         const currentProduct = fetchedProduct[0];
 
-        if (!args.props.param) {
-          item.value.properties = currentProduct.properties;
-        }
+        item.value.properties = currentProduct.properties;
 
         if (args.props.options && "sellerProduct" in args.props.options && args.props.options.sellerProduct) {
           item.value.productId = currentProduct.id;
@@ -296,6 +294,7 @@ export const useOfferDetails = (args: {
     addPrice,
     getProductItem,
     trackInventoryFn,
+    disableProductSelect: computed(() => !!args.props.param),
     currencies,
     toolbarOverrides: {
       saveChanges: {

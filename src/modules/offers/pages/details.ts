@@ -65,6 +65,9 @@ export const details: DynamicDetailsSchema = {
           update: {
             method: "getProductItem",
           },
+          disabled: {
+            method: "disableProductSelect",
+          },
         },
         {
           id: "inventoryCard",
@@ -84,7 +87,7 @@ export const details: DynamicDetailsSchema = {
               id: "trackInventory",
               component: "vc-checkbox",
               property: "trackInventory",
-              content: "Always in stock",
+              content: "OFFERS.PAGES.DETAILS.FIELDS.ALWAYS_IN_STOCK.TITLE",
               trueValue: false,
               falseValue: true,
               label: "OFFERS.PAGES.DETAILS.FIELDS.QTY.TITLE",

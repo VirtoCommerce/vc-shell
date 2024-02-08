@@ -1,3 +1,12 @@
+## [1.0.158](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.157...v1.0.158) (2024-02-08)
+
+
+### Bug Fixes
+
+* **dynamic:** reactivity losing fixes ([2f129ee](https://github.com/VirtoCommerce/vc-shell/commit/2f129ee993200f8aa0ac651d1a0adc94f1834a67))
+
+
+
 ## [1.0.157](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.156...v1.0.157) (2024-02-07)
 
 

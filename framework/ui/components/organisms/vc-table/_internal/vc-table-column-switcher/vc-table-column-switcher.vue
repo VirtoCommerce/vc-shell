@@ -37,7 +37,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, onMounted } from "vue";
+import { ref, computed } from "vue";
 import { ITableColumns } from "./../../../../../../core/types";
 import { vOnClickOutside } from "@vueuse/components";
 import { useFloating, flip, shift, autoUpdate } from "@floating-ui/vue";

@@ -33,7 +33,6 @@
         <div class="item-details__content">
           <VcForm class="tw-grow tw-p-4">
             <SchemaRender
-              :key="`${loading}`"
               v-model="item"
               :ui-schema="form.children"
               :context="bladeContext"
@@ -79,7 +78,6 @@ import {
   ComputedRef,
   type Component,
   ConcreteComponent,
-  toRefs,
 } from "vue";
 import { DynamicDetailsSchema, FormContentSchema, SettingsSchema } from "../types";
 import { reactiveComputed, useMounted, useTemplateRefsList } from "@vueuse/core";
@@ -98,7 +96,6 @@ import { useToolbarReducer } from "../composables/useToolbarReducer";
 import { useBeforeUnload } from "../../../../core/composables/useBeforeUnload";
 import * as _ from "lodash-es";
 import { IBladeToolbar } from "../../../../core/types";
-import { toRef } from "vue";
 
 interface Props {
   expanded?: boolean;

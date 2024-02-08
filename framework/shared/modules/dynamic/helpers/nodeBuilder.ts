@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { unref, computed, toValue, h, UnwrapNestedRefs, MaybeRef, reactive, VNode } from "vue";
+import { unref, computed, toValue, h, UnwrapNestedRefs, MaybeRef, reactive, VNode, ToRefs } from "vue";
 import FIELD_MAP from "../components/FIELD_MAP";
 import { ControlSchema } from "../types";
 import { IControlBaseProps } from "../types/models";
@@ -10,6 +10,8 @@ import { DetailsBladeContext } from "../factories";
 import { safeIn } from "./safeIn";
 import { i18n } from "./../../../../core/plugins/i18n";
 import { visibilityHandler } from "./visibilityHandler";
+import { toRefs } from "@vueuse/core";
+import { unrefNested } from "./unrefNested";
 
 function disabledHandler(
   disabled: { method?: string } | boolean,
@@ -34,13 +36,15 @@ function nodeBuilder<
   bladeContext,
   currentLocale,
   formData,
+  updateFormData,
 }: {
   controlSchema: ControlSchema;
   parentId: string | number;
-  internalContext: MaybeRef<Context>;
+  internalContext: ToRefs<Context>;
   bladeContext: BContext;
   currentLocale: MaybeRef<string>;
-  formData: FormData;
+  formData: ToRefs<FormData>;
+  updateFormData?: (newVal: ToRefs<unknown>) => void;
 }): VNode {
   if (!controlSchema) throw new Error("There is no controlSchema provided");
 
@@ -60,14 +64,14 @@ function nodeBuilder<
     bladeContext.scope &&
     bladeContext.scope[controlSchema.property];
 
-  const modelValue = scopedProperty || contextProperty || undefined;
+  const modelValue = scopedProperty ?? contextProperty ?? undefined;
 
   const tooltip = (safeIn("tooltip", controlSchema) && controlSchema.tooltip) || undefined;
   const multilanguage = safeIn("multilanguage", controlSchema) && controlSchema.multilanguage;
 
   const label =
     safeIn("label", controlSchema) && controlSchema.label
-      ? unref(unwrapInterpolation(controlSchema.label, toValue(internalContext)))
+      ? unref(unwrapInterpolation(controlSchema.label, internalContext))
       : undefined;
 
   const disabled =
@@ -82,9 +86,11 @@ function nodeBuilder<
       setModel({
         property: controlSchema.property,
         value: e,
-        context: toValue(internalContext),
+        context: internalContext,
         scope: bladeContext.scope,
       });
+
+      updateFormData?.(formData);
 
       if (
         safeIn("update", controlSchema) &&
@@ -94,7 +100,7 @@ function nodeBuilder<
       ) {
         const updateMethod = controlSchema.update.method;
         if (safeIn(updateMethod, bladeContext.scope) && typeof bladeContext.scope[updateMethod] === "function") {
-          await bladeContext.scope[updateMethod](e, controlSchema.property, toValue(internalContext));
+          await bladeContext.scope[updateMethod](e, controlSchema.property, unrefNested(internalContext));
         }
       }
     }
@@ -124,24 +130,22 @@ function nodeBuilder<
     if (!("fields" in controlSchema)) return null;
 
     const contextFieldModel =
-      safeIn("property", controlSchema) &&
-      controlSchema.property &&
-      getModel(controlSchema.property, toValue(internalContext));
+      safeIn("property", controlSchema) && controlSchema.property && getModel(controlSchema.property, internalContext);
 
     const scopedFieldModel =
       safeIn("property", controlSchema) &&
       controlSchema.property &&
       getModel(controlSchema.property, toValue(bladeContext.scope ?? {}));
 
-    const model = toValue(scopedFieldModel) || toValue(contextFieldModel);
+    const model = scopedFieldModel || contextFieldModel;
 
-    if (model && Array.isArray(model)) {
-      return model.map((modelItem: { [x: string]: unknown; id: string }) =>
-        controlSchema.fields.reduce((arr, fieldItem) => {
+    if (toValue(model) && Array.isArray(toValue(model))) {
+      return toValue(model).map((modelItem: ToRefs<{ [x: string]: unknown; id: string }>) => {
+        return controlSchema.fields.reduce((arr, fieldItem) => {
           if (
             safeIn("visibility", fieldItem) &&
             fieldItem.visibility?.method &&
-            !visibilityHandler(bladeContext.scope?.[fieldItem.visibility?.method], toValue(modelItem), fieldItem)
+            !visibilityHandler(bladeContext.scope?.[fieldItem.visibility?.method], modelItem, fieldItem)
           ) {
             return arr;
           }
@@ -154,10 +158,11 @@ function nodeBuilder<
               bladeContext,
               currentLocale,
               formData,
+              updateFormData,
             }),
           ];
-        }, [] as VNode[]),
-      );
+        }, [] as VNode[]);
+      });
     }
 
     return [
@@ -165,7 +170,7 @@ function nodeBuilder<
         if (
           safeIn("visibility", field) &&
           field.visibility?.method &&
-          !visibilityHandler(bladeContext.scope?.[field.visibility?.method], toValue(internalContext), field)
+          !visibilityHandler(bladeContext.scope?.[field.visibility?.method], internalContext, field)
         ) {
           return arr;
         }
@@ -179,6 +184,7 @@ function nodeBuilder<
             bladeContext,
             currentLocale,
             formData,
+            updateFormData,
           }),
         ];
       }, [] as VNode[]),
@@ -186,13 +192,13 @@ function nodeBuilder<
   });
 
   const elProps = {
-    baseProps,
+    baseProps: toRefs(baseProps),
     bladeContext,
     element: controlSchema,
     currentLocale: unref(currentLocale),
     fields: fieldsHandler,
     formData,
-    fieldContext: reactive(unref(internalContext)),
+    fieldContext: internalContext,
   };
 
   return h(component, elProps);

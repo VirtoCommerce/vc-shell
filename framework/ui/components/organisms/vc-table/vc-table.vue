@@ -1,5 +1,5 @@
 <template>
-  <div class="tw-relative tw-overflow-hidden tw-flex tw-flex-col tw-grow tw-basis-0">
+  <div class="tw-relative tw-overflow-hidden tw-flex tw-flex-col tw-grow">
     <!-- Header slot with filter and searchbar -->
     <slot
       v-if="

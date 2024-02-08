@@ -50,7 +50,6 @@ export const ControlBaseProps = ({
   disabled = false,
   required = false,
   name = undefined,
-  classNames = undefined,
   tooltip = undefined,
   key = undefined,
   ...rest
@@ -62,7 +61,6 @@ export const ControlBaseProps = ({
   disabled,
   required,
   name,
-  classNames,
   tooltip,
   ...rest,
 });

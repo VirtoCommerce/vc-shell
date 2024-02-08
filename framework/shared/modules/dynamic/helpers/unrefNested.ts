@@ -1,11 +1,11 @@
-import { unref } from "vue";
+import { ToRefs, unref, UnwrapRef } from "vue";
 
-export function unrefNested<T extends Record<string, unknown>>(field: T) {
-  const unreffedProps = {} as T;
+export function unrefNested<T extends ToRefs<Record<string, unknown>>>(field: T) {
+  const unreffedProps = {} as { [K in keyof T]: UnwrapRef<T[K]> };
 
   if (field) {
     Object.keys(field).forEach((key: keyof T) => {
-      unreffedProps[key] = unref(field[key]);
+      unreffedProps[key] = unref(field[key]) as UnwrapRef<T[typeof key]>;
     });
 
     return unreffedProps;

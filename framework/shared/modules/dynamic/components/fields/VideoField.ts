@@ -2,6 +2,7 @@ import { Component, ExtractPropTypes, h } from "vue";
 import { VideoField } from "../factories";
 import componentProps from "./props";
 import { VideoSchema } from "../../types";
+import { unrefNested } from "../../helpers/unrefNested";
 
 export default {
   name: "VideoField",
@@ -9,11 +10,14 @@ export default {
   setup(props: ExtractPropTypes<typeof componentProps> & { element: VideoSchema }) {
     return () => {
       const field = VideoField({
-        props: {
-          ...props.baseProps,
-          source: props.baseProps.modelValue,
-          size: props.element.size,
-        },
+        props: Object.assign(
+          {},
+          {
+            source: props.baseProps.modelValue,
+            size: props.element.size,
+          },
+          unrefNested(props.baseProps),
+        ),
       });
 
       const render = h(field.component as Component, field.props);

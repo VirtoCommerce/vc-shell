@@ -3,6 +3,7 @@ import { TextareaSchema } from "./../../types/index";
 import { ExtractPropTypes, h, Component } from "vue";
 import componentProps from "./props";
 import ValidationField from "./ValidationField";
+import { unrefNested } from "../../helpers/unrefNested";
 
 export default {
   name: "TextareaField",
@@ -10,11 +11,14 @@ export default {
   setup(props: ExtractPropTypes<typeof componentProps> & { element: TextareaSchema }) {
     return () => {
       const field = TextareaField({
-        props: {
-          ...props.baseProps,
-          currentLanguage: props.currentLocale,
-          clearable: props.element.clearable || false,
-        },
+        props: Object.assign(
+          {},
+          {
+            currentLanguage: props.currentLocale,
+            clearable: props.element.clearable || false,
+          },
+          unrefNested(props.baseProps),
+        ),
       });
 
       const render = h(field.component as Component, field.props);

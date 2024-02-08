@@ -144,7 +144,7 @@ export default <Query>(args: {
       (obj, currC) => {
         obj[currC.value] = Checkbox({
           props: {
-            classNames: "tw-mb-2",
+            class: "tw-mb-2",
             modelValue: computed(() => isItemSelected(currC.value, control.field)),
             "onUpdate:modelValue": (e: boolean) => selectFilterItem(e, currC.value, control.field, control.multiple),
           },
@@ -163,7 +163,7 @@ export default <Query>(args: {
     return InputField({
       props: {
         type: "date",
-        classNames: "tw-mb-3",
+        class: "tw-mb-3",
         label: toValue(computed(() => t(control.label ?? ""))),
         modelValue: computed(() => filter[control.field]),
         "onUpdate:modelValue": (e: unknown) => (filter[control.field] = e),
@@ -208,7 +208,7 @@ export default <Query>(args: {
               if ("component" in item && item.component) {
                 return h(
                   item.component as Component,
-                  { ...item.props, class: item.props.classNames },
+                  { ...item.props, class: item.props.class },
                   "slots" in item && item.slots ? { ...item.slots } : {},
                 );
               }

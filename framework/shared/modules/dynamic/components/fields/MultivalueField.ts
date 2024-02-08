@@ -5,6 +5,7 @@ import componentProps from "./props";
 import ValidationField from "./ValidationField";
 import { MultivalueSchema } from "../../types";
 import { VcMultivalue } from "../../../../../ui/components";
+import { unrefNested } from "../../helpers/unrefNested";
 
 type TScope = Parameters<ComponentSlots<typeof VcMultivalue>["item"]>["0"];
 
@@ -14,15 +15,18 @@ export default {
   setup(props: ExtractPropTypes<typeof componentProps> & { element: MultivalueSchema }) {
     return () => {
       const field = MultivalueField({
-        props: {
-          ...props.baseProps,
-          multivalue: props.element.multivalue,
-          type: props.element.variant,
-          optionValue: props.element.optionValue,
-          optionLabel: props.element.optionLabel,
-          options: props.element.options ? props.bladeContext.scope?.[props.element.options] : undefined,
-          currentLanguage: props.currentLocale,
-        },
+        props: Object.assign(
+          {},
+          {
+            multivalue: props.element.multivalue,
+            type: props.element.variant,
+            optionValue: props.element.optionValue,
+            optionLabel: props.element.optionLabel,
+            options: props.element.options ? props.bladeContext.scope?.[props.element.options] : undefined,
+            currentLanguage: props.currentLocale,
+          },
+          unrefNested(props.baseProps),
+        ),
 
         slots:
           props.element.customTemplate &&

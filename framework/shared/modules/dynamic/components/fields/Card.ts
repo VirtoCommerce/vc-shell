@@ -1,22 +1,33 @@
-import { ExtractPropTypes, h, toValue, VNodeChild, VNodeNormalizedChildren, watch, Component, ref } from "vue";
+import {
+  ExtractPropTypes,
+  h,
+  toValue,
+  VNodeChild,
+  VNodeNormalizedChildren,
+  Component,
+  ref,
+  onMounted,
+  onUpdated,
+} from "vue";
 import { CardCollection } from "../factories";
 import componentProps from "./props";
 import { CardSchema } from "../../types";
 import { nodeBuilder } from "../../helpers/nodeBuilder";
-import { useMounted } from "@vueuse/core";
 import * as _ from "lodash-es";
+import { unrefNested } from "../../helpers/unrefNested";
 
 export default {
   name: "CardEl",
   props: componentProps,
   setup(props: ExtractPropTypes<typeof componentProps> & { element: CardSchema }) {
-    const isMounted = useMounted();
     const hasNoComment = ref(true);
 
-    watch(isMounted, (newVal) => {
-      if (newVal) {
-        hasNoComment.value = hasNoCommentNodes(toValue(props.fields));
-      }
+    onMounted(() => {
+      hasNoComment.value = hasNoCommentNodes(toValue(props.fields));
+    });
+
+    onUpdated(() => {
+      hasNoComment.value = hasNoCommentNodes(toValue(props.fields));
     });
 
     const hasNoCommentNodes = (components: (VNodeChild | VNodeNormalizedChildren)[]): boolean => {
@@ -43,13 +54,16 @@ export default {
 
     return () => {
       const field = CardCollection({
-        props: {
-          ...props.baseProps,
-          header: props.baseProps.label,
-          isCollapsable: props.element.collapsible,
-          isCollapsed: restoreCollapsed(props.element.id),
-          "onState:collapsed": (e: boolean) => handleCollapsed(props.element.id, e),
-        },
+        props: Object.assign(
+          {},
+          {
+            header: toValue(props.baseProps.label),
+            isCollapsable: props.element.collapsible,
+            isCollapsed: restoreCollapsed(props.element.id),
+            "onState:collapsed": (e: boolean) => handleCollapsed(props.element.id, e),
+          },
+          unrefNested(props.baseProps),
+        ),
 
         slots: {
           default: () =>
@@ -59,7 +73,7 @@ export default {
                 class: {
                   "tw-flex": true,
                   "tw-flex-col": true,
-                  "tw-p-4": !!props.element.removePadding === true ? false : true,
+                  "tw-p-4": !props.element.removePadding,
                   "tw-gap-4": true,
                 },
               },

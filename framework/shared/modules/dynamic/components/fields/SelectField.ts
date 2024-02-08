@@ -5,6 +5,7 @@ import componentProps from "./props";
 import ValidationField from "./ValidationField";
 import { SelectSchema } from "../../types";
 import { VcSelect } from "../../../../../ui/components";
+import { unrefNested } from "../../helpers/unrefNested";
 
 type TScope =
   | Parameters<ComponentSlots<typeof VcSelect>["option"]>["0"]
@@ -16,16 +17,19 @@ export default {
   setup(props: ExtractPropTypes<typeof componentProps> & { element: SelectSchema }) {
     return () => {
       const field = SelectField({
-        props: {
-          ...props.baseProps,
-          optionValue: props.element.optionValue,
-          optionLabel: props.element.optionLabel,
-          emitValue: props.element.emitValue,
-          options: props.bladeContext.scope?.[props.element.optionsMethod],
-          currentLanguage: props.currentLocale,
-          clearable: props.element.clearable || false,
-          searchable: props.element.searchable || false,
-        },
+        props: Object.assign(
+          {},
+          {
+            optionValue: props.element.optionValue,
+            optionLabel: props.element.optionLabel,
+            emitValue: props.element.emitValue,
+            options: props.bladeContext.scope?.[props.element.optionsMethod],
+            currentLanguage: props.currentLocale,
+            clearable: props.element.clearable || false,
+            searchable: props.element.searchable || false,
+          },
+          unrefNested(props.baseProps),
+        ),
 
         slots:
           props.element.customTemplate &&

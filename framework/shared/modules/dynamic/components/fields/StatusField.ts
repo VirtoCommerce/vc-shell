@@ -3,6 +3,7 @@ import componentProps from "./props";
 import { StatusSchema } from "../../types";
 import { StatusField } from "../factories";
 import { VcIcon } from "../../../../../ui/components";
+import { unrefNested } from "../../helpers/unrefNested";
 
 export default {
   name: "StatusField",
@@ -25,12 +26,14 @@ export default {
       });
 
       const field = StatusField({
-        props: {
-          ...props.baseProps,
-          variant: props.element.variant,
-          outline: props.element.outline,
-          extend: props.element.extend,
-        },
+        props: Object.assign(
+          {
+            variant: props.element.variant,
+            outline: props.element.outline,
+            extend: props.element.extend,
+          },
+          unrefNested(props.baseProps),
+        ),
         slots: {
           default: () => {
             return h("div", { class: "tw-flex tw-flex-row tw-items-center" }, [

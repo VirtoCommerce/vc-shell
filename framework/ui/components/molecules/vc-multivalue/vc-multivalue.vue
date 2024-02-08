@@ -126,7 +126,6 @@ import { unref, nextTick, ref, computed } from "vue";
 import { vOnClickOutside } from "@vueuse/components";
 import { useFloating, UseFloatingReturn, offset, flip, shift, autoUpdate, MiddlewareState } from "@floating-ui/vue";
 import { generateId } from "../../../../core/utilities";
-import * as _ from "lodash-es";
 
 export interface Props<T> {
   placeholder?: string;

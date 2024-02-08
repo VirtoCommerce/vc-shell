@@ -2,6 +2,7 @@ import { ExtractPropTypes, h, Component } from "vue";
 import { ContentField } from "../factories";
 import componentProps from "./props";
 import { FieldSchema } from "../../types";
+import { unrefNested } from "../../helpers/unrefNested";
 
 export default {
   name: "ContentField",
@@ -9,12 +10,15 @@ export default {
   setup(props: ExtractPropTypes<typeof componentProps> & { element: FieldSchema }) {
     return () => {
       const field = ContentField({
-        props: {
-          ...props.baseProps,
-          type: props.element.variant,
-          copyable: props.element.copyable || false,
-          orientation: props.element.orientation,
-        },
+        props: Object.assign(
+          {},
+          {
+            type: props.element.variant,
+            copyable: props.element.copyable || false,
+            orientation: props.element.orientation,
+          },
+          unrefNested(props.baseProps),
+        ),
       });
 
       const render = h(field.component as Component, field.props);

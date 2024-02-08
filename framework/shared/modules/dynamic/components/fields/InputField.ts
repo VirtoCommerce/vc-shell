@@ -4,6 +4,7 @@ import componentProps from "./props";
 import ValidationField from "./ValidationField";
 import { InputSchema, ControlSchema } from "../../types";
 import { nodeBuilder } from "../../helpers/nodeBuilder";
+import { unrefNested } from "../../helpers/unrefNested";
 
 const slotsMap = {
   append: "append",
@@ -18,12 +19,15 @@ export default {
   setup(props: ExtractPropTypes<typeof componentProps> & { element: InputSchema }) {
     return () => {
       const field = InputField({
-        props: {
-          ...props.baseProps,
-          type: props.element.variant,
-          currentLanguage: props.currentLocale,
-          clearable: props.element.clearable || false,
-        },
+        props: Object.assign(
+          {},
+          {
+            type: props.element.variant,
+            currentLanguage: props.currentLocale,
+            clearable: props.element.clearable || false,
+          },
+          unrefNested(props.baseProps),
+        ),
         slots: Object.entries(slotsMap).reduce(
           (acc, [key, value]) => {
             if (props.element[key as keyof InputSchema]) {

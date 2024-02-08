@@ -5,7 +5,7 @@
 </template>
 
 <script lang="ts" setup>
-import { Ref, computed, inject, withDirectives, h, vShow, nextTick } from "vue";
+import { Ref, computed, inject, withDirectives, h, vShow } from "vue";
 import { RouterView } from "vue-router";
 import { BladeVNode, IParentCallArgs, useBladeNavigation } from "./../../../../../shared";
 import { ErrorInterceptor } from "./../../../error-interceptor";

@@ -119,19 +119,22 @@ export default {
       }
 
       const field = Gallery({
-        props: {
-          ...props.baseProps,
-          loading: imageHandlers.loading,
-          images: props.baseProps.modelValue,
-          multiple: props.element.multiple,
-          variant: props.element.variant,
-          itemActions: props.element.actions,
-          onUpload: imageHandlers.upload,
-          onRemove: imageHandlers.remove,
-          onEdit: onGalleryItemEdit,
-          onSort: editImages,
-          hideAfterUpload: props.element.hideAfterUpload,
-        },
+        props: Object.assign(
+          {},
+          {
+            loading: imageHandlers.loading,
+            images: props.baseProps.modelValue,
+            multiple: props.element.multiple,
+            variant: props.element.variant,
+            itemActions: props.element.actions,
+            onUpload: imageHandlers.upload,
+            onRemove: imageHandlers.remove,
+            onEdit: onGalleryItemEdit,
+            onSort: editImages,
+            hideAfterUpload: props.element.hideAfterUpload,
+          },
+          unrefNested(props.baseProps),
+        ),
       });
 
       return h(field.component as Component, unrefNested(field.props));

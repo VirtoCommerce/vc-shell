@@ -3,6 +3,7 @@ import { Button } from "../factories";
 import componentProps from "./props";
 import { ButtonSchema } from "../../types";
 import { useI18n } from "vue-i18n";
+import { unrefNested } from "../../helpers/unrefNested";
 
 export default {
   name: "ButtonEl",
@@ -11,16 +12,19 @@ export default {
     const { t } = useI18n({ useScope: "global" });
     return () => {
       const field = Button({
-        props: {
-          ...props.baseProps,
-          small: props.element.small,
-          icon: props.element?.icon,
-          iconSize: props.element?.iconSize,
-          text: props.element?.text,
-          onClick: () => {
-            unref(props.bladeContext.scope)?.[props.element.method]();
+        props: Object.assign(
+          {},
+          {
+            small: props.element.small,
+            icon: props.element?.icon,
+            iconSize: props.element?.iconSize,
+            text: props.element?.text,
+            onClick: () => {
+              unref(props.bladeContext.scope)?.[props.element.method]();
+            },
           },
-        },
+          unrefNested(props.baseProps),
+        ),
         slots: {
           default: () => unref(computed(() => t(props.element.content))),
         },

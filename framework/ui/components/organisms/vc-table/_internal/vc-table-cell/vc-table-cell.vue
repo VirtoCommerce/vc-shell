@@ -35,7 +35,7 @@
   </span>
 
   <!-- Date exact cell -->
-  <dvi
+  <div
     v-else-if="cell.type === 'date' || cell.type === 'time' || cell.type === 'date-time'"
     class="tw-text-[#a5a5a5] tw-truncate"
   >
@@ -73,7 +73,7 @@
     >
       N/A
     </div>
-  </dvi>
+  </div>
 
   <!-- Image cell -->
   <template v-else-if="cell.type === 'image'">

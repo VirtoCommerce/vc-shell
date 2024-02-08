@@ -73,7 +73,6 @@ export interface IControlBaseProps {
   disabled?: boolean;
   required?: boolean;
   name?: string;
-  classNames?: string;
   modelValue?: any;
   tooltip?: string;
   "onUpdate:modelValue"?: (event: any) => void;

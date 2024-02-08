@@ -46,8 +46,8 @@ export default {
     watch(
       () => props.baseProps?.modelValue,
       (newVal) => {
-        if (!_.isEqual(newVal, internalModel.value)) {
-          internalModel.value = _.cloneDeep(newVal);
+        if (!_.isEqual(toValue(newVal), internalModel.value)) {
+          internalModel.value = _.cloneDeep(toValue(newVal));
         }
       },
       { deep: true, immediate: true },

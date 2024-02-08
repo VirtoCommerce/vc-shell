@@ -5,6 +5,8 @@ import ValidationField from "./ValidationField";
 import { getModel } from "../../helpers/getters";
 import { setModel } from "../../helpers/setters";
 import { InputCurrencySchema } from "../../types";
+import { unrefNested } from "../../helpers/unrefNested";
+import { toValue } from "@vueuse/core";
 
 // TODO fix disabling when blades is disabled
 export default {
@@ -13,22 +15,25 @@ export default {
   setup(props: ExtractPropTypes<typeof componentProps> & { element: InputCurrencySchema }) {
     return () => {
       const field = InputCurrency({
-        props: {
-          ...props.baseProps,
-          option: getModel(props.element.optionProperty, props.fieldContext ?? {}).value,
-          optionLabel: props.element.optionLabel,
-          optionValue: props.element.optionValue,
-          options: unref(props.bladeContext.scope)?.["currencies"],
-          "onUpdate:option": (e: string | number | Record<string, unknown>) => {
-            setModel({
-              value: e,
-              property: props.element.optionProperty,
-              context: props.fieldContext ?? {},
-              scope: props.bladeContext.scope,
-            });
+        props: Object.assign(
+          {},
+          {
+            option: toValue(getModel(props.element.optionProperty, props.fieldContext ?? {})),
+            optionLabel: props.element.optionLabel,
+            optionValue: props.element.optionValue,
+            options: unref(props.bladeContext.scope)?.["currencies"],
+            "onUpdate:option": (e: string | number | Record<string, unknown>) => {
+              setModel({
+                value: e,
+                property: props.element.optionProperty,
+                context: props.fieldContext ?? {},
+                scope: props.bladeContext.scope,
+              });
+            },
+            clearable: props.element.clearable || false,
           },
-          clearable: props.element.clearable || false,
-        },
+          unrefNested(props.baseProps),
+        ),
       });
       const render = h(field.component as Component, field.props);
 

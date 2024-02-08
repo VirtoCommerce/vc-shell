@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { RouteRecordNormalized, Router } from "vue-router";
+import { Router } from "vue-router";
 import {
   AppContext,
   Component,

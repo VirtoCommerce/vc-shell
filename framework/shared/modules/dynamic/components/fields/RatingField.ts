@@ -2,6 +2,7 @@ import { Component, ExtractPropTypes, h } from "vue";
 import { Rating } from "../factories";
 import componentProps from "./props";
 import { RatingSchema } from "../../types";
+import { unrefNested } from "../../helpers/unrefNested";
 
 export default {
   name: "RatingEl",
@@ -9,10 +10,13 @@ export default {
   setup(props: ExtractPropTypes<typeof componentProps> & { element: RatingSchema }) {
     return () => {
       const field = Rating({
-        props: {
-          ...props.baseProps,
-          variant: props.element.type,
-        },
+        props: Object.assign(
+          {},
+          {
+            variant: props.element.type,
+          },
+          unrefNested(props.baseProps),
+        ),
       });
 
       return h(field.component as Component, field.props);

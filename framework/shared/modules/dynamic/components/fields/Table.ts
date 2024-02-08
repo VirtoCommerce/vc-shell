@@ -5,6 +5,7 @@ import { Table } from "../factories";
 import componentProps from "./props";
 import { TableSchema } from "../../types";
 import { useI18n } from "vue-i18n";
+import { unrefNested } from "../../helpers/unrefNested";
 
 type TableItemData = Record<string, any>;
 
@@ -17,18 +18,21 @@ export default {
 
     return () => {
       const field = Table({
-        props: {
-          ...props.baseProps,
-          header: !!props.element.header,
-          footer: !!props.element.footer,
-          multiselect: !!props.element.multiselect,
-          columns: props.element.columns?.map((col) => ({ ...col, title: computed(() => t(col.title)) })),
-          items: props.baseProps.modelValue ?? [],
-          stateKey: props.element.id,
-          class: {
-            "!tw-flex-auto": true,
+        props: Object.assign(
+          {},
+          {
+            header: !!props.element.header,
+            footer: !!props.element.footer,
+            multiselect: !!props.element.multiselect,
+            columns: props.element.columns?.map((col) => ({ ...col, title: computed(() => t(col.title)) })),
+            items: unrefNested(props.baseProps).modelValue ?? [],
+            stateKey: props.element.id,
+            class: {
+              "!tw-flex-auto": true,
+            },
           },
-        },
+          unrefNested(props.baseProps),
+        ),
         slots: {
           ...Object.entries(tableTemplates.templateOverrideComponents).reduce(
             (obj, [key, value], index) => {

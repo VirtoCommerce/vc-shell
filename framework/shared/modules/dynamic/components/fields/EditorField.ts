@@ -2,6 +2,7 @@ import { h, ExtractPropTypes, Component, unref } from "vue";
 import { EditorField } from "../factories";
 import componentProps from "./props";
 import ValidationField from "./ValidationField";
+import { unrefNested } from "../../helpers/unrefNested";
 
 export default {
   name: "EditorField",
@@ -9,11 +10,14 @@ export default {
   setup(props: ExtractPropTypes<typeof componentProps>) {
     return () => {
       const field = EditorField({
-        props: {
-          ...props.baseProps,
-          currentLanguage: props.currentLocale,
-          assetsFolder: unref(props.formData).id || unref(props.formData).categoryId,
-        },
+        props: Object.assign(
+          {},
+          {
+            currentLanguage: props.currentLocale,
+            assetsFolder: unref(props.formData).id || unref(props.formData).categoryId,
+          },
+          unrefNested(props.baseProps),
+        ),
       });
 
       const render = h(field.component as Component, field.props);

@@ -1,5 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { PropType, ref, toRefs, watch, ExtractPropTypes, h, VNode, defineComponent, UnwrapNestedRefs } from "vue";
+import {
+  PropType,
+  ToRefs,
+  toRefs,
+  watch,
+  ExtractPropTypes,
+  h,
+  VNode,
+  defineComponent,
+  UnwrapNestedRefs,
+  reactive,
+} from "vue";
 import { ControlSchema } from "../types";
 import * as _ from "lodash-es";
 import { DetailsBladeContext } from "../factories/types";
@@ -7,6 +18,7 @@ import { nodeBuilder } from "../helpers/nodeBuilder";
 import { visibilityHandler } from "../helpers/visibilityHandler";
 import { toValue } from "@vueuse/core";
 import { safeIn } from "../helpers/safeIn";
+import { unrefNested } from "../helpers/unrefNested";
 
 const schemeRenderProps = {
   context: {
@@ -35,30 +47,22 @@ export default defineComponent({
   emits: ["update:modelValue"],
   setup(props: ExtractPropTypes<typeof schemeRenderProps>, ctx) {
     const { currentLocale } = toRefs(props);
-    const internalFormData = ref();
+    const internalFormData = reactive({});
 
     watch(
       () => props.modelValue,
       (newVal) => {
-        if (!_.isEqual(internalFormData.value, newVal)) {
-          internalFormData.value = newVal;
+        if (!_.isEqual(internalFormData, newVal)) {
+          Object.assign(internalFormData, toRefs(newVal));
         }
       },
       { deep: true, immediate: true },
     );
 
-    watch(
-      internalFormData,
-      (newVal) => {
-        if (!_.isEqual(newVal, props.modelValue)) {
-          emitChange(newVal);
-        }
-      },
-      { deep: true },
-    );
-
-    function emitChange(newVal: unknown) {
-      ctx.emit("update:modelValue", newVal);
+    function updateFormData(newVal: ToRefs<unknown>) {
+      if (!_.isEqual(newVal, internalFormData)) {
+        ctx.emit("update:modelValue", unrefNested(newVal));
+      }
     }
 
     return () =>
@@ -83,6 +87,7 @@ export default defineComponent({
               bladeContext: props.context,
               currentLocale: currentLocale,
               formData: internalFormData,
+              updateFormData,
             }),
           ];
         }, [] as VNode[]),

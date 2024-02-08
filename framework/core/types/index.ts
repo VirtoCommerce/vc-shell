@@ -1,5 +1,4 @@
-import { permissions } from "./../plugins/permissions/index";
-import { Component, ComponentPublicInstance, ComputedRef, Ref } from "vue";
+import { Component, ComputedRef, Ref } from "vue";
 import { BladeInstanceConstructor, CoreBladeExposed, ExtractedBladeOptions } from "./../../shared";
 import { ComponentPublicInstanceConstructor } from "../../shared/utilities/vueUtils";
 

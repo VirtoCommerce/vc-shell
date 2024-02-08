@@ -1,12 +1,12 @@
-import { ComputedRef, MaybeRef, PropType, UnwrapNestedRefs, VNode } from "vue";
+import { ComputedRef, PropType, ToRefs, UnwrapNestedRefs, VNode } from "vue";
 import { DetailsBladeContext } from "../../factories";
 import { IControlBaseProps } from "../../types/models";
 import { ControlSchema } from "../../types";
 
 export default {
   baseProps: {
-    type: Object as PropType<UnwrapNestedRefs<IControlBaseProps>>,
-    default: () => ({}) as IControlBaseProps,
+    type: Object as PropType<ToRefs<IControlBaseProps>>,
+    default: () => ({}) as ToRefs<IControlBaseProps>,
   },
   element: {
     type: Object as PropType<ControlSchema>,
@@ -21,15 +21,11 @@ export default {
     default: () => ({}) as ComputedRef<VNode[][]>,
   },
   formData: {
-    type: Object as PropType<MaybeRef<Record<string, unknown>>>,
-    default: () => ({}) as MaybeRef<Record<string, unknown>>,
+    type: Object as PropType<ToRefs<Record<string, unknown>>>,
+    default: () => ({}) as ToRefs<Record<string, unknown>>,
   },
   fieldContext: {
     type: Object,
-  },
-  nodeBuilder: {
-    type: Function,
-    default: () => ({}),
   },
   currentLocale: {
     type: String,
@@ -39,9 +35,5 @@ export default {
   },
   rows: {
     type: Number,
-  },
-  onSetModelData: {
-    type: Function,
-    default: () => ({}),
   },
 };

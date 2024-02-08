@@ -1,3 +1,12 @@
+## [1.0.160](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.159...v1.0.160) (2024-02-08)
+
+
+### Bug Fixes
+
+* checkbox locale in offers, disable product select in offer ([6c532cc](https://github.com/VirtoCommerce/vendor-portal/commit/6c532cc3ddb6f1dd6981cf3c83c7ed95aabbd4e9))
+
+
+
 ## [1.0.159](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.158...v1.0.159) (2024-02-07)
 
 

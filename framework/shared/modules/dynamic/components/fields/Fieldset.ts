@@ -3,6 +3,7 @@ import componentProps from "./props";
 import * as _ from "lodash-es";
 import { VcButton, VcCol, VcRow } from "../../../../../ui/components";
 import { FieldsetSchema } from "../../types";
+import { unrefNested } from "../../helpers/unrefNested";
 
 export default {
   name: "Fieldset",
@@ -19,7 +20,7 @@ export default {
         return h(
           "div",
           {
-            class: "tw-flex tw-row tw-relative",
+            class: `tw-flex tw-row tw-relative ${unrefNested(props.baseProps).class}`,
             key: `fieldset-${index}`,
           },
           [

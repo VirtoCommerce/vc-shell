@@ -7,7 +7,6 @@ import {
   unref,
   Component,
   onMounted,
-  reactive,
   RendererElement,
   RendererNode,
   VNode,
@@ -23,7 +22,6 @@ import { VcButton, VcCol, VcContainer, VcRow } from "../../../../../ui/component
 import { createUnrefFn } from "@vueuse/core";
 import { useI18n } from "vue-i18n";
 import { FilterBase, FilterCheckbox, FilterDateInput } from "../../types";
-import { onBeforeUnmount } from "vue";
 
 interface Control {
   title: string;
@@ -247,7 +245,7 @@ export default <Query>(args: {
   }
 
   async function reset() {
-    Object.keys(filter).forEach((key: string) => (filter.value[key] = undefined));
+    Object.keys(filter.value).forEach((key: string) => (filter.value[key] = undefined));
 
     appliedFilter.value = {};
   }

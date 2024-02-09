@@ -1,3 +1,4 @@
+import { useI18n } from "vue-i18n";
 import { Component, ExtractPropTypes, computed, h, unref } from "vue";
 import componentProps from "./props";
 import { StatusSchema } from "../../types";
@@ -9,6 +10,8 @@ export default {
   name: "StatusField",
   props: componentProps,
   setup(props: ExtractPropTypes<typeof componentProps> & { element: StatusSchema }) {
+    const { t } = useI18n({ useScope: "global" });
+
     return () => {
       const slotContent = computed(() => {
         if (props.element.content && typeof props.element.content === "string") {
@@ -46,7 +49,10 @@ export default {
                 variant: props.element.iconVariant,
                 class: "tw-mr-3",
               }),
-              h("div", [h("div", { class: "tw-font-bold" }, props.element.title), h("div", slotContent.value)]),
+              h("div", [
+                h("div", { class: "tw-font-bold" }, computed(() => t(props.element.title ?? "")).value),
+                h("div", slotContent.value),
+              ]),
             ]);
           },
         },

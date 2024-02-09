@@ -138,7 +138,6 @@ export interface SettingsBase {
    * Collapsed blade width in percentage
    * @default "50%"
    */
-  // TODO Add to documentation
   width?: `${number}%`;
 }
 
@@ -427,7 +426,6 @@ export interface VideoSchema
  * Data field schema interface.
  * @interface
  */
-// TODO update documentation
 export interface FieldSchema
   extends Pick<SchemaBase, "id" | "property" | "label" | "visibility" | "tooltip" | "horizontalSeparator"> {
   /**
@@ -437,7 +435,7 @@ export interface FieldSchema
   component: "vc-field";
   /**
    * Field variant.
-   * @type {"text" | "normal" | "date" | "date-ago" | "link"}
+   * @type {"date-ago" | "date" | "link" | "text" | "email"}
    */
   variant?: ComponentProps<typeof VcField>["type"];
   /**
@@ -454,6 +452,7 @@ export interface FieldSchema
   /**
    * Field columns aspect ratio.
    * @description Uses CSS flex-grow property.
+   * @default [1,1]
    * @type {[number, number]}
    */
   aspectRatio?: [number, number];
@@ -769,7 +768,6 @@ export interface FieldsetSchema
  * Switch schema interface.
  * @interface
  */
-// TODO add to documentation
 export interface SwitchSchema extends Omit<SchemaBase, "placeholder" | "multilanguage"> {
   /**
    * Component type for switch.

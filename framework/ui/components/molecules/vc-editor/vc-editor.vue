@@ -27,6 +27,7 @@
     <!-- Editor field -->
     <QuillEditor
       :key="`${disabled}`"
+      ref="quillRef"
       v-model:content="content"
       class="quill-editor tw-border tw-border-solid tw-border-[color:var(--editor-border-color)] tw-rounded-b-[var(--editor-border-radius)] tw-h-[200px]"
       :class="{ 'tw-bg-[#fafafa] tw-text-[#424242] tw-cursor-default': disabled }"
@@ -50,9 +51,9 @@
 </template>
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
-import { QuillEditor } from "@vueup/vue-quill";
+import { QuillEditor, Quill } from "@vueup/vue-quill";
 import "@vueup/vue-quill/dist/vue-quill.snow.css";
-import { ref, unref, watch, onMounted, onUpdated } from "vue";
+import { ref, unref, watch, onMounted, onUpdated, Ref } from "vue";
 import ImageUploader from "quill-image-uploader";
 import { VcLabel, VcHint } from "./../../";
 
@@ -82,6 +83,8 @@ defineSlots<{
 }>();
 
 const content = ref();
+const quillRef = ref<Quill | null>(null);
+
 const toolbar = {
   container: [
     { header: 1 },
@@ -131,6 +134,10 @@ onUpdated(() => {
 watch(
   () => props.modelValue,
   (value) => {
+    if (value === "") {
+      quillRef.value?.setText(value);
+      return;
+    }
     content.value = unref(value);
   },
   { immediate: true },

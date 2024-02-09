@@ -1,3 +1,12 @@
+## [1.0.161](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.160...v1.0.161) (2024-02-09)
+
+
+### Features
+
+* update localization files and components ([de7ed3d](https://github.com/VirtoCommerce/vendor-portal/commit/de7ed3d5fd01bf8f6d19a4fbae89f2d79cb5b1f1))
+
+
+
 ## [1.0.160](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.159...v1.0.160) (2024-02-08)
 
 

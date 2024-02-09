@@ -130,21 +130,6 @@ export const useProductDetails = (args: {
         descriptions: details.descriptions,
         publishedProductDataId: details.publishedProductDataId,
         stagedProductDataId: details.stagedProductDataId,
-        description: computed({
-          get() {
-            return useArrayFind(details.descriptions ?? [], (x) => x.languageCode == currentLocale.value).value
-              ?.content;
-          },
-          set(value) {
-            const foundItem = useArrayFind(
-              details.descriptions ?? [],
-              (x) => x.languageCode == currentLocale.value,
-            ).value;
-            if (foundItem) {
-              foundItem.content = value;
-            }
-          },
-        }),
         productType: details.productData?.productType,
         status: details.status,
       }) as ISellerProduct & IProductDetails;
@@ -287,9 +272,10 @@ export const useProductDetails = (args: {
       saveChanges: {
         disabled: computed(() => {
           return (
-            !validationState.value.validated ||
-            (args.props.param && !(item.value?.canBeModified || validationState.value.validated)) ||
-            (!args.props.param && !validationState.value.validated)
+            !validationState.value.modified ||
+            !validationState.value.valid ||
+            (args.props.param && !(item.value?.canBeModified || validationState.value.modified)) ||
+            (!args.props.param && !validationState.value.modified)
           );
         }),
       },
@@ -343,6 +329,21 @@ export const useProductDetails = (args: {
         },
       },
     },
+    description: computed({
+      get() {
+        return useArrayFind(item.value?.descriptions ?? [], (x) => x.languageCode == currentLocale.value).value
+          ?.content;
+      },
+      set(value) {
+        const foundItem = useArrayFind(
+          item.value?.descriptions ?? [],
+          (x) => x.languageCode == currentLocale.value,
+        ).value;
+        if (foundItem) {
+          foundItem.content = value;
+        }
+      },
+    }),
   });
 
   watch(

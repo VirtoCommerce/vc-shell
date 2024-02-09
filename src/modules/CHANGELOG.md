@@ -1,3 +1,12 @@
+## [1.0.165](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.164...v1.0.165) (2024-02-09)
+
+
+### Bug Fixes
+
+* product description moved to scope ([0cd3f2c](https://github.com/VirtoCommerce/vendor-portal/commit/0cd3f2c7448fb71092e339628aa64201f4224cf1))
+
+
+
 ## [1.0.164](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.163...v1.0.164) (2024-02-09)
 
 

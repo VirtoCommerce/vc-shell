@@ -1,6 +1,6 @@
 {
   "name": "app-vendor-portal",
-  "version": "1.0.164",
+  "version": "1.0.165",
   "private": true,
   "scripts": {
     "postinstall": "husky install",
@@ -68,8 +68,8 @@
     "@fortawesome/fontawesome-free": "^5.15.3",
     "@vc-shell/config-generator": "^1.0.164",
     "@vc-shell/framework": "^1.0.164",
-    "@vcmp-vendor-portal/api": "^1.0.164",
-    "@vcmp-vendor-portal/modules": "^1.0.164",
+    "@vcmp-vendor-portal/api": "^1.0.165",
+    "@vcmp-vendor-portal/modules": "^1.0.165",
     "@virtocommerce/import-app": "^1.0.149",
     "@vueuse/core": "^10.7.1",
     "@vueuse/integrations": "^10.7.1",

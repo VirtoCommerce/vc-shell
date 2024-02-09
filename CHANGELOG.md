@@ -1,3 +1,12 @@
+## [1.0.159](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.158...v1.0.159) (2024-02-09)
+
+
+### Bug Fixes
+
+* **framework:** blade navigation bug and update dynamic filter checkbox data structure ([ae97351](https://github.com/VirtoCommerce/vc-shell/commit/ae97351548d65b9f1eca44fc54e13495446ecf12))
+
+
+
 ## [1.0.158](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.157...v1.0.158) (2024-02-08)
 
 

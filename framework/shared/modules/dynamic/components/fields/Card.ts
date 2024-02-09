@@ -63,6 +63,9 @@ export default {
             "onState:collapsed": (e: boolean) => handleCollapsed(props.element.id, e),
           },
           unrefNested(props.baseProps),
+          {
+            class: unrefNested(props.baseProps).classNames ?? "",
+          },
         ),
 
         slots: {

@@ -18,6 +18,9 @@ export default {
             orientation: props.element.orientation,
           },
           unrefNested(props.baseProps),
+          {
+            class: unrefNested(props.baseProps).classNames ?? "",
+          },
         ),
       });
 

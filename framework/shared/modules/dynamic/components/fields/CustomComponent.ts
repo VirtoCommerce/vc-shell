@@ -1,6 +1,7 @@
 import { CustomComponentSchema } from "./../../types";
 import { ExtractPropTypes, resolveComponent, h } from "vue";
 import componentProps from "./props";
+import { unrefNested } from "../../helpers/unrefNested";
 
 export default {
   name: "CustomComponentRenderer",
@@ -10,9 +11,18 @@ export default {
       const component = resolveComponent(props.element?.name);
 
       return typeof component === "object"
-        ? h(component, {
-            context: props.bladeContext,
-          })
+        ? h(
+            component,
+            Object.assign(
+              {},
+              {
+                context: props.bladeContext,
+              },
+              {
+                class: unrefNested(props.baseProps).classNames ?? "",
+              },
+            ),
+          )
         : null;
     };
   },

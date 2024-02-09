@@ -22,6 +22,9 @@ export default {
             background: props.element.background,
           },
           unrefNested(props.baseProps),
+          {
+            class: unrefNested(props.baseProps).classNames ?? "",
+          },
         ),
       });
 

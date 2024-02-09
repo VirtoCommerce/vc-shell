@@ -29,6 +29,9 @@ export default {
             searchable: props.element.searchable || false,
           },
           unrefNested(props.baseProps),
+          {
+            class: unrefNested(props.baseProps).classNames ?? "",
+          },
         ),
 
         slots:

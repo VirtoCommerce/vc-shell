@@ -22,6 +22,9 @@ export default {
             falseValue: props.element.falseValue,
           },
           unrefNested(props.baseProps),
+          {
+            class: unrefNested(props.baseProps).classNames ?? "",
+          },
         ),
         slots: {
           default: () =>

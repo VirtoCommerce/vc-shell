@@ -24,6 +24,9 @@ export default {
             },
           },
           unrefNested(props.baseProps),
+          {
+            class: unrefNested(props.baseProps).classNames ?? "",
+          },
         ),
         slots: {
           default: () => unref(computed(() => t(props.element.content))),

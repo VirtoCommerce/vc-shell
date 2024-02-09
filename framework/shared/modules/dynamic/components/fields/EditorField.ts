@@ -17,6 +17,9 @@ export default {
             assetsFolder: unref(props.formData).id || unref(props.formData).categoryId,
           },
           unrefNested(props.baseProps),
+          {
+            class: unrefNested(props.baseProps).classNames ?? "",
+          },
         ),
       });
 

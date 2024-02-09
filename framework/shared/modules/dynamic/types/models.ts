@@ -77,7 +77,7 @@ export interface IControlBaseProps {
   tooltip?: string;
   "onUpdate:modelValue"?: (event: any) => void;
   multilanguage?: boolean;
-  class?: string;
+  classNames?: string;
 }
 
 export type WithRequiredProperty<Type, Key extends keyof Type> = Type & {

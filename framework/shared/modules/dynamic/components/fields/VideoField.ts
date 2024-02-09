@@ -17,6 +17,9 @@ export default {
             size: props.element.size,
           },
           unrefNested(props.baseProps),
+          {
+            class: unrefNested(props.baseProps).classNames ?? "",
+          },
         ),
       });
 

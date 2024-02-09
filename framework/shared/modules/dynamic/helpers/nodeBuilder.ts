@@ -118,7 +118,7 @@ function nodeBuilder<
     "onUpdate:modelValue": onUpdateModelValue,
     tooltip: computed(() => (tooltip ? t(tooltip) : undefined)),
     multilanguage,
-    class:
+    classNames:
       "horizontalSeparator" in controlSchema && controlSchema.horizontalSeparator
         ? "tw-border-b tw-border-solid tw-border-b-[#e5e5e5] tw-mb-[5px] tw-pb-[21px]"
         : "",

@@ -52,6 +52,7 @@ export const ControlBaseProps = ({
   name = undefined,
   tooltip = undefined,
   key = undefined,
+  classNames = undefined,
   ...rest
 }: IControlBaseProps): IControlBaseProps => ({
   key,
@@ -62,6 +63,7 @@ export const ControlBaseProps = ({
   required,
   name,
   tooltip,
+  classNames,
   ...rest,
 });
 

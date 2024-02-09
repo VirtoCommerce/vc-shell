@@ -27,9 +27,7 @@ export default {
             columns: props.element.columns?.map((col) => ({ ...col, title: computed(() => t(col.title)) })),
             items: unrefNested(props.baseProps).modelValue ?? [],
             stateKey: props.element.id,
-            class: {
-              "!tw-flex-auto": true,
-            },
+            class: `!tw-flex-auto ${unrefNested(props.baseProps).classNames ?? ""}`,
           },
           unrefNested(props.baseProps),
         ),

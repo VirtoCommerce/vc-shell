@@ -18,6 +18,9 @@ export default {
             clearable: props.element.clearable || false,
           },
           unrefNested(props.baseProps),
+          {
+            class: unrefNested(props.baseProps).classNames ?? "",
+          },
         ),
       });
 

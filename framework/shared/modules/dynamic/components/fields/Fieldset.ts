@@ -20,7 +20,7 @@ export default {
         return h(
           "div",
           {
-            class: `tw-flex tw-row tw-relative ${unrefNested(props.baseProps).class}`,
+            class: `tw-flex tw-row tw-relative ${unrefNested(props.baseProps).classNames ?? ""}`,
             key: `fieldset-${index}`,
           },
           [

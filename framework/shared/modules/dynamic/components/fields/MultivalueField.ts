@@ -26,6 +26,9 @@ export default {
             currentLanguage: props.currentLocale,
           },
           unrefNested(props.baseProps),
+          {
+            class: unrefNested(props.baseProps).classNames ?? "",
+          },
         ),
 
         slots:

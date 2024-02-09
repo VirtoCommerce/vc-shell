@@ -134,6 +134,9 @@ export default {
             hideAfterUpload: props.element.hideAfterUpload,
           },
           unrefNested(props.baseProps),
+          {
+            class: unrefNested(props.baseProps).classNames ?? "",
+          },
         ),
       });
 

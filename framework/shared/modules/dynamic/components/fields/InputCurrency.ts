@@ -33,6 +33,9 @@ export default {
             clearable: props.element.clearable || false,
           },
           unrefNested(props.baseProps),
+          {
+            class: unrefNested(props.baseProps).classNames ?? "",
+          },
         ),
       });
       const render = h(field.component as Component, field.props);

@@ -122,7 +122,14 @@ export default {
 
     return () => {
       return properties && properties.length
-        ? properties?.map((field) => h(field.component as Component, unrefNested(field.props)))
+        ? properties?.map((field) =>
+            h(
+              field.component as Component,
+              Object.assign(unrefNested(field.props), {
+                class: unrefNested(props.baseProps).classNames ?? "",
+              }),
+            ),
+          )
         : null;
     };
   },

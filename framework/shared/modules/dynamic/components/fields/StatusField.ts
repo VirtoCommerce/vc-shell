@@ -33,6 +33,9 @@ export default {
             extend: props.element.extend,
           },
           unrefNested(props.baseProps),
+          {
+            class: unrefNested(props.baseProps).classNames ?? "",
+          },
         ),
         slots: {
           default: () => {

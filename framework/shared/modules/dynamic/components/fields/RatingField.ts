@@ -16,6 +16,9 @@ export default {
             variant: props.element.type,
           },
           unrefNested(props.baseProps),
+          {
+            class: unrefNested(props.baseProps).classNames ?? "",
+          },
         ),
       });
 

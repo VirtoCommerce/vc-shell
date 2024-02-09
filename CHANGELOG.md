@@ -1,3 +1,12 @@
+## [1.0.164](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.163...v1.0.164) (2024-02-09)
+
+
+### Bug Fixes
+
+* refactor order details form structure ([92ebd06](https://github.com/VirtoCommerce/vendor-portal/commit/92ebd06fa2f8f0af926586411c6c2370e8d4f6a3))
+
+
+
 ## [1.0.163](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.162...v1.0.163) (2024-02-09)
 
 

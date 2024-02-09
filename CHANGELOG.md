@@ -1,3 +1,12 @@
+## [1.0.160](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.159...v1.0.160) (2024-02-09)
+
+
+### Bug Fixes
+
+* filter reset ([49aec1b](https://github.com/VirtoCommerce/vc-shell/commit/49aec1b7ee488d86f0248a10e933fd132bf6ec10))
+
+
+
 ## [1.0.159](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.158...v1.0.159) (2024-02-09)
 
 

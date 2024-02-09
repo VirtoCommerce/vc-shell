@@ -1,7 +1,7 @@
 {
   "name": "@vc-shell/config-generator",
   "description": "Generate Vite configurations",
-  "version": "1.0.159",
+  "version": "1.0.160",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -19,7 +19,7 @@
     "vue": "^3.4.15"
   },
   "devDependencies": {
-    "@vc-shell/ts-config": "^1.0.159",
+    "@vc-shell/ts-config": "^1.0.160",
     "tsc-alias": "^1.8.8",
     "typescript": "^5.3.3"
   },

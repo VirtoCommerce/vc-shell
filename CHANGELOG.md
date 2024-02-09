@@ -1,3 +1,12 @@
+## [1.0.161](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.160...v1.0.161) (2024-02-09)
+
+
+### Bug Fixes
+
+* filter reset condition, return reactive filter ([68af932](https://github.com/VirtoCommerce/vc-shell/commit/68af9323e0d3d2edc58560487e8c66a817b34ceb))
+
+
+
 ## [1.0.160](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.159...v1.0.160) (2024-02-09)
 
 

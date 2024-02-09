@@ -912,7 +912,9 @@ export type FilterCheckbox = {
   id: string;
   field: string;
   multiple?: boolean;
-  data?: { value: string; displayName: string }[];
+  data: string;
+  optionValue: string;
+  optionLabel: string;
   component: CheckboxSchema["component"];
 };
 

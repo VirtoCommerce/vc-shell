@@ -44,11 +44,6 @@ const render = () => {
                       closable: index >= 1,
                       expandable: quantity.value > 1,
                       expanded: index === quantity.value - 1,
-                      "onUpdate:expanded": (value: boolean) => {
-                        if (value) {
-                          closeBlade(index + 1);
-                        }
-                      },
                       "onClose:blade": () => closeBlade(index),
                       "onParent:call": (args: IParentCallArgs) => {
                         const instance = blades.value?.[index - 1]?.props?.navigation?.instance.value;

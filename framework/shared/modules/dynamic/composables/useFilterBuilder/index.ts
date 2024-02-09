@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   h,
   ref,
@@ -13,6 +14,7 @@ import {
   ComputedRef,
   readonly,
   toValue,
+  Ref,
 } from "vue";
 import * as _ from "lodash-es";
 import { Checkbox, InputField } from "../../components/factories";
@@ -20,27 +22,14 @@ import { AsyncAction } from "../../../../../core/composables";
 import { VcButton, VcCol, VcContainer, VcRow } from "../../../../../ui/components";
 import { createUnrefFn } from "@vueuse/core";
 import { useI18n } from "vue-i18n";
-
-interface RawControl {
-  field: string;
-  component: string;
-  label?: string;
-  multiple?: boolean;
-  data?: { value: string; displayName: string }[];
-}
+import { FilterBase, FilterCheckbox, FilterDateInput } from "../../types";
+import { onBeforeUnmount } from "vue";
 
 interface Control {
   title: string;
   fields: {
     [x: string]: ReturnType<typeof Checkbox> | ReturnType<typeof InputField>;
   };
-}
-
-interface Data {
-  columns: {
-    title: string;
-    controls: RawControl[];
-  }[];
 }
 
 export interface UseFilterBuilder {
@@ -62,15 +51,16 @@ export interface UseFilterBuilder {
 }
 
 export default <Query>(args: {
-  data: Data | undefined;
+  data: FilterBase | undefined;
   query: MaybeRef<Query>;
   load: AsyncAction<Query>;
+  scope: ComputedRef<Record<string, any>> | undefined;
 }): UseFilterBuilder => {
   const _search = args.load;
   const _data = args.data;
 
   const isFilterVisible = ref(true);
-  const filter: Record<string, unknown> = reactive({});
+  const filter: Ref<Record<string, unknown>> = ref({});
   const { t } = useI18n({ useScope: "global" });
 
   const controls = ref<Control[]>([]);
@@ -86,7 +76,7 @@ export default <Query>(args: {
   onMounted(() => createFilterControls());
 
   function isItemSelected(value: string, field: string) {
-    const item = filter[field];
+    const item = filter.value[field];
     if (Array.isArray(item) && typeof item !== "string") {
       return item.some((x) => x === value);
     } else {
@@ -96,13 +86,13 @@ export default <Query>(args: {
 
   function selectFilterItem(e: boolean, value: string, field: string, multiple = true) {
     if (multiple) {
-      filter[field] = e
-        ? [...((filter[field] as string[]) || []), value]
-        : ((filter[field] as string[]) || []).filter((x) => x !== value);
+      filter.value[field] = e
+        ? [...((filter.value[field] as string[]) || []), value]
+        : ((filter.value[field] as string[]) || []).filter((x) => x !== value);
 
-      if (!(filter[field] as string[]).length) filter[field] = undefined;
+      if (!(filter.value[field] as string[]).length) filter.value[field] = undefined;
     } else {
-      filter[field] = e ? value : undefined;
+      filter.value[field] = e ? value : undefined;
     }
   }
 
@@ -116,7 +106,8 @@ export default <Query>(args: {
         (obj, control) => {
           if (control.component === "vc-checkbox") {
             const filterData = control.data;
-            const fields = createCheckboxFromData(filterData, control);
+            const filterDataFromScope = unref(args.scope)?.[filterData] ?? [];
+            const fields = createCheckboxFromData(filterDataFromScope, control);
 
             if (fields) {
               obj = fields;
@@ -138,18 +129,20 @@ export default <Query>(args: {
     });
   }
 
-  function createCheckboxFromData(data: RawControl["data"], control: RawControl) {
-    if (!(data && data.length)) return;
-    return data.reduce(
+  // TODO add to documentation support of dynamic data for filter
+  function createCheckboxFromData(data: MaybeRef<Record<string, string>[]>, control: FilterCheckbox) {
+    if (!(toValue(data) && toValue(data).length)) return;
+    return toValue(data).reduce(
       (obj, currC) => {
-        obj[currC.value] = Checkbox({
+        obj[currC[control.optionValue]] = Checkbox({
           props: {
             class: "tw-mb-2",
-            modelValue: computed(() => isItemSelected(currC.value, control.field)),
-            "onUpdate:modelValue": (e: boolean) => selectFilterItem(e, currC.value, control.field, control.multiple),
+            modelValue: computed(() => isItemSelected(currC[control.optionValue], control.field)),
+            "onUpdate:modelValue": (e: boolean) =>
+              selectFilterItem(e, currC[control.optionValue], control.field, control.multiple),
           },
           slots: {
-            default: () => unref(computed(() => t(currC.displayName))),
+            default: () => toValue(currC[control.optionLabel]),
           },
         });
 
@@ -159,14 +152,14 @@ export default <Query>(args: {
     );
   }
 
-  function createInput(control: RawControl) {
+  function createInput(control: FilterDateInput) {
     return InputField({
       props: {
         type: "date",
         class: "tw-mb-3",
         label: toValue(computed(() => t(control.label ?? ""))),
-        modelValue: computed(() => filter[control.field]),
-        "onUpdate:modelValue": (e: unknown) => (filter[control.field] = e),
+        modelValue: computed(() => filter.value[control.field]),
+        "onUpdate:modelValue": (e: unknown) => (filter.value[control.field] = e),
       },
     });
   }
@@ -175,10 +168,10 @@ export default <Query>(args: {
     filterHandlerFn();
     await _search({
       ...unref(args.query),
-      ...filter,
+      ...filter.value,
     });
     appliedFilter.value = {
-      ...filter,
+      ...filter.value,
     };
   }
 
@@ -189,62 +182,72 @@ export default <Query>(args: {
 
     await _search({
       ...unref(args.query),
-      ...filter,
+      ...filter.value,
     });
   }
 
   function render(slotMethods: { close: () => void }) {
     if (_.isEmpty(controls.value)) return;
-    return h(VcContainer, () => [
-      h(VcRow, () =>
-        Object.values(controls.value).map(({ title, fields }) =>
-          h(VcCol, { class: "tw-p-2" }, () => [
-            h(
-              "div",
-              { class: "tw-mb-4 tw-text-[#a1c0d4] tw-font-bold tw-text-[17px]" },
-              unref(computed(() => t(title))),
-            ),
-            Object.values(fields).map((item) => {
-              if ("component" in item && item.component) {
-                return h(
-                  item.component as Component,
-                  { ...item.props, class: item.props.class },
-                  "slots" in item && item.slots ? { ...item.slots } : {},
-                );
-              }
-            }),
-          ]),
+    return h(
+      VcContainer,
+      {
+        onVnodeBeforeMount: () => {
+          if (Object.keys(appliedFilter.value).length) {
+            filter.value = _.cloneDeep(appliedFilter.value);
+          }
+        },
+      },
+      () => [
+        h(VcRow, () =>
+          Object.values(controls.value).map(({ title, fields }) =>
+            h(VcCol, { class: "tw-p-2" }, () => [
+              h(
+                "div",
+                { class: "tw-mb-4 tw-text-[#a1c0d4] tw-font-bold tw-text-[17px]" },
+                unref(computed(() => t(title))),
+              ),
+              Object.values(fields).map((item) => {
+                if ("component" in item && item.component) {
+                  return h(
+                    item.component as Component,
+                    { ...item.props, class: item.props.class },
+                    "slots" in item && item.slots ? { ...item.slots } : {},
+                  );
+                }
+              }),
+            ]),
+          ),
         ),
-      ),
-      h(VcRow, () =>
-        h(VcCol, { class: "tw-p-2" }, () =>
-          h("div", { class: "tw-flex tw-justify-end" }, [
-            h(
-              VcButton,
-              {
-                outline: true,
-                class: "tw-mr-4",
-                disabled: isDisabled(appliedFilter),
-                onClick: () => resetFilters(slotMethods.close),
-              },
-              () => t("COMPONENTS.FILTERS.RESET"),
-            ),
-            h(
-              VcButton,
-              {
-                disabled: isDisabled(filter),
-                onClick: () => applyFilters(slotMethods.close),
-              },
-              () => t("COMPONENTS.FILTERS.APPLY"),
-            ),
-          ]),
+        h(VcRow, () =>
+          h(VcCol, { class: "tw-p-2" }, () =>
+            h("div", { class: "tw-flex tw-justify-end" }, [
+              h(
+                VcButton,
+                {
+                  outline: true,
+                  class: "tw-mr-4",
+                  disabled: isDisabled(appliedFilter),
+                  onClick: () => resetFilters(slotMethods.close),
+                },
+                () => t("COMPONENTS.FILTERS.RESET"),
+              ),
+              h(
+                VcButton,
+                {
+                  disabled: isDisabled(filter),
+                  onClick: () => applyFilters(slotMethods.close),
+                },
+                () => t("COMPONENTS.FILTERS.APPLY"),
+              ),
+            ]),
+          ),
         ),
-      ),
-    ]);
+      ],
+    );
   }
 
   async function reset() {
-    Object.keys(filter).forEach((key: string) => (filter[key] = undefined));
+    Object.keys(filter).forEach((key: string) => (filter.value[key] = undefined));
 
     appliedFilter.value = {};
   }
@@ -252,7 +255,7 @@ export default <Query>(args: {
   return {
     filterComponent: render,
     activeFilterCount,
-    filter: readonly(filter),
+    filter: readonly(filter.value),
     isFilterVisible: computed(() => isFilterVisible.value),
     reset,
   };

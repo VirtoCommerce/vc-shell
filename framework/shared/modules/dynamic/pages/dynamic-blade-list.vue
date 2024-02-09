@@ -297,6 +297,7 @@ const {
   data: bladeOptions.tableData?.filter,
   query,
   load,
+  scope,
 });
 
 const bladeContext = ref<ListBladeContext>({

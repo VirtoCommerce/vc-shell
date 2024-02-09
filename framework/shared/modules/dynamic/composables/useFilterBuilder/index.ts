@@ -1,3 +1,4 @@
+import { toReactive, createUnrefFn } from "@vueuse/core";
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   h,
@@ -19,7 +20,6 @@ import * as _ from "lodash-es";
 import { Checkbox, InputField } from "../../components/factories";
 import { AsyncAction } from "../../../../../core/composables";
 import { VcButton, VcCol, VcContainer, VcRow } from "../../../../../ui/components";
-import { createUnrefFn } from "@vueuse/core";
 import { useI18n } from "vue-i18n";
 import { FilterBase, FilterCheckbox, FilterDateInput } from "../../types";
 
@@ -163,14 +163,14 @@ export default <Query>(args: {
   }
 
   async function applyFilters(filterHandlerFn: () => void) {
+    appliedFilter.value = {
+      ...filter.value,
+    };
     filterHandlerFn();
     await _search({
       ...unref(args.query),
       ...filter.value,
     });
-    appliedFilter.value = {
-      ...filter.value,
-    };
   }
 
   async function resetFilters(filterHandlerFn: () => void) {
@@ -190,9 +190,7 @@ export default <Query>(args: {
       VcContainer,
       {
         onVnodeBeforeMount: () => {
-          if (Object.keys(appliedFilter.value).length) {
-            filter.value = _.cloneDeep(appliedFilter.value);
-          }
+          filter.value = { ...appliedFilter.value };
         },
       },
       () => [
@@ -253,7 +251,7 @@ export default <Query>(args: {
   return {
     filterComponent: render,
     activeFilterCount,
-    filter: readonly(filter.value),
+    filter: readonly(toReactive(filter)),
     isFilterVisible: computed(() => isFilterVisible.value),
     reset,
   };

@@ -1,3 +1,12 @@
+## [1.0.164](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.163...v1.0.164) (2024-02-09)
+
+
+### Bug Fixes
+
+* **framework:** Add i18n support to StatusField component and fix Quill editor issue ([7749feb](https://github.com/VirtoCommerce/vc-shell/commit/7749feba938b8011220c6139908daa7e68df5bcd))
+
+
+
 ## [1.0.163](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.162...v1.0.163) (2024-02-09)
 
 

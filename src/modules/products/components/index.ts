@@ -7,6 +7,7 @@ import ProductNotFoundGridTemplate from "./ProductNotFoundGridTemplate.vue";
 import ProductsDashboardCard from "./ProductsDashboardCard.vue";
 
 export * from "./widgets";
+export * from "./notifications";
 export {
   MpProductStatus,
   ProductsSelectCategoryTemplate,

@@ -32,12 +32,13 @@
         <div
           v-loading="loading"
           class="tw-flex tw-flex-auto tw-flex-col"
+          @click="() => onItemClick()"
         >
           <div class="tw-h-px tw-bg-[#e3e7ec] tw-w-full"></div>
-          <div
-            class="tw-flex tw-flex-auto tw-justify-center tw-my-4 tw-text-[26px] tw-font-medium tw-text-[#319ed4] tw-items-center"
-          >
-            <Rating :variant="'text'"></Rating>
+          <div class="tw-text-center tw-m-4 tw-text-[26px] tw-font-medium tw-text-[#319ed4]">
+            <Rating :variant="'text'">
+              {{ $t("RATING.WIDGET.EMPTY") }}
+            </Rating>
           </div>
         </div>
       </template>

@@ -23,11 +23,10 @@
         <div
           v-loading="loading"
           class="tw-flex tw-flex-auto tw-flex-col"
+          @click="() => onItemClick()"
         >
           <div class="tw-h-px tw-bg-[#e3e7ec] tw-w-full"></div>
-          <div
-            class="tw-flex tw-flex-auto tw-justify-center tw-my-4 tw-text-[26px] tw-font-medium tw-text-[#319ed4] tw-items-center"
-          >
+          <div class="tw-text-center tw-m-4 tw-text-[26px] tw-font-medium tw-text-[#319ed4]">
             {{ totalCount == 0 ? $t("ORDERS.WIDGET.EMPTY") : totalCount }}
           </div>
         </div>
@@ -44,7 +43,7 @@ const { openBlade, resolveBladeByName } = useBladeNavigation();
 async function onItemClick(args?: { param: string }) {
   await openBlade(
     {
-      blade: resolveBladeByName("Offers"),
+      blade: resolveBladeByName("Orders"),
       param: args?.param,
     },
     true,

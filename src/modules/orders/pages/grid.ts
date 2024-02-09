@@ -10,6 +10,7 @@ export const grid: DynamicGridSchema = {
     isWorkspace: true,
     composable: "useOrders",
     width: "30%",
+    pushNotificationType: "OrderCreatedEventHandler",
     toolbar: [
       {
         id: "refresh",
@@ -50,17 +51,9 @@ export const grid: DynamicGridSchema = {
                 field: "status",
                 component: "vc-checkbox",
                 multiple: false,
-                data: [
-                  {
-                    value: "None",
-                    displayName: "ORDERS.PAGES.LIST.TABLE.FILTER.STATUS.None",
-                  },
-                  { value: "Unpaid", displayName: "ORDERS.PAGES.LIST.TABLE.FILTER.STATUS.Unpaid" },
-                  { value: "Paid", displayName: "ORDERS.PAGES.LIST.TABLE.FILTER.STATUS.Paid" },
-                  { value: "Accepted", displayName: "ORDERS.PAGES.LIST.TABLE.FILTER.STATUS.Accepted" },
-                  { value: "Shipped", displayName: "ORDERS.PAGES.LIST.TABLE.FILTER.STATUS.Shipped" },
-                  { value: "Cancelled", displayName: "ORDERS.PAGES.LIST.TABLE.FILTER.STATUS.Cancelled" },
-                ],
+                data: "statuses",
+                optionValue: "value",
+                optionLabel: "displayValue",
               },
             ],
           },

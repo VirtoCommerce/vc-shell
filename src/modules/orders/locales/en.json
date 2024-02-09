@@ -6,7 +6,7 @@
     "WIDGET": {
       "TITLE": "Orders",
       "ALL": "All orders",
-      "EMPTY": "There are no orders yet"
+      "EMPTY": "No orders"
     },
     "PAGES": {
       "LIST": {

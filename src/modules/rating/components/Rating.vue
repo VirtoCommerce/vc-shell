@@ -16,7 +16,7 @@
         }}
       </template>
     </VcRating>
-    <span v-else>{{ $t("RATING.RATING.EMPTY") }}</span>
+    <slot v-else>{{ $t("RATING.RATING.EMPTY") }}</slot>
   </div>
 </template>
 

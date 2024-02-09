@@ -16,6 +16,7 @@ import {
   SellerProductStatus,
 } from "@vcmp-vendor-portal/api/marketplacevendor";
 import { Ref, computed, ref } from "vue";
+import { useI18n } from "vue-i18n";
 
 const { getApiClient } = useApiClient(VcmpSellerCatalogClient);
 
@@ -33,6 +34,7 @@ export const useProductsList = (args: {
   emit: InstanceType<typeof DynamicBladeList>["$emit"];
   mounted: Ref<boolean>;
 }): UseList<SellerProduct[], ISearchProductsQuery, ProductListScope> => {
+  const { t } = useI18n({ useScope: "global" });
   const listFactory = useListFactory<SellerProduct[], ISearchProductsQuery>({
     load: async (query) => (await getApiClient()).searchProducts(new SearchProductsQuery(query)),
     remove: async (query, customQuery) => {
@@ -102,6 +104,15 @@ export const useProductsList = (args: {
         },
       },
     },
+    statuses: computed(() => {
+      const statusKeys = Object.entries(SellerProductStatus).filter(
+        (key) => !key.includes(SellerProductStatus.Approved),
+      );
+      return statusKeys.map(([value, displayValue]) => ({
+        value,
+        displayValue: computed(() => t(`PRODUCTS.PAGES.LIST.FILTERS.STATUS.${displayValue}`)),
+      }));
+    }),
   });
 
   return {

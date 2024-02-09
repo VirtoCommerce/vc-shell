@@ -287,10 +287,9 @@ export const useProductDetails = (args: {
       saveChanges: {
         disabled: computed(() => {
           return (
-            !validationState.value.modified ||
-            !validationState.value.valid ||
-            (args.props.param && !(item.value?.canBeModified || validationState.value.modified)) ||
-            (!args.props.param && !validationState.value.modified)
+            !validationState.value.validated ||
+            (args.props.param && !(item.value?.canBeModified || validationState.value.validated)) ||
+            (!args.props.param && !validationState.value.validated)
           );
         }),
       },

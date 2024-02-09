@@ -2,7 +2,7 @@
   <div class="tw-w-full tw-h-full tw-box-border tw-flex tw-flex-col tw-items-center tw-justify-center">
     <img :src="emptyImage" />
     <div class="tw-m-4 tw-text-xl tw-font-medium">
-      {{ $t("ORDERS.PAGES.LIST.NOT_FOUND.NO_ORDERS") }}
+      {{ $t("ORDERS.PAGES.LIST.NOT_FOUND.EMPTY") }}
     </div>
     <vc-button @click="$emit('reset')">{{ $t("ORDERS.PAGES.LIST.NOT_FOUND.RESET") }}</vc-button>
   </div>

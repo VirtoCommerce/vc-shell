@@ -42,6 +42,7 @@ export const grid: DynamicGridSchema = {
       priority: 2,
       inGroupPriority: 2,
     },
+    pushNotificationType: "PublicationRequestStatusChangedDomainEvent",
   },
   content: [
     {
@@ -67,17 +68,9 @@ export const grid: DynamicGridSchema = {
                 id: "statusCheckbox",
                 field: "status",
                 component: "vc-checkbox",
-                data: [
-                  {
-                    value: "None",
-                    displayName: "PRODUCTS.PAGES.LIST.FILTERS.STATUS.None",
-                  },
-                  { value: "Published", displayName: "PRODUCTS.PAGES.LIST.FILTERS.STATUS.Published" },
-                  { value: "HasStagedChanges", displayName: "PRODUCTS.PAGES.LIST.FILTERS.STATUS.HasStagedChanges" },
-                  { value: "WaitForApproval", displayName: "PRODUCTS.PAGES.LIST.FILTERS.STATUS.WaitForApproval" },
-                  { value: "RequiresChanges", displayName: "PRODUCTS.PAGES.LIST.FILTERS.STATUS.RequiresChanges" },
-                  { value: "Rejected", displayName: "PRODUCTS.PAGES.LIST.FILTERS.STATUS.Rejected" },
-                ],
+                data: "statuses",
+                optionValue: "value",
+                optionLabel: "displayValue",
               },
             ],
           },

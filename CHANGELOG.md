@@ -1,3 +1,12 @@
+## [1.0.163](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.162...v1.0.163) (2024-02-09)
+
+
+### Bug Fixes
+
+* **dynamic:** update class property to classNames ([4297cb0](https://github.com/VirtoCommerce/vc-shell/commit/4297cb088be767b42a892a078c450d54a571ad32))
+
+
+
 ## [1.0.162](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.161...v1.0.162) (2024-02-09)
 
 

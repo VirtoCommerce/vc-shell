@@ -1,3 +1,12 @@
+## [1.0.162](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.161...v1.0.162) (2024-02-09)
+
+
+### Features
+
+* **dynamic:** horizontalSeparator in fieldset ([e2f63cf](https://github.com/VirtoCommerce/vc-shell/commit/e2f63cfccb859ae15c217f8e3e9b4e1b71d294da))
+
+
+
 ## [1.0.161](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.160...v1.0.161) (2024-02-09)
 
 

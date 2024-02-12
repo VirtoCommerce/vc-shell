@@ -9942,6 +9942,7 @@ export class OfferProduct implements IOfferProduct {
   name?: string | undefined;
   sellerProductId?: string | undefined;
   sku?: string | undefined;
+  gtin?: string | undefined;
   imgSrc?: string | undefined;
   categoryId?: string | undefined;
   path?: string | undefined;
@@ -9965,6 +9966,7 @@ export class OfferProduct implements IOfferProduct {
       this.name = _data["name"];
       this.sellerProductId = _data["sellerProductId"];
       this.sku = _data["sku"];
+      this.gtin = _data["gtin"];
       this.imgSrc = _data["imgSrc"];
       this.categoryId = _data["categoryId"];
       this.path = _data["path"];
@@ -9992,6 +9994,7 @@ export class OfferProduct implements IOfferProduct {
     data["name"] = this.name;
     data["sellerProductId"] = this.sellerProductId;
     data["sku"] = this.sku;
+    data["gtin"] = this.gtin;
     data["imgSrc"] = this.imgSrc;
     data["categoryId"] = this.categoryId;
     data["path"] = this.path;
@@ -10012,6 +10015,7 @@ export interface IOfferProduct {
   name?: string | undefined;
   sellerProductId?: string | undefined;
   sku?: string | undefined;
+  gtin?: string | undefined;
   imgSrc?: string | undefined;
   categoryId?: string | undefined;
   path?: string | undefined;

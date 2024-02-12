@@ -13,7 +13,7 @@
       </div>
       <VcHint class="tw-truncate tw-mt-1">
         {{ $t("OFFERS.PAGES.DETAILS.FIELDS.CODE") }}:
-        {{ context.opt.sku }}
+        {{ context.opt.gtin }}
       </VcHint>
       <div
         v-if="context.opt.sellerProductId && slotName === 'selected-item'"
@@ -31,7 +31,7 @@ import { useBladeNavigation } from "@vc-shell/framework";
 
 defineProps<{
   context: {
-    opt: { imgSrc: string; name: string; sku: string; sellerProductId: string };
+    opt: { imgSrc: string; name: string; gtin: string; sellerProductId: string };
   };
   slotName: string;
 }>();

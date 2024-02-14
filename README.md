@@ -29,7 +29,6 @@ $ yarn build-framework
 $ yarn build-cli:config
 $ yarn build-cli:api-client
 $ yarn build-cli:create-vc-app
-$ yarn build:import-module
 $ yarn build-config:release-config
 
 # generate api clients (require .NET Core 6 on Mac OS or Linux)

@@ -507,7 +507,6 @@ const props = withDefaults(
     pages: 0,
     expanded: true,
     currentPage: 0,
-    selectedItemId: undefined,
     header: true,
     footer: true,
     activeFilterCount: 0,
@@ -526,7 +525,6 @@ const emit = defineEmits<{
   selectionChanged: [values: T[]];
   "search:change": [value: string | number | Date | null | undefined];
   headerClick: [item: ITableColumns];
-  value: [Record<string, unknown>];
   itemClick: [item: T];
   "scroll:ptr": [];
   "row:reorder": [args: { dragIndex: number; dropIndex: number; value: T[] }];

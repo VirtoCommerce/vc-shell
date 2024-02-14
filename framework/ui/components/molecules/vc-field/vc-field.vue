@@ -63,7 +63,6 @@ export interface Props {
    * Add button for field content copying
    */
   copyable?: boolean;
-  // TODO Add to documentation
   /**
    * Field orientation
    */

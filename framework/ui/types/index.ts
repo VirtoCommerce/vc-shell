@@ -10,4 +10,9 @@ declare module "vue" {
   export interface GlobalComponents extends TGlobalComponents<typeof components> {}
 }
 
-export {};
+export interface Breadcrumbs {
+  icon?: string;
+  title: string;
+  clickHandler?: (id: string) => void | Promise<void>;
+  id: string;
+}

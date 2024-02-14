@@ -41,7 +41,7 @@
       </template>
     </template>
     <template v-else>
-      <span class="vc-rating__placeholder"></span>
+      <span class="vc-rating__placeholder">{{ placeholder }}</span>
     </template>
   </div>
 </template>

@@ -15,7 +15,7 @@ import {
   BulkProductsDeleteCommand,
   SellerProductStatus,
 } from "@vcmp-vendor-portal/api/marketplacevendor";
-import { Ref, computed, ref } from "vue";
+import { MaybeRef, ComputedRef, Ref, computed, ref } from "vue";
 import { useI18n } from "vue-i18n";
 
 const { getApiClient } = useApiClient(VcmpSellerCatalogClient);
@@ -105,13 +105,17 @@ export const useProductsList = (args: {
       },
     },
     statuses: computed(() => {
-      const statusKeys = Object.entries(SellerProductStatus).filter(
-        (key) => !key.includes(SellerProductStatus.Approved),
+      return Object.entries(SellerProductStatus).reduce(
+        (acc, [value, displayValue]) => {
+          if (value.includes(SellerProductStatus.Approved)) return acc;
+          acc.push({
+            value,
+            displayValue: computed(() => t(`PRODUCTS.PAGES.LIST.FILTERS.STATUS.${displayValue}`)),
+          });
+          return acc;
+        },
+        [] as Record<string, MaybeRef<string>>[],
       );
-      return statusKeys.map(([value, displayValue]) => ({
-        value,
-        displayValue: computed(() => t(`PRODUCTS.PAGES.LIST.FILTERS.STATUS.${displayValue}`)),
-      }));
     }),
   });
 

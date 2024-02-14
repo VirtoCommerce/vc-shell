@@ -25,9 +25,10 @@ export default getApplicationConfiguration({
       includeAssets: ["favicon.ico", "apple-touch-icon.png"],
       manifest: {
         name: "Vendor Portal",
+        short_name: "Vendor Portal",
         theme_color: "#319ED4",
         display: "fullscreen",
-        start_url: "/index.html",
+        start_url: "/apps/vendor-portal",
         icons: [
           {
             src: "./img/icons/pwa-192x192.png",

@@ -1,4 +1,4 @@
-import { Component, ExtractPropTypes, computed, h, markRaw, ref, toRefs, watch } from "vue";
+import { Component, ExtractPropTypes, computed, h, markRaw, ref, toRefs, toValue, unref, watch } from "vue";
 import { Gallery } from "../factories";
 import componentProps from "./props";
 import { ICommonAsset } from "../../../../../core/types";
@@ -123,7 +123,7 @@ export default {
           {},
           {
             loading: imageHandlers.loading,
-            images: props.baseProps.modelValue,
+            images: toValue(props.baseProps.modelValue),
             multiple: props.element.multiple,
             variant: props.element.variant,
             itemActions: props.element.actions,

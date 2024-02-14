@@ -1,4 +1,4 @@
-import { ExtractPropTypes, h, Component } from "vue";
+import { ExtractPropTypes, h, Component, toValue } from "vue";
 import { ImageField } from "../factories";
 import componentProps from "./props";
 import { ImageSchema } from "../../types";
@@ -13,7 +13,7 @@ export default {
         props: Object.assign(
           {},
           {
-            src: props.baseProps.modelValue,
+            src: toValue(props.baseProps.modelValue),
             aspect: props.element.aspect,
             rounded: props.element.rounded,
             bordered: props.element.bordered,

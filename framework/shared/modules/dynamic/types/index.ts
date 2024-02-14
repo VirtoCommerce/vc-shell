@@ -786,7 +786,6 @@ export interface SwitchSchema extends Omit<SchemaBase, "placeholder" | "multilan
   falseValue?: boolean;
 }
 
-// TODO add to documentation
 export type TableSchema = Omit<ListContentSchema, "filter"> & Pick<SchemaBase, "id" | "property" | "visibility">;
 
 /**
@@ -836,7 +835,6 @@ export interface ButtonSchema extends Pick<SchemaBase, "id" | "disabled" | "visi
  * Custom component schema interface.
  * @interface
  */
-// TODO add to documentation
 export interface CustomComponentSchema extends Pick<SchemaBase, "id" | "visibility"> {
   /**
    * Component type for custom component.

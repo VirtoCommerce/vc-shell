@@ -1,4 +1,4 @@
-import { Component, ExtractPropTypes, h } from "vue";
+import { Component, ExtractPropTypes, h, toValue } from "vue";
 import { VideoField } from "../factories";
 import componentProps from "./props";
 import { VideoSchema } from "../../types";
@@ -13,7 +13,7 @@ export default {
         props: Object.assign(
           {},
           {
-            source: props.baseProps.modelValue,
+            source: toValue(props.baseProps.modelValue),
             size: props.element.size,
           },
           unrefNested(props.baseProps),

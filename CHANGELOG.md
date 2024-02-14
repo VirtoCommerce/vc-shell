@@ -1,3 +1,17 @@
+## [1.0.165](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.164...v1.0.165) (2024-02-14)
+
+
+### Bug Fixes
+
+* **dynamic:** component fixes ([77acf38](https://github.com/VirtoCommerce/vc-shell/commit/77acf38f64a5638bbaa4aede1fd3b4d44165e08e))
+
+
+### Features
+
+* **dynamic:** useBreadcrumbs composable and support in dynamic views, exposing more methods ([c1ccdea](https://github.com/VirtoCommerce/vc-shell/commit/c1ccdea065000345b9ee7e9334839179a0d30661))
+
+
+
 ## [1.0.164](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.163...v1.0.164) (2024-02-09)
 
 

@@ -1,7 +1,7 @@
 <template>
   <div
-    v-if="items"
-    class="tw-flex tw-items-center tw-flex-nowrap"
+    v-if="items && items.length"
+    class="tw-flex tw-items-center tw-flex-wrap tw-gap-[10px]"
   >
     <VcBreadcrumbsItem
       v-for="(item, i) in items"
@@ -13,16 +13,11 @@
 </template>
 
 <script lang="ts" setup>
+import { Breadcrumbs } from "../../../types";
 import VcBreadcrumbsItem from "./_internal/vc-breadcrumbs-item/vc-breadcrumbs-item.vue";
 
 export interface Props {
-  items?: {
-    current: boolean;
-    icon?: string;
-    title: string;
-    clickHandler?: () => void;
-    id: string;
-  }[];
+  items?: Breadcrumbs[];
 }
 
 withDefaults(defineProps<Props>(), {

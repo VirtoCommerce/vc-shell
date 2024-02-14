@@ -11,3 +11,4 @@ export { useAssets } from "./useAssets";
 export { useMenuService } from "./useMenuService";
 export { useBeforeUnload } from "./useBeforeUnload";
 export { useLanguages } from "./useLanguages";
+export { useBreadcrumbs } from "./useBreadcrumbs";

@@ -9,8 +9,8 @@ interface ISearchResult<T> {
 }
 
 export interface UseListFactoryParams<Items extends Record<string, any>[], Query extends IQuery> {
-  load?: (query: Query) => Promise<ISearchResult<Items>>;
-  remove?: (query: Query, customQuery: CustomQuery) => Promise<void>;
+  load?: (query: Query, ...args: any[]) => Promise<ISearchResult<Items>>;
+  remove?: (query: Query, customQuery: CustomQuery, ...args: any[]) => Promise<void>;
 }
 
 export interface IQuery {
@@ -36,13 +36,13 @@ export const useListFactory = <Items extends Record<string, any>[], Query extend
       sort: options?.sort,
     }) as Ref<Query>;
 
-    const { loading: itemsLoading, action: load } = useAsync<Query>(async (query) => {
+    const { loading: itemsLoading, action: load } = useAsync<Query>(async (query, ...rest) => {
       searchQuery.value = { ...searchQuery.value, ...query };
-      searchResult.value = await factoryParams.load?.(query as Query);
+      searchResult.value = await factoryParams.load?.(query as Query, ...rest);
     });
 
-    const { loading: itemsDelete, action: remove } = useAsync<CustomQuery>(async (customQuery) => {
-      await factoryParams.remove?.(searchQuery.value, customQuery as CustomQuery);
+    const { loading: itemsDelete, action: remove } = useAsync<CustomQuery>(async (customQuery, ...rest) => {
+      await factoryParams.remove?.(searchQuery.value, customQuery as CustomQuery, ...rest);
     });
 
     const loading = useLoading(itemsLoading, itemsDelete);

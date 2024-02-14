@@ -19,36 +19,20 @@
 </template>
 
 <script lang="ts" setup>
+import { Breadcrumbs } from "../../../../../types";
 import { VcIcon } from "./../../../../";
 
-const props = defineProps({
-  current: {
-    type: Boolean,
-    default: false,
-  },
+export interface Props extends Breadcrumbs {
+  current: boolean;
+}
 
-  icon: {
-    type: String,
-    default: undefined,
-  },
+export interface Emits {
+  (event: "click"): void;
+}
 
-  title: {
-    type: String,
-    default: undefined,
-  },
+const props = defineProps<Props>();
 
-  clickHandler: {
-    type: Function,
-    default: undefined,
-  },
-
-  id: {
-    type: String,
-    default: undefined,
-  },
-});
-
-const emit = defineEmits(["click"]);
+const emit = defineEmits<Emits>();
 
 function onClick(): void {
   if (!props.current) {
@@ -74,12 +58,12 @@ function onClick(): void {
 
 .vc-breadcrumbs-item {
   @apply tw-h-[var(--breadcrumbs-item-height)]
-  tw-box-border tw-rounded-[calc(var(--breadcrumbs-item-height)/2)]
+  tw-box-border tw-rounded-[3px]
   tw-border tw-border-solid
   tw-border-[color:var(--breadcrumbs-item-border-color)]
   tw-text-[color:var(--breadcrumbs-item-color)]
   tw-whitespace-nowrap
-  tw-px-3 tw-mr-2
+  tw-px-3
   tw-text-sm tw-cursor-pointer tw-inline-flex tw-items-center
   hover:tw-border
   hover:tw-border-solid

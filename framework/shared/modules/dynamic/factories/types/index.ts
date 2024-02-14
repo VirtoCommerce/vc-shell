@@ -5,6 +5,7 @@ import { SettingsSchema } from "../../types";
 import { AssetsHandler, IBladeToolbar, ICommonAsset } from "../../../../../core/types";
 import { useBladeNavigation } from "../../../../components";
 import { FormContext } from "vee-validate";
+import { Breadcrumbs } from "../../../../../ui/types";
 
 export type ItemId = { id: string };
 
@@ -46,7 +47,11 @@ export interface UseDetails<Item, Scope extends DetailsBaseBladeScope = DetailsB
   bladeTitle?: ComputedRef<string>;
 }
 
-export interface UseList<Items, Query, Scope extends ListBaseBladeScope = ListBaseBladeScope> {
+export interface UseList<
+  Items extends Record<string, any>[],
+  Query,
+  Scope extends ListBaseBladeScope<Items[number]> = ListBaseBladeScope<Items[number]>,
+> {
   items: ComputedRef<Items>;
   query: Ref<Query>;
   loading: ComputedRef<boolean>;
@@ -66,10 +71,13 @@ export interface BaseBladeScope {
   toolbarOverrides?: MaybeRef<{ [x: string]: IBladeToolbar }> | ((...args: any[]) => any) | MaybeRef<IBladeToolbar[]>;
 }
 
-export interface ListBaseBladeScope extends BaseBladeScope {
-  openDetailsBlade: (
+export interface ListBaseBladeScope<Item = Record<string, any>, Query = Record<string, any>> extends BaseBladeScope {
+  openDetailsBlade?: (
     args?: Omit<Parameters<ReturnType<typeof useBladeNavigation>["openBlade"]>["0"], "blade">,
-  ) => Promise<void>;
+  ) => Promise<void> | void;
+  onListItemClick?: (args: { item?: Item }) => void;
+  onPaginationClick?: (query: Query) => void;
+  breadcrumbs?: ComputedRef<Breadcrumbs[]>;
 }
 
 export interface DetailsBaseBladeScope extends BaseBladeScope {

@@ -78,6 +78,7 @@ import {
   ComputedRef,
   type Component,
   ConcreteComponent,
+  toRefs,
 } from "vue";
 import { DynamicDetailsSchema, FormContentSchema, SettingsSchema } from "../types";
 import { reactiveComputed, useMounted, useTemplateRefsList } from "@vueuse/core";
@@ -295,11 +296,12 @@ const toolbarComputed =
 async function setActiveWidget(widget: string | ConcreteComponent) {
   const component = typeof widget === "string" ? resolveComponent(widget) : widget;
 
-  if (typeof component !== "string") {
-    await nextTick(
-      () => (activeWidgetExposed.value = widgetsRefs.value.find((x) => _.isEqual(x.component, component))?.el),
-    );
-  }
+  await nextTick(
+    () =>
+      (activeWidgetExposed.value = widgetsRefs.value.find((x) =>
+        _.isEqual(x.component, typeof component !== "string" ? component : resolveComponent(component)),
+      )?.el),
+  );
 }
 
 async function updateActiveWidgetCount() {
@@ -338,7 +340,7 @@ onBeforeClose(async () => {
 defineExpose({
   title: bladeTitle ?? "",
   updateActiveWidgetCount,
-  ...scope?.value,
+  ...toRefs(scope?.value ?? {}),
 });
 </script>
 

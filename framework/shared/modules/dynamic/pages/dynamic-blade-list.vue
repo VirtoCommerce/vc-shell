@@ -24,6 +24,17 @@
       >
     </template>
     <template v-else>
+      <div
+        v-if="!isWidgetView && scope?.breadcrumbs"
+        :class="[
+          {
+            '-tw-mb-4': tableData?.header,
+          },
+          'tw-p-4',
+        ]"
+      >
+        <VcBreadcrumbs :items="scope?.breadcrumbs" />
+      </div>
       <VcTable
         class="tw-grow tw-basis-0"
         :loading="loading"
@@ -43,7 +54,7 @@
         :total-count="pagination?.totalCount"
         :active-filter-count="activeFilterCount"
         :reorderable-rows="isWidgetView ? false : tableData?.reorderableRows"
-        :pull-to-reload="true"
+        :pull-to-reload="!isWidgetView"
         @item-click="onItemClick"
         @pagination-click="onPaginationClick"
         @selection-changed="onSelectionChanged"
@@ -144,6 +155,7 @@ import {
   UnwrapRef,
   ComputedRef,
   onBeforeMount,
+  toRefs,
 } from "vue";
 import { useI18n } from "vue-i18n";
 import { DynamicGridSchema, ListContentSchema, SettingsSchema } from "../types";
@@ -156,6 +168,7 @@ import { ListBaseBladeScope, ListBladeContext, UseList } from "../factories/type
 import { IParentCallArgs } from "../../../index";
 import * as _ from "lodash-es";
 import { useMounted } from "@vueuse/core";
+import { safeIn } from "../helpers/safeIn";
 
 export interface Props {
   expanded?: boolean;
@@ -330,7 +343,7 @@ const toolbarComputed =
               toValue(scope).openDetailsBlade &&
               typeof toValue(scope).openDetailsBlade === "function"
             ) {
-              toValue(scope).openDetailsBlade();
+              toValue(scope).openDetailsBlade?.();
             } else throw new Error("openDetailsBlade method is not defined in scope");
           },
         },
@@ -367,7 +380,7 @@ watch(
         toValue(scope).openDetailsBlade &&
         typeof toValue(scope).openDetailsBlade === "function"
       ) {
-        await toValue(scope).openDetailsBlade({
+        await toValue(scope).openDetailsBlade?.({
           param: newVal,
           onOpen() {
             selectedItemId.value = newVal;
@@ -406,7 +419,7 @@ const openDetailsBlade = async () => {
       toValue(scope).openDetailsBlade &&
       typeof toValue(scope).openDetailsBlade === "function"
     ) {
-      await toValue(scope).openDetailsBlade();
+      await toValue(scope).openDetailsBlade?.();
     }
   } else {
     emit("add");
@@ -415,13 +428,8 @@ const openDetailsBlade = async () => {
 
 const onItemClick = (item: { [x: string]: any; id?: string }) => {
   if (!props.isWidgetView) {
-    if (
-      scope &&
-      "openDetailsBlade" in toValue(scope) &&
-      toValue(scope).openDetailsBlade &&
-      typeof toValue(scope).openDetailsBlade === "function"
-    ) {
-      toValue(scope).openDetailsBlade({
+    if (scope && safeIn("openDetailsBlade", toValue(scope)) && typeof toValue(scope).openDetailsBlade === "function") {
+      toValue(scope).openDetailsBlade?.({
         param: item.id,
         onOpen() {
           selectedItemId.value = item.id;
@@ -429,6 +437,12 @@ const onItemClick = (item: { [x: string]: any; id?: string }) => {
         onClose() {
           selectedItemId.value = undefined;
         },
+      });
+    }
+
+    if (scope && safeIn("onListItemClick", toValue(scope)) && typeof toValue(scope).onListItemClick === "function") {
+      toValue(scope).onListItemClick?.({
+        item,
       });
     }
   } else {
@@ -490,6 +504,18 @@ const reload = async () => {
 
 const onPaginationClick = async (page: number) => {
   if (query.value.take) {
+    if (
+      scope &&
+      safeIn("onPaginationClick", toValue(scope)) &&
+      typeof toValue(scope).onPaginationClick === "function"
+    ) {
+      toValue(scope).onPaginationClick?.({
+        ...query.value,
+        skip: (page - 1) * query.value.take,
+      });
+
+      return;
+    }
     await load({
       ...query.value,
       skip: (page - 1) * query.value.take,
@@ -564,6 +590,7 @@ defineExpose({
   reload,
   title,
   updateActiveWidgetCount,
-  ...scope?.value,
+  selectedIds,
+  ...toRefs(scope?.value ?? {}),
 });
 </script>

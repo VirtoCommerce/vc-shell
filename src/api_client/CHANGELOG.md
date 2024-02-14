@@ -1,3 +1,12 @@
+## [1.0.166](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.165...v1.0.166) (2024-02-14)
+
+
+### Features
+
+* gtin in product selector ([eb52288](https://github.com/VirtoCommerce/vendor-portal/commit/eb52288698b1146a34830e028705c845e80c204c))
+
+
+
 ## [1.0.165](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.164...v1.0.165) (2024-02-09)
 
 

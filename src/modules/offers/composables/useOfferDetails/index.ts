@@ -240,7 +240,7 @@ export const useOfferDetails = (args: {
       if (fetchedProduct && fetchedProduct.length && item.value) {
         const currentProduct = fetchedProduct[0];
 
-        item.value.properties = currentProduct.properties;
+        if (!item.value.properties?.length) item.value.properties = currentProduct.properties;
         if (!item.value?.id) {
           item.value.productType = currentProduct.productType;
         }

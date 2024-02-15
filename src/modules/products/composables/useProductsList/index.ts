@@ -21,7 +21,7 @@ import { useI18n } from "vue-i18n";
 const { getApiClient } = useApiClient(VcmpSellerCatalogClient);
 
 export interface ProductListScope extends ListBaseBladeScope {
-  toolbarOverrides: {
+  toolbarOverrides?: {
     exportCategories: {
       clickHandler: () => Promise<void>;
     };

@@ -1,3 +1,17 @@
+## [1.0.167](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.166...v1.0.167) (2024-02-15)
+
+
+### Bug Fixes
+
+* dynamic property in offer ([6ab42be](https://github.com/VirtoCommerce/vendor-portal/commit/6ab42be5fd5f986799718e02a25ba144140c84a7))
+
+
+### Features
+
+* productType in offers ([de4e763](https://github.com/VirtoCommerce/vendor-portal/commit/de4e763b59291e79019d69197f3f4f03642cf00f))
+
+
+
 ## [1.0.166](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.165...v1.0.166) (2024-02-14)
 
 

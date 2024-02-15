@@ -1,3 +1,12 @@
+## [1.0.167](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.166...v1.0.167) (2024-02-15)
+
+
+### Features
+
+* productType in offers ([de4e763](https://github.com/VirtoCommerce/vendor-portal/commit/de4e763b59291e79019d69197f3f4f03642cf00f))
+
+
+
 ## [1.0.166](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.165...v1.0.166) (2024-02-14)
 
 

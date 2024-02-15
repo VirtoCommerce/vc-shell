@@ -25,12 +25,17 @@ import {
   IOfferPrice,
   ChangeOfferDefaultCommand,
 } from "@vcmp-vendor-portal/api/marketplacevendor";
-import { Ref, computed, nextTick, reactive, ref, watch } from "vue";
+import { Ref, computed, nextTick, reactive, ref, watch, ComputedRef } from "vue";
 import { useMarketplaceSettings } from "../../../settings";
 import { useI18n } from "vue-i18n";
 import { ICurrency } from "../../../settings/composables/useMarketplaceSettings";
 import { useDynamicProperties, useMultilanguage } from "../../../common";
 import { useFulfillmentCenters } from "../../../fulfillment-centers/composables";
+
+export interface IProductType {
+  label: string;
+  value: string;
+}
 
 export interface OfferDetailsScope extends DetailsBaseBladeScope {
   fetchProducts: (keyword?: string, skip?: number, ids?: string[]) => Promise<SearchOfferProductsResult>;
@@ -39,6 +44,8 @@ export interface OfferDetailsScope extends DetailsBaseBladeScope {
   getProductItem: () => void;
   trackInventoryFn: () => boolean;
   currencies: Ref<ICurrency[]>;
+  productTypeOptions: Ref<IProductType[]>;
+  productTypeDisabled: ComputedRef<boolean>;
   toolbarOverrides: {
     saveChanges: IBladeToolbar;
     enable: IBladeToolbar;
@@ -61,9 +68,10 @@ export const useOfferDetails = (args: {
   const pricingEqual = ref(false);
   const productLoading = ref(false);
   const alreadyDefault = ref(false);
+  const productTypeOptions = ref<IProductType[]>([]);
   const { items: fulfillmentCentersList, load: searchFulfillmentCenters } = useFulfillmentCenters();
 
-  const { currencies, settingUseDefaultOffer, loadSettings } = useMarketplaceSettings();
+  const { currencies, settingUseDefaultOffer, productTypes, loadSettings } = useMarketplaceSettings();
   const { getLanguages, loading: languagesLoading } = useMultilanguage();
   const { upload: imageUpload, remove: imageRemove, edit: imageEdit, loading: imageLoading } = useAssets();
 
@@ -233,6 +241,9 @@ export const useOfferDetails = (args: {
         const currentProduct = fetchedProduct[0];
 
         item.value.properties = currentProduct.properties;
+        if (!item.value?.id) {
+          item.value.productType = currentProduct.productType;
+        }
 
         if (args.props.options && "sellerProduct" in args.props.options && args.props.options.sellerProduct) {
           item.value.productId = currentProduct.id;
@@ -265,6 +276,12 @@ export const useOfferDetails = (args: {
         alreadyDefault.value = false;
         await getLanguages();
         await loadSettings();
+
+        productTypeOptions.value = productTypes.value?.map((x) => ({
+          label: t(`OFFERS.PAGES.DETAILS.FIELDS.PRODUCT_TYPE.${x}`, x),
+          value: x,
+        }));
+
         if (!args.props.param) {
           item.value = reactive(new Offer());
           item.value.trackInventory = true;
@@ -296,6 +313,8 @@ export const useOfferDetails = (args: {
     trackInventoryFn,
     disableProductSelect: computed(() => !!args.props.param),
     currencies,
+    productTypeOptions,
+    productTypeDisabled: computed(() => !!item.value?.id),
     toolbarOverrides: {
       saveChanges: {
         disabled: computed(() => {

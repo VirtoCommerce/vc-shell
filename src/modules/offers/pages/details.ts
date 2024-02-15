@@ -70,6 +70,22 @@ export const details: DynamicDetailsSchema = {
           },
         },
         {
+          id: "productType",
+          component: "vc-select",
+          label: "OFFERS.PAGES.DETAILS.FIELDS.PRODUCT_TYPE.TITLE",
+          property: "productType",
+          optionValue: "value",
+          optionLabel: "label",
+          optionsMethod: "productTypeOptions",
+          tooltip: "OFFERS.PAGES.DETAILS.FIELDS.PRODUCT_TYPE.TOOLTIP",
+          rules: {
+            required: true,
+          },
+          disabled: {
+            method: "productTypeDisabled",
+          },
+        },
+        {
           id: "inventoryCard",
           component: "vc-card",
           label: "OFFERS.PAGES.DETAILS.FIELDS.INVENTORY.TITLE",

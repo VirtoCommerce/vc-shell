@@ -9586,6 +9586,7 @@ export class Offer implements IOffer {
   storeName?: string | undefined;
   name?: string | undefined;
   sku?: string | undefined;
+  productType?: string | undefined;
   readonly imgSrc?: string | undefined;
   images?: Image[] | undefined;
   categoryId?: string | undefined;
@@ -9631,6 +9632,7 @@ export class Offer implements IOffer {
       this.storeName = _data["storeName"];
       this.name = _data["name"];
       this.sku = _data["sku"];
+      this.productType = _data["productType"];
       (<any>this).imgSrc = _data["imgSrc"];
       if (Array.isArray(_data["images"])) {
         this.images = [] as any;
@@ -9691,6 +9693,7 @@ export class Offer implements IOffer {
     data["storeName"] = this.storeName;
     data["name"] = this.name;
     data["sku"] = this.sku;
+    data["productType"] = this.productType;
     data["imgSrc"] = this.imgSrc;
     if (Array.isArray(this.images)) {
       data["images"] = [];
@@ -9742,6 +9745,7 @@ export interface IOffer {
   storeName?: string | undefined;
   name?: string | undefined;
   sku?: string | undefined;
+  productType?: string | undefined;
   imgSrc?: string | undefined;
   images?: Image[] | undefined;
   categoryId?: string | undefined;
@@ -9776,6 +9780,7 @@ export class OfferDetails implements IOfferDetails {
   outerId?: string | undefined;
   name?: string | undefined;
   sku!: string;
+  productType?: string | undefined;
   prices?: OfferPrice[] | undefined;
   inStockQuantity?: number;
   trackInventory?: boolean;
@@ -9803,6 +9808,7 @@ export class OfferDetails implements IOfferDetails {
       this.outerId = _data["outerId"];
       this.name = _data["name"];
       this.sku = _data["sku"];
+      this.productType = _data["productType"];
       if (Array.isArray(_data["prices"])) {
         this.prices = [] as any;
         for (let item of _data["prices"]) this.prices!.push(OfferPrice.fromJS(item));
@@ -9843,6 +9849,7 @@ export class OfferDetails implements IOfferDetails {
     data["outerId"] = this.outerId;
     data["name"] = this.name;
     data["sku"] = this.sku;
+    data["productType"] = this.productType;
     if (Array.isArray(this.prices)) {
       data["prices"] = [];
       for (let item of this.prices) data["prices"].push(item.toJSON());
@@ -9876,6 +9883,7 @@ export interface IOfferDetails {
   outerId?: string | undefined;
   name?: string | undefined;
   sku: string;
+  productType?: string | undefined;
   prices?: OfferPrice[] | undefined;
   inStockQuantity?: number;
   trackInventory?: boolean;
@@ -9943,6 +9951,7 @@ export class OfferProduct implements IOfferProduct {
   sellerProductId?: string | undefined;
   sku?: string | undefined;
   gtin?: string | undefined;
+  productType?: string | undefined;
   imgSrc?: string | undefined;
   categoryId?: string | undefined;
   path?: string | undefined;
@@ -9967,6 +9976,7 @@ export class OfferProduct implements IOfferProduct {
       this.sellerProductId = _data["sellerProductId"];
       this.sku = _data["sku"];
       this.gtin = _data["gtin"];
+      this.productType = _data["productType"];
       this.imgSrc = _data["imgSrc"];
       this.categoryId = _data["categoryId"];
       this.path = _data["path"];
@@ -9995,6 +10005,7 @@ export class OfferProduct implements IOfferProduct {
     data["sellerProductId"] = this.sellerProductId;
     data["sku"] = this.sku;
     data["gtin"] = this.gtin;
+    data["productType"] = this.productType;
     data["imgSrc"] = this.imgSrc;
     data["categoryId"] = this.categoryId;
     data["path"] = this.path;
@@ -10016,6 +10027,7 @@ export interface IOfferProduct {
   sellerProductId?: string | undefined;
   sku?: string | undefined;
   gtin?: string | undefined;
+  productType?: string | undefined;
   imgSrc?: string | undefined;
   categoryId?: string | undefined;
   path?: string | undefined;

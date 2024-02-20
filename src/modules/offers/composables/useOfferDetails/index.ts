@@ -240,7 +240,14 @@ export const useOfferDetails = (args: {
       if (fetchedProduct && fetchedProduct.length && item.value) {
         const currentProduct = fetchedProduct[0];
 
-        if (!item.value.properties?.length) item.value.properties = currentProduct.properties;
+        if (!item.value.properties?.length && currentProduct.properties !== undefined) {
+          item.value.properties = currentProduct.properties.map((x) => {
+            if (x.type === "Variation") {
+              x.values = [];
+            }
+            return x;
+          });
+        }
         if (!item.value?.id) {
           item.value.productType = currentProduct.productType;
         }

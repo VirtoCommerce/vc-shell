@@ -620,7 +620,8 @@ async function onLoadMore() {
     try {
       listLoading.value = true;
       const data = await props.options(filterString.value, optionsList.value.length);
-      optionsList.value.push(...(data.results as Option[]));
+      optionsList.value = _.unionBy<Option>(optionsList.value, data.results as Option[], "id");
+
       totalItems.value = data.totalCount;
       optionsTemp.value = optionsList.value;
     } finally {
@@ -824,7 +825,8 @@ function toggleOption(opt: Option) {
     if (innerValue.value.length === 0 || _.isEqual(getOptionValue.value(innerValue.value[0]), optValue) !== true) {
       emit("update:modelValue", props.emitValue === true ? optValue : opt);
     }
-    isOpened.value = false;
+
+    closeDropdown();
     return;
   }
 

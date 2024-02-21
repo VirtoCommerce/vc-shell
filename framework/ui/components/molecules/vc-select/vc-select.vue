@@ -514,7 +514,7 @@ const defaultValue = ref<Option[]>([]) as Ref<Option[]>;
 
 const optionsList = ref<Option[]>([]) as Ref<Option[]>;
 
-const optionsTemp = ref<Option[]>([]) as Ref<Option[]>;
+// const optionsList = ref<Option[]>([]) as Ref<Option[]>;
 
 const totalItems = ref();
 
@@ -525,7 +525,7 @@ let innerValueCache: Option[];
 useIntersectionObserver(
   el,
   ([{ isIntersecting }]) => {
-    if (isIntersecting) {
+    if (isIntersecting && hasNextPage.value) {
       onLoadMore();
     }
   },
@@ -607,7 +607,7 @@ watch(
 watch(
   () => optionsList.value,
   (newVal) => {
-    optionsTemp.value = newVal;
+    optionsList.value = newVal;
   },
   { immediate: true, deep: true },
 );
@@ -627,6 +627,7 @@ async function onLoadMore() {
       listLoading.value = true;
       const data = await props.options(filterString.value, optionsList.value.length);
       optionsList.value.push(...(data.results as Option[]));
+      totalItems.value = data.totalCount;
     } finally {
       listLoading.value = false;
     }
@@ -693,7 +694,7 @@ const hasValue = computed(() => fieldValueIsFilled(innerValue.value));
 const innerOptionsValue = computed(() => innerValue.value.map((opt) => getOptionValue.value(opt)));
 
 const optionScope = computed(() => {
-  return optionsTemp.value.map((opt, i) => {
+  return optionsList.value.map((opt, i) => {
     return {
       index: i,
       opt,
@@ -759,9 +760,11 @@ function closeDropdown() {
 
 const onDropdownClose = async () => {
   if (props.options && typeof props.options === "function") {
-    optionsTemp.value = (await props.options()).results as Option[];
+    const data = await props.options();
+    optionsList.value = data.results as Option[];
+    totalItems.value = data.totalCount;
   } else {
-    optionsTemp.value = props.options as Option[];
+    optionsList.value = props.options as Option[];
   }
 
   filterString.value = undefined;
@@ -857,12 +860,14 @@ async function onSearch(value: string) {
   if (props.options && typeof props.options === "function") {
     try {
       listLoading.value = true;
-      optionsTemp.value = (await props.options(filterString.value)).results as Option[];
+      const data = await props.options(filterString.value);
+      optionsList.value = data.results as Option[];
+      totalItems.value = data.totalCount;
     } finally {
       listLoading.value = false;
     }
   } else {
-    optionsTemp.value = optionsList.value.filter((x: Option) => {
+    optionsList.value = optionsList.value.filter((x: Option) => {
       return (x[props.optionLabel as keyof Option] as string).toLowerCase().includes(filterString.value.toLowerCase());
     });
   }

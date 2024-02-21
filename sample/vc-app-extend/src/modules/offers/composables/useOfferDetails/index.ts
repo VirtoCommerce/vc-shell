@@ -39,7 +39,7 @@ export const useOfferDetails = (args: {
         },
       },
     }),
-  ) as Ref<ExtendedOfferDetailsScope>;
+  );
 
   return {
     load,

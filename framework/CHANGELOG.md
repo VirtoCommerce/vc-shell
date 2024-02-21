@@ -1,3 +1,12 @@
+## [1.0.166](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.165...v1.0.166) (2024-02-21)
+
+
+### Bug Fixes
+
+* **ui:** vc-select search fix ([d1de088](https://github.com/VirtoCommerce/vc-shell/commit/d1de08889c64526ed24496e0ee32437bd853e9e4))
+
+
+
 ## [1.0.165](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.164...v1.0.165) (2024-02-14)
 
 

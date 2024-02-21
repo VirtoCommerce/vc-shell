@@ -514,7 +514,7 @@ const defaultValue = ref<Option[]>([]) as Ref<Option[]>;
 
 const optionsList = ref<Option[]>([]) as Ref<Option[]>;
 
-// const optionsList = ref<Option[]>([]) as Ref<Option[]>;
+const optionsTemp = ref<Option[]>([]) as Ref<Option[]>;
 
 const totalItems = ref();
 
@@ -600,16 +600,10 @@ watch(
     } else if (props.options && Array.isArray(props.options)) {
       optionsList.value = props.options as Option[];
     }
+
+    optionsTemp.value = optionsList.value;
   },
   { immediate: true },
-);
-
-watch(
-  () => optionsList.value,
-  (newVal) => {
-    optionsList.value = newVal;
-  },
-  { immediate: true, deep: true },
 );
 
 watch(
@@ -628,6 +622,7 @@ async function onLoadMore() {
       const data = await props.options(filterString.value, optionsList.value.length);
       optionsList.value.push(...(data.results as Option[]));
       totalItems.value = data.totalCount;
+      optionsTemp.value = optionsList.value;
     } finally {
       listLoading.value = false;
     }
@@ -766,6 +761,7 @@ const onDropdownClose = async () => {
   } else {
     optionsList.value = props.options as Option[];
   }
+  optionsTemp.value = optionsList.value;
 
   filterString.value = undefined;
 };
@@ -860,14 +856,16 @@ async function onSearch(value: string) {
   if (props.options && typeof props.options === "function") {
     try {
       listLoading.value = true;
+
       const data = await props.options(filterString.value);
+
       optionsList.value = data.results as Option[];
       totalItems.value = data.totalCount;
     } finally {
       listLoading.value = false;
     }
   } else {
-    optionsList.value = optionsList.value.filter((x: Option) => {
+    optionsList.value = optionsTemp.value.filter((x: Option) => {
       return (x[props.optionLabel as keyof Option] as string).toLowerCase().includes(filterString.value.toLowerCase());
     });
   }

@@ -1,3 +1,13 @@
+## [1.0.168](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.167...v1.0.168) (2024-02-21)
+
+
+### Bug Fixes
+
+* **dynamic:** card visibility fix ([8f224c9](https://github.com/VirtoCommerce/vc-shell/commit/8f224c95549c9aea60b62521143ed7698b22721b))
+* **ui:** vc-select duplicates remove on search when backend totalCount corrupted ([fafce05](https://github.com/VirtoCommerce/vc-shell/commit/fafce051d87267148c4332adbced097aa78644b2))
+
+
+
 ## [1.0.167](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.166...v1.0.167) (2024-02-21)
 
 

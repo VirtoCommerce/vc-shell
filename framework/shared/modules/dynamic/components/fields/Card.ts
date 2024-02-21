@@ -13,7 +13,6 @@ import { CardCollection } from "../factories";
 import componentProps from "./props";
 import { CardSchema } from "../../types";
 import { nodeBuilder } from "../../helpers/nodeBuilder";
-import * as _ from "lodash-es";
 import { unrefNested } from "../../helpers/unrefNested";
 
 export default {
@@ -32,24 +31,31 @@ export default {
 
     const hasNoCommentNodes = (components: (VNodeChild | VNodeNormalizedChildren)[]): boolean => {
       const vnodeIterable = Array.isArray(components) ? components : [components];
-      return _.every(vnodeIterable, (component) => {
-        if (Array.isArray(component) && component.length > 0) {
-          return hasNoCommentNodes(component);
-        }
+      const commentCounter = ref(0);
 
-        if (component && typeof component === "object" && !Array.isArray(component)) {
+      for (const component of vnodeIterable) {
+        if (Array.isArray(component) && component.length > 0) {
+          if (!hasNoCommentNodes(component)) {
+            commentCounter.value++;
+            break;
+          }
+        } else if (component && typeof component === "object" && !Array.isArray(component)) {
           if (Array.isArray(component.children) && component.children.length > 0) {
             // Recursive check for nested components
-            return hasNoCommentNodes(component.children);
+            if (!hasNoCommentNodes(component.children)) {
+              commentCounter.value++;
+              break;
+            }
           }
 
           if (component.el && (component.el as HTMLElement).nodeType === 8) {
-            return false;
+            commentCounter.value++;
+            break;
           }
         }
+      }
 
-        return true;
-      });
+      return commentCounter.value !== vnodeIterable.length;
     };
 
     return () => {

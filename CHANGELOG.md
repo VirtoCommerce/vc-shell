@@ -1,3 +1,17 @@
+## [1.0.168](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.167...v1.0.168) (2024-02-21)
+
+
+### Bug Fixes
+
+* mp-products scope loss ([6f7cfd2](https://github.com/VirtoCommerce/vendor-portal/commit/6f7cfd2b983189652f501324d40e50d2806a9b65))
+
+
+### Features
+
+* variation properties in offer issue ([0a67818](https://github.com/VirtoCommerce/vendor-portal/commit/0a67818bd4e6b933efb0e9fdffe30ae6ffed4620))
+
+
+
 ## [1.0.167](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.166...v1.0.167) (2024-02-15)
 
 

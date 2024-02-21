@@ -1,3 +1,12 @@
+## [1.0.170](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.169...v1.0.170) (2024-02-21)
+
+
+### Bug Fixes
+
+* offer details properties fix ([10d233f](https://github.com/VirtoCommerce/vendor-portal/commit/10d233fa92c88a7a08181ef773661eacdcde2b43))
+
+
+
 ## [1.0.169](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.168...v1.0.169) (2024-02-21)
 
 

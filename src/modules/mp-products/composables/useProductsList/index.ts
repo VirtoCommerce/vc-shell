@@ -32,5 +32,5 @@ export const useProductsListExtended = (args: {
     }),
   );
 
-  return { items, load: loadWrap, loading, query, pagination, remove, scope: computed(() => extendedScope) };
+  return { items, load: loadWrap, loading, query, pagination, remove, scope: computed(() => extendedScope.value) };
 };

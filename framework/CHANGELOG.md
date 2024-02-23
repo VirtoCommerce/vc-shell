@@ -1,3 +1,12 @@
+## [1.0.169](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.168...v1.0.169) (2024-02-23)
+
+
+### Features
+
+* **dynamic:** id style path notation in overrides ([edd8a3b](https://github.com/VirtoCommerce/vc-shell/commit/edd8a3ba6289c9364c548d2fe80cdda1bf3cfa0d))
+
+
+
 ## [1.0.168](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.167...v1.0.168) (2024-02-21)
 
 

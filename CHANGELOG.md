@@ -1,3 +1,12 @@
+## [1.0.171](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.170...v1.0.171) (2024-02-23)
+
+
+### Bug Fixes
+
+* pagination in mp-products ([3c61587](https://github.com/VirtoCommerce/vendor-portal/commit/3c6158793c61bcf51b746e332ae67a5ce01489ad))
+
+
+
 ## [1.0.170](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.169...v1.0.170) (2024-02-21)
 
 

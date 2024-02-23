@@ -2,6 +2,7 @@ import { DynamicBladeList, useBladeNavigation } from "@vc-shell/framework";
 import { useProductsList } from "../../../products/composables/useProductsList";
 import { Ref, computed, ref } from "vue";
 import * as _ from "lodash-es";
+import { ISearchProductsQuery } from "@vcmp-vendor-portal/api/marketplacevendor";
 
 export const useProductsListExtended = (args: {
   props: InstanceType<typeof DynamicBladeList>["$props"];
@@ -11,8 +12,8 @@ export const useProductsListExtended = (args: {
   const { items, load, loading, query, pagination, remove, scope } = useProductsList(args);
   const { openBlade, resolveBladeByName } = useBladeNavigation();
 
-  const loadWrap = async () => {
-    query.value = Object.assign(query.value, { isPublished: true, searchFromAllSellers: true });
+  const loadWrap = async (loadQuery?: ISearchProductsQuery) => {
+    query.value = Object.assign(query.value, loadQuery, { isPublished: true, searchFromAllSellers: true });
 
     await load(query.value);
   };

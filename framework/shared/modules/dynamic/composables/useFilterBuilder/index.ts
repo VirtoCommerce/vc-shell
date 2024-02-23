@@ -127,7 +127,6 @@ export default <Query>(args: {
     });
   }
 
-  // TODO add to documentation support of dynamic data for filter
   function createCheckboxFromData(data: MaybeRef<Record<string, string>[]>, control: FilterCheckbox) {
     if (!(toValue(data) && toValue(data).length)) return;
     return toValue(data).reduce(

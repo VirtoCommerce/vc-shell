@@ -25,17 +25,45 @@ const upsertHelper = (overrides: OverridesSchema, schemaCopy: { [key: string]: D
       overrides.upsert
         ?.filter((x) => clonedSchema.settings.id === x.id)
         .forEach((args) => {
-          const valueByPath = _.get(clonedSchema, args.path);
-          if (Array.isArray(valueByPath) && valueByPath.length && typeof args.value === "object" && "index" in args) {
+          let valueByPath = _.get(clonedSchema, args.path);
+          let currentPath: string | (string | number)[] = args.path;
+
+          // if we can't get value with lodash - try to parse path, cause it could be path with elements id's
+          if (!valueByPath) {
+            const pathParts = args.path.split(".");
+
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            let current: any = clonedSchema;
+            const generatedPath = [];
+            for (const part of pathParts) {
+              if (Array.isArray(current)) {
+                const currentCopy = [...current];
+                current = current.find((x) => Object.entries(x).some(([key, value]) => key === part || value === part));
+
+                const fountElIndex = currentCopy.findIndex((x) => x === current);
+
+                generatedPath.push(fountElIndex);
+              } else {
+                current = current[part];
+                generatedPath.push(part);
+              }
+            }
+
+            currentPath = generatedPath;
+
+            valueByPath = current;
+          }
+
+          if (Array.isArray(valueByPath) && valueByPath.length && typeof args.value === "object") {
             const findIndex = _.findIndex(valueByPath, { id: args.value.id });
 
             const spliced = valueByPath /* @ts-expect-error  - toSpliced is not parsed correctly by ts */
-              .toSpliced(findIndex >= 0 ? findIndex : args.index, findIndex >= 0 ? 1 : 0, args.value);
-            _.set(clonedSchema, args.path, spliced);
+              .toSpliced(findIndex >= 0 ? findIndex : args.index ?? 0, findIndex >= 0 ? 1 : 0, args.value);
+            _.set(clonedSchema, currentPath, spliced);
           } else {
-            _.set(clonedSchema, args.path, args.value);
+            _.set(clonedSchema, currentPath, args.value);
           }
-        }, {});
+        });
       obj[name] = clonedSchema;
       return obj;
     },
@@ -60,9 +88,33 @@ const removeHelper = (overrides: OverridesSchema, schemaCopy: Record<string, Dyn
 };
 
 function removePath(obj: DynamicSchema, path: string) {
-  const parentPath = path.slice(0, path.lastIndexOf("["));
-  _.unset(obj, path);
-  _.update(obj, parentPath, _.compact);
+  const removeItem = _.get(obj, path);
+
+  if (removeItem) {
+    const parentPath = path.slice(0, path.lastIndexOf("["));
+    _.unset(obj, path);
+    _.update(obj, parentPath, _.compact);
+  } else {
+    const pathParts = path.split(".");
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let current: any = obj;
+    const generatedPath = [];
+    for (const part of pathParts) {
+      if (Array.isArray(current)) {
+        const currentCopy = [...current];
+        current = current.find((x) => Object.entries(x).some(([key, value]) => key === part || value === part));
+
+        const foundElIndex = currentCopy.findIndex((x) => x === current);
+
+        generatedPath.push(foundElIndex);
+      } else {
+        current = current[part];
+        generatedPath.push(part);
+      }
+    }
+    _.unset(obj, generatedPath);
+    _.update(obj, generatedPath, _.compact);
+  }
 }
 
 // this part sorts paths with indexes in descending order to avoid deleting items with already changed indexes

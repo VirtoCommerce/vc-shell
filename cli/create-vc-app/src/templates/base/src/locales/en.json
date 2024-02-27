@@ -26,6 +26,12 @@
     }
   },
   "COMPONENTS": {
+    "ATOMS": {
+      "VC_CONTAINER": {
+        "PULL_TO_REFRESH": "Pull to refresh",
+        "REFRESHING": "Refreshing..."
+      }
+    },
     "MOLECULES": {
       "VC_SELECT": {
         "CLICK_TO_SELECT": "Click to select..."
@@ -72,7 +78,8 @@
         "SEARCH": "Search...",
         "EMPTY": "List is empty.",
         "NOT_FOUND": "Nothing found.",
-        "TOTALS": "Totals:"
+        "TOTALS": "Totals:",
+        "MORE": "More"
       },
 
       "VC_POPUP": {
@@ -205,6 +212,63 @@
       "PasswordRequiresDigit": "Passwords must have at least one digit ('0'-'9')",
       "PasswordRequiresNonAlphanumeric": "Passwords must have at least one non alphanumeric character",
       "recentPasswordUsed": "You have used this password in the past. Choose another one."
+    }
+  },
+  "ASSETS_MANAGER": {
+    "TITLE": "Assets",
+    "TOOLBAR": {
+      "SAVE":"Save",
+      "REFRESH":"Refresh",
+      "ADD": "Add",
+      "DELETE": "Delete selected"
+    },
+    "EMPTY": {
+      "NO_ASSETS": "No assets",
+      "UPLOAD_ASSETS": "Drag & drop assets here or click 'Upload' button",
+      "UPLOAD": "Upload"
+    },
+    "TABLE":{
+      "HEADER":{
+        "IMAGE": "Img",
+        "NAME":"Name",
+        "SIZE":"Size",
+        "SORT_ORDER":"Sort order",
+        "CREATED_DATE":"Created date"
+      },
+      "ACTIONS":{
+        "DELETE":"Delete",
+        "EDIT": "Edit"
+      }
+    }
+  },
+  "ASSETS": {
+    "PAGES": {
+      "DETAILS": {
+        "SUBTITLE": "Asset edit",
+        "TOOLBAR": {
+          "SAVE": "Save",
+          "DELETE": "Delete"
+        },
+        "FIELDS": {
+          "SIZE": "Size",
+          "CREATED_DATE": "Created date",
+          "URL": "Url",
+          "COPY":"Copy link",
+          "NAME": {
+            "TITLE": "Asset name",
+            "PLACEHOLDER": "Enter asset name"
+          },
+          "ALT": {
+            "TITLE": "Image alternative text",
+            "PLACEHOLDER": "Enter image alt text",
+            "TOOLTIP": "This text will be displayed in case of disabled/unloaded image on the page"
+          },
+          "DESCRIPTION": {
+            "TITLE": "Meta description",
+            "PLACEHOLDER": "Enter meta description"
+          }
+        }
+      }
     }
   },
   "messages": {

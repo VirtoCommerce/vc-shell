@@ -79,9 +79,10 @@ import {
   type Component,
   ConcreteComponent,
   toRefs,
+  provide,
 } from "vue";
 import { DynamicDetailsSchema, FormContentSchema, SettingsSchema } from "../types";
-import { reactiveComputed, useMounted, useTemplateRefsList } from "@vueuse/core";
+import { reactiveComputed, toReactive, useMounted, useTemplateRefsList } from "@vueuse/core";
 import {
   DetailsBladeContext,
   DetailsBaseBladeScope,
@@ -336,6 +337,8 @@ onBeforeClose(async () => {
     );
   }
 });
+
+provide("bladeContext", toReactive(bladeContext));
 
 defineExpose({
   title: bladeTitle ?? "",

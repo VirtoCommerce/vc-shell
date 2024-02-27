@@ -24,10 +24,12 @@
         :style="{ height: dist ? `${dist}px` : '0px' }"
       >
         <VcIcon
-          icon="fas fa-spinner"
-          :style="{ 'tw-font-size': `${dist / 2}px` }"
-          class="vc-container__overscroll-icon"
+          :icon="status === 'pulling' ? 'fas fa-arrow-down' : 'fas fa-sync'"
+          :class="[iconClass]"
+          :style="{ transform: status === 'pulling' ? `rotate(${dist * 3}deg)` : '' }"
         ></VcIcon>
+        <span v-if="status === 'pulling'">{{ $t("COMPONENTS.ATOMS.VC_CONTAINER.PULL_TO_REFRESH") }}</span>
+        <span v-else-if="status === 'loosing'">{{ $t("COMPONENTS.ATOMS.VC_CONTAINER.REFRESHING") }}</span>
       </div>
       <slot></slot>
     </div>
@@ -72,6 +74,15 @@ onMounted(() => {
 });
 
 const touchable = computed(() => status.value !== "refresh" && status.value !== "success");
+
+const iconClass = computed(() => {
+  if (status.value === "loosing") {
+    return "vc-container__overscroll-icon_refresh";
+  } else if (status.value === "pulling") {
+    return "vc-container__overscroll-icon_pulling";
+  }
+  return "vc-container__overscroll-icon";
+});
 
 const scrollTop = () => {
   if (component.value) {
@@ -178,15 +189,27 @@ defineExpose({
   }
 
   &__overscroll {
-    @apply tw-relative tw-w-full tw-flex tw-items-start tw-justify-center tw-overflow-hidden;
+    @apply tw-relative tw-w-full tw-flex tw-items-start tw-justify-center tw-overflow-hidden tw-gap-2;
 
-    &-icon {
-      @apply tw-text-[color:#a1c0d4] tw-animate-spin;
-    }
-
-    &_passed &-icon {
+    &_passed {
       @apply tw-text-[#43b0e6];
     }
+  }
+
+  &__overscroll-icon {
+    @apply tw-text-[color:#a1c0d4];
+
+    &_pulling {
+      @apply tw-text-[color:#a1c0d4];
+    }
+
+    &_refresh {
+      animation: tw-spin 2s linear infinite;
+    }
+  }
+
+  &__overscroll span {
+    @apply tw-mb-2 tw-text-sm tw-text-gray-500;
   }
 
   &__inner {
@@ -212,6 +235,15 @@ defineExpose({
 
   &_nopadding &__inner {
     @apply tw-p-0;
+  }
+}
+
+@keyframes tw-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
   }
 }
 </style>

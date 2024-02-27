@@ -89,8 +89,8 @@ export type NotificationTemplateConstructor = ComponentPublicInstanceConstructor
 export interface IActionBuilderResult<T = {}> {
   icon: string;
   title: string | Ref<string>;
-  variant: string;
-  leftActions?: boolean;
+  type: "danger" | "success";
+  position: "right" | "left";
   clickHandler(item?: T): void;
 }
 

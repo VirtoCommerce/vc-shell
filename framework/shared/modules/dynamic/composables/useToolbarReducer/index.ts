@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { IBladeToolbar } from "../../../../../core/types";
 import * as _ from "lodash-es";
-import { SettingsSchema } from "../../types";
+import { SettingsSchema, ToolbarSchema } from "../../types";
 import { BaseBladeScope, DetailsBladeContext, ListBladeContext } from "../../factories/types";
 import { useI18n } from "vue-i18n";
 import { toValue } from "@vueuse/core";
@@ -13,7 +13,7 @@ export const useToolbarReducer = (args: {
   customToolbarConfig: BaseBladeScope["toolbarOverrides"];
   context: UnwrapNestedRefs<DetailsBladeContext> | UnwrapNestedRefs<ListBladeContext>;
   scope: ComputedRef<BaseBladeScope> | undefined;
-}): UnwrapNestedRefs<ComputedRef<IBladeToolbar[]>> | undefined => {
+}): UnwrapNestedRefs<ComputedRef<(IBladeToolbar & ToolbarSchema)[]>> | undefined => {
   if (!args) return;
 
   const { t } = useI18n({ useScope: "global" });

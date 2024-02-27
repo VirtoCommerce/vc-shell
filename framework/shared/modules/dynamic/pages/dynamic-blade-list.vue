@@ -44,6 +44,8 @@
         :items="itemsProxy as Record<string, any>[]"
         :multiselect="isWidgetView ? false : tableData?.multiselect"
         :header="isWidgetView ? false : tableData?.header"
+        :item-action-builder="actionBuilder"
+        :enable-item-actions="!!tableData?.actions"
         :footer="!isWidgetView"
         :sort="sort"
         :pages="pagination?.pages"
@@ -55,6 +57,7 @@
         :active-filter-count="activeFilterCount"
         :reorderable-rows="isWidgetView ? false : tableData?.reorderableRows"
         :pull-to-reload="!isWidgetView"
+        :select-all="tableData?.selectAll"
         @item-click="onItemClick"
         @pagination-click="onPaginationClick"
         @selection-changed="onSelectionChanged"
@@ -63,6 +66,7 @@
         @scroll:ptr="reload"
         @search:change="onSearchList"
         @row:reorder="sortRows"
+        @select:all="handleSelectAllItems"
       >
         <template
           v-if="isFilterVisible"
@@ -76,6 +80,7 @@
           <template v-if="tableTemplates?.notFound">
             <component
               :is="tableTemplates.notFound"
+              :context="bladeContext"
               @reset="resetSearch"
             ></component>
           </template>
@@ -101,6 +106,7 @@
               :class="{
                 'tw-py-6': isWidgetView,
               }"
+              :context="bladeContext"
               @add="openDetailsBlade"
             ></component>
           </template>
@@ -156,19 +162,21 @@ import {
   ComputedRef,
   onBeforeMount,
   toRefs,
+  provide,
 } from "vue";
 import { useI18n } from "vue-i18n";
-import { DynamicGridSchema, ListContentSchema, SettingsSchema } from "../types";
+import { DynamicGridSchema, ListContentSchema, SettingsSchema, ToolbarSchema } from "../types";
 import { useFilterBuilder, useTableTemplates } from "../composables";
 import { useFunctions, useNotifications } from "../../../../core/composables";
-import { ITableColumns } from "../../../../core/types";
+import { IActionBuilderResult, IBladeToolbar, ITableColumns } from "../../../../core/types";
 import { useToolbarReducer } from "../composables/useToolbarReducer";
 import { notification, usePopup } from "../../../components";
 import { ListBaseBladeScope, ListBladeContext, UseList } from "../factories/types";
 import { IParentCallArgs } from "../../../index";
 import * as _ from "lodash-es";
-import { useMounted } from "@vueuse/core";
+import { toReactive, useMounted } from "@vueuse/core";
 import { safeIn } from "../helpers/safeIn";
+import { isRef } from "vue";
 
 export interface Props {
   expanded?: boolean;
@@ -357,7 +365,7 @@ const toolbarComputed =
             await removeItems();
           },
           disabled: computed(() => !selectedIds.value?.length),
-          isVisible: isDesktop.value,
+          // isVisible: computed(() => isDesktop.value),
         },
       },
       customToolbarConfig: toValue(scope)?.toolbarOverrides,
@@ -585,6 +593,42 @@ function updateActiveWidgetCount() {
     method: "updateActiveWidgetCount",
   });
 }
+
+async function handleSelectAllItems(all: boolean) {
+  allSelected.value = all;
+}
+
+// TODO add to documentation
+function actionBuilder(): IActionBuilderResult[] | undefined {
+  const result = tableData?.value?.actions?.map((action) => {
+    return {
+      icon: action.icon,
+      title: computed(() => t(action.title)),
+      type: action.type,
+      position: action.position,
+      clickHandler: async (itemVal: (typeof items.value)[number]) => {
+        try {
+          if (isRef(toolbarComputed) && toolbarComputed.value && toolbarComputed.value.length > 0) {
+            const toolbarItem = toolbarComputed.value.find((x) => x.method === action.method);
+            selectedIds.value = [itemVal.id];
+            if (toolbarItem) {
+              await toolbarItem.clickHandler?.();
+            } else {
+              await toValue(scope)?.[action.method]?.(itemVal);
+            }
+            selectedIds.value = [];
+          }
+        } catch (error) {
+          throw new Error(`Method ${action.method} is not defined in scope or toolbarOverrides`);
+        }
+      },
+    };
+  });
+
+  return result;
+}
+
+provide("bladeContext", toReactive(bladeContext));
 
 defineExpose({
   reload,

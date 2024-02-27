@@ -64,7 +64,7 @@
         v-if="items && items.length"
         ref="scrollContainer"
         :no-padding="true"
-        class="tw-grow tw-basis-0"
+        class="tw-grow tw-basis-0 tw-relative"
         :use-ptr="pullToReload"
         @scroll:ptr="$emit('scroll:ptr')"
       >
@@ -77,8 +77,10 @@
               :item="item"
               :action-builder="itemActionBuilder"
               :swiping-item="mobileSwipeItem"
+              :is-selected="isSelected(item)"
               @click="$emit('itemClick', item)"
               @swipe-start="handleSwipe"
+              @select="rowCheckbox(item)"
             >
               <slot
                 name="mobile-item"
@@ -118,7 +120,7 @@
                 </div>
               </th>
               <th
-                v-if="itemActionBuilder"
+                v-if="enableItemActions && itemActionBuilder"
                 class="tw-h-[42px] tw-w-[21px] tw-max-w-[21px] tw-min-w-[21px] tw-bg-[#f9f9f9] tw-m-w-[70px] !tw-border-0 tw-shadow-[inset_0px_1px_0px_#eaedf3,_inset_0px_-1px_0px_#eaedf3] tw-box-border tw-sticky tw-top-0 tw-select-none tw-z-[1]"
               >
                 <div class="tw-w-3 tw-top-0 tw-bottom-0 tw-absolute tw-right-0 tw-flex tw-justify-end">
@@ -262,7 +264,7 @@
                 <div class="tw-w-px tw-top-0 tw-bottom-0 tw-absolute tw-right-0 tw-bg-[#e5e7eb]"></div>
               </td>
               <td
-                v-if="itemActionBuilder && typeof item === 'object'"
+                v-if="enableItemActions && itemActionBuilder && typeof item === 'object'"
                 class="tw-box-border tw-overflow-visible tw-w-[21px] tw-max-w-[21px] tw-min-w-[21px] tw-relative"
                 @click.stop
               >
@@ -298,7 +300,7 @@
                         :key="i"
                         :class="[
                           'tw-flex tw-flex-row tw-items-center tw-text-[#319ed4] tw-cursor-pointer',
-                          `vc-table__body-actions-item_${itemAction.variant}`,
+                          `vc-table__body-actions-item_${itemAction.type}`,
                         ]"
                         @click.stop="itemAction.clickHandler(item)"
                       >
@@ -477,7 +479,7 @@ const props = withDefaults(
   defineProps<{
     columns: ITableColumns[];
     items: T[];
-    itemActionBuilder?: (item: T) => IActionBuilderResult[];
+    itemActionBuilder?: (item: T) => IActionBuilderResult[] | undefined;
     sort?: string;
     multiselect?: boolean;
     expanded?: boolean;
@@ -500,6 +502,7 @@ const props = withDefaults(
     reorderableRows?: boolean;
     stateKey: string;
     selectAll?: boolean;
+    enableItemActions?: boolean;
   }>(),
   {
     items: () => [],
@@ -788,12 +791,14 @@ const arrowStyle = computed(() => {
 });
 
 async function calculateActions(items: T[]) {
-  if (typeof props.itemActionBuilder === "function") {
-    const populatedItems = [];
+  if (props.enableItemActions && typeof props.itemActionBuilder === "function") {
+    const populatedItems: IActionBuilderResult[][] = [];
     for (let index = 0; index < items.length; index++) {
       if (typeof items[index] === "object") {
         const elementWithActions = await props.itemActionBuilder(items[index]);
-        populatedItems.push(elementWithActions);
+        if (elementWithActions) {
+          populatedItems.push(elementWithActions);
+        }
       }
     }
     itemActions.value = populatedItems;

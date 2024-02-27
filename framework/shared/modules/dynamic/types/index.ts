@@ -58,7 +58,7 @@ export interface SettingsDetails extends SettingsBase {
 
 export type IViewComponentName = "DynamicBladeForm" | "DynamicBladeList";
 
-type ToolbarSchema = {
+export type ToolbarSchema = {
   id: string;
   title: string;
   icon: string;
@@ -162,6 +162,14 @@ export interface ListContentSchema {
         };
   })[];
   reorderableRows?: boolean;
+  // TODO Add to documentation
+  selectAll?: boolean;
+  // TODO Add to documentation
+  actions?: (ToolbarSchema & {
+    position: "right" | "left";
+    type: "danger" | "success";
+    method: string;
+  })[];
   mobileTemplate?: {
     component: string;
   };

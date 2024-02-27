@@ -25,6 +25,7 @@
         :header="false"
         :footer="false"
         :item-action-builder="!readonly ? actionBuilder : undefined"
+        :enable-item-actions="!readonly"
         :multiselect="!readonly"
         class="tw-h-full tw-w-full"
         @item-click="onItemClick"
@@ -34,14 +35,21 @@
         <!-- Empty template -->
         <template #empty>
           <div class="tw-w-full tw-h-full tw-box-border tw-flex tw-flex-col tw-items-center tw-justify-center">
-            <VcIcon
-              icon="fas fa-cloud-upload-alt"
-              class="tw-text-[100px] tw-text-[#41afe6]"
-            ></VcIcon>
-            <div class="tw-m-4 tw-text-xl tw-font-medium">
-              {{ t("ASSETS_MANAGER.EMPTY.NO_ASSETS") }}
-            </div>
-            <VcButton @click="toggleUploader">{{ t("ASSETS_MANAGER.EMPTY.UPLOAD") }}</VcButton>
+            <template v-if="!readonly">
+              <VcIcon
+                icon="fas fa-cloud-upload-alt"
+                class="tw-text-[100px] tw-text-[#41afe6]"
+              ></VcIcon>
+              <div class="tw-m-4 tw-text-xl tw-font-medium">
+                {{ t("ASSETS_MANAGER.EMPTY.UPLOAD_ASSETS") }}
+              </div>
+              <VcButton @click="toggleUploader">{{ t("ASSETS_MANAGER.EMPTY.UPLOAD") }}</VcButton>
+            </template>
+            <template v-else>
+              <div class="tw-m-4 tw-text-xl tw-font-medium">
+                {{ t("ASSETS_MANAGER.EMPTY.NO_ASSETS") }}
+              </div>
+            </template>
           </div>
         </template>
 
@@ -73,7 +81,7 @@
           </div>
         </template>
 
-        <!-- Overide order column -->
+        <!-- Override order column -->
         <template #item_sortOrder="{ item }">
           <div>
             {{ item.sortOrder }}
@@ -176,7 +184,7 @@ const props = withDefaults(defineProps<Props>(), {
   param: undefined,
 });
 
-const emit = defineEmits<Emits>();
+defineEmits<Emits>();
 
 defineOptions({
   name: "AssetsManager",
@@ -197,15 +205,6 @@ const { openBlade, resolveBladeByName } = useBladeNavigation();
 
 const bladeToolbar = ref<IBladeToolbar[]>([
   {
-    id: "save",
-    title: computed(() => t("ASSETS_MANAGER.TOOLBAR.SAVE")),
-    icon: "fas fa-save",
-    clickHandler() {
-      emit("close:blade");
-    },
-    disabled: computed(() => !modified.value || readonly.value),
-  },
-  {
     id: "add",
     title: computed(() => t("ASSETS_MANAGER.TOOLBAR.ADD")),
     icon: "fas fa-plus",
@@ -213,6 +212,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
       toggleUploader();
     },
     disabled: computed(() => readonly.value),
+    isVisible: computed(() => !readonly.value),
   },
   {
     id: "delete",
@@ -224,6 +224,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
       }
     },
     disabled: computed(() => !selectedItems.value.length || readonly.value),
+    isVisible: computed(() => !readonly.value),
   },
 ]);
 
@@ -363,7 +364,8 @@ const actionBuilder = (): IActionBuilderResult<ICommonAsset>[] => {
   result.push({
     icon: "fas fa-edit",
     title: computed(() => t("ASSETS_MANAGER.TABLE.ACTIONS.EDIT")),
-    variant: "success",
+    type: "success",
+    position: "right",
     clickHandler(item: ICommonAsset) {
       onItemClick(item);
     },
@@ -372,8 +374,8 @@ const actionBuilder = (): IActionBuilderResult<ICommonAsset>[] => {
   result.push({
     icon: "fas fa-trash",
     title: computed(() => t("ASSETS_MANAGER.TABLE.ACTIONS.DELETE")),
-    variant: "danger",
-    leftActions: true,
+    type: "danger",
+    position: "left",
     async clickHandler(item: ICommonAsset) {
       defaultAssets.value = await props.options.assetsRemoveHandler([item]);
       selectedItems.value = [];

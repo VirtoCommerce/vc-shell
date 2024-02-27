@@ -9,6 +9,7 @@ import * as sharedPages from "./shared/pages/plugin";
 import { registerInterceptors } from "./core/interceptors";
 import { usePermissions } from "./core/composables/usePermissions";
 import { useUser } from "./core/composables/useUser";
+import Vue3TouchEvents from "vue3-touch-events";
 
 import "normalize.css";
 import "./assets/styles/index.scss";
@@ -87,6 +88,9 @@ export default {
 
     // Permissions check
     app.use(permissions);
+
+    // Touch events
+    app.use<[]>(Vue3TouchEvents);
 
     // Common pages
     Object.values(sharedPages).forEach((page) => {

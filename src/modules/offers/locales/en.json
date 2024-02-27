@@ -43,8 +43,7 @@
             "MIN_QTY": "Min quantity"
           },
           "ACTIONS": {
-            "UNPUBLISH": "Unpublish",
-            "PUBLISH": "Publish"
+            "DELETE": "Delete"
           }
         },
         "NOT_FOUND": {

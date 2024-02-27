@@ -50,6 +50,17 @@ export const grid: DynamicGridSchema = {
         component: "OffersNotFoundGridTemplate",
       },
       multiselect: true,
+      selectAll: true,
+      actions: [
+        {
+          id: "deleteItem",
+          icon: "fas fa-trash",
+          title: "OFFERS.PAGES.LIST.TABLE.ACTIONS.DELETE",
+          type: "danger",
+          position: "left",
+          method: "removeItems",
+        },
+      ],
       columns: [
         {
           id: "imgSrc",

@@ -7,14 +7,13 @@
     <template v-if="isLogin">
       <VcForm @submit.prevent="login">
         <Field
-          v-slot="{ field, errorMessage, handleChange, errors }"
+          v-slot="{ errorMessage, handleChange, errors }"
           :label="t('LOGIN.FIELDS.LOGIN.LABEL')"
           name="username"
           :model-value="form.username"
           rules="required"
         >
           <VcInput
-            v-bind="field"
             ref="loginField"
             v-model="form.username"
             class="tw-mb-4 tw-mt-1"
@@ -27,14 +26,13 @@
           />
         </Field>
         <Field
-          v-slot="{ field, errorMessage, handleChange, errors }"
+          v-slot="{ errorMessage, handleChange, errors }"
           :label="t('LOGIN.FIELDS.PASSWORD.LABEL')"
           name="password"
           :model-value="form.password"
           rules="required"
         >
           <VcInput
-            v-bind="field"
             ref="passwordField"
             v-model="form.password"
             class="tw-mb-4"
@@ -78,6 +76,7 @@
         <div
           class="tw-flex tw-items-center tw-text-center tw-uppercase tw-text-[color:var(--separator-text)] before:tw-content-[''] before:tw-flex-1 before:tw-border-b before:tw-border-b-[color:var(--separator)] before:tw-mr-2 after:tw-content-[''] after:tw-flex-1 after:tw-border-b after:tw-border-b-[color:var(--separator)] after:tw-ml-2"
         >
+          <!-- TODO add to localization -->
           OR
         </div>
         <div class="tw-flex tw-justify-center tw-mt-4 tw-flex-wrap tw-gap-2">
@@ -198,7 +197,7 @@ const props = defineProps<Props>();
 
 const router = useRouter();
 
-useForm({ validateOnMount: false });
+const { setFieldError, resetForm, setErrors, validateField } = useForm({ validateOnMount: false });
 const { uiSettings, loading: customizationLoading } = useSettings();
 const { t } = useI18n({ useScope: "global" });
 let useLogin;
@@ -253,6 +252,7 @@ const forgotPasswordForm = reactive({
 
 const login = async () => {
   if (isValid.value) {
+    signInResult.value.error = "";
     signInResult.value = (await signIn(form.username, form.password)) as SignInResult & {
       status?: number;
       error?: any;
@@ -264,6 +264,8 @@ const login = async () => {
       if (signInResult.value.status) {
         if (signInResult.value.status === 401) {
           signInResult.value.error = "The login or password is incorrect.";
+          form.password = "";
+          validateField("password");
         } else {
           signInResult.value.error = "Authentication error (code: " + signInResult.value.status + ").";
         }
@@ -288,6 +290,7 @@ const forgot = async () => {
 
 const togglePassRequest = () => {
   isLogin.value = !isLogin.value;
+  signInResult.value.error = "";
   if (isLogin.value) {
     forgotPasswordRequestSent.value = false;
     forgotPasswordForm.loginOrEmail = "";

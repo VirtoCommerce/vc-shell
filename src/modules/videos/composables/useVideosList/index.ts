@@ -20,14 +20,18 @@ import { computed, ref, Ref, onBeforeMount } from "vue";
 const { getApiClient } = useApiClient(VcmpSellerCatalogClient);
 
 export interface VideosListScope extends ListBaseBladeScope {
+  disabled?: boolean;
   toolbarOverrides: {
     save: IBladeToolbar;
     openAddBlade: IBladeToolbar;
+    removeItems: IBladeToolbar;
   };
 }
 
 export const useVideosList = (args: {
-  props: InstanceType<typeof DynamicBladeList>["$props"] & { options: { catalogProduct: SellerProduct } };
+  props: InstanceType<typeof DynamicBladeList>["$props"] & {
+    options: { catalogProduct: SellerProduct; disabled?: boolean };
+  };
   emit: InstanceType<typeof DynamicBladeList>["$emit"];
   mounted: Ref<boolean>;
 }): UseList<Video[], ISearchVideosQuery, VideosListScope> => {
@@ -67,6 +71,7 @@ export const useVideosList = (args: {
   const scope = ref<VideosListScope>({
     openDetailsBlade,
     markProductDirty,
+    disabled: args.props.options.disabled,
     toolbarOverrides: {
       save: {
         async clickHandler(args) {
@@ -74,11 +79,16 @@ export const useVideosList = (args: {
           await markProductDirty();
           await load(query.value);
         },
+        isVisible: computed(() => !args.props.options.disabled),
       },
       openAddBlade: {
         async clickHandler() {
           await openDetailsBlade();
         },
+        isVisible: computed(() => !args.props.options.disabled),
+      },
+      removeItems: {
+        isVisible: computed(() => !args.props.options.disabled),
       },
     },
   });

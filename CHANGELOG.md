@@ -1,3 +1,16 @@
+## [1.0.170](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.169...v1.0.170) (2024-02-27)
+
+
+### Features
+
+* **create-vc-app:** updated localizations ([ebb3839](https://github.com/VirtoCommerce/vc-shell/commit/ebb38390b1208da522281efd8a6e54f027d12b9d))
+* **dynamic:** support of table actions, improved mobile swipe ([ccd4553](https://github.com/VirtoCommerce/vc-shell/commit/ccd4553a58ac3093fc8108351e09d5152349b2fb))
+* **framework:** removed redundant localizations, moved to app ([9eb0ca7](https://github.com/VirtoCommerce/vc-shell/commit/9eb0ca789f75e4959e9d3d61eaebb2f8723511df))
+* **sample:** updated localizations ([5524e2f](https://github.com/VirtoCommerce/vc-shell/commit/5524e2f2ee1be161734f2f9d5a264fabe559ac0d))
+* **shared:** field validation improvements ([e36f900](https://github.com/VirtoCommerce/vc-shell/commit/e36f9009940b5b91d4a20552dd033b854ef30af6))
+
+
+
 ## [1.0.169](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.168...v1.0.169) (2024-02-23)
 
 

@@ -1,3 +1,12 @@
+## [1.0.170](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.169...v1.0.170) (2024-02-27)
+
+
+### Features
+
+* **sample:** updated localizations ([5524e2f](https://github.com/VirtoCommerce/vc-shell/commit/5524e2f2ee1be161734f2f9d5a264fabe559ac0d))
+
+
+
 ## [1.0.169](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.168...v1.0.169) (2024-02-23)
 
 

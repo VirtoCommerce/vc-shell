@@ -11,16 +11,16 @@
 
 <script setup lang="ts">
 import { VcWidget, useApiClient, useAsync, useBladeNavigation } from "@vc-shell/framework";
-import { onMounted, ref } from "vue";
+import { UnwrapNestedRefs, onMounted, ref } from "vue";
 import {
   VcmpSellerCatalogClient,
   ISearchOffersQuery,
   SearchOffersQuery,
 } from "@vcmp-vendor-portal/api/marketplacevendor";
+import { useProductDetails } from "../../../composables/useProductDetails";
 
 interface Props {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  modelValue: { item: { [x: string]: any; id: string } };
+  modelValue: UnwrapNestedRefs<ReturnType<typeof useProductDetails>>;
 }
 
 const props = defineProps<Props>();

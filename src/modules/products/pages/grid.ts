@@ -49,6 +49,17 @@ export const grid: DynamicGridSchema = {
       id: "productsGrid",
       component: "vc-table",
       multiselect: true,
+      selectAll: true,
+      actions: [
+        {
+          id: "deleteItem",
+          icon: "fas fa-trash",
+          title: "PRODUCTS.PAGES.LIST.TABLE.ACTIONS.DELETE",
+          type: "danger",
+          position: "left",
+          method: "removeItems",
+        },
+      ],
       mobileTemplate: {
         component: "ProductsMobileGridView",
       },

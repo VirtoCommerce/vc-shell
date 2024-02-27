@@ -41,6 +41,9 @@
             "GTIN": "Code",
             "PUBLISHED": "Is published",
             "PRODUCT_TYPE": "Product type"
+          },
+          "ACTIONS": {
+            "DELETE": "Delete"
           }
         },
         "FILTERS": {

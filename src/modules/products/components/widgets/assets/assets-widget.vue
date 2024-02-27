@@ -9,25 +9,28 @@
   </VcWidget>
 </template>
 
-<script setup lang="ts" generic="T extends UnwrapNestedRefs<DetailsBladeContext & { item: { assets?: Asset[] } }>">
-import { DetailsBladeContext, VcWidget, useBladeNavigation, usePopup, useAssets } from "@vc-shell/framework";
+<script setup lang="ts">
+import { VcWidget, useBladeNavigation, usePopup, useAssets, useUser } from "@vc-shell/framework";
 import { UnwrapNestedRefs, computed, ref, watch } from "vue";
 import { Asset } from "@vcmp-vendor-portal/api/marketplacevendor";
 import { useI18n } from "vue-i18n";
 import * as _ from "lodash-es";
+import { useProductDetails } from "../../../composables/useProductDetails";
 
 const props = defineProps<{
-  modelValue: T;
+  // TODO Add to documentation
+  modelValue: UnwrapNestedRefs<ReturnType<typeof useProductDetails>>;
 }>();
 
 const emit = defineEmits<{
-  (event: "update:modelValue", context: T): void;
+  (event: "update:modelValue", context: UnwrapNestedRefs<ReturnType<typeof useProductDetails>>): void;
 }>();
 
 const { openBlade, resolveBladeByName } = useBladeNavigation();
 const { showConfirmation } = usePopup();
 const { t } = useI18n({ useScope: "global" });
 const { edit, upload, remove, loading } = useAssets();
+const { user } = useUser();
 const modelValue = ref(props.modelValue);
 const widgetOpened = ref(false);
 const internalModel = ref();
@@ -53,6 +56,7 @@ function clickHandler() {
         assetsEditHandler: assetsHandler?.edit,
         assetsUploadHandler: assetsHandler?.upload,
         assetsRemoveHandler: assetsHandler?.remove,
+        disabled: props.modelValue.scope?.disabled || props.modelValue.item?.createdBy !== user.value?.userName,
       },
       onOpen() {
         widgetOpened.value = true;

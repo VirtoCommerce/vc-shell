@@ -10,17 +10,17 @@
 </template>
 
 <script setup lang="ts">
-import { VcWidget, useApiClient, useAsync, useBladeNavigation } from "@vc-shell/framework";
-import { onMounted, ref } from "vue";
+import { VcWidget, useApiClient, useAsync, useBladeNavigation, useUser } from "@vc-shell/framework";
+import { UnwrapNestedRefs, onMounted, ref } from "vue";
 import {
   VcmpSellerCatalogClient,
   ISearchVideosQuery,
   SearchVideosQuery,
 } from "@vcmp-vendor-portal/api/marketplacevendor";
+import { useProductDetails } from "../../../composables/useProductDetails";
 
 interface Props {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  modelValue: { [x: string]: any; item: { id: string; stagedProductDataId: string } };
+  modelValue: UnwrapNestedRefs<ReturnType<typeof useProductDetails>>;
 }
 
 const props = defineProps<Props>();
@@ -29,6 +29,7 @@ const { getApiClient } = useApiClient(VcmpSellerCatalogClient);
 const client = getApiClient();
 
 const { openBlade, resolveBladeByName } = useBladeNavigation();
+const { user } = useUser();
 
 const widgetOpened = ref(false);
 const count = ref(0);
@@ -39,6 +40,7 @@ function clickHandler() {
       blade: resolveBladeByName("Videos"),
       options: {
         catalogProduct: props.modelValue?.item,
+        disabled: props.modelValue.scope?.disabled || props.modelValue.item?.createdBy !== user.value?.userName,
       },
       onOpen() {
         widgetOpened.value = true;
@@ -58,7 +60,7 @@ async function populateCounter() {
   count.value =
     (await getCount({
       take: 0,
-      ownerIds: [props.modelValue?.item?.stagedProductDataId],
+      ownerIds: [props.modelValue?.item?.stagedProductDataId ?? ""],
     })) ?? 0;
 }
 

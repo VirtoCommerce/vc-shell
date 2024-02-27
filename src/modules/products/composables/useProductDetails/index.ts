@@ -47,7 +47,6 @@ export interface ProductDetailsScope extends DetailsBaseBladeScope {
   propertiesCardVisibility: ComputedRef<boolean>;
   statusText: ComputedRef<string | null>;
   setCategory: (selectedCategory: Category) => Promise<void>;
-  // assetsHandler: AssetsHandler<Image>;
   toolbarOverrides: {
     saveChanges: IBladeToolbar;
     remove: IBladeToolbar;

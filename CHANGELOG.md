@@ -1,3 +1,15 @@
+## [1.0.172](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.171...v1.0.172) (2024-02-27)
+
+
+### Features
+
+* **offers:** actions in grid ([4a4c547](https://github.com/VirtoCommerce/vendor-portal/commit/4a4c547eb3033679db6b35998a1c19c7417d6d4f))
+* **products:** updated widgets, actions in grid ([daf7fc8](https://github.com/VirtoCommerce/vendor-portal/commit/daf7fc8859fce968ca52d74a8fb98a590d906cf9))
+* updated localization ([c039ad8](https://github.com/VirtoCommerce/vendor-portal/commit/c039ad89cd317fb01412d2bc6aa9f762eb6621bb))
+* **videos:** add disabled state to VideosEmptyGridTemplate and useVideosList ([114d70b](https://github.com/VirtoCommerce/vendor-portal/commit/114d70b56dd492ccc75602b2a994e0adaaaf0a74))
+
+
+
 ## [1.0.171](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.170...v1.0.171) (2024-02-23)
 
 

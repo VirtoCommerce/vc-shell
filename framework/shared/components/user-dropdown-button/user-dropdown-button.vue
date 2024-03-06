@@ -4,6 +4,7 @@
     class="user-dropdown-button"
     :class="{
       'user-dropdown-button_active': accountMenuVisible,
+      'tw-w-auto': disabled,
     }"
     @click.stop="toggleAccountMenuVisible"
   >

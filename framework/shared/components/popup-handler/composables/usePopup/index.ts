@@ -12,12 +12,15 @@ import {
   MaybeRef,
   unref,
   DefineComponent,
+  h,
 } from "vue";
 import { PopupPlugin, UsePopupInternal, UsePopupProps } from "./../../types";
 import { popupPluginInstance } from "./../../plugin";
 import { useI18n } from "vue-i18n";
 import { ComponentPublicInstanceConstructor } from "../../../../utilities/vueUtils";
 import * as _ from "lodash-es";
+import vcPopupWarning from "../../../common/popup/vc-popup-warning.vue";
+import vcPopupError from "../../../common/popup/vc-popup-error.vue";
 
 interface IUsePopup {
   open(): void;
@@ -85,10 +88,8 @@ export function usePopup<T extends ComponentPublicInstanceConstructor<any> = typ
   async function showConfirmation(message: string | Ref<string>): Promise<boolean> {
     let resolvePromise: (value: boolean | PromiseLike<boolean>) => void;
     const confirmation = createInstance({
-      component: VcPopup,
+      component: vcPopupWarning,
       props: {
-        type: "warning",
-        variant: "small",
         title: t("COMPONENTS.ORGANISMS.VC_POPUP.TITLE.CONFIRMATION"),
       },
       emits: {
@@ -102,7 +103,7 @@ export function usePopup<T extends ComponentPublicInstanceConstructor<any> = typ
         },
       },
       slots: {
-        default: message,
+        content: message,
       },
     });
 
@@ -117,10 +118,8 @@ export function usePopup<T extends ComponentPublicInstanceConstructor<any> = typ
 
   function showError(message: string | Ref<string>) {
     const confirmation = createInstance({
-      component: VcPopup,
+      component: vcPopupError,
       props: {
-        type: "error",
-        variant: "small",
         title: t("COMPONENTS.ORGANISMS.VC_POPUP.TITLE.ERROR"),
       },
       emits: {
@@ -129,7 +128,7 @@ export function usePopup<T extends ComponentPublicInstanceConstructor<any> = typ
         },
       },
       slots: {
-        default: message,
+        content: message,
       },
     });
 

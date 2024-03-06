@@ -12,6 +12,7 @@
     >
       <div
         v-if="typeof slot === 'string'"
+        class="tw-h-full tw-w-full"
         v-html="slot"
       ></div>
       <component

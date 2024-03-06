@@ -1,11 +1,12 @@
 <template>
   <VcPopup
-    variant="small"
     :title="t('COMPONENTS.CHANGE_PASSWORD.TITLE')"
+    is-mobile-fullscreen
     @close="$emit('close')"
   >
-    <div class="change-password tw-p-3 tw-overflow-scroll">
-      <VcForm>
+    <template #content>
+      <!-- <div class="change-password tw-p-3 tw-overflow-scroll"> -->
+      <VcForm class="tw-flex tw-flex-col tw-flex-auto">
         <Field
           v-slot="{ field, errorMessage, errors }"
           :label="t('COMPONENTS.CHANGE_PASSWORD.CURRENT_PASSWORD.LABEL')"
@@ -69,11 +70,15 @@
             @update:model-value="validate"
           ></VcInput>
         </Field>
-        <div class="tw-flex tw-justify-center tw-items-center tw-pt-2">
-          <span
-            v-if="$isDesktop.value"
-            class="tw-grow tw-basis-0"
-          ></span>
+      </VcForm>
+    </template>
+    <template #footer>
+      <div class="tw-flex tw-flex-col tw-flex-auto">
+        <div class="tw-flex tw-justify-between tw-flex-auto">
+          <!-- <span
+          v-if="$isDesktop.value"
+          class="tw-grow tw-basis-0"
+        ></span> -->
           <VcButton
             :outline="true"
             class="tw-mr-3"
@@ -88,7 +93,6 @@
             {{ t("COMPONENTS.CHANGE_PASSWORD.SAVE") }}
           </VcButton>
         </div>
-
         <VcHint
           v-for="(err, i) in form.errors"
           :key="i"
@@ -99,8 +103,10 @@
             (err as IIdentityError).code ? t(`COMPONENTS.CHANGE_PASSWORD.ERRORS.${(err as IIdentityError).code}`) : err
           }}
         </VcHint>
-      </VcForm>
-    </div>
+      </div>
+    </template>
+
+    <!-- </div> -->
   </VcPopup>
 </template>
 

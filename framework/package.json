@@ -29,6 +29,7 @@
   },
   "dependencies": {
     "@floating-ui/vue": "^1.0.6",
+    "@headlessui/vue": "^1.7.19",
     "@microsoft/signalr": "^8.0.0",
     "@vee-validate/i18n": "^4.12.4",
     "@vee-validate/rules": "^4.12.4",

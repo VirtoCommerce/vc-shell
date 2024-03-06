@@ -1,161 +1,193 @@
 <template>
-  <div
-    class="vc-popup"
-    :class="`vc-popup_${variant}`"
+  <TransitionRoot
+    appear
+    show
+    as="template"
   >
-    <div class="vc-popup__wrapper">
-      <div class="vc-popup__inner">
-        <div
-          class="vc-popup__header"
-          :class="`vc-popup__header_${type}`"
-        >
-          <div class="tw-truncate tw-grow tw-basis-0">
-            <slot name="title">{{ title }}</slot>
-          </div>
-          <VcIcon
-            v-if="closable"
-            class="vc-popup__header-icon"
-            icon="fas fa-times"
-            @click="$emit('close')"
-          ></VcIcon>
-        </div>
-        <template v-if="type === 'error'">
-          <VcPopupError @close="$emit('close')">
-            <slot></slot>
-          </VcPopupError>
-        </template>
-        <template v-else-if="type === 'warning'">
-          <VcPopupWarning
-            @close="$emit('close')"
-            @confirm="$emit('confirm')"
+    <Dialog
+      as="div"
+      class="tw-relative tw-z-10"
+      @close="closeModal"
+    >
+      <TransitionChild
+        as="template"
+        enter="tw-duration-300 tw-ease-out"
+        enter-from="tw-opacity-0"
+        enter-to="tw-opacity-100"
+        leave="tw-duration-200 tw-ease-in"
+        leave-from="tw-opacity-100"
+        leave-to="tw-opacity-0"
+      >
+        <div class="tw-fixed tw-inset-0 tw-bg-black/25" />
+      </TransitionChild>
+
+      <div
+        class="tw-fixed tw-inset-0 tw-overflow-y-auto"
+        :class="{
+          'tw-p-4': !isMobileView,
+          'tw-p-0': isMobileView,
+        }"
+      >
+        <div class="tw-flex tw-min-h-full tw-items-center tw-justify-center tw-text-center">
+          <TransitionChild
+            as="template"
+            enter="tw-duration-300 tw-ease-out"
+            enter-from="tw-opacity-0 tw-scale-95"
+            enter-to="tw-opacity-100 tw-scale-100"
+            leave="tw-duration-200 tw-ease-in"
+            leave-from="tw-opacity-100 tw-scale-100"
+            leave-to="tw-opacity-0 tw-scale-95"
           >
-            <slot></slot>
-          </VcPopupWarning>
-        </template>
-        <template v-else>
-          <slot></slot>
-        </template>
+            <DialogPanel
+              class="tw-w-full tw-transform tw-overflow-hidden tw-rounded-[5px] tw-bg-white tw-text-left tw-align-middle tw-shadow-xl tw-transition-all"
+              :class="[
+                {
+                  'tw-flex tw-flex-col [max-height:calc(100vh-40px)]': !isMobileView,
+                  'tw-max-w-full tw-h-[100dvh] tw-rounded-none tw-flex tw-flex-col': isMobileView,
+                  '!tw-h-screen': isFullscreen,
+                },
+                modalWidth,
+              ]"
+            >
+              <DialogTitle
+                as="h3"
+                class="tw-text-[18px] tw-font-semibold tw-leading-5 tw-text-[var(--header-color)] tw-flex tw-px-6 tw-py-5"
+              >
+                <slot name="header">{{ title }}</slot>
+
+                <button
+                  class="tw-h-[26px] tw-w-[26px] tw-bg-[var(--close-btn-bg)] tw-rounded-[4px] tw-inline-flex tw-items-center tw-justify-center tw-ml-auto hover:tw-bg-[var(--close-btn-bg-hover)]"
+                  @click="closeModal"
+                >
+                  <svg
+                    v-if="closable"
+                    width="12"
+                    height="12"
+                    viewBox="0 0 12 12"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M7.27173 5.99939L11.1499 2.12967C11.3198 1.95981 11.4152 1.72943 11.4152 1.48922C11.4152 1.24901 11.3198 1.01863 11.1499 0.848777C10.9801 0.67892 10.7497 0.583496 10.5096 0.583496C10.2694 0.583496 10.0391 0.67892 9.86922 0.848777L6.00004 4.72752L2.13086 0.848777C1.96103 0.67892 1.73069 0.583496 1.49051 0.583496C1.25033 0.583496 1.01999 0.67892 0.850156 0.848777C0.680324 1.01863 0.584913 1.24901 0.584913 1.48922C0.584913 1.72943 0.680324 1.95981 0.850156 2.12967L4.72835 5.99939L0.850156 9.86912C0.765622 9.95298 0.698526 10.0527 0.652737 10.1627C0.606948 10.2726 0.583374 10.3905 0.583374 10.5096C0.583374 10.6286 0.606948 10.7465 0.652737 10.8565C0.698526 10.9664 0.765622 11.0662 0.850156 11.15C0.934 11.2346 1.03375 11.3017 1.14366 11.3475C1.25356 11.3933 1.37145 11.4168 1.49051 11.4168C1.60957 11.4168 1.72746 11.3933 1.83736 11.3475C1.94727 11.3017 2.04702 11.2346 2.13086 11.15L6.00004 7.27126L9.86922 11.15C9.95306 11.2346 10.0528 11.3017 10.1627 11.3475C10.2726 11.3933 10.3905 11.4168 10.5096 11.4168C10.6286 11.4168 10.7465 11.3933 10.8564 11.3475C10.9663 11.3017 11.0661 11.2346 11.1499 11.15C11.2345 11.0662 11.3016 10.9664 11.3473 10.8565C11.3931 10.7465 11.4167 10.6286 11.4167 10.5096C11.4167 10.3905 11.3931 10.2726 11.3473 10.1627C11.3016 10.0527 11.2345 9.95298 11.1499 9.86912L7.27173 5.99939Z"
+                      fill="#6E8BA5"
+                    />
+                  </svg>
+                </button>
+              </DialogTitle>
+
+              <div class="tw-flex tw-w-full tw-min-h-0 tw-grow tw-gap-5 tw-px-6 tw-pb-5 tw-pt-3">
+                <VcIcon
+                  v-if="variant !== 'default'"
+                  :class="['tw-self-center tw-text-[40px]', iconStyle]"
+                  :icon="icon"
+                />
+
+                <div
+                  class="tw-text-[14px] tw-font-normal tw-leading-[20px] tw-text-[var(--content-text-color)] tw-flex tw-items-center tw-flex-auto tw-overflow-y-auto [word-break:break-word]"
+                  :class="{
+                    'tw-grow': isMobileView,
+                  }"
+                >
+                  <div
+                    class="tw-flex tw-flex-auto tw-self-center tw-min-h-0 tw-max-h-[-webkit-fill-available]"
+                    :class="{ 'tw-h-full': isFullscreen }"
+                  >
+                    <slot name="content"></slot>
+                  </div>
+                </div>
+              </div>
+              <div
+                v-if="$slots.footer"
+                class="tw-flex tw-items-center tw-px-6 tw-py-5 tw-border-t tw-border-t-[var(--footer-separator)] tw-border-solid"
+              >
+                <slot
+                  name="footer"
+                  :close="closeModal"
+                >
+                  <VcButton
+                    class="tw-ml-auto"
+                    @click="closeModal"
+                    >{{ $t("COMPONENTS.ORGANISMS.VC_POPUP.CLOSE") }}</VcButton
+                  >
+                </slot>
+              </div>
+            </DialogPanel>
+          </TransitionChild>
+        </div>
       </div>
-    </div>
-  </div>
+    </Dialog>
+  </TransitionRoot>
 </template>
 
-<script lang="ts">
-import { VcIcon } from "./../../";
-import VcPopupWarning from "./_internal/vc-popup-warning/vc-popup-warning.vue";
-import VcPopupError from "./_internal/vc-popup-error/vc-popup-error.vue";
-import { defineComponent, PropType } from "vue";
+<script lang="ts" setup>
+import { Ref, computed, inject } from "vue";
+import { TransitionRoot, TransitionChild, Dialog, DialogPanel, DialogTitle } from "@headlessui/vue";
 
-export default defineComponent({
-  components: {
-    VcIcon,
-    VcPopupWarning,
-    VcPopupError,
-  },
-  props: {
-    title: {
-      type: String,
-      default: "",
-    },
-    closable: {
-      type: Boolean,
-      default: true,
-    },
-    variant: {
-      type: String as PropType<"small" | "medium" | "fullscreen">,
-      default: "fullscreen",
-    },
-    type: {
-      type: String as PropType<"default" | "error" | "warning" | "success">,
-      default: "default",
-    },
-  },
-  emits: ["close", "confirm"],
+interface Props {
+  title?: string;
+  closable?: boolean;
+  variant: "default" | "error" | "warning" | "success";
+  isMobileFullscreen?: boolean;
+  isFullscreen?: boolean;
+  modalWidth?: string;
+}
+
+interface Emits {
+  (event: "close"): void;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  closable: true,
+  variant: "default",
+  modalWidth: "tw-max-w-md",
 });
+
+const emit = defineEmits<Emits>();
+
+const isMobile = inject("isMobile") as Ref<boolean>;
+
+const icon = computed(() => {
+  switch (props.variant) {
+    case "warning":
+      return "fas fa-exclamation-circle";
+    case "error":
+      return "fas fa-times-circle";
+    case "success":
+      return "fas fa-check-circle";
+    default:
+      return "";
+  }
+});
+
+const iconStyle = computed(() => {
+  switch (props.variant) {
+    case "warning":
+      return "tw-text-[var(--warning-icon-color)]";
+    case "error":
+      return "tw-text-[var(--error-icon-color)]";
+    case "success":
+      return "tw-text-[var(--success-icon-color)]";
+    default:
+      return "";
+  }
+});
+
+const isMobileView = computed(() => isMobile.value && props.isMobileFullscreen);
+
+function closeModal() {
+  emit("close");
+}
 </script>
 
 <style lang="scss">
 :root {
-  --popup-header-default-color: #eef5fa;
-  --popup-header-success-color: #87b563;
-  --popup-header-warning-color: #f89406;
-  --popup-header-error-color: #ef796f;
-}
-.vc-popup {
-  @apply tw-fixed tw-top-0 tw-right-0 tw-bottom-0 tw-left-0 tw-z-[9999] tw-bg-[rgba(31,40,50,0.58)];
-
-  &_small {
-    .vc-popup__wrapper {
-      @apply tw-max-h-[50%] tw-items-center tw-flex tw-grow-0 tw-shrink-0 tw-basis-auto [flex-direction:inherit] tw-justify-center;
-    }
-
-    .vc-popup__inner {
-      @apply tw-max-w-[439px] tw-w-full tw-flex tw-flex-col tw-grow tw-basis-0;
-    }
-  }
-
-  &_medium {
-    .vc-popup__wrapper {
-      @apply tw-max-h-[75vh];
-    }
-  }
-
-  &_fullscreen {
-    .vc-popup__wrapper {
-      @apply tw-max-h-[100vh];
-    }
-  }
-
-  &__wrapper {
-    @apply tw-fixed tw-top-2/4 -tw-translate-y-2/4 tw-right-0 tw-bottom-0 tw-left-0 tw-flex tw-grow tw-shrink tw-basis-auto tw-flex-col tw-h-full;
-
-    .vc-app_phone & {
-      @apply tw-max-h-[100vh];
-    }
-  }
-
-  &__inner {
-    @apply tw-shrink tw-m-[40px] tw-box-border tw-bg-white tw-rounded-[5px] tw-overflow-hidden tw-relative tw-flex tw-flex-col tw-grow tw-basis-0 tw-max-h-full tw-h-fit;
-
-    .vc-app_phone & {
-      @apply tw-m-0 tw-rounded-none;
-    }
-  }
-
-  &__header {
-    @apply tw-h-[44px] tw-px-4 tw-bg-[var(--popup-header-default-color)] tw-flex tw-shrink-0 tw-items-center;
-
-    &_default {
-      @apply tw-bg-[var(--popup-header-default-color)];
-    }
-
-    &_error {
-      @apply tw-bg-[var(--popup-header-error-color)] tw-text-white;
-
-      .vc-popup__header-icon {
-        @apply tw-text-white;
-      }
-    }
-
-    &_warning {
-      @apply tw-bg-[var(--popup-header-warning-color)] tw-text-white;
-
-      .vc-popup__header-icon {
-        @apply tw-text-white;
-      }
-    }
-
-    &_success {
-      @apply tw-bg-[var(--popup-header-success-color)] tw-text-white;
-
-      .vc-popup__header-icon {
-        @apply tw-text-white;
-      }
-    }
-
-    &-icon {
-      @apply tw-cursor-pointer tw-text-[#a1c0d4];
-    }
-  }
+  --close-btn-bg: #f5f8fb;
+  --close-btn-bg-hover: color-mix(in srgb, var(--close-btn-bg), #000 5%);
+  --header-color: #465769;
+  --content-text-color: #465769;
+  --warning-icon-color: #ffbb0d;
+  --error-icon-color: #ff4a4a;
+  --success-icon-color: #87b563;
+  --footer-separator: #ebebeb;
 }
 </style>

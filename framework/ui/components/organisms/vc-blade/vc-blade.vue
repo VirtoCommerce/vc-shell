@@ -66,7 +66,8 @@ import { usePopup } from "./../../../../shared";
 import { useI18n } from "vue-i18n";
 import VcBladeHeader from "./_internal/vc-blade-header/vc-blade-header.vue";
 import VcBladeToolbar from "./_internal/vc-blade-toolbar/vc-blade-toolbar.vue";
-import { VcButton, VcIcon, VcPopup } from "./../../";
+import { VcButton, VcIcon } from "./../../";
+import vcPopupError from "../../../../shared/components/common/popup/vc-popup-error.vue";
 
 export interface Props {
   icon?: string;
@@ -102,14 +103,12 @@ const { maximized, error }: { maximized?: Ref<boolean>; error?: Ref<string> } = 
 const { t } = useI18n({ useScope: "global" });
 
 const { open } = usePopup({
-  component: VcPopup,
+  component: vcPopupError,
   props: {
-    type: "error",
-    variant: "small",
     title: t("COMPONENTS.ORGANISMS.VC_BLADE.ERROR_POPUP.TITLE"),
   },
   slots: {
-    default: computed(() => error?.value),
+    content: computed(() => error?.value),
   },
 });
 </script>

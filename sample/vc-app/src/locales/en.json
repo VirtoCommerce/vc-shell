@@ -79,6 +79,7 @@
         "OK": "OK",
         "CONFIRM": "Confirm",
         "CANCEL": "Cancel",
+        "CLOSE": "Close",
         "TITLE": {
           "CONFIRMATION": "Confirmation",
           "ERROR": "Error"

@@ -597,32 +597,46 @@ async function handleSelectAllItems(all: boolean) {
   allSelected.value = all;
 }
 
+function disabledActionHandler(disabled: { method?: string } | boolean, item: (typeof items.value)[number]): boolean {
+  if (!disabled) return false;
+  if (typeof disabled === "boolean") return disabled;
+  else if (disabled.method && typeof toValue(scope)?.[disabled.method] === "function")
+    return toValue(scope)?.[disabled.method]({ item });
+  else if (disabled.method && toValue(scope)?.[disabled.method]) return toValue(scope)?.[disabled.method];
+  return false;
+}
+
 // TODO add to documentation
-function actionBuilder(): IActionBuilderResult[] | undefined {
-  const result = tableData?.value?.actions?.map((action) => {
-    return {
-      icon: action.icon,
-      title: computed(() => t(action.title)),
-      type: action.type,
-      position: action.position,
-      clickHandler: async (itemVal: (typeof items.value)[number]) => {
-        try {
-          if (isRef(toolbarComputed) && toolbarComputed.value && toolbarComputed.value.length > 0) {
-            const toolbarItem = toolbarComputed.value.find((x) => x.method === action.method);
-            selectedIds.value = [itemVal.id];
-            if (toolbarItem) {
-              await toolbarItem.clickHandler?.();
-            } else {
-              await toValue(scope)?.[action.method]?.(itemVal);
+function actionBuilder(item: (typeof items.value)[number]): IActionBuilderResult[] | undefined {
+  const result = tableData?.value?.actions?.reduce((arr, action) => {
+    const isDisabled = disabledActionHandler(action?.disabled ?? false, item);
+
+    if (!toValue(isDisabled)) {
+      arr.push({
+        icon: action.icon,
+        title: computed(() => t(action.title)),
+        type: action.type,
+        position: action.position,
+        clickHandler: async (itemVal: (typeof items.value)[number]) => {
+          try {
+            if (isRef(toolbarComputed) && toolbarComputed.value && toolbarComputed.value.length > 0) {
+              const toolbarItem = toolbarComputed.value.find((x) => x.method === action.method);
+              selectedIds.value = [itemVal.id];
+              if (toolbarItem) {
+                await toolbarItem.clickHandler?.();
+              } else {
+                await toValue(scope)?.[action.method]?.(itemVal);
+              }
+              selectedIds.value = [];
             }
-            selectedIds.value = [];
+          } catch (error) {
+            throw new Error(`Method ${action.method} is not defined in scope or toolbarOverrides`);
           }
-        } catch (error) {
-          throw new Error(`Method ${action.method} is not defined in scope or toolbarOverrides`);
-        }
-      },
-    };
-  });
+        },
+      });
+    }
+    return arr;
+  }, [] as IActionBuilderResult[]);
 
   return result;
 }

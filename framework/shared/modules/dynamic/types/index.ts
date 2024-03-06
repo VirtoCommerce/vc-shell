@@ -168,6 +168,9 @@ export interface ListContentSchema {
   actions?: (ToolbarSchema & {
     position: "right" | "left";
     type: "danger" | "success";
+    disabled?: {
+      method: string;
+    };
     method: string;
   })[];
   mobileTemplate?: {

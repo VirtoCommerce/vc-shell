@@ -98,6 +98,8 @@ import { useToolbarReducer } from "../composables/useToolbarReducer";
 import { useBeforeUnload } from "../../../../core/composables/useBeforeUnload";
 import * as _ from "lodash-es";
 import { IBladeToolbar } from "../../../../core/types";
+import { useNotifications } from "../../../../core/composables";
+import { notification } from "../../../components";
 
 interface Props {
   expanded?: boolean;
@@ -151,6 +153,25 @@ const { loading, item, validationState, scope, load, remove, saveChanges, bladeT
 const title = ref();
 const isReady = ref(false);
 const activeWidgetExposed = ref<CoreBladeExposed>();
+const settings = computed(() => props.model?.settings);
+
+const { moduleNotifications, markAsRead } = useNotifications(settings.value?.pushNotificationType);
+
+watch(
+  moduleNotifications,
+  (newVal) => {
+    newVal.forEach((message) => {
+      if (message.title && props.composables) {
+        notification.success(message.title, {
+          onClose() {
+            markAsRead(message);
+          },
+        });
+      }
+    });
+  },
+  { deep: true },
+);
 
 watch(
   () => bladeTitle?.value,
@@ -172,8 +193,6 @@ const validated = computed(() => {
 });
 
 useBeforeUnload(validated);
-
-const settings = computed(() => props.model?.settings);
 
 const form = computed(
   (): FormContentSchema => props.model?.content.find((x) => x?.component === "vc-form") as FormContentSchema,

@@ -165,7 +165,7 @@ export const useTeamDetails = (args: {
       remove: {
         clickHandler: async () => {
           if (await showConfirmation(computed(() => t("TEAM.PAGES.DETAILS.POPUP.ALERT.MESSAGE.USER_DELETE")))) {
-            remove?.();
+            if (item.value?.id) remove?.({ id: item.value?.id });
           }
         },
         isVisible: !!args.props.param,

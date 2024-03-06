@@ -1,3 +1,12 @@
+## [1.0.174](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.173...v1.0.174) (2024-03-06)
+
+
+### Features
+
+* **dynamic:** disabled method for actions ([a575064](https://github.com/VirtoCommerce/vc-shell/commit/a5750642339e0fedf3e937370361968eea144368))
+
+
+
 ## [1.0.173](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.172...v1.0.173) (2024-03-06)
 
 

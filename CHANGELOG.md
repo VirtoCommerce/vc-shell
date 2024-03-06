@@ -1,3 +1,13 @@
+## [1.0.173](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.172...v1.0.173) (2024-03-06)
+
+
+### Bug Fixes
+
+* add check for empty assets array before concatenating uploaded assets ([0ddcfa7](https://github.com/VirtoCommerce/vendor-portal/commit/0ddcfa77b3c5f44a88f50bcb4179051d69a4e469))
+* fix remove function parameter in useTeamDetails ([352b706](https://github.com/VirtoCommerce/vendor-portal/commit/352b7064525fd0fd4898a3b16d65fdd423a3dcc9))
+
+
+
 ## [1.0.172](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.171...v1.0.172) (2024-02-27)
 
 

@@ -25,16 +25,16 @@
     <div v-show="navigation">
       <div class="vc-slider__prev tw-left-0">
         <slot name="prevBtn">
-          <div class="vc-slider__btn">
+          <button class="vc-slider__btn">
             <VcIcon icon="fas fa-chevron-left"></VcIcon>
-          </div>
+          </button>
         </slot>
       </div>
       <div class="vc-slider__next tw-right-0">
         <slot name="nextBtn">
-          <div class="vc-slider__btn">
+          <button class="vc-slider__btn">
             <VcIcon icon="fas fa-chevron-right"></VcIcon>
-          </div>
+          </button>
         </slot>
       </div>
     </div>

@@ -19,6 +19,7 @@
       }"
     >
       <div
+        v-if="usePtr && dist > 0"
         class="vc-container__overscroll"
         :class="{ 'vc-container__overscroll_passed': status === 'loosing' }"
         :style="{ height: dist ? `${dist}px` : '0px' }"

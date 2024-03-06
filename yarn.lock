@@ -2293,6 +2293,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@headlessui/vue@npm:^1.7.19":
+  version: 1.7.19
+  resolution: "@headlessui/vue@npm:1.7.19"
+  dependencies:
+    "@tanstack/vue-virtual": "npm:^3.0.0-beta.60"
+  peerDependencies:
+    vue: ^3.2.0
+  checksum: 7090259d047bacae3a65eaede1f74b8657ba7506975ecf526b6e1a675a6e7541f0096c33463fc8b820c3c957f2cb656932a9b891d420874406eb1c581a656786
+  languageName: node
+  linkType: hard
+
 "@humanwhocodes/config-array@npm:^0.11.13":
   version: 0.11.13
   resolution: "@humanwhocodes/config-array@npm:0.11.13"
@@ -4317,6 +4328,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@tanstack/virtual-core@npm:3.1.3":
+  version: 3.1.3
+  resolution: "@tanstack/virtual-core@npm:3.1.3"
+  checksum: fdaee168954ba96908476105d61ad3ed45973afcb9cec2c33707d4b48abaa705b7cbf7dd8e4264a7848d57366cc1422a378c8f34c5da124f18d3f7ae7bc8bd23
+  languageName: node
+  linkType: hard
+
+"@tanstack/vue-virtual@npm:^3.0.0-beta.60":
+  version: 3.1.3
+  resolution: "@tanstack/vue-virtual@npm:3.1.3"
+  dependencies:
+    "@tanstack/virtual-core": "npm:3.1.3"
+  peerDependencies:
+    vue: ^2.7.0 || ^3.0.0
+  checksum: b01ec9595aa8b5e28f34eea55b95e173fcf848289e5888d2e8925ff8e6ff24b0872405b16e3278b59c26f904c13aced7fe80dd9dd1b5257915688557fa3710a9
+  languageName: node
+  linkType: hard
+
 "@tsconfig/node10@npm:^1.0.7":
   version: 1.0.9
   resolution: "@tsconfig/node10@npm:1.0.9"
@@ -4987,7 +5016,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vc-shell/api-client-generator@npm:^1.0.170, @vc-shell/api-client-generator@workspace:cli/api-client":
+"@vc-shell/api-client-generator@npm:^1.0.154, @vc-shell/api-client-generator@npm:^1.0.170, @vc-shell/api-client-generator@workspace:cli/api-client":
   version: 0.0.0-use.local
   resolution: "@vc-shell/api-client-generator@workspace:cli/api-client"
   dependencies:
@@ -5002,7 +5031,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vc-shell/config-generator@npm:^1.0.170, @vc-shell/config-generator@workspace:cli/config":
+"@vc-shell/config-generator@npm:^1.0.154, @vc-shell/config-generator@npm:^1.0.170, @vc-shell/config-generator@workspace:cli/config":
   version: 0.0.0-use.local
   resolution: "@vc-shell/config-generator@workspace:cli/config"
   dependencies:
@@ -5038,11 +5067,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vc-shell/framework@npm:^1.0.170, @vc-shell/framework@workspace:framework":
+"@vc-shell/framework@npm:^1.0.154, @vc-shell/framework@npm:^1.0.170, @vc-shell/framework@workspace:framework":
   version: 0.0.0-use.local
   resolution: "@vc-shell/framework@workspace:framework"
   dependencies:
     "@floating-ui/vue": "npm:^1.0.6"
+    "@headlessui/vue": "npm:^1.7.19"
     "@microsoft/signalr": "npm:^8.0.0"
     "@vc-shell/api-client-generator": "npm:^1.0.170"
     "@vc-shell/config-generator": "npm:^1.0.170"
@@ -5078,7 +5108,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vc-shell/release-config@npm:^1.0.170, @vc-shell/release-config@workspace:configs/release-config":
+"@vc-shell/release-config@npm:^1.0.154, @vc-shell/release-config@npm:^1.0.170, @vc-shell/release-config@workspace:configs/release-config":
   version: 0.0.0-use.local
   resolution: "@vc-shell/release-config@workspace:configs/release-config"
   dependencies:
@@ -5155,23 +5185,23 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vc-shell/ts-config@npm:^1.0.170, @vc-shell/ts-config@workspace:configs/ts-config":
+"@vc-shell/ts-config@npm:^1.0.154, @vc-shell/ts-config@npm:^1.0.170, @vc-shell/ts-config@workspace:configs/ts-config":
   version: 0.0.0-use.local
   resolution: "@vc-shell/ts-config@workspace:configs/ts-config"
   languageName: unknown
   linkType: soft
 
-"@vcmp-vendor-portal/api@npm:^1.0.171, @vcmp-vendor-portal/api@workspace:apps/vendor-portal/src/api_client":
+"@vcmp-vendor-portal/api@npm:^1.0.172, @vcmp-vendor-portal/api@workspace:apps/vendor-portal/src/api_client":
   version: 0.0.0-use.local
   resolution: "@vcmp-vendor-portal/api@workspace:apps/vendor-portal/src/api_client"
   languageName: unknown
   linkType: soft
 
-"@vcmp-vendor-portal/modules@npm:^1.0.171, @vcmp-vendor-portal/modules@workspace:apps/vendor-portal/src/modules":
+"@vcmp-vendor-portal/modules@npm:^1.0.172, @vcmp-vendor-portal/modules@workspace:apps/vendor-portal/src/modules":
   version: 0.0.0-use.local
   resolution: "@vcmp-vendor-portal/modules@workspace:apps/vendor-portal/src/modules"
   peerDependencies:
-    "@vcmp-vendor-portal/api": ^1.0.171
+    "@vcmp-vendor-portal/api": ^1.0.172
   languageName: unknown
   linkType: soft
 
@@ -5191,12 +5221,26 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@virtocommerce/import-app-api@workspace:apps/import-app/src/api_client":
+  version: 0.0.0-use.local
+  resolution: "@virtocommerce/import-app-api@workspace:apps/import-app/src/api_client"
+  dependencies:
+    typescript: "npm:5.3.3"
+  languageName: unknown
+  linkType: soft
+
 "@virtocommerce/import-app@npm:^1.0.149":
   version: 1.0.149
   resolution: "@virtocommerce/import-app@npm:1.0.149"
   checksum: f2ff6e3239553e7b30768ab4997f90b0aa7d19bd7241b98a06c931b00053d110591c04944c2efe9243fe05499956db9756a1230320e50ab2be53c53a024f411d
   languageName: node
   linkType: hard
+
+"@virtocommerce/import-app@workspace:apps/import-app/src/modules":
+  version: 0.0.0-use.local
+  resolution: "@virtocommerce/import-app@workspace:apps/import-app/src/modules"
+  languageName: unknown
+  linkType: soft
 
 "@vitejs/plugin-vue@npm:^4.0.0":
   version: 4.6.2
@@ -5934,8 +5978,8 @@ __metadata:
     "@vc-shell/framework": "npm:^1.0.170"
     "@vc-shell/release-config": "npm:^1.0.170"
     "@vc-shell/ts-config": "npm:^1.0.170"
-    "@vcmp-vendor-portal/api": "npm:^1.0.171"
-    "@vcmp-vendor-portal/modules": "npm:^1.0.171"
+    "@vcmp-vendor-portal/api": "npm:^1.0.172"
+    "@vcmp-vendor-portal/modules": "npm:^1.0.172"
     "@virtocommerce/import-app": "npm:^1.0.149"
     "@vitejs/plugin-vue": "npm:^5.0.3"
     "@vue/eslint-config-prettier": "npm:^9.0.0"
@@ -7823,7 +7867,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"esbuild@npm:^0.18.0":
+"esbuild@npm:^0.18.0, esbuild@npm:~0.18.20":
   version: 0.18.20
   resolution: "esbuild@npm:0.18.20"
   dependencies:
@@ -9483,6 +9527,61 @@ __metadata:
   checksum: ea187acc1eec9dcfaa0823bae59e1ae0ea82e7a40d2ace9fb84d467875d5506ced684a79b68e70451f1e1761a387a958ba724171f93aa10330998b026fcb5d29
   languageName: node
   linkType: hard
+
+"import-app@workspace:apps/import-app":
+  version: 0.0.0-use.local
+  resolution: "import-app@workspace:apps/import-app"
+  dependencies:
+    "@commitlint/cli": "npm:^18.4.3"
+    "@commitlint/config-conventional": "npm:^18.4.3"
+    "@fortawesome/fontawesome-free": "npm:^5.15.3"
+    "@laynezh/vite-plugin-lib-assets": "npm:^0.5.13"
+    "@rollup/plugin-typescript": "npm:^11.1.5"
+    "@types/lodash-es": "npm:^4.17.12"
+    "@types/node": "npm:^20.10.5"
+    "@typescript-eslint/eslint-plugin": "npm:^6.16.0"
+    "@typescript-eslint/parser": "npm:^6.16.0"
+    "@vc-shell/api-client-generator": "npm:^1.0.154"
+    "@vc-shell/config-generator": "npm:^1.0.154"
+    "@vc-shell/framework": "npm:^1.0.154"
+    "@vc-shell/release-config": "npm:^1.0.154"
+    "@vc-shell/ts-config": "npm:^1.0.154"
+    "@vitejs/plugin-vue": "npm:^5.0.3"
+    "@vue/eslint-config-prettier": "npm:^9.0.0"
+    "@vue/eslint-config-typescript": "npm:^12.0.0"
+    "@vueuse/core": "npm:^10.7.1"
+    "@vueuse/integrations": "npm:^10.7.1"
+    autoprefixer: "npm:^10.4.16"
+    conventional-changelog-cli: "npm:^4.1.0"
+    cross-env: "npm:^7.0.3"
+    eslint: "npm:^8.56.0"
+    eslint-import-resolver-typescript: "npm:^3.6.1"
+    eslint-plugin-import: "npm:^2.29.1"
+    eslint-plugin-prettier: "npm:^5.1.2"
+    eslint-plugin-vue: "npm:^9.19.2"
+    husky: "npm:^8.0.3"
+    lint-staged: "npm:^15.2.0"
+    lodash-es: "npm:^4.17.21"
+    moment: "npm:^2.30.1"
+    postcss: "npm:^8.4.32"
+    prettier: "npm:^3.1.1"
+    querystring-es3: "npm:^0.2.1"
+    roboto-fontface: "npm:^0.10.0"
+    sass: "npm:^1.69.6"
+    tailwindcss: "npm:^3.4.0"
+    tsx: "npm:^3.13.0"
+    typescript: "npm:^5.3.3"
+    vee-validate: "npm:^4.12.4"
+    vite: "npm:^5.0.11"
+    vite-plugin-checker: "npm:^0.6.2"
+    vite-plugin-mkcert: "npm:^1.17.1"
+    vite-plugin-pwa: "npm:^0.17.4"
+    vue: "npm:^3.4.15"
+    vue-eslint-parser: "npm:^9.3.2"
+    vue-router: "npm:^4.2.5"
+    vue-tsc: "npm:^1.8.27"
+  languageName: unknown
+  linkType: soft
 
 "import-fresh@npm:^3.0.0, import-fresh@npm:^3.2.1, import-fresh@npm:^3.3.0":
   version: 3.3.0
@@ -12351,6 +12450,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"querystring-es3@npm:^0.2.1":
+  version: 0.2.1
+  resolution: "querystring-es3@npm:0.2.1"
+  checksum: c99fccfe1a9c4c25ea6194fa7a559fdb83d2628f118f898af6f0ac02c4ffcd7e0576997bb80e7dfa892d193988b60e23d4968122426351819f87051862af991c
+  languageName: node
+  linkType: hard
+
 "querystringify@npm:^2.1.1":
   version: 2.2.0
   resolution: "querystringify@npm:2.2.0"
@@ -13392,7 +13498,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"source-map-support@npm:^0.5.16, source-map-support@npm:~0.5.20":
+"source-map-support@npm:^0.5.16, source-map-support@npm:^0.5.21, source-map-support@npm:~0.5.20":
   version: 0.5.21
   resolution: "source-map-support@npm:0.5.21"
   dependencies:
@@ -14240,6 +14346,23 @@ __metadata:
   languageName: node
   linkType: hard
 
+"tsx@npm:^3.13.0":
+  version: 3.14.0
+  resolution: "tsx@npm:3.14.0"
+  dependencies:
+    esbuild: "npm:~0.18.20"
+    fsevents: "npm:~2.3.3"
+    get-tsconfig: "npm:^4.7.2"
+    source-map-support: "npm:^0.5.21"
+  dependenciesMeta:
+    fsevents:
+      optional: true
+  bin:
+    tsx: dist/cli.mjs
+  checksum: 7147970975344d779f495169c0246dff5110a3e110b0a89e8cec6403fcd6c03ede3abbf4c7ccc03dae7fb17d7f1a4c21992c5c6d7ab2130cb2f7a3ffaeae1ce1
+  languageName: node
+  linkType: hard
+
 "tsx@npm:^4.7.1":
   version: 4.7.1
   resolution: "tsx@npm:4.7.1"
@@ -14953,6 +15076,23 @@ __metadata:
   peerDependencies:
     vite: ">=3"
   checksum: 6c9b62eb4f812e15684e5bc8f33e72401afe402c0363ba6850ccb11e1916cd7a451a39c87a3a2e4a94c2158bad4cb367a698c58dff07b7d4424babd24cc49829
+  languageName: node
+  linkType: hard
+
+"vite-plugin-pwa@npm:^0.17.4":
+  version: 0.17.5
+  resolution: "vite-plugin-pwa@npm:0.17.5"
+  dependencies:
+    debug: "npm:^4.3.4"
+    fast-glob: "npm:^3.3.2"
+    pretty-bytes: "npm:^6.1.1"
+    workbox-build: "npm:^7.0.0"
+    workbox-window: "npm:^7.0.0"
+  peerDependencies:
+    vite: ^3.1.0 || ^4.0.0 || ^5.0.0
+    workbox-build: ^7.0.0
+    workbox-window: ^7.0.0
+  checksum: 6f3aa5929bd2a3b2ddaca0c61b5930c37044c310fbbe03d032125480ad580f8d687f0c6c8c96ffa99b0da21e902a357e4b80e2ef666bb632c40f4fbc17af4dab
   languageName: node
   linkType: hard
 

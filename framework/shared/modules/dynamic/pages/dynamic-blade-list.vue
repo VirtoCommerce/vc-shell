@@ -217,7 +217,6 @@ const searchValue = ref();
 const selectedItemId = shallowRef();
 const sort = shallowRef("createdDate:DESC");
 const selectedIds = shallowRef<string[]>([]);
-const isDesktop = inject("isDesktop") as Ref<boolean>;
 const itemsProxy = ref<Record<string, any>[]>();
 const modified = shallowRef(false);
 

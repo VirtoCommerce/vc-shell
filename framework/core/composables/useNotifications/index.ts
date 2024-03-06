@@ -68,26 +68,33 @@ export function useNotifications(notifyType?: string | string[]): INotifications
 
   async function markAllAsRead() {
     try {
-      await notificationsClient.markAllAsRead();
       notifications.value = notifications.value.map((x) => {
         if (x.isNew) {
           x.isNew = false;
         }
         return x;
       });
+      pushNotifications.value = pushNotifications.value.map((x) => {
+        if (x.isNew) {
+          x.isNew = false;
+        }
+        return x;
+      });
+      await notificationsClient.markAllAsRead();
     } catch (e) {
       console.error(e);
       throw e;
     }
   }
 
-  const moduleNotifications = computed(
-    () =>
+  const moduleNotifications = computed(() => {
+    return (
       pushNotifications.value.filter(
         (item: PushNotification) =>
           item.isNew && !!item.notifyType && !!notifyType && notifyType.includes(item.notifyType),
-      ) ?? [],
-  );
+      ) ?? []
+    );
+  });
 
   return {
     notifications: computed(() => _.orderBy(notifications.value, ["created"], ["desc"])),

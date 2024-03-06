@@ -68,6 +68,9 @@ export default (args: {
 
   const scope = ref<DynamicItemsScope>({
     openDetailsBlade,
+    deleteItem: () => {
+      alert("Delete item");
+    },
   });
 
   return {

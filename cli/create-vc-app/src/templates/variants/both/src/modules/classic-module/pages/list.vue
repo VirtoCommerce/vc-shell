@@ -19,6 +19,7 @@
       :loading="loading"
       :columns="columns"
       :item-action-builder="actionBuilder"
+      enable-item-actions
       :sort="sort"
       :pages="pages"
       :total-count="totalCount"
@@ -248,13 +249,13 @@ const onHeaderClick = (item: ITableColumns) => {
 };
 
 const actionBuilder = (item: (typeof data.value)[number]): IActionBuilderResult[] => {
-  const result = [];
+  const result: IActionBuilderResult[] = [];
 
   result.push({
     icon: "fas fa-trash",
     title: "Delete",
-    variant: "danger",
-    leftActions: true,
+    type: "danger",
+    position: "left",
     clickHandler() {
       throw new Error("Function is not implemented.");
     },

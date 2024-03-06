@@ -81,6 +81,10 @@ const assetsHandler = {
         (x) => new Asset(x),
       );
 
+      if (!internalModel.value.item.assets) {
+        internalModel.value.item.assets = [];
+      }
+
       internalModel.value.item.assets = internalModel.value.item.assets.concat(uploaded);
 
       files = null;

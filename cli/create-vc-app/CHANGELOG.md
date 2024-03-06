@@ -1,3 +1,12 @@
+## [1.0.172](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.171...v1.0.172) (2024-03-06)
+
+
+### Features
+
+* **create-vc-app:** added table actions ([4545c92](https://github.com/VirtoCommerce/vc-shell/commit/4545c92b5c48da897ad9631ed06f058f1c448e6a))
+
+
+
 ## [1.0.171](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.170...v1.0.171) (2024-03-06)
 
 

@@ -20,6 +20,7 @@
       :columns="tableColumns"
       :items="offers as unknown as IOfferUnwrappedPrice[]"
       :item-action-builder="actionBuilder"
+      enable-item-actions
       :sort="sort"
       :pages="pages"
       :current-page="currentPage"
@@ -433,12 +434,12 @@ const onSelectionChanged = (items: IOffer[]) => {
 };
 
 const actionBuilder = (): IActionBuilderResult[] => {
-  const result = [];
+  const result: IActionBuilderResult[] = [];
   result.push({
     icon: "fas fa-trash",
     title: "Delete",
-    variant: "danger",
-    leftActions: true,
+    type: "danger",
+    position: "left",
     clickHandler(item: IOffer) {
       if (item.id) {
         if (!selectedOfferIds.value.includes(item.id)) {

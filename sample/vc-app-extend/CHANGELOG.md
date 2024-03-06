@@ -1,3 +1,17 @@
+## [1.0.171](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.170...v1.0.171) (2024-03-06)
+
+
+### Features
+
+* updated popups and VcPopup component ([35a2102](https://github.com/VirtoCommerce/vc-shell/commit/35a21022ec7acbf2ab7a5356a9407f74f9c9af13))
+
+
+### BREAKING CHANGES
+
+* VcPopup now uses 'header', 'content' and 'footer' slots instead of a single 'default' slot. Props have also been changed
+
+
+
 ## [1.0.170](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.169...v1.0.170) (2024-02-27)
 
 

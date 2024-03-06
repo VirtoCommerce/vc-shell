@@ -1,3 +1,24 @@
+## [1.0.171](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.170...v1.0.171) (2024-03-06)
+
+
+### Bug Fixes
+
+* **core:** fixed old push display after page refresh ([2155a6e](https://github.com/VirtoCommerce/vc-shell/commit/2155a6e8bd6e0bcd3c90d4a4233130302255cf3e))
+* **ui:** user-dropdown-button auto width when disabled ([1249bbf](https://github.com/VirtoCommerce/vc-shell/commit/1249bbfac96943ede03064adbf268b9abba35481))
+
+
+### Features
+
+* **dynamic:** add useNotifications and notification component to form blade ([578bb19](https://github.com/VirtoCommerce/vc-shell/commit/578bb192c8edac55054ca5b72d74f0c900e5dadf))
+* updated popups and VcPopup component ([35a2102](https://github.com/VirtoCommerce/vc-shell/commit/35a21022ec7acbf2ab7a5356a9407f74f9c9af13))
+
+
+### BREAKING CHANGES
+
+* VcPopup now uses 'header', 'content' and 'footer' slots instead of a single 'default' slot. Props have also been changed
+
+
+
 ## [1.0.170](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.169...v1.0.170) (2024-02-27)
 
 

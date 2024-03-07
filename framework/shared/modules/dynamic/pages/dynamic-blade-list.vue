@@ -45,7 +45,7 @@
         :multiselect="isWidgetView ? false : tableData?.multiselect"
         :header="isWidgetView ? false : tableData?.header"
         :item-action-builder="actionBuilder"
-        :enable-item-actions="!!tableData?.actions"
+        :enable-item-actions="!!tableData?.actions && !isWidgetView"
         :footer="!isWidgetView"
         :sort="sort"
         :pages="pagination?.pages"
@@ -149,9 +149,7 @@
 <script setup lang="ts">
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {
-  Ref,
   computed,
-  inject,
   reactive,
   ref,
   shallowRef,
@@ -163,12 +161,13 @@ import {
   onBeforeMount,
   toRefs,
   provide,
+  isRef,
 } from "vue";
 import { useI18n } from "vue-i18n";
-import { DynamicGridSchema, ListContentSchema, SettingsSchema, ToolbarSchema } from "../types";
+import { DynamicGridSchema, ListContentSchema, SettingsSchema } from "../types";
 import { useFilterBuilder, useTableTemplates } from "../composables";
 import { useFunctions, useNotifications } from "../../../../core/composables";
-import { IActionBuilderResult, IBladeToolbar, ITableColumns } from "../../../../core/types";
+import { IActionBuilderResult, ITableColumns } from "../../../../core/types";
 import { useToolbarReducer } from "../composables/useToolbarReducer";
 import { notification, usePopup } from "../../../components";
 import { ListBaseBladeScope, ListBladeContext, UseList } from "../factories/types";
@@ -176,7 +175,6 @@ import { IParentCallArgs } from "../../../index";
 import * as _ from "lodash-es";
 import { toReactive, useMounted } from "@vueuse/core";
 import { safeIn } from "../helpers/safeIn";
-import { isRef } from "vue";
 
 export interface Props {
   expanded?: boolean;

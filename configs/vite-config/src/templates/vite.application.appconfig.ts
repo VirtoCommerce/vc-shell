@@ -16,6 +16,8 @@ process.env = {
   ...loadEnv(mode, process.cwd(), "APP_"),
 };
 
+const isDemo = mode === "development" && !process.env.APP_PLATFORM_URL;
+
 const isMonorepo = fs.existsSync(path.resolve(process.cwd(), "./../../framework/package.json"));
 
 const getProxy = (target: ProxyOptions["target"], options: Omit<ProxyOptions, "target"> = {}): ProxyOptions => {
@@ -71,6 +73,9 @@ export default defineConfig({
     // https://vue-i18n.intlify.dev/guide/advanced/optimization.html#reduce-bundle-size-with-feature-build-flags
     __VUE_I18N_FULL_INSTALL__: true,
     __VUE_I18N_LEGACY_API__: false,
+
+    // Set demo mode
+    __DEMO_MODE__: isDemo,
   },
   server: {
     fs: {

@@ -1,3 +1,12 @@
+## [1.0.176](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.175...v1.0.176) (2024-03-07)
+
+
+### Features
+
+* **dynamic:** bladeContext exposure to list composable ([37a30c9](https://github.com/VirtoCommerce/vc-shell/commit/37a30c91239b60f2c5d7b9d859d6f48962627ee5))
+
+
+
 ## [1.0.175](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.174...v1.0.175) (2024-03-07)
 
 

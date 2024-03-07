@@ -6,6 +6,7 @@ import { router } from "./router";
 import * as locales from "./locales";
 import { RouterView } from "vue-router";
 import { bootstrap } from "./bootstrap";
+import { useSellerDetails } from "./modules/seller-details/composables";
 
 // Load required CSS
 import "./styles/index.scss";
@@ -16,7 +17,9 @@ import "@virtocommerce/import-app/dist/style.css";
 
 async function startApp() {
   const { loadUser } = useUser();
+  const { load: loadSeller, item: sellerDetails } = useSellerDetails();
   await loadUser();
+  await loadSeller();
 
   const { currentLocale, setLocale } = useLanguages();
 
@@ -28,6 +31,9 @@ async function startApp() {
     i18n: {
       locale: import.meta.env.APP_I18N_LOCALE,
       fallbackLocale: import.meta.env.APP_I18N_FALLBACK_LOCALE,
+    },
+    signalR: {
+      creator: sellerDetails.value?.id,
     },
   });
 

@@ -1,3 +1,12 @@
+## [1.0.174](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.173...v1.0.174) (2024-03-07)
+
+
+### Features
+
+* add signalR seller id messages ([e842c11](https://github.com/VirtoCommerce/vendor-portal/commit/e842c1199761a7017ccf044495fcab17c1181a67))
+
+
+
 ## [1.0.173](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.172...v1.0.173) (2024-03-06)
 
 

@@ -1,3 +1,12 @@
+## [1.0.175](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.174...v1.0.175) (2024-03-07)
+
+
+### Features
+
+* **create-vc-app:** remove redundant and dupe code, decouple mocks, remove demo mode from configs ([2b3fd6b](https://github.com/VirtoCommerce/vc-shell/commit/2b3fd6b945c21b5a3f4a177a7e6a183662eb480d))
+
+
+
 ## [1.0.174](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.173...v1.0.174) (2024-03-06)
 
 

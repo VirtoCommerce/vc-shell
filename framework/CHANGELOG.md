@@ -1,3 +1,17 @@
+## [1.0.175](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.174...v1.0.175) (2024-03-07)
+
+
+### Bug Fixes
+
+* **dynamic:** remove table actions from widgetView ([e51fb3f](https://github.com/VirtoCommerce/vc-shell/commit/e51fb3f8e63c56ed0146f61a036581a45f386830))
+
+
+### Features
+
+* **core:** Update signalR plugin to accept options, SendSystemEvents connection ([7cc96d5](https://github.com/VirtoCommerce/vc-shell/commit/7cc96d5c783207b94b0657c2467203ccea4a55a5))
+
+
+
 ## [1.0.174](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.173...v1.0.174) (2024-03-06)
 
 

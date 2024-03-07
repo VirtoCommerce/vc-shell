@@ -1,4 +1,4 @@
-import { watch } from "vue";
+import { App, watch } from "vue";
 import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 import { PushNotification } from "../../api/platform";
 import { useNotifications } from "./../../composables/useNotifications";
@@ -7,7 +7,12 @@ import { useUser } from "../../composables/useUser";
 const { addNotification } = useNotifications();
 
 export const signalR = {
-  install() {
+  install(
+    app: App,
+    options?: {
+      creator?: string;
+    },
+  ) {
     const { isAuthenticated } = useUser();
     let reconnect = false;
     const connection = new HubConnectionBuilder()
@@ -39,6 +44,14 @@ export const signalR = {
     connection.on("Send", (message: PushNotification) => {
       addNotification(message);
     });
+
+    if (options?.creator) {
+      connection.on("SendSystemEvents", (message: PushNotification) => {
+        if (message.creator === options.creator) {
+          addNotification(message);
+        }
+      });
+    }
 
     watch(
       isAuthenticated,

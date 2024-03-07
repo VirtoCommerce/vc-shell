@@ -24,6 +24,9 @@ export default {
         locale: string;
         fallbackLocale: string;
       };
+      signalR?: {
+        creator?: string;
+      };
     },
   ): void {
     // HTTP Interceptors
@@ -84,7 +87,7 @@ export default {
     app.use(SharedModule, { router: args.router });
 
     // SignalR
-    app.use(signalR);
+    app.use(signalR, args.signalR);
 
     // Permissions check
     app.use(permissions);

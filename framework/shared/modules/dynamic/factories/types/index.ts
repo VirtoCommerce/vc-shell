@@ -117,4 +117,5 @@ export interface DetailsBladeContext extends UseDetails<Record<string, any>, Det
 
 export interface ListBladeContext extends UseList<Record<string, any>[], Record<string, any>, ListBaseBladeScope> {
   settings: ComputedRef<SettingsSchema>;
+  selectedIds: ComputedRef<string[]>;
 }

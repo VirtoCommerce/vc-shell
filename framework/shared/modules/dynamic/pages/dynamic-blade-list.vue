@@ -173,7 +173,7 @@ import { notification, usePopup } from "../../../components";
 import { ListBaseBladeScope, ListBladeContext, UseList } from "../factories/types";
 import { IParentCallArgs } from "../../../index";
 import * as _ from "lodash-es";
-import { toReactive, useMounted } from "@vueuse/core";
+import { reactiveComputed, toReactive, useMounted } from "@vueuse/core";
 import { safeIn } from "../helpers/safeIn";
 
 export interface Props {
@@ -257,6 +257,10 @@ const { load, remove, items, loading, pagination, query, scope } = props.composa
       emit,
       props,
       mounted: useMounted(),
+      bladeContext: {
+        settings,
+        selectedIds: computed(() => selectedIds.value),
+      },
     }) as UseList<Record<string, any>[], Record<string, any>, ListBaseBladeScope>)
   : ({
       load: ref(true),
@@ -326,6 +330,7 @@ const bladeContext = ref<ListBladeContext>({
   pagination,
   query,
   scope,
+  selectedIds: computed(() => selectedIds.value),
   settings: settings as ComputedRef<SettingsSchema>,
 });
 
@@ -645,7 +650,6 @@ defineExpose({
   reload,
   title,
   updateActiveWidgetCount,
-  selectedIds,
   ...toRefs(scope?.value ?? {}),
 });
 </script>

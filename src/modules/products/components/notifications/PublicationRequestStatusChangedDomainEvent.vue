@@ -86,7 +86,7 @@ function onClick() {
     emit("notificationClick");
     openBlade(
       {
-        blade: resolveBladeByName("ProductsList"),
+        blade: resolveBladeByName("Products"),
         param: props.notification.productId,
       },
       true,

@@ -1,16 +1,6 @@
-/* eslint-disable import/no-unresolved */
 import { computed, ref, Ref } from "vue";
-import img1 from "/assets/1.jpeg";
-import img2 from "/assets/2.jpg";
-import img3 from "/assets/3.jpg";
 import { DynamicBladeList, ListBaseBladeScope, useBladeNavigation, useListFactory } from "@vc-shell/framework";
-
-interface MockedItem {
-  imgSrc: string;
-  name: string;
-  createdDate: Date;
-  id: string;
-}
+import { loadMockItemsList } from "../../../mocks";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface DynamicItemsScope extends ListBaseBladeScope {}
@@ -22,34 +12,7 @@ export default (args: {
 }) => {
   const factory = useListFactory({
     load: async () => {
-      return await new Promise((resolve: (value: MockedItem[]) => void) => {
-        setTimeout(
-          () =>
-            resolve([
-              {
-                imgSrc: img1,
-                name: "Item 1",
-                createdDate: new Date(),
-                id: "item-id-1",
-              },
-              {
-                imgSrc: img2,
-                name: "Item 2",
-                createdDate: new Date(),
-                id: "item-id-2",
-              },
-              {
-                imgSrc: img3,
-                name: "Item 3",
-                createdDate: new Date(),
-                id: "item-id-3",
-              },
-            ]),
-          1000,
-        );
-      }).then((res) => {
-        return { results: res, totalCount: res.length };
-      });
+      return await loadMockItemsList();
     },
     remove: () => {
       throw new Error("Function not implemented.");

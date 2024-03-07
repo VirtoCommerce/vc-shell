@@ -6,6 +6,7 @@ import path from "node:path";
 import fs from "node:fs";
 import { fileURLToPath } from "node:url";
 import { cwd as processCwd, argv, exit } from "node:process";
+import mainPkg from "./../package.json";
 
 type Config = prompts.Answers<"appName" | "packageName" | "variant">;
 
@@ -20,7 +21,7 @@ const renameFiles: Record<string, string | undefined> = {
   _prettierignore: ".prettierignore",
   _prettierrc: ".prettierrc",
   "_eslintrc.js": ".eslintrc.js",
-  _github: "github",
+  _github: ".github",
   _husky: ".husky",
   _vscode: ".vscode",
   _yarn: ".yarn",
@@ -89,7 +90,15 @@ const variantMap = {
   dynamic: "variants/dynamic",
 };
 
+const moduleMap = {
+  both: ["classic-module", "dynamic-module"],
+  classic: ["classic-module"],
+  dynamic: ["dynamic-module"],
+};
+
 async function create() {
+  console.log(`  ${chalk.bold(chalk.green(`\ncreate-vc-app version: ${mainPkg.version}\n`))}`);
+
   const cwd = processCwd();
 
   const args = mri(argv.slice(2));
@@ -189,7 +198,19 @@ async function create() {
 
   render("base");
 
+  // render module variant main.ts
   render(variantMap[variant as keyof typeof variantMap]);
+
+  // render each module
+  moduleMap[variant as keyof typeof moduleMap].forEach((module) => {
+    const templateDir = path.resolve(templateRoot, `modules/${module}`);
+    const files = fs.readdirSync(templateDir);
+    for (const file of files.filter((f) => f !== "package.json")) {
+      const targetPath = path.join(root, "src", "modules", module, renameFiles[file] ?? file);
+
+      copy(path.join(templateRoot, `modules/${module}`, file), targetPath);
+    }
+  });
 
   const pkg = JSON.parse(fs.readFileSync(path.join(templateRoot, `./base/package.json`), "utf-8"));
 

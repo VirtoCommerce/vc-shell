@@ -1,9 +1,6 @@
-/* eslint-disable import/no-unresolved */
 import { computed, ref, Ref } from "vue";
-import img1 from "/assets/1.jpeg";
-import img2 from "/assets/2.jpg";
-import img3 from "/assets/3.jpg";
 import { DetailsBaseBladeScope, DynamicBladeForm, IBladeToolbar, useDetailsFactory } from "@vc-shell/framework";
+import { loadMockItem, type MockedItem } from "../../../mocks";
 
 export interface DynamicItemScope extends DetailsBaseBladeScope {
   toolbarOverrides: {
@@ -16,33 +13,9 @@ export default (args: {
   emit: InstanceType<typeof DynamicBladeForm>["$emit"];
   mounted: Ref<boolean>;
 }) => {
-  const factory = useDetailsFactory<{ imgSrc: string; name: string; createdDate: Date; id: string }>({
+  const factory = useDetailsFactory<MockedItem>({
     load: async (payload) => {
-      return await new Promise((resolve) => {
-        setTimeout(() => {
-          const findMockedItem = [
-            {
-              imgSrc: img1,
-              name: "Item 1",
-              createdDate: new Date(),
-              id: "item-id-1",
-            },
-            {
-              imgSrc: img2,
-              name: "Item 2",
-              createdDate: new Date(),
-              id: "item-id-2",
-            },
-            {
-              imgSrc: img3,
-              name: "Item 3",
-              createdDate: new Date(),
-              id: "item-id-3",
-            },
-          ].find((x) => x.id === payload?.id);
-          resolve(findMockedItem);
-        }, 1000);
-      });
+      return await loadMockItem(payload);
     },
     saveChanges: () => {
       throw new Error("Function not implemented.");

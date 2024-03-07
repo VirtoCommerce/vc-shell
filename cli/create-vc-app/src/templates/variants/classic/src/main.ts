@@ -13,9 +13,8 @@ import "roboto-fontface/css/roboto/roboto-fontface.css";
 import "@vc-shell/framework/dist/index.css";
 
 async function startApp() {
-  /** !!! uncomment these lines when adding APP_PLATFORM_URL in .env */
-  // const { loadUser } = useUser();
-  // await loadUser();
+  const { loadUser } = useUser();
+  await loadUser();
 
   const { currentLocale, setLocale } = useLanguages();
 

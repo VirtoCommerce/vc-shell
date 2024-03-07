@@ -7,9 +7,9 @@ release({
     ".", // root
     "framework",
     "cli/api-client",
-    "cli/config",
     "cli/create-vc-app",
     "configs/release-config",
+    "configs/vite-config",
     "configs/ts-config",
     "sample/vc-app",
     "sample/vc-app-extend",

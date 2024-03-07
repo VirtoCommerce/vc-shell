@@ -37,7 +37,11 @@ export const useSellerDetails = (args?: {
   mounted: Ref<boolean>;
 }): UseDetails<ISeller> => {
   const detailsFactory = useDetailsFactory<ISeller>({
-    load: async () => (await getApiClient()).getCurrentSeller(),
+    load: async () => {
+      if (!user.value?.isAdministrator) {
+        return (await getApiClient()).getCurrentSeller();
+      }
+    },
     saveChanges: async (seller) => {
       return (await getApiClient()).updateSeller(
         new UpdateSellerCommand({

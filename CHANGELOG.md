@@ -1,3 +1,12 @@
+## [1.0.176](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.175...v1.0.176) (2024-03-07)
+
+
+### Bug Fixes
+
+* update blade name in products notification ([4dc166e](https://github.com/VirtoCommerce/vendor-portal/commit/4dc166e0c77505ae0063ffaccdf93b46d2a35d13))
+
+
+
 ## [1.0.175](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.174...v1.0.175) (2024-03-07)
 
 

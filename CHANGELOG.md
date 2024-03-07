@@ -1,3 +1,12 @@
+## [1.0.175](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.174...v1.0.175) (2024-03-07)
+
+
+### Bug Fixes
+
+* prevent seller load if admin ([67a4549](https://github.com/VirtoCommerce/vendor-portal/commit/67a4549207aac9161cf500538815fab4b436804b))
+
+
+
 ## [1.0.174](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.173...v1.0.174) (2024-03-07)
 
 

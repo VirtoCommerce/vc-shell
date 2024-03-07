@@ -18,8 +18,13 @@ import "@virtocommerce/import-app/dist/style.css";
 async function startApp() {
   const { loadUser } = useUser();
   const { load: loadSeller, item: sellerDetails } = useSellerDetails();
-  await loadUser();
-  await loadSeller();
+
+  try {
+    await loadUser();
+    await loadSeller();
+  } catch (e) {
+    console.log(e);
+  }
 
   const { currentLocale, setLocale } = useLanguages();
 

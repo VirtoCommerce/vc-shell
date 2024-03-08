@@ -1,3 +1,12 @@
+## [1.0.178](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.177...v1.0.178) (2024-03-08)
+
+
+### Features
+
+* shell locales moved to locales, expose locales ([9d6099e](https://github.com/VirtoCommerce/vc-shell/commit/9d6099ed2d43dba38a71a5e868ed335cf2bd8170))
+
+
+
 ## [1.0.177](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.176...v1.0.177) (2024-03-08)
 
 

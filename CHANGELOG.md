@@ -1,3 +1,12 @@
+## [1.0.177](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.176...v1.0.177) (2024-03-08)
+
+
+### Bug Fixes
+
+* **ui:** vc-breadcrumbs key fix ([192debc](https://github.com/VirtoCommerce/vc-shell/commit/192debc1791beca4e8bd253362584736dfb1de0e))
+
+
+
 ## [1.0.176](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.175...v1.0.176) (2024-03-07)
 
 

@@ -5,7 +5,7 @@
   >
     <VcBreadcrumbsItem
       v-for="(item, i) in items"
-      :key="item.id"
+      :key="item?.id ?? `item-${i}`"
       v-bind="item"
       :current="i === items.length - 1"
     />

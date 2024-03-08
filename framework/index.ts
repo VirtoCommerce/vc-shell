@@ -10,6 +10,7 @@ import { registerInterceptors } from "./core/interceptors";
 import { usePermissions } from "./core/composables/usePermissions";
 import { useUser } from "./core/composables/useUser";
 import Vue3TouchEvents from "vue3-touch-events";
+import * as locales from "./locales";
 
 import "normalize.css";
 import "./assets/styles/index.scss";
@@ -42,6 +43,11 @@ export default {
     app.use(i18n);
 
     app.config.globalProperties.$mergeLocaleMessage = i18n.global.mergeLocaleMessage;
+
+    // Components locales
+    Object.entries(locales).forEach(([key, message]) => {
+      i18n.global.mergeLocaleMessage(key, message);
+    });
 
     // Register exported components
     Object.entries(components).forEach(([name, component]) => {

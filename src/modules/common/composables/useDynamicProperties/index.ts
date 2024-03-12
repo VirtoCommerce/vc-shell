@@ -110,11 +110,11 @@ export const useDynamicProperties = () => {
         if (Array.isArray(value)) {
           property.values = value.map((item) => {
             item.languageCode = locale;
-            if (dictionary.find((x) => x.id === item.valueId)) {
+            if (dictionary.find((x) => x.id === item.id)) {
               return new PropertyValue(
                 handleDictionaryValue(
                   property,
-                  item.valueId!,
+                  item.id!,
                   dictionary.map((x) => new PropertyDictionaryItem(x)),
                   locale,
                 ),

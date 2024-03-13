@@ -1,3 +1,12 @@
+## [1.0.179](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.178...v1.0.179) (2024-03-13)
+
+
+### Features
+
+* **ui/dynamic:** components update, multiple in dynamic select, fixed close blade confirmation ([ced10db](https://github.com/VirtoCommerce/vc-shell/commit/ced10db4f2b3db555716e14159203aec4b048885))
+
+
+
 ## [1.0.178](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.177...v1.0.178) (2024-03-08)
 
 

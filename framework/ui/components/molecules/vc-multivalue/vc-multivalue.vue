@@ -110,14 +110,31 @@
       </template>
     </div>
 
-    <slot
-      v-if="errorMessage"
-      name="error"
+    <Transition
+      name="slide-up"
+      mode="out-in"
     >
-      <VcHint class="vc-multivalue__error tw-mt-1">
-        {{ errorMessage }}
-      </VcHint>
-    </slot>
+      <div v-if="error">
+        <slot name="error">
+          <VcHint
+            v-if="errorMessage"
+            class="vc-multivalue__error"
+          >
+            {{ errorMessage }}
+          </VcHint>
+        </slot>
+      </div>
+      <div v-else>
+        <slot name="hint">
+          <VcHint
+            v-if="hint"
+            class="tw-text-[color:var(--multivalue-placeholder-color)] tw-mt-1 tw-break-words tw-p-0"
+          >
+            {{ hint }}
+          </VcHint>
+        </slot>
+      </div>
+    </Transition>
   </div>
 </template>
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
@@ -136,6 +153,7 @@ export interface Props<T> {
   label?: string;
   tooltip?: string;
   name?: string;
+  hint?: string;
   options?: T[];
   optionValue?: string;
   optionLabel?: string;
@@ -175,7 +193,8 @@ const props = withDefaults(defineProps<Props<T>>(), {
 const emit = defineEmits<Emits<T>>();
 defineSlots<{
   item: (args: { item: T }) => any;
-  error: (props: any) => any;
+  hint: void;
+  error: void;
 }>();
 
 const dropdownToggleRef = ref();
@@ -358,7 +377,7 @@ function onSearch(event: Event) {
   }
 
   &__error {
-    @apply tw-text-[color:var(--multivalue-border-color-error)];
+    @apply tw-mt-1 [--hint-color:var(--multivalue-border-color-error)];
   }
 
   &__field {
@@ -399,5 +418,20 @@ function onSearch(event: Event) {
   &_disabled &__field {
     @apply tw-bg-[#fafafa] tw-text-[#424242];
   }
+}
+
+.slide-up-enter-active,
+.slide-up-leave-active {
+  transition: all 0.25s ease-out;
+}
+
+.slide-up-enter-from {
+  opacity: 0;
+  transform: translateY(5px);
+}
+
+.slide-up-leave-to {
+  opacity: 0;
+  transform: translateY(-5px);
 }
 </style>

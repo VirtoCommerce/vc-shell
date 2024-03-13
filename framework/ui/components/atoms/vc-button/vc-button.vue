@@ -170,7 +170,11 @@ $variants: primary, warning, danger;
         @apply tw-bg-[color:rgb(var(--button-#{$variant}-background-color-hover))];
 
         &.vc-button_text {
-          @apply tw-bg-[color:rgba(var(--button-#{$variant}-background-color-hover),0.07)];
+          @apply tw-bg-[color:rgba(var(--button-#{$variant}-background-color-hover),0.07)] tw-p-1;
+        }
+
+        &.vc-button_outline {
+          @apply tw-border-[color:rgb(var(--button-#{$variant}-background-color-hover))]  tw-bg-transparent  #{!important};
         }
       }
     }

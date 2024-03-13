@@ -5,9 +5,11 @@
     :option-value="optionValue"
     :searchable="true"
     :debounce="debounce"
+    :disabled="disabled"
     :label="label"
     :required="required"
     :model-value="option"
+    :tooltip="tooltip"
     @update:model-value="$emit('update:option', $event)"
   >
     <template #control="{ toggleHandler }">
@@ -24,7 +26,6 @@
         :error="error"
         :error-message="errorMessage"
         :maxlength="maxlength"
-        :tooltip="tooltip"
         class="tw-w-full"
         type="number"
       >
@@ -45,6 +46,7 @@
           <input
             ref="inputRef"
             type="text"
+            :disabled="disabled"
             :placeholder="holder"
           />
         </template>

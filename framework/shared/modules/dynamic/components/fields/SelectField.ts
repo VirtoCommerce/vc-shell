@@ -27,6 +27,7 @@ export default {
             currentLanguage: props.currentLocale,
             clearable: props.element.clearable || false,
             searchable: props.element.searchable || false,
+            multiple: props.element.multiple || false,
           },
           unrefNested(props.baseProps),
           {

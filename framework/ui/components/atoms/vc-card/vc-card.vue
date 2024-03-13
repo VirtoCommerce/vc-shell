@@ -48,6 +48,9 @@ export interface Props {
   icon?: string;
   isCollapsable?: boolean;
   isCollapsed?: boolean;
+  /**
+   * Card content will fill the available space
+   */
   fill?: boolean;
   variant?: "default" | "success" | "danger";
 }

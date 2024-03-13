@@ -7,7 +7,7 @@
       :class="[
         `vc-image_${aspect}`,
         {
-          'tw-rounded-full tw-pb-[var(--image-padding-bottom-1x1)]': rounded,
+          'tw-rounded-full': rounded,
           'tw-rounded-[3px] tw-border tw-border-solid tw-border-[color:#efefef]': bordered,
           'tw-cursor-pointer': clickable,
         },

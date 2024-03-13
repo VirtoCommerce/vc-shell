@@ -61,7 +61,7 @@
 
 <script lang="ts" setup>
 import { MaybeRef, computed, ref, unref, watch } from "vue";
-import { ICommonAsset } from "../../../../core/types";
+import { ICommonAsset, IValidationRules } from "../../../../core/types";
 import { VcLabel, VcFileUpload, VcHint } from "./../../";
 import VcGalleryItem from "./_internal/vc-gallery-item/vc-gallery-item.vue";
 import VcGalleryPreview from "./_internal/vc-gallery-preview/vc-gallery-preview.vue";
@@ -84,7 +84,7 @@ export interface Props {
     remove: boolean;
   };
   hideAfterUpload?: boolean;
-  rules?: string | Record<string, unknown>;
+  rules?: keyof IValidationRules | IValidationRules;
   name?: string;
   loading?: boolean;
 }

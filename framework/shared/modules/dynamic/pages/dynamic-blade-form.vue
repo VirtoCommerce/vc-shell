@@ -189,7 +189,10 @@ watch(
 const validated = computed(() => {
   const toolbarSave = _.get(toValue(scope)?.toolbarOverrides, "saveChanges") as unknown as IBladeToolbar;
 
-  return (toolbarSave && !unref("disabled" in toolbarSave && toolbarSave.disabled)) || validationState.value.modified;
+  if (toolbarSave && "disabled" in toolbarSave) {
+    return (validationState.value.modified && unref(toolbarSave.disabled)) ?? false;
+  }
+  return validationState.value.modified;
 });
 
 useBeforeUnload(validated);

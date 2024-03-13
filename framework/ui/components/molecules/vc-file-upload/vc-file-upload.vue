@@ -56,13 +56,14 @@ import { getCurrentInstance, ref, unref } from "vue";
 import { useField } from "vee-validate";
 import { VcIcon, VcLink, VcHint } from "./../../";
 import { useI18n } from "vue-i18n";
+import { IValidationRules } from "./../../../../core/types";
 
 export interface Props {
   variant?: "gallery" | "file-upload";
   loading?: boolean;
   accept?: string;
   multiple?: boolean;
-  rules?: string | Record<string, unknown>;
+  rules?: keyof IValidationRules | IValidationRules;
   name?: string;
 }
 

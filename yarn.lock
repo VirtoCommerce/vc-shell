@@ -5083,7 +5083,6 @@ __metadata:
     "@vueuse/components": "npm:^10.7.1"
     "@vueuse/core": "npm:^10.7.1"
     "@vueuse/integrations": "npm:^10.7.1"
-    ace-builds: "npm:^1.32.2"
     core-js: "npm:^3.35.0"
     iso-639-1: "npm:^3.1.0"
     moment: "npm:^2.30.1"
@@ -5102,7 +5101,6 @@ __metadata:
     vue-i18n: "npm:^9.8.0"
     vue-router: "npm:^4.2.5"
     vue-tsc: "npm:^1.8.27"
-    vue3-ace-editor: "npm:^2.2.4"
     vue3-touch-events: "npm:^4.1.8"
     whatwg-fetch: "npm:^3.6.19"
   languageName: unknown
@@ -5757,13 +5755,6 @@ __metadata:
     mime-types: "npm:~2.1.34"
     negotiator: "npm:0.6.3"
   checksum: 67eaaa90e2917c58418e7a9b89392002d2b1ccd69bcca4799135d0c632f3b082f23f4ae4ddeedbced5aa59bcc7bdf4699c69ebed4593696c922462b7bc5744d6
-  languageName: node
-  linkType: hard
-
-"ace-builds@npm:^1.32.2":
-  version: 1.32.3
-  resolution: "ace-builds@npm:1.32.3"
-  checksum: 2bbad710cb8401aa45c19e0225ccea8299cd6b57e016a807d9e408bb8f8e25c83794dc07dd2c066cd85109deeca094128b1eed6a0a6bd0ca9a449df792e6b1ea
   languageName: node
   linkType: hard
 
@@ -12461,6 +12452,60 @@ __metadata:
   languageName: node
   linkType: hard
 
+"qwe@workspace:apps/qwe":
+  version: 0.0.0-use.local
+  resolution: "qwe@workspace:apps/qwe"
+  dependencies:
+    "@commitlint/cli": "npm:^18.4.3"
+    "@commitlint/config-conventional": "npm:^18.4.3"
+    "@fortawesome/fontawesome-free": "npm:^5.15.3"
+    "@laynezh/vite-plugin-lib-assets": "npm:^0.5.13"
+    "@rollup/plugin-typescript": "npm:^11.1.5"
+    "@types/lodash-es": "npm:^4.17.12"
+    "@types/node": "npm:^20.10.5"
+    "@typescript-eslint/eslint-plugin": "npm:^6.16.0"
+    "@typescript-eslint/parser": "npm:^6.16.0"
+    "@vc-shell/api-client-generator": "npm:^1.0.178"
+    "@vc-shell/config-generator": "npm:^1.0.178"
+    "@vc-shell/framework": "npm:^1.0.178"
+    "@vc-shell/release-config": "npm:^1.0.178"
+    "@vc-shell/ts-config": "npm:^1.0.178"
+    "@vitejs/plugin-vue": "npm:^5.0.3"
+    "@vue/eslint-config-prettier": "npm:^9.0.0"
+    "@vue/eslint-config-typescript": "npm:^12.0.0"
+    "@vueuse/core": "npm:^10.7.1"
+    "@vueuse/integrations": "npm:^10.7.1"
+    autoprefixer: "npm:^10.4.16"
+    conventional-changelog-cli: "npm:^4.1.0"
+    cross-env: "npm:^7.0.3"
+    eslint: "npm:^8.56.0"
+    eslint-import-resolver-typescript: "npm:^3.6.1"
+    eslint-plugin-import: "npm:^2.29.1"
+    eslint-plugin-prettier: "npm:^5.1.2"
+    eslint-plugin-vue: "npm:^9.19.2"
+    husky: "npm:^8.0.3"
+    lint-staged: "npm:^15.2.0"
+    lodash-es: "npm:^4.17.21"
+    moment: "npm:^2.30.1"
+    postcss: "npm:^8.4.32"
+    prettier: "npm:^3.1.1"
+    roboto-fontface: "npm:^0.10.0"
+    sass: "npm:^1.69.6"
+    tailwindcss: "npm:^3.4.0"
+    tsx: "npm:^4.7.1"
+    typescript: "npm:^5.3.3"
+    vee-validate: "npm:^4.12.4"
+    vite: "npm:^5.0.11"
+    vite-plugin-checker: "npm:^0.6.2"
+    vite-plugin-mkcert: "npm:^1.17.1"
+    vite-plugin-pwa: "npm:^0.18.1"
+    vue: "npm:^3.4.19"
+    vue-eslint-parser: "npm:^9.3.2"
+    vue-router: "npm:^4.2.5"
+    vue-tsc: "npm:^1.8.27"
+  languageName: unknown
+  linkType: soft
+
 "ramda@npm:0.29.0":
   version: 0.29.0
   resolution: "ramda@npm:0.29.0"
@@ -12830,13 +12875,6 @@ __metadata:
   version: 1.0.0
   resolution: "requires-port@npm:1.0.0"
   checksum: 878880ee78ccdce372784f62f52a272048e2d0827c29ae31e7f99da18b62a2b9463ea03a75f277352f4697c100183debb0532371ad515a2d49d4bfe596dd4c20
-  languageName: node
-  linkType: hard
-
-"resize-observer-polyfill@npm:^1.5.1":
-  version: 1.5.1
-  resolution: "resize-observer-polyfill@npm:1.5.1"
-  checksum: e10ee50cd6cf558001de5c6fb03fee15debd011c2f694564b71f81742eef03fb30d6c2596d1d5bf946d9991cb692fcef529b7bd2e4057041377ecc9636c753ce
   languageName: node
   linkType: hard
 
@@ -15233,18 +15271,6 @@ __metadata:
   bin:
     vue-tsc: bin/vue-tsc.js
   checksum: fb84ff195de75e3529cf01b917f111bee561d15e1e437aa97a47e797f99f913783f24ec2d595271240240a21df08ba43b36aa7fc82a48a4c396a0f6d0e409376
-  languageName: node
-  linkType: hard
-
-"vue3-ace-editor@npm:^2.2.4":
-  version: 2.2.4
-  resolution: "vue3-ace-editor@npm:2.2.4"
-  dependencies:
-    resize-observer-polyfill: "npm:^1.5.1"
-  peerDependencies:
-    ace-builds: "*"
-    vue: ^3
-  checksum: d7f029bac72a9bbf245019a25ea502495e3ad3d38fb70004bc26d48747036c12a8b81c006b58bc6e2cf737e6fbf8ce94f2ea509a1c1110e9b508eee6f22677c8
   languageName: node
   linkType: hard
 

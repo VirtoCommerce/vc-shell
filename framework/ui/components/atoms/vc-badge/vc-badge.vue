@@ -30,6 +30,13 @@ const props = defineProps<Props>();
 
 const emit = defineEmits<Emits>();
 
+defineSlots<{
+  /**
+   * Slot for component content
+   * */
+  default: void;
+}>();
+
 function onClick(): void {
   if (props.clickable && !props.disabled) {
     emit("click");

@@ -1,5 +1,4 @@
 export * from "./vc-breadcrumbs";
-export * from "./vc-code-editor";
 export * from "./vc-editor";
 export * from "./vc-form";
 export * from "./vc-file-upload";

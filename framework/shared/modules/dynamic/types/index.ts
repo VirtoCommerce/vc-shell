@@ -314,6 +314,11 @@ export interface SelectSchema extends SchemaBase {
    * @type {boolean}
    */
   searchable?: boolean;
+  /**
+   * Select multiple values.
+   * @type {boolean}
+   */
+  multiple?: boolean;
 }
 
 export interface MultivalueSchema extends SchemaBase {

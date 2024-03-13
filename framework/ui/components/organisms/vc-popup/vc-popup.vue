@@ -56,7 +56,7 @@
                 <slot name="header">{{ title }}</slot>
 
                 <button
-                  class="tw-h-[26px] tw-w-[26px] tw-bg-[var(--close-btn-bg)] tw-rounded-[4px] tw-inline-flex tw-items-center tw-justify-center tw-ml-auto hover:tw-bg-[var(--close-btn-bg-hover)]"
+                  class="tw-h-[26px] tw-w-[26px] tw-bg-[var(--close-btn-bg)] tw-rounded-[4px] tw-inline-flex tw-items-center tw-justify-center tw-ml-auto hover:tw-bg-[var(--close-btn-bg-hover)] tw-outline-none"
                   @click="closeModal"
                 >
                   <svg

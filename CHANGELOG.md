@@ -1,3 +1,12 @@
+## [1.0.180](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.179...v1.0.180) (2024-03-14)
+
+
+### Bug Fixes
+
+* **navigation:** fixed multiple close confirmations, component update in vue router instance ([966e779](https://github.com/VirtoCommerce/vc-shell/commit/966e7796ff190110a583e674da149b56634264c3))
+
+
+
 ## [1.0.179](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.178...v1.0.179) (2024-03-13)
 
 

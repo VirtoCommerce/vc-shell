@@ -12,12 +12,12 @@ export const VcBladeView = defineComponent({
     },
   },
   setup(props, { attrs, slots }) {
-    provide(navigationViewLocation, props.blade!);
-
     const viewRef = ref<CoreBladeExposed>();
 
+    const bl = toRef(props.blade);
+
     watch(
-      () => [viewRef.value, props.blade] as const,
+      () => [viewRef.value, bl.value] as const,
       ([instance, blade]) => {
         if (blade && blade.props?.navigation) {
           blade.props.navigation.instance = toRef(instance);
@@ -26,6 +26,7 @@ export const VcBladeView = defineComponent({
       { flush: "post" },
     );
 
+    provide(navigationViewLocation, bl.value!);
     return () => {
       /**
        * Callback function onClose, which is passed while opening blade, called when a BladeVNode is unmounted.

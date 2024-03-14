@@ -167,30 +167,36 @@ const useBladeNavigationSingleton = createSharedComposable(() => {
   async function closeBlade(index: number) {
     console.debug(`[@vc-shell/framework#useBladeNavigation] - closeBlade called.`);
 
-    if (navigationInstance.blades.value.length === 1) {
+    if (navigationInstance.blades.value.length === 0) {
       return false;
     }
 
-    const children = navigationInstance.blades.value.slice(index).reverse();
-    let isPrevented = false;
-    for (let index = 0; index < children.length; index++) {
-      const element = children[index];
+    try {
+      const children = navigationInstance.blades.value.slice(index).reverse();
+      let isPrevented = false;
+      for (let index = 0; index < children.length; index++) {
+        const element = children[index];
 
-      if (element.props?.navigation?.onBeforeClose) {
-        const result = await element.props.navigation.onBeforeClose();
+        if (element.props?.navigation?.onBeforeClose) {
+          const result = await element.props.navigation.onBeforeClose();
 
-        if (result === false) {
-          isPrevented = true;
-          console.debug(`[@vc-shell/framework#useBladeNavigation] - Navigation is prevented`);
+          if (result === false) {
+            isPrevented = true;
+            console.debug(`[@vc-shell/framework#useBladeNavigation] - Navigation is prevented`);
+          }
+          // we use break here to prevent running onBeforeClose for all children, cause it can be prevented by first child
+          break;
         }
       }
-    }
 
-    if (!isPrevented) {
-      navigationInstance.blades.value.splice(index);
-    }
+      if (!isPrevented) {
+        navigationInstance.blades.value.splice(index);
+      }
 
-    return isPrevented;
+      return isPrevented;
+    } finally {
+      console.debug(`[@vc-shell/framework#useBladeNavigation] - closeBlade finished.`);
+    }
   }
 
   return {
@@ -227,6 +233,12 @@ export function useBladeNavigation(): IUseBladeNavigation {
       if (!isPrevented && createdComponent.type?.url) {
         if (hasAccess(blade.permissions)) {
           navigationInstance.blades.value = [createdComponent];
+
+          // Find the route with the matching URL and update the components.default property with the new component
+          const route = router.getRoutes().find((r) => r.path === createdComponent.type?.url);
+          if (route && route.components) {
+            route.components.default = createdComponent;
+          }
 
           return await router.replace({ path: createdComponent.type?.url as string });
         } else

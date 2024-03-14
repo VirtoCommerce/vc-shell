@@ -130,8 +130,6 @@ const { t } = useI18n({ useScope: "global" });
 
 const { showConfirmation } = usePopup();
 
-const { onBeforeClose } = useBladeNavigation();
-
 const widgetsRefs = useTemplateRefsList<{ el: HTMLDivElement; component: ConcreteComponent }>();
 
 const { loading, item, validationState, scope, load, remove, saveChanges, bladeTitle } = props.composables
@@ -149,7 +147,7 @@ const { loading, item, validationState, scope, load, remove, saveChanges, bladeT
       saveChanges: undefined,
       bladeTitle: undefined,
     } as unknown as UseDetails<Record<string, any>, DetailsBaseBladeScope>);
-
+const { onBeforeClose } = useBladeNavigation();
 const title = ref();
 const isReady = ref(false);
 const activeWidgetExposed = ref<CoreBladeExposed>();
@@ -186,16 +184,16 @@ watch(
 /**
  * Validated state. Uses 'disabled' property from toolbarOverrides.saveChanges OR validationState.modified
  */
-const validated = computed(() => {
+const isFormModified = computed(() => {
   const toolbarSave = _.get(toValue(scope)?.toolbarOverrides, "saveChanges") as unknown as IBladeToolbar;
 
-  if (toolbarSave && "disabled" in toolbarSave) {
-    return (validationState.value.modified && unref(toolbarSave.disabled)) ?? false;
+  if (toolbarSave && "disabled" in toolbarSave && toolbarSave.disabled !== undefined) {
+    return !unref(toolbarSave.disabled) || validationState.value.modified;
   }
   return validationState.value.modified;
 });
 
-useBeforeUnload(validated);
+useBeforeUnload(isFormModified);
 
 const form = computed(
   (): FormContentSchema => props.model?.content.find((x) => x?.component === "vc-form") as FormContentSchema,
@@ -351,7 +349,7 @@ onBeforeMount(async () => {
 });
 
 onBeforeClose(async () => {
-  if (unref(validated)) {
+  if (unref(isFormModified)) {
     return await showConfirmation(
       unref(
         computed(() => t(`${settings.value?.localizationPrefix.trim().toUpperCase()}.PAGES.ALERTS.CLOSE_CONFIRMATION`)),

@@ -1,3 +1,12 @@
+## [1.0.181](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.180...v1.0.181) (2024-03-14)
+
+
+### Bug Fixes
+
+* **ui:** vc-select initial multiple fix ([edcb55c](https://github.com/VirtoCommerce/vc-shell/commit/edcb55c172ea4ffc63110360ca4fefa446d2a10a))
+
+
+
 ## [1.0.180](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.179...v1.0.180) (2024-03-14)
 
 

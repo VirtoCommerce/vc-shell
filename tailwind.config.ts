@@ -1,6 +1,6 @@
-import defaultConfig from "@vc-shell/tailwind-config";
-
+import config from "./framework/tailwind.config";
 export default {
-  ...defaultConfig,
+  prefix: "tw-",
+  theme: config.theme,
   content: ["./framework/**/*.{vue,js,ts,jsx,tsx}"],
 };

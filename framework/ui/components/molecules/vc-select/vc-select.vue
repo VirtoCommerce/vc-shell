@@ -568,9 +568,15 @@ watch(
           );
 
           if (typeof data === "object" && !Array.isArray(data) && "results" in data) {
-            defaultValue.value = data.results?.filter(
-              (x) => x[props.optionValue as keyof T] === props.modelValue,
-            ) as Option[];
+            if (props.multiple) {
+              defaultValue.value = data.results?.filter((x) =>
+                props.modelValue.includes(x[props.optionValue as keyof T]),
+              ) as Option[];
+            } else {
+              defaultValue.value = data.results?.filter(
+                (x) => x[props.optionValue as keyof T] === props.modelValue,
+              ) as Option[];
+            }
           } else if (Array.isArray(data)) {
             defaultValue.value = data?.filter((x) => x[props.optionValue as keyof T] === props.modelValue);
           }
@@ -641,12 +647,16 @@ const getOptionLabel = computed(() => getPropValueFn(props.optionLabel, "title")
 const innerValue = computed((): Option[] => {
   const mapNull = props.mapOptions === true && props.multiple !== true;
 
+  console.log(mapNull);
+
   const val =
     props.modelValue !== undefined && (props.modelValue !== null || mapNull === true)
       ? props.multiple === true && Array.isArray(props.modelValue)
         ? props.modelValue
         : [props.modelValue]
       : [];
+
+  console.log(val);
 
   if (props.mapOptions === true && Array.isArray(optionsList.value) === true) {
     const cache = props.mapOptions === true && innerValueCache !== undefined ? innerValueCache : [];

@@ -1,22 +1,24 @@
-import type { Meta, StoryObj } from "@storybook/vue3";
+import type { Meta, StoryFn } from "@storybook/vue3";
 import { VcSwitch } from "./";
 import { VcHint } from "./../../";
 
-const meta: Meta<typeof VcSwitch> = {
+export default {
   title: "atoms/VcSwitch",
   component: VcSwitch,
-};
-
-export default meta;
-type Story = StoryObj<typeof VcSwitch>;
-
-export const Primary: Story = {
-  render: (args) => ({
-    components: { VcSwitch, VcHint },
-    setup() {
-      return { args };
+  args: {
+    label: "This is a switch",
+  },
+  argTypes: {
+    tooltip: {
+      control: "text",
     },
-    template: '<vc-switch v-bind="args"></vc-switch>',
-  }),
-  args: {},
-};
+  },
+} satisfies Meta<typeof VcSwitch>;
+
+export const Primary: StoryFn<typeof VcSwitch> = (args) => ({
+  components: { VcSwitch, VcHint },
+  setup() {
+    return { args };
+  },
+  template: '<vc-switch v-bind="args"></vc-switch>',
+});

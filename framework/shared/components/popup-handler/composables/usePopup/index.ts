@@ -12,7 +12,6 @@ import {
   MaybeRef,
   unref,
   DefineComponent,
-  h,
 } from "vue";
 import { PopupPlugin, UsePopupInternal, UsePopupProps } from "./../../types";
 import { popupPluginInstance } from "./../../plugin";
@@ -59,9 +58,11 @@ export function usePopup<T extends ComponentPublicInstanceConstructor<any> = typ
 
   function destroy(confirmation: UsePopupProps<DefineComponent>): void {
     const popupInstanceInternal = usePopupInternal();
-    const index = popupInstanceInternal.popups.findIndex((x) => _.isEqualWith(x, confirmation, (val) => val.component));
+    const index = popupInstanceInternal?.popups?.findIndex((x) =>
+      _.isEqualWith(x, confirmation, (val) => val.component),
+    );
 
-    if (index !== -1) popupInstanceInternal.popups.splice(index, 1);
+    if (index !== -1) popupInstanceInternal?.popups?.splice(index, 1);
   }
 
   async function open(customInstance?: UsePopupProps<DefineComponent>) {
@@ -73,7 +74,7 @@ export function usePopup<T extends ComponentPublicInstanceConstructor<any> = typ
 
     destroy(rawPopup || customInstance);
 
-    activeInstance?.popups.push(rawPopup || customInstance);
+    activeInstance?.popups?.push(rawPopup || customInstance);
   }
 
   function close(customInstance?: UsePopupProps<DefineComponent>) {
@@ -82,7 +83,7 @@ export function usePopup<T extends ComponentPublicInstanceConstructor<any> = typ
       activeInstance = popupInstance;
     }
     const index = activeInstance?.popups.indexOf(rawPopup || customInstance);
-    if (index !== undefined && index !== -1) activeInstance?.popups.splice(index, 1);
+    if (index !== undefined && index !== -1) activeInstance?.popups?.splice(index, 1);
   }
 
   async function showConfirmation(message: string | Ref<string>): Promise<boolean> {
@@ -103,7 +104,7 @@ export function usePopup<T extends ComponentPublicInstanceConstructor<any> = typ
         },
       },
       slots: {
-        content: message,
+        default: message,
       },
     });
 
@@ -128,7 +129,7 @@ export function usePopup<T extends ComponentPublicInstanceConstructor<any> = typ
         },
       },
       slots: {
-        content: message,
+        default: message,
       },
     });
 

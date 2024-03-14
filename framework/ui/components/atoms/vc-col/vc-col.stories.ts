@@ -1,23 +1,22 @@
-import type { Meta, StoryObj } from "@storybook/vue3";
+import type { Meta, StoryFn } from "@storybook/vue3";
 import { VcCol } from "./";
+import { VcRow } from "./../vc-row";
 import { VcImage } from "./../../";
 
-const meta: Meta<typeof VcCol> = {
+export default {
   title: "atoms/VcCol",
   component: VcCol,
-};
+} satisfies Meta<typeof VcCol>;
 
-export default meta;
-type Story = StoryObj<typeof VcCol>;
-
-export const Primary: Story = {
-  render: (args) => ({
-    components: { VcCol, VcImage },
-    setup() {
-      return { args };
-    },
-    template:
-      '<vc-col v-bind="args"><vc-image src="https://placekitten.com/800/600" size="xl"/><vc-image src="https://placekitten.com/800/600" size="xl"/><vc-image src="https://placekitten.com/800/600" size="xl"/></vc-col>',
-  }),
-  args: {},
-};
+export const Primary: StoryFn<typeof VcCol> = (args) => ({
+  components: { VcCol, VcImage, VcRow },
+  setup() {
+    return { args };
+  },
+  template: `
+      <vc-col v-bind="args">
+        <vc-image src="https://picsum.photos/200" size="xl"/>
+        <vc-image src="https://picsum.photos/200" size="xl"/>
+        <vc-image src="https://picsum.photos/200" size="xl"/>
+      </vc-col>`,
+});

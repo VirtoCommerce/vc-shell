@@ -24,7 +24,7 @@
     "./*": "./*"
   },
   "scripts": {
-    "build": "tsx scripts/build.mts",
+    "build": "shx rm -rf ./dist && tsx scripts/build.mts",
     "build:lib": "vite build",
     "build:types": "vue-tsc --declaration --emitDeclarationOnly --outDir dist",
     "type-check": "vue-tsc --noEmit"
@@ -60,6 +60,7 @@
     "@vc-shell/ts-config": "^1.0.181",
     "@vitejs/plugin-vue": "^5.0.3",
     "sass": "^1.69.6",
+    "shx": "^0.3.4",
     "tsx": "^4.7.1",
     "typescript": "^5.3.3",
     "vite": "^5.0.11",

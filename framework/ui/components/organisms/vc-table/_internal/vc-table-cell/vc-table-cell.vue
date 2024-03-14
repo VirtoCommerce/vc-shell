@@ -133,6 +133,7 @@ export interface Props {
 
 const props = defineProps<Props>();
 
+// TODO fix on russian locale
 const locale = window.navigator.language;
 const value = computed((): unknown => {
   return (props.cell.field || props.cell.id).split(".").reduce((p: { [x: string]: unknown }, c: string) => {

@@ -1,25 +1,53 @@
-import type { Meta, StoryObj } from "@storybook/vue3";
-import { VcBadge } from "./";
+import type { Meta, StoryFn } from "@storybook/vue3";
+import VcBadge from "./vc-badge.vue";
 
-const meta: Meta<typeof VcBadge> = {
+export default {
   title: "atoms/VcBadge",
   component: VcBadge,
-};
-
-export default meta;
-type Story = StoryObj<typeof VcBadge>;
-
-export const Primary: Story = {
-  render: (args) => ({
-    components: { VcBadge },
-    setup() {
-      return { args };
-    },
-    template: '<vc-badge v-bind="args">42</vc-badge>',
-  }),
   args: {
-    active: false,
-    disabled: false,
-    clickable: true,
+    default: "42",
   },
-};
+  argTypes: {
+    default: {
+      control: "text",
+    },
+    active: {
+      control: "boolean",
+      type: {
+        name: "boolean",
+        required: false,
+      },
+    },
+    disabled: {
+      control: "boolean",
+      type: {
+        name: "boolean",
+        required: false,
+      },
+    },
+    clickable: {
+      control: "boolean",
+      type: {
+        name: "boolean",
+        required: false,
+      },
+    },
+  },
+} satisfies Meta<typeof VcBadge>;
+
+const Template: StoryFn<typeof VcBadge> = (args) => ({
+  components: { VcBadge },
+  setup: () => ({ args }),
+  template: `<VcBadge v-bind="args">{{args.default}}</VcBadge>`,
+});
+
+export const Basic = Template.bind({});
+
+export const Active = Template.bind({});
+Active.args = { active: true };
+
+export const Disabled = Template.bind({});
+Disabled.args = { disabled: true };
+
+export const Clickable = Template.bind({});
+Clickable.args = { clickable: true };

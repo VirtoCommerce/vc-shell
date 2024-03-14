@@ -1,21 +1,39 @@
-import type { Meta, StoryObj } from "@storybook/vue3";
+import type { Meta, StoryFn } from "@storybook/vue3";
 import { VcFileUpload } from "./";
 
-const meta: Meta<typeof VcFileUpload> = {
+const VARIANT = ["gallery", "file-upload"];
+
+export default {
   title: "molecules/VcFileUpload",
   component: VcFileUpload,
-};
-
-export default meta;
-type Story = StoryObj<typeof VcFileUpload>;
-
-export const Primary: Story = {
-  render: (args) => ({
-    components: { VcFileUpload },
-    setup() {
-      return { args };
+  args: {
+    variant: "gallery",
+  },
+  argTypes: {
+    variant: {
+      control: "radio",
+      options: VARIANT,
+      table: {
+        type: {
+          summary: VARIANT.join(" | "),
+        },
+      },
     },
-    template: '<vc-file-upload v-bind="args"></vc-file-upload>',
-  }),
-  args: {},
-};
+    rules: {
+      control: "object",
+      table: {
+        type: {
+          summary: "keyof IValidationRules | IValidationRules",
+        },
+      },
+    },
+  },
+} satisfies Meta<typeof VcFileUpload>;
+
+export const Primary: StoryFn<typeof VcFileUpload> = (args) => ({
+  components: { VcFileUpload },
+  setup() {
+    return { args };
+  },
+  template: '<vc-file-upload v-bind="args"></vc-file-upload>',
+});

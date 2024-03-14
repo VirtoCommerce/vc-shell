@@ -126,7 +126,7 @@ import { TransitionRoot, TransitionChild, Dialog, DialogPanel, DialogTitle } fro
 interface Props {
   title?: string;
   closable?: boolean;
-  variant: "default" | "error" | "warning" | "success";
+  variant?: "default" | "error" | "warning" | "success";
   isMobileFullscreen?: boolean;
   isFullscreen?: boolean;
   modalWidth?: string;
@@ -143,6 +143,12 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const emit = defineEmits<Emits>();
+
+defineSlots<{
+  header: void;
+  content: void;
+  footer: (props: { close: () => void }) => void;
+}>();
 
 const isMobile = inject("isMobile") as Ref<boolean>;
 

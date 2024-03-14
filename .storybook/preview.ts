@@ -1,28 +1,37 @@
-import "@vc-shell/framework/dist/index.css";
+// import "@vc-shell/framework/dist/index.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import { setup, Preview } from "@storybook/vue3";
 import { useBreakpoints } from "@vueuse/core";
+import framework from "@vc-shell/framework";
+import { createRouter, createWebHashHistory } from "vue-router";
+import { vueRouter } from "storybook-vue3-router";
+import * as locales from "./assets/locales";
+import "./../framework/assets/styles/index.scss";
 
 setup((app) => {
-  const bp = useBreakpoints({
-    phone: 480,
-    desktop: 1024,
+  app.use(framework, {
+    router: createRouter({
+      history: createWebHashHistory(),
+      routes: [],
+    }),
+    platformUrl: "",
   });
 
-  app.config.globalProperties.pages = [];
-  app.config.globalProperties.$isPhone = bp.smaller("phone");
-  app.config.globalProperties.$isTablet = bp.between("phone", "desktop");
-  app.config.globalProperties.$isMobile = bp.smaller("desktop");
-  app.config.globalProperties.$isDesktop = bp.greater("desktop");
-  app.config.globalProperties.$isTouch = "ontouchstart" in window || navigator.maxTouchPoints > 0;
+  Object.entries(locales).forEach(([key, message]) => {
+    app.config.globalProperties.$mergeLocaleMessage(key, message);
+  });
 });
 
 const preview: Preview = {
-  decorators: [
-    (story) => ({
-      components: { story },
-      template: "<div class='vc-theme_light tw-font-roboto tw-text-base tw-h-screen tw-w-full'><story/></div>",
-    }),
-  ],
+  decorators: [vueRouter()],
+  parameters: {
+    actions: { argTypesRegex: "^on[A-Z].*" },
+    controls: {
+      matchers: {
+        color: /(background|color)$/i,
+        date: /Date$/,
+      },
+    },
+  },
 };
 export default preview;

@@ -2,11 +2,14 @@
   <div class="vc-gallery">
     <VcLabel
       v-if="label"
-      :tooltip="tooltip"
       :required="required"
-      :tooltip-icon="tooltipIcon"
     >
-      {{ label }}
+      <span>{{ label }}</span>
+      <template
+        v-if="tooltip"
+        #tooltip
+        >{{ tooltip }}</template
+      >
     </VcLabel>
 
     <template v-if="(defaultImages && defaultImages.length) || !disabled">
@@ -74,7 +77,6 @@ export interface Props {
   required?: boolean;
   label?: string;
   tooltip?: string;
-  tooltipIcon?: string;
   uploadIcon?: string;
   multiple?: boolean;
   variant?: "gallery" | "file-upload";
@@ -98,8 +100,7 @@ export interface Emits {
 
 const props = withDefaults(defineProps<Props>(), {
   images: () => [],
-  tooltipIcon: "fas fa-info",
-  uploadIcon: "fas fa-upload",
+  uploadIcon: "fas fa-cloud-upload-alt",
   variant: "gallery",
   itemActions: () => ({
     preview: true,

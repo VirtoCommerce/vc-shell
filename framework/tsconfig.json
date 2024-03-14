@@ -26,5 +26,5 @@
 
     "locales/*.ts",
     "locales/*.json"
-  ],
+   ],
 }

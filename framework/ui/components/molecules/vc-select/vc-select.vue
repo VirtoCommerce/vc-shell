@@ -647,16 +647,12 @@ const getOptionLabel = computed(() => getPropValueFn(props.optionLabel, "title")
 const innerValue = computed((): Option[] => {
   const mapNull = props.mapOptions === true && props.multiple !== true;
 
-  console.log(mapNull);
-
   const val =
     props.modelValue !== undefined && (props.modelValue !== null || mapNull === true)
       ? props.multiple === true && Array.isArray(props.modelValue)
         ? props.modelValue
         : [props.modelValue]
       : [];
-
-  console.log(val);
 
   if (props.mapOptions === true && Array.isArray(optionsList.value) === true) {
     const cache = props.mapOptions === true && innerValueCache !== undefined ? innerValueCache : [];

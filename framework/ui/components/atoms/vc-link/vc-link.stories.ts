@@ -1,24 +1,37 @@
-import type { Meta, StoryObj } from "@storybook/vue3";
+import type { Meta, StoryFn } from "@storybook/vue3";
 import { VcLink } from "./";
 
-const meta: Meta<typeof VcLink> = {
+export default {
   title: "atoms/VcLink",
   component: VcLink,
-};
-
-export default meta;
-type Story = StoryObj<typeof VcLink>;
-
-export const Primary: Story = {
-  render: (args) => ({
-    components: { VcLink },
-    setup() {
-      return { args };
-    },
-    template: '<vc-link v-bind="args">This is a link</vc-link>',
-  }),
   args: {
     active: false,
     disabled: false,
+    default: "This is a link",
   },
-};
+  argTypes: {
+    default: {
+      control: "text",
+      table: {
+        type: {
+          summary: "text",
+        },
+      },
+    },
+    onClick: {
+      table: {
+        type: {
+          summary: "function",
+        },
+      },
+    },
+  },
+} satisfies Meta<typeof VcLink>;
+
+export const Primary: StoryFn<typeof VcLink> = (args) => ({
+  components: { VcLink },
+  setup() {
+    return { args };
+  },
+  template: '<vc-link v-bind="args">{{args.default}}</vc-link>',
+});

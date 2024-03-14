@@ -19,7 +19,7 @@
     >
       <VcIcon
         class="tw-text-[#c8dbea]"
-        icon="fas fa-cloud-upload-alt"
+        :icon="icon"
         size="xxl"
       ></VcIcon>
 
@@ -65,6 +65,7 @@ export interface Props {
   multiple?: boolean;
   rules?: keyof IValidationRules | IValidationRules;
   name?: string;
+  icon?: string;
 }
 
 export interface Emits {
@@ -75,6 +76,7 @@ const props = withDefaults(defineProps<Props>(), {
   variant: "gallery",
   accept: ".jpg, .png, .jpeg",
   name: "Gallery",
+  icon: "fas fa-cloud-upload-alt",
 });
 
 const emit = defineEmits<Emits>();

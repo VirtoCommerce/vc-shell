@@ -60,7 +60,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, Ref, reactive, useAttrs, toRefs } from "vue";
+import { computed, Ref, reactive, useAttrs, toRefs, toValue } from "vue";
 import { IBladeToolbar } from "../../../../core/types";
 import { usePopup } from "./../../../../shared";
 import { useI18n } from "vue-i18n";
@@ -97,6 +97,11 @@ withDefaults(defineProps<Props>(), {
   toolbarItems: () => [],
 });
 
+defineSlots<{
+  actions: void;
+  default: void;
+}>();
+
 defineEmits<Emits>();
 const attrs = useAttrs();
 const { maximized, error }: { maximized?: Ref<boolean>; error?: Ref<string> } = toRefs(reactive(attrs));
@@ -108,7 +113,7 @@ const { open } = usePopup({
     title: t("COMPONENTS.ORGANISMS.VC_BLADE.ERROR_POPUP.TITLE"),
   },
   slots: {
-    content: computed(() => error?.value),
+    default: computed(() => toValue(error)),
   },
 });
 </script>

@@ -1,21 +1,24 @@
-import type { Meta, StoryObj } from "@storybook/vue3";
+import type { Meta, StoryFn } from "@storybook/vue3";
 import { VcPagination } from "./";
 
-const meta: Meta<typeof VcPagination> = {
+export default {
   title: "molecules/VcPagination",
   component: VcPagination,
-};
+  args: {
+    pages: 20,
+    currentPage: 3,
+  },
+} satisfies Meta<typeof VcPagination>;
 
-export default meta;
-type Story = StoryObj<typeof VcPagination>;
+export const Template: StoryFn<typeof VcPagination> = (args) => ({
+  components: { VcPagination },
+  setup() {
+    return { args };
+  },
+  template: '<vc-pagination v-bind="args"></vc-pagination>',
+});
 
-export const Primary: Story = {
-  render: (args) => ({
-    components: { VcPagination },
-    setup() {
-      return { args };
-    },
-    template: '<vc-pagination v-bind="args"></vc-pagination>',
-  }),
-  args: {},
+export const Expanded = Template.bind({});
+Expanded.args = {
+  expanded: true,
 };

@@ -8,6 +8,7 @@
   >
     <template
       v-for="(slot, key) in popup.slots"
+      #[key]
       :key="key"
     >
       <div

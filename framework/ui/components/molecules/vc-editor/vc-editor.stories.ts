@@ -1,21 +1,29 @@
-import type { Meta, StoryObj } from "@storybook/vue3";
+import type { Meta, StoryFn } from "@storybook/vue3";
 import { VcEditor } from "./";
 
-const meta: Meta<typeof VcEditor> = {
+export default {
   title: "molecules/VcEditor",
   component: VcEditor,
-};
-
-export default meta;
-type Story = StoryObj<typeof VcEditor>;
-
-export const Primary: Story = {
-  render: (args) => ({
-    components: { VcEditor },
-    setup() {
-      return { args };
+  args: {
+    assetsFolder: "folder",
+    placeholder: "Editor text placeholder",
+  },
+  argTypes: {
+    modelValue: {
+      control: "text",
+      table: {
+        type: {
+          summary: "string | number | Date",
+        },
+      },
     },
-    template: '<vc-editor v-bind="args" class="tw-h-[400px]"></vc-editor></>',
-  }),
-  args: {},
-};
+  },
+} satisfies Meta<typeof VcEditor>;
+
+export const Primary: StoryFn<typeof VcEditor> = (args) => ({
+  components: { VcEditor },
+  setup() {
+    return { args };
+  },
+  template: '<vc-editor v-bind="args"></vc-editor>',
+});

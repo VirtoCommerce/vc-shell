@@ -16,7 +16,7 @@ async function buildLocales() {
   for (let i = 0; i < files.length; i++) {
     const file = files[i];
     if (file === "index.ts") break;
-    process.stdout.write(`${chalk.green(`Output File ${i + 1}/${files.length}: `)} ${file}`);
+    process.stdout.write(`${chalk.green(`Output File ${i + 1}/${files.length - 1}: `)} ${file}`);
 
     const input = path.join(__dirname, "../locales", file);
     const out = path.join(__dirname, "../dist/locales", file);

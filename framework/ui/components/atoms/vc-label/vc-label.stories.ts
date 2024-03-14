@@ -1,21 +1,31 @@
-import type { Meta, StoryObj } from "@storybook/vue3";
+import type { Meta, StoryFn } from "@storybook/vue3";
 import { VcLabel } from "./";
 
-const meta: Meta<typeof VcLabel> = {
+export default {
   title: "atoms/VcLabel",
   component: VcLabel,
-};
-
-export default meta;
-type Story = StoryObj<typeof VcLabel>;
-
-export const Primary: Story = {
-  render: (args) => ({
-    components: { VcLabel },
-    setup() {
-      return { args };
+  args: {
+    default: "This is a label",
+    tooltip: "This is a tooltip",
+  },
+  argTypes: {
+    default: {
+      control: "text",
     },
-    template: '<vc-label v-bind="args">This is a label</vc-label>',
-  }),
-  args: {},
-};
+    tooltip: {
+      control: "text",
+    },
+  },
+} satisfies Meta<typeof VcLabel>;
+
+export const Primary: StoryFn<typeof VcLabel> = (args) => ({
+  components: { VcLabel },
+  setup() {
+    return { args };
+  },
+  template: `
+  <vc-label v-bind="args">
+    {{args.default}}
+    <template #tooltip>{{args.tooltip}}</template>
+  </vc-label>`,
+});

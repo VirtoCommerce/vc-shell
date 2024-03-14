@@ -1,21 +1,23 @@
-import type { Meta, StoryObj } from "@storybook/vue3";
+import type { Meta, StoryFn } from "@storybook/vue3";
 import { VcHint } from "./";
 
-const meta: Meta<typeof VcHint> = {
+export default {
   title: "atoms/VcHint",
   component: VcHint,
-};
-
-export default meta;
-type Story = StoryObj<typeof VcHint>;
-
-export const Primary: Story = {
-  render: (args) => ({
-    components: { VcHint },
-    setup() {
-      return { args };
+  args: {
+    default: "This is a hint",
+  },
+  argTypes: {
+    default: {
+      control: "text",
     },
-    template: '<vc-hint v-bind="args">This is a hint</vc-hint>',
-  }),
-  args: {},
-};
+  },
+} satisfies Meta<typeof VcHint>;
+
+export const Primary: StoryFn<typeof VcHint> = (args) => ({
+  components: { VcHint },
+  setup() {
+    return { args };
+  },
+  template: '<vc-hint v-bind="args">{{args.default}}</vc-hint>',
+});

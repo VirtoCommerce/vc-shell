@@ -174,7 +174,10 @@
                   </div>
                 </div>
                 <div
-                  class="tw-w-3 tw-top-0 tw-bottom-0 tw-cursor-col-resize tw-absolute tw-right-0 tw-flex tw-justify-end"
+                  class="tw-w-3 tw-top-0 tw-bottom-0 tw-absolute tw-right-0 tw-flex tw-justify-end"
+                  :class="{
+                    'tw-cursor-col-resize': props.resizableColumns,
+                  }"
                   @mousedown="handleMouseDown($event, item)"
                 >
                   <div class="tw-w-px tw-bg-[#e5e7eb] tw-h-full"></div>
@@ -818,12 +821,14 @@ function handleHeaderClick(item: ITableColumns) {
 }
 
 function handleMouseDown(e: MouseEvent, item: ITableColumns) {
-  const containerLeft = getOffset(table.value as HTMLElement).left;
-  resizeColumnElement.value = item;
-  columnResizing.value = true;
-  lastResize.value = e.pageX - containerLeft + table.value.scrollLeft;
+  if (props.resizableColumns) {
+    const containerLeft = getOffset(table.value as HTMLElement).left;
+    resizeColumnElement.value = item;
+    columnResizing.value = true;
+    lastResize.value = e.pageX - containerLeft + table.value.scrollLeft;
 
-  bindColumnResizeEvents();
+    bindColumnResizeEvents();
+  }
 }
 
 function bindColumnResizeEvents() {
@@ -975,7 +980,8 @@ function onColumnHeaderDragOver(event: DragEvent) {
     }
   }
 }
-
+// TODO column width fix
+// TODO tootip on date date ago full time on hover
 function onColumnHeaderDragLeave(event: DragEvent) {
   if (props.reorderableColumns && draggedColumn.value) {
     event.preventDefault();

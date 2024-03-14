@@ -8,7 +8,6 @@
     v-else
     class="vc-app tw-flex tw-flex-col tw-w-full tw-h-full tw-box-border tw-m-0 tw-overflow-hidden tw-text-base"
     :class="[
-      `vc-theme_${theme}`,
       {
         'vc-app_touch': $isTouch,
         'vc-app_phone': $isPhone.value,
@@ -27,10 +26,7 @@
       @logo:click="openRoot"
     >
       <template #app-switcher>
-        <slot
-          v-if="!$slots['app-switcher']"
-          name="app-switcher"
-        >
+        <slot name="app-switcher">
           <VcAppSwitcher
             :apps-list="appsList"
             @on-click="switchApp($event)"
@@ -41,26 +37,34 @@
       <!-- Toolbar slot -->
       <template #toolbar>
         <slot
-          v-if="$slots['toolbar:prepend']"
-          name="toolbar:prepend"
-        ></slot>
-        <slot
-          v-if="!$slots['toolbar:language-selector']"
-          name="toolbar:language-selector"
+          name="toolbar"
+          v-bind="{
+            LanguageSelector,
+            UserDropdownButton,
+            NotificationDropdown,
+          }"
         >
-          <LanguageSelector v-if="$isDesktop.value ? $isDesktop.value : $isMobile.value ? route.path === '/' : false" />
-        </slot>
-        <slot name="toolbar:notifications-dropdown">
-          <NotificationDropdown />
-        </slot>
-        <template v-if="$isDesktop.value">
           <slot
-            name="toolbar:user-dropdown"
-            :user-dropdown="UserDropdownButton"
-          >
-            <UserDropdownButton />
+            v-if="$slots['toolbar:prepend']"
+            name="toolbar:prepend"
+          ></slot>
+          <slot name="toolbar:language-selector">
+            <LanguageSelector
+              v-if="$isDesktop.value ? $isDesktop.value : $isMobile.value ? route.path === '/' : false"
+            />
           </slot>
-        </template>
+          <slot name="toolbar:notifications-dropdown">
+            <NotificationDropdown />
+          </slot>
+          <template v-if="$isDesktop.value">
+            <slot
+              name="toolbar:user-dropdown"
+              :user-dropdown="UserDropdownButton"
+            >
+              <UserDropdownButton />
+            </slot>
+          </template>
+        </slot>
       </template>
     </VcAppBar>
 
@@ -116,7 +120,6 @@ export interface Props {
   isReady: boolean;
   logo?: string;
   version?: string;
-  theme?: "light" | "dark";
   title?: string;
   disableMenu?: boolean;
 }
@@ -127,7 +130,11 @@ defineOptions({
 
 defineSlots<{
   "app-switcher": void;
-  toolbar: void;
+  toolbar: (props: {
+    UserDropdownButton: typeof UserDropdownButton;
+    LanguageSelector: typeof LanguageSelector;
+    NotificationDropdown: typeof NotificationDropdown;
+  }) => void;
   "toolbar:prepend": void;
   "toolbar:language-selector": void;
   "toolbar:notifications-dropdown": void;

@@ -1,3 +1,12 @@
+## [1.0.182](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.181...v1.0.182) (2024-03-14)
+
+
+### Features
+
+* **framework:** storybook, component fixes ([965b242](https://github.com/VirtoCommerce/vc-shell/commit/965b242d6afccd325fa09f8315b52cbe7c58527c))
+
+
+
 ## [1.0.181](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.180...v1.0.181) (2024-03-14)
 
 

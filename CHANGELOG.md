@@ -1,3 +1,12 @@
+## [1.0.184](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.183...v1.0.184) (2024-03-14)
+
+
+### Reverts
+
+* tailwind package remove and config change ([2bf54da](https://github.com/VirtoCommerce/vc-shell/commit/2bf54dad5e9d02a49396e0031e24c01ec045c797))
+
+
+
 ## [1.0.183](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.182...v1.0.183) (2024-03-14)
 
 

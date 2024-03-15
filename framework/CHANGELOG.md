@@ -1,3 +1,12 @@
+## [1.0.186](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.185...v1.0.186) (2024-03-15)
+
+
+### Features
+
+* administrator full access on permissions check ([9f96645](https://github.com/VirtoCommerce/vc-shell/commit/9f96645ae03c0920e83d2a8ecca5b3f565a910b9))
+
+
+
 ## [1.0.185](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.184...v1.0.185) (2024-03-15)
 
 

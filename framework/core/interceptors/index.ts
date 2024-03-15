@@ -51,7 +51,7 @@ export function registerInterceptors(router: Router) {
       /**
        * If the response is unauthorized, logout the user
        */
-      if (response.status === 401 || (response.status === 500 && args[0] === "/api/vcmp/security/seller")) {
+      if (response.status === 401) {
         //logout user
         if (isAuthenticated.value) {
           signOut().then(() => {

@@ -19,6 +19,7 @@
   <span
     v-else-if="cell.type === 'date-ago'"
     class="tw-text-[#a5a5a5]"
+    :title="(value instanceof Date && value.toLocaleString(locale)) || ''"
   >
     <div
       v-if="value"
@@ -51,19 +52,19 @@
           v-if="cell.type === 'date'"
           class="tw-truncate"
         >
-          {{ value instanceof Date && value.toLocaleDateString() }}
+          {{ value instanceof Date && value.toLocaleDateString(locale) }}
         </div>
         <div
           v-if="cell.type === 'time'"
           class="tw-truncate"
         >
-          {{ value instanceof Date && value.toLocaleTimeString() }}
+          {{ value instanceof Date && value.toLocaleTimeString(locale) }}
         </div>
         <p
           v-if="cell.type === 'date-time'"
           class="tw-truncate"
         >
-          {{ value.toLocaleString() }}
+          {{ value instanceof Date && value.toLocaleString(locale) }}
         </p>
       </template>
     </template>
@@ -133,8 +134,8 @@ export interface Props {
 
 const props = defineProps<Props>();
 
-// TODO fix on russian locale
 const locale = window.navigator.language;
+
 const value = computed((): unknown => {
   return (props.cell.field || props.cell.id).split(".").reduce((p: { [x: string]: unknown }, c: string) => {
     if (p && Array.isArray(p) && p.length) {

@@ -1050,6 +1050,7 @@ function restoreState() {
           // visible: column.visible,
           sortable: column.sortable,
           alwaysVisible: column.alwaysVisible,
+          width: column.width,
           type: column.type,
         };
       }

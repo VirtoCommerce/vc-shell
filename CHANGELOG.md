@@ -1,3 +1,12 @@
+## [1.0.185](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.184...v1.0.185) (2024-03-15)
+
+
+### Bug Fixes
+
+* **ui:** table width fix, hover with date on date-ago ([a249e0c](https://github.com/VirtoCommerce/vc-shell/commit/a249e0cff939cf9ef555b93373b62980cfed4182))
+
+
+
 ## [1.0.184](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.183...v1.0.184) (2024-03-14)
 
 

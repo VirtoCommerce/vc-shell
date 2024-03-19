@@ -1,3 +1,12 @@
+## [1.0.187](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.186...v1.0.187) (2024-03-19)
+
+
+### Bug Fixes
+
+* **dynamic:** confirmation logics refactor, sort in list priority change ([c98d639](https://github.com/VirtoCommerce/vc-shell/commit/c98d639878599932630b0b868f9dca536710b6b6))
+
+
+
 ## [1.0.186](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.185...v1.0.186) (2024-03-15)
 
 

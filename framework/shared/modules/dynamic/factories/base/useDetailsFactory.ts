@@ -1,4 +1,4 @@
-import { ComputedRef, MaybeRef, computed, ref, watch } from "vue";
+import { ComputedRef, MaybeRef, Ref, computed, ref, watch } from "vue";
 import * as _ from "lodash-es";
 import { useForm, useIsFormDirty, useIsFormValid } from "vee-validate";
 import { useAsync, useLoading } from "../../../../../core/composables";
@@ -20,7 +20,7 @@ export const useDetailsFactory = <Item>(factoryParams: UseDetailsFactoryParams<I
     const itemTemp = ref<Item>();
     const isModified = ref(false);
     const isFormValid = useIsFormValid();
-    const isDirty = useIsFormDirty();
+    let isDirty: Ref<boolean> = useIsFormDirty();
     const isDisabled = computed(() => !isDirty.value || !isFormValid.value);
 
     const { loading: itemLoading, action: load } = useAsync<ItemId>(async (args?: ItemId) => {
@@ -32,6 +32,7 @@ export const useDetailsFactory = <Item>(factoryParams: UseDetailsFactoryParams<I
       if (validationState.value.valid) {
         await factoryParams.saveChanges?.(item as Item);
         isModified.value = false;
+        isDirty = ref(false);
       } else throw new Error("Form is not valid");
     });
 

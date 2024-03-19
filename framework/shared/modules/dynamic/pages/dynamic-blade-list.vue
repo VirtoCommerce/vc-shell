@@ -377,7 +377,7 @@ const toolbarComputed =
   [];
 
 onBeforeMount(async () => {
-  if (props.composables) await load({ ...query.value, sort: sort.value });
+  if (props.composables) await load({ sort: sort.value, ...query.value });
 });
 
 watch(

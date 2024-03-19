@@ -181,17 +181,7 @@ watch(
   { immediate: true },
 );
 
-/**
- * Validated state. Uses 'disabled' property from toolbarOverrides.saveChanges OR validationState.modified
- */
-const isFormModified = computed(() => {
-  const toolbarSave = _.get(toValue(scope)?.toolbarOverrides, "saveChanges") as unknown as IBladeToolbar;
-
-  if (toolbarSave && "disabled" in toolbarSave && toolbarSave.disabled !== undefined) {
-    return !unref(toolbarSave.disabled) || validationState.value.modified;
-  }
-  return validationState.value.modified;
-});
+const isFormModified = computed(() => validationState.value.dirty || validationState.value.modified);
 
 useBeforeUnload(isFormModified);
 

@@ -1,3 +1,12 @@
+## [1.0.188](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.187...v1.0.188) (2024-03-19)
+
+
+### Bug Fixes
+
+* **dynamic:** isDirty reset in useDetailsFactory ([bf7341e](https://github.com/VirtoCommerce/vc-shell/commit/bf7341ece299dac32784222aeee72f2ef9c7ead6))
+
+
+
 ## [1.0.187](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.186...v1.0.187) (2024-03-19)
 
 

@@ -9,7 +9,7 @@ on:
     paths-ignore:
       - '.idea'
       - '.vscode'
-      - 'README.md'
+      # - 'README.md'
       - 'LICENSE'
   pull_request:
     paths-ignore:

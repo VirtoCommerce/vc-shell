@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-      [main]
+      [main, VCI-847]
     paths-ignore:
       - '.idea'
       - '.vscode'

@@ -144,7 +144,8 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
-          push: ${{ github.ref == 'refs/heads/main' || github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main')}}
+          # push: ${{ github.ref == 'refs/heads/main' || github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main')}}
+          push: true
           context: .
           file: .storybook/Dockerfile
           tags: ${{ steps.urls.outputs.DOCKER_URL }}${{ env.DOCKER_TAG }},${{ steps.urls.outputs.DOCKER_URL }}${{ github.event_name != 'pull_request' && github.ref == 'refs/heads/dev' && 'dev-latest' || 'latest'}}

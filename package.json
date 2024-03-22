@@ -17,7 +17,8 @@
     "generate:api-client": "yarn workspace @vc-shell/framework exec cross-env api-client-generator --APP_PLATFORM_MODULES='[Platform]' --APP_API_CLIENT_DIRECTORY=./core/api/",
     "storybook-build": "cross-env APP_ENV=production storybook build .storybook/assets --docs",
     "storybook-serve": "storybook dev .storybook/assets -p 6006 --no-open --docs",
-    "release": "tsx scripts/release.ts"
+    "release": "tsx scripts/release.ts",
+    "storybook-compress": "vite-node --mode production scripts/compress-storybook.ts --"
   },
   "workspaces": [
     "apps/*",

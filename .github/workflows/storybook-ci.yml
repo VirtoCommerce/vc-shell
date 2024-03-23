@@ -1,11 +1,11 @@
-# v1.0.1.vcst
+# v1.0.0.vcmp
 name: Storybook CI
 
 on:
   workflow_dispatch:
   push:
     branches:
-      [main, VCI-847]
+      [main]
     paths-ignore:
       - '.idea'
       - '.vscode'

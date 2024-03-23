@@ -144,8 +144,7 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
-          # push: ${{ github.ref == 'refs/heads/main' || github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main')}}
-          push: true
+          push: ${{ github.ref == 'refs/heads/main' || github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main')}}
           context: .
           file: .storybook/Dockerfile
           tags: ${{ steps.urls.outputs.DOCKER_URL }}${{ env.DOCKER_TAG }},${{ steps.urls.outputs.DOCKER_URL }}${{ github.event_name != 'pull_request' && github.ref == 'refs/heads/dev' && 'dev-latest' || 'latest'}}
@@ -183,23 +182,3 @@ jobs:
         if: success()
         run: |
           echo "Jira Upload Build Info response: ${{ steps.push_build_info_to_jira.outputs.response }}"
-
-  # deploy-cloud:
-  #   if: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev' || github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main')}}
-  #   runs-on: ubuntu-latest
-  #   env:
-  #     CLOUD_URL: 
-  #     CLOUD_TOKEN:
-  #     ENV_NAME: 
-  #   needs: ci
-  #   steps:
-  #   - name: Deploy to cloud
-  #     run: |
-  #       dotnet tool install --global VirtoCommerce.GlobalTool
-  #       vc-build CloudEnvSetParameter -CloudUrl ${{ env.CLOUD_URL }} -CloudToken ${{ env.CLOUD_TOKEN }} -EnvironmentName ${{ env.ENV_NAME }} -HelmParameters custom.app1.image.tag=$(imageTag)
-  #   - name: Check deployment start
-  #     run: |
-  #       vc-build CloudEnvStatus -CloudUrl ${{ env.CLOUD_URL }} -CloudToken ${{ env.CLOUD_TOKEN }} -EnvironmentName ${{ env.ENV_NAME }} -HealthStatus Progressing
-  #   - name: Check deployment status
-  #     run: |
-  #       vc-build CloudEnvStatus -CloudUrl ${{ env.CLOUD_URL }} -CloudToken ${{ env.CLOUD_TOKEN }} -EnvironmentName ${{ env.ENV_NAME }} -HealthStatus Healthy -SyncStatus Synced

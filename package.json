@@ -17,7 +17,8 @@
     "generate:api-client": "yarn workspace @vc-shell/framework exec cross-env api-client-generator --APP_PLATFORM_MODULES='[Platform]' --APP_API_CLIENT_DIRECTORY=./core/api/",
     "storybook-build": "cross-env APP_ENV=production storybook build .storybook/assets --docs",
     "storybook-serve": "storybook dev .storybook/assets -p 6006 --no-open --docs",
-    "release": "tsx scripts/release.ts"
+    "release": "tsx scripts/release.ts",
+    "storybook-compress": "vite-node --mode production scripts/compress-storybook.ts --"
   },
   "workspaces": [
     "apps/*",
@@ -44,11 +45,13 @@
     "@storybook/vue3-vite": "^8.0.0",
     "@types/lodash-es": "^4.17.12",
     "@types/node": "^20.10.5",
+    "@types/adm-zip": "^0.5.5",
     "@typescript-eslint/eslint-plugin": "^6.16.0",
     "@typescript-eslint/parser": "^6.16.0",
     "@vitejs/plugin-vue": "^5.0.3",
     "@vue/eslint-config-prettier": "^9.0.0",
     "@vue/eslint-config-typescript": "^12.0.0",
+    "adm-zip": "^0.5.10",
     "autoprefixer": "^10.4.16",
     "chalk": "^2.4.2",
     "conventional-changelog-cli": "^4.1.0",

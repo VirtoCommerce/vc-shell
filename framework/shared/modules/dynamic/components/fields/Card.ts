@@ -65,7 +65,7 @@ export default {
           {
             header: toValue(props.baseProps.label),
             isCollapsable: props.element.collapsible,
-            isCollapsed: restoreCollapsed(props.element.id),
+            isCollapsed: restoreCollapsed(props.element.id) || props.element.collapsed,
             "onState:collapsed": (e: boolean) => handleCollapsed(props.element.id, e),
           },
           unrefNested(props.baseProps),
@@ -89,13 +89,13 @@ export default {
               toValue(props.fields),
             ),
           actions: () => {
-            if (props.element.action && props.fieldContext && props.currentLocale) {
+            if (props.element.action) {
               const elem = nodeBuilder({
                 controlSchema: props.element.action,
                 parentId: `${props.element.id}`,
-                internalContext: props.fieldContext,
+                internalContext: props.fieldContext ?? {},
                 bladeContext: props.bladeContext,
-                currentLocale: props.currentLocale,
+                currentLocale: props.currentLocale ?? "en",
                 formData: props.formData,
               });
               return elem;

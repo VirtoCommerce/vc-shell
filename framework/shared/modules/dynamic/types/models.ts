@@ -22,13 +22,14 @@ import {
 } from "../../../../ui/components";
 import type { ComponentProps, ComponentEmit, ComponentSlots } from "vue-component-type-helpers";
 
-type FromGenericEventsToProps<T extends Record<string, any>> = T extends Record<string, any>
-  ? {
-      [K in string & `on${Capitalize<string & keyof T>}`]?: K extends `on${infer C}`
-        ? (...args: T[Uncapitalize<C>]) => any
-        : never;
-    }
-  : never;
+type FromGenericEventsToProps<T extends Record<string, any>> =
+  T extends Record<string, any>
+    ? {
+        [K in string & `on${Capitalize<string & keyof T>}`]?: K extends `on${infer C}`
+          ? (...args: T[Uncapitalize<C>]) => any
+          : never;
+      }
+    : never;
 
 interface FieldOpts<T> {
   component?: ComponentType<T>;

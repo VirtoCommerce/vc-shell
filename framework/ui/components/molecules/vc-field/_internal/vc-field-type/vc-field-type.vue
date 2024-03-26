@@ -12,7 +12,7 @@
   <template v-if="type === 'date'">
     <div class="tw-flex tw-flex-row tw-justify-stretch tw-truncate">
       <div class="tw-text-wrap">
-        <p>{{ value.toLocaleDateString() }}</p>
+        <p>{{ value instanceof Date ? value.toLocaleDateString() : value }}</p>
       </div>
     </div>
   </template>
@@ -21,7 +21,7 @@
   <template v-if="type === 'date-ago'">
     <div class="tw-flex tw-flex-row tw-justify-stretch tw-truncate">
       <div class="tw-text-wrap">
-        <p>{{ moment(value).fromNow() ?? "N/A" }}</p>
+        <p>{{ value instanceof Date ? moment(value).fromNow() ?? "N/A" : value }}</p>
       </div>
     </div>
   </template>

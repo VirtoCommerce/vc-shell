@@ -14,7 +14,6 @@ export default {
           {},
           {
             source: toValue(props.baseProps.modelValue),
-            size: props.element.size,
           },
           unrefNested(props.baseProps),
           {

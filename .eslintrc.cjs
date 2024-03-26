@@ -42,6 +42,6 @@ module.exports = {
     "vue/require-default-prop": "off",
     "vue/no-v-html": "off",
     "vue/no-template-shadow": "off",
-    "vue/one-component-per-file": "off"
+    "vue/one-component-per-file": "off",
   },
-}
+};

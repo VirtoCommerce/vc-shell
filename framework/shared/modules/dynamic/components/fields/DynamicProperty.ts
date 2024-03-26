@@ -78,12 +78,11 @@ export default {
             disabled:
               props.bladeContext.scope && "disabled" in props.bladeContext.scope && props.bladeContext.scope.disabled,
             property: prop,
-            modelValue: computed(
-              () =>
-                props.bladeContext.scope?.dynamicProperties?.getPropertyValue(
-                  prop,
-                  toValue(props.currentLocale ?? "en-US"),
-                ),
+            modelValue: computed(() =>
+              props.bladeContext.scope?.dynamicProperties?.getPropertyValue(
+                prop,
+                toValue(props.currentLocale ?? "en-US"),
+              ),
             ),
             optionsGetter: props.bladeContext.scope?.dynamicProperties?.loadDictionaries as (
               property: Record<string, any>,

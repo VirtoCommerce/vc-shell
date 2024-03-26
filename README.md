@@ -14,6 +14,10 @@ The project is originated to create a replacement of the current vc-platform man
 - **Vue 3** as background for our solution.
 - **Vite** for easy build and deployment.
 
+## Demo
+
+- [Storybook](https://vcmp-dev-storybook.govirto.com/)
+
 ## Getting started
 
 ```bash

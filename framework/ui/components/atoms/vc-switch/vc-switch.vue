@@ -13,7 +13,7 @@
         <input
           type="checkbox"
           class="vc-switch__input"
-          :checked="modelValue"
+          :checked="invertValue(modelValue)"
           :disabled="disabled"
           @input="onInput"
         />
@@ -37,19 +37,26 @@ export interface Props {
   tooltip?: string;
   required?: boolean;
   label?: string;
+  trueValue?: boolean;
+  falseValue?: boolean;
 }
 
 export interface Emits {
   (event: "update:modelValue", value: boolean): void;
 }
 
-defineProps<Props>();
+const props = withDefaults(defineProps<Props>(), {
+  trueValue: true,
+  falseValue: false,
+});
 
 const emit = defineEmits<Emits>();
 
+const invertValue = (value: boolean) => (props.trueValue ? value : !value);
+
 function onInput(e: Event) {
   const newValue = (e.target as HTMLInputElement).checked;
-  emit("update:modelValue", newValue);
+  emit("update:modelValue", invertValue(newValue));
 }
 </script>
 

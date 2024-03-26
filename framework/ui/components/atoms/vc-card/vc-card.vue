@@ -41,7 +41,7 @@
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
 import { VcIcon } from "./../vc-icon";
-import { ref } from "vue";
+import { ref, watch } from "vue";
 
 export interface Props {
   header?: string;
@@ -71,7 +71,7 @@ defineSlots<{
   actions: (props?: any) => any;
 }>();
 
-const isCollapsedInternal = ref(props.isCollapsed);
+const isCollapsedInternal = ref();
 
 function onHeaderClick() {
   if (props.isCollapsable) {
@@ -80,6 +80,16 @@ function onHeaderClick() {
   }
   emit("header:click");
 }
+
+watch(
+  () => props.isCollapsed,
+  (value) => {
+    isCollapsedInternal.value = value;
+  },
+  {
+    immediate: true,
+  },
+);
 </script>
 
 <style lang="scss">

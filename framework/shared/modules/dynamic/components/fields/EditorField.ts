@@ -1,20 +1,21 @@
-import { h, ExtractPropTypes, Component, unref } from "vue";
+import { h, ExtractPropTypes, Component } from "vue";
 import { EditorField } from "../factories";
 import componentProps from "./props";
 import ValidationField from "./ValidationField";
 import { unrefNested } from "../../helpers/unrefNested";
+import { EditorSchema } from "../..";
 
 export default {
   name: "EditorField",
   props: componentProps,
-  setup(props: ExtractPropTypes<typeof componentProps>) {
+  setup(props: ExtractPropTypes<typeof componentProps> & { element: EditorSchema }) {
     return () => {
       const field = EditorField({
         props: Object.assign(
           {},
           {
             currentLanguage: props.currentLocale,
-            assetsFolder: unref(props.formData).id || unref(props.formData).categoryId,
+            assetsFolder: props.element.assetsFolder,
           },
           unrefNested(props.baseProps),
           {

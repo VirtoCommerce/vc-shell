@@ -1,4 +1,4 @@
-import { Component, ExtractPropTypes, computed, h, markRaw, ref, toRefs, toValue, unref, watch } from "vue";
+import { Component, ExtractPropTypes, computed, h, markRaw, ref, toRefs, toValue, watch } from "vue";
 import { Gallery } from "../factories";
 import componentProps from "./props";
 import { ICommonAsset } from "../../../../../core/types";
@@ -81,7 +81,7 @@ export default {
             await showConfirmation(
               computed(() =>
                 t(
-                  `${props.bladeContext.settings.localizationPrefix
+                  `${props.bladeContext?.settings?.localizationPrefix
                     .trim()
                     .toUpperCase()}.PAGES.DETAILS.ALERTS.DELETE_CONFIRMATION`,
                 ),
@@ -114,7 +114,10 @@ export default {
             context: props.fieldContext,
             scope: props.bladeContext.scope,
           });
-          await props.bladeContext.validationState.setFieldValue(props.element.id, args);
+
+          if (props.bladeContext.validationState) {
+            await props.bladeContext.validationState.setFieldValue(props.element.id, args);
+          }
         }
       }
 

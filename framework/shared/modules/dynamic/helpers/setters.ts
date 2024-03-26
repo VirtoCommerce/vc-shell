@@ -17,7 +17,7 @@ function setModel(args: {
     if (typeof scope[property] === "function") {
       scope[property](value);
     } else {
-      scope[property] = value;
+      _.set(scope, property, value);
     }
   }
 }

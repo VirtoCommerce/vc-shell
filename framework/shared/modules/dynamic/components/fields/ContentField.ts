@@ -16,6 +16,7 @@ export default {
             type: props.element.variant,
             copyable: props.element.copyable || false,
             orientation: props.element.orientation,
+            aspectRatio: props.element.aspectRatio,
           },
           unrefNested(props.baseProps),
           {

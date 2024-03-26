@@ -14,7 +14,7 @@ export default {
     const { fields: fieldsetFields } = toRefs(props);
 
     return () =>
-      toValue(fieldsetFields.value).map((fields, index, arr) => {
+      toValue(fieldsetFields.value)?.map((fields, index, arr) => {
         const divideByCols = _.chunk(fields, props.element.columns || 1) ?? [];
 
         return h(

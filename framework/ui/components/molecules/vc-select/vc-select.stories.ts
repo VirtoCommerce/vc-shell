@@ -11,20 +11,91 @@ export default {
   },
   argTypes: {
     options: {
+      description: `Method that is used to get select options.
+      Method should be defined in the blade \`scope\` and could be:
+      \n1) async method with the following arguments: (\`keyword: string\`, \`skip\`, \`ids?: string[]\`).
+      \n2) any array
+      \n3) composable returning array`,
       table: {
         type: {
           summary: "((keyword?: string, skip?: number, ids?: string[]) => Promise<P>) | T[]",
         },
       },
     },
-    optionLabel: {
-      control: "text",
-    },
     optionValue: {
+      description: "Property which holds the `value`",
       control: "text",
+      table: {
+        type: {
+          summary: "string",
+        },
+        defaultValue: {
+          summary: "id",
+        },
+      },
+    },
+    optionLabel: {
+      description: "Property which holds the `label`",
+      control: "text",
+      table: {
+        type: {
+          summary: "string",
+        },
+        defaultValue: {
+          summary: "title",
+        },
+      },
     },
     debounce: {
       control: "number",
+    },
+    clearable: {
+      description: "Whether the select is clearable or not.",
+      control: "boolean",
+      table: {
+        type: {
+          summary: "boolean",
+        },
+        defaultValue: {
+          summary: false,
+        },
+      },
+    },
+    emitValue: {
+      description: `Update model with the value of the selected option instead of the whole option.
+      \n Example:
+      \nIf emitValue is \`true\` and the selected option is { id: 1, title: "Option 1" }, the model will be updated with 1.
+      \nIf emitValue is \`false\`, the model will be updated with the whole option.`,
+      table: {
+        type: {
+          summary: "boolean",
+        },
+        defaultValue: {
+          summary: "true",
+        },
+      },
+    },
+    searchable: {
+      description: "Whether the select is searchable or not.",
+      table: {
+        type: {
+          summary: "boolean",
+        },
+        defaultValue: {
+          summary: false,
+        },
+      },
+    },
+    multiple: {
+      description: "Select multiple values.",
+      table: {
+        type: {
+          summary: "boolean",
+        },
+        defaultValue: {
+          summary: false,
+        },
+      },
     },
   },
 } satisfies Meta<typeof VcSelect>;
@@ -61,7 +132,7 @@ export const AsyncOptions: StoryFn<typeof VcSelect> = (args) => ({
   components: { VcSelect } as Record<keyof typeof VcSelect, unknown>,
   setup() {
     const val = ref();
-    const getItems = async () =>
+    const getItems = async (keyword?: string, skip = 0, ids?: string[]) =>
       new Promise((resolve) => {
         setTimeout(() => {
           resolve({

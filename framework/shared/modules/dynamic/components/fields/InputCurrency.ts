@@ -21,7 +21,7 @@ export default {
             option: toValue(getModel(props.element.optionProperty, props.fieldContext ?? {})),
             optionLabel: props.element.optionLabel,
             optionValue: props.element.optionValue,
-            options: unref(props.bladeContext.scope)?.["currencies"],
+            options: toValue(unref(props.bladeContext.scope)?.[props.element.options]),
             "onUpdate:option": (e: string | number | Record<string, unknown>) => {
               setModel({
                 value: e,

@@ -73,45 +73,42 @@
                           <template v-else>{{ t("COMPONENTS.MOLECULES.VC_SELECT.CLICK_TO_SELECT") }}</template>
                         </div>
                         <template v-else-if="selectedScope && selectedScope.length && hasValue">
-                          <template v-if="$slots['selected-item']">
-                            <template
+                          <div class="tw-flex tw-flex-wrap tw-gap-1 tw-py-1">
+                            <div
                               v-for="(item, i) in selectedScope"
+                              v-bind="item"
                               :key="i"
+                              class="tw-flex tw-items-center"
                             >
-                              <slot
-                                v-bind="item"
-                                name="selected-item"
-                              ></slot>
-                            </template>
-                          </template>
-                          <template v-else>
-                            <div class="tw-flex tw-flex-wrap tw-gap-1 tw-py-1">
-                              <div
-                                v-for="(item, i) in selectedScope"
-                                v-bind="item"
-                                :key="i"
-                                class="tw-flex tw-items-center"
-                              >
-                                <template v-if="multiple">
-                                  <div
-                                    class="tw-bg-[#fbfdfe] tw-border tw-border-solid tw-border-[color:#bdd1df] tw-rounded-[2px] tw-flex tw-items-center tw-h-[28px] tw-box-border tw-px-2"
+                              <template v-if="multiple">
+                                <div
+                                  class="tw-bg-[#fbfdfe] tw-border tw-border-solid tw-border-[color:#bdd1df] tw-rounded-[2px] tw-flex tw-items-center tw-h-[28px] tw-box-border tw-px-2"
+                                >
+                                  <slot
+                                    name="selected-item"
+                                    v-bind="item"
                                   >
                                     <span>{{ getOptionLabel(item.opt) }}</span>
-                                    <VcIcon
-                                      v-if="!disabled"
-                                      class="tw-text-[#a9bfd2] tw-ml-2 tw-cursor-pointer hover:tw-text-[color:var(--select-clear-color-hover)]"
-                                      icon="fas fa-times"
-                                      size="s"
-                                      @click.stop="removeAtIndex(item.index)"
-                                    ></VcIcon>
-                                  </div>
-                                </template>
-                                <template v-else-if="!multiple">
+                                  </slot>
+                                  <VcIcon
+                                    v-if="!disabled"
+                                    class="tw-text-[#a9bfd2] tw-ml-2 tw-cursor-pointer hover:tw-text-[color:var(--select-clear-color-hover)]"
+                                    icon="fas fa-times"
+                                    size="s"
+                                    @click.stop="removeAtIndex(item.index)"
+                                  ></VcIcon>
+                                </div>
+                              </template>
+                              <template v-else-if="!multiple">
+                                <slot
+                                  name="selected-item"
+                                  v-bind="item"
+                                >
                                   {{ getEmittingOptionValue(item.opt) }}
-                                </template>
-                              </div>
+                                </slot>
+                              </template>
                             </div>
-                          </template>
+                          </div>
                         </template>
                       </div>
                       <div
@@ -375,8 +372,8 @@ const props = withDefaults(
 
     modelValue?: any;
     /**
-     * Try to map labels of model from 'options' Array; If you are using emit-value you will probably need to use map-options to display the label text in the select field rather than the value;
-     * Default value: true
+     * Try to map labels of model from 'options' Array; If you are using emit-value you will probably need to use map-options to display the label text in the select field rather than the value.
+     * @default true
      */
     mapOptions?: boolean;
     /**
@@ -422,19 +419,19 @@ const props = withDefaults(
     multiple?: boolean;
     /**
      * Available options that the user can select from.
-     * Default value: []
+     * @default []
      */
     options?: ((keyword?: string, skip?: number, ids?: string[]) => Promise<P>) | T[];
     /**
      * Property of option which holds the 'value'
-     * Default value: id
+     * @default id
      * @param option The current option being processed
      * @returns Value of the current option
      */
     optionValue?: OptionProp<Option>;
     /**
      * Property of option which holds the 'label'
-     * Default value: title
+     * @default title
      * @param option The current option being processed
      * @returns Label of the current option
      */
@@ -445,7 +442,7 @@ const props = withDefaults(
     emitValue?: boolean;
     /**
      * Debounce the search input update with an amount of milliseconds
-     * Default value: 500
+     * @default 500
      */
     debounce?: number | string;
     /**

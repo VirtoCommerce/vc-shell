@@ -33,6 +33,7 @@ export const useDetailsFactory = <Item>(factoryParams: UseDetailsFactoryParams<I
         await factoryParams.saveChanges?.(item as Item);
         isModified.value = false;
         isDirty = ref(false);
+        isDirty = ref(false);
       } else throw new Error("Form is not valid");
     });
 

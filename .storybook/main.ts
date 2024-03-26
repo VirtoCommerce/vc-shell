@@ -1,7 +1,5 @@
-import { mergeConfig } from "vite";
-
 export default {
-  stories: ["../framework/ui/components/**/*.stories.ts"],
+  stories: ["../framework/**/*.stories.ts"],
   addons: ["@storybook/addon-links", "@storybook/addon-essentials"],
   staticDirs: ["./assets"],
   framework: {

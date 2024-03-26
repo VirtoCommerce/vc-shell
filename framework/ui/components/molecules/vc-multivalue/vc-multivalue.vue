@@ -40,11 +40,22 @@
           v-if="item"
           class="vc-multivalue__field-value"
         >
-          <span class="tw-truncate">{{
-            type === "number"
-              ? Number(item[props.optionLabel as keyof T]).toFixed(3)
-              : item[props.optionLabel as keyof T]
-          }}</span>
+          <slot
+            name="selected-item"
+            :value="
+              type === 'number'
+                ? Number(item[props.optionLabel as keyof T]).toFixed(3)
+                : item[props.optionLabel as keyof T]
+            "
+            :item="item"
+            :remove="() => onDelete(i)"
+          >
+            <span class="tw-truncate">{{
+              type === "number"
+                ? Number(item[props.optionLabel as keyof T]).toFixed(3)
+                : item[props.optionLabel as keyof T]
+            }}</span>
+          </slot>
           <VcIcon
             v-if="!disabled"
             class="vc-multivalue__field-value-clear"
@@ -88,7 +99,7 @@
                   @click="onItemSelect(item)"
                 >
                   <slot
-                    name="item"
+                    name="option"
                     :item="item"
                     >{{ item[optionLabel as keyof T] }}</slot
                   >
@@ -192,7 +203,8 @@ const props = withDefaults(defineProps<Props<T>>(), {
 
 const emit = defineEmits<Emits<T>>();
 defineSlots<{
-  item: (args: { item: T }) => any;
+  option: (args: { item: T }) => any;
+  "selected-item": (args: { value: string | T[keyof T]; item: T; remove: () => void }) => any;
   hint: void;
   error: void;
 }>();
@@ -381,7 +393,7 @@ function onSearch(event: Event) {
   }
 
   &__field {
-    @apply tw-border-none tw-outline-none tw-h-[var(--multivalue-height)]
+    @apply tw-border-none tw-outline-none tw-min-h-[var(--multivalue-height)]
       tw-min-w-[120px] tw-box-border placeholder:tw-text-[color:var(--multivalue-placeholder-color)];
 
     &::-webkit-input-placeholder {
@@ -397,7 +409,7 @@ function onSearch(event: Event) {
     }
 
     &-value-wrapper {
-      @apply tw-h-[var(--multivalue-height)] tw-ml-2 tw-flex tw-items-center;
+      @apply tw-min-h-[var(--multivalue-height)] tw-ml-2 tw-flex tw-items-center;
     }
 
     &-value {

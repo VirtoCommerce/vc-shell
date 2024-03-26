@@ -7,7 +7,8 @@ import { MultivalueSchema } from "../../types";
 import { VcMultivalue } from "../../../../../ui/components";
 import { unrefNested } from "../../helpers/unrefNested";
 
-type TScope = Parameters<ComponentSlots<typeof VcMultivalue>["item"]>["0"];
+type TScope = Parameters<ComponentSlots<typeof VcMultivalue>["option"]>["0"] &
+  Parameters<ComponentSlots<typeof VcMultivalue>["selected-item"]>["0"];
 
 export default {
   name: "MultivalueField",
@@ -33,7 +34,7 @@ export default {
 
         slots:
           props.element.customTemplate &&
-          ["item"].reduce(
+          ["option", "selected-item"].reduce(
             (obj, slot) => {
               obj[slot] = (scope: TScope) =>
                 h(resolveComponent(props.element.customTemplate?.component as string), {

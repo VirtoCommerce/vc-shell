@@ -26,9 +26,10 @@
 
     <!-- Editor field -->
     <QuillEditor
-      :key="`${disabled}`"
+      :id="id"
+      :key="`${id}-${disabled}`"
       ref="quillRef"
-      v-model:content="content"
+      :content="content"
       class="quill-editor tw-border tw-border-solid tw-border-[color:var(--editor-border-color)] tw-rounded-b-[var(--editor-border-radius)] tw-h-[200px]"
       :class="{ 'tw-bg-[#fafafa] tw-text-[#424242] tw-cursor-default': disabled }"
       theme="snow"
@@ -37,6 +38,7 @@
       content-type="html"
       :read-only="disabled"
       :placeholder="placeholder"
+      :options="options"
       @update:content="onInput"
     />
     <slot
@@ -53,9 +55,9 @@
 <script lang="ts" setup>
 import { QuillEditor, Quill } from "@vueup/vue-quill";
 import "@vueup/vue-quill/dist/vue-quill.snow.css";
-import { ref, unref, watch, onMounted, onUpdated, Ref } from "vue";
+import { ref, unref, watch, onMounted, onUpdated, getCurrentInstance } from "vue";
 import ImageUploader from "quill-image-uploader";
-import { VcLabel, VcHint } from "./../../";
+import { VcLabel, VcHint } from "../..";
 
 export interface Props {
   placeholder?: string;
@@ -77,6 +79,8 @@ export interface Emits {
 const props = defineProps<Props>();
 
 const emit = defineEmits<Emits>();
+const uid = getCurrentInstance()?.uid;
+const id = `editor-${uid}`;
 
 defineSlots<{
   error?: (props: any) => any;
@@ -102,6 +106,10 @@ const toolbar = {
   handlers: {},
 };
 
+const options = {
+  bounds: ".quill-editor",
+};
+
 const modules = {
   name: "imageUploader",
   module: ImageUploader,
@@ -110,7 +118,7 @@ const modules = {
       const formData = new FormData();
       formData.append("image", file);
 
-      const result = await fetch(`/api/assets?folderUrl=/catalog/${props.assetsFolder}`, {
+      const result = await fetch(`/api/assets?folderUrl=/${props.assetsFolder}`, {
         method: "POST",
         body: formData,
       });
@@ -145,17 +153,17 @@ watch(
 
 function removeBlankClass() {
   // fixes quill editor placeholder visibility issue when content is not empty
-  const editor = document.querySelector(".ql-editor.ql-blank");
+  const editor = document.getElementById(id)?.querySelector(".ql-editor.ql-blank");
   if (editor && content.value) {
     editor.classList.remove("ql-blank");
   }
 }
 
-function onInput() {
-  if (isQuillEmpty(content.value)) {
+function onInput(value: string) {
+  if (isQuillEmpty(value)) {
     emit("update:modelValue", null);
   } else {
-    emit("update:modelValue", content.value);
+    emit("update:modelValue", value);
   }
 }
 
@@ -207,6 +215,17 @@ function isQuillEmpty(value: string) {
       pointer-events: none;
       position: absolute;
       right: 15px;
+    }
+  }
+
+  .quill-editor {
+    & .ql-tooltip {
+      display: flex;
+      flex-flow: wrap;
+
+      &.ql-hidden {
+        display: none !important;
+      }
     }
   }
 }

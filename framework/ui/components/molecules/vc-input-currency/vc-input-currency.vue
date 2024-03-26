@@ -20,6 +20,7 @@
         :prefix="prefix"
         :suffix="suffix"
         :name="name"
+        :model-value="numberValue"
         :loading="loading"
         :disabled="disabled"
         :autofocus="autofocus"
@@ -28,6 +29,7 @@
         :maxlength="maxlength"
         class="tw-w-full"
         type="number"
+        @update:model-value="updateModel"
       >
         <template #append-inner>
           <slot
@@ -210,4 +212,10 @@ watch(
 watch(numberValue, (value) => {
   emit("update:model-value", value);
 });
+
+function updateModel(value: string | number | Date | null | undefined) {
+  inputRef.value.value = value as string;
+  numberValue.value = value as number | null;
+  emit("update:model-value", value as number);
+}
 </script>

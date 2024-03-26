@@ -15,10 +15,14 @@ export default {
     return () => {
       const slotContent = computed(() => {
         if (props.element.content && typeof props.element.content === "string") {
-          return props.element.content;
-        } else if (props.element.content?.method) {
+          return t(props.element.content);
+        } else if (
+          typeof props.element.content === "object" &&
+          "method" in props.element.content &&
+          props.element.content?.method
+        ) {
           const method = unref(props.bladeContext.scope)?.[props.element.content?.method];
-          if (method === "function") {
+          if (typeof method === "function") {
             return method();
           } else {
             return method;
@@ -43,12 +47,14 @@ export default {
         slots: {
           default: () => {
             return h("div", { class: "tw-flex tw-flex-row tw-items-center" }, [
-              h(VcIcon, {
-                icon: props.element.icon,
-                size: props.element.iconSize,
-                variant: props.element.iconVariant,
-                class: "tw-mr-3",
-              }),
+              props.element.icon
+                ? h(VcIcon, {
+                    icon: props.element.icon,
+                    size: props.element.iconSize,
+                    variant: props.element.iconVariant,
+                    class: "tw-mr-3",
+                  })
+                : undefined,
               h("div", [
                 h("div", { class: "tw-font-bold" }, computed(() => t(props.element.title ?? "")).value),
                 h("div", slotContent.value),
@@ -58,7 +64,11 @@ export default {
         },
       });
 
-      return h(field.component as Component, { ...field.props, class: "tw-w-full tw-box-border" }, field.slots);
+      return h(
+        field.component as Component,
+        { ...field.props, class: props.element.extend ? "tw-w-full tw-box-border" : "tw-flex tw-self-start" },
+        field.slots,
+      );
     };
   },
 };

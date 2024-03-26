@@ -1,8 +1,5 @@
 <template>
-  <div
-    class="vc-video"
-    :class="[`vc-video_${size}`]"
-  >
+  <div class="tw-inline-block tw-relative">
     <VcLabel
       v-if="label"
       class="tw-mb-2"
@@ -15,12 +12,12 @@
       >
     </VcLabel>
 
-    <div :class="[`vc-video_auto`, 'tw-relative']">
+    <div class="tw-w-full tw-relative">
       <div v-if="source">
         <iframe
           :src="`${source}`"
           width="100%"
-          height="300"
+          height="300px"
           frameborder="0"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           allowfullscreen="false"
@@ -47,43 +44,13 @@ export interface Props {
   label?: string;
   tooltip?: string;
   source?: string;
-  size?: "auto" | "xs" | "s" | "m" | "l" | "xl" | "xxl";
 }
 
 export interface Emits {
   (event: "click"): void;
 }
 
-withDefaults(defineProps<Props>(), {
-  size: "auto",
-});
+defineProps<Props>();
 
 defineEmits<Emits>();
 </script>
-
-<style lang="scss">
-:root {
-  --image-size-xs: 32px;
-  --image-size-s: 48px;
-  --image-size-m: 64px;
-  --image-size-l: 96px;
-  --image-size-xl: 128px;
-  --image-size-xxl: 145px;
-}
-
-$paddings: xs, s, m, l, xl, xxl;
-
-.vc-video {
-  @apply tw-inline-block tw-relative;
-
-  @each $padding in $paddings {
-    &_#{$padding} {
-      @apply tw-w-[var(--image-size-#{$padding})];
-    }
-  }
-
-  &_auto {
-    @apply tw-w-full;
-  }
-}
-</style>

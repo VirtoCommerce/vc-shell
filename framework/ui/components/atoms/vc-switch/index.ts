@@ -1,3 +1,1 @@
-import _Switch from "./vc-switch.vue";
-
-export const VcSwitch = _Switch as typeof _Switch;
+export { default as VcSwitch } from "./vc-switch.vue";

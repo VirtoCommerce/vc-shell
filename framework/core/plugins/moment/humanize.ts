@@ -7,13 +7,12 @@ const momentUnits: momentUnit[] = ["s", "m", "h", "d", "w", "M", "y"];
 
 const intlUnits = ["second", "minute", "hour", "day", "week", "month", "year"];
 
-const intlNumberFormats = intlUnits.map(
-  (intlUnit) =>
-    Intl?.NumberFormat(moment.locale(), {
-      style: "unit",
-      unit: intlUnit,
-      unitDisplay: "long",
-    }),
+const intlNumberFormats = intlUnits.map((intlUnit) =>
+  Intl?.NumberFormat(moment.locale(), {
+    style: "unit",
+    unit: intlUnit,
+    unitDisplay: "long",
+  }),
 );
 
 const getIntlNumberFormat = (unit: momentUnit) => {

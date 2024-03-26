@@ -1052,6 +1052,7 @@ function restoreState() {
           alwaysVisible: column.alwaysVisible,
           width: column.width,
           type: column.type,
+          format: column.format,
         };
       }
       return item;

@@ -1,4 +1,4 @@
-import { Component, ExtractPropTypes, computed, h, unref } from "vue";
+import { Component, ExtractPropTypes, computed, h, mergeProps, unref } from "vue";
 import { Button } from "../factories";
 import componentProps from "./props";
 import { ButtonSchema } from "../../types";
@@ -19,6 +19,9 @@ export default {
             icon: props.element?.icon,
             iconSize: props.element?.iconSize,
             text: props.element?.text,
+            variant: props.element?.variant,
+            raised: props.element?.raised,
+            outline: props.element?.outline,
             onClick: () => {
               unref(props.bladeContext.scope)?.[props.element.method]();
             },
@@ -33,7 +36,7 @@ export default {
         },
       });
 
-      return h(field.component as Component, field.props, field.slots);
+      return h(field.component as Component, mergeProps(field.props, { class: "tw-self-start" }), field.slots);
     };
   },
 };

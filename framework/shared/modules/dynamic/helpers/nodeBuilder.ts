@@ -62,7 +62,7 @@ function nodeBuilder<
     safeIn("property", controlSchema) &&
     controlSchema.property &&
     bladeContext.scope &&
-    bladeContext.scope[controlSchema.property];
+    getModel(controlSchema.property, bladeContext.scope);
 
   const modelValue = scopedProperty ?? contextProperty ?? undefined;
 

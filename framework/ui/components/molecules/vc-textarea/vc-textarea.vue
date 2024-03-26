@@ -73,21 +73,13 @@ defineSlots<{
   error: (props: any) => any;
 }>();
 
-const props = withDefaults(defineProps<Props>(), {
+withDefaults(defineProps<Props>(), {
   name: "Field",
   maxchars: "1024",
 });
 
 const emit = defineEmits<Emits>();
 
-watch(
-  () => props.modelValue,
-  (value) => {
-    emit("update:modelValue", value);
-  },
-);
-
-// Handle input event to propertly validate value and emit changes
 function onInput(e: Event) {
   const newValue = (e.target as HTMLInputElement).value;
   emit("update:modelValue", newValue);

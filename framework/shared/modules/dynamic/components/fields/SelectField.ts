@@ -23,6 +23,7 @@ export default {
             optionValue: props.element.optionValue,
             optionLabel: props.element.optionLabel,
             emitValue: props.element.emitValue,
+            mapOptions: props.element.mapOptions,
             options: props.bladeContext.scope?.[props.element.optionsMethod],
             currentLanguage: props.currentLocale,
             clearable: props.element.clearable || false,

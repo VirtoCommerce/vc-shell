@@ -1,4 +1,5 @@
 import {
+  VcButton,
   VcField,
   VcGallery,
   VcIcon,
@@ -209,6 +210,9 @@ export interface SchemaBase {
    */
   label?: string;
   /** Property name to populate the component with data.
+   * Data can be defined in either the `item` or the `scope`.
+   * Dot notation can also be used for nested properties, e.g. `address.city` or `addresses[1].city`.
+   * You can also use a `function` or `writable computed` to set the property in the `scope`, which receives the modified data as an argument.
    * @type {string}
    */
   property: string;
@@ -218,7 +222,7 @@ export interface SchemaBase {
    * @type {IValidationRules}
    */
   rules?: IValidationRules;
-  /** Placeholder text for component.
+  /** Placeholder text for the component.
    * @type {string}
    */
   placeholder?: string;
@@ -228,7 +232,7 @@ export interface SchemaBase {
    * @type {{ method: string }}
    */
   disabled?: { method: string };
-  /** Tooltip text for component.
+  /** Tooltip text for the component.
    * @type {string}
    */
   tooltip?: string;
@@ -277,9 +281,11 @@ export interface SelectSchema extends SchemaBase {
    * @type {string}
    */
   optionLabel: string;
-  /**
-   * Method that is used to get select options.
-   * @description Method should be defined in the blade `scope`.
+  /** Method that is used to get select options.
+   *  @description Method should be defined in the blade \`scope\` and could be:
+   *  1) async method with the following arguments: (\`keyword: string\`, \`skip\`, \`ids?: string[]\`).
+   *  2) any array
+   *  3) composable returning array
    * @type {string}
    */
   optionsMethod: string;
@@ -309,6 +315,11 @@ export interface SelectSchema extends SchemaBase {
    * }
    */
   emitValue?: boolean;
+  /**
+   * @type {boolean}
+   * @default true
+   */
+  mapOptions?: boolean;
   /**
    * Whether the select is searchable or not.
    * @type {boolean}
@@ -424,18 +435,12 @@ export interface InputSchema extends SchemaBase {
  *  Video schema interface.
  * @interface
  */
-export interface VideoSchema
-  extends Pick<SchemaBase, "id" | "property" | "label" | "visibility" | "tooltip" | "update"> {
+export interface VideoSchema extends Pick<SchemaBase, "id" | "property" | "label" | "visibility" | "tooltip"> {
   /**
    * Component type for video.
    * @type {"vc-video"}
    */
   component: "vc-video";
-  /**
-   * Video size.
-   * @type {"auto" | "xs" | "s" | "m" | "l" | "xl" | "xxl"}
-   */
-  size?: ComponentProps<typeof VcVideo>["size"];
 }
 
 /**
@@ -478,8 +483,7 @@ export interface FieldSchema
  * Image schema interface.
  * @interface
  */
-export interface ImageSchema
-  extends Pick<SchemaBase, "id" | "property" | "visibility" | "update" | "horizontalSeparator"> {
+export interface ImageSchema extends Pick<SchemaBase, "id" | "property" | "visibility"> {
   /**
    * Component type for image.
    * @type {"vc-image"}
@@ -510,11 +514,6 @@ export interface ImageSchema
    * @type {boolean}
    */
   bordered?: boolean;
-  /**
-   * Whether the image has preview on click or not.
-   * @type {boolean}
-   */
-  clickable?: boolean;
 }
 
 /**
@@ -563,13 +562,16 @@ export interface StatusSchema extends Pick<SchemaBase, "id" | "visibility" | "ho
    */
   title?: string;
   /**
-   * Method to call to get status content.
+   * Used to display the content of the status. It can be a `string\` or an `object with a method property`.
+   * Method property could be a function, `computed property` or `ref`, returning a `string` value.
    * @description Method should be defined in the blade `scope`.
-   * @type {{ method: string }}
+   * @type {{ method: string } | string}
    */
-  content: {
-    method: string;
-  };
+  content:
+    | {
+        method: string;
+      }
+    | string;
 }
 
 /**
@@ -583,7 +585,12 @@ export interface InputCurrencySchema extends Omit<SchemaBase, "multilanguage"> {
    */
   component: "vc-input-currency";
   /**
-   * Property that holds available currency options.
+   * List of currency options to be displayed in the dropdown.
+   * @description Array should be defined in the blade `scope`.
+   */
+  options: string;
+  /**
+   * Name of property that holds currency value.
    * @type {string}
    */
   optionProperty: string;
@@ -616,6 +623,11 @@ export interface EditorSchema extends SchemaBase {
    * @type {"vc-editor"}
    */
   component: "vc-editor";
+  /**
+   * Assets folder for the editor image uploads.
+   * @type {string}
+   */
+  assetsFolder: string;
 }
 
 /**
@@ -645,7 +657,8 @@ export interface DynamicPropertiesSchema
  * Gallery schema interface.
  * @interface
  */
-export interface GallerySchema extends Omit<SchemaBase, "placeholder" | "multilanguage"> {
+export interface GallerySchema
+  extends Omit<SchemaBase, "placeholder" | "multilanguage" | "update" | "horizontalSeparator"> {
   /**
    * Component type for the gallery.
    * @type {"vc-gallery"}
@@ -681,8 +694,7 @@ export interface GallerySchema extends Omit<SchemaBase, "placeholder" | "multila
  * Interface for a card schema.
  * @interface
  */
-export interface CardSchema
-  extends RequiredBy<Pick<SchemaBase, "id" | "label" | "visibility" | "horizontalSeparator">, "label"> {
+export interface CardSchema extends RequiredBy<Pick<SchemaBase, "id" | "label" | "visibility">, "label"> {
   /**
    * Component type for the card.
    * @type {"vc-card"}
@@ -695,14 +707,19 @@ export interface CardSchema
   fields: ControlSchema[];
   /**
    * Button schema for the action button in the card, along with the action method to use.
-   * @type {ButtonSchema & { method: string }}
+   * @type {ButtonSchema}
    */
-  action?: ButtonSchema & { method: string };
+  action?: ButtonSchema;
   /**
    * Whether the card is collapsible or not.
    * @type {boolean}
    */
   collapsible?: boolean;
+  /**
+   * Whether the card is collapsed or not.
+   * @type {boolean}
+   */
+  collapsed?: boolean;
   /**
    * Removes internal padding from the card.
    * @type {boolean}
@@ -727,12 +744,12 @@ export interface CheckboxSchema extends Omit<SchemaBase, "multilanguage" | "plac
    */
   content: string;
   /**
-   * True value for the switch.
+   * Value when checkbox is checked.
    * @type {boolean}
    */
   trueValue?: boolean;
   /**
-   * False value for the switch.
+   * Value when checkbox is unchecked.
    * @type {boolean}
    */
   falseValue?: boolean;
@@ -742,13 +759,18 @@ export interface CheckboxSchema extends Omit<SchemaBase, "multilanguage" | "plac
  * Fieldset schema interface.
  * @interface
  */
-export interface FieldsetSchema
-  extends PartialBy<Pick<SchemaBase, "id" | "property" | "visibility" | "horizontalSeparator">, "property"> {
+export interface FieldsetSchema extends Pick<SchemaBase, "id" | "visibility" | "horizontalSeparator"> {
   /**
    * Component type for the fieldset.
    * @type {"vc-fieldset"}
    */
   component: "vc-fieldset";
+  /** Property name to build `fieldset` from `array of objects`.
+   * Data can be defined in either the `item` or the `scope`.
+   * Dot notation can also be used for nested properties, e.g. `address.city` or `addresses[1].city`
+   * @type {string}
+   */
+  property?: string;
   /**
    * Number of columns to display the fields in.
    * @type {number}
@@ -756,13 +778,13 @@ export interface FieldsetSchema
   columns?: number;
   /**
    * Array of numbers that define the aspect ratio of each column.
-   * @example Set to [1, 1] to make all columns equal width.
-   * @description Uses CSS flex-grow property.
+   * @example If you have two columns - set to [1, 1] to make all columns equal width.
+   * @description Uses CSS flex-grow property to set the width of each column.
    * @type {number[]}
    */
   aspectRatio?: number[];
   /**
-   * Array of control schemas to be displayed in the fieldset.
+   * Array of control schemas for the fields in the fieldset.
    * @type {ControlSchema[]}
    */
   fields: ControlSchema[];
@@ -773,6 +795,7 @@ export interface FieldsetSchema
    *
    * Allows to remove selected fieldset.
    * @description Method should be defined in the blade `scope`.
+   * @argument {number} id - id of the field to remove
    * @type {{ method: string }}
    */
   remove?: {
@@ -791,12 +814,12 @@ export interface SwitchSchema extends Omit<SchemaBase, "placeholder" | "multilan
    */
   component: "vc-switch";
   /**
-   * True value for the switch.
+   * Value when switch is on.
    * @type {boolean}
    */
   trueValue?: boolean;
   /**
-   * False value for the switch.
+   * Value when switch is off.
    * @type {boolean}
    */
   falseValue?: boolean;
@@ -808,7 +831,7 @@ export type TableSchema = Omit<ListContentSchema, "filter"> & Pick<SchemaBase, "
  * Button schema interface.
  * @interface
  */
-export interface ButtonSchema extends Pick<SchemaBase, "id" | "disabled" | "visibility" | "horizontalSeparator"> {
+export interface ButtonSchema extends Pick<SchemaBase, "id" | "disabled" | "visibility"> {
   /**
    * Component type.
    * @type {"vc-button"}
@@ -845,6 +868,21 @@ export interface ButtonSchema extends Pick<SchemaBase, "id" | "disabled" | "visi
    * @type {string}
    */
   method: string;
+  /**
+   * Button variant.
+   * @type {primary | warning | danger}
+   */
+  variant?: ComponentProps<typeof VcButton>["variant"];
+  /**
+   * Raised button.
+   * @type {boolean}
+   */
+  raised?: boolean;
+  /**
+   * Outlined button.
+   * @type {boolean}
+   */
+  outline?: boolean;
 }
 
 /**

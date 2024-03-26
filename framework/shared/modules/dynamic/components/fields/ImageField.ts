@@ -17,7 +17,6 @@ export default {
             aspect: props.element.aspect,
             rounded: props.element.rounded,
             bordered: props.element.bordered,
-            clickable: props.element.clickable,
             size: props.element.size,
             background: props.element.background,
           },

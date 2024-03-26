@@ -140,6 +140,7 @@ export const details: DynamicDetailsSchema = {
               rules: {
                 required: true,
               },
+              assetsFolder: "catalog",
             },
             {
               id: "productDynamicProperties",

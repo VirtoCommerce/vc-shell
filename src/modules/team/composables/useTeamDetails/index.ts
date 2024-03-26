@@ -98,9 +98,9 @@ export const useTeamDetails = (args: {
   );
 
   const isActive = computed({
-    get: () => !item.value?.isLockedOut,
+    get: () => item.value?.isLockedOut,
     set: (val) => {
-      (item.value as SellerUserDetails).isLockedOut = !val;
+      (item.value as SellerUserDetails).isLockedOut = val;
     },
   });
 

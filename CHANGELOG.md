@@ -1,3 +1,12 @@
+## [1.0.180](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.179...v1.0.180) (2024-03-26)
+
+
+### Bug Fixes
+
+* added new props into schemas ([b4d3dbf](https://github.com/VirtoCommerce/vendor-portal/commit/b4d3dbf4f0b55afafa1530d805520657695410fa))
+
+
+
 ## [1.0.179](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.178...v1.0.179) (2024-03-14)
 
 

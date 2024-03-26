@@ -1,3 +1,12 @@
+## [1.0.189](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.188...v1.0.189) (2024-03-26)
+
+
+### Features
+
+* **storybook:** dynamic views components and some components refactoring ([19f9d20](https://github.com/VirtoCommerce/vc-shell/commit/19f9d2055d76166a8b38be0149346c0bec12ad77))
+
+
+
 ## [1.0.188](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.187...v1.0.188) (2024-03-19)
 
 

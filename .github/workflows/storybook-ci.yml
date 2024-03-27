@@ -193,6 +193,7 @@ jobs:
       ARGO_APP_NAME: vcmp-dev
       STORYBOOK_TAG: ${{ needs.ci.outputs.tag }}
       CLOUD_URL: https://portal.virtocommerce.cloud
+      CLOUD_TOKEN: ${{ secrets.VCMP_PLATFORM_TOKEN  }}
     steps:
       - uses: actions/checkout@v4
    
@@ -207,12 +208,12 @@ jobs:
       - name: Update environment
         run: |
           dotnet tool install --global VirtoCommerce.GlobalTool
-          vc-build CloudEnvSetParameter -CloudUrl ${{ env.CLOUD_URL }} -CloudToken ${{ secrets.VCMP_PLATFORM_TOKEN  }} -EnvironmentName ${{ env.ARGO_APP_NAME }} -HelmParameters custom.app1.image.tag=${{ env.STORYBOOK_TAG }}
+          vc-build CloudEnvSetParameter -CloudUrl ${{ env.CLOUD_URL }} -CloudToken ${{ env.CLOUD_TOKEN }} -EnvironmentName ${{ env.ARGO_APP_NAME }} -HelmParameters custom.app1.image.tag=${{ env.STORYBOOK_TAG }}
 
       - name: Check deployment start
         run: |
-          vc-build CloudEnvStatus -CloudUrl ${{ env.CLOUD_URL }} -CloudToken ${{ secrets.VCMP_PLATFORM_TOKEN  }} -EnvironmentName ${{ env.ARGO_APP_NAME }} -HealthStatus Progressing
+          vc-build CloudEnvStatus -CloudUrl ${{ env.CLOUD_URL }} -CloudToken ${{ env.CLOUD_TOKEN }} -EnvironmentName ${{ env.ARGO_APP_NAME }} -HealthStatus Progressing
 
       - name: Check deployment status
         run: |
-          vc-build CloudEnvStatus -CloudUrl ${{ env.CLOUD_URL }} -CloudToken ${{ secrets.VCMP_PLATFORM_TOKEN  }} -EnvironmentName ${{ env.ARGO_APP_NAME }} -HealthStatus Healthy -SyncStatus Synced
+          vc-build CloudEnvStatus -CloudUrl ${{ env.CLOUD_URL }} -CloudToken ${{ env.CLOUD_TOKEN }} -EnvironmentName ${{ env.ARGO_APP_NAME }} -HealthStatus Healthy -SyncStatus Synced

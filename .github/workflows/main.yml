@@ -73,7 +73,9 @@ jobs:
         NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
     - name: Publish virto-shell npm
+      if: ${{ github.ref == 'refs/heads/main' }}
       run: yarn run publish
+
   Storybook-CI:
     needs: 'CI'
     uses: VirtoCommerce/vc-shell/.github/workflows/storybook-ci.yml@VCI-847-1 #main

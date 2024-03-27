@@ -3,26 +3,26 @@ name: Storybook CI
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      [main]
-    paths-ignore:
-      - '.idea'
-      - '.vscode'
-      - 'README.md'
-      - 'LICENSE'
-  pull_request:
-    paths-ignore:
-      - '.idea'
-      - '.vscode'
-      - 'README.md'
-      - 'LICENSE'
+  # push:
+  #   branches:
+  #     [main]
+  #   paths-ignore:
+  #     - '.idea'
+  #     - '.vscode'
+  #     - 'README.md'
+  #     - 'LICENSE'
+  # pull_request:
+  #   paths-ignore:
+  #     - '.idea'
+  #     - '.vscode'
+  #     - 'README.md'
+  #     - 'LICENSE'
 
 jobs:
   ci:
-    if: ${{ github.actor != 'dependabot[bot]' &&
-         (github.event.pull_request.head.repo.full_name == github.repository ||
-         github.event.pull_request.head.repo.full_name == '') }}  # Check that PR not from forked repo and not from Dependabot
+    # if: ${{ github.actor != 'dependabot[bot]' &&
+    #      (github.event.pull_request.head.repo.full_name == github.repository ||
+    #      github.event.pull_request.head.repo.full_name == '') }}  # Check that PR not from forked repo and not from Dependabot
     runs-on: ubuntu-latest
     env:
       FORCE_COLOR: true
@@ -56,7 +56,8 @@ jobs:
           corepack enable
 
       - name: Set RELEASE_STATUS
-        if: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push' }}
+        # if: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push' }}
+        if: ${{ github.ref == 'refs/heads/main' }}
         run: |
           echo "RELEASE_STATUS=true" >> $GITHUB_ENV
 
@@ -76,14 +77,15 @@ jobs:
           echo "VERSION_SUFFIX=${{ steps.image.outputs.suffix }}" >> $GITHUB_ENV
 
       - name: Set release-alpha VERSION_SUFFIX
-        if: ${{ github.event_name == 'workflow_dispatch' }}
+        # if: ${{ github.event_name == 'workflow_dispatch' }}
+        if: ${{ github.event_name != 'refs/heads/main' }}
         run: |
           echo "VERSION_SUFFIX=${{ steps.image.outputs.fullSuffix }}" >> $GITHUB_ENV
 
-      - name: Set PR VERSION_SUFFIX
-        if: ${{ github.event_name == 'pull_request' }}
-        run: |
-          echo "VERSION_SUFFIX=${{ steps.image.outputs.suffix }}-${{ steps.image.outputs.SHA }}" >> $GITHUB_ENV
+      # - name: Set PR VERSION_SUFFIX
+      #   if: ${{ github.event_name == 'pull_request' }}
+      #   run: |
+      #     echo "VERSION_SUFFIX=${{ steps.image.outputs.suffix }}-${{ steps.image.outputs.SHA }}" >> $GITHUB_ENV
 
       - name: Set VERSION
         run: |
@@ -118,7 +120,8 @@ jobs:
           yarn storybook-compress
 
       - name: Publish to Blob
-        if: ${{ github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main'}}
+        # if: ${{ github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main'}}
+        if: ${{ github.ref != 'refs/heads/main'}}
         id: blobRelease
         uses: VirtoCommerce/vc-github-actions/publish-blob-release@master
         with:

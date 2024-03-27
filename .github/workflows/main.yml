@@ -74,6 +74,6 @@ jobs:
 
     - name: Publish virto-shell npm
       run: yarn run publish
-
-    - name: Start storybook CI
-      uses: VirtoCommerce/vc-shell/.github/workflows/storybook-ci.yml@main
+  Storybook-CI:
+    needs: 'CI'
+    uses: VirtoCommerce/vc-shell/.github/workflows/storybook-ci.yml@VCI-847-1 #main

@@ -3,6 +3,7 @@ name: Storybook CI
 
 on:
   workflow_dispatch:
+  workflow_call:
   # push:
   #   branches:
   #     [main]

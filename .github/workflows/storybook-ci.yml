@@ -120,19 +120,19 @@ jobs:
         run: |
           yarn storybook-compress
 
-      - name: Publish to Blob
-        # if: ${{ github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main'}}
-        if: ${{ github.ref != 'refs/heads/main'}}
-        id: blobRelease
-        uses: VirtoCommerce/vc-github-actions/publish-blob-release@master
-        with:
-          blobSAS: ${{ secrets.BLOB_TOKEN }}
+      # - name: Publish to Blob
+      #   # if: ${{ github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main'}}
+      #   if: ${{ github.ref != 'refs/heads/main'}}
+      #   id: blobRelease
+      #   uses: VirtoCommerce/vc-github-actions/publish-blob-release@master
+      #   with:
+      #     blobSAS: ${{ secrets.BLOB_TOKEN }}
 
       - name: Set URLs
         id: urls
         run: |
           echo "DOCKER_URL=${{ env.DOCKER_REPOSITORY }}/${GITHUB_REPOSITORY_OWNER,,}/${{ env.DOCKER_IMAGE }}:" >> $GITHUB_OUTPUT
-          echo "BLOB_URL=${{ steps.blobRelease.outputs.packageUrl }}" >> $GITHUB_OUTPUT
+          # echo "BLOB_URL=${{ steps.blobRelease.outputs.packageUrl }}" >> $GITHUB_OUTPUT
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -185,3 +185,34 @@ jobs:
         if: success()
         run: |
           echo "Jira Upload Build Info response: ${{ steps.push_build_info_to_jira.outputs.response }}"
+
+  cd:
+    runs-on: ubuntu-latest
+    needs: 'ci'
+    env:
+      ARGO_APP_NAME: vcmp-dev
+      STORYBOOK_TAG: ${{ needs.ci.outputs.tag }}
+      CLOUD_URL: https://portal.virtocommerce.cloud
+    steps:
+      - uses: actions/checkout@v4
+   
+      - name: Install vc-build
+        run: |
+          dotnet tool install --global VirtoCommerce.GlobalTool
+    
+      # - name: Get theme version
+      #   id: storybook-version
+      #   run: |
+      #       echo "STORYBOOK_TAG=$(cat ./storybook/image.json | jq -r '.Tag')" >> $GITHUB_ENV
+      - name: Update environment
+        run: |
+          dotnet tool install --global VirtoCommerce.GlobalTool
+          vc-build CloudEnvSetParameter -CloudUrl ${{ env.CLOUD_URL }} -CloudToken ${{ secrets.VCMP_PLATFORM_TOKEN  }} -EnvironmentName ${{ env.ARGO_APP_NAME }} -HelmParameters custom.app1.image.tag=${{ env.STORYBOOK_TAG }}
+
+      - name: Check deployment start
+        run: |
+          vc-build CloudEnvStatus -CloudUrl ${{ env.CLOUD_URL }} -CloudToken ${{ secrets.VCMP_PLATFORM_TOKEN  }} -EnvironmentName ${{ env.ARGO_APP_NAME }} -HealthStatus Progressing
+
+      - name: Check deployment status
+        run: |
+          vc-build CloudEnvStatus -CloudUrl ${{ env.CLOUD_URL }} -CloudToken ${{ secrets.VCMP_PLATFORM_TOKEN  }} -EnvironmentName ${{ env.ARGO_APP_NAME }} -HealthStatus Healthy -SyncStatus Synced

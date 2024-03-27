@@ -76,6 +76,6 @@ jobs:
       if: ${{ github.ref == 'refs/heads/main' }}
       run: yarn run publish
 
-  Storybook-CI:
+  Storybook:
     needs: 'CI'
     uses: VirtoCommerce/vc-shell/.github/workflows/storybook-ci.yml@VCI-847-1 #main

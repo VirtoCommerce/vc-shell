@@ -79,3 +79,5 @@ jobs:
   Storybook:
     needs: 'CI'
     uses: VirtoCommerce/vc-shell/.github/workflows/storybook-ci.yml@VCI-847-1 #main
+    secrets:
+      VCMP_PLATFORM_TOKEN: ${{ secrets.VCMP_PLATFORM_TOKEN }}

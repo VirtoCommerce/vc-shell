@@ -4,6 +4,9 @@ name: Storybook CI
 on:
   workflow_dispatch:
   workflow_call:
+    secrets:
+      VCMP_PLATFORM_TOKEN:
+        required: true
   # push:
   #   branches:
   #     [main]

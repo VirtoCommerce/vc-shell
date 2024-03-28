@@ -78,7 +78,7 @@ jobs:
 
   Storybook:
     needs: 'CI'
-    uses: VirtoCommerce/vc-shell/.github/workflows/storybook-ci.yml@VCI-847-1 #main
+    uses: VirtoCommerce/vc-shell/.github/workflows/storybook-ci.yml@main
     with:
       event_name: ${{ github.event_name }}
     secrets:

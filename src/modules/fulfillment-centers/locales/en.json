@@ -33,6 +33,10 @@
             "LABEL": "Name",
             "PLACEHOLDER": "Enter fulfillment center name"
           },
+          "OUTER_ID":{
+            "LABEL": "Outer ID",
+            "PLACEHOLDER": "Enter fulfillment center outer ID"
+          },
           "NOT_VALID": "Form is not valid.\nPlease, check highlighted fields."
         }
       },

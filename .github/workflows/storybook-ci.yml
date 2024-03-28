@@ -3,26 +3,18 @@ name: Storybook CI
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      [main]
-    paths-ignore:
-      - '.idea'
-      - '.vscode'
-      - 'README.md'
-      - 'LICENSE'
-  pull_request:
-    paths-ignore:
-      - '.idea'
-      - '.vscode'
-      - 'README.md'
-      - 'LICENSE'
+  workflow_call:
+    inputs:
+      event_name:
+        description: 'GH event from caller workflow'
+        required: true
+        type: string
+    secrets:
+      VCMP_PLATFORM_TOKEN:
+        required: true
 
 jobs:
   ci:
-    if: ${{ github.actor != 'dependabot[bot]' &&
-         (github.event.pull_request.head.repo.full_name == github.repository ||
-         github.event.pull_request.head.repo.full_name == '') }}  # Check that PR not from forked repo and not from Dependabot
     runs-on: ubuntu-latest
     env:
       FORCE_COLOR: true
@@ -30,7 +22,6 @@ jobs:
       CLIENT_ID: ${{secrets.CLIENT_ID}}
       CLIENT_SECRET: ${{secrets.CLIENT_SECRET}}
       GITHUB_TOKEN: ${{ secrets.REPO_TOKEN }}
-      BLOB_SAS: ${{ secrets.BLOB_TOKEN }}
       VERSION: ''
       VERSION_SUFFIX: ''
       BUILD_STATE: 'failed'
@@ -56,7 +47,7 @@ jobs:
           corepack enable
 
       - name: Set RELEASE_STATUS
-        if: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push' }}
+        if: ${{ github.ref == 'refs/heads/main' && inputs.event_name == 'push' }}
         run: |
           echo "RELEASE_STATUS=true" >> $GITHUB_ENV
 
@@ -76,12 +67,12 @@ jobs:
           echo "VERSION_SUFFIX=${{ steps.image.outputs.suffix }}" >> $GITHUB_ENV
 
       - name: Set release-alpha VERSION_SUFFIX
-        if: ${{ github.event_name == 'workflow_dispatch' }}
+        if: ${{ inputs.event_name == 'workflow_dispatch' }}
         run: |
           echo "VERSION_SUFFIX=${{ steps.image.outputs.fullSuffix }}" >> $GITHUB_ENV
 
       - name: Set PR VERSION_SUFFIX
-        if: ${{ github.event_name == 'pull_request' }}
+        if: ${{ inputs.event_name == 'pull_request' }}
         run: |
           echo "VERSION_SUFFIX=${{ steps.image.outputs.suffix }}-${{ steps.image.outputs.SHA }}" >> $GITHUB_ENV
 
@@ -117,18 +108,10 @@ jobs:
         run: |
           yarn storybook-compress
 
-      - name: Publish to Blob
-        if: ${{ github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main'}}
-        id: blobRelease
-        uses: VirtoCommerce/vc-github-actions/publish-blob-release@master
-        with:
-          blobSAS: ${{ secrets.BLOB_TOKEN }}
-
       - name: Set URLs
         id: urls
         run: |
           echo "DOCKER_URL=${{ env.DOCKER_REPOSITORY }}/${GITHUB_REPOSITORY_OWNER,,}/${{ env.DOCKER_IMAGE }}:" >> $GITHUB_OUTPUT
-          echo "BLOB_URL=${{ steps.blobRelease.outputs.packageUrl }}" >> $GITHUB_OUTPUT
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -143,10 +126,10 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
-          push: ${{ github.ref == 'refs/heads/main' || github.event_name == 'pull_request' }}
+          push: ${{ github.ref == 'refs/heads/main' || inputs.event_name == 'pull_request' }}
           context: .
           file: .storybook/Dockerfile
-          tags: ${{ steps.urls.outputs.DOCKER_URL }}${{ env.DOCKER_TAG }},${{ steps.urls.outputs.DOCKER_URL }}${{ github.event_name != 'pull_request' && github.ref == 'refs/heads/dev' && 'dev-latest' || 'latest'}}
+          tags: ${{ steps.urls.outputs.DOCKER_URL }}${{ env.DOCKER_TAG }},${{ steps.urls.outputs.DOCKER_URL }}${{ inputs.event_name != 'pull_request' && github.ref == 'refs/heads/dev' && 'dev-latest' || 'latest'}}
 
       - name: Parse Jira Keys from All Commits
         uses: VirtoCommerce/vc-github-actions/get-jira-keys@master
@@ -181,3 +164,32 @@ jobs:
         if: success()
         run: |
           echo "Jira Upload Build Info response: ${{ steps.push_build_info_to_jira.outputs.response }}"
+
+  cd:
+    if: ${{ github.ref == 'refs/heads/main' || inputs.event_name == 'pull_request' }}
+    runs-on: ubuntu-latest
+    needs: 'ci'
+    env:
+      ARGO_APP_NAME: vcmp-dev
+      STORYBOOK_TAG: ${{ needs.ci.outputs.tag }}
+      CLOUD_URL: https://portal.virtocommerce.cloud
+      CLOUD_TOKEN: ${{ secrets.VCMP_PLATFORM_TOKEN  }}
+    steps:
+      - uses: actions/checkout@v4
+   
+      - name: Install vc-build
+        run: |
+          dotnet tool install --global VirtoCommerce.GlobalTool
+
+      - name: Update environment
+        run: |
+          dotnet tool install --global VirtoCommerce.GlobalTool
+          vc-build CloudEnvSetParameter -CloudUrl ${{ env.CLOUD_URL }} -CloudToken ${{ env.CLOUD_TOKEN }} -EnvironmentName ${{ env.ARGO_APP_NAME }} -HelmParameters custom.app1.image.tag=${{ env.STORYBOOK_TAG }}
+
+      # - name: Check deployment start
+      #   run: |
+      #     vc-build CloudEnvStatus -CloudUrl ${{ env.CLOUD_URL }} -CloudToken ${{ env.CLOUD_TOKEN }} -EnvironmentName ${{ env.ARGO_APP_NAME }} -HealthStatus Progressing
+
+      # - name: Check deployment status
+      #   run: |
+      #     vc-build CloudEnvStatus -CloudUrl ${{ env.CLOUD_URL }} -CloudToken ${{ env.CLOUD_TOKEN }} -EnvironmentName ${{ env.ARGO_APP_NAME }} -HealthStatus Healthy -SyncStatus Synced

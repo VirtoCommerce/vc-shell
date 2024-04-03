@@ -48,6 +48,6 @@ Tooltip.args = {
 export const MaximumCharacters = Primary.bind({});
 MaximumCharacters.args = {
   label: "Textarea Label",
-  maxchars: "10",
+  maxlength: "10",
   modelValue: "1234567890",
 };

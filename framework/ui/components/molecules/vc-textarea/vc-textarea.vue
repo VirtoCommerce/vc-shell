@@ -30,7 +30,7 @@
         :placeholder="placeholder"
         :value="modelValue"
         :disabled="disabled"
-        :maxlength="maxchars"
+        :maxlength="maxlength"
         @input="onInput"
       ></textarea>
     </div>
@@ -47,7 +47,6 @@
 </template>
 
 <script lang="ts" setup>
-import { watch } from "vue";
 import { VcHint, VcLabel } from "./../../";
 
 export interface Props {
@@ -58,7 +57,7 @@ export interface Props {
   label?: string;
   tooltip?: string;
   name?: string;
-  maxchars?: string;
+  maxlength?: string;
   errorMessage?: string;
   multilanguage?: boolean;
   currentLanguage?: string;
@@ -69,13 +68,12 @@ export interface Emits {
 }
 
 defineSlots<{
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  error: (props: any) => any;
+  error: void;
 }>();
 
 withDefaults(defineProps<Props>(), {
   name: "Field",
-  maxchars: "1024",
+  maxlength: "1024",
 });
 
 const emit = defineEmits<Emits>();

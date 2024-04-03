@@ -28,7 +28,7 @@ export default defineComponent({
     error(value: Error | string) {
       return (value && value instanceof Error) || typeof value === "string";
     },
-    reset() {
+    reset(): boolean {
       return true;
     },
   },

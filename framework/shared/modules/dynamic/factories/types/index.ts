@@ -80,6 +80,8 @@ export interface ListBaseBladeScope<Item = Record<string, any>, Query = Record<s
   breadcrumbs?: ComputedRef<Breadcrumbs[]>;
 }
 
+export type TOpenBladeArgs = Omit<Parameters<ReturnType<typeof useBladeNavigation>["openBlade"]>["0"], "blade">;
+
 export interface DetailsBaseBladeScope extends BaseBladeScope {
   disabled?: ComputedRef<boolean | undefined>;
   multilanguage?: {

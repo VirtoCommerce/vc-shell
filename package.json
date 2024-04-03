@@ -92,6 +92,9 @@
     "vue-eslint-parser": "^9.3.2",
     "vue-tsc": "^1.8.27"
   },
+  "dependencies": {
+    "cross-spawn": "^7.0.3"
+  },
   "lint-staged": {
     "*.{js,ts,html,css}": "prettier --write 'framework/**/*.{ts,vue}' 'cli/**/*.{ts,vue}' 'configs/**/*.{ts,vue}'",
     "*.{js,ts,vue}": "eslint --fix --cache 'framework/**/*.{ts,vue}' 'cli/**/*.{ts,vue}' 'configs/**/*.{ts,vue}'"

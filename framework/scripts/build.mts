@@ -2,7 +2,7 @@ import path, { dirname } from "node:path";
 import fs from "fs-extra";
 import chalk from "chalk";
 import { fileURLToPath } from "node:url";
-import { spawnSync } from "node:child_process";
+import { sync } from "cross-spawn";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -28,7 +28,7 @@ async function buildLocales() {
 }
 
 async function buildShell(command: string) {
-  return await spawnSync("yarn", [command], { stdio: "inherit" });
+  return sync("yarn", [command], { stdio: "inherit" });
 }
 
 async function Bundle() {

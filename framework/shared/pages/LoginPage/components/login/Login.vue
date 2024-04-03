@@ -197,7 +197,7 @@ const props = defineProps<Props>();
 
 const router = useRouter();
 
-const { setFieldError, resetForm, setErrors, validateField } = useForm({ validateOnMount: false });
+const { validateField } = useForm({ validateOnMount: false });
 const { uiSettings, loading: customizationLoading } = useSettings();
 const { t } = useI18n({ useScope: "global" });
 let useLogin;

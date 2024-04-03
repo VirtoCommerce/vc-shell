@@ -16,6 +16,7 @@ export default {
           {
             currentLanguage: props.currentLocale,
             assetsFolder: props.element.assetsFolder,
+            maxlength: props.element.maxlength,
           },
           unrefNested(props.baseProps),
           {

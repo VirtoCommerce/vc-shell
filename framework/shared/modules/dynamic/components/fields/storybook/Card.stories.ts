@@ -1,7 +1,6 @@
 import { template, templateWithVisibilityToggle } from "./common/templates";
 import { Meta, StoryFn } from "@storybook/vue3";
-import Card from "../Card";
-import { computed, reactive, ref } from "vue";
+import { reactive, ref } from "vue";
 import page from "./pages/DynamicRender";
 import * as _ from "lodash-es";
 import { SchemaBaseArgTypes } from "./common/args";

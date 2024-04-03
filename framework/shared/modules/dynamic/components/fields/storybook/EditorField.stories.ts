@@ -1,9 +1,7 @@
 import { Meta, StoryFn } from "@storybook/vue3";
-import EditorField from "../EditorField";
 import { template, templateWithVisibilityToggle } from "./common/templates";
 import page from "./pages/DynamicRender";
-import { nextTick, reactive, ref } from "vue";
-import * as _ from "lodash-es";
+import { reactive, ref } from "vue";
 import { SchemaBaseArgTypes } from "./common/args";
 import { EditorSchema } from "../../..";
 
@@ -41,6 +39,15 @@ export default {
       table: {
         type: {
           summary: "string",
+        },
+      },
+    },
+    maxlength: {
+      description: "Maximum length of the editor content.",
+      control: "number",
+      table: {
+        type: {
+          summary: "number",
         },
       },
     },

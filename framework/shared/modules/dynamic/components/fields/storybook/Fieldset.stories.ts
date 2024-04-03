@@ -73,13 +73,13 @@ export default {
       description: `Array of numbers that define the aspect ratio of each column.
       Example - If you have two columns - set to [1, 1] to make all columns equal width.
       Uses CSS flex-grow property to set the width of each column.`,
-      control: "text",
+      control: "object",
       table: {
         type: {
-          summary: "string",
+          summary: "array",
         },
         defaultValue: {
-          summary: "1:1",
+          summary: "[1, 1]",
         },
       },
     },

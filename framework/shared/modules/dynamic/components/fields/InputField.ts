@@ -25,6 +25,7 @@ export default {
             type: props.element.variant,
             currentLanguage: props.currentLocale,
             clearable: props.element.clearable || false,
+            maxlength: props.element.maxlength,
           },
           unrefNested(props.baseProps),
           {

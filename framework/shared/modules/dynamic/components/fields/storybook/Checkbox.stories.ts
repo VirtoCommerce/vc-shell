@@ -1,5 +1,4 @@
 import { Meta, StoryFn } from "@storybook/vue3";
-import Checkbox from "../Checkbox";
 import { computed, reactive, ref } from "vue";
 import page from "./pages/DynamicRender";
 import { template, templateWithVisibilityToggle } from "./common/templates";

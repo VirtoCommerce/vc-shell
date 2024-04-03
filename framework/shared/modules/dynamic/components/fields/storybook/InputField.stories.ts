@@ -87,6 +87,18 @@ export default {
         },
       },
     },
+    maxlength: {
+      description: "Maximum number of characters that can be entered.",
+      control: "number",
+      table: {
+        type: {
+          summary: "number",
+        },
+        defaultValue: {
+          summary: 1024,
+        },
+      },
+    },
   },
   parameters: {
     docs: {

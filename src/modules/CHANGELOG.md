@@ -1,3 +1,12 @@
+## [1.0.181](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.180...v1.0.181) (2024-04-03)
+
+
+### Features
+
+* vm-1244 outer id in fulfillment center ([40d7643](https://github.com/VirtoCommerce/vendor-portal/commit/40d7643621a90e9ac534d0885f5a5e222ef8e82c))
+
+
+
 ## [1.0.180](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.179...v1.0.180) (2024-03-26)
 
 

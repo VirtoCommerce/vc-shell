@@ -14,7 +14,7 @@
 
     <div class="tw-overflow-hidden tw-grow tw-basis-0">
       <div
-        class="tw-text-[color:var(--blade-header-title-color)] tw-text-lg tw-truncate"
+        class="tw-text-[color:var(--blade-header-title-color)] tw-text-lg/[23px] tw-truncate"
         :class="{
           '!tw-text-[length:var(--blade-header-title-font-size)] tw-font-medium': !subtitle,
         }"

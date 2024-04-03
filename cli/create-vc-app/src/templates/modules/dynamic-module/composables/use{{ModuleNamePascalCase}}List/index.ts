@@ -1,6 +1,11 @@
 import { computed, ref, Ref } from "vue";
-import { DynamicBladeList, ListBaseBladeScope, useBladeNavigation, useListFactory } from "@vc-shell/framework";
-import { loadMockItemsList } from "../../../mocks";
+import {
+  DynamicBladeList,
+  ListBaseBladeScope,
+  useBladeNavigation,
+  useListFactory,
+  type TOpenBladeArgs,
+} from "@vc-shell/framework";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface DynamicItemsScope extends ListBaseBladeScope {}
@@ -12,28 +17,28 @@ export default (args: {
 }) => {
   const factory = useListFactory({
     load: async () => {
-      return await loadMockItemsList();
+      return {
+        totalCount: 0,
+        results: [],
+      };
     },
     remove: () => {
       throw new Error("Function not implemented.");
-    }
+    },
   });
 
   const { load, remove, items, pagination, loading, query } = factory();
   const { openBlade, resolveBladeByName } = useBladeNavigation();
 
-  async function openDetailsBlade(data?: Omit<Parameters<typeof openBlade>["0"], "blade">) {
+  async function openDetailsBlade(data?: TOpenBladeArgs) {
     await openBlade({
-      blade: resolveBladeByName("DynamicItem"),
+      blade: resolveBladeByName("{{ModuleNamePascalCase}}Details"),
       ...data,
     });
   }
 
   const scope = ref<DynamicItemsScope>({
     openDetailsBlade,
-    deleteItem: () => {
-      alert("Delete item");
-    },
   });
 
   return {

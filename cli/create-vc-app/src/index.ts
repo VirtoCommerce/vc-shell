@@ -7,8 +7,9 @@ import fs from "node:fs";
 import { fileURLToPath } from "node:url";
 import { cwd as processCwd, argv, exit } from "node:process";
 import mainPkg from "./../package.json";
+import * as _ from "lodash-es";
 
-type Config = prompts.Answers<"appName" | "packageName" | "variant">;
+type Config = prompts.Answers<"appName" | "packageName" | "variant" | "moduleName" | "appName" | "basePath">;
 
 const renameFiles: Record<string, string | undefined> = {
   _gitignore: ".gitignore",
@@ -25,6 +26,7 @@ const renameFiles: Record<string, string | undefined> = {
   _husky: ".husky",
   _vscode: ".vscode",
   _yarn: ".yarn",
+  "_package.json": "package.json",
 };
 
 function isValidName(appName: string) {
@@ -40,9 +42,28 @@ function toValidName(appName: string) {
     .replace(/[^a-z0-9-~]+/g, "-");
 }
 
+function toValidBasePath(basePath: string) {
+  return basePath
+    .trim()
+    .toLowerCase()
+    .replace(/\/+/g, "/")
+    .replace(/[^a-z0-9/-]+/g, "/")
+    .replace(/\/?$/, "/");
+}
+
 function emptyDir(dir: string) {
   if (!fs.existsSync(dir)) {
     return;
+  } else {
+    // remove directory contents
+    fs.readdirSync(dir).forEach((file) => {
+      const current = path.join(dir, file);
+      if (fs.lstatSync(current).isDirectory()) {
+        emptyDir(current);
+      } else {
+        fs.unlinkSync(current);
+      }
+    });
   }
 }
 
@@ -51,47 +72,18 @@ function isEmpty(path: string) {
   return files.length === 0 || (files.length === 1 && files[0] === ".git");
 }
 
-function copy(src: string, dest: string) {
-  const stat = fs.statSync(src);
-  if (stat.isDirectory()) {
-    copyDir(src, dest);
-  } else {
-    fs.copyFileSync(src, dest);
-  }
-}
-
-function copyDir(srcDir: string, destDir: string) {
-  fs.mkdirSync(destDir, { recursive: true });
-  for (const file of fs.readdirSync(srcDir)) {
-    const srcFile = path.resolve(srcDir, file);
-    const destFile = path.resolve(destDir, file);
-    copy(srcFile, destFile);
-  }
-}
-
 const AppVariants = [
   {
-    name: "classic",
-    display: "Classic modules boilerplate",
-  },
-  {
     name: "dynamic",
-    display: "Dynamic modules boilerplate",
+    display: "Dynamic view modules boilerplate",
   },
   {
-    name: "both",
-    display: "Classic modules + Dynamic modules boilerplate",
+    name: "classic",
+    display: "Classic view modules boilerplate",
   },
 ];
 
-const variantMap = {
-  both: "variants/both",
-  classic: "variants/classic",
-  dynamic: "variants/dynamic",
-};
-
 const moduleMap = {
-  both: ["classic-module", "dynamic-module"],
   classic: ["classic-module"],
   dynamic: ["dynamic-module"],
 };
@@ -135,12 +127,20 @@ async function create() {
           },
           name: "overwriteChecker",
         },
+
         {
           name: "packageName",
           type: () => (isValidName(getProjectName()) ? null : "text"),
           message: chalk.reset("Package name:"),
           initial: () => toValidName(getProjectName()),
           validate: (dir) => isValidName(dir) || "Invalid package.json name",
+        },
+        {
+          name: "basePath",
+          type: "text",
+          message: chalk.reset("Base path:"),
+          initial: () => "/apps/" + toValidName(getProjectName()) + "/",
+          format: (value) => toValidBasePath(String(value).trim()),
         },
         {
           type: "select",
@@ -152,6 +152,13 @@ async function create() {
               value: variant.name,
             };
           }),
+        },
+        {
+          name: "moduleName",
+          type: "text",
+          message: chalk.reset("Module name:"),
+          initial: () => _.startCase(getProjectName()),
+          format: (value) => String(value).trim(),
         },
       ],
       {
@@ -165,7 +172,20 @@ async function create() {
     exit(1);
   }
 
-  const { packageName, variant } = config;
+  const { packageName, variant, moduleName, appName, basePath } = config;
+
+  const stringsToReplace = new Map<string, string>([
+    ["{{ModuleName}}", toValidName(moduleName)],
+    ["{{ModuleNamePascalCase}}", _.upperFirst(_.camelCase(moduleName))],
+    ["{{ModuleNameUppercase}}", moduleName.toUpperCase()],
+    ["{{ModuleNameUppercaseSnakeCase}}", _.snakeCase(moduleName).toUpperCase()],
+    ["{{ModuleNameExports}}", _.lowerFirst(_.camelCase(moduleName))],
+    ["{{ModuleNameSentenceCase}}", _.startCase(moduleName)],
+    ["{{AppName}}", appName],
+    ["{{AppNameSentenceCase}}", _.startCase(appName)],
+    ["{{BasePath}}", basePath],
+    ["{{PackageName}}", packageName || getProjectName()],
+  ]);
 
   const root = path.join(cwd, dir);
 
@@ -179,44 +199,58 @@ async function create() {
 
   const templateRoot = path.resolve(fileURLToPath(import.meta.url), "..", "templates");
 
-  const write = (file: string, templateName: string, content?: string) => {
-    const targetPath = path.join(root, renameFiles[file] ?? file);
-    if (content) {
-      fs.writeFileSync(targetPath, content);
-    } else {
-      copy(path.join(templateRoot, templateName, file), targetPath);
-    }
-  };
-
-  const render = (templateName: string) => {
+  function render(templateName: string, targetPath: string = "") {
     const templateDir = path.resolve(templateRoot, templateName);
     const files = fs.readdirSync(templateDir);
-    for (const file of files.filter((f) => f !== "package.json")) {
-      write(file, templateName);
+
+    for (const file of files) {
+      const sourcePath = path.join(templateDir, file);
+      let targetFileName = renameFiles[file] ?? file; // Get the target file/directory name from the mapping
+
+      // Apply replacements to the target file/directory name
+      for (const [key, value] of stringsToReplace.entries()) {
+        const regex = new RegExp(key, "g");
+        targetFileName = targetFileName.replace(regex, value);
+      }
+
+      const targetFilePath = path.join(root, targetPath, targetFileName);
+
+      if (fs.statSync(sourcePath).isDirectory()) {
+        // If the source file is a directory, create a directory with the new name in the target path
+        fs.mkdirSync(targetFilePath, { recursive: true });
+
+        // Recursively process the contents of the directory
+        render(path.join(templateName, file), path.join(targetPath, targetFileName));
+      } else {
+        // If the source file is a binary file, copy it without modification
+        const isBinary = [".png", ".jpg", ".jpeg", ".gif", ".bmp", ".ico", ".pdf", ".zip"].includes(
+          path.extname(file).toLowerCase(),
+        );
+        if (isBinary) {
+          fs.copyFileSync(sourcePath, targetFilePath);
+        } else {
+          // If the source file is a text file, read its content
+          let content = fs.readFileSync(sourcePath, "utf-8");
+
+          // Replace all variables in the file content
+          for (const [key, value] of stringsToReplace.entries()) {
+            const regex = new RegExp(key, "g");
+            content = content.replace(regex, value);
+          }
+
+          // Write the modified content to the target file
+          fs.writeFileSync(targetFilePath, content);
+        }
+      }
     }
-  };
+  }
 
   render("base");
 
-  // render module variant main.ts
-  render(variantMap[variant as keyof typeof variantMap]);
-
-  // render each module
+  // Render each module
   moduleMap[variant as keyof typeof moduleMap].forEach((module) => {
-    const templateDir = path.resolve(templateRoot, `modules/${module}`);
-    const files = fs.readdirSync(templateDir);
-    for (const file of files.filter((f) => f !== "package.json")) {
-      const targetPath = path.join(root, "src", "modules", module, renameFiles[file] ?? file);
-
-      copy(path.join(templateRoot, `modules/${module}`, file), targetPath);
-    }
+    render(`modules/${module}`, "src/modules/" + stringsToReplace.get("{{ModuleName}}"));
   });
-
-  const pkg = JSON.parse(fs.readFileSync(path.join(templateRoot, `./base/package.json`), "utf-8"));
-
-  pkg.name = packageName || getProjectName();
-
-  write("package.json", "", JSON.stringify(pkg, null, 2) + "\n");
 
   console.log(`\nDone. You can now run application:\n`);
 

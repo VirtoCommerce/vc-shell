@@ -2,12 +2,12 @@ import { DynamicGridSchema } from "@vc-shell/framework";
 
 export const grid: DynamicGridSchema = {
   settings: {
-    url: "/dynamic-module-list",
-    id: "DynamicItems",
-    titleTemplate: "Dynamic module blade",
-    localizationPrefix: "DynamicModule",
+    url: "/{{ModuleName}}",
+    id: "{{ModuleNamePascalCase}}List",
+    titleTemplate: "{{ModuleNameSentenceCase}} list",
+    localizationPrefix: "{{ModuleNameUppercaseSnakeCase}}",
     isWorkspace: true,
-    composable: "useList",
+    composable: "use{{ModuleNamePascalCase}}List",
     component: "DynamicBladeList",
     toolbar: [
       {
@@ -18,47 +18,17 @@ export const grid: DynamicGridSchema = {
       },
     ],
     menuItem: {
-      title: 'DYNAMICMODULE.MENU.TITLE',
+      title: "{{ModuleNameUppercaseSnakeCase}}.MENU.TITLE",
       icon: "fas fa-file-alt",
       priority: 1,
-    }
+    },
   },
   content: [
     {
       id: "itemsGrid",
       component: "vc-table",
-      actions: [
-        {
-          id: "deleteAction",
-          icon: "fas fa-trash",
-          title: "Delete",
-          type: "danger",
-          position: "left",
-          method: "deleteItem",
-        },
-      ],
-      mobileTemplate: {
-        component: "DynamicItemsMobileGridView",
-      },
-      multiselect: true,
       columns: [
-        {
-          id: "imgSrc",
-          title: "Pic",
-          type: "image",
-          alwaysVisible: true,
-        },
-        {
-          id: "name",
-          title: "Name",
-          alwaysVisible: true,
-        },
-        {
-          id: "createdDate",
-          title: "Created date",
-          sortable: true,
-          type: "date-ago",
-        },
+        // You can add columns here
       ],
     },
   ],

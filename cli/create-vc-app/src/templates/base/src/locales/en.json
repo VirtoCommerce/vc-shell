@@ -1,11 +1,3 @@
 {
-  "language_name": "English",
-  "SHELL": {
-    "MENU": {
-      "DASHBOARD": "Home"
-    },
-    "DASHBOARD": {
-      "TITLE": "Dashboard"
-    }
-  }
+  "language_name": "English"
 }

@@ -1,4 +1,4 @@
-import { grid as itemsList } from "./list";
-import { details as itemDetails } from "./details";
+import { grid as {{ModuleNameExports}}List } from "./list";
+import { details as {{ModuleNameExports}}Details } from "./details";
 
-export { itemsList, itemDetails };
+export { {{ModuleNameExports}}List, {{ModuleNameExports}}Details };

@@ -1,26 +1,19 @@
 {
-  "DYNAMICMODULE": {
+  "{{ModuleNameUppercaseSnakeCase}}": {
     "MENU": {
-      "TITLE": "Dynamic Module"
+      "TITLE": "{{ModuleNameSentenceCase}}"
     },
     "PAGES": {
       "LIST": {
-        "TITLE": "Module blade",
         "TOOLBAR": {
-          "REFRESH": "Refresh",
-          "ADD": "Add",
-          "DELETE": "Delete selected"
+          "REFRESH": "Refresh"
         },
         "SEARCH": {
           "PLACEHOLDER": "Search keywords"
         },
         "TABLE": {
           "TOTALS": "Count:",
-          "HEADER": {
-            "PRODUCT_IMAGE": "Pic",
-            "PRODUCT_NAME": "Name",
-            "CREATED_DATE": "Created"
-          },
+          "HEADER": {},
           "EMPTY": {
             "TITLE": "There are no content yet",
             "ACTION": "Add content"
@@ -28,14 +21,7 @@
           "NOT_FOUND": {
             "TITLE": "No content found.",
             "ACTION": "Reset search"
-          },
-          "ACTIONS": {
-            "UNPUBLISH": "Unpublish",
-            "PUBLISH": "Publish"
           }
-        },
-        "MOBILE": {
-          "CREATED": "Created"
         },
         "EMPTY": {
           "NO_ITEMS": "There are no items yet"

@@ -1,7 +1,7 @@
 <template>
   <VcBlade
     v-loading="loading"
-    :title="item.name"
+    :title="$t('{{ModuleNameUppercaseSnakeCase}}.PAGES.DETAILS.TITLE')"
     :expanded="expanded"
     :closable="closable"
     width="70%"
@@ -12,16 +12,7 @@
   >
     <VcContainer class="tw-p-2">
       <VcForm>
-        <VcInput
-          :model-value="item.name"
-          label="Name"
-          class="tw-mb-4"
-        ></VcInput>
-        <VcInput
-          :model-value="item.createdDate"
-          label="Date"
-          type="datetime-local"
-        ></VcInput>
+        <!-- You can add form fields here -->
       </VcForm>
     </VcContainer>
   </VcBlade>
@@ -29,9 +20,8 @@
 
 <script lang="ts" setup>
 import { IBladeToolbar, IParentCallArgs } from "@vc-shell/framework";
-import { useDetails } from "./../composables";
-import { computed, onMounted, ref } from "vue";
-import { useI18n } from "vue-i18n";
+import { use{{ModuleNamePascalCase}}Details } from "./../composables";
+import { onMounted, ref } from "vue";
 
 export interface Props {
   expanded?: boolean;
@@ -47,8 +37,8 @@ export interface Emits {
 }
 
 defineOptions({
-  url: "/classic-module-details",
-  name: "ClassicModuleDetails",
+  url: "/{{ModuleName}}-details",
+  name: "{{ModuleNamePascalCase}}Details",
 });
 
 const props = withDefaults(defineProps<Props>(), {
@@ -57,24 +47,11 @@ const props = withDefaults(defineProps<Props>(), {
   param: undefined,
 });
 
-const emit = defineEmits<Emits>();
+defineEmits<Emits>();
 
-const { t } = useI18n({ useScope: "global" });
+const { loading, getItem } = use{{ModuleNamePascalCase}}Details();
 
-const { item, loading, getItem } = useDetails();
-
-const bladeToolbar = ref<IBladeToolbar[]>([
-  {
-    id: "refresh",
-    title: computed(() => t("MODULE.PAGES.LIST.TOOLBAR.REFRESH")),
-    icon: "fas fa-sync-alt",
-    async clickHandler() {
-      if (props.param) {
-        await getItem({ id: props.param });
-      }
-    },
-  },
-]);
+const bladeToolbar = ref<IBladeToolbar[]>([]);
 
 onMounted(async () => {
   if (props.param) {
@@ -82,5 +59,3 @@ onMounted(async () => {
   }
 });
 </script>
-
-<style lang="scss" scoped></style>

@@ -4,7 +4,7 @@ import { writeFileSync } from "node:fs";
 export async function updateBoilerplatePkgVersions() {
   const version = fs.readJsonSync("package.json").version;
 
-  const boilerplatePkgPath = "cli/create-vc-app/src/templates/base/package.json";
+  const boilerplatePkgPath = "cli/create-vc-app/src/templates/base/_package.json";
   const boilerplatePkg = fs.readJsonSync(boilerplatePkgPath);
 
   ["@vc-shell/api-client-generator", "@vc-shell/ts-config", "@vc-shell/release-config"].forEach(

@@ -1,13 +1,12 @@
-import { Ref, computed, ref } from "vue";
+import { computed, ref } from "vue";
 import { useAsync, useLoading } from "@vc-shell/framework";
-import { MockedItem, loadMockItem } from "../../../mocks";
 
 export default () => {
-  const item = ref({}) as Ref<MockedItem>;
+  const item = ref({});
 
-  // Example mocked method for 'fetching' list data
+  // Implement your own load function
   const { loading: itemLoading, action: getItem } = useAsync<{ id: string }>(async (payload) => {
-    item.value = await loadMockItem(payload);
+    item.value = {};
   });
 
   const loading = useLoading(itemLoading);

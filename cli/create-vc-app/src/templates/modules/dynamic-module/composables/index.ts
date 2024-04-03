@@ -1,2 +1,2 @@
-export { default as useList } from "./useList";
-export { default as useDetails } from "./useDetails";
+export { default as use{{ModuleNamePascalCase}}List } from "./use{{ModuleNamePascalCase}}List";
+export { default as use{{ModuleNamePascalCase}}Details } from "./use{{ModuleNamePascalCase}}Details";

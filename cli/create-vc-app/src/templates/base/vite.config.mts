@@ -6,11 +6,11 @@ export default getApplicationConfiguration({
     VitePWA({
       includeAssets: ["favicon.ico", "apple-touch-icon.png"],
       manifest: {
-        name: "App",
-        short_name: "App",
+        name: "{{AppNameSentenceCase}}",
+        short_name: "{{AppNameSentenceCase}}",
         theme_color: "#319ED4",
         display: "fullscreen",
-        start_url: "/apps/application",
+        start_url: "{{BasePath}}",
         icons: [
           {
             src: "./img/icons/pwa-192x192.png",

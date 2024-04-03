@@ -1,6 +1,5 @@
 import { computed, ref, Ref } from "vue";
 import { DetailsBaseBladeScope, DynamicBladeForm, IBladeToolbar, useDetailsFactory } from "@vc-shell/framework";
-import { loadMockItem, type MockedItem } from "../../../mocks";
 
 export interface DynamicItemScope extends DetailsBaseBladeScope {
   toolbarOverrides: {
@@ -13,9 +12,9 @@ export default (args: {
   emit: InstanceType<typeof DynamicBladeForm>["$emit"];
   mounted: Ref<boolean>;
 }) => {
-  const factory = useDetailsFactory<MockedItem>({
-    load: async (payload) => {
-      return await loadMockItem(payload);
+  const factory = useDetailsFactory({
+    load: async () => {
+      return {};
     },
     saveChanges: () => {
       throw new Error("Function not implemented.");
@@ -27,20 +26,10 @@ export default (args: {
 
   const { load, saveChanges, remove, loading, item, validationState } = factory();
 
-  const scope = ref<DynamicItemScope>({
-    toolbarOverrides: {
-      refresh: {
-        async clickHandler() {
-          if (args.props.param) {
-            await load({ id: args.props.param });
-          }
-        },
-      },
-    },
-  });
+  const scope = ref<DynamicItemScope>();
 
   const bladeTitle = computed(() => {
-    return args.props.param ? item.value?.name : "Dynamic item details";
+    return "{{ModuleNameSentenceCase}} details";
   });
 
   return {

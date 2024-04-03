@@ -387,6 +387,11 @@ export interface TextareaSchema extends SchemaBase {
    * @type {boolean}
    */
   clearable?: boolean;
+  /**
+   * Maximum number of characters that can be entered.
+   * @type {number}
+   */
+  maxlength?: number;
 }
 
 /**
@@ -429,6 +434,11 @@ export interface InputSchema extends SchemaBase {
    * @type {ControlSchema}
    */
   prependInner?: ControlSchema;
+  /**
+   * Maximum number of characters that can be entered.
+   * @type {number}
+   */
+  maxlength?: number;
 }
 
 /**
@@ -628,6 +638,11 @@ export interface EditorSchema extends SchemaBase {
    * @type {string}
    */
   assetsFolder: string;
+  /**
+   * Maximum length of the editor content.
+   * @type {number}
+   */
+  maxlength?: number;
 }
 
 /**

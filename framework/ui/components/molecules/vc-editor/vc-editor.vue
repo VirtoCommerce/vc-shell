@@ -29,7 +29,7 @@
       :id="id"
       :key="`${id}-${disabled}`"
       ref="quillRef"
-      :content="content"
+      :content="modelValue"
       class="quill-editor tw-border tw-border-solid tw-border-[color:var(--editor-border-color)] tw-rounded-b-[var(--editor-border-radius)] tw-h-[200px]"
       :class="{ 'tw-bg-[#fafafa] tw-text-[#424242] tw-cursor-default': disabled }"
       theme="snow"
@@ -39,7 +39,7 @@
       :read-only="disabled"
       :placeholder="placeholder"
       :options="options"
-      @update:content="onInput"
+      @ready="initializeQuill"
     />
     <slot
       v-if="errorMessage"
@@ -53,15 +53,15 @@
 </template>
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
-import { QuillEditor, Quill } from "@vueup/vue-quill";
+import { QuillEditor } from "@vueup/vue-quill";
 import "@vueup/vue-quill/dist/vue-quill.snow.css";
-import { ref, unref, watch, onMounted, onUpdated, getCurrentInstance } from "vue";
+import { ref, unref, onMounted, onUpdated, getCurrentInstance, Ref } from "vue";
 import ImageUploader from "quill-image-uploader";
 import { VcLabel, VcHint } from "../..";
 
 export interface Props {
   placeholder?: string;
-  modelValue?: string | number | Date;
+  modelValue?: string;
   required?: boolean;
   disabled?: boolean;
   label?: string;
@@ -70,6 +70,7 @@ export interface Props {
   assetsFolder: string;
   multilanguage?: boolean;
   currentLanguage?: string;
+  maxlength?: number;
 }
 
 export interface Emits {
@@ -86,8 +87,9 @@ defineSlots<{
   error?: (props: any) => any;
 }>();
 
-const content = ref();
-const quillRef = ref<Quill | null>(null);
+// const content = ref();
+const quillRef = ref(null) as Ref<typeof QuillEditor | null>;
+const quill = ref();
 
 const toolbar = {
   container: [
@@ -139,39 +141,32 @@ onUpdated(() => {
   removeBlankClass();
 });
 
-watch(
-  () => props.modelValue,
-  (value) => {
-    if (value === "") {
-      quillRef.value?.setText(value);
-      return;
-    }
-    content.value = unref(value);
-  },
-  { immediate: true },
-);
+function initializeQuill() {
+  quill.value = quillRef.value?.getQuill();
+  if (props.modelValue) {
+    quill.value.root.innerHTML = unref(props.modelValue);
+  }
+
+  quill.value.on("text-change", onTextChange);
+}
 
 function removeBlankClass() {
   // fixes quill editor placeholder visibility issue when content is not empty
   const editor = document.getElementById(id)?.querySelector(".ql-editor.ql-blank");
-  if (editor && content.value) {
+  if (editor && props.modelValue) {
     editor.classList.remove("ql-blank");
   }
 }
 
-function onInput(value: string) {
-  if (isQuillEmpty(value)) {
-    emit("update:modelValue", null);
-  } else {
-    emit("update:modelValue", value);
+function onTextChange() {
+  const len = quill.value.getLength();
+  if (props.maxlength !== undefined && len > props.maxlength) {
+    quill.value.deleteText(props.maxlength, len);
   }
-}
 
-function isQuillEmpty(value: string) {
-  if (value.replace(/<(.|\n)*?>/g, "").trim().length === 0) {
-    return true;
+  if (quill.value.getText().trim() !== props.modelValue?.trim()) {
+    emit("update:modelValue", quill.value.root.innerHTML);
   }
-  return false;
 }
 </script>
 

@@ -1,3 +1,20 @@
+## [1.0.190](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.189...v1.0.190) (2024-04-03)
+
+
+### Bug Fixes
+
+* **ui/vc-blade-header:** fixed line height ([c3df1e2](https://github.com/VirtoCommerce/vc-shell/commit/c3df1e2bbb96f87c15ba17961a88542502a8ab36))
+* windows build with cross-spawn, other small changes ([a8e576d](https://github.com/VirtoCommerce/vc-shell/commit/a8e576d8556cebb7dd648de68954f87989b7f3ca))
+
+
+### Features
+
+* **dynamic:** added maxlength prop for inputs, storybook update ([b7fb253](https://github.com/VirtoCommerce/vc-shell/commit/b7fb253fe31a8de78b31a01393f7b38c9772a24e))
+* **ui/vc-editor:** no change emit on component mount ([cf1af9a](https://github.com/VirtoCommerce/vc-shell/commit/cf1af9a4978688e93fb4b22707cafdd14a970752))
+* **ui/vc-table:** auto mobile view, html cell, all cols in dropdown selector, state save refactor ([d4034a7](https://github.com/VirtoCommerce/vc-shell/commit/d4034a70887bdbefd6a26f514145f14e86a1331e))
+
+
+
 ## [1.0.189](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.188...v1.0.189) (2024-03-26)
 
 

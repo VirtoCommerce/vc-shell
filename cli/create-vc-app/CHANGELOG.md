@@ -1,3 +1,12 @@
+## [1.0.190](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.189...v1.0.190) (2024-04-03)
+
+
+### Features
+
+* **create-vc-app:** updated scaffold app, new prompts and removed redundant mocks ([e7a5b98](https://github.com/VirtoCommerce/vc-shell/commit/e7a5b98e8dcaf417841819677b0f4af0ee8ca0a9))
+
+
+
 ## [1.0.189](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.188...v1.0.189) (2024-03-26)
 
 

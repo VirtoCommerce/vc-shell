@@ -17,7 +17,7 @@ export default {
       {
         id: "img",
         title: "Pic",
-        width: 60,
+        width: "60px",
         type: "image",
       },
       {
@@ -29,7 +29,11 @@ export default {
         id: "sku",
         title: "SKU",
         sortable: true,
-        width: 100,
+        width: "100px",
+      },
+      {
+        id: "id",
+        title: "ID",
       },
     ],
 

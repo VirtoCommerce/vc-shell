@@ -131,7 +131,18 @@ export type ITableColumns = {
   width?: number | string;
   field?: string;
   alwaysVisible?: boolean;
-  type?: "money" | "date-ago" | "date" | "time" | "date-time" | "image" | "status" | "status-icon" | "number" | "link";
+  type?:
+    | "money"
+    | "date-ago"
+    | "date"
+    | "time"
+    | "date-time"
+    | "image"
+    | "status"
+    | "status-icon"
+    | "number"
+    | "link"
+    | "html";
   sortable?: boolean;
   class?: string;
   format?: string;

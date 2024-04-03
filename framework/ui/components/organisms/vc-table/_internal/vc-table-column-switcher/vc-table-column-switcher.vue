@@ -16,18 +16,22 @@
         class="tw-flex tw-flex-col tw-box-border tw-max-h-[300px] tw-h-auto tw-z-10 tw-overflow-hidden tw-absolute tw-bg-white tw-border tw-border-solid tw-border-[#e5e7eb] tw-w-max tw-right-0"
       >
         <VcContainer
-          v-if="items && items.length"
+          v-if="internalItems && internalItems.length"
           :no-padding="true"
         >
           <div class="tw-w-full tw-h-full tw-box-border tw-flex tw-flex-col">
             <div
-              v-for="item in items"
+              v-for="item in internalItems"
               :key="item.id"
               class="tw-flex tw-items-center tw-min-h-[30px] tw-box-border tw-rounded-[3px] tw-px-2 tw-cursor-pointer hover:tw-bg-[#eff7fc] tw-border-b"
-              :class="{ 'tw-bg-[#eff7fc]': item.visible }"
               @click="selectItem(item)"
             >
-              {{ item.title }}
+              <VcIcon
+                :icon="item.visible ? 'fas fa-check' : ''"
+                size="s"
+                class="tw-w-4"
+              />
+              <p class="tw-ml-2">{{ item.title }}</p>
             </div>
           </div>
         </VcContainer>
@@ -37,7 +41,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed } from "vue";
+import { ref, computed, toRefs, watch } from "vue";
 import { ITableColumns } from "./../../../../../../core/types";
 import { vOnClickOutside } from "@vueuse/components";
 import { useFloating, flip, shift, autoUpdate } from "@floating-ui/vue";
@@ -50,12 +54,13 @@ export interface Emits {
   (event: "change", value: ITableColumns): void;
 }
 
-withDefaults(defineProps<Props>(), {});
+const props = withDefaults(defineProps<Props>(), {});
 const emit = defineEmits<Emits>();
 
 const isActive = ref(false);
 const referenceButton = ref(null);
 const floatingDrop = ref(null);
+const internalItems = ref();
 const floater = useFloating(referenceButton, floatingDrop, {
   placement: "bottom-end",
   whileElementsMounted: autoUpdate,
@@ -69,12 +74,21 @@ const floatingDropStyle = computed(() => {
   };
 });
 
+watch(
+  () => props.items,
+  (newVal) => {
+    internalItems.value = newVal;
+  },
+  { immediate: true, deep: true },
+);
+
 function selectItem(item: ITableColumns) {
   emit("change", toggleVisibility(item));
 }
 
 function toggleVisibility(item: ITableColumns) {
   item.visible = !item.visible;
+
   return item;
 }
 

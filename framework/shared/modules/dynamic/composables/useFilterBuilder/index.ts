@@ -15,6 +15,7 @@ import {
   readonly,
   toValue,
   Ref,
+  watchPostEffect,
 } from "vue";
 import * as _ from "lodash-es";
 import { Checkbox, InputField } from "../../components/factories";
@@ -71,7 +72,9 @@ export default <Query>(args: {
     return filterKeys.length === 0 || filterKeys.every((key) => !filterObj[key]);
   });
 
-  onMounted(() => createFilterControls());
+  watchPostEffect(() => {
+    createFilterControls();
+  });
 
   function isItemSelected(value: string, field: string) {
     const item = filter.value[field];
@@ -195,7 +198,7 @@ export default <Query>(args: {
       () => [
         h(VcRow, () =>
           Object.values(controls.value).map(({ title, fields }) =>
-            h(VcCol, { class: "tw-p-2" }, () => [
+            h(VcCol, { class: "tw-p-2 !tw-flex-auto" }, () => [
               h(
                 "div",
                 { class: "tw-mb-4 tw-text-[#a1c0d4] tw-font-bold tw-text-[17px]" },
@@ -214,7 +217,7 @@ export default <Query>(args: {
           ),
         ),
         h(VcRow, () =>
-          h(VcCol, { class: "tw-p-2" }, () =>
+          h(VcCol, { class: "tw-p-2 !tw-flex-auto" }, () =>
             h("div", { class: "tw-flex tw-justify-end" }, [
               h(
                 VcButton,

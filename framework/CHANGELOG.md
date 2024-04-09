@@ -1,3 +1,12 @@
+## [1.0.191](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.190...v1.0.191) (2024-04-09)
+
+
+### Bug Fixes
+
+* **dynamic:** support fetched data in filters ([c6c133d](https://github.com/VirtoCommerce/vc-shell/commit/c6c133d8224d6905a3a4a3d45ef474c3dabd56f3))
+
+
+
 ## [1.0.190](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.189...v1.0.190) (2024-04-03)
 
 

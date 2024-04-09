@@ -235,12 +235,12 @@ export function useBladeNavigation(): IUseBladeNavigation {
           navigationInstance.blades.value = [createdComponent];
 
           // Find the route with the matching URL and update the components.default property with the new component
-          const route = router.getRoutes().find((r) => r.path === createdComponent.type?.url);
-          if (route && route.components) {
-            route.components.default = createdComponent;
+          const wsroute = router.getRoutes().find((r) => r.path.endsWith(createdComponent.type?.url as string));
+          if (wsroute && wsroute.components) {
+            wsroute.components.default = createdComponent;
           }
 
-          return await router.replace({ path: createdComponent.type?.url as string });
+          return await router.replace({ name: wsroute?.name, params: { ...route.params } });
         } else
           notification.error(i18n.global.t("PERMISSION_MESSAGES.ACCESS_RESTRICTED"), {
             timeout: 3000,

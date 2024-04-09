@@ -115,8 +115,15 @@ function onMenuItemClick() {
 
 const isActive = (url: string) => {
   if (url) {
-    const splitted = url.split("/").filter((part) => part !== "");
-    const active = route.path.split("/").filter((part) => part !== "")[0] === splitted[0];
+    const regexWithParam = new RegExp(`^(?:/([^/]+?))?${url}?$`, "i");
+    const regex = new RegExp(`^${url}?$`, "i");
+
+    let active = false;
+    if (Object.values(route.params)?.[0] !== "") {
+      active = regexWithParam.test(route.path);
+    } else {
+      active = regex.test(route.path);
+    }
 
     if (active && props.children?.length) {
       isOpened.value = true;

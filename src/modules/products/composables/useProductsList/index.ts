@@ -17,6 +17,7 @@ import {
 } from "@vcmp-vendor-portal/api/marketplacevendor";
 import { MaybeRef, ComputedRef, Ref, computed, ref } from "vue";
 import { useI18n } from "vue-i18n";
+import { useRoute } from "vue-router";
 
 const { getApiClient } = useApiClient(VcmpSellerCatalogClient);
 
@@ -36,7 +37,11 @@ export const useProductsList = (args: {
 }): UseList<SellerProduct[], ISearchProductsQuery, ProductListScope> => {
   const { t } = useI18n({ useScope: "global" });
   const listFactory = useListFactory<SellerProduct[], ISearchProductsQuery>({
-    load: async (query) => (await getApiClient()).searchProducts(new SearchProductsQuery(query)),
+    load: async (query) => {
+      const sellerId = await GetSellerId();
+      const productsQuery = new SearchProductsQuery({ ...(query || {}), sellerId: sellerId });
+      return (await getApiClient()).searchProducts(productsQuery);
+    },
     remove: async (query, customQuery) => {
       const command = new BulkProductsDeleteCommand({
         query: new SearchProductsQuery(query),
@@ -53,6 +58,7 @@ export const useProductsList = (args: {
 
   const { load, remove, items, query, loading, pagination } = listFactory();
   const { openBlade, resolveBladeByName } = useBladeNavigation();
+  const route = useRoute();
 
   const isExporting = ref(false);
 
@@ -118,6 +124,11 @@ export const useProductsList = (args: {
       );
     }),
   });
+
+  async function GetSellerId(): Promise<string> {
+    const result = route?.params?.sellerId as string;
+    return result;
+  }
 
   return {
     loading: useLoading(loading, isExporting),

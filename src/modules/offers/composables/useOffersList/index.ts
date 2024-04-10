@@ -15,6 +15,7 @@ import {
 } from "@vcmp-vendor-portal/api/marketplacevendor";
 import { Ref, computed, ref, onBeforeMount } from "vue";
 import { useMarketplaceSettings } from "../../../settings";
+import { useRoute } from "vue-router";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface OffersListScope extends ListBaseBladeScope {}
@@ -28,7 +29,11 @@ export const useOffersList = (args: {
   mounted: Ref<boolean>;
 }): UseList<Offer[], ISearchOffersQuery, OffersListScope> => {
   const factory = useListFactory<Offer[], ISearchOffersQuery>({
-    load: async (query) => (await getApiClient()).searchOffers(new SearchOffersQuery(query)),
+    load: async (query) => {
+      const sellerId = await GetSellerId();
+      const offersQuery = new SearchOffersQuery({ ...(query || {}), sellerId: sellerId });
+      return (await getApiClient()).searchOffers(offersQuery);
+    },
     remove: async (query, customQuery) => {
       const command = new BulkOffersDeleteCommand({
         query: new SearchOffersQuery(query),
@@ -46,6 +51,7 @@ export const useOffersList = (args: {
   const { load, remove, items, query, loading, pagination } = factory();
   const { openBlade, resolveBladeByName } = useBladeNavigation();
   const { settingUseDefaultOffer, loadSettings } = useMarketplaceSettings();
+  const route = useRoute();
 
   async function openDetailsBlade(data?: Omit<Parameters<typeof openBlade>["0"], "blade">) {
     await openBlade({
@@ -78,6 +84,11 @@ export const useOffersList = (args: {
       query.value.sellerProductId = args.props.options?.sellerProduct["id"];
     await loadSettings();
   });
+
+  async function GetSellerId(): Promise<string> {
+    const result = route?.params?.sellerId as string;
+    return result;
+  }
 
   return {
     load,

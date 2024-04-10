@@ -16,6 +16,7 @@ import {
 import { Ref, computed, reactive, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { useSellerDetails } from "../../../seller-details/composables";
+import { useRoute } from "vue-router";
 
 export interface FulfillmentCenterScope extends DetailsBaseBladeScope {
   toolbarOverrides: {
@@ -39,8 +40,10 @@ export const useFulfillmentCenter = (args: {
       }
     },
     saveChanges: async (details) => {
+      const sellerId = await GetSellerId();
       return (await getApiClient()).updateFulfillmentCenter(
         new UpdateFulfillmentCenterCommand({
+          sellerId: sellerId,
           fulfillmentCenter: new FulfillmentCenter(details as IFulfillmentCenter),
         }),
       );
@@ -56,6 +59,7 @@ export const useFulfillmentCenter = (args: {
   const { item: sellerDetailsItem } = useSellerDetails();
   const { load, saveChanges, remove, loading, item, validationState } = factory();
   const { showConfirmation } = usePopup();
+  const route = useRoute();
 
   const { t } = useI18n({ useScope: "global" });
 
@@ -97,6 +101,11 @@ export const useFulfillmentCenter = (args: {
       }
     },
   );
+
+  async function GetSellerId(): Promise<string> {
+    const result = route?.params?.sellerId as string;
+    return result;
+  }
 
   return {
     load,

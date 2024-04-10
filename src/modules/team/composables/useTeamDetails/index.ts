@@ -25,6 +25,7 @@ import {
 import { Ref, computed, reactive, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { roles } from "../../common";
+import { useRoute } from "vue-router";
 
 export interface TeamDetailsScope extends DetailsBaseBladeScope {
   toolbarOverrides: {
@@ -46,7 +47,11 @@ export const useTeamDetails = (args: {
   const factory = useDetailsFactory<SellerUser>({
     load: async (item) => {
       if (item?.id) {
-        const command = new SearchSellerUsersQuery({ objectIds: [item.id] });
+        const sellerId = await GetSellerId();
+        const command = new SearchSellerUsersQuery({
+          sellerId: sellerId,
+          objectIds: [item.id],
+        });
 
         return (await getApiClient())
           .searchSellerUsers(command)
@@ -54,6 +59,7 @@ export const useTeamDetails = (args: {
       }
     },
     saveChanges: async (details) => {
+      const sellerId = await GetSellerId();
       if (details.id) {
         return (await getApiClient()).updateSellerUser(
           new UpdateSellerUserCommand({
@@ -71,6 +77,7 @@ export const useTeamDetails = (args: {
           await getApiClient()
         ).createSellerUser(
           new CreateSellerUserCommand({
+            sellerId: sellerId,
             userDetails: new SellerUserDetails(details as ISellerUserDetails),
             sendInvitation: sendInviteStatus.value,
           }),
@@ -88,6 +95,7 @@ export const useTeamDetails = (args: {
   const { showError, showConfirmation } = usePopup();
   const { user } = useUser();
   const { t } = useI18n({ useScope: "global" });
+  const route = useRoute();
 
   const sendInviteStatus = ref(false);
   const isOwnerReadonly = computed(() => item.value?.role === "vcmp-owner-role");
@@ -225,6 +233,11 @@ export const useTeamDetails = (args: {
       }
     },
   );
+
+  async function GetSellerId(): Promise<string> {
+    const result = route?.params?.sellerId as string;
+    return result;
+  }
 
   return {
     load,

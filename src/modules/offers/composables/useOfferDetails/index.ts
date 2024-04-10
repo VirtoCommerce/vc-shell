@@ -31,6 +31,7 @@ import { useI18n } from "vue-i18n";
 import { ICurrency } from "../../../settings/composables/useMarketplaceSettings";
 import { useDynamicProperties, useMultilanguage } from "../../../common";
 import { useFulfillmentCenters } from "../../../fulfillment-centers/composables";
+import { useRoute } from "vue-router";
 
 export interface IProductType {
   label: string;
@@ -70,6 +71,7 @@ export const useOfferDetails = (args: {
   const alreadyDefault = ref(false);
   const productTypeOptions = ref<IProductType[]>([]);
   const { items: fulfillmentCentersList, load: searchFulfillmentCenters } = useFulfillmentCenters();
+  const route = useRoute();
 
   const { currencies, settingUseDefaultOffer, productTypes, loadSettings } = useMarketplaceSettings();
   const { getLanguages, loading: languagesLoading } = useMultilanguage();
@@ -82,9 +84,11 @@ export const useOfferDetails = (args: {
       }
     },
     saveChanges: async (details) => {
+      const sellerId = await GetSellerId();
       return details.id
         ? (await getApiClient()).updateOffer(
             new UpdateOfferCommand({
+              sellerId: sellerId,
               sellerName: user.value?.userName,
               offerId: details.id,
               offerDetails: new OfferDetails({ ...details, sku: details.sku ?? "" }),
@@ -92,6 +96,7 @@ export const useOfferDetails = (args: {
           )
         : (await getApiClient()).createNewOffer(
             new CreateNewOfferCommand({
+              sellerId: sellerId,
               sellerName: user.value?.userName,
               productId: details.productId,
               details: new OfferDetails({ ...details, sku: details.sku ?? "" }),
@@ -112,10 +117,12 @@ export const useOfferDetails = (args: {
   });
 
   const fetchProducts = async (keyword?: string, skip?: number, ids?: string[]) => {
+    const sellerId = await GetSellerId();
     return await (
       await getApiClient()
     ).searchOfferProducts(
       new SearchProductsForNewOfferQuery({
+        sellerId: sellerId,
         objectIds: ids,
         keyword: keyword,
         skip: skip || 0,
@@ -386,6 +393,11 @@ export const useOfferDetails = (args: {
       },
     },
   });
+
+  async function GetSellerId(): Promise<string> {
+    const result = route?.params?.sellerId as string;
+    return result;
+  }
 
   return {
     load,

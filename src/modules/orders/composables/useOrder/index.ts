@@ -15,6 +15,7 @@ import { useI18n } from "vue-i18n";
 import { CustomerOrder, OrderAddressAddressType, OrderModuleClient } from "@vcmp-vendor-portal/api/orders";
 import { useStateMachines } from "../../../state-machines/composables";
 import moment from "moment";
+import { useRoute } from "vue-router";
 
 interface IShippingInfo {
   label: string;
@@ -61,6 +62,7 @@ export const useOrder = (args: {
 }): UseDetails<CustomerOrder, OrderScope> => {
   const factory = useDetailsFactory<CustomerOrder>({
     load: async (item) => {
+      const sellerId = await GetSellerId();
       if (item?.id) {
         return (await getApiClient()).getById(item.id);
       }
@@ -73,6 +75,7 @@ export const useOrder = (args: {
 
   const { t } = useI18n({ useScope: "global" });
   const { searchStateMachines, stateMachine, fireTrigger } = useStateMachines();
+  const route = useRoute();
 
   const toolbar = ref([]) as Ref<IBladeToolbar[]>;
 
@@ -201,6 +204,11 @@ export const useOrder = (args: {
       });
     });
   };
+
+  async function GetSellerId(): Promise<string> {
+    const result = route?.params?.sellerId as string;
+    return result;
+  }
 
   return {
     load,

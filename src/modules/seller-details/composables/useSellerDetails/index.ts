@@ -19,6 +19,7 @@ import {
   IImage,
 } from "@vcmp-vendor-portal/api/marketplacevendor";
 import * as _ from "lodash-es";
+import { useRoute } from "vue-router";
 
 interface SellerDetailsScope extends DetailsBaseBladeScope {
   logoHandler: WritableComputedRef<{ url: string; name: string; title: string }[]>;
@@ -37,11 +38,16 @@ export const useSellerDetails = (args?: {
   mounted: Ref<boolean>;
 }): UseDetails<ISeller> => {
   const detailsFactory = useDetailsFactory<ISeller>({
-    load: async () => (await getApiClient()).getCurrentSeller(),
+    load: async () => {
+      const sellerId = await GetSellerId();
+      if (sellerId) return (await getApiClient()).getSellerById(sellerId);
+      else return (await getApiClient()).getCurrentSeller();
+    },
     saveChanges: async (seller) => {
+      const sellerId = await GetSellerId();
       return (await getApiClient()).updateSeller(
         new UpdateSellerCommand({
-          sellerId: seller.id!,
+          sellerId: sellerId ?? seller.id!,
           sellerDetails: new SellerDetails({
             ...(seller as ISellerDetails),
             addresses: seller.addresses!.map((address) => new CustomerAddress(address)),
@@ -55,6 +61,7 @@ export const useSellerDetails = (args?: {
   const { load, item, saveChanges, remove, loading, validationState } = detailsFactory();
   const { user } = useUser();
   const { upload: uploadImage, remove: removeImage, loading: imageLoading } = useAssets();
+  const route = useRoute();
 
   const countriesList = ref<ILocation[]>([]);
   const regionsList = ref<ILocation[]>([]);
@@ -206,6 +213,11 @@ export const useSellerDetails = (args?: {
       }
     },
   );
+
+  async function GetSellerId(): Promise<string> {
+    const result = route?.params?.sellerId as string;
+    return result;
+  }
 
   return {
     load,

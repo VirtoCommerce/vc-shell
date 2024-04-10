@@ -33,6 +33,7 @@ import { useI18n } from "vue-i18n";
 import { useDynamicProperties, useMultilanguage } from "../../../common";
 import * as _ from "lodash-es";
 import { useMarketplaceSettings } from "../../../settings";
+import { useRoute } from "vue-router";
 
 export interface IProductType {
   label: string;
@@ -69,15 +70,20 @@ export const useProductDetails = (args: {
       }
     },
     saveChanges: async (details) => {
+      const sellerId = await GetSellerId();
       return details.id
         ? (await getApiClient()).updateProductDetails(
             new UpdateProductDetailsCommand({
+              sellerId: sellerId,
               sellerProductId: details.id,
               productDetails: new ProductDetails(details),
             }),
           )
         : (await getApiClient()).createNewProduct(
-            new CreateNewProductCommand({ productDetails: new ProductDetails(details) }),
+            new CreateNewProductCommand({
+              sellerId: sellerId,
+              productDetails: new ProductDetails(details),
+            }),
           );
     },
     remove: async ({ id }) => (await getApiClient()).deleteProducts([id]),
@@ -96,6 +102,7 @@ export const useProductDetails = (args: {
   const currentCategory = ref<Category>();
 
   const { currentLocale, languages, getLanguages, loading: languagesLoading } = useMultilanguage();
+  const route = useRoute();
 
   // const assetsDisabled = computed(() => disabled.value || item.value.createdBy !== user.value?.userName);
 
@@ -194,8 +201,10 @@ export const useProductDetails = (args: {
   }
 
   async function fetchCategories(keyword?: string, skip = 0, ids?: string[]): Promise<CategorySearchResult> {
+    const sellerId = await GetSellerId();
     return (await getApiClient()).searchCategories(
       new SearchCategoriesQuery({
+        sellerId: sellerId,
         objectIds: ids,
         keyword,
         skip,
@@ -384,6 +393,11 @@ export const useProductDetails = (args: {
       item.value.hasStagedChanges = true;
       await saveChangesWrapper({ ...item.value }, false);
     }
+  }
+
+  async function GetSellerId(): Promise<string> {
+    const result = route?.params?.sellerId as string;
+    return result;
   }
 
   return {

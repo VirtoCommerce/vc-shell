@@ -173,7 +173,7 @@ import { notification, useBladeNavigation, usePopup } from "../../../components"
 import { ListBaseBladeScope, ListBladeContext, UseList } from "../factories/types";
 import { IParentCallArgs } from "../../../index";
 import * as _ from "lodash-es";
-import { reactiveComputed, toReactive, useMounted } from "@vueuse/core";
+import { toReactive, useMounted } from "@vueuse/core";
 import { safeIn } from "../helpers/safeIn";
 
 export interface Props {
@@ -219,6 +219,7 @@ const itemsProxy = ref<Record<string, any>[]>();
 const modified = shallowRef(false);
 
 const { moduleNotifications, markAsRead } = useNotifications(settings.value?.pushNotificationType);
+const { setNavigationQuery, getNavigationQuery } = useBladeNavigation();
 
 watch(
   moduleNotifications,
@@ -381,7 +382,7 @@ const toolbarComputed =
   [];
 
 onBeforeMount(async () => {
-  if (props.composables) await load({ sort: sort.value, ...query.value });
+  if (props.composables) await load({ sort: sort.value, ...query.value, ...getNavigationQuery() });
 });
 
 watch(
@@ -530,10 +531,12 @@ const onPaginationClick = async (page: number) => {
 
       return;
     }
-    await load({
+    const queryObj = {
       ...query.value,
       skip: (page - 1) * query.value.take,
-    });
+    };
+    setNavigationQuery(queryObj);
+    await load(queryObj);
   }
 };
 

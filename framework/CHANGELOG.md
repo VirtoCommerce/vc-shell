@@ -1,3 +1,12 @@
+## [1.0.193](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.192...v1.0.193) (2024-04-11)
+
+
+### Features
+
+* **navigation:** query params ([f7b13ce](https://github.com/VirtoCommerce/vc-shell/commit/f7b13ce28eb4dbd8c6d81b3b3c2bd57faad59abf))
+
+
+
 ## [1.0.192](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.191...v1.0.192) (2024-04-11)
 
 

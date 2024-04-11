@@ -1,3 +1,12 @@
+## [1.0.196](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.195...v1.0.196) (2024-04-11)
+
+
+### Bug Fixes
+
+* **ui:** vc-table mobile view hidden fix ([d5d0353](https://github.com/VirtoCommerce/vc-shell/commit/d5d035352bd5afcb3ae5c5e07a332d06bc34a72e))
+
+
+
 ## [1.0.195](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.192...v1.0.195) (2024-04-11)
 
 

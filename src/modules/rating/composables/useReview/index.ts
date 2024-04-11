@@ -14,6 +14,7 @@ import {
 import moment from "moment";
 import { ComputedRef, Ref, computed, ref } from "vue";
 import { useI18n } from "vue-i18n";
+import { useRoute } from "vue-router";
 
 export interface ReviewDetailsScope extends DetailsBaseBladeScope {
   createdDate: ComputedRef<string>;
@@ -31,7 +32,8 @@ export const useReview = (args: {
   const factory = useDetailsFactory({
     load: async (item) => {
       if (item?.id) {
-        const command = new SearchCustomerReviewsQuery({ objectIds: [item.id] });
+        const sellerId = await GetSellerId();
+        const command = new SearchCustomerReviewsQuery({ sellerId: sellerId, objectIds: [item.id] });
 
         return (await getApiClient())
           .searchCustomerReviews(command)
@@ -43,6 +45,7 @@ export const useReview = (args: {
   const { load, saveChanges, remove, loading, item, validationState } = factory();
   const { currentLocale } = useLanguages();
   const { t } = useI18n({ useScope: "global" });
+  const route = useRoute();
 
   const scope = ref<ReviewDetailsScope>({
     createdDate: computed(() => {
@@ -52,6 +55,11 @@ export const useReview = (args: {
     title: computed(() => item.value?.title ?? t("RATING.PAGES.DETAILS.FORM.TITLE.PLACEHOLDER")),
     disableReviewTextarea: true,
   });
+
+  async function GetSellerId(): Promise<string> {
+    const result = route?.params?.sellerId as string;
+    return result;
+  }
 
   return {
     load,

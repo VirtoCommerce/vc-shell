@@ -9,16 +9,20 @@
 </template>
 
 <script lang="ts" setup>
-import { useSettings, useUser, useNotifications, notification } from "@vc-shell/framework";
+import { useSettings, useUser, useNotifications, notification, useApiClient } from "@vc-shell/framework";
 import { onMounted, ref, watch } from "vue";
 import * as modules from "@vcmp-vendor-portal/modules";
 // eslint-disable-next-line import/no-unresolved
 import logoImage from "/assets/logo.svg";
+import { VcmpSellerSecurityClient } from "@vcmp-vendor-portal/api/marketplacevendor";
+import { useRoute } from "vue-router";
 
 const { isAdministrator, isAuthenticated } = useUser();
 const { uiSettings, applySettings } = useSettings();
 const { item: sellerDetails, load: getCurrentSeller } = modules.default.SellerDetails.composables.useSellerDetails();
 const { moduleNotifications, markAsRead } = useNotifications("OrderCreatedEventHandler");
+const { getApiClient } = useApiClient(VcmpSellerSecurityClient);
+const route = useRoute();
 const isReady = ref(false);
 
 const version = import.meta.env.PACKAGE_VERSION;
@@ -53,14 +57,28 @@ watch(
 console.debug(`Initializing App`);
 
 async function customizationHandler() {
-  if (!isAdministrator.value) {
-    await getCurrentSeller();
-  }
+  const sellerId = await GetSellerId();
+  if (!sellerId) {
+    if (!isAdministrator.value) {
+      await getCurrentSeller();
+    }
 
-  applySettings({
-    logo: sellerDetails.value?.logo || logoImage,
-    title: sellerDetails.value?.name || "Vendor Portal",
-  });
+    applySettings({
+      logo: sellerDetails.value?.logo || logoImage,
+      title: sellerDetails.value?.name || "Vendor Portal",
+    });
+  } else {
+    const seller = await (await getApiClient()).getSellerById(sellerId);
+    applySettings({
+      logo: seller?.logo || logoImage,
+      title: seller?.name || "Vendor Portal",
+    });
+  }
+}
+
+async function GetSellerId(): Promise<string> {
+  const result = route?.params?.sellerId as string;
+  return result;
 }
 </script>
 

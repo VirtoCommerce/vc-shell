@@ -5,7 +5,6 @@ import {
   inject,
   warn,
   Component,
-  watch,
   isVNode,
   h,
   shallowRef,
@@ -13,9 +12,17 @@ import {
   mergeProps,
 } from "vue";
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { createSharedComposable, reactiveComputed, toValue, watchDebounced } from "@vueuse/core";
+import { createSharedComposable, reactiveComputed, watchDebounced } from "@vueuse/core";
 import * as _ from "lodash-es";
-import { RouteLocationNormalized, useRoute, NavigationFailure, RouteRecordName, RouteParams, Router } from "vue-router";
+import {
+  RouteLocationNormalized,
+  useRoute,
+  NavigationFailure,
+  RouteRecordName,
+  RouteParams,
+  Router,
+  LocationQuery,
+} from "vue-router";
 import { bladeNavigationInstance } from "../../plugin";
 import {
   BladeComponentInternalInstance,
@@ -55,6 +62,8 @@ interface IUseBladeNavigation {
       >
     | undefined;
   getCurrentBlade: () => BladeVNode;
+  setNavigationQuery: (query: Record<string, string | number>) => void;
+  getNavigationQuery: () => Record<string, string | number>;
 }
 
 const activeWorkspace = shallowRef<BladeVNode>();
@@ -93,16 +102,33 @@ const utils = (router: Router) => {
   }
 
   function parseWorkspaceUrl(path: string): string {
-    const basePath = "/" + (Object.values(route.params)?.[0] ?? "");
-    const pathWithoutBase = path.startsWith(basePath) ? path.slice(basePath.length) : path;
+    // Object.values(route.params)[0] will always be base path of the app
+    if (!mainRouteBaseParamURL.value) {
+      mainRouteBaseParamURL.value = "/" + (Object.values(route.params)?.[0] ?? "");
+    }
+    const pathWithoutBase = path.startsWith(mainRouteBaseParamURL.value)
+      ? path.slice(mainRouteBaseParamURL.value.length)
+      : path;
     const segments = pathWithoutBase.split("/").filter(Boolean);
     const workspaceUrl = segments.slice(0, 1).join("/");
     return "/" + workspaceUrl;
   }
 
+  function getURLQuery() {
+    if (route.query && Object.keys(route.query).length) {
+      return { params: new URLSearchParams(route.query as Record<string, string>).toString(), obj: route.query };
+    }
+
+    const [, query] = window.location.href.split("#")[1].split("?");
+    const params = new URLSearchParams(query).toString();
+
+    return { params, obj: Object.fromEntries(new URLSearchParams(query)) };
+  }
+
   return {
     parseUrl,
     parseWorkspaceUrl,
+    getURLQuery,
   };
 };
 
@@ -114,7 +140,7 @@ const useBladeNavigationSingleton = createSharedComposable(() => {
     (instance !== null && inject<BladeNavigationPlugin>("bladeNavigationPlugin")) || bladeNavigationInstance;
   const router = navigationInstance?.router;
 
-  const { parseUrl, parseWorkspaceUrl } = utils(router);
+  const { parseUrl, parseWorkspaceUrl, getURLQuery } = utils(router);
 
   watchDebounced(
     () => route.path,
@@ -173,8 +199,7 @@ const useBladeNavigationSingleton = createSharedComposable(() => {
       if (workspace?.type?.url) {
         const url = constructUrl(workspace, lastBlade);
         if (url) {
-          const query = window.location.search;
-          updateRouterHistory(url, query);
+          updateRouterHistory(url);
         }
       }
     },
@@ -200,11 +225,13 @@ const useBladeNavigationSingleton = createSharedComposable(() => {
     }
   }
 
-  function updateRouterHistory(url: string, query: string) {
+  function updateRouterHistory(url: string) {
+    const params = getURLQuery().params;
+
     router.options.history.replace(
       (mainRouteBaseParamURL.value && !url.startsWith(mainRouteBaseParamURL.value) ? mainRouteBaseParamURL.value : "") +
         url +
-        (query ? "?" + query : ""),
+        (params ? "?" + params : ""),
     );
   }
 
@@ -259,11 +286,15 @@ export function useBladeNavigation(): IUseBladeNavigation {
   const instance: BladeComponentInternalInstance = getCurrentInstance() as BladeComponentInternalInstance;
 
   const { router, route, navigationInstance, closeBlade } = useBladeNavigationSingleton();
-  const { parseUrl } = utils(router);
+  const { parseUrl, getURLQuery } = utils(router);
   const routerRoutes = router.getRoutes();
   const mainRoute = routerRoutes.find((r) => r.meta?.root)!;
 
-  async function openWorkspace<Blade extends Component>({ blade, param, options }: IBladeEvent<Blade>) {
+  async function openWorkspace<Blade extends Component>(
+    { blade, param, options }: IBladeEvent<Blade>,
+    query: LocationQuery | undefined = undefined,
+    params: RouteParams = {},
+  ) {
     const createdComponent = h(blade, {
       param,
       options,
@@ -284,8 +315,7 @@ export function useBladeNavigation(): IUseBladeNavigation {
           if (wsroute && wsroute.components) {
             wsroute.components.default = createdComponent;
           }
-
-          return await router.replace({ name: wsroute?.name, params: { ...route.params } });
+          return await router.replace({ name: wsroute?.name, params: { ...params, ...route.params }, query });
         } else
           notification.error(i18n.global.t("PERMISSION_MESSAGES.ACCESS_RESTRICTED"), {
             timeout: 3000,
@@ -454,18 +484,15 @@ export function useBladeNavigation(): IUseBladeNavigation {
 
       // Open the workspace component or workspace route.
       if (registeredRouteComponent?.type.isWorkspace) {
-        await openBlade(
-          {
-            blade: registeredRouteComponent as unknown as BladeInstanceConstructor,
-          },
-          true,
-        );
+        await openWorkspace({
+          blade: registeredRouteComponent as unknown as BladeInstanceConstructor,
+        });
         return { name: registeredRouteComponent?.type.name, params };
       }
 
       // Open the workspace component with param or workspace route.
       if (registeredWorkspaceComponent) {
-        await openBlade(
+        await openWorkspace(
           {
             blade: registeredWorkspaceComponent as unknown as BladeInstanceConstructor,
             param:
@@ -473,7 +500,8 @@ export function useBladeNavigation(): IUseBladeNavigation {
                 ? param
                 : undefined,
           },
-          true,
+          getURLQuery().obj,
+          params,
         );
 
         // Open the route if it's not from the workspace module.
@@ -486,7 +514,7 @@ export function useBladeNavigation(): IUseBladeNavigation {
             param: param,
           });
         }
-        return { name: registeredWorkspaceComponent?.type.name, params };
+        return { name: registeredWorkspaceComponent?.type.name, params, query: to.query };
       }
     } else {
       return goToRoot();
@@ -519,6 +547,43 @@ export function useBladeNavigation(): IUseBladeNavigation {
     }
   }
 
+  function setNavigationQuery(query: Record<string, string | number>) {
+    // add blade name to query keys
+    const namedQuery = _.mapKeys(
+      _.mapValues(query, (value) => value?.toString()),
+      (value, key) => instance.vnode.type.name.toLowerCase() + "_" + key,
+    );
+    const cleanQuery = _.omitBy(namedQuery, _.isNil);
+
+    router.options.history.replace(
+      decodeURIComponent(
+        `${window.location.hash.substring(1).split("?")[0]}?${new URLSearchParams(cleanQuery).toString()}`,
+      ),
+    );
+  }
+
+  function getNavigationQuery() {
+    const queryKeys = Array.from(Object.keys(route.query));
+    const bladeQueryKeys = queryKeys.filter((key) => key.startsWith(instance.vnode.type.name.toLowerCase()));
+
+    const namedQuery = _.mapKeys(_.pick(route.query, bladeQueryKeys), (value, key) =>
+      key.replace(instance.vnode.type.name.toLowerCase() + "_", ""),
+    ) as Record<string, string | number>;
+
+    const obj: typeof namedQuery = {};
+    for (const [key, value] of Object.entries(namedQuery)) {
+      const numValue = Number(value);
+
+      if (!isNaN(numValue)) {
+        obj[key] = numValue;
+      } else {
+        obj[key] = value;
+      }
+    }
+
+    return obj;
+  }
+
   return {
     blades: computed(() => navigationInstance.blades.value),
     openBlade,
@@ -529,5 +594,7 @@ export function useBladeNavigation(): IUseBladeNavigation {
     getCurrentBlade,
     currentBladeNavigationData,
     onBeforeClose,
+    setNavigationQuery,
+    getNavigationQuery,
   };
 }

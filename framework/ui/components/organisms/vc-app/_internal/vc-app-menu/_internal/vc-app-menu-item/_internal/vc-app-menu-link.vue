@@ -3,7 +3,7 @@
     class="vc-app-menu-item"
     :class="[
       {
-        'vc-app-menu-item_active': isActive && !children?.length,
+        'vc-app-menu-item_active': isActive(url ?? '') && !children?.length,
         'vc-app-menu-item_no-hover': !children?.length,
         'vc-app-menu-item_child-opened': isOpened,
       },
@@ -48,16 +48,15 @@
       :key="i"
     >
       <router-link
-        v-if="$hasAccess(nested.permissions!)"
-        v-slot="{ isExactActive }"
-        :to="nested.url!"
+        v-if="$hasAccess(nested.permissions!) && nested.url"
+        :to="nested.url"
         custom
       >
         <div
           :key="i"
           :class="[
             {
-              'vc-app-menu-item__child-item_active': isExactActive,
+              'vc-app-menu-item__child-item_active': isActive(nested.url ?? ''),
             },
             'vc-app-menu-item__child-item',
           ]"
@@ -81,7 +80,6 @@ export interface Props {
   icon: string;
   title?: string;
   url?: string;
-  isActive?: boolean;
 }
 
 export interface Emits {
@@ -96,6 +94,7 @@ const emit = defineEmits<Emits>();
 
 const isOpened = ref(false);
 const route = useRoute();
+const params = Object.fromEntries(Object.entries(route.params).filter(([key]) => key !== "pathMatch"));
 
 watch(
   () => route.path,
@@ -114,6 +113,21 @@ function onMenuItemClick() {
     isOpened.value = !isOpened.value;
   }
 }
+
+const isActive = (url: string) => {
+  let path = route.path;
+  if (Object.values(params).length) {
+    path = path.replace(Object.values(params)[0] as string, "");
+  }
+
+  const active = path.endsWith(url);
+
+  if (active && props.children?.length) {
+    isOpened.value = true;
+  }
+
+  return active;
+};
 </script>
 
 <style lang="scss">

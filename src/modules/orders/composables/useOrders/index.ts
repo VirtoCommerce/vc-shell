@@ -40,7 +40,7 @@ export const useOrders = (args?: {
       return (await getApiClient()).searchOrders(
         new SearchOrdersQuery({
           ...query,
-          employeeId: user.value?.id,
+          employeeId: sellerId ?? user.value?.id,
           sellerId: sellerId,
         }),
       );

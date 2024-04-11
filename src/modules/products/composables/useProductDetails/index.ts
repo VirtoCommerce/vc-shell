@@ -260,6 +260,7 @@ export const useProductDetails = (args: {
             value: error?.attemptedValue,
           }),
         )
+        .concat(validationState.value.errorBag[property] ?? [])
         .join("\n"),
     );
   }, 1000);

@@ -1,3 +1,14 @@
+## [1.0.182](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.181...v1.0.182) (2024-04-11)
+
+
+### Features
+
+* sellerId param for app ([766850d](https://github.com/VirtoCommerce/vendor-portal/commit/766850d20cade5933923473bb9501eb9e5cf831a))
+* vm-1300 use sellerId from route ([803ac5f](https://github.com/VirtoCommerce/vendor-portal/commit/803ac5f6ea8ce82962e39e55a35755d9bc48923a))
+* vm-1300 use sellerId from route 2 ([e3c14ce](https://github.com/VirtoCommerce/vendor-portal/commit/e3c14ceb26ff5df662515b572650c7c7ba759f20))
+
+
+
 ## [1.0.181](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.180...v1.0.181) (2024-04-03)
 
 

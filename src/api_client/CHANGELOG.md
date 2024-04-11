@@ -1,3 +1,12 @@
+## [1.0.182](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.181...v1.0.182) (2024-04-11)
+
+
+### Features
+
+* vm-1300 use sellerId from route 2 ([e3c14ce](https://github.com/VirtoCommerce/vendor-portal/commit/e3c14ceb26ff5df662515b572650c7c7ba759f20))
+
+
+
 ## [1.0.181](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.180...v1.0.181) (2024-04-03)
 
 

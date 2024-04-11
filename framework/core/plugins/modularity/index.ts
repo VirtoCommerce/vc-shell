@@ -1,9 +1,10 @@
 import { App, Component, h } from "vue";
 import { i18n } from "./../i18n";
 import { Router } from "vue-router";
-import { BladeInstanceConstructor } from "./../../../shared/components/blade-navigation/types";
+import { BladeInstanceConstructor, BladeVNode } from "./../../../shared/components/blade-navigation/types";
 import { kebabToPascal } from "./../../utilities";
 import { useMenuService } from "../../composables";
+import * as _ from "lodash-es";
 
 export const createModule = (components: { [key: string]: BladeInstanceConstructor }, locales?: unknown) => ({
   install(app: App): void {
@@ -36,6 +37,8 @@ export const createAppModule = (
         routerInstance = router;
       }
 
+      const uid = _.uniqueId("module_");
+
       // Register pages
       Object.values(pages).forEach((page) => {
         if (!("routable" in page)) {
@@ -57,6 +60,10 @@ export const createAppModule = (
           app.component(page.name, page);
         }
 
+        if (!page.moduleUid) {
+          page.moduleUid = uid;
+        }
+
         // Dynamically add pages to vue router
         if (page.url) {
           const mainRouteName = routerInstance.getRoutes().find((r) => r.meta?.root)?.name;
@@ -71,7 +78,7 @@ export const createAppModule = (
 
           const bladeVNode = h(BladeInstanceConstructor, {
             navigation: {},
-          });
+          }) as BladeVNode;
 
           if (routerInstance && mainRouteName) {
             routerInstance.addRoute(mainRouteName, {

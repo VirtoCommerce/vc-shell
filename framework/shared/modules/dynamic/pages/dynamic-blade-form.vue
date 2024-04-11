@@ -97,7 +97,6 @@ import { VcSelect } from "../../../../ui/components";
 import { useToolbarReducer } from "../composables/useToolbarReducer";
 import { useBeforeUnload } from "../../../../core/composables/useBeforeUnload";
 import * as _ from "lodash-es";
-import { IBladeToolbar } from "../../../../core/types";
 import { useNotifications } from "../../../../core/composables";
 import { notification } from "../../../components";
 
@@ -132,6 +131,9 @@ const { showConfirmation } = usePopup();
 
 const widgetsRefs = useTemplateRefsList<{ el: HTMLDivElement; component: ConcreteComponent }>();
 
+if (typeof props.composables?.[props.model?.settings?.composable ?? ""] === "undefined") {
+  throw new Error(`Composable ( ${props.model?.settings?.composable} ) is not defined`);
+}
 const { loading, item, validationState, scope, load, remove, saveChanges, bladeTitle } = props.composables
   ? (props.composables?.[props.model?.settings?.composable ?? ""]({ emit, props, mounted: useMounted() }) as UseDetails<
       Record<string, any>,
@@ -147,6 +149,7 @@ const { loading, item, validationState, scope, load, remove, saveChanges, bladeT
       saveChanges: undefined,
       bladeTitle: undefined,
     } as unknown as UseDetails<Record<string, any>, DetailsBaseBladeScope>);
+
 const { onBeforeClose } = useBladeNavigation();
 const title = ref();
 const isReady = ref(false);

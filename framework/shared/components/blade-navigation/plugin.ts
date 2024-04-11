@@ -29,7 +29,7 @@ export const VcBladeNavigationComponent = {
     };
 
     app.config.globalProperties.$bladeNavigationPlugin = bladeNavigationPlugin;
-    app.provide("bladeNavigationPlugin", bladeNavigationPlugin);
     bladeNavigationInstance = bladeNavigationPlugin;
+    app.provide("bladeNavigationPlugin", bladeNavigationPlugin);
   },
 };

@@ -10,11 +10,12 @@ import {
   h,
   shallowRef,
   ComputedRef,
+  mergeProps,
 } from "vue";
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { createSharedComposable, reactiveComputed } from "@vueuse/core";
+import { createSharedComposable, reactiveComputed, toValue, watchDebounced } from "@vueuse/core";
 import * as _ from "lodash-es";
-import { RouteLocationNormalized, useRoute, NavigationFailure } from "vue-router";
+import { RouteLocationNormalized, useRoute, NavigationFailure, RouteRecordName, RouteParams, Router } from "vue-router";
 import { bladeNavigationInstance } from "../../plugin";
 import {
   BladeComponentInternalInstance,
@@ -24,6 +25,7 @@ import {
   IParentCallArgs,
   BladeInstanceConstructor,
   BladeRoutesRecord,
+  ExtractedBladeOptions,
 } from "../../types";
 import { navigationViewLocation } from "../../injectionKeys";
 import { usePermissions } from "../../../../../core/composables";
@@ -43,30 +45,66 @@ interface IUseBladeNavigation {
   onParentCall: (parentExposedMethods: Record<string, any>, args: IParentCallArgs) => void;
   onBeforeClose: (cb: () => Promise<boolean | undefined>) => void;
   resolveBladeByName: (name: string) => BladeInstanceConstructor;
-  routeResolver: (to: RouteLocationNormalized) => Promise<void | NavigationFailure | undefined> | undefined;
+  routeResolver: (to: RouteLocationNormalized) =>
+    | Promise<
+        | {
+            name: RouteRecordName | undefined;
+            params: RouteParams;
+          }
+        | undefined
+      >
+    | undefined;
   getCurrentBlade: () => BladeVNode;
 }
 
 const activeWorkspace = shallowRef<BladeVNode>();
 const mainRouteBaseParamURL = shallowRef<string>();
 
-function parseUrl(url: string) {
-  const urlRegex = /^\/([a-zA-Z0-9_-]+)(?:\/([a-zA-Z0-9_-]+))?(?:\/([a-zA-Z0-9_-]+))?$/;
-  const match = url.match(urlRegex);
+const utils = (router: Router) => {
+  const route = useRoute();
 
-  if (!match) {
-    return undefined;
+  function parseUrl(url: string) {
+    // remove parts of url that does not contain workspace, blade or param - everything before workspace
+    const parts = url.split("/");
+    const workspaceIndex = parts.findIndex((part) => {
+      const route = router
+        .getRoutes()
+        .find((r) => r.path.endsWith("/" + part) && (r.components?.default as BladeVNode).type.isWorkspace);
+
+      return route !== undefined;
+    });
+    const cleanUrl = "/" + parts.slice(workspaceIndex).join("/");
+
+    const urlRegex = /^\/([a-zA-Z0-9_-]+)(?:\/([a-zA-Z0-9_-]+))?(?:\/([a-zA-Z0-9_-]+))?$/;
+    const match = cleanUrl.match(urlRegex);
+
+    if (!match) {
+      return undefined;
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const [_, workspace, blade, param] = match;
+
+    return {
+      workspace,
+      blade: blade || undefined,
+      param: param || undefined,
+    };
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [_, workspace, blade, param] = match;
+  function parseWorkspaceUrl(path: string): string {
+    const basePath = "/" + (Object.values(route.params)?.[0] ?? "");
+    const pathWithoutBase = path.startsWith(basePath) ? path.slice(basePath.length) : path;
+    const segments = pathWithoutBase.split("/").filter(Boolean);
+    const workspaceUrl = segments.slice(0, 1).join("/");
+    return "/" + workspaceUrl;
+  }
 
   return {
-    workspace,
-    blade: blade || undefined,
-    param: param || undefined,
+    parseUrl,
+    parseWorkspaceUrl,
   };
-}
+};
 
 const useBladeNavigationSingleton = createSharedComposable(() => {
   const route = useRoute();
@@ -76,93 +114,99 @@ const useBladeNavigationSingleton = createSharedComposable(() => {
     (instance !== null && inject<BladeNavigationPlugin>("bladeNavigationPlugin")) || bladeNavigationInstance;
   const router = navigationInstance?.router;
 
-  function parseWorkspaceUrl(path: string): string {
-    // Object.values(route.params)[0] will always be base path of the app
-    if (!mainRouteBaseParamURL.value) {
-      mainRouteBaseParamURL.value = "/" + (Object.values(route.params)?.[0] ?? "");
-    }
-    const pathWithoutBase = path.startsWith(mainRouteBaseParamURL.value)
-      ? path.slice(mainRouteBaseParamURL.value.length)
-      : path;
-    const segments = pathWithoutBase.split("/").filter(Boolean);
-    const workspaceUrl = segments.slice(0, 1).join("/");
-    return "/" + workspaceUrl;
-  }
+  const { parseUrl, parseWorkspaceUrl } = utils(router);
 
-  watch(
+  watchDebounced(
     () => route.path,
     async (newVal, oldVal) => {
       const workspaceUrl = parseWorkspaceUrl(newVal);
 
-      const wsRouteComponent =
-        (route?.matched?.[1]?.components?.default as BladeVNode) ??
-        (router.resolve({ path: workspaceUrl })?.matched?.[1]?.components?.default as BladeVNode);
+      const wsRouteComponent = getWorkspaceRouteComponent(workspaceUrl);
 
       if (wsRouteComponent !== undefined) {
         if (isVNode(wsRouteComponent) && wsRouteComponent.type.isBlade) {
-          //&& wsRouteComponent.type.isBlade
-          navigationInstance.blades.value[0] = markRaw(wsRouteComponent);
-          activeWorkspace.value = wsRouteComponent;
+          updateActiveWorkspace(wsRouteComponent);
         } else {
-          const isPrevented = await closeBlade(0);
-
-          if (!isPrevented) {
-            // add not blade page to blades array to show simple routes as
-            // we use only one router-view for all routes
-            navigationInstance.blades.value = [];
-          } else {
-            if (oldVal) router.replace({ path: oldVal });
-          }
+          await handleNonBladePage(oldVal);
         }
       }
     },
     { immediate: true },
   );
 
-  watch(
-    navigationInstance.blades,
-    (newVal) => {
-      const workspace = navigationInstance.blades.value[0];
+  async function handleNonBladePage(oldVal?: string) {
+    const isPrevented = await closeBlade(0);
+    if (!isPrevented) {
+      navigationInstance.blades.value = [];
+      activeWorkspace.value = undefined;
+    } else {
+      if (oldVal) router.replace({ path: oldVal });
+    }
+  }
 
-      // method that checks if last item in newVal array has url and returns item. If it has no url - it returns previous item with url, but not first item from array as it's workspace
-      const getLastItemWithUrl = () => {
-        // Find the previous item with a URL
-        for (let i = newVal.length - 1; i > 0; i--) {
-          if (newVal[i].type.url) {
-            return newVal[i]; // return the previous item with a URL
-          }
-        }
-        return;
-      };
+  function updateActiveWorkspace(wsRouteComponent: BladeVNode) {
+    navigationInstance.blades.value[0] = markRaw(
+      Object.assign(wsRouteComponent, {
+        props: mergeProps(wsRouteComponent.props, {
+          navigation: {
+            idx: 0,
+          },
+        }),
+      }),
+    );
+    activeWorkspace.value = wsRouteComponent;
+  }
+
+  function getWorkspaceRouteComponent(workspaceUrl: string) {
+    return (
+      (route?.matched?.[1]?.components?.default as BladeVNode) ??
+      (router.resolve({ path: workspaceUrl })?.matched?.[1]?.components?.default as BladeVNode)
+    );
+  }
+
+  watchDebounced(
+    navigationInstance.blades,
+    async (newVal) => {
+      const workspace = navigationInstance.blades.value[0];
+      const lastBlade = getLastItemWithUrl(newVal);
 
       if (workspace?.type?.url) {
-        let url: string;
-        // when restoring blades we need to use full path of the blade to show last blade from the url as workspace.
-        // fullPath is provided by generateRoute function
-        const wsBladeUrl = workspace?.props?.navigation?.fullPath || workspace?.type.url;
-
-        const lastBlade = getLastItemWithUrl();
-        if (getLastItemWithUrl()) {
-          url =
-            "/" +
-            parseUrl(wsBladeUrl)?.workspace +
-            lastBlade?.type.url +
-            (lastBlade?.props?.param ? "/" + lastBlade?.props.param : "");
-        } else {
-          url = wsBladeUrl;
-        }
-
+        const url = constructUrl(workspace, lastBlade);
         if (url) {
-          router.options.history.replace(
-            (mainRouteBaseParamURL.value && !url.startsWith(mainRouteBaseParamURL.value)
-              ? mainRouteBaseParamURL.value
-              : "") + url,
-          );
+          const query = window.location.search;
+          updateRouterHistory(url, query);
         }
       }
     },
-    { deep: true },
+    { deep: true, debounce: 1 },
   );
+
+  function getLastItemWithUrl(newVal: BladeVNode[]) {
+    for (let i = newVal.length - 1; i > 0; i--) {
+      if (newVal[i].type.url) {
+        return newVal[i];
+      }
+    }
+  }
+
+  function constructUrl(workspace: BladeVNode, lastBlade?: BladeVNode) {
+    const wsBladeUrl = workspace?.type.url;
+    const lastBladeUrl = lastBlade?.type.url;
+    const param = lastBlade?.props?.param;
+    if (lastBlade && wsBladeUrl) {
+      return "/" + parseUrl(wsBladeUrl)?.workspace + lastBladeUrl + (param ? "/" + param : "");
+    } else {
+      return wsBladeUrl;
+    }
+  }
+
+  function updateRouterHistory(url: string, query: string) {
+    router.options.history.replace(
+      (mainRouteBaseParamURL.value && !url.startsWith(mainRouteBaseParamURL.value) ? mainRouteBaseParamURL.value : "") +
+        url +
+        (query ? "?" + query : ""),
+    );
+  }
 
   async function closeBlade(index: number) {
     console.debug(`[@vc-shell/framework#useBladeNavigation] - closeBlade called.`);
@@ -215,8 +259,9 @@ export function useBladeNavigation(): IUseBladeNavigation {
   const instance: BladeComponentInternalInstance = getCurrentInstance() as BladeComponentInternalInstance;
 
   const { router, route, navigationInstance, closeBlade } = useBladeNavigationSingleton();
-
-  const mainRoute = router.getRoutes().find((r) => r.meta?.root)!;
+  const { parseUrl } = utils(router);
+  const routerRoutes = router.getRoutes();
+  const mainRoute = routerRoutes.find((r) => r.meta?.root)!;
 
   async function openWorkspace<Blade extends Component>({ blade, param, options }: IBladeEvent<Blade>) {
     const createdComponent = h(blade, {
@@ -228,14 +273,14 @@ export function useBladeNavigation(): IUseBladeNavigation {
     }) as BladeVNode;
 
     try {
-      const isPrevented = await closeBlade(0);
+      // Close all blades except the first one cause it will be overwritten
+      const isPrevented = await closeBlade(1);
 
       if (!isPrevented && createdComponent.type?.url) {
         if (hasAccess(blade.permissions)) {
           navigationInstance.blades.value = [createdComponent];
-
           // Find the route with the matching URL and update the components.default property with the new component
-          const wsroute = router.getRoutes().find((r) => r.path.endsWith(createdComponent.type?.url as string));
+          const wsroute = routerRoutes.find((r) => r.path.endsWith(createdComponent.type?.url as string));
           if (wsroute && wsroute.components) {
             wsroute.components.default = createdComponent;
           }
@@ -247,7 +292,7 @@ export function useBladeNavigation(): IUseBladeNavigation {
           });
       }
     } catch (e) {
-      console.log(e);
+      console.error(e);
       throw new Error(`Opening workspace '${blade.type.name}' is prevented`);
     }
   }
@@ -267,50 +312,62 @@ export function useBladeNavigation(): IUseBladeNavigation {
     try {
       const instanceComponent = navigationView || activeWorkspace.value;
 
-      if (isVNode(instanceComponent) || activeWorkspace.value) {
-        const instanceComponentIndex =
-          navigationInstance.blades.value /* @ts-expect-error  - findLastIndex is not parsed correctly by ts */
-            .findLastIndex((x) => _.isEqual(x.type, instanceComponent.type));
-
-        const instanceComponentChild =
-          instanceComponentIndex >= 0 ? navigationInstance.blades.value[instanceComponentIndex + 1] : undefined;
-
-        let isPrevented = false;
-
-        if (instanceComponentChild) {
-          isPrevented = await closeBlade(instanceComponentChild.props?.navigation?.idx);
-        }
-
-        const currentBladeIdx = instanceComponent.props?.navigation?.idx ? instanceComponent.props?.navigation?.idx : 0;
-
-        const bladeNode = h(
-          blade,
-          Object.assign(
-            {},
-            reactiveComputed(() => ({ options, param })),
-            {
-              navigation: {
-                onClose,
-                onOpen,
-                idx: currentBladeIdx + 1,
-              },
-            },
-          ),
-        ) as BladeVNode;
-
-        if (!isPrevented) {
-          if (hasAccess(blade.permissions)) navigationInstance.blades.value.push(bladeNode);
-          else
-            notification.error(i18n.global.t("PERMISSION_MESSAGES.ACCESS_RESTRICTED"), {
-              timeout: 3000,
-            });
-        }
-      } else {
+      if (!instanceComponent) {
         throw new Error("No workspace found");
+      }
+
+      const instanceComponentIndex = findInstanceComponentIndex(instanceComponent);
+      const instanceComponentChild = navigationInstance.blades.value[instanceComponentIndex + 1];
+
+      let isPrevented = false;
+
+      if (instanceComponentChild) {
+        isPrevented = await closeBlade(instanceComponentChild.props?.navigation?.idx);
+      }
+
+      const currentBladeIdx = instanceComponent.props?.navigation?.idx ?? 0;
+
+      const bladeNode = createBladeNode<Blade>({ blade, currentBladeIdx, options, param, onClose, onOpen });
+
+      if (!isPrevented) {
+        if (hasAccess(blade.permissions)) {
+          navigationInstance.blades.value.push(bladeNode);
+        } else {
+          notification.error(i18n.global.t("PERMISSION_MESSAGES.ACCESS_RESTRICTED"), { timeout: 3000 });
+        }
       }
     } catch (e) {
       console.error(e);
     }
+  }
+
+  function findInstanceComponentIndex(instanceComponent: BladeVNode) {
+    return navigationInstance.blades.value.findIndex((x) => _.isEqual(x.type, instanceComponent.type));
+  }
+
+  function createBladeNode<Blade extends Component>(args: {
+    blade: BladeInstanceConstructor<Blade>;
+    currentBladeIdx: number;
+    options: ExtractedBladeOptions<InstanceType<BladeInstanceConstructor<Blade>>["$props"], "options"> | undefined;
+    param?: string;
+    onClose?: () => void;
+    onOpen?: () => void;
+  }) {
+    const { blade, currentBladeIdx, options, param, onClose, onOpen } = args;
+    return h(
+      blade,
+      Object.assign(
+        {},
+        reactiveComputed(() => ({ options, param })),
+        {
+          navigation: {
+            onClose,
+            onOpen,
+            idx: currentBladeIdx + 1,
+          },
+        },
+      ),
+    ) as BladeVNode;
   }
 
   async function onParentCall(parentExposedMethods: Record<string, any>, args: IParentCallArgs) {
@@ -355,7 +412,7 @@ export function useBladeNavigation(): IUseBladeNavigation {
   }
 
   function hasNecessaryRoute(to: RouteLocationNormalized) {
-    return router.getRoutes().find((route) => route.path === to.path);
+    return routerRoutes.find((route) => route.path === to.path);
   }
 
   /**
@@ -369,90 +426,77 @@ export function useBladeNavigation(): IUseBladeNavigation {
    */
   async function generateRoute(to: RouteLocationNormalized, routes: BladeRoutesRecord[]) {
     // Extract parameters excluding "pathMatch". This is necessary if a variable is used as the App component URL, for example, /:userId?
-    const params = Object.entries(to.params)
-      .filter(([key]) => key !== "pathMatch")
-      .reduce(
-        (acc, [key, value]) => {
-          acc[key] = value;
-          return acc;
-        },
-        {} as Record<string, string | string[]>,
-      );
+    const params = Object.fromEntries(Object.entries(to.params).filter(([key]) => key !== "pathMatch"));
 
     // Get the raw path of the main route.
-    const parentRawPath = router.getRoutes().find((route) => route.name === mainRoute.name)!.path!;
+    const parentRawPath = routerRoutes.find((route) => route.name === mainRoute.name)?.path;
 
     // Determine the parent path based on the parameters.
-    const parentPath = parentRawPath.includes(Object.keys(params)?.[0] as string)
-      ? "/" + (Object.values(params)?.[0] ?? "")
-      : "";
+    const parentPath =
+      parentRawPath && parentRawPath.includes(Object.keys(params)[0]) ? `/${Object.values(params)[0]}` : "";
 
     // Set the base param value.
     mainRouteBaseParamURL.value = parentPath;
 
-    // Check if the current path matches the parent path.
-    const isCorrectParentPath = parentRawPath !== "/" && to.path.startsWith(parentPath);
-
-    // Check if the current route is a parent route.
-    const isRouteParent = router.getRoutes().find((x) => x.path.endsWith(parentPath));
-
     // Parse the URL to extract relevant route information.
-    const parsedRoutes = parseUrl(!isRouteParent ? to.path.slice(parentPath.length) : to.path);
+    const parsedRoutes = parseUrl(parentPath !== "/" ? to.path.slice(parentPath.length) : to.path);
 
-    if (parsedRoutes) {
+    if (parsedRoutes !== undefined) {
+      const { workspace, blade, param } = parsedRoutes;
+
       // Find the registered route component.
-      const registeredRouteComponent = routes.find((route) => route.route === "/" + parsedRoutes?.blade)?.component;
+      const registeredWorkspaceComponent = routes.find((route) => route.route === `/${workspace}`)?.component;
+      const registeredRouteComponent = routes.find((route) => route.route === `/${blade}`)?.component;
 
-      if (registeredRouteComponent) {
-        if (registeredRouteComponent.type?.isWorkspace) {
-          // If the route is a workspace, navigate to it directly.
-          router.replace({ path: registeredRouteComponent.type.url as string });
-        } else {
-          // If the route is not a workspace, add it to the router and navigate to it.
-          const url =
-            (!isRouteParent ? parentPath : "") +
-            "/" +
-            parsedRoutes?.workspace +
-            "/" +
-            parsedRoutes.blade +
-            (parsedRoutes.param ? "/" + parsedRoutes.param : "");
-
-          // If the route is not routable, redirect to the workspace.
-          if (!parsedRoutes.param && !registeredRouteComponent.type?.routable) {
-            return router.replace("/" + parsedRoutes?.workspace);
-          } else {
-            // Add the route to the router.
-            router.addRoute(mainRoute.name as string, {
-              name: url,
-              path: parentRawPath !== "/" ? parentRawPath + url : "" + url,
-              components: {
-                default: _.merge({}, registeredRouteComponent, {
-                  props: {
-                    param: parsedRoutes.param,
-                    navigation: {
-                      fullPath: url,
-                      idx: 0,
-                    },
-                  },
-                }),
-              },
-              meta: {
-                permissions: registeredRouteComponent.type?.permissions,
-              },
-            });
-
-            // Navigate to the newly added route.
-            return router.replace({ name: url, params: isCorrectParentPath ? params : {} });
-          }
-        }
-      } else {
-        // If the registered route component is not found, navigate to the main route.
-        const mainRoute = router.getRoutes().find((route) => route.meta?.root);
-        const mainRouteAlias = router.getRoutes().find((route) => route.aliasOf?.path === mainRoute?.path) ?? mainRoute;
-
-        router.replace({ name: mainRouteAlias?.name, params: route.params });
+      if (!registeredWorkspaceComponent) {
+        return goToRoot();
       }
+
+      // Open the workspace component or workspace route.
+      if (registeredRouteComponent?.type.isWorkspace) {
+        await openBlade(
+          {
+            blade: registeredRouteComponent as unknown as BladeInstanceConstructor,
+          },
+          true,
+        );
+        return { name: registeredRouteComponent?.type.name, params };
+      }
+
+      // Open the workspace component with param or workspace route.
+      if (registeredWorkspaceComponent) {
+        await openBlade(
+          {
+            blade: registeredWorkspaceComponent as unknown as BladeInstanceConstructor,
+            param:
+              registeredRouteComponent?.type.moduleUid === registeredWorkspaceComponent.type.moduleUid
+                ? param
+                : undefined,
+          },
+          true,
+        );
+
+        // Open the route if it's not from the workspace module.
+        if (
+          registeredRouteComponent?.type.moduleUid !== registeredWorkspaceComponent.type.moduleUid &&
+          registeredRouteComponent?.type.routable
+        ) {
+          await openBlade({
+            blade: registeredRouteComponent as unknown as BladeInstanceConstructor,
+            param: param,
+          });
+        }
+        return { name: registeredWorkspaceComponent?.type.name, params };
+      }
+    } else {
+      return goToRoot();
     }
+  }
+
+  function goToRoot() {
+    const mainRoute = routerRoutes.find((route) => route.meta?.root);
+    const mainRouteAlias = routerRoutes.find((route) => route.aliasOf?.path === mainRoute?.path) || mainRoute;
+    return { name: mainRouteAlias?.name, params: route.params };
   }
 
   /**

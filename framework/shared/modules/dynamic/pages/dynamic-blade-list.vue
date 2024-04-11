@@ -169,7 +169,7 @@ import { useFilterBuilder, useTableTemplates } from "../composables";
 import { useFunctions, useNotifications } from "../../../../core/composables";
 import { IActionBuilderResult, ITableColumns } from "../../../../core/types";
 import { useToolbarReducer } from "../composables/useToolbarReducer";
-import { notification, usePopup } from "../../../components";
+import { notification, useBladeNavigation, usePopup } from "../../../components";
 import { ListBaseBladeScope, ListBladeContext, UseList } from "../factories/types";
 import { IParentCallArgs } from "../../../index";
 import * as _ from "lodash-es";
@@ -251,6 +251,10 @@ const stateKey =
 
     throw new Error('Table id is not defined. Please provide "id" property in table schema');
   });
+
+if (typeof props.composables?.[props.model?.settings?.composable ?? ""] === "undefined") {
+  throw new Error(`Composable ( ${props.model?.settings?.composable} ) is not defined`);
+}
 
 const { load, remove, items, loading, pagination, query, scope } = props.composables
   ? (props.composables?.[props.model?.settings?.composable ?? ""]({

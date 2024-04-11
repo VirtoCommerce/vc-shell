@@ -95,7 +95,6 @@ export interface BladeVNode extends VNode {
       onClose?: () => void;
       onBeforeClose?: () => Promise<boolean | undefined>;
       instance: Ref<CoreBladeExposed | undefined | null>;
-      fullPath: string;
       idx: number;
     };
     onVnodeUnmounted?: VNodeMountHook | VNodeMountHook[];

@@ -1,3 +1,12 @@
+## [1.0.184](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.183...v1.0.184) (2024-04-11)
+
+
+### Bug Fixes
+
+* gtin validation error lose ([2cf4be7](https://github.com/VirtoCommerce/vendor-portal/commit/2cf4be7e72e09ab63253edc559d7e9b4f6a2032b))
+
+
+
 ## [1.0.183](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.182...v1.0.183) (2024-04-11)
 
 

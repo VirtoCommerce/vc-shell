@@ -1,3 +1,17 @@
+## [1.0.194](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.193...v1.0.194) (2024-04-11)
+
+
+### Bug Fixes
+
+* **ui:** vc-table immediate watch on items ([45cd08a](https://github.com/VirtoCommerce/vc-shell/commit/45cd08a69483f8106247bdd9b213a23fb81a24cb))
+
+
+### Features
+
+* **dynamic:** added vee-validate's errorBag into validationState object ([164be3c](https://github.com/VirtoCommerce/vc-shell/commit/164be3cacd3c76ae4043a79825604dea9026de2f))
+
+
+
 ## [1.0.193](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.192...v1.0.193) (2024-04-11)
 
 

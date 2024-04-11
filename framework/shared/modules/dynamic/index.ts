@@ -44,6 +44,7 @@ const register = (
     composables: { [key: string]: (...args: any[]) => any };
     json: DynamicSchema;
     options?: { router: any };
+    moduleUid: string;
   },
   appModuleContent:
     | {
@@ -73,7 +74,9 @@ const register = (
     name: bladeName,
     isWorkspace: "isWorkspace" in json.settings && json.settings.isWorkspace,
     menuItem: ("menuItem" in json.settings && json.settings.menuItem) ?? undefined,
+    moduleUid: args.moduleUid,
     routable: json.settings.routable ?? true,
+    composables: args.composables,
     setup: (props: ComponentProps<typeof bladeComponent>, ctx) =>
       (bladeComponent?.setup &&
         bladeComponent.setup(
@@ -146,6 +149,7 @@ export const createDynamicAppModule = (args: {
         notificationTemplates: args?.notificationTemplates,
         moduleComponents: args?.moduleComponents,
       };
+      const moduleUid = _.uniqueId("module_");
       Object.entries(schemaCopy).forEach(([, JsonSchema], index) => {
         const blade = register(
           {
@@ -154,6 +158,7 @@ export const createDynamicAppModule = (args: {
             composables: { ...args.composables },
             json: JsonSchema,
             options,
+            moduleUid,
           },
           index === 0 ? appModuleContent : undefined,
         );

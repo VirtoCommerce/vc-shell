@@ -2,11 +2,13 @@
   <div>
     <template v-if="url">
       <router-link
+        v-slot="{ isExactActive }"
         :to="url"
         custom
       >
         <vc-app-menu-link
           v-if="isVisible"
+          :is-active="isExactActive"
           :sticky="sticky"
           :icon="icon ?? ''"
           :title="title ?? ''"

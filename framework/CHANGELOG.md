@@ -1,3 +1,17 @@
+## [1.0.192](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.191...v1.0.192) (2024-04-11)
+
+
+### Bug Fixes
+
+* router param lost ([9931a84](https://github.com/VirtoCommerce/vc-shell/commit/9931a848c18389f80fad6f22e5e864952aa0e277))
+
+
+### Features
+
+* **navigation:** better work with custom app param, preserve blades where it's possible ([49d3ae8](https://github.com/VirtoCommerce/vc-shell/commit/49d3ae8b40178fb6d29d6b8f54880a2f5e0e21c4))
+
+
+
 ## [1.0.191](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.190...v1.0.191) (2024-04-09)
 
 

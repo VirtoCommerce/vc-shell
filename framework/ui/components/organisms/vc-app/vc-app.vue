@@ -167,7 +167,14 @@ const onMenuItemClick = function (item: MenuItem) {
       true,
     );
   } else if (!item.routeId && item.url) {
-    router.push(item.url);
+    const menuRoute = router.getRoutes().find((r) => {
+      return "/" + r.path.split("/").filter((part) => part !== "")[1] === item.url || r.path === item.url;
+    });
+    if (typeof menuRoute === "undefined") {
+      openRoot();
+    } else {
+      router.replace({ name: menuRoute?.name, params: route.params });
+    }
   }
 };
 

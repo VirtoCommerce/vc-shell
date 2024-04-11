@@ -382,7 +382,7 @@
             </div>
             <VcButton
               v-if="notfound?.action"
-              @click="notfound.clickHandler"
+              @click="notfound?.clickHandler"
             >
               {{ notfound.action }}
             </VcButton>
@@ -402,7 +402,7 @@
             </div>
             <VcButton
               v-if="empty?.action"
-              @click="empty.clickHandler"
+              @click="empty?.clickHandler"
             >
               {{ empty.action }}
             </VcButton>

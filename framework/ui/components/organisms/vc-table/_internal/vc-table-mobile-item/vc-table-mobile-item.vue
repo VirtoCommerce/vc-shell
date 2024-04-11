@@ -116,7 +116,7 @@
 </template>
 
 <script lang="ts" setup generic="T extends TableItem | string">
-import { Ref, computed, ref, onMounted, watch } from "vue";
+import { Ref, computed, ref, onMounted, watch, onUpdated } from "vue";
 import { IActionBuilderResult } from "../../../../../../core/types";
 import { useI18n } from "vue-i18n";
 import { useSwipe } from "@vueuse/core";
@@ -213,6 +213,10 @@ watch(
 );
 
 onMounted(() => {
+  adjustHeight();
+});
+
+onUpdated(() => {
   adjustHeight();
 });
 

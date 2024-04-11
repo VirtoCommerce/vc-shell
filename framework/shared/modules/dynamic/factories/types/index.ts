@@ -32,6 +32,7 @@ export interface IValidationState<Item> {
     updateInitial?: MaybeRef<boolean>,
   ) => void;
   validate: FormContext["validate"];
+  errorBag: FormContext["errorBag"];
 }
 
 export type CustomQuery = { ids: string[] | null; allSelected?: boolean };

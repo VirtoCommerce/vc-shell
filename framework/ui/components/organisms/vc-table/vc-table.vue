@@ -658,7 +658,7 @@ watch(
     }
     columnsInit.value = false;
   },
-  { deep: true },
+  { deep: true, immediate: true },
 );
 
 const internalColumnsSorted = computed(() => {

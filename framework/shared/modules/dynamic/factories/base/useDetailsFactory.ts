@@ -13,7 +13,7 @@ export interface UseDetailsFactoryParams<Item> {
 
 export const useDetailsFactory = <Item>(factoryParams: UseDetailsFactoryParams<Item>) => {
   return function useDetails(): UseDetails<Item> {
-    const { setFieldError, setErrors, validate, setFieldValue, setValues } = useForm({
+    const { setFieldError, setErrors, validate, setFieldValue, setValues, errorBag } = useForm({
       validateOnMount: false,
     });
     const item = ref<Item>();
@@ -57,6 +57,7 @@ export const useDetailsFactory = <Item>(factoryParams: UseDetailsFactoryParams<I
         setValues,
         resetModified,
         validate,
+        errorBag,
       }),
     );
 

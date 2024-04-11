@@ -1,6 +1,6 @@
 import { RouteRecordRaw } from "vue-router";
 import App from "../pages/App.vue";
-import { Invite, Login, ResetPassword, useBladeNavigation } from "@vc-shell/framework";
+import { BladeVNode, Invite, Login, ResetPassword, useBladeNavigation } from "@vc-shell/framework";
 // eslint-disable-next-line import/no-unresolved
 import whiteLogoImage from "/assets/logo-white.svg";
 // eslint-disable-next-line import/no-unresolved
@@ -8,9 +8,11 @@ import bgImage from "/assets/background.jpg";
 import { useLogin } from "../composables";
 import Dashboard from "../pages/Dashboard.vue";
 
+const sellerIdRegex = "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}";
+
 export const routes: RouteRecordRaw[] = [
   {
-    path: "/",
+    path: `/:sellerId(${sellerIdRegex})?`,
     component: App,
     name: "App",
     meta: {
@@ -20,10 +22,19 @@ export const routes: RouteRecordRaw[] = [
       {
         name: "Dashboard",
         path: "",
-        alias: "/",
+        alias: `/:sellerId(${sellerIdRegex})?`,
         component: Dashboard,
       },
     ],
+    beforeEnter: (to) => {
+      const { sellerId } = to.params;
+
+      if (!sellerId || new RegExp(sellerIdRegex).test(sellerId as string)) {
+        return true;
+      } else {
+        return { path: (to.matched[1].components?.default as BladeVNode).type.url as string };
+      }
+    },
   },
   {
     name: "Login",
@@ -57,7 +68,7 @@ export const routes: RouteRecordRaw[] = [
     }),
   },
   {
-    path: "/:pathMatch(.*)*",
+    path: `/:sellerId(${sellerIdRegex})?/:pathMatch(.*)*`,
     component: App,
     beforeEnter: async (to) => {
       const { routeResolver } = useBladeNavigation();

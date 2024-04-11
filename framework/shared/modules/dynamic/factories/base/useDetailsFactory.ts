@@ -51,13 +51,13 @@ export const useDetailsFactory = <Item>(factoryParams: UseDetailsFactoryParams<I
         disabled: isDisabled.value,
         validated: !isDisabled.value && isModified.value,
         cachedValue: itemTemp.value,
+        errorBag: errorBag.value,
         setFieldError,
         setErrors,
         setFieldValue,
         setValues,
         resetModified,
         validate,
-        errorBag,
       }),
     );
 

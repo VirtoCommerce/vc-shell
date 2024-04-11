@@ -1,3 +1,12 @@
+## [1.0.183](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.182...v1.0.183) (2024-04-11)
+
+
+### Features
+
+* vm-1300 seller id in orders request ([9f39df0](https://github.com/VirtoCommerce/vendor-portal/commit/9f39df03388c51603e15fb356a7ce4886f0534ee))
+
+
+
 ## [1.0.182](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.181...v1.0.182) (2024-04-11)
 
 

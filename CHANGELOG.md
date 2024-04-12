@@ -1,3 +1,12 @@
+## [1.0.197](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.196...v1.0.197) (2024-04-12)
+
+
+### Bug Fixes
+
+* instance removal fix ([9eeb850](https://github.com/VirtoCommerce/vc-shell/commit/9eeb850603b18fcd3e6dc7b03a9bfe3ceb224680))
+
+
+
 ## [1.0.196](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.195...v1.0.196) (2024-04-11)
 
 

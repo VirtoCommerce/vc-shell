@@ -115,18 +115,20 @@ function onMenuItemClick() {
 }
 
 const isActive = (url: string) => {
-  let path = route.path;
-  if (Object.values(params).length) {
-    path = path.replace(Object.values(params)[0] as string, "");
-  }
+  if (url) {
+    let path = route.path;
+    if (Object.values(params).length) {
+      path = path.replace(Object.values(params)[0] as string, "");
+    }
 
-  const active = path.endsWith(url);
+    const active = path.endsWith(url);
 
-  if (active && props.children?.length) {
-    isOpened.value = true;
-  }
+    if (active && props.children?.length) {
+      isOpened.value = true;
+    }
 
-  return active;
+    return active;
+  } else return false;
 };
 </script>
 

@@ -10,6 +10,7 @@ import {
   shallowRef,
   ComputedRef,
   mergeProps,
+  reactive,
 } from "vue";
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createSharedComposable, reactiveComputed, watchDebounced } from "@vueuse/core";
@@ -171,15 +172,8 @@ const useBladeNavigationSingleton = createSharedComposable(() => {
   }
 
   function updateActiveWorkspace(wsRouteComponent: BladeVNode) {
-    navigationInstance.blades.value[0] = markRaw(
-      Object.assign(wsRouteComponent, {
-        props: mergeProps(wsRouteComponent.props, {
-          navigation: {
-            idx: 0,
-          },
-        }),
-      }),
-    );
+    wsRouteComponent.props.navigation.idx = 0;
+    navigationInstance.blades.value[0] = wsRouteComponent;
     activeWorkspace.value = wsRouteComponent;
   }
 
@@ -406,6 +400,7 @@ export function useBladeNavigation(): IUseBladeNavigation {
     if (args.method && parentExposedMethods && typeof parentExposedMethods[args.method] === "function") {
       const method = parentExposedMethods[args.method] as (args: unknown) => Promise<unknown>;
       const result = await method(args.args);
+
       if (typeof args.callback === "function") {
         args.callback(result);
       }

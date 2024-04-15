@@ -172,10 +172,12 @@ export const useProductDetails = (args: {
   }
 
   async function saveChangesWrapper(details?: IProductDetails, sendToApprove = false) {
-    await saveChanges({ ...details, id: item.value?.id });
+    const sellerId = await GetSellerId();
+    await saveChanges({ ...details, id: item.value?.id, sellerId: sellerId });
 
     if (sendToApprove && item.value?.id) {
       const newRequestCommand = new CreateNewPublicationRequestCommand({
+        sellerId: sellerId,
         productId: item.value?.id,
       });
       await (await getApiClient()).createNewPublicationRequest(newRequestCommand);

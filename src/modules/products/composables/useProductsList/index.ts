@@ -27,6 +27,7 @@ export interface ProductListScope extends ListBaseBladeScope {
       clickHandler: () => Promise<void>;
     };
   };
+  statuses: ComputedRef<Record<string, MaybeRef<string>>[]>;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars

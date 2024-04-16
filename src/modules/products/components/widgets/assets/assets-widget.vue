@@ -96,7 +96,7 @@ const assetsHandler = {
   async remove(files: Asset[]) {
     if (
       await showConfirmation(
-        computed(() => t("PRODUCTS.PAGES.DETAILS.ALERTS.DELETE_CONFIRMATION_ASSET", { count: files.length })),
+        computed(() => t("PRODUCTS.PAGES.ALERTS.DELETE_CONFIRMATION_ASSET", { count: files.length })),
       )
     ) {
       internalModel.value.item.assets = (await remove(files, internalModel.value.item.assets)).map((x) => new Asset(x));

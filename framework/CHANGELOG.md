@@ -1,3 +1,12 @@
+## [1.0.198](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.197...v1.0.198) (2024-04-16)
+
+
+### Features
+
+* blade navigation breadcrumbs, useDynamicViewsUtils composable ([506cee1](https://github.com/VirtoCommerce/vc-shell/commit/506cee114479717b2745c8f85968249959eb16af))
+
+
+
 ## [1.0.197](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.196...v1.0.197) (2024-04-12)
 
 

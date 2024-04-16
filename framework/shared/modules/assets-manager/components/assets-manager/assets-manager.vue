@@ -40,13 +40,13 @@
                 icon="fas fa-cloud-upload-alt"
                 class="tw-text-[100px] tw-text-[#41afe6]"
               ></VcIcon>
-              <div class="tw-m-4 tw-text-xl tw-font-medium">
+              <div class="tw-m-4 tw-text-xl tw-font-medium tw-text-center">
                 {{ t("ASSETS_MANAGER.EMPTY.UPLOAD_ASSETS") }}
               </div>
               <VcButton @click="toggleUploader">{{ t("ASSETS_MANAGER.EMPTY.UPLOAD") }}</VcButton>
             </template>
             <template v-else>
-              <div class="tw-m-4 tw-text-xl tw-font-medium">
+              <div class="tw-m-4 tw-text-xl tw-font-medium tw-text-center">
                 {{ t("ASSETS_MANAGER.EMPTY.NO_ASSETS") }}
               </div>
             </template>

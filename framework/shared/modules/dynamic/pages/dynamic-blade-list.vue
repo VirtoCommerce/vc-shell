@@ -262,6 +262,9 @@ const { load, remove, items, loading, pagination, query, scope } = props.composa
       emit,
       props,
       mounted: useMounted(),
+      /**
+       * @deprecated use `useDynamicViewsUtils` instead. This will be removed in the next major version.
+       */
       bladeContext: {
         settings,
         selectedIds: computed(() => selectedIds.value),
@@ -382,7 +385,8 @@ const toolbarComputed =
   [];
 
 onBeforeMount(async () => {
-  if (props.composables) await load({ sort: sort.value, ...query.value, ...getNavigationQuery() });
+  if (props.composables)
+    await load({ sort: sort.value, ...query.value, ...(props.isWidgetView ? {} : getNavigationQuery()) });
 });
 
 watch(
@@ -658,5 +662,7 @@ defineExpose({
   title,
   updateActiveWidgetCount,
   ...toRefs(scope?.value ?? {}),
+  selectedIds,
+  settings: toValue(settings),
 });
 </script>

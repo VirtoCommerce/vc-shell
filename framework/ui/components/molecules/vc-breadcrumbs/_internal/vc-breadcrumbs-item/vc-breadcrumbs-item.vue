@@ -3,6 +3,7 @@
     class="vc-breadcrumbs-item"
     :class="{
       'vc-breadcrumbs-item_current': current,
+      'tw-px-1 tw-h-[var(--breadcrumbs-item-height-light)]': variant === 'light',
     }"
     @click="onClick"
   >
@@ -24,6 +25,7 @@ import { VcIcon } from "./../../../../";
 
 export interface Props extends Breadcrumbs {
   current: boolean;
+  variant?: "default" | "light";
 }
 
 export interface Emits {
@@ -48,6 +50,7 @@ function onClick(): void {
 <style lang="scss">
 :root {
   --breadcrumbs-item-height: 28px;
+  --breadcrumbs-item-height-light: 20px;
   --breadcrumbs-item-border-color: #a1c0d4;
   --breadcrumbs-item-border-color-hover: #8fb0c6;
   --breadcrumbs-item-border-color-current: #838d9a;

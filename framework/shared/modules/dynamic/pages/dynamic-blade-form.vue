@@ -357,6 +357,7 @@ defineExpose({
   title: bladeTitle ?? "",
   updateActiveWidgetCount,
   ...toRefs(scope?.value ?? {}),
+  settings: toValue(settings),
 });
 </script>
 

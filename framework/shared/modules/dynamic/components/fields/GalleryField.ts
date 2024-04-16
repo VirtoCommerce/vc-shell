@@ -83,7 +83,7 @@ export default {
                 t(
                   `${props.bladeContext?.settings?.localizationPrefix
                     .trim()
-                    .toUpperCase()}.PAGES.DETAILS.ALERTS.DELETE_CONFIRMATION`,
+                    .toUpperCase()}.PAGES.ALERTS.IMAGE_DELETE_CONFIRMATION`,
                 ),
               ),
             )

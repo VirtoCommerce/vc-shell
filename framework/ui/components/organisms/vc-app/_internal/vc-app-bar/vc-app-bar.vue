@@ -70,7 +70,8 @@ import { useI18n } from "vue-i18n";
 import { VcIcon, VcLink } from "./../../../../";
 import { IBladeToolbar } from "./../../../../../../core/types";
 import { useBladeNavigation } from "./../../../../../../shared";
-import { Ref, nextTick, ref, toRef, unref, watch } from "vue";
+import { Ref, ref } from "vue";
+import { watchDebounced } from "@vueuse/core";
 
 export interface Props {
   logo?: string;
@@ -93,22 +94,17 @@ const { t } = useI18n({ useScope: "global" });
 
 const { blades } = useBladeNavigation();
 
-let viewTitle: Ref<string>;
+const viewTitle: Ref<string> = ref("");
 const quantity = ref();
 
-watch(
-  () => blades,
-  async (newVal) => {
-    await nextTick().then(() => {
-      viewTitle = toRef(
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        unref(newVal.value[newVal.value.length - 1]?.props?.navigation?.instance) as Record<string, any>,
-        "title",
-      );
-      quantity.value = newVal.value.length;
-    });
+watchDebounced(
+  blades,
+  (newVal) => {
+    viewTitle.value = newVal[newVal.length - 1]?.props?.navigation?.instance?.title ?? "";
+
+    quantity.value = newVal.length;
   },
-  { deep: true, immediate: true, flush: "post" },
+  { deep: true, immediate: true, flush: "post", debounce: 1 },
 );
 </script>
 

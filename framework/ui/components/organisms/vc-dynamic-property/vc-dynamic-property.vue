@@ -245,6 +245,7 @@ const { locale, te, t } = useI18n({ useScope: "global" });
 
 const items: Ref<any[]> = ref([]);
 const loading = ref(false);
+const initialOptions = ref<any[]>([]);
 
 const computedProperty = computed(() => {
   const rules: IValidationRules = {};
@@ -302,6 +303,7 @@ const value = computed({
 
 onMounted(async () => {
   await getOptions();
+  initialOptions.value = items.value;
 });
 
 async function getOptions(keyword: string | undefined = undefined) {
@@ -324,6 +326,8 @@ async function onSearch(keyword: string) {
 }
 
 async function onClose() {
-  getOptions();
+  if (initialOptions.value.length) {
+    items.value = initialOptions.value;
+  }
 }
 </script>

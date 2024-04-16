@@ -1,5 +1,5 @@
 import { Breadcrumbs } from "./../../../ui/types/index";
-import { ComputedRef, computed, reactive } from "vue";
+import { ComputedRef, computed, reactive, toValue } from "vue";
 import * as _ from "lodash-es";
 
 interface HistoryRecord {
@@ -14,13 +14,13 @@ export interface IUseBreadcrumbs {
 }
 
 export function useBreadcrumbs() {
-  const history = reactive<HistoryRecord>({
+  const history = reactive({
     current: undefined,
     records: [],
-  });
+  }) as HistoryRecord;
 
   function isBreadcrumbsEqual(x: Breadcrumbs | undefined, y: Breadcrumbs | undefined) {
-    return x && y && x.id === y.id && x.title === y.title;
+    return x && y && (toValue(x.id) === toValue(y.id) || toValue(x.title) === toValue(y.title));
   }
 
   function removeNext(id: string) {
@@ -35,12 +35,18 @@ export function useBreadcrumbs() {
   function push(breadcrumb: Breadcrumbs) {
     const bread = {
       ...breadcrumb,
-      clickHandler: (id: string) => {
+      clickHandler: async (id: string) => {
         if (breadcrumb.clickHandler) {
-          breadcrumb.clickHandler?.(id);
+          try {
+            const res = await breadcrumb.clickHandler?.(id);
 
-          // remove next items in history.records
-          removeNext(id);
+            if (typeof res === "undefined" || res) {
+              // remove next items in history.records
+              removeNext(id);
+            }
+          } catch (e) {
+            console.error(e);
+          }
         }
       },
     };
@@ -68,7 +74,7 @@ export function useBreadcrumbs() {
   }
 
   return {
-    breadcrumbs: computed(() => history.records.concat([history.current!])),
+    breadcrumbs: computed(() => (history.current ? history.records.concat([history.current]) : [])),
     push,
     remove,
   };

@@ -1,3 +1,4 @@
+import { MaybeRef } from "vue";
 import * as components from "./../components";
 
 // Declare all components globally
@@ -12,7 +13,7 @@ declare module "vue" {
 
 export interface Breadcrumbs {
   icon?: string;
-  title: string;
-  clickHandler?: (id: string) => void | Promise<void>;
+  title: MaybeRef<string | undefined>;
+  clickHandler?: (id: string) => void | boolean | Promise<void | boolean>;
   id: string;
 }

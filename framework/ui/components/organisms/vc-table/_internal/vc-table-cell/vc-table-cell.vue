@@ -116,7 +116,7 @@
       class="tw-text-right tw-truncate"
       :class="cell.class"
     >
-      {{ Number(value).toFixed(0) }}
+      {{ typeof Number(value) === "number" && Number(value) >= 0 ? Number(value).toFixed(0) : "N/A" }}
     </div>
 
     <!-- Link cell -->

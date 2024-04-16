@@ -1,17 +1,4 @@
-import {
-  markRaw,
-  computed,
-  getCurrentInstance,
-  inject,
-  warn,
-  Component,
-  isVNode,
-  h,
-  shallowRef,
-  ComputedRef,
-  mergeProps,
-  reactive,
-} from "vue";
+import { computed, getCurrentInstance, inject, warn, Component, isVNode, h, shallowRef, ComputedRef, watch } from "vue";
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createSharedComposable, reactiveComputed, watchDebounced } from "@vueuse/core";
 import * as _ from "lodash-es";
@@ -62,9 +49,8 @@ interface IUseBladeNavigation {
         | undefined
       >
     | undefined;
-  getCurrentBlade: () => BladeVNode;
   setNavigationQuery: (query: Record<string, string | number>) => void;
-  getNavigationQuery: () => Record<string, string | number>;
+  getNavigationQuery: () => Record<string, string | number> | undefined;
 }
 
 const activeWorkspace = shallowRef<BladeVNode>();
@@ -143,7 +129,7 @@ const useBladeNavigationSingleton = createSharedComposable(() => {
 
   const { parseUrl, parseWorkspaceUrl, getURLQuery } = utils(router);
 
-  watchDebounced(
+  watch(
     () => route.path,
     async (newVal, oldVal) => {
       const workspaceUrl = parseWorkspaceUrl(newVal);
@@ -336,12 +322,13 @@ export function useBladeNavigation(): IUseBladeNavigation {
     try {
       const instanceComponent = navigationView || activeWorkspace.value;
 
-      if (!instanceComponent) {
+      if (!(isVNode(instanceComponent) || activeWorkspace.value)) {
         throw new Error("No workspace found");
       }
 
       const instanceComponentIndex = findInstanceComponentIndex(instanceComponent);
-      const instanceComponentChild = navigationInstance.blades.value[instanceComponentIndex + 1];
+      const instanceComponentChild =
+        instanceComponentIndex >= 0 ? navigationInstance.blades.value[instanceComponentIndex + 1] : undefined;
 
       let isPrevented = false;
 
@@ -366,7 +353,8 @@ export function useBladeNavigation(): IUseBladeNavigation {
   }
 
   function findInstanceComponentIndex(instanceComponent: BladeVNode) {
-    return navigationInstance.blades.value.findIndex((x) => _.isEqual(x.type, instanceComponent.type));
+    return navigationInstance.blades.value /* @ts-expect-error  - findLastIndex is not parsed correctly by ts */
+      .findLastIndex((x) => _.isEqual(x.type, instanceComponent.type));
   }
 
   function createBladeNode<Blade extends Component>(args: {
@@ -522,14 +510,6 @@ export function useBladeNavigation(): IUseBladeNavigation {
     return { name: mainRouteAlias?.name, params: route.params };
   }
 
-  /**
-   * The function getCurrentBlade returns the current BladeVNode instance's vnode.
-   * @returns the `vnode` property of the `instance` object, which is of type `BladeVNode`.
-   */
-  function getCurrentBlade(): BladeVNode {
-    return instance.vnode;
-  }
-
   const currentBladeNavigationData = computed(() => navigationView?.props?.navigation ?? undefined);
 
   function onBeforeClose(cb: () => Promise<boolean | undefined>) {
@@ -543,40 +523,44 @@ export function useBladeNavigation(): IUseBladeNavigation {
   }
 
   function setNavigationQuery(query: Record<string, string | number>) {
-    // add blade name to query keys
-    const namedQuery = _.mapKeys(
-      _.mapValues(query, (value) => value?.toString()),
-      (value, key) => instance.vnode.type.name.toLowerCase() + "_" + key,
-    );
-    const cleanQuery = _.omitBy(namedQuery, _.isNil);
+    if (instance.vnode.props.navigation.idx === 0) {
+      // add blade name to query keys
+      const namedQuery = _.mapKeys(
+        _.mapValues(query, (value) => value?.toString()),
+        (value, key) => instance.vnode.type.name.toLowerCase() + "_" + key,
+      );
+      const cleanQuery = _.omitBy(namedQuery, _.isNil);
 
-    router.options.history.replace(
-      decodeURIComponent(
-        `${window.location.hash.substring(1).split("?")[0]}?${new URLSearchParams(cleanQuery).toString()}`,
-      ),
-    );
+      router.options.history.replace(
+        decodeURIComponent(
+          `${window.location.hash.substring(1).split("?")[0]}?${new URLSearchParams(cleanQuery).toString()}`,
+        ),
+      );
+    }
   }
 
   function getNavigationQuery() {
-    const queryKeys = Array.from(Object.keys(route.query));
-    const bladeQueryKeys = queryKeys.filter((key) => key.startsWith(instance.vnode.type.name.toLowerCase()));
+    if (instance.vnode.props.navigation.idx === 0) {
+      const queryKeys = Array.from(Object.keys(route.query));
+      const bladeQueryKeys = queryKeys.filter((key) => key.startsWith(instance.vnode.type.name.toLowerCase()));
 
-    const namedQuery = _.mapKeys(_.pick(route.query, bladeQueryKeys), (value, key) =>
-      key.replace(instance.vnode.type.name.toLowerCase() + "_", ""),
-    ) as Record<string, string | number>;
+      const namedQuery = _.mapKeys(_.pick(route.query, bladeQueryKeys), (value, key) =>
+        key.replace(instance.vnode.type.name.toLowerCase() + "_", ""),
+      ) as Record<string, string | number>;
 
-    const obj: typeof namedQuery = {};
-    for (const [key, value] of Object.entries(namedQuery)) {
-      const numValue = Number(value);
+      const obj: typeof namedQuery = {};
+      for (const [key, value] of Object.entries(namedQuery)) {
+        const numValue = Number(value);
 
-      if (!isNaN(numValue)) {
-        obj[key] = numValue;
-      } else {
-        obj[key] = value;
+        if (!isNaN(numValue)) {
+          obj[key] = numValue;
+        } else {
+          obj[key] = value;
+        }
       }
-    }
 
-    return obj;
+      return obj;
+    }
   }
 
   return {
@@ -586,7 +570,6 @@ export function useBladeNavigation(): IUseBladeNavigation {
     onParentCall,
     resolveBladeByName,
     routeResolver,
-    getCurrentBlade,
     currentBladeNavigationData,
     onBeforeClose,
     setNavigationQuery,

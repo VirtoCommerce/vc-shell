@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ComputedRef, MaybeRef, Ref, UnwrapNestedRefs } from "vue";
 import { AsyncAction } from "../../../../../core/composables";
-import { SettingsSchema } from "../../types";
+import { SettingsDetails, SettingsGrid, SettingsSchema } from "../../types";
 import { AssetsHandler, IBladeToolbar, ICommonAsset } from "../../../../../core/types";
 import { useBladeNavigation } from "../../../../components";
 import { FormContext } from "vee-validate";
@@ -122,3 +122,18 @@ export interface ListBladeContext extends UseList<Record<string, any>[], Record<
   settings: ComputedRef<SettingsSchema>;
   selectedIds: ComputedRef<string[]>;
 }
+
+export interface BaseBladeExposed {
+  updateActiveWidgetCount: () => void;
+  readonly title: MaybeRef<string>;
+}
+
+export type ListBladeExposed<Scope extends ListBaseBladeScope> = BaseBladeExposed & {
+  readonly selectedIds: string[];
+  reload: () => void;
+  readonly settings: SettingsGrid;
+} & UnwrapNestedRefs<Scope>;
+
+export type DetailsBladeExposed<Scope extends DetailsBaseBladeScope> = BaseBladeExposed & {
+  readonly settings: SettingsDetails;
+} & UnwrapNestedRefs<Scope>;

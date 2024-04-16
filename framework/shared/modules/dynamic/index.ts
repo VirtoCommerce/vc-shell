@@ -171,8 +171,7 @@ export const createDynamicAppModule = (args: {
   };
 };
 
-export * from "./pages";
-export * from "./composables";
-export * from "./components";
 export * from "./factories";
 export * from "./types";
+export * from "./pages";
+export { useDynamicViewsUtils } from "./composables";

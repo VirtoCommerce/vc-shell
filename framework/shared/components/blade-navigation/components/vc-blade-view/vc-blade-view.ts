@@ -1,4 +1,4 @@
-import { Slot, defineComponent, h, provide, ref, VNode, PropType, Component, watch } from "vue";
+import { Slot, defineComponent, h, provide, ref, VNode, PropType, Component, watch, reactive } from "vue";
 import { navigationViewLocation } from "./../../injectionKeys";
 import { BladeVNode, CoreBladeExposed } from "../../types";
 import { toRef } from "@vueuse/core";
@@ -19,11 +19,18 @@ export const VcBladeView = defineComponent({
     watch(
       () => [viewRef.value, bl.value] as const,
       ([instance, blade]) => {
-        if (blade && blade.props?.navigation) {
-          blade.props.navigation.instance = toRef(instance);
+        if (instance && blade && blade.props?.navigation) {
+          Object.assign(
+            blade.props.navigation,
+            reactive({
+              get instance() {
+                return instance;
+              },
+            }),
+          );
         }
       },
-      { flush: "post" },
+      { flush: "sync" },
     );
 
     provide(navigationViewLocation, bl.value!);

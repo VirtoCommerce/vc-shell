@@ -57,7 +57,7 @@ export const createAppModule = (
             isWorkspace: page.isWorkspace || false,
           });
 
-          app.component(page.name, page);
+          if (page.name) app.component(page.name, page);
         }
 
         if (!page.moduleUid) {

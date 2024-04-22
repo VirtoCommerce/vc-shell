@@ -1,3 +1,12 @@
+## [1.0.188](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.187...v1.0.188) (2024-04-22)
+
+
+### Features
+
+* udeDynamicProperties refactoring ([47a3a1c](https://github.com/VirtoCommerce/vendor-portal/commit/47a3a1c6ff3d9afea869c27d870a0f095be55921))
+
+
+
 ## [1.0.187](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.186...v1.0.187) (2024-04-16)
 
 

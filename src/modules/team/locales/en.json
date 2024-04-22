@@ -91,7 +91,7 @@
         "TITLE": "New member"
       },
       "ALERTS": {
-        "CLOSE_CONFIRMATION": "You have unsaved changes\nClose anyway?"
+        "CLOSE_CONFIRMATION": "You have unsaved changes. Close anyway?"
       }
     }
   }

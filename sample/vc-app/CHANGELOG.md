@@ -1,3 +1,12 @@
+## [1.0.199](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.198...v1.0.199) (2024-04-22)
+
+
+### Bug Fixes
+
+* vc-dynamic-properties refactoring ([3aaf821](https://github.com/VirtoCommerce/vc-shell/commit/3aaf8213716ddf4c1695dafce4fe826de35e3d7d))
+
+
+
 ## [1.0.198](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.197...v1.0.198) (2024-04-16)
 
 

@@ -1,3 +1,20 @@
+## [1.0.199](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.198...v1.0.199) (2024-04-22)
+
+
+### Bug Fixes
+
+* **ui:** vc-breadcrumbs arrow color fix ([9ad6aa9](https://github.com/VirtoCommerce/vc-shell/commit/9ad6aa95863f0321e1a9c6575cd1b090a593c11e))
+* vc-dynamic-properties refactoring ([3aaf821](https://github.com/VirtoCommerce/vc-shell/commit/3aaf8213716ddf4c1695dafce4fe826de35e3d7d))
+
+
+### Features
+
+* **ui:** vc-input integer type ([56f825d](https://github.com/VirtoCommerce/vc-shell/commit/56f825d59b081a0d268715e3b50623512b35a35d))
+* **ui:** vc-multivalue integer type, loading state ([0535b21](https://github.com/VirtoCommerce/vc-shell/commit/0535b21b9c0bae213572b0320b28eac649df27bb))
+* **ui:** vc-select loading state improvement ([97be0b0](https://github.com/VirtoCommerce/vc-shell/commit/97be0b048f80908b7b9147210bc4eeb734a2dc5f))
+
+
+
 ## [1.0.198](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.197...v1.0.198) (2024-04-16)
 
 

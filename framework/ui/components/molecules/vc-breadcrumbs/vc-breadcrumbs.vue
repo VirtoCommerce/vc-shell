@@ -10,13 +10,14 @@
       :title="items[0]?.title"
       :current="items.length === 1"
       :variant="variant"
+      @click="items[0]?.clickHandler && items[0]?.clickHandler(items[0]?.id)"
     >
     </VcBreadcrumbsItem>
     <VcIcon
       v-if="withArrow && canExpand"
       :icon="arrowIcon"
       :size="arrowSize"
-      class="tw-text-[color:let(--chevron-color)]"
+      class="tw-text-[color:var(--chevron-color)]"
     />
     <VcBreadcrumbsItem
       v-if="canExpand"
@@ -36,7 +37,7 @@
           v-if="withArrow && i < items.length - 1"
           :icon="arrowIcon"
           :size="arrowSize"
-          class="tw-text-[color:let(--chevron-color)] tw-mr-[10px]"
+          class="tw-text-[color:var(--chevron-color)] tw-mr-[10px]"
         />
         <VcBreadcrumbsItem
           v-bind="item"

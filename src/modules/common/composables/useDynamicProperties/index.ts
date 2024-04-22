@@ -31,12 +31,15 @@ export const useDynamicProperties = () => {
       if (property.multivalue) {
         return property.values?.filter((x) => x.languageCode === locale);
       } else if (!propValue) {
+        const aliasProp = property.values?.find((x) => x.propertyId === property.id);
         property.values?.push(
           new PropertyValue({
             propertyName: property.name,
             propertyId: property.id,
             languageCode: locale,
+            alias: aliasProp?.alias,
             valueType: property.valueType as unknown as PropertyValueValueType,
+            valueId: aliasProp?.valueId,
           }),
         );
       }

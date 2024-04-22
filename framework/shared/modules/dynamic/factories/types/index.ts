@@ -96,7 +96,7 @@ export interface DetailsBaseBladeScope extends BaseBladeScope {
   dynamicProperties?: {
     loading: ComputedRef<boolean>;
     loadDictionaries: (
-      property: Record<string, any>,
+      propertyId: string,
       keyword?: string,
       locale?: string,
     ) => Promise<Record<string, any>[] | undefined>;

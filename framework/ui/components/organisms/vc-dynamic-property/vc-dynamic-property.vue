@@ -65,8 +65,9 @@
         :current-language="currentLanguage"
         :options="items"
         :option-label="multilanguage ? 'value' : 'alias'"
-        option-value="id"
+        :option-value="multilanguage ? 'value' : 'alias'"
         :multivalue="computedProperty.multivalue"
+        :loading="loading"
         @search="onSearch"
         @close="onClose"
       ></VcMultivalue>
@@ -82,7 +83,6 @@
         :required="computedProperty.required"
         :placeholder="computedProperty.displayName || 'Add value'"
         :disabled="disabled"
-        :multilanguage="multilanguage"
         :current-language="currentLanguage"
         :loading="loading"
       ></VcInput>
@@ -98,6 +98,8 @@
         type="number"
         :error="!!errors.length"
         :error-message="errorMessage"
+        option-label="value"
+        option-value="value"
         :options="items"
       ></VcMultivalue>
     </template>
@@ -109,9 +111,11 @@
         :required="computedProperty.required"
         placeholder="Add value"
         :disabled="disabled"
-        type="number"
+        type="integer"
         :error="!!errors.length"
         :error-message="errorMessage"
+        option-label="value"
+        option-value="value"
         :options="items"
       ></VcMultivalue>
     </template>
@@ -138,7 +142,7 @@
         :error-message="errorMessage"
         :label="computedProperty.displayName"
         clearable
-        type="number"
+        type="integer"
         step="1"
         :required="computedProperty.required"
         :placeholder="computedProperty.placeholder"
@@ -169,7 +173,6 @@
         :required="computedProperty.required"
         :placeholder="computedProperty.placeholder"
         :disabled="disabled"
-        :multilanguage="multilanguage"
         :current-language="currentLanguage"
       ></VcTextarea
     ></template>
@@ -190,10 +193,11 @@
 
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup generic="T extends { [x: string]: any; id?: string }">
-import { ref, onMounted, computed, Ref } from "vue";
+import { ref, onMounted, computed, Ref, watch } from "vue";
 import { Field } from "vee-validate";
 import { useI18n } from "vue-i18n";
 import { VcSelect, VcInput, VcTextarea, VcCheckbox } from "./../../";
+import * as _ from "lodash-es";
 
 type IValidationRules = {
   required?: boolean;
@@ -206,7 +210,11 @@ const props = withDefaults(
   defineProps<{
     property: T;
     modelValue: any;
-    optionsGetter: (property: T, keyword?: string, locale?: string) => Promise<any[]> | any[] | undefined;
+    optionsGetter: (
+      propertyId: string,
+      keyword?: string,
+      locale?: string,
+    ) => Promise<any[] | undefined> | any[] | undefined;
     required: boolean;
     multivalue?: boolean;
     multilanguage?: boolean;
@@ -236,9 +244,7 @@ const props = withDefaults(
 );
 
 const emit = defineEmits<{
-  "update:model-value": [
-    data: { readonly property: T; readonly value: any; readonly dictionary?: any[]; readonly locale?: string },
-  ];
+  "update:model-value": [data: { readonly value: any; readonly dictionary?: any[]; readonly locale?: string }];
 }>();
 
 const { locale, te, t } = useI18n({ useScope: "global" });
@@ -246,6 +252,30 @@ const { locale, te, t } = useI18n({ useScope: "global" });
 const items: Ref<any[]> = ref([]);
 const loading = ref(false);
 const initialOptions = ref<any[]>([]);
+const internalProperty = ref(props.property) as Ref<typeof props.property>;
+const internalModel = ref(props.modelValue) as Ref<typeof props.modelValue>;
+
+watch(
+  () => props.property,
+  (newVal) => {
+    internalProperty.value = _.cloneDeep(newVal);
+  },
+  {
+    deep: true,
+    immediate: true,
+  },
+);
+
+watch(
+  () => props.modelValue,
+  (newVal) => {
+    internalModel.value = _.cloneDeep(newVal);
+  },
+  {
+    deep: true,
+    immediate: true,
+  },
+);
 
 const computedProperty = computed(() => {
   const rules: IValidationRules = {};
@@ -278,7 +308,7 @@ const computedProperty = computed(() => {
     dictionary: props.dictionary || false,
     multivalue: props.multivalue || false,
     name: props.multilanguage ? props.name + "_" + props.currentLanguage : props.name,
-    key: props.multilanguage ? props.property.id + "_" + props.currentLanguage : props.property.id,
+    key: props.multilanguage ? internalProperty.value.id + "_" + props.currentLanguage : internalProperty.value.id,
     displayName: propertyDisplayNameLocalized,
     optionValue: props.optionsValue,
     optionLabel: optionLabelField,
@@ -289,11 +319,10 @@ const computedProperty = computed(() => {
 
 const value = computed({
   get() {
-    return props.modelValue;
+    return internalModel.value;
   },
   set(newValue) {
     emit("update:model-value", {
-      property: props.property,
       value: newValue,
       dictionary: items.value,
       locale: props.currentLanguage,
@@ -307,10 +336,10 @@ onMounted(async () => {
 });
 
 async function getOptions(keyword: string | undefined = undefined) {
-  if (props.optionsGetter) {
+  if (props.optionsGetter && internalProperty.value.dictionary && internalProperty.value.id) {
     try {
       loading.value = true;
-      const res = await props.optionsGetter(props.property, keyword, props.currentLanguage);
+      const res = await props.optionsGetter(internalProperty.value.id, keyword, props.currentLanguage);
 
       if (res) {
         items.value = res;

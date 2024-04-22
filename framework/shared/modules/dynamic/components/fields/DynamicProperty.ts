@@ -85,17 +85,21 @@ export default {
               ),
             ),
             optionsGetter: props.bladeContext.scope?.dynamicProperties?.loadDictionaries as (
-              property: Record<string, any>,
+              propertyId: string,
               keyword?: string | undefined,
               locale?: string | undefined,
             ) => Promise<Record<string, any>[]>,
             "onUpdate:model-value": (args: {
-              property: Record<string, any>;
               value: string | Record<string, any>[];
               dictionary?: Record<string, any>[];
               locale?: string;
             }) => {
-              props.bladeContext.scope?.dynamicProperties?.setPropertyValue(args);
+              props.bladeContext.scope?.dynamicProperties?.setPropertyValue({
+                property: prop,
+                value: args.value,
+                dictionary: args.dictionary,
+                locale: args.locale,
+              });
               if (props.fieldContext) {
                 setModel({ context: props.fieldContext, property: props.element.property, value: internalModel.value });
               }

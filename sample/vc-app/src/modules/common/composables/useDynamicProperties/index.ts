@@ -10,6 +10,7 @@ import {
   PropertyValueValueType,
   VcmpSellerCatalogClient,
 } from "@vc-app/api";
+import * as _ from "lodash-es";
 
 const { getApiClient } = useApiClient(VcmpSellerCatalogClient);
 
@@ -24,9 +25,11 @@ export const useDynamicProperties = () => {
 
   function getPropertyValue(property: IProperty, locale: string) {
     if (property.multilanguage) {
+      const propValue = property.values?.find((x) => x.languageCode == locale);
+
       if (property.multivalue) {
-        return property.values?.filter((x) => x.languageCode == locale);
-      } else if (property.values?.find((x) => x.languageCode == locale) == undefined) {
+        return property.values?.filter((x) => x.languageCode === locale);
+      } else if (!propValue) {
         property.values?.push(
           new PropertyValue({
             propertyName: property.name,
@@ -37,7 +40,6 @@ export const useDynamicProperties = () => {
         );
       }
 
-      const propValue = property.values?.find((x) => x.languageCode == locale);
       if (property.dictionary) {
         return propValue && propValue?.valueId;
       }
@@ -47,16 +49,16 @@ export const useDynamicProperties = () => {
         return property.values;
       }
       if (property.dictionary) {
-        return property.values && property.values[0] && property.values[0].valueId;
+        return property.values?.[0]?.valueId;
       }
-      return property.values && property.values[0] && property.values[0].value;
+      return property.values?.[0]?.value;
     }
   }
 
-  async function loadDictionaries(property: IProperty, keyword?: string, locale?: string) {
-    if (property.id) {
+  async function loadDictionaries(propertyId: string, keyword?: string, locale?: string) {
+    if (propertyId) {
       let dictionaryItems = await searchDictionaryItems({
-        propertyIds: [property.id],
+        propertyIds: [propertyId],
         keyword,
         skip: 0,
       });
@@ -65,107 +67,97 @@ export const useDynamicProperties = () => {
           Object.assign(x, { value: x.localizedValues?.find((v) => v.languageCode == locale)?.value ?? x.alias }),
         );
       }
-      return dictionaryItems!;
+      return dictionaryItems;
     }
-    throw new Error("Could not load dictionary.");
-  }
-
-  function handleDictionaryValue(
-    property: IProperty,
-    valueId: string,
-    dictionary: PropertyDictionaryItem[],
-    locale?: string,
-  ) {
-    let valueValue;
-    const dictionaryItem = dictionary.find((x) => x.id === valueId);
-    if (!dictionaryItem) {
-      return undefined;
-    }
-
-    if ("value" in dictionaryItem && dictionaryItem["value"]) {
-      valueValue = dictionaryItem["value"];
-    } else {
-      valueValue = dictionaryItem.alias;
-    }
-
-    return {
-      propertyId: dictionaryItem.propertyId,
-      alias: dictionaryItem.alias,
-      languageCode: locale,
-      value: valueValue,
-      valueId: valueId,
-    };
   }
 
   function setPropertyValue(data: {
     property: IProperty;
-    value: string | IPropertyValue[];
+    value: string | IPropertyValue[] | (IPropertyDictionaryItem & { value: string })[];
     dictionary?: IPropertyDictionaryItem[];
     locale?: string;
   }) {
     const { property, value, dictionary, locale } = data;
 
     if (dictionary && dictionary.length) {
+      const dict = dictionary.map((x) => new PropertyDictionaryItem(x));
       if (property.multilanguage) {
+        // Multivalue Dictionary Multilanguage
         if (Array.isArray(value)) {
-          property.values = value.map((item) => {
-            item.languageCode = locale;
-            if (dictionary.find((x) => x.id === item.valueId)) {
-              return new PropertyValue(
-                handleDictionaryValue(
-                  property,
-                  item.valueId!,
-                  dictionary.map((x) => new PropertyDictionaryItem(x)),
-                  locale,
-                ),
+          property.values = value.flatMap((item) => {
+            const dictItem = dict.find((x) => x.id === (item as IPropertyValue).valueId || x.id === item.id);
+            if (dictItem?.localizedValues?.length) {
+              return dictItem.localizedValues.map(
+                (x) =>
+                  new PropertyValue({
+                    propertyId: dictItem.propertyId,
+                    alias: dictItem.alias,
+                    languageCode: x.languageCode,
+                    value: x.value ?? dictItem.alias,
+                    valueId: dictItem.id,
+                  }),
               );
-            } else {
-              return new PropertyValue(item);
             }
+            return new PropertyValue(item);
           });
-        } else {
-          property.values = [
-            new PropertyValue(
-              handleDictionaryValue(
-                property,
-                value,
-                dictionary.map((x) => new PropertyDictionaryItem(x)),
-                locale,
-              ),
-            ),
-          ];
+        }
+        // Single value Dictionary Multilanguage
+        else {
+          const dictionaryItem = dictionary.find((x) => x.id === value);
+          property.values = dictionaryItem?.localizedValues?.map(
+            (x) =>
+              new PropertyValue({
+                propertyId: dictionaryItem.propertyId,
+                alias: dictionaryItem.alias,
+                languageCode: x.languageCode,
+                value: x.value ?? dictionaryItem.alias,
+                valueId: dictionaryItem.id,
+              }),
+          );
         }
       } else {
-        property.values = Array.isArray(value)
-          ? value.map((item) => {
-              item.languageCode = locale;
-              if (dictionary.find((x) => x.id === item.id)) {
-                const handledValue = handleDictionaryValue(
-                  property,
-                  item.id!,
-                  dictionary.map((x) => new PropertyDictionaryItem(x)),
-                );
-                return new PropertyValue(handledValue);
-              } else return new PropertyValue(item);
-            })
-          : [
-              new PropertyValue(
-                handleDictionaryValue(
-                  property,
-                  value,
-                  dictionary.map((x) => new PropertyDictionaryItem(x)),
-                ),
-              ),
-            ];
+        // Multivalue Dictionary
+        if (Array.isArray(value)) {
+          // TODO maybe delete uniqWith?
+          property.values = _.uniqWith(
+            (property.values ?? []).concat(
+              value.flatMap((item) => {
+                return new PropertyValue({
+                  propertyId: item.propertyId,
+                  alias: item.alias,
+                  value: item.value ?? item.alias,
+                  valueId: item.id,
+                });
+              }),
+            ),
+            (a, b) => a.alias === b.alias,
+          );
+        }
+        // Single value Dictionary
+        else {
+          const dictionaryItem = dictionary.find((x) => x.id === value);
+
+          property.values = [
+            new PropertyValue({
+              propertyId: dictionaryItem?.propertyId,
+              alias: dictionaryItem?.alias,
+              value: (dictionaryItem as IPropertyDictionaryItem & { value: string })?.value ?? dictionaryItem?.alias,
+              valueId: value,
+            }),
+          ];
+        }
       }
     } else {
       if (property.multilanguage) {
+        // Multivalue Multilanguage
         if (Array.isArray(value)) {
           property.values = property.values && [
             ...property.values.filter((x) => x.languageCode !== locale),
             ...value.map((item) => new PropertyValue({ ...item, languageCode: locale })),
           ];
-        } else {
+        }
+        // Single value Multilanguage
+        else {
           const propValue = property.values?.find((x) => x.languageCode == locale);
           if (propValue) {
             propValue.value = value;
@@ -174,11 +166,16 @@ export const useDynamicProperties = () => {
           }
         }
       } else {
-        property.values = Array.isArray(value)
-          ? value.map((item) => new PropertyValue({ ...item, languageCode: locale }))
-          : property.values?.[0]
+        // Multivalue
+        if (Array.isArray(value)) {
+          property.values = value.map((item) => new PropertyValue(item));
+        }
+        // Single value
+        else {
+          property.values = property.values?.[0]
             ? [Object.assign(property.values[0], { value: value })]
             : [new PropertyValue({ value: value, isInherited: false })];
+        }
       }
     }
   }

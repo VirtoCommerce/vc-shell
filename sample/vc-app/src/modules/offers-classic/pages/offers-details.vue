@@ -268,7 +268,7 @@
                           regex: property.validationRule?.regExp,
                         }"
                         :display-names="property.displayNames"
-                        @update:model-value="setPropertyValue"
+                        @update:model-value="(event) => setPropertyValue({ property, ...event })"
                       >
                       </VcDynamicProperty>
                     </div>
@@ -291,7 +291,7 @@
                         regex: property.validationRule?.regExp,
                       }"
                       :display-names="property.displayNames"
-                      @update:model-value="setPropertyValue"
+                      @update:model-value="(event) => setPropertyValue({ property, ...event })"
                     >
                     </VcDynamicProperty>
                   </div>

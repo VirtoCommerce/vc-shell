@@ -54,22 +54,22 @@
                   name="control"
                   :editable="disabled"
                   :focused="autofocus"
-                  :model-value="temp"
+                  :model-value="handleValue"
                   :emit-value="emitValue"
                   :placeholder="placeholder"
                 >
                   <input
                     ref="inputRef"
-                    v-model="temp"
+                    v-model="handleValue"
                     :placeholder="placeholder"
-                    :type="internalType"
+                    :type="internalTypeComputed"
                     :disabled="disabled"
                     :name="name"
                     :maxlength="maxlength"
                     :autofocus="autofocus"
                     :max="maxDate"
                     class="vc-input__input"
-                    @input="onInput"
+                    @keydown="onKeyDown"
                   />
                 </slot>
                 <div
@@ -191,7 +191,11 @@ export interface Props {
    * Input type
    * Default value: text
    */
-  type?: "text" | "password" | "email" | "tel" | "number" | "url" | "time" | "date" | "datetime-local";
+  type?: "text" | "password" | "email" | "tel" | "number" | "integer" | "url" | "time" | "date" | "datetime-local";
+  /**
+   * The step attribute is a number that specifies the granularity that the value must adhere to.
+   */
+  step?: string;
   /**
    * Input description (hint) text below input component
    */
@@ -271,6 +275,7 @@ const props = withDefaults(defineProps<Props>(), {
   type: "text",
   name: "Field",
   maxlength: "1024",
+  step: "1",
 });
 
 const emit = defineEmits<Emits>();
@@ -336,18 +341,45 @@ const inputRef = ref();
 
 const internalType = ref(unref(props.type));
 
+const internalTypeComputed = computed({
+  get() {
+    if (internalType.value === "integer") {
+      return "number";
+    }
+    return internalType.value;
+  },
+  set(value) {
+    internalType.value = value;
+  },
+});
+
 const maxDate = computed(() => (props.type === "date" && "9999-12-31") || undefined);
 
 const rawModel = computed(() => unref(props.modelValue));
+const handleValue = computed({
+  get() {
+    return props.type === "integer" || props.type === "number" ? (isNaN(temp.value) ? "" : temp.value) : temp.value;
+  },
+  set(value) {
+    temp.value = value;
+    onInput(value);
+  },
+});
 const mutatedModel = ref();
 
 watch(
   rawModel,
   (newVal) => {
-    if (internalType.value === "datetime-local" && newVal instanceof Date && !isNaN(newVal.valueOf())) {
-      mutatedModel.value = moment(newVal).format("YYYY-MM-DDTHH:mm");
-    } else if (internalType.value === "date" && newVal instanceof Date && !isNaN(newVal.valueOf())) {
-      mutatedModel.value = moment(newVal).format("YYYY-MM-DD");
+    if (props.type === "datetime-local" || props.type === "date") {
+      if (newVal instanceof Date && !isNaN(newVal.valueOf())) {
+        mutatedModel.value = moment(newVal).format(props.type === "datetime-local" ? "YYYY-MM-DDTHH:mm" : "YYYY-MM-DD");
+      } else if (typeof newVal === "string") {
+        mutatedModel.value = new Date(newVal).toISOString().slice(0, props.type === "datetime-local" ? 16 : 10);
+      }
+    } else if (props.type === "number" && newVal !== null) {
+      mutatedModel.value = parseFloat(newVal as string);
+    } else if (props.type === "integer" && newVal !== null) {
+      mutatedModel.value = Math.trunc(newVal as number);
     } else {
       mutatedModel.value = newVal;
     }
@@ -359,24 +391,32 @@ watch(
   { immediate: true },
 );
 
-// Handle input event and emit changes
-function onInput(e: Event) {
-  if (!e || !e.target) {
-    return;
+function onKeyDown(e: KeyboardEvent) {
+  const allowedKeys = ["Backspace", "Delete", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"];
+  const keypressed = e.key;
+  if (props.type === "integer") {
+    if (!/^\d$/.test(keypressed) && !allowedKeys.includes(keypressed)) {
+      e.preventDefault();
+      return;
+    }
   }
+}
 
-  const newValue = (e.target as HTMLInputElement).value;
-  emitValue(newValue);
+// Handle input event and emit changes
+function onInput(value: string | number | Date | null) {
+  emitValue(value);
 }
 
 function emitValue(val: string | number | Date | null) {
   emitValueFn = () => {
     if (mutatedModel.value !== val) {
       let value;
-      if (internalType.value === "datetime-local" || internalType.value === "date") {
+      if (internalTypeComputed.value === "datetime-local" || internalTypeComputed.value === "date") {
         value = val ? moment(val).toDate() : undefined;
-      } else if (internalType.value === "number" && val !== null) {
-        value = +val;
+      } else if (props.type === "number" && val !== null) {
+        value = parseFloat(val as string);
+      } else if (props.type === "integer" && val !== null) {
+        value = Math.trunc(parseInt(val as string));
       } else {
         value = val;
       }

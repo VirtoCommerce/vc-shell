@@ -28,12 +28,13 @@ export const useDetailsFactory = <Item>(factoryParams: UseDetailsFactoryParams<I
       item.value && resetModified(item.value);
     });
 
-    const { loading: manageLoading, action: saveChanges } = useAsync<Item>(async (item) => {
+    const { loading: manageLoading, action: saveChanges } = useAsync<Item, Item | undefined>(async (item) => {
       if (validationState.value.valid) {
-        await factoryParams.saveChanges?.(item as Item);
+        const res = await factoryParams.saveChanges?.(item as Item);
         isModified.value = false;
         isDirty = ref(false);
-        isDirty = ref(false);
+
+        if (res) return res;
       } else throw new Error("Form is not valid");
     });
 

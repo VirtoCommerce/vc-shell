@@ -31,94 +31,99 @@
       ref="dropdownToggleRef"
       class="vc-multivalue__field-wrapper"
     >
-      <div
-        v-for="(item, i) in modelValue"
-        :key="`${item?.id}_${generateId()}`"
-        class="vc-multivalue__field-value-wrapper"
-      >
+      <div class="tw-items-center tw-flex tw-flex-wrap">
         <div
-          v-if="item"
-          class="vc-multivalue__field-value"
+          v-for="(item, i) in modelValue"
+          :key="`${item?.id}_${generateId()}`"
+          class="vc-multivalue__field-value-wrapper"
         >
-          <slot
-            name="selected-item"
-            :value="
-              type === 'number'
-                ? Number(item[props.optionLabel as keyof T]).toFixed(3)
-                : item[props.optionLabel as keyof T]
-            "
-            :item="item"
-            :remove="() => onDelete(i)"
+          <div
+            v-if="item"
+            class="vc-multivalue__field-value"
           >
-            <span class="tw-truncate">{{
-              type === "number"
-                ? Number(item[props.optionLabel as keyof T]).toFixed(3)
-                : item[props.optionLabel as keyof T]
-            }}</span>
-          </slot>
-          <VcIcon
-            v-if="!disabled"
-            class="vc-multivalue__field-value-clear"
-            icon="fas fa-times"
-            size="s"
-            @click="onDelete(i)"
-          ></VcIcon>
-        </div>
-      </div>
-
-      <template v-if="multivalue">
-        <div class="vc-multivalue__field vc-multivalue__field_dictionary tw-grow tw-basis-0 tw-p-2">
-          <VcButton
-            small
-            :disabled="disabled"
-            @click.stop="toggleDropdown"
-            >Add +</VcButton
-          >
-          <teleport to="body">
-            <div
-              v-if="isOpened"
-              ref="dropdownRef"
-              v-on-click-outside="[toggleDropdown, { ignore: [dropdownToggleRef] }]"
-              class="vc-multivalue__dropdown"
-              :style="dropdownStyle"
+            <slot
+              name="selected-item"
+              :value="formatValue(item)"
+              :item="item"
+              :remove="() => onDelete(i)"
             >
-              <input
-                ref="searchRef"
-                class="vc-multivalue__search"
-                @input="onSearch"
-              />
-
-              <VcContainer
-                ref="root"
-                :no-padding="true"
-              >
-                <div
-                  v-for="(item, i) in slicedDictionary"
-                  :key="i"
-                  class="vc-multivalue__item"
-                  @click="onItemSelect(item)"
-                >
-                  <slot
-                    name="option"
-                    :item="item"
-                    >{{ item[optionLabel as keyof T] }}</slot
-                  >
-                </div>
-              </VcContainer>
-            </div>
-          </teleport>
+              <span class="tw-truncate">{{ formatValue(item) }}</span>
+            </slot>
+            <VcIcon
+              v-if="!disabled"
+              class="vc-multivalue__field-value-clear"
+              icon="fas fa-times"
+              size="s"
+              @click="onDelete(i)"
+            ></VcIcon>
+          </div>
         </div>
-      </template>
-      <template v-else>
-        <input
-          v-model="value"
-          class="vc-multivalue__field tw-grow tw-basis-0 tw-pl-3"
-          :placeholder="placeholder"
-          :type="type"
-          :disabled="disabled"
-          @keypress.enter.stop.prevent="onInput"
-        />
-      </template>
+
+        <template v-if="multivalue">
+          <div class="vc-multivalue__field vc-multivalue__field_dictionary tw-grow tw-basis-0 tw-p-2">
+            <VcButton
+              small
+              :disabled="disabled"
+              @click.stop="toggleDropdown"
+              >Add +</VcButton
+            >
+            <teleport to="body">
+              <div
+                v-if="isOpened"
+                ref="dropdownRef"
+                v-on-click-outside="[toggleDropdown, { ignore: [dropdownToggleRef] }]"
+                class="vc-multivalue__dropdown"
+                :style="dropdownStyle"
+              >
+                <input
+                  ref="searchRef"
+                  class="vc-multivalue__search"
+                  @input="onSearch"
+                />
+
+                <VcContainer
+                  ref="root"
+                  :no-padding="true"
+                >
+                  <div
+                    v-for="(item, i) in slicedDictionary"
+                    :key="i"
+                    class="vc-multivalue__item"
+                    @click="onItemSelect(item)"
+                  >
+                    <slot
+                      name="option"
+                      :item="item"
+                      >{{ item[optionLabel as keyof T] }}</slot
+                    >
+                  </div>
+                </VcContainer>
+              </div>
+            </teleport>
+          </div>
+        </template>
+        <template v-else>
+          <input
+            v-model="value"
+            class="vc-multivalue__field tw-grow tw-basis-0 tw-pl-3"
+            :placeholder="placeholder"
+            :type="internalTypeComputed"
+            :disabled="disabled"
+            @keypress.enter.stop.prevent="onInput"
+            @keydown="onKeyDown"
+          />
+        </template>
+      </div>
+      <!-- Loading-->
+      <div
+        v-if="loading"
+        class="tw-flex tw-items-center tw-flex-nowrap tw-px-3 tw-text-[color:var(--select-clear-color)]"
+      >
+        <VcIcon
+          icon="fas fa-circle-notch tw-animate-spin"
+          size="m"
+        ></VcIcon>
+      </div>
     </div>
 
     <Transition
@@ -160,7 +165,7 @@ export interface Props<T> {
   modelValue?: T[];
   required?: boolean;
   disabled?: boolean;
-  type?: "text" | "number";
+  type?: "text" | "number" | "integer";
   label?: string;
   tooltip?: string;
   name?: string;
@@ -173,6 +178,7 @@ export interface Props<T> {
   errorMessage?: string;
   multilanguage?: boolean;
   currentLanguage?: string;
+  loading?: boolean;
 }
 
 export interface Emits<T> {
@@ -204,7 +210,7 @@ const props = withDefaults(defineProps<Props<T>>(), {
 const emit = defineEmits<Emits<T>>();
 defineSlots<{
   option: (args: { item: T }) => any;
-  "selected-item": (args: { value: string | T[keyof T]; item: T; remove: () => void }) => any;
+  "selected-item": (args: { value: string | number | T[keyof T]; item: T; remove: () => void }) => any;
   hint: void;
   error: void;
 }>();
@@ -215,6 +221,7 @@ const root = ref();
 const searchRef = ref();
 const isOpened = ref(false);
 const value = ref();
+const internalType = ref(unref(props.type));
 
 const popper = useFloating(dropdownToggleRef, dropdownRef, {
   placement: "bottom",
@@ -242,6 +249,41 @@ const slicedDictionary = computed(() => {
     });
   });
 });
+
+const formatValue = computed(() => {
+  return (item: T) => {
+    if (props.type === "number") {
+      return Number(item[props.optionLabel as keyof T]).toFixed(3);
+    } else if (props.type === "integer") {
+      return Math.trunc(+item[props.optionLabel as keyof T]);
+    } else {
+      return item[props.optionLabel as keyof T];
+    }
+  };
+});
+
+const internalTypeComputed = computed({
+  get() {
+    if (internalType.value === "integer") {
+      return "number";
+    }
+    return internalType.value;
+  },
+  set(value) {
+    internalType.value = value;
+  },
+});
+
+function onKeyDown(e: KeyboardEvent) {
+  const allowedKeys = ["Backspace", "Delete", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Enter"];
+  const keypressed = e.key;
+  if (props.type === "integer") {
+    if (!/^\d$/.test(keypressed) && !allowedKeys.includes(keypressed)) {
+      e.preventDefault();
+      return;
+    }
+  }
+}
 
 function onInput(e: KeyboardEvent) {
   const newValue = (e.target as HTMLInputElement).value;
@@ -356,8 +398,7 @@ function onSearch(event: Event) {
     tw-rounded-[var(--multivalue-border-radius)]
     tw-bg-[color:var(--multivalue-background-color)]
     tw-items-center
-    tw-flex
-    tw-flex-wrap;
+    tw-flex tw-justify-between;
   }
 
   &__dropdown {

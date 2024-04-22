@@ -76,7 +76,6 @@
                           <div class="tw-flex tw-flex-wrap tw-gap-1 tw-py-1">
                             <div
                               v-for="(item, i) in selectedScope"
-                              v-bind="item"
                               :key="i"
                               class="tw-flex tw-items-center"
                             >
@@ -84,12 +83,19 @@
                                 <div
                                   class="tw-bg-[#fbfdfe] tw-border tw-border-solid tw-border-[color:#bdd1df] tw-rounded-[2px] tw-flex tw-items-center tw-h-[28px] tw-box-border tw-px-2"
                                 >
-                                  <slot
-                                    name="selected-item"
-                                    v-bind="item"
-                                  >
-                                    <span>{{ getOptionLabel(item.opt) }}</span>
-                                  </slot>
+                                  <template v-if="loading">
+                                    <span class="tw-text-[#a5a5a5]">{{
+                                      t("COMPONENTS.MOLECULES.VC_SELECT.LOADING")
+                                    }}</span>
+                                  </template>
+                                  <template v-else>
+                                    <slot
+                                      name="selected-item"
+                                      v-bind="item"
+                                    >
+                                      <span>{{ getOptionLabel(item.opt) }}</span>
+                                    </slot>
+                                  </template>
                                   <VcIcon
                                     v-if="!disabled"
                                     class="tw-text-[#a9bfd2] tw-ml-2 tw-cursor-pointer hover:tw-text-[color:var(--select-clear-color-hover)]"
@@ -100,12 +106,23 @@
                                 </div>
                               </template>
                               <template v-else-if="!multiple">
-                                <slot
-                                  name="selected-item"
-                                  v-bind="item"
-                                >
-                                  {{ getEmittingOptionValue(item.opt) }}
-                                </slot>
+                                <template v-if="loading">
+                                  <span class="tw-text-[#a5a5a5]">{{
+                                    t("COMPONENTS.MOLECULES.VC_SELECT.LOADING")
+                                  }}</span>
+                                </template>
+                                <template v-else>
+                                  <slot
+                                    name="selected-item"
+                                    v-bind="item"
+                                  >
+                                    {{
+                                      loading
+                                        ? t("COMPONENTS.MOLECULES.VC_SELECT.LOADING")
+                                        : getEmittingOptionValue(item.opt)
+                                    }}
+                                  </slot>
+                                </template>
                               </template>
                             </div>
                           </div>
@@ -140,7 +157,7 @@
                       class="tw-flex tw-items-center tw-flex-nowrap tw-pl-3 tw-text-[color:var(--select-clear-color)]"
                     >
                       <VcIcon
-                        icon="fas fa-spinner tw-animate-spin"
+                        icon="fas fa-circle-notch tw-animate-spin"
                         size="m"
                       ></VcIcon>
                     </div>
@@ -715,9 +732,17 @@ const dropdownStyle = computed(() => {
 function getPropValueFn(propValue: OptionProp<Option>, defaultVal: OptionProp<Option>) {
   const val = propValue !== undefined ? propValue : defaultVal;
 
-  return typeof val === "function"
-    ? val
-    : (opt: Option) => (opt !== null && typeof opt === "object" && val && val in opt ? opt[val as keyof Option] : opt);
+  if (typeof val === "function") {
+    return val;
+  } else {
+    return (opt: Option) => {
+      if (opt !== null && typeof opt === "object" && val && val in opt) {
+        return opt[val as keyof Option];
+      } else {
+        return opt;
+      }
+    };
+  }
 }
 
 function getOption(value: Option, valueCache: Option[]) {

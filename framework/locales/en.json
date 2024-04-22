@@ -20,7 +20,8 @@
     },
     "MOLECULES": {
       "VC_SELECT": {
-        "CLICK_TO_SELECT": "Click to select..."
+        "CLICK_TO_SELECT": "Click to select...",
+        "LOADING": "Loading..."
       },
       "VC_FILE_UPLOAD": {
         "DRAG_HERE": "Drag and drop file here or",

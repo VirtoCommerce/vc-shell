@@ -1,3 +1,12 @@
+## [1.0.191](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.190...v1.0.191) (2024-04-23)
+
+
+### Features
+
+* vm-1307 save and publish product for operator ([8fd2732](https://github.com/VirtoCommerce/vendor-portal/commit/8fd27322ea1be2c8c22e47f7a67bb4f3cc4b7eac))
+
+
+
 ## [1.0.190](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.189...v1.0.190) (2024-04-23)
 
 

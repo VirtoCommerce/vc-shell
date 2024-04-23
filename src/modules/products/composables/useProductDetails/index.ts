@@ -17,6 +17,7 @@ import {
   Image,
   ValidateProductQuery,
   ValidationFailure,
+  SellerProductStatus2,
 } from "@vcmp-vendor-portal/api/marketplacevendor";
 import {
   IBladeToolbar,
@@ -30,7 +31,7 @@ import {
 } from "@vc-shell/framework";
 import { ref, computed, reactive, ComputedRef, Ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
-import { useDynamicProperties, useMultilanguage } from "../../../common";
+import { useDynamicProperties, useMultilanguage, useRoles } from "../../../common";
 import * as _ from "lodash-es";
 import { useMarketplaceSettings } from "../../../settings";
 import { useRoute } from "vue-router";
@@ -53,6 +54,7 @@ export interface ProductDetailsScope extends DetailsBaseBladeScope {
     remove: IBladeToolbar;
     saveAndSendToApprove: IBladeToolbar;
     revertStagedChanges: IBladeToolbar;
+    saveAndPublish: IBladeToolbar;
   };
 }
 
@@ -92,6 +94,7 @@ export const useProductDetails = (args: {
   const { load, saveChanges, remove, loading, item, validationState } = detailsFactory();
   const { defaultProductType, productTypes, loadSettings } = useMarketplaceSettings();
   const { upload: imageUpload, remove: imageRemove, edit: imageEdit, loading: imageLoading } = useAssets();
+  const { getRoles, isAdministrator, isOperator, loading: rolesLoading } = useRoles();
 
   const { t } = useI18n({ useScope: "global" });
 
@@ -173,12 +176,17 @@ export const useProductDetails = (args: {
 
   async function saveChangesWrapper(details?: IProductDetails, sendToApprove = false) {
     const sellerId = await GetSellerId();
-    await saveChanges({ ...details, id: item.value?.id, sellerId: sellerId });
+    const savedProduct = (await saveChanges({
+      ...details,
+      id: item.value?.id,
+      sellerId: sellerId,
+    })) as unknown as SellerProduct;
 
-    if (sendToApprove && item.value?.id) {
+    const productId = savedProduct?.id || item.value?.id;
+    if (sendToApprove && productId) {
       const newRequestCommand = new CreateNewPublicationRequestCommand({
         sellerId: sellerId,
-        productId: item.value?.id,
+        productId: productId,
       });
       await (await getApiClient()).createNewPublicationRequest(newRequestCommand);
     }
@@ -281,6 +289,7 @@ export const useProductDetails = (args: {
     productTypeDisabled: computed(() => !!item.value?.id),
     toolbarOverrides: {
       saveChanges: {
+        isVisible: computed(() => !rolesLoading.value && !(isAdministrator.value || isOperator.value)),
         disabled: computed(() => {
           return (
             !validationState.value.modified ||
@@ -294,7 +303,9 @@ export const useProductDetails = (args: {
         isVisible: computed(() => !!args.props.param && !loading.value),
       },
       saveAndSendToApprove: {
-        isVisible: computed(() => !!args.props.param),
+        isVisible: computed(
+          () => !!args.props.param && !rolesLoading.value && !(isAdministrator.value || isOperator.value),
+        ),
         async clickHandler() {
           await saveChangesWrapper({ ...item.value }, true);
 
@@ -312,7 +323,9 @@ export const useProductDetails = (args: {
         ),
       },
       revertStagedChanges: {
-        isVisible: computed(() => !!args.props.param),
+        isVisible: computed(
+          () => !!args.props.param && !rolesLoading.value && !(isAdministrator.value || isOperator.value),
+        ),
         async clickHandler() {
           await revertStagedChanges(item.value?.id ?? "");
           args.emit("parent:call", {
@@ -321,6 +334,31 @@ export const useProductDetails = (args: {
         },
         disabled: computed(
           () => !(item.value?.isPublished && item.value?.hasStagedChanges && item.value?.canBeModified),
+        ),
+      },
+      saveAndPublish: {
+        isVisible: computed(() => !rolesLoading.value && (isAdministrator.value || isOperator.value)),
+        async clickHandler() {
+          await saveChangesWrapper({ ...item.value }, true);
+
+          args.emit("parent:call", {
+            method: "reload",
+          });
+          if (!args.props.param) {
+            args.emit("close:blade");
+          }
+        },
+        disabled: computed(
+          () =>
+            (!validationState.value.modified &&
+              !(
+                item.value?.status == SellerProductStatus2.HasStagedChanges ||
+                item.value?.status == SellerProductStatus2.WaitForApproval ||
+                item.value?.status == SellerProductStatus2.None
+              )) ||
+            !validationState.value.valid ||
+            (args.props.param && !(item.value?.canBeModified || validationState.value.modified)) ||
+            (!args.props.param && !validationState.value.modified),
         ),
       },
     },
@@ -360,6 +398,7 @@ export const useProductDetails = (args: {
   watch(
     () => args?.mounted.value,
     async () => {
+      await getRoles();
       await getLanguages();
       await loadSettings();
 
@@ -410,7 +449,7 @@ export const useProductDetails = (args: {
     scope: computed(() => scope.value),
     item,
     validationState,
-    loading: useLoading(loading, revertLoading, languagesLoading),
+    loading: useLoading(loading, revertLoading, languagesLoading, rolesLoading),
     bladeTitle,
   };
 };

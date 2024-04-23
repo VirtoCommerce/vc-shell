@@ -28,6 +28,12 @@ export const details: DynamicDetailsSchema = {
         method: "revertStagedChanges",
       },
       {
+        id: "saveAndPublish",
+        icon: "fas fa-save",
+        title: "PRODUCTS.PAGES.DETAILS.TOOLBAR.SAVEANDPUBLISH",
+        method: "saveAndPublish",
+      },
+      {
         id: "delete",
         icon: "fas fa-trash",
         title: "PRODUCTS.PAGES.DETAILS.TOOLBAR.DELETE",

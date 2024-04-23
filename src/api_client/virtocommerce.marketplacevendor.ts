@@ -3852,6 +3852,51 @@ export class VcmpSellerSecurityClient extends AuthApiBase {
     }
     return Promise.resolve<void>(null as any);
   }
+
+  /**
+   * @return Success
+   */
+  isOperator(): Promise<boolean> {
+    let url_ = this.baseUrl + "/api/vcmp/security/isoperator";
+    url_ = url_.replace(/[?&]$/, "");
+
+    let options_: RequestInit = {
+      method: "GET",
+      headers: {
+        Accept: "text/plain",
+      },
+    };
+
+    return this.transformOptions(options_)
+      .then((transformedOptions_) => {
+        return this.http.fetch(url_, transformedOptions_);
+      })
+      .then((_response: Response) => {
+        return this.processIsOperator(_response);
+      });
+  }
+
+  protected processIsOperator(response: Response): Promise<boolean> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+    }
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = resultData200 !== undefined ? resultData200 : <any>null;
+
+        return result200;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
+    }
+    return Promise.resolve<boolean>(null as any);
+  }
 }
 
 export class VcmpSmClient extends AuthApiBase {
@@ -9776,6 +9821,69 @@ export interface IMarketplaceSettings {
   useDefaultOffer?: boolean;
 }
 
+export class Note implements INote {
+  title?: string | undefined;
+  body?: string | undefined;
+  outerId?: string | undefined;
+  createdDate?: Date;
+  modifiedDate?: Date | undefined;
+  createdBy?: string | undefined;
+  modifiedBy?: string | undefined;
+  id?: string | undefined;
+
+  constructor(data?: INote) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property)) (<any>this)[property] = (<any>data)[property];
+      }
+    }
+  }
+
+  init(_data?: any) {
+    if (_data) {
+      this.title = _data["title"];
+      this.body = _data["body"];
+      this.outerId = _data["outerId"];
+      this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>undefined;
+      this.modifiedDate = _data["modifiedDate"] ? new Date(_data["modifiedDate"].toString()) : <any>undefined;
+      this.createdBy = _data["createdBy"];
+      this.modifiedBy = _data["modifiedBy"];
+      this.id = _data["id"];
+    }
+  }
+
+  static fromJS(data: any): Note {
+    data = typeof data === "object" ? data : {};
+    let result = new Note();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    data["title"] = this.title;
+    data["body"] = this.body;
+    data["outerId"] = this.outerId;
+    data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>undefined;
+    data["modifiedDate"] = this.modifiedDate ? this.modifiedDate.toISOString() : <any>undefined;
+    data["createdBy"] = this.createdBy;
+    data["modifiedBy"] = this.modifiedBy;
+    data["id"] = this.id;
+    return data;
+  }
+}
+
+export interface INote {
+  title?: string | undefined;
+  body?: string | undefined;
+  outerId?: string | undefined;
+  createdDate?: Date;
+  modifiedDate?: Date | undefined;
+  createdBy?: string | undefined;
+  modifiedBy?: string | undefined;
+  id?: string | undefined;
+}
+
 export class ObjectSettingEntry implements IObjectSettingEntry {
   readonly itHasValues?: boolean;
   /** Setting may belong to any object in system */
@@ -11245,6 +11353,171 @@ export interface IOrderShipmentItem {
   quantity?: number;
   outerId?: string | undefined;
   status?: string | undefined;
+  createdDate?: Date;
+  modifiedDate?: Date | undefined;
+  createdBy?: string | undefined;
+  modifiedBy?: string | undefined;
+  id?: string | undefined;
+}
+
+export class Organization implements IOrganization {
+  description?: string | undefined;
+  businessCategory?: string | undefined;
+  ownerId?: string | undefined;
+  parentId?: string | undefined;
+  readonly objectType?: string | undefined;
+  name?: string | undefined;
+  memberType?: string | undefined;
+  outerId?: string | undefined;
+  status?: string | undefined;
+  addresses?: CustomerAddress[] | undefined;
+  phones?: string[] | undefined;
+  emails?: string[] | undefined;
+  notes?: Note[] | undefined;
+  groups?: string[] | undefined;
+  iconUrl?: string | undefined;
+  dynamicProperties?: DynamicObjectProperty[] | undefined;
+  readonly seoObjectType?: string | undefined;
+  seoInfos?: SeoInfo[] | undefined;
+  createdDate?: Date;
+  modifiedDate?: Date | undefined;
+  createdBy?: string | undefined;
+  modifiedBy?: string | undefined;
+  id?: string | undefined;
+
+  constructor(data?: IOrganization) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property)) (<any>this)[property] = (<any>data)[property];
+      }
+    }
+  }
+
+  init(_data?: any) {
+    if (_data) {
+      this.description = _data["description"];
+      this.businessCategory = _data["businessCategory"];
+      this.ownerId = _data["ownerId"];
+      this.parentId = _data["parentId"];
+      (<any>this).objectType = _data["objectType"];
+      this.name = _data["name"];
+      this.memberType = _data["memberType"];
+      this.outerId = _data["outerId"];
+      this.status = _data["status"];
+      if (Array.isArray(_data["addresses"])) {
+        this.addresses = [] as any;
+        for (let item of _data["addresses"]) this.addresses!.push(CustomerAddress.fromJS(item));
+      }
+      if (Array.isArray(_data["phones"])) {
+        this.phones = [] as any;
+        for (let item of _data["phones"]) this.phones!.push(item);
+      }
+      if (Array.isArray(_data["emails"])) {
+        this.emails = [] as any;
+        for (let item of _data["emails"]) this.emails!.push(item);
+      }
+      if (Array.isArray(_data["notes"])) {
+        this.notes = [] as any;
+        for (let item of _data["notes"]) this.notes!.push(Note.fromJS(item));
+      }
+      if (Array.isArray(_data["groups"])) {
+        this.groups = [] as any;
+        for (let item of _data["groups"]) this.groups!.push(item);
+      }
+      this.iconUrl = _data["iconUrl"];
+      if (Array.isArray(_data["dynamicProperties"])) {
+        this.dynamicProperties = [] as any;
+        for (let item of _data["dynamicProperties"]) this.dynamicProperties!.push(DynamicObjectProperty.fromJS(item));
+      }
+      (<any>this).seoObjectType = _data["seoObjectType"];
+      if (Array.isArray(_data["seoInfos"])) {
+        this.seoInfos = [] as any;
+        for (let item of _data["seoInfos"]) this.seoInfos!.push(SeoInfo.fromJS(item));
+      }
+      this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>undefined;
+      this.modifiedDate = _data["modifiedDate"] ? new Date(_data["modifiedDate"].toString()) : <any>undefined;
+      this.createdBy = _data["createdBy"];
+      this.modifiedBy = _data["modifiedBy"];
+      this.id = _data["id"];
+    }
+  }
+
+  static fromJS(data: any): Organization {
+    data = typeof data === "object" ? data : {};
+    let result = new Organization();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    data["description"] = this.description;
+    data["businessCategory"] = this.businessCategory;
+    data["ownerId"] = this.ownerId;
+    data["parentId"] = this.parentId;
+    data["objectType"] = this.objectType;
+    data["name"] = this.name;
+    data["memberType"] = this.memberType;
+    data["outerId"] = this.outerId;
+    data["status"] = this.status;
+    if (Array.isArray(this.addresses)) {
+      data["addresses"] = [];
+      for (let item of this.addresses) data["addresses"].push(item.toJSON());
+    }
+    if (Array.isArray(this.phones)) {
+      data["phones"] = [];
+      for (let item of this.phones) data["phones"].push(item);
+    }
+    if (Array.isArray(this.emails)) {
+      data["emails"] = [];
+      for (let item of this.emails) data["emails"].push(item);
+    }
+    if (Array.isArray(this.notes)) {
+      data["notes"] = [];
+      for (let item of this.notes) data["notes"].push(item.toJSON());
+    }
+    if (Array.isArray(this.groups)) {
+      data["groups"] = [];
+      for (let item of this.groups) data["groups"].push(item);
+    }
+    data["iconUrl"] = this.iconUrl;
+    if (Array.isArray(this.dynamicProperties)) {
+      data["dynamicProperties"] = [];
+      for (let item of this.dynamicProperties) data["dynamicProperties"].push(item.toJSON());
+    }
+    data["seoObjectType"] = this.seoObjectType;
+    if (Array.isArray(this.seoInfos)) {
+      data["seoInfos"] = [];
+      for (let item of this.seoInfos) data["seoInfos"].push(item.toJSON());
+    }
+    data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>undefined;
+    data["modifiedDate"] = this.modifiedDate ? this.modifiedDate.toISOString() : <any>undefined;
+    data["createdBy"] = this.createdBy;
+    data["modifiedBy"] = this.modifiedBy;
+    data["id"] = this.id;
+    return data;
+  }
+}
+
+export interface IOrganization {
+  description?: string | undefined;
+  businessCategory?: string | undefined;
+  ownerId?: string | undefined;
+  parentId?: string | undefined;
+  objectType?: string | undefined;
+  name?: string | undefined;
+  memberType?: string | undefined;
+  outerId?: string | undefined;
+  status?: string | undefined;
+  addresses?: CustomerAddress[] | undefined;
+  phones?: string[] | undefined;
+  emails?: string[] | undefined;
+  notes?: Note[] | undefined;
+  groups?: string[] | undefined;
+  iconUrl?: string | undefined;
+  dynamicProperties?: DynamicObjectProperty[] | undefined;
+  seoObjectType?: string | undefined;
+  seoInfos?: SeoInfo[] | undefined;
   createdDate?: Date;
   modifiedDate?: Date | undefined;
   createdBy?: string | undefined;
@@ -17141,6 +17414,7 @@ export class StateMachineInstance implements IStateMachineInstance {
   readonly currentState?: StateMachineState | undefined;
   permittedTriggers?: string[] | undefined;
   readonly isActive?: boolean;
+  stateMachineDefinition?: StateMachineDefinition | undefined;
   createdDate?: Date;
   modifiedDate?: Date | undefined;
   createdBy?: string | undefined;
@@ -17170,6 +17444,9 @@ export class StateMachineInstance implements IStateMachineInstance {
         for (let item of _data["permittedTriggers"]) this.permittedTriggers!.push(item);
       }
       (<any>this).isActive = _data["isActive"];
+      this.stateMachineDefinition = _data["stateMachineDefinition"]
+        ? StateMachineDefinition.fromJS(_data["stateMachineDefinition"])
+        : <any>undefined;
       this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>undefined;
       this.modifiedDate = _data["modifiedDate"] ? new Date(_data["modifiedDate"].toString()) : <any>undefined;
       this.createdBy = _data["createdBy"];
@@ -17198,6 +17475,9 @@ export class StateMachineInstance implements IStateMachineInstance {
       for (let item of this.permittedTriggers) data["permittedTriggers"].push(item);
     }
     data["isActive"] = this.isActive;
+    data["stateMachineDefinition"] = this.stateMachineDefinition
+      ? this.stateMachineDefinition.toJSON()
+      : <any>undefined;
     data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>undefined;
     data["modifiedDate"] = this.modifiedDate ? this.modifiedDate.toISOString() : <any>undefined;
     data["createdBy"] = this.createdBy;
@@ -17216,6 +17496,7 @@ export interface IStateMachineInstance {
   currentState?: StateMachineState | undefined;
   permittedTriggers?: string[] | undefined;
   isActive?: boolean;
+  stateMachineDefinition?: StateMachineDefinition | undefined;
   createdDate?: Date;
   modifiedDate?: Date | undefined;
   createdBy?: string | undefined;

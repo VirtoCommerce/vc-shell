@@ -86,6 +86,7 @@
         "TOOLBAR": {
           "SAVE": "Save",
           "SAVEANDAPPROVE": "Send changes to approve",
+          "SAVEANDPUBLISH": "Save & publish",
           "CLOSE": "Close",
           "REVERT": "Revert staged changes",
           "APPROVE": "Approve (test only)",

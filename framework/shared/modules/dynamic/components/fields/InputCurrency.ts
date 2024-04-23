@@ -8,7 +8,6 @@ import { InputCurrencySchema } from "../../types";
 import { unrefNested } from "../../helpers/unrefNested";
 import { toValue } from "@vueuse/core";
 
-// TODO fix disabling when blades is disabled
 export default {
   name: "InputCurrency",
   props: componentProps,

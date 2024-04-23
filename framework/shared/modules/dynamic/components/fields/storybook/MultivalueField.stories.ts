@@ -106,10 +106,10 @@ export default {
     variant: {
       description: "Multivalue type",
       control: "radio",
-      options: ["number", "text"],
+      options: ["number", "integer", "text"],
       table: {
         type: {
-          summary: "number | text",
+          summary: "number | integer | text",
         },
         defaultValue: {
           summary: "text",

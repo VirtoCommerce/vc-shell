@@ -34,10 +34,10 @@ export default {
     variant: {
       description: "Field variant.",
       control: "radio",
-      options: ["number", "text", "password", "email", "tel", "url", "time", "date", "datetime-local"],
+      options: ["number", "integer", "text", "password", "email", "tel", "url", "time", "date", "datetime-local"],
       table: {
         type: {
-          summary: "number | text | password | email | tel | url | time | date | datetime-local",
+          summary: "number | integer | text | password | email | tel | url | time | date | datetime-local",
         },
         defaultValue: {
           summary: "text",

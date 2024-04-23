@@ -1,3 +1,12 @@
+## [1.0.201](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.200...v1.0.201) (2024-04-23)
+
+
+### Features
+
+* **dynamic:** saveChanges response ([9d3f909](https://github.com/VirtoCommerce/vc-shell/commit/9d3f9091e15dad0498c680f7835a96c3e0fb5cac))
+
+
+
 ## [1.0.200](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.199...v1.0.200) (2024-04-23)
 
 

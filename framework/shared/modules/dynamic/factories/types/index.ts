@@ -39,7 +39,7 @@ export type CustomQuery = { ids: string[] | null; allSelected?: boolean };
 
 export interface UseDetails<Item, Scope extends DetailsBaseBladeScope = DetailsBaseBladeScope> {
   load: AsyncAction<ItemId>;
-  saveChanges: AsyncAction<Item>;
+  saveChanges: AsyncAction<Item, Item | void>;
   remove?: AsyncAction<ItemId>;
   loading: ComputedRef<boolean>;
   item: Ref<Item | undefined>;

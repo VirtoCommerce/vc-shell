@@ -1,3 +1,12 @@
+## [1.0.190](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.189...v1.0.190) (2024-04-23)
+
+
+### Bug Fixes
+
+* rename description in useProductDetails to prevent side-effects ([691c579](https://github.com/VirtoCommerce/vendor-portal/commit/691c5793d8307cd1a0404d94e3e7a6772404d0af))
+
+
+
 ## [1.0.189](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.188...v1.0.189) (2024-04-22)
 
 

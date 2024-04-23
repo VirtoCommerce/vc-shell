@@ -340,7 +340,7 @@ export const useProductDetails = (args: {
         },
       },
     },
-    description: computed({
+    computedDescription: computed({
       get() {
         return useArrayFind(item.value?.descriptions ?? [], (x) => x.languageCode == currentLocale.value).value
           ?.content;

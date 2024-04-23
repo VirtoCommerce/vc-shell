@@ -134,7 +134,7 @@ export const details: DynamicDetailsSchema = {
               id: "description",
               component: "vc-editor",
               label: "PRODUCTS.PAGES.DETAILS.FIELDS.DESCRIPTION.TITLE",
-              property: "description",
+              property: "computedDescription",
               placeholder: "PRODUCTS.PAGES.DETAILS.FIELDS.DESCRIPTION.PLACEHOLDER",
               multilanguage: true,
               rules: {

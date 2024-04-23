@@ -31,7 +31,7 @@
       ref="dropdownToggleRef"
       class="vc-multivalue__field-wrapper"
     >
-      <div class="tw-items-center tw-flex tw-flex-wrap">
+      <div class="tw-items-center tw-flex tw-flex-wrap tw-flex-grow">
         <div
           v-for="(item, i) in modelValue"
           :key="`${item?.id}_${generateId()}`"
@@ -105,11 +105,12 @@
         <template v-else>
           <input
             v-model="value"
-            class="vc-multivalue__field tw-grow tw-basis-0 tw-pl-3"
+            class="vc-multivalue__field tw-grow tw-basis-0 tw-px-3"
             :placeholder="placeholder"
             :type="internalTypeComputed"
             :disabled="disabled"
             @keypress.enter.stop.prevent="onInput"
+            @blur="onInput"
             @keydown="onKeyDown"
           />
         </template>
@@ -285,8 +286,11 @@ function onKeyDown(e: KeyboardEvent) {
   }
 }
 
-function onInput(e: KeyboardEvent) {
+function onInput(e: KeyboardEvent | FocusEvent) {
   const newValue = (e.target as HTMLInputElement).value;
+  if (newValue === "" || newValue === undefined || newValue === null) {
+    return;
+  }
   emit("update:model-value", [...props.modelValue, { [props.optionLabel]: newValue } as T]);
   value.value = undefined;
 }
@@ -447,6 +451,12 @@ function onSearch(event: Event) {
 
     &::-ms-placeholder {
       @apply tw-text-[color:var(--multivalue-placeholder-color)];
+    }
+
+    &[type="number"]::-webkit-inner-spin-button,
+    &[type="number"]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
     }
 
     &-value-wrapper {

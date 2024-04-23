@@ -1,3 +1,12 @@
+## [1.0.200](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.199...v1.0.200) (2024-04-23)
+
+
+### Features
+
+* **ui:** vc-multivalue input on blur, removed arrows with number type ([ff0b293](https://github.com/VirtoCommerce/vc-shell/commit/ff0b29305dd495f2f9577b34c122d33fb67596d0))
+
+
+
 ## [1.0.199](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.198...v1.0.199) (2024-04-22)
 
 

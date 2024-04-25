@@ -1,3 +1,17 @@
+## [1.0.202](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.200...v1.0.202) (2024-04-25)
+
+
+### Bug Fixes
+
+* **dynamic:** fixed set of value when property path has array index ([1ae24fc](https://github.com/VirtoCommerce/vc-shell/commit/1ae24fc859dda595e3e5d2251377f996b62c6ce9))
+
+
+### Features
+
+* **dynamic:** saveChanges response ([#207](https://github.com/VirtoCommerce/vc-shell/issues/207)) ([a05313b](https://github.com/VirtoCommerce/vc-shell/commit/a05313bd0fc5b25b927570c31e14aea69c4a5ddd))
+
+
+
 ## [1.0.201](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.200...v1.0.201) (2024-04-23)
 
 

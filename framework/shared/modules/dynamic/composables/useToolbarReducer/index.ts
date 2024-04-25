@@ -54,8 +54,8 @@ export const useToolbarReducer = (args: {
       }, [] as IBladeToolbar[]);
     }
 
-    if (args.scope && toValue(toValue(args.scope).toolbarOverrides)) {
-      const toolbarOverrides: BaseBladeScope["toolbarOverrides"] = toValue(toValue(args.scope).toolbarOverrides);
+    if (args.scope && toValue(toValue(args.scope)?.toolbarOverrides)) {
+      const toolbarOverrides: BaseBladeScope["toolbarOverrides"] = toValue(toValue(args.scope)?.toolbarOverrides);
 
       if (Array.isArray(toolbarOverrides)) {
         return toolbarOverrides;

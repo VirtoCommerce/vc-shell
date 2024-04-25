@@ -217,7 +217,7 @@ const bladeStatus = computed(() => {
 });
 
 const bladeMultilanguage = reactiveComputed(() => {
-  if (scope && "multilanguage" in toValue(scope) && toValue(scope).multilanguage) {
+  if (scope && toValue(scope) && "multilanguage" in toValue(scope) && toValue(scope).multilanguage) {
     return {
       component: () => {
         return h(VcSelect as Component, {

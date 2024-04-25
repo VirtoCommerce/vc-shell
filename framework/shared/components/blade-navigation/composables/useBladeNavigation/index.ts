@@ -65,7 +65,7 @@ const utils = (router: Router) => {
     const workspaceIndex = parts.findIndex((part) => {
       const route = router
         .getRoutes()
-        .find((r) => r.path.endsWith("/" + part) && (r.components?.default as BladeVNode).type.isWorkspace);
+        .find((r) => r.path.endsWith("/" + part) && (r.components?.default as BladeVNode)?.type?.isWorkspace);
 
       return route !== undefined;
     });

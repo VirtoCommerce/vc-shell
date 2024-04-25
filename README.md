@@ -16,7 +16,7 @@ The project is originated to create a replacement of the current vc-platform man
 
 ## Demo
 
-- [Storybook](https://vcmp-dev-storybook.govirto.com/)
+- [Storybook](https://vc-shell-storybook.govirto.com/)
 
 ## Getting started
 

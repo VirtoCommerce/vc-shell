@@ -1,3 +1,7 @@
+## [1.0.203](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.202...v1.0.203) (2024-04-25)
+
+
+
 ## [1.0.202](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.200...v1.0.202) (2024-04-25)
 
 

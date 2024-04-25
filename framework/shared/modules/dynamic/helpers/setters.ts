@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import * as _ from "lodash-es";
-import { unrefNested } from "./unrefNested";
 
 function setModel(args: {
   property: string;
@@ -11,15 +10,15 @@ function setModel(args: {
 }) {
   const { property, value, option, context, scope } = args;
 
-  if (_.has(unrefNested(context), property)) {
-    _.set(context, property, option ? value[option as keyof typeof value] : value);
-  } else if (scope && _.has(scope, property)) {
+  if (scope && _.has(scope, property)) {
     if (typeof scope[property] === "function") {
       scope[property](value);
     } else {
       _.set(scope, property, value);
     }
+    return;
   }
+  _.set(context, property, option ? value[option as keyof typeof value] : value);
 }
 
 export { setModel };

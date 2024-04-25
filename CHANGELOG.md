@@ -1,3 +1,12 @@
+## [1.0.202](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.201...v1.0.202) (2024-04-25)
+
+
+### Bug Fixes
+
+* **dynamic:** unable to set value with array path in it ([72905f1](https://github.com/VirtoCommerce/vc-shell/commit/72905f1f6f036d55688952ce5cf13e867082d450))
+
+
+
 ## [1.0.201](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.200...v1.0.201) (2024-04-23)
 
 

@@ -199,6 +199,7 @@ export const useOrder = (args: {
             method: "reload",
           });
           item.value!.status = transition.toState;
+          validationState.value.resetModified(item.value, true);
           refreshToolbar(currentStateMachine);
         },
       });

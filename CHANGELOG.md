@@ -1,3 +1,12 @@
+## [1.0.196](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.195...v1.0.196) (2024-04-30)
+
+
+### Bug Fixes
+
+* **products:** add loading state on saveChanges method ([4279283](https://github.com/VirtoCommerce/vendor-portal/commit/42792837aab249303ca76fc92969236002d356aa))
+
+
+
 ## [1.0.195](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.194...v1.0.195) (2024-04-30)
 
 

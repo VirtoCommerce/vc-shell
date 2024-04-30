@@ -1,3 +1,13 @@
+## [1.0.207](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.206...v1.0.207) (2024-04-30)
+
+
+### Features
+
+* vm-1309 decode uri asset file name ([cf290f6](https://github.com/VirtoCommerce/vc-shell/commit/cf290f624b81f6a4a61ab4a092b2f784e9c350b6))
+* vm-1309 unescape asset file url ([d4fc236](https://github.com/VirtoCommerce/vc-shell/commit/d4fc23689e742b9da6a4bf01d34a16adc6fe91ad))
+
+
+
 ## [1.0.206](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.205...v1.0.206) (2024-04-30)
 
 

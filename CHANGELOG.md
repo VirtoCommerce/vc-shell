@@ -1,3 +1,12 @@
+## [1.0.208](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.207...v1.0.208) (2024-04-30)
+
+
+### Bug Fixes
+
+* release script cross-spawn for Windows support ([3d92f79](https://github.com/VirtoCommerce/vc-shell/commit/3d92f79311756ea7c57f464a24c73b89a3ceb03a))
+
+
+
 ## [1.0.207](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.206...v1.0.207) (2024-04-30)
 
 

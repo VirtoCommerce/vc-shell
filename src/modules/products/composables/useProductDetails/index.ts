@@ -103,6 +103,7 @@ export const useProductDetails = (args: {
   const revertLoading = ref(false);
   const productTypeOptions = ref<IProductType[]>([]);
   const currentCategory = ref<Category>();
+  const saveChangesLoading = ref(false);
 
   const { currentLocale, languages, getLanguages, loading: languagesLoading } = useMultilanguage();
   const route = useRoute();
@@ -175,24 +176,29 @@ export const useProductDetails = (args: {
   }
 
   async function saveChangesWrapper(details?: IProductDetails, sendToApprove = false) {
-    const sellerId = await GetSellerId();
-    const savedProduct = (await saveChanges({
-      ...details,
-      id: item.value?.id,
-      sellerId: sellerId,
-    })) as unknown as SellerProduct;
-
-    const productId = savedProduct?.id || item.value?.id;
-    if (sendToApprove && productId) {
-      const newRequestCommand = new CreateNewPublicationRequestCommand({
+    try {
+      saveChangesLoading.value = true;
+      const sellerId = await GetSellerId();
+      const savedProduct = (await saveChanges({
+        ...details,
+        id: item.value?.id,
         sellerId: sellerId,
-        productId: productId,
-      });
-      await (await getApiClient()).createNewPublicationRequest(newRequestCommand);
-    }
+      })) as unknown as SellerProduct;
 
-    if (item.value?.id) {
-      await loadWrapper({ id: item.value.id });
+      const productId = savedProduct?.id || item.value?.id;
+      if (sendToApprove && productId) {
+        const newRequestCommand = new CreateNewPublicationRequestCommand({
+          sellerId: sellerId,
+          productId: productId,
+        });
+        await (await getApiClient()).createNewPublicationRequest(newRequestCommand);
+      }
+
+      if (item.value?.id) {
+        await loadWrapper({ id: item.value.id });
+      }
+    } finally {
+      saveChangesLoading.value = false;
     }
   }
 
@@ -449,7 +455,7 @@ export const useProductDetails = (args: {
     scope: computed(() => scope.value),
     item,
     validationState,
-    loading: useLoading(loading, revertLoading, languagesLoading, rolesLoading),
+    loading: useLoading(loading, revertLoading, languagesLoading, rolesLoading, saveChangesLoading),
     bladeTitle,
   };
 };

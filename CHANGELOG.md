@@ -1,3 +1,12 @@
+## [1.0.197](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.196...v1.0.197) (2024-04-30)
+
+
+### Bug Fixes
+
+* release script cross-spawn for Windows support ([28d4462](https://github.com/VirtoCommerce/vendor-portal/commit/28d446212b142260224a3947b0913db79908913b))
+
+
+
 ## [1.0.196](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.195...v1.0.196) (2024-04-30)
 
 

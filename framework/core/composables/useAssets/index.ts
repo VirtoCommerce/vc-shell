@@ -32,6 +32,7 @@ export function useAssets(): IUseAssets {
           const file = response[0];
           file.createdDate = new Date();
           file.sortOrder = startingSortOrder !== undefined && startingSortOrder >= 0 ? startingSortOrder + i + 1 : 0;
+          file.url = file.url ? unescape(file.url) : "";
 
           if ("size" in file) {
             file.size = files[i].size;

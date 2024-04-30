@@ -51,10 +51,6 @@
           "LIST_PRICE": "List price",
           "SALE_PRICE": "Sale price",
           "CREATED": "Created"
-        },
-        "DELETE_SELECTED_CONFIRMATION": {
-          "MESSAGE": "Are you sure you want to delete {count} selected offers?",
-          "ALL": "all {totalCount}"
         }
       },
       "DETAILS": {
@@ -154,7 +150,11 @@
         "REMOVE_CONFIRMATION": "Remove selected price?",
         "IMAGE_DELETE_CONFIRMATION": "Are you sure you want to delete this image?",
         "CLOSE_CONFIRMATION": "You have unsaved changes. Close anyway?",
-        "DELETE_OFFER": "Are you sure you want to delete this offer?"
+        "DELETE_OFFER": "Are you sure you want to delete this offer?",
+        "DELETE_SELECTED_CONFIRMATION": {
+          "MESSAGE": "Are you sure you want to delete {count} selected offers?",
+          "ALL": "all {totalCount}"
+        }
       }
     }
   }

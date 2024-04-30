@@ -1,5 +1,10 @@
 import { onBeforeMount, onBeforeUnmount, unref, ComputedRef } from "vue";
 
+/**
+ * Prevents the user from closing the tab if the modified flag is set to true.
+ * @param modified - The flag that indicates whether the user has made changes.
+ * @returns The modified flag.
+ */
 export const useBeforeUnload = (modified: ComputedRef<boolean>) => {
   onBeforeMount(() => {
     window.addEventListener("beforeunload", preventUnload);

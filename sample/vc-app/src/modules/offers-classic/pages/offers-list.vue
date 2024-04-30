@@ -457,9 +457,9 @@ const actionBuilder = (): IActionBuilderResult[] => {
 async function removeOffers() {
   if (
     await showConfirmation(
-      t("OFFERSCLASSIC.PAGES.LIST.DELETE_SELECTED_CONFIRMATION.MESSAGE", {
+      t("OFFERSCLASSIC.PAGES.ALERTS.DELETE_SELECTED_CONFIRMATION.MESSAGE", {
         count: allSelected.value
-          ? t("OFFERSCLASSIC.PAGES.LIST.DELETE_SELECTED_CONFIRMATION.ALL", { totalCount: totalCount.value })
+          ? t("OFFERSCLASSIC.PAGES.ALERTS.DELETE_SELECTED_CONFIRMATION.ALL", { totalCount: totalCount.value })
           : selectedOfferIds.value.length,
       }),
     )

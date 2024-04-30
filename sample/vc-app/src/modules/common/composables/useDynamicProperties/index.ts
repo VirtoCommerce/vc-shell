@@ -128,6 +128,7 @@ export const useDynamicProperties = () => {
                 valueId: dictItem.id,
               });
             }
+            return new PropertyValue(item);
           });
         }
         // Single value Dictionary

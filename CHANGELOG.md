@@ -1,3 +1,12 @@
+## [1.0.195](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.194...v1.0.195) (2024-04-30)
+
+
+### Bug Fixes
+
+* update useDynamicProperties composable, orders status change ([ca0ab5d](https://github.com/VirtoCommerce/vendor-portal/commit/ca0ab5dfdff5586cfddd3c61b0f81ec29b5beb58))
+
+
+
 ## [1.0.194](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.193...v1.0.194) (2024-04-30)
 
 

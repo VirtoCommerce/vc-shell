@@ -58,14 +58,15 @@ const mainRouteBaseParamURL = shallowRef<string>();
 
 const utils = (router: Router) => {
   const route = useRoute();
+  const routes = router.getRoutes();
 
   function parseUrl(url: string) {
     // remove parts of url that does not contain workspace, blade or param - everything before workspace
     const parts = url.split("/");
     const workspaceIndex = parts.findIndex((part) => {
-      const route = router
-        .getRoutes()
-        .find((r) => r.path.endsWith("/" + part) && (r.components?.default as BladeVNode)?.type?.isWorkspace);
+      const route = routes.find(
+        (r) => r.path.endsWith("/" + part) && (r.components?.default as BladeVNode)?.type?.isWorkspace,
+      );
 
       return route !== undefined;
     });
@@ -116,6 +117,7 @@ const utils = (router: Router) => {
     parseUrl,
     parseWorkspaceUrl,
     getURLQuery,
+    routes,
   };
 };
 
@@ -266,8 +268,7 @@ export function useBladeNavigation(): IUseBladeNavigation {
   const instance: BladeComponentInternalInstance = getCurrentInstance() as BladeComponentInternalInstance;
 
   const { router, route, navigationInstance, closeBlade } = useBladeNavigationSingleton();
-  const { parseUrl, getURLQuery } = utils(router);
-  const routerRoutes = router.getRoutes();
+  const { parseUrl, getURLQuery, routes: routerRoutes } = utils(router);
   const mainRoute = routerRoutes.find((r) => r.meta?.root)!;
 
   async function openWorkspace<Blade extends Component>(
@@ -289,6 +290,12 @@ export function useBladeNavigation(): IUseBladeNavigation {
 
       if (!isPrevented && createdComponent.type?.url) {
         if (hasAccess(blade.permissions)) {
+          // If the blade is the same as the one we want to open, do nothing. It prevents the loose of the instance state
+          if (navigationInstance.blades.value.length > 0) {
+            if (navigationInstance.blades.value[0].type.url === createdComponent.type.url) {
+              return;
+            }
+          }
           navigationInstance.blades.value = [createdComponent];
           // Find the route with the matching URL and update the components.default property with the new component
           const wsroute = routerRoutes.find((r) => r.path.endsWith(createdComponent.type?.url as string));

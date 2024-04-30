@@ -155,10 +155,10 @@ const { appsList, switchApp, getApps } = useAppSwitcher();
 const { loadFromHistory } = useNotifications();
 const route = useRoute();
 const { isAuthenticated } = useUser();
+const routes = router.getRoutes();
 
 const onMenuItemClick = function (item: MenuItem) {
   console.debug(`vc-app#onMenuItemClick() called.`);
-
   if (item.routeId) {
     openBlade(
       {
@@ -167,7 +167,7 @@ const onMenuItemClick = function (item: MenuItem) {
       true,
     );
   } else if (!item.routeId && item.url) {
-    const menuRoute = router.getRoutes().find((r) => {
+    const menuRoute = routes.find((r) => {
       return "/" + r.path.split("/").filter((part) => part !== "")[1] === item.url || r.path === item.url;
     });
     if (typeof menuRoute === "undefined") {
@@ -182,8 +182,8 @@ const openRoot = async () => {
   const isPrevented = await closeBlade(1);
 
   if (!isPrevented) {
-    const mainRoute = router.getRoutes().find((route) => route.meta?.root);
-    const mainRouteAlias = router.getRoutes().find((route) => route.aliasOf?.path === mainRoute?.path) ?? mainRoute;
+    const mainRoute = routes.find((route) => route.meta?.root);
+    const mainRouteAlias = routes.find((route) => route.aliasOf?.path === mainRoute?.path) ?? mainRoute;
 
     router.replace({ name: mainRouteAlias?.name, params: route.params });
   }

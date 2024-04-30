@@ -1,7 +1,7 @@
-import { Slot, defineComponent, h, provide, ref, VNode, PropType, Component, watch, reactive } from "vue";
+import { Slot, defineComponent, h, provide, ref, VNode, PropType, Component, reactive } from "vue";
 import { navigationViewLocation } from "./../../injectionKeys";
 import { BladeVNode, CoreBladeExposed } from "../../types";
-import { toRef } from "@vueuse/core";
+import { toRef, watchTriggerable } from "@vueuse/core";
 
 export const VcBladeView = defineComponent({
   name: "BladeView",
@@ -16,7 +16,7 @@ export const VcBladeView = defineComponent({
 
     const bl = toRef(props.blade);
 
-    watch(
+    const { trigger } = watchTriggerable(
       () => [viewRef.value, bl.value] as const,
       ([instance, blade]) => {
         if (instance && blade && blade.props?.navigation) {
@@ -53,6 +53,7 @@ export const VcBladeView = defineComponent({
        */
       const onVnodeMounted: BladeVNode["props"]["onVnodeMounted"] = (vnode) => {
         if (vnode.component?.isMounted) {
+          trigger();
           if (typeof vnode.props?.navigation?.onOpen === "function") {
             vnode.props?.navigation.onOpen();
           }

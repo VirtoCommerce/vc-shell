@@ -480,16 +480,19 @@ const onSelectionChanged = (i: UnwrapRef<typeof items>) => {
 async function removeItems() {
   if (
     await showConfirmation(
-      t(`${settings.value?.localizationPrefix.trim().toUpperCase()}.PAGES.LIST.DELETE_SELECTED_CONFIRMATION.MESSAGE`, {
-        count: allSelected.value
-          ? t(
-              `${settings.value?.localizationPrefix.trim().toUpperCase()}.PAGES.LIST.DELETE_SELECTED_CONFIRMATION.ALL`,
-              {
-                totalCount: pagination.value.totalCount,
-              },
-            )
-          : selectedIds.value.length,
-      }),
+      t(
+        `${settings.value?.localizationPrefix.trim().toUpperCase()}.PAGES.ALERTS.DELETE_SELECTED_CONFIRMATION.MESSAGE`,
+        {
+          count: allSelected.value
+            ? t(
+                `${settings.value?.localizationPrefix.trim().toUpperCase()}.PAGES.ALERTS.DELETE_SELECTED_CONFIRMATION.ALL`,
+                {
+                  totalCount: pagination.value.totalCount,
+                },
+              )
+            : selectedIds.value.length,
+        },
+      ),
     )
   ) {
     emit("close:children");

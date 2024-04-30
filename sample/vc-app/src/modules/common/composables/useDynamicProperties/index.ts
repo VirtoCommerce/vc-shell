@@ -118,20 +118,18 @@ export const useDynamicProperties = () => {
       } else {
         // Multivalue Dictionary
         if (Array.isArray(value)) {
-          // TODO maybe delete uniqWith?
-          property.values = _.uniqWith(
-            (property.values ?? []).concat(
-              value.flatMap((item) => {
-                return new PropertyValue({
-                  propertyId: item.propertyId,
-                  alias: item.alias,
-                  value: item.value ?? item.alias,
-                  valueId: item.id,
-                });
-              }),
-            ),
-            (a, b) => a.alias === b.alias,
-          );
+          property.values = value.flatMap((item) => {
+            const dictItem = dict.find((x) => x.id === (item as IPropertyValue).valueId || x.id === item.id);
+            if (dictItem) {
+              return new PropertyValue({
+                propertyId: dictItem.propertyId,
+                alias: dictItem.alias,
+                value: item.value ?? dictItem.alias,
+                valueId: dictItem.id,
+              });
+            }
+            return new PropertyValue(item);
+          });
         }
         // Single value Dictionary
         else {

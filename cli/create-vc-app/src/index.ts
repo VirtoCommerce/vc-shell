@@ -9,7 +9,7 @@ import { cwd as processCwd, argv, exit } from "node:process";
 import mainPkg from "./../package.json";
 import * as _ from "lodash-es";
 
-type Config = prompts.Answers<"appName" | "packageName" | "variant" | "moduleName" | "appName" | "basePath">;
+type Config = prompts.Answers<"appName" | "packageName" | "variant" | "moduleName" | "appName" | "basePath" | "mocks">;
 
 const renameFiles: Record<string, string | undefined> = {
   _gitignore: ".gitignore",
@@ -160,6 +160,12 @@ async function create() {
           initial: () => _.startCase(getProjectName()),
           format: (value) => String(value).trim(),
         },
+        {
+          name: "mocks",
+          type: "confirm",
+          message: "Do you want to include additional module with sample data?",
+          initial: false,
+        },
       ],
       {
         onCancel: () => {
@@ -172,7 +178,7 @@ async function create() {
     exit(1);
   }
 
-  const { packageName, variant, moduleName, appName, basePath } = config;
+  const { packageName, variant, moduleName, appName, basePath, mocks } = config;
 
   const stringsToReplace = new Map<string, string>([
     ["{{ModuleName}}", toValidName(moduleName)],
@@ -251,6 +257,22 @@ async function create() {
   moduleMap[variant as keyof typeof moduleMap].forEach((module) => {
     render(`modules/${module}`, "src/modules/" + stringsToReplace.get("{{ModuleName}}"));
   });
+
+  if (mocks) {
+    if (variant === "dynamic") {
+      moduleMap[variant as keyof typeof moduleMap].forEach((module) => {
+        render(`sample/${module}`, "src/modules/sample");
+      });
+    }
+
+    if (variant === "classic") {
+      moduleMap[variant as keyof typeof moduleMap].forEach((module) => {
+        render(`sample/${module}`, "src/modules/sample");
+      });
+    }
+    render("mocks", "src/modules/sample");
+    render("sample/overrides", "src");
+  }
 
   console.log(`\nDone. You can now run application:\n`);
 

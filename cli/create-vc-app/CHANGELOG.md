@@ -1,3 +1,12 @@
+## [1.0.204](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.203...v1.0.204) (2024-04-30)
+
+
+### Features
+
+* **create-vc-app:** new prompt with ability to add sample data module ([7816a8b](https://github.com/VirtoCommerce/vc-shell/commit/7816a8b2ce872f3ca7e54c7a328481edf4adb854))
+
+
+
 ## [1.0.203](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.202...v1.0.203) (2024-04-25)
 
 

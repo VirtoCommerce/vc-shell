@@ -1,0 +1,59 @@
+{
+  "SAMPLE_APP": {
+    "MENU": {
+      "TITLE": "Sample"
+    },
+    "PAGES": {
+      "LIST": {
+        "TITLE": "Sample list",
+        "TOOLBAR": {
+          "REFRESH": "Refresh",
+          "REMOVE": "Remove"
+        },
+        "SEARCH": {
+          "PLACEHOLDER": "Search keywords"
+        },
+        "TABLE": {
+          "TOTALS": "Count:",
+          "HEADER": {
+            "IMAGE": "Image",
+            "PRODUCT_NAME": "Product name",
+            "DESCRIPTION": "Description",
+            "PRICE": "Price",
+            "SALE_PRICE": "Sale price",
+            "CURRENCY": "Currency"
+          },
+          "ACTIONS": {
+            "DELETE": "Delete"
+          }
+        }
+      },
+      "DETAILS": {
+        "TITLE": {
+          "DETAILS": " details",
+          "LOADING": "Loading..."
+        },
+        "TOOLBAR": {
+          "SAVE": "Save",
+          "DELETE": "Delete"
+        },
+        "FIELDS": {
+          "NAME": "Name",
+          "CONTENT": "Content",
+          "GUID": "GUID",
+          "DESCRIPTION": "Description",
+          "PRICE": "Price",
+          "SALE_PRICE": "Sale price"
+        }
+      },
+      "ALERTS": {
+        "CLOSE_CONFIRMATION": "You have unsaved changes. Close anyway?",
+        "DELETE": "Are you sure you want to delete this item?",
+        "DELETE_SELECTED_CONFIRMATION": {
+          "MESSAGE": "Are you sure you want to delete {count} selected items?",
+          "ALL": "all {totalCount}"
+        }
+      }
+    }
+  }
+}

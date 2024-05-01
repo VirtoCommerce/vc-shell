@@ -18,6 +18,7 @@ import {
   SearchVideosQuery,
 } from "@vcmp-vendor-portal/api/marketplacevendor";
 import { useProductDetails } from "../../../composables/useProductDetails";
+import { useRoles } from "../../../../common";
 
 interface Props {
   modelValue: UnwrapNestedRefs<ReturnType<typeof useProductDetails>>;
@@ -34,13 +35,17 @@ const { user } = useUser();
 const widgetOpened = ref(false);
 const count = ref(0);
 
+const { getRoles, isAdministrator, isOperator } = useRoles();
+
 function clickHandler() {
   if (!widgetOpened.value) {
     openBlade({
       blade: resolveBladeByName("Videos"),
       options: {
         catalogProduct: props.modelValue?.item,
-        disabled: props.modelValue.scope?.disabled || props.modelValue.item?.createdBy !== user.value?.userName,
+        disabled:
+          props.modelValue.scope?.disabled ||
+          (props.modelValue.item?.createdBy !== user.value?.userName && !isAdministrator.value && !isOperator.value),
       },
       onOpen() {
         widgetOpened.value = true;
@@ -68,6 +73,7 @@ onMounted(async () => {
   if (props.modelValue?.item?.id) {
     await populateCounter();
   }
+  await getRoles();
 });
 
 defineExpose({

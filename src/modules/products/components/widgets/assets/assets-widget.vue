@@ -11,11 +11,12 @@
 
 <script setup lang="ts">
 import { VcWidget, useBladeNavigation, usePopup, useAssets, useUser } from "@vc-shell/framework";
-import { UnwrapNestedRefs, computed, ref, watch } from "vue";
+import { UnwrapNestedRefs, computed, ref, watch, onMounted } from "vue";
 import { Asset } from "@vcmp-vendor-portal/api/marketplacevendor";
 import { useI18n } from "vue-i18n";
 import * as _ from "lodash-es";
 import { useProductDetails } from "../../../composables/useProductDetails";
+import { useRoles } from "../../../../common";
 
 const props = defineProps<{
   // TODO Add to documentation
@@ -31,6 +32,7 @@ const { showConfirmation } = usePopup();
 const { t } = useI18n({ useScope: "global" });
 const { edit, upload, remove, loading } = useAssets();
 const { user } = useUser();
+const { getRoles, isAdministrator, isOperator } = useRoles();
 const modelValue = ref(props.modelValue);
 const widgetOpened = ref(false);
 const internalModel = ref();
@@ -56,7 +58,9 @@ function clickHandler() {
         assetsEditHandler: assetsHandler?.edit,
         assetsUploadHandler: assetsHandler?.upload,
         assetsRemoveHandler: assetsHandler?.remove,
-        disabled: props.modelValue.scope?.disabled || props.modelValue.item?.createdBy !== user.value?.userName,
+        disabled:
+          props.modelValue.scope?.disabled ||
+          (props.modelValue.item?.createdBy !== user.value?.userName && !isAdministrator.value && !isOperator.value),
       },
       onOpen() {
         widgetOpened.value = true;
@@ -105,6 +109,10 @@ const assetsHandler = {
     return internalModel.value.item.assets;
   },
 };
+
+onMounted(async () => {
+  await getRoles();
+});
 
 function emitAssets() {
   emit("update:modelValue", internalModel.value);

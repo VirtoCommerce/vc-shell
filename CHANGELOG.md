@@ -1,3 +1,12 @@
+## [1.0.198](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.197...v1.0.198) (2024-05-01)
+
+
+### Features
+
+* vm-1314 toolbars in assets and video widgets for operator ([ebb0787](https://github.com/VirtoCommerce/vendor-portal/commit/ebb078705aafd560e8273aad199da0052e784e1e))
+
+
+
 ## [1.0.197](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.196...v1.0.197) (2024-04-30)
 
 

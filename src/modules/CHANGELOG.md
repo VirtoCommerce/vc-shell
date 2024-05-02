@@ -1,3 +1,12 @@
+## [1.0.199](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.198...v1.0.199) (2024-05-02)
+
+
+### Features
+
+* vm-1310 offer sku validation ([4859234](https://github.com/VirtoCommerce/vendor-portal/commit/48592343484c8b6e19cd2fa2fee5dc69c328087c))
+
+
+
 ## [1.0.198](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.197...v1.0.198) (2024-05-01)
 
 

@@ -167,6 +167,9 @@
             "PHYSICAL": "Physical",
             "DIGITAL": "Digital"
           }
+        },
+        "ERRORS":{
+          "SKU_ALREADY_EXISTS": "An offer with the SKU: {value} already exists, please change the SKU."
         }
       },
       "ALERTS": {

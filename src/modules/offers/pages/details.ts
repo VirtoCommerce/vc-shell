@@ -97,6 +97,10 @@ export const details: DynamicDetailsSchema = {
               property: "sku",
               rules: {
                 required: true,
+                min: 3,
+              },
+              update: {
+                method: "validateSku",
               },
             },
             {

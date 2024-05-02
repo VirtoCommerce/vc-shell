@@ -24,6 +24,8 @@ import {
   SellerProduct,
   IOfferPrice,
   ChangeOfferDefaultCommand,
+  ValidateOfferQuery,
+  ValidationFailure,
 } from "@vcmp-vendor-portal/api/marketplacevendor";
 import { Ref, computed, nextTick, reactive, ref, watch, ComputedRef } from "vue";
 import { useMarketplaceSettings } from "../../../settings";
@@ -32,6 +34,7 @@ import { ICurrency } from "../../../settings/composables/useMarketplaceSettings"
 import { useDynamicProperties, useMultilanguage } from "../../../common";
 import { useFulfillmentCenters } from "../../../fulfillment-centers/composables";
 import { useRoute } from "vue-router";
+import { useDebounceFn } from "@vueuse/core";
 
 export interface IProductType {
   label: string;
@@ -319,12 +322,48 @@ export const useOfferDetails = (args: {
     },
   );
 
+  async function validateOffer(offer: IOffer): Promise<ValidationFailure[]> {
+    const client = await getApiClient();
+
+    const query = new ValidateOfferQuery({
+      offer: new Offer(offer),
+    });
+
+    try {
+      return await client.validateOffer(query);
+    } catch (e) {
+      console.error(e);
+      throw e;
+    }
+  }
+
+  const validateSku = useDebounceFn(async (value: string, property) => {
+    const offer = {
+      ...item.value,
+      sku: value,
+    } as IOffer;
+    const offerErrors = await validateOffer(offer);
+    const errors = offerErrors?.filter((error) => error.propertyName?.toLowerCase() === "sku");
+    validationState.value.setFieldError(
+      property,
+      errors
+        .map((error) =>
+          t(`OFFERS.PAGES.DETAILS.ERRORS.${error?.errorCode}`, {
+            value: error?.attemptedValue,
+          }),
+        )
+        .concat(validationState.value.errorBag[property] ?? [])
+        .join("\n"),
+    );
+  }, 1000);
+
   const scope = ref<OfferDetailsScope>({
     fetchProducts,
     removePrice,
     addPrice,
     getProductItem,
     trackInventoryFn,
+    validateSku,
     disableProductSelect: computed(() => !!args.props.param),
     currencies,
     productTypeOptions,

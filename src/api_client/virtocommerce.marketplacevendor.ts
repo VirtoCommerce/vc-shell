@@ -1715,6 +1715,60 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
    * @param body (optional)
    * @return Success
    */
+  validateOffer(body?: ValidateOfferQuery | undefined): Promise<ValidationFailure[]> {
+    let url_ = this.baseUrl + "/api/vcmp/seller/offers/validate";
+    url_ = url_.replace(/[?&]$/, "");
+
+    const content_ = JSON.stringify(body);
+
+    let options_: RequestInit = {
+      body: content_,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json-patch+json",
+        Accept: "text/plain",
+      },
+    };
+
+    return this.transformOptions(options_)
+      .then((transformedOptions_) => {
+        return this.http.fetch(url_, transformedOptions_);
+      })
+      .then((_response: Response) => {
+        return this.processValidateOffer(_response);
+      });
+  }
+
+  protected processValidateOffer(response: Response): Promise<ValidationFailure[]> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+    }
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+        if (Array.isArray(resultData200)) {
+          result200 = [] as any;
+          for (let item of resultData200) result200!.push(ValidationFailure.fromJS(item));
+        } else {
+          result200 = <any>null;
+        }
+        return result200;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
+    }
+    return Promise.resolve<ValidationFailure[]>(null as any);
+  }
+
+  /**
+   * @param body (optional)
+   * @return Success
+   */
   searchFulfillmentCenters(body?: SearchFulfillmentCentersQuery | undefined): Promise<SearchFulfillmentCentersResult> {
     let url_ = this.baseUrl + "/api/vcmp/seller/fulfillmentcenters/search";
     url_ = url_.replace(/[?&]$/, "");
@@ -6488,6 +6542,9 @@ export class CreateNewPublicationRequestCommand implements ICreateNewPublication
   sellerId?: string | undefined;
   sellerName?: string | undefined;
   storeId?: string | undefined;
+  isOperator?: boolean;
+  operatorId?: string | undefined;
+  operatorName?: string | undefined;
   productId!: string;
   comment?: string | undefined;
 
@@ -6504,6 +6561,9 @@ export class CreateNewPublicationRequestCommand implements ICreateNewPublication
       this.sellerId = _data["sellerId"];
       this.sellerName = _data["sellerName"];
       this.storeId = _data["storeId"];
+      this.isOperator = _data["isOperator"];
+      this.operatorId = _data["operatorId"];
+      this.operatorName = _data["operatorName"];
       this.productId = _data["productId"];
       this.comment = _data["comment"];
     }
@@ -6521,6 +6581,9 @@ export class CreateNewPublicationRequestCommand implements ICreateNewPublication
     data["sellerId"] = this.sellerId;
     data["sellerName"] = this.sellerName;
     data["storeId"] = this.storeId;
+    data["isOperator"] = this.isOperator;
+    data["operatorId"] = this.operatorId;
+    data["operatorName"] = this.operatorName;
     data["productId"] = this.productId;
     data["comment"] = this.comment;
     return data;
@@ -6531,6 +6594,9 @@ export interface ICreateNewPublicationRequestCommand {
   sellerId?: string | undefined;
   sellerName?: string | undefined;
   storeId?: string | undefined;
+  isOperator?: boolean;
+  operatorId?: string | undefined;
+  operatorName?: string | undefined;
   productId: string;
   comment?: string | undefined;
 }
@@ -16450,6 +16516,7 @@ export class SellerProduct implements ISellerProduct {
   canBeModified?: boolean;
   publicationRequests?: ProductPublicationRequest[] | undefined;
   outerId?: string | undefined;
+  productType?: string | undefined;
   readonly productData?: CatalogProduct | undefined;
   publishedProductDataId?: string | undefined;
   stagedProductDataId?: string | undefined;
@@ -16489,6 +16556,7 @@ export class SellerProduct implements ISellerProduct {
           this.publicationRequests!.push(ProductPublicationRequest.fromJS(item));
       }
       this.outerId = _data["outerId"];
+      this.productType = _data["productType"];
       (<any>this).productData = _data["productData"] ? CatalogProduct.fromJS(_data["productData"]) : <any>undefined;
       this.publishedProductDataId = _data["publishedProductDataId"];
       this.stagedProductDataId = _data["stagedProductDataId"];
@@ -16528,6 +16596,7 @@ export class SellerProduct implements ISellerProduct {
       for (let item of this.publicationRequests) data["publicationRequests"].push(item.toJSON());
     }
     data["outerId"] = this.outerId;
+    data["productType"] = this.productType;
     data["productData"] = this.productData ? this.productData.toJSON() : <any>undefined;
     data["publishedProductDataId"] = this.publishedProductDataId;
     data["stagedProductDataId"] = this.stagedProductDataId;
@@ -16557,6 +16626,7 @@ export interface ISellerProduct {
   canBeModified?: boolean;
   publicationRequests?: ProductPublicationRequest[] | undefined;
   outerId?: string | undefined;
+  productType?: string | undefined;
   productData?: CatalogProduct | undefined;
   publishedProductDataId?: string | undefined;
   stagedProductDataId?: string | undefined;
@@ -18297,6 +18367,49 @@ export interface IUpdateSellerUserCommand {
   seller?: Seller | undefined;
   sellerUserId: string;
   userDetails?: SellerUserDetails | undefined;
+}
+
+export class ValidateOfferQuery implements IValidateOfferQuery {
+  sellerId?: string | undefined;
+  sellerName?: string | undefined;
+  offer?: Offer | undefined;
+
+  constructor(data?: IValidateOfferQuery) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property)) (<any>this)[property] = (<any>data)[property];
+      }
+    }
+  }
+
+  init(_data?: any) {
+    if (_data) {
+      this.sellerId = _data["sellerId"];
+      this.sellerName = _data["sellerName"];
+      this.offer = _data["offer"] ? Offer.fromJS(_data["offer"]) : <any>undefined;
+    }
+  }
+
+  static fromJS(data: any): ValidateOfferQuery {
+    data = typeof data === "object" ? data : {};
+    let result = new ValidateOfferQuery();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    data["sellerId"] = this.sellerId;
+    data["sellerName"] = this.sellerName;
+    data["offer"] = this.offer ? this.offer.toJSON() : <any>undefined;
+    return data;
+  }
+}
+
+export interface IValidateOfferQuery {
+  sellerId?: string | undefined;
+  sellerName?: string | undefined;
+  offer?: Offer | undefined;
 }
 
 export class ValidateProductQuery implements IValidateProductQuery {

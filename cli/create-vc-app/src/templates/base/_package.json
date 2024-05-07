@@ -59,6 +59,7 @@
     "@vc-shell/framework": "^1.0.208",
     "@vueuse/core": "^10.7.1",
     "@vueuse/integrations": "^10.7.1",
+    "cross-spawn": "^7.0.3",
     "moment": "^2.30.1",
     "roboto-fontface": "^0.10.0",
     "vee-validate": "^4.12.4",

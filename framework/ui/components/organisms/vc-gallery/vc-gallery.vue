@@ -149,7 +149,33 @@ watch(
 
 const onUpload = (files: FileList) => {
   if (files && files.length) {
-    emit("upload", files, props.images[props.images.length - 1]?.sortOrder);
+    const uploadedFiles: File[] = [];
+    const existingImageNames = defaultImages.value.map((image) => image.name);
+
+    Array.from(files).forEach((file: File) => {
+      let fileName = file.name;
+
+      if (existingImageNames.includes(fileName)) {
+        let index = 1;
+        const baseName = fileName.replace(/\.[^/.]+$/, "");
+
+        while (existingImageNames.includes(fileName)) {
+          fileName = `${baseName}_${index}.${file.name.split(".").pop()}`;
+          index++;
+        }
+      }
+
+      const modifiedFile = new File([file], fileName, { type: file.type });
+
+      uploadedFiles.push(modifiedFile);
+    });
+
+    const modifiedFileList = new DataTransfer();
+    uploadedFiles.forEach((file) => {
+      modifiedFileList.items.add(file);
+    });
+
+    emit("upload", modifiedFileList.files, props.images[props.images.length - 1]?.sortOrder);
   }
 };
 

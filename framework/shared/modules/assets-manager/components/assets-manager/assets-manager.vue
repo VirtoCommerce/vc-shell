@@ -320,8 +320,33 @@ function toggleUploader() {
 
 async function upload(files: FileList) {
   if (files && files.length) {
+    const uploadedFiles: File[] = [];
+    const existingImageNames = defaultAssets.value.map((asset) => asset.name);
+
+    Array.from(files).forEach((file: File) => {
+      let fileName = file.name;
+
+      if (existingImageNames.includes(fileName)) {
+        let index = 1;
+        const baseName = fileName.replace(/\.[^/.]+$/, "");
+
+        while (existingImageNames.includes(fileName)) {
+          fileName = `${baseName}_${index}.${file.name.split(".").pop()}`;
+          index++;
+        }
+      }
+
+      const modifiedFile = new File([file], fileName, { type: file.type });
+
+      uploadedFiles.push(modifiedFile);
+    });
+
+    const modifiedFileList = new DataTransfer();
+    uploadedFiles.forEach((file) => {
+      modifiedFileList.items.add(file);
+    });
     if (props.options.assetsUploadHandler && typeof props.options.assetsUploadHandler === "function")
-      defaultAssets.value = await props.options.assetsUploadHandler(files);
+      defaultAssets.value = await props.options.assetsUploadHandler(modifiedFileList.files);
   }
 }
 

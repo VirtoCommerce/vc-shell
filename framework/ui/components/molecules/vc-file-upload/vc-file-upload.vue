@@ -74,12 +74,16 @@ export interface Emits {
 
 const props = withDefaults(defineProps<Props>(), {
   variant: "gallery",
-  accept: ".jpg, .png, .jpeg",
+  accept: ".jpg, .png, .jpeg, .webp, .heic",
   name: "Gallery",
   icon: "fas fa-cloud-upload-alt",
 });
 
 const emit = defineEmits<Emits>();
+
+defineSlots<{
+  error: void;
+}>();
 
 const { t } = useI18n({ useScope: "global" });
 

@@ -1,3 +1,12 @@
+## [1.0.209](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.208...v1.0.209) (2024-05-07)
+
+
+### Bug Fixes
+
+* **create-vc-app:** fixed boilerplate release script ([b1e3124](https://github.com/VirtoCommerce/vc-shell/commit/b1e312445acb99402850e22208c1c9e4b7912502))
+
+
+
 ## [1.0.208](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.207...v1.0.208) (2024-04-30)
 
 

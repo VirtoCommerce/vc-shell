@@ -1,3 +1,18 @@
+## [1.0.209](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.208...v1.0.209) (2024-05-07)
+
+
+### Bug Fixes
+
+* **create-vc-app:** fixed boilerplate release script ([b1e3124](https://github.com/VirtoCommerce/vc-shell/commit/b1e312445acb99402850e22208c1c9e4b7912502))
+
+
+### Features
+
+* img extensions, renaming vm-1315 ([cd02d04](https://github.com/VirtoCommerce/vc-shell/commit/cd02d04d924f9049521b2f116e0ed192f29ce981))
+* support of edit mode for blade and vc-table vm-1312 ([b1c8daa](https://github.com/VirtoCommerce/vc-shell/commit/b1c8daae2255befdadd8a3012354ba3efa813e84))
+
+
+
 ## [1.0.208](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.207...v1.0.208) (2024-04-30)
 
 

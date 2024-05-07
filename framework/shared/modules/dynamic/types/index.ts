@@ -149,6 +149,7 @@ export interface ListContentSchema {
   multiselect?: boolean;
   header?: boolean;
   footer?: boolean;
+  editable?: boolean;
   columns?: (Omit<ITableColumns, "visible"> & {
     id: string;
     title: string;
@@ -184,7 +185,6 @@ export interface ListContentSchema {
     component: string;
   };
 }
-
 export interface FormContentSchema {
   id: string;
   component: "vc-form";

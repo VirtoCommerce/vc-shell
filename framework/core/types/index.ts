@@ -148,6 +148,8 @@ export type ITableColumns = {
   format?: string;
   align?: "start" | "end" | "center" | "between" | "around" | "evenly";
   visible?: boolean;
+  editable?: boolean;
+  currencyField?: string;
 };
 
 export interface MenuItem extends Omit<MenuItemConfig, "title" | "id"> {

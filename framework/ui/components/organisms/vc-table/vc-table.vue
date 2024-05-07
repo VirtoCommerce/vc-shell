@@ -353,11 +353,13 @@
                     v-if="typeof item === 'object'"
                     :cell="cell"
                     :item="item"
+                    :cell-edit-active="cellEditActive"
                     :width="
                       calculateElWidth(
                         `${(typeof item === 'object' && 'id' in item && item.id) || itemIndex}_${cell.id}`,
                       )
                     "
+                    @update="$emit('onEditComplete', { event: $event, index: itemIndex })"
                   ></VcTableCell>
                 </slot>
               </td>
@@ -517,6 +519,7 @@ const props = withDefaults(
     stateKey: string;
     selectAll?: boolean;
     enableItemActions?: boolean;
+    cellEditActive?: boolean;
   }>(),
   {
     items: () => [],
@@ -546,6 +549,7 @@ const emit = defineEmits<{
   "scroll:ptr": [];
   "row:reorder": [args: { dragIndex: number; dropIndex: number; value: T[] }];
   "select:all": [values: boolean];
+  onEditComplete: [args: { event: { field: string; value: string | number }; index: number }];
 }>();
 
 const { t } = useI18n({ useScope: "global" });

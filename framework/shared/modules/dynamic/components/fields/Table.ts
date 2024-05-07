@@ -1,11 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useTableTemplates } from "./../../composables";
-import { Component, ExtractPropTypes, computed, h, unref } from "vue";
+import { Component, ExtractPropTypes, computed, h, inject, unref } from "vue";
 import { Table } from "../factories";
 import componentProps from "./props";
 import { TableSchema } from "../../types";
 import { useI18n } from "vue-i18n";
 import { unrefNested } from "../../helpers/unrefNested";
+import { setModel } from "../../helpers/setters";
 
 type TableItemData = Record<string, any>;
 
@@ -15,6 +16,8 @@ export default {
   setup(props: ExtractPropTypes<typeof componentProps> & { element: TableSchema }) {
     const { tableTemplates } = useTableTemplates(props.element);
     const { t } = useI18n({ useScope: "global" });
+    const enableEdit = inject("isBladeEditable", false);
+    const enableEditComputed = computed(() => unref(enableEdit));
 
     return () => {
       const field = Table({
@@ -24,10 +27,21 @@ export default {
             header: !!props.element.header,
             footer: !!props.element.footer,
             multiselect: !!props.element.multiselect,
+            editable: !!props.element.editable,
             columns: props.element.columns?.map((col) => ({ ...col, title: computed(() => t(col.title)) })),
             items: unrefNested(props.baseProps).modelValue ?? [],
             stateKey: props.element.id,
             class: `!tw-flex-auto ${unrefNested(props.baseProps).classNames ?? ""}`,
+            cellEditActive: enableEditComputed.value,
+            onOnEditComplete: (data: any) => {
+              if (props.fieldContext) {
+                setModel({
+                  context: props.fieldContext,
+                  property: `${props.element.property}.${data.index}.${data.event.field}`,
+                  value: data.event.value,
+                });
+              }
+            },
           },
           unrefNested(props.baseProps),
         ),

@@ -80,6 +80,7 @@ import {
   ConcreteComponent,
   toRefs,
   provide,
+  toRef,
 } from "vue";
 import { DynamicDetailsSchema, FormContentSchema, SettingsSchema } from "../types";
 import { reactiveComputed, toReactive, useMounted, useTemplateRefsList } from "@vueuse/core";
@@ -352,6 +353,7 @@ onBeforeClose(async () => {
 });
 
 provide("bladeContext", toReactive(bladeContext));
+provide("isBladeEditable", toRef(toValue(scope ?? {}), "isBladeEditable"));
 
 defineExpose({
   title: bladeTitle ?? "",

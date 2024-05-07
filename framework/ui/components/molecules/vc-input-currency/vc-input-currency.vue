@@ -36,12 +36,14 @@
             name="button"
             :toggle-handler="toggleHandler"
           >
-            <button
-              class="tw-text-[#43b0e6] tw-not-italic tw-font-medium tw-text-[13px] tw-leading-[20px] tw-cursor-pointer"
-              @click.stop.prevent="toggleHandler"
-            >
-              {{ unref(option) }}
-            </button>
+            <template v-if="options && options.length">
+              <button
+                class="tw-text-[#43b0e6] tw-not-italic tw-font-medium tw-text-[13px] tw-leading-[20px] tw-cursor-pointer"
+                @click.stop.prevent="toggleHandler"
+              >
+                {{ unref(option) }}
+              </button>
+            </template>
           </slot>
         </template>
         <template #control="{ placeholder: holder }">
@@ -158,6 +160,10 @@ export interface Props {
    * @returns Label of the current option
    */
   optionLabel?: OptionProp<unknown>;
+  /**
+   * Currency sign display settings
+   */
+  currencyDisplay?: `${CurrencyDisplay}`;
 }
 
 export interface Emits {
@@ -168,6 +174,7 @@ export interface Emits {
 
 const props = withDefaults(defineProps<Props>(), {
   debounce: 0,
+  currencyDisplay: CurrencyDisplay.hidden,
 });
 
 defineSlots<{
@@ -189,7 +196,7 @@ const { inputRef, setOptions, numberValue } = useCurrencyInput(
   {
     locale: navigator.language,
     currency: props.option || "USD",
-    currencyDisplay: CurrencyDisplay.hidden,
+    currencyDisplay: props.currencyDisplay as CurrencyDisplay,
     hideGroupingSeparatorOnFocus: false,
   },
   false,
@@ -203,7 +210,7 @@ watch(
       setOptions({
         locale: navigator.language,
         currency: newVal,
-        currencyDisplay: CurrencyDisplay.hidden,
+        currencyDisplay: props.currencyDisplay as CurrencyDisplay,
         hideGroupingSeparatorOnFocus: false,
       });
   },

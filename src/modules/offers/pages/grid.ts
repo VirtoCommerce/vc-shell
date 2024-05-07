@@ -102,28 +102,12 @@ export const grid: DynamicGridSchema = {
           visible: { method: "needShowIsDefault" },
         },
         {
-          id: "prices.salePrice",
-          title: "OFFERS.PAGES.LIST.TABLE.HEADER.SALE_PRICE",
+          id: "prices[0].listPrice",
+          title: "OFFERS.PAGES.LIST.TABLE.HEADER.LIST_PRICE",
           sortable: true,
-          type: "money",
-        },
-        {
-          id: "minQuantity",
-          title: "OFFERS.PAGES.LIST.TABLE.HEADER.MIN_QTY",
-          sortable: true,
-          type: "number",
-        },
-        {
-          id: "inStockQuantity",
-          title: "OFFERS.PAGES.LIST.TABLE.HEADER.QTY",
-          sortable: true,
-          type: "number",
-        },
-        {
-          id: "availQuantity",
-          title: "OFFERS.PAGES.LIST.TABLE.HEADER.AVAIL_QTY",
-          sortable: true,
-          type: "number",
+          customTemplate: {
+            component: "ListPriceTemplate",
+          },
         },
       ],
     },

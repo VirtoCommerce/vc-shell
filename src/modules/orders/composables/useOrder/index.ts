@@ -62,8 +62,8 @@ export const useOrder = (args: {
 }): UseDetails<CustomerOrder, OrderScope> => {
   const factory = useDetailsFactory<CustomerOrder>({
     load: async (item) => {
-      const sellerId = await GetSellerId();
       if (item?.id) {
+        const sellerId = await GetSellerId();
         return (await getApiClient()).getById(item.id);
       }
     },
@@ -76,6 +76,7 @@ export const useOrder = (args: {
   const { t } = useI18n({ useScope: "global" });
   const { searchStateMachines, stateMachine, fireTrigger } = useStateMachines();
   const route = useRoute();
+  const stateMachineLoading = ref(false);
 
   const toolbar = ref([]) as Ref<IBladeToolbar[]>;
 
@@ -118,7 +119,6 @@ export const useOrder = (args: {
         ];
   });
 
-  // TODO: Remove after PT-10642 will be fixed
   const { getApiClient: getOrderApiClient } = useApiClient(OrderModuleClient);
 
   const { loading: pdfLoading, action: loadPdf } = useAsync(async () => {
@@ -187,20 +187,29 @@ export const useOrder = (args: {
           await loadPdf();
         }
       },
-      disabled: !args.props.param,
+      disabled: computed(() => stateMachineLoading.value || !args.props.param),
     });
+
     sm?.currentState?.transitions?.forEach((transition) => {
       toolbar.value.push({
         title: computed(() => t(`ORDERS.PAGES.DETAILS.TOOLBAR.${transition.trigger?.toUpperCase()}`)),
         icon: transition.icon ?? "fas fa-tasks",
+        disabled: computed(() => stateMachineLoading.value),
         async clickHandler() {
-          const currentStateMachine = await fireTrigger(sm.id!, transition.trigger!, args.props.param!);
-          args.emit("parent:call", {
-            method: "reload",
-          });
-          item.value!.status = transition.toState;
-          validationState.value.resetModified(item.value, true);
-          refreshToolbar(currentStateMachine);
+          try {
+            stateMachineLoading.value = true;
+            const currentStateMachine = await fireTrigger(sm.id!, transition.trigger!, args.props.param!);
+            args.emit("parent:call", {
+              method: "reload",
+            });
+            item.value!.status = transition.toState;
+            validationState.value.resetModified(item.value, true);
+            refreshToolbar(currentStateMachine);
+          } catch (error) {
+            console.error(error);
+          } finally {
+            stateMachineLoading.value = false;
+          }
         },
       });
     });

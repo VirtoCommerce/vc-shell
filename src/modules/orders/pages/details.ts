@@ -188,18 +188,23 @@ export const details: DynamicDetailsSchema = {
                   title: "ORDERS.PAGES.DETAILS.FORM.TABLE.QUANTITY",
                   width: 100,
                   type: "number",
+                  editable: true,
                 },
                 {
                   id: "price",
                   title: "ORDERS.PAGES.DETAILS.FORM.TABLE.UNIT_PRICE",
                   width: 100,
                   type: "money",
+                  editable: true,
+                  currencyField: "currency",
                 },
                 {
                   id: "extendedPrice",
                   title: "ORDERS.PAGES.DETAILS.FORM.TABLE.TOTAL",
                   width: 100,
                   type: "money",
+                  editable: true,
+                  currencyField: "currency",
                 },
                 {
                   id: "fee",

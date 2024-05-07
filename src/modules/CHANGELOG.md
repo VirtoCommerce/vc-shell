@@ -1,3 +1,13 @@
+## [1.0.200](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.199...v1.0.200) (2024-05-07)
+
+
+### Features
+
+* **offers:** vm-1316 toolbar disable on status change ([59ab0bb](https://github.com/VirtoCommerce/vendor-portal/commit/59ab0bbd98387a1eb4dc0ca24449ccab1e21ecac))
+* **offers:** vm-1318 vm-1317 columns change, custom listPrice col, locales fix ([a2f576c](https://github.com/VirtoCommerce/vendor-portal/commit/a2f576cb2aa84d84c498620330c578c0db217dc1))
+
+
+
 ## [1.0.199](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.198...v1.0.199) (2024-05-02)
 
 

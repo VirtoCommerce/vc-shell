@@ -4,6 +4,7 @@ import {
   useListFactory,
   DynamicBladeList,
   ListBaseBladeScope,
+  TOpenBladeArgs,
 } from "@vc-shell/framework";
 import {
   CustomerReview,
@@ -35,7 +36,7 @@ export const useReviews = (args: {
   const { openBlade, resolveBladeByName } = useBladeNavigation();
   const route = useRoute();
 
-  async function openDetailsBlade(args?: Omit<Parameters<typeof openBlade>["0"], "blade">) {
+  async function openDetailsBlade(args?: TOpenBladeArgs) {
     await openBlade({
       blade: resolveBladeByName("ReviewDetails"),
       ...args,

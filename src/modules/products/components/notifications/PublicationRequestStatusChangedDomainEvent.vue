@@ -81,16 +81,20 @@ const notificationStyle = computed(() => ({
   icon: "fas fa-box-open",
 }));
 
-function onClick() {
+async function onClick() {
   if (props.notification.notifyType === "PublicationRequestStatusChangedDomainEvent") {
     emit("notificationClick");
-    openBlade(
+    await openBlade(
       {
         blade: resolveBladeByName("Products"),
         param: props.notification.productId,
       },
       true,
     );
+    await openBlade({
+      blade: resolveBladeByName("Product"),
+      param: props.notification.productId,
+    });
   }
 }
 </script>

@@ -48,5 +48,12 @@ async function onItemClick(args?: { param: string }) {
     },
     true,
   );
+
+  if (args?.param) {
+    await openBlade({
+      blade: resolveBladeByName("OrderDetails"),
+      param: args?.param,
+    });
+  }
 }
 </script>

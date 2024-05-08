@@ -1,7 +1,6 @@
 <template>
   <VcWidget
     v-loading="loading"
-    v-bind="props"
     :value="count"
     :title="$t('PRODUCTS.PAGES.DETAILS.WIDGETS.VIDEOS')"
     icon="fas fa-film"

@@ -1,6 +1,5 @@
 <template>
   <VcWidget
-    v-bind="props"
     :value="count"
     :title="$t('PRODUCTS.PAGES.DETAILS.WIDGETS.ASSETS')"
     icon="far fa-file"

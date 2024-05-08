@@ -55,6 +55,13 @@ async function onItemClick(args?: { param: string }) {
     },
     true,
   );
+
+  if (args?.param) {
+    await openBlade({
+      blade: resolveBladeByName("Offer"),
+      param: args?.param,
+    });
+  }
 }
 
 async function addItem() {

@@ -1,4 +1,4 @@
-import { DynamicBladeList, useBladeNavigation } from "@vc-shell/framework";
+import { DynamicBladeList, useBladeNavigation, TOpenBladeArgs } from "@vc-shell/framework";
 import { useProductsList } from "../../../products/composables/useProductsList";
 import { Ref, computed, ref } from "vue";
 import * as _ from "lodash-es";
@@ -18,7 +18,7 @@ export const useProductsListExtended = (args: {
     await load(query.value);
   };
 
-  async function openDetailsBlade(args?: Omit<Parameters<typeof openBlade>["0"], "blade">) {
+  async function openDetailsBlade(args?: TOpenBladeArgs) {
     await openBlade({
       blade: resolveBladeByName("MpProduct"),
       ...args,

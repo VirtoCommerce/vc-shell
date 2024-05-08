@@ -6,6 +6,7 @@ import {
   DynamicBladeList,
   useListFactory,
   ListBaseBladeScope,
+  TOpenBladeArgs,
 } from "@vc-shell/framework";
 import {
   VcmpSellerCatalogClient,
@@ -95,7 +96,7 @@ export const useProductsList = (args: {
     }
   }
 
-  async function openDetailsBlade(args?: Omit<Parameters<typeof openBlade>["0"], "blade">) {
+  async function openDetailsBlade(args?: TOpenBladeArgs) {
     await openBlade({
       blade: resolveBladeByName("Product"),
       ...args,

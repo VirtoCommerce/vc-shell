@@ -7,6 +7,7 @@ import {
   useListFactory,
   ListBaseBladeScope,
   IBladeToolbar,
+  TOpenBladeArgs,
 } from "@vc-shell/framework";
 import {
   VcmpSellerCatalogClient,
@@ -54,7 +55,7 @@ export const useVideosList = (args: {
 
   const isExporting = ref(false);
 
-  async function openDetailsBlade(args?: Omit<Parameters<typeof openBlade>["0"], "blade">) {
+  async function openDetailsBlade(args?: TOpenBladeArgs) {
     await openBlade({
       blade: resolveBladeByName("Video"),
       options: { productId: query.value.ownerIds?.find(() => true) },

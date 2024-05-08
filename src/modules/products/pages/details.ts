@@ -3,7 +3,6 @@ import { DynamicDetailsSchema } from "@vc-shell/framework";
 export const details: DynamicDetailsSchema = {
   settings: {
     url: "/product",
-    routable: false,
     id: "Product",
     localizationPrefix: "Products",
     composable: "useProductDetails",

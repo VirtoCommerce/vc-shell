@@ -1,3 +1,12 @@
+## [1.0.210](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.209...v1.0.210) (2024-05-08)
+
+
+### Bug Fixes
+
+* remove auto-open blade on param change, as it can lead to unpredictable behavior ([898e0d9](https://github.com/VirtoCommerce/vc-shell/commit/898e0d9ffc5812b71e8215a355c9ad0918c48dfe))
+
+
+
 ## [1.0.209](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.208...v1.0.209) (2024-05-07)
 
 

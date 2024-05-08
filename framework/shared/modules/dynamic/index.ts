@@ -80,13 +80,11 @@ const register = (
     setup: (props: ComponentProps<typeof bladeComponent>, ctx) =>
       (bladeComponent?.setup &&
         bladeComponent.setup(
-          Object.assign(
-            {},
-            reactiveComputed(() => props),
-            {
+          reactiveComputed(() =>
+            Object.assign({}, props, {
               model: json,
               composables: args.composables,
-            } as any,
+            } as any),
           ),
           ctx,
         )) ??

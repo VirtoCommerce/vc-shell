@@ -176,7 +176,7 @@ watch(
 );
 
 watch(
-  () => bladeTitle?.value,
+  () => unref(bladeTitle),
   (newVal) => {
     if (newVal && props.composables) {
       title.value = newVal;

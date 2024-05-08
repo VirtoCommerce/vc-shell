@@ -99,20 +99,7 @@ const query = ref();
 watch(
   () => props.param,
   (newVal) => {
-    if (newVal) {
       selectedItemId.value = newVal;
-
-      openBlade({
-        blade: markRaw(Details),
-        param: newVal,
-        onOpen() {
-          selectedItemId.value = newVal;
-        },
-        onClose() {
-          selectedItemId.value = undefined;
-        },
-      });
-    }
   },
   { immediate: true },
 );

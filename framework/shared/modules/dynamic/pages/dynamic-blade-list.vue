@@ -392,24 +392,7 @@ onBeforeMount(async () => {
 watch(
   () => props.param,
   async (newVal) => {
-    if (newVal) {
-      if (
-        scope &&
-        "openDetailsBlade" in toValue(scope) &&
-        toValue(scope).openDetailsBlade &&
-        typeof toValue(scope).openDetailsBlade === "function"
-      ) {
-        await toValue(scope).openDetailsBlade?.({
-          param: newVal,
-          onOpen() {
-            selectedItemId.value = newVal;
-          },
-          onClose() {
-            selectedItemId.value = undefined;
-          },
-        });
-      }
-    }
+    selectedItemId.value = newVal;
   },
   { immediate: true },
 );

@@ -485,25 +485,28 @@ export function useBladeNavigation(): IUseBladeNavigation {
         await openWorkspace(
           {
             blade: registeredWorkspaceComponent as unknown as BladeInstanceConstructor,
-            param:
-              registeredRouteComponent?.type.moduleUid === registeredWorkspaceComponent.type.moduleUid
-                ? param
-                : undefined,
+            param: computed(() => {
+              if (
+                navigationInstance.blades.value.length > 1 &&
+                registeredRouteComponent?.type.moduleUid === registeredWorkspaceComponent.type.moduleUid
+              ) {
+                return param;
+              }
+              return undefined;
+            }) as unknown as string,
           },
           getURLQuery().obj,
           params,
         );
 
-        // Open the route if it's not from the workspace module.
-        if (
-          registeredRouteComponent?.type.moduleUid !== registeredWorkspaceComponent.type.moduleUid &&
-          registeredRouteComponent?.type.routable
-        ) {
+        // Open the route if it's routable.
+        if (registeredRouteComponent?.type.routable) {
           await openBlade({
             blade: registeredRouteComponent as unknown as BladeInstanceConstructor,
             param: param,
           });
         }
+
         return { name: registeredWorkspaceComponent?.type.name, params, query: to.query };
       }
     } else {

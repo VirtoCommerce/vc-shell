@@ -129,7 +129,6 @@ export interface Props {
   param?: string;
   options?: {
     sellerProduct?: ISellerProduct;
-    addOffer?: boolean;
   };
 }
 
@@ -200,20 +199,7 @@ watch(sort, async (value) => {
 watch(
   () => props.param,
   (newVal) => {
-    if (newVal) {
-      selectedItemId.value = newVal;
-
-      if (props.param) {
-        openBlade({
-          blade: markRaw(OffersDetails),
-          param: newVal,
-        });
-      } else if (props.options?.addOffer) {
-        openBlade({
-          blade: markRaw(OffersDetails),
-        });
-      }
-    }
+    selectedItemId.value = newVal;
   },
   { immediate: true },
 );

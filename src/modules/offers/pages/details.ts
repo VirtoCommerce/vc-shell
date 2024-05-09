@@ -213,36 +213,36 @@ export const details: DynamicDetailsSchema = {
             },
           ],
         },
-        {
-          id: "validityDatesCard",
-          component: "vc-card",
-          label: "OFFERS.PAGES.DETAILS.FIELDS.DATES.TITLE",
-          fields: [
-            {
-              id: "validityDatesFieldset",
-              component: "vc-fieldset",
-              columns: 2,
-              fields: [
-                {
-                  id: "startDate",
-                  component: "vc-input",
-                  label: "OFFERS.PAGES.DETAILS.FIELDS.DATES.VALID_FROM",
-                  variant: "datetime-local",
-                  property: "startDate",
-                  rules: { before: "@endDate" },
-                },
-                {
-                  id: "endDate",
-                  component: "vc-input",
-                  label: "OFFERS.PAGES.DETAILS.FIELDS.DATES.VALID_TO",
-                  variant: "datetime-local",
-                  property: "endDate",
-                  rules: { after: "@startDate" },
-                },
-              ],
-            },
-          ],
-        },
+        // {
+        //   id: "validityDatesCard",
+        //   component: "vc-card",
+        //   label: "OFFERS.PAGES.DETAILS.FIELDS.DATES.TITLE",
+        //   fields: [
+        //     {
+        //       id: "validityDatesFieldset",
+        //       component: "vc-fieldset",
+        //       columns: 2,
+        //       fields: [
+        //         {
+        //           id: "startDate",
+        //           component: "vc-input",
+        //           label: "OFFERS.PAGES.DETAILS.FIELDS.DATES.VALID_FROM",
+        //           variant: "datetime-local",
+        //           property: "startDate",
+        //           rules: { before: "@endDate" },
+        //         },
+        //         {
+        //           id: "endDate",
+        //           component: "vc-input",
+        //           label: "OFFERS.PAGES.DETAILS.FIELDS.DATES.VALID_TO",
+        //           variant: "datetime-local",
+        //           property: "endDate",
+        //           rules: { after: "@startDate" },
+        //         },
+        //       ],
+        //     },
+        //   ],
+        // },
         {
           id: "galleryCard",
           component: "vc-card",
@@ -258,6 +258,11 @@ export const details: DynamicDetailsSchema = {
           ],
         },
       ],
+    },
+    {
+      id: "offerWidgets",
+      component: "vc-widgets",
+      children: ["SpecialPricesWidget"],
     },
   ],
 };

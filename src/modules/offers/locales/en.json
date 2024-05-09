@@ -138,7 +138,7 @@
             "VALID_TO": "Valid to"
           },
           "PRICING": {
-            "TITLE": "Pricing",
+            "TITLE": "Default pricing",
             "ADD_PRICE": "Add price",
             "CHOOSE_CURRENCY": "Choose currency",
             "EMPTY": "No prices for this offer",
@@ -160,7 +160,7 @@
             "DIGITAL": "Digital"
           }
         },
-        "ERRORS":{
+        "ERRORS": {
           "SKU_ALREADY_EXISTS": "An offer with the SKU: {value} already exists, please change the SKU."
         }
       },
@@ -175,6 +175,72 @@
           "ALL": "all {totalCount}"
         }
       }
+    }
+  },
+  "SPECIAL_PRICES": {
+    "PAGES": {
+      "LIST": {
+        "TITLE": "Special prices",
+        "TOOLBAR": {
+          "ADD": "Add price"
+        },
+        "TABLE": {
+          "TOTALS": "Count:",
+          "HEADER": {
+            "NAME": "Name",
+            "PRICE": "Price",
+            "START_DATE": "Valid from",
+            "END_DATE": "Valid to"
+          },
+          "ACTIONS": {
+            "DELETE": "Delete"
+          }
+        },
+        "NOT_FOUND": {
+          "EMPTY": "No special prices found.",
+          "RESET": "Reset search"
+        },
+        "EMPTY": {
+          "NO_ITEMS": "There are no special prices yet",
+          "ADD": "Add special price"
+        }
+      },
+      "DETAILS": {
+        "TITLE": "Add Special Price",
+        "TOOLBAR": {
+          "SAVE": "Save",
+          "DELETE": "Delete"
+        },
+        "FIELDS": {
+          "NAME": {
+            "TITLE": "Name"
+          },
+          "CONDITIONS": {
+            "TITLE": "Conditions"
+          },
+          "CUSTOMER_GROUP": { "TITLE": "Customer group" },
+          "PRICING": {
+            "TITLE": "Pricing",
+            "ADD_PRICE": "Add price",
+            "CHOOSE_CURRENCY": "Choose currency",
+            "EMPTY": "No prices for this offer",
+            "ERRORS": {
+              "SIMILAR": "Min quantity can't be the same"
+            }
+          },
+          "DATES": {
+            "TITLE": "Validity dates",
+            "VALID_FROM": "Valid from",
+            "VALID_TO": "Valid to"
+          }
+        },
+        "WIDGETS": {
+          "SPECIAL_PRICES": "Special prices"
+        }
+      }
+    },
+    "ALERTS": {
+      "CLOSE_CONFIRMATION": "You have unsaved changes. Close anyway?"
     }
   }
 }

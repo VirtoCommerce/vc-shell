@@ -1,3 +1,12 @@
+## [1.0.212](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.211...v1.0.212) (2024-05-09)
+
+
+### Bug Fixes
+
+* fix param type ([059d80c](https://github.com/VirtoCommerce/vc-shell/commit/059d80c924f5a18fe9457994c49b77249c8a7890))
+
+
+
 ## [1.0.211](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.210...v1.0.211) (2024-05-09)
 
 

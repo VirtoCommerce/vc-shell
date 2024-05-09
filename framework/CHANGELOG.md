@@ -1,3 +1,12 @@
+## [1.0.211](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.210...v1.0.211) (2024-05-09)
+
+
+### Bug Fixes
+
+* fix grid selection persistance on child blade close ([5e5ee3f](https://github.com/VirtoCommerce/vc-shell/commit/5e5ee3f70b27bed8c983dab092b610cf2cb78db7))
+
+
+
 ## [1.0.210](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.209...v1.0.210) (2024-05-08)
 
 

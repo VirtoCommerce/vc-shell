@@ -162,6 +162,7 @@ import {
   toRefs,
   provide,
   isRef,
+  MaybeRef,
 } from "vue";
 import { useI18n } from "vue-i18n";
 import { DynamicGridSchema, ListContentSchema, SettingsSchema } from "../types";
@@ -179,7 +180,7 @@ import { safeIn } from "../helpers/safeIn";
 export interface Props {
   expanded?: boolean;
   closable?: boolean;
-  param?: string;
+  param?: MaybeRef<string>;
   options?: unknown;
   model?: DynamicGridSchema;
   composables?: Record<string, (...args: any[]) => Record<string, any>>;
@@ -392,7 +393,7 @@ onBeforeMount(async () => {
 watch(
   () => props.param,
   async (newVal) => {
-    selectedItemId.value = newVal;
+    selectedItemId.value = unref(newVal);
   },
   { immediate: true },
 );

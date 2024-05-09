@@ -81,6 +81,7 @@ import {
   toRefs,
   provide,
   toRef,
+  MaybeRef,
 } from "vue";
 import { DynamicDetailsSchema, FormContentSchema, SettingsSchema } from "../types";
 import { reactiveComputed, toReactive, useMounted, useTemplateRefsList } from "@vueuse/core";
@@ -104,7 +105,7 @@ import { notification } from "../../../components";
 interface Props {
   expanded?: boolean;
   closable?: boolean;
-  param?: string;
+  param?: MaybeRef<string>;
   model?: DynamicDetailsSchema;
   options?: {
     [x: string]: unknown;
@@ -272,7 +273,7 @@ const toolbarComputed =
                 method: "updateActiveWidgetCount",
               });
 
-              if (!props.param) {
+              if (!unref(props.param)) {
                 emit("close:blade");
               }
             }
@@ -287,7 +288,7 @@ const toolbarComputed =
               )
             ) {
               if (props.param) {
-                await remove?.({ id: props.param });
+                await remove?.({ id: unref(props.param) });
                 emit("parent:call", {
                   method: "reload",
                 });
@@ -329,8 +330,8 @@ async function updateActiveWidgetCount() {
 }
 
 async function init() {
-  if (props.param) {
-    await load({ id: props.param });
+  if (props.param && unref(props.param)) {
+    await load({ id: unref(props.param) });
   }
 
   await nextTick(() => {

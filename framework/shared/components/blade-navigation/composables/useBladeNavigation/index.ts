@@ -1,6 +1,18 @@
-import { computed, getCurrentInstance, inject, warn, Component, isVNode, h, shallowRef, ComputedRef, watch } from "vue";
+import {
+  computed,
+  getCurrentInstance,
+  inject,
+  warn,
+  Component,
+  isVNode,
+  h,
+  shallowRef,
+  ComputedRef,
+  watch,
+  reactive,
+} from "vue";
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { createSharedComposable, reactiveComputed, watchDebounced } from "@vueuse/core";
+import { createSharedComposable, reactifyObject, reactiveComputed, toValue, watchDebounced } from "@vueuse/core";
 import * as _ from "lodash-es";
 import {
   RouteLocationNormalized,
@@ -276,13 +288,24 @@ export function useBladeNavigation(): IUseBladeNavigation {
     query: LocationQuery | undefined = undefined,
     params: RouteParams = {},
   ) {
-    const createdComponent = h(blade, {
-      param,
-      options,
-      navigation: {
-        idx: 0,
-      },
-    }) as BladeVNode;
+    const createdComponent = h(
+      blade,
+      reactifyObject({
+        param: computed(() => {
+          const isChildWithSameParamOpened = navigationInstance.blades.value.some(
+            (x) => x.props?.param === toValue(param),
+          );
+          if (isChildWithSameParamOpened) {
+            return toValue(param);
+          }
+          return undefined;
+        }) as unknown as string,
+        options,
+        navigation: {
+          idx: 0,
+        },
+      }),
+    ) as BladeVNode;
 
     try {
       // Close all blades except the first one cause it will be overwritten
@@ -483,7 +506,7 @@ export function useBladeNavigation(): IUseBladeNavigation {
       // Open the workspace component with param or workspace route.
       if (registeredWorkspaceComponent) {
         await openWorkspace(
-          {
+          reactifyObject({
             blade: registeredWorkspaceComponent as unknown as BladeInstanceConstructor,
             param: computed(() => {
               if (
@@ -494,7 +517,7 @@ export function useBladeNavigation(): IUseBladeNavigation {
               }
               return undefined;
             }) as unknown as string,
-          },
+          }),
           getURLQuery().obj,
           params,
         );

@@ -81,7 +81,6 @@ import {
   toRefs,
   provide,
   toRef,
-  MaybeRef,
 } from "vue";
 import { DynamicDetailsSchema, FormContentSchema, SettingsSchema } from "../types";
 import { reactiveComputed, toReactive, useMounted, useTemplateRefsList } from "@vueuse/core";
@@ -105,7 +104,7 @@ import { notification } from "../../../components";
 interface Props {
   expanded?: boolean;
   closable?: boolean;
-  param?: MaybeRef<string>;
+  param?: string;
   model?: DynamicDetailsSchema;
   options?: {
     [x: string]: unknown;

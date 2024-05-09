@@ -162,7 +162,6 @@ import {
   toRefs,
   provide,
   isRef,
-  MaybeRef,
 } from "vue";
 import { useI18n } from "vue-i18n";
 import { DynamicGridSchema, ListContentSchema, SettingsSchema } from "../types";
@@ -180,7 +179,7 @@ import { safeIn } from "../helpers/safeIn";
 export interface Props {
   expanded?: boolean;
   closable?: boolean;
-  param?: MaybeRef<string>;
+  param?: string;
   options?: unknown;
   model?: DynamicGridSchema;
   composables?: Record<string, (...args: any[]) => Record<string, any>>;

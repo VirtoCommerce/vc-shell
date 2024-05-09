@@ -76,7 +76,12 @@ export interface ListBaseBladeScope<Item = Record<string, any>, Query = Record<s
   openDetailsBlade?: (
     args?: Omit<Parameters<ReturnType<typeof useBladeNavigation>["openBlade"]>["0"], "blade">,
   ) => Promise<void> | void;
-  onListItemClick?: (args: { item?: Item }) => void;
+  onListItemClick?: (
+    args: { item?: Item } & Omit<
+      Parameters<ReturnType<typeof useBladeNavigation>["openBlade"]>["0"],
+      "blade" | "param" | "options"
+    >,
+  ) => void;
   onPaginationClick?: (query: Query) => void;
   breadcrumbs?: ComputedRef<Breadcrumbs[]>;
 }

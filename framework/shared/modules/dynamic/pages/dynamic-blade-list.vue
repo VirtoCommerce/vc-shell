@@ -442,9 +442,16 @@ const onItemClick = (item: { [x: string]: any; id?: string }) => {
       });
     }
 
+    // TODO Add to docs
     if (scope && safeIn("onListItemClick", toValue(scope)) && typeof toValue(scope).onListItemClick === "function") {
       toValue(scope).onListItemClick?.({
         item,
+        onOpen() {
+          selectedItemId.value = item.id;
+        },
+        onClose() {
+          selectedItemId.value = undefined;
+        },
       });
     }
   } else {

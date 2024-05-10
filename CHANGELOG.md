@@ -1,3 +1,12 @@
+## [1.0.204](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.203...v1.0.204) (2024-05-10)
+
+
+### Features
+
+* expose css to npm in modules library ([06a6dd8](https://github.com/VirtoCommerce/vendor-portal/commit/06a6dd80b8d3b027be0cabef06dfbb5238169780))
+
+
+
 ## [1.0.203](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.202...v1.0.203) (2024-05-09)
 
 

@@ -9,6 +9,8 @@ import * as FulfillmentCenters from "./fulfillment-centers";
 import * as Orders from "./orders";
 import * as Rating from "./rating";
 
+import "./../styles/index.scss";
+
 export default {
   Offers,
   Orders,

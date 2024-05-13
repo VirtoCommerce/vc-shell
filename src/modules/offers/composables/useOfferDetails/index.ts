@@ -26,6 +26,7 @@ import {
   ChangeOfferDefaultCommand,
   ValidateOfferQuery,
   ValidationFailure,
+  OfferPriceList,
 } from "@vcmp-vendor-portal/api/marketplacevendor";
 import { Ref, computed, nextTick, reactive, ref, watch, ComputedRef } from "vue";
 import { useMarketplaceSettings } from "../../../settings";
@@ -368,6 +369,11 @@ export const useOfferDetails = (args: {
     currencies,
     productTypeOptions,
     productTypeDisabled: computed(() => !!item.value?.id),
+    saveSpecialPrices: (data: { items: OfferPriceList[] }) => {
+      if (item.value) {
+        item.value.priceLists = data.items;
+      }
+    },
     toolbarOverrides: {
       saveChanges: {
         disabled: computed(() => {

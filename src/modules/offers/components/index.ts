@@ -6,6 +6,7 @@ import OffersDashboardCard from "./OffersDashboardCard.vue";
 import ListPriceTemplate from "./ListPriceTemplate.vue";
 
 export * from "./notifications";
+export * from "./widgets";
 export {
   OfferProductsSelectCategoryTemplate,
   OffersMobileGridView,

@@ -9,53 +9,20 @@
     >
       {{ $t("SHELL.DASHBOARD.TITLE") }}
     </div>
-    <VcRow>
-      <VcCol :size="10">
-        <VcRow>
-          <!-- Latest orders block -->
-          <VcCol
-            :size="3"
-            class="tw-p-2"
-          >
-            <component :is="modules.Orders.components.OrdersDashboardCard"></component>
-          </VcCol>
-
-          <!-- Rating & Reviews block -->
-          <VcCol
-            v-if="$hasAccess(UserPermissions.ManageSellerReviews)"
-            :size="4"
-            class="tw-p-2"
-          >
-            <component :is="modules.Rating.components.RatingDashboardCard"></component>
-          </VcCol>
-        </VcRow>
-
-        <VcRow>
-          <!-- Latest products block -->
-          <VcCol
-            :size="3"
-            class="tw-p-2"
-          >
-            <component :is="modules.Products.components.ProductsDashboardCard"></component>
-          </VcCol>
-
-          <!-- Offers block -->
-          <VcCol
-            :size="4"
-            class="tw-p-2"
-          >
-            <component :is="modules.Offers.components.OffersDashboardCard"></component>
-          </VcCol>
-        </VcRow>
-      </VcCol>
-    </VcRow>
+    <dic class="tw-flex tw-flex-wrap">
+      <component
+        :is="card"
+        v-for="(card, i) in dashboardCardComponents"
+        :key="`card_${i}`"
+      ></component>
+    </dic>
   </VcContainer>
 </template>
 
 <script lang="ts" setup>
 import { notification, useErrorHandler } from "@vc-shell/framework";
 import { watch } from "vue";
-import { default as modules, UserPermissions } from "@vcmp-vendor-portal/modules";
+import { dashboardCardComponents } from "@vcmp-vendor-portal/modules";
 
 const { error, reset } = useErrorHandler(true);
 

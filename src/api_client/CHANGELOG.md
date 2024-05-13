@@ -1,3 +1,12 @@
+## [1.0.205](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.203...v1.0.205) (2024-05-13)
+
+
+### Features
+
+* special prices WIP ([2953300](https://github.com/VirtoCommerce/vendor-portal/commit/2953300646c9585926af0c465ea8e9de27d390bf))
+
+
+
 ## [1.0.204](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.203...v1.0.204) (2024-05-10)
 
 

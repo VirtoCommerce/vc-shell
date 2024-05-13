@@ -3,7 +3,7 @@
     v-loading="loading"
     :value="count"
     :title="$t('PRODUCTS.PAGES.DETAILS.WIDGETS.OFFERS')"
-    icon="fas fa-tags"
+    icon="fas fa-shapes"
     @click="clickHandler"
   >
   </VcWidget>

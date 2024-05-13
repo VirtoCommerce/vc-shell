@@ -70,7 +70,7 @@ function onClick() {
   }
 
   &__title {
-    @apply tw-font-medium tw-text-sm tw-text-[#333333] tw-mt-3 tw-mb-1 tw-mx-0;
+    @apply tw-font-medium tw-text-sm tw-text-[#333333] tw-mt-3 tw-mb-1 tw-mx-0 tw-text-center;
   }
 
   &_disabled &__title {

@@ -92,6 +92,7 @@ export const grid: DynamicGridSchema = {
           id: "imgSrc",
           title: "PRODUCTS.PAGES.LIST.TABLE.HEADER.IMAGE",
           type: "image",
+          alwaysVisible: true,
         },
         {
           id: "name",

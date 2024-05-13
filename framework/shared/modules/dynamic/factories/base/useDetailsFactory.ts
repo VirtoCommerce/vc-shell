@@ -6,9 +6,9 @@ import type { ItemId, IValidationState, UseDetails } from "../types";
 import { createUnrefFn } from "@vueuse/core";
 
 export interface UseDetailsFactoryParams<Item> {
-  load: (args?: ItemId) => Promise<Item | undefined>;
-  saveChanges?: (details: Item) => Promise<Item | void>;
-  remove?: (args: ItemId) => Promise<void>;
+  load: (args?: ItemId) => Promise<Item | undefined> | Item | undefined;
+  saveChanges?: (details: Item) => Promise<Item | void> | Item | void;
+  remove?: (args: ItemId) => Promise<void> | void;
 }
 
 export const useDetailsFactory = <Item>(factoryParams: UseDetailsFactoryParams<Item>) => {

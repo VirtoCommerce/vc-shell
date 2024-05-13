@@ -288,15 +288,18 @@ const toolbarComputed =
             ) {
               if (props.param) {
                 await remove?.({ id: unref(props.param) });
-                emit("parent:call", {
-                  method: "reload",
-                });
-                emit("parent:call", {
-                  method: "updateActiveWidgetCount",
-                });
-
-                emit("close:blade");
+              } else {
+                await remove?.({ item: item.value });
               }
+
+              emit("parent:call", {
+                method: "reload",
+              });
+              emit("parent:call", {
+                method: "updateActiveWidgetCount",
+              });
+
+              emit("close:blade");
             }
           },
           disabled: computed(() => toValue(scope)?.disabled),

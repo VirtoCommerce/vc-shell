@@ -162,6 +162,7 @@ import {
   toRefs,
   provide,
   isRef,
+  onMounted,
 } from "vue";
 import { useI18n } from "vue-i18n";
 import { DynamicGridSchema, ListContentSchema, SettingsSchema } from "../types";
@@ -430,7 +431,22 @@ const openDetailsBlade = async () => {
 
 const onItemClick = (item: { [x: string]: any; id?: string }) => {
   if (!props.isWidgetView) {
-    if (scope && safeIn("openDetailsBlade", toValue(scope)) && typeof toValue(scope).openDetailsBlade === "function") {
+    // TODO Add to docs
+    if (scope && safeIn("onListItemClick", toValue(scope)) && typeof toValue(scope).onListItemClick === "function") {
+      toValue(scope).onListItemClick?.({
+        item,
+        onOpen() {
+          selectedItemId.value = item.id;
+        },
+        onClose() {
+          selectedItemId.value = undefined;
+        },
+      });
+    } else if (
+      scope &&
+      safeIn("openDetailsBlade", toValue(scope)) &&
+      typeof toValue(scope).openDetailsBlade === "function"
+    ) {
       toValue(scope).openDetailsBlade?.({
         param: item.id,
         onOpen() {
@@ -439,12 +455,6 @@ const onItemClick = (item: { [x: string]: any; id?: string }) => {
         onClose() {
           selectedItemId.value = undefined;
         },
-      });
-    }
-
-    if (scope && safeIn("onListItemClick", toValue(scope)) && typeof toValue(scope).onListItemClick === "function") {
-      toValue(scope).onListItemClick?.({
-        item,
       });
     }
   } else {

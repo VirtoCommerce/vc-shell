@@ -40,7 +40,7 @@ export type CustomQuery = { ids: string[] | null; allSelected?: boolean };
 export interface UseDetails<Item, Scope extends DetailsBaseBladeScope = DetailsBaseBladeScope> {
   load: AsyncAction<ItemId>;
   saveChanges: AsyncAction<Item, Item | void>;
-  remove?: AsyncAction<ItemId>;
+  remove?: AsyncAction<ItemId | Item>;
   loading: ComputedRef<boolean>;
   item: Ref<Item | undefined>;
   validationState: ComputedRef<IValidationState<Item>>;
@@ -76,12 +76,21 @@ export interface ListBaseBladeScope<Item = Record<string, any>, Query = Record<s
   openDetailsBlade?: (
     args?: Omit<Parameters<ReturnType<typeof useBladeNavigation>["openBlade"]>["0"], "blade">,
   ) => Promise<void> | void;
-  onListItemClick?: (args: { item?: Item }) => void;
+  onListItemClick?: (
+    args: { item?: Item } & Omit<
+      Parameters<ReturnType<typeof useBladeNavigation>["openBlade"]>["0"],
+      "blade" | "param" | "options"
+    >,
+  ) => void;
   onPaginationClick?: (query: Query) => void;
   breadcrumbs?: ComputedRef<Breadcrumbs[]>;
 }
 
 export type TOpenBladeArgs = Omit<Parameters<ReturnType<typeof useBladeNavigation>["openBlade"]>["0"], "blade">;
+export type TListItemClickArgs<Item extends Record<string, any> = Record<string, any>> = Omit<
+  Parameters<ReturnType<typeof useBladeNavigation>["openBlade"]>["0"],
+  "blade" | "param" | "options"
+> & { item?: Item | undefined };
 
 export interface DetailsBaseBladeScope extends BaseBladeScope {
   disabled?: ComputedRef<boolean | undefined> | Ref<boolean | undefined>;

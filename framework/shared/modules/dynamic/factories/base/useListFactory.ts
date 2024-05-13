@@ -9,8 +9,8 @@ interface ISearchResult<T> {
 }
 
 export interface UseListFactoryParams<Items extends Record<string, any>[], Query extends IQuery> {
-  load?: (query: Query, ...args: any[]) => Promise<ISearchResult<Items>>;
-  remove?: (query: Query, customQuery: CustomQuery, ...args: any[]) => Promise<void>;
+  load?: (query: Query, ...args: any[]) => Promise<ISearchResult<Items>> | ISearchResult<Items>;
+  remove?: (query: Query, customQuery: CustomQuery, ...args: any[]) => Promise<void> | void;
 }
 
 export interface IQuery {

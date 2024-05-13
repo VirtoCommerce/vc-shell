@@ -1,3 +1,18 @@
+## [1.0.213](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.212...v1.0.213) (2024-05-13)
+
+
+### Bug Fixes
+
+* **dynamic:** update remove action in UseDetails to accept ItemId or Item ([3f8ebdf](https://github.com/VirtoCommerce/vc-shell/commit/3f8ebdfdb26378143579fde2a30489d77a62aa75))
+
+
+### Features
+
+* **dynamic:** extend onListItemClick ([c45d2af](https://github.com/VirtoCommerce/vc-shell/commit/c45d2afaaa38a2be88d5926023e0446cabb33b09))
+* **dynamic:** factories sync methods, types update, grid item click separate method ([87cf7b8](https://github.com/VirtoCommerce/vc-shell/commit/87cf7b85e26c3304c9fe631697a897c27b5a7fae))
+
+
+
 ## [1.0.212](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.211...v1.0.212) (2024-05-09)
 
 

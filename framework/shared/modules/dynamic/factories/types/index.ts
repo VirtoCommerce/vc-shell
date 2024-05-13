@@ -87,6 +87,10 @@ export interface ListBaseBladeScope<Item = Record<string, any>, Query = Record<s
 }
 
 export type TOpenBladeArgs = Omit<Parameters<ReturnType<typeof useBladeNavigation>["openBlade"]>["0"], "blade">;
+export type TListItemClickArgs<Item extends Record<string, any> = Record<string, any>> = Omit<
+  Parameters<ReturnType<typeof useBladeNavigation>["openBlade"]>["0"],
+  "blade" | "param" | "options"
+> & { item?: Item | undefined };
 
 export interface DetailsBaseBladeScope extends BaseBladeScope {
   disabled?: ComputedRef<boolean | undefined> | Ref<boolean | undefined>;

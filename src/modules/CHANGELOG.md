@@ -1,3 +1,12 @@
+## [1.0.206](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.205...v1.0.206) (2024-05-13)
+
+
+### Reverts
+
+* e4846a0: feat: automatic registration of modules dashboard cards ([1099438](https://github.com/VirtoCommerce/vendor-portal/commit/1099438dcdf8199c6899d2a0db0b8e142352cd3b))
+
+
+
 ## [1.0.205](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.203...v1.0.205) (2024-05-13)
 
 

@@ -374,9 +374,6 @@ export const useOfferDetails = (args: {
         item.value.priceLists = data.items;
       }
     },
-    removeSpecialPrice: (data: { item: OfferPriceList }) => {
-      item.value?.priceLists?.splice(item.value?.priceLists?.findIndex((x) => x === data.item), 1);
-    },
     toolbarOverrides: {
       saveChanges: {
         disabled: computed(() => {

@@ -30,27 +30,19 @@ export const useSpecialPriceDetails = (args: {
 }): UseDetails<OfferPriceList> => {
   const { t } = useI18n({ useScope: "global" });
 
-  const internalModel = ref<OfferPriceList>();
-
-  watch(
-    () => args.props.options?.item,
-    (value) => {
-      internalModel.value = _.cloneDeep(value);
-    },
-    { immediate: true },
-  );
+  const internalModel = ref<OfferPriceList | undefined>(_.cloneDeep(args.props.options?.item));
 
   const detailsFactory = useDetailsFactory<OfferPriceList>({
     load: async () => {
       return internalModel.value;
     },
-    saveChanges: async (details) => {
+    saveChanges: (details) => {
       args.emit("parent:call", {
         method: "saveSpecialPrice",
         args: { item: details },
       });
     },
-    remove: async () => {
+    remove: () => {
       args.emit("parent:call", {
         method: "removeSpecialPrice",
         args: { item: internalModel.value },

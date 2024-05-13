@@ -94,10 +94,11 @@ export const useSpecialPricesList = (args: {
       }
     },
     removeSpecialPrice: (data: { item: OfferPriceList }) => {
-      args.emit("parent:call", {
-        method: "removeSpecialPrice",
-        args: { item: data.item },
-      });
+      const index = internalModel.value.findIndex((item) => _.isEqual(item, data.item));
+
+      if (index !== -1) {
+        internalModel.value.splice(index, 1);
+      }
     },
     toolbarOverrides: {
       save: {

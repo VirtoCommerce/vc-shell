@@ -1,3 +1,15 @@
+## [1.0.204](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.203...v1.0.204) (2024-05-13)
+
+
+### Features
+
+* automatic registration of modules dashboard cards ([e4846a0](https://github.com/VirtoCommerce/vendor-portal/commit/e4846a05fdd0448d9eb8cf634f4e917ac62d7576))
+* **products:** alwaysVisible pic ([a8c7418](https://github.com/VirtoCommerce/vendor-portal/commit/a8c7418d3ab500eeeba174cd5a808306801ec042))
+* special prices widget and blades ([f0225be](https://github.com/VirtoCommerce/vendor-portal/commit/f0225be0f6dbe61cf76f4c6b2df8e7508bc58b04))
+* special prices WIP ([2953300](https://github.com/VirtoCommerce/vendor-portal/commit/2953300646c9585926af0c465ea8e9de27d390bf))
+
+
+
 ## [1.0.203](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.202...v1.0.203) (2024-05-09)
 
 

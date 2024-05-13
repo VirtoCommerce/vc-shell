@@ -24,13 +24,4 @@ export default {
   Rating,
 };
 
-const dashboardCardComponents = {
-  orders: Orders.components.OrdersDashboardCard,
-  reviews: Rating.components.RatingDashboardCard,
-  products: Products.components.ProductsDashboardCard,
-  offers: Offers.components.OffersDashboardCard,
-};
-
-export { dashboardCardComponents };
-
 export * from "./types";

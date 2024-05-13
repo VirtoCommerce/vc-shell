@@ -12,7 +12,8 @@
     ".": {
       "import": "./dist/index.mjs",
       "types": "./dist/types/index.d.ts"
-    }
+    },
+    "./dist/style.css": "./dist/style.css"
   },
   "peerDependencies": {
     "@vcmp-vendor-portal/api": "^1.0.203"

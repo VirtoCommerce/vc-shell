@@ -31,6 +31,7 @@ export const specialPricesDetails: DynamicDetailsSchema = {
           id: "name",
           component: "vc-input",
           label: "SPECIAL_PRICES.PAGES.DETAILS.FIELDS.NAME.TITLE",
+          placeholder: "SPECIAL_PRICES.PAGES.DETAILS.FIELDS.NAME.PLACEHOLDER",
           property: "name",
         },
         {
@@ -139,6 +140,7 @@ export const specialPricesDetails: DynamicDetailsSchema = {
               property: "memberIds",
               optionValue: "id",
               optionLabel: "id",
+              placeholder: "SPECIAL_PRICES.PAGES.DETAILS.FIELDS.CUSTOMER_GROUP.PLACEHOLDER",
             },
           ],
         },

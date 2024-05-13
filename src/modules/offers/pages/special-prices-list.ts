@@ -10,6 +10,12 @@ export const specialPricesList: DynamicGridSchema = {
     component: "DynamicBladeList",
     toolbar: [
       {
+        id: "save",
+        icon: "fas fa-check",
+        title: "SPECIAL_PRICES.PAGES.LIST.TOOLBAR.CONFIRM",
+        method: "save",
+      },
+      {
         id: "add",
         icon: "fas fa-plus",
         title: "SPECIAL_PRICES.PAGES.LIST.TOOLBAR.ADD",
@@ -43,12 +49,14 @@ export const specialPricesList: DynamicGridSchema = {
           title: "SPECIAL_PRICES.PAGES.LIST.TABLE.HEADER.START_DATE",
           sortable: true,
           alwaysVisible: true,
+          type: "date-time",
         },
         {
           id: "endDate",
           title: "SPECIAL_PRICES.PAGES.LIST.TABLE.HEADER.END_DATE",
           sortable: true,
           alwaysVisible: true,
+          type: "date-time",
         },
       ],
     },

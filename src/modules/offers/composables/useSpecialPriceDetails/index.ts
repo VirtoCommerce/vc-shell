@@ -1,14 +1,35 @@
 import { IOfferPrice, OfferPrice, OfferPriceList } from "@vcmp-vendor-portal/api/marketplacevendor";
-import { DynamicBladeForm, UseDetails, useDetailsFactory, useLoading } from "@vc-shell/framework";
-import { Ref, computed, nextTick, reactive, ref, watch } from "vue";
+import {
+  DetailsBaseBladeScope,
+  DynamicBladeForm,
+  IBladeToolbar,
+  UseDetails,
+  useDetailsFactory,
+  useLoading,
+} from "@vc-shell/framework";
+import { Ref, computed, nextTick, reactive, ref, watch, WritableComputedRef } from "vue";
 import * as _ from "lodash-es";
-import useMarketplaceSettings from "../../../settings/composables/useMarketplaceSettings";
+import useMarketplaceSettings, { ICurrency } from "../../../settings/composables/useMarketplaceSettings";
+import { useI18n } from "vue-i18n";
+
+export interface SpecialPricesDetailsScope extends DetailsBaseBladeScope {
+  memberIds: WritableComputedRef<{ id: string }[]>;
+  removePrice: (idx: number) => void;
+  addPrice: () => void;
+  currencies: Ref<ICurrency[]>;
+  toolbarOverrides: {
+    saveChanges: IBladeToolbar;
+    remove: IBladeToolbar;
+  };
+}
 
 export const useSpecialPriceDetails = (args: {
   props: InstanceType<typeof DynamicBladeForm>["$props"] & { options?: { item: OfferPriceList } };
   emit: InstanceType<typeof DynamicBladeForm>["$emit"];
   mounted: Ref<boolean>;
 }): UseDetails<OfferPriceList> => {
+  const { t } = useI18n({ useScope: "global" });
+
   const internalModel = ref<OfferPriceList>();
 
   watch(
@@ -25,15 +46,20 @@ export const useSpecialPriceDetails = (args: {
     },
     saveChanges: async (details) => {
       args.emit("parent:call", {
-        method: "tryToSaveChanges",
+        method: "saveSpecialPrice",
         args: { item: details },
       });
     },
-    // remove: () => {},
+    remove: async () => {
+      args.emit("parent:call", {
+        method: "removeSpecialPrice",
+        args: { item: internalModel.value },
+      });
+    },
   });
 
   const { load, saveChanges, remove, loading, item, validationState } = detailsFactory();
-  const { currencies, settingUseDefaultOffer, productTypes, loadSettings } = useMarketplaceSettings();
+  const { currencies, loadSettings } = useMarketplaceSettings();
   const pricesLoading = ref(false);
   const duplicates = ref<string[]>([]);
   const pricingEqual = ref(false);
@@ -55,7 +81,7 @@ export const useSpecialPriceDetails = (args: {
     );
   }
 
-  const scope = ref({
+  const scope = ref<SpecialPricesDetailsScope>({
     memberIds: computed({
       get() {
         return item.value?.memberIds?.map((id) => ({ id })) ?? [];
@@ -77,6 +103,9 @@ export const useSpecialPriceDetails = (args: {
             validationState.value.modified
           );
         }),
+      },
+      remove: {
+        isVisible: computed(() => !!args.props.options?.item && !loading.value),
       },
     },
   });
@@ -134,14 +163,20 @@ export const useSpecialPriceDetails = (args: {
 
   watch(
     () => args?.mounted.value,
-    () => {
+    async () => {
       try {
         pricesLoading.value = true;
-        loadSettings();
+        await loadSettings();
 
         if (!args.props.param) {
+          await load();
+        }
+
+        if (!args.props.options?.item) {
           item.value = reactive(new OfferPriceList());
           addPrice();
+
+          validationState.value.resetModified(item.value, true);
         }
       } finally {
         pricesLoading.value = false;
@@ -157,6 +192,12 @@ export const useSpecialPriceDetails = (args: {
     item,
     validationState,
     scope: computed(() => scope.value),
-    bladeTitle: computed(() => item.value?.name ?? ""),
+    bladeTitle: computed(() => {
+      return args.props.options?.item
+        ? item.value?.name
+          ? item.value.name + " " + t("SPECIAL_PRICES.PAGES.DETAILS.SPECIAL_PRICE_DETAILS")
+          : ""
+        : t("SPECIAL_PRICES.PAGES.DETAILS.TITLE");
+    }),
   };
 };

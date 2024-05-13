@@ -180,9 +180,10 @@
   "SPECIAL_PRICES": {
     "PAGES": {
       "LIST": {
-        "TITLE": "Special prices",
+        "TITLE": "Prices",
         "TOOLBAR": {
-          "ADD": "Add price"
+          "ADD": "Add price",
+          "CONFIRM": "Confirm"
         },
         "TABLE": {
           "TOTALS": "Count:",
@@ -197,28 +198,33 @@
           }
         },
         "NOT_FOUND": {
-          "EMPTY": "No special prices found.",
+          "EMPTY": "No prices found.",
           "RESET": "Reset search"
         },
         "EMPTY": {
-          "NO_ITEMS": "There are no special prices yet",
-          "ADD": "Add special price"
+          "NO_ITEMS": "There are no prices yet",
+          "ADD": "Add price"
         }
       },
       "DETAILS": {
-        "TITLE": "Add Special Price",
+        "TITLE": "Add Price",
+        "SPECIAL_PRICE_DETAILS": " price details",
         "TOOLBAR": {
           "SAVE": "Save",
           "DELETE": "Delete"
         },
         "FIELDS": {
           "NAME": {
-            "TITLE": "Name"
+            "TITLE": "Name",
+            "PLACEHOLDER": "Enter price name"
           },
           "CONDITIONS": {
             "TITLE": "Conditions"
           },
-          "CUSTOMER_GROUP": { "TITLE": "Customer group" },
+          "CUSTOMER_GROUP": {
+            "TITLE": "Customer group",
+            "PLACEHOLDER": "Enter customer group ID"
+          },
           "PRICING": {
             "TITLE": "Pricing",
             "ADD_PRICE": "Add price",
@@ -235,12 +241,12 @@
           }
         },
         "WIDGETS": {
-          "SPECIAL_PRICES": "Special prices"
+          "SPECIAL_PRICES": "Prices"
         }
+      },
+      "ALERTS": {
+        "CLOSE_CONFIRMATION": "You have unsaved changes. Close anyway?"
       }
-    },
-    "ALERTS": {
-      "CLOSE_CONFIRMATION": "You have unsaved changes. Close anyway?"
     }
   }
 }

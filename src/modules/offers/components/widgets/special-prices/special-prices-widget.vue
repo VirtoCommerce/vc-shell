@@ -1,6 +1,6 @@
 <template>
   <VcWidget
-    value="11"
+    :value="modelValue.item?.priceLists?.length"
     icon="fas fa-tags"
     :title="$t('SPECIAL_PRICES.PAGES.DETAILS.WIDGETS.SPECIAL_PRICES')"
     @click="clickHandler"
@@ -9,17 +9,17 @@
 </template>
 
 <script lang="ts" setup>
-import { VcWidget, useBladeNavigation, usePopup, useAssets, useUser } from "@vc-shell/framework";
-import { useSpecialPriceDetails } from "../../../composables";
+import { VcWidget, useBladeNavigation } from "@vc-shell/framework";
+import { useOfferDetails } from "../../../composables";
 import { UnwrapNestedRefs, ref } from "vue";
 
 const props = defineProps<{
   // TODO Add to documentation
-  modelValue: UnwrapNestedRefs<ReturnType<typeof useSpecialPriceDetails>>;
+  modelValue: UnwrapNestedRefs<ReturnType<typeof useOfferDetails>>;
 }>();
 
 const emit = defineEmits<{
-  (event: "update:modelValue", context: UnwrapNestedRefs<ReturnType<typeof useSpecialPriceDetails>>): void;
+  (event: "update:modelValue", context: UnwrapNestedRefs<ReturnType<typeof useOfferDetails>>): void;
 }>();
 
 const { openBlade, resolveBladeByName } = useBladeNavigation();

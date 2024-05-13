@@ -369,12 +369,13 @@ export const useOfferDetails = (args: {
     currencies,
     productTypeOptions,
     productTypeDisabled: computed(() => !!item.value?.id),
-    saveSpecialPrices: (data: { item: OfferPriceList }) => {
-      if (item.value?.priceLists?.find((x) => x.id === data.item.id)) {
-        item.value.priceLists = item.value.priceLists?.map((x) => (x.id === data.item.id ? data.item : x));
-      } else {
-        item.value?.priceLists?.push(data.item);
+    saveSpecialPrices: (data: { items: OfferPriceList[] }) => {
+      if (item.value) {
+        item.value.priceLists = data.items;
       }
+    },
+    removeSpecialPrice: (data: { item: OfferPriceList }) => {
+      item.value?.priceLists?.splice(item.value?.priceLists?.findIndex((x) => x === data.item), 1);
     },
     toolbarOverrides: {
       saveChanges: {

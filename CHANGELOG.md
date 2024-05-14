@@ -1,3 +1,12 @@
+## [1.0.208](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.207...v1.0.208) (2024-05-14)
+
+
+### Bug Fixes
+
+* add object assign to properly update data ([a2b6347](https://github.com/VirtoCommerce/vendor-portal/commit/a2b6347484661a8809771a5dc04fc3061947dc87))
+
+
+
 ## [1.0.207](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.206...v1.0.207) (2024-05-14)
 
 

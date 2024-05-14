@@ -77,7 +77,6 @@ export const useOrder = (args: {
   const { searchStateMachines, stateMachine, fireTrigger } = useStateMachines();
   const route = useRoute();
   const stateMachineLoading = ref(false);
-  const isBladeEditable = ref(false);
   const toolbar = ref([]) as Ref<IBladeToolbar[]>;
 
   const shippingInfo = computed(() => {
@@ -137,7 +136,6 @@ export const useOrder = (args: {
   });
 
   const scope = ref<OrderScope>({
-    isBladeEditable,
     toolbarOverrides: computed(() => toolbar.value),
     shippingInfo,
     addressVisibility: (schema: { property: keyof IShippingInfo }, fieldContext: IShippingInfo) => {
@@ -180,35 +178,6 @@ export const useOrder = (args: {
 
   const refreshToolbar = (sm: StateMachineInstance) => {
     toolbar.value.splice(0);
-    toolbar.value.push(
-      {
-        title: computed(() => t("ORDERS.PAGES.DETAILS.TOOLBAR.DL_PDF")),
-        icon: "fas fa-file-pdf",
-        async clickHandler() {
-          if (args.props.param) {
-            await loadPdf();
-          }
-        },
-        disabled: computed(() => stateMachineLoading.value || !args.props.param),
-      },
-      {
-        title: "Edit",
-        icon: "fas fa-edit",
-        clickHandler() {
-          isBladeEditable.value = true;
-        },
-      },
-      {
-        title: "SAVE",
-        icon: "fas fa-save",
-        async clickHandler() {
-          // await saveChanges();
-          isBladeEditable.value = false;
-          validationState.value.resetModified(item.value, true);
-        },
-        disabled: computed(() => !validationState.value.modified),
-      },
-    );
     toolbar.value.push({
       title: computed(() => t("ORDERS.PAGES.DETAILS.TOOLBAR.DL_PDF")),
       icon: "fas fa-file-pdf",

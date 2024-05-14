@@ -29,7 +29,7 @@ export const grid: DynamicGridSchema = {
         method: "removeItems",
       },
     ],
-    pushNotificationType: ["OfferDeletedDomainEvent", "OfferCreatedDomainEvent"],
+    pushNotificationType: ["OfferDeletedDomainEvent", "OfferCreatedDomainEvent", "BulkOffersDeletedDomainEvent"],
     menuItem: {
       title: "OFFERS.MENU.TITLE",
       icon: "fas fa-shapes",

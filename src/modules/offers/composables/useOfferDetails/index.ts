@@ -371,7 +371,7 @@ export const useOfferDetails = (args: {
     productTypeDisabled: computed(() => !!item.value?.id),
     saveSpecialPrices: (data: { items: OfferPriceList[] }) => {
       if (item.value) {
-        item.value.priceLists = data.items;
+        Object.assign(item.value, { priceLists: data.items });
       }
     },
     toolbarOverrides: {

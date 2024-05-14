@@ -1,3 +1,12 @@
+## [1.0.207](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.206...v1.0.207) (2024-05-14)
+
+
+### Reverts
+
+* remove redundant order edit code ([4b75009](https://github.com/VirtoCommerce/vendor-portal/commit/4b75009380bbd407058a6b5a7b6d22af0865fd23))
+
+
+
 ## [1.0.206](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.205...v1.0.206) (2024-05-13)
 
 

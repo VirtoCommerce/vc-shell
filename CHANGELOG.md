@@ -1,3 +1,12 @@
+## [1.0.212](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.211...v1.0.212) (2024-05-16)
+
+
+### Bug Fixes
+
+* add initial quantity to prices widget ([9f1fce8](https://github.com/VirtoCommerce/vendor-portal/commit/9f1fce8bbe55bcf2ab858b231eeecf66c2fad727))
+
+
+
 ## [1.0.211](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.210...v1.0.211) (2024-05-16)
 
 

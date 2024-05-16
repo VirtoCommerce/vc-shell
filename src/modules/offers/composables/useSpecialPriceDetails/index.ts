@@ -37,6 +37,9 @@ export const useSpecialPriceDetails = (args: {
       return internalModel.value;
     },
     saveChanges: (details) => {
+      if (!details.name || details.name == "") {
+        details.name = generatePriceName(details);
+      }
       args.emit("parent:call", {
         method: "saveSpecialPrice",
         args: { item: details },
@@ -71,6 +74,27 @@ export const useSpecialPriceDetails = (args: {
         minQuantity: null,
       } as unknown as IOfferPrice),
     );
+  }
+
+  function generatePriceName(price: OfferPriceList): string {
+    let name = "";
+    if (price.memberIds && price.memberIds.length > 0) {
+      name = "For " + price.memberIds.join(", ");
+    }
+    if (price.startDate) {
+      if (name.length > 0) {
+        name += ", ";
+      }
+      name += "Start " + price.startDate.toDateString();
+    }
+    if (price.endDate) {
+      if (name.length > 0) {
+        name += ", ";
+      }
+      name += "End " + price.endDate.toDateString();
+    }
+
+    return name != "" ? name : "Default";
   }
 
   const scope = ref<SpecialPricesDetailsScope>({

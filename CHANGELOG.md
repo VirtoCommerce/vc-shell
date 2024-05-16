@@ -1,3 +1,12 @@
+## [1.0.210](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.209...v1.0.210) (2024-05-16)
+
+
+### Features
+
+* vm-1235 generate pricelist name when empty ([2a18863](https://github.com/VirtoCommerce/vendor-portal/commit/2a188635828321d1877165fc01a44f98c8b2a642))
+
+
+
 ## [1.0.209](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.208...v1.0.209) (2024-05-16)
 
 

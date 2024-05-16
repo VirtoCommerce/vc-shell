@@ -53,6 +53,7 @@ export interface OfferDetailsScope extends DetailsBaseBladeScope {
     enable: IBladeToolbar;
     disable: IBladeToolbar;
     setDefault: IBladeToolbar;
+    remove: IBladeToolbar;
   };
 }
 
@@ -66,8 +67,6 @@ export const useOfferDetails = (args: {
   const { user } = useUser();
   const { t } = useI18n({ useScope: "global" });
   const offerLoading = ref(false);
-  const duplicates = ref<string[]>([]);
-  const pricingEqual = ref(false);
   const productLoading = ref(false);
   const alreadyDefault = ref(false);
   const productTypeOptions = ref<IProductType[]>([]);
@@ -302,12 +301,7 @@ export const useOfferDetails = (args: {
     toolbarOverrides: {
       saveChanges: {
         disabled: computed(() => {
-          return !(
-            item.value?.prices &&
-            item.value?.prices?.length > 0 &&
-            validationState.value.valid &&
-            validationState.value.modified
-          );
+          return !(validationState.value.valid && validationState.value.modified);
         }),
       },
       enable: {
@@ -316,7 +310,7 @@ export const useOfferDetails = (args: {
             item.value.isActive = true;
           }
         },
-        isVisible: computed(() => !!args.props.param && !item.value?.isActive),
+        isVisible: computed(() => (args.props.param ? !item.value?.isActive : false)),
       },
       disable: {
         async clickHandler() {
@@ -324,7 +318,10 @@ export const useOfferDetails = (args: {
             item.value.isActive = false;
           }
         },
-        isVisible: computed(() => !!args.props.param && item.value?.isActive),
+        isVisible: computed(() => (args.props.param ? item.value?.isActive : false)),
+      },
+      remove: {
+        isVisible: computed(() => !!args.props.param),
       },
       setDefault: {
         async clickHandler() {
@@ -343,7 +340,7 @@ export const useOfferDetails = (args: {
           }
         },
         disabled: computed(() => item.value?.isDefault || alreadyDefault.value),
-        isVisible: computed(() => settingUseDefaultOffer.value),
+        isVisible: computed(() => (args.props.param ? settingUseDefaultOffer.value : false)),
       },
     },
     dynamicProperties: useDynamicProperties(),

@@ -11,7 +11,7 @@ import {
   usePopup,
 } from "@vc-shell/framework";
 import { OfferPriceList } from "@vcmp-vendor-portal/api/marketplacevendor";
-import { Ref, computed, ref, watch, unref } from "vue";
+import { Ref, computed, ref, watch, unref, onMounted } from "vue";
 import * as _ from "lodash-es";
 import { useI18n } from "vue-i18n";
 

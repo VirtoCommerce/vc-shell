@@ -114,6 +114,7 @@ export const specialPricesDetails: DynamicDetailsSchema = {
                   label: "SPECIAL_PRICES.PAGES.DETAILS.FIELDS.DATES.VALID_FROM",
                   variant: "datetime-local",
                   property: "startDate",
+                  clearable: true,
                   rules: { before: "@endDate" },
                 },
                 {
@@ -122,6 +123,7 @@ export const specialPricesDetails: DynamicDetailsSchema = {
                   label: "SPECIAL_PRICES.PAGES.DETAILS.FIELDS.DATES.VALID_TO",
                   variant: "datetime-local",
                   property: "endDate",
+                  clearable: true,
                   rules: { after: "@startDate" },
                 },
               ],

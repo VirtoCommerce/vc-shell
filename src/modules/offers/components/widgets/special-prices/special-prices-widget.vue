@@ -1,6 +1,6 @@
 <template>
   <VcWidget
-    :value="modelValue.item?.priceLists?.length"
+    :value="modelValue.item?.priceLists?.length ?? 0"
     icon="fas fa-tags"
     :title="$t('SPECIAL_PRICES.PAGES.DETAILS.WIDGETS.SPECIAL_PRICES')"
     @click="clickHandler"

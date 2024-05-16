@@ -34,6 +34,7 @@
       </template>
     </VcBladeHeader>
 
+    <!-- Show error message -->
     <template v-if="error">
       <div class="tw-text-white tw-p-2 tw-flex tw-flex-row tw-items-center tw-bg-[color:var(--blade-color-error)]">
         <VcIcon
@@ -47,6 +48,19 @@
           @click="open()"
           >{{ t("COMPONENTS.ORGANISMS.VC_BLADE.SEE_DETAILS") }}</VcButton
         >
+      </div>
+    </template>
+
+    <!-- Unsaved changes -->
+    <template v-if="hasUnsavedChanges">
+      <div
+        class="tw-text-white tw-px-2 tw-py-1 tw-flex tw-flex-row tw-items-center tw-bg-[color:var(--blade-color-unsaved-changes)]"
+      >
+        <VcIcon
+          size="s"
+          icon="fas fa-info-circle"
+        />
+        <div class="tw-line-clamp-1 tw-w-full tw-ml-2">{{ t("COMPONENTS.ORGANISMS.VC_BLADE.UNSAVED_CHANGES") }}</div>
       </div>
     </template>
 
@@ -78,6 +92,7 @@ export interface Props {
   expandable?: boolean;
   closable?: boolean;
   toolbarItems?: IBladeToolbar[];
+  hasUnsavedChanges?: boolean;
 }
 
 export interface Emits {
@@ -123,6 +138,7 @@ const { open } = usePopup({
   --blade-background-color: #ffffff;
   --blade-border-radius: 6px;
   --blade-color-error: #f14e4e;
+  --blade-color-unsaved-changes: #82a6bd;
 }
 
 .vc-app_mobile .vc-blade {

@@ -629,7 +629,7 @@ const mobileTemplateRenderer = ({ item }: { item: TableItem }) => {
       { class: "tw-border-b tw-border-solid tw-border-b-[#e3e7ec] tw-p-3 tw-gap-2 tw-flex tw-flex-wrap" },
       props.columns.map((x) => {
         return h("div", { class: "tw-grow tw-w-[33%] tw-ml-3  tw-truncate" }, [
-          h(VcHint, { class: "tw-mb-1 tw-truncate" }, toValue(x.title)),
+          h(VcHint, { class: "tw-mb-1 tw-truncate" }, () => toValue(x.title)),
           h(VcTableCell, { cell: { ...x, class: "!tw-justify-start" }, item, class: "" }),
         ]);
       }),

@@ -51,6 +51,7 @@
       },
       "VC_BLADE": {
         "SEE_DETAILS": "See details",
+        "UNSAVED_CHANGES": "Has unsaved changes",
         "ERROR_POPUP": {
           "TITLE": "Error details"
         }

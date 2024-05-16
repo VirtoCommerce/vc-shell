@@ -84,6 +84,7 @@ export interface ListBaseBladeScope<Item = Record<string, any>, Query = Record<s
   ) => void;
   onPaginationClick?: (query: Query) => void;
   breadcrumbs?: ComputedRef<Breadcrumbs[]>;
+  modified?: ComputedRef<boolean> | Ref<boolean> | boolean;
 }
 
 export type TOpenBladeArgs = Omit<Parameters<ReturnType<typeof useBladeNavigation>["openBlade"]>["0"], "blade">;

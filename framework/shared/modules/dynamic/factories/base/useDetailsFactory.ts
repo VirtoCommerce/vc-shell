@@ -38,7 +38,7 @@ export const useDetailsFactory = <Item>(factoryParams: UseDetailsFactoryParams<I
       } else throw new Error("Form is not valid");
     });
 
-    const { loading: removeLoading, action: remove } = useAsync<ItemId>(async (args) => {
+    const { loading: removeLoading, action: remove } = useAsync<ItemId | Item>(async (args) => {
       await factoryParams.remove?.(args as ItemId);
     });
 

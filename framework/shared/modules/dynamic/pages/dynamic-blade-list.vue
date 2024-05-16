@@ -10,6 +10,7 @@
     :class="{
       'tw-flex tw-flex-auto': isWidgetView,
     }"
+    :has-unsaved-changes="unref(scope)?.modified"
     @close="$emit('close:blade')"
     @expand="$emit('expand:blade')"
     @collapse="$emit('collapse:blade')"
@@ -39,20 +40,20 @@
         class="tw-grow tw-basis-0"
         :loading="loading"
         :expanded="expanded"
-        :columns="(tableColsWithLocales as ITableColumns[]) ?? []"
+        :columns="tableColsWithLocales ?? []"
         :state-key="stateKey ?? ''"
-        :items="itemsProxy as Record<string, any>[]"
+        :items="itemsProxy ?? []"
         :multiselect="isWidgetView ? false : tableData?.multiselect"
         :header="isWidgetView ? false : tableData?.header"
         :item-action-builder="actionBuilder"
         :enable-item-actions="!!tableData?.actions && !isWidgetView"
-        :footer="!isWidgetView"
+        :footer="isWidgetView ? false : tableData?.footer"
         :sort="sort"
         :pages="pagination?.pages"
         :current-page="pagination?.currentPage"
         :search-value="searchValue"
         :selected-item-id="selectedItemId"
-        :total-label="$t(`${settings?.localizationPrefix.trim().toUpperCase()}.PAGES.LIST.TABLE.TOTALS`)"
+        :total-label="$t(`${localizationPrefix}.PAGES.LIST.TABLE.TOTALS`)"
         :total-count="pagination?.totalCount"
         :active-filter-count="activeFilterCount"
         :reorderable-rows="isWidgetView ? false : tableData?.reorderableRows"
@@ -87,12 +88,12 @@
           <template v-else>
             <div class="tw-w-full tw-h-full tw-box-border tw-flex tw-flex-col tw-items-center tw-justify-center">
               <div class="tw-m-4 tw-text-xl tw-font-medium">
-                {{ $t(`${settings?.localizationPrefix.trim().toUpperCase()}.PAGES.LIST.NOT_FOUND.EMPTY`) }}
+                {{ $t(`${localizationPrefix}.PAGES.LIST.NOT_FOUND.EMPTY`) }}
               </div>
               <VcButton
                 v-if="isFilterVisible"
                 @click="resetSearch"
-                >{{ $t(`${settings?.localizationPrefix.trim().toUpperCase()}.PAGES.LIST.NOT_FOUND.RESET`) }}</VcButton
+                >{{ $t(`${localizationPrefix}.PAGES.LIST.NOT_FOUND.RESET`) }}</VcButton
               >
             </div>
           </template>
@@ -113,7 +114,7 @@
           <template v-else>
             <div class="tw-w-full tw-h-full tw-box-border tw-flex tw-flex-col tw-items-center tw-justify-center">
               <div class="tw-m-4 tw-text-xl tw-font-medium">
-                {{ $t(`${settings?.localizationPrefix.trim().toUpperCase()}.PAGES.LIST.EMPTY.NO_ITEMS`) }}
+                {{ $t(`${localizationPrefix}.PAGES.LIST.EMPTY.NO_ITEMS`) }}
               </div>
             </div>
           </template>
@@ -180,7 +181,7 @@ import { safeIn } from "../helpers/safeIn";
 export interface Props {
   expanded?: boolean;
   closable?: boolean;
-  param?: string;
+  param?: string | any;
   options?: unknown;
   model?: DynamicGridSchema;
   composables?: Record<string, (...args: any[]) => Record<string, any>>;
@@ -210,6 +211,7 @@ const { debounce } = useFunctions();
 const emit = defineEmits<Emits>();
 
 const settings = computed(() => props.model?.settings);
+const localizationPrefix = computed(() => settings.value?.localizationPrefix.trim().toUpperCase());
 const title = computed(() => t(settings.value?.titleTemplate as string));
 const allSelected = ref(false);
 const searchValue = ref();
@@ -217,7 +219,6 @@ const selectedItemId = shallowRef();
 const sort = shallowRef("createdDate:DESC");
 const selectedIds = shallowRef<string[]>([]);
 const itemsProxy = ref<Record<string, any>[]>();
-const modified = shallowRef(false);
 
 const { moduleNotifications, markAsRead } = useNotifications(settings.value?.pushNotificationType);
 const { setNavigationQuery, getNavigationQuery } = useBladeNavigation();
@@ -242,7 +243,10 @@ const tableData =
   props.composables &&
   computed(() => props.model?.content.find((type: ListContentSchema) => type.component === "vc-table"));
 
-const tableColsWithLocales = tableData?.value?.columns?.map((col) => ({ ...col, title: computed(() => t(col.title)) }));
+const tableColsWithLocales = tableData?.value?.columns?.map((col) => ({
+  ...col,
+  title: computed(() => t(col.title)),
+})) as ITableColumns[];
 
 const stateKey =
   props.composables &&
@@ -348,12 +352,6 @@ const toolbarComputed =
     useToolbarReducer({
       defaultToolbarSchema: settings.value?.toolbar ?? [],
       defaultToolbarBindings: {
-        save: {
-          clickHandler() {
-            emit("close:blade");
-          },
-          disabled: computed(() => !modified.value),
-        },
         openAddBlade: {
           async clickHandler() {
             if (
@@ -396,14 +394,6 @@ watch(
     selectedItemId.value = unref(newVal);
   },
   { immediate: true },
-);
-
-watch(
-  () => itemsProxy.value,
-  (newVal) => {
-    modified.value = !_.isEqual(newVal, items.value);
-  },
-  { deep: true },
 );
 
 watch(sort, async (value) => {

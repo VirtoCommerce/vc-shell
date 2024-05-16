@@ -7,6 +7,7 @@
     :width="settings?.width || '50%'"
     :toolbar-items="toolbarComputed"
     :title="title"
+    :has-unsaved-changes="isFormModified"
     @close="$emit('close:blade')"
     @expand="$emit('expand:blade')"
     @collapse="$emit('collapse:blade')"
@@ -104,7 +105,7 @@ import { notification } from "../../../components";
 interface Props {
   expanded?: boolean;
   closable?: boolean;
-  param?: string;
+  param?: string | any;
   model?: DynamicDetailsSchema;
   options?: {
     [x: string]: unknown;

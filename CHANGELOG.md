@@ -1,3 +1,12 @@
+## [1.0.211](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.210...v1.0.211) (2024-05-16)
+
+
+### Bug Fixes
+
+* offer save condition, hide buttons on create new ([37c3529](https://github.com/VirtoCommerce/vendor-portal/commit/37c352947d86b5d731af302a1b9aa97f6587b941))
+
+
+
 ## [1.0.210](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.209...v1.0.210) (2024-05-16)
 
 

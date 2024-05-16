@@ -80,6 +80,7 @@ export const useSpecialPricesList = (args: {
   const scope = ref<SpecialPricesListScope>({
     openDetailsBlade,
     onListItemClick,
+    modified,
     saveSpecialPrice: (data: { item: OfferPriceList }) => {
       const index = internalModel.value.findIndex((item) => item === selectedItem.value);
 

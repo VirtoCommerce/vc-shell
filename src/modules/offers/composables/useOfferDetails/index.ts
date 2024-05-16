@@ -44,11 +44,8 @@ export interface IProductType {
 
 export interface OfferDetailsScope extends DetailsBaseBladeScope {
   fetchProducts: (keyword?: string, skip?: number, ids?: string[]) => Promise<SearchOfferProductsResult>;
-  removePrice: (idx: number) => void;
-  addPrice: (scroll?: boolean) => void;
   getProductItem: () => void;
   trackInventoryFn: () => boolean;
-  currencies: Ref<ICurrency[]>;
   productTypeOptions: Ref<IProductType[]>;
   productTypeDisabled: ComputedRef<boolean>;
   toolbarOverrides: {
@@ -77,7 +74,7 @@ export const useOfferDetails = (args: {
   const { items: fulfillmentCentersList, load: searchFulfillmentCenters } = useFulfillmentCenters();
   const route = useRoute();
 
-  const { currencies, settingUseDefaultOffer, productTypes, loadSettings } = useMarketplaceSettings();
+  const { settingUseDefaultOffer, productTypes, loadSettings } = useMarketplaceSettings();
   const { getLanguages, loading: languagesLoading } = useMultilanguage();
   const { upload: imageUpload, remove: imageRemove, edit: imageEdit, loading: imageLoading } = useAssets();
 
@@ -147,57 +144,6 @@ export const useOfferDetails = (args: {
     { deep: true },
   );
 
-  watch(
-    () => item.value?.prices,
-    (newVal) => {
-      nextTick(() => {
-        const dupes: string[] = [];
-
-        newVal?.forEach((o, idx) => {
-          if (
-            newVal.some((o2, idx2) => {
-              return (
-                idx !== idx2 &&
-                !!o.minQuantity &&
-                !!o2.minQuantity &&
-                o.minQuantity === o2.minQuantity &&
-                o.currency === o2.currency
-              );
-            })
-          ) {
-            dupes.push(`minQuantity_${idx}`);
-          }
-        });
-
-        duplicates.value = dupes;
-        pricingEqual.value = !!dupes.length;
-      });
-    },
-    { deep: true },
-  );
-
-  watch(duplicates, (newVal, oldVal) => {
-    validationState.value.setErrors(
-      Object.values(oldVal).reduce(
-        (obj, curr) => {
-          obj[curr] = undefined;
-          return obj;
-        },
-        {} as Record<string, undefined>,
-      ),
-    );
-
-    validationState.value.setErrors(
-      Object.values(newVal).reduce(
-        (obj, curr) => {
-          obj[curr] = "Min quantity can't be the same";
-          return obj;
-        },
-        {} as Record<string, string>,
-      ),
-    );
-  });
-
   const addEmptyInventory = async () => {
     if (item.value) {
       item.value.inventory = [];
@@ -214,19 +160,6 @@ export const useOfferDetails = (args: {
       });
     }
   };
-
-  function addPrice() {
-    if (item.value && !item.value.prices) {
-      item.value.prices = [];
-    }
-    item.value?.prices?.push(
-      new OfferPrice({
-        currency: "USD",
-        listPrice: null,
-        minQuantity: null,
-      } as unknown as IOfferPrice),
-    );
-  }
 
   function generateSku(): string {
     // XXX(letter)-XXXXXXXX(number).
@@ -278,10 +211,6 @@ export const useOfferDetails = (args: {
     }
   }
 
-  function removePrice(idx: number) {
-    item.value?.prices?.splice(idx, 1);
-  }
-
   function trackInventoryFn() {
     return !item.value?.trackInventory;
   }
@@ -305,7 +234,6 @@ export const useOfferDetails = (args: {
           item.value.trackInventory = true;
           item.value.sku = generateSku();
           await addEmptyInventory();
-          addPrice();
         }
 
         const resolveId = (value: keyof Pick<SellerProduct, "publishedProductDataId" | "stagedProductDataId">) =>
@@ -360,13 +288,10 @@ export const useOfferDetails = (args: {
 
   const scope = ref<OfferDetailsScope>({
     fetchProducts,
-    removePrice,
-    addPrice,
     getProductItem,
     trackInventoryFn,
     validateSku,
     disableProductSelect: computed(() => !!args.props.param),
-    currencies,
     productTypeOptions,
     productTypeDisabled: computed(() => !!item.value?.id),
     saveSpecialPrices: (data: { items: OfferPriceList[] }) => {

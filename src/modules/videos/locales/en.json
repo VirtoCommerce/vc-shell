@@ -4,7 +4,6 @@
       "LIST": {
         "TITLE": "Videos",
         "TOOLBAR": {
-          "SAVE": "Save",
           "ADD": "Add video",
           "DELETE": "Delete selected"
         },

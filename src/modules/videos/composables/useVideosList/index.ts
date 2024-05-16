@@ -23,7 +23,6 @@ const { getApiClient } = useApiClient(VcmpSellerCatalogClient);
 export interface VideosListScope extends ListBaseBladeScope {
   disabled?: boolean;
   toolbarOverrides: {
-    save: IBladeToolbar;
     openAddBlade: IBladeToolbar;
     removeItems: IBladeToolbar;
   };
@@ -39,6 +38,7 @@ export const useVideosList = (args: {
   const listFactory = useListFactory<Video[], ISearchVideosQuery>({
     load: async (query) => {
       query.sort = "sortOrder:ASC";
+      console.log("search");
       return (await getApiClient()).searchVideos(new SearchVideosQuery(query));
     },
     remove: async (query, customQuery) => {
@@ -74,14 +74,6 @@ export const useVideosList = (args: {
     markProductDirty,
     disabled: args.props.options.disabled,
     toolbarOverrides: {
-      save: {
-        async clickHandler(args) {
-          await (await getApiClient()).update(args?.items);
-          await markProductDirty();
-          await load(query.value);
-        },
-        isVisible: computed(() => !args.props.options.disabled),
-      },
       openAddBlade: {
         async clickHandler() {
           await openDetailsBlade();

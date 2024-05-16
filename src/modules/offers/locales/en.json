@@ -99,22 +99,6 @@
           "PROPERTIES": {
             "TITLE": "Properties"
           },
-          "LIST_PRICE": {
-            "TITLE": "List price",
-            "PLACEHOLDER": "Set list price"
-          },
-          "SALE_PRICE": {
-            "TITLE": "Sale price",
-            "PLACEHOLDER": "Set product sale price"
-          },
-          "CURRENCY": {
-            "TITLE": "Currency",
-            "PLACEHOLDER": "Select price currency"
-          },
-          "MIN_QTY": {
-            "TITLE": "Minimum quantity",
-            "PLACEHOLDER": "Enter product minimal quantity in order"
-          },
           "CONDITION": {
             "TITLE": "Condition",
             "PLACEHOLDER": "Select product condition"
@@ -123,28 +107,10 @@
             "TITLE": "Shipping time",
             "PLACEHOLDER": "Set shipping time"
           },
-          "START_DATE": {
-            "TITLE": "Start date",
-            "PLACEHOLDER": ""
-          },
+          "CODE": "CODE",
           "END_DATE": {
             "TITLE": "End date",
             "PLACEHOLDER": ""
-          },
-          "CODE": "CODE",
-          "DATES": {
-            "TITLE": "Validity dates",
-            "VALID_FROM": "Valid from",
-            "VALID_TO": "Valid to"
-          },
-          "PRICING": {
-            "TITLE": "Default price",
-            "ADD_PRICE": "Add price",
-            "CHOOSE_CURRENCY": "Choose currency",
-            "EMPTY": "No prices for this offer",
-            "ERRORS": {
-              "SIMILAR": "Min quantity can't be the same"
-            }
           },
           "IMAGES": {
             "TITLE": "Offer image"
@@ -191,7 +157,8 @@
             "NAME": "Name",
             "PRICE": "Price",
             "START_DATE": "Valid from",
-            "END_DATE": "Valid to"
+            "END_DATE": "Valid to",
+            "CONDITIONS": "Conditions"
           },
           "ACTIONS": {
             "DELETE": "Delete"
@@ -225,6 +192,10 @@
             "TITLE": "Customer group",
             "PLACEHOLDER": "Enter customer group ID"
           },
+          "CURRENCY": {
+            "TITLE": "Currency",
+            "PLACEHOLDER": "Select price currency"
+          },
           "PRICING": {
             "TITLE": "Pricing",
             "ADD_PRICE": "Add price",
@@ -233,6 +204,22 @@
             "ERRORS": {
               "SIMILAR": "Min quantity can't be the same"
             }
+          },
+          "MIN_QTY": {
+            "TITLE": "Minimum quantity",
+            "PLACEHOLDER": "Enter product minimal quantity in order"
+          },
+          "START_DATE": {
+            "TITLE": "Start date",
+            "PLACEHOLDER": ""
+          },
+          "LIST_PRICE": {
+            "TITLE": "List price",
+            "PLACEHOLDER": "Set list price"
+          },
+          "SALE_PRICE": {
+            "TITLE": "Sale price",
+            "PLACEHOLDER": "Set product sale price"
           },
           "DATES": {
             "TITLE": "Validity dates",

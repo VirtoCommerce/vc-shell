@@ -10,12 +10,6 @@ export const grid: DynamicGridSchema = {
     component: "DynamicBladeList",
     toolbar: [
       {
-        id: "save",
-        icon: "fas fa-save",
-        title: "VIDEOS.PAGES.LIST.TOOLBAR.SAVE",
-        method: "save",
-      },
-      {
         id: "add",
         icon: "fas fa-plus",
         title: "VIDEOS.PAGES.LIST.TOOLBAR.ADD",

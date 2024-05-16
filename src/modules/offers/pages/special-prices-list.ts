@@ -32,13 +32,11 @@ export const specialPricesList: DynamicGridSchema = {
         {
           id: "name",
           title: "SPECIAL_PRICES.PAGES.LIST.TABLE.HEADER.NAME",
-          sortable: true,
           alwaysVisible: true,
         },
         {
           id: "prices[0].listPrice",
           title: "SPECIAL_PRICES.PAGES.LIST.TABLE.HEADER.PRICE",
-          sortable: true,
           alwaysVisible: true,
           customTemplate: {
             component: "ListPriceTemplate",
@@ -47,16 +45,22 @@ export const specialPricesList: DynamicGridSchema = {
         {
           id: "startDate",
           title: "SPECIAL_PRICES.PAGES.LIST.TABLE.HEADER.START_DATE",
-          sortable: true,
           alwaysVisible: true,
           type: "date-time",
         },
         {
           id: "endDate",
           title: "SPECIAL_PRICES.PAGES.LIST.TABLE.HEADER.END_DATE",
-          sortable: true,
           alwaysVisible: true,
           type: "date-time",
+        },
+        {
+          id: "conditions",
+          title: "SPECIAL_PRICES.PAGES.LIST.TABLE.HEADER.CONDITIONS",
+          alwaysVisible: true,
+          customTemplate: {
+            component: "ConditionsTemplate",
+          },
         },
       ],
     },

@@ -37,11 +37,11 @@ export const specialPricesDetails: DynamicDetailsSchema = {
         {
           id: "pricingCard",
           component: "vc-card",
-          label: "OFFERS.PAGES.DETAILS.FIELDS.PRICING.TITLE",
+          label: "SPECIAL_PRICES.PAGES.DETAILS.FIELDS.PRICING.TITLE",
           action: {
             id: "addPrice",
             component: "vc-button",
-            content: "OFFERS.PAGES.DETAILS.FIELDS.PRICING.ADD_PRICE",
+            content: "SPECIAL_PRICES.PAGES.DETAILS.FIELDS.PRICING.ADD_PRICE",
             small: true,
             method: "addPrice",
           },
@@ -58,9 +58,9 @@ export const specialPricesDetails: DynamicDetailsSchema = {
                 {
                   id: "listPrice",
                   component: "vc-input-currency",
-                  label: "OFFERS.PAGES.DETAILS.FIELDS.LIST_PRICE.TITLE",
+                  label: "SPECIAL_PRICES.PAGES.DETAILS.FIELDS.LIST_PRICE.TITLE",
                   property: "listPrice",
-                  placeholder: "OFFERS.PAGES.DETAILS.FIELDS.LIST_PRICE.PLACEHOLDER",
+                  placeholder: "SPECIAL_PRICES.PAGES.DETAILS.FIELDS.LIST_PRICE.PLACEHOLDER",
                   options: "currencies",
                   optionProperty: "currency",
                   optionValue: "value",
@@ -73,9 +73,9 @@ export const specialPricesDetails: DynamicDetailsSchema = {
                 {
                   id: "salePrice",
                   component: "vc-input-currency",
-                  label: "OFFERS.PAGES.DETAILS.FIELDS.SALE_PRICE.TITLE",
+                  label: "SPECIAL_PRICES.PAGES.DETAILS.FIELDS.SALE_PRICE.TITLE",
                   property: "salePrice",
-                  placeholder: "OFFERS.PAGES.DETAILS.FIELDS.SALE_PRICE.PLACEHOLDER",
+                  placeholder: "SPECIAL_PRICES.PAGES.DETAILS.FIELDS.SALE_PRICE.PLACEHOLDER",
                   options: "currencies",
                   optionProperty: "currency",
                   optionValue: "value",
@@ -84,9 +84,9 @@ export const specialPricesDetails: DynamicDetailsSchema = {
                 {
                   id: "minQuantity",
                   component: "vc-input",
-                  label: "OFFERS.PAGES.DETAILS.FIELDS.MIN_QTY.TITLE",
+                  label: "SPECIAL_PRICES.PAGES.DETAILS.FIELDS.MIN_QTY.TITLE",
                   property: "minQuantity",
-                  placeholder: "OFFERS.PAGES.DETAILS.FIELDS.MIN_QTY.PLACEHOLDER",
+                  placeholder: "SPECIAL_PRICES.PAGES.DETAILS.FIELDS.MIN_QTY.PLACEHOLDER",
                   clearable: true,
                   rules: {
                     required: true,

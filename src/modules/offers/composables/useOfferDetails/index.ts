@@ -245,7 +245,10 @@ export const useOfferDetails = (args: {
         }
       } finally {
         offerLoading.value = false;
-        validationState.value.resetModified(item.value!, true);
+
+        if (!args.props?.options?.sellerProduct) {
+          validationState.value.resetModified(item.value, true);
+        }
       }
     },
   );

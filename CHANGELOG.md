@@ -1,3 +1,12 @@
+## [1.0.213](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.212...v1.0.213) (2024-05-16)
+
+
+### Bug Fixes
+
+* **offer:** save button when create from products ([83bfee4](https://github.com/VirtoCommerce/vendor-portal/commit/83bfee444b153c3fb6cc32e5849f88ce2964ee67))
+
+
+
 ## [1.0.212](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.211...v1.0.212) (2024-05-16)
 
 

@@ -1,3 +1,12 @@
+## [1.0.209](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.208...v1.0.209) (2024-05-16)
+
+
+### Features
+
+* special prices blades updates, video module remove redundant save button ([2dc17d5](https://github.com/VirtoCommerce/vendor-portal/commit/2dc17d5b8c0f1da1f0c10bdc4ad7566ce5801058))
+
+
+
 ## [1.0.208](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.207...v1.0.208) (2024-05-14)
 
 

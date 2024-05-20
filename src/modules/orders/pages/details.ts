@@ -86,13 +86,6 @@ export const details: DynamicDetailsSchema = {
                       orientation: "horizontal",
                     },
                     {
-                      id: "orderTotal",
-                      component: "vc-field",
-                      label: "ORDERS.PAGES.DETAILS.FORM.ORDER_INFO.TOTAL",
-                      property: "total",
-                      orientation: "horizontal",
-                    },
-                    {
                       id: "taxTotal",
                       component: "vc-field",
                       label: "ORDERS.PAGES.DETAILS.FORM.ORDER_INFO.TAX",
@@ -104,6 +97,13 @@ export const details: DynamicDetailsSchema = {
                       component: "vc-field",
                       label: "ORDERS.PAGES.DETAILS.FORM.ORDER_INFO.SHIPPING",
                       property: "shippingTotal",
+                      orientation: "horizontal",
+                    },
+                    {
+                      id: "orderTotal",
+                      component: "vc-field",
+                      label: "ORDERS.PAGES.DETAILS.FORM.ORDER_INFO.TOTAL",
+                      property: "total",
                       orientation: "horizontal",
                     },
                   ],

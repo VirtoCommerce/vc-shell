@@ -156,6 +156,10 @@ export const useOrder = (args: {
     ),
     total: computed(() => item.value?.total && item.value?.total.toFixed(2) + " " + item.value?.currency),
     feeTotal: computed(() => item.value?.feeTotal && item.value?.feeTotal.toFixed(2) + " " + item.value?.currency),
+    taxTotal: computed(() => item.value?.taxTotal && item.value?.taxTotal.toFixed(2) + " " + item.value?.currency),
+    shippingTotal: computed(
+      () => item.value?.shippingTotal && item.value?.shippingTotal.toFixed(2) + " " + item.value?.currency,
+    ),
     createdDate: computed(() => {
       const date = new Date(item.value?.createdDate ?? "");
       return moment(date).locale(currentLocale.value).format("L LT");

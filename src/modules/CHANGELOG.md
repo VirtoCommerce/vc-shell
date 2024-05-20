@@ -1,3 +1,12 @@
+## [1.0.214](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.213...v1.0.214) (2024-05-20)
+
+
+### Features
+
+* products/offers widget hide on create new, orders permissions, order tax/shipping total ([a8767a1](https://github.com/VirtoCommerce/vendor-portal/commit/a8767a164d3f1f7faa246c2c44d469e51fd01541))
+
+
+
 ## [1.0.213](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.212...v1.0.213) (2024-05-16)
 
 

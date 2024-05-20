@@ -20,6 +20,8 @@ const isDemo = mode === "development" && !process.env.APP_PLATFORM_URL;
 
 const isMonorepo = fs.existsSync(path.resolve(process.cwd(), "./../../framework/package.json"));
 
+const hash = Math.floor(Math.random() * 90000) + 10000;
+
 const getProxy = (target: ProxyOptions["target"], options: Omit<ProxyOptions, "target"> = {}): ProxyOptions => {
   const dontTrustSelfSignedCertificate = false;
   return {
@@ -112,6 +114,12 @@ export default defineConfig({
     minify: true,
     sourcemap: mode === "development",
     emptyOutDir: true,
+    rollupOptions: {
+      output: {
+        entryFileNames: `[name]` + hash + `.js`,
+        chunkFileNames: `[name]` + hash + `.js`,
+      },
+    },
   },
   esbuild: {
     drop: mode === "production" ? ["console", "debugger"] : [],

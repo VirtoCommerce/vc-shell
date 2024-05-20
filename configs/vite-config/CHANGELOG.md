@@ -1,3 +1,12 @@
+## [1.0.215](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.214...v1.0.215) (2024-05-20)
+
+
+### Features
+
+* **vite-config:** add hash to app build to prevent caching ([aafe494](https://github.com/VirtoCommerce/vc-shell/commit/aafe4945bca52a62520217ea8948abe6f442614b))
+
+
+
 ## [1.0.214](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.212...v1.0.214) (2024-05-16)
 
 

@@ -1,3 +1,12 @@
+## [1.0.215](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.214...v1.0.215) (2024-05-20)
+
+
+### Features
+
+* **navigation:** support of blade replacing, permissions check on generateRoute ([40d934c](https://github.com/VirtoCommerce/vc-shell/commit/40d934c056bebc1a023cc1498d40a2c672ec43dd))
+
+
+
 ## [1.0.214](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.212...v1.0.214) (2024-05-16)
 
 

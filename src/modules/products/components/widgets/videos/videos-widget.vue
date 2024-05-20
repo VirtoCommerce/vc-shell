@@ -1,5 +1,6 @@
 <template>
   <VcWidget
+    v-if="modelValue.item?.id"
     v-loading="loading"
     :value="count"
     :title="$t('PRODUCTS.PAGES.DETAILS.WIDGETS.VIDEOS')"

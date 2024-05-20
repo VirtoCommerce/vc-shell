@@ -8,6 +8,7 @@ import {
   useAsync,
   useLoading,
   useLanguages,
+  usePermissions,
 } from "@vc-shell/framework";
 import { StateMachineInstance, VcmpSellerOrdersClient } from "@vcmp-vendor-portal/api/marketplacevendor";
 import { ComputedRef, Ref, computed, ref, watch } from "vue";
@@ -16,6 +17,7 @@ import { CustomerOrder, OrderAddressAddressType, OrderModuleClient } from "@vcmp
 import { useStateMachines } from "../../../state-machines/composables";
 import moment from "moment";
 import { useRoute } from "vue-router";
+import { UserPermissions } from "../../../types";
 
 interface IShippingInfo {
   label: string;
@@ -75,6 +77,7 @@ export const useOrder = (args: {
 
   const { t } = useI18n({ useScope: "global" });
   const { searchStateMachines, stateMachine, fireTrigger } = useStateMachines();
+  const { hasAccess } = usePermissions();
   const route = useRoute();
   const stateMachineLoading = ref(false);
   const toolbar = ref([]) as Ref<IBladeToolbar[]>;
@@ -194,6 +197,7 @@ export const useOrder = (args: {
         title: computed(() => t(`ORDERS.PAGES.DETAILS.TOOLBAR.${transition.trigger?.toUpperCase()}`)),
         icon: transition.icon ?? "fas fa-tasks",
         disabled: computed(() => stateMachineLoading.value),
+        isVisible: hasAccess(UserPermissions.EditSellerOrder),
         async clickHandler() {
           try {
             stateMachineLoading.value = true;

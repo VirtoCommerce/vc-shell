@@ -5,6 +5,8 @@ enum UserPermissions {
   ManageSellerFulfillmentCenters = "seller:fulfillment_centers:manage",
   ManageSellerReviews = "seller:reviews:manage",
   SellerImportProfilesEdit = "seller:import_profiles:edit",
+  ViewSellerOrders = "seller:orders:view",
+  EditSellerOrder = "seller:order:edit",
 }
 
 export { UserPermissions };

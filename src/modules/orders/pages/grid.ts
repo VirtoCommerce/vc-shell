@@ -11,6 +11,7 @@ export const grid: DynamicGridSchema = {
     composable: "useOrders",
     width: "30%",
     pushNotificationType: "OrderCreatedEventHandler",
+    permissions: ["seller:orders:view"],
     toolbar: [
       {
         id: "refresh",

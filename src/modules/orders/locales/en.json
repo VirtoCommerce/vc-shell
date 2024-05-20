@@ -70,7 +70,9 @@
             "SUBTOTAL": "Subtotal",
             "COMMISSIONS_TOTAL": "Commissions total",
             "DISCOUNT_TOTAL": "Discount total",
-            "TOTAL": "Total"
+            "TOTAL": "Total",
+            "TAX": "Tax",
+            "SHIPPING": "Shipping"
           },
           "BUYER_RECIPIENT": {
             "SOLD_TO": "Sold to",

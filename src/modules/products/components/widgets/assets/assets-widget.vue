@@ -1,5 +1,6 @@
 <template>
   <VcWidget
+    v-if="modelValue.item?.id"
     :value="count"
     :title="$t('PRODUCTS.PAGES.DETAILS.WIDGETS.ASSETS')"
     icon="far fa-file"

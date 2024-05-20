@@ -52,6 +52,8 @@ export interface OrderScope extends DetailsBaseBladeScope {
   discountTotal: ComputedRef<string | 0 | undefined>;
   total: ComputedRef<string | 0 | undefined>;
   feeTotal: ComputedRef<string | 0 | undefined>;
+  taxTotal: ComputedRef<string | 0 | undefined>;
+  shippingTotal: ComputedRef<string | 0 | undefined>;
   createdDate: ComputedRef<string>;
 }
 
@@ -81,6 +83,7 @@ export const useOrder = (args: {
   const route = useRoute();
   const stateMachineLoading = ref(false);
   const toolbar = ref([]) as Ref<IBladeToolbar[]>;
+  const locale = window.navigator.language;
 
   const shippingInfo = computed(() => {
     const info =
@@ -138,6 +141,13 @@ export const useOrder = (args: {
     }
   });
 
+  const withCurrency = (value: number | undefined) => {
+    return new Intl.NumberFormat(locale, {
+      style: "currency",
+      currency: item.value?.currency || "USD",
+    }).format(typeof value === "undefined" ? 0 : value);
+  };
+
   const scope = ref<OrderScope>({
     toolbarOverrides: computed(() => toolbar.value),
     shippingInfo,
@@ -150,16 +160,12 @@ export const useOrder = (args: {
     emailVisibility: (schema: { property: keyof IShippingInfo }, fieldContext: IShippingInfo) => {
       return !!fieldContext[schema.property];
     },
-    subTotal: computed(() => item.value?.subTotal && item.value?.subTotal.toFixed(2) + " " + item.value?.currency),
-    discountTotal: computed(
-      () => item.value?.discountTotal && item.value?.discountTotal.toFixed(2) + " " + item.value?.currency,
-    ),
-    total: computed(() => item.value?.total && item.value?.total.toFixed(2) + " " + item.value?.currency),
-    feeTotal: computed(() => item.value?.feeTotal && item.value?.feeTotal.toFixed(2) + " " + item.value?.currency),
-    taxTotal: computed(() => item.value?.taxTotal && item.value?.taxTotal.toFixed(2) + " " + item.value?.currency),
-    shippingTotal: computed(
-      () => item.value?.shippingTotal && item.value?.shippingTotal.toFixed(2) + " " + item.value?.currency,
-    ),
+    subTotal: computed(() => withCurrency(item.value?.subTotal)),
+    discountTotal: computed(() => withCurrency(item.value?.discountTotal)),
+    total: computed(() => withCurrency(item.value?.total)),
+    feeTotal: computed(() => withCurrency(item.value?.feeTotal)),
+    taxTotal: computed(() => withCurrency(item.value?.taxTotal)),
+    shippingTotal: computed(() => withCurrency(item.value?.shippingTotal)),
     createdDate: computed(() => {
       const date = new Date(item.value?.createdDate ?? "");
       return moment(date).locale(currentLocale.value).format("L LT");

@@ -1,3 +1,12 @@
+## [1.0.216](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.215...v1.0.216) (2024-05-20)
+
+
+### Bug Fixes
+
+* **offer:** add currency sign to zero items, use currency formatting ([cdeb6c7](https://github.com/VirtoCommerce/vendor-portal/commit/cdeb6c7c1096c47996864dfb3e443ef49d925a86))
+
+
+
 ## [1.0.215](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.214...v1.0.215) (2024-05-20)
 
 

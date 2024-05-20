@@ -1,6 +1,6 @@
 {
   "name": "@vcmp-vendor-portal/api",
-  "version": "1.0.215",
+  "version": "1.0.216",
   "files": [
     "dist",
     "package.json"

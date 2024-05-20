@@ -72,6 +72,7 @@ export interface IBladeEvent<T extends Component = Component> {
   param?: string;
   onOpen?: () => void;
   onClose?: () => void;
+  replaceCurrentBlade?: boolean;
 }
 
 export interface BladeNavigationPlugin {
@@ -96,6 +97,7 @@ export interface BladeVNode extends VNode {
       onBeforeClose?: () => Promise<boolean | undefined>;
       instance: CoreBladeExposed | undefined | null;
       idx: number;
+      isVisible?: boolean;
     };
     onVnodeUnmounted?: VNodeMountHook | VNodeMountHook[];
     onVnodeMounted?: VNodeMountHook | VNodeMountHook[];

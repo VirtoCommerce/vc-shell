@@ -45,7 +45,7 @@ interface IUseBladeNavigation {
   readonly blades: ComputedRef<BladeVNode[]>;
   readonly currentBladeNavigationData: ComputedRef<BladeVNode["props"]["navigation"]>;
   openBlade: <Blade extends Component>(
-    { blade, param, options, onOpen, onClose }: IBladeEvent<Blade>,
+    { blade, param, options, onOpen, onClose, replaceCurrentBlade }: IBladeEvent<Blade>,
     isWorkspace?: boolean,
   ) => Promise<void | NavigationFailure>;
   closeBlade: (index: number) => Promise<boolean>;
@@ -255,6 +255,9 @@ const useBladeNavigationSingleton = createSharedComposable(() => {
       }
 
       if (!isPrevented) {
+        if (navigationInstance.blades.value[index - 1]?.props?.navigation?.isVisible === false) {
+          navigationInstance.blades.value[index - 1].props.navigation.isVisible = true;
+        }
         navigationInstance.blades.value.splice(index);
       }
 
@@ -338,7 +341,7 @@ export function useBladeNavigation(): IUseBladeNavigation {
   }
 
   async function openBlade<Blade extends Component>(
-    { blade, param, options, onOpen, onClose }: IBladeEvent<Blade>,
+    { blade, param, options, onOpen, onClose, replaceCurrentBlade = false }: IBladeEvent<Blade>,
     isWorkspace = false,
   ) {
     if (!blade) {
@@ -372,6 +375,9 @@ export function useBladeNavigation(): IUseBladeNavigation {
 
       if (!isPrevented) {
         if (hasAccess(blade.permissions)) {
+          if (replaceCurrentBlade) {
+            navigationInstance.blades.value[currentBladeIdx].props.navigation.isVisible = false;
+          }
           navigationInstance.blades.value.push(bladeNode);
         } else {
           notification.error(i18n.global.t("PERMISSION_MESSAGES.ACCESS_RESTRICTED"), { timeout: 3000 });
@@ -491,7 +497,7 @@ export function useBladeNavigation(): IUseBladeNavigation {
       const registeredWorkspaceComponent = routes.find((route) => route.route === `/${workspace}`)?.component;
       const registeredRouteComponent = routes.find((route) => route.route === `/${blade}`)?.component;
 
-      if (!registeredWorkspaceComponent) {
+      if (!hasAccess(registeredWorkspaceComponent?.type.permissions) || !registeredWorkspaceComponent) {
         return goToRoot();
       }
 

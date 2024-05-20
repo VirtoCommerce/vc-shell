@@ -1,3 +1,12 @@
+## [1.0.215](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.214...v1.0.215) (2024-05-20)
+
+
+### Bug Fixes
+
+* shipping/tax reorder ([fde3be9](https://github.com/VirtoCommerce/vendor-portal/commit/fde3be9f5afaeec7c9eb9b7fa61cdec7e60bae48))
+
+
+
 ## [1.0.214](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.213...v1.0.214) (2024-05-20)
 
 

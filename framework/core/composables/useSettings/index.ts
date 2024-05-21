@@ -16,9 +16,9 @@ interface IUseSettings {
   applySettings: (args: { logo?: string; title?: string }) => void;
 }
 
-const uiSettings = ref<IUISetting | undefined>();
 export function useSettings(): IUseSettings {
   const base = inject("platformUrl");
+  const uiSettings = ref<IUISetting | undefined>();
 
   const { getApiClient } = useApiClient(SettingClient);
 

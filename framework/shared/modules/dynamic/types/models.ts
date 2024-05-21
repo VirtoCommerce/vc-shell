@@ -19,6 +19,7 @@ import {
   VcSwitch,
   VcTable,
   VcRating,
+  VcRadioButton,
 } from "../../../../ui/components";
 import type { ComponentProps, ComponentEmit, ComponentSlots } from "vue-component-type-helpers";
 
@@ -133,6 +134,10 @@ export type ICheckbox = {
 
   slots?: Partial<Pick<ComponentSlots<typeof VcCheckbox>, "default" | "error">>;
 } & FieldOpts<typeof VcCheckbox>;
+
+export type IRadioButton = {
+  props: ComponentProps<typeof VcRadioButton> | IControlBaseProps;
+} & FieldOpts<typeof VcRadioButton>;
 
 export type IDynamicProperties = {
   props:

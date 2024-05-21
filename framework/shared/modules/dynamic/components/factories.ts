@@ -19,6 +19,7 @@ import {
   ISwitch,
   ITable,
   IRating,
+  IRadioButton,
 } from "./../types/models";
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { markRaw } from "vue";
@@ -41,6 +42,7 @@ import {
   VcSwitch,
   VcTable,
   VcRating,
+  VcRadioButton,
 } from "../../../../ui/components";
 
 export const ControlBaseProps = ({
@@ -189,6 +191,14 @@ export const Checkbox = ({ props, slots }: ICheckbox): ICheckbox => ({
   },
 
   slots,
+});
+
+export const RadioButton = ({ props }: IRadioButton): IRadioButton => ({
+  component: markRaw(VcRadioButton),
+  props: {
+    ...ControlBaseProps(props),
+    ...props,
+  },
 });
 
 export const Button = ({ props, slots }: IButton): IButton => ({

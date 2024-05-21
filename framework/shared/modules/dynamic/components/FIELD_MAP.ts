@@ -20,6 +20,7 @@ import Table from "./fields/Table";
 import { ControlSchema } from "../types";
 import CustomComponent from "./fields/CustomComponent";
 import RatingField from "./fields/RatingField";
+import RadioButtonGroup from "./fields/RadioButtonGroup";
 
 type AvailableComponents = Exclude<ControlSchema["component"], "vc-widgets">;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -46,6 +47,7 @@ const FIELD_MAP: TFieldMap = {
   "vc-table": Table,
   "vc-custom": CustomComponent,
   "vc-rating": RatingField,
+  "vc-radio-button-group": RadioButtonGroup,
 };
 
 export default FIELD_MAP;

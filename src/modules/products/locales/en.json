@@ -75,10 +75,6 @@
           "UNPUBLISH": "Unpublish",
           "PUBLISH": "Publish",
           "DELETE": "Delete"
-        },
-        "DELETE_SELECTED_CONFIRMATION": {
-          "MESSAGE": "Are you sure you want to delete {count} selected products?",
-          "ALL": "all {totalCount}"
         }
       },
       "DETAILS": {
@@ -143,7 +139,11 @@
         "CLOSE_CONFIRMATION": "You have unsaved changes. Close anyway?",
         "DELETE": "Are you sure you want to delete this product?",
         "DELETE_CONFIRMATION": "Are you sure you want to delete this image?",
-        "DELETE_CONFIRMATION_ASSET": "Are you sure you want to delete {count} selected assets?"
+        "DELETE_CONFIRMATION_ASSET": "Are you sure you want to delete {count} selected assets?",
+        "DELETE_SELECTED_CONFIRMATION": {
+          "MESSAGE": "Are you sure you want to delete {count} selected products?",
+          "ALL": "all {totalCount}"
+        }
       }
     },
 

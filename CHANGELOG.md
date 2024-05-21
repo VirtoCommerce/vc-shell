@@ -1,3 +1,12 @@
+## [1.0.217](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.216...v1.0.217) (2024-05-21)
+
+
+### Bug Fixes
+
+* message about edited blade is not displayed, fixed ([6b8e3a3](https://github.com/VirtoCommerce/vc-shell/commit/6b8e3a3f2245c442df7da788d7e6b0627cbcd79c))
+
+
+
 ## [1.0.216](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.215...v1.0.216) (2024-05-21)
 
 

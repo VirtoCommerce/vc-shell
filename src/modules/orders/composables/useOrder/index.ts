@@ -149,6 +149,7 @@ export const useOrder = (args: {
   };
 
   const scope = ref<OrderScope>({
+    isBladeEditable: false,
     toolbarOverrides: computed(() => toolbar.value),
     shippingInfo,
     addressVisibility: (schema: { property: keyof IShippingInfo }, fieldContext: IShippingInfo) => {

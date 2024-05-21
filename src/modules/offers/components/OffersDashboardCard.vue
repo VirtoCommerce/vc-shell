@@ -1,7 +1,7 @@
 <template>
   <VcCard
     :header="$t('OFFERS.WIDGET.TITLE')"
-    icon="fas fa-file-invoice"
+    icon="fas fa-shapes"
     :fill="true"
   >
     <template

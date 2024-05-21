@@ -32,7 +32,7 @@
 <script lang="ts" setup>
 import { VcLabel, VcHint } from "./../../";
 export interface Props {
-  modelValue: boolean;
+  modelValue: boolean | undefined;
   disabled?: boolean;
   tooltip?: string;
   required?: boolean;

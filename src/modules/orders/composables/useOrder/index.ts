@@ -238,7 +238,7 @@ export const useOrder = (args: {
     load,
     saveChanges,
     remove,
-    loading: useLoading(loading, pdfLoading),
+    loading: useLoading(loading, pdfLoading, stateMachineLoading),
     item,
     validationState,
     scope: computed(() => scope.value),

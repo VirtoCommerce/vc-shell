@@ -17,7 +17,12 @@
           "ADD_FULFILLMENT_CENTER": "Add Fulfillment Center"
         },
         "EMPTY": {
-          "NO_ITEMS": "There are no Fulfillment Centers yet"
+          "NO_ITEMS": "There are no Fulfillment Centers yet",
+          "ADD": "Add Fulfillment Center"
+        },
+        "NOT_FOUND": {
+          "EMPTY": "No Fulfillment Centers found.",
+          "RESET": "Reset search"
         }
       },
       "DETAILS": {

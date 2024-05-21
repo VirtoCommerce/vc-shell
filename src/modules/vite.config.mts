@@ -1,17 +1,11 @@
 import { defineConfig } from "vite";
 import { resolve, join, dirname } from "node:path";
 import vue from "@vitejs/plugin-vue";
-import libAssetsPlugin from "@laynezh/vite-plugin-lib-assets";
 import { fileURLToPath } from "node:url";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
-  resolve: {
-    alias: {
-      "/assets/empty.png": resolve(__dirname, "../../public/assets/empty.png"),
-    },
-  },
   build: {
     copyPublicDir: false,
     lib: {
@@ -37,5 +31,5 @@ export default defineConfig({
       ],
     },
   },
-  plugins: [libAssetsPlugin(), vue()],
+  plugins: [vue()],
 });

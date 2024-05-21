@@ -5,6 +5,7 @@ import OffersNotFoundGridTemplate from "./OffersNotFoundGridTemplate.vue";
 import OffersDashboardCard from "./OffersDashboardCard.vue";
 import ListPriceTemplate from "./ListPriceTemplate.vue";
 import ConditionsTemplate from "./ConditionsTemplate.vue";
+import SpecialPricesEmptyGridTemplate from "./SpecialPricesEmptyGridTemplate.vue";
 
 export * from "./notifications";
 export * from "./widgets";
@@ -16,4 +17,5 @@ export {
   OffersDashboardCard,
   ListPriceTemplate,
   ConditionsTemplate,
+  SpecialPricesEmptyGridTemplate,
 };

@@ -40,6 +40,9 @@ export const grid: DynamicGridSchema = {
       mobileTemplate: {
         component: "FulfillmentMobileGridView",
       },
+      emptyTemplate: {
+        component: "FulfillmentEmptyGridTemplate",
+      },
       columns: [
         {
           id: "name",

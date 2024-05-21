@@ -3,7 +3,7 @@
     v-if="modelValue.item?.id"
     :value="modelValue.item?.priceLists?.length ?? 0"
     icon="fas fa-tags"
-    :title="$t('SPECIAL_PRICES.PAGES.DETAILS.WIDGETS.SPECIAL_PRICES')"
+    :title="$t('OFFERS.PAGES.DETAILS.WIDGETS.SPECIAL_PRICES')"
     @click="clickHandler"
   >
   </VcWidget>

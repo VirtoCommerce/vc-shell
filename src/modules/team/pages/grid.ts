@@ -40,6 +40,9 @@ export const grid: DynamicGridSchema = {
       mobileTemplate: {
         component: "TeamGridMobileView",
       },
+      emptyTemplate: {
+        component: "TeamEmptyGridTemplate",
+      },
       columns: [
         {
           id: "firstName",

@@ -33,6 +33,9 @@ export const grid: DynamicGridSchema = {
       mobileTemplate: {
         component: "RatingMobileGridView",
       },
+      emptyTemplate: {
+        component: "RatingEmptyGridTemplate",
+      },
       columns: [
         {
           id: "title",

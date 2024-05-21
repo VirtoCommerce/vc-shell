@@ -28,6 +28,9 @@ export const specialPricesList: DynamicGridSchema = {
       id: "specialPricesGrid",
       component: "vc-table",
       header: false,
+      emptyTemplate: {
+        component: "SpecialPricesEmptyGridTemplate",
+      },
       columns: [
         {
           id: "name",

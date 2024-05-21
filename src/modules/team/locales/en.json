@@ -30,7 +30,8 @@
           }
         },
         "EMPTY": {
-          "NO_ITEMS": "There are no people yet"
+          "NO_ITEMS": "There are no people yet",
+          "ADD": "Add new member"
         }
       },
       "DETAILS": {

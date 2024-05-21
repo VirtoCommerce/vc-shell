@@ -95,7 +95,6 @@ export type TListItemClickArgs<Item extends Record<string, any> = Record<string,
 
 export interface DetailsBaseBladeScope extends BaseBladeScope {
   disabled?: ComputedRef<boolean | undefined> | Ref<boolean | undefined>;
-  isBladeEditable?: ComputedRef<boolean | undefined> | Ref<boolean | undefined> | boolean;
   multilanguage?: {
     loading: ComputedRef<boolean>;
     currentLocale: Ref<string>;

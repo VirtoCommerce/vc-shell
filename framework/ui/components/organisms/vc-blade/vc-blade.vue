@@ -22,7 +22,7 @@
       :icon="icon"
       :title="title"
       :subtitle="subtitle"
-      :modified="modified"
+      :modified="typeof modified !== 'undefined' ? modified : undefined"
       @close="$emit('close')"
       @expand="$emit('expand')"
       @collapse="$emit('collapse')"
@@ -53,7 +53,7 @@
     </template>
 
     <!-- Unsaved changes -->
-    <template v-if="modified">
+    <template v-if="typeof modified !== 'undefined' ? modified : false">
       <div
         class="tw-text-white tw-px-2 tw-py-1 tw-flex tw-flex-row tw-items-center tw-bg-[color:var(--blade-color-unsaved-changes)]"
       >
@@ -111,6 +111,7 @@ withDefaults(defineProps<Props>(), {
   closable: true,
   expandable: true,
   toolbarItems: () => [],
+  modified: undefined,
 });
 
 defineSlots<{

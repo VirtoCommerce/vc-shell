@@ -7,7 +7,7 @@
     :width="settings?.width || '50%'"
     :toolbar-items="toolbarComputed"
     :title="title"
-    :modified="isBladeEditable ? isFormModified : undefined"
+    :modified="!toValue(scope)?.disabled ? isFormModified : undefined"
     @close="$emit('close:blade')"
     @expand="$emit('expand:blade')"
     @collapse="$emit('collapse:blade')"
@@ -156,7 +156,7 @@ const { onBeforeClose } = useBladeNavigation();
 const title = ref();
 const isReady = ref(false);
 const activeWidgetExposed = ref<CoreBladeExposed>();
-const isBladeEditable = computed(() => refDefault(toRef(toValue(scope ?? {}), "isBladeEditable"), true).value);
+const isBladeEditable = computed(() => !toValue("disabled" in toValue(scope || {}) && toValue(scope || {}).disabled));
 const settings = computed(() => props.model?.settings);
 
 const { moduleNotifications, markAsRead } = useNotifications(settings.value?.pushNotificationType);

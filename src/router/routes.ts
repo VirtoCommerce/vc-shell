@@ -8,6 +8,8 @@ import bgImage from "/assets/background.jpg";
 import { useLogin } from "../composables";
 import Dashboard from "../pages/Dashboard.vue";
 
+const version = import.meta.env.PACKAGE_VERSION;
+
 const sellerIdRegex = "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}";
 
 export const routes: RouteRecordRaw[] = [
@@ -40,6 +42,9 @@ export const routes: RouteRecordRaw[] = [
     name: "Login",
     path: "/login",
     component: Login,
+    meta: {
+      appVersion: version,
+    },
     props: () => ({
       composable: useLogin,
       logo: whiteLogoImage,

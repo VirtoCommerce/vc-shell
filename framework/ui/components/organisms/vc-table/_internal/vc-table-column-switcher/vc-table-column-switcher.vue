@@ -52,6 +52,7 @@ export interface Props {
 
 export interface Emits {
   (event: "change", value: ITableColumns): void;
+  (event: "onActive", value: boolean): void;
 }
 
 const props = withDefaults(defineProps<Props>(), {});
@@ -80,6 +81,13 @@ watch(
     internalItems.value = newVal;
   },
   { immediate: true, deep: true },
+);
+
+watch(
+  () => isActive.value,
+  (newVal) => {
+    emit("onActive", newVal);
+  },
 );
 
 function selectItem(item: ITableColumns) {

@@ -105,6 +105,8 @@
           <thead
             v-if="filteredCols"
             class="vc-table__header tw-relative"
+            @mouseenter="handleHeaderMouseOver(true)"
+            @mouseleave="handleHeaderMouseOver(false)"
           >
             <tr class="vc-table__header-row">
               <th
@@ -118,7 +120,7 @@
                     @click.stop
                   ></VcCheckbox>
                 </div>
-                <div class="tw-w-3 tw-top-0 tw-bottom-0 tw-absolute tw-right-0 tw-flex tw-justify-end">
+                <div class="tw-top-0 tw-bottom-0 tw-absolute tw-right-0 tw-flex tw-justify-end">
                   <div class="tw-w-px tw-bg-[#e5e7eb] tw-h-full"></div>
                 </div>
               </th>
@@ -127,7 +129,7 @@
                 width="21px"
                 class="tw-h-[42px] tw-w-[21px] tw-max-w-[21px] tw-min-w-[21px] tw-bg-[#f9f9f9] tw-m-w-[70px] !tw-border-0 tw-shadow-[inset_0px_1px_0px_#eaedf3,_inset_0px_-1px_0px_#eaedf3] tw-box-border tw-sticky tw-top-0 tw-select-none tw-z-[1]"
               >
-                <div class="tw-w-3 tw-top-0 tw-bottom-0 tw-absolute tw-right-0 tw-flex tw-justify-end">
+                <div class="tw-top-0 tw-bottom-0 tw-absolute tw-right-0 tw-flex tw-justify-end">
                   <div class="tw-w-px tw-bg-[#e5e7eb] tw-h-full"></div>
                 </div>
               </th>
@@ -190,12 +192,13 @@
                 </div>
               </th>
               <div
-                v-if="props.expanded"
+                v-if="isHeaderHover && props.expanded"
                 class="tw-sticky tw-h-[42px] tw-z-[1] tw-right-0 tw-top-0 tw-table-cell tw-align-middle tw-w-0"
               >
                 <VcTableColumnSwitcher
                   :items="internalColumnsSorted"
                   @change="toggleColumn"
+                  @on-active="handleColumnSwitcher"
                 ></VcTableColumnSwitcher>
               </div>
             </tr>
@@ -580,6 +583,8 @@ const nextColumn = ref<ITableColumns>();
 const lastResize = ref<number>();
 const table = useCurrentElement();
 const resizer = ref();
+const isHeaderHover = ref(false);
+const columnSwitcherActive = ref(false);
 const state = useLocalStorage<Partial<ITableColumns & { predefined: boolean }>[]>(
   "VC_TABLE_STATE_" + props.stateKey.toUpperCase(),
   [],
@@ -741,6 +746,21 @@ watch(
     emit("select:all", newVal);
   },
 );
+
+function handleHeaderMouseOver(state: boolean) {
+  if (columnSwitcherActive.value) {
+    return;
+  }
+  isHeaderHover.value = state;
+}
+
+function handleColumnSwitcher(state: boolean) {
+  columnSwitcherActive.value = state;
+
+  if (!state) {
+    isHeaderHover.value = false;
+  }
+}
 
 function handleSelectAll() {
   allSelected.value = !allSelected.value;

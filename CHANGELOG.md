@@ -1,3 +1,14 @@
+## [1.0.217](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.216...v1.0.217) (2024-05-21)
+
+
+### Features
+
+* add replaceCurrentBlade option to useSpecialPricesList ([48ff4f3](https://github.com/VirtoCommerce/vendor-portal/commit/48ff4f3184f1433aa8341a179ca7ee5b19124e11))
+* filter updates ([3552275](https://github.com/VirtoCommerce/vendor-portal/commit/35522757ab184d9f32b9c6011d5e3087687de651))
+* open new offer/product blade after creation ([2723ce8](https://github.com/VirtoCommerce/vendor-portal/commit/2723ce8f620619845c16b5be17e38236e1495374))
+
+
+
 ## [1.0.216](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.215...v1.0.216) (2024-05-20)
 
 

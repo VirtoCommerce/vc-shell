@@ -177,16 +177,16 @@
       ></VcTextarea
     ></template>
     <template v-else-if="computedProperty.valueType === 'Boolean'">
-      <VcCheckbox
+      <VcSwitch
         v-bind="$attrs"
         v-model="value"
         :error-message="errorMessage"
         :required="computedProperty.required"
         :disabled="disabled"
         :name="computedProperty.name"
+        :label="computedProperty.displayName"
       >
-        {{ computedProperty.displayName }}
-      </VcCheckbox>
+      </VcSwitch>
     </template>
   </Field>
 </template>
@@ -196,7 +196,7 @@
 import { ref, onMounted, computed, Ref, watch } from "vue";
 import { Field } from "vee-validate";
 import { useI18n } from "vue-i18n";
-import { VcSelect, VcInput, VcTextarea, VcCheckbox } from "./../../";
+import { VcSelect, VcInput, VcTextarea, VcSwitch } from "./../../";
 import * as _ from "lodash-es";
 
 type IValidationRules = {

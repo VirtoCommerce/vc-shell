@@ -1,3 +1,13 @@
+## [1.0.219](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.218...v1.0.219) (2024-05-21)
+
+
+### Features
+
+* app version on login page ([299b721](https://github.com/VirtoCommerce/vendor-portal/commit/299b721c8d5fca6a4927894c7570510746dcd769))
+* updated grid empty/not found templates ([e549b47](https://github.com/VirtoCommerce/vendor-portal/commit/e549b47969dd832c1186c46bd00a84e4ff07dde7))
+
+
+
 ## [1.0.218](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.217...v1.0.218) (2024-05-21)
 
 

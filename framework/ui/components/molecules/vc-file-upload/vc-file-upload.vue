@@ -74,7 +74,7 @@ export interface Emits {
 
 const props = withDefaults(defineProps<Props>(), {
   variant: "gallery",
-  accept: ".jpg, .png, .jpeg, .webp, .heic",
+  accept: ".jpg, .png, .jpeg, .webp, .heic, .svg",
   name: "Gallery",
   icon: "fas fa-cloud-upload-alt",
 });

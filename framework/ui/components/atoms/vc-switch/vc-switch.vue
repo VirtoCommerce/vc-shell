@@ -42,7 +42,7 @@ export interface Props {
 }
 
 export interface Emits {
-  (event: "update:modelValue", value: boolean): void;
+  (event: "update:modelValue", value: boolean | undefined): void;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -52,7 +52,11 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<Emits>();
 
-const invertValue = (value: boolean) => (props.trueValue ? value : !value);
+const invertValue = (value: boolean | undefined) => {
+  if (typeof value !== "undefined") {
+    return props.trueValue ? value : !value;
+  }
+};
 
 function onInput(e: Event) {
   const newValue = (e.target as HTMLInputElement).checked;

@@ -28,10 +28,9 @@ import {
   ValidationFailure,
   OfferPriceList,
 } from "@vcmp-vendor-portal/api/marketplacevendor";
-import { Ref, computed, nextTick, reactive, ref, watch, ComputedRef } from "vue";
+import { Ref, computed, reactive, ref, watch, ComputedRef, unref } from "vue";
 import { useMarketplaceSettings } from "../../../settings";
 import { useI18n } from "vue-i18n";
-import { ICurrency } from "../../../settings/composables/useMarketplaceSettings";
 import { useDynamicProperties, useMultilanguage } from "../../../common";
 import { useFulfillmentCenters } from "../../../fulfillment-centers/composables";
 import { useRoute } from "vue-router";
@@ -303,6 +302,28 @@ export const useOfferDetails = (args: {
     },
     toolbarOverrides: {
       saveChanges: {
+        async clickHandler() {
+          if (item.value) {
+            const res = await saveChanges(item.value);
+
+            args.emit("parent:call", {
+              method: "reload",
+            });
+
+            args.emit("parent:call", {
+              method: "updateActiveWidgetCount",
+            });
+
+            if (!unref(args.props.param)) {
+              args.emit("parent:call", {
+                method: "openDetailsBlade",
+                args: {
+                  param: (res && res.id) ?? undefined,
+                },
+              });
+            }
+          }
+        },
         disabled: computed(() => {
           return !(validationState.value.valid && validationState.value.modified);
         }),

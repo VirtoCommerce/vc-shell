@@ -29,7 +29,7 @@ import {
   DetailsBaseBladeScope,
   useAssets,
 } from "@vc-shell/framework";
-import { ref, computed, reactive, ComputedRef, Ref, watch } from "vue";
+import { ref, computed, reactive, ComputedRef, Ref, watch, unref } from "vue";
 import { useI18n } from "vue-i18n";
 import { useDynamicProperties, useMultilanguage, useRoles } from "../../../common";
 import * as _ from "lodash-es";
@@ -295,6 +295,28 @@ export const useProductDetails = (args: {
     productTypeDisabled: computed(() => !!item.value?.id),
     toolbarOverrides: {
       saveChanges: {
+        async clickHandler() {
+          if (item.value) {
+            const res = await saveChanges(item.value);
+
+            args.emit("parent:call", {
+              method: "reload",
+            });
+
+            args.emit("parent:call", {
+              method: "updateActiveWidgetCount",
+            });
+
+            if (!unref(args.props.param)) {
+              args.emit("parent:call", {
+                method: "openDetailsBlade",
+                args: {
+                  param: (res && res.id) ?? undefined,
+                },
+              });
+            }
+          }
+        },
         isVisible: computed(() => !rolesLoading.value && !(isAdministrator.value || isOperator.value)),
         disabled: computed(() => {
           return (

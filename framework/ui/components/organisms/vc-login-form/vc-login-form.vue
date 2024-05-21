@@ -19,11 +19,17 @@
         <slot></slot>
       </div>
     </div>
+    <div
+      class="tw-absolute tw-bottom-[2px] tw-left-[93px] tw-text-[color:var(--login-version-color)] tw-text-xs tw-mt-auto tw-self-center tw-p-1"
+    >
+      {{ version }}
+    </div>
   </div>
 </template>
 
 <script lang="ts" setup>
 import { computed } from "vue";
+import { useRouter } from "vue-router";
 
 export interface Props {
   logo?: string;
@@ -34,6 +40,12 @@ export interface Props {
 const props = withDefaults(defineProps<Props>(), {
   title: "Login",
 });
+
+defineSlots<{
+  default: void;
+}>();
+
+const router = useRouter();
 
 const backgroundImageHandler = computed(() => {
   if (props.background) {
@@ -49,5 +61,13 @@ const logoImageHandler = computed(() => {
   return undefined;
 });
 
+const version = router.currentRoute.value.meta?.appVersion;
+
 console.debug("Init vc-login-form");
 </script>
+
+<style lang="scss">
+:root {
+  --login-version-color: #838d9a;
+}
+</style>

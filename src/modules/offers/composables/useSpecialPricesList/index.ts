@@ -62,6 +62,7 @@ export const useSpecialPricesList = (args: {
     await openBlade({
       blade: resolveBladeByName("SpecialPriceDetails"),
       ...data,
+      replaceCurrentBlade: true,
     });
   }
 
@@ -73,6 +74,7 @@ export const useSpecialPricesList = (args: {
       options: {
         item: selectedItem.value,
       },
+      replaceCurrentBlade: true,
       ...args,
     });
   }

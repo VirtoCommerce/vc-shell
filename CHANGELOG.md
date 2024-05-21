@@ -1,3 +1,12 @@
+## [1.0.220](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.219...v1.0.220) (2024-05-21)
+
+
+### Features
+
+* updated dashboard card icon in offers ([073c40d](https://github.com/VirtoCommerce/vendor-portal/commit/073c40decaba6142900075cc6fdb2ee725ab05e4))
+
+
+
 ## [1.0.219](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.218...v1.0.219) (2024-05-21)
 
 

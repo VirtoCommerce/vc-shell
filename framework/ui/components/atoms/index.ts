@@ -1,7 +1,6 @@
 export * from "./vc-badge";
 export * from "./vc-button";
 export * from "./vc-card";
-export * from "./vc-checkbox";
 export * from "./vc-col";
 export * from "./vc-container";
 export * from "./vc-hint";

@@ -7,7 +7,7 @@ import { SchemaBaseArgTypes } from "./common/args";
 import { CheckboxSchema } from "../../..";
 
 export default {
-  title: "DynamicViews/atoms/VcCheckbox",
+  title: "DynamicViews/molecules/VcCheckbox",
   component: page,
   args: {
     id: "checkboxId",

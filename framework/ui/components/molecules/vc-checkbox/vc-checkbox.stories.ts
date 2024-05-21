@@ -1,9 +1,9 @@
 import type { Meta, StoryFn } from "@storybook/vue3";
 import { VcCheckbox } from "./";
-import { VcLabel } from "../vc-label";
+import { VcLabel } from "../../atoms/vc-label";
 
 export default {
-  title: "atoms/VcCheckbox",
+  title: "molecules/VcCheckbox",
   component: VcCheckbox,
   args: {
     modelValue: true,
@@ -66,7 +66,7 @@ export const Required = Template.bind({});
 Required.args = { required: true };
 
 export const Error = Template.bind({});
-Error.args = { errorMessage: "This is an error message" };
+Error.args = { errorMessage: "This is an error message", modelValue: false };
 
 export const Tooltip = Template.bind({});
 Tooltip.args = { tooltip: "This is a tooltip" };

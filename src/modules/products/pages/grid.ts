@@ -73,12 +73,13 @@ export const grid: DynamicGridSchema = {
         columns: [
           {
             id: "statusFilter",
-            title: "PRODUCTS.PAGES.LIST.FILTERS.STATUS_FILTER",
             controls: [
               {
                 id: "statusCheckbox",
+                label: "PRODUCTS.PAGES.LIST.FILTERS.STATUS_FILTER",
                 field: "status",
                 component: "vc-checkbox",
+                multiple: true,
                 data: "statuses",
                 optionValue: "value",
                 optionLabel: "displayValue",

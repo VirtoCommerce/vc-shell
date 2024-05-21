@@ -45,13 +45,12 @@ export const grid: DynamicGridSchema = {
         columns: [
           {
             id: "statusFilter",
-            title: "ORDERS.PAGES.LIST.TABLE.FILTER.STATUS.TITLE",
             controls: [
               {
                 id: "statusCheckbox",
                 field: "status",
-                component: "vc-checkbox",
-                multiple: false,
+                label: "ORDERS.PAGES.LIST.TABLE.FILTER.STATUS.TITLE",
+                component: "vc-radio-button-group",
                 data: "statuses",
                 optionValue: "value",
                 optionLabel: "displayValue",
@@ -60,7 +59,6 @@ export const grid: DynamicGridSchema = {
           },
           {
             id: "orderDateFilter",
-            title: "ORDERS.PAGES.LIST.TABLE.FILTER.DATE.TITLE",
             controls: [
               {
                 id: "startDateInput",

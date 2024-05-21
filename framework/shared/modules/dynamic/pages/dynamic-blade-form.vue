@@ -7,7 +7,7 @@
     :width="settings?.width || '50%'"
     :toolbar-items="toolbarComputed"
     :title="title"
-    :modified="toValue(scope)?.isBladeEditable ? isFormModified : undefined"
+    :modified="isBladeEditable ? isFormModified : undefined"
     @close="$emit('close:blade')"
     @expand="$emit('expand:blade')"
     @collapse="$emit('collapse:blade')"
@@ -156,6 +156,7 @@ const { onBeforeClose } = useBladeNavigation();
 const title = ref();
 const isReady = ref(false);
 const activeWidgetExposed = ref<CoreBladeExposed>();
+const isBladeEditable = computed(() => refDefault(toRef(toValue(scope ?? {}), "isBladeEditable"), true).value);
 const settings = computed(() => props.model?.settings);
 
 const { moduleNotifications, markAsRead } = useNotifications(settings.value?.pushNotificationType);
@@ -357,7 +358,7 @@ onBeforeClose(async () => {
 });
 
 provide("bladeContext", toReactive(bladeContext));
-provide("isBladeEditable", refDefault(toRef(toValue(scope ?? {}), "isBladeEditable"), true));
+provide("isBladeEditable", isBladeEditable);
 
 defineExpose({
   title: bladeTitle ?? "",

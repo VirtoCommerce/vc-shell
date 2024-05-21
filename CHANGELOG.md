@@ -1,3 +1,26 @@
+## [1.0.216](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.215...v1.0.216) (2024-05-21)
+
+
+### Bug Fixes
+
+* disable preserve of ui settings in useSettings ([b41ee37](https://github.com/VirtoCommerce/vc-shell/commit/b41ee371ab6e5e329e578206a39c2c819c4d0ed8))
+
+
+### Features
+
+* another view of modified status in blade ([fe6055a](https://github.com/VirtoCommerce/vc-shell/commit/fe6055a647a560339138286472815dce000ac75c))
+* **dynamic:** add vc-select, vc-radio-button-group, vc-switch components to grid filter builder ([8f0bc5b](https://github.com/VirtoCommerce/vc-shell/commit/8f0bc5b233a9dfd6cecf570b2328601c55cf6d29))
+* **dynamic:** support of blade modified state ([a2f9764](https://github.com/VirtoCommerce/vc-shell/commit/a2f97645f9512b36337483815073ca0c799bf341))
+* show app version on login page ([0fe8da4](https://github.com/VirtoCommerce/vc-shell/commit/0fe8da4d78fa9fc9e03eb8490a2f051f850ad25e))
+* **ui,dynamic:** vc-radio-button component, storybook ([2061e21](https://github.com/VirtoCommerce/vc-shell/commit/2061e21673a93560d127a4c60c10fa0fc7eab8d2))
+* **ui:** add support for SVG files in file upload component ([b7d1ecc](https://github.com/VirtoCommerce/vc-shell/commit/b7d1ecc8c78dabc27ae0044df2dffab02689ffa4))
+* **ui:** update styles of vc-checkbox component, move to molecules, storybook update ([2dd4ecc](https://github.com/VirtoCommerce/vc-shell/commit/2dd4eccf44ec489dd9678ec441a28ec99cacfcc1))
+* **ui:** update vc-dynamic-property component to use VcSwitch for Boolean value type ([8fe513f](https://github.com/VirtoCommerce/vc-shell/commit/8fe513fb12d118151153be0cb7ce009987208d71))
+* **ui:** vc-input update with new datepicker ([8a5a934](https://github.com/VirtoCommerce/vc-shell/commit/8a5a9342f9db2fb12c602d857e11e8cf9591d36e))
+* **ui:** vc-table column switcher on hover at header ([5a5a131](https://github.com/VirtoCommerce/vc-shell/commit/5a5a131e1ba5bc539438c57e6f115d5331ec491b))
+
+
+
 ## [1.0.215](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.214...v1.0.215) (2024-05-20)
 
 

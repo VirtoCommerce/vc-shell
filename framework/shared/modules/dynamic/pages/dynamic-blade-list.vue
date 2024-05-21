@@ -10,7 +10,7 @@
     :class="{
       'tw-flex tw-flex-auto': isWidgetView,
     }"
-    :has-unsaved-changes="unref(scope)?.modified"
+    :modified="unref(scope)?.modified"
     @close="$emit('close:blade')"
     @expand="$emit('expand:blade')"
     @collapse="$emit('collapse:blade')"

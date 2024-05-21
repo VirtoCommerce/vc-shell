@@ -13,6 +13,9 @@ export default {
   props: componentProps,
   setup(props: ExtractPropTypes<typeof componentProps> & { element: InputCurrencySchema }) {
     return () => {
+      const options =
+        toValue(getModel(props.element.options, props.fieldContext ?? {})) ||
+        toValue(unref(props.bladeContext.scope)?.[props.element.options]);
       const field = InputCurrency({
         props: Object.assign(
           {},
@@ -20,7 +23,7 @@ export default {
             option: toValue(getModel(props.element.optionProperty, props.fieldContext ?? {})),
             optionLabel: props.element.optionLabel,
             optionValue: props.element.optionValue,
-            options: toValue(unref(props.bladeContext.scope)?.[props.element.options]),
+            options,
             "onUpdate:option": (e: string | number | Record<string, unknown>) => {
               setModel({
                 value: e,

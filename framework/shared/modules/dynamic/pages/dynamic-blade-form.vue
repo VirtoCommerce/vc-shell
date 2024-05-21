@@ -7,7 +7,7 @@
     :width="settings?.width || '50%'"
     :toolbar-items="toolbarComputed"
     :title="title"
-    :has-unsaved-changes="isFormModified"
+    :modified="toValue(scope)?.isBladeEditable ? isFormModified : undefined"
     @close="$emit('close:blade')"
     @expand="$emit('expand:blade')"
     @collapse="$emit('collapse:blade')"
@@ -84,7 +84,7 @@ import {
   toRef,
 } from "vue";
 import { DynamicDetailsSchema, FormContentSchema, SettingsSchema } from "../types";
-import { reactiveComputed, toReactive, useMounted, useTemplateRefsList } from "@vueuse/core";
+import { reactiveComputed, refDefault, toReactive, useMounted, useTemplateRefsList } from "@vueuse/core";
 import {
   DetailsBladeContext,
   DetailsBaseBladeScope,
@@ -357,7 +357,7 @@ onBeforeClose(async () => {
 });
 
 provide("bladeContext", toReactive(bladeContext));
-provide("isBladeEditable", toRef(toValue(scope ?? {}), "isBladeEditable"));
+provide("isBladeEditable", refDefault(toRef(toValue(scope ?? {}), "isBladeEditable"), true));
 
 defineExpose({
   title: bladeTitle ?? "",

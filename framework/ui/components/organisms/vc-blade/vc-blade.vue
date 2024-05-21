@@ -22,6 +22,7 @@
       :icon="icon"
       :title="title"
       :subtitle="subtitle"
+      :modified="modified"
       @close="$emit('close')"
       @expand="$emit('expand')"
       @collapse="$emit('collapse')"
@@ -52,7 +53,7 @@
     </template>
 
     <!-- Unsaved changes -->
-    <template v-if="hasUnsavedChanges">
+    <template v-if="modified">
       <div
         class="tw-text-white tw-px-2 tw-py-1 tw-flex tw-flex-row tw-items-center tw-bg-[color:var(--blade-color-unsaved-changes)]"
       >
@@ -92,7 +93,7 @@ export interface Props {
   expandable?: boolean;
   closable?: boolean;
   toolbarItems?: IBladeToolbar[];
-  hasUnsavedChanges?: boolean;
+  modified?: boolean;
 }
 
 export interface Emits {
@@ -138,6 +139,7 @@ const { open } = usePopup({
   --blade-background-color: #ffffff;
   --blade-border-radius: 6px;
   --blade-color-error: #f14e4e;
+  --blade-color-unsaved-changes: #82a6bd;
   --blade-color-unsaved-changes: #82a6bd;
 }
 

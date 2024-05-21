@@ -26,6 +26,10 @@
       "VC_FILE_UPLOAD": {
         "DRAG_HERE": "Drag and drop file here or",
         "BROWSE": "browse your files"
+      },
+      "VC_INPUT": {
+        "DATE_PLACEHOLDER": "Select date",
+        "DATE_TIME_PLACEHOLDER": "Select date and time"
       }
     },
     "ORGANISMS": {
@@ -55,6 +59,10 @@
         "ERROR_POPUP": {
           "TITLE": "Error details"
         }
+      },
+      "VC_BLADE_HEADER": {
+        "UNSAVED_CHANGES": "Has unsaved changes",
+        "NO_CHANGES": "No unsaved changes"
       },
       "VC_TABLE": {
         "CURRENT_PAGE_SELECTED": "All items in this page are selected.",

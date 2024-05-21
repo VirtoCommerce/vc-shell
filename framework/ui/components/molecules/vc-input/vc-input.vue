@@ -58,19 +58,55 @@
                   :emit-value="emitValue"
                   :placeholder="placeholder"
                 >
-                  <input
-                    ref="inputRef"
-                    v-model="handleValue"
-                    :placeholder="placeholder"
-                    :type="internalTypeComputed"
-                    :disabled="disabled"
-                    :name="name"
-                    :maxlength="maxlength"
-                    :autofocus="autofocus"
-                    :max="maxDate"
-                    class="vc-input__input"
-                    @keydown="onKeyDown"
-                  />
+                  <template v-if="type === 'datetime-local' || type === 'date'">
+                    <VueDatePicker
+                      v-model="handleValue"
+                      :placeholder="
+                        placeholder || type === 'datetime-local'
+                          ? $t('COMPONENTS.MOLECULES.VC_INPUT.DATE_TIME_PLACEHOLDER')
+                          : $t('COMPONENTS.MOLECULES.VC_INPUT.DATE_PLACEHOLDER')
+                      "
+                      :disabled="disabled"
+                      :name="name"
+                      :maxlength="maxlength"
+                      :autofocus="autofocus"
+                      :max-date="maxDate"
+                      time-picker-inline
+                      :enable-time-picker="type === 'datetime-local'"
+                      :format="formatDateWithLocale"
+                      :locale="locale"
+                      :start-time="{
+                        hours: 0,
+                        minutes: 0,
+                      }"
+                      :clearable="false"
+                      :config="{
+                        closeOnAutoApply: false,
+                      }"
+                      auto-apply
+                      :teleport-center="$isMobile.value"
+                      :is24="isBrowserLocale24h"
+                      v-bind="datePickerOptions"
+                      :teleport="$isDesktop.value ? 'body' : undefined"
+                      class="vc-input__input"
+                      @keydown="onKeyDown"
+                    ></VueDatePicker>
+                  </template>
+                  <template v-else>
+                    <input
+                      ref="inputRef"
+                      v-model="handleValue"
+                      :placeholder="placeholder"
+                      :type="internalTypeComputed"
+                      :disabled="disabled"
+                      :name="name"
+                      :maxlength="maxlength"
+                      :autofocus="autofocus"
+                      :max="maxDate"
+                      class="vc-input__input"
+                      @keydown="onKeyDown"
+                    />
+                  </template>
                 </slot>
                 <div
                   v-if="suffix"
@@ -173,6 +209,10 @@
 import { computed, ref, unref, watch } from "vue";
 import { VcLabel, VcIcon, VcHint } from "./../../";
 import moment from "moment";
+import VueDatePicker, { VueDatePickerProps } from "@vuepic/vue-datepicker";
+import "@vuepic/vue-datepicker/dist/main.css";
+import * as Locales from "date-fns/locale";
+import { Locale } from "date-fns";
 
 export interface Props {
   /**
@@ -262,6 +302,14 @@ export interface Props {
    * Input current language
    */
   currentLanguage?: string;
+  /**
+   * VueDatePicker options
+   *
+   * Used only when type is 'date' or 'datetime-local'
+   *
+   * @see https://vue3datepicker.com/
+   */
+  datePickerOptions?: VueDatePickerProps;
 }
 
 export interface Emits {
@@ -338,7 +386,7 @@ let emitTimer: NodeJS.Timeout;
 let emitValueFn;
 const temp = ref();
 const inputRef = ref();
-
+const locale = window.navigator.language;
 const internalType = ref(unref(props.type));
 
 const internalTypeComputed = computed({
@@ -370,13 +418,7 @@ const mutatedModel = ref();
 watch(
   rawModel,
   (newVal) => {
-    if (props.type === "datetime-local" || props.type === "date") {
-      if (newVal instanceof Date && !isNaN(newVal.valueOf())) {
-        mutatedModel.value = moment(newVal).format(props.type === "datetime-local" ? "YYYY-MM-DDTHH:mm" : "YYYY-MM-DD");
-      } else if (typeof newVal === "string") {
-        mutatedModel.value = new Date(newVal).toISOString().slice(0, props.type === "datetime-local" ? 16 : 10);
-      }
-    } else if (props.type === "number" && newVal !== null) {
+    if (props.type === "number" && newVal !== null) {
       mutatedModel.value = parseFloat(newVal as string);
     } else if (props.type === "integer" && newVal !== null) {
       mutatedModel.value = Math.trunc(newVal as number);
@@ -390,6 +432,27 @@ watch(
   },
   { immediate: true },
 );
+
+const isBrowserLocale24h = (() => {
+  const hr = new Intl.DateTimeFormat(locale, { hour: "numeric" }).format();
+  return Number.isInteger(Number(hr));
+})();
+
+const formatDateWithLocale: (date: Date) => string = (date) => {
+  const options: Intl.DateTimeFormatOptions = {
+    year: "numeric",
+    month: "numeric",
+    day: "numeric",
+  };
+
+  if (props.type === "datetime-local") {
+    options.hour = "numeric";
+    options.minute = "numeric";
+    options.hour12 = !isBrowserLocale24h;
+  }
+
+  return new Intl.DateTimeFormat(locale, options).format(date);
+};
 
 function onKeyDown(e: KeyboardEvent) {
   const allowedKeys = ["Backspace", "Delete", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"];
@@ -411,9 +474,7 @@ function emitValue(val: string | number | Date | null) {
   emitValueFn = () => {
     if (mutatedModel.value !== val) {
       let value;
-      if (internalTypeComputed.value === "datetime-local" || internalTypeComputed.value === "date") {
-        value = val ? moment(val).toDate() : undefined;
-      } else if (props.type === "number" && val !== null) {
+      if (props.type === "number" && val !== null) {
         value = parseFloat(val as string);
       } else if (props.type === "integer" && val !== null) {
         value = Math.trunc(parseInt(val as string));
@@ -451,6 +512,10 @@ function onReset() {
   --input-placeholder-color: #a5a5a5;
   --input-clear-color: #43b0e6;
   --input-clear-color-hover: #319ed4;
+  --dp-input-padding: 10px 0px 10px 10px;
+  --dp-input-icon-padding: 25px;
+  --dp-font-size: 13px;
+  --dp-font-family: "Roboto", sans-serif;
 }
 
 .vc-input {
@@ -531,20 +596,44 @@ function onReset() {
   &_disabled &__field {
     @apply tw-bg-[#fafafa] tw-text-[#424242];
   }
+
+  .slide-up-enter-active,
+  .slide-up-leave-active {
+    transition: all 0.25s ease-out;
+  }
+
+  .slide-up-enter-from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+
+  .slide-up-leave-to {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
 }
 
-.slide-up-enter-active,
-.slide-up-leave-active {
-  transition: all 0.25s ease-out;
+.dp__pm_am_button {
+  background: var(--dp-primary-color) !important;
+  color: var(--dp-primary-text-color) !important;
+  border: none !important;
+  padding: var(--dp-common-padding) !important;
+  border-radius: var(--dp-border-radius) !important;
+  cursor: pointer !important;
 }
 
-.slide-up-enter-from {
-  opacity: 0;
-  transform: translateY(5px);
+.dp__input_icons {
+  padding: 6px 0 !important;
 }
 
-.slide-up-leave-to {
-  opacity: 0;
-  transform: translateY(-5px);
+.dp__input {
+  &::-ms-reveal,
+  &::-ms-clear {
+    @apply tw-hidden;
+  }
+}
+
+input.dp__input::placeholder {
+  color: #818181 !important;
 }
 </style>

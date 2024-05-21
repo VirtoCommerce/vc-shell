@@ -7,7 +7,6 @@ import {
   MaybeRef,
   unref,
   Component,
-  onMounted,
   RendererElement,
   RendererNode,
   VNode,
@@ -18,17 +17,29 @@ import {
   watchPostEffect,
 } from "vue";
 import * as _ from "lodash-es";
-import { Checkbox, InputField } from "../../components/factories";
+import { Checkbox, InputField, Switch, SelectField, RadioButton } from "../../components/factories";
 import { AsyncAction } from "../../../../../core/composables";
-import { VcButton, VcCol, VcContainer, VcRow } from "../../../../../ui/components";
+import { VcButton, VcCol, VcContainer, VcLabel, VcRow } from "../../../../../ui/components";
 import { useI18n } from "vue-i18n";
-import { FilterBase, FilterCheckbox, FilterDateInput } from "../../types";
+import { FilterBase, FilterCheckbox, FilterDateInput, FilterRadio, FilterSelect, FilterSwitch } from "../../types";
 
 interface Control {
   title: string;
-  fields: {
-    [x: string]: ReturnType<typeof Checkbox> | ReturnType<typeof InputField>;
-  };
+  fields: Record<
+    string,
+    {
+      fields: Record<
+        string,
+        | ReturnType<typeof Checkbox>
+        | ReturnType<typeof InputField>
+        | ReturnType<typeof Switch>
+        | ReturnType<typeof SelectField>
+        | ReturnType<typeof RadioButton>
+      >;
+      label?: string | ComputedRef<string> | undefined;
+      tooltip?: string | ComputedRef<string> | undefined;
+    }
+  >;
 }
 
 export interface UseFilterBuilder {
@@ -111,40 +122,175 @@ export default <Query>(args: {
             const fields = createCheckboxFromData(filterDataFromScope, control);
 
             if (fields) {
-              obj = fields;
+              obj[control.field] = {
+                fields,
+                label: computed(() => t(control.label ?? "")),
+                tooltip: computed(() => t(control.tooltip ?? "")),
+              };
             }
           }
+
           if (control.component === "vc-input") {
-            obj[control.field] = createInput(control);
+            obj[control.field] = {
+              fields: {
+                [control.field]: createInput(control),
+              },
+            };
+          }
+
+          if (control.component === "vc-switch") {
+            const filterData = control.data;
+            const filterDataFromScope = unref(args.scope)?.[filterData] ?? [];
+            const fields = createSwitchFromData(filterDataFromScope, control);
+
+            if (fields) {
+              obj[control.field] = {
+                fields,
+              };
+            }
+          }
+
+          if (control.component === "vc-select") {
+            const filterData = control.data;
+            const filterDataFromScope = unref(args.scope)?.[filterData] ?? [];
+            const fields = createSelectFromData(filterDataFromScope, control);
+
+            if (fields) {
+              obj[control.field] = {
+                fields,
+              };
+            }
+          }
+
+          if (control.component === "vc-radio-button-group") {
+            const filterData = control.data;
+            const filterDataFromScope = unref(args.scope)?.[filterData] ?? [];
+            const fields = createRadioButtonGroupFromData(filterDataFromScope, control);
+
+            if (fields) {
+              obj[control.field] = {
+                fields,
+                label: computed(() => t(control.label ?? "")),
+                tooltip: computed(() => t(control.tooltip ?? "")),
+              };
+            }
           }
 
           return obj;
         },
-        {} as Record<string, ReturnType<typeof Checkbox> | ReturnType<typeof InputField>>,
+        {} as Record<
+          string,
+          {
+            fields: Record<
+              string,
+              | ReturnType<typeof Checkbox>
+              | ReturnType<typeof InputField>
+              | ReturnType<typeof Switch>
+              | ReturnType<typeof SelectField>
+              | ReturnType<typeof RadioButton>
+            >;
+            label?: string | ComputedRef<string>;
+            tooltip?: string | ComputedRef<string>;
+          }
+        >,
       );
 
       return {
-        title: item.title,
+        title: item.title ?? "",
         fields: ctr,
       };
     });
+  }
+
+  function createRadioButtonGroupFromData(data: MaybeRef<Record<string, string>[]>, control: FilterRadio) {
+    if (!(toValue(data) && toValue(data).length)) return;
+    return toValue(data).reduce(
+      (obj, currC) => {
+        obj[currC[control.optionValue]] = {
+          ...RadioButton({
+            props: {
+              class: "tw-mb-2",
+              value: currC[control.optionValue],
+              label: currC[control.optionLabel],
+              modelValue: computed(() => filter.value[control.field]),
+              "onUpdate:modelValue": (e: string) => {
+                filter.value[control.field] = e;
+              },
+            },
+          }),
+        };
+
+        return obj;
+      },
+      {} as Record<string, ReturnType<typeof RadioButton>>,
+    );
+  }
+
+  function createSelectFromData(data: MaybeRef<Record<string, string>[]>, control: FilterSelect) {
+    if (!(toValue(data) && toValue(data).length)) return;
+
+    return {
+      [control.field]: SelectField({
+        props: {
+          class: "tw-mb-2",
+          label: computed(() => t(control.label ?? "")) as unknown as string,
+          tooltip: computed(() => t(control.tooltip ?? "")) as unknown as string,
+          options: toValue(data),
+          multiple: control.multiple,
+          optionLabel: control.optionLabel,
+          optionValue: control.optionValue,
+          clearable: false,
+          modelValue: computed(() => filter.value[control.field]),
+          "onUpdate:modelValue": (e: string | string[]) => {
+            if (Array.isArray(e) && e.length === 0) {
+              filter.value[control.field] = undefined;
+              return;
+            }
+            filter.value[control.field] = e;
+          },
+        },
+      }),
+    };
+  }
+
+  function createSwitchFromData(data: MaybeRef<Record<string, string>[]>, control: FilterSwitch) {
+    if (!(toValue(data) && toValue(data).length)) return;
+    return toValue(data).reduce(
+      (obj, currC) => {
+        obj[currC[control.optionValue]] = Switch({
+          props: {
+            class: "tw-mb-2",
+            label: toValue(currC[control.optionLabel]),
+            tooltip: computed(() => t(control.tooltip ?? "")) as unknown as string,
+            modelValue: computed(() => isItemSelected(currC[control.optionValue], control.field)),
+            "onUpdate:modelValue": (e: boolean) =>
+              selectFilterItem(e, currC[control.optionValue], control.field, control.multiple),
+          },
+        });
+
+        return obj;
+      },
+      {} as Record<string, ReturnType<typeof Switch>>,
+    );
   }
 
   function createCheckboxFromData(data: MaybeRef<Record<string, string>[]>, control: FilterCheckbox) {
     if (!(toValue(data) && toValue(data).length)) return;
     return toValue(data).reduce(
       (obj, currC) => {
-        obj[currC[control.optionValue]] = Checkbox({
-          props: {
-            class: "tw-mb-2",
-            modelValue: computed(() => isItemSelected(currC[control.optionValue], control.field)),
-            "onUpdate:modelValue": (e: boolean) =>
-              selectFilterItem(e, currC[control.optionValue], control.field, control.multiple),
-          },
-          slots: {
-            default: () => toValue(currC[control.optionLabel]),
-          },
-        });
+        obj[currC[control.optionValue]] = {
+          ...Checkbox({
+            props: {
+              class: "tw-mb-2",
+              modelValue: computed(() => isItemSelected(currC[control.optionValue], control.field)),
+              "onUpdate:modelValue": (e: boolean) =>
+                selectFilterItem(e, currC[control.optionValue], control.field, control.multiple),
+            },
+            slots: {
+              default: () => toValue(currC[control.optionLabel]),
+            },
+          }),
+        };
 
         return obj;
       },
@@ -158,6 +304,7 @@ export default <Query>(args: {
         type: "date",
         class: "tw-mb-3",
         label: toValue(computed(() => t(control.label ?? ""))),
+        tooltip: toValue(computed(() => t(control.tooltip ?? ""))),
         modelValue: computed(() => filter.value[control.field]),
         "onUpdate:modelValue": (e: unknown) => (filter.value[control.field] = e),
       },
@@ -197,24 +344,46 @@ export default <Query>(args: {
       },
       () => [
         h(VcRow, () =>
-          Object.values(controls.value).map(({ title, fields }) =>
-            h(VcCol, { class: "tw-p-2 !tw-flex-auto" }, () => [
-              h(
-                "div",
-                { class: "tw-mb-4 tw-text-[#a1c0d4] tw-font-bold tw-text-[17px]" },
-                unref(computed(() => t(title))),
-              ),
-              Object.values(fields).map((item) => {
-                if ("component" in item && item.component) {
-                  return h(
-                    item.component as Component,
-                    { ...item.props, class: item.props.class },
-                    "slots" in item && item.slots ? { ...item.slots } : {},
-                  );
-                }
+          Object.values(controls.value).map(({ title, fields }) => {
+            return h(VcCol, { class: "tw-p-2" }, () => [
+              title
+                ? h(
+                    "div",
+                    { class: "tw-mb-4 tw-text-[#a1c0d4] tw-font-bold tw-text-[17px]" },
+                    unref(computed(() => t(title))),
+                  )
+                : undefined,
+              Object.values(fields)?.map((items) => {
+                return items.label
+                  ? h(
+                      VcLabel,
+                      {
+                        class: "tw-mb-2",
+                      },
+                      {
+                        default: () => items.label,
+                        tooltip: items.tooltip ? () => items.tooltip : undefined,
+                      },
+                    )
+                  : undefined;
               }),
-            ]),
-          ),
+              Object.values(fields)?.map((items) => {
+                return Object.values(items.fields).map((item) => {
+                  if ("component" in item && item.component) {
+                    return [
+                      h(
+                        item.component as Component,
+                        { ...item.props, class: item.props.class },
+                        "slots" in item && item.slots ? { ...item.slots } : {},
+                      ),
+                    ];
+                  } else {
+                    return item;
+                  }
+                });
+              }),
+            ]);
+          }),
         ),
         h(VcRow, () =>
           h(VcCol, { class: "tw-p-2 !tw-flex-auto" }, () =>

@@ -12,3 +12,5 @@ export * from "./vc-slider";
 export * from "./vc-textarea";
 export * from "./vc-multivalue";
 export * from "./vc-field";
+export * from "./vc-radio-button";
+export * from "./vc-checkbox";

@@ -770,6 +770,33 @@ export interface CheckboxSchema extends Omit<SchemaBase, "multilanguage" | "plac
   falseValue?: boolean;
 }
 
+export interface RadioButtonSchema extends Omit<SchemaBase, "multilanguage" | "placeholder"> {
+  /**
+   * Component type for radio button.
+   * @type {"vc-radio-button-group"}
+   */
+  component: "vc-radio-button-group";
+  /**
+   * Allows to select a boolean value.
+   */
+  binary?: boolean;
+  /**
+   * List of options to be displayed as radio-buttons.
+   * @description Array of should be defined in the blade `scope`.
+   */
+  options: string;
+  /**
+   * Name of property that holds radio button value.
+   * @type {string}
+   */
+  optionValue?: string;
+  /**
+   * Name of property that holds radio button label.
+   * @type {string}
+   */
+  optionLabel?: string;
+}
+
 /**
  * Fieldset schema interface.
  * @interface
@@ -963,13 +990,17 @@ export type ControlSchema =
   | SwitchSchema
   | TableSchema
   | CustomComponentSchema
-  | RatingSchema;
+  | RatingSchema
+  | RadioButtonSchema;
 
 export interface FilterBase {
   columns: {
-    title: string;
+    /**
+     * @deprecated use 'label' in 'controls' instead
+     */
+    title?: string;
     id: string;
-    controls: (FilterCheckbox | FilterDateInput)[];
+    controls: (FilterCheckbox | FilterDateInput | FilterSwitch | FilterSelect | FilterRadio)[];
   }[];
 }
 
@@ -977,6 +1008,8 @@ export type FilterCheckbox = {
   id: string;
   field: string;
   multiple?: boolean;
+  label?: string;
+  tooltip?: string;
   data: string;
   optionValue: string;
   optionLabel: string;
@@ -987,7 +1020,43 @@ export type FilterDateInput = {
   id: string;
   field: string;
   label?: string;
+  tooltip?: string;
   component: InputSchema["component"];
+};
+
+export type FilterSwitch = {
+  id: string;
+  field: string;
+  data: string;
+  label?: string;
+  tooltip?: string;
+  multiple?: boolean;
+  optionValue: string;
+  optionLabel: string;
+  component: SwitchSchema["component"];
+};
+
+export type FilterSelect = {
+  id: string;
+  field: string;
+  label?: string;
+  tooltip?: string;
+  data: string;
+  multiple?: boolean;
+  component: SelectSchema["component"];
+  optionValue: string;
+  optionLabel: string;
+};
+
+export type FilterRadio = {
+  id: string;
+  field: string;
+  label?: string;
+  tooltip?: string;
+  data: string;
+  optionValue: string;
+  optionLabel: string;
+  component: RadioButtonSchema["component"];
 };
 
 export type FilterSchema = FilterBase;

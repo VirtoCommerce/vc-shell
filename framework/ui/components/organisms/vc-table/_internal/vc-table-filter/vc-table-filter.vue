@@ -4,7 +4,7 @@
     <div
       ref="filterToggle"
       class="tw-rounded-[3px] tw-bg-[#43b0e6] tw-flex tw-items-center tw-px-[10px] tw-text-white tw-h-[38px] tw-box-border tw-cursor-pointer"
-      @click="openPanel($isMobile.value)"
+      @click="openPanel"
     >
       <VcIcon
         icon="fas fa-filter"
@@ -30,9 +30,9 @@
         v-if="isPanelVisible"
         ref="filterPanel"
         :class="{
-          'vc-table-filter__panel_mobile tw-fixed tw-left-0 tw-top-0 tw-w-full tw-bottom-0 tw-z-[9999] tw-bg-[rgba(128,140,153,0.6)] tw-shadow-none tw-rounded-none tw-max-h-full tw-max-w-full tw-min-w-full':
+          'vc-table-filter__panel_mobile tw-fixed tw-left-0 tw-top-0 tw-w-full tw-bottom-0 tw-z-[100] tw-bg-[rgba(128,140,153,0.6)] tw-shadow-none tw-rounded-none tw-max-h-full tw-max-w-full tw-min-w-full':
             $isMobile.value,
-          'vc-table-filter__panel tw-absolute tw-max-h-[400px] tw-max-w-[800px] tw-min-w-[400px] tw-z-[100] tw-shadow-[1px_1px_11px_rgba(141,152,163,0.6)] tw-rounded-[3px] tw-overflow-hidden':
+          'vc-table-filter__panel tw-absolute tw-max-w-[800px] tw-min-w-[400px] tw-w-0 tw-z-[100] tw-shadow-[1px_1px_11px_rgba(141,152,163,0.6)] tw-rounded-[3px] tw-overflow-hidden':
             !$isMobile.value,
         }"
         :style="filterStyle"
@@ -57,8 +57,8 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, watch, computed, nextTick } from "vue";
-import { offset, computePosition, ComputePositionReturn, ReferenceElement } from "@floating-ui/vue";
+import { ref, watch, computed, inject, Ref } from "vue";
+import { offset, autoUpdate, useFloating, UseFloatingReturn } from "@floating-ui/vue";
 
 export interface Props {
   title?: string;
@@ -79,8 +79,15 @@ const props = withDefaults(defineProps<Props>(), {
 const isPanelVisible = ref(false);
 const filterToggle = ref<HTMLElement | null>();
 const filterPanel = ref<HTMLElement | null>();
+const isMobile = inject("isMobile") as Ref<boolean>;
 
-const popper = ref<ComputePositionReturn>();
+const popper: UseFloatingReturn | undefined = !isMobile.value
+  ? useFloating(filterToggle, filterPanel, {
+      whileElementsMounted: autoUpdate,
+      placement: "bottom-end",
+      middleware: [offset(10)],
+    })
+  : undefined;
 
 watch(
   () => props.parentExpanded,
@@ -90,25 +97,12 @@ watch(
 );
 
 const filterStyle = computed(() => ({
-  top: `${popper.value?.y ?? 0}px`,
-  left: `${popper.value?.x ?? 0}px`,
+  top: `${popper?.y.value ?? 0}px`,
+  left: `${popper?.x.value ?? 0}px`,
 }));
 
-function openPanel(isMobile: boolean) {
+function openPanel() {
   isPanelVisible.value = !isPanelVisible.value;
-
-  if (!isMobile) {
-    if (isPanelVisible.value) {
-      nextTick(() => {
-        if (filterToggle.value && filterPanel.value) {
-          computePosition(filterToggle.value as ReferenceElement, filterPanel.value, {
-            placement: "bottom-end",
-            middleware: [offset(10)],
-          }).then((item) => (popper.value = item));
-        }
-      });
-    }
-  }
 }
 
 function closePanel() {

@@ -223,7 +223,7 @@
           v-if="isOpened"
           ref="dropdownRef"
           v-on-click-outside="[toggleDropdown, { ignore: [dropdownToggleRef] }]"
-          class="tw-flex tw-flex-col tw-box-border tw-max-h-[300px] tw-h-auto tw-z-10 tw-overflow-hidden tw-absolute tw-bg-[color:var(--select-background-color)] tw-border tw-border-solid tw-border-[color:var(--select-border-color)] tw-border-t-[color:var(--select-background-color)] tw-rounded-b-[var(--select-border-radius)] tw-p-2"
+          class="tw-flex tw-flex-col tw-box-border tw-max-h-[300px] tw-h-auto tw-z-[101] tw-overflow-hidden tw-absolute tw-bg-[color:var(--select-background-color)] tw-border tw-border-solid tw-border-[color:var(--select-border-color)] tw-border-t-[color:var(--select-background-color)] tw-rounded-b-[var(--select-border-radius)] tw-p-2"
           :style="dropdownStyle"
         >
           <input

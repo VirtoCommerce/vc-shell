@@ -1,10 +1,10 @@
-import { Router } from "vue-router";
+import { RouteLocationNormalized, Router } from "vue-router";
 import { App, Component } from "vue";
 import * as components from "./ui/components";
 import * as directives from "./core/directives";
 import { useBreakpoints } from "@vueuse/core";
 import { i18n, permissions, signalR } from "./core/plugins";
-import { SharedModule, notification } from "./shared";
+import { BladeComponentInternalInstance, BladeVNode, SharedModule, notification } from "./shared";
 import * as sharedPages from "./shared/pages/plugin";
 import { registerInterceptors } from "./core/interceptors";
 import { usePermissions } from "./core/composables/usePermissions";
@@ -111,6 +111,18 @@ export default {
     args.router.listening = false;
 
     // Router guards
+    const getParam = (to: RouteLocationNormalized) => {
+      let param: {
+        [k: string]: string | string[];
+      } = {};
+
+      if (Object.keys(to.params).length > 0) {
+        param = Object.fromEntries(Object.entries(to.params).filter(([key]) => key !== "pathMatch"));
+      }
+
+      return param;
+    };
+
     /**
      * Check if user is authenticated and redirect to login page if not.
      */
@@ -141,7 +153,27 @@ export default {
         notification.error(i18n.global.t("PERMISSION_MESSAGES.ACCESS_RESTRICTED"), {
           timeout: 3000,
         });
-        return from.path;
+
+        const param = getParam(to);
+
+        return Object.keys(param)[0] ? `/${Object.values(param)[0]}` + from.path : from.path;
+      }
+    });
+
+    /**
+     * Check if user trying to access not workspace pages as workspace pages.
+     * Redirect to main page if not.
+     */
+    args.router.beforeEach((to) => {
+      const blade = to.matched?.[1]?.components?.default as BladeVNode | Component;
+
+      if (blade && "type" in blade && blade?.type?.isBlade && !blade?.type?.isWorkspace) {
+        const routes = args.router.getRoutes();
+        const mainRoute = routes.find((route) => route.meta?.root);
+        const mainRouteAlias = routes.find((route) => route.aliasOf?.path === mainRoute?.path) ?? mainRoute;
+        const param = getParam(to);
+
+        return { name: mainRouteAlias?.name, params: param };
       }
     });
   },

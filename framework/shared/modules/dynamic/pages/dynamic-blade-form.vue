@@ -7,7 +7,7 @@
     :width="settings?.width || '50%'"
     :toolbar-items="toolbarComputed"
     :title="title"
-    :modified="!toValue(scope)?.disabled ? isFormModified : undefined"
+    :modified="isBladeEditable ? isFormModified : undefined"
     @close="$emit('close:blade')"
     @expand="$emit('expand:blade')"
     @collapse="$emit('collapse:blade')"

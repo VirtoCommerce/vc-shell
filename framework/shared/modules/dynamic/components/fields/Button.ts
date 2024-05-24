@@ -31,9 +31,11 @@ export default {
             class: unrefNested(props.baseProps).classNames ?? "",
           },
         ),
-        slots: {
-          default: () => unref(computed(() => t(props.element.content))),
-        },
+        slots: props.element.content
+          ? {
+              default: () => unref(computed(() => (props.element.content && t(props.element.content)) ?? undefined)),
+            }
+          : undefined,
       });
 
       return h(field.component as Component, mergeProps(field.props, { class: "tw-self-start" }), field.slots);

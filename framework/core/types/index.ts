@@ -149,7 +149,12 @@ export type ITableColumns = {
   align?: "start" | "end" | "center" | "between" | "around" | "evenly";
   visible?: boolean;
   editable?: boolean;
+  /**
+   * Field for currency property to show currency sign on money type.
+   * @default "currency"
+   */
   currencyField?: string;
+  rules?: IValidationRules;
 };
 
 export interface MenuItem extends Omit<MenuItemConfig, "title" | "id"> {

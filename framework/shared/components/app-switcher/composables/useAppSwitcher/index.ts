@@ -15,9 +15,7 @@ export function useAppSwitcher(): IUseAppSwitcher {
   const appsList = ref<AppDescriptor[]>([]);
 
   async function getApiClient(): Promise<AppsClient> {
-    // const { getAccessToken } = useUser();
     const client = new AppsClient();
-    // client.setAuthToken((await getAccessToken()) as string);
     return client;
   }
 

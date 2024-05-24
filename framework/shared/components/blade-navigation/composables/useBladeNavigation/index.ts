@@ -311,8 +311,7 @@ export function useBladeNavigation(): IUseBladeNavigation {
     ) as BladeVNode;
 
     try {
-      // Close all blades except the first one cause it will be overwritten
-      const isPrevented = await closeBlade(1);
+      const isPrevented = await closeBlade(0);
 
       if (!isPrevented && createdComponent.type?.url) {
         if (hasAccess(blade.permissions)) {

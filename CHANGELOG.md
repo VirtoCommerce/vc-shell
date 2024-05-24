@@ -1,3 +1,21 @@
+## [1.0.221](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.220...v1.0.221) (2024-05-24)
+
+
+### Features
+
+* **fulfillment:** update FulfillmentEmptyGridTemplate with new icon color and size ([8f4908f](https://github.com/VirtoCommerce/vendor-portal/commit/8f4908f1921a24116b50c3552bcaabdb373bf77d))
+* **offers:** offers updates ([36dd3ec](https://github.com/VirtoCommerce/vendor-portal/commit/36dd3ec3124601151c6b3f02e5c193ab435c68cd))
+* **orders:** update grid empty/not found templates with new icon color ([f4cc86a](https://github.com/VirtoCommerce/vendor-portal/commit/f4cc86a9458a20e96736eb0cf5e86549918a793d))
+* **products:** add create new status text and visibility to product details page ([f154b77](https://github.com/VirtoCommerce/vendor-portal/commit/f154b777f1b54214dc5db4f2ef63521088b19f31))
+* **products:** update not found/empty template icon color and size ([e136ddf](https://github.com/VirtoCommerce/vendor-portal/commit/e136ddf6dadd2ebe5c0b4c1551ec1da1e0140fb1))
+* **rating:** update RatingEmptyGridTemplate icon color and size ([242fdfe](https://github.com/VirtoCommerce/vendor-portal/commit/242fdfea52f4e9a79cc0cc9addea630e7b88877a))
+* **seller-details:** update seller details blade title and menu title ([b819ab4](https://github.com/VirtoCommerce/vendor-portal/commit/b819ab4972d2cc6678f2f6baa808469d4887ecbe))
+* **team:** update TeamEmptyGridTemplate icon color and size ([aa7ee92](https://github.com/VirtoCommerce/vendor-portal/commit/aa7ee9268c52f9c1e8e548325280ed0a91625a60))
+* update router and sign out functionality in App.vue ([2a2b621](https://github.com/VirtoCommerce/vendor-portal/commit/2a2b621ab9f3e01b24578b1cecf275a8816648dd))
+* **videos:** update VideosEmptyGridTemplate icon color ([6273ca4](https://github.com/VirtoCommerce/vendor-portal/commit/6273ca4f444ad70ca18d3a1321aafe9245068a34))
+
+
+
 ## [1.0.220](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.219...v1.0.220) (2024-05-21)
 
 

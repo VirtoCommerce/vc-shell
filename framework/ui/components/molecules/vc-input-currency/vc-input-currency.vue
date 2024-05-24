@@ -45,6 +45,10 @@
               </button>
             </template>
           </slot>
+          <slot
+            v-if="$slots['append-inner']"
+            name="append-inner"
+          ></slot>
         </template>
         <template #control="{ placeholder: holder }">
           <input
@@ -53,6 +57,24 @@
             :disabled="disabled"
             :placeholder="holder"
           />
+        </template>
+        <template
+          v-if="$slots['prepend-inner']"
+          #prepend-inner
+        >
+          <slot name="prepend-inner"></slot>
+        </template>
+        <template
+          v-if="$slots['append']"
+          #append
+        >
+          <slot name="append"></slot>
+        </template>
+        <template
+          v-if="$slots['prepend']"
+          #prepend
+        >
+          <slot name="prepend"></slot>
         </template>
       </VcInput>
     </template>
@@ -188,11 +210,27 @@ defineSlots<{
     toggleHandler: () => void;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   }) => any;
+  /**
+   * Slot for custom append-inner content
+   */
+  "append-inner": void;
+  /**
+   * Slot for custom prepend-inner content
+   */
+  "prepend-inner": void;
+  /**
+   * Slot for custom append content
+   */
+  append: void;
+  /**
+   * Slot for custom prepend content
+   */
+  prepend: void;
 }>();
 
 const emit = defineEmits<Emits>();
 
-const { inputRef, setOptions, numberValue } = useCurrencyInput(
+const { inputRef, setOptions, numberValue, setValue } = useCurrencyInput(
   {
     locale: navigator.language,
     currency: props.option || "USD",
@@ -213,6 +251,13 @@ watch(
         currencyDisplay: props.currencyDisplay as CurrencyDisplay,
         hideGroupingSeparatorOnFocus: false,
       });
+  },
+);
+
+watch(
+  () => props.modelValue,
+  (value) => {
+    setValue(value as number | null);
   },
 );
 

@@ -149,7 +149,6 @@ export interface ListContentSchema {
   multiselect?: boolean;
   header?: boolean;
   footer?: boolean;
-  editable?: boolean;
   columns?: (Omit<ITableColumns, "visible"> & {
     id: string;
     title: string;
@@ -182,6 +181,9 @@ export interface ListContentSchema {
     component: string;
   };
   emptyTemplate?: {
+    component: string;
+  };
+  footerTemplate?: {
     component: string;
   };
 }
@@ -548,7 +550,7 @@ export interface StatusSchema extends Pick<SchemaBase, "id" | "visibility" | "ho
   extend?: boolean;
   /**
    * Status variant.
-   * @type {"info" | "warning" | "danger" | "success" | "light-danger"}
+   * @type {"info" | "info-dark" | "warning" | "danger" | "success" | "light-danger"}
    */
   variant?: ComponentProps<typeof VcStatus>["variant"];
   /**
@@ -830,19 +832,6 @@ export interface FieldsetSchema extends Pick<SchemaBase, "id" | "visibility" | "
    * @type {ControlSchema[]}
    */
   fields: ControlSchema[];
-  /**
-   * Method to call to remove field from the fieldset. When set - activates remove button.
-   *
-   * Used for property-based fieldsets.
-   *
-   * Allows to remove selected fieldset.
-   * @description Method should be defined in the blade `scope`.
-   * @argument {number} id - id of the field to remove
-   * @type {{ method: string }}
-   */
-  remove?: {
-    method: string;
-  };
 }
 
 /**
@@ -867,7 +856,45 @@ export interface SwitchSchema extends Omit<SchemaBase, "placeholder" | "multilan
   falseValue?: boolean;
 }
 
-export type TableSchema = Omit<ListContentSchema, "filter"> & Pick<SchemaBase, "id" | "property" | "visibility">;
+export type TableSchema = Omit<ListContentSchema, "filter"> &
+  Pick<SchemaBase, "id" | "property" | "visibility"> & {
+    /**
+     * Shows button to remove table row.
+     * Used when table is in editing mode.
+     */
+    removeRowButton?: {
+      /**
+       * Determines whether the button should be shown or hidden.
+       */
+      show: boolean;
+      /**
+       * Method to be called when the button is clicked.
+       * @description Method should be defined in the blade `scope`.
+       * @type {string}
+       */
+      method: string;
+    };
+    /**
+     * Configuration for the add new row button in the table.
+     * Used when table is in editing mode.
+     */
+    addNewRowButton?: {
+      /**
+       * The title of the button.
+       */
+      title: string;
+      /**
+       * Determines whether the button should be shown or hidden.
+       */
+      show: boolean;
+      /**
+       * Method to be called when the button is clicked.
+       * @description Method should be defined in the blade `scope`.
+       * @type {string}
+       */
+      method: string;
+    };
+  };
 
 /**
  * Button schema interface.
@@ -883,7 +910,7 @@ export interface ButtonSchema extends Pick<SchemaBase, "id" | "disabled" | "visi
    * Button inner text.
    * @type {string}
    */
-  content: string;
+  content?: string;
   /**
    * Small sized button.
    * @type {boolean}

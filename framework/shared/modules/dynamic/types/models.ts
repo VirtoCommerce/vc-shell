@@ -177,7 +177,9 @@ export type ISwitch = {
 
 export type ITable = {
   props: ComponentProps<typeof VcTable> | IControlBaseProps;
-  slots: Partial<Pick<ComponentSlots<typeof VcTable>, `item_${string}` | "notfound" | "mobile-item" | "empty">>;
+  slots: Partial<
+    Pick<ComponentSlots<typeof VcTable>, `item_${string}` | "notfound" | "mobile-item" | "empty" | "footer">
+  >;
 } & FieldOpts<typeof VcTable>;
 
 export type IRating = {

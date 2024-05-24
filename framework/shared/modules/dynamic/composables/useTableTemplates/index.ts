@@ -7,6 +7,7 @@ export interface IUseTableTemplates {
     mobileView: ConcreteComponent | undefined;
     notFound: ConcreteComponent | undefined;
     empty: ConcreteComponent | undefined;
+    footer: ConcreteComponent | undefined;
   };
 }
 
@@ -18,6 +19,7 @@ export const useTableTemplates = (
     mobileView: resolveTemplateComponent("mobileTemplate"),
     notFound: resolveTemplateComponent("notFoundTemplate"),
     empty: resolveTemplateComponent("emptyTemplate"),
+    footer: resolveTemplateComponent("footerTemplate"),
   });
 
   function resolveTemplateComponent(name: keyof ListContentSchema): ShallowRef<ConcreteComponent> | undefined {

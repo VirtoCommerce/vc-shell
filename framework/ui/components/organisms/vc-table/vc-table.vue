@@ -1,14 +1,11 @@
 <template>
   <div
     v-loading="unref(loading) || columnsInit"
-    class="tw-relative tw-overflow-hidden tw-flex tw-flex-col tw-grow"
+    class="tw-relative tw-overflow-hidden tw-flex tw-flex-col tw-grow tw-basis-0"
   >
     <!-- Header slot with filter and searchbar -->
     <slot
-      v-if="
-        ($slots['header'] || header) &&
-        ((items && items.length && !columnsInit) || searchValue || searchValue === '' || activeFilterCount)
-      "
+      v-if="($slots['header'] || header) && (!columnsInit || searchValue || searchValue === '' || activeFilterCount)"
       name="header"
     >
       <div class="tw-shrink-0 tw-flex tw-items-center tw-justify-between tw-p-4">
@@ -61,7 +58,6 @@
     <div class="tw-flex tw-relative tw-overflow-hidden tw-grow">
       <!-- Table scroll container -->
       <VcContainer
-        v-if="items && items.length && !columnsInit"
         ref="scrollContainer"
         :no-padding="true"
         class="tw-grow tw-basis-0 tw-relative"
@@ -96,15 +92,15 @@
         <table
           v-else
           ref="tableRef"
-          class="[border-spacing:0] tw-border-collapse tw-relative tw-pt-[43px] tw-table-fixed tw-box-border tw-w-full"
+          class="[border-spacing:0] tw-border-collapse tw-relative tw-pt-[43px] tw-table-fixed tw-box-border tw-w-full tw-h-full"
           :class="{
             'vc-table_empty': !items || !items.length,
             'vc-table_multiselect': multiselect,
           }"
         >
           <thead
-            v-if="filteredCols"
-            class="vc-table__header tw-relative"
+            v-if="filteredCols.length"
+            class="vc-table__header tw-sticky tw-top-0 tw-bg-[#f9f9f9] tw-z-[1] tw-box-border"
             @mouseenter="handleHeaderMouseOver(true)"
             @mouseleave="handleHeaderMouseOver(false)"
           >
@@ -155,6 +151,11 @@
                   :class="item.align ? tableAlignment[item.align as keyof typeof tableAlignment] : ''"
                 >
                   <div class="tw-truncate">
+                    <span
+                      v-if="editing && item.rules?.required"
+                      class="tw-text-[color:var(--label-required-color)] tw-mr-1"
+                      >*</span
+                    >
                     <slot :name="`header_${item.id}`">{{ item.title }}</slot>
                   </div>
                   <div
@@ -201,7 +202,15 @@
                   @on-active="handleColumnSwitcher"
                 ></VcTableColumnSwitcher>
               </div>
+              <th
+                v-if="editing && removeRowButton"
+                width="90px"
+                class="tw-w-[90px] tw-h-[42px] tw-bg-[#f9f9f9] !tw-border-0 tw-shadow-[inset_0px_1px_0px_#eaedf3,_inset_0px_-1px_0px_#eaedf3] tw-box-border tw-sticky tw-top-0 tw-select-none tw-overflow-hidden tw-z-[1]"
+              >
+                {{ $t("COMPONENTS.ORGANISMS.VC_TABLE.ACTIONS") }}
+              </th>
             </tr>
+
             <div
               ref="resizer"
               class="tw-w-px tw-absolute tw-z-10 tw-hidden tw-h-full tw-bg-[#e5e7eb] tw-cursor-col-resize"
@@ -236,8 +245,8 @@
             </div>
           </div>
           <tbody
-            v-if="items"
-            class="vc-table__body"
+            v-if="items && items.length && !columnsInit"
+            class="vc-table__body tw-block tw-overflow-auto"
             :class="{ 'tw-translate-y-[60px]': selectAll && showSelectionChoice }"
           >
             <tr
@@ -342,7 +351,7 @@
                 :class="[
                   cell.class,
                   {
-                    'last:tw-w-full': cell.id === filteredCols[filteredCols.length - 1].id,
+                    // 'last:tw-w-full': cell.id === filteredCols[filteredCols.length - 1].id,
                   },
                 ]"
                 :style="{ maxWidth: cell.width, width: cell.width }"
@@ -351,12 +360,14 @@
                   :name="`item_${cell.id}`"
                   :item="item"
                   :cell="cell"
+                  :index="itemIndex"
                 >
                   <VcTableCell
                     v-if="typeof item === 'object'"
                     :cell="cell"
                     :item="item"
-                    :cell-edit-active="cellEditActive"
+                    :editing="editing"
+                    :index="itemIndex"
                     :width="
                       calculateElWidth(
                         `${(typeof item === 'object' && 'id' in item && item.id) || itemIndex}_${cell.id}`,
@@ -366,54 +377,107 @@
                   ></VcTableCell>
                 </slot>
               </td>
+              <td
+                v-if="editing && removeRowButton"
+                class="tw-box-border tw-overflow-hidden tw-px-3 tw-w-[90px]"
+                width="90px"
+              >
+                <div class="tw-w-full tw-flex tw-justify-center tw-items-center">
+                  <div
+                    class="tw-h-[26px] tw-w-[26px] tw-inline-flex tw-items-center tw-justify-center tw-outline-none"
+                    @click="
+                      $emit('onRowRemove', {
+                        index: itemIndex,
+                      })
+                    "
+                  >
+                    <svg
+                      width="12"
+                      height="12"
+                      viewBox="0 0 12 12"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M7.27173 5.99939L11.1499 2.12967C11.3198 1.95981 11.4152 1.72943 11.4152 1.48922C11.4152 1.24901 11.3198 1.01863 11.1499 0.848777C10.9801 0.67892 10.7497 0.583496 10.5096 0.583496C10.2694 0.583496 10.0391 0.67892 9.86922 0.848777L6.00004 4.72752L2.13086 0.848777C1.96103 0.67892 1.73069 0.583496 1.49051 0.583496C1.25033 0.583496 1.01999 0.67892 0.850156 0.848777C0.680324 1.01863 0.584913 1.24901 0.584913 1.48922C0.584913 1.72943 0.680324 1.95981 0.850156 2.12967L4.72835 5.99939L0.850156 9.86912C0.765622 9.95298 0.698526 10.0527 0.652737 10.1627C0.606948 10.2726 0.583374 10.3905 0.583374 10.5096C0.583374 10.6286 0.606948 10.7465 0.652737 10.8565C0.698526 10.9664 0.765622 11.0662 0.850156 11.15C0.934 11.2346 1.03375 11.3017 1.14366 11.3475C1.25356 11.3933 1.37145 11.4168 1.49051 11.4168C1.60957 11.4168 1.72746 11.3933 1.83736 11.3475C1.94727 11.3017 2.04702 11.2346 2.13086 11.15L6.00004 7.27126L9.86922 11.15C9.95306 11.2346 10.0528 11.3017 10.1627 11.3475C10.2726 11.3933 10.3905 11.4168 10.5096 11.4168C10.6286 11.4168 10.7465 11.3933 10.8564 11.3475C10.9663 11.3017 11.0661 11.2346 11.1499 11.15C11.2345 11.0662 11.3016 10.9664 11.3473 10.8565C11.3931 10.7465 11.4167 10.6286 11.4167 10.5096C11.4167 10.3905 11.3931 10.2726 11.3473 10.1627C11.3016 10.0527 11.2345 9.95298 11.1499 9.86912L7.27173 5.99939Z"
+                        fill="#6E8BA5"
+                      />
+                    </svg>
+                  </div>
+                </div>
+              </td>
             </tr>
+            <VcTableAddNew
+              :editing="editing"
+              :add-new-row-button="addNewRowButton"
+              @on-add-new-row="$emit('onAddNewRow')"
+            />
+          </tbody>
+          <tbody
+            v-else
+            class="tw-table tw-overflow-auto tw-h-[calc(100%-42px)]"
+          >
+            <tr class="tw-h-full">
+              <th :colspan="colspan">
+                <!-- Empty table view -->
+                <template v-if="!(items && items.length && !columnsInit)">
+                  <div>
+                    <slot
+                      v-if="searchValue || searchValue === '' || activeFilterCount"
+                      name="notfound"
+                    >
+                      <div
+                        class="tw-w-full tw-h-full tw-box-border tw-flex tw-flex-col tw-items-center tw-justify-center"
+                      >
+                        <img
+                          v-if="notfound?.image"
+                          :src="notfound.image"
+                        />
+                        <div class="tw-m-4 vc-table__empty-text">
+                          {{ notfound?.text || t("COMPONENTS.ORGANISMS.VC_TABLE.NOT_FOUND") }}
+                        </div>
+                        <VcButton
+                          v-if="notfound?.action"
+                          @click="notfound?.clickHandler"
+                        >
+                          {{ notfound.action }}
+                        </VcButton>
+                      </div>
+                    </slot>
+                    <slot
+                      v-else
+                      name="empty"
+                    >
+                      <div
+                        class="tw-w-full tw-h-full tw-box-border tw-flex tw-flex-col tw-items-center tw-justify-center"
+                      >
+                        <img
+                          v-if="empty?.image"
+                          :src="empty.image"
+                        />
+                        <div class="tw-m-4 tw-text-xl tw-font-medium">
+                          {{ empty?.text || t("COMPONENTS.ORGANISMS.VC_TABLE.EMPTY") }}
+                        </div>
+                        <VcButton
+                          v-if="empty?.action"
+                          @click="empty?.clickHandler"
+                        >
+                          {{ empty.action }}
+                        </VcButton>
+                      </div>
+                    </slot>
+                  </div>
+                </template>
+              </th>
+            </tr>
+            <VcTableAddNew
+              :editing="editing"
+              :add-new-row-button="addNewRowButton"
+              @on-add-new-row="$emit('onAddNewRow')"
+            />
           </tbody>
         </table>
       </VcContainer>
-
-      <!-- Empty table view -->
-      <template v-else>
-        <slot
-          v-if="searchValue || searchValue === '' || activeFilterCount"
-          name="notfound"
-        >
-          <div class="tw-w-full tw-h-full tw-box-border tw-flex tw-flex-col tw-items-center tw-justify-center">
-            <img
-              v-if="notfound?.image"
-              :src="notfound.image"
-            />
-            <div class="tw-m-4 vc-table__empty-text">
-              {{ notfound?.text || t("COMPONENTS.ORGANISMS.VC_TABLE.NOT_FOUND") }}
-            </div>
-            <VcButton
-              v-if="notfound?.action"
-              @click="notfound?.clickHandler"
-            >
-              {{ notfound.action }}
-            </VcButton>
-          </div>
-        </slot>
-        <slot
-          v-else
-          name="empty"
-        >
-          <div class="tw-w-full tw-h-full tw-box-border tw-flex tw-flex-col tw-items-center tw-justify-center">
-            <img
-              v-if="empty?.image"
-              :src="empty.image"
-            />
-            <div class="tw-m-4 tw-text-xl tw-font-medium">
-              {{ empty?.text || t("COMPONENTS.ORGANISMS.VC_TABLE.EMPTY") }}
-            </div>
-            <VcButton
-              v-if="empty?.action"
-              @click="empty?.clickHandler"
-            >
-              {{ empty.action }}
-            </VcButton>
-          </div>
-        </slot>
-      </template>
     </div>
 
     <!-- Table footer -->
@@ -470,6 +534,7 @@ import VcTableMobileItem from "./_internal/vc-table-mobile-item/vc-table-mobile-
 import * as _ from "lodash-es";
 import "core-js/actual/array/to-spliced";
 import "core-js/actual/array/to-sorted";
+import VcTableAddNew from "./_internal/vc-table-add-new/vc-table-add-new.vue";
 
 export interface StatusImage {
   image?: string;
@@ -488,7 +553,7 @@ defineSlots<{
   filters: (args: { closePanel: () => void }) => any;
   "mobile-item": (args: { item: T }) => any;
   [key: `header_${string}`]: (props: any) => any;
-  [key: `item_${string}`]: (args: { item: T; cell: ITableColumns }) => any;
+  [key: `item_${string}`]: (args: { item: T; cell: ITableColumns; index: number }) => any;
   notfound: (props: any) => any;
   empty: (props: any) => any;
   footer: (props: any) => any;
@@ -522,7 +587,12 @@ const props = withDefaults(
     stateKey: string;
     selectAll?: boolean;
     enableItemActions?: boolean;
-    cellEditActive?: boolean;
+    editing?: boolean;
+    addNewRowButton?: {
+      show: boolean;
+      title: string;
+    };
+    removeRowButton?: boolean;
   }>(),
   {
     items: () => [],
@@ -553,6 +623,8 @@ const emit = defineEmits<{
   "row:reorder": [args: { dragIndex: number; dropIndex: number; value: T[] }];
   "select:all": [values: boolean];
   onEditComplete: [args: { event: { field: string; value: string | number }; index: number }];
+  onAddNewRow: [];
+  onRowRemove: [args: { index: number }];
 }>();
 
 const { t } = useI18n({ useScope: "global" });
@@ -610,6 +682,10 @@ onBeforeUpdate(() => {
   tooltipRefs.value = [];
 });
 
+const colspan = computed(() => {
+  return filteredCols.value.length + (props.multiselect ? 1 : 0) + (props.enableItemActions ? 1 : 0);
+});
+
 const sortDirection = computed(() => {
   const entry = props.sort?.split(":");
   return entry && entry.length === 2 && entry[1];
@@ -645,8 +721,9 @@ const mobileTemplateRenderer = ({ item }: { item: TableItem }) => {
 watch(
   () => props.items,
   (newVal) => {
+    let cols: ITableColumns[] = [];
     if (newVal && newVal.length) {
-      const cols = Object.keys(newVal[0]).map((key) => {
+      cols = Object.keys(newVal[0]).map((key) => {
         return {
           id: key,
           // From camelCase to human readable with first letter capitalized
@@ -655,16 +732,16 @@ watch(
           predefined: false,
         };
       });
-
-      const predefined = props.columns.map((item) => ({
-        ...item,
-        predefined: true,
-        visible: typeof item.visible !== "undefined" ? item.visible : true,
-      }));
-      allColumns.value = _.unionBy(predefined, cols, "id");
-
-      restoreState();
     }
+
+    const predefined = props.columns.map((item) => ({
+      ...item,
+      predefined: true,
+      visible: typeof item.visible !== "undefined" ? item.visible : true,
+    }));
+    allColumns.value = _.unionBy(predefined, cols, "id");
+
+    restoreState();
     columnsInit.value = false;
   },
   { deep: true, immediate: true },
@@ -692,7 +769,7 @@ const tableAlignment = {
 
 const headerCheckbox = computed({
   get() {
-    return props.items ? selection.value.length === props.items.length : false;
+    return props.items && props.items.length ? selection.value.length === props.items.length : false;
   },
   set(checked: boolean) {
     let _selected: T[] = [];
@@ -1314,5 +1391,12 @@ $variants: (
   &__drag-row-top {
     @apply tw-shadow-[inset_0_2px_0_0_var(--row-drag-color)];
   }
+}
+
+thead,
+tbody tr {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
 }
 </style>

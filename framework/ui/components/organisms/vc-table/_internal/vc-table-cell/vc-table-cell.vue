@@ -7,21 +7,42 @@
         class="tw-truncate"
         :class="cell.class"
       >
-        <template v-if="cellEditActive">
-          <VcInputCurrency
+        <template v-if="isEditable">
+          <Field
+            v-slot="{ errors, errorMessage }"
+            :label="cell.title as string"
+            :name="`${cell.id}_${index}`"
             :model-value="value"
-            :options="[]"
-            :option="(item[cell.currencyField || 'currency'] as string) || 'USD'"
-            currency-display="symbol"
-            class="tw-w-full"
-            @update:model-value="$emit('update', { field: cell.id, value: $event })"
-          />
+            :rules="cell.rules"
+          >
+            <VcInputCurrency
+              :model-value="value"
+              :options="[]"
+              :option="(item[cell.currencyField || 'currency'] as string) || 'USD'"
+              currency-display="symbol"
+              class="tw-w-full"
+              :error="errors.length > 0"
+              @update:model-value="$emit('update', { field: cell.id, value: $event })"
+            >
+              <template
+                v-if="errors.length > 0"
+                #append-inner
+              >
+                <VcTooltip placement="bottom-end">
+                  <VcIcon icon="fa fa-info-circle tw-text-[color:var(--error-color)]"></VcIcon>
+                  <template #tooltip>
+                    <div class="tw-text-[color:var(--error-color)]">{{ errorMessage }}</div>
+                  </template>
+                </VcTooltip>
+              </template>
+            </VcInputCurrency>
+          </Field>
         </template>
         <template v-else>
           <span class="tw-truncate">{{ intlMoney(Number(value)) }}</span>
         </template>
       </div>
-      <template v-else-if="!cellEditActive">
+      <template v-else-if="!isEditable">
         <div
           class="tw-truncate"
           :class="cell.class"
@@ -125,13 +146,34 @@
       class="tw-text-right tw-truncate"
       :class="cell.class"
     >
-      <template v-if="cellEditActive">
-        <VcInput
+      <template v-if="isEditable">
+        <Field
+          v-slot="{ errors, errorMessage }"
+          :label="cell.title as string"
+          :name="`${cell.id}_${index}`"
           :model-value="value"
-          class="tw-w-full"
-          type="number"
-          @update:model-value="$emit('update', { field: cell.id, value: $event })"
-        ></VcInput>
+          :rules="cell.rules"
+        >
+          <VcInput
+            :model-value="value"
+            class="tw-w-full"
+            type="number"
+            :error="errors.length > 0"
+            @update:model-value="$emit('update', { field: cell.id, value: $event })"
+          >
+            <template
+              v-if="errors.length > 0"
+              #append-inner
+            >
+              <VcTooltip placement="bottom-end">
+                <VcIcon icon="fa fa-info-circle tw-text-[color:var(--error-color)]"></VcIcon>
+                <template #tooltip>
+                  <div class="tw-text-[color:var(--error-color)]">{{ errorMessage }}</div>
+                </template>
+              </VcTooltip>
+            </template>
+          </VcInput>
+        </Field>
       </template>
       <template v-else>
         {{ typeof Number(value) === "number" && Number(value) >= 0 ? Number(value).toFixed(0) : "N/A" }}
@@ -162,12 +204,33 @@
       class="tw-truncate"
       :class="cell.class"
     >
-      <template v-if="cellEditActive">
-        <VcInput
+      <template v-if="isEditable">
+        <Field
+          v-slot="{ errors, errorMessage }"
+          :label="cell.title as string"
+          :name="`${cell.id}_${index}`"
           :model-value="value"
-          class="tw-w-full"
-          @update:model-value="$emit('update', { field: cell.id, value: $event })"
-        ></VcInput>
+          :rules="cell.rules"
+        >
+          <VcInput
+            :model-value="value"
+            class="tw-w-full"
+            :error="errors.length > 0"
+            @update:model-value="$emit('update', { field: cell.id, value: $event })"
+          >
+            <template
+              v-if="errors.length > 0"
+              #append-inner
+            >
+              <VcTooltip placement="bottom-end">
+                <VcIcon icon="fa fa-info-circle tw-text-[color:var(--error-color)]"></VcIcon>
+                <template #tooltip>
+                  <div class="tw-text-[color:var(--error-color)]">{{ errorMessage }}</div>
+                </template>
+              </VcTooltip>
+            </template></VcInput
+          >
+        </Field>
       </template>
       <template v-else>
         {{ value }}
@@ -185,12 +248,14 @@ import htmlTruncate from "truncate-html";
 import * as DOMPurify from "dompurify";
 import VcInputCurrency from "../../../../molecules/vc-input-currency/vc-input-currency.vue";
 import VcInput from "../../../../molecules/vc-input/vc-input.vue";
+import { Field } from "vee-validate";
 
 export interface Props {
   cell: ITableColumns;
   item: Record<string, unknown>;
   width?: number;
-  cellEditActive?: boolean;
+  editing?: boolean;
+  index?: number;
 }
 
 const props = defineProps<Props>();
@@ -203,6 +268,8 @@ const locale = window.navigator.language;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const value = computed((): any => _.get(props.item, props.cell.field || props.cell.id));
+
+const isEditable = computed(() => props.cell.editable && props.editing);
 
 const sanitizedHtml = computed(() => {
   if (props.cell.type === "html") {
@@ -226,3 +293,9 @@ function intlMoney(value: number) {
   }).format(value);
 }
 </script>
+
+<style lang="scss">
+:root {
+  --error-color: #f14e4e;
+}
+</style>

@@ -41,7 +41,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, toRefs, watch } from "vue";
+import { ref, computed, watch } from "vue";
 import { ITableColumns } from "./../../../../../../core/types";
 import { vOnClickOutside } from "@vueuse/components";
 import { useFloating, flip, shift, autoUpdate } from "@floating-ui/vue";
@@ -91,7 +91,11 @@ watch(
 );
 
 function selectItem(item: ITableColumns) {
-  emit("change", toggleVisibility(item));
+  const numberVisible = internalItems.value.filter((i: ITableColumns) => i.visible).length;
+
+  if (numberVisible > 1 || !item.visible) {
+    emit("change", toggleVisibility(item));
+  }
 }
 
 function toggleVisibility(item: ITableColumns) {

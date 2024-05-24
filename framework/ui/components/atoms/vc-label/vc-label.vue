@@ -14,24 +14,16 @@
       v-if="$slots['tooltip']"
       class="tw-grow tw-basis-0 tw-ml-1 tw-relative"
     >
-      <VcIcon
-        ref="tooltipIconRef"
-        class="tw-text-[color:var(--label-tooltip-color)]"
-        :icon="tooltipIcon"
-        size="s"
-        @mouseenter="tooltipVisible = true"
-        @mouseleave="tooltipVisible = false"
-      ></VcIcon>
-      <teleport to="body">
-        <span
-          v-if="tooltipVisible"
-          ref="tooltipRef"
-          :style="floatingStyles"
-          class="tw-absolute tw-z-[101] tw-bg-white tw-border tw-border-solid tw-border-[color:#eef0f2] tw-shadow-[1px_1px_8px_rgba(126,142,157,0.25)] tw-rounded-[3px] tw-text-[color:#8e9daa] tw-font-normal tw-py-1 tw-px-2 tw-ml-4"
-        >
+      <VcTooltip placement="top-start">
+        <VcIcon
+          class="tw-text-[color:var(--label-tooltip-color)]"
+          :icon="tooltipIcon"
+          size="s"
+        ></VcIcon>
+        <template #tooltip>
           <slot name="tooltip"></slot>
-        </span>
-      </teleport>
+        </template>
+      </VcTooltip>
     </span>
 
     <div
@@ -44,9 +36,7 @@
 </template>
 
 <script lang="ts" setup>
-import { VcIcon } from "./../../../components";
-import { ref } from "vue";
-import { useFloating, shift } from "@floating-ui/vue";
+import { VcIcon, VcTooltip } from "./../../../components";
 
 export interface Props {
   required?: boolean;
@@ -63,15 +53,6 @@ defineSlots<{
   default: void;
   tooltip?: void;
 }>();
-
-const tooltipVisible = ref(false);
-const tooltipIconRef = ref<HTMLElement | null>(null);
-const tooltipRef = ref<HTMLElement | null>(null);
-
-const { floatingStyles } = useFloating(tooltipIconRef, tooltipRef, {
-  placement: "top-start",
-  middleware: [shift()],
-});
 </script>
 
 <style lang="scss">

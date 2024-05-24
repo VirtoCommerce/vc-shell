@@ -16,3 +16,4 @@ export * from "./vc-status-icon";
 export * from "./vc-switch";
 export * from "./vc-video";
 export * from "./vc-widget";
+export * from "./vc-tooltip";

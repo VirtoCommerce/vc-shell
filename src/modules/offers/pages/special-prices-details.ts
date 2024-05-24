@@ -34,70 +34,72 @@ export const specialPricesDetails: DynamicDetailsSchema = {
           placeholder: "SPECIAL_PRICES.PAGES.DETAILS.FIELDS.NAME.PLACEHOLDER",
           property: "name",
         },
+        // {
+        //   id: "pricingCard",
+        //   component: "vc-card",
+        //   label: "SPECIAL_PRICES.PAGES.DETAILS.FIELDS.PRICING.TITLE",
+        //   fields: [
         {
-          id: "pricingCard",
-          component: "vc-card",
-          label: "SPECIAL_PRICES.PAGES.DETAILS.FIELDS.PRICING.TITLE",
-          action: {
-            id: "addPrice",
-            component: "vc-button",
-            content: "SPECIAL_PRICES.PAGES.DETAILS.FIELDS.PRICING.ADD_PRICE",
-            small: true,
+          id: "pricesTable",
+          component: "vc-table",
+          property: "prices",
+          emptyTemplate: {
+            component: "EmptyPricesTableTemplate",
+          },
+          addNewRowButton: {
+            show: true,
+            title: "SPECIAL_PRICES.PAGES.DETAILS.FIELDS.PRICING.ADD_PRICE",
             method: "addPrice",
           },
-          fields: [
+          removeRowButton: {
+            show: true,
+            method: "removePrice",
+          },
+          columns: [
             {
-              id: "pricesFieldset",
-              component: "vc-fieldset",
-              property: "prices",
-              columns: 3,
-              remove: {
-                method: "removePrice",
+              id: "currency",
+              title: "Currency",
+              customTemplate: {
+                component: "CurrenciesGridTemplate",
               },
-              fields: [
-                {
-                  id: "listPrice",
-                  component: "vc-input-currency",
-                  label: "SPECIAL_PRICES.PAGES.DETAILS.FIELDS.LIST_PRICE.TITLE",
-                  property: "listPrice",
-                  placeholder: "SPECIAL_PRICES.PAGES.DETAILS.FIELDS.LIST_PRICE.PLACEHOLDER",
-                  options: "currencies",
-                  optionProperty: "currency",
-                  optionValue: "value",
-                  optionLabel: "title",
-                  rules: {
-                    required: true,
-                    min_value: 0,
-                  },
-                },
-                {
-                  id: "salePrice",
-                  component: "vc-input-currency",
-                  label: "SPECIAL_PRICES.PAGES.DETAILS.FIELDS.SALE_PRICE.TITLE",
-                  property: "salePrice",
-                  placeholder: "SPECIAL_PRICES.PAGES.DETAILS.FIELDS.SALE_PRICE.PLACEHOLDER",
-                  options: "currencies",
-                  optionProperty: "currency",
-                  optionValue: "value",
-                  optionLabel: "title",
-                },
-                {
-                  id: "minQuantity",
-                  component: "vc-input",
-                  label: "SPECIAL_PRICES.PAGES.DETAILS.FIELDS.MIN_QTY.TITLE",
-                  property: "minQuantity",
-                  placeholder: "SPECIAL_PRICES.PAGES.DETAILS.FIELDS.MIN_QTY.PLACEHOLDER",
-                  clearable: true,
-                  rules: {
-                    required: true,
-                    min_value: 0,
-                  },
-                  variant: "number",
-                },
-              ],
+              width: "100px",
+            },
+            {
+              id: "listPrice",
+              title: "SPECIAL_PRICES.PAGES.DETAILS.FIELDS.LIST_PRICE.TITLE",
+              type: "money",
+              rules: {
+                min_value: 0,
+                required: true,
+              },
+              editable: true,
+              currencyField: "currency",
+            },
+            {
+              id: "salePrice",
+              title: "SPECIAL_PRICES.PAGES.DETAILS.FIELDS.SALE_PRICE.TITLE",
+              type: "money",
+              rules: {
+                min_value: 0,
+              },
+              editable: true,
+              currencyField: "currency",
+            },
+            {
+              id: "minQuantity",
+              title: "SPECIAL_PRICES.PAGES.DETAILS.FIELDS.MIN_QTY.TITLE",
+              rules: {
+                min_value: 0,
+                required: true,
+              },
+              editable: true,
+              type: "number",
+              class: "!tw-text-left",
             },
           ],
         },
+        //   ],
+        // },
         {
           id: "validityDatesCard",
           component: "vc-card",

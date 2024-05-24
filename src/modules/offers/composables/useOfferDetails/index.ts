@@ -18,11 +18,9 @@ import {
   UpdateOfferCommand,
   SearchProductsForNewOfferQuery,
   InventoryInfo,
-  OfferPrice,
   SearchOfferProductsResult,
   Image,
   SellerProduct,
-  IOfferPrice,
   ChangeOfferDefaultCommand,
   ValidateOfferQuery,
   ValidationFailure,
@@ -106,6 +104,9 @@ export const useOfferDetails = (args: {
   });
 
   const { load, saveChanges, remove, loading, item, validationState } = detailsFactory();
+
+  const createNewText = computed(() => t("OFFERS.PAGES.DETAILS.CREATE_NEW_STATUS_TEXT"));
+  const createNewStatusVisibility = computed(() => !item.value?.id);
 
   const bladeTitle = computed(() => {
     return args.props.param
@@ -292,6 +293,8 @@ export const useOfferDetails = (args: {
     getProductItem,
     trackInventoryFn,
     validateSku,
+    createNewText,
+    createNewStatusVisibility,
     disableProductSelect: computed(() => !!args.props.param),
     productTypeOptions,
     productTypeDisabled: computed(() => !!item.value?.id),

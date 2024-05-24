@@ -6,6 +6,8 @@ import OffersDashboardCard from "./OffersDashboardCard.vue";
 import ListPriceTemplate from "./ListPriceTemplate.vue";
 import ConditionsTemplate from "./ConditionsTemplate.vue";
 import SpecialPricesEmptyGridTemplate from "./SpecialPricesEmptyGridTemplate.vue";
+import CurrenciesGridTemplate from "./CurrenciesGridTemplate.vue";
+import EmptyPricesTableTemplate from "./EmptyPricesTableTemplate.vue";
 
 export * from "./notifications";
 export * from "./widgets";
@@ -18,4 +20,6 @@ export {
   ListPriceTemplate,
   ConditionsTemplate,
   SpecialPricesEmptyGridTemplate,
+  CurrenciesGridTemplate,
+  EmptyPricesTableTemplate,
 };

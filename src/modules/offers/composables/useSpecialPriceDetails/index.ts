@@ -11,6 +11,7 @@ import { Ref, computed, nextTick, reactive, ref, watch, WritableComputedRef } fr
 import * as _ from "lodash-es";
 import useMarketplaceSettings, { ICurrency } from "../../../settings/composables/useMarketplaceSettings";
 import { useI18n } from "vue-i18n";
+import { watchDebounced } from "@vueuse/core";
 
 export interface SpecialPricesDetailsScope extends DetailsBaseBladeScope {
   memberIds: WritableComputedRef<{ id: string }[]>;
@@ -58,6 +59,13 @@ export const useSpecialPriceDetails = (args: {
   const pricesLoading = ref(false);
   const duplicates = ref<string[]>([]);
   const pricingEqual = ref(false);
+  const pricesToAdd = ref(
+    new OfferPrice({
+      currency: "USD",
+      listPrice: null,
+      minQuantity: null,
+    } as unknown as IOfferPrice),
+  );
 
   function removePrice(idx: number) {
     item.value?.prices?.splice(idx, 1);
@@ -67,13 +75,13 @@ export const useSpecialPriceDetails = (args: {
     if (item.value && !item.value.prices) {
       item.value.prices = [];
     }
-    item.value?.prices?.push(
-      new OfferPrice({
-        currency: "USD",
-        listPrice: null,
-        minQuantity: null,
-      } as unknown as IOfferPrice),
-    );
+    item.value?.prices?.push(pricesToAdd.value);
+
+    pricesToAdd.value = new OfferPrice({
+      currency: "USD",
+      listPrice: null,
+      minQuantity: null,
+    } as unknown as IOfferPrice);
   }
 
   function generatePriceName(price: OfferPriceList): string {
@@ -97,6 +105,12 @@ export const useSpecialPriceDetails = (args: {
     return name != "" ? name : "Default";
   }
 
+  function updateCurrencies(args: { index: number; value: string }) {
+    if (item.value && item.value.prices) {
+      item.value.prices[args.index].currency = args.value;
+    }
+  }
+
   const scope = ref<SpecialPricesDetailsScope>({
     memberIds: computed({
       get() {
@@ -106,9 +120,11 @@ export const useSpecialPriceDetails = (args: {
         item.value!.memberIds = value.map((v) => v.id);
       },
     }),
+    pricesToAdd,
     removePrice,
     addPrice,
     currencies,
+    updateCurrencies,
     toolbarOverrides: {
       saveChanges: {
         disabled: computed(() => {
@@ -155,27 +171,33 @@ export const useSpecialPriceDetails = (args: {
     { deep: true },
   );
 
-  watch(duplicates, (newVal, oldVal) => {
-    validationState.value.setErrors(
-      Object.values(oldVal).reduce(
-        (obj, curr) => {
-          obj[curr] = undefined;
-          return obj;
-        },
-        {} as Record<string, undefined>,
-      ),
-    );
+  watchDebounced(
+    duplicates,
+    (newVal, oldVal) => {
+      validationState.value.setErrors(
+        Object.values(oldVal).reduce(
+          (obj, curr) => {
+            obj[curr] = undefined;
+            return obj;
+          },
+          {} as Record<string, undefined>,
+        ),
+      );
 
-    validationState.value.setErrors(
-      Object.values(newVal).reduce(
-        (obj, curr) => {
-          obj[curr] = "Min quantity can't be the same";
-          return obj;
-        },
-        {} as Record<string, string>,
-      ),
-    );
-  });
+      validationState.value.setErrors(
+        Object.values(newVal).reduce(
+          (obj, curr) => {
+            obj[curr] = "Min quantity can't be the same";
+            return obj;
+          },
+          {} as Record<string, string>,
+        ),
+      );
+    },
+    {
+      // debounce: 100,
+    },
+  );
 
   watch(
     () => args?.mounted.value,

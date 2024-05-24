@@ -70,6 +70,7 @@
           "DELETE": "Delete",
           "DEFAULT": "Set default"
         },
+        "CREATE_NEW_STATUS_TEXT": "Price tags can be added to the offer after it has been created",
         "FIELDS": {
           "PRODUCT": {
             "TITLE": "Product",
@@ -203,7 +204,7 @@
             "TITLE": "Pricing",
             "ADD_PRICE": "Add price",
             "CHOOSE_CURRENCY": "Choose currency",
-            "EMPTY": "No prices for this offer",
+            "EMPTY": "At least one price must be added",
             "ERRORS": {
               "SIMILAR": "Min quantity can't be the same"
             }
@@ -215,6 +216,9 @@
           "START_DATE": {
             "TITLE": "Start date",
             "PLACEHOLDER": ""
+          },
+          "ACTIONS": {
+            "TITLE": "Actions"
           },
           "LIST_PRICE": {
             "TITLE": "List price",

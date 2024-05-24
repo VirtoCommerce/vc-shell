@@ -7,6 +7,7 @@ import { setModel } from "../../helpers/setters";
 import { InputCurrencySchema } from "../../types";
 import { unrefNested } from "../../helpers/unrefNested";
 import { toValue } from "@vueuse/core";
+import { safeIn } from "../../helpers/safeIn";
 
 export default {
   name: "InputCurrency",
@@ -16,11 +17,23 @@ export default {
       const options =
         toValue(getModel(props.element.options, props.fieldContext ?? {})) ||
         toValue(unref(props.bladeContext.scope)?.[props.element.options]);
+
+      const contextProperty =
+        safeIn("optionProperty", props.element) &&
+        props.element.optionProperty &&
+        getModel(props.element.optionProperty, props.fieldContext ?? {});
+
+      const scopedProperty =
+        safeIn("optionProperty", props.element) &&
+        props.element.optionProperty &&
+        props.bladeContext.scope &&
+        getModel(props.element.optionProperty, props.bladeContext.scope);
+
       const field = InputCurrency({
         props: Object.assign(
           {},
           {
-            option: toValue(getModel(props.element.optionProperty, props.fieldContext ?? {})),
+            option: toValue(scopedProperty ?? contextProperty),
             optionLabel: props.element.optionLabel,
             optionValue: props.element.optionValue,
             options,

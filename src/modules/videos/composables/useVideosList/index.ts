@@ -38,7 +38,6 @@ export const useVideosList = (args: {
   const listFactory = useListFactory<Video[], ISearchVideosQuery>({
     load: async (query) => {
       query.sort = "sortOrder:ASC";
-      console.log("search");
       return (await getApiClient()).searchVideos(new SearchVideosQuery(query));
     },
     remove: async (query, customQuery) => {

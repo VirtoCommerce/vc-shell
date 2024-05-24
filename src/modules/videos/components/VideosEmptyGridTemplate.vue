@@ -1,7 +1,7 @@
 <template>
   <div class="tw-w-full tw-h-full tw-box-border tw-flex tw-flex-col tw-items-center tw-justify-center">
     <VcIcon
-      class="vc-widget__icon"
+      class="tw-text-[#A9BFD2]"
       icon="fas fa-film"
       size="xxxl"
     ></VcIcon>

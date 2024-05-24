@@ -1,3 +1,12 @@
+## [1.0.222](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.221...v1.0.222) (2024-05-24)
+
+
+### Features
+
+* **offers:** update OffersEmptyGridTemplate icon color and size ([ae169c1](https://github.com/VirtoCommerce/vendor-portal/commit/ae169c1524d2a67a391cb778fd859bef57423462))
+
+
+
 ## [1.0.221](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.220...v1.0.221) (2024-05-24)
 
 

@@ -96,25 +96,10 @@ export default {
         },
       },
     },
-    remove: {
-      description: `Method to call to remove field from the fieldset. When set - activates remove button.
-      \nUsed for \`property\`-based fieldsets.
-      Allows to remove selected fieldset.
-      Method should be defined in the blade \`scope\`.
-      \n Argument - \`id\` of the field to remove`,
-      table: {
-        type: {
-          summary: "{ method: string }",
-        },
-        defaultValue: {
-          summary: false,
-        },
-      },
-    },
   },
   parameters: {
     componentSubtitle:
-      "Fieldset allows displaying sets of any available controls of any nested depth. It allows arranging elements in a grid with a customizable number of columns and aspect ratio that allows to control columns width, the ability to build a grid with multiple rows based on an array of data bound to the fieldset using the property option. It also has visibility state settings and ability to remove elements from the fieldset.",
+      "Fieldset allows displaying sets of any available controls of any nested depth. It allows arranging elements in a grid with a customizable number of columns and aspect ratio that allows to control columns width, the ability to build a grid with multiple rows based on an array of data bound to the fieldset using the property option. It also has visibility state settings.",
     docs: {
       canvas: {
         sourceState: "none",
@@ -261,53 +246,6 @@ PropertyBasedFieldsetInTwoColumns.args = {
       property: "description",
     },
   ],
-};
-
-export const RemoveField: StoryFn<FieldsetSchema> = (args) => ({
-  components: { page },
-  setup() {
-    const context = reactive({
-      item: {
-        dataArray: [
-          {
-            id: 1,
-            value: "value1",
-            label: "Label 1",
-          },
-          {
-            id: 2,
-            value: "value2",
-            label: "Label 2",
-          },
-          {
-            id: 3,
-            value: "value3",
-            label: "Label 3",
-          },
-        ],
-      },
-      scope: {
-        removeField: (id: number) => {
-          context.item.dataArray.splice(id, 1);
-        },
-      },
-    });
-    return { args, context };
-  },
-  template,
-});
-RemoveField.args = {
-  property: "dataArray",
-  fields: [
-    {
-      id: "fieldId",
-      component: "vc-input",
-      label: "{label}",
-      placeholder: "Enter text here",
-      property: "value",
-    },
-  ],
-  remove: { method: "removeField" },
 };
 
 export const NestedFieldsetsWithHorizontalSeparator: StoryFn<FieldsetSchema> = (args) => ({

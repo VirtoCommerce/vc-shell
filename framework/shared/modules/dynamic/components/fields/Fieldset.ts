@@ -1,7 +1,7 @@
-import { Ref, h, inject, toRefs, ExtractPropTypes, toValue } from "vue";
+import { h, toRefs, ExtractPropTypes, toValue } from "vue";
 import componentProps from "./props";
 import * as _ from "lodash-es";
-import { VcButton, VcCol, VcRow } from "../../../../../ui/components";
+import { VcCol, VcRow } from "../../../../../ui/components";
 import { FieldsetSchema } from "../../types";
 import { unrefNested } from "../../helpers/unrefNested";
 
@@ -9,8 +9,6 @@ export default {
   name: "Fieldset",
   props: componentProps,
   setup(props: ExtractPropTypes<typeof componentProps> & { element: FieldsetSchema }) {
-    const isMobile = inject("isMobile") as Ref<boolean>;
-
     const { fields: fieldsetFields } = toRefs(props);
 
     return () =>
@@ -60,21 +58,6 @@ export default {
                 );
               }),
             ]),
-            props.element.remove
-              ? h(VcButton, {
-                  iconSize: "m",
-                  icon: "fas fa-times-circle",
-                  text: true,
-                  class: {
-                    "tw-m-2": !isMobile.value,
-                    "tw-absolute tw-top-0 tw-right-0": isMobile.value,
-                    "!tw-hidden": arr.length === 1,
-                  },
-                  onClick: () => {
-                    if (props.element.remove?.method) props.bladeContext.scope?.[props.element.remove?.method](index);
-                  },
-                })
-              : undefined,
           ],
         );
       });

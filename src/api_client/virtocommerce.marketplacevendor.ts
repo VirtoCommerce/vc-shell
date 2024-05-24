@@ -9704,6 +9704,7 @@ export class ObjectSettingEntry implements IObjectSettingEntry {
   displayName?: string | undefined;
   isRequired?: boolean;
   isHidden?: boolean;
+  isPublic?: boolean;
   valueType?: ObjectSettingEntryValueType;
   allowedValues?: any[] | undefined;
   defaultValue?: any | undefined;
@@ -9733,6 +9734,7 @@ export class ObjectSettingEntry implements IObjectSettingEntry {
       this.displayName = _data["displayName"];
       this.isRequired = _data["isRequired"];
       this.isHidden = _data["isHidden"];
+      this.isPublic = _data["isPublic"];
       this.valueType = _data["valueType"];
       if (Array.isArray(_data["allowedValues"])) {
         this.allowedValues = [] as any;
@@ -9766,6 +9768,7 @@ export class ObjectSettingEntry implements IObjectSettingEntry {
     data["displayName"] = this.displayName;
     data["isRequired"] = this.isRequired;
     data["isHidden"] = this.isHidden;
+    data["isPublic"] = this.isPublic;
     data["valueType"] = this.valueType;
     if (Array.isArray(this.allowedValues)) {
       data["allowedValues"] = [];
@@ -9792,6 +9795,7 @@ export interface IObjectSettingEntry {
   displayName?: string | undefined;
   isRequired?: boolean;
   isHidden?: boolean;
+  isPublic?: boolean;
   valueType?: ObjectSettingEntryValueType;
   allowedValues?: any[] | undefined;
   defaultValue?: any | undefined;
@@ -16589,6 +16593,7 @@ export class SettingDescriptor implements ISettingDescriptor {
   displayName?: string | undefined;
   isRequired?: boolean;
   isHidden?: boolean;
+  isPublic?: boolean;
   valueType?: SettingDescriptorValueType;
   allowedValues?: any[] | undefined;
   defaultValue?: any | undefined;
@@ -16613,6 +16618,7 @@ export class SettingDescriptor implements ISettingDescriptor {
       this.displayName = _data["displayName"];
       this.isRequired = _data["isRequired"];
       this.isHidden = _data["isHidden"];
+      this.isPublic = _data["isPublic"];
       this.valueType = _data["valueType"];
       if (Array.isArray(_data["allowedValues"])) {
         this.allowedValues = [] as any;
@@ -16641,6 +16647,7 @@ export class SettingDescriptor implements ISettingDescriptor {
     data["displayName"] = this.displayName;
     data["isRequired"] = this.isRequired;
     data["isHidden"] = this.isHidden;
+    data["isPublic"] = this.isPublic;
     data["valueType"] = this.valueType;
     if (Array.isArray(this.allowedValues)) {
       data["allowedValues"] = [];
@@ -16662,6 +16669,7 @@ export interface ISettingDescriptor {
   displayName?: string | undefined;
   isRequired?: boolean;
   isHidden?: boolean;
+  isPublic?: boolean;
   valueType?: SettingDescriptorValueType;
   allowedValues?: any[] | undefined;
   defaultValue?: any | undefined;

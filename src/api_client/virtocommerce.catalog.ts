@@ -6619,6 +6619,7 @@ export class ProductIndexedSearchCriteria implements IProductIndexedSearchCriter
   startDate?: Date;
   startDateFrom?: Date | undefined;
   endDate?: Date | undefined;
+  certainDate?: Date | undefined;
   includeAggregations?: string[] | undefined;
   excludeAggregations?: string[] | undefined;
   geoDistanceFilter?: GeoDistanceFilter | undefined;
@@ -6670,6 +6671,7 @@ export class ProductIndexedSearchCriteria implements IProductIndexedSearchCriter
       this.startDate = _data["startDate"] ? new Date(_data["startDate"].toString()) : <any>undefined;
       this.startDateFrom = _data["startDateFrom"] ? new Date(_data["startDateFrom"].toString()) : <any>undefined;
       this.endDate = _data["endDate"] ? new Date(_data["endDate"].toString()) : <any>undefined;
+      this.certainDate = _data["certainDate"] ? new Date(_data["certainDate"].toString()) : <any>undefined;
       if (Array.isArray(_data["includeAggregations"])) {
         this.includeAggregations = [] as any;
         for (let item of _data["includeAggregations"]) this.includeAggregations!.push(item);
@@ -6754,6 +6756,7 @@ export class ProductIndexedSearchCriteria implements IProductIndexedSearchCriter
     data["startDate"] = this.startDate ? this.startDate.toISOString() : <any>undefined;
     data["startDateFrom"] = this.startDateFrom ? this.startDateFrom.toISOString() : <any>undefined;
     data["endDate"] = this.endDate ? this.endDate.toISOString() : <any>undefined;
+    data["certainDate"] = this.certainDate ? this.certainDate.toISOString() : <any>undefined;
     if (Array.isArray(this.includeAggregations)) {
       data["includeAggregations"] = [];
       for (let item of this.includeAggregations) data["includeAggregations"].push(item);
@@ -6823,6 +6826,7 @@ export interface IProductIndexedSearchCriteria {
   startDate?: Date;
   startDateFrom?: Date | undefined;
   endDate?: Date | undefined;
+  certainDate?: Date | undefined;
   includeAggregations?: string[] | undefined;
   excludeAggregations?: string[] | undefined;
   geoDistanceFilter?: GeoDistanceFilter | undefined;

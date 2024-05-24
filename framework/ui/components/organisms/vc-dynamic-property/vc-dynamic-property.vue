@@ -162,6 +162,7 @@
         :placeholder="computedProperty.placeholder"
         :disabled="disabled"
         :loading="loading"
+        clearable
       ></VcInput
     ></template>
     <template v-else-if="computedProperty.valueType === 'LongText'">

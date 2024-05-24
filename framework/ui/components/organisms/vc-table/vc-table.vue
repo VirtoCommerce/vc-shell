@@ -1,7 +1,7 @@
 <template>
   <div
     v-loading="unref(loading) || columnsInit"
-    class="tw-relative tw-overflow-hidden tw-flex tw-flex-col tw-grow tw-basis-0"
+    class="tw-relative tw-overflow-hidden tw-flex tw-flex-col tw-grow tw-basis-0 tw-border tw-border-[color:#eef0f2] tw-border-solid tw-border-t-0"
   >
     <!-- Header slot with filter and searchbar -->
     <slot

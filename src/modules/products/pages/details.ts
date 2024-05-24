@@ -66,6 +66,21 @@ export const details: DynamicDetailsSchema = {
           },
         },
         {
+          id: "onCreateNewStatus",
+          component: "vc-status",
+          extend: true,
+          outline: false,
+          variant: "info-dark",
+          icon: "far fa-lightbulb",
+          iconSize: "l",
+          content: {
+            method: "createNewText",
+          },
+          visibility: {
+            method: "createNewStatusVisibility",
+          },
+        },
+        {
           id: "productType",
           component: "vc-select",
           label: "PRODUCTS.PAGES.DETAILS.FIELDS.PRODUCT_TYPE.TITLE",

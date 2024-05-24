@@ -89,6 +89,7 @@
           "DELETE": "Delete"
         },
         "DECLINE_REASON": "Decline reason",
+        "CREATE_NEW_STATUS_TEXT": "Videos, Assets and Offers can be added to the product after it has been saved",
         "FIELDS": {
           "TITLE": "Properties",
           "NAME": {

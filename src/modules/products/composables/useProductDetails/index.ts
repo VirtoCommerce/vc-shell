@@ -117,6 +117,8 @@ export const useProductDetails = (args: {
     }
     return null;
   });
+  const createNewText = computed(() => t("PRODUCTS.PAGES.DETAILS.CREATE_NEW_STATUS_TEXT"));
+  const createNewStatusVisibility = computed(() => !item.value?.id);
 
   const bladeTitle = computed(() =>
     args.props.param && item.value?.name ? item.value?.name : t("PRODUCTS.PAGES.DETAILS.TITLE"),
@@ -289,6 +291,8 @@ export const useProductDetails = (args: {
     setCategory,
     declineReasonVisibility,
     statusText,
+    createNewText,
+    createNewStatusVisibility,
     markProductDirty,
     propertiesCardVisibility: computed(() => !!item.value?.id || !!currentCategory.value),
     galleryVisibility: computed(() => !!item.value?.categoryId),

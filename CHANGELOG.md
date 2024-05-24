@@ -1,3 +1,17 @@
+## [1.0.220](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.219...v1.0.220) (2024-05-24)
+
+
+### Features
+
+* **dynamic:** Add support of footer template in dynamic views ([137c49a](https://github.com/VirtoCommerce/vc-shell/commit/137c49a6788dc68bd73766af6439ba4713ba05bf))
+* **dynamic:** inputCurrency getting options update' ([635de1d](https://github.com/VirtoCommerce/vc-shell/commit/635de1d3501efa163a013a53962083bf9794e66a))
+* **ui, dynamic:** vc-table updates ([bcab837](https://github.com/VirtoCommerce/vc-shell/commit/bcab8371a8e33181b1faf4645fba76e3bb92853f))
+* **ui:** add clearable option to date input component in vc-dynamic-properties ([8efcb59](https://github.com/VirtoCommerce/vc-shell/commit/8efcb592c793152d728b36541fe1c3fe7a78d1d2))
+* **ui:** update vc-input-currency component to support custom slots for prepend and append content ([4ae9f90](https://github.com/VirtoCommerce/vc-shell/commit/4ae9f906c7d89833b46aea7d4f3bb23a4ddb031b))
+* **ui:** vc-tooltip component and refactor of vc-label ([1eafd03](https://github.com/VirtoCommerce/vc-shell/commit/1eafd036e4b693563d1987d41ae6de620def7d34))
+
+
+
 ## [1.0.219](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.218...v1.0.219) (2024-05-21)
 
 

@@ -9,7 +9,7 @@
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
 export interface Props {
-  variant?: "info" | "warning" | "danger" | "success" | "light-danger";
+  variant?: "info" | "warning" | "danger" | "success" | "light-danger" | "info-dark";
   outline?: boolean;
   extend?: boolean;
 }
@@ -27,7 +27,7 @@ defineSlots<{
 <style lang="scss">
 :root {
   --status-padding: 4px 14px;
-  --status-padding-extended: 12px;
+  --status-padding-extended: 8px;
 
   --status-border-radius: 2px;
   --status-border-radius-extended: 4px;
@@ -47,9 +47,12 @@ defineSlots<{
 
   --status-light-danger-color: #333333;
   --status-light-danger-main-color: #ffefef;
+
+  --status-info-dark-color: #ffffff;
+  --status-info-dark-main-color: #82a6bd;
 }
 
-$variants: info, warning, danger, success, light-danger;
+$variants: info, warning, danger, success, light-danger, info-dark;
 
 .vc-status {
   @apply tw-inline-block tw-rounded-[var(--status-border-radius)] tw-py-1 tw-px-3.5 tw-text-base tw-font-normal tw-whitespace-nowrap;

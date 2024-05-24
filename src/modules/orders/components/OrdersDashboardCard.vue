@@ -1,7 +1,7 @@
 <template>
   <VcCard
     :header="$t('ORDERS.WIDGET.TITLE')"
-    icon="fas fa-sync-alt"
+    icon="fas fa-shopping-cart"
     :fill="true"
   >
     <template

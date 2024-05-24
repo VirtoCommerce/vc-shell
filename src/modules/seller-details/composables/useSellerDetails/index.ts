@@ -7,6 +7,7 @@ import {
   useUser,
   DetailsBaseBladeScope,
   useAssets,
+  i18n,
 } from "@vc-shell/framework";
 import {
   CustomerAddress,
@@ -37,6 +38,8 @@ export const useSellerDetails = (args?: {
   emit: InstanceType<typeof DynamicBladeForm>["$emit"];
   mounted: Ref<boolean>;
 }): UseDetails<ISeller> => {
+  const { t } = i18n.global;
+
   const detailsFactory = useDetailsFactory<ISeller>({
     load: async () => {
       const sellerId = await GetSellerId();
@@ -227,6 +230,6 @@ export const useSellerDetails = (args?: {
     loading,
     validationState,
     scope: computed(() => scope.value),
-    bladeTitle: computed(() => "Seller Details"),
+    bladeTitle: computed(() => t("SELLER_DETAILS.TITLE")),
   };
 };

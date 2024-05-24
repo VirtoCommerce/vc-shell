@@ -103,7 +103,6 @@ export const details: DynamicDetailsSchema = {
                       multiple: false,
                       property: "logoHandler",
                       rules: {
-                        mindimensions: [120, 120],
                         fileWeight: 1024,
                       },
                       actions: {

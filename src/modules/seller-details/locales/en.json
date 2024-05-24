@@ -1,7 +1,7 @@
 {
   "SELLER_DETAILS": {
     "MENU": {
-      "TITLE": "Seller Details"
+      "TITLE": "Organization Details"
     },
     "PAGES": {
       "ALERTS": {
@@ -13,7 +13,7 @@
         }
       }
     },
-    "TITLE": "Seller Details",
+    "TITLE": "Organization Details",
     "TOOLBAR": {
       "SAVE": "Save",
       "RESET": "Reset"

@@ -1,3 +1,15 @@
+## [1.0.221](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.220...v1.0.221) (2024-05-28)
+
+
+### Features
+
+* Add onCellBlur event handler to Table component ([946e020](https://github.com/VirtoCommerce/vc-shell/commit/946e020cee55defa3c73d26ae3860747b52e0b14))
+* Add separator option to vc-blade-toolbar-button component ([3082483](https://github.com/VirtoCommerce/vc-shell/commit/30824839d1652311e2f2c1c2fcc74bd2a6cfb3ac))
+* **dynamic:** Add hint text to input fields ([31b3ded](https://github.com/VirtoCommerce/vc-shell/commit/31b3ded3e7685085b9d9c9e398bddb7b9e7264e8))
+* Update useToolbarReducer to handle toolbarItemCtx as an array or object ([cc598eb](https://github.com/VirtoCommerce/vc-shell/commit/cc598eb38570f617c5e241a6439fcb0e87885667))
+
+
+
 ## [1.0.220](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.219...v1.0.220) (2024-05-24)
 
 

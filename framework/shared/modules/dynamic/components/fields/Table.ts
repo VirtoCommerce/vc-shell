@@ -100,16 +100,20 @@ export default {
             {} as Record<`item_${string}`, any>,
           ),
           notfound: tableTemplates?.notFound
-            ? (itemData: TableItemData) => h(tableTemplates.notFound as Component, { context: itemData })
+            ? (itemData: TableItemData) =>
+                h(tableTemplates.notFound as Component, { context: itemData, bladeContext: props.bladeContext })
             : undefined,
           "mobile-item": tableTemplates?.mobileView
-            ? (itemData: TableItemData) => h(tableTemplates.mobileView as Component, { context: itemData })
+            ? (itemData: TableItemData) =>
+                h(tableTemplates.mobileView as Component, { context: itemData, bladeContext: props.bladeContext })
             : undefined,
           empty: tableTemplates?.empty
-            ? (itemData: TableItemData) => h(tableTemplates.empty as Component, { context: itemData })
+            ? (itemData: TableItemData) =>
+                h(tableTemplates.empty as Component, { context: itemData, bladeContext: props.bladeContext })
             : undefined,
           footer: tableTemplates?.footer
-            ? (itemData: TableItemData) => h(tableTemplates.footer as Component, { context: itemData })
+            ? (itemData: TableItemData) =>
+                h(tableTemplates.footer as Component, { context: itemData, bladeContext: props.bladeContext })
             : undefined,
         },
       });

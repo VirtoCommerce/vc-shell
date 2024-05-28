@@ -9,6 +9,8 @@ import * as FulfillmentCenters from "./fulfillment-centers";
 import * as Orders from "./orders";
 import * as Rating from "./rating";
 
+import { type OrderScope } from "./orders/composables";
+
 import "./../styles/index.scss";
 
 export default {
@@ -23,5 +25,7 @@ export default {
   FulfillmentCenters,
   Rating,
 };
+
+export type { OrderScope };
 
 export * from "./types";

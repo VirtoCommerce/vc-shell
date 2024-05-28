@@ -8,6 +8,36 @@ export const details: DynamicDetailsSchema = {
     localizationPrefix: "ORDERS",
     composable: "useOrder",
     width: "70%",
+    toolbar: [
+      {
+        id: "downloadPdf",
+        title: "ORDERS.PAGES.DETAILS.TOOLBAR.DL_PDF",
+        icon: "fas fa-file-pdf",
+        method: "downloadPdf",
+      },
+      {
+        id: "save",
+        title: "ORDERS.PAGES.DETAILS.TOOLBAR.SAVE",
+        icon: "fas fa-save",
+        method: "saveChanges",
+      },
+      {
+        id: "edit",
+        title: "ORDERS.PAGES.DETAILS.TOOLBAR.EDIT",
+        icon: "fas fa-edit",
+        method: "edit",
+      },
+      {
+        id: "cancelEdit",
+        title: "ORDERS.PAGES.DETAILS.TOOLBAR.CANCEL_EDIT",
+        icon: "fas fa-undo",
+        method: "cancelEdit",
+      },
+      {
+        id: "stateMachineComputed",
+        method: "stateMachineComputed",
+      },
+    ],
   },
   content: [
     {
@@ -191,6 +221,11 @@ export const details: DynamicDetailsSchema = {
                   type: "image",
                 },
                 {
+                  id: "sku",
+                  title: "ORDERS.PAGES.DETAILS.FORM.TABLE.SKU",
+                  width: 100,
+                },
+                {
                   id: "name",
                   title: "ORDERS.PAGES.DETAILS.FORM.TABLE.NAME",
                   customTemplate: {
@@ -202,6 +237,13 @@ export const details: DynamicDetailsSchema = {
                   title: "ORDERS.PAGES.DETAILS.FORM.TABLE.QUANTITY",
                   width: 100,
                   type: "number",
+                  editable: true,
+                  rules: {
+                    min_value: 0,
+                  },
+                  onCellBlur: {
+                    method: "calculateTotals",
+                  },
                 },
                 {
                   id: "price",
@@ -209,6 +251,13 @@ export const details: DynamicDetailsSchema = {
                   width: 100,
                   type: "money",
                   currencyField: "currency",
+                  editable: true,
+                  rules: {
+                    min_value: 0,
+                  },
+                  onCellBlur: {
+                    method: "calculateTotals",
+                  },
                 },
                 {
                   id: "extendedPrice",

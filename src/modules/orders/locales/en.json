@@ -57,7 +57,10 @@
           "CONFIRM": "Confirm",
           "CANCEL": "Cancel",
           "SHIP": "Ship order",
-          "PACK": "Pack"
+          "PACK": "Pack",
+          "EDIT": "Edit",
+          "CANCEL_EDIT": "Cancel editing",
+          "SAVE": "Save"
         },
         "FORM": {
           "ORDER_INFO": {
@@ -93,7 +96,8 @@
             "QUANTITY": "Quantity",
             "UNIT_PRICE": "Unit price",
             "TOTAL": "Total",
-            "COMMISSION": "Commission"
+            "COMMISSION": "Commission",
+            "SKU": "SKU"
           },
           "NOT_VALID": "Form is not valid.\nPlease, check highlighted fields."
         }

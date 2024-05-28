@@ -28,7 +28,13 @@ interface IShippingInfo {
 }
 
 export interface OrderScope extends DetailsBaseBladeScope {
-  toolbarOverrides: ComputedRef<IBladeToolbar[]>;
+  toolbarOverrides: {
+    downloadPdf: IBladeToolbar;
+    saveChanges: IBladeToolbar;
+    edit: IBladeToolbar;
+    cancelEdit: IBladeToolbar;
+    stateMachineComputed: ComputedRef<IBladeToolbar[]>;
+  };
   shippingInfo: ComputedRef<IShippingInfo[]>;
   addressVisibility: (
     schema: {
@@ -71,6 +77,14 @@ export const useOrder = (args: {
         return (await getApiClient()).getById(item.id);
       }
     },
+    saveChanges: async (details) => {
+      if (details?.id) {
+        disabled.value = true;
+        if (!isCalculated.value) {
+          return await calculateTotals();
+        }
+      }
+    },
   });
 
   const { load, saveChanges, remove, loading, item, validationState } = factory();
@@ -84,6 +98,8 @@ export const useOrder = (args: {
   const stateMachineLoading = ref(false);
   const toolbar = ref([]) as Ref<IBladeToolbar[]>;
   const locale = window.navigator.language;
+  const disabled = ref(true);
+  const isCalculated = ref(false);
 
   const shippingInfo = computed(() => {
     const info =
@@ -141,6 +157,13 @@ export const useOrder = (args: {
     }
   });
 
+  const { loading: calculateTotalsLoading, action: calculateTotals } = useAsync(async () => {
+    if (item.value?.id) {
+      item.value = await (await getOrderApiClient()).calculateTotals(item.value);
+      isCalculated.value = true;
+    }
+  });
+
   const withCurrency = (value: number | undefined) => {
     return new Intl.NumberFormat(locale, {
       style: "currency",
@@ -149,9 +172,47 @@ export const useOrder = (args: {
   };
 
   const scope = ref<OrderScope>({
-    disabled: ref(true),
-    toolbarOverrides: computed(() => toolbar.value),
+    disabled,
+    toolbarOverrides: {
+      downloadPdf: {
+        async clickHandler() {
+          if (args.props.param) {
+            await loadPdf();
+          }
+        },
+        disabled: computed(() => stateMachineLoading.value || !args.props.param),
+      },
+      saveChanges: {
+        isVisible: computed(() => !disabled.value),
+        disabled: computed(
+          () => !(isCalculated.value && validationState.value.valid && validationState.value.modified),
+        ),
+      },
+      edit: {
+        clickHandler: () => {
+          disabled.value = false;
+        },
+        isVisible: computed(
+          () =>
+            hasAccess(UserPermissions.EditSellerOrder) &&
+            (item.value?.status === "New" || item.value?.status === "Pending") &&
+            disabled.value,
+        ),
+
+        disabled: computed(() => stateMachineLoading.value || !args.props.param),
+      },
+      cancelEdit: {
+        clickHandler: () => {
+          validationState.value.resetModified(validationState.value.cachedValue, true);
+          disabled.value = true;
+        },
+        disabled: computed(() => !validationState.value.modified),
+        isVisible: computed(() => !disabled.value),
+      },
+      stateMachineComputed: computed(() => toolbar.value),
+    },
     shippingInfo,
+    calculateTotals,
     addressVisibility: (schema: { property: keyof IShippingInfo }, fieldContext: IShippingInfo) => {
       return !!fieldContext[schema.property];
     },
@@ -192,23 +253,14 @@ export const useOrder = (args: {
 
   const refreshToolbar = (sm: StateMachineInstance) => {
     toolbar.value.splice(0);
-    toolbar.value.push({
-      title: computed(() => t("ORDERS.PAGES.DETAILS.TOOLBAR.DL_PDF")),
-      icon: "fas fa-file-pdf",
-      async clickHandler() {
-        if (args.props.param) {
-          await loadPdf();
-        }
-      },
-      disabled: computed(() => stateMachineLoading.value || !args.props.param),
-    });
 
-    sm?.currentState?.transitions?.forEach((transition) => {
+    sm?.currentState?.transitions?.forEach((transition, index) => {
       toolbar.value.push({
         title: computed(() => t(`ORDERS.PAGES.DETAILS.TOOLBAR.${transition.trigger?.toUpperCase()}`)),
         icon: transition.icon ?? "fas fa-tasks",
         disabled: computed(() => stateMachineLoading.value),
         isVisible: hasAccess(UserPermissions.EditSellerOrder),
+        separator: index === 0 ? "left" : undefined,
         async clickHandler() {
           try {
             stateMachineLoading.value = true;
@@ -238,7 +290,7 @@ export const useOrder = (args: {
     load,
     saveChanges,
     remove,
-    loading: useLoading(loading, pdfLoading, stateMachineLoading),
+    loading: useLoading(loading, pdfLoading, stateMachineLoading, calculateTotalsLoading),
     item,
     validationState,
     scope: computed(() => scope.value),

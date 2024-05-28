@@ -1,3 +1,12 @@
+## [1.0.223](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.222...v1.0.223) (2024-05-28)
+
+
+### Features
+
+* **orders:** editing, sku in line items ([1efb681](https://github.com/VirtoCommerce/vendor-portal/commit/1efb681f8eef50fa729d2ee9da0efc87950f99fa))
+
+
+
 ## [1.0.222](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.221...v1.0.222) (2024-05-24)
 
 

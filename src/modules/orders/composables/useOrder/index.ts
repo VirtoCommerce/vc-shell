@@ -206,7 +206,6 @@ export const useOrder = (args: {
           validationState.value.resetModified(validationState.value.cachedValue, true);
           disabled.value = true;
         },
-        disabled: computed(() => !validationState.value.modified),
         isVisible: computed(() => !disabled.value),
       },
       stateMachineComputed: computed(() => toolbar.value),

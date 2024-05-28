@@ -30,6 +30,7 @@
         class="tw-w-full"
         type="number"
         @update:model-value="updateModel"
+        @blur="handleBlur"
       >
         <template #append-inner>
           <slot
@@ -56,6 +57,7 @@
             type="text"
             :disabled="disabled"
             :placeholder="holder"
+            @blur="handleBlur"
           />
         </template>
         <template
@@ -192,6 +194,7 @@ export interface Emits {
   (event: "update:model-value", value: string | number | null): void;
   (event: "update:option", value: unknown): void;
   (event: "change", value: string | number | null): void;
+  (event: "blur", value: Event): void;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -269,5 +272,9 @@ function updateModel(value: string | number | Date | null | undefined) {
   inputRef.value.value = value as string;
   numberValue.value = value as number | null;
   emit("update:model-value", value as number);
+}
+
+function handleBlur(event: Event) {
+  emit("blur", event);
 }
 </script>

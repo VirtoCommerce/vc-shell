@@ -67,6 +67,19 @@ export default {
                 props.bladeContext.scope?.[props.element.addNewRowButton?.method]?.();
               }
             },
+            onOnCellBlur: async (data: { row: number | undefined; field: string }) => {
+              if (props.element.columns) {
+                const column = props.element.columns.find((col) => col.id === data.field);
+                if (column && column.onCellBlur && column.onCellBlur.method) {
+                  if (
+                    props.bladeContext.scope?.[column.onCellBlur.method] &&
+                    typeof props.bladeContext.scope[column.onCellBlur.method] === "function"
+                  ) {
+                    await props.bladeContext.scope[column.onCellBlur.method](data);
+                  }
+                }
+              }
+            },
           },
           unrefNested(props.baseProps),
         ),

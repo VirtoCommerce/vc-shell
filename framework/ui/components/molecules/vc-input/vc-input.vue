@@ -90,6 +90,7 @@
                       :teleport="$isDesktop.value ? 'body' : undefined"
                       class="vc-input__input"
                       @keydown="onKeyDown"
+                      @blur="handleBlur"
                     ></VueDatePicker>
                   </template>
                   <template v-else>
@@ -105,6 +106,7 @@
                       :max="maxDate"
                       class="vc-input__input"
                       @keydown="onKeyDown"
+                      @blur="handleBlur"
                     />
                   </template>
                 </slot>
@@ -208,11 +210,8 @@
 <script lang="ts" setup>
 import { computed, ref, unref, watch } from "vue";
 import { VcLabel, VcIcon, VcHint } from "./../../";
-import moment from "moment";
 import VueDatePicker, { VueDatePickerProps } from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
-import * as Locales from "date-fns/locale";
-import { Locale } from "date-fns";
 
 export interface Props {
   /**
@@ -317,6 +316,7 @@ export interface Emits {
    * Emitted when the component needs to change the model; Is also used by v-model
    */
   (event: "update:modelValue", value: string | number | Date | null | undefined): void;
+  (event: "blur", value: Event): void;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -499,6 +499,10 @@ function emitValue(val: string | number | Date | null) {
 function onReset() {
   temp.value = null;
   emit("update:modelValue", null);
+}
+
+function handleBlur(e: Event) {
+  emit("blur", e);
 }
 </script>
 

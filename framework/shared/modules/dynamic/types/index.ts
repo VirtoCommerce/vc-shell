@@ -61,8 +61,8 @@ export type IViewComponentName = "DynamicBladeForm" | "DynamicBladeList";
 
 export type ToolbarSchema = {
   id: string;
-  title: string;
-  icon: string;
+  title?: string;
+  icon?: string;
   method: string;
 };
 
@@ -156,6 +156,14 @@ export interface ListContentSchema {
     alwaysVisible?: boolean;
     type?: string;
     customTemplate?: GridTemplateOverride;
+    /** Additional method that is called when the focus is lost from the cell when editing.
+     * @description Method should be defined in the blade `scope`.
+     * @argument ({ row: number, field: string })
+     * @type {{ method: string }}
+     */
+    onCellBlur?: {
+      method: string;
+    };
     visible?:
       | boolean
       | {
@@ -166,14 +174,15 @@ export interface ListContentSchema {
   // TODO Add to documentation
   selectAll?: boolean;
   // TODO Add to documentation
-  actions?: (ToolbarSchema & {
-    position: "right" | "left";
-    type: "danger" | "success";
-    disabled?: {
+  actions?: (Partial<TableSchema> &
+    Required<Pick<ToolbarSchema, "title" | "icon">> & {
+      position: "right" | "left";
+      type: "danger" | "success";
+      disabled?: {
+        method: string;
+      };
       method: string;
-    };
-    method: string;
-  })[];
+    })[];
   mobileTemplate?: {
     component: string;
   };

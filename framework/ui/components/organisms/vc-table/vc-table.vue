@@ -374,6 +374,7 @@
                       )
                     "
                     @update="$emit('onEditComplete', { event: $event, index: itemIndex })"
+                    @blur="$emit('onCellBlur', $event)"
                   ></VcTableCell>
                 </slot>
               </td>
@@ -625,6 +626,7 @@ const emit = defineEmits<{
   onEditComplete: [args: { event: { field: string; value: string | number }; index: number }];
   onAddNewRow: [];
   onRowRemove: [args: { index: number }];
+  onCellBlur: [args: { row: number | undefined; field: string }];
 }>();
 
 const { t } = useI18n({ useScope: "global" });
@@ -1188,7 +1190,7 @@ function restoreState() {
   if (state.value && state.value.length) {
     //  Iterate over the state value and update corresponding columns in allColumns
     for (const item of state.value) {
-      const matchingColumn = allColumns.value.find((col) => col.id === item.id);
+      const matchingColumn = _.cloneDeep(allColumns.value.find((col) => col.id === item.id));
       if (matchingColumn) {
         matchingColumn.width = item.width || matchingColumn.width;
         matchingColumn.visible = item.visible;

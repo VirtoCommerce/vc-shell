@@ -23,13 +23,14 @@
               class="tw-w-full"
               :error="errors.length > 0"
               @update:model-value="$emit('update', { field: cell.id, value: $event })"
+              @blur="onBlur({ row: index, field: cell.id, errors })"
             >
               <template
                 v-if="errors.length > 0"
                 #append-inner
               >
                 <VcTooltip placement="bottom-end">
-                  <VcIcon icon="fa fa-info-circle tw-text-[color:var(--error-color)]"></VcIcon>
+                  <VcIcon icon="fas fa-exclamation-circle tw-text-[color:var(--error-color)]"></VcIcon>
                   <template #tooltip>
                     <div class="tw-text-[color:var(--error-color)]">{{ errorMessage }}</div>
                   </template>
@@ -160,13 +161,14 @@
             type="number"
             :error="errors.length > 0"
             @update:model-value="$emit('update', { field: cell.id, value: $event })"
+            @blur="onBlur({ row: index, field: cell.id, errors })"
           >
             <template
               v-if="errors.length > 0"
               #append-inner
             >
               <VcTooltip placement="bottom-end">
-                <VcIcon icon="fa fa-info-circle tw-text-[color:var(--error-color)]"></VcIcon>
+                <VcIcon icon="fas fa-exclamation-circle tw-text-[color:var(--error-color)]"></VcIcon>
                 <template #tooltip>
                   <div class="tw-text-[color:var(--error-color)]">{{ errorMessage }}</div>
                 </template>
@@ -217,13 +219,14 @@
             class="tw-w-full"
             :error="errors.length > 0"
             @update:model-value="$emit('update', { field: cell.id, value: $event })"
+            @blur="onBlur({ row: index, field: cell.id, errors })"
           >
             <template
               v-if="errors.length > 0"
               #append-inner
             >
               <VcTooltip placement="bottom-end">
-                <VcIcon icon="fa fa-info-circle tw-text-[color:var(--error-color)]"></VcIcon>
+                <VcIcon icon="fas fa-exclamation-circle tw-text-[color:var(--error-color)]"></VcIcon>
                 <template #tooltip>
                   <div class="tw-text-[color:var(--error-color)]">{{ errorMessage }}</div>
                 </template>
@@ -239,6 +242,7 @@
   </div>
 </template>
 
+<!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
 import { computed } from "vue";
 import moment from "moment";
@@ -259,9 +263,10 @@ export interface Props {
 }
 
 const props = defineProps<Props>();
-defineEmits<{
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
+const emit = defineEmits<{
   (event: "update", payload: { field: string; value: any }): void;
+  (event: "blur", payload: { row: number | undefined; field: string }): void;
 }>();
 
 const locale = window.navigator.language;
@@ -291,6 +296,13 @@ function intlMoney(value: number) {
     style: "currency",
     currency: (props.item[currencyProp] as string) || "USD",
   }).format(value);
+}
+
+function onBlur(args: { row: number | undefined; field: string; errors?: string[] }) {
+  if (args.errors && args.errors.length > 0) {
+    return;
+  }
+  emit("blur", { row: args.row, field: args.field });
 }
 </script>
 

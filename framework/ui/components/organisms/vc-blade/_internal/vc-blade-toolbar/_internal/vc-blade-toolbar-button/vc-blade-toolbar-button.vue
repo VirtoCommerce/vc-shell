@@ -1,7 +1,10 @@
 <template>
   <div
     class="vc-blade-toolbar-button"
-    :class="{ 'vc-blade-toolbar-button_disabled': disabled || isWaiting }"
+    :class="{
+      'vc-blade-toolbar-button_disabled': disabled || isWaiting,
+      'tw-border-l tw-border-solid tw-border-[color:#eef0f2]': separator === 'left',
+    }"
     :title="title"
     @click="onClick"
   >
@@ -60,6 +63,7 @@ export interface Props {
   disabled?: boolean;
   dropdownItems?: IBladeDropdownItem[];
   clickHandler?(): void;
+  separator?: "left" | "right" | "both";
 }
 
 export interface Emits {

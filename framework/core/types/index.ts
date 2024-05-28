@@ -70,6 +70,7 @@ export interface IBladeToolbar {
   isVisible?: boolean | Ref<boolean | undefined> | ComputedRef<boolean | undefined>;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   clickHandler?(app?: Record<string, any> | CoreBladeExposed | null): void;
+  separator?: "left" | "right" | "both";
 }
 
 export type ToolbarMenu<T> = T extends {

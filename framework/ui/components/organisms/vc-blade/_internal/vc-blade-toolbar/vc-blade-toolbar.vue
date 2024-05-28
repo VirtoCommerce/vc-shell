@@ -15,6 +15,7 @@
           :icon="item.icon"
           :title="unref(item.title)"
           :disabled="item.disabled as boolean"
+          :separator="item.separator"
           :dropdown-items="item.dropdownItems"
           :click-handler="item.clickHandler"
         />

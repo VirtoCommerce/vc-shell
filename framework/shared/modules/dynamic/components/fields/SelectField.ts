@@ -1,11 +1,12 @@
 import { ComponentSlots } from "../../../../utilities/vueUtils";
-import { h, resolveComponent, ExtractPropTypes, Component, VNode } from "vue";
+import { h, resolveComponent, ExtractPropTypes, Component, VNode, computed, toValue } from "vue";
 import { SelectField } from "../factories";
 import componentProps from "./props";
 import ValidationField from "./ValidationField";
 import { SelectSchema } from "../../types";
 import { VcSelect } from "../../../../../ui/components";
 import { unrefNested } from "../../helpers/unrefNested";
+import { useI18n } from "vue-i18n";
 
 type TScope =
   | Parameters<ComponentSlots<typeof VcSelect>["option"]>["0"]
@@ -15,11 +16,13 @@ export default {
   name: "SelectField",
   props: componentProps,
   setup(props: ExtractPropTypes<typeof componentProps> & { element: SelectSchema }) {
+    const { t } = useI18n({ useScope: "global" });
     return () => {
       const field = SelectField({
         props: Object.assign(
           {},
           {
+            hint: props.element.hint ? toValue(computed(() => t(props.element.hint ?? ""))) : undefined,
             optionValue: props.element.optionValue,
             optionLabel: props.element.optionLabel,
             emitValue: props.element.emitValue,

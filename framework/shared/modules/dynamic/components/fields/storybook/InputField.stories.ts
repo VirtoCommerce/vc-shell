@@ -99,6 +99,14 @@ export default {
         },
       },
     },
+    hint: {
+      description: "Hint text to be displayed below the input.",
+      table: {
+        type: {
+          summary: "string",
+        },
+      },
+    },
   },
   parameters: {
     docs: {
@@ -137,6 +145,12 @@ export const WithPlaceholder = Template.bind({});
 WithPlaceholder.args = {
   label: "Input label",
   placeholder: "Input placeholder",
+};
+
+export const WithHint = Template.bind({});
+WithHint.args = {
+  label: "Input label",
+  hint: "Input hint",
 };
 
 export const WithPrepend: StoryFn<InputSchema> = (args) => ({

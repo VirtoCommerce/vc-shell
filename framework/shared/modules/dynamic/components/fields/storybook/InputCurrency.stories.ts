@@ -96,6 +96,14 @@ export default {
         },
       },
     },
+    hint: {
+      description: "Hint text to be displayed below the input.",
+      table: {
+        type: {
+          summary: "string",
+        },
+      },
+    },
   },
   parameters: {
     docs: {
@@ -137,6 +145,12 @@ export const WithTooltip = WithLabel.bind({});
 WithTooltip.args = {
   label: "Input Currency Label",
   tooltip: "Input Currency Tooltip",
+};
+
+export const WithHint = Template.bind({});
+WithHint.args = {
+  label: "Input Currency Label",
+  hint: "Input Currency Hint",
 };
 
 export const WithPlaceholder: StoryFn<InputCurrencySchema> = (args) => ({

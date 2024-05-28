@@ -134,6 +134,14 @@ export default {
         },
       },
     },
+    hint: {
+      description: "Hint text to be displayed below the input.",
+      table: {
+        type: {
+          summary: "string",
+        },
+      },
+    },
   },
   parameters: {
     docs: {
@@ -159,6 +167,12 @@ export const Template: StoryFn<MultivalueSchema> = (args) => ({
 });
 Template.args = {
   placeholder: "Write something and press Enter",
+};
+
+export const WithHint = Template.bind({});
+WithHint.args = {
+  placeholder: "Write something and press Enter",
+  hint: "I am a hint",
 };
 
 export const NumberInput: StoryFn<MultivalueSchema> = (args) => ({

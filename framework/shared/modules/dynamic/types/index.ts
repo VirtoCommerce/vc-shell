@@ -341,6 +341,10 @@ export interface SelectSchema extends SchemaBase {
    * @type {boolean}
    */
   multiple?: boolean;
+  /**
+   * Text below control.
+   */
+  hint?: string;
 }
 
 export interface MultivalueSchema extends SchemaBase {
@@ -385,6 +389,10 @@ export interface MultivalueSchema extends SchemaBase {
   customTemplate?: {
     component: string;
   };
+  /**
+   * Text below control.
+   */
+  hint?: string;
 }
 
 export interface TextareaSchema extends SchemaBase {
@@ -450,6 +458,10 @@ export interface InputSchema extends SchemaBase {
    * @type {number}
    */
   maxlength?: number;
+  /**
+   * Text below control.
+   */
+  hint?: string;
 }
 
 /**
@@ -632,6 +644,10 @@ export interface InputCurrencySchema extends Omit<SchemaBase, "multilanguage"> {
    * @type {boolean}
    */
   clearable?: boolean;
+  /**
+   * Text below control.
+   */
+  hint?: string;
 }
 
 /**

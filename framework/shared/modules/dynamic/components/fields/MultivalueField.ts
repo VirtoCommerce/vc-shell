@@ -1,11 +1,12 @@
 import { ComponentSlots } from "../../../../utilities/vueUtils";
-import { h, resolveComponent, ExtractPropTypes, Component, VNode } from "vue";
+import { h, resolveComponent, ExtractPropTypes, Component, VNode, computed, toValue } from "vue";
 import { MultivalueField } from "../factories";
 import componentProps from "./props";
 import ValidationField from "./ValidationField";
 import { MultivalueSchema } from "../../types";
 import { VcMultivalue } from "../../../../../ui/components";
 import { unrefNested } from "../../helpers/unrefNested";
+import { useI18n } from "vue-i18n";
 
 type TScope = Parameters<ComponentSlots<typeof VcMultivalue>["option"]>["0"] &
   Parameters<ComponentSlots<typeof VcMultivalue>["selected-item"]>["0"];
@@ -14,11 +15,13 @@ export default {
   name: "MultivalueField",
   props: componentProps,
   setup(props: ExtractPropTypes<typeof componentProps> & { element: MultivalueSchema }) {
+    const { t } = useI18n({ useScope: "global" });
     return () => {
       const field = MultivalueField({
         props: Object.assign(
           {},
           {
+            hint: props.element.hint ? toValue(computed(() => t(props.element.hint ?? ""))) : undefined,
             multivalue: props.element.multivalue,
             type: props.element.variant,
             optionValue: props.element.optionValue,

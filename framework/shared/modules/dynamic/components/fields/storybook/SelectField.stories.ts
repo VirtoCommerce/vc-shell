@@ -183,6 +183,14 @@ export default {
         },
       },
     },
+    hint: {
+      description: "Hint text to be displayed below the input.",
+      table: {
+        type: {
+          summary: "string",
+        },
+      },
+    },
   },
   parameters: {
     docs: {
@@ -223,6 +231,11 @@ export const WithTooltip = WithLabel.bind({});
 WithTooltip.args = {
   label: "Select label",
   tooltip: "Select tooltip",
+};
+
+export const WithHint = WithLabel.bind({});
+WithHint.args = {
+  hint: "Select hint",
 };
 
 export const WithPlaceholder: StoryFn<SelectSchema> = (args) => ({

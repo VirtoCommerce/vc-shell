@@ -1,4 +1,4 @@
-import { Component, ExtractPropTypes, h, unref } from "vue";
+import { Component, ExtractPropTypes, computed, h, unref } from "vue";
 import { InputCurrency } from "../factories";
 import componentProps from "./props";
 import ValidationField from "./ValidationField";
@@ -8,11 +8,13 @@ import { InputCurrencySchema } from "../../types";
 import { unrefNested } from "../../helpers/unrefNested";
 import { toValue } from "@vueuse/core";
 import { safeIn } from "../../helpers/safeIn";
+import { useI18n } from "vue-i18n";
 
 export default {
   name: "InputCurrency",
   props: componentProps,
   setup(props: ExtractPropTypes<typeof componentProps> & { element: InputCurrencySchema }) {
+    const { t } = useI18n({ useScope: "global" });
     return () => {
       const options =
         toValue(getModel(props.element.options, props.fieldContext ?? {})) ||
@@ -33,6 +35,7 @@ export default {
         props: Object.assign(
           {},
           {
+            hint: props.element.hint ? toValue(computed(() => t(props.element.hint ?? ""))) : undefined,
             option: toValue(scopedProperty ?? contextProperty),
             optionLabel: props.element.optionLabel,
             optionValue: props.element.optionValue,

@@ -69,7 +69,10 @@ export interface UseList<
 
 export interface BaseBladeScope {
   [x: string]: any;
-  toolbarOverrides?: MaybeRef<{ [x: string]: IBladeToolbar }> | ((...args: any[]) => any) | MaybeRef<IBladeToolbar[]>;
+  toolbarOverrides?:
+    | MaybeRef<{ [x: string]: IBladeToolbar | IBladeToolbar[] | MaybeRef<IBladeToolbar> | MaybeRef<IBladeToolbar[]> }>
+    | ((...args: any[]) => any)
+    | MaybeRef<IBladeToolbar[]>;
 }
 
 export interface ListBaseBladeScope<Item = Record<string, any>, Query = Record<string, any>> extends BaseBladeScope {

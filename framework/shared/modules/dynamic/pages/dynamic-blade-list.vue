@@ -620,7 +620,9 @@ function actionBuilder(item: (typeof items.value)[number]): IActionBuilderResult
         clickHandler: async (itemVal: (typeof items.value)[number]) => {
           try {
             if (isRef(toolbarComputed) && toolbarComputed.value && toolbarComputed.value.length > 0) {
-              const toolbarItem = toolbarComputed.value.find((x) => x.method === action.method);
+              const toolbarItem = toolbarComputed.value.find(
+                (x) => ("method" in x && x.method === action.method) ?? false,
+              );
               selectedIds.value = [itemVal.id];
               if (toolbarItem) {
                 await toolbarItem.clickHandler?.();

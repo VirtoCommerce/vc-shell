@@ -1,3 +1,17 @@
+## [1.0.223](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.222...v1.0.223) (2024-05-29)
+
+
+### Features
+
+* **dynamic:** refactoring of scope, composable args interface, dynamic hint for some components ([e6b8099](https://github.com/VirtoCommerce/vc-shell/commit/e6b8099a120cef9429896904947e13fdae670541))
+
+
+### BREAKING CHANGES
+
+* **dynamic:** change scope in composables to be plain object instead refs. Also, if you want to extend scope, use lodash's merge method like: _.merge(scope, {})
+
+
+
 ## [1.0.222](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.221...v1.0.222) (2024-05-28)
 
 

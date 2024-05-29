@@ -14,3 +14,9 @@ export default createDynamicAppModule({
 });
 
 export { components, composables, schema, locales, notificationTemplates };
+export type {
+  OffersListScope,
+  OfferDetailsScope,
+  SpecialPricesListScope,
+  SpecialPricesDetailsScope,
+} from "./composables";

@@ -1,2 +1,2 @@
-export { useFulfillmentCenter } from "./useFulfillmentCenter";
-export { useFulfillmentCenters } from "./useFulfillmentCenters";
+export { useFulfillmentCenter, type FulfillmentCenterScope } from "./useFulfillmentCenter";
+export { useFulfillmentCenters, type FulfillmentCentersScope } from "./useFulfillmentCenters";

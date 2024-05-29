@@ -16,3 +16,5 @@ export default createDynamicAppModule({
     ...mpLocales,
   },
 });
+
+export type { ProductsListExtendedScope } from "./composables/useProductsList";

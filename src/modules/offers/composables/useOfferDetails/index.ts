@@ -4,7 +4,7 @@ import {
   useLoading,
   useUser,
   UseDetails,
-  DynamicBladeForm,
+  DetailsComposableArgs,
   useDetailsFactory,
   DetailsBaseBladeScope,
   useAssets,
@@ -56,11 +56,9 @@ export interface OfferDetailsScope extends DetailsBaseBladeScope {
 
 const { getApiClient } = useApiClient(VcmpSellerCatalogClient);
 
-export const useOfferDetails = (args: {
-  props: InstanceType<typeof DynamicBladeForm>["$props"] & { options: { sellerProduct: SellerProduct } };
-  emit: InstanceType<typeof DynamicBladeForm>["$emit"];
-  mounted: Ref<boolean>;
-}): UseDetails<IOffer, OfferDetailsScope> => {
+export const useOfferDetails = (
+  args: DetailsComposableArgs<{ options: { sellerProduct: SellerProduct } }>,
+): UseDetails<IOffer, OfferDetailsScope> => {
   const { user } = useUser();
   const { t } = useI18n({ useScope: "global" });
   const offerLoading = ref(false);
@@ -288,7 +286,7 @@ export const useOfferDetails = (args: {
     );
   }, 1000);
 
-  const scope = ref<OfferDetailsScope>({
+  const scope: OfferDetailsScope = {
     fetchProducts,
     getProductItem,
     trackInventoryFn,
@@ -386,7 +384,7 @@ export const useOfferDetails = (args: {
         },
       },
     },
-  });
+  };
 
   async function GetSellerId(): Promise<string> {
     const result = route?.params?.sellerId as string;
@@ -397,7 +395,7 @@ export const useOfferDetails = (args: {
     load,
     remove,
     saveChanges,
-    scope: computed(() => scope.value),
+    scope,
     loading: useLoading(loading, offerLoading, productLoading, languagesLoading),
     item,
     validationState,

@@ -3,7 +3,7 @@ import {
   useBladeNavigation,
   useLoading,
   UseList,
-  DynamicBladeList,
+  ListComposableArgs,
   useListFactory,
   ListBaseBladeScope,
   TOpenBladeArgs,
@@ -32,11 +32,9 @@ export interface ProductListScope extends ListBaseBladeScope {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const useProductsList = (args: {
-  props: InstanceType<typeof DynamicBladeList>["$props"];
-  emit: InstanceType<typeof DynamicBladeList>["$emit"];
-  mounted: Ref<boolean>;
-}): UseList<SellerProduct[], ISearchProductsQuery, ProductListScope> => {
+export const useProductsList = (
+  args: ListComposableArgs,
+): UseList<SellerProduct[], ISearchProductsQuery, ProductListScope> => {
   const { t } = useI18n({ useScope: "global" });
   const listFactory = useListFactory<SellerProduct[], ISearchProductsQuery>({
     load: async (query) => {
@@ -103,7 +101,7 @@ export const useProductsList = (args: {
     });
   }
 
-  const scope = ref<ProductListScope>({
+  const scope: ProductListScope = {
     openDetailsBlade,
     toolbarOverrides: {
       exportCategories: {
@@ -125,7 +123,7 @@ export const useProductsList = (args: {
         [] as Record<string, MaybeRef<string>>[],
       );
     }),
-  });
+  };
 
   async function GetSellerId(): Promise<string> {
     const result = route?.params?.sellerId as string;
@@ -139,6 +137,6 @@ export const useProductsList = (args: {
     pagination,
     load,
     remove,
-    scope: computed(() => scope.value),
+    scope,
   };
 };

@@ -1,4 +1,4 @@
-export { useOffersList } from "./useOffersList";
-export { useOfferDetails } from "./useOfferDetails";
-export { useSpecialPricesList } from "./useSpecialPricesList";
-export { useSpecialPriceDetails } from "./useSpecialPriceDetails";
+export { useOffersList, type OffersListScope } from "./useOffersList";
+export { useOfferDetails, type OfferDetailsScope } from "./useOfferDetails";
+export { useSpecialPricesList, type SpecialPricesListScope } from "./useSpecialPricesList";
+export { useSpecialPriceDetails, type SpecialPricesDetailsScope } from "./useSpecialPriceDetails";

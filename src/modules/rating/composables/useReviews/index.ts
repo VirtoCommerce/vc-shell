@@ -2,27 +2,27 @@ import {
   useApiClient,
   useBladeNavigation,
   useListFactory,
-  DynamicBladeList,
+  ListComposableArgs,
   ListBaseBladeScope,
   TOpenBladeArgs,
+  UseList,
 } from "@vc-shell/framework";
 import {
   CustomerReview,
   ISearchCustomerReviewsQuery,
   SearchCustomerReviewsQuery,
-  SearchSellerUsersQuery,
   VcmpSellerRatingAndReviewsClient,
-  VcmpSellerSecurityClient,
 } from "@vcmp-vendor-portal/api/marketplacevendor";
 import { computed, ref } from "vue";
 import { useRoute } from "vue-router";
 
+export interface ReviewsListScope extends ListBaseBladeScope<CustomerReview> {}
+
 const { getApiClient } = useApiClient(VcmpSellerRatingAndReviewsClient);
 
-export const useReviews = (args: {
-  props: InstanceType<typeof DynamicBladeList>["$props"];
-  emit: InstanceType<typeof DynamicBladeList>["$emit"];
-}) => {
+export const useReviews = (
+  args: ListComposableArgs,
+): UseList<CustomerReview[], ISearchCustomerReviewsQuery, ReviewsListScope> => {
   const factory = useListFactory<CustomerReview[], ISearchCustomerReviewsQuery>({
     load: async (query) => {
       const sellerId = await GetSellerId();
@@ -43,7 +43,7 @@ export const useReviews = (args: {
     });
   }
 
-  const scope = ref<ListBaseBladeScope>({
+  const scope = ref<ReviewsListScope>({
     openDetailsBlade,
   });
 

@@ -4,7 +4,7 @@ import {
   IBladeToolbar,
   useApiClient,
   useLoading,
-  DynamicBladeForm,
+  DetailsComposableArgs,
   UseDetails,
   useDetailsFactory,
   DetailsBaseBladeScope,
@@ -28,11 +28,9 @@ export interface VideoDetailsScope extends DetailsBaseBladeScope {
 
 const { getApiClient } = useApiClient(VcmpSellerCatalogClient);
 
-export const useVideoDetails = (args: {
-  props: InstanceType<typeof DynamicBladeForm>["$props"] & { options: { productId: string } };
-  emit: InstanceType<typeof DynamicBladeForm>["$emit"];
-  mounted: Ref<boolean>;
-}): UseDetails<IVideo, VideoDetailsScope> => {
+export const useVideoDetails = (
+  args: DetailsComposableArgs<{ options: { productId: string } }>,
+): UseDetails<IVideo, VideoDetailsScope> => {
   const detailsFactory = useDetailsFactory<IVideo>({
     load: async (item) => {
       if (item?.id) {
@@ -129,7 +127,7 @@ export const useVideoDetails = (args: {
     });
   }
 
-  const scope = ref<VideoDetailsScope>({
+  const scope: VideoDetailsScope = {
     videoUrlHandler,
     videoDisabled: computed(() => true),
     previewDisabled: computed(() => validationState.value.disabled),
@@ -145,7 +143,7 @@ export const useVideoDetails = (args: {
         isVisible: computed(() => !!args.props.param),
       },
     },
-  });
+  };
 
   watch(
     () => args?.mounted.value,
@@ -161,7 +159,7 @@ export const useVideoDetails = (args: {
     load: loadWrapper,
     saveChanges: saveChangesWrapper,
     remove,
-    scope: computed(() => scope.value),
+    scope,
     item,
     validationState,
     loading: useLoading(loading, videoLoading),

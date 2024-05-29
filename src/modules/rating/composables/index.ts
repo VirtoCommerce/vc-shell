@@ -1,3 +1,3 @@
-export { useReview } from "./useReview";
-export { useReviews } from "./useReviews";
+export { useReview, type ReviewDetailsScope } from "./useReview";
+export { useReviews, type ReviewsListScope } from "./useReviews";
 export { useRating } from "./useRating";

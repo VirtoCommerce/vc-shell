@@ -2,6 +2,7 @@ import {
   useApiClient,
   useDetailsFactory,
   DynamicBladeForm,
+  DetailsComposableArgs,
   DetailsBaseBladeScope,
   UseDetails,
   IBladeToolbar,
@@ -65,11 +66,7 @@ export interface OrderScope extends DetailsBaseBladeScope {
 
 const { getApiClient } = useApiClient(VcmpSellerOrdersClient);
 
-export const useOrder = (args: {
-  props: InstanceType<typeof DynamicBladeForm>["$props"];
-  emit: InstanceType<typeof DynamicBladeForm>["$emit"];
-  mounted: Ref<boolean>;
-}): UseDetails<CustomerOrder, OrderScope> => {
+export const useOrder = (args: DetailsComposableArgs): UseDetails<CustomerOrder, OrderScope> => {
   const factory = useDetailsFactory<CustomerOrder>({
     load: async (item) => {
       if (item?.id) {
@@ -171,7 +168,7 @@ export const useOrder = (args: {
     }).format(typeof value === "undefined" ? 0 : value);
   };
 
-  const scope = ref<OrderScope>({
+  const scope: OrderScope = {
     disabled,
     toolbarOverrides: {
       downloadPdf: {
@@ -231,7 +228,7 @@ export const useOrder = (args: {
       const date = new Date(item.value?.createdDate ?? "");
       return moment(date).locale(currentLocale.value).format("L LT");
     }),
-  });
+  };
 
   watch(
     () => args?.mounted.value,
@@ -292,7 +289,7 @@ export const useOrder = (args: {
     loading: useLoading(loading, pdfLoading, stateMachineLoading, calculateTotalsLoading),
     item,
     validationState,
-    scope: computed(() => scope.value),
+    scope,
     bladeTitle: computed(() => item.value?.number ?? ""),
   };
 };

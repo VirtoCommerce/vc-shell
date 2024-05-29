@@ -3,7 +3,7 @@ import {
   useBladeNavigation,
   useLoading,
   UseList,
-  DynamicBladeList,
+  ListComposableArgs,
   useListFactory,
   ListBaseBladeScope,
   IBladeToolbar,
@@ -16,7 +16,7 @@ import {
   SellerProduct,
 } from "@vcmp-vendor-portal/api/marketplacevendor";
 import { Video } from "@vcmp-vendor-portal/api/catalog";
-import { computed, ref, Ref, onBeforeMount } from "vue";
+import { computed, ref, onBeforeMount } from "vue";
 
 const { getApiClient } = useApiClient(VcmpSellerCatalogClient);
 
@@ -28,13 +28,11 @@ export interface VideosListScope extends ListBaseBladeScope {
   };
 }
 
-export const useVideosList = (args: {
-  props: InstanceType<typeof DynamicBladeList>["$props"] & {
+export const useVideosList = (
+  args: ListComposableArgs<{
     options: { catalogProduct: SellerProduct; disabled?: boolean };
-  };
-  emit: InstanceType<typeof DynamicBladeList>["$emit"];
-  mounted: Ref<boolean>;
-}): UseList<Video[], ISearchVideosQuery, VideosListScope> => {
+  }>,
+): UseList<Video[], ISearchVideosQuery, VideosListScope> => {
   const listFactory = useListFactory<Video[], ISearchVideosQuery>({
     load: async (query) => {
       query.sort = "sortOrder:ASC";
@@ -68,7 +66,7 @@ export const useVideosList = (args: {
     });
   }
 
-  const scope = ref<VideosListScope>({
+  const scope: VideosListScope = {
     openDetailsBlade,
     markProductDirty,
     disabled: args.props.options.disabled,
@@ -83,7 +81,7 @@ export const useVideosList = (args: {
         isVisible: computed(() => !args.props.options.disabled),
       },
     },
-  });
+  };
 
   onBeforeMount(async () => {
     if (
@@ -108,6 +106,6 @@ export const useVideosList = (args: {
     pagination,
     load,
     remove,
-    scope: computed(() => scope.value),
+    scope,
   };
 };

@@ -7,3 +7,4 @@ import { createDynamicAppModule } from "@vc-shell/framework";
 export default createDynamicAppModule({ schema, composables, locales, moduleComponents: components });
 
 export { schema, composables, locales, components };
+export type { FulfillmentCenterScope, FulfillmentCentersScope } from "./composables";

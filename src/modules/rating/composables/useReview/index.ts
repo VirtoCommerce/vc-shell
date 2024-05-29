@@ -1,7 +1,7 @@
 import {
   useApiClient,
   useDetailsFactory,
-  DynamicBladeForm,
+  DetailsComposableArgs,
   DetailsBaseBladeScope,
   UseDetails,
   useLanguages,
@@ -24,11 +24,7 @@ export interface ReviewDetailsScope extends DetailsBaseBladeScope {
 
 const { getApiClient } = useApiClient(VcmpSellerRatingAndReviewsClient);
 
-export const useReview = (args: {
-  props: InstanceType<typeof DynamicBladeForm>["$props"];
-  emit: InstanceType<typeof DynamicBladeForm>["$emit"];
-  mounted: Ref<boolean>;
-}): UseDetails<SellerUser, ReviewDetailsScope> => {
+export const useReview = (args: DetailsComposableArgs): UseDetails<SellerUser, ReviewDetailsScope> => {
   const factory = useDetailsFactory({
     load: async (item) => {
       if (item?.id) {
@@ -47,14 +43,14 @@ export const useReview = (args: {
   const { t } = useI18n({ useScope: "global" });
   const route = useRoute();
 
-  const scope = ref<ReviewDetailsScope>({
+  const scope: ReviewDetailsScope = {
     createdDate: computed(() => {
       const date = new Date(item.value?.createdDate ?? "");
       return moment(date).locale(currentLocale.value).format("L LT");
     }),
     title: computed(() => item.value?.title ?? t("RATING.PAGES.DETAILS.FORM.TITLE.PLACEHOLDER")),
     disableReviewTextarea: true,
-  });
+  };
 
   async function GetSellerId(): Promise<string> {
     const result = route?.params?.sellerId as string;
@@ -68,7 +64,7 @@ export const useReview = (args: {
     loading,
     item,
     validationState,
-    scope: computed(() => scope.value),
+    scope,
     bladeTitle: computed(() => t("RATING.PAGES.DETAILS.TITLE") as string),
   };
 };

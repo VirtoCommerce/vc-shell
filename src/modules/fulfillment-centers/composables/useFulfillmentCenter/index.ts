@@ -1,7 +1,7 @@
 import {
   useApiClient,
   useDetailsFactory,
-  DynamicBladeForm,
+  DetailsComposableArgs,
   DetailsBaseBladeScope,
   UseDetails,
   usePopup,
@@ -28,11 +28,9 @@ export interface FulfillmentCenterScope extends DetailsBaseBladeScope {
 
 const { getApiClient } = useApiClient(VcmpSellerCatalogClient);
 
-export const useFulfillmentCenter = (args: {
-  props: InstanceType<typeof DynamicBladeForm>["$props"];
-  emit: InstanceType<typeof DynamicBladeForm>["$emit"];
-  mounted: Ref<boolean>;
-}): UseDetails<FulfillmentCenter, FulfillmentCenterScope> => {
+export const useFulfillmentCenter = (
+  args: DetailsComposableArgs,
+): UseDetails<FulfillmentCenter, FulfillmentCenterScope> => {
   const factory = useDetailsFactory<FulfillmentCenter>({
     load: async (item) => {
       if (item?.id) {
@@ -63,7 +61,7 @@ export const useFulfillmentCenter = (args: {
 
   const { t } = useI18n({ useScope: "global" });
 
-  const scope = ref<FulfillmentCenterScope>({
+  const scope = {
     toolbarOverrides: {
       saveChanges: {
         disabled: computed(() => !(!validationState.value.disabled && validationState.value.modified)),
@@ -89,7 +87,7 @@ export const useFulfillmentCenter = (args: {
         disabled: computed(() => true),
       },
     },
-  });
+  };
 
   watch(
     () => args?.mounted.value,
@@ -114,7 +112,7 @@ export const useFulfillmentCenter = (args: {
     loading,
     item,
     validationState,
-    scope: computed(() => scope.value),
+    scope,
     bladeTitle: computed(() =>
       args.props.param ? item.value?.name ?? "" : (t("FULFILLMENT_CENTERS.PAGES.DETAILS.TITLE") as string),
     ),

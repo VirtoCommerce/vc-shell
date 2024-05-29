@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   UseList,
-  DynamicBladeList,
+  ListComposableArgs,
   useListFactory,
   useBladeNavigation,
   TOpenBladeArgs,
@@ -25,12 +26,9 @@ export interface SpecialPricesListScope extends ListBaseBladeScope<OfferPriceLis
   };
 }
 
-export const useSpecialPricesList = (args: {
-  props: InstanceType<typeof DynamicBladeList>["$props"] & { options?: { priceLists: OfferPriceList[] } };
-  emit: InstanceType<typeof DynamicBladeList>["$emit"];
-  mounted: Ref<boolean>;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-}): UseList<OfferPriceList[], any, SpecialPricesListScope> => {
+export const useSpecialPricesList = (
+  args: ListComposableArgs<{ options?: { priceLists: OfferPriceList[] } }>,
+): UseList<OfferPriceList[], any, SpecialPricesListScope> => {
   const internalModel = ref<OfferPriceList[]>(_.cloneDeep(args.props.options?.priceLists) ?? []);
   const selectedItem = ref<OfferPriceList>();
   const modified = ref(false);
@@ -79,10 +77,11 @@ export const useSpecialPricesList = (args: {
     });
   }
 
-  const scope = ref<SpecialPricesListScope>({
+  const scope: SpecialPricesListScope = {
     openDetailsBlade,
     onListItemClick,
     modified,
+    internalModel,
     saveSpecialPrice: (data: { item: OfferPriceList }) => {
       const index = internalModel.value.findIndex((item) => item === selectedItem.value);
 
@@ -117,7 +116,7 @@ export const useSpecialPricesList = (args: {
         disabled: computed(() => !modified.value),
       },
     },
-  });
+  };
 
   onBeforeClose(async () => {
     if (modified.value) {
@@ -134,6 +133,6 @@ export const useSpecialPricesList = (args: {
     query,
     loading,
     pagination,
-    scope: computed(() => scope.value),
+    scope,
   };
 };

@@ -2,7 +2,7 @@ import {
   useApiClient,
   useBladeNavigation,
   UseList,
-  DynamicBladeList,
+  ListComposableArgs,
   useListFactory,
   ListBaseBladeScope,
   TOpenBladeArgs,
@@ -23,12 +23,10 @@ export interface OffersListScope extends ListBaseBladeScope {}
 
 const { getApiClient } = useApiClient(VcmpSellerCatalogClient);
 
-export const useOffersList = (args: {
+export const useOffersList = (
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  props: InstanceType<typeof DynamicBladeList>["$props"] & { options: { sellerProduct: any } };
-  emit: InstanceType<typeof DynamicBladeList>["$emit"];
-  mounted: Ref<boolean>;
-}): UseList<Offer[], ISearchOffersQuery, OffersListScope> => {
+  args: ListComposableArgs<{ options: { sellerProduct: any } }>,
+): UseList<Offer[], ISearchOffersQuery, OffersListScope> => {
   const factory = useListFactory<Offer[], ISearchOffersQuery>({
     load: async (query) => {
       const sellerId = await GetSellerId();

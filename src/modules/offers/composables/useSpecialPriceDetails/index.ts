@@ -1,7 +1,7 @@
 import { IOfferPrice, OfferPrice, OfferPriceList } from "@vcmp-vendor-portal/api/marketplacevendor";
 import {
   DetailsBaseBladeScope,
-  DynamicBladeForm,
+  DetailsComposableArgs,
   IBladeToolbar,
   UseDetails,
   useDetailsFactory,
@@ -24,11 +24,9 @@ export interface SpecialPricesDetailsScope extends DetailsBaseBladeScope {
   };
 }
 
-export const useSpecialPriceDetails = (args: {
-  props: InstanceType<typeof DynamicBladeForm>["$props"] & { options?: { item: OfferPriceList } };
-  emit: InstanceType<typeof DynamicBladeForm>["$emit"];
-  mounted: Ref<boolean>;
-}): UseDetails<OfferPriceList> => {
+export const useSpecialPriceDetails = (
+  args: DetailsComposableArgs<{ options?: { item: OfferPriceList } }>,
+): UseDetails<OfferPriceList, SpecialPricesDetailsScope> => {
   const { t } = useI18n({ useScope: "global" });
 
   const internalModel = ref<OfferPriceList | undefined>(_.cloneDeep(args.props.options?.item));
@@ -111,7 +109,7 @@ export const useSpecialPriceDetails = (args: {
     }
   }
 
-  const scope = ref<SpecialPricesDetailsScope>({
+  const scope: SpecialPricesDetailsScope = {
     memberIds: computed({
       get() {
         return item.value?.memberIds?.map((id) => ({ id })) ?? [];
@@ -140,7 +138,7 @@ export const useSpecialPriceDetails = (args: {
         isVisible: computed(() => !!args.props.options?.item && !loading.value),
       },
     },
-  });
+  };
 
   watch(
     () => item.value?.prices,
@@ -229,7 +227,7 @@ export const useSpecialPriceDetails = (args: {
     loading: useLoading(loading, pricesLoading),
     item,
     validationState,
-    scope: computed(() => scope.value),
+    scope,
     bladeTitle: computed(() => {
       return args.props.options?.item
         ? item.value?.name

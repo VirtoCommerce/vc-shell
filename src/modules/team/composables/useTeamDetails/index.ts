@@ -1,7 +1,7 @@
 import {
   useApiClient,
   useDetailsFactory,
-  DynamicBladeForm,
+  DetailsComposableArgs,
   DetailsBaseBladeScope,
   UseDetails,
   usePopup,
@@ -39,11 +39,7 @@ export interface TeamDetailsScope extends DetailsBaseBladeScope {
 
 const { getApiClient } = useApiClient(VcmpSellerSecurityClient);
 
-export const useTeamDetails = (args: {
-  props: InstanceType<typeof DynamicBladeForm>["$props"];
-  emit: InstanceType<typeof DynamicBladeForm>["$emit"];
-  mounted: Ref<boolean>;
-}): UseDetails<SellerUser, TeamDetailsScope> => {
+export const useTeamDetails = (args: DetailsComposableArgs): UseDetails<SellerUser, TeamDetailsScope> => {
   const factory = useDetailsFactory<SellerUser>({
     load: async (item) => {
       if (item?.id) {
@@ -112,7 +108,7 @@ export const useTeamDetails = (args: {
     },
   });
 
-  const scope = ref<TeamDetailsScope>({
+  const scope: TeamDetailsScope = {
     sendInviteStatus,
     isActive,
     isOwnerReadonly,
@@ -195,7 +191,7 @@ export const useTeamDetails = (args: {
         disabled: computed(() => isOwnerReadonly.value || !!item.value?.email),
       },
     },
-  });
+  };
 
   function showEmailExistsError() {
     showError(
@@ -246,7 +242,7 @@ export const useTeamDetails = (args: {
     loading: useLoading(loading, resendInviteLoading, validateTeamMemberLoading),
     item,
     validationState,
-    scope: computed(() => scope.value),
+    scope,
     bladeTitle: computed(() =>
       args.props.param && item.value?.firstName && item.value.lastName
         ? item.value.firstName + " " + item.value.lastName

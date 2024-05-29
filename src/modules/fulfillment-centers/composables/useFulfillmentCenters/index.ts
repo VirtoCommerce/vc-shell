@@ -2,7 +2,7 @@ import {
   useApiClient,
   useBladeNavigation,
   useListFactory,
-  DynamicBladeList,
+  ListComposableArgs,
   ListBaseBladeScope,
   TOpenBladeArgs,
 } from "@vc-shell/framework";
@@ -15,12 +15,11 @@ import {
 import { computed, ref } from "vue";
 import { useRoute } from "vue-router";
 
+export interface FulfillmentCentersScope extends ListBaseBladeScope<FulfillmentCenter> {}
+
 const { getApiClient } = useApiClient(VcmpSellerCatalogClient);
 
-export const useFulfillmentCenters = (args?: {
-  props: InstanceType<typeof DynamicBladeList>["$props"];
-  emit: InstanceType<typeof DynamicBladeList>["$emit"];
-}) => {
+export const useFulfillmentCenters = (args?: ListComposableArgs) => {
   const factory = useListFactory<FulfillmentCenter[], ISearchFulfillmentCentersQuery>({
     load: async (query) => {
       const sellerId = await GetSellerId();

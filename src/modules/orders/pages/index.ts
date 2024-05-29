@@ -1,4 +1,4 @@
-import { grid as teamList } from "./grid";
-import { details as teamDetails } from "./details";
+import { grid as ordersList } from "./grid";
+import { details as ordersDetails } from "./details";
 
-export { teamList, teamDetails };
+export { ordersList, ordersDetails };

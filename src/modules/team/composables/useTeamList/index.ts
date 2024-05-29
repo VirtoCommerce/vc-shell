@@ -2,7 +2,7 @@ import {
   useApiClient,
   useBladeNavigation,
   useListFactory,
-  DynamicBladeList,
+  ListComposableArgs,
   ListBaseBladeScope,
   TOpenBladeArgs,
 } from "@vc-shell/framework";
@@ -17,10 +17,7 @@ import { useRoute } from "vue-router";
 
 const { getApiClient } = useApiClient(VcmpSellerSecurityClient);
 
-export const useTeamList = (args: {
-  props: InstanceType<typeof DynamicBladeList>["$props"];
-  emit: InstanceType<typeof DynamicBladeList>["$emit"];
-}) => {
+export const useTeamList = (args: ListComposableArgs) => {
   const factory = useListFactory<SellerUser[], ISearchSellerUsersQuery>({
     load: async (query) => {
       const sellerId = await GetSellerId();

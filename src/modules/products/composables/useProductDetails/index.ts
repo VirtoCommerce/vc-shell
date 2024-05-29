@@ -23,7 +23,7 @@ import {
   IBladeToolbar,
   useApiClient,
   useLoading,
-  DynamicBladeForm,
+  DetailsComposableArgs,
   UseDetails,
   useDetailsFactory,
   DetailsBaseBladeScope,
@@ -60,11 +60,9 @@ export interface ProductDetailsScope extends DetailsBaseBladeScope {
 
 const { getApiClient } = useApiClient(VcmpSellerCatalogClient);
 
-export const useProductDetails = (args: {
-  props: InstanceType<typeof DynamicBladeForm>["$props"];
-  emit: InstanceType<typeof DynamicBladeForm>["$emit"];
-  mounted: Ref<boolean>;
-}): UseDetails<ISellerProduct & IProductDetails, ProductDetailsScope> => {
+export const useProductDetails = (
+  args: DetailsComposableArgs,
+): UseDetails<ISellerProduct & IProductDetails, ProductDetailsScope> => {
   const detailsFactory = useDetailsFactory<ISellerProduct & IProductDetails>({
     load: async (item) => {
       if (item?.id) {
@@ -283,7 +281,7 @@ export const useProductDetails = (args: {
     );
   }, 1000);
 
-  const scope = ref<ProductDetailsScope>({
+  const scope: ProductDetailsScope = {
     disabled,
     fetchCategories,
     productTypeOptions,
@@ -425,7 +423,7 @@ export const useProductDetails = (args: {
         }
       },
     }),
-  });
+  };
 
   watch(
     () => args?.mounted.value,
@@ -478,7 +476,7 @@ export const useProductDetails = (args: {
     load: loadWrapper,
     saveChanges: saveChangesWrapper,
     remove,
-    scope: computed(() => scope.value),
+    scope,
     item,
     validationState,
     loading: useLoading(loading, revertLoading, languagesLoading, rolesLoading, saveChangesLoading),

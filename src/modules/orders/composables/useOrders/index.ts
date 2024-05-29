@@ -3,7 +3,7 @@ import {
   useApiClient,
   useBladeNavigation,
   useListFactory,
-  DynamicBladeList,
+  ListComposableArgs,
   ListBaseBladeScope,
   useUser,
   UseList,
@@ -26,12 +26,11 @@ enum PaymentStatus {
   Cancelled = "Cancelled",
 }
 
+export interface OrdersListScope extends ListBaseBladeScope<CustomerOrder> {}
+
 const { getApiClient } = useApiClient(VcmpSellerOrdersClient);
 
-export const useOrders = (args?: {
-  props: InstanceType<typeof DynamicBladeList>["$props"];
-  emit: InstanceType<typeof DynamicBladeList>["$emit"];
-}): UseList<CustomerOrder[], ISearchOrdersQuery> => {
+export const useOrders = (args?: ListComposableArgs): UseList<CustomerOrder[], ISearchOrdersQuery, OrdersListScope> => {
   const { user } = useUser();
   const { t } = useI18n({ useScope: "global" });
 
@@ -59,7 +58,7 @@ export const useOrders = (args?: {
     });
   }
 
-  const scope = ref<ListBaseBladeScope>({
+  const scope = ref<OrdersListScope>({
     openDetailsBlade,
     statuses: computed(() => {
       const statusKey = Object.entries(PaymentStatus);

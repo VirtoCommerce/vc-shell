@@ -1,1 +1,1 @@
-export { useProductsListExtended } from "./useProductsList";
+export { useProductsListExtended, type ProductsListExtendedScope } from "./useProductsList";

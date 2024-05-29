@@ -1,13 +1,15 @@
-import { Ref, WritableComputedRef, computed, ref, watch } from "vue";
+import { ComputedRef, Ref, WritableComputedRef, computed, ref, toRefs, watch } from "vue";
 import {
   useDetailsFactory,
   UseDetails,
   useApiClient,
-  DynamicBladeForm,
+  DetailsComposableArgs,
   useUser,
   DetailsBaseBladeScope,
   useAssets,
   i18n,
+  IBladeToolbar,
+  ICommonAsset,
 } from "@vc-shell/framework";
 import {
   CustomerAddress,
@@ -24,6 +26,32 @@ import { useRoute } from "vue-router";
 
 interface SellerDetailsScope extends DetailsBaseBladeScope {
   logoHandler: WritableComputedRef<{ url: string; name: string; title: string }[]>;
+  onCountryChange: (e: string) => Promise<void>;
+  countriesList: Ref<
+    {
+      id: string;
+      name: string;
+    }[]
+  >;
+  setRegion: (regionId: string) => void;
+  regionsList: Ref<
+    {
+      id: string;
+      name: string;
+    }[]
+  >;
+  computedFee: ComputedRef<string>;
+  assetsHandler: {
+    images: {
+      loading: ComputedRef<boolean>;
+      upload(files: FileList): Promise<Image[]>;
+      remove: (files: IImage[]) => ICommonAsset[];
+    };
+  };
+  toolbarOverrides: {
+    reset: IBladeToolbar;
+    saveChanges: IBladeToolbar;
+  };
 }
 
 interface ILocation {
@@ -33,11 +61,7 @@ interface ILocation {
 
 const { getApiClient } = useApiClient(VcmpSellerSecurityClient);
 
-export const useSellerDetails = (args?: {
-  props: InstanceType<typeof DynamicBladeForm>["$props"];
-  emit: InstanceType<typeof DynamicBladeForm>["$emit"];
-  mounted: Ref<boolean>;
-}): UseDetails<ISeller> => {
+export const useSellerDetails = (args?: DetailsComposableArgs): UseDetails<ISeller, SellerDetailsScope> => {
   const { t } = i18n.global;
 
   const detailsFactory = useDetailsFactory<ISeller>({
@@ -164,7 +188,7 @@ export const useSellerDetails = (args?: {
     item.value = _.cloneDeep(validationState.value.cachedValue) as SellerDetails;
   }
 
-  const scope = ref<SellerDetailsScope>({
+  const scope = {
     logoHandler,
     onCountryChange,
     countriesList,
@@ -193,7 +217,7 @@ export const useSellerDetails = (args?: {
         disabled: computed(() => !validationState.value.valid || !validationState.value.modified),
       },
     },
-  });
+  };
 
   watch(
     () => item.value?.addresses?.[0],
@@ -229,7 +253,7 @@ export const useSellerDetails = (args?: {
     remove,
     loading,
     validationState,
-    scope: computed(() => scope.value),
+    scope,
     bladeTitle: computed(() => t("SELLER_DETAILS.TITLE")),
   };
 };

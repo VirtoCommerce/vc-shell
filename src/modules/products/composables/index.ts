@@ -1,2 +1,2 @@
-export { useProductDetails } from "./useProductDetails";
-export { useProductsList } from "./useProductsList";
+export { useProductDetails, type ProductDetailsScope } from "./useProductDetails";
+export { useProductsList, type ProductListScope } from "./useProductsList";

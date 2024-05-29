@@ -10,7 +10,7 @@
     :class="{
       'tw-flex tw-flex-auto': isWidgetView,
     }"
-    :modified="unref(scope)?.modified"
+    :modified="unreffedScope?.modified"
     @close="$emit('close:blade')"
     @expand="$emit('expand:blade')"
     @collapse="$emit('collapse:blade')"
@@ -34,7 +34,7 @@
           'tw-p-4',
         ]"
       >
-        <VcBreadcrumbs :items="scope?.breadcrumbs" />
+        <VcBreadcrumbs :items="toValue(scope?.breadcrumbs)" />
       </div>
       <VcTable
         class="tw-grow tw-basis-0"
@@ -163,7 +163,6 @@ import {
   toRefs,
   provide,
   isRef,
-  onMounted,
 } from "vue";
 import { useI18n } from "vue-i18n";
 import { DynamicGridSchema, ListContentSchema, SettingsSchema } from "../types";
@@ -175,7 +174,7 @@ import { notification, useBladeNavigation, usePopup } from "../../../components"
 import { ListBaseBladeScope, ListBladeContext, UseList } from "../factories/types";
 import { IParentCallArgs } from "../../../index";
 import * as _ from "lodash-es";
-import { toReactive, useMounted } from "@vueuse/core";
+import { reactiveComputed, toReactive, useMounted } from "@vueuse/core";
 import { safeIn } from "../helpers/safeIn";
 
 export interface Props {
@@ -289,6 +288,8 @@ if (props.isWidgetView) {
   query.value.take = 5;
 }
 
+const unreffedScope = reactiveComputed(() => toValue(scope) ?? {});
+
 const { tableTemplates } = useTableTemplates(tableData);
 
 const calculateColumns = (columns: ListContentSchema["columns"]) => {
@@ -356,11 +357,11 @@ const toolbarComputed =
           async clickHandler() {
             if (
               scope &&
-              "openDetailsBlade" in toValue(scope) &&
-              toValue(scope).openDetailsBlade &&
-              typeof toValue(scope).openDetailsBlade === "function"
+              "openDetailsBlade" in toValue(unreffedScope) &&
+              toValue(unreffedScope).openDetailsBlade &&
+              typeof toValue(unreffedScope).openDetailsBlade === "function"
             ) {
-              toValue(scope).openDetailsBlade?.();
+              toValue(unreffedScope).openDetailsBlade?.();
             } else throw new Error("openDetailsBlade method is not defined in scope");
           },
         },
@@ -377,9 +378,8 @@ const toolbarComputed =
           // isVisible: computed(() => isDesktop.value),
         },
       },
-      customToolbarConfig: toValue(scope)?.toolbarOverrides,
+      customToolbarConfig: toValue(unreffedScope)?.toolbarOverrides,
       context: bladeContext.value,
-      scope,
     })) ??
   [];
 
@@ -408,11 +408,11 @@ const openDetailsBlade = async () => {
   if (!props.isWidgetView) {
     if (
       scope &&
-      "openDetailsBlade" in toValue(scope) &&
-      toValue(scope).openDetailsBlade &&
-      typeof toValue(scope).openDetailsBlade === "function"
+      "openDetailsBlade" in toValue(unreffedScope) &&
+      toValue(unreffedScope).openDetailsBlade &&
+      typeof toValue(unreffedScope).openDetailsBlade === "function"
     ) {
-      await toValue(scope).openDetailsBlade?.();
+      await toValue(unreffedScope).openDetailsBlade?.();
     }
   } else {
     emit("add");
@@ -422,8 +422,12 @@ const openDetailsBlade = async () => {
 const onItemClick = (item: { [x: string]: any; id?: string }) => {
   if (!props.isWidgetView) {
     // TODO Add to docs
-    if (scope && safeIn("onListItemClick", toValue(scope)) && typeof toValue(scope).onListItemClick === "function") {
-      toValue(scope).onListItemClick?.({
+    if (
+      scope &&
+      safeIn("onListItemClick", toValue(unreffedScope)) &&
+      typeof toValue(unreffedScope).onListItemClick === "function"
+    ) {
+      toValue(unreffedScope).onListItemClick?.({
         item,
         onOpen() {
           selectedItemId.value = item.id;
@@ -434,10 +438,10 @@ const onItemClick = (item: { [x: string]: any; id?: string }) => {
       });
     } else if (
       scope &&
-      safeIn("openDetailsBlade", toValue(scope)) &&
-      typeof toValue(scope).openDetailsBlade === "function"
+      safeIn("openDetailsBlade", toValue(unreffedScope)) &&
+      typeof toValue(unreffedScope).openDetailsBlade === "function"
     ) {
-      toValue(scope).openDetailsBlade?.({
+      toValue(unreffedScope).openDetailsBlade?.({
         param: item.id,
         onOpen() {
           selectedItemId.value = item.id;
@@ -511,10 +515,10 @@ const onPaginationClick = async (page: number) => {
   if (query.value.take) {
     if (
       scope &&
-      safeIn("onPaginationClick", toValue(scope)) &&
-      typeof toValue(scope).onPaginationClick === "function"
+      safeIn("onPaginationClick", toValue(unreffedScope)) &&
+      typeof toValue(unreffedScope).onPaginationClick === "function"
     ) {
-      toValue(scope).onPaginationClick?.({
+      toValue(unreffedScope).onPaginationClick?.({
         ...query.value,
         skip: (page - 1) * query.value.take,
       });
@@ -600,9 +604,10 @@ async function handleSelectAllItems(all: boolean) {
 function disabledActionHandler(disabled: { method?: string } | boolean, item: (typeof items.value)[number]): boolean {
   if (!disabled) return false;
   if (typeof disabled === "boolean") return disabled;
-  else if (disabled.method && typeof toValue(scope)?.[disabled.method] === "function")
-    return toValue(scope)?.[disabled.method]({ item });
-  else if (disabled.method && toValue(scope)?.[disabled.method]) return toValue(scope)?.[disabled.method];
+  else if (disabled.method && typeof toValue(unreffedScope)?.[disabled.method] === "function")
+    return toValue(unreffedScope)?.[disabled.method]({ item });
+  else if (disabled.method && toValue(unreffedScope)?.[disabled.method])
+    return toValue(unreffedScope)?.[disabled.method];
   return false;
 }
 
@@ -627,7 +632,7 @@ function actionBuilder(item: (typeof items.value)[number]): IActionBuilderResult
               if (toolbarItem) {
                 await toolbarItem.clickHandler?.();
               } else {
-                await toValue(scope)?.[action.method]?.(itemVal);
+                await toValue(unreffedScope)?.[action.method]?.(itemVal);
               }
               selectedIds.value = [];
             }
@@ -649,7 +654,7 @@ defineExpose({
   reload,
   title,
   updateActiveWidgetCount,
-  ...toRefs(scope?.value ?? {}),
+  ...toRefs(toValue(unreffedScope) ?? {}),
   selectedIds,
   settings: toValue(settings),
 });

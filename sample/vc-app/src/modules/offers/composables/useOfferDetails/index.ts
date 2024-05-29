@@ -4,7 +4,7 @@ import {
   useLoading,
   useUser,
   UseDetails,
-  DynamicBladeForm,
+  DetailsComposableArgs,
   useDetailsFactory,
   DetailsBaseBladeScope,
   useAssets,
@@ -46,11 +46,9 @@ export interface OfferDetailsScope extends DetailsBaseBladeScope {
 
 const { getApiClient } = useApiClient(VcmpSellerCatalogClient);
 
-export const useOfferDetails = (args: {
-  props: InstanceType<typeof DynamicBladeForm>["$props"] & { options: { sellerProduct: SellerProduct } };
-  emit: InstanceType<typeof DynamicBladeForm>["$emit"];
-  mounted: Ref<boolean>;
-}): UseDetails<IOffer, OfferDetailsScope> => {
+export const useOfferDetails = (
+  args: DetailsComposableArgs<{ options: { sellerProduct: SellerProduct } }>,
+): UseDetails<IOffer, OfferDetailsScope> => {
   const { user } = useUser();
   const { t } = useI18n({ useScope: "global" });
   const offerLoading = ref(false);

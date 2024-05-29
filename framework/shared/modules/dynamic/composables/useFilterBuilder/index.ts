@@ -64,7 +64,7 @@ export default <Query>(args: {
   data: FilterBase | undefined;
   query: MaybeRef<Query>;
   load: AsyncAction<Query>;
-  scope: ComputedRef<Record<string, any>> | undefined;
+  scope: Record<string, any> | undefined;
 }): UseFilterBuilder => {
   const _search = args.load;
   const _data = args.data;

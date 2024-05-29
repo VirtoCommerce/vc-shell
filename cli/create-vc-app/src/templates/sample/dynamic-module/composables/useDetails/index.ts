@@ -1,5 +1,5 @@
 import { computed, ref, Ref } from "vue";
-import { DetailsBaseBladeScope, DynamicBladeForm, UseDetails, useDetailsFactory } from "@vc-shell/framework";
+import { DetailsBaseBladeScope, DetailsComposableArgs, UseDetails, useDetailsFactory } from "@vc-shell/framework";
 import { addNewMockItem, loadMockItem, removeMockItem, updateMockItem } from "../../sample-data/methods";
 import { currencyOptions, MockedItem } from "../../sample-data";
 import { useI18n } from "vue-i18n";
@@ -8,11 +8,7 @@ export interface DynamicItemScope extends DetailsBaseBladeScope {
   currencyOptions: typeof currencyOptions;
 }
 
-export default (args: {
-  props: InstanceType<typeof DynamicBladeForm>["$props"];
-  emit: InstanceType<typeof DynamicBladeForm>["$emit"];
-  mounted: Ref<boolean>;
-}): UseDetails<MockedItem, DynamicItemScope> => {
+export default (args: DetailsComposableArgs): UseDetails<MockedItem, DynamicItemScope> => {
   const factory = useDetailsFactory<MockedItem>({
     load: loadMockItem,
     saveChanges: (details) => {

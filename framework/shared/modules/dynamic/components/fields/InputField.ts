@@ -1,11 +1,10 @@
-import { ExtractPropTypes, h, VNode, Component, computed, toValue } from "vue";
+import { ExtractPropTypes, h, VNode, Component } from "vue";
 import { InputField } from "../factories";
 import componentProps from "./props";
 import ValidationField from "./ValidationField";
 import { InputSchema, ControlSchema } from "../../types";
 import { nodeBuilder } from "../../helpers/nodeBuilder";
 import { unrefNested } from "../../helpers/unrefNested";
-import { useI18n } from "vue-i18n";
 
 const slotsMap = {
   append: "append",
@@ -18,14 +17,11 @@ export default {
   name: "InputField",
   props: componentProps,
   setup(props: ExtractPropTypes<typeof componentProps> & { element: InputSchema }) {
-    const { t } = useI18n({ useScope: "global" });
-
     return () => {
       const field = InputField({
         props: Object.assign(
           {},
           {
-            hint: props.element.hint ? toValue(computed(() => t(props.element.hint ?? ""))) : undefined,
             type: props.element.variant,
             currentLanguage: props.currentLocale,
             clearable: props.element.clearable || false,

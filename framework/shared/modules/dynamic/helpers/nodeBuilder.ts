@@ -74,6 +74,13 @@ function nodeBuilder<
       ? unref(unwrapInterpolation(controlSchema.label, internalContext))
       : undefined;
 
+  const hint =
+    safeIn("hint", controlSchema) && controlSchema.hint
+      ? unref(unwrapInterpolation(controlSchema.hint, internalContext)) ??
+        (bladeContext.scope && unref(unwrapInterpolation(controlSchema.hint, bladeContext.scope))) ??
+        undefined
+      : undefined;
+
   const disabled =
     (bladeContext.scope && safeIn("disabled", bladeContext.scope) && bladeContext.scope.disabled) ||
     (safeIn("disabled", controlSchema) &&
@@ -109,6 +116,7 @@ function nodeBuilder<
   const baseProps: IControlBaseProps = reactive({
     key: `${parentId}`,
     label: computed(() => (label ? t(label) : undefined)),
+    hint: computed(() => (hint ? t(hint) : undefined)),
     disabled,
     name,
     rules,

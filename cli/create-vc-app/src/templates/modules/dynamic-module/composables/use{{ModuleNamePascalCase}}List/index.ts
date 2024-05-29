@@ -1,6 +1,6 @@
 import { computed, ref, Ref } from "vue";
 import {
-  DynamicBladeList,
+  ListComposableArgs,
   ListBaseBladeScope,
   useBladeNavigation,
   useListFactory,
@@ -10,11 +10,7 @@ import {
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface DynamicItemsScope extends ListBaseBladeScope {}
 
-export default (args: {
-  props: InstanceType<typeof DynamicBladeList>["$props"];
-  emit: InstanceType<typeof DynamicBladeList>["$emit"];
-  mounted: Ref<boolean>;
-}) => {
+export default (args: ListComposableArgs) => {
   const factory = useListFactory({
     load: async () => {
       return {

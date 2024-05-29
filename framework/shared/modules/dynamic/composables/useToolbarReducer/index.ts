@@ -12,7 +12,6 @@ export const useToolbarReducer = (args: {
   defaultToolbarBindings: BaseBladeScope["toolbarOverrides"];
   customToolbarConfig: BaseBladeScope["toolbarOverrides"];
   context: UnwrapNestedRefs<DetailsBladeContext> | UnwrapNestedRefs<ListBladeContext>;
-  scope: ComputedRef<BaseBladeScope> | undefined;
 }): UnwrapNestedRefs<ComputedRef<(IBladeToolbar & ToolbarSchema)[] | IBladeToolbar[] | undefined>> | undefined => {
   if (!args) return;
 
@@ -65,19 +64,6 @@ export const useToolbarReducer = (args: {
         return acc;
       }, [] as IBladeToolbar[]);
     }
-
-    // TODO remove redundant code if not needed
-    // if (args.scope && toValue(toValue(args.scope)?.toolbarOverrides)) {
-    //   const toolbarOverrides: BaseBladeScope["toolbarOverrides"] = toValue(toValue(args.scope)?.toolbarOverrides);
-
-    //   if (Array.isArray(toolbarOverrides)) {
-    //     return toolbarOverrides;
-    //   } else if (typeof toolbarOverrides === "function") {
-    //     return toolbarOverrides(args.context);
-    //   } else if (typeof toolbarOverrides === "object") {
-    //     return Object.values(toolbarOverrides);
-    //   }
-    // }
 
     return [];
   });

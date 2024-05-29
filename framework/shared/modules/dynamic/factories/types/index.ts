@@ -6,6 +6,7 @@ import { AssetsHandler, IBladeToolbar, ICommonAsset } from "../../../../../core/
 import { useBladeNavigation } from "../../../../components";
 import { FormContext } from "vee-validate";
 import { Breadcrumbs } from "../../../../../ui/types";
+import { DynamicBladeForm, DynamicBladeList } from "../../pages";
 
 export type ItemId = { id: string };
 
@@ -44,7 +45,7 @@ export interface UseDetails<Item, Scope extends DetailsBaseBladeScope = DetailsB
   loading: ComputedRef<boolean>;
   item: Ref<Item | undefined>;
   validationState: ComputedRef<IValidationState<Item>>;
-  scope?: ComputedRef<UnwrapNestedRefs<Scope>>;
+  scope?: Scope;
   bladeTitle?: ComputedRef<string>;
 }
 
@@ -64,7 +65,7 @@ export interface UseList<
   }>;
   load: AsyncAction<Query>;
   remove?: AsyncAction<CustomQuery>;
-  scope?: ComputedRef<UnwrapNestedRefs<Scope>>;
+  scope?: Scope;
 }
 
 export interface BaseBladeScope {
@@ -150,3 +151,19 @@ export type ListBladeExposed<Scope extends ListBaseBladeScope> = BaseBladeExpose
 export type DetailsBladeExposed<Scope extends DetailsBaseBladeScope> = BaseBladeExposed & {
   readonly settings: SettingsDetails;
 } & UnwrapNestedRefs<Scope>;
+
+export type DetailsComposableArgs<
+  Props extends Omit<InstanceType<typeof DynamicBladeForm>["$props"], "composables"> = Record<string, any>,
+> = {
+  props: InstanceType<typeof DynamicBladeForm>["$props"] & Props;
+  emit: InstanceType<typeof DynamicBladeForm>["$emit"];
+  mounted: Ref<boolean>;
+};
+
+export type ListComposableArgs<
+  Props extends Omit<InstanceType<typeof DynamicBladeList>["$props"], "composables"> = Record<string, any>,
+> = {
+  readonly props: InstanceType<typeof DynamicBladeList>["$props"] & Props;
+  readonly emit: InstanceType<typeof DynamicBladeList>["$emit"];
+  readonly mounted: Ref<boolean>;
+};

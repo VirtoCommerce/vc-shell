@@ -37,7 +37,7 @@
               v-model="item"
               :ui-schema="form.children"
               :context="bladeContext"
-              :current-locale="scope?.multilanguage?.currentLocale"
+              :current-locale="toValue(unreffedScope)?.multilanguage?.currentLocale"
             ></SchemaRender>
           </VcForm>
         </div>
@@ -158,6 +158,7 @@ const isReady = ref(false);
 const activeWidgetExposed = ref<CoreBladeExposed>();
 const isBladeEditable = computed(() => !toValue("disabled" in toValue(scope || {}) && toValue(scope || {}).disabled));
 const settings = computed(() => props.model?.settings);
+const unreffedScope = reactiveComputed(() => toValue(scope) ?? {});
 
 const { moduleNotifications, markAsRead } = useNotifications(settings.value?.pushNotificationType);
 
@@ -220,24 +221,29 @@ const bladeStatus = computed(() => {
 });
 
 const bladeMultilanguage = reactiveComputed(() => {
-  if (scope && toValue(scope) && "multilanguage" in toValue(scope) && toValue(scope).multilanguage) {
+  if (
+    scope &&
+    toValue(unreffedScope) &&
+    "multilanguage" in toValue(unreffedScope) &&
+    toValue(unreffedScope).multilanguage
+  ) {
     return {
       component: () => {
         return h(VcSelect as Component, {
           name: "currentLocale",
-          modelValue: toValue(scope).multilanguage?.currentLocale,
-          options: toValue(scope).multilanguage?.localesOptions,
+          modelValue: toValue(unreffedScope).multilanguage?.currentLocale,
+          options: toValue(unreffedScope).multilanguage?.localesOptions,
           optionValue: "value",
           optionLabel: "label",
-          disabled: "disabled" in toValue(scope) && toValue(scope).disabled,
+          disabled: "disabled" in toValue(unreffedScope) && toValue(unreffedScope).disabled,
           required: true,
           clearable: false,
           "onUpdate:modelValue": (e: string) => {
-            toValue(scope).multilanguage?.setLocale(e);
+            toValue(unreffedScope).multilanguage?.setLocale(e);
           },
         });
       },
-      currentLocale: toValue(scope).multilanguage?.currentLocale,
+      currentLocale: toValue(unreffedScope).multilanguage?.currentLocale,
     };
   }
 
@@ -304,12 +310,11 @@ const toolbarComputed =
               emit("close:blade");
             }
           },
-          disabled: computed(() => toValue(scope)?.disabled),
+          disabled: computed(() => toValue(toValue(unreffedScope)?.disabled)),
         },
       },
-      customToolbarConfig: toValue(scope)?.toolbarOverrides,
+      customToolbarConfig: toValue(unreffedScope)?.toolbarOverrides,
       context: bladeContext.value,
-      scope,
     })) ??
   [];
 
@@ -363,7 +368,7 @@ provide("isBladeEditable", isBladeEditable);
 defineExpose({
   title: bladeTitle ?? "",
   updateActiveWidgetCount,
-  ...toRefs(scope?.value ?? {}),
+  ...toRefs(toValue(unreffedScope) ?? {}),
   settings: toValue(settings),
 });
 </script>

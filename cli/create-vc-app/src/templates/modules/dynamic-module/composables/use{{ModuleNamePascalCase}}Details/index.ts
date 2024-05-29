@@ -1,5 +1,5 @@
 import { computed, ref, Ref } from "vue";
-import { DetailsBaseBladeScope, DynamicBladeForm, IBladeToolbar, useDetailsFactory } from "@vc-shell/framework";
+import { DetailsBaseBladeScope, IBladeToolbar, useDetailsFactory, DetailsComposableArgs } from "@vc-shell/framework";
 
 export interface DynamicItemScope extends DetailsBaseBladeScope {
   toolbarOverrides: {
@@ -7,11 +7,7 @@ export interface DynamicItemScope extends DetailsBaseBladeScope {
   };
 }
 
-export default (args: {
-  props: InstanceType<typeof DynamicBladeForm>["$props"];
-  emit: InstanceType<typeof DynamicBladeForm>["$emit"];
-  mounted: Ref<boolean>;
-}) => {
+export default (args: DetailsComposableArgs) => {
   const factory = useDetailsFactory({
     load: async () => {
       return {};

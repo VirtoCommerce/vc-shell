@@ -1,6 +1,6 @@
 import { computed, ref, Ref } from "vue";
 import {
-  DynamicBladeList,
+  ListComposableArgs,
   ListBaseBladeScope,
   useBladeNavigation,
   useListFactory,
@@ -13,11 +13,7 @@ import { MockedItem, MockedQuery } from "../../sample-data";
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface DynamicItemsScope extends ListBaseBladeScope {}
 
-export default (args: {
-  props: InstanceType<typeof DynamicBladeList>["$props"];
-  emit: InstanceType<typeof DynamicBladeList>["$emit"];
-  mounted: Ref<boolean>;
-}): UseList<MockedItem[], MockedQuery, DynamicItemsScope> => {
+export default (args: ListComposableArgs): UseList<MockedItem[], MockedQuery, DynamicItemsScope> => {
   const factory = useListFactory<MockedItem[], MockedQuery>({
     load: loadMockItemsList,
     remove: async (query, customQuery) => {

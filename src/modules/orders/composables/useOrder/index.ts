@@ -85,8 +85,10 @@ export const useOrder = (args: DetailsComposableArgs): UseDetails<CustomerOrder,
         if (!isCalculated.value) {
           await calculateTotals();
         }
+        const sellerId = await GetSellerId();
         return (await getApiClient()).updateOrder(
           new UpdateSellerOrderCommand({
+            sellerId: sellerId,
             order: new SellerOrder({
               id: details.id,
               customerOrder: details,

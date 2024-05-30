@@ -11,7 +11,12 @@ import {
   useLanguages,
   usePermissions,
 } from "@vc-shell/framework";
-import { StateMachineInstance, VcmpSellerOrdersClient } from "@vcmp-vendor-portal/api/marketplacevendor";
+import {
+  StateMachineInstance,
+  VcmpSellerOrdersClient,
+  UpdateSellerOrderCommand,
+  SellerOrder,
+} from "@vcmp-vendor-portal/api/marketplacevendor";
 import { ComputedRef, Ref, computed, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { CustomerOrder, OrderAddressAddressType, OrderModuleClient } from "@vcmp-vendor-portal/api/orders";
@@ -78,8 +83,16 @@ export const useOrder = (args: DetailsComposableArgs): UseDetails<CustomerOrder,
       if (details?.id) {
         disabled.value = true;
         if (!isCalculated.value) {
-          return await calculateTotals();
+          await calculateTotals();
         }
+        return (await getApiClient()).updateOrder(
+          new UpdateSellerOrderCommand({
+            order: new SellerOrder({
+              id: details.id,
+              customerOrder: details,
+            }),
+          }),
+        );
       }
     },
   });

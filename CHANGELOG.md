@@ -1,3 +1,12 @@
+## [1.0.226](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.225...v1.0.226) (2024-05-30)
+
+
+### Features
+
+* vm-1352 seller id in seller details ([715af50](https://github.com/VirtoCommerce/vendor-portal/commit/715af504dd68b662374814771e0155bbb705f75b))
+
+
+
 ## [1.0.225](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.224...v1.0.225) (2024-05-29)
 
 

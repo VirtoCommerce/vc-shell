@@ -74,7 +74,7 @@ export const useSellerDetails = (args?: DetailsComposableArgs): UseDetails<ISell
       const sellerId = await GetSellerId();
       return (await getApiClient()).updateSeller(
         new UpdateSellerCommand({
-          sellerId: sellerId ?? seller.id!,
+          sellerId: sellerId && sellerId != "" ? sellerId : seller.id!,
           sellerDetails: new SellerDetails({
             ...(seller as ISellerDetails),
             addresses: seller.addresses!.map((address) => new CustomerAddress(address)),

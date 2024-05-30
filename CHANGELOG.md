@@ -1,3 +1,13 @@
+## [1.0.227](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.226...v1.0.227) (2024-05-30)
+
+
+### Features
+
+* vm-1350 update seller order ([4377992](https://github.com/VirtoCommerce/vendor-portal/commit/43779928de88dca641cd31930abd4db4c505e24f))
+* vm-1350 update seller order for operator ([bfd154b](https://github.com/VirtoCommerce/vendor-portal/commit/bfd154ba0eec323c6a1bc9e97d218ebe2d584de7))
+
+
+
 ## [1.0.226](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.225...v1.0.226) (2024-05-30)
 
 

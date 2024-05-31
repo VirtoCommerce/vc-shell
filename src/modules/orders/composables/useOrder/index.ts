@@ -17,7 +17,7 @@ import {
   UpdateSellerOrderCommand,
   SellerOrder,
 } from "@vcmp-vendor-portal/api/marketplacevendor";
-import { ComputedRef, Ref, computed, ref, watch } from "vue";
+import { ComputedRef, Ref, computed, ref, watch, unref } from "vue";
 import { useI18n } from "vue-i18n";
 import { CustomerOrder, OrderAddressAddressType, OrderModuleClient } from "@vcmp-vendor-portal/api/orders";
 import { useStateMachines } from "../../../state-machines/composables";
@@ -195,6 +195,22 @@ export const useOrder = (args: DetailsComposableArgs): UseDetails<CustomerOrder,
         disabled: computed(() => stateMachineLoading.value || !args.props.param),
       },
       saveChanges: {
+        async clickHandler() {
+          if (item.value) {
+            const res = await saveChanges(item.value);
+
+            args.emit("parent:call", {
+              method: "reload",
+            });
+
+            args.emit("parent:call", {
+              method: "openDetailsBlade",
+              args: {
+                param: (res && res.id) ?? undefined,
+              },
+            });
+          }
+        },
         isVisible: computed(() => !disabled.value),
         disabled: computed(
           () => !(isCalculated.value && validationState.value.valid && validationState.value.modified),

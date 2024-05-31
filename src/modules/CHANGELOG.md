@@ -1,3 +1,12 @@
+## [1.0.228](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.227...v1.0.228) (2024-05-31)
+
+
+### Features
+
+* vm-1350 update order - refresh blades after save ([65f00dd](https://github.com/VirtoCommerce/vendor-portal/commit/65f00ddaeaaa05d8fc5ee7a71441d61ca4456cd3))
+
+
+
 ## [1.0.227](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.226...v1.0.227) (2024-05-30)
 
 

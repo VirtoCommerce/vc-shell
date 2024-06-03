@@ -1,3 +1,12 @@
+## [1.0.229](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.228...v1.0.229) (2024-06-03)
+
+
+### Features
+
+* vm-1365 seller id in search offers query ([0f01248](https://github.com/VirtoCommerce/vendor-portal/commit/0f01248c28f119a7df3d0f99dca8b55299f91643))
+
+
+
 ## [1.0.228](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.227...v1.0.228) (2024-05-31)
 
 

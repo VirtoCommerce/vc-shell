@@ -19,12 +19,14 @@ import {
   SearchOffersQuery,
 } from "@vcmp-vendor-portal/api/marketplacevendor";
 import { useProductDetails } from "../../../composables/useProductDetails";
+import { useRoute } from "vue-router";
 
 interface Props {
   modelValue: UnwrapNestedRefs<ReturnType<typeof useProductDetails>>;
 }
 
 const props = defineProps<Props>();
+const route = useRoute();
 
 const { getApiClient } = useApiClient(VcmpSellerCatalogClient);
 const client = getApiClient();
@@ -52,7 +54,12 @@ function clickHandler() {
 }
 
 const { loading, action: getCount } = useAsync<ISearchOffersQuery, number | undefined>(async (query) => {
-  return (await client).searchOffers(new SearchOffersQuery(query)).then((res) => res.totalCount);
+  const sellerId = await GetSellerId();
+  const searchQuery = new SearchOffersQuery(query);
+  if (sellerId && sellerId != "") {
+    searchQuery.sellerId = sellerId;
+  }
+  return (await client).searchOffers(searchQuery).then((res) => res.totalCount);
 });
 
 async function populateCounter() {
@@ -68,6 +75,11 @@ onMounted(async () => {
     await populateCounter();
   }
 });
+
+async function GetSellerId(): Promise<string> {
+  const result = route?.params?.sellerId as string;
+  return result;
+}
 
 defineExpose({
   updateActiveWidgetCount: populateCounter,

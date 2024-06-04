@@ -31,7 +31,13 @@
                 size="s"
                 class="tw-w-4"
               />
-              <p class="tw-ml-2">{{ item.title }}</p>
+              <p class="tw-ml-2">
+                {{
+                  $te(`COMPONENTS.ORGANISMS.VC_TABLE.${stateKey}.${item.id}`)
+                    ? $t(`COMPONENTS.ORGANISMS.VC_TABLE.${stateKey}.${item.id}`)
+                    : item.title
+                }}
+              </p>
             </div>
           </div>
         </VcContainer>
@@ -48,6 +54,7 @@ import { useFloating, flip, shift, autoUpdate } from "@floating-ui/vue";
 
 export interface Props {
   items: ITableColumns[];
+  stateKey: string;
 }
 
 export interface Emits {

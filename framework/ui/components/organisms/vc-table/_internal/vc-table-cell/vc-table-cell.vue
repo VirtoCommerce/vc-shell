@@ -2,8 +2,16 @@
   <div>
     <!-- Money cell -->
     <template v-if="cell.type === 'money'">
+      <template v-if="!isEditable && (typeof value === 'undefined' || Number(value) === 0)">
+        <div
+          class="tw-truncate"
+          :class="cell.class"
+        >
+          {{ $t("COMPONENTS.ORGANISMS.VC_TABLE.NOT_SET") }}
+        </div>
+      </template>
       <div
-        v-if="typeof Number(value) === 'number'"
+        v-else-if="typeof Number(value) === 'number'"
         class="tw-truncate"
         :class="cell.class"
       >
@@ -22,11 +30,12 @@
               currency-display="symbol"
               class="tw-w-full"
               :error="errors.length > 0"
+              :error-message="$isMobile.value ? errorMessage : undefined"
               @update:model-value="$emit('update', { field: cell.id, value: $event })"
               @blur="onBlur({ row: index, field: cell.id, errors })"
             >
               <template
-                v-if="errors.length > 0"
+                v-if="$isDesktop.value && errors.length > 0"
                 #append-inner
               >
                 <VcTooltip placement="bottom-end">
@@ -43,14 +52,6 @@
           <span class="tw-truncate">{{ intlMoney(Number(value)) }}</span>
         </template>
       </div>
-      <template v-else-if="!isEditable">
-        <div
-          class="tw-truncate"
-          :class="cell.class"
-        >
-          N/A
-        </div>
-      </template>
     </template>
 
     <!-- Date ago cell -->
@@ -70,7 +71,7 @@
         v-else
         class="tw-truncate"
       >
-        N/A
+        {{ $t("COMPONENTS.ORGANISMS.VC_TABLE.NOT_SET") }}
       </div>
     </span>
 
@@ -112,7 +113,7 @@
         v-else
         class="tw-truncate"
       >
-        N/A
+        {{ $t("COMPONENTS.ORGANISMS.VC_TABLE.NOT_SET") }}
       </div>
     </div>
 
@@ -144,7 +145,7 @@
     <!-- Number cell -->
     <div
       v-else-if="cell.type === 'number'"
-      class="tw-text-right tw-truncate"
+      class="tw-truncate"
       :class="cell.class"
     >
       <template v-if="isEditable">
@@ -160,11 +161,12 @@
             class="tw-w-full"
             type="number"
             :error="errors.length > 0"
+            :error-message="$isMobile.value ? errorMessage : undefined"
             @update:model-value="$emit('update', { field: cell.id, value: $event })"
             @blur="onBlur({ row: index, field: cell.id, errors })"
           >
             <template
-              v-if="errors.length > 0"
+              v-if="$isDesktop.value && errors.length > 0"
               #append-inner
             >
               <VcTooltip placement="bottom-end">
@@ -178,7 +180,11 @@
         </Field>
       </template>
       <template v-else>
-        {{ typeof Number(value) === "number" && Number(value) >= 0 ? Number(value).toFixed(0) : "N/A" }}
+        {{
+          typeof Number(value) === "number" && Number(value) >= 0
+            ? Number(value).toFixed(0)
+            : $t("COMPONENTS.ORGANISMS.VC_TABLE.NOT_SET")
+        }}
       </template>
     </div>
 
@@ -218,11 +224,12 @@
             :model-value="value"
             class="tw-w-full"
             :error="errors.length > 0"
+            :error-message="$isMobile.value ? errorMessage : undefined"
             @update:model-value="$emit('update', { field: cell.id, value: $event })"
             @blur="onBlur({ row: index, field: cell.id, errors })"
           >
             <template
-              v-if="errors.length > 0"
+              v-if="$isDesktop.value && errors.length > 0"
               #append-inner
             >
               <VcTooltip placement="bottom-end">

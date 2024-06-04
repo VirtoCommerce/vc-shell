@@ -28,7 +28,7 @@
         <div
           class="tw-flex tw-grow tw-basis-[1] tw-flex-col tw-justify-center tw-items-center tw-text-white"
           :class="[`vc-table-mobile__item-action_${leftSwipeActions[0].type}`]"
-          @click.stop="leftSwipeActions[0].clickHandler(item as T)"
+          @click.stop="leftSwipeActions?.[0].clickHandler(item as T)"
         >
           <VcIcon :icon="leftSwipeActions[0].icon" />
           <div class="tw-mt-1 tw-text-lg tw-text-center">
@@ -191,15 +191,17 @@ const { isSwiping, lengthX } = useSwipe(target, {
 
 const rightSwipeActions = computed(
   () =>
-    itemActions.value &&
-    itemActions.value.length &&
-    itemActions.value.filter((actions: IActionBuilderResult) => actions.position === "right"),
+    (itemActions.value &&
+      itemActions.value.length &&
+      itemActions.value.filter((actions: IActionBuilderResult) => actions.position === "right")) ||
+    undefined,
 );
 const leftSwipeActions = computed(
   () =>
-    itemActions.value &&
-    itemActions.value.length &&
-    itemActions.value.filter((actions: IActionBuilderResult) => actions.position === "left"),
+    (itemActions.value &&
+      itemActions.value.length &&
+      itemActions.value.filter((actions: IActionBuilderResult) => actions.position === "left")) ||
+    undefined,
 );
 
 watch(

@@ -167,7 +167,7 @@ const useBladeNavigationSingleton = createSharedComposable(() => {
       navigationInstance.blades.value = [];
       activeWorkspace.value = undefined;
     } else {
-      if (oldVal) router.replace({ path: oldVal });
+      if (oldVal) router.push({ path: oldVal });
     }
   }
 
@@ -175,6 +175,7 @@ const useBladeNavigationSingleton = createSharedComposable(() => {
     wsRouteComponent.props.navigation.idx = 0;
     navigationInstance.blades.value[0] = wsRouteComponent;
     activeWorkspace.value = wsRouteComponent;
+    closeBlade(1);
   }
 
   function getWorkspaceRouteComponent(workspaceUrl: string) {
@@ -290,6 +291,7 @@ export function useBladeNavigation(): IUseBladeNavigation {
     { blade, param, options }: IBladeEvent<Blade>,
     query: LocationQuery | undefined = undefined,
     params: RouteParams = {},
+    replace = false,
   ) {
     const createdComponent = h(
       blade,
@@ -327,7 +329,7 @@ export function useBladeNavigation(): IUseBladeNavigation {
           if (wsroute && wsroute.components) {
             wsroute.components.default = createdComponent;
           }
-          return await router.replace({ name: wsroute?.name, params: { ...params, ...route.params }, query });
+          return await router.push({ name: wsroute?.name, params: { ...params, ...route.params }, query, replace });
         } else
           notification.error(i18n.global.t("PERMISSION_MESSAGES.ACCESS_RESTRICTED"), {
             timeout: 3000,
@@ -473,6 +475,7 @@ export function useBladeNavigation(): IUseBladeNavigation {
    * @param routes - The array of BladeRoutesRecord containing the registered routes.
    */
   async function generateRoute(to: RouteLocationNormalized, routes: BladeRoutesRecord[]) {
+    console.log("generateRoute");
     // Extract parameters excluding "pathMatch". This is necessary if a variable is used as the App component URL, for example, /:userId?
     const params = Object.fromEntries(Object.entries(to.params).filter(([key]) => key !== "pathMatch"));
 
@@ -502,9 +505,14 @@ export function useBladeNavigation(): IUseBladeNavigation {
 
       // Open the workspace component or workspace route.
       if (registeredRouteComponent?.type.isWorkspace) {
-        await openWorkspace({
-          blade: registeredRouteComponent as unknown as BladeInstanceConstructor,
-        });
+        await openWorkspace(
+          {
+            blade: registeredRouteComponent as unknown as BladeInstanceConstructor,
+          },
+          undefined,
+          undefined,
+          true,
+        );
         return { name: registeredRouteComponent?.type.name, params };
       }
 
@@ -525,10 +533,14 @@ export function useBladeNavigation(): IUseBladeNavigation {
           }),
           getURLQuery().obj,
           params,
+          true,
         );
 
         // Open the route if it's routable.
-        if (registeredRouteComponent?.type.routable) {
+        if (
+          registeredRouteComponent?.type.routable &&
+          registeredWorkspaceComponent.type.moduleUid === registeredRouteComponent.type.moduleUid
+        ) {
           await openBlade({
             blade: registeredRouteComponent as unknown as BladeInstanceConstructor,
             param: param,
@@ -565,7 +577,7 @@ export function useBladeNavigation(): IUseBladeNavigation {
       // add blade name to query keys
       const namedQuery = _.mapKeys(
         _.mapValues(query, (value) => value?.toString()),
-        (value, key) => instance.vnode.type.name.toLowerCase() + "_" + key,
+        (value, key) => instance.vnode.type.name?.toLowerCase() + "_" + key,
       );
       const cleanQuery = _.omitBy(namedQuery, _.isNil);
 
@@ -580,10 +592,10 @@ export function useBladeNavigation(): IUseBladeNavigation {
   function getNavigationQuery() {
     if (instance.vnode.props.navigation.idx === 0) {
       const queryKeys = Array.from(Object.keys(route.query));
-      const bladeQueryKeys = queryKeys.filter((key) => key.startsWith(instance.vnode.type.name.toLowerCase()));
+      const bladeQueryKeys = queryKeys.filter((key) => key.startsWith(instance.vnode.type.name?.toLowerCase() ?? ""));
 
       const namedQuery = _.mapKeys(_.pick(route.query, bladeQueryKeys), (value, key) =>
-        key.replace(instance.vnode.type.name.toLowerCase() + "_", ""),
+        key.replace(instance.vnode.type.name?.toLowerCase() + "_", ""),
       ) as Record<string, string | number>;
 
       const obj: typeof namedQuery = {};

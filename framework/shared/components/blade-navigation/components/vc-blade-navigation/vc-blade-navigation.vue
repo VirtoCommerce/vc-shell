@@ -103,6 +103,7 @@ const render = () => {
                             expandable: quantity.value > 1,
                             expanded: index - hiddenQuantity === quantity.value - 1,
                             "onClose:blade": () => {
+                              if (index === 0) return;
                               closeBlade(index);
                             },
                             "onParent:call": async (args: IParentCallArgs) => {

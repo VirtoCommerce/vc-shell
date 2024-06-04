@@ -1,8 +1,8 @@
 <template>
   <div class="tw-p-3">
     <div class="tw-w-full tw-flex tw-justify-evenly">
-      <div class="tw-grow tw-basis-0">
-        <div class="tw-font-bold tw-text-lg">
+      <div class="tw-grow tw-basis-0 tw-truncate">
+        <div class="tw-font-bold tw-text-lg tw-truncate">
           {{ context.item.title }}
         </div>
       </div>

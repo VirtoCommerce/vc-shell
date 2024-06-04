@@ -1,3 +1,12 @@
+## [1.0.225](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.224...v1.0.225) (2024-06-04)
+
+
+### Features
+
+* update useDetailsFactory to reset dirty validation state ([a037847](https://github.com/VirtoCommerce/vc-shell/commit/a03784713e504231a13171a46a06ffa61b9cb117))
+
+
+
 ## [1.0.224](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.223...v1.0.224) (2024-06-04)
 
 

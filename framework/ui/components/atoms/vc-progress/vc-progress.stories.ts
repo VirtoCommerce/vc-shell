@@ -14,7 +14,7 @@ export default {
       options: ["default", "striped"],
       table: {
         type: {
-          summary: ["default", "striped"],
+          summary: '["default", "striped"]',
         },
       },
     },

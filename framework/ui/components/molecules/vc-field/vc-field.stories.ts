@@ -36,7 +36,7 @@ export default {
       },
     },
     aspectRatio: {
-      control: "array",
+      control: "object",
       table: {
         type: {
           summary: "number[]",
@@ -44,7 +44,7 @@ export default {
       },
     },
   },
-} as Meta;
+} satisfies Meta;
 
 const Template: StoryFn = (args) => ({
   components: { VcField },

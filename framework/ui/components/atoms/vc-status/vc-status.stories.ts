@@ -18,7 +18,7 @@ export default {
       options: VARIANT,
       table: {
         type: {
-          summary: VARIANT,
+          summary: VARIANT.join(", "),
         },
       },
     },

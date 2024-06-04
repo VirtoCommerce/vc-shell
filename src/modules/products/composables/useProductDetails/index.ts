@@ -155,8 +155,8 @@ export const useProductDetails = (
         descriptions: item.value.productData?.reviews?.filter((x) => x.reviewType == "QuickReview"),
       });
 
-      const notReviewedLangs = languages.value.filter(
-        (x) => item.value?.descriptions?.every((d) => d.languageCode !== x),
+      const notReviewedLangs = languages.value.filter((x) =>
+        item.value?.descriptions?.every((d) => d.languageCode !== x),
       );
       item.value.descriptions = item.value.descriptions?.concat(
         notReviewedLangs.map(

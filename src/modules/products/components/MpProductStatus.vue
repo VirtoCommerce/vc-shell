@@ -60,13 +60,12 @@ const statusStyles: Omit<Record<keyof typeof SellerProductStatus2, Record<string
   },
 };
 
-const statuses = computed(
-  () =>
-    itemStatus.value
-      ?.split(",")
-      .map((item) => {
-        return item.trim();
-      })
-      .filter((x) => x !== "Published"),
+const statuses = computed(() =>
+  itemStatus.value
+    ?.split(",")
+    .map((item) => {
+      return item.trim();
+    })
+    .filter((x) => x !== "Published"),
 ) as unknown as (keyof typeof statusStyles)[];
 </script>

@@ -12,7 +12,7 @@
       "LIST": {
         "TITLE": "My Team",
         "TOOLBAR": {
-          "ADD_MEMBER": "Add member",
+          "ADD_MEMBER": "Add user",
           "REFRESH": "Refresh"
         },
         "TABLE": {
@@ -31,7 +31,7 @@
         },
         "EMPTY": {
           "NO_ITEMS": "There are no people yet",
-          "ADD": "Add new member"
+          "ADD": "Add user"
         }
       },
       "DETAILS": {
@@ -89,7 +89,7 @@
           "NOT_VALID": "Form is not valid.\nPlease, check highlighted fields.",
           "ERROR": "Error"
         },
-        "TITLE": "New member"
+        "TITLE": "New user"
       },
       "ALERTS": {
         "CLOSE_CONFIRMATION": "You have unsaved changes. Close anyway?"

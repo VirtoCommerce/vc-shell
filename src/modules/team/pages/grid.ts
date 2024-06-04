@@ -19,7 +19,7 @@ export const grid: DynamicGridSchema = {
       },
       {
         id: "add",
-        icon: "fas fa-plus",
+        icon: "fas fa-user-plus",
         title: "TEAM.PAGES.LIST.TOOLBAR.ADD_MEMBER",
         method: "openAddBlade",
       },

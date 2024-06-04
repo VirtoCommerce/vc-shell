@@ -70,7 +70,8 @@
             <VcTableMobileItem
               v-for="(item, i) in items"
               :key="i"
-              :item="item"
+              :index="i"
+              :items="items"
               :action-builder="itemActionBuilder"
               :swiping-item="mobileSwipeItem"
               :is-selected="isSelected(item)"
@@ -326,7 +327,7 @@
                 v-if="
                   enableItemActions && itemActionBuilder && typeof item === 'object' && selectedRowIndex === itemIndex
                 "
-                class="tw-absolute tw-flex tw-right-0 actions tw-h-full tw-bg-[#f4f8fb]"
+                class="tw-absolute tw-flex tw-right-[10px] actions tw-h-full tw-bg-[#f4f8fb]"
                 :class="{
                   'group-hover:!tw-bg-[#dfeef9]': hasClickListener,
                 }"
@@ -339,11 +340,16 @@
                     v-for="(itemAction, i) in itemActions[itemIndex]"
                     :key="i"
                     :class="[
-                      'tw-text-[#319ed4] tw-cursor-pointer tw-w-[22px] tw-h-[22px] tw-flex tw-items-center tw-justify-center',
+                      'tw-text-[#319ed4] tw-cursor-pointer tw-w-[22px] tw-h-[22px] tw-flex tw-items-center tw-justify-center hover:tw-text-[#257fad]',
                     ]"
                     @click.stop="itemAction.clickHandler(item, itemIndex)"
                   >
-                    <VcTooltip>
+                    <VcTooltip
+                      placement="bottom"
+                      :offset="{
+                        mainAxis: 5,
+                      }"
+                    >
                       <VcIcon
                         :icon="itemAction.icon"
                         size="m"
@@ -603,22 +609,25 @@ const mobileTemplateRenderer = ({ item, index }: { item: TableItem | string; ind
     "div",
     { class: "tw-border-b tw-border-solid tw-border-b-[#e3e7ec] tw-p-3 tw-gap-2 tw-flex tw-flex-wrap" },
     props.columns.map((x) => {
-      return h("div", { class: "tw-grow tw-w-[33%] tw-ml-3  tw-truncate" }, [
+      return h("div", { class: "tw-grow tw-w-[33%] tw-ml-3  tw-truncate", key: `mobile-view-item-${index}` }, [
         h(VcLabel, { class: "tw-mb-1 tw-truncate", required: x?.rules?.required }, () => toValue(x.title)),
         slots[`item_${x.id}`]
-          ? slots[`item_${x.id}`]({ item, cell: x, index })
+          ? slots[`item_${x.id}`]?.({ item, cell: x, index })
           : [
-              h(VcTableCell, {
-                cell: { ...x, class: "!tw-justify-start" },
-                item,
-                class: "",
-                editing: props.editing,
-                index,
-                onUpdate: (event) => {
-                  emit("onEditComplete", { event: event, index });
-                },
-                onBlur: (event) => emit("onCellBlur", event),
-              }),
+              typeof item === "object"
+                ? h(VcTableCell, {
+                    cell: { ...x, class: "!tw-justify-start" },
+                    item,
+                    key: `mobile-view-cell-${index}`,
+                    class: "tw-mb-4",
+                    editing: props.editing,
+                    index,
+                    onUpdate: (event) => {
+                      emit("onEditComplete", { event: event, index });
+                    },
+                    onBlur: (event) => emit("onCellBlur", event),
+                  })
+                : undefined,
             ],
       ]);
     }),

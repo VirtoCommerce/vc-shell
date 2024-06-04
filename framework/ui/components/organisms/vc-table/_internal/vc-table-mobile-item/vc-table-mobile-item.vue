@@ -28,7 +28,7 @@
         <div
           class="tw-flex tw-grow tw-basis-[1] tw-flex-col tw-justify-center tw-items-center tw-text-white"
           :class="[`vc-table-mobile__item-action_${leftSwipeActions[0].type}`]"
-          @click.stop="leftSwipeActions?.[0].clickHandler(item as T)"
+          @click.stop="leftSwipeActions?.[0].clickHandler(items[index] as T, index)"
         >
           <VcIcon :icon="leftSwipeActions[0].icon" />
           <div class="tw-mt-1 tw-text-lg tw-text-center">
@@ -49,7 +49,7 @@
           :key="`rightSwipeAction-${index}`"
           class="tw-flex tw-grow tw-basis-[1] tw-flex-col tw-justify-center tw-items-center tw-text-white"
           :class="[`vc-table-mobile__item-action_${action.type}`]"
-          @click.stop="action.clickHandler(item as T)"
+          @click.stop="action.clickHandler(items[index] as T, index)"
         >
           <VcIcon :icon="action.icon" />
           <div class="tw-mt-1 tw-text-lg tw-text-center">
@@ -95,7 +95,7 @@
                     v-for="(itemAction, i) in itemActions"
                     :key="i"
                     class="tw-flex tw-grow tw-shrink-0 tw-flex-col tw-items-center tw-text-[#319ed4] tw-my-2 tw-box-border tw-p-1 tw-max-w-[80px]"
-                    @click="itemAction.clickHandler(item as T)"
+                    @click="itemAction.clickHandler(items[index] as T, index)"
                   >
                     <VcIcon
                       :icon="itemAction.icon"
@@ -116,10 +116,10 @@
 </template>
 
 <script lang="ts" setup generic="T extends TableItem | string">
-import { Ref, computed, ref, onMounted, watch, onUpdated } from "vue";
+import { Ref, computed, ref, onMounted, watch, onUpdated, nextTick } from "vue";
 import { IActionBuilderResult } from "../../../../../../core/types";
 import { useI18n } from "vue-i18n";
-import { useSwipe } from "@vueuse/core";
+import { useSwipe, watchDebounced } from "@vueuse/core";
 import { vOnClickOutside } from "@vueuse/components";
 
 export interface Emits {
@@ -134,10 +134,11 @@ export interface TableItem {
 }
 
 const props = defineProps<{
-  item: T;
+  items: T[];
   actionBuilder?: (item: T) => IActionBuilderResult[] | undefined;
   swipingItem?: string;
   isSelected?: boolean;
+  index: number;
 }>();
 
 const emit = defineEmits<Emits>();
@@ -156,8 +157,9 @@ const { isSwiping, lengthX } = useSwipe(target, {
   threshold: 0,
   onSwipeStart() {
     getActions();
-    if (typeof props.item !== "string") {
-      emit("swipeStart", props.item.id);
+    const item = props.items[props.index];
+    if (typeof item !== "string") {
+      emit("swipeStart", item.id);
     }
     if (containerWidth.value) {
       reset();
@@ -207,7 +209,8 @@ const leftSwipeActions = computed(
 watch(
   () => props.swipingItem,
   (newVal) => {
-    if (typeof props.item !== "string" && newVal !== props.item.id) {
+    const item = props.items[props.index];
+    if (typeof item !== "string" && newVal !== item.id) {
       left.value = "0";
       actionsWidth.value = "0";
     }
@@ -221,6 +224,14 @@ onMounted(() => {
 onUpdated(() => {
   adjustHeight();
 });
+
+watchDebounced(
+  () => props.items,
+  () => {
+    adjustHeight();
+  },
+  { deep: true, debounce: 450 },
+);
 
 function reset() {
   left.value = "0";
@@ -243,7 +254,7 @@ const direction = computed(() => {
 function getActions() {
   if (!(itemActions.value && itemActions.value.length)) {
     if (props.actionBuilder && typeof props.actionBuilder === "function") {
-      itemActions.value = props.actionBuilder(props.item);
+      itemActions.value = props.actionBuilder(props.items[props.index]);
     }
   }
 }

@@ -1,3 +1,18 @@
+## [1.0.226](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.225...v1.0.226) (2024-06-04)
+
+
+### Bug Fixes
+
+* reset dirty validation with update of initial ([a4f820c](https://github.com/VirtoCommerce/vc-shell/commit/a4f820c3ab71296f334a3192069dcf6771031018))
+* **ui:** vc-table mobile view fixes ([08f6474](https://github.com/VirtoCommerce/vc-shell/commit/08f647471732d875eacf4d5f2907eb75686b7c4d))
+
+
+### Features
+
+* **dynamic:** add onBlur event handler to dynamic form controls ([1543d4f](https://github.com/VirtoCommerce/vc-shell/commit/1543d4f7816a3e5c67ea842c0a545b9d14e0e72b))
+
+
+
 ## [1.0.225](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.224...v1.0.225) (2024-06-04)
 
 

@@ -52,10 +52,10 @@ export const useDetailsFactory = <Item extends { id?: string }>(factoryParams: U
 
     const validationState = computed(
       (): IValidationState<Item> => ({
-        dirty: isDirty.value,
+        dirty: isDirty.value || isModified.value,
         valid: isFormValid.value,
         modified: isModified.value,
-        disabled: isDisabled.value,
+        disabled: isDisabled.value || !isModified.value,
         validated: !isDisabled.value && isModified.value,
         cachedValue: itemTemp.value,
         errorBag: errorBag.value,
@@ -64,7 +64,7 @@ export const useDetailsFactory = <Item extends { id?: string }>(factoryParams: U
         setFieldValue,
         setValues,
         resetModified,
-        resetDirty,
+        resetValidationState,
         validate,
       }),
     );
@@ -83,9 +83,12 @@ export const useDetailsFactory = <Item extends { id?: string }>(factoryParams: U
       }
 
       itemTemp.value = _.cloneDeep(data);
+
+      resetValidationState();
     }) as (data: MaybeRef<Item | undefined> | ComputedRef<Item | undefined>, updateInitial?: MaybeRef<boolean>) => void;
 
-    const resetDirty = () => {
+    const resetValidationState = () => {
+      isModified.value = false;
       isDirty = ref(false);
     };
 

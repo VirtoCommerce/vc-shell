@@ -32,7 +32,7 @@ export interface IValidationState<Item> {
     data: MaybeRef<Item | undefined> | ComputedRef<Item | undefined>,
     updateInitial?: MaybeRef<boolean>,
   ) => void;
-  resetDirty: () => void;
+  resetValidationState: () => void;
   validate: FormContext["validate"];
   errorBag: Partial<Record<string, string[]>>;
 }

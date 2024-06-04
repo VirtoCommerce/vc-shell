@@ -34,6 +34,7 @@ interface IShippingInfo {
 }
 
 export interface OrderScope extends DetailsBaseBladeScope {
+  disabled: Ref<boolean>;
   toolbarOverrides: {
     downloadPdf: IBladeToolbar;
     saveChanges: IBladeToolbar;
@@ -82,9 +83,6 @@ export const useOrder = (args: DetailsComposableArgs): UseDetails<CustomerOrder,
     saveChanges: async (details) => {
       if (details?.id) {
         disabled.value = true;
-        if (!isCalculated.value) {
-          await calculateTotals();
-        }
         const sellerId = await GetSellerId();
         return (await getApiClient()).updateOrder(
           new UpdateSellerOrderCommand({
@@ -172,7 +170,6 @@ export const useOrder = (args: DetailsComposableArgs): UseDetails<CustomerOrder,
   const { loading: calculateTotalsLoading, action: calculateTotals } = useAsync(async () => {
     if (item.value?.id) {
       item.value = await (await getOrderApiClient()).calculateTotals(item.value);
-      isCalculated.value = true;
     }
   });
 
@@ -212,9 +209,7 @@ export const useOrder = (args: DetailsComposableArgs): UseDetails<CustomerOrder,
           }
         },
         isVisible: computed(() => !disabled.value),
-        disabled: computed(
-          () => !(isCalculated.value && validationState.value.valid && validationState.value.modified),
-        ),
+        disabled: computed(() => !(validationState.value.valid && validationState.value.modified)),
       },
       edit: {
         clickHandler: () => {
@@ -317,7 +312,7 @@ export const useOrder = (args: DetailsComposableArgs): UseDetails<CustomerOrder,
     load,
     saveChanges,
     remove,
-    loading: useLoading(loading, pdfLoading, stateMachineLoading, calculateTotalsLoading),
+    loading: useLoading(loading, pdfLoading, stateMachineLoading),
     item,
     validationState,
     scope,

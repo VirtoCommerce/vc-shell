@@ -209,22 +209,22 @@ export const details: DynamicDetailsSchema = {
               multiselect: false,
               property: "items",
               footer: false,
-              mobileTemplate: {
-                component: "OrderOfferMobileGridView",
-              },
+              // mobileTemplate: {
+              //   component: "OrderOfferMobileGridView",
+              // },
               columns: [
                 {
                   id: "imageUrl",
                   title: "ORDERS.PAGES.DETAILS.FORM.TABLE.PIC",
-                  width: 60,
-                  class: "pr-0",
+                  width: "60px",
+                  class: "tw-pr-0",
                   type: "image",
                 },
-                {
-                  id: "sku",
-                  title: "ORDERS.PAGES.DETAILS.FORM.TABLE.SKU",
-                  width: 100,
-                },
+                // {
+                //   id: "sku",
+                //   title: "ORDERS.PAGES.DETAILS.FORM.TABLE.SKU",
+                //   width: 100,
+                // },
                 {
                   id: "name",
                   title: "ORDERS.PAGES.DETAILS.FORM.TABLE.NAME",
@@ -235,7 +235,6 @@ export const details: DynamicDetailsSchema = {
                 {
                   id: "quantity",
                   title: "ORDERS.PAGES.DETAILS.FORM.TABLE.QUANTITY",
-                  width: 100,
                   type: "number",
                   editable: true,
                   rules: {
@@ -248,7 +247,6 @@ export const details: DynamicDetailsSchema = {
                 {
                   id: "price",
                   title: "ORDERS.PAGES.DETAILS.FORM.TABLE.UNIT_PRICE",
-                  width: 100,
                   type: "money",
                   currencyField: "currency",
                   editable: true,
@@ -262,7 +260,6 @@ export const details: DynamicDetailsSchema = {
                 {
                   id: "extendedPrice",
                   title: "ORDERS.PAGES.DETAILS.FORM.TABLE.TOTAL",
-                  width: 100,
                   type: "money",
                   currencyField: "currency",
                 },

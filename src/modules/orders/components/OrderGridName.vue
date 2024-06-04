@@ -1,7 +1,7 @@
 <template>
   <div class="tw-flex tw-flex-col">
-    <div>{{ context.item.name }}</div>
-    <VcHint class="tw-mt-1">{{ $t("ORDERS.PAGES.DETAILS.FORM.ITEMS_LIST.SKU") }}: {{ context.item.sku }}</VcHint>
+    <div>{{ context.item.sku }}</div>
+    <VcHint class="tw-mt-1">{{ context.item.name }}</VcHint>
   </div>
 </template>
 

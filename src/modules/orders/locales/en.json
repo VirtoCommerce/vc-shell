@@ -92,7 +92,7 @@
           },
           "TABLE": {
             "PIC": "Pic",
-            "NAME": "Name",
+            "NAME": "Item",
             "QUANTITY": "Quantity",
             "UNIT_PRICE": "Unit price",
             "TOTAL": "Total",

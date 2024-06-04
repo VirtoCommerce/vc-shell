@@ -8,8 +8,8 @@
         :bordered="true"
         :src="context.item.imageUrl"
       ></VcImage>
-      <div class="tw-grow tw-basis-0 tw-ml-3">
-        <div class="tw-font-bold tw-text-lg">
+      <div class="tw-grow tw-basis-0 tw-ml-3 tw-truncate">
+        <div class="tw-font-bold tw-text-lg tw-truncate">
           {{ context.item.name }}
         </div>
         <VcHint class="tw-mt-1">
@@ -58,11 +58,13 @@
 
 <script lang="ts" setup>
 import { OrderLineItem } from "@vcmp-vendor-portal/api/orders";
+import { useOrder } from "../composables";
 
 export interface Props {
   context: {
     item: OrderLineItem;
   };
+  bladeContext: ReturnType<typeof useOrder>;
 }
 
 defineProps<Props>();

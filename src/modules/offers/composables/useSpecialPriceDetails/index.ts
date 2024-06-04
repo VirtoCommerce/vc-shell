@@ -186,7 +186,7 @@ export const useSpecialPriceDetails = (
       );
     },
     {
-      // debounce: 100,
+      debounce: 100,
     },
   );
 

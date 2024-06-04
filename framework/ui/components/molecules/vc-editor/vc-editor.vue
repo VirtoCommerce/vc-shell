@@ -104,6 +104,9 @@ const toolbar = {
     "blockquote",
     { list: "ordered" },
     { list: "bullet" },
+    { color: [] },
+    { background: [] },
+    "clean",
   ],
   handlers: {},
 };

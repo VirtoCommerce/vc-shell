@@ -148,7 +148,7 @@
                 v-for="(item, index) in filteredCols"
                 :id="item.id"
                 :key="item.id"
-                class="tw-flex-1 tw-flex tw-items-center tw-h-[42px] tw-bg-[#f9f9f9] !tw-border-0 tw-shadow-[inset_0px_1px_0px_#eaedf3,_inset_0px_-1px_0px_#eaedf3] tw-box-border tw-sticky tw-top-0 tw-select-none tw-overflow-hidden tw-z-[1]"
+                class="vc-table__header tw-flex-1 tw-flex tw-items-center tw-h-[42px] tw-bg-[#f9f9f9] !tw-border-0 tw-shadow-[inset_0px_1px_0px_#eaedf3,_inset_0px_-1px_0px_#eaedf3] tw-box-border tw-sticky tw-top-0 tw-select-none tw-overflow-hidden tw-z-[1]"
                 :class="[
                   {
                     'tw-cursor-pointer tw-group': item.sortable,
@@ -197,7 +197,6 @@
                   </div>
                 </div>
                 <div
-                  v-if="index !== filteredCols.length - 1"
                   class="tw-w-[5px] tw-mr-[3px] tw-border-r tw-border-r-[#e5e7eb] tw-border-solid tw-h-full tw-top-0 tw-bottom-0 tw-absolute tw-right-0 tw-flex tw-justify-end"
                   :class="{
                     'tw-cursor-col-resize': props.resizableColumns,
@@ -896,6 +895,7 @@ function onColumnResizeEnd() {
         const nextColElement = (table.value as HTMLDivElement).querySelector(`#${nextColumn.value.id}`);
 
         const nextColumnWidth = (nextColElement as HTMLElement).offsetWidth - delta;
+
         if (newColumnWidth > 15 && nextColumnWidth > 15) {
           resizeTableCells(newColumnWidth, nextColumnWidth);
         }

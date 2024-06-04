@@ -4672,16 +4672,11 @@ export class Asset implements IAsset {
   url?: string | undefined;
   description?: string | undefined;
   sortOrder?: number;
-  /** Gets or sets the asset type identifier. */
   typeId?: string | undefined;
-  /** Gets or sets the asset group name. */
   group?: string | undefined;
-  /** Gets or sets the asset name. */
   name?: string | undefined;
   outerId?: string | undefined;
-  /** Gets or sets the asset language. */
   languageCode?: string | undefined;
-  /** System flag used to mark that object was inherited from other */
   readonly isInherited?: boolean;
   readonly seoObjectType?: string | undefined;
   seoInfos?: SeoInfo[] | undefined;
@@ -4774,16 +4769,11 @@ export interface IAsset {
   url?: string | undefined;
   description?: string | undefined;
   sortOrder?: number;
-  /** Gets or sets the asset type identifier. */
   typeId?: string | undefined;
-  /** Gets or sets the asset group name. */
   group?: string | undefined;
-  /** Gets or sets the asset name. */
   name?: string | undefined;
   outerId?: string | undefined;
-  /** Gets or sets the asset language. */
   languageCode?: string | undefined;
-  /** System flag used to mark that object was inherited from other */
   isInherited?: boolean;
   seoObjectType?: string | undefined;
   seoInfos?: SeoInfo[] | undefined;
@@ -4938,9 +4928,7 @@ export class Capture implements ICapture {
   currency?: string | undefined;
   sum?: number;
   outerId?: string | undefined;
-  /** For system use to handle canellation flow */
   cancelledState?: CaptureCancelledState;
-  /** Used by payment provides to indicate that cancellation operation has completed */
   isCancelled?: boolean;
   cancelledDate?: Date | undefined;
   cancelReason?: string | undefined;
@@ -5070,9 +5058,7 @@ export interface ICapture {
   currency?: string | undefined;
   sum?: number;
   outerId?: string | undefined;
-  /** For system use to handle canellation flow */
   cancelledState?: CaptureCancelledState;
-  /** Used by payment provides to indicate that cancellation operation has completed */
   isCancelled?: boolean;
   cancelledDate?: Date | undefined;
   cancelReason?: string | undefined;
@@ -5157,96 +5143,56 @@ export interface ICaptureItem {
 }
 
 export class CatalogProduct implements ICatalogProduct {
-  /** The type of product. Can be "Physical", "Digital", etc. */
   productType?: string | undefined;
-  /** The Stock Keeping Unit (SKU) code for the product. */
   code?: string | undefined;
-  /** The manufacturer's part number for the product. */
   manufacturerPartNumber?: string | undefined;
-  /** The Global Trade Item Number (GTIN) for the product. This can include UPC (in North America), EAN (in Europe), JAN (in Japan), and ISBN (for books). */
   gtin?: string | undefined;
-  /** The name of the product. */
   name?: string | undefined;
-  /** The ID of the catalog to which this product belongs. */
   catalogId?: string | undefined;
-  /** The ID of the category to which this product belongs. */
   categoryId?: string | undefined;
-  /** Product outline in physical catalog (all parent categories ids concatenated. E.g. (1/21/344)) */
   readonly outline?: string | undefined;
-  /** Product path in physical catalog (all parent categories names concatenated. E.g. (parent1/parent2)) */
   readonly path?: string | undefined;
   readonly titularItemId?: string | undefined;
-  /** The ID of the main product associated with this product variation. */
   mainProductId?: string | undefined;
-  /** Specifies whether the product is currently visible on the store for customers to view and purchase.
-If set to false, the product is currently sold out. */
   isActive?: boolean | undefined;
-  /** Specifies whether the product is currently visible on the store for customers to view and purchase.
-If set to false, the product is currently ouf of stock. */
   isBuyable?: boolean | undefined;
-  /** Indicates whether the inventory service is tracking the availability of this product.
-If set to false, the product is considered in stock without any inventory limitations. */
   trackInventory?: boolean | undefined;
-  /** The date and time when the product was last indexed for search. */
   indexingDate?: Date | undefined;
-  /** The maximum quantity of the product that can be purchased in a single order. A value of 0 indicates that there are no limitations on the maximum quantity. */
   maxQuantity?: number | undefined;
-  /** The minimum quantity of the product that must be purchased in a single order. A value of 0 indicates that there are no limitations on the minimum quantity. */
   minQuantity?: number | undefined;
-  /** First listed date and time. If you do not specify an end date, the product will be active until you deactivate it.If you do not specify an end date, the product will be active until you deactivate it.If you do not specify a start date, the product will become active immediately once you save it. */
   startDate?: Date;
-  /** Listing expires on the specific date and time. If you do not specify an end date, the product will be active until you deactivate it. */
   endDate?: Date | undefined;
-  /** The type of package for this product, which determines the product's specific dimensions. */
   packageType?: string | undefined;
-  /** The unit of measurement for the product's weight. */
   weightUnit?: string | undefined;
-  /** The weight of the product, in the unit specified by the WeightUnit property. */
   weight?: number | undefined;
-  /** The unit of measurement for the product's height, length, and width. */
   measureUnit?: string | undefined;
-  /** The height of the product, in the unit specified by the MeasureUnit property. */
   height?: number | undefined;
-  /** The length of the product, in the unit specified by the MeasureUnit property. */
   length?: number | undefined;
-  /** The width of the product, in the unit specified by the MeasureUnit property. */
   width?: number | undefined;
   enableReview?: boolean | undefined;
-  /** The maximum number of times the product can be downloaded. A value of 0 indicates no limit. */
   maxNumberOfDownload?: number | undefined;
-  /** The date and time when the download link or access to the product will expire. */
   downloadExpiration?: Date | undefined;
-  /** The type of product download. Valid values include: "Standard Product", "Software", and "Music". */
   downloadType?: string | undefined;
-  /** Indicates whether the product requires the user to agree to any terms or conditions before downloading. */
   hasUserAgreement?: boolean | undefined;
-  /** Specifies the type of shipping option available for the product. */
   shippingType?: string | undefined;
-  /** Specifies the type of tax applied to the product. */
   taxType?: string | undefined;
-  /** ID of the vendor associated with the product. */
   vendor?: string | undefined;
-  /** Indicates the position of the product in the catalog for ordering purposes. */
   priority?: number;
-  /** An external identifier for the product that can be used for integration with external systems. */
   outerId?: string | undefined;
   properties?: Property[] | undefined;
   excludedProperties?: ExcludedProperty[] | undefined;
   propertyValues?: PropertyValue[] | undefined;
-  /** Gets the default image for the product. */
   readonly imgSrc?: string | undefined;
   images?: Image[] | undefined;
   assets?: Asset[] | undefined;
   links?: CategoryLink[] | undefined;
   variations?: Variation[] | undefined;
-  /** Each descendant type should override this property to use other object type for seo records */
   readonly seoObjectType?: string | undefined;
   seoInfos?: SeoInfo[] | undefined;
   reviews?: EditorialReview[] | undefined;
   associations?: ProductAssociation[] | undefined;
   referencedAssociations?: ProductAssociation[] | undefined;
   outlines?: Outline[] | undefined;
-  /** System flag used to mark that object was inherited from other */
   readonly isInherited?: boolean;
   readonly parentCategoryIsActive?: boolean;
   createdDate?: Date;
@@ -5471,96 +5417,56 @@ If set to false, the product is considered in stock without any inventory limita
 }
 
 export interface ICatalogProduct {
-  /** The type of product. Can be "Physical", "Digital", etc. */
   productType?: string | undefined;
-  /** The Stock Keeping Unit (SKU) code for the product. */
   code?: string | undefined;
-  /** The manufacturer's part number for the product. */
   manufacturerPartNumber?: string | undefined;
-  /** The Global Trade Item Number (GTIN) for the product. This can include UPC (in North America), EAN (in Europe), JAN (in Japan), and ISBN (for books). */
   gtin?: string | undefined;
-  /** The name of the product. */
   name?: string | undefined;
-  /** The ID of the catalog to which this product belongs. */
   catalogId?: string | undefined;
-  /** The ID of the category to which this product belongs. */
   categoryId?: string | undefined;
-  /** Product outline in physical catalog (all parent categories ids concatenated. E.g. (1/21/344)) */
   outline?: string | undefined;
-  /** Product path in physical catalog (all parent categories names concatenated. E.g. (parent1/parent2)) */
   path?: string | undefined;
   titularItemId?: string | undefined;
-  /** The ID of the main product associated with this product variation. */
   mainProductId?: string | undefined;
-  /** Specifies whether the product is currently visible on the store for customers to view and purchase.
-If set to false, the product is currently sold out. */
   isActive?: boolean | undefined;
-  /** Specifies whether the product is currently visible on the store for customers to view and purchase.
-If set to false, the product is currently ouf of stock. */
   isBuyable?: boolean | undefined;
-  /** Indicates whether the inventory service is tracking the availability of this product.
-If set to false, the product is considered in stock without any inventory limitations. */
   trackInventory?: boolean | undefined;
-  /** The date and time when the product was last indexed for search. */
   indexingDate?: Date | undefined;
-  /** The maximum quantity of the product that can be purchased in a single order. A value of 0 indicates that there are no limitations on the maximum quantity. */
   maxQuantity?: number | undefined;
-  /** The minimum quantity of the product that must be purchased in a single order. A value of 0 indicates that there are no limitations on the minimum quantity. */
   minQuantity?: number | undefined;
-  /** First listed date and time. If you do not specify an end date, the product will be active until you deactivate it.If you do not specify an end date, the product will be active until you deactivate it.If you do not specify a start date, the product will become active immediately once you save it. */
   startDate?: Date;
-  /** Listing expires on the specific date and time. If you do not specify an end date, the product will be active until you deactivate it. */
   endDate?: Date | undefined;
-  /** The type of package for this product, which determines the product's specific dimensions. */
   packageType?: string | undefined;
-  /** The unit of measurement for the product's weight. */
   weightUnit?: string | undefined;
-  /** The weight of the product, in the unit specified by the WeightUnit property. */
   weight?: number | undefined;
-  /** The unit of measurement for the product's height, length, and width. */
   measureUnit?: string | undefined;
-  /** The height of the product, in the unit specified by the MeasureUnit property. */
   height?: number | undefined;
-  /** The length of the product, in the unit specified by the MeasureUnit property. */
   length?: number | undefined;
-  /** The width of the product, in the unit specified by the MeasureUnit property. */
   width?: number | undefined;
   enableReview?: boolean | undefined;
-  /** The maximum number of times the product can be downloaded. A value of 0 indicates no limit. */
   maxNumberOfDownload?: number | undefined;
-  /** The date and time when the download link or access to the product will expire. */
   downloadExpiration?: Date | undefined;
-  /** The type of product download. Valid values include: "Standard Product", "Software", and "Music". */
   downloadType?: string | undefined;
-  /** Indicates whether the product requires the user to agree to any terms or conditions before downloading. */
   hasUserAgreement?: boolean | undefined;
-  /** Specifies the type of shipping option available for the product. */
   shippingType?: string | undefined;
-  /** Specifies the type of tax applied to the product. */
   taxType?: string | undefined;
-  /** ID of the vendor associated with the product. */
   vendor?: string | undefined;
-  /** Indicates the position of the product in the catalog for ordering purposes. */
   priority?: number;
-  /** An external identifier for the product that can be used for integration with external systems. */
   outerId?: string | undefined;
   properties?: Property[] | undefined;
   excludedProperties?: ExcludedProperty[] | undefined;
   propertyValues?: PropertyValue[] | undefined;
-  /** Gets the default image for the product. */
   imgSrc?: string | undefined;
   images?: Image[] | undefined;
   assets?: Asset[] | undefined;
   links?: CategoryLink[] | undefined;
   variations?: Variation[] | undefined;
-  /** Each descendant type should override this property to use other object type for seo records */
   seoObjectType?: string | undefined;
   seoInfos?: SeoInfo[] | undefined;
   reviews?: EditorialReview[] | undefined;
   associations?: ProductAssociation[] | undefined;
   referencedAssociations?: ProductAssociation[] | undefined;
   outlines?: Outline[] | undefined;
-  /** System flag used to mark that object was inherited from other */
   isInherited?: boolean;
   parentCategoryIsActive?: boolean;
   createdDate?: Date;
@@ -5575,9 +5481,7 @@ export class Category implements ICategory {
   parentId?: string | undefined;
   code?: string | undefined;
   name?: string | undefined;
-  /** Category outline in physical catalog (all parent categories ids concatenated. E.g. (1/21/344)) */
   readonly outline?: string | undefined;
-  /** Category path in physical catalog (all parent categories names concatenated. E.g. (parent1/parent2)) */
   path?: string | undefined;
   isVirtual?: boolean;
   level?: number;
@@ -5593,11 +5497,9 @@ export class Category implements ICategory {
   seoInfos?: SeoInfo[] | undefined;
   enableDescription?: boolean | undefined;
   descriptions?: CategoryDescription[] | undefined;
-  /** Gets the default image */
   readonly imgSrc?: string | undefined;
   images?: Image[] | undefined;
   outlines?: Outline[] | undefined;
-  /** System flag used to mark that object was inherited from other */
   readonly isInherited?: boolean;
   readonly parentIsActive?: boolean;
   createdDate?: Date;
@@ -5739,9 +5641,7 @@ export interface ICategory {
   parentId?: string | undefined;
   code?: string | undefined;
   name?: string | undefined;
-  /** Category outline in physical catalog (all parent categories ids concatenated. E.g. (1/21/344)) */
   outline?: string | undefined;
-  /** Category path in physical catalog (all parent categories names concatenated. E.g. (parent1/parent2)) */
   path?: string | undefined;
   isVirtual?: boolean;
   level?: number;
@@ -5757,11 +5657,9 @@ export interface ICategory {
   seoInfos?: SeoInfo[] | undefined;
   enableDescription?: boolean | undefined;
   descriptions?: CategoryDescription[] | undefined;
-  /** Gets the default image */
   imgSrc?: string | undefined;
   images?: Image[] | undefined;
   outlines?: Outline[] | undefined;
-  /** System flag used to mark that object was inherited from other */
   isInherited?: boolean;
   parentIsActive?: boolean;
   createdDate?: Date;
@@ -5839,18 +5737,13 @@ export interface ICategoryDescription {
 }
 
 export class CategoryLink implements ICategoryLink {
-  /** Entry identifier which this link belongs to */
   readonly entryId?: string | undefined;
   listEntryId?: string | undefined;
-  /** Gets or sets the type of the list entry. E.g. "product", "category" */
   listEntryType?: string | undefined;
-  /** Product order position in virtual catalog */
   priority?: number;
   catalogId?: string | undefined;
   categoryId?: string | undefined;
-  /** Gets the Id of either target Catetory or Catalog */
   readonly targetId?: string | undefined;
-  /** Gets the name of either target Catetory or Catalog */
   readonly name?: string | undefined;
 
   constructor(data?: ICategoryLink) {
@@ -5896,18 +5789,13 @@ export class CategoryLink implements ICategoryLink {
 }
 
 export interface ICategoryLink {
-  /** Entry identifier which this link belongs to */
   entryId?: string | undefined;
   listEntryId?: string | undefined;
-  /** Gets or sets the type of the list entry. E.g. "product", "category" */
   listEntryType?: string | undefined;
-  /** Product order position in virtual catalog */
   priority?: number;
   catalogId?: string | undefined;
   categoryId?: string | undefined;
-  /** Gets the Id of either target Catetory or Catalog */
   targetId?: string | undefined;
-  /** Gets the name of either target Catetory or Catalog */
   name?: string | undefined;
 }
 
@@ -5915,7 +5803,6 @@ export class CategorySearchCriteria implements ICategorySearchCriteria {
   code?: string | undefined;
   catalogId?: string | undefined;
   catalogIds?: string[] | undefined;
-  /** Parent category id */
   categoryId?: string | undefined;
   outerIds?: string[] | undefined;
   searchOnlyInRoot?: boolean;
@@ -6025,7 +5912,6 @@ export interface ICategorySearchCriteria {
   code?: string | undefined;
   catalogId?: string | undefined;
   catalogIds?: string[] | undefined;
-  /** Parent category id */
   categoryId?: string | undefined;
   outerIds?: string[] | undefined;
   searchOnlyInRoot?: boolean;
@@ -7024,15 +6910,10 @@ export class CustomerOrder implements ICustomerOrder {
   organizationName?: string | undefined;
   employeeId?: string | undefined;
   employeeName?: string | undefined;
-  /** The base shopping cart ID the order was created with */
   shoppingCartId?: string | undefined;
-  /** This checkbox determines whether the order is a prototype */
   isPrototype?: boolean;
-  /** The order internal number provided by customer */
   purchaseOrderNumber?: string | undefined;
-  /** Number of subscription associated with this order */
   subscriptionNumber?: string | undefined;
-  /** The ID of subscription associated with this order */
   subscriptionId?: string | undefined;
   objectType?: string | undefined;
   addresses?: OrderAddress[] | undefined;
@@ -7041,72 +6922,39 @@ export class CustomerOrder implements ICustomerOrder {
   shipments?: OrderShipment[] | undefined;
   feeDetails?: FeeDetail[] | undefined;
   discounts?: Discount[] | undefined;
-  /** When a discount is applied to the order, the tax calculation has already been applied and is shown in the tax field.
-Therefore, the discount will not be taking tax into account. 
-For instance, if the cart subtotal is $100, and the tax subtotal is $15, a 10% discount will yield a total of $105 ($100 subtotal – $10 discount + $15 tax). */
   discountAmount?: number;
   taxDetails?: TaxDetail[] | undefined;
   scopes?: string[] | undefined;
-  /** Order grand total */
   total?: number;
-  /** Amount of the item prices */
   subTotal?: number;
-  /** Amount of the item prices with tax */
   subTotalWithTax?: number;
-  /** Amount of the item discount total */
   subTotalDiscount?: number;
-  /** Amount of the item discount total with tax */
   subTotalDiscountWithTax?: number;
-  /** Amount of the item tax total */
   subTotalTaxTotal?: number;
-  /** Amount of the shipment total */
   shippingTotal?: number;
-  /** Amount of the shipment total with tax */
   shippingTotalWithTax?: number;
-  /** Amount of the shipment prices */
   shippingSubTotal?: number;
-  /** Amount of the shipment prices with tax */
   shippingSubTotalWithTax?: number;
-  /** Amount of the shipment discount amounts */
   shippingDiscountTotal?: number;
-  /** Amount of the shipment discount amounts with tax */
   shippingDiscountTotalWithTax?: number;
-  /** Reserved for future needs */
   shippingTaxTotal?: number;
-  /** Amount of the payments totals */
   paymentTotal?: number;
-  /** Amount of the payment totals with tax */
   paymentTotalWithTax?: number;
-  /** Amount of the payment prices */
   paymentSubTotal?: number;
-  /** Amount of the payment prices with tax */
   paymentSubTotalWithTax?: number;
-  /** Amount of the payments discount amounts */
   paymentDiscountTotal?: number;
-  /** Amount of the payment discount amounts with tax */
   paymentDiscountTotalWithTax?: number;
-  /** Reserved for future needs */
   paymentTaxTotal?: number;
-  /** Amount of the discount amounts of items, shipments and payments, and the order discount amount */
   discountTotal?: number;
-  /** Amount of the discount amounts with tax of items, shipments and payments, and the order discount amount with tax */
   discountTotalWithTax?: number;
-  /** Any extra fees applied to the order. This value comes from the cart */
   fee?: number;
-  /** Order fee with applied tax factor */
   feeWithTax?: number;
-  /** Amount of the order fee, as well as any item, shipment, and payment fees */
   feeTotal?: number;
-  /** Total fee with applied tax factor */
   feeTotalWithTax?: number;
-  /** Reserved for future needs */
   handlingTotal?: number;
-  /** Reserved for future needs */
   handlingTotalWithTax?: number;
   isAnonymous?: boolean;
-  /** Tax category or type */
   taxType?: string | undefined;
-  /** Amount of tax totals for items, shipments, and payments without the order discount amount with tax factor applied */
   taxTotal?: number;
   taxPercentRate?: number;
   languageCode?: string | undefined;
@@ -7119,9 +6967,7 @@ For instance, if the cart subtotal is $100, and the tax subtotal is $15, a 10% d
   currency?: string | undefined;
   sum?: number;
   outerId?: string | undefined;
-  /** For system use to handle canellation flow */
   cancelledState?: CustomerOrderCancelledState;
-  /** Used by payment provides to indicate that cancellation operation has completed */
   isCancelled?: boolean;
   cancelledDate?: Date | undefined;
   cancelReason?: string | undefined;
@@ -7386,15 +7232,10 @@ export interface ICustomerOrder {
   organizationName?: string | undefined;
   employeeId?: string | undefined;
   employeeName?: string | undefined;
-  /** The base shopping cart ID the order was created with */
   shoppingCartId?: string | undefined;
-  /** This checkbox determines whether the order is a prototype */
   isPrototype?: boolean;
-  /** The order internal number provided by customer */
   purchaseOrderNumber?: string | undefined;
-  /** Number of subscription associated with this order */
   subscriptionNumber?: string | undefined;
-  /** The ID of subscription associated with this order */
   subscriptionId?: string | undefined;
   objectType?: string | undefined;
   addresses?: OrderAddress[] | undefined;
@@ -7403,72 +7244,39 @@ export interface ICustomerOrder {
   shipments?: OrderShipment[] | undefined;
   feeDetails?: FeeDetail[] | undefined;
   discounts?: Discount[] | undefined;
-  /** When a discount is applied to the order, the tax calculation has already been applied and is shown in the tax field.
-Therefore, the discount will not be taking tax into account. 
-For instance, if the cart subtotal is $100, and the tax subtotal is $15, a 10% discount will yield a total of $105 ($100 subtotal – $10 discount + $15 tax). */
   discountAmount?: number;
   taxDetails?: TaxDetail[] | undefined;
   scopes?: string[] | undefined;
-  /** Order grand total */
   total?: number;
-  /** Amount of the item prices */
   subTotal?: number;
-  /** Amount of the item prices with tax */
   subTotalWithTax?: number;
-  /** Amount of the item discount total */
   subTotalDiscount?: number;
-  /** Amount of the item discount total with tax */
   subTotalDiscountWithTax?: number;
-  /** Amount of the item tax total */
   subTotalTaxTotal?: number;
-  /** Amount of the shipment total */
   shippingTotal?: number;
-  /** Amount of the shipment total with tax */
   shippingTotalWithTax?: number;
-  /** Amount of the shipment prices */
   shippingSubTotal?: number;
-  /** Amount of the shipment prices with tax */
   shippingSubTotalWithTax?: number;
-  /** Amount of the shipment discount amounts */
   shippingDiscountTotal?: number;
-  /** Amount of the shipment discount amounts with tax */
   shippingDiscountTotalWithTax?: number;
-  /** Reserved for future needs */
   shippingTaxTotal?: number;
-  /** Amount of the payments totals */
   paymentTotal?: number;
-  /** Amount of the payment totals with tax */
   paymentTotalWithTax?: number;
-  /** Amount of the payment prices */
   paymentSubTotal?: number;
-  /** Amount of the payment prices with tax */
   paymentSubTotalWithTax?: number;
-  /** Amount of the payments discount amounts */
   paymentDiscountTotal?: number;
-  /** Amount of the payment discount amounts with tax */
   paymentDiscountTotalWithTax?: number;
-  /** Reserved for future needs */
   paymentTaxTotal?: number;
-  /** Amount of the discount amounts of items, shipments and payments, and the order discount amount */
   discountTotal?: number;
-  /** Amount of the discount amounts with tax of items, shipments and payments, and the order discount amount with tax */
   discountTotalWithTax?: number;
-  /** Any extra fees applied to the order. This value comes from the cart */
   fee?: number;
-  /** Order fee with applied tax factor */
   feeWithTax?: number;
-  /** Amount of the order fee, as well as any item, shipment, and payment fees */
   feeTotal?: number;
-  /** Total fee with applied tax factor */
   feeTotalWithTax?: number;
-  /** Reserved for future needs */
   handlingTotal?: number;
-  /** Reserved for future needs */
   handlingTotalWithTax?: number;
   isAnonymous?: boolean;
-  /** Tax category or type */
   taxType?: string | undefined;
-  /** Amount of tax totals for items, shipments, and payments without the order discount amount with tax factor applied */
   taxTotal?: number;
   taxPercentRate?: number;
   languageCode?: string | undefined;
@@ -7481,9 +7289,7 @@ For instance, if the cart subtotal is $100, and the tax subtotal is $15, a 10% d
   currency?: string | undefined;
   sum?: number;
   outerId?: string | undefined;
-  /** For system use to handle canellation flow */
   cancelledState?: CustomerOrderCancelledState;
-  /** Used by payment provides to indicate that cancellation operation has completed */
   isCancelled?: boolean;
   cancelledDate?: Date | undefined;
   cancelReason?: string | undefined;
@@ -8236,23 +8042,14 @@ export interface IExcludedProperty {
   isInherited?: boolean;
 }
 
-/** Basic query information for data sources to retrieve exported data: included properties, paging, sorting, etc... Applied data sources expand it by adding certain criteria (for example, additional information for searching) */
 export class ExportDataQuery implements IExportDataQuery {
-  /** This used to instantiate a data query of this type at export start. */
   readonly exportTypeName?: string | undefined;
-  /** Keyword to search data */
   keyword?: string | undefined;
-  /** Object keys to search data */
   objectIds?: string[] | undefined;
-  /** How to sort the dataset matching a query */
   sort?: string | undefined;
-  /** User selected properties to export */
   includedProperties?: ExportedTypePropertyInfo[] | undefined;
-  /** Paging: skip records */
   skip?: number | undefined;
-  /** Paging: records in one page */
   take?: number | undefined;
-  /** True means preview (lightweight) data is queried, false - full version requested */
   isPreview?: boolean;
 
   constructor(data?: IExportDataQuery) {
@@ -8310,36 +8107,21 @@ export class ExportDataQuery implements IExportDataQuery {
   }
 }
 
-/** Basic query information for data sources to retrieve exported data: included properties, paging, sorting, etc... Applied data sources expand it by adding certain criteria (for example, additional information for searching) */
 export interface IExportDataQuery {
-  /** This used to instantiate a data query of this type at export start. */
   exportTypeName?: string | undefined;
-  /** Keyword to search data */
   keyword?: string | undefined;
-  /** Object keys to search data */
   objectIds?: string[] | undefined;
-  /** How to sort the dataset matching a query */
   sort?: string | undefined;
-  /** User selected properties to export */
   includedProperties?: ExportedTypePropertyInfo[] | undefined;
-  /** Paging: skip records */
   skip?: number | undefined;
-  /** Paging: records in one page */
   take?: number | undefined;
-  /** True means preview (lightweight) data is queried, false - full version requested */
   isPreview?: boolean;
 }
 
-/** Export property information */
 export class ExportedTypePropertyInfo implements IExportedTypePropertyInfo {
-  /** Property name with the path from the exportable entity (e.g. for entity containing PropertyA with nested properties it could be "PropertyA.PropertyB.PropertyC"). */
   fullName?: string | undefined;
-  /** Property group. Properties can be divided into different groups to simplify selection.
-Group could be used for grouping property infos. */
   group?: string | undefined;
-  /** User-friendly name for this property */
   displayName?: string | undefined;
-  /** * Reserved for future use */
   isRequired?: boolean;
 
   constructor(data?: IExportedTypePropertyInfo) {
@@ -8376,16 +8158,10 @@ Group could be used for grouping property infos. */
   }
 }
 
-/** Export property information */
 export interface IExportedTypePropertyInfo {
-  /** Property name with the path from the exportable entity (e.g. for entity containing PropertyA with nested properties it could be "PropertyA.PropertyB.PropertyC"). */
   fullName?: string | undefined;
-  /** Property group. Properties can be divided into different groups to simplify selection.
-Group could be used for grouping property infos. */
   group?: string | undefined;
-  /** User-friendly name for this property */
   displayName?: string | undefined;
-  /** * Reserved for future use */
   isRequired?: boolean;
 }
 
@@ -8689,7 +8465,6 @@ export interface IIAuthorizationRequirement {}
 
 export class IConditionTree implements IIConditionTree {
   readonly id?: string | undefined;
-  /** List of all available children for current tree node (is used in expression designer) */
   readonly availableChildren?: IConditionTree[] | undefined;
   readonly children?: IConditionTree[] | undefined;
 
@@ -8739,7 +8514,6 @@ export class IConditionTree implements IIConditionTree {
 
 export interface IIConditionTree {
   id?: string | undefined;
-  /** List of all available children for current tree node (is used in expression designer) */
   availableChildren?: IConditionTree[] | undefined;
   children?: IConditionTree[] | undefined;
 }
@@ -8812,7 +8586,6 @@ export interface IIDataImporter {
 }
 
 export class IExportProviderConfiguration implements IIExportProviderConfiguration {
-  /** Type discriminator to instantiate proper descendant (e.g. thru the universal PolymorphJsonConverter) */
   type?: string | undefined;
 
   constructor(data?: IIExportProviderConfiguration) {
@@ -8844,7 +8617,6 @@ export class IExportProviderConfiguration implements IIExportProviderConfigurati
 }
 
 export interface IIExportProviderConfiguration {
-  /** Type discriminator to instantiate proper descendant (e.g. thru the universal PolymorphJsonConverter) */
   type?: string | undefined;
 }
 
@@ -9028,16 +8800,11 @@ export class Image implements IImage {
   url?: string | undefined;
   description?: string | undefined;
   sortOrder?: number;
-  /** Gets or sets the asset type identifier. */
   typeId?: string | undefined;
-  /** Gets or sets the asset group name. */
   group?: string | undefined;
-  /** Gets or sets the asset name. */
   name?: string | undefined;
   outerId?: string | undefined;
-  /** Gets or sets the asset language. */
   languageCode?: string | undefined;
-  /** System flag used to mark that object was inherited from other */
   readonly isInherited?: boolean;
   readonly seoObjectType?: string | undefined;
   seoInfos?: SeoInfo[] | undefined;
@@ -9124,16 +8891,11 @@ export interface IImage {
   url?: string | undefined;
   description?: string | undefined;
   sortOrder?: number;
-  /** Gets or sets the asset type identifier. */
   typeId?: string | undefined;
-  /** Gets or sets the asset group name. */
   group?: string | undefined;
-  /** Gets or sets the asset name. */
   name?: string | undefined;
   outerId?: string | undefined;
-  /** Gets or sets the asset language. */
   languageCode?: string | undefined;
-  /** System flag used to mark that object was inherited from other */
   isInherited?: boolean;
   seoObjectType?: string | undefined;
   seoInfos?: SeoInfo[] | undefined;
@@ -10832,29 +10594,23 @@ export interface IOrderAddress {
 }
 
 export class OrderLineItem implements IOrderLineItem {
-  /** Price id */
   priceId?: string | undefined;
   currency?: string | undefined;
-  /** unit price without discount and tax */
   price?: number;
   priceWithTax?: number;
-  /** Resulting price with discount for one unit */
   placedPrice?: number;
   placedPriceWithTax?: number;
   extendedPrice?: number;
   extendedPriceWithTax?: number;
-  /** Gets the value of the single qty line item discount amount */
   discountAmount?: number;
   discountAmountWithTax?: number;
   discountTotal?: number;
   discountTotalWithTax?: number;
   fee?: number;
   feeWithTax?: number;
-  /** Tax category or type */
   taxType?: string | undefined;
   taxTotal?: number;
   taxPercentRate?: number;
-  /** Reserve quantity */
   reserveQuantity?: number;
   quantity?: number;
   productId?: string | undefined;
@@ -11055,29 +10811,23 @@ export class OrderLineItem implements IOrderLineItem {
 }
 
 export interface IOrderLineItem {
-  /** Price id */
   priceId?: string | undefined;
   currency?: string | undefined;
-  /** unit price without discount and tax */
   price?: number;
   priceWithTax?: number;
-  /** Resulting price with discount for one unit */
   placedPrice?: number;
   placedPriceWithTax?: number;
   extendedPrice?: number;
   extendedPriceWithTax?: number;
-  /** Gets the value of the single qty line item discount amount */
   discountAmount?: number;
   discountAmountWithTax?: number;
   discountTotal?: number;
   discountTotalWithTax?: number;
   fee?: number;
   feeWithTax?: number;
-  /** Tax category or type */
   taxType?: string | undefined;
   taxTotal?: number;
   taxPercentRate?: number;
-  /** Reserve quantity */
   reserveQuantity?: number;
   quantity?: number;
   productId?: string | undefined;
@@ -11125,11 +10875,8 @@ export class OrderShipment implements IOrderShipment {
   fulfillmentCenterName?: string | undefined;
   employeeId?: string | undefined;
   employeeName?: string | undefined;
-  /** Current shipment method code */
   shipmentMethodCode?: string | undefined;
-  /** Current shipment option code */
   shipmentMethodOption?: string | undefined;
-  /** Shipment method contains additional shipment method information */
   shippingMethod?: ShippingMethod | undefined;
   customerOrderId?: string | undefined;
   customerOrder?: CustomerOrder | undefined;
@@ -11153,13 +10900,11 @@ export class OrderShipment implements IOrderShipment {
   discountAmountWithTax?: number;
   fee?: number;
   feeWithTax?: number;
-  /** Tracking information */
   trackingNumber?: string | undefined;
   trackingUrl?: string | undefined;
   deliveryDate?: Date | undefined;
   objectType?: string | undefined;
   vendorId?: string | undefined;
-  /** Tax category or type */
   taxType?: string | undefined;
   taxTotal?: number;
   taxPercentRate?: number;
@@ -11173,9 +10918,7 @@ export class OrderShipment implements IOrderShipment {
   currency?: string | undefined;
   sum?: number;
   outerId?: string | undefined;
-  /** For system use to handle canellation flow */
   cancelledState?: OrderShipmentCancelledState;
-  /** Used by payment provides to indicate that cancellation operation has completed */
   isCancelled?: boolean;
   cancelledDate?: Date | undefined;
   cancelReason?: string | undefined;
@@ -11388,11 +11131,8 @@ export interface IOrderShipment {
   fulfillmentCenterName?: string | undefined;
   employeeId?: string | undefined;
   employeeName?: string | undefined;
-  /** Current shipment method code */
   shipmentMethodCode?: string | undefined;
-  /** Current shipment option code */
   shipmentMethodOption?: string | undefined;
-  /** Shipment method contains additional shipment method information */
   shippingMethod?: ShippingMethod | undefined;
   customerOrderId?: string | undefined;
   customerOrder?: CustomerOrder | undefined;
@@ -11416,13 +11156,11 @@ export interface IOrderShipment {
   discountAmountWithTax?: number;
   fee?: number;
   feeWithTax?: number;
-  /** Tracking information */
   trackingNumber?: string | undefined;
   trackingUrl?: string | undefined;
   deliveryDate?: Date | undefined;
   objectType?: string | undefined;
   vendorId?: string | undefined;
-  /** Tax category or type */
   taxType?: string | undefined;
   taxTotal?: number;
   taxPercentRate?: number;
@@ -11436,9 +11174,7 @@ export interface IOrderShipment {
   currency?: string | undefined;
   sum?: number;
   outerId?: string | undefined;
-  /** For system use to handle canellation flow */
   cancelledState?: OrderShipmentCancelledState;
-  /** Used by payment provides to indicate that cancellation operation has completed */
   isCancelled?: boolean;
   cancelledDate?: Date | undefined;
   cancelReason?: string | undefined;
@@ -11691,9 +11427,7 @@ export interface IOrganization {
   id?: string | undefined;
 }
 
-/** Represents the path from the catalog to one of the child objects (product or category): catalog/parent-category1/.../parent-categoryN/object */
 export class Outline implements IOutline {
-  /** Outline parts */
   items?: OutlineItem[] | undefined;
 
   constructor(data?: IOutline) {
@@ -11730,23 +11464,15 @@ export class Outline implements IOutline {
   }
 }
 
-/** Represents the path from the catalog to one of the child objects (product or category): catalog/parent-category1/.../parent-categoryN/object */
 export interface IOutline {
-  /** Outline parts */
   items?: OutlineItem[] | undefined;
 }
 
-/** Represents one outline element: catalog, category or product. */
 export class OutlineItem implements IOutlineItem {
-  /** Object id */
   id?: string | undefined;
-  /** Object type */
   seoObjectType?: string | undefined;
-  /** All SEO records for the object */
   seoInfos?: SeoInfo[] | undefined;
-  /** The name of current item */
   name?: string | undefined;
-  /** True when this object is linked to the virtual parent. */
   hasVirtualParent?: boolean;
 
   constructor(data?: IOutlineItem) {
@@ -11791,41 +11517,26 @@ export class OutlineItem implements IOutlineItem {
   }
 }
 
-/** Represents one outline element: catalog, category or product. */
 export interface IOutlineItem {
-  /** Object id */
   id?: string | undefined;
-  /** Object type */
   seoObjectType?: string | undefined;
-  /** All SEO records for the object */
   seoInfos?: SeoInfo[] | undefined;
-  /** The name of current item */
   name?: string | undefined;
-  /** True when this object is linked to the virtual parent. */
   hasVirtualParent?: boolean;
 }
 
 export class PaymentGatewayTransaction implements IPaymentGatewayTransaction {
   amount?: number;
   currencyCode?: string | undefined;
-  /** Flag represent that current transaction is processed */
   isProcessed?: boolean;
-  /** Date when this transaction was handled */
   processedDate?: Date | undefined;
   processError?: string | undefined;
   processAttemptCount?: number;
-  /** Raw request data */
   requestData?: string | undefined;
-  /** Raw response data */
   responseData?: string | undefined;
-  /** Gateway or VC response status code */
   responseCode?: string | undefined;
-  /** Gateway IP address */
   gatewayIpAddress?: string | undefined;
-  /** The type of payment interaction.The payment can be Capture or CheckReceived. 
-The value also includes customer payment interactions such as Website, Call, Store, or Unknown. */
   type?: string | undefined;
-  /** "Active", "Expired", and "Inactive" or other */
   status?: string | undefined;
   note?: string | undefined;
   createdDate?: Date;
@@ -11899,24 +11610,15 @@ The value also includes customer payment interactions such as Website, Call, Sto
 export interface IPaymentGatewayTransaction {
   amount?: number;
   currencyCode?: string | undefined;
-  /** Flag represent that current transaction is processed */
   isProcessed?: boolean;
-  /** Date when this transaction was handled */
   processedDate?: Date | undefined;
   processError?: string | undefined;
   processAttemptCount?: number;
-  /** Raw request data */
   requestData?: string | undefined;
-  /** Raw response data */
   responseData?: string | undefined;
-  /** Gateway or VC response status code */
   responseCode?: string | undefined;
-  /** Gateway IP address */
   gatewayIpAddress?: string | undefined;
-  /** The type of payment interaction.The payment can be Capture or CheckReceived. 
-The value also includes customer payment interactions such as Website, Call, Store, or Unknown. */
   type?: string | undefined;
-  /** "Active", "Expired", and "Inactive" or other */
   status?: string | undefined;
   note?: string | undefined;
   createdDate?: Date;
@@ -11929,9 +11631,7 @@ The value also includes customer payment interactions such as Website, Call, Sto
 export class PaymentIn implements IPaymentIn {
   orderId?: string | undefined;
   purpose?: string | undefined;
-  /** Payment method (gateway) code */
   gatewayCode?: string | undefined;
-  /** Payment method contains additional payment method information */
   paymentMethod?: PaymentMethod | undefined;
   organizationId?: string | undefined;
   organizationName?: string | undefined;
@@ -11953,7 +11653,6 @@ export class PaymentIn implements IPaymentIn {
   objectType?: string | undefined;
   feeDetails?: FeeDetail[] | undefined;
   vendorId?: string | undefined;
-  /** Tax category or type */
   taxType?: string | undefined;
   taxTotal?: number;
   taxPercentRate?: number;
@@ -11971,9 +11670,7 @@ export class PaymentIn implements IPaymentIn {
   currency?: string | undefined;
   sum?: number;
   outerId?: string | undefined;
-  /** For system use to handle canellation flow */
   cancelledState?: PaymentInCancelledState;
-  /** Used by payment provides to indicate that cancellation operation has completed */
   isCancelled?: boolean;
   cancelledDate?: Date | undefined;
   cancelReason?: string | undefined;
@@ -12168,9 +11865,7 @@ export class PaymentIn implements IPaymentIn {
 export interface IPaymentIn {
   orderId?: string | undefined;
   purpose?: string | undefined;
-  /** Payment method (gateway) code */
   gatewayCode?: string | undefined;
-  /** Payment method contains additional payment method information */
   paymentMethod?: PaymentMethod | undefined;
   organizationId?: string | undefined;
   organizationName?: string | undefined;
@@ -12192,7 +11887,6 @@ export interface IPaymentIn {
   objectType?: string | undefined;
   feeDetails?: FeeDetail[] | undefined;
   vendorId?: string | undefined;
-  /** Tax category or type */
   taxType?: string | undefined;
   taxTotal?: number;
   taxPercentRate?: number;
@@ -12210,9 +11904,7 @@ export interface IPaymentIn {
   currency?: string | undefined;
   sum?: number;
   outerId?: string | undefined;
-  /** For system use to handle canellation flow */
   cancelledState?: PaymentInCancelledState;
-  /** Used by payment provides to indicate that cancellation operation has completed */
   isCancelled?: boolean;
   cancelledDate?: Date | undefined;
   cancelReason?: string | undefined;
@@ -12507,21 +12199,14 @@ export interface IProcessPaymentRequestResult {
 }
 
 export class ProductAssociation implements IProductAssociation {
-  /** Association type (Accessories, Up-Sales, Cross-Sales, Related etc) */
   type?: string | undefined;
   priority?: number;
   quantity?: number | undefined;
-  /** Is a primary key of associating object */
   itemId?: string | undefined;
-  /** Each link element can have an associated object like Product, Category, etc.
-Is a primary key of associated object */
   associatedObjectId?: string | undefined;
-  /** Associated object type : 'product', 'category' etc */
   associatedObjectType?: string | undefined;
   outerId?: string | undefined;
-  /** Display name for associated object */
   readonly associatedObjectName?: string | undefined;
-  /** Associated object image URL */
   readonly associatedObjectImg?: string | undefined;
   tags?: string[] | undefined;
   readonly imgSrc?: string | undefined;
@@ -12593,21 +12278,14 @@ Is a primary key of associated object */
 }
 
 export interface IProductAssociation {
-  /** Association type (Accessories, Up-Sales, Cross-Sales, Related etc) */
   type?: string | undefined;
   priority?: number;
   quantity?: number | undefined;
-  /** Is a primary key of associating object */
   itemId?: string | undefined;
-  /** Each link element can have an associated object like Product, Category, etc.
-Is a primary key of associated object */
   associatedObjectId?: string | undefined;
-  /** Associated object type : 'product', 'category' etc */
   associatedObjectType?: string | undefined;
   outerId?: string | undefined;
-  /** Display name for associated object */
   associatedObjectName?: string | undefined;
-  /** Associated object image URL */
   associatedObjectImg?: string | undefined;
   tags?: string[] | undefined;
   imgSrc?: string | undefined;
@@ -12810,22 +12488,16 @@ export interface IProductPublicationRequest {
 }
 
 export class Property implements IProperty {
-  /** Gets or sets a value indicating whether user can change property value. */
   isReadOnly?: boolean;
-  /** Gets or sets a value indicating whether user can change property metadata or remove this property. */
   readonly isManageable?: boolean;
-  /** Gets or sets a value indicating whether this instance is new. A new property should be created on server site instead of trying to update it. */
   isNew?: boolean;
-  /** Gets or sets the catalog id that this product belongs to. */
   catalogId?: string | undefined;
-  /** Gets or sets the category id that this product belongs to. */
   categoryId?: string | undefined;
   name?: string | undefined;
   required?: boolean;
   dictionary?: boolean;
   multivalue?: boolean;
   multilanguage?: boolean;
-  /** Gets or sets a value indicating whether this VirtoCommerce.CatalogModule.Core.Model.Property is hidden. */
   hidden?: boolean;
   valueType?: PropertyValueType2;
   type?: PropertyType2;
@@ -12836,7 +12508,6 @@ export class Property implements IProperty {
   attributes?: PropertyAttribute[] | undefined;
   displayNames?: PropertyDisplayName[] | undefined;
   validationRules?: PropertyValidationRule[] | undefined;
-  /** Represents property validation rules definition */
   readonly validationRule?: PropertyValidationRule | undefined;
   isInherited?: boolean;
   createdDate?: Date;
@@ -12952,22 +12623,16 @@ export class Property implements IProperty {
 }
 
 export interface IProperty {
-  /** Gets or sets a value indicating whether user can change property value. */
   isReadOnly?: boolean;
-  /** Gets or sets a value indicating whether user can change property metadata or remove this property. */
   isManageable?: boolean;
-  /** Gets or sets a value indicating whether this instance is new. A new property should be created on server site instead of trying to update it. */
   isNew?: boolean;
-  /** Gets or sets the catalog id that this product belongs to. */
   catalogId?: string | undefined;
-  /** Gets or sets the category id that this product belongs to. */
   categoryId?: string | undefined;
   name?: string | undefined;
   required?: boolean;
   dictionary?: boolean;
   multivalue?: boolean;
   multilanguage?: boolean;
-  /** Gets or sets a value indicating whether this VirtoCommerce.CatalogModule.Core.Model.Property is hidden. */
   hidden?: boolean;
   valueType?: PropertyValueType2;
   type?: PropertyType2;
@@ -12978,7 +12643,6 @@ export interface IProperty {
   attributes?: PropertyAttribute[] | undefined;
   displayNames?: PropertyDisplayName[] | undefined;
   validationRules?: PropertyValidationRule[] | undefined;
-  /** Represents property validation rules definition */
   validationRule?: PropertyValidationRule | undefined;
   isInherited?: boolean;
   createdDate?: Date;
@@ -13148,7 +12812,6 @@ export interface IPropertyDictionaryItemLocalizedValue {
   value?: string | undefined;
 }
 
-/** Search criteria used for search property dictionary items */
 export class PropertyDictionaryItemSearchCriteria implements IPropertyDictionaryItemSearchCriteria {
   propertyIds?: string[] | undefined;
   catalogIds?: string[] | undefined;
@@ -13246,7 +12909,6 @@ export class PropertyDictionaryItemSearchCriteria implements IPropertyDictionary
   }
 }
 
-/** Search criteria used for search property dictionary items */
 export interface IPropertyDictionaryItemSearchCriteria {
   propertyIds?: string[] | undefined;
   catalogIds?: string[] | undefined;
@@ -13354,15 +13016,10 @@ export enum PropertyType {
   Catalog = "Catalog",
 }
 
-/** Represents property validation rules definition */
 export class PropertyValidationRule implements IPropertyValidationRule {
-  /** Uniquie value flag constrain */
   isUnique?: boolean;
-  /** Down chars count border or null if no defined */
   charCountMin?: number | undefined;
-  /** Upper chars count border or null if no defined */
   charCountMax?: number | undefined;
-  /** Custom regular expression */
   regExp?: string | undefined;
   propertyId?: string | undefined;
   id?: string | undefined;
@@ -13405,15 +13062,10 @@ export class PropertyValidationRule implements IPropertyValidationRule {
   }
 }
 
-/** Represents property validation rules definition */
 export interface IPropertyValidationRule {
-  /** Uniquie value flag constrain */
   isUnique?: boolean;
-  /** Down chars count border or null if no defined */
   charCountMin?: number | undefined;
-  /** Upper chars count border or null if no defined */
   charCountMax?: number | undefined;
-  /** Custom regular expression */
   regExp?: string | undefined;
   propertyId?: string | undefined;
   id?: string | undefined;
@@ -13549,9 +13201,7 @@ export class Refund implements IRefund {
   currency?: string | undefined;
   sum?: number;
   outerId?: string | undefined;
-  /** For system use to handle canellation flow */
   cancelledState?: RefundCancelledState;
-  /** Used by payment provides to indicate that cancellation operation has completed */
   isCancelled?: boolean;
   cancelledDate?: Date | undefined;
   cancelReason?: string | undefined;
@@ -13690,9 +13340,7 @@ export interface IRefund {
   currency?: string | undefined;
   sum?: number;
   outerId?: string | undefined;
-  /** For system use to handle canellation flow */
   cancelledState?: RefundCancelledState;
-  /** Used by payment provides to indicate that cancellation operation has completed */
   isCancelled?: boolean;
   cancelledDate?: Date | undefined;
   cancelReason?: string | undefined;
@@ -13792,13 +13440,9 @@ export enum RefundStatus {
 export class RunCategoriesExportCommand implements IRunCategoriesExportCommand {
   sellerId?: string | undefined;
   sellerName?: string | undefined;
-  /** Full type name of exportable entity */
   exportTypeName?: string | undefined;
-  /** Query information to retrive exported data */
   dataQuery?: ExportDataQuery | undefined;
-  /** Export provider configuration */
   providerConfig?: IExportProviderConfiguration | undefined;
-  /** Selected export provider name */
   providerName?: string | undefined;
 
   constructor(data?: IRunCategoriesExportCommand) {
@@ -13844,13 +13488,9 @@ export class RunCategoriesExportCommand implements IRunCategoriesExportCommand {
 export interface IRunCategoriesExportCommand {
   sellerId?: string | undefined;
   sellerName?: string | undefined;
-  /** Full type name of exportable entity */
   exportTypeName?: string | undefined;
-  /** Query information to retrive exported data */
   dataQuery?: ExportDataQuery | undefined;
-  /** Export provider configuration */
   providerConfig?: IExportProviderConfiguration | undefined;
-  /** Selected export provider name */
   providerName?: string | undefined;
 }
 
@@ -14980,14 +14620,10 @@ export interface ISearchOffersResult {
 export class SearchOrdersQuery implements ISearchOrdersQuery {
   sellerId?: string | undefined;
   sellerName?: string | undefined;
-  /** Search orders with flag IsPrototype */
   withPrototypes?: boolean;
-  /** Search only recurring orders created by subscription */
   onlyRecurring?: boolean;
-  /** Search orders with given subscription */
   subscriptionId?: string | undefined;
   subscriptionIds?: string[] | undefined;
-  /** It used to limit search within an operation (customer order for example) */
   operationId?: string | undefined;
   customerId?: string | undefined;
   customerIds?: string[] | undefined;
@@ -14998,10 +14634,8 @@ export class SearchOrdersQuery implements ISearchOrdersQuery {
   parentOperationId?: string | undefined;
   employeeId?: string | undefined;
   storeIds?: string[] | undefined;
-  /** Search by status */
   status?: string | undefined;
   statuses?: string[] | undefined;
-  /** Search by numbers */
   number?: string | undefined;
   numbers?: string[] | undefined;
   startDate?: Date | undefined;
@@ -15173,14 +14807,10 @@ export class SearchOrdersQuery implements ISearchOrdersQuery {
 export interface ISearchOrdersQuery {
   sellerId?: string | undefined;
   sellerName?: string | undefined;
-  /** Search orders with flag IsPrototype */
   withPrototypes?: boolean;
-  /** Search only recurring orders created by subscription */
   onlyRecurring?: boolean;
-  /** Search orders with given subscription */
   subscriptionId?: string | undefined;
   subscriptionIds?: string[] | undefined;
-  /** It used to limit search within an operation (customer order for example) */
   operationId?: string | undefined;
   customerId?: string | undefined;
   customerIds?: string[] | undefined;
@@ -15191,10 +14821,8 @@ export interface ISearchOrdersQuery {
   parentOperationId?: string | undefined;
   employeeId?: string | undefined;
   storeIds?: string[] | undefined;
-  /** Search by status */
   status?: string | undefined;
   statuses?: string[] | undefined;
-  /** Search by numbers */
   number?: string | undefined;
   numbers?: string[] | undefined;
   startDate?: Date | undefined;
@@ -16971,22 +16599,14 @@ export interface ISendSellerUserInvitationCommand {
 
 export class SeoInfo implements ISeoInfo {
   name?: string | undefined;
-  /** Slug */
   semanticUrl?: string | undefined;
-  /** head title tag content */
   pageTitle?: string | undefined;
-  /** <meta name="description" /> */
   metaDescription?: string | undefined;
   imageAltDescription?: string | undefined;
-  /** <meta name="keywords" /> */
   metaKeywords?: string | undefined;
-  /** Tenant StoreId which SEO defined */
   storeId?: string | undefined;
-  /** SEO related object id */
   objectId?: string | undefined;
-  /** SEO related object type name */
   objectType?: string | undefined;
-  /** Active/Inactive */
   isActive?: boolean;
   languageCode?: string | undefined;
   createdDate?: Date;
@@ -17055,22 +16675,14 @@ export class SeoInfo implements ISeoInfo {
 
 export interface ISeoInfo {
   name?: string | undefined;
-  /** Slug */
   semanticUrl?: string | undefined;
-  /** head title tag content */
   pageTitle?: string | undefined;
-  /** <meta name="description" /> */
   metaDescription?: string | undefined;
   imageAltDescription?: string | undefined;
-  /** <meta name="keywords" /> */
   metaKeywords?: string | undefined;
-  /** Tenant StoreId which SEO defined */
   storeId?: string | undefined;
-  /** SEO related object id */
   objectId?: string | undefined;
-  /** SEO related object type name */
   objectType?: string | undefined;
-  /** Active/Inactive */
   isActive?: boolean;
   languageCode?: string | undefined;
   createdDate?: Date;
@@ -18627,96 +18239,56 @@ export interface IValidationFailure {
 }
 
 export class Variation implements IVariation {
-  /** The type of product. Can be "Physical", "Digital", etc. */
   productType?: string | undefined;
-  /** The Stock Keeping Unit (SKU) code for the product. */
   code?: string | undefined;
-  /** The manufacturer's part number for the product. */
   manufacturerPartNumber?: string | undefined;
-  /** The Global Trade Item Number (GTIN) for the product. This can include UPC (in North America), EAN (in Europe), JAN (in Japan), and ISBN (for books). */
   gtin?: string | undefined;
-  /** The name of the product. */
   name?: string | undefined;
-  /** The ID of the catalog to which this product belongs. */
   catalogId?: string | undefined;
-  /** The ID of the category to which this product belongs. */
   categoryId?: string | undefined;
-  /** Product outline in physical catalog (all parent categories ids concatenated. E.g. (1/21/344)) */
   readonly outline?: string | undefined;
-  /** Product path in physical catalog (all parent categories names concatenated. E.g. (parent1/parent2)) */
   readonly path?: string | undefined;
   readonly titularItemId?: string | undefined;
-  /** The ID of the main product associated with this product variation. */
   mainProductId?: string | undefined;
-  /** Specifies whether the product is currently visible on the store for customers to view and purchase.
-If set to false, the product is currently sold out. */
   isActive?: boolean | undefined;
-  /** Specifies whether the product is currently visible on the store for customers to view and purchase.
-If set to false, the product is currently ouf of stock. */
   isBuyable?: boolean | undefined;
-  /** Indicates whether the inventory service is tracking the availability of this product.
-If set to false, the product is considered in stock without any inventory limitations. */
   trackInventory?: boolean | undefined;
-  /** The date and time when the product was last indexed for search. */
   indexingDate?: Date | undefined;
-  /** The maximum quantity of the product that can be purchased in a single order. A value of 0 indicates that there are no limitations on the maximum quantity. */
   maxQuantity?: number | undefined;
-  /** The minimum quantity of the product that must be purchased in a single order. A value of 0 indicates that there are no limitations on the minimum quantity. */
   minQuantity?: number | undefined;
-  /** First listed date and time. If you do not specify an end date, the product will be active until you deactivate it.If you do not specify an end date, the product will be active until you deactivate it.If you do not specify a start date, the product will become active immediately once you save it. */
   startDate?: Date;
-  /** Listing expires on the specific date and time. If you do not specify an end date, the product will be active until you deactivate it. */
   endDate?: Date | undefined;
-  /** The type of package for this product, which determines the product's specific dimensions. */
   packageType?: string | undefined;
-  /** The unit of measurement for the product's weight. */
   weightUnit?: string | undefined;
-  /** The weight of the product, in the unit specified by the WeightUnit property. */
   weight?: number | undefined;
-  /** The unit of measurement for the product's height, length, and width. */
   measureUnit?: string | undefined;
-  /** The height of the product, in the unit specified by the MeasureUnit property. */
   height?: number | undefined;
-  /** The length of the product, in the unit specified by the MeasureUnit property. */
   length?: number | undefined;
-  /** The width of the product, in the unit specified by the MeasureUnit property. */
   width?: number | undefined;
   enableReview?: boolean | undefined;
-  /** The maximum number of times the product can be downloaded. A value of 0 indicates no limit. */
   maxNumberOfDownload?: number | undefined;
-  /** The date and time when the download link or access to the product will expire. */
   downloadExpiration?: Date | undefined;
-  /** The type of product download. Valid values include: "Standard Product", "Software", and "Music". */
   downloadType?: string | undefined;
-  /** Indicates whether the product requires the user to agree to any terms or conditions before downloading. */
   hasUserAgreement?: boolean | undefined;
-  /** Specifies the type of shipping option available for the product. */
   shippingType?: string | undefined;
-  /** Specifies the type of tax applied to the product. */
   taxType?: string | undefined;
-  /** ID of the vendor associated with the product. */
   vendor?: string | undefined;
-  /** Indicates the position of the product in the catalog for ordering purposes. */
   priority?: number;
-  /** An external identifier for the product that can be used for integration with external systems. */
   outerId?: string | undefined;
   properties?: Property[] | undefined;
   excludedProperties?: ExcludedProperty[] | undefined;
   propertyValues?: PropertyValue[] | undefined;
-  /** Gets the default image for the product. */
   readonly imgSrc?: string | undefined;
   images?: Image[] | undefined;
   assets?: Asset[] | undefined;
   links?: CategoryLink[] | undefined;
   variations?: Variation[] | undefined;
-  /** Each descendant type should override this property to use other object type for seo records */
   readonly seoObjectType?: string | undefined;
   seoInfos?: SeoInfo[] | undefined;
   reviews?: EditorialReview[] | undefined;
   associations?: ProductAssociation[] | undefined;
   referencedAssociations?: ProductAssociation[] | undefined;
   outlines?: Outline[] | undefined;
-  /** System flag used to mark that object was inherited from other */
   readonly isInherited?: boolean;
   readonly parentCategoryIsActive?: boolean;
   createdDate?: Date;
@@ -18941,96 +18513,56 @@ If set to false, the product is considered in stock without any inventory limita
 }
 
 export interface IVariation {
-  /** The type of product. Can be "Physical", "Digital", etc. */
   productType?: string | undefined;
-  /** The Stock Keeping Unit (SKU) code for the product. */
   code?: string | undefined;
-  /** The manufacturer's part number for the product. */
   manufacturerPartNumber?: string | undefined;
-  /** The Global Trade Item Number (GTIN) for the product. This can include UPC (in North America), EAN (in Europe), JAN (in Japan), and ISBN (for books). */
   gtin?: string | undefined;
-  /** The name of the product. */
   name?: string | undefined;
-  /** The ID of the catalog to which this product belongs. */
   catalogId?: string | undefined;
-  /** The ID of the category to which this product belongs. */
   categoryId?: string | undefined;
-  /** Product outline in physical catalog (all parent categories ids concatenated. E.g. (1/21/344)) */
   outline?: string | undefined;
-  /** Product path in physical catalog (all parent categories names concatenated. E.g. (parent1/parent2)) */
   path?: string | undefined;
   titularItemId?: string | undefined;
-  /** The ID of the main product associated with this product variation. */
   mainProductId?: string | undefined;
-  /** Specifies whether the product is currently visible on the store for customers to view and purchase.
-If set to false, the product is currently sold out. */
   isActive?: boolean | undefined;
-  /** Specifies whether the product is currently visible on the store for customers to view and purchase.
-If set to false, the product is currently ouf of stock. */
   isBuyable?: boolean | undefined;
-  /** Indicates whether the inventory service is tracking the availability of this product.
-If set to false, the product is considered in stock without any inventory limitations. */
   trackInventory?: boolean | undefined;
-  /** The date and time when the product was last indexed for search. */
   indexingDate?: Date | undefined;
-  /** The maximum quantity of the product that can be purchased in a single order. A value of 0 indicates that there are no limitations on the maximum quantity. */
   maxQuantity?: number | undefined;
-  /** The minimum quantity of the product that must be purchased in a single order. A value of 0 indicates that there are no limitations on the minimum quantity. */
   minQuantity?: number | undefined;
-  /** First listed date and time. If you do not specify an end date, the product will be active until you deactivate it.If you do not specify an end date, the product will be active until you deactivate it.If you do not specify a start date, the product will become active immediately once you save it. */
   startDate?: Date;
-  /** Listing expires on the specific date and time. If you do not specify an end date, the product will be active until you deactivate it. */
   endDate?: Date | undefined;
-  /** The type of package for this product, which determines the product's specific dimensions. */
   packageType?: string | undefined;
-  /** The unit of measurement for the product's weight. */
   weightUnit?: string | undefined;
-  /** The weight of the product, in the unit specified by the WeightUnit property. */
   weight?: number | undefined;
-  /** The unit of measurement for the product's height, length, and width. */
   measureUnit?: string | undefined;
-  /** The height of the product, in the unit specified by the MeasureUnit property. */
   height?: number | undefined;
-  /** The length of the product, in the unit specified by the MeasureUnit property. */
   length?: number | undefined;
-  /** The width of the product, in the unit specified by the MeasureUnit property. */
   width?: number | undefined;
   enableReview?: boolean | undefined;
-  /** The maximum number of times the product can be downloaded. A value of 0 indicates no limit. */
   maxNumberOfDownload?: number | undefined;
-  /** The date and time when the download link or access to the product will expire. */
   downloadExpiration?: Date | undefined;
-  /** The type of product download. Valid values include: "Standard Product", "Software", and "Music". */
   downloadType?: string | undefined;
-  /** Indicates whether the product requires the user to agree to any terms or conditions before downloading. */
   hasUserAgreement?: boolean | undefined;
-  /** Specifies the type of shipping option available for the product. */
   shippingType?: string | undefined;
-  /** Specifies the type of tax applied to the product. */
   taxType?: string | undefined;
-  /** ID of the vendor associated with the product. */
   vendor?: string | undefined;
-  /** Indicates the position of the product in the catalog for ordering purposes. */
   priority?: number;
-  /** An external identifier for the product that can be used for integration with external systems. */
   outerId?: string | undefined;
   properties?: Property[] | undefined;
   excludedProperties?: ExcludedProperty[] | undefined;
   propertyValues?: PropertyValue[] | undefined;
-  /** Gets the default image for the product. */
   imgSrc?: string | undefined;
   images?: Image[] | undefined;
   assets?: Asset[] | undefined;
   links?: CategoryLink[] | undefined;
   variations?: Variation[] | undefined;
-  /** Each descendant type should override this property to use other object type for seo records */
   seoObjectType?: string | undefined;
   seoInfos?: SeoInfo[] | undefined;
   reviews?: EditorialReview[] | undefined;
   associations?: ProductAssociation[] | undefined;
   referencedAssociations?: ProductAssociation[] | undefined;
   outlines?: Outline[] | undefined;
-  /** System flag used to mark that object was inherited from other */
   isInherited?: boolean;
   parentCategoryIsActive?: boolean;
   createdDate?: Date;
@@ -19040,7 +18572,6 @@ If set to false, the product is considered in stock without any inventory limita
   id?: string | undefined;
 }
 
-/** Video content information */
 export class Video implements IVideo {
   name?: string | undefined;
   description?: string | undefined;
@@ -19117,7 +18648,6 @@ export class Video implements IVideo {
   }
 }
 
-/** Video content information */
 export interface IVideo {
   name?: string | undefined;
   description?: string | undefined;

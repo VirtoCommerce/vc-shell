@@ -76,7 +76,8 @@
         "EMPTY": "List is empty.",
         "NOT_FOUND": "Nothing found.",
         "TOTALS": "Totals:",
-        "ACTIONS": "Actions"
+        "ACTIONS": "Actions",
+        "NOT_SET": "Not set"
       },
 
       "VC_POPUP": {

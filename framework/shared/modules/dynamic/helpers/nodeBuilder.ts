@@ -76,8 +76,8 @@ function nodeBuilder<
 
   const hint =
     safeIn("hint", controlSchema) && controlSchema.hint
-      ? unref(unwrapInterpolation(controlSchema.hint, internalContext)) ??
-        (bladeContext.scope && unref(unwrapInterpolation(controlSchema.hint, bladeContext.scope))) ??
+      ? (bladeContext.scope && unref(unwrapInterpolation(controlSchema.hint, bladeContext.scope))) ??
+        unref(unwrapInterpolation(controlSchema.hint, internalContext)) ??
         undefined
       : undefined;
 
@@ -115,16 +115,16 @@ function nodeBuilder<
 
   const baseProps: IControlBaseProps = reactive({
     key: `${parentId}`,
-    label: computed(() => (label ? t(label) : undefined)),
-    hint: computed(() => (hint ? t(hint) : undefined)),
+    label: computed(() => (typeof label !== "undefined" ? t(label) : undefined)),
+    hint: computed(() => (typeof hint !== "undefined" ? t(hint) : undefined)),
     disabled,
     name,
     rules,
-    placeholder: computed(() => (placeholder ? t(placeholder) : undefined)),
+    placeholder: computed(() => (typeof placeholder !== "undefined" ? t(placeholder) : undefined)),
     required,
     modelValue,
     "onUpdate:modelValue": onUpdateModelValue,
-    tooltip: computed(() => (tooltip ? t(tooltip) : undefined)),
+    tooltip: computed(() => (typeof tooltip !== "undefined" ? t(tooltip) : undefined)),
     multilanguage,
     classNames:
       "horizontalSeparator" in controlSchema && controlSchema.horizontalSeparator

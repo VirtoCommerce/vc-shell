@@ -1,3 +1,13 @@
+## [1.0.230](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.229...v1.0.230) (2024-06-04)
+
+
+### Features
+
+* **offers:** add maxlength to sku input field, small refactors ([c857745](https://github.com/VirtoCommerce/vendor-portal/commit/c857745922f0a2d98c069652762c9b3633cb694c))
+* **seller-details:** image remove confirmation turned off, localization updates ([2004b56](https://github.com/VirtoCommerce/vendor-portal/commit/2004b566c77e5f262ba3a003b48217688e4a3470))
+
+
+
 ## [1.0.229](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.228...v1.0.229) (2024-06-03)
 
 

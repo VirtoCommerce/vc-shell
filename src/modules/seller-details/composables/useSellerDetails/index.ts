@@ -43,6 +43,7 @@ interface SellerDetailsScope extends DetailsBaseBladeScope {
   computedFee: ComputedRef<string>;
   assetsHandler: {
     images: {
+      noRemoveConfirmation: boolean;
       loading: ComputedRef<boolean>;
       upload(files: FileList): Promise<Image[]>;
       remove: (files: IImage[]) => ICommonAsset[];
@@ -197,6 +198,7 @@ export const useSellerDetails = (args?: DetailsComposableArgs): UseDetails<ISell
     computedFee,
     assetsHandler: {
       images: {
+        noRemoveConfirmation: true,
         loading: imageLoading,
         async upload(files: FileList) {
           return (await uploadImage(files, `seller_logos/${item.value!.id}`)).map((x) => new Image(x));

@@ -5,12 +5,8 @@
     },
     "PAGES": {
       "ALERTS": {
-        "CLOSE_CONFIRMATION": "You have unsaved changes. Close anyway?"
-      },
-      "DETAILS": {
-        "ALERTS": {
-          "DELETE_CONFIRMATION": "Are you sure you want to delete this image?"
-        }
+        "CLOSE_CONFIRMATION": "You have unsaved changes. Close anyway?",
+        "IMAGE_DELETE_CONFIRMATION": "Are you sure you want to delete this image?"
       }
     },
     "TITLE": "Organization Details",

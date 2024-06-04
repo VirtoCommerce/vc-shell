@@ -8,8 +8,8 @@
         :bordered="true"
         :src="context.item.imgSrc"
       ></VcImage>
-      <div class="tw-grow tw-basis-0 tw-ml-3">
-        <div class="tw-font-bold tw-text-lg">
+      <div class="tw-grow tw-basis-0 tw-ml-3 tw-truncate">
+        <div class="tw-font-bold tw-text-lg tw-truncate">
           {{ context.item.name }}
         </div>
       </div>

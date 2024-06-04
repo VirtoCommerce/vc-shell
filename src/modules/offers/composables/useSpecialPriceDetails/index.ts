@@ -15,7 +15,7 @@ import { watchDebounced } from "@vueuse/core";
 
 export interface SpecialPricesDetailsScope extends DetailsBaseBladeScope {
   memberIds: WritableComputedRef<{ id: string }[]>;
-  removePrice: (idx: number) => void;
+  removePrice: (item: OfferPriceList, idx: number) => void;
   addPrice: () => void;
   currencies: Ref<ICurrency[]>;
   toolbarOverrides: {
@@ -65,7 +65,7 @@ export const useSpecialPriceDetails = (
     } as unknown as IOfferPrice),
   );
 
-  function removePrice(idx: number) {
+  function removePrice(price: OfferPriceList, idx: number) {
     item.value?.prices?.splice(idx, 1);
   }
 
@@ -103,12 +103,6 @@ export const useSpecialPriceDetails = (
     return name != "" ? name : "Default";
   }
 
-  function updateCurrencies(args: { index: number; value: string }) {
-    if (item.value && item.value.prices) {
-      item.value.prices[args.index].currency = args.value;
-    }
-  }
-
   const scope: SpecialPricesDetailsScope = {
     memberIds: computed({
       get() {
@@ -122,7 +116,6 @@ export const useSpecialPriceDetails = (
     removePrice,
     addPrice,
     currencies,
-    updateCurrencies,
     toolbarOverrides: {
       saveChanges: {
         disabled: computed(() => {

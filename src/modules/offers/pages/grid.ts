@@ -72,7 +72,7 @@ export const grid: DynamicGridSchema = {
           id: "name",
           title: "OFFERS.PAGES.LIST.TABLE.HEADER.PRODUCT_NAME",
           sortable: true,
-          alwaysVisible: true,
+          // alwaysVisible: true,
         },
         {
           id: "createdDate",
@@ -100,14 +100,6 @@ export const grid: DynamicGridSchema = {
           alwaysVisible: true,
           type: "status-icon",
           visible: { method: "needShowIsDefault" },
-        },
-        {
-          id: "prices[0].listPrice",
-          title: "OFFERS.PAGES.LIST.TABLE.HEADER.LIST_PRICE",
-          sortable: true,
-          customTemplate: {
-            component: "ListPriceTemplate",
-          },
         },
       ],
     },

@@ -29,15 +29,13 @@ export interface Props {
     scope: UnwrapNestedRefs<SpecialPricesDetailsScope>;
   };
   index: number;
+  onEditComplete: (data: unknown) => void;
 }
 
 const props = defineProps<Props>();
 
 function updateModel(value: unknown) {
-  props.bladeContext.scope?.updateCurrencies({
-    index: props.index,
-    value,
-  });
+  props.onEditComplete(value);
 }
 </script>
 

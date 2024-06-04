@@ -78,7 +78,8 @@ export default {
         async remove(image: ICommonAsset) {
           if (!imagesHandler.remove?.value) throw new Error("Remove handler is not provided");
           if (
-            await showConfirmation(
+            imagesHandler.noRemoveConfirmation ||
+            (await showConfirmation(
               computed(() =>
                 t(
                   `${props.bladeContext?.settings?.localizationPrefix
@@ -86,7 +87,7 @@ export default {
                     .toUpperCase()}.PAGES.ALERTS.IMAGE_DELETE_CONFIRMATION`,
                 ),
               ),
-            )
+            ))
           ) {
             const edited = await imagesHandler.remove?.value?.([image]);
             await editImages(edited);

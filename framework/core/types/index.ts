@@ -92,10 +92,11 @@ export interface IActionBuilderResult<T = {}> {
   title: string | Ref<string>;
   type: "danger" | "success";
   position: "right" | "left";
-  clickHandler(item?: T): void;
+  clickHandler(item?: T, index?: number): void;
 }
 
 export interface AssetsHandler<T extends ICommonAsset> {
+  noRemoveConfirmation?: boolean;
   loading?: Ref<boolean>;
   upload?: (files: FileList, startingSortOrder?: number) => Promise<T[]>;
   edit?: (files: T[]) => T[];

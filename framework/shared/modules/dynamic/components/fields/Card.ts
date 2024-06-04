@@ -63,6 +63,7 @@ export default {
         props: Object.assign(
           {},
           {
+            variant: props.element.variant,
             header: toValue(props.baseProps.label),
             isCollapsable: props.element.collapsible,
             isCollapsed: restoreCollapsed(props.element.id) || props.element.collapsed,

@@ -127,7 +127,7 @@ $variants: success, danger;
   &__title {
     @apply tw-uppercase tw-flex-grow
    tw-text-[color:var(--card-header-color)]
-   tw-text-base tw-font-bold tw-uppercase;
+   tw-text-base tw-font-bold;
   }
 
   &__icon {
@@ -139,7 +139,7 @@ $variants: success, danger;
   }
 
   &__body {
-    @apply tw-flex-grow tw-box-border;
+    @apply tw-flex-grow tw-box-border tw-flex-col;
   }
 
   @each $variant in $variants {

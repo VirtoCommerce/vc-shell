@@ -1,5 +1,6 @@
 import {
   VcButton,
+  VcCard,
   VcField,
   VcGallery,
   VcIcon,
@@ -768,6 +769,11 @@ export interface CardSchema extends RequiredBy<Pick<SchemaBase, "id" | "label" |
    * @default false
    */
   removePadding?: boolean;
+  /**
+   * Card variant.
+   * @type {default | success | danger}
+   */
+  variant?: ComponentProps<typeof VcCard>["variant"];
 }
 
 export interface WidgetsSchema extends Pick<SchemaBase, "id" | "horizontalSeparator"> {
@@ -883,22 +889,6 @@ export interface SwitchSchema extends Omit<SchemaBase, "placeholder" | "multilan
 
 export type TableSchema = Omit<ListContentSchema, "filter"> &
   Pick<SchemaBase, "id" | "property" | "visibility"> & {
-    /**
-     * Shows button to remove table row.
-     * Used when table is in editing mode.
-     */
-    removeRowButton?: {
-      /**
-       * Determines whether the button should be shown or hidden.
-       */
-      show: boolean;
-      /**
-       * Method to be called when the button is clicked.
-       * @description Method should be defined in the blade `scope`.
-       * @type {string}
-       */
-      method: string;
-    };
     /**
      * Configuration for the add new row button in the table.
      * Used when table is in editing mode.

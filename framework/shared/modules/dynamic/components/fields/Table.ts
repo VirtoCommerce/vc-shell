@@ -1,13 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useTableTemplates } from "./../../composables";
-import { Component, ExtractPropTypes, computed, h, inject, isRef, nextTick, toValue, unref } from "vue";
+import { Component, ExtractPropTypes, computed, h, inject, toValue, unref } from "vue";
 import { Table } from "../factories";
 import componentProps from "./props";
 import { TableSchema } from "../../types";
 import { useI18n } from "vue-i18n";
 import { unrefNested } from "../../helpers/unrefNested";
 import { setModel } from "../../helpers/setters";
-import { safeIn } from "../../helpers/safeIn";
 import { IActionBuilderResult, ITableColumns } from "../../../../../core/types";
 
 type TableItemData<T> = {

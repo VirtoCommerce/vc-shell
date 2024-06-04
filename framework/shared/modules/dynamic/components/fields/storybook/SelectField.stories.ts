@@ -131,7 +131,7 @@ export default {
           summary: "boolean",
         },
         defaultValue: {
-          summary: false,
+          summary: "false",
         },
       },
     },
@@ -156,7 +156,7 @@ export default {
           summary: "boolean",
         },
         defaultValue: {
-          summary: false,
+          summary: "false",
         },
       },
     },
@@ -167,7 +167,7 @@ export default {
           summary: "boolean",
         },
         defaultValue: {
-          summary: false,
+          summary: "false",
         },
       },
     },
@@ -179,7 +179,7 @@ export default {
           summary: "boolean",
         },
         defaultValue: {
-          summary: true,
+          summary: "true",
         },
       },
     },

@@ -73,7 +73,7 @@ export default {
     aspectRatio: {
       description: `Field columns aspect ratio.
       Uses CSS flex-grow property.`,
-      control: "array",
+      control: "object",
       table: {
         type: {
           summary: "[number, number]",

@@ -95,7 +95,7 @@ export default {
           summary: "number",
         },
         defaultValue: {
-          summary: 1024,
+          summary: "1024",
         },
       },
     },

@@ -65,7 +65,7 @@ export default {
           summary: "number",
         },
         defaultValue: {
-          summary: 1,
+          summary: "1",
         },
       },
     },

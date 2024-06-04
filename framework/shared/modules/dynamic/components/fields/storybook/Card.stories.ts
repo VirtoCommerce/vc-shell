@@ -87,6 +87,16 @@ export default {
         },
       },
     },
+    variant: {
+      description: "Card variant.",
+      control: "radio",
+      options: ["default", "success", "danger"],
+      table: {
+        type: {
+          summary: "default | success | danger",
+        },
+      },
+    },
   },
   parameters: {
     docs: {

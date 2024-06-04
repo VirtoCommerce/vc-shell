@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useTableTemplates } from "./../../composables";
-import { Component, ExtractPropTypes, computed, h, inject, unref } from "vue";
+import { Component, ExtractPropTypes, computed, h, inject, isRef, nextTick, toValue, unref } from "vue";
 import { Table } from "../factories";
 import componentProps from "./props";
 import { TableSchema } from "../../types";
@@ -8,8 +8,14 @@ import { useI18n } from "vue-i18n";
 import { unrefNested } from "../../helpers/unrefNested";
 import { setModel } from "../../helpers/setters";
 import { safeIn } from "../../helpers/safeIn";
+import { IActionBuilderResult, ITableColumns } from "../../../../../core/types";
 
-type TableItemData = Record<string, any>;
+type TableItemData<T> = {
+  name: string;
+  item: T;
+  cell: ITableColumns;
+  index: number;
+};
 
 export default {
   name: "TableEl",
@@ -19,13 +25,48 @@ export default {
     const { t } = useI18n({ useScope: "global" });
     const enableEdit = inject("isBladeEditable", false);
     const enableEditComputed = computed(() => unref(enableEdit));
+    const items = (unrefNested(props.baseProps).modelValue ?? []) as any[];
+
+    function disabledActionHandler(disabled: { method?: string } | boolean, item: (typeof items)[number]): boolean {
+      if (!disabled) return false;
+      if (typeof disabled === "boolean") return disabled;
+      else if (disabled.method && typeof toValue(props.bladeContext.scope)?.[disabled.method] === "function")
+        return toValue(props.bladeContext.scope)?.[disabled.method]({ item });
+      else if (disabled.method && toValue(props.bladeContext.scope)?.[disabled.method])
+        return toValue(props.bladeContext.scope)?.[disabled.method];
+      return false;
+    }
+
+    function actionBuilder(item: (typeof items)[number]): IActionBuilderResult[] | undefined {
+      const result = props.element?.actions?.reduce((arr, action) => {
+        const isDisabled = disabledActionHandler(action?.disabled ?? false, item);
+
+        if (!toValue(isDisabled)) {
+          arr.push({
+            icon: action.icon,
+            title: computed(() => t(action.title)),
+            type: action.type,
+            position: action.position,
+            clickHandler: async (itemVal: (typeof items)[number], index: number) => {
+              try {
+                await toValue(props.bladeContext.scope)?.[action.method]?.(itemVal, index);
+              } catch (error) {
+                throw new Error(`Method ${action.method} is not defined in scope or toolbarOverrides`);
+              }
+            },
+          });
+        }
+        return arr;
+      }, [] as IActionBuilderResult[]);
+
+      return result;
+    }
 
     return () => {
       const field = Table({
         props: Object.assign(
           {},
           {
-            removeRowButton: props.element.removeRowButton?.show,
             addNewRowButton: props.element.addNewRowButton
               ? {
                   title: computed(() => t(props.element.addNewRowButton?.title ?? "")),
@@ -40,22 +81,15 @@ export default {
             stateKey: props.element.id,
             class: `!tw-flex-auto ${unrefNested(props.baseProps).classNames ?? ""}`,
             editing: enableEditComputed.value,
-            onOnEditComplete: (data: any) => {
+            enableItemActions: !!props.element.actions,
+            itemActionBuilder: actionBuilder,
+            onOnEditComplete: (data: { event: { field: string; value: any }; index: number }) => {
               if (props.fieldContext) {
                 setModel({
                   context: props.fieldContext,
                   property: `${props.element.property}.${data.index}.${data.event.field}`,
                   value: data.event.value,
                 });
-              }
-            },
-            onOnRowRemove: (data: { index: number }) => {
-              if (
-                props.element.removeRowButton?.method &&
-                props.bladeContext.scope?.[props.element.removeRowButton?.method] &&
-                typeof props.bladeContext.scope?.[props.element.removeRowButton?.method] === "function"
-              ) {
-                props.bladeContext.scope?.[props.element.removeRowButton?.method]?.(data.index);
               }
             },
             onOnAddNewRow: () => {
@@ -86,12 +120,21 @@ export default {
         slots: {
           ...Object.entries(tableTemplates.templateOverrideComponents).reduce(
             (obj, [key, value], index) => {
-              obj[`item_${key}`] = (itemData: TableItemData) => {
+              obj[`item_${key}`] = (itemData: TableItemData<(typeof items)[number]>) => {
                 return h(unref(value), {
                   index: itemData.index,
                   context: itemData,
                   key: `template_override_${props.element.id}_${index}`,
                   bladeContext: props.bladeContext,
+                  onEditComplete: (data: any) => {
+                    if (props.fieldContext) {
+                      setModel({
+                        context: props.fieldContext,
+                        property: `${props.element.property}.${itemData.index}.${key}`,
+                        value: data,
+                      });
+                    }
+                  },
                 });
               };
 
@@ -100,20 +143,17 @@ export default {
             {} as Record<`item_${string}`, any>,
           ),
           notfound: tableTemplates?.notFound
-            ? (itemData: TableItemData) =>
-                h(tableTemplates.notFound as Component, { context: itemData, bladeContext: props.bladeContext })
+            ? () => h(tableTemplates.notFound as Component, { context: props.bladeContext })
             : undefined,
           "mobile-item": tableTemplates?.mobileView
-            ? (itemData: TableItemData) =>
+            ? (itemData: (typeof items)[number]) =>
                 h(tableTemplates.mobileView as Component, { context: itemData, bladeContext: props.bladeContext })
             : undefined,
           empty: tableTemplates?.empty
-            ? (itemData: TableItemData) =>
-                h(tableTemplates.empty as Component, { context: itemData, bladeContext: props.bladeContext })
+            ? () => h(tableTemplates.empty as Component, { context: props.bladeContext })
             : undefined,
           footer: tableTemplates?.footer
-            ? (itemData: TableItemData) =>
-                h(tableTemplates.footer as Component, { context: itemData, bladeContext: props.bladeContext })
+            ? () => h(tableTemplates.footer as Component, { context: props.bladeContext })
             : undefined,
         },
       });

@@ -7,38 +7,41 @@
         'vc-container_nopadding': noPadding,
       },
     ]"
-    @touchstart="touchStart"
-    @touchmove="touchMove"
-    @touchend="touchEnd"
+    @touchstart="onTouchstart"
+    @touchmove="onTouchmove"
+    @touchend="onTouchend"
   >
+    <div
+      :class="['vc-container__overscroll', { 'vc-container__overscroll_touching': touching }]"
+      :style="{
+        top: -1 * pullDist + topOffset + 'px',
+        height: pullDist + 'px',
+      }"
+    >
+      <div class="vc-container__status">
+        <VcIcon
+          :icon="canRefresh || goingUp ? 'fas fa-arrow-up' : 'fas fa-arrow-down'"
+          class="vc-container__overscroll-icon"
+        ></VcIcon>
+        <span v-if="!(canRefresh || goingUp)">{{ $t("COMPONENTS.ATOMS.VC_CONTAINER.PULL_TO_REFRESH") }}</span>
+        <span v-else>{{ $t("COMPONENTS.ATOMS.VC_CONTAINER.REFRESHING") }}</span>
+      </div>
+    </div>
     <div
       ref="component"
       class="vc-container__inner"
-      :style="{
-        transform: dist ? `translate3d(0, ${dist}px, 0)` : '',
+      :class="{
+        'vc-container__inner_touching': touching,
       }"
+      :style="{ top: topOffset + 'px' }"
     >
-      <div
-        v-if="usePtr && dist > 0"
-        class="vc-container__overscroll"
-        :class="{ 'vc-container__overscroll_passed': status === 'loosing' }"
-        :style="{ height: dist ? `${dist}px` : '0px' }"
-      >
-        <VcIcon
-          :icon="status === 'pulling' ? 'fas fa-arrow-down' : 'fas fa-sync'"
-          :class="[iconClass]"
-          :style="{ transform: status === 'pulling' ? `rotate(${dist * 3}deg)` : '' }"
-        ></VcIcon>
-        <span v-if="status === 'pulling'">{{ $t("COMPONENTS.ATOMS.VC_CONTAINER.PULL_TO_REFRESH") }}</span>
-        <span v-else-if="status === 'loosing'">{{ $t("COMPONENTS.ATOMS.VC_CONTAINER.REFRESHING") }}</span>
-      </div>
       <slot></slot>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted, computed, nextTick } from "vue";
+import { ref, onMounted, computed, shallowRef, watch } from "vue";
 import { VcIcon } from "./../vc-icon";
 
 export interface Props {
@@ -51,18 +54,56 @@ export interface Emits {
   (event: "scroll:ptr"): void;
 }
 
-const props = defineProps<Props>();
+defineProps<Props>();
 
 const emit = defineEmits<Emits>();
 
 const component = ref<HTMLElement>();
 const scroll = ref(false);
-const startY = ref(0);
-const ceiling = ref();
 const pullDist = ref(60);
-const dist = ref(0);
-const status = ref("normal");
-const delta = ref(0);
+const touchDiff = shallowRef(0);
+let touchstartY = 0;
+const refreshing = shallowRef(false);
+const goingUp = shallowRef(false);
+const touching = shallowRef(false);
+
+const topOffset = computed(() => Math.max(0, Math.min(pullDist.value, touchDiff.value)));
+const canRefresh = computed(() => touchDiff.value >= pullDist.value && !refreshing.value);
+
+const scrollTop = () => {
+  if (component.value) {
+    component.value.scroll(0, 0);
+  }
+};
+
+function onTouchstart(e: TouchEvent | MouseEvent) {
+  if (refreshing.value) return;
+  touching.value = true;
+  touchstartY = "clientY" in e ? e.clientY : e.touches[0].clientY;
+}
+
+function onTouchmove(e: TouchEvent | MouseEvent) {
+  if (refreshing.value || !touching.value) return;
+
+  const touchY = "clientY" in e ? e.clientY : e.touches[0].clientY;
+
+  if (scroll.value) {
+    touchDiff.value = touchY - touchstartY;
+  }
+}
+
+function onTouchend() {
+  if (refreshing.value) return;
+  touching.value = false;
+
+  if (canRefresh.value) {
+    touchDiff.value = 0;
+    refreshing.value = false;
+    emit("scroll:ptr");
+  } else {
+    touchDiff.value = 0;
+  }
+}
 
 onMounted(() => {
   const observer = new ResizeObserver(() => {
@@ -74,98 +115,9 @@ onMounted(() => {
   }
 });
 
-const touchable = computed(() => status.value !== "refresh" && status.value !== "success");
-
-const iconClass = computed(() => {
-  if (status.value === "loosing") {
-    return "vc-container__overscroll-icon_refresh";
-  } else if (status.value === "pulling") {
-    return "vc-container__overscroll-icon_pulling";
-  }
-  return "vc-container__overscroll-icon";
+watch(topOffset, (newVal, oldVal) => {
+  goingUp.value = newVal < oldVal;
 });
-
-const scrollTop = () => {
-  if (component.value) {
-    component.value.scroll(0, 0);
-  }
-};
-
-function touchStart(e: TouchEvent): void {
-  if (!touchable.value) {
-    return;
-  }
-  checkPullStart(e);
-}
-
-function touchMove(e: TouchEvent): void {
-  if (props.usePtr) {
-    const touch = e.touches[0];
-    if (!touchable.value) {
-      return;
-    }
-
-    if (!ceiling.value) {
-      checkPullStart(e);
-    }
-
-    delta.value = touch.clientY - startY.value;
-
-    if (ceiling.value && delta.value >= 0 && delta.value < 80) {
-      e.preventDefault();
-
-      setStatus(ease(delta.value));
-    }
-  }
-}
-
-function touchEnd(): void {
-  if (delta.value && touchable.value) {
-    if (status.value === "loosing") {
-      nextTick(() => emit("scroll:ptr"));
-    }
-    setStatus(0);
-  }
-}
-
-function getScrollTop(el: HTMLElement) {
-  const top = el.scrollTop;
-
-  return Math.max(top, 0);
-}
-
-function checkPullStart(e: TouchEvent) {
-  ceiling.value = getScrollTop(component.value as HTMLElement) === 0;
-
-  if (ceiling.value) {
-    startY.value = e.touches[0].clientY;
-  }
-}
-
-function setStatus(distance: number) {
-  let stat;
-  if (distance === 0) {
-    stat = "normal";
-  } else {
-    stat = distance < pullDist.value ? "pulling" : "loosing";
-  }
-  dist.value = distance;
-  if (stat !== status.value) {
-    status.value = stat;
-  }
-}
-
-function ease(distance: number) {
-  const pullDistance = +pullDist.value;
-  if (distance > pullDistance) {
-    if (distance < pullDistance * 2) {
-      distance = pullDistance + (distance - pullDistance) / 2;
-    } else {
-      distance = pullDistance * 1.5 + (distance - pullDistance * 2) / 4;
-    }
-  }
-  return Math.round(distance);
-}
 
 defineExpose({
   scrollTop,
@@ -190,33 +142,29 @@ defineExpose({
   }
 
   &__overscroll {
-    @apply tw-relative tw-w-full tw-flex tw-items-start tw-justify-center tw-overflow-hidden tw-gap-2;
+    @apply tw-absolute tw-w-full [transition:top_0.3s_ease-out];
 
-    &_passed {
-      @apply tw-text-[#43b0e6];
+    &_touching {
+      @apply tw-transition-none;
     }
+  }
+
+  &__status {
+    @apply tw-flex tw-w-full tw-h-full tw-justify-center tw-items-center tw-pb-[10px];
   }
 
   &__overscroll-icon {
     @apply tw-text-[color:#a1c0d4];
-
-    &_pulling {
-      @apply tw-text-[color:#a1c0d4];
-    }
-
-    &_refresh {
-      animation: tw-spin 2s linear infinite;
-    }
   }
 
   &__overscroll span {
-    @apply tw-mb-2 tw-text-sm tw-text-gray-500;
+    @apply tw-ml-2 tw-text-sm tw-text-gray-500;
   }
 
   &__inner {
     @apply tw-relative tw-overflow-y-auto tw-overflow-x-hidden
     tw-flex-1 tw-p-[var(--container-scroll-padding)]
-    tw-transition-transform [scrollbar-color:var(--container-scroll-color)] [scrollbar-width:thin];
+    [transition:top_0.3s_ease-out] [scrollbar-color:var(--container-scroll-color)] [scrollbar-width:thin];
 
     &::-webkit-scrollbar {
       @apply tw-w-[var(--container-scroll-width)] tw-bg-transparent;
@@ -232,19 +180,14 @@ defineExpose({
       tw-overflow-x-hidden
       hover:tw-bg-[color:var(--container-scroll-color-hover)];
     }
+
+    &_touching {
+      transition: none;
+    }
   }
 
   &_nopadding &__inner {
     @apply tw-p-0;
-  }
-}
-
-@keyframes tw-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
   }
 }
 </style>

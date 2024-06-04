@@ -164,11 +164,11 @@
                     <!-- Select chevron-->
                     <div
                       v-if="!disabled"
-                      class="tw-flex tw-items-center tw-flex-nowrap tw-pl-3"
+                      class="tw-flex tw-items-center tw-flex-nowrap tw-pl-3 tw-cursor-pointer"
+                      @click.stop="toggleDropdown"
                     >
                       <div
-                        class="vc-select__chevron tw-cursor-pointer tw-flex-nowrap tw-text-[color:var(--select-chevron-color)] hover:tw-text-[color:var(--select-chevron-color-hover)]"
-                        @click.stop="toggleDropdown"
+                        class="vc-select__chevron tw-flex-nowrap tw-text-[color:var(--select-chevron-color)] hover:tw-text-[color:var(--select-chevron-color-hover)]"
                       >
                         <VcIcon
                           size="s"

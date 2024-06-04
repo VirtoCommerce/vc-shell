@@ -80,11 +80,11 @@ export const useDetailsFactory = <Item extends { id?: string }>(factoryParams: U
     const resetModified = createUnrefFn((data: Item, updateInitial = false) => {
       if (updateInitial) {
         item.value = data;
+
+        resetValidationState();
       }
 
       itemTemp.value = _.cloneDeep(data);
-
-      resetValidationState();
     }) as (data: MaybeRef<Item | undefined> | ComputedRef<Item | undefined>, updateInitial?: MaybeRef<boolean>) => void;
 
     const resetValidationState = () => {

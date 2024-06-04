@@ -87,6 +87,20 @@ function nodeBuilder<
       controlSchema.disabled &&
       disabledHandler(controlSchema.disabled, bladeContext));
 
+  // TODO add to docs
+  const onBlur = (event: Event) => {
+    if (safeIn("onBlur", controlSchema) && controlSchema.onBlur) {
+      const method = controlSchema.onBlur.method;
+      if (method && bladeContext.scope?.[method] && typeof bladeContext.scope[method] === "function") {
+        bladeContext.scope[method]({
+          event,
+          property: controlSchema.property,
+          context: unrefNested(internalContext),
+        });
+      }
+    }
+  };
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const onUpdateModelValue = async (e: any) => {
     if (safeIn("property", controlSchema) && controlSchema.property) {
@@ -118,6 +132,7 @@ function nodeBuilder<
     label: computed(() => (typeof label !== "undefined" ? t(label) : undefined)),
     hint: computed(() => (typeof hint !== "undefined" ? t(hint) : undefined)),
     disabled,
+    onBlur,
     name,
     rules,
     placeholder: computed(() => (typeof placeholder !== "undefined" ? t(placeholder) : undefined)),

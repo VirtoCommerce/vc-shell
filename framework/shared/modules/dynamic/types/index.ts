@@ -256,6 +256,14 @@ export interface SchemaBase {
   visibility?: {
     method: string;
   };
+  /**
+   * Method that is called when component emits `blur` event.
+   * @description Method should be defined in the blade `scope`.
+   * @type {{ method: string }}
+   */
+  onBlur?: {
+    method: string;
+  };
   /** Flag to indicate if the component supports multilanguage.
    * @type {boolean}
    */
@@ -396,7 +404,7 @@ export interface MultivalueSchema extends SchemaBase {
   hint?: string;
 }
 
-export interface TextareaSchema extends SchemaBase {
+export interface TextareaSchema extends Omit<SchemaBase, "onBlur"> {
   /**
    * Component type for textarea.
    * @type {"vc-textarea"}
@@ -655,7 +663,7 @@ export interface InputCurrencySchema extends Omit<SchemaBase, "multilanguage"> {
  * Editor schema interface.
  * @interface
  */
-export interface EditorSchema extends SchemaBase {
+export interface EditorSchema extends Omit<SchemaBase, "onBlur"> {
   /**
    * Component type for editor.
    * @type {"vc-editor"}
@@ -701,7 +709,7 @@ export interface DynamicPropertiesSchema
  * @interface
  */
 export interface GallerySchema
-  extends Omit<SchemaBase, "placeholder" | "multilanguage" | "update" | "horizontalSeparator"> {
+  extends Omit<SchemaBase, "placeholder" | "multilanguage" | "update" | "horizontalSeparator" | "onBlur"> {
   /**
    * Component type for the gallery.
    * @type {"vc-gallery"}
@@ -781,7 +789,7 @@ export interface WidgetsSchema extends Pick<SchemaBase, "id" | "horizontalSepara
   children: string[];
 }
 
-export interface CheckboxSchema extends Omit<SchemaBase, "multilanguage" | "placeholder"> {
+export interface CheckboxSchema extends Omit<SchemaBase, "multilanguage" | "placeholder" | "onBlur"> {
   /**
    * Component type for checkbox.
    * @type {"vc-checkbox"}
@@ -803,7 +811,7 @@ export interface CheckboxSchema extends Omit<SchemaBase, "multilanguage" | "plac
   falseValue?: boolean;
 }
 
-export interface RadioButtonSchema extends Omit<SchemaBase, "multilanguage" | "placeholder"> {
+export interface RadioButtonSchema extends Omit<SchemaBase, "multilanguage" | "placeholder" | "onBlur"> {
   /**
    * Component type for radio button.
    * @type {"vc-radio-button-group"}
@@ -869,7 +877,7 @@ export interface FieldsetSchema extends Pick<SchemaBase, "id" | "visibility" | "
  * Switch schema interface.
  * @interface
  */
-export interface SwitchSchema extends Omit<SchemaBase, "placeholder" | "multilanguage"> {
+export interface SwitchSchema extends Omit<SchemaBase, "placeholder" | "multilanguage" | "onBlur"> {
   /**
    * Component type for switch.
    * @type {"vc-switch"}

@@ -63,7 +63,6 @@
         @pagination-click="onPaginationClick"
         @selection-changed="onSelectionChanged"
         @header-click="onHeaderClick"
-        @load:change="onSearchList"
         @scroll:ptr="reload"
         @search:change="onSearchList"
         @row:reorder="sortRows"
@@ -129,6 +128,7 @@
           <component
             :is="component"
             :context="itemData"
+            :blade-context="bladeContext"
           />
         </template>
 
@@ -141,6 +141,7 @@
           <component
             :is="tableTemplates.mobileView"
             :context="itemData"
+            :blade-context="bladeContext"
           ></component>
         </template>
       </VcTable>
@@ -215,7 +216,7 @@ const title = computed(() => t(settings.value?.titleTemplate as string));
 const allSelected = ref(false);
 const searchValue = ref();
 const selectedItemId = shallowRef();
-const sort = shallowRef("createdDate:DESC");
+const sort = shallowRef();
 const selectedIds = shallowRef<string[]>([]);
 const itemsProxy = ref<Record<string, any>[]>();
 
@@ -287,6 +288,8 @@ const { load, remove, items, loading, pagination, query, scope } = props.composa
 if (props.isWidgetView) {
   query.value.take = 5;
 }
+
+sort.value = query.value.sort ?? "createdDate:DESC";
 
 const unreffedScope = reactiveComputed(() => toValue(scope) ?? {});
 

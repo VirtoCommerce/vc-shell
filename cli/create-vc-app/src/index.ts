@@ -18,6 +18,7 @@ const renameFiles: Record<string, string | undefined> = {
   "_commitlintrc.json": ".commitlintrc.json",
   _editorconfig: ".editorconfig",
   _env: ".env",
+  "_env.local": ".env.local",
   _eslintignore: ".eslintignore",
   _prettierignore: ".prettierignore",
   _prettierrc: ".prettierrc",

@@ -1,3 +1,23 @@
+## [1.0.224](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.223...v1.0.224) (2024-06-04)
+
+
+### Bug Fixes
+
+* vc-1359 ([fbd5d92](https://github.com/VirtoCommerce/vc-shell/commit/fbd5d92c5945694669ef3cb27e7f77faaa42795a))
+
+
+### Features
+
+* **dynamic:** add noRemoveConfirmation option to GalleryField's remove method ([caf6ac8](https://github.com/VirtoCommerce/vc-shell/commit/caf6ac82ad76821b15f580660c10c0cae3f548e5))
+* **dynamic:** possibility to override default grid sorting ([0afecfb](https://github.com/VirtoCommerce/vc-shell/commit/0afecfb53cd114f099dd9296c47270031be72a4f))
+* **dynamic:** updated vc-table ([c2ad3ff](https://github.com/VirtoCommerce/vc-shell/commit/c2ad3ffb4e6067342a1cd855fcabc07dd62e7d69))
+* **navigation:** support of browser back/forward history buttons ([513375e](https://github.com/VirtoCommerce/vc-shell/commit/513375e66fde74db8bd05e8b7d799c8941f75396))
+* **ui:** vc-container ptr smooth transitions ([e7ae279](https://github.com/VirtoCommerce/vc-shell/commit/e7ae2793e2748290443b2218627f38045ca213d7))
+* **ui:** vc-editor color, background, reset buttons ([f7fa19c](https://github.com/VirtoCommerce/vc-shell/commit/f7fa19c2700f302c264b2e914e557b623324c213))
+* **ui:** vc-table refactoring ([df652ae](https://github.com/VirtoCommerce/vc-shell/commit/df652ae4e75e266d427f7a500d815665107a078b))
+
+
+
 ## [1.0.223](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.222...v1.0.223) (2024-05-29)
 
 

@@ -11,7 +11,7 @@ export interface UseDetailsFactoryParams<Item> {
   remove?: (args: ItemId) => Promise<void> | void;
 }
 
-export const useDetailsFactory = <Item>(factoryParams: UseDetailsFactoryParams<Item>) => {
+export const useDetailsFactory = <Item extends { id?: string }>(factoryParams: UseDetailsFactoryParams<Item>) => {
   return function useDetails(): UseDetails<Item> {
     const { setFieldError, setErrors, validate, setFieldValue, setValues, errorBag } = useForm({
       validateOnMount: false,
@@ -33,6 +33,12 @@ export const useDetailsFactory = <Item>(factoryParams: UseDetailsFactoryParams<I
         const res = await factoryParams.saveChanges?.(item as Item);
         isModified.value = false;
         isDirty = ref(false);
+
+        const id = item?.id ?? res?.id;
+
+        if (id) {
+          await load({ id });
+        }
 
         if (res) return res;
       } else throw new Error("Form is not valid");
@@ -58,6 +64,7 @@ export const useDetailsFactory = <Item>(factoryParams: UseDetailsFactoryParams<I
         setFieldValue,
         setValues,
         resetModified,
+        resetDirty,
         validate,
       }),
     );
@@ -77,6 +84,10 @@ export const useDetailsFactory = <Item>(factoryParams: UseDetailsFactoryParams<I
 
       itemTemp.value = _.cloneDeep(data);
     }) as (data: MaybeRef<Item | undefined> | ComputedRef<Item | undefined>, updateInitial?: MaybeRef<boolean>) => void;
+
+    const resetDirty = () => {
+      isDirty = ref(false);
+    };
 
     return {
       load,

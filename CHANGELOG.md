@@ -1,3 +1,12 @@
+## [1.0.227](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.226...v1.0.227) (2024-06-04)
+
+
+### Bug Fixes
+
+* **ui:** vc-table add last column resizer ([f63a7a0](https://github.com/VirtoCommerce/vc-shell/commit/f63a7a010366fd55fc0add08701d0d983fe4280a))
+
+
+
 ## [1.0.226](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.225...v1.0.226) (2024-06-04)
 
 

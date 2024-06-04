@@ -475,7 +475,6 @@ export function useBladeNavigation(): IUseBladeNavigation {
    * @param routes - The array of BladeRoutesRecord containing the registered routes.
    */
   async function generateRoute(to: RouteLocationNormalized, routes: BladeRoutesRecord[]) {
-    console.log("generateRoute");
     // Extract parameters excluding "pathMatch". This is necessary if a variable is used as the App component URL, for example, /:userId?
     const params = Object.fromEntries(Object.entries(to.params).filter(([key]) => key !== "pathMatch"));
 

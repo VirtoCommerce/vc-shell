@@ -173,7 +173,7 @@ const onMenuItemClick = function (item: MenuItem) {
     if (typeof menuRoute === "undefined") {
       openRoot();
     } else {
-      router.replace({ name: menuRoute?.name, params: route.params });
+      router.push({ name: menuRoute?.name, params: route.params });
     }
   }
 };
@@ -185,7 +185,7 @@ const openRoot = async () => {
     const mainRoute = routes.find((route) => route.meta?.root);
     const mainRouteAlias = routes.find((route) => route.aliasOf?.path === mainRoute?.path) ?? mainRoute;
 
-    router.replace({ name: mainRouteAlias?.name, params: route.params });
+    router.push({ name: mainRouteAlias?.name, params: route.params });
   }
 };
 

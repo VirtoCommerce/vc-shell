@@ -108,8 +108,6 @@ export default {
 
     app.provide("platformUrl", args.platformUrl);
 
-    args.router.listening = false;
-
     // Router guards
     const getParam = (to: RouteLocationNormalized) => {
       let param: {

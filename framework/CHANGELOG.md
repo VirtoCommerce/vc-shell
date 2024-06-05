@@ -1,3 +1,12 @@
+## [1.0.229](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.228...v1.0.229) (2024-06-05)
+
+
+### Features
+
+* **dynamic:** permissions prop in controls/toolbar ([5230a23](https://github.com/VirtoCommerce/vc-shell/commit/5230a235acd049cb19613a3ac855f26b3bffb146))
+
+
+
 ## [1.0.228](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.227...v1.0.228) (2024-06-05)
 
 

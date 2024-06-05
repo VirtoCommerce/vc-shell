@@ -1,3 +1,12 @@
+## [1.0.230](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.229...v1.0.230) (2024-06-05)
+
+
+### Features
+
+* refactor InputCurrency component to handle currency display option ([f11a193](https://github.com/VirtoCommerce/vc-shell/commit/f11a193289c0992444ff11e3c0c16970693c5bb0))
+
+
+
 ## [1.0.229](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.228...v1.0.229) (2024-06-05)
 
 

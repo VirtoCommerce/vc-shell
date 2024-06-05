@@ -20,8 +20,7 @@ export const useDetailsFactory = <Item extends { id?: string }>(factoryParams: U
     const itemTemp = ref<Item>();
     const isModified = ref(false);
     const isFormValid = useIsFormValid();
-    let isDirty: Ref<boolean> = useIsFormDirty();
-    const isDisabled = computed(() => !isDirty.value || !isFormValid.value);
+    const isDisabled = computed(() => !isModified.value || !isFormValid.value);
 
     const { loading: itemLoading, action: load } = useAsync<ItemId>(async (args?: ItemId) => {
       item.value = await factoryParams.load(args);
@@ -32,7 +31,6 @@ export const useDetailsFactory = <Item extends { id?: string }>(factoryParams: U
       if (validationState.value.valid) {
         const res = await factoryParams.saveChanges?.(item as Item);
         isModified.value = false;
-        isDirty = ref(false);
 
         const id = item?.id ?? res?.id;
 
@@ -52,10 +50,13 @@ export const useDetailsFactory = <Item extends { id?: string }>(factoryParams: U
 
     const validationState = computed(
       (): IValidationState<Item> => ({
-        dirty: isDirty.value || isModified.value,
+        /**
+         * @deprecated `dirty` - use `modified` instead
+         */
+        dirty: isModified.value,
         valid: isFormValid.value,
         modified: isModified.value,
-        disabled: isDisabled.value || !isModified.value,
+        disabled: isDisabled.value,
         validated: !isDisabled.value && isModified.value,
         cachedValue: itemTemp.value,
         errorBag: errorBag.value,
@@ -89,7 +90,6 @@ export const useDetailsFactory = <Item extends { id?: string }>(factoryParams: U
 
     const resetValidationState = () => {
       isModified.value = false;
-      isDirty = ref(false);
     };
 
     return {

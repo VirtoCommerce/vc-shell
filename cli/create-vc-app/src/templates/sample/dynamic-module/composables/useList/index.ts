@@ -34,9 +34,9 @@ export default (args: ListComposableArgs): UseList<MockedItem[], MockedQuery, Dy
     });
   }
 
-  const scope = ref<DynamicItemsScope>({
+  const scope: DynamicItemsScope = {
     openDetailsBlade,
-  });
+  };
 
   return {
     items,
@@ -45,6 +45,6 @@ export default (args: ListComposableArgs): UseList<MockedItem[], MockedQuery, Dy
     loading,
     pagination,
     query,
-    scope: computed(() => scope.value),
+    scope,
   };
 };

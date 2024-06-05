@@ -285,7 +285,7 @@ export const useOfferDetails = (
     },
   );
 
-  const scope = ref<OfferDetailsScope>({
+  const scope: OfferDetailsScope = {
     fetchProducts,
     removePrice,
     addPrice,
@@ -355,13 +355,13 @@ export const useOfferDetails = (
         },
       },
     },
-  });
+  };
 
   return {
     load,
     remove,
     saveChanges,
-    scope: computed(() => scope.value),
+    scope,
     loading: useLoading(loading, offerLoading, productLoading, languagesLoading),
     item,
     validationState,

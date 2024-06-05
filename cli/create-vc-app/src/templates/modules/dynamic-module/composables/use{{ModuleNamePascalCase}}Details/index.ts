@@ -1,11 +1,7 @@
 import { computed, ref, Ref } from "vue";
 import { DetailsBaseBladeScope, IBladeToolbar, useDetailsFactory, DetailsComposableArgs } from "@vc-shell/framework";
 
-export interface DynamicItemScope extends DetailsBaseBladeScope {
-  toolbarOverrides: {
-    refresh: IBladeToolbar;
-  };
-}
+export interface DynamicItemScope extends DetailsBaseBladeScope {}
 
 export default (args: DetailsComposableArgs) => {
   const factory = useDetailsFactory({
@@ -22,7 +18,7 @@ export default (args: DetailsComposableArgs) => {
 
   const { load, saveChanges, remove, loading, item, validationState } = factory();
 
-  const scope = ref<DynamicItemScope>();
+  const scope: DynamicItemScope = {};
 
   const bladeTitle = computed(() => {
     return "{{ModuleNameSentenceCase}} details";
@@ -36,6 +32,6 @@ export default (args: DetailsComposableArgs) => {
     item,
     validationState,
     bladeTitle,
-    scope: computed(() => scope.value),
+    scope,
   };
 };

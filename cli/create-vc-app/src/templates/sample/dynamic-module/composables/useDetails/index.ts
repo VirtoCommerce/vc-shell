@@ -19,9 +19,10 @@ export default (args: DetailsComposableArgs): UseDetails<MockedItem, DynamicItem
 
   const { load, saveChanges, remove, loading, item, validationState } = factory();
 
-  const scope = ref<DynamicItemScope>({
+  const scope: DynamicItemScope = {
     currencyOptions,
-  });
+  };
+
   const { t } = useI18n({ useScope: "global" });
 
   const bladeTitle = computed(() => {
@@ -40,6 +41,6 @@ export default (args: DetailsComposableArgs): UseDetails<MockedItem, DynamicItem
     item,
     validationState,
     bladeTitle,
-    scope: computed(() => scope.value),
+    scope,
   };
 };

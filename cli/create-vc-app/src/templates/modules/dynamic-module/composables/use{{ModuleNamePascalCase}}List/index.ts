@@ -33,9 +33,9 @@ export default (args: ListComposableArgs) => {
     });
   }
 
-  const scope = ref<DynamicItemsScope>({
+  const scope: DynamicItemsScope = {
     openDetailsBlade,
-  });
+  };
 
   return {
     items,
@@ -44,6 +44,6 @@ export default (args: ListComposableArgs) => {
     loading,
     pagination,
     query,
-    scope: computed(() => scope.value),
+    scope,
   };
 };

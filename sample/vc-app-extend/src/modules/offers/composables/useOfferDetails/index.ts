@@ -24,20 +24,16 @@ export const useOfferDetails = (
   }
 
   // Extending useOfferDetails 'scope' and adding a new 'showAlert' method representing 'method' key of new toolbar button:
-  const extendedScope = _.merge(
-    ref({}),
-    ref(scope?.value),
-    ref({
-      toolbarOverrides: {
-        showAlert: {
-          clickHandler() {
-            clickMe();
-          },
-          isVisible: true,
+  const extendedScope = _.merge(scope, {
+    toolbarOverrides: {
+      showAlert: {
+        clickHandler() {
+          clickMe();
         },
+        isVisible: true,
       },
-    }),
-  );
+    },
+  });
 
   return {
     load,
@@ -46,7 +42,7 @@ export const useOfferDetails = (
     loading,
     item,
     validationState,
-    scope: computed(() => extendedScope.value),
+    scope: extendedScope,
     bladeTitle,
   };
 };

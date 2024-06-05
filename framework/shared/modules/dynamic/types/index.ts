@@ -65,6 +65,11 @@ export type ToolbarSchema = {
   title?: string;
   icon?: string;
   method: string;
+  /**
+   * Permissions for the toolbar button. If the user does not have the required permissions, the toolbar button will not be displayed.
+   * @type {string | string[]}
+   */
+  permissions?: string | string[];
 };
 
 export interface SettingsBase {
@@ -277,6 +282,11 @@ export interface SchemaBase {
    * Adds horizontal separator after component.
    */
   horizontalSeparator?: boolean;
+  /**
+   * Permissions for the component. If the user does not have the required permissions, the component will not be displayed.
+   * @type {string | string[]}
+   */
+  permissions?: string | string[];
 }
 
 /**
@@ -477,7 +487,8 @@ export interface InputSchema extends SchemaBase {
  *  Video schema interface.
  * @interface
  */
-export interface VideoSchema extends Pick<SchemaBase, "id" | "property" | "label" | "visibility" | "tooltip"> {
+export interface VideoSchema
+  extends Pick<SchemaBase, "id" | "property" | "label" | "visibility" | "tooltip" | "permissions"> {
   /**
    * Component type for video.
    * @type {"vc-video"}
@@ -490,7 +501,10 @@ export interface VideoSchema extends Pick<SchemaBase, "id" | "property" | "label
  * @interface
  */
 export interface FieldSchema
-  extends Pick<SchemaBase, "id" | "property" | "label" | "visibility" | "tooltip" | "horizontalSeparator"> {
+  extends Pick<
+    SchemaBase,
+    "id" | "property" | "label" | "visibility" | "tooltip" | "horizontalSeparator" | "permissions"
+  > {
   /**
    * Component type for field.
    * @type {"vc-field"}
@@ -525,7 +539,7 @@ export interface FieldSchema
  * Image schema interface.
  * @interface
  */
-export interface ImageSchema extends Pick<SchemaBase, "id" | "property" | "visibility"> {
+export interface ImageSchema extends Pick<SchemaBase, "id" | "property" | "visibility" | "permissions"> {
   /**
    * Component type for image.
    * @type {"vc-image"}
@@ -562,7 +576,7 @@ export interface ImageSchema extends Pick<SchemaBase, "id" | "property" | "visib
  * Status schema interface.
  * @interface
  */
-export interface StatusSchema extends Pick<SchemaBase, "id" | "visibility" | "horizontalSeparator"> {
+export interface StatusSchema extends Pick<SchemaBase, "id" | "visibility" | "horizontalSeparator" | "permissions"> {
   /**
    * Component type for status.
    * @type {"vc-status"}
@@ -686,7 +700,7 @@ export interface EditorSchema extends Omit<SchemaBase, "onBlur"> {
  * @interface
  */
 export interface DynamicPropertiesSchema
-  extends Pick<SchemaBase, "id" | "disabled" | "property" | "visibility" | "horizontalSeparator"> {
+  extends Pick<SchemaBase, "id" | "disabled" | "property" | "visibility" | "horizontalSeparator" | "permissions"> {
   /**
    * The component type for dynamic properties.
    * @type {"vc-dynamic-properties"}
@@ -745,7 +759,8 @@ export interface GallerySchema
  * Interface for a card schema.
  * @interface
  */
-export interface CardSchema extends RequiredBy<Pick<SchemaBase, "id" | "label" | "visibility">, "label"> {
+export interface CardSchema
+  extends RequiredBy<Pick<SchemaBase, "id" | "label" | "visibility" | "permissions">, "label"> {
   /**
    * Component type for the card.
    * @type {"vc-card"}
@@ -784,7 +799,7 @@ export interface CardSchema extends RequiredBy<Pick<SchemaBase, "id" | "label" |
   variant?: ComponentProps<typeof VcCard>["variant"];
 }
 
-export interface WidgetsSchema extends Pick<SchemaBase, "id" | "horizontalSeparator"> {
+export interface WidgetsSchema extends Pick<SchemaBase, "id" | "horizontalSeparator" | "permissions"> {
   component: "vc-widgets";
   children: string[];
 }
@@ -842,7 +857,7 @@ export interface RadioButtonSchema extends Omit<SchemaBase, "multilanguage" | "p
  * Fieldset schema interface.
  * @interface
  */
-export interface FieldsetSchema extends Pick<SchemaBase, "id" | "visibility" | "horizontalSeparator"> {
+export interface FieldsetSchema extends Pick<SchemaBase, "id" | "visibility" | "horizontalSeparator" | "permissions"> {
   /**
    * Component type for the fieldset.
    * @type {"vc-fieldset"}
@@ -896,7 +911,7 @@ export interface SwitchSchema extends Omit<SchemaBase, "placeholder" | "multilan
 }
 
 export type TableSchema = Omit<ListContentSchema, "filter"> &
-  Pick<SchemaBase, "id" | "property" | "visibility"> & {
+  Pick<SchemaBase, "id" | "property" | "visibility" | "permissions"> & {
     /**
      * Configuration for the add new row button in the table.
      * Used when table is in editing mode.
@@ -923,7 +938,7 @@ export type TableSchema = Omit<ListContentSchema, "filter"> &
  * Button schema interface.
  * @interface
  */
-export interface ButtonSchema extends Pick<SchemaBase, "id" | "disabled" | "visibility"> {
+export interface ButtonSchema extends Pick<SchemaBase, "id" | "disabled" | "visibility" | "permissions"> {
   /**
    * Component type.
    * @type {"vc-button"}
@@ -981,7 +996,7 @@ export interface ButtonSchema extends Pick<SchemaBase, "id" | "disabled" | "visi
  * Custom component schema interface.
  * @interface
  */
-export interface CustomComponentSchema extends Pick<SchemaBase, "id" | "visibility"> {
+export interface CustomComponentSchema extends Pick<SchemaBase, "id" | "visibility" | "permissions"> {
   /**
    * Component type for custom component.
    * @type {vc-custom}
@@ -1000,7 +1015,7 @@ export interface CustomComponentSchema extends Pick<SchemaBase, "id" | "visibili
 export interface RatingSchema
   extends Pick<
     SchemaBase,
-    "id" | "visibility" | "label" | "property" | "tooltip" | "horizontalSeparator" | "placeholder"
+    "id" | "visibility" | "label" | "property" | "tooltip" | "horizontalSeparator" | "placeholder" | "permissions"
   > {
   /**
    * Component type for rating.

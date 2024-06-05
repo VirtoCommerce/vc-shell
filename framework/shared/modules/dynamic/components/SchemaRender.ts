@@ -19,6 +19,7 @@ import { visibilityHandler } from "../helpers/visibilityHandler";
 import { toValue } from "@vueuse/core";
 import { safeIn } from "../helpers/safeIn";
 import { unrefNested } from "../helpers/unrefNested";
+import { usePermissions } from "../../../../core/composables";
 
 const schemeRenderProps = {
   context: {
@@ -48,6 +49,7 @@ export default defineComponent({
   setup(props: ExtractPropTypes<typeof schemeRenderProps>, ctx) {
     const { currentLocale } = toRefs(props);
     const internalFormData = reactive({});
+    const { hasAccess } = usePermissions();
 
     watch(
       () => props.modelValue,
@@ -70,6 +72,12 @@ export default defineComponent({
         "div",
         { class: "tw-flex tw-flex-col tw-gap-4" },
         props.uiSchema.reduce((arr, field): VNode[] => {
+          console.log(field.id, field.permissions, hasAccess(field.permissions));
+
+          if (safeIn("permissions", field) && !hasAccess(field.permissions)) {
+            return arr;
+          }
+
           if (
             safeIn("visibility", field) &&
             field.visibility?.method &&

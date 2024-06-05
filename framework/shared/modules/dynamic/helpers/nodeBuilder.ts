@@ -12,6 +12,9 @@ import { i18n } from "./../../../../core/plugins/i18n";
 import { visibilityHandler } from "./visibilityHandler";
 import { toRefs } from "@vueuse/core";
 import { unrefNested } from "./unrefNested";
+import { usePermissions } from "../../../../core/composables";
+
+const { hasAccess } = usePermissions();
 
 function disabledHandler(
   disabled: { method?: string } | boolean,
@@ -165,6 +168,10 @@ function nodeBuilder<
     if (toValue(model) && Array.isArray(toValue(model))) {
       return toValue(model).map((modelItem: ToRefs<{ [x: string]: unknown; id: string }>) => {
         return controlSchema.fields.reduce((arr, fieldItem) => {
+          if (safeIn("permissions", fieldItem) && !hasAccess(fieldItem.permissions)) {
+            return arr;
+          }
+
           if (
             safeIn("visibility", fieldItem) &&
             fieldItem.visibility?.method &&
@@ -190,6 +197,10 @@ function nodeBuilder<
 
     return [
       controlSchema.fields.reduce((arr, field) => {
+        if (safeIn("permissions", field) && !hasAccess(field.permissions)) {
+          return arr;
+        }
+
         if (
           safeIn("visibility", field) &&
           field.visibility?.method &&

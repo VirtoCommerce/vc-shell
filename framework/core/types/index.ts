@@ -71,6 +71,7 @@ export interface IBladeToolbar {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   clickHandler?(app?: Record<string, any> | CoreBladeExposed | null): void;
   separator?: "left" | "right" | "both";
+  permissions?: string | string[];
 }
 
 export type ToolbarMenu<T> = T extends {

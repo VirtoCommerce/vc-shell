@@ -17,7 +17,7 @@ declare module "*.mdx" {
 declare module "@vue/runtime-core" {
   interface ComponentCustomProperties {
     $mergeLocaleMessage: Composer<{}, {}, {}, string, never, string>["mergeLocaleMessage"];
-    $hasAccess: (permissions: string | string[]) => boolean;
+    $hasAccess: (permissions: string | string[] | undefined) => boolean;
     $isPhone: Ref<boolean>;
     $isTablet: Ref<boolean>;
     $isMobile: Ref<boolean>;

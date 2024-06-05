@@ -13,6 +13,7 @@ import {
 } from "./../../../../ui/components";
 import { ITableColumns, IValidationRules, MenuItemConfig } from "../../../../core/types";
 import type { ComponentProps } from "./../../../utilities/vueUtils";
+import VcInputCurrency from "../../../../ui/components/molecules/vc-input-currency/vc-input-currency.vue";
 
 export type KeysOfUnion<T> = T extends T ? keyof T : never;
 
@@ -644,7 +645,7 @@ export interface InputCurrencySchema extends Omit<SchemaBase, "multilanguage"> {
    * List of currency options to be displayed in the dropdown.
    * @description Array should be defined in the blade `scope`.
    */
-  options: string;
+  options?: string;
   /**
    * Name of property that holds currency value.
    * @type {string}
@@ -671,6 +672,10 @@ export interface InputCurrencySchema extends Omit<SchemaBase, "multilanguage"> {
    * Text below control.
    */
   hint?: string;
+  /**
+   * How to show the currency.
+   */
+  currencyDisplay?: ComponentProps<typeof VcInputCurrency>["currencyDisplay"];
 }
 
 /**

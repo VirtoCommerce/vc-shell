@@ -15,8 +15,11 @@ export default {
   setup(props: ExtractPropTypes<typeof componentProps> & { element: InputCurrencySchema }) {
     return () => {
       const options =
-        toValue(getModel(props.element.options, props.fieldContext ?? {})) ||
-        toValue(unref(props.bladeContext.scope)?.[props.element.options]);
+        (safeIn("options", props.element) &&
+          props.element.options &&
+          (toValue(getModel(props.element.options, props.fieldContext ?? {})) ||
+            toValue(unref(props.bladeContext.scope)?.[props.element.options]))) ??
+        undefined;
 
       const contextProperty =
         safeIn("optionProperty", props.element) &&
@@ -34,6 +37,7 @@ export default {
           {},
           {
             option: toValue(scopedProperty ?? contextProperty),
+            currencyDisplay: props.element.currencyDisplay,
             optionLabel: props.element.optionLabel,
             optionValue: props.element.optionValue,
             options,

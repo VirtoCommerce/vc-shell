@@ -58,7 +58,7 @@ export const useOrders = (args?: ListComposableArgs): UseList<CustomerOrder[], I
     });
   }
 
-  const scope = ref<OrdersListScope>({
+  const scope: OrdersListScope = {
     openDetailsBlade,
     statuses: computed(() => {
       const statusKey = Object.entries(PaymentStatus);
@@ -67,7 +67,7 @@ export const useOrders = (args?: ListComposableArgs): UseList<CustomerOrder[], I
         displayValue: computed(() => t(`ORDERS.PAGES.LIST.TABLE.FILTER.STATUS.${displayValue}`)),
       }));
     }),
-  });
+  };
 
   async function GetSellerId(): Promise<string> {
     const result = route?.params?.sellerId as string;
@@ -80,6 +80,6 @@ export const useOrders = (args?: ListComposableArgs): UseList<CustomerOrder[], I
     items,
     query,
     pagination,
-    scope: computed(() => scope.value),
+    scope,
   };
 };

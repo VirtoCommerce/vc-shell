@@ -1,3 +1,12 @@
+## [1.0.228](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.227...v1.0.228) (2024-06-05)
+
+
+### Features
+
+* refactor sample and scaffold template to use object literal syntax for scope ([083d039](https://github.com/VirtoCommerce/vc-shell/commit/083d039f2d5dcbbd1ad1f914220cab5c11651b46))
+
+
+
 ## [1.0.227](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.226...v1.0.227) (2024-06-04)
 
 

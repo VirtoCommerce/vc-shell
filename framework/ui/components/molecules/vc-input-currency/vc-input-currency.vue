@@ -188,6 +188,7 @@ export interface Props {
    * Currency sign display settings
    */
   currencyDisplay?: `${CurrencyDisplay}`;
+  precision?: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15;
 }
 
 export interface Emits {
@@ -200,6 +201,7 @@ export interface Emits {
 const props = withDefaults(defineProps<Props>(), {
   debounce: 0,
   currencyDisplay: CurrencyDisplay.hidden,
+  precision: 2,
 });
 
 defineSlots<{
@@ -239,6 +241,7 @@ const { inputRef, setOptions, numberValue, setValue } = useCurrencyInput(
     currency: props.option || "USD",
     currencyDisplay: props.currencyDisplay as CurrencyDisplay,
     hideGroupingSeparatorOnFocus: false,
+    precision: props.precision,
   },
   false,
 );

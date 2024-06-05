@@ -36,6 +36,7 @@ export default {
         props: Object.assign(
           {},
           {
+            precision: props.element.precision,
             option: toValue(scopedProperty ?? contextProperty),
             currencyDisplay: props.element.currencyDisplay,
             optionLabel: props.element.optionLabel,

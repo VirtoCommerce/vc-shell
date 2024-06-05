@@ -676,6 +676,10 @@ export interface InputCurrencySchema extends Omit<SchemaBase, "multilanguage"> {
    * How to show the currency.
    */
   currencyDisplay?: ComponentProps<typeof VcInputCurrency>["currencyDisplay"];
+  /**
+   * The number of displayed decimal digits.
+   */
+  precision?: ComponentProps<typeof VcInputCurrency>["precision"];
 }
 
 /**

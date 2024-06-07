@@ -23,29 +23,34 @@
             :model-value="value"
             :rules="cell.rules"
           >
-            <VcInputCurrency
-              :model-value="value"
-              :options="[]"
-              :option="(item[cell.currencyField || 'currency'] as string) || 'USD'"
-              currency-display="symbol"
-              class="tw-w-full"
-              :error="errors.length > 0"
-              :error-message="$isMobile.value ? errorMessage : undefined"
-              @update:model-value="$emit('update', { field: cell.id, value: $event })"
-              @blur="onBlur({ row: index, field: cell.id, errors })"
-            >
-              <template
-                v-if="$isDesktop.value && errors.length > 0"
-                #append-inner
-              >
-                <VcTooltip placement="bottom-end">
-                  <VcIcon icon="fas fa-exclamation-circle tw-text-[color:var(--error-color)]"></VcIcon>
-                  <template #tooltip>
-                    <div class="tw-text-[color:var(--error-color)]">{{ errorMessage }}</div>
+            <VcTooltip placement="bottom">
+              <template #default>
+                <VcInputCurrency
+                  :model-value="value"
+                  :options="[]"
+                  :option="(item[cell.currencyField || 'currency'] as string) || 'USD'"
+                  currency-display="symbol"
+                  class="tw-w-full"
+                  :error="errors.length > 0"
+                  :error-message="$isMobile.value ? errorMessage : undefined"
+                  @update:model-value="$emit('update', { field: cell.id, value: $event })"
+                  @blur="onBlur({ row: index, field: cell.id, errors })"
+                >
+                  <template
+                    v-if="$isDesktop.value && errors.length > 0"
+                    #append-inner
+                  >
+                    <VcIcon icon="fas fa-exclamation-circle tw-text-[color:var(--error-color)]"></VcIcon>
                   </template>
-                </VcTooltip>
+                </VcInputCurrency>
               </template>
-            </VcInputCurrency>
+              <template
+                v-if="errors.length > 0"
+                #tooltip
+              >
+                <div class="tw-text-[color:var(--error-color)]">{{ errorMessage }}</div>
+              </template>
+            </VcTooltip>
           </Field>
         </template>
         <template v-else>
@@ -156,27 +161,32 @@
           :model-value="value"
           :rules="cell.rules"
         >
-          <VcInput
-            :model-value="value"
-            class="tw-w-full"
-            type="number"
-            :error="errors.length > 0"
-            :error-message="$isMobile.value ? errorMessage : undefined"
-            @update:model-value="$emit('update', { field: cell.id, value: $event })"
-            @blur="onBlur({ row: index, field: cell.id, errors })"
-          >
-            <template
-              v-if="$isDesktop.value && errors.length > 0"
-              #append-inner
-            >
-              <VcTooltip placement="bottom-end">
-                <VcIcon icon="fas fa-exclamation-circle tw-text-[color:var(--error-color)]"></VcIcon>
-                <template #tooltip>
-                  <div class="tw-text-[color:var(--error-color)]">{{ errorMessage }}</div>
+          <VcTooltip placement="bottom">
+            <template #default>
+              <VcInput
+                :model-value="value"
+                class="tw-w-full"
+                type="number"
+                :error="errors.length > 0"
+                :error-message="$isMobile.value ? errorMessage : undefined"
+                @update:model-value="$emit('update', { field: cell.id, value: $event })"
+                @blur="onBlur({ row: index, field: cell.id, errors })"
+              >
+                <template
+                  v-if="$isDesktop.value && errors.length > 0"
+                  #append-inner
+                >
+                  <VcIcon icon="fas fa-exclamation-circle tw-text-[color:var(--error-color)]"></VcIcon>
                 </template>
-              </VcTooltip>
+              </VcInput>
             </template>
-          </VcInput>
+            <template
+              v-if="errors.length > 0"
+              #tooltip
+            >
+              <div class="tw-text-[color:var(--error-color)]">{{ errorMessage }}</div>
+            </template>
+          </VcTooltip>
         </Field>
       </template>
       <template v-else>
@@ -220,26 +230,30 @@
           :model-value="value"
           :rules="cell.rules"
         >
-          <VcInput
-            :model-value="value"
-            class="tw-w-full"
-            :error="errors.length > 0"
-            :error-message="$isMobile.value ? errorMessage : undefined"
-            @update:model-value="$emit('update', { field: cell.id, value: $event })"
-            @blur="onBlur({ row: index, field: cell.id, errors })"
-          >
+          <VcTooltip placement="bottom">
+            <template #default>
+              <VcInput
+                :model-value="value"
+                class="tw-w-full"
+                :error="errors.length > 0"
+                :error-message="$isMobile.value ? errorMessage : undefined"
+                @update:model-value="$emit('update', { field: cell.id, value: $event })"
+                @blur="onBlur({ row: index, field: cell.id, errors })"
+              >
+                <template
+                  v-if="$isDesktop.value && errors.length > 0"
+                  #append-inner
+                >
+                  <VcIcon icon="fas fa-exclamation-circle tw-text-[color:var(--error-color)]"></VcIcon> </template
+              ></VcInput>
+            </template>
             <template
-              v-if="$isDesktop.value && errors.length > 0"
-              #append-inner
+              v-if="errors.length > 0"
+              #tooltip
             >
-              <VcTooltip placement="bottom-end">
-                <VcIcon icon="fas fa-exclamation-circle tw-text-[color:var(--error-color)]"></VcIcon>
-                <template #tooltip>
-                  <div class="tw-text-[color:var(--error-color)]">{{ errorMessage }}</div>
-                </template>
-              </VcTooltip>
-            </template></VcInput
-          >
+              <div class="tw-text-[color:var(--error-color)]">{{ errorMessage }}</div>
+            </template>
+          </VcTooltip>
         </Field>
       </template>
       <template v-else>
@@ -259,6 +273,7 @@ import htmlTruncate from "truncate-html";
 import * as DOMPurify from "dompurify";
 import VcInputCurrency from "../../../../molecules/vc-input-currency/vc-input-currency.vue";
 import VcInput from "../../../../molecules/vc-input/vc-input.vue";
+import VcTooltip from "../../../../atoms/vc-tooltip/vc-tooltip.vue";
 import { Field } from "vee-validate";
 
 export interface Props {

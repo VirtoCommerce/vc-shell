@@ -16,7 +16,7 @@ export default {
     columns: [
       {
         id: "img",
-        title: "Pic",
+        title: "Img",
         width: "60px",
         type: "image",
       },

@@ -72,8 +72,6 @@ export default defineComponent({
         "div",
         { class: "tw-flex tw-flex-col tw-gap-4" },
         props.uiSchema.reduce((arr, field): VNode[] => {
-          console.log(field.id, field.permissions, hasAccess(field.permissions));
-
           if (safeIn("permissions", field) && !hasAccess(field.permissions)) {
             return arr;
           }

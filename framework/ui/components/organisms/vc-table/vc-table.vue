@@ -326,7 +326,7 @@
                 v-if="
                   enableItemActions && itemActionBuilder && typeof item === 'object' && selectedRowIndex === itemIndex
                 "
-                class="tw-absolute tw-flex tw-right-[10px] actions tw-h-full tw-bg-[#f4f8fb]"
+                class="tw-absolute tw-flex tw-right-0 tw-px-[10px] actions tw-h-full tw-bg-[#f4f8fb]"
                 :class="{
                   'group-hover:!tw-bg-[#dfeef9]': hasClickListener,
                 }"
@@ -936,12 +936,12 @@ function onColumnHeaderDragStart(event: DragEvent, item: ITableColumns) {
 }
 
 function findParentHeader(element: HTMLElement) {
-  if (element.nodeName === "TH") {
+  if (element.classList.contains("vc-table__header")) {
     return element;
   } else {
     let parent = element.parentElement;
 
-    while (parent && parent.nodeName !== "TH") {
+    while (parent && !parent.classList.contains("vc-table__header")) {
       parent = parent.parentElement;
       if (!parent) break;
     }
@@ -965,11 +965,11 @@ function onColumnHeaderDragOver(event: DragEvent) {
       reorderRef.value.style.top = dropHeaderOffset.top - getOffset(tableRef.value).top + "px";
 
       if (event.pageX > columnCenter) {
-        reorderRef.value.style.left = targetLeft + dropHeader.offsetWidth + "px";
+        reorderRef.value.style.left = targetLeft + dropHeader.offsetWidth - 5 + "px";
 
         dropPosition.value = 1;
       } else {
-        reorderRef.value.style.left = targetLeft + "px";
+        reorderRef.value.style.left = targetLeft - 5 + "px";
         dropPosition.value = -1;
       }
 
@@ -1024,7 +1024,8 @@ function onColumnHeaderDrop(event: DragEvent, item: ITableColumns) {
 function saveState() {
   console.debug("[@vc-shell/framework#vc-table.vue] - Save state");
 
-  state.value = internalColumns.value.map((col) => _.pick(col, "id", "visible", "width", "predefined"));
+  const colsClone = _.cloneDeep(internalColumns.value);
+  state.value = colsClone.map((col) => _.pick(col, "id", "visible", "width", "predefined"));
 }
 
 function restoreState() {
@@ -1045,9 +1046,14 @@ function restoreState() {
       }
     }
     // Merge the updated columns with the remaining state columns
-    internalColumns.value = _.values(
-      _.merge(_.keyBy(props.columns, "id"), _.keyBy(allColumns.value, "id"), _.keyBy(state.value, "id")),
-    );
+    internalColumns.value = state.value.map((stateItem) => {
+      const id = stateItem.id;
+
+      const propsColumn = _.find(props.columns, { id });
+      const allColumn = _.find(allColumns.value, { id });
+
+      return _.merge({}, propsColumn, allColumn, stateItem);
+    });
   } else {
     internalColumns.value = allColumns.value;
   }

@@ -11,7 +11,7 @@
 
     <teleport to="body">
       <span
-        v-if="tooltipVisible"
+        v-if="tooltipVisible && $slots['tooltip']"
         ref="tooltipRef"
         :style="floatingStyles"
         class="tw-absolute tw-z-[101] tw-bg-white tw-border tw-border-solid tw-border-[color:#eef0f2] tw-shadow-[1px_1px_8px_rgba(126,142,157,0.25)] tw-rounded-[3px] tw-text-[color:#8e9daa] tw-font-normal tw-py-1 tw-px-2"

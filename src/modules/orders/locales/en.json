@@ -91,7 +91,7 @@
             "COMMISSION": "Commission"
           },
           "TABLE": {
-            "PIC": "Pic",
+            "PIC": "Img",
             "NAME": "Item",
             "QUANTITY": "Quantity",
             "UNIT_PRICE": "Unit price",

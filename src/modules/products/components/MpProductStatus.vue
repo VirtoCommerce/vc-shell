@@ -33,7 +33,7 @@ const { context } = toRefs(props);
 
 const itemStatus = computed(() => context.value?.item?.status);
 
-const statusStyles: Omit<Record<keyof typeof SellerProductStatus2, Record<string, unknown>>, "None"> = {
+const statusStyles: Record<keyof typeof SellerProductStatus2, Record<string, unknown>> = {
   RequiresChanges: {
     outline: true,
     variant: "danger",
@@ -44,7 +44,7 @@ const statusStyles: Omit<Record<keyof typeof SellerProductStatus2, Record<string
   },
   WaitForApproval: {
     outline: true,
-    variant: "warning",
+    variant: "success",
   },
   Rejected: {
     outline: false,
@@ -57,6 +57,10 @@ const statusStyles: Omit<Record<keyof typeof SellerProductStatus2, Record<string
   Published: {
     outline: false,
     variant: "success",
+  },
+  None: {
+    outline: true,
+    variant: "info-dark",
   },
 };
 

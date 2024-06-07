@@ -18,7 +18,7 @@ defineProps<Props>();
 const statusStyle = (status: string) => {
   const result: {
     outline: boolean;
-    variant: "success" | "danger" | "info";
+    variant: "info" | "warning" | "danger" | "success" | "light-danger" | "info-dark" | "primary";
   } = {
     outline: true,
     variant: "info",
@@ -30,15 +30,27 @@ const statusStyle = (status: string) => {
       result.variant = "success";
       break;
     case "New":
+      result.outline = true;
+      result.variant = "warning";
+      break;
+    case "Pending":
       result.outline = false;
+      result.variant = "warning";
+      break;
+    case "Confirmed":
+      result.outline = true;
       result.variant = "success";
+      break;
+    case "Packaged":
+      result.outline = true;
+      result.variant = "primary";
       break;
     case "Cancelled":
       result.outline = true;
       result.variant = "danger";
       break;
     case "Shipped":
-      result.outline = true;
+      result.outline = false;
       result.variant = "success";
   }
   return result;

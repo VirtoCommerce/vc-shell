@@ -5,8 +5,8 @@
       "WAIT_FOR_APPROVAL": "Wait for approval",
       "REJECTED": "Rejected",
       "PUBLISHED": "Published",
-      "HAS_STAGED_CHANGES": "Has staged changes",
-      "NONE": "New"
+      "HAS_STAGED_CHANGES": "Has draft updates",
+      "NONE": "Draft"
     },
     "WIDGET": {
       "TITLE": "Products",
@@ -33,7 +33,7 @@
         "TABLE": {
           "TOTALS": "Total:",
           "HEADER": {
-            "IMAGE": "Pic",
+            "IMAGE": "Img",
             "NAME": "Name",
             "CATEGORY": "Category",
             "CREATED_DATE": "Created Date",
@@ -80,12 +80,11 @@
       "DETAILS": {
         "TITLE": "Add product",
         "TOOLBAR": {
-          "SAVE": "Save",
-          "SAVEANDAPPROVE": "Send changes to approve",
+          "SAVE": "Save as draft",
+          "SAVEANDAPPROVE": "Submit for approval",
           "SAVEANDPUBLISH": "Save & publish",
           "CLOSE": "Close",
-          "REVERT": "Revert staged changes",
-          "APPROVE": "Approve (test only)",
+          "REVERT": "Revert draft",
           "DELETE": "Delete"
         },
         "DECLINE_REASON": "Decline reason",

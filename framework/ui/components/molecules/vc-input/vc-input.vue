@@ -409,8 +409,17 @@ const handleValue = computed({
     return props.type === "integer" || props.type === "number" ? (isNaN(temp.value) ? "" : temp.value) : temp.value;
   },
   set(value) {
-    temp.value = value;
-    onInput(value);
+    if (props.type === "number" || props.type === "integer") {
+      if (value < 0) {
+        temp.value = Math.abs(value);
+      } else {
+        temp.value = value;
+      }
+    } else {
+      temp.value = value;
+    }
+
+    onInput(temp.value);
   },
 });
 const mutatedModel = ref();
@@ -457,6 +466,12 @@ const formatDateWithLocale: (date: Date) => string = (date) => {
 function onKeyDown(e: KeyboardEvent) {
   const allowedKeys = ["Backspace", "Delete", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"];
   const keypressed = e.key;
+
+  if (props.type === "number" || props.type === "integer") {
+    if (keypressed === "-" || keypressed === "e") {
+      e.preventDefault();
+    }
+  }
   if (props.type === "integer") {
     if (!/^\d$/.test(keypressed) && !allowedKeys.includes(keypressed)) {
       e.preventDefault();

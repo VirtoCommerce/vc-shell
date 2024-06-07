@@ -58,6 +58,8 @@
             :disabled="disabled"
             :placeholder="holder"
             @blur="handleBlur"
+            @keydown="handleKeyDown"
+            @paste="handlePaste"
           />
         </template>
         <template
@@ -242,6 +244,8 @@ const { inputRef, setOptions, numberValue, setValue } = useCurrencyInput(
     currencyDisplay: props.currencyDisplay as CurrencyDisplay,
     hideGroupingSeparatorOnFocus: false,
     precision: props.precision,
+    hideCurrencySymbolOnFocus: false,
+    hideNegligibleDecimalDigitsOnFocus: false,
   },
   false,
 );
@@ -256,6 +260,9 @@ watch(
         currency: newVal,
         currencyDisplay: props.currencyDisplay as CurrencyDisplay,
         hideGroupingSeparatorOnFocus: false,
+        precision: props.precision,
+        hideCurrencySymbolOnFocus: false,
+        hideNegligibleDecimalDigitsOnFocus: false,
       });
   },
 );
@@ -279,5 +286,18 @@ function updateModel(value: string | number | Date | null | undefined) {
 
 function handleBlur(event: Event) {
   emit("blur", event);
+}
+
+function handleKeyDown(e: KeyboardEvent) {
+  if (e.key === "-" || e.key === "e") {
+    e.preventDefault();
+  }
+}
+
+function handlePaste(e: ClipboardEvent) {
+  const pasteData = e.clipboardData?.getData("text/plain");
+  if (typeof pasteData !== "undefined" && parseInt(pasteData) < 0) {
+    e.preventDefault();
+  }
 }
 </script>

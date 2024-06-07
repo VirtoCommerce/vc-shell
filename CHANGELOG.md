@@ -1,3 +1,13 @@
+## [1.0.235](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.234...v1.0.235) (2024-06-07)
+
+
+### Features
+
+* rename pic to img vm-1388, rename statuses vc-1387 ([a434358](https://github.com/VirtoCommerce/vendor-portal/commit/a434358f001236c017b7c12645cbb2a8ff9d1122))
+* vc-1376 restrict offer SKU by 55 chars ([7d580c7](https://github.com/VirtoCommerce/vendor-portal/commit/7d580c73576cac863f43772f0d1dc8d1d770f152))
+
+
+
 ## [1.0.234](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.233...v1.0.234) (2024-06-05)
 
 

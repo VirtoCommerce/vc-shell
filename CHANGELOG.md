@@ -1,3 +1,18 @@
+## [1.0.232](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.231...v1.0.232) (2024-06-07)
+
+
+### Bug Fixes
+
+* **ui:** vc-table columns reordering fix ([48b4994](https://github.com/VirtoCommerce/vc-shell/commit/48b499480f208db81b97de4e5638c8079b6eb98e))
+
+
+### Features
+
+* prevent entering negative numbers in vc-input-currency and vc-input components ([b82a9e4](https://github.com/VirtoCommerce/vc-shell/commit/b82a9e47c26d06c80eb5806aad8d99fdf9043cc1))
+* **ui:** add "primary" variant to vc-status component ([e3e1544](https://github.com/VirtoCommerce/vc-shell/commit/e3e154477cf15ae69c0e5cb203eec82160265610))
+
+
+
 ## [1.0.231](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.230...v1.0.231) (2024-06-05)
 
 

@@ -595,7 +595,7 @@ export interface StatusSchema extends Pick<SchemaBase, "id" | "visibility" | "ho
   extend?: boolean;
   /**
    * Status variant.
-   * @type {"info" | "info-dark" | "warning" | "danger" | "success" | "light-danger"}
+   * @type {"info" | "info-dark" | "warning" | "danger" | "success" | "light-danger" | "primary"}
    */
   variant?: ComponentProps<typeof VcStatus>["variant"];
   /**

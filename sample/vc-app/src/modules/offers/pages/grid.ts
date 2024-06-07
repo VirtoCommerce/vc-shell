@@ -53,7 +53,7 @@ export const grid: DynamicGridSchema = {
       columns: [
         {
           id: "imgSrc",
-          title: "Pic",
+          title: "Img",
           type: "image",
           alwaysVisible: true,
         },

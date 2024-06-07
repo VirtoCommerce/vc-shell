@@ -15,7 +15,7 @@
         "TABLE": {
           "TOTALS": "Count:",
           "HEADER": {
-            "IMAGE": "Image",
+            "IMAGE": "Img",
             "PRODUCT_NAME": "Product name",
             "DESCRIPTION": "Description",
             "PRICE": "Price",

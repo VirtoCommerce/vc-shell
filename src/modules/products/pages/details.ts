@@ -149,6 +149,7 @@ export const details: DynamicDetailsSchema = {
               update: {
                 method: "validateGtin",
               },
+              maxlength: 61,
             },
             {
               id: "description",

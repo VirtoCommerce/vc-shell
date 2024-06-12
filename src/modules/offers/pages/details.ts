@@ -117,7 +117,7 @@ export const details: DynamicDetailsSchema = {
               update: {
                 method: "validateSku",
               },
-              maxlength: 55,
+              maxlength: 61,
             },
             {
               id: "trackInventory",

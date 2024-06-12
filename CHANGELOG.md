@@ -1,3 +1,17 @@
+## [1.0.236](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.235...v1.0.236) (2024-06-12)
+
+
+### Bug Fixes
+
+* rename pic to img in orders ([e8ef2ef](https://github.com/VirtoCommerce/vendor-portal/commit/e8ef2eff72cf71f4466d78da17d5ac19895c5268))
+
+
+### Features
+
+* vm-1384 sku length limit ([8042539](https://github.com/VirtoCommerce/vendor-portal/commit/8042539821e394e858d2f4b5cb17dff796ba4df1))
+
+
+
 ## [1.0.235](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.234...v1.0.235) (2024-06-07)
 
 

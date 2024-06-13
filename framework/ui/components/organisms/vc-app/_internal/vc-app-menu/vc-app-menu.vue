@@ -19,8 +19,9 @@
       @click="isMobileVisible = false"
     ></div>
     <div
-      class="!tw-absolute vc-app-menu__inner tw-flex tw-flex-col tw-h-full [transition:width_300ms_cubic-bezier(0.2,0,0,1)_0s] tw-z-[9999] tw-left-0 tw-top-0 tw-bottom-0 tw-bg-[color:var(--app-background)] tw-pt-[22px] tw-shadow-[inset_0px_2px_5px_0px_#3654751A]"
+      class="!tw-absolute vc-app-menu__inner tw-flex tw-flex-col tw-h-full [transition:width_300ms_cubic-bezier(0.2,0,0,1)_0s] tw-z-[9999] tw-top-0 tw-bottom-0 tw-bg-[color:var(--app-background)] tw-shadow-[inset_0px_2px_5px_0px_#3654751A]"
       :class="{
+        'tw-left-0 tw-pt-[22px]': $isDesktop.value,
         '!tw-w-[63px] !tw-shadow-[inset_4px_2px_5px_0px_#3654751A]': $isDesktop.value && !isExpanded && !isExpandedOver,
         'tw-w-[var(--app-menu-width)]': $isDesktop.value && (isExpanded || isExpandedOver),
         'tw-shadow-none': $isDesktop.value && isExpanded,

@@ -1,3 +1,12 @@
+## [1.0.237](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.236...v1.0.237) (2024-06-13)
+
+
+### Features
+
+* vm-1347 seller user photo ([bd768a8](https://github.com/VirtoCommerce/vendor-portal/commit/bd768a8966bdb6631f37eb7a8af7ba0451f198f8))
+
+
+
 ## [1.0.236](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.235...v1.0.236) (2024-06-12)
 
 

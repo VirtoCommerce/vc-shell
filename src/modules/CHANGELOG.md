@@ -1,3 +1,12 @@
+## [1.0.238](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.237...v1.0.238) (2024-06-13)
+
+
+### Features
+
+* vm-1348 avatar for seller user ([b345a83](https://github.com/VirtoCommerce/vendor-portal/commit/b345a83a3b738d77e7ca560d892bd550c89dffdf))
+
+
+
 ## [1.0.237](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.236...v1.0.237) (2024-06-13)
 
 

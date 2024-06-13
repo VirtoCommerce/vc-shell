@@ -168,7 +168,11 @@ function onTextChange() {
   }
 
   if (quill.value.getText().trim() !== props.modelValue?.trim()) {
-    emit("update:modelValue", quill.value.root.innerHTML);
+    if (quill.value.root.innerHTML === "<p><br></p>") {
+      emit("update:modelValue", "");
+    } else {
+      emit("update:modelValue", quill.value.root.innerHTML);
+    }
   }
 }
 </script>

@@ -128,7 +128,7 @@ export interface RequestPasswordResult {
   errorCode?: string;
 }
 
-export type ITableColumns = {
+export type ITableColumnsBase = {
   id: string;
   title: string | ComputedRef<string>;
   width?: number | string;
@@ -139,6 +139,7 @@ export type ITableColumns = {
     | "date-ago"
     | "date"
     | "time"
+    | "image"
     | "date-time"
     | "image"
     | "status"
@@ -159,6 +160,18 @@ export type ITableColumns = {
   currencyField?: string;
   rules?: IValidationRules;
 };
+
+type IImageColumn = {
+  type: "image";
+  emptyIcon?: string;
+};
+
+type IMoneyColumn = {
+  type: "money";
+  currencyField: string;
+};
+
+export type ITableColumns = ITableColumnsBase | (ITableColumnsBase & IImageColumn) | (ITableColumnsBase & IMoneyColumn);
 
 export interface MenuItem extends Omit<MenuItemConfig, "title" | "id"> {
   priority: number;

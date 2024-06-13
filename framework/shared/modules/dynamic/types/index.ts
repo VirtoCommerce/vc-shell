@@ -156,7 +156,16 @@ export interface ListContentSchema {
   multiselect?: boolean;
   header?: boolean;
   footer?: boolean;
-  columns?: (Omit<ITableColumns, "visible"> & {
+  columns?: ((
+    | ITableColumns
+    | {
+        visible?:
+          | boolean
+          | {
+              method: string;
+            };
+      }
+  ) & {
     id: string;
     title: string;
     sortable?: boolean;
@@ -171,11 +180,6 @@ export interface ListContentSchema {
     onCellBlur?: {
       method: string;
     };
-    visible?:
-      | boolean
-      | {
-          method: string;
-        };
   })[];
   reorderableRows?: boolean;
   // TODO Add to documentation

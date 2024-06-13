@@ -9,12 +9,21 @@
   >
     <div
       ref="target"
-      class="tw-top-0 tw-left-0 tw-bottom-0 tw-right-0 tw-w-full tw-h-full tw-absolute tw-flex-shrink-0 tw-bg-white"
+      class="tw-top-0 tw-left-0 tw-bottom-0 tw-right-0 tw-w-full tw-h-full tw-absolute tw-flex-shrink-0 tw-bg-white tw-flex tw-flex-row"
       :class="{ animated: !isSwiping, 'vc-table-mobile__item_selected': isSelected }"
       :style="{ left }"
     >
-      <!-- Mobile item slot content -->
-      <slot></slot>
+      <div
+        v-if="anySelected"
+        class="tw-pl-4 tw-flex tw-items-center tw-justify-center tw-border-b tw-border-solid tw-border-b-[#e3e7ec]"
+      >
+        <VcCheckbox :model-value="unref(isSelected ?? false)"></VcCheckbox>
+      </div>
+      <div class="tw-flex-1 tw-w-full">
+        <div class="tw-flex tw-flex-col tw-h-full tw-border-b tw-border-solid tw-border-b-[#e3e7ec]">
+          <slot></slot>
+        </div>
+      </div>
     </div>
     <div class="tw-flex tw-justify-between tw-flex-auto">
       <!-- Left swipe actions -->
@@ -116,10 +125,10 @@
 </template>
 
 <script lang="ts" setup generic="T extends TableItem | string">
-import { Ref, computed, ref, onMounted, watch, onUpdated, nextTick } from "vue";
+import { Ref, computed, ref, onMounted, watch, onUpdated, unref } from "vue";
 import { IActionBuilderResult } from "../../../../../../core/types";
 import { useI18n } from "vue-i18n";
-import { useSwipe, watchDebounced } from "@vueuse/core";
+import { useElementVisibility, useSwipe, watchDebounced } from "@vueuse/core";
 import { vOnClickOutside } from "@vueuse/components";
 
 export interface Emits {
@@ -139,6 +148,7 @@ const props = defineProps<{
   swipingItem?: string;
   isSelected?: boolean;
   index: number;
+  selection?: T[];
 }>();
 
 const emit = defineEmits<Emits>();
@@ -150,6 +160,8 @@ const target = ref<HTMLElement | null>(null);
 const container = ref<HTMLElement | null>(null);
 const containerWidth = computed(() => container.value?.offsetWidth);
 const left = ref("0");
+const anySelected = computed(() => props.selection && props.selection.length > 0);
+const targetIsVisible = useElementVisibility(container);
 
 const actionsWidth = ref("0");
 
@@ -193,14 +205,16 @@ const { isSwiping, lengthX } = useSwipe(target, {
 
 const rightSwipeActions = computed(
   () =>
-    (itemActions.value &&
+    (props.selection?.length === 0 &&
+      itemActions.value &&
       itemActions.value.length &&
       itemActions.value.filter((actions: IActionBuilderResult) => actions.position === "right")) ||
     undefined,
 );
 const leftSwipeActions = computed(
   () =>
-    (itemActions.value &&
+    (props.selection?.length === 0 &&
+      itemActions.value &&
       itemActions.value.length &&
       itemActions.value.filter((actions: IActionBuilderResult) => actions.position === "left")) ||
     undefined,
@@ -233,6 +247,8 @@ watchDebounced(
   { deep: true, debounce: 450 },
 );
 
+watch(() => targetIsVisible.value, adjustHeight);
+
 function reset() {
   left.value = "0";
   actionsWidth.value = "0";
@@ -264,6 +280,10 @@ function handleHold() {
 }
 
 function handleClick() {
+  if (anySelected.value) {
+    emit("select");
+    return;
+  }
   emit("click");
 }
 </script>

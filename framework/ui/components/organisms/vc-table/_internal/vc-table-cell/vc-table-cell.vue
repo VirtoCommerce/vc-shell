@@ -129,6 +129,7 @@
         size="s"
         aspect="1x1"
         :src="value as string"
+        :empty-icon="('emptyIcon' in cell && cell.emptyIcon) || undefined"
         background="contain"
       />
     </template>

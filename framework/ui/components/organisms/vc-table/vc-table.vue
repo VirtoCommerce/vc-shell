@@ -1,14 +1,71 @@
 <template>
   <div
     v-loading="unref(loading) || columnsInit"
-    class="tw-relative tw-overflow-hidden tw-flex tw-flex-col tw-grow tw-basis-0 tw-border tw-border-[color:#eef0f2] tw-border-solid tw-border-t-0"
+    class="tw-relative tw-overflow-hidden tw-flex tw-flex-col tw-grow tw-basis-0 tw-border-[color:#eef0f2] tw-border-solid tw-border-t-0"
   >
+    <div
+      v-if="$isMobile.value && selection.length > 0"
+      class="tw-flex tw-flex-col"
+    >
+      <div
+        class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-px-4 tw-py-2 tw-min-h-[56px] tw-font-bold tw-text-lg tw-border-[color:#eef0f2] tw-border-b tw-border-solid tw-box-border"
+      >
+        <div class="tw-flex tw-flex-row tw-w-full tw-justify-between">
+          <div class="tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-3">
+            <VcCheckbox
+              v-model="headerCheckbox"
+              class="tw-font-normal tw-self-center tw-flex"
+              @click.stop
+              >{{ $t("COMPONENTS.ORGANISMS.VC_TABLE.SELECT_ALL_TRUNCATED") }}</VcCheckbox
+            >
+            {{ $t("COMPONENTS.ORGANISMS.VC_TABLE.SELECTED") }}: {{ selection.length }}
+          </div>
+
+          <VcButton
+            text
+            @click="() => (selection = [])"
+            >{{ $t("COMPONENTS.ORGANISMS.VC_TABLE.CANCEL") }}</VcButton
+          >
+        </div>
+      </div>
+      <div
+        v-if="selectAll && showSelectionChoice"
+        class="tw-w-full tw-flex tw-py-2"
+      >
+        <div class="tw-w-full tw-flex tw-items-center tw-justify-center">
+          <div>
+            {{
+              allSelected
+                ? t("COMPONENTS.ORGANISMS.VC_TABLE.ALL_SELECTED")
+                : t("COMPONENTS.ORGANISMS.VC_TABLE.CURRENT_PAGE_SELECTED")
+            }}
+            <VcButton
+              text
+              class="tw-text-[13px]"
+              @click="handleSelectAll"
+              >{{
+                allSelected ? t("COMPONENTS.ORGANISMS.VC_TABLE.CANCEL") : t("COMPONENTS.ORGANISMS.VC_TABLE.SELECT_ALL")
+              }}</VcButton
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Header slot with filter and searchbar -->
     <slot
-      v-if="($slots['header'] || header) && (!columnsInit || searchValue || searchValue === '' || activeFilterCount)"
+      v-else-if="
+        ($slots['header'] || header) && (!columnsInit || searchValue || searchValue === '' || activeFilterCount)
+      "
       name="header"
     >
-      <div class="tw-shrink-0 tw-flex tw-items-center tw-justify-between tw-p-4">
+      <div
+        class="tw-shrink-0 tw-flex tw-items-center tw-justify-between tw-box-border"
+        :class="{
+          'tw-px-4 tw-py-2 tw-border-[color:#eef0f2] tw-border-solid tw-border-b ': $isMobile.value,
+          'tw-p-4': $isDesktop.value,
+        }"
+      >
         <!-- Table filter mobile button -->
         <div
           v-if="$isMobile.value && $slots['filters']"
@@ -32,7 +89,14 @@
           name="table_search"
           :model-value="searchValue"
           @update:model-value="$emit('search:change', $event)"
-        ></VcInput>
+        >
+          <template #prepend-inner>
+            <VcIcon
+              icon="fas fa-search"
+              class="tw-text-[color:#a5a5a5]"
+            ></VcIcon>
+          </template>
+        </VcInput>
 
         <!-- Table filter desktop button -->
         <div
@@ -61,7 +125,7 @@
         ref="scrollContainer"
         :no-padding="true"
         class="tw-grow tw-basis-0 tw-relative"
-        :use-ptr="pullToReload"
+        :use-ptr="selection.length === 0 ? pullToReload : undefined"
         @scroll:ptr="$emit('scroll:ptr')"
       >
         <!-- Mobile table view -->
@@ -74,6 +138,7 @@
               :items="items"
               :action-builder="itemActionBuilder"
               :swiping-item="mobileSwipeItem"
+              :selection="selection"
               :is-selected="isSelected(item)"
               @click="$emit('itemClick', item)"
               @swipe-start="handleSwipe"
@@ -131,20 +196,6 @@
           >
             <div class="vc-table__header-row tw-flex tw-flex-row">
               <div
-                v-if="multiselect"
-                class="tw-flex-1 tw-flex tw-items-center tw-justify-center tw-w-[28px] tw-max-w-[28px] tw-min-w-[28px] tw-bg-[#f9f9f9] !tw-border-0 tw-shadow-[inset_0px_1px_0px_#eaedf3,_inset_0px_-1px_0px_#eaedf3] tw-box-border tw-sticky tw-top-0 tw-select-none tw-overflow-hidden tw-z-[1]"
-              >
-                <div class="tw-flex tw-justify-center tw-items-center">
-                  <VcCheckbox
-                    v-model="headerCheckbox"
-                    @click.stop
-                  ></VcCheckbox>
-                </div>
-                <div class="tw-top-0 tw-bottom-0 tw-absolute tw-right-0 tw-flex tw-justify-end">
-                  <div class="tw-w-px tw-bg-[#e5e7eb] tw-h-full"></div>
-                </div>
-              </div>
-              <div
                 v-for="(item, index) in filteredCols"
                 :id="item.id"
                 :key="item.id"
@@ -164,6 +215,17 @@
                 @drop="onColumnHeaderDrop($event, item)"
                 @click="handleHeaderClick(item)"
               >
+                <div
+                  v-if="multiselect && index === 0 && isHeaderHover"
+                  class="tw-flex tw-pl-3 tw-items-center tw-justify-center tw-w-auto tw-bg-[#f9f9f9] tw-box-border tw-select-none tw-overflow-hidden tw-z-[1]"
+                >
+                  <div class="tw-flex tw-justify-center tw-items-center">
+                    <VcCheckbox
+                      v-model="headerCheckbox"
+                      @click.stop
+                    ></VcCheckbox>
+                  </div>
+                </div>
                 <div class="tw-flex tw-items-center tw-flex-nowrap tw-truncate tw-px-3 tw-font-bold">
                   <div class="tw-truncate">
                     <span
@@ -276,20 +338,6 @@
               @mouseover="showActions(itemIndex)"
             >
               <div
-                v-if="multiselect && typeof item === 'object'"
-                class="tw-w-[28px] tw-max-w-[28px] tw-min-w-[28px] tw-relative tw-flex-1 tw-flex tw-items-center tw-justify-center"
-                @click.stop
-              >
-                <div class="tw-flex tw-justify-center tw-items-center">
-                  <VcCheckbox
-                    :model-value="isSelected(item)"
-                    @update:model-value="rowCheckbox(item)"
-                  ></VcCheckbox>
-                </div>
-                <div class="tw-w-px tw-top-0 tw-bottom-0 tw-absolute tw-right-0 tw-bg-[#e5e7eb]"></div>
-              </div>
-
-              <div
                 v-for="cell in filteredCols"
                 :id="`${(typeof item === 'object' && 'id' in item && item.id) || itemIndex}_${cell.id}`"
                 :key="`${(typeof item === 'object' && 'id' in item && item.id) || itemIndex}_${cell.id}`"
@@ -298,28 +346,11 @@
                 :style="{ maxWidth: cell.width, width: cell.width }"
               >
                 <div class="tw-truncate">
-                  <slot
-                    :name="`item_${cell.id}`"
+                  <renderCellSlot
                     :item="item"
                     :cell="cell"
                     :index="itemIndex"
-                  >
-                    <VcTableCell
-                      v-if="typeof item === 'object'"
-                      class="tw-flex-1"
-                      :cell="cell"
-                      :item="item"
-                      :editing="editing"
-                      :index="itemIndex"
-                      :width="
-                        calculateElWidth(
-                          `${(typeof item === 'object' && 'id' in item && item.id) || itemIndex}_${cell.id}`,
-                        )
-                      "
-                      @update="$emit('onEditComplete', { event: $event, index: itemIndex })"
-                      @blur="$emit('onCellBlur', $event)"
-                    ></VcTableCell>
-                  </slot>
+                  />
                 </div>
               </div>
               <div
@@ -400,7 +431,11 @@
       name="footer"
     >
       <div
-        class="tw-bg-[#fbfdfe] tw-border-t tw-border-solid tw-border-[#eaedf3] tw-flex-shrink-0 tw-flex tw-items-center tw-justify-between tw-p-4"
+        class="tw-bg-[#fbfdfe] tw-border-t tw-border-solid tw-border-[#eaedf3] tw-flex-shrink-0 tw-flex tw-items-center tw-justify-between"
+        :class="{
+          'tw-py-2 tw-px-4': $isMobile.value,
+          'tw-p-4': $isDesktop.value,
+        }"
       >
         <!-- Table pagination -->
         <VcPagination
@@ -595,6 +630,41 @@ const sortField = computed(() => {
 });
 
 const hasClickListener = typeof instance?.vnode.props?.["onItemClick"] === "function";
+
+const renderCellSlot = ({ item, cell, index }: { item: T; cell: ITableColumns; index: number }) => {
+  const isSlotExist = slots[`item_${cell.id}`];
+
+  const isFirstCell = filteredCols.value.indexOf(cell) === 0;
+
+  const isRowSelected = selection.value.includes(item);
+
+  if ((isFirstCell && selectedRowIndex.value === index) || (isRowSelected && isFirstCell)) {
+    return h(
+      "div",
+      { onClick: (e) => e.stopPropagation() },
+      h(VcCheckbox, {
+        modelValue: selection.value.includes(item),
+        "onUpdate:modelValue": (value: boolean) => {
+          rowCheckbox(item);
+        },
+      }),
+    );
+  }
+
+  if (!isSlotExist) {
+    return h(VcTableCell, {
+      cell,
+      item: item as TableItem,
+      index,
+      editing: props.editing,
+      onUpdate: (event) => {
+        emit("onEditComplete", { event, index });
+      },
+      onBlur: (event) => emit("onCellBlur", event),
+    });
+  }
+  return slots[`item_${cell.id}`]?.({ item, cell, index });
+};
 
 const calculateElWidth = (id: string) => {
   const el = document.getElementById(id);

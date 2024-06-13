@@ -16119,6 +16119,7 @@ export class SellerOwnerDetails implements ISellerOwnerDetails {
   firstName?: string | undefined;
   lastName?: string | undefined;
   email!: string;
+  iconUrl?: string | undefined;
 
   constructor(data?: ISellerOwnerDetails) {
     if (data) {
@@ -16133,6 +16134,7 @@ export class SellerOwnerDetails implements ISellerOwnerDetails {
       this.firstName = _data["firstName"];
       this.lastName = _data["lastName"];
       this.email = _data["email"];
+      this.iconUrl = _data["iconUrl"];
     }
   }
 
@@ -16148,6 +16150,7 @@ export class SellerOwnerDetails implements ISellerOwnerDetails {
     data["firstName"] = this.firstName;
     data["lastName"] = this.lastName;
     data["email"] = this.email;
+    data["iconUrl"] = this.iconUrl;
     return data;
   }
 }
@@ -16156,6 +16159,7 @@ export interface ISellerOwnerDetails {
   firstName?: string | undefined;
   lastName?: string | undefined;
   email: string;
+  iconUrl?: string | undefined;
 }
 
 export class SellerProduct implements ISellerProduct {
@@ -16420,13 +16424,13 @@ export class SellerUser implements ISellerUser {
   readonly userName?: string | undefined;
   email?: string | undefined;
   role?: string | undefined;
+  iconUrl?: string | undefined;
   readonly isLockedOut?: boolean;
   createdDate?: Date;
   modifiedDate?: Date | undefined;
   createdBy?: string | undefined;
   modifiedBy?: string | undefined;
   id?: string | undefined;
-  iconUrl?: string | undefined;
 
   constructor(data?: ISellerUser) {
     if (data) {
@@ -16445,13 +16449,13 @@ export class SellerUser implements ISellerUser {
       (<any>this).userName = _data["userName"];
       this.email = _data["email"];
       this.role = _data["role"];
+      this.iconUrl = _data["iconUrl"];
       (<any>this).isLockedOut = _data["isLockedOut"];
       this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>undefined;
       this.modifiedDate = _data["modifiedDate"] ? new Date(_data["modifiedDate"].toString()) : <any>undefined;
       this.createdBy = _data["createdBy"];
       this.modifiedBy = _data["modifiedBy"];
       this.id = _data["id"];
-      this.iconUrl = _data["iconUrl"];
     }
   }
 
@@ -16471,13 +16475,13 @@ export class SellerUser implements ISellerUser {
     data["userName"] = this.userName;
     data["email"] = this.email;
     data["role"] = this.role;
+    data["iconUrl"] = this.iconUrl;
     data["isLockedOut"] = this.isLockedOut;
     data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>undefined;
     data["modifiedDate"] = this.modifiedDate ? this.modifiedDate.toISOString() : <any>undefined;
     data["createdBy"] = this.createdBy;
     data["modifiedBy"] = this.modifiedBy;
     data["id"] = this.id;
-    data["iconUrl"] = this.iconUrl;
     return data;
   }
 }
@@ -16490,13 +16494,13 @@ export interface ISellerUser {
   userName?: string | undefined;
   email?: string | undefined;
   role?: string | undefined;
+  iconUrl?: string | undefined;
   isLockedOut?: boolean;
   createdDate?: Date;
   modifiedDate?: Date | undefined;
   createdBy?: string | undefined;
   modifiedBy?: string | undefined;
   id?: string | undefined;
-  iconUrl?: string | undefined;
 }
 
 export class SellerUserDetails implements ISellerUserDetails {

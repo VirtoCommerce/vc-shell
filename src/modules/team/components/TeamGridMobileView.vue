@@ -1,5 +1,5 @@
 <template>
-  <div class="tw-border-b tw-border-solid tw-border-b-[#e3e7ec] tw-py-3 tw-px-4">
+  <div class="tw-py-3 tw-px-4">
     <div class="tw-mt-3 tw-w-full tw-flex tw-justify-between">
       <div class="tw-truncate tw-grow tw-basis-0 tw-mr-2">
         <VcHint>{{ $t("TEAM.PAGES.LIST.TABLE.HEADER.FIRST_NAME") }}</VcHint>

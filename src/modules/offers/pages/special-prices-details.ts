@@ -96,7 +96,7 @@ export const specialPricesDetails: DynamicDetailsSchema = {
                   id: "minQuantity",
                   title: "SPECIAL_PRICES.PAGES.DETAILS.FIELDS.MIN_QTY.TITLE",
                   rules: {
-                    min_value: 0,
+                    min_value: 1,
                     required: true,
                   },
                   editable: true,

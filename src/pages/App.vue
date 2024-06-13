@@ -113,8 +113,6 @@ async function GetSellerId(): Promise<string> {
 
   --background-color: #f2f2f2;
   --top-bar-color: #ffffff;
-  --app-background: linear-gradient(180deg, #e4f5fb 5.06%, #e8f3f2 100%), linear-gradient(0deg, #e8f2f3, #e8f2f3),
-    #eef2f8;
   --app-bar-background-color: #ffffff;
   --app-bar-divider-color: #ffffff;
   --app-bar-toolbar-item-width: 50px;

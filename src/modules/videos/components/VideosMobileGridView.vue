@@ -1,5 +1,5 @@
 <template>
-  <div class="tw-border-b tw-border-solid tw-border-b-[#e3e7ec] tw-p-3 tw-flex tw-flex-nowrap">
+  <div class="tw-p-3 tw-flex tw-flex-nowrap">
     <VcImage
       class="tw-shrink-0"
       aspect="1x1"

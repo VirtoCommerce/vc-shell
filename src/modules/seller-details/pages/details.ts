@@ -102,6 +102,7 @@ export const details: DynamicDetailsSchema = {
                       variant: "file-upload",
                       multiple: false,
                       property: "logoHandler",
+                      uploadIcon: "fas fa-camera",
                       rules: {
                         fileWeight: 1024,
                       },

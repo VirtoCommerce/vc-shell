@@ -130,7 +130,7 @@ export const useVideoDetails = (
   const scope: VideoDetailsScope = {
     videoUrlHandler,
     videoDisabled: computed(() => true),
-    previewDisabled: computed(() => validationState.value.disabled),
+    previewDisabled: computed(() => videoUrl.value.length === 0 || videoLoading.value),
     needShowUrl: computed(() => !args.props.param),
     needShowFields: computed(() => !!args.props.param || newVideoLoaded.value),
     createVideo,

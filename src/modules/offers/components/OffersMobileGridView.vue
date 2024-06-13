@@ -1,5 +1,5 @@
 <template>
-  <div class="tw-border-b tw-border-solid tw-border-b-[#e3e7ec] tw-py-3 tw-px-4">
+  <div class="tw-py-3 tw-px-4">
     <div class="tw-w-full tw-flex tw-justify-evenly">
       <VcImage
         class="tw-shrink-0"

@@ -41,24 +41,23 @@
             ></SchemaRender>
           </VcForm>
         </div>
-        <div
-          v-if="bladeWidgets && bladeWidgets.length"
-          class="item-details__widgets"
-        >
-          <div
-            v-for="(item, index) in bladeWidgets"
-            :key="index"
-          >
-            <component
-              :is="item"
-              :ref="(el: HTMLElement) => widgetsRefs.set({ component: item, el })"
-              v-model="bladeContext"
-              @click="setActiveWidget(item)"
-            ></component>
-          </div>
-        </div>
       </div>
     </VcContainer>
+
+    <template
+      v-if="bladeWidgets && bladeWidgets.length"
+      #widgets="{ isExpanded }"
+    >
+      <component
+        :is="item"
+        v-for="(item, index) in bladeWidgets"
+        :key="index"
+        :ref="(el: HTMLElement) => widgetsRefs.set({ component: item, el })"
+        v-model="bladeContext"
+        :is-expanded="isExpanded"
+        @click="setActiveWidget(item)"
+      ></component>
+    </template>
   </VcBlade>
 </template>
 
@@ -387,16 +386,12 @@ defineExpose({
     @apply tw-text-[#ff4a4a] tw-mr-3;
   }
 
-  .app_phone &__inner {
+  .vc-app_mobile &__inner {
     @apply tw-flex-col;
   }
 
-  .app_phone &__content {
+  .vc-app_mobile &__content {
     @apply tw-border-r-0 tw-border-b tw-border-solid tw-border-b-[#eaedf3] tw-overflow-visible;
-  }
-
-  .app_phone &__widgets {
-    @apply tw-flex tw-flex-row;
   }
 }
 </style>

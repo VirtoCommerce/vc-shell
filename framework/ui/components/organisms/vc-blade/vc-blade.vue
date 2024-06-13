@@ -70,12 +70,64 @@
       class="tw-shrink-0"
       :items="toolbarItems"
     ></VcBladeToolbar>
-    <slot></slot>
+
+    <div class="tw-flex-1 tw-overflow-auto">
+      <div
+        class="tw-flex tw-flex-row tw-h-full"
+        :class="{
+          'tw-flex-col': $isMobile.value,
+        }"
+      >
+        <slot></slot>
+
+        <div
+          v-show="$slots['widgets'] && !isWidgetContainerEmpty"
+          ref="widgetsRef"
+          class="vc-blade__widgets tw-flex"
+          :class="{
+            'tw-w-[var(--blade-widgets-width)] tw-flex-col': $isDesktop.value && !isExpanded,
+            'tw-w-[var(--blade-widgets-width-expanded)] tw-flex-col': $isDesktop.value && isExpanded,
+            'tw-w-auto tw-border-t tw-border-solid tw-border-t-[#eaedf3] tw-flex-row': $isMobile.value,
+          }"
+        >
+          <div
+            ref="widgetsContainerRef"
+            class="vc-blade__widget-container tw-flex tw-overflow-auto"
+            :class="{
+              'tw-flex-col': $isDesktop.value,
+              'tw-flex-row': $isMobile.value,
+            }"
+          >
+            <slot
+              name="widgets"
+              :is-expanded="isExpanded"
+            ></slot>
+          </div>
+
+          <div
+            class="tw-flex tw-flex-auto"
+            :class="{
+              'tw-flex-col tw-justify-end': $isDesktop.value,
+              'tw-w-12 tw-max-w-12 tw-bg-white tw-items-center tw-justify-center tw-px-4 tw-ml-auto': $isMobile.value,
+            }"
+          >
+            <VcIcon
+              class="tw-self-center tw-justify-self-center tw-text-[#a1c0d4] tw-cursor-pointer hover:tw-text-[#7ea8c4]"
+              :class="{
+                'tw-mb-4': $isDesktop.value,
+              }"
+              :icon="`fas fa-chevron-${$isDesktop.value ? (isExpanded ? 'right' : 'left') : isExpanded ? 'up' : 'down'}`"
+              @click="toggleWidgets"
+            ></VcIcon>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { computed, Ref, reactive, useAttrs, toRefs, toValue } from "vue";
+import { computed, Ref, reactive, useAttrs, toRefs, toValue, ref, onMounted, onUpdated } from "vue";
 import { IBladeToolbar } from "../../../../core/types";
 import { usePopup } from "./../../../../shared";
 import { useI18n } from "vue-i18n";
@@ -83,6 +135,7 @@ import VcBladeHeader from "./_internal/vc-blade-header/vc-blade-header.vue";
 import VcBladeToolbar from "./_internal/vc-blade-toolbar/vc-blade-toolbar.vue";
 import { VcButton, VcIcon } from "./../../";
 import vcPopupError from "../../../../shared/components/common/popup/vc-popup-error.vue";
+import { useLocalStorage } from "@vueuse/core";
 
 export interface Props {
   icon?: string;
@@ -117,12 +170,39 @@ withDefaults(defineProps<Props>(), {
 defineSlots<{
   actions: void;
   default: void;
+  widgets: void;
 }>();
 
 defineEmits<Emits>();
 const attrs = useAttrs();
 const { maximized, error }: { maximized?: Ref<boolean>; error?: Ref<string> } = toRefs(reactive(attrs));
 const { t } = useI18n({ useScope: "global" });
+const widgetsRef = ref();
+const widgetsContainerRef = ref();
+
+const isExpanded = useLocalStorage("VC_BLADE_WIDGETS_IS_EXPANDED", true);
+
+const toggleWidgets = () => {
+  isExpanded.value = !isExpanded.value;
+};
+const isWidgetContainerEmpty = ref(false);
+
+const checkEmpty = (el: HTMLElement) => {
+  const isEmpty = !el.innerText.trim() && Array.from(el.children).every((node) => node.nodeType === Node.COMMENT_NODE);
+  isWidgetContainerEmpty.value = isEmpty;
+};
+
+onMounted(() => {
+  if (widgetsRef.value) {
+    checkEmpty(widgetsContainerRef.value);
+  }
+});
+
+onUpdated(() => {
+  if (widgetsRef.value) {
+    checkEmpty(widgetsContainerRef.value);
+  }
+});
 
 const { open } = usePopup({
   component: vcPopupError,
@@ -142,9 +222,16 @@ const { open } = usePopup({
   --blade-color-error: #f14e4e;
   --blade-color-unsaved-changes: #82a6bd;
   --blade-color-unsaved-changes: #82a6bd;
+
+  --blade-widgets-width: 36px;
+  --blade-widgets-width-expanded: 80px;
 }
 
 .vc-app_mobile .vc-blade {
   @apply tw-m-0 tw-rounded-none;
+}
+
+.vc-app_mobile .vc-blade__widgets {
+  @apply tw-flex tw-flex-row;
 }
 </style>

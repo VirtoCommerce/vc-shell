@@ -1,28 +1,47 @@
 <template>
-  <div
-    class="vc-widget tw-relative"
-    :class="{ 'vc-widget_disabled': disabled }"
-    @click="onClick"
+  <VcTooltip
+    :placement="$isDesktop.value ? 'bottom' : 'top'"
+    :offset="{
+      crossAxis: 0,
+      mainAxis: -10,
+    }"
   >
-    <VcIcon
-      v-if="icon"
-      class="vc-widget__icon"
-      :icon="icon"
-      size="xxl"
-    ></VcIcon>
     <div
-      v-if="title"
-      class="vc-widget__title"
+      class="vc-widget tw-relative tw-shrink-0 tw-py-4 tw-px-2"
+      :class="{
+        'tw-w-[80px]': isExpanded,
+        'vc-widget_disabled': disabled,
+        'tw-w-[36px]': !isExpanded,
+        'tw-w-[70px]': $isMobile.value,
+      }"
+      @click="onClick"
     >
+      <VcBadge
+        :content="value"
+        :size="isExpanded ? 'm' : 's'"
+      >
+        <div class="tw-flex tw-flex-col tw-items-center tw-justify-center">
+          <VcIcon
+            v-if="icon"
+            class="vc-widget__icon"
+            :icon="icon"
+            :size="isExpanded ? 'xxl' : 'l'"
+          ></VcIcon>
+        </div>
+      </VcBadge>
+      <div class="tw-truncate tw-w-full">
+        <div
+          v-if="title && isExpanded"
+          class="vc-widget__title tw-truncate"
+        >
+          {{ title }}
+        </div>
+      </div>
+    </div>
+    <template #tooltip>
       {{ title }}
-    </div>
-    <div
-      v-if="value !== undefined"
-      class="vc-widget__value"
-    >
-      {{ value }}
-    </div>
-  </div>
+    </template>
+  </VcTooltip>
 </template>
 
 <script lang="ts" setup>
@@ -32,6 +51,7 @@ export interface Props {
   title?: string;
   value?: string | number;
   disabled?: boolean;
+  isExpanded?: boolean;
 }
 
 export interface Emits {
@@ -51,7 +71,7 @@ function onClick() {
 
 <style lang="scss">
 .vc-widget {
-  @apply tw-flex tw-w-[100px] tw-overflow-hidden tw-p-5
+  @apply tw-flex  tw-overflow-hidden
     tw-box-border tw-flex-col tw-items-center
     tw-justify-center tw-border-b tw-border-solid
     tw-border-b-[#eaedf3] tw-cursor-pointer tw-bg-white
@@ -70,7 +90,7 @@ function onClick() {
   }
 
   &__title {
-    @apply tw-font-medium tw-text-sm tw-text-[#333333] tw-mt-3 tw-mb-1 tw-mx-0 tw-text-center;
+    @apply tw-font-medium tw-text-sm tw-text-[#333333] tw-mt-2 tw-mx-0 tw-text-center;
   }
 
   &_disabled &__title {

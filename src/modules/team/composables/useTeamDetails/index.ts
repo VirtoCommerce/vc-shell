@@ -9,6 +9,8 @@ import {
   useAsync,
   useLoading,
   useUser,
+  useAssets,
+  ICommonAsset,
 } from "@vc-shell/framework";
 import {
   CreateSellerUserCommand,
@@ -21,19 +23,30 @@ import {
   ValidateSellerUserQuery,
   ValidationFailure,
   VcmpSellerSecurityClient,
+  IImage,
+  Image,
 } from "@vcmp-vendor-portal/api/marketplacevendor";
-import { Ref, computed, reactive, ref, watch } from "vue";
+import { Ref, computed, reactive, ref, watch, WritableComputedRef, ComputedRef } from "vue";
 import { useI18n } from "vue-i18n";
 import { roles } from "../../common";
 import { useRoute } from "vue-router";
 
 export interface TeamDetailsScope extends DetailsBaseBladeScope {
+  photoHandler: WritableComputedRef<{ url: string; name: string; title: string }[]>;
   toolbarOverrides: {
     sendInvite: IBladeToolbar;
     saveChanges: IBladeToolbar;
     reset: IBladeToolbar;
     remove: IBladeToolbar;
     resendInvite: IBladeToolbar;
+  };
+  assetsHandler: {
+    images: {
+      noRemoveConfirmation: boolean;
+      loading: ComputedRef<boolean>;
+      upload(files: FileList): Promise<Image[]>;
+      remove: (files: IImage[]) => ICommonAsset[];
+    };
   };
 }
 
@@ -92,6 +105,7 @@ export const useTeamDetails = (args: DetailsComposableArgs): UseDetails<SellerUs
   const { user } = useUser();
   const { t } = useI18n({ useScope: "global" });
   const route = useRoute();
+  const { upload: uploadImage, remove: removeImage, loading: imageLoading } = useAssets();
 
   const sendInviteStatus = ref(false);
   const isOwnerReadonly = computed(() => item.value?.role === "vcmp-owner-role");
@@ -108,10 +122,24 @@ export const useTeamDetails = (args: DetailsComposableArgs): UseDetails<SellerUs
     },
   });
 
+  const photoHandler = computed({
+    get() {
+      return item.value?.iconUrl ? [{ url: item.value.iconUrl, name: user.value?.userName ?? "", title: "" }] : [];
+    },
+    set(value) {
+      if (value) {
+        item.value!.iconUrl = value.find(() => true)?.url;
+      } else {
+        item.value!.iconUrl = undefined;
+      }
+    },
+  });
+
   const scope: TeamDetailsScope = {
     sendInviteStatus,
     isActive,
     isOwnerReadonly,
+    photoHandler,
     disableOnCurrent: computed(() => isCurrentUser.value || isOwnerReadonly.value),
     isActiveSwitchVisible: computed(() => !!item.value?.id),
     isActiveSwitchHidden: computed(() => !item.value?.id),
@@ -122,6 +150,18 @@ export const useTeamDetails = (args: DetailsComposableArgs): UseDetails<SellerUs
       }),
     ),
     disableOnUser: computed(() => !!item.value?.id),
+    assetsHandler: {
+      images: {
+        noRemoveConfirmation: true,
+        loading: imageLoading,
+        async upload(files: FileList) {
+          return (await uploadImage(files, `seller_logos/${item.value!.id}`)).map((x) => new Image(x));
+        },
+        remove: (files: IImage[]) => {
+          return removeImage(files, photoHandler.value);
+        },
+      },
+    },
     toolbarOverrides: {
       sendInvite: {
         clickHandler: async () => {

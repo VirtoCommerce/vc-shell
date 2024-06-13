@@ -106,6 +106,25 @@ export const details: DynamicDetailsSchema = {
           },
         },
         {
+          id: "iconUrl",
+          component: "vc-gallery",
+          variant: "file-upload",
+          multiple: false,
+          property: "photoHandler",
+          rules: {
+            fileWeight: 1024,
+          },
+          actions: {
+            preview: true,
+            edit: false,
+            remove: true,
+          },
+          disabled: {
+            method: "disableOnCurrent",
+          },
+          hideAfterUpload: true,
+        },
+        {
           id: "send-invite",
           component: "vc-switch",
           label: "TEAM.PAGES.DETAILS.FORM.INVITE.LABEL",

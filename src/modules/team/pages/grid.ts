@@ -45,6 +45,12 @@ export const grid: DynamicGridSchema = {
       },
       columns: [
         {
+          id: "iconUrl",
+          title: "TEAM.PAGES.LIST.TABLE.HEADER.IMAGE",
+          type: "image",
+          alwaysVisible: true,
+        },
+        {
           id: "firstName",
           title: "TEAM.PAGES.LIST.TABLE.HEADER.FIRST_NAME",
           alwaysVisible: true,

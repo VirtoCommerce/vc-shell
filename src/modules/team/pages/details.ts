@@ -108,6 +108,7 @@ export const details: DynamicDetailsSchema = {
         {
           id: "iconUrl",
           component: "vc-gallery",
+          label: "TEAM.PAGES.DETAILS.FORM.IMAGE.LABEL",
           variant: "file-upload",
           multiple: false,
           property: "photoHandler",

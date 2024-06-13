@@ -48,7 +48,7 @@ export default {
             }
           }
 
-          if (component.el && (component.el as HTMLElement).nodeType === 8) {
+          if (component.el && (component.el as HTMLElement).nodeType === Node.COMMENT_NODE) {
             commentCounter.value++;
             break;
           }

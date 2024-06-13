@@ -3,9 +3,9 @@
     class="vc-app-menu-item"
     :class="[
       {
-        'vc-app-menu-item_active': isActive(url ?? '') && !children?.length,
+        'vc-app-menu-item_active': isMenuItemActive,
         'vc-app-menu-item_no-hover': !children?.length,
-        'vc-app-menu-item_child-opened': isOpened,
+        'vc-app-menu-item_child-opened': expand && isOpened,
       },
     ]"
     @click="onMenuItemClick"
@@ -28,7 +28,10 @@
         size="m"
       />
     </div>
-    <div class="vc-app-menu-item__title tw-capitalize">
+    <div
+      v-if="expand"
+      class="vc-app-menu-item__title tw-capitalize"
+    >
       {{ title }}
       <VcIcon
         v-if="!!children?.length || false"
@@ -40,7 +43,7 @@
   </div>
   <!-- Nested menu items -->
   <div
-    v-show="isOpened"
+    v-show="isOpened && expand"
     class="vc-app-menu-item__child"
   >
     <template
@@ -69,7 +72,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { ref, watch } from "vue";
+import { ref, watch, computed } from "vue";
 import { MenuItem } from "../../../../../../../../../core/types";
 import { VcIcon } from "./../../../../../../../";
 import { useRoute } from "vue-router";
@@ -80,6 +83,7 @@ export interface Props {
   icon: string;
   title?: string;
   url?: string;
+  expand?: boolean;
 }
 
 export interface Emits {
@@ -95,6 +99,12 @@ const emit = defineEmits<Emits>();
 const isOpened = ref(false);
 const route = useRoute();
 const params = Object.fromEntries(Object.entries(route.params).filter(([key]) => key !== "pathMatch"));
+
+const isMenuItemActive = computed(
+  () =>
+    (isActive(props.url ?? "") && !props.children?.length) ||
+    (!props.expand && isOpened.value && props.children?.some((x) => isActive(x.url ?? ""))),
+);
 
 watch(
   () => route.path,
@@ -128,7 +138,9 @@ const isActive = (url: string) => {
     }
 
     return active;
-  } else return false;
+  } else {
+    return false;
+  }
 };
 </script>
 
@@ -182,10 +194,9 @@ const isActive = (url: string) => {
   }
 
   &__icon {
-    @apply tw-w-[var(--app-menu-item-icon-width)]
-    tw-text-[color:var(--app-menu-item-icon-color)]
+    @apply tw-text-[color:var(--app-menu-item-icon-color)]
     tw-overflow-hidden tw-flex
-    tw-justify-center tw-shrink-0  tw-transition-[color]  tw-duration-200;
+    tw-justify-center tw-shrink-0 tw-transition-[color] tw-duration-200 tw-pr-[7px];
   }
 
   &_active &__icon {
@@ -196,7 +207,7 @@ const isActive = (url: string) => {
     @apply tw-truncate
     tw-text-lg
     tw-font-medium
-    tw-px-2
+    tw-pr-2
     tw-text-[color:var(--app-menu-item-title-color)]
     [transition:color_0.2s_ease]
     tw-opacity-100 tw-w-full tw-flex tw-justify-between tw-items-center;

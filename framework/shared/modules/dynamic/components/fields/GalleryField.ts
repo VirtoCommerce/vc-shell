@@ -126,6 +126,7 @@ export default {
         props: Object.assign(
           {},
           {
+            uploadIcon: props.element.uploadIcon,
             loading: imageHandlers.loading,
             images: toValue(props.baseProps.modelValue),
             multiple: props.element.multiple,

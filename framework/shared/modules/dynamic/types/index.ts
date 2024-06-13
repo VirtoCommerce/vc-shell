@@ -766,6 +766,10 @@ export interface GallerySchema
    * @type {boolean}
    */
   hideAfterUpload?: boolean;
+  /**
+   * Custom gallery upload icon.
+   */
+  uploadIcon?: string;
 }
 
 /**

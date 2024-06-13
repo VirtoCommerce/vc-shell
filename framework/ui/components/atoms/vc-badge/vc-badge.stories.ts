@@ -5,10 +5,10 @@ export default {
   title: "atoms/VcBadge",
   component: VcBadge,
   args: {
-    default: "42",
+    content: "42",
   },
   argTypes: {
-    default: {
+    content: {
       control: "text",
     },
     active: {
@@ -38,7 +38,7 @@ export default {
 const Template: StoryFn<typeof VcBadge> = (args) => ({
   components: { VcBadge },
   setup: () => ({ args }),
-  template: `<VcBadge v-bind="args">{{args.default}}</VcBadge>`,
+  template: `<VcBadge v-bind="args"></VcBadge>`,
 });
 
 export const Basic = Template.bind({});

@@ -8,7 +8,7 @@
     <template v-if="!$isMobile.value || quantity === 0">
       <!-- Logo -->
       <img
-        class="tw-h-1/2 tw-cursor-pointer tw-mx-3"
+        class="tw-h-1/2 tw-cursor-pointer tw-mx-4"
         alt="logo"
         :src="logo"
         @click="$emit('logo:click')"

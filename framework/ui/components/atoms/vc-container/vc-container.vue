@@ -54,7 +54,7 @@ export interface Emits {
   (event: "scroll:ptr"): void;
 }
 
-defineProps<Props>();
+const props = defineProps<Props>();
 
 const emit = defineEmits<Emits>();
 
@@ -77,7 +77,7 @@ const scrollTop = () => {
 };
 
 function onTouchstart(e: TouchEvent | MouseEvent) {
-  if (refreshing.value) return;
+  if (refreshing.value || !props.usePtr) return;
   touching.value = true;
   touchstartY = "clientY" in e ? e.clientY : e.touches[0].clientY;
 }

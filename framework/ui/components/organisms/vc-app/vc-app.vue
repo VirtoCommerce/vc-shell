@@ -10,7 +10,6 @@
     :class="[
       {
         'vc-app_touch': $isTouch,
-        'vc-app_phone': $isPhone.value,
         'vc-app_mobile': $isMobile.value,
       },
     ]"

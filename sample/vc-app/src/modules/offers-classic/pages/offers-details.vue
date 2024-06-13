@@ -1020,7 +1020,7 @@ defineExpose({
 
 <style lang="scss">
 .offer-details {
-  .vc-app_phone &__inner {
+  .vc-app_mobile &__inner {
     @apply tw-flex-col;
   }
 

@@ -1,7 +1,7 @@
 <template>
   <div
     v-on-click-outside="onClose"
-    class="tw-relative tw-h-full tw-flex tw-items-center tw-justify-center tw-mx-2 tw-shrink-0"
+    class="tw-relative tw-h-full tw-flex tw-items-center tw-justify-center tw-mx-3 tw-shrink-0"
   >
     <button
       class="hover:[&>img] hover:[&_div]:tw-bg-[color:var(--app-bar-button-color-hover)]"

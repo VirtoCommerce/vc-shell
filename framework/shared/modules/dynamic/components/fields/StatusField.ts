@@ -1,16 +1,34 @@
 import { useI18n } from "vue-i18n";
-import { Component, ExtractPropTypes, computed, h, unref } from "vue";
+import { Component, ExtractPropTypes, computed, h, onMounted, ref, unref, watch } from "vue";
 import componentProps from "./props";
 import { StatusSchema } from "../../types";
 import { StatusField } from "../factories";
 import { VcIcon } from "../../../../../ui/components";
 import { unrefNested } from "../../helpers/unrefNested";
+import VcButton from "../../../../../ui/components/atoms/vc-button/vc-button.vue";
 
 export default {
   name: "StatusField",
   props: componentProps,
   setup(props: ExtractPropTypes<typeof componentProps> & { element: StatusSchema }) {
     const { t } = useI18n({ useScope: "global" });
+    const hasOverflow = ref(false);
+    const isExpanded = ref(false);
+    const contentRef = ref<HTMLElement | null>(null);
+
+    const toggle = () => {
+      isExpanded.value = !isExpanded.value;
+    };
+
+    const checkOverflow = () => {
+      if (contentRef.value) {
+        hasOverflow.value = contentRef.value.scrollHeight > 100;
+      }
+    };
+
+    onMounted(() => {
+      checkOverflow();
+    });
 
     return () => {
       const slotContent = computed(() => {
@@ -55,9 +73,27 @@ export default {
                     class: "tw-mr-3",
                   })
                 : undefined,
-              h("div", [
+              h("div", { class: "tw-flex tw-flex-col" }, [
                 h("div", { class: "tw-font-bold" }, computed(() => t(props.element.title ?? "")).value),
-                h("div", slotContent.value),
+                h(
+                  "div",
+                  {
+                    class: {
+                      "tw-overflow-hidden": true,
+                      "tw-max-h-[100px] tw-line-clamp-4": !isExpanded.value,
+                      "tw-max-h-[100%]": isExpanded.value,
+                    },
+                    ref: contentRef,
+                  },
+                  slotContent.value,
+                ),
+                hasOverflow.value
+                  ? h(VcButton, { text: true, class: "tw-self-end", onClick: toggle }, () =>
+                      isExpanded.value
+                        ? t("COMPONENTS.ATOMS.VC_STATUS.SHOW_LESS")
+                        : t("COMPONENTS.ATOMS.VC_STATUS.SHOW_MORE"),
+                    )
+                  : undefined,
               ]),
             ]);
           },

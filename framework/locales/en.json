@@ -16,6 +16,10 @@
       "VC_CONTAINER": {
         "PULL_TO_REFRESH": "Pull to refresh",
         "REFRESHING": "Refreshing..."
+      },
+      "VC_STATUS": {
+        "SHOW_MORE": "Show more",
+        "SHOW_LESS": "Show less"
       }
     },
     "MOLECULES": {
@@ -68,7 +72,7 @@
         "CURRENT_PAGE_SELECTED": "All items in this page are selected.",
         "SELECT_ALL": "Select all items",
         "ALL_SELECTED": "All items are selected.",
-        "CANCEL": "Cancel selection",
+        "CANCEL": "Clear selection",
         "ALL_ACTIONS": "All actions",
         "MORE": "More",
         "ALL_FILTERS": "Filters",
@@ -77,7 +81,9 @@
         "NOT_FOUND": "Nothing found.",
         "TOTALS": "Totals:",
         "ACTIONS": "Actions",
-        "NOT_SET": "Not set"
+        "NOT_SET": "Not set",
+        "SELECTED": "Selected",
+        "SELECT_ALL_TRUNCATED": "Select all"
       },
 
       "VC_POPUP": {

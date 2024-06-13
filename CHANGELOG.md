@@ -1,3 +1,24 @@
+## [1.0.233](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.232...v1.0.233) (2024-06-13)
+
+
+### Bug Fixes
+
+* **ui:** vc-editor handle empty text value in onTextChange function ([c71bbda](https://github.com/VirtoCommerce/vc-shell/commit/c71bbda701bc0eaa7583bb43306b0110774e50db))
+
+
+### Features
+
+* **dynamic:** add custom gallery upload icon ([8e029f5](https://github.com/VirtoCommerce/vc-shell/commit/8e029f55b84240665b2516ae6f21c688d1e1ac6b))
+* **dynamic:** expand/collapse status vm-1383 ([6527080](https://github.com/VirtoCommerce/vc-shell/commit/652708052f5148f29d46b2e133589b9913682faa))
+* **dynamic:** improve blade form widget rendering ([139285c](https://github.com/VirtoCommerce/vc-shell/commit/139285c5da88bea460fbef45671b6eea439fe51b))
+* **shared:** vm-1393 icons in the account menu ([da442a1](https://github.com/VirtoCommerce/vc-shell/commit/da442a1d5fca234f63fa918e89fc171caa3f4162))
+* **ui:** improve vc-badge component styling and functionality ([ff9fc51](https://github.com/VirtoCommerce/vc-shell/commit/ff9fc51f7b367ce4c384f21d86412a5b0f0801c8))
+* **ui:** updated navigation menu vm-1371 ([33b229e](https://github.com/VirtoCommerce/vc-shell/commit/33b229eea39681914c1a974aa4464788d6e13a51))
+* **ui:** vc-image custom icon ([4c14e35](https://github.com/VirtoCommerce/vc-shell/commit/4c14e3574519ba0e31a30e314952ac5a85d348a5))
+* **ui:** vc-table improvements vm-1370 vm-1389 ([ce9beec](https://github.com/VirtoCommerce/vc-shell/commit/ce9beecac5a217fd5e8acccd3486b20a166b1fac))
+
+
+
 ## [1.0.232](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.231...v1.0.232) (2024-06-07)
 
 

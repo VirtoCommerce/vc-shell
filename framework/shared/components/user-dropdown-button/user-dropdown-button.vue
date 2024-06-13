@@ -49,10 +49,16 @@
       <div
         v-for="(item, i) in menu"
         :key="`menu_item_${i}`"
-        class="user-dropdown-button__menu-item"
+        class="user-dropdown-button__menu-item tw-group"
         @click="item.hasOwnProperty('clickHandler') ? item.clickHandler?.() : null"
       >
-        {{ item.title }}
+        <VcIcon
+          v-if="item.icon"
+          :icon="item.icon"
+          size="l"
+          class="tw-mr-3 tw-text-[color:var(--app-bar-button-color)] group-hover:tw-text-[color:var(--app-bar-button-color-hover)]"
+        ></VcIcon>
+        <p>{{ item.title }}</p>
       </div>
     </div>
   </div>
@@ -94,12 +100,14 @@ const menu = computed(() => [
   ...props.menuItems,
   {
     title: t("SHELL.ACCOUNT.CHANGE_PASSWORD"),
+    icon: "fas fa-key",
     clickHandler() {
       open();
     },
   },
   {
     title: t("SHELL.ACCOUNT.LOGOUT"),
+    icon: "fas fa-sign-out-alt",
     async clickHandler() {
       const isPrevented = await closeBlade(0);
 
@@ -168,7 +176,7 @@ const imageHandler = computed(() => {
     @apply tw-absolute -tw-left-px tw-right-0 tw-top-[var(--app-bar-height)] tw-bg-white tw-z-[10000] tw-shadow-[0_-6px_6px_white,1px_1px_22px_rgba(126,142,157,0.2)];
 
     &-item {
-      @apply tw-p-3 tw-text-lg tw-text-black tw-border-l tw-border-solid tw-border-l-[#eef0f2] tw-border-b tw-border-b-[#eef0f2] tw-bg-white hover:tw-bg-[#eff7fc];
+      @apply tw-p-3 tw-text-lg tw-text-black tw-border-l tw-border-solid tw-border-l-[#eef0f2] tw-border-b tw-border-b-[#eef0f2] tw-bg-white hover:tw-bg-[#eff7fc] tw-flex tw-flex-row tw-items-center;
     }
   }
 

@@ -21,7 +21,7 @@
         class="tw-absolute tw-w-full tw-h-full tw-flex tw-items-center tw-justify-center tw-text-[#83a3be]"
       >
         <VcIcon
-          icon="fas fa-image"
+          :icon="emptyIcon"
           size="xl"
         ></VcIcon>
       </div>
@@ -41,6 +41,7 @@ export interface Props {
   src?: string;
   size?: "auto" | "xs" | "s" | "m" | "l" | "xl" | "xxl";
   background?: "cover" | "contain" | "auto";
+  emptyIcon?: string;
 }
 
 export interface Emits {
@@ -51,6 +52,7 @@ const props = withDefaults(defineProps<Props>(), {
   aspect: "1x1",
   size: "auto",
   background: "cover",
+  emptyIcon: "fas fa-image",
 });
 
 const emit = defineEmits<Emits>();

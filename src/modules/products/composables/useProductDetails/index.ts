@@ -28,6 +28,7 @@ import {
   useDetailsFactory,
   DetailsBaseBladeScope,
   useAssets,
+  usePopup,
 } from "@vc-shell/framework";
 import { ref, computed, reactive, ComputedRef, Ref, watch, unref } from "vue";
 import { useI18n } from "vue-i18n";
@@ -93,6 +94,7 @@ export const useProductDetails = (
   const { defaultProductType, productTypes, loadSettings } = useMarketplaceSettings();
   const { upload: imageUpload, remove: imageRemove, edit: imageEdit, loading: imageLoading } = useAssets();
   const { getRoles, isAdministrator, isOperator, loading: rolesLoading } = useRoles();
+  const { showConfirmation } = usePopup();
 
   const { t } = useI18n({ useScope: "global" });
 
@@ -357,10 +359,12 @@ export const useProductDetails = (
           () => !!args.props.param && !rolesLoading.value && !(isAdministrator.value || isOperator.value),
         ),
         async clickHandler() {
-          await revertStagedChanges(item.value?.id ?? "");
-          args.emit("parent:call", {
-            method: "reload",
-          });
+          if (await showConfirmation(t("PRODUCTS.PAGES.ALERTS.REVERT_CONFIRMATION"))) {
+            await revertStagedChanges(item.value?.id ?? "");
+            args.emit("parent:call", {
+              method: "reload",
+            });
+          }
         },
         disabled: computed(
           () => !(item.value?.isPublished && item.value?.hasStagedChanges && item.value?.canBeModified),

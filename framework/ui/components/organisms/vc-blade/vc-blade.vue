@@ -92,9 +92,9 @@
         >
           <div
             ref="widgetsContainerRef"
-            class="vc-blade__widget-container tw-flex tw-overflow-auto"
+            class="vc-blade__widget-container tw-flex tw-overflow-y-auto"
             :class="{
-              'tw-flex-col': $isDesktop.value,
+              'tw-flex-col tw-overflow-x-clip': $isDesktop.value,
               'tw-flex-row': $isMobile.value,
             }"
           >

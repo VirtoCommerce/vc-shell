@@ -129,11 +129,6 @@ function onMouseLeave() {
   --notification-error: #ef796f;
   --notification-success: #87b563;
   --notification-info: #bdd1df;
-
-  --notification-scroll-color: #e1eff9;
-  --notification-scroll-color-hover: #cce4f5;
-  --notification-scroll-width: 8px;
-  --notification-scroll-shadow: 0 3px 2px rgba(0, 0, 0, 0.1) inset, 0 -3px 2px rgba(0, 0, 0, 0.1) inset;
 }
 
 .vc-notification {
@@ -141,23 +136,6 @@ function onMouseLeave() {
 
   .vc-app_mobile {
     @apply tw-max-w-[80%];
-  }
-
-  &__content {
-    &::-webkit-scrollbar {
-      @apply tw-w-[var(--notification-scroll-width)] tw-bg-transparent;
-    }
-
-    &::-webkit-scrollbar-track {
-      @apply tw-bg-transparent;
-    }
-
-    &::-webkit-scrollbar-thumb {
-      @apply tw-bg-[color:var(--notification-scroll-color)]
-      tw-rounded-[calc(var(--notification-scroll-width)/2)]
-      tw-overflow-x-hidden
-      hover:tw-bg-[color:var(--notification-scroll-color-hover)];
-    }
   }
 }
 </style>

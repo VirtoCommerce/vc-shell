@@ -18,7 +18,7 @@
             v-bind="field"
             ref="passwordField"
             v-model="form.currentPassword"
-            class="tw-mb-4 tw-mt-1"
+            class="tw-mb-4 tw-mt-1 tw-shrink-0"
             :label="t('COMPONENTS.CHANGE_PASSWORD.CURRENT_PASSWORD.LABEL')"
             :placeholder="t('COMPONENTS.CHANGE_PASSWORD.CURRENT_PASSWORD.PLACEHOLDER')"
             type="password"
@@ -39,7 +39,7 @@
             v-bind="field"
             ref="newPasswordField"
             v-model="form.password"
-            class="tw-mb-4 tw-mt-1"
+            class="tw-mb-4 tw-mt-1 tw-shrink-0"
             :label="t('COMPONENTS.CHANGE_PASSWORD.NEW_PASSWORD.LABEL')"
             :placeholder="t('COMPONENTS.CHANGE_PASSWORD.NEW_PASSWORD.PLACEHOLDER')"
             type="password"
@@ -60,7 +60,7 @@
             v-bind="field"
             ref="confirmPasswordField"
             v-model="form.confirmPassword"
-            class="tw-mb-4"
+            class="tw-mb-4 tw-shrink-0"
             :label="t('COMPONENTS.CHANGE_PASSWORD.CONFIRM_PASSWORD.LABEL')"
             :placeholder="t('COMPONENTS.CHANGE_PASSWORD.CONFIRM_PASSWORD.PLACEHOLDER')"
             type="password"
@@ -173,30 +173,3 @@ function validate() {
   });
 }
 </script>
-
-<style lang="scss">
-:root {
-  --change-password-scroll-color: #e1eff9;
-  --change-password-scroll-color-hover: #cce4f5;
-  --change-password-scroll-width: 8px;
-  --change-password-scroll-padding: 8px;
-  --change-password-scroll-shadow: 0 3px 2px rgba(0, 0, 0, 0.1) inset, 0 -3px 2px rgba(0, 0, 0, 0.1) inset;
-}
-
-.change-password {
-  &::-webkit-scrollbar {
-    @apply tw-w-[var(--change-password-scroll-width)] tw-bg-transparent;
-  }
-
-  &::-webkit-scrollbar-track {
-    @apply tw-bg-transparent;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    @apply tw-bg-[color:var(--change-password-scroll-color)]
-      tw-rounded-[calc(var(--change-password-scroll-width)/2)]
-      tw-overflow-x-hidden
-      hover:tw-bg-[color:var(--change-password-scroll-color-hover)];
-  }
-}
-</style>

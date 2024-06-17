@@ -24,10 +24,12 @@
       ></VcIcon>
 
       <div class="tw-text-[#9db0be] tw-text-center tw-text-lg tw-leading-lg tw-mt-4">
-        <span>{{ t("COMPONENTS.MOLECULES.VC_FILE_UPLOAD.DRAG_HERE") }}</span
+        <span>{{ customText?.dragHere || t("COMPONENTS.MOLECULES.VC_FILE_UPLOAD.DRAG_HERE") }}</span
         >&nbsp;
         <br />
-        <VcLink @click="toggleUploader">{{ t("COMPONENTS.MOLECULES.VC_FILE_UPLOAD.BROWSE") }}</VcLink>
+        <VcLink @click="toggleUploader">{{
+          customText?.browse || t("COMPONENTS.MOLECULES.VC_FILE_UPLOAD.BROWSE")
+        }}</VcLink>
       </div>
 
       <input
@@ -66,6 +68,10 @@ export interface Props {
   rules?: keyof IValidationRules | IValidationRules;
   name?: string;
   icon?: string;
+  customText?: {
+    dragHere: string;
+    browse: string;
+  };
 }
 
 export interface Emits {

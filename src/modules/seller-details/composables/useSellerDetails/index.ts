@@ -236,10 +236,6 @@ export const useSellerDetails = (args?: DetailsComposableArgs): UseDetails<ISell
     async () => {
       await load();
       await getCountries();
-
-      if (item.value?.addresses && item.value?.addresses[0]?.countryCode) {
-        await getRegions(item.value?.addresses[0]?.countryCode);
-      }
     },
   );
 

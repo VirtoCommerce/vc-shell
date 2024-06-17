@@ -1,7 +1,7 @@
 <template>
   <VcWidget
     v-if="modelValue.item?.id"
-    v-loading="loading"
+    v-loading:500="loading"
     :value="count"
     :title="$t('PRODUCTS.PAGES.DETAILS.WIDGETS.OFFERS')"
     icon="fas fa-shapes"

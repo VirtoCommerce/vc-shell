@@ -126,6 +126,16 @@ export const useSpecialPricesList = (
 
   useBeforeUnload(computed(() => modified.value));
 
+  if (!internalModel.value.length) {
+    openBlade({
+      blade: resolveBladeByName("SpecialPriceDetails"),
+      options: {
+        priceLists: internalModel.value,
+      },
+      replaceCurrentBlade: true,
+    });
+  }
+
   return {
     load,
     remove,

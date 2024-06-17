@@ -1,7 +1,12 @@
 <template>
   <div
     class="vc-checkbox"
-    :class="{ 'vc-checkbox_disabled': disabled }"
+    :class="{
+      'vc-checkbox_disabled': disabled,
+      'vc-checkbox_size-small': size === 's',
+      'vc-checkbox_size-medium': size === 'm',
+      'vc-checkbox_size-large': size === 'l',
+    }"
   >
     <!-- Input label -->
     <VcLabel
@@ -66,13 +71,15 @@ export interface Props {
   falseValue?: boolean;
   label?: string;
   tooltip?: string;
+  size?: "s" | "m" | "l";
+  outline?: boolean;
 }
 
 export interface Emits {
   (event: "update:modelValue", value: boolean): void;
 }
 
-const props = withDefaults(defineProps<Props>(), { name: "Field", trueValue: true, falseValue: false });
+const props = withDefaults(defineProps<Props>(), { name: "Field", trueValue: true, falseValue: false, size: "s" });
 const emit = defineEmits<Emits>();
 
 defineSlots<{
@@ -92,7 +99,9 @@ const value = computed({
 
 <style lang="scss">
 :root {
-  --checkbox-size: 14px;
+  --checkbox-size-small: 14px;
+  --checkbox-size-medium: 18px;
+  --checkbox-size-large: 24px;
   --checkbox-border-radius: 2px;
   --checkbox-background-color: #ffffff;
   --checkbox-color-error: #f14e4e;
@@ -107,6 +116,14 @@ const value = computed({
   --checkbox-disabled: #f6f8ff;
   --checkbox-disabled-inner: #e1e6f9;
   --checkbox-error: #f14e4e;
+}
+
+$sizes: small, medium, large;
+
+@each $size in $sizes {
+  .vc-checkbox_size-#{$size} {
+    --checkbox-size: var(--checkbox-size-#{$size});
+  }
 }
 
 .vc-checkbox {
@@ -165,14 +182,14 @@ const value = computed({
       content: "";
       display: block;
       position: absolute;
-      width: 5px;
-      height: 9px;
-      border: 2px solid var(--checkbox-background);
+      width: calc(var(--checkbox-size) * 0.35);
+      height: calc(var(--checkbox-size) * 0.6);
+      border: calc(var(--checkbox-size) * 0.1) solid var(--checkbox-background);
       border-top: 0;
       border-left: 0;
-      left: 4px;
-      top: 1px;
-      transform: rotate(var(--r, 20deg));
+      left: calc(var(--checkbox-size) * 0.25);
+      top: calc(var(--checkbox-size) * 0.1);
+      transform: rotate(var(--r, 43deg));
       opacity: var(--checkbox-after-opacity, 0);
       transition:
         transform var(--checkbox-after-transform-duration, 0.3s) var(--checkbox-after-transform-ease, ease),

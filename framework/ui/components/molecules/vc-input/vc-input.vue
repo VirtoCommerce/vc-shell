@@ -32,7 +32,10 @@
           v-if="$slots['prepend']"
           class="tw-flex tw-items-center tw-flex-nowrap tw-pr-3"
         >
-          <slot name="prepend"></slot>
+          <slot
+            name="prepend"
+            :focus="focus"
+          ></slot>
         </div>
         <div class="tw-flex tw-flex-col tw-flex-nowrap tw-flex-auto tw-relative">
           <div class="vc-input__field-wrapper">
@@ -41,7 +44,10 @@
                 v-if="$slots['prepend-inner']"
                 class="tw-flex tw-items-center tw-flex-nowrap tw-pr-3"
               >
-                <slot name="prepend-inner"></slot>
+                <slot
+                  name="prepend-inner"
+                  :focus="focus"
+                ></slot>
               </div>
               <div class="vc-input__field">
                 <div
@@ -154,7 +160,10 @@
                 v-if="$slots['append-inner']"
                 class="tw-flex tw-items-center tw-flex-nowrap tw-pl-3"
               >
-                <slot name="append-inner"></slot>
+                <slot
+                  name="append-inner"
+                  :focus="focus"
+                ></slot>
               </div>
               <div
                 v-if="loading"
@@ -200,7 +209,10 @@
           v-if="$slots['append']"
           class="tw-flex tw-items-center tw-flex-nowrap tw-pl-3"
         >
-          <slot name="append"></slot>
+          <slot
+            name="append"
+            :focus="focus"
+          ></slot>
         </div>
       </div>
     </div>
@@ -359,19 +371,19 @@ defineSlots<{
   /**
    * Prepend outer field
    */
-  prepend: (props: any) => any;
+  prepend: (props: { focus: () => void }) => any;
   /**
    * Prepend inner field
    */
-  "prepend-inner": (props: any) => any;
+  "prepend-inner": (props: { focus: () => void }) => any;
   /**
    * Append to inner field
    */
-  "append-inner": (props: any) => any;
+  "append-inner": (props: { focus: () => void }) => any;
   /**
    * Append outer field
    */
-  append: (props: any) => any;
+  append: (props: { focus: () => void }) => any;
   /**
    * Slot for errors
    */
@@ -518,6 +530,10 @@ function onReset() {
 
 function handleBlur(e: Event) {
   emit("blur", e);
+}
+
+function focus() {
+  inputRef.value?.focus();
 }
 </script>
 

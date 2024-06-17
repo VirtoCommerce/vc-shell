@@ -8,12 +8,13 @@ interface IUISetting {
   contrast_logo?: string;
   logo?: string;
   title?: string;
+  avatar?: string;
 }
 
 interface IUseSettings {
   readonly uiSettings: Ref<IUISetting>;
   readonly loading: ComputedRef<boolean>;
-  applySettings: (args: { logo?: string; title?: string }) => void;
+  applySettings: (args: { logo?: string; title?: string; avatar?: string }) => void;
 }
 
 export function useSettings(): IUseSettings {
@@ -35,11 +36,12 @@ export function useSettings(): IUseSettings {
     }
   });
 
-  function applySettings(args: { logo?: string; title?: string }) {
+  function applySettings(args: { logo?: string; title?: string; avatar?: string }) {
     uiSettings.value = {
       ...uiSettings.value,
       logo: args.logo,
       title: args.title,
+      avatar: args.avatar,
     };
   }
 

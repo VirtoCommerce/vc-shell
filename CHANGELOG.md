@@ -1,3 +1,18 @@
+## [1.0.235](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.234...v1.0.235) (2024-06-17)
+
+
+### Bug Fixes
+
+* **ui:** ensure pull-to-reload works only on mobile and when scrolled to the top of the list ([4bb1faf](https://github.com/VirtoCommerce/vc-shell/commit/4bb1faf259152ec8b0772a4ff78ec5c9ba8b7757))
+
+
+### Features
+
+* **dynamic:** add custom gallery file upload text ([1e5e02a](https://github.com/VirtoCommerce/vc-shell/commit/1e5e02aaa6f7c110015b85874a81c52e0b5da978))
+* **ui:** update vc-checkbox component to support different sizes ([ff809b9](https://github.com/VirtoCommerce/vc-shell/commit/ff809b9eac19f20a38771db46c92943fff267978))
+
+
+
 ## [1.0.234](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.233...v1.0.234) (2024-06-13)
 
 

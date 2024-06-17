@@ -1,3 +1,20 @@
+## [1.0.238](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.237...v1.0.238) (2024-06-17)
+
+
+### Bug Fixes
+
+* **navigation:** show router pages via RouterView only if it's not blades ([59d41a0](https://github.com/VirtoCommerce/vc-shell/commit/59d41a0059101350b230a7c07144b1641546f1f8))
+
+
+### Features
+
+* improve loading directive with dynamic z-index support ([c3c8c63](https://github.com/VirtoCommerce/vc-shell/commit/c3c8c63fa48facf640e182405938bb83f5b5087b))
+* **ui:** extend vc-input slots with focus prop ([e0d42b7](https://github.com/VirtoCommerce/vc-shell/commit/e0d42b790571ca8de220c857b67cf143e3d2d024))
+* **ui:** update vc-breadcrumbs-item title style and truncate long titles ([9bd8729](https://github.com/VirtoCommerce/vc-shell/commit/9bd8729161a0e3188ae57acf10e95a301abbe8bb))
+* **ui:** vm-1411 ([25a9096](https://github.com/VirtoCommerce/vc-shell/commit/25a909603c33dc0c0a05f76681a13eba46f3bab4))
+
+
+
 ## [1.0.237](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.236...v1.0.237) (2024-06-17)
 
 

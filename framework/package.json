@@ -1,6 +1,6 @@
 {
   "name": "@vc-shell/framework",
-  "version": "1.0.237",
+  "version": "1.0.238",
   "type": "module",
   "main": "./dist/framework.js",
   "types": "./dist/index.d.ts",
@@ -60,9 +60,9 @@
   "devDependencies": {
     "@types/dompurify": "^3.0.5",
     "@types/quill": "^2.0.14",
-    "@vc-shell/api-client-generator": "^1.0.237",
-    "@vc-shell/config-generator": "^1.0.237",
-    "@vc-shell/ts-config": "^1.0.237",
+    "@vc-shell/api-client-generator": "^1.0.238",
+    "@vc-shell/config-generator": "^1.0.238",
+    "@vc-shell/ts-config": "^1.0.238",
     "@vitejs/plugin-vue": "^5.0.3",
     "sass": "^1.69.6",
     "shx": "^0.3.4",

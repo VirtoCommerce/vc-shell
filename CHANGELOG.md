@@ -1,3 +1,19 @@
+## [1.0.236](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.235...v1.0.236) (2024-06-17)
+
+
+### Bug Fixes
+
+* **shared:** update asset manager table column widths ([83195cb](https://github.com/VirtoCommerce/vc-shell/commit/83195cb6ee271f2adbfcc81fadbe47f8495fa08e))
+* **ui:** do not shrink checkbox in first col ([e8c8071](https://github.com/VirtoCommerce/vc-shell/commit/e8c807170846c3c0c06c7e1a5004adf1fb7851e8))
+
+
+### Features
+
+* **ui:** improve menu item styling and behavior ([6b56988](https://github.com/VirtoCommerce/vc-shell/commit/6b569881ef7b4e91dc32adf71380bb3c15f7be75))
+* **ui:** update vc-breadcrumbs-item title style and truncate long titles ([069ed6d](https://github.com/VirtoCommerce/vc-shell/commit/069ed6d4ca738599b5bf954f07ba6749cd04f8b5))
+
+
+
 ## [1.0.235](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.234...v1.0.235) (2024-06-17)
 
 

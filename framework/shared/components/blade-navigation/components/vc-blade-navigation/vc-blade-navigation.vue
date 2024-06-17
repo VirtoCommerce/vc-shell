@@ -19,7 +19,7 @@
 
 <script lang="ts" setup>
 import { Ref, computed, inject, withDirectives, h, vShow, toRef, VNode, nextTick } from "vue";
-import { RouterView } from "vue-router";
+import { RouterView, useRoute } from "vue-router";
 import { BladeVNode, IParentCallArgs, useBladeNavigation } from "./../../../../../shared";
 import { ErrorInterceptor } from "./../../../error-interceptor";
 import VcBreadcrumbs from "./../../../../../ui/components/molecules/vc-breadcrumbs/vc-breadcrumbs.vue";
@@ -29,6 +29,7 @@ import { watchDebounced } from "@vueuse/core";
 
 const { blades, closeBlade, onParentCall } = useBladeNavigation();
 const { breadcrumbs, push, remove } = useBreadcrumbs();
+const route = useRoute();
 
 const quantity = computed(() => {
   return (
@@ -67,12 +68,12 @@ watchDebounced(
 );
 
 const render = () => {
-  if (!blades.value.length) {
+  if (!(route.matched[1].components?.default as BladeVNode)?.type?.isBlade) {
     return h(RouterView);
   }
 
   return h("div", { class: "tw-w-full tw-overflow-hidden tw-flex tw-grow tw-basis-0 tw-relative" }, [
-    blades.value.reduce(
+    blades.value?.reduce(
       (arr, bladeVNode, index) => {
         if (bladeVNode.type.isBlade) {
           const hiddenQuantity = blades.value.filter(

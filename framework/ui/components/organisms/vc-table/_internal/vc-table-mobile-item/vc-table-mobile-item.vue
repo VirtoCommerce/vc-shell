@@ -19,7 +19,7 @@
       >
         <VcCheckbox :model-value="unref(isSelected ?? false)"></VcCheckbox>
       </div>
-      <div class="tw-flex-1 tw-w-full">
+      <div class="tw-flex-1 tw-w-0">
         <div class="tw-flex tw-flex-col tw-h-full tw-border-b tw-border-solid tw-border-b-[#e3e7ec]">
           <slot></slot>
         </div>

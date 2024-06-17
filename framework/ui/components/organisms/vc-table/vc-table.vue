@@ -4,7 +4,7 @@
     class="tw-relative tw-overflow-hidden tw-flex tw-flex-col tw-grow tw-basis-0 tw-border-[color:#eef0f2] tw-border-solid tw-border-t-0"
   >
     <div
-      v-if="$isMobile.value && selection.length > 0"
+      v-if="$isMobile.value && (selection.length > 0 || allSelected)"
       class="tw-flex tw-flex-col"
     >
       <div
@@ -18,12 +18,17 @@
               @click.stop
               >{{ $t("COMPONENTS.ORGANISMS.VC_TABLE.SELECT_ALL_TRUNCATED") }}</VcCheckbox
             >
-            {{ $t("COMPONENTS.ORGANISMS.VC_TABLE.SELECTED") }}: {{ selection.length }}
+            {{ $t("COMPONENTS.ORGANISMS.VC_TABLE.SELECTED") }}: {{ allSelected ? totalCount : selection.length }}
           </div>
 
           <VcButton
             text
-            @click="() => (selection = [])"
+            @click="
+              () => {
+                selection = [];
+                allSelected = false;
+              }
+            "
             >{{ $t("COMPONENTS.ORGANISMS.VC_TABLE.CANCEL") }}</VcButton
           >
         </div>
@@ -216,12 +221,13 @@
                 @click="handleHeaderClick(item)"
               >
                 <div
-                  v-if="multiselect && index === 0 && isHeaderHover"
-                  class="tw-flex tw-pl-3 tw-items-center tw-justify-center tw-w-auto tw-bg-[#f9f9f9] tw-box-border tw-select-none tw-overflow-hidden tw-z-[1]"
+                  v-if="multiselect && index === 0"
+                  class="tw-flex tw-pl-5 tw-items-center tw-justify-center tw-w-auto tw-bg-[#f9f9f9] tw-box-border tw-select-none tw-overflow-hidden tw-z-[1]"
                 >
                   <div class="tw-flex tw-justify-center tw-items-center">
                     <VcCheckbox
                       v-model="headerCheckbox"
+                      size="m"
                       @click.stop
                     ></VcCheckbox>
                   </div>
@@ -341,7 +347,7 @@
                 v-for="cell in filteredCols"
                 :id="`${(typeof item === 'object' && 'id' in item && item.id) || itemIndex}_${cell.id}`"
                 :key="`${(typeof item === 'object' && 'id' in item && item.id) || itemIndex}_${cell.id}`"
-                class="tw-box-border tw-overflow-hidden tw-px-3 tw-flex-1 tw-flex tw-items-center"
+                class="tw-box-border tw-overflow-hidden tw-px-3 tw-flex-1 tw-flex tw-items-center tw-relative"
                 :class="[cell.class]"
                 :style="{ maxWidth: cell.width, width: cell.width }"
               >
@@ -638,32 +644,44 @@ const renderCellSlot = ({ item, cell, index }: { item: T; cell: ITableColumns; i
 
   const isRowSelected = selection.value.includes(item);
 
-  if ((isFirstCell && selectedRowIndex.value === index) || (isRowSelected && isFirstCell)) {
-    return h(
-      "div",
-      { onClick: (e) => e.stopPropagation() },
-      h(VcCheckbox, {
-        modelValue: selection.value.includes(item),
-        "onUpdate:modelValue": (value: boolean) => {
-          rowCheckbox(item);
-        },
-      }),
-    );
-  }
-
-  if (!isSlotExist) {
-    return h(VcTableCell, {
-      cell,
-      item: item as TableItem,
-      index,
-      editing: props.editing,
-      onUpdate: (event) => {
-        emit("onEditComplete", { event, index });
+  const checkboxComponent = h(
+    "div",
+    {
+      onClick: (e) => e.stopPropagation(),
+      class: "tw-absolute tw-z-10 tw-top-0 tw-bottom-0 tw-left-[20px] tw-right-0 tw-flex tw-items-center",
+    },
+    h(VcCheckbox, {
+      class: "",
+      size: "m",
+      modelValue: selection.value.includes(item),
+      "onUpdate:modelValue": (value: boolean) => {
+        rowCheckbox(item);
       },
-      onBlur: (event) => emit("onCellBlur", event),
-    });
-  }
-  return slots[`item_${cell.id}`]?.({ item, cell, index });
+    }),
+  );
+
+  const checkboxVisibilityHandler = (isFirstCell && selectedRowIndex.value === index) || (isRowSelected && isFirstCell);
+
+  return h("div", { class: "" }, [
+    checkboxVisibilityHandler ? checkboxComponent : undefined,
+    h(
+      "div",
+      { class: checkboxVisibilityHandler ? "tw-opacity-15" : "" },
+      !isSlotExist
+        ? h(VcTableCell, {
+            cell,
+
+            item: item as TableItem,
+            index,
+            editing: props.editing,
+            onUpdate: (event) => {
+              emit("onEditComplete", { event, index });
+            },
+            onBlur: (event) => emit("onCellBlur", event),
+          })
+        : slots[`item_${cell.id}`]?.({ item, cell, index }),
+    ),
+  ]);
 };
 
 const calculateElWidth = (id: string) => {

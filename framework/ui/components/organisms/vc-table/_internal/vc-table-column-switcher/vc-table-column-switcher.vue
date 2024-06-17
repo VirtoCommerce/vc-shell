@@ -3,7 +3,7 @@
     <div ref="referenceButton">
       <VcButton
         small
-        icon="fas fa-bars"
+        icon="fas fa-th"
         @click.stop="isActive = !isActive"
       ></VcButton>
     </div>

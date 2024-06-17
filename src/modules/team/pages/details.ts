@@ -45,26 +45,58 @@ export const details: DynamicDetailsSchema = {
       component: "vc-form",
       children: [
         {
-          id: "firstName",
-          component: "vc-input",
-          label: "TEAM.PAGES.DETAILS.FORM.FIRST_NAME.LABEL",
-          property: "firstName",
-          placeholder: "TEAM.PAGES.DETAILS.FORM.FIRST_NAME.PLACEHOLDER",
-          rules: { required: true },
-          disabled: {
-            method: "isOwnerReadonly",
-          },
-        },
-        {
-          id: "lastName",
-          component: "vc-input",
-          label: "TEAM.PAGES.DETAILS.FORM.LAST_NAME.LABEL",
-          property: "lastName",
-          placeholder: "TEAM.PAGES.DETAILS.FORM.LAST_NAME.PLACEHOLDER",
-          rules: { required: true },
-          disabled: {
-            method: "isOwnerReadonly",
-          },
+          id: "nameAndAvatarFieldset",
+          component: "vc-fieldset",
+          columns: 2,
+          fields: [
+            {
+              id: "nameFieldset",
+              component: "vc-fieldset",
+              fields: [
+                {
+                  id: "firstName",
+                  component: "vc-input",
+                  label: "TEAM.PAGES.DETAILS.FORM.FIRST_NAME.LABEL",
+                  property: "firstName",
+                  placeholder: "TEAM.PAGES.DETAILS.FORM.FIRST_NAME.PLACEHOLDER",
+                  rules: { required: true },
+                  disabled: {
+                    method: "isOwnerReadonly",
+                  },
+                },
+                {
+                  id: "lastName",
+                  component: "vc-input",
+                  label: "TEAM.PAGES.DETAILS.FORM.LAST_NAME.LABEL",
+                  property: "lastName",
+                  placeholder: "TEAM.PAGES.DETAILS.FORM.LAST_NAME.PLACEHOLDER",
+                  rules: { required: true },
+                  disabled: {
+                    method: "isOwnerReadonly",
+                  },
+                },
+              ],
+            },
+            {
+              id: "iconUrl",
+              component: "vc-gallery",
+              variant: "file-upload",
+              multiple: false,
+              property: "photoHandler",
+              rules: {
+                fileWeight: 300,
+              },
+              actions: {
+                preview: true,
+                edit: false,
+                remove: true,
+              },
+              disabled: {
+                method: "disableOnCurrent",
+              },
+              hideAfterUpload: true,
+            },
+          ],
         },
         {
           id: "email",
@@ -104,26 +136,6 @@ export const details: DynamicDetailsSchema = {
           disabled: {
             method: "disableOnCurrent",
           },
-        },
-        {
-          id: "iconUrl",
-          component: "vc-gallery",
-          label: "TEAM.PAGES.DETAILS.FORM.IMAGE.LABEL",
-          variant: "file-upload",
-          multiple: false,
-          property: "photoHandler",
-          rules: {
-            fileWeight: 1024,
-          },
-          actions: {
-            preview: true,
-            edit: false,
-            remove: true,
-          },
-          disabled: {
-            method: "disableOnCurrent",
-          },
-          hideAfterUpload: true,
         },
         {
           id: "send-invite",

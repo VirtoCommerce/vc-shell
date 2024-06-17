@@ -4,6 +4,7 @@
     :logo="uiSettings.logo"
     :title="uiSettings.title"
     :version="version"
+    :avatar="uiSettings.avatar"
   >
   </VcApp>
 </template>
@@ -15,11 +16,13 @@ import * as modules from "@vcmp-vendor-portal/modules";
 // eslint-disable-next-line import/no-unresolved
 import logoImage from "/assets/logo.svg";
 import { VcmpSellerSecurityClient } from "@vcmp-vendor-portal/api/marketplacevendor";
+import { useSellerUser } from "../composables";
 import { useRoute, useRouter } from "vue-router";
 
 const { isAdministrator, isAuthenticated, signOut } = useUser();
 const { uiSettings, applySettings } = useSettings();
 const { item: sellerDetails, load: getCurrentSeller } = modules.default.SellerDetails.composables.useSellerDetails();
+const { getCurrentUser } = useSellerUser();
 const { moduleNotifications, markAsRead } = useNotifications("OrderCreatedEventHandler");
 const { getApiClient } = useApiClient(VcmpSellerSecurityClient);
 const route = useRoute();
@@ -59,6 +62,9 @@ console.debug(`Initializing App`);
 
 async function customizationHandler() {
   try {
+    const currentUser = await getCurrentUser();
+    const avatar = currentUser.iconUrl;
+
     const sellerId = await GetSellerId();
     if (!sellerId) {
       if (!isAdministrator.value) {
@@ -68,12 +74,14 @@ async function customizationHandler() {
       applySettings({
         logo: sellerDetails.value?.logo || logoImage,
         title: sellerDetails.value?.name || "Vendor Portal",
+        avatar: avatar,
       });
     } else {
       const seller = await (await getApiClient()).getSellerById(sellerId);
       applySettings({
         logo: seller?.logo || logoImage,
         title: seller?.name || "Vendor Portal",
+        avatar: avatar,
       });
     }
   } catch (e) {

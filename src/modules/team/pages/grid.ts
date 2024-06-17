@@ -48,6 +48,7 @@ export const grid: DynamicGridSchema = {
         {
           id: "iconUrl",
           title: "TEAM.PAGES.LIST.TABLE.HEADER.IMAGE",
+          emptyIcon: "fas fa-user",
           type: "image",
           alwaysVisible: true,
         },

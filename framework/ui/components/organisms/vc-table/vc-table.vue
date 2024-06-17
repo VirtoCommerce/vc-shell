@@ -88,6 +88,7 @@
 
         <!-- Table search input -->
         <VcInput
+          ref="searchInput"
           class="tw-grow tw-basis-0"
           :placeholder="searchPlaceholder || $t('COMPONENTS.ORGANISMS.VC_TABLE.SEARCH')"
           clearable
@@ -95,10 +96,11 @@
           :model-value="searchValue"
           @update:model-value="$emit('search:change', $event)"
         >
-          <template #prepend-inner>
+          <template #prepend-inner="{ focus }">
             <VcIcon
               icon="fas fa-search"
-              class="tw-text-[color:#a5a5a5]"
+              class="tw-text-[color:#d2d4d7]"
+              @click="focus?.()"
             ></VcIcon>
           </template>
         </VcInput>
@@ -583,6 +585,7 @@ const slots = useSlots();
 // template refs
 const reorderRef = ref<HTMLElement | null>();
 const tableRef = ref<HTMLElement | null>();
+const searchInput = ref<HTMLElement | null>();
 
 // event listeners
 let columnResizeListener: ((...args: any[]) => any) | null = null;
@@ -636,7 +639,7 @@ const sortField = computed(() => {
 });
 
 const hasClickListener = typeof instance?.vnode.props?.["onItemClick"] === "function";
-
+const isHovered = ref(false);
 const renderCellSlot = ({ item, cell, index }: { item: T; cell: ITableColumns; index: number }) => {
   const isSlotExist = slots[`item_${cell.id}`];
 
@@ -647,14 +650,16 @@ const renderCellSlot = ({ item, cell, index }: { item: T; cell: ITableColumns; i
   const checkboxComponent = h(
     "div",
     {
-      onClick: (e) => e.stopPropagation(),
       class: "tw-absolute tw-z-10 tw-top-0 tw-bottom-0 tw-left-[20px] tw-right-0 tw-flex tw-items-center",
     },
     h(VcCheckbox, {
       class: "",
       size: "m",
       modelValue: selection.value.includes(item),
-      "onUpdate:modelValue": (value: boolean) => {
+      onClick: (e: Event) => e.stopPropagation(),
+      onMouseover: () => (isHovered.value = true),
+      onMouseout: () => (isHovered.value = false),
+      "onUpdate:modelValue": () => {
         rowCheckbox(item);
       },
     }),
@@ -666,7 +671,7 @@ const renderCellSlot = ({ item, cell, index }: { item: T; cell: ITableColumns; i
     checkboxVisibilityHandler ? checkboxComponent : undefined,
     h(
       "div",
-      { class: checkboxVisibilityHandler ? "tw-opacity-15" : "" },
+      { class: checkboxVisibilityHandler ? (isHovered.value ? "tw-opacity-5" : "tw-opacity-15") : "" },
       !isSlotExist
         ? h(VcTableCell, {
             cell,

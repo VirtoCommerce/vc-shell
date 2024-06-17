@@ -11,7 +11,7 @@
   >
     <div
       v-loading="options?.loading"
-      class="tw-relative tw-h-full"
+      class="tw-relative tw-h-full tw-flex-1"
       @dragover.prevent.stop="dragOver"
       @dragleave.prevent="dragLeave"
       @drop.prevent.stop="onDrop"
@@ -232,31 +232,31 @@ const columns = ref<ITableColumns[]>([
   {
     id: "url",
     title: computed(() => t("ASSETS_MANAGER.TABLE.HEADER.IMAGE")),
-    width: "60px",
+    width: "10%",
     alwaysVisible: true,
   },
   {
     id: "name",
     title: computed(() => t("ASSETS_MANAGER.TABLE.HEADER.NAME")),
-    width: "120px",
+    width: "20%",
     alwaysVisible: true,
   },
   {
     id: "size",
     title: computed(() => t("ASSETS_MANAGER.TABLE.HEADER.SIZE")),
-    width: "100px",
+    width: "20%",
     alwaysVisible: true,
   },
   {
     id: "sortOrder",
     title: computed(() => t("ASSETS_MANAGER.TABLE.HEADER.SORT_ORDER")),
-    width: "180px",
+    width: "25%",
     alwaysVisible: true,
   },
   {
     id: "createdDate",
     title: computed(() => t("ASSETS_MANAGER.TABLE.HEADER.CREATED_DATE")),
-    width: "140px",
+    width: "25%",
     alwaysVisible: true,
     type: "date-ago",
   },

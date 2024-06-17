@@ -280,7 +280,7 @@ export const useOrder = (args: DetailsComposableArgs): UseDetails<CustomerOrder,
       toolbar.value.push({
         title: computed(() => t(`ORDERS.PAGES.DETAILS.TOOLBAR.${transition.trigger?.toUpperCase()}`)),
         icon: transition.icon ?? "fas fa-tasks",
-        disabled: computed(() => stateMachineLoading.value),
+        disabled: computed(() => stateMachineLoading.value || !disabled.value),
         isVisible: hasAccess(UserPermissions.EditSellerOrder),
         separator: index === 0 ? "left" : undefined,
         async clickHandler() {

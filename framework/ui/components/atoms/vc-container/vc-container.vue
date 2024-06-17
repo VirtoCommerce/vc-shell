@@ -41,7 +41,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted, computed, shallowRef, watch } from "vue";
+import { ref, onMounted, computed, shallowRef, watch, inject, Ref } from "vue";
 import { VcIcon } from "./../vc-icon";
 
 export interface Props {
@@ -66,6 +66,7 @@ let touchstartY = 0;
 const refreshing = shallowRef(false);
 const goingUp = shallowRef(false);
 const touching = shallowRef(false);
+const isMobile = inject("isMobile") as Ref<boolean>;
 
 const topOffset = computed(() => Math.max(0, Math.min(pullDist.value, touchDiff.value)));
 const canRefresh = computed(() => touchDiff.value >= pullDist.value && !refreshing.value);
@@ -77,7 +78,8 @@ const scrollTop = () => {
 };
 
 function onTouchstart(e: TouchEvent | MouseEvent) {
-  if (refreshing.value || !props.usePtr) return;
+  if (!isMobile.value || refreshing.value || !props.usePtr || (component.value && component.value.scrollTop > 0))
+    return;
   touching.value = true;
   touchstartY = "clientY" in e ? e.clientY : e.touches[0].clientY;
 }
@@ -87,7 +89,7 @@ function onTouchmove(e: TouchEvent | MouseEvent) {
 
   const touchY = "clientY" in e ? e.clientY : e.touches[0].clientY;
 
-  if (scroll.value) {
+  if (component.value && component.value.scrollTop === 0) {
     touchDiff.value = touchY - touchstartY;
   }
 }
@@ -98,8 +100,10 @@ function onTouchend() {
 
   if (canRefresh.value) {
     touchDiff.value = 0;
-    refreshing.value = false;
+    refreshing.value = true;
     emit("scroll:ptr");
+
+    refreshing.value = false;
   } else {
     touchDiff.value = 0;
   }
@@ -126,14 +130,6 @@ defineExpose({
 </script>
 
 <style lang="scss">
-:root {
-  --container-scroll-color: #e1eff9;
-  --container-scroll-color-hover: #cce4f5;
-  --container-scroll-width: 8px;
-  --container-scroll-padding: 8px;
-  --container-scroll-shadow: 0 3px 2px rgba(0, 0, 0, 0.1) inset, 0 -3px 2px rgba(0, 0, 0, 0.1) inset;
-}
-
 .vc-container {
   @apply tw-w-full tw-h-full tw-overflow-hidden tw-box-border tw-flex tw-flex-col tw-relative;
 
@@ -163,23 +159,8 @@ defineExpose({
 
   &__inner {
     @apply tw-relative tw-overflow-y-auto tw-overflow-x-hidden
-    tw-flex-1 tw-p-[var(--container-scroll-padding)]
-    [transition:top_0.3s_ease-out] [scrollbar-color:var(--container-scroll-color)] [scrollbar-width:thin];
-
-    &::-webkit-scrollbar {
-      @apply tw-w-[var(--container-scroll-width)] tw-bg-transparent;
-    }
-
-    &::-webkit-scrollbar-track {
-      @apply tw-bg-transparent;
-    }
-
-    &::-webkit-scrollbar-thumb {
-      @apply tw-bg-[color:var(--container-scroll-color)]
-      tw-rounded-[calc(var(--container-scroll-width)/2)]
-      tw-overflow-x-hidden
-      hover:tw-bg-[color:var(--container-scroll-color-hover)];
-    }
+    tw-flex-1 tw-p-[var(--scroll-padding)]
+    [transition:top_0.3s_ease-out];
 
     &_touching {
       transition: none;

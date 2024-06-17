@@ -1,12 +1,12 @@
 <template>
   <div
     v-if="isMenuVisible"
-    class="tw-relative tw-w-[var(--app-menu-width)] [transition:width_300ms_cubic-bezier(0.2,0,0,1)_0s] tw-pt-[22px]"
+    class="vc-app-menu tw-relative tw-w-[var(--app-menu-width)] [transition:width_300ms_cubic-bezier(0.2,0,0,1)_0s] tw-pt-[22px]"
     :class="{
       'vc-app-menu_mobile tw-hidden !tw-fixed !tw-left-0 !tw-top-0 !tw-w-full !tw-bottom-0 !tw-z-[9999]':
         $isMobile.value,
       '!tw-block': isMobileVisible,
-      '!tw-w-[63px]': $isDesktop.value && !isExpanded,
+      '!tw-w-[var(--app-menu-width-collapse)]': $isDesktop.value && !isExpanded,
     }"
     @mouseenter="!isExpanded && expandOverHandler(true)"
     @mouseover="!isExpanded && expandOverHandler(true)"
@@ -22,7 +22,8 @@
       class="!tw-absolute vc-app-menu__inner tw-flex tw-flex-col tw-h-full [transition:width_300ms_cubic-bezier(0.2,0,0,1)_0s] tw-z-[9999] tw-top-0 tw-bottom-0 tw-bg-[color:var(--app-background)] tw-shadow-[inset_0px_2px_5px_0px_#3654751A]"
       :class="{
         'tw-left-0 tw-pt-[22px]': $isDesktop.value,
-        '!tw-w-[63px] !tw-shadow-[inset_4px_2px_5px_0px_#3654751A]': $isDesktop.value && !isExpanded && !isExpandedOver,
+        '!tw-w-[var(--app-menu-width-collapse)] !tw-shadow-[inset_4px_2px_5px_0px_#3654751A]':
+          $isDesktop.value && !isExpanded && !isExpandedOver,
         'tw-w-[var(--app-menu-width)]': $isDesktop.value && (isExpanded || isExpandedOver),
         'tw-shadow-none': $isDesktop.value && isExpanded,
       }"
@@ -42,7 +43,7 @@
 
       <div
         v-if="$isDesktop.value"
-        class="tw-pl-[21px] tw-pb-2"
+        class="tw-pl-[19px] tw-pb-2"
       >
         <button
           class="tw-p-[10px] tw-h-[var(--app-menu-item-height)] tw-rounded tw-text-[color:var(--app-menu-burger-color)] hover:tw-bg-[color:var(--app-menu-burger-background-color)]"
@@ -63,8 +64,8 @@
         <div
           class="tw-gap-[5px] tw-flex tw-flex-col tw-h-full"
           :class="{
-            'tw-px-[21px]': ($isDesktop.value && (isExpanded || isExpandedOver)) || $isMobile.value,
-            'tw-pl-[21px] tw-pr-[2px]': $isDesktop.value && !isExpanded && !isExpandedOver,
+            'tw-px-[19px]': ($isDesktop.value && (isExpanded || isExpandedOver)) || $isMobile.value,
+            'tw-pl-[19px] tw-pr-[4px]': $isDesktop.value && !isExpanded && !isExpandedOver,
           }"
         >
           <slot
@@ -154,6 +155,7 @@ defineExpose({
 <style lang="scss">
 :root {
   --app-menu-width: 230px;
+  --app-menu-width-collapse: 63px;
   --app-menu-background-color: #ffffff;
   --app-menu-version-color: #838d9a;
 
@@ -162,6 +164,9 @@ defineExpose({
 }
 
 .vc-app-menu {
+  ::-webkit-scrollbar {
+    display: none;
+  }
   &_mobile &__inner {
     @apply tw-absolute tw-z-[9999] tw-right-0 tw-top-0 tw-bottom-0 tw-w-[300px] tw-max-w-[60%] tw-bg-[color:var(--app-menu-background-color)];
   }

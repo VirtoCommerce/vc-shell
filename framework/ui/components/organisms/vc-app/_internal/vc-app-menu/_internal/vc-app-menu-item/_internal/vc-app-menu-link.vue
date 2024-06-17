@@ -1,6 +1,6 @@
 <template>
   <div
-    class="vc-app-menu-item"
+    class="vc-app-menu-item tw-flex"
     :class="[
       {
         'vc-app-menu-item_active': isMenuItemActive,
@@ -11,20 +11,11 @@
     @click="onMenuItemClick"
   >
     <div
-      class="vc-app-menu-item__handler"
-      :class="{ 'vc-app-menu-item__handler_enabled': !sticky }"
-    >
-      <VcIcon
-        icon="fas fa-ellipsis-v"
-        size="m"
-      />
-    </div>
-    <div
       v-if="icon"
-      class="vc-app-menu-item__icon"
+      class="vc-app-menu-item__icon tw-w-[var(--app-menu-item-icon-width)]"
     >
       <VcIcon
-        class="tw-w-[var(--app-menu-item-icon-width)] tw-text-center"
+        class="tw-text-center"
         :icon="icon"
         size="m"
       />
@@ -64,7 +55,7 @@
           :class="[
             {
               'vc-app-menu-item__child-item_active': isActive(nested.url ?? ''),
-              'tw-px-[10px] tw-flex tw-justify-center tw-items-center': !expand,
+              'tw-pl-[21px]': expand,
             },
             'vc-app-menu-item__child-item tw-min-w-0 tw-flex tw-w-full tw-h-[var(--app-menu-item-height)] tw-items-center',
           ]"
@@ -72,20 +63,20 @@
         >
           <div
             v-if="nested.icon"
-            class="vc-app-menu-item__icon"
+            class="vc-app-menu-item__icon tw-w-[var(--app-menu-item-icon-width)]"
             :class="{
               'tw-p-0': !expand,
             }"
           >
             <VcIcon
-              class="tw-w-[var(--app-menu-item-icon-width)] tw-text-center"
+              class="tw-text-center"
               :icon="nested.icon"
               size="m"
             />
           </div>
           <p
             v-if="expand"
-            class="tw-truncate"
+            class="tw-truncate tw-pl-[7px]"
           >
             {{ nested.title }}
           </p>
@@ -184,7 +175,7 @@ const isActive = (url: string) => {
 .vc-app-menu-item {
   @apply tw-flex tw-items-center tw-w-full tw-h-[var(--app-menu-item-height)]
   tw-border-none
-  tw-flex-nowrap tw-box-border tw-cursor-pointer tw-relative tw-uppercase tw-select-none;
+  tw-flex-nowrap tw-box-border tw-cursor-pointer tw-relative tw-uppercase tw-select-none tw-py-[4px] tw-px-[8px];
 
   &_active {
     @apply tw-bg-[color:var(--app-menu-item-background-color-active)]
@@ -215,7 +206,7 @@ const isActive = (url: string) => {
   &__icon {
     @apply tw-text-[color:var(--app-menu-item-icon-color)]
     tw-overflow-hidden tw-flex
-    tw-justify-center tw-shrink-0 tw-transition-[color] tw-duration-200 tw-pr-[7px];
+    tw-justify-center tw-shrink-0 tw-transition-[color] tw-duration-200;
   }
 
   &_active &__icon {
@@ -226,7 +217,7 @@ const isActive = (url: string) => {
     @apply tw-truncate
     tw-text-lg
     tw-font-medium
-    tw-pr-2
+    tw-pl-[7px]
     tw-text-[color:var(--app-menu-item-title-color)]
     [transition:color_0.2s_ease]
     tw-opacity-100 tw-w-full tw-flex tw-justify-between tw-items-center;
@@ -250,9 +241,9 @@ const isActive = (url: string) => {
   }
 
   &__child-item {
-    @apply tw-cursor-pointer tw-w-fit tw-py-[4px] tw-px-[6px] tw-rounded-[4px]
+    @apply tw-cursor-pointer tw-w-fit tw-py-[4px] tw-px-[8px] tw-rounded-[4px]
     hover:tw-bg-[color:var(--app-menu-item-background-color-hover)]
-    hover:tw-text-[color:var(--app-menu-item-title-color-active)] tw-pl-[25px];
+    hover:tw-text-[color:var(--app-menu-item-title-color-active)];
 
     &_active {
       @apply tw-bg-[color:var(--app-menu-item-background-color-active)]

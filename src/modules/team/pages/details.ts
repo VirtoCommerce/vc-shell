@@ -83,6 +83,7 @@ export const details: DynamicDetailsSchema = {
               variant: "file-upload",
               multiple: false,
               property: "photoHandler",
+              uploadIcon: "fas fa-camera",
               rules: {
                 fileWeight: 300,
               },
@@ -95,6 +96,10 @@ export const details: DynamicDetailsSchema = {
                 method: "disableOnCurrent",
               },
               hideAfterUpload: true,
+              customText: {
+                dragHere: "TEAM.PAGES.DETAILS.FORM.UPLOAD.DRAG",
+                browse: "TEAM.PAGES.DETAILS.FORM.UPLOAD.BROWSE",
+              },
             },
           ],
         },

@@ -90,6 +90,10 @@
           "INVITE": {
             "LABEL": "Send invite"
           },
+          "UPLOAD": {
+            "DRAG": "Drag and drop photo here or",
+            "BROWSE": "upload from files"
+          },
           "NOT_VALID": "Form is not valid.\nPlease, check highlighted fields.",
           "ERROR": "Error"
         },

@@ -13,7 +13,7 @@
       :icon="icon"
       size="s"
     />
-    <div class="vc-breadcrumbs-item__title">
+    <div class="vc-breadcrumbs-item__title tw-max-w-[150px] tw-truncate">
       {{ title }}
     </div>
   </div>

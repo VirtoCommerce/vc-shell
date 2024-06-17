@@ -32,7 +32,10 @@
       v-for="(item, i) in visibleBreadcrumbs"
       :key="item?.id ?? `breadcrumb-item-${i}`"
     >
-      <div v-if="item && item.title && item.isVisible">
+      <div
+        v-if="item && item.title && item.isVisible"
+        class="tw-flex tw-flex-row tw-items-center tw-justify-center"
+      >
         <VcIcon
           v-if="withArrow && i < items.length - 1"
           :icon="arrowIcon"

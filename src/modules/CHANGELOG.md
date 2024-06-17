@@ -1,3 +1,19 @@
+## [1.0.240](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.239...v1.0.240) (2024-06-17)
+
+
+### Bug Fixes
+
+* **orders:** hide order actions in edit mode ([b098a16](https://github.com/VirtoCommerce/vendor-portal/commit/b098a1604f968d77817250337920f2dee169ce1b))
+
+
+### Features
+
+* add logic to open SpecialPriceDetails blade if price list is empty ([c646f43](https://github.com/VirtoCommerce/vendor-portal/commit/c646f431fd2ef221df47e0a70a5086d2dc3ccb30))
+* **products:** add confirmation dialog for reverting staged changes ([0c11c10](https://github.com/VirtoCommerce/vendor-portal/commit/0c11c107055f86ff40a2e42bc574be20dab41f96))
+* update icons for fulfillment centers, marketplace products, seller details, and team pages ([39dbe9a](https://github.com/VirtoCommerce/vendor-portal/commit/39dbe9a7a6a8e30874ef60d4164f18842f3b05ae))
+
+
+
 ## [1.0.239](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.238...v1.0.239) (2024-06-13)
 
 

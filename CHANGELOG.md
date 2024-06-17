@@ -1,3 +1,12 @@
+## [1.0.243](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.242...v1.0.243) (2024-06-17)
+
+
+### Features
+
+* vm-1348: customized uploader ([c95647d](https://github.com/VirtoCommerce/vendor-portal/commit/c95647d53729d9dbc9a65df801b100c84b3b1936))
+
+
+
 ## [1.0.242](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.241...v1.0.242) (2024-06-17)
 
 

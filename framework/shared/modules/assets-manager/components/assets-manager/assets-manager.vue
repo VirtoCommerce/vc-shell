@@ -387,16 +387,6 @@ const actionBuilder = (): IActionBuilderResult<ICommonAsset>[] => {
   const result: IActionBuilderResult<ICommonAsset>[] = [];
 
   result.push({
-    icon: "fas fa-edit",
-    title: computed(() => t("ASSETS_MANAGER.TABLE.ACTIONS.EDIT")),
-    type: "success",
-    position: "right",
-    clickHandler(item: ICommonAsset) {
-      onItemClick(item);
-    },
-  });
-
-  result.push({
     icon: "fas fa-trash",
     title: computed(() => t("ASSETS_MANAGER.TABLE.ACTIONS.DELETE")),
     type: "danger",

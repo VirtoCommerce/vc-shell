@@ -770,6 +770,13 @@ export interface GallerySchema
    * Custom gallery upload icon.
    */
   uploadIcon?: string;
+  /**
+   * Custom text to display in the gallery file upload.
+   */
+  customText?: {
+    dragHere: string;
+    browse: string;
+  };
 }
 
 /**

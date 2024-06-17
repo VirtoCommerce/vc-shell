@@ -1,4 +1,4 @@
-import { Component, ExtractPropTypes, computed, h, markRaw, ref, toRefs, toValue, watch } from "vue";
+import { Component, ExtractPropTypes, computed, h, markRaw, ref, toRefs, toValue, unref, watch } from "vue";
 import { Gallery } from "../factories";
 import componentProps from "./props";
 import { ICommonAsset } from "../../../../../core/types";
@@ -126,6 +126,16 @@ export default {
         props: Object.assign(
           {},
           {
+            customText: {
+              dragHere:
+                typeof props.element.customText?.dragHere !== "undefined"
+                  ? unref(computed(() => t(props.element.customText!.dragHere!)))
+                  : undefined,
+              browse:
+                typeof props.element.customText?.browse !== "undefined"
+                  ? unref(computed(() => t(props.element.customText!.browse!)))
+                  : undefined,
+            },
             uploadIcon: props.element.uploadIcon,
             loading: imageHandlers.loading,
             images: toValue(props.baseProps.modelValue),

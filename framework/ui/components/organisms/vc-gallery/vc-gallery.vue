@@ -44,6 +44,7 @@
             :rules="rules"
             :name="name"
             :loading="loading"
+            :custom-text="customText"
             @upload="onUpload"
           ></VcFileUpload>
         </div>
@@ -89,6 +90,10 @@ export interface Props {
   rules?: keyof IValidationRules | IValidationRules;
   name?: string;
   loading?: boolean;
+  customText?: {
+    dragHere: string;
+    browse: string;
+  };
 }
 
 export interface Emits {

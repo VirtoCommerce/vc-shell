@@ -45,17 +45,17 @@
     </VcContainer>
 
     <template
-      v-if="bladeWidgets && bladeWidgets.length"
+      v-if="item && bladeWidgets && bladeWidgets.length"
       #widgets="{ isExpanded }"
     >
       <component
-        :is="item"
-        v-for="(item, index) in bladeWidgets"
+        :is="widgetItem"
+        v-for="(widgetItem, index) in bladeWidgets"
         :key="index"
         :ref="(el: HTMLElement) => widgetsRefs.set({ component: item, el })"
         v-model="bladeContext"
         :is-expanded="isExpanded"
-        @click="setActiveWidget(item)"
+        @click="setActiveWidget(widgetItem)"
       ></component>
     </template>
   </VcBlade>

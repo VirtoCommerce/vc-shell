@@ -38,7 +38,10 @@
         </div>
       </div>
     </div>
-    <template #tooltip>
+    <template
+      v-if="$isDesktop.value"
+      #tooltip
+    >
       {{ title }}
     </template>
   </VcTooltip>

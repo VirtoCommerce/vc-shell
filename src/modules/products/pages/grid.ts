@@ -37,7 +37,8 @@ export const grid: DynamicGridSchema = {
     ],
     menuItem: {
       title: "PRODUCTS.MENU.MY_PRODUCTS",
-      icon: "fas fa-box-open",
+      groupIcon: "fas fa-cubes",
+      icon: "fas fa-dice-d6",
       group: "PRODUCTS.MENU.TITLE",
       priority: 2,
       inGroupPriority: 2,

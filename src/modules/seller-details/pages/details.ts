@@ -25,7 +25,8 @@ export const details: DynamicDetailsSchema = {
     ],
     menuItem: {
       title: "SELLER_DETAILS.MENU.TITLE",
-      icon: "fas fa-sliders-h",
+      groupIcon: "fas fa-store",
+      icon: "fas fa-briefcase",
       group: "SETTINGS.MENU.TITLE",
       priority: 6,
     },
@@ -112,6 +113,10 @@ export const details: DynamicDetailsSchema = {
                         remove: true,
                       },
                       hideAfterUpload: true,
+                      customText: {
+                        dragHere: "SELLER_DETAILS.CARDS.INFO.FORM.UPLOAD.DRAG",
+                        browse: "SELLER_DETAILS.CARDS.INFO.FORM.UPLOAD.BROWSE",
+                      },
                     },
                   ],
                 },

@@ -52,7 +52,7 @@ export const overrides: OverridesSchema = {
       path: "settings.menuItem",
       value: {
         title: "PRODUCTS.MENU.MARKETPLACE_PRODUCTS",
-        icon: "fas fa-box-open",
+        icon: "fas fa-dice-d20",
         group: "PRODUCTS.MENU.TITLE",
         priority: 2,
         inGroupPriority: 1,
@@ -67,6 +67,10 @@ export const overrides: OverridesSchema = {
     {
       id: "Products",
       path: "content[0].filter",
+    },
+    {
+      id: "Products",
+      path: "content[0].actions",
     },
   ],
 };

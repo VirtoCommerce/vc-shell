@@ -1,7 +1,7 @@
 {
   "SELLER_DETAILS": {
     "MENU": {
-      "TITLE": "Organization Details"
+      "TITLE": "Profile"
     },
     "PAGES": {
       "ALERTS": {
@@ -9,7 +9,7 @@
         "IMAGE_DELETE_CONFIRMATION": "Are you sure you want to delete this image?"
       }
     },
-    "TITLE": "Organization Details",
+    "TITLE": "Profile",
     "TOOLBAR": {
       "SAVE": "Save",
       "RESET": "Reset"
@@ -44,7 +44,9 @@
           },
           "UPLOAD": {
             "LABEL": "Company logo",
-            "DESCRIPTION": "Select image with min height 120px and min width 120px of the PNG, JPEG"
+            "DESCRIPTION": "Select image with min height 120px and min width 120px of the PNG, JPEG",
+            "DRAG": "Drag & Drop photo here or",
+            "BROWSE": "upload from files"
           }
         }
       },

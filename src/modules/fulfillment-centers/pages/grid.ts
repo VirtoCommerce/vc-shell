@@ -26,7 +26,8 @@ export const grid: DynamicGridSchema = {
     ],
     menuItem: {
       title: "FULFILLMENT_CENTERS.MENU.TITLE",
-      icon: "fas fa-sliders-h",
+      groupIcon: "fas fa-store",
+      icon: "fas fa-warehouse",
       group: "SETTINGS.MENU.TITLE",
       priority: 6,
     },

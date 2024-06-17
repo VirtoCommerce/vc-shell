@@ -1,7 +1,7 @@
 {
   "TEAM": {
     "MENU": {
-      "TITLE": "My Team"
+      "TITLE": "People"
     },
     "ROLES": {
       "ADMIN": "Admin",
@@ -10,7 +10,7 @@
     },
     "PAGES": {
       "LIST": {
-        "TITLE": "My Team",
+        "TITLE": "People",
         "TOOLBAR": {
           "ADD_MEMBER": "Add user",
           "REFRESH": "Refresh"

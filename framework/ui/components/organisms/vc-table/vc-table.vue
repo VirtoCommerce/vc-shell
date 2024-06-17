@@ -222,7 +222,7 @@
               >
                 <div
                   v-if="multiselect && index === 0"
-                  class="tw-flex tw-pl-5 tw-items-center tw-justify-center tw-w-auto tw-bg-[#f9f9f9] tw-box-border tw-select-none tw-overflow-hidden tw-z-[1]"
+                  class="tw-flex tw-pl-5 tw-items-center tw-justify-center tw-w-auto tw-bg-[#f9f9f9] tw-box-border tw-select-none tw-overflow-hidden tw-z-[1] tw-shrink-0"
                 >
                   <div class="tw-flex tw-justify-center tw-items-center">
                     <VcCheckbox

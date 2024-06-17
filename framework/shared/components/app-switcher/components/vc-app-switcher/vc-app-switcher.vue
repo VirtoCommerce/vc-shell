@@ -14,7 +14,7 @@
 
     <div
       v-if="isVisible && appsList && appsList.length"
-      class="tw-px-4 tw-py-3.5 tw-bg-white tw-drop-shadow-[4px_4px_20px_rgba(47,86,108,0.25)] tw-absolute tw-z-[9999] tw-rounded tw-top-[var(--app-bar-height)] tw-left-0 tw-w-max tw-max-w-[200px]"
+      class="tw-px-4 tw-py-3.5 tw-bg-white tw-drop-shadow-[4px_4px_20px_rgba(47,86,108,0.25)] tw-absolute tw-z-[1002] tw-rounded tw-top-[var(--app-bar-height)] tw-left-0 tw-w-max tw-max-w-[200px]"
     >
       <ul class="tw-flex tw-flex-col tw-gap-3 tw-overflow-hidden">
         <li

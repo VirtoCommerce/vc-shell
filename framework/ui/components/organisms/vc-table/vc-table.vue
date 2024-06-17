@@ -1,6 +1,6 @@
 <template>
   <div
-    v-loading="unref(loading) || columnsInit"
+    v-loading:1000="unref(loading) || columnsInit"
     class="tw-relative tw-overflow-hidden tw-flex tw-flex-col tw-grow tw-basis-0 tw-border-[color:#eef0f2] tw-border-solid tw-border-t-0"
   >
     <div

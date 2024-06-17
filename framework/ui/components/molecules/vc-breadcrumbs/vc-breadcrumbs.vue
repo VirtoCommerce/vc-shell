@@ -126,10 +126,12 @@ function calculateTotalWidth(title: MaybeRef<string | undefined>) {
   const unrefTitle = toValue(title);
   if (!unrefTitle) return 0;
 
+  const maxChars = 27;
   const paddings = 40;
   const averageCharacterWidth = 4.87;
 
-  const wordWidth = Math.floor(unrefTitle.length * averageCharacterWidth) + paddings;
+  const wordWidth =
+    Math.floor((unrefTitle.length > maxChars ? maxChars : unrefTitle.length) * averageCharacterWidth) + paddings;
 
   return wordWidth;
 }

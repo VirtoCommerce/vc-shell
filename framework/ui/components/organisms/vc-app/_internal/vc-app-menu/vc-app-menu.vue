@@ -79,7 +79,7 @@
               $hasAccess(item.permissions!) && (item.children?.some((child) => $hasAccess(child.permissions!)) ?? true)
             "
             :url="item.url"
-            :icon="item.icon"
+            :icon="item.groupIcon || item.icon"
             :title="item.title as string"
             :children="item.children"
             :expand="$isDesktop.value ? isExpanded || isExpandedOver : true"
@@ -93,7 +93,7 @@
         </div>
       </VcContainer>
       <div
-        class="tw-text-[color:var(--app-menu-version-color)] tw-text-xs tw-mt-auto tw-self-start tw-py-1 tw-pl-4"
+        class="tw-text-[color:var(--app-menu-version-color)] tw-text-xs tw-mt-auto tw-self-start tw-py-1 tw-pl-[22px]"
         @click="$emit('version:click')"
       >
         {{ version }}

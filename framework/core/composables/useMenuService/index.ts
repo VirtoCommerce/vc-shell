@@ -21,14 +21,16 @@ function useMenuServiceFn(): MenuService {
     constructMenu();
   }
 
-  const upsert = createUnrefFn((array: MenuItem[], element: MenuItem) => {
-    const index = array.findIndex((_element) => _.isEqual(_element, element));
-    if (index > -1) {
-      array[index] = { ...element };
-    } else {
-      array.push({ ...element });
-    }
-  });
+  const upsert = createUnrefFn(
+    (array: (MenuItem | Omit<MenuItem, "icon">)[], element: MenuItem | Omit<MenuItem, "icon">) => {
+      const index = array.findIndex((_element) => _.isEqual(_element, element));
+      if (index > -1) {
+        array[index] = { ...element };
+      } else {
+        array.push({ ...element });
+      }
+    },
+  );
 
   function sortByPriority(a: MenuItem, b: MenuItem): number {
     const getPriority = (item: MenuItem): number => item.priority ?? Infinity;
@@ -53,14 +55,16 @@ function useMenuServiceFn(): MenuService {
             title: computed(() => t(item.title as string)),
           },
           "group",
+          "groupIcon",
+          "groupPriority",
         );
 
         if (isGroupExist.value && isGroupExist.value.children) {
           upsert(isGroupExist.value.children, groupItem);
         } else {
-          const group: MenuItem = {
+          const group: Omit<MenuItem, "icon"> = {
             groupId: "group_" + item.group,
-            icon: item.icon,
+            groupIcon: item.groupIcon ?? "",
             title: computed(() => t(item.group as string)),
             children: [_.omit(groupItem)],
             priority: item.priority,

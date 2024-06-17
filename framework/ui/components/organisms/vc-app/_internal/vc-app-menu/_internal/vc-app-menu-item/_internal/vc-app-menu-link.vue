@@ -24,6 +24,7 @@
       class="vc-app-menu-item__icon"
     >
       <VcIcon
+        class="tw-w-[var(--app-menu-item-icon-width)] tw-text-center"
         :icon="icon"
         size="m"
       />
@@ -43,8 +44,11 @@
   </div>
   <!-- Nested menu items -->
   <div
-    v-show="isOpened && expand"
+    v-show="isOpened"
     class="vc-app-menu-item__child"
+    :class="{
+      '!tw-ml-0': !expand,
+    }"
   >
     <template
       v-for="(nested, i) in children"
@@ -60,12 +64,31 @@
           :class="[
             {
               'vc-app-menu-item__child-item_active': isActive(nested.url ?? ''),
+              'tw-px-[10px] tw-flex tw-justify-center tw-items-center': !expand,
             },
-            'vc-app-menu-item__child-item',
+            'vc-app-menu-item__child-item tw-min-w-0 tw-flex tw-w-full tw-h-[var(--app-menu-item-height)] tw-items-center',
           ]"
           @click="$emit('onClick', nested)"
         >
-          {{ nested.title }}
+          <div
+            v-if="nested.icon"
+            class="vc-app-menu-item__icon"
+            :class="{
+              'tw-p-0': !expand,
+            }"
+          >
+            <VcIcon
+              class="tw-w-[var(--app-menu-item-icon-width)] tw-text-center"
+              :icon="nested.icon"
+              size="m"
+            />
+          </div>
+          <p
+            v-if="expand"
+            class="tw-truncate"
+          >
+            {{ nested.title }}
+          </p>
         </div>
       </router-link>
     </template>
@@ -100,11 +123,7 @@ const isOpened = ref(false);
 const route = useRoute();
 const params = Object.fromEntries(Object.entries(route.params).filter(([key]) => key !== "pathMatch"));
 
-const isMenuItemActive = computed(
-  () =>
-    (isActive(props.url ?? "") && !props.children?.length) ||
-    (!props.expand && isOpened.value && props.children?.some((x) => isActive(x.url ?? ""))),
-);
+const isMenuItemActive = computed(() => isActive(props.url ?? "") && !props.children?.length);
 
 watch(
   () => route.path,
@@ -147,7 +166,7 @@ const isActive = (url: string) => {
 <style lang="scss">
 :root {
   --app-menu-item-height: 36px;
-  --app-menu-item-icon-width: 20px;
+  --app-menu-item-icon-width: 22px;
   --app-menu-item-icon-color: #82a6bd;
   --app-menu-item-icon-color-active: #ffffff;
   --app-menu-item-handler-width: 10px;
@@ -227,19 +246,23 @@ const isActive = (url: string) => {
   }
 
   &__child {
-    @apply tw-ml-[32px] tw-gap-[4px] tw-mt-[4px] tw-flex tw-flex-col;
+    @apply tw-gap-[4px] tw-mt-[4px] tw-flex tw-flex-col;
   }
 
   &__child-item {
     @apply tw-cursor-pointer tw-w-fit tw-py-[4px] tw-px-[6px] tw-rounded-[4px]
     hover:tw-bg-[color:var(--app-menu-item-background-color-hover)]
-    hover:tw-text-[color:var(--app-menu-item-title-color-active)];
+    hover:tw-text-[color:var(--app-menu-item-title-color-active)] tw-pl-[25px];
 
     &_active {
       @apply tw-bg-[color:var(--app-menu-item-background-color-active)]
       tw-text-[color:var(--app-menu-item-title-color-active)] tw-font-bold
       hover:tw-bg-[color:var(--app-menu-item-background-color-active)]
       hover:tw-text-[color:var(--app-menu-item-title-color-active)];
+
+      .vc-app-menu-item__icon {
+        @apply tw-text-[color:var(--app-menu-item-icon-color-active)];
+      }
     }
   }
 

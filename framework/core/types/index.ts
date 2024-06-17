@@ -178,6 +178,7 @@ export interface MenuItem extends Omit<MenuItemConfig, "title" | "id"> {
   routeId?: string;
   title: ComputedRef<string> | string;
   url?: string;
+  groupIcon?: string;
   groupId?: string;
   children?: MenuItem[];
   permissions?: string | string[];
@@ -194,6 +195,10 @@ export interface MenuItemConfig {
    * Menu item icon.
    */
   icon: string;
+  /**
+   * Menu group icon.
+   */
+  groupIcon?: string;
   /**
    * Menu item group. Is used to group menu items with it's provided name.
    *

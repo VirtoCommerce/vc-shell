@@ -1,7 +1,7 @@
 <template>
   <VcBlade
     v-if="!composables"
-    v-loading="loading"
+    v-loading:1000="loading"
     :expanded="expanded"
     :closable="closable"
     :width="settings?.width || '50%'"
@@ -379,7 +379,7 @@ defineExpose({
   }
 
   &__content {
-    @apply tw-border-r tw-border-solid tw-border-r-[#eaedf3] tw-overflow-hidden tw-grow tw-basis-0;
+    @apply tw-overflow-hidden tw-grow tw-basis-0;
   }
 
   &__decline-icon {

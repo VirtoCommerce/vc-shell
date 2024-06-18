@@ -56,7 +56,7 @@
     </template>
     <div
       v-else
-      class="tw-flex tw-justify-center tw-p-5"
+      class="tw-flex tw-justify-center tw-p-5 tw-h-full tw-items-center"
     >
       <VcHint>{{ t("COMPONENTS.ORGANISMS.VC_GALLERY.GALLERY_IS_EMPTY") }}</VcHint>
     </div>

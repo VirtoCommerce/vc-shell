@@ -155,7 +155,7 @@ export default {
         ),
       });
 
-      return h(field.component as Component, unrefNested(field.props));
+      return h(field.component as Component, Object.assign(unrefNested(field.props), { class: "tw-flex-auto" }));
     };
   },
 };

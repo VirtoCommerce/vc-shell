@@ -46,7 +46,7 @@
         class="tw-pl-[19px] tw-pb-2"
       >
         <button
-          class="tw-p-[10px] tw-h-[var(--app-menu-item-height)] tw-rounded tw-text-[color:var(--app-menu-burger-color)] hover:tw-bg-[color:var(--app-menu-burger-background-color)]"
+          class="tw-flex tw-items-center tw-p-[10px] tw-rounded tw-text-[color:var(--app-menu-burger-color)] hover:tw-bg-[color:var(--app-menu-burger-background-color)]"
           @click="toggleMenu"
         >
           <VcIcon
@@ -61,13 +61,7 @@
         :no-padding="true"
         class="tw-grow tw-basis-0"
       >
-        <div
-          class="tw-gap-[5px] tw-flex tw-flex-col tw-h-full"
-          :class="{
-            'tw-px-[19px]': ($isDesktop.value && (isExpanded || isExpandedOver)) || $isMobile.value,
-            'tw-pl-[19px] tw-pr-[4px]': $isDesktop.value && !isExpanded && !isExpandedOver,
-          }"
-        >
+        <div class="tw-gap-[5px] tw-flex tw-flex-col tw-h-full">
           <slot
             v-if="!$isDesktop.value"
             name="mobile"

@@ -1,36 +1,44 @@
 <template>
   <div
-    class="vc-app-menu-item tw-flex"
-    :class="[
-      {
-        'vc-app-menu-item_active': isMenuItemActive,
-        'vc-app-menu-item_no-hover': !children?.length,
-        'vc-app-menu-item_child-opened': expand && isOpened,
-      },
-    ]"
+    class="vc-app-menu-link tw-cursor-pointer tw-group"
+    :class="{
+      'tw-px-[19px]': ($isDesktop.value && expand) || $isMobile.value,
+      'tw-pl-[19px] tw-pr-[4px]': $isDesktop.value && !expand,
+    }"
     @click="onMenuItemClick"
   >
     <div
-      v-if="icon"
-      class="vc-app-menu-item__icon tw-w-[var(--app-menu-item-icon-width)]"
+      class="vc-app-menu-item tw-flex"
+      :class="[
+        {
+          'vc-app-menu-item_active': isMenuItemActive,
+          'vc-app-menu-item_no-hover': !children?.length,
+          'vc-app-menu-item_child-opened': expand && isOpened,
+        },
+      ]"
     >
-      <VcIcon
-        class="tw-text-center"
-        :icon="icon"
-        size="m"
-      />
-    </div>
-    <div
-      v-if="expand"
-      class="vc-app-menu-item__title tw-capitalize"
-    >
-      {{ title }}
-      <VcIcon
-        v-if="!!children?.length || false"
-        class="vc-app-menu-item__title-icon"
-        :icon="`fas fa-chevron-${isOpened ? 'up' : 'down'}`"
-        size="xs"
-      ></VcIcon>
+      <div
+        v-if="icon"
+        class="vc-app-menu-item__icon tw-w-[var(--app-menu-item-icon-width)]"
+      >
+        <VcIcon
+          class="tw-text-center"
+          :icon="icon"
+          size="m"
+        />
+      </div>
+      <div
+        v-if="expand"
+        class="vc-app-menu-item__title tw-capitalize"
+      >
+        {{ title }}
+        <VcIcon
+          v-if="!!children?.length || false"
+          class="vc-app-menu-item__title-icon"
+          :icon="`fas fa-chevron-${isOpened ? 'up' : 'down'}`"
+          size="xs"
+        ></VcIcon>
+      </div>
     </div>
   </div>
   <!-- Nested menu items -->
@@ -51,35 +59,43 @@
         custom
       >
         <div
-          :key="i"
-          :class="[
-            {
-              'vc-app-menu-item__child-item_active': isActive(nested.url ?? ''),
-              'tw-pl-[21px]': expand,
-            },
-            'vc-app-menu-item__child-item tw-min-w-0 tw-flex tw-w-full tw-h-[var(--app-menu-item-height)] tw-items-center',
-          ]"
+          :class="{
+            'tw-px-[19px] ': ($isDesktop.value && expand) || $isMobile.value,
+            'tw-pl-[19px] tw-pr-[4px] ': $isDesktop.value && !expand,
+          }"
+          class="vc-app-menu-item__child-item-link tw-cursor-pointer tw-z-[2]"
           @click="$emit('onClick', nested)"
         >
           <div
-            v-if="nested.icon"
-            class="vc-app-menu-item__icon tw-w-[var(--app-menu-item-icon-width)]"
-            :class="{
-              'tw-p-0': !expand,
-            }"
+            :key="i"
+            :class="[
+              {
+                'vc-app-menu-item__child-item_active': isActive(nested.url ?? ''),
+                'tw-pl-[21px]': expand,
+              },
+              'vc-app-menu-item__child-item tw-min-w-0 tw-flex tw-w-full tw-h-[var(--app-menu-item-height)] tw-items-center',
+            ]"
           >
-            <VcIcon
-              class="tw-text-center"
-              :icon="nested.icon"
-              size="m"
-            />
+            <div
+              v-if="nested.icon"
+              class="vc-app-menu-item__icon tw-w-[var(--app-menu-item-icon-width)]"
+              :class="{
+                'tw-p-0': !expand,
+              }"
+            >
+              <VcIcon
+                class="tw-text-center"
+                :icon="nested.icon"
+                size="m"
+              />
+            </div>
+            <p
+              v-if="expand"
+              class="tw-truncate tw-pl-[7px]"
+            >
+              {{ nested.title }}
+            </p>
           </div>
-          <p
-            v-if="expand"
-            class="tw-truncate tw-pl-[7px]"
-          >
-            {{ nested.title }}
-          </p>
         </div>
       </router-link>
     </template>
@@ -170,6 +186,36 @@ const isActive = (url: string) => {
 
   --app-menu-item-active-text: #2e3d4e;
   --app-menu-item-active-icon: #2e3d4e;
+}
+
+.vc-app-menu-link:hover .vc-app-menu-item {
+  @apply tw-bg-[color:var(--app-menu-item-background-color-hover)] tw-bg-opacity-50
+    tw-rounded-[var(--app-menu-item-hover-radius)];
+
+  .vc-app-menu-item__title {
+    @apply tw-text-[color:var(--app-menu-item-title-color-active)];
+  }
+
+  .vc-app-menu-item__icon {
+    @apply tw-text-[color:var(--app-menu-item-icon-color-active)];
+  }
+
+  .vc-app-menu-item__title-icon {
+    @apply tw-text-[color:var(--app-menu-item-icon-color-active)];
+  }
+
+  .vc-app-menu-item__handler_enabled {
+    @apply tw-visible #{!important};
+  }
+}
+
+.vc-app-menu-item__child-item-link:hover .vc-app-menu-item__child-item {
+  @apply tw-bg-[color:var(--app-menu-item-background-color-hover)] tw-bg-opacity-50
+    tw-rounded-[var(--app-menu-item-hover-radius)];
+
+  .vc-app-menu-item__icon {
+    @apply tw-text-[color:var(--app-menu-item-icon-color-active)];
+  }
 }
 
 .vc-app-menu-item {

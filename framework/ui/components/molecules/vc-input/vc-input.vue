@@ -580,6 +580,7 @@ function focus() {
   }
 
   &__input {
+    background: transparent;
     &:-webkit-autofill,
     &:-webkit-autofill:focus {
       transition:

@@ -1,3 +1,12 @@
+## [1.0.245](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.244...v1.0.245) (2024-06-18)
+
+
+### Features
+
+* vm-1408 corrected image upload folders ([0aa4edb](https://github.com/VirtoCommerce/vendor-portal/commit/0aa4edb5ec83ada1553a08f198f223c976a69d9f))
+
+
+
 ## [1.0.244](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.243...v1.0.244) (2024-06-17)
 
 

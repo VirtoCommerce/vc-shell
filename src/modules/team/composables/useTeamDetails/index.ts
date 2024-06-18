@@ -110,6 +110,9 @@ export const useTeamDetails = (args: DetailsComposableArgs): UseDetails<SellerUs
   const sendInviteStatus = ref(false);
   const isOwnerReadonly = computed(() => item.value?.role === "vcmp-owner-role");
   const isCurrentUser = computed(() => item.value?.userName === user.value?.userName);
+  const isCurrentUserOwner = computed(
+    () => item.value?.userName === user.value?.userName && item.value?.role === "vcmp-owner-role",
+  );
 
   const role = computed(
     () => roles.value.find((x) => x.id === item.value?.role) || roles.value.find((x) => x.id === "vcmp-agent-role"),
@@ -138,7 +141,7 @@ export const useTeamDetails = (args: DetailsComposableArgs): UseDetails<SellerUs
   const scope: TeamDetailsScope = {
     sendInviteStatus,
     isActive,
-    isOwnerReadonly,
+    isOwnerReadonly: computed(() => isOwnerReadonly.value && !isCurrentUserOwner.value),
     photoHandler,
     disableOnCurrent: computed(() => isCurrentUser.value || isOwnerReadonly.value),
     isActiveSwitchVisible: computed(() => !!item.value?.id),

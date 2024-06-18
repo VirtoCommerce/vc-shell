@@ -93,7 +93,7 @@ export const details: DynamicDetailsSchema = {
                 remove: true,
               },
               disabled: {
-                method: "disableOnCurrent",
+                method: "isOwnerReadonly",
               },
               hideAfterUpload: true,
               customText: {

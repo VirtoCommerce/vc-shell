@@ -155,7 +155,7 @@ export const useTeamDetails = (args: DetailsComposableArgs): UseDetails<SellerUs
         noRemoveConfirmation: true,
         loading: imageLoading,
         async upload(files: FileList) {
-          return (await uploadImage(files, `seller_logos/${item.value!.id}`)).map((x) => new Image(x));
+          return (await uploadImage(files, `vendors/${item.value?.sellerId}/users`)).map((x) => new Image(x));
         },
         remove: (files: IImage[]) => {
           return removeImage(files, photoHandler.value);

@@ -201,7 +201,7 @@ export const useSellerDetails = (args?: DetailsComposableArgs): UseDetails<ISell
         noRemoveConfirmation: true,
         loading: imageLoading,
         async upload(files: FileList) {
-          return (await uploadImage(files, `seller_logos/${item.value!.id}`)).map((x) => new Image(x));
+          return (await uploadImage(files, `vendors/${item.value?.id}/logos`)).map((x) => new Image(x));
         },
         remove: (files: IImage[]) => {
           return removeImage(files, logoHandler.value);

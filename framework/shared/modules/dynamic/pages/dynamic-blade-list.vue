@@ -636,8 +636,8 @@ function actionBuilder(item: (typeof items.value)[number]): IActionBuilderResult
                 await toolbarItem.clickHandler?.();
               } else {
                 await toValue(unreffedScope)?.[action.method]?.(itemVal);
+                selectedIds.value = [];
               }
-              selectedIds.value = [];
             }
           } catch (error) {
             throw new Error(`Method ${action.method} is not defined in scope or toolbarOverrides`);

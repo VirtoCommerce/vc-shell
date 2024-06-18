@@ -1,3 +1,12 @@
+## [1.0.247](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.246...v1.0.247) (2024-06-18)
+
+
+### Bug Fixes
+
+* disabled condition in videos/assets widgets ([27ef88a](https://github.com/VirtoCommerce/vendor-portal/commit/27ef88a3fed569f020e15302996f356b3594abed))
+
+
+
 ## [1.0.246](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.245...v1.0.246) (2024-06-18)
 
 

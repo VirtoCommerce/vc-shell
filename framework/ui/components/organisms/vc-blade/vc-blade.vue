@@ -85,6 +85,7 @@
           ref="widgetsRef"
           class="vc-blade__widgets tw-flex"
           :class="{
+            'tw-border-l tw-border-solid tw-border-l-[#eaedf3]': $isDesktop.value,
             'tw-w-[var(--blade-widgets-width)] tw-flex-col': $isDesktop.value && !isExpanded,
             'tw-w-[var(--blade-widgets-width-expanded)] tw-flex-col': $isDesktop.value && isExpanded,
             'tw-w-auto tw-border-t tw-border-solid tw-border-t-[#eaedf3] tw-flex-row': $isMobile.value,

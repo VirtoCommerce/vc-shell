@@ -135,8 +135,20 @@ function toggleMenu() {
   isExpanded.value = !isExpanded.value;
 }
 
+let expandTimeout: ReturnType<typeof setTimeout> | null = null;
+
 function expandOverHandler(state: boolean) {
-  if (isExpandedOver.value !== state) {
+  if (expandTimeout) {
+    clearTimeout(expandTimeout);
+  }
+
+  if (state) {
+    expandTimeout = setTimeout(() => {
+      if (isExpandedOver.value !== state) {
+        isExpandedOver.value = state;
+      }
+    }, 200);
+  } else {
     isExpandedOver.value = state;
   }
 }

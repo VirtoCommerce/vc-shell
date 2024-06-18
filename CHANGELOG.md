@@ -1,3 +1,12 @@
+## [1.0.239](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.238...v1.0.239) (2024-06-18)
+
+
+### Bug Fixes
+
+* **ui:** fixed flickering when hover on tooltip ([df11271](https://github.com/VirtoCommerce/vc-shell/commit/df112712cd8542a6a69fd0f3eda38d3040936df1))
+
+
+
 ## [1.0.238](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.237...v1.0.238) (2024-06-17)
 
 

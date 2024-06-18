@@ -11,11 +11,12 @@
 
 <script setup lang="ts">
 import { VcWidget, useApiClient, useAsync, useBladeNavigation, useUser } from "@vc-shell/framework";
-import { UnwrapNestedRefs, onMounted, ref } from "vue";
+import { Ref, UnwrapNestedRefs, inject, onMounted, ref } from "vue";
 import {
   VcmpSellerCatalogClient,
   ISearchVideosQuery,
   SearchVideosQuery,
+  ISeller,
 } from "@vcmp-vendor-portal/api/marketplacevendor";
 import { useProductDetails } from "../../../composables/useProductDetails";
 import { useRoles } from "../../../../common";
@@ -31,6 +32,7 @@ const client = getApiClient();
 
 const { openBlade, resolveBladeByName } = useBladeNavigation();
 const { user } = useUser();
+const currentSeller = inject("currentSeller") as Ref<ISeller>;
 
 const widgetOpened = ref(false);
 const count = ref(0);
@@ -45,7 +47,10 @@ function clickHandler() {
         catalogProduct: props.modelValue?.item,
         disabled:
           props.modelValue.scope?.disabled ||
-          (props.modelValue.item?.createdBy !== user.value?.userName && !isAdministrator.value && !isOperator.value),
+          ((props.modelValue.item?.sellerId !== currentSeller.value.id ||
+            props.modelValue.item?.createdBy !== user.value?.userName) &&
+            !isAdministrator.value &&
+            !isOperator.value),
       },
       onOpen() {
         widgetOpened.value = true;

@@ -11,8 +11,8 @@
 
 <script setup lang="ts">
 import { VcWidget, useBladeNavigation, usePopup, useAssets, useUser } from "@vc-shell/framework";
-import { UnwrapNestedRefs, computed, ref, watch, onMounted } from "vue";
-import { Asset } from "@vcmp-vendor-portal/api/marketplacevendor";
+import { UnwrapNestedRefs, computed, ref, watch, onMounted, inject, Ref } from "vue";
+import { Asset, ISeller } from "@vcmp-vendor-portal/api/marketplacevendor";
 import { useI18n } from "vue-i18n";
 import * as _ from "lodash-es";
 import { useProductDetails } from "../../../composables/useProductDetails";
@@ -37,6 +37,7 @@ const modelValue = ref(props.modelValue);
 const widgetOpened = ref(false);
 const internalModel = ref();
 const count = computed(() => modelValue.value?.item?.assets?.length || 0);
+const currentSeller = inject("currentSeller") as Ref<ISeller>;
 
 watch(
   () => props.modelValue,
@@ -60,7 +61,10 @@ function clickHandler() {
         assetsRemoveHandler: assetsHandler?.remove,
         disabled:
           props.modelValue.scope?.disabled ||
-          (props.modelValue.item?.createdBy !== user.value?.userName && !isAdministrator.value && !isOperator.value),
+          ((props.modelValue.item?.sellerId !== currentSeller.value.id ||
+            props.modelValue.item?.createdBy !== user.value?.userName) &&
+            !isAdministrator.value &&
+            !isOperator.value),
       },
       onOpen() {
         widgetOpened.value = true;

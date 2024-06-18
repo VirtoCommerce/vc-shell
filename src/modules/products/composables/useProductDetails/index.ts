@@ -144,6 +144,7 @@ export const useProductDetails = (
         stagedProductDataId: details.stagedProductDataId,
         productType: details.productData?.productType,
         status: details.status,
+        sellerId: details.sellerId,
       }) as ISellerProduct & IProductDetails;
     }
     return details;

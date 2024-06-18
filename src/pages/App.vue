@@ -11,7 +11,7 @@
 
 <script lang="ts" setup>
 import { useSettings, useUser, useNotifications, notification, useApiClient } from "@vc-shell/framework";
-import { onMounted, ref, watch } from "vue";
+import { onMounted, provide, ref, watch } from "vue";
 import * as modules from "@vcmp-vendor-portal/modules";
 // eslint-disable-next-line import/no-unresolved
 import logoImage from "/assets/logo.svg";
@@ -95,6 +95,8 @@ async function GetSellerId(): Promise<string> {
   const result = route?.params?.sellerId as string;
   return result;
 }
+
+provide("currentSeller", sellerDetails);
 </script>
 
 <style lang="scss">

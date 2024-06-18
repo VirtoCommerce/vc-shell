@@ -17,7 +17,10 @@
         v-if="anySelected"
         class="tw-pl-4 tw-flex tw-items-center tw-justify-center tw-border-b tw-border-solid tw-border-b-[#e3e7ec]"
       >
-        <VcCheckbox :model-value="unref(isSelected ?? false)"></VcCheckbox>
+        <VcCheckbox
+          :model-value="unref(isSelected ?? false)"
+          size="m"
+        ></VcCheckbox>
       </div>
       <div class="tw-flex-1 tw-w-0">
         <div class="tw-flex tw-flex-col tw-h-full tw-border-b tw-border-solid tw-border-b-[#e3e7ec]">

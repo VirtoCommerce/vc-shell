@@ -4,7 +4,7 @@
     class="tw-relative tw-overflow-hidden tw-flex tw-flex-col tw-grow tw-basis-0 tw-border-[color:#eef0f2] tw-border-solid tw-border-t-0"
   >
     <div
-      v-if="$isMobile.value && (selection.length > 0 || allSelected)"
+      v-if="multiselect && $isMobile.value && (selection.length > 0 || allSelected)"
       class="tw-flex tw-flex-col"
     >
       <div
@@ -15,6 +15,7 @@
             <VcCheckbox
               v-model="headerCheckbox"
               class="tw-font-normal tw-self-center tw-flex"
+              size="m"
               @click.stop
               >{{ $t("COMPONENTS.ORGANISMS.VC_TABLE.SELECT_ALL_TRUNCATED") }}</VcCheckbox
             >
@@ -149,7 +150,7 @@
               :is-selected="isSelected(item)"
               @click="$emit('itemClick', item)"
               @swipe-start="handleSwipe"
-              @select="rowCheckbox(item)"
+              @select="multiselect ? rowCheckbox(item) : undefined"
             >
               <slot
                 name="mobile-item"
@@ -203,6 +204,20 @@
           >
             <div class="vc-table__header-row tw-flex tw-flex-row">
               <div
+                v-if="editing && multiselect && items && items.length"
+                class="tw-flex-1 tw-flex tw-items-center tw-justify-center tw-w-[28px] tw-max-w-[28px] tw-min-w-[28px] tw-bg-[#f9f9f9] !tw-border-0 tw-shadow-[inset_0px_1px_0px_#eaedf3,_inset_0px_-1px_0px_#eaedf3] tw-box-border tw-sticky tw-top-0 tw-select-none tw-overflow-hidden tw-z-[1]"
+              >
+                <div class="tw-flex tw-justify-center tw-items-center">
+                  <VcCheckbox
+                    v-model="headerCheckbox"
+                    @click.stop
+                  ></VcCheckbox>
+                </div>
+                <div class="tw-top-0 tw-bottom-0 tw-absolute tw-right-0 tw-flex tw-justify-end">
+                  <div class="tw-w-px tw-bg-[#e5e7eb] tw-h-full"></div>
+                </div>
+              </div>
+              <div
                 v-for="(item, index) in filteredCols"
                 :id="item.id"
                 :key="item.id"
@@ -223,7 +238,7 @@
                 @click="handleHeaderClick(item)"
               >
                 <div
-                  v-if="multiselect && index === 0"
+                  v-if="!editing && multiselect && index === 0 && items && items.length"
                   class="tw-flex tw-pl-5 tw-items-center tw-justify-center tw-w-auto tw-bg-[#f9f9f9] tw-box-border tw-select-none tw-overflow-hidden tw-z-[1] tw-shrink-0"
                 >
                   <div class="tw-flex tw-justify-center tw-items-center">
@@ -345,6 +360,19 @@
               @drop="onRowDrop"
               @mouseover="showActions(itemIndex)"
             >
+              <div
+                v-if="editing && multiselect && typeof item === 'object'"
+                class="tw-w-[28px] tw-max-w-[28px] tw-min-w-[28px] tw-relative tw-flex-1 tw-flex tw-items-center tw-justify-center"
+                @click.stop
+              >
+                <div class="tw-flex tw-justify-center tw-items-center">
+                  <VcCheckbox
+                    :model-value="isSelected(item)"
+                    @update:model-value="rowCheckbox(item)"
+                  ></VcCheckbox>
+                </div>
+                <div class="tw-w-px tw-top-0 tw-bottom-0 tw-absolute tw-right-0 tw-bg-[#e5e7eb]"></div>
+              </div>
               <div
                 v-for="cell in filteredCols"
                 :id="`${(typeof item === 'object' && 'id' in item && item.id) || itemIndex}_${cell.id}`"
@@ -617,6 +645,7 @@ const draggedColumn = ref();
 const draggedElement = ref<HTMLElement>();
 const dropPosition = ref();
 const columnsInit = ref(true);
+const isHovered = ref(false);
 
 // row reordering variables
 const draggedRow = ref<T>();
@@ -639,7 +668,7 @@ const sortField = computed(() => {
 });
 
 const hasClickListener = typeof instance?.vnode.props?.["onItemClick"] === "function";
-const isHovered = ref(false);
+
 const renderCellSlot = ({ item, cell, index }: { item: T; cell: ITableColumns; index: number }) => {
   const isSlotExist = slots[`item_${cell.id}`];
 
@@ -665,7 +694,12 @@ const renderCellSlot = ({ item, cell, index }: { item: T; cell: ITableColumns; i
     }),
   );
 
-  const checkboxVisibilityHandler = (isFirstCell && selectedRowIndex.value === index) || (isRowSelected && isFirstCell);
+  const checkboxVisibilityHandler =
+    !props.editing &&
+    props.multiselect &&
+    props.items &&
+    props.items.length &&
+    ((isFirstCell && selectedRowIndex.value === index) || (isRowSelected && isFirstCell));
 
   return h("div", { class: "" }, [
     checkboxVisibilityHandler ? checkboxComponent : undefined,

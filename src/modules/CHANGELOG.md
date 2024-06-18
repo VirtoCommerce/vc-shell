@@ -1,3 +1,13 @@
+## [1.0.246](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.245...v1.0.246) (2024-06-18)
+
+
+### Features
+
+* vm-1410 ([c7a0a0f](https://github.com/VirtoCommerce/vendor-portal/commit/c7a0a0fbc495f3025e475d25fff807f03154fe6a))
+* vm-1412 vm-1413 ([598b753](https://github.com/VirtoCommerce/vendor-portal/commit/598b7537697bfcef3d47be2a768f1c0ed0874e46))
+
+
+
 ## [1.0.245](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.244...v1.0.245) (2024-06-18)
 
 

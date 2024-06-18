@@ -61,8 +61,8 @@ function clickHandler() {
         assetsRemoveHandler: assetsHandler?.remove,
         disabled:
           props.modelValue.scope?.disabled ||
-          ((props.modelValue.item?.sellerId !== currentSeller.value.id ||
-            props.modelValue.item?.createdBy !== user.value?.userName) &&
+          (props.modelValue.item?.sellerId !== currentSeller.value.id &&
+            props.modelValue.item?.createdBy !== user.value?.userName &&
             !isAdministrator.value &&
             !isOperator.value),
       },

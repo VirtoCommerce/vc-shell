@@ -1,3 +1,17 @@
+## [1.0.240](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.239...v1.0.240) (2024-06-18)
+
+
+### Bug Fixes
+
+* **dynamic:** clear selectedIds after executing custom action ([4591f9b](https://github.com/VirtoCommerce/vc-shell/commit/4591f9b030d6277e1f77b92857679367759b49d1))
+
+
+### Features
+
+* **ui:** add delay for menu opening ([276f31d](https://github.com/VirtoCommerce/vc-shell/commit/276f31d99c7a58a3610b3b36fe2188902bd3e6e4))
+
+
+
 ## [1.0.239](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.238...v1.0.239) (2024-06-18)
 
 

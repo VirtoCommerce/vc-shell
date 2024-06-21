@@ -1,10 +1,10 @@
 import { i18n } from "..";
 import { defineRule } from "vee-validate";
-import * as AllRules from "@vee-validate/rules";
+import { all } from "@vee-validate/rules";
 
-Object.keys(AllRules).forEach((rule: string) => {
+Object.keys(all).forEach((rule: string) => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  defineRule(rule, (AllRules as Record<string, any>)[rule]);
+  defineRule(rule, (all as Record<string, any>)[rule]);
 });
 
 /**

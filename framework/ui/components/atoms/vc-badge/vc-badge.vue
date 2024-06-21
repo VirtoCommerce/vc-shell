@@ -1,5 +1,6 @@
 <template>
   <div
+    ref="badgeContainer"
     class="vc-badge"
     :class="{
       'vc-badge--small': size === 's',
@@ -9,6 +10,7 @@
     <div class="tw-flex tw-relative">
       <slot name="default"></slot>
       <div
+        ref="badge"
         class="vc-badge__badge tw-absolute tw-inline-flex tw-justify-center tw-items-center tw-text-center tw-indent-0 tw-rounded-[var(--badge-border-radius)] tw-text-[13px] tw-leading-[13px] tw-font-normal tw-bg-[color:var(--badge-background-color)] tw-text-[color:var(--badge-text-color)] tw-border tw-border-solid tw-border-[color:var(--badge-border-color)] tw-transition tw-duration-200"
         :class="{
           'tw-bg-[color:var(--badge-background-color-active)] tw-text-[color:var(--badge-text-color-active)] tw-border-[color:var(--badge-border-color-active)]':
@@ -71,27 +73,25 @@ function onClick(): void {
   --badge-text-color-active: #3b4959;
   --badge-text-color-disabled: #8296ab;
 
-  --badge-border-radius: 35px;
+  --badge-border-radius: 9999px;
 
   --badge-border-color: #a1bfd4;
   --badge-border-color-hover: #8fb3cc;
   --badge-border-color-active: #8fb3cc;
   --badge-border-color-disabled: #b2cbdc;
 
-  --badge-width-small: 15px;
-  --badge-height-small: 15px;
+  --badge-width-small: 18px;
 
-  --badge-width-medium: 25px;
-  --badge-height-medium: 25px;
+  --badge-width-medium: 18px;
 
-  --badge-padding-small: 2px 5px;
-  --badge-padding-medium: 4px 6px;
+  --badge-padding-small: 0px 4px;
+  --badge-padding-medium: 0 4px;
 
-  --badge-distance-bottom-small: calc(100% - 12px);
-  --badge-distance-left-small: calc(100% - 12px);
+  --badge-distance-top-small: -10px;
+  --badge-distance-right-small: -6px;
 
-  --badge-distance-bottom-medium: calc(100% - 20px);
-  --badge-distance-left-medium: calc(100% - 20px);
+  --badge-distance-top-medium: -10px;
+  --badge-distance-right-medium: -10px;
 }
 
 $sizes: small, medium;
@@ -100,13 +100,12 @@ $sizes: small, medium;
   .vc-badge {
     &--#{$size} {
       .vc-badge__badge {
-        width: var(--badge-width-#{$size});
-        height: var(--badge-height-#{$size});
         min-width: var(--badge-width-#{$size});
-        min-height: var(--badge-height-#{$size});
         padding: var(--badge-padding-#{$size});
-        bottom: var(--badge-distance-bottom-#{$size});
-        left: var(--badge-distance-left-#{$size});
+        top: var(--badge-distance-top-#{$size});
+        right: var(--badge-distance-right-#{$size});
+        font-size: 0.75rem;
+        line-height: 1.35;
       }
     }
   }

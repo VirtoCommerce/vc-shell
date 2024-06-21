@@ -17,7 +17,7 @@
       @click="onClick"
     >
       <VcBadge
-        :content="value"
+        :content="truncateCount"
         :size="isExpanded ? 'm' : 's'"
       >
         <div class="tw-flex tw-flex-col tw-items-center tw-justify-center">
@@ -48,6 +48,7 @@
 </template>
 
 <script lang="ts" setup>
+import { computed } from "vue";
 import { VcIcon } from "./../vc-icon";
 export interface Props {
   icon?: string;
@@ -64,6 +65,17 @@ export interface Emits {
 const props = defineProps<Props>();
 
 const emit = defineEmits<Emits>();
+
+const truncateCount = computed(() => {
+  if (
+    (typeof props.value === "string" && parseInt(props.value) > 99) ||
+    (typeof props.value === "number" && props.value > 99)
+  ) {
+    return "99+";
+  } else {
+    return props.value;
+  }
+});
 
 function onClick() {
   if (!props.disabled) {

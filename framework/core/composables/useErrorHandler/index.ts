@@ -1,4 +1,6 @@
 import { onErrorCaptured, getCurrentInstance, ref, Ref } from "vue";
+import { useAppInsights } from "vue3-application-insights";
+import { useUser } from "..";
 
 interface IUseErrorHandler {
   error: Ref<string | null>;
@@ -8,6 +10,8 @@ interface IUseErrorHandler {
 export function useErrorHandler(capture?: boolean): IUseErrorHandler {
   const error = ref<string | null>(null);
   const instance = getCurrentInstance();
+  const appInsights = useAppInsights();
+  const { user } = useUser();
 
   function reset() {
     error.value = null;
@@ -25,6 +29,15 @@ export function useErrorHandler(capture?: boolean): IUseErrorHandler {
       } else {
         error.value = err.toString();
       }
+
+      appInsights.trackException({
+        exception: err,
+        properties: {
+          userId: user.value?.id ?? "",
+          userName: user.value?.userName ?? "",
+        },
+      });
+
       console.error(err);
     }
 

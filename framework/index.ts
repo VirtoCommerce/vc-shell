@@ -11,6 +11,7 @@ import { usePermissions } from "./core/composables/usePermissions";
 import { useUser } from "./core/composables/useUser";
 import Vue3TouchEvents from "vue3-touch-events";
 import * as locales from "./locales";
+import { AppInsightsPlugin, AppInsightsPluginOptions } from "vue3-application-insights";
 
 import "normalize.css";
 import "./assets/styles/index.scss";
@@ -27,6 +28,12 @@ export default {
       };
       signalR?: {
         creator?: string;
+      };
+      applicationInsights?: {
+        instrumentationKey: string;
+        appName?: string;
+        cloudRole?: string;
+        cloudRoleInstance?: string;
       };
     },
   ): void {
@@ -100,6 +107,24 @@ export default {
 
     // Touch events
     app.use<[]>(Vue3TouchEvents);
+
+    if (args.applicationInsights?.instrumentationKey) {
+      // Application Insights
+      const aiOptions: AppInsightsPluginOptions = {
+        appInsightsConfig: {
+          config: {
+            instrumentationKey: args.applicationInsights.instrumentationKey,
+          },
+        },
+        router: args.router,
+        trackAppErrors: true,
+        appName: args.applicationInsights?.appName,
+        cloudRole: args.applicationInsights?.cloudRole,
+        cloudRoleInstance: args.applicationInsights?.cloudRoleInstance,
+      };
+
+      app.use(AppInsightsPlugin, aiOptions);
+    }
 
     // Common pages
     Object.values(sharedPages).forEach((page) => {

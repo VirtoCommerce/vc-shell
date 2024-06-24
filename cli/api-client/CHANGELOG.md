@@ -1,3 +1,12 @@
+## [1.0.244](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.243...v1.0.244) (2024-06-24)
+
+
+### Features
+
+* application insights logger ([536db4d](https://github.com/VirtoCommerce/vc-shell/commit/536db4db35c91f4fb566717d2d6c536e48aacc95))
+
+
+
 ## [1.0.243](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.242...v1.0.243) (2024-06-21)
 
 

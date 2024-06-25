@@ -1,3 +1,12 @@
+## [1.0.252](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.251...v1.0.252) (2024-06-25)
+
+
+### Bug Fixes
+
+* vm-1415 error in seller details update ([ff47300](https://github.com/VirtoCommerce/vendor-portal/commit/ff47300235ba8f2d7807a801cfb6612fe154d8a8))
+
+
+
 ## [1.0.251](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.250...v1.0.251) (2024-06-21)
 
 

@@ -258,7 +258,6 @@ export const details: DynamicDetailsSchema = {
                         max: 64,
                       },
                       property: "phones[0]",
-                      variant: "number",
                     },
                     {
                       id: "email",

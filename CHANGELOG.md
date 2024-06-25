@@ -1,3 +1,12 @@
+## [1.0.253](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.252...v1.0.253) (2024-06-25)
+
+
+### Bug Fixes
+
+* vm-1420 save seller without commission ([47a7c7f](https://github.com/VirtoCommerce/vendor-portal/commit/47a7c7f12752de11163ed43c0ee61953bc76bd7c))
+
+
+
 ## [1.0.252](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.251...v1.0.252) (2024-06-25)
 
 

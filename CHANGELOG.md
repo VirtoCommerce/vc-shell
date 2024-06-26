@@ -1,3 +1,12 @@
+## [1.0.254](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.253...v1.0.254) (2024-06-26)
+
+
+### Features
+
+* vm-1420 non-reqired commission in seller update ([b8b3596](https://github.com/VirtoCommerce/vendor-portal/commit/b8b3596b59df7194f7b33db192b7dbd397ca804a))
+
+
+
 ## [1.0.253](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.252...v1.0.253) (2024-06-25)
 
 

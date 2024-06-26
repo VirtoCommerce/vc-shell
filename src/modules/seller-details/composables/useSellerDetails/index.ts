@@ -18,11 +18,8 @@ import {
   SellerDetails,
   UpdateSellerCommand,
   VcmpSellerSecurityClient,
-  VcmpFeeClient,
   Image,
   IImage,
-  SearchCommissionFeesQuery,
-  TypeCommissionFee,
 } from "@vcmp-vendor-portal/api/marketplacevendor";
 import * as _ from "lodash-es";
 import { useRoute } from "vue-router";
@@ -64,7 +61,6 @@ interface ILocation {
 }
 
 const { getApiClient } = useApiClient(VcmpSellerSecurityClient);
-const { getApiClient: getFeeApiClient } = useApiClient(VcmpFeeClient);
 
 export const useSellerDetails = (args?: DetailsComposableArgs): UseDetails<ISeller, SellerDetailsScope> => {
   const { t } = i18n.global;
@@ -77,17 +73,6 @@ export const useSellerDetails = (args?: DetailsComposableArgs): UseDetails<ISell
     },
     saveChanges: async (seller) => {
       const sellerId = await GetSellerId();
-      const defaultFeeId =
-        (
-          await (
-            await getFeeApiClient()
-          ).searchFee(
-            new SearchCommissionFeesQuery({
-              type: TypeCommissionFee.Static,
-              isDefault: true,
-            }),
-          )
-        ).results?.find(() => true)?.id ?? "";
 
       return (await getApiClient()).updateSeller(
         new UpdateSellerCommand({
@@ -96,7 +81,7 @@ export const useSellerDetails = (args?: DetailsComposableArgs): UseDetails<ISell
             ...(seller as ISellerDetails),
             addresses: seller.addresses!.map((address) => new CustomerAddress(address)),
           }),
-          commissionFeeId: seller.commissionFee?.id ?? defaultFeeId,
+          commissionFeeId: seller.commissionFee?.id ?? "",
         }),
       );
     },

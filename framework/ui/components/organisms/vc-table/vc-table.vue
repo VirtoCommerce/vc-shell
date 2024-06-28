@@ -645,7 +645,7 @@ const draggedColumn = ref();
 const draggedElement = ref<HTMLElement>();
 const dropPosition = ref();
 const columnsInit = ref(true);
-const isHovered = ref(false);
+const isHovered = ref(undefined) as Ref<{ item: T; state: boolean } | undefined>;
 
 // row reordering variables
 const draggedRow = ref<T>();
@@ -686,8 +686,8 @@ const renderCellSlot = ({ item, cell, index }: { item: T; cell: ITableColumns; i
       size: "m",
       modelValue: selection.value.includes(item),
       onClick: (e: Event) => e.stopPropagation(),
-      onMouseover: () => (isHovered.value = true),
-      onMouseout: () => (isHovered.value = false),
+      onMouseover: () => (isHovered.value = { state: true, item: item }),
+      onMouseout: () => (isHovered.value = { state: false, item: item }),
       "onUpdate:modelValue": () => {
         rowCheckbox(item);
       },
@@ -705,7 +705,13 @@ const renderCellSlot = ({ item, cell, index }: { item: T; cell: ITableColumns; i
     checkboxVisibilityHandler ? checkboxComponent : undefined,
     h(
       "div",
-      { class: checkboxVisibilityHandler ? (isHovered.value ? "tw-opacity-5" : "tw-opacity-15") : "" },
+      {
+        class: checkboxVisibilityHandler
+          ? isHovered.value?.item === item && isHovered.value.state
+            ? "tw-opacity-5"
+            : "tw-opacity-15"
+          : "",
+      },
       !isSlotExist
         ? h(VcTableCell, {
             cell,

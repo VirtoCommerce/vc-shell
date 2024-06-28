@@ -1,3 +1,12 @@
+## [1.0.246](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.245...v1.0.246) (2024-06-28)
+
+
+### Features
+
+* add useAppInsights composable for application insights pageview logging ([7c030d6](https://github.com/VirtoCommerce/vc-shell/commit/7c030d6947529a93f0476adc9d59b94336c3580b))
+
+
+
 ## [1.0.245](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.244...v1.0.245) (2024-06-28)
 
 

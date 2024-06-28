@@ -127,6 +127,22 @@ export const details: DynamicDetailsSchema = {
           },
         },
         {
+          id: "productGalleryCard",
+          component: "vc-card",
+          label: "PRODUCTS.PAGES.DETAILS.FIELDS.IMAGES.TITLE",
+          visibility: {
+            method: "galleryVisibility",
+          },
+          fields: [
+            {
+              id: "productGallery",
+              component: "vc-gallery",
+              property: "images",
+              multiple: true,
+            },
+          ],
+        },
+        {
           id: "propertiesCard",
           component: "vc-card",
           label: "PRODUCTS.PAGES.DETAILS.FIELDS.TITLE",
@@ -168,22 +184,6 @@ export const details: DynamicDetailsSchema = {
               component: "vc-dynamic-properties",
               property: "properties",
               exclude: ["Category", "Variation"],
-            },
-          ],
-        },
-        {
-          id: "productGalleryCard",
-          component: "vc-card",
-          label: "PRODUCTS.PAGES.DETAILS.FIELDS.IMAGES.TITLE",
-          visibility: {
-            method: "galleryVisibility",
-          },
-          fields: [
-            {
-              id: "productGallery",
-              component: "vc-gallery",
-              property: "images",
-              multiple: true,
             },
           ],
         },

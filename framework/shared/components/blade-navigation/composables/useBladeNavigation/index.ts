@@ -1,16 +1,4 @@
-import {
-  computed,
-  getCurrentInstance,
-  inject,
-  warn,
-  Component,
-  isVNode,
-  h,
-  shallowRef,
-  ComputedRef,
-  watch,
-  reactive,
-} from "vue";
+import { computed, getCurrentInstance, inject, warn, Component, isVNode, h, shallowRef, ComputedRef, watch } from "vue";
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createSharedComposable, reactifyObject, reactiveComputed, toValue, watchDebounced } from "@vueuse/core";
 import * as _ from "lodash-es";
@@ -35,7 +23,7 @@ import {
   ExtractedBladeOptions,
 } from "../../types";
 import { navigationViewLocation } from "../../injectionKeys";
-import { usePermissions } from "../../../../../core/composables";
+import { useAppInsights, usePermissions } from "../../../../../core/composables";
 import { notification } from "./../../../notifications";
 import "core-js/actual/array/find-last";
 import "core-js/actual/array/find-last-index";
@@ -135,6 +123,7 @@ const utils = (router: Router) => {
 
 const useBladeNavigationSingleton = createSharedComposable(() => {
   const route = useRoute();
+  const { setupPageTracking } = useAppInsights();
 
   const instance: BladeComponentInternalInstance = getCurrentInstance() as BladeComponentInternalInstance;
   const navigationInstance =
@@ -194,7 +183,7 @@ const useBladeNavigationSingleton = createSharedComposable(() => {
       if (workspace?.type?.url) {
         const url = constructUrl(workspace, lastBlade);
         if (url) {
-          updateRouterHistory(url);
+          updateRouterHistory(url, lastBlade?.type.name);
         }
       }
     },
@@ -220,14 +209,19 @@ const useBladeNavigationSingleton = createSharedComposable(() => {
     }
   }
 
-  function updateRouterHistory(url: string) {
+  function updateRouterHistory(url: string, name?: string) {
     const params = getURLQuery().params;
 
-    router.options.history.replace(
+    const fullUrl =
       (mainRouteBaseParamURL.value && !url.startsWith(mainRouteBaseParamURL.value) ? mainRouteBaseParamURL.value : "") +
-        url +
-        (params ? "?" + params : ""),
-    );
+      url +
+      (params ? "?" + params : "");
+
+    router.options.history.replace(fullUrl);
+
+    if (name) {
+      setupPageTracking.afterEach({ name: name, fullPath: fullUrl });
+    }
   }
 
   async function closeBlade(index: number) {
@@ -273,6 +267,7 @@ const useBladeNavigationSingleton = createSharedComposable(() => {
     router,
     route,
     closeBlade,
+    setupPageTracking,
   };
 });
 
@@ -283,7 +278,7 @@ export function useBladeNavigation(): IUseBladeNavigation {
 
   const instance: BladeComponentInternalInstance = getCurrentInstance() as BladeComponentInternalInstance;
 
-  const { router, route, navigationInstance, closeBlade } = useBladeNavigationSingleton();
+  const { router, route, navigationInstance, closeBlade, setupPageTracking } = useBladeNavigationSingleton();
   const { parseUrl, getURLQuery, routes: routerRoutes } = utils(router);
   const mainRoute = routerRoutes.find((r) => r.meta?.root)!;
 
@@ -379,6 +374,7 @@ export function useBladeNavigation(): IUseBladeNavigation {
           if (replaceCurrentBlade) {
             navigationInstance.blades.value[currentBladeIdx].props.navigation.isVisible = false;
           }
+          setupPageTracking.beforeEach({ name: bladeNode.type.name });
           navigationInstance.blades.value.push(bladeNode);
         } else {
           notification.error(i18n.global.t("PERMISSION_MESSAGES.ACCESS_RESTRICTED"), { timeout: 3000 });

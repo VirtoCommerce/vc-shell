@@ -12,3 +12,4 @@ export { useMenuService } from "./useMenuService";
 export { useBeforeUnload } from "./useBeforeUnload";
 export { useLanguages } from "./useLanguages";
 export { useBreadcrumbs } from "./useBreadcrumbs";
+export { useAppInsights } from "./useAppInsights";

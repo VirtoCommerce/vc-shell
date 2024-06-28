@@ -15,6 +15,7 @@ import { AppInsightsPlugin, AppInsightsPluginOptions } from "vue3-application-in
 
 import "normalize.css";
 import "./assets/styles/index.scss";
+import { useAppInsights } from "./core/composables";
 
 export default {
   install(
@@ -116,7 +117,7 @@ export default {
             instrumentationKey: args.applicationInsights.instrumentationKey,
           },
         },
-        router: args.router,
+        // router: args.router,
         trackAppErrors: true,
         appName: args.applicationInsights?.appName,
         cloudRole: args.applicationInsights?.cloudRole,
@@ -124,6 +125,22 @@ export default {
       };
 
       app.use(AppInsightsPlugin, aiOptions);
+      app.provide("appInsightsOptions", aiOptions);
+
+      app.runWithContext(() => {
+        const { setupPageTracking } = useAppInsights();
+
+        /**
+         * Add Application Insights page tracking.
+         */
+        args.router.beforeEach((to) => {
+          setupPageTracking.beforeEach({ name: to.name as string });
+        });
+
+        args.router.afterEach((to) => {
+          setupPageTracking.afterEach({ name: to.name as string, fullPath: to.fullPath });
+        });
+      });
     }
 
     // Common pages

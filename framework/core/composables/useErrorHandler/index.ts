@@ -30,13 +30,15 @@ export function useErrorHandler(capture?: boolean): IUseErrorHandler {
         error.value = err.toString();
       }
 
-      appInsights.trackException({
-        exception: err,
-        properties: {
-          userId: user.value?.id ?? "",
-          userName: user.value?.userName ?? "",
-        },
-      });
+      if (appInsights) {
+        appInsights.trackException({
+          exception: err,
+          properties: {
+            userId: user.value?.id ?? "",
+            userName: user.value?.userName ?? "",
+          },
+        });
+      }
 
       console.error(err);
     }

@@ -1,5 +1,6 @@
 import { Ref, ref } from "vue";
 import { MarketplaceSettings, VcmpCommonClient } from "@vcmp-vendor-portal/api/marketplacevendor";
+import { useApiClient, useAsync } from "@vc-shell/framework";
 
 export interface ICurrency {
   title: string;
@@ -29,37 +30,31 @@ export default (): IUseSettings => {
   const productTypes = ref<string[]>([]);
   const settingUseDefaultOffer = ref<boolean>(true);
 
-  async function loadSettings() {
-    const client = new VcmpCommonClient();
+  const { getApiClient } = useApiClient(VcmpCommonClient);
 
-    try {
-      settings.value = await client.getVcmpSettings();
+  const { loading, action: loadSettings } = useAsync(async () => {
+    const settings = await (await getApiClient()).getVcmpSettings();
+    defaultCurrency.value = {
+      title: settings.defaultCurrency ?? "USD",
+      value: settings.defaultCurrency ?? "USD",
+    };
+    currencies.value =
+      settings.currencies?.map((currency) => ({
+        title: currency,
+        value: currency,
+      })) ?? [];
 
-      defaultCurrency.value = {
-        title: settings.value.defaultCurrency ?? "USD",
-        value: settings.value.defaultCurrency ?? "USD",
-      };
-      currencies.value =
-        settings.value.currencies?.map((currency) => ({
-          title: currency,
-          value: currency,
-        })) ?? [];
+    defaultLanguage.value = settings.defaultLanguage!;
+    languages.value = settings.languages ?? [];
 
-      defaultLanguage.value = settings.value.defaultLanguage!;
-      languages.value = settings.value.languages ?? [];
-
-      if (!currentLanguage.value) {
-        currentLanguage.value = defaultLanguage.value;
-      }
-
-      defaultProductType.value = settings.value.defaultProductType!;
-      productTypes.value = settings.value.productTypes ?? [];
-      settingUseDefaultOffer.value = settings.value.useDefaultOffer!;
-    } catch (e) {
-      console.error(e);
-      throw e;
+    if (!currentLanguage.value) {
+      currentLanguage.value = defaultLanguage.value;
     }
-  }
+
+    defaultProductType.value = settings.defaultProductType!;
+    productTypes.value = settings.productTypes ?? [];
+    settingUseDefaultOffer.value = settings.useDefaultOffer!;
+  });
 
   return {
     defaultCurrency,

@@ -6,5 +6,5 @@
     "rootDir": "src",
     "types": ["vite/client"]
   },
-  "include": ["./src/**/*.ts", "./src/**/*.vue", "./src/**/*.json"]
+  "include": ["./src/**/*.ts", "./src/**/*.vue", "./src/**/*.json", "./src/modules/products/__tests__/products.spec.ts"]
 }

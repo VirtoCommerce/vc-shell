@@ -11,7 +11,7 @@
     "type-check": "vue-tsc --noEmit",
     "lint-staged": "lint-staged",
     "lint": "eslint --fix --cache '**/*.{ts,vue}'",
-    "generate-api-client": "cross-env api-client-generator --APP_PLATFORM_MODULES='[]' --APP_API_CLIENT_DIRECTORY=./src/api_client/",
+    "generate-api-client": "cross-env api-client-generator --APP_PLATFORM_MODULES='[]' --APP_API_CLIENT_DIRECTORY=./src/api_client/ --APP_API_CLIENT_DIRECTORY=./src/api_client/ --APP_OUT_DIR=dist --APP_PACKAGE_NAME=api --APP_PACKAGE_VERSION=$npm_package_version",
     "release": "tsx scripts/release.ts --dry"
   },
   "devDependencies": {

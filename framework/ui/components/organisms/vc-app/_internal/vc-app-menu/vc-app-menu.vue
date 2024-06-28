@@ -82,7 +82,6 @@
             :title="item.title as string"
             :children="item.children"
             :expand="$isDesktop.value ? isExpanded || isExpandedOver : true"
-            :is-expanding="isExpandingOver"
             @click="
               (event) => {
                 $emit('item:click', event ? event : item);
@@ -129,7 +128,6 @@ defineEmits<Emits>();
 const { menuItems } = useMenuService();
 const isExpanded = useLocalStorage("VC_APP_MENU_EXPANDED", true);
 const isExpandedOver = ref(false);
-const isExpandingOver = ref(false);
 
 const isMobileVisible = ref(false);
 
@@ -157,12 +155,6 @@ function expandOverHandler(state: boolean) {
   } else {
     isExpandedOver.value = state;
   }
-
-  // Set isExpandingOver to true during expansion animation
-  isExpandingOver.value = true;
-  setTimeout(() => {
-    isExpandingOver.value = false;
-  }, 100);
 }
 
 defineExpose({

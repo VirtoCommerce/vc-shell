@@ -109,7 +109,6 @@ export interface Props {
   title?: string;
   url?: string;
   expand?: boolean;
-  isExpanding?: boolean;
 }
 
 export interface Emits {

@@ -144,6 +144,7 @@ function nodeBuilder<
     "onUpdate:modelValue": onUpdateModelValue,
     tooltip: computed(() => (typeof tooltip !== "undefined" ? t(tooltip) : undefined)),
     multilanguage,
+    "data-test-id": controlSchema.id,
     classNames:
       "horizontalSeparator" in controlSchema && controlSchema.horizontalSeparator
         ? "tw-border-b tw-border-solid tw-border-b-[#e5e5e5] tw-mb-[5px] tw-pb-[21px]"

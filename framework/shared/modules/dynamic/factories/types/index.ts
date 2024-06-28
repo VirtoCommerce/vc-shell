@@ -151,6 +151,8 @@ export type ListBladeExposed<Scope extends ListBaseBladeScope> = BaseBladeExpose
 
 export type DetailsBladeExposed<Scope extends DetailsBaseBladeScope> = BaseBladeExposed & {
   readonly settings: SettingsDetails;
+  readonly item: Record<string, any>;
+  readonly validationState: IValidationState<Record<string, any>>;
 } & UnwrapNestedRefs<Scope>;
 
 export type DetailsComposableArgs<

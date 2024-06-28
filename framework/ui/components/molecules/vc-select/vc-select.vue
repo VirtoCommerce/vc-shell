@@ -62,6 +62,7 @@
                         {{ prefix }}
                       </div>
                       <div
+                        data-test-id="dropdown-toggle"
                         class="tw-appearance-none tw-border-none tw-outline-none tw-min-h-[var(--select-height)] tw-flex tw-items-center tw-w-full tw-box-border tw-cursor-pointer invalid:tw-text-[color:var(--select-placeholder-color)] tw-truncate"
                         @click.stop="toggleDropdown"
                       >
@@ -223,6 +224,7 @@
           v-if="isOpened"
           ref="dropdownRef"
           v-on-click-outside="[toggleDropdown, { ignore: [dropdownToggleRef] }]"
+          data-test-id="dropdown"
           class="tw-flex tw-flex-col tw-box-border tw-max-h-[300px] tw-h-auto tw-z-[101] tw-overflow-hidden tw-absolute tw-bg-[color:var(--select-background-color)] tw-border tw-border-solid tw-border-[color:var(--select-border-color)] tw-border-t-[color:var(--select-background-color)] tw-rounded-b-[var(--select-border-radius)] tw-p-2"
           :style="dropdownStyle"
         >
@@ -250,6 +252,7 @@
               v-else
               :key="i"
               class="tw-flex tw-items-center tw-min-h-[36px] tw-my-1 tw-box-border tw-px-2 tw-rounded-[3px] tw-cursor-pointer hover:tw-bg-[#eff7fc]"
+              data-test-id="option"
               :class="{ 'tw-bg-[#eff7fc]': item.selected }"
               @click="item.toggleOption(item.opt)"
             >

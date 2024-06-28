@@ -11,6 +11,7 @@
       >
         <VcBladeToolbarButton
           v-if="$hasAccess(item.permissions) && (item.isVisible === undefined || item.isVisible)"
+          :id="item.id"
           :is-expanded="isExpanded"
           :icon="item.icon"
           :title="unref(item.title)"

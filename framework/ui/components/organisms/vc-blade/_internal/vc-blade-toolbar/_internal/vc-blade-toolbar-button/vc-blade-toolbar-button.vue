@@ -6,11 +6,13 @@
       'tw-border-l tw-border-solid tw-border-[color:#eef0f2]': separator === 'left',
     }"
     :title="title"
+    :data-test-id="id ?? 'vc-blade-toolbar-button'"
     @click="onClick"
   >
     <div ref="dropButtonRef">
       <div
         ref="bladeDropToggle"
+        type="button"
         class="vc-blade-toolbar-button__wrap"
       >
         <VcIcon
@@ -64,6 +66,7 @@ export interface Props {
   dropdownItems?: IBladeDropdownItem[];
   clickHandler?(): void;
   separator?: "left" | "right" | "both";
+  id?: string;
 }
 
 export interface Emits {

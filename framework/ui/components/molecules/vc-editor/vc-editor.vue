@@ -175,6 +175,10 @@ function onTextChange() {
     }
   }
 }
+
+defineExpose({
+  quillRef,
+});
 </script>
 
 <style lang="scss">

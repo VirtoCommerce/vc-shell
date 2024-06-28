@@ -3,6 +3,7 @@ import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 import { PushNotification } from "../../api/platform";
 import { useNotifications } from "./../../composables/useNotifications";
 import { useUser } from "../../composables/useUser";
+import { useCypressSignalRMock } from "cypress-signalr-mock";
 
 const { addNotification } = useNotifications();
 
@@ -15,11 +16,13 @@ export const signalR = {
   ) {
     const { isAuthenticated } = useUser();
     let reconnect = false;
-    const connection = new HubConnectionBuilder()
-      .withUrl("/pushNotificationHub")
-      .withAutomaticReconnect()
-      .configureLogging(LogLevel.Information)
-      .build();
+    const connection =
+      useCypressSignalRMock("pushNotificationHub", { enableForVitest: true }) ??
+      new HubConnectionBuilder()
+        .withUrl("/pushNotificationHub")
+        .withAutomaticReconnect()
+        .configureLogging(LogLevel.Information)
+        .build();
 
     const start = () => {
       connection

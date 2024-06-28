@@ -32,7 +32,10 @@
         class="item-details__inner"
       >
         <div class="item-details__content">
-          <VcForm class="tw-grow tw-p-4">
+          <VcForm
+            ref="formItem"
+            class="tw-grow tw-p-4"
+          >
             <SchemaRender
               v-model="item"
               :ui-schema="form.children"
@@ -92,6 +95,7 @@ import {
   usePopup,
   useBladeNavigation,
   CoreBladeExposed,
+  DetailsBladeExposed,
 } from "../../../index";
 import SchemaRender from "../components/SchemaRender";
 import { VcSelect } from "../../../../ui/components";
@@ -369,6 +373,8 @@ defineExpose({
   updateActiveWidgetCount,
   ...toRefs(toValue(unreffedScope) ?? {}),
   settings: toValue(settings),
+  item,
+  validationState,
 });
 </script>
 

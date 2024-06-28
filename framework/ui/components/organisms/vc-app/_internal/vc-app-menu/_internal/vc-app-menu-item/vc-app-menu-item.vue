@@ -12,6 +12,7 @@
           :title="title ?? ''"
           :url="url"
           :expand="expand"
+          :is-expanding="isExpanding"
           @on-click="$emit('click')"
         />
       </router-link>
@@ -24,6 +25,7 @@
         :icon="icon ?? ''"
         :title="title ?? ''"
         :expand="expand"
+        :is-expanding="isExpanding"
         @on-click="$emit('click', $event)"
       />
     </template>
@@ -42,6 +44,7 @@ export interface Props {
   title?: string;
   children?: MenuItem[];
   expand?: boolean;
+  isExpanding?: boolean;
 }
 
 export interface Emits {

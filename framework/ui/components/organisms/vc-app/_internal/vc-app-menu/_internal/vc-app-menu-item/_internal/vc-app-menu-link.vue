@@ -1,10 +1,6 @@
 <template>
   <div
-    class="vc-app-menu-link tw-cursor-pointer tw-group"
-    :class="{
-      'tw-px-[19px]': ($isDesktop.value && expand) || $isMobile.value,
-      'tw-pl-[19px] tw-pr-[4px]': $isDesktop.value && !expand,
-    }"
+    class="vc-app-menu-link tw-cursor-pointer tw-group tw-px-[19px]"
     @click="onMenuItemClick"
   >
     <div
@@ -14,6 +10,7 @@
           'vc-app-menu-item_active': isMenuItemActive,
           'vc-app-menu-item_no-hover': !children?.length,
           'vc-app-menu-item_child-opened': expand && isOpened,
+          'vc-app-menu-item_collapsed': !expand,
         },
       ]"
     >
@@ -59,11 +56,8 @@
         custom
       >
         <div
-          :class="{
-            'tw-px-[19px] ': ($isDesktop.value && expand) || $isMobile.value,
-            'tw-pl-[19px] tw-pr-[4px] ': $isDesktop.value && !expand,
-          }"
-          class="vc-app-menu-item__child-item-link tw-cursor-pointer tw-z-[2]"
+          class="vc-app-menu-item__child-item-link tw-cursor-pointer tw-z-[2] tw-px-[19px]"
+          :data-test-id="nested.routeId"
           @click="$emit('onClick', nested)"
         >
           <div
@@ -71,9 +65,10 @@
             :class="[
               {
                 'vc-app-menu-item__child-item_active': isActive(nested.url ?? ''),
-                'tw-pl-[21px]': expand,
+                'vc-app-menu-item__child-item_collapsed': !expand,
+                'tw-pl-[21px] tw-w-full  ': expand,
               },
-              'vc-app-menu-item__child-item tw-min-w-0 tw-flex tw-w-full tw-h-[var(--app-menu-item-height)] tw-items-center',
+              'vc-app-menu-item__child-item tw-min-w-0 tw-flex  tw-h-[var(--app-menu-item-height)] tw-items-center [transition:padding_150ms_cubic-bezier(0.2,0,0,1)_0s] ',
             ]"
           >
             <div
@@ -114,6 +109,7 @@ export interface Props {
   title?: string;
   url?: string;
   expand?: boolean;
+  isExpanding?: boolean;
 }
 
 export interface Emits {
@@ -188,7 +184,7 @@ const isActive = (url: string) => {
   --app-menu-item-active-icon: #2e3d4e;
 }
 
-.vc-app-menu-link:hover .vc-app-menu-item {
+.vc-app-menu-link:hover .vc-app-menu-item:not(.vc-app-menu-item_active) {
   @apply tw-bg-[color:var(--app-menu-item-background-color-hover)] tw-bg-opacity-50
     tw-rounded-[var(--app-menu-item-hover-radius)];
 
@@ -209,7 +205,7 @@ const isActive = (url: string) => {
   }
 }
 
-.vc-app-menu-item__child-item-link:hover .vc-app-menu-item__child-item {
+.vc-app-menu-item__child-item-link:hover .vc-app-menu-item__child-item:not(.vc-app-menu-item__child-item_active) {
   @apply tw-bg-[color:var(--app-menu-item-background-color-hover)] tw-bg-opacity-50
     tw-rounded-[var(--app-menu-item-hover-radius)];
 
@@ -222,6 +218,10 @@ const isActive = (url: string) => {
   @apply tw-flex tw-items-center tw-w-full tw-h-[var(--app-menu-item-height)]
   tw-border-none
   tw-flex-nowrap tw-box-border tw-cursor-pointer tw-relative tw-uppercase tw-select-none tw-py-[4px] tw-px-[8px];
+
+  &_collapsed {
+    @apply tw-w-[40px];
+  }
 
   &_active {
     @apply tw-bg-[color:var(--app-menu-item-background-color-active)]
@@ -300,6 +300,10 @@ const isActive = (url: string) => {
       .vc-app-menu-item__icon {
         @apply tw-text-[color:var(--app-menu-item-icon-color-active)];
       }
+    }
+
+    &_collapsed {
+      @apply tw-w-[40px];
     }
   }
 

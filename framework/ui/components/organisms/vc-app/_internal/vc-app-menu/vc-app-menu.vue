@@ -1,7 +1,7 @@
 <template>
   <div
     v-if="isMenuVisible"
-    class="vc-app-menu tw-relative tw-w-[var(--app-menu-width)] [transition:width_300ms_cubic-bezier(0.2,0,0,1)_0s] tw-pt-[22px]"
+    class="vc-app-menu tw-relative tw-w-[var(--app-menu-width)] [transition:width_300ms_cubic-bezier(0.2,0,0,1)_0s] tw-pt-[22px] -tw-mr-[8px]"
     :class="{
       'vc-app-menu_mobile tw-hidden !tw-fixed !tw-left-0 !tw-top-0 !tw-w-full !tw-bottom-0 !tw-z-[9999]':
         $isMobile.value,
@@ -19,13 +19,11 @@
       @click="isMobileVisible = false"
     ></div>
     <div
-      class="!tw-absolute vc-app-menu__inner tw-flex tw-flex-col tw-h-full [transition:width_300ms_cubic-bezier(0.2,0,0,1)_0s] tw-z-[1001] tw-top-0 tw-bottom-0 tw-bg-[color:var(--app-background)]"
+      class="!tw-absolute vc-app-menu__inner tw-flex tw-flex-col tw-h-full [transition:width_150ms_cubic-bezier(0.2,0,0,1)_0s] tw-z-[1001] tw-top-0 tw-bottom-0 tw-bg-[color:var(--app-background)]"
       :class="{
         'tw-left-0 tw-pt-[22px]': $isDesktop.value,
         '!tw-w-[var(--app-menu-width-collapse)]': $isDesktop.value && !isExpanded && !isExpandedOver,
         'tw-w-[var(--app-menu-width)]': $isDesktop.value && (isExpanded || isExpandedOver),
-        'tw-shadow-none': $isDesktop.value && isExpanded,
-        'tw-shadow-[6px_0_5px_-2px_#3654751A]': $isDesktop.value && isExpandedOver,
       }"
     >
       <!-- Show menu close handler on mobile devices -->
@@ -62,14 +60,20 @@
         class="tw-grow tw-basis-0"
       >
         <div class="tw-gap-[5px] tw-flex tw-flex-col tw-h-full">
-          <slot
-            v-if="!$isDesktop.value"
-            name="mobile"
-          ></slot>
+          <div
+            v-if="$slots['mobile']"
+            class="tw-px-[19px]"
+          >
+            <slot
+              v-if="!$isDesktop.value"
+              name="mobile"
+            ></slot>
+          </div>
 
           <VcAppMenuItem
             v-for="item in menuItems"
             :key="item?.id"
+            :data-test-id="item?.routeId"
             :is-visible="
               $hasAccess(item.permissions!) && (item.children?.some((child) => $hasAccess(child.permissions!)) ?? true)
             "
@@ -78,6 +82,7 @@
             :title="item.title as string"
             :children="item.children"
             :expand="$isDesktop.value ? isExpanded || isExpandedOver : true"
+            :is-expanding="isExpandingOver"
             @click="
               (event) => {
                 $emit('item:click', event ? event : item);
@@ -124,6 +129,7 @@ defineEmits<Emits>();
 const { menuItems } = useMenuService();
 const isExpanded = useLocalStorage("VC_APP_MENU_EXPANDED", true);
 const isExpandedOver = ref(false);
+const isExpandingOver = ref(false);
 
 const isMobileVisible = ref(false);
 
@@ -147,10 +153,16 @@ function expandOverHandler(state: boolean) {
       if (isExpandedOver.value !== state) {
         isExpandedOver.value = state;
       }
-    }, 200);
+    }, 50);
   } else {
     isExpandedOver.value = state;
   }
+
+  // Set isExpandingOver to true during expansion animation
+  isExpandingOver.value = true;
+  setTimeout(() => {
+    isExpandingOver.value = false;
+  }, 100);
 }
 
 defineExpose({
@@ -161,7 +173,7 @@ defineExpose({
 <style lang="scss">
 :root {
   --app-menu-width: 230px;
-  --app-menu-width-collapse: 63px;
+  --app-menu-width-collapse: 70px;
   --app-menu-background-color: #ffffff;
   --app-menu-version-color: #838d9a;
 

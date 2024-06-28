@@ -1,5 +1,6 @@
 import type { Meta, StoryFn } from "@storybook/vue3";
 import { VcEditor } from "./";
+import { default as Delta } from "@vueup/vue-quill/node_modules/quill-delta";
 
 export default {
   title: "molecules/VcEditor",

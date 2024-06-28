@@ -4,10 +4,14 @@
     "baseUrl": ".",
     "declarationDir": "dist/types",
     "outDir": "dist",
-    "rootDir": "./",
+    "rootDir": "./"
   },
-  "files": ["package.json"],
+  "files": [
+    "virtocommerce.marketplacevendor.ts",
+    "virtocommerce.orders.ts",
+    "virtocommerce.catalog.ts"
+  ],
   "include": [
-    "*.ts",
+    "*.ts"
   ]
 }

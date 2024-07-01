@@ -3052,6 +3052,199 @@ export class VcmpSellerOrdersClient extends AuthApiBase {
     }
     return Promise.resolve<CustomerOrder>(null as any);
   }
+
+  /**
+   * @return Success
+   */
+  getNewShipment(orderId: string): Promise<CustomerOrder> {
+    let url_ = this.baseUrl + "/api/vcmp/orders/{orderId}/shipments/getnew";
+    if (orderId === undefined || orderId === null) throw new Error("The parameter 'orderId' must be defined.");
+    url_ = url_.replace("{orderId}", encodeURIComponent("" + orderId));
+    url_ = url_.replace(/[?&]$/, "");
+
+    let options_: RequestInit = {
+      method: "GET",
+      headers: {
+        Accept: "text/plain",
+      },
+    };
+
+    return this.transformOptions(options_)
+      .then((transformedOptions_) => {
+        return this.http.fetch(url_, transformedOptions_);
+      })
+      .then((_response: Response) => {
+        return this.processGetNewShipment(_response);
+      });
+  }
+
+  protected processGetNewShipment(response: Response): Promise<CustomerOrder> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+    }
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = CustomerOrder.fromJS(resultData200);
+        return result200;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
+    }
+    return Promise.resolve<CustomerOrder>(null as any);
+  }
+
+  /**
+   * @param body (optional)
+   * @return Success
+   */
+  searchShipments(body?: SearchShipmentsQuery | undefined): Promise<CustomerOrder> {
+    let url_ = this.baseUrl + "/api/vcmp/orders/shipments/search";
+    url_ = url_.replace(/[?&]$/, "");
+
+    const content_ = JSON.stringify(body);
+
+    let options_: RequestInit = {
+      body: content_,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json-patch+json",
+        Accept: "text/plain",
+      },
+    };
+
+    return this.transformOptions(options_)
+      .then((transformedOptions_) => {
+        return this.http.fetch(url_, transformedOptions_);
+      })
+      .then((_response: Response) => {
+        return this.processSearchShipments(_response);
+      });
+  }
+
+  protected processSearchShipments(response: Response): Promise<CustomerOrder> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+    }
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = CustomerOrder.fromJS(resultData200);
+        return result200;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
+    }
+    return Promise.resolve<CustomerOrder>(null as any);
+  }
+
+  /**
+   * @param body (optional)
+   * @return Success
+   */
+  updateOrderShipment(body?: UpdateOrderShipmentCommand | undefined): Promise<CustomerOrder> {
+    let url_ = this.baseUrl + "/api/vcmp/orders/shipments";
+    url_ = url_.replace(/[?&]$/, "");
+
+    const content_ = JSON.stringify(body);
+
+    let options_: RequestInit = {
+      body: content_,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json-patch+json",
+        Accept: "text/plain",
+      },
+    };
+
+    return this.transformOptions(options_)
+      .then((transformedOptions_) => {
+        return this.http.fetch(url_, transformedOptions_);
+      })
+      .then((_response: Response) => {
+        return this.processUpdateOrderShipment(_response);
+      });
+  }
+
+  protected processUpdateOrderShipment(response: Response): Promise<CustomerOrder> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+    }
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = CustomerOrder.fromJS(resultData200);
+        return result200;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
+    }
+    return Promise.resolve<CustomerOrder>(null as any);
+  }
+
+  /**
+   * @param body (optional)
+   * @return Success
+   */
+  deleteOrderShipment(body?: string | undefined): Promise<CustomerOrder> {
+    let url_ = this.baseUrl + "/api/vcmp/orders/shipments";
+    url_ = url_.replace(/[?&]$/, "");
+
+    const content_ = JSON.stringify(body);
+
+    let options_: RequestInit = {
+      body: content_,
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json-patch+json",
+        Accept: "text/plain",
+      },
+    };
+
+    return this.transformOptions(options_)
+      .then((transformedOptions_) => {
+        return this.http.fetch(url_, transformedOptions_);
+      })
+      .then((_response: Response) => {
+        return this.processDeleteOrderShipment(_response);
+      });
+  }
+
+  protected processDeleteOrderShipment(response: Response): Promise<CustomerOrder> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+    }
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = CustomerOrder.fromJS(resultData200);
+        return result200;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
+    }
+    return Promise.resolve<CustomerOrder>(null as any);
+  }
 }
 
 export class VcmpSellerRatingAndReviewsClient extends AuthApiBase {
@@ -3407,50 +3600,6 @@ export class VcmpSellerSecurityClient extends AuthApiBase {
       });
     }
     return Promise.resolve<Seller>(null as any);
-  }
-
-  /**
-   * @return Success
-   */
-  getCurrentUser(): Promise<SellerUser> {
-    let url_ = this.baseUrl + "/api/vcmp/security/seller/user";
-    url_ = url_.replace(/[?&]$/, "");
-
-    let options_: RequestInit = {
-      method: "GET",
-      headers: {
-        Accept: "text/plain",
-      },
-    };
-
-    return this.transformOptions(options_)
-      .then((transformedOptions_) => {
-        return this.http.fetch(url_, transformedOptions_);
-      })
-      .then((_response: Response) => {
-        return this.processGetCurrentUser(_response);
-      });
-  }
-
-  protected processGetCurrentUser(response: Response): Promise<SellerUser> {
-    const status = response.status;
-    let _headers: any = {};
-    if (response.headers && response.headers.forEach) {
-      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
-    }
-    if (status === 200) {
-      return response.text().then((_responseText) => {
-        let result200: any = null;
-        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-        result200 = SellerUser.fromJS(resultData200);
-        return result200;
-      });
-    } else if (status !== 200 && status !== 204) {
-      return response.text().then((_responseText) => {
-        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-      });
-    }
-    return Promise.resolve<SellerUser>(null as any);
   }
 
   /**
@@ -3953,6 +4102,50 @@ export class VcmpSellerSecurityClient extends AuthApiBase {
       });
     }
     return Promise.resolve<SearchSellerUsersResult>(null as any);
+  }
+
+  /**
+   * @return Success
+   */
+  getCurrentSellerUser(): Promise<SellerUser> {
+    let url_ = this.baseUrl + "/api/vcmp/security/seller/user";
+    url_ = url_.replace(/[?&]$/, "");
+
+    let options_: RequestInit = {
+      method: "GET",
+      headers: {
+        Accept: "text/plain",
+      },
+    };
+
+    return this.transformOptions(options_)
+      .then((transformedOptions_) => {
+        return this.http.fetch(url_, transformedOptions_);
+      })
+      .then((_response: Response) => {
+        return this.processGetCurrentSellerUser(_response);
+      });
+  }
+
+  protected processGetCurrentSellerUser(response: Response): Promise<SellerUser> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+    }
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = SellerUser.fromJS(resultData200);
+        return result200;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
+    }
+    return Promise.resolve<SellerUser>(null as any);
   }
 
   /**
@@ -15489,6 +15682,195 @@ export interface ISearchSellersResult {
   results?: Seller[] | undefined;
 }
 
+export class SearchShipmentsQuery implements ISearchShipmentsQuery {
+  sellerId?: string | undefined;
+  sellerName?: string | undefined;
+  orderId?: string | undefined;
+  orderNumber?: string | undefined;
+  fulfillmentCenterId?: string | undefined;
+  shipmentMethodCode?: string | undefined;
+  shipmentMethodOption?: string | undefined;
+  ids?: string[] | undefined;
+  hasParentOperation?: boolean | undefined;
+  parentOperationId?: string | undefined;
+  employeeId?: string | undefined;
+  storeIds?: string[] | undefined;
+  status?: string | undefined;
+  statuses?: string[] | undefined;
+  number?: string | undefined;
+  numbers?: string[] | undefined;
+  startDate?: Date | undefined;
+  endDate?: Date | undefined;
+  responseGroup?: string | undefined;
+  objectType?: string | undefined;
+  objectTypes?: string[] | undefined;
+  objectIds?: string[] | undefined;
+  keyword?: string | undefined;
+  searchPhrase?: string | undefined;
+  languageCode?: string | undefined;
+  sort?: string | undefined;
+  readonly sortInfos?: SortInfo[] | undefined;
+  skip?: number;
+  take?: number;
+
+  constructor(data?: ISearchShipmentsQuery) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property)) (<any>this)[property] = (<any>data)[property];
+      }
+    }
+  }
+
+  init(_data?: any) {
+    if (_data) {
+      this.sellerId = _data["sellerId"];
+      this.sellerName = _data["sellerName"];
+      this.orderId = _data["orderId"];
+      this.orderNumber = _data["orderNumber"];
+      this.fulfillmentCenterId = _data["fulfillmentCenterId"];
+      this.shipmentMethodCode = _data["shipmentMethodCode"];
+      this.shipmentMethodOption = _data["shipmentMethodOption"];
+      if (Array.isArray(_data["ids"])) {
+        this.ids = [] as any;
+        for (let item of _data["ids"]) this.ids!.push(item);
+      }
+      this.hasParentOperation = _data["hasParentOperation"];
+      this.parentOperationId = _data["parentOperationId"];
+      this.employeeId = _data["employeeId"];
+      if (Array.isArray(_data["storeIds"])) {
+        this.storeIds = [] as any;
+        for (let item of _data["storeIds"]) this.storeIds!.push(item);
+      }
+      this.status = _data["status"];
+      if (Array.isArray(_data["statuses"])) {
+        this.statuses = [] as any;
+        for (let item of _data["statuses"]) this.statuses!.push(item);
+      }
+      this.number = _data["number"];
+      if (Array.isArray(_data["numbers"])) {
+        this.numbers = [] as any;
+        for (let item of _data["numbers"]) this.numbers!.push(item);
+      }
+      this.startDate = _data["startDate"] ? new Date(_data["startDate"].toString()) : <any>undefined;
+      this.endDate = _data["endDate"] ? new Date(_data["endDate"].toString()) : <any>undefined;
+      this.responseGroup = _data["responseGroup"];
+      this.objectType = _data["objectType"];
+      if (Array.isArray(_data["objectTypes"])) {
+        this.objectTypes = [] as any;
+        for (let item of _data["objectTypes"]) this.objectTypes!.push(item);
+      }
+      if (Array.isArray(_data["objectIds"])) {
+        this.objectIds = [] as any;
+        for (let item of _data["objectIds"]) this.objectIds!.push(item);
+      }
+      this.keyword = _data["keyword"];
+      this.searchPhrase = _data["searchPhrase"];
+      this.languageCode = _data["languageCode"];
+      this.sort = _data["sort"];
+      if (Array.isArray(_data["sortInfos"])) {
+        (<any>this).sortInfos = [] as any;
+        for (let item of _data["sortInfos"]) (<any>this).sortInfos!.push(SortInfo.fromJS(item));
+      }
+      this.skip = _data["skip"];
+      this.take = _data["take"];
+    }
+  }
+
+  static fromJS(data: any): SearchShipmentsQuery {
+    data = typeof data === "object" ? data : {};
+    let result = new SearchShipmentsQuery();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    data["sellerId"] = this.sellerId;
+    data["sellerName"] = this.sellerName;
+    data["orderId"] = this.orderId;
+    data["orderNumber"] = this.orderNumber;
+    data["fulfillmentCenterId"] = this.fulfillmentCenterId;
+    data["shipmentMethodCode"] = this.shipmentMethodCode;
+    data["shipmentMethodOption"] = this.shipmentMethodOption;
+    if (Array.isArray(this.ids)) {
+      data["ids"] = [];
+      for (let item of this.ids) data["ids"].push(item);
+    }
+    data["hasParentOperation"] = this.hasParentOperation;
+    data["parentOperationId"] = this.parentOperationId;
+    data["employeeId"] = this.employeeId;
+    if (Array.isArray(this.storeIds)) {
+      data["storeIds"] = [];
+      for (let item of this.storeIds) data["storeIds"].push(item);
+    }
+    data["status"] = this.status;
+    if (Array.isArray(this.statuses)) {
+      data["statuses"] = [];
+      for (let item of this.statuses) data["statuses"].push(item);
+    }
+    data["number"] = this.number;
+    if (Array.isArray(this.numbers)) {
+      data["numbers"] = [];
+      for (let item of this.numbers) data["numbers"].push(item);
+    }
+    data["startDate"] = this.startDate ? this.startDate.toISOString() : <any>undefined;
+    data["endDate"] = this.endDate ? this.endDate.toISOString() : <any>undefined;
+    data["responseGroup"] = this.responseGroup;
+    data["objectType"] = this.objectType;
+    if (Array.isArray(this.objectTypes)) {
+      data["objectTypes"] = [];
+      for (let item of this.objectTypes) data["objectTypes"].push(item);
+    }
+    if (Array.isArray(this.objectIds)) {
+      data["objectIds"] = [];
+      for (let item of this.objectIds) data["objectIds"].push(item);
+    }
+    data["keyword"] = this.keyword;
+    data["searchPhrase"] = this.searchPhrase;
+    data["languageCode"] = this.languageCode;
+    data["sort"] = this.sort;
+    if (Array.isArray(this.sortInfos)) {
+      data["sortInfos"] = [];
+      for (let item of this.sortInfos) data["sortInfos"].push(item.toJSON());
+    }
+    data["skip"] = this.skip;
+    data["take"] = this.take;
+    return data;
+  }
+}
+
+export interface ISearchShipmentsQuery {
+  sellerId?: string | undefined;
+  sellerName?: string | undefined;
+  orderId?: string | undefined;
+  orderNumber?: string | undefined;
+  fulfillmentCenterId?: string | undefined;
+  shipmentMethodCode?: string | undefined;
+  shipmentMethodOption?: string | undefined;
+  ids?: string[] | undefined;
+  hasParentOperation?: boolean | undefined;
+  parentOperationId?: string | undefined;
+  employeeId?: string | undefined;
+  storeIds?: string[] | undefined;
+  status?: string | undefined;
+  statuses?: string[] | undefined;
+  number?: string | undefined;
+  numbers?: string[] | undefined;
+  startDate?: Date | undefined;
+  endDate?: Date | undefined;
+  responseGroup?: string | undefined;
+  objectType?: string | undefined;
+  objectTypes?: string[] | undefined;
+  objectIds?: string[] | undefined;
+  keyword?: string | undefined;
+  searchPhrase?: string | undefined;
+  languageCode?: string | undefined;
+  sort?: string | undefined;
+  sortInfos?: SortInfo[] | undefined;
+  skip?: number;
+  take?: number;
+}
+
 export class SearchStateMachineDefinitionsQuery implements ISearchStateMachineDefinitionsQuery {
   responseGroup?: string | undefined;
   objectType?: string | undefined;
@@ -17846,6 +18228,49 @@ export interface IUpdateOfferCommand {
   offerDetails: OfferDetails;
 }
 
+export class UpdateOrderShipmentCommand implements IUpdateOrderShipmentCommand {
+  sellerId?: string | undefined;
+  sellerName?: string | undefined;
+  shipment?: OrderShipment | undefined;
+
+  constructor(data?: IUpdateOrderShipmentCommand) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property)) (<any>this)[property] = (<any>data)[property];
+      }
+    }
+  }
+
+  init(_data?: any) {
+    if (_data) {
+      this.sellerId = _data["sellerId"];
+      this.sellerName = _data["sellerName"];
+      this.shipment = _data["shipment"] ? OrderShipment.fromJS(_data["shipment"]) : <any>undefined;
+    }
+  }
+
+  static fromJS(data: any): UpdateOrderShipmentCommand {
+    data = typeof data === "object" ? data : {};
+    let result = new UpdateOrderShipmentCommand();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    data["sellerId"] = this.sellerId;
+    data["sellerName"] = this.sellerName;
+    data["shipment"] = this.shipment ? this.shipment.toJSON() : <any>undefined;
+    return data;
+  }
+}
+
+export interface IUpdateOrderShipmentCommand {
+  sellerId?: string | undefined;
+  sellerName?: string | undefined;
+  shipment?: OrderShipment | undefined;
+}
+
 export class UpdateProductDetailsCommand implements IUpdateProductDetailsCommand {
   sellerId?: string | undefined;
   sellerName?: string | undefined;
@@ -17944,7 +18369,7 @@ export class UpdateSellerCommand implements IUpdateSellerCommand {
   sellerId!: string;
   sellerName?: string | undefined;
   sellerDetails?: SellerDetails | undefined;
-  commissionFeeId!: string;
+  commissionFeeId?: string | undefined;
   groups?: string[] | undefined;
 
   constructor(data?: IUpdateSellerCommand) {
@@ -17993,7 +18418,7 @@ export interface IUpdateSellerCommand {
   sellerId: string;
   sellerName?: string | undefined;
   sellerDetails?: SellerDetails | undefined;
-  commissionFeeId: string;
+  commissionFeeId?: string | undefined;
   groups?: string[] | undefined;
 }
 

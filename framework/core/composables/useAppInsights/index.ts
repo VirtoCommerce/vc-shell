@@ -14,6 +14,7 @@ export const useAppInsights = () => {
     const pageName = (route: { name: string }) => `${appName}${route.name as string}`;
 
     function beforeEach(route: { name: string }) {
+      if (!appInsights) return;
       const name = pageName(route);
       appInsights.context.telemetryTrace.traceID = generateW3CId();
       appInsights.context.telemetryTrace.name = route.name as string;
@@ -22,6 +23,7 @@ export const useAppInsights = () => {
     }
 
     function afterEach(route: { name: string; fullPath: string }) {
+      if (!appInsights) return;
       const name = pageName(route);
       const url = location.protocol + "//" + location.host + route.fullPath;
       appInsights.stopTrackPage(name, url, {

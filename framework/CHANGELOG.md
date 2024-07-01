@@ -1,3 +1,12 @@
+## [1.0.247](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.246...v1.0.247) (2024-07-01)
+
+
+### Bug Fixes
+
+* **useAppInsights:** add return if appInsights is not active ([5724a14](https://github.com/VirtoCommerce/vc-shell/commit/5724a1437f95e726216079f7a77b976434436b51))
+
+
+
 ## [1.0.246](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.245...v1.0.246) (2024-06-28)
 
 

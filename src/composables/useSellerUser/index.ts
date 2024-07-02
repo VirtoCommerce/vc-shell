@@ -11,7 +11,7 @@ export default (): IUseSellerUser => {
   }
 
   async function getCurrentUser() {
-    return await (await getApiClient()).getCurrentUser();
+    return await (await getApiClient()).getCurrentSellerUser();
   }
 
   return {

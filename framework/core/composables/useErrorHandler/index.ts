@@ -1,5 +1,5 @@
 import { onErrorCaptured, getCurrentInstance, ref, Ref } from "vue";
-import { useAppInsights } from "vue3-application-insights";
+import { useAppInsights as useInsights } from "vue3-application-insights";
 import { useUser } from "..";
 
 interface IUseErrorHandler {
@@ -10,7 +10,7 @@ interface IUseErrorHandler {
 export function useErrorHandler(capture?: boolean): IUseErrorHandler {
   const error = ref<string | null>(null);
   const instance = getCurrentInstance();
-  const appInsights = useAppInsights();
+  const appInsights = useInsights();
   const { user } = useUser();
 
   function reset() {

@@ -1,9 +1,9 @@
 import { inject } from "vue";
 import { AppInsightsPluginOptions, useAppInsights as useInsights } from "vue3-application-insights";
 import { generateW3CId } from "@microsoft/applicationinsights-core-js";
-import { useUser } from "..";
+import { useUser } from "./../useUser";
 
-export const useAppInsights = () => {
+export function useAppInsights() {
   const appInsights = useInsights();
   const { user } = useUser();
   const appInsightsOptions = inject<AppInsightsPluginOptions>("appInsightsOptions");
@@ -41,4 +41,4 @@ export const useAppInsights = () => {
   return {
     setupPageTracking: setupPageTracking(),
   };
-};
+}

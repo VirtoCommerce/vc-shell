@@ -911,7 +911,7 @@ function rowCheckbox(item: T) {
 }
 
 function showActions(index: number) {
-  if (props.enableItemActions && props.itemActionBuilder && typeof props.items[index] === "object") {
+  if (typeof props.items[index] === "object") {
     selectedRowIndex.value = index;
   }
 }

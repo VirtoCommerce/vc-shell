@@ -170,7 +170,7 @@ export interface ListContentSchema {
     title: string;
     sortable?: boolean;
     alwaysVisible?: boolean;
-    type?: string;
+    type?: ITableColumns["type"];
     customTemplate?: GridTemplateOverride;
     /** Additional method that is called when the focus is lost from the cell when editing.
      * @description Method should be defined in the blade `scope`.

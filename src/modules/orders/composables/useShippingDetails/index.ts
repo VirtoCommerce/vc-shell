@@ -87,23 +87,26 @@ export const useShippingDetails = (
   const shippingMethods = ref<ShippingMethod[]>([]);
   const shippingStatuses = ref<{ value: string; label: string }[]>([]);
 
+  const { loading: getNewShipmentLoading, action: getNewShipment } = useAsync(async () => {
+    return await (await getApiClient()).getNewShipment(args.props.options?.orderId);
+  });
+
   watch(
     () => args?.mounted.value,
     async () => {
-      await loadFulfillmentCenters();
-      await loadEmployee();
-      await getShippingMethods();
-      await getShippingStatuses();
-
-      const newShipment = await (await getApiClient()).getNewShipment(args.props.options?.orderId);
-
       if (!args.props.param) {
+        const newShipment = await getNewShipment();
         internalModel.value = reactive(new OrderShipment(newShipment));
 
         internalModel.value.createdDate = new Date();
 
         validationState.value.resetModified(internalModel, true);
       }
+
+      await loadFulfillmentCenters();
+      await loadEmployee();
+      await getShippingMethods();
+      await getShippingStatuses();
     },
   );
 
@@ -154,6 +157,15 @@ export const useShippingDetails = (
     }));
   });
 
+  const allLoading = useLoading(
+    loading,
+    fulfillmentCentersLoading,
+    employeeLoading,
+    getShippingMethodsLoading,
+    getShippingStatusesLoading,
+    getNewShipmentLoading,
+  );
+
   const scope: ShippingDetailsScope = {
     fulfillmentCenters,
     employee,
@@ -199,7 +211,7 @@ export const useShippingDetails = (
       },
       saveChanges: {
         disabled: computed(() => {
-          return validationState.value.valid && validationState.value.modified;
+          return !(validationState.value.valid && validationState.value.modified);
         }),
       },
     },
@@ -214,13 +226,7 @@ export const useShippingDetails = (
     load,
     saveChanges,
     remove,
-    loading: useLoading(
-      loading,
-      fulfillmentCentersLoading,
-      employeeLoading,
-      getShippingMethodsLoading,
-      getShippingStatusesLoading,
-    ),
+    loading: allLoading,
     item,
     validationState,
     scope,

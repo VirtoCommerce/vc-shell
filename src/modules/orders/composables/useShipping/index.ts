@@ -91,6 +91,8 @@ export const useShipping = (
         items: internalModel.value,
       },
     });
+    modified.value = false;
+    args.emit("close:blade");
   }
 
   function removeShipment(arg: { item: OrderShipment }) {
@@ -119,6 +121,17 @@ export const useShipping = (
   });
 
   useBeforeUnload(computed(() => modified.value));
+
+  if (!internalModel.value.length) {
+    openBlade({
+      blade: resolveBladeByName("ShippingDetails"),
+      options: {
+        items: args?.props.options?.items,
+        orderId: args?.props.options?.orderId,
+      },
+      replaceCurrentBlade: true,
+    });
+  }
 
   return {
     load,

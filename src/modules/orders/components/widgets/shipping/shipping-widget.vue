@@ -1,6 +1,5 @@
 <template>
   <VcWidget
-    v-loading:500="shipmentsLoading"
     :value="count"
     :title="$t('ORDERS.PAGES.DETAILS.WIDGETS.SHIPPING')"
     icon="fas fa-truck"
@@ -9,14 +8,9 @@
 </template>
 
 <script lang="ts" setup>
-import { UnwrapNestedRefs, onMounted, ref } from "vue";
+import { UnwrapNestedRefs, computed, ref } from "vue";
 import { useOrder } from "../../../composables/useOrder";
-import { useApiClient, useAsync, useBladeNavigation } from "@vc-shell/framework";
-import {
-  ISearchShipmentsQuery,
-  SearchShipmentsQuery,
-  VcmpSellerOrdersClient,
-} from "@vcmp-vendor-portal/api/marketplacevendor";
+import { useBladeNavigation } from "@vc-shell/framework";
 
 interface Props {
   modelValue: UnwrapNestedRefs<ReturnType<typeof useOrder>>;
@@ -25,10 +19,8 @@ interface Props {
 const props = defineProps<Props>();
 
 const { openBlade, resolveBladeByName } = useBladeNavigation();
-const { getApiClient } = useApiClient(VcmpSellerOrdersClient);
 
 const widgetOpened = ref(false);
-const count = ref(0);
 
 function clickHandler() {
   if (!widgetOpened.value) {
@@ -49,29 +41,7 @@ function clickHandler() {
   }
 }
 
-const { loading: shipmentsLoading, action: getCount } = useAsync<ISearchShipmentsQuery, number | undefined>(
-  async (query) => {
-    return await (await getApiClient()).searchShipments(new SearchShipmentsQuery(query)).then((res) => res.totalCount);
-  },
-);
-
-async function populateCounter() {
-  count.value =
-    (await getCount({
-      take: 0,
-      orderId: props.modelValue?.item?.id,
-    })) ?? 0;
-}
-
-onMounted(async () => {
-  if (props.modelValue?.item?.id) {
-    await populateCounter();
-  }
-});
-
-defineExpose({
-  updateActiveWidgetCount: populateCounter,
-});
+const count = computed(() => props.modelValue?.item?.shipments?.length ?? 0);
 </script>
 
 <style lang="scss" scoped></style>

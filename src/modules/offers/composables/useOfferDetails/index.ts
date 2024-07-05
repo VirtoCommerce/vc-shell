@@ -25,8 +25,9 @@ import {
   ValidateOfferQuery,
   ValidationFailure,
   OfferPriceList,
+  ISeller,
 } from "@vcmp-vendor-portal/api/marketplacevendor";
-import { Ref, computed, reactive, ref, watch, ComputedRef, unref } from "vue";
+import { Ref, computed, reactive, ref, watch, ComputedRef, unref, inject } from "vue";
 import { useMarketplaceSettings } from "../../../settings";
 import { useI18n } from "vue-i18n";
 import { useDynamicProperties, useMultilanguage } from "../../../common";
@@ -67,6 +68,7 @@ export const useOfferDetails = (
   const productTypeOptions = ref<IProductType[]>([]);
   const { items: fulfillmentCentersList, load: searchFulfillmentCenters } = useFulfillmentCenters();
   const route = useRoute();
+  const currentSeller = inject("currentSeller") as Ref<ISeller>;
 
   const { settingUseDefaultOffer, productTypes, loadSettings } = useMarketplaceSettings();
   const { getLanguages, loading: languagesLoading } = useMultilanguage();
@@ -79,7 +81,7 @@ export const useOfferDetails = (
       }
     },
     saveChanges: async (details) => {
-      const sellerId = await GetSellerId();
+      const sellerId = currentSeller.value?.id;
       return details.id
         ? (await getApiClient()).updateOffer(
             new UpdateOfferCommand({
@@ -115,7 +117,7 @@ export const useOfferDetails = (
   });
 
   const fetchProducts = async (keyword?: string, skip?: number, ids?: string[]) => {
-    const sellerId = await GetSellerId();
+    const sellerId = currentSeller.value?.id;
     return await (
       await getApiClient()
     ).searchOfferProducts(
@@ -385,11 +387,6 @@ export const useOfferDetails = (
       },
     },
   };
-
-  async function GetSellerId(): Promise<string> {
-    const result = route?.params?.sellerId as string;
-    return result;
-  }
 
   return {
     load,

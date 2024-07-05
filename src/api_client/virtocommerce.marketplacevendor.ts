@@ -3056,7 +3056,7 @@ export class VcmpSellerOrdersClient extends AuthApiBase {
   /**
    * @return Success
    */
-  getNewShipment(orderId: string): Promise<CustomerOrder> {
+  getNewShipment(orderId: string): Promise<OrderShipment> {
     let url_ = this.baseUrl + "/api/vcmp/orders/{orderId}/shipments/getnew";
     if (orderId === undefined || orderId === null) throw new Error("The parameter 'orderId' must be defined.");
     url_ = url_.replace("{orderId}", encodeURIComponent("" + orderId));
@@ -3078,7 +3078,7 @@ export class VcmpSellerOrdersClient extends AuthApiBase {
       });
   }
 
-  protected processGetNewShipment(response: Response): Promise<CustomerOrder> {
+  protected processGetNewShipment(response: Response): Promise<OrderShipment> {
     const status = response.status;
     let _headers: any = {};
     if (response.headers && response.headers.forEach) {
@@ -3088,7 +3088,7 @@ export class VcmpSellerOrdersClient extends AuthApiBase {
       return response.text().then((_responseText) => {
         let result200: any = null;
         let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-        result200 = CustomerOrder.fromJS(resultData200);
+        result200 = OrderShipment.fromJS(resultData200);
         return result200;
       });
     } else if (status !== 200 && status !== 204) {
@@ -3096,14 +3096,14 @@ export class VcmpSellerOrdersClient extends AuthApiBase {
         return throwException("An unexpected server error occurred.", status, _responseText, _headers);
       });
     }
-    return Promise.resolve<CustomerOrder>(null as any);
+    return Promise.resolve<OrderShipment>(null as any);
   }
 
   /**
    * @param body (optional)
    * @return Success
    */
-  searchShipments(body?: SearchShipmentsQuery | undefined): Promise<CustomerOrder> {
+  searchShipments(body?: SearchShipmentsQuery | undefined): Promise<ShipmentSearchResult> {
     let url_ = this.baseUrl + "/api/vcmp/orders/shipments/search";
     url_ = url_.replace(/[?&]$/, "");
 
@@ -3127,7 +3127,7 @@ export class VcmpSellerOrdersClient extends AuthApiBase {
       });
   }
 
-  protected processSearchShipments(response: Response): Promise<CustomerOrder> {
+  protected processSearchShipments(response: Response): Promise<ShipmentSearchResult> {
     const status = response.status;
     let _headers: any = {};
     if (response.headers && response.headers.forEach) {
@@ -3137,7 +3137,7 @@ export class VcmpSellerOrdersClient extends AuthApiBase {
       return response.text().then((_responseText) => {
         let result200: any = null;
         let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-        result200 = CustomerOrder.fromJS(resultData200);
+        result200 = ShipmentSearchResult.fromJS(resultData200);
         return result200;
       });
     } else if (status !== 200 && status !== 204) {
@@ -3145,14 +3145,14 @@ export class VcmpSellerOrdersClient extends AuthApiBase {
         return throwException("An unexpected server error occurred.", status, _responseText, _headers);
       });
     }
-    return Promise.resolve<CustomerOrder>(null as any);
+    return Promise.resolve<ShipmentSearchResult>(null as any);
   }
 
   /**
    * @param body (optional)
    * @return Success
    */
-  updateOrderShipment(body?: UpdateOrderShipmentCommand | undefined): Promise<CustomerOrder> {
+  updateOrderShipment(body?: UpdateOrderShipmentCommand | undefined): Promise<void> {
     let url_ = this.baseUrl + "/api/vcmp/orders/shipments";
     url_ = url_.replace(/[?&]$/, "");
 
@@ -3163,7 +3163,6 @@ export class VcmpSellerOrdersClient extends AuthApiBase {
       method: "POST",
       headers: {
         "Content-Type": "application/json-patch+json",
-        Accept: "text/plain",
       },
     };
 
@@ -3176,7 +3175,7 @@ export class VcmpSellerOrdersClient extends AuthApiBase {
       });
   }
 
-  protected processUpdateOrderShipment(response: Response): Promise<CustomerOrder> {
+  protected processUpdateOrderShipment(response: Response): Promise<void> {
     const status = response.status;
     let _headers: any = {};
     if (response.headers && response.headers.forEach) {
@@ -3184,24 +3183,21 @@ export class VcmpSellerOrdersClient extends AuthApiBase {
     }
     if (status === 200) {
       return response.text().then((_responseText) => {
-        let result200: any = null;
-        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-        result200 = CustomerOrder.fromJS(resultData200);
-        return result200;
+        return;
       });
     } else if (status !== 200 && status !== 204) {
       return response.text().then((_responseText) => {
         return throwException("An unexpected server error occurred.", status, _responseText, _headers);
       });
     }
-    return Promise.resolve<CustomerOrder>(null as any);
+    return Promise.resolve<void>(null as any);
   }
 
   /**
    * @param body (optional)
    * @return Success
    */
-  deleteOrderShipment(body?: string | undefined): Promise<CustomerOrder> {
+  deleteOrderShipment(body?: string | undefined): Promise<void> {
     let url_ = this.baseUrl + "/api/vcmp/orders/shipments";
     url_ = url_.replace(/[?&]$/, "");
 
@@ -3212,7 +3208,6 @@ export class VcmpSellerOrdersClient extends AuthApiBase {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json-patch+json",
-        Accept: "text/plain",
       },
     };
 
@@ -3225,7 +3220,48 @@ export class VcmpSellerOrdersClient extends AuthApiBase {
       });
   }
 
-  protected processDeleteOrderShipment(response: Response): Promise<CustomerOrder> {
+  protected processDeleteOrderShipment(response: Response): Promise<void> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+    }
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        return;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
+    }
+    return Promise.resolve<void>(null as any);
+  }
+
+  /**
+   * @return Success
+   */
+  getShippingMethods(): Promise<ShippingMethod[]> {
+    let url_ = this.baseUrl + "/api/vcmp/orders/getshippingmethods";
+    url_ = url_.replace(/[?&]$/, "");
+
+    let options_: RequestInit = {
+      method: "GET",
+      headers: {
+        Accept: "text/plain",
+      },
+    };
+
+    return this.transformOptions(options_)
+      .then((transformedOptions_) => {
+        return this.http.fetch(url_, transformedOptions_);
+      })
+      .then((_response: Response) => {
+        return this.processGetShippingMethods(_response);
+      });
+  }
+
+  protected processGetShippingMethods(response: Response): Promise<ShippingMethod[]> {
     const status = response.status;
     let _headers: any = {};
     if (response.headers && response.headers.forEach) {
@@ -3235,7 +3271,12 @@ export class VcmpSellerOrdersClient extends AuthApiBase {
       return response.text().then((_responseText) => {
         let result200: any = null;
         let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-        result200 = CustomerOrder.fromJS(resultData200);
+        if (Array.isArray(resultData200)) {
+          result200 = [] as any;
+          for (let item of resultData200) result200!.push(ShippingMethod.fromJS(item));
+        } else {
+          result200 = <any>null;
+        }
         return result200;
       });
     } else if (status !== 200 && status !== 204) {
@@ -3243,7 +3284,56 @@ export class VcmpSellerOrdersClient extends AuthApiBase {
         return throwException("An unexpected server error occurred.", status, _responseText, _headers);
       });
     }
-    return Promise.resolve<CustomerOrder>(null as any);
+    return Promise.resolve<ShippingMethod[]>(null as any);
+  }
+
+  /**
+   * @return Success
+   */
+  getShipmentStatuses(): Promise<string[]> {
+    let url_ = this.baseUrl + "/api/vcmp/orders/getshipmentstatuses";
+    url_ = url_.replace(/[?&]$/, "");
+
+    let options_: RequestInit = {
+      method: "GET",
+      headers: {
+        Accept: "text/plain",
+      },
+    };
+
+    return this.transformOptions(options_)
+      .then((transformedOptions_) => {
+        return this.http.fetch(url_, transformedOptions_);
+      })
+      .then((_response: Response) => {
+        return this.processGetShipmentStatuses(_response);
+      });
+  }
+
+  protected processGetShipmentStatuses(response: Response): Promise<string[]> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+    }
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+        if (Array.isArray(resultData200)) {
+          result200 = [] as any;
+          for (let item of resultData200) result200!.push(item);
+        } else {
+          result200 = <any>null;
+        }
+        return result200;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
+    }
+    return Promise.resolve<string[]>(null as any);
   }
 }
 
@@ -17332,6 +17422,51 @@ export interface IShipmentPackage {
   createdBy?: string | undefined;
   modifiedBy?: string | undefined;
   id?: string | undefined;
+}
+
+export class ShipmentSearchResult implements IShipmentSearchResult {
+  totalCount?: number;
+  results?: OrderShipment[] | undefined;
+
+  constructor(data?: IShipmentSearchResult) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property)) (<any>this)[property] = (<any>data)[property];
+      }
+    }
+  }
+
+  init(_data?: any) {
+    if (_data) {
+      this.totalCount = _data["totalCount"];
+      if (Array.isArray(_data["results"])) {
+        this.results = [] as any;
+        for (let item of _data["results"]) this.results!.push(OrderShipment.fromJS(item));
+      }
+    }
+  }
+
+  static fromJS(data: any): ShipmentSearchResult {
+    data = typeof data === "object" ? data : {};
+    let result = new ShipmentSearchResult();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    data["totalCount"] = this.totalCount;
+    if (Array.isArray(this.results)) {
+      data["results"] = [];
+      for (let item of this.results) data["results"].push(item.toJSON());
+    }
+    return data;
+  }
+}
+
+export interface IShipmentSearchResult {
+  totalCount?: number;
+  results?: OrderShipment[] | undefined;
 }
 
 export class ShippingMethod implements IShippingMethod {

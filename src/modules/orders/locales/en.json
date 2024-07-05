@@ -52,6 +52,9 @@
         }
       },
       "DETAILS": {
+        "WIDGETS": {
+          "SHIPPING": "Shipping"
+        },
         "TOOLBAR": {
           "DL_PDF": "Download PDF",
           "CONFIRM": "Confirm",
@@ -105,6 +108,101 @@
       "ALERTS": {
         "CLOSE_CONFIRMATION": "You have unsaved changes. Close anyway?",
         "FC_DELETE": "This action can not be undone. Are you sure you want to delete Fulfillment Center? "
+      }
+    }
+  },
+  "SHIPPING": {
+    "STATUSES": {
+      "CANCELLED": "Cancelled",
+      "NEW": "New",
+      "PICKPACK": "Pick & Pack",
+      "READYTOSEND": "Ready to send",
+      "SEND": "Send"
+    },
+    "PAGES": {
+      "LIST": {
+        "TITLE": "Shipping",
+        "TOOLBAR": {
+          "REFRESH": "Refresh",
+          "ADD": "Add",
+          "SAVE": "Save"
+        },
+        "TABLE": {
+          "TOTALS": "Total:",
+          "HEADER": {
+            "METHOD": "Shipping method",
+            "TRACK_NUM": "Tracking number",
+            "STATUS": "Status",
+            "TOTAL": "Total"
+          }
+        },
+        "EMPTY": {
+          "NO_ITEMS": "There is no shipping yet",
+          "ADD": "Add shipping"
+        }
+      },
+      "ITEMS_LIST": {
+        "TITLE": "Shipping",
+        "TOOLBAR": {
+          "REFRESH": "Refresh",
+          "ADD": "Add",
+          "CANCEL": "Cancel"
+        },
+        "TABLE": {
+          "HEADER": {
+            "IMAGE": "Img",
+            "SKU": "SKU",
+            "QTY": "Quantity"
+          }
+        }
+      },
+      "DETAILS": {
+        "TITLE": "New shipment",
+        "TITLE_EDIT": "Shipment #",
+        "TOOLBAR": {
+          "SAVE": "Save",
+          "DELETE": "Delete"
+        },
+        "FORM": {
+          "ITEMS": {
+            "TITLE": "Items for shipment",
+            "FULFILLMENT_CENTER": "Fulfillment center",
+            "SHIPMENT_ID": "Shipment number",
+            "SHIPMENT_ID_PLACEHOLDER": "Enter shipment number",
+            "STATUS": "Status",
+            "TRACKING_NUMBER": "Tracking number",
+            "TRACKING_NUMBER_PLACEHOLDER": "Enter tracking number",
+            "TRACKING_URL": "Tracking URL",
+            "TRACKING_URL_PLACEHOLDER": "Enter tracking URL",
+            "SHIPPING_METHOD": "Shipping method",
+            "SHIPPING_METHOD_PLACEHOLDER": "Enter shipping method",
+            "DATE_TIME": "Date and time",
+            "ASSIGNED_TO": "Assigned to",
+            "SHIPMENT_AMOUNT": "Shipment amount",
+            "SHIPMENT_AMOUNT_PLACEHOLDER": "Enter shipment amount",
+            "SHIPMENT_AMOUNT_WITH_TAX": "Shipment amount with tax",
+            "SHIPMENT_AMOUNT_WITH_TAX_PLACEHOLDER": "Enter shipment amount with tax",
+            "DELIVERY_DATE": "Delivery date",
+            "VENDOR": "Vendor",
+            "LINE_ITEMS": {
+              "ADD": "Add item",
+              "TABLE": {
+                "IMAGE": "Img",
+                "SKU": "SKU",
+                "QTY": "Quantity",
+                "PRICE": "Price per item",
+                "TOTAL": "Total",
+                "ACTIONS": {
+                  "DELETE": "Delete"
+                }
+              }
+            }
+          }
+        }
+      },
+      "ALERTS": {
+        "DELETE": "Are you sure you want to delete this shipment?",
+        "CLOSE_CONFIRMATION": "You have unsaved changes. Close anyway?"
       }
     }
   }

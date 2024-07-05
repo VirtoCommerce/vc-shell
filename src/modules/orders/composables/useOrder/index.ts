@@ -16,6 +16,7 @@ import {
   VcmpSellerOrdersClient,
   UpdateSellerOrderCommand,
   SellerOrder,
+  OrderShipment,
 } from "@vcmp-vendor-portal/api/marketplacevendor";
 import { ComputedRef, Ref, computed, ref, watch, unref } from "vue";
 import { useI18n } from "vue-i18n";
@@ -254,6 +255,7 @@ export const useOrder = (args: DetailsComposableArgs): UseDetails<CustomerOrder,
       const date = new Date(item.value?.createdDate ?? "");
       return moment(date).locale(currentLocale.value).format("L LT");
     }),
+    saveShipping,
   };
 
   watch(
@@ -306,6 +308,18 @@ export const useOrder = (args: DetailsComposableArgs): UseDetails<CustomerOrder,
   async function GetSellerId(): Promise<string> {
     const result = route?.params?.sellerId as string;
     return result;
+  }
+
+  async function saveShipping(arg: { items: OrderShipment[] }) {
+    if (item.value) {
+      item.value.shipments = arg.items;
+
+      await saveChanges(item.value);
+
+      args.emit("parent:call", {
+        method: "reload",
+      });
+    }
   }
 
   return {

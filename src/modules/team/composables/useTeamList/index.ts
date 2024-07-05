@@ -17,7 +17,7 @@ import { useRoute } from "vue-router";
 
 const { getApiClient } = useApiClient(VcmpSellerSecurityClient);
 
-export const useTeamList = (args: ListComposableArgs) => {
+export const useTeamList = (args?: ListComposableArgs) => {
   const factory = useListFactory<SellerUser[], ISearchSellerUsersQuery>({
     load: async (query) => {
       const sellerId = await GetSellerId();

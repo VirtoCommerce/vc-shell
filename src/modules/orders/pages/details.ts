@@ -276,5 +276,10 @@ export const details: DynamicDetailsSchema = {
         },
       ],
     },
+    {
+      id: "orderWidgets",
+      component: "vc-widgets",
+      children: ["ShippingWidget"],
+    },
   ],
 };

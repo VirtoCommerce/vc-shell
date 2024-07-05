@@ -6,6 +6,8 @@ import OrdersEmptyGridTemplate from "./OrdersEmptyGridTemplate.vue";
 import OrdersMobileGridView from "./OrdersMobileGridView.vue";
 import OrdersNotFoundGridTemplate from "./OrdersNotFoundGridTemplate.vue";
 import OrdersDashboardCard from "./OrdersDashboardCard.vue";
+import ShippingGridStatus from "./ShippingGridStatus.vue";
+import ShippingEmptyGridTemplate from "./ShippingEmptyGridTemplate.vue";
 
 export {
   OrderGridName,
@@ -16,4 +18,7 @@ export {
   OrdersMobileGridView,
   OrdersNotFoundGridTemplate,
   OrdersDashboardCard,
+  ShippingGridStatus,
+  ShippingEmptyGridTemplate,
 };
+export * from "./widgets";

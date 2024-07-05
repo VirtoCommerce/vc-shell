@@ -7,11 +7,11 @@
     }"
   >
     <div
-      class="vc-widget tw-relative tw-shrink-0 tw-py-4 tw-px-2"
+      class="vc-widget tw-relative tw-shrink-0 tw-py-4 tw-px-3"
       :class="{
         'tw-w-[80px]': isExpanded,
         'vc-widget_disabled': disabled,
-        'tw-w-[36px]': !isExpanded,
+        'tw-w-[50px]': !isExpanded,
         'tw-w-[70px]': $isMobile.value,
       }"
       @click="onClick"

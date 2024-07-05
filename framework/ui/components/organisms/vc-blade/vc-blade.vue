@@ -224,7 +224,7 @@ const { open } = usePopup({
   --blade-color-unsaved-changes: #82a6bd;
   --blade-color-unsaved-changes: #82a6bd;
 
-  --blade-widgets-width: 36px;
+  --blade-widgets-width: 50px;
   --blade-widgets-width-expanded: 80px;
 }
 

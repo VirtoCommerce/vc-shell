@@ -1,3 +1,17 @@
+## [1.0.257](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.256...v1.0.257) (2024-07-05)
+
+
+### Bug Fixes
+
+* getCurrentSellerUser instead getCurrentUser ([4db67be](https://github.com/VirtoCommerce/vendor-portal/commit/4db67be73cc987d4dee99891c45338cbcea06d6b))
+
+
+### Features
+
+* **orders:** shipping edit blades ([223f0f0](https://github.com/VirtoCommerce/vendor-portal/commit/223f0f05de2820e92733415e35fce91f5a5b576a))
+
+
+
 ## [1.0.256](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.255...v1.0.256) (2024-07-01)
 
 

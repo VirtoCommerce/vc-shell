@@ -1,3 +1,12 @@
+## [1.0.257](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.256...v1.0.257) (2024-07-05)
+
+
+### Features
+
+* **orders:** shipping edit blades ([223f0f0](https://github.com/VirtoCommerce/vendor-portal/commit/223f0f05de2820e92733415e35fce91f5a5b576a))
+
+
+
 ## [1.0.256](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.255...v1.0.256) (2024-07-01)
 
 

@@ -1,10 +1,10 @@
 import VirtoShellFramework, { notification, useLanguages, useUser } from "@vc-shell/framework";
-import { createApp } from "vue";
+import { App, Plugin, createApp } from "vue";
 import * as modules from "@vcmp-vendor-portal/modules";
 import ImportModule from "@virtocommerce/import-app";
 import { router } from "./router";
 import * as locales from "./locales";
-import { RouterView } from "vue-router";
+import { RouterView, Router } from "vue-router";
 import { bootstrap } from "./bootstrap";
 import { useSellerDetails } from "./modules/seller-details/composables";
 
@@ -14,6 +14,59 @@ import "@fortawesome/fontawesome-free/css/all.min.css";
 import "roboto-fontface/css/roboto/roboto-fontface.css";
 import "@vc-shell/framework/dist/index.css";
 import "@virtocommerce/import-app/dist/style.css";
+
+interface ModuleManifest {
+  file: string;
+  name: string;
+  src: string;
+  isEntry: boolean;
+}
+
+interface CssManifest {
+  file: string;
+  src: string;
+}
+
+interface Manifest {
+  [key: string]: ModuleManifest | CssManifest;
+}
+
+async function loadModules(app: App, { router }: { router: Router }) {
+  try {
+    const modulePaths = [
+      import.meta.env.APP_PLATFORM_URL +
+        "Modules/$(VirtoCommerce.MarketplaceReviews)/reviews-app/dist/packages/modules",
+    ];
+
+    for (const module of modulePaths) {
+      const manifestResponse: Manifest = (await import(module + "/manifest.json")).default;
+
+      // const manifest = await manifestResponse.json();
+
+      // Find entry point
+      const entry = Object.values(manifestResponse).find((file) => (file as ModuleManifest).isEntry);
+
+      if (!entry) {
+        throw new Error("Entry file not found");
+      }
+
+      // Find style
+      await Promise.all(
+        Object.values(manifestResponse)
+          .filter((file) => file.file.endsWith(".css"))
+          .map((file) => import(/* @vite-ignore */ module + "/" + `${file.file}`)),
+      );
+
+      const mainModule = await import(/* @vite-ignore */ module + "/" + entry.file);
+
+      Object.values(mainModule.default).forEach((module) => {
+        app.use((module as Record<"default", Plugin>).default, { router });
+      });
+    }
+  } catch (error) {
+    console.error("Failed to load modules", error);
+  }
+}
 
 async function startApp() {
   const { loadUser } = useUser();
@@ -47,6 +100,8 @@ async function startApp() {
   });
 
   app.use(ImportModule.Import.default, { router });
+
+  await loadModules(app, { router });
 
   app.use(router);
 

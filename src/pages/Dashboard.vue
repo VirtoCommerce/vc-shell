@@ -26,7 +26,7 @@
             :size="4"
             class="tw-p-2"
           >
-            <component :is="modules.Rating.components.RatingDashboardCard"></component>
+            <component :is="RatingDashboardCard"></component>
           </VcCol>
         </VcRow>
 
@@ -54,7 +54,7 @@
 
 <script lang="ts" setup>
 import { notification, useErrorHandler } from "@vc-shell/framework";
-import { watch } from "vue";
+import { getCurrentInstance, resolveComponent, watch } from "vue";
 import { default as modules, UserPermissions } from "@vcmp-vendor-portal/modules";
 
 const { error, reset } = useErrorHandler(true);
@@ -69,6 +69,8 @@ watch(error, (newVal) => {
     });
   }
 });
+
+const RatingDashboardCard = resolveComponent("RatingDashboardCard");
 </script>
 
 <style lang="scss">

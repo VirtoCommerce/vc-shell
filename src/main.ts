@@ -63,6 +63,8 @@ async function loadModules(app: App, { router }: { router: Router }) {
 
       const mainModule = await import(/* @vite-ignore */ module + "/" + entry.file);
 
+      console.error("mainModule", mainModule);
+
       Object.values(mainModule.default).forEach((mod) => {
         app.use((mod as Record<"default", Plugin>).default, { router });
       });

@@ -104,8 +104,8 @@ async function generateApiClient(): Promise<void> {
       }
 
       const newExportPath = {
-        import: `./${outDir}/${platformModuleLower}.js`,
-        types: `./${outDir}/types/${platformModuleLower}.d.ts`,
+        import: path.join(outDir, `${platformModuleLower}.js`),
+        types: path.join(outDir, "types", `${platformModuleLower}.d.ts`),
       };
 
       const existingKey = Object.keys(exports).find((key) =>

@@ -35,7 +35,7 @@ async function generateApiClient(): Promise<void> {
     return console.log(chalk.red("error"), "api-client-generator outDir command is required");
   }
 
-  const outDir = parsedArgs.APP_OUT_DIR ?? "dist";
+  const outDir = parsedArgs.APP_OUT_DIR ?? "./";
   const paths = new Paths(parsedArgs.APP_API_CLIENT_DIRECTORY);
 
   const platformModules = parsedArgs.APP_PLATFORM_MODULES.replace(/[[\]]/g, "").split(",");
@@ -104,8 +104,8 @@ async function generateApiClient(): Promise<void> {
       }
 
       const newExportPath = {
-        import: path.join(outDir, `${platformModuleLower}.js`),
-        types: path.join(outDir, "types", `${platformModuleLower}.d.ts`),
+        import: outDir !== "./" ? `./${outDir}/${platformModuleLower}.js` : `./${platformModuleLower}.js`,
+        types: outDir !== "./" ? `./${outDir}/types/${platformModuleLower}.d.ts` : `./types/${platformModuleLower}.js`,
       };
 
       const existingKey = Object.keys(exports).find((key) =>
@@ -148,7 +148,7 @@ async function generateApiClient(): Promise<void> {
   let packageJson = {
     name: parsedArgs.APP_PACKAGE_NAME || "api-client",
     version: parsedArgs.APP_PACKAGE_VERSION || "1.0.0",
-    files: [outDir, "package.json"],
+    files: outDir !== "./" ? [outDir, "package.json"] : ["package.json"],
     exports,
   };
 

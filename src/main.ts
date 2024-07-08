@@ -39,14 +39,16 @@ async function loadModules(app: App, { router }: { router: Router }) {
     ];
 
     for (const module of modulePaths) {
-      const manifestResponse: Manifest = (await import(module + "/manifest.json")).default;
+      const manifestResponse = await fetch(module + "/manifest.json");
 
-      console.error("manifestResponse", manifestResponse);
+      if (!manifestResponse.ok) {
+        throw new Error(`Failed to load manifest: ${manifestResponse.statusText}`);
+      }
 
-      // const manifest = await manifestResponse.json();
+      const manifest: Manifest = await manifestResponse.json();
 
       // Find entry point
-      const entry = Object.values(manifestResponse).find((file) => (file as ModuleManifest).isEntry);
+      const entry = Object.values(manifest).find((file) => (file as ModuleManifest).isEntry);
 
       if (!entry) {
         throw new Error("Entry file not found");
@@ -60,8 +62,6 @@ async function loadModules(app: App, { router }: { router: Router }) {
       );
 
       const mainModule = await import(/* @vite-ignore */ module + "/" + entry.file);
-
-      console.error("mainModule", mainModule);
 
       Object.values(mainModule.default).forEach((mod) => {
         app.use((mod as Record<"default", Plugin>).default, { router });

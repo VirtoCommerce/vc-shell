@@ -35,11 +35,13 @@ async function loadModules(app: App, { router }: { router: Router }) {
   try {
     const modulePaths = [
       import.meta.env.APP_PLATFORM_URL +
-        "Modules/$(VirtoCommerce.MarketplaceReviews)/reviews-app/dist/packages/modules",
+        "/Modules/$(VirtoCommerce.MarketplaceReviews)/reviews-app/dist/packages/modules",
     ];
 
     for (const module of modulePaths) {
       const manifestResponse: Manifest = (await import(module + "/manifest.json")).default;
+
+      console.error("manifestResponse", manifestResponse);
 
       // const manifest = await manifestResponse.json();
 
@@ -59,8 +61,10 @@ async function loadModules(app: App, { router }: { router: Router }) {
 
       const mainModule = await import(/* @vite-ignore */ module + "/" + entry.file);
 
-      Object.values(mainModule.default).forEach((module) => {
-        app.use((module as Record<"default", Plugin>).default, { router });
+      console.error("mainModule", mainModule);
+
+      Object.values(mainModule.default).forEach((mod) => {
+        app.use((mod as Record<"default", Plugin>).default, { router });
       });
     }
   } catch (error) {

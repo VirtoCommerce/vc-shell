@@ -1,10 +1,10 @@
 import VirtoShellFramework, { notification, useLanguages, useUser } from "@vc-shell/framework";
-import { App, Plugin, createApp, provide } from "vue";
+import { createApp } from "vue";
 import * as modules from "@vcmp-vendor-portal/modules";
 import ImportModule from "@virtocommerce/import-app";
 import { router } from "./router";
 import * as locales from "./locales";
-import { RouterView, Router } from "vue-router";
+import { RouterView } from "vue-router";
 import { bootstrap } from "./bootstrap";
 import { useSellerDetails } from "./modules/seller-details/composables";
 
@@ -14,77 +14,6 @@ import "@fortawesome/fontawesome-free/css/all.min.css";
 import "roboto-fontface/css/roboto/roboto-fontface.css";
 import "@vc-shell/framework/dist/index.css";
 import "@virtocommerce/import-app/dist/style.css";
-
-interface ModuleManifest {
-  file: string;
-  name: string;
-  src: string;
-  isEntry: boolean;
-}
-
-interface CssManifest {
-  file: string;
-  src: string;
-}
-
-interface Manifest {
-  [key: string]: ModuleManifest | CssManifest;
-}
-
-function loadCSS(url: string) {
-  return new Promise<void>((resolve, reject) => {
-    const link = document.createElement("link");
-    link.rel = "stylesheet";
-    link.href = url;
-    link.onload = () => resolve();
-    link.onerror = (error) => reject(new Error(`Failed to load CSS: ${url}`));
-    document.head.appendChild(link);
-  });
-}
-
-async function loadModules(app: App, { router }: { router: Router }) {
-  try {
-    const modulePaths = ["/Modules/$(VirtoCommerce.MarketplaceReviews)/reviews-app/dist/packages/modules/"];
-
-    for (const module of modulePaths) {
-      const manifestResponse = await fetch(module + "manifest.json");
-
-      if (!manifestResponse.ok) {
-        throw new Error(`Failed to load manifest: ${manifestResponse.statusText}`);
-      }
-
-      const manifest: Manifest = await manifestResponse.json();
-
-      // Find entry point
-      const entry = Object.values(manifest).find((file) => (file as ModuleManifest).isEntry);
-
-      if (!entry) {
-        throw new Error("Entry file not found");
-      }
-
-      await Promise.all(
-        Object.values(manifest)
-          .filter((file) => file.file.endsWith(".css"))
-          .map((file) => loadCSS(module + `${file.file}`)),
-      ).catch((error) => {
-        console.error("Failed to load styles", error);
-      });
-
-      const mainModule = await import(/* @vite-ignore */ module + entry.file);
-
-      console.error("mainModule", mainModule);
-
-      Object.entries(mainModule.default).forEach(([name, mod]) => {
-        app.use((mod as Record<"default", Plugin>).default, { router });
-      });
-
-      app.config.globalProperties.$dynamicModules = mainModule.default;
-      app.provide("$dynamicModules", app.config.globalProperties.$dynamicModules);
-    }
-  } catch (error) {
-    console.error("Failed to load modules", error);
-  }
-}
 
 async function startApp() {
   const { loadUser } = useUser();
@@ -118,8 +47,6 @@ async function startApp() {
   });
 
   app.use(ImportModule.Import.default, { router });
-
-  await loadModules(app, { router });
 
   app.use(router);
 

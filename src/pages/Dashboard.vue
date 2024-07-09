@@ -26,7 +26,7 @@
             :size="4"
             class="tw-p-2"
           >
-            <component :is="$dynamicModules.Rating.components.RatingDashboardCard"></component>
+            <component :is="modules.Rating.components.RatingDashboardCard"></component>
           </VcCol>
         </VcRow>
 

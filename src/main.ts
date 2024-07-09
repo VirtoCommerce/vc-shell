@@ -54,7 +54,12 @@ async function loadModules(app: App, { router }: { router: Router }) {
       await Promise.all(
         Object.values(manifest)
           .filter((file) => file.file.endsWith(".css"))
-          .map((file) => import(/* @vite-ignore */ module + `${file.file}`)),
+          .map(
+            (file) =>
+              import(/* @vite-ignore */ module + `${file.file}`, {
+                assert: { type: "css" },
+              }),
+          ),
       ).catch((error) => {
         console.error("Failed to load styles", error);
       });

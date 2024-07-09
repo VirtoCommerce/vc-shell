@@ -31,6 +31,17 @@ interface Manifest {
   [key: string]: ModuleManifest | CssManifest;
 }
 
+function loadCSS(url: string) {
+  return new Promise<void>((resolve, reject) => {
+    const link = document.createElement("link");
+    link.rel = "stylesheet";
+    link.href = url;
+    link.onload = () => resolve();
+    link.onerror = (error) => reject(new Error(`Failed to load CSS: ${url}`));
+    document.head.appendChild(link);
+  });
+}
+
 async function loadModules(app: App, { router }: { router: Router }) {
   try {
     const modulePaths = ["/Modules/$(VirtoCommerce.MarketplaceReviews)/reviews-app/dist/packages/modules/"];
@@ -54,12 +65,7 @@ async function loadModules(app: App, { router }: { router: Router }) {
       await Promise.all(
         Object.values(manifest)
           .filter((file) => file.file.endsWith(".css"))
-          .map(
-            (file) =>
-              import(/* @vite-ignore */ module + `${file.file}`, {
-                assert: { type: "css" },
-              }),
-          ),
+          .map((file) => loadCSS(module + `${file.file}`)),
       ).catch((error) => {
         console.error("Failed to load styles", error);
       });

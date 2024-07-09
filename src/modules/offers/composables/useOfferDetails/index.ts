@@ -66,6 +66,7 @@ export const useOfferDetails = (
   const productLoading = ref(false);
   const alreadyDefault = ref(false);
   const productTypeOptions = ref<IProductType[]>([]);
+  const selectedProductSellerId = ref<string>();
   const { items: fulfillmentCentersList, load: searchFulfillmentCenters } = useFulfillmentCenters();
   const route = useRoute();
   const currentSeller = inject("currentSeller") as Ref<ISeller>;
@@ -198,6 +199,8 @@ export const useOfferDetails = (
         if (args.props.options && "sellerProduct" in args.props.options && args.props.options.sellerProduct) {
           item.value.productId = currentProduct.id;
         }
+
+        selectedProductSellerId.value = currentProduct.sellerId;
       }
     } finally {
       productLoading.value = false;
@@ -367,7 +370,11 @@ export const useOfferDetails = (
           }
         },
         disabled: computed(() => item.value?.isDefault || alreadyDefault.value),
-        isVisible: computed(() => (args.props.param ? settingUseDefaultOffer.value : false)),
+        isVisible: computed(() =>
+          args.props.param
+            ? settingUseDefaultOffer.value && item.value?.sellerId === selectedProductSellerId.value
+            : false,
+        ),
       },
     },
     dynamicProperties: useDynamicProperties(),

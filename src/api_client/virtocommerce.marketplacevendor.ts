@@ -10648,6 +10648,7 @@ export interface IOfferPriceList {
 export class OfferProduct implements IOfferProduct {
   name?: string | undefined;
   sellerProductId?: string | undefined;
+  sellerId?: string | undefined;
   sku?: string | undefined;
   gtin?: string | undefined;
   productType?: string | undefined;
@@ -10673,6 +10674,7 @@ export class OfferProduct implements IOfferProduct {
     if (_data) {
       this.name = _data["name"];
       this.sellerProductId = _data["sellerProductId"];
+      this.sellerId = _data["sellerId"];
       this.sku = _data["sku"];
       this.gtin = _data["gtin"];
       this.productType = _data["productType"];
@@ -10702,6 +10704,7 @@ export class OfferProduct implements IOfferProduct {
     data = typeof data === "object" ? data : {};
     data["name"] = this.name;
     data["sellerProductId"] = this.sellerProductId;
+    data["sellerId"] = this.sellerId;
     data["sku"] = this.sku;
     data["gtin"] = this.gtin;
     data["productType"] = this.productType;
@@ -10724,6 +10727,7 @@ export class OfferProduct implements IOfferProduct {
 export interface IOfferProduct {
   name?: string | undefined;
   sellerProductId?: string | undefined;
+  sellerId?: string | undefined;
   sku?: string | undefined;
   gtin?: string | undefined;
   productType?: string | undefined;

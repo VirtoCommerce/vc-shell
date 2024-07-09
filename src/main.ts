@@ -33,10 +33,7 @@ interface Manifest {
 
 async function loadModules(app: App, { router }: { router: Router }) {
   try {
-    const modulePaths = [
-      import.meta.env.APP_PLATFORM_URL +
-        "Modules/$(VirtoCommerce.MarketplaceReviews)/reviews-app/dist/packages/modules/",
-    ];
+    const modulePaths = ["Modules/$(VirtoCommerce.MarketplaceReviews)/reviews-app/dist/packages/modules/"];
 
     for (const module of modulePaths) {
       const manifestResponse = await fetch(module + "manifest.json");

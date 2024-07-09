@@ -1,3 +1,12 @@
+## [1.0.259](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.258...v1.0.259) (2024-07-09)
+
+
+### Features
+
+* vm-1367 only product owner can set default offer ([bf72682](https://github.com/VirtoCommerce/vendor-portal/commit/bf726826304f6ada36d1ac47236a8efd3fd452d7))
+
+
+
 ## [1.0.258](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.257...v1.0.258) (2024-07-05)
 
 

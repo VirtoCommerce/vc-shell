@@ -1,3 +1,19 @@
+## [1.0.259](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.258...v1.0.259) (2024-07-09)
+
+
+### Features
+
+* rating as module ([28f1f86](https://github.com/VirtoCommerce/vendor-portal/commit/28f1f86b4d0a34b37d79c508d90dcaa24815e9ee))
+* vm-1367 only product owner can set default offer ([bf72682](https://github.com/VirtoCommerce/vendor-portal/commit/bf726826304f6ada36d1ac47236a8efd3fd452d7))
+
+
+### Reverts
+
+* ratings ([60f6319](https://github.com/VirtoCommerce/vendor-portal/commit/60f6319d7edf121783fa0591e4e42f627c9036d5))
+* reviews ([f18f43c](https://github.com/VirtoCommerce/vendor-portal/commit/f18f43c7e8174f224afb50b0b6f1db6696146a54))
+
+
+
 ## [1.0.258](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.257...v1.0.258) (2024-07-05)
 
 

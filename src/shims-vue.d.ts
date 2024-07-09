@@ -1,6 +1,6 @@
 /* eslint-disable */
 import { CoreBladeAdditionalSettings } from "@vc-shell/framework";
-import { Ref } from "vue";
+import { Ref, Plugin } from "vue";
 
 declare module "*.vue" {
   import type { DefineComponent } from "vue";
@@ -16,6 +16,16 @@ declare module "@vue/runtime-core" {
     $isMobile: Ref<boolean>;
     $isDesktop: Ref<boolean>;
     $isTouch: boolean;
+    $dynamicModules: Record<
+      string,
+      {
+        components: Record<string, any>;
+        composables: Record<string, any>;
+        default: Plugin;
+        locales: Record<string, any>;
+        schema: Record<string, any>;
+      }
+    >;
   }
 
   interface ComponentOptionsBase extends CoreBladeAdditionalSettings {}

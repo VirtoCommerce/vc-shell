@@ -1,3 +1,12 @@
+## [1.0.254](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.253...v1.0.254) (2024-07-12)
+
+
+### Features
+
+* dynamic module loader ([4d15575](https://github.com/VirtoCommerce/vc-shell/commit/4d15575bb5448e16b4034782bafc7097189742f1))
+
+
+
 ## [1.0.253](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.252...v1.0.253) (2024-07-12)
 
 

@@ -1,6 +1,6 @@
 {
   "name": "@vc-shell/release-config",
-  "version": "1.0.253",
+  "version": "1.0.254",
   "type": "module",
   "main": "dist/release-config.js",
   "types": "./dist/index.d.ts",
@@ -20,7 +20,7 @@
   "devDependencies": {
     "@types/prompts": "^2.4.7",
     "@types/semver": "^7.5.4",
-    "@vc-shell/ts-config": "^1.0.253",
+    "@vc-shell/ts-config": "^1.0.254",
     "typescript": "~5.3.3",
     "vite-plugin-dts": "^3.6.4"
   },

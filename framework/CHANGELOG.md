@@ -1,3 +1,12 @@
+## [1.0.255](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.254...v1.0.255) (2024-07-12)
+
+
+### Bug Fixes
+
+* **core:** useDynamicModules fix ([b38d966](https://github.com/VirtoCommerce/vc-shell/commit/b38d9668b410d7bbb0d798f2218f2b6051416cc9))
+
+
+
 ## [1.0.254](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.253...v1.0.254) (2024-07-12)
 
 

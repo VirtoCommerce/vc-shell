@@ -1,3 +1,12 @@
+## [1.0.263](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.262...v1.0.263) (2024-07-12)
+
+
+### Bug Fixes
+
+* currentSeller ([9625bfd](https://github.com/VirtoCommerce/vendor-portal/commit/9625bfd56cd377fa21700cad3b4a6f8a36fd2a50))
+
+
+
 ## [1.0.262](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.261...v1.0.262) (2024-07-12)
 
 

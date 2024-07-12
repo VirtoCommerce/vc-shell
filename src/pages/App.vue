@@ -11,7 +11,7 @@
 
 <script lang="ts" setup>
 import { useSettings, useUser, useNotifications, notification, useApiClient } from "@vc-shell/framework";
-import { onMounted, provide, ref, watch } from "vue";
+import { computed, onMounted, provide, ref, watch } from "vue";
 import * as modules from "@vcmp-vendor-portal/modules";
 // eslint-disable-next-line import/no-unresolved
 import logoImage from "/assets/logo.svg";
@@ -70,7 +70,7 @@ async function customizationHandler() {
       avatar = currentUser.iconUrl;
     }
 
-    const sellerId = await GetSellerId();
+    const sellerId = GetSellerId();
     if (!sellerId) {
       if (!isAdministrator.value) {
         await getCurrentSeller();
@@ -96,12 +96,15 @@ async function customizationHandler() {
   }
 }
 
-async function GetSellerId(): Promise<string> {
+function GetSellerId(): string {
   const result = route?.params?.sellerId as string;
   return result;
 }
 
-provide("currentSeller", sellerDetails);
+provide(
+  "currentSeller",
+  computed(() => sellerDetails.value || { id: GetSellerId() }),
+);
 </script>
 
 <style lang="scss">

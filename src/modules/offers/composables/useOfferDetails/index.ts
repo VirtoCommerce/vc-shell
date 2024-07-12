@@ -68,7 +68,6 @@ export const useOfferDetails = (
   const productTypeOptions = ref<IProductType[]>([]);
   const selectedProductSellerId = ref<string>();
   const { items: fulfillmentCentersList, load: searchFulfillmentCenters } = useFulfillmentCenters();
-  const route = useRoute();
   const currentSeller = inject("currentSeller") as Ref<ISeller>;
 
   const { settingUseDefaultOffer, productTypes, loadSettings } = useMarketplaceSettings();

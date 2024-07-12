@@ -14,8 +14,9 @@ import {
   VcmpSellerOrdersClient,
   CustomerOrder,
   ISearchOrdersQuery,
+  ISeller,
 } from "@vcmp-vendor-portal/api/marketplacevendor";
-import { computed, ref } from "vue";
+import { Ref, computed, inject, ref } from "vue";
 import { useRoute } from "vue-router";
 
 enum PaymentStatus {
@@ -33,10 +34,11 @@ const { getApiClient } = useApiClient(VcmpSellerOrdersClient);
 export const useOrders = (args?: ListComposableArgs): UseList<CustomerOrder[], ISearchOrdersQuery, OrdersListScope> => {
   const { user } = useUser();
   const { t } = useI18n({ useScope: "global" });
+  const currentSeller = inject("currentSeller") as Ref<ISeller>;
 
   const factory = useListFactory<CustomerOrder[], ISearchOrdersQuery>({
     load: async (query) => {
-      const sellerId = await GetSellerId();
+      const sellerId = currentSeller.value?.id;
       return (await getApiClient()).searchOrders(
         new SearchOrdersQuery({
           ...query,
@@ -49,7 +51,6 @@ export const useOrders = (args?: ListComposableArgs): UseList<CustomerOrder[], I
 
   const { load, loading, items, query, pagination } = factory();
   const { openBlade, resolveBladeByName } = useBladeNavigation();
-  const route = useRoute();
 
   async function openDetailsBlade(args?: TOpenBladeArgs) {
     await openBlade({
@@ -68,11 +69,6 @@ export const useOrders = (args?: ListComposableArgs): UseList<CustomerOrder[], I
       }));
     }),
   };
-
-  async function GetSellerId(): Promise<string> {
-    const result = route?.params?.sellerId as string;
-    return result;
-  }
 
   return {
     load,

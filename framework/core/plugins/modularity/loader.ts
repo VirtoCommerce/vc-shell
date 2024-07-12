@@ -35,8 +35,6 @@ function loadCSS(url: string) {
 }
 
 export function useDynamicModules(app: App, { router, appName }: { router: Router; appName: string }) {
-  if (!appName) return;
-
   async function load() {
     try {
       const appsUrl = "/Modules/$(VirtoCommerce.MarketplaceVendor)/Content/apps.json";

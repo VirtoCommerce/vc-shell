@@ -1,3 +1,12 @@
+## [1.0.261](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.260...v1.0.261) (2024-07-12)
+
+
+### Bug Fixes
+
+* remove "type" property from shipping grid trackingNumber ([32f9e89](https://github.com/VirtoCommerce/vendor-portal/commit/32f9e89e93a6d1da5da99d80767a023aca04cfcc))
+
+
+
 ## [1.0.260](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.259...v1.0.260) (2024-07-12)
 
 

@@ -22,11 +22,11 @@
 
           <!-- Rating & Reviews block -->
           <VcCol
-            v-if="$hasAccess(UserPermissions.ManageSellerReviews)"
+            v-if="$dynamicModules?.Rating && $hasAccess(UserPermissions.ManageSellerReviews)"
             :size="4"
             class="tw-p-2"
           >
-            <component :is="modules.Rating.components.RatingDashboardCard"></component>
+            <component :is="$dynamicModules?.Rating?.components?.RatingDashboardCard"></component>
           </VcCol>
         </VcRow>
 

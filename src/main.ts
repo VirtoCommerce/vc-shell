@@ -1,10 +1,10 @@
-import VirtoShellFramework, { notification, useLanguages, useUser } from "@vc-shell/framework";
-import { createApp } from "vue";
+import VirtoShellFramework, { notification, useLanguages, useUser, useDynamicModules } from "@vc-shell/framework";
+import { App, Plugin, createApp, provide } from "vue";
 import * as modules from "@vcmp-vendor-portal/modules";
 import ImportModule from "@virtocommerce/import-app";
 import { router } from "./router";
 import * as locales from "./locales";
-import { RouterView } from "vue-router";
+import { RouterView, Router } from "vue-router";
 import { bootstrap } from "./bootstrap";
 import { useSellerDetails } from "./modules/seller-details/composables";
 
@@ -30,6 +30,8 @@ async function startApp() {
 
   const app = createApp(RouterView);
 
+  const { load } = useDynamicModules(app, { router, appName: "vendor-portal" });
+
   app.use(VirtoShellFramework, {
     router,
     platformUrl: import.meta.env.APP_PLATFORM_URL,
@@ -47,6 +49,9 @@ async function startApp() {
   });
 
   app.use(ImportModule.Import.default, { router });
+
+  // Load dynamic modules
+  await load();
 
   app.use(router);
 

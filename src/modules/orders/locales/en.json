@@ -117,7 +117,9 @@
       "NEW": "New",
       "PICKPACK": "Pick & Pack",
       "READYTOSEND": "Ready to send",
-      "SEND": "Send"
+      "SEND": "Send",
+      "CONFIRMED_DELIVERED": "Confirmed delivered",
+      "DELIVERED": "Delivered"
     },
     "PAGES": {
       "LIST": {

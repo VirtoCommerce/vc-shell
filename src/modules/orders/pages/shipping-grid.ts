@@ -28,14 +28,16 @@ export const shippingGrid: DynamicGridSchema = {
       component: "vc-table",
       header: false,
       multiselect: false,
+      footer: false,
       emptyTemplate: {
         component: "ShippingEmptyGridTemplate",
       },
       columns: [
         {
-          id: "shippingMethod.name",
+          id: "shippingMethod",
           title: "SHIPPING.PAGES.LIST.TABLE.HEADER.METHOD",
           alwaysVisible: true,
+          field: "shippingMethod.name",
         },
         {
           id: "trackingNumber",

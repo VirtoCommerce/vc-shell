@@ -67,7 +67,7 @@ export const useShippingDetails = (
     saveChanges: async (item) => {
       args.emit("parent:call", {
         method: "saveShipment",
-        args: { item },
+        args: { item: _.cloneDeep(item) },
       });
     },
   });
@@ -96,11 +96,11 @@ export const useShippingDetails = (
     async () => {
       if (!args.props.param) {
         const newShipment = await getNewShipment();
-        internalModel.value = reactive(new OrderShipment(newShipment));
+        item.value = reactive(new OrderShipment(newShipment));
 
-        internalModel.value.createdDate = new Date();
+        item.value.createdDate = new Date();
 
-        validationState.value.resetModified(internalModel, true);
+        validationState.value.resetModified(item, true);
       }
 
       await loadFulfillmentCenters();
@@ -124,14 +124,14 @@ export const useShippingDetails = (
 
     if (!lineItems) return;
 
-    if (!internalModel.value!.items) {
-      internalModel.value!.items = [];
+    if (!item.value!.items) {
+      item.value!.items = [];
     }
 
     lineItems.forEach((lineItem) => {
-      const exists = internalModel.value!.items?.some((existingItem) => existingItem.lineItemId === lineItem.id);
+      const exists = item.value!.items?.some((existingItem) => existingItem.lineItemId === lineItem.id);
       if (!exists) {
-        internalModel.value!.items?.push(
+        item.value!.items?.push(
           new OrderShipmentItem({
             lineItem,
             lineItemId: lineItem.id,
@@ -143,7 +143,7 @@ export const useShippingDetails = (
   }
 
   function removeLineItem(lineItem: OrderLineItem, idx: number) {
-    internalModel.value?.items?.splice(idx, 1);
+    item.value?.items?.splice(idx, 1);
   }
 
   const { loading: getShippingMethodsLoading, action: getShippingMethods } = useAsync(async () => {
@@ -183,8 +183,8 @@ export const useShippingDetails = (
         return shippingMethods.value.find((method) => method.code === internalModel.value?.shipmentMethodCode);
       },
       set(value) {
-        internalModel.value!.shipmentMethodCode = value?.code;
-        internalModel.value!.shippingMethod = new ShippingMethod(value);
+        item.value!.shipmentMethodCode = value?.code;
+        item.value!.shippingMethod = new ShippingMethod(value);
       },
     }),
     setEmployee: computed({
@@ -192,8 +192,8 @@ export const useShippingDetails = (
         return employee.value?.find((emp) => emp.id === internalModel.value?.employeeId);
       },
       set(value: SellerUser | undefined) {
-        internalModel.value!.employeeId = value?.id;
-        internalModel.value!.employeeName = value?.fullName;
+        item.value!.employeeId = value?.id;
+        item.value!.employeeName = value?.fullName;
       },
     }),
     setFulfillmentCenter: computed({
@@ -201,8 +201,8 @@ export const useShippingDetails = (
         return fulfillmentCenters.value?.find((fc) => fc.id === internalModel.value?.fulfillmentCenterId);
       },
       set(value: FulfillmentCenter | undefined) {
-        internalModel.value!.fulfillmentCenterId = value?.id;
-        internalModel.value!.fulfillmentCenterName = value?.name;
+        item.value!.fulfillmentCenterId = value?.id;
+        item.value!.fulfillmentCenterName = value?.name;
       },
     }),
     toolbarOverrides: {
@@ -219,8 +219,8 @@ export const useShippingDetails = (
 
   return {
     bladeTitle: computed(() =>
-      internalModel.value?.number
-        ? t("SHIPPING.PAGES.DETAILS.TITLE_EDIT") + internalModel.value.number
+      item.value?.number
+        ? t("SHIPPING.PAGES.DETAILS.TITLE_EDIT") + item.value.number
         : t("SHIPPING.PAGES.DETAILS.TITLE"),
     ),
     load,

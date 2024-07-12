@@ -15,7 +15,7 @@ import { onMounted, provide, ref, watch } from "vue";
 import * as modules from "@vcmp-vendor-portal/modules";
 // eslint-disable-next-line import/no-unresolved
 import logoImage from "/assets/logo.svg";
-import { VcmpSellerSecurityClient } from "@vcmp-vendor-portal/api/marketplacevendor";
+import { SellerUser, VcmpSellerSecurityClient } from "@vcmp-vendor-portal/api/marketplacevendor";
 import { useSellerUser } from "../composables";
 import { useRoute, useRouter } from "vue-router";
 
@@ -62,8 +62,13 @@ console.debug(`Initializing App`);
 
 async function customizationHandler() {
   try {
-    const currentUser = await getCurrentUser();
-    const avatar = currentUser.iconUrl;
+    let currentUser: SellerUser | null = null;
+    let avatar: string | undefined = undefined;
+
+    if (!isAdministrator.value) {
+      currentUser = !isAdministrator.value && (await getCurrentUser());
+      avatar = currentUser.iconUrl;
+    }
 
     const sellerId = await GetSellerId();
     if (!sellerId) {

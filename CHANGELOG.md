@@ -1,3 +1,12 @@
+## [1.0.260](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.259...v1.0.260) (2024-07-12)
+
+
+### Bug Fixes
+
+* **orders:** shipping fixes ([737ecc7](https://github.com/VirtoCommerce/vendor-portal/commit/737ecc7620933215ce43c0d00725a0a9b18aacc4))
+
+
+
 ## [1.0.259](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.258...v1.0.259) (2024-07-09)
 
 

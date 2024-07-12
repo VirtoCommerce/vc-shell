@@ -1,3 +1,12 @@
+## [1.0.253](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.252...v1.0.253) (2024-07-12)
+
+
+### Features
+
+* **shared:** update login logic to redirect to the previous page after successful login ([8701044](https://github.com/VirtoCommerce/vc-shell/commit/8701044315a7b13609474e00e83a069d542bb256))
+
+
+
 ## [1.0.252](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.251...v1.0.252) (2024-07-08)
 
 

@@ -14772,6 +14772,7 @@ export class SearchOffersQuery implements ISearchOffersQuery {
   outerIds?: string[] | undefined;
   productId?: string | undefined;
   skus?: string[] | undefined;
+  isDefault?: boolean;
   responseGroup?: string | undefined;
   objectType?: string | undefined;
   objectTypes?: string[] | undefined;
@@ -14810,6 +14811,7 @@ export class SearchOffersQuery implements ISearchOffersQuery {
         this.skus = [] as any;
         for (let item of _data["skus"]) this.skus!.push(item);
       }
+      this.isDefault = _data["isDefault"];
       this.responseGroup = _data["responseGroup"];
       this.objectType = _data["objectType"];
       if (Array.isArray(_data["objectTypes"])) {
@@ -14858,6 +14860,7 @@ export class SearchOffersQuery implements ISearchOffersQuery {
       data["skus"] = [];
       for (let item of this.skus) data["skus"].push(item);
     }
+    data["isDefault"] = this.isDefault;
     data["responseGroup"] = this.responseGroup;
     data["objectType"] = this.objectType;
     if (Array.isArray(this.objectTypes)) {
@@ -14890,6 +14893,7 @@ export interface ISearchOffersQuery {
   outerIds?: string[] | undefined;
   productId?: string | undefined;
   skus?: string[] | undefined;
+  isDefault?: boolean;
   responseGroup?: string | undefined;
   objectType?: string | undefined;
   objectTypes?: string[] | undefined;

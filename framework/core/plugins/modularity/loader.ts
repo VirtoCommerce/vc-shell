@@ -40,10 +40,12 @@ export function useDynamicModules(app: App, { router, appName }: { router: Route
       const appsUrl = "/Modules/$(VirtoCommerce.MarketplaceVendor)/Content/apps.json";
       const modules: Apps[] = await fetch(appsUrl).then((res) => res.json());
 
-      for (const module of modules) {
-        const appModules = module[appName].modules;
+      const module = modules.find((module) => module[appName]);
 
-        if (!appModules.length) {
+      if (typeof module !== "undefined") {
+        const appModules = module[appName]?.modules;
+
+        if (!(appModules && appModules.length)) {
           throw new Error("Modules not found");
         }
 

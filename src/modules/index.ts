@@ -7,7 +7,6 @@ import * as SellerDetails from "./seller-details";
 import * as Team from "./team";
 import * as FulfillmentCenters from "./fulfillment-centers";
 import * as Orders from "./orders";
-import * as Rating from "./rating";
 
 import { type OrderScope } from "./orders/composables";
 
@@ -23,7 +22,6 @@ export default {
   SellerDetails,
   Team,
   FulfillmentCenters,
-  Rating,
 };
 
 export type { OrderScope };

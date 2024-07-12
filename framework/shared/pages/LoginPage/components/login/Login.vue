@@ -259,7 +259,9 @@ const login = async () => {
     };
 
     if (signInResult.value.succeeded) {
-      await router.push("/");
+      const redirectTo = localStorage.getItem("redirectAfterLogin") || "/";
+      localStorage.removeItem("redirectAfterLogin");
+      await router.push(redirectTo);
     } else {
       if (signInResult.value.status) {
         if (signInResult.value.status === 401) {

@@ -167,18 +167,24 @@ export default {
      * Check if user is authenticated and redirect to login page if not.
      */
     // TODO add check if app has login page
-    args.router.beforeEach(async (to) => {
+    args.router.beforeEach(async (to, from, next) => {
       const { isAuthenticated } = useUser();
 
       if (to.name !== "Login" && to.name !== "ResetPassword" && to.name !== "Invite") {
         try {
           if (!isAuthenticated.value) {
-            return { name: "Login" };
-          } else return true;
+            localStorage.setItem("redirectAfterLogin", to.fullPath);
+            next({ name: "Login" });
+          } else {
+            next();
+          }
         } catch (e) {
-          return { name: "Login" };
+          localStorage.setItem("redirectAfterLogin", to.fullPath);
+          next({ name: "Login" });
         }
-      } else return true;
+      } else {
+        next();
+      }
     });
 
     /**

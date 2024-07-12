@@ -42,7 +42,6 @@ export const shippingGrid: DynamicGridSchema = {
         {
           id: "trackingNumber",
           title: "SHIPPING.PAGES.LIST.TABLE.HEADER.TRACK_NUM",
-          type: "number",
           alwaysVisible: true,
         },
         {

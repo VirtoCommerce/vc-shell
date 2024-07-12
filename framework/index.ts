@@ -1,10 +1,11 @@
-import { RouteLocationNormalized, Router } from "vue-router";
+import type { RouteLocationNormalized, Router } from "vue-router";
+import * as VueRouter from "vue-router";
 import { App, Component } from "vue";
 import * as components from "./ui/components";
 import * as directives from "./core/directives";
 import { useBreakpoints } from "@vueuse/core";
 import { i18n, permissions, signalR } from "./core/plugins";
-import { BladeComponentInternalInstance, BladeVNode, SharedModule, notification } from "./shared";
+import { BladeVNode, SharedModule, notification } from "./shared";
 import * as sharedPages from "./shared/pages/plugin";
 import { registerInterceptors } from "./core/interceptors";
 import { usePermissions } from "./core/composables/usePermissions";
@@ -13,9 +14,35 @@ import Vue3TouchEvents from "vue3-touch-events";
 import * as locales from "./locales";
 import { AppInsightsPlugin, AppInsightsPluginOptions } from "vue3-application-insights";
 
+import * as coreComposables from "./core/composables";
+import * as corePlugins from "./core/plugins";
+import * as coreApiPlatform from "./core/api/platform";
+import * as coreUtilities from "./core/utilities";
+import * as shared from "./shared";
+import * as Vue from "vue";
+import * as VueI18n from "vue-i18n";
+
 import "normalize.css";
 import "./assets/styles/index.scss";
 import { useAppInsights } from "./core/composables";
+
+// globals
+if (typeof window !== "undefined") {
+  window.VcShellFramework = {
+    ...window.VcShellFramework,
+    ...components,
+    ...coreComposables,
+    ...corePlugins,
+    ...coreApiPlatform,
+    ...coreUtilities,
+    ...shared,
+    ...directives,
+  };
+  window.Vue = Vue;
+  window.VueRouter = VueRouter;
+  window.moment = corePlugins.moment;
+  window.VueI18n = VueI18n;
+}
 
 export default {
   install(

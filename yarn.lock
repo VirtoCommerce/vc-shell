@@ -5132,17 +5132,17 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vcmp-vendor-portal/api@npm:^1.0.259, @vcmp-vendor-portal/api@workspace:apps/vendor-portal/src/api_client":
+"@vcmp-vendor-portal/api@npm:^1.0.260, @vcmp-vendor-portal/api@workspace:apps/vendor-portal/src/api_client":
   version: 0.0.0-use.local
   resolution: "@vcmp-vendor-portal/api@workspace:apps/vendor-portal/src/api_client"
   languageName: unknown
   linkType: soft
 
-"@vcmp-vendor-portal/modules@npm:^1.0.259, @vcmp-vendor-portal/modules@workspace:apps/vendor-portal/src/modules":
+"@vcmp-vendor-portal/modules@npm:^1.0.260, @vcmp-vendor-portal/modules@workspace:apps/vendor-portal/src/modules":
   version: 0.0.0-use.local
   resolution: "@vcmp-vendor-portal/modules@workspace:apps/vendor-portal/src/modules"
   peerDependencies:
-    "@vcmp-vendor-portal/api": ^1.0.259
+    "@vcmp-vendor-portal/api": ^1.0.260
   languageName: unknown
   linkType: soft
 
@@ -5901,8 +5901,8 @@ __metadata:
     "@vc-shell/framework": "npm:^1.0.253"
     "@vc-shell/release-config": "npm:^1.0.253"
     "@vc-shell/ts-config": "npm:^1.0.253"
-    "@vcmp-vendor-portal/api": "npm:^1.0.259"
-    "@vcmp-vendor-portal/modules": "npm:^1.0.259"
+    "@vcmp-vendor-portal/api": "npm:^1.0.260"
+    "@vcmp-vendor-portal/modules": "npm:^1.0.260"
     "@virtocommerce/import-app": "npm:^1.0.160"
     "@vitejs/plugin-vue": "npm:^5.0.3"
     "@vue/eslint-config-prettier": "npm:^9.0.0"
@@ -5935,6 +5935,7 @@ __metadata:
     vee-validate: "npm:^4.12.4"
     vite: "npm:^5.0.11"
     vite-plugin-checker: "npm:^0.6.2"
+    vite-plugin-dynamic-import: "npm:^1.5.0"
     vite-plugin-mkcert: "npm:^1.17.1"
     vitest: "npm:^1.6.0"
     vue: "npm:^3.4.19"
@@ -8269,7 +8270,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"es-module-lexer@npm:^1.5.0":
+"es-module-lexer@npm:^1.2.1, es-module-lexer@npm:^1.5.0":
   version: 1.5.4
   resolution: "es-module-lexer@npm:1.5.4"
   checksum: f29c7c97a58eb17640dcbd71bd6ef754ad4f58f95c3073894573d29dae2cad43ecd2060d97ed5b866dfb7804d5590fb7de1d2c5339a5fceae8bd60b580387fc5
@@ -9039,7 +9040,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fast-glob@npm:^3.2.7, fast-glob@npm:^3.2.9, fast-glob@npm:^3.3.0, fast-glob@npm:^3.3.1, fast-glob@npm:^3.3.2":
+"fast-glob@npm:^3.2.12, fast-glob@npm:^3.2.7, fast-glob@npm:^3.2.9, fast-glob@npm:^3.3.0, fast-glob@npm:^3.3.1, fast-glob@npm:^3.3.2":
   version: 3.3.2
   resolution: "fast-glob@npm:3.3.2"
   dependencies:
@@ -11529,7 +11530,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"magic-string@npm:^0.30.0, magic-string@npm:^0.30.10, magic-string@npm:^0.30.5, magic-string@npm:^0.30.8":
+"magic-string@npm:^0.30.0, magic-string@npm:^0.30.1, magic-string@npm:^0.30.10, magic-string@npm:^0.30.5, magic-string@npm:^0.30.8":
   version: 0.30.10
   resolution: "magic-string@npm:0.30.10"
   dependencies:
@@ -16160,6 +16161,18 @@ __metadata:
     vite:
       optional: true
   checksum: 3a0c65fb45dd5ce6e83e7525df2de3d7c27d92f39e7d363d27b6c2daf66feaf820c4bc014f326cb903dc816db8027845df7add47a8f33e80aa3927443299e812
+  languageName: node
+  linkType: hard
+
+"vite-plugin-dynamic-import@npm:^1.5.0":
+  version: 1.5.0
+  resolution: "vite-plugin-dynamic-import@npm:1.5.0"
+  dependencies:
+    acorn: "npm:^8.8.2"
+    es-module-lexer: "npm:^1.2.1"
+    fast-glob: "npm:^3.2.12"
+    magic-string: "npm:^0.30.1"
+  checksum: b93972a3321f75e50eefb5d987c10a9bfe22ea8d95cbb377a4a16d2c5e475f31f5ab68bafcc3f6bc1ebcf74ce9017a842b837c9f05e746b1f613342d3b9d03ce
   languageName: node
   linkType: hard
 

@@ -137,3 +137,5 @@ export const createAppModule = (
     },
   };
 };
+
+export * from "./loader";

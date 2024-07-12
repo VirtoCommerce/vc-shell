@@ -147,6 +147,7 @@ const props = defineProps<Props>();
 console.debug("vc-app: Init vc-app");
 
 const internalRoutes = inject("bladeRoutes") as BladeRoutesRecord[];
+const dynamicModules = inject("$dynamicModules", undefined) as Record<string, unknown> | undefined;
 const router = useRouter();
 
 const { openBlade, closeBlade, resolveBladeByName, blades } = useBladeNavigation();
@@ -200,6 +201,7 @@ watchOnce(
 );
 
 provide("internalRoutes", internalRoutes);
+provide("$dynamicModules", dynamicModules);
 </script>
 
 <style lang="scss">

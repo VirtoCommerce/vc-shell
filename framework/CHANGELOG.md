@@ -1,3 +1,13 @@
+## [1.0.257](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.256...v1.0.257) (2024-07-23)
+
+
+### Features
+
+* **core:** memoize opened nested nav groups ([20942b0](https://github.com/VirtoCommerce/vc-shell/commit/20942b0ffbe440cbf607e821314078aa1972083c))
+* **ui:** widgets 2 line/equal height vm-1442, fix table breadcrumbs position ([53a801b](https://github.com/VirtoCommerce/vc-shell/commit/53a801b68743161391e48de77db7ed0e72da1abf))
+
+
+
 ## [1.0.256](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.255...v1.0.256) (2024-07-12)
 
 

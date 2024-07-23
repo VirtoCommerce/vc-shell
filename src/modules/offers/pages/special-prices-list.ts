@@ -38,12 +38,13 @@ export const specialPricesList: DynamicGridSchema = {
           alwaysVisible: true,
         },
         {
-          id: "prices[0].listPrice",
+          id: "prices",
           title: "SPECIAL_PRICES.PAGES.LIST.TABLE.HEADER.PRICE",
           alwaysVisible: true,
           customTemplate: {
             component: "ListPriceTemplate",
           },
+          field: "prices[0].listPrice",
         },
         {
           id: "startDate",

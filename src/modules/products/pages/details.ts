@@ -40,7 +40,7 @@ export const details: DynamicDetailsSchema = {
       },
     ],
     status: {
-      component: "MpProductStatus",
+      component: "ProductPublishedStatus",
     },
   },
   content: [

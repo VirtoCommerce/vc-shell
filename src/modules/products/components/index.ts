@@ -5,6 +5,7 @@ import GridName from "./GridName.vue";
 import ProductsEmptyGridTemplate from "./ProductsEmptyGridTemplate.vue";
 import ProductNotFoundGridTemplate from "./ProductNotFoundGridTemplate.vue";
 import ProductsDashboardCard from "./ProductsDashboardCard.vue";
+import ProductPublishedStatus from "./ProductPublishedStatus.vue";
 
 export * from "./widgets";
 export * from "./notifications";
@@ -16,4 +17,5 @@ export {
   ProductsEmptyGridTemplate,
   ProductNotFoundGridTemplate,
   ProductsDashboardCard,
+  ProductPublishedStatus,
 };

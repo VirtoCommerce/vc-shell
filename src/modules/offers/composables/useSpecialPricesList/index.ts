@@ -24,6 +24,8 @@ export interface SpecialPricesListScope extends ListBaseBladeScope<OfferPriceLis
   toolbarOverrides: {
     save: IBladeToolbar;
   };
+  modified: Ref<boolean>;
+  internalModel: Ref<OfferPriceList[]>;
 }
 
 export const useSpecialPricesList = (
@@ -65,15 +67,22 @@ export const useSpecialPricesList = (
   }
 
   async function onListItemClick(args: TListItemClickArgs<OfferPriceList>) {
-    selectedItem.value = args.item;
-
     await openBlade({
       blade: resolveBladeByName("SpecialPriceDetails"),
       options: {
-        item: selectedItem.value,
+        item: args.item,
       },
       replaceCurrentBlade: true,
-      ...args,
+      onOpen: () => {
+        selectedItem.value = args.item;
+
+        args.onOpen?.();
+      },
+      onClose: () => {
+        selectedItem.value = undefined;
+
+        args.onClose?.();
+      },
     });
   }
 

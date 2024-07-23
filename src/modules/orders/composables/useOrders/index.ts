@@ -18,6 +18,7 @@ import {
 } from "@vcmp-vendor-portal/api/marketplacevendor";
 import { Ref, computed, inject, ref } from "vue";
 import { useRoute } from "vue-router";
+import { toRef } from "@vueuse/core";
 
 enum PaymentStatus {
   Unpaid = "Unpaid",
@@ -34,7 +35,8 @@ const { getApiClient } = useApiClient(VcmpSellerOrdersClient);
 export const useOrders = (args?: ListComposableArgs): UseList<CustomerOrder[], ISearchOrdersQuery, OrdersListScope> => {
   const { user } = useUser();
   const { t } = useI18n({ useScope: "global" });
-  const currentSeller = inject("currentSeller") as Ref<ISeller>;
+  const route = useRoute();
+  const currentSeller = inject("currentSeller", toRef(route?.params?.sellerId)) as Ref<ISeller>;
 
   const factory = useListFactory<CustomerOrder[], ISearchOrdersQuery>({
     load: async (query) => {

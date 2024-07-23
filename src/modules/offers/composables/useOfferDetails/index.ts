@@ -33,7 +33,7 @@ import { useI18n } from "vue-i18n";
 import { useDynamicProperties, useMultilanguage } from "../../../common";
 import { useFulfillmentCenters } from "../../../fulfillment-centers/composables";
 import { useRoute } from "vue-router";
-import { useDebounceFn } from "@vueuse/core";
+import { toRef, useDebounceFn } from "@vueuse/core";
 
 export interface IProductType {
   label: string;
@@ -68,7 +68,8 @@ export const useOfferDetails = (
   const productTypeOptions = ref<IProductType[]>([]);
   const selectedProductSellerId = ref<string>();
   const { items: fulfillmentCentersList, load: searchFulfillmentCenters } = useFulfillmentCenters();
-  const currentSeller = inject("currentSeller") as Ref<ISeller>;
+  const route = useRoute();
+  const currentSeller = inject("currentSeller", toRef(route?.params?.sellerId)) as Ref<ISeller>;
 
   const { settingUseDefaultOffer, productTypes, loadSettings } = useMarketplaceSettings();
   const { getLanguages, loading: languagesLoading } = useMultilanguage();

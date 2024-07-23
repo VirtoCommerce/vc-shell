@@ -7,6 +7,7 @@
       >
         <vc-app-menu-link
           v-if="isVisible"
+          :id="id"
           :sticky="sticky"
           :icon="icon ?? ''"
           :title="title ?? ''"
@@ -19,6 +20,7 @@
     <template v-else>
       <vc-app-menu-link
         v-if="isVisible"
+        :id="id"
         :children="children"
         :sticky="sticky"
         :icon="icon ?? ''"
@@ -42,6 +44,7 @@ export interface Props {
   title?: string;
   children?: MenuItem[];
   expand?: boolean;
+  id?: string | number;
 }
 
 export interface Emits {

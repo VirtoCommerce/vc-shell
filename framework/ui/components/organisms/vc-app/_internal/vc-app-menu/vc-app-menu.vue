@@ -72,6 +72,7 @@
 
           <VcAppMenuItem
             v-for="item in menuItems"
+            :id="item.id"
             :key="item?.id"
             :data-test-id="item?.routeId"
             :is-visible="

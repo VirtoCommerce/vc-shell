@@ -97,10 +97,11 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { ref, watch, computed } from "vue";
+import { ref, watch, computed, onMounted } from "vue";
 import { MenuItem } from "../../../../../../../../../core/types";
 import { VcIcon } from "./../../../../../../../";
 import { useRoute } from "vue-router";
+import * as _ from "lodash-es";
 
 export interface Props {
   children?: MenuItem[];
@@ -109,6 +110,7 @@ export interface Props {
   title?: string;
   url?: string;
   expand?: boolean;
+  id?: string | number;
 }
 
 export interface Emits {
@@ -163,6 +165,17 @@ const isActive = (url: string) => {
     return false;
   }
 };
+
+onMounted(() => {
+  const storedState = localStorage.getItem(`vc_menu_${props.id}_isOpened`);
+  if (storedState) {
+    isOpened.value = JSON.parse(storedState);
+  }
+});
+
+watch(isOpened, (newValue) => {
+  localStorage.setItem(`vc_menu_${props.id}_isOpened`, JSON.stringify(newValue));
+});
 </script>
 
 <style lang="scss">

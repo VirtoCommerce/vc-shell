@@ -13,6 +13,7 @@ import { useUser } from "./core/composables/useUser";
 import Vue3TouchEvents from "vue3-touch-events";
 import * as locales from "./locales";
 import { AppInsightsPlugin, AppInsightsPluginOptions } from "vue3-application-insights";
+import { useAppInsights } from "./core/composables";
 
 import * as coreComposables from "./core/composables";
 import * as corePlugins from "./core/plugins";
@@ -24,7 +25,6 @@ import * as VueI18n from "vue-i18n";
 
 import "normalize.css";
 import "./assets/styles/index.scss";
-import { useAppInsights } from "./core/composables";
 
 // globals
 if (typeof window !== "undefined") {

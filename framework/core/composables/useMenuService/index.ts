@@ -47,7 +47,10 @@ function useMenuServiceFn(): MenuService {
 
     rawMenu.value.forEach((item) => {
       if (item.group) {
-        const isGroupExist = useArrayFind(constructedMenu, (m) => m.groupId === "group_" + item.group);
+        const isGroupExist = useArrayFind(
+          constructedMenu,
+          (m) => m.groupId === "group_" + _.snakeCase(t(item.group ?? "")),
+        );
 
         const groupItem = _.omit(
           {
@@ -63,7 +66,7 @@ function useMenuServiceFn(): MenuService {
           upsert(isGroupExist.value.children, groupItem);
         } else {
           const group: Omit<MenuItem, "icon"> = {
-            groupId: "group_" + item.group,
+            groupId: "group_" + _.snakeCase(t(item.group)),
             groupIcon: item.groupIcon ?? "",
             title: computed(() => t(item.group as string)),
             children: [_.omit(groupItem)],
@@ -83,7 +86,7 @@ function useMenuServiceFn(): MenuService {
         (x, index): MenuItem => ({
           ...x,
           title: computed(() => t(x.title as string)),
-          id: index,
+          id: _.snakeCase(t(x.title as string)),
           children: x.children?.sort(sortByGroupPriority),
         }),
       )

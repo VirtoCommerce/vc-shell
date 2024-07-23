@@ -113,7 +113,8 @@ export const useProductsList = (
     statuses: computed(() => {
       return Object.entries(SellerProductStatus).reduce(
         (acc, [value, displayValue]) => {
-          if (value.includes(SellerProductStatus.Approved)) return acc;
+          if (value.includes(SellerProductStatus.Approved) || value.includes(SellerProductStatus.RequiresChanges))
+            return acc;
           acc.push({
             value,
             displayValue: computed(() => t(`PRODUCTS.PAGES.LIST.FILTERS.STATUS.${displayValue}`)),

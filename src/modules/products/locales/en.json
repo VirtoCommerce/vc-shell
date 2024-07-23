@@ -50,11 +50,10 @@
           "TITLE": "Filters",
           "STATUS_FILTER": "Status filter",
           "STATUS": {
-            "None": "New",
+            "None": "Draft",
             "Published": "Published",
-            "HasStagedChanges": "Has staged changes",
+            "HasStagedChanges": "Has draft updates",
             "WaitForApproval": "Wait for approval",
-            "RequiresChanges": "Requires changes",
             "Rejected": "Rejected"
           }
         },

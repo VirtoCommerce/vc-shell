@@ -1,3 +1,20 @@
+## [1.0.264](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.263...v1.0.264) (2024-07-23)
+
+
+### Bug Fixes
+
+* **offers:** fix wrong price update vm-1448 ([baf1343](https://github.com/VirtoCommerce/vendor-portal/commit/baf1343668acb486a3059fba754f7f1a96ecadd0))
+* **offers:** table changing width issue fix ([b1dbbe0](https://github.com/VirtoCommerce/vendor-portal/commit/b1dbbe0c93d23cf43f1c39b00509b650b6540e07))
+
+
+### Features
+
+* **products:** published badge on details blade ([dc2e07c](https://github.com/VirtoCommerce/vendor-portal/commit/dc2e07c12e0d8bdd85ecaaf30185a23de2fb9f26))
+* **products:** statuses text change ([036e71c](https://github.com/VirtoCommerce/vendor-portal/commit/036e71cfe9ca5fbe8ff8d48b227a10be4b3b196b))
+* **team:** add reload and close blade on team member removal ([bf66a9f](https://github.com/VirtoCommerce/vendor-portal/commit/bf66a9f8aae687b53c1ce6f0f938bab44d3e2e17))
+
+
+
 ## [1.0.263](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.262...v1.0.263) (2024-07-12)
 
 

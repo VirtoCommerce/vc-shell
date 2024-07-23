@@ -2,7 +2,7 @@
   <div>
     <div
       ref="tooltipCompRef"
-      class="tw-inline-flex"
+      class="tw-inline-flex tw-h-full"
       @mouseenter="tooltipVisible = true"
       @mouseleave="tooltipVisible = false"
     >

@@ -29,10 +29,10 @@
           ></VcIcon>
         </div>
       </VcBadge>
-      <div class="tw-truncate tw-w-full">
+      <div class="tw-w-full">
         <div
           v-if="title && isExpanded"
-          class="vc-widget__title tw-truncate"
+          class="vc-widget__title tw-line-clamp-2"
         >
           {{ title }}
         </div>

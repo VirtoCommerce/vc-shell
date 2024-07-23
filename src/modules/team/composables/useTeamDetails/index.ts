@@ -33,6 +33,13 @@ import { useRoute } from "vue-router";
 
 export interface TeamDetailsScope extends DetailsBaseBladeScope {
   photoHandler: WritableComputedRef<{ url: string; name: string; title: string }[]>;
+  sendInviteStatus: Ref<boolean>;
+  isActive: WritableComputedRef<boolean | undefined>;
+  isOwnerReadonly: ComputedRef<boolean>;
+  isActiveSwitchVisible: ComputedRef<boolean>;
+  disableOnCurrent: ComputedRef<boolean>;
+  isActiveSwitchHidden: ComputedRef<boolean>;
+  roles: ComputedRef<{ id: string; name: string }[]>;
   toolbarOverrides: {
     sendInvite: IBladeToolbar;
     saveChanges: IBladeToolbar;
@@ -48,6 +55,7 @@ export interface TeamDetailsScope extends DetailsBaseBladeScope {
       remove: (files: IImage[]) => ICommonAsset[];
     };
   };
+  disableOnUser: ComputedRef<boolean>;
 }
 
 const { getApiClient } = useApiClient(VcmpSellerSecurityClient);
@@ -212,7 +220,15 @@ export const useTeamDetails = (args: DetailsComposableArgs): UseDetails<SellerUs
       remove: {
         clickHandler: async () => {
           if (await showConfirmation(computed(() => t("TEAM.PAGES.DETAILS.POPUP.ALERT.MESSAGE.USER_DELETE")))) {
-            if (item.value?.id) remove?.({ id: item.value?.id });
+            if (item.value?.id) {
+              await remove?.({ id: item.value?.id });
+
+              args.emit("parent:call", {
+                method: "reload",
+              });
+
+              args.emit("close:blade");
+            }
           }
         },
         isVisible: !!args.props.param,

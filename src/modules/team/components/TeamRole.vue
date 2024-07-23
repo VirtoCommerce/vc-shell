@@ -1,5 +1,5 @@
 <template>
-  {{ roleName(context.item.role) }}
+  <div>{{ roleName(context.item.role) }}</div>
 </template>
 <script setup lang="ts">
 import { SellerUser } from "@vcmp-vendor-portal/api/marketplacevendor";

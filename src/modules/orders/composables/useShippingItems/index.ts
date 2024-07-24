@@ -7,7 +7,9 @@ import {
   useListFactory,
 } from "@vc-shell/framework";
 import { OrderLineItem } from "@vcmp-vendor-portal/api/marketplacevendor";
-import { computed, ref, watch } from "vue";
+import { Ref, computed, ref, toRef, toRefs, watch } from "vue";
+import * as _ from "lodash-es";
+import { useForm, useIsFormValid } from "vee-validate";
 
 export interface ShippingItemScope extends ListBaseBladeScope {
   toolbarOverrides: {
@@ -23,10 +25,16 @@ export const useShippingItems = (
   }>,
 ): UseList<OrderLineItem[], Record<string, unknown>, ShippingItemScope> => {
   const { getBladeExposedData } = useDynamicViewsUtils();
+  const { meta } = useForm({
+    validateOnMount: false,
+  });
+  const isFormValid = computed(() => meta.value.valid);
+
+  const internalModel = ref([]) as Ref<(OrderLineItem & { quantityOnShipment?: number })[]>;
 
   const factory = useListFactory({
     load: () => {
-      return { results: args.props.options?.items ?? [] };
+      return { results: internalModel.value };
     },
   });
 
@@ -36,16 +44,25 @@ export const useShippingItems = (
   const selectedIds = ref<string[]>([]);
 
   const scope: ShippingItemScope = {
+    disabled: false,
     toolbarOverrides: {
       add: {
         clickHandler: () => {
           args.emit("parent:call", {
             method: "addLineItems",
-            args: { selectedIds: selectedIds.value },
+            args: {
+              selectedItems: selectedIds.value.map((id) => {
+                const item = internalModel.value.find((item) => item.id === id);
+                return {
+                  ...item,
+                  quantity: item?.quantityOnShipment,
+                };
+              }),
+            },
           });
           args.emit("close:blade");
         },
-        disabled: computed(() => selectedIds.value.length === 0),
+        disabled: computed(() => !isFormValid.value || selectedIds.value.length === 0),
       },
     },
   };
@@ -56,6 +73,18 @@ export const useShippingItems = (
       selectedIds.value = newVal;
     },
     { deep: true },
+  );
+
+  watch(
+    () => args?.props.options?.items,
+    (newVal) => {
+      internalModel.value = _.cloneDeep(newVal) ?? [];
+
+      internalModel.value.forEach((item) => {
+        item.quantityOnShipment = item.quantity;
+      });
+    },
+    { deep: true, immediate: true },
   );
 
   return {

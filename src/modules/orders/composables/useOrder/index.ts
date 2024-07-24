@@ -17,6 +17,8 @@ import {
   UpdateSellerOrderCommand,
   SellerOrder,
   OrderShipment,
+  OrderLineItem,
+  OrderShipmentItem,
 } from "@vcmp-vendor-portal/api/marketplacevendor";
 import { ComputedRef, Ref, computed, ref, watch, unref } from "vue";
 import { useI18n } from "vue-i18n";
@@ -312,7 +314,15 @@ export const useOrder = (args: DetailsComposableArgs): UseDetails<CustomerOrder,
 
   async function saveShipping(arg: { items: OrderShipment[] }) {
     if (item.value) {
-      item.value.shipments = arg.items;
+      item.value.shipments = arg.items.map(
+        (x) =>
+          new OrderShipment({
+            ...x,
+            items: x.items?.map(
+              (item) => new OrderShipmentItem({ ...item, lineItem: new OrderLineItem(item.lineItem) }),
+            ),
+          }),
+      );
 
       await saveChanges(item.value);
 

@@ -35,8 +35,17 @@ export const shippingItems: DynamicGridSchema = {
           title: "SHIPPING.PAGES.ITEMS_LIST.TABLE.HEADER.SKU",
         },
         {
+          id: "quantityOnShipment",
+          title: "SHIPPING.PAGES.ITEMS_LIST.TABLE.HEADER.ORDER_QTY",
+          type: "number",
+          editable: true,
+          rules: {
+            min_value: 1,
+          },
+        },
+        {
           id: "quantity",
-          title: "SHIPPING.PAGES.ITEMS_LIST.TABLE.HEADER.QTY",
+          title: "SHIPPING.PAGES.ITEMS_LIST.TABLE.HEADER.AVAIL_QTY",
           type: "number",
         },
       ],

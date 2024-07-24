@@ -187,23 +187,27 @@ export const shippingDetails: DynamicDetailsSchema = {
               property: "items",
               columns: [
                 {
-                  id: "lineItem.imageUrl",
+                  id: "imageUrl",
                   title: "SHIPPING.PAGES.DETAILS.FORM.ITEMS.LINE_ITEMS.TABLE.IMAGE",
                   type: "image",
                   width: "100px",
+                  field: "lineItem.imageUrl",
                 },
                 {
-                  id: "lineItem.sku",
+                  id: "sku",
                   title: "SHIPPING.PAGES.DETAILS.FORM.ITEMS.LINE_ITEMS.TABLE.SKU",
+                  field: "lineItem.sku",
                 },
                 {
-                  id: "lineItem.quantity",
+                  id: "quantity",
                   title: "SHIPPING.PAGES.DETAILS.FORM.ITEMS.LINE_ITEMS.TABLE.QTY",
+                  field: "quantity",
                 },
                 {
-                  id: "lineItem.priceWithTax",
+                  id: "priceWithTax",
                   title: "SHIPPING.PAGES.DETAILS.FORM.ITEMS.LINE_ITEMS.TABLE.PRICE",
                   type: "money",
+                  field: "lineItem.priceWithTax",
                 },
               ],
             },

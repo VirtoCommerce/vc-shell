@@ -16,13 +16,10 @@ import {
   SellerUser,
   OrderLineItem,
   VcmpSellerOrdersClient,
-  SearchShipmentsQuery,
-  UpdateOrderShipmentCommand,
-  ISeller,
   ShippingMethod,
   OrderShipmentItem,
 } from "@vcmp-vendor-portal/api/marketplacevendor";
-import { ComputedRef, Ref, WritableComputedRef, computed, inject, reactive, ref, watch } from "vue";
+import { ComputedRef, WritableComputedRef, computed, reactive, ref, watch } from "vue";
 import { useFulfillmentCenters } from "../../../fulfillment-centers/composables";
 import { useTeamList } from "../../../team/composables";
 import * as _ from "lodash-es";
@@ -31,7 +28,7 @@ export interface ShippingDetailsScope extends DetailsBaseBladeScope {
   fulfillmentCenters: ComputedRef<FulfillmentCenter[]>;
   employee: ComputedRef<SellerUser[]>;
   addNewLineItem: () => Promise<void>;
-  addLineItems: (data: { selectedIds: string[] }) => void;
+  addLineItems: (data: { selectedItems: OrderLineItem[] }) => void;
   removeLineItem: (lineItem: OrderLineItem, idx: number) => void;
   setEmployee: WritableComputedRef<SellerUser | undefined>;
   setFulfillmentCenter: WritableComputedRef<FulfillmentCenter | undefined>;
@@ -64,10 +61,10 @@ export const useShippingDetails = (
         args: { item: internalModel.value },
       });
     },
-    saveChanges: async (item) => {
+    saveChanges: async (details) => {
       args.emit("parent:call", {
         method: "saveShipment",
-        args: { item: _.cloneDeep(item) },
+        args: { item: _.cloneDeep(details) },
       });
     },
   });
@@ -100,7 +97,7 @@ export const useShippingDetails = (
 
         item.value.createdDate = new Date();
 
-        validationState.value.resetModified(item, true);
+        validationState.value.resetModified(item.value, true);
       }
 
       await loadFulfillmentCenters();
@@ -119,8 +116,8 @@ export const useShippingDetails = (
     });
   }
 
-  function addLineItems(data: { selectedIds: string[] }) {
-    const lineItems = args.props.options?.items.filter((item) => item.id && data.selectedIds.includes(item.id));
+  function addLineItems(data: { selectedItems: OrderLineItem[] }) {
+    const lineItems = data.selectedItems;
 
     if (!lineItems) return;
 
@@ -180,7 +177,7 @@ export const useShippingDetails = (
     isShippingMethodSelectVisible: computed(() => !args.props.param),
     shipmentMethodCode: computed({
       get() {
-        return shippingMethods.value.find((method) => method.code === internalModel.value?.shipmentMethodCode);
+        return shippingMethods.value.find((method) => method.code === item.value?.shipmentMethodCode);
       },
       set(value) {
         item.value!.shipmentMethodCode = value?.code;
@@ -189,7 +186,7 @@ export const useShippingDetails = (
     }),
     setEmployee: computed({
       get() {
-        return employee.value?.find((emp) => emp.id === internalModel.value?.employeeId);
+        return employee.value?.find((emp) => emp.id === item.value?.employeeId);
       },
       set(value: SellerUser | undefined) {
         item.value!.employeeId = value?.id;
@@ -198,7 +195,7 @@ export const useShippingDetails = (
     }),
     setFulfillmentCenter: computed({
       get() {
-        return fulfillmentCenters.value?.find((fc) => fc.id === internalModel.value?.fulfillmentCenterId);
+        return fulfillmentCenters.value?.find((fc) => fc.id === item.value?.fulfillmentCenterId);
       },
       set(value: FulfillmentCenter | undefined) {
         item.value!.fulfillmentCenterId = value?.id;

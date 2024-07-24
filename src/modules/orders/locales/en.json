@@ -24,7 +24,8 @@
             "TOTAL": "Total",
             "QTY": "Qty",
             "STATUS": "Status",
-            "CREATED": "Created"
+            "CREATED": "Created",
+            "ITEMS_IMG": "Img"
           },
           "FILTER": {
             "STATUS": {
@@ -154,7 +155,8 @@
           "HEADER": {
             "IMAGE": "Img",
             "SKU": "SKU",
-            "QTY": "Quantity"
+            "AVAIL_QTY": "Ordered quantity",
+            "ORDER_QTY": "Quantity in Shipment"
           }
         }
       },
@@ -196,7 +198,8 @@
                 "TOTAL": "Total",
                 "ACTIONS": {
                   "DELETE": "Delete"
-                }
+                },
+                "ORDERED_QUANTITY": "Ordered quantity"
               }
             }
           }

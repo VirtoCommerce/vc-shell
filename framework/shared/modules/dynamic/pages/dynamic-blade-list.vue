@@ -46,6 +46,7 @@
         :multiselect="isWidgetView ? false : tableData?.multiselect"
         :header="isWidgetView ? false : tableData?.header"
         :item-action-builder="actionBuilder"
+        :editing="isWidgetView ? false : isBladeEditable"
         :enable-item-actions="!!tableData?.actions && !isWidgetView"
         :footer="isWidgetView ? false : tableData?.footer"
         :sort="sort"
@@ -67,6 +68,8 @@
         @search:change="onSearchList"
         @row:reorder="sortRows"
         @select:all="handleSelectAllItems"
+        @on-edit-complete="onEditComplete"
+        @on-cell-blur="onCellBlur"
       >
         <template
           v-if="isFilterVisible"
@@ -285,6 +288,8 @@ const { load, remove, items, loading, pagination, query, scope } = props.composa
       scope: undefined,
     } as unknown as UseList<Record<string, any>[], Record<string, any>, ListBaseBladeScope>);
 
+const isBladeEditable = computed(() => !toValue("disabled" in toValue(scope || {}) && toValue(scope || {}).disabled));
+
 if (props.isWidgetView) {
   query.value.take = 5;
 }
@@ -406,6 +411,26 @@ watch(sort, async (value) => {
 watch(items, (newVal) => {
   itemsProxy.value = newVal;
 });
+
+const onEditComplete = (data: { event: { field: string; value: any }; index: number }) => {
+  const item = itemsProxy.value?.[data.index];
+  if (item) {
+    item[data.event.field] = data.event.value;
+  }
+};
+
+const onCellBlur = async (data: { row: number | undefined; field: string }) => {
+  const column = tableData?.value?.columns?.find((col) => col.id === data.field);
+  if (column && column.onCellBlur && column.onCellBlur.method) {
+    if (
+      scope &&
+      toValue(unreffedScope)?.[column.onCellBlur.method] &&
+      typeof toValue(unreffedScope)[column.onCellBlur.method] === "function"
+    ) {
+      await toValue(unreffedScope)[column.onCellBlur.method](data);
+    }
+  }
+};
 
 const openDetailsBlade = async () => {
   if (!props.isWidgetView) {
@@ -652,6 +677,7 @@ function actionBuilder(item: (typeof items.value)[number]): IActionBuilderResult
 }
 
 provide("bladeContext", toReactive(bladeContext));
+provide("isBladeEditable", isBladeEditable);
 
 defineExpose({
   reload,

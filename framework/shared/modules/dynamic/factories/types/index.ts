@@ -19,6 +19,9 @@ export interface IPagination {
 
 export interface IValidationState<Item> {
   valid: boolean;
+  /**
+   * @deprecated `dirty` - use `modified` instead
+   */
   dirty: boolean;
   disabled: boolean;
   modified: boolean;

@@ -191,7 +191,7 @@ watch(
   { immediate: true },
 );
 
-const isFormModified = computed(() => validationState.value.dirty || validationState.value.modified);
+const isFormModified = computed(() => validationState.value.modified);
 
 useBeforeUnload(isFormModified);
 
@@ -274,6 +274,9 @@ const toolbarComputed =
           async clickHandler() {
             if (item.value) {
               await saveChanges(item.value);
+
+              // WORKAROUND: Sometimes validationState is not reset after saveChanges
+              validationState.value.resetValidationState();
 
               emit("parent:call", {
                 method: "reload",

@@ -78,9 +78,17 @@ export const grid: DynamicGridSchema = {
       },
       columns: [
         {
+          id: "lineItemsImg",
+          title: "ORDERS.PAGES.LIST.TABLE.HEADER.ITEMS_IMG",
+          width: "75px",
+          alwaysVisible: true,
+          customTemplate: {
+            component: "OrderLineItemsImgTemplate",
+          },
+        },
+        {
           id: "number",
           title: "ORDERS.PAGES.LIST.TABLE.HEADER.NUMBER",
-          width: 160,
           alwaysVisible: true,
           sortable: true,
         },
@@ -93,7 +101,6 @@ export const grid: DynamicGridSchema = {
         {
           id: "total",
           title: "ORDERS.PAGES.LIST.TABLE.HEADER.TOTAL",
-          width: 120,
           alwaysVisible: true,
           sortable: true,
           type: "money",
@@ -101,7 +108,6 @@ export const grid: DynamicGridSchema = {
         {
           id: "status",
           title: "ORDERS.PAGES.LIST.TABLE.HEADER.STATUS",
-          width: 120,
           alwaysVisible: true,
           sortable: true,
           customTemplate: {
@@ -112,7 +118,6 @@ export const grid: DynamicGridSchema = {
           id: "createdDate",
           title: "ORDERS.PAGES.LIST.TABLE.HEADER.CREATED",
           sortable: true,
-          width: 180,
           type: "date-ago",
         },
       ],

@@ -8,6 +8,7 @@ import OrdersNotFoundGridTemplate from "./OrdersNotFoundGridTemplate.vue";
 import OrdersDashboardCard from "./OrdersDashboardCard.vue";
 import ShippingGridStatus from "./ShippingGridStatus.vue";
 import ShippingEmptyGridTemplate from "./ShippingEmptyGridTemplate.vue";
+import OrderLineItemsImgTemplate from "./OrderLineItemsImgTemplate.vue";
 
 export {
   OrderGridName,
@@ -20,5 +21,6 @@ export {
   OrdersDashboardCard,
   ShippingGridStatus,
   ShippingEmptyGridTemplate,
+  OrderLineItemsImgTemplate,
 };
 export * from "./widgets";

@@ -1,3 +1,13 @@
+## [1.0.265](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.264...v1.0.265) (2024-07-24)
+
+
+### Features
+
+* **orders:** allow edit quantities in shippings vm-1449 ([3fc9f5f](https://github.com/VirtoCommerce/vendor-portal/commit/3fc9f5f1fd964c7cc048ce0bbf62be9081aa46c9))
+* **orders:** stacked line items images in orders list ([4b85069](https://github.com/VirtoCommerce/vendor-portal/commit/4b850699127e51ee1bd6f5d03d3bbe7e637667fe))
+
+
+
 ## [1.0.264](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.263...v1.0.264) (2024-07-23)
 
 

@@ -1,3 +1,12 @@
+## [1.0.258](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.257...v1.0.258) (2024-07-24)
+
+
+### Features
+
+* **dynamic:** grid blade editable table ([5b41467](https://github.com/VirtoCommerce/vc-shell/commit/5b414675c1148fb8652c0125253a882b1f9a665e))
+
+
+
 ## [1.0.257](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.256...v1.0.257) (2024-07-23)
 
 

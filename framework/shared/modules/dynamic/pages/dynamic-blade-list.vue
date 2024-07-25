@@ -288,7 +288,9 @@ const { load, remove, items, loading, pagination, query, scope } = props.composa
       scope: undefined,
     } as unknown as UseList<Record<string, any>[], Record<string, any>, ListBaseBladeScope>);
 
-const isBladeEditable = computed(() => !toValue("disabled" in toValue(scope || {}) && toValue(scope || {}).disabled));
+const isBladeEditable = computed(() =>
+  "disabled" in toValue(scope || {}) ? !toValue(toValue(scope || {}).disabled) : false,
+);
 
 if (props.isWidgetView) {
   query.value.take = 5;

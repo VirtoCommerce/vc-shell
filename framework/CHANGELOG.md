@@ -1,3 +1,12 @@
+## [1.0.259](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.258...v1.0.259) (2024-07-25)
+
+
+### Bug Fixes
+
+* **dynamic:** editable blade condition fix ([c446afa](https://github.com/VirtoCommerce/vc-shell/commit/c446afaf736db86a9b4e0618d200376fae242fff))
+
+
+
 ## [1.0.258](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.257...v1.0.258) (2024-07-24)
 
 

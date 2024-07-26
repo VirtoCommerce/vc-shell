@@ -83,10 +83,11 @@ export const grid: DynamicGridSchema = {
           type: "status-icon",
         },
         {
-          id: "prices.salePrice",
+          id: "salePrice",
           title: "Sale price",
           sortable: true,
           type: "money",
+          field: "prices.salePrice",
         },
         {
           id: "minQuantity",

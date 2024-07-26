@@ -1,6 +1,6 @@
 <template>
   <div
-    class="vc-select tw-box-border"
+    class="vc-select tw-box-border tw-w-full"
     :class="{
       'vc-select_opened': isOpened,
       'vc-select_error': error,
@@ -42,7 +42,7 @@
             >
               <slot name="prepend"></slot>
             </div>
-            <div class="tw-relative tw-flex tw-flex-auto tw-overflow-x-clip">
+            <div class="tw-relative tw-flex tw-flex-auto tw-overflow-x-clip tw-truncate">
               <div
                 class="tw-truncate vc-select__field-wrapper tw-relative tw-box-border tw-border tw-border-solid tw-border-[color:var(--select-border-color)] tw-rounded-[var(--select-border-radius)] tw-bg-[color:var(--select-background-color)] tw-flex tw-flex-col tw-flex-nowrap tw-flex-auto tw-items-stretch"
               >

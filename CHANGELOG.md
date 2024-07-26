@@ -1,3 +1,12 @@
+## [1.0.260](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.259...v1.0.260) (2024-07-26)
+
+
+### Features
+
+* **ui:** vc-select truncating ([ba67161](https://github.com/VirtoCommerce/vc-shell/commit/ba6716135fa55e17c5670964efef70e01d94c195))
+
+
+
 ## [1.0.259](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.258...v1.0.259) (2024-07-25)
 
 

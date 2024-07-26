@@ -381,7 +381,7 @@
                 :class="[cell.class]"
                 :style="{ maxWidth: cell.width, width: cell.width }"
               >
-                <div class="tw-truncate">
+                <div class="tw-truncate tw-w-full">
                   <renderCellSlot
                     :item="item"
                     :cell="cell"

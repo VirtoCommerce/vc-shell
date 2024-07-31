@@ -241,7 +241,7 @@ const { open } = usePopup({
   --blade-color-unsaved-changes: #82a6bd;
 
   --blade-widgets-width: 50px;
-  --blade-widgets-width-expanded: 80px;
+  --blade-widgets-width-expanded: 120px;
 }
 
 .vc-app_mobile .vc-blade {

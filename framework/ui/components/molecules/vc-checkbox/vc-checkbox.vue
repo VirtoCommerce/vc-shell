@@ -187,7 +187,7 @@ $sizes: small, medium, large;
       border: calc(var(--checkbox-size) * 0.1) solid var(--checkbox-background);
       border-top: 0;
       border-left: 0;
-      left: calc(var(--checkbox-size) * 0.25);
+      left: calc(var(--checkbox-size) * 0.3);
       top: calc(var(--checkbox-size) * 0.1);
       transform: rotate(var(--r, 43deg));
       opacity: var(--checkbox-after-opacity, 0);

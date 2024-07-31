@@ -10,6 +10,7 @@
     <div class="tw-flex tw-relative">
       <slot name="default"></slot>
       <div
+        v-if="typeof content !== 'undefined'"
         ref="badge"
         class="vc-badge__badge tw-absolute tw-inline-flex tw-justify-center tw-items-center tw-text-center tw-indent-0 tw-rounded-[var(--badge-border-radius)] tw-text-[13px] tw-leading-[13px] tw-font-normal tw-bg-[color:var(--badge-background-color)] tw-text-[color:var(--badge-text-color)] tw-border tw-border-solid tw-border-[color:var(--badge-border-color)] tw-transition tw-duration-200"
         :class="{

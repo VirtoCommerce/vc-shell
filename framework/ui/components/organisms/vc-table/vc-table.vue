@@ -95,7 +95,7 @@
           clearable
           name="table_search"
           :model-value="searchValue"
-          @update:model-value="$emit('search:change', $event)"
+          @update:model-value="$emit('search:change', $event as string)"
         >
           <template #prepend-inner="{ focus }">
             <VcIcon
@@ -204,12 +204,13 @@
           >
             <div class="vc-table__header-row tw-flex tw-flex-row">
               <div
-                v-if="editing && multiselect && items && items.length"
-                class="tw-flex-1 tw-flex tw-items-center tw-justify-center tw-w-[28px] tw-max-w-[28px] tw-min-w-[28px] tw-bg-[#f9f9f9] !tw-border-0 tw-shadow-[inset_0px_1px_0px_#eaedf3,_inset_0px_-1px_0px_#eaedf3] tw-box-border tw-sticky tw-top-0 tw-select-none tw-overflow-hidden tw-z-[1]"
+                v-if="multiselect && items && items.length"
+                class="tw-flex-1 tw-flex tw-items-center tw-justify-center tw-w-[36px] tw-max-w-[36px] tw-min-w-[36px] tw-bg-[#f9f9f9] !tw-border-0 tw-shadow-[inset_0px_1px_0px_#eaedf3,_inset_0px_-1px_0px_#eaedf3] tw-box-border tw-sticky tw-top-0 tw-select-none tw-overflow-hidden tw-z-[1]"
               >
                 <div class="tw-flex tw-justify-center tw-items-center">
                   <VcCheckbox
                     v-model="headerCheckbox"
+                    size="m"
                     @click.stop
                   ></VcCheckbox>
                 </div>
@@ -237,7 +238,7 @@
                 @drop="onColumnHeaderDrop($event, item)"
                 @click="handleHeaderClick(item)"
               >
-                <div
+                <!-- <div
                   v-if="!editing && multiselect && index === 0 && items && items.length"
                   class="tw-flex tw-pl-5 tw-items-center tw-justify-center tw-w-auto tw-bg-[#f9f9f9] tw-box-border tw-select-none tw-overflow-hidden tw-z-[1] tw-shrink-0"
                 >
@@ -248,7 +249,7 @@
                       @click.stop
                     ></VcCheckbox>
                   </div>
-                </div>
+                </div> -->
                 <div class="tw-flex tw-items-center tw-flex-nowrap tw-truncate tw-px-3 tw-font-bold">
                   <div class="tw-truncate">
                     <span
@@ -361,13 +362,14 @@
               @mouseover="showActions(itemIndex)"
             >
               <div
-                v-if="editing && multiselect && typeof item === 'object'"
-                class="tw-w-[28px] tw-max-w-[28px] tw-min-w-[28px] tw-relative tw-flex-1 tw-flex tw-items-center tw-justify-center"
+                v-if="multiselect && typeof item === 'object'"
+                class="tw-w-[36px] tw-max-w-[36px] tw-min-w-[36px] tw-relative tw-flex-1 tw-flex tw-items-center tw-justify-center"
                 @click.stop
               >
                 <div class="tw-flex tw-justify-center tw-items-center">
                   <VcCheckbox
                     :model-value="isSelected(item)"
+                    size="m"
                     @update:model-value="rowCheckbox(item)"
                   ></VcCheckbox>
                 </div>
@@ -382,11 +384,26 @@
                 :style="{ maxWidth: cell.width, width: cell.width }"
               >
                 <div class="tw-truncate tw-w-full">
-                  <renderCellSlot
+                  <!-- <renderCellSlot
                     :item="item"
                     :cell="cell"
                     :index="itemIndex"
-                  />
+                  /> -->
+                  <slot
+                    :name="`item_${cell.id}`"
+                    :item="item"
+                    :cell="cell"
+                    :index="itemIndex"
+                  >
+                    <VcTableCell
+                      :item="item as TableItem"
+                      :cell="cell"
+                      :index="itemIndex"
+                      :editing="editing"
+                      @update="$emit('onEditComplete', { event: $event, index: itemIndex })"
+                      @blur="$emit('onCellBlur', $event)"
+                    ></VcTableCell>
+                  </slot>
                 </div>
               </div>
               <div
@@ -595,7 +612,7 @@ const props = withDefaults(
 const emit = defineEmits<{
   paginationClick: [page: number];
   selectionChanged: [values: T[]];
-  "search:change": [value: string | number | Date | null | undefined];
+  "search:change": [value: string | undefined];
   headerClick: [item: ITableColumns];
   itemClick: [item: T];
   "scroll:ptr": [];
@@ -645,7 +662,7 @@ const draggedColumn = ref();
 const draggedElement = ref<HTMLElement>();
 const dropPosition = ref();
 const columnsInit = ref(true);
-const isHovered = ref(undefined) as Ref<{ item: T; state: boolean } | undefined>;
+// const isHovered = ref(undefined) as Ref<{ item: T; state: boolean } | undefined>;
 
 // row reordering variables
 const draggedRow = ref<T>();
@@ -669,70 +686,70 @@ const sortField = computed(() => {
 
 const hasClickListener = typeof instance?.vnode.props?.["onItemClick"] === "function";
 
-const renderCellSlot = ({ item, cell, index }: { item: T; cell: ITableColumns; index: number }) => {
-  const isSlotExist = slots[`item_${cell.id}`];
+// const renderCellSlot = ({ item, cell, index }: { item: T; cell: ITableColumns; index: number }) => {
+//   const isSlotExist = slots[`item_${cell.id}`];
 
-  const isFirstCell = filteredCols.value.indexOf(cell) === 0;
+//   const isFirstCell = filteredCols.value.indexOf(cell) === 0;
 
-  const isRowSelected = selection.value.includes(item);
+//   const isRowSelected = isSelected(item);
 
-  const checkboxComponent = h(
-    "div",
-    {
-      class: "tw-absolute tw-z-10 tw-top-0 tw-bottom-0 tw-left-[20px] tw-right-0 tw-flex tw-items-center",
-    },
-    h(VcCheckbox, {
-      class: "",
-      size: "m",
-      modelValue: selection.value.includes(item),
-      onClick: (e: Event) => e.stopPropagation(),
-      onMouseover: () => (isHovered.value = { state: true, item: item }),
-      onMouseout: () => (isHovered.value = { state: false, item: item }),
-      "onUpdate:modelValue": () => {
-        rowCheckbox(item);
-      },
-    }),
-  );
+//   const checkboxComponent = h(
+//     "div",
+//     {
+//       class: "tw-absolute tw-z-10 tw-top-0 tw-bottom-0 tw-left-[20px] tw-right-0 tw-flex tw-items-center",
+//     },
+//     h(VcCheckbox, {
+//       class: "",
+//       size: "m",
+//       modelValue: isSelected(item),
+//       onClick: (e: Event) => e.stopPropagation(),
+//       onMouseover: () => (isHovered.value = { state: true, item: item }),
+//       onMouseout: () => (isHovered.value = { state: false, item: item }),
+//       "onUpdate:modelValue": () => {
+//         rowCheckbox(item);
+//       },
+//     }),
+//   );
 
-  const checkboxVisibilityHandler =
-    !props.editing &&
-    props.multiselect &&
-    props.items &&
-    props.items.length &&
-    ((isFirstCell && selectedRowIndex.value === index) || (isRowSelected && isFirstCell));
+//   const checkboxVisibilityHandler =
+//     !props.editing &&
+//     props.multiselect &&
+//     props.items &&
+//     props.items.length &&
+//     ((isFirstCell && selectedRowIndex.value === index) || (isRowSelected && isFirstCell));
 
-  return h("div", { class: "" }, [
-    checkboxVisibilityHandler ? checkboxComponent : undefined,
-    h(
-      "div",
-      {
-        class: checkboxVisibilityHandler
-          ? isHovered.value?.item === item && isHovered.value.state
-            ? "tw-opacity-5"
-            : "tw-opacity-15"
-          : "",
-      },
-      !isSlotExist
-        ? h(VcTableCell, {
-            cell,
+//   return h("div", { class: "" }, [
+//     checkboxVisibilityHandler ? checkboxComponent : undefined,
+//     h(
+//       "div",
+//       {
+//         class: checkboxVisibilityHandler
+//           ? isHovered.value?.item === item && isHovered.value.state
+//             ? "tw-opacity-5"
+//             : "tw-opacity-15"
+//           : "",
+//       },
+//       !isSlotExist
+//         ? h(VcTableCell, {
+//             cell,
 
-            item: item as TableItem,
-            index,
-            editing: props.editing,
-            onUpdate: (event) => {
-              emit("onEditComplete", { event, index });
-            },
-            onBlur: (event) => emit("onCellBlur", event),
-          })
-        : slots[`item_${cell.id}`]?.({ item, cell, index }),
-    ),
-  ]);
-};
+//             item: item as TableItem,
+//             index,
+//             editing: props.editing,
+//             onUpdate: (event) => {
+//               emit("onEditComplete", { event, index });
+//             },
+//             onBlur: (event) => emit("onCellBlur", event),
+//           })
+//         : slots[`item_${cell.id}`]?.({ item, cell, index }),
+//     ),
+//   ]);
+// };
 
-const calculateElWidth = (id: string) => {
-  const el = document.getElementById(id);
-  return el ? el.offsetWidth : 0;
-};
+// const calculateElWidth = (id: string) => {
+//   const el = document.getElementById(id);
+//   return el ? el.offsetWidth : 0;
+// };
 
 const allColumns = ref([]) as Ref<ITableColumns[]>;
 
@@ -897,14 +914,15 @@ function handleSelectAll() {
 }
 
 function isSelected(item: T) {
-  return selection.value.indexOf(item) > -1;
+  return !!selection.value.find((x) => _.isEqual(x, item));
 }
 
 function rowCheckbox(item: T) {
   const clear = item;
-  const index = selection.value.indexOf(clear);
-  if (index > -1) {
-    selection.value = selection.value.filter((x) => x !== clear);
+  const isExist = selection.value.find((x) => _.isEqual(x, clear));
+
+  if (isExist) {
+    selection.value = selection.value.filter((x) => !_.isEqual(x, clear));
   } else {
     selection.value.push(clear);
   }

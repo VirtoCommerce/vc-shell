@@ -55,7 +55,7 @@
         :is="widgetItem"
         v-for="(widgetItem, index) in bladeWidgets"
         :key="index"
-        :ref="(el: HTMLElement) => widgetsRefs.set({ component: item, el })"
+        :ref="(el: HTMLElement) => widgetsRefs.set({ component: widgetItem, el })"
         v-model="bladeContext"
         :is-expanded="isExpanded"
         @click="setActiveWidget(widgetItem)"

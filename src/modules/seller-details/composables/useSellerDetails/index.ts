@@ -24,7 +24,7 @@ import {
 import * as _ from "lodash-es";
 import { useRoute } from "vue-router";
 
-interface SellerDetailsScope extends DetailsBaseBladeScope {
+export interface SellerDetailsScope extends DetailsBaseBladeScope {
   logoHandler: WritableComputedRef<{ url: string; name: string; title: string }[]>;
   onCountryChange: (e: string) => Promise<void>;
   countriesList: Ref<

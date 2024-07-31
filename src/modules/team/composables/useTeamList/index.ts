@@ -5,6 +5,7 @@ import {
   ListComposableArgs,
   ListBaseBladeScope,
   TOpenBladeArgs,
+  UseList,
 } from "@vc-shell/framework";
 import {
   ISearchSellerUsersQuery,
@@ -17,7 +18,11 @@ import { useRoute } from "vue-router";
 
 const { getApiClient } = useApiClient(VcmpSellerSecurityClient);
 
-export const useTeamList = (args?: ListComposableArgs) => {
+export interface TeamListScope extends ListBaseBladeScope {}
+
+export const useTeamList = (
+  args?: ListComposableArgs,
+): UseList<SellerUser[], ISearchSellerUsersQuery, TeamListScope> => {
   const factory = useListFactory<SellerUser[], ISearchSellerUsersQuery>({
     load: async (query) => {
       const sellerId = await GetSellerId();
@@ -38,9 +43,9 @@ export const useTeamList = (args?: ListComposableArgs) => {
     });
   }
 
-  const scope = ref<ListBaseBladeScope>({
+  const scope: ListBaseBladeScope = {
     openDetailsBlade,
-  });
+  };
 
   async function GetSellerId(): Promise<string> {
     const result = route?.params?.sellerId as string;
@@ -53,6 +58,6 @@ export const useTeamList = (args?: ListComposableArgs) => {
     items,
     query,
     pagination,
-    scope: computed(() => scope.value),
+    scope,
   };
 };

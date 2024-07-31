@@ -8,7 +8,32 @@ import * as Team from "./team";
 import * as FulfillmentCenters from "./fulfillment-centers";
 import * as Orders from "./orders";
 
-import { type OrderScope } from "./orders/composables";
+import {
+  type OrderScope,
+  type OrdersListScope,
+  type ShippingScope,
+  type ShippingDetailsScope,
+  type ShippingItemScope,
+} from "./orders/composables";
+
+import { type FulfillmentCenterScope, type FulfillmentCentersScope } from "./fulfillment-centers/composables";
+
+import {
+  type OffersListScope,
+  type OfferDetailsScope,
+  type SpecialPricesListScope,
+  type SpecialPricesDetailsScope,
+} from "./offers/composables";
+
+import { type ProductDetailsScope, type ProductListScope } from "./products/composables";
+
+import { type ProductsListExtendedScope } from "./mp-products/composables";
+
+import { type VideosListScope, type VideoDetailsScope } from "./videos/composables";
+
+import { type SellerDetailsScope } from "./seller-details/composables";
+
+import { type TeamDetailsScope, type TeamListScope } from "./team/composables";
 
 import "./../styles/index.scss";
 
@@ -24,6 +49,26 @@ export default {
   FulfillmentCenters,
 };
 
-export type { OrderScope };
+export type {
+  OrderScope,
+  OrdersListScope,
+  ShippingScope,
+  ShippingDetailsScope,
+  ShippingItemScope,
+  FulfillmentCenterScope,
+  FulfillmentCentersScope,
+  OffersListScope,
+  OfferDetailsScope,
+  SpecialPricesListScope,
+  SpecialPricesDetailsScope,
+  ProductDetailsScope,
+  ProductListScope,
+  ProductsListExtendedScope,
+  VideosListScope,
+  VideoDetailsScope,
+  SellerDetailsScope,
+  TeamDetailsScope,
+  TeamListScope,
+};
 
 export * from "./types";

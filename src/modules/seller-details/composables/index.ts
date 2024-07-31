@@ -1,1 +1,1 @@
-export { useSellerDetails } from "./useSellerDetails";
+export { useSellerDetails, type SellerDetailsScope } from "./useSellerDetails";

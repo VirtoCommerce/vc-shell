@@ -69,7 +69,7 @@ export const useOfferDetails = (
   const selectedProductSellerId = ref<string>();
   const { items: fulfillmentCentersList, load: searchFulfillmentCenters } = useFulfillmentCenters();
   const route = useRoute();
-  const currentSeller = inject("currentSeller", toRef(route?.params?.sellerId)) as Ref<ISeller>;
+  const currentSeller = inject("currentSeller", toRef({ id: route?.params?.sellerId })) as Ref<ISeller>;
 
   const { settingUseDefaultOffer, productTypes, loadSettings } = useMarketplaceSettings();
   const { getLanguages, loading: languagesLoading } = useMultilanguage();

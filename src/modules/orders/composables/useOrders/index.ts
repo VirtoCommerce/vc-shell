@@ -36,7 +36,7 @@ export const useOrders = (args?: ListComposableArgs): UseList<CustomerOrder[], I
   const { user } = useUser();
   const { t } = useI18n({ useScope: "global" });
   const route = useRoute();
-  const currentSeller = inject("currentSeller", toRef(route?.params?.sellerId)) as Ref<ISeller>;
+  const currentSeller = inject("currentSeller", toRef({ id: route?.params?.sellerId })) as Ref<ISeller>;
 
   const factory = useListFactory<CustomerOrder[], ISearchOrdersQuery>({
     load: async (query) => {

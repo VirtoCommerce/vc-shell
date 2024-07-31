@@ -1,2 +1,2 @@
-export { useTeamDetails } from "./useTeamDetails";
-export { useTeamList } from "./useTeamList";
+export { useTeamDetails, type TeamDetailsScope } from "./useTeamDetails";
+export { useTeamList, type TeamListScope } from "./useTeamList";

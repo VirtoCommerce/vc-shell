@@ -1,2 +1,2 @@
-export { useVideosList } from "./useVideosList";
-export { useVideoDetails } from "./useVideoDetails";
+export { useVideosList, type VideosListScope } from "./useVideosList";
+export { useVideoDetails, type VideoDetailsScope } from "./useVideoDetails";

@@ -11,12 +11,13 @@
 
 <script setup lang="ts">
 import { VcWidget, useBladeNavigation, usePopup, useAssets, useUser } from "@vc-shell/framework";
-import { UnwrapNestedRefs, computed, ref, watch, onMounted, inject, Ref } from "vue";
+import { UnwrapNestedRefs, computed, ref, watch, onMounted, inject, Ref, toRef } from "vue";
 import { Asset, ISeller } from "@vcmp-vendor-portal/api/marketplacevendor";
 import { useI18n } from "vue-i18n";
 import * as _ from "lodash-es";
 import { useProductDetails } from "../../../composables/useProductDetails";
 import { useRoles } from "../../../../common";
+import { useRoute } from "vue-router";
 
 const props = defineProps<{
   // TODO Add to documentation
@@ -33,11 +34,12 @@ const { t } = useI18n({ useScope: "global" });
 const { edit, upload, remove, loading } = useAssets();
 const { user } = useUser();
 const { getRoles, isAdministrator, isOperator } = useRoles();
+const route = useRoute();
 const modelValue = ref(props.modelValue);
 const widgetOpened = ref(false);
 const internalModel = ref();
 const count = computed(() => modelValue.value?.item?.assets?.length || 0);
-const currentSeller = inject("currentSeller") as Ref<ISeller>;
+const currentSeller = inject("currentSeller", toRef({ id: route?.params?.sellerId })) as Ref<ISeller>;
 
 watch(
   () => props.modelValue,

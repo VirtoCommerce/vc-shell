@@ -11,7 +11,7 @@
 
 <script setup lang="ts">
 import { VcWidget, useApiClient, useAsync, useBladeNavigation, useUser } from "@vc-shell/framework";
-import { Ref, UnwrapNestedRefs, inject, onMounted, ref } from "vue";
+import { Ref, UnwrapNestedRefs, inject, onMounted, ref, toRef } from "vue";
 import {
   VcmpSellerCatalogClient,
   ISearchVideosQuery,
@@ -20,6 +20,7 @@ import {
 } from "@vcmp-vendor-portal/api/marketplacevendor";
 import { useProductDetails } from "../../../composables/useProductDetails";
 import { useRoles } from "../../../../common";
+import { useRoute } from "vue-router";
 
 interface Props {
   modelValue: UnwrapNestedRefs<ReturnType<typeof useProductDetails>>;
@@ -31,8 +32,9 @@ const { getApiClient } = useApiClient(VcmpSellerCatalogClient);
 const client = getApiClient();
 
 const { openBlade, resolveBladeByName } = useBladeNavigation();
+const route = useRoute();
 const { user } = useUser();
-const currentSeller = inject("currentSeller") as Ref<ISeller>;
+const currentSeller = inject("currentSeller", toRef({ id: route?.params?.sellerId })) as Ref<ISeller>;
 
 const widgetOpened = ref(false);
 const count = ref(0);

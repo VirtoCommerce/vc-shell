@@ -1,3 +1,12 @@
+## [1.0.268](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.267...v1.0.268) (2024-07-31)
+
+
+### Features
+
+* **products:** associations fixes ([d559330](https://github.com/VirtoCommerce/vendor-portal/commit/d559330b18566d68620af3312a8338e16f8ff15e))
+
+
+
 ## [1.0.267](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.266...v1.0.267) (2024-07-31)
 
 

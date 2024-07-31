@@ -192,7 +192,7 @@ export const details: DynamicDetailsSchema = {
     {
       id: "productWidgets",
       component: "vc-widgets",
-      children: ["OffersWidget", "VideosWidget", "AssetsWidget"],
+      children: ["OffersWidget", "VideosWidget", "AssetsWidget", "AssociationsWidget"],
     },
   ],
 };

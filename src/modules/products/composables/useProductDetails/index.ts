@@ -145,6 +145,7 @@ export const useProductDetails = (
         productType: details.productData?.productType,
         status: details.status,
         sellerId: details.sellerId,
+        productData: details.productData,
       }) as ISellerProduct & IProductDetails;
     }
     return details;

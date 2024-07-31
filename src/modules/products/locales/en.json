@@ -129,7 +129,49 @@
         "WIDGETS": {
           "OFFERS": "Offers",
           "VIDEOS": "Videos",
-          "ASSETS": "Assets"
+          "ASSETS": "Assets",
+          "ASSOCIATIONS": "Associations"
+        }
+      },
+      "ASSOCIATIONS": {
+        "TITLE": "Associations",
+        "TOOLBAR": {
+          "REMOVE": "Remove"
+        },
+        "TABLE": {
+          "HEADER": {
+            "IMAGES": "Img",
+            "NAME": "Name",
+            "CATALOG": "Catalog",
+            "QUANTITY": "Quantity"
+          },
+          "ACTIONS": {
+            "DELETE": "Delete"
+          },
+          "ADD_NEW": "Add items"
+        },
+        "TYPES": {
+          "UPSELL_ITEMS": "Upsell items",
+          "RELATED_ITEMS": "Related items",
+          "ADDITIONAL_SERVICES": "Additional services",
+          "ACCESSORIES": "Accessories"
+        },
+        "EMPTY": {
+          "NO_ITEMS": "There are no associations yet",
+          "ADD": "Add association"
+        }
+      },
+      "ASSOCIATIONS_ITEMS": {
+        "TITLE": "Select items to associate",
+        "TABLE": {
+          "HEADER": {
+            "IMAGES": "Img",
+            "NAME": "Name",
+            "QUANTITY": "Quantity"
+          }
+        },
+        "TOOLBAR": {
+          "CONFIRM": "Associate"
         }
       },
       "ALERTS": {
@@ -142,6 +184,9 @@
         "DELETE_SELECTED_CONFIRMATION": {
           "MESSAGE": "Are you sure you want to delete {count} selected products?",
           "ALL": "all {totalCount}"
+        },
+        "DELETE_SELECTED_CONFIRMATION_ASSOCIATIONS": {
+          "MESSAGE": "Are you sure you want to delete {count} selected associations?"
         },
         "REVERT_CONFIRMATION": "Draft updates will be reverted. Please confirm."
       }

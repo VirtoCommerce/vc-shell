@@ -1238,6 +1238,246 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
    * @param body (optional)
    * @return Success
    */
+  search(body?: SearchProductAssociationsQuery | undefined): Promise<ProductAssociationSearchResult> {
+    let url_ = this.baseUrl + "/api/vcmp/seller/products/associations/search";
+    url_ = url_.replace(/[?&]$/, "");
+
+    const content_ = JSON.stringify(body);
+
+    let options_: RequestInit = {
+      body: content_,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json-patch+json",
+        Accept: "text/plain",
+      },
+    };
+
+    return this.transformOptions(options_)
+      .then((transformedOptions_) => {
+        return this.http.fetch(url_, transformedOptions_);
+      })
+      .then((_response: Response) => {
+        return this.processSearch(_response);
+      });
+  }
+
+  protected processSearch(response: Response): Promise<ProductAssociationSearchResult> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+    }
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = ProductAssociationSearchResult.fromJS(resultData200);
+        return result200;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
+    }
+    return Promise.resolve<ProductAssociationSearchResult>(null as any);
+  }
+
+  /**
+   * @return Success
+   */
+  getProductAssociations(productId: string): Promise<ProductAssociation[]> {
+    let url_ = this.baseUrl + "/api/vcmp/seller/products/{productId}/associations";
+    if (productId === undefined || productId === null) throw new Error("The parameter 'productId' must be defined.");
+    url_ = url_.replace("{productId}", encodeURIComponent("" + productId));
+    url_ = url_.replace(/[?&]$/, "");
+
+    let options_: RequestInit = {
+      method: "GET",
+      headers: {
+        Accept: "text/plain",
+      },
+    };
+
+    return this.transformOptions(options_)
+      .then((transformedOptions_) => {
+        return this.http.fetch(url_, transformedOptions_);
+      })
+      .then((_response: Response) => {
+        return this.processGetProductAssociations(_response);
+      });
+  }
+
+  protected processGetProductAssociations(response: Response): Promise<ProductAssociation[]> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+    }
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+        if (Array.isArray(resultData200)) {
+          result200 = [] as any;
+          for (let item of resultData200) result200!.push(ProductAssociation.fromJS(item));
+        } else {
+          result200 = <any>null;
+        }
+        return result200;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
+    }
+    return Promise.resolve<ProductAssociation[]>(null as any);
+  }
+
+  /**
+   * @param body (optional)
+   * @return Success
+   */
+  updateAssociations(body?: UpdateProductAssociationsCommand | undefined): Promise<void> {
+    let url_ = this.baseUrl + "/api/vcmp/seller/products/associations";
+    url_ = url_.replace(/[?&]$/, "");
+
+    const content_ = JSON.stringify(body);
+
+    let options_: RequestInit = {
+      body: content_,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json-patch+json",
+      },
+    };
+
+    return this.transformOptions(options_)
+      .then((transformedOptions_) => {
+        return this.http.fetch(url_, transformedOptions_);
+      })
+      .then((_response: Response) => {
+        return this.processUpdateAssociations(_response);
+      });
+  }
+
+  protected processUpdateAssociations(response: Response): Promise<void> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+    }
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        return;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
+    }
+    return Promise.resolve<void>(null as any);
+  }
+
+  /**
+   * @param ids (optional)
+   * @return Success
+   */
+  deleteAssociations(ids?: string[] | undefined): Promise<void> {
+    let url_ = this.baseUrl + "/api/vcmp/seller/products/associations?";
+    if (ids === null) throw new Error("The parameter 'ids' cannot be null.");
+    else if (ids !== undefined)
+      ids &&
+        ids.forEach((item) => {
+          url_ += "ids=" + encodeURIComponent("" + item) + "&";
+        });
+    url_ = url_.replace(/[?&]$/, "");
+
+    let options_: RequestInit = {
+      method: "DELETE",
+      headers: {},
+    };
+
+    return this.transformOptions(options_)
+      .then((transformedOptions_) => {
+        return this.http.fetch(url_, transformedOptions_);
+      })
+      .then((_response: Response) => {
+        return this.processDeleteAssociations(_response);
+      });
+  }
+
+  protected processDeleteAssociations(response: Response): Promise<void> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+    }
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        return;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
+    }
+    return Promise.resolve<void>(null as any);
+  }
+
+  /**
+   * @return Success
+   */
+  getProductAssociationTypes(): Promise<string[]> {
+    let url_ = this.baseUrl + "/api/vcmp/seller/products/associations/types";
+    url_ = url_.replace(/[?&]$/, "");
+
+    let options_: RequestInit = {
+      method: "GET",
+      headers: {
+        Accept: "text/plain",
+      },
+    };
+
+    return this.transformOptions(options_)
+      .then((transformedOptions_) => {
+        return this.http.fetch(url_, transformedOptions_);
+      })
+      .then((_response: Response) => {
+        return this.processGetProductAssociationTypes(_response);
+      });
+  }
+
+  protected processGetProductAssociationTypes(response: Response): Promise<string[]> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+    }
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+        if (Array.isArray(resultData200)) {
+          result200 = [] as any;
+          for (let item of resultData200) result200!.push(item);
+        } else {
+          result200 = <any>null;
+        }
+        return result200;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
+    }
+    return Promise.resolve<string[]>(null as any);
+  }
+
+  /**
+   * @param body (optional)
+   * @return Success
+   */
   searchOffers(body?: SearchOffersQuery | undefined): Promise<SearchOffersResult> {
     let url_ = this.baseUrl + "/api/vcmp/seller/offers/search";
     url_ = url_.replace(/[?&]$/, "");
@@ -6800,6 +7040,7 @@ export class CreateNewPublicationRequestCommand implements ICreateNewPublication
   operatorId?: string | undefined;
   operatorName?: string | undefined;
   productId!: string;
+  sellerProductId?: string | undefined;
   comment?: string | undefined;
 
   constructor(data?: ICreateNewPublicationRequestCommand) {
@@ -6819,6 +7060,7 @@ export class CreateNewPublicationRequestCommand implements ICreateNewPublication
       this.operatorId = _data["operatorId"];
       this.operatorName = _data["operatorName"];
       this.productId = _data["productId"];
+      this.sellerProductId = _data["sellerProductId"];
       this.comment = _data["comment"];
     }
   }
@@ -6839,6 +7081,7 @@ export class CreateNewPublicationRequestCommand implements ICreateNewPublication
     data["operatorId"] = this.operatorId;
     data["operatorName"] = this.operatorName;
     data["productId"] = this.productId;
+    data["sellerProductId"] = this.sellerProductId;
     data["comment"] = this.comment;
     return data;
   }
@@ -6852,6 +7095,7 @@ export interface ICreateNewPublicationRequestCommand {
   operatorId?: string | undefined;
   operatorName?: string | undefined;
   productId: string;
+  sellerProductId?: string | undefined;
   comment?: string | undefined;
 }
 
@@ -12624,6 +12868,51 @@ export interface IProductAssociation {
   id?: string | undefined;
 }
 
+export class ProductAssociationSearchResult implements IProductAssociationSearchResult {
+  totalCount?: number;
+  results?: ProductAssociation[] | undefined;
+
+  constructor(data?: IProductAssociationSearchResult) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property)) (<any>this)[property] = (<any>data)[property];
+      }
+    }
+  }
+
+  init(_data?: any) {
+    if (_data) {
+      this.totalCount = _data["totalCount"];
+      if (Array.isArray(_data["results"])) {
+        this.results = [] as any;
+        for (let item of _data["results"]) this.results!.push(ProductAssociation.fromJS(item));
+      }
+    }
+  }
+
+  static fromJS(data: any): ProductAssociationSearchResult {
+    data = typeof data === "object" ? data : {};
+    let result = new ProductAssociationSearchResult();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    data["totalCount"] = this.totalCount;
+    if (Array.isArray(this.results)) {
+      data["results"] = [];
+      for (let item of this.results) data["results"].push(item.toJSON());
+    }
+    return data;
+  }
+}
+
+export interface IProductAssociationSearchResult {
+  totalCount?: number;
+  results?: ProductAssociation[] | undefined;
+}
+
 export class ProductDetails implements IProductDetails {
   name?: string | undefined;
   descriptions?: EditorialReview[] | undefined;
@@ -15162,6 +15451,131 @@ export interface ISearchOrdersQuery {
   numbers?: string[] | undefined;
   startDate?: Date | undefined;
   endDate?: Date | undefined;
+  responseGroup?: string | undefined;
+  objectType?: string | undefined;
+  objectTypes?: string[] | undefined;
+  objectIds?: string[] | undefined;
+  keyword?: string | undefined;
+  searchPhrase?: string | undefined;
+  languageCode?: string | undefined;
+  sort?: string | undefined;
+  sortInfos?: SortInfo[] | undefined;
+  skip?: number;
+  take?: number;
+}
+
+export class SearchProductAssociationsQuery implements ISearchProductAssociationsQuery {
+  sellerId?: string | undefined;
+  sellerName?: string | undefined;
+  group?: string | undefined;
+  tags?: string[] | undefined;
+  associatedObjectIds?: string[] | undefined;
+  responseGroup?: string | undefined;
+  objectType?: string | undefined;
+  objectTypes?: string[] | undefined;
+  objectIds?: string[] | undefined;
+  keyword?: string | undefined;
+  searchPhrase?: string | undefined;
+  languageCode?: string | undefined;
+  sort?: string | undefined;
+  readonly sortInfos?: SortInfo[] | undefined;
+  skip?: number;
+  take?: number;
+
+  constructor(data?: ISearchProductAssociationsQuery) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property)) (<any>this)[property] = (<any>data)[property];
+      }
+    }
+  }
+
+  init(_data?: any) {
+    if (_data) {
+      this.sellerId = _data["sellerId"];
+      this.sellerName = _data["sellerName"];
+      this.group = _data["group"];
+      if (Array.isArray(_data["tags"])) {
+        this.tags = [] as any;
+        for (let item of _data["tags"]) this.tags!.push(item);
+      }
+      if (Array.isArray(_data["associatedObjectIds"])) {
+        this.associatedObjectIds = [] as any;
+        for (let item of _data["associatedObjectIds"]) this.associatedObjectIds!.push(item);
+      }
+      this.responseGroup = _data["responseGroup"];
+      this.objectType = _data["objectType"];
+      if (Array.isArray(_data["objectTypes"])) {
+        this.objectTypes = [] as any;
+        for (let item of _data["objectTypes"]) this.objectTypes!.push(item);
+      }
+      if (Array.isArray(_data["objectIds"])) {
+        this.objectIds = [] as any;
+        for (let item of _data["objectIds"]) this.objectIds!.push(item);
+      }
+      this.keyword = _data["keyword"];
+      this.searchPhrase = _data["searchPhrase"];
+      this.languageCode = _data["languageCode"];
+      this.sort = _data["sort"];
+      if (Array.isArray(_data["sortInfos"])) {
+        (<any>this).sortInfos = [] as any;
+        for (let item of _data["sortInfos"]) (<any>this).sortInfos!.push(SortInfo.fromJS(item));
+      }
+      this.skip = _data["skip"];
+      this.take = _data["take"];
+    }
+  }
+
+  static fromJS(data: any): SearchProductAssociationsQuery {
+    data = typeof data === "object" ? data : {};
+    let result = new SearchProductAssociationsQuery();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    data["sellerId"] = this.sellerId;
+    data["sellerName"] = this.sellerName;
+    data["group"] = this.group;
+    if (Array.isArray(this.tags)) {
+      data["tags"] = [];
+      for (let item of this.tags) data["tags"].push(item);
+    }
+    if (Array.isArray(this.associatedObjectIds)) {
+      data["associatedObjectIds"] = [];
+      for (let item of this.associatedObjectIds) data["associatedObjectIds"].push(item);
+    }
+    data["responseGroup"] = this.responseGroup;
+    data["objectType"] = this.objectType;
+    if (Array.isArray(this.objectTypes)) {
+      data["objectTypes"] = [];
+      for (let item of this.objectTypes) data["objectTypes"].push(item);
+    }
+    if (Array.isArray(this.objectIds)) {
+      data["objectIds"] = [];
+      for (let item of this.objectIds) data["objectIds"].push(item);
+    }
+    data["keyword"] = this.keyword;
+    data["searchPhrase"] = this.searchPhrase;
+    data["languageCode"] = this.languageCode;
+    data["sort"] = this.sort;
+    if (Array.isArray(this.sortInfos)) {
+      data["sortInfos"] = [];
+      for (let item of this.sortInfos) data["sortInfos"].push(item.toJSON());
+    }
+    data["skip"] = this.skip;
+    data["take"] = this.take;
+    return data;
+  }
+}
+
+export interface ISearchProductAssociationsQuery {
+  sellerId?: string | undefined;
+  sellerName?: string | undefined;
+  group?: string | undefined;
+  tags?: string[] | undefined;
+  associatedObjectIds?: string[] | undefined;
   responseGroup?: string | undefined;
   objectType?: string | undefined;
   objectTypes?: string[] | undefined;
@@ -18414,6 +18828,58 @@ export interface IUpdateOrderShipmentCommand {
   shipment?: OrderShipment | undefined;
 }
 
+export class UpdateProductAssociationsCommand implements IUpdateProductAssociationsCommand {
+  associations!: ProductAssociation[];
+  sellerId?: string | undefined;
+  sellerName?: string | undefined;
+
+  constructor(data?: IUpdateProductAssociationsCommand) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property)) (<any>this)[property] = (<any>data)[property];
+      }
+    }
+    if (!data) {
+      this.associations = [];
+    }
+  }
+
+  init(_data?: any) {
+    if (_data) {
+      if (Array.isArray(_data["associations"])) {
+        this.associations = [] as any;
+        for (let item of _data["associations"]) this.associations!.push(ProductAssociation.fromJS(item));
+      }
+      this.sellerId = _data["sellerId"];
+      this.sellerName = _data["sellerName"];
+    }
+  }
+
+  static fromJS(data: any): UpdateProductAssociationsCommand {
+    data = typeof data === "object" ? data : {};
+    let result = new UpdateProductAssociationsCommand();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    if (Array.isArray(this.associations)) {
+      data["associations"] = [];
+      for (let item of this.associations) data["associations"].push(item.toJSON());
+    }
+    data["sellerId"] = this.sellerId;
+    data["sellerName"] = this.sellerName;
+    return data;
+  }
+}
+
+export interface IUpdateProductAssociationsCommand {
+  associations: ProductAssociation[];
+  sellerId?: string | undefined;
+  sellerName?: string | undefined;
+}
+
 export class UpdateProductDetailsCommand implements IUpdateProductDetailsCommand {
   sellerId?: string | undefined;
   sellerName?: string | undefined;
@@ -18569,6 +19035,7 @@ export class UpdateSellerOrderCommand implements IUpdateSellerOrderCommand {
   sellerId?: string | undefined;
   sellerName?: string | undefined;
   order!: SellerOrder;
+  orderId?: string | undefined;
 
   constructor(data?: IUpdateSellerOrderCommand) {
     if (data) {
@@ -18586,6 +19053,7 @@ export class UpdateSellerOrderCommand implements IUpdateSellerOrderCommand {
       this.sellerId = _data["sellerId"];
       this.sellerName = _data["sellerName"];
       this.order = _data["order"] ? SellerOrder.fromJS(_data["order"]) : new SellerOrder();
+      this.orderId = _data["orderId"];
     }
   }
 
@@ -18601,6 +19069,7 @@ export class UpdateSellerOrderCommand implements IUpdateSellerOrderCommand {
     data["sellerId"] = this.sellerId;
     data["sellerName"] = this.sellerName;
     data["order"] = this.order ? this.order.toJSON() : <any>undefined;
+    data["orderId"] = this.orderId;
     return data;
   }
 }
@@ -18609,6 +19078,7 @@ export interface IUpdateSellerOrderCommand {
   sellerId?: string | undefined;
   sellerName?: string | undefined;
   order: SellerOrder;
+  orderId?: string | undefined;
 }
 
 export class UpdateSellerUserCommand implements IUpdateSellerUserCommand {

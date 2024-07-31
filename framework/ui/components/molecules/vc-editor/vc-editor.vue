@@ -56,6 +56,7 @@
 import { QuillEditor } from "@vueup/vue-quill";
 import "@vueup/vue-quill/dist/vue-quill.snow.css";
 import { ref, unref, onMounted, onUpdated, getCurrentInstance, Ref } from "vue";
+import DOMPurify from "dompurify";
 import ImageUploader from "quill-image-uploader";
 import { VcLabel, VcHint } from "../..";
 
@@ -78,7 +79,6 @@ export interface Emits {
 }
 
 const props = defineProps<Props>();
-
 const emit = defineEmits<Emits>();
 const uid = getCurrentInstance()?.uid;
 const id = `editor-${uid}`;
@@ -87,7 +87,6 @@ defineSlots<{
   error?: (props: any) => any;
 }>();
 
-// const content = ref();
 const quillRef = ref(null) as Ref<typeof QuillEditor | null>;
 const quill = ref();
 
@@ -147,7 +146,7 @@ onUpdated(() => {
 function initializeQuill() {
   quill.value = quillRef.value?.getQuill();
   if (props.modelValue) {
-    quill.value.root.innerHTML = unref(props.modelValue);
+    quill.value.root.innerHTML = DOMPurify.sanitize(unref(props.modelValue));
   }
 
   quill.value.on("text-change", onTextChange);
@@ -171,7 +170,8 @@ function onTextChange() {
     if (quill.value.root.innerHTML === "<p><br></p>") {
       emit("update:modelValue", "");
     } else {
-      emit("update:modelValue", quill.value.root.innerHTML);
+      const sanitizedContent = DOMPurify.sanitize(quill.value.root.innerHTML);
+      emit("update:modelValue", sanitizedContent);
     }
   }
 }

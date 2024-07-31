@@ -3,13 +3,24 @@ import {
   ISearchProductsQuery,
   SearchProductsQuery,
   SearchProductsResult,
+  ISellerProduct,
   VcmpSellerCatalogClient,
 } from "@vcmp-vendor-portal/api/marketplacevendor";
-import { computed, ref } from "vue";
+import { ComputedRef, Ref, computed, ref } from "vue";
 
 const { getApiClient: getProductsClient } = useApiClient(VcmpSellerCatalogClient);
 
-export const useAssociationItems = () => {
+export interface IUseAssociationItems {
+  items: ComputedRef<(ISellerProduct & { quantity: number })[]>;
+  totalCount: ComputedRef<number | undefined>;
+  pages: ComputedRef<number | undefined>;
+  currentPage: ComputedRef<number | undefined>;
+  loading: Ref<boolean>;
+  searchAssociationItems: (query: ISearchProductsQuery) => Promise<void>;
+  searchQuery: Ref<ISearchProductsQuery>;
+}
+
+export const useAssociationItems = (): IUseAssociationItems => {
   const pageSize = 20;
   const searchQuery = ref<ISearchProductsQuery>({
     take: pageSize,

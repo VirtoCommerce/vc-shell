@@ -31,7 +31,7 @@
             type="number"
             min="0"
             step="1"
-            @update:model-value="(e) => onQuantityChange(item, e as string)"
+            @update:model-value="onQuantityChange(item, $event as string)"
           ></VcInput>
         </div>
         <div v-else></div>
@@ -93,7 +93,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
         method: "confirm",
         args: {
           type: props.options?.type,
-          selectedItems: selectedItems.value,
+          items: selectedItems.value,
         },
       });
       emit("close:blade");
@@ -113,12 +113,14 @@ const columns = ref<ITableColumns[]>([
   {
     id: "name",
     title: computed(() => t("PRODUCTS.PAGES.ASSOCIATIONS_ITEMS.TABLE.HEADER.NAME")),
+    width: "80%",
   },
   {
     id: "quantity",
     title: computed(() => t("PRODUCTS.PAGES.ASSOCIATIONS_ITEMS.TABLE.HEADER.QUANTITY")),
     type: "number",
     editable: true,
+    width: "15%",
   },
 ]);
 
@@ -150,7 +152,7 @@ const onQuantityChange = (item: ISellerProduct, e: string) => {
 };
 
 onMounted(async () => {
-  await searchAssociationItems();
+  await searchAssociationItems(searchQuery.value);
 });
 
 defineExpose({

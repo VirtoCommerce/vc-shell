@@ -198,9 +198,9 @@ export const useProductDetails = (
         await (await getApiClient()).createNewPublicationRequest(newRequestCommand);
       }
 
-      if (item.value?.id) {
-        await loadWrapper({ id: item.value.id });
-      }
+      // if (item.value?.id) {
+      //   // await loadWrapper({ id: item.value.id });
+      // }
     } finally {
       saveChangesLoading.value = false;
     }
@@ -304,6 +304,10 @@ export const useProductDetails = (
         async clickHandler() {
           if (item.value) {
             const res = await saveChanges(item.value);
+
+            if (item.value?.id) {
+              await loadWrapper({ id: item.value.id });
+            }
 
             args.emit("parent:call", {
               method: "reload",

@@ -38,6 +38,15 @@
             @on-add-new-row="onAddNewRow(item.type)"
             @selection-changed="onSelectionChanged"
           >
+            <template #[`item_quantity`]="{ item }">
+              <VcInput
+                :model-value="item.quantity"
+                type="number"
+                step="1"
+                @update:model-value="onQuantityChange($event as string, item)"
+                @blur="onBlur"
+              ></VcInput>
+            </template>
           </VcTable>
         </VcCard>
       </div>
@@ -58,12 +67,7 @@ import { useAssociations } from "../composables";
 import { computed, onMounted, ref } from "vue";
 import { useI18n } from "vue-i18n";
 import * as _ from "lodash-es";
-import {
-  IOffer,
-  IProductAssociation,
-  ProductAssociation,
-  SellerProduct,
-} from "@vcmp-vendor-portal/api/marketplacevendor";
+import { IProductAssociation } from "@vcmp-vendor-portal/api/marketplacevendor";
 
 export interface Props {
   expanded?: boolean;
@@ -98,8 +102,9 @@ const {
   searchQuery,
   items,
   getTypes,
-  addAssociations,
+  createAssociations,
   removeAssociations: remove,
+  saveAssociations,
 } = useAssociations();
 const { showConfirmation } = usePopup();
 const { openBlade, resolveBladeByName } = useBladeNavigation();
@@ -107,6 +112,7 @@ const { openBlade, resolveBladeByName } = useBladeNavigation();
 const title = computed(() => t("PRODUCTS.PAGES.ASSOCIATIONS.TITLE"));
 
 const selectedItemIds = ref<string[]>([]);
+const changedItemTemp = ref<(typeof items.value)[number]>();
 
 const columns = ref<ITableColumns[]>([
   {
@@ -120,10 +126,12 @@ const columns = ref<ITableColumns[]>([
     id: "name",
     title: computed(() => t("PRODUCTS.PAGES.ASSOCIATIONS.TABLE.HEADER.NAME")),
     alwaysVisible: true,
+    width: "80%",
   },
   {
     id: "quantity",
     title: computed(() => t("PRODUCTS.PAGES.ASSOCIATIONS.TABLE.HEADER.QUANTITY")),
+    width: "15%",
   },
 ]);
 
@@ -185,9 +193,13 @@ function restoreCollapsed(key: string): boolean {
   return localStorage?.getItem(key) === "true";
 }
 
-async function confirm(args: { type: string; selectedItems: (SellerProduct & { quantity: number })[] }) {
+async function confirm(args: {
+  type: string;
+  items: { quantity: number | undefined; publishedProductDataId: string | undefined }[];
+}) {
   if (props.param) {
-    await addAssociations({ ...args, itemId: props.param });
+    const associations = await createAssociations({ ...args, itemId: props.param });
+    await saveAssociations(associations);
     emit("parent:call", {
       method: "updateActiveWidgetCount",
     });
@@ -221,6 +233,29 @@ const itemActionBuilder = (): IActionBuilderResult[] => {
   });
 
   return result;
+};
+
+const onQuantityChange = (value: string, item: IProductAssociation) => {
+  changedItemTemp.value = _.cloneDeep(items.value.find((i) => i.associations.some((a) => a.id === item.id)));
+
+  if (changedItemTemp.value) {
+    const index = changedItemTemp.value.associations.findIndex((a) => a.id === item.id);
+    if (index !== -1) {
+      changedItemTemp.value.associations[index].quantity = parseInt(value);
+    }
+  }
+};
+
+const onBlur = async () => {
+  if (changedItemTemp.value) {
+    await confirm({
+      type: changedItemTemp.value.type,
+      items: changedItemTemp.value.associations.map((a) => ({
+        quantity: a.quantity,
+        publishedProductDataId: a.associatedObjectId,
+      })),
+    });
+  }
 };
 
 onMounted(async () => {

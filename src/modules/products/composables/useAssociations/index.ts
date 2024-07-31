@@ -2,7 +2,6 @@ import { useApiClient, useAsync, useLoading } from "@vc-shell/framework";
 import { CatalogModuleIndexedSearchClient, CatalogProduct } from "@vcmp-vendor-portal/api/catalog";
 import {
   SearchProductsQuery,
-  SellerProduct,
   ProductAssociation,
   SearchProductAssociationsQuery,
   ProductAssociationSearchResult,
@@ -19,7 +18,23 @@ import { useRoute } from "vue-router";
 const { getApiClient: getAssociationsClient } = useApiClient(VcmpSellerCatalogClient);
 const { getApiClient: getProductsClient } = useApiClient(CatalogModuleIndexedSearchClient);
 
-export const useAssociations = () => {
+export interface IUseAssociations {
+  items: Ref<{ type: string; associations: IProductAssociation[] }[]>;
+  totalCount: Ref<number | undefined>;
+  searchAssociations: (query: ISearchProductAssociationsQuery) => Promise<void>;
+  searchQuery: Ref<ISearchProductAssociationsQuery>;
+  getTypes: () => Promise<void>;
+  createAssociations: (args: {
+    type: string;
+    items: { quantity: number | undefined; publishedProductDataId: string | undefined }[];
+    itemId: string;
+  }) => ProductAssociation[];
+  removeAssociations: (selectedItemsIds: string[] | undefined) => Promise<void>;
+  saveAssociations: (associations: ProductAssociation[]) => Promise<void>;
+  loading: Ref<boolean>;
+}
+
+export const useAssociations = (): IUseAssociations => {
   const route = useRoute();
   const result = ref<ProductAssociationSearchResult>();
   const items = ref<ProductAssociation[]>();
@@ -80,23 +95,14 @@ export const useAssociations = () => {
     types.value = await apiClient.getProductAssociationTypes();
   });
 
-  const { loading: addAssociationsLoading, action: addAssociations } = useAsync(
-    async (args?: { type: string; selectedItems: (SellerProduct & { quantity: number })[]; itemId: string }) => {
-      if (args) {
+  const { loading: addAssociationsLoading, action: saveAssociations } = useAsync<ProductAssociation[]>(
+    async (associations) => {
+      if (associations?.length) {
         await (
           await getAssociationsClient()
         ).updateAssociations(
           new UpdateProductAssociationsCommand({
-            associations: args.selectedItems.map(
-              (x) =>
-                new ProductAssociation({
-                  type: args.type,
-                  associatedObjectId: x.publishedProductDataId,
-                  associatedObjectType: "product",
-                  itemId: args.itemId,
-                  quantity: x.quantity,
-                }),
-            ),
+            associations,
             sellerId: currentSeller.value?.id,
             sellerName: currentSeller.value?.name,
           }),
@@ -105,34 +111,44 @@ export const useAssociations = () => {
     },
   );
 
+  function createAssociations(args: {
+    type: string;
+    items: { quantity: number | undefined; publishedProductDataId: string | undefined }[];
+    itemId: string;
+  }) {
+    return args.items.map(
+      (x) =>
+        new ProductAssociation({
+          type: args.type,
+          associatedObjectId: x.publishedProductDataId,
+          associatedObjectType: "product",
+          itemId: args.itemId,
+          quantity: x.quantity,
+          id: items.value?.find((i) => i.type === args.type && i.associatedObjectId === x.publishedProductDataId)?.id,
+        }),
+    );
+  }
+
   const associationsByType = computed(() => {
     const associations = items.value || [];
 
     return types.value.map((type) => ({
       type,
-      associations: products.value.reduce(
-        (acc, product) => {
-          const association = associations.find(
-            (assoc) => assoc.type === type && assoc.associatedObjectId === product.id,
-          );
+      associations: associations
+        .map((a) => {
+          if (a.type === type) {
+            const product = products.value?.find((p) => p.id === a.associatedObjectId);
 
-          if (association) {
-            acc.push({
-              ...association,
-              publishedProductDataId: product.id,
-              name: product.name,
-              imgSrc: product.imgSrc,
-            });
+            return {
+              ...a,
+              publishedProductDataId: product?.id,
+              name: product?.name,
+              imgSrc: product?.imgSrc,
+            };
           }
-
-          return acc;
-        },
-        [] as (IProductAssociation & {
-          publishedProductDataId: string | undefined;
-          name: string | undefined;
-          imgSrc: string | undefined;
-        })[],
-      ),
+          return null;
+        })
+        .filter((a) => a !== null) as IProductAssociation[],
     }));
   });
 
@@ -143,7 +159,8 @@ export const useAssociations = () => {
     searchAssociations,
     searchQuery,
     getTypes,
-    addAssociations,
+    createAssociations,
     removeAssociations,
+    saveAssociations,
   };
 };

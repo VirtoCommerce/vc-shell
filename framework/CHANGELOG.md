@@ -1,3 +1,12 @@
+## [1.0.263](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.262...v1.0.263) (2024-07-31)
+
+
+### Features
+
+* **ui:** sanitize vc-editor content to prevent XSS attacks ([0b625f9](https://github.com/VirtoCommerce/vc-shell/commit/0b625f93e26a576ebf04141246b9d8e2ae659c3c))
+
+
+
 ## [1.0.262](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.261...v1.0.262) (2024-07-31)
 
 

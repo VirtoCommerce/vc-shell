@@ -1,3 +1,12 @@
+## [1.0.269](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.268...v1.0.269) (2024-08-01)
+
+
+### Bug Fixes
+
+* **products:** change initial model on load ([61b0a9d](https://github.com/VirtoCommerce/vendor-portal/commit/61b0a9d7a9e6fafc27b309ee10db70a0b9a2b250))
+
+
+
 ## [1.0.268](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.267...v1.0.268) (2024-07-31)
 
 

@@ -67,7 +67,9 @@ export const useProductDetails = (
   const detailsFactory = useDetailsFactory<ISellerProduct & IProductDetails>({
     load: async (item) => {
       if (item?.id) {
-        return (await getApiClient()).getProductById(item.id);
+        const resItem = await (await getApiClient()).getProductById(item.id);
+
+        return await createModel(resItem);
       }
     },
     saveChanges: async (details) => {
@@ -153,10 +155,12 @@ export const useProductDetails = (
 
   async function loadWrapper(args?: { id: string }) {
     await load(args);
+  }
 
-    if (item.value) {
-      item.value = Object.assign(item.value, {
-        descriptions: item.value.productData?.reviews?.filter((x) => x.reviewType == "QuickReview"),
+  function createModel(res: ISellerProduct & IProductDetails) {
+    if (res) {
+      item.value = Object.assign(res, {
+        descriptions: res.productData?.reviews?.filter((x) => x.reviewType == "QuickReview"),
       });
 
       const notReviewedLangs = languages.value.filter((x) =>
@@ -175,7 +179,7 @@ export const useProductDetails = (
 
       const mapped = getMappedDetails(item);
 
-      validationState.value.resetModified(mapped, true);
+      return mapped.value;
     }
   }
 

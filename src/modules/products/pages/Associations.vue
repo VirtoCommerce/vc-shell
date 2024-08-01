@@ -36,7 +36,7 @@
             enable-item-actions
             :item-action-builder="itemActionBuilder"
             @on-add-new-row="onAddNewRow(item.type)"
-            @selection-changed="onSelectionChanged"
+            @selection-changed="(i) => onSelectionChanged(i, item.type)"
           >
             <template #[`item_quantity`]="{ item }">
               <VcInput
@@ -110,8 +110,8 @@ const { showConfirmation } = usePopup();
 const { openBlade, resolveBladeByName } = useBladeNavigation();
 
 const title = computed(() => t("PRODUCTS.PAGES.ASSOCIATIONS.TITLE"));
-
-const selectedItemIds = ref<string[]>([]);
+const selectedIdsFromDifferentGroups = ref<{ type: string; ids: string[] }[]>([]);
+const selectedItemIds = computed(() => selectedIdsFromDifferentGroups.value.flatMap((i) => i.ids));
 const changedItemTemp = ref<(typeof items.value)[number]>();
 
 const columns = ref<ITableColumns[]>([
@@ -165,7 +165,7 @@ async function removeAssociations() {
 }
 
 const reload = async () => {
-  selectedItemIds.value = [];
+  selectedIdsFromDifferentGroups.value = [];
   if (props.param) {
     await searchAssociations({
       ...searchQuery.value,
@@ -210,8 +210,16 @@ async function confirm(args: {
   }
 }
 
-const onSelectionChanged = (items: IProductAssociation[]) => {
-  selectedItemIds.value = items.map((item) => item.id).filter((x): x is string => x !== null);
+const onSelectionChanged = (selectedFromGroup: IProductAssociation[], type: string) => {
+  const index = selectedIdsFromDifferentGroups.value.findIndex((i) => i.type === type);
+  if (index !== -1) {
+    selectedIdsFromDifferentGroups.value[index].ids = selectedFromGroup.map((i) => i.id!);
+  } else {
+    selectedIdsFromDifferentGroups.value.push({
+      type,
+      ids: selectedFromGroup.map((i) => i.id!),
+    });
+  }
 };
 
 const itemActionBuilder = (): IActionBuilderResult[] => {
@@ -224,10 +232,10 @@ const itemActionBuilder = (): IActionBuilderResult[] => {
     async clickHandler(item: IProductAssociation) {
       if (item.id) {
         if (!selectedItemIds.value.includes(item.id)) {
-          selectedItemIds.value.push(item.id);
+          onSelectionChanged([item], item.type!);
         }
         await removeAssociations();
-        selectedItemIds.value = [];
+        selectedIdsFromDifferentGroups.value = [];
       }
     },
   });

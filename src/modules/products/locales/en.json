@@ -186,7 +186,7 @@
           "ALL": "all {totalCount}"
         },
         "DELETE_SELECTED_CONFIRMATION_ASSOCIATIONS": {
-          "MESSAGE": "Are you sure you want to delete {count} selected associations?"
+          "MESSAGE": "Are you sure you want to delete {count} selected association(s)?"
         },
         "REVERT_CONFIRMATION": "Draft updates will be reverted. Please confirm."
       }

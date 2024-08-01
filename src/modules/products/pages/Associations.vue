@@ -255,6 +255,8 @@ const onBlur = async () => {
         publishedProductDataId: a.associatedObjectId,
       })),
     });
+
+    changedItemTemp.value = undefined;
   }
 };
 

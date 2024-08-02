@@ -78,7 +78,15 @@
           'tw-flex-col': $isMobile.value,
         }"
       >
-        <slot></slot>
+        <div
+          class="tw-flex tw-flex-auto tw-flex-col"
+          :class="{
+            'tw-w-0': $isDesktop.value,
+            'tw-h-0': $isMobile.value,
+          }"
+        >
+          <slot></slot>
+        </div>
 
         <div
           v-show="$slots['widgets'] && !isWidgetContainerEmpty"

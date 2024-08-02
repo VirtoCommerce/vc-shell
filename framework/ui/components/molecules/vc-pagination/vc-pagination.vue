@@ -39,7 +39,7 @@
 
       <!-- Jump to page input -->
       <div
-        v-if="variant === 'default'"
+        v-if="variant === 'default' && pages > 5"
         class="vc-pagination__jump"
       >
         <p class="tw-mr-3">{{ $t("COMPONENTS.MOLECULES.VC_PAGINATION.JUMP") }}</p>
@@ -79,7 +79,6 @@ export interface Props {
 
 export interface Emits {
   (event: "itemClick", pages: number): void;
-  (event: "pageSizeChange", pageSize: number): void;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -91,9 +90,10 @@ const props = withDefaults(defineProps<Props>(), {
 const emit = defineEmits<Emits>();
 
 const currentPage = ref(props.currentPage);
-const jumpPage = ref(1);
+const jumpPage = ref();
 
 const setPage = (page: number | string) => {
+  if (typeof page === "undefined" || (typeof page === "number" && isNaN(page))) return;
   const pageNumber = typeof page === "string" ? parseInt(page) : page;
   if (pageNumber < 1 || pageNumber > props.pages || page === "...") return;
   currentPage.value = pageNumber;
@@ -114,7 +114,11 @@ const handleInputChange = (value: unknown) => {
 };
 
 function onKeyDown(e: KeyboardEvent) {
-  if (jumpPage.value >= props.pages && e.key !== "Backspace" && e.key !== "Delete") {
+  const allowedKeys = ["Backspace", "Delete", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"];
+  if (
+    (!/^\d$/.test(e.key) && !allowedKeys.includes(e.key)) ||
+    (jumpPage.value >= props.pages && e.key !== "Backspace" && e.key !== "Delete")
+  ) {
     e.preventDefault();
   }
 }
@@ -226,7 +230,7 @@ const pagesToShow = computed(() => {
 
   &__jump input {
     width: 50px;
-    margin-left: 10px;
+    text-align: center;
   }
 }
 </style>

@@ -60,6 +60,7 @@
         :reorderable-rows="isWidgetView ? false : tableData?.reorderableRows"
         :pull-to-reload="!isWidgetView"
         :select-all="tableData?.selectAll"
+        :pagination-variant="tableData?.paginationVariant"
         @item-click="onItemClick"
         @pagination-click="onPaginationClick"
         @selection-changed="onSelectionChanged"

@@ -20,5 +20,5 @@ export const Template: StoryFn<typeof VcPagination> = (args) => ({
 
 export const Expanded = Template.bind({});
 Expanded.args = {
-  expanded: true,
+  // expanded: true,
 };

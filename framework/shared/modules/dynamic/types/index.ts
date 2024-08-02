@@ -10,6 +10,7 @@ import {
   VcRating,
   VcStatus,
   VcVideo,
+  VcPagination,
 } from "./../../../../ui/components";
 import { ITableColumns, IValidationRules, MenuItemConfig } from "../../../../core/types";
 import type { ComponentProps } from "./../../../utilities/vueUtils";
@@ -182,6 +183,7 @@ export interface ListContentSchema {
     };
   })[];
   reorderableRows?: boolean;
+  paginationVariant?: ComponentProps<typeof VcPagination>["variant"];
   // TODO Add to documentation
   selectAll?: boolean;
   // TODO Add to documentation

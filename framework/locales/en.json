@@ -34,6 +34,9 @@
       "VC_INPUT": {
         "DATE_PLACEHOLDER": "Select date",
         "DATE_TIME_PLACEHOLDER": "Select date and time"
+      },
+      "VC_PAGINATION": {
+        "JUMP": "Jump to page:"
       }
     },
     "ORGANISMS": {

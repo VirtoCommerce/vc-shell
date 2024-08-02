@@ -495,6 +495,7 @@
           :expanded="expanded"
           :pages="pages"
           :current-page="currentPage"
+          :variant="paginationVariant"
           @item-click="$emit('paginationClick', $event)"
         ></VcPagination>
 
@@ -537,6 +538,7 @@ import "core-js/actual/array/to-spliced";
 import "core-js/actual/array/to-sorted";
 import VcTableAddNew from "./_internal/vc-table-add-new/vc-table-add-new.vue";
 import VcTableEmpty from "./_internal/vc-table-empty/vc-table-empty.vue";
+import type { ComponentProps } from "vue-component-type-helpers";
 
 export interface StatusImage {
   image?: string;
@@ -594,6 +596,7 @@ const props = withDefaults(
       show: boolean;
       title: string;
     };
+    paginationVariant?: ComponentProps<typeof VcPagination>["variant"];
   }>(),
   {
     items: () => [],
@@ -606,6 +609,7 @@ const props = withDefaults(
     activeFilterCount: 0,
     resizableColumns: true,
     reorderableColumns: true,
+    paginationVariant: "default",
   },
 );
 

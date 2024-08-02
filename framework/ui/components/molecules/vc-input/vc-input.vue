@@ -38,7 +38,13 @@
           ></slot>
         </div>
         <div class="tw-flex tw-flex-col tw-flex-nowrap tw-flex-auto tw-relative">
-          <div class="vc-input__field-wrapper">
+          <div
+            class="vc-input__field-wrapper"
+            :class="{
+              'tw-h-[var(--input-height)]': size === 'default',
+              'tw-h-[var(--input-height-small)]': size === 'small',
+            }"
+          >
             <div class="tw-flex tw-flex-nowrap tw-flex-auto tw-h-full">
               <div
                 v-if="$slots['prepend-inner']"
@@ -321,6 +327,7 @@ export interface Props {
    * @see https://vue3datepicker.com/
    */
   datePickerOptions?: VueDatePickerProps;
+  size?: "default" | "small";
 }
 
 export interface Emits {
@@ -336,6 +343,7 @@ const props = withDefaults(defineProps<Props>(), {
   name: "Field",
   maxlength: "1024",
   step: "1",
+  size: "default",
 });
 
 const emit = defineEmits<Emits>();
@@ -540,6 +548,7 @@ function focus() {
 <style lang="scss">
 :root {
   --input-height: 38px;
+  --input-height-small: 30px;
   --input-border-radius: 3px;
   --input-border-color: #d3dbe9;
   --input-border-color-error: #f14e4e;
@@ -564,7 +573,7 @@ function focus() {
   }
 
   &__field-wrapper {
-    @apply tw-px-3 tw-relative tw-flex tw-flex-nowrap tw-w-full tw-outline-none tw-h-[var(--input-height)] tw-min-w-0 tw-box-border tw-grow tw-border tw-border-solid tw-border-[color:var(--input-border-color)] tw-rounded-[var(--input-border-radius)] tw-bg-[color:var(--input-background-color)];
+    @apply tw-px-3 tw-relative tw-flex tw-flex-nowrap tw-w-full tw-outline-none  tw-min-w-0 tw-box-border tw-grow tw-border tw-border-solid tw-border-[color:var(--input-border-color)] tw-rounded-[var(--input-border-radius)] tw-bg-[color:var(--input-background-color)];
   }
 
   &_error &__field-wrapper {

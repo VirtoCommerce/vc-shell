@@ -1,127 +1,150 @@
 <template>
-  <div class="vc-pagination tw-flex">
-    <!-- To first page chevron -->
-    <div
-      class="vc-pagination__item"
-      :class="{
-        'vc-pagination__item_disabled': currentPage === 1,
-      }"
-      @click="currentPage !== 1 && $emit('itemClick', 1)"
-    >
-      <VcIcon
-        size="xs"
-        icon="fas fa-angle-double-left"
-      ></VcIcon>
-    </div>
-
-    <!-- To previous page arrow -->
-    <div
-      class="vc-pagination__item"
-      :class="{
-        'vc-pagination__item_disabled': currentPage === 1,
-      }"
-      @click="currentPage !== 1 && $emit('itemClick', currentPage - 1)"
-    >
-      <VcIcon
-        size="xs"
-        icon="fas fa-arrow-left"
-      ></VcIcon>
-    </div>
-
-    <template v-if="expanded && $isDesktop.value">
-      <!-- To preprevious page with number -->
+  <div class="vc-pagination">
+    <!-- Pagination Controls -->
+    <div class="vc-pagination__controls">
       <div
-        v-if="currentPage > 2"
         class="vc-pagination__item"
-        @click="$emit('itemClick', currentPage - 2)"
+        :class="{ 'vc-pagination__item_disabled': currentPage === 1 }"
+        @click="currentPage !== 1 && setPage(currentPage - 1)"
       >
-        {{ currentPage - 2 }}
+        <VcIcon
+          size="xs"
+          icon="fas fa-arrow-left"
+        ></VcIcon>
       </div>
 
-      <!-- To previous page with number -->
       <div
-        v-if="currentPage > 1"
+        v-for="page in pagesToShow"
+        :key="page"
         class="vc-pagination__item"
-        @click="$emit('itemClick', currentPage - 1)"
+        :class="{
+          'vc-pagination__item_current': page === currentPage,
+          'vc-pagination__item_hover': page !== '...' && page !== currentPage,
+        }"
+        @click="setPage(page)"
       >
-        {{ currentPage - 1 }}
-      </div>
-    </template>
-
-    <!-- Current page -->
-    <div class="vc-pagination__item vc-pagination__item_current">
-      {{ currentPage }}
-    </div>
-
-    <template v-if="expanded && $isDesktop.value">
-      <!-- To next page with number -->
-      <div
-        v-if="currentPage < pages"
-        class="vc-pagination__item"
-        @click="$emit('itemClick', currentPage + 1)"
-      >
-        {{ currentPage + 1 }}
+        {{ page }}
       </div>
 
-      <!-- To postnext page with number -->
       <div
-        v-if="currentPage < pages - 1"
         class="vc-pagination__item"
-        @click="$emit('itemClick', currentPage + 2)"
+        :class="{ 'vc-pagination__item_disabled': currentPage === pages }"
+        @click="currentPage !== pages && setPage(currentPage + 1)"
       >
-        {{ currentPage + 2 }}
+        <VcIcon
+          size="xs"
+          icon="fas fa-arrow-right"
+        ></VcIcon>
       </div>
-    </template>
 
-    <!-- To next page arrow -->
-    <div
-      class="vc-pagination__item"
-      :class="{
-        'vc-pagination__item_disabled': currentPage === pages,
-      }"
-      @click="currentPage !== pages && $emit('itemClick', currentPage + 1)"
-    >
-      <VcIcon
-        size="xs"
-        icon="fas fa-arrow-right"
-      ></VcIcon>
-    </div>
+      <!-- Jump to page input -->
+      <div
+        v-if="variant === 'default'"
+        class="vc-pagination__jump"
+      >
+        <p class="tw-mr-3">{{ $t("COMPONENTS.MOLECULES.VC_PAGINATION.JUMP") }}</p>
 
-    <!-- To last page chevron -->
-    <div
-      class="vc-pagination__item"
-      :class="{
-        'vc-pagination__item_disabled': currentPage === pages,
-      }"
-      @click="currentPage !== pages && $emit('itemClick', pages)"
-    >
-      <VcIcon
-        size="xs"
-        icon="fas fa-angle-double-right"
-      ></VcIcon>
+        <VcInput
+          type="number"
+          size="small"
+          :model-value="jumpPage"
+          @update:model-value="handleInputChange"
+        >
+          <template #control="{ modelValue }">
+            <input
+              :value="modelValue"
+              class="tw-w-full"
+              :max="props.pages"
+              @input="(event) => handleInputChange((event.target as HTMLInputElement)?.value)"
+              @keyup.enter="setPage(jumpPage)"
+              @keydown="onKeyDown"
+            />
+          </template>
+        </VcInput>
+      </div>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { VcIcon } from "./../../";
+import { ref, computed } from "vue";
+import { VcIcon, VcInput } from "./../../";
 
 export interface Props {
   expanded?: boolean;
   pages?: number;
   currentPage?: number;
+  variant?: "default" | "minimal";
 }
 
 export interface Emits {
   (event: "itemClick", pages: number): void;
+  (event: "pageSizeChange", pageSize: number): void;
 }
 
-withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<Props>(), {
   pages: 1,
   currentPage: 1,
+  variant: "default",
 });
 
-defineEmits<Emits>();
+const emit = defineEmits<Emits>();
+
+const currentPage = ref(props.currentPage);
+const jumpPage = ref(1);
+
+const setPage = (page: number | string) => {
+  const pageNumber = typeof page === "string" ? parseInt(page) : page;
+  if (pageNumber < 1 || pageNumber > props.pages || page === "...") return;
+  currentPage.value = pageNumber;
+  emit("itemClick", pageNumber);
+};
+
+const handleInputChange = (value: unknown) => {
+  const numberValue: number = typeof value === "string" ? parseInt(value) : Number(value);
+  let parsedValue = numberValue;
+
+  if (parsedValue > props.pages) {
+    parsedValue = props.pages;
+  } else if (parsedValue < 1) {
+    parsedValue = 1;
+  }
+
+  jumpPage.value = parsedValue;
+};
+
+function onKeyDown(e: KeyboardEvent) {
+  if (jumpPage.value >= props.pages && e.key !== "Backspace" && e.key !== "Delete") {
+    e.preventDefault();
+  }
+}
+
+const pagesToShow = computed(() => {
+  const pages = [];
+  const range = 2;
+
+  if (props.pages <= 5) {
+    for (let i = 1; i <= props.pages; i++) {
+      pages.push(i);
+    }
+  } else {
+    if (currentPage.value >= 1) pages.push(1);
+    if (currentPage.value > 3) pages.push("...");
+
+    for (
+      let i = Math.max(2, currentPage.value - range);
+      i <= Math.min(props.pages - 1, currentPage.value + range);
+      i++
+    ) {
+      pages.push(i);
+    }
+
+    if (currentPage.value < props.pages - 2) pages.push("...");
+    if (currentPage.value <= props.pages) pages.push(props.pages);
+  }
+
+  return pages;
+});
 </script>
 
 <style lang="scss">
@@ -144,6 +167,23 @@ defineEmits<Emits>();
 }
 
 .vc-pagination {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  &__results {
+    margin-right: 20px;
+  }
+
+  &__page-size {
+    margin-right: 20px;
+  }
+
+  &__controls {
+    display: flex;
+    align-items: center;
+  }
+
   &__item {
     @apply tw-flex tw-items-center tw-justify-center tw-w-[var(--pagination-item-width)]
     tw-h-[var(--pagination-item-height)]
@@ -151,13 +191,9 @@ defineEmits<Emits>();
     tw-border tw-border-solid tw-border-[color:var(--pagination-item-border-color)]
     tw-rounded-[var(--pagination-item-border-radius)]
     tw-text-[color:var(--pagination-item-color)]
-    tw-box-border tw-cursor-pointer
+    tw-box-border
     tw-transition  tw-duration-200
-    tw-mr-3 tw-select-none last:tw-mr-0
-    hover:tw-bg-[color:var(--pagination-item-background-color-hover)]
-    hover:tw-text-[color:var(--pagination-item-color-hover)]
-    hover:tw-border hover:tw-border-solid
-    hover:tw-border-[color:var(--pagination-item-border-color-hover)];
+    tw-mr-3 tw-select-none last:tw-mr-0;
 
     &_current,
     &_current:hover {
@@ -174,6 +210,23 @@ defineEmits<Emits>();
       tw-border tw-border-solid tw-border-[color:var(--pagination-item-border-color-disabled)]
       tw-cursor-auto;
     }
+
+    &_hover {
+      @apply hover:tw-bg-[color:var(--pagination-item-background-color-hover)]
+    hover:tw-text-[color:var(--pagination-item-color-hover)]
+    hover:tw-border hover:tw-border-solid
+    hover:tw-border-[color:var(--pagination-item-border-color-hover)] tw-cursor-pointer;
+    }
+  }
+
+  &__jump {
+    display: flex;
+    align-items: center;
+  }
+
+  &__jump input {
+    width: 50px;
+    margin-left: 10px;
   }
 }
 </style>

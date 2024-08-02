@@ -63,7 +63,11 @@
                       </div>
                       <div
                         data-test-id="dropdown-toggle"
-                        class="tw-appearance-none tw-border-none tw-outline-none tw-min-h-[var(--select-height)] tw-flex tw-items-center tw-w-full tw-box-border tw-cursor-pointer invalid:tw-text-[color:var(--select-placeholder-color)] tw-truncate"
+                        class="tw-appearance-none tw-border-none tw-outline-none tw-flex tw-items-center tw-w-full tw-box-border tw-cursor-pointer invalid:tw-text-[color:var(--select-placeholder-color)] tw-truncate"
+                        :class="{
+                          'tw-min-h-[var(--select-height)]': size === 'default',
+                          'tw-min-h-[var(--select-height-small)]': size === 'small',
+                        }"
                         @click.stop="toggleDropdown"
                       >
                         <div
@@ -483,6 +487,7 @@ const props = withDefaults(
     searchable?: boolean;
     multilanguage?: boolean;
     currentLanguage?: string;
+    size?: "default" | "small";
   }>(),
   {
     optionValue: "id",
@@ -492,6 +497,7 @@ const props = withDefaults(
     name: "Field",
     emitValue: true,
     mapOptions: true,
+    size: "default",
     options: (): T[] => [],
   },
 );
@@ -940,6 +946,7 @@ function onReset() {
 <style lang="scss">
 :root {
   --select-height: 38px;
+  --select-height-small: 28px;
   --select-border-radius: 3px;
   --select-border-color: #d3dbe9;
   --select-border-color-error: #f14e4e;

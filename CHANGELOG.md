@@ -1,3 +1,12 @@
+## [1.0.266](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.265...v1.0.266) (2024-08-02)
+
+
+### Features
+
+* **ui:** improved vc-pagination vm-1430 ([2119b72](https://github.com/VirtoCommerce/vc-shell/commit/2119b72fbd232bdaca9adc0ecb7693aee3a6ac42))
+
+
+
 ## [1.0.265](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.264...v1.0.265) (2024-08-02)
 
 

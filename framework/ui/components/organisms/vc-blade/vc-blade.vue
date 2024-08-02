@@ -78,9 +78,7 @@
           'tw-flex-col': $isMobile.value,
         }"
       >
-        <div class="tw-flex tw-flex-auto tw-flex-col tw-w-0">
-          <slot></slot>
-        </div>
+        <slot></slot>
 
         <div
           v-show="$slots['widgets'] && !isWidgetContainerEmpty"
@@ -195,29 +193,15 @@ const checkEmpty = (el: HTMLElement) => {
   isWidgetContainerEmpty.value = isEmpty;
 };
 
-const equalHeight = (el: HTMLElement) => {
-  const widgets = el.children;
-  if (!widgets) return;
-  const maxHeightArr = Array.from(widgets).map((widget: Element) => (widget as HTMLElement).clientHeight);
-  const maxHeight = maxHeightArr.length ? Math.max(...maxHeightArr) : 0;
-
-  Array.from(widgets).forEach((widget: Element) => {
-    const widgetElement = widget as HTMLElement;
-    widgetElement.style.height = maxHeight !== 0 ? `${maxHeight}px` : "auto";
-  });
-};
-
 onMounted(() => {
   if (widgetsRef.value) {
     checkEmpty(widgetsContainerRef.value);
-    equalHeight(widgetsContainerRef.value);
   }
 });
 
 onUpdated(() => {
   if (widgetsRef.value) {
     checkEmpty(widgetsContainerRef.value);
-    equalHeight(widgetsContainerRef.value);
   }
 });
 

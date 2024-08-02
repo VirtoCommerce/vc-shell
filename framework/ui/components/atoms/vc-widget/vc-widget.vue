@@ -9,9 +9,9 @@
     <div
       class="vc-widget tw-relative tw-shrink-0 tw-py-4 tw-px-2"
       :class="{
-        'tw-w-[120px]': isExpanded,
+        'tw-w-[120px] tw-h-[120px]': isExpanded,
         'vc-widget_disabled': disabled,
-        'tw-w-[50px]': !isExpanded,
+        'tw-w-[50px] tw-h-[50px]': !isExpanded,
         'tw-w-[100px]': $isMobile.value,
       }"
       @click="onClick"

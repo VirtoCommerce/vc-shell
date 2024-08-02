@@ -1,3 +1,12 @@
+## [1.0.267](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.266...v1.0.267) (2024-08-02)
+
+
+### Bug Fixes
+
+* **ui:** vc-pagination show jump if pages > 5 ([1523282](https://github.com/VirtoCommerce/vc-shell/commit/1523282abd92d4af4a346b2529f2437172a22e00))
+
+
+
 ## [1.0.266](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.265...v1.0.266) (2024-08-02)
 
 

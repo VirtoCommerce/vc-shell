@@ -1,6 +1,6 @@
 {
   "name": "@vc-shell/ts-config",
-  "version": "1.0.264",
+  "version": "1.0.265",
   "main": "./tsconfig.json",
   "files": [
     "tsconfig.json"

@@ -2,7 +2,11 @@
   "SHELL": {
     "USER": {
       "ROLE": {
-        "ADMINISTRATOR": "Administrator"
+        "ADMINISTRATOR": "Administrator",
+        "vcmp-admin-role": "Admin",
+        "vcmp-agent-role": "Agent",
+        "vcmp-operator-role": "Operator",
+        "vcmp-owner-role": "Owner"
       }
     },
     "ACCOUNT": {

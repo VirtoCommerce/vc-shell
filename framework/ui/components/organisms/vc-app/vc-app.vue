@@ -60,7 +60,10 @@
               name="toolbar:user-dropdown"
               :user-dropdown="UserDropdownButton"
             >
-              <UserDropdownButton :avatar-url="avatar" />
+              <UserDropdownButton
+                :avatar-url="avatar"
+                :role="role"
+              />
             </slot>
           </template>
         </slot>
@@ -122,6 +125,7 @@ export interface Props {
   title?: string;
   avatar?: string;
   disableMenu?: boolean;
+  role?: string;
 }
 
 defineOptions({

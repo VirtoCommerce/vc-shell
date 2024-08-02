@@ -9,12 +9,13 @@ interface IUISetting {
   logo?: string;
   title?: string;
   avatar?: string;
+  role?: string;
 }
 
 interface IUseSettings {
   readonly uiSettings: Ref<IUISetting>;
   readonly loading: ComputedRef<boolean>;
-  applySettings: (args: { logo?: string; title?: string; avatar?: string }) => void;
+  applySettings: (args: { logo?: string; title?: string; avatar?: string; role?: string }) => void;
 }
 
 export function useSettings(): IUseSettings {
@@ -36,12 +37,13 @@ export function useSettings(): IUseSettings {
     }
   });
 
-  function applySettings(args: { logo?: string; title?: string; avatar?: string }) {
+  function applySettings(args: { logo?: string; title?: string; avatar?: string; role?: string }) {
     uiSettings.value = {
       ...uiSettings.value,
       logo: args.logo,
       title: args.title,
       avatar: args.avatar,
+      role: args.role,
     };
   }
 

@@ -5,6 +5,7 @@
     :title="uiSettings.title"
     :version="version"
     :avatar="uiSettings.avatar"
+    :role="uiSettings.role"
   >
   </VcApp>
 </template>
@@ -64,10 +65,12 @@ async function customizationHandler() {
   try {
     let currentUser: SellerUser | null = null;
     let avatar: string | undefined = undefined;
+    let role: string | undefined = undefined;
 
     if (!isAdministrator.value) {
       currentUser = !isAdministrator.value && (await getCurrentUser());
       avatar = currentUser.iconUrl;
+      role = currentUser.role;
     }
 
     const sellerId = GetSellerId();
@@ -80,6 +83,7 @@ async function customizationHandler() {
         logo: sellerDetails.value?.logo || logoImage,
         title: sellerDetails.value?.name || "Vendor Portal",
         avatar: avatar,
+        role: role,
       });
     } else {
       const seller = await (await getApiClient()).getSellerById(sellerId);
@@ -87,6 +91,7 @@ async function customizationHandler() {
         logo: seller?.logo || logoImage,
         title: seller?.name || "Vendor Portal",
         avatar: avatar,
+        role: role,
       });
     }
   } catch (e) {

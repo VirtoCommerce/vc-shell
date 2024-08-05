@@ -1,3 +1,12 @@
+## [1.0.277](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.276...v1.0.277) (2024-08-05)
+
+
+### Features
+
+* **fulfillment-centers:** address block, description, short description vm-1450 ([4096ea1](https://github.com/VirtoCommerce/vendor-portal/commit/4096ea1007ca16d2799e0628810bccc3eae63a15))
+
+
+
 ## [1.0.276](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.275...v1.0.276) (2024-08-02)
 
 

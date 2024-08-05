@@ -266,6 +266,7 @@ export const details: DynamicDetailsSchema = {
                       placeholder: "SELLER_DETAILS.CARDS.ADDRESS.FORM.EMAIL.PLACEHOLDER",
                       rules: {
                         max: 256,
+                        email: true,
                       },
                       property: "emails[0]",
                     },

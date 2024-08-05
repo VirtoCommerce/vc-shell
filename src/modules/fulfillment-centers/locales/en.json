@@ -38,9 +38,61 @@
             "LABEL": "Name",
             "PLACEHOLDER": "Enter fulfillment center name"
           },
-          "OUTER_ID":{
+          "OUTER_ID": {
             "LABEL": "Outer ID",
             "PLACEHOLDER": "Enter fulfillment center outer ID"
+          },
+          "SHORT_DESC": {
+            "LABEL": "Short Description",
+            "PLACEHOLDER": "Enter short description"
+          },
+          "DESCRIPTION": {
+            "LABEL": "Description",
+            "PLACEHOLDER": "Enter description"
+          },
+          "CARDS": {
+            "ADDRESS": {
+              "TITLE": "Address",
+              "FORM": {
+                "COUNTRY": {
+                  "LABEL": "Country",
+                  "PLACEHOLDER": "Select country"
+                },
+                "ZIP": {
+                  "LABEL": "Postal/ZIP code",
+                  "PLACEHOLDER": "Enter value"
+                },
+                "STATE": {
+                  "LABEL": "State/Province",
+                  "PLACEHOLDER": "Enter value"
+                },
+                "CITY": {
+                  "LABEL": "City",
+                  "PLACEHOLDER": "Enter value"
+                },
+                "ADDRESS_1": {
+                  "LABEL": "Address line 1",
+                  "PLACEHOLDER": "Enter value"
+                },
+                "ADDRESS_2": {
+                  "LABEL": "Address line 2",
+                  "PLACEHOLDER": "Enter value"
+                },
+                "LONGLAT": {
+                  "LABEL": "Location (latitude & longitude)",
+                  "PLACEHOLDER": "Enter value",
+                  "DESCRIPTION": "Enter longitude and latitude separated by comma, eg: 34.059761, -118.276802"
+                },
+                "PHONE": {
+                  "LABEL": "Contact Phone Number",
+                  "PLACEHOLDER": "Enter value"
+                },
+                "EMAIL": {
+                  "LABEL": "Contact E-mail Address",
+                  "PLACEHOLDER": "Enter value"
+                }
+              }
+            }
           },
           "NOT_VALID": "Form is not valid.\nPlease, check highlighted fields."
         }

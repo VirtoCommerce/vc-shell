@@ -10,6 +10,7 @@ import {
 import {
   FulfillmentCenter,
   IFulfillmentCenter,
+  InventoryAddress,
   UpdateFulfillmentCenterCommand,
   VcmpSellerCatalogClient,
 } from "@vcmp-vendor-portal/api/marketplacevendor";
@@ -24,6 +25,11 @@ export interface FulfillmentCenterScope extends DetailsBaseBladeScope {
     reset: IBladeToolbar;
     remove: IBladeToolbar;
   };
+}
+
+interface ILocation {
+  id: string;
+  name: string;
 }
 
 const { getApiClient } = useApiClient(VcmpSellerCatalogClient);
@@ -59,9 +65,83 @@ export const useFulfillmentCenter = (
   const { showConfirmation } = usePopup();
   const route = useRoute();
 
+  const countriesList = ref<ILocation[]>([]);
+  const regionsList = ref<ILocation[]>([]);
+
   const { t } = useI18n({ useScope: "global" });
 
+  async function getCountries() {
+    try {
+      const result = await fetch("/api/platform/common/countries", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json-patch+json",
+          Accept: "application/json",
+        },
+      });
+
+      result.text().then((response) => {
+        countriesList.value = JSON.parse(response);
+      });
+    } catch (e) {
+      console.error(e);
+      throw e;
+    }
+  }
+
+  async function getRegions(countryId: string) {
+    try {
+      const result = await fetch(`/api/platform/common/countries/${countryId}/regions`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json-patch+json",
+          Accept: "application/json",
+        },
+      });
+
+      result.text().then((response) => {
+        regionsList.value = JSON.parse(response);
+      });
+    } catch (e) {
+      console.error(e);
+      throw e;
+    }
+  }
+
+  function setCountry(countryId: string) {
+    if (countryId) {
+      const countryInfo = countriesList.value.find((x) => x.id === countryId);
+      if (countryInfo && item.value!.address) {
+        (item.value!.address = new InventoryAddress({
+          ...item.value!.address,
+          countryCode: countryInfo.id,
+          countryName: countryInfo.name,
+        })),
+          (item.value!.address.regionName = undefined);
+        item.value!.address.regionId = undefined;
+      }
+    }
+  }
+
+  function setRegion(regionId: string) {
+    if (regionId) {
+      const regionInfo = regionsList.value.find((x) => x.id === regionId);
+      if (regionInfo && item.value!.address) {
+        item.value!.address.regionId = regionInfo.id;
+        item.value!.address.regionName = regionInfo.name;
+      }
+    }
+  }
+
+  async function onCountryChange(e: string) {
+    setCountry(e);
+  }
+
   const scope = {
+    onCountryChange,
+    countriesList,
+    setRegion,
+    regionsList,
     toolbarOverrides: {
       saveChanges: {
         disabled: computed(() => !(!validationState.value.disabled && validationState.value.modified)),
@@ -92,12 +172,24 @@ export const useFulfillmentCenter = (
   watch(
     () => args?.mounted.value,
     async () => {
+      await getCountries();
+
       if (!args.props.param) {
         item.value = reactive(new FulfillmentCenter());
         item.value.organizationId = sellerDetailsItem.value?.id;
         validationState.value.resetModified(item.value, true);
       }
     },
+  );
+
+  watch(
+    () => item.value?.address,
+    (newVal) => {
+      if (newVal && newVal.countryCode) {
+        getRegions(newVal.countryCode);
+      }
+    },
+    { deep: true },
   );
 
   async function GetSellerId(): Promise<string> {

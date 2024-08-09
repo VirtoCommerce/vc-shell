@@ -8,6 +8,8 @@ import { ComponentPublicInstanceConstructor } from "../../shared/utilities/vueUt
 // i.e. interface N { key: value } can't be casted to Record<TKey,TValue>
 // while it satisfies requirements
 export type IValidationRules = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [x: string]: any;
   required?: boolean;
   numeric?: boolean;
   email?: boolean;

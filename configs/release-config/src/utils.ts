@@ -1,11 +1,12 @@
 import { readFileSync } from "node:fs";
 import path from "node:path";
 import chalk from "chalk";
-import { SpawnSyncOptionsWithStringEncoding, spawnSync } from "node:child_process";
+import { SpawnSyncOptionsWithStringEncoding } from "node:child_process";
 import type { ReleaseType } from "semver";
 import { inc as semverInc } from "semver";
 import mri from "mri";
 import { argv } from "node:process";
+import { sync } from "cross-spawn";
 
 export const args = mri(argv.slice(2));
 
@@ -28,7 +29,7 @@ export function getPackageInfo(pkgName: string) {
 }
 
 export async function run(bin: string, args: string[], opts?: Partial<SpawnSyncOptionsWithStringEncoding>) {
-  return spawnSync(bin, args, { stdio: "inherit", ...opts });
+  return sync(bin, args, { stdio: "inherit", ...opts });
 }
 
 export async function dryRun(

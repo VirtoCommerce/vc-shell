@@ -597,6 +597,7 @@ const props = withDefaults(
       title: string;
     };
     paginationVariant?: ComponentProps<typeof VcPagination>["variant"];
+    selectionItems?: T[];
   }>(),
   {
     items: () => [],
@@ -786,6 +787,19 @@ const mobileTemplateRenderer = ({ item, index }: { item: TableItem | string; ind
     }),
   );
 };
+
+watch(
+  () => props.selectionItems,
+  (newVal) => {
+    if (newVal) {
+      if (!newVal?.length) return;
+      selection.value = _.merge(selection.value, newVal);
+    }
+  },
+  {
+    immediate: true,
+  },
+);
 
 watch(
   () => props.items,

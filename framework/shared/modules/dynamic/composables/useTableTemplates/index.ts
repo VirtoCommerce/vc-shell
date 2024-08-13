@@ -8,6 +8,7 @@ export interface IUseTableTemplates {
     notFound: ConcreteComponent | undefined;
     empty: ConcreteComponent | undefined;
     footer: ConcreteComponent | undefined;
+    header: ConcreteComponent | undefined;
   };
 }
 
@@ -20,6 +21,7 @@ export const useTableTemplates = (
     notFound: resolveTemplateComponent("notFoundTemplate"),
     empty: resolveTemplateComponent("emptyTemplate"),
     footer: resolveTemplateComponent("footerTemplate"),
+    header: resolveTemplateComponent("headerTemplate"),
   });
 
   function resolveTemplateComponent(name: keyof ListContentSchema): ShallowRef<ConcreteComponent> | undefined {

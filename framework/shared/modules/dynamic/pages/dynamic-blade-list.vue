@@ -61,6 +61,7 @@
         :pull-to-reload="!isWidgetView"
         :select-all="tableData?.selectAll"
         :pagination-variant="tableData?.paginationVariant"
+        :selection-items="selection"
         @item-click="onItemClick"
         @pagination-click="onPaginationClick"
         @selection-changed="onSelectionChanged"
@@ -293,6 +294,13 @@ const isBladeEditable = computed(() =>
   "disabled" in toValue(scope || {}) ? !toValue(toValue(scope || {}).disabled) : false,
 );
 
+const selection = computed(
+  () =>
+    ("selectedIds" in toValue(scope || {}) &&
+      items.value?.filter((item) => toValue(toValue(scope || {}).selectedIds)?.includes(item.id))) ||
+    [],
+);
+
 if (props.isWidgetView) {
   query.value.take = 5;
 }
@@ -398,6 +406,16 @@ onBeforeMount(async () => {
   if (props.composables)
     await load({ sort: sort.value, ...query.value, ...(props.isWidgetView ? {} : getNavigationQuery()) });
 });
+
+watch(
+  () => toValue(scope)?.searchValue,
+  (newVal) => {
+    searchValue.value = newVal;
+  },
+  {
+    immediate: true,
+  },
+);
 
 watch(
   () => props.param,

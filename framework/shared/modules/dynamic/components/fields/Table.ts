@@ -82,6 +82,16 @@ export default {
             editing: enableEditComputed.value,
             enableItemActions: !!props.element.actions,
             itemActionBuilder: actionBuilder,
+            get selectedItems() {
+              if (
+                props.element.selectedIds?.method &&
+                props.bladeContext.scope?.[props.element.selectedIds?.method] &&
+                typeof props.bladeContext.scope?.[props.element.selectedIds?.method] === "function"
+              ) {
+                return props.bladeContext.scope?.[props.element.selectedIds?.method]?.();
+              }
+              return [];
+            },
             onOnEditComplete: (data: { event: { field: string; value: any }; index: number }) => {
               if (props.fieldContext) {
                 setModel({

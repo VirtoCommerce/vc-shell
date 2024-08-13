@@ -93,6 +93,8 @@ export interface ListBaseBladeScope<Item = Record<string, any>, Query = Record<s
   onPaginationClick?: (query: Query) => void;
   breadcrumbs?: ComputedRef<Breadcrumbs[]>;
   modified?: ComputedRef<boolean> | Ref<boolean> | boolean;
+  selectedIds?: string[];
+  searchValue?: string;
 }
 
 export type TOpenBladeArgs = Omit<Parameters<ReturnType<typeof useBladeNavigation>["openBlade"]>["0"], "blade">;
@@ -101,7 +103,7 @@ export type TListItemClickArgs<Item extends Record<string, any> = Record<string,
   "blade" | "param" | "options"
 > & { item?: Item | undefined };
 
-export interface DetailsBaseBladeScope extends BaseBladeScope {
+export interface DetailsBaseBladeScope<Item = Record<string, any>> extends BaseBladeScope {
   disabled?: ComputedRef<boolean | undefined> | Ref<boolean | undefined> | boolean;
   multilanguage?: {
     loading: ComputedRef<boolean>;
@@ -130,6 +132,7 @@ export interface DetailsBaseBladeScope extends BaseBladeScope {
     assets?: AssetsHandler<ICommonAsset>;
     images?: AssetsHandler<ICommonAsset>;
   };
+  selection?: Item[];
 }
 
 export interface DetailsBladeContext extends UseDetails<Record<string, any>, DetailsBaseBladeScope> {

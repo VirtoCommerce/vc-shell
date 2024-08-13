@@ -103,7 +103,7 @@ const isDragging = ref(false);
 // Prepare field-level validation
 const { errorMessage, handleChange, validate } = useField(
   `${props.name === "Gallery" ? instance?.uid : props.name}`,
-  internalRules,
+  internalRules as IValidationRules,
 );
 
 const uploader = ref();

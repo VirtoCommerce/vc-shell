@@ -208,6 +208,9 @@ export interface ListContentSchema {
   footerTemplate?: {
     component: string;
   };
+  headerTemplate?: {
+    component: string;
+  };
 }
 export interface FormContentSchema {
   id: string;
@@ -956,6 +959,15 @@ export type TableSchema = Omit<ListContentSchema, "filter"> &
        * @description Method should be defined in the blade `scope`.
        * @type {string}
        */
+      method: string;
+    };
+    /**
+     * Configuration for the pre-selected table rows.
+     * Method should be defined in the blade `scope`.
+     * @description Method should return an array of table item ids.
+     * @type {string}
+     */
+    selectedIds: {
       method: string;
     };
   };

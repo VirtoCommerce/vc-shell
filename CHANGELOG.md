@@ -1,3 +1,12 @@
+## [1.0.271](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.270...v1.0.271) (2024-08-13)
+
+
+### Features
+
+* **ui,dynamic:** vc-table external access to selectedIds, searchValue ([33ddec1](https://github.com/VirtoCommerce/vc-shell/commit/33ddec108d88cb118f29102de11d55a7111eb838))
+
+
+
 ## [1.0.270](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.269...v1.0.270) (2024-08-13)
 
 

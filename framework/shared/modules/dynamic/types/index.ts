@@ -967,7 +967,7 @@ export type TableSchema = Omit<ListContentSchema, "filter"> &
      * @description Method should return an array of table item ids.
      * @type {string}
      */
-    selectedIds: {
+    selectedIds?: {
       method: string;
     };
   };

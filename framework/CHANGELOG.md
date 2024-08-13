@@ -1,3 +1,12 @@
+## [1.0.272](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.271...v1.0.272) (2024-08-13)
+
+
+### Bug Fixes
+
+* **dynamic:** TableSchema interface fix ([d3c4c40](https://github.com/VirtoCommerce/vc-shell/commit/d3c4c4061f285db8b8c26f7bcf0dfc1d6956fb23))
+
+
+
 ## [1.0.271](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.270...v1.0.271) (2024-08-13)
 
 

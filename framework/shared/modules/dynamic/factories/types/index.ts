@@ -93,8 +93,8 @@ export interface ListBaseBladeScope<Item = Record<string, any>, Query = Record<s
   onPaginationClick?: (query: Query) => void;
   breadcrumbs?: ComputedRef<Breadcrumbs[]>;
   modified?: ComputedRef<boolean> | Ref<boolean> | boolean;
-  selectedIds?: string[];
-  searchValue?: string;
+  selectedIds?: MaybeRef<string[]>;
+  searchValue?: MaybeRef<string>;
 }
 
 export type TOpenBladeArgs = Omit<Parameters<ReturnType<typeof useBladeNavigation>["openBlade"]>["0"], "blade">;

@@ -1,3 +1,12 @@
+## [1.0.279](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.278...v1.0.279) (2024-08-19)
+
+
+### Features
+
+* **orders:** img in mobile grid view ([bb15e7d](https://github.com/VirtoCommerce/vendor-portal/commit/bb15e7dcbb323af1d3b9a55f3b1fe0241b59448d))
+
+
+
 ## [1.0.278](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.277...v1.0.278) (2024-08-19)
 
 

@@ -6,6 +6,14 @@
     },
     "DASHBOARD": {
       "TITLE": "Dashboard"
+    },
+    "USER": {
+      "ROLE": {
+        "vcmp-admin-role": "Admin",
+        "vcmp-agent-role": "Agent",
+        "vcmp-operator-role": "Operator",
+        "vcmp-owner-role": "Owner"
+      }
     }
   }
 }

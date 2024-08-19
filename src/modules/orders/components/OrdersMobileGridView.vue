@@ -1,28 +1,31 @@
 <template>
-  <div class="tw-p-3">
-    <div class="tw-w-full tw-flex tw-justify-evenly">
-      <div class="tw-grow tw-basis-0">
-        <div class="tw-font-bold tw-text-lg">
-          {{ context.item.number }}
+  <div class="tw-p-3 tw-flex tw-flex-nowrap">
+    <OrderLineItemsImgTemplate :context="context" />
+    <div class="tw-grow tw-basis-0 tw-ml-3 tw-truncate">
+      <div class="tw-w-full tw-flex tw-justify-evenly">
+        <div class="tw-grow tw-basis-0">
+          <div class="tw-font-bold tw-text-lg">
+            {{ context.item.number }}
+          </div>
+          <VcHint class="tw-mt-1">{{ context.item.customerName }}</VcHint>
         </div>
-        <VcHint class="tw-mt-1">{{ context.item.customerName }}</VcHint>
+        <div>
+          <VcStatus v-bind="statusStyle(context.item.status as string)">
+            {{ context.item.status }}
+          </VcStatus>
+        </div>
       </div>
       <div>
-        <VcStatus v-bind="statusStyle(context.item.status as string)">
-          {{ context.item.status }}
-        </VcStatus>
-      </div>
-    </div>
-    <div>
-      <div class="tw-mt-3 tw-w-full tw-flex tw-justify-between">
-        <div class="tw-truncate tw-grow tw-basis-0 tw-mr-2">
-          <VcHint>{{ $t("ORDERS.PAGES.LIST.TABLE.HEADER.TOTAL") }}</VcHint>
-          <div class="tw-truncate tw-mt-1">{{ context.item.total }} {{ context.item.currency }}</div>
-        </div>
-        <div class="tw-truncate tw-grow tw-basis-0 tw-mr-2">
-          <VcHint>{{ $t("ORDERS.PAGES.LIST.TABLE.HEADER.CREATED") }}</VcHint>
-          <div class="tw-truncate tw-mt-1">
-            {{ context.item.createdDate && moment(context.item.createdDate).fromNow() }}
+        <div class="tw-mt-3 tw-w-full tw-flex tw-justify-between">
+          <div class="tw-truncate tw-grow tw-basis-0 tw-mr-2">
+            <VcHint>{{ $t("ORDERS.PAGES.LIST.TABLE.HEADER.TOTAL") }}</VcHint>
+            <div class="tw-truncate tw-mt-1">{{ context.item.total }} {{ context.item.currency }}</div>
+          </div>
+          <div class="tw-truncate tw-grow tw-basis-0 tw-mr-2">
+            <VcHint>{{ $t("ORDERS.PAGES.LIST.TABLE.HEADER.CREATED") }}</VcHint>
+            <div class="tw-truncate tw-mt-1">
+              {{ context.item.createdDate && moment(context.item.createdDate).fromNow() }}
+            </div>
           </div>
         </div>
       </div>
@@ -33,6 +36,7 @@
 <script setup lang="ts">
 import { CustomerOrder } from "@vcmp-vendor-portal/api/orders";
 import moment from "moment";
+import OrderLineItemsImgTemplate from "./OrderLineItemsImgTemplate.vue";
 
 export interface Props {
   context: {

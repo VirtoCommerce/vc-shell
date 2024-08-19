@@ -125,26 +125,36 @@ function onKeyDown(e: KeyboardEvent) {
 
 const pagesToShow = computed(() => {
   const pages = [];
-  const range = 2;
+  const range = 1;
+  const totalPages = props.pages;
+  const current = currentPage.value;
 
   if (props.pages <= 5) {
     for (let i = 1; i <= props.pages; i++) {
       pages.push(i);
     }
   } else {
-    if (currentPage.value >= 1) pages.push(1);
-    if (currentPage.value > 3) pages.push("...");
+    const addRange = (start: number, end: number) => {
+      for (let i = start; i <= end; i++) {
+        pages.push(i);
+      }
+    };
 
-    for (
-      let i = Math.max(2, currentPage.value - range);
-      i <= Math.min(props.pages - 1, currentPage.value + range);
-      i++
-    ) {
-      pages.push(i);
+    pages.push(1);
+
+    if (current <= 4) {
+      addRange(2, 5);
+      pages.push("...");
+    } else if (current >= totalPages - 3) {
+      pages.push("...");
+      addRange(totalPages - 4, totalPages - 1);
+    } else {
+      pages.push("...");
+      addRange(current - range, current + range);
+      pages.push("...");
     }
 
-    if (currentPage.value < props.pages - 2) pages.push("...");
-    if (currentPage.value <= props.pages) pages.push(props.pages);
+    pages.push(props.pages);
   }
 
   return pages;

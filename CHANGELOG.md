@@ -1,3 +1,12 @@
+## [1.0.274](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.273...v1.0.274) (2024-08-19)
+
+
+### Bug Fixes
+
+* **ui:** vc-pagination pagesToShow  logic refactor ([92153d8](https://github.com/VirtoCommerce/vc-shell/commit/92153d8a91990274682fca1490cdc5a9cc9e784a))
+
+
+
 ## [1.0.273](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.272...v1.0.273) (2024-08-16)
 
 

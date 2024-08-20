@@ -171,7 +171,7 @@ export interface Props {
    * Available options that the user can select from.
    * Default value: []
    */
-  options: unknown[];
+  options?: unknown[];
   /**
    * Property of option which holds the 'value'
    * Default value: id

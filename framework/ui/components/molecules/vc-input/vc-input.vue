@@ -687,4 +687,9 @@ function focus() {
 input.dp__input::placeholder {
   color: #818181 !important;
 }
+
+.dp--tp-wrap {
+  min-width: var(--dp-menu-min-width);
+  max-width: 100% !important;
+}
 </style>

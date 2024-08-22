@@ -344,12 +344,14 @@
             <div
               v-for="(item, itemIndex) in items"
               :key="(typeof item === 'object' && 'id' in item && item.id) || itemIndex"
-              class="vc-table__body-row tw-flex tw-w-full tw-h-[60px] tw-min-h-[60px] tw-bg-white tw-relative tw-group"
+              class="vc-table__body-row tw-flex tw-w-full tw-h-[60px] tw-min-h-[60px] tw-relative tw-group"
               :class="{
-                'hover:!tw-bg-[#dfeef9] tw-cursor-pointer': hasClickListener,
-                '!tw-bg-[#F9F9F9]': itemIndex % 2 === 1,
-                '!tw-bg-[#dfeef9] hover:!tw-bg-[#dfeef9]':
+                'tw-bg-white': itemIndex % 2 === 0,
+                'hover:tw-bg-[#EEF6FC] tw-cursor-pointer tw-border-solid': hasClickListener,
+                'tw-bg-[#F9F9F9]': itemIndex % 2 === 1,
+                '!tw-bg-[#EEF6FC] hover:!tw-bg-[#EEF6FC]':
                   typeof item === 'object' && 'id' in item && item.id ? selectedItemId === item.id : false,
+                'hover:!tw-bg-[#dfeef9] !tw-bg-[#dfeef9]': selection && selection.length && selection.includes(item),
               }"
               @click="$emit('itemClick', item)"
               @mouseleave="closeActions"
@@ -412,7 +414,9 @@
                 "
                 class="tw-absolute tw-flex tw-right-0 tw-px-[10px] actions tw-h-full tw-bg-[#f4f8fb]"
                 :class="{
-                  'group-hover:!tw-bg-[#dfeef9]': hasClickListener,
+                  'group-hover:!tw-bg-[#EEF6FC]': hasClickListener,
+                  'group-hover:!tw-bg-[#dfeef9]':
+                    hasClickListener && selection && selection.length && selection.includes(item),
                 }"
                 @click.stop
               >

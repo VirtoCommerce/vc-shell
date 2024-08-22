@@ -131,6 +131,15 @@ export const useSpecialPriceDetails = (
         isVisible: computed(() => !!args.props.options?.item && !loading.value),
       },
     },
+    datesComputed: computed({
+      get() {
+        return [item.value?.startDate, item.value?.endDate];
+      },
+      set(value: (Date | undefined)[]) {
+        item.value!.startDate = value?.[0] ?? undefined;
+        item.value!.endDate = value?.[1] ?? undefined;
+      },
+    }),
   };
 
   watch(

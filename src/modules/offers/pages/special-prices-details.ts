@@ -108,42 +108,22 @@ export const specialPricesDetails: DynamicDetailsSchema = {
           ],
         },
         {
-          id: "validityDatesCard",
-          component: "vc-card",
-          label: "SPECIAL_PRICES.PAGES.DETAILS.FIELDS.DATES.TITLE",
-          fields: [
-            {
-              id: "validityDatesFieldset",
-              component: "vc-fieldset",
-              columns: 2,
-              fields: [
-                {
-                  id: "startDate",
-                  component: "vc-input",
-                  label: "SPECIAL_PRICES.PAGES.DETAILS.FIELDS.DATES.VALID_FROM",
-                  variant: "datetime-local",
-                  property: "startDate",
-                  clearable: true,
-                  rules: { before: "@endDate" },
-                },
-                {
-                  id: "endDate",
-                  component: "vc-input",
-                  label: "SPECIAL_PRICES.PAGES.DETAILS.FIELDS.DATES.VALID_TO",
-                  variant: "datetime-local",
-                  property: "endDate",
-                  clearable: true,
-                  rules: { after: "@startDate" },
-                },
-              ],
-            },
-          ],
-        },
-        {
           id: "conditionsCard",
           component: "vc-card",
           label: "SPECIAL_PRICES.PAGES.DETAILS.FIELDS.CONDITIONS.TITLE",
           fields: [
+            {
+              id: "validityDates",
+              component: "vc-input",
+              label: "SPECIAL_PRICES.PAGES.DETAILS.FIELDS.DATES.VALIDITY_DATES",
+              variant: "datetime-local",
+              property: "datesComputed",
+              clearable: true,
+              datePickerOptions: {
+                multiCalendars: true,
+                range: true,
+              },
+            },
             {
               id: "customerGroup",
               component: "vc-multivalue",

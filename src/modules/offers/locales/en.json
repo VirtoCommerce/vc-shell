@@ -230,8 +230,7 @@
           },
           "DATES": {
             "TITLE": "Validity dates",
-            "VALID_FROM": "Valid from",
-            "VALID_TO": "Valid to"
+            "VALIDITY_DATES": "Validity dates"
           }
         }
       },

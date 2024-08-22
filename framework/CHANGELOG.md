@@ -1,3 +1,12 @@
+## [1.0.277](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.276...v1.0.277) (2024-08-22)
+
+
+### Bug Fixes
+
+* **ui:** adjust min-width and max-width for dp--tp-wrap to prevent timepicker overflow ([b606d9a](https://github.com/VirtoCommerce/vc-shell/commit/b606d9a9ad3026a38d7230550b8ed71194b18d54))
+
+
+
 ## [1.0.276](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.275...v1.0.276) (2024-08-22)
 
 

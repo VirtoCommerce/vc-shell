@@ -491,6 +491,10 @@ export interface InputSchema extends SchemaBase {
    * Text below control.
    */
   hint?: string;
+  /**
+   * Datepicker options.
+   */
+  datePickerOptions?: ComponentProps<typeof VcInput>["datePickerOptions"];
 }
 
 /**

@@ -467,7 +467,7 @@ const isBrowserLocale24h = (() => {
   return Number.isInteger(Number(hr));
 })();
 
-const formatDateWithLocale: (date: Date) => string = (date) => {
+const formatDateWithLocale = (date: Date | Date[]) => {
   const options: Intl.DateTimeFormatOptions = {
     year: "numeric",
     month: "numeric",
@@ -480,7 +480,13 @@ const formatDateWithLocale: (date: Date) => string = (date) => {
     options.hour12 = !isBrowserLocale24h;
   }
 
-  return new Intl.DateTimeFormat(locale, options).format(date);
+  const formatSingleDate = (date: Date) => new Intl.DateTimeFormat(locale, options).format(date);
+
+  if (Array.isArray(date)) {
+    return date.map(formatSingleDate).join(",");
+  } else {
+    return formatSingleDate(date);
+  }
 };
 
 function onKeyDown(e: KeyboardEvent) {

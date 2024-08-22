@@ -26,6 +26,7 @@ export default {
             currentLanguage: props.currentLocale,
             clearable: props.element.clearable || false,
             maxlength: props.element.maxlength,
+            datePickerOptions: props.element.datePickerOptions,
           },
           unrefNested(props.baseProps),
           {

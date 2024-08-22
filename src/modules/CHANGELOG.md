@@ -1,3 +1,12 @@
+## [1.0.280](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.279...v1.0.280) (2024-08-22)
+
+
+### Features
+
+* **offers:** validity dates range selector ([7ff12df](https://github.com/VirtoCommerce/vendor-portal/commit/7ff12dfa5c9daca9b894f27504f7ec068349b389))
+
+
+
 ## [1.0.279](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.278...v1.0.279) (2024-08-19)
 
 

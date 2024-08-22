@@ -1,3 +1,13 @@
+## [1.0.276](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.275...v1.0.276) (2024-08-22)
+
+
+### Features
+
+* **dynamic:** InputField exposed datePickerOptions prop ([2ce0972](https://github.com/VirtoCommerce/vc-shell/commit/2ce0972beab48e2655795d7630e881053d10b042))
+* **ui:** vc-table highlight multiselected rows vm-1431 ([67dde13](https://github.com/VirtoCommerce/vc-shell/commit/67dde13314a4e8ae906f737dea03c10fa39e5273))
+
+
+
 ## [1.0.275](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.274...v1.0.275) (2024-08-20)
 
 

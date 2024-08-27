@@ -66,10 +66,10 @@ export const useOffersList = (
     return settingUseDefaultOffer.value;
   }
 
-  const scope = ref<OffersListScope>({
+  const scope: OffersListScope = {
     openDetailsBlade,
     needShowIsDefault,
-  });
+  };
 
   onBeforeMount(async () => {
     if (
@@ -96,6 +96,6 @@ export const useOffersList = (
     query,
     loading,
     pagination,
-    scope: computed(() => scope.value),
+    scope,
   };
 };

@@ -28,7 +28,9 @@
         v-if="expand"
         class="vc-app-menu-item__title tw-capitalize"
       >
-        {{ title }}
+        <div class="tw-truncate">
+          {{ title }}
+        </div>
         <VcIcon
           v-if="!!children?.length || false"
           class="vc-app-menu-item__title-icon"

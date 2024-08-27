@@ -1,3 +1,12 @@
+## [1.0.279](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.278...v1.0.279) (2024-08-27)
+
+
+### Bug Fixes
+
+* **create-vc-app:** update currency option in details.vue and dynamic-blade-list.vue ([40a363a](https://github.com/VirtoCommerce/vc-shell/commit/40a363a292457d0f74e961a342909ed6f425d3b4))
+
+
+
 ## [1.0.278](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.277...v1.0.278) (2024-08-27)
 
 

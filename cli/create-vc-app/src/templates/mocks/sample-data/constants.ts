@@ -6,9 +6,7 @@ interface MockedItem {
   price: number;
   salePrice: number;
   guid: string;
-  currency: {
-    name: string;
-  };
+  currency: string;
 }
 
 interface MockedQuery {
@@ -24,9 +22,7 @@ const mockedItems: MockedItem[] = [
     price: 100,
     salePrice: 90,
     guid: "a1e26bcd-2704-5a3f-b97c-3e32e3d77a38",
-    currency: {
-      name: "USD",
-    },
+    currency: "USD",
   },
   {
     id: "44b96758-792a-5449-b649-f2a0cd614c4b",
@@ -36,9 +32,7 @@ const mockedItems: MockedItem[] = [
     price: 200,
     salePrice: 90,
     guid: "0ab995c0-3798-5011-a4ae-498e4c683cfd",
-    currency: {
-      name: "USD",
-    },
+    currency: "USD",
   },
   {
     id: "605b2bfb-ba13-5687-91d5-0261b4b60524",
@@ -48,9 +42,7 @@ const mockedItems: MockedItem[] = [
     price: 300,
     salePrice: 90,
     guid: "8a9b6954-7bf7-58b2-a146-c68e06fa7bb4",
-    currency: {
-      name: "USD",
-    },
+    currency: "USD",
   },
   {
     id: "5ca8185c-0c28-59bf-ab40-991f134e6db3",
@@ -60,9 +52,7 @@ const mockedItems: MockedItem[] = [
     price: 400,
     salePrice: 90,
     guid: "261364c5-f976-5c86-a92c-b0f0ea14efc7",
-    currency: {
-      name: "USD",
-    },
+    currency: "USD",
   },
   {
     id: "077930cb-0874-5f85-9a5b-daafdd0bf860",
@@ -72,9 +62,7 @@ const mockedItems: MockedItem[] = [
     price: 500,
     salePrice: 90,
     guid: "74d302ef-31e6-5432-91f1-d92c87ee2d2a",
-    currency: {
-      name: "USD",
-    },
+    currency: "USD",
   },
 ];
 

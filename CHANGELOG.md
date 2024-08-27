@@ -1,3 +1,13 @@
+## [1.0.278](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.277...v1.0.278) (2024-08-27)
+
+
+### Bug Fixes
+
+* **create-vc-app:** add shims and change sample constants ([bfdc2d6](https://github.com/VirtoCommerce/vc-shell/commit/bfdc2d6bb50b17d88387b2f71aef8c8c931c3452))
+* **ui:** vc-app-menu-link truncating ([e7fe836](https://github.com/VirtoCommerce/vc-shell/commit/e7fe836e8e28d9ec92469f8bdf7dc8353104363f))
+
+
+
 ## [1.0.277](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.276...v1.0.277) (2024-08-22)
 
 

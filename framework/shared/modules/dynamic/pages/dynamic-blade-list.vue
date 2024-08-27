@@ -291,13 +291,13 @@ const { load, remove, items, loading, pagination, query, scope } = props.composa
     } as unknown as UseList<Record<string, any>[], Record<string, any>, ListBaseBladeScope>);
 
 const isBladeEditable = computed(() =>
-  "disabled" in toValue(scope || {}) ? !toValue(toValue(scope || {}).disabled) : false,
+  "disabled" in toValue(scope || {}) ? !toValue(toValue(scope || {})?.disabled) : false,
 );
 
 const selection = computed(
   () =>
     ("selectedIds" in toValue(scope || {}) &&
-      items.value?.filter((item) => toValue(toValue(scope || {}).selectedIds)?.includes(item.id))) ||
+      items.value?.filter((item) => toValue(toValue(scope || {})?.selectedIds)?.includes(item.id))) ||
     [],
 );
 

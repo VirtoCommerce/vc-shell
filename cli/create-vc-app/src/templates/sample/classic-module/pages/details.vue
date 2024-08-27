@@ -91,7 +91,7 @@
               >
                 <VcInputCurrency
                   v-model="item.price"
-                  v-model:option="item.currency.name"
+                  v-model:option="item.currency"
                   :label="$t('SAMPLE_APP.PAGES.DETAILS.FIELDS.PRICE')"
                   required
                   option-value="value"
@@ -115,7 +115,7 @@
               >
                 <VcInputCurrency
                   v-model="item.salePrice"
-                  v-model:option="item.currency.name"
+                  v-model:option="item.currency"
                   :label="$t('SAMPLE_APP.PAGES.DETAILS.FIELDS.SALE_PRICE')"
                   required
                   option-value="value"

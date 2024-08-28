@@ -1,3 +1,12 @@
+## [1.0.284](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.283...v1.0.284) (2024-08-28)
+
+
+### Features
+
+* vm-1464 expired password change ([36a9009](https://github.com/VirtoCommerce/vendor-portal/commit/36a9009f7a2260164ddff858f1a0cc78f36419ff))
+
+
+
 ## [1.0.283](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.282...v1.0.283) (2024-08-28)
 
 

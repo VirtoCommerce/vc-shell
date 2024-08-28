@@ -1,3 +1,12 @@
+## [1.0.280](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.279...v1.0.280) (2024-08-28)
+
+
+### Features
+
+* vm-1464 expired password change form ([4645cba](https://github.com/VirtoCommerce/vc-shell/commit/4645cba7ecc1844b9cd12bb95baf760871b44053))
+
+
+
 ## [1.0.279](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.278...v1.0.279) (2024-08-27)
 
 

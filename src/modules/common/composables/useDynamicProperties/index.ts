@@ -25,10 +25,10 @@ export const useDynamicProperties = () => {
   });
 
   function getPropertyValue(property: IProperty, locale: string) {
-    if (property.multilanguage) {
+    if ("multilanguage" in property && property.multilanguage) {
       const propValue = property.values?.find((x) => x.languageCode == locale);
 
-      if (property.multivalue) {
+      if ("multivalue" in property && property.multivalue) {
         return property.values?.filter((x) => x.languageCode === locale);
       } else if (!propValue) {
         const aliasProp = property.values?.find((x) => x.propertyId === property.id);
@@ -44,15 +44,15 @@ export const useDynamicProperties = () => {
         );
       }
 
-      if (property.dictionary) {
+      if ("dictionary" in property && property.dictionary) {
         return propValue && propValue?.valueId;
       }
       return propValue?.value;
     } else {
-      if (property.multivalue) {
+      if ("multivalue" in property && property.multivalue) {
         return property.values;
       }
-      if (property.dictionary) {
+      if ("dictionary" in property && property.dictionary) {
         return property.values?.[0]?.valueId;
       }
       return property.values?.[0]?.value;

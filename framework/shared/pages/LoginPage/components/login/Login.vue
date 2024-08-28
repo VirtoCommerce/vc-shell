@@ -204,7 +204,7 @@ let useLogin;
 const signInResult = ref({ succeeded: true }) as Ref<SignInResult & { status?: number; error?: any }>;
 const requestPassResult = ref<RequestPasswordResult>({ succeeded: true });
 const forgotPasswordRequestSent = ref(false);
-const { signIn, loading, externalSignIn, getExternalLoginProviders } = useUser();
+const { signIn, loading, externalSignIn, getExternalLoginProviders, user } = useUser();
 const isLogin = ref(true);
 const isValid = useIsFormValid();
 const isDirty = useIsFormDirty();
@@ -258,21 +258,25 @@ const login = async () => {
       error?: any;
     };
 
-    if (signInResult.value.succeeded) {
-      const redirectTo = localStorage.getItem("redirectAfterLogin") || "/";
-      localStorage.removeItem("redirectAfterLogin");
-      await router.push(redirectTo);
+    if (signInResult.value.succeeded && user.value?.passwordExpired) {
+      await router.push({ name: "ChangePassword" });
     } else {
-      if (signInResult.value.status) {
-        if (signInResult.value.status === 401) {
-          signInResult.value.error = "The login or password is incorrect.";
-          form.password = "";
-          validateField("password");
-        } else {
-          signInResult.value.error = "Authentication error (code: " + signInResult.value.status + ").";
-        }
+      if (signInResult.value.succeeded) {
+        const redirectTo = localStorage.getItem("redirectAfterLogin") || "/";
+        localStorage.removeItem("redirectAfterLogin");
+        await router.push(redirectTo);
       } else {
-        signInResult.value.error = "Authentication error: " + signInResult.value.error;
+        if (signInResult.value.status) {
+          if (signInResult.value.status === 401) {
+            signInResult.value.error = "The login or password is incorrect.";
+            form.password = "";
+            validateField("password");
+          } else {
+            signInResult.value.error = "Authentication error (code: " + signInResult.value.status + ").";
+          }
+        } else {
+          signInResult.value.error = "Authentication error: " + signInResult.value.error;
+        }
       }
     }
   }

@@ -102,6 +102,9 @@
     },
     "CHANGE_PASSWORD": {
       "TITLE": "Change password",
+      "FORCED": {
+        "LABEL": "Your password has expired. You must change the password to continue using the manager."
+      },
       "CURRENT_PASSWORD": {
         "LABEL": "Current password",
         "PLACEHOLDER": "Enter password"

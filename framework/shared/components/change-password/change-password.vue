@@ -2,11 +2,33 @@
   <VcPopup
     :title="t('COMPONENTS.CHANGE_PASSWORD.TITLE')"
     is-mobile-fullscreen
-    @close="$emit('close')"
+    @close="cancelChange"
   >
     <template #content>
       <!-- <div class="change-password tw-p-3 tw-overflow-scroll"> -->
       <VcForm class="tw-flex tw-flex-col tw-flex-auto">
+        <div
+          v-if="forced"
+          class="tw-mb-4"
+        >
+          <vc-status
+            extend
+            :outline="false"
+            variant="info-dark"
+          >
+            <div class="tw-flex tw-flex-row tw-items-center">
+              <VcIcon
+                icon="far fa-lightbulb"
+                size="l"
+                class="tw-mr-3"
+              />
+              <div>
+                <p>{{ t("COMPONENTS.CHANGE_PASSWORD.FORCED.LABEL") }}</p>
+              </div>
+            </div>
+          </vc-status>
+        </div>
+
         <Field
           v-slot="{ field, errorMessage, errors }"
           :label="t('COMPONENTS.CHANGE_PASSWORD.CURRENT_PASSWORD.LABEL')"
@@ -82,7 +104,7 @@
           <VcButton
             :outline="true"
             class="tw-mr-3"
-            @click="$emit('close')"
+            @click="cancelChange"
           >
             {{ t("COMPONENTS.CHANGE_PASSWORD.CANCEL") }}
           </VcButton>
@@ -117,6 +139,7 @@ import { VcInput, VcHint, VcButton, VcPopup, VcForm } from "./../../../ui/compon
 import { IIdentityError } from "./../../../core/api/platform";
 import { useUser } from "./../../../core/composables/useUser";
 import { useI18n } from "vue-i18n";
+import { useRouter } from "vue-router";
 
 interface IChangePassForm {
   isValid: boolean;
@@ -125,6 +148,13 @@ interface IChangePassForm {
   password: string;
   confirmPassword: string;
 }
+
+export interface Props {
+  forced?: boolean;
+  login?: string;
+}
+
+const props = defineProps<Props>();
 
 interface Emits {
   (event: "close"): void;
@@ -136,6 +166,9 @@ const { changeUserPassword, loading, validatePassword } = useUser();
 useForm({ validateOnMount: false });
 const isValid = useIsFormValid();
 const isDirty = useIsFormDirty();
+const router = useRouter();
+const { signOut } = useUser();
+
 const form = reactive<IChangePassForm>({
   isValid: false,
   errors: [],
@@ -148,10 +181,23 @@ const isDisabled = computed(() => {
   return !isDirty.value || !isValid.value;
 });
 
+async function cancelChange() {
+  if (props.forced) {
+    await signOut();
+    await router.push("/login");
+  } else {
+    emit("close");
+  }
+}
+
 async function changePassword() {
   const result = await changeUserPassword(form.currentPassword, form.password);
   if (result?.succeeded) {
-    emit("close");
+    if (props.forced) {
+      await router.push("/");
+    } else {
+      emit("close");
+    }
   } else if (result?.errors) {
     form.errors = result?.errors;
     form.isValid = form.errors.length == 0;

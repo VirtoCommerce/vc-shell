@@ -78,6 +78,7 @@ export const routes: RouteRecordRaw[] = [
     component: ChangePasswordPage,
     meta: {
       forced: true,
+      bgimage: bgImage,
     },
     props: (route) => ({
       userId: route.query.userId,

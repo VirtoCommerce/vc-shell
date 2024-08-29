@@ -1,3 +1,12 @@
+## [1.0.285](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.284...v1.0.285) (2024-08-29)
+
+
+### Features
+
+* vm-1464 bgimage for change password page ([7244cf8](https://github.com/VirtoCommerce/vendor-portal/commit/7244cf8ab962376ec47ba4cbd3b5d5336c9cde6c))
+
+
+
 ## [1.0.284](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.283...v1.0.284) (2024-08-28)
 
 

@@ -14,6 +14,7 @@ import { useRouter } from "vue-router";
 const router = useRouter();
 
 const forced = router.currentRoute.value.meta?.forced;
+const bgimage = router.currentRoute.value.meta?.bgimage;
 
 import { ChangePassword } from "../../../../components/change-password";
 
@@ -25,6 +26,6 @@ export interface Props {
 const props = defineProps<Props>();
 
 const backgroundImageHandler = computed(() => {
-  return `background: url('/assets/background.jpg') center / cover no-repeat`;
+  return `background: url(${bgimage}) center / cover no-repeat`;
 });
 </script>

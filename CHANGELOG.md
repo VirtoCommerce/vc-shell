@@ -1,3 +1,12 @@
+## [1.0.281](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.280...v1.0.281) (2024-08-29)
+
+
+### Features
+
+* vm-1464 bgimage for change password page ([5259707](https://github.com/VirtoCommerce/vc-shell/commit/525970745a95e94483ace2cfad507b67e49892ac))
+
+
+
 ## [1.0.280](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.279...v1.0.280) (2024-08-28)
 
 

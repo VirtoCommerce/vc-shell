@@ -1,6 +1,6 @@
 import { VcNotification } from "./../../../../../ui/components";
-import { PropType, computed, defineComponent, h } from "vue";
-import { NotificationType } from "../../types";
+import { PropType, computed, defineComponent, h, toRaw } from "vue";
+import { Content, NotificationType } from "../../types";
 import { useContainer } from "../../composables";
 
 const NotificationContainer = defineComponent({
@@ -23,7 +23,7 @@ const NotificationContainer = defineComponent({
       default: 3000,
     },
     content: {
-      type: String,
+      type: [String, Object] as PropType<Content>,
       required: false,
       default: "",
     },
@@ -70,8 +70,23 @@ const NotificationContainer = defineComponent({
       return notificationContainer.value || [];
     });
 
+    function isComponent(content: Content) {
+      return (
+        typeof content === "object" &&
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (!!(content as any)?.render || !!(content as any)?.setup)
+      );
+    }
+
     return () =>
       notificationsList.value.map((item) => {
+        if (item.content && isComponent(item.content)) {
+          return h(VcNotification, {
+            ...item,
+            content: h(toRaw(item.content)),
+            key: item.notificationId,
+          });
+        }
         return h(VcNotification, { ...item, key: item.notificationId });
       });
   },

@@ -14,9 +14,13 @@
         class="tw-mr-2"
       ></VcIcon>
       <div
+        v-if="typeof content === 'string'"
         class="vc-notification__content tw-text-[color:var(--notification-content-color)] tw-whitespace-pre-line tw-overflow-auto tw-max-h-[100px]"
       >
         {{ content }}
+      </div>
+      <div v-else>
+        <component :is="content"></component>
       </div>
     </div>
     <VcIcon
@@ -29,12 +33,12 @@
 </template>
 
 <script lang="ts" setup>
-import { NotificationType } from "./../../../../shared/components/notifications";
+import { Content, NotificationType } from "./../../../../shared/components/notifications";
 import { VcIcon } from "./../../";
 import { Ref, onMounted, ref, toRefs, watch } from "vue";
 
 export interface Props {
-  content?: string;
+  content?: Content;
   notificationId?: number | string;
   updateId?: number | string;
   type?: NotificationType;

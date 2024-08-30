@@ -1,10 +1,15 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/ban-types */
+
+import { VNode, DefineComponent } from "vue";
+
 export type NotificationType = "success" | "error" | "warning" | "default";
 
 export interface NotificationOptions {
   limit?: number;
   pauseOnHover?: boolean;
   timeout?: number | boolean;
-  content?: string;
+  content?: Content;
   notificationId?: number | string;
   type?: NotificationType;
   onOpen?: <T>(payload: T) => void;
@@ -17,3 +22,5 @@ export interface NotificationOptions {
 export interface InternalNotificationOptions extends NotificationOptions {
   closeNotification?(): void;
 }
+
+export type Content = string | VNode | DefineComponent<{}, {}, any>;

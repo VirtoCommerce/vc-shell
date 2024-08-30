@@ -1,5 +1,5 @@
-import { mergeProps } from "vue";
-import { InternalNotificationOptions, NotificationOptions } from "../types";
+import { mergeProps, h } from "vue";
+import { Content, InternalNotificationOptions, NotificationOptions } from "../types";
 import { useContainer } from "../composables";
 
 const {
@@ -27,7 +27,7 @@ function resolvePending(options: InternalNotificationOptions) {
   }
 }
 
-function showNotification(content: string, options: InternalNotificationOptions) {
+function showNotification(content: Content, options: InternalNotificationOptions) {
   options = mergeProps(defaultOptions as Record<string, unknown>, options as Record<string, unknown>);
 
   if (
@@ -52,16 +52,16 @@ function showNotification(content: string, options: InternalNotificationOptions)
   return options.notificationId;
 }
 
-const notification = (content: string, options?: NotificationOptions) =>
+const notification = (content: Content, options?: NotificationOptions) =>
   showNotification(content, { ...options, type: "default" });
 
-notification.error = (content: string, options?: NotificationOptions) =>
+notification.error = (content: Content, options?: NotificationOptions) =>
   showNotification(content, { ...options, type: "error" });
 
-notification.warning = (content: string, options?: NotificationOptions) =>
+notification.warning = (content: Content, options?: NotificationOptions) =>
   showNotification(content, { ...options, type: "warning" });
 
-notification.success = (content: string, options?: NotificationOptions) =>
+notification.success = (content: Content, options?: NotificationOptions) =>
   showNotification(content, { ...options, type: "success" });
 
 notification.clearAll = () => {

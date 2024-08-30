@@ -3,7 +3,7 @@
     class="tw-w-full tw-h-full tw-box-border tw-flex tw-flex-col tw-items-center tw-justify-center"
     :style="backgroundImageHandler"
   >
-    <ChangePassword :forced="forced"> </ChangePassword>
+    <ChangePassComponent :forced="forced"> </ChangePassComponent>
   </div>
 </template>
 
@@ -13,10 +13,10 @@ import { useRouter } from "vue-router";
 
 const router = useRouter();
 
-const forced = router.currentRoute.value.meta?.forced;
+const forced = router.currentRoute.value.meta?.forced as boolean | undefined;
 const bgimage = router.currentRoute.value.meta?.bgimage;
 
-import { ChangePassword } from "../../../../components/change-password";
+import { ChangePassword as ChangePassComponent } from "../../../../components/change-password";
 
 export interface Props {
   background?: string;

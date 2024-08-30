@@ -1,3 +1,13 @@
+## [1.0.282](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.281...v1.0.282) (2024-08-30)
+
+
+### Features
+
+* **dynamic:** vc-table expandable header slot ([9a3cd40](https://github.com/VirtoCommerce/vc-shell/commit/9a3cd407d3ba1125c38f3d7a7a296923a1a5a8be))
+* **shared:** toast notification container and core to support component content ([7c17099](https://github.com/VirtoCommerce/vc-shell/commit/7c17099cbb4f797c009282a3af74c655a8c4f8c8))
+
+
+
 ## [1.0.281](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.280...v1.0.281) (2024-08-29)
 
 

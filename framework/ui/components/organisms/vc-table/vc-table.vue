@@ -64,67 +64,9 @@
         ($slots['header'] || header) && (!columnsInit || searchValue || searchValue === '' || activeFilterCount)
       "
       name="header"
+      :header="headerComponent"
     >
-      <div
-        class="tw-shrink-0 tw-flex tw-items-center tw-justify-between tw-box-border"
-        :class="{
-          'tw-px-4 tw-py-2 tw-border-[color:#eef0f2] tw-border-solid tw-border-b ': $isMobile.value,
-          'tw-p-4': $isDesktop.value,
-        }"
-      >
-        <!-- Table filter mobile button -->
-        <div
-          v-if="$isMobile.value && $slots['filters']"
-          class="tw-mr-3"
-        >
-          <VcTableFilter :counter="activeFilterCount">
-            <template #default="{ closePanel }">
-              <slot
-                name="filters"
-                :close-panel="closePanel"
-              ></slot>
-            </template>
-          </VcTableFilter>
-        </div>
-
-        <!-- Table search input -->
-        <VcInput
-          ref="searchInput"
-          class="tw-grow tw-basis-0"
-          :placeholder="searchPlaceholder || $t('COMPONENTS.ORGANISMS.VC_TABLE.SEARCH')"
-          clearable
-          name="table_search"
-          :model-value="searchValue"
-          @update:model-value="$emit('search:change', $event as string)"
-        >
-          <template #prepend-inner="{ focus }">
-            <VcIcon
-              icon="fas fa-search"
-              class="tw-text-[color:#d2d4d7]"
-              @click="focus?.()"
-            ></VcIcon>
-          </template>
-        </VcInput>
-
-        <!-- Table filter desktop button -->
-        <div
-          v-if="$isDesktop.value && $slots['filters']"
-          class="tw-ml-3"
-        >
-          <VcTableFilter
-            :title="t('COMPONENTS.ORGANISMS.VC_TABLE.ALL_FILTERS')"
-            :counter="activeFilterCount"
-            :parent-expanded="expanded"
-          >
-            <template #default="{ closePanel }">
-              <slot
-                name="filters"
-                :close-panel="closePanel"
-              ></slot>
-            </template>
-          </VcTableFilter>
-        </div>
-      </div>
+      <component :is="headerComponent"></component>
     </slot>
 
     <div class="tw-flex tw-relative tw-overflow-hidden tw-grow">
@@ -528,15 +470,16 @@ import {
   getCurrentInstance,
   shallowRef,
   useSlots,
+  VNode,
 } from "vue";
 import { useI18n } from "vue-i18n";
-import { VcButton, VcCheckbox, VcContainer, VcIcon, VcInput, VcPagination, VcLabel } from "./../../";
+import { VcButton, VcCheckbox, VcContainer, VcIcon, VcPagination, VcLabel } from "./../../";
 import { IActionBuilderResult, ITableColumns } from "./../../../../core/types";
 import VcTableCell from "./_internal/vc-table-cell/vc-table-cell.vue";
 import VcTableColumnSwitcher from "./_internal/vc-table-column-switcher/vc-table-column-switcher.vue";
 import VcTableCounter from "./_internal/vc-table-counter/vc-table-counter.vue";
-import VcTableFilter from "./_internal/vc-table-filter/vc-table-filter.vue";
 import VcTableMobileItem from "./_internal/vc-table-mobile-item/vc-table-mobile-item.vue";
+import VcTableBaseHeader from "./_internal/vc-table-base-header/vc-table-base-header.vue";
 import * as _ from "lodash-es";
 import "core-js/actual/array/to-spliced";
 import "core-js/actual/array/to-sorted";
@@ -557,7 +500,7 @@ export interface TableItem {
 }
 
 defineSlots<{
-  header: (props: any) => any;
+  header: (props: { header: VNode }) => any;
   filters: (args: { closePanel: () => void }) => any;
   "mobile-item": (args: { item: T }) => any;
   [key: `header_${string}`]: (props: any) => any;
@@ -759,6 +702,21 @@ const hasClickListener = typeof instance?.vnode.props?.["onItemClick"] === "func
 //   const el = document.getElementById(id);
 //   return el ? el.offsetWidth : 0;
 // };
+
+const headerComponent = h(
+  VcTableBaseHeader,
+  {
+    searchValue: props.searchValue,
+    searchPlaceholder: props.searchPlaceholder,
+    activeFilterCount: props.activeFilterCount,
+    expanded: props.expanded,
+  },
+  {
+    filters: () => {
+      return slots.filters?.({ closePanel: () => {} });
+    },
+  },
+);
 
 const allColumns = ref([]) as Ref<ITableColumns[]>;
 

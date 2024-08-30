@@ -137,7 +137,29 @@
           />
         </template>
 
-        <!-- Override table mobile view -->
+        <!-- Override header -->
+        <template
+          v-if="tableTemplates?.header"
+          #header="headerData"
+        >
+          <component
+            :is="tableTemplates.header"
+            :context="headerData"
+            :blade-context="bladeContext"
+          ></component>
+        </template>
+
+        <!-- Override footer -->
+        <template
+          v-if="tableTemplates?.footer"
+          #footer="footerData"
+        >
+          <component
+            :is="tableTemplates.footer"
+            :context="footerData"
+            :blade-context="bladeContext"
+          ></component>
+        </template>
 
         <template
           v-if="tableTemplates?.mobileView"

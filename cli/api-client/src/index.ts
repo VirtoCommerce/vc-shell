@@ -1,5 +1,5 @@
 import { default as chalk } from "chalk";
-import { spawnSync } from "node:child_process";
+import { sync } from "cross-spawn";
 import { resolveConfig } from "vite";
 import { writeFileSync, existsSync, readFileSync } from "node:fs";
 import { Paths } from "./paths/paths";
@@ -75,7 +75,7 @@ async function generateApiClient(): Promise<void> {
       chalk.whiteBright(platformUrl),
     );
 
-    const nswag = spawnSync(
+    const nswag = sync(
       "npx nswag",
       [
         "run",
@@ -122,6 +122,7 @@ async function generateApiClient(): Promise<void> {
         "api-client-generator %s Failed to generate %s",
         chalk.red("error"),
         chalk.whiteBright(apiClientPaths.console),
+        nswag,
       );
     }
   }
@@ -132,7 +133,7 @@ async function generateApiClient(): Promise<void> {
   // Compile generated TypeScript files to JavaScript with declaration files
   console.log("api-client-generator %s Compiling TypeScript files to JavaScript", chalk.green("info"));
 
-  const tsc = spawnSync("npx tsc", ["--project", tsConfigPath], {
+  const tsc = sync("npx tsc", ["--project", tsConfigPath], {
     stdio: ["ignore", "inherit", "ignore"],
     shell: true,
   });

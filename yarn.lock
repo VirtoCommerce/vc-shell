@@ -4945,6 +4945,7 @@ __metadata:
   dependencies:
     "@vc-shell/ts-config": "npm:^1.0.282"
     chalk: "npm:^2.4.2"
+    cross-spawn: "npm:^7.0.3"
     nswag: "npm:^13.20.0"
     typescript: "npm:~5.3.3"
     vite: "npm:^5.0.11"

@@ -223,12 +223,10 @@ function useUserFn(): IUseUser {
 
   async function externalSignOut(authenticationType: string): Promise<void> {
     try {
-      externalSecurityClient.signOut(authenticationType);
+      const url = "/externalsignin/signout?authenticationType=" + authenticationType;
+      window.location.href = url;
 
       externalSignInStorage.value = {};
-
-      const url = "externalsignin/signout?authenticationType=" + externalSignInStorage.value.providerType;
-      window.location.href = url;
     } catch (e) {
       console.error(e);
       throw e;

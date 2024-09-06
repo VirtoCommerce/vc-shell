@@ -44,8 +44,10 @@ const upsertHelper = (overrides: OverridesSchema, schemaCopy: { [key: string]: D
 
                 generatedPath.push(fountElIndex);
               } else {
-                current = current[part];
-                generatedPath.push(part);
+                if (current) {
+                  current = current[part];
+                  generatedPath.push(part);
+                }
               }
             }
 
@@ -108,8 +110,10 @@ function removePath(obj: DynamicSchema, path: string) {
 
         generatedPath.push(foundElIndex);
       } else {
-        current = current[part];
-        generatedPath.push(part);
+        if (current) {
+          current = current[part];
+          generatedPath.push(part);
+        }
       }
     }
     _.unset(obj, generatedPath);

@@ -29,49 +29,23 @@
         v-if="!isWidgetView && scope?.breadcrumbs"
         :class="[
           {
-            '-tw-mb-4': tableData?.header,
+            '-tw-mb-4': typeof tableData?.header === 'undefined' || tableData.header,
           },
           'tw-p-4',
         ]"
       >
-        <VcBreadcrumbs :items="toValue(scope?.breadcrumbs)" />
+        <VcBreadcrumbs
+          :items="toValue(scope?.breadcrumbs)"
+          variant="light"
+          with-arrow
+        />
       </div>
       <VcTable
         class="tw-grow tw-basis-0"
-        :loading="loading"
+        v-bind="tableConfigComputed"
         :expanded="expanded"
-        :columns="tableColsWithLocales ?? []"
-        :state-key="stateKey ?? ''"
-        :items="itemsProxy ?? []"
-        :multiselect="isWidgetView ? false : tableData?.multiselect"
-        :header="isWidgetView ? false : tableData?.header"
-        :item-action-builder="actionBuilder"
-        :editing="isWidgetView ? false : isBladeEditable"
-        :enable-item-actions="!!tableData?.actions && !isWidgetView"
-        :footer="isWidgetView ? false : tableData?.footer"
-        :sort="sort"
-        :pages="pagination?.pages"
-        :current-page="pagination?.currentPage"
-        :search-value="searchValue"
-        :selected-item-id="selectedItemId"
         :total-label="$t(`${localizationPrefix}.PAGES.LIST.TABLE.TOTALS`)"
-        :total-count="pagination?.totalCount"
         :active-filter-count="activeFilterCount"
-        :reorderable-rows="isWidgetView ? false : tableData?.reorderableRows"
-        :pull-to-reload="!isWidgetView"
-        :select-all="tableData?.selectAll"
-        :pagination-variant="tableData?.paginationVariant"
-        :selection-items="selection"
-        @item-click="onItemClick"
-        @pagination-click="onPaginationClick"
-        @selection-changed="onSelectionChanged"
-        @header-click="onHeaderClick"
-        @scroll:ptr="reload"
-        @search:change="onSearchList"
-        @row:reorder="sortRows"
-        @select:all="handleSelectAllItems"
-        @on-edit-complete="onEditComplete"
-        @on-cell-blur="onCellBlur"
       >
         <template
           v-if="isFilterVisible"
@@ -160,6 +134,8 @@
             :blade-context="bladeContext"
           ></component>
         </template>
+
+        <!-- Override table mobile view -->
 
         <template
           v-if="tableTemplates?.mobileView"
@@ -294,13 +270,6 @@ const { load, remove, items, loading, pagination, query, scope } = props.composa
       emit,
       props,
       mounted: useMounted(),
-      /**
-       * @deprecated use `useDynamicViewsUtils` instead. This will be removed in the next major version.
-       */
-      bladeContext: {
-        settings,
-        selectedIds: computed(() => selectedIds.value),
-      },
     }) as UseList<Record<string, any>[], Record<string, any>, ListBaseBladeScope>)
   : ({
       load: ref(true),
@@ -316,12 +285,13 @@ const isBladeEditable = computed(() =>
   "disabled" in toValue(scope || {}) ? !toValue(toValue(scope || {})?.disabled) : false,
 );
 
-const selection = computed(
-  () =>
-    ("selectedIds" in toValue(scope || {}) &&
-      items.value?.filter((item) => toValue(toValue(scope || {})?.selectedIds)?.includes(item.id))) ||
-    [],
-);
+const selection = computed(() => {
+  const tableConfig = toValue(scope)?.tableConfigComputed;
+  if (tableConfig && "selectedIds" in tableConfig) {
+    return items.value?.filter((item) => tableConfig.selectedIds?.includes(item.id)) || [];
+  }
+  return [];
+});
 
 if (props.isWidgetView) {
   query.value.take = 5;
@@ -426,11 +396,15 @@ const toolbarComputed =
 
 onBeforeMount(async () => {
   if (props.composables)
-    await load({ sort: sort.value, ...query.value, ...(props.isWidgetView ? {} : getNavigationQuery()) });
+    await load({
+      sort: sort.value,
+      ...query.value,
+      // ...(props.isWidgetView ? {} : getNavigationQuery())
+    });
 });
 
 watch(
-  () => toValue(scope)?.searchValue,
+  () => toValue(toValue(scope)?.tableConfigComputed)?.searchValue,
   (newVal) => {
     searchValue.value = newVal;
   },
@@ -600,7 +574,7 @@ const onPaginationClick = async (page: number) => {
       ...query.value,
       skip: (page - 1) * query.value.take,
     };
-    setNavigationQuery(queryObj);
+    // setNavigationQuery(queryObj);
     await load(queryObj);
   }
 };
@@ -718,6 +692,58 @@ function actionBuilder(item: (typeof items.value)[number]): IActionBuilderResult
 
   return result;
 }
+
+const tableConfig = computed(() => {
+  return {
+    loading: loading.value,
+    columns: tableColsWithLocales ?? [],
+    stateKey: stateKey?.value ?? "",
+    items: itemsProxy.value ?? [],
+    multiselect: props.isWidgetView ? false : tableData?.value?.multiselect,
+    header: props.isWidgetView ? false : tableData?.value?.header,
+    itemActionBuilder: actionBuilder,
+    editing: props.isWidgetView ? false : isBladeEditable.value,
+    enableItemActions: !!tableData?.value?.actions && !props.isWidgetView,
+    footer: props.isWidgetView ? false : tableData?.value?.footer,
+    sort: sort.value,
+    pages: pagination.value?.pages,
+    currentPage: pagination.value?.currentPage,
+    searchValue: searchValue.value,
+    selectedItemId: selectedItemId.value,
+    totalCount: pagination.value?.totalCount,
+    reorderableRows: props.isWidgetView ? false : tableData?.value?.reorderableRows,
+    pullToReload: !props.isWidgetView,
+    selectAll: tableData?.value?.selectAll,
+    paginationVariant: tableData?.value?.paginationVariant,
+    selectionItems: selection.value,
+    onItemClick: onItemClick,
+    onPaginationClick: onPaginationClick,
+    onSelectionChanged: onSelectionChanged,
+    onHeaderClick: onHeaderClick,
+    "onScroll:ptr": reload,
+    "onSearch:change": onSearchList,
+    "onRow:reorder": sortRows,
+    "onSelect:all": handleSelectAllItems,
+    onEditComplete: onEditComplete,
+    onCellBlur: onCellBlur,
+  };
+});
+
+const tableConfigComputed = computed(() => {
+  if (scope && "tableConfig" in toValue(scope) && Object.keys(toValue(toValue(scope)?.tableConfig ?? {})).length > 0) {
+    const res = {
+      ...tableConfig.value,
+      ...toValue(toValue(scope)?.tableConfig),
+    };
+
+    if (toValue(toValue(scope)?.tableConfig)?.columns?.length) {
+      res.columns = toValue(toValue(scope)?.tableConfig)?.columns as ITableColumns[];
+    }
+
+    return res;
+  }
+  return tableConfig.value;
+});
 
 provide("bladeContext", toReactive(bladeContext));
 provide("isBladeEditable", isBladeEditable);

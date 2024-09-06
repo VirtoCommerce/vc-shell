@@ -226,6 +226,9 @@ function useUserFn(): IUseUser {
       externalSecurityClient.signOut(authenticationType);
 
       externalSignInStorage.value = {};
+
+      const url = "externalsignin/signout?authenticationType=" + externalSignInStorage.value.providerType;
+      window.location.href = url;
     } catch (e) {
       console.error(e);
       throw e;

@@ -3,15 +3,14 @@
     ref="container"
     v-on-click-outside="reset"
     v-touch:hold="handleHold"
-    class="tw-select-none tw-relative tw-overflow-hidden tw-flex"
+    class="vc-table-mobile tw-select-none tw-block tw-overflow-visible"
     @click="handleClick"
     @contextmenu.prevent
   >
     <div
       ref="target"
-      class="tw-top-0 tw-left-0 tw-bottom-0 tw-right-0 tw-w-full tw-h-full tw-absolute tw-flex-shrink-0 tw-bg-white tw-flex tw-flex-row"
+      class="tw-w-full tw-h-full tw-flex-shrink-0 tw-bg-white tw-flex tw-flex-row"
       :class="{ animated: !isSwiping, 'vc-table-mobile__item_selected': isSelected }"
-      :style="{ left }"
     >
       <div
         v-if="anySelected"
@@ -19,119 +18,122 @@
       >
         <VcCheckbox
           :model-value="unref(isSelected ?? false)"
+          :disabled="disabledSelection?.includes(items[index])"
           size="m"
         ></VcCheckbox>
       </div>
-      <div class="tw-flex-1 tw-w-0">
-        <div class="tw-flex tw-flex-col tw-h-full tw-border-b tw-border-solid tw-border-b-[#e3e7ec]">
-          <slot></slot>
-        </div>
-      </div>
-    </div>
-    <div class="tw-flex tw-justify-between tw-flex-auto">
-      <!-- Left swipe actions -->
-      <div
-        v-if="leftSwipeActions && leftSwipeActions.length && direction === 'right'"
-        class="tw-flex-shrink-0 tw-flex tw-flex-col [justify-content:stretch] tw-bg-[#a9bfd2]"
-        :style="{
-          width: actionsWidth,
-        }"
-      >
+      <div class="tw-flex-auto tw-flex tw-flex-row tw-relative">
+        <!-- Left swipe actions -->
         <div
-          class="tw-flex tw-grow tw-basis-[1] tw-flex-col tw-justify-center tw-items-center tw-text-white"
-          :class="[`vc-table-mobile__item-action_${leftSwipeActions[0].type}`]"
-          @click.stop="leftSwipeActions?.[0].clickHandler(items[index] as T, index)"
+          v-if="leftSwipeActions && leftSwipeActions.length && direction === 'right'"
+          class="tw-flex-shrink-0 tw-flex tw-flex-col [justify-content:stretch] tw-bg-[#a9bfd2] tw-absolute tw-top-0 tw-bottom-0"
+          :style="{
+            width: actionsWidth,
+          }"
         >
-          <VcIcon :icon="leftSwipeActions[0].icon" />
-          <div class="tw-mt-1 tw-text-lg tw-text-center">
-            {{ leftSwipeActions[0].title }}
-          </div>
-        </div>
-      </div>
-      <!-- Item actions -->
-      <div
-        v-if="rightSwipeActions && rightSwipeActions.length && direction === 'left'"
-        class="tw-flex-shrink-0 tw-flex tw-flex-col [justify-content:stretch] tw-bg-[#a9bfd2] tw-ml-auto"
-        :style="{
-          width: actionsWidth,
-        }"
-      >
-        <div
-          v-for="(action, index) in rightSwipeActions.slice(0, rightSwipeActions.length > 2 ? 1 : 2)"
-          :key="`rightSwipeAction-${index}`"
-          class="tw-flex tw-grow tw-basis-[1] tw-flex-col tw-justify-center tw-items-center tw-text-white"
-          :class="[`vc-table-mobile__item-action_${action.type}`]"
-          @click.stop="action.clickHandler(items[index] as T, index)"
-        >
-          <VcIcon :icon="action.icon" />
-          <div class="tw-mt-1 tw-text-lg tw-text-center">
-            {{ action.title }}
-          </div>
-        </div>
-
-        <!-- Other available actions -->
-        <template v-if="rightSwipeActions.length > 2">
           <div
             class="tw-flex tw-grow tw-basis-[1] tw-flex-col tw-justify-center tw-items-center tw-text-white"
-            @click.stop="isActionsPopupVisible = true"
+            :class="[`vc-table-mobile__item-action_${leftSwipeActions[0].type}`]"
+            @click.stop="leftSwipeActions?.[0].clickHandler(items[index] as T, index)"
           >
-            <VcIcon icon="fas fa-ellipsis-h" />
-            <div class="tw-mt-1 tw-text-lg">{{ $t("COMPONENTS.ORGANISMS.VC_TABLE.MORE") }}</div>
+            <VcIcon :icon="leftSwipeActions[0].icon" />
+            <div class="tw-mt-1 tw-text-lg tw-text-center">
+              {{ leftSwipeActions[0].title }}
+            </div>
+          </div>
+        </div>
+        <div
+          class="tw-flex tw-flex-col tw-border-b tw-border-solid tw-border-b-[#e3e7ec] tw-grow"
+          :style="{ transform: `translateX(${left})` }"
+        >
+          <slot></slot>
+        </div>
+        <!-- Item actions -->
+        <div
+          v-if="rightSwipeActions && rightSwipeActions.length && direction === 'left'"
+          class="tw-flex-shrink-0 tw-flex tw-flex-col [justify-content:stretch] tw-bg-[#a9bfd2] tw-absolute tw-top-0 tw-bottom-0 tw-right-0"
+          :style="{
+            width: actionsWidth,
+          }"
+        >
+          <div
+            v-for="(action, index) in rightSwipeActions.slice(0, rightSwipeActions.length > 2 ? 1 : 2)"
+            :key="`rightSwipeAction-${index}`"
+            class="tw-flex tw-grow tw-basis-[1] tw-flex-col tw-justify-center tw-items-center tw-text-white"
+            :class="[`vc-table-mobile__item-action_${action.type}`]"
+            @click.stop="action.clickHandler(items[index] as T, index)"
+          >
+            <VcIcon :icon="action.icon" />
+            <div class="tw-mt-1 tw-text-lg tw-text-center">
+              {{ action.title }}
+            </div>
           </div>
 
-          <!-- Actions popup -->
-          <teleport
-            v-if="isActionsPopupVisible"
-            to="body"
-          >
+          <!-- Other available actions -->
+          <template v-if="rightSwipeActions.length > 2">
             <div
-              class="tw-absolute tw-left-0 tw-top-0 tw-right-0 tw-bottom-0 tw-bg-[rgba(107,121,135,0.15)] tw-flex tw-items-center tw-justify-center tw-z-[99]"
+              class="tw-flex tw-grow tw-basis-[1] tw-flex-col tw-justify-center tw-items-center tw-text-white"
+              @click.stop="isActionsPopupVisible = true"
+            >
+              <VcIcon icon="fas fa-ellipsis-h" />
+              <div class="tw-mt-1 tw-text-lg">{{ $t("COMPONENTS.ORGANISMS.VC_TABLE.MORE") }}</div>
+            </div>
+
+            <!-- Actions popup -->
+            <teleport
+              v-if="isActionsPopupVisible"
+              to="body"
             >
               <div
-                class="tw-bg-white tw-rounded-[6px] tw-overflow-hidden tw-p-5 tw-max-w-[80%] tw-w-[350px] tw-border tw-border-solid tw-border-[#eef0f2] tw-box-border tw-shadow-[1px_1px_22px_rgba(126,142,157,0.2)]"
+                class="tw-absolute tw-left-0 tw-top-0 tw-right-0 tw-bottom-0 tw-bg-[rgba(107,121,135,0.15)] tw-flex tw-items-center tw-justify-center tw-z-[99]"
               >
-                <div class="tw-flex tw-w-full tw-items-center">
-                  <span class="tw-grow tw-text-[#2e3d4e] tw-text-[19px] tw-font-semibold tw-tracking-[-0.01em]">
-                    {{ t("COMPONENTS.ORGANISMS.VC_TABLE.ALL_ACTIONS") }}
-                  </span>
-                  <VcIcon
-                    class="tw-text-[#c2d7e4]"
-                    icon="fas fa-times-circle"
-                    size="xl"
-                    @click="isActionsPopupVisible = false"
-                  ></VcIcon>
-                </div>
-
-                <div class="tw-flex tw-flex-wrap tw-my-5 tw-justify-between">
-                  <div
-                    v-for="(itemAction, i) in itemActions"
-                    :key="i"
-                    class="tw-flex tw-grow tw-shrink-0 tw-flex-col tw-items-center tw-text-[#319ed4] tw-my-2 tw-box-border tw-p-1 tw-max-w-[80px]"
-                    @click="itemAction.clickHandler(items[index] as T, index)"
-                  >
+                <div
+                  class="tw-bg-white tw-rounded-[6px] tw-overflow-hidden tw-p-5 tw-max-w-[80%] tw-w-[350px] tw-border tw-border-solid tw-border-[#eef0f2] tw-box-border tw-shadow-[1px_1px_22px_rgba(126,142,157,0.2)]"
+                >
+                  <div class="tw-flex tw-w-full tw-items-center">
+                    <span class="tw-grow tw-text-[#2e3d4e] tw-text-[19px] tw-font-semibold tw-tracking-[-0.01em]">
+                      {{ t("COMPONENTS.ORGANISMS.VC_TABLE.ALL_ACTIONS") }}
+                    </span>
                     <VcIcon
-                      :icon="itemAction.icon"
+                      class="tw-text-[#c2d7e4]"
+                      icon="fas fa-times-circle"
                       size="xl"
+                      @click="isActionsPopupVisible = false"
                     ></VcIcon>
-                    <div class="tw-text-base tw-mt-2 tw-text-center">
-                      {{ itemAction.title }}
+                  </div>
+
+                  <div class="tw-flex tw-flex-wrap tw-my-5 tw-justify-between">
+                    <div
+                      v-for="(itemAction, i) in itemActions"
+                      :key="i"
+                      class="tw-flex tw-grow tw-shrink-0 tw-flex-col tw-items-center tw-text-[#319ed4] tw-my-2 tw-box-border tw-p-1 tw-max-w-[80px]"
+                      @click="itemAction.clickHandler(items[index] as T, index)"
+                    >
+                      <VcIcon
+                        :icon="itemAction.icon"
+                        size="xl"
+                      ></VcIcon>
+                      <div class="tw-text-base tw-mt-2 tw-text-center">
+                        {{ itemAction.title }}
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
-          </teleport>
-        </template>
+            </teleport>
+          </template>
+        </div>
       </div>
     </div>
+    <div class="tw-flex tw-justify-between tw-flex-auto"></div>
   </div>
 </template>
 
 <script lang="ts" setup generic="T extends TableItem | string">
-import { Ref, computed, ref, onMounted, watch, onUpdated, unref } from "vue";
+import { Ref, computed, ref, watch, unref } from "vue";
 import { IActionBuilderResult } from "../../../../../../core/types";
 import { useI18n } from "vue-i18n";
-import { useElementVisibility, useSwipe, watchDebounced } from "@vueuse/core";
+import { useSwipe } from "@vueuse/core";
 import { vOnClickOutside } from "@vueuse/components";
 
 export interface Emits {
@@ -152,6 +154,7 @@ const props = defineProps<{
   isSelected?: boolean;
   index: number;
   selection?: T[];
+  disabledSelection?: (TableItem | string)[];
 }>();
 
 const emit = defineEmits<Emits>();
@@ -164,7 +167,6 @@ const container = ref<HTMLElement | null>(null);
 const containerWidth = computed(() => container.value?.offsetWidth);
 const left = ref("0");
 const anySelected = computed(() => props.selection && props.selection.length > 0);
-const targetIsVisible = useElementVisibility(container);
 
 const actionsWidth = ref("0");
 
@@ -234,33 +236,9 @@ watch(
   },
 );
 
-onMounted(() => {
-  adjustHeight();
-});
-
-onUpdated(() => {
-  adjustHeight();
-});
-
-watchDebounced(
-  () => props.items,
-  () => {
-    adjustHeight();
-  },
-  { deep: true, debounce: 450 },
-);
-
-watch(() => targetIsVisible.value, adjustHeight);
-
 function reset() {
   left.value = "0";
   actionsWidth.value = "0";
-}
-
-function adjustHeight() {
-  if (container.value && target.value) {
-    container.value.style.height = target.value.scrollHeight + "px";
-  }
 }
 
 const direction = computed(() => {
@@ -292,19 +270,22 @@ function handleClick() {
 </script>
 
 <style lang="scss">
-.vc-table-mobile__item {
-  &-action {
-    &_success {
-      @apply tw-bg-[#87b563];
+.vc-table-mobile {
+  // height: -webkit-fill-available;
+  &__item {
+    &-action {
+      &_success {
+        @apply tw-bg-[#87b563];
+      }
+
+      &_danger {
+        @apply tw-bg-[#ff4a4a];
+      }
     }
 
-    &_danger {
-      @apply tw-bg-[#ff4a4a];
+    &_selected {
+      @apply tw-bg-[#dfeef9] #{!important};
     }
-  }
-
-  &_selected {
-    @apply tw-bg-[#dfeef9] #{!important};
   }
 }
 </style>

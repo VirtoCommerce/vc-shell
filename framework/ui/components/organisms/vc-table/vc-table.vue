@@ -74,19 +74,23 @@
       <VcContainer
         ref="scrollContainer"
         :no-padding="true"
-        class="tw-grow tw-basis-0 tw-relative"
+        class="vc-table__mobile-view tw-grow tw-basis-0 tw-relative"
         :use-ptr="selection.length === 0 ? pullToReload : undefined"
         @scroll:ptr="$emit('scroll:ptr')"
       >
         <!-- Mobile table view -->
         <template v-if="$isMobile.value">
-          <div v-if="items && items.length && !columnsInit">
+          <div
+            v-if="items && items.length && !columnsInit"
+            class="tw-flex-grow tw-flex tw-flex-col tw-h-max"
+          >
             <VcTableMobileItem
               v-for="(item, i) in items"
               :key="i"
               :index="i"
               :items="items"
               :action-builder="itemActionBuilder"
+              :disabled-selection="disabledSelection"
               :swiping-item="mobileSwipeItem"
               :selection="selection"
               :is-selected="isSelected(item)"
@@ -107,7 +111,7 @@
           </div>
           <div
             v-else
-            class="tw-overflow-auto tw-flex tw-flex-col tw-h-full"
+            class="tw-overflow-auto tw-flex tw-flex-col tw-h-full tw-flex-grow"
           >
             <!-- Empty table view -->
             <VcTableEmpty
@@ -314,6 +318,7 @@
                   <VcCheckbox
                     :model-value="isSelected(item)"
                     size="m"
+                    :disabled="disabledSelection.includes(item)"
                     @update:model-value="rowCheckbox(item)"
                   ></VcCheckbox>
                 </div>
@@ -517,6 +522,7 @@ const props = withDefaults(
     itemActionBuilder?: (item: T) => IActionBuilderResult[] | undefined;
     sort?: string;
     multiselect?: boolean;
+    disableItemCheckbox?: (item: T) => boolean;
     expanded?: boolean;
     totalLabel?: string;
     totalCount?: number;
@@ -562,17 +568,17 @@ const props = withDefaults(
 );
 
 const emit = defineEmits<{
-  paginationClick: [page: number];
-  selectionChanged: [values: T[]];
-  "search:change": [value: string | undefined];
-  headerClick: [item: ITableColumns];
-  itemClick: [item: T];
-  "scroll:ptr": [];
-  "row:reorder": [args: { dragIndex: number; dropIndex: number; value: T[] }];
-  "select:all": [values: boolean];
-  onEditComplete: [args: { event: { field: string; value: string | number }; index: number }];
-  onAddNewRow: [];
-  onCellBlur: [args: { row: number | undefined; field: string }];
+  (e: "paginationClick", page: number): void;
+  (e: "selectionChanged", values: T[]): void;
+  (e: "search:change", value: string | undefined): void;
+  (e: "headerClick", item: ITableColumns): void;
+  (e: "itemClick", item: T): void;
+  (e: "scroll:ptr"): void;
+  (e: "row:reorder", args: { dragIndex: number; dropIndex: number; value: T[] }): void;
+  (e: "select:all", values: boolean): void;
+  (e: "onEditComplete", args: { event: { field: string; value: string | number }; index: number }): void;
+  (e: "onAddNewRow"): void;
+  (e: "onCellBlur", args: { row: number | undefined; field: string }): void;
 }>();
 
 const { t } = useI18n({ useScope: "global" });
@@ -596,6 +602,7 @@ const selectedRowIndex = shallowRef();
 const scrollContainer = ref<typeof VcContainer>();
 
 const itemActions: Ref<IActionBuilderResult[][]> = ref([]);
+const disabledSelection: Ref<T[]> = ref([]);
 const mobileSwipeItem = ref<string>();
 const columnResizing = ref(false);
 const resizeColumnElement = ref<ITableColumns>();
@@ -703,20 +710,22 @@ const hasClickListener = typeof instance?.vnode.props?.["onItemClick"] === "func
 //   return el ? el.offsetWidth : 0;
 // };
 
-const headerComponent = h(
-  VcTableBaseHeader,
-  {
-    searchValue: props.searchValue,
-    searchPlaceholder: props.searchPlaceholder,
-    activeFilterCount: props.activeFilterCount,
-    expanded: props.expanded,
-  },
-  {
-    filters: () => {
-      return slots.filters?.({ closePanel: () => {} });
+const headerComponent = () =>
+  h(
+    VcTableBaseHeader,
+    {
+      searchValue: props.searchValue,
+      searchPlaceholder: props.searchPlaceholder,
+      activeFilterCount: props.activeFilterCount,
+      expanded: props.expanded,
+      "onSearch:change": (value: string) => emit("search:change", value),
     },
-  },
-);
+    {
+      filters: () => {
+        return slots.filters?.({ closePanel: () => {} });
+      },
+    },
+  );
 
 const allColumns = ref([]) as Ref<ITableColumns[]>;
 
@@ -814,13 +823,15 @@ const tableAlignment = {
 
 const headerCheckbox = computed({
   get() {
-    return props.items && props.items.length ? selection.value.length === props.items.length : false;
+    return props.items && props.items.length
+      ? selection.value.length === props.items.length - disabledSelection.value.length
+      : false;
   },
   set(checked: boolean) {
     let _selected: T[] = [];
 
     if (checked) {
-      _selected = props.items;
+      _selected = props.items.filter((x) => !disabledSelection.value.includes(x));
     }
 
     selection.value = _selected;
@@ -848,6 +859,7 @@ watch(
     scrollContainer.value?.scrollTop();
 
     calculateActions(newVal);
+    handleMultiselect(newVal);
 
     selection.value = selection.value.filter((selection) => newVal.includes(selection));
   },
@@ -899,6 +911,13 @@ function isSelected(item: T) {
 
 function rowCheckbox(item: T) {
   const clear = item;
+
+  // const index = props.items.findIndex((x) => _.isEqual(x, clear));
+
+  if (disabledSelection.value.includes(item)) {
+    return;
+  }
+
   const isExist = selection.value.find((x) => _.isEqual(x, clear));
 
   if (isExist) {
@@ -926,6 +945,22 @@ async function calculateActions(items: T[]) {
       }
     }
     itemActions.value = populatedItems;
+  }
+}
+
+async function handleMultiselect(items: T[]) {
+  if (props.multiselect && props.disableItemCheckbox && typeof props.disableItemCheckbox === "function") {
+    const disabledMultiselect = [];
+    for (let index = 0; index < items.length; index++) {
+      if (typeof items[index] === "object") {
+        const element = await props.disableItemCheckbox(items[index]);
+
+        if (element) {
+          disabledMultiselect.push(items[index]);
+        }
+      }
+    }
+    disabledSelection.value = disabledMultiselect as T[];
   }
 }
 
@@ -1339,6 +1374,12 @@ $variants: (
 );
 
 .vc-table {
+  &__mobile-view {
+    .vc-container__inner {
+      display: flex;
+      flex-grow: 1;
+    }
+  }
   &__body {
     &-row:hover .actions {
       display: flex;

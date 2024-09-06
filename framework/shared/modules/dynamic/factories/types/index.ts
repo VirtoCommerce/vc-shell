@@ -2,7 +2,13 @@
 import { ComputedRef, MaybeRef, Ref, UnwrapNestedRefs } from "vue";
 import { AsyncAction } from "../../../../../core/composables";
 import { SettingsDetails, SettingsGrid, SettingsSchema } from "../../types";
-import { AssetsHandler, IBladeToolbar, ICommonAsset } from "../../../../../core/types";
+import {
+  AssetsHandler,
+  IActionBuilderResult,
+  IBladeToolbar,
+  ICommonAsset,
+  ITableColumns,
+} from "../../../../../core/types";
 import { useBladeNavigation } from "../../../../components";
 import { FormContext } from "vee-validate";
 import { Breadcrumbs } from "../../../../../ui/types";
@@ -72,6 +78,41 @@ export interface UseList<
   scope?: Scope;
 }
 
+export interface ITableConfig {
+  loading?: boolean;
+  columns?: ITableColumns[];
+  stateKey?: string;
+  items?: Record<string, any>[];
+  multiselect?: boolean;
+  header?: boolean;
+  itemActionBuilder?: (item: Record<string, any>) => IActionBuilderResult[] | undefined;
+  editing?: boolean;
+  enableItemActions?: boolean;
+  footer?: boolean;
+  sort?: string;
+  pages?: number;
+  currentPage?: number;
+  searchValue?: string;
+  selectedItemId?: string | undefined;
+  totalCount?: number;
+  reorderableRows?: boolean;
+  pullToReload?: boolean;
+  selectAll?: boolean;
+  paginationVariant?: "default" | "minimal" | undefined;
+  selectionItems?: Record<string, any>[];
+  onItemClick?: (item: Record<string, any>) => void;
+  onPaginationClick?: (page: number) => void;
+  onSelectionChanged?: (items: Record<string, any>[]) => void;
+  onHeaderClick?: (item: ITableColumns) => void;
+  "onScroll:ptr"?: () => void;
+  "onSearch:change"?: (keyword: string | undefined) => void;
+  "onRow:reorder"?: (event: { dragIndex: number; dropIndex: number; value: any[] }) => void;
+  "onSelect:all"?: (all: boolean) => void;
+  onEditComplete?: (data: { event: { field: string; value: any }; index: number }) => void;
+  onCellBlur?: (data: { row: number | undefined; field: string }) => void;
+  disableItemCheckbox?: (item: Record<string, any> | undefined) => boolean;
+}
+
 export interface BaseBladeScope {
   [x: string]: any;
   toolbarOverrides?:
@@ -93,8 +134,7 @@ export interface ListBaseBladeScope<Item = Record<string, any>, Query = Record<s
   onPaginationClick?: (query: Query) => void;
   breadcrumbs?: ComputedRef<Breadcrumbs[]>;
   modified?: ComputedRef<boolean> | Ref<boolean> | boolean;
-  selectedIds?: MaybeRef<string[]>;
-  searchValue?: MaybeRef<string>;
+  tableConfig?: ComputedRef<ITableConfig> | Ref<ITableConfig> | ITableConfig;
 }
 
 export type TOpenBladeArgs = Omit<Parameters<ReturnType<typeof useBladeNavigation>["openBlade"]>["0"], "blade">;
@@ -135,11 +175,18 @@ export interface DetailsBaseBladeScope<Item = Record<string, any>> extends BaseB
   selection?: Item[];
 }
 
-export interface DetailsBladeContext extends UseDetails<Record<string, any>, DetailsBaseBladeScope> {
+export interface DetailsBladeContext<
+  Item extends Record<string, any> = Record<string, any>,
+  Scope extends DetailsBaseBladeScope = DetailsBaseBladeScope,
+> extends UseDetails<Item, Scope> {
   settings: ComputedRef<SettingsSchema>;
 }
 
-export interface ListBladeContext extends UseList<Record<string, any>[], Record<string, any>, ListBaseBladeScope> {
+export interface ListBladeContext<
+  Items extends Record<string, any>[] = Record<string, any>[],
+  Query = Record<string, any>,
+  Scope extends ListBaseBladeScope = ListBaseBladeScope,
+> extends UseList<Items, Query, Scope> {
   settings: ComputedRef<SettingsSchema>;
   selectedIds: ComputedRef<string[]>;
 }

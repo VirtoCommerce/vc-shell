@@ -145,7 +145,10 @@
       class="tw-flex tw-justify-center"
       :class="cell.class"
     >
-      <VcStatusIcon :status="value as boolean"></VcStatusIcon>
+      <VcStatusIcon
+        v-if="typeof value === 'boolean'"
+        :status="value as boolean"
+      ></VcStatusIcon>
     </div>
 
     <!-- Number cell -->

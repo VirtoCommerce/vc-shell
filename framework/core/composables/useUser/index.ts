@@ -223,7 +223,8 @@ function useUserFn(): IUseUser {
 
   async function externalSignOut(authenticationType: string): Promise<void> {
     try {
-      const url = "/externalsignin/signout?authenticationType=" + authenticationType;
+      const url =
+        "/externalsignin/signout?authenticationType=" + authenticationType + "&returnUrl=" + window.location.pathname;
       window.location.href = url;
 
       externalSignInStorage.value = {};

@@ -1,3 +1,12 @@
+## [1.0.293](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.292...v1.0.293) (2024-09-09)
+
+
+### Features
+
+* **products:** persist view type in localstorage ([7ca903f](https://github.com/VirtoCommerce/vendor-portal/commit/7ca903f3b9e2f3c4d1d28ef7b443e7ef22cc1bc7))
+
+
+
 ## [1.0.292](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.291...v1.0.292) (2024-09-09)
 
 

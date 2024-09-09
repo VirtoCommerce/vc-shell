@@ -32,6 +32,7 @@ import {
 import { MaybeRef, ComputedRef, Ref, computed, ref, inject, toRef } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRoute } from "vue-router";
+import { useLocalStorage } from "@vueuse/core";
 
 const { getApiClient } = useApiClient(VcmpSellerCatalogClient);
 const { getApiClient: getListEntriesClient } = useApiClient(CatalogModuleListEntryClient);
@@ -80,9 +81,9 @@ export const useProductsList = (
   const { openBlade, resolveBladeByName, setNavigationQuery } = useBladeNavigation();
   const { breadcrumbs, push: pushBc, remove: removeBc } = useBreadcrumbs();
   const route = useRoute();
+  const isCatalogView = useLocalStorage("VC_APP_PRODUCTS_IS_CATALOG_VIEW", false);
 
   const isExporting = ref(false);
-  const isCatalogView = ref(false);
 
   const currentSeller = inject("currentSeller", toRef({ id: route?.params?.sellerId })) as Ref<ISeller>;
 

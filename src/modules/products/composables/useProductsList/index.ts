@@ -202,6 +202,9 @@ export const useProductsList = (
     await openBlade({
       blade: resolveBladeByName("Product"),
       ...args,
+      options: {
+        categoryId: query.value.id,
+      },
     });
   }
 

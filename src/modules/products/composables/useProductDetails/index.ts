@@ -62,7 +62,7 @@ export interface ProductDetailsScope extends DetailsBaseBladeScope {
 const { getApiClient } = useApiClient(VcmpSellerCatalogClient);
 
 export const useProductDetails = (
-  args: DetailsComposableArgs,
+  args: DetailsComposableArgs<{ options?: { categoryId?: string } }>,
 ): UseDetails<ISellerProduct & IProductDetails, ProductDetailsScope> => {
   const detailsFactory = useDetailsFactory<ISellerProduct & IProductDetails>({
     load: async (item) => {
@@ -472,6 +472,18 @@ export const useProductDetails = (
         validationState.value.resetModified(getMappedDetails(item), true);
       }
     },
+  );
+
+  watch(
+    [() => item.value, () => args.props.options?.categoryId],
+    async ([newItem, newVal]) => {
+      if (newItem && newVal && item.value) {
+        item.value.categoryId = newVal;
+
+        currentCategory.value = await fetchCategories(undefined, 0, [newVal]);
+      }
+    },
+    { immediate: true },
   );
 
   async function markProductDirty() {

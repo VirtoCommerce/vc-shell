@@ -70,6 +70,9 @@ export const grid: DynamicGridSchema = {
       emptyTemplate: {
         component: "ProductsEmptyGridTemplate",
       },
+      headerTemplate: {
+        component: "ProductsGridHeader",
+      },
       filter: {
         columns: [
           {
@@ -91,9 +94,11 @@ export const grid: DynamicGridSchema = {
       },
       columns: [
         {
-          id: "imgSrc",
+          id: "img",
           title: "PRODUCTS.PAGES.LIST.TABLE.HEADER.IMAGE",
-          type: "image",
+          customTemplate: {
+            component: "ProductImage",
+          },
           alwaysVisible: true,
         },
         {
@@ -109,7 +114,9 @@ export const grid: DynamicGridSchema = {
           id: "createdDate",
           title: "PRODUCTS.PAGES.LIST.TABLE.HEADER.CREATED_DATE",
           sortable: true,
-          type: "date-ago",
+          customTemplate: {
+            component: "ProductCreatedDate",
+          },
         },
         {
           id: "isPublished",

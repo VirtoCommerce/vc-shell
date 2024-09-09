@@ -31,6 +31,9 @@
           "PLACEHOLDER": "Search keywords"
         },
         "TABLE": {
+          "BREADCRUMBS": {
+            "CATALOG": "Catalog"
+          },
           "TOTALS": "Total:",
           "HEADER": {
             "IMAGE": "Img",

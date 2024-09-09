@@ -42,7 +42,7 @@ export class VcmpCommonClient extends AuthApiBase {
   }
 
   /**
-   * @return Success
+   * @return OK
    */
   getVcmpSettings(): Promise<MarketplaceSettings> {
     let url_ = this.baseUrl + "/api/vcmp/settings";
@@ -98,7 +98,7 @@ export class VcmpFeeClient extends AuthApiBase {
   }
 
   /**
-   * @return Success
+   * @return OK
    */
   getNewFee(): Promise<DynamicCommissionFee> {
     let url_ = this.baseUrl + "/api/vcmp/fees/new";
@@ -150,7 +150,7 @@ export class VcmpFeeClient extends AuthApiBase {
   }
 
   /**
-   * @return Success
+   * @return OK
    */
   getFeeById(id: string): Promise<CommissionFee> {
     let url_ = this.baseUrl + "/api/vcmp/fees/{id}";
@@ -205,7 +205,7 @@ export class VcmpFeeClient extends AuthApiBase {
 
   /**
    * @param body (optional)
-   * @return Success
+   * @return OK
    */
   createFee(body?: CreateFeeCommand | undefined): Promise<CommissionFee> {
     let url_ = this.baseUrl + "/api/vcmp/fees";
@@ -262,7 +262,7 @@ export class VcmpFeeClient extends AuthApiBase {
 
   /**
    * @param body (optional)
-   * @return Success
+   * @return OK
    */
   updateFee(body?: UpdateFeeCommand | undefined): Promise<CommissionFee> {
     let url_ = this.baseUrl + "/api/vcmp/fees";
@@ -319,7 +319,7 @@ export class VcmpFeeClient extends AuthApiBase {
 
   /**
    * @param ids (optional)
-   * @return Success
+   * @return OK
    */
   deleteFee(ids?: string[] | undefined): Promise<void> {
     let url_ = this.baseUrl + "/api/vcmp/fees?";
@@ -373,7 +373,7 @@ export class VcmpFeeClient extends AuthApiBase {
 
   /**
    * @param body (optional)
-   * @return Success
+   * @return OK
    */
   searchFee(body?: SearchCommissionFeesQuery | undefined): Promise<SearchCommissionFeesResult> {
     let url_ = this.baseUrl + "/api/vcmp/fees/search";
@@ -442,7 +442,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
 
   /**
    * @param body (optional)
-   * @return Success
+   * @return OK
    */
   massChangeProductsStatus(status: string, body?: SearchProductsQuery | undefined): Promise<void> {
     let url_ = this.baseUrl + "/api/vcmp/seller/products/status/{status}";
@@ -497,7 +497,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
 
   /**
    * @param body (optional)
-   * @return Success
+   * @return OK
    */
   changeProductStatus(body?: ChangeRequestStatusCommand | undefined): Promise<void> {
     let url_ = this.baseUrl + "/api/vcmp/seller/product/status/change";
@@ -550,56 +550,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
 
   /**
    * @param body (optional)
-   * @return Success
-   */
-  searchCategories(body?: SearchCategoriesQuery | undefined): Promise<CategorySearchResult> {
-    let url_ = this.baseUrl + "/api/vcmp/seller/categories/search";
-    url_ = url_.replace(/[?&]$/, "");
-
-    const content_ = JSON.stringify(body);
-
-    let options_: RequestInit = {
-      body: content_,
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json-patch+json",
-        Accept: "text/plain",
-      },
-    };
-
-    return this.transformOptions(options_)
-      .then((transformedOptions_) => {
-        return this.http.fetch(url_, transformedOptions_);
-      })
-      .then((_response: Response) => {
-        return this.processSearchCategories(_response);
-      });
-  }
-
-  protected processSearchCategories(response: Response): Promise<CategorySearchResult> {
-    const status = response.status;
-    let _headers: any = {};
-    if (response.headers && response.headers.forEach) {
-      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
-    }
-    if (status === 200) {
-      return response.text().then((_responseText) => {
-        let result200: any = null;
-        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-        result200 = CategorySearchResult.fromJS(resultData200);
-        return result200;
-      });
-    } else if (status !== 200 && status !== 204) {
-      return response.text().then((_responseText) => {
-        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-      });
-    }
-    return Promise.resolve<CategorySearchResult>(null as any);
-  }
-
-  /**
-   * @param body (optional)
-   * @return Success
+   * @return OK
    */
   validateProduct(body?: ValidateProductQuery | undefined): Promise<ValidationFailure[]> {
     let url_ = this.baseUrl + "/api/vcmp/seller/products/validate";
@@ -653,7 +604,637 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
 
   /**
    * @param body (optional)
-   * @return Success
+   * @return OK
+   */
+  searchProducts(body?: SearchProductsQuery | undefined): Promise<SearchProductsResult> {
+    let url_ = this.baseUrl + "/api/vcmp/seller/products/search";
+    url_ = url_.replace(/[?&]$/, "");
+
+    const content_ = JSON.stringify(body);
+
+    let options_: RequestInit = {
+      body: content_,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json-patch+json",
+        Accept: "text/plain",
+      },
+    };
+
+    return this.transformOptions(options_)
+      .then((transformedOptions_) => {
+        return this.http.fetch(url_, transformedOptions_);
+      })
+      .then((_response: Response) => {
+        return this.processSearchProducts(_response);
+      });
+  }
+
+  protected processSearchProducts(response: Response): Promise<SearchProductsResult> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+    }
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = SearchProductsResult.fromJS(resultData200);
+        return result200;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
+    }
+    return Promise.resolve<SearchProductsResult>(null as any);
+  }
+
+  /**
+   * @param body (optional)
+   * @return OK
+   */
+  searchPropertyDictionaryItems(
+    body?: PropertyDictionaryItemSearchCriteria | undefined,
+  ): Promise<PropertyDictionaryItemSearchResult> {
+    let url_ = this.baseUrl + "/api/vcmp/seller/dictionaryitems/search";
+    url_ = url_.replace(/[?&]$/, "");
+
+    const content_ = JSON.stringify(body);
+
+    let options_: RequestInit = {
+      body: content_,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json-patch+json",
+        Accept: "text/plain",
+      },
+    };
+
+    return this.transformOptions(options_)
+      .then((transformedOptions_) => {
+        return this.http.fetch(url_, transformedOptions_);
+      })
+      .then((_response: Response) => {
+        return this.processSearchPropertyDictionaryItems(_response);
+      });
+  }
+
+  protected processSearchPropertyDictionaryItems(response: Response): Promise<PropertyDictionaryItemSearchResult> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+    }
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = PropertyDictionaryItemSearchResult.fromJS(resultData200);
+        return result200;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
+    }
+    return Promise.resolve<PropertyDictionaryItemSearchResult>(null as any);
+  }
+
+  /**
+   * @return OK
+   */
+  getProductById(productId: string): Promise<SellerProduct> {
+    let url_ = this.baseUrl + "/api/vcmp/seller/products/{productId}";
+    if (productId === undefined || productId === null) throw new Error("The parameter 'productId' must be defined.");
+    url_ = url_.replace("{productId}", encodeURIComponent("" + productId));
+    url_ = url_.replace(/[?&]$/, "");
+
+    let options_: RequestInit = {
+      method: "GET",
+      headers: {
+        Accept: "text/plain",
+      },
+    };
+
+    return this.transformOptions(options_)
+      .then((transformedOptions_) => {
+        return this.http.fetch(url_, transformedOptions_);
+      })
+      .then((_response: Response) => {
+        return this.processGetProductById(_response);
+      });
+  }
+
+  protected processGetProductById(response: Response): Promise<SellerProduct> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+    }
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = SellerProduct.fromJS(resultData200);
+        return result200;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
+    }
+    return Promise.resolve<SellerProduct>(null as any);
+  }
+
+  /**
+   * @param body (optional)
+   * @return OK
+   */
+  createNewProduct(body?: CreateNewProductCommand | undefined): Promise<SellerProduct> {
+    let url_ = this.baseUrl + "/api/vcmp/seller/products";
+    url_ = url_.replace(/[?&]$/, "");
+
+    const content_ = JSON.stringify(body);
+
+    let options_: RequestInit = {
+      body: content_,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json-patch+json",
+        Accept: "text/plain",
+      },
+    };
+
+    return this.transformOptions(options_)
+      .then((transformedOptions_) => {
+        return this.http.fetch(url_, transformedOptions_);
+      })
+      .then((_response: Response) => {
+        return this.processCreateNewProduct(_response);
+      });
+  }
+
+  protected processCreateNewProduct(response: Response): Promise<SellerProduct> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+    }
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = SellerProduct.fromJS(resultData200);
+        return result200;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
+    }
+    return Promise.resolve<SellerProduct>(null as any);
+  }
+
+  /**
+   * @param body (optional)
+   * @return OK
+   */
+  updateProductDetails(body?: UpdateProductDetailsCommand | undefined): Promise<SellerProduct> {
+    let url_ = this.baseUrl + "/api/vcmp/seller/products";
+    url_ = url_.replace(/[?&]$/, "");
+
+    const content_ = JSON.stringify(body);
+
+    let options_: RequestInit = {
+      body: content_,
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json-patch+json",
+        Accept: "text/plain",
+      },
+    };
+
+    return this.transformOptions(options_)
+      .then((transformedOptions_) => {
+        return this.http.fetch(url_, transformedOptions_);
+      })
+      .then((_response: Response) => {
+        return this.processUpdateProductDetails(_response);
+      });
+  }
+
+  protected processUpdateProductDetails(response: Response): Promise<SellerProduct> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+    }
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = SellerProduct.fromJS(resultData200);
+        return result200;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
+    }
+    return Promise.resolve<SellerProduct>(null as any);
+  }
+
+  /**
+   * @param ids (optional)
+   * @return OK
+   */
+  deleteProducts(ids?: string[] | undefined): Promise<void> {
+    let url_ = this.baseUrl + "/api/vcmp/seller/products?";
+    if (ids === null) throw new Error("The parameter 'ids' cannot be null.");
+    else if (ids !== undefined)
+      ids &&
+        ids.forEach((item) => {
+          url_ += "ids=" + encodeURIComponent("" + item) + "&";
+        });
+    url_ = url_.replace(/[?&]$/, "");
+
+    let options_: RequestInit = {
+      method: "DELETE",
+      headers: {},
+    };
+
+    return this.transformOptions(options_)
+      .then((transformedOptions_) => {
+        return this.http.fetch(url_, transformedOptions_);
+      })
+      .then((_response: Response) => {
+        return this.processDeleteProducts(_response);
+      });
+  }
+
+  protected processDeleteProducts(response: Response): Promise<void> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+    }
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        return;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
+    }
+    return Promise.resolve<void>(null as any);
+  }
+
+  /**
+   * @param body (optional)
+   * @return OK
+   */
+  bulkDeleteProducts(body?: BulkProductsDeleteCommand | undefined): Promise<void> {
+    let url_ = this.baseUrl + "/api/vcmp/seller/products/bulk";
+    url_ = url_.replace(/[?&]$/, "");
+
+    const content_ = JSON.stringify(body);
+
+    let options_: RequestInit = {
+      body: content_,
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json-patch+json",
+      },
+    };
+
+    return this.transformOptions(options_)
+      .then((transformedOptions_) => {
+        return this.http.fetch(url_, transformedOptions_);
+      })
+      .then((_response: Response) => {
+        return this.processBulkDeleteProducts(_response);
+      });
+  }
+
+  protected processBulkDeleteProducts(response: Response): Promise<void> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+    }
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        return;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
+    }
+    return Promise.resolve<void>(null as any);
+  }
+
+  /**
+   * @param body (optional)
+   * @return OK
+   */
+  createNewPublicationRequest(
+    body?: CreateNewPublicationRequestCommand | undefined,
+  ): Promise<ProductPublicationRequest> {
+    let url_ = this.baseUrl + "/api/vcmp/seller/products/requests/new";
+    url_ = url_.replace(/[?&]$/, "");
+
+    const content_ = JSON.stringify(body);
+
+    let options_: RequestInit = {
+      body: content_,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json-patch+json",
+        Accept: "text/plain",
+      },
+    };
+
+    return this.transformOptions(options_)
+      .then((transformedOptions_) => {
+        return this.http.fetch(url_, transformedOptions_);
+      })
+      .then((_response: Response) => {
+        return this.processCreateNewPublicationRequest(_response);
+      });
+  }
+
+  protected processCreateNewPublicationRequest(response: Response): Promise<ProductPublicationRequest> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+    }
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = ProductPublicationRequest.fromJS(resultData200);
+        return result200;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
+    }
+    return Promise.resolve<ProductPublicationRequest>(null as any);
+  }
+
+  /**
+   * @return OK
+   */
+  revertStagedChanges(productId: string): Promise<ProductPublicationRequest> {
+    let url_ = this.baseUrl + "/api/vcmp/seller/product/{productId}/revert";
+    if (productId === undefined || productId === null) throw new Error("The parameter 'productId' must be defined.");
+    url_ = url_.replace("{productId}", encodeURIComponent("" + productId));
+    url_ = url_.replace(/[?&]$/, "");
+
+    let options_: RequestInit = {
+      method: "POST",
+      headers: {
+        Accept: "text/plain",
+      },
+    };
+
+    return this.transformOptions(options_)
+      .then((transformedOptions_) => {
+        return this.http.fetch(url_, transformedOptions_);
+      })
+      .then((_response: Response) => {
+        return this.processRevertStagedChanges(_response);
+      });
+  }
+
+  protected processRevertStagedChanges(response: Response): Promise<ProductPublicationRequest> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+    }
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = ProductPublicationRequest.fromJS(resultData200);
+        return result200;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
+    }
+    return Promise.resolve<ProductPublicationRequest>(null as any);
+  }
+
+  /**
+   * @param body (optional)
+   * @return OK
+   */
+  publishProduct(body?: PublishProductCommand | undefined): Promise<ProductPublicationRequest> {
+    let url_ = this.baseUrl + "/api/vcmp/seller/product/publish";
+    url_ = url_.replace(/[?&]$/, "");
+
+    const content_ = JSON.stringify(body);
+
+    let options_: RequestInit = {
+      body: content_,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json-patch+json",
+        Accept: "text/plain",
+      },
+    };
+
+    return this.transformOptions(options_)
+      .then((transformedOptions_) => {
+        return this.http.fetch(url_, transformedOptions_);
+      })
+      .then((_response: Response) => {
+        return this.processPublishProduct(_response);
+      });
+  }
+
+  protected processPublishProduct(response: Response): Promise<ProductPublicationRequest> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+    }
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = ProductPublicationRequest.fromJS(resultData200);
+        return result200;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
+    }
+    return Promise.resolve<ProductPublicationRequest>(null as any);
+  }
+
+  /**
+   * @param body (optional)
+   * @return OK
+   */
+  unpublishProduct(body?: UnpublishProductCommand | undefined): Promise<ProductPublicationRequest> {
+    let url_ = this.baseUrl + "/api/vcmp/seller/product/unpublish";
+    url_ = url_.replace(/[?&]$/, "");
+
+    const content_ = JSON.stringify(body);
+
+    let options_: RequestInit = {
+      body: content_,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json-patch+json",
+        Accept: "text/plain",
+      },
+    };
+
+    return this.transformOptions(options_)
+      .then((transformedOptions_) => {
+        return this.http.fetch(url_, transformedOptions_);
+      })
+      .then((_response: Response) => {
+        return this.processUnpublishProduct(_response);
+      });
+  }
+
+  protected processUnpublishProduct(response: Response): Promise<ProductPublicationRequest> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+    }
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = ProductPublicationRequest.fromJS(resultData200);
+        return result200;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
+    }
+    return Promise.resolve<ProductPublicationRequest>(null as any);
+  }
+
+  /**
+   * @param body (optional)
+   * @return OK
+   */
+  searchCategories(body?: SearchCategoriesQuery | undefined): Promise<CategorySearchResult> {
+    let url_ = this.baseUrl + "/api/vcmp/seller/categories/search";
+    url_ = url_.replace(/[?&]$/, "");
+
+    const content_ = JSON.stringify(body);
+
+    let options_: RequestInit = {
+      body: content_,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json-patch+json",
+        Accept: "text/plain",
+      },
+    };
+
+    return this.transformOptions(options_)
+      .then((transformedOptions_) => {
+        return this.http.fetch(url_, transformedOptions_);
+      })
+      .then((_response: Response) => {
+        return this.processSearchCategories(_response);
+      });
+  }
+
+  protected processSearchCategories(response: Response): Promise<CategorySearchResult> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+    }
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = CategorySearchResult.fromJS(resultData200);
+        return result200;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
+    }
+    return Promise.resolve<CategorySearchResult>(null as any);
+  }
+
+  /**
+   * @return OK
+   */
+  getCategoryChildren(categoryId: string): Promise<Category[]> {
+    let url_ = this.baseUrl + "/api/vcmp/seller/categories/{categoryId}/getchildren";
+    if (categoryId === undefined || categoryId === null) throw new Error("The parameter 'categoryId' must be defined.");
+    url_ = url_.replace("{categoryId}", encodeURIComponent("" + categoryId));
+    url_ = url_.replace(/[?&]$/, "");
+
+    let options_: RequestInit = {
+      method: "GET",
+      headers: {
+        Accept: "text/plain",
+      },
+    };
+
+    return this.transformOptions(options_)
+      .then((transformedOptions_) => {
+        return this.http.fetch(url_, transformedOptions_);
+      })
+      .then((_response: Response) => {
+        return this.processGetCategoryChildren(_response);
+      });
+  }
+
+  protected processGetCategoryChildren(response: Response): Promise<Category[]> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+    }
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+        if (Array.isArray(resultData200)) {
+          result200 = [] as any;
+          for (let item of resultData200) result200!.push(Category.fromJS(item));
+        } else {
+          result200 = <any>null;
+        }
+        return result200;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
+    }
+    return Promise.resolve<Category[]>(null as any);
+  }
+
+  /**
+   * @param body (optional)
+   * @return OK
    */
   createSellerCategories(body?: CreateSellerCategoriesCommand | undefined): Promise<void> {
     let url_ = this.baseUrl + "/api/vcmp/seller/categories/create";
@@ -706,7 +1287,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
 
   /**
    * @param body (optional)
-   * @return Success
+   * @return OK
    */
   deleteSellerCategories(body?: DeleteSellerCategoriesCommand | undefined): Promise<void> {
     let url_ = this.baseUrl + "/api/vcmp/seller/categories/delete";
@@ -759,7 +1340,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
 
   /**
    * @param body (optional)
-   * @return Success
+   * @return OK
    */
   exportSellerCategories(body?: RunCategoriesExportCommand | undefined): Promise<void> {
     let url_ = this.baseUrl + "/api/vcmp/seller/categories/export";
@@ -804,439 +1385,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
 
   /**
    * @param body (optional)
-   * @return Success
-   */
-  searchProducts(body?: SearchProductsQuery | undefined): Promise<SearchProductsResult> {
-    let url_ = this.baseUrl + "/api/vcmp/seller/products/search";
-    url_ = url_.replace(/[?&]$/, "");
-
-    const content_ = JSON.stringify(body);
-
-    let options_: RequestInit = {
-      body: content_,
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json-patch+json",
-        Accept: "text/plain",
-      },
-    };
-
-    return this.transformOptions(options_)
-      .then((transformedOptions_) => {
-        return this.http.fetch(url_, transformedOptions_);
-      })
-      .then((_response: Response) => {
-        return this.processSearchProducts(_response);
-      });
-  }
-
-  protected processSearchProducts(response: Response): Promise<SearchProductsResult> {
-    const status = response.status;
-    let _headers: any = {};
-    if (response.headers && response.headers.forEach) {
-      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
-    }
-    if (status === 200) {
-      return response.text().then((_responseText) => {
-        let result200: any = null;
-        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-        result200 = SearchProductsResult.fromJS(resultData200);
-        return result200;
-      });
-    } else if (status !== 200 && status !== 204) {
-      return response.text().then((_responseText) => {
-        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-      });
-    }
-    return Promise.resolve<SearchProductsResult>(null as any);
-  }
-
-  /**
-   * @param body (optional)
-   * @return Success
-   */
-  searchPropertyDictionaryItems(
-    body?: PropertyDictionaryItemSearchCriteria | undefined,
-  ): Promise<PropertyDictionaryItemSearchResult> {
-    let url_ = this.baseUrl + "/api/vcmp/seller/dictionaryitems/search";
-    url_ = url_.replace(/[?&]$/, "");
-
-    const content_ = JSON.stringify(body);
-
-    let options_: RequestInit = {
-      body: content_,
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json-patch+json",
-        Accept: "text/plain",
-      },
-    };
-
-    return this.transformOptions(options_)
-      .then((transformedOptions_) => {
-        return this.http.fetch(url_, transformedOptions_);
-      })
-      .then((_response: Response) => {
-        return this.processSearchPropertyDictionaryItems(_response);
-      });
-  }
-
-  protected processSearchPropertyDictionaryItems(response: Response): Promise<PropertyDictionaryItemSearchResult> {
-    const status = response.status;
-    let _headers: any = {};
-    if (response.headers && response.headers.forEach) {
-      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
-    }
-    if (status === 200) {
-      return response.text().then((_responseText) => {
-        let result200: any = null;
-        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-        result200 = PropertyDictionaryItemSearchResult.fromJS(resultData200);
-        return result200;
-      });
-    } else if (status !== 200 && status !== 204) {
-      return response.text().then((_responseText) => {
-        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-      });
-    }
-    return Promise.resolve<PropertyDictionaryItemSearchResult>(null as any);
-  }
-
-  /**
-   * @return Success
-   */
-  getProductById(productId: string): Promise<SellerProduct> {
-    let url_ = this.baseUrl + "/api/vcmp/seller/products/{productId}";
-    if (productId === undefined || productId === null) throw new Error("The parameter 'productId' must be defined.");
-    url_ = url_.replace("{productId}", encodeURIComponent("" + productId));
-    url_ = url_.replace(/[?&]$/, "");
-
-    let options_: RequestInit = {
-      method: "GET",
-      headers: {
-        Accept: "text/plain",
-      },
-    };
-
-    return this.transformOptions(options_)
-      .then((transformedOptions_) => {
-        return this.http.fetch(url_, transformedOptions_);
-      })
-      .then((_response: Response) => {
-        return this.processGetProductById(_response);
-      });
-  }
-
-  protected processGetProductById(response: Response): Promise<SellerProduct> {
-    const status = response.status;
-    let _headers: any = {};
-    if (response.headers && response.headers.forEach) {
-      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
-    }
-    if (status === 200) {
-      return response.text().then((_responseText) => {
-        let result200: any = null;
-        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-        result200 = SellerProduct.fromJS(resultData200);
-        return result200;
-      });
-    } else if (status !== 200 && status !== 204) {
-      return response.text().then((_responseText) => {
-        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-      });
-    }
-    return Promise.resolve<SellerProduct>(null as any);
-  }
-
-  /**
-   * @param body (optional)
-   * @return Success
-   */
-  createNewProduct(body?: CreateNewProductCommand | undefined): Promise<SellerProduct> {
-    let url_ = this.baseUrl + "/api/vcmp/seller/products";
-    url_ = url_.replace(/[?&]$/, "");
-
-    const content_ = JSON.stringify(body);
-
-    let options_: RequestInit = {
-      body: content_,
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json-patch+json",
-        Accept: "text/plain",
-      },
-    };
-
-    return this.transformOptions(options_)
-      .then((transformedOptions_) => {
-        return this.http.fetch(url_, transformedOptions_);
-      })
-      .then((_response: Response) => {
-        return this.processCreateNewProduct(_response);
-      });
-  }
-
-  protected processCreateNewProduct(response: Response): Promise<SellerProduct> {
-    const status = response.status;
-    let _headers: any = {};
-    if (response.headers && response.headers.forEach) {
-      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
-    }
-    if (status === 200) {
-      return response.text().then((_responseText) => {
-        let result200: any = null;
-        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-        result200 = SellerProduct.fromJS(resultData200);
-        return result200;
-      });
-    } else if (status !== 200 && status !== 204) {
-      return response.text().then((_responseText) => {
-        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-      });
-    }
-    return Promise.resolve<SellerProduct>(null as any);
-  }
-
-  /**
-   * @param body (optional)
-   * @return Success
-   */
-  updateProductDetails(body?: UpdateProductDetailsCommand | undefined): Promise<SellerProduct> {
-    let url_ = this.baseUrl + "/api/vcmp/seller/products";
-    url_ = url_.replace(/[?&]$/, "");
-
-    const content_ = JSON.stringify(body);
-
-    let options_: RequestInit = {
-      body: content_,
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json-patch+json",
-        Accept: "text/plain",
-      },
-    };
-
-    return this.transformOptions(options_)
-      .then((transformedOptions_) => {
-        return this.http.fetch(url_, transformedOptions_);
-      })
-      .then((_response: Response) => {
-        return this.processUpdateProductDetails(_response);
-      });
-  }
-
-  protected processUpdateProductDetails(response: Response): Promise<SellerProduct> {
-    const status = response.status;
-    let _headers: any = {};
-    if (response.headers && response.headers.forEach) {
-      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
-    }
-    if (status === 200) {
-      return response.text().then((_responseText) => {
-        let result200: any = null;
-        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-        result200 = SellerProduct.fromJS(resultData200);
-        return result200;
-      });
-    } else if (status !== 200 && status !== 204) {
-      return response.text().then((_responseText) => {
-        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-      });
-    }
-    return Promise.resolve<SellerProduct>(null as any);
-  }
-
-  /**
-   * @param ids (optional)
-   * @return Success
-   */
-  deleteProducts(ids?: string[] | undefined): Promise<void> {
-    let url_ = this.baseUrl + "/api/vcmp/seller/products?";
-    if (ids === null) throw new Error("The parameter 'ids' cannot be null.");
-    else if (ids !== undefined)
-      ids &&
-        ids.forEach((item) => {
-          url_ += "ids=" + encodeURIComponent("" + item) + "&";
-        });
-    url_ = url_.replace(/[?&]$/, "");
-
-    let options_: RequestInit = {
-      method: "DELETE",
-      headers: {},
-    };
-
-    return this.transformOptions(options_)
-      .then((transformedOptions_) => {
-        return this.http.fetch(url_, transformedOptions_);
-      })
-      .then((_response: Response) => {
-        return this.processDeleteProducts(_response);
-      });
-  }
-
-  protected processDeleteProducts(response: Response): Promise<void> {
-    const status = response.status;
-    let _headers: any = {};
-    if (response.headers && response.headers.forEach) {
-      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
-    }
-    if (status === 200) {
-      return response.text().then((_responseText) => {
-        return;
-      });
-    } else if (status !== 200 && status !== 204) {
-      return response.text().then((_responseText) => {
-        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-      });
-    }
-    return Promise.resolve<void>(null as any);
-  }
-
-  /**
-   * @param body (optional)
-   * @return Success
-   */
-  bulkDeleteProducts(body?: BulkProductsDeleteCommand | undefined): Promise<void> {
-    let url_ = this.baseUrl + "/api/vcmp/seller/products/bulk";
-    url_ = url_.replace(/[?&]$/, "");
-
-    const content_ = JSON.stringify(body);
-
-    let options_: RequestInit = {
-      body: content_,
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json-patch+json",
-      },
-    };
-
-    return this.transformOptions(options_)
-      .then((transformedOptions_) => {
-        return this.http.fetch(url_, transformedOptions_);
-      })
-      .then((_response: Response) => {
-        return this.processBulkDeleteProducts(_response);
-      });
-  }
-
-  protected processBulkDeleteProducts(response: Response): Promise<void> {
-    const status = response.status;
-    let _headers: any = {};
-    if (response.headers && response.headers.forEach) {
-      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
-    }
-    if (status === 200) {
-      return response.text().then((_responseText) => {
-        return;
-      });
-    } else if (status !== 200 && status !== 204) {
-      return response.text().then((_responseText) => {
-        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-      });
-    }
-    return Promise.resolve<void>(null as any);
-  }
-
-  /**
-   * @param body (optional)
-   * @return Success
-   */
-  createNewPublicationRequest(
-    body?: CreateNewPublicationRequestCommand | undefined,
-  ): Promise<ProductPublicationRequest> {
-    let url_ = this.baseUrl + "/api/vcmp/seller/products/requests/new";
-    url_ = url_.replace(/[?&]$/, "");
-
-    const content_ = JSON.stringify(body);
-
-    let options_: RequestInit = {
-      body: content_,
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json-patch+json",
-        Accept: "text/plain",
-      },
-    };
-
-    return this.transformOptions(options_)
-      .then((transformedOptions_) => {
-        return this.http.fetch(url_, transformedOptions_);
-      })
-      .then((_response: Response) => {
-        return this.processCreateNewPublicationRequest(_response);
-      });
-  }
-
-  protected processCreateNewPublicationRequest(response: Response): Promise<ProductPublicationRequest> {
-    const status = response.status;
-    let _headers: any = {};
-    if (response.headers && response.headers.forEach) {
-      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
-    }
-    if (status === 200) {
-      return response.text().then((_responseText) => {
-        let result200: any = null;
-        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-        result200 = ProductPublicationRequest.fromJS(resultData200);
-        return result200;
-      });
-    } else if (status !== 200 && status !== 204) {
-      return response.text().then((_responseText) => {
-        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-      });
-    }
-    return Promise.resolve<ProductPublicationRequest>(null as any);
-  }
-
-  /**
-   * @return Success
-   */
-  revertStagedChanges(productId: string): Promise<ProductPublicationRequest> {
-    let url_ = this.baseUrl + "/api/vcmp/seller/product/{productId}/revert";
-    if (productId === undefined || productId === null) throw new Error("The parameter 'productId' must be defined.");
-    url_ = url_.replace("{productId}", encodeURIComponent("" + productId));
-    url_ = url_.replace(/[?&]$/, "");
-
-    let options_: RequestInit = {
-      method: "POST",
-      headers: {
-        Accept: "text/plain",
-      },
-    };
-
-    return this.transformOptions(options_)
-      .then((transformedOptions_) => {
-        return this.http.fetch(url_, transformedOptions_);
-      })
-      .then((_response: Response) => {
-        return this.processRevertStagedChanges(_response);
-      });
-  }
-
-  protected processRevertStagedChanges(response: Response): Promise<ProductPublicationRequest> {
-    const status = response.status;
-    let _headers: any = {};
-    if (response.headers && response.headers.forEach) {
-      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
-    }
-    if (status === 200) {
-      return response.text().then((_responseText) => {
-        let result200: any = null;
-        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-        result200 = ProductPublicationRequest.fromJS(resultData200);
-        return result200;
-      });
-    } else if (status !== 200 && status !== 204) {
-      return response.text().then((_responseText) => {
-        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-      });
-    }
-    return Promise.resolve<ProductPublicationRequest>(null as any);
-  }
-
-  /**
-   * @param body (optional)
-   * @return Success
+   * @return OK
    */
   search(body?: SearchProductAssociationsQuery | undefined): Promise<ProductAssociationSearchResult> {
     let url_ = this.baseUrl + "/api/vcmp/seller/products/associations/search";
@@ -1284,7 +1433,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
   }
 
   /**
-   * @return Success
+   * @return OK
    */
   getProductAssociations(productId: string): Promise<ProductAssociation[]> {
     let url_ = this.baseUrl + "/api/vcmp/seller/products/{productId}/associations";
@@ -1336,7 +1485,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
 
   /**
    * @param body (optional)
-   * @return Success
+   * @return OK
    */
   updateAssociations(body?: UpdateProductAssociationsCommand | undefined): Promise<void> {
     let url_ = this.baseUrl + "/api/vcmp/seller/products/associations";
@@ -1381,7 +1530,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
 
   /**
    * @param ids (optional)
-   * @return Success
+   * @return OK
    */
   deleteAssociations(ids?: string[] | undefined): Promise<void> {
     let url_ = this.baseUrl + "/api/vcmp/seller/products/associations?";
@@ -1426,7 +1575,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
   }
 
   /**
-   * @return Success
+   * @return OK
    */
   getProductAssociationTypes(): Promise<string[]> {
     let url_ = this.baseUrl + "/api/vcmp/seller/products/associations/types";
@@ -1476,7 +1625,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
 
   /**
    * @param body (optional)
-   * @return Success
+   * @return OK
    */
   searchOffers(body?: SearchOffersQuery | undefined): Promise<SearchOffersResult> {
     let url_ = this.baseUrl + "/api/vcmp/seller/offers/search";
@@ -1524,7 +1673,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
   }
 
   /**
-   * @return Success
+   * @return OK
    */
   getOfferByIdGET(offerId: string): Promise<Offer> {
     let url_ = this.baseUrl + "/api/vcmp/seller/offers/{offerId}";
@@ -1570,7 +1719,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
   }
 
   /**
-   * @return Success
+   * @return OK
    */
   getOfferByIdPOST(offerId: string): Promise<Offer> {
     let url_ = this.baseUrl + "/api/vcmp/seller/offers/{offerId}";
@@ -1617,7 +1766,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
 
   /**
    * @param body (optional)
-   * @return Success
+   * @return OK
    */
   searchOfferProducts(body?: SearchProductsForNewOfferQuery | undefined): Promise<SearchOfferProductsResult> {
     let url_ = this.baseUrl + "/api/vcmp/seller/offers/products/search";
@@ -1666,7 +1815,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
 
   /**
    * @param body (optional)
-   * @return Success
+   * @return OK
    */
   createNewOffer(body?: CreateNewOfferCommand | undefined): Promise<Offer> {
     let url_ = this.baseUrl + "/api/vcmp/seller/offers/new";
@@ -1715,7 +1864,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
 
   /**
    * @param body (optional)
-   * @return Success
+   * @return OK
    */
   changeOfferState(body?: ChangeOfferStateCommand | undefined): Promise<Offer> {
     let url_ = this.baseUrl + "/api/vcmp/seller/offers/state";
@@ -1764,7 +1913,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
 
   /**
    * @param body (optional)
-   * @return Success
+   * @return OK
    */
   changeOfferDefault(body?: ChangeOfferDefaultCommand | undefined): Promise<Offer> {
     let url_ = this.baseUrl + "/api/vcmp/seller/offers/default";
@@ -1813,7 +1962,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
 
   /**
    * @param body (optional)
-   * @return Success
+   * @return OK
    */
   updateOffer(body?: UpdateOfferCommand | undefined): Promise<Offer> {
     let url_ = this.baseUrl + "/api/vcmp/seller/offers";
@@ -1862,7 +2011,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
 
   /**
    * @param ids (optional)
-   * @return Success
+   * @return OK
    */
   deleteOffers(ids?: string[] | undefined): Promise<void> {
     let url_ = this.baseUrl + "/api/vcmp/seller/offers?";
@@ -1908,7 +2057,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
 
   /**
    * @param body (optional)
-   * @return Success
+   * @return OK
    */
   bulkDeleteOffers(body?: BulkOffersDeleteCommand | undefined): Promise<void> {
     let url_ = this.baseUrl + "/api/vcmp/seller/offers/bulk";
@@ -1953,7 +2102,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
 
   /**
    * @param body (optional)
-   * @return Success
+   * @return OK
    */
   validateOffer(body?: ValidateOfferQuery | undefined): Promise<ValidationFailure[]> {
     let url_ = this.baseUrl + "/api/vcmp/seller/offers/validate";
@@ -2007,7 +2156,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
 
   /**
    * @param body (optional)
-   * @return Success
+   * @return OK
    */
   searchFulfillmentCenters(body?: SearchFulfillmentCentersQuery | undefined): Promise<SearchFulfillmentCentersResult> {
     let url_ = this.baseUrl + "/api/vcmp/seller/fulfillmentcenters/search";
@@ -2055,7 +2204,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
   }
 
   /**
-   * @return Success
+   * @return OK
    */
   getFulfillmentCenterById(fulfillmentCenterId: string): Promise<FulfillmentCenter> {
     let url_ = this.baseUrl + "/api/vcmp/seller/fulfillmentcenters/{fulfillmentCenterId}";
@@ -2103,7 +2252,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
 
   /**
    * @param body (optional)
-   * @return Success
+   * @return OK
    */
   updateFulfillmentCenter(body?: UpdateFulfillmentCenterCommand | undefined): Promise<FulfillmentCenter> {
     let url_ = this.baseUrl + "/api/vcmp/seller/fulfillmentcenters";
@@ -2152,7 +2301,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
 
   /**
    * @param ids (optional)
-   * @return Success
+   * @return OK
    */
   deleteFulfillmentCenter(ids?: string[] | undefined): Promise<void> {
     let url_ = this.baseUrl + "/api/vcmp/seller/fulfillmentcenters?";
@@ -2198,7 +2347,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
 
   /**
    * @param body (optional)
-   * @return Success
+   * @return OK
    */
   createVideo(body?: CreateVideoCommand | undefined): Promise<Video> {
     let url_ = this.baseUrl + "/api/vcmp/seller/videos/create";
@@ -2247,7 +2396,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
 
   /**
    * @param body (optional)
-   * @return Success
+   * @return OK
    */
   searchVideos(body?: SearchVideosQuery | undefined): Promise<VideoSearchResult> {
     let url_ = this.baseUrl + "/api/vcmp/seller/videos/search";
@@ -2295,7 +2444,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
   }
 
   /**
-   * @return Success
+   * @return OK
    */
   getVideoById(videoId: string): Promise<Video> {
     let url_ = this.baseUrl + "/api/vcmp/seller/videos/{videoId}";
@@ -2342,7 +2491,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
 
   /**
    * @param body (optional)
-   * @return Success
+   * @return OK
    */
   update(body?: Video[] | undefined): Promise<Video[]> {
     let url_ = this.baseUrl + "/api/vcmp/seller/videos";
@@ -2396,7 +2545,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
 
   /**
    * @param ids (optional)
-   * @return Success
+   * @return OK
    */
   delete(ids?: string[] | undefined): Promise<void> {
     let url_ = this.baseUrl + "/api/vcmp/seller/videos?";
@@ -2441,7 +2590,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
   }
 
   /**
-   * @return Success
+   * @return OK
    */
   getAvailableLanguages(): Promise<string[]> {
     let url_ = this.baseUrl + "/api/vcmp/seller/languages";
@@ -2503,7 +2652,7 @@ export class VcmpSellerImportClient extends AuthApiBase {
 
   /**
    * @param body (optional)
-   * @return Success
+   * @return OK
    */
   runImport(body?: RunImportCommand | undefined): Promise<ImportPushNotification> {
     let url_ = this.baseUrl + "/api/vcmp/import/run";
@@ -2552,7 +2701,7 @@ export class VcmpSellerImportClient extends AuthApiBase {
 
   /**
    * @param body (optional)
-   * @return Success
+   * @return OK
    */
   cancelJob(body?: ImportCancellationRequest | undefined): Promise<void> {
     let url_ = this.baseUrl + "/api/vcmp/import/task/cancel";
@@ -2605,7 +2754,7 @@ export class VcmpSellerImportClient extends AuthApiBase {
 
   /**
    * @param body (optional)
-   * @return Success
+   * @return OK
    */
   preview(body?: PreviewDataQuery | undefined): Promise<ImportDataPreview> {
     let url_ = this.baseUrl + "/api/vcmp/import/preview";
@@ -2661,7 +2810,7 @@ export class VcmpSellerImportClient extends AuthApiBase {
   }
 
   /**
-   * @return Success
+   * @return OK
    */
   getImporters(): Promise<IDataImporter[]> {
     let url_ = this.baseUrl + "/api/vcmp/import/importers";
@@ -2718,7 +2867,7 @@ export class VcmpSellerImportClient extends AuthApiBase {
   }
 
   /**
-   * @return Success
+   * @return OK
    */
   getImportProfileById(profileId: string): Promise<ImportProfile> {
     let url_ = this.baseUrl + "/api/vcmp/import/profiles/{profileId}";
@@ -2765,7 +2914,7 @@ export class VcmpSellerImportClient extends AuthApiBase {
 
   /**
    * @param body (optional)
-   * @return Success
+   * @return OK
    */
   createImportProfile(body?: ImportProfile | undefined): Promise<ImportProfile> {
     let url_ = this.baseUrl + "/api/vcmp/import/profiles";
@@ -2814,7 +2963,7 @@ export class VcmpSellerImportClient extends AuthApiBase {
 
   /**
    * @param body (optional)
-   * @return Success
+   * @return OK
    */
   updateImportProfile(body?: UpdateProfileCommand | undefined): Promise<ImportProfile> {
     let url_ = this.baseUrl + "/api/vcmp/import/profiles";
@@ -2864,7 +3013,7 @@ export class VcmpSellerImportClient extends AuthApiBase {
   /**
    * @param id (optional)
    * @param ids (optional)
-   * @return Success
+   * @return OK
    */
   deleteProfile(id?: string | undefined, ids?: string[] | undefined): Promise<void> {
     let url_ = this.baseUrl + "/api/vcmp/import/profiles?";
@@ -2912,7 +3061,7 @@ export class VcmpSellerImportClient extends AuthApiBase {
 
   /**
    * @param body (optional)
-   * @return Success
+   * @return OK
    */
   searchImportProfiles(body?: SearchImportProfilesQuery | undefined): Promise<SearchImportProfilesResult> {
     let url_ = this.baseUrl + "/api/vcmp/import/profiles/search";
@@ -2961,7 +3110,7 @@ export class VcmpSellerImportClient extends AuthApiBase {
 
   /**
    * @param body (optional)
-   * @return Success
+   * @return OK
    */
   searchImportRunHistory(body?: SearchImportRunHistoryQuery | undefined): Promise<SearchImportRunHistoryResult> {
     let url_ = this.baseUrl + "/api/vcmp/import/profiles/execution/history/search";
@@ -3021,7 +3170,7 @@ export class VcmpSellerOrdersClient extends AuthApiBase {
   }
 
   /**
-   * @return Success
+   * @return OK
    */
   sync(): Promise<void> {
     let url_ = this.baseUrl + "/api/vcmp/orders/sync";
@@ -3060,7 +3209,7 @@ export class VcmpSellerOrdersClient extends AuthApiBase {
   }
 
   /**
-   * @return Success
+   * @return OK
    */
   getById(orderId: string): Promise<CustomerOrder> {
     let url_ = this.baseUrl + "/api/vcmp/orders/{orderId}";
@@ -3107,7 +3256,7 @@ export class VcmpSellerOrdersClient extends AuthApiBase {
 
   /**
    * @param body (optional)
-   * @return Success
+   * @return OK
    */
   searchOrders(body?: SearchOrdersQuery | undefined): Promise<CustomerOrderSearchResult> {
     let url_ = this.baseUrl + "/api/vcmp/orders/search";
@@ -3246,7 +3395,7 @@ export class VcmpSellerOrdersClient extends AuthApiBase {
 
   /**
    * @param body (optional)
-   * @return Success
+   * @return OK
    */
   updateOrder(body?: UpdateSellerOrderCommand | undefined): Promise<CustomerOrder> {
     let url_ = this.baseUrl + "/api/vcmp/orders";
@@ -3294,7 +3443,7 @@ export class VcmpSellerOrdersClient extends AuthApiBase {
   }
 
   /**
-   * @return Success
+   * @return OK
    */
   getNewShipment(orderId: string): Promise<OrderShipment> {
     let url_ = this.baseUrl + "/api/vcmp/orders/{orderId}/shipments/getnew";
@@ -3341,7 +3490,7 @@ export class VcmpSellerOrdersClient extends AuthApiBase {
 
   /**
    * @param body (optional)
-   * @return Success
+   * @return OK
    */
   searchShipments(body?: SearchShipmentsQuery | undefined): Promise<ShipmentSearchResult> {
     let url_ = this.baseUrl + "/api/vcmp/orders/shipments/search";
@@ -3390,7 +3539,7 @@ export class VcmpSellerOrdersClient extends AuthApiBase {
 
   /**
    * @param body (optional)
-   * @return Success
+   * @return OK
    */
   updateOrderShipment(body?: UpdateOrderShipmentCommand | undefined): Promise<void> {
     let url_ = this.baseUrl + "/api/vcmp/orders/shipments";
@@ -3435,7 +3584,7 @@ export class VcmpSellerOrdersClient extends AuthApiBase {
 
   /**
    * @param body (optional)
-   * @return Success
+   * @return OK
    */
   deleteOrderShipment(body?: string | undefined): Promise<void> {
     let url_ = this.baseUrl + "/api/vcmp/orders/shipments";
@@ -3479,7 +3628,7 @@ export class VcmpSellerOrdersClient extends AuthApiBase {
   }
 
   /**
-   * @return Success
+   * @return OK
    */
   getShippingMethods(): Promise<ShippingMethod[]> {
     let url_ = this.baseUrl + "/api/vcmp/orders/getshippingmethods";
@@ -3528,7 +3677,7 @@ export class VcmpSellerOrdersClient extends AuthApiBase {
   }
 
   /**
-   * @return Success
+   * @return OK
    */
   getShipmentStatuses(): Promise<string[]> {
     let url_ = this.baseUrl + "/api/vcmp/orders/getshipmentstatuses";
@@ -3589,7 +3738,7 @@ export class VcmpSellerRatingAndReviewsClient extends AuthApiBase {
   }
 
   /**
-   * @return Success
+   * @return OK
    */
   getCurrentSellerRating(): Promise<SellerRating> {
     let url_ = this.baseUrl + "/api/vcmp/seller/rating";
@@ -3633,7 +3782,7 @@ export class VcmpSellerRatingAndReviewsClient extends AuthApiBase {
   }
 
   /**
-   * @return Success
+   * @return OK
    */
   getSellerRatingById(sellerId: string): Promise<SellerRating> {
     let url_ = this.baseUrl + "/api/vcmp/seller/rating/{sellerId}";
@@ -3680,7 +3829,7 @@ export class VcmpSellerRatingAndReviewsClient extends AuthApiBase {
 
   /**
    * @param body (optional)
-   * @return Success
+   * @return OK
    */
   searchCustomerReviews(body?: SearchCustomerReviewsQuery | undefined): Promise<SearchCustomerReviewsResult> {
     let url_ = this.baseUrl + "/api/vcmp/seller/reviews/search";
@@ -3741,7 +3890,7 @@ export class VcmpSellerSecurityClient extends AuthApiBase {
 
   /**
    * @param memberId (optional)
-   * @return Success
+   * @return OK
    */
   sendInvitation(memberId?: string | undefined): Promise<void> {
     let url_ = this.baseUrl + "/api/vcmp/security/seller/send/invitation?";
@@ -3783,7 +3932,7 @@ export class VcmpSellerSecurityClient extends AuthApiBase {
 
   /**
    * @param body (optional)
-   * @return Success
+   * @return OK
    */
   sendUserInvitation(body?: SendSellerUserInvitationCommand | undefined): Promise<void> {
     let url_ = this.baseUrl + "/api/vcmp/security/seller/users/invitation/send";
@@ -3828,7 +3977,7 @@ export class VcmpSellerSecurityClient extends AuthApiBase {
 
   /**
    * @param body (optional)
-   * @return Success
+   * @return OK
    */
   validateSeller(body?: ValidateProductQuery | undefined): Promise<ValidationFailure[]> {
     let url_ = this.baseUrl + "/api/vcmp/security/seller/validate";
@@ -3889,7 +4038,7 @@ export class VcmpSellerSecurityClient extends AuthApiBase {
   }
 
   /**
-   * @return Success
+   * @return OK
    */
   getCurrentSeller(): Promise<Seller> {
     let url_ = this.baseUrl + "/api/vcmp/security/seller";
@@ -3934,7 +4083,7 @@ export class VcmpSellerSecurityClient extends AuthApiBase {
 
   /**
    * @param ids (optional)
-   * @return Success
+   * @return OK
    */
   deleteSellers(ids?: string[] | undefined): Promise<void> {
     let url_ = this.baseUrl + "/api/vcmp/security/seller?";
@@ -3987,7 +4136,7 @@ export class VcmpSellerSecurityClient extends AuthApiBase {
   }
 
   /**
-   * @return Success
+   * @return OK
    */
   getSellerById(id: string): Promise<Seller> {
     let url_ = this.baseUrl + "/api/vcmp/security/seller/{id}";
@@ -4034,7 +4183,7 @@ export class VcmpSellerSecurityClient extends AuthApiBase {
 
   /**
    * @param body (optional)
-   * @return Success
+   * @return OK
    */
   createSeller(body?: CreateSellerCommand | undefined): Promise<void> {
     let url_ = this.baseUrl + "/api/vcmp/security/seller/create";
@@ -4087,7 +4236,7 @@ export class VcmpSellerSecurityClient extends AuthApiBase {
 
   /**
    * @param body (optional)
-   * @return Success
+   * @return OK
    */
   updateSeller(body?: UpdateSellerCommand | undefined): Promise<void> {
     let url_ = this.baseUrl + "/api/vcmp/security/seller/update";
@@ -4132,7 +4281,7 @@ export class VcmpSellerSecurityClient extends AuthApiBase {
 
   /**
    * @param body (optional)
-   * @return Success
+   * @return OK
    */
   searchSellers(body?: SearchSellersQuery | undefined): Promise<SearchSellersResult> {
     let url_ = this.baseUrl + "/api/vcmp/security/seller/search";
@@ -4189,7 +4338,7 @@ export class VcmpSellerSecurityClient extends AuthApiBase {
 
   /**
    * @param body (optional)
-   * @return Success
+   * @return OK
    */
   createSellerUser(body?: CreateSellerUserCommand | undefined): Promise<SellerUser> {
     let url_ = this.baseUrl + "/api/vcmp/security/seller/users/create";
@@ -4238,7 +4387,7 @@ export class VcmpSellerSecurityClient extends AuthApiBase {
 
   /**
    * @param body (optional)
-   * @return Success
+   * @return OK
    */
   validateUser(body?: ValidateSellerUserQuery | undefined): Promise<ValidationFailure[]> {
     let url_ = this.baseUrl + "/api/vcmp/security/seller/users/validate";
@@ -4292,7 +4441,7 @@ export class VcmpSellerSecurityClient extends AuthApiBase {
 
   /**
    * @param body (optional)
-   * @return Success
+   * @return OK
    */
   updateSellerUser(body?: UpdateSellerUserCommand | undefined): Promise<SellerUser> {
     let url_ = this.baseUrl + "/api/vcmp/security/seller/users/update";
@@ -4341,7 +4490,7 @@ export class VcmpSellerSecurityClient extends AuthApiBase {
 
   /**
    * @param ids (optional)
-   * @return Success
+   * @return OK
    */
   deleteSellerUsers(ids?: string[] | undefined): Promise<void> {
     let url_ = this.baseUrl + "/api/vcmp/security/seller/users?";
@@ -4387,7 +4536,7 @@ export class VcmpSellerSecurityClient extends AuthApiBase {
 
   /**
    * @param body (optional)
-   * @return Success
+   * @return OK
    */
   searchSellerUsers(body?: SearchSellerUsersQuery | undefined): Promise<SearchSellerUsersResult> {
     let url_ = this.baseUrl + "/api/vcmp/security/seller/users/search";
@@ -4435,7 +4584,7 @@ export class VcmpSellerSecurityClient extends AuthApiBase {
   }
 
   /**
-   * @return Success
+   * @return OK
    */
   getCurrentSellerUser(): Promise<SellerUser> {
     let url_ = this.baseUrl + "/api/vcmp/security/seller/user";
@@ -4480,7 +4629,7 @@ export class VcmpSellerSecurityClient extends AuthApiBase {
 
   /**
    * @param body (optional)
-   * @return Success
+   * @return OK
    */
   forgotPassword(body?: ForgotPasswordCommand | undefined): Promise<void> {
     let url_ = this.baseUrl + "/api/vcmp/security/forgotpassword";
@@ -4524,7 +4673,7 @@ export class VcmpSellerSecurityClient extends AuthApiBase {
   }
 
   /**
-   * @return Success
+   * @return OK
    */
   isOperator(): Promise<boolean> {
     let url_ = this.baseUrl + "/api/vcmp/security/isoperator";
@@ -4582,7 +4731,7 @@ export class VcmpSmClient extends AuthApiBase {
 
   /**
    * @param body (optional)
-   * @return Success
+   * @return OK
    */
   search(body?: SearchStateMachineDefinitionsQuery | undefined): Promise<SearchStateMachineDefinitionsResult> {
     let url_ = this.baseUrl + "/api/vcmp/statemachine/definitions/search";
@@ -4639,7 +4788,7 @@ export class VcmpSmClient extends AuthApiBase {
 
   /**
    * @param body (optional)
-   * @return Success
+   * @return OK
    */
   createNewDefinition(body?: CreateStateMachineDefinitionCommand | undefined): Promise<StateMachineDefinition> {
     let url_ = this.baseUrl + "/api/vcmp/statemachine/definitions/new";
@@ -4695,7 +4844,7 @@ export class VcmpSmClient extends AuthApiBase {
   }
 
   /**
-   * @return Success
+   * @return OK
    */
   getStateMachineById(definitionId: string): Promise<StateMachineDefinition> {
     let url_ = this.baseUrl + "/api/vcmp/statemachine/definitions/{definitionId}";
@@ -4751,7 +4900,7 @@ export class VcmpSmClient extends AuthApiBase {
 
   /**
    * @param body (optional)
-   * @return Success
+   * @return OK
    */
   validateDefinition(body?: StateMachineDefinition | undefined): Promise<StateMachineDefinition> {
     let url_ = this.baseUrl + "/api/vcmp/statemachine/definitions/validate";
@@ -4808,7 +4957,7 @@ export class VcmpSmClient extends AuthApiBase {
 
   /**
    * @param body (optional)
-   * @return Success
+   * @return OK
    */
   searchInstance(body?: SearchStateMachineInstancesQuery | undefined): Promise<SearchStateMachineInstancesResult> {
     let url_ = this.baseUrl + "/api/vcmp/statemachine/instances/search";
@@ -4864,7 +5013,7 @@ export class VcmpSmClient extends AuthApiBase {
   }
 
   /**
-   * @return Success
+   * @return OK
    */
   getStateMachineInstanceById(instanceId: string): Promise<StateMachineInstance> {
     let url_ = this.baseUrl + "/api/vcmp/statemachine/instances/{instanceId}";
@@ -4920,7 +5069,7 @@ export class VcmpSmClient extends AuthApiBase {
   /**
    * @param instanceId (optional)
    * @param body (optional)
-   * @return Success
+   * @return OK
    */
   createNewInstance(
     definitionId: string,
@@ -4985,7 +5134,7 @@ export class VcmpSmClient extends AuthApiBase {
   }
 
   /**
-   * @return Success
+   * @return OK
    */
   fire(instanceId: string, trigger: string, entityId: string): Promise<StateMachineInstance> {
     let url_ = this.baseUrl + "/api/vcmp/statemachine/instances/{instanceId}/fire/{trigger}/{entityId}";
@@ -5056,7 +5205,7 @@ export class VcmpSyncClient extends AuthApiBase {
 
   /**
    * @param body (optional)
-   * @return Success
+   * @return OK
    */
   runSynchronization(body?: SyncContext | undefined): Promise<SyncPushNotification> {
     let url_ = this.baseUrl + "/api/vcmp/sync/run";
@@ -5113,7 +5262,7 @@ export class VcmpSyncClient extends AuthApiBase {
 
   /**
    * @param body (optional)
-   * @return Success
+   * @return OK
    */
   cancelJob(body?: SyncJobCancellationRequest | undefined): Promise<void> {
     let url_ = this.baseUrl + "/api/vcmp/sync/cancel";
@@ -5165,7 +5314,7 @@ export class VcmpSyncClient extends AuthApiBase {
   }
 
   /**
-   * @return Success
+   * @return OK
    */
   getSyncClients(): Promise<ISyncClient[]> {
     let url_ = this.baseUrl + "/api/vcmp/sync/clients";
@@ -13800,6 +13949,49 @@ export enum PublicationRequestStatus {
   Approved = "Approved",
 }
 
+export class PublishProductCommand implements IPublishProductCommand {
+  sellerId?: string | undefined;
+  sellerName?: string | undefined;
+  sellerProductId!: string;
+
+  constructor(data?: IPublishProductCommand) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property)) (<any>this)[property] = (<any>data)[property];
+      }
+    }
+  }
+
+  init(_data?: any) {
+    if (_data) {
+      this.sellerId = _data["sellerId"];
+      this.sellerName = _data["sellerName"];
+      this.sellerProductId = _data["sellerProductId"];
+    }
+  }
+
+  static fromJS(data: any): PublishProductCommand {
+    data = typeof data === "object" ? data : {};
+    let result = new PublishProductCommand();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    data["sellerId"] = this.sellerId;
+    data["sellerName"] = this.sellerName;
+    data["sellerProductId"] = this.sellerProductId;
+    return data;
+  }
+}
+
+export interface IPublishProductCommand {
+  sellerId?: string | undefined;
+  sellerName?: string | undefined;
+  sellerProductId: string;
+}
+
 export class Refund implements IRefund {
   objectType?: string | undefined;
   amount?: number;
@@ -18650,6 +18842,53 @@ export interface ITaxDetail {
 export enum TypeCommissionFee {
   Static = "Static",
   Dynamic = "Dynamic",
+}
+
+export class UnpublishProductCommand implements IUnpublishProductCommand {
+  sellerId?: string | undefined;
+  sellerName?: string | undefined;
+  sellerProductId!: string;
+  comment?: string | undefined;
+
+  constructor(data?: IUnpublishProductCommand) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property)) (<any>this)[property] = (<any>data)[property];
+      }
+    }
+  }
+
+  init(_data?: any) {
+    if (_data) {
+      this.sellerId = _data["sellerId"];
+      this.sellerName = _data["sellerName"];
+      this.sellerProductId = _data["sellerProductId"];
+      this.comment = _data["comment"];
+    }
+  }
+
+  static fromJS(data: any): UnpublishProductCommand {
+    data = typeof data === "object" ? data : {};
+    let result = new UnpublishProductCommand();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    data["sellerId"] = this.sellerId;
+    data["sellerName"] = this.sellerName;
+    data["sellerProductId"] = this.sellerProductId;
+    data["comment"] = this.comment;
+    return data;
+  }
+}
+
+export interface IUnpublishProductCommand {
+  sellerId?: string | undefined;
+  sellerName?: string | undefined;
+  sellerProductId: string;
+  comment?: string | undefined;
 }
 
 export class UpdateFeeCommand implements IUpdateFeeCommand {

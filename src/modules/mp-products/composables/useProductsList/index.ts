@@ -2,6 +2,7 @@ import { ListComposableArgs, useBladeNavigation, TOpenBladeArgs, UseList } from 
 import { useProductsList, ProductListScope } from "../../../products/composables/useProductsList";
 import { ISearchProductsQuery, SellerProduct } from "@vcmp-vendor-portal/api/marketplacevendor";
 import * as _ from "lodash-es";
+import { ICatalogListEntrySearchCriteria, ListEntryBase } from "@vcmp-vendor-portal/api/catalog";
 
 export interface ProductsListExtendedScope extends ProductListScope {
   openDetailsBlade: (args?: TOpenBladeArgs) => Promise<void>;
@@ -9,7 +10,11 @@ export interface ProductsListExtendedScope extends ProductListScope {
 
 export const useProductsListExtended = (
   args: ListComposableArgs,
-): UseList<SellerProduct[], ISearchProductsQuery, ProductsListExtendedScope> => {
+): UseList<
+  SellerProduct[] | ListEntryBase[],
+  (ISearchProductsQuery | ICatalogListEntrySearchCriteria) & { id?: string },
+  ProductsListExtendedScope
+> => {
   const { items, load, loading, query, pagination, remove, scope } = useProductsList(args);
   const { openBlade, resolveBladeByName } = useBladeNavigation();
 

@@ -6,6 +6,9 @@ import ProductsEmptyGridTemplate from "./ProductsEmptyGridTemplate.vue";
 import ProductNotFoundGridTemplate from "./ProductNotFoundGridTemplate.vue";
 import ProductsDashboardCard from "./ProductsDashboardCard.vue";
 import ProductPublishedStatus from "./ProductPublishedStatus.vue";
+import ProductsGridHeader from "./ProductsGridHeader.vue";
+import ProductImage from "./ProductImage.vue";
+import ProductCreatedDate from "./ProductCreatedDate.vue";
 
 export * from "./widgets";
 export * from "./notifications";
@@ -18,4 +21,7 @@ export {
   ProductNotFoundGridTemplate,
   ProductsDashboardCard,
   ProductPublishedStatus,
+  ProductsGridHeader,
+  ProductImage,
+  ProductCreatedDate,
 };

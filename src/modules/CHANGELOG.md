@@ -1,3 +1,13 @@
+## [1.0.292](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.291...v1.0.292) (2024-09-09)
+
+
+### Features
+
+* **products:** add conditional rendering to associations widget ([234e305](https://github.com/VirtoCommerce/vendor-portal/commit/234e305ff309f323108675d6aef4109a731839bc))
+* **products:** preselect category from category view when creating a product ([ed0010e](https://github.com/VirtoCommerce/vendor-portal/commit/ed0010eca75a0bfebe59dc1333edcbaa6f020e69))
+
+
+
 ## [1.0.291](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.290...v1.0.291) (2024-09-09)
 
 

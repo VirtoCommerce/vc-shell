@@ -1,5 +1,6 @@
 <template>
   <VcWidget
+    v-if="modelValue.item?.id"
     :title="$t('PRODUCTS.PAGES.DETAILS.WIDGETS.ASSOCIATIONS')"
     icon="fas fa-link"
     :value="count"

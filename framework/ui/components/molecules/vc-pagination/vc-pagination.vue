@@ -67,7 +67,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed } from "vue";
+import { ref, computed, toRefs } from "vue";
 import { VcIcon, VcInput } from "./../../";
 
 export interface Props {
@@ -89,7 +89,8 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<Emits>();
 
-const currentPage = ref(props.currentPage);
+const { currentPage, variant } = toRefs(props);
+
 const jumpPage = ref();
 
 const setPage = (page: number | string) => {

@@ -824,7 +824,9 @@ const tableAlignment = {
 const headerCheckbox = computed({
   get() {
     return props.items && props.items.length
-      ? selection.value.length === props.items.length - disabledSelection.value.length
+      ? selection.value.length ===
+          props.items.length -
+            (disabledSelection.value.length !== props.items.length ? disabledSelection.value.length : 0)
       : false;
   },
   set(checked: boolean) {

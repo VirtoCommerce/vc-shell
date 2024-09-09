@@ -1,3 +1,12 @@
+## [1.0.291](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.290...v1.0.291) (2024-09-09)
+
+
+### Features
+
+* **products:** catalog view ([89e0058](https://github.com/VirtoCommerce/vendor-portal/commit/89e0058f15cdf6951c6123f99fd100f51ae83d2b))
+
+
+
 ## [1.0.290](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.289...v1.0.290) (2024-09-06)
 
 

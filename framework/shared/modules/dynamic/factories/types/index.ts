@@ -134,7 +134,7 @@ export interface ListBaseBladeScope<Item = Record<string, any>, Query = Record<s
   onPaginationClick?: (query: Query) => void;
   breadcrumbs?: ComputedRef<Breadcrumbs[]>;
   modified?: ComputedRef<boolean> | Ref<boolean> | boolean;
-  tableConfig?: ComputedRef<ITableConfig> | Ref<ITableConfig> | ITableConfig;
+  tableConfig?: (initialTableConfig: ITableConfig) => ITableConfig;
 }
 
 export type TOpenBladeArgs = Omit<Parameters<ReturnType<typeof useBladeNavigation>["openBlade"]>["0"], "blade">;

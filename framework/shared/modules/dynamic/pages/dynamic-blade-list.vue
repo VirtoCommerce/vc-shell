@@ -175,7 +175,7 @@ import { useFunctions, useNotifications } from "../../../../core/composables";
 import { IActionBuilderResult, ITableColumns } from "../../../../core/types";
 import { useToolbarReducer } from "../composables/useToolbarReducer";
 import { notification, useBladeNavigation, usePopup } from "../../../components";
-import { ListBaseBladeScope, ListBladeContext, UseList } from "../factories/types";
+import { ITableConfig, ListBaseBladeScope, ListBladeContext, UseList } from "../factories/types";
 import { IParentCallArgs } from "../../../index";
 import * as _ from "lodash-es";
 import { reactiveComputed, toReactive, useMounted } from "@vueuse/core";
@@ -399,7 +399,7 @@ onBeforeMount(async () => {
     await load({
       sort: sort.value,
       ...query.value,
-      // ...(props.isWidgetView ? {} : getNavigationQuery())
+      ...(props.isWidgetView ? {} : getNavigationQuery()),
     });
 });
 
@@ -574,7 +574,7 @@ const onPaginationClick = async (page: number) => {
       ...query.value,
       skip: (page - 1) * query.value.take,
     };
-    // setNavigationQuery(queryObj);
+    setNavigationQuery(queryObj);
     await load(queryObj);
   }
 };
@@ -730,14 +730,17 @@ const tableConfig = computed(() => {
 });
 
 const tableConfigComputed = computed(() => {
-  if (scope && "tableConfig" in toValue(scope) && Object.keys(toValue(toValue(scope)?.tableConfig ?? {})).length > 0) {
+  if (scope && "tableConfig" in toValue(scope) && typeof toValue(scope)?.tableConfig === "function") {
+    const initialTableConfig = toReactive(tableConfig.value);
+    const scopeTableConfig = toValue(scope)?.tableConfig?.(initialTableConfig);
+
     const res = {
-      ...tableConfig.value,
-      ...toValue(toValue(scope)?.tableConfig),
+      ...initialTableConfig,
+      ...scopeTableConfig,
     };
 
-    if (toValue(toValue(scope)?.tableConfig)?.columns?.length) {
-      res.columns = toValue(toValue(scope)?.tableConfig)?.columns as ITableColumns[];
+    if (scopeTableConfig?.columns?.length) {
+      res.columns = scopeTableConfig.columns as ITableColumns[];
     }
 
     return res;

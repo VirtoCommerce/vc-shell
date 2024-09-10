@@ -1,3 +1,12 @@
+## [1.0.294](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.293...v1.0.294) (2024-09-10)
+
+
+### Bug Fixes
+
+* **products:** change localstorage in db card to show only products list ([a252829](https://github.com/VirtoCommerce/vendor-portal/commit/a25282904c6c649fc09f3040393123caa1604966))
+
+
+
 ## [1.0.293](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.292...v1.0.293) (2024-09-09)
 
 

@@ -89,7 +89,7 @@ export const useProductsList = (
 
   async function loadWrapper(q: (ISearchProductsQuery | ICatalogListEntrySearchCriteria) & { id?: string }) {
     const sellerId = currentSeller.value.id;
-    if (!isCatalogView.value) {
+    if (!isCatalogView.value || args.isWidgetView) {
       const productsQuery = new SearchProductsQuery({ ...(q || {}), sellerId: sellerId });
       return (await getApiClient()).searchProducts(productsQuery);
     } else {

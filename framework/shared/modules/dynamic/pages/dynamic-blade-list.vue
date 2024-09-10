@@ -113,7 +113,7 @@
 
         <!-- Override header -->
         <template
-          v-if="tableTemplates?.header"
+          v-if="tableTemplates?.header && !isWidgetView"
           #header="headerData"
         >
           <component
@@ -125,7 +125,7 @@
 
         <!-- Override footer -->
         <template
-          v-if="tableTemplates?.footer"
+          v-if="tableTemplates?.footer && !isWidgetView"
           #footer="footerData"
         >
           <component
@@ -270,6 +270,7 @@ const { load, remove, items, loading, pagination, query, scope } = props.composa
       emit,
       props,
       mounted: useMounted(),
+      isWidgetView: props.isWidgetView,
     }) as UseList<Record<string, any>[], Record<string, any>, ListBaseBladeScope>)
   : ({
       load: ref(true),

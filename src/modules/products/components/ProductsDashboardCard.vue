@@ -42,11 +42,6 @@ import { useBladeNavigation } from "@vc-shell/framework";
 const { openBlade, resolveBladeByName } = useBladeNavigation();
 
 async function onItemClick(args?: { param: string }) {
-  if (args?.param) {
-    // Set the catalog view to false to show the products list in dashboard
-    localStorage.setItem("VC_APP_PRODUCTS_IS_CATALOG_VIEW", "false");
-  }
-
   await openBlade(
     {
       blade: resolveBladeByName("Products"),

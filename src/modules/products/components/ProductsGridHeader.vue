@@ -8,7 +8,7 @@
     <div class="tw-flex tw-flex-row tw-gap-2 tw-py-4 tw-pr-4">
       <VcTooltip placement="bottom">
         <VcButton
-          class="products-header__button"
+          class="tw-w-[38px] [&>.vc-icon]:disabled:tw-text-[#d2d4d7]"
           icon="fas fa-list"
           icon-size="l"
           text
@@ -20,7 +20,7 @@
       </VcTooltip>
       <VcTooltip placement="bottom">
         <VcButton
-          class="products-header__button"
+          class="tw-w-[38px] [&>.vc-icon]:disabled:tw-text-[#d2d4d7]"
           icon="fas fa-stream"
           icon-size="l"
           text
@@ -50,16 +50,3 @@ export interface Props {
 
 defineProps<Props>();
 </script>
-
-<style lang="scss">
-.products-header__button {
-  width: 38px;
-  height: 38px;
-
-  &:disabled {
-    .vc-icon {
-      color: #d2d4d7;
-    }
-  }
-}
-</style>

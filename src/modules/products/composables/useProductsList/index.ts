@@ -21,6 +21,8 @@ import {
   SellerProductStatus,
   ISeller,
   ISellerProduct,
+  SearchProductsResult,
+  ISearchProductsResult,
 } from "@vcmp-vendor-portal/api/marketplacevendor";
 import {
   CatalogModuleListEntryClient,
@@ -28,8 +30,10 @@ import {
   ListEntryBase,
   IListEntryBase,
   ICatalogListEntrySearchCriteria,
+  ListEntrySearchResult,
+  IListEntrySearchResult,
 } from "@vcmp-vendor-portal/api/catalog";
-import { MaybeRef, ComputedRef, Ref, computed, ref, inject, toRef } from "vue";
+import { MaybeRef, ComputedRef, Ref, computed, ref, inject, toRef, watchEffect } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRoute } from "vue-router";
 import { useLocalStorage } from "@vueuse/core";
@@ -60,21 +64,8 @@ export const useProductsList = (
     SellerProduct[] | ListEntryBase[],
     (ISearchProductsQuery | ICatalogListEntrySearchCriteria) & { id?: string }
   >({
-    load: async (query) => {
-      return await loadWrapper(query);
-    },
-    remove: async (query, customQuery) => {
-      const command = new BulkProductsDeleteCommand({
-        query: new SearchProductsQuery(query),
-        productIds: customQuery.ids ?? [],
-        all: customQuery.allSelected,
-      });
-      if (customQuery.allSelected) {
-        command.productIds = undefined;
-      }
-
-      return (await getApiClient()).bulkDeleteProducts(command);
-    },
+    load: loadWrapper,
+    remove: bulkRemoveProducts,
   });
 
   const { load, remove, items, query, loading, pagination } = listFactory();
@@ -87,85 +78,154 @@ export const useProductsList = (
 
   const currentSeller = inject("currentSeller", toRef({ id: route?.params?.sellerId })) as Ref<ISeller>;
 
-  async function loadWrapper(q: (ISearchProductsQuery | ICatalogListEntrySearchCriteria) & { id?: string }) {
-    const sellerId = currentSeller.value.id;
-    if (!isCatalogView.value || args.isWidgetView) {
-      const productsQuery = new SearchProductsQuery({ ...(q || {}), sellerId: sellerId });
-      return (await getApiClient()).searchProducts(productsQuery);
-    } else {
-      const res = await getListEntries({ ...q, sellerId, query: query.value });
+  const { loading: listEntriesLoading, action: getListEntries } = useAsync(loadListEntries);
 
-      if (!q.id) {
-        pushBc({
-          id: sellerId ?? "catalog",
-          title: computed(() => t("PRODUCTS.PAGES.LIST.TABLE.BREADCRUMBS.CATALOG")),
-          clickHandler: async () => {
-            await load({
-              catalogId: sellerId,
-            });
-          },
-        });
+  async function loadWrapper(
+    q: ISearchProductsQuery | (ICatalogListEntrySearchCriteria & { id?: string }),
+  ): Promise<IListEntrySearchResult | ISearchProductsResult> {
+    const sellerId = currentSeller.value.id;
+    return isCatalogView.value && !args.isWidgetView
+      ? await loadCategoryList(q, sellerId)
+      : await loadProductsList(q, sellerId);
+  }
+
+  async function loadProductsList(q: ISearchProductsQuery, sellerId?: string) {
+    const productsQuery = new SearchProductsQuery({ ...(q || {}), sellerId });
+    return (await getApiClient()).searchProducts(productsQuery);
+  }
+
+  async function loadCategoryList(q: ICatalogListEntrySearchCriteria & { id?: string }, sellerId?: string) {
+    if (!q.id && !q.catalogId) setupCatalogBreadcrumbs(sellerId);
+    return getListEntries({ ...q, sellerId, query: query.value });
+  }
+
+  async function loadListEntries(args?: {
+    sellerId?: string;
+    id?: string;
+    query?: ISearchProductsQuery | ICatalogListEntrySearchCriteria;
+  }) {
+    const sellerId = currentSeller.value.id;
+    const listEntries = await (
+      await getListEntriesClient()
+    ).listItemsSearch(
+      new CatalogListEntrySearchCriteria({
+        ...args,
+        catalogId: args?.sellerId,
+        categoryId: args?.id,
+        responseGroup: "withCategories, withProducts",
+        searchInVariations: false,
+      }),
+    );
+
+    const products = listEntries.results?.filter((x) => x.type === "product");
+
+    if (products?.length) {
+      const productsQuery = new SearchProductsQuery({
+        ...(args?.query || {}),
+        sellerId,
+        stagedProductsIds: sellerId
+          ? products.map((x) => x.id).filter((id): id is string => id !== undefined)
+          : undefined,
+        publishedProductsIds: !sellerId
+          ? products.map((x) => x.id).filter((id): id is string => id !== undefined)
+          : undefined,
+      });
+      const sellerProducts = await (await getApiClient()).searchProducts(productsQuery);
+
+      return mapListEntriesWithProducts(listEntries, sellerProducts) as ListEntrySearchResult & SearchProductsResult;
+    }
+
+    return listEntries;
+  }
+
+  function mapListEntriesWithProducts(listEntries: ListEntrySearchResult, sellerProducts: SearchProductsResult) {
+    return {
+      results: listEntries.results
+        ?.map((x) => (x.type === "product" ? sellerProducts.results?.find((y) => y.stagedProductDataId === x.id) : x))
+        .filter(Boolean) as (ISellerProduct | IListEntryBase)[],
+      totalCount: listEntries.totalCount,
+    };
+  }
+
+  async function bulkRemoveProducts(
+    query: ((ISearchProductsQuery | ICatalogListEntrySearchCriteria) & { id?: string }) | undefined,
+    customQuery: { ids?: string[] | null; allSelected?: boolean },
+  ) {
+    const command = new BulkProductsDeleteCommand({
+      query: new SearchProductsQuery(query),
+      productIds: customQuery.ids ?? [],
+      all: customQuery.allSelected,
+    });
+    if (customQuery.allSelected) command.productIds = undefined;
+    return (await getApiClient()).bulkDeleteProducts(command);
+  }
+
+  function setupCatalogBreadcrumbs(sellerId?: string) {
+    pushBc({
+      id: sellerId ?? "catalog",
+      title: computed(() => t("PRODUCTS.PAGES.LIST.TABLE.BREADCRUMBS.CATALOG")),
+      clickHandler: async () => {
+        await load({ catalogId: sellerId });
+      },
+    });
+  }
+
+  watchEffect(async () => {
+    if (args.props.param && isCatalogView.value) {
+      await getSingleProduct(args.props.param);
+    }
+  });
+
+  async function getSingleProduct(id: string) {
+    try {
+      if (!isCatalogView.value) return;
+
+      const product = await (await getApiClient()).getProductById(id);
+
+      if (!product) {
+        console.warn("Product not found:", id);
+        return;
       }
 
-      return res;
+      const outlineCategoryIds = product.outline?.split("/") ?? [];
+      const outlineCategoryName = product.path?.split("/") ?? [];
+
+      if (outlineCategoryIds.length === 1) {
+        await openCategory({
+          id: outlineCategoryIds[0],
+          name: outlineCategoryName[0],
+        });
+        return;
+      }
+
+      if (outlineCategoryIds.length > 1) {
+        await setupCategoryBreadcrumbs(outlineCategoryIds, outlineCategoryName);
+      }
+    } catch (error) {
+      console.error("Error fetching product:", error);
     }
   }
 
-  const { loading: listEntriesLoading, action: getListEntries } = useAsync(
-    async (args?: {
-      sellerId?: string;
-      id?: string;
-      query?: (ISearchProductsQuery | ICatalogListEntrySearchCriteria) & { id?: string };
-    }) => {
-      const sellerId = currentSeller.value.id;
+  async function setupCategoryBreadcrumbs(ids: string[], names: string[]) {
+    const lastIndex = ids.length - 1;
 
-      const listEntries = await (
-        await getListEntriesClient()
-      ).listItemsSearch(
-        new CatalogListEntrySearchCriteria({
-          ...args,
-          catalogId: args?.sellerId,
-          categoryId: args?.id,
-          responseGroup: "withCategories, withProducts",
-          searchInVariations: false,
-        }),
-      );
+    for (let i = 0; i < lastIndex; i++) {
+      const id = ids[i];
+      const name = names[i];
+      pushBc({
+        id,
+        title: name,
+        clickHandler: async () => {
+          await load({ ...query.value, id });
+        },
+      });
+    }
 
-      const products = listEntries.results?.filter((x) => x.type === "product");
-
-      if (products?.length) {
-        const productsQuery = new SearchProductsQuery({
-          ...(args?.query || {}),
-          sellerId: sellerId,
-          stagedProductsIds: sellerId
-            ? products?.map((x) => x.id).filter((id): id is string => id !== undefined)
-            : undefined,
-          publishedProductsIds: !sellerId
-            ? products?.map((x) => x.id).filter((id): id is string => id !== undefined)
-            : undefined,
-        });
-        const sellerProducts = await (await getApiClient()).searchProducts(productsQuery);
-
-        const mappedListEntries = {
-          results: listEntries.results
-            ?.map((x) => {
-              if (x.type === "product") {
-                const product = sellerProducts.results?.find((y) => y.stagedProductDataId === x.id);
-
-                return product;
-              }
-              return x;
-            })
-            .filter((x): x is SellerProduct & ListEntryBase => x !== undefined),
-          totalCount: listEntries.totalCount,
-        };
-
-        return mappedListEntries;
-      }
-
-      return listEntries;
-    },
-  );
+    await openCategory({
+      id: ids[lastIndex],
+      name: names[lastIndex],
+    });
+  }
 
   async function exportCategories() {
     try {
@@ -210,27 +270,8 @@ export const useProductsList = (
   }
 
   async function onListItemClick(args?: TListItemClickArgs) {
-    if (isCatalogView.value) {
-      if (args?.item?.type !== "category") {
-        await openBlade({
-          blade: resolveBladeByName("Product"),
-          param: args?.item?.id,
-          onOpen: args?.onOpen,
-          onClose: args?.onClose,
-        });
-
-        return;
-      }
-
-      pushBc({
-        id: args?.item?.id,
-        title: args?.item?.name,
-        clickHandler: async () => {
-          await load({ ...query.value, id: args?.item?.id });
-        },
-      });
-
-      await load({ ...query.value, id: args?.item?.id });
+    if (isCatalogView.value && args?.item?.type === "category") {
+      await openCategory(args.item);
     } else {
       await openBlade({
         blade: resolveBladeByName("Product"),
@@ -238,6 +279,20 @@ export const useProductsList = (
         onOpen: args?.onOpen,
         onClose: args?.onClose,
       });
+    }
+  }
+
+  async function openCategory(item: IListEntryBase) {
+    if (item.id) {
+      pushBc({
+        id: item?.id,
+        title: item?.name,
+        clickHandler: async () => {
+          await load({ ...query.value, id: item?.id });
+        },
+      });
+
+      await load({ ...query.value, id: item?.id });
     }
   }
 

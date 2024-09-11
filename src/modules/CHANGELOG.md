@@ -1,3 +1,12 @@
+## [1.0.295](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.294...v1.0.295) (2024-09-11)
+
+
+### Features
+
+* **products:** auto load categories ([e469471](https://github.com/VirtoCommerce/vendor-portal/commit/e4694719adab8e1f866f9522985a7f7b44780f40))
+
+
+
 ## [1.0.294](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.293...v1.0.294) (2024-09-10)
 
 

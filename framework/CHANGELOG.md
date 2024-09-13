@@ -1,3 +1,12 @@
+## [1.0.290](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.289...v1.0.290) (2024-09-13)
+
+
+### Features
+
+* **shared:** user-dropdown-button - add baseMenuItemsHandler prop and handle default menu items ([e5f4017](https://github.com/VirtoCommerce/vc-shell/commit/e5f40174dae9445ed074493d824e3c95c37c7150))
+
+
+
 ## [1.0.289](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.288...v1.0.289) (2024-09-10)
 
 

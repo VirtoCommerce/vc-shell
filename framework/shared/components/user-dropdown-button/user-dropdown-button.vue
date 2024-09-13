@@ -81,6 +81,7 @@ export interface Props {
   name?: string | undefined;
   role?: string | undefined;
   menuItems?: BladeMenu[];
+  baseMenuItemsHandler?: (defaultMenuItems: BladeMenu[]) => BladeMenu[];
   disabled?: boolean;
 }
 const props = withDefaults(defineProps<Props>(), {
@@ -96,8 +97,7 @@ const { open } = usePopup({
 });
 const { closeBlade } = useBladeNavigation();
 const accountMenuVisible = ref(false);
-const menu = computed(() => [
-  ...props.menuItems,
+const defaultMenuItems = ref([
   {
     title: t("SHELL.ACCOUNT.CHANGE_PASSWORD"),
     icon: "fas fa-key",
@@ -118,6 +118,22 @@ const menu = computed(() => [
     },
   },
 ]);
+
+const menu = computed(() => {
+  const defaultItems = handleDefaultMenuItems();
+
+  if (defaultItems?.length) {
+    return [...props.menuItems, ...defaultItems];
+  }
+  return [...props.menuItems];
+});
+
+function handleDefaultMenuItems() {
+  if (props.baseMenuItemsHandler && typeof props.baseMenuItemsHandler === "function") {
+    return props.baseMenuItemsHandler(defaultMenuItems.value);
+  }
+  return defaultMenuItems.value;
+}
 
 const toggleAccountMenuVisible = () => {
   if (!props.disabled && menu.value && menu.value.length) {

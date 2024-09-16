@@ -1,3 +1,11 @@
-@tailwind base;
 @tailwind components;
+
+@import 'base';
+
+@import "@vc-shell/framework/dist/index.css";
+
+@import 'colors';
+
+@import 'custom';
+
 @tailwind utilities;

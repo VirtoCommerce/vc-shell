@@ -1,5 +1,4 @@
 <template>
-  <div></div>
   <div class="tw-flex tw-flex-row">
     <component
       :is="context.header"

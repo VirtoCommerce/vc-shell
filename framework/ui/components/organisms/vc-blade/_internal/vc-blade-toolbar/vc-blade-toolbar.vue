@@ -1,7 +1,7 @@
 <template>
   <div
     v-if="isToolbarVisible()"
-    class="tw-h-[var(--blade-toolbar-height)] tw-bg-[color:var(--blade-toolbar-background-color)] tw-border-b-[color:#eaedf3] tw-border-solid tw-border-b tw-flex tw-box-border tw-w-full tw-content-center tw-items-stretch tw-shrink-0"
+    class="tw-h-[var(--blade-toolbar-height)] tw-bg-[color:var(--blade-toolbar-background-color)] tw-border-b-[color:var(--blade-toolbar-border-color)] tw-border-solid tw-border-b tw-flex tw-box-border tw-w-full tw-content-center tw-items-stretch tw-shrink-0"
     :class="{ '!tw-h-[var(--blade-toolbar-height-expanded)]': isExpanded }"
   >
     <div class="tw-grow tw-basis-0 tw-flex tw-content-start tw-items-center tw-overflow-x-auto tw-px-2">
@@ -23,7 +23,7 @@
       </template>
     </div>
     <VcIcon
-      class="tw-self-center tw-justify-self-center tw-text-[#a1c0d4] tw-cursor-pointer tw-mr-4 hover:tw-text-[#7ea8c4]"
+      class="tw-self-center tw-justify-self-center tw-text-[color:var(--blade-toolbar-icon-color)] tw-cursor-pointer tw-mr-4 hover:tw-text-[color:var(--blade-toolbar-icon-hover-color)]"
       :icon="`fas fa-chevron-${isExpanded ? 'up' : 'down'}`"
       @click="toggleToolbar"
     ></VcIcon>
@@ -68,6 +68,9 @@ function isToolbarVisible() {
 :root {
   --blade-toolbar-height: 36px;
   --blade-toolbar-height-expanded: 50px;
-  --blade-toolbar-background-color: #ffffff;
+  --blade-toolbar-background-color: var(--additional-50);
+  --blade-toolbar-border-color: var(--secondary-100);
+  --blade-toolbar-icon-color: var(--primary-500);
+  --blade-toolbar-icon-hover-color: var(--primary-600);
 }
 </style>

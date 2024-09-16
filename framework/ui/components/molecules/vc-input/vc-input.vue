@@ -556,16 +556,19 @@ function focus() {
   --input-height: 38px;
   --input-height-small: 30px;
   --input-border-radius: 3px;
-  --input-border-color: #d3dbe9;
-  --input-border-color-error: #f14e4e;
-  --input-background-color: #ffffff;
-  --input-placeholder-color: #a5a5a5;
-  --input-clear-color: #43b0e6;
-  --input-clear-color-hover: #319ed4;
+  --input-border-color: var(--neutrals-300);
+  --input-border-color-error: var(--danger-500);
+  --input-background-color: var(--additional-50);
+  --input-placeholder-color: var(--neutrals-400);
+  --input-clear-color: var(--primary-500);
+  --input-clear-color-hover: var(--primary-600);
+  --input-disabled-text-color: var(--neutrals-600);
+  --input-disabled-bg-color: var(--neutrals-100);
   --dp-input-padding: 10px 0px 10px 10px;
   --dp-input-icon-padding: 25px;
   --dp-font-size: 13px;
   --dp-font-family: "Roboto", sans-serif;
+  --dp-placeholder-color: var(--neutrals-400);
 }
 
 .vc-input {
@@ -645,7 +648,7 @@ function focus() {
 
   &_disabled &__field-wrapper,
   &_disabled &__field {
-    @apply tw-bg-[#fafafa] tw-text-[#424242];
+    @apply tw-bg-[--input-disabled-bg-color] tw-text-[--input-disabled-text-color];
   }
 
   .slide-up-enter-active,
@@ -685,7 +688,7 @@ function focus() {
 }
 
 input.dp__input::placeholder {
-  color: #818181 !important;
+  color: var(--dp-placeholder-color) !important;
 }
 
 .dp--tp-wrap {

@@ -2,7 +2,7 @@
   <div
     :id="String(notificationId)"
     ref="nodeRef"
-    class="vc-notification tw-flex tw-items-center tw-mt-1 tw-mb-3 tw-mx-2 tw-bg-[color:var(--notification-background)] tw-border tw-border-solid tw-border-[color:#eef0f2] tw-box-border tw-shadow-[2px_2px_11px_rgba(126,142,157,0.4)] tw-rounded-[var(--notification-border-radius)] tw-overflow-hidden tw-py-2 tw-px-4 tw-max-w-[600px] tw-justify-between"
+    class="vc-notification tw-flex tw-items-center tw-mt-1 tw-mb-3 tw-mx-2 tw-bg-[color:var(--notification-background)] tw-border tw-border-solid tw-border-[color:var(--notification-border-color)] tw-box-border [box-shadow:var(--notification-shadow)] tw-rounded-[var(--notification-border-radius)] tw-overflow-hidden tw-py-2 tw-px-4 tw-max-w-[600px] tw-justify-between"
     @mouseenter="onMouseEnter"
     @mouseleave="onMouseLeave"
   >
@@ -123,16 +123,19 @@ function onMouseLeave() {
 
 <style lang="scss">
 :root {
-  --notification-background: #ffffff;
-  --notification-border-radius: 4px;
-  --notification-box-shadow: 2px 2px 11px rgba(126, 142, 157, 0.4);
-  --notification-dismiss-color: #83a3be;
-  --notification-content-color: #8c9cab;
+  --notification-background: var(--additional-50);
+  --notification-border-radius: var(--multivalue-border-radius);
+  --notification-border-color: var(--neutrals-200);
+  --notification-dismiss-color: var(--secondary-500);
+  --notification-content-color: var(--neutrals-600);
 
-  --notification-warning: #f89406;
-  --notification-error: #ef796f;
-  --notification-success: #87b563;
-  --notification-info: #bdd1df;
+  --notification-warning: var(--warning-500);
+  --notification-error: var(--danger-500);
+  --notification-success: var(--success-500);
+  --notification-info: var(--info-500);
+
+  --notification-shadow-color: var(--neutrals-300);
+  --notification-shadow: 2px 2px 11px rgb(from var(--notification-shadow-color) r g b / 40%);
 }
 
 .vc-notification {

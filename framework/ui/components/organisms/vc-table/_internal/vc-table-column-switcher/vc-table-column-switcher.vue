@@ -13,7 +13,7 @@
         ref="floatingDrop"
         v-on-click-outside="[close, { ignore: [referenceButton] }]"
         :style="floatingDropStyle"
-        class="tw-flex tw-flex-col tw-box-border tw-max-h-[300px] tw-h-auto tw-z-10 tw-overflow-hidden tw-absolute tw-bg-white tw-border tw-border-solid tw-border-[#e5e7eb] tw-w-max tw-right-0"
+        class="tw-flex tw-flex-col tw-box-border tw-max-h-[300px] tw-h-auto tw-z-10 tw-overflow-hidden tw-absolute tw-bg-(--table-column-switcher-dropdown-bg) tw-border tw-border-solid tw-border-[color:var(--table-column-switcher-dropdown-border)] tw-w-max tw-right-0"
       >
         <VcContainer
           v-if="internalItems && internalItems.length"
@@ -23,7 +23,7 @@
             <div
               v-for="item in internalItems"
               :key="item.id"
-              class="tw-flex tw-items-center tw-min-h-[30px] tw-box-border tw-rounded-[3px] tw-px-2 tw-cursor-pointer hover:tw-bg-[#eff7fc] tw-border-b"
+              class="tw-flex tw-items-center tw-min-h-[30px] tw-box-border tw-rounded-[3px] tw-px-2 tw-cursor-pointer hover:tw-bg-[--table-column-switcher-dropdown-item-hover] tw-border-b"
               @click="selectItem(item)"
             >
               <VcIcon
@@ -117,3 +117,11 @@ function close() {
   }
 }
 </script>
+
+<style lang="scss">
+:root {
+  --table-column-switcher-dropdown-bg: var(--additional-50);
+  --table-column-switcher-dropdown-border: var(--neutrals-300);
+  --table-column-switcher-dropdown-item-hover: var(--primary-50);
+}
+</style>

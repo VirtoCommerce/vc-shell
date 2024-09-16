@@ -39,7 +39,7 @@
           >
             <template v-if="options && options.length">
               <button
-                class="tw-text-[#43b0e6] tw-not-italic tw-font-medium tw-text-[13px] tw-leading-[20px] tw-cursor-pointer"
+                class="tw-text-[--input-curr-toggle-color] tw-not-italic tw-font-medium tw-text-[13px] tw-leading-[20px] tw-cursor-pointer"
                 @click.stop.prevent="toggleHandler"
               >
                 {{ unref(option) }}
@@ -301,3 +301,9 @@ function handlePaste(e: ClipboardEvent) {
   }
 }
 </script>
+
+<style lang="scss">
+:root {
+  --input-curr-toggle-color: var(--primary-500);
+}
+</style>

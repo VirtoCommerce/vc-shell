@@ -315,13 +315,13 @@ function sameWidthChangeBorders() {
       let borderBottom;
       let borderRadius;
       if (placement === "top") {
-        borderTop = "1px solid var(--select-border-color)";
-        borderBottom = "1px solid var(--select-background-color)";
-        borderRadius = "var(--select-border-radius) var(--select-border-radius) 0 0";
+        borderTop = "1px solid var(--multivalue-select-border-color)";
+        borderBottom = "1px solid var(--multivalue-select-background-color)";
+        borderRadius = "var(--multivalue-select-border-radius) var(--multivalue-select-border-radius) 0 0";
       } else {
-        borderBottom = "1px solid var(--select-border-color)";
-        borderTop = "1px solid var(--select-background-color)";
-        borderRadius = "0 0 var(--select-border-radius) var(--select-border-radius)";
+        borderBottom = "1px solid var(--multivalue-select-border-color)";
+        borderTop = "1px solid var(--multivalue-select-background-color)";
+        borderRadius = "0 0 var(--multivalue-select-border-radius) var(--multivalue-select-border-radius)";
       }
 
       const width = `${rects.reference.width}px`;
@@ -368,20 +368,28 @@ function onSearch(event: Event) {
 :root {
   --multivalue-height: 38px;
   --multivalue-border-radius: 3px;
-  --multivalue-border-color: #d3dbe9;
-  --multivalue-border-color-error: #f14e4e;
-  --multivalue-background-color: #ffffff;
-  --multivalue-placeholder-color: #a5a5a5;
+  --multivalue-border-color: var(--neutrals-300);
+  --multivalue-border-color-error: var(--danger-500);
+  --multivalue-background-color: var(--additional-50);
+  --multivalue-placeholder-color: var(--neutrals-400);
 
-  --select-height: 38px;
-  --select-border-radius: 3px;
-  --select-border-color: #d3dbe9;
-  --select-border-color-error: #f14e4e;
-  --select-background-color: #ffffff;
-  --select-background-color-disabled: #fafafa;
-  --select-placeholder-color: #a5a5a5;
-  --select-chevron-color: #43b0e6;
-  --select-chevron-color-hover: #319ed4;
+  --multivalue-select-border-radius: 3px;
+  --multivalue-select-border-color: var(--neutrals-300);
+  --multivalue-select-border-color-error: var(--danger-500);
+  --multivalue-select-background-color: var(--additional-50);
+  --multivalue-select-background-color-disabled: var(--neutrals-100);
+  --multivalue-select-placeholder-color: var(--neutrals-400);
+  --multivalue-select-chevron-color: var(--primary-500);
+  --multivalue-select-chevron-color-hover: var(--primary-600);
+
+  --multivalue-search-border-color: var(--neutrals-300);
+  --multivalue-item-hover-background-color: var(--accent-50);
+  --multivalue-hint-color: var(--danger-500);
+  --multivalue-field-value-background-color: var(--additional-50);
+  --multivalue-field-value-border-color: var(--primary-300);
+  --multivalue-clear-icon-color: var(--secondary-500);
+  --multivalue-disabled-text-color: var(--neutrals-600);
+  --multivalue-disabled-background-color: var(--neutrals-100);
 }
 
 .vc-multivalue {
@@ -408,25 +416,26 @@ function onSearch(event: Event) {
   &__dropdown {
     @apply tw-flex tw-flex-col tw-box-border
     tw-max-h-[300px] tw-z-10 tw-overflow-hidden
-    tw-absolute tw-bg-[color:var(--select-background-color)]
-    tw-border tw-border-solid tw-border-[color:var(--select-border-color)]
-    tw-border-t-[color:var(--select-background-color)]
-    tw-rounded-b-[var(--select-border-radius)]
+    tw-absolute tw-bg-[color:var(--multivalue-select-background-color)]
+    tw-border tw-border-solid tw-border-[color:var(--multivalue-select-border-color)]
+    tw-border-t-[color:var(--multivalue-select-background-color)]
+    tw-rounded-b-[var(--multivalue-select-border-radius)]
     tw-p-2;
   }
 
   &__search {
-    @apply tw-w-full tw-box-border tw-border tw-border-solid tw-border-[#eaecf2]
-      tw-rounded-[4px] tw-h-8 tw-leading-[32px]
-      tw-outline-none tw-mb-3 tw-px-2;
+    @apply tw-w-full tw-box-border tw-border tw-border-solid
+    tw-border-[color:var(--multivalue-search-border-color)]
+    tw-rounded-[4px] tw-h-8 tw-leading-[32px]
+    tw-outline-none tw-mb-3 tw-px-2;
   }
 
   &__item {
-    @apply tw-flex tw-items-center tw-min-h-[36px] tw-px-2 tw-rounded-[3px] tw-cursor-pointer hover:tw-bg-[#eff7fc];
+    @apply tw-flex tw-items-center tw-min-h-[36px] tw-px-2 tw-rounded-[3px] tw-cursor-pointer hover:tw-bg-[color:var(--multivalue-item-hover-background-color)];
   }
 
   &_opened &__field-wrapper {
-    @apply tw-rounded-t-[var(--select-border-radius)];
+    @apply tw-rounded-t-[var(--multivalue-select-border-radius)];
   }
 
   &_error &__field-wrapper {
@@ -434,7 +443,7 @@ function onSearch(event: Event) {
   }
 
   &__error {
-    @apply tw-mt-1 [--hint-color:var(--multivalue-border-color-error)];
+    @apply tw-mt-1 [--multivalue-hint-color:var(--multivalue-hint-color)];
   }
 
   &__field {
@@ -464,11 +473,11 @@ function onSearch(event: Event) {
     }
 
     &-value {
-      @apply tw-bg-[#fbfdfe] tw-border tw-border-solid tw-border-[color:#bdd1df] tw-rounded-[2px]
-        tw-flex tw-items-center tw-h-[28px] tw-box-border tw-px-2 tw-max-w-[150px];
+      @apply tw-bg-[color:var(--multivalue-field-value-background-color)] tw-border tw-border-solid tw-border-[color:var(--multivalue-field-value-border-color)]
+        tw-rounded-[2px] tw-flex tw-items-center tw-h-[28px] tw-box-border tw-px-2 tw-max-w-[150px];
 
       &-clear {
-        @apply tw-text-[#a9bfd2] tw-ml-2 tw-cursor-pointer;
+        @apply tw-text-[color:var(--multivalue-clear-icon-color)] tw-ml-2 tw-cursor-pointer;
       }
     }
 
@@ -479,7 +488,7 @@ function onSearch(event: Event) {
 
   &_disabled &__field-wrapper,
   &_disabled &__field {
-    @apply tw-bg-[#fafafa] tw-text-[#424242];
+    @apply tw-bg-[color:var(--multivalue-disabled-background-color)] tw-text-[color:var(--multivalue-disabled-text-color)];
   }
 }
 

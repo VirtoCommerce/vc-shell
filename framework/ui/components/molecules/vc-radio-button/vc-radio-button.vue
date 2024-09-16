@@ -96,15 +96,14 @@ function onChange() {
 
 <style lang="scss">
 :root {
-  --radio-active: #43b0e6;
-  --radio-active-inner: #fff;
-  --radio-focus: 2px rgba(39, 94, 254, 0.3);
-  --radio-border: #bbc1e1;
-  --radio-border-hover: #43b0e6;
-  --radio-background: #fff;
-  --radio-disabled: #f6f8ff;
-  --radio-disabled-inner: #e1e6f9;
-  --radio-error: #f14e4e;
+  --radio-active: var(--primary-400);
+  --radio-active-inner: var(--additional-50);
+  --radio-border: var(--secondary-300);
+  --radio-border-hover: var(--primary-400);
+  --radio-background: var(--additional-50);
+  --radio-disabled: var(--secondary-100);
+  --radio-disabled-inner: var(--secondary-200);
+  --radio-error: var(--danger-500);
   --radio-size: 14px;
 }
 

@@ -64,25 +64,24 @@ function onClick(): void {
 
 <style lang="scss">
 :root {
-  --badge-background-color: #ffffff;
-  --badge-background-color-hover: #fafafa;
-  --badge-background-color-active: #fafafa;
-  --badge-background-color-disabled: #f2f2f2;
+  --badge-background-color: var(--additional-50);
+  --badge-background-color-hover: var(--neutrals-200);
+  --badge-background-color-active: var(--neutrals-200);
+  --badge-background-color-disabled: var(--neutrals-300);
 
-  --badge-text-color: #455668;
-  --badge-text-color-hover: #3b4959;
-  --badge-text-color-active: #3b4959;
-  --badge-text-color-disabled: #8296ab;
+  --badge-text-color: var(--neutrals-700);
+  --badge-text-color-hover: var(--neutrals-800);
+  --badge-text-color-active: var(--neutrals-800);
+  --badge-text-color-disabled: var(--neutrals-500);
 
   --badge-border-radius: 9999px;
 
-  --badge-border-color: #a1bfd4;
-  --badge-border-color-hover: #8fb3cc;
-  --badge-border-color-active: #8fb3cc;
-  --badge-border-color-disabled: #b2cbdc;
+  --badge-border-color: var(--primary-400);
+  --badge-border-color-hover: var(--primary-300);
+  --badge-border-color-active: var(--primary-300);
+  --badge-border-color-disabled: var(--primary-200);
 
   --badge-width-small: 18px;
-
   --badge-width-medium: 18px;
 
   --badge-padding-small: 0px 4px;

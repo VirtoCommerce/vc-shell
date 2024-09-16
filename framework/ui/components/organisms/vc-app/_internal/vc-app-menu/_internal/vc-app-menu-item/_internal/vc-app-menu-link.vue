@@ -184,22 +184,22 @@ watch(isOpened, (newValue) => {
 :root {
   --app-menu-item-height: 36px;
   --app-menu-item-icon-width: 22px;
-  --app-menu-item-icon-color: #82a6bd;
-  --app-menu-item-icon-color-active: #ffffff;
+  --app-menu-item-icon-color: var(--secondary-600);
+  --app-menu-item-icon-color-active: var(--additional-50);
   --app-menu-item-handler-width: 10px;
-  --app-menu-item-background-color-hover: rgba(130, 166, 189, 0.5);
-  --app-menu-item-background-color-active: #82a6bd;
+  --app-menu-item-background-color-hover: var(--secondary-500);
+  --app-menu-item-background-color-active: var(--secondary-600);
   --app-menu-item-hover-radius: 4px;
-  --app-menu-item-title-color: #465769;
-  --app-menu-item-title-color-active: #ffffff;
-  --app-menu-item-handler-color: #bdd1df;
+  --app-menu-item-title-color: var(--neutrals-700);
+  --app-menu-item-title-color-active: var(--additional-50);
+  --app-menu-item-handler-color: var(--secondary-300);
 
-  --app-menu-item-active-text: #2e3d4e;
-  --app-menu-item-active-icon: #2e3d4e;
+  --app-menu-item-active-text: var(--neutrals-800);
+  --app-menu-item-active-icon: var(--neutrals-800);
 }
 
 .vc-app-menu-link:hover .vc-app-menu-item:not(.vc-app-menu-item_active) {
-  @apply tw-bg-[color:var(--app-menu-item-background-color-hover)] tw-bg-opacity-50
+  @apply tw-bg-[var(--app-menu-item-background-color-hover)] tw-bg-opacity-50
     tw-rounded-[var(--app-menu-item-hover-radius)];
 
   .vc-app-menu-item__title {
@@ -220,7 +220,7 @@ watch(isOpened, (newValue) => {
 }
 
 .vc-app-menu-item__child-item-link:hover .vc-app-menu-item__child-item:not(.vc-app-menu-item__child-item_active) {
-  @apply tw-bg-[color:var(--app-menu-item-background-color-hover)] tw-bg-opacity-50
+  @apply tw-bg-[var(--app-menu-item-background-color-hover)] tw-bg-opacity-50
     tw-rounded-[var(--app-menu-item-hover-radius)];
 
   .vc-app-menu-item__icon {
@@ -302,7 +302,7 @@ watch(isOpened, (newValue) => {
 
   &__child-item {
     @apply tw-cursor-pointer tw-w-fit tw-py-[4px] tw-px-[8px] tw-rounded-[4px]
-    hover:tw-bg-[color:var(--app-menu-item-background-color-hover)]
+    hover:tw-bg-[var(--app-menu-item-background-color-hover)]
     hover:tw-text-[color:var(--app-menu-item-title-color-active)];
 
     &_active {
@@ -322,7 +322,7 @@ watch(isOpened, (newValue) => {
   }
 
   &:hover:not(.vc-app-menu-item_active) {
-    @apply tw-bg-[color:var(--app-menu-item-background-color-hover)] tw-bg-opacity-50
+    @apply tw-bg-[var(--app-menu-item-background-color-hover)] tw-bg-opacity-50
     tw-rounded-[var(--app-menu-item-hover-radius)];
   }
 

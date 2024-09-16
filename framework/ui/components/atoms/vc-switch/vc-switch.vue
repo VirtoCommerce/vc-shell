@@ -66,10 +66,13 @@ function onInput(e: Event) {
 
 <style lang="scss">
 :root {
-  --switch-main-color: #43b0e6;
-  --switch-secondary-color: #d2d4d7;
+  --switch-main-color: var(--primary-500);
+  --switch-secondary-color: var(--neutrals-300);
+  --switch-icon-background: var(--additional-50);
+  --switch-icon-color: var(--neutrals-400);
+  --switch-shadow-color: var(--additional-950);
+  --switch-shadow: inset 0px 2px 4px rgb(from var(--switch-shadow-color) r g b / 10%);
   --switch-transition: all 0.2s ease-in-out;
-  --switch-icon-transition: opacity 0.3s ease-in-out;
 }
 
 .vc-switch {
@@ -90,10 +93,10 @@ function onInput(e: Event) {
   }
 
   &__slider {
-    @apply tw-absolute tw-top-0 tw-right-0 tw-bottom-0 tw-left-0 tw-bg-[color:var(--switch-secondary-color)] tw-rounded-[9999px] tw-cursor-pointer tw-transition  tw-duration-200 tw-shadow-[inset_0px_2px_4px_rgba(0,0,0,0.1)];
+    @apply tw-absolute tw-top-0 tw-right-0 tw-bottom-0 tw-left-0 tw-bg-[color:var(--switch-secondary-color)] tw-rounded-[9999px] tw-cursor-pointer tw-transition tw-duration-200 [box-shadow:var(--switch-shadow)];
 
     &:before {
-      @apply tw-absolute tw-bottom-px tw-left-px tw-flex tw-justify-center tw-items-center tw-w-[16px] tw-h-[16px] tw-bg-white tw-rounded-[9999px] tw-text-[color:#d2d2d2] tw-text-[10px] tw-transition tw-shadow-[0_2px_4px_rgba(0,0,0,0.1)] tw-duration-200 tw-content-[""];
+      @apply tw-absolute tw-bottom-px tw-left-px tw-flex tw-justify-center tw-items-center tw-w-[16px] tw-h-[16px] tw-bg-[color:var(--switch-icon-background)] tw-rounded-[9999px] tw-text-[color:var(--switch-icon-color)] tw-text-[10px] tw-transition [box-shadow:var(--switch-shadow)] tw-duration-200 tw-content-[""];
     }
   }
 }

@@ -68,7 +68,11 @@ defineSlots<{
 
 <style lang="scss">
 :root {
-  --rating-placeholder-color: #a5a5a5;
+  --rating-placeholder-color: var(--neutrals-400);
+
+  --rating-special-color: var(--warning-500);
+  --rating-special-color-hover: var(--warning-600);
+  --rating-special-color-disabled: var(--warning-200);
 }
 
 .vc-rating {
@@ -78,7 +82,7 @@ defineSlots<{
     @apply tw-text-[color:var(--rating-placeholder-color)];
   }
   &__icon {
-    @apply tw-text-[color:var(--special-color)] tw-mr-1;
+    @apply tw-text-[color:var(--rating-special-color)] tw-mr-1;
     font-size: inherit;
   }
   &__rating {

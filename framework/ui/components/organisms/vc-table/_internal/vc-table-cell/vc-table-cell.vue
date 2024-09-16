@@ -40,7 +40,7 @@
                     v-if="$isDesktop.value && errors.length > 0"
                     #append-inner
                   >
-                    <VcIcon icon="fas fa-exclamation-circle tw-text-[color:var(--error-color)]"></VcIcon>
+                    <VcIcon icon="fas fa-exclamation-circle tw-text-[color:var(--table-cell-error-color)]"></VcIcon>
                   </template>
                 </VcInputCurrency>
               </template>
@@ -48,7 +48,7 @@
                 v-if="errors.length > 0"
                 #tooltip
               >
-                <div class="tw-text-[color:var(--error-color)]">{{ errorMessage }}</div>
+                <div class="tw-text-[color:var(--table-cell-error-color)]">{{ errorMessage }}</div>
               </template>
             </VcTooltip>
           </Field>
@@ -62,7 +62,7 @@
     <!-- Date ago cell -->
     <span
       v-else-if="cell.type === 'date-ago'"
-      class="tw-text-[#a5a5a5]"
+      class="tw-text-[color:var(--table-cell-text-color)]"
       :class="cell.class"
       :title="(value instanceof Date && value.toLocaleString(locale)) || ''"
     >
@@ -83,7 +83,7 @@
     <!-- Date exact cell -->
     <div
       v-else-if="cell.type === 'date' || cell.type === 'time' || cell.type === 'date-time'"
-      class="tw-text-[#a5a5a5] tw-truncate"
+      class="tw-text-[color:var(--table-cell-text-color)] tw-truncate"
       :class="cell.class"
     >
       <template v-if="value">
@@ -180,7 +180,7 @@
                   v-if="$isDesktop.value && errors.length > 0"
                   #append-inner
                 >
-                  <VcIcon icon="fas fa-exclamation-circle tw-text-[color:var(--error-color)]"></VcIcon>
+                  <VcIcon icon="fas fa-exclamation-circle tw-text-[color:var(--table-cell-error-color)]"></VcIcon>
                 </template>
               </VcInput>
             </template>
@@ -188,7 +188,7 @@
               v-if="errors.length > 0"
               #tooltip
             >
-              <div class="tw-text-[color:var(--error-color)]">{{ errorMessage }}</div>
+              <div class="tw-text-[color:var(--table-cell-error-color)]">{{ errorMessage }}</div>
             </template>
           </VcTooltip>
         </Field>
@@ -248,14 +248,16 @@
                   v-if="$isDesktop.value && errors.length > 0"
                   #append-inner
                 >
-                  <VcIcon icon="fas fa-exclamation-circle tw-text-[color:var(--error-color)]"></VcIcon> </template
+                  <VcIcon
+                    icon="fas fa-exclamation-circle tw-text-[color:var(--table-cell-error-color)]"
+                  ></VcIcon> </template
               ></VcInput>
             </template>
             <template
               v-if="errors.length > 0"
               #tooltip
             >
-              <div class="tw-text-[color:var(--error-color)]">{{ errorMessage }}</div>
+              <div class="tw-text-[color:var(--table-cell-error-color)]">{{ errorMessage }}</div>
             </template>
           </VcTooltip>
         </Field>
@@ -334,6 +336,7 @@ function onBlur(args: { row: number | undefined; field: string; errors?: string[
 
 <style lang="scss">
 :root {
-  --error-color: #f14e4e;
+  --table-cell-error-color: var(--danger-500);
+  --table-cell-text-color: var(--neutrals-400);
 }
 </style>

@@ -72,7 +72,7 @@
                       >
                         <div
                           v-if="!hasValue"
-                          class="tw-text-[#a5a5a5]"
+                          class="tw-text-[color:var(--select-placeholder-color)]"
                         >
                           <template v-if="placeholder">{{ placeholder }}</template>
                           <template v-else>{{ t("COMPONENTS.MOLECULES.VC_SELECT.CLICK_TO_SELECT") }}</template>
@@ -86,10 +86,10 @@
                             >
                               <template v-if="multiple">
                                 <div
-                                  class="tw-bg-[#fbfdfe] tw-border tw-border-solid tw-border-[color:#bdd1df] tw-rounded-[2px] tw-flex tw-items-center tw-h-[28px] tw-box-border tw-px-2"
+                                  class="tw-bg-[color:var(--select-option-background-color-selected)] tw-border tw-border-solid tw-border-[color:var(--select-border-color)] tw-rounded-[2px] tw-flex tw-items-center tw-h-[28px] tw-box-border tw-px-2"
                                 >
                                   <template v-if="loading">
-                                    <span class="tw-text-[#a5a5a5]">{{
+                                    <span class="tw-text-[color:var(--select-loading-color)]">{{
                                       t("COMPONENTS.MOLECULES.VC_SELECT.LOADING")
                                     }}</span>
                                   </template>
@@ -103,7 +103,7 @@
                                   </template>
                                   <VcIcon
                                     v-if="!disabled"
-                                    class="tw-text-[#a9bfd2] tw-ml-2 tw-cursor-pointer hover:tw-text-[color:var(--select-clear-color-hover)]"
+                                    class="tw-text-[color:var(--select-clear-color)] tw-ml-2 tw-cursor-pointer hover:tw-text-[color:var(--select-clear-color-hover)]"
                                     icon="fas fa-times"
                                     size="s"
                                     @click.stop="removeAtIndex(item.index)"
@@ -112,7 +112,7 @@
                               </template>
                               <template v-else-if="!multiple">
                                 <template v-if="loading">
-                                  <span class="tw-text-[#a5a5a5]">{{
+                                  <span class="tw-text-[color:var(--select-loading-color)]">{{
                                     t("COMPONENTS.MOLECULES.VC_SELECT.LOADING")
                                   }}</span>
                                 </template>
@@ -159,7 +159,7 @@
                     <!-- Loading-->
                     <div
                       v-if="loading || listLoading"
-                      class="tw-flex tw-items-center tw-flex-nowrap tw-pl-3 tw-text-[color:var(--select-clear-color)]"
+                      class="tw-flex tw-items-center tw-flex-nowrap tw-pl-3 tw-text-[color:var(--select-loading-color)]"
                     >
                       <VcIcon
                         icon="fas fa-circle-notch tw-animate-spin"
@@ -235,7 +235,7 @@
           <input
             v-if="searchable"
             ref="searchRef"
-            class="tw-w-full tw-box-border tw-border tw-border-solid tw-border-[#eaecf2] tw-rounded-[4px] tw-h-[32px] tw-leading-[32px] tw-outline-none tw-mb-3 tw-px-2"
+            class="tw-w-full tw-box-border tw-border tw-border-solid tw-border-[color:var(--select-border-color-input)] tw-rounded-[4px] tw-h-[32px] tw-leading-[32px] tw-outline-none tw-mb-3 tw-px-2"
             @input="onInput"
           />
 
@@ -255,9 +255,9 @@
               v-for="(item, i) in optionScope"
               v-else
               :key="i"
-              class="tw-flex tw-items-center tw-min-h-[36px] tw-my-1 tw-box-border tw-px-2 tw-rounded-[3px] tw-cursor-pointer hover:tw-bg-[#eff7fc]"
+              class="tw-flex tw-items-center tw-min-h-[36px] tw-my-1 tw-box-border tw-px-2 tw-rounded-[3px] tw-cursor-pointer hover:tw-bg-[color:var(--select-option-background-color-hover)]"
               data-test-id="option"
-              :class="{ 'tw-bg-[#eff7fc]': item.selected }"
+              :class="{ 'tw-bg-[color:var(--select-option-background-color-selected)]': item.selected }"
               @click="item.toggleOption(item.opt)"
             >
               <slot
@@ -948,21 +948,27 @@ function onReset() {
   --select-height: 38px;
   --select-height-small: 28px;
   --select-border-radius: 3px;
-  --select-border-color: #d3dbe9;
-  --select-border-color-error: #f14e4e;
-  --select-background-color: #ffffff;
-  --select-background-color-disabled: #fafafa;
-  --select-placeholder-color: #a5a5a5;
-  --select-chevron-color: #43b0e6;
-  --select-chevron-color-hover: #319ed4;
-  --select-clear-color: #43b0e6;
-  --select-clear-color-hover: #319ed4;
+  --select-border-color: var(--neutrals-300);
+  --select-border-color-error: var(--danger-500);
+  --select-background-color: var(--additional-50);
+  --select-background-color-disabled: var(--neutrals-100);
+  --select-placeholder-color: var(--neutrals-400);
+  --select-chevron-color: var(--primary-500);
+  --select-chevron-color-hover: var(--primary-600);
+  --select-clear-color: var(--primary-500);
+  --select-clear-color-hover: var(--primary-600);
+  --select-disabled-field-color: var(--neutrals-700);
+
+  --select-loading-color: var(--info-500);
+  --select-option-background-color-hover: var(--accent-100);
+  --select-option-background-color-selected: var(--accent-200);
+  --select-border-color-input: var(--neutrals-300);
 }
 
 .vc-select {
   &_disabled &__field-wrapper,
   &_disabled &__field {
-    @apply tw-bg-[color:var(--select-background-color-disabled)] tw-text-[#424242];
+    @apply tw-bg-[color:var(--select-background-color-disabled)] tw-text-[--select-disabled-field-color];
   }
 
   &_error &__field-wrapper {

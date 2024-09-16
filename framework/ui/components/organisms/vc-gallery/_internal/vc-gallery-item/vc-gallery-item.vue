@@ -107,11 +107,18 @@ function onClose() {
 </script>
 
 <style lang="scss">
+:root {
+  --gallery-item-border-color: var(--neutrals-200);
+  --gallery-item-overlay-bg-color: var(--primary-100);
+  --gallery-item-move-icon-color: var(--secondary-300);
+  --gallery-item-button-icon-color: var(--primary-500);
+}
+
 .vc-gallery-item {
-  @apply tw-relative tw-w-[155px] tw-h-[155px] tw-box-border tw-border tw-border-solid tw-border-[#d3dae9] tw-rounded-md tw-p-1;
+  @apply tw-relative tw-w-[155px] tw-h-[155px] tw-box-border tw-border tw-border-solid tw-border-[var(--gallery-item-border-color)] tw-rounded-md tw-p-1;
 
   &__overlay {
-    @apply tw-bg-[rgba(238,246,252,0.97)] tw-flex-col tw-p-2 tw-opacity-0 tw-flex tw-absolute tw-left-0 tw-top-0 tw-right-0 tw-bottom-0 tw-transition  tw-duration-200;
+    @apply tw-bg-[var(--gallery-item-overlay-bg-color)] tw-flex-col tw-p-2 tw-opacity-0 tw-flex tw-absolute tw-left-0 tw-top-0 tw-right-0 tw-bottom-0 tw-transition tw-duration-200;
   }
 
   &:hover &__overlay,
@@ -120,14 +127,14 @@ function onClose() {
   }
 
   &__move {
-    @apply tw-text-[#a1c0d4] tw-cursor-move tw-mr-2;
+    @apply tw-text-[var(--gallery-item-move-icon-color)] tw-cursor-move tw-mr-2;
   }
 
   &__button {
     @apply tw-cursor-pointer tw-flex tw-flex-col tw-items-center;
 
     &-icon {
-      @apply tw-text-[#319ed4];
+      @apply tw-text-[var(--gallery-item-button-icon-color)];
     }
   }
 }

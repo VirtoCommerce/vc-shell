@@ -25,9 +25,9 @@ withDefaults(defineProps<Props>(), {
   --icon-size-xxl: 30px;
   --icon-size-xxxl: 64px;
 
-  --icon-color-success: #99c17a;
-  --icon-color-danger: #f34747;
-  --icon-color-warning: #f89406;
+  --icon-color-success: var(--success-500);
+  --icon-color-danger: var(--danger-500);
+  --icon-color-warning: var(--warning-500);
 }
 
 $sizes: xs, s, m, l, xl, xxl, xxxl;

@@ -50,7 +50,7 @@
         </div>
         <div
           ref="reorderGalleryRef"
-          class="tw-w-0.5 tw-bg-[#41afe6] tw-h-full tw-absolute tw-top-0 tw-bottom-0 tw-z-[2] tw-hidden"
+          class="tw-w-0.5 tw-bg-[color:var(--gallery-reorder-color)] tw-h-full tw-absolute tw-top-0 tw-bottom-0 tw-z-[2] tw-hidden"
         ></div>
       </div>
     </template>
@@ -313,3 +313,9 @@ function findParentElement(element: HTMLElement) {
   }
 }
 </script>
+
+<style lang="scss">
+:root {
+  --gallery-reorder-color: var(--primary-500);
+}
+</style>

@@ -210,7 +210,7 @@ provide("$dynamicModules", dynamicModules);
 
 <style lang="scss">
 :root {
-  --app-background: #eff2fa;
+  --app-background: var(--primary-50);
 }
 
 .vc-app {

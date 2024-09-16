@@ -18,7 +18,7 @@
         leave-from="tw-opacity-100"
         leave-to="tw-opacity-0"
       >
-        <div class="tw-fixed tw-inset-0 tw-bg-black/25" />
+        <div class="tw-fixed tw-inset-0 tw-bg-(--popup-overlay)" />
       </TransitionChild>
 
       <div
@@ -39,7 +39,7 @@
             leave-to="tw-opacity-0 tw-scale-95"
           >
             <DialogPanel
-              class="tw-w-full tw-transform tw-overflow-hidden tw-rounded-[5px] tw-bg-white tw-text-left tw-align-middle tw-shadow-xl tw-transition-all"
+              class="tw-w-full tw-transform tw-overflow-hidden tw-rounded-[5px] tw-bg-[--popup-bg] tw-text-left tw-align-middle tw-shadow-xl tw-transition-all"
               :class="[
                 {
                   'tw-flex tw-flex-col [max-height:calc(100vh-40px)]': !isMobileView,
@@ -51,12 +51,12 @@
             >
               <DialogTitle
                 as="h3"
-                class="tw-text-[18px] tw-font-semibold tw-leading-5 tw-text-[var(--header-color)] tw-flex tw-px-6 tw-py-5"
+                class="tw-text-[18px] tw-font-semibold tw-leading-5 tw-text-[var(--popup-header-color)] tw-flex tw-px-6 tw-py-5"
               >
                 <slot name="header">{{ title }}</slot>
 
                 <button
-                  class="tw-h-[26px] tw-w-[26px] tw-bg-[var(--close-btn-bg)] tw-rounded-[4px] tw-inline-flex tw-items-center tw-justify-center tw-ml-auto hover:tw-bg-[var(--close-btn-bg-hover)] tw-outline-none"
+                  class="tw-h-[26px] tw-w-[26px] tw-bg-[var(--popup-close-btn-bg)] tw-rounded-[4px] tw-inline-flex tw-items-center tw-justify-center tw-ml-auto hover:tw-bg-[var(--popup-close-btn-bg-hover)] tw-outline-none"
                   @click="closeModal"
                 >
                   <svg
@@ -83,7 +83,7 @@
                 />
 
                 <div
-                  class="tw-text-[14px] tw-font-normal tw-leading-[20px] tw-text-[var(--content-text-color)] tw-flex tw-items-center tw-flex-auto tw-overflow-y-auto [word-break:break-word]"
+                  class="tw-text-[14px] tw-font-normal tw-leading-[20px] tw-text-[var(--popup-content-text-color)] tw-flex tw-items-center tw-flex-auto tw-overflow-y-auto [word-break:break-word]"
                   :class="{
                     'tw-grow': isMobileView,
                   }"
@@ -98,7 +98,7 @@
               </div>
               <div
                 v-if="$slots.footer"
-                class="tw-flex tw-items-center tw-px-6 tw-py-5 tw-border-t tw-border-t-[var(--footer-separator)] tw-border-solid"
+                class="tw-flex tw-items-center tw-px-6 tw-py-5 tw-border-t tw-border-t-[var(--popup-footer-separator)] tw-border-solid"
               >
                 <slot
                   name="footer"
@@ -168,11 +168,11 @@ const icon = computed(() => {
 const iconStyle = computed(() => {
   switch (props.variant) {
     case "warning":
-      return "tw-text-[var(--warning-icon-color)]";
+      return "tw-text-[var(--popup-warning-icon-color)]";
     case "error":
-      return "tw-text-[var(--error-icon-color)]";
+      return "tw-text-[var(--popup-error-icon-color)]";
     case "success":
-      return "tw-text-[var(--success-icon-color)]";
+      return "tw-text-[var(--popup-success-icon-color)]";
     default:
       return "";
   }
@@ -187,13 +187,15 @@ function closeModal() {
 
 <style lang="scss">
 :root {
-  --close-btn-bg: #f5f8fb;
-  --close-btn-bg-hover: color-mix(in srgb, var(--close-btn-bg), #000 5%);
-  --header-color: #465769;
-  --content-text-color: #465769;
-  --warning-icon-color: #ffbb0d;
-  --error-icon-color: #ff4a4a;
-  --success-icon-color: #87b563;
-  --footer-separator: #ebebeb;
+  --popup-close-btn-bg: var(--neutrals-100);
+  --popup-close-btn-bg-hover: color-mix(in srgb, var(--popup-close-btn-bg), #000 5%);
+  --popup-header-color: var(--primary-700);
+  --popup-content-text-color: var(--primary-700);
+  --popup-warning-icon-color: var(--warning-500);
+  --popup-error-icon-color: var(--danger-500);
+  --popup-success-icon-color: var(--success-500);
+  --popup-footer-separator: var(--neutrals-200);
+  --popup-overlay: var(--neutrals-100);
+  --popup-bg: var(--additional-50);
 }
 </style>

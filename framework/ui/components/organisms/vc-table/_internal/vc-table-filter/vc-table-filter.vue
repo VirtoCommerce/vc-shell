@@ -1,28 +1,27 @@
 <template>
   <div class="tw-relative tw-overflow-visible">
     <!-- Filter button -->
-    <div
+    <VcButton
       ref="filterToggle"
-      class="tw-rounded-[3px] tw-bg-[#43b0e6] tw-flex tw-items-center tw-px-[10px] tw-text-white tw-h-[38px] tw-box-border tw-cursor-pointer"
+      icon="fas fa-filter"
+      icon-size="m"
       @click="openPanel"
     >
-      <VcIcon
-        icon="fas fa-filter"
-        size="m"
-      />
-      <span
-        v-if="title"
-        class="tw-ml-[10px] tw-font-medium"
-      >
-        {{ title }}
-      </span>
-      <div
-        v-if="counter"
-        class="tw-ml-[10px] tw-rounded-[10px] tw-bg-white tw-text-[#43b0e6] tw-h-[20px] tw-min-w-[20px] tw-leading-[20px] tw-text-center tw-font-medium"
-      >
-        {{ counter }}
+      <div class="tw-flex tw-flex-row tw-items-center">
+        <span
+          v-if="title"
+          class="tw-font-medium"
+        >
+          {{ title }}
+        </span>
+        <div
+          v-if="counter"
+          class="tw-ml-[10px] tw-rounded-[10px] tw-bg-(--table-filter-counter-bg) tw-text-[color:var(--table-filter-counter-text-color)] tw-h-[20px] tw-min-w-[20px] tw-leading-[20px] tw-text-center tw-font-medium"
+        >
+          {{ counter }}
+        </div>
       </div>
-    </div>
+    </VcButton>
 
     <!-- Filter panel -->
     <teleport to="body">
@@ -30,20 +29,20 @@
         v-if="isPanelVisible"
         ref="filterPanel"
         :class="{
-          'vc-table-filter__panel_mobile tw-fixed tw-left-0 tw-top-0 tw-w-full tw-bottom-0 tw-z-[100] tw-bg-[rgba(128,140,153,0.6)] tw-shadow-none tw-rounded-none tw-max-h-full tw-max-w-full tw-min-w-full':
+          'vc-table-filter__panel_mobile tw-fixed tw-left-0 tw-top-0 tw-w-full tw-bottom-0 tw-z-[100] tw-bg-[--table-filter-mobile-panel-overlay] tw-shadow-none tw-rounded-none tw-max-h-full tw-max-w-full tw-min-w-full':
             $isMobile.value,
-          'vc-table-filter__panel tw-absolute tw-max-w-[800px] tw-min-w-[400px] tw-w-0 tw-z-[100] tw-shadow-[1px_1px_11px_rgba(141,152,163,0.6)] tw-rounded-[3px] tw-overflow-hidden':
+          'vc-table-filter__panel tw-absolute tw-max-w-[800px] tw-min-w-[400px] tw-w-0 tw-z-[100] [box-shadow:var(--table-filter-desktop-shadow)] tw-rounded-[3px] tw-overflow-hidden':
             !$isMobile.value,
         }"
         :style="filterStyle"
         @click.self="closePanel"
       >
         <div
-          class="vc-table-filter__panel-inner tw-bg-white tw-box-border tw-p-5 tw-flex tw-flex-col"
+          class="vc-table-filter__panel-inner tw-bg-[--table-filter-panel-bg] tw-box-border tw-p-5 tw-flex tw-flex-col"
           @click.stop
         >
           <VcIcon
-            class="vc-table-filter__panel-close tw-text-[#43b0e6] tw-cursor-pointer tw-self-end tw-shrink-0"
+            class="vc-table-filter__panel-close tw-text-[color:var(--table-filter-close-icon-color)] tw-cursor-pointer tw-self-end tw-shrink-0"
             icon="fas fa-times"
             size="xl"
             @click="closePanel"
@@ -59,6 +58,7 @@
 <script lang="ts" setup>
 import { ref, watch, computed, inject, Ref } from "vue";
 import { offset, autoUpdate, useFloating, UseFloatingReturn } from "@floating-ui/vue";
+import { VcButton } from "./../../../../atoms/vc-button";
 
 export interface Props {
   title?: string;
@@ -111,6 +111,16 @@ function closePanel() {
 </script>
 
 <style lang="scss">
+:root {
+  --table-filter-counter-bg: var(--additional-50);
+  --table-filter-counter-text-color: var(--info-500);
+  --table-filter-mobile-panel-overlay: var(--neutral-500);
+  --table-filter-desktop-shadow-color: var(--neutral-400);
+  --table-filter-desktop-shadow: 1px 1px 11px var(--table-filter-desktop-shadow-color);
+  --table-filter-panel-bg: var(--additional-50);
+  --table-filter-close-icon-color: var(--info-500);
+}
+
 .vc-table-filter {
   @apply tw-relative tw-overflow-visible;
 

@@ -8,7 +8,8 @@
         `vc-image_${aspect}`,
         {
           'tw-rounded-full': rounded,
-          'tw-rounded-[3px] tw-border tw-border-solid tw-border-[color:#efefef]': bordered,
+          'tw-rounded-[var(--image-border-radius)] tw-border tw-border-solid tw-border-[color:var(--image-border-color)]':
+            bordered,
           'tw-cursor-pointer': clickable,
         },
         'tw-relative',
@@ -18,7 +19,7 @@
     >
       <div
         v-if="!src"
-        class="tw-absolute tw-w-full tw-h-full tw-flex tw-items-center tw-justify-center tw-text-[#83a3be]"
+        class="tw-absolute tw-w-full tw-h-full tw-flex tw-items-center tw-justify-center tw-text-[color:var(--image-empty-icon-color)]"
       >
         <VcIcon
           :icon="emptyIcon"
@@ -79,6 +80,10 @@ function onClick(): void {
   --image-size-l: 96px;
   --image-size-xl: 128px;
   --image-size-xxl: 145px;
+
+  --image-border-radius: 3px;
+  --image-border-color: var(--neutrals-200);
+  --image-empty-icon-color: var(--secondary-500);
 }
 
 $aspects: (

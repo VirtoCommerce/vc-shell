@@ -2,8 +2,8 @@
   <div
     class="vc-link"
     :class="{
-      'tw-text-[color:var(--link-text-color-active)] tw-no-underline': active,
-      'tw-cursor-not-allowed tw-text-[color:var(--link-text-color-disabled)] hover:tw-text-[color:var(--link-text-color-disabled)] tw-no-underline':
+      'tw-text-[color:var(--primary-700)] tw-no-underline': active,
+      'tw-cursor-not-allowed tw-text-[color:var(--neutrals-300)] hover:tw-text-[color:var(--neutrals-300)] tw-no-underline':
         disabled,
     }"
     @click="onClickFn"
@@ -35,13 +35,13 @@ function onClickFn(): void {
 
 <style lang="scss">
 :root {
-  --link-text-color: hsl(200, 77%, 58%);
-  --link-text-color-hover: hsl(200, 77%, 48%);
-  --link-text-color-active: hsl(200, 77%, 48%);
-  --link-text-color-disabled: hsl(200, 77%, 73%);
+  --link-text-color: var(--primary-500);
+  --link-text-color-hover: var(--primary-400);
+  --link-text-color-active: var(--primary-700);
+  --link-text-color-disabled: var(--neutrals-300);
 }
 
 .vc-link {
-  @apply tw-text-[color:var(--link-text-color)] tw-no-underline tw-cursor-pointer tw-transition  tw-duration-200 tw-inline-block hover:tw-text-[color:var(--link-text-color-hover)] hover:tw-underline;
+  @apply tw-text-[color:var(--link-text-color)] tw-no-underline tw-cursor-pointer tw-transition tw-duration-200 tw-inline-block hover:tw-text-[color:var(--link-text-color-hover)] hover:tw-underline;
 }
 </style>

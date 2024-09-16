@@ -1,14 +1,14 @@
 <template>
   <div
     v-loading:1000="unref(loading) || columnsInit"
-    class="tw-relative tw-overflow-hidden tw-flex tw-flex-col tw-grow tw-basis-0 tw-border-[color:#eef0f2] tw-border-solid tw-border-t-0"
+    class="tw-relative tw-overflow-hidden tw-flex tw-flex-col tw-grow tw-basis-0 tw-border-[color:var(--table-border-color)] tw-border-solid tw-border-t-0"
   >
     <div
       v-if="multiselect && $isMobile.value && (selection.length > 0 || allSelected)"
       class="tw-flex tw-flex-col"
     >
       <div
-        class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-px-4 tw-py-2 tw-min-h-[56px] tw-font-bold tw-text-lg tw-border-[color:#eef0f2] tw-border-b tw-border-solid tw-box-border"
+        class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-px-4 tw-py-2 tw-min-h-[56px] tw-font-bold tw-text-lg tw-border-[color:var(--table-select-all-border-color)] tw-border-b tw-border-solid tw-box-border"
       >
         <div class="tw-flex tw-flex-row tw-w-full tw-justify-between">
           <div class="tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-3">
@@ -144,14 +144,14 @@
         >
           <div
             v-if="filteredCols.length"
-            class="vc-table__header tw-flex tw-flex-col tw-sticky tw-top-0 tw-bg-[#f9f9f9] tw-z-[1] tw-box-border"
+            class="vc-table__header tw-flex tw-flex-col tw-sticky tw-top-0 tw-bg-[--table-header-bg] tw-z-[1] tw-box-border"
             @mouseenter="handleHeaderMouseOver(true)"
             @mouseleave="handleHeaderMouseOver(false)"
           >
             <div class="vc-table__header-row tw-flex tw-flex-row">
               <div
                 v-if="multiselect && items && items.length"
-                class="tw-flex-1 tw-flex tw-items-center tw-justify-center tw-w-[36px] tw-max-w-[36px] tw-min-w-[36px] tw-bg-[#f9f9f9] !tw-border-0 tw-shadow-[inset_0px_1px_0px_#eaedf3,_inset_0px_-1px_0px_#eaedf3] tw-box-border tw-sticky tw-top-0 tw-select-none tw-overflow-hidden tw-z-[1]"
+                class="tw-flex-1 tw-flex tw-items-center tw-justify-center tw-w-[36px] tw-max-w-[36px] tw-min-w-[36px] tw-bg-[--table-header-bg] !tw-border-0 [box-shadow:var(--table-header-border)] tw-box-border tw-sticky tw-top-0 tw-select-none tw-overflow-hidden tw-z-[1]"
               >
                 <div class="tw-flex tw-justify-center tw-items-center">
                   <VcCheckbox
@@ -161,14 +161,14 @@
                   ></VcCheckbox>
                 </div>
                 <div class="tw-top-0 tw-bottom-0 tw-absolute tw-right-0 tw-flex tw-justify-end">
-                  <div class="tw-w-px tw-bg-[#e5e7eb] tw-h-full"></div>
+                  <div class="tw-w-px tw-bg-[--table-resizer-color] tw-h-full"></div>
                 </div>
               </div>
               <div
                 v-for="(item, index) in filteredCols"
                 :id="item.id"
                 :key="item.id"
-                class="vc-table__header tw-flex-1 tw-flex tw-items-center tw-h-[42px] tw-bg-[#f9f9f9] !tw-border-0 tw-shadow-[inset_0px_1px_0px_#eaedf3,_inset_0px_-1px_0px_#eaedf3] tw-box-border tw-sticky tw-top-0 tw-select-none tw-overflow-hidden tw-z-[1]"
+                class="vc-table__header tw-flex-1 tw-flex tw-items-center tw-h-[42px] tw-bg-[--table-header-bg] !tw-border-0 [box-shadow:var(--table-header-border)] tw-box-border tw-sticky tw-top-0 tw-select-none tw-overflow-hidden tw-z-[1]"
                 :class="[
                   {
                     'tw-cursor-pointer tw-group': item.sortable,
@@ -186,7 +186,7 @@
               >
                 <!-- <div
                   v-if="!editing && multiselect && index === 0 && items && items.length"
-                  class="tw-flex tw-pl-5 tw-items-center tw-justify-center tw-w-auto tw-bg-[#f9f9f9] tw-box-border tw-select-none tw-overflow-hidden tw-z-[1] tw-shrink-0"
+                  class="tw-flex tw-pl-5 tw-items-center tw-justify-center tw-w-auto tw-bg-[--table-header-bg] tw-box-border tw-select-none tw-overflow-hidden tw-z-[1] tw-shrink-0"
                 >
                   <div class="tw-flex tw-justify-center tw-items-center">
                     <VcCheckbox
@@ -229,7 +229,7 @@
                   </div>
                 </div>
                 <div
-                  class="tw-w-[5px] tw-mr-[3px] tw-border-r tw-border-r-[#e5e7eb] tw-border-solid tw-h-full tw-top-0 tw-bottom-0 tw-absolute tw-right-0 tw-flex tw-justify-end"
+                  class="tw-w-[5px] tw-mr-[3px] tw-border-r tw-border-r-[color:var(--table-resizer-color)] tw-border-solid tw-h-full tw-top-0 tw-bottom-0 tw-absolute tw-right-0 tw-flex tw-justify-end"
                   :class="{
                     'tw-cursor-col-resize': props.resizableColumns,
                   }"
@@ -252,16 +252,16 @@
 
             <div
               ref="resizer"
-              class="tw-w-px tw-absolute tw-z-10 tw-hidden tw-h-full tw-bg-[#e5e7eb] tw-cursor-col-resize"
+              class="tw-w-px tw-absolute tw-z-10 tw-hidden tw-h-full tw-bg-[--table-resizer-color] tw-cursor-col-resize"
             ></div>
             <div
               ref="reorderRef"
-              class="tw-w-0.5 tw-bg-[#41afe6] tw-h-full tw-absolute tw-top-0 tw-bottom-0 tw-z-[2] tw-hidden"
+              class="tw-w-0.5 tw-bg-[--table-reorder-color] tw-h-full tw-absolute tw-top-0 tw-bottom-0 tw-z-[2] tw-hidden"
             ></div>
           </div>
           <div
             v-if="selectAll && showSelectionChoice"
-            class="tw-h-[60px] tw-min-h-[60px] tw-bg-[#dfeef9] tw-w-full tw-flex"
+            class="tw-h-[60px] tw-min-h-[60px] tw-bg-[--table-select-all-bg] tw-w-full tw-flex"
           >
             <div class="tw-w-full tw-flex tw-items-center tw-justify-center">
               <div>
@@ -292,12 +292,13 @@
               :key="(typeof item === 'object' && 'id' in item && item.id) || itemIndex"
               class="vc-table__body-row tw-flex tw-w-full tw-h-[60px] tw-min-h-[60px] tw-relative tw-group"
               :class="{
-                'tw-bg-white': itemIndex % 2 === 0,
-                'hover:tw-bg-[#EEF6FC] tw-cursor-pointer tw-border-solid': hasClickListener,
-                'tw-bg-[#F9F9F9]': itemIndex % 2 === 1,
-                '!tw-bg-[#EEF6FC] hover:!tw-bg-[#EEF6FC]':
+                'tw-bg-[--table-row-bg-odd]': itemIndex % 2 === 0,
+                'hover:tw-bg-[--table-row-bg-hover] tw-cursor-pointer tw-border-solid': hasClickListener,
+                'tw-bg-[--table-row-bg-even]': itemIndex % 2 === 1,
+                '!tw-bg-[--table-row-hover] hover:!tw-bg-[--table-row-hover]':
                   typeof item === 'object' && 'id' in item && item.id ? selectedItemId === item.id : false,
-                'hover:!tw-bg-[#dfeef9] !tw-bg-[#dfeef9]': selection && selection.length && selection.includes(item),
+                'hover:!tw-bg-[--table-row-bg-selected] !tw-bg-[--table-row-bg-selected]':
+                  selection && selection.length && selection.includes(item),
               }"
               @click="$emit('itemClick', item)"
               @mouseleave="closeActions"
@@ -322,7 +323,7 @@
                     @update:model-value="rowCheckbox(item)"
                   ></VcCheckbox>
                 </div>
-                <div class="tw-w-px tw-top-0 tw-bottom-0 tw-absolute tw-right-0 tw-bg-[#e5e7eb]"></div>
+                <div class="tw-w-px tw-top-0 tw-bottom-0 tw-absolute tw-right-0 tw-bg-[--table-resizer-color]"></div>
               </div>
               <div
                 v-for="cell in filteredCols"
@@ -359,22 +360,22 @@
                 v-if="
                   enableItemActions && itemActionBuilder && typeof item === 'object' && selectedRowIndex === itemIndex
                 "
-                class="tw-absolute tw-flex tw-right-0 tw-px-[10px] actions tw-h-full tw-bg-[#f4f8fb]"
+                class="tw-absolute tw-flex tw-right-0 tw-px-[10px] actions tw-h-full tw-bg-[--table-actions-bg]"
                 :class="{
-                  'group-hover:!tw-bg-[#EEF6FC]': hasClickListener,
-                  'group-hover:!tw-bg-[#dfeef9]':
+                  'group-hover:!tw-bg-[--table-actions-bg-hover]': hasClickListener,
+                  'group-hover:!tw-bg-[--table-actions-bg-hover-selected-item]':
                     hasClickListener && selection && selection.length && selection.includes(item),
                 }"
                 @click.stop
               >
                 <div
-                  class="tw-flex tw-flex-row tw-items-center tw-text-[#3f3f3f] tw-font-normal not-italic tw-text-base tw-leading-[20px] tw-gap-[10px]"
+                  class="tw-flex tw-flex-row tw-items-center tw-text-[color:var(--table-actions-text-color)] tw-font-normal not-italic tw-text-base tw-leading-[20px] tw-gap-[10px]"
                 >
                   <div
                     v-for="(itemAction, i) in itemActions[itemIndex]"
                     :key="i"
                     :class="[
-                      'tw-text-[#319ed4] tw-cursor-pointer tw-w-[22px] tw-h-[22px] tw-flex tw-items-center tw-justify-center hover:tw-text-[#257fad]',
+                      'tw-text-[color:var(--table-actions-icon-color)] tw-cursor-pointer tw-w-[22px] tw-h-[22px] tw-flex tw-items-center tw-justify-center hover:tw-text-[color:var(--table-actions-icon-color-hover)]',
                     ]"
                     @click.stop="itemAction.clickHandler(item, itemIndex)"
                   >
@@ -389,7 +390,9 @@
                         size="m"
                       />
                       <template #tooltip>
-                        <div class="tw-not-italic tw-font-normal tw-text-base tw-leading-[20px] tw-text-[#3f3f3f]">
+                        <div
+                          class="tw-not-italic tw-font-normal tw-text-base tw-leading-[20px] tw-text-[--table-actions-tooltip-text]"
+                        >
                           {{ itemAction.title }}
                         </div>
                       </template>
@@ -435,7 +438,7 @@
       name="footer"
     >
       <div
-        class="tw-bg-[#fbfdfe] tw-border-t tw-border-solid tw-border-[#eaedf3] tw-flex-shrink-0 tw-flex tw-items-center tw-justify-between"
+        class="tw-bg-[--table-footer-bg] tw-border-t tw-border-solid tw-border-[color:var(--table-footer-border-color)] tw-flex-shrink-0 tw-flex tw-items-center tw-justify-between"
         :class="{
           'tw-py-2 tw-px-4': $isMobile.value,
           'tw-p-4': $isDesktop.value,
@@ -732,7 +735,10 @@ const allColumns = ref([]) as Ref<ITableColumns[]>;
 const mobileTemplateRenderer = ({ item, index }: { item: TableItem | string; index: number }) => {
   return h(
     "div",
-    { class: "tw-border-b tw-border-solid tw-border-b-[#e3e7ec] tw-p-3 tw-gap-2 tw-flex tw-flex-wrap" },
+    {
+      class:
+        "tw-border-b tw-border-solid tw-border-b-[--table-mobile-border-colo] tw-p-3 tw-gap-2 tw-flex tw-flex-wrap",
+    },
     props.columns.map((x) => {
       return h("div", { class: "tw-grow tw-w-[33%] tw-ml-3  tw-truncate", key: `mobile-view-item-${index}` }, [
         h(VcLabel, { class: "tw-mb-1 tw-truncate", required: x?.rules?.required }, () => toValue(x.title)),
@@ -1367,12 +1373,39 @@ function onRowDrop(event: DragEvent) {
 
 <style lang="scss">
 :root {
-  --row-drag-color: #41afe6;
+  --table-border-color: var(--neutrals-200);
+  --table-select-all-border-color: var(--neutrals-200);
+  --table-header-bg: var(--neutrals-50);
+  --table-header-border-color: var(--neutrals-200);
+  --table-header-border: inset 0px 1px 0px var(--table-header-border-color),
+    inset 0px -1px 0px var(--table-header-border-color);
+  --table-resizer-color: var(--neutrals-200);
+  --table-reorder-color: var(--primary-400);
+  --table-select-all-bg: var(--primary-100);
+  --table-row-bg-hover: var(--primary-50);
+  --table-row-bg-odd: var(--additional-50);
+  --table-row-bg-even: var(--neutrals-50);
+  --table-row-hover: var(--primary-50);
+  --table-row-bg-selected: var(--primary-100);
+  --table-actions-bg: var(--neutrals-100);
+  --table-actions-bg-hover: var(--primary-50);
+  --table-actions-bg-hover-selected-item: var(--primary-100);
+  --table-actions-text-color: var(--neutrals-600);
+  --table-actions-tooltip-text: var(--neutrals-600);
+  --table-actions-icon-color: var(--primary-500);
+  --table-actions-icon-color-hover: var(--primary-600);
+  --table-footer-bg: var(--neutrals-50);
+  --table-footer-border-color: var(--neutrals-200);
+  --table-row-drag-color: var(--primary-400);
+  --table-row-drag-shadow: inset 0 -2px 0 0 var(--table-row-drag-color);
+  --table-actions-color-danger: var(--danger-500);
+  --table-actions-color-success: var(--success-500);
+  --table-mobile-border-color: var(--secondary-200);
 }
 
 $variants: (
-  danger: #ff4a4a,
-  success: #87b563,
+  danger: var(--table-actions-color-danger),
+  success: var(--table-actions-color-success),
 );
 
 .vc-table {
@@ -1413,11 +1446,11 @@ $variants: (
   }
 
   &__drag-row-bottom {
-    @apply tw-shadow-[inset_0_-2px_0_0_var(--row-drag-color)];
+    @apply [box-shadow:var(--table-row-drag-shadow)];
   }
 
   &__drag-row-top {
-    @apply tw-shadow-[inset_0_2px_0_0_var(--row-drag-color)];
+    @apply [box-shadow:var(--table-row-drag-shadow)];
   }
 }
 </style>

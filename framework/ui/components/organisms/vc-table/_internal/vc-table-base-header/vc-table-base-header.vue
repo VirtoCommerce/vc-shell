@@ -2,7 +2,7 @@
   <div
     class="tw-shrink-0 tw-flex tw-items-center tw-justify-between tw-box-border"
     :class="{
-      'tw-px-4 tw-py-2 tw-border-[color:#eef0f2] tw-border-solid tw-border-b ': $isMobile.value,
+      'tw-px-4 tw-py-2 tw-border-[color:var(--table-header-border-color)] tw-border-solid tw-border-b': $isMobile.value,
       'tw-p-4': $isDesktop.value,
     }"
   >
@@ -34,7 +34,7 @@
       <template #prepend-inner="{ focus }">
         <VcIcon
           icon="fas fa-search"
-          class="tw-text-[color:#d2d4d7]"
+          class="tw-text-[color:var(--table-header-input-icon-color)]"
           @click="focus?.()"
         ></VcIcon>
       </template>
@@ -79,4 +79,9 @@ const props = defineProps<Props>();
 const emit = defineEmits<Emits>();
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss">
+:root {
+  --table-header-border-color: var(--neutral-200);
+  --table-header-input-icon-color: var(--neutral-300);
+}
+</style>

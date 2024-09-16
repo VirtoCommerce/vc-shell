@@ -145,6 +145,6 @@ function expand() {
 
 <style lang="scss">
 :root {
-  --chevron-color: #a1c0d4;
+  --chevron-color: var(--secondary-500);
 }
 </style>

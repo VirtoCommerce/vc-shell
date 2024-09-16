@@ -154,6 +154,11 @@ const imageHandler = computed(() => {
 </script>
 
 <style lang="scss">
+:root {
+  --app-bar-account-info-name-color: #161d25;
+  --app-bar-account-info-role-color: #7e8e9d;
+}
+
 .user-dropdown-button {
   @apply tw-w-[240px] tw-border-l tw-border-solid tw-border-l-[color:var(--app-bar-divider-color)] tw-px-4 tw-cursor-pointer
     tw-relative tw-flex tw-h-full tw-flex-col tw-select-none;

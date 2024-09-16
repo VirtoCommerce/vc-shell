@@ -1,4 +1,3 @@
-o
 <template>
   <div v-if="editing && addNewRowButton">
     <div class="tw-p-3">
@@ -11,7 +10,7 @@ o
           <VcIcon
             icon="fas fa-plus"
             size="m"
-            class="tw-text-[#41afe6]"
+            class="tw-text-[color:var(--table-add-new-icon-color)]"
           />
           {{ unref(addNewRowButton.title) }}
         </div>
@@ -41,4 +40,8 @@ defineProps<Props>();
 defineEmits<Emits>();
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss">
+:root {
+  --table-add-new-icon-color: var(--primary-400);
+}
+</style>

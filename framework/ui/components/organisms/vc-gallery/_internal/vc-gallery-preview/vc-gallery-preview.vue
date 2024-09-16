@@ -26,7 +26,7 @@
           ></div>
           <button
             v-if="localIndex > 0"
-            class="tw-absolute tw-top-2/4 -tw-mt-9 tw-h-[72px] tw-w-[72px] tw-flex tw-items-center tw-justify-center tw-rounded-full tw-bg-[#f1f6fa] tw-cursor-pointer tw-text-[#a1c0d4] [--icon-size-xl: 36px] hover:tw-shadow-[0_0_20px_rgba(31,40,50,0.15)] tw-left-[25px]"
+            class="tw-absolute tw-top-2/4 -tw-mt-9 tw-h-[72px] tw-w-[72px] tw-flex tw-items-center tw-justify-center tw-rounded-full tw-bg-[--gallery-preview-btn-bg-color] tw-cursor-pointer tw-text-[color:var(--gallery-preview-btn-icon-color)] [--icon-size-xl: 36px] hover:[box-shadow:var(--gallery-preview-btn-shadow)] tw-left-[25px]"
             @click="localIndex--"
           >
             <VcIcon
@@ -36,7 +36,7 @@
           </button>
           <button
             v-if="localIndex < images.length - 1"
-            class="tw-absolute tw-top-2/4 -tw-mt-9 tw-h-[72px] tw-w-[72px] tw-flex tw-items-center tw-justify-center tw-rounded-full tw-bg-[#f1f6fa] tw-cursor-pointer tw-text-[#a1c0d4] [--icon-size-xl: 36px] hover:tw-shadow-[0_0_20px_rgba(31,40,50,0.15)] tw-right-[25px]"
+            class="tw-absolute tw-top-2/4 -tw-mt-9 tw-h-[72px] tw-w-[72px] tw-flex tw-items-center tw-justify-center tw-rounded-full tw-bg-[--gallery-preview-btn-bg-color] tw-cursor-pointer tw-text-[color:var(--gallery-preview-btn-icon-color)] [--icon-size-xl: 36px] hover:[box-shadow:var(--gallery-preview-btn-shadow)] tw-right-[25px]"
             @click="localIndex++"
           >
             <VcIcon
@@ -120,11 +120,19 @@ function handleKeyDown(event: KeyboardEvent) {
 </script>
 
 <style lang="scss">
+:root {
+  --gallery-preview-btn-bg-color: var(--secondary-50);
+  --gallery-preview-btn-icon-color: var(--secondary-400);
+  --gallery-preview-btn-shadow-color: var(--neutrals-900);
+  --gallery-preview-btn-shadow: 0 0 20px rgb(from var(--gallery-preview-btn-shadow-color) r g b / 15%);
+  --gallery-preview-overlay-color: var(--primary-400);
+}
+
 .vc-gallery-preview {
   &__images {
     &-item {
       &_current {
-        @apply tw-relative tw-opacity-100 after:tw-content-[""] after:tw-bg-[#43b0e6] after:tw-h-1 after:tw-w-full after:tw-rounded-[5px] after:tw-absolute after:tw-left-0 after:-tw-bottom-[12px];
+        @apply tw-relative tw-opacity-100 after:tw-content-[""] after:tw-bg-[--gallery-preview-overlay-color] after:tw-h-1 after:tw-w-full after:tw-rounded-[5px] after:tw-absolute after:tw-left-0 after:-tw-bottom-[12px];
       }
     }
   }

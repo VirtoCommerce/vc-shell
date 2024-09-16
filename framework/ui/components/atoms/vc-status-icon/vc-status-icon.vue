@@ -3,13 +3,13 @@
     <template v-if="status">
       <VcIcon
         icon="fas fa-check-circle"
-        class="tw-text-[color:#87b563]"
+        class="tw-text-[color:var(--status-success-main-color)]"
       ></VcIcon>
     </template>
     <template v-else>
       <VcIcon
         icon="fas fa-times-circle"
-        class="tw-text-[color:#bdd1df]"
+        class="tw-text-[color:var(--status-info-main-color)]"
       ></VcIcon>
     </template>
   </div>
@@ -23,3 +23,10 @@ export interface Props {
 
 defineProps<Props>();
 </script>
+
+<style lang="scss">
+:root {
+  --status-success-main-color: var(--success-400);
+  --status-info-main-color: var(--info-300);
+}
+</style>

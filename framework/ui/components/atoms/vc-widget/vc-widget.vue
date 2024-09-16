@@ -85,39 +85,57 @@ function onClick() {
 </script>
 
 <style lang="scss">
+:root {
+  --widget-bg-color: var(--additional-50);
+  --widget-border-color: var(--secondary-200);
+  --widget-bg-hover-color: var(--primary-50);
+  --widget-icon-color: var(--secondary-500);
+  --widget-icon-disabled-color: var(--neutrals-300);
+  --widget-title-color: var(--neutrals-900);
+  --widget-title-disabled-color: var(--neutrals-300);
+  --widget-value-color: var(--primary-400);
+  --widget-value-disabled-color: var(--neutrals-300);
+}
+
 .vc-widget {
-  @apply tw-flex  tw-overflow-hidden
-    tw-box-border tw-flex-col tw-items-center
-    tw-justify-center tw-border-b tw-border-solid
-    tw-border-b-[#eaedf3] tw-cursor-pointer tw-bg-white
-    hover:tw-bg-[#eff7fc];
+  @apply tw-flex tw-overflow-hidden tw-box-border tw-flex-col tw-items-center tw-justify-center tw-border-b tw-border-solid tw-cursor-pointer;
+
+  @apply tw-bg-[color:var(--widget-bg-color)] tw-border-b-[color:var(--widget-border-color)];
+
+  &:hover {
+    @apply tw-bg-[color:var(--widget-bg-hover-color)];
+  }
 
   &_disabled {
-    @apply tw-cursor-default hover:tw-bg-white;
+    @apply tw-cursor-default tw-bg-[color:var(--widget-bg-color)];
+
+    &:hover {
+      @apply tw-bg-[color:var(--widget-bg-color)];
+    }
   }
 
   &__icon {
-    @apply tw-text-[#a9bfd2];
+    @apply tw-text-[color:var(--widget-icon-color)];
   }
 
   &_disabled &__icon {
-    @apply tw-text-[#d2d4d7];
+    @apply tw-text-[color:var(--widget-icon-disabled-color)];
   }
 
   &__title {
-    @apply tw-font-medium tw-text-sm tw-text-[#333333] tw-mt-2 tw-mx-0 tw-text-center;
+    @apply tw-font-medium tw-text-sm tw-text-[color:var(--widget-title-color)] tw-mt-2 tw-mx-0 tw-text-center;
   }
 
   &_disabled &__title {
-    @apply tw-text-[#d2d4d7];
+    @apply tw-text-[color:var(--widget-title-disabled-color)];
   }
 
   &__value {
-    @apply tw-font-medium tw-text-[22px] tw-text-[#43b0e6];
+    @apply tw-font-medium tw-text-[22px] tw-text-[color:var(--widget-value-color)];
   }
 
   &_disabled &__value {
-    @apply tw-text-[#d2d4d7];
+    @apply tw-text-[color:var(--widget-value-disabled-color)];
   }
 }
 </style>

@@ -51,12 +51,12 @@ function onClick(): void {
 :root {
   --breadcrumbs-item-height: 28px;
   --breadcrumbs-item-height-light: 20px;
-  --breadcrumbs-item-border-color: #a1c0d4;
-  --breadcrumbs-item-border-color-hover: #8fb0c6;
-  --breadcrumbs-item-border-color-current: #838d9a;
-  --breadcrumbs-item-color: #43b0e6;
-  --breadcrumbs-item-color-current: #465769;
-  --breadcrumbs-item-icon-color: #a1c0d4;
+  --breadcrumbs-item-border-color: var(--secondary-300);
+  --breadcrumbs-item-border-color-hover: var(--secondary-400);
+  --breadcrumbs-item-border-color-current: var(--secondary-500);
+  --breadcrumbs-item-color: var(--primary-500);
+  --breadcrumbs-item-color-current: var(--primary-600);
+  --breadcrumbs-item-icon-color: var(--secondary-300);
 }
 
 .vc-breadcrumbs-item {

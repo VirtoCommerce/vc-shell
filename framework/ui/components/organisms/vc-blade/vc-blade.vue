@@ -1,6 +1,6 @@
 <template>
   <div
-    class="vc-blade tw-relative tw-flex tw-shrink-0 tw-flex-col tw-bg-[color:var(--blade-background-color)] tw-rounded-[var(--blade-border-radius)] tw-shadow-[2px_2px_8px_rgba(54,84,117,0.14)] tw-my-4 tw-mx-2 tw-overflow-hidden tw-transition-[width] tw-duration-200"
+    class="vc-blade tw-relative tw-flex tw-shrink-0 tw-flex-col tw-bg-[color:var(--blade-background-color)] tw-rounded-[var(--blade-border-radius)] [box-shadow:var(--blade-shadow)] tw-my-4 tw-mx-2 tw-overflow-hidden tw-transition-[width] tw-duration-200"
     :class="[
       $attrs.class,
       {
@@ -37,7 +37,9 @@
 
     <!-- Show error message -->
     <template v-if="error">
-      <div class="tw-text-white tw-p-2 tw-flex tw-flex-row tw-items-center tw-bg-[color:var(--blade-color-error)]">
+      <div
+        class="tw-text-[color:var(--blade-text-color)] tw-p-2 tw-flex tw-flex-row tw-items-center tw-bg-[color:var(--blade-color-error)]"
+      >
         <VcIcon
           size="s"
           icon="fas fa-exclamation-triangle"
@@ -45,17 +47,18 @@
         <div class="tw-line-clamp-1 tw-w-full tw-mx-2">{{ error }}</div>
         <VcButton
           text
-          class="tw-shrink-0 tw-opacity-80 tw-text-white hover:!tw-opacity-100 hover:!tw-text-white"
+          class="tw-shrink-0 tw-opacity-80 tw-text-[color:var(--blade-text-color)] hover:!tw-opacity-100 hover:!tw-text-[color:var(--blade-text-color)]"
           @click="open()"
-          >{{ t("COMPONENTS.ORGANISMS.VC_BLADE.SEE_DETAILS") }}</VcButton
         >
+          {{ t("COMPONENTS.ORGANISMS.VC_BLADE.SEE_DETAILS") }}
+        </VcButton>
       </div>
     </template>
 
     <!-- Unsaved changes -->
     <template v-if="typeof modified !== 'undefined' ? modified : false">
       <div
-        class="tw-text-white tw-px-2 tw-py-1 tw-flex tw-flex-row tw-items-center tw-bg-[color:var(--blade-color-unsaved-changes)]"
+        class="tw-text-[color:var(--blade-text-color)] tw-px-2 tw-py-1 tw-flex tw-flex-row tw-items-center tw-bg-[color:var(--blade-color-unsaved-changes)]"
       >
         <VcIcon
           size="s"
@@ -93,10 +96,11 @@
           ref="widgetsRef"
           class="vc-blade__widgets tw-flex"
           :class="{
-            'tw-border-l tw-border-solid tw-border-l-[#eaedf3]': $isDesktop.value,
+            'tw-border-l tw-border-solid tw-border-l-[color:var(--blade-border-color)]': $isDesktop.value,
             'tw-w-[var(--blade-widgets-width)] tw-flex-col': $isDesktop.value && !isExpanded,
             'tw-w-[var(--blade-widgets-width-expanded)] tw-flex-col': $isDesktop.value && isExpanded,
-            'tw-w-auto tw-border-t tw-border-solid tw-border-t-[#eaedf3] tw-flex-row': $isMobile.value,
+            'tw-w-auto tw-border-t tw-border-solid tw-border-t-[color:var(--blade-border-color)] tw-flex-row':
+              $isMobile.value,
           }"
         >
           <div
@@ -117,11 +121,12 @@
             class="tw-flex tw-flex-auto"
             :class="{
               'tw-flex-col tw-justify-end': $isDesktop.value,
-              'tw-w-12 tw-max-w-12 tw-bg-white tw-items-center tw-justify-center tw-px-4 tw-ml-auto': $isMobile.value,
+              'tw-w-12 tw-max-w-12 tw-bg-[--blade-background-color] tw-items-center tw-justify-center tw-px-4 tw-ml-auto':
+                $isMobile.value,
             }"
           >
             <VcIcon
-              class="tw-self-center tw-justify-self-center tw-text-[#a1c0d4] tw-cursor-pointer hover:tw-text-[#7ea8c4]"
+              class="tw-self-center tw-justify-self-center tw-text-[color:var(--blade-icon-color)] tw-cursor-pointer hover:tw-text-[color:var(--blade-icon-hover-color)]"
               :class="{
                 'tw-mb-4': $isDesktop.value,
               }"
@@ -226,14 +231,22 @@ const { open } = usePopup({
 
 <style lang="scss">
 :root {
-  --blade-background-color: #ffffff;
+  --blade-background-color: var(--additional-50);
   --blade-border-radius: 6px;
-  --blade-color-error: #f14e4e;
-  --blade-color-unsaved-changes: #82a6bd;
-  --blade-color-unsaved-changes: #82a6bd;
+  --blade-color-error: var(--danger-500);
+  --blade-color-unsaved-changes: var(--secondary-300);
+
+  --blade-border-color: var(--neutrals-200);
+  --blade-icon-color: var(--secondary-400);
+  --blade-icon-hover-color: var(--secondary-500);
 
   --blade-widgets-width: 50px;
   --blade-widgets-width-expanded: 120px;
+
+  --blade-shadow-color: var(--primary-700);
+  --blade-shadow: 2px 2px 8px rgb(from var(--blade-shadow-color) r g b / 14%);
+
+  --blade-text-color: var(--additional-50);
 }
 
 .vc-app_mobile .vc-blade {

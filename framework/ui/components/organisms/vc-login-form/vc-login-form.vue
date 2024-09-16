@@ -8,10 +8,10 @@
       :style="logoImageHandler"
     ></div>
     <div
-      class="tw-w-[516px] tw-max-w-[90%] tw-bg-white tw-rounded-md tw-overflow-hidden tw-shadow-[0_0_0_rgba(0,0,0,0.05)]"
+      class="tw-w-[516px] tw-max-w-[90%] tw-bg-[color:var(--login-bg-color)] tw-rounded-md tw-overflow-hidden [box-shadow:var(--login-box-shadow)]"
     >
       <div
-        class="tw-uppercase tw-text-white tw-bg-[#465769] tw-h-[50px] tw-px-[28px] tw-text-xl tw-flex tw-items-center"
+        class="tw-uppercase tw-text-[color:var(--login-title-color)] tw-bg-[--login-title-bg] tw-h-[50px] tw-px-[28px] tw-text-xl tw-flex tw-items-center"
       >
         {{ title }}
       </div>
@@ -68,6 +68,12 @@ console.debug("Init vc-login-form");
 
 <style lang="scss">
 :root {
-  --login-version-color: #838d9a;
+  --login-version-color: var(--neutrals-400);
+  --login-header-bg-color: var(--secondary-700);
+  --login-box-shadow-color: var(--additional-950);
+  --login-box-shadow: rgb(from var(--login-box-shadow-color) r g b / 5%);
+  --login-bg-color: var(--additional-50);
+  --login-title-color: var(--additional-50);
+  --login-title-bg: var(--secondary-700);
 }
 </style>

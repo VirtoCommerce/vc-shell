@@ -28,7 +28,7 @@
 
     <div
       v-if="multilanguage"
-      class="tw-text-[color:var(--app-menu-item-icon-color)] tw-shrink-0"
+      class="tw-text-[color:var(--label-lang-color)] tw-shrink-0"
     >
       {{ currentLanguage }}
     </div>
@@ -57,7 +57,8 @@ defineSlots<{
 
 <style lang="scss">
 :root {
-  --label-required-color: #f14e4e;
-  --label-tooltip-color: #d3e0ee;
+  --label-required-color: var(--danger-500);
+  --label-tooltip-color: var(--info-400);
+  --label-lang-color: var(--neutrals-500);
 }
 </style>

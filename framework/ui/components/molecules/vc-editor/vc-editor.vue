@@ -31,7 +31,10 @@
       ref="quillRef"
       :content="modelValue"
       class="quill-editor tw-border tw-border-solid tw-border-[color:var(--editor-border-color)] tw-rounded-b-[var(--editor-border-radius)] tw-h-[200px]"
-      :class="{ 'tw-bg-[#fafafa] tw-text-[#424242] tw-cursor-default': disabled }"
+      :class="{
+        'tw-bg-[color:var(--editor-disabled-bg)] tw-text-[color:var(--editor-disabled-text)] tw-cursor-default':
+          disabled,
+      }"
       theme="snow"
       :toolbar="toolbar"
       :modules="modules"
@@ -184,9 +187,11 @@ defineExpose({
 <style lang="scss">
 :root {
   --editor-border-radius: 3px;
-  --editor-border-color: #d3dbe9;
-  --editor-border-color-error: #f14e4e;
-  --editor-placeholder-color: #a5a5a5;
+  --editor-border-color: var(--neutrals-300);
+  --editor-border-color-error: var(--danger-500);
+  --editor-disabled-bg: var(--neutrals-50);
+  --editor-disabled-text: var(--neutrals-700);
+  --editor-placeholder-color: var(--neutrals-400);
 }
 
 .vc-editor {
@@ -196,7 +201,7 @@ defineExpose({
 
   .quill-editor .ql-editor {
     &.ql-blank:before {
-      color: var(--textarea-placeholder-color);
+      color: var(--editor-placeholder-color);
       content: attr(data-placeholder);
       font-style: inherit;
       left: 15px;
@@ -222,6 +227,7 @@ defineExpose({
   padding-right: 18px;
   content: attr(data-value);
 }
+
 .ql-language.ql-picker .ql-picker-item:before {
   content: attr(data-value);
 }

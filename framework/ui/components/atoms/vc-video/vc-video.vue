@@ -26,7 +26,7 @@
       </div>
       <div
         v-else
-        class="tw-absolute tw-w-full tw-h-full tw-flex tw-items-center tw-justify-center tw-text-[#83a3be]"
+        class="tw-absolute tw-w-full tw-h-full tw-flex tw-items-center tw-justify-center tw-text-[--video-icon-color]"
       >
         <VcIcon
           icon="fas fa-film"
@@ -54,3 +54,9 @@ defineProps<Props>();
 
 defineEmits<Emits>();
 </script>
+
+<style lang="scss">
+:root {
+  --video-icon-color: var(--primary-400);
+}
+</style>

@@ -87,11 +87,13 @@ function onInput(e: Event) {
 <style lang="scss">
 :root {
   --textarea-height: 120px;
-  --textarea-border-color: #d3dbe9;
-  --textarea-border-color-error: #f14e4e;
+  --textarea-border-color: var(--neutrals-300);
+  --textarea-border-color-error: var(--danger-500);
   --textarea-border-radius: 3px;
-  --textarea-background-color: #ffffff;
-  --textarea-placeholder-color: #a5a5a5;
+  --textarea-background-color: var(--additional-50);
+  --textarea-placeholder-color: var(--neutrals-400);
+  --textarea-disabled-background-color: var(--neutrals-100);
+  --textarea-disabled-text-color: var(--neutrals-700);
 }
 
 .vc-textarea {
@@ -132,7 +134,7 @@ function onInput(e: Event) {
 
   &_disabled &__field-wrapper,
   &_disabled &__field {
-    @apply tw-bg-[#fafafa] tw-text-[#424242];
+    @apply tw-bg-[var(--textarea-disabled-background-color)] tw-text-[var(--textarea-disabled-text-color)];
   }
 }
 </style>

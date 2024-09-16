@@ -2,11 +2,11 @@
   <div class="tw-flex tw-flex-col tw-flex-1">
     <div
       v-loading="loading"
-      class="vc-file-upload tw-relative tw-h-[155px] tw-box-border tw-border tw-border-dashed tw-border-[#c8dbea] tw-rounded-[6px] tw-p-4 tw-flex tw-flex-col tw-items-center tw-justify-center"
+      class="vc-file-upload tw-relative tw-h-[155px] tw-box-border tw-border tw-border-dashed tw-border-[color:var(--file-upload-border-color)] tw-rounded-[var(--file-upload-border-radius)] tw-p-4 tw-flex tw-flex-col tw-items-center tw-justify-center"
       :class="[
         `vc-file-upload_${variant}`,
         {
-          '!tw-bg-[#e8f1f9] !tw-border-solid tw-cursor-copy': isDragging,
+          '!tw-bg-[color:var(--file-upload-drag-bg)] !tw-border-solid tw-cursor-copy': isDragging,
         },
       ]"
       @drop.stop.prevent="onDrop"
@@ -18,12 +18,12 @@
       @dragleave.stop.prevent="dragLeave"
     >
       <VcIcon
-        class="tw-text-[#c8dbea]"
+        class="tw-text-[color:var(--file-upload-icon-color)]"
         :icon="icon"
         size="xxl"
       ></VcIcon>
 
-      <div class="tw-text-[#9db0be] tw-text-center tw-text-lg tw-leading-lg tw-mt-4">
+      <div class="tw-text-[color:var(--file-upload-text-color)] tw-text-center tw-text-lg tw-leading-lg tw-mt-4">
         <span>{{ customText?.dragHere || t("COMPONENTS.MOLECULES.VC_FILE_UPLOAD.DRAG_HERE") }}</span
         >&nbsp;
         <br />
@@ -46,7 +46,7 @@
       v-if="errorMessage"
       name="error"
     >
-      <VcHint class="vc-input__error">
+      <VcHint class="vc-file-upload__error">
         {{ errorMessage }}
       </VcHint>
     </slot>
@@ -93,14 +93,10 @@ defineSlots<{
 
 const { t } = useI18n({ useScope: "global" });
 
-// TODO refactor component and remove field-level validation
-
 const instance = getCurrentInstance();
-// Prepare validation rules using required and rules props combination
 const internalRules = unref(props.rules) || "";
 const isDragging = ref(false);
 
-// Prepare field-level validation
 const { errorMessage, handleChange, validate } = useField(
   `${props.name === "Gallery" ? instance?.uid : props.name}`,
   internalRules as IValidationRules,
@@ -147,14 +143,27 @@ function dragLeave() {
 </script>
 
 <style lang="scss">
+:root {
+  --file-upload-border-color: var(--neutrals-300);
+  --file-upload-border-radius: 6px;
+  --file-upload-drag-bg: var(--primary-100);
+  --file-upload-icon-color: var(--secondary-200);
+  --file-upload-text-color: var(--neutrals-400);
+  --file-upload-error-color: var(--danger-500);
+  --file-upload-background-color: var(--primary-50);
+}
+
 .vc-file-upload {
-  // variants
   &_gallery {
     @apply tw-w-[155px] tw-h-[155px];
   }
 
   &_file-upload {
-    @apply tw-w-full tw-bg-[#f2f8fd];
+    @apply tw-w-full tw-bg-[--file-upload-background-color];
+  }
+
+  &_error .vc-file-upload {
+    @apply tw-border tw-border-solid tw-border-[color:var(--file-upload-error-color)] #{!important};
   }
 }
 </style>

@@ -2,6 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
+@import './theme/colors.scss';
+
 :root {
   --scroll-color: #e1eff9;
   --scroll-color-hover: #cce4f5;
@@ -27,7 +29,7 @@
     overflow-x: hidden;
     background-clip: content-box;
 
-   
+
 
     &:hover {
       background-color: var(--scroll-color-hover);

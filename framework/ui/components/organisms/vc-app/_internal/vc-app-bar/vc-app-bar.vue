@@ -1,6 +1,6 @@
 <template>
   <div
-    class="tw-relative tw-flex tw-items-center tw-content-between tw-h-[var(--app-bar-height)] tw-bg-[color:var(--app-bar-background-color)] tw-px-4 tw-shadow-[0px_2px_5px_0px_#3654751A] tw-z-[1002]"
+    class="tw-relative tw-flex tw-items-center tw-content-between tw-h-[var(--app-bar-height)] tw-bg-[color:var(--app-bar-background-color)] tw-px-4 [box-shadow:var(--app-bar-shadow)] tw-z-[1002]"
     :class="{ '!tw-pr-0 !tw-pl-[10px]': $isMobile.value }"
   >
     <slot name="app-switcher"></slot>
@@ -57,7 +57,7 @@
     <!-- Show menu toggler on mobile devices -->
     <div
       v-if="!disableMenu && $isMobile.value"
-      class="tw-text-[#319ed4] tw-w-[var(--app-bar-button-width)] tw-flex tw-items-center tw-justify-center tw-h-full tw-box-border tw-cursor-pointer"
+      class="tw-text-[color:var(--app-bar-burger-color)] tw-w-[var(--app-bar-button-width)] tw-flex tw-items-center tw-justify-center tw-h-full tw-box-border tw-cursor-pointer"
       @click="$emit('menubutton:click')"
     >
       <VcIcon icon="fas fa-bars"></VcIcon>
@@ -111,14 +111,20 @@ watchDebounced(
 <style lang="scss">
 :root {
   --app-bar-height: 60px;
-  --app-bar-background-color: #ffffff;
+  --app-bar-background-color: var(--additional-50);
   --app-bar-button-width: 50px;
   --app-bar-button-border-color: var(--app-bar-background-color);
-  --app-bar-button-color: #7e8e9d;
+  --app-bar-button-color: var(--neutrals-500);
   --app-bar-button-background-color: var(--app-bar-background-color);
-  --app-bar-button-color-hover: #34414f;
+  --app-bar-button-color-hover: var(--neutrals-600);
   --app-bar-button-background-color-hover: var(--app-bar-background-color);
-  --app-bar-product-name-color: #34414f;
+  --app-bar-product-name-color: var(--neutrals-600);
   --app-bar-product-name-size: 20px;
+  --app-bar-toolbar-icon-background-hover: var(--neutrals-600);
+  --app-bar-divider-color: var(--additional-50);
+  --app-bar-account-info-role-color: var(--neutrals-400);
+  --app-bar-shadow-color: var(--neutrals-200);
+  --app-bar-shadow: 0px 2px 5px 0px var(--app-bar-shadow-color);
+  --app-bar-burger-color: var(--primary-500);
 }
 </style>

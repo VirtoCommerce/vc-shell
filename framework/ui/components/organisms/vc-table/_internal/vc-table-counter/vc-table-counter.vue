@@ -19,7 +19,7 @@ withDefaults(defineProps<Props>(), {
 
 <style lang="scss">
 :root {
-  --table-counter-label-color: #465769;
-  --table-counter-value-color: #43b0e6;
+  --table-counter-label-color: var(--secondary-800);
+  --table-counter-value-color: var(--info-500);
 }
 </style>

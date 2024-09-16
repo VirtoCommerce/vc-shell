@@ -15,7 +15,7 @@
     <!-- Show backdrop overlay on mobile devices -->
     <div
       v-if="$isMobile.value"
-      class="tw-absolute tw-left-0 tw-top-0 tw-right-0 tw-bottom-0 tw-z-[9998] tw-bg-[#808c99] tw-opacity-60"
+      class="tw-absolute tw-left-0 tw-top-0 tw-right-0 tw-bottom-0 tw-z-[9998] tw-bg-[color:var(--app-backdrop-overlay-bg)] tw-opacity-[color:var(--app-backdrop-overlay-opacity)]"
       @click="isMobileVisible = false"
     ></div>
     <div
@@ -29,7 +29,7 @@
       <!-- Show menu close handler on mobile devices -->
       <div
         v-if="$isMobile.value"
-        class="tw-text-[#319ed4] tw-flex tw-justify-end tw-items-center tw-p-4 tw-cursor-pointer"
+        class="tw-text-[color:var(--app-menu-close-color)] tw-flex tw-justify-end tw-items-center tw-p-4 tw-cursor-pointer"
       >
         <button @click="isMobileVisible = false">
           <VcIcon
@@ -167,11 +167,15 @@ defineExpose({
 :root {
   --app-menu-width: 230px;
   --app-menu-width-collapse: 70px;
-  --app-menu-background-color: #ffffff;
-  --app-menu-version-color: #838d9a;
+  --app-background: var(--primary-50);
+  --app-menu-background-color: var(--additional-50);
+  --app-menu-version-color: var(--neutrals-400);
 
-  --app-menu-burger-background-color: rgba(255, 255, 255, 0.5);
-  --app-menu-burger-color: #319ed4;
+  --app-menu-burger-background-color: var(--primary-100);
+  --app-menu-burger-color: var(--primary-500);
+
+  --app-backdrop-overlay-bg: var(--neutrals-800);
+  --app-backdrop-overlay-opacity: 0.6;
 }
 
 .vc-app-menu {

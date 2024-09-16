@@ -1,11 +1,17 @@
 <template>
-  <div class="tw-text-[color:var(--hint-color)] tw-text-xs">
+  <div class="vc-hint">
     <slot></slot>
   </div>
 </template>
 
 <style lang="scss">
 :root {
-  --hint-color: #a5a5a5;
+  --hint-color: var(--neutrals-500);
+  --hint-font-size: 12px;
+}
+
+.vc-hint {
+  color: var(--hint-color);
+  font-size: var(--hint-font-size);
 }
 </style>

@@ -72,7 +72,14 @@ const buttonsList = computed(() => ({
 }));
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
+:root {
+  --slider-button-background: var(--additional-50);
+  --slider-button-border: var(--neutrals-300);
+  --slider-button-text: var(--primary-500);
+  --slider-button-text-disabled: var(--neutrals-400);
+}
+
 .vc-slider {
   &__swiper {
     .swiper-slide {
@@ -85,15 +92,15 @@ const buttonsList = computed(() => ({
     @apply tw-absolute tw-top-2/4 -tw-translate-y-2/4 tw-z-[2];
 
     &.swiper-button-disabled .vc-slider__btn {
-      @apply tw-text-[#999999];
+      @apply tw-text-[var(--slider-button-text-disabled)];
     }
   }
 
   &__btn {
-    @apply tw-bg-white tw-border tw-border-solid tw-border-[#eaecf2]
+    @apply tw-bg-[var(--slider-button-background)] tw-border tw-border-solid tw-border-[var(--slider-button-border)]
       tw-box-border tw-rounded-[3px]
       tw-flex tw-items-center tw-justify-center
-      tw-text-[#43b0e6] tw-w-[30px] tw-h-[30px];
+      tw-text-[var(--slider-button-text)] tw-w-[30px] tw-h-[30px];
   }
 }
 </style>

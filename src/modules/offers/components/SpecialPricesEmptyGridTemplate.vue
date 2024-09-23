@@ -2,7 +2,7 @@
   <div class="tw-w-full tw-h-full tw-box-border tw-flex tw-flex-col tw-items-center tw-justify-center">
     <VcIcon
       icon="fas fa-tags"
-      class="tw-text-[#A9BFD2]"
+      class="tw-text-[color:var(--empty-grid-icon-color)]"
       size="xxxl"
     />
     <div class="tw-m-4 tw-text-xl tw-font-medium">

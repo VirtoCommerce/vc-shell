@@ -1,3 +1,12 @@
+## [1.0.296](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.295...v1.0.296) (2024-09-23)
+
+
+### Features
+
+* css theming ([f5cd3f0](https://github.com/VirtoCommerce/vendor-portal/commit/f5cd3f0365f0317c3464fc3b2bf09fb3efb8b766))
+
+
+
 ## [1.0.295](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.294...v1.0.295) (2024-09-11)
 
 

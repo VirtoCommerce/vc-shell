@@ -1,7 +1,9 @@
 <template>
-  <VcStatus v-bind="statusStyle(context.item.status as string)">
-    {{ context.item.status }}
-  </VcStatus>
+  <div class="tw-flex">
+    <VcStatus v-bind="statusStyle(context.item.status as string)">
+      {{ context.item.status }}
+    </VcStatus>
+  </div>
 </template>
 
 <script lang="ts" setup>

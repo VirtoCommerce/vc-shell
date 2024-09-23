@@ -72,11 +72,17 @@ watch(error, (newVal) => {
 </script>
 
 <style lang="scss">
-.dashboard {
-  --card-header-background: transparent;
+:root {
+  --dashboard-header-text-color: var(--neutrals-950);
+  --dashboard-counters-title-color: var(--secondary-500);
+  --dashboard-counters-value-color: var(--primary-500);
+  --dashboard-review-header-color: var(--primary-500);
+  --dashboard-separator-color: var(--base-border-color, var(--secondary-200));
+}
 
+.dashboard {
   &-header {
-    @apply tw-text-[25px] tw-text-[#333333] tw-mb-3 tw-pt-[22px] tw-px-2;
+    @apply tw-text-[25px] tw-text-[color:var(--dashboard-header-text-color)] tw-mb-3 tw-pt-[22px] tw-px-2;
   }
 
   .vc-row {
@@ -93,21 +99,20 @@ watch(error, (newVal) => {
     }
 
     &__title {
-      @apply tw-text-[14px] tw-font-medium tw-text-[#a9bfd2]
-        tw-text-center tw-mt-2;
+      @apply tw-text-[14px] tw-font-medium tw-text-[color:var(--dashboard-counters-title-color)] tw-text-center tw-mt-2;
     }
 
     &__value {
-      @apply tw-text-[26px] tw-font-medium tw-text-[#319ed4] tw-text-center;
+      @apply tw-text-[26px] tw-font-medium tw-text-[color:var(--dashboard-counters-value-color)] tw-text-center;
     }
   }
 
   &-review-header {
-    @apply tw-text-[#319ed4] tw-font-medium tw-text-lg tw-my-1;
+    @apply tw-text-[color:var(--dashboard-review-header-color)] tw-font-medium tw-text-lg tw-my-1;
   }
 }
 
 .vc-separator {
-  @apply tw-h-px tw-bg-[#e3e7ec];
+  @apply tw-h-px tw-bg-[--dashboard-separator-color];
 }
 </style>

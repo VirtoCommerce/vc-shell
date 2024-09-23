@@ -60,6 +60,8 @@ export const routes: RouteRecordRaw[] = [
       userId: route.query.userId,
       token: route.query.token,
       userName: route.query.userName,
+      logo: whiteLogoImage,
+      background: bgImage,
     }),
   },
   {
@@ -70,6 +72,8 @@ export const routes: RouteRecordRaw[] = [
       userId: route.query.userId,
       token: route.query.token,
       userName: route.query.userName,
+      logo: whiteLogoImage,
+      background: bgImage,
     }),
   },
   {
@@ -78,12 +82,9 @@ export const routes: RouteRecordRaw[] = [
     component: ChangePasswordPage,
     meta: {
       forced: true,
-      bgimage: bgImage,
     },
     props: (route) => ({
-      userId: route.query.userId,
-      token: route.query.token,
-      userName: route.query.userName,
+      background: bgImage,
     }),
   },
   {

@@ -13,7 +13,7 @@
       <VcIcon
         icon="fas fa-folder"
         size="xxl"
-        class="tw-text-[#83a3be]"
+        class="tw-text-[color:var(--folder-icon-color)]"
       ></VcIcon>
     </template>
   </div>
@@ -31,3 +31,9 @@ export interface Props {
 
 defineProps<Props>();
 </script>
+
+<style lang="scss">
+:root {
+  --folder-icon-color: var(--primary-300);
+}
+</style>

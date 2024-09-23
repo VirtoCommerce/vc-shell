@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="tw-flex">
     <VcStatus
       v-for="(value, i) in statuses"
       v-bind="statusStyles[value]"

@@ -6,7 +6,7 @@
     <div>{{ context.item.feeDetails[0].description }}</div>
     <div>
       <span>{{ Math.trunc(Number(context.item.feeDetails[0].amount)) }}</span
-      ><span class="tw-text-[#a5a5a5] tw-text-xs"
+      ><span class="tw-text-[color:var(--order-grid-fee-color)] tw-text-xs"
         >.{{ `${(Number(context.item.feeDetails[0].amount) * 100) % 100}`.padEnd(2, "0").slice(0, 2) }}</span
       >
     </div>
@@ -24,3 +24,9 @@ export interface Props {
 
 defineProps<Props>();
 </script>
+
+<style lang="scss">
+:root {
+  --order-grid-fee-color: var(--neutrals-400);
+}
+</style>

@@ -23,7 +23,7 @@ import { usePermissions } from "../../../../core/composables";
 
 const schemeRenderProps = {
   context: {
-    type: Object as PropType<UnwrapNestedRefs<DetailsBladeContext>>,
+    type: Object as PropType<UnwrapNestedRefs<DetailsBladeContext<any, any>>>,
     default: () => ({}) as DetailsBladeContext,
   },
   modelValue: {

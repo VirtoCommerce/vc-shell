@@ -39,7 +39,7 @@
             <SchemaRender
               v-model="item"
               :ui-schema="form.children"
-              :context="bladeContext"
+              :context="bladeContext as any"
               :current-locale="toValue(unreffedScope)?.multilanguage?.currentLocale"
             ></SchemaRender>
           </VcForm>

@@ -12,7 +12,7 @@
       >
     </VcLabel>
 
-    <template v-if="(defaultImages && defaultImages.length) || !disabled">
+    <template v-if="(toValue(defaultImages) && toValue(defaultImages).length) || !disabled">
       <div class="vc-gallery__container">
         <div
           ref="galleryRef"
@@ -64,7 +64,7 @@
 </template>
 
 <script lang="ts" setup>
-import { MaybeRef, computed, ref, unref, watch } from "vue";
+import { MaybeRef, computed, ref, unref, watch, toValue } from "vue";
 import { ICommonAsset, IValidationRules } from "../../../../core/types";
 import { VcLabel, VcFileUpload, VcHint } from "./../../";
 import VcGalleryItem from "./_internal/vc-gallery-item/vc-gallery-item.vue";
@@ -137,7 +137,8 @@ const { open } = usePopup(
       images: props.images,
       index: currentIndex.value,
     },
-  })),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  })) as any,
 );
 
 watch(

@@ -1,7 +1,11 @@
 import defaultConfig from "@vc-shell/framework/tailwind.config";
+import path from "path";
 
 export default {
   prefix: "tw-",
-  content: ["../../node_modules/@vc-shell/**/*.{vue,js,ts,jsx,tsx}", "./src/**/*.{vue,js,ts,jsx,tsx}"],
+  content: [
+    path.join(path.dirname(require.resolve("@vc-shell/framework")), "**/*.{vue,js,ts,jsx,tsx}"),
+    "./src/**/*.{vue,js,ts,jsx,tsx}",
+  ],
   theme: defaultConfig.theme,
 };

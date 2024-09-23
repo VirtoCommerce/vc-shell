@@ -1,18 +1,18 @@
 import VirtoShellFramework, { notification, useLanguages, useUser, useDynamicModules } from "@vc-shell/framework";
-import { App, Plugin, createApp, provide } from "vue";
+import { createApp } from "vue";
 import * as modules from "@vcmp-vendor-portal/modules";
 import ImportModule from "@virtocommerce/import-app";
 import { router } from "./router";
 import * as locales from "./locales";
-import { RouterView, Router } from "vue-router";
+import { RouterView } from "vue-router";
 import { bootstrap } from "./bootstrap";
 import { useSellerDetails } from "./modules/seller-details/composables";
 
 // Load required CSS
-import "./styles/index.scss";
+
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import "roboto-fontface/css/roboto/roboto-fontface.css";
-// import "@vc-shell/framework/dist/index.css";
+import "@vc-shell/framework/dist/index.css";
 import "@virtocommerce/import-app/dist/style.css";
 
 async function startApp() {

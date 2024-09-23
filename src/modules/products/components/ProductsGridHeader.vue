@@ -4,10 +4,15 @@
       :is="context.header"
       class="tw-flex-auto"
     />
-    <div class="tw-flex tw-flex-row tw-gap-2 tw-py-4 tw-pr-4">
+    <div
+      class="tw-flex tw-flex-row tw-gap-2 tw-py-4 tw-pr-4"
+      :class="{
+        'tw-border-[color:var(--table-header-border-color)] tw-border-solid tw-border-b': $isMobile.value,
+      }"
+    >
       <VcTooltip placement="bottom">
         <VcButton
-          class="tw-w-[38px] [&>.vc-icon]:disabled:tw-text-[#d2d4d7]"
+          class="tw-w-[38px] [&>.vc-icon]:disabled:tw-text-[color:var(--table-header-icon-color)]"
           icon="fas fa-list"
           icon-size="l"
           text
@@ -19,7 +24,7 @@
       </VcTooltip>
       <VcTooltip placement="bottom">
         <VcButton
-          class="tw-w-[38px] [&>.vc-icon]:disabled:tw-text-[#d2d4d7]"
+          class="tw-w-[38px] [&>.vc-icon]:disabled:tw-text-[color:var(--table-header-icon-color)]"
           icon="fas fa-stream"
           icon-size="l"
           text
@@ -49,3 +54,10 @@ export interface Props {
 
 defineProps<Props>();
 </script>
+
+<style lang="scss">
+:root {
+  --table-header-border-color: var(--neutrals-200);
+  --table-header-icon-color: var(--secondary-200);
+}
+</style>

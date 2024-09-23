@@ -1,13 +1,15 @@
 @tailwind base;
 
-html,
-body,
-#app {
-  @apply tw-font-roboto tw-h-full tw-w-full tw-m-0 tw-fixed tw-overflow-hidden tw-overscroll-y-none;
-}
+@layer base {
+  html,
+  body,
+  #app {
+    @apply tw-font-roboto tw-h-full tw-w-full tw-m-0 tw-fixed tw-overflow-hidden tw-overscroll-y-none;
+  }
 
-body {
-  @apply tw-text-base;
+  body {
+    @apply tw-text-sm tw-text-[color:var(--base-text-color)];
+  }
 }
 
 h1,

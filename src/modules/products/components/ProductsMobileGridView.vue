@@ -9,14 +9,14 @@
       <template v-if="context.item.type !== 'category'">
         <VcHint class="tw-mt-1">{{ context.item.path }}</VcHint>
 
-        <div class="tw-mt-2 tw-mb-3">
+        <div class="tw-mt-2 tw-mb-3 tw-flex">
           <MpProductStatus
             class="tw-mt-3"
             :context="context"
           />
         </div>
 
-        <div class="tw-mt-3 tw-w-full tw-flex tw-justify-between">
+        <div class="tw-mt-3 tw-w-auto tw-flex tw-justify-between">
           <div class="tw-truncate tw-grow tw-basis-0 tw-mr-2">
             <VcHint>{{ $t("PRODUCTS.PAGES.LIST.MOBILE.EAN_GTIN") }}</VcHint>
             <div class="tw-truncate tw-mt-1">

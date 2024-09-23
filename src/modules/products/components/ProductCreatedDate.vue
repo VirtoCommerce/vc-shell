@@ -1,6 +1,6 @@
 <template>
   <span
-    class="tw-text-[#a5a5a5]"
+    class="tw-text-[color:var(--table-cell-text-color)]"
     :class="context.cell.class"
     :title="(value instanceof Date && value.toLocaleString(locale)) || ''"
   >

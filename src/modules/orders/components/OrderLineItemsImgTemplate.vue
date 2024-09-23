@@ -1,7 +1,7 @@
 <template>
   <div
     v-if="imgData"
-    class="tw-w-12 tw-h-12 tw-border tw-border-solid tw-border-[#efefef] tw-rounded-[3px] tw-relative"
+    class="tw-w-12 tw-h-12 tw-border tw-border-solid tw-border-[--image-border-color] tw-rounded-[3px] tw-relative"
   >
     <!-- Single Image -->
     <template v-if="imgData.quantity === 1">
@@ -69,7 +69,9 @@
 
     <!-- No Image -->
     <template v-else>
-      <div class="tw-absolute tw-w-full tw-h-full tw-flex tw-items-center tw-justify-center tw-text-[#83a3be]">
+      <div
+        class="tw-absolute tw-w-full tw-h-full tw-flex tw-items-center tw-justify-center tw-text-[color:var(--line-item-empty-image-color)]"
+      >
         <VcIcon
           icon="fas fa-image"
           size="xl"
@@ -103,3 +105,9 @@ const imageHandler = (src: string | undefined) => {
   return src ? { background: `url(${CSS.escape(src)}) center / cover no-repeat` } : {};
 };
 </script>
+
+<style lang="scss">
+:root {
+  --line-item-empty-image-color: var(--secondary-500);
+}
+</style>

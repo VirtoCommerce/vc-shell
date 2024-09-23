@@ -1,3 +1,8 @@
+:root {
+  --v-loading-bg-color: var(--additional-50);
+  --v-loading-bg: rgb(from var(--v-loading-bg-color) r g b / 75%);
+}
+
 .v-loading {
   position: relative;
   cursor: wait;
@@ -11,7 +16,7 @@
   right: 0;
   bottom: 0;
   left: 0;
-  background-color: rgba(255, 255, 255, 75%);
+  background-color: var(--v-loading-bg);
   backdrop-filter: blur(3px);
 }
 

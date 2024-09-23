@@ -3,7 +3,7 @@
     <!-- Rating label -->
     <VcLabel
       v-if="label"
-      class="tw-mb-2"
+      class="vc-rating__label"
     >
       <span>{{ label }}</span>
       <template
@@ -16,7 +16,7 @@
 
     <!-- Rating icon -->
     <template v-if="modelValue">
-      <template v-if="variant == 'stars'">
+      <template v-if="variant === 'stars'">
         <VcIcon
           v-for="index in modelValue"
           :key="index"
@@ -32,7 +32,7 @@
       </template>
       <template v-else>
         <VcIcon
-          v-if="variant == 'star-and-text'"
+          v-if="variant === 'star-and-text'"
           icon="fas fa-star"
           class="vc-rating__icon"
         ></VcIcon>

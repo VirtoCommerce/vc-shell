@@ -5,11 +5,12 @@
 @import './theme/colors.scss';
 
 :root {
-  --scroll-color: #e1eff9;
-  --scroll-color-hover: #cce4f5;
+  --scroll-color: var(--primary-100);
+  --scroll-color-hover: var(--primary-200);
   --scroll-width: 8px;
   --scroll-padding: 8px;
-  --scroll-shadow: 0 3px 2px rgba(0, 0, 0, 0.1) inset, 0 -3px 2px rgba(0, 0, 0, 0.1) inset;
+  --scroll-shadow-color: var(--additional-950)
+  --scroll-shadow: 0 3px 2px rgb(from var(--scroll-shadow-color) r g b / 10%) inset, 0 -3px 2px rgb(from var(--scroll-shadow-color) r g b / 10%) inset;
 }
 
 * {

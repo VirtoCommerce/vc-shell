@@ -96,8 +96,9 @@ watch(
 :root {
   --card-background: var(--additional-50);
   --card-border-radius: 6px;
-  --card-box-shadow: 1px 1px 7px rgba(126, 142, 157, 0.15);
-  --card-header-background: var(--secondary-100);
+  --card-box-shadow-color: var(--secondary-600);
+  --card-box-shadow: 1px 1px 7px rgb(from var(--card-box-shadow-color) r g b / 15%);
+  --card-header-background: var(--secondary-50);
   --card-header-color: var(--secondary-600);
 
   --card-header-background-success: var(--success-100);
@@ -108,13 +109,15 @@ watch(
 
   --card-header-padding-hor: 16px;
   --card-header-padding-vert: 12px;
+
+  --card-border-color: var(--base-border-color, var(--neutrals-200));
 }
 
 $variants: success, danger;
 
 .vc-card {
   @apply tw-bg-[color:var(--card-background)] tw-border
-  tw-border-[color:var(--neutrals-200)] tw-border-solid tw-box-border
+  tw-border-[color:var(--card-border-color)] tw-border-solid tw-box-border
   tw-shadow-[var(--card-box-shadow)]
   tw-rounded-[var(--card-border-radius)] tw-overflow-hidden
   tw-flex-grow tw-flex tw-flex-col;
@@ -130,7 +133,7 @@ $variants: success, danger;
   &__title {
     @apply tw-uppercase tw-flex-grow
    tw-text-[color:var(--card-header-color)]
-   tw-text-base tw-font-bold;
+   tw-text-sm tw-font-bold;
   }
 
   &__icon {

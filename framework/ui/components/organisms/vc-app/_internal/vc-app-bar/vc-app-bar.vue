@@ -1,14 +1,14 @@
 <template>
   <div
-    class="tw-relative tw-flex tw-items-center tw-content-between tw-h-[var(--app-bar-height)] tw-bg-[color:var(--app-bar-background-color)] tw-px-4 [box-shadow:var(--app-bar-shadow)] tw-z-[1002]"
-    :class="{ '!tw-pr-0 !tw-pl-[10px]': $isMobile.value }"
+    class="vc-app-bar"
+    :class="{ 'vc-app-bar--mobile': $isMobile.value }"
   >
     <slot name="app-switcher"></slot>
 
     <template v-if="!$isMobile.value || quantity === 0">
       <!-- Logo -->
       <img
-        class="tw-h-1/2 tw-cursor-pointer tw-mx-4"
+        class="vc-app-bar__logo"
         alt="logo"
         :src="logo"
         @click="$emit('logo:click')"
@@ -17,7 +17,7 @@
       <!-- Title -->
       <div
         v-if="title"
-        class="tw-text-[color:var(--app-bar-product-name-color)] tw-text-[length:var(--app-bar-product-name-size)] tw-font-medium"
+        class="vc-app-bar__title"
       >
         {{ title }}
       </div>
@@ -27,7 +27,7 @@
       <!-- Show blades name when at least one blade is opened -->
       <div
         v-if="quantity === 1"
-        class="tw-overflow-ellipsis tw-overflow-hidden tw-whitespace-nowrap tw-text-2xl tw-leading-header tw-ml-2"
+        class="vc-app-bar__blade-title"
       >
         {{ viewTitle }}
       </div>
@@ -35,29 +35,29 @@
       <!-- Show back link when more than one blade is opened -->
       <VcLink
         v-else-if="quantity > 1"
-        class="tw-ml-3"
+        class="vc-app-bar__backlink"
         @click="$emit('backlink:click')"
       >
         <VcIcon
           icon="fas fa-chevron-left"
           size="s"
         ></VcIcon>
-        <span class="tw-ml-2 tw-text-lg">{{ t("COMPONENTS.ORGANISMS.VC_APP.INTERNAL.VC_APP_BAR.BACK") }}</span>
+        <span class="vc-app-bar__backlink-text">{{ t("COMPONENTS.ORGANISMS.VC_APP.INTERNAL.VC_APP_BAR.BACK") }}</span>
       </VcLink>
     </template>
 
     <!-- Additional spacer -->
-    <div class="tw-grow tw-basis-0"></div>
+    <div class="vc-app__spacer"></div>
 
     <!-- Toolbar container -->
-    <div class="tw-flex tw-h-full tw-box-border">
+    <div class="vc-app__toolbar">
       <slot name="toolbar"></slot>
     </div>
 
     <!-- Show menu toggler on mobile devices -->
     <div
       v-if="!disableMenu && $isMobile.value"
-      class="tw-text-[color:var(--app-bar-burger-color)] tw-w-[var(--app-bar-button-width)] tw-flex tw-items-center tw-justify-center tw-h-full tw-box-border tw-cursor-pointer"
+      class="vc-app__menu-toggler"
       @click="$emit('menubutton:click')"
     >
       <VcIcon icon="fas fa-bars"></VcIcon>
@@ -114,17 +114,65 @@ watchDebounced(
   --app-bar-background-color: var(--additional-50);
   --app-bar-button-width: 50px;
   --app-bar-button-border-color: var(--app-bar-background-color);
-  --app-bar-button-color: var(--neutrals-500);
+  --app-bar-button-color: var(--secondary-600);
   --app-bar-button-background-color: var(--app-bar-background-color);
-  --app-bar-button-color-hover: var(--neutrals-600);
+  --app-bar-button-color-hover: var(--secondary-700);
   --app-bar-button-background-color-hover: var(--app-bar-background-color);
   --app-bar-product-name-color: var(--neutrals-600);
   --app-bar-product-name-size: 20px;
   --app-bar-toolbar-icon-background-hover: var(--neutrals-600);
   --app-bar-divider-color: var(--additional-50);
   --app-bar-account-info-role-color: var(--neutrals-400);
-  --app-bar-shadow-color: var(--neutrals-200);
-  --app-bar-shadow: 0px 2px 5px 0px var(--app-bar-shadow-color);
+
   --app-bar-burger-color: var(--primary-500);
+
+  --app-bar-shadow-color: var(--additional-950);
+  --app-bar-shadow: 0px 2px 4px 0px rgba(var(--app-bar-shadow-color), 0.07);
+}
+
+.vc-app-bar {
+  @apply tw-relative tw-flex tw-items-center tw-justify-between tw-px-4 tw-z-[1002];
+  height: var(--app-bar-height);
+  background-color: var(--app-bar-background-color);
+  box-shadow: var(--app-bar-shadow);
+  @apply tw-box-border;
+}
+
+.vc-app-bar--mobile {
+  @apply tw-pr-0 tw-pl-3 #{!important};
+}
+
+.vc-app-bar__logo {
+  @apply tw-h-1/2 tw-cursor-pointer tw-mx-4;
+}
+
+.vc-app-bar__title {
+  @apply tw-text-[color:var(--app-bar-product-name-color)] tw-font-medium;
+  font-size: var(--app-bar-product-name-size);
+}
+
+.vc-app-bar__blade-title {
+  @apply tw-overflow-ellipsis tw-overflow-hidden tw-whitespace-nowrap tw-text-2xl tw-ml-2;
+  @apply tw-leading-snug;
+}
+
+.vc-app-bar__backlink {
+  @apply tw-ml-3;
+}
+
+.vc-app-bar__backlink-text {
+  @apply tw-ml-2 tw-text-lg;
+}
+
+.vc-app__spacer {
+  @apply tw-grow tw-basis-0;
+}
+
+.vc-app__toolbar {
+  @apply tw-flex tw-h-full tw-box-border;
+}
+
+.vc-app__menu-toggler {
+  @apply tw-text-[color:var(--app-bar-burger-color)] tw-w-12 tw-flex tw-items-center tw-justify-center tw-h-full tw-box-border tw-cursor-pointer;
 }
 </style>

@@ -26,7 +26,7 @@
     </template>
     <template v-else>
       <div
-        v-if="!isWidgetView && scope?.breadcrumbs"
+        v-if="!isWidgetView && toValue(scope?.breadcrumbs)?.length"
         :class="[
           {
             '-tw-mb-4': typeof tableData?.header === 'undefined' || tableData.header,
@@ -46,9 +46,10 @@
         :expanded="expanded"
         :total-label="$t(`${localizationPrefix}.PAGES.LIST.TABLE.TOTALS`)"
         :active-filter-count="activeFilterCount"
+        :disable-filter="filterDisable"
       >
         <template
-          v-if="isFilterVisible"
+          v-if="isFilterVisible && bladeOptions.tableData?.filter"
           #filters="{ closePanel }"
         >
           <filterComponent :close="closePanel" />
@@ -301,6 +302,19 @@ if (props.isWidgetView) {
 sort.value = query.value.sort ?? "createdDate:DESC";
 
 const unreffedScope = reactiveComputed(() => toValue(scope) ?? {});
+
+const filterDisable = computed(() => {
+  if (tableData?.value?.filter?.disabled?.method) {
+    const disableFilterMethod = toValue(unreffedScope)?.[tableData?.value?.filter?.disabled.method];
+
+    if (disableFilterMethod && typeof disableFilterMethod === "function") {
+      return disableFilterMethod();
+    } else {
+      return toValue(disableFilterMethod);
+    }
+  }
+  return false;
+});
 
 const { tableTemplates } = useTableTemplates(tableData);
 

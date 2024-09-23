@@ -147,23 +147,23 @@ export default {
     fontFamily: {
       roboto: ["Roboto", "sans-serif"],
     },
-    fontSize: {
-      xs: ["11px", "14px"],
-      sm: ["12px", "16px"],
-      base: ["13px", "18px"],
-      lg: ["14px", "19px"],
-      xl: ["16px", "22px"],
-      "2xl": ["23px", "28px"],
-    },
-    lineHeight: {
-      xs: "14px",
-      sm: "16px",
-      base: "18px",
-      lg: "19px",
-      xl: "22px",
-      "2xl": "28px",
-      header: "28px",
-    },
+    // fontSize: {
+    //   xs: ["11px", "14px"],
+    //   sm: ["12px", "16px"],
+    //   base: ["13px", "18px"],
+    //   lg: ["14px", "19px"],
+    //   xl: ["16px", "22px"],
+    //   "2xl": ["23px", "28px"],
+    // },
+    // lineHeight: {
+    //   xs: "14px",
+    //   sm: "16px",
+    //   base: "18px",
+    //   lg: "19px",
+    //   xl: "22px",
+    //   "2xl": "28px",
+    //   header: "28px",
+    // },
     // colors,
 
     // backgroundColor: {
@@ -201,6 +201,93 @@ export default {
     // boxShadowColor: {
     //   ...colors,
     // },
+
+    fontSize: {
+      xxs: [
+        "0.625rem", //10px
+        {
+          lineHeight: "0.75rem", //12px
+        },
+      ],
+      xs: [
+        "0.75rem", //12px
+        {
+          lineHeight: "0.875rem", //14px
+        },
+      ],
+      sm: [
+        "0.875rem", //14px
+        {
+          lineHeight: "1rem", //18px
+        },
+      ],
+      s: [
+        "0.875rem", //14px
+        {
+          lineHeight: "1rem", //18px
+        },
+      ],
+      base: [
+        "1rem", //16px
+        {
+          lineHeight: "1.25rem", //20px
+        },
+      ],
+      lg: [
+        "1.125rem", //18px
+        {
+          lineHeight: "1.375rem", //22px
+        },
+      ],
+      xl: [
+        "1.25rem", //20px
+        {
+          lineHeight: "1.75rem", //28px
+        },
+      ],
+      "2xl": [
+        "1.5rem", //24px
+        {
+          lineHeight: "2rem", //32px
+        },
+      ],
+      "3xl": [
+        "1.875rem", //30px
+        {
+          lineHeight: "2.25rem", //36px
+        },
+      ],
+      "4xl": [
+        "2.25rem", //36px
+        {
+          lineHeight: "2.5rem", //40px
+        },
+      ],
+      "5xl": [
+        "3rem", //48px
+        {
+          lineHeight: "3rem", //48px
+        },
+      ],
+      "6xl": [
+        "3.75rem", //60px
+        {
+          lineHeight: "3.75rem", //60px
+        },
+      ],
+      "7xl": [
+        "4.5rem", //72px
+        {
+          lineHeight: "4.5rem", //72px
+        },
+      ],
+      "8xl": [
+        "6rem", //96px
+        {
+          lineHeight: "6rem", //96px
+        },
+      ],
+    },
     extend: {
       keyframes: {
         loadingMarker: {

@@ -1103,6 +1103,9 @@ export type ControlSchema =
   | RadioButtonSchema;
 
 export interface FilterBase {
+  disabled?: {
+    method: string;
+  };
   columns: {
     /**
      * @deprecated use 'label' in 'controls' instead

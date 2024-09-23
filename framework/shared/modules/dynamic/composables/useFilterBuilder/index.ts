@@ -349,7 +349,7 @@ export default <Query>(args: {
               title
                 ? h(
                     "div",
-                    { class: "tw-mb-4 tw-text-[#a1c0d4] tw-font-bold tw-text-[17px]" },
+                    { class: "tw-mb-4 tw-text-[color:var(--secondary-500)] tw-font-bold tw-text-[17px]" },
                     unref(computed(() => t(title))),
                   )
                 : undefined,

@@ -7,20 +7,20 @@
     }"
   >
     <div
-      class="vc-widget tw-relative tw-shrink-0 tw-py-4 tw-px-2"
-      :class="{
-        'tw-w-[120px] tw-h-[120px]': isExpanded,
-        'vc-widget_disabled': disabled,
-        'tw-w-[50px] tw-h-[50px]': !isExpanded,
-        'tw-w-[100px]': $isMobile.value,
-      }"
+      class="vc-widget"
+      :class="[
+        { 'vc-widget--expanded': isExpanded },
+        { 'vc-widget--collapsed': !isExpanded },
+        { 'vc-widget--mobile': $isMobile.value },
+        { 'vc-widget--disabled': disabled },
+      ]"
       @click="onClick"
     >
       <VcBadge
         :content="truncateCount"
         :size="isExpanded ? 'm' : 's'"
       >
-        <div class="tw-flex tw-flex-col tw-items-center tw-justify-center">
+        <div class="vc-widget__icon-container">
           <VcIcon
             v-if="icon"
             class="vc-widget__icon"
@@ -29,10 +29,10 @@
           ></VcIcon>
         </div>
       </VcBadge>
-      <div class="tw-w-full">
+      <div class="vc-widget__content">
         <div
           v-if="title && isExpanded"
-          class="vc-widget__title tw-line-clamp-2"
+          class="vc-widget__title"
         >
           {{ title }}
         </div>
@@ -87,55 +87,68 @@ function onClick() {
 <style lang="scss">
 :root {
   --widget-bg-color: var(--additional-50);
-  --widget-border-color: var(--secondary-200);
+  --widget-border-color: var(--base-border-color, var(--neutrals-200));
   --widget-bg-hover-color: var(--primary-50);
   --widget-icon-color: var(--secondary-500);
   --widget-icon-disabled-color: var(--neutrals-300);
-  --widget-title-color: var(--neutrals-900);
+  --widget-title-color: var(--base-text-color, var(--neutrals-950));
   --widget-title-disabled-color: var(--neutrals-300);
   --widget-value-color: var(--primary-400);
   --widget-value-disabled-color: var(--neutrals-300);
 }
 
 .vc-widget {
+  @apply tw-relative tw-shrink-0 tw-py-4 tw-px-2;
   @apply tw-flex tw-overflow-hidden tw-box-border tw-flex-col tw-items-center tw-justify-center tw-border-b tw-border-solid tw-cursor-pointer;
-
   @apply tw-bg-[color:var(--widget-bg-color)] tw-border-b-[color:var(--widget-border-color)];
 
   &:hover {
     @apply tw-bg-[color:var(--widget-bg-hover-color)];
   }
 
-  &_disabled {
-    @apply tw-cursor-default tw-bg-[color:var(--widget-bg-color)];
+  &--expanded {
+    @apply tw-w-32 tw-h-32;
+  }
 
-    &:hover {
-      @apply tw-bg-[color:var(--widget-bg-color)];
-    }
+  &--collapsed {
+    @apply tw-w-12 tw-h-12;
+  }
+
+  &--mobile {
+    @apply tw-w-28;
+    @apply tw-border-none #{!important};
+  }
+
+  &__icon-container {
+    @apply tw-flex tw-flex-col tw-items-center tw-justify-center;
   }
 
   &__icon {
     @apply tw-text-[color:var(--widget-icon-color)];
   }
 
-  &_disabled &__icon {
+  &--disabled &__icon {
     @apply tw-text-[color:var(--widget-icon-disabled-color)];
   }
 
   &__title {
-    @apply tw-font-medium tw-text-sm tw-text-[color:var(--widget-title-color)] tw-mt-2 tw-mx-0 tw-text-center;
+    @apply tw-font-medium tw-text-sm tw-text-[color:var(--widget-title-color)] tw-mt-2 tw-mx-0 tw-text-center tw-line-clamp-2;
   }
 
-  &_disabled &__title {
+  &--disabled &__title {
     @apply tw-text-[color:var(--widget-title-disabled-color)];
   }
 
-  &__value {
-    @apply tw-font-medium tw-text-[22px] tw-text-[color:var(--widget-value-color)];
+  &__content {
+    @apply tw-w-full;
   }
 
-  &_disabled &__value {
-    @apply tw-text-[color:var(--widget-value-disabled-color)];
+  &--disabled {
+    @apply tw-cursor-default tw-bg-[color:var(--widget-bg-color)];
+
+    &:hover {
+      @apply tw-bg-[color:var(--widget-bg-color)];
+    }
   }
 }
 </style>

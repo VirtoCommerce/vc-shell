@@ -1,17 +1,17 @@
 <template>
   <div
-    class="vc-select tw-box-border tw-w-full"
+    class="vc-select"
     :class="{
       'vc-select_opened': isOpened,
       'vc-select_error': error,
       'vc-select_disabled': disabled,
-      'tw-pb-[20px]': error || hint,
+      'vc-select_has-hint-or-error': error || hint,
     }"
   >
     <!-- Select label -->
     <VcLabel
       v-if="label"
-      class="tw-mb-2"
+      class="vc-select__label"
       :required="required"
       :multilanguage="multilanguage"
       :current-language="currentLanguage"
@@ -26,70 +26,66 @@
     </VcLabel>
 
     <!-- Select field -->
-    <div class="tw-flex tw-flex-nowrap tw-items-start tw-relative">
+    <div class="vc-select__field-container">
       <div
         ref="dropdownToggleRef"
-        class="tw-flex tw-flex-auto tw-text-left tw-max-w-full"
+        class="vc-select__dropdown-toggle"
       >
         <slot
           name="control"
           :toggle-handler="toggleDropdown"
         >
-          <div class="tw-relative tw-flex tw-flex-auto tw-text-left tw-max-w-full">
+          <div class="vc-select__control">
             <div
               v-if="$slots['prepend']"
-              class="tw-flex tw-items-center tw-flex-nowrap tw-pr-3"
+              class="vc-select__prepend"
             >
               <slot name="prepend"></slot>
             </div>
-            <div class="tw-relative tw-flex tw-flex-auto tw-overflow-x-clip tw-truncate">
-              <div
-                class="tw-truncate vc-select__field-wrapper tw-relative tw-box-border tw-border tw-border-solid tw-border-[color:var(--select-border-color)] tw-rounded-[var(--select-border-radius)] tw-bg-[color:var(--select-background-color)] tw-flex tw-flex-col tw-flex-nowrap tw-flex-auto tw-items-stretch"
-              >
-                <div class="tw-flex tw-flex-col tw-flex-nowrap tw-flex-auto tw-relative">
-                  <div class="tw-flex tw-flex-nowrap tw-flex-auto tw-h-full tw-px-3">
+            <div class="vc-select__field-wrapper">
+              <div class="vc-select__field">
+                <div class="vc-select__field-inner">
+                  <div class="vc-select__field-content">
                     <div
                       v-if="$slots['prepend-inner']"
-                      class="tw-flex tw-items-center tw-flex-nowrap tw-pr-3"
+                      class="vc-select__prepend-inner"
                     >
                       <slot name="prepend-inner"></slot>
                     </div>
-                    <div class="tw-flex tw-flex-nowrap tw-flex-auto tw-h-full tw-truncate">
+                    <div class="vc-select__field-main">
                       <div
                         v-if="prefix"
-                        class="tw-flex tw-items-center tw-flex-wrap tw-pr-3 tw-pointer-events-none"
+                        class="vc-select__prefix"
                       >
                         {{ prefix }}
                       </div>
                       <div
                         data-test-id="dropdown-toggle"
-                        class="tw-appearance-none tw-border-none tw-outline-none tw-flex tw-items-center tw-w-full tw-box-border tw-cursor-pointer invalid:tw-text-[color:var(--select-placeholder-color)] tw-truncate"
+                        class="vc-select__input"
                         :class="{
-                          'tw-min-h-[var(--select-height)]': size === 'default',
-                          'tw-min-h-[var(--select-height-small)]': size === 'small',
+                          'vc-select__input--default': size === 'default',
+                          'vc-select__input--small': size === 'small',
                         }"
                         @click.stop="toggleDropdown"
                       >
                         <div
                           v-if="!hasValue"
-                          class="tw-text-[color:var(--select-placeholder-color)]"
+                          class="vc-select__placeholder"
                         >
                           <template v-if="placeholder">{{ placeholder }}</template>
                           <template v-else>{{ t("COMPONENTS.MOLECULES.VC_SELECT.CLICK_TO_SELECT") }}</template>
                         </div>
                         <template v-else-if="selectedScope && selectedScope.length && hasValue">
-                          <div class="tw-flex tw-flex-wrap tw-gap-1 tw-py-1">
+                          <div class="vc-select__selected">
                             <div
                               v-for="(item, i) in selectedScope"
                               :key="i"
-                              class="tw-flex tw-items-center"
+                              class="vc-select__selected-item"
                             >
                               <template v-if="multiple">
-                                <div
-                                  class="tw-bg-[color:var(--select-option-background-color-selected)] tw-border tw-border-solid tw-border-[color:var(--select-border-color)] tw-rounded-[2px] tw-flex tw-items-center tw-h-[28px] tw-box-border tw-px-2"
-                                >
+                                <div class="vc-select__multiple-item">
                                   <template v-if="loading">
-                                    <span class="tw-text-[color:var(--select-loading-color)]">{{
+                                    <span class="vc-select__loading">{{
                                       t("COMPONENTS.MOLECULES.VC_SELECT.LOADING")
                                     }}</span>
                                   </template>
@@ -103,7 +99,7 @@
                                   </template>
                                   <VcIcon
                                     v-if="!disabled"
-                                    class="tw-text-[color:var(--select-clear-color)] tw-ml-2 tw-cursor-pointer hover:tw-text-[color:var(--select-clear-color-hover)]"
+                                    class="vc-select__icon-remove"
                                     icon="fas fa-times"
                                     size="s"
                                     @click.stop="removeAtIndex(item.index)"
@@ -112,7 +108,7 @@
                               </template>
                               <template v-else-if="!multiple">
                                 <template v-if="loading">
-                                  <span class="tw-text-[color:var(--select-loading-color)]">{{
+                                  <span class="vc-select__loading">{{
                                     t("COMPONENTS.MOLECULES.VC_SELECT.LOADING")
                                   }}</span>
                                 </template>
@@ -135,13 +131,13 @@
                       </div>
                       <div
                         v-if="suffix"
-                        class="tw-flex tw-items-center tw-flex-wrap tw-pl-3 tw-pointer-events-none"
+                        class="vc-select__suffix"
                       >
                         {{ suffix }}
                       </div>
                       <div
                         v-if="clearable && hasValue && !disabled"
-                        class="tw-cursor-pointer tw-flex tw-items-center tw-pl-3 tw-text-[color:var(--select-clear-color)] hover:tw-text-[color:var(--select-clear-color-hover)]"
+                        class="vc-select__clear"
                         @click="onReset"
                       >
                         <VcIcon
@@ -152,14 +148,14 @@
                     </div>
                     <div
                       v-if="$slots['append-inner']"
-                      class="tw-flex tw-items-center tw-flex-nowrap tw-pl-3"
+                      class="vc-select__append-inner"
                     >
                       <slot name="append-inner"></slot>
                     </div>
                     <!-- Loading-->
                     <div
                       v-if="loading || listLoading"
-                      class="tw-flex tw-items-center tw-flex-nowrap tw-pl-3 tw-text-[color:var(--select-loading-color)]"
+                      class="vc-select__loading-icon"
                     >
                       <VcIcon
                         icon="fas fa-circle-notch tw-animate-spin"
@@ -169,12 +165,10 @@
                     <!-- Select chevron-->
                     <div
                       v-if="!disabled"
-                      class="tw-flex tw-items-center tw-flex-nowrap tw-pl-3 tw-cursor-pointer"
+                      class="vc-select__chevron-container"
                       @click.stop="toggleDropdown"
                     >
-                      <div
-                        class="vc-select__chevron tw-flex-nowrap tw-text-[color:var(--select-chevron-color)] hover:tw-text-[color:var(--select-chevron-color-hover)]"
-                      >
+                      <div class="vc-select__chevron">
                         <VcIcon
                           size="s"
                           icon="fas fa-chevron-down"
@@ -184,7 +178,7 @@
                   </div>
                 </div>
               </div>
-              <div class="tw-absolute tw-translate-y-full tw-left-0 tw-right-0 tw-bottom-0 tw-min-h-[20px]">
+              <div class="vc-select__hint-error">
                 <Transition
                   name="slide-up"
                   mode="out-in"
@@ -193,7 +187,7 @@
                     <slot name="error">
                       <VcHint
                         v-if="errorMessage"
-                        class="tw-mt-1 tw-text-[color:var(--select-border-color-error)]"
+                        class="vc-select__error-message"
                       >
                         {{ errorMessage }}
                       </VcHint>
@@ -203,7 +197,7 @@
                     <slot name="hint">
                       <VcHint
                         v-if="hint"
-                        class="tw-text-[color:var(--select-placeholder-color)] tw-mt-1 tw-break-words tw-p-0"
+                        class="vc-select__hint"
                       >
                         {{ hint }}
                       </VcHint>
@@ -215,7 +209,7 @@
 
             <div
               v-if="$slots['append']"
-              class="tw-flex tw-items-center tw-flex-nowrap tw-pl-3"
+              class="vc-select__append"
             >
               <slot name="append"></slot>
             </div>
@@ -229,13 +223,13 @@
           ref="dropdownRef"
           v-on-click-outside="[toggleDropdown, { ignore: [dropdownToggleRef] }]"
           data-test-id="dropdown"
-          class="tw-flex tw-flex-col tw-box-border tw-max-h-[300px] tw-h-auto tw-z-[101] tw-overflow-hidden tw-absolute tw-bg-[color:var(--select-background-color)] tw-border tw-border-solid tw-border-[color:var(--select-border-color)] tw-border-t-[color:var(--select-background-color)] tw-rounded-b-[var(--select-border-radius)] tw-p-2"
+          class="vc-select__dropdown"
           :style="dropdownStyle"
         >
           <input
             v-if="searchable"
             ref="searchRef"
-            class="tw-w-full tw-box-border tw-border tw-border-solid tw-border-[color:var(--select-border-color-input)] tw-rounded-[4px] tw-h-[32px] tw-leading-[32px] tw-outline-none tw-mb-3 tw-px-2"
+            class="vc-select__search-input"
             @input="onInput"
           />
 
@@ -245,19 +239,19 @@
           >
             <div
               v-if="!(optionsList && optionsList.length)"
-              class="tw-w-full tw-h-full tw-box-border tw-flex tw-flex-col tw-items-center tw-justify-center"
+              class="vc-select__no-options"
             >
               <slot name="no-options">
-                <span class="tw-m-4 tw-text-xl tw-font-medium">No options</span>
+                <span class="vc-select__no-options-text">No options</span>
               </slot>
             </div>
             <div
               v-for="(item, i) in optionScope"
               v-else
               :key="i"
-              class="tw-flex tw-items-center tw-min-h-[36px] tw-my-1 tw-box-border tw-px-2 tw-rounded-[3px] tw-cursor-pointer hover:tw-bg-[color:var(--select-option-background-color-hover)]"
+              class="vc-select__option"
               data-test-id="option"
-              :class="{ 'tw-bg-[color:var(--select-option-background-color-selected)]': item.selected }"
+              :class="{ 'vc-select__option--selected': item.selected }"
               @click="item.toggleOption(item.opt)"
             >
               <slot
@@ -948,10 +942,10 @@ function onReset() {
   --select-height: 38px;
   --select-height-small: 28px;
   --select-border-radius: 3px;
-  --select-border-color: var(--neutrals-300);
-  --select-border-color-error: var(--danger-500);
+  --select-border-color: var(--secondary-200);
+  --select-border-color-error: var(--base-error-color, var(--danger-500));
   --select-background-color: var(--additional-50);
-  --select-background-color-disabled: var(--neutrals-100);
+  --select-background-color-disabled: var(--neutrals-50);
   --select-placeholder-color: var(--neutrals-400);
   --select-chevron-color: var(--primary-500);
   --select-chevron-color-hover: var(--primary-600);
@@ -962,29 +956,175 @@ function onReset() {
   --select-loading-color: var(--info-500);
   --select-option-background-color-hover: var(--accent-100);
   --select-option-background-color-selected: var(--accent-200);
-  --select-border-color-input: var(--neutrals-300);
+  --select-border-color-input: var(--secondary-200);
+
+  --select-search-background-color: var(--additional-50);
 }
 
 .vc-select {
-  &_disabled &__field-wrapper,
-  &_disabled &__field {
-    @apply tw-bg-[color:var(--select-background-color-disabled)] tw-text-[--select-disabled-field-color];
+  &__container {
+    @apply tw-box-border tw-w-full;
   }
 
-  &_error &__field-wrapper {
-    @apply tw-border tw-border-solid tw-border-[color:var(--select-border-color-error)];
+  &__label {
+    @apply tw-mb-2;
   }
 
-  &_disabled &__field {
-    @apply tw-cursor-auto;
+  &__field-container {
+    @apply tw-flex tw-flex-nowrap tw-items-start tw-relative;
   }
 
-  &_opened &__chevron {
+  &__dropdown-toggle {
+    @apply tw-flex tw-flex-auto tw-text-left tw-max-w-full;
+  }
+
+  &__control {
+    @apply tw-relative tw-flex tw-flex-auto tw-text-left tw-max-w-full;
+  }
+
+  &__prepend,
+  &__append {
+    @apply tw-flex tw-items-center tw-flex-nowrap tw-pr-3;
+  }
+
+  &__field-wrapper {
+    @apply tw-relative tw-flex tw-flex-auto tw-overflow-x-clip tw-truncate;
+  }
+
+  &__field {
+    @apply tw-truncate tw-relative tw-box-border tw-border tw-border-solid tw-border-[color:var(--select-border-color)] tw-rounded-sm tw-bg-[color:var(--select-background-color)] tw-flex tw-flex-col tw-flex-nowrap tw-flex-auto tw-items-stretch;
+  }
+
+  &__field-inner {
+    @apply tw-flex tw-flex-col tw-flex-nowrap tw-flex-auto tw-relative;
+  }
+
+  &__field-content {
+    @apply tw-flex tw-flex-nowrap tw-flex-auto tw-h-full tw-px-3;
+  }
+
+  &__prepend-inner,
+  &__append-inner {
+    @apply tw-flex tw-items-center tw-flex-nowrap tw-pr-3;
+  }
+
+  &__field-main {
+    @apply tw-flex tw-flex-nowrap tw-flex-auto tw-h-full tw-truncate;
+  }
+
+  &__prefix,
+  &__suffix {
+    @apply tw-flex tw-items-center tw-flex-wrap tw-pr-3 tw-pointer-events-none tw-text-sm;
+  }
+
+  &__input {
+    @apply tw-appearance-none tw-border-none tw-outline-none tw-flex tw-items-center tw-w-full tw-box-border tw-cursor-pointer invalid:tw-text-[color:var(--select-placeholder-color)] tw-truncate;
+
+    &--default {
+      @apply tw-min-h-10;
+    }
+
+    &--small {
+      @apply tw-min-h-7;
+    }
+  }
+
+  &__placeholder {
+    @apply tw-text-[color:var(--select-placeholder-color)] tw-text-sm;
+  }
+
+  &__selected {
+    @apply tw-flex tw-flex-wrap tw-gap-1 tw-py-1;
+  }
+
+  &__selected-item {
+    @apply tw-flex tw-items-center tw-text-sm;
+  }
+
+  &__multiple-item {
+    @apply tw-bg-[color:var(--select-option-background-color-selected)] tw-border tw-border-solid tw-border-[color:var(--select-border-color)] tw-rounded-sm tw-flex tw-items-center tw-h-7 tw-box-border tw-px-2;
+  }
+
+  &__loading {
+    @apply tw-text-[color:var(--select-loading-color)];
+  }
+
+  &__icon-remove {
+    @apply tw-text-[color:var(--select-clear-color)] tw-ml-2 tw-cursor-pointer hover:tw-text-[color:var(--select-clear-color-hover)];
+  }
+
+  &__clear {
+    @apply tw-cursor-pointer tw-flex tw-items-center tw-pl-3 tw-text-[color:var(--select-clear-color)] hover:tw-text-[color:var(--select-clear-color-hover)];
+  }
+
+  &__loading-icon {
+    @apply tw-flex tw-items-center tw-flex-nowrap tw-pl-3 tw-text-[color:var(--select-loading-color)];
+  }
+
+  &__chevron-container {
+    @apply tw-flex tw-items-center tw-flex-nowrap tw-pl-3 tw-cursor-pointer;
+  }
+
+  &__chevron {
+    @apply tw-flex-nowrap tw-text-[color:var(--select-chevron-color)] hover:tw-text-[color:var(--select-chevron-color-hover)];
+  }
+
+  &__hint-error {
+    @apply tw-absolute tw-translate-y-full tw-left-0 tw-right-0 tw-bottom-0 tw-min-h-5;
+  }
+
+  &__error-message {
+    @apply tw-mt-1 tw-text-[color:var(--select-border-color-error)];
+  }
+
+  &__hint {
+    @apply tw-text-[color:var(--select-placeholder-color)] tw-mt-1 tw-break-words tw-p-0;
+  }
+
+  &__dropdown {
+    @apply tw-flex tw-flex-col tw-box-border tw-max-h-72 tw-h-auto tw-z-[101] tw-overflow-hidden tw-absolute tw-bg-[color:var(--select-background-color)] tw-border tw-border-solid tw-border-[color:var(--select-border-color)] tw-border-t-[color:var(--select-background-color)] tw-rounded-b-sm tw-p-2;
+  }
+
+  &__search-input {
+    @apply tw-w-full tw-box-border tw-border tw-border-solid tw-border-[color:var(--select-border-color-input)] tw-bg-[color:var(--select-search-background-color)] tw-rounded-md tw-h-8 tw-leading-8 tw-outline-none tw-mb-3 tw-px-2;
+  }
+
+  &__no-options {
+    @apply tw-w-full tw-h-full tw-box-border tw-flex tw-flex-col tw-items-center tw-justify-center;
+  }
+
+  &__no-options-text {
+    @apply tw-m-4 tw-text-lg tw-font-medium;
+  }
+
+  &__option {
+    @apply tw-flex tw-items-center tw-min-h-9 tw-my-1 tw-box-border tw-px-2 tw-rounded-sm tw-cursor-pointer hover:tw-bg-[color:var(--select-option-background-color-hover)] tw-text-sm;
+
+    &--selected {
+      @apply tw-bg-[color:var(--select-option-background-color-selected)];
+    }
+  }
+
+  &.vc-select_opened &__chevron {
     @apply tw-rotate-180;
   }
 
-  &_opened &__field-wrapper {
-    @apply tw-rounded-t-[var(--select-border-radius)];
+  &.vc-select_opened &__field {
+    @apply tw-rounded-t-sm tw-rounded-b-none;
+  }
+
+  &.vc-select_error &__field-wrapper {
+    @apply tw-border tw-border-solid tw-border-[color:var(--select-border-color-error)];
+  }
+
+  &.vc-select_disabled &__field-wrapper,
+  &.vc-select_disabled &__field,
+  &.vc-select_disabled &__input {
+    @apply tw-bg-[color:var(--select-background-color-disabled)] tw-text-[color:var(--select-disabled-field-color)] tw-cursor-auto;
+  }
+
+  &.vc-select_has-hint-or-error {
+    @apply tw-pb-5;
   }
 }
 </style>

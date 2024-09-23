@@ -1,13 +1,12 @@
 <template>
   <div
-    class="vc-blade tw-relative tw-flex tw-shrink-0 tw-flex-col tw-bg-[color:var(--blade-background-color)] tw-rounded-[var(--blade-border-radius)] [box-shadow:var(--blade-shadow)] tw-my-4 tw-mx-2 tw-overflow-hidden tw-transition-[width] tw-duration-200"
+    class="vc-blade"
     :class="[
       $attrs.class,
       {
-        '!tw-w-full': $isMobile.value,
-        '!tw-w-full !tw-shrink': expanded,
-        '!tw-absolute !tw-z-[2] !tw-top-0 !tw-bottom-0 !tw-left-0 ![width:-webkit-fill-available] !tw-shrink':
-          maximized,
+        'vc-blade--mobile': $isMobile.value,
+        'vc-blade--expanded': expanded,
+        'vc-blade--maximized': maximized,
       },
     ]"
     :style="{ width: typeof width === 'number' ? `${width}px` : width }"
@@ -15,7 +14,7 @@
     <!-- Init blade header -->
     <VcBladeHeader
       v-if="!$isMobile.value || closable"
-      class="tw-shrink-0"
+      class="vc-blade__header"
       :maximized="maximized"
       :expandable="expandable"
       :closable="closable"
@@ -37,17 +36,15 @@
 
     <!-- Show error message -->
     <template v-if="error">
-      <div
-        class="tw-text-[color:var(--blade-text-color)] tw-p-2 tw-flex tw-flex-row tw-items-center tw-bg-[color:var(--blade-color-error)]"
-      >
+      <div class="vc-blade__error">
         <VcIcon
           size="s"
           icon="fas fa-exclamation-triangle"
         />
-        <div class="tw-line-clamp-1 tw-w-full tw-mx-2">{{ error }}</div>
+        <div class="vc-blade__error-text">{{ error }}</div>
         <VcButton
           text
-          class="tw-shrink-0 tw-opacity-80 tw-text-[color:var(--blade-text-color)] hover:!tw-opacity-100 hover:!tw-text-[color:var(--blade-text-color)]"
+          class="vc-blade__error-button"
           @click="open()"
         >
           {{ t("COMPONENTS.ORGANISMS.VC_BLADE.SEE_DETAILS") }}
@@ -57,35 +54,33 @@
 
     <!-- Unsaved changes -->
     <template v-if="typeof modified !== 'undefined' ? modified : false">
-      <div
-        class="tw-text-[color:var(--blade-text-color)] tw-px-2 tw-py-1 tw-flex tw-flex-row tw-items-center tw-bg-[color:var(--blade-color-unsaved-changes)]"
-      >
+      <div class="vc-blade__unsaved-changes">
         <VcIcon
           size="s"
           icon="fas fa-info-circle"
         />
-        <div class="tw-line-clamp-1 tw-w-full tw-ml-2">{{ t("COMPONENTS.ORGANISMS.VC_BLADE.UNSAVED_CHANGES") }}</div>
+        <div class="vc-blade__unsaved-changes-text">
+          {{ t("COMPONENTS.ORGANISMS.VC_BLADE.UNSAVED_CHANGES") }}
+        </div>
       </div>
     </template>
 
     <!-- Set up blade toolbar -->
     <VcBladeToolbar
-      class="tw-shrink-0"
+      class="vc-blade__toolbar"
       :items="toolbarItems"
     ></VcBladeToolbar>
 
-    <div class="tw-flex-1 tw-overflow-auto">
+    <div class="vc-blade__content">
       <div
-        class="tw-flex tw-flex-row tw-h-full"
-        :class="{
-          'tw-flex-col': $isMobile.value,
-        }"
+        class="vc-blade__main"
+        :class="{ 'vc-blade__main--mobile': $isMobile.value }"
       >
         <div
-          class="tw-flex tw-flex-auto tw-flex-col"
+          class="vc-blade__slot"
           :class="{
-            'tw-w-0': $isDesktop.value,
-            'tw-h-0': $isMobile.value,
+            'vc-blade__slot--desktop': $isDesktop.value,
+            'vc-blade__slot--mobile': $isMobile.value,
           }"
         >
           <slot></slot>
@@ -94,21 +89,22 @@
         <div
           v-show="$slots['widgets'] && !isWidgetContainerEmpty"
           ref="widgetsRef"
-          class="vc-blade__widgets tw-flex"
-          :class="{
-            'tw-border-l tw-border-solid tw-border-l-[color:var(--blade-border-color)]': $isDesktop.value,
-            'tw-w-[var(--blade-widgets-width)] tw-flex-col': $isDesktop.value && !isExpanded,
-            'tw-w-[var(--blade-widgets-width-expanded)] tw-flex-col': $isDesktop.value && isExpanded,
-            'tw-w-auto tw-border-t tw-border-solid tw-border-t-[color:var(--blade-border-color)] tw-flex-row':
-              $isMobile.value,
-          }"
+          class="vc-blade__widgets"
+          :class="[
+            {
+              'vc-blade__widgets--desktop': $isDesktop.value,
+              'vc-blade__widgets--not-expanded': $isDesktop.value && !isExpanded,
+              'vc-blade__widgets--expanded': $isDesktop.value && isExpanded,
+              'vc-blade__widgets--mobile': $isMobile.value,
+            },
+          ]"
         >
           <div
             ref="widgetsContainerRef"
-            class="vc-blade__widget-container tw-flex tw-overflow-y-auto"
+            class="vc-blade__widget-container"
             :class="{
-              'tw-flex-col tw-overflow-x-clip': $isDesktop.value,
-              'tw-flex-row': $isMobile.value,
+              'vc-blade__widget-container--desktop': $isDesktop.value,
+              'vc-blade__widget-container--mobile': $isMobile.value,
             }"
           >
             <slot
@@ -118,17 +114,16 @@
           </div>
 
           <div
-            class="tw-flex tw-flex-auto"
+            class="vc-blade__widget-toggle"
             :class="{
-              'tw-flex-col tw-justify-end': $isDesktop.value,
-              'tw-w-12 tw-max-w-12 tw-bg-[--blade-background-color] tw-items-center tw-justify-center tw-px-4 tw-ml-auto':
-                $isMobile.value,
+              'vc-blade__widget-toggle--desktop': $isDesktop.value,
+              'vc-blade__widget-toggle--mobile': $isMobile.value,
             }"
           >
             <VcIcon
-              class="tw-self-center tw-justify-self-center tw-text-[color:var(--blade-icon-color)] tw-cursor-pointer hover:tw-text-[color:var(--blade-icon-hover-color)]"
+              class="vc-blade__toggle-icon"
               :class="{
-                'tw-mb-4': $isDesktop.value,
+                'vc-blade__toggle-icon--desktop': $isDesktop.value,
               }"
               :icon="`fas fa-chevron-${$isDesktop.value ? (isExpanded ? 'right' : 'left') : isExpanded ? 'up' : 'down'}`"
               @click="toggleWidgets"
@@ -188,11 +183,12 @@ defineSlots<{
 }>();
 
 defineEmits<Emits>();
+
 const attrs = useAttrs();
 const { maximized, error }: { maximized?: Ref<boolean>; error?: Ref<string> } = toRefs(reactive(attrs));
 const { t } = useI18n({ useScope: "global" });
-const widgetsRef = ref();
-const widgetsContainerRef = ref();
+const widgetsRef = ref<HTMLElement | null>(null);
+const widgetsContainerRef = ref<HTMLElement | null>(null);
 
 const isExpanded = useLocalStorage("VC_BLADE_WIDGETS_IS_EXPANDED", true);
 
@@ -208,13 +204,13 @@ const checkEmpty = (el: HTMLElement) => {
 
 onMounted(() => {
   if (widgetsRef.value) {
-    checkEmpty(widgetsContainerRef.value);
+    checkEmpty(widgetsContainerRef.value!);
   }
 });
 
 onUpdated(() => {
   if (widgetsRef.value) {
-    checkEmpty(widgetsContainerRef.value);
+    checkEmpty(widgetsContainerRef.value!);
   }
 });
 
@@ -233,10 +229,10 @@ const { open } = usePopup({
 :root {
   --blade-background-color: var(--additional-50);
   --blade-border-radius: 6px;
-  --blade-color-error: var(--danger-500);
-  --blade-color-unsaved-changes: var(--secondary-300);
+  --blade-color-error: var(--base-error-color, var(--danger-500));
+  --blade-color-unsaved-changes: var(--secondary-600);
 
-  --blade-border-color: var(--neutrals-200);
+  --blade-border-color: var(--base-border-color, var(--neutrals-200));
   --blade-icon-color: var(--secondary-400);
   --blade-icon-hover-color: var(--secondary-500);
 
@@ -247,6 +243,128 @@ const { open } = usePopup({
   --blade-shadow: 2px 2px 8px rgb(from var(--blade-shadow-color) r g b / 14%);
 
   --blade-text-color: var(--additional-50);
+}
+
+.vc-blade {
+  @apply tw-relative tw-flex tw-shrink-0 tw-flex-col [box-shadow:var(--blade-shadow)] tw-my-4 tw-mx-2 tw-overflow-hidden tw-transition-[width] tw-duration-200;
+  @apply tw-bg-[color:var(--blade-background-color)] tw-rounded-[var(--blade-border-radius)];
+
+  &--mobile {
+    @apply tw-w-full #{!important};
+  }
+
+  &--expanded {
+    @apply tw-w-full tw-shrink #{!important};
+  }
+
+  &--maximized {
+    @apply tw-absolute tw-z-[2] tw-top-0 tw-bottom-0 tw-left-0 tw-shrink #{!important};
+    width: -webkit-fill-available !important;
+  }
+
+  &__header {
+    @apply tw-shrink-0;
+  }
+
+  &__error {
+    @apply tw-text-[color:var(--blade-text-color)] tw-p-2 tw-flex tw-flex-row tw-items-center tw-bg-[color:var(--blade-color-error)];
+  }
+
+  &__error-text {
+    @apply tw-line-clamp-1 tw-w-full tw-mx-2;
+  }
+
+  &__error-button {
+    @apply tw-shrink-0 tw-opacity-80 tw-text-[color:var(--blade-text-color)] hover:tw-opacity-100 hover:tw-text-[color:var(--blade-text-color)];
+  }
+
+  &__unsaved-changes {
+    @apply tw-text-[color:var(--blade-text-color)] tw-px-2 tw-py-1 tw-flex tw-flex-row tw-items-center tw-bg-[color:var(--blade-color-unsaved-changes)];
+  }
+
+  &__unsaved-changes-text {
+    @apply tw-line-clamp-1 tw-w-full tw-ml-2;
+  }
+
+  &__toolbar {
+    @apply tw-shrink-0;
+  }
+
+  &__content {
+    @apply tw-flex-1 tw-overflow-auto;
+  }
+
+  &__main {
+    @apply tw-flex tw-flex-row tw-h-full;
+
+    &--mobile {
+      @apply tw-flex-col;
+    }
+  }
+
+  &__slot {
+    @apply tw-flex tw-flex-auto tw-flex-col;
+
+    &--desktop {
+      @apply tw-w-0;
+    }
+
+    &--mobile {
+      @apply tw-h-0;
+    }
+  }
+
+  &__widgets {
+    @apply tw-flex;
+
+    &--desktop {
+      @apply tw-border-l tw-border-solid tw-border-l-[color:var(--blade-border-color)];
+    }
+
+    &--not-expanded {
+      @apply tw-w-12 tw-flex-col;
+    }
+
+    &--expanded {
+      @apply tw-w-32 tw-flex-col;
+    }
+
+    &--mobile {
+      @apply tw-w-auto tw-border-t tw-border-solid tw-border-t-[color:var(--blade-border-color)] tw-flex-row;
+    }
+  }
+
+  &__widget-container {
+    @apply tw-flex tw-overflow-y-auto;
+
+    &--desktop {
+      @apply tw-flex-col tw-overflow-x-clip;
+    }
+
+    &--mobile {
+      @apply tw-flex-row;
+    }
+  }
+
+  &__widget-toggle {
+    @apply tw-flex tw-flex-auto;
+
+    &--desktop {
+      @apply tw-flex-col tw-justify-end;
+    }
+
+    &--mobile {
+      @apply tw-w-12 tw-max-w-12 tw-bg-[color:var(--blade-background-color)] tw-items-center tw-justify-center tw-px-4 tw-ml-auto;
+    }
+  }
+
+  &__toggle-icon {
+    @apply tw-self-center tw-justify-self-center tw-text-[color:var(--blade-icon-color)] tw-cursor-pointer hover:tw-text-[color:var(--blade-icon-hover-color)];
+  }
+
+  &__toggle-icon--desktop {
+    @apply tw-mb-4;
+  }
 }
 
 .vc-app_mobile .vc-blade {

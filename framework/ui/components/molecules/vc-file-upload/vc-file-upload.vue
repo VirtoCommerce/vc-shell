@@ -1,12 +1,12 @@
 <template>
-  <div class="tw-flex tw-flex-col tw-flex-1">
+  <div class="vc-file-upload__container">
     <div
       v-loading="loading"
-      class="vc-file-upload tw-relative tw-h-[155px] tw-box-border tw-border tw-border-dashed tw-border-[color:var(--file-upload-border-color)] tw-rounded-[var(--file-upload-border-radius)] tw-p-4 tw-flex tw-flex-col tw-items-center tw-justify-center"
+      class="vc-file-upload__drop-zone"
       :class="[
-        `vc-file-upload_${variant}`,
+        `vc-file-upload__drop-zone--${variant}`,
         {
-          '!tw-bg-[color:var(--file-upload-drag-bg)] !tw-border-solid tw-cursor-copy': isDragging,
+          'vc-file-upload__drop-zone--dragging': isDragging,
         },
       ]"
       @drop.stop.prevent="onDrop"
@@ -18,18 +18,21 @@
       @dragleave.stop.prevent="dragLeave"
     >
       <VcIcon
-        class="tw-text-[color:var(--file-upload-icon-color)]"
+        class="vc-file-upload__icon"
         :icon="icon"
         size="xxl"
       ></VcIcon>
 
-      <div class="tw-text-[color:var(--file-upload-text-color)] tw-text-center tw-text-lg tw-leading-lg tw-mt-4">
-        <span>{{ customText?.dragHere || t("COMPONENTS.MOLECULES.VC_FILE_UPLOAD.DRAG_HERE") }}</span
-        >&nbsp;
+      <div class="vc-file-upload__text">
+        <span>{{ customText?.dragHere || t("COMPONENTS.MOLECULES.VC_FILE_UPLOAD.DRAG_HERE") }}</span>
+        &nbsp;
         <br />
-        <VcLink @click="toggleUploader">{{
-          customText?.browse || t("COMPONENTS.MOLECULES.VC_FILE_UPLOAD.BROWSE")
-        }}</VcLink>
+        <VcLink
+          class="vc-file-upload__link"
+          @click="toggleUploader"
+        >
+          {{ customText?.browse || t("COMPONENTS.MOLECULES.VC_FILE_UPLOAD.BROWSE") }}
+        </VcLink>
       </div>
 
       <input
@@ -84,7 +87,6 @@ const props = withDefaults(defineProps<Props>(), {
   name: "Gallery",
   icon: "fas fa-cloud-upload-alt",
 });
-
 const emit = defineEmits<Emits>();
 
 defineSlots<{
@@ -102,7 +104,7 @@ const { errorMessage, handleChange, validate } = useField(
   internalRules as IValidationRules,
 );
 
-const uploader = ref();
+const uploader = ref<HTMLInputElement | null>(null);
 
 const upload = async (event: Event) => {
   await handleChange(event.target);
@@ -120,8 +122,10 @@ const upload = async (event: Event) => {
 };
 
 function toggleUploader() {
-  uploader.value.value = "";
-  uploader.value.click();
+  if (uploader.value) {
+    uploader.value.value = "";
+    uploader.value.click();
+  }
 }
 
 function onDrop(event: DragEvent) {
@@ -144,26 +148,63 @@ function dragLeave() {
 
 <style lang="scss">
 :root {
-  --file-upload-border-color: var(--neutrals-300);
+  --file-upload-border-color: var(--secondary-200);
+  --file-upload-border-color-hover: var(--secondary-400);
+  --file-upload-border-color-error: var(--base-error-color, var(--danger-500));
   --file-upload-border-radius: 6px;
   --file-upload-drag-bg: var(--primary-100);
   --file-upload-icon-color: var(--secondary-200);
   --file-upload-text-color: var(--neutrals-400);
-  --file-upload-error-color: var(--danger-500);
+  --file-upload-error-color: var(--base-error-color, var(--danger-500));
   --file-upload-background-color: var(--primary-50);
 }
 
 .vc-file-upload {
-  &_gallery {
-    @apply tw-w-[155px] tw-h-[155px];
+  &__container {
+    @apply tw-flex tw-flex-col tw-flex-1;
   }
 
-  &_file-upload {
-    @apply tw-w-full tw-bg-[--file-upload-background-color];
+  &__drop-zone {
+    @apply tw-relative tw-h-40 tw-box-border tw-border tw-border-dashed tw-p-4 tw-flex tw-flex-col tw-items-center tw-justify-center;
+    @apply tw-border-[color:var(--file-upload-border-color)];
+    @apply tw-rounded-lg;
+    @apply tw-transition-colors tw-duration-300;
+
+    &--gallery {
+      @apply tw-w-40 tw-h-40;
+    }
+
+    &--file-upload {
+      @apply tw-w-full tw-bg-[var(--file-upload-background-color)];
+    }
+
+    &--dragging {
+      background-color: var(--file-upload-drag-bg) !important;
+      border-style: solid !important;
+      cursor: copy !important;
+    }
+
+    &:hover {
+      @apply tw-border-[color:var(--file-upload-border-color-hover)] #{!important};
+    }
   }
 
-  &_error .vc-file-upload {
-    @apply tw-border tw-border-solid tw-border-[color:var(--file-upload-error-color)] #{!important};
+  &__icon {
+    color: var(--file-upload-icon-color);
+  }
+
+  &__text {
+    color: var(--file-upload-text-color);
+    @apply tw-text-center tw-text-sm tw-mt-4;
+  }
+
+  &__link {
+    @apply tw-text-sm tw-truncate tw-w-full;
+  }
+
+  &__error {
+    color: var(--file-upload-error-color);
+    @apply tw-mt-1;
   }
 }
 </style>

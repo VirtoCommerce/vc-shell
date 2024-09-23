@@ -1,17 +1,19 @@
 <template>
   <div
-    class="tw-shrink-0 tw-flex tw-items-center tw-justify-between tw-box-border"
+    class="vc-table-header"
     :class="{
-      'tw-px-4 tw-py-2 tw-border-[color:var(--table-header-border-color)] tw-border-solid tw-border-b': $isMobile.value,
-      'tw-p-4': $isDesktop.value,
+      'vc-table-header--mobile': $isMobile.value,
+      'vc-table-header--desktop': $isDesktop.value,
     }"
   >
-    <!-- Table filter mobile button -->
     <div
       v-if="$isMobile.value && $slots['filters']"
-      class="tw-mr-3"
+      class="vc-table-header__filter-mobile"
     >
-      <VcTableFilter :counter="activeFilterCount">
+      <VcTableFilter
+        :counter="activeFilterCount"
+        :disabled="disableFilter"
+      >
         <template #default="{ closePanel }">
           <slot
             name="filters"
@@ -21,10 +23,9 @@
       </VcTableFilter>
     </div>
 
-    <!-- Table search input -->
     <VcInput
       ref="searchInput"
-      class="tw-grow tw-basis-0"
+      class="vc-table-header__search-input"
       :placeholder="searchPlaceholder || $t('COMPONENTS.ORGANISMS.VC_TABLE.SEARCH')"
       clearable
       name="table_search"
@@ -34,21 +35,21 @@
       <template #prepend-inner="{ focus }">
         <VcIcon
           icon="fas fa-search"
-          class="tw-text-[color:var(--table-header-input-icon-color)]"
+          class="vc-table-header__search-icon"
           @click="focus?.()"
         ></VcIcon>
       </template>
     </VcInput>
 
-    <!-- Table filter desktop button -->
     <div
       v-if="$isDesktop.value && $slots['filters']"
-      class="tw-ml-3"
+      class="vc-table-header__filter-desktop"
     >
       <VcTableFilter
         :title="$t('COMPONENTS.ORGANISMS.VC_TABLE.ALL_FILTERS')"
         :counter="activeFilterCount"
         :parent-expanded="expanded"
+        :disabled="disableFilter"
       >
         <template #default="{ closePanel }">
           <slot
@@ -69,6 +70,7 @@ export interface Props {
   searchPlaceholder?: string;
   activeFilterCount?: number;
   expanded?: boolean;
+  disableFilter?: boolean;
 }
 
 export interface Emits {
@@ -81,7 +83,36 @@ const emit = defineEmits<Emits>();
 
 <style lang="scss">
 :root {
-  --table-header-border-color: var(--neutral-200);
-  --table-header-input-icon-color: var(--neutral-300);
+  --table-header-border-color: var(--base-border-color, var(--neutrals-200));
+  --table-header-input-icon-color: var(--neutrals-300);
+}
+
+.vc-table-header {
+  @apply tw-shrink-0 tw-flex tw-items-center tw-justify-between tw-box-border;
+
+  &--mobile {
+    @apply tw-px-4 tw-py-2 tw-border-b tw-border-solid;
+    border-color: var(--table-header-border-color);
+  }
+
+  &--desktop {
+    @apply tw-p-4;
+  }
+
+  &__filter-mobile {
+    @apply tw-mr-3;
+  }
+
+  &__filter-desktop {
+    @apply tw-ml-3;
+  }
+
+  &__search-input {
+    @apply tw-grow tw-basis-0;
+  }
+
+  &__search-icon {
+    @apply tw-text-[color:var(--table-header-input-icon-color)];
+  }
 }
 </style>

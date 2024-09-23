@@ -5,7 +5,7 @@
       `vc-multivalue_${type}`,
       {
         'vc-multivalue_opened': isOpened,
-        'vc-multivalue_error tw-pb-[20px]': error,
+        'vc-multivalue_error vc-multivalue__error-padding': error,
         'vc-multivalue_disabled': disabled,
       },
     ]"
@@ -13,7 +13,7 @@
     <!-- Input label -->
     <VcLabel
       v-if="label"
-      class="tw-mb-2"
+      class="vc-multivalue__label"
       :required="required"
       :multilanguage="multilanguage"
       :current-language="currentLanguage"
@@ -31,7 +31,7 @@
       ref="dropdownToggleRef"
       class="vc-multivalue__field-wrapper"
     >
-      <div class="tw-items-center tw-flex tw-flex-wrap tw-flex-grow">
+      <div class="vc-multivalue__content">
         <div
           v-for="(item, i) in modelValue"
           :key="`${item?.id}_${generateId()}`"
@@ -47,7 +47,7 @@
               :item="item"
               :remove="() => onDelete(i)"
             >
-              <span class="tw-truncate">{{ formatValue(item) }}</span>
+              <span class="vc-multivalue__truncate">{{ formatValue(item) }}</span>
             </slot>
             <VcIcon
               v-if="!disabled"
@@ -60,7 +60,7 @@
         </div>
 
         <template v-if="multivalue">
-          <div class="vc-multivalue__field vc-multivalue__field_dictionary tw-grow tw-basis-0 tw-p-2">
+          <div class="vc-multivalue__field vc-multivalue__field_dictionary">
             <VcButton
               small
               :disabled="disabled"
@@ -105,7 +105,7 @@
         <template v-else>
           <input
             v-model="value"
-            class="vc-multivalue__field tw-grow tw-basis-0 tw-px-3"
+            class="vc-multivalue__field vc-multivalue__input"
             :placeholder="placeholder"
             :type="internalTypeComputed"
             :disabled="disabled"
@@ -115,13 +115,14 @@
           />
         </template>
       </div>
-      <!-- Loading-->
+      <!-- Loading -->
       <div
         v-if="loading"
-        class="tw-flex tw-items-center tw-flex-nowrap tw-px-3 tw-text-[color:var(--select-clear-color)]"
+        class="vc-multivalue__loading"
       >
         <VcIcon
-          icon="fas fa-circle-notch tw-animate-spin"
+          icon="fas fa-circle-notch"
+          class="vc-multivalue__loading-icon"
           size="m"
         ></VcIcon>
       </div>
@@ -136,24 +137,23 @@
           <VcHint
             v-if="errorMessage"
             class="vc-multivalue__error"
+            >{{ errorMessage }}</VcHint
           >
-            {{ errorMessage }}
-          </VcHint>
         </slot>
       </div>
       <div v-else>
         <slot name="hint">
           <VcHint
             v-if="hint"
-            class="tw-text-[color:var(--multivalue-placeholder-color)] tw-mt-1 tw-break-words tw-p-0"
+            class="vc-multivalue__hint"
+            >{{ hint }}</VcHint
           >
-            {{ hint }}
-          </VcHint>
         </slot>
       </div>
     </Transition>
   </div>
 </template>
+
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup generic="T extends { id?: string }">
 import { unref, nextTick, ref, computed } from "vue";
@@ -368,28 +368,28 @@ function onSearch(event: Event) {
 :root {
   --multivalue-height: 38px;
   --multivalue-border-radius: 3px;
-  --multivalue-border-color: var(--neutrals-300);
-  --multivalue-border-color-error: var(--danger-500);
+  --multivalue-border-color: var(--secondary-200);
+  --multivalue-border-color-error: var(--base-error-color, var(--danger-500));
   --multivalue-background-color: var(--additional-50);
   --multivalue-placeholder-color: var(--neutrals-400);
 
   --multivalue-select-border-radius: 3px;
-  --multivalue-select-border-color: var(--neutrals-300);
-  --multivalue-select-border-color-error: var(--danger-500);
+  --multivalue-select-border-color: var(--secondary-200);
+  --multivalue-select-border-color-error: var(--base-error-color, var(--danger-500));
   --multivalue-select-background-color: var(--additional-50);
-  --multivalue-select-background-color-disabled: var(--neutrals-100);
+  --multivalue-select-background-color-disabled: var(--neutrals-50);
   --multivalue-select-placeholder-color: var(--neutrals-400);
   --multivalue-select-chevron-color: var(--primary-500);
   --multivalue-select-chevron-color-hover: var(--primary-600);
 
-  --multivalue-search-border-color: var(--neutrals-300);
+  --multivalue-search-border-color: var(--secondary-200);
   --multivalue-item-hover-background-color: var(--accent-50);
-  --multivalue-hint-color: var(--danger-500);
+  --multivalue-hint-color: var(--base-error-color, var(--danger-500));
   --multivalue-field-value-background-color: var(--additional-50);
-  --multivalue-field-value-border-color: var(--primary-300);
-  --multivalue-clear-icon-color: var(--secondary-500);
-  --multivalue-disabled-text-color: var(--neutrals-600);
-  --multivalue-disabled-background-color: var(--neutrals-100);
+  --multivalue-field-value-border-color: var(--secondary-200);
+  --multivalue-clear-icon-color: var(--primary-500);
+  --multivalue-disabled-text-color: var(--neutrals-400);
+  --multivalue-disabled-background-color: var(--neutrals-50);
 }
 
 .vc-multivalue {
@@ -404,13 +404,41 @@ function onSearch(event: Event) {
     }
   }
 
+  &__label {
+    @apply tw-mb-2;
+  }
+
+  &__error-padding {
+    @apply tw-pb-[20px];
+  }
+
   &__field-wrapper {
     @apply tw-border tw-border-solid
     tw-border-[color:var(--multivalue-border-color)]
     tw-rounded-[var(--multivalue-border-radius)]
-    tw-bg-[color:var(--multivalue-background-color)]
     tw-items-center
     tw-flex tw-justify-between;
+  }
+
+  &__content {
+    @apply tw-items-center tw-flex tw-flex-wrap tw-flex-grow;
+  }
+
+  &__field-value-wrapper {
+    @apply tw-ml-2 tw-flex tw-items-center;
+  }
+
+  &__field-value {
+    @apply tw-bg-[color:var(--multivalue-background-color)] tw-border tw-border-solid tw-border-[color:var(--multivalue-border-color)]
+      tw-rounded-[2px] tw-flex tw-items-center tw-h-[28px] tw-box-border tw-px-2 tw-max-w-[150px];
+  }
+
+  &__truncate {
+    @apply tw-truncate tw-text-sm;
+  }
+
+  &__field-value-clear {
+    @apply tw-text-[color:var(--multivalue-clear-icon-color)] tw-ml-2 tw-cursor-pointer;
   }
 
   &__dropdown {
@@ -427,7 +455,7 @@ function onSearch(event: Event) {
     @apply tw-w-full tw-box-border tw-border tw-border-solid
     tw-border-[color:var(--multivalue-search-border-color)]
     tw-rounded-[4px] tw-h-8 tw-leading-[32px]
-    tw-outline-none tw-mb-3 tw-px-2;
+    tw-outline-none tw-mb-3 tw-px-2 tw-bg-[color:var(--multivalue-background-color)];
   }
 
   &__item {
@@ -443,12 +471,12 @@ function onSearch(event: Event) {
   }
 
   &__error {
-    @apply tw-mt-1 [--multivalue-hint-color:var(--multivalue-hint-color)];
+    @apply tw-mt-1 [--hint-color:var(--multivalue-hint-color)];
   }
 
   &__field {
-    @apply tw-border-none tw-outline-none tw-min-h-[var(--multivalue-height)]
-      tw-min-w-[120px] tw-box-border placeholder:tw-text-[color:var(--multivalue-placeholder-color)];
+    @apply tw-border-none tw-outline-none tw-min-h-[var(--multivalue-height)] tw-bg-[color:var(--multivalue-background-color)]
+      tw-min-w-[120px] tw-box-border placeholder:tw-text-[color:var(--multivalue-placeholder-color)] tw-text-sm;
 
     &::-webkit-input-placeholder {
       @apply tw-text-[color:var(--multivalue-placeholder-color)];
@@ -482,7 +510,7 @@ function onSearch(event: Event) {
     }
 
     &_dictionary {
-      @apply tw-h-auto tw-min-w-[auto];
+      @apply tw-h-auto tw-min-w-[auto] tw-grow tw-basis-0 tw-p-2;
     }
   }
 
@@ -490,20 +518,21 @@ function onSearch(event: Event) {
   &_disabled &__field {
     @apply tw-bg-[color:var(--multivalue-disabled-background-color)] tw-text-[color:var(--multivalue-disabled-text-color)];
   }
-}
 
-.slide-up-enter-active,
-.slide-up-leave-active {
-  transition: all 0.25s ease-out;
-}
+  &__input {
+    @apply tw-px-3;
+  }
 
-.slide-up-enter-from {
-  opacity: 0;
-  transform: translateY(5px);
-}
+  &__loading {
+    @apply tw-flex tw-items-center tw-flex-nowrap tw-px-3 tw-text-[color:var(--select-clear-color)];
+  }
 
-.slide-up-leave-to {
-  opacity: 0;
-  transform: translateY(-5px);
+  &__loading-icon {
+    @apply tw-animate-spin;
+  }
+
+  &__hint {
+    @apply tw-text-[color:var(--multivalue-placeholder-color)] tw-mt-1 tw-break-words tw-p-0;
+  }
 }
 </style>

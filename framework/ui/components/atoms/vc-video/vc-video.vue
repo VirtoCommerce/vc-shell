@@ -1,18 +1,19 @@
 <template>
-  <div class="tw-inline-block tw-relative">
+  <div class="vc-video">
     <VcLabel
       v-if="label"
-      class="tw-mb-2"
+      class="vc-video__label"
     >
       <span>{{ label }}</span>
       <template
         v-if="tooltip"
         #tooltip
-        >{{ tooltip }}</template
       >
+        {{ tooltip }}
+      </template>
     </VcLabel>
 
-    <div class="tw-w-full tw-relative">
+    <div class="vc-video__container">
       <div v-if="source">
         <iframe
           :src="`${source}`"
@@ -26,7 +27,7 @@
       </div>
       <div
         v-else
-        class="tw-absolute tw-w-full tw-h-full tw-flex tw-items-center tw-justify-center tw-text-[--video-icon-color]"
+        class="vc-video__placeholder"
       >
         <VcIcon
           icon="fas fa-film"
@@ -51,12 +52,27 @@ export interface Emits {
 }
 
 defineProps<Props>();
-
 defineEmits<Emits>();
 </script>
 
 <style lang="scss">
 :root {
   --video-icon-color: var(--primary-400);
+}
+
+.vc-video {
+  @apply tw-inline-block tw-relative;
+
+  &__label {
+    @apply tw-mb-2;
+  }
+
+  &__container {
+    @apply tw-w-full tw-relative;
+  }
+
+  &__placeholder {
+    @apply tw-absolute tw-w-full tw-h-full tw-flex tw-items-center tw-justify-center tw-text-[color:var(--video-icon-color)];
+  }
 }
 </style>

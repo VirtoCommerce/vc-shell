@@ -6,7 +6,6 @@ import { RouterView } from "vue-router";
 import {{ModuleNamePascalCase}} from "./modules/{{ModuleName}}";
 
 // Load required CSS
-import "./styles/index.scss";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import "roboto-fontface/css/roboto/roboto-fontface.css";
 import "@vc-shell/framework/dist/index.css";

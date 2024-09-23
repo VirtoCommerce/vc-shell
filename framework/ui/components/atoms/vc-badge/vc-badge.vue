@@ -7,19 +7,16 @@
       'vc-badge--medium': size === 'm',
     }"
   >
-    <div class="tw-flex tw-relative">
+    <div class="vc-badge__content">
       <slot name="default"></slot>
       <div
         v-if="typeof content !== 'undefined'"
         ref="badge"
-        class="vc-badge__badge tw-absolute tw-inline-flex tw-justify-center tw-items-center tw-text-center tw-indent-0 tw-rounded-[var(--badge-border-radius)] tw-text-[13px] tw-leading-[13px] tw-font-normal tw-bg-[color:var(--badge-background-color)] tw-text-[color:var(--badge-text-color)] tw-border tw-border-solid tw-border-[color:var(--badge-border-color)] tw-transition tw-duration-200"
+        class="vc-badge__badge"
         :class="{
-          'tw-bg-[color:var(--badge-background-color-active)] tw-text-[color:var(--badge-text-color-active)] tw-border-[color:var(--badge-border-color-active)]':
-            active,
-          'tw-cursor-pointer hover:tw-bg-[color:var(--badge-background-color-active)] hover:tw-text-[color:var(--badge-text-color-hover)] hover:tw-border-[color:var(--badge-border-color-hover)]':
-            clickable,
-          'cursor-not-allowed tw-bg-[color:var(--badge-background-color-disabled)] tw-text-[color:var(--badge-text-color-disabled)] tw-border-[color:var(--badge-border-color-disabled)] hover:tw-bg-[color:var(--badge-background-color-disabled)] hover:tw-text-[color:var(--badge-text-color-disabled)] hover:tw-border-[color:var(--badge-border-color-disabled)]':
-            disabled,
+          'vc-badge__badge--active': active,
+          'vc-badge__badge--clickable': clickable,
+          'vc-badge__badge--disabled': disabled,
         }"
         @click="onClick"
       >
@@ -104,10 +101,29 @@ $sizes: small, medium;
         padding: var(--badge-padding-#{$size});
         top: var(--badge-distance-top-#{$size});
         right: var(--badge-distance-right-#{$size});
-        font-size: 0.75rem;
-        line-height: 1.35;
+        @apply tw-text-xs tw-leading-snug;
       }
     }
   }
+}
+
+.vc-badge__content {
+  @apply tw-flex tw-relative;
+}
+
+.vc-badge__badge {
+  @apply tw-absolute tw-inline-flex tw-justify-center tw-items-center tw-text-center tw-indent-0 tw-rounded-full tw-font-normal tw-bg-[color:var(--badge-background-color)] tw-text-[color:var(--badge-text-color)] tw-border tw-border-solid tw-border-[color:var(--badge-border-color)] tw-transition tw-duration-200;
+}
+
+.vc-badge__badge--active {
+  @apply tw-bg-[color:var(--badge-background-color-active)] tw-text-[color:var(--badge-text-color-active)] tw-border-[color:var(--badge-border-color-active)];
+}
+
+.vc-badge__badge--clickable {
+  @apply tw-cursor-pointer hover:tw-bg-[color:var(--badge-background-color-hover)] hover:tw-text-[color:var(--badge-text-color-hover)] hover:tw-border-[color:var(--badge-border-color-hover)];
+}
+
+.vc-badge__badge--disabled {
+  @apply tw-cursor-not-allowed tw-bg-[color:var(--badge-background-color-disabled)] tw-text-[color:var(--badge-text-color-disabled)] tw-border-[color:var(--badge-border-color-disabled)] hover:tw-bg-[color:var(--badge-background-color-disabled)] hover:tw-text-[color:var(--badge-text-color-disabled)] hover:tw-border-[color:var(--badge-border-color-disabled)];
 }
 </style>

@@ -1,5 +1,6 @@
 <template>
   <VcSelect
+    class="vc-input-currency"
     :options="options"
     :option-label="optionLabel"
     :option-value="optionValue"
@@ -27,7 +28,7 @@
         :error="error"
         :error-message="errorMessage"
         :maxlength="maxlength"
-        class="tw-w-full"
+        class="vc-input-currency__input"
         type="number"
         @update:model-value="updateModel"
         @blur="handleBlur"
@@ -39,7 +40,7 @@
           >
             <template v-if="options && options.length">
               <button
-                class="tw-text-[--input-curr-toggle-color] tw-not-italic tw-font-medium tw-text-[13px] tw-leading-[20px] tw-cursor-pointer"
+                class="vc-input-currency__toggle-button"
                 @click.stop.prevent="toggleHandler"
               >
                 {{ unref(option) }}
@@ -57,6 +58,7 @@
             type="text"
             :disabled="disabled"
             :placeholder="holder"
+            class="vc-input-currency__control"
             @blur="handleBlur"
             @keydown="handleKeyDown"
             @paste="handlePaste"
@@ -305,5 +307,19 @@ function handlePaste(e: ClipboardEvent) {
 <style lang="scss">
 :root {
   --input-curr-toggle-color: var(--primary-500);
+}
+
+.vc-input-currency {
+  &__input {
+    @apply tw-w-full;
+  }
+
+  &__toggle-button {
+    @apply tw-text-[color:var(--input-curr-toggle-color)] tw-not-italic tw-font-medium tw-text-sm tw-cursor-pointer;
+  }
+
+  &__control {
+    @apply tw-border tw-border-solid tw-px-2 tw-py-1 tw-text-sm tw-outline-none;
+  }
 }
 </style>

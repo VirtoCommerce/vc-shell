@@ -10,12 +10,12 @@
       :icon="icon"
       :size="small ? 'xs' : iconSize"
     ></VcIcon>
-    <span
+    <p
       v-if="$slots['default']"
       class="vc-button__title"
     >
       <slot></slot>
-    </span>
+    </p>
   </button>
 </template>
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->

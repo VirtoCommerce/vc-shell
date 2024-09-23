@@ -6,17 +6,14 @@
   />
   <div
     v-else
-    class="vc-app tw-flex tw-flex-col tw-w-full tw-h-full tw-box-border tw-m-0 tw-overflow-hidden tw-text-base"
-    :class="[
-      {
-        'vc-app_touch': $isTouch,
-        'vc-app_mobile': $isMobile.value,
-      },
-    ]"
+    class="vc-app"
+    :class="{
+      'vc-app_mobile': $isMobile.value,
+    }"
   >
     <!-- Init application top bar -->
     <VcAppBar
-      class="tw-shrink-0"
+      class="vc-app__app-bar"
       :logo="logo"
       :title="title"
       :disable-menu="disableMenu"
@@ -41,12 +38,16 @@
             LanguageSelector,
             UserDropdownButton,
             NotificationDropdown,
+            ThemeSelector,
           }"
         >
           <slot
             v-if="$slots['toolbar:prepend']"
             name="toolbar:prepend"
           ></slot>
+          <slot name="toolbar:theme-selector">
+            <ThemeSelector />
+          </slot>
           <slot name="toolbar:language-selector">
             <LanguageSelector
               v-if="$isDesktop.value ? $isDesktop.value : $isMobile.value ? route.path === '/' : false"
@@ -70,24 +71,28 @@
       </template>
     </VcAppBar>
 
-    <div class="tw-overflow-hidden tw-flex tw-grow tw-basis-0">
+    <div class="vc-app__main-content">
       <!-- Init main menu -->
       <VcAppMenu
         v-if="!disableMenu"
         ref="menu"
-        class="tw-shrink-0"
+        class="vc-app__app-menu"
         :version="version"
         @item:click="onMenuItemClick"
       >
         <template #mobile>
-          <UserDropdownButton class="tw-p-0 tw-mb-2 tw-w-full tw-h-auto" />
+          <UserDropdownButton
+            class="vc-app__user-dropdown-button"
+            :avatar-url="avatar"
+            :role="role"
+          />
         </template>
       </VcAppMenu>
 
       <!-- Blade navigation -->
       <div
         v-if="isAuthenticated"
-        class="vc-app__workspace tw-px-2 tw-w-full tw-overflow-hidden !tw-flex tw-grow tw-basis-0 tw-relative"
+        class="vc-app__workspace"
       >
         <slot name="blade-navigation">
           <VcBladeNavigation />
@@ -112,6 +117,7 @@ import {
   useBladeNavigation,
   NotificationDropdown,
   BladeRoutesRecord,
+  ThemeSelector,
 } from "./../../../../shared/components";
 import { useNotifications, useUser } from "../../../../core/composables";
 import { useRoute, useRouter } from "vue-router";
@@ -144,6 +150,7 @@ defineSlots<{
   "toolbar:notifications-dropdown": void;
   "toolbar:user-dropdown": (props: { userDropdown: typeof UserDropdownButton }) => void;
   "blade-navigation": void;
+  "toolbar:theme-selector": void;
 }>();
 
 const props = defineProps<Props>();
@@ -210,20 +217,39 @@ provide("$dynamicModules", dynamicModules);
 
 <style lang="scss">
 :root {
-  --app-background: var(--primary-50);
+  --app-background: var(--secondary-200);
 }
 
 .vc-app {
+  @apply tw-flex tw-flex-col tw-w-full tw-h-full tw-box-border tw-m-0 tw-overflow-hidden tw-text-base;
   background: var(--app-background);
 
+  &__loader {
+    background: var(--app-background);
+  }
+
+  &__app-bar {
+    @apply tw-shrink-0;
+  }
+
+  &__app-menu {
+    @apply tw-shrink-0;
+  }
+
+  &__main-content {
+    @apply tw-overflow-hidden tw-flex tw-grow tw-basis-0;
+  }
+
   &__workspace {
+    @apply tw-px-2 tw-w-full tw-overflow-hidden tw-flex tw-grow tw-basis-0 tw-relative;
+
     .vc-app_mobile & {
       @apply tw-p-0;
     }
   }
 
-  &__loader {
-    background: var(--app-background);
+  &__user-dropdown-button {
+    @apply tw-p-0 tw-mb-2 tw-w-full tw-h-auto;
   }
 }
 </style>

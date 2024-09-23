@@ -42,6 +42,6 @@ defineEmits<Emits>();
 
 <style lang="scss">
 :root {
-  --confirm-button-color: #6b7987;
+  --confirm-button-color: var(--secondary-700);
 }
 </style>

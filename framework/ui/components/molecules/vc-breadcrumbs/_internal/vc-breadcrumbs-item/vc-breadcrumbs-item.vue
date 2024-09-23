@@ -2,8 +2,8 @@
   <div
     class="vc-breadcrumbs-item"
     :class="{
-      'vc-breadcrumbs-item_current': current,
-      'tw-px-1 tw-h-[var(--breadcrumbs-item-height-light)]': variant === 'light',
+      'vc-breadcrumbs-item--current': current,
+      'vc-breadcrumbs-item--light': variant === 'light',
     }"
     @click="onClick"
   >
@@ -13,7 +13,7 @@
       :icon="icon"
       size="s"
     />
-    <div class="vc-breadcrumbs-item__title tw-max-w-[150px] tw-truncate">
+    <div class="vc-breadcrumbs-item__title">
       {{ title }}
     </div>
   </div>
@@ -60,31 +60,33 @@ function onClick(): void {
 }
 
 .vc-breadcrumbs-item {
-  @apply tw-h-[var(--breadcrumbs-item-height)]
-  tw-box-border tw-rounded-[3px]
-  tw-border tw-border-solid
-  tw-border-[color:var(--breadcrumbs-item-border-color)]
-  tw-text-[color:var(--breadcrumbs-item-color)]
-  tw-whitespace-nowrap
-  tw-px-3
-  tw-text-sm tw-cursor-pointer tw-inline-flex tw-items-center
-  hover:tw-border
-  hover:tw-border-solid
-  hover:tw-border-[color:var(--breadcrumbs-item-border-color-hover)];
+  @apply tw-box-border tw-rounded-[3px] tw-border tw-border-solid tw-text-sm tw-cursor-pointer tw-inline-flex tw-items-center;
+  @apply tw-h-[var(--breadcrumbs-item-height)] tw-px-3 tw-whitespace-nowrap;
+  @apply tw-border-[color:var(--breadcrumbs-item-border-color)] tw-text-[color:var(--breadcrumbs-item-color)];
+  @apply tw-transition-colors tw-duration-300;
+
+  &--current {
+    @apply tw-text-[color:var(--breadcrumbs-item-color-current)] tw-border-[color:var(--breadcrumbs-item-border-color-current)] tw-cursor-default tw-mr-0;
+  }
+
+  &--light {
+    @apply tw-px-1 tw-h-[var(--breadcrumbs-item-height-light)];
+  }
 
   &__icon {
     @apply tw-mr-2 tw-text-[color:var(--breadcrumbs-item-icon-color)];
   }
 
-  &_disabled {
-    @apply tw-opacity-[0.4];
+  &__title {
+    @apply tw-max-w-[150px] tw-truncate;
   }
 
-  &_current,
-  &_current:hover {
-    @apply tw-text-[color:var(--breadcrumbs-item-color-current)]
-    tw-border tw-border-solid tw-border-[color:var(--breadcrumbs-item-border-color-current)]
-    tw-cursor-default tw-mr-0;
+  &--error {
+    @apply tw-border-[color:var(--breadcrumbs-item-border-color-error)] tw-text-[color:var(--breadcrumbs-item-color-error)];
+  }
+
+  &:hover {
+    @apply tw-border tw-border-solid tw-border-[color:var(--breadcrumbs-item-border-color-hover)];
   }
 }
 </style>

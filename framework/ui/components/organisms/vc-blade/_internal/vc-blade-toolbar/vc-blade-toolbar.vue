@@ -1,10 +1,10 @@
 <template>
   <div
     v-if="isToolbarVisible()"
-    class="tw-h-[var(--blade-toolbar-height)] tw-bg-[color:var(--blade-toolbar-background-color)] tw-border-b-[color:var(--blade-toolbar-border-color)] tw-border-solid tw-border-b tw-flex tw-box-border tw-w-full tw-content-center tw-items-stretch tw-shrink-0"
-    :class="{ '!tw-h-[var(--blade-toolbar-height-expanded)]': isExpanded }"
+    class="vc-blade-toolbar"
+    :class="{ 'vc-blade-toolbar--expanded': isExpanded }"
   >
-    <div class="tw-grow tw-basis-0 tw-flex tw-content-start tw-items-center tw-overflow-x-auto tw-px-2">
+    <div class="vc-blade-toolbar__content">
       <template
         v-for="item in items"
         :key="item.id"
@@ -23,7 +23,7 @@
       </template>
     </div>
     <VcIcon
-      class="tw-self-center tw-justify-self-center tw-text-[color:var(--blade-toolbar-icon-color)] tw-cursor-pointer tw-mr-4 hover:tw-text-[color:var(--blade-toolbar-icon-hover-color)]"
+      class="vc-blade-toolbar__icon"
       :icon="`fas fa-chevron-${isExpanded ? 'up' : 'down'}`"
       @click="toggleToolbar"
     ></VcIcon>
@@ -32,9 +32,10 @@
 
 <script lang="ts" setup>
 import { IBladeToolbar } from "./../../../../../../core/types";
-import { ref, unref } from "vue";
+import { unref } from "vue";
 import VcBladeToolbarButton from "./_internal/vc-blade-toolbar-button/vc-blade-toolbar-button.vue";
 import { VcIcon } from "./../../../../";
+import { useLocalStorage } from "@vueuse/core";
 
 export interface Props {
   items: IBladeToolbar[];
@@ -44,16 +45,10 @@ const props = withDefaults(defineProps<Props>(), {
   items: () => [],
 });
 
-const isExpanded = ref(true);
-try {
-  isExpanded.value = localStorage.getItem("VC_BLADE_TOOLBAR_IS_EXPANDED") === "true";
-} catch (err) {
-  isExpanded.value = true;
-}
+const isExpanded = useLocalStorage("VC_BLADE_TOOLBAR_IS_EXPANDED", true);
 
 function toggleToolbar() {
   isExpanded.value = !isExpanded.value;
-  localStorage.setItem("VC_BLADE_TOOLBAR_IS_EXPANDED", isExpanded.value.toString());
 }
 
 function isToolbarVisible() {
@@ -69,8 +64,24 @@ function isToolbarVisible() {
   --blade-toolbar-height: 36px;
   --blade-toolbar-height-expanded: 50px;
   --blade-toolbar-background-color: var(--additional-50);
-  --blade-toolbar-border-color: var(--secondary-100);
+  --blade-toolbar-border-color: var(--base-border-color, var(--neutrals-200));
   --blade-toolbar-icon-color: var(--primary-500);
   --blade-toolbar-icon-hover-color: var(--primary-600);
+}
+
+.vc-blade-toolbar {
+  @apply tw-h-[var(--blade-toolbar-height)] tw-bg-[color:var(--blade-toolbar-background-color)] tw-border-b-[color:var(--blade-toolbar-border-color)] tw-border-solid tw-border-b tw-flex tw-box-border tw-w-full tw-content-center tw-items-stretch tw-shrink-0;
+
+  &--expanded {
+    @apply tw-h-[var(--blade-toolbar-height-expanded)] #{!important};
+  }
+
+  &__content {
+    @apply tw-grow tw-basis-0 tw-flex tw-content-start tw-items-center tw-overflow-x-auto tw-px-2;
+  }
+
+  &__icon {
+    @apply tw-self-center tw-justify-self-center tw-text-[color:var(--blade-toolbar-icon-color)] tw-cursor-pointer tw-mr-4 hover:tw-text-[color:var(--blade-toolbar-icon-hover-color)];
+  }
 }
 </style>

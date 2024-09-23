@@ -1,51 +1,51 @@
 <template>
   <div
-    class="vc-app-menu-link tw-cursor-pointer tw-group tw-px-[19px]"
+    class="vc-app-menu-link"
     @click="onMenuItemClick"
   >
     <div
-      class="vc-app-menu-item tw-flex"
+      class="vc-app-menu-link__item"
       :class="[
         {
-          'vc-app-menu-item_active': isMenuItemActive,
-          'vc-app-menu-item_no-hover': !children?.length,
-          'vc-app-menu-item_child-opened': expand && isOpened,
-          'vc-app-menu-item_collapsed': !expand,
+          'vc-app-menu-link__item_active': isMenuItemActive,
+          'vc-app-menu-link__item_no-hover': !children?.length,
+          'vc-app-menu-link__item_child-opened': expand && isOpened,
+          'vc-app-menu-link__item_collapsed': !expand,
         },
       ]"
     >
       <div
         v-if="icon"
-        class="vc-app-menu-item__icon tw-w-[var(--app-menu-item-icon-width)]"
+        class="vc-app-menu-link__icon"
       >
         <VcIcon
-          class="tw-text-center"
+          class="vc-app-menu-link__icon-content"
           :icon="icon"
           size="m"
         />
       </div>
       <div
         v-if="expand"
-        class="vc-app-menu-item__title tw-capitalize"
+        class="vc-app-menu-link__title"
       >
-        <div class="tw-truncate">
+        <div class="vc-app-menu-link__title-truncate">
           {{ title }}
         </div>
         <VcIcon
           v-if="!!children?.length || false"
-          class="vc-app-menu-item__title-icon"
+          class="vc-app-menu-link__title-icon"
           :icon="`fas fa-chevron-${isOpened ? 'up' : 'down'}`"
           size="xs"
-        ></VcIcon>
+        />
       </div>
     </div>
   </div>
-  <!-- Nested menu items -->
+
   <div
     v-show="isOpened"
-    class="vc-app-menu-item__child"
+    class="vc-app-menu-link__child"
     :class="{
-      '!tw-ml-0': !expand,
+      'vc-app-menu-link__child-collapsed': !expand,
     }"
   >
     <template
@@ -58,7 +58,7 @@
         custom
       >
         <div
-          class="vc-app-menu-item__child-item-link tw-cursor-pointer tw-z-[2] tw-px-[19px]"
+          class="vc-app-menu-link__child-item-link"
           :data-test-id="nested.routeId"
           @click="$emit('onClick', nested)"
         >
@@ -66,29 +66,29 @@
             :key="i"
             :class="[
               {
-                'vc-app-menu-item__child-item_active': isActive(nested.url ?? ''),
-                'vc-app-menu-item__child-item_collapsed': !expand,
-                'tw-pl-[21px] tw-w-full  ': expand,
+                'vc-app-menu-link__child-item_active': isActive(nested.url ?? ''),
+                'vc-app-menu-link__child-item_collapsed': !expand,
+                'vc-app-menu-link__child-item_expanded': expand,
               },
-              'vc-app-menu-item__child-item tw-min-w-0 tw-flex  tw-h-[var(--app-menu-item-height)] tw-items-center [transition:padding_150ms_cubic-bezier(0.2,0,0,1)_0s] ',
+              'vc-app-menu-link__child-item',
             ]"
           >
             <div
               v-if="nested.icon"
-              class="vc-app-menu-item__icon tw-w-[var(--app-menu-item-icon-width)]"
+              class="vc-app-menu-link__icon"
               :class="{
-                'tw-p-0': !expand,
+                'vc-app-menu-link__icon-collapsed': !expand,
               }"
             >
               <VcIcon
-                class="tw-text-center"
+                class="vc-app-menu-link__icon-content"
                 :icon="nested.icon"
                 size="m"
               />
             </div>
             <p
               v-if="expand"
-              class="tw-truncate tw-pl-[7px]"
+              class="vc-app-menu-link__child-item-title"
             >
               {{ nested.title }}
             </p>
@@ -98,12 +98,12 @@
     </template>
   </div>
 </template>
+
 <script lang="ts" setup>
 import { ref, watch, computed, onMounted } from "vue";
 import { MenuItem } from "../../../../../../../../../core/types";
 import { VcIcon } from "./../../../../../../../";
 import { useRoute } from "vue-router";
-import * as _ from "lodash-es";
 
 export interface Props {
   children?: MenuItem[];
@@ -186,162 +186,152 @@ watch(isOpened, (newValue) => {
   --app-menu-item-icon-width: 22px;
   --app-menu-item-icon-color: var(--secondary-600);
   --app-menu-item-icon-color-active: var(--additional-50);
-  --app-menu-item-handler-width: 10px;
   --app-menu-item-background-color-hover: var(--secondary-500);
   --app-menu-item-background-color-active: var(--secondary-600);
   --app-menu-item-hover-radius: 4px;
-  --app-menu-item-title-color: var(--neutrals-700);
+  --app-menu-item-title-color: var(--base-text-color, var(--neutrals-950));
   --app-menu-item-title-color-active: var(--additional-50);
-  --app-menu-item-handler-color: var(--secondary-300);
 
-  --app-menu-item-active-text: var(--neutrals-800);
-  --app-menu-item-active-icon: var(--neutrals-800);
+  --app-menu-item-active-text: var(--base-text-color, var(--neutrals-950));
+  --app-menu-item-active-icon: var(--base-text-color, var(--neutrals-950));
 }
 
-.vc-app-menu-link:hover .vc-app-menu-item:not(.vc-app-menu-item_active) {
-  @apply tw-bg-[var(--app-menu-item-background-color-hover)] tw-bg-opacity-50
-    tw-rounded-[var(--app-menu-item-hover-radius)];
+.vc-app-menu-link {
+  @apply tw-cursor-pointer tw-px-5;
 
-  .vc-app-menu-item__title {
-    @apply tw-text-[color:var(--app-menu-item-title-color-active)];
-  }
+  &:hover .vc-app-menu-link__item:not(.vc-app-menu-link__item_active) {
+    @apply tw-bg-[var(--app-menu-item-background-color-hover)] tw-bg-opacity-50
+      tw-rounded-[var(--app-menu-item-hover-radius)];
 
-  .vc-app-menu-item__icon {
-    @apply tw-text-[color:var(--app-menu-item-icon-color-active)];
-  }
-
-  .vc-app-menu-item__title-icon {
-    @apply tw-text-[color:var(--app-menu-item-icon-color-active)];
-  }
-
-  .vc-app-menu-item__handler_enabled {
-    @apply tw-visible #{!important};
-  }
-}
-
-.vc-app-menu-item__child-item-link:hover .vc-app-menu-item__child-item:not(.vc-app-menu-item__child-item_active) {
-  @apply tw-bg-[var(--app-menu-item-background-color-hover)] tw-bg-opacity-50
-    tw-rounded-[var(--app-menu-item-hover-radius)];
-
-  .vc-app-menu-item__icon {
-    @apply tw-text-[color:var(--app-menu-item-icon-color-active)];
-  }
-}
-
-.vc-app-menu-item {
-  @apply tw-flex tw-items-center tw-w-full tw-h-[var(--app-menu-item-height)]
-  tw-border-none
-  tw-flex-nowrap tw-box-border tw-cursor-pointer tw-relative tw-uppercase tw-select-none tw-py-[4px] tw-px-[8px];
-
-  &_collapsed {
-    @apply tw-w-[40px];
-  }
-
-  &_active {
-    @apply tw-bg-[color:var(--app-menu-item-background-color-active)]
-    tw-rounded-[var(--app-menu-item-hover-radius)]
-    before:tw-opacity-100;
-  }
-
-  &_child-opened {
-    .vc-app-menu-item__title {
-      @apply tw-font-bold tw-text-[color:var(--app-menu-item-active-text)] #{!important};
+    .vc-app-menu-link__title {
+      @apply tw-text-[color:var(--app-menu-item-title-color-active)];
     }
 
-    .vc-app-menu-item__icon {
-      @apply tw-text-[color:var(--app-menu-item-active-icon)]  #{!important};
+    .vc-app-menu-link__icon {
+      @apply tw-text-[color:var(--app-menu-item-icon-color-active)];
+    }
+
+    .vc-app-menu-link__title-icon {
+      @apply tw-text-[color:var(--app-menu-item-icon-color-active)];
     }
   }
 
-  &__handler {
-    @apply tw-w-[var(--app-menu-item-handler-width)]
-    tw-text-[color:var(--app-menu-item-handler-color)]
-    tw-text-center tw-invisible tw-shrink-0;
+  &__item {
+    @apply tw-flex tw-items-center tw-w-full tw-h-[var(--app-menu-item-height)]
+      tw-border-none tw-flex-nowrap tw-box-border tw-cursor-pointer tw-relative
+      tw-uppercase tw-select-none tw-py-1 tw-px-2;
 
-    &_enabled {
-      @apply tw-cursor-move #{!important};
+    &_collapsed {
+      @apply tw-w-10;
+    }
+
+    &_active {
+      @apply tw-bg-[color:var(--app-menu-item-background-color-active)]
+        tw-rounded-[var(--app-menu-item-hover-radius)]
+        before:tw-opacity-100;
+
+      .vc-app-menu-link__icon {
+        @apply tw-text-[color:var(--app-menu-item-icon-color-active)];
+      }
+
+      .vc-app-menu-link__title {
+        @apply tw-font-bold tw-text-[color:var(--app-menu-item-title-color-active)] #{!important};
+      }
+
+      .vc-app-menu-link__title-icon {
+        @apply tw-text-[color:var(--app-menu-item-icon-color-active)];
+      }
+    }
+
+    &_child-opened {
+      .vc-app-menu-link__title {
+        @apply tw-font-bold tw-text-[color:var(--app-menu-item-active-text)] #{!important};
+      }
+
+      .vc-app-menu-link__icon {
+        @apply tw-text-[color:var(--app-menu-item-active-icon)] #{!important};
+      }
     }
   }
 
   &__icon {
     @apply tw-text-[color:var(--app-menu-item-icon-color)]
     tw-overflow-hidden tw-flex
-    tw-justify-center tw-shrink-0 tw-transition-[color] tw-duration-200;
-  }
-
-  &_active &__icon {
-    @apply tw-text-[color:var(--app-menu-item-icon-color-active)];
+    tw-justify-center tw-shrink-0 tw-transition-[color] tw-duration-200 tw-w-[var(--app-menu-item-icon-width)];
   }
 
   &__title {
-    @apply tw-truncate
-    tw-text-lg
+    @apply tw-capitalize tw-text-[color:var(--app-menu-item-title-color)] tw-truncate
+    tw-text-sm
     tw-font-medium
-    tw-pl-[7px]
-    tw-text-[color:var(--app-menu-item-title-color)]
+    tw-pl-2
     [transition:color_0.2s_ease]
     tw-opacity-100 tw-w-full tw-flex tw-justify-between tw-items-center;
   }
 
+  &__title-truncate {
+    @apply tw-truncate;
+  }
+
   &__title-icon {
-    @apply tw-text-[color:var(--app-menu-item-icon-color)] tw-ml-3;
+    @apply tw-ml-3 tw-text-[color:var(--app-menu-item-icon-color)];
   }
 
-  &_active &__title {
-    @apply tw-text-[color:var(--app-menu-item-title-color-active)]
-    tw-font-bold;
-  }
-
-  &_active &__title-icon {
-    @apply tw-text-[color:var(--app-menu-item-icon-color-active)];
+  &__icon-content {
+    @apply tw-text-center;
   }
 
   &__child {
-    @apply tw-gap-[4px] tw-mt-[4px] tw-flex tw-flex-col;
+    @apply tw-gap-1 tw-mt-1 tw-flex tw-flex-col;
   }
 
   &__child-item {
-    @apply tw-cursor-pointer tw-w-fit tw-py-[4px] tw-px-[8px] tw-rounded-[4px]
+    @apply tw-cursor-pointer tw-min-w-0 tw-flex tw-h-[var(--app-menu-item-height)]
+      tw-items-center tw-transition-[padding] tw-duration-150 tw-w-fit tw-py-1 tw-px-2 tw-rounded-[4px]
+    tw-text-[color:var(--app-menu-item-title-color)] tw-text-xs
     hover:tw-bg-[var(--app-menu-item-background-color-hover)]
     hover:tw-text-[color:var(--app-menu-item-title-color-active)];
 
+    &_expanded {
+      @apply tw-pl-5 tw-w-full #{!important};
+    }
+
+    &_collapsed {
+      @apply tw-w-10;
+    }
+
     &_active {
-      @apply tw-bg-[color:var(--app-menu-item-background-color-active)]
+      @apply tw-rounded-[var(--app-menu-item-hover-radius)]
+      tw-bg-[color:var(--app-menu-item-background-color-active)]
       tw-text-[color:var(--app-menu-item-title-color-active)] tw-font-bold
       hover:tw-bg-[color:var(--app-menu-item-background-color-active)]
       hover:tw-text-[color:var(--app-menu-item-title-color-active)];
 
-      .vc-app-menu-item__icon {
+      .vc-app-menu-link__icon {
         @apply tw-text-[color:var(--app-menu-item-icon-color-active)];
       }
     }
-
-    &_collapsed {
-      @apply tw-w-[40px];
-    }
   }
 
-  &:hover:not(.vc-app-menu-item_active) {
+  &__child-item-title {
+    @apply tw-truncate tw-pl-2;
+  }
+
+  &__child-item-link {
+    @apply tw-cursor-pointer tw-z-[2] tw-px-5;
+  }
+
+  &__child-item-link:hover .vc-app-menu-link__child-item:not(.vc-app-menu-link__child-item_active) {
     @apply tw-bg-[var(--app-menu-item-background-color-hover)] tw-bg-opacity-50
-    tw-rounded-[var(--app-menu-item-hover-radius)];
-  }
+      tw-rounded-[var(--app-menu-item-hover-radius)];
 
-  &:hover &__title {
-    @apply tw-text-[color:var(--app-menu-item-title-color-active)];
-  }
-
-  &:hover &__icon {
-    @apply tw-text-[color:var(--app-menu-item-icon-color-active)];
-  }
-
-  &:hover &__title-icon {
-    @apply tw-text-[color:var(--app-menu-item-icon-color-active)];
-  }
-
-  &:hover &__handler {
-    &_enabled {
-      @apply tw-visible #{!important};
+    .vc-app-menu-link__icon {
+      @apply tw-text-[color:var(--app-menu-item-icon-color-active)];
     }
+  }
+
+  &__icon-collapsed {
+    @apply tw-p-0;
   }
 }
 </style>

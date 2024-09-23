@@ -9,7 +9,7 @@
     <!-- Textarea label -->
     <VcLabel
       v-if="label"
-      class="tw-mb-2"
+      class="vc-textarea__label"
       :required="required"
       :multilanguage="multilanguage"
       :current-language="currentLanguage"
@@ -87,8 +87,8 @@ function onInput(e: Event) {
 <style lang="scss">
 :root {
   --textarea-height: 120px;
-  --textarea-border-color: var(--neutrals-300);
-  --textarea-border-color-error: var(--danger-500);
+  --textarea-border-color: var(--secondary-200);
+  --textarea-border-color-error: var(--base-error-color, var(--danger-500));
   --textarea-border-radius: 3px;
   --textarea-background-color: var(--additional-50);
   --textarea-placeholder-color: var(--neutrals-400);
@@ -97,11 +97,14 @@ function onInput(e: Event) {
 }
 
 .vc-textarea {
+  &__label {
+    @apply tw-mb-2;
+  }
+
   &__field-wrapper {
     @apply tw-border tw-border-solid
       tw-border-[color:var(--textarea-border-color)]
-      tw-rounded-[var(--textarea-border-radius)]
-      tw-box-border
+      tw-rounded-sm tw-box-border
       tw-bg-[color:var(--textarea-background-color)] tw-flex tw-items-stretch;
   }
 
@@ -110,14 +113,14 @@ function onInput(e: Event) {
   }
 
   &__error {
-    @apply tw-text-[color:var(--textarea-border-color-error)] tw-mt-1 #{!important};
+    @apply tw-text-[color:var(--textarea-border-color-error)] tw-mt-1;
   }
 
   &__field {
     @apply tw-w-full tw-resize-y tw-box-border tw-border-none tw-outline-none
-    tw-min-h-[var(--textarea-height)]
-    placeholder:tw-text-[color:var(--textarea-placeholder-color)]
-    tw-px-3 tw-py-2;
+      tw-min-h-32
+      placeholder:tw-text-[color:var(--textarea-placeholder-color)]
+      tw-px-3 tw-py-2 tw-bg-[color:var(--textarea-background-color)] tw-text-sm;
 
     &::-webkit-input-placeholder {
       @apply tw-text-[color:var(--textarea-placeholder-color)];

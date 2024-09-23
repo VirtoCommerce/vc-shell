@@ -3,7 +3,7 @@
     <VcBreadcrumbs
       v-if="blades && blades.length > 2"
       :items="breadcrumbs"
-      class="tw-bg-white tw-p-2 tw-shadow-[2px_2px_8px_rgba(54,84,117,0.14)] tw-rounded-[var(--blade-border-radius)]"
+      class="tw-bg-[--blade-navigation-bg-color] tw-p-2 [box-shadow:var(--blade-navigation-shadow)] tw-rounded-[var(--blade-navigation-border-radius)]"
       :class="[
         {
           'tw-mt-4 tw-mx-2': !$isMobile.value,
@@ -141,3 +141,12 @@ const render = () => {
   ]);
 };
 </script>
+
+<style lang="scss">
+:root {
+  --blade-navigation-bg-color: var(--additional-50);
+  --blade-navigation-shadow-color: var(--additional-950);
+  --blade-navigation-shadow: 2px 2px 8px rgb(from var(--blade-navigation-shadow-color) r g b / 7%);
+  --blade-navigation-border-radius: var(--blade-border-radius);
+}
+</style>

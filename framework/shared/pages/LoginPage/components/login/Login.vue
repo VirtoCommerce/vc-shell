@@ -3,6 +3,7 @@
     :logo="customization.logo"
     :background="background"
     :title="title"
+    class="vc-login-page"
   >
     <template v-if="isLogin">
       <VcForm @submit.prevent="login">
@@ -16,7 +17,7 @@
           <VcInput
             ref="loginField"
             v-model="form.username"
-            class="tw-mb-4 tw-mt-1"
+            class="vc-login-page__input"
             :label="t('LOGIN.FIELDS.LOGIN.LABEL')"
             :placeholder="t('LOGIN.FIELDS.LOGIN.PLACEHOLDER')"
             required
@@ -35,7 +36,7 @@
           <VcInput
             ref="passwordField"
             v-model="form.password"
-            class="tw-mb-4"
+            class="vc-login-page__input--small"
             :label="t('LOGIN.FIELDS.PASSWORD.LABEL')"
             :placeholder="t('LOGIN.FIELDS.PASSWORD.PLACEHOLDER')"
             type="password"
@@ -49,7 +50,7 @@
 
         <div
           v-if="!!forgotPassword"
-          class="tw-flex tw-justify-end tw-items-center tw-pt-2"
+          class="vc-login-page__forgot-password-container"
         >
           <VcButton
             text
@@ -59,10 +60,10 @@
             {{ t("LOGIN.FORGOT_PASSWORD_BUTTON") }}
           </VcButton>
         </div>
-        <div class="tw-flex tw-justify-center tw-items-center tw-pt-2">
+        <div class="vc-login-page__button-container">
           <vc-button
             :disabled="loading || !isValid"
-            class="tw-w-28"
+            class="vc-login-page__submit-button"
             @click="login"
           >
             {{ t("LOGIN.BUTTON") }}
@@ -71,28 +72,27 @@
       </VcForm>
       <div
         v-if="loginProviders && loginProviders.length"
-        class="tw-mt-4"
+        class="vc-login-page__separator"
       >
-        <div
-          class="tw-flex tw-items-center tw-text-center tw-uppercase tw-text-[color:var(--separator-text)] before:tw-content-[''] before:tw-flex-1 before:tw-border-b before:tw-border-b-[color:var(--separator)] before:tw-mr-2 after:tw-content-[''] after:tw-flex-1 after:tw-border-b after:tw-border-b-[color:var(--separator)] after:tw-ml-2"
-        >
+        <div class="vc-login-page__separator-line">
           <!-- TODO add to localization -->
           OR
         </div>
-        <div class="tw-flex tw-justify-center tw-mt-4 tw-flex-wrap tw-gap-2">
+        <div class="vc-login-page__external-buttons">
           <VcButton
             v-for="external in loginProviders"
             :key="external.authenticationType"
             outline
             @click="externalSignOn(external.authenticationType ?? '')"
-            ><div class="tw-flex tw-flex-row tw-items-center">
+          >
+            <div class="vc-login-page__external-button-content">
               <img
                 :src="externalAuthIcon(external.authenticationType ?? '')"
                 :alt="external.authenticationType"
-                class="tw-h-5 tw-mr-2"
+                class="vc-login-page__external-icon"
               />{{ external.displayName }}
-            </div></VcButton
-          >
+            </div>
+          </VcButton>
         </div>
       </div>
     </template>
@@ -110,7 +110,7 @@
               v-bind="field"
               ref="forgotPasswordField"
               v-model="forgotPasswordForm.loginOrEmail"
-              class="tw-mb-4 tw-mt-1"
+              class="vc-login-page__input"
               :label="t('LOGIN.FIELDS.FORGOT_PASSWORD.LABEL')"
               :placeholder="t('LOGIN.FIELDS.FORGOT_PASSWORD.PLACEHOLDER')"
               :hint="t('LOGIN.RESET_EMAIL_TEXT')"
@@ -120,7 +120,7 @@
               @update:model-value="handleChange"
             ></VcInput>
           </Field>
-          <div class="tw-flex tw-justify-between tw-items-center tw-pt-2">
+          <div class="vc-login-page__forgot-form-buttons">
             <vc-button
               text
               type="button"
@@ -140,10 +140,10 @@
 
       <template v-if="requestPassResult.succeeded && forgotPasswordRequestSent">
         <div>{{ t("LOGIN.RESET_EMAIL_SENT") }}</div>
-        <div class="tw-flex tw-justify-center tw-items-center tw-pt-2">
+        <div class="vc-login-page__button-container">
           <span
             v-if="$isDesktop.value"
-            class="tw-grow tw-basis-0"
+            class="vc-login-page__spacer"
           ></span>
           <vc-button
             :disabled="loading"
@@ -157,7 +157,7 @@
 
     <VcHint
       v-if="!signInResult.succeeded"
-      class="tw-mt-3"
+      class="vc-login-page__error-hint"
       style="color: #f14e4e"
     >
       <!-- TODO: stylizing-->
@@ -165,7 +165,7 @@
     </VcHint>
     <VcHint
       v-if="!requestPassResult.succeeded"
-      class="tw-mt-3"
+      class="vc-login-page__error-hint"
       style="color: #f14e4e"
     >
       <!-- TODO: stylizing-->
@@ -173,6 +173,7 @@
     </VcHint>
   </VcLoginForm>
 </template>
+
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
 import { ref, reactive, computed, onMounted, Ref } from "vue";
@@ -313,7 +314,62 @@ console.debug("Init login-page");
 
 <style lang="scss">
 :root {
-  --separator: #d3dbe9;
-  --separator-text: #83a3be;
+  --login-separator: var(--secondary-200);
+  --login-separator-text: var(--primary-300);
+  --login-error: var(--base-error-color, var(--danger-500));
+}
+
+.vc-login-page {
+  &__input {
+    @apply tw-mb-4 tw-mt-1;
+  }
+
+  &__input--small {
+    @apply tw-mb-4;
+  }
+
+  &__forgot-password-container {
+    @apply tw-flex tw-justify-end tw-items-center tw-pt-2;
+  }
+
+  &__button-container {
+    @apply tw-flex tw-justify-center tw-items-center tw-pt-2;
+  }
+
+  &__submit-button {
+    @apply tw-w-28;
+  }
+
+  &__separator {
+    @apply tw-mt-4;
+  }
+
+  &__separator-line {
+    @apply tw-flex tw-items-center tw-text-center tw-uppercase tw-text-[color:var(--login-separator-text)] before:tw-content-[''] before:tw-flex-1 before:tw-border-b before:tw-border-b-[color:var(--login-separator)] before:tw-mr-2 after:tw-content-[''] after:tw-flex-1 after:tw-border-b after:tw-border-b-[color:var(--login-separator)] after:tw-ml-2;
+  }
+
+  &__external-buttons {
+    @apply tw-flex tw-justify-center tw-mt-4 tw-flex-wrap tw-gap-2;
+  }
+
+  &__external-button-content {
+    @apply tw-flex tw-flex-row tw-items-center;
+  }
+
+  &__external-icon {
+    @apply tw-h-5 tw-mr-2;
+  }
+
+  &__error-hint {
+    @apply tw-mt-3 tw-text-[color:var(--login-error)];
+  }
+
+  &__forgot-form-buttons {
+    @apply tw-flex tw-justify-between tw-items-center tw-pt-2;
+  }
+
+  &__spacer {
+    @apply tw-grow tw-basis-0;
+  }
 }
 </style>

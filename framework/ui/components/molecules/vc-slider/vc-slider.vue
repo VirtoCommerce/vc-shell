@@ -1,13 +1,11 @@
 <template>
   <div class="vc-slider tw-relative">
     <swiper
-      :class="[
-        'vc-slider__swiper',
-        {
-          'tw-overflow-visible': overflow,
-          'tw-px-[40px]': navigation,
-        },
-      ]"
+      class="vc-slider__swiper"
+      :class="{
+        'vc-slider__swiper_overflow-visible': overflow,
+        'vc-slider__swiper_navigation': navigation,
+      }"
       :space-between="spaceBetweenSlides"
       :navigation="buttonsList as any"
       :slides-per-view="slidesPerView as any"
@@ -85,6 +83,14 @@ const buttonsList = computed(() => ({
     .swiper-slide {
       @apply tw-w-auto;
     }
+
+    &.vc-slider__swiper_overflow-visible {
+      @apply tw-overflow-visible;
+    }
+
+    &.vc-slider__swiper_navigation {
+      @apply tw-px-10;
+    }
   }
 
   &__next,
@@ -97,10 +103,16 @@ const buttonsList = computed(() => ({
   }
 
   &__btn {
-    @apply tw-bg-[var(--slider-button-background)] tw-border tw-border-solid tw-border-[var(--slider-button-border)]
-      tw-box-border tw-rounded-[3px]
-      tw-flex tw-items-center tw-justify-center
-      tw-text-[var(--slider-button-text)] tw-w-[30px] tw-h-[30px];
+    @apply tw-bg-[var(--slider-button-background)] tw-border tw-border-solid tw-border-[var(--slider-button-border)];
+    @apply tw-box-border tw-rounded tw-flex tw-items-center tw-justify-center;
+    @apply tw-text-[var(--slider-button-text)] tw-w-8 tw-h-8;
+    @apply tw-transition tw-duration-200;
+  }
+
+  &__prev {
+  }
+
+  &__next {
   }
 }
 </style>

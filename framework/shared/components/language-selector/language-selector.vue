@@ -1,54 +1,44 @@
 <template>
-  <div
-    v-on-click-outside="
-      () => {
-        isDropActive = false;
-      }
-    "
-    class="tw-relative"
+  <AppBarButtonTemplate
     :title="$t('COMPONENTS.LANGUAGE_SELECTOR.TITLE')"
-    @click.stop="isDropActive = !isDropActive"
+    icon="fas fa-globe"
+    position="bottom-end"
   >
-    <div
-      :class="[
-        {
-          'tw-shadow-[0_-6px_6px_white,1px_1px_22px_rgba(126,142,157,0.2)] [clip-path:inset(0px_-20px_0px_-20px)] tw-bg-white tw-z-[10000]':
-            isDropActive,
-        },
-        'tw-relative tw-h-full tw-flex tw-items-center tw-justify-center tw-w-[var(--app-bar-button-width)] tw-border-l tw-border-solid tw-border-l-[color:var(--app-bar-button-border-color)] tw-cursor-pointer tw-text-[color:var(--app-bar-button-color)] tw-bg-[color:var(--app-bar-button-background-color)]  tw-transition-[color]  tw-duration-200 hover:tw-text-[color:var(--app-bar-button-color-hover)] hover:tw-bg-[color:var(--app-bar-button-background-color-hover)]',
-      ]"
-    >
-      <VcIcon
-        icon="fas fa-globe"
-        size="xl"
-      ></VcIcon>
-    </div>
-    <div
-      v-if="isDropActive"
-      class="tw-absolute tw-right-0 tw-top-[var(--app-bar-height)] tw-bg-white tw-shadow-[0_-6px_6px_white,1px_1px_22px_rgba(126,142,157,0.2)] tw-w-min tw-z-[10000]"
-    >
-      <div
-        v-for="(lang, i) in languageItems"
-        :key="i"
-        class="tw-p-3 tw-text-lg tw-text-black tw-border-l tw-border-solid tw-border-l-[#eef0f2] tw-border-b tw-border-b-[#eef0f2] tw-white tw-cursor-pointer hover:tw-bg-[#eff7fc]"
-        @click="lang.hasOwnProperty('clickHandler') && lang.clickHandler(lang.lang)"
+    <template #dropdown-content="{ opened, toggle }">
+      <Sidebar
+        :is-expanded="$isMobile.value ? opened : false"
+        position="right"
+        render="mobile"
+        @close="toggle"
       >
-        {{ lang.title }}
-      </div>
-    </div>
-  </div>
+        <template #content>
+          <div
+            v-if="opened"
+            class="vc-language-selector__dropdown"
+          >
+            <div
+              v-for="(lang, i) in languageItems"
+              :key="i"
+              class="vc-language-selector__item"
+              @click="lang.hasOwnProperty('clickHandler') && lang.clickHandler(lang.lang)"
+            >
+              {{ lang.title }}
+            </div>
+          </div>
+        </template>
+      </Sidebar>
+    </template>
+  </AppBarButtonTemplate>
 </template>
 
 <script lang="ts" setup>
-import { VcIcon } from "./../../../ui/components";
-import { ref } from "vue";
-import { vOnClickOutside } from "@vueuse/components";
 import { useI18n } from "vue-i18n";
 import { useLanguages } from "../../../core/composables";
+import { AppBarButtonTemplate } from "./../app-bar-button";
+import { Sidebar } from "./../sidebar";
 
 const { availableLocales, getLocaleMessage } = useI18n({ useScope: "global" });
 const { setLocale } = useLanguages();
-const isDropActive = ref(false);
 
 const languageItems = availableLocales
   .map((locale: string) => ({
@@ -60,3 +50,29 @@ const languageItems = availableLocales
   }))
   .filter((item) => item.title);
 </script>
+
+<style lang="scss">
+:root {
+  --language-selector-bg-color: var(--additional-50);
+  --language-selector-text-color: var(--base-text-color, var(--neutrals-950));
+  --language-selector-border-color: var(--app-bar-divider-color);
+  --language-selector-hover-bg-color: var(--primary-50);
+}
+
+.vc-language-selector {
+  &__dropdown {
+    @apply tw-bg-[color:var(--language-selector-bg-color)] tw-w-full;
+  }
+
+  &__item {
+    @apply tw-p-3 tw-text-sm tw-text-[color:var(--language-selector-text-color)]
+      tw-border-l tw-border-solid tw-border-l-[var(--language-selector-border-color)]
+      tw-border-b tw-border-b-[var(--language-selector-border-color)] tw-w-full tw-cursor-pointer;
+    transition: background-color 0.2s;
+
+    &:hover {
+      background-color: var(--language-selector-hover-bg-color);
+    }
+  }
+}
+</style>

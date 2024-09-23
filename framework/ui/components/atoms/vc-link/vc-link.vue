@@ -2,9 +2,8 @@
   <div
     class="vc-link"
     :class="{
-      'tw-text-[color:var(--primary-700)] tw-no-underline': active,
-      'tw-cursor-not-allowed tw-text-[color:var(--neutrals-300)] hover:tw-text-[color:var(--neutrals-300)] tw-no-underline':
-        disabled,
+      'vc-link--active': active,
+      'vc-link--disabled': disabled,
     }"
     @click="onClickFn"
   >
@@ -43,5 +42,13 @@ function onClickFn(): void {
 
 .vc-link {
   @apply tw-text-[color:var(--link-text-color)] tw-no-underline tw-cursor-pointer tw-transition tw-duration-200 tw-inline-block hover:tw-text-[color:var(--link-text-color-hover)] hover:tw-underline;
+
+  &--active {
+    @apply tw-text-[color:var(--link-text-color-active)] tw-no-underline hover:tw-text-[color:var(--link-text-color-active)] hover:tw-no-underline;
+  }
+
+  &--disabled {
+    @apply tw-cursor-not-allowed tw-text-[color:var(--link-text-color-disabled)] tw-no-underline hover:tw-text-[color:var(--link-text-color-disabled)] hover:tw-no-underline;
+  }
 }
 </style>

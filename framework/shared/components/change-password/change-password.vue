@@ -118,7 +118,7 @@
         <VcHint
           v-for="(err, i) in form.errors"
           :key="i"
-          class="tw-mt-3 !tw-text-[#f14e4e]"
+          class="tw-mt-3 !tw-text-[color:var(--change-password-error-color)]"
         >
           <!-- TODO: stylizing-->
           {{
@@ -219,3 +219,9 @@ function validate() {
   });
 }
 </script>
+
+<style lang="scss">
+:root {
+  --change-password-error-color: var(--base-error-color, var(--danger-500));
+}
+</style>

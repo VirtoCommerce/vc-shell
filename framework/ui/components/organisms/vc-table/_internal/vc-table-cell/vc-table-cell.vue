@@ -1,19 +1,15 @@
 <template>
-  <div>
-    <!-- Money cell -->
+  <div class="vc-table-cell">
+    <!-- Money Cell -->
     <template v-if="cell.type === 'money'">
       <template v-if="!isEditable && (typeof value === 'undefined' || Number(value) === 0)">
-        <div
-          class="tw-truncate"
-          :class="cell.class"
-        >
+        <div class="vc-table-cell__not-set">
           {{ $t("COMPONENTS.ORGANISMS.VC_TABLE.NOT_SET") }}
         </div>
       </template>
       <div
         v-else-if="typeof Number(value) === 'number'"
-        class="tw-truncate"
-        :class="cell.class"
+        :class="['vc-table-cell__money', cell.class]"
       >
         <template v-if="isEditable">
           <Field
@@ -30,7 +26,7 @@
                   :options="[]"
                   :option="(item[cell.currencyField || 'currency'] as string) || 'USD'"
                   currency-display="symbol"
-                  class="tw-w-full"
+                  class="vc-table-cell__input-currency"
                   :error="errors.length > 0"
                   :error-message="$isMobile.value ? errorMessage : undefined"
                   @update:model-value="$emit('update', { field: cell.id, value: $event })"
@@ -40,75 +36,75 @@
                     v-if="$isDesktop.value && errors.length > 0"
                     #append-inner
                   >
-                    <VcIcon icon="fas fa-exclamation-circle tw-text-[color:var(--table-cell-error-color)]"></VcIcon>
+                    <VcIcon
+                      icon="fas fa-exclamation-circle"
+                      class="vc-table-cell__error-icon"
+                    ></VcIcon>
                   </template>
                 </VcInputCurrency>
               </template>
-              <template
-                v-if="errors.length > 0"
-                #tooltip
-              >
-                <div class="tw-text-[color:var(--table-cell-error-color)]">{{ errorMessage }}</div>
+              <template #tooltip>
+                <div class="vc-table-cell__error-tooltip">
+                  {{ errorMessage }}
+                </div>
               </template>
             </VcTooltip>
           </Field>
         </template>
         <template v-else>
-          <span class="tw-truncate">{{ intlMoney(Number(value)) }}</span>
+          <span class="vc-table-cell__money-display">{{ intlMoney(Number(value)) }}</span>
         </template>
       </div>
     </template>
 
-    <!-- Date ago cell -->
+    <!-- Date Ago Cell -->
     <span
       v-else-if="cell.type === 'date-ago'"
-      class="tw-text-[color:var(--table-cell-text-color)]"
-      :class="cell.class"
+      :class="['vc-table-cell__date-ago', cell.class]"
       :title="(value instanceof Date && value.toLocaleString(locale)) || ''"
     >
       <div
         v-if="value"
-        class="tw-truncate"
+        class="vc-table-cell__date-ago-content"
       >
         {{ moment(value).fromNow() }}
       </div>
       <div
         v-else
-        class="tw-truncate"
+        class="vc-table-cell__not-set"
       >
         {{ $t("COMPONENTS.ORGANISMS.VC_TABLE.NOT_SET") }}
       </div>
     </span>
 
-    <!-- Date exact cell -->
+    <!-- Exact Date/Time Cell -->
     <div
       v-else-if="cell.type === 'date' || cell.type === 'time' || cell.type === 'date-time'"
-      class="tw-text-[color:var(--table-cell-text-color)] tw-truncate"
-      :class="cell.class"
+      :class="['vc-table-cell__date', cell.class]"
     >
       <template v-if="value">
         <div
           v-if="cell.format"
-          class="tw-truncate"
+          class="vc-table-cell__date-content"
         >
           {{ moment(value).locale(locale).format(cell.format) }}
         </div>
         <template v-else>
           <div
             v-if="cell.type === 'date'"
-            class="tw-truncate"
+            class="vc-table-cell__date-content"
           >
             {{ value instanceof Date && value.toLocaleDateString(locale) }}
           </div>
           <div
             v-if="cell.type === 'time'"
-            class="tw-truncate"
+            class="vc-table-cell__date-content"
           >
             {{ value instanceof Date && value.toLocaleTimeString(locale) }}
           </div>
           <p
             v-if="cell.type === 'date-time'"
-            class="tw-truncate"
+            class="vc-table-cell__date-content"
           >
             {{ value instanceof Date && value.toLocaleString(locale) }}
           </p>
@@ -116,15 +112,16 @@
       </template>
       <div
         v-else
-        class="tw-truncate"
+        class="vc-table-cell__not-set"
       >
         {{ $t("COMPONENTS.ORGANISMS.VC_TABLE.NOT_SET") }}
       </div>
     </div>
 
-    <!-- Image cell -->
+    <!-- Image Cell -->
     <template v-else-if="cell.type === 'image'">
       <VcImage
+        class="vc-table-cell__image"
         :bordered="true"
         size="s"
         aspect="1x1"
@@ -134,15 +131,15 @@
       />
     </template>
 
-    <!-- Status cell -->
+    <!-- Status Cell -->
     <template v-else-if="cell.type === 'status'">
-      <VcStatus>{{ value }}</VcStatus>
+      <VcStatus class="vc-table-cell__status">{{ value }}</VcStatus>
     </template>
 
-    <!-- Status icon cell -->
+    <!-- Status Icon Cell -->
     <div
       v-else-if="cell.type === 'status-icon'"
-      class="tw-flex tw-justify-center"
+      class="vc-table-cell__status-icon"
       :class="cell.class"
     >
       <VcStatusIcon
@@ -151,11 +148,10 @@
       ></VcStatusIcon>
     </div>
 
-    <!-- Number cell -->
+    <!-- Number Cell -->
     <div
       v-else-if="cell.type === 'number'"
-      class="tw-truncate"
-      :class="cell.class"
+      :class="['vc-table-cell__number', cell.class]"
     >
       <template v-if="isEditable">
         <Field
@@ -169,7 +165,7 @@
             <template #default>
               <VcInput
                 :model-value="value"
-                class="tw-w-full"
+                class="vc-table-cell__input-number"
                 type="number"
                 :error="errors.length > 0"
                 :error-message="$isMobile.value ? errorMessage : undefined"
@@ -180,15 +176,17 @@
                   v-if="$isDesktop.value && errors.length > 0"
                   #append-inner
                 >
-                  <VcIcon icon="fas fa-exclamation-circle tw-text-[color:var(--table-cell-error-color)]"></VcIcon>
+                  <VcIcon
+                    icon="fas fa-exclamation-circle"
+                    class="vc-table-cell__error-icon"
+                  ></VcIcon>
                 </template>
               </VcInput>
             </template>
-            <template
-              v-if="errors.length > 0"
-              #tooltip
-            >
-              <div class="tw-text-[color:var(--table-cell-error-color)]">{{ errorMessage }}</div>
+            <template #tooltip>
+              <div class="vc-table-cell__error-tooltip">
+                {{ errorMessage }}
+              </div>
             </template>
           </VcTooltip>
         </Field>
@@ -202,29 +200,28 @@
       </template>
     </div>
 
-    <!-- Link cell -->
+    <!-- Link Cell -->
     <template v-else-if="cell.type === 'link'">
       <VcLink
-        class="tw-truncate"
+        class="vc-table-cell__link"
         :class="cell.class"
         >{{ value }}</VcLink
       >
     </template>
 
-    <!-- HTML cell -->
+    <!-- HTML Cell -->
     <template v-else-if="cell.type === 'html'">
       <div
-        class="tw-p-1"
+        class="vc-table-cell__html"
         :class="cell.class"
         v-html="truncatedHtml"
       />
     </template>
 
-    <!-- Default cell -->
+    <!-- Default Cell -->
     <div
       v-else
-      class="tw-truncate"
-      :class="cell.class"
+      :class="['vc-table-cell__default', cell.class]"
     >
       <template v-if="isEditable">
         <Field
@@ -238,7 +235,7 @@
             <template #default>
               <VcInput
                 :model-value="value"
-                class="tw-w-full"
+                class="vc-table-cell__input-default"
                 :error="errors.length > 0"
                 :error-message="$isMobile.value ? errorMessage : undefined"
                 @update:model-value="$emit('update', { field: cell.id, value: $event })"
@@ -249,15 +246,16 @@
                   #append-inner
                 >
                   <VcIcon
-                    icon="fas fa-exclamation-circle tw-text-[color:var(--table-cell-error-color)]"
-                  ></VcIcon> </template
-              ></VcInput>
+                    icon="fas fa-exclamation-circle"
+                    class="vc-table-cell__error-icon"
+                  ></VcIcon>
+                </template>
+              </VcInput>
             </template>
-            <template
-              v-if="errors.length > 0"
-              #tooltip
-            >
-              <div class="tw-text-[color:var(--table-cell-error-color)]">{{ errorMessage }}</div>
+            <template #tooltip>
+              <div class="vc-table-cell__error-tooltip">
+                {{ errorMessage }}
+              </div>
             </template>
           </VcTooltip>
         </Field>
@@ -336,7 +334,76 @@ function onBlur(args: { row: number | undefined; field: string; errors?: string[
 
 <style lang="scss">
 :root {
-  --table-cell-error-color: var(--danger-500);
+  --table-cell-error-color: var(--base-error-color, var(--danger-500));
   --table-cell-text-color: var(--neutrals-400);
+  --table-cell-text-base-color: var(--base-text-color, var(--additional-950));
+}
+
+.vc-table-cell {
+  @apply tw-text-sm tw-text-[color:var(--table-cell-text-base-color)];
+
+  &__not-set {
+    @apply tw-truncate;
+  }
+
+  &__money {
+    @apply tw-truncate;
+  }
+
+  &__input-currency {
+    @apply tw-w-full;
+  }
+
+  &__error-icon {
+    @apply tw-text-[color:var(--table-cell-error-color)];
+  }
+
+  &__error-tooltip {
+    @apply tw-text-[color:var(--table-cell-error-color)];
+  }
+
+  &__date-ago {
+    @apply tw-text-[color:var(--table-cell-text-color)];
+  }
+
+  &__date-ago-content {
+    @apply tw-truncate;
+  }
+
+  &__date {
+    @apply tw-truncate tw-text-[color:var(--table-cell-text-color)];
+  }
+
+  &__date-content {
+    @apply tw-truncate;
+  }
+
+  &__status-icon {
+    @apply tw-flex tw-justify-center;
+  }
+
+  &__number {
+    @apply tw-truncate;
+  }
+
+  &__input-number {
+    @apply tw-w-full;
+  }
+
+  &__link {
+    @apply tw-truncate;
+  }
+
+  &__html {
+    @apply tw-p-1 tw-truncate;
+  }
+
+  &__default {
+    @apply tw-truncate;
+  }
+
+  &__input-default {
+    @apply tw-w-full;
+  }
 }
 </style>

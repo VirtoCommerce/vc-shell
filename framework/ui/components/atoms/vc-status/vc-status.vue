@@ -6,7 +6,7 @@
     <slot></slot>
   </div>
 </template>
-<!-- eslint-disable @typescript-eslint/no-explicit-any -->
+
 <script lang="ts" setup>
 export interface Props {
   variant?: "info" | "warning" | "danger" | "success" | "light-danger" | "info-dark" | "primary";
@@ -20,6 +20,7 @@ withDefaults(defineProps<Props>(), {
 });
 
 defineSlots<{
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   default: (props?: any) => any;
 }>();
 </script>
@@ -43,10 +44,10 @@ defineSlots<{
   --status-danger-main-color: var(--danger-500);
 
   --status-success-color: var(--neutrals-50);
-  --status-success-main-color: var(--success-400);
+  --status-success-main-color: var(--success-500);
 
-  --status-light-danger-color: var(--neutrals-700);
-  --status-light-danger-main-color: var(--danger-50);
+  --status-light-danger-color: var(--neutrals-50);
+  --status-light-danger-main-color: var(--danger-200);
 
   --status-info-dark-color: var(--neutrals-50);
   --status-info-dark-main-color: var(--info-600);
@@ -60,20 +61,26 @@ defineSlots<{
 $variants: info, warning, danger, success, light-danger, info-dark, primary;
 
 .vc-status {
-  @apply tw-inline-block tw-rounded-[var(--status-border-radius)] tw-py-1 tw-px-3.5 tw-text-base tw-font-normal tw-whitespace-nowrap;
+  @apply tw-inline-block tw-font-normal tw-whitespace-nowrap tw-text-sm tw-truncate tw-text-center tw-border tw-border-solid tw-box-border tw-w-full;
+
+  @apply tw-py-1 tw-px-3.5 tw-rounded-[var(--status-border-radius)];
+
+  border-width: var(--status-border-width);
 
   @each $variant in $variants {
-    &_#{$variant} {
-      @apply tw-text-[color:var(--status-#{$variant}-color)] tw-border tw-border-solid tw-border-[color:var(--status-#{$variant}-main-color)] tw-bg-[color:var(--status-#{$variant}-main-color)];
+    &.vc-status_#{$variant} {
+      @apply tw-text-[color:var(--status-#{$variant}-color)] tw-border-[color:var(--status-#{$variant}-main-color)] tw-bg-[color:var(--status-#{$variant}-main-color)];
 
       &.vc-status_outline {
-        @apply tw-text-[color:var(--status-#{$variant}-main-color)] tw-border tw-border-solid tw-border-[color:var(--status-#{$variant}-main-color)] tw-bg-[--status-outline-bg-color];
+        @apply tw-text-[color:var(--status-#{$variant}-main-color)] tw-bg-[color:var(--status-outline-bg-color)];
       }
     }
   }
 
   &.vc-status_extended {
-    @apply tw-whitespace-normal tw-p-[var(--status-padding-extended)] tw-rounded-[var(--status-border-radius-extended)];
+    @apply tw-whitespace-normal tw-rounded-[var(--status-border-radius-extended)];
+
+    padding: var(--status-padding-extended);
   }
 }
 </style>

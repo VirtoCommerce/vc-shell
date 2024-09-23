@@ -382,6 +382,10 @@ defineExpose({
 </script>
 
 <style lang="scss">
+:root {
+  --dynamic-form-decline-color: var(--danger-500);
+  --dynamic-form-mobile-border: var(--primary-100);
+}
 .item-details {
   &__inner {
     @apply tw-overflow-hidden tw-min-h-full tw-flex tw-grow tw-basis-0;
@@ -392,7 +396,7 @@ defineExpose({
   }
 
   &__decline-icon {
-    @apply tw-text-[#ff4a4a] tw-mr-3;
+    @apply tw-text-[color:var(--dynamic-form-decline-color)] tw-mr-3;
   }
 
   .vc-app_mobile &__inner {
@@ -400,7 +404,7 @@ defineExpose({
   }
 
   .vc-app_mobile &__content {
-    @apply tw-border-r-0 tw-border-b tw-border-solid tw-border-b-[#eaedf3] tw-overflow-visible;
+    @apply tw-border-r-0 tw-border-b tw-border-solid tw-border-b-[--dynamic-form-mobile-border] tw-overflow-visible;
   }
 }
 </style>

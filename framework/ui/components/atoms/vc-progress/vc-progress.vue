@@ -1,12 +1,12 @@
 <template>
   <div
-    :class="[
-      'vc-progress tw-border-[length:var(--progressbar-border-width)] tw-border-[color:var(--progressbar-border-color)] tw-rounded-[var(--progressbar-border-radius)] tw-h-[var(--progressbar-height)] tw-transition tw-duration-200 tw-box-border tw-bg-[color:var(--progressbar-background-color)]',
-      variant === 'striped' ? 'vc-progress--striped' : '',
-    ]"
+    class="vc-progress"
+    :class="{
+      'vc-progress--striped': variant === 'striped',
+    }"
   >
     <div
-      class="vc-progress__value tw-bg-[color:var(--progressbar-foreground-color)] tw-transition tw-duration-200 tw-h-full"
+      class="vc-progress__value"
       :style="`width: ${value}%`"
     ></div>
   </div>
@@ -31,7 +31,7 @@ withDefaults(defineProps<Props>(), {
   --progressbar-background-color: var(--additional-50);
   --progressbar-foreground-color: var(--accent-200);
   --progressbar-border-width: 1px;
-  --progressbar-border-color: var(--neutrals-200);
+  --progressbar-border-color: var(--base-border-color, var(--neutrals-200));
   --progressbar-striped-bg: linear-gradient(
         45deg,
         transparent 50%,
@@ -54,11 +54,15 @@ withDefaults(defineProps<Props>(), {
 }
 
 .vc-progress {
-  &--striped {
-    .vc-progress__value {
-      background: var(--progressbar-striped-bg);
-      animation: change 1s linear infinite;
-    }
+  @apply tw-border-[length:var(--progressbar-border-width)] tw-border-[color:var(--progressbar-border-color)] tw-rounded-[var(--progressbar-border-radius)] tw-h-[var(--progressbar-height)] tw-transition tw-duration-200 tw-box-border tw-bg-[color:var(--progressbar-background-color)];
+
+  &__value {
+    @apply tw-bg-[color:var(--progressbar-foreground-color)] tw-transition tw-duration-200 tw-h-full;
+  }
+
+  &--striped .vc-progress__value {
+    background: var(--progressbar-striped-bg);
+    animation: change 1s linear infinite;
   }
 }
 </style>

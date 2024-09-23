@@ -130,18 +130,30 @@ defineExpose({
 </script>
 
 <style lang="scss">
+:root {
+  --container-overscroll-icon-color: var(--secondary-600);
+  --container-text-color: var(--neutrals-400);
+  --container-padding: 16px;
+  --container-transition-duration: 0.3s;
+  --container-transition-ease: ease-out;
+  --container-shadow-color: var(--additional-950);
+  --container-shadow-opacity: 0.1;
+  --container-shadow: 0 3px 2px rgba(var(--container-shadow-color), var(--container-shadow-opacity)) inset;
+}
+
 .vc-container {
   @apply tw-w-full tw-h-full tw-overflow-hidden tw-box-border tw-flex tw-flex-col tw-relative;
 
   &_shadow {
-    @apply tw-shadow-[0_3px_2px_rgba(0,0,0,0.1)_inset];
+    @apply tw-shadow-[--container-shadow];
   }
 
   &__overscroll {
-    @apply tw-absolute tw-w-full [transition:top_0.3s_ease-out];
+    @apply tw-absolute tw-w-full;
+    transition: top var(--container-transition-duration) var(--container-transition-ease);
 
     &_touching {
-      @apply tw-transition-none;
+      transition: none;
     }
   }
 
@@ -150,17 +162,19 @@ defineExpose({
   }
 
   &__overscroll-icon {
-    @apply tw-text-[color:#a1c0d4];
+    @apply tw-text-[color:var(--container-overscroll-icon-color)];
   }
 
   &__overscroll span {
-    @apply tw-ml-2 tw-text-sm tw-text-gray-500;
+    @apply tw-ml-2 tw-text-sm;
+    color: var(--container-text-color);
   }
 
   &__inner {
     @apply tw-relative tw-overflow-y-auto tw-overflow-x-hidden
-    tw-flex-1 tw-p-[var(--scroll-padding)]
-    [transition:top_0.3s_ease-out];
+    tw-flex-1;
+    transition: top var(--container-transition-duration) var(--container-transition-ease);
+    padding: var(--container-padding);
 
     &_touching {
       transition: none;
@@ -168,7 +182,11 @@ defineExpose({
   }
 
   &_nopadding &__inner {
-    @apply tw-p-0;
+    padding: 0;
+  }
+
+  &_shadow {
+    @apply tw-shadow-[--container-shadow];
   }
 }
 </style>

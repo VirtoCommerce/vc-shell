@@ -1,9 +1,13 @@
 <template>
-  <div class="tw-relative tw-w-min tw-float-right tw-mr-4">
-    <div ref="referenceButton">
+  <div class="vc-table-column-switcher">
+    <div
+      ref="referenceButton"
+      class="vc-table-column-switcher__button-container"
+    >
       <VcButton
         small
         icon="fas fa-th"
+        class="vc-table-column-switcher__toggle-button"
         @click.stop="isActive = !isActive"
       ></VcButton>
     </div>
@@ -13,25 +17,26 @@
         ref="floatingDrop"
         v-on-click-outside="[close, { ignore: [referenceButton] }]"
         :style="floatingDropStyle"
-        class="tw-flex tw-flex-col tw-box-border tw-max-h-[300px] tw-h-auto tw-z-10 tw-overflow-hidden tw-absolute tw-bg-white tw-border tw-border-solid tw-border-[#e5e7eb] tw-w-max tw-right-0"
+        class="vc-table-column-switcher__dropdown"
       >
         <VcContainer
           v-if="internalItems && internalItems.length"
           :no-padding="true"
+          class="vc-table-column-switcher__container"
         >
-          <div class="tw-w-full tw-h-full tw-box-border tw-flex tw-flex-col">
+          <div class="vc-table-column-switcher__list">
             <div
               v-for="item in internalItems"
               :key="item.id"
-              class="tw-flex tw-items-center tw-min-h-[30px] tw-box-border tw-rounded-[3px] tw-px-2 tw-cursor-pointer hover:tw-bg-[#eff7fc] tw-border-b"
+              class="vc-table-column-switcher__item"
               @click="selectItem(item)"
             >
               <VcIcon
                 :icon="item.visible ? 'fas fa-check' : ''"
                 size="s"
-                class="tw-w-4"
+                class="vc-table-column-switcher__item-icon"
               />
-              <p class="tw-ml-2">
+              <p class="vc-table-column-switcher__item-title">
                 {{
                   $te(`COMPONENTS.ORGANISMS.VC_TABLE.${stateKey}.${item.id}`)
                     ? $t(`COMPONENTS.ORGANISMS.VC_TABLE.${stateKey}.${item.id}`)
@@ -117,3 +122,46 @@ function close() {
   }
 }
 </script>
+
+<style lang="scss">
+:root {
+  --table-column-switcher-dropdown-bg: var(--additional-50);
+  --table-column-switcher-dropdown-border: var(--base-border-color, var(--neutrals-200));
+  --table-column-switcher-dropdown-item-hover: var(--primary-50);
+  --table-column-switcher-text-color: var(--base-text-color, var(--neutrals-950));
+}
+
+.vc-table-column-switcher {
+  @apply tw-relative tw-w-min tw-float-right tw-mr-4;
+
+  &__dropdown {
+    @apply tw-flex tw-flex-col tw-box-border tw-z-10 tw-overflow-hidden tw-absolute tw-border tw-border-solid tw-w-max tw-right-0;
+    @apply tw-max-h-[300px] tw-h-auto;
+    background-color: var(--table-column-switcher-dropdown-bg);
+    border-color: var(--table-column-switcher-dropdown-border);
+  }
+
+  &__container {
+    @apply tw-w-full tw-h-full tw-box-border tw-flex tw-flex-col;
+  }
+
+  &__item {
+    @apply tw-flex tw-text-sm tw-items-center tw-box-border tw-cursor-pointer tw-border-b;
+    @apply tw-min-h-[30px] tw-px-2 tw-rounded-[3px];
+    @apply tw-bg-[--table-column-switcher-dropdown-bg];
+    &:hover {
+      @apply tw-bg-[--table-column-switcher-dropdown-item-hover];
+    }
+    border-color: var(--table-column-switcher-dropdown-border);
+    color: var(--table-column-switcher-text-color);
+  }
+
+  &__item-icon {
+    @apply tw-w-4;
+  }
+
+  &__item-title {
+    @apply tw-ml-2;
+  }
+}
+</style>

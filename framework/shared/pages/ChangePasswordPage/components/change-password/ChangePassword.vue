@@ -1,31 +1,36 @@
 <template>
   <div
-    class="tw-w-full tw-h-full tw-box-border tw-flex tw-flex-col tw-items-center tw-justify-center"
+    class="vc-change-password"
     :style="backgroundImageHandler"
   >
-    <ChangePassComponent :forced="forced"> </ChangePassComponent>
+    <ChangePassComponent :forced="forced" />
   </div>
 </template>
 
 <script lang="ts" setup>
 import { computed } from "vue";
 import { useRouter } from "vue-router";
+import { ChangePassword as ChangePassComponent } from "../../../../components/change-password";
 
 const router = useRouter();
 
 const forced = router.currentRoute.value.meta?.forced as boolean | undefined;
-const bgimage = router.currentRoute.value.meta?.bgimage;
-
-import { ChangePassword as ChangePassComponent } from "../../../../components/change-password";
 
 export interface Props {
-  background?: string;
-  userName?: string;
+  background: string;
 }
 
-const props = defineProps<Props>();
+const props = withDefaults(defineProps<Props>(), {
+  background: "/assets/background.jpg",
+});
 
 const backgroundImageHandler = computed(() => {
-  return `background: url(${bgimage}) center / cover no-repeat`;
+  return `background: url(${props.background}) center / cover no-repeat`;
 });
 </script>
+
+<style lang="scss">
+.vc-change-password {
+  @apply tw-w-full tw-h-full tw-box-border tw-flex tw-flex-col tw-items-center tw-justify-center;
+}
+</style>

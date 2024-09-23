@@ -43,7 +43,7 @@ const props = defineProps<Props>();
 const emit = defineEmits<Emits>();
 
 const notificationStyle = computed(() => ({
-  color: "#A9BCCD",
+  color: "var(--notification-icon-color)",
   icon: "fas fa-info",
 }));
 
@@ -58,3 +58,9 @@ function notificationTemplateRenderer() {
   );
 }
 </script>
+
+<style lang="scss">
+:root {
+  --notification-icon-color: var(--secondary-600);
+}
+</style>

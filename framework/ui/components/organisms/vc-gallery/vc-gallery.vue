@@ -13,15 +13,15 @@
     </VcLabel>
 
     <template v-if="(defaultImages && defaultImages.length) || !disabled">
-      <div class="tw-flex tw-flex-wrap tw-relative">
+      <div class="vc-gallery__container">
         <div
           ref="galleryRef"
-          class="tw-flex tw-flex-wrap tw-w-full"
+          class="vc-gallery__wrapper"
         >
           <VcGalleryItem
             v-for="(image, i) in defaultImages"
             :key="`image_${i}`"
-            class="tw-m-2 vc-gallery__item"
+            class="vc-gallery__item"
             :image="image"
             :readonly="disabled"
             :actions="itemActions"
@@ -37,7 +37,7 @@
           ></VcGalleryItem>
           <VcFileUpload
             v-if="!disabled && !uploadHidden"
-            class="tw-m-2"
+            class="vc-gallery__upload"
             :icon="uploadIcon"
             :variant="variant"
             :multiple="multiple"
@@ -50,13 +50,13 @@
         </div>
         <div
           ref="reorderGalleryRef"
-          class="tw-w-0.5 tw-bg-[#41afe6] tw-h-full tw-absolute tw-top-0 tw-bottom-0 tw-z-[2] tw-hidden"
+          class="vc-gallery__reorder-line"
         ></div>
       </div>
     </template>
     <div
       v-else
-      class="tw-flex tw-justify-center tw-p-5 tw-h-full tw-items-center"
+      class="vc-gallery__empty"
     >
       <VcHint>{{ t("COMPONENTS.ORGANISMS.VC_GALLERY.GALLERY_IS_EMPTY") }}</VcHint>
     </div>
@@ -313,3 +313,35 @@ function findParentElement(element: HTMLElement) {
   }
 }
 </script>
+
+<style lang="scss">
+:root {
+  --gallery-reorder-color: var(--primary-500);
+}
+
+.vc-gallery {
+  &__container {
+    @apply tw-flex tw-flex-wrap tw-relative;
+  }
+
+  &__wrapper {
+    @apply tw-flex tw-flex-wrap tw-w-full;
+  }
+
+  &__item {
+    @apply tw-m-2;
+  }
+
+  &__upload {
+    @apply tw-m-2;
+  }
+
+  &__reorder-line {
+    @apply tw-w-0.5 tw-bg-[color:var(--gallery-reorder-color)] tw-h-full tw-absolute tw-top-0 tw-bottom-0 tw-z-[2] tw-hidden;
+  }
+
+  &__empty {
+    @apply tw-flex tw-justify-center tw-p-5 tw-h-full tw-items-center;
+  }
+}
+</style>

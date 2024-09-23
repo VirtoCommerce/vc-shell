@@ -3,18 +3,18 @@
     ref="container"
     v-on-click-outside="reset"
     v-touch:hold="handleHold"
-    class="vc-table-mobile tw-select-none tw-block tw-overflow-visible"
+    class="vc-table-mobile"
     @click="handleClick"
     @contextmenu.prevent
   >
     <div
       ref="target"
-      class="tw-w-full tw-h-full tw-flex-shrink-0 tw-bg-white tw-flex tw-flex-row"
+      class="vc-table-mobile__item"
       :class="{ animated: !isSwiping, 'vc-table-mobile__item_selected': isSelected }"
     >
       <div
         v-if="anySelected"
-        class="tw-pl-4 tw-flex tw-items-center tw-justify-center tw-border-b tw-border-solid tw-border-b-[#e3e7ec]"
+        class="vc-table-mobile__checkbox-container"
       >
         <VcCheckbox
           :model-value="unref(isSelected ?? false)"
@@ -22,28 +22,26 @@
           size="m"
         ></VcCheckbox>
       </div>
-      <div class="tw-flex-auto tw-flex tw-flex-row tw-relative">
+      <div class="vc-table-mobile__content">
         <!-- Left swipe actions -->
         <div
           v-if="leftSwipeActions && leftSwipeActions.length && direction === 'right'"
-          class="tw-flex-shrink-0 tw-flex tw-flex-col [justify-content:stretch] tw-bg-[#a9bfd2] tw-absolute tw-top-0 tw-bottom-0"
-          :style="{
-            width: actionsWidth,
-          }"
+          class="vc-table-mobile__swipe-actions vc-table-mobile__swipe-actions_left"
+          :style="{ width: actionsWidth }"
         >
           <div
-            class="tw-flex tw-grow tw-basis-[1] tw-flex-col tw-justify-center tw-items-center tw-text-white"
-            :class="[`vc-table-mobile__item-action_${leftSwipeActions[0].type}`]"
+            class="vc-table-mobile__action"
+            :class="`vc-table-mobile__item-action_${leftSwipeActions[0].type}`"
             @click.stop="leftSwipeActions?.[0].clickHandler(items[index] as T, index)"
           >
             <VcIcon :icon="leftSwipeActions[0].icon" />
-            <div class="tw-mt-1 tw-text-lg tw-text-center">
+            <div class="vc-table-mobile__action-title">
               {{ leftSwipeActions[0].title }}
             </div>
           </div>
         </div>
         <div
-          class="tw-flex tw-flex-col tw-border-b tw-border-solid tw-border-b-[#e3e7ec] tw-grow"
+          class="vc-table-mobile__slot"
           :style="{ transform: `translateX(${left})` }"
         >
           <slot></slot>
@@ -51,20 +49,18 @@
         <!-- Item actions -->
         <div
           v-if="rightSwipeActions && rightSwipeActions.length && direction === 'left'"
-          class="tw-flex-shrink-0 tw-flex tw-flex-col [justify-content:stretch] tw-bg-[#a9bfd2] tw-absolute tw-top-0 tw-bottom-0 tw-right-0"
-          :style="{
-            width: actionsWidth,
-          }"
+          class="vc-table-mobile__swipe-actions vc-table-mobile__swipe-actions_right"
+          :style="{ width: actionsWidth }"
         >
           <div
-            v-for="(action, index) in rightSwipeActions.slice(0, rightSwipeActions.length > 2 ? 1 : 2)"
-            :key="`rightSwipeAction-${index}`"
-            class="tw-flex tw-grow tw-basis-[1] tw-flex-col tw-justify-center tw-items-center tw-text-white"
-            :class="[`vc-table-mobile__item-action_${action.type}`]"
+            v-for="(action, idx) in rightSwipeActions.slice(0, rightSwipeActions.length > 2 ? 1 : 2)"
+            :key="`rightSwipeAction-${idx}`"
+            class="vc-table-mobile__action"
+            :class="`vc-table-mobile__item-action_${action.type}`"
             @click.stop="action.clickHandler(items[index] as T, index)"
           >
             <VcIcon :icon="action.icon" />
-            <div class="tw-mt-1 tw-text-lg tw-text-center">
+            <div class="vc-table-mobile__action-title">
               {{ action.title }}
             </div>
           </div>
@@ -72,11 +68,13 @@
           <!-- Other available actions -->
           <template v-if="rightSwipeActions.length > 2">
             <div
-              class="tw-flex tw-grow tw-basis-[1] tw-flex-col tw-justify-center tw-items-center tw-text-white"
+              class="vc-table-mobile__action vc-table-mobile__action_more"
               @click.stop="isActionsPopupVisible = true"
             >
               <VcIcon icon="fas fa-ellipsis-h" />
-              <div class="tw-mt-1 tw-text-lg">{{ $t("COMPONENTS.ORGANISMS.VC_TABLE.MORE") }}</div>
+              <div class="vc-table-mobile__action-title">
+                {{ $t("COMPONENTS.ORGANISMS.VC_TABLE.MORE") }}
+              </div>
             </div>
 
             <!-- Actions popup -->
@@ -84,36 +82,32 @@
               v-if="isActionsPopupVisible"
               to="body"
             >
-              <div
-                class="tw-absolute tw-left-0 tw-top-0 tw-right-0 tw-bottom-0 tw-bg-[rgba(107,121,135,0.15)] tw-flex tw-items-center tw-justify-center tw-z-[99]"
-              >
-                <div
-                  class="tw-bg-white tw-rounded-[6px] tw-overflow-hidden tw-p-5 tw-max-w-[80%] tw-w-[350px] tw-border tw-border-solid tw-border-[#eef0f2] tw-box-border tw-shadow-[1px_1px_22px_rgba(126,142,157,0.2)]"
-                >
-                  <div class="tw-flex tw-w-full tw-items-center">
-                    <span class="tw-grow tw-text-[#2e3d4e] tw-text-[19px] tw-font-semibold tw-tracking-[-0.01em]">
+              <div class="vc-table-mobile__actions-popup-overlay">
+                <div class="vc-table-mobile__actions-popup">
+                  <div class="vc-table-mobile__actions-popup-header">
+                    <span class="vc-table-mobile__actions-popup-title">
                       {{ t("COMPONENTS.ORGANISMS.VC_TABLE.ALL_ACTIONS") }}
                     </span>
                     <VcIcon
-                      class="tw-text-[#c2d7e4]"
+                      class="vc-table-mobile__actions-popup-close"
                       icon="fas fa-times-circle"
                       size="xl"
                       @click="isActionsPopupVisible = false"
                     ></VcIcon>
                   </div>
 
-                  <div class="tw-flex tw-flex-wrap tw-my-5 tw-justify-between">
+                  <div class="vc-table-mobile__actions-popup-content">
                     <div
                       v-for="(itemAction, i) in itemActions"
                       :key="i"
-                      class="tw-flex tw-grow tw-shrink-0 tw-flex-col tw-items-center tw-text-[#319ed4] tw-my-2 tw-box-border tw-p-1 tw-max-w-[80px]"
+                      class="vc-table-mobile__actions-popup-action"
                       @click="itemAction.clickHandler(items[index] as T, index)"
                     >
                       <VcIcon
                         :icon="itemAction.icon"
                         size="xl"
                       ></VcIcon>
-                      <div class="tw-text-base tw-mt-2 tw-text-center">
+                      <div class="vc-table-mobile__actions-popup-action-title">
                         {{ itemAction.title }}
                       </div>
                     </div>
@@ -125,7 +119,7 @@
         </div>
       </div>
     </div>
-    <div class="tw-flex tw-justify-between tw-flex-auto"></div>
+    <div class="vc-table-mobile__spacer"></div>
   </div>
 </template>
 
@@ -270,22 +264,121 @@ function handleClick() {
 </script>
 
 <style lang="scss">
+:root {
+  --table-mobile-checkbox-border-color: var(--secondary-200);
+  --table-mobile-background-color: var(--additional-50);
+  --table-mobile-action-bg: var(--secondary-400);
+  --table-mobile-border-color: var(--secondary-200);
+  --table-mobile-action-text-color: var(--additional-50);
+  --table-mobile-action-popup-overlay: var(--neutrals-100);
+  --table-mobile-action-popup-bg: var(--additional-50);
+  --table-mobile-action-popup-shadow-color: var(--secondary-200);
+  --table-mobile-action-popup-shadow: 1px 1px 22px var(--table-mobile-action-popup-shadow-color);
+  --table-mobile-action-popup-border-color: var(--base-border-color, var(--neutrals-200));
+  --table-mobile-action-popup-title-color: var(--neutrals-700);
+  --table-mobile-action-popup-icon-color: var(--secondary-600);
+  --table-mobile-action-popup-action-text-color: var(--primary-500);
+  --table-mobile-action-success: var(--success-400);
+  --table-mobile-action-danger: var(--danger-500);
+  --table-mobile-action-selected: var(--secondary-100);
+}
+
 .vc-table-mobile {
-  // height: -webkit-fill-available;
+  @apply tw-select-none tw-block tw-overflow-visible;
+
   &__item {
-    &-action {
-      &_success {
-        @apply tw-bg-[#87b563];
-      }
+    @apply tw-w-full tw-h-full tw-flex-shrink-0 tw-bg-[--table-mobile-background-color] tw-flex tw-flex-row;
 
-      &_danger {
-        @apply tw-bg-[#ff4a4a];
-      }
+    &.animated {
+      transition: transform 0.3s ease;
     }
 
-    &_selected {
-      @apply tw-bg-[#dfeef9] #{!important};
+    &.vc-table-mobile__item_selected {
+      @apply tw-bg-[--table-mobile-action-selected]  #{!important};
     }
+  }
+
+  &__checkbox-container {
+    @apply tw-pl-4 tw-flex tw-items-center tw-justify-center tw-border-b tw-border-solid tw-border-b-[color:var(--table-mobile-checkbox-border-color)];
+  }
+
+  &__content {
+    @apply tw-flex-auto tw-flex tw-flex-col tw-relative tw-w-full;
+  }
+
+  &__swipe-actions {
+    @apply tw-flex-shrink-0 tw-flex tw-flex-col [justify-content:stretch] tw-bg-[--table-mobile-action-bg] tw-absolute tw-top-0 tw-bottom-0;
+
+    &_left {
+    }
+
+    &_right {
+      @apply tw-right-0;
+    }
+  }
+
+  &__action {
+    @apply tw-flex tw-grow tw-basis-[1] tw-flex-col tw-justify-center tw-items-center tw-text-[color:var(--table-mobile-action-text-color)];
+  }
+
+  &__action-title {
+    @apply tw-mt-1 tw-text-lg tw-text-center;
+  }
+
+  &__item-action_success {
+    @apply tw-bg-[--table-mobile-action-success];
+  }
+
+  &__item-action_danger {
+    @apply tw-bg-[--table-mobile-action-danger];
+  }
+
+  &__item_selected {
+    @apply tw-bg-[--table-mobile-action-selected] #{!important};
+  }
+
+  &__slot {
+    @apply tw-flex tw-flex-col tw-border-b tw-border-solid tw-border-b-[color:var(--table-mobile-border-color)] tw-grow;
+  }
+
+  &__action_more {
+    @apply tw-text-[--table-mobile-action-text-color];
+  }
+
+  &__actions-popup-overlay {
+    @apply tw-absolute tw-left-0 tw-top-0 tw-right-0 tw-bottom-0 tw-bg-[--table-mobile-action-popup-overlay] tw-flex tw-items-center tw-justify-center tw-z-[99];
+  }
+
+  &__actions-popup {
+    @apply tw-bg-[--table-mobile-action-popup-bg] tw-rounded-[6px] tw-overflow-hidden tw-p-5 tw-max-w-[80%] tw-w-[350px] tw-border tw-border-solid tw-border-[--table-mobile-action-popup-border-color] tw-box-border [box-shadow:var(--table-mobile-action-popup-shadow)];
+  }
+
+  &__actions-popup-header {
+    @apply tw-flex tw-w-full tw-items-center;
+  }
+
+  &__actions-popup-title {
+    @apply tw-grow tw-text-[color:var(--table-mobile-action-popup-title-color)] tw-text-[19px] tw-font-semibold tw-tracking-[-0.01em];
+  }
+
+  &__actions-popup-close {
+    @apply tw-text-[color:var(--table-mobile-action-popup-icon-color)];
+  }
+
+  &__actions-popup-content {
+    @apply tw-flex tw-flex-wrap tw-my-5 tw-justify-between;
+  }
+
+  &__actions-popup-action {
+    @apply tw-flex tw-grow tw-shrink-0 tw-flex-col tw-items-center tw-text-[color:var(--table-mobile-action-popup-action-text-color)] tw-my-2 tw-box-border tw-p-1 tw-max-w-[80px];
+  }
+
+  &__actions-popup-action-title {
+    @apply tw-text-base tw-mt-2 tw-text-center;
+  }
+
+  &__spacer {
+    @apply tw-flex tw-justify-between tw-flex-auto;
   }
 }
 </style>

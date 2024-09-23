@@ -1,6 +1,6 @@
 import { RouteRecordRaw } from "vue-router";
 import App from "../pages/App.vue";
-import { Invite, Login, ResetPassword, useBladeNavigation } from "@vc-shell/framework";
+import { Invite, Login, ResetPassword, useBladeNavigation, ChangePasswordPage } from "@vc-shell/framework";
 // eslint-disable-next-line import/no-unresolved
 import whiteLogoImage from "/assets/logo-white.svg";
 // eslint-disable-next-line import/no-unresolved
@@ -40,6 +40,8 @@ export const routes: RouteRecordRaw[] = [
       userId: route.query.userId,
       token: route.query.token,
       userName: route.query.userName,
+      logo: whiteLogoImage,
+      background: bgImage,
     }),
   },
   {
@@ -50,6 +52,19 @@ export const routes: RouteRecordRaw[] = [
       userId: route.query.userId,
       token: route.query.token,
       userName: route.query.userName,
+      logo: whiteLogoImage,
+      background: bgImage,
+    }),
+  },
+  {
+    name: "ChangePassword",
+    path: "/changepassword",
+    component: ChangePasswordPage,
+    meta: {
+      forced: true,
+    },
+    props: (route) => ({
+      background: bgImage,
     }),
   },
   {

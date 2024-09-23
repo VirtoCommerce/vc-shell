@@ -1,24 +1,23 @@
 <template>
   <div
     v-loading:1000="unref(loading) || columnsInit"
-    class="tw-relative tw-overflow-hidden tw-flex tw-flex-col tw-grow tw-basis-0 tw-border-[color:#eef0f2] tw-border-solid tw-border-t-0"
+    class="vc-table"
   >
     <div
       v-if="multiselect && $isMobile.value && (selection.length > 0 || allSelected)"
-      class="tw-flex tw-flex-col"
+      class="vc-table__multiselect-mobile"
     >
-      <div
-        class="tw-flex tw-flex-row tw-items-center tw-justify-between tw-px-4 tw-py-2 tw-min-h-[56px] tw-font-bold tw-text-lg tw-border-[color:#eef0f2] tw-border-b tw-border-solid tw-box-border"
-      >
-        <div class="tw-flex tw-flex-row tw-w-full tw-justify-between">
-          <div class="tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-3">
+      <div class="vc-table__select-all-bar">
+        <div class="vc-table__select-all-content">
+          <div class="vc-table__select-all-checkbox">
             <VcCheckbox
               v-model="headerCheckbox"
-              class="tw-font-normal tw-self-center tw-flex"
+              class="vc-table__select-all-checkbox__checkbox"
               size="m"
               @click.stop
-              >{{ $t("COMPONENTS.ORGANISMS.VC_TABLE.SELECT_ALL_TRUNCATED") }}</VcCheckbox
             >
+              {{ $t("COMPONENTS.ORGANISMS.VC_TABLE.SELECT_ALL_TRUNCATED") }}
+            </VcCheckbox>
             {{ $t("COMPONENTS.ORGANISMS.VC_TABLE.SELECTED") }}: {{ allSelected ? totalCount : selection.length }}
           </div>
 
@@ -30,15 +29,16 @@
                 allSelected = false;
               }
             "
-            >{{ $t("COMPONENTS.ORGANISMS.VC_TABLE.CANCEL") }}</VcButton
           >
+            {{ $t("COMPONENTS.ORGANISMS.VC_TABLE.CANCEL") }}
+          </VcButton>
         </div>
       </div>
       <div
         v-if="selectAll && showSelectionChoice"
-        class="tw-w-full tw-flex tw-py-2"
+        class="vc-table__select-all-choice"
       >
-        <div class="tw-w-full tw-flex tw-items-center tw-justify-center">
+        <div class="vc-table__select-all-choice__content">
           <div>
             {{
               allSelected
@@ -47,12 +47,13 @@
             }}
             <VcButton
               text
-              class="tw-text-[13px]"
+              class="vc-table__select-all-choice__button"
               @click="handleSelectAll"
-              >{{
-                allSelected ? t("COMPONENTS.ORGANISMS.VC_TABLE.CANCEL") : t("COMPONENTS.ORGANISMS.VC_TABLE.SELECT_ALL")
-              }}</VcButton
             >
+              {{
+                allSelected ? t("COMPONENTS.ORGANISMS.VC_TABLE.CANCEL") : t("COMPONENTS.ORGANISMS.VC_TABLE.SELECT_ALL")
+              }}
+            </VcButton>
           </div>
         </div>
       </div>
@@ -66,15 +67,15 @@
       name="header"
       :header="headerComponent"
     >
-      <component :is="headerComponent"></component>
+      <headerComponent></headerComponent>
     </slot>
 
-    <div class="tw-flex tw-relative tw-overflow-hidden tw-grow">
+    <div class="vc-table__content">
       <!-- Table scroll container -->
       <VcContainer
         ref="scrollContainer"
         :no-padding="true"
-        class="vc-table__mobile-view tw-grow tw-basis-0 tw-relative"
+        class="vc-table__mobile-view"
         :use-ptr="selection.length === 0 ? pullToReload : undefined"
         @scroll:ptr="$emit('scroll:ptr')"
       >
@@ -82,7 +83,7 @@
         <template v-if="$isMobile.value">
           <div
             v-if="items && items.length && !columnsInit"
-            class="tw-flex-grow tw-flex tw-flex-col tw-h-max"
+            class="vc-table__mobile-items"
           >
             <VcTableMobileItem
               v-for="(item, i) in items"
@@ -111,7 +112,7 @@
           </div>
           <div
             v-else
-            class="tw-overflow-auto tw-flex tw-flex-col tw-h-full tw-flex-grow"
+            class="vc-table__mobile-empty"
           >
             <!-- Empty table view -->
             <VcTableEmpty
@@ -136,43 +137,41 @@
         <div
           v-else
           ref="tableRef"
-          class="tw-relative tw-box-border tw-w-full tw-h-full tw-flex tw-flex-col"
+          class="vc-table__desktop-table"
           :class="{
-            'vc-table_empty': !items || !items.length,
-            'vc-table_multiselect': multiselect,
+            'vc-table__empty': !items || !items.length,
+            'vc-table__multiselect': multiselect,
           }"
         >
           <div
             v-if="filteredCols.length"
-            class="vc-table__header tw-flex tw-flex-col tw-sticky tw-top-0 tw-bg-[#f9f9f9] tw-z-[1] tw-box-border"
+            class="vc-table__header"
             @mouseenter="handleHeaderMouseOver(true)"
             @mouseleave="handleHeaderMouseOver(false)"
           >
-            <div class="vc-table__header-row tw-flex tw-flex-row">
+            <div class="vc-table__header-row">
               <div
                 v-if="multiselect && items && items.length"
-                class="tw-flex-1 tw-flex tw-items-center tw-justify-center tw-w-[36px] tw-max-w-[36px] tw-min-w-[36px] tw-bg-[#f9f9f9] !tw-border-0 tw-shadow-[inset_0px_1px_0px_#eaedf3,_inset_0px_-1px_0px_#eaedf3] tw-box-border tw-sticky tw-top-0 tw-select-none tw-overflow-hidden tw-z-[1]"
+                class="vc-table__header-checkbox"
               >
-                <div class="tw-flex tw-justify-center tw-items-center">
+                <div class="vc-table__header-checkbox__content">
                   <VcCheckbox
                     v-model="headerCheckbox"
                     size="m"
                     @click.stop
                   ></VcCheckbox>
                 </div>
-                <div class="tw-top-0 tw-bottom-0 tw-absolute tw-right-0 tw-flex tw-justify-end">
-                  <div class="tw-w-px tw-bg-[#e5e7eb] tw-h-full"></div>
-                </div>
+                <div class="vc-table__header-checkbox__resizer"></div>
               </div>
               <div
                 v-for="(item, index) in filteredCols"
                 :id="item.id"
                 :key="item.id"
-                class="vc-table__header tw-flex-1 tw-flex tw-items-center tw-h-[42px] tw-bg-[#f9f9f9] !tw-border-0 tw-shadow-[inset_0px_1px_0px_#eaedf3,_inset_0px_-1px_0px_#eaedf3] tw-box-border tw-sticky tw-top-0 tw-select-none tw-overflow-hidden tw-z-[1]"
+                class="vc-table__header-cell"
                 :class="[
                   {
-                    'tw-cursor-pointer tw-group': item.sortable,
-                    'tw-p-r-[35px]': index === filteredCols.length - 1,
+                    'vc-table__header-cell--sortable': item.sortable,
+                    'vc-table__header-cell--last': index === filteredCols.length - 1,
                   },
                   item.align ? tableAlignment[item.align as keyof typeof tableAlignment] : '',
                 ]"
@@ -184,30 +183,18 @@
                 @drop="onColumnHeaderDrop($event, item)"
                 @click="handleHeaderClick(item)"
               >
-                <!-- <div
-                  v-if="!editing && multiselect && index === 0 && items && items.length"
-                  class="tw-flex tw-pl-5 tw-items-center tw-justify-center tw-w-auto tw-bg-[#f9f9f9] tw-box-border tw-select-none tw-overflow-hidden tw-z-[1] tw-shrink-0"
-                >
-                  <div class="tw-flex tw-justify-center tw-items-center">
-                    <VcCheckbox
-                      v-model="headerCheckbox"
-                      size="m"
-                      @click.stop
-                    ></VcCheckbox>
-                  </div>
-                </div> -->
-                <div class="tw-flex tw-items-center tw-flex-nowrap tw-truncate tw-px-3 tw-font-bold">
-                  <div class="tw-truncate">
+                <div class="vc-table__header-cell__content">
+                  <div class="vc-table__header-cell__title">
                     <span
                       v-if="editing && item.rules?.required"
-                      class="tw-text-[color:var(--label-required-color)] tw-mr-1"
+                      class="vc-table__header-cell__required"
                       >*</span
                     >
                     <slot :name="`header_${item.id}`">{{ item.title }}</slot>
                   </div>
                   <div
                     v-if="sortField === item.id"
-                    class="tw-ml-1"
+                    class="vc-table__header-cell__sort-icon"
                   >
                     <VcIcon
                       size="xs"
@@ -216,7 +203,7 @@
                   </div>
                   <div
                     v-else
-                    class="tw-flex tw-flex-col tw-ml-1 tw-invisible group-hover:tw-visible"
+                    class="vc-table__header-cell__sort-icons"
                   >
                     <VcIcon
                       size="xs"
@@ -229,9 +216,9 @@
                   </div>
                 </div>
                 <div
-                  class="tw-w-[5px] tw-mr-[3px] tw-border-r tw-border-r-[#e5e7eb] tw-border-solid tw-h-full tw-top-0 tw-bottom-0 tw-absolute tw-right-0 tw-flex tw-justify-end"
+                  class="vc-table__header-cell__resizer"
                   :class="{
-                    'tw-cursor-col-resize': props.resizableColumns,
+                    'vc-table__header-cell__resizer--cursor': props.resizableColumns,
                   }"
                   @mousedown="handleMouseDown($event, item)"
                 ></div>
@@ -239,7 +226,7 @@
 
               <div
                 v-if="isHeaderHover && props.expanded"
-                class="tw-absolute tw-h-[42px] tw-z-[1] tw-right-0 tw-flex tw-items-center"
+                class="vc-table__column-switcher"
               >
                 <VcTableColumnSwitcher
                   :items="internalColumnsSorted"
@@ -252,18 +239,18 @@
 
             <div
               ref="resizer"
-              class="tw-w-px tw-absolute tw-z-10 tw-hidden tw-h-full tw-bg-[#e5e7eb] tw-cursor-col-resize"
+              class="vc-table__resizer"
             ></div>
             <div
               ref="reorderRef"
-              class="tw-w-0.5 tw-bg-[#41afe6] tw-h-full tw-absolute tw-top-0 tw-bottom-0 tw-z-[2] tw-hidden"
+              class="vc-table__reorder-ref"
             ></div>
           </div>
           <div
             v-if="selectAll && showSelectionChoice"
-            class="tw-h-[60px] tw-min-h-[60px] tw-bg-[#dfeef9] tw-w-full tw-flex"
+            class="vc-table__select-all-footer"
           >
-            <div class="tw-w-full tw-flex tw-items-center tw-justify-center">
+            <div class="vc-table__select-all-footer__content">
               <div>
                 {{
                   allSelected
@@ -272,32 +259,33 @@
                 }}
                 <VcButton
                   text
-                  class="tw-text-[13px]"
+                  class="vc-table__select-all-footer__button"
                   @click="handleSelectAll"
-                  >{{
+                >
+                  {{
                     allSelected
                       ? t("COMPONENTS.ORGANISMS.VC_TABLE.CANCEL")
                       : t("COMPONENTS.ORGANISMS.VC_TABLE.SELECT_ALL")
-                  }}</VcButton
-                >
+                  }}
+                </VcButton>
               </div>
             </div>
           </div>
           <div
             v-if="items && items.length && !columnsInit"
-            class="tw-flex tw-flex-col tw-overflow-auto"
+            class="vc-table__body"
           >
             <div
               v-for="(item, itemIndex) in items"
               :key="(typeof item === 'object' && 'id' in item && item.id) || itemIndex"
-              class="vc-table__body-row tw-flex tw-w-full tw-h-[60px] tw-min-h-[60px] tw-relative tw-group"
+              class="vc-table__body-row"
               :class="{
-                'tw-bg-white': itemIndex % 2 === 0,
-                'hover:tw-bg-[#EEF6FC] tw-cursor-pointer tw-border-solid': hasClickListener,
-                'tw-bg-[#F9F9F9]': itemIndex % 2 === 1,
-                '!tw-bg-[#EEF6FC] hover:!tw-bg-[#EEF6FC]':
+                'vc-table__body-row--odd': itemIndex % 2 === 0,
+                'vc-table__body-row--clickable': hasClickListener,
+                'vc-table__body-row--even': itemIndex % 2 === 1,
+                'vc-table__body-row--selected':
                   typeof item === 'object' && 'id' in item && item.id ? selectedItemId === item.id : false,
-                'hover:!tw-bg-[#dfeef9] !tw-bg-[#dfeef9]': selection && selection.length && selection.includes(item),
+                'vc-table__body-row--selection': selection && selection.length && selection.includes(item),
               }"
               @click="$emit('itemClick', item)"
               @mouseleave="closeActions"
@@ -311,10 +299,10 @@
             >
               <div
                 v-if="multiselect && typeof item === 'object'"
-                class="tw-w-[36px] tw-max-w-[36px] tw-min-w-[36px] tw-relative tw-flex-1 tw-flex tw-items-center tw-justify-center"
+                class="vc-table__body-row-checkbox"
                 @click.stop
               >
-                <div class="tw-flex tw-justify-center tw-items-center">
+                <div class="vc-table__body-row-checkbox-content">
                   <VcCheckbox
                     :model-value="isSelected(item)"
                     size="m"
@@ -322,22 +310,17 @@
                     @update:model-value="rowCheckbox(item)"
                   ></VcCheckbox>
                 </div>
-                <div class="tw-w-px tw-top-0 tw-bottom-0 tw-absolute tw-right-0 tw-bg-[#e5e7eb]"></div>
+                <div class="vc-table__body-row-checkbox-resizer"></div>
               </div>
               <div
                 v-for="cell in filteredCols"
                 :id="`${(typeof item === 'object' && 'id' in item && item.id) || itemIndex}_${cell.id}`"
                 :key="`${(typeof item === 'object' && 'id' in item && item.id) || itemIndex}_${cell.id}`"
-                class="tw-box-border tw-overflow-hidden tw-px-3 tw-flex-1 tw-flex tw-items-center tw-relative"
+                class="vc-table__body-cell"
                 :class="[cell.class]"
                 :style="{ maxWidth: cell.width, width: cell.width }"
               >
-                <div class="tw-truncate tw-w-full">
-                  <!-- <renderCellSlot
-                    :item="item"
-                    :cell="cell"
-                    :index="itemIndex"
-                  /> -->
+                <div class="vc-table__body-cell__content">
                   <slot
                     :name="`item_${cell.id}`"
                     :item="item"
@@ -359,23 +342,19 @@
                 v-if="
                   enableItemActions && itemActionBuilder && typeof item === 'object' && selectedRowIndex === itemIndex
                 "
-                class="tw-absolute tw-flex tw-right-0 tw-px-[10px] actions tw-h-full tw-bg-[#f4f8fb]"
+                class="vc-table__body-actions"
                 :class="{
-                  'group-hover:!tw-bg-[#EEF6FC]': hasClickListener,
-                  'group-hover:!tw-bg-[#dfeef9]':
+                  'vc-table__body-actions--hover': hasClickListener,
+                  'vc-table__body-actions--selected':
                     hasClickListener && selection && selection.length && selection.includes(item),
                 }"
                 @click.stop
               >
-                <div
-                  class="tw-flex tw-flex-row tw-items-center tw-text-[#3f3f3f] tw-font-normal not-italic tw-text-base tw-leading-[20px] tw-gap-[10px]"
-                >
+                <div class="vc-table__body-actions-content">
                   <div
                     v-for="(itemAction, i) in itemActions[itemIndex]"
                     :key="i"
-                    :class="[
-                      'tw-text-[#319ed4] tw-cursor-pointer tw-w-[22px] tw-h-[22px] tw-flex tw-items-center tw-justify-center hover:tw-text-[#257fad]',
-                    ]"
+                    class="vc-table__body-actions-item"
                     @click.stop="itemAction.clickHandler(item, itemIndex)"
                   >
                     <VcTooltip
@@ -389,7 +368,7 @@
                         size="m"
                       />
                       <template #tooltip>
-                        <div class="tw-not-italic tw-font-normal tw-text-base tw-leading-[20px] tw-text-[#3f3f3f]">
+                        <div class="vc-table__body-actions-tooltip">
                           {{ itemAction.title }}
                         </div>
                       </template>
@@ -401,7 +380,7 @@
           </div>
           <div
             v-else
-            class="tw-overflow-auto tw-flex tw-flex-col tw-flex-auto"
+            class="vc-table__body-empty"
           >
             <!-- Empty table view -->
             <VcTableEmpty
@@ -435,10 +414,10 @@
       name="footer"
     >
       <div
-        class="tw-bg-[#fbfdfe] tw-border-t tw-border-solid tw-border-[#eaedf3] tw-flex-shrink-0 tw-flex tw-items-center tw-justify-between"
+        class="vc-table__footer"
         :class="{
-          'tw-py-2 tw-px-4': $isMobile.value,
-          'tw-p-4': $isDesktop.value,
+          'vc-table__footer--mobile': $isMobile.value,
+          'vc-table__footer--desktop': $isDesktop.value,
         }"
       >
         <!-- Table pagination -->
@@ -459,6 +438,7 @@
     </slot>
   </div>
 </template>
+
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup generic="T extends TableItem | string">
 import { useCurrentElement, useLocalStorage } from "@vueuse/core";
@@ -551,6 +531,7 @@ const props = withDefaults(
     };
     paginationVariant?: ComponentProps<typeof VcPagination>["variant"];
     selectionItems?: T[];
+    disableFilter?: boolean;
   }>(),
   {
     items: () => [],
@@ -719,12 +700,15 @@ const headerComponent = () =>
       activeFilterCount: props.activeFilterCount,
       expanded: props.expanded,
       "onSearch:change": (value: string) => emit("search:change", value),
+      disableFilter: props.disableFilter,
     },
-    {
-      filters: () => {
-        return slots.filters?.({ closePanel: () => {} });
-      },
-    },
+    slots.filters
+      ? {
+          filters: () => {
+            return slots.filters?.({ closePanel: () => {} });
+          },
+        }
+      : undefined,
   );
 
 const allColumns = ref([]) as Ref<ITableColumns[]>;
@@ -732,7 +716,9 @@ const allColumns = ref([]) as Ref<ITableColumns[]>;
 const mobileTemplateRenderer = ({ item, index }: { item: TableItem | string; index: number }) => {
   return h(
     "div",
-    { class: "tw-border-b tw-border-solid tw-border-b-[#e3e7ec] tw-p-3 tw-gap-2 tw-flex tw-flex-wrap" },
+    {
+      class: "vc-table__mobile-items-renderer",
+    },
     props.columns.map((x) => {
       return h("div", { class: "tw-grow tw-w-[33%] tw-ml-3  tw-truncate", key: `mobile-view-item-${index}` }, [
         h(VcLabel, { class: "tw-mb-1 tw-truncate", required: x?.rules?.required }, () => toValue(x.title)),
@@ -741,7 +727,7 @@ const mobileTemplateRenderer = ({ item, index }: { item: TableItem | string; ind
           : [
               typeof item === "object"
                 ? h(VcTableCell, {
-                    cell: { ...x, class: "!tw-justify-start" },
+                    cell: { ...x, class: "!tw-justify-start " },
                     item,
                     key: `mobile-view-cell-${index}`,
                     class: "tw-mb-4",
@@ -1367,57 +1353,313 @@ function onRowDrop(event: DragEvent) {
 
 <style lang="scss">
 :root {
-  --row-drag-color: #41afe6;
+  --table-border-color: var(--base-border-color, var(--neutrals-200));
+  --table-select-all-border-color: var(--base-border-color, var(--neutrals-200));
+  --table-header-bg: var(--neutrals-50);
+  --table-header-border-color: var(--base-border-color, var(--neutrals-200));
+  --table-header-border: inset 0px 1px 0px var(--table-header-border-color),
+    inset 0px -1px 0px var(--table-header-border-color);
+  --table-header-text-color: var(--secondary-700);
+  --table-resizer-color: var(--base-border-color, var(--neutrals-200));
+  --table-reorder-color: var(--primary-400);
+  --table-select-all-bg: var(--primary-100);
+  --table-row-bg-hover: var(--primary-50);
+  --table-row-bg-odd: var(--additional-50);
+  --table-row-bg-even: var(--neutrals-50);
+  --table-row-hover: var(--primary-50);
+  --table-row-bg-selected: var(--primary-100);
+  --table-actions-bg: var(--neutrals-100);
+  --table-actions-bg-hover: var(--primary-50);
+  --table-actions-bg-hover-selected-item: var(--primary-100);
+  --table-actions-text-color: var(--neutrals-600);
+  --table-actions-tooltip-text: var(--neutrals-600);
+  --table-actions-icon-color: var(--primary-500);
+  --table-actions-icon-color-hover: var(--primary-600);
+  --table-footer-bg: var(--neutrals-50);
+  --table-footer-border-color: var(--base-border-color, var(--neutrals-200));
+  --table-row-drag-color: var(--primary-400);
+  --table-row-drag-shadow: inset 0 -2px 0 0 var(--table-row-drag-color);
+  --table-actions-color-danger: var(--danger-500);
+  --table-actions-color-success: var(--success-500);
+  --table-mobile-border-color: var(--secondary-200);
+  --table-text-color: var(--base-text-color, var(--neutrals-950));
 }
 
 $variants: (
-  danger: #ff4a4a,
-  success: #87b563,
+  danger: var(--table-actions-color-danger),
+  success: var(--table-actions-color-success),
 );
 
 .vc-table {
+  @apply tw-relative tw-overflow-hidden tw-flex tw-flex-col tw-grow tw-basis-0 tw-border-solid tw-border-t-0;
+  border-color: var(--table-border-color);
+
+  &__multiselect-mobile {
+    @apply tw-flex tw-flex-col;
+  }
+
+  &__select-all-bar {
+    @apply tw-flex tw-flex-row tw-items-center tw-justify-between tw-px-4 tw-py-2 tw-min-h-14 tw-font-bold tw-text-lg tw-border-[color:var(--table-select-all-border-color)] tw-border-b tw-border-solid tw-box-border;
+  }
+
+  &__select-all-content {
+    @apply tw-flex tw-flex-row tw-w-full tw-justify-between;
+  }
+
+  &__select-all-checkbox {
+    @apply tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-3;
+  }
+
+  &__select-all-checkbox__checkbox {
+    @apply tw-font-normal tw-self-center tw-flex;
+  }
+
+  &__select-all-choice {
+    @apply tw-w-full tw-flex tw-py-2;
+  }
+
+  &__select-all-choice__content {
+    @apply tw-w-full tw-flex tw-items-center tw-justify-center;
+  }
+
+  &__select-all-choice__button {
+    @apply tw-text-sm;
+  }
+
+  &__content {
+    @apply tw-flex tw-relative tw-overflow-hidden tw-grow;
+  }
+
   &__mobile-view {
+    @apply tw-grow tw-basis-0 tw-relative;
     .vc-container__inner {
-      display: flex;
-      flex-grow: 1;
+      @apply tw-flex tw-flex-grow;
     }
   }
-  &__body {
-    &-row:hover .actions {
-      display: flex;
-    }
-    &-actions-item {
-      @each $name, $variant in $variants {
-        &_#{$name} {
-          @apply tw-text-[#{$variant}];
-        }
+
+  &__mobile-items {
+    @apply tw-flex-grow tw-flex tw-flex-col tw-h-max [width:-webkit-fill-available];
+  }
+
+  &__mobile-empty {
+    @apply tw-overflow-auto tw-flex tw-flex-col tw-h-full tw-flex-grow;
+  }
+
+  &__desktop-table {
+    @apply tw-relative tw-box-border tw-w-full tw-h-full tw-flex tw-flex-col;
+  }
+
+  &__header {
+    @apply tw-flex tw-flex-col tw-sticky tw-top-0 tw-bg-[--table-header-bg] tw-z-[1] tw-box-border;
+  }
+
+  &__header-row {
+    @apply tw-flex tw-flex-row;
+  }
+
+  &__header-checkbox {
+    @apply tw-flex-1 tw-flex tw-items-center tw-justify-center tw-w-9 tw-max-w-9 tw-min-w-9 tw-bg-[--table-header-bg] [box-shadow:var(--table-header-border)] tw-shadow-none tw-box-border tw-sticky tw-top-0 tw-select-none tw-overflow-hidden tw-z-[1];
+    @apply tw-border-0 #{!important};
+  }
+
+  &__header-checkbox__content {
+    @apply tw-flex tw-justify-center tw-items-center;
+  }
+
+  &__header-checkbox__resizer {
+    @apply tw-w-px tw-bg-[--table-resizer-color] tw-h-full tw-absolute tw-right-0 tw-flex tw-justify-end;
+  }
+
+  &__header-cell {
+    @apply tw-flex-1 tw-flex tw-items-center tw-h-10 tw-bg-[--table-header-bg] [box-shadow:var(--table-header-border)] tw-box-border tw-sticky tw-top-0 tw-select-none tw-overflow-hidden tw-z-[1];
+    @apply tw-border-0 #{!important};
+  }
+
+  &__header-cell--sortable {
+    @apply tw-cursor-pointer;
+
+    &:hover {
+      .vc-table__header-cell__sort-icons {
+        @apply tw-visible;
       }
     }
+  }
 
-    &-tooltip-arrow,
-    &-tooltip-arrow:before {
-      @apply tw-absolute tw-w-2 tw-h-2 tw-bg-inherit;
-    }
+  &__header-cell--last {
+  }
 
-    &-tooltip-arrow {
-      @apply tw-invisible before:tw-visible before:tw-content-[""] before:tw-rotate-45;
-    }
+  &__header-cell__content {
+    @apply tw-flex tw-items-center tw-flex-nowrap tw-truncate tw-px-3 tw-font-bold tw-text-sm tw-text-[color:var(--table-header-text-color)];
+  }
 
-    &-tooltip[data-popper-placement^="top"] > .vc-table__body-tooltip-arrow {
-      @apply tw-bottom-[-4px];
-    }
+  &__header-cell__title {
+    @apply tw-truncate;
+  }
 
-    &-tooltip[data-popper-placement^="bottom"] > .vc-table__body-tooltip-arrow {
-      @apply tw-top-[-4px];
+  &__header-cell__required {
+    @apply tw-text-[color:var(--label-required-color)] tw-mr-1;
+  }
+
+  &__header-cell__sort-icon {
+    @apply tw-ml-1;
+  }
+
+  &__header-cell__sort-icons {
+    @apply tw-flex tw-flex-col tw-ml-1 tw-invisible;
+  }
+
+  &__header-cell__resizer {
+    @apply tw-w-1 tw-mr-1 tw-border-r tw-border-[--table-resizer-color] tw-border-solid tw-h-full tw-absolute tw-right-0 tw-flex tw-justify-end;
+  }
+
+  &__header-cell__resizer--cursor {
+    @apply tw-cursor-col-resize;
+  }
+
+  &__column-switcher {
+    @apply tw-absolute tw-h-10 tw-z-10 tw-right-0 tw-flex tw-items-center;
+  }
+
+  &__resizer {
+    @apply tw-w-px tw-absolute tw-z-10 tw-hidden tw-h-full tw-bg-[--table-resizer-color] tw-cursor-col-resize;
+  }
+
+  &__reorder-ref {
+    @apply tw-w-0.5 tw-bg-[--table-reorder-color] tw-h-full tw-absolute tw-top-0 tw-bottom-0 tw-z-20 tw-hidden;
+  }
+
+  &__select-all-footer {
+    @apply tw-h-16 tw-min-h-16 tw-bg-[--table-select-all-bg] tw-w-full tw-flex;
+  }
+
+  &__select-all-footer__content {
+    @apply tw-w-full tw-flex tw-items-center tw-justify-center;
+  }
+
+  &__select-all-footer__button {
+    @apply tw-text-sm;
+  }
+
+  &__body {
+    @apply tw-flex tw-flex-col tw-overflow-auto;
+  }
+
+  &__body-row {
+    @apply tw-flex tw-w-full tw-h-14 tw-min-h-14 tw-relative;
+
+    &:hover {
+      .vc-table__body-actions--hover {
+        @apply tw-bg-[--table-actions-bg-hover];
+      }
+
+      .vc-table__body-actions--selected {
+        @apply tw-bg-[--table-actions-bg-hover-selected-item];
+      }
     }
   }
 
+  &__body-row--odd {
+    @apply tw-bg-[--table-row-bg-odd];
+  }
+
+  &__body-row--even {
+    @apply tw-bg-[--table-row-bg-even];
+  }
+
+  &__body-row--clickable {
+    @apply hover:tw-bg-[--table-row-bg-hover] tw-cursor-pointer tw-border-solid;
+  }
+
+  &__body-row--selected {
+    @apply tw-bg-[--table-row-hover] hover:tw-bg-[--table-row-hover] #{!important};
+  }
+
+  &__body-row--selection {
+    @apply hover:tw-bg-[--table-row-bg-selected] tw-bg-[--table-row-bg-selected] #{!important};
+  }
+
+  &__body-row-checkbox {
+    @apply tw-w-[36px] tw-max-w-[36px] tw-min-w-[36px] tw-relative tw-flex-1 tw-flex tw-items-center tw-justify-center;
+  }
+
+  &__body-row-checkbox-content {
+    @apply tw-flex tw-justify-center tw-items-center;
+  }
+
+  &__body-row-checkbox-resizer {
+    @apply tw-w-px tw-top-0 tw-bottom-0 tw-absolute tw-right-0 tw-bg-[--table-resizer-color];
+  }
+
+  &__body-actions {
+    @apply tw-absolute tw-flex tw-right-0 tw-px-2.5 tw-h-full tw-bg-[--table-actions-bg];
+  }
+
+  &__body-actions-content {
+    @apply tw-flex tw-flex-row tw-items-center tw-text-[color:var(--table-actions-text-color)] tw-font-normal tw-text-base tw-leading-5 tw-gap-2.5;
+  }
+
+  &__body-actions-item {
+    @apply tw-text-[color:var(--table-actions-icon-color)] tw-cursor-pointer tw-w-6 tw-h-6 tw-flex tw-items-center tw-justify-center hover:tw-text-[color:var(--table-actions-icon-color-hover)];
+  }
+
+  &__body-actions-tooltip {
+    @apply tw-not-italic tw-font-normal tw-text-base tw-leading-5 tw-text-[--table-actions-tooltip-text];
+  }
+
+  &__body-cell {
+    @apply tw-box-border tw-overflow-hidden tw-px-3 tw-flex-1 tw-flex tw-items-center tw-relative;
+  }
+
+  &__body-cell__content {
+    @apply tw-truncate tw-w-full tw-text-[color:var(--table-text-color)] tw-text-sm;
+  }
+
+  &__body-empty {
+    @apply tw-overflow-auto tw-flex tw-flex-col tw-flex-auto;
+  }
+
+  &__footer {
+    @apply tw-bg-[--table-footer-bg] tw-border-t tw-border-solid tw-border-[--table-footer-border-color] tw-flex-shrink-0 tw-flex tw-items-center tw-justify-between;
+  }
+
+  &__footer--mobile {
+    @apply tw-py-2 tw-px-4;
+  }
+
+  &__footer--desktop {
+    @apply tw-p-4;
+  }
+
+  /* Drag row styles */
   &__drag-row-bottom {
-    @apply tw-shadow-[inset_0_-2px_0_0_var(--row-drag-color)];
+    box-shadow: var(--table-row-drag-shadow);
   }
 
   &__drag-row-top {
-    @apply tw-shadow-[inset_0_2px_0_0_var(--row-drag-color)];
+    box-shadow: var(--table-row-drag-shadow);
+  }
+
+  /* Tooltip arrow styles */
+  &__body-tooltip-arrow,
+  &__body-tooltip-arrow:before {
+    @apply tw-absolute tw-w-2 tw-h-2 tw-bg-inherit;
+  }
+
+  &__body-tooltip-arrow {
+    @apply tw-invisible before:tw-visible before:tw-content-[""] before:tw-rotate-45;
+  }
+
+  &__body-tooltip[data-popper-placement^="top"] > .vc-table__body-tooltip-arrow {
+    @apply tw-bottom-[-1px];
+  }
+
+  &__body-tooltip[data-popper-placement^="bottom"] > .vc-table__body-tooltip-arrow {
+    @apply tw-top-[-1px];
+  }
+
+  /* Mobile border color */
+  &__mobile-items-renderer {
+    @apply tw-border-b tw-border-solid tw-border-[--table-mobile-border-color] tw-p-3 tw-gap-2 tw-flex tw-flex-wrap;
   }
 }
 </style>

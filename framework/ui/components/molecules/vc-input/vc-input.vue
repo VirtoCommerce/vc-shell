@@ -13,7 +13,7 @@
     <!-- Input label -->
     <VcLabel
       v-if="label"
-      class="tw-mb-2"
+      class="vc-input__label"
       :required="required"
       :multilanguage="multilanguage"
       :current-language="currentLanguage"
@@ -26,202 +26,198 @@
       >
     </VcLabel>
 
-    <div class="tw-flex tw-flex-nowrap tw-items-start">
-      <div class="tw-relative tw-flex tw-flex-auto tw-text-left">
-        <div
-          v-if="$slots['prepend']"
-          class="tw-flex tw-items-center tw-flex-nowrap tw-pr-3"
-        >
-          <slot
-            name="prepend"
-            :focus="focus"
-          ></slot>
-        </div>
-        <div class="tw-flex tw-flex-col tw-flex-nowrap tw-flex-auto tw-relative">
+    <div class="vc-input__container">
+      <div
+        v-if="$slots['prepend']"
+        class="vc-input__prepend"
+      >
+        <slot
+          name="prepend"
+          :focus="focus"
+        ></slot>
+      </div>
+
+      <div
+        class="vc-input__field-wrapper"
+        :class="{
+          'vc-input__field-wrapper--default': size === 'default',
+          'vc-input__field-wrapper--small': size === 'small',
+        }"
+      >
+        <div class="vc-input__field-container">
           <div
-            class="vc-input__field-wrapper"
-            :class="{
-              'tw-h-[var(--input-height)]': size === 'default',
-              'tw-h-[var(--input-height-small)]': size === 'small',
-            }"
+            v-if="$slots['prepend-inner']"
+            class="vc-input__prepend-inner"
           >
-            <div class="tw-flex tw-flex-nowrap tw-flex-auto tw-h-full">
-              <div
-                v-if="$slots['prepend-inner']"
-                class="tw-flex tw-items-center tw-flex-nowrap tw-pr-3"
-              >
-                <slot
-                  name="prepend-inner"
-                  :focus="focus"
-                ></slot>
-              </div>
-              <div class="vc-input__field">
-                <div
-                  v-if="prefix"
-                  class="tw-flex tw-items-center tw-flex-wrap tw-pr-3 tw-pointer-events-none"
-                >
-                  {{ prefix }}
-                </div>
-                <slot
-                  name="control"
-                  :editable="disabled"
-                  :focused="autofocus"
-                  :model-value="handleValue"
-                  :emit-value="emitValue"
+            <slot
+              name="prepend-inner"
+              :focus="focus"
+            ></slot>
+          </div>
+
+          <div class="vc-input__field">
+            <div
+              v-if="prefix"
+              class="vc-input__prefix"
+            >
+              {{ prefix }}
+            </div>
+
+            <slot
+              name="control"
+              :editable="disabled"
+              :focused="autofocus"
+              :model-value="handleValue"
+              :emit-value="emitValue"
+              :placeholder="placeholder"
+            >
+              <template v-if="type === 'datetime-local' || type === 'date'">
+                <VueDatePicker
+                  v-model="handleValue"
+                  :placeholder="
+                    placeholder ||
+                    (type === 'datetime-local'
+                      ? $t('COMPONENTS.MOLECULES.VC_INPUT.DATE_TIME_PLACEHOLDER')
+                      : $t('COMPONENTS.MOLECULES.VC_INPUT.DATE_PLACEHOLDER'))
+                  "
+                  :disabled="disabled"
+                  :name="name"
+                  :maxlength="maxlength"
+                  :autofocus="autofocus"
+                  :max-date="maxDate"
+                  time-picker-inline
+                  :enable-time-picker="type === 'datetime-local'"
+                  :format="formatDateWithLocale"
+                  :locale="locale"
+                  :start-time="{ hours: 0, minutes: 0 }"
+                  :clearable="false"
+                  :config="{ closeOnAutoApply: false }"
+                  auto-apply
+                  :teleport-center="$isMobile.value"
+                  :is24="isBrowserLocale24h"
+                  v-bind="datePickerOptions"
+                  :teleport="$isDesktop.value ? 'body' : undefined"
+                  class="vc-input__input"
+                  @keydown="onKeyDown"
+                  @blur="handleBlur"
+                />
+              </template>
+              <template v-else>
+                <input
+                  ref="inputRef"
+                  v-model="handleValue"
                   :placeholder="placeholder"
-                >
-                  <template v-if="type === 'datetime-local' || type === 'date'">
-                    <VueDatePicker
-                      v-model="handleValue"
-                      :placeholder="
-                        placeholder || type === 'datetime-local'
-                          ? $t('COMPONENTS.MOLECULES.VC_INPUT.DATE_TIME_PLACEHOLDER')
-                          : $t('COMPONENTS.MOLECULES.VC_INPUT.DATE_PLACEHOLDER')
-                      "
-                      :disabled="disabled"
-                      :name="name"
-                      :maxlength="maxlength"
-                      :autofocus="autofocus"
-                      :max-date="maxDate"
-                      time-picker-inline
-                      :enable-time-picker="type === 'datetime-local'"
-                      :format="formatDateWithLocale"
-                      :locale="locale"
-                      :start-time="{
-                        hours: 0,
-                        minutes: 0,
-                      }"
-                      :clearable="false"
-                      :config="{
-                        closeOnAutoApply: false,
-                      }"
-                      auto-apply
-                      :teleport-center="$isMobile.value"
-                      :is24="isBrowserLocale24h"
-                      v-bind="datePickerOptions"
-                      :teleport="$isDesktop.value ? 'body' : undefined"
-                      class="vc-input__input"
-                      @keydown="onKeyDown"
-                      @blur="handleBlur"
-                    ></VueDatePicker>
-                  </template>
-                  <template v-else>
-                    <input
-                      ref="inputRef"
-                      v-model="handleValue"
-                      :placeholder="placeholder"
-                      :type="internalTypeComputed"
-                      :disabled="disabled"
-                      :name="name"
-                      :maxlength="maxlength"
-                      :autofocus="autofocus"
-                      :max="maxDate"
-                      class="vc-input__input"
-                      @keydown="onKeyDown"
-                      @blur="handleBlur"
-                    />
-                  </template>
-                </slot>
-                <div
-                  v-if="suffix"
-                  class="tw-flex tw-items-center tw-flex-wrap tw-pl-3 tw-pointer-events-none"
-                >
-                  {{ suffix }}
-                </div>
-                <div
-                  v-if="clearable && mutatedModel && !disabled && type !== 'password'"
-                  class="vc-input__clear"
-                  @click="onReset"
-                >
-                  <VcIcon
-                    size="s"
-                    icon="fas fa-times"
-                  ></VcIcon>
-                </div>
+                  :type="internalTypeComputed"
+                  :disabled="disabled"
+                  :name="name"
+                  :maxlength="maxlength"
+                  :autofocus="autofocus"
+                  :max="maxDate"
+                  class="vc-input__input"
+                  @keydown="onKeyDown"
+                  @blur="handleBlur"
+                />
+              </template>
+            </slot>
 
-                <div
-                  v-if="type === 'password' && internalType === 'password'"
-                  class="vc-input__showhide"
-                  @click="internalType = 'text'"
-                >
-                  <VcIcon
-                    size="s"
-                    icon="fas fa-eye-slash"
-                  ></VcIcon>
-                </div>
+            <div
+              v-if="suffix"
+              class="vc-input__suffix"
+            >
+              {{ suffix }}
+            </div>
 
-                <div
-                  v-if="type === 'password' && internalType === 'text'"
-                  class="vc-input__showhide"
-                  @click="internalType = 'password'"
-                >
-                  <VcIcon
-                    size="s"
-                    icon="fas fa-eye"
-                  ></VcIcon>
-                </div>
-              </div>
+            <div
+              v-if="clearable && mutatedModel && !disabled && type !== 'password'"
+              class="vc-input__clear"
+              @click="onReset"
+            >
+              <VcIcon
+                size="s"
+                icon="fas fa-times"
+              ></VcIcon>
+            </div>
 
-              <div
-                v-if="$slots['append-inner']"
-                class="tw-flex tw-items-center tw-flex-nowrap tw-pl-3"
-              >
-                <slot
-                  name="append-inner"
-                  :focus="focus"
-                ></slot>
-              </div>
-              <div
-                v-if="loading"
-                class="tw-flex tw-items-center tw-flex-nowrap tw-pl-3"
-              >
-                <VcIcon
-                  icon="fas fa-spinner tw-animate-spin"
-                  class="tw-text-[var(--input-clear-color)]"
-                  size="m"
-                ></VcIcon>
-              </div>
+            <div
+              v-if="type === 'password' && internalType === 'password'"
+              class="vc-input__showhide"
+              @click="internalType = 'text'"
+            >
+              <VcIcon
+                size="s"
+                icon="fas fa-eye-slash"
+              ></VcIcon>
+            </div>
+
+            <div
+              v-if="type === 'password' && internalType === 'text'"
+              class="vc-input__showhide"
+              @click="internalType = 'password'"
+            >
+              <VcIcon
+                size="s"
+                icon="fas fa-eye"
+              ></VcIcon>
             </div>
           </div>
 
-          <Transition
-            name="slide-up"
-            mode="out-in"
+          <div
+            v-if="$slots['append-inner']"
+            class="vc-input__append-inner"
           >
-            <div v-if="error">
-              <slot name="error">
-                <VcHint
-                  v-if="errorMessage"
-                  class="vc-input__error"
-                >
-                  {{ errorMessage }}
-                </VcHint>
-              </slot>
-            </div>
-            <div v-else>
-              <slot name="hint">
-                <VcHint
-                  v-if="hint"
-                  class="vc-input__desc"
-                >
-                  {{ hint }}
-                </VcHint>
-              </slot>
-            </div>
-          </Transition>
-        </div>
+            <slot
+              name="append-inner"
+              :focus="focus"
+            ></slot>
+          </div>
 
-        <div
-          v-if="$slots['append']"
-          class="tw-flex tw-items-center tw-flex-nowrap tw-pl-3"
-        >
-          <slot
-            name="append"
-            :focus="focus"
-          ></slot>
+          <div
+            v-if="loading"
+            class="vc-input__loading"
+          >
+            <VcIcon
+              icon="fas fa-circle-notch"
+              class="vc-input__loading-icon"
+              size="m"
+            ></VcIcon>
+          </div>
         </div>
       </div>
+
+      <div
+        v-if="$slots['append']"
+        class="vc-input__append"
+      >
+        <slot
+          name="append"
+          :focus="focus"
+        ></slot>
+      </div>
     </div>
+
+    <Transition
+      name="slide-up"
+      mode="out-in"
+    >
+      <div v-if="error">
+        <slot name="error">
+          <VcHint
+            v-if="errorMessage"
+            class="vc-input__error"
+            >{{ errorMessage }}</VcHint
+          >
+        </slot>
+      </div>
+      <div v-else>
+        <slot name="hint">
+          <VcHint
+            v-if="hint"
+            class="vc-input__desc"
+            >{{ hint }}</VcHint
+          >
+        </slot>
+      </div>
+    </Transition>
   </div>
 </template>
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
@@ -556,42 +552,98 @@ function focus() {
   --input-height: 38px;
   --input-height-small: 30px;
   --input-border-radius: 3px;
-  --input-border-color: #d3dbe9;
-  --input-border-color-error: #f14e4e;
-  --input-background-color: #ffffff;
-  --input-placeholder-color: #a5a5a5;
-  --input-clear-color: #43b0e6;
-  --input-clear-color-hover: #319ed4;
-  --dp-input-padding: 10px 0px 10px 10px;
-  --dp-input-icon-padding: 25px;
-  --dp-font-size: 13px;
-  --dp-font-family: "Roboto", sans-serif;
+  --input-border-color: var(--secondary-200);
+  --input-border-color-error: var(--base-error-color, var(--danger-500));
+  --input-background-color: var(--additional-50);
+  --input-placeholder-color: var(--neutrals-400);
+  --input-clear-color: var(--primary-500);
+  --input-clear-color-hover: var(--primary-600);
+  --input-disabled-text-color: var(--neutrals-400);
+  --input-disabled-bg-color: var(--neutrals-50);
+  --input-text-color: var(--base-text-color, var(--neutrals-950));
 }
 
 .vc-input {
   @apply tw-overflow-hidden;
 
-  &_date,
-  &_datetime-local {
-    .vc-app_mobile & {
-      @apply tw-max-w-full;
-    }
+  &__label {
+    @apply tw-mb-2;
+  }
+
+  &__container {
+    @apply tw-flex tw-flex-nowrap tw-items-start;
+  }
+
+  &__prepend,
+  &__append {
+    @apply tw-flex tw-items-center tw-flex-nowrap tw-pr-3 tw-pl-3;
   }
 
   &__field-wrapper {
     @apply tw-px-3 tw-relative tw-flex tw-flex-nowrap tw-w-full tw-outline-none  tw-min-w-0 tw-box-border tw-grow tw-border tw-border-solid tw-border-[color:var(--input-border-color)] tw-rounded-[var(--input-border-radius)] tw-bg-[color:var(--input-background-color)];
+
+    &--default {
+      @apply tw-h-[var(--input-height)];
+    }
+
+    &--small {
+      @apply tw-h-[var(--input-height-small)];
+    }
   }
 
-  &_error &__field-wrapper {
-    @apply tw-border tw-border-solid tw-border-[color:var(--input-border-color-error)];
+  &__field-container {
+    @apply tw-flex tw-flex-nowrap tw-flex-auto tw-h-full;
   }
 
-  &__error {
-    @apply tw-mt-1 [--hint-color:var(--input-border-color-error)];
+  &__prepend-inner,
+  &__append-inner {
+    @apply tw-flex tw-items-center tw-flex-nowrap;
   }
 
-  &__desc {
-    @apply tw-text-[color:var(--input-placeholder-color)] tw-mt-1 tw-break-words tw-p-0;
+  &__append-inner {
+    @apply tw-pl-3;
+  }
+
+  &__prepend-inner {
+    @apply tw-pr-3;
+  }
+
+  &__field {
+    @apply tw-flex tw-flex-row tw-flex-auto tw-w-full tw-min-w-0;
+  }
+
+  &__prefix,
+  &__suffix {
+    @apply tw-flex tw-items-center tw-flex-wrap tw-pointer-events-none;
+  }
+
+  &__prefix {
+    @apply tw-pr-3;
+  }
+
+  &__suffix {
+    @apply tw-pl-3;
+  }
+
+  &__clear,
+  &__showhide {
+    @apply tw-cursor-pointer tw-pl-3;
+  }
+
+  &__clear {
+    @apply tw-text-[color:var(--input-clear-color)] hover:tw-text-[color:var(--input-clear-color-hover)] tw-flex tw-items-center;
+  }
+
+  &__showhide {
+    @apply tw-text-[color:var(--input-placeholder-color)] hover:tw-text-[color:var(--input-clear-color-hover)] tw-flex tw-items-center;
+  }
+
+  &__loading {
+    @apply tw-flex tw-items-center tw-flex-nowrap tw-pl-3;
+  }
+
+  &__loading-icon {
+    @apply tw-animate-spin tw-text-[color:var(--input-clear-color)];
   }
 
   &__input {
@@ -610,22 +662,22 @@ function focus() {
   &__field {
     @apply tw-w-auto tw-min-w-0 tw-max-w-full tw-relative tw-flex tw-flex-row tw-flex-auto tw-flex-nowrap [height:inherit];
     input {
-      @apply tw-border-none tw-outline-none tw-h-full tw-min-w-0 tw-w-full tw-box-border tw-grow;
+      @apply tw-border-none tw-outline-none tw-h-full tw-min-w-0 tw-w-full tw-box-border tw-grow tw-text-sm tw-text-[color:var(--input-text-color)];
 
       &::-webkit-input-placeholder {
-        @apply tw-text-[color:var(--input-placeholder-color)];
+        @apply tw-text-[color:var(--input-placeholder-color)] tw-text-sm;
       }
 
       &::-moz-placeholder {
-        @apply tw-text-[color:var(--input-placeholder-color)];
+        @apply tw-text-[color:var(--input-placeholder-color)] tw-text-sm;
       }
 
       &::-ms-placeholder {
-        @apply tw-text-[color:var(--input-placeholder-color)];
+        @apply tw-text-[color:var(--input-placeholder-color)] tw-text-sm;
       }
 
       &::placeholder {
-        @apply tw-text-[color:var(--input-placeholder-color)];
+        @apply tw-text-[color:var(--input-placeholder-color)] tw-text-sm;
       }
 
       &::-ms-reveal,
@@ -635,17 +687,21 @@ function focus() {
     }
   }
 
-  &__clear {
-    @apply tw-cursor-pointer tw-text-[color:var(--input-clear-color)] hover:tw-text-[color:var(--input-clear-color-hover)] tw-flex tw-items-center tw-pl-3;
+  &__error {
+    @apply tw-mt-1 [--hint-color:var(--input-border-color-error)];
   }
 
-  &__showhide {
-    @apply tw-cursor-pointer tw-text-[color:var(--input-placeholder-color)] hover:tw-text-[color:var(--input-clear-color-hover)] tw-pl-3 tw-flex tw-items-center;
+  &__desc {
+    @apply tw-text-[color:var(--input-placeholder-color)] tw-text-sm tw-mt-1;
+  }
+
+  &_error &__field-wrapper {
+    @apply tw-border tw-border-solid tw-border-[color:var(--input-border-color-error)];
   }
 
   &_disabled &__field-wrapper,
   &_disabled &__field {
-    @apply tw-bg-[#fafafa] tw-text-[#424242];
+    @apply tw-bg-[color:var(--input-disabled-bg-color)] tw-text-[color:var(--input-disabled-text-color)];
   }
 
   .slide-up-enter-active,
@@ -684,8 +740,13 @@ function focus() {
   }
 }
 
+input.dp__input {
+  background-color: var(--input-background-color);
+  height: auto;
+}
+
 input.dp__input::placeholder {
-  color: #818181 !important;
+  color: var(--input-placeholder-color) !important;
 }
 
 .dp--tp-wrap {

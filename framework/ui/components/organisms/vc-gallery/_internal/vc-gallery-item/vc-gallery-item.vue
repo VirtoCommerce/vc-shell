@@ -14,7 +14,7 @@
       background="contain"
     ></VcImage>
     <div class="vc-gallery-item__overlay">
-      <div class="tw-flex">
+      <div class="vc-gallery-item__overlay-content">
         <VcIcon
           v-if="!readonly && !disableDrag"
           class="vc-gallery-item__move"
@@ -22,13 +22,13 @@
           size="s"
         ></VcIcon>
         <div
-          class="tw-truncate"
+          class="vc-gallery-item__image-name"
           :title="image.name"
         >
           {{ image.name }}
         </div>
       </div>
-      <div class="tw-flex tw-grow tw-basis-0 tw-items-center tw-justify-around">
+      <div class="vc-gallery-item__actions">
         <div
           v-if="actions && actions.preview"
           class="vc-gallery-item__button"
@@ -38,7 +38,9 @@
             class="vc-gallery-item__button-icon"
             icon="fas fa-eye"
           ></VcIcon>
-          <div class="tw-mt-2">{{ t("COMPONENTS.ORGANISMS.VC_GALLERY.INTERNAL.VC_GALLERY_ITEM.FULLSCREEN") }}</div>
+          <div class="vc-gallery-item__button-text">
+            {{ t("COMPONENTS.ORGANISMS.VC_GALLERY.INTERNAL.VC_GALLERY_ITEM.FULLSCREEN") }}
+          </div>
         </div>
         <div
           v-if="!readonly && actions && actions.edit"
@@ -49,7 +51,9 @@
             class="vc-gallery-item__button-icon"
             icon="fas fa-pen"
           ></VcIcon>
-          <div class="tw-mt-2">{{ $t("COMPONENTS.ORGANISMS.VC_GALLERY.INTERNAL.VC_GALLERY_ITEM.EDIT") }}</div>
+          <div class="vc-gallery-item__button-text">
+            {{ $t("COMPONENTS.ORGANISMS.VC_GALLERY.INTERNAL.VC_GALLERY_ITEM.EDIT") }}
+          </div>
         </div>
         <div
           v-if="!readonly && actions && actions.remove"
@@ -60,7 +64,9 @@
             class="vc-gallery-item__button-icon"
             icon="fas fa-trash"
           ></VcIcon>
-          <div class="tw-mt-2">{{ $t("COMPONENTS.ORGANISMS.VC_GALLERY.INTERNAL.VC_GALLERY_ITEM.DELETE") }}</div>
+          <div class="vc-gallery-item__button-text">
+            {{ $t("COMPONENTS.ORGANISMS.VC_GALLERY.INTERNAL.VC_GALLERY_ITEM.DELETE") }}
+          </div>
         </div>
       </div>
     </div>
@@ -107,28 +113,51 @@ function onClose() {
 </script>
 
 <style lang="scss">
+:root {
+  --gallery-item-border-color: var(--secondary-200);
+  --gallery-item-overlay-bg-color: var(--primary-100);
+  --gallery-item-move-icon-color: var(--secondary-300);
+  --gallery-item-button-icon-color: var(--primary-500);
+}
+
 .vc-gallery-item {
-  @apply tw-relative tw-w-[155px] tw-h-[155px] tw-box-border tw-border tw-border-solid tw-border-[#d3dae9] tw-rounded-md tw-p-1;
+  @apply tw-relative tw-w-[155px] tw-h-[155px] tw-box-border tw-border tw-border-solid tw-border-[var(--gallery-item-border-color)] tw-rounded-md tw-p-1;
 
   &__overlay {
-    @apply tw-bg-[rgba(238,246,252,0.97)] tw-flex-col tw-p-2 tw-opacity-0 tw-flex tw-absolute tw-left-0 tw-top-0 tw-right-0 tw-bottom-0 tw-transition  tw-duration-200;
+    @apply tw-bg-[var(--gallery-item-overlay-bg-color)] tw-opacity-0 tw-flex tw-flex-col tw-p-2 tw-absolute tw-left-0 tw-top-0 tw-right-0 tw-bottom-0 tw-transition-opacity tw-duration-200;
   }
 
   &:hover &__overlay,
-  .vc-app_touch &_hover &__overlay {
+  .vc-app_touch &__hover &__overlay {
     @apply tw-opacity-100;
   }
 
   &__move {
-    @apply tw-text-[#a1c0d4] tw-cursor-move tw-mr-2;
+    @apply tw-text-[var(--gallery-item-move-icon-color)] tw-cursor-move tw-mr-2;
   }
 
   &__button {
     @apply tw-cursor-pointer tw-flex tw-flex-col tw-items-center;
 
     &-icon {
-      @apply tw-text-[#319ed4];
+      @apply tw-text-[var(--gallery-item-button-icon-color)];
     }
+
+    &-text {
+      @apply tw-mt-2 tw-text-sm;
+    }
+  }
+
+  &__overlay-content {
+    @apply tw-flex;
+  }
+
+  &__image-name {
+    @apply tw-truncate tw-text-sm;
+  }
+
+  &__actions {
+    @apply tw-flex tw-grow tw-basis-0 tw-items-center tw-justify-around;
   }
 }
 </style>

@@ -1,17 +1,15 @@
 <template>
   <div
     class="vc-editor"
-    :class="[
-      {
-        'vc-editor_error': errorMessage,
-        'vc-editor_disabled': disabled,
-      },
-    ]"
+    :class="{
+      'vc-editor--error': errorMessage,
+      'vc-editor--disabled': disabled,
+    }"
   >
     <!-- Editor label -->
     <VcLabel
       v-if="label"
-      class="tw-mb-2"
+      class="vc-editor__label"
       :required="required"
       :multilanguage="multilanguage"
       :current-language="currentLanguage"
@@ -20,8 +18,9 @@
       <template
         v-if="tooltip"
         #tooltip
-        >{{ tooltip }}</template
       >
+        {{ tooltip }}
+      </template>
     </VcLabel>
 
     <!-- Editor field -->
@@ -30,8 +29,10 @@
       :key="`${id}-${disabled}`"
       ref="quillRef"
       :content="modelValue"
-      class="quill-editor tw-border tw-border-solid tw-border-[color:var(--editor-border-color)] tw-rounded-b-[var(--editor-border-radius)] tw-h-[200px]"
-      :class="{ 'tw-bg-[#fafafa] tw-text-[#424242] tw-cursor-default': disabled }"
+      class="quill-editor vc-editor__quill-editor"
+      :class="{
+        'vc-editor__quill-editor--disabled': disabled,
+      }"
       theme="snow"
       :toolbar="toolbar"
       :modules="modules"
@@ -41,11 +42,12 @@
       :options="options"
       @ready="initializeQuill"
     />
+
     <slot
       v-if="errorMessage"
       name="error"
     >
-      <VcHint class="vc-editor__error !tw-text-[color:var(--editor-border-color-error)] tw-mt-1">
+      <VcHint class="vc-editor__error">
         {{ errorMessage }}
       </VcHint>
     </slot>
@@ -184,36 +186,66 @@ defineExpose({
 <style lang="scss">
 :root {
   --editor-border-radius: 3px;
-  --editor-border-color: #d3dbe9;
-  --editor-border-color-error: #f14e4e;
-  --editor-placeholder-color: #a5a5a5;
+  --editor-border-color: var(--secondary-200);
+  --editor-border-color-error: var(--base-error-color, var(--danger-500));
+  --editor-disabled-bg: var(--neutrals-50);
+  --editor-disabled-text: var(--neutrals-400);
+  --editor-placeholder-color: var(--neutrals-400);
 }
 
 .vc-editor {
-  &_error .quill-editor {
-    @apply tw-border tw-border-solid tw-border-[color:var(--editor-border-color-error)] #{!important};
+  & {
+    @apply tw-flex tw-flex-col;
   }
 
-  .quill-editor .ql-editor {
-    &.ql-blank:before {
-      color: var(--textarea-placeholder-color);
-      content: attr(data-placeholder);
-      font-style: inherit;
-      left: 15px;
-      pointer-events: none;
-      position: absolute;
-      right: 15px;
+  &--disabled {
+    @apply tw-opacity-50 tw-cursor-not-allowed;
+  }
+
+  &__label {
+    @apply tw-mb-2;
+  }
+
+  &__quill-editor {
+    @apply tw-border tw-border-solid tw-border-[color:var(--editor-border-color)] tw-rounded-b-[var(--editor-border-radius)] tw-h-[200px];
+    transition:
+      background 0.3s,
+      color 0.3s,
+      cursor 0.3s;
+
+    &--disabled {
+      @apply tw-bg-[color:var(--editor-disabled-bg)] tw-text-[color:var(--editor-disabled-text)] tw-cursor-default;
+    }
+
+    &.vc-editor--error {
+      @apply tw-border-[color:var(--editor-border-color-error)];
     }
   }
 
-  .quill-editor {
-    & .ql-tooltip {
-      display: flex;
-      flex-flow: wrap;
+  &__error {
+    @apply tw-text-[color:var(--editor-border-color-error)] tw-mt-1;
+  }
+}
 
-      &.ql-hidden {
-        display: none !important;
-      }
+.quill-editor .ql-editor {
+  &.ql-blank:before {
+    color: var(--editor-placeholder-color);
+    content: attr(data-placeholder);
+    font-style: inherit;
+    left: 15px;
+    pointer-events: none;
+    position: absolute;
+    right: 15px;
+  }
+}
+
+.quill-editor {
+  & .ql-tooltip {
+    display: flex;
+    flex-flow: wrap;
+
+    &.ql-hidden {
+      display: none !important;
     }
   }
 }
@@ -222,7 +254,13 @@ defineExpose({
   padding-right: 18px;
   content: attr(data-value);
 }
+
 .ql-language.ql-picker .ql-picker-item:before {
   content: attr(data-value);
+}
+
+.ql-toolbar,
+.quill-editor {
+  border-color: var(--editor-border-color) !important;
 }
 </style>

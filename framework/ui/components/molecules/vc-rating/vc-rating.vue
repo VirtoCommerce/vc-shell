@@ -3,7 +3,7 @@
     <!-- Rating label -->
     <VcLabel
       v-if="label"
-      class="tw-mb-2"
+      class="vc-rating__label"
     >
       <span>{{ label }}</span>
       <template
@@ -16,7 +16,7 @@
 
     <!-- Rating icon -->
     <template v-if="modelValue">
-      <template v-if="variant == 'stars'">
+      <template v-if="variant === 'stars'">
         <VcIcon
           v-for="index in modelValue"
           :key="index"
@@ -32,7 +32,7 @@
       </template>
       <template v-else>
         <VcIcon
-          v-if="variant == 'star-and-text'"
+          v-if="variant === 'star-and-text'"
           icon="fas fa-star"
           class="vc-rating__icon"
         ></VcIcon>
@@ -68,7 +68,11 @@ defineSlots<{
 
 <style lang="scss">
 :root {
-  --rating-placeholder-color: #a5a5a5;
+  --rating-placeholder-color: var(--neutrals-400);
+
+  --rating-special-color: var(--warning-500);
+  --rating-special-color-hover: var(--warning-600);
+  --rating-special-color-disabled: var(--warning-200);
 }
 
 .vc-rating {
@@ -78,7 +82,7 @@ defineSlots<{
     @apply tw-text-[color:var(--rating-placeholder-color)];
   }
   &__icon {
-    @apply tw-text-[color:var(--special-color)] tw-mr-1;
+    @apply tw-text-[color:var(--rating-special-color)] tw-mr-1;
     font-size: inherit;
   }
   &__rating {

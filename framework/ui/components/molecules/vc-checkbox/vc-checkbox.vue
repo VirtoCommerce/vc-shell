@@ -11,7 +11,7 @@
     <!-- Input label -->
     <VcLabel
       v-if="label"
-      class="tw-mb-2"
+      class="vc-checkbox__label"
       :required="required"
     >
       <span>{{ label }}</span>
@@ -21,7 +21,7 @@
         >{{ tooltip }}</template
       >
     </VcLabel>
-    <label class="tw-inline-flex tw-select-none tw-cursor-pointer tw-text-base tw-items-center">
+    <label class="vc-checkbox__container">
       <input
         v-model="value"
         type="checkbox"
@@ -30,18 +30,18 @@
         :true-value="trueValue"
         :false-value="falseValue"
         :class="{
-          'vc-checkbox_error': errorMessage,
+          'vc-checkbox__input--error': errorMessage,
         }"
       />
       <span
         v-if="$slots['default']"
-        class="tw-ml-2"
+        class="vc-checkbox__text"
       >
         <slot></slot>
       </span>
       <span
         v-if="!label && required"
-        class="tw-text-[color:var(--checkbox-required-color)] tw-ml-1"
+        class="vc-checkbox__required"
         >*</span
       >
     </label>
@@ -50,7 +50,7 @@
       v-if="errorMessage"
       name="error"
     >
-      <VcHint class="vc-checkbox__error tw-mt-1">
+      <VcHint class="vc-checkbox__error">
         {{ errorMessage }}
       </VcHint>
     </slot>
@@ -61,6 +61,7 @@
 import { MaybeRef, computed, unref } from "vue";
 import { VcHint } from "./../../atoms/vc-hint";
 import { VcLabel } from "../../atoms/vc-label";
+
 export interface Props {
   modelValue: MaybeRef<boolean>;
   disabled?: boolean;
@@ -103,19 +104,20 @@ const value = computed({
   --checkbox-size-medium: 18px;
   --checkbox-size-large: 24px;
   --checkbox-border-radius: 2px;
-  --checkbox-background-color: #ffffff;
-  --checkbox-color-error: #f14e4e;
-  --checkbox-required-color: #f14e4e;
+  --checkbox-background-color: var(--additional-50);
+  --checkbox-color-error: var(--base-error-color, var(--danger-500));
+  --checkbox-required-color: var(--danger-500);
 
-  --checkbox-active: #43b0e6;
-  --checkbox-active-inner: #fff;
-  --checkbox-focus: 2px rgba(39, 94, 254, 0.3);
-  --checkbox-border: #bbc1e1;
-  --checkbox-border-hover: #43b0e6;
-  --checkbox-background: #fff;
-  --checkbox-disabled: #f6f8ff;
-  --checkbox-disabled-inner: #e1e6f9;
-  --checkbox-error: #f14e4e;
+  --checkbox-active: var(--primary-500);
+  --checkbox-active-inner: var(--additional-50);
+  --checkbox-focus-color: var(--info-400);
+  --checkbox-focus: 2px rgb(from var(--checkbox-focus-color) r g b / 30%);
+  --checkbox-border: var(--neutrals-300);
+  --checkbox-border-hover: var(--primary-500);
+  --checkbox-background: var(--additional-50);
+  --checkbox-disabled: var(--neutrals-100);
+  --checkbox-disabled-inner: var(--base-border-color, var(--neutrals-200));
+  --checkbox-error: var(--base-error-color, var(--danger-500));
 }
 
 $sizes: small, medium, large;
@@ -127,8 +129,28 @@ $sizes: small, medium, large;
 }
 
 .vc-checkbox {
+  &__label {
+    @apply tw-mb-2;
+  }
+
+  &__container {
+    @apply tw-inline-flex tw-select-none tw-cursor-pointer tw-text-base tw-items-center;
+  }
+
+  &__text {
+    @apply tw-ml-2;
+  }
+
+  &__required {
+    @apply tw-text-[color:var(--checkbox-required-color)] tw-ml-1;
+  }
+
+  &__input--error {
+    --hint-color: var(--checkbox-error);
+  }
+
   input[type="checkbox"] {
-    border-radius: 2px;
+    border-radius: var(--checkbox-border-radius);
     appearance: none;
     height: var(--checkbox-size);
     outline: none;
@@ -140,7 +162,6 @@ $sizes: small, medium, large;
     border: 1px solid var(--checkbox-border-color, var(--checkbox-border));
     background: var(--checkbox-bg, var(--checkbox-background));
     width: var(--checkbox-size);
-    border-radius: 3px;
     transition:
       background 0.3s,
       border-color 0.3s,
@@ -216,6 +237,7 @@ $sizes: small, medium, large;
 
   &__error {
     --hint-color: var(--checkbox-error);
+    @apply tw-mt-1;
   }
 }
 </style>

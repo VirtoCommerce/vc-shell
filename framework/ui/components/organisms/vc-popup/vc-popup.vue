@@ -6,57 +6,57 @@
   >
     <Dialog
       as="div"
-      class="tw-relative tw-z-10"
+      class="vc-popup"
       @close="closeModal"
     >
       <TransitionChild
         as="template"
-        enter="tw-duration-300 tw-ease-out"
-        enter-from="tw-opacity-0"
-        enter-to="tw-opacity-100"
-        leave="tw-duration-200 tw-ease-in"
-        leave-from="tw-opacity-100"
-        leave-to="tw-opacity-0"
+        enter="vc-popup__transition-enter"
+        enter-from="vc-popup__transition-enter-from"
+        enter-to="vc-popup__transition-enter-to"
+        leave="vc-popup__transition-leave"
+        leave-from="vc-popup__transition-leave-from"
+        leave-to="vc-popup__transition-leave-to"
       >
-        <div class="tw-fixed tw-inset-0 tw-bg-black/25" />
+        <div class="vc-popup__overlay" />
       </TransitionChild>
 
       <div
-        class="tw-fixed tw-inset-0 tw-overflow-y-auto"
+        class="vc-popup__container"
         :class="{
-          'tw-p-4': !isMobileView,
-          'tw-p-0': isMobileView,
+          'vc-popup__container--desktop': !isMobileView,
+          'vc-popup__container--mobile': isMobileView,
         }"
       >
-        <div class="tw-flex tw-min-h-full tw-items-center tw-justify-center tw-text-center">
+        <div class="vc-popup__center">
           <TransitionChild
             as="template"
-            enter="tw-duration-300 tw-ease-out"
-            enter-from="tw-opacity-0 tw-scale-95"
-            enter-to="tw-opacity-100 tw-scale-100"
-            leave="tw-duration-200 tw-ease-in"
-            leave-from="tw-opacity-100 tw-scale-100"
-            leave-to="tw-opacity-0 tw-scale-95"
+            enter="vc-popup__dialog-enter"
+            enter-from="vc-popup__dialog-enter-from"
+            enter-to="vc-popup__dialog-enter-to"
+            leave="vc-popup__dialog-leave"
+            leave-from="vc-popup__dialog-leave-from"
+            leave-to="vc-popup__dialog-leave-to"
           >
             <DialogPanel
-              class="tw-w-full tw-transform tw-overflow-hidden tw-rounded-[5px] tw-bg-white tw-text-left tw-align-middle tw-shadow-xl tw-transition-all"
+              class="vc-popup__panel"
               :class="[
                 {
-                  'tw-flex tw-flex-col [max-height:calc(100vh-40px)]': !isMobileView,
-                  'tw-max-w-full tw-h-[100dvh] tw-rounded-none tw-flex tw-flex-col': isMobileView,
-                  '!tw-h-screen': isFullscreen,
+                  'vc-popup__panel--desktop': !isMobileView,
+                  'vc-popup__panel--mobile': isMobileView,
+                  'vc-popup__panel--fullscreen': isFullscreen,
                 },
                 modalWidth,
               ]"
             >
               <DialogTitle
                 as="h3"
-                class="tw-text-[18px] tw-font-semibold tw-leading-5 tw-text-[var(--header-color)] tw-flex tw-px-6 tw-py-5"
+                class="vc-popup__title"
               >
                 <slot name="header">{{ title }}</slot>
 
                 <button
-                  class="tw-h-[26px] tw-w-[26px] tw-bg-[var(--close-btn-bg)] tw-rounded-[4px] tw-inline-flex tw-items-center tw-justify-center tw-ml-auto hover:tw-bg-[var(--close-btn-bg-hover)] tw-outline-none"
+                  class="vc-popup__close-btn"
                   @click="closeModal"
                 >
                   <svg
@@ -75,22 +75,22 @@
                 </button>
               </DialogTitle>
 
-              <div class="tw-flex tw-w-full tw-min-h-0 tw-grow tw-gap-5 tw-px-6 tw-pb-5 tw-pt-3">
+              <div class="vc-popup__content">
                 <VcIcon
                   v-if="variant !== 'default'"
-                  :class="['tw-self-center tw-text-[40px]', iconStyle]"
+                  :class="['vc-popup__icon', iconStyle]"
                   :icon="icon"
                 />
 
                 <div
-                  class="tw-text-[14px] tw-font-normal tw-leading-[20px] tw-text-[var(--content-text-color)] tw-flex tw-items-center tw-flex-auto tw-overflow-y-auto [word-break:break-word]"
+                  class="vc-popup__content-inner"
                   :class="{
-                    'tw-grow': isMobileView,
+                    'vc-popup__content-inner--grow': isMobileView,
                   }"
                 >
                   <div
-                    class="tw-flex tw-flex-auto tw-self-center tw-min-h-0 tw-max-h-[-webkit-fill-available]"
-                    :class="{ 'tw-h-full': isFullscreen }"
+                    class="vc-popup__content-wrapper"
+                    :class="{ 'vc-popup__content-wrapper--full': isFullscreen }"
                   >
                     <slot name="content"></slot>
                   </div>
@@ -98,17 +98,18 @@
               </div>
               <div
                 v-if="$slots.footer"
-                class="tw-flex tw-items-center tw-px-6 tw-py-5 tw-border-t tw-border-t-[var(--footer-separator)] tw-border-solid"
+                class="vc-popup__footer"
               >
                 <slot
                   name="footer"
                   :close="closeModal"
                 >
                   <VcButton
-                    class="tw-ml-auto"
+                    class="vc-popup__close-button"
                     @click="closeModal"
-                    >{{ $t("COMPONENTS.ORGANISMS.VC_POPUP.CLOSE") }}</VcButton
                   >
+                    {{ $t("COMPONENTS.ORGANISMS.VC_POPUP.CLOSE") }}
+                  </VcButton>
                 </slot>
               </div>
             </DialogPanel>
@@ -168,11 +169,11 @@ const icon = computed(() => {
 const iconStyle = computed(() => {
   switch (props.variant) {
     case "warning":
-      return "tw-text-[var(--warning-icon-color)]";
+      return "vc-popup__icon--warning";
     case "error":
-      return "tw-text-[var(--error-icon-color)]";
+      return "vc-popup__icon--error";
     case "success":
-      return "tw-text-[var(--success-icon-color)]";
+      return "vc-popup__icon--success";
     default:
       return "";
   }
@@ -187,13 +188,154 @@ function closeModal() {
 
 <style lang="scss">
 :root {
-  --close-btn-bg: #f5f8fb;
-  --close-btn-bg-hover: color-mix(in srgb, var(--close-btn-bg), #000 5%);
-  --header-color: #465769;
-  --content-text-color: #465769;
-  --warning-icon-color: #ffbb0d;
-  --error-icon-color: #ff4a4a;
-  --success-icon-color: #87b563;
-  --footer-separator: #ebebeb;
+  --popup-close-btn-bg: var(--neutrals-100);
+  --popup-close-btn-bg-hover: color-mix(in srgb, var(--popup-close-btn-bg), #000 5%);
+  --popup-header-color: var(--primary-700);
+  --popup-content-text-color: var(--primary-700);
+  --popup-warning-icon-color: var(--warning-500);
+  --popup-error-icon-color: var(--base-error-color, var(--danger-500));
+  --popup-success-icon-color: var(--success-500);
+  --popup-footer-separator: var(--base-border-color, var(--neutrals-200));
+  --popup-overlay-color: var(--additional-50);
+  --popup-overlay: rgb(from var(--popup-overlay-color) r g b / 75%);
+  --popup-bg: var(--additional-50);
+}
+
+.vc-popup {
+  &__overlay {
+    @apply tw-fixed tw-inset-0 tw-bg-[var(--popup-overlay)] tw-backdrop-blur-[3px];
+  }
+
+  &__container {
+    @apply tw-fixed tw-inset-0 tw-overflow-y-auto;
+
+    &--desktop {
+      @apply tw-p-4;
+    }
+
+    &--mobile {
+      @apply tw-p-0;
+    }
+  }
+
+  &__center {
+    @apply tw-flex tw-min-h-full tw-items-center tw-justify-center tw-text-center;
+  }
+
+  &__panel {
+    @apply tw-w-full tw-transform tw-overflow-hidden tw-rounded-[5px] tw-bg-[var(--popup-bg)] tw-text-left tw-align-middle tw-shadow-xl tw-transition-all;
+
+    &--desktop {
+      @apply tw-flex tw-flex-col [max-height:calc(100vh-40px)];
+    }
+
+    &--mobile {
+      @apply tw-max-w-full tw-h-[100dvh] tw-rounded-none tw-flex tw-flex-col;
+    }
+
+    &--fullscreen {
+      @apply tw-h-screen #{!important};
+    }
+  }
+
+  &__title {
+    @apply tw-text-lg tw-font-semibold tw-leading-5 tw-text-[var(--popup-header-color)] tw-flex tw-px-6 tw-py-5;
+  }
+
+  &__close-btn {
+    @apply tw-h-[26px] tw-w-[26px] tw-bg-[var(--popup-close-btn-bg)] tw-rounded-[4px] tw-inline-flex tw-items-center tw-justify-center tw-ml-auto hover:tw-bg-[var(--popup-close-btn-bg-hover)] tw-outline-none;
+  }
+
+  &__content {
+    @apply tw-flex tw-w-full tw-min-h-0 tw-grow tw-gap-5 tw-px-6 tw-pb-5 tw-pt-3;
+  }
+
+  &__content-inner {
+    @apply tw-text-sm tw-font-normal tw-leading-5 tw-text-[var(--popup-content-text-color)] tw-flex tw-items-center tw-flex-auto tw-overflow-y-auto [word-break:break-word];
+
+    &--grow {
+      @apply tw-grow;
+    }
+  }
+
+  &__content-wrapper {
+    @apply tw-flex tw-flex-auto tw-self-center tw-min-h-0 tw-max-h-[-webkit-fill-available];
+
+    &--full {
+      @apply tw-h-full;
+    }
+  }
+
+  &__footer {
+    @apply tw-flex tw-items-center tw-px-6 tw-py-5 tw-border-t tw-border-t-[var(--popup-footer-separator)] tw-border-solid;
+  }
+
+  &__close-button {
+    @apply tw-ml-auto;
+  }
+
+  &__icon {
+    @apply tw-self-center tw-text-[40px];
+
+    &--warning {
+      @apply tw-text-[var(--popup-warning-icon-color)];
+    }
+
+    &--error {
+      @apply tw-text-[var(--popup-error-icon-color)];
+    }
+
+    &--success {
+      @apply tw-text-[var(--popup-success-icon-color)];
+    }
+  }
+
+  &__transition-enter {
+    @apply tw-duration-300 tw-ease-out;
+  }
+
+  &__transition-enter-from {
+    @apply tw-opacity-0;
+  }
+
+  &__transition-enter-to {
+    @apply tw-opacity-100;
+  }
+
+  &__transition-leave {
+    @apply tw-duration-200 tw-ease-in;
+  }
+
+  &__transition-leave-from {
+    @apply tw-opacity-100;
+  }
+
+  &__transition-leave-to {
+    @apply tw-opacity-0;
+  }
+
+  &__dialog-enter {
+    @apply tw-duration-300 tw-ease-out;
+  }
+
+  &__dialog-enter-from {
+    @apply tw-opacity-0 tw-scale-95;
+  }
+
+  &__dialog-enter-to {
+    @apply tw-opacity-100 tw-scale-100;
+  }
+
+  &__dialog-leave {
+    @apply tw-duration-200 tw-ease-in;
+  }
+
+  &__dialog-leave-from {
+    @apply tw-opacity-100 tw-scale-100;
+  }
+
+  &__dialog-leave-to {
+    @apply tw-opacity-0 tw-scale-95;
+  }
 }
 </style>

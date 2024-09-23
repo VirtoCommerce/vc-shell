@@ -1,37 +1,37 @@
 <template>
   <!-- Text -->
   <template v-if="type === 'text'">
-    <div class="tw-flex tw-flex-row tw-justify-stretch tw-truncate">
-      <div class="tw-text-wrap">
-        <p>{{ value }}</p>
+    <div class="vc-field-type">
+      <div class="vc-field-type__text-wrap">
+        <p class="vc-field-type__text">{{ value }}</p>
       </div>
     </div>
   </template>
 
   <!-- Date -->
   <template v-if="type === 'date'">
-    <div class="tw-flex tw-flex-row tw-justify-stretch tw-truncate">
-      <div class="tw-text-wrap">
-        <p>{{ value instanceof Date ? value.toLocaleDateString() : value }}</p>
+    <div class="vc-field-type">
+      <div class="vc-field-type__text-wrap">
+        <p class="vc-field-type__text">{{ value instanceof Date ? value.toLocaleDateString() : value }}</p>
       </div>
     </div>
   </template>
 
   <!-- Date ago -->
   <template v-if="type === 'date-ago'">
-    <div class="tw-flex tw-flex-row tw-justify-stretch tw-truncate">
-      <div class="tw-text-wrap">
-        <p>{{ value instanceof Date ? moment(value).fromNow() ?? "N/A" : value }}</p>
+    <div class="vc-field-type">
+      <div class="vc-field-type__text-wrap">
+        <p class="vc-field-type__text">{{ value instanceof Date ? moment(value).fromNow() ?? "N/A" : value }}</p>
       </div>
     </div>
   </template>
 
   <!-- Link -->
   <template v-if="type === 'link'">
-    <div class="tw-flex tw-flex-row tw-justify-stretch tw-truncate">
-      <div class="tw-truncate tw-text-wrap">
+    <div class="vc-field-type">
+      <div class="vc-field-type__text-wrap">
         <VcLink
-          class="vc-link !tw-text-s tw-truncate tw-w-full"
+          class="vc-field-type__link"
           @click="onLinkClick"
           >{{ value }}</VcLink
         >
@@ -42,11 +42,11 @@
 
   <!-- Email -->
   <template v-if="type === 'email'">
-    <div class="tw-flex tw-flex-row tw-justify-stretch tw-truncate">
-      <div class="tw-text-wrap">
+    <div class="vc-field-type">
+      <div class="vc-field-type__text-wrap">
         <a
           :href="`mailto:${value}`"
-          class="vc-link !tw-text-s tw-truncate tw-w-full"
+          class="vc-field-type__link"
           >{{ value }}</a
         >
       </div>
@@ -77,4 +77,20 @@ function onLinkClick() {
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss">
+.vc-field-type {
+  @apply tw-flex tw-flex-row tw-justify-stretch tw-truncate;
+
+  &__text-wrap {
+    @apply tw-text-wrap;
+  }
+
+  &__text {
+    @apply tw-text-sm;
+  }
+
+  &__link {
+    @apply tw-text-sm tw-truncate tw-w-full;
+  }
+}
+</style>

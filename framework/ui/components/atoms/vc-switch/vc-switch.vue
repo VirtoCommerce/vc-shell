@@ -1,14 +1,14 @@
 <template>
-  <div>
+  <div class="vc-switch">
     <!-- Switch label -->
     <VcLabel
       v-if="label"
-      class="tw-mb-2"
+      class="vc-switch__label"
       :required="required"
     >
       <span>{{ label }}</span>
     </VcLabel>
-    <div class="tw-relative tw-inline-block tw-w-[32px] tw-h-[18px]">
+    <div class="vc-switch__container">
       <label>
         <input
           type="checkbox"
@@ -21,7 +21,7 @@
       </label>
       <VcHint
         v-if="tooltip"
-        class="tw-mt-2 tw-w-max"
+        class="vc-switch__hint"
       >
         {{ tooltip }}
       </VcHint>
@@ -66,34 +66,58 @@ function onInput(e: Event) {
 
 <style lang="scss">
 :root {
-  --switch-main-color: #43b0e6;
-  --switch-secondary-color: #d2d4d7;
+  --switch-width: 32px;
+  --switch-height: 18px;
+  --switch-thumb-size: 16px;
+  --switch-translate: 14px;
+
+  --switch-main-color: var(--primary-500);
+  --switch-secondary-color: var(--neutrals-300);
+  --switch-icon-background: var(--additional-50);
+  --switch-icon-color: var(--neutrals-400);
+  --switch-shadow-color: var(--additional-950);
+  --switch-shadow: inset 0px 2px 4px rgb(from var(--switch-shadow-color) r g b / 10%);
   --switch-transition: all 0.2s ease-in-out;
-  --switch-icon-transition: opacity 0.3s ease-in-out;
 }
 
 .vc-switch {
-  &__input {
-    @apply tw-w-0 tw-h-0 tw-opacity-0;
+  &__label {
+    @apply tw-mb-2;
+  }
 
-    &:checked + .vc-switch__slider:before {
-      @apply tw-translate-x-[14px];
-    }
+  &__container {
+    @apply tw-relative tw-inline-block tw-w-[var(--switch-width)] tw-h-[var(--switch-height)];
+  }
+
+  &__hint {
+    @apply tw-mt-2 tw-w-max;
+  }
+
+  &__input {
+    @apply tw-w-0 tw-h-0 tw-opacity-0 tw-cursor-pointer;
 
     &:checked + .vc-switch__slider {
-      @apply tw-bg-[color:var(--switch-main-color)] after:tw-bg-[position:10px] after:tw-bg-[length:10px_7px];
+      @apply tw-bg-[color:var(--switch-main-color)];
+
+      &::before {
+        @apply [transform:translateX(var(--switch-translate))_translateY(-50%)];
+      }
     }
 
     &:disabled + .vc-switch__slider {
-      @apply tw-bg-[color:var(--switch-secondary-color)];
+      @apply tw-bg-[color:var(--switch-secondary-color)] tw-cursor-not-allowed;
+    }
+
+    &:disabled {
+      @apply tw-cursor-not-allowed;
     }
   }
 
   &__slider {
-    @apply tw-absolute tw-top-0 tw-right-0 tw-bottom-0 tw-left-0 tw-bg-[color:var(--switch-secondary-color)] tw-rounded-[9999px] tw-cursor-pointer tw-transition  tw-duration-200 tw-shadow-[inset_0px_2px_4px_rgba(0,0,0,0.1)];
+    @apply tw-absolute tw-inset-0 tw-bg-[color:var(--switch-secondary-color)] tw-rounded-full tw-transition tw-duration-200 [box-shadow:var(--switch-shadow)] tw-cursor-pointer;
 
-    &:before {
-      @apply tw-absolute tw-bottom-px tw-left-px tw-flex tw-justify-center tw-items-center tw-w-[16px] tw-h-[16px] tw-bg-white tw-rounded-[9999px] tw-text-[color:#d2d2d2] tw-text-[10px] tw-transition tw-shadow-[0_2px_4px_rgba(0,0,0,0.1)] tw-duration-200 tw-content-[""];
+    &::before {
+      @apply tw-absolute tw-left-px tw-top-1/2 tw-transition tw-duration-200 tw-bg-[color:var(--switch-icon-background)] tw-rounded-full tw-w-[var(--switch-thumb-size)] tw-h-[var(--switch-thumb-size)] [content:''] [box-shadow:var(--switch-shadow)] [transform:translateX(0)_translateY(-50%)];
     }
   }
 }

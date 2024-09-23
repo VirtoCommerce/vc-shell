@@ -5,20 +5,20 @@
   >
     <div
       :class="[
+        'vc-image__container',
         `vc-image_${aspect}`,
         {
-          'tw-rounded-full': rounded,
-          'tw-rounded-[3px] tw-border tw-border-solid tw-border-[color:#efefef]': bordered,
-          'tw-cursor-pointer': clickable,
+          'vc-image__container--rounded': rounded,
+          'vc-image__container--bordered': bordered,
+          'vc-image__container--clickable': clickable,
         },
-        'tw-relative',
       ]"
       :style="imageHandler"
       @click="onClick"
     >
       <div
         v-if="!src"
-        class="tw-absolute tw-w-full tw-h-full tw-flex tw-items-center tw-justify-center tw-text-[#83a3be]"
+        class="vc-image__placeholder"
       >
         <VcIcon
           :icon="emptyIcon"
@@ -79,6 +79,10 @@ function onClick(): void {
   --image-size-l: 96px;
   --image-size-xl: 128px;
   --image-size-xxl: 145px;
+
+  --image-border-radius: 3px;
+  --image-border-color: var(--base-border-color, var(--neutrals-200));
+  --image-empty-icon-color: var(--secondary-500);
 }
 
 $aspects: (
@@ -88,7 +92,7 @@ $aspects: (
   3x2: 66.66%,
 );
 
-$paddings: xs, s, m, l, xl, xxl;
+$sizes: xs, s, m, l, xl, xxl;
 
 .vc-image {
   @apply tw-inline-block tw-relative;
@@ -99,14 +103,34 @@ $paddings: xs, s, m, l, xl, xxl;
     }
   }
 
-  @each $padding in $paddings {
-    &_#{$padding} {
-      @apply tw-w-[var(--image-size-#{$padding})] tw-max-w-full tw-min-w-0;
+  @each $size in $sizes {
+    &_#{$size} {
+      @apply tw-w-[var(--image-size-#{$size})] tw-max-w-full tw-min-w-0;
     }
   }
 
   &_auto {
     @apply tw-w-full;
+  }
+
+  &__container {
+    @apply tw-relative;
+  }
+
+  &__container--rounded {
+    @apply tw-rounded-full;
+  }
+
+  &__container--bordered {
+    @apply tw-rounded-[var(--image-border-radius)] tw-border tw-border-solid tw-border-[color:var(--image-border-color)];
+  }
+
+  &__container--clickable {
+    @apply tw-cursor-pointer;
+  }
+
+  &__placeholder {
+    @apply tw-absolute tw-w-full tw-h-full tw-flex tw-items-center tw-justify-center tw-text-[color:var(--image-empty-icon-color)];
   }
 }
 </style>

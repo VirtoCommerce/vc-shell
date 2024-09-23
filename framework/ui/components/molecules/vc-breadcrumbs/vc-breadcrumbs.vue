@@ -2,47 +2,51 @@
   <div
     v-if="items && items.length"
     ref="el"
-    class="tw-flex tw-items-center tw-flex-wrap tw-gap-[10px]"
+    class="vc-breadcrumbs"
   >
     <VcBreadcrumbsItem
       v-if="items.length"
       :id="items[0]?.id"
+      class="vc-breadcrumbs__item"
       :title="items[0]?.title"
       :current="items.length === 1"
       :variant="variant"
       @click="items[0]?.clickHandler && items[0]?.clickHandler(items[0]?.id)"
-    >
-    </VcBreadcrumbsItem>
+    />
+
     <VcIcon
       v-if="withArrow && canExpand"
+      class="vc-breadcrumbs__chevron-icon"
       :icon="arrowIcon"
       :size="arrowSize"
-      class="tw-text-[color:var(--chevron-color)]"
     />
+
     <VcBreadcrumbsItem
       v-if="canExpand"
       id="Expand"
+      class="vc-breadcrumbs__expand-button"
       :current="false"
       title="..."
       :variant="variant"
       @click="expand"
-    >
-    </VcBreadcrumbsItem>
+    />
+
     <template
       v-for="(item, i) in visibleBreadcrumbs"
       :key="item?.id ?? `breadcrumb-item-${i}`"
     >
       <div
         v-if="item && item.title && item.isVisible"
-        class="tw-flex tw-flex-row tw-items-center tw-justify-center"
+        class="vc-breadcrumbs__item-wrapper"
       >
         <VcIcon
           v-if="withArrow && i < items.length - 1"
+          class="vc-breadcrumbs__item-chevron"
           :icon="arrowIcon"
           :size="arrowSize"
-          class="tw-text-[color:var(--chevron-color)] tw-mr-[10px]"
         />
         <VcBreadcrumbsItem
+          class="vc-breadcrumbs__item"
           v-bind="item"
           :current="i === items.length - 1"
           :variant="variant"
@@ -79,11 +83,10 @@ const props = withDefaults(defineProps<Props>(), {
   arrowSize: "xs",
 });
 
-const el = ref(null);
+const el = ref<HTMLElement | null>(null);
 const visibleBreadcrumbs = ref([]) as Ref<InternalBreadcrumbs[]>;
 
 const { width } = useElementBounding(el);
-
 const { items } = toRefs(props);
 
 const canExpand = computed(
@@ -145,6 +148,26 @@ function expand() {
 
 <style lang="scss">
 :root {
-  --chevron-color: #a1c0d4;
+  --chevron-color: var(--secondary-500);
+}
+
+.vc-breadcrumbs {
+  @apply tw-flex tw-items-center tw-flex-wrap tw-gap-2.5;
+
+  &__chevron-icon {
+    @apply tw-text-[color:var(--chevron-color)];
+  }
+
+  &__expand-button {
+    @apply tw-text-[color:var(--chevron-color)] tw-cursor-pointer hover:tw-text-[color:var(--chevron-color)];
+  }
+
+  &__item-wrapper {
+    @apply tw-flex tw-flex-row tw-items-center tw-justify-center;
+  }
+
+  &__item-chevron {
+    @apply tw-text-[color:var(--chevron-color)] tw-mr-2.5;
+  }
 }
 </style>

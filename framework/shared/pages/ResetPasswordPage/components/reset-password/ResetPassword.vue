@@ -1,14 +1,15 @@
 <template>
-  <div class="vc-app tw-w-full tw-h-full tw-box-border tw-flex tw-flex-col tw-m-0 vc-theme_light">
+  <div class="vc-reset-password-page">
     <VcLoading
       v-if="loading"
       active
     ></VcLoading>
 
     <VcLoginForm
-      logo="/assets/logo-white.svg"
-      background="/assets/background.jpg"
+      :logo="customization.logo"
+      :background="background"
       :title="t('PASSWORDRESET.TITLE')"
+      class="vc-reset-password-page__login-form"
     >
       <VcForm>
         <Field
@@ -22,7 +23,7 @@
             v-bind="field"
             ref="passwordField"
             v-model="form.password"
-            class="tw-mb-4 tw-mt-1"
+            class="vc-reset-password-page__input"
             :label="t('PASSWORDRESET.FIELDS.PASSWORD.LABEL')"
             :placeholder="t('PASSWORDRESET.FIELDS.PASSWORD.PLACEHOLDER')"
             type="password"
@@ -49,7 +50,7 @@
             v-bind="field"
             ref="confirmPasswordField"
             v-model="form.confirmPassword"
-            class="tw-mb-4"
+            class="vc-reset-password-page__input-small"
             :label="t('PASSWORDRESET.FIELDS.CONFIRM_PASSWORD.LABEL')"
             :placeholder="t('PASSWORDRESET.FIELDS.CONFIRM_PASSWORD.PLACEHOLDER')"
             :disabled="!form.tokenIsValid"
@@ -67,13 +68,14 @@
           >
           </VcInput>
         </Field>
-        <div class="tw-flex tw-justify-center tw-items-center tw-pt-2">
+        <div class="vc-reset-password-page__button-container">
           <span
             v-if="$isDesktop.value"
-            class="tw-grow tw-basis-0"
+            class="vc-reset-password-page__spacer"
           ></span>
           <vc-button
             :disabled="disableButton"
+            class="vc-reset-password-page__submit-button"
             @click="resetPassword"
           >
             {{ t("PASSWORDRESET.SAVE_PASSWORD") }}
@@ -83,10 +85,11 @@
         <VcHint
           v-for="error in form.errors"
           :key="error"
-          class="tw-mt-3 !tw-text-[#f14e4e]"
+          class="vc-reset-password-page__error-hint"
+          style="color: #f14e4e"
         >
           <!-- TODO: stylizing-->
-          {{ t(`PASSWORDRESET.ERRORS.${+error}`) }}
+          {{ t(`PASSWORDRESET.ERRORS.${error}`) }}
         </VcHint>
       </VcForm>
     </VcLoginForm>
@@ -97,19 +100,28 @@
 import { reactive, onMounted, computed } from "vue";
 import { useRouter } from "vue-router";
 import { Field, useForm } from "vee-validate";
-import { useUser } from "./../../../../../core/composables";
+import { useUser, useSettings } from "./../../../../../core/composables";
 import { useI18n } from "vue-i18n";
 
-const props = defineProps<{
-  userId: string;
-  userName: string;
-  token: string;
-}>();
+const props = withDefaults(
+  defineProps<{
+    userId: string;
+    userName: string;
+    token: string;
+    logo: string;
+    background: string;
+  }>(),
+  {
+    background: "/assets/background.jpg",
+    logo: "/assets/logo-white.svg",
+  },
+);
 
 const { validateToken, validatePassword, resetPasswordByToken, signIn, loading } = useUser();
 const router = useRouter();
 const { t } = useI18n({ useScope: "global" });
 const { validate: veeValidate } = useForm({ validateOnMount: false });
+const { uiSettings, loading: customizationLoading } = useSettings();
 
 const form = reactive<{
   isValid: boolean;
@@ -163,4 +175,44 @@ const resetPassword = async () => {
     }
   }
 };
+
+const customization = computed(() => {
+  return {
+    logo: !customizationLoading.value ? uiSettings.value?.logo || props.logo : "",
+  };
+});
 </script>
+
+<style lang="scss">
+:root {
+  --reset-password-error-color: var(--base-error-color, var(--danger-500));
+}
+
+.vc-reset-password-page {
+  @apply tw-w-full tw-h-full tw-box-border tw-flex tw-flex-col tw-m-0;
+}
+
+.vc-reset-password-page__input {
+  @apply tw-mb-4 tw-mt-1;
+}
+
+.vc-reset-password-page__input-small {
+  @apply tw-mb-4;
+}
+
+.vc-reset-password-page__button-container {
+  @apply tw-flex tw-justify-center tw-items-center tw-pt-2;
+}
+
+.vc-reset-password-page__spacer {
+  @apply tw-grow tw-basis-0;
+}
+
+.vc-reset-password-page__submit-button {
+  @apply tw-w-28;
+}
+
+.vc-reset-password-page__error-hint {
+  @apply tw-mt-3 tw-text-[color:var(--reset-password-error-color)] #{!important};
+}
+</style>

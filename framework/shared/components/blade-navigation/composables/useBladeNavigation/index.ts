@@ -104,7 +104,10 @@ const utils = (router: Router) => {
 
   function getURLQuery() {
     if (route.query && Object.keys(route.query).length) {
-      return { params: new URLSearchParams(route.query as Record<string, string>).toString(), obj: route.query };
+      return {
+        params: new URLSearchParams(route.query as Record<string, string>).toString(),
+        obj: route.query,
+      };
     }
 
     const [, query] = window.location.href.split("#")[1].split("?");
@@ -125,12 +128,12 @@ const useBladeNavigationSingleton = createSharedComposable(() => {
   const route = useRoute();
   const { setupPageTracking } = useAppInsights();
 
-  const instance: BladeComponentInternalInstance = getCurrentInstance() as BladeComponentInternalInstance;
+  const instance = getCurrentInstance() as BladeComponentInternalInstance;
   const navigationInstance =
     (instance !== null && inject<BladeNavigationPlugin>("bladeNavigationPlugin")) || bladeNavigationInstance;
   const router = navigationInstance?.router;
 
-  const { parseUrl, parseWorkspaceUrl, getURLQuery } = utils(router);
+  const { parseUrl, parseWorkspaceUrl, getURLQuery, routes } = utils(router);
 
   watch(
     () => route.path,
@@ -161,7 +164,9 @@ const useBladeNavigationSingleton = createSharedComposable(() => {
   }
 
   function updateActiveWorkspace(wsRouteComponent: BladeVNode) {
-    wsRouteComponent.props.navigation.idx = 0;
+    if (wsRouteComponent.props?.navigation) {
+      wsRouteComponent.props.navigation.idx = 0;
+    }
     navigationInstance.blades.value[0] = wsRouteComponent;
     activeWorkspace.value = wsRouteComponent;
     closeBlade(1);
@@ -202,8 +207,10 @@ const useBladeNavigationSingleton = createSharedComposable(() => {
     const wsBladeUrl = workspace?.type.url;
     const lastBladeUrl = lastBlade?.type.url;
     const param = lastBlade?.props?.param;
-    if (lastBlade && wsBladeUrl) {
-      return "/" + parseUrl(wsBladeUrl)?.workspace + lastBladeUrl + (param ? "/" + param : "");
+    const parsedWorkspaceUrl = parseUrl(wsBladeUrl || "")?.workspace;
+
+    if (lastBlade && wsBladeUrl && parsedWorkspaceUrl) {
+      return "/" + parsedWorkspaceUrl + lastBladeUrl + (param ? "/" + param : "");
     } else {
       return wsBladeUrl;
     }
@@ -234,8 +241,8 @@ const useBladeNavigationSingleton = createSharedComposable(() => {
     try {
       const children = navigationInstance.blades.value.slice(index).reverse();
       let isPrevented = false;
-      for (let index = 0; index < children.length; index++) {
-        const element = children[index];
+      for (let i = 0; i < children.length; i++) {
+        const element = children[i];
 
         if (element.props?.navigation?.onBeforeClose) {
           const result = await element.props.navigation.onBeforeClose();
@@ -250,7 +257,7 @@ const useBladeNavigationSingleton = createSharedComposable(() => {
       }
 
       if (!isPrevented) {
-        if (navigationInstance.blades.value[index - 1]?.props?.navigation?.isVisible === false) {
+        if (index > 0 && navigationInstance.blades.value[index - 1]?.props?.navigation?.isVisible === false) {
           navigationInstance.blades.value[index - 1].props.navigation.isVisible = true;
         }
         navigationInstance.blades.value.splice(index);
@@ -276,11 +283,14 @@ export function useBladeNavigation(): IUseBladeNavigation {
 
   const { hasAccess } = usePermissions();
 
-  const instance: BladeComponentInternalInstance = getCurrentInstance() as BladeComponentInternalInstance;
+  const instance = getCurrentInstance() as BladeComponentInternalInstance;
 
   const { router, route, navigationInstance, closeBlade, setupPageTracking } = useBladeNavigationSingleton();
   const { parseUrl, getURLQuery, routes: routerRoutes } = utils(router);
-  const mainRoute = routerRoutes.find((r) => r.meta?.root)!;
+  const mainRoute = routerRoutes.find((r) => r.meta?.root);
+  if (!mainRoute) {
+    throw new Error("Main route not found");
+  }
 
   async function openWorkspace<Blade extends Component>(
     { blade, param, options }: IBladeEvent<Blade>,
@@ -312,11 +322,12 @@ export function useBladeNavigation(): IUseBladeNavigation {
 
       if (!isPrevented && createdComponent.type?.url) {
         if (hasAccess(blade.permissions)) {
-          // If the blade is the same as the one we want to open, do nothing. It prevents the loose of the instance state
-          if (navigationInstance.blades.value.length > 0) {
-            if (navigationInstance.blades.value[0].type.url === createdComponent.type.url) {
-              return;
-            }
+          if (
+            hasAccess(blade.permissions) &&
+            navigationInstance.blades.value.length > 0 &&
+            navigationInstance.blades.value[0].type.url === createdComponent.type.url
+          ) {
+            return;
           }
           navigationInstance.blades.value = [createdComponent];
           // Find the route with the matching URL and update the components.default property with the new component
@@ -324,15 +335,21 @@ export function useBladeNavigation(): IUseBladeNavigation {
           if (wsroute && wsroute.components) {
             wsroute.components.default = createdComponent;
           }
-          return await router.push({ name: wsroute?.name, params: { ...params, ...route.params }, query, replace });
-        } else
+          return await router.push({
+            name: wsroute?.name,
+            params: { ...params, ...route.params },
+            query,
+            replace,
+          });
+        } else {
           notification.error(i18n.global.t("PERMISSION_MESSAGES.ACCESS_RESTRICTED"), {
             timeout: 3000,
           });
+        }
       }
     } catch (e) {
       console.error(e);
-      throw new Error(`Opening workspace '${blade.type.name}' is prevented`);
+      throw new Error(`Opening workspace '${blade?.type?.name || "Unknown"}' is prevented`);
     }
   }
 
@@ -367,7 +384,14 @@ export function useBladeNavigation(): IUseBladeNavigation {
 
       const currentBladeIdx = instanceComponent.props?.navigation?.idx ?? 0;
 
-      const bladeNode = createBladeNode<Blade>({ blade, currentBladeIdx, options, param, onClose, onOpen });
+      const bladeNode = createBladeNode<Blade>({
+        blade,
+        currentBladeIdx,
+        options,
+        param,
+        onClose,
+        onOpen,
+      });
 
       if (!isPrevented) {
         if (hasAccess(blade.permissions)) {
@@ -386,8 +410,7 @@ export function useBladeNavigation(): IUseBladeNavigation {
   }
 
   function findInstanceComponentIndex(instanceComponent: BladeVNode) {
-    return navigationInstance.blades.value /* @ts-expect-error  - findLastIndex is not parsed correctly by ts */
-      .findLastIndex((x) => _.isEqual(x.type, instanceComponent.type));
+    return _.findLastIndex(navigationInstance.blades.value, (x) => _.isEqual(x.type, instanceComponent.type));
   }
 
   function createBladeNode<Blade extends Component>(args: {
@@ -419,7 +442,7 @@ export function useBladeNavigation(): IUseBladeNavigation {
     console.debug(`vc-app#onParentCall({ method: ${args.method} }) called.`);
 
     if (args.method && parentExposedMethods && typeof parentExposedMethods[args.method] === "function") {
-      const method = parentExposedMethods[args.method] as (args: unknown) => Promise<unknown>;
+      const method = parentExposedMethods[args.method];
       const result = await method(args.args);
 
       if (typeof args.callback === "function") {
@@ -436,7 +459,7 @@ export function useBladeNavigation(): IUseBladeNavigation {
     if (!instance) {
       warn("resolveComponentByName can only be used in setup().");
 
-      return null as any; // Return type inferred as any due to the early return
+      return null as unknown as BladeInstanceConstructor;
     }
 
     if (!name) {
@@ -475,7 +498,7 @@ export function useBladeNavigation(): IUseBladeNavigation {
     const params = Object.fromEntries(Object.entries(to.params).filter(([key]) => key !== "pathMatch"));
 
     // Get the raw path of the main route.
-    const parentRawPath = routerRoutes.find((route) => route.name === mainRoute.name)?.path;
+    const parentRawPath = routerRoutes.find((route) => route.name === mainRoute?.name)?.path;
 
     // Determine the parent path based on the parameters.
     const parentPath =
@@ -568,11 +591,12 @@ export function useBladeNavigation(): IUseBladeNavigation {
   }
 
   function setNavigationQuery(query: Record<string, string | number>) {
-    if (instance.vnode.props.navigation.idx === 0) {
+    const typeName = instance.vnode.type.name?.toLowerCase();
+    if (typeName && instance.vnode.props.navigation.idx === 0) {
       // add blade name to query keys
       const namedQuery = _.mapKeys(
         _.mapValues(query, (value) => value?.toString()),
-        (value, key) => instance.vnode.type.name?.toLowerCase() + "_" + key,
+        (value, key) => typeName + "_" + key,
       );
       const cleanQuery = _.omitBy(namedQuery, _.isNil);
 
@@ -585,12 +609,13 @@ export function useBladeNavigation(): IUseBladeNavigation {
   }
 
   function getNavigationQuery() {
-    if (instance.vnode.props.navigation.idx === 0) {
+    const typeName = instance.vnode.type.name?.toLowerCase();
+    if (typeName && instance.vnode.props.navigation.idx === 0) {
       const queryKeys = Array.from(Object.keys(route.query));
-      const bladeQueryKeys = queryKeys.filter((key) => key.startsWith(instance.vnode.type.name?.toLowerCase() ?? ""));
+      const bladeQueryKeys = queryKeys.filter((key) => key.startsWith(typeName));
 
       const namedQuery = _.mapKeys(_.pick(route.query, bladeQueryKeys), (value, key) =>
-        key.replace(instance.vnode.type.name?.toLowerCase() + "_", ""),
+        key.replace(typeName + "_", ""),
       ) as Record<string, string | number>;
 
       const obj: typeof namedQuery = {};

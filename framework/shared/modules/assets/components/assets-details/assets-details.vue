@@ -10,7 +10,7 @@
     @collapse="$emit('collapse:blade')"
   >
     <!-- Blade contents -->
-    <div class="tw-flex tw-grow-1 tw-border-t tw-border-solid tw-border-t-[#eaedf3]">
+    <div class="tw-flex tw-grow-1 tw-border-t tw-border-solid tw-border-t-[--assets-details-border]">
       <div class="assets-details__content tw-grow tw-basis-0 tw-w-full">
         <VcContainer :no-padding="true">
           <div class="tw-p-4">
@@ -27,7 +27,7 @@
                 <template v-else>
                   <VcIcon
                     :icon="getFileThumbnail(defaultAsset.name)"
-                    class="tw-text-[#a9bfd2] tw-text-[128px] tw-shrink-0"
+                    class="tw-text-[color:var(--assets-details-thumbnail-color)] tw-text-[128px] tw-shrink-0"
                   ></VcIcon>
                 </template>
                 <VcCol class="tw-ml-6">
@@ -217,3 +217,10 @@ function openLink(link: string | undefined) {
   location.href = link;
 }
 </script>
+
+<style lang="scss">
+:root {
+  --assets-details-border: var(--base-border-color, var(--neutrals-200));
+  --assets-details-thumbnail-color: var(--secondary-500);
+}
+</style>

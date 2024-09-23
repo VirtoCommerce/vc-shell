@@ -65,6 +65,9 @@ export default {
       };
     },
   ): void {
+    // Register base theme
+    coreComposables.useTheme().register(["light", "dark"]);
+
     // HTTP Interceptors
     window.fetch = registerInterceptors(args.router);
 

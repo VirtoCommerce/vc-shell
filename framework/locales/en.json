@@ -100,6 +100,9 @@
         }
       }
     },
+    "THEME_SELECTOR": {
+      "THEME_CHANGED": " theme"
+    },
     "CHANGE_PASSWORD": {
       "TITLE": "Change password",
       "FORCED": {
@@ -133,6 +136,9 @@
         "Incorrect password.": "You entered an incorrect password",
         "You have used this password in the past. Choose another one.": "You have used this password in the past. Choose another one."
       }
+    },
+    "APP_SWITCHER": {
+      "TITLE": "Appications"
     },
     "NOTIFICATION_DROPDOWN": {
       "TITLE": "Notifications",

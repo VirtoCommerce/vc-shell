@@ -53,7 +53,7 @@
           <template #control="{ modelValue }">
             <input
               :value="modelValue"
-              class="tw-w-full"
+              class="vc-pagination__input"
               :max="props.pages"
               @input="(event) => handleInputChange((event.target as HTMLInputElement)?.value)"
               @keyup.enter="setPage(jumpPage)"
@@ -166,19 +166,19 @@ const pagesToShow = computed(() => {
 :root {
   --pagination-item-width: 30px;
   --pagination-item-height: 30px;
-  --pagination-item-color: #000000;
-  --pagination-item-color-hover: #000000;
-  --pagination-item-color-current: #ffffff;
-  --pagination-item-color-disabled: #9c9c9c;
-  --pagination-item-background-color: #ffffff;
-  --pagination-item-background-color-hover: #dfeef9;
-  --pagination-item-background-color-current: #43b0e6;
-  --pagination-item-background-color-disabled: #ffffff;
+  --pagination-item-color: var(--base-text-color, var(--neutrals-950));
+  --pagination-item-color-hover: var(--primary-500);
+  --pagination-item-color-current: var(--additional-50);
+  --pagination-item-color-disabled: var(--neutrals-400);
+  --pagination-item-background-color: var(--additional-50);
+  --pagination-item-background-color-hover: var(--primary-100);
+  --pagination-item-background-color-current: var(--primary-500);
+  --pagination-item-background-color-disabled: var(--neutrals-100);
   --pagination-item-border-radius: 3px;
-  --pagination-item-border-color: #eaecf2;
-  --pagination-item-border-color-hover: #eaecf2;
-  --pagination-item-border-color-current: #eaecf2;
-  --pagination-item-border-color-disabled: #eaecf2;
+  --pagination-item-border-color: var(--secondary-100);
+  --pagination-item-border-color-hover: var(--neutrals-200);
+  --pagination-item-border-color-current: var(--neutrals-200);
+  --pagination-item-border-color-disabled: var(--neutrals-200);
 }
 
 .vc-pagination {
@@ -207,8 +207,8 @@ const pagesToShow = computed(() => {
     tw-rounded-[var(--pagination-item-border-radius)]
     tw-text-[color:var(--pagination-item-color)]
     tw-box-border
-    tw-transition  tw-duration-200
-    tw-mr-3 tw-select-none last:tw-mr-0;
+    tw-transition tw-duration-200
+    tw-mr-3 tw-select-none last:tw-mr-0 tw-text-xs;
 
     &_current,
     &_current:hover {
@@ -242,6 +242,10 @@ const pagesToShow = computed(() => {
   &__jump input {
     width: 50px;
     text-align: center;
+  }
+
+  &__input {
+    @apply tw-w-full;
   }
 }
 </style>

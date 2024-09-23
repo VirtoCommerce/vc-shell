@@ -1,23 +1,24 @@
 <template>
-  <div class="vc-app tw-w-full tw-h-full tw-box-border tw-flex tw-flex-col tw-m-0 vc-theme_light">
+  <div class="vc-invite-page">
     <VcLoading
       v-if="loading"
       active
     ></VcLoading>
 
     <VcLoginForm
-      logo="/assets/logo-white.svg"
-      background="/assets/background.jpg"
+      :logo="customization.logo"
+      :background="background"
       :title="t('INVITATION.TITLE')"
     >
       <VcForm>
         <VcInput
-          class="tw-mb-4 tw-mt-1"
+          class="vc-invite-page__input"
           :label="t('INVITATION.FIELDS.EMAIL.LABEL')"
           :model-value="userName"
           name="username"
           disabled
         ></VcInput>
+
         <Field
           v-slot="{ field, errorMessage, handleChange, errors }"
           :label="t('INVITATION.FIELDS.PASSWORD.LABEL')"
@@ -29,7 +30,7 @@
             v-bind="field"
             ref="passwordField"
             v-model="form.password"
-            class="tw-mb-4 tw-mt-1"
+            class="vc-invite-page__input"
             :label="t('INVITATION.FIELDS.PASSWORD.LABEL')"
             :placeholder="t('INVITATION.FIELDS.PASSWORD.PLACEHOLDER')"
             type="password"
@@ -45,6 +46,7 @@
             "
           ></VcInput>
         </Field>
+
         <Field
           v-slot="{ field, errorMessage, handleChange, errors }"
           :label="t('INVITATION.FIELDS.CONFIRM_PASSWORD.LABEL')"
@@ -56,7 +58,7 @@
             v-bind="field"
             ref="confirmPasswordField"
             v-model="form.confirmPassword"
-            class="tw-mb-4"
+            class="vc-invite-page__input--small"
             :label="t('INVITATION.FIELDS.CONFIRM_PASSWORD.LABEL')"
             :placeholder="t('INVITATION.FIELDS.CONFIRM_PASSWORD.PLACEHOLDER')"
             :disabled="!form.tokenIsValid"
@@ -73,10 +75,11 @@
             @keyup.enter="acceptInvitation"
           ></VcInput>
         </Field>
-        <div class="tw-flex tw-justify-center tw-items-center tw-pt-2">
+
+        <div class="vc-invite-page__button-container">
           <span
             v-if="$isDesktop.value"
-            class="tw-grow tw-basis-0"
+            class="vc-invite-page__spacer"
           ></span>
           <vc-button
             :disabled="loading || !form.isValid || !form.tokenIsValid"
@@ -89,7 +92,7 @@
         <VcHint
           v-for="error in form.errors"
           :key="error"
-          class="tw-mt-3"
+          class="vc-invite-page__hint"
           style="color: #f14e4e"
         >
           <!-- TODO: stylizing-->
@@ -104,22 +107,31 @@
 import { reactive, onMounted, computed } from "vue";
 import { useRouter } from "vue-router";
 import { useIsFormValid, Field, useIsFormDirty, useForm } from "vee-validate";
-import { useUser } from "./../../../../../core/composables";
+import { useUser, useSettings } from "./../../../../../core/composables";
 import { useI18n } from "vue-i18n";
 
 useForm({ validateOnMount: false });
 
-const props = defineProps<{
-  userId: string;
-  userName: string;
-  token: string;
-}>();
+const props = withDefaults(
+  defineProps<{
+    userId: string;
+    userName: string;
+    token: string;
+    logo: string;
+    background: string;
+  }>(),
+  {
+    background: "/assets/background.jpg",
+    logo: "/assets/logo-white.svg",
+  },
+);
 
 const { validateToken, validatePassword, resetPasswordByToken, signIn, loading } = useUser();
 const router = useRouter();
 const { t } = useI18n({ useScope: "global" });
 const isFormValid = useIsFormValid();
 const isDirty = useIsFormDirty();
+const { uiSettings, loading: customizationLoading } = useSettings();
 const form = reactive<{
   isValid: boolean;
   tokenIsValid: boolean;
@@ -169,4 +181,36 @@ const acceptInvitation = async () => {
     form.errors = result.errors as string[];
   }
 };
+
+const customization = computed(() => {
+  return {
+    logo: !customizationLoading.value ? uiSettings.value?.logo || props.logo : "",
+  };
+});
 </script>
+
+<style lang="scss">
+.vc-invite-page {
+  @apply tw-w-full tw-h-full tw-box-border tw-flex tw-flex-col tw-items-center tw-m-0;
+}
+
+.vc-invite-page__input {
+  @apply tw-mb-4 tw-mt-1;
+}
+
+.vc-invite-page__input--small {
+  @apply tw-mb-4;
+}
+
+.vc-invite-page__button-container {
+  @apply tw-flex tw-justify-center tw-items-center tw-pt-2;
+}
+
+.vc-invite-page__spacer {
+  @apply tw-grow tw-basis-0;
+}
+
+.vc-invite-page__hint {
+  @apply tw-mt-3;
+}
+</style>

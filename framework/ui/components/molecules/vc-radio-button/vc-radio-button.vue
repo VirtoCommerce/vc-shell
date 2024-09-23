@@ -1,6 +1,6 @@
 <template>
   <div class="vc-radio-button">
-    <label class="tw-text-base tw-flex tw-items-center tw-gap-[5px]">
+    <label class="vc-radio-button__label">
       <input
         type="radio"
         :name="name"
@@ -13,18 +13,19 @@
         @change="onChange"
       />
 
-      {{ label }}</label
-    >
+      {{ label }}
+    </label>
     <slot
       v-if="errorMessage"
       name="error"
     >
-      <VcHint class="vc-radio-button__error tw-mt-1">
+      <VcHint class="vc-radio-button__error">
         {{ errorMessage }}
       </VcHint>
     </slot>
   </div>
 </template>
+
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
 import * as _ from "lodash-es";
@@ -96,19 +97,22 @@ function onChange() {
 
 <style lang="scss">
 :root {
-  --radio-active: #43b0e6;
-  --radio-active-inner: #fff;
-  --radio-focus: 2px rgba(39, 94, 254, 0.3);
-  --radio-border: #bbc1e1;
-  --radio-border-hover: #43b0e6;
-  --radio-background: #fff;
-  --radio-disabled: #f6f8ff;
-  --radio-disabled-inner: #e1e6f9;
-  --radio-error: #f14e4e;
+  --radio-active: var(--primary-400);
+  --radio-active-inner: var(--additional-50);
+  --radio-border: var(--secondary-300);
+  --radio-border-hover: var(--primary-400);
+  --radio-background: var(--additional-50);
+  --radio-disabled: var(--secondary-100);
+  --radio-disabled-inner: var(--secondary-200);
+  --radio-error: var(--base-error-color, var(--danger-500));
   --radio-size: 14px;
 }
 
 .vc-radio-button {
+  &__label {
+    @apply tw-text-base tw-flex tw-items-center tw-gap-1.5;
+  }
+
   input[type="radio"] {
     border-radius: 50%;
     appearance: none;
@@ -176,22 +180,13 @@ function onChange() {
       }
     }
 
-    & + label {
-      font-size: 14px;
-      line-height: 21px;
-      display: inline-block;
-      vertical-align: top;
-      cursor: pointer;
-      margin-left: 4px;
-    }
-
     &.vc-radio-button_error {
       --radio-border-color: var(--radio-error);
     }
   }
 
   &__error {
-    --hint-color: var(--radio-error);
+    @apply tw-mt-1 [--hint-color:var(--radio-error)];
   }
 }
 </style>

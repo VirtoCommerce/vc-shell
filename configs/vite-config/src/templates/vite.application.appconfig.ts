@@ -2,7 +2,7 @@ import vue from "@vitejs/plugin-vue";
 import * as fs from "node:fs";
 import { loadEnv, ProxyOptions, defineConfig, searchForWorkspaceRoot, splitVendorChunkPlugin } from "vite";
 import mkcert from "vite-plugin-mkcert";
-import path from "node:path";
+import path, { resolve } from "node:path";
 import { checker } from "vite-plugin-checker";
 
 // Get actual package version from package.json
@@ -43,7 +43,7 @@ export default defineConfig({
       mode === "development"
         ? isMonorepo
           ? {
-              "@vc-shell/framework/dist/index.css": "@vc-shell/framework/dist/index.css",
+              "@vc-shell/framework/dist/index.css": workspaceRoot + "/framework/assets/styles/index.scss",
               "@vc-shell/framework": "@vc-shell/framework/index.ts",
             }
           : {

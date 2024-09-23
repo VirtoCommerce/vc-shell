@@ -38,15 +38,15 @@
             <template v-if="!readonly">
               <VcIcon
                 icon="fas fa-cloud-upload-alt"
-                class="tw-text-[100px] tw-text-[#41afe6]"
+                class="tw-text-[100px] tw-text-[color:var(--assets-manager-empty-icon-color)]"
               ></VcIcon>
-              <div class="tw-m-4 tw-text-xl tw-font-medium tw-text-center">
+              <div class="tw-m-4 tw-text-l tw-font-medium tw-text-center">
                 {{ t("ASSETS_MANAGER.EMPTY.UPLOAD_ASSETS") }}
               </div>
               <VcButton @click="toggleUploader">{{ t("ASSETS_MANAGER.EMPTY.UPLOAD") }}</VcButton>
             </template>
             <template v-else>
-              <div class="tw-m-4 tw-text-xl tw-font-medium tw-text-center">
+              <div class="tw-m-4 tw-text-l tw-font-medium tw-text-center">
                 {{ t("ASSETS_MANAGER.EMPTY.NO_ASSETS") }}
               </div>
             </template>
@@ -75,7 +75,7 @@
             <template v-else>
               <VcIcon
                 :icon="getFileThumbnail(item.name ?? '')"
-                class="tw-text-[#a9bfd2] tw-text-[38px]"
+                class="tw-text-[color:var(--assets-manager-thumbnail-color)] tw-text-[38px]"
               ></VcIcon>
             </template>
           </div>
@@ -90,7 +90,9 @@
 
         <!-- Mobile -->
         <template #mobile-item="{ item }">
-          <div class="tw-border-b tw-border-solid tw-border-b-[#e3e7ec] tw-p-3 tw-flex tw-flex-nowrap">
+          <div
+            class="tw-border-b tw-border-solid tw-border-b-[--assets-manager-mobile-border] tw-p-3 tw-flex tw-flex-nowrap"
+          >
             <template v-if="isImage(item.name ?? '')">
               <VcImage
                 :bordered="true"
@@ -104,7 +106,7 @@
               <div class="tw-w-12 tw-flex tw-items-center tw-justify-center">
                 <VcIcon
                   :icon="getFileThumbnail(item.name ?? '')"
-                  class="tw-text-[#a9bfd2] tw-w-12 tw-text-[48px]"
+                  class="tw-text-[color:var(--assets-manager-thumbnail-color)] tw-w-12 tw-text-[48px]"
                 ></VcIcon>
               </div>
             </template>
@@ -404,3 +406,11 @@ defineExpose({
   title: t("ASSETS_MANAGER.TITLE"),
 });
 </script>
+
+<style lang="scss">
+:root {
+  --assets-manager-empty-icon-color: var(--primary-400);
+  --assets-manager-thumbnail-color: var(--secondary-500);
+  --assets-manager-mobile-border: var(--info-100);
+}
+</style>

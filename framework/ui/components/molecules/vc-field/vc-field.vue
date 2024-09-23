@@ -1,34 +1,37 @@
 <template>
   <div
-    :class="[
-      {
-        'tw-flex-col': orientation === 'vertical',
-        'tw-flex-row tw-items-center': orientation === 'horizontal',
-      },
-      'tw-flex ',
-    ]"
+    class="vc-field"
+    :class="{
+      'vc-field--vertical': orientation === 'vertical',
+      'vc-field--horizontal': orientation === 'horizontal',
+    }"
   >
     <VcCol :size="aspectRatio[0]">
       <!-- Field label -->
-      <VcLabel v-if="label">
+      <VcLabel
+        v-if="label"
+        class="vc-field__label"
+      >
         <span>{{ label }}</span>
         <template
           v-if="tooltip"
           #tooltip
-          >{{ tooltip }}</template
-        ></VcLabel
-      >
+        >
+          {{ tooltip }}
+        </template>
+      </VcLabel>
     </VcCol>
     <VcCol :size="aspectRatio[1]">
       <VcFieldType
         :value="modelValue"
         :type="type"
+        class="vc-field__field-type"
       >
         <VcButton
           v-if="copyable"
           icon="far fa-copy"
           size="m"
-          class="tw-ml-2"
+          class="vc-field__copy-button"
           text
           @click="copy(modelValue)"
         ></VcButton>
@@ -84,4 +87,24 @@ function copy(value: string) {
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss">
+.vc-field {
+  @apply tw-flex;
+
+  &--vertical {
+    @apply tw-flex-col;
+  }
+
+  &--horizontal {
+    @apply tw-flex-row tw-items-center;
+  }
+
+  &__label {
+    @apply tw-mb-2;
+  }
+
+  &__copy-button {
+    @apply tw-ml-2;
+  }
+}
+</style>

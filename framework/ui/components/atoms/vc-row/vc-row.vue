@@ -1,5 +1,5 @@
 <template>
-  <div class="vc-row tw-flex-nowrap tw-flex tw-items-stretch">
+  <div class="vc-row">
     <slot></slot>
   </div>
 </template>
@@ -13,8 +13,10 @@ defineSlots<{
 
 <style lang="scss">
 .vc-row {
+  @apply tw-flex tw-flex-nowrap tw-items-stretch;
+
   .vc-app_mobile & {
-    display: grid;
+    @apply tw-grid;
   }
 }
 </style>

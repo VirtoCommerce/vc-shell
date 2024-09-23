@@ -6,7 +6,7 @@
     <slot></slot>
   </div>
 </template>
-<!-- eslint-disable @typescript-eslint/no-explicit-any -->
+
 <script lang="ts" setup>
 export interface Props {
   variant?: "info" | "warning" | "danger" | "success" | "light-danger" | "info-dark" | "primary";
@@ -20,6 +20,7 @@ withDefaults(defineProps<Props>(), {
 });
 
 defineSlots<{
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   default: (props?: any) => any;
 }>();
 </script>
@@ -33,45 +34,53 @@ defineSlots<{
   --status-border-radius-extended: 4px;
   --status-border-width: 1px;
 
-  --status-info-color: #ffffff;
-  --status-info-main-color: #bdd1df;
+  --status-info-color: var(--neutrals-50);
+  --status-info-main-color: var(--info-300);
 
-  --status-warning-color: #ffffff;
-  --status-warning-main-color: #f89406;
+  --status-warning-color: var(--neutrals-50);
+  --status-warning-main-color: var(--warning-500);
 
-  --status-danger-color: #ffffff;
-  --status-danger-main-color: #ef796f;
+  --status-danger-color: var(--neutrals-50);
+  --status-danger-main-color: var(--danger-500);
 
-  --status-success-color: #ffffff;
-  --status-success-main-color: #87b563;
+  --status-success-color: var(--neutrals-50);
+  --status-success-main-color: var(--success-500);
 
-  --status-light-danger-color: #333333;
-  --status-light-danger-main-color: #ffefef;
+  --status-light-danger-color: var(--neutrals-50);
+  --status-light-danger-main-color: var(--danger-200);
 
-  --status-info-dark-color: #ffffff;
-  --status-info-dark-main-color: #82a6bd;
+  --status-info-dark-color: var(--neutrals-50);
+  --status-info-dark-main-color: var(--info-600);
 
-  --status-primary-main-color: #319ed4;
-  --status-primary-color: #ffffff;
+  --status-primary-main-color: var(--primary-500);
+  --status-primary-color: var(--neutrals-50);
+
+  --status-outline-bg-color: var(--additional-50);
 }
 
 $variants: info, warning, danger, success, light-danger, info-dark, primary;
 
 .vc-status {
-  @apply tw-inline-block tw-rounded-[var(--status-border-radius)] tw-py-1 tw-px-3.5 tw-text-base tw-font-normal tw-whitespace-nowrap;
+  @apply tw-inline-block tw-font-normal tw-whitespace-nowrap tw-text-sm tw-truncate tw-text-center tw-border tw-border-solid tw-box-border tw-w-full;
+
+  @apply tw-py-1 tw-px-3.5 tw-rounded-[var(--status-border-radius)];
+
+  border-width: var(--status-border-width);
 
   @each $variant in $variants {
-    &_#{$variant} {
-      @apply tw-text-[color:var(--status-#{$variant}-color)] tw-border tw-border-solid tw-border-[color:var(--status-#{$variant}-main-color)] tw-bg-[color:var(--status-#{$variant}-main-color)];
+    &.vc-status_#{$variant} {
+      @apply tw-text-[color:var(--status-#{$variant}-color)] tw-border-[color:var(--status-#{$variant}-main-color)] tw-bg-[color:var(--status-#{$variant}-main-color)];
 
       &.vc-status_outline {
-        @apply tw-text-[color:var(--status-#{$variant}-main-color)] tw-border tw-border-solid tw-border-[color:var(--status-#{$variant}-main-color)] tw-bg-white;
+        @apply tw-text-[color:var(--status-#{$variant}-main-color)] tw-bg-[color:var(--status-outline-bg-color)];
       }
     }
   }
 
   &.vc-status_extended {
-    @apply tw-whitespace-normal tw-p-[var(--status-padding-extended)] tw-rounded-[var(--status-border-radius-extended)];
+    @apply tw-whitespace-normal tw-rounded-[var(--status-border-radius-extended)];
+
+    padding: var(--status-padding-extended);
   }
 }
 </style>

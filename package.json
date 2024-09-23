@@ -1,6 +1,6 @@
 {
   "name": "@vc-shell/root",
-  "version": "1.0.291",
+  "version": "1.0.292",
   "private": true,
   "repository": "https://github.com/VirtoCommerce/vc-shell",
   "scripts": {
@@ -74,7 +74,7 @@
     "prismjs": "^1.29.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "sass": "^1.69.6",
+    "sass": "~1.69.6",
     "serialize-javascript": "^6.0.2",
     "shx": "^0.3.4",
     "storybook": "^8.0.4",

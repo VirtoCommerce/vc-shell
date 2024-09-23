@@ -314,3 +314,5 @@ export default {
   },
   content: ["./ui/components/**/*.{vue,js,ts,jsx,tsx}", "./shared/**/*.{vue,js,ts,jsx,tsx}"],
 };
+
+export const content = ["../../node_modules/@vc-shell/**/*.{vue,js,ts,jsx,tsx}"];

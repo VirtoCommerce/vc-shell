@@ -1,6 +1,6 @@
 {
   "name": "@vc-shell/release-config",
-  "version": "1.0.291",
+  "version": "1.0.292",
   "type": "module",
   "main": "dist/release-config.js",
   "types": "./dist/index.d.ts",
@@ -19,9 +19,10 @@
     "vite": "^5.0.11"
   },
   "devDependencies": {
+    "@types/cross-spawn": "^6.0.6",
     "@types/prompts": "^2.4.7",
     "@types/semver": "^7.5.4",
-    "@vc-shell/ts-config": "^1.0.291",
+    "@vc-shell/ts-config": "^1.0.292",
     "typescript": "~5.3.3",
     "vite-plugin-dts": "^3.6.4"
   },

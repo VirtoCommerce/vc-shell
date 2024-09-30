@@ -4,11 +4,14 @@ import { setLocale as setVeeI18nLocale, localize } from "@vee-validate/i18n";
 import { createSharedComposable, useLocalStorage } from "@vueuse/core";
 import { ComputedRef, computed } from "vue";
 import ISO6391 from "iso-639-1";
+import { languageToCountryMap } from "../../constants";
 
 export interface IUseLanguages {
   setLocale: (locale: string) => void;
   currentLocale: ComputedRef<string>;
   getLocaleByTag: (localeTag: string) => string | undefined;
+  resolveCamelCaseLocale: (locale: string) => string;
+  getFlag: (language: string) => Promise<string>;
 }
 
 export const useLanguages = createSharedComposable(() => {
@@ -44,9 +47,36 @@ export const useLanguages = createSharedComposable(() => {
     return ISO6391.getNativeName(twoLetterLanguageName);
   }
 
+  function resolveCamelCaseLocale(locale: string) {
+    const formattedLocale = locale.replace(/([a-z]+)([A-Z]+)/g, "$1-$2").toLowerCase();
+
+    if (i18n.global.getLocaleMessage(formattedLocale)) {
+      return formattedLocale;
+    }
+    return "en";
+  }
+
+  function getCountryCode(language: string): string {
+    return (
+      languageToCountryMap[language.toLocaleLowerCase()] || languageToCountryMap[language.slice(0, 2)] || "xx" // placeholder for unknown country
+    );
+  }
+
+  async function getFlag(language: string): Promise<string> {
+    const flag = await import(/* @vite-ignore */ `./../../../assets/icons/flags/${getCountryCode(language)}.svg`).catch(
+      (error) => {
+        console.error("Failed to load flag", error);
+      },
+    );
+    return flag.default;
+  }
+
   return {
     setLocale,
     currentLocale,
     getLocaleByTag,
+    resolveCamelCaseLocale,
+    getFlag,
+    getCountryCode,
   };
 });

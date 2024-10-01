@@ -19,7 +19,6 @@ async function startApp() {
   const app = createApp(RouterView)
     .use(VirtoShellFramework, {
       router,
-      platformUrl: import.meta.env.APP_PLATFORM_URL,
       i18n: {
         locale: import.meta.env.APP_I18N_LOCALE,
         fallbackLocale: import.meta.env.APP_I18N_FALLBACK_LOCALE,

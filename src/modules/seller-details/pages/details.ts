@@ -58,13 +58,6 @@ export const details: DynamicDetailsSchema = {
                   property: "name",
                 },
                 {
-                  id: "commissionFee",
-                  component: "vc-field",
-                  label: "SELLER_DETAILS.CARDS.INFO.FORM.COMMISSION.LABEL",
-                  variant: "text",
-                  property: "computedFee",
-                },
-                {
                   id: "companyFieldset",
                   component: "vc-fieldset",
                   columns: 2,

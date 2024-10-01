@@ -25,7 +25,7 @@ import * as _ from "lodash-es";
 import { useRoute } from "vue-router";
 
 export interface SellerDetailsScope extends DetailsBaseBladeScope {
-  logoHandler: WritableComputedRef<{ url: string; name: string; title: string }[]>;
+  logoHandler: WritableComputedRef<{ url: string; title: string }[]>;
   onCountryChange: (e: string) => Promise<void>;
   countriesList: Ref<
     {
@@ -40,7 +40,6 @@ export interface SellerDetailsScope extends DetailsBaseBladeScope {
       name: string;
     }[]
   >;
-  computedFee: ComputedRef<string>;
   assetsHandler: {
     images: {
       noRemoveConfirmation: boolean;
@@ -81,7 +80,7 @@ export const useSellerDetails = (args?: DetailsComposableArgs): UseDetails<ISell
             ...(seller as ISellerDetails),
             addresses: seller.addresses!.map((address) => new CustomerAddress(address)),
           }),
-          commissionFeeId: seller.commissionFee?.id ?? "",
+          // commissionFeeId: seller.commissionFee?.id ?? "",
         }),
       );
     },
@@ -97,7 +96,7 @@ export const useSellerDetails = (args?: DetailsComposableArgs): UseDetails<ISell
 
   const logoHandler = computed({
     get() {
-      return item.value?.logo ? [{ url: item.value.logo, name: user.value?.userName ?? "", title: "" }] : [];
+      return item.value?.logo ? [{ url: item.value.logo, title: "" }] : [];
     },
     set(value) {
       if (value) {
@@ -106,15 +105,6 @@ export const useSellerDetails = (args?: DetailsComposableArgs): UseDetails<ISell
         item.value!.logo = undefined;
       }
     },
-  });
-
-  const computedFee = computed(() => {
-    if (item.value && item.value.commissionFee) {
-      return `${item.value.commissionFee?.name} (${item.value.commissionFee?.fee} ${
-        item.value.commissionFee?.calculationType === "Percent" ? "%" : "Fixed"
-      })`;
-    }
-    return "";
   });
 
   async function getCountries() {
@@ -196,7 +186,6 @@ export const useSellerDetails = (args?: DetailsComposableArgs): UseDetails<ISell
     countriesList,
     setRegion,
     regionsList,
-    computedFee,
     assetsHandler: {
       images: {
         noRemoveConfirmation: true,
@@ -235,7 +224,7 @@ export const useSellerDetails = (args?: DetailsComposableArgs): UseDetails<ISell
   watch(
     () => args?.mounted.value,
     async () => {
-      await load();
+      // await load();
       await getCountries();
     },
   );

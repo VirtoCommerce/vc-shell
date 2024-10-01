@@ -1,14 +1,8 @@
 <template>
   <VcContainer
-    class="dashboard tw-w-full tw-h-full tw-box-border"
+    class="dashboard tw-w-full tw-h-full tw-box-border tw-pt-6"
     no-padding
   >
-    <div
-      v-if="$isDesktop.value"
-      class="dashboard-header"
-    >
-      {{ $t("SHELL.DASHBOARD.TITLE") }}
-    </div>
     <VcRow>
       <VcCol :size="10">
         <VcRow>

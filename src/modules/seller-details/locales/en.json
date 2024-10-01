@@ -22,10 +22,6 @@
             "LABEL": "Company name",
             "PLACEHOLDER": "Enter company name"
           },
-          "COMMISSION": {
-            "LABEL": "Commission fee",
-            "PLACEHOLDER": "Select commission fee"
-          },
           "COMPANY_REG_NUM": {
             "LABEL": "Company Registration #",
             "PLACEHOLDER": "Enter registration number"

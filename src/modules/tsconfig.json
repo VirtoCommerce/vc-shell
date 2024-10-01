@@ -8,5 +8,6 @@
     "types": ["vite/client", "../shims-vue.d.ts"],
   },
   "files": ["package.json"],
-  "include": ["index.ts", "**/*.ts", "**/*.vue", "**/*.json", "vite.config.mts", "products/__tests__/products.spec.ts"]
+  "include": ["index.ts", "**/*.ts", "**/*.vue", "**/*.json", "vite.config.mts", "products/__tests__/products.spec.ts"],
+  "exclude": ["**/comissions/**/*.ts"],
 }

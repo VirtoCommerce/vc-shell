@@ -10,7 +10,7 @@ export interface IUseTheme {
   setTheme: (theme: string) => void;
 }
 
-const registeredThemes: Ref<string[]> = ref([]);
+const registeredThemes: Ref<string[]> = ref(["auto"]);
 export const useTheme = (): IUseTheme => {
   function register(customNames: string | string[]) {
     (typeof customNames === "string" ? [customNames] : customNames).forEach((name) => {
@@ -34,6 +34,7 @@ export const useTheme = (): IUseTheme => {
   }
 
   const mode = useColorMode({
+    emitAuto: true,
     modes: {
       ...registeredThemes.value.reduce(
         (acc, name) => {

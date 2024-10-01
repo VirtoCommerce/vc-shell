@@ -1,7 +1,8 @@
 <template>
   <AppBarButtonTemplate
     icon="fas fa-palette"
-    :title="themeText(current)"
+    :title="$t('COMPONENTS.THEME_SELECTOR.THEME_SELECTOR')"
+    position="bottom-end"
   >
     <template #dropdown-content="{ opened, toggle }">
       <Sidebar
@@ -43,23 +44,21 @@ import { useTheme } from "./../../../core/composables/useTheme";
 import { watch, computed } from "vue";
 import { notification } from "./../";
 import * as _ from "lodash-es";
-import { useI18n } from "vue-i18n";
 import { createUnrefFn } from "@vueuse/core";
 
 const { current, themes, setTheme } = useTheme();
-const { t } = useI18n({ useScope: "global" });
 
 watch(
-  () => current,
+  () => current.value,
   (newVal) => {
-    notification(themeText.value(newVal));
+    notification(_.capitalize(newVal));
   },
   { deep: true },
 );
 
 const themeText = computed(() => {
   return createUnrefFn((theme: string) => {
-    return _.capitalize(theme) + t("COMPONENTS.THEME_SELECTOR.THEME_CHANGED");
+    return _.capitalize(theme);
   });
 });
 </script>
@@ -74,11 +73,11 @@ const themeText = computed(() => {
 
 .vc-theme-selector {
   &__dropdown {
-    @apply tw-bg-[color:var(--theme-selector-bg-color)] tw-w-full;
+    @apply tw-bg-[color:var(--theme-selector-bg-color)] tw-min-w-20 tw-max-w-max;
   }
 
   &__item {
-    @apply tw-p-3 tw-text-sm tw-text-[color:var(--theme-selector-text-color)]
+    @apply tw-truncate tw-p-3 tw-text-sm tw-text-[color:var(--theme-selector-text-color)]
       tw-border-l tw-border-solid tw-border-l-[var(--theme-selector-border-color)]
       tw-border-b tw-border-b-[var(--theme-selector-border-color)] tw-w-full tw-cursor-pointer;
     transition: background-color 0.2s;

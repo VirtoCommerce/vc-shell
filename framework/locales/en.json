@@ -101,7 +101,8 @@
       }
     },
     "THEME_SELECTOR": {
-      "THEME_CHANGED": " theme"
+      "THEME_CHANGED": " theme",
+      "THEME_SELECTOR": "Theme selector"
     },
     "CHANGE_PASSWORD": {
       "TITLE": "Change password",

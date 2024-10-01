@@ -398,7 +398,7 @@ export function useBladeNavigation(): IUseBladeNavigation {
           if (replaceCurrentBlade) {
             navigationInstance.blades.value[currentBladeIdx].props.navigation.isVisible = false;
           }
-          setupPageTracking.beforeEach({ name: bladeNode.type.name });
+          setupPageTracking.beforeEach({ name: bladeNode.type.name! });
           navigationInstance.blades.value.push(bladeNode);
         } else {
           notification.error(i18n.global.t("PERMISSION_MESSAGES.ACCESS_RESTRICTED"), { timeout: 3000 });

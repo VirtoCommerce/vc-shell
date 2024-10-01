@@ -11,3 +11,4 @@ export * from "./notification-template";
 export * from "./app-bar-button";
 export * from "./sidebar";
 export * from "./theme-selector";
+export * from "./sign-in";

@@ -24,7 +24,7 @@ defineProps<Props>();
 
 const loadProviderComponent = (providerName: string) => {
   return defineAsyncComponent<Component>({
-    loader: () => import(`./${providerName.toLowerCase()}.vue`),
+    loader: () => import(/* @vite-ignore */ `./${providerName.toLowerCase()}.vue`),
     onError(error) {
       console.error(`Failed to load ${providerName} provider component`, error);
     },

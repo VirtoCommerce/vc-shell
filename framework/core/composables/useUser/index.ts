@@ -7,17 +7,14 @@ import {
   SecurityResult,
   ValidatePasswordResetTokenRequest,
   IdentityResult,
-  ExternalSignInClient,
   ChangePasswordRequest,
   LoginType,
-  ExternalSignInProviderInfo,
   LoginRequest,
   SignInResult,
 } from "./../../api/platform";
 import { RequestPasswordResult } from "./../../types";
-import { createSharedComposable, useLocalStorage } from "@vueuse/core";
-
-const VC_EXTERNAL_AUTH_DATA_KEY = "externalSignIn";
+import { createSharedComposable } from "@vueuse/core";
+import { useExternalProvider } from "../../../shared/components/sign-in/useExternalProvider";
 
 interface IUseUser {
   user: ComputedRef<UserDetail | undefined>;
@@ -32,8 +29,6 @@ interface IUseUser {
   resetPasswordByToken: (userId: string, password: string, token: string) => Promise<SecurityResult>;
   requestPasswordReset: (loginOrEmail: string) => Promise<RequestPasswordResult>;
   changeUserPassword: (oldPassword: string, newPassword: string) => Promise<SecurityResult | undefined>;
-  getExternalLoginProviders: () => Promise<ExternalSignInProviderInfo[] | undefined>;
-  externalSignIn: (authenticationType?: string | undefined, returnUrl?: string | undefined) => void;
   getLoginType: () => Promise<LoginType[]>;
   isAuthenticated: ComputedRef<boolean>;
 }
@@ -41,17 +36,9 @@ const user: Ref<UserDetail | undefined> = ref();
 function useUserFn(): IUseUser {
   const loading: Ref<boolean> = ref(false);
 
+  const { storage: externalSignInStorage, signOut: externalSignOut } = useExternalProvider();
+
   const securityClient = new SecurityClient();
-  const base = window.location.origin + "/";
-  const externalSecurityClient = new ExternalSignInClient(base);
-  const externalSignInStorage = useLocalStorage<{ providerType?: string | undefined }>(
-    VC_EXTERNAL_AUTH_DATA_KEY,
-    {},
-    {
-      listenToStorageChanges: true,
-      deep: true,
-    },
-  );
 
   const isAuthenticated = computed(() => user.value?.userName != null);
 
@@ -183,63 +170,6 @@ function useUserFn(): IUseUser {
     return result;
   }
 
-  async function getExternalLoginProviders() {
-    let result: ExternalSignInProviderInfo[] | undefined = undefined;
-    try {
-      result = await externalSecurityClient.getExternalLoginProviders();
-    } catch (e) {
-      console.error(e);
-      // TODO check error in app!!!
-    }
-
-    return result;
-  }
-
-  async function externalSignIn(authenticationType: string | undefined, returnUrl: string | undefined) {
-    try {
-      let url_ = base + "externalsignin?";
-
-      const signInData = {
-        providerType: authenticationType,
-      };
-
-      externalSignInStorage.value = signInData;
-
-      if (authenticationType === null) throw new Error("The parameter 'authenticationType' cannot be null.");
-      else {
-        if (authenticationType !== undefined)
-          url_ += "authenticationType=" + encodeURIComponent("" + authenticationType) + "&";
-        if (returnUrl !== undefined) url_ += "returnUrl=" + encodeURIComponent("" + returnUrl) + "&";
-      }
-      url_ = url_.replace(/[?&]$/, "");
-
-      window.location.href = url_;
-    } catch (e) {
-      console.error(e);
-
-      throw e;
-    }
-  }
-
-  async function externalSignOut(authenticationType: string): Promise<void> {
-    try {
-      let url_ = base + "externalsignin/signout?";
-
-      if (authenticationType !== undefined)
-        url_ += "authenticationType=" + encodeURIComponent("" + authenticationType) + "&";
-      if (window.location.pathname !== undefined)
-        url_ += "returnUrl=" + encodeURIComponent("" + window.location.pathname) + "&";
-
-      url_ = url_.replace(/[?&]$/, "");
-      window.location.href = url_;
-
-      externalSignInStorage.value = {};
-    } catch (e) {
-      console.error(e);
-      throw e;
-    }
-  }
-
   return {
     user: computed(() => user.value),
     loading: computed(() => loading.value),
@@ -253,8 +183,6 @@ function useUserFn(): IUseUser {
     resetPasswordByToken,
     requestPasswordReset,
     changeUserPassword,
-    getExternalLoginProviders,
-    externalSignIn,
     getLoginType,
   };
 }

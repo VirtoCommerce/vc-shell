@@ -78,22 +78,8 @@
           <!-- TODO add to localization -->
           OR
         </div>
-        <div class="vc-login-page__external-buttons">
-          <VcButton
-            v-for="external in loginProviders"
-            :key="external.authenticationType"
-            outline
-            @click="externalSignOn(external.authenticationType ?? '')"
-          >
-            <div class="vc-login-page__external-button-content">
-              <img
-                :src="externalAuthIcon(external.authenticationType ?? '')"
-                :alt="external.authenticationType"
-                class="vc-login-page__external-icon"
-              />{{ external.displayName }}
-            </div>
-          </VcButton>
-        </div>
+
+        <ExternalProviders :providers="loginProviders" />
       </div>
     </template>
     <template v-else>
@@ -181,9 +167,10 @@ import { useRouter } from "vue-router";
 import { useIsFormValid, Field, useIsFormDirty, useForm } from "vee-validate";
 import { useSettings, useUser } from "./../../../../../core/composables";
 import { RequestPasswordResult } from "./../../../../../core/types";
-import AzureAdIcon from "./../../../../../assets/img/AzureAd.svg";
 import { ExternalSignInProviderInfo, SignInResult } from "./../../../../../core/api/platform";
 import { useI18n } from "vue-i18n";
+import { default as ExternalProviders } from "./../../../../../shared/components/sign-in/external-providers.vue";
+import { useExternalProvider } from "./../../../../../shared/components/sign-in/useExternalProvider";
 
 type ForgotPasswordFunc = (args: { loginOrEmail: string }) => Promise<void>;
 
@@ -205,7 +192,9 @@ let useLogin;
 const signInResult = ref({ succeeded: true }) as Ref<SignInResult & { status?: number; error?: any }>;
 const requestPassResult = ref<RequestPasswordResult>({ succeeded: true });
 const forgotPasswordRequestSent = ref(false);
-const { signIn, loading, externalSignIn, getExternalLoginProviders, user } = useUser();
+const { signIn, loading, user } = useUser();
+const { getProviders } = useExternalProvider();
+
 const isLogin = ref(true);
 const isValid = useIsFormValid();
 const isDirty = useIsFormDirty();
@@ -224,13 +213,8 @@ if (props.composable && typeof props.composable === "function") {
 }
 
 onMounted(async () => {
-  loginProviders.value = await getExternalLoginProviders();
+  loginProviders.value = await getProviders();
 });
-
-const externalAuthIcon = (authenticationType: string) => {
-  if (authenticationType === "AzureAD") return AzureAdIcon;
-  else return;
-};
 
 const customization = computed(() => {
   return {
@@ -305,10 +289,6 @@ const togglePassRequest = () => {
   }
 };
 
-const externalSignOn = async (authenticationType: string) => {
-  await externalSignIn(authenticationType, window.location.pathname);
-};
-
 console.debug("Init login-page");
 </script>
 
@@ -346,18 +326,6 @@ console.debug("Init login-page");
 
   &__separator-line {
     @apply tw-flex tw-items-center tw-text-center tw-uppercase tw-text-[color:var(--login-separator-text)] before:tw-content-[''] before:tw-flex-1 before:tw-border-b before:tw-border-b-[color:var(--login-separator)] before:tw-mr-2 after:tw-content-[''] after:tw-flex-1 after:tw-border-b after:tw-border-b-[color:var(--login-separator)] after:tw-ml-2;
-  }
-
-  &__external-buttons {
-    @apply tw-flex tw-justify-center tw-mt-4 tw-flex-wrap tw-gap-2;
-  }
-
-  &__external-button-content {
-    @apply tw-flex tw-flex-row tw-items-center;
-  }
-
-  &__external-icon {
-    @apply tw-h-5 tw-mr-2;
   }
 
   &__error-hint {

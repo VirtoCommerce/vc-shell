@@ -29,7 +29,7 @@ export const useExternalProvider = (): IUseExternalProvider => {
 
   async function externalSignIn(authenticationType: string, oidcUrl: string) {
     try {
-      let url_ = window.location.origin + "externalsignin?";
+      let url_ = window.location.origin + "/externalsignin?";
       const returnUrl = window.location.pathname ?? "/";
 
       const signInData = {
@@ -56,7 +56,7 @@ export const useExternalProvider = (): IUseExternalProvider => {
 
   async function externalSignOut(authenticationType: string): Promise<void> {
     try {
-      let url_ = window.location.origin + "externalsignin/signout?";
+      let url_ = window.location.origin + "/externalsignin/signout?";
 
       if (authenticationType !== undefined)
         url_ += "authenticationType=" + encodeURIComponent("" + authenticationType) + "&";

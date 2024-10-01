@@ -72,7 +72,7 @@ import { Sidebar } from "./../../../../../../shared/components";
 
 export interface Props {
   title?: string;
-  counter: number;
+  counter?: number;
   parentExpanded?: boolean;
   disabled?: boolean;
 }

@@ -43,7 +43,10 @@
                   </template>
                 </VcInputCurrency>
               </template>
-              <template #tooltip>
+              <template
+                v-if="errorMessage"
+                #tooltip
+              >
                 <div class="vc-table-cell__error-tooltip">
                   {{ errorMessage }}
                 </div>
@@ -183,7 +186,10 @@
                 </template>
               </VcInput>
             </template>
-            <template #tooltip>
+            <template
+              v-if="errorMessage"
+              #tooltip
+            >
               <div class="vc-table-cell__error-tooltip">
                 {{ errorMessage }}
               </div>
@@ -252,7 +258,10 @@
                 </template>
               </VcInput>
             </template>
-            <template #tooltip>
+            <template
+              v-if="errorMessage"
+              #tooltip
+            >
               <div class="vc-table-cell__error-tooltip">
                 {{ errorMessage }}
               </div>

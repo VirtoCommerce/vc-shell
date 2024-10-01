@@ -329,7 +329,7 @@
                   >
                     <VcTableCell
                       :item="item as TableItem"
-                      :cell="cell"
+                      :cell="cell as ITableColumns"
                       :index="itemIndex"
                       :editing="editing"
                       @update="$emit('onEditComplete', { event: $event, index: itemIndex })"
@@ -484,12 +484,18 @@ export interface TableItem {
   actions?: IActionBuilderResult[];
 }
 
+export type TableColPartial = Partial<
+  ITableColumns & {
+    predefined?: boolean;
+  }
+>;
+
 defineSlots<{
   header: (props: { header: VNode }) => any;
   filters: (args: { closePanel: () => void }) => any;
   "mobile-item": (args: { item: T }) => any;
   [key: `header_${string}`]: (props: any) => any;
-  [key: `item_${string}`]: (args: { item: T; cell: ITableColumns; index: number }) => any;
+  [key: `item_${string}`]: (args: { item: T; cell: ITableColumns | TableColPartial; index: number }) => any;
   notfound: (props: any) => any;
   empty: (props: any) => any;
   footer: (props: any) => any;
@@ -586,18 +592,15 @@ const itemActions: Ref<IActionBuilderResult[][]> = ref([]);
 const disabledSelection: Ref<T[]> = ref([]);
 const mobileSwipeItem = ref<string>();
 const columnResizing = ref(false);
-const resizeColumnElement = ref<ITableColumns>();
-const nextColumn = ref<ITableColumns>();
+const resizeColumnElement = ref<TableColPartial>();
+const nextColumn = ref<TableColPartial>();
 const lastResize = ref<number>();
 const table = useCurrentElement();
 const resizer = ref();
 const isHeaderHover = ref(false);
 const columnSwitcherActive = ref(false);
-const state = useLocalStorage<Partial<ITableColumns & { predefined: boolean }>[]>(
-  "VC_TABLE_STATE_" + props.stateKey.toUpperCase(),
-  [],
-);
-const internalColumns: Ref<ITableColumns[]> = ref([]);
+const state = useLocalStorage<TableColPartial[]>("VC_TABLE_STATE_" + props.stateKey.toUpperCase(), []);
+const internalColumns: Ref<TableColPartial[]> = ref([]);
 const draggedColumn = ref();
 const draggedElement = ref<HTMLElement>();
 const dropPosition = ref();
@@ -711,7 +714,7 @@ const headerComponent = () =>
       : undefined,
   );
 
-const allColumns = ref([]) as Ref<ITableColumns[]>;
+const allColumns = ref([]) as Ref<TableColPartial[]>;
 
 const mobileTemplateRenderer = ({ item, index }: { item: TableItem | string; index: number }) => {
   return h(
@@ -759,11 +762,12 @@ watch(
 );
 
 watch(
-  () => props.items,
-  (newVal) => {
+  [() => props.items, () => props.columns],
+  ([newValItems, newValCols]) => {
     let cols: ITableColumns[] = [];
-    if (newVal && newVal.length) {
-      cols = Object.keys(newVal[0]).map((key) => {
+    let predefinedCols: ITableColumns[] = [];
+    if (newValItems && newValItems.length) {
+      cols = Object.keys(newValItems[0]).map((key) => {
         return {
           id: key,
           // From camelCase to human readable with first letter capitalized
@@ -774,14 +778,18 @@ watch(
       });
     }
 
-    const predefined = props.columns.map((item) => ({
-      ...item,
-      predefined: true,
-      visible: typeof item.visible !== "undefined" ? item.visible : true,
-    }));
-    allColumns.value = _.unionBy(predefined, cols, "id");
+    if (newValCols && newValCols.length) {
+      // Update internal columns based on predefined columns
+      predefinedCols = newValCols.map((item) => ({
+        ...item,
+        predefined: true,
+        visible: typeof item.visible !== "undefined" ? item.visible : true,
+      }));
+    }
 
-    restoreState();
+    allColumns.value = _.unionBy(predefinedCols, cols, "id");
+
+    restoreState(predefinedCols);
     columnsInit.value = false;
   },
   { deep: true, immediate: true },
@@ -960,11 +968,13 @@ function handleSwipe(id: string) {
   mobileSwipeItem.value = id;
 }
 
-function handleHeaderClick(item: ITableColumns) {
-  emit("headerClick", item);
+function handleHeaderClick(item: TableColPartial) {
+  const cleanCol = item;
+  delete cleanCol.predefined;
+  emit("headerClick", cleanCol as ITableColumns);
 }
 
-function handleMouseDown(e: MouseEvent, item: ITableColumns) {
+function handleMouseDown(e: MouseEvent, item: TableColPartial) {
   if (props.resizableColumns) {
     const containerLeft = getOffset(table.value as HTMLElement).left;
     resizeColumnElement.value = item;
@@ -1068,15 +1078,26 @@ function onColumnResizeEnd() {
 }
 
 function resizeTableCells(newColumnWidth: number, nextColumnWidth: number) {
-  if (resizeColumnElement.value) {
-    resizeColumnElement.value.width = newColumnWidth + "px";
-  }
-  if (nextColumn.value) {
-    nextColumn.value.width = nextColumnWidth + "px";
-  }
+  const colIndex = internalColumns.value.findIndex((col) => col.id === resizeColumnElement.value?.id);
+  const widths: number[] = [];
+  const tableHeaders = (table.value as HTMLDivElement)?.querySelectorAll(
+    ".vc-table__header-cell",
+  ) as NodeListOf<HTMLElement>;
+  tableHeaders.forEach((header) => widths.push(header.offsetWidth));
+
+  internalColumns.value.forEach((col, index) => {
+    col.width = widths[index] + "px";
+  });
+
+  widths.forEach((width, index) => {
+    const colWidth =
+      index === colIndex ? newColumnWidth : nextColumnWidth && index === colIndex + 1 ? nextColumnWidth : width;
+
+    internalColumns.value[index].width = colWidth + "px";
+  });
 }
 
-function onColumnHeaderDragStart(event: DragEvent, item: ITableColumns) {
+function onColumnHeaderDragStart(event: DragEvent, item: TableColPartial) {
   if (columnResizing.value) {
     event.preventDefault();
     return;
@@ -1090,12 +1111,12 @@ function onColumnHeaderDragStart(event: DragEvent, item: ITableColumns) {
 }
 
 function findParentHeader(element: HTMLElement) {
-  if (element.classList.contains("vc-table__header")) {
+  if (element.classList.contains("vc-table__header-cell")) {
     return element;
   } else {
     let parent = element.parentElement;
 
-    while (parent && !parent.classList.contains("vc-table__header")) {
+    while (parent && !parent.classList.contains("vc-table__header-cell")) {
       parent = parent.parentElement;
       if (!parent) break;
     }
@@ -1141,7 +1162,7 @@ function onColumnHeaderDragLeave(event: DragEvent) {
   }
 }
 
-function onColumnHeaderDrop(event: DragEvent, item: ITableColumns) {
+function onColumnHeaderDrop(event: DragEvent, item: TableColPartial) {
   event.preventDefault();
 
   if (draggedColumn.value) {
@@ -1182,35 +1203,77 @@ function saveState() {
   state.value = colsClone.map((col) => _.pick(col, "id", "visible", "width", "predefined"));
 }
 
-function restoreState() {
-  console.debug("[@vc-shell/framework#vc-table.vue] - Restore state");
+function restoreState(predefinedColumns: TableColPartial[] = []) {
+  const storedState = state.value;
 
-  if (state.value && state.value.length) {
-    //  Iterate over the state value and update corresponding columns in allColumns
-    for (const item of state.value) {
-      const matchingColumn = _.cloneDeep(allColumns.value.find((col) => col.id === item.id));
-      if (matchingColumn) {
-        matchingColumn.width = item.width || matchingColumn.width;
-        matchingColumn.visible = item.visible;
-        // Remove the matched column from internalColumns
-        internalColumns.value = internalColumns.value.filter((col) => col.id !== matchingColumn.id);
-      }
-      if (item.predefined && !props.columns.some((col) => col.id === item.id)) {
-        _.remove(state.value, item);
+  if (!storedState?.length) {
+    internalColumns.value = allColumns.value;
+    return;
+  }
+
+  const predefinedMap = new Map(predefinedColumns.map((col) => [col.id, col]));
+
+  const mergedColumns = storedState.map((storedCol) => {
+    const predefinedCol = predefinedMap.get(storedCol.id);
+    return mergeColumns(storedCol, predefinedCol);
+  });
+
+  resetRemovedColumns(storedState, predefinedMap, mergedColumns);
+
+  setTitles(mergedColumns);
+
+  allColumns.value = [...mergedColumns];
+  internalColumns.value = allColumns.value;
+
+  saveState();
+}
+
+function mergeColumns(storedCol: TableColPartial, predefinedCol: TableColPartial | undefined) {
+  if (predefinedCol) {
+    if (predefinedCol.predefined && !storedCol.predefined) {
+      return { ...predefinedCol, predefined: true };
+    } else {
+      return {
+        ...predefinedCol,
+        visible: storedCol.visible,
+        width: storedCol.width,
+        title: predefinedCol.title || storedCol.title || "",
+      };
+    }
+  } else {
+    return { ...storedCol, predefined: false };
+  }
+}
+
+function resetRemovedColumns(
+  storedState: TableColPartial[],
+  predefinedMap: Map<string | undefined, TableColPartial>,
+  mergedColumns: TableColPartial[],
+) {
+  storedState.forEach((storedCol) => {
+    if (storedCol.predefined && !predefinedMap.has(storedCol.id)) {
+      const existingColumnIndex = mergedColumns.findIndex((col) => col.id === storedCol.id);
+      if (existingColumnIndex !== -1) {
+        mergedColumns[existingColumnIndex] = {
+          ...mergedColumns[existingColumnIndex],
+          visible: false,
+          width: undefined,
+          predefined: false,
+        };
       }
     }
-    // Merge the updated columns with the remaining state columns
-    internalColumns.value = state.value.map((stateItem) => {
-      const id = stateItem.id;
+  });
+}
 
-      const propsColumn = _.find(props.columns, { id });
-      const allColumn = _.find(allColumns.value, { id });
-
-      return _.merge({}, propsColumn, allColumn, stateItem);
-    });
-  } else {
-    internalColumns.value = allColumns.value;
-  }
+function setTitles(mergedColumns: TableColPartial[]) {
+  mergedColumns.forEach((col) => {
+    if (!col.title) {
+      const originalColumn = allColumns.value.find((c) => c.id === col.id);
+      if (originalColumn) {
+        col.title = originalColumn.title;
+      }
+    }
+  });
 }
 
 function reorderArray(value: unknown[], from: number, to: number) {
@@ -1433,7 +1496,7 @@ $variants: (
   &__mobile-view {
     @apply tw-grow tw-basis-0 tw-relative;
     .vc-container__inner {
-      @apply tw-flex tw-flex-grow;
+      @apply tw-flex tw-flex-grow tw-flex-col;
     }
   }
 
@@ -1449,12 +1512,8 @@ $variants: (
     @apply tw-relative tw-box-border tw-w-full tw-h-full tw-flex tw-flex-col;
   }
 
-  &__header {
-    @apply tw-flex tw-flex-col tw-sticky tw-top-0 tw-bg-[--table-header-bg] tw-z-[1] tw-box-border;
-  }
-
   &__header-row {
-    @apply tw-flex tw-flex-row;
+    @apply tw-flex tw-flex-row [box-shadow:var(--table-header-border)];
   }
 
   &__header-checkbox {

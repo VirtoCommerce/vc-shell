@@ -10,12 +10,21 @@ export const createModule = (components: { [key: string]: BladeInstanceConstruct
   install(app: App): void {
     // Register components
     Object.entries(components).forEach(([componentName, component]) => {
+      // Check if the component is already registered
+      if (app.component(componentName)) {
+        // Remove the existing component
+        // Note: Vue does not provide a method to remove a component, so we can overwrite it
+        console.warn(
+          `Component ${componentName} is already registered. It will be overwritten with the new component.`,
+        );
+      }
       app.component(componentName, component);
     });
 
     // Load locales
     if (locales) {
       Object.entries(locales).forEach(([key, message]) => {
+        // Merge locale messages, overwriting existing ones
         i18n.global.mergeLocaleMessage(key, message);
       });
     }
@@ -45,32 +54,65 @@ export const createAppModule = (
           page.routable = true;
         }
 
-        // all components registered through this plugin are blades
+        // All components registered through this plugin are blades
         page.isBlade = true;
 
         if (!page.url) {
+          // Remove existing page if it exists
+          if (app.config.globalProperties.pages) {
+            const existingPageIndex = app.config.globalProperties.pages.findIndex(
+              (p: BladeInstanceConstructor) => p.name === page.name,
+            );
+            if (existingPageIndex !== -1) {
+              app.config.globalProperties.pages.splice(existingPageIndex, 1);
+            }
+          }
+
+          // Add new page
           app.config.globalProperties.pages?.push(page);
 
+          // Remove existing bladeRoute if it exists
+          if (app.config.globalProperties.bladeRoutes) {
+            const existingBladeRouteIndex = app.config.globalProperties.bladeRoutes.findIndex(
+              (r: BladeInstanceConstructor) => r.name === page.name,
+            );
+            if (existingBladeRouteIndex !== -1) {
+              app.config.globalProperties.bladeRoutes.splice(existingBladeRouteIndex, 1);
+            }
+          }
+
+          // Add new bladeRoute
           app.config.globalProperties.bladeRoutes?.push({
             component: page,
             name: page?.name,
             isWorkspace: page.isWorkspace || false,
           });
 
-          if (page.name) app.component(page.name, page);
+          // Register component globally
+          if (page.name) {
+            if (app.component(page.name)) {
+              // Overwrite existing component
+              console.warn(
+                `Component ${page.name} is already registered. It will be overwritten with the new component.`,
+              );
+            }
+            app.component(page.name, page);
+          }
         }
 
         if (!page.moduleUid) {
           page.moduleUid = uid;
         }
 
-        // Dynamically add pages to vue router
+        // Dynamically add pages to Vue Router
         if (page.url) {
-          const mainRouteName = routerInstance.getRoutes().find((r) => r.meta?.root)?.name;
+          const mainRoute = routerInstance.getRoutes().find((r) => r.meta?.root);
 
-          if (!mainRouteName) {
-            throw new Error("No parent route is found. Make sure you have added `meta: {root: true}` to main route.");
+          if (!mainRoute) {
+            throw new Error("Main route not found. Make sure you have added `meta: {root: true}` to the main route.");
           }
+
+          const mainRouteName = mainRoute.name;
 
           const routeName = page.name || kebabToPascal(page.url.substring(1));
 
@@ -80,19 +122,45 @@ export const createAppModule = (
             navigation: {},
           }) as BladeVNode;
 
-          if (routerInstance && mainRouteName) {
-            routerInstance.addRoute(mainRouteName, {
-              name: routeName,
-              path: page.url.substring(1),
-              components: { default: bladeVNode },
-              meta: {
-                permissions: page?.permissions,
-              },
-            });
+          // Remove existing route if it exists
+          if (routerInstance.hasRoute(routeName)) {
+            routerInstance.removeRoute(routeName);
           }
 
+          // Add new route
+          routerInstance.addRoute(mainRouteName as string, {
+            name: routeName,
+            path: page.url.substring(1),
+            components: { default: bladeVNode },
+            meta: {
+              permissions: page?.permissions,
+            },
+          });
+
+          // Remove existing page in global properties if it exists
+          if (app.config.globalProperties.pages) {
+            const existingPageIndex = app.config.globalProperties.pages.findIndex(
+              (p: BladeInstanceConstructor) => p.name === bladeVNode.type.name,
+            );
+            if (existingPageIndex !== -1) {
+              app.config.globalProperties.pages.splice(existingPageIndex, 1);
+            }
+          }
+
+          // Add new page to global properties
           app.config.globalProperties.pages?.push(bladeVNode);
 
+          // Remove existing bladeRoute if it exists
+          if (app.config.globalProperties.bladeRoutes) {
+            const existingBladeRouteIndex = app.config.globalProperties.bladeRoutes.findIndex(
+              (r: BladeInstanceConstructor) => r.name === routeName,
+            );
+            if (existingBladeRouteIndex !== -1) {
+              app.config.globalProperties.bladeRoutes.splice(existingBladeRouteIndex, 1);
+            }
+          }
+
+          // Add new bladeRoute
           app.config.globalProperties.bladeRoutes?.push({
             component: bladeVNode,
             route: page.url,
@@ -100,6 +168,13 @@ export const createAppModule = (
             isWorkspace: page.isWorkspace || false,
           });
 
+          // Register component globally
+          if (app.component(BladeInstanceConstructor.name)) {
+            // Overwrite existing component
+            console.warn(
+              `Component ${BladeInstanceConstructor.name} is already registered. It will be overwritten with the new component.`,
+            );
+          }
           app.component(BladeInstanceConstructor.name, BladeInstanceConstructor);
 
           // Add to menu
@@ -117,7 +192,16 @@ export const createAppModule = (
 
       if (notificationTemplates) {
         // Register notification templates
-        Object.entries(notificationTemplates).forEach(([, template]) => {
+        Object.entries(notificationTemplates).forEach(([name, template]) => {
+          // Remove existing template if it exists
+          if (app.config.globalProperties.notificationTemplates) {
+            const existingIndex = app.config.globalProperties.notificationTemplates.findIndex(
+              (t: Component) => t.name === template.name,
+            );
+            if (existingIndex !== -1) {
+              app.config.globalProperties.notificationTemplates.splice(existingIndex, 1);
+            }
+          }
           app.config.globalProperties.notificationTemplates?.push(template);
         });
       }
@@ -125,12 +209,18 @@ export const createAppModule = (
       if (moduleComponents) {
         // Register module components globally
         Object.entries(moduleComponents).forEach(([name, component]) => {
+          // Check if the component is already registered
+          if (app.component(name)) {
+            // Overwrite existing component
+            console.warn(`Component ${name} is already registered. It will be overwritten with the new component.`);
+          }
           app.component(name, component);
         });
       }
 
       if (locales) {
         Object.entries(locales).forEach(([key, message]) => {
+          // Merge locale messages, overwriting existing ones
           i18n.global.mergeLocaleMessage(key, message);
         });
       }

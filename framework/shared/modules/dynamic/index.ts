@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import * as pages from "./pages";
-import { App, Component, defineComponent } from "vue";
+import { App, Component, SetupContext, defineComponent } from "vue";
 import { DynamicSchema, OverridesSchema } from "./types";
 import * as _ from "lodash-es";
 import { handleOverrides } from "./helpers/override";
@@ -15,12 +15,17 @@ interface Registered {
   component: BladeInstanceConstructor;
   name: string;
   model: DynamicSchema;
+  composables: { [key: string]: (...args: any[]) => any };
 }
+
+const registeredModules: { [key: string]: Registered } = {};
+const installedBladeIds = new Set<string>();
+const registeredSchemas: { [key: string]: DynamicSchema } = {};
 
 const createAppModuleWrapper = (args: {
   bladeName: string;
   bladeComponent: BladeInstanceConstructor;
-  appModuleContent:
+  appModuleContent?:
     | {
         locales?: { [key: string]: object };
         notificationTemplates?: { [key: string]: Component };
@@ -37,16 +42,61 @@ const createAppModuleWrapper = (args: {
   );
 };
 
+const createBladeInstanceConstructor = (
+  bladeComponent: any,
+  bladeName: string,
+  json: DynamicSchema,
+  args: {
+    moduleUid: string;
+    composables?: { [key: string]: (...args: any[]) => any };
+    mixin?: ((...args: any[]) => any)[];
+  },
+  existingComposables?: { [key: string]: (...args: any[]) => any },
+) => {
+  if (json.settings.url) {
+    const rawUrl = json.settings.url as `/${string}`;
+    bladeComponent.url = rawUrl;
+  }
+
+  if (json.settings.permissions) {
+    bladeComponent.permissions = json.settings.permissions;
+  }
+
+  return defineComponent({
+    ...bladeComponent,
+    name: bladeName,
+    isWorkspace: "isWorkspace" in json.settings && json.settings.isWorkspace,
+    menuItem: ("menuItem" in json.settings && json.settings.menuItem) ?? undefined,
+    moduleUid: args.moduleUid,
+    routable: json.settings.routable ?? true,
+    composables: existingComposables ? { ...existingComposables, ...args.composables } : args.composables,
+    setup: (props: ComponentProps<typeof bladeComponent>, ctx: SetupContext) =>
+      (bladeComponent?.setup &&
+        bladeComponent.setup(
+          reactiveComputed(() =>
+            Object.assign({}, props, {
+              model: json,
+              composables: existingComposables ? { ...existingComposables, ...args.composables } : args.composables,
+              mixinFn: args.mixin?.length ? args.mixin : undefined,
+            } as any),
+          ),
+          ctx,
+        )) ??
+      {},
+  });
+};
+
 const register = (
   args: {
     app: App;
     component: BladeInstanceConstructor;
     composables: { [key: string]: (...args: any[]) => any };
+    mixin?: ((...args: any[]) => any)[];
     json: DynamicSchema;
-    options?: { router: any };
+    options?: { router: Router };
     moduleUid: string;
   },
-  appModuleContent:
+  appModuleContent?:
     | {
         locales?: { [key: string]: object };
         notificationTemplates?: { [key: string]: Component };
@@ -55,89 +105,136 @@ const register = (
     | undefined,
 ): Registered => {
   const { app, component, json, options } = args;
+  const bladeId = json.settings.id;
+  const bladeName = kebabToPascal(bladeId);
+
+  if (registeredModules[bladeName]) {
+    // Module already registered, updating it
+    updateBlade(bladeName, json, args, appModuleContent);
+    return registeredModules[bladeName];
+  }
+
   const bladeComponent = _.cloneDeep(component);
-  let rawUrl: `/${string}`;
-
-  const bladeName = kebabToPascal(json.settings.id);
-
-  if (json.settings.url) {
-    rawUrl = json.settings.url as `/${string}`;
-    bladeComponent.url = rawUrl;
-  }
-
-  if (json.settings.permissions) {
-    bladeComponent.permissions = json.settings.permissions;
-  }
-
-  const BladeInstanceConstructor = defineComponent({
-    ...bladeComponent,
-    name: bladeName,
-    isWorkspace: "isWorkspace" in json.settings && json.settings.isWorkspace,
-    menuItem: ("menuItem" in json.settings && json.settings.menuItem) ?? undefined,
-    moduleUid: args.moduleUid,
-    routable: json.settings.routable ?? true,
-    composables: args.composables,
-    setup: (props: ComponentProps<typeof bladeComponent>, ctx) =>
-      (bladeComponent?.setup &&
-        bladeComponent.setup(
-          reactiveComputed(() =>
-            Object.assign({}, props, {
-              model: json,
-              composables: args.composables,
-            } as any),
-          ),
-          ctx,
-        )) ??
-      {},
-  });
+  const BladeInstanceConstructor = createBladeInstanceConstructor(bladeComponent, bladeName, json, args);
 
   const module = createAppModuleWrapper({
     bladeName,
-    bladeComponent: BladeInstanceConstructor,
+    bladeComponent: BladeInstanceConstructor as BladeInstanceConstructor,
     appModuleContent,
   });
 
   module.install(app, options);
 
-  return {
-    component: BladeInstanceConstructor,
+  const newModule: Registered = {
+    component: BladeInstanceConstructor as BladeInstanceConstructor,
     name: bladeName,
     model: json,
+    composables: args.composables,
   };
+
+  registeredModules[bladeName] = newModule;
+
+  return newModule;
 };
 
-const handleError = (errorKey: string, schema: { [key: string]: DynamicSchema }, text?: string) => {
+const handleError = (errorKey: string, schemas: { [key: string]: DynamicSchema }, text?: string) => {
   return console.error(
-    `Module initialization aborted. '${errorKey}' key not found in files: ${Object.keys(schema).join(
+    `Module initialization aborted. Key '${errorKey}' not found in schemas: ${Object.keys(schemas).join(
       ", ",
-    )}. '${errorKey}' key ${text}`,
+    )}. Key '${errorKey}' ${text}`,
   );
 };
 
-export const createDynamicAppModule = (args: {
-  schema: { [key: string]: DynamicSchema };
-  composables: { [key: string]: (...args: any[]) => any };
+const updateBlade = (
+  moduleName: string,
+  newSchema: DynamicSchema,
+  args: {
+    app: App;
+    component: BladeInstanceConstructor;
+    composables?: { [key: string]: (...args: any[]) => any };
+    mixin?: ((...args: any[]) => any)[];
+    json: DynamicSchema;
+    options?: { router: Router };
+    moduleUid: string;
+  },
+  appModuleContent?:
+    | {
+        locales?: { [key: string]: object };
+        notificationTemplates?: { [key: string]: Component };
+        moduleComponents?: { [key: string]: Component };
+      }
+    | undefined,
+) => {
+  const existingModule = registeredModules[moduleName];
+
+  if (existingModule) {
+    // Updating blade model
+    existingModule.model = newSchema;
+
+    // Updating blade component
+    const bladeComponent = _.cloneDeep(args.component);
+    const BladeInstanceConstructor = createBladeInstanceConstructor(
+      bladeComponent,
+      moduleName,
+      newSchema,
+      args,
+      existingModule.composables,
+    );
+
+    // Reinstall the blade with the updated component
+    const module = createAppModuleWrapper({
+      bladeName: moduleName,
+      bladeComponent: BladeInstanceConstructor as BladeInstanceConstructor,
+      appModuleContent,
+    });
+
+    module.install(args.app, args.options);
+
+    // Update registered blade with the new component
+    existingModule.component = BladeInstanceConstructor as BladeInstanceConstructor;
+  }
+};
+
+export function createDynamicAppModule(args: {
+  schema?: { [key: string]: DynamicSchema };
+  composables?: { [key: string]: (...args: any[]) => any };
+  mixin?: { [x: string]: ((...args: any[]) => any)[] };
   overrides?: OverridesSchema;
   moduleComponents?: { [key: string]: Component };
   locales?: { [key: string]: object };
   notificationTemplates?: { [key: string]: Component };
-}) => {
-  const moduleInitializer = _.findKey(args.schema, (o) => "isWorkspace" in o.settings && o.settings.isWorkspace);
-  const everyHasTemplate = _.every(Object.values(args.schema), (o) => o?.settings?.component);
+}): {
+  install(
+    app: App<any>,
+    options?:
+      | {
+          router: Router;
+        }
+      | undefined,
+  ): void;
+} {
+  let schemaCopy: { [key: string]: DynamicSchema } = {};
 
-  if (!everyHasTemplate) handleError("component", args.schema, "must be included in 'settings' of every file");
-  if (!moduleInitializer)
-    handleError(
-      "isWorkspace",
-      args.schema,
-      "must be included in one of this files to initialize module workspace blade",
-    );
-
-  let schemaCopy = _.cloneDeep({ ...args.schema });
+  if (args.schema && Object.keys(args.schema).length > 0) {
+    schemaCopy = _.cloneDeep({ ...args.schema });
+    // Save schemas in the global registry
+    Object.assign(registeredSchemas, schemaCopy);
+  } else {
+    // Use registered schemas if new ones are not provided
+    schemaCopy = _.cloneDeep({ ...registeredSchemas });
+  }
 
   if (args.overrides) {
     schemaCopy = handleOverrides(args.overrides, schemaCopy);
   }
+
+  // Validation
+  const moduleInitializer = _.findKey(schemaCopy, (o) => o.settings.isWorkspace);
+  const everyHasTemplate = _.every(Object.values(schemaCopy), (o) => o?.settings?.component);
+
+  if (!everyHasTemplate) handleError("component", schemaCopy, "must be included in 'settings' of each file");
+  if (!moduleInitializer)
+    handleError("isWorkspace", schemaCopy, "must be included in one of the files to initialize the module workspace");
 
   return {
     install(app: App, options: { router: Router }) {
@@ -147,27 +244,33 @@ export const createDynamicAppModule = (args: {
         notificationTemplates: args?.notificationTemplates,
         moduleComponents: args?.moduleComponents,
       };
-      const moduleUid = _.uniqueId("module_");
-      Object.entries(schemaCopy).forEach(([, JsonSchema], index) => {
-        const blade = register(
-          {
-            app,
-            component: bladePages[JsonSchema.settings.component as keyof typeof bladePages] as BladeInstanceConstructor,
-            composables: { ...args.composables },
-            json: JsonSchema,
-            options,
-            moduleUid,
-          },
-          index === 0 ? appModuleContent : undefined,
-        );
 
-        if (!blade) {
+      const moduleUid = _.uniqueId("module_");
+      Object.entries(schemaCopy).forEach(([key, JsonSchema], index) => {
+        const bladeId = JsonSchema.settings.id;
+        const registerArgs = {
+          app,
+          component: bladePages[JsonSchema.settings.component as keyof typeof bladePages] as BladeInstanceConstructor,
+          composables: { ...args.composables },
+          mixin: args.mixin?.[JsonSchema.settings.id] ? args.mixin[JsonSchema.settings.id] : undefined,
+          json: JsonSchema,
+          options,
+          moduleUid,
+        };
+
+        if (installedBladeIds.has(bladeId)) {
+          // Blade already installed, updating it
+          updateBlade(kebabToPascal(bladeId), JsonSchema, registerArgs, index === 0 ? appModuleContent : undefined);
           return;
         }
+
+        installedBladeIds.add(bladeId);
+
+        register(registerArgs, index === 0 ? appModuleContent : undefined);
       });
     },
   };
-};
+}
 
 export * from "./factories";
 export * from "./types";

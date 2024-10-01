@@ -79,9 +79,9 @@ function nodeBuilder<
 
   const hint =
     safeIn("hint", controlSchema) && controlSchema.hint
-      ? (bladeContext.scope && unref(unwrapInterpolation(controlSchema.hint, bladeContext.scope))) ??
+      ? ((bladeContext.scope && unref(unwrapInterpolation(controlSchema.hint, bladeContext.scope))) ??
         unref(unwrapInterpolation(controlSchema.hint, internalContext)) ??
-        undefined
+        undefined)
       : undefined;
 
   const disabled =

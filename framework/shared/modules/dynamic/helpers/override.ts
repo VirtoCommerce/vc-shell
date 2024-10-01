@@ -60,7 +60,7 @@ const upsertHelper = (overrides: OverridesSchema, schemaCopy: { [key: string]: D
             const findIndex = _.findIndex(valueByPath, { id: args.value.id });
 
             const spliced = valueByPath /* @ts-expect-error  - toSpliced is not parsed correctly by ts */
-              .toSpliced(findIndex >= 0 ? findIndex : args.index ?? 0, findIndex >= 0 ? 1 : 0, args.value);
+              .toSpliced(findIndex >= 0 ? findIndex : (args.index ?? 0), findIndex >= 0 ? 1 : 0, args.value);
             _.set(clonedSchema, currentPath, spliced);
           } else {
             _.set(clonedSchema, currentPath, args.value);

@@ -594,7 +594,7 @@ const onPaginationClick = async (page: number) => {
   }
 };
 
-const onHeaderClick = (item: ITableColumns) => {
+const onHeaderClick = (item: Partial<ITableColumns>) => {
   const sortOptions = ["DESC", "ASC", ""];
 
   if (item.sortable) {

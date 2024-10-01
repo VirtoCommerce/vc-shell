@@ -84,6 +84,7 @@ import {
   toRefs,
   provide,
   toRef,
+  type VNode,
 } from "vue";
 import { DynamicDetailsSchema, FormContentSchema, SettingsSchema } from "../types";
 import { reactiveComputed, refDefault, toReactive, useMounted, useTemplateRefsList } from "@vueuse/core";
@@ -98,12 +99,13 @@ import {
   DetailsBladeExposed,
 } from "../../../index";
 import SchemaRender from "../components/SchemaRender";
-import { VcSelect } from "../../../../ui/components";
+import { VcSelect, VcImage } from "../../../../ui/components";
 import { useToolbarReducer } from "../composables/useToolbarReducer";
 import { useBeforeUnload } from "../../../../core/composables/useBeforeUnload";
 import * as _ from "lodash-es";
-import { useNotifications } from "../../../../core/composables";
+import { useLanguages, useNotifications } from "../../../../core/composables";
 import { notification } from "../../../components";
+import { ComponentSlots } from "../../../utilities/vueUtils";
 
 interface Props {
   expanded?: boolean;
@@ -114,6 +116,7 @@ interface Props {
     [x: string]: unknown;
   };
   composables?: Record<string, (...args: any[]) => Record<string, any>>;
+  mixinFn?: ((...args: any[]) => any)[];
 }
 
 interface Emits {
@@ -133,13 +136,18 @@ const emit = defineEmits<Emits>();
 const { t } = useI18n({ useScope: "global" });
 
 const { showConfirmation } = usePopup();
+const { getFlag } = useLanguages();
 
 const widgetsRefs = useTemplateRefsList<{ el: HTMLDivElement; component: ConcreteComponent }>();
+const isMixinReady = ref(false);
 
 if (typeof props.composables?.[props.model?.settings?.composable ?? ""] === "undefined") {
   throw new Error(`Composable ( ${props.model?.settings?.composable} ) is not defined`);
 }
-const { loading, item, validationState, scope, load, remove, saveChanges, bladeTitle } = props.composables
+
+const settings = computed(() => props.model?.settings);
+
+let { loading, item, validationState, scope, load, remove, saveChanges, bladeTitle } = props.composables
   ? (props.composables?.[props.model?.settings?.composable ?? ""]({ emit, props, mounted: useMounted() }) as UseDetails<
       Record<string, any>,
       DetailsBaseBladeScope
@@ -155,12 +163,39 @@ const { loading, item, validationState, scope, load, remove, saveChanges, bladeT
       bladeTitle: undefined,
     } as unknown as UseDetails<Record<string, any>, DetailsBaseBladeScope>);
 
+if (props.mixinFn?.length) {
+  const mixinResults = props.mixinFn?.map((mixin) =>
+    mixin({ loading, item, validationState, scope, load, remove, saveChanges, bladeTitle }),
+  );
+
+  const mergedResults = mixinResults.reduce((acc, result) => {
+    return {
+      ...acc,
+      ...result,
+    };
+  }, {});
+
+  loading = mergedResults.loading ?? loading;
+  item = mergedResults.item ?? item;
+  validationState = mergedResults.validationState ?? validationState;
+  scope = mergedResults.scope ?? scope;
+  load = mergedResults.load ?? load;
+
+  remove = mergedResults.remove ?? remove;
+  saveChanges = mergedResults.saveChanges ?? saveChanges;
+  bladeTitle = mergedResults.bladeTitle ?? bladeTitle;
+
+  isMixinReady.value = true;
+} else {
+  isMixinReady.value = true;
+}
+
 const { onBeforeClose } = useBladeNavigation();
 const title = ref();
 const isReady = ref(false);
 const activeWidgetExposed = ref<CoreBladeExposed>();
 const isBladeEditable = computed(() => !toValue("disabled" in toValue(scope || {}) && toValue(scope || {}).disabled));
-const settings = computed(() => props.model?.settings);
+
 const unreffedScope = reactiveComputed(() => toValue(scope) ?? {});
 
 const { moduleNotifications, markAsRead } = useNotifications(settings.value?.pushNotificationType);
@@ -223,6 +258,26 @@ const bladeStatus = computed(() => {
   return null;
 });
 
+const localeOptions = ref();
+
+watch(
+  () => toValue(unreffedScope).multilanguage?.localesOptions,
+  (newVal) => {
+    localeOptions.value = newVal;
+  },
+  { immediate: true, deep: true },
+);
+
+watch(
+  () => localeOptions.value,
+  async (newVal) => {
+    for (const lang of newVal) {
+      lang.flag = await getFlag(lang.value);
+    }
+  },
+  { deep: true },
+);
+
 const bladeMultilanguage = reactiveComputed(() => {
   if (
     scope &&
@@ -232,19 +287,45 @@ const bladeMultilanguage = reactiveComputed(() => {
   ) {
     return {
       component: () => {
-        return h(VcSelect as Component, {
-          name: "currentLocale",
-          modelValue: toValue(unreffedScope).multilanguage?.currentLocale,
-          options: toValue(unreffedScope).multilanguage?.localesOptions,
-          optionValue: "value",
-          optionLabel: "label",
-          disabled: "disabled" in toValue(unreffedScope) && toValue(unreffedScope).disabled,
-          required: true,
-          clearable: false,
-          "onUpdate:modelValue": (e: string) => {
-            toValue(unreffedScope).multilanguage?.setLocale(e);
+        return h(
+          VcSelect as Component,
+          {
+            name: "currentLocale",
+            modelValue: toValue(unreffedScope).multilanguage?.currentLocale,
+            options: localeOptions.value,
+            optionValue: "value",
+            optionLabel: "label",
+            disabled: "disabled" in toValue(unreffedScope) && toValue(unreffedScope).disabled,
+            required: true,
+            clearable: false,
+            "onUpdate:modelValue": (e: string) => {
+              toValue(unreffedScope).multilanguage?.setLocale(e);
+            },
           },
-        });
+          ["selected-item", "option"].reduce(
+            (obj, slot) => {
+              obj[slot] = (
+                scope: Parameters<ComponentSlots<typeof VcSelect>["option"]>["0"] & {
+                  opt: { flag: string; label: string };
+                },
+              ) => {
+                return h("div", { class: "tw-flex tw-items-center tw-gap-2" }, [
+                  h(VcImage, { src: scope.opt.flag, class: "tw-w-6 tw-h-6", emptyIcon: "" }),
+                  h("span", { class: "tw-text-sm" }, scope.opt.label),
+                ]);
+              };
+              return obj;
+            },
+            {} as Record<
+              string,
+              (
+                scope: Parameters<ComponentSlots<typeof VcSelect>["option"]>["0"] & {
+                  opt: { flag: string; label: string };
+                },
+              ) => VNode
+            >,
+          ),
+        );
       },
       currentLocale: toValue(unreffedScope).multilanguage?.currentLocale,
     };
@@ -345,9 +426,7 @@ async function updateActiveWidgetCount() {
 }
 
 async function init() {
-  if (props.param && unref(props.param)) {
-    await load({ id: unref(props.param) });
-  }
+  await load({ id: unref(props.param) });
 
   await nextTick(() => {
     isReady.value = true;
@@ -355,7 +434,7 @@ async function init() {
 }
 
 onBeforeMount(async () => {
-  if (props.composables) await init();
+  if (props.composables && isMixinReady.value) await init();
 });
 
 onBeforeClose(async () => {

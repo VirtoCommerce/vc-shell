@@ -4,7 +4,7 @@
     class="vc-external-provider"
     @click="$emit('signIn')"
   >
-    <div class="vc-external-provider__content">
+    <div class="tw-flex tw-flex-row tw-items-center tw-gap-2">
       <VcImage
         :src="logo"
         class="vc-external-provider__icon"
@@ -28,11 +28,3 @@ export interface Emits {
 defineEmits<Emits>();
 defineProps<Props>();
 </script>
-
-<style lang="scss">
-.vc-external-provider {
-  &__content {
-    @apply tw-flex tw-flex-row tw-items-center tw-gap-2;
-  }
-}
-</style>

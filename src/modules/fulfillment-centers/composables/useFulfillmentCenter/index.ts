@@ -206,7 +206,7 @@ export const useFulfillmentCenter = (
     validationState,
     scope,
     bladeTitle: computed(() =>
-      args.props.param ? item.value?.name ?? "" : (t("FULFILLMENT_CENTERS.PAGES.DETAILS.TITLE") as string),
+      args.props.param ? (item.value?.name ?? "") : (t("FULFILLMENT_CENTERS.PAGES.DETAILS.TITLE") as string),
     ),
   };
 };

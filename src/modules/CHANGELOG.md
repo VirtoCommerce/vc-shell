@@ -1,3 +1,12 @@
+## [1.0.298](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.297...v1.0.298) (2024-10-01)
+
+
+### Features
+
+* **seller-details:** commissions ([6b3eb9f](https://github.com/VirtoCommerce/vendor-portal/commit/6b3eb9f4d659da15210a5d38442faeb6de0384cd))
+
+
+
 ## [1.0.297](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.296...v1.0.297) (2024-09-23)
 
 

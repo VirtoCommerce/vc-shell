@@ -33,6 +33,7 @@
             class="vc-table-mobile__action"
             :class="`vc-table-mobile__item-action_${leftSwipeActions[0].type}`"
             @click.stop="leftSwipeActions?.[0].clickHandler(items[index] as T, index)"
+            @touchstart.stop
           >
             <VcIcon :icon="leftSwipeActions[0].icon" />
             <div class="vc-table-mobile__action-title">
@@ -51,6 +52,7 @@
           v-if="rightSwipeActions && rightSwipeActions.length && direction === 'left'"
           class="vc-table-mobile__swipe-actions vc-table-mobile__swipe-actions_right"
           :style="{ width: actionsWidth }"
+          @touchstart.stop
         >
           <div
             v-for="(action, idx) in rightSwipeActions.slice(0, rightSwipeActions.length > 2 ? 1 : 2)"

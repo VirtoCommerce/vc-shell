@@ -63,12 +63,8 @@ export const useLanguages = createSharedComposable(() => {
   }
 
   async function getFlag(language: string): Promise<string> {
-    const flag = await import(/* @vite-ignore */ `./../../../assets/icons/flags/${getCountryCode(language)}.svg`).catch(
-      (error) => {
-        console.error("Failed to load flag", error);
-      },
-    );
-    return flag.default;
+    const countryCode = getCountryCode(language);
+    return new URL(`../../../assets/icons/flags/${countryCode}.svg`, import.meta.url).href;
   }
 
   return {

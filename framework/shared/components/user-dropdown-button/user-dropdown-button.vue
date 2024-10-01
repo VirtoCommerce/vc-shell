@@ -9,6 +9,7 @@
         :class="{
           'vc-user-dropdown-button--active': opened,
           'vc-user-dropdown-button--auto-width': disabled,
+          'vc-user-dropdown-button--mobile': $isMobile.value,
         }"
       >
         <div
@@ -181,6 +182,10 @@ const imageHandler = computed(() => {
 
   .vc-app_mobile & {
     @apply tw-w-full #{!important};
+  }
+
+  &--mobile {
+    @apply tw-h-[var(--app-bar-height)];
   }
 
   &--auto-width {

@@ -10,7 +10,7 @@
       <slot></slot>
     </div>
 
-    <teleport to="body">
+    <teleport :to="`#${appContainer}`">
       <span
         v-if="tooltipVisible && $slots['tooltip']"
         ref="tooltipRef"
@@ -25,7 +25,7 @@
 
 <script lang="ts" setup>
 import { useFloating, shift, Placement, offset as floatingOffset } from "@floating-ui/vue";
-import { ref, watch } from "vue";
+import { getCurrentInstance, ref, watch } from "vue";
 import { useMouseInElement } from "@vueuse/core";
 
 export interface Props {
@@ -53,6 +53,11 @@ const tooltipVisible = ref(false);
 const tooltipCompRef = ref<HTMLElement | null>(null);
 const tooltipRef = ref<HTMLElement | null>(null);
 const target = ref(null);
+
+const instance = getCurrentInstance();
+console.log(instance);
+
+const appContainer = instance?.appContext.app._container.id;
 
 const { floatingStyles } = useFloating(tooltipCompRef, tooltipRef, {
   placement: props.placement,

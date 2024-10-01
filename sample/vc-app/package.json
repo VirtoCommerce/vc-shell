@@ -36,7 +36,7 @@
     "@vc-shell/api-client-generator": "^1.0.294",
     "@vc-shell/release-config": "^1.0.294",
     "@vc-shell/ts-config": "^1.0.294",
-    "@vitejs/plugin-vue": "^5.0.3",
+    "@vitejs/plugin-vue": "5.0.3",
     "@vue/eslint-config-prettier": "^9.0.0",
     "@vue/eslint-config-typescript": "^13.0.0",
     "autoprefixer": "^10.4.16",

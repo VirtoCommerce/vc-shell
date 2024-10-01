@@ -1,15 +1,13 @@
 import vue from "@vitejs/plugin-vue";
 import * as fs from "node:fs";
-import { loadEnv, ProxyOptions, defineConfig, searchForWorkspaceRoot, splitVendorChunkPlugin } from "vite";
+import { loadEnv, defineConfig, searchForWorkspaceRoot, splitVendorChunkPlugin, ProxyOptions } from "vite";
 import mkcert from "vite-plugin-mkcert";
-import path, { resolve } from "node:path";
+import path from "node:path";
 import { checker } from "vite-plugin-checker";
 
-// Get actual package version from package.json
 const packageJson = fs.readFileSync(process.cwd() + "/package.json");
 const version = JSON.parse(packageJson.toString()).version || 0;
 
-// Build configuration for the application
 const mode = process.env.APP_ENV as string;
 process.env = {
   ...process.env,
@@ -17,15 +15,13 @@ process.env = {
 };
 
 const isDemo = mode === "development" && !process.env.APP_PLATFORM_URL;
-
 const isMonorepo = fs.existsSync(path.resolve(process.cwd(), "./../../framework/package.json"));
-
 const hash = Math.floor(Math.random() * 90000) + 10000;
 
-const getProxy = (target: ProxyOptions["target"], options: Omit<ProxyOptions, "target"> = {}): ProxyOptions => {
+const getProxyOptions = (targetUrl: ProxyOptions["target"], options: Omit<ProxyOptions, "target"> = {}) => {
   const dontTrustSelfSignedCertificate = false;
   return {
-    target,
+    target: targetUrl,
     changeOrigin: true,
     secure: dontTrustSelfSignedCertificate,
     ...options,
@@ -35,6 +31,59 @@ const getProxy = (target: ProxyOptions["target"], options: Omit<ProxyOptions, "t
 const workspaceRoot = isMonorepo
   ? searchForWorkspaceRoot(path.resolve(process.cwd(), "./../../framework/package.json"))
   : searchForWorkspaceRoot(process.cwd());
+
+const appBasePath = process.env.APP_BASE_PATH || "/";
+const appBasePathWithSlash = appBasePath.endsWith("/") ? appBasePath : `${appBasePath}/`;
+
+const proxyPaths = ["/api", "/connect/token", "/Modules", "/images", "/pushNotificationHub"];
+
+const commonProxyOptions = process.env.APP_PLATFORM_URL ? getProxyOptions(process.env.APP_PLATFORM_URL) : "";
+
+const proxyConfig = Object.fromEntries(proxyPaths.map((path) => [path, commonProxyOptions]));
+
+if (process.env.APP_PLATFORM_URL) {
+  proxyConfig["^/pushNotificationHub"] = getProxyOptions(process.env.APP_PLATFORM_URL, { ws: true });
+
+  proxyConfig["^/"] = getProxyOptions(process.env.APP_PLATFORM_URL, {
+    ws: false,
+    // Use custom bypass function to exclude some requests from proxying
+    bypass: (req) => {
+      const url = req.url;
+      // Exclude app base path
+      if (
+        url?.startsWith(appBasePathWithSlash) ||
+        url === appBasePath.slice(0, -1) ||
+        proxyPaths.some((path) => url?.startsWith(path))
+      ) {
+        return req.url;
+      }
+      // Exclude vite paths
+      if (
+        url &&
+        (url.startsWith("/@vite/") ||
+          url.startsWith("/@id/") ||
+          url.startsWith("/@fs/") ||
+          url === "/__vite_ping" ||
+          url.startsWith("/__vite") ||
+          url === "/favicon.ico" ||
+          url === "/" ||
+          url.includes("/vite"))
+      ) {
+        return req.url;
+      }
+      // Proxy all other requests
+      return null;
+    },
+    configure: (proxy) => {
+      proxy.on("error", (err) => {
+        console.error("Proxy error:", err);
+      });
+      proxy.on("proxyReq", (proxyReq, req) => {
+        console.log(`Proxying request: ${req.method} ${req.url} -> ${process.env.APP_PLATFORM_URL}${proxyReq.path}`);
+      });
+    },
+  });
+}
 
 export default defineConfig({
   mode,
@@ -54,7 +103,7 @@ export default defineConfig({
         : undefined,
   },
   envPrefix: "APP_",
-  base: process.env.APP_BASE_PATH,
+  base: appBasePath,
   plugins: [
     mkcert({ hosts: ["localhost", "127.0.0.1"] }),
     vue(),
@@ -91,17 +140,7 @@ export default defineConfig({
     },
     host: "0.0.0.0",
     port: 8080,
-    proxy: {
-      "/api": process.env.APP_PLATFORM_URL ? getProxy(`${process.env.APP_PLATFORM_URL}`) : "",
-      "/connect/token": process.env.APP_PLATFORM_URL ? getProxy(`${process.env.APP_PLATFORM_URL}`) : "",
-      "/pushNotificationHub": process.env.APP_PLATFORM_URL ? getProxy(`${process.env.APP_PLATFORM_URL}`) : "",
-      "^/pushNotificationHub": process.env.APP_PLATFORM_URL
-        ? getProxy(`${process.env.APP_PLATFORM_URL} `, {
-            ws: true,
-          })
-        : "",
-      "/Modules": process.env.APP_PLATFORM_URL ? getProxy(`${process.env.APP_PLATFORM_URL}`) : "",
-    },
+    proxy: proxyConfig,
   },
   optimizeDeps: {
     exclude: ["@vc-shell/framework"],
@@ -123,5 +162,12 @@ export default defineConfig({
   },
   esbuild: {
     drop: mode === "production" ? ["console", "debugger"] : [],
+  },
+  css: {
+    preprocessorOptions: {
+      scss: {
+        silenceDeprecations: ["legacy-js-api"],
+      },
+    },
   },
 });

@@ -39,7 +39,7 @@
 
 <script lang="ts" setup>
 export interface Props {
-  position: "left" | "right";
+  position?: "left" | "right";
   render: "always" | "mobile" | "desktop";
   isExpanded: boolean;
 }

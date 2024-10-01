@@ -79,11 +79,10 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const emit = defineEmits<Emits>();
-const base = inject<string>("platformUrl");
 
 const isVisible = ref(false);
 
-const imageUrl = (url: string) => base?.replace(/\/+$/, "") + url;
+const imageUrl = (url: string) => url;
 
 const locationHandler = (url: string) => {
   const cleanUrl = window.location.pathname.replace(/\/+$/, "");

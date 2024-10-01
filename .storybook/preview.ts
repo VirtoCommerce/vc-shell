@@ -14,7 +14,6 @@ setup((app) => {
       history: createWebHashHistory(),
       routes: [],
     }),
-    platformUrl: "",
   });
 
   const { currentLocale, setLocale } = useLanguages();

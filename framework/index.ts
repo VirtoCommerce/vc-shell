@@ -19,12 +19,42 @@ import * as coreComposables from "./core/composables";
 import * as corePlugins from "./core/plugins";
 import * as coreApiPlatform from "./core/api/platform";
 import * as coreUtilities from "./core/utilities";
+import * as coreConstants from "./core/constants";
 import * as shared from "./shared";
 import * as Vue from "vue";
 import * as VueI18n from "vue-i18n";
 
 import "normalize.css";
 import "./assets/styles/index.scss";
+
+type I18NParams = Parameters<typeof i18n.global.mergeLocaleMessage>;
+
+export interface VcShellFrameworkPlugin {
+  install(
+    app: App,
+    args: {
+      router: Router;
+      /**
+       * @deprecated `platformUrl` key will be removed in the next versions.
+       * Use 'APP_PLATFORM_URL' environment variable instead while on development.
+       */
+      platformUrl?: string;
+      i18n?: {
+        locale: string;
+        fallbackLocale: string;
+      };
+      signalR?: {
+        creator?: string;
+      };
+      applicationInsights?: {
+        instrumentationKey: string;
+        appName?: string;
+        cloudRole?: string;
+        cloudRoleInstance?: string;
+      };
+    },
+  ): void;
+}
 
 // globals
 if (typeof window !== "undefined") {
@@ -35,6 +65,7 @@ if (typeof window !== "undefined") {
     ...corePlugins,
     ...coreApiPlatform,
     ...coreUtilities,
+    ...coreConstants,
     ...shared,
     ...directives,
   };
@@ -49,7 +80,11 @@ export default {
     app: App,
     args: {
       router: Router;
-      platformUrl: string;
+      /**
+       * @deprecated `platformUrl` key will be removed in the next versions.
+       * Use 'APP_PLATFORM_URL' environment variable instead while on development.
+       */
+      platformUrl?: string;
       i18n?: {
         locale: string;
         fallbackLocale: string;
@@ -80,11 +115,15 @@ export default {
 
     app.use(i18n);
 
-    app.config.globalProperties.$mergeLocaleMessage = i18n.global.mergeLocaleMessage;
+    const { resolveCamelCaseLocale } = coreComposables.useLanguages();
+
+    app.config.globalProperties.$mergeLocaleMessage = (locale: I18NParams[0], message: I18NParams[1]) => {
+      i18n.global.mergeLocaleMessage(resolveCamelCaseLocale(locale), message);
+    };
 
     // Components locales
     Object.entries(locales).forEach(([key, message]) => {
-      i18n.global.mergeLocaleMessage(key, message);
+      i18n.global.mergeLocaleMessage(resolveCamelCaseLocale(key), message);
     });
 
     // Register exported components
@@ -178,8 +217,6 @@ export default {
       app.use(page);
     });
 
-    app.provide("platformUrl", args.platformUrl);
-
     // Router guards
     const getParam = (to: RouteLocationNormalized) => {
       let param: {
@@ -253,7 +290,7 @@ export default {
       }
     });
   },
-};
+} as VcShellFrameworkPlugin;
 
 export * from "./ui/components";
 // eslint-disable-next-line import/export
@@ -265,5 +302,6 @@ export * from "./core/types";
 export * from "./core/plugins";
 export * from "./core/api/platform";
 export * from "./core/utilities";
+export * from "./core/constants";
 
 export * from "./shared";

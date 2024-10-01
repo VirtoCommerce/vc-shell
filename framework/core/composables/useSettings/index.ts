@@ -19,7 +19,6 @@ interface IUseSettings {
 }
 
 export function useSettings(): IUseSettings {
-  const base = inject("platformUrl");
   const uiSettings = ref<IUISetting | undefined>();
 
   const { getApiClient } = useApiClient(SettingClient);
@@ -30,8 +29,8 @@ export function useSettings(): IUseSettings {
 
     if (settings) {
       uiSettings.value = {
-        contrast_logo: base + settings.contrast_logo,
-        logo: base + settings.logo,
+        contrast_logo: settings.contrast_logo,
+        logo: settings.logo,
         title: settings.title,
       };
     }

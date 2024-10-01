@@ -720,6 +720,14 @@ function focus() {
   }
 }
 
+.dp__main {
+  @apply tw-flex tw-items-center;
+
+  & > div {
+    @apply tw-w-full tw-h-full tw-flex tw-items-center;
+  }
+}
+
 .dp__pm_am_button {
   background: var(--dp-primary-color) !important;
   color: var(--dp-primary-text-color) !important;
@@ -752,5 +760,35 @@ input.dp__input::placeholder {
 .dp--tp-wrap {
   min-width: var(--dp-menu-min-width);
   max-width: 100% !important;
+}
+
+.dp__theme_light {
+  --dp-background-color: var(--additional-50);
+  --dp-text-color: var(--neutrals-800);
+  --dp-hover-color: var(--neutrals-200);
+  --dp-hover-text-color: var(--neutrals-800);
+  --dp-hover-icon-color: var(--neutrals-400);
+  --dp-primary-color: var(--primary-500);
+  --dp-primary-disabled-color: var(--secondary-400);
+  --dp-primary-text-color: var(--neutrals-50);
+  --dp-secondary-color: var(--secondary-300);
+  --dp-border-color: var(--neutrals-300);
+  --dp-menu-border-color: var(--neutrals-300);
+  --dp-border-color-hover: var(--neutrals-400);
+  --dp-border-color-focus: var(--neutrals-400);
+  --dp-disabled-color: var(--neutrals-100);
+  --dp-scroll-bar-background: var(--neutrals-200);
+  --dp-scroll-bar-color: var(--neutrals-400);
+  --dp-success-color: var(--success-500);
+  --dp-success-color-disabled: var(--success-200);
+  --dp-icon-color: var(--neutrals-400);
+  --dp-danger-color: var(--danger-500);
+  --dp-marker-color: var(--danger-500);
+  --dp-tooltip-color: var(--additional-50);
+  --dp-disabled-color-text: var(--neutrals-400);
+  --dp-highlight-color: rgba(25, 118, 210, 0.1);
+  --dp-range-between-dates-background-color: var(--dp-hover-color);
+  --dp-range-between-dates-text-color: var(--dp-hover-text-color);
+  --dp-range-between-border-color: var(--dp-hover-color);
 }
 </style>

@@ -39,7 +39,7 @@ export interface Props {
   bordered?: boolean;
   clickable?: boolean;
   src?: string;
-  size?: "auto" | "xs" | "s" | "m" | "l" | "xl" | "xxl";
+  size?: "auto" | "xxs" | "xs" | "s" | "m" | "l" | "xl" | "xxl";
   background?: "cover" | "contain" | "auto";
   emptyIcon?: string;
 }
@@ -73,6 +73,7 @@ function onClick(): void {
 
 <style lang="scss">
 :root {
+  --image-size-xxs: 24px;
   --image-size-xs: 32px;
   --image-size-s: 48px;
   --image-size-m: 64px;
@@ -92,7 +93,7 @@ $aspects: (
   3x2: 66.66%,
 );
 
-$sizes: xs, s, m, l, xl, xxl;
+$sizes: xxs, xs, s, m, l, xl, xxl;
 
 .vc-image {
   @apply tw-inline-block tw-relative;

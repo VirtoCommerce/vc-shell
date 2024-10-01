@@ -25,7 +25,7 @@
 
 <script lang="ts" setup>
 import { useFloating, shift, Placement, offset as floatingOffset } from "@floating-ui/vue";
-import { ref, nextTick, watch } from "vue";
+import { ref, watch } from "vue";
 import { useMouseInElement } from "@vueuse/core";
 
 export interface Props {

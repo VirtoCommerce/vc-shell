@@ -42,7 +42,13 @@
             >
               <slot name="prepend"></slot>
             </div>
-            <div class="vc-select__field-wrapper">
+            <div
+              class="vc-select__field-wrapper"
+              :class="{
+                'vc-select__field-wrapper--default': size === 'default',
+                'vc-select__field-wrapper--small': size === 'small',
+              }"
+            >
               <div class="vc-select__field">
                 <div class="vc-select__field-inner">
                   <div class="vc-select__field-content">
@@ -62,10 +68,6 @@
                       <div
                         data-test-id="dropdown-toggle"
                         class="vc-select__input"
-                        :class="{
-                          'vc-select__input--default': size === 'default',
-                          'vc-select__input--small': size === 'small',
-                        }"
                         @click.stop="toggleDropdown"
                       >
                         <div
@@ -989,6 +991,14 @@ function onReset() {
 
   &__field-wrapper {
     @apply tw-relative tw-flex tw-flex-auto tw-overflow-x-clip tw-truncate;
+
+    &--default {
+      @apply tw-min-h-[var(--select-height)];
+    }
+
+    &--small {
+      @apply tw-min-h-[var(--select-height-small)];
+    }
   }
 
   &__field {

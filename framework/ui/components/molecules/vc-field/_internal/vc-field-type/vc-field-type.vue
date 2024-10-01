@@ -21,7 +21,7 @@
   <template v-if="type === 'date-ago'">
     <div class="vc-field-type">
       <div class="vc-field-type__text-wrap">
-        <p class="vc-field-type__text">{{ value instanceof Date ? moment(value).fromNow() ?? "N/A" : value }}</p>
+        <p class="vc-field-type__text">{{ value instanceof Date ? (moment(value).fromNow() ?? "N/A") : value }}</p>
       </div>
     </div>
   </template>

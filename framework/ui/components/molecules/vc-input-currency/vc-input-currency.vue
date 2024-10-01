@@ -319,7 +319,7 @@ function handlePaste(e: ClipboardEvent) {
   }
 
   &__control {
-    @apply tw-border tw-border-solid tw-px-2 tw-py-1 tw-text-sm tw-outline-none;
+    @apply tw-border tw-border-solid tw-px-2 tw-py-1 tw-text-sm tw-outline-none tw-bg-transparent;
   }
 }
 </style>

@@ -17,13 +17,6 @@
         @mouseover="!isExpanded && expandOverHandler(true)"
         @mouseleave="expandOverHandler(false)"
       >
-        <!-- Show backdrop overlay on mobile devices -->
-        <!-- <div
-          v-if="$isMobile.value"
-          class="vc-app-menu__backdrop"
-          @click="isMobileVisible = false"
-        ></div> -->
-
         <div
           class="vc-app-menu__inner"
           :class="{
@@ -32,22 +25,6 @@
             'vc-app-menu__inner--expanded': $isDesktop.value && (isExpanded || isExpandedOver),
           }"
         >
-          <!-- Show menu close handler on mobile devices -->
-          <!-- <div
-            v-if="$isMobile.value"
-            class="vc-app-menu__close-handler"
-          >
-            <button
-              class="vc-app-menu__close-button"
-              @click="isMobileVisible = false"
-            >
-              <VcIcon
-                icon="fas fa-times"
-                size="xl"
-              ></VcIcon>
-            </button>
-          </div> -->
-
           <div
             v-if="$isDesktop.value"
             class="vc-app-menu__burger-container"
@@ -104,6 +81,7 @@
           </VcContainer>
 
           <div
+            v-if="version"
             class="vc-app-menu__version"
             @click="$emit('version:click')"
           >
@@ -125,7 +103,7 @@ import { useLocalStorage } from "@vueuse/core";
 import { Sidebar } from "../../../../../../shared/components";
 
 export interface Props {
-  version: string;
+  version: string | undefined;
 }
 
 export interface Emits {

@@ -1,3 +1,20 @@
+## [1.0.294](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.293...v1.0.294) (2024-10-01)
+
+
+### Bug Fixes
+
+* **ui:** components fixes and updates ([37148ec](https://github.com/VirtoCommerce/vc-shell/commit/37148ec889065d7e76c7c3466f5bc23a86080389))
+* **ui:** sidebar component optional position prop ([61a7018](https://github.com/VirtoCommerce/vc-shell/commit/61a7018f88d42f0a84c6d3fbe9b3318f94152c99))
+
+
+### Features
+
+* **dynamic:** mixin support, refactor of module registering ([70589c9](https://github.com/VirtoCommerce/vc-shell/commit/70589c9a9044af31ffbbb66189bd96456a3e5d0c))
+* locale flag ([0dc7f74](https://github.com/VirtoCommerce/vc-shell/commit/0dc7f740ed24acee2dfd7efbb0880d9b4e7ab4c7))
+* **ui:** vc-table resizing, state saving improvements ([cd402b1](https://github.com/VirtoCommerce/vc-shell/commit/cd402b14e1442d8072b7572959eb2b6c97218fac))
+
+
+
 ## [1.0.293](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.290...v1.0.293) (2024-09-23)
 
 

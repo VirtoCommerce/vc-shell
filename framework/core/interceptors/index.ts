@@ -56,6 +56,9 @@ export function registerInterceptors(router: Router) {
         if (isAuthenticated.value) {
           signOut().then(() => {
             redirect(router);
+            notification.error(
+              "Access Denied: Your session has expired or you do not have the necessary permissions.\nPlease log in again or contact the administrator for assistance.",
+            );
           });
         }
       }

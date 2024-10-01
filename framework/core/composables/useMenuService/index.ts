@@ -23,7 +23,7 @@ function useMenuServiceFn(): MenuService {
 
   const upsert = createUnrefFn(
     (array: (MenuItem | Omit<MenuItem, "icon">)[], element: MenuItem | Omit<MenuItem, "icon">) => {
-      const index = array.findIndex((_element) => _.isEqual(_element, element));
+      const index = array.findIndex((_element) => _.isEqual(_.omit(_element, "title"), _.omit(element, "title")));
       if (index > -1) {
         array[index] = { ...element };
       } else {

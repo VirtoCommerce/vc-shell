@@ -12,6 +12,13 @@ export default getLibraryConfiguration({
       vueTsc: true,
     }),
   ],
+  css: {
+    preprocessorOptions: {
+      scss: {
+        silenceDeprecations: ["legacy-js-api"],
+      },
+    },
+  },
   build: {
     target: "esnext",
     cssCodeSplit: true,

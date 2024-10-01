@@ -245,7 +245,7 @@ const pagesToShow = computed(() => {
   }
 
   &__input {
-    @apply tw-w-full;
+    @apply tw-w-full tw-bg-transparent;
   }
 }
 </style>

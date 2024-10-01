@@ -29,44 +29,51 @@ export const useExternalProvider = (): IUseExternalProvider => {
 
   async function externalSignIn(authenticationType: string, oidcUrl: string) {
     try {
-      let url_ = window.location.origin + "/externalsignin?";
-      const returnUrl = window.location.pathname ?? "/";
+      const origin = window.location.origin;
+      const finalReturnUrl = window.location.pathname ?? getReturnUrlValue() ?? "/";
 
-      const signInData = {
-        providerType: authenticationType,
-      };
-
-      externalSignInStorage.value = signInData;
-
-      if (authenticationType === null) throw new Error("The parameter 'authenticationType' cannot be null.");
-      else {
-        if (authenticationType !== undefined)
-          url_ += "authenticationType=" + encodeURIComponent("" + authenticationType) + "&";
-        if (returnUrl !== undefined) url_ += "returnUrl=" + encodeURIComponent("" + returnUrl) + "&";
+      if (!authenticationType) {
+        throw new Error("The parameter 'authenticationType' cannot be null or undefined.");
       }
-      url_ = url_.replace(/[?&]$/, "");
 
-      window.location.href = url_;
+      // const oidcUrlObject = new URL(oidcUrl, origin);
+      // const callbackUrl = new URL("/auth/callback", origin);
+      const url = new URL("/externalsignin", origin);
+
+      // Set query parameters
+      // callbackUrl.searchParams.set("returnUrl", finalReturnUrl);
+      url.searchParams.set("authenticationType", authenticationType);
+      // url.searchParams.set("callbackUrl", callbackUrl.href);
+      url.searchParams.set("returnUrl", finalReturnUrl);
+
+      // Store sign-in data
+      externalSignInStorage.value = { providerType: authenticationType };
+
+      console.log("url", url);
+      // Redirect to the constructed URL
+      window.location.assign(url);
     } catch (e) {
       console.error(e);
-
       throw e;
     }
   }
 
   async function externalSignOut(authenticationType: string): Promise<void> {
     try {
-      let url_ = window.location.origin + "/externalsignin/signout?";
+      const origin = window.location.origin;
+      const returnUrl = window.location.pathname ?? "/";
 
-      if (authenticationType !== undefined)
-        url_ += "authenticationType=" + encodeURIComponent("" + authenticationType) + "&";
-      if (window.location.pathname !== undefined)
-        url_ += "returnUrl=" + encodeURIComponent("" + window.location.pathname) + "&";
+      const url = new URL("/externalsignin/signout", origin);
 
-      url_ = url_.replace(/[?&]$/, "");
-      window.location.href = url_;
+      // Set query parameters
+      url.searchParams.set("authenticationType", authenticationType);
+      url.searchParams.set("returnUrl", returnUrl);
 
+      // Clear sign-in data
       externalSignInStorage.value = {};
+
+      // Redirect to the sign-out URL
+      window.location.assign(url);
     } catch (e) {
       console.error(e);
       throw e;

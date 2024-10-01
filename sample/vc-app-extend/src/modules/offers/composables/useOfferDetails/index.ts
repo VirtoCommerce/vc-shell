@@ -1,6 +1,6 @@
 import { IBladeToolbar, DetailsComposableArgs } from "@vc-shell/framework";
 import modules from "@vc-app/modules";
-import { Ref, UnwrapRef, computed, ref } from "vue";
+import { UnwrapRef } from "vue";
 import * as _ from "lodash-es";
 import { SellerProduct } from "@vc-app/api";
 

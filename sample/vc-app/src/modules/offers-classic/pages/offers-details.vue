@@ -338,7 +338,7 @@
                             rules="required"
                           >
                             <VcInputCurrency
-                              v-model:modelValue.number="item.listPrice"
+                              v-model:model-value.number="item.listPrice"
                               v-model:option="item.currency"
                               :label="$t('OFFERSCLASSIC.PAGES.DETAILS.FIELDS.LIST_PRICE.TITLE')"
                               :placeholder="$t('OFFERSCLASSIC.PAGES.DETAILS.FIELDS.LIST_PRICE.PLACEHOLDER')"
@@ -358,7 +358,7 @@
                         <VcCol class="tw-p-2">
                           <!-- Sales price field -->
                           <VcInputCurrency
-                            v-model:modelValue.number="item.salePrice"
+                            v-model:model-value.number="item.salePrice"
                             v-model:option="item.currency"
                             :label="$t('OFFERSCLASSIC.PAGES.DETAILS.FIELDS.SALE_PRICE.TITLE')"
                             :placeholder="$t('OFFERSCLASSIC.PAGES.DETAILS.FIELDS.SALE_PRICE.PLACEHOLDER')"

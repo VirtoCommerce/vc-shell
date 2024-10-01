@@ -132,9 +132,6 @@ export const details: DynamicDetailsSchema = {
               component: "vc-fieldset",
               property: "prices",
               columns: 3,
-              remove: {
-                method: "removePrice",
-              },
               fields: [
                 {
                   id: "listPrice",

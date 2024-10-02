@@ -131,7 +131,7 @@ watchDebounced(
 }
 
 .vc-app-bar {
-  @apply tw-relative tw-flex tw-items-center tw-justify-between tw-px-4 tw-z-50;
+  @apply tw-relative tw-flex tw-items-center tw-justify-between tw-px-4;
   height: var(--app-bar-height);
   background-color: var(--app-bar-background-color);
   box-shadow: var(--app-bar-shadow);

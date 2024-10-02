@@ -15,6 +15,9 @@
           <div
             v-if="opened"
             class="vc-theme-selector__dropdown"
+            :class="{
+              'vc-theme-selector__dropdown--mobile': $isMobile.value,
+            }"
           >
             <div
               v-for="(theme, i) in themes"
@@ -74,6 +77,10 @@ const themeText = computed(() => {
 .vc-theme-selector {
   &__dropdown {
     @apply tw-bg-[color:var(--theme-selector-bg-color)] tw-min-w-20 tw-max-w-max;
+
+    &--mobile {
+      @apply tw-min-w-full tw-max-w-full;
+    }
   }
 
   &__item {

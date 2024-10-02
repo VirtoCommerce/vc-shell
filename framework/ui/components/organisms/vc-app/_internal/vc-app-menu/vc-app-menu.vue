@@ -175,7 +175,7 @@ defineExpose({
 }
 
 .vc-app-menu {
-  @apply tw-relative tw-w-[var(--app-menu-width)] tw-pt-6 -tw-mr-2 [transition:width_300ms_cubic-bezier(0.2,0,0,1)_0s];
+  @apply tw-relative tw-w-[var(--app-menu-width)] tw-pt-6 -tw-mr-2 [transition:width_300ms_cubic-bezier(0.2,0,0,1)_0s] tw-z-[1001];
 
   &.vc-app-menu--mobile {
     @apply tw-hidden tw-h-full tw-w-full #{!important};

@@ -86,7 +86,7 @@ watch(isOutside, (outside) => {
   }
 
   &__content {
-    @apply tw-absolute tw-z-[100] tw-bg-[color:var(--tooltip-background-color)] tw-border tw-border-solid tw-border-[color:var(--tooltip-border-color)] tw-shadow-lg tw-rounded tw-text-[color:var(--tooltip-text-color)] tw-font-normal tw-py-1 tw-px-2;
+    @apply tw-absolute tw-z-[1001] tw-bg-[color:var(--tooltip-background-color)] tw-border tw-border-solid tw-border-[color:var(--tooltip-border-color)] tw-shadow-lg tw-rounded tw-text-[color:var(--tooltip-text-color)] tw-font-normal tw-py-1 tw-px-2;
   }
 }
 </style>

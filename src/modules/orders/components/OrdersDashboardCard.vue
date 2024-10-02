@@ -21,7 +21,7 @@
     >
       <template #widget-mobile="{ totalCount, loading }">
         <div
-          v-loading="loading"
+          v-loading:100="loading"
           class="tw-flex tw-flex-auto tw-flex-col"
           @click="() => onItemClick()"
         >

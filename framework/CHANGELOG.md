@@ -1,3 +1,12 @@
+## [1.0.304](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.303...v1.0.304) (2024-10-04)
+
+
+### Bug Fixes
+
+* **shared:** notification flex container ([e253f8c](https://github.com/VirtoCommerce/vc-shell/commit/e253f8cceebac0e0324befef121b9a03830518b8))
+
+
+
 ## [1.0.303](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.302...v1.0.303) (2024-10-04)
 
 

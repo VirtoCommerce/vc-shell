@@ -23,8 +23,12 @@ export const useDetailsFactory = <Item extends { id?: string }>(factoryParams: U
     const isDisabled = computed(() => !isModified.value || !isFormValid.value);
 
     const { loading: itemLoading, action: load } = useAsync<ItemId>(async (args?: ItemId) => {
-      item.value = await factoryParams.load(args);
-      item.value && resetModified(item.value);
+      const res = await factoryParams.load(args);
+
+      if (res) {
+        item.value = res;
+        item.value && resetModified(item.value);
+      }
     });
 
     const { loading: manageLoading, action: saveChanges } = useAsync<Item, Item | undefined>(async (item) => {

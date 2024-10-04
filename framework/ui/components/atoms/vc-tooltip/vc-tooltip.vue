@@ -55,7 +55,6 @@ const tooltipRef = ref<HTMLElement | null>(null);
 const target = ref(null);
 
 const instance = getCurrentInstance();
-console.log(instance);
 
 const appContainer = instance?.appContext.app._container.id;
 

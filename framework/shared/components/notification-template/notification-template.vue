@@ -1,6 +1,11 @@
 <template>
   <div class="vc-notification-template">
-    <div class="vc-notification-template__container">
+    <div
+      class="vc-notification-template__container"
+      :class="{
+        'vc-notification-template__container--mobile': $isMobile.value,
+      }"
+    >
       <div class="vc-notification-template__left">
         <div
           class="vc-notification-template__icon-container"
@@ -22,7 +27,10 @@
           <slot></slot>
         </div>
       </div>
-      <div class="vc-notification-template__right">
+      <div
+        class="vc-notification-template__right"
+        :class="{ 'vc-notification-template__right--mobile': $isMobile.value }"
+      >
         <p class="vc-notification-template__time">
           {{ pushTime }}
         </p>
@@ -61,8 +69,14 @@ const pushTime = computed(() => {
 }
 
 .vc-notification-template {
+  @apply tw-w-full;
+
   &__container {
     @apply tw-flex tw-flex-row tw-justify-between tw-grow tw-basis-0;
+
+    &--mobile {
+      @apply tw-flex-col-reverse;
+    }
   }
 
   &__left {
@@ -86,6 +100,10 @@ const pushTime = computed(() => {
 
   &__right {
     @apply tw-flex tw-shrink-0;
+
+    &--mobile {
+      @apply tw-mb-2 tw-justify-end;
+    }
   }
 
   &__time {

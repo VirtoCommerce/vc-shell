@@ -49,7 +49,6 @@ export const useExternalProvider = (): IUseExternalProvider => {
       // Store sign-in data
       externalSignInStorage.value = { providerType: authenticationType };
 
-      console.log("url", url);
       // Redirect to the constructed URL
       window.location.assign(url);
     } catch (e) {

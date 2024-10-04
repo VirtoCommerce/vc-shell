@@ -42,6 +42,9 @@
                   v-for="item in notifications"
                   :key="`notification_${item.id}`"
                   class="vc-notification-dropdown__item"
+                  :class="{
+                    'vc-notification-dropdown__item--mobile': $isMobile.value,
+                  }"
                 >
                   <NotificationItem
                     :notification="item"
@@ -96,6 +99,7 @@ function onOpen(state: boolean) {
   --notification-dropdown-bg-color: var(--additional-50);
   --notification-dropdown-accent-color: var(--danger-500);
   --notification-dropdown-button-width: var(--app-bar-button-width);
+  --notification-dropdown-divider-color: var(--base-border-color, var(--neutrals-200));
 }
 
 .vc-notification-dropdown {
@@ -124,6 +128,10 @@ function onOpen(state: boolean) {
 
     &:last-of-type {
       @apply tw-border-b-0;
+    }
+
+    &--mobile:not(:last-of-type) {
+      @apply tw-border-solid tw-border-b tw-border-b-[color:var(--notification-dropdown-divider-color)];
     }
   }
 

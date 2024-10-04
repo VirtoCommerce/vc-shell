@@ -284,7 +284,7 @@
                 'vc-table__body-row--clickable': hasClickListener,
                 'vc-table__body-row--even': itemIndex % 2 === 1,
                 'vc-table__body-row--selected':
-                  typeof item === 'object' && 'id' in item && item.id ? selectedItemId === item.id : false,
+                  typeof item === 'object' && 'id' in item && item.id ? toValue(selectedItemId) === item.id : false,
                 'vc-table__body-row--selection': selection && selection.length && selection.includes(item),
               }"
               @click="$emit('itemClick', item)"
@@ -522,7 +522,7 @@ const props = withDefaults(
     header?: boolean;
     footer?: boolean;
     activeFilterCount?: number;
-    selectedItemId?: string;
+    selectedItemId?: MaybeRef<string>;
     pullToReload?: boolean;
     resizableColumns?: boolean;
     reorderableColumns?: boolean;

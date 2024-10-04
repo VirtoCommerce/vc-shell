@@ -1,6 +1,6 @@
 <template>
   <div class="tw-flex">
-    <VcRow class="tw-justify-between tw-grow tw-basis-0">
+    <VcRow class="tw-justify-between tw-grow tw-basis-0 !tw-flex">
       <template v-if="currentTemplate">
         <notificationTemplateRenderer />
       </template>

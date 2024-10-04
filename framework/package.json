@@ -1,6 +1,6 @@
 {
   "name": "@vc-shell/framework",
-  "version": "1.0.302",
+  "version": "1.0.303",
   "type": "module",
   "main": "./dist/framework.js",
   "types": "./dist/index.d.ts",
@@ -61,9 +61,9 @@
   "devDependencies": {
     "@types/dompurify": "^3.0.5",
     "@types/quill": "^2.0.14",
-    "@vc-shell/api-client-generator": "^1.0.302",
-    "@vc-shell/config-generator": "^1.0.302",
-    "@vc-shell/ts-config": "^1.0.302",
+    "@vc-shell/api-client-generator": "^1.0.303",
+    "@vc-shell/config-generator": "^1.0.303",
+    "@vc-shell/ts-config": "^1.0.303",
     "@vitejs/plugin-vue": "5.0.3",
     "cypress-signalr-mock": "^1.5.0",
     "sass": "^1.69.6",

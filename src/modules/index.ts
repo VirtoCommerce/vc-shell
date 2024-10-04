@@ -43,7 +43,6 @@ import "./../styles/index.scss";
 export default {
   Offers,
   Orders,
-  Common,
   Settings,
   Products,
   MarketplaceProducts,
@@ -52,6 +51,8 @@ export default {
   Team,
   FulfillmentCenters,
 };
+
+export { Common };
 
 export type {
   OrderScope,

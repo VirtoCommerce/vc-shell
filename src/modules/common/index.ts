@@ -1,3 +1,3 @@
-export { useDynamicProperties } from "./composables/useDynamicProperties";
-export { useMultilanguage } from "./composables/useMultilanguage";
-export { useRoles } from "./composables/useRoles";
+export { useDynamicProperties, type IUseDynamicProperties } from "./composables/useDynamicProperties";
+export { useMultilanguage, type IUseMultilanguage } from "./composables/useMultilanguage";
+export { useRoles, type IUseRoles } from "./composables/useRoles";

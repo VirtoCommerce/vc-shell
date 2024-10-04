@@ -129,6 +129,7 @@ export const useProductDetails = (
   const getMappedDetails = reactify((details: (ISellerProduct & IProductDetails) | undefined) => {
     if (details) {
       return reactive({
+        ...details,
         publicationRequests: details.publicationRequests,
         canBeModified: details.canBeModified,
         createdBy: "createdBy" in details && details.createdBy,
@@ -202,9 +203,9 @@ export const useProductDetails = (
         await (await getApiClient()).createNewPublicationRequest(newRequestCommand);
       }
 
-      // if (item.value?.id) {
-      //   // await loadWrapper({ id: item.value.id });
-      // }
+      if (item.value?.id) {
+        await loadWrapper({ id: item.value.id });
+      }
     } finally {
       saveChangesLoading.value = false;
     }

@@ -2,7 +2,7 @@ import { AsyncAction, useApiClient, useAsync, useLoading, useLanguages } from "@
 import { VcmpSellerCatalogClient } from "@vcmp-vendor-portal/api/marketplacevendor";
 import { ComputedRef, Ref, onBeforeUnmount, ref } from "vue";
 
-interface UseMultilanguage {
+export interface IUseMultilanguage {
   loading: ComputedRef<boolean>;
   currentLocale: Ref<string>;
   languages: Ref<string[]>;
@@ -17,7 +17,7 @@ const currentLocale = ref("en-US");
 const languages = ref<string[]>([]);
 const localesOptions = ref([]) as Ref<{ label: string | undefined; value: string }[]>;
 
-export const useMultilanguage = (): UseMultilanguage => {
+export const useMultilanguage = (): IUseMultilanguage => {
   const { getLocaleByTag } = useLanguages();
 
   const { loading: languagesLoading, action: getLanguages } = useAsync(async () => {

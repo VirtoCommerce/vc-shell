@@ -12,10 +12,30 @@ import {
   VcmpSellerCatalogClient,
 } from "@vcmp-vendor-portal/api/marketplacevendor";
 import * as _ from "lodash-es";
+import { ComputedRef } from "vue";
+
+export interface IUseDynamicProperties {
+  loading: ComputedRef<boolean>;
+  loadDictionaries: (
+    propertyId: string,
+    keyword?: string,
+    locale?: string,
+  ) => Promise<IPropertyDictionaryItem[] | undefined>;
+  getPropertyValue: (
+    property: IProperty,
+    locale: string,
+  ) => string | IPropertyValue[] | (IPropertyDictionaryItem & { value: string })[];
+  setPropertyValue: (data: {
+    property: IProperty;
+    value: string | IPropertyValue[] | (IPropertyDictionaryItem & { value: string })[];
+    dictionary?: IPropertyDictionaryItem[];
+    locale?: string;
+  }) => void;
+}
 
 const { getApiClient } = useApiClient(VcmpSellerCatalogClient);
 
-export const useDynamicProperties = () => {
+export const useDynamicProperties = (): IUseDynamicProperties => {
   const { loading: dictionaryItemsLoading, action: searchDictionaryItems } = useAsync<
     IPropertyDictionaryItemSearchCriteria,
     IPropertyDictionaryItem[] | undefined

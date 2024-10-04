@@ -7,6 +7,7 @@ import * as SellerDetails from "./seller-details";
 import * as Team from "./team";
 import * as FulfillmentCenters from "./fulfillment-centers";
 import * as Orders from "./orders";
+import * as Common from "./common";
 
 import {
   type OrderScope,
@@ -35,11 +36,14 @@ import { type SellerDetailsScope } from "./seller-details/composables";
 
 import { type TeamDetailsScope, type TeamListScope } from "./team/composables";
 
+import { type IUseDynamicProperties, type IUseMultilanguage, type IUseRoles } from "./common";
+
 import "./../styles/index.scss";
 
 export default {
   Offers,
   Orders,
+  Common,
   Settings,
   Products,
   MarketplaceProducts,
@@ -69,6 +73,9 @@ export type {
   SellerDetailsScope,
   TeamDetailsScope,
   TeamListScope,
+  IUseDynamicProperties,
+  IUseMultilanguage,
+  IUseRoles,
 };
 
 export * from "./types";

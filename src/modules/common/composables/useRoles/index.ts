@@ -2,14 +2,14 @@ import { AsyncAction, useApiClient, useUser, useLoading } from "@vc-shell/framew
 import { VcmpSellerSecurityClient } from "@vcmp-vendor-portal/api/marketplacevendor";
 import { ComputedRef, ref, computed } from "vue";
 
-interface UseRoles {
+export interface IUseRoles {
   loading: ComputedRef<boolean>;
   getRoles: AsyncAction<void>;
   isAdministrator: ComputedRef<boolean>;
   isOperator: ComputedRef<boolean>;
 }
 
-export const useRoles = (): UseRoles => {
+export const useRoles = (): IUseRoles => {
   const { getApiClient } = useApiClient(VcmpSellerSecurityClient);
   const { loadUser } = useUser();
 

@@ -32,7 +32,7 @@ import { roles } from "../../common";
 import { useRoute } from "vue-router";
 
 export interface TeamDetailsScope extends DetailsBaseBladeScope {
-  photoHandler: WritableComputedRef<{ url: string; name: string; title: string }[]>;
+  photoHandler: WritableComputedRef<{ url: string; title: string }[]>;
   sendInviteStatus: Ref<boolean>;
   isActive: WritableComputedRef<boolean | undefined>;
   isOwnerReadonly: ComputedRef<boolean>;
@@ -135,7 +135,7 @@ export const useTeamDetails = (args: DetailsComposableArgs): UseDetails<SellerUs
 
   const photoHandler = computed({
     get() {
-      return item.value?.iconUrl ? [{ url: item.value.iconUrl, name: user.value?.userName ?? "", title: "" }] : [];
+      return item.value?.iconUrl ? [{ url: item.value.iconUrl, title: "" }] : [];
     },
     set(value) {
       if (value) {
@@ -280,7 +280,7 @@ export const useTeamDetails = (args: DetailsComposableArgs): UseDetails<SellerUs
 
   watch(
     () => args?.mounted.value,
-    async () => {
+    () => {
       if (!args.props.param) {
         item.value = reactive(new SellerUserDetails());
         item.value.role = role.value?.id ?? "";

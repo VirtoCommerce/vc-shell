@@ -1,12 +1,12 @@
 <template>
   <div
-    v-if="imgData"
-    class="tw-w-12 tw-h-12 tw-border tw-border-solid tw-border-[--image-border-color] tw-rounded-[3px] tw-relative"
+    v-if="imgData && imgData.quantity > 0"
+    class="tw-min-w-0 tw-max-w-full tw-block tw-w-[48px] tw-border tw-border-solid tw-border-[--image-border-color] tw-rounded-[3px] tw-relative"
   >
     <!-- Single Image -->
     <template v-if="imgData.quantity === 1">
       <div
-        class="tw-w-full tw-h-full"
+        class="tw-w-full tw-h-full tw-pb-[100%]"
         :style="imageHandler(imgData.srcArr[0])"
       ></div>
     </template>
@@ -15,11 +15,11 @@
     <template v-else-if="imgData.quantity === 2">
       <div class="tw-flex tw-w-full tw-h-full tw-gap-[2px]">
         <div
-          class="tw-w-1/2 tw-h-full"
+          class="tw-w-1/2 tw-h-full tw-pb-[100%]"
           :style="imageHandler(imgData.srcArr[0])"
         ></div>
         <div
-          class="tw-w-1/2 tw-h-full"
+          class="tw-w-1/2 tw-h-full tw-pb-[100%]"
           :style="imageHandler(imgData.srcArr[1])"
         ></div>
       </div>
@@ -29,16 +29,16 @@
     <template v-else-if="imgData.quantity === 3">
       <div class="tw-flex tw-w-full tw-h-full tw-gap-[2px]">
         <div
-          class="tw-w-1/2 tw-h-full"
+          class="tw-w-1/2 tw-h-full tw-pb-[100%]"
           :style="imageHandler(imgData.srcArr[0])"
         ></div>
         <div class="tw-w-1/2 tw-h-full tw-flex tw-flex-col tw-gap-[2px]">
           <div
-            class="tw-h-1/2"
+            class="tw-h-1/2 tw-pb-[100%]"
             :style="imageHandler(imgData.srcArr[1])"
           ></div>
           <div
-            class="tw-h-1/2"
+            class="tw-h-1/2 tw-pb-[100%]"
             :style="imageHandler(imgData.srcArr[2])"
           ></div>
         </div>
@@ -49,36 +49,32 @@
     <template v-else-if="imgData.quantity >= 4">
       <div class="tw-grid tw-grid-cols-2 tw-grid-rows-2 tw-gap-[2px] tw-w-full tw-h-full">
         <div
-          class="tw-w-full tw-h-full"
+          class="tw-w-full tw-h-full tw-pb-[100%]"
           :style="imageHandler(imgData.srcArr[0])"
         ></div>
         <div
-          class="tw-w-full tw-h-full"
+          class="tw-w-full tw-h-full tw-pb-[100%]"
           :style="imageHandler(imgData.srcArr[1])"
         ></div>
         <div
-          class="tw-w-full tw-h-full"
+          class="tw-w-full tw-h-full tw-pb-[100%]"
           :style="imageHandler(imgData.srcArr[2])"
         ></div>
         <div
-          class="tw-w-full tw-h-full"
+          class="tw-w-full tw-h-full tw-pb-[100%]"
           :style="imageHandler(imgData.srcArr[3])"
         ></div>
       </div>
     </template>
-
-    <!-- No Image -->
-    <template v-else>
-      <div
-        class="tw-absolute tw-w-full tw-h-full tw-flex tw-items-center tw-justify-center tw-text-[color:var(--line-item-empty-image-color)]"
-      >
-        <VcIcon
-          icon="fas fa-image"
-          size="xl"
-        ></VcIcon>
-      </div>
-    </template>
   </div>
+  <!-- No Image -->
+  <template v-if="imgData.quantity === 0">
+    <VcImage
+      size="s"
+      bordered
+      aspect="1x1"
+    />
+  </template>
 </template>
 
 <script lang="ts" setup>

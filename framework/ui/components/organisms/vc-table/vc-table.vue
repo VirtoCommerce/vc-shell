@@ -1454,7 +1454,7 @@ $variants: (
 );
 
 .vc-table {
-  @apply tw-relative tw-overflow-hidden tw-flex tw-flex-col tw-grow tw-basis-0 tw-border-solid tw-border-t-0;
+  @apply tw-relative tw-overflow-hidden tw-flex tw-flex-col tw-grow tw-basis-0 tw-border-solid tw-border-t-0 !tw-flex-auto;
   border-color: var(--table-border-color);
 
   &__multiselect-mobile {

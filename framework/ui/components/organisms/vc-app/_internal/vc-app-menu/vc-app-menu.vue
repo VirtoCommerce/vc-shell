@@ -34,7 +34,7 @@
               @click="toggleMenu"
             >
               <VcIcon
-                icon="fas fa-bars"
+                :icon="isExpanded ? 'fas fa-angle-double-left' : 'fas fa-angle-double-right'"
                 size="xl"
               ></VcIcon>
             </button>

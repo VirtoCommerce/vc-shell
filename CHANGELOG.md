@@ -1,3 +1,12 @@
+## [1.0.306](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.305...v1.0.306) (2024-10-07)
+
+
+### Features
+
+* md-editor-v3 instead quill, info popup, clickable form table ([aebb563](https://github.com/VirtoCommerce/vc-shell/commit/aebb563e4dd7819a3ae91eb7ce2cc5629234a9ab))
+
+
+
 ## [1.0.305](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.304...v1.0.305) (2024-10-04)
 
 

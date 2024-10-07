@@ -1,7 +1,7 @@
 <template>
   <div class="tw-w-full tw-h-full tw-box-border tw-flex tw-flex-col tw-items-center tw-justify-center">
     <VcIcon
-      class="tw-text-[color:var(--empty-grid-icon-color)]"
+      class="tw-text-[color:var(--videos-empty-grid-icon-color)]"
       icon="fas fa-film"
       size="xxxl"
     ></VcIcon>
@@ -31,3 +31,9 @@ export interface Props {
 defineEmits<Emits>();
 defineProps<Props>();
 </script>
+
+<style lang="scss">
+:root {
+  --videos-empty-grid-icon-color: var(--empty-grid-icon-color, var(--secondary-500));
+}
+</style>

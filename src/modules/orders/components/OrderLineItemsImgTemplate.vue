@@ -1,7 +1,7 @@
 <template>
   <div
     v-if="imgData && imgData.quantity > 0"
-    class="tw-min-w-0 tw-max-w-full tw-block tw-w-[48px] tw-border tw-border-solid tw-border-[--image-border-color] tw-rounded-[3px] tw-relative"
+    class="tw-min-w-0 tw-max-w-full tw-block tw-w-[48px] tw-max-h-[48px] tw-border tw-border-solid tw-border-[--line-item-image-border-color] tw-rounded-[3px] tw-relative"
   >
     <!-- Single Image -->
     <template v-if="imgData.quantity === 1">
@@ -105,5 +105,6 @@ const imageHandler = (src: string | undefined) => {
 <style lang="scss">
 :root {
   --line-item-empty-image-color: var(--secondary-500);
+  --line-item-image-border-color: var(--image-border-color, var(--neutrals-200));
 }
 </style>

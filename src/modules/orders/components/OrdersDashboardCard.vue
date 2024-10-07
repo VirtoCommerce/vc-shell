@@ -25,9 +25,9 @@
           class="tw-flex tw-flex-auto tw-flex-col"
           @click="() => onItemClick()"
         >
-          <div class="tw-h-px tw-bg-[--base-border-color] tw-w-full"></div>
+          <div class="tw-h-px tw-bg-[--orders-widget-separator-color] tw-w-full"></div>
           <div
-            class="tw-text-center tw-m-4 tw-text-[26px] tw-font-medium tw-text-[color:var(--mobile-card-count-color)]"
+            class="tw-text-center tw-m-4 tw-text-[26px] tw-font-medium tw-text-[color:var(--orders-widget-icon-color)]"
           >
             {{ totalCount == 0 ? $t("ORDERS.WIDGET.EMPTY") : totalCount }}
           </div>
@@ -59,3 +59,10 @@ async function onItemClick(args?: { param: string }) {
   }
 }
 </script>
+
+<style lang="scss">
+:root {
+  --orders-widget-icon-color: var(--empty-grid-icon-color, var(--primary-500));
+  --orders-widget-separator-color: var(--base-border-color, var(--neutrals-200));
+}
+</style>

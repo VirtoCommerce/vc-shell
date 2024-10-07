@@ -209,6 +209,12 @@ export const details: DynamicDetailsSchema = {
               multiselect: false,
               property: "items",
               footer: false,
+              onItemClick: {
+                method: "onItemClick",
+              },
+              selectedItemId: {
+                method: "selectedItemId",
+              },
               // mobileTemplate: {
               //   component: "OrderOfferMobileGridView",
               // },

@@ -1,7 +1,7 @@
 <template>
-  <div class="tw-flex tw-flex-col">
-    <div>{{ context.item.sku }}</div>
-    <VcHint class="tw-mt-1">{{ context.item.name }}</VcHint>
+  <div class="tw-flex tw-flex-col tw-truncate">
+    <div class="tw-truncate">{{ context.item.sku }}</div>
+    <VcHint class="tw-mt-1 tw-truncate">{{ context.item.name }}</VcHint>
   </div>
 </template>
 

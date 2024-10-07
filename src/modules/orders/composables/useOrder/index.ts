@@ -10,6 +10,8 @@ import {
   useLoading,
   useLanguages,
   usePermissions,
+  useBladeNavigation,
+  usePopup,
 } from "@vc-shell/framework";
 import {
   StateMachineInstance,
@@ -19,6 +21,8 @@ import {
   OrderShipment,
   OrderLineItem,
   OrderShipmentItem,
+  SearchOffersQuery,
+  VcmpSellerCatalogClient,
 } from "@vcmp-vendor-portal/api/marketplacevendor";
 import { ComputedRef, Ref, computed, ref, watch, unref } from "vue";
 import { useI18n } from "vue-i18n";
@@ -74,6 +78,7 @@ export interface OrderScope extends DetailsBaseBladeScope {
 }
 
 const { getApiClient } = useApiClient(VcmpSellerOrdersClient);
+const { getApiClient: getCatalogApiClient } = useApiClient(VcmpSellerCatalogClient);
 
 export const useOrder = (args: DetailsComposableArgs): UseDetails<CustomerOrder, OrderScope> => {
   const factory = useDetailsFactory<CustomerOrder>({
@@ -103,16 +108,19 @@ export const useOrder = (args: DetailsComposableArgs): UseDetails<CustomerOrder,
   const { load, saveChanges, remove, loading, item, validationState } = factory();
 
   const { currentLocale } = useLanguages();
+  const { openBlade, resolveBladeByName } = useBladeNavigation();
 
   const { t } = useI18n({ useScope: "global" });
   const { searchStateMachines, stateMachine, fireTrigger } = useStateMachines();
   const { hasAccess } = usePermissions();
+  const { showInfo } = usePopup();
   const route = useRoute();
   const stateMachineLoading = ref(false);
   const toolbar = ref([]) as Ref<IBladeToolbar[]>;
   const locale = window.navigator.language;
   const disabled = ref(true);
-  const isCalculated = ref(false);
+  const selectedItemId = ref();
+  const catalogLoading = ref(false);
 
   const shippingInfo = computed(() => {
     const info =
@@ -183,8 +191,37 @@ export const useOrder = (args: DetailsComposableArgs): UseDetails<CustomerOrder,
     }).format(typeof value === "undefined" ? 0 : value);
   };
 
+  async function onItemClick(item: OrderLineItem) {
+    try {
+      catalogLoading.value = true;
+      const offersQuery = new SearchOffersQuery({ keyword: item.sku, take: 1 });
+      const items = await (await getCatalogApiClient()).searchOffers(offersQuery);
+
+      if (items.results && items.results.length > 0) {
+        await openBlade({
+          blade: resolveBladeByName("Offer"),
+          param: items.results[0].id,
+          onOpen: () => {
+            selectedItemId.value = item.id;
+          },
+          onClose: () => {
+            selectedItemId.value = undefined;
+          },
+        });
+      } else {
+        showInfo(computed(() => t("ORDERS.PAGES.DETAILS.FORM.OFFERS.NOT_FOUND")));
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      catalogLoading.value = false;
+    }
+  }
+
   const scope: OrderScope = {
     disabled,
+    onItemClick,
+    selectedItemId,
     toolbarOverrides: {
       downloadPdf: {
         async clickHandler() {
@@ -336,7 +373,7 @@ export const useOrder = (args: DetailsComposableArgs): UseDetails<CustomerOrder,
     load,
     saveChanges,
     remove,
-    loading: useLoading(loading, pdfLoading, stateMachineLoading),
+    loading: useLoading(loading, pdfLoading, stateMachineLoading, catalogLoading),
     item,
     validationState,
     scope,

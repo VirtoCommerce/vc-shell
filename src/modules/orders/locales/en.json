@@ -103,6 +103,9 @@
             "COMMISSION": "Commission",
             "SKU": "SKU"
           },
+          "OFFERS": {
+              "NOT_FOUND": "Offer does not exist. It might be already deleted."
+            },
           "NOT_VALID": "Form is not valid.\nPlease, check highlighted fields."
         }
       },

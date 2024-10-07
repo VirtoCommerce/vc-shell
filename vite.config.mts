@@ -7,6 +7,8 @@ const mode = process.env.APP_ENV as string;
 export default getApplicationConfiguration({
   resolve: {
     alias: {
+      "@vcmp-vendor-portal/modules/dist/style.css":
+        mode === "development" ? resolve("src/styles/index.scss") : "@vcmp-vendor-portal/modules/dist/style.css",
       "@vcmp-vendor-portal/modules":
         mode === "development" ? resolve("src/modules/index.ts") : "@vcmp-vendor-portal/modules",
       "@vcmp-vendor-portal/api/orders":

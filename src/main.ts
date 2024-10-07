@@ -14,6 +14,7 @@ import "@fortawesome/fontawesome-free/css/all.min.css";
 import "roboto-fontface/css/roboto/roboto-fontface.css";
 import "@vc-shell/framework/dist/index.css";
 import "@virtocommerce/import-app/dist/style.css";
+import "@vcmp-vendor-portal/modules/dist/style.css";
 
 async function startApp() {
   const { loadUser } = useUser();

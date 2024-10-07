@@ -1,3 +1,12 @@
+## [1.0.309](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.308...v1.0.309) (2024-10-07)
+
+
+### Bug Fixes
+
+* added modules style import ([c09a1ef](https://github.com/VirtoCommerce/vendor-portal/commit/c09a1ef97edb7ef8d4a2dfe092ce035c15747ab2))
+
+
+
 ## [1.0.308](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.307...v1.0.308) (2024-10-07)
 
 

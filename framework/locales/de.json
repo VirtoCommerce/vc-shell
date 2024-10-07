@@ -1,0 +1,417 @@
+{
+  "SHELL": {
+    "USER": {
+      "ROLE": {
+        "ADMINISTRATOR": "Administrator"
+      }
+    },
+    "ACCOUNT": {
+      "CHANGE_PASSWORD": "Passwort ändern",
+      "PROFILE": "Profil",
+      "LOGOUT": "Abmelden"
+    }
+  },
+  "COMPONENTS": {
+    "ATOMS": {
+      "VC_CONTAINER": {
+        "PULL_TO_REFRESH": "Zum Aktualisieren ziehen",
+        "REFRESHING": "Wird aktualisiert..."
+      },
+      "VC_STATUS": {
+        "SHOW_MORE": "Mehr anzeigen",
+        "SHOW_LESS": "Weniger anzeigen"
+      }
+    },
+    "MOLECULES": {
+      "VC_SELECT": {
+        "CLICK_TO_SELECT": "Zum Auswählen klicken...",
+        "LOADING": "Wird geladen..."
+      },
+      "VC_FILE_UPLOAD": {
+        "DRAG_HERE": "Datei hier ablegen oder",
+        "BROWSE": "Dateien durchsuchen"
+      },
+      "VC_INPUT": {
+        "DATE_PLACEHOLDER": "Datum auswählen",
+        "DATE_TIME_PLACEHOLDER": "Datum und Uhrzeit auswählen"
+      },
+      "VC_PAGINATION": {
+        "JUMP": "Zur Seite springen:"
+      },
+      "VC_EDITOR": {
+        "TOOLBAR_TIPS": {
+          "BOLD": "Fett",
+          "UNDERLINE": "Unterstrichen",
+          "ITALIC": "Kursiv",
+          "STRIKE_THROUGH": "Durchgestrichen",
+          "TITLE": "Titel",
+          "SUB": "Tiefgestellt",
+          "SUP": "Hochgestellt",
+          "QUOTE": "Zitat",
+          "UNORDERED_LIST": "Ungeordnete Liste",
+          "ORDERED_LIST": "Geordnete Liste",
+          "TASK": "Aufgabe",
+          "CODE_ROW": "Codezeile",
+          "CODE": "Code",
+          "LINK": "Link",
+          "IMAGE": "Bild",
+          "TABLE": "Tabelle",
+          "MERMAID": "Mermaid",
+          "KATEX": "KaTeX",
+          "REVOKE": "Widerrufen",
+          "NEXT": "Weiter",
+          "SAVE": "Speichern",
+          "PRETTIER": "Schöner",
+          "PAGE_FULLSCREEN": "Seite Vollbild",
+          "FULLSCREEN": "Vollbild",
+          "PREVIEW": "Vorschau",
+          "PREVIEW_ONLY": "Nur Vorschau",
+          "HTML_PREVIEW": "HTML-Vorschau",
+          "CATALOG": "Katalog",
+          "GITHUB": "GitHub",
+          "DASH": "-",
+          "EQUALS": "="
+        },
+        "TITLE_ITEM": {
+          "H1": "Überschrift 1",
+          "H2": "Überschrift 2",
+          "H3": "Überschrift 3",
+          "H4": "Überschrift 4",
+          "H5": "Überschrift 5",
+          "H6": "Überschrift 6"
+        },
+        "IMG_TITLE_ITEM": {
+          "LINK": "Link",
+          "UPLOAD": "Hochladen",
+          "CLIP2UPLOAD": "Zum Hochladen einfügen"
+        },
+        "LINK_MODAL_TIPS": {
+          "LINK_TITLE": "Link-Titel",
+          "IMAGE_TITLE": "Bild-Titel",
+          "DESC_LABEL": "Beschreibung",
+          "DESC_LABEL_PLACEHOLDER": "Beschreibung eingeben",
+          "URL_LABEL": "URL",
+          "URL_LABEL_PLACEHOLDER": "URL eingeben",
+          "BUTTON_OK": "OK"
+        },
+        "CLIP_MODAL_TIPS": {
+          "TITLE": "Einfügen",
+          "BUTTON_UPLOAD": "Hochladen"
+        },
+        "COPY_CODE": {
+          "TEXT": "Code kopieren",
+          "SUCCESS_TIPS": "Erfolgreich kopiert!",
+          "FAIL_TIPS": "Kopieren fehlgeschlagen."
+        },
+        "MERMAID": {
+          "FLOW": "Flussdiagramm",
+          "SEQUENCE": "Sequenzdiagramm",
+          "GANTT": "Gantt-Diagramm",
+          "CLASS": "Klassendiagramm",
+          "STATE": "Zustandsdiagramm",
+          "PIE": "Kreisdiagramm",
+          "RELATIONSHIP": "Beziehungsdiagramm",
+          "JOURNEY": "Journey-Diagramm"
+        },
+        "KATEX": {
+          "INLINE": "Inline",
+          "BLOCK": "Block"
+        },
+        "FOOTER": {
+          "MARKDOWN_TOTAL": "Markdown Gesamt",
+          "SCROLL_AUTO": "Automatisches Scrollen"
+        }
+      }
+    },
+    "ORGANISMS": {
+      "VC_GALLERY": {
+        "INTERNAL": {
+          "VC_GALLERY_ITEM": {
+            "FULLSCREEN": "Vollbild",
+            "EDIT": "Bearbeiten",
+            "DELETE": "Löschen"
+          },
+          "VC_GALLERY_PREVIEW": {
+            "COPY_IMAGE_LINK": "Bildlink kopieren"
+          }
+        },
+        "GALLERY_IS_EMPTY": "Galerie ist leer"
+      },
+      "VC_APP": {
+        "INTERNAL": {
+          "VC_APP_BAR": {
+            "BACK": "Zurück"
+          }
+        }
+      },
+      "VC_BLADE": {
+        "SEE_DETAILS": "Details anzeigen",
+        "UNSAVED_CHANGES": "Hat ungespeicherte Änderungen",
+        "ERROR_POPUP": {
+          "TITLE": "Fehlerdetails"
+        }
+      },
+      "VC_BLADE_HEADER": {
+        "UNSAVED_CHANGES": "Hat ungespeicherte Änderungen",
+        "NO_CHANGES": "Keine ungespeicherten Änderungen"
+      },
+      "VC_TABLE": {
+        "CURRENT_PAGE_SELECTED": "Alle Elemente auf dieser Seite sind ausgewählt.",
+        "SELECT_ALL": "Alle Elemente auswählen",
+        "ALL_SELECTED": "Alle Elemente sind ausgewählt.",
+        "CANCEL": "Auswahl aufheben",
+        "ALL_ACTIONS": "Alle Aktionen",
+        "MORE": "Mehr",
+        "ALL_FILTERS": "Filter",
+        "SEARCH": "Suchen...",
+        "EMPTY": "Liste ist leer.",
+        "NOT_FOUND": "Nichts gefunden.",
+        "TOTALS": "Gesamt:",
+        "ACTIONS": "Aktionen",
+        "NOT_SET": "Nicht festgelegt",
+        "SELECTED": "Ausgewählt",
+        "SELECT_ALL_TRUNCATED": "Alle auswählen"
+      },
+
+      "VC_POPUP": {
+        "OK": "OK",
+        "CONFIRM": "Bestätigen",
+        "CANCEL": "Abbrechen",
+        "CLOSE": "Schließen",
+        "TITLE": {
+          "CONFIRMATION": "Bestätigung",
+          "ERROR": "Fehler",
+          "INFO": "Info"
+        }
+      }
+    },
+    "THEME_SELECTOR": {
+      "THEME_CHANGED": " Thema",
+      "THEME_SELECTOR": "Themenauswahl"
+    },
+    "CHANGE_PASSWORD": {
+      "TITLE": "Passwort ändern",
+      "FORCED": {
+        "LABEL": "Ihr Passwort ist abgelaufen. Sie müssen das Passwort ändern, um den Manager weiter zu nutzen."
+      },
+      "CURRENT_PASSWORD": {
+        "LABEL": "Aktuelles Passwort",
+        "PLACEHOLDER": "Passwort eingeben"
+      },
+      "NEW_PASSWORD": {
+        "LABEL": "Neues Passwort",
+        "PLACEHOLDER": "Passwort eingeben"
+      },
+      "CONFIRM_PASSWORD": {
+        "LABEL": "Passwort bestätigen",
+        "PLACEHOLDER": "Passwort bestätigen"
+      },
+      "CANCEL": "Abbrechen",
+      "SAVE": "Aktualisieren",
+      "ERRORS": {
+        "Repeat-password": "Passwörter stimmen nicht überein",
+        "Equal-passwords": "Das neue Passwort darf nicht mit dem alten übereinstimmen",
+        "Invalid-token": "Token ist ungültig oder abgelaufen",
+        "Password-too-weak": "Neues Passwort erfüllt eine oder mehrere Passwort-Sicherheitsrichtlinien nicht:",
+        "PasswordTooShort": "Passwort zu kurz",
+        "PasswordRequiresUniqueChars": "Passwörter müssen unterschiedliche Zeichen verwenden",
+        "PasswordRequiresLower": "Passwörter müssen mindestens einen Kleinbuchstaben enthalten ('a'-'z')",
+        "PasswordRequiresUpper": "Passwörter müssen mindestens einen Großbuchstaben enthalten ('A'-'Z')",
+        "PasswordRequiresDigit": "Passwörter müssen mindestens eine Ziffer enthalten ('0'-'9')",
+        "PasswordRequiresNonAlphanumeric": "Passwörter müssen mindestens ein nicht-alphanumerisches Zeichen enthalten",
+        "Incorrect password.": "Sie haben ein falsches Passwort eingegeben",
+        "You have used this password in the past. Choose another one.": "Sie haben dieses Passwort in der Vergangenheit verwendet. Wählen Sie ein anderes."
+      }
+    },
+    "APP_SWITCHER": {
+      "TITLE": "Anwendungen"
+    },
+    "NOTIFICATION_DROPDOWN": {
+      "TITLE": "Benachrichtigungen",
+      "EMPTY": "Noch keine Benachrichtigungen"
+    },
+    "LANGUAGE_SELECTOR": {
+      "TITLE": "Sprachauswahl"
+    },
+    "FILTERS": {
+      "APPLY": "Filter anwenden",
+      "RESET": "Zurücksetzen"
+    }
+  },
+  "INVITATION": {
+    "TITLE": "Aktivierung neuer Benutzer",
+    "FIELDS": {
+      "EMAIL": {
+        "LABEL": "E-Mail"
+      },
+      "PASSWORD": {
+        "LABEL": "Neues Passwort",
+        "PLACEHOLDER": "Passwort eingeben"
+      },
+      "CONFIRM_PASSWORD": {
+        "LABEL": "Passwort bestätigen",
+        "PLACEHOLDER": "Passwort bestätigen"
+      }
+    },
+    "ACCEPT_INVITATION": "Aktivieren",
+    "ERRORS": {
+      "Repeat-password": "Passwörter stimmen nicht überein",
+      "Invalid-token": "Token ist ungültig oder abgelaufen",
+      "Password-too-weak": "Neues Passwort erfüllt eine oder mehrere Passwort-Sicherheitsrichtlinien nicht:",
+      "PasswordTooShort": "Passwort zu kurz",
+      "PasswordRequiresUniqueChars": "Passwörter müssen unterschiedliche Zeichen verwenden",
+      "PasswordRequiresLower": "Passwörter müssen mindestens einen Kleinbuchstaben enthalten ('a'-'z')",
+      "PasswordRequiresUpper": "Passwörter müssen mindestens einen Großbuchstaben enthalten ('A'-'Z')",
+      "PasswordRequiresDigit": "Passwörter müssen mindestens eine Ziffer enthalten ('0'-'9')",
+      "PasswordRequiresNonAlphanumeric": "Passwörter müssen mindestens ein nicht-alphanumerisches Zeichen enthalten",
+      "recentPasswordUsed": "Sie haben dieses Passwort in der Vergangenheit verwendet. Wählen Sie ein anderes."
+    }
+  },
+  "LOGIN": {
+    "FIELDS": {
+      "LOGIN": {
+        "LABEL": "Benutzername",
+        "PLACEHOLDER": "Geben Sie Ihren Benutzernamen ein"
+      },
+      "PASSWORD": {
+        "LABEL": "Passwort",
+        "PLACEHOLDER": "Geben Sie Ihr Passwort ein"
+      },
+      "FORGOT_PASSWORD": {
+        "TITLE": "Passwort vergessen",
+        "LABEL": "E-Mail",
+        "PLACEHOLDER": "Bitte geben Sie Ihre E-Mail-Adresse ein"
+      }
+    },
+    "FORGOT_PASSWORD_BUTTON": "Passwort vergessen?",
+    "BUTTON": "Anmelden",
+    "FORGOT_BUTTON": "Absenden",
+    "BACK_BUTTON": "Zurück",
+    "BUTTON_OK": "Ok",
+    "RESET_EMAIL_TEXT": "Wir senden Ihnen eine E-Mail mit Anweisungen zum Zurücksetzen Ihres Passworts.",
+    "RESET_EMAIL_SENT": "Eine E-Mail mit Anweisungen wurde an Sie gesendet."
+  },
+  "PASSWORDRESET": {
+    "TITLE": "Passwort zurücksetzen",
+    "FIELDS": {
+      "PASSWORD": {
+        "LABEL": "Neues Passwort",
+        "PLACEHOLDER": "Passwort eingeben"
+      },
+      "CONFIRM_PASSWORD": {
+        "LABEL": "Passwort bestätigen",
+        "PLACEHOLDER": "Passwort bestätigen"
+      }
+    },
+    "SAVE_PASSWORD": "Speichern",
+    "ERRORS": {
+      "Repeat-password": "Passwörter stimmen nicht überein",
+      "Invalid-token": "Token ist ungültig oder abgelaufen",
+      "Password-too-weak": "Neues Passwort erfüllt eine oder mehrere Passwort-Sicherheitsrichtlinien nicht:",
+      "PasswordTooShort": "Passwort zu kurz",
+      "PasswordRequiresUniqueChars": "Passwörter müssen unterschiedliche Zeichen verwenden",
+      "PasswordRequiresLower": "Passwörter müssen mindestens einen Kleinbuchstaben enthalten ('a'-'z')",
+      "PasswordRequiresUpper": "Passwörter müssen mindestens einen Großbuchstaben enthalten ('A'-'Z')",
+      "PasswordRequiresDigit": "Passwörter müssen mindestens eine Ziffer enthalten ('0'-'9')",
+      "PasswordRequiresNonAlphanumeric": "Passwörter müssen mindestens ein nicht-alphanumerisches Zeichen enthalten",
+      "recentPasswordUsed": "Sie haben dieses Passwort in der Vergangenheit verwendet. Wählen Sie ein anderes."
+    }
+  },
+  "ASSETS_MANAGER": {
+    "TITLE": "Assets",
+    "TOOLBAR": {
+      "SAVE": "Speichern",
+      "REFRESH": "Aktualisieren",
+      "ADD": "Hinzufügen",
+      "DELETE": "Ausgewählte löschen"
+    },
+    "EMPTY": {
+      "NO_ASSETS": "Keine Assets",
+      "UPLOAD_ASSETS": "Assets hier ablegen oder auf 'Hochladen' klicken",
+      "UPLOAD": "Hochladen"
+    },
+    "TABLE": {
+      "HEADER": {
+        "IMAGE": "Bild",
+        "NAME": "Name",
+        "SIZE": "Größe",
+        "SORT_ORDER": "Sortierreihenfolge",
+        "CREATED_DATE": "Erstellungsdatum"
+      },
+      "ACTIONS": {
+        "DELETE": "Löschen",
+        "EDIT": "Bearbeiten"
+      }
+    }
+  },
+  "ASSETS": {
+    "PAGES": {
+      "DETAILS": {
+        "SUBTITLE": "Asset bearbeiten",
+        "TOOLBAR": {
+          "SAVE": "Speichern",
+          "DELETE": "Löschen"
+        },
+        "FIELDS": {
+          "SIZE": "Größe",
+          "CREATED_DATE": "Erstellungsdatum",
+          "URL": "URL",
+          "COPY": "Link kopieren",
+          "NAME": {
+            "TITLE": "Asset-Name",
+            "PLACEHOLDER": "Asset-Namen eingeben"
+          },
+          "ALT": {
+            "TITLE": "Alternativer Bildtext",
+            "PLACEHOLDER": "Alternativen Bildtext eingeben",
+            "TOOLTIP": "Dieser Text wird angezeigt, wenn das Bild auf der Seite deaktiviert oder nicht geladen ist"
+          },
+          "DESCRIPTION": {
+            "TITLE": "Meta-Beschreibung",
+            "PLACEHOLDER": "Meta-Beschreibung eingeben"
+          }
+        }
+      }
+    }
+  },
+  "messages": {
+    "_default": "Das Feld {field} ist ungültig",
+    "alpha": "Das Feld {field} darf nur alphabetische Zeichen enthalten",
+    "alpha_num": "Das Feld {field} darf nur alphanumerische Zeichen enthalten",
+    "alpha_dash": "Das Feld {field} darf alphanumerische Zeichen sowie Bindestriche und Unterstriche enthalten",
+    "alpha_spaces": "Das Feld {field} darf nur alphabetische Zeichen und Leerzeichen enthalten",
+    "between": "Das Feld {field} muss zwischen 0:{min} und 1:{max} liegen",
+    "confirmed": "Die Bestätigung des Feldes {field} stimmt nicht überein",
+    "digits": "Das Feld {field} muss numerisch sein und genau 0:{length} Ziffern enthalten",
+    "dimensions": "Das Feld {field} muss 0:{width} Pixel breit und 1:{height} Pixel hoch sein",
+    "email": "Das Feld {field} muss eine gültige E-Mail-Adresse sein",
+    "not_one_of": "Das Feld {field} hat keinen gültigen Wert",
+    "ext": "Das Feld {field} ist keine gültige Datei",
+    "image": "Das Feld {field} muss ein Bild sein",
+    "integer": "Das Feld {field} muss eine ganze Zahl sein",
+    "length": "Das Feld {field} muss 0:{length} lang sein",
+    "max_value": "Das Feld {field} muss 0:{max} oder weniger sein",
+    "max": "Das Feld {field} darf nicht länger als 0:{length} Zeichen sein",
+    "mimes": "Das Feld {field} muss einen gültigen Dateityp haben",
+    "min_value": "Das Feld {field} muss 0:{min} oder mehr sein",
+    "min": "Das Feld {field} muss mindestens 0:{length} Zeichen lang sein",
+    "numeric": "Das Feld {field} darf nur numerische Zeichen enthalten",
+    "one_of": "Das Feld {field} hat keinen gültigen Wert",
+    "regex": "Das Format des Feldes {field} ist ungültig",
+    "required_if": "Das Feld {field} ist erforderlich",
+    "required": "Das Feld {field} ist erforderlich",
+    "size": "Die Größe des Feldes {field} muss kleiner als 0:{size}KB sein",
+    "url": "Das Feld {field} ist keine gültige URL",
+    "min_dimensions": {
+      "error": "Die Bildabmessungen müssen größer als {height}*{width} sein",
+      "not_image_error": "Keine Bilddatei"
+    },
+    "file_weight": "Die Dateigröße darf maximal {size} kb betragen",
+    "before": "Das Enddatum muss früher als das Startdatum sein",
+    "after": "Das Enddatum muss später als das Startdatum sein",
+    "bigint": "Nicht unterstützte Zahl"
+  },
+  "PERMISSION_MESSAGES": {
+    "ACCESS_RESTRICTED": "Zugriff eingeschränkt"
+  }
+}

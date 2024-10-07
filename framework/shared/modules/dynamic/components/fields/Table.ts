@@ -82,6 +82,18 @@ export default {
             editing: enableEditComputed.value,
             enableItemActions: !!props.element.actions,
             itemActionBuilder: actionBuilder,
+            get selectedItemId() {
+              if (
+                props.element.selectedItemId?.method &&
+                props.bladeContext.scope?.[props.element.selectedItemId?.method]
+              ) {
+                if (typeof props.bladeContext.scope?.[props.element.selectedItemId?.method] === "function") {
+                  return props.bladeContext.scope?.[props.element.selectedItemId?.method]?.();
+                } else {
+                  return props.bladeContext.scope?.[props.element.selectedItemId?.method];
+                }
+              }
+            },
             get selectedItems() {
               if (
                 props.element.selectedIds?.method &&
@@ -91,6 +103,15 @@ export default {
                 return props.bladeContext.scope?.[props.element.selectedIds?.method]?.();
               }
               return [];
+            },
+            onItemClick: (item: (typeof items)[number]) => {
+              if (
+                props.element.onItemClick?.method &&
+                props.bladeContext.scope?.[props.element.onItemClick?.method] &&
+                typeof props.bladeContext.scope?.[props.element.onItemClick?.method] === "function"
+              ) {
+                props.bladeContext.scope?.[props.element.onItemClick?.method](item);
+              }
             },
             onOnEditComplete: (data: { event: { field: string; value: any }; index: number }) => {
               if (props.fieldContext) {

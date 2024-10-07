@@ -976,6 +976,24 @@ export type TableSchema = Omit<ListContentSchema, "filter"> &
     selectedIds?: {
       method: string;
     };
+    /**
+     * Configuration for the selected table row.
+     * Method should be defined in the blade `scope`.
+     * @description Method should return a table item id.
+     * @type {string}
+     */
+    selectedItemId?: {
+      method: string;
+    };
+    /**
+     * Configuration for the table item click.
+     * Method should be defined in the blade `scope`.
+     * @description Method should return a table item id.
+     * @type {string}
+     */
+    onItemClick?: {
+      method: string;
+    };
   };
 
 /**

@@ -127,7 +127,7 @@ import { TransitionRoot, TransitionChild, Dialog, DialogPanel, DialogTitle } fro
 interface Props {
   title?: string;
   closable?: boolean;
-  variant?: "default" | "error" | "warning" | "success";
+  variant?: "default" | "error" | "warning" | "success" | "info";
   isMobileFullscreen?: boolean;
   isFullscreen?: boolean;
   modalWidth?: string;
@@ -161,6 +161,8 @@ const icon = computed(() => {
       return "fas fa-times-circle";
     case "success":
       return "fas fa-check-circle";
+    case "info":
+      return "fas fa-info-circle";
     default:
       return "";
   }
@@ -174,6 +176,8 @@ const iconStyle = computed(() => {
       return "vc-popup__icon--error";
     case "success":
       return "vc-popup__icon--success";
+    case "info":
+      return "vc-popup__icon--info";
     default:
       return "";
   }
@@ -195,6 +199,7 @@ function closeModal() {
   --popup-warning-icon-color: var(--warning-500);
   --popup-error-icon-color: var(--base-error-color, var(--danger-500));
   --popup-success-icon-color: var(--success-500);
+  --popup-info-icon-color: var(--info-500);
   --popup-footer-separator: var(--base-border-color, var(--neutrals-200));
   --popup-overlay-color: var(--additional-50);
   --popup-overlay: rgb(from var(--popup-overlay-color) r g b / 75%);
@@ -287,6 +292,10 @@ function closeModal() {
 
     &--success {
       @apply tw-text-[var(--popup-success-icon-color)];
+    }
+
+    &--info {
+      @apply tw-text-[var(--popup-info-icon-color)];
     }
   }
 

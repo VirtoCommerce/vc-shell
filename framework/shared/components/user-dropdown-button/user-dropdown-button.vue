@@ -112,14 +112,14 @@ const { closeBlade } = useBladeNavigation();
 
 const defaultMenuItems = ref([
   {
-    title: t("SHELL.ACCOUNT.CHANGE_PASSWORD"),
+    title: computed(() => t("SHELL.ACCOUNT.CHANGE_PASSWORD")),
     icon: "fas fa-key",
     clickHandler() {
       open();
     },
   },
   {
-    title: t("SHELL.ACCOUNT.LOGOUT"),
+    title: computed(() => t("SHELL.ACCOUNT.LOGOUT")),
     icon: "fas fa-sign-out-alt",
     async clickHandler() {
       const isPrevented = await closeBlade(0);

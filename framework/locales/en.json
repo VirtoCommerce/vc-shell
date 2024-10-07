@@ -37,6 +37,90 @@
       },
       "VC_PAGINATION": {
         "JUMP": "Jump to page:"
+      },
+      "VC_EDITOR": {
+        "TOOLBAR_TIPS": {
+          "BOLD": "Bold",
+          "UNDERLINE": "Underline",
+          "ITALIC": "Italic",
+          "STRIKE_THROUGH": "Strikethrough",
+          "TITLE": "Title",
+          "SUB": "Subscript",
+          "SUP": "Superscript",
+          "QUOTE": "Quote",
+          "UNORDERED_LIST": "Unordered List",
+          "ORDERED_LIST": "Ordered List",
+          "TASK": "Task",
+          "CODE_ROW": "Code Row",
+          "CODE": "Code",
+          "LINK": "Link",
+          "IMAGE": "Image",
+          "TABLE": "Table",
+          "MERMAID": "Mermaid",
+          "KATEX": "KaTeX",
+          "REVOKE": "Revoke",
+          "NEXT": "Next",
+          "SAVE": "Save",
+          "PRETTIER": "Prettier",
+          "PAGE_FULLSCREEN": "Page Fullscreen",
+          "FULLSCREEN": "Fullscreen",
+          "PREVIEW": "Preview",
+          "PREVIEW_ONLY": "Preview Only",
+          "HTML_PREVIEW": "HTML Preview",
+          "CATALOG": "Catalog",
+          "GITHUB": "GitHub",
+          "DASH": "-",
+          "EQUALS": "="
+        },
+        "TITLE_ITEM": {
+          "H1": "Heading 1",
+          "H2": "Heading 2",
+          "H3": "Heading 3",
+          "H4": "Heading 4",
+          "H5": "Heading 5",
+          "H6": "Heading 6"
+        },
+        "IMG_TITLE_ITEM": {
+          "LINK": "Link",
+          "UPLOAD": "Upload",
+          "CLIP2UPLOAD": "Clip to Upload"
+        },
+        "LINK_MODAL_TIPS": {
+          "LINK_TITLE": "Link Title",
+          "IMAGE_TITLE": "Image Title",
+          "DESC_LABEL": "Description",
+          "DESC_LABEL_PLACEHOLDER": "Enter description",
+          "URL_LABEL": "URL",
+          "URL_LABEL_PLACEHOLDER": "Enter URL",
+          "BUTTON_OK": "OK"
+        },
+        "CLIP_MODAL_TIPS": {
+          "TITLE": "Clip",
+          "BUTTON_UPLOAD": "Upload"
+        },
+        "COPY_CODE": {
+          "TEXT": "Copy code",
+          "SUCCESS_TIPS": "Copied successfully!",
+          "FAIL_TIPS": "Failed to copy."
+        },
+        "MERMAID": {
+          "FLOW": "Flow",
+          "SEQUENCE": "Sequence",
+          "GANTT": "Gantt",
+          "CLASS": "Class",
+          "STATE": "State",
+          "PIE": "Pie",
+          "RELATIONSHIP": "Relationship",
+          "JOURNEY": "Journey"
+        },
+        "KATEX": {
+          "INLINE": "Inline",
+          "BLOCK": "Block"
+        },
+        "FOOTER": {
+          "MARKDOWN_TOTAL": "Total Markdown",
+          "SCROLL_AUTO": "Auto Scroll"
+        }
       }
     },
     "ORGANISMS": {
@@ -96,7 +180,8 @@
         "CLOSE": "Close",
         "TITLE": {
           "CONFIRMATION": "Confirmation",
-          "ERROR": "Error"
+          "ERROR": "Error",
+          "INFO": "Info"
         }
       }
     },

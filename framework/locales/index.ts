@@ -1,2 +1,3 @@
 import * as en from "./en.json";
-export { en };
+import * as de from "./de.json";
+export { en, de };

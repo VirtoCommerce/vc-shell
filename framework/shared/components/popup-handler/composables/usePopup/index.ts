@@ -20,12 +20,13 @@ import { ComponentPublicInstanceConstructor } from "../../../../utilities/vueUti
 import * as _ from "lodash-es";
 import vcPopupWarning from "../../../common/popup/vc-popup-warning.vue";
 import vcPopupError from "../../../common/popup/vc-popup-error.vue";
-
+import vcPopupInfo from "../../../common/popup/vc-popup-info.vue";
 interface IUsePopup {
   open(): void;
   close(): void;
   showConfirmation(message: string | Ref<string>): Promise<boolean>;
   showError(message: string | Ref<string>): void;
+  showInfo(message: string | Ref<string>): void;
 }
 
 function usePopupInternal() {
@@ -138,6 +139,27 @@ export function usePopup<T extends ComponentPublicInstanceConstructor<any> = typ
     popupInstance.popups.push(confirmation);
   }
 
+  function showInfo(message: string | Ref<string>) {
+    const confirmation = createInstance({
+      component: vcPopupInfo,
+      props: {
+        title: t("COMPONENTS.ORGANISMS.VC_POPUP.TITLE.INFO"),
+      },
+      emits: {
+        onClose() {
+          close(confirmation);
+        },
+      },
+      slots: {
+        default: message,
+      },
+    });
+
+    destroy(confirmation);
+
+    popupInstance.popups.push(confirmation);
+  }
+
   function createInstance<T extends ComponentPublicInstanceConstructor<any> = typeof VcPopup>(
     options: UsePopupProps<T>,
   ) {
@@ -156,6 +178,7 @@ export function usePopup<T extends ComponentPublicInstanceConstructor<any> = typ
     close,
     showConfirmation,
     showError,
+    showInfo,
   };
 }
 

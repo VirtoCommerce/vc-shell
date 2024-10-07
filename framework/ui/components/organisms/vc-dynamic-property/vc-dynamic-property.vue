@@ -248,7 +248,7 @@ const emit = defineEmits<{
   "update:model-value": [data: { readonly value: any; readonly dictionary?: any[]; readonly locale?: string }];
 }>();
 
-const { locale, te, t } = useI18n({ useScope: "global" });
+const { te, t } = useI18n({ useScope: "global" });
 
 const items: Ref<any[]> = ref([]);
 const loading = ref(false);
@@ -294,8 +294,8 @@ const computedProperty = computed(() => {
   }
 
   const propertyDisplayName =
-    props.displayNames?.find((displayName) => displayName.languageCode?.startsWith(locale.value as string))?.name ||
-    props.name;
+    props.displayNames?.find((displayName) => displayName.languageCode?.startsWith(props.currentLanguage as string))
+      ?.name || props.name;
   const propertyDisplayNameLocalized =
     propertyDisplayName && te(propertyDisplayName.toUpperCase())
       ? t(propertyDisplayName.toUpperCase())

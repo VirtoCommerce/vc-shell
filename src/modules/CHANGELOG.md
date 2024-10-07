@@ -1,3 +1,12 @@
+## [1.0.306](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.305...v1.0.306) (2024-10-07)
+
+
+### Features
+
+* **orders:** clickable line items ([84faeba](https://github.com/VirtoCommerce/vendor-portal/commit/84faeba509ed58a28e252a8f26099446a49dd985))
+
+
+
 ## [1.0.305](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.304...v1.0.305) (2024-10-04)
 
 

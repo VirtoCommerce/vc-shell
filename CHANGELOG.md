@@ -1,3 +1,12 @@
+## [1.0.307](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.306...v1.0.307) (2024-10-07)
+
+
+### Bug Fixes
+
+* **UI:** vc-table flex important ([ebc01dc](https://github.com/VirtoCommerce/vc-shell/commit/ebc01dccecf20ba182300a86010acc1882b0ec17))
+
+
+
 ## [1.0.306](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.305...v1.0.306) (2024-10-07)
 
 

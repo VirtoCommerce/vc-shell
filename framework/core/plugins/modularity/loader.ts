@@ -82,7 +82,10 @@ export function useDynamicModules(app: App, { router, appName }: { router: Route
             app.use((mod as Record<"default", Plugin>)?.default, { router });
           });
 
-          app.config.globalProperties.$dynamicModules = window.VcShellDynamicModules;
+          app.config.globalProperties.$dynamicModules = {
+            ...(app.config.globalProperties.$dynamicModules || {}),
+            ...window.VcShellDynamicModules,
+          };
           app.provide("$dynamicModules", app.config.globalProperties.$dynamicModules);
         }
       }

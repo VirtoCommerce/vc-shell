@@ -1,3 +1,12 @@
+## [1.0.309](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.308...v1.0.309) (2024-10-09)
+
+
+### Features
+
+* **dynamic:** mixin in list ([c6d954d](https://github.com/VirtoCommerce/vc-shell/commit/c6d954d77643d303fde3333352b023891f5222ef))
+
+
+
 ## [1.0.308](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.307...v1.0.308) (2024-10-08)
 
 

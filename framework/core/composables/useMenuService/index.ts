@@ -83,7 +83,7 @@ function useMenuServiceFn(): MenuService {
 
     menuItems.value = constructedMenu.value
       .map(
-        (x, index): MenuItem => ({
+        (x): MenuItem => ({
           ...x,
           title: computed(() => t(x.title as string)),
           id: _.snakeCase(t(x.title as string)),

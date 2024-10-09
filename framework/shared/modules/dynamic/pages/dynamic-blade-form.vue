@@ -83,11 +83,10 @@ import {
   ConcreteComponent,
   toRefs,
   provide,
-  toRef,
   type VNode,
 } from "vue";
 import { DynamicDetailsSchema, FormContentSchema, SettingsSchema } from "../types";
-import { reactiveComputed, refDefault, toReactive, useMounted, useTemplateRefsList } from "@vueuse/core";
+import { reactiveComputed, toReactive, useMounted, useTemplateRefsList } from "@vueuse/core";
 import {
   DetailsBladeContext,
   DetailsBaseBladeScope,
@@ -96,7 +95,6 @@ import {
   usePopup,
   useBladeNavigation,
   CoreBladeExposed,
-  DetailsBladeExposed,
 } from "../../../index";
 import SchemaRender from "../components/SchemaRender";
 import { VcSelect, VcImage } from "../../../../ui/components";

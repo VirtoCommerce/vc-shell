@@ -129,7 +129,7 @@ const register = (
     component: BladeInstanceConstructor as BladeInstanceConstructor,
     name: bladeName,
     model: json,
-    composables: args.composables,
+    composables: { ...args.composables },
   };
 
   registeredModules[bladeName] = newModule;
@@ -214,11 +214,15 @@ export function createDynamicAppModule(args: {
   ): void;
 } {
   let schemaCopy: { [key: string]: DynamicSchema } = {};
+  let composablesCopy: { [key: string]: (...args: any[]) => any } = args.composables ?? {};
 
   if (args.schema && Object.keys(args.schema).length > 0) {
-    schemaCopy = _.cloneDeep({ ...args.schema });
-    // Save schemas in the global registry
-    Object.assign(registeredSchemas, schemaCopy);
+    Object.entries(args.schema).forEach(([, schema]) => {
+      if (schema.settings && schema.settings.id) {
+        schemaCopy[schema.settings.id] = _.cloneDeep(schema);
+        registeredSchemas[schema.settings.id] = schemaCopy[schema.settings.id];
+      }
+    });
   } else {
     // Use registered schemas if new ones are not provided
     schemaCopy = _.cloneDeep({ ...registeredSchemas });
@@ -246,13 +250,26 @@ export function createDynamicAppModule(args: {
       };
 
       const moduleUid = _.uniqueId("module_");
-      Object.entries(schemaCopy).forEach(([key, JsonSchema], index) => {
+      Object.entries(schemaCopy).forEach(([, JsonSchema], index) => {
         const bladeId = JsonSchema.settings.id;
+        const mixin = args.mixin?.[JsonSchema.settings.id];
+
+        if (args.overrides) {
+          const idsOnOverridesUnique = [...new Set(args.overrides?.upsert?.map((x) => x.id))];
+
+          composablesCopy = {
+            ...composablesCopy,
+            ...Object.values(registeredModules).find((module) => {
+              return idsOnOverridesUnique.includes(module.name);
+            })?.composables,
+          };
+        }
+
         const registerArgs = {
           app,
           component: bladePages[JsonSchema.settings.component as keyof typeof bladePages] as BladeInstanceConstructor,
-          composables: { ...args.composables },
-          mixin: args.mixin?.[JsonSchema.settings.id] ? args.mixin[JsonSchema.settings.id] : undefined,
+          composables: { ...composablesCopy },
+          mixin,
           json: JsonSchema,
           options,
           moduleUid,

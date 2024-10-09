@@ -176,9 +176,8 @@ import { useFunctions, useNotifications } from "../../../../core/composables";
 import { IActionBuilderResult, ITableColumns } from "../../../../core/types";
 import { useToolbarReducer } from "../composables/useToolbarReducer";
 import { notification, useBladeNavigation, usePopup } from "../../../components";
-import { ITableConfig, ListBaseBladeScope, ListBladeContext, UseList } from "../factories/types";
+import { ListBaseBladeScope, ListBladeContext, UseList } from "../factories/types";
 import { IParentCallArgs } from "../../../index";
-import * as _ from "lodash-es";
 import { reactiveComputed, toReactive, useMounted } from "@vueuse/core";
 import { safeIn } from "../helpers/safeIn";
 
@@ -190,6 +189,7 @@ export interface Props {
   model?: DynamicGridSchema;
   composables?: Record<string, (...args: any[]) => Record<string, any>>;
   isWidgetView?: boolean;
+  mixinFn?: ((...args: any[]) => any)[];
 }
 
 export interface Emits {
@@ -223,6 +223,7 @@ const selectedItemId = shallowRef();
 const sort = shallowRef();
 const selectedIds = shallowRef<string[]>([]);
 const itemsProxy = ref<Record<string, any>[]>();
+const isMixinReady = ref(false);
 
 const { moduleNotifications, markAsRead } = useNotifications(settings.value?.pushNotificationType);
 const { setNavigationQuery, getNavigationQuery } = useBladeNavigation();
@@ -266,7 +267,8 @@ if (typeof props.composables?.[props.model?.settings?.composable ?? ""] === "und
   throw new Error(`Composable ( ${props.model?.settings?.composable} ) is not defined`);
 }
 
-const { load, remove, items, loading, pagination, query, scope } = props.composables
+// eslint-disable-next-line prefer-const
+let { load, remove, items, loading, pagination, query, scope } = props.composables
   ? (props.composables?.[props.model?.settings?.composable ?? ""]({
       emit,
       props,
@@ -282,6 +284,32 @@ const { load, remove, items, loading, pagination, query, scope } = props.composa
       query: undefined,
       scope: undefined,
     } as unknown as UseList<Record<string, any>[], Record<string, any>, ListBaseBladeScope>);
+
+if (props.mixinFn?.length) {
+  console.log("props.mixinFn", props.mixinFn);
+  const mixinResults = props.mixinFn?.map((mixin) => mixin({ loading, items, scope, load, remove, query }));
+
+  const mergedResults = mixinResults.reduce((acc, result) => {
+    return {
+      ...acc,
+      ...result,
+    };
+  }, {});
+
+  console.log("mergedResults", mergedResults);
+
+  loading = mergedResults.loading ?? loading;
+  items = mergedResults.items ?? items;
+  scope = mergedResults.scope ?? scope;
+  load = mergedResults.load ?? load;
+  remove = mergedResults.remove ?? remove;
+  query = mergedResults.query ?? query;
+  // console.log('query', query, mergedResults.query)
+
+  isMixinReady.value = true;
+} else {
+  isMixinReady.value = true;
+}
 
 const isBladeEditable = computed(() =>
   "disabled" in toValue(scope || {}) ? !toValue(toValue(scope || {})?.disabled) : false,
@@ -410,7 +438,7 @@ const toolbarComputed =
   [];
 
 onBeforeMount(async () => {
-  if (props.composables)
+  if (props.composables && isMixinReady.value)
     await load({
       sort: sort.value,
       ...query.value,

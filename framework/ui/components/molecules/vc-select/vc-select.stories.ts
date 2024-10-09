@@ -132,7 +132,7 @@ export const AsyncOptions: StoryFn<typeof VcSelect> = (args) => ({
   components: { VcSelect } as Record<keyof typeof VcSelect, unknown>,
   setup() {
     const val = ref();
-    const getItems = async (keyword?: string, skip = 0, ids?: string[]) =>
+    const getItems = async () =>
       new Promise((resolve) => {
         setTimeout(() => {
           resolve({

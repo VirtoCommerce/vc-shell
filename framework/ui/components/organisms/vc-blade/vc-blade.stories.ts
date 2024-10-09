@@ -1,6 +1,6 @@
 import type { Meta, StoryFn } from "@storybook/vue3";
 import { VcBlade } from "./";
-import { onMounted, ref } from "vue";
+import { ref } from "vue";
 
 export default {
   title: "organisms/VcBlade",

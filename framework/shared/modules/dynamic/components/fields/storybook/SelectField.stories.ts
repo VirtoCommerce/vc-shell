@@ -277,7 +277,7 @@ export const WithAsyncOptions: StoryFn<SelectSchema> = (args) => ({
         mockedProperty: null,
       },
       scope: {
-        mockedOptionsArray: async (keyword?: string, skip = 0, ids?: string[]) =>
+        mockedOptionsArray: async () =>
           new Promise((resolve) => {
             setTimeout(() => {
               resolve({

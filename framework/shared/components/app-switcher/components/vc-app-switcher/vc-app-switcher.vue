@@ -62,7 +62,7 @@
 </template>
 
 <script lang="ts" setup>
-import { inject, ref } from "vue";
+import { ref } from "vue";
 import { AppDescriptor } from "../../../../../core/api/platform";
 import { Sidebar } from "./../../../sidebar";
 

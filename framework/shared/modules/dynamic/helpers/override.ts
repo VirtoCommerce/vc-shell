@@ -20,7 +20,7 @@ export const handleOverrides = (overrides: OverridesSchema, schemaCopy: { [key: 
 
 const upsertHelper = (overrides: OverridesSchema, schemaCopy: { [key: string]: DynamicSchema }) => {
   return Object.entries(schemaCopy).reduce(
-    (obj, [name, schema]) => {
+    (obj, [, schema]) => {
       const clonedSchema = _.cloneDeep(schema);
       overrides.upsert
         ?.filter((x) => clonedSchema.settings.id === x.id)
@@ -66,7 +66,17 @@ const upsertHelper = (overrides: OverridesSchema, schemaCopy: { [key: string]: D
             _.set(clonedSchema, currentPath, args.value);
           }
         });
-      obj[name] = clonedSchema;
+
+      const newId = clonedSchema.settings.id;
+
+      if (newId !== schema.settings.id) {
+        obj[newId] = clonedSchema;
+
+        obj[schema.settings.id] = schema;
+      } else {
+        obj[schema.settings.id] = clonedSchema;
+      }
+
       return obj;
     },
     {} as Record<string, DynamicSchema>,

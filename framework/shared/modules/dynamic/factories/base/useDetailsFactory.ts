@@ -1,6 +1,6 @@
-import { ComputedRef, MaybeRef, Ref, computed, ref, watch } from "vue";
+import { ComputedRef, MaybeRef, computed, ref, watch } from "vue";
 import * as _ from "lodash-es";
-import { useForm, useIsFormDirty, useIsFormValid } from "vee-validate";
+import { useForm, useIsFormValid } from "vee-validate";
 import { useAsync, useLoading } from "../../../../../core/composables";
 import type { ItemId, IValidationState, UseDetails } from "../types";
 import { createUnrefFn } from "@vueuse/core";
@@ -31,12 +31,12 @@ export const useDetailsFactory = <Item extends { id?: string }>(factoryParams: U
       }
     });
 
-    const { loading: manageLoading, action: saveChanges } = useAsync<Item, Item | undefined>(async (item) => {
+    const { loading: manageLoading, action: saveChanges } = useAsync<Item, Item | undefined>(async (itemToSave) => {
       if (validationState.value.valid) {
-        const res = await factoryParams.saveChanges?.(item as Item);
+        const res = await factoryParams.saveChanges?.(itemToSave as Item);
         isModified.value = false;
 
-        const id = item?.id ?? res?.id;
+        const id = itemToSave?.id ?? res?.id;
 
         if (id) {
           await load({ id });

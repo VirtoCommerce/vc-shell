@@ -1,7 +1,6 @@
-import type { Meta, StoryFn, StoryObj } from "@storybook/vue3";
+import type { Meta, StoryFn } from "@storybook/vue3";
 import { VcCard } from ".";
 import { VcInput, VcCol, VcButton } from "./../../";
-import { h } from "vue";
 
 const VARIANT = ["default", "success", "danger"];
 

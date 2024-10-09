@@ -50,7 +50,7 @@ export interface Emits {
 
 defineEmits<Emits>();
 
-const props = withDefaults(defineProps<Props>(), {
+withDefaults(defineProps<Props>(), {
   position: "right",
   render: "always",
 });

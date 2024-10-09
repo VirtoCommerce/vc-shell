@@ -3,7 +3,7 @@ import { MultivalueSchema } from "../../..";
 import { SchemaBaseArgTypes } from "./common/args";
 import { template, templateWithVisibilityToggle } from "./common/templates";
 import page from "./pages/DynamicRender";
-import { computed, defineComponent, reactive, ref, watch } from "vue";
+import { reactive, ref } from "vue";
 import { VcIcon } from "../../../../../../ui/components/atoms/vc-icon";
 
 const customTemplateComponent = {

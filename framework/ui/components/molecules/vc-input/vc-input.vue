@@ -511,10 +511,10 @@ function emitValue(val: string | number | Date | null) {
   emitValueFn = () => {
     if (mutatedModel.value !== val) {
       let value;
-      if (props.type === "number" && val !== null) {
-        value = parseFloat(val as string);
-      } else if (props.type === "integer" && val !== null) {
-        value = Math.trunc(parseInt(val as string));
+      if (props.type === "number" && val !== null && val !== undefined) {
+        value = val !== "" ? parseFloat(val as string) : null;
+      } else if (props.type === "integer" && val !== null && val !== undefined) {
+        value = val !== "" ? Math.trunc(parseInt(val as string)) : null;
       } else {
         value = val;
       }

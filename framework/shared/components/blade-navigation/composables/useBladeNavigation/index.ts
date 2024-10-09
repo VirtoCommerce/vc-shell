@@ -133,7 +133,7 @@ const useBladeNavigationSingleton = createSharedComposable(() => {
     (instance !== null && inject<BladeNavigationPlugin>("bladeNavigationPlugin")) || bladeNavigationInstance;
   const router = navigationInstance?.router;
 
-  const { parseUrl, parseWorkspaceUrl, getURLQuery, routes } = utils(router);
+  const { parseUrl, parseWorkspaceUrl, getURLQuery } = utils(router);
 
   watch(
     () => route.path,

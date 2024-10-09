@@ -1,5 +1,5 @@
 import { useI18n } from "vue-i18n";
-import { Component, ExtractPropTypes, computed, h, onMounted, ref, unref, watch } from "vue";
+import { Component, ExtractPropTypes, computed, h, onMounted, ref, unref } from "vue";
 import componentProps from "./props";
 import { StatusSchema } from "../../types";
 import { StatusField } from "../factories";

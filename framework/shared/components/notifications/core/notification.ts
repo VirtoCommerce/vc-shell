@@ -1,4 +1,4 @@
-import { mergeProps, h } from "vue";
+import { mergeProps } from "vue";
 import { Content, InternalNotificationOptions, NotificationOptions } from "../types";
 import { useContainer } from "../composables";
 

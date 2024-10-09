@@ -77,8 +77,8 @@ export interface Emits {
   (event: "search:change", value: string): void;
 }
 
-const props = defineProps<Props>();
-const emit = defineEmits<Emits>();
+defineProps<Props>();
+defineEmits<Emits>();
 </script>
 
 <style lang="scss">

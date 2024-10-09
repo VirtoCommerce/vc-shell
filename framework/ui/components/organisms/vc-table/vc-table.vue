@@ -575,7 +575,6 @@ const slots = useSlots();
 // template refs
 const reorderRef = ref<HTMLElement | null>();
 const tableRef = ref<HTMLElement | null>();
-const searchInput = ref<HTMLElement | null>();
 
 // event listeners
 let columnResizeListener: ((...args: any[]) => any) | null = null;

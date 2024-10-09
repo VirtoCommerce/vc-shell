@@ -7,7 +7,7 @@ import {
   useDetailsFactory,
   useLoading,
 } from "@vc-shell/framework";
-import { Ref, computed, nextTick, reactive, ref, watch, WritableComputedRef } from "vue";
+import { Ref, computed, nextTick, reactive, ref, watch, WritableComputedRef, toRef } from "vue";
 import * as _ from "lodash-es";
 import useMarketplaceSettings, { ICurrency } from "../../../settings/composables/useMarketplaceSettings";
 import { useI18n } from "vue-i18n";
@@ -53,13 +53,16 @@ export const useSpecialPriceDetails = (
   });
 
   const { load, saveChanges, remove, loading, item, validationState } = detailsFactory();
-  const { currencies, loadSettings } = useMarketplaceSettings();
+  const { currencies, loadSettings, defaultCurrency } = useMarketplaceSettings();
   const pricesLoading = ref(false);
   const duplicates = ref<string[]>([]);
   const pricingEqual = ref(false);
+
   const pricesToAdd = ref(
     new OfferPrice({
-      currency: "USD",
+      get currency() {
+        return defaultCurrency.value?.value;
+      },
       listPrice: null,
       minQuantity: null,
     } as unknown as IOfferPrice),
@@ -73,10 +76,15 @@ export const useSpecialPriceDetails = (
     if (item.value && !item.value.prices) {
       item.value.prices = [];
     }
+
+    if (!pricesToAdd.value.currency) {
+      pricesToAdd.value.currency = defaultCurrency.value.value;
+    }
+
     item.value?.prices?.push(pricesToAdd.value);
 
     pricesToAdd.value = new OfferPrice({
-      currency: "USD",
+      currency: defaultCurrency.value.value,
       listPrice: null,
       minQuantity: null,
     } as unknown as IOfferPrice);

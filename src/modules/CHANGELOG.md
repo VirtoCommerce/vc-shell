@@ -1,3 +1,17 @@
+## [1.0.311](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.310...v1.0.311) (2024-10-09)
+
+
+### Bug Fixes
+
+* **offers:** default currency in prices ([2db3118](https://github.com/VirtoCommerce/vendor-portal/commit/2db3118d2b6d5360f67f2d6bff5c6a615390fd28))
+
+
+### Features
+
+* mp-products as mixin ([6a2e4c8](https://github.com/VirtoCommerce/vendor-portal/commit/6a2e4c8f9089301a6da2a73569f0a08976bb3d59))
+
+
+
 ## [1.0.310](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.309...v1.0.310) (2024-10-08)
 
 

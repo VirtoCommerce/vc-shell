@@ -1,3 +1,7 @@
+## [1.0.311](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.310...v1.0.311) (2024-10-09)
+
+
+
 ## [1.0.310](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.309...v1.0.310) (2024-10-08)
 
 

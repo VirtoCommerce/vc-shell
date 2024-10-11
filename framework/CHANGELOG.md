@@ -1,3 +1,21 @@
+## [1.0.311](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.310...v1.0.311) (2024-10-11)
+
+
+### Bug Fixes
+
+* **dynamic/filter-builder:** exclude 'skip' property from query parameters in search function ([0591359](https://github.com/VirtoCommerce/vc-shell/commit/0591359508f9c72ef3a44550cf8c336f23288d0b))
+* **error-handler:** improve error handling and message extraction ([15f68b4](https://github.com/VirtoCommerce/vc-shell/commit/15f68b4219172226c149430ecf4f5687a6b9e0ab))
+* **ui/vc-blade:** adjust error button styles for improved visibility and consistency ([f9db7da](https://github.com/VirtoCommerce/vc-shell/commit/f9db7da7f9da0f8fac6a6b488fa983621389649b))
+* **ui/vc-pagination:** enhance pagination item styles with hover effects and cursor pointer ([b89296f](https://github.com/VirtoCommerce/vc-shell/commit/b89296f23bc826ada4cb0196f8ffb937657013d4))
+* **ui:** update status field styles and color variables for improved visibility ([00a4c3f](https://github.com/VirtoCommerce/vc-shell/commit/00a4c3f464f5883c98337aecc9161036f423acf7))
+
+
+### Features
+
+* **ui:** vc-table scroll to top on page change, column switcher modes ([3c7c353](https://github.com/VirtoCommerce/vc-shell/commit/3c7c3533abf5f3f03fada20d5a9693f135517ad6))
+
+
+
 ## [1.0.310](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.309...v1.0.310) (2024-10-11)
 
 

@@ -1,3 +1,12 @@
+## [1.0.313](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.312...v1.0.313) (2024-10-11)
+
+
+### Bug Fixes
+
+* **offers:** remove product loading from blade loading state ([20f8cfc](https://github.com/VirtoCommerce/vendor-portal/commit/20f8cfc4f1a70e02f4f742ed7002b6de8293dd82))
+
+
+
 ## [1.0.312](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.311...v1.0.312) (2024-10-11)
 
 

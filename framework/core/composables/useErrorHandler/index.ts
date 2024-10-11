@@ -22,17 +22,27 @@ export function useErrorHandler(capture?: boolean): IUseErrorHandler {
   }
 
   onErrorCaptured((err) => {
-    if (err && err instanceof Error) {
-      if ("isApiException" in err && "response" in err) {
-        const stringifiedError = JSON.stringify(err);
-        error.value = stringifiedError;
+    if (err) {
+      if (err instanceof Error) {
+        if (typeof err === "object" && "isApiException" in err && "response" in err) {
+          const res = JSON.parse(String(err.response));
+          if (res && "message" in res) {
+            error.value = res.message;
+          } else if (err.message) {
+            error.value = err.message;
+          } else {
+            error.value = err.toString();
+          }
+        } else {
+          error.value = err.message || err.toString();
+        }
       } else {
-        error.value = err.toString();
+        error.value = String(err);
       }
 
       if (appInsights) {
         appInsights.trackException({
-          exception: err,
+          exception: err instanceof Error ? err : new Error(String(err)),
           properties: {
             userId: user.value?.id ?? "",
             userName: user.value?.userName ?? "",

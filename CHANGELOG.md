@@ -1,3 +1,12 @@
+## [1.0.312](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.311...v1.0.312) (2024-10-11)
+
+
+### Bug Fixes
+
+* **orders:** prevent open line item while editing, change keyword search to skus ([cce6ea8](https://github.com/VirtoCommerce/vendor-portal/commit/cce6ea8ffe657885d5d0bf770dbc64ed14f6231b))
+
+
+
 ## [1.0.311](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.310...v1.0.311) (2024-10-09)
 
 

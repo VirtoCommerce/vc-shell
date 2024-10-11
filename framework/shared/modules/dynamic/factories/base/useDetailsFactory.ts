@@ -77,7 +77,11 @@ export const useDetailsFactory = <Item extends { id?: string }>(factoryParams: U
     watch(
       [() => item, () => itemTemp],
       ([state, stateCopy]) => {
-        isModified.value = !_.isEqual(stateCopy.value, state.value);
+        isModified.value = !_.isEqualWith(stateCopy.value, state.value, (a, b) => {
+          if (a === undefined && b === null) return true;
+          if (a === null && b === undefined) return true;
+          return undefined; // Use default comparison for other cases
+        });
       },
       { deep: true },
     );

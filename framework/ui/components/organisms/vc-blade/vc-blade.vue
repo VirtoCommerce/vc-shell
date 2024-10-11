@@ -275,7 +275,8 @@ const { open } = usePopup({
   }
 
   &__error-button {
-    @apply tw-shrink-0 tw-opacity-80 tw-text-[color:var(--blade-text-color)] hover:tw-opacity-100 hover:tw-text-[color:var(--blade-text-color)];
+    @apply tw-shrink-0 tw-opacity-80  hover:tw-opacity-100 hover:tw-text-[color:var(--blade-text-color)];
+    @apply tw-text-[color:var(--blade-text-color)] #{!important};
   }
 
   &__unsaved-changes {

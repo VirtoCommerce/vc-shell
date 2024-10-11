@@ -111,6 +111,7 @@ export interface ITableConfig {
   onEditComplete?: (data: { event: { field: string; value: any }; index: number }) => void;
   onCellBlur?: (data: { row: number | undefined; field: string }) => void;
   disableItemCheckbox?: (item: Record<string, any> | undefined) => boolean;
+  columnSelector?: "auto" | "defined" | MaybeRef<ITableColumns[]> | (() => ITableColumns[]);
 }
 
 export interface BaseBladeScope {

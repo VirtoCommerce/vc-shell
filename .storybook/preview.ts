@@ -2,11 +2,12 @@
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import { setup, Preview } from "@storybook/vue3";
 import { useBreakpoints } from "@vueuse/core";
-import framework, { useLanguages } from "@vc-shell/framework";
+import framework, { useLanguages, useTheme } from "@vc-shell/framework";
 import { createRouter, createWebHashHistory } from "vue-router";
 import { vueRouter } from "storybook-vue3-router";
 import * as locales from "./assets/locales";
 import "./../framework/assets/styles/index.scss";
+import { ref, watch } from "vue";
 
 setup((app) => {
   app.use(framework, {
@@ -26,7 +27,42 @@ setup((app) => {
 });
 
 const preview: Preview = {
-  decorators: [vueRouter()],
+  globalTypes: {
+    theme: {
+      description: "Global theme for components",
+      toolbar: {
+        title: "Theme",
+        icon: "circlehollow",
+        items: ["light", "dark"],
+        dynamicTitle: true,
+      },
+    },
+  },
+  initialGlobals: {
+    theme: "light",
+  },
+  decorators: [
+    vueRouter(),
+    (story, context) => {
+      const theme = context.globals.theme || "light";
+      return {
+        template: `<div>
+          <story/>
+        </div>`,
+        setup: () => {
+          const { setTheme } = useTheme();
+
+          watch(
+            () => theme,
+            (theme) => {
+              setTheme(theme);
+            },
+            { immediate: true },
+          );
+        },
+      };
+    },
+  ],
   parameters: {
     actions: { argTypesRegex: "^on[A-Z].*" },
     controls: {

@@ -177,7 +177,7 @@ const imageHandler = computed(() => {
 }
 
 .vc-user-dropdown-button {
-  @apply tw-w-[240px] tw-border-l tw-border-solid tw-border-l-[color:var(--user-dropdown-border-color)]  tw-cursor-pointer
+  @apply tw-border-l tw-border-solid tw-border-l-[color:var(--user-dropdown-border-color)]  tw-cursor-pointer
   tw-relative tw-flex tw-h-full tw-flex-col tw-select-none;
 
   .vc-app_mobile & {
@@ -193,7 +193,7 @@ const imageHandler = computed(() => {
   }
 
   &__wrap {
-    @apply tw-flex tw-justify-between tw-items-center tw-flex-auto tw-px-4 tw-bg-[--user-dropdown-wrap-bg];
+    @apply tw-flex tw-justify-between tw-items-center tw-flex-auto tw-px-4 tw-bg-[--user-dropdown-wrap-bg] tw-gap-3;
   }
 
   &__avatar {
@@ -206,7 +206,7 @@ const imageHandler = computed(() => {
   }
 
   &__info {
-    @apply tw-grow tw-basis-0 tw-ml-3 tw-overflow-hidden;
+    @apply tw-grow tw-basis-0 tw-overflow-hidden;
   }
 
   &__name {

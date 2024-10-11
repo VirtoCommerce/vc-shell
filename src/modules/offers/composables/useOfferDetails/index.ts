@@ -400,7 +400,7 @@ export const useOfferDetails = (
     remove,
     saveChanges,
     scope,
-    loading: useLoading(loading, offerLoading, productLoading, languagesLoading),
+    loading: useLoading(loading, offerLoading, languagesLoading),
     item,
     validationState,
     bladeTitle,

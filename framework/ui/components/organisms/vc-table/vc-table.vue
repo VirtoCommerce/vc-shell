@@ -273,6 +273,7 @@
           </div>
           <div
             v-if="items && items.length && !columnsInit"
+            ref="tableBody"
             class="vc-table__body"
           >
             <div
@@ -426,7 +427,13 @@
           :pages="pages"
           :current-page="currentPage"
           :variant="paginationVariant"
-          @item-click="$emit('paginationClick', $event)"
+          @item-click="
+            (event) => {
+              //scroll table to top
+              tableBody?.scrollTo(0, 0);
+              $emit('paginationClick', event);
+            }
+          "
         ></VcPagination>
 
         <!-- Table counter -->
@@ -538,6 +545,7 @@ const props = withDefaults(
     paginationVariant?: ComponentProps<typeof VcPagination>["variant"];
     selectionItems?: T[];
     disableFilter?: boolean;
+    columnSelector?: "auto" | "defined" | MaybeRef<ITableColumns[]> | (() => ITableColumns[]);
   }>(),
   {
     items: () => [],
@@ -551,6 +559,7 @@ const props = withDefaults(
     resizableColumns: true,
     reorderableColumns: true,
     paginationVariant: "default",
+    columnSelector: "auto",
   },
 );
 
@@ -575,6 +584,7 @@ const slots = useSlots();
 // template refs
 const reorderRef = ref<HTMLElement | null>();
 const tableRef = ref<HTMLElement | null>();
+const tableBody = ref<HTMLElement | null>();
 
 // event listeners
 let columnResizeListener: ((...args: any[]) => any) | null = null;
@@ -763,32 +773,56 @@ watch(
 watch(
   [() => props.items, () => props.columns],
   ([newValItems, newValCols]) => {
-    let cols: ITableColumns[] = [];
     let predefinedCols: ITableColumns[] = [];
-    if (newValItems && newValItems.length) {
-      cols = Object.keys(newValItems[0]).map((key) => {
-        return {
+    let otherCols: ITableColumns[] = [];
+
+    // Helper function to process columns
+    const processColumns = (columns: ITableColumns[], predefined: boolean, defaultVisible: boolean) =>
+      columns.map((item) => ({
+        ...item,
+        predefined,
+        visible: typeof item.visible !== "undefined" ? item.visible : defaultVisible,
+      }));
+
+    // Process predefined columns
+    if (newValCols && newValCols.length) {
+      predefinedCols = processColumns(newValCols, true, true);
+    }
+
+    if (props.columnSelector === "auto") {
+      // Generate columns automatically from items
+      if (newValItems && newValItems.length) {
+        const itemKeys = Object.keys(newValItems[0]);
+        otherCols = itemKeys.map((key) => ({
           id: key,
-          // From camelCase to human readable with first letter capitalized
           title: key.replace(/([A-Z])/g, " $1").replace(/^./, (str) => str.toUpperCase()),
           visible: false,
           predefined: false,
-        };
-      });
+        }));
+      }
+
+      // Combine columns and restore state
+      allColumns.value = _.unionBy(predefinedCols, otherCols, "id");
+      restoreState(predefinedCols);
+    } else if (props.columnSelector === "defined") {
+      allColumns.value = predefinedCols;
+      restoreState(predefinedCols);
+    } else {
+      // Get columns from columnSelector
+      const getDefinedColumns = (): ITableColumns[] => {
+        if (typeof props.columnSelector === "function") {
+          return props.columnSelector();
+        }
+        return toValue(props.columnSelector) as ITableColumns[];
+      };
+
+      const definedCols = processColumns(getDefinedColumns(), false, false);
+
+      // Combine columns and restore state
+      allColumns.value = _.unionBy(predefinedCols, definedCols, "id");
+      restoreState(allColumns.value);
     }
 
-    if (newValCols && newValCols.length) {
-      // Update internal columns based on predefined columns
-      predefinedCols = newValCols.map((item) => ({
-        ...item,
-        predefined: true,
-        visible: typeof item.visible !== "undefined" ? item.visible : true,
-      }));
-    }
-
-    allColumns.value = _.unionBy(predefinedCols, cols, "id");
-
-    restoreState(predefinedCols);
     columnsInit.value = false;
   },
   { deep: true, immediate: true },
@@ -1211,10 +1245,27 @@ function restoreState(predefinedColumns: TableColPartial[] = []) {
   }
 
   const predefinedMap = new Map(predefinedColumns.map((col) => [col.id, col]));
+  console.log("predefinedMap", predefinedMap);
+  const mergedColumns: TableColPartial[] = storedState
+    .map((storedCol) => {
+      const predefinedCol = predefinedMap.get(storedCol.id);
+      console.log("predefinedCol", predefinedCol);
+      return mergeColumns(storedCol, predefinedCol);
+    })
+    .filter((col) => col.title);
 
-  const mergedColumns = storedState.map((storedCol) => {
-    const predefinedCol = predefinedMap.get(storedCol.id);
-    return mergeColumns(storedCol, predefinedCol);
+  // add predefined columns that are not in stored state
+  predefinedColumns.forEach((predefinedCol) => {
+    if (!mergedColumns.find((col) => col.id === predefinedCol.id)) {
+      mergedColumns.push({ ...predefinedCol, visible: true, predefined: true });
+    }
+  });
+
+  // add other columns to mergedColumns from allColumns array without duplicates
+  allColumns.value.forEach((col) => {
+    if (!mergedColumns.find((c) => c.id === col.id)) {
+      mergedColumns.push(col as TableColPartial);
+    }
   });
 
   resetRemovedColumns(storedState, predefinedMap, mergedColumns);

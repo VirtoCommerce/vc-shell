@@ -317,7 +317,7 @@ export default <Query>(args: {
     };
     filterHandlerFn();
     await _search({
-      ...unref(args.query),
+      ...(_.omit(unref(args.query) as object, "skip") as Query),
       ...filter.value,
     });
   }

@@ -72,6 +72,10 @@
         },
         "CREATE_NEW_STATUS_TEXT": "Price tags can be added to the offer after it has been created",
         "FIELDS": {
+          "NAME": {
+            "TITLE": "Name",
+            "PLACEHOLDER": "Enter offer name"
+          },
           "PRODUCT": {
             "TITLE": "Product",
             "PLACEHOLDER": "Select product for offer"

@@ -62,6 +62,16 @@ export const details: DynamicDetailsSchema = {
           },
         },
         {
+          id: "name",
+          component: "vc-input",
+          property: "name",
+          label: "OFFERS.PAGES.DETAILS.FIELDS.NAME.TITLE",
+          placeholder: "OFFERS.PAGES.DETAILS.FIELDS.NAME.PLACEHOLDER",
+          rules: {
+            required: true,
+          },
+        },
+        {
           id: "productId",
           component: "vc-select",
           label: "OFFERS.PAGES.DETAILS.FIELDS.PRODUCT.TITLE",

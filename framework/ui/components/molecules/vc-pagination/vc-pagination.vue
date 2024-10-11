@@ -208,7 +208,14 @@ const pagesToShow = computed(() => {
     tw-text-[color:var(--pagination-item-color)]
     tw-box-border
     tw-transition tw-duration-200
-    tw-mr-3 tw-select-none last:tw-mr-0 tw-text-xs;
+    tw-mr-3 tw-select-none last:tw-mr-0 tw-text-xs tw-cursor-pointer;
+
+    &:hover {
+      @apply tw-bg-[color:var(--pagination-item-background-color-hover)]
+      tw-text-[color:var(--pagination-item-color-hover)]
+      tw-border tw-border-solid tw-border-[color:var(--pagination-item-border-color-hover)]
+      tw-cursor-pointer;
+    }
 
     &_current,
     &_current:hover {

@@ -73,7 +73,7 @@ export default {
                     class: "tw-mr-3",
                   })
                 : undefined,
-              h("div", { class: "tw-flex tw-flex-col" }, [
+              h("div", { class: "tw-flex tw-flex-col", style: "text-align: start;" }, [
                 h("div", { class: "tw-font-bold" }, computed(() => t(props.element.title ?? "")).value),
                 h(
                   "div",

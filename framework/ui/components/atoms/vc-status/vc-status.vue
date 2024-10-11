@@ -34,26 +34,26 @@ defineSlots<{
   --status-border-radius-extended: 4px;
   --status-border-width: 1px;
 
-  --status-info-color: var(--neutrals-50);
-  --status-info-main-color: var(--info-300);
+  --status-info-color: var(--additional-950);
+  --status-info-main-color: var(--info-500);
 
-  --status-warning-color: var(--neutrals-50);
+  --status-warning-color: var(--additional-950);
   --status-warning-main-color: var(--warning-500);
 
-  --status-danger-color: var(--neutrals-50);
+  --status-danger-color: var(--additional-950);
   --status-danger-main-color: var(--danger-500);
 
-  --status-success-color: var(--neutrals-50);
+  --status-success-color: var(--additional-950);
   --status-success-main-color: var(--success-500);
 
-  --status-light-danger-color: var(--neutrals-50);
-  --status-light-danger-main-color: var(--danger-200);
+  --status-light-danger-color: var(--additional-950);
+  --status-light-danger-main-color: var(--danger-300);
 
-  --status-info-dark-color: var(--neutrals-50);
+  --status-info-dark-color: var(--additional-50);
   --status-info-dark-main-color: var(--info-600);
 
+  --status-primary-color: var(--additional-950);
   --status-primary-main-color: var(--primary-500);
-  --status-primary-color: var(--neutrals-50);
 
   --status-outline-bg-color: var(--additional-50);
 }

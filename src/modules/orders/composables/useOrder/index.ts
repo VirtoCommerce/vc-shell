@@ -192,29 +192,31 @@ export const useOrder = (args: DetailsComposableArgs): UseDetails<CustomerOrder,
   };
 
   async function onItemClick(item: OrderLineItem) {
-    try {
-      catalogLoading.value = true;
-      const offersQuery = new SearchOffersQuery({ keyword: item.sku, take: 1 });
-      const items = await (await getCatalogApiClient()).searchOffers(offersQuery);
+    if (disabled.value) {
+      try {
+        catalogLoading.value = true;
+        const offersQuery = new SearchOffersQuery({ skus: item.sku ? [item.sku] : [] });
+        const items = await (await getCatalogApiClient()).searchOffers(offersQuery);
 
-      if (items.results && items.results.length > 0) {
-        await openBlade({
-          blade: resolveBladeByName("Offer"),
-          param: items.results[0].id,
-          onOpen: () => {
-            selectedItemId.value = item.id;
-          },
-          onClose: () => {
-            selectedItemId.value = undefined;
-          },
-        });
-      } else {
-        showInfo(computed(() => t("ORDERS.PAGES.DETAILS.FORM.OFFERS.NOT_FOUND")));
+        if (items.results && items.results.length > 0) {
+          await openBlade({
+            blade: resolveBladeByName("Offer"),
+            param: items.results[0].id,
+            onOpen: () => {
+              selectedItemId.value = item.id;
+            },
+            onClose: () => {
+              selectedItemId.value = undefined;
+            },
+          });
+        } else {
+          showInfo(computed(() => t("ORDERS.PAGES.DETAILS.FORM.OFFERS.NOT_FOUND")));
+        }
+      } catch (error) {
+        console.error(error);
+      } finally {
+        catalogLoading.value = false;
       }
-    } catch (error) {
-      console.error(error);
-    } finally {
-      catalogLoading.value = false;
     }
   }
 

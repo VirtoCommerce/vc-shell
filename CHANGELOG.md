@@ -1,3 +1,13 @@
+## [1.0.310](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.309...v1.0.310) (2024-10-11)
+
+
+### Bug Fixes
+
+* **dynamic:** isModified undef/null equality ([1756fbb](https://github.com/VirtoCommerce/vc-shell/commit/1756fbb66206bfb5d200859ebcbff8e1a4c3bc5f))
+* **ui:** user dropdown button full name ([44f411f](https://github.com/VirtoCommerce/vc-shell/commit/44f411fc30be3c859416eb232efa633200f05b71))
+
+
+
 ## [1.0.309](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.308...v1.0.309) (2024-10-09)
 
 

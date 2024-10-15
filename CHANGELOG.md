@@ -1,3 +1,12 @@
+## [1.0.313](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.312...v1.0.313) (2024-10-15)
+
+
+### Bug Fixes
+
+* **ui:** logo height fix ([b24bb02](https://github.com/VirtoCommerce/vc-shell/commit/b24bb0237cdb770a94d5df7f8be4c397ace4d159))
+
+
+
 ## [1.0.312](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.311...v1.0.312) (2024-10-15)
 
 

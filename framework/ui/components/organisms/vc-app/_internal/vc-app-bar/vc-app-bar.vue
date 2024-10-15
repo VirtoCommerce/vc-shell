@@ -6,7 +6,7 @@
     <slot name="app-switcher"></slot>
 
     <template v-if="!$isMobile.value || quantity === 0">
-      <div class="tw-w-auto">
+      <div class="tw-w-auto tw-h-[var(--app-bar-height)] tw-flex tw-items-center">
         <!-- Logo -->
         <img
           class="vc-app-bar__logo"

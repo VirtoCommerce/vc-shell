@@ -1,3 +1,17 @@
+## [1.0.312](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.311...v1.0.312) (2024-10-15)
+
+
+### Bug Fixes
+
+* **dynamic:** overrides fix, redundant comments remove ([3de9436](https://github.com/VirtoCommerce/vc-shell/commit/3de94367320ef81e3b518e9f085205a9684df20a))
+
+
+### Features
+
+* **ui:** user info as sidebar ([f04c8c6](https://github.com/VirtoCommerce/vc-shell/commit/f04c8c66f8010cfc7bcec93c67f272859530b65e))
+
+
+
 ## [1.0.311](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.310...v1.0.311) (2024-10-11)
 
 

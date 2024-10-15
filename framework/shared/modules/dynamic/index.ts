@@ -16,6 +16,7 @@ interface Registered {
   name: string;
   model: DynamicSchema;
   composables: { [key: string]: (...args: any[]) => any };
+  mixin?: ((...args: any[]) => any)[];
 }
 
 const registeredModules: { [key: string]: Registered } = {};
@@ -52,6 +53,7 @@ const createBladeInstanceConstructor = (
     mixin?: ((...args: any[]) => any)[];
   },
   existingComposables?: { [key: string]: (...args: any[]) => any },
+  existingMixins?: ((...args: any[]) => any)[],
 ) => {
   if (json.settings.url) {
     const rawUrl = json.settings.url as `/${string}`;
@@ -77,7 +79,11 @@ const createBladeInstanceConstructor = (
             Object.assign({}, props, {
               model: json,
               composables: existingComposables ? { ...existingComposables, ...args.composables } : args.composables,
-              mixinFn: args.mixin?.length ? args.mixin : undefined,
+              mixinFn: existingMixins
+                ? [...existingMixins, ...(args.mixin || [])]
+                : args.mixin?.length
+                  ? args.mixin
+                  : undefined,
             } as any),
           ),
           ctx,
@@ -90,7 +96,7 @@ const register = (
   args: {
     app: App;
     component: BladeInstanceConstructor;
-    composables: { [key: string]: (...args: any[]) => any };
+    composables: { [key: string]: (...args: any[]) => any } | undefined;
     mixin?: ((...args: any[]) => any)[];
     json: DynamicSchema;
     options?: { router: Router };
@@ -130,6 +136,7 @@ const register = (
     name: bladeName,
     model: json,
     composables: { ...args.composables },
+    mixin: args.mixin, // Set mixin directly
   };
 
   registeredModules[bladeName] = newModule;
@@ -179,6 +186,7 @@ const updateBlade = (
       newSchema,
       args,
       existingModule.composables,
+      existingModule.mixin,
     );
 
     // Reinstall the blade with the updated component
@@ -190,8 +198,9 @@ const updateBlade = (
 
     module.install(args.app, args.options);
 
-    // Update registered blade with the new component
+    // Update registered blade with the new component and merged mixins
     existingModule.component = BladeInstanceConstructor as BladeInstanceConstructor;
+    existingModule.mixin = existingModule.mixin ? [...existingModule.mixin, ...(args.mixin || [])] : args.mixin;
   }
 };
 
@@ -214,7 +223,6 @@ export function createDynamicAppModule(args: {
   ): void;
 } {
   let schemaCopy: { [key: string]: DynamicSchema } = {};
-  let composablesCopy: { [key: string]: (...args: any[]) => any } = args.composables ?? {};
 
   if (args.schema && Object.keys(args.schema).length > 0) {
     Object.entries(args.schema).forEach(([, schema]) => {
@@ -230,6 +238,8 @@ export function createDynamicAppModule(args: {
 
   if (args.overrides) {
     schemaCopy = handleOverrides(args.overrides, schemaCopy);
+
+    Object.assign(registeredSchemas, schemaCopy);
   }
 
   // Validation
@@ -250,25 +260,29 @@ export function createDynamicAppModule(args: {
       };
 
       const moduleUid = _.uniqueId("module_");
+
+      const getComposables = (bladeId: string) => {
+        const composable = schemaCopy[bladeId]?.settings.composable;
+
+        const composableFn = Object.values(registeredModules).find((module) => {
+          return module.composables?.[composable];
+        });
+
+        if (!composableFn) {
+          return args.composables;
+        }
+
+        return composableFn?.composables;
+      };
+
       Object.entries(schemaCopy).forEach(([, JsonSchema], index) => {
         const bladeId = JsonSchema.settings.id;
-        const mixin = args.mixin?.[JsonSchema.settings.id];
-
-        if (args.overrides) {
-          const idsOnOverridesUnique = [...new Set(args.overrides?.upsert?.map((x) => x.id))];
-
-          composablesCopy = {
-            ...composablesCopy,
-            ...Object.values(registeredModules).find((module) => {
-              return idsOnOverridesUnique.includes(module.name);
-            })?.composables,
-          };
-        }
+        const mixin = args.mixin?.[bladeId];
 
         const registerArgs = {
           app,
           component: bladePages[JsonSchema.settings.component as keyof typeof bladePages] as BladeInstanceConstructor,
-          composables: { ...composablesCopy },
+          composables: getComposables(JsonSchema.settings.id),
           mixin,
           json: JsonSchema,
           options,

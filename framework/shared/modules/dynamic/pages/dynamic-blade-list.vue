@@ -286,7 +286,6 @@ let { load, remove, items, loading, pagination, query, scope } = props.composabl
     } as unknown as UseList<Record<string, any>[], Record<string, any>, ListBaseBladeScope>);
 
 if (props.mixinFn?.length) {
-  console.log("props.mixinFn", props.mixinFn);
   const mixinResults = props.mixinFn?.map((mixin) => mixin({ loading, items, scope, load, remove, query }));
 
   const mergedResults = mixinResults.reduce((acc, result) => {
@@ -296,15 +295,12 @@ if (props.mixinFn?.length) {
     };
   }, {});
 
-  console.log("mergedResults", mergedResults);
-
   loading = mergedResults.loading ?? loading;
   items = mergedResults.items ?? items;
   scope = mergedResults.scope ?? scope;
   load = mergedResults.load ?? load;
   remove = mergedResults.remove ?? remove;
   query = mergedResults.query ?? query;
-  // console.log('query', query, mergedResults.query)
 
   isMixinReady.value = true;
 } else {

@@ -71,8 +71,6 @@ const upsertHelper = (overrides: OverridesSchema, schemaCopy: { [key: string]: D
 
       if (newId !== schema.settings.id) {
         obj[newId] = clonedSchema;
-
-        obj[schema.settings.id] = schema;
       } else {
         obj[schema.settings.id] = clonedSchema;
       }

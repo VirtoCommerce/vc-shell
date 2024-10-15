@@ -1245,11 +1245,9 @@ function restoreState(predefinedColumns: TableColPartial[] = []) {
   }
 
   const predefinedMap = new Map(predefinedColumns.map((col) => [col.id, col]));
-  console.log("predefinedMap", predefinedMap);
   const mergedColumns: TableColPartial[] = storedState
     .map((storedCol) => {
       const predefinedCol = predefinedMap.get(storedCol.id);
-      console.log("predefinedCol", predefinedCol);
       return mergeColumns(storedCol, predefinedCol);
     })
     .filter((col) => col.title);

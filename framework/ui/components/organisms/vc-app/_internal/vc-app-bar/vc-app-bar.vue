@@ -6,17 +6,22 @@
     <slot name="app-switcher"></slot>
 
     <template v-if="!$isMobile.value || quantity === 0">
-      <!-- Logo -->
-      <img
-        class="vc-app-bar__logo"
-        alt="logo"
-        :src="logo"
-        @click="$emit('logo:click')"
-      />
+      <div class="tw-w-auto">
+        <!-- Logo -->
+        <img
+          class="vc-app-bar__logo"
+          :class="{
+            'vc-app-bar__logo--mobile': $isMobile.value,
+          }"
+          alt="logo"
+          :src="logo"
+          @click="$emit('logo:click')"
+        />
+      </div>
 
       <!-- Title -->
       <div
-        v-if="title"
+        v-if="title && $isDesktop.value"
         class="vc-app-bar__title"
       >
         {{ title }}
@@ -144,6 +149,10 @@ watchDebounced(
 
 .vc-app-bar__logo {
   @apply tw-h-1/2 tw-cursor-pointer tw-mx-4;
+
+  &--mobile {
+    @apply tw-mx-1;
+  }
 }
 
 .vc-app-bar__title {

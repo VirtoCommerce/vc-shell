@@ -4,20 +4,57 @@
     :before-open="beforeOpen"
   >
     <template #button="{ opened }">
-      <div
-        class="vc-user-dropdown-button"
-        :class="{
-          'vc-user-dropdown-button--active': opened,
-          'vc-user-dropdown-button--auto-width': disabled,
-          'vc-user-dropdown-button--mobile': $isMobile.value,
-        }"
-      >
+      <template v-if="$isDesktop.value">
         <div
-          class="vc-user-dropdown-button__wrap"
+          class="vc-user-dropdown-button"
           :class="{
-            'vc-user-dropdown-button__wrap--active': opened,
+            'vc-user-dropdown-button--active': opened,
+            'vc-user-dropdown-button--auto-width': disabled,
+            'vc-user-dropdown-button--mobile': $isMobile.value,
           }"
         >
+          <div
+            class="vc-user-dropdown-button__wrap"
+            :class="{
+              'vc-user-dropdown-button__wrap--active': opened,
+            }"
+          >
+            <div
+              v-if="avatarUrl"
+              class="vc-user-dropdown-button__avatar"
+              :style="imageHandler"
+            ></div>
+            <VcIcon
+              v-else
+              icon="fas fa-user-circle"
+              size="xxl"
+              class="vc-user-dropdown-button__icon"
+            />
+            <div class="vc-user-dropdown-button__info">
+              <div class="vc-user-dropdown-button__name">
+                {{ name || user?.userName }}
+              </div>
+              <div class="vc-user-dropdown-button__role">
+                {{
+                  (role && $t(`SHELL.USER.ROLE.${role}`)) ||
+                  (user?.isAdministrator ? $t("SHELL.USER.ROLE.ADMINISTRATOR") : "")
+                }}
+              </div>
+            </div>
+            <div
+              v-if="!disabled && menu && menu.length"
+              class="vc-user-dropdown-button__chevron"
+            >
+              <VcIcon
+                icon="fas fa-chevron-down"
+                size="xl"
+              ></VcIcon>
+            </div>
+          </div>
+        </div>
+      </template>
+      <template v-else>
+        <div class="vc-user-dropdown-button__button">
           <div
             v-if="avatarUrl"
             class="vc-user-dropdown-button__avatar"
@@ -29,50 +66,39 @@
             size="xxl"
             class="vc-user-dropdown-button__icon"
           />
-          <div class="vc-user-dropdown-button__info">
-            <div class="vc-user-dropdown-button__name">
-              {{ name || user?.userName }}
-            </div>
-            <div class="vc-user-dropdown-button__role">
-              {{
-                (role && $t(`SHELL.USER.ROLE.${role}`)) ||
-                (user?.isAdministrator ? $t("SHELL.USER.ROLE.ADMINISTRATOR") : "")
-              }}
-            </div>
-          </div>
-          <div
-            v-if="!disabled && menu && menu.length"
-            class="vc-user-dropdown-button__chevron"
-          >
-            <VcIcon
-              icon="fas fa-chevron-down"
-              size="xl"
-            ></VcIcon>
-          </div>
         </div>
-      </div>
+      </template>
     </template>
     <template #dropdown-content="{ opened, toggle }">
-      <div
-        v-if="menu && opened"
-        class="vc-user-dropdown-button__menu"
-        @click.stop="toggle"
+      <Sidebar
+        :is-expanded="$isMobile.value ? opened : false"
+        position="right"
+        render="mobile"
+        @close="toggle"
       >
-        <div
-          v-for="(item, i) in menu"
-          :key="`menu_item_${i}`"
-          class="vc-user-dropdown-button__menu-item"
-          @click="item.hasOwnProperty('clickHandler') ? item.clickHandler?.() : null"
-        >
-          <VcIcon
-            v-if="item.icon"
-            :icon="item.icon"
-            size="l"
-            class="vc-user-dropdown-button__menu-icon"
-          ></VcIcon>
-          <p>{{ item.title }}</p>
-        </div>
-      </div>
+        <template #content>
+          <div
+            v-if="menu && opened"
+            class="vc-user-dropdown-button__menu"
+            @click.stop="toggle"
+          >
+            <div
+              v-for="(item, i) in menu"
+              :key="`menu_item_${i}`"
+              class="vc-user-dropdown-button__menu-item"
+              @click="item.hasOwnProperty('clickHandler') ? item.clickHandler?.() : null"
+            >
+              <VcIcon
+                v-if="item.icon"
+                :icon="item.icon"
+                size="l"
+                class="vc-user-dropdown-button__menu-icon"
+              ></VcIcon>
+              <p>{{ item.title }}</p>
+            </div>
+          </div>
+        </template>
+      </Sidebar>
     </template>
   </AppBarButtonTemplate>
 </template>
@@ -88,6 +114,7 @@ import { usePopup } from "../popup-handler/composables/usePopup";
 import { ChangePassword } from "../change-password";
 import { useBladeNavigation } from "..";
 import { AppBarButtonTemplate } from "./../app-bar-button";
+import { Sidebar } from "./../sidebar";
 
 export interface Props {
   avatarUrl?: string | undefined;
@@ -174,6 +201,7 @@ const imageHandler = computed(() => {
   --user-dropdown-chevron-color: var(--secondary-600);
   --user-dropdown-chevron-color-hover: var(--secondary-700);
   --user-dropdown-wrap-bg: var(--additional-50);
+  --user-dropdown-button-width: var(--app-bar-button-width);
 }
 
 .vc-user-dropdown-button {
@@ -190,6 +218,10 @@ const imageHandler = computed(() => {
 
   &--auto-width {
     @apply tw-w-auto;
+  }
+
+  &__button {
+    @apply tw-w-[var(--user-dropdown-button-width)] tw-h-full tw-flex tw-items-center tw-justify-center tw-relative;
   }
 
   &__wrap {

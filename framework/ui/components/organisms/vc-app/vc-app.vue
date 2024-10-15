@@ -56,17 +56,15 @@
           <slot name="toolbar:notifications-dropdown">
             <NotificationDropdown />
           </slot>
-          <template v-if="$isDesktop.value">
-            <slot
-              name="toolbar:user-dropdown"
-              :user-dropdown="UserDropdownButton"
-            >
-              <UserDropdownButton
-                :avatar-url="avatar"
-                :role="role"
-              />
-            </slot>
-          </template>
+          <slot
+            name="toolbar:user-dropdown"
+            :user-dropdown="UserDropdownButton"
+          >
+            <UserDropdownButton
+              :avatar-url="avatar"
+              :role="role"
+            />
+          </slot>
         </slot>
       </template>
     </VcAppBar>
@@ -80,13 +78,6 @@
         :version="version"
         @item:click="onMenuItemClick"
       >
-        <template #mobile>
-          <UserDropdownButton
-            class="vc-app__user-dropdown-button"
-            :avatar-url="avatar"
-            :role="role"
-          />
-        </template>
       </VcAppMenu>
 
       <!-- Blade navigation -->

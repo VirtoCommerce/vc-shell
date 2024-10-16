@@ -35,6 +35,16 @@ export interface IUseDynamicProperties {
 
 const { getApiClient } = useApiClient(VcmpSellerCatalogClient);
 
+function isEmptyValues(value: unknown) {
+  return (
+    value === undefined ||
+    value === null ||
+    (typeof value === "number" && isNaN(value)) ||
+    (typeof value === "object" && Object.keys(value).length === 0) ||
+    (typeof value === "string" && value.trim().length === 0)
+  );
+}
+
 export const useDynamicProperties = (): IUseDynamicProperties => {
   const { loading: dictionaryItemsLoading, action: searchDictionaryItems } = useAsync<
     IPropertyDictionaryItemSearchCriteria,
@@ -52,16 +62,19 @@ export const useDynamicProperties = (): IUseDynamicProperties => {
         return property.values?.filter((x) => x.languageCode === locale);
       } else if (!propValue) {
         const aliasProp = property.values?.find((x) => x.propertyId === property.id);
-        property.values?.push(
-          new PropertyValue({
-            propertyName: property.name,
-            propertyId: property.id,
-            languageCode: locale,
-            alias: aliasProp?.alias,
-            valueType: property.valueType as unknown as PropertyValueValueType,
-            valueId: aliasProp?.valueId,
-          }),
-        );
+
+        if (aliasProp) {
+          property.values?.push(
+            new PropertyValue({
+              propertyName: property.name,
+              propertyId: property.id,
+              languageCode: locale,
+              alias: aliasProp?.alias,
+              valueType: property.valueType as unknown as PropertyValueValueType,
+              valueId: aliasProp?.valueId,
+            }),
+          );
+        }
       }
 
       if ("dictionary" in property && property.dictionary) {
@@ -103,7 +116,7 @@ export const useDynamicProperties = (): IUseDynamicProperties => {
   }) {
     const { property, value, dictionary, locale } = data;
 
-    if (dictionary && dictionary.length) {
+    if (dictionary && dictionary.length > 0) {
       const dict = dictionary.map((x) => new PropertyDictionaryItem(x));
       if (property.multilanguage) {
         // Multivalue Dictionary Multilanguage
@@ -128,16 +141,20 @@ export const useDynamicProperties = (): IUseDynamicProperties => {
         // Single value Dictionary Multilanguage
         else {
           const dictionaryItem = dictionary.find((x) => x.id === value);
-          property.values = dictionaryItem?.localizedValues?.map(
-            (x) =>
-              new PropertyValue({
-                propertyId: dictionaryItem.propertyId,
-                alias: dictionaryItem.alias,
-                languageCode: x.languageCode,
-                value: x.value ?? dictionaryItem.alias,
-                valueId: dictionaryItem.id,
-              }),
-          );
+          if (dictionaryItem) {
+            property.values = dictionaryItem?.localizedValues?.map(
+              (x) =>
+                new PropertyValue({
+                  propertyId: dictionaryItem.propertyId,
+                  alias: dictionaryItem.alias,
+                  languageCode: x.languageCode,
+                  value: x.value ?? dictionaryItem.alias,
+                  valueId: dictionaryItem.id,
+                }),
+            );
+          } else {
+            property.values = [];
+          }
         }
       } else {
         // Multivalue Dictionary
@@ -159,14 +176,18 @@ export const useDynamicProperties = (): IUseDynamicProperties => {
         else {
           const dictionaryItem = dictionary.find((x) => x.id === value);
 
-          property.values = [
-            new PropertyValue({
-              propertyId: dictionaryItem?.propertyId,
-              alias: dictionaryItem?.alias,
-              value: (dictionaryItem as IPropertyDictionaryItem & { value: string })?.value ?? dictionaryItem?.alias,
-              valueId: value,
-            }),
-          ];
+          if (isEmptyValues(value)) {
+            property.values = [];
+          } else {
+            property.values = [
+              new PropertyValue({
+                propertyId: dictionaryItem?.propertyId,
+                alias: dictionaryItem?.alias,
+                value: (dictionaryItem as IPropertyDictionaryItem & { value: string })?.value ?? dictionaryItem?.alias,
+                valueId: value,
+              }),
+            ];
+          }
         }
       }
     } else {
@@ -194,9 +215,13 @@ export const useDynamicProperties = (): IUseDynamicProperties => {
         }
         // Single value
         else {
-          property.values = property.values?.[0]
-            ? [Object.assign(property.values[0], { value: value })]
-            : [new PropertyValue({ value: value, isInherited: false })];
+          if (isEmptyValues(value) || (typeof value === "boolean" && value === false)) {
+            property.values = property.values?.[0] ? [] : [new PropertyValue({ value: value, isInherited: false })];
+          } else {
+            property.values = property.values?.[0]
+              ? [Object.assign(property.values[0], { value: value })]
+              : [new PropertyValue({ value: value, isInherited: false })];
+          }
         }
       }
     }

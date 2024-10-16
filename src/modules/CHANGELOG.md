@@ -1,3 +1,12 @@
+## [1.0.317](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.316...v1.0.317) (2024-10-16)
+
+
+### Features
+
+* **common:** useDynamicProperties additional empty val checks ([b6ae367](https://github.com/VirtoCommerce/vendor-portal/commit/b6ae36756085e9d3a4bd7685e25143b4600162d5))
+
+
+
 ## [1.0.316](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.315...v1.0.316) (2024-10-15)
 
 

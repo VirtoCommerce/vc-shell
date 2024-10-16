@@ -1,4 +1,4 @@
-import { ComputedRef, MaybeRef, computed, ref, watch } from "vue";
+import { ComputedRef, MaybeRef, computed, ref, watch, toRaw } from "vue";
 import * as _ from "lodash-es";
 import { useForm, useIsFormValid } from "vee-validate";
 import { useAsync, useLoading } from "../../../../../core/composables";
@@ -74,14 +74,41 @@ export const useDetailsFactory = <Item extends { id?: string }>(factoryParams: U
       }),
     );
 
+    function normalizeData(data: unknown): unknown {
+      if (
+        data === null ||
+        data === undefined ||
+        data === "" ||
+        (Array.isArray(data) && data.length === 0) ||
+        (typeof data === "object" && data !== null && Object.keys(data).length === 0)
+      ) {
+        return undefined;
+      }
+
+      if (Array.isArray(data)) {
+        return data.map((item) => normalizeData(item));
+      }
+
+      if (typeof data === "object") {
+        const normalizedObj: Record<string, unknown> = {};
+        for (const key in data) {
+          if (Object.prototype.hasOwnProperty.call(data, key)) {
+            normalizedObj[key] = normalizeData(data[key as keyof typeof data]);
+          }
+        }
+        return normalizedObj;
+      }
+
+      return data;
+    }
+
     watch(
-      [() => item, () => itemTemp],
+      [() => item.value, () => itemTemp.value],
       ([state, stateCopy]) => {
-        isModified.value = !_.isEqualWith(stateCopy.value, state.value, (a, b) => {
-          if (a === undefined && b === null) return true;
-          if (a === null && b === undefined) return true;
-          return undefined; // Use default comparison for other cases
-        });
+        const normalizedState = normalizeData(state);
+        const normalizedStateCopy = normalizeData(stateCopy);
+
+        isModified.value = !_.isEqual(normalizedState, normalizedStateCopy);
       },
       { deep: true },
     );

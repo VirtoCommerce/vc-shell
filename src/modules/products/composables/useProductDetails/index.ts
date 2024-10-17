@@ -99,6 +99,8 @@ export const useProductDetails = (
   const { getRoles, isAdministrator, isOperator, loading: rolesLoading } = useRoles();
   const { showConfirmation } = usePopup();
 
+  const isGtinValidating = ref(false);
+
   const { t } = useI18n({ useScope: "global" });
 
   const disabled = computed(() => !!args.props.param && !item.value?.canBeModified);
@@ -272,10 +274,13 @@ export const useProductDetails = (
     });
 
     try {
+      isGtinValidating.value = true;
       return await client.validateProduct(query);
     } catch (e) {
       console.error(e);
       throw e;
+    } finally {
+      isGtinValidating.value = false;
     }
   }
 
@@ -296,24 +301,33 @@ export const useProductDetails = (
     }
   };
 
+  const validateGtin = useDebounceFn(async (value: string, property) => {
+    const sellerProduct = {
+      ...item.value,
+      gtin: value,
+    } as ISellerProduct;
+    const productErrors = await validateProduct(sellerProduct);
+    const errors = productErrors?.filter((error) => error.propertyName?.toLowerCase() === "gtin");
+    validationState.value.setFieldError(
+      property,
+      errors
+        .map((error) =>
+          t(`PRODUCTS.PAGES.DETAILS.ERRORS.${error?.errorCode}`, {
+            value: error?.attemptedValue,
+          }),
+        )
+        .concat(validationState.value.errorBag[property] ?? [])
+        .join("\n"),
+    );
+  }, 1000);
+
   defineRule(
     "validateGtin",
     (function () {
       let timeout: ReturnType<typeof setTimeout> | null;
       let lastValue = "";
-      let initialValueSet = false;
-      let initialValue = "";
 
       return (value: string, _, context) => {
-        if (!initialValueSet) {
-          initialValue = value;
-          initialValueSet = true;
-        }
-
-        if (value === initialValue) {
-          return true;
-        }
-
         if (value === lastValue) {
           return validationState.value.errorBag[context.name]?.join("\n") || true;
         }
@@ -369,6 +383,7 @@ export const useProductDetails = (
     createNewText,
     createNewStatusVisibility,
     markProductDirty,
+    isGtinValidating,
     propertiesCardVisibility: computed(() => !!item.value?.id || !!currentCategory.value),
     galleryVisibility: computed(() => !!item.value?.categoryId),
     productTypeDisabled: computed(() => !!item.value?.id),

@@ -113,6 +113,7 @@ export const useDynamicProperties = (): IUseDynamicProperties => {
     value: string | IPropertyValue[] | (IPropertyDictionaryItem & { value: string })[];
     dictionary?: IPropertyDictionaryItem[];
     locale?: string;
+    initialProp?: IProperty;
   }) {
     const { property, value, dictionary, locale } = data;
 
@@ -215,7 +216,21 @@ export const useDynamicProperties = (): IUseDynamicProperties => {
         }
         // Single value
         else {
-          if (isEmptyValues(value) || (typeof value === "boolean" && value === false)) {
+          if (typeof value === "boolean") {
+            if (data.initialProp?.values?.length) {
+              property.values = [
+                property.values?.[0]
+                  ? Object.assign(property.values[0], { value })
+                  : new PropertyValue({ value, isInherited: false }),
+              ];
+            } else {
+              if (value) {
+                property.values = [new PropertyValue({ value, isInherited: false })];
+              } else {
+                property.values = [];
+              }
+            }
+          } else if (isEmptyValues(value)) {
             property.values = property.values?.[0] ? [] : [new PropertyValue({ value: value, isInherited: false })];
           } else {
             property.values = property.values?.[0]

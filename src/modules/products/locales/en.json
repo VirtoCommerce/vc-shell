@@ -106,7 +106,10 @@
           "GTIN": {
             "TITLE": "Code",
             "PLACEHOLDER": "Enter product identifier",
-            "TOOLTIP": "Set unique product identifier (ex.: EAN or GTIN)"
+            "TOOLTIP": "Set unique product identifier (ex.: EAN or GTIN)",
+            "VALIDATION": {
+              "CHECKING": "Checking product code..."
+            }
           },
           "DESCRIPTION": {
             "TITLE": "Description",

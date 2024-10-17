@@ -36,6 +36,7 @@ import { useDynamicProperties, useMultilanguage, useRoles } from "../../../commo
 import * as _ from "lodash-es";
 import { useMarketplaceSettings } from "../../../settings";
 import { useRoute } from "vue-router";
+import { defineRule } from "vee-validate";
 
 export interface IProductType {
   label: string;
@@ -112,7 +113,7 @@ export const useProductDetails = (
 
   // const assetsDisabled = computed(() => disabled.value || item.value.createdBy !== user.value?.userName);
 
-  const declineReasonVisibility = computed(() => !!statusText.value && item.value?.status !== "Published");
+  const declineReasonVisibility = computed(() => !!statusText.value && !item.value?.status?.includes("Published"));
   const statusText = computed(() => {
     if (item.value?.publicationRequests && item.value?.publicationRequests.length) {
       return _.orderBy(item.value.publicationRequests, ["createdDate"], ["desc"])[0].comment ?? "";
@@ -124,6 +125,31 @@ export const useProductDetails = (
 
   const bladeTitle = computed(() =>
     args.props.param && item.value?.name ? item.value?.name : t("PRODUCTS.PAGES.DETAILS.TITLE"),
+  );
+
+  defineRule(
+    "validateGtin",
+    useDebounceFn(async (value: string) => {
+      const sellerProduct = {
+        ...item.value,
+        gtin: value,
+      } as ISellerProduct;
+
+      const productErrors = await validateProduct(sellerProduct);
+      const errors = productErrors?.filter((error) => error.propertyName?.toLowerCase() === "gtin");
+
+      if (errors.length > 0) {
+        return errors
+          .map((error) =>
+            t(`PRODUCTS.PAGES.DETAILS.ERRORS.${error?.errorCode}`, {
+              value: error?.attemptedValue,
+            }),
+          )
+          .join("\n");
+      }
+
+      return true;
+    }, 1000),
   );
 
   const getMappedDetails = reactify((details: (ISellerProduct & IProductDetails) | undefined) => {
@@ -270,31 +296,73 @@ export const useProductDetails = (
     }
   };
 
-  const validateGtin = useDebounceFn(async (value: string, property) => {
-    const sellerProduct = {
-      ...item.value,
-      gtin: value,
-    } as ISellerProduct;
-    const productErrors = await validateProduct(sellerProduct);
-    const errors = productErrors?.filter((error) => error.propertyName?.toLowerCase() === "gtin");
-    validationState.value.setFieldError(
-      property,
-      errors
-        .map((error) =>
-          t(`PRODUCTS.PAGES.DETAILS.ERRORS.${error?.errorCode}`, {
-            value: error?.attemptedValue,
-          }),
-        )
-        .concat(validationState.value.errorBag[property] ?? [])
-        .join("\n"),
-    );
-  }, 1000);
+  defineRule(
+    "validateGtin",
+    (function () {
+      let timeout: ReturnType<typeof setTimeout> | null;
+      let lastValue = "";
+      let initialValueSet = false;
+      let initialValue = "";
+
+      return (value: string, _, context) => {
+        if (!initialValueSet) {
+          initialValue = value;
+          initialValueSet = true;
+        }
+
+        if (value === initialValue) {
+          return true;
+        }
+
+        if (value === lastValue) {
+          return validationState.value.errorBag[context.name]?.join("\n") || true;
+        }
+
+        lastValue = value;
+
+        if (timeout) {
+          clearTimeout(timeout);
+        }
+
+        // Immediately set the error message to "Checking..."
+        validationState.value.setFieldError(context.name, t("PRODUCTS.PAGES.DETAILS.FIELDS.GTIN.VALIDATION.CHECKING"));
+
+        timeout = setTimeout(async () => {
+          try {
+            const sellerProduct = {
+              ...item.value,
+              gtin: value,
+            } as ISellerProduct;
+
+            const productErrors = await validateProduct(sellerProduct);
+
+            const errors = productErrors?.filter((error) => error.propertyName?.toLowerCase() === "gtin");
+
+            if (errors && errors.length > 0) {
+              const messages = errors.map((error) =>
+                t(`PRODUCTS.PAGES.DETAILS.ERRORS.${error?.errorCode}`, {
+                  value: error?.attemptedValue,
+                }),
+              );
+
+              validationState.value.setFieldError(context.name, messages.join("\n"));
+            } else {
+              validationState.value.setFieldError(context.name, "");
+            }
+          } catch (e) {
+            validationState.value.setFieldError(context.name, "An error occurred during validation");
+          }
+        }, 1000);
+
+        return t("PRODUCTS.PAGES.DETAILS.FIELDS.GTIN.VALIDATION.CHECKING");
+      };
+    })(),
+  );
 
   const scope: ProductDetailsScope = {
     disabled,
     fetchCategories,
     productTypeOptions,
-    validateGtin,
     setCategory,
     declineReasonVisibility,
     statusText,

@@ -19,14 +19,11 @@
         },
       ]"
     >
-      <slot name="header">
-        <div class="sidebar__header">
-          <VcIcon
-            icon="fas fa-times"
-            size="xl"
-            @click.stop="$emit('close')"
-          ></VcIcon>
-        </div>
+      <slot
+        name="header"
+        :header="header"
+      >
+        <component :is="header" />
       </slot>
 
       <slot name="content"></slot>
@@ -38,6 +35,9 @@
 </template>
 
 <script lang="ts" setup>
+import { h } from "vue";
+import { VcIcon } from "../../../ui/components";
+
 export interface Props {
   position?: "left" | "right";
   render: "always" | "mobile" | "desktop";
@@ -48,12 +48,16 @@ export interface Emits {
   (event: "close"): void;
 }
 
-defineEmits<Emits>();
+const emit = defineEmits<Emits>();
 
 withDefaults(defineProps<Props>(), {
   position: "right",
   render: "always",
 });
+
+const header = h("div", { class: "sidebar__header" }, [
+  h(VcIcon, { icon: "fas fa-times", size: "xl", onClick: () => emit("close") }),
+]);
 </script>
 
 <style lang="scss">

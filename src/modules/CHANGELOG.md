@@ -1,3 +1,12 @@
+## [1.0.318](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.317...v1.0.318) (2024-10-17)
+
+
+### Features
+
+* **products:** validateGtin vee validate rule ([5b7737e](https://github.com/VirtoCommerce/vendor-portal/commit/5b7737e24d5dd2ee9e5fef21a5d77c1d508186d2))
+
+
+
 ## [1.0.317](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.316...v1.0.317) (2024-10-16)
 
 

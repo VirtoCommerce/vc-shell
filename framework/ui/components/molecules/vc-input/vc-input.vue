@@ -490,7 +490,7 @@ function onKeyDown(e: KeyboardEvent) {
   const keypressed = e.key;
 
   if (props.type === "number" || props.type === "integer") {
-    if (keypressed === "-" || keypressed === "e") {
+    if (keypressed === "-" || keypressed === "e" || keypressed === "+") {
       e.preventDefault();
     }
   }

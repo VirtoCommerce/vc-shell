@@ -278,6 +278,13 @@ const internalTypeComputed = computed({
 function onKeyDown(e: KeyboardEvent) {
   const allowedKeys = ["Backspace", "Delete", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Enter"];
   const keypressed = e.key;
+
+  if (props.type === "number" || props.type === "integer") {
+    if (keypressed === "-" || keypressed === "e" || keypressed === "+") {
+      e.preventDefault();
+    }
+  }
+
   if (props.type === "integer") {
     if (!/^\d$/.test(keypressed) && !allowedKeys.includes(keypressed)) {
       e.preventDefault();

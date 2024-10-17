@@ -54,17 +54,13 @@ export default defineComponent({
     watch(
       () => props.modelValue,
       (newVal) => {
-        if (!_.isEqual(internalFormData, newVal)) {
-          Object.assign(internalFormData, toRefs(newVal));
-        }
+        Object.assign(internalFormData, toRefs(newVal));
       },
       { deep: true, immediate: true },
     );
 
     function updateFormData(newVal: ToRefs<unknown>) {
-      if (!_.isEqual(newVal, internalFormData)) {
-        ctx.emit("update:modelValue", unrefNested(newVal));
-      }
+      ctx.emit("update:modelValue", unrefNested(newVal));
     }
 
     return () =>

@@ -1,3 +1,12 @@
+## [1.0.317](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.316...v1.0.317) (2024-10-17)
+
+
+### Features
+
+* **dynamic:** added support of loader method ([2166d1b](https://github.com/VirtoCommerce/vc-shell/commit/2166d1b55fbed6b18653d1fa012fa5d1319c777f))
+
+
+
 ## [1.0.316](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.315...v1.0.316) (2024-10-17)
 
 

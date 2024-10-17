@@ -1,3 +1,12 @@
+## [1.0.316](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.315...v1.0.316) (2024-10-17)
+
+
+### Bug Fixes
+
+* **ui:** vc-multivalue prevent symbols in num/int ([3b83ca5](https://github.com/VirtoCommerce/vc-shell/commit/3b83ca56202fdc1f630e1d8ecd79b621c75e6bf6))
+
+
+
 ## [1.0.315](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.314...v1.0.315) (2024-10-17)
 
 

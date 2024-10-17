@@ -1,3 +1,19 @@
+## [1.0.315](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.314...v1.0.315) (2024-10-17)
+
+
+### Bug Fixes
+
+* **dynamic:** fix emitting of edited data ([2a17d42](https://github.com/VirtoCommerce/vc-shell/commit/2a17d42fbd6c02f524be06723b9aceb8d36ed8ca))
+* **ui:** prevent + sign in input type num/int ([885294d](https://github.com/VirtoCommerce/vc-shell/commit/885294d69ceaea06e16f595195f0472acc06d89d))
+
+
+### Features
+
+* **shared:** sidebar header component in slot ([1cca848](https://github.com/VirtoCommerce/vc-shell/commit/1cca8489734b52c68024d380bd378cf4af814361))
+* **shared:** user info in mobile user sidebar ([2b49635](https://github.com/VirtoCommerce/vc-shell/commit/2b496353667ca20795bf33cb5ea68dfa20ac11be))
+
+
+
 ## [1.0.314](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.313...v1.0.314) (2024-10-16)
 
 

@@ -9,7 +9,7 @@ import { unwrapInterpolation } from "./unwrapInterpolation";
 import { DetailsBladeContext } from "../factories";
 import { safeIn } from "./safeIn";
 import { i18n } from "./../../../../core/plugins/i18n";
-import { visibilityHandler } from "./visibilityHandler";
+import { methodHandler } from "./methodHandler";
 import { toRefs } from "@vueuse/core";
 import { unrefNested } from "./unrefNested";
 import { usePermissions } from "../../../../core/composables";
@@ -176,7 +176,7 @@ function nodeBuilder<
           if (
             safeIn("visibility", fieldItem) &&
             fieldItem.visibility?.method &&
-            !visibilityHandler(bladeContext.scope?.[fieldItem.visibility?.method], modelItem, fieldItem)
+            !methodHandler(bladeContext.scope?.[fieldItem.visibility?.method], modelItem, fieldItem)
           ) {
             return arr;
           }
@@ -205,7 +205,7 @@ function nodeBuilder<
         if (
           safeIn("visibility", field) &&
           field.visibility?.method &&
-          !visibilityHandler(bladeContext.scope?.[field.visibility?.method], internalContext, field)
+          !methodHandler(bladeContext.scope?.[field.visibility?.method], internalContext, field)
         ) {
           return arr;
         }

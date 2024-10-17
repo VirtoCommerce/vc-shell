@@ -71,6 +71,8 @@ export default {
       exclude: props.element?.exclude,
     });
 
+    const initialProps = _.cloneDeep(dynamicProps.value);
+
     const properties: UnwrapNestedRefs<IDynamicProperties[]> = reactiveComputed(() => {
       return (dynamicProps.value || [])?.map((prop) =>
         DynamicProperties({
@@ -99,6 +101,7 @@ export default {
                 value: args.value,
                 dictionary: args.dictionary,
                 locale: args.locale,
+                initialProp: _.cloneDeep(initialProps?.find((x) => x.id === prop.id)),
               });
               if (props.fieldContext) {
                 setModel({ context: props.fieldContext, property: props.element.property, value: internalModel.value });

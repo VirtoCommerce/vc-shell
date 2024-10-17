@@ -1,10 +1,11 @@
-import { ExtractPropTypes, h, VNode, Component } from "vue";
+import { ExtractPropTypes, h, VNode, Component, toValue } from "vue";
 import { InputField } from "../factories";
 import componentProps from "./props";
 import ValidationField from "./ValidationField";
 import { InputSchema, ControlSchema } from "../../types";
 import { nodeBuilder } from "../../helpers/nodeBuilder";
 import { unrefNested } from "../../helpers/unrefNested";
+import { methodHandler } from "../../helpers/methodHandler";
 
 const slotsMap = {
   append: "append",
@@ -27,6 +28,13 @@ export default {
             clearable: props.element.clearable || false,
             maxlength: props.element.maxlength,
             datePickerOptions: props.element.datePickerOptions,
+            loading: props.element.loading?.method
+              ? methodHandler(
+                  toValue(props.bladeContext?.scope)?.[props.element.loading?.method],
+                  props.fieldContext,
+                  props.element,
+                )
+              : false,
           },
           unrefNested(props.baseProps),
           {

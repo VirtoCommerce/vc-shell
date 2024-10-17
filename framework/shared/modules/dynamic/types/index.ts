@@ -495,6 +495,13 @@ export interface InputSchema extends SchemaBase {
    * Datepicker options.
    */
   datePickerOptions?: ComponentProps<typeof VcInput>["datePickerOptions"];
+  /**
+   * Whether the input is in loading state or not.
+   * @type {boolean}
+   */
+  loading?: {
+    method: string;
+  };
 }
 
 /**

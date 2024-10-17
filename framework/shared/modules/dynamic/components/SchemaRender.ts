@@ -15,7 +15,7 @@ import { ControlSchema } from "../types";
 import * as _ from "lodash-es";
 import { DetailsBladeContext } from "../factories/types";
 import { nodeBuilder } from "../helpers/nodeBuilder";
-import { visibilityHandler } from "../helpers/visibilityHandler";
+import { methodHandler } from "../helpers/methodHandler";
 import { toValue } from "@vueuse/core";
 import { safeIn } from "../helpers/safeIn";
 import { unrefNested } from "../helpers/unrefNested";
@@ -53,14 +53,18 @@ export default defineComponent({
 
     watch(
       () => props.modelValue,
-      (newVal) => {
-        Object.assign(internalFormData, toRefs(newVal));
+      (newVal): void => {
+        if (!_.isEqual(internalFormData, toRefs(newVal))) {
+          Object.assign(internalFormData, toRefs(newVal));
+        }
       },
       { deep: true, immediate: true },
     );
 
     function updateFormData(newVal: ToRefs<unknown>) {
-      ctx.emit("update:modelValue", unrefNested(newVal));
+      if (!_.isEqual(toRefs(newVal), internalFormData)) {
+        ctx.emit("update:modelValue", unrefNested(newVal));
+      }
     }
 
     return () =>
@@ -75,7 +79,7 @@ export default defineComponent({
           if (
             safeIn("visibility", field) &&
             field.visibility?.method &&
-            !visibilityHandler(toValue(props.context?.scope)?.[field.visibility.method], props.context, field)
+            !methodHandler(toValue(props.context?.scope)?.[field.visibility.method], props.context, field)
           ) {
             return arr;
           }

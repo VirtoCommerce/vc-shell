@@ -1,8 +1,8 @@
-import { ControlSchema } from "./../types/index";
+import { ControlSchema } from "../types/index";
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ComputedRef, toValue } from "vue";
 
-export const visibilityHandler = (
+export const methodHandler = (
   visibility:
     | ComputedRef<boolean | undefined>
     | ((schema: ControlSchema, fieldContext: Record<string, any> | undefined) => boolean)

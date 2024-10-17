@@ -167,6 +167,7 @@ export interface DetailsBaseBladeScope<Item = Record<string, any>> extends BaseB
       value: string | Record<string, any>[];
       dictionary?: Record<string, any>[];
       locale?: string;
+      initialProp?: Record<string, any>;
     }) => void;
   };
   assetsHandler?: {

@@ -1,3 +1,12 @@
+## [1.0.320](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.319...v1.0.320) (2024-10-17)
+
+
+### Features
+
+* useDynamicProperties update, gtin validator loader ([be7aa98](https://github.com/VirtoCommerce/vendor-portal/commit/be7aa98df990772aa4fdfa62d7cec71bfa466e79))
+
+
+
 ## [1.0.319](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.318...v1.0.319) (2024-10-17)
 
 

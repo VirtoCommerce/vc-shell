@@ -76,6 +76,35 @@
         render="mobile"
         @close="toggle"
       >
+        <template #header="{ header }">
+          <div class="vc-user-dropdown-button__header-wrap">
+            <div class="vc-user-dropdown-button__header">
+              <div
+                v-if="avatarUrl"
+                class="vc-user-dropdown-button__avatar"
+                :style="imageHandler"
+              ></div>
+              <VcIcon
+                v-else
+                icon="fas fa-user-circle"
+                size="xxl"
+                class="vc-user-dropdown-button__icon"
+              />
+              <div class="vc-user-dropdown-button__info">
+                <div class="vc-user-dropdown-button__name">
+                  {{ name || user?.userName }}
+                </div>
+                <div class="vc-user-dropdown-button__role">
+                  {{
+                    (role && $t(`SHELL.USER.ROLE.${role}`)) ||
+                    (user?.isAdministrator ? $t("SHELL.USER.ROLE.ADMINISTRATOR") : "")
+                  }}
+                </div>
+              </div>
+            </div>
+            <component :is="header" />
+          </div>
+        </template>
         <template #content>
           <div
             v-if="menu && opened"
@@ -226,6 +255,14 @@ const imageHandler = computed(() => {
 
   &__wrap {
     @apply tw-flex tw-justify-between tw-items-center tw-flex-auto tw-px-4 tw-bg-[--user-dropdown-wrap-bg] tw-gap-3;
+  }
+
+  &__header {
+    @apply tw-flex tw-justify-between tw-items-center tw-px-3 tw-py-3 tw-bg-[--user-dropdown-wrap-bg] tw-gap-3;
+  }
+
+  &__header-wrap {
+    @apply tw-flex tw-justify-between tw-items-center;
   }
 
   &__avatar {

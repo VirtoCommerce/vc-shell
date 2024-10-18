@@ -1,3 +1,14 @@
+## [1.0.321](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.320...v1.0.321) (2024-10-18)
+
+
+### Features
+
+* **offers:** improved sku validator ([572921e](https://github.com/VirtoCommerce/vendor-portal/commit/572921efc9150c77335e6b66bb08a785f373d0c5))
+* **products:** improved gtin validator, status style change ([6f4de05](https://github.com/VirtoCommerce/vendor-portal/commit/6f4de054936f699ab95684c5d0c4b2f3a8e0ee02))
+* show user name ([912bfcd](https://github.com/VirtoCommerce/vendor-portal/commit/912bfcd5095b5fed76e5cfae8d633f9a85b258d0))
+
+
+
 ## [1.0.320](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.319...v1.0.320) (2024-10-17)
 
 

@@ -1,12 +1,15 @@
 <template>
-  <div class="tw-flex tw-gap-2">
+  <div class="tw-flex tw-gap-2 tw-w-full">
     <VcStatus
       v-if="context?.item?.isPublished"
       :outline="false"
       variant="success"
       >{{ $t("PRODUCTS.STATUSES.PUBLISHED") }}</VcStatus
     >
-    <MpProductStatus :context="context" />
+    <MpProductStatus
+      :context="context"
+      class="tw-w-full tw-overflow-hidden"
+    />
   </div>
 </template>
 

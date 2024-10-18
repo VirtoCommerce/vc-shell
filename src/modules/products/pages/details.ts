@@ -161,7 +161,9 @@ export const details: DynamicDetailsSchema = {
               rules: {
                 required: true,
                 min: 3,
-                validateGtin: true,
+              },
+              update: {
+                method: "validateGtin",
               },
               maxlength: 61,
               loading: {

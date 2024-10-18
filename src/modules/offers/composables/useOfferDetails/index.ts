@@ -65,6 +65,7 @@ export const useOfferDetails = (
   const offerLoading = ref(false);
   const productLoading = ref(false);
   const alreadyDefault = ref(false);
+  const isSkuValidating = ref(false);
   const productTypeOptions = ref<IProductType[]>([]);
   const selectedProductSellerId = ref<string>();
   const { items: fulfillmentCentersList, load: searchFulfillmentCenters } = useFulfillmentCenters();
@@ -271,29 +272,37 @@ export const useOfferDetails = (
     }
   }
 
-  const validateSku = useDebounceFn(async (value: string, property) => {
-    const offer = {
-      ...item.value,
-      sku: value,
-    } as IOffer;
-    const offerErrors = await validateOffer(offer);
-    const errors = offerErrors?.filter((error) => error.propertyName?.toLowerCase() === "sku");
-    validationState.value.setFieldError(
-      property,
-      errors
-        .map((error) =>
-          t(`OFFERS.PAGES.DETAILS.ERRORS.${error?.errorCode}`, {
-            value: error?.attemptedValue,
-          }),
-        )
-        .concat(validationState.value.errorBag[property] ?? [])
-        .join("\n"),
-    );
-  }, 1000);
+  const validateSku = (value: string, property: string) => {
+    isSkuValidating.value = true;
+
+    const debouncedValidation = useDebounceFn(async () => {
+      const offer = {
+        ...item.value,
+        sku: value,
+      } as IOffer;
+      const offerErrors = await validateOffer(offer);
+      const errors = offerErrors?.filter((error) => error.propertyName?.toLowerCase() === "sku");
+      validationState.value.setFieldError(
+        property,
+        errors
+          .map((error) =>
+            t(`OFFERS.PAGES.DETAILS.ERRORS.${error?.errorCode}`, {
+              value: error?.attemptedValue,
+            }),
+          )
+          .concat(validationState.value.errorBag[property] ?? [])
+          .join("\n"),
+      );
+      isSkuValidating.value = false;
+    }, 1000);
+
+    debouncedValidation();
+  };
 
   const scope: OfferDetailsScope = {
     fetchProducts,
     getProductItem,
+    isSkuValidating,
     trackInventoryFn,
     validateSku,
     createNewText,
@@ -331,7 +340,7 @@ export const useOfferDetails = (
           }
         },
         disabled: computed(() => {
-          return !(validationState.value.valid && validationState.value.modified);
+          return isSkuValidating.value || !(validationState.value.valid && validationState.value.modified);
         }),
       },
       enable: {

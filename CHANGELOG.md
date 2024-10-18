@@ -1,3 +1,12 @@
+## [1.0.318](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.317...v1.0.318) (2024-10-18)
+
+
+### Features
+
+* refactored multilanguage selector ([fef81c0](https://github.com/VirtoCommerce/vc-shell/commit/fef81c0d647465a3c81b667fc2df54ffce6d2f84))
+
+
+
 ## [1.0.317](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.316...v1.0.317) (2024-10-17)
 
 

@@ -52,7 +52,10 @@
       </div>
     </div>
 
-    <div v-if="$slots['actions']">
+    <div
+      v-if="$slots['actions']"
+      class="tw-w-auto tw-max-w-1/2"
+    >
       <slot name="actions"></slot>
     </div>
 

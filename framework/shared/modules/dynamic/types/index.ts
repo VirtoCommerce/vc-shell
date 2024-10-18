@@ -11,17 +11,17 @@ import {
   VcRating,
   VcStatus,
   VcPagination,
+  VcInputCurrency,
 } from "./../../../../ui/components";
 import { ITableColumns, IValidationRules, MenuItemConfig } from "../../../../core/types";
 import type { ComponentProps } from "./../../../utilities/vueUtils";
-import VcInputCurrency from "../../../../ui/components/molecules/vc-input-currency/vc-input-currency.vue";
 
 export type KeysOfUnion<T> = T extends T ? keyof T : never;
 
 export type Composable<T> = T[keyof T];
 
 export type DynamicSchema = DynamicGridSchema | DynamicDetailsSchema;
-type PartialBy<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
+// type PartialBy<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
 type RequiredBy<T, K extends keyof T> = Omit<T, K> & Required<Pick<T, K>>;
 
 export interface DynamicGridSchema {

@@ -74,7 +74,7 @@ export const ExpandableBlade: StoryFn<typeof VcBlade> = (args) => ({
   template: '<vc-blade v-bind="args" expandable @expand="expandBlade"><div class="p-4">Blade Contents</div></vc-blade>',
 });
 
-export const bladeWithoutToolbar: StoryFn<typeof VcBlade> = (args) => ({
+export const BladeWithoutToolbar: StoryFn<typeof VcBlade> = (args) => ({
   components: { VcBlade },
   setup() {
     return { args };

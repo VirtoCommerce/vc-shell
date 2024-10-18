@@ -16,6 +16,7 @@
 * {
   &::-webkit-scrollbar {
     width: var(--scroll-width);
+    height: var(--scroll-width);
     background-color: transparent;
   }
 

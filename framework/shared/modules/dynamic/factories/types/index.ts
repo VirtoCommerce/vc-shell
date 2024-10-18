@@ -44,6 +44,7 @@ export interface IValidationState<Item> {
   resetValidationState: () => void;
   validate: FormContext["validate"];
   errorBag: Partial<Record<string, string[]>>;
+  setModifiedState: (value: boolean) => void;
 }
 
 export type CustomQuery = { ids: string[] | null; allSelected?: boolean };

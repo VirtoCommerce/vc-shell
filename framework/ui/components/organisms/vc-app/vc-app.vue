@@ -63,6 +63,7 @@
             <UserDropdownButton
               :avatar-url="avatar"
               :role="role"
+              :name="name"
             />
           </slot>
         </slot>
@@ -121,6 +122,7 @@ export interface Props {
   version?: string;
   title?: string;
   avatar?: string;
+  name?: string;
   disableMenu?: boolean;
   role?: string;
 }

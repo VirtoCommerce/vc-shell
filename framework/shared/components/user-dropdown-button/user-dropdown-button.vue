@@ -32,7 +32,7 @@
             />
             <div class="vc-user-dropdown-button__info">
               <div class="vc-user-dropdown-button__name">
-                {{ name || user?.userName }}
+                {{ name || (user && "fullName" in user && user.fullName) || user?.userName }}
               </div>
               <div class="vc-user-dropdown-button__role">
                 {{
@@ -92,7 +92,7 @@
               />
               <div class="vc-user-dropdown-button__info">
                 <div class="vc-user-dropdown-button__name">
-                  {{ name || user?.userName }}
+                  {{ name || (user && "fullName" in user && user.fullName) || user?.userName }}
                 </div>
                 <div class="vc-user-dropdown-button__role">
                   {{
@@ -258,7 +258,7 @@ const imageHandler = computed(() => {
   }
 
   &__header {
-    @apply tw-flex tw-justify-between tw-items-center tw-px-3 tw-py-3 tw-bg-[--user-dropdown-wrap-bg] tw-gap-3;
+    @apply tw-flex tw-justify-between tw-items-center tw-px-3 tw-py-3 tw-bg-[--user-dropdown-wrap-bg] tw-gap-3 tw-truncate;
   }
 
   &__header-wrap {
@@ -279,7 +279,7 @@ const imageHandler = computed(() => {
   }
 
   &__name {
-    @apply tw-text-sm tw-text-[color:var(--user-dropdown-account-info-name-color)] tw-truncate;
+    @apply tw-text-sm tw-text-[color:var(--user-dropdown-account-info-name-color)] tw-max-w-[250px] tw-truncate;
   }
 
   &__role {

@@ -1,6 +1,6 @@
 import { useAsync } from "./../useAsync";
 import { useApiClient } from "./../useApiClient";
-import { computed, inject, Ref, ref, ComputedRef, onMounted } from "vue";
+import { computed, Ref, ref, ComputedRef, onMounted } from "vue";
 import { SettingClient } from "./../../api/platform";
 import { useLoading } from "../useLoading";
 

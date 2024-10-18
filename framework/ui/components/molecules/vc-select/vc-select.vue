@@ -6,6 +6,7 @@
       'vc-select_error': error,
       'vc-select_disabled': disabled,
       'vc-select_has-hint-or-error': error || hint,
+      'vc-select_no-outline': !outline,
     }"
   >
     <!-- Select label -->
@@ -239,8 +240,9 @@
             ref="root"
             :no-padding="true"
           >
+            <div v-if="listLoading"></div>
             <div
-              v-if="!(optionsList && optionsList.length)"
+              v-else-if="!(optionsList && optionsList.length)"
               class="vc-select__no-options"
             >
               <slot name="no-options">
@@ -279,7 +281,16 @@ import { ref, computed, watch, nextTick, Ref, toRefs } from "vue";
 import { vOnClickOutside } from "@vueuse/components";
 import * as _ from "lodash-es";
 import { useIntersectionObserver } from "@vueuse/core";
-import { useFloating, UseFloatingReturn, offset, flip, shift, autoUpdate, MiddlewareState } from "@floating-ui/vue";
+import {
+  useFloating,
+  UseFloatingReturn,
+  offset as uiOffset,
+  flip,
+  shift,
+  autoUpdate,
+  MiddlewareState,
+  Placement,
+} from "@floating-ui/vue";
 import { VcLabel, VcContainer, VcHint, VcIcon } from "./../../";
 import { useI18n } from "vue-i18n";
 
@@ -484,6 +495,14 @@ const props = withDefaults(
     multilanguage?: boolean;
     currentLanguage?: string;
     size?: "default" | "small";
+    outline?: boolean;
+    placement?: Placement;
+    offset?:
+      | {
+          crossAxis?: number;
+          mainAxis?: number;
+        }
+      | number;
   }>(),
   {
     optionValue: "id",
@@ -495,6 +514,9 @@ const props = withDefaults(
     mapOptions: true,
     size: "default",
     options: (): T[] => [],
+    outline: true,
+    placement: "bottom",
+    offset: -2,
   },
 );
 
@@ -552,13 +574,13 @@ useIntersectionObserver(
 );
 
 const popper = useFloating(dropdownToggleRef, dropdownRef, {
-  placement: "bottom",
+  placement: props.placement,
   whileElementsMounted: autoUpdate,
   middleware: [
     flip({ fallbackPlacements: ["top", "bottom"] }),
     shift({ mainAxis: false }),
     sameWidthChangeBorders(),
-    offset(-2),
+    uiOffset(props.offset),
   ],
 }) as FloatingInstanceType;
 
@@ -611,22 +633,36 @@ watch(
 );
 
 watch(
-  options,
-  async () => {
-    if (props.options && typeof props.options === "function") {
-      try {
-        listLoading.value = true;
-        const data = await props.options();
-        optionsList.value = data.results as Option[];
-        totalItems.value = data.totalCount;
-      } finally {
-        listLoading.value = false;
+  isOpened,
+  async (newVal) => {
+    if (newVal && !optionsList.value.length) {
+      if (props.options && typeof props.options === "function") {
+        try {
+          listLoading.value = true;
+          const data = await props.options();
+          optionsList.value = data.results as Option[];
+          totalItems.value = data.totalCount;
+        } finally {
+          listLoading.value = false;
+        }
       }
-    } else if (props.options && Array.isArray(props.options)) {
-      optionsList.value = props.options as Option[];
-    }
 
-    optionsTemp.value = optionsList.value;
+      optionsTemp.value = optionsList.value;
+    }
+  },
+  { immediate: true },
+);
+
+watch(
+  options,
+  async (newVal) => {
+    if (newVal && !optionsList.value.length && typeof props.options !== "function") {
+      if (props.options && Array.isArray(props.options)) {
+        optionsList.value = props.options as Option[];
+      }
+
+      optionsTemp.value = optionsList.value;
+    }
   },
   { immediate: true },
 );
@@ -836,12 +872,17 @@ function sameWidthChangeBorders() {
       return {
         x,
         y,
-        data: {
-          borderTop,
-          borderBottom,
-          borderRadius,
-          width,
-        },
+        data: props.outline
+          ? {
+              borderTop,
+              borderBottom,
+              borderRadius,
+              width,
+            }
+          : {
+              border: "1px solid var(--select-border-color)",
+              width: "max-content",
+            },
       };
     },
   };
@@ -964,6 +1005,17 @@ function onReset() {
 }
 
 .vc-select {
+  &_no-outline {
+    .vc-select__chevron-container {
+      display: none;
+    }
+
+    .vc-select__field {
+      border: none;
+      background-color: transparent !important;
+    }
+  }
+
   &__container {
     @apply tw-box-border tw-w-full;
   }

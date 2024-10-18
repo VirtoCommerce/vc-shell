@@ -155,7 +155,7 @@ function onMouseLeave() {
   }
 
   &__content {
-    @apply tw-text-[color:var(--notification-content-color)] tw-whitespace-pre-line tw-overflow-auto;
+    @apply tw-text-[color:var(--notification-content-color)] tw-whitespace-pre-line tw-overflow-auto tw-text-sm tw-leading-5;
     @apply tw-max-h-[100px];
   }
 

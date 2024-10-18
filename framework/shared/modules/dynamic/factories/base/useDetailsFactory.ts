@@ -1,4 +1,4 @@
-import { ComputedRef, MaybeRef, computed, ref, watch, toRaw } from "vue";
+import { ComputedRef, MaybeRef, computed, ref, watch } from "vue";
 import * as _ from "lodash-es";
 import { useForm, useIsFormValid } from "vee-validate";
 import { useAsync, useLoading } from "../../../../../core/composables";
@@ -71,8 +71,13 @@ export const useDetailsFactory = <Item extends { id?: string }>(factoryParams: U
         resetModified,
         resetValidationState,
         validate,
+        setModifiedState,
       }),
     );
+
+    function setModifiedState(value: boolean) {
+      isModified.value = value;
+    }
 
     function normalizeData(data: unknown): unknown {
       if (

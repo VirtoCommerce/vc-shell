@@ -16,7 +16,7 @@
       v-if="bladeOptions"
       #actions
     >
-      <div class="tw-flex tw-flex-row tw-items-center tw-gap-3">
+      <div class="tw-flex tw-flex-row tw-items-center tw-gap-3 tw-max-w-1/2 tw-w-full">
         <template
           v-for="(value, key, index) in bladeOptions"
           :key="`blade-actions-slot-${key}-${index}`"
@@ -26,26 +26,40 @@
       </div>
     </template>
 
-    <VcContainer :no-padding="true">
+    <div class="blade-content-wrapper">
       <div
-        v-if="isReady && item && Object.keys(item)"
-        class="item-details__inner"
+        v-if="multilanguage.multilanguage"
+        class="language-selector-container"
       >
-        <div class="item-details__content">
-          <VcForm
-            ref="formItem"
-            class="tw-grow tw-p-4"
-          >
-            <SchemaRender
-              v-model="item"
-              :ui-schema="form.children"
-              :context="bladeContext as any"
-              :current-locale="toValue(unreffedScope)?.multilanguage?.currentLocale"
-            ></SchemaRender>
-          </VcForm>
-        </div>
+        <template
+          v-for="(value, key, index) in multilanguage"
+          :key="`blade-multilanguage-slot-${key}-${index}`"
+        >
+          <component :is="value" />
+        </template>
       </div>
-    </VcContainer>
+
+      <VcContainer :no-padding="true">
+        <div
+          v-if="isReady && item && Object.keys(item)"
+          class="item-details__inner"
+        >
+          <div class="item-details__content">
+            <VcForm
+              ref="formItem"
+              class="tw-grow tw-p-4"
+            >
+              <SchemaRender
+                v-model="item"
+                :ui-schema="form.children"
+                :context="bladeContext as any"
+                :current-locale="toValue(unreffedScope)?.multilanguage?.currentLocale"
+              ></SchemaRender>
+            </VcForm>
+          </div>
+        </div>
+      </VcContainer>
+    </div>
 
     <template
       v-if="item && bladeWidgets && bladeWidgets.length"
@@ -296,6 +310,12 @@ const bladeMultilanguage = reactiveComputed(() => {
             disabled: "disabled" in toValue(unreffedScope) && toValue(unreffedScope).disabled,
             required: true,
             clearable: false,
+            outline: false,
+            offset: {
+              mainAxis: -2,
+              crossAxis: -12,
+            },
+            placement: "bottom-end",
             "onUpdate:modelValue": (e: string) => {
               toValue(unreffedScope).multilanguage?.setLocale(e);
             },
@@ -307,6 +327,16 @@ const bladeMultilanguage = reactiveComputed(() => {
                   opt: { flag: string; label: string };
                 },
               ) => {
+                if (slot === "selected-item") {
+                  return h(
+                    "div",
+                    {
+                      class:
+                        "tw-flex tw-items-center tw-justify-center tw-bg-[--primary-500] tw-w-8 tw-h-8 tw-rounded-l-full",
+                    },
+                    [h(VcImage, { src: scope.opt.flag, class: "tw-w-6 tw-h-6", emptyIcon: "" })],
+                  );
+                }
                 return h("div", { class: "tw-flex tw-items-center tw-gap-2" }, [
                   h(VcImage, { src: scope.opt.flag, class: "tw-w-6 tw-h-6", emptyIcon: "" }),
                   h("span", { class: "tw-text-sm" }, scope.opt.label),
@@ -340,8 +370,11 @@ const bladeWidgets = computed(() => {
 });
 
 const bladeOptions = reactive({
-  multilanguage: bladeMultilanguage.component,
   status: bladeStatus,
+});
+
+const multilanguage = reactive({
+  multilanguage: bladeMultilanguage.component,
 });
 
 const toolbarComputed =
@@ -483,5 +516,23 @@ defineExpose({
   .vc-app_mobile &__content {
     @apply tw-border-r-0 tw-border-b tw-border-solid tw-border-b-[--dynamic-form-mobile-border] tw-overflow-visible;
   }
+}
+
+.blade-content-wrapper {
+  position: relative;
+  height: 100%;
+  width: 100%;
+}
+
+.language-selector-container {
+  position: absolute;
+  top: 0;
+  right: -5px;
+  z-index: 10;
+}
+
+.blade-scrollable-content {
+  height: 100%;
+  overflow-y: auto;
 }
 </style>

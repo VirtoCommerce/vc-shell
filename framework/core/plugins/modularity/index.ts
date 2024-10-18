@@ -192,7 +192,7 @@ export const createAppModule = (
 
       if (notificationTemplates) {
         // Register notification templates
-        Object.entries(notificationTemplates).forEach(([name, template]) => {
+        Object.entries(notificationTemplates).forEach(([, template]) => {
           // Remove existing template if it exists
           if (app.config.globalProperties.notificationTemplates) {
             const existingIndex = app.config.globalProperties.notificationTemplates.findIndex(

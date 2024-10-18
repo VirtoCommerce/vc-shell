@@ -301,15 +301,16 @@ export function useBladeNavigation(): IUseBladeNavigation {
     const createdComponent = h(
       blade,
       reactifyObject({
-        param: computed(() => {
-          const isChildWithSameParamOpened = navigationInstance.blades.value.some(
-            (x) => x.props?.param === toValue(param),
-          );
-          if (isChildWithSameParamOpened) {
-            return toValue(param);
-          }
-          return undefined;
-        }) as unknown as string,
+        // param: computed(() => {
+        //   const isChildWithSameParamOpened = navigationInstance.blades.value.some(
+        //     (x) => x.props?.param === toValue(param),
+        //   );
+        //   if (isChildWithSameParamOpened) {
+        //     return toValue(param);
+        //   }
+        //   return undefined;
+        // }) as unknown as string,
+        param: computed(() => toValue(param)),
         options,
         navigation: {
           idx: 0,

@@ -4,6 +4,7 @@
     :logo="uiSettings.logo"
     :title="uiSettings.title"
     :version="version"
+    :name="name"
     :avatar="uiSettings.avatar"
     :role="uiSettings.role"
   >
@@ -29,7 +30,7 @@ const { getApiClient } = useApiClient(VcmpSellerSecurityClient);
 const route = useRoute();
 const router = useRouter();
 const isReady = ref(false);
-
+const name = ref();
 const version = import.meta.env.PACKAGE_VERSION;
 
 onMounted(async () => {
@@ -71,6 +72,7 @@ async function customizationHandler() {
       currentUser = !isAdministrator.value && (await getCurrentUser());
       avatar = currentUser.iconUrl;
       role = currentUser.role;
+      name.value = currentUser.fullName;
     }
 
     const sellerId = GetSellerId();

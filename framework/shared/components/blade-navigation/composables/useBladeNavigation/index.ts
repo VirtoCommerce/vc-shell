@@ -244,6 +244,12 @@ const useBladeNavigationSingleton = createSharedComposable(() => {
       for (let i = 0; i < children.length; i++) {
         const element = children[i];
 
+        const position = navigationInstance.blades.value.findIndex((x) => x.type.name === element.type.name);
+
+        if (navigationInstance.blades.value[position - 1]) {
+          navigationInstance.blades.value[position - 1].props.param = undefined;
+        }
+
         if (element.props?.navigation?.onBeforeClose) {
           const result = await element.props.navigation.onBeforeClose();
 
@@ -310,7 +316,7 @@ export function useBladeNavigation(): IUseBladeNavigation {
         //   }
         //   return undefined;
         // }) as unknown as string,
-        param: computed(() => toValue(param)),
+        param,
         options,
         navigation: {
           idx: 0,

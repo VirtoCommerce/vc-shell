@@ -2,6 +2,7 @@
   <AppBarButtonTemplate
     position="bottom-start"
     :before-open="beforeOpen"
+    :title="user?.userName"
   >
     <template #button="{ opened }">
       <template v-if="$isDesktop.value">

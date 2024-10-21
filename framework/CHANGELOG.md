@@ -1,3 +1,18 @@
+## [1.0.320](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.319...v1.0.320) (2024-10-21)
+
+
+### Bug Fixes
+
+* **dynamic:** multilanguage selector color ([83afdd3](https://github.com/VirtoCommerce/vc-shell/commit/83afdd3a29f9b0d33f4491df3816c58ee5208bbe))
+* **ui:** vc-blade action 50% header width ([611f8f4](https://github.com/VirtoCommerce/vc-shell/commit/611f8f48fda9a59228cfd7d4c29dbaf68c0d2443))
+
+
+### Features
+
+* **shared:** user email tooltip ([4f69f57](https://github.com/VirtoCommerce/vc-shell/commit/4f69f5764c4fba0f5f6a4753d79d308b8021c12b))
+
+
+
 ## [1.0.319](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.318...v1.0.319) (2024-10-18)
 
 

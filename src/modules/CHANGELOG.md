@@ -1,3 +1,12 @@
+## [1.0.324](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.323...v1.0.324) (2024-10-21)
+
+
+### Bug Fixes
+
+* **products:** header status position fix ([ad56a80](https://github.com/VirtoCommerce/vendor-portal/commit/ad56a803e438409658e2777d168b7edb2b49766b))
+
+
+
 ## [1.0.323](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.322...v1.0.323) (2024-10-21)
 
 

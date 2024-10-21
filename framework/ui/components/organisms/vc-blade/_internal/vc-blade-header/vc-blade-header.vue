@@ -54,7 +54,7 @@
 
     <div
       v-if="$slots['actions']"
-      class="tw-w-auto tw-max-w-1/2"
+      class="vc-blade-header__actions"
     >
       <slot name="actions"></slot>
     </div>
@@ -167,6 +167,10 @@ function onClose(): void {
 
 .vc-blade-header {
   @apply tw-shrink-0 tw-h-[var(--blade-header-height)] tw-bg-[color:var(--blade-header-background-color)] tw-flex tw-items-center tw-py-0 tw-px-4 tw-border-solid tw-border-b tw-border-b-[color:var(--blade-header-border-color)];
+
+  &__actions {
+    @apply tw-w-auto tw-max-w-[50%] tw-grow tw-basis-0 tw-overflow-hidden;
+  }
 
   &__status {
     @apply tw-block tw-w-2 tw-h-2 tw-rounded-full tw-z-[1] tw-mr-2;

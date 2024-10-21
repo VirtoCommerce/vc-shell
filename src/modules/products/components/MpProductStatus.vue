@@ -4,7 +4,7 @@
       v-for="(value, i) in statuses"
       v-bind="statusStyles[value]"
       :key="`${value}_${i}`"
-      :class="[$attrs.class, { 'tw-mr-1': i < statuses.length - 1 }]"
+      :class="[{ 'tw-mr-1': i < statuses.length - 1 }]"
       >{{ $t(`PRODUCTS.STATUSES.${camelToSnake(value).toUpperCase()}`) }}</VcStatus
     >
   </div>

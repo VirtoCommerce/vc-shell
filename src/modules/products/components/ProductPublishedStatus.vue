@@ -1,5 +1,5 @@
 <template>
-  <div class="tw-flex tw-gap-2 tw-w-full">
+  <div class="tw-flex tw-gap-2 tw-w-full tw-grow tw-basis-0">
     <VcStatus
       v-if="context?.item?.isPublished"
       :outline="false"
@@ -9,6 +9,7 @@
     <MpProductStatus
       :context="context"
       class="tw-w-full tw-overflow-hidden"
+      :class="{ 'tw-max-w-[50%] tw-ml-auto': !context?.item?.isPublished }"
     />
   </div>
 </template>

@@ -1,3 +1,12 @@
+## [1.0.323](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.322...v1.0.323) (2024-10-21)
+
+
+### Bug Fixes
+
+* **products:** blade header status width ([94424fc](https://github.com/VirtoCommerce/vendor-portal/commit/94424fc2cf5f67929ed99872827f43a01f5771f3))
+
+
+
 ## [1.0.322](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.321...v1.0.322) (2024-10-18)
 
 

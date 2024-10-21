@@ -332,7 +332,7 @@ const bladeMultilanguage = reactiveComputed(() => {
                     "div",
                     {
                       class:
-                        "tw-flex tw-items-center tw-justify-center tw-bg-[--primary-500] tw-w-8 tw-h-8 tw-rounded-l-full",
+                        "tw-flex tw-items-center tw-justify-center tw-bg-[--primary-100] tw-w-8 tw-h-8 tw-rounded-l-full hover:tw-bg-[--primary-200]",
                     },
                     [h(VcImage, { src: scope.opt.flag, class: "tw-w-6 tw-h-6", emptyIcon: "" })],
                   );

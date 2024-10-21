@@ -1,6 +1,6 @@
 <template>
   <div
-    v-if="statuses.length > 0"
+    v-if="statuses?.length > 0"
     class="tw-flex"
   >
     <VcStatus

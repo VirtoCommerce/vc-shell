@@ -54,7 +54,7 @@ const { current, themes, setTheme } = useTheme();
 watch(
   () => current.value,
   (newVal) => {
-    notification(_.capitalize(newVal), { timeout: 10000000 });
+    notification(_.capitalize(newVal));
   },
   { deep: true },
 );

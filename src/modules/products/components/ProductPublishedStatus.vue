@@ -3,6 +3,7 @@
     <VcStatus
       v-if="context?.item?.isPublished"
       :outline="false"
+      class="tw-max-w-[50%] tw-ml-auto"
       variant="success"
       >{{ $t("PRODUCTS.STATUSES.PUBLISHED") }}</VcStatus
     >

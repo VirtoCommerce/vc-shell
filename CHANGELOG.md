@@ -1,3 +1,12 @@
+## [1.0.321](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.320...v1.0.321) (2024-10-23)
+
+
+### Bug Fixes
+
+* **shared:** clear param fix ([eeca977](https://github.com/VirtoCommerce/vc-shell/commit/eeca97759c2d5e5de91c85d24a71795739cf7336))
+
+
+
 ## [1.0.320](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.319...v1.0.320) (2024-10-21)
 
 

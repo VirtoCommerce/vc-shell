@@ -244,12 +244,6 @@ const useBladeNavigationSingleton = createSharedComposable(() => {
       for (let i = 0; i < children.length; i++) {
         const element = children[i];
 
-        const position = navigationInstance.blades.value.findIndex((x) => x.type.name === element.type.name);
-
-        if (navigationInstance.blades.value[position - 1]) {
-          navigationInstance.blades.value[position - 1].props.param = undefined;
-        }
-
         if (element.props?.navigation?.onBeforeClose) {
           const result = await element.props.navigation.onBeforeClose();
 
@@ -263,9 +257,19 @@ const useBladeNavigationSingleton = createSharedComposable(() => {
       }
 
       if (!isPrevented) {
-        if (index > 0 && navigationInstance.blades.value[index - 1]?.props?.navigation?.isVisible === false) {
-          navigationInstance.blades.value[index - 1].props.navigation.isVisible = true;
+        const prevBlade = navigationInstance.blades.value[index - 1];
+
+        if (index > 0 && prevBlade?.props?.navigation?.isVisible === false) {
+          prevBlade.props.navigation.isVisible = true;
         }
+
+        if (
+          prevBlade &&
+          toValue(prevBlade.props?.param) === toValue(navigationInstance.blades.value[index]?.props?.param)
+        ) {
+          prevBlade.props.param = undefined;
+        }
+
         navigationInstance.blades.value.splice(index);
       }
 
@@ -547,10 +551,7 @@ export function useBladeNavigation(): IUseBladeNavigation {
           reactifyObject({
             blade: registeredWorkspaceComponent as unknown as BladeInstanceConstructor,
             param: computed(() => {
-              if (
-                navigationInstance.blades.value.length > 1 &&
-                registeredRouteComponent?.type.moduleUid === registeredWorkspaceComponent.type.moduleUid
-              ) {
+              if (registeredRouteComponent?.type.moduleUid === registeredWorkspaceComponent.type.moduleUid) {
                 return param;
               }
               return undefined;

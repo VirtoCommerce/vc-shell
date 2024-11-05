@@ -1,10 +1,11 @@
-import { App, Component, h } from "vue";
+import { App, Component, h, watch } from "vue";
 import { i18n } from "./../i18n";
 import { Router } from "vue-router";
 import { BladeInstanceConstructor, BladeVNode } from "./../../../shared/components/blade-navigation/types";
 import { kebabToPascal } from "./../../utilities";
-import { useMenuService } from "../../composables";
+import { useMenuService, useNotifications } from "../../composables";
 import * as _ from "lodash-es";
+import { notification } from "../../../shared";
 
 export const createModule = (components: { [key: string]: BladeInstanceConstructor }, locales?: unknown) => ({
   install(app: App): void {
@@ -34,7 +35,7 @@ export const createModule = (components: { [key: string]: BladeInstanceConstruct
 export const createAppModule = (
   pages: { [key: string]: BladeInstanceConstructor },
   locales?: { [key: string]: object },
-  notificationTemplates?: { [key: string]: Component },
+  notificationTemplates?: { [key: string]: Component & { notifyType: string } },
   moduleComponents?: { [key: string]: Component },
 ) => {
   return {
@@ -102,6 +103,24 @@ export const createAppModule = (
 
         if (!page.moduleUid) {
           page.moduleUid = uid;
+        }
+
+        if (page.notifyType) {
+          const notifyTypes = Array.isArray(page.notifyType) ? page.notifyType : [page.notifyType];
+
+          if (notifyTypes.length > 0) {
+            const { markAsRead, setNotificationHandler } = useNotifications(notifyTypes);
+
+            setNotificationHandler((message) => {
+              if (message.title) {
+                notification(message.title, {
+                  onClose() {
+                    markAsRead(message);
+                  },
+                });
+              }
+            });
+          }
         }
 
         // Dynamically add pages to Vue Router
@@ -196,7 +215,7 @@ export const createAppModule = (
           // Remove existing template if it exists
           if (app.config.globalProperties.notificationTemplates) {
             const existingIndex = app.config.globalProperties.notificationTemplates.findIndex(
-              (t: Component) => t.name === template.name,
+              (t: Component & { notifyType: string }) => t.notifyType === template.notifyType,
             );
             if (existingIndex !== -1) {
               app.config.globalProperties.notificationTemplates.splice(existingIndex, 1);

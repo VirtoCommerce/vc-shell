@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import * as pages from "./pages";
-import { App, Component, SetupContext, defineComponent } from "vue";
+import { App, Component, SetupContext, defineComponent, watch } from "vue";
 import { DynamicSchema, OverridesSchema } from "./types";
 import * as _ from "lodash-es";
 import { handleOverrides } from "./helpers/override";
 import { reactiveComputed } from "@vueuse/core";
 import { kebabToPascal } from "../../../core/utilities";
-import { BladeInstanceConstructor } from "../../index";
+import { BladeInstanceConstructor, notification } from "../../index";
 import { createAppModule } from "../../../core/plugins";
 import { ComponentProps } from "./../../utilities/vueUtils";
 import { Router } from "vue-router";
@@ -38,7 +38,7 @@ const createAppModuleWrapper = (args: {
   return createAppModule(
     { [bladeName]: bladeComponent },
     appModuleContent?.locales,
-    appModuleContent?.notificationTemplates,
+    appModuleContent?.notificationTemplates as { [key: string]: Component & { notifyType: string } },
     appModuleContent?.moduleComponents,
   );
 };
@@ -71,6 +71,7 @@ const createBladeInstanceConstructor = (
     menuItem: ("menuItem" in json.settings && json.settings.menuItem) ?? undefined,
     moduleUid: args.moduleUid,
     routable: json.settings.routable ?? true,
+    notifyType: json.settings.pushNotificationType,
     composables: existingComposables ? { ...existingComposables, ...args.composables } : args.composables,
     setup: (props: ComponentProps<typeof bladeComponent>, ctx: SetupContext) =>
       (bladeComponent?.setup &&
@@ -222,24 +223,36 @@ export function createDynamicAppModule(args: {
       | undefined,
   ): void;
 } {
-  let schemaCopy: { [key: string]: DynamicSchema } = {};
+  let schemaCopy: { [key: string]: DynamicSchema & { moduleUid: string } } = {};
 
   if (args.schema && Object.keys(args.schema).length > 0) {
+    const moduleUid = _.uniqueId("module_");
     Object.entries(args.schema).forEach(([, schema]) => {
       if (schema.settings && schema.settings.id) {
-        schemaCopy[schema.settings.id] = _.cloneDeep(schema);
+        schemaCopy[schema.settings.id] = { ..._.cloneDeep(schema), moduleUid };
         registeredSchemas[schema.settings.id] = schemaCopy[schema.settings.id];
       }
     });
   } else {
     // Use registered schemas if new ones are not provided
-    schemaCopy = _.cloneDeep({ ...registeredSchemas });
+    schemaCopy = _.cloneDeep({ ...registeredSchemas }) as { [key: string]: DynamicSchema & { moduleUid: string } };
   }
 
   if (args.overrides) {
-    schemaCopy = handleOverrides(args.overrides, schemaCopy);
+    schemaCopy = handleOverrides(args.overrides, schemaCopy) as {
+      [key: string]: DynamicSchema & { moduleUid: string };
+    };
 
-    Object.assign(registeredSchemas, schemaCopy);
+    const newUid = _.uniqueId("module_");
+    const newSchemas = Object.entries(schemaCopy).reduce(
+      (acc, [key, schema]) => {
+        acc[key] = { ...schema, moduleUid: newUid };
+        return acc;
+      },
+      {} as { [key: string]: DynamicSchema & { moduleUid: string } },
+    );
+
+    Object.assign(registeredSchemas, newSchemas);
   }
 
   // Validation
@@ -258,8 +271,6 @@ export function createDynamicAppModule(args: {
         notificationTemplates: args?.notificationTemplates,
         moduleComponents: args?.moduleComponents,
       };
-
-      const moduleUid = _.uniqueId("module_");
 
       const getComposables = (bladeId: string) => {
         const composable = schemaCopy[bladeId]?.settings.composable;
@@ -286,7 +297,7 @@ export function createDynamicAppModule(args: {
           mixin,
           json: JsonSchema,
           options,
-          moduleUid,
+          moduleUid: JsonSchema.moduleUid,
         };
 
         if (installedBladeIds.has(bladeId)) {

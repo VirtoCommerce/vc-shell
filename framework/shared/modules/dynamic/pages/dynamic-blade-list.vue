@@ -225,24 +225,7 @@ const selectedIds = shallowRef<string[]>([]);
 const itemsProxy = ref<Record<string, any>[]>();
 const isMixinReady = ref(false);
 
-const { moduleNotifications, markAsRead } = useNotifications(settings.value?.pushNotificationType);
 const { setNavigationQuery, getNavigationQuery } = useBladeNavigation();
-
-watch(
-  moduleNotifications,
-  (newVal) => {
-    newVal.forEach((message) => {
-      if (message.title && props.composables) {
-        notification.success(message.title, {
-          onClose() {
-            markAsRead(message);
-          },
-        });
-      }
-    });
-  },
-  { deep: true },
-);
 
 const tableData =
   props.composables &&

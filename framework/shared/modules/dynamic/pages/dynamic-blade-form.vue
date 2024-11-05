@@ -16,14 +16,12 @@
       v-if="bladeOptions"
       #actions
     >
-      <div class="tw-flex tw-flex-row tw-items-center tw-gap-3 tw-max-w-1/2 tw-w-full">
-        <template
-          v-for="(value, key, index) in bladeOptions"
-          :key="`blade-actions-slot-${key}-${index}`"
-        >
-          <component :is="value" />
-        </template>
-      </div>
+      <template
+        v-for="(value, key, index) in bladeOptions"
+        :key="`blade-actions-slot-${key}-${index}`"
+      >
+        <component :is="value" />
+      </template>
     </template>
 
     <div class="blade-content-wrapper">
@@ -313,7 +311,7 @@ const bladeMultilanguage = reactiveComputed(() => {
             outline: false,
             offset: {
               mainAxis: -2,
-              crossAxis: -12,
+              crossAxis: -15,
             },
             placement: "bottom-end",
             "onUpdate:modelValue": (e: string) => {
@@ -332,7 +330,7 @@ const bladeMultilanguage = reactiveComputed(() => {
                     "div",
                     {
                       class:
-                        "tw-flex tw-items-center tw-justify-center tw-bg-[--primary-100] tw-w-8 tw-h-8 tw-rounded-l-full hover:tw-bg-[--primary-200]",
+                        "tw-flex tw-items-center tw-justify-center tw-bg-[--primary-100] tw-w-8 tw-h-8 tw-rounded-full tw-mr-1 hover:tw-bg-[--primary-200]",
                     },
                     [h(VcImage, { src: scope.opt.flag, class: "tw-w-6 tw-h-6", emptyIcon: "" })],
                   );
@@ -527,7 +525,7 @@ defineExpose({
 .language-selector-container {
   position: absolute;
   top: 0;
-  right: -5px;
+  right: 0;
   z-index: 10;
 }
 

@@ -1,5 +1,5 @@
 import { PushNotification, PushNotificationClient } from "./../../api/platform";
-import { computed, ComputedRef, ref } from "vue";
+import { computed, ComputedRef, ref, onUnmounted } from "vue";
 import * as _ from "lodash-es";
 
 const notificationsClient = new PushNotificationClient();
@@ -11,12 +11,43 @@ interface INotifications {
   addNotification(message: PushNotification): void;
   markAsRead(message: PushNotification): void;
   markAllAsRead(): void;
+  setNotificationHandler(handler: (notification: PushNotification) => void): void;
 }
 
 const notifications = ref<PushNotification[]>([]);
 const pushNotifications = ref<PushNotification[]>([]);
 
+// Global subscribers storage and their handlers
+const subscribers = new Map<
+  string,
+  {
+    id: number;
+    handler?: (notification: PushNotification) => void;
+  }
+>();
+
+let subscriberCounter = 0;
+
 export function useNotifications(notifyType?: string | string[]): INotifications {
+  if (notifyType) {
+    const types = Array.isArray(notifyType) ? notifyType : [notifyType];
+
+    // Check existing subscriptions
+    types.forEach((type) => {
+      if (!subscribers.has(type)) {
+        subscribers.set(type, {
+          id: ++subscriberCounter,
+        });
+      }
+    });
+
+    onUnmounted(() => {
+      types.forEach((type) => {
+        subscribers.delete(type);
+      });
+    });
+  }
+
   async function loadFromHistory(take = 10) {
     // TODO temporary workaround to get push notifications without base type
     try {
@@ -41,7 +72,7 @@ export function useNotifications(notifyType?: string | string[]): INotifications
   function addNotification(message: PushNotification) {
     if (message.notifyType !== "IndexProgressPushNotification") {
       const existsNotification = notifications.value.find((x: PushNotification) => x.id == message.id);
-      const existPushNotification = pushNotifications.value.find((x) => x.id == message.id);
+      const existPushNotification = pushNotifications.value.find((x: PushNotification) => x.id == message.id);
 
       if (existsNotification) {
         message.isNew = existsNotification.isNew;
@@ -55,6 +86,14 @@ export function useNotifications(notifyType?: string | string[]): INotifications
         Object.assign(existPushNotification, message);
       } else {
         pushNotifications.value.push(new PushNotification(message));
+      }
+
+      // Check if there is a handler for this type of notification
+      if (message.isNew && message.notifyType && subscribers.has(message.notifyType)) {
+        const subscriber = subscribers.get(message.notifyType);
+        if (subscriber?.handler) {
+          subscriber.handler(message);
+        }
       }
     }
   }
@@ -87,11 +126,29 @@ export function useNotifications(notifyType?: string | string[]): INotifications
     }
   }
 
+  function setNotificationHandler(handler: (notification: PushNotification) => void) {
+    if (notifyType) {
+      const types = Array.isArray(notifyType) ? notifyType : [notifyType];
+      types.forEach((type) => {
+        const subscriber = subscribers.get(type);
+        if (subscriber) {
+          subscriber.handler = handler;
+        }
+      });
+    }
+  }
+
   const moduleNotifications = computed(() => {
+    if (!notifyType) {
+      return [];
+    }
+
+    const types = Array.isArray(notifyType) ? notifyType : [notifyType];
+
     return (
       pushNotifications.value.filter(
         (item: PushNotification) =>
-          item.isNew && !!item.notifyType && !!notifyType && notifyType.includes(item.notifyType),
+          item.isNew && item.notifyType && types.includes(item.notifyType) && subscribers.has(item.notifyType),
       ) ?? []
     );
   });
@@ -103,5 +160,6 @@ export function useNotifications(notifyType?: string | string[]): INotifications
     addNotification,
     markAsRead,
     markAllAsRead,
+    setNotificationHandler,
   };
 }

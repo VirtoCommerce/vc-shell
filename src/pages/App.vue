@@ -12,8 +12,8 @@
 </template>
 
 <script lang="ts" setup>
-import { useSettings, useUser, useNotifications, notification, useApiClient } from "@vc-shell/framework";
-import { computed, onMounted, provide, ref, watch } from "vue";
+import { useSettings, useUser, useApiClient, updateSignalRCreatorSymbol } from "@vc-shell/framework";
+import { computed, inject, onMounted, provide, ref } from "vue";
 import * as modules from "@vcmp-vendor-portal/modules";
 // eslint-disable-next-line import/no-unresolved
 import logoImage from "/assets/logo.svg";
@@ -25,13 +25,13 @@ const { isAdministrator, isAuthenticated, signOut } = useUser();
 const { uiSettings, applySettings } = useSettings();
 const { item: sellerDetails, load: getCurrentSeller } = modules.default.SellerDetails.composables.useSellerDetails();
 const { getCurrentUser } = useSellerUser();
-const { moduleNotifications, markAsRead } = useNotifications("OrderCreatedEventHandler");
 const { getApiClient } = useApiClient(VcmpSellerSecurityClient);
 const route = useRoute();
 const router = useRouter();
 const isReady = ref(false);
 const name = ref();
 const version = import.meta.env.PACKAGE_VERSION;
+const updateSignalRCreator = inject(updateSignalRCreatorSymbol) as (creator: string | undefined) => void;
 
 onMounted(async () => {
   try {
@@ -46,20 +46,6 @@ onMounted(async () => {
   }
 });
 
-watch(
-  moduleNotifications,
-  (newVal) => {
-    newVal.forEach((message) => {
-      notification(message.title ?? "", {
-        onClose() {
-          markAsRead(message);
-        },
-      });
-    });
-  },
-  { deep: true },
-);
-
 console.debug(`Initializing App`);
 
 async function customizationHandler() {
@@ -69,16 +55,17 @@ async function customizationHandler() {
     let role: string | undefined = undefined;
 
     if (!isAdministrator.value) {
-      currentUser = !isAdministrator.value && (await getCurrentUser());
-      avatar = currentUser.iconUrl;
-      role = currentUser.role;
-      name.value = currentUser.fullName;
+      currentUser = (await getCurrentUser()) || null;
+      avatar = currentUser?.iconUrl;
+      role = currentUser?.role;
+      name.value = currentUser?.fullName;
     }
 
     const sellerId = GetSellerId();
     if (!sellerId) {
       if (!isAdministrator.value) {
         await getCurrentSeller();
+        updateSignalRCreator(sellerDetails.value?.id);
       }
 
       applySettings({
@@ -88,6 +75,7 @@ async function customizationHandler() {
         role: role,
       });
     } else {
+      updateSignalRCreator(sellerId);
       const seller = await (await getApiClient()).getSellerById(sellerId);
       applySettings({
         logo: seller?.logo || logoImage,

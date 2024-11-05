@@ -1,11 +1,31 @@
-import { App, watch } from "vue";
-import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
+import { App, watch, ref, InjectionKey } from "vue";
+import { HubConnection, HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 import { PushNotification } from "../../api/platform";
 import { useNotifications } from "./../../composables/useNotifications";
 import { useUser } from "../../composables/useUser";
 import { useCypressSignalRMock } from "cypress-signalr-mock";
 
 const { addNotification } = useNotifications();
+const currentCreator = ref<string | undefined>();
+
+export const updateSignalRCreatorSymbol = Symbol("updateSignalRCreator") as InjectionKey<
+  (creator: string | undefined) => void
+>;
+
+function setupSystemEventsHandler(connection: HubConnection, creator?: string) {
+  // Unsubscribe from the previous handler if it was
+  connection.off("SendSystemEvents");
+
+  // Subscribe to events with the new creator
+  if (creator) {
+    console.log("[SignalR] Setup handler for creator: ", creator);
+    connection.on("SendSystemEvents", (message: PushNotification) => {
+      if (message.creator === creator) {
+        addNotification(message);
+      }
+    });
+  }
+}
 
 export const signalR = {
   install(
@@ -14,6 +34,7 @@ export const signalR = {
       creator?: string;
     },
   ) {
+    currentCreator.value = options?.creator;
     const { isAuthenticated } = useUser();
     let reconnect = false;
     const connection =
@@ -28,10 +49,11 @@ export const signalR = {
       connection
         .start()
         .then(() => {
-          console.log("SignalR Connected.");
+          console.log("[SignalR] Connected.");
+          setupSystemEventsHandler(connection, currentCreator.value);
         })
         .catch((err) => {
-          console.log("SignalR Connection Error: ", err);
+          console.log("[SignalR] Connection Error: ", err);
           setTimeout(() => start(), 5000);
         });
     };
@@ -48,13 +70,16 @@ export const signalR = {
       addNotification(message);
     });
 
-    if (options?.creator) {
-      connection.on("SendSystemEvents", (message: PushNotification) => {
-        if (message.creator === options.creator) {
-          addNotification(message);
+    // Watch for changes in the creator
+    watch(
+      currentCreator,
+      (newCreator) => {
+        if (newCreator && connection.state === "Connected") {
+          setupSystemEventsHandler(connection, newCreator);
         }
-      });
-    }
+      },
+      { immediate: true },
+    );
 
     watch(
       isAuthenticated,
@@ -69,5 +94,12 @@ export const signalR = {
       },
       { immediate: true },
     );
+
+    app.config.globalProperties.$updateSignalRCreator = (creator: string | undefined) => {
+      currentCreator.value = creator;
+    };
+    app.provide(updateSignalRCreatorSymbol, (creator: string | undefined) => {
+      currentCreator.value = creator;
+    });
   },
 };

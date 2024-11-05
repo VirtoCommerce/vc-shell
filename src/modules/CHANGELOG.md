@@ -1,3 +1,12 @@
+## [1.0.327](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.326...v1.0.327) (2024-11-05)
+
+
+### Bug Fixes
+
+* **notifications:** update color styles to use CSS variables ([0e46d6d](https://github.com/VirtoCommerce/vendor-portal/commit/0e46d6d842afe6e8f8cfc2737e410e1a213310b8))
+
+
+
 ## [1.0.326](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.325...v1.0.326) (2024-10-23)
 
 

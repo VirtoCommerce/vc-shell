@@ -1,3 +1,17 @@
+## [1.0.327](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.326...v1.0.327) (2024-11-05)
+
+
+### Bug Fixes
+
+* **notifications:** update color styles to use CSS variables ([0e46d6d](https://github.com/VirtoCommerce/vendor-portal/commit/0e46d6d842afe6e8f8cfc2737e410e1a213310b8))
+
+
+### Features
+
+* **app:** inject updateSignalRCreator and streamline user data handling ([e34d236](https://github.com/VirtoCommerce/vendor-portal/commit/e34d236b2cc6a5bf68a0ab2aa1bee9d0cf67299c))
+
+
+
 ## [1.0.326](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.325...v1.0.326) (2024-10-23)
 
 

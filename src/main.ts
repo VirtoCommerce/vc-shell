@@ -6,7 +6,6 @@ import { router } from "./router";
 import * as locales from "./locales";
 import { RouterView } from "vue-router";
 import { bootstrap } from "./bootstrap";
-import { useSellerDetails } from "./modules/seller-details/composables";
 
 // Load required CSS
 
@@ -18,11 +17,9 @@ import "@vcmp-vendor-portal/modules/dist/style.css";
 
 async function startApp() {
   const { loadUser } = useUser();
-  const { load: loadSeller, item: sellerDetails } = useSellerDetails();
 
   try {
     await loadUser();
-    await loadSeller();
   } catch (e) {
     console.log(e);
   }
@@ -38,9 +35,6 @@ async function startApp() {
     i18n: {
       locale: import.meta.env.APP_I18N_LOCALE,
       fallbackLocale: import.meta.env.APP_I18N_FALLBACK_LOCALE,
-    },
-    signalR: {
-      creator: sellerDetails.value?.id,
     },
   });
 

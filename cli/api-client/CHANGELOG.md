@@ -1,3 +1,12 @@
+## [1.0.322](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.321...v1.0.322) (2024-11-05)
+
+
+### Features
+
+* **api-client:** skip build arg ([f67a69f](https://github.com/VirtoCommerce/vc-shell/commit/f67a69fc0b09129a5b2e7ec51039bcc2ba435ea1))
+
+
+
 ## [1.0.321](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.320...v1.0.321) (2024-10-23)
 
 

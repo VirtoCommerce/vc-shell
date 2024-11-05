@@ -25,5 +25,6 @@ declare global {
     VueI18n: typeof vueI18n;
     moment: moment;
     VcShellFramework: any;
+    VueUseCore: typeof VueUseCore;
   }
 }

@@ -1,3 +1,14 @@
+## [1.0.322](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.321...v1.0.322) (2024-11-05)
+
+
+### Features
+
+* **api-client:** skip build arg ([f67a69f](https://github.com/VirtoCommerce/vc-shell/commit/f67a69fc0b09129a5b2e7ec51039bcc2ba435ea1))
+* **core:** push subscription, setNotificationHandler as watcher replacement ([8c726fc](https://github.com/VirtoCommerce/vc-shell/commit/8c726fc315d52958201107cfdd101dbbf698c697))
+* **signalR:** creator update method ([6e78664](https://github.com/VirtoCommerce/vc-shell/commit/6e78664f71201b60069d1dd806db8491fd656db5))
+
+
+
 ## [1.0.321](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.320...v1.0.321) (2024-10-23)
 
 

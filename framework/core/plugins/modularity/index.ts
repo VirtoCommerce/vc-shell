@@ -35,7 +35,7 @@ export const createModule = (components: { [key: string]: BladeInstanceConstruct
 export const createAppModule = (
   pages: { [key: string]: BladeInstanceConstructor },
   locales?: { [key: string]: object },
-  notificationTemplates?: { [key: string]: Component & { notifyType: string } },
+  notificationTemplates?: { [key: string]: Component & { notifyType?: string } },
   moduleComponents?: { [key: string]: Component },
 ) => {
   return {

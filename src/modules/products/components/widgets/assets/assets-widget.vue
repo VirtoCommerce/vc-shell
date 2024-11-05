@@ -34,12 +34,11 @@ const { t } = useI18n({ useScope: "global" });
 const { edit, upload, remove, loading } = useAssets();
 const { user } = useUser();
 const { getRoles, isAdministrator, isOperator } = useRoles();
-const route = useRoute();
 const modelValue = ref(props.modelValue);
 const widgetOpened = ref(false);
 const internalModel = ref();
 const count = computed(() => modelValue.value?.item?.assets?.length || 0);
-const currentSeller = inject("currentSeller", toRef({ id: route?.params?.sellerId })) as Ref<ISeller>;
+const currentSeller = inject("currentSeller") as Ref<ISeller>;
 
 watch(
   () => props.modelValue,

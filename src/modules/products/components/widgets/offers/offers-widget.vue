@@ -12,11 +12,12 @@
 
 <script setup lang="ts">
 import { VcWidget, useApiClient, useAsync, useBladeNavigation } from "@vc-shell/framework";
-import { UnwrapNestedRefs, onMounted, ref } from "vue";
+import { UnwrapNestedRefs, inject, onMounted, ref, toRef, Ref } from "vue";
 import {
   VcmpSellerCatalogClient,
   ISearchOffersQuery,
   SearchOffersQuery,
+  ISeller,
 } from "@vcmp-vendor-portal/api/marketplacevendor";
 import { useProductDetails } from "../../../composables/useProductDetails";
 import { useRoute } from "vue-router";
@@ -30,6 +31,7 @@ const route = useRoute();
 
 const { getApiClient } = useApiClient(VcmpSellerCatalogClient);
 const client = getApiClient();
+const currentSeller = inject("currentSeller", toRef({ id: route?.params?.sellerId })) as Ref<ISeller>;
 
 const { openBlade, resolveBladeByName } = useBladeNavigation();
 
@@ -54,7 +56,7 @@ function clickHandler() {
 }
 
 const { loading, action: getCount } = useAsync<ISearchOffersQuery, number | undefined>(async (query) => {
-  const sellerId = await GetSellerId();
+  const sellerId = currentSeller?.value?.id;
   const searchQuery = new SearchOffersQuery(query);
   if (sellerId && sellerId != "") {
     searchQuery.sellerId = sellerId;
@@ -75,11 +77,6 @@ onMounted(async () => {
     await populateCounter();
   }
 });
-
-async function GetSellerId(): Promise<string> {
-  const result = route?.params?.sellerId as string;
-  return result;
-}
 
 defineExpose({
   updateActiveWidgetCount: populateCounter,

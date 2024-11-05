@@ -8,6 +8,7 @@
 /* eslint-disable */
 // ReSharper disable InconsistentNaming
 // @ts-nocheck
+
 export class AuthApiBase {
   authToken = "";
   protected constructor() {}
@@ -29,77 +30,6 @@ export class AuthApiBase {
   }
 }
 
-export class AuthorizationClient extends AuthApiBase {
-  private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
-  private baseUrl: string;
-  protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
-
-  constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
-    super();
-    this.http = http ? http : (window as any);
-    this.baseUrl = this.getBaseUrl("", baseUrl);
-  }
-
-  /**
-   * @return Success
-   */
-  exchange(body: Body): Promise<OpenIddictResponse> {
-    let url_ = this.baseUrl + "/connect/token";
-    url_ = url_.replace(/[?&]$/, "");
-
-    const content_ = Object.keys(body as any)
-      .map((key) => {
-        return encodeURIComponent(key) + "=" + encodeURIComponent((body as any)[key]);
-      })
-      .join("&");
-
-    let options_: RequestInit = {
-      body: content_,
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-        Accept: "application/json",
-      },
-    };
-
-    return this.transformOptions(options_)
-      .then((transformedOptions_) => {
-        return this.http.fetch(url_, transformedOptions_);
-      })
-      .then((_response: Response) => {
-        return this.processExchange(_response);
-      });
-  }
-
-  protected processExchange(response: Response): Promise<OpenIddictResponse> {
-    const status = response.status;
-    let _headers: any = {};
-    if (response.headers && response.headers.forEach) {
-      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
-    }
-    if (status === 200) {
-      return response.text().then((_responseText) => {
-        let result200: any = null;
-        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-        result200 = OpenIddictResponse.fromJS(resultData200);
-        return result200;
-      });
-    } else if (status === 400) {
-      return response.text().then((_responseText) => {
-        let result400: any = null;
-        let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-        result400 = OpenIddictResponse.fromJS(resultData400);
-        return throwException("Bad Request", status, _responseText, _headers, result400);
-      });
-    } else if (status !== 200 && status !== 204) {
-      return response.text().then((_responseText) => {
-        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-      });
-    }
-    return Promise.resolve<OpenIddictResponse>(null as any);
-  }
-}
-
 export class ExternalSignInClient extends AuthApiBase {
   private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
   private baseUrl: string;
@@ -114,15 +44,30 @@ export class ExternalSignInClient extends AuthApiBase {
   /**
    * @param authenticationType (optional)
    * @param returnUrl (optional)
-   * @return Success
+   * @param storeId (optional)
+   * @param oidcUrl (optional)
+   * @param callbackUrl (optional)
+   * @return OK
    */
-  signIn(authenticationType?: string | undefined, returnUrl?: string | undefined): Promise<void> {
+  signIn(
+    authenticationType?: string | undefined,
+    returnUrl?: string | undefined,
+    storeId?: string | undefined,
+    oidcUrl?: string | undefined,
+    callbackUrl?: string | undefined,
+  ): Promise<void> {
     let url_ = this.baseUrl + "/externalsignin?";
     if (authenticationType === null) throw new Error("The parameter 'authenticationType' cannot be null.");
     else if (authenticationType !== undefined)
-      url_ += "authenticationType=" + encodeURIComponent("" + authenticationType) + "&";
+      url_ += "AuthenticationType=" + encodeURIComponent("" + authenticationType) + "&";
     if (returnUrl === null) throw new Error("The parameter 'returnUrl' cannot be null.");
-    else if (returnUrl !== undefined) url_ += "returnUrl=" + encodeURIComponent("" + returnUrl) + "&";
+    else if (returnUrl !== undefined) url_ += "ReturnUrl=" + encodeURIComponent("" + returnUrl) + "&";
+    if (storeId === null) throw new Error("The parameter 'storeId' cannot be null.");
+    else if (storeId !== undefined) url_ += "StoreId=" + encodeURIComponent("" + storeId) + "&";
+    if (oidcUrl === null) throw new Error("The parameter 'oidcUrl' cannot be null.");
+    else if (oidcUrl !== undefined) url_ += "OidcUrl=" + encodeURIComponent("" + oidcUrl) + "&";
+    if (callbackUrl === null) throw new Error("The parameter 'callbackUrl' cannot be null.");
+    else if (callbackUrl !== undefined) url_ += "CallbackUrl=" + encodeURIComponent("" + callbackUrl) + "&";
     url_ = url_.replace(/[?&]$/, "");
 
     let options_: RequestInit = {
@@ -159,13 +104,16 @@ export class ExternalSignInClient extends AuthApiBase {
 
   /**
    * @param authenticationType (optional)
-   * @return Success
+   * @param returnUrl (optional)
+   * @return OK
    */
-  signOut(authenticationType?: string | undefined): Promise<void> {
+  signOut(authenticationType?: string | undefined, returnUrl?: string | undefined): Promise<void> {
     let url_ = this.baseUrl + "/externalsignin/signout?";
     if (authenticationType === null) throw new Error("The parameter 'authenticationType' cannot be null.");
     else if (authenticationType !== undefined)
       url_ += "authenticationType=" + encodeURIComponent("" + authenticationType) + "&";
+    if (returnUrl === null) throw new Error("The parameter 'returnUrl' cannot be null.");
+    else if (returnUrl !== undefined) url_ += "returnUrl=" + encodeURIComponent("" + returnUrl) + "&";
     url_ = url_.replace(/[?&]$/, "");
 
     let options_: RequestInit = {
@@ -202,7 +150,7 @@ export class ExternalSignInClient extends AuthApiBase {
 
   /**
    * @param returnUrl (optional)
-   * @return Success
+   * @return OK
    */
   signInCallback(returnUrl?: string | undefined): Promise<void> {
     let url_ = this.baseUrl + "/externalsignin/callback?";
@@ -243,7 +191,7 @@ export class ExternalSignInClient extends AuthApiBase {
   }
 
   /**
-   * @return Success
+   * @return OK
    */
   getExternalLoginProviders(): Promise<ExternalSignInProviderInfo[]> {
     let url_ = this.baseUrl + "/externalsignin/providers";
@@ -304,7 +252,7 @@ export class AppsClient extends AuthApiBase {
   }
 
   /**
-   * @return Success
+   * @return OK
    */
   getApps(): Promise<AppDescriptor[]> {
     let url_ = this.baseUrl + "/api/platform/apps";
@@ -353,6 +301,116 @@ export class AppsClient extends AuthApiBase {
   }
 }
 
+export class AuthorizationClient extends AuthApiBase {
+  private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+  private baseUrl: string;
+  protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+  constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+    super();
+    this.http = http ? http : (window as any);
+    this.baseUrl = this.getBaseUrl("", baseUrl);
+  }
+
+  /**
+   * @return OK
+   */
+  revokeCurrentUserToken(): Promise<void> {
+    let url_ = this.baseUrl + "/revoke/token";
+    url_ = url_.replace(/[?&]$/, "");
+
+    let options_: RequestInit = {
+      method: "POST",
+      headers: {},
+    };
+
+    return this.transformOptions(options_)
+      .then((transformedOptions_) => {
+        return this.http.fetch(url_, transformedOptions_);
+      })
+      .then((_response: Response) => {
+        return this.processRevokeCurrentUserToken(_response);
+      });
+  }
+
+  protected processRevokeCurrentUserToken(response: Response): Promise<void> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+    }
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        return;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
+    }
+    return Promise.resolve<void>(null as any);
+  }
+
+  /**
+   * @return OK
+   */
+  exchange(body: Body): Promise<OpenIddictResponse> {
+    let url_ = this.baseUrl + "/connect/token";
+    url_ = url_.replace(/[?&]$/, "");
+
+    const content_ = Object.keys(body as any)
+      .map((key) => {
+        return encodeURIComponent(key) + "=" + encodeURIComponent((body as any)[key]);
+      })
+      .join("&");
+
+    let options_: RequestInit = {
+      body: content_,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        Accept: "application/json",
+      },
+    };
+
+    return this.transformOptions(options_)
+      .then((transformedOptions_) => {
+        return this.http.fetch(url_, transformedOptions_);
+      })
+      .then((_response: Response) => {
+        return this.processExchange(_response);
+      });
+  }
+
+  protected processExchange(response: Response): Promise<OpenIddictResponse> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+    }
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = OpenIddictResponse.fromJS(resultData200);
+        return result200;
+      });
+    } else if (status === 400) {
+      return response.text().then((_responseText) => {
+        let result400: any = null;
+        let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+        result400 = OpenIddictResponse.fromJS(resultData400);
+        return throwException("Bad Request", status, _responseText, _headers, result400);
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
+    }
+    return Promise.resolve<OpenIddictResponse>(null as any);
+  }
+}
+
 export class ChangeLogClient extends AuthApiBase {
   private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
   private baseUrl: string;
@@ -366,7 +424,7 @@ export class ChangeLogClient extends AuthApiBase {
 
   /**
    * @param scope (optional)
-   * @return Success
+   * @return No Content
    */
   forceChanges(scope?: string | undefined): Promise<void> {
     let url_ = this.baseUrl + "/api/changes/force?";
@@ -415,7 +473,7 @@ export class ChangeLogClient extends AuthApiBase {
   }
 
   /**
-   * @return Success
+   * @return No Content
    */
   resetPlatformCache(): Promise<void> {
     let url_ = this.baseUrl + "/api/platform-cache/reset";
@@ -463,7 +521,7 @@ export class ChangeLogClient extends AuthApiBase {
 
   /**
    * @param scope (optional)
-   * @return Success
+   * @return OK
    */
   getLastModifiedDate(scope?: string | undefined): Promise<LastModifiedResponse> {
     let url_ = this.baseUrl + "/api/changes/lastmodifieddate?";
@@ -510,7 +568,7 @@ export class ChangeLogClient extends AuthApiBase {
 
   /**
    * @param body (optional)
-   * @return Success
+   * @return OK
    */
   getChangedEntities(body?: ChangedEntitiesRequest | undefined): Promise<ChangedEntitiesResponse> {
     let url_ = this.baseUrl + "/api/changes/changed-entities";
@@ -559,7 +617,7 @@ export class ChangeLogClient extends AuthApiBase {
 
   /**
    * @param body (optional)
-   * @return Success
+   * @return No Content
    */
   resetChangedEntities(body?: string[] | undefined): Promise<void> {
     let url_ = this.baseUrl + "/api/changes/changed-entities/reset";
@@ -612,7 +670,7 @@ export class ChangeLogClient extends AuthApiBase {
 
   /**
    * @param body (optional)
-   * @return Success
+   * @return OK
    */
   searchChanges(body?: ChangeLogSearchCriteria | undefined): Promise<ChangeLogSearchResult> {
     let url_ = this.baseUrl + "/api/platform/changelog/search";
@@ -670,7 +728,7 @@ export class ChangeLogClient extends AuthApiBase {
   /**
    * @param start (optional)
    * @param end (optional)
-   * @return Success
+   * @return OK
    */
   searchTypeChangeHistory(type: string, start?: Date | undefined, end?: Date | undefined): Promise<OperationLog[]> {
     let url_ = this.baseUrl + "/api/platform/changelog/{type}/changes?";
@@ -745,7 +803,7 @@ export class DiagnosticsClient extends AuthApiBase {
   }
 
   /**
-   * @return Success
+   * @return OK
    */
   getSystemInfo(): Promise<SystemInfo> {
     let url_ = this.baseUrl + "/api/platform/diagnostics/systeminfo";
@@ -797,7 +855,7 @@ export class DiagnosticsClient extends AuthApiBase {
   }
 
   /**
-   * @return Success
+   * @return OK
    */
   getModulesErrors(): Promise<ModuleDescriptor[]> {
     let url_ = this.baseUrl + "/api/platform/diagnostics/errors";
@@ -858,7 +916,7 @@ export class DynamicPropertiesClient extends AuthApiBase {
   }
 
   /**
-   * @return Success
+   * @return OK
    */
   getObjectTypes(): Promise<string[]> {
     let url_ = this.baseUrl + "/api/platform/dynamic/types";
@@ -915,20 +973,18 @@ export class DynamicPropertiesClient extends AuthApiBase {
   }
 
   /**
-   * @param body (optional)
-   * @return Success
+   * @param id (optional)
+   * @return OK
    */
-  searchDynamicProperties(body?: DynamicPropertySearchCriteria | undefined): Promise<DynamicPropertySearchResult> {
-    let url_ = this.baseUrl + "/api/platform/dynamic/properties/search";
+  getAllDynamicProperties(id?: string | undefined): Promise<DynamicProperty[]> {
+    let url_ = this.baseUrl + "/api/platform/dynamic/properties?";
+    if (id === null) throw new Error("The parameter 'id' cannot be null.");
+    else if (id !== undefined) url_ += "id=" + encodeURIComponent("" + id) + "&";
     url_ = url_.replace(/[?&]$/, "");
 
-    const content_ = JSON.stringify(body);
-
     let options_: RequestInit = {
-      body: content_,
-      method: "POST",
+      method: "GET",
       headers: {
-        "Content-Type": "application/json-patch+json",
         Accept: "application/json",
       },
     };
@@ -938,11 +994,11 @@ export class DynamicPropertiesClient extends AuthApiBase {
         return this.http.fetch(url_, transformedOptions_);
       })
       .then((_response: Response) => {
-        return this.processSearchDynamicProperties(_response);
+        return this.processGetAllDynamicProperties(_response);
       });
   }
 
-  protected processSearchDynamicProperties(response: Response): Promise<DynamicPropertySearchResult> {
+  protected processGetAllDynamicProperties(response: Response): Promise<DynamicProperty[]> {
     const status = response.status;
     let _headers: any = {};
     if (response.headers && response.headers.forEach) {
@@ -952,7 +1008,12 @@ export class DynamicPropertiesClient extends AuthApiBase {
       return response.text().then((_responseText) => {
         let result200: any = null;
         let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-        result200 = DynamicPropertySearchResult.fromJS(resultData200);
+        if (Array.isArray(resultData200)) {
+          result200 = [] as any;
+          for (let item of resultData200) result200!.push(DynamicProperty.fromJS(item));
+        } else {
+          result200 = <any>null;
+        }
         return result200;
       });
     } else if (status === 401) {
@@ -968,12 +1029,12 @@ export class DynamicPropertiesClient extends AuthApiBase {
         return throwException("An unexpected server error occurred.", status, _responseText, _headers);
       });
     }
-    return Promise.resolve<DynamicPropertySearchResult>(null as any);
+    return Promise.resolve<DynamicProperty[]>(null as any);
   }
 
   /**
    * @param body (optional)
-   * @return Success
+   * @return OK
    */
   createProperty(body?: DynamicProperty | undefined): Promise<DynamicProperty> {
     let url_ = this.baseUrl + "/api/platform/dynamic/properties";
@@ -1030,7 +1091,7 @@ export class DynamicPropertiesClient extends AuthApiBase {
 
   /**
    * @param body (optional)
-   * @return Success
+   * @return No Content
    */
   updateProperty(body?: DynamicProperty | undefined): Promise<void> {
     let url_ = this.baseUrl + "/api/platform/dynamic/properties";
@@ -1083,7 +1144,7 @@ export class DynamicPropertiesClient extends AuthApiBase {
 
   /**
    * @param propertyIds (optional)
-   * @return Success
+   * @return No Content
    */
   deleteProperty(propertyIds?: string[] | undefined): Promise<void> {
     let url_ = this.baseUrl + "/api/platform/dynamic/properties?";
@@ -1136,7 +1197,64 @@ export class DynamicPropertiesClient extends AuthApiBase {
   }
 
   /**
-   * @return Success
+   * @param body (optional)
+   * @return OK
+   */
+  searchDynamicProperties(body?: DynamicPropertySearchCriteria | undefined): Promise<DynamicPropertySearchResult> {
+    let url_ = this.baseUrl + "/api/platform/dynamic/properties/search";
+    url_ = url_.replace(/[?&]$/, "");
+
+    const content_ = JSON.stringify(body);
+
+    let options_: RequestInit = {
+      body: content_,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json-patch+json",
+        Accept: "application/json",
+      },
+    };
+
+    return this.transformOptions(options_)
+      .then((transformedOptions_) => {
+        return this.http.fetch(url_, transformedOptions_);
+      })
+      .then((_response: Response) => {
+        return this.processSearchDynamicProperties(_response);
+      });
+  }
+
+  protected processSearchDynamicProperties(response: Response): Promise<DynamicPropertySearchResult> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+    }
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = DynamicPropertySearchResult.fromJS(resultData200);
+        return result200;
+      });
+    } else if (status === 401) {
+      return response.text().then((_responseText) => {
+        return throwException("Unauthorized", status, _responseText, _headers);
+      });
+    } else if (status === 403) {
+      return response.text().then((_responseText) => {
+        return throwException("Forbidden", status, _responseText, _headers);
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
+    }
+    return Promise.resolve<DynamicPropertySearchResult>(null as any);
+  }
+
+  /**
+   * @return OK
    */
   exposeDynamicObjectProperty(): Promise<DynamicObjectProperty> {
     let url_ = this.baseUrl + "/api/platform/dynamic";
@@ -1173,7 +1291,7 @@ export class DynamicPropertiesClient extends AuthApiBase {
       });
     } else if (status === 204) {
       return response.text().then((_responseText) => {
-        return throwException("Success", status, _responseText, _headers);
+        return throwException("No Content", status, _responseText, _headers);
       });
     } else if (status === 401) {
       return response.text().then((_responseText) => {
@@ -1192,8 +1310,175 @@ export class DynamicPropertiesClient extends AuthApiBase {
   }
 
   /**
+   * @param propertyId (optional)
+   * @return OK
+   */
+  getAllDictionaryItems(propertyId?: string | undefined): Promise<DynamicPropertyDictionaryItem[]> {
+    let url_ = this.baseUrl + "/api/platform/dynamic/dictionaryitems?";
+    if (propertyId === null) throw new Error("The parameter 'propertyId' cannot be null.");
+    else if (propertyId !== undefined) url_ += "propertyId=" + encodeURIComponent("" + propertyId) + "&";
+    url_ = url_.replace(/[?&]$/, "");
+
+    let options_: RequestInit = {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+      },
+    };
+
+    return this.transformOptions(options_)
+      .then((transformedOptions_) => {
+        return this.http.fetch(url_, transformedOptions_);
+      })
+      .then((_response: Response) => {
+        return this.processGetAllDictionaryItems(_response);
+      });
+  }
+
+  protected processGetAllDictionaryItems(response: Response): Promise<DynamicPropertyDictionaryItem[]> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+    }
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+        if (Array.isArray(resultData200)) {
+          result200 = [] as any;
+          for (let item of resultData200) result200!.push(DynamicPropertyDictionaryItem.fromJS(item));
+        } else {
+          result200 = <any>null;
+        }
+        return result200;
+      });
+    } else if (status === 401) {
+      return response.text().then((_responseText) => {
+        return throwException("Unauthorized", status, _responseText, _headers);
+      });
+    } else if (status === 403) {
+      return response.text().then((_responseText) => {
+        return throwException("Forbidden", status, _responseText, _headers);
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
+    }
+    return Promise.resolve<DynamicPropertyDictionaryItem[]>(null as any);
+  }
+
+  /**
    * @param body (optional)
-   * @return Success
+   * @return No Content
+   */
+  saveDictionaryItems(body?: DynamicPropertyDictionaryItem[] | undefined): Promise<void> {
+    let url_ = this.baseUrl + "/api/platform/dynamic/dictionaryitems";
+    url_ = url_.replace(/[?&]$/, "");
+
+    const content_ = JSON.stringify(body);
+
+    let options_: RequestInit = {
+      body: content_,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json-patch+json",
+      },
+    };
+
+    return this.transformOptions(options_)
+      .then((transformedOptions_) => {
+        return this.http.fetch(url_, transformedOptions_);
+      })
+      .then((_response: Response) => {
+        return this.processSaveDictionaryItems(_response);
+      });
+  }
+
+  protected processSaveDictionaryItems(response: Response): Promise<void> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+    }
+    if (status === 204) {
+      return response.text().then((_responseText) => {
+        return;
+      });
+    } else if (status === 401) {
+      return response.text().then((_responseText) => {
+        return throwException("Unauthorized", status, _responseText, _headers);
+      });
+    } else if (status === 403) {
+      return response.text().then((_responseText) => {
+        return throwException("Forbidden", status, _responseText, _headers);
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
+    }
+    return Promise.resolve<void>(null as any);
+  }
+
+  /**
+   * @param ids (optional)
+   * @return No Content
+   */
+  deleteDictionaryItem(ids?: string[] | undefined): Promise<void> {
+    let url_ = this.baseUrl + "/api/platform/dynamic/dictionaryitems?";
+    if (ids === null) throw new Error("The parameter 'ids' cannot be null.");
+    else if (ids !== undefined)
+      ids &&
+        ids.forEach((item) => {
+          url_ += "ids=" + encodeURIComponent("" + item) + "&";
+        });
+    url_ = url_.replace(/[?&]$/, "");
+
+    let options_: RequestInit = {
+      method: "DELETE",
+      headers: {},
+    };
+
+    return this.transformOptions(options_)
+      .then((transformedOptions_) => {
+        return this.http.fetch(url_, transformedOptions_);
+      })
+      .then((_response: Response) => {
+        return this.processDeleteDictionaryItem(_response);
+      });
+  }
+
+  protected processDeleteDictionaryItem(response: Response): Promise<void> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+    }
+    if (status === 204) {
+      return response.text().then((_responseText) => {
+        return;
+      });
+    } else if (status === 401) {
+      return response.text().then((_responseText) => {
+        return throwException("Unauthorized", status, _responseText, _headers);
+      });
+    } else if (status === 403) {
+      return response.text().then((_responseText) => {
+        return throwException("Forbidden", status, _responseText, _headers);
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
+    }
+    return Promise.resolve<void>(null as any);
+  }
+
+  /**
+   * @param body (optional)
+   * @return OK
    */
   searchDictionaryItems(
     body?: DynamicPropertyDictionaryItemSearchCriteria | undefined,
@@ -1249,113 +1534,6 @@ export class DynamicPropertiesClient extends AuthApiBase {
     }
     return Promise.resolve<DynamicPropertyDictionaryItemSearchResult>(null as any);
   }
-
-  /**
-   * @param body (optional)
-   * @return Success
-   */
-  saveDictionaryItems(body?: DynamicPropertyDictionaryItem[] | undefined): Promise<void> {
-    let url_ = this.baseUrl + "/api/platform/dynamic/dictionaryitems";
-    url_ = url_.replace(/[?&]$/, "");
-
-    const content_ = JSON.stringify(body);
-
-    let options_: RequestInit = {
-      body: content_,
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json-patch+json",
-      },
-    };
-
-    return this.transformOptions(options_)
-      .then((transformedOptions_) => {
-        return this.http.fetch(url_, transformedOptions_);
-      })
-      .then((_response: Response) => {
-        return this.processSaveDictionaryItems(_response);
-      });
-  }
-
-  protected processSaveDictionaryItems(response: Response): Promise<void> {
-    const status = response.status;
-    let _headers: any = {};
-    if (response.headers && response.headers.forEach) {
-      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
-    }
-    if (status === 204) {
-      return response.text().then((_responseText) => {
-        return;
-      });
-    } else if (status === 401) {
-      return response.text().then((_responseText) => {
-        return throwException("Unauthorized", status, _responseText, _headers);
-      });
-    } else if (status === 403) {
-      return response.text().then((_responseText) => {
-        return throwException("Forbidden", status, _responseText, _headers);
-      });
-    } else if (status !== 200 && status !== 204) {
-      return response.text().then((_responseText) => {
-        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-      });
-    }
-    return Promise.resolve<void>(null as any);
-  }
-
-  /**
-   * @param ids (optional)
-   * @return Success
-   */
-  deleteDictionaryItem(ids?: string[] | undefined): Promise<void> {
-    let url_ = this.baseUrl + "/api/platform/dynamic/dictionaryitems?";
-    if (ids === null) throw new Error("The parameter 'ids' cannot be null.");
-    else if (ids !== undefined)
-      ids &&
-        ids.forEach((item) => {
-          url_ += "ids=" + encodeURIComponent("" + item) + "&";
-        });
-    url_ = url_.replace(/[?&]$/, "");
-
-    let options_: RequestInit = {
-      method: "DELETE",
-      headers: {},
-    };
-
-    return this.transformOptions(options_)
-      .then((transformedOptions_) => {
-        return this.http.fetch(url_, transformedOptions_);
-      })
-      .then((_response: Response) => {
-        return this.processDeleteDictionaryItem(_response);
-      });
-  }
-
-  protected processDeleteDictionaryItem(response: Response): Promise<void> {
-    const status = response.status;
-    let _headers: any = {};
-    if (response.headers && response.headers.forEach) {
-      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
-    }
-    if (status === 204) {
-      return response.text().then((_responseText) => {
-        return;
-      });
-    } else if (status === 401) {
-      return response.text().then((_responseText) => {
-        return throwException("Unauthorized", status, _responseText, _headers);
-      });
-    } else if (status === 403) {
-      return response.text().then((_responseText) => {
-        return throwException("Forbidden", status, _responseText, _headers);
-      });
-    } else if (status !== 200 && status !== 204) {
-      return response.text().then((_responseText) => {
-        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-      });
-    }
-    return Promise.resolve<void>(null as any);
-  }
 }
 
 export class JobsClient extends AuthApiBase {
@@ -1370,7 +1548,7 @@ export class JobsClient extends AuthApiBase {
   }
 
   /**
-   * @return Success
+   * @return OK
    */
   getStatus(id: string): Promise<Job> {
     let url_ = this.baseUrl + "/api/platform/jobs/{id}";
@@ -1436,7 +1614,7 @@ export class LocalizableSettingsClient extends AuthApiBase {
   }
 
   /**
-   * @return Success
+   * @return OK
    */
   getSettingsAndLanguages(): Promise<LocalizableSettingsAndLanguages> {
     let url_ = this.baseUrl + "/api/platform/localizable-settings";
@@ -1488,7 +1666,7 @@ export class LocalizableSettingsClient extends AuthApiBase {
   }
 
   /**
-   * @return Success
+   * @return OK
    */
   getDictionaryValues(name: string, language: string): Promise<KeyValue[]> {
     let url_ = this.baseUrl + "/api/platform/localizable-settings/{name}/dictionary-items/{language}/values";
@@ -1550,7 +1728,7 @@ export class LocalizableSettingsClient extends AuthApiBase {
 
   /**
    * @param body (optional)
-   * @return Success
+   * @return No Content
    */
   saveDictionaryItems(name: string, body?: DictionaryItem[] | undefined): Promise<void> {
     let url_ = this.baseUrl + "/api/platform/localizable-settings/{name}/dictionary-items";
@@ -1605,7 +1783,7 @@ export class LocalizableSettingsClient extends AuthApiBase {
 
   /**
    * @param values (optional)
-   * @return Success
+   * @return No Content
    */
   deleteDictionaryItems(name: string, values?: string[] | undefined): Promise<void> {
     let url_ = this.baseUrl + "/api/platform/localizable-settings/{name}/dictionary-items?";
@@ -1672,7 +1850,7 @@ export class ModulesClient extends AuthApiBase {
   }
 
   /**
-   * @return Success
+   * @return No Content
    */
   reloadModules(): Promise<void> {
     let url_ = this.baseUrl + "/api/platform/modules/reload";
@@ -1719,7 +1897,7 @@ export class ModulesClient extends AuthApiBase {
   }
 
   /**
-   * @return Success
+   * @return OK
    */
   getModules(): Promise<ModuleDescriptor[]> {
     let url_ = this.baseUrl + "/api/platform/modules";
@@ -1777,7 +1955,7 @@ export class ModulesClient extends AuthApiBase {
 
   /**
    * @param body (optional)
-   * @return Success
+   * @return OK
    */
   getDependingModules(body?: ModuleDescriptor[] | undefined): Promise<ModuleDescriptor[]> {
     let url_ = this.baseUrl + "/api/platform/modules/getdependents";
@@ -1839,7 +2017,7 @@ export class ModulesClient extends AuthApiBase {
 
   /**
    * @param body (optional)
-   * @return Success
+   * @return OK
    */
   getMissingDependencies(body?: ModuleDescriptor[] | undefined): Promise<ModuleDescriptor[]> {
     let url_ = this.baseUrl + "/api/platform/modules/getmissingdependencies";
@@ -1900,7 +2078,7 @@ export class ModulesClient extends AuthApiBase {
   }
 
   /**
-   * @return Success
+   * @return OK
    */
   uploadModuleArchive(): Promise<ModuleDescriptor> {
     let url_ = this.baseUrl + "/api/platform/modules/localstorage";
@@ -1953,7 +2131,7 @@ export class ModulesClient extends AuthApiBase {
 
   /**
    * @param body (optional)
-   * @return Success
+   * @return OK
    */
   installModules(body?: ModuleDescriptor[] | undefined): Promise<ModulePushNotification> {
     let url_ = this.baseUrl + "/api/platform/modules/install";
@@ -2010,7 +2188,7 @@ export class ModulesClient extends AuthApiBase {
 
   /**
    * @param body (optional)
-   * @return Success
+   * @return OK
    */
   uninstallModule(body?: ModuleDescriptor[] | undefined): Promise<ModulePushNotification> {
     let url_ = this.baseUrl + "/api/platform/modules/uninstall";
@@ -2066,7 +2244,7 @@ export class ModulesClient extends AuthApiBase {
   }
 
   /**
-   * @return Success
+   * @return No Content
    */
   restart(): Promise<void> {
     let url_ = this.baseUrl + "/api/platform/modules/restart";
@@ -2113,7 +2291,7 @@ export class ModulesClient extends AuthApiBase {
   }
 
   /**
-   * @return Success
+   * @return OK
    */
   tryToAutoInstallModules(): Promise<ModuleAutoInstallPushNotification> {
     let url_ = this.baseUrl + "/api/platform/modules/autoinstall";
@@ -2163,6 +2341,63 @@ export class ModulesClient extends AuthApiBase {
     }
     return Promise.resolve<ModuleAutoInstallPushNotification>(null as any);
   }
+
+  /**
+   * @return OK
+   */
+  getModulesLoadingOrder(): Promise<string[]> {
+    let url_ = this.baseUrl + "/api/platform/modules/loading-order";
+    url_ = url_.replace(/[?&]$/, "");
+
+    let options_: RequestInit = {
+      method: "GET",
+      headers: {
+        Accept: "text/plain",
+      },
+    };
+
+    return this.transformOptions(options_)
+      .then((transformedOptions_) => {
+        return this.http.fetch(url_, transformedOptions_);
+      })
+      .then((_response: Response) => {
+        return this.processGetModulesLoadingOrder(_response);
+      });
+  }
+
+  protected processGetModulesLoadingOrder(response: Response): Promise<string[]> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+    }
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+        if (Array.isArray(resultData200)) {
+          result200 = [] as any;
+          for (let item of resultData200) result200!.push(item);
+        } else {
+          result200 = <any>null;
+        }
+        return result200;
+      });
+    } else if (status === 401) {
+      return response.text().then((_responseText) => {
+        return throwException("Unauthorized", status, _responseText, _headers);
+      });
+    } else if (status === 403) {
+      return response.text().then((_responseText) => {
+        return throwException("Forbidden", status, _responseText, _headers);
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
+    }
+    return Promise.resolve<string[]>(null as any);
+  }
 }
 
 export class OAuthAppsClient extends AuthApiBase {
@@ -2177,7 +2412,7 @@ export class OAuthAppsClient extends AuthApiBase {
   }
 
   /**
-   * @return Success
+   * @return OK
    */
   new(): Promise<OpenIddictApplicationDescriptor> {
     let url_ = this.baseUrl + "/api/platform/oauthapps/new";
@@ -2230,7 +2465,7 @@ export class OAuthAppsClient extends AuthApiBase {
 
   /**
    * @param body (optional)
-   * @return Success
+   * @return OK
    */
   save(body?: OpenIddictApplicationDescriptor | undefined): Promise<OpenIddictApplicationDescriptor> {
     let url_ = this.baseUrl + "/api/platform/oauthapps";
@@ -2287,7 +2522,7 @@ export class OAuthAppsClient extends AuthApiBase {
 
   /**
    * @param clientIds (optional)
-   * @return Success
+   * @return OK
    */
   delete(clientIds?: string[] | undefined): Promise<void> {
     let url_ = this.baseUrl + "/api/platform/oauthapps?";
@@ -2341,7 +2576,7 @@ export class OAuthAppsClient extends AuthApiBase {
 
   /**
    * @param body (optional)
-   * @return Success
+   * @return OK
    */
   search(body?: OAuthAppSearchCriteria | undefined): Promise<OAuthAppSearchResult> {
     let url_ = this.baseUrl + "/api/platform/oauthapps/search";
@@ -2410,7 +2645,7 @@ export class PushNotificationClient extends AuthApiBase {
 
   /**
    * @param body (optional)
-   * @return Success
+   * @return OK
    */
   searchPushNotification(body?: PushNotificationSearchCriteria | undefined): Promise<PushNotificationSearchResult> {
     let url_ = this.baseUrl + "/api/platform/pushnotifications";
@@ -2466,7 +2701,7 @@ export class PushNotificationClient extends AuthApiBase {
   }
 
   /**
-   * @return Success
+   * @return OK
    */
   markAllAsRead(): Promise<PushNotificationSearchResult> {
     let url_ = this.baseUrl + "/api/platform/pushnotifications/markAllAsRead";
@@ -2531,7 +2766,7 @@ export class SecurityClient extends AuthApiBase {
 
   /**
    * @param body (optional)
-   * @return Success
+   * @return OK
    */
   login(body?: LoginRequest | undefined): Promise<SignInResult> {
     let url_ = this.baseUrl + "/api/platform/security/login";
@@ -2579,7 +2814,7 @@ export class SecurityClient extends AuthApiBase {
   }
 
   /**
-   * @return Success
+   * @return No Content
    */
   logout(): Promise<void> {
     let url_ = this.baseUrl + "/api/platform/security/logout";
@@ -2626,7 +2861,7 @@ export class SecurityClient extends AuthApiBase {
   }
 
   /**
-   * @return Success
+   * @return OK
    */
   getCurrentUser(): Promise<UserDetail> {
     let url_ = this.baseUrl + "/api/platform/security/currentuser";
@@ -2661,14 +2896,6 @@ export class SecurityClient extends AuthApiBase {
         result200 = UserDetail.fromJS(resultData200);
         return result200;
       });
-    } else if (status === 401) {
-      return response.text().then((_responseText) => {
-        return throwException("Unauthorized", status, _responseText, _headers);
-      });
-    } else if (status === 403) {
-      return response.text().then((_responseText) => {
-        return throwException("Forbidden", status, _responseText, _headers);
-      });
     } else if (status !== 200 && status !== 204) {
       return response.text().then((_responseText) => {
         return throwException("An unexpected server error occurred.", status, _responseText, _headers);
@@ -2678,7 +2905,7 @@ export class SecurityClient extends AuthApiBase {
   }
 
   /**
-   * @return Success
+   * @return OK
    */
   userinfo(): Promise<Claim[]> {
     let url_ = this.baseUrl + "/api/platform/security/userinfo";
@@ -2735,7 +2962,7 @@ export class SecurityClient extends AuthApiBase {
   }
 
   /**
-   * @return Success
+   * @return OK
    */
   getAllRegisteredPermissions(): Promise<Permission[]> {
     let url_ = this.baseUrl + "/api/platform/security/permissions";
@@ -2793,7 +3020,7 @@ export class SecurityClient extends AuthApiBase {
 
   /**
    * @param body (optional)
-   * @return Success
+   * @return OK
    */
   searchRoles(body?: RoleSearchCriteria | undefined): Promise<RoleSearchResult> {
     let url_ = this.baseUrl + "/api/platform/security/roles/search";
@@ -2849,7 +3076,7 @@ export class SecurityClient extends AuthApiBase {
   }
 
   /**
-   * @return Success
+   * @return OK
    */
   getRole(roleName: string): Promise<Role> {
     let url_ = this.baseUrl + "/api/platform/security/roles/{roleName}";
@@ -2904,7 +3131,7 @@ export class SecurityClient extends AuthApiBase {
 
   /**
    * @param ids (optional)
-   * @return Success
+   * @return No Content
    */
   deleteRoles(ids?: string[] | undefined): Promise<void> {
     let url_ = this.baseUrl + "/api/platform/security/roles?";
@@ -2958,7 +3185,7 @@ export class SecurityClient extends AuthApiBase {
 
   /**
    * @param body (optional)
-   * @return Success
+   * @return OK
    */
   updateRole(body?: Role | undefined): Promise<SecurityResult> {
     let url_ = this.baseUrl + "/api/platform/security/roles";
@@ -3015,7 +3242,7 @@ export class SecurityClient extends AuthApiBase {
 
   /**
    * @param body (optional)
-   * @return Success
+   * @return OK
    */
   searchUsers(body?: UserSearchCriteria | undefined): Promise<UserSearchResult> {
     let url_ = this.baseUrl + "/api/platform/security/users/search";
@@ -3071,7 +3298,7 @@ export class SecurityClient extends AuthApiBase {
   }
 
   /**
-   * @return Success
+   * @return OK
    */
   getUserByName(userName: string): Promise<ApplicationUser> {
     let url_ = this.baseUrl + "/api/platform/security/users/{userName}";
@@ -3125,7 +3352,7 @@ export class SecurityClient extends AuthApiBase {
   }
 
   /**
-   * @return Success
+   * @return OK
    */
   getUserById(id: string): Promise<ApplicationUser> {
     let url_ = this.baseUrl + "/api/platform/security/users/id/{id}";
@@ -3179,7 +3406,7 @@ export class SecurityClient extends AuthApiBase {
   }
 
   /**
-   * @return Success
+   * @return OK
    */
   getUserByEmail(email: string): Promise<ApplicationUser> {
     let url_ = this.baseUrl + "/api/platform/security/users/email/{email}";
@@ -3233,7 +3460,7 @@ export class SecurityClient extends AuthApiBase {
   }
 
   /**
-   * @return Success
+   * @return OK
    */
   getUserByLogin(loginProvider: string, providerKey: string): Promise<ApplicationUser> {
     let url_ = this.baseUrl + "/api/platform/security/users/login/external/{loginProvider}/{providerKey}";
@@ -3292,7 +3519,7 @@ export class SecurityClient extends AuthApiBase {
 
   /**
    * @param body (optional)
-   * @return Success
+   * @return OK
    */
   create(body?: ApplicationUser | undefined): Promise<SecurityResult> {
     let url_ = this.baseUrl + "/api/platform/security/users/create";
@@ -3349,7 +3576,7 @@ export class SecurityClient extends AuthApiBase {
 
   /**
    * @param body (optional)
-   * @return Success
+   * @return OK
    */
   changeCurrentUserPassword(body?: ChangePasswordRequest | undefined): Promise<SecurityResult> {
     let url_ = this.baseUrl + "/api/platform/security/currentuser/changepassword";
@@ -3410,7 +3637,7 @@ export class SecurityClient extends AuthApiBase {
 
   /**
    * @param body (optional)
-   * @return Success
+   * @return OK
    */
   changePassword(userName: string, body?: ChangePasswordRequest | undefined): Promise<SecurityResult> {
     let url_ = this.baseUrl + "/api/platform/security/users/{userName}/changepassword";
@@ -3473,7 +3700,7 @@ export class SecurityClient extends AuthApiBase {
 
   /**
    * @param body (optional)
-   * @return Success
+   * @return OK
    */
   resetPassword(userName: string, body?: ResetPasswordConfirmRequest | undefined): Promise<SecurityResult> {
     let url_ = this.baseUrl + "/api/platform/security/users/{userName}/resetpassword";
@@ -3532,7 +3759,7 @@ export class SecurityClient extends AuthApiBase {
 
   /**
    * @param body (optional)
-   * @return Success
+   * @return OK
    */
   resetPasswordByToken(userId: string, body?: ResetPasswordConfirmRequest | undefined): Promise<SecurityResult> {
     let url_ = this.baseUrl + "/api/platform/security/users/{userId}/resetpasswordconfirm";
@@ -3583,7 +3810,7 @@ export class SecurityClient extends AuthApiBase {
 
   /**
    * @param body (optional)
-   * @return Success
+   * @return OK
    */
   validatePasswordResetToken(userId: string, body?: ValidatePasswordResetTokenRequest | undefined): Promise<boolean> {
     let url_ = this.baseUrl + "/api/platform/security/users/{userId}/validatepasswordresettoken";
@@ -3634,7 +3861,7 @@ export class SecurityClient extends AuthApiBase {
   }
 
   /**
-   * @return Success
+   * @return OK
    */
   requestPasswordReset(loginOrEmail: string): Promise<void> {
     let url_ = this.baseUrl + "/api/platform/security/users/{loginOrEmail}/requestpasswordreset";
@@ -3677,7 +3904,7 @@ export class SecurityClient extends AuthApiBase {
 
   /**
    * @param body (optional)
-   * @return Success
+   * @return OK
    */
   validatePassword(body?: string | undefined): Promise<IdentityResult> {
     let url_ = this.baseUrl + "/api/platform/security/validatepassword";
@@ -3726,7 +3953,7 @@ export class SecurityClient extends AuthApiBase {
 
   /**
    * @param body (optional)
-   * @return Success
+   * @return OK
    */
   validateUserPassword(body?: ChangePasswordRequest | undefined): Promise<IdentityResult> {
     let url_ = this.baseUrl + "/api/platform/security/validateuserpassword";
@@ -3783,7 +4010,7 @@ export class SecurityClient extends AuthApiBase {
 
   /**
    * @param body (optional)
-   * @return Success
+   * @return OK
    */
   update(body?: ApplicationUser | undefined): Promise<SecurityResult> {
     let url_ = this.baseUrl + "/api/platform/security/users";
@@ -3840,7 +4067,7 @@ export class SecurityClient extends AuthApiBase {
 
   /**
    * @param names (optional)
-   * @return Success
+   * @return OK
    */
   delete(names?: string[] | undefined): Promise<void> {
     let url_ = this.baseUrl + "/api/platform/security/users?";
@@ -3893,7 +4120,7 @@ export class SecurityClient extends AuthApiBase {
   }
 
   /**
-   * @return Success
+   * @return OK
    */
   isUserLocked(id: string): Promise<UserLockedResult> {
     let url_ = this.baseUrl + "/api/platform/security/users/{id}/locked";
@@ -3947,7 +4174,7 @@ export class SecurityClient extends AuthApiBase {
   }
 
   /**
-   * @return Success
+   * @return OK
    */
   passwordChangeEnabled(): Promise<UserLockedResult> {
     let url_ = this.baseUrl + "/api/platform/security/passwordchangeenabled";
@@ -3999,7 +4226,7 @@ export class SecurityClient extends AuthApiBase {
   }
 
   /**
-   * @return Success
+   * @return OK
    */
   lockUser(id: string): Promise<SecurityResult> {
     let url_ = this.baseUrl + "/api/platform/security/users/{id}/lock";
@@ -4053,7 +4280,7 @@ export class SecurityClient extends AuthApiBase {
   }
 
   /**
-   * @return Success
+   * @return OK
    */
   unlockUser(id: string): Promise<SecurityResult> {
     let url_ = this.baseUrl + "/api/platform/security/users/{id}/unlock";
@@ -4107,7 +4334,7 @@ export class SecurityClient extends AuthApiBase {
   }
 
   /**
-   * @return Success
+   * @return OK
    */
   getUserApiKeys(id: string): Promise<UserApiKey[]> {
     let url_ = this.baseUrl + "/api/platform/security/users/{id}/apikeys";
@@ -4167,7 +4394,7 @@ export class SecurityClient extends AuthApiBase {
 
   /**
    * @param body (optional)
-   * @return Success
+   * @return OK
    */
   saveUserApiKey(body?: UserApiKey | undefined): Promise<UserApiKey[]> {
     let url_ = this.baseUrl + "/api/platform/security/users/apikeys";
@@ -4229,7 +4456,7 @@ export class SecurityClient extends AuthApiBase {
 
   /**
    * @param body (optional)
-   * @return Success
+   * @return OK
    */
   updateUserApiKey(body?: UserApiKey | undefined): Promise<UserApiKey[]> {
     let url_ = this.baseUrl + "/api/platform/security/users/apikeys";
@@ -4291,7 +4518,7 @@ export class SecurityClient extends AuthApiBase {
 
   /**
    * @param ids (optional)
-   * @return Success
+   * @return OK
    */
   deleteUserApiKeys(ids?: string[] | undefined): Promise<UserApiKey[]> {
     let url_ = this.baseUrl + "/api/platform/security/users/apikeys?";
@@ -4354,7 +4581,7 @@ export class SecurityClient extends AuthApiBase {
   }
 
   /**
-   * @return Success
+   * @return OK
    */
   getLoginTypes(): Promise<LoginType[]> {
     let url_ = this.baseUrl + "/api/platform/security/logintypes";
@@ -4403,7 +4630,7 @@ export class SecurityClient extends AuthApiBase {
   }
 
   /**
-   * @return Success
+   * @return OK
    */
   sendVerificationEmail(userId: string): Promise<void> {
     let url_ = this.baseUrl + "/api/platform/security/users/{userId}/sendVerificationEmail";
@@ -4453,7 +4680,7 @@ export class SecurityClient extends AuthApiBase {
 
   /**
    * @param body (optional)
-   * @return Success
+   * @return OK
    */
   confirmEmail(userId: string, body?: ConfirmEmailRequest | undefined): Promise<SecurityResult> {
     let url_ = this.baseUrl + "/api/platform/security/users/{userId}/confirmEmail";
@@ -4512,7 +4739,7 @@ export class SecurityClient extends AuthApiBase {
 
   /**
    * @param newEmail (optional)
-   * @return Success
+   * @return OK
    */
   generateChangeEmailToken(userId: string, newEmail?: string | undefined): Promise<string> {
     let url_ = this.baseUrl + "/api/platform/security/users/{userId}/generateChangeEmailToken?";
@@ -4569,7 +4796,7 @@ export class SecurityClient extends AuthApiBase {
   }
 
   /**
-   * @return Success
+   * @return OK
    */
   generateEmailConfirmationToken(userId: string): Promise<string> {
     let url_ = this.baseUrl + "/api/platform/security/users/{userId}/generateEmailConfirmationToken";
@@ -4624,7 +4851,7 @@ export class SecurityClient extends AuthApiBase {
   }
 
   /**
-   * @return Success
+   * @return OK
    */
   generatePasswordResetToken(userId: string): Promise<string> {
     let url_ = this.baseUrl + "/api/platform/security/users/{userId}/generatePasswordResetToken";
@@ -4681,7 +4908,7 @@ export class SecurityClient extends AuthApiBase {
   /**
    * @param tokenProvider (optional)
    * @param purpose (optional)
-   * @return Success
+   * @return OK
    */
   generateUserToken(userId: string, tokenProvider?: string | undefined, purpose?: string | undefined): Promise<string> {
     let url_ = this.baseUrl + "/api/platform/security/users/{userId}/generateToken?";
@@ -4741,7 +4968,7 @@ export class SecurityClient extends AuthApiBase {
 
   /**
    * @param body (optional)
-   * @return Success
+   * @return OK
    */
   verifyUserToken(userId: string, body?: VerifyTokenRequest | undefined): Promise<boolean> {
     let url_ = this.baseUrl + "/api/platform/security/users/{userId}/verifyToken";
@@ -4812,7 +5039,7 @@ export class SettingClient extends AuthApiBase {
   }
 
   /**
-   * @return Success
+   * @return OK
    */
   getAllGlobalSettings(): Promise<ObjectSettingEntry[]> {
     let url_ = this.baseUrl + "/api/platform/settings";
@@ -4870,7 +5097,7 @@ export class SettingClient extends AuthApiBase {
 
   /**
    * @param body (optional)
-   * @return Success
+   * @return No Content
    */
   update(body?: ObjectSettingEntry[] | undefined): Promise<void> {
     let url_ = this.baseUrl + "/api/platform/settings";
@@ -4922,7 +5149,7 @@ export class SettingClient extends AuthApiBase {
   }
 
   /**
-   * @return Success
+   * @return OK
    */
   getGlobalModuleSettings(id: string): Promise<ObjectSettingEntry[]> {
     let url_ = this.baseUrl + "/api/platform/settings/modules/{id}";
@@ -4981,7 +5208,7 @@ export class SettingClient extends AuthApiBase {
   }
 
   /**
-   * @return Success
+   * @return OK
    */
   getGlobalSetting(name: string): Promise<ObjectSettingEntry> {
     let url_ = this.baseUrl + "/api/platform/settings/{name}";
@@ -5035,7 +5262,7 @@ export class SettingClient extends AuthApiBase {
   }
 
   /**
-   * @return Success
+   * @return OK
    */
   getUICustomizationSetting(): Promise<ObjectSettingEntry> {
     let url_ = this.baseUrl + "/api/platform/settings/ui/customization";
@@ -5077,12 +5304,6 @@ export class SettingClient extends AuthApiBase {
     }
     return Promise.resolve<ObjectSettingEntry>(null as any);
   }
-}
-
-export enum AccountState {
-  PendingApproval = "PendingApproval",
-  Approved = "Approved",
-  Rejected = "Rejected",
 }
 
 export class AppDescriptor implements IAppDescriptor {
@@ -5153,9 +5374,6 @@ export class ApplicationUser implements IApplicationUser {
   createdBy?: string | undefined;
   modifiedBy?: string | undefined;
   roles?: Role[] | undefined;
-  lockoutEndDateUtc?: Date | undefined;
-  userState?: ApplicationUserUserState;
-  permissions?: string[] | undefined;
   logins?: ApplicationUserLogin[] | undefined;
   passwordExpired?: boolean;
   lastPasswordChangedDate?: Date | undefined;
@@ -5201,14 +5419,6 @@ export class ApplicationUser implements IApplicationUser {
       if (Array.isArray(_data["roles"])) {
         this.roles = [] as any;
         for (let item of _data["roles"]) this.roles!.push(Role.fromJS(item));
-      }
-      this.lockoutEndDateUtc = _data["lockoutEndDateUtc"]
-        ? new Date(_data["lockoutEndDateUtc"].toString())
-        : <any>undefined;
-      this.userState = _data["userState"];
-      if (Array.isArray(_data["permissions"])) {
-        this.permissions = [] as any;
-        for (let item of _data["permissions"]) this.permissions!.push(item);
       }
       if (Array.isArray(_data["logins"])) {
         this.logins = [] as any;
@@ -5264,12 +5474,6 @@ export class ApplicationUser implements IApplicationUser {
       data["roles"] = [];
       for (let item of this.roles) data["roles"].push(item.toJSON());
     }
-    data["lockoutEndDateUtc"] = this.lockoutEndDateUtc ? this.lockoutEndDateUtc.toISOString() : <any>undefined;
-    data["userState"] = this.userState;
-    if (Array.isArray(this.permissions)) {
-      data["permissions"] = [];
-      for (let item of this.permissions) data["permissions"].push(item);
-    }
     if (Array.isArray(this.logins)) {
       data["logins"] = [];
       for (let item of this.logins) data["logins"].push(item.toJSON());
@@ -5314,9 +5518,6 @@ export interface IApplicationUser {
   createdBy?: string | undefined;
   modifiedBy?: string | undefined;
   roles?: Role[] | undefined;
-  lockoutEndDateUtc?: Date | undefined;
-  userState?: ApplicationUserUserState;
-  permissions?: string[] | undefined;
   logins?: ApplicationUserLogin[] | undefined;
   passwordExpired?: boolean;
   lastPasswordChangedDate?: Date | undefined;
@@ -5376,131 +5577,6 @@ export class ApplicationUserLogin implements IApplicationUserLogin {
 export interface IApplicationUserLogin {
   loginProvider?: string | undefined;
   providerKey?: string | undefined;
-}
-
-export class ChangedEntitiesRequest implements IChangedEntitiesRequest {
-  entityNames?: string[] | undefined;
-  modifiedSince?: Date;
-
-  constructor(data?: IChangedEntitiesRequest) {
-    if (data) {
-      for (var property in data) {
-        if (data.hasOwnProperty(property)) (<any>this)[property] = (<any>data)[property];
-      }
-    }
-  }
-
-  init(_data?: any) {
-    if (_data) {
-      if (Array.isArray(_data["entityNames"])) {
-        this.entityNames = [] as any;
-        for (let item of _data["entityNames"]) this.entityNames!.push(item);
-      }
-      this.modifiedSince = _data["modifiedSince"] ? new Date(_data["modifiedSince"].toString()) : <any>undefined;
-    }
-  }
-
-  static fromJS(data: any): ChangedEntitiesRequest {
-    data = typeof data === "object" ? data : {};
-    let result = new ChangedEntitiesRequest();
-    result.init(data);
-    return result;
-  }
-
-  toJSON(data?: any) {
-    data = typeof data === "object" ? data : {};
-    if (Array.isArray(this.entityNames)) {
-      data["entityNames"] = [];
-      for (let item of this.entityNames) data["entityNames"].push(item);
-    }
-    data["modifiedSince"] = this.modifiedSince ? this.modifiedSince.toISOString() : <any>undefined;
-    return data;
-  }
-}
-
-export interface IChangedEntitiesRequest {
-  entityNames?: string[] | undefined;
-  modifiedSince?: Date;
-}
-
-export class ChangedEntitiesResponse implements IChangedEntitiesResponse {
-  entities?: ChangedEntity[] | undefined;
-
-  constructor(data?: IChangedEntitiesResponse) {
-    if (data) {
-      for (var property in data) {
-        if (data.hasOwnProperty(property)) (<any>this)[property] = (<any>data)[property];
-      }
-    }
-  }
-
-  init(_data?: any) {
-    if (_data) {
-      if (Array.isArray(_data["entities"])) {
-        this.entities = [] as any;
-        for (let item of _data["entities"]) this.entities!.push(ChangedEntity.fromJS(item));
-      }
-    }
-  }
-
-  static fromJS(data: any): ChangedEntitiesResponse {
-    data = typeof data === "object" ? data : {};
-    let result = new ChangedEntitiesResponse();
-    result.init(data);
-    return result;
-  }
-
-  toJSON(data?: any) {
-    data = typeof data === "object" ? data : {};
-    if (Array.isArray(this.entities)) {
-      data["entities"] = [];
-      for (let item of this.entities) data["entities"].push(item.toJSON());
-    }
-    return data;
-  }
-}
-
-export interface IChangedEntitiesResponse {
-  entities?: ChangedEntity[] | undefined;
-}
-
-export class ChangedEntity implements IChangedEntity {
-  name?: string | undefined;
-  modifiedDate?: Date;
-
-  constructor(data?: IChangedEntity) {
-    if (data) {
-      for (var property in data) {
-        if (data.hasOwnProperty(property)) (<any>this)[property] = (<any>data)[property];
-      }
-    }
-  }
-
-  init(_data?: any) {
-    if (_data) {
-      this.name = _data["name"];
-      this.modifiedDate = _data["modifiedDate"] ? new Date(_data["modifiedDate"].toString()) : <any>undefined;
-    }
-  }
-
-  static fromJS(data: any): ChangedEntity {
-    data = typeof data === "object" ? data : {};
-    let result = new ChangedEntity();
-    result.init(data);
-    return result;
-  }
-
-  toJSON(data?: any) {
-    data = typeof data === "object" ? data : {};
-    data["name"] = this.name;
-    data["modifiedDate"] = this.modifiedDate ? this.modifiedDate.toISOString() : <any>undefined;
-    return data;
-  }
-}
-
-export interface IChangedEntity {
-  name?: string | undefined;
-  modifiedDate?: Date;
 }
 
 export class ChangeLogSearchCriteria implements IChangeLogSearchCriteria {
@@ -5700,6 +5776,131 @@ export interface IChangePasswordRequest {
   userName?: string | undefined;
   oldPassword?: string | undefined;
   newPassword?: string | undefined;
+}
+
+export class ChangedEntitiesRequest implements IChangedEntitiesRequest {
+  entityNames?: string[] | undefined;
+  modifiedSince?: Date;
+
+  constructor(data?: IChangedEntitiesRequest) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property)) (<any>this)[property] = (<any>data)[property];
+      }
+    }
+  }
+
+  init(_data?: any) {
+    if (_data) {
+      if (Array.isArray(_data["entityNames"])) {
+        this.entityNames = [] as any;
+        for (let item of _data["entityNames"]) this.entityNames!.push(item);
+      }
+      this.modifiedSince = _data["modifiedSince"] ? new Date(_data["modifiedSince"].toString()) : <any>undefined;
+    }
+  }
+
+  static fromJS(data: any): ChangedEntitiesRequest {
+    data = typeof data === "object" ? data : {};
+    let result = new ChangedEntitiesRequest();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    if (Array.isArray(this.entityNames)) {
+      data["entityNames"] = [];
+      for (let item of this.entityNames) data["entityNames"].push(item);
+    }
+    data["modifiedSince"] = this.modifiedSince ? this.modifiedSince.toISOString() : <any>undefined;
+    return data;
+  }
+}
+
+export interface IChangedEntitiesRequest {
+  entityNames?: string[] | undefined;
+  modifiedSince?: Date;
+}
+
+export class ChangedEntitiesResponse implements IChangedEntitiesResponse {
+  entities?: ChangedEntity[] | undefined;
+
+  constructor(data?: IChangedEntitiesResponse) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property)) (<any>this)[property] = (<any>data)[property];
+      }
+    }
+  }
+
+  init(_data?: any) {
+    if (_data) {
+      if (Array.isArray(_data["entities"])) {
+        this.entities = [] as any;
+        for (let item of _data["entities"]) this.entities!.push(ChangedEntity.fromJS(item));
+      }
+    }
+  }
+
+  static fromJS(data: any): ChangedEntitiesResponse {
+    data = typeof data === "object" ? data : {};
+    let result = new ChangedEntitiesResponse();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    if (Array.isArray(this.entities)) {
+      data["entities"] = [];
+      for (let item of this.entities) data["entities"].push(item.toJSON());
+    }
+    return data;
+  }
+}
+
+export interface IChangedEntitiesResponse {
+  entities?: ChangedEntity[] | undefined;
+}
+
+export class ChangedEntity implements IChangedEntity {
+  name?: string | undefined;
+  modifiedDate?: Date;
+
+  constructor(data?: IChangedEntity) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property)) (<any>this)[property] = (<any>data)[property];
+      }
+    }
+  }
+
+  init(_data?: any) {
+    if (_data) {
+      this.name = _data["name"];
+      this.modifiedDate = _data["modifiedDate"] ? new Date(_data["modifiedDate"].toString()) : <any>undefined;
+    }
+  }
+
+  static fromJS(data: any): ChangedEntity {
+    data = typeof data === "object" ? data : {};
+    let result = new ChangedEntity();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    data["name"] = this.name;
+    data["modifiedDate"] = this.modifiedDate ? this.modifiedDate.toISOString() : <any>undefined;
+    return data;
+  }
+}
+
+export interface IChangedEntity {
+  name?: string | undefined;
+  modifiedDate?: Date;
 }
 
 export class Claim implements IClaim {
@@ -6995,6 +7196,7 @@ export interface ILicense {
 
 export class LocalizableSetting implements ILocalizableSetting {
   name?: string | undefined;
+  isLocalizable?: boolean;
   items?: DictionaryItem[] | undefined;
 
   constructor(data?: ILocalizableSetting) {
@@ -7008,6 +7210,7 @@ export class LocalizableSetting implements ILocalizableSetting {
   init(_data?: any) {
     if (_data) {
       this.name = _data["name"];
+      this.isLocalizable = _data["isLocalizable"];
       if (Array.isArray(_data["items"])) {
         this.items = [] as any;
         for (let item of _data["items"]) this.items!.push(DictionaryItem.fromJS(item));
@@ -7025,6 +7228,7 @@ export class LocalizableSetting implements ILocalizableSetting {
   toJSON(data?: any) {
     data = typeof data === "object" ? data : {};
     data["name"] = this.name;
+    data["isLocalizable"] = this.isLocalizable;
     if (Array.isArray(this.items)) {
       data["items"] = [];
       for (let item of this.items) data["items"].push(item.toJSON());
@@ -7035,6 +7239,7 @@ export class LocalizableSetting implements ILocalizableSetting {
 
 export interface ILocalizableSetting {
   name?: string | undefined;
+  isLocalizable?: boolean;
   items?: DictionaryItem[] | undefined;
 }
 
@@ -7453,6 +7658,7 @@ export interface IModuleDescriptor {
 export class ModuleIdentity implements IModuleIdentity {
   id?: string | undefined;
   version?: SemanticVersion | undefined;
+  optional?: boolean;
 
   constructor(data?: IModuleIdentity) {
     if (data) {
@@ -7466,6 +7672,7 @@ export class ModuleIdentity implements IModuleIdentity {
     if (_data) {
       this.id = _data["id"];
       this.version = _data["version"] ? SemanticVersion.fromJS(_data["version"]) : <any>undefined;
+      this.optional = _data["optional"];
     }
   }
 
@@ -7480,6 +7687,7 @@ export class ModuleIdentity implements IModuleIdentity {
     data = typeof data === "object" ? data : {};
     data["id"] = this.id;
     data["version"] = this.version ? this.version.toJSON() : <any>undefined;
+    data["optional"] = this.optional;
     return data;
   }
 }
@@ -7487,6 +7695,7 @@ export class ModuleIdentity implements IModuleIdentity {
 export interface IModuleIdentity {
   id?: string | undefined;
   version?: SemanticVersion | undefined;
+  optional?: boolean;
 }
 
 export class ModulePushNotification implements IModulePushNotification {
@@ -7730,6 +7939,7 @@ export class ObjectSettingEntry implements IObjectSettingEntry {
   displayName?: string | undefined;
   isRequired?: boolean;
   isHidden?: boolean;
+  isPublic?: boolean;
   valueType?: ObjectSettingEntryValueType;
   allowedValues?: any[] | undefined;
   defaultValue?: any | undefined;
@@ -7759,6 +7969,7 @@ export class ObjectSettingEntry implements IObjectSettingEntry {
       this.displayName = _data["displayName"];
       this.isRequired = _data["isRequired"];
       this.isHidden = _data["isHidden"];
+      this.isPublic = _data["isPublic"];
       this.valueType = _data["valueType"];
       if (Array.isArray(_data["allowedValues"])) {
         this.allowedValues = [] as any;
@@ -7792,6 +8003,7 @@ export class ObjectSettingEntry implements IObjectSettingEntry {
     data["displayName"] = this.displayName;
     data["isRequired"] = this.isRequired;
     data["isHidden"] = this.isHidden;
+    data["isPublic"] = this.isPublic;
     data["valueType"] = this.valueType;
     if (Array.isArray(this.allowedValues)) {
       data["allowedValues"] = [];
@@ -7818,6 +8030,7 @@ export interface IObjectSettingEntry {
   displayName?: string | undefined;
   isRequired?: boolean;
   isHidden?: boolean;
+  isPublic?: boolean;
   valueType?: ObjectSettingEntryValueType;
   allowedValues?: any[] | undefined;
   defaultValue?: any | undefined;
@@ -7958,11 +8171,14 @@ export class OpenIddictResponse implements IOpenIddictResponse {
   errorUri?: string | undefined;
   expiresIn?: number | undefined;
   idToken?: string | undefined;
+  iss?: string | undefined;
   refreshToken?: string | undefined;
   scope?: string | undefined;
   state?: string | undefined;
   tokenType?: string | undefined;
   userCode?: string | undefined;
+  verificationUri?: string | undefined;
+  verificationUriComplete?: string | undefined;
   readonly count?: number;
 
   constructor(data?: IOpenIddictResponse) {
@@ -7983,11 +8199,14 @@ export class OpenIddictResponse implements IOpenIddictResponse {
       this.errorUri = _data["errorUri"];
       this.expiresIn = _data["expiresIn"];
       this.idToken = _data["idToken"];
+      this.iss = _data["iss"];
       this.refreshToken = _data["refreshToken"];
       this.scope = _data["scope"];
       this.state = _data["state"];
       this.tokenType = _data["tokenType"];
       this.userCode = _data["userCode"];
+      this.verificationUri = _data["verificationUri"];
+      this.verificationUriComplete = _data["verificationUriComplete"];
       (<any>this).count = _data["count"];
     }
   }
@@ -8009,11 +8228,14 @@ export class OpenIddictResponse implements IOpenIddictResponse {
     data["errorUri"] = this.errorUri;
     data["expiresIn"] = this.expiresIn;
     data["idToken"] = this.idToken;
+    data["iss"] = this.iss;
     data["refreshToken"] = this.refreshToken;
     data["scope"] = this.scope;
     data["state"] = this.state;
     data["tokenType"] = this.tokenType;
     data["userCode"] = this.userCode;
+    data["verificationUri"] = this.verificationUri;
+    data["verificationUriComplete"] = this.verificationUriComplete;
     data["count"] = this.count;
     return data;
   }
@@ -8028,11 +8250,14 @@ export interface IOpenIddictResponse {
   errorUri?: string | undefined;
   expiresIn?: number | undefined;
   idToken?: string | undefined;
+  iss?: string | undefined;
   refreshToken?: string | undefined;
   scope?: string | undefined;
   state?: string | undefined;
   tokenType?: string | undefined;
   userCode?: string | undefined;
+  verificationUri?: string | undefined;
+  verificationUriComplete?: string | undefined;
   count?: number;
 }
 
@@ -8104,7 +8329,6 @@ export interface IOperationLog {
 }
 
 export class Permission implements IPermission {
-  id?: string | undefined;
   name?: string | undefined;
   moduleId?: string | undefined;
   groupName?: string | undefined;
@@ -8121,7 +8345,6 @@ export class Permission implements IPermission {
 
   init(_data?: any) {
     if (_data) {
-      this.id = _data["id"];
       this.name = _data["name"];
       this.moduleId = _data["moduleId"];
       this.groupName = _data["groupName"];
@@ -8145,7 +8368,6 @@ export class Permission implements IPermission {
 
   toJSON(data?: any) {
     data = typeof data === "object" ? data : {};
-    data["id"] = this.id;
     data["name"] = this.name;
     data["moduleId"] = this.moduleId;
     data["groupName"] = this.groupName;
@@ -8162,7 +8384,6 @@ export class Permission implements IPermission {
 }
 
 export interface IPermission {
-  id?: string | undefined;
   name?: string | undefined;
   moduleId?: string | undefined;
   groupName?: string | undefined;
@@ -9485,6 +9706,8 @@ export class Body implements IBody {
   scope?: string;
   username?: string;
   password?: string;
+  storeId?: string;
+  user_id?: string;
 
   [key: string]: any;
 
@@ -9505,6 +9728,8 @@ export class Body implements IBody {
       this.scope = _data["scope"];
       this.username = _data["username"];
       this.password = _data["password"];
+      this.storeId = _data["storeId"];
+      this.user_id = _data["user_id"];
     }
   }
 
@@ -9524,6 +9749,8 @@ export class Body implements IBody {
     data["scope"] = this.scope;
     data["username"] = this.username;
     data["password"] = this.password;
+    data["storeId"] = this.storeId;
+    data["user_id"] = this.user_id;
     return data;
   }
 }
@@ -9533,14 +9760,10 @@ export interface IBody {
   scope?: string;
   username?: string;
   password?: string;
+  storeId?: string;
+  user_id?: string;
 
   [key: string]: any;
-}
-
-export enum ApplicationUserUserState {
-  PendingApproval = "PendingApproval",
-  Approved = "Approved",
-  Rejected = "Rejected",
 }
 
 export enum DynamicObjectPropertyValueType {

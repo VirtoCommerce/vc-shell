@@ -13,7 +13,7 @@ import {
   ISearchOffersQuery,
   BulkOffersDeleteCommand,
 } from "@vc-app/api";
-import { Ref, computed, onBeforeMount, ref, watch } from "vue";
+import { onBeforeMount } from "vue";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface OffersListScope extends ListBaseBladeScope {}

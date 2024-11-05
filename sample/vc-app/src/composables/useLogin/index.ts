@@ -7,7 +7,7 @@ export default (): IUseLogin => {
    * @description Forgot password functionality
    */
   async function forgotPassword(args: { loginOrEmail: string }) {
-    console.log("Forgot password click");
+    console.log("Forgot password click", args);
   }
 
   return {

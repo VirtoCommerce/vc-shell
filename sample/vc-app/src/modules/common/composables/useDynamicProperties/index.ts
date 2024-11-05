@@ -10,7 +10,6 @@ import {
   PropertyValueValueType,
   VcmpSellerCatalogClient,
 } from "@vc-app/api";
-import * as _ from "lodash-es";
 
 const { getApiClient } = useApiClient(VcmpSellerCatalogClient);
 

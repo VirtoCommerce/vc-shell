@@ -1,4 +1,3 @@
-import { useUser } from "@vc-shell/framework";
 import {
   IFulfillmentCenter,
   FulfillmentCenter,

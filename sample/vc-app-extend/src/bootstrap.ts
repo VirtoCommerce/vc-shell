@@ -6,10 +6,10 @@ export function bootstrap(app: App) {
   const { addMenuItem } = useMenuService();
 
   // Add Dashboard to main menu item
-  addMenuItem({
-    title: "SHELL.MENU.DASHBOARD",
-    icon: "fas fa-home",
-    priority: 0,
-    url: "/",
-  });
+  //   addMenuItem({
+  //     title: "SHELL.MENU.DASHBOARD",
+  //     icon: "fas fa-home",
+  //     priority: 0,
+  //     url: "/",
+  //   });
 }

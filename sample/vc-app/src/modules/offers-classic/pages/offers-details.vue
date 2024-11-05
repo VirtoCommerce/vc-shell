@@ -12,23 +12,21 @@
   >
     <template #actions>
       <div class="tw-flex tw-flex-row tw-items-center">
-        <div class="vc-status">
-          <VcSelect
-            name="currentLocale"
-            :model-value="currentLocale"
-            :options="localesOptions"
-            option-value="value"
-            option-label="label"
-            required
-            :clearable="false"
-            @update:model-value="
-              (e) => {
-                setLocale(e as string);
-              }
-            "
-          >
-          </VcSelect>
-        </div>
+        <VcSelect
+          name="currentLocale"
+          :model-value="currentLocale"
+          :options="localesOptions"
+          option-value="value"
+          option-label="label"
+          required
+          :clearable="false"
+          @update:model-value="
+            (e) => {
+              setLocale(e as string);
+            }
+          "
+        >
+        </VcSelect>
       </div>
     </template>
 

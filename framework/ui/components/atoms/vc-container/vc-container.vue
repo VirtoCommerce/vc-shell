@@ -34,6 +34,7 @@
         'vc-container__inner_touching': touching,
       }"
       :style="{ top: topOffset + 'px' }"
+      @scroll="onScroll"
     >
       <slot></slot>
     </div>
@@ -52,6 +53,7 @@ export interface Props {
 
 export interface Emits {
   (event: "scroll:ptr"): void;
+  (event: "scroll", e: Event): void;
 }
 
 const props = defineProps<Props>();
@@ -107,6 +109,10 @@ function onTouchend() {
   } else {
     touchDiff.value = 0;
   }
+}
+
+function onScroll(e: Event) {
+  emit("scroll", e);
 }
 
 onMounted(() => {

@@ -348,23 +348,23 @@ const { open } = usePopup({
   }
 
   &__widget-toggle {
-    @apply tw-flex tw-flex-auto;
+    @apply tw-flex;
 
     &--desktop {
-      @apply tw-flex-col tw-justify-end;
+      @apply tw-flex-col tw-justify-end tw-max-h-14 tw-h-full tw-mt-auto;
     }
 
     &--mobile {
-      @apply tw-w-12 tw-max-w-12 tw-bg-[color:var(--blade-background-color)] tw-items-center tw-justify-center tw-px-4 tw-ml-auto;
+      @apply tw-w-12 tw-max-w-12 tw-bg-[color:var(--blade-background-color)] tw-items-center tw-justify-center tw-px-4 tw-ml-auto tw-mt-0;
     }
   }
 
   &__toggle-icon {
-    @apply tw-self-center tw-justify-self-center tw-text-[color:var(--blade-icon-color)] tw-cursor-pointer hover:tw-text-[color:var(--blade-icon-hover-color)];
+    @apply tw-flex-auto tw-items-center tw-self-center tw-justify-self-center tw-text-[color:var(--blade-icon-color)] tw-cursor-pointer hover:tw-text-[color:var(--blade-icon-hover-color)];
+    @apply tw-flex #{!important};
   }
 
   &__toggle-icon--desktop {
-    @apply tw-mb-4;
   }
 }
 

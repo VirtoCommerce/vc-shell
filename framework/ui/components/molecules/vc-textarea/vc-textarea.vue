@@ -26,6 +26,7 @@
     <!-- Textarea field -->
     <div class="vc-textarea__field-wrapper">
       <textarea
+        ref="textareaRef"
         class="vc-textarea__field"
         :placeholder="placeholder"
         :value="modelValue"
@@ -47,6 +48,7 @@
 </template>
 
 <script lang="ts" setup>
+import { ref } from "vue";
 import { VcHint, VcLabel } from "./../../";
 
 export interface Props {
@@ -78,10 +80,16 @@ withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<Emits>();
 
+const textareaRef = ref<HTMLTextAreaElement>();
+
 function onInput(e: Event) {
   const newValue = (e.target as HTMLInputElement).value;
   emit("update:modelValue", newValue);
 }
+
+defineExpose({
+  focus: () => textareaRef.value?.focus(),
+});
 </script>
 
 <style lang="scss">

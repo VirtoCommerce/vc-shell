@@ -169,7 +169,7 @@ function onClose(): void {
   @apply tw-shrink-0 tw-h-[var(--blade-header-height)] tw-bg-[color:var(--blade-header-background-color)] tw-flex tw-items-center tw-py-0 tw-px-4 tw-border-solid tw-border-b tw-border-b-[color:var(--blade-header-border-color)];
 
   &__actions {
-    @apply tw-w-auto tw-max-w-[50%] tw-grow tw-basis-0 tw-overflow-hidden;
+    @apply tw-grow tw-basis-0 tw-overflow-hidden tw-flex tw-justify-end;
   }
 
   &__status {
@@ -193,7 +193,7 @@ function onClose(): void {
   }
 
   &__content {
-    @apply tw-overflow-hidden tw-grow tw-basis-0;
+    @apply tw-overflow-hidden tw-grow tw-basis-0 tw-shrink-0;
   }
 
   &__title {

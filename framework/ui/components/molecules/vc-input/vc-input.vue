@@ -116,6 +116,7 @@
                   class="vc-input__input"
                   @keydown="onKeyDown"
                   @blur="handleBlur"
+                  @focus="handleFocus"
                 />
               </template>
             </slot>
@@ -332,6 +333,7 @@ export interface Emits {
    */
   (event: "update:modelValue", value: string | number | Date | null | undefined): void;
   (event: "blur", value: Event): void;
+  (event: "focus"): void;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -544,6 +546,10 @@ function handleBlur(e: Event) {
 
 function focus() {
   inputRef.value?.focus();
+}
+
+function handleFocus() {
+  emit("focus");
 }
 </script>
 

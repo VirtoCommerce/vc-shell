@@ -102,7 +102,7 @@ function onClick(e: Event): void {
   --button-padding-hor: 14px;
   --button-padding-hor-small: 14px;
   --button-padding-vert: 10px;
-  --button-padding-vert-small: 2px;
+  --button-padding-vert-small: 7px;
 
   --button-height: 36px;
   --button-height-small: 28px;
@@ -135,7 +135,7 @@ $variants: primary, warning, danger;
         @apply tw-py-[var(--button-padding-vert-small)] tw-min-h-[var(--button-height-small)] tw-px-[var(--button-padding-hor-small)] tw-font-normal tw-text-xs;
 
         .vc-button__icon + .vc-button__title {
-          @apply tw-ml-1;
+          @apply tw-ml-2;
         }
       }
 

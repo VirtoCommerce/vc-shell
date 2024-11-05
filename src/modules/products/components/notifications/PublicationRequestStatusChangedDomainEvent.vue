@@ -63,19 +63,19 @@ const notificationStyle = computed(() => ({
     const notification = props.notification;
     switch (notification.newStatus) {
       case "RequestChanges":
-        return "#F14E4E";
+        return "var(--danger-400)";
       case "Approved":
-        return "#87B563";
+        return "var(--success-400)";
       case "WaitForApproval":
-        return "#f89406";
+        return "var(--warning-600)";
       case "Rejected":
-        return "#F14E4E";
+        return "var(--danger-400)";
       case "HasStagedChanges":
-        return "#f89406";
+        return "var(--warning-600)";
       case "Published":
-        return "#87B563";
+        return "var(--success-400)";
       default:
-        return "#A9BCCD";
+        return "var(--secondary-200)";
     }
   }),
   icon: "fas fa-box-open",

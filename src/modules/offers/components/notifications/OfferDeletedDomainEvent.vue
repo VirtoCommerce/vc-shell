@@ -27,7 +27,7 @@ defineOptions({
 });
 
 const notificationStyle = {
-  color: "#F14E4E",
+  color: "var(--danger-400)",
   icon: "fas fa-percentage",
 };
 </script>

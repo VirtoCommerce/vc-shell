@@ -27,7 +27,7 @@ defineOptions({
 });
 
 const notificationStyle = {
-  color: "#87b563",
+  color: "var(--success-400)",
   icon: "fas fa-percentage",
 };
 </script>

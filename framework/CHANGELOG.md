@@ -1,3 +1,12 @@
+## [1.0.324](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.323...v1.0.324) (2024-11-06)
+
+
+### Bug Fixes
+
+* **core:** dynamic loader fix ([503408c](https://github.com/VirtoCommerce/vc-shell/commit/503408c68852d2660b6ecaf06f0b818ece474d69))
+
+
+
 ## [1.0.323](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.322...v1.0.323) (2024-11-05)
 
 

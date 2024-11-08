@@ -1,20 +1,21 @@
 <template>
   <div class="tw-flex tw-justify-center tw-mt-4 tw-flex-wrap tw-gap-2">
-    <component
-      :is="loadProviderComponent(provider.authenticationType!)"
+    <ExternalProvider
       v-for="provider in providers"
-      :key="provider"
-      :logo="'/' + provider.logoUrl"
+      :key="provider.authenticationType"
+      :logo="provider.logoUrl"
       :display-name="provider.displayName"
       :authentication-type="provider.authenticationType"
+      @sign-in="signIn(provider.authenticationType)"
     />
   </div>
 </template>
 
 <script setup lang="ts">
-import { defineProps, defineAsyncComponent } from "vue";
-import type { Component, AsyncComponentLoader } from "vue";
+import { defineProps } from "vue";
 import { ExternalSignInProviderInfo } from "../../../core/api/platform";
+import { useExternalProvider } from "./useExternalProvider";
+import { default as ExternalProvider } from "./external-provider.vue";
 
 export interface Props {
   providers: ExternalSignInProviderInfo[];
@@ -22,22 +23,5 @@ export interface Props {
 
 defineProps<Props>();
 
-const components = import.meta.glob("./*.vue");
-
-const loadProviderComponent = (providerName: string): Component | null => {
-  const componentPath = `./${providerName.toLowerCase()}.vue`;
-  const loader: AsyncComponentLoader = components[componentPath];
-
-  if (loader !== undefined) {
-    return defineAsyncComponent({
-      loader,
-      onError(error) {
-        console.error(`Failed to load ${providerName} provider component`, error);
-      },
-    });
-  } else {
-    console.error(`Component for provider "${providerName}" not found at path "${componentPath}"`);
-    return null;
-  }
-};
+const { signIn } = useExternalProvider();
 </script>

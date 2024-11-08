@@ -1,3 +1,12 @@
+## [1.0.325](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.324...v1.0.325) (2024-11-08)
+
+
+### Bug Fixes
+
+* **core:** sso fixes ([decbec2](https://github.com/VirtoCommerce/vc-shell/commit/decbec29ae48deca6183e8f92e1155f5faced943))
+
+
+
 ## [1.0.324](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.323...v1.0.324) (2024-11-06)
 
 

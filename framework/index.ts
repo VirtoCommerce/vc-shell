@@ -25,7 +25,7 @@ import * as Vue from "vue";
 import * as VueI18n from "vue-i18n";
 import * as VueUse from "@vueuse/core";
 import _ from "lodash";
-
+import * as VeeValidate from "vee-validate";
 import "normalize.css";
 import "./assets/styles/index.scss";
 
@@ -77,6 +77,7 @@ if (typeof window !== "undefined") {
   window.VueI18n = VueI18n;
   window._ = _;
   window.VueUse = VueUse;
+  window.VeeValidate = VeeValidate;
 }
 
 export default {

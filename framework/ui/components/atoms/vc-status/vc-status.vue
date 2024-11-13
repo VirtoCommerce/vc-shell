@@ -3,6 +3,10 @@
     class="vc-status"
     :class="[`vc-status_${variant}`, { 'vc-status_outline': outline }, { 'vc-status_extended': extend }]"
   >
+    <div
+      v-if="outline"
+      class="vc-status__dot"
+    ></div>
     <slot></slot>
   </div>
 </template>
@@ -30,9 +34,11 @@ defineSlots<{
   --status-padding: 4px 14px;
   --status-padding-extended: 8px;
 
-  --status-border-radius: 2px;
+  --status-border-radius: 20px;
   --status-border-radius-extended: 4px;
   --status-border-width: 1px;
+
+  --status-border-color: var(--neutrals-500);
 
   --status-info-color: var(--additional-950);
   --status-info-main-color: var(--info-500);
@@ -61,7 +67,7 @@ defineSlots<{
 $variants: info, warning, danger, success, light-danger, info-dark, primary;
 
 .vc-status {
-  @apply tw-inline-block tw-font-normal tw-whitespace-nowrap tw-text-sm tw-truncate tw-text-center tw-border tw-border-solid tw-box-border tw-w-full;
+  @apply tw-inline-block tw-font-normal tw-whitespace-nowrap tw-text-xs tw-truncate tw-text-center tw-border tw-border-solid tw-box-border;
 
   @apply tw-py-1 tw-px-3.5 tw-rounded-[var(--status-border-radius)];
 
@@ -69,10 +75,17 @@ $variants: info, warning, danger, success, light-danger, info-dark, primary;
 
   @each $variant in $variants {
     &.vc-status_#{$variant} {
-      @apply tw-text-[color:var(--status-#{$variant}-color)] tw-border-[color:var(--status-#{$variant}-main-color)] tw-bg-[color:var(--status-#{$variant}-main-color)];
+      @apply tw-border-[color:var(--status-#{$variant}-main-color)] tw-bg-[color:var(--status-#{$variant}-main-color)];
 
       &.vc-status_outline {
-        @apply tw-text-[color:var(--status-#{$variant}-main-color)] tw-bg-[color:var(--status-outline-bg-color)];
+        @apply tw-bg-[color:var(--status-outline-bg-color)];
+        @apply tw-flex tw-items-center tw-justify-center tw-flex-row tw-relative;
+        @apply tw-border-[color:var(--status-border-color)] #{!important};
+
+        &::before {
+          content: "";
+          @apply tw-bg-[color:var(--status-#{$variant}-main-color)] tw-w-4 tw-h-4 tw-rounded-full tw-mr-2 tw-shrink-0;
+        }
       }
     }
   }

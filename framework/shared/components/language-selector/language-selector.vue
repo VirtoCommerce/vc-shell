@@ -1,55 +1,37 @@
 <template>
-  <AppBarButtonTemplate
-    :title="$t('COMPONENTS.LANGUAGE_SELECTOR.TITLE')"
-    position="bottom-end"
-  >
-    <template #button>
-      <div class="vc-language-selector__button-wrap">
-        <VcImage
-          :src="currLocaleFlag"
-          class="vc-language-selector__img vc-language-selector__img--button"
-          empty-icon="fas fa-globe"
+  <div>
+    <SettingsMenuItem
+      :image="currLocaleFlag"
+      :empty-icon="'fas fa-globe'"
+      :title="$t('COMPONENTS.LANGUAGE_SELECTOR.TITLE')"
+      @click="opened = !opened"
+    />
+
+    <GenericDropdown
+      :opened="opened"
+      :items="languageItems"
+      :is-item-active="(lang) => lang.lang === $i18n.locale"
+      :on-item-click="(lang) => lang.hasOwnProperty('clickHandler') && lang.clickHandler(lang.lang)"
+    >
+      <template #item="{ item: lang, click }">
+        <SettingsMenuItem
+          class="tw-py-0"
+          :image="lang.flag"
+          :title="lang.title"
+          :is-active="lang.lang === $i18n.locale"
+          @click="click"
         />
-      </div>
-    </template>
-    <template #dropdown-content="{ opened, toggle }">
-      <Sidebar
-        :is-expanded="$isMobile.value ? opened : false"
-        position="right"
-        render="mobile"
-        @close="toggle"
-      >
-        <template #content>
-          <div
-            v-if="opened"
-            class="vc-language-selector__dropdown"
-          >
-            <div
-              v-for="(lang, i) in languageItems"
-              :key="i"
-              class="vc-language-selector__item"
-              :class="{ 'vc-language-selector__item--active': lang.lang === $i18n.locale }"
-              @click="lang.hasOwnProperty('clickHandler') && lang.clickHandler(lang.lang)"
-            >
-              <VcImage
-                :src="lang.flag"
-                class="vc-language-selector__img"
-              />
-              {{ lang.title }}
-            </div>
-          </div>
-        </template>
-      </Sidebar>
-    </template>
-  </AppBarButtonTemplate>
+      </template>
+    </GenericDropdown>
+  </div>
 </template>
 
 <script lang="ts" setup>
 import { useI18n } from "vue-i18n";
 import { useLanguages } from "../../../core/composables";
-import { AppBarButtonTemplate } from "./../app-bar-button";
-import { Sidebar } from "./../sidebar";
+import { GenericDropdown } from "../generic-dropdown";
 import { watch, ref } from "vue";
+import { SettingsMenuItem } from "../menu-item";
 
 interface ILanguage {
   lang: string;
@@ -60,6 +42,8 @@ interface ILanguage {
 
 const { availableLocales, getLocaleMessage, locale } = useI18n({ useScope: "global" });
 const { setLocale, getFlag } = useLanguages();
+
+const opened = ref(false);
 
 const languageItems: ILanguage[] = availableLocales
   .map((locale: string) => ({
@@ -97,25 +81,6 @@ watch(
 }
 
 .vc-language-selector {
-  &__dropdown {
-    @apply tw-bg-[color:var(--language-selector-bg-color)] tw-min-w-max;
-  }
-
-  &__item {
-    @apply tw-truncate tw-flex tw-items-center tw-p-3 tw-text-sm tw-text-[color:var(--language-selector-text-color)]
-      tw-border-l tw-border-solid tw-border-l-[var(--language-selector-border-color)]
-      tw-border-b tw-border-b-[var(--language-selector-border-color)] tw-w-full tw-cursor-pointer;
-    transition: background-color 0.2s;
-
-    &:hover {
-      background-color: var(--language-selector-hover-bg-color);
-    }
-
-    &--active {
-      @apply tw-bg-[color:var(--language-selector-hover-bg-color)];
-    }
-  }
-
   &__img {
     @apply tw-w-6 tw-h-6 tw-mr-2;
 
@@ -125,7 +90,7 @@ watch(
   }
 
   &__button-wrap {
-    @apply tw-w-[var(--language-selector-button-width)] tw-flex tw-justify-center;
+    @apply tw-flex tw-justify-center;
   }
 }
 </style>

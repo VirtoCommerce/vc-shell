@@ -63,9 +63,9 @@
       v-if="!$isMobile.value"
       class="vc-blade-header__controls"
     >
-      <template v-if="expandable">
+      <template v-if="blade.expandable">
         <div
-          v-if="maximized"
+          v-if="blade.maximized"
           class="vc-blade-header__button"
           @click="onCollapse"
         >
@@ -79,10 +79,7 @@
           class="vc-blade-header__button"
           @click="onExpand"
         >
-          <VcIcon
-            icon="fas fa-window-maximize"
-            size="s"
-          />
+          <VcIcon :icon="AppWindowIcon" />
         </div>
       </template>
       <div
@@ -90,7 +87,7 @@
         class="vc-blade-header__button"
         @click="onClose"
       >
-        <VcIcon icon="fas fa-times" />
+        <VcIcon :icon="CrossSignIcon" />
       </div>
     </div>
   </div>
@@ -98,12 +95,11 @@
 
 <script lang="ts" setup>
 import { VcIcon } from "./../../../../";
-import { ref } from "vue";
+import { ComputedRef, inject, ref } from "vue";
 import { useFloating, shift } from "@floating-ui/vue";
+import { CrossSignIcon, AppWindowIcon } from "../../../../atoms/vc-icon/icons";
 
 export interface Props {
-  expandable?: boolean;
-  maximized?: boolean;
   closable?: boolean;
   title?: string;
   subtitle?: string;
@@ -114,6 +110,7 @@ const props = defineProps<Props>();
 
 const emit = defineEmits(["close", "expand", "collapse"]);
 
+const blade = inject("$blade") as ComputedRef<{ expandable: boolean; maximized: boolean }>;
 const tooltipVisible = ref(false);
 const tooltipIconRef = ref<HTMLElement | null>(null);
 const tooltipRef = ref<HTMLElement | null>(null);
@@ -123,13 +120,13 @@ const { floatingStyles } = useFloating(tooltipIconRef, tooltipRef, {
 });
 
 function onExpand(): void {
-  if (props.expandable) {
+  if (blade.value.expandable) {
     emit("expand");
   }
 }
 
 function onCollapse(): void {
-  if (props.expandable) {
+  if (blade.value.expandable) {
     emit("collapse");
   }
 }
@@ -143,7 +140,7 @@ function onClose(): void {
 
 <style lang="scss">
 :root {
-  --blade-header-height: 50px;
+  --blade-header-height: 82px;
   --blade-header-background-color: var(--additional-50);
 
   --blade-header-button-color: var(--secondary-500);
@@ -166,7 +163,7 @@ function onClose(): void {
 }
 
 .vc-blade-header {
-  @apply tw-shrink-0 tw-h-[var(--blade-header-height)] tw-bg-[color:var(--blade-header-background-color)] tw-flex tw-items-center tw-py-0 tw-px-4 tw-border-solid tw-border-b tw-border-b-[color:var(--blade-header-border-color)];
+  @apply tw-shrink-0 tw-h-[var(--blade-header-height)] tw-bg-[color:var(--blade-header-background-color)] tw-flex tw-items-center tw-py-0 tw-px-5 tw-border-solid tw-border-b tw-border-b-[color:var(--blade-header-border-color)];
 
   &__actions {
     @apply tw-grow tw-basis-0 tw-overflow-hidden tw-flex tw-justify-end;
@@ -197,11 +194,11 @@ function onClose(): void {
   }
 
   &__title {
-    @apply tw-text-[color:var(--blade-header-title-color)] tw-text-lg/[23px] tw-truncate;
+    @apply tw-text-[color:var(--blade-header-title-color)] tw-text-xl/[23px] tw-truncate;
   }
 
   &__title-no-subtitle {
-    @apply tw-text-[length:var(--blade-header-title-font-size)] tw-font-medium #{!important};
+    @apply tw-text-[length:var(--blade-header-title-font-size)] tw-font-semibold #{!important};
   }
 
   &__subtitle {
@@ -213,7 +210,7 @@ function onClose(): void {
   }
 
   &__button {
-    @apply tw-text-[color:var(--blade-header-button-color)] tw-ml-4 tw-cursor-pointer hover:tw-text-[color:var(--blade-header-button-color-hover)];
+    @apply tw-text-[color:var(--blade-header-button-color)] tw-ml-2.5 tw-cursor-pointer hover:tw-text-[color:var(--blade-header-button-color-hover)];
   }
 }
 </style>

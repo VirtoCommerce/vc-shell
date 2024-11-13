@@ -91,12 +91,12 @@ defineEmits<Emits>();
   @apply tw-shrink-0 tw-flex tw-items-center tw-justify-between tw-box-border;
 
   &--mobile {
-    @apply tw-px-4 tw-py-2 tw-border-b tw-border-solid;
+    @apply tw-px-4 tw-border-b tw-border-solid;
     border-color: var(--table-header-border-color);
   }
 
   &--desktop {
-    @apply tw-p-4;
+    @apply tw-px-4;
   }
 
   &__filter-mobile {

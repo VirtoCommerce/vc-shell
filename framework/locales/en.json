@@ -6,6 +6,7 @@
       }
     },
     "ACCOUNT": {
+      "SETTINGS": "Settings",
       "CHANGE_PASSWORD": "Change password",
       "PROFILE": "Profile",
       "LOGOUT": "Log Out"

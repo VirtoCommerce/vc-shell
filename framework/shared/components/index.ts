@@ -12,3 +12,5 @@ export * from "./app-bar-button";
 export * from "./sidebar";
 export * from "./theme-selector";
 export * from "./sign-in";
+export * from "./menu-item";
+export * from "./generic-dropdown";

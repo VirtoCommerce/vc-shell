@@ -10,7 +10,7 @@ export default {
   prefix: "tw-",
   theme: {
     fontFamily: {
-      roboto: ["Roboto", "sans-serif"],
+      jakarta: ["Plus Jakarta Sans", "sans-serif"],
     },
     fontSize: {
       xxs: [

@@ -16,7 +16,7 @@
             :outline="false"
             variant="info-dark"
           >
-            <div class="tw-flex tw-flex-row tw-items-center">
+            <div class="tw-flex tw-flex-row tw-items-center tw-text-[color:var(--change-password-text-color)]">
               <VcIcon
                 icon="far fa-lightbulb"
                 size="l"
@@ -223,5 +223,6 @@ function validate() {
 <style lang="scss">
 :root {
   --change-password-error-color: var(--base-error-color, var(--danger-500));
+  --change-password-text-color: var(--base-text-color, var(--additional-950));
 }
 </style>

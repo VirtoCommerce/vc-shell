@@ -2,6 +2,8 @@
   <div
     ref="target"
     class="vc-tooltip"
+    @mouseenter="showTooltip"
+    @mouseleave="hideTooltip"
   >
     <div
       ref="tooltipCompRef"
@@ -25,8 +27,7 @@
 
 <script lang="ts" setup>
 import { useFloating, shift, Placement, offset as floatingOffset } from "@floating-ui/vue";
-import { getCurrentInstance, ref, watch } from "vue";
-import { useMouseInElement } from "@vueuse/core";
+import { getCurrentInstance, ref } from "vue";
 
 export interface Props {
   placement?: Placement;
@@ -34,6 +35,7 @@ export interface Props {
     crossAxis?: number;
     mainAxis?: number;
   };
+  delay?: number;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -42,6 +44,7 @@ const props = withDefaults(defineProps<Props>(), {
     crossAxis: 5,
     mainAxis: 5,
   }),
+  delay: 0,
 });
 
 defineSlots<{
@@ -53,9 +56,9 @@ const tooltipVisible = ref(false);
 const tooltipCompRef = ref<HTMLElement | null>(null);
 const tooltipRef = ref<HTMLElement | null>(null);
 const target = ref(null);
+let showTimeout: NodeJS.Timeout | null = null;
 
 const instance = getCurrentInstance();
-
 const appContainer = instance?.appContext.app._container.id;
 
 const { floatingStyles } = useFloating(tooltipCompRef, tooltipRef, {
@@ -63,11 +66,23 @@ const { floatingStyles } = useFloating(tooltipCompRef, tooltipRef, {
   middleware: [floatingOffset(props.offset), shift()],
 });
 
-const { isOutside } = useMouseInElement(target);
+const showTooltip = () => {
+  if (props.delay > 0) {
+    showTimeout = setTimeout(() => {
+      tooltipVisible.value = true;
+    }, props.delay);
+  } else {
+    tooltipVisible.value = true;
+  }
+};
 
-watch(isOutside, (outside) => {
-  tooltipVisible.value = !outside;
-});
+const hideTooltip = () => {
+  if (showTimeout) {
+    clearTimeout(showTimeout);
+    showTimeout = null;
+  }
+  tooltipVisible.value = false;
+};
 </script>
 
 <style lang="scss">

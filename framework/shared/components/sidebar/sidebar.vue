@@ -16,6 +16,7 @@
           'sidebar__dropdown--always': render === 'always',
           'sidebar__dropdown--left': position === 'left',
           'sidebar__dropdown--right': position === 'right',
+          'sidebar__dropdown--title': title,
         },
       ]"
     >
@@ -42,6 +43,7 @@ export interface Props {
   position?: "left" | "right";
   render: "always" | "mobile" | "desktop";
   isExpanded: boolean;
+  title?: string;
 }
 
 export interface Emits {
@@ -50,12 +52,13 @@ export interface Emits {
 
 const emit = defineEmits<Emits>();
 
-withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<Props>(), {
   position: "right",
   render: "always",
 });
 
 const header = h("div", { class: "sidebar__header" }, [
+  props.title ? h("h3", { class: "sidebar__title" }, props.title) : null,
   h(VcIcon, { icon: "fas fa-times", size: "xl", onClick: () => emit("close") }),
 ]);
 </script>
@@ -64,6 +67,7 @@ const header = h("div", { class: "sidebar__header" }, [
 :root {
   --sidebar-mobile-bg-color: var(--neutral-500);
   --sidebar-dropdown-mobile-icon-color: var(--primary-500);
+  --sidebar-title-color: var(--base-text-color, var(--additional-950));
 }
 
 .sidebar {
@@ -73,8 +77,13 @@ const header = h("div", { class: "sidebar__header" }, [
     @apply tw-fixed tw-left-0 tw-top-0 tw-right-0 tw-bottom-0 tw-z-[10000]
       tw-bg-[--sidebar-mobile-bg-color] tw-backdrop-blur-[3px];
   }
+
   &__header {
     @apply tw-text-[color:var(--sidebar-dropdown-mobile-icon-color)] tw-flex tw-justify-end tw-items-center tw-p-4 tw-cursor-pointer;
+  }
+
+  &__title {
+    @apply tw-text-[color:var(--sidebar-title-color)] tw-text-lg tw-font-bold;
   }
 
   &__dropdown {
@@ -94,6 +103,12 @@ const header = h("div", { class: "sidebar__header" }, [
 
     &--right {
       @apply tw-right-0 tw-left-auto;
+    }
+
+    &--title {
+      .sidebar__header {
+        @apply tw-justify-between #{!important};
+      }
     }
   }
 }

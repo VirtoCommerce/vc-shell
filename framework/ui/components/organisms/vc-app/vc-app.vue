@@ -12,74 +12,81 @@
     }"
   >
     <!-- Init application top bar -->
-    <VcAppBar
-      class="vc-app__app-bar"
-      :logo="logo"
-      :title="title"
-      :disable-menu="disableMenu"
-      @menubutton:click="($refs.menu as Record<'isMobileVisible', boolean>).isMobileVisible = true"
-      @backlink:click="closeBlade(blades.length - 1)"
-      @logo:click="openRoot"
-    >
-      <template #app-switcher>
-        <slot name="app-switcher">
-          <VcAppSwitcher
-            :apps-list="appsList"
-            @on-click="switchApp($event)"
-          />
-        </slot>
-      </template>
-
-      <!-- Toolbar slot -->
-      <template #toolbar>
-        <slot
-          name="toolbar"
-          v-bind="{
-            LanguageSelector,
-            UserDropdownButton,
-            NotificationDropdown,
-            ThemeSelector,
-          }"
-        >
-          <slot
-            v-if="$slots['toolbar:prepend']"
-            name="toolbar:prepend"
-          ></slot>
-          <slot name="toolbar:theme-selector">
-            <ThemeSelector />
-          </slot>
-          <slot name="toolbar:language-selector">
-            <LanguageSelector
-              v-if="$isDesktop.value ? $isDesktop.value : $isMobile.value ? route.path === '/' : false"
-            />
-          </slot>
-          <slot name="toolbar:notifications-dropdown">
-            <NotificationDropdown />
-          </slot>
-          <slot
-            name="toolbar:user-dropdown"
-            :user-dropdown="UserDropdownButton"
-          >
-            <UserDropdownButton
-              :avatar-url="avatar"
-              :role="role"
-              :name="name"
-            />
-          </slot>
-        </slot>
-      </template>
-    </VcAppBar>
 
     <div class="vc-app__main-content">
       <!-- Init main menu -->
-      <VcAppMenu
-        v-if="!disableMenu"
-        ref="menu"
-        class="vc-app__app-menu"
-        :version="version"
-        @item:click="onMenuItemClick"
+      <VcAppBar
+        class="vc-app__app-bar"
+        :logo="logo"
+        :title="title"
+        :disable-menu="disableMenu"
+        @menubutton:click="($refs.menu as Record<'isMobileVisible', boolean>).isMobileVisible = true"
+        @backlink:click="closeBlade(blades.length - 1)"
+        @logo:click="openRoot"
       >
-      </VcAppMenu>
+        <template #app-switcher>
+          <slot name="app-switcher">
+            <VcAppSwitcher
+              :apps-list="appsList"
+              @on-click="switchApp($event)"
+            />
+          </slot>
+        </template>
+
+        <!-- Toolbar slot -->
+        <template #toolbar>
+          <!-- <slot
+            name="toolbar"
+            v-bind="{
+              LanguageSelector,
+              UserDropdownButton,
+              NotificationDropdown,
+              ThemeSelector,
+            }"
+          >
+            <slot
+              v-if="$slots['toolbar:prepend']"
+              name="toolbar:prepend"
+            ></slot>
+            <slot name="toolbar:theme-selector">
+              <ThemeSelector />
+            </slot>
+            <slot name="toolbar:language-selector">
+              <LanguageSelector />
+            </slot>
+            <slot name="toolbar:notifications-dropdown">
+              <NotificationDropdown />
+            </slot>
+          </slot> -->
+
+          <slot
+            name="toolbar:notifications-dropdown"
+            :notifications-dropdown="NotificationDropdown"
+          >
+            <NotificationDropdown />
+          </slot>
+        </template>
+
+        <template #navmenu>
+          <VcAppMenu
+            v-if="!disableMenu"
+            ref="menu"
+            class="vc-app__app-menu"
+            :version="version"
+            @item:click="onMenuItemClick"
+          >
+          </VcAppMenu>
+        </template>
+
+        <template #user-dropdown>
+          <slot
+            name="toolbar:user-dropdown"
+            :user-dropdown="UserDropdownComponent as unknown as typeof UserDropdownButton"
+          >
+            <UserDropdownComponent />
+          </slot>
+        </template>
+      </VcAppBar>
 
       <!-- Blade navigation -->
       <div
@@ -98,23 +105,22 @@
 </template>
 
 <script lang="ts" setup>
-import { inject, provide } from "vue";
+import { h, inject, provide } from "vue";
 import VcAppBar from "./_internal/vc-app-bar/vc-app-bar.vue";
 import VcAppMenu from "./_internal/vc-app-menu/vc-app-menu.vue";
 import {
   VcPopupContainer,
-  LanguageSelector,
   UserDropdownButton,
   useAppSwitcher,
   useBladeNavigation,
   NotificationDropdown,
   BladeRoutesRecord,
-  ThemeSelector,
 } from "./../../../../shared/components";
 import { useNotifications, useUser } from "../../../../core/composables";
 import { useRoute, useRouter } from "vue-router";
 import { watchOnce } from "@vueuse/core";
 import { MenuItem } from "../../../../core/types";
+import { useToolbarSlots } from "./composables/useToolbarSlots";
 
 export interface Props {
   isReady: boolean;
@@ -133,14 +139,14 @@ defineOptions({
 
 defineSlots<{
   "app-switcher": void;
-  toolbar: (props: {
-    UserDropdownButton: typeof UserDropdownButton;
-    LanguageSelector: typeof LanguageSelector;
-    NotificationDropdown: typeof NotificationDropdown;
-  }) => void;
+  // toolbar: (props: {
+  //   UserDropdownButton: typeof UserDropdownButton;
+  //   LanguageSelector: typeof LanguageSelector;
+  //   NotificationDropdown: typeof NotificationDropdown;
+  // }) => void;
   "toolbar:prepend": void;
   "toolbar:language-selector": void;
-  "toolbar:notifications-dropdown": void;
+  "toolbar:notifications-dropdown": (props: { notificationsDropdown: typeof NotificationDropdown }) => void;
   "toolbar:user-dropdown": (props: { userDropdown: typeof UserDropdownButton }) => void;
   "blade-navigation": void;
   "toolbar:theme-selector": void;
@@ -161,6 +167,17 @@ const { loadFromHistory } = useNotifications();
 const route = useRoute();
 const { isAuthenticated } = useUser();
 const routes = router.getRoutes();
+
+const { getToolbarMenuItems } = useToolbarSlots();
+
+const UserDropdownComponent = () => {
+  return h(UserDropdownButton, {
+    avatar: props.avatar,
+    role: props.role,
+    name: props.name,
+    menuItems: getToolbarMenuItems(),
+  });
+};
 
 const onMenuItemClick = function (item: MenuItem) {
   console.debug(`vc-app#onMenuItemClick() called.`);
@@ -234,7 +251,7 @@ provide("$dynamicModules", dynamicModules);
   }
 
   &__workspace {
-    @apply tw-px-2 tw-w-full tw-overflow-hidden tw-flex tw-grow tw-basis-0 tw-relative;
+    @apply tw-w-full tw-overflow-hidden tw-flex tw-grow tw-basis-0 tw-relative;
 
     .vc-app_mobile & {
       @apply tw-p-0;

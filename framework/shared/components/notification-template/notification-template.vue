@@ -6,34 +6,22 @@
         'vc-notification-template__container--mobile': $isMobile.value,
       }"
     >
-      <div class="vc-notification-template__left">
-        <div
-          class="vc-notification-template__icon-container"
-          :style="{ 'background-color': color }"
+      <div class="vc-notification-template__content">
+        <p
+          class="vc-notification-template__title"
+          :class="{ 'vc-notification-template__title--desktop': $isDesktop.value }"
         >
-          <VcIcon
-            :icon="icon"
-            size="l"
-            aria-label="Notification Icon"
-          ></VcIcon>
-        </div>
-        <div class="vc-notification-template__content">
-          <p
-            class="vc-notification-template__title"
-            :class="{ 'vc-notification-template__title--desktop': $isDesktop.value }"
-          >
-            {{ title }}
-          </p>
-          <slot></slot>
-        </div>
-      </div>
-      <div
-        class="vc-notification-template__right"
-        :class="{ 'vc-notification-template__right--mobile': $isMobile.value }"
-      >
+          {{ title }}
+        </p>
         <p class="vc-notification-template__time">
           {{ pushTime }}
         </p>
+        <div
+          v-if="$slots.default"
+          class="vc-notification-template__content-body"
+        >
+          <slot></slot>
+        </div>
       </div>
     </div>
   </div>
@@ -46,8 +34,8 @@ import moment from "moment";
 import { PushNotification } from "../../../core/api/platform";
 
 export interface Props {
-  color: string;
-  icon: string;
+  color?: string;
+  icon?: string;
   title: string;
   notification: PushNotification;
 }
@@ -65,7 +53,8 @@ const pushTime = computed(() => {
 :root {
   --notification-template-icon-color: var(--additional-50);
   --notification-template-text-color: var(--additional-950);
-  --notification-template-time-color: var(--neutrals-600);
+  --notification-template-time-color: var(--neutrals-500);
+  --notification-template-content-body-color: var(--neutrals-700);
 }
 
 .vc-notification-template {
@@ -89,13 +78,9 @@ const pushTime = computed(() => {
   }
 
   &__title {
-    @apply tw-text-[color:var(--notification-template-text-color)] tw-text-lg tw-leading-[19px]
-      tw-font-bold tw-m-0 tw-mb-1;
+    @apply tw-text-[color:var(--notification-template-text-color)] tw-text-xs tw-leading-[19px]
+      tw-font-bold tw-m-0 tw-text-wrap;
     word-break: break-word;
-
-    &--desktop {
-      @apply tw-mr-4;
-    }
   }
 
   &__right {
@@ -106,8 +91,12 @@ const pushTime = computed(() => {
     }
   }
 
+  &__content-body {
+    @apply tw-text-xs tw-text-[color:var(--notification-template-content-body-color)] tw-m-0 tw-text-wrap;
+  }
+
   &__time {
-    @apply tw-text-sm tw-text-[color:var(--notification-template-time-color)] tw-m-0;
+    @apply tw-text-xxs tw-text-[color:var(--notification-template-time-color)] tw-m-0 tw-mb-2;
   }
 }
 </style>

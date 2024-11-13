@@ -1,4 +1,44 @@
 @tailwind base;
+
+@layer base {
+  html,
+  body,
+  #app {
+    @apply tw-h-full tw-w-full tw-m-0 tw-fixed tw-overflow-hidden tw-overscroll-y-none;
+    font-family: "Plus Jakarta Sans", sans-serif;
+  }
+
+  body {
+    @apply tw-text-sm tw-text-[color:var(--base-text-color)];
+  }
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+button,
+input,
+select,
+textarea {
+   font-family: "Plus Jakarta Sans", sans-serif;
+}
+::-webkit-input-placeholder {
+   font-family: "Plus Jakarta Sans", sans-serif;
+}
+:-moz-placeholder {
+   font-family: "Plus Jakarta Sans", sans-serif;
+}
+::-moz-placeholder {
+   font-family: "Plus Jakarta Sans", sans-serif;
+}
+:-ms-input-placeholder {
+   font-family: "Plus Jakarta Sans", sans-serif;
+}
+
+
 @tailwind components;
 @tailwind utilities;
 

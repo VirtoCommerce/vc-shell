@@ -3,6 +3,7 @@
     <VcTooltip
       placement="bottom"
       :offset="{ crossAxis: 0, mainAxis: -10 }"
+      :delay="1000"
       class="tw-w-full"
     >
       <template
@@ -35,33 +36,35 @@
           </slot>
         </div>
       </button>
-
-      <div
-        v-if="isDropdownVisible"
-        ref="floatingDrop"
-        v-on-click-outside="[
-          () => {
-            isDropdownVisible = false;
-          },
-          { ignore: [referenceButton] },
-        ]"
-        :style="floatingDropStyle"
-        :class="['app-bar-button__dropdown']"
-      >
-        <slot
-          name="dropdown-content"
-          :opened="isDropdownVisible"
-          :toggle="toggleNotificationsDrop"
-        ></slot>
-      </div>
     </VcTooltip>
+
+    <div
+      v-if="isDropdownVisible"
+      v-on-click-outside="[
+        () => {
+          isDropdownVisible = false;
+        },
+        { ignore: [referenceButton] },
+      ]"
+      class="app-bar-button__dropdown"
+    >
+      <Teleport to="#vc-app-bar__menu-dropdowns">
+        <div class="app-bar-button__menu-dropdowns">
+          <slot
+            name="dropdown-content"
+            :opened="isDropdownVisible"
+            :toggle="toggleNotificationsDrop"
+          ></slot>
+        </div>
+      </Teleport>
+    </div>
   </div>
 </template>
 
 <script lang="ts" setup>
 import { ref, computed } from "vue";
 import { vOnClickOutside } from "@vueuse/components";
-import { useFloating, shift, autoUpdate } from "@floating-ui/vue";
+// import { useFloating, shift, autoUpdate } from "@floating-ui/vue";
 
 export interface Props {
   title?: string;
@@ -88,20 +91,19 @@ defineSlots<{
 const isDropdownVisible = ref(false);
 
 const referenceButton = ref<HTMLDivElement | null>(null);
-const floatingDrop = ref<HTMLDivElement | null>(null);
 
-const floater = useFloating(referenceButton, floatingDrop, {
-  placement: props.position,
-  whileElementsMounted: autoUpdate,
-  middleware: [shift({ mainAxis: false })],
-});
+// const floater = useFloating(referenceButton, null, {
+//   placement: props.position,
+//   whileElementsMounted: autoUpdate,
+//   middleware: [shift({ mainAxis: false })],
+// });
 
-const floatingDropStyle = computed(() => {
-  return {
-    top: `${floater.y.value ?? 0}px`,
-    left: `${floater.x.value ?? 0}px`,
-  };
-});
+// const floatingDropStyle = computed(() => {
+//   return {
+//     top: `${floater.y.value ?? 0}px`,
+//     left: `${floater.x.value ?? 0}px`,
+//   };
+// });
 
 function toggleNotificationsDrop() {
   if (props.beforeOpen && typeof props.beforeOpen === "function" && props.beforeOpen() === false) {
@@ -122,38 +124,50 @@ function toggleNotificationsDrop() {
   --app-bar-button-bg-color: var(--additional-50);
   --app-bar-button-dropdown-bg-color: var(--additional-50);
   --app-bar-button-dropdown-button-width: var(--app-bar-button-width);
+  --app-bar-button-border-color: var(--accent-500);
   --app-bar-button-dropdown-button-border: var(--app-bar-button-border-color);
   --app-bar-button-dropdown-button-color: var(--app-bar-button-color);
   --app-bar-button-dropdown-button-background-color: var(--app-bar-button-background-color);
   --app-bar-button-dropdown-button-color-hover: var(--app-bar-button-color-hover);
   --app-bar-button-dropdown-button-background-color-hover: var(--app-bar-button-background-color-hover);
   --app-bar-button-mobile-bg-color: var(--neutral-500);
+
+  --app-bar-button-dropdown-button-color-hover: var(--neutrals-100);
+  --app-bar-button-dropdown-button-active-bg: var(--neutrals-200);
+  --app-bar-button-border-width: 2px;
 }
 
 .app-bar-button {
   @apply tw-relative tw-flex;
 
+  &::after {
+    content: "";
+    @apply tw-absolute tw-left-0 tw-bottom-0 tw-w-full
+        tw-border-b-[2px]
+        tw-border-[color:var(--app-bar-button-border-color)]
+        tw-opacity-0 tw-transition-opacity tw-duration-200 tw-z-[2];
+  }
+
+  &:hover::after {
+    @apply tw-opacity-100;
+  }
+
   &__button {
-    @apply tw-flex tw-text-left tw-w-full;
+    @apply tw-flex tw-text-left tw-w-full tw-box-border tw-relative;
   }
 
   &__button-container {
     @apply tw-w-full tw-relative tw-h-full tw-flex tw-items-center tw-justify-center
-      tw-border-l tw-border-solid
-      tw-border-l-[color:var(--app-bar-button-dropdown-button-border)] tw-cursor-pointer
+     tw-cursor-pointer
       tw-text-[color:var(--app-bar-button-dropdown-button-color)] tw-bg-[color:var(--app-bar-button-dropdown-button-background-color)]
-      tw-transition-colors tw-duration-200;
+      tw-transition-colors tw-duration-200 tw-box-border;
 
-    &:hover {
-      @apply tw-text-[color:var(--app-bar-button-dropdown-button-color-hover)]
-        tw-bg-[color:var(--app-bar-button-dropdown-button-background-color-hover)];
+    &:hover:not(&--active) {
+      @apply tw-bg-[color:var(--app-bar-button-dropdown-button-color-hover)];
     }
 
     &--active {
-      box-shadow: var(--app-bar-button-shadow);
-      clip-path: inset(0px -20px 0px -20px);
-      background-color: var(--app-bar-button-dropdown-bg-color);
-      z-index: 9999;
+      @apply tw-bg-[color:var(--app-bar-button-dropdown-button-active-bg)];
     }
   }
 
@@ -162,8 +176,11 @@ function toggleNotificationsDrop() {
   }
 
   &__dropdown {
-    @apply tw-absolute tw-top-[var(--app-bar-button-height)] tw-z-[10000] tw-min-w-[100%];
-    box-shadow: var(--app-bar-button-shadow);
+    @apply tw-min-w-[100%];
+  }
+
+  &__menu-dropdowns {
+    //@apply tw-w-full tw-h-full tw-border-t-[2px] tw-border-[color:var(--app-bar-button-border-color)] tw-border-solid tw-border-b-[2px] tw-border-b-[color:var(--app-bar-button-border-color)];
   }
 }
 </style>

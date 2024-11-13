@@ -349,7 +349,7 @@ function onBlur(args: { row: number | undefined; field: string; errors?: string[
 }
 
 .vc-table-cell {
-  @apply tw-text-sm tw-text-[color:var(--table-cell-text-base-color)];
+  @apply tw-text-sm tw-text-[color:var(--table-cell-text-base-color)] tw-leading-normal;
 
   &__not-set {
     @apply tw-truncate;

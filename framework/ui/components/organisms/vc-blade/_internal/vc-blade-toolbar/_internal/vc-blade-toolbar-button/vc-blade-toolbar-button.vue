@@ -5,6 +5,7 @@
       crossAxis: 0,
       mainAxis: 0,
     }"
+    :delay="1000"
   >
     <template #tooltip>{{ title }}</template>
     <div
@@ -16,9 +17,8 @@
       :data-test-id="id ?? 'vc-blade-toolbar-button'"
       @click="onClick"
     >
-      <div ref="dropButtonRef">
+      <div>
         <div
-          ref="bladeDropToggle"
           type="button"
           class="vc-blade-toolbar-button__wrap"
         >
@@ -34,44 +34,20 @@
             {{ title }}
           </div>
         </div>
-        <teleport to="body">
-          <div
-            v-if="isDropActive"
-            ref="bladeDropRef"
-            class="vc-blade-toolbar-button__dropdown"
-            :style="dropStyle"
-          >
-            <div
-              v-for="(item, i) in dropdownItems"
-              :key="i"
-              class="vc-blade-toolbar-button__dropdown-item"
-              @click="handleDropItemClick(item)"
-            >
-              <VcIcon
-                :icon="item.icon"
-                class="vc-blade-toolbar-button__dropdown-item-icon"
-              />
-              {{ item.title }}
-            </div>
-          </div>
-        </teleport>
       </div>
     </div>
   </VcTooltip>
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, nextTick } from "vue";
+import { ref } from "vue";
 import { VcIcon, VcTooltip } from "./../../../../../../";
-import { offset, computePosition, ComputePositionReturn } from "@floating-ui/vue";
-import { IBladeDropdownItem } from "./../../../../../../../../core/types";
 
 export interface Props {
   isExpanded: boolean;
   icon?: string | (() => string);
   title?: string;
   disabled?: boolean;
-  dropdownItems?: IBladeDropdownItem[];
   clickHandler?(): void;
   separator?: "left" | "right" | "both";
   id?: string;
@@ -96,17 +72,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<Emits>();
 
-const popper = ref<ComputePositionReturn>();
 const isWaiting = ref(false);
-const isDropActive = ref(false);
-const bladeDropToggle = ref();
-const dropButtonRef = ref();
-const bladeDropRef = ref();
-
-const dropStyle = computed(() => ({
-  top: `${popper.value?.y ?? 0}px`,
-  left: `${popper.value?.x ?? 0}px`,
-}));
 
 async function onClick(): Promise<void> {
   console.debug("vc-blade-toolbar-item#onClick()");
@@ -119,52 +85,26 @@ async function onClick(): Promise<void> {
       } finally {
         isWaiting.value = false;
       }
-    } else if (props.dropdownItems?.length) {
-      toggleDropdown();
     } else {
       emit("click");
     }
-  }
-}
-
-function toggleDropdown() {
-  if (props.dropdownItems?.length) {
-    if (isDropActive.value) {
-      isDropActive.value = false;
-    } else {
-      isDropActive.value = true;
-
-      nextTick(() => {
-        computePosition(bladeDropToggle.value, bladeDropRef.value, {
-          placement: "bottom",
-          middleware: [offset(10)],
-        }).then((item) => (popper.value = item));
-      });
-    }
-  }
-}
-
-function handleDropItemClick(item: IBladeDropdownItem) {
-  if (item.clickHandler && typeof item.clickHandler === "function") {
-    item.clickHandler();
-    toggleDropdown();
   }
 }
 </script>
 
 <style lang="scss">
 :root {
-  --blade-toolbar-button-title-color: var(--base-text-color, var(--neutrals-950));
-  --blade-toolbar-button-title-color-hover: var(--base-text-color, var(--neutrals-950));
+  --blade-toolbar-button-title-color: var(--neutrals-600);
+  --blade-toolbar-button-title-color-hover: var(--primary-600);
   --blade-toolbar-button-title-color-disabled: var(--neutrals-400);
 
-  --blade-toolbar-button-icon-color: var(--primary-500);
+  --blade-toolbar-button-icon-color: var(--neutrals-700);
   --blade-toolbar-button-icon-color-hover: var(--primary-600);
   --blade-toolbar-button-icon-color-disabled: var(--neutrals-400);
 
-  --blade-toolbar-button-background-color: var(--additional-50);
-  --blade-toolbar-button-background-color-hover: var(--additional-50);
-  --blade-toolbar-button-background-color-disabled: var(--additional-50);
+  --blade-toolbar-button-background-color: trans;
+  --blade-toolbar-button-background-color-hover: transparent;
+  --blade-toolbar-button-background-color-disabled: transparent;
 
   --blade-toolbar-button-border-color: var(--base-border-color, var(--neutrals-200));
 

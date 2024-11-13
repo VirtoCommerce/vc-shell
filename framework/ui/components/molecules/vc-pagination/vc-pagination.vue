@@ -9,7 +9,7 @@
       >
         <VcIcon
           size="xs"
-          icon="fas fa-arrow-left"
+          :icon="ArrowLeftIcon"
         ></VcIcon>
       </div>
 
@@ -33,7 +33,7 @@
       >
         <VcIcon
           size="xs"
-          icon="fas fa-arrow-right"
+          :icon="ArrowRightIcon"
         ></VcIcon>
       </div>
 
@@ -69,6 +69,7 @@
 <script lang="ts" setup>
 import { ref, computed, toRefs } from "vue";
 import { VcIcon, VcInput } from "./../../";
+import { ArrowLeftIcon, ArrowRightIcon } from "./../../atoms/vc-icon/icons";
 
 export interface Props {
   expanded?: boolean;
@@ -166,7 +167,7 @@ const pagesToShow = computed(() => {
 :root {
   --pagination-item-width: 30px;
   --pagination-item-height: 30px;
-  --pagination-item-color: var(--base-text-color, var(--neutrals-950));
+  --pagination-item-color: var(--neutrals-500);
   --pagination-item-color-hover: var(--primary-500);
   --pagination-item-color-current: var(--additional-50);
   --pagination-item-color-disabled: var(--neutrals-400);
@@ -202,18 +203,15 @@ const pagesToShow = computed(() => {
   &__item {
     @apply tw-flex tw-items-center tw-justify-center tw-w-[var(--pagination-item-width)]
     tw-h-[var(--pagination-item-height)]
-    tw-bg-[color:var(--pagination-item-background-color)]
-    tw-border tw-border-solid tw-border-[color:var(--pagination-item-border-color)]
-    tw-rounded-[var(--pagination-item-border-radius)]
+    tw-rounded-full
     tw-text-[color:var(--pagination-item-color)]
     tw-box-border
     tw-transition tw-duration-200
-    tw-mr-3 tw-select-none last:tw-mr-0 tw-text-xs tw-cursor-pointer;
+    tw-mr-3 tw-select-none last:tw-mr-0 tw-text-xs tw-cursor-pointer tw-shrink-0;
 
     &:hover {
       @apply tw-bg-[color:var(--pagination-item-background-color-hover)]
       tw-text-[color:var(--pagination-item-color-hover)]
-      tw-border tw-border-solid tw-border-[color:var(--pagination-item-border-color-hover)]
       tw-cursor-pointer;
     }
 
@@ -221,7 +219,6 @@ const pagesToShow = computed(() => {
     &_current:hover {
       @apply tw-bg-[color:var(--pagination-item-background-color-current)]
       tw-text-[color:var(--pagination-item-color-current)]
-      tw-border tw-border-solid tw-border-[color:var(--pagination-item-border-color-current)]
       tw-cursor-auto;
     }
 
@@ -229,26 +226,21 @@ const pagesToShow = computed(() => {
     &_disabled:hover {
       @apply tw-bg-[color:var(--pagination-item-background-color-disabled)]
       tw-text-[color:var(--pagination-item-color-disabled)]
-      tw-border tw-border-solid tw-border-[color:var(--pagination-item-border-color-disabled)]
       tw-cursor-auto;
     }
 
     &_hover {
       @apply hover:tw-bg-[color:var(--pagination-item-background-color-hover)]
-    hover:tw-text-[color:var(--pagination-item-color-hover)]
-    hover:tw-border hover:tw-border-solid
-    hover:tw-border-[color:var(--pagination-item-border-color-hover)] tw-cursor-pointer;
+    hover:tw-text-[color:var(--pagination-item-color-hover)] tw-cursor-pointer;
     }
   }
 
   &__jump {
-    display: flex;
-    align-items: center;
+    @apply tw-flex tw-items-center tw-text-sm;
   }
 
   &__jump input {
-    width: 50px;
-    text-align: center;
+    @apply tw-w-10 tw-text-center;
   }
 
   &__input {

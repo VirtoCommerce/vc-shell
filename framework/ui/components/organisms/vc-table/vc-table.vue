@@ -58,18 +58,19 @@
         </div>
       </div>
     </div>
-
-    <!-- Header slot with filter and searchbar -->
-    <slot
-      v-else-if="
-        ($slots['header'] || header) && (!columnsInit || searchValue || searchValue === '' || activeFilterCount)
-      "
-      name="header"
-      :header="headerComponent"
+    <Teleport
+      v-if="shouldTeleport"
+      :to="`#${toolbarContainerId}`"
+      defer
     >
-      <headerComponent></headerComponent>
-    </slot>
-
+      <!-- Header slot with filter and searchbar -->
+      <slot
+        name="header"
+        :header="headerComponent"
+      >
+        <headerComponent></headerComponent>
+      </slot>
+    </Teleport>
     <div class="vc-table__content">
       <!-- Table scroll container -->
       <VcContainer
@@ -198,7 +199,7 @@
                   >
                     <VcIcon
                       size="xs"
-                      :icon="`fas fa-caret-${sortDirection === 'DESC' ? 'down' : 'up'}`"
+                      :icon="`fas fa-chevron-${sortDirection === 'DESC' ? 'down' : 'up'}`"
                     ></VcIcon>
                   </div>
                   <div
@@ -207,11 +208,11 @@
                   >
                     <VcIcon
                       size="xs"
-                      icon="fas fa-caret-up"
+                      icon="fas fa-chevron-up"
                     ></VcIcon>
                     <VcIcon
                       size="xs"
-                      icon="fas fa-caret-down"
+                      icon="fas fa-chevron-down"
                     ></VcIcon>
                   </div>
                 </div>
@@ -463,6 +464,7 @@ import {
   shallowRef,
   useSlots,
   VNode,
+  inject,
 } from "vue";
 import { useI18n } from "vue-i18n";
 import { VcButton, VcCheckbox, VcContainer, VcIcon, VcPagination, VcLabel } from "./../../";
@@ -580,6 +582,8 @@ const emit = defineEmits<{
 const { t } = useI18n({ useScope: "global" });
 const instance = getCurrentInstance();
 const slots = useSlots();
+
+const toolbarContainerId = inject("toolbarContainerId", "vc-blade-toolbar-container");
 
 // template refs
 const reorderRef = ref<HTMLElement | null>();
@@ -702,6 +706,13 @@ const hasClickListener = typeof instance?.vnode.props?.["onItemClick"] === "func
 //   const el = document.getElementById(id);
 //   return el ? el.offsetWidth : 0;
 // };
+
+const shouldTeleport = computed(() => {
+  return (
+    (slots["header"] || props.header) &&
+    (!columnsInit.value || props.searchValue || props.searchValue === "" || props.activeFilterCount)
+  );
+});
 
 const headerComponent = () =>
   h(
@@ -1466,11 +1477,11 @@ function onRowDrop(event: DragEvent) {
 :root {
   --table-border-color: var(--base-border-color, var(--neutrals-200));
   --table-select-all-border-color: var(--base-border-color, var(--neutrals-200));
-  --table-header-bg: var(--neutrals-50);
+  --table-header-bg: var(--primary-50);
   --table-header-border-color: var(--base-border-color, var(--neutrals-200));
   --table-header-border: inset 0px 1px 0px var(--table-header-border-color),
     inset 0px -1px 0px var(--table-header-border-color);
-  --table-header-text-color: var(--secondary-700);
+  --table-header-text-color: var(--base-text-color, var(--secondary-950));
   --table-resizer-color: var(--base-border-color, var(--neutrals-200));
   --table-reorder-color: var(--primary-400);
   --table-select-all-bg: var(--primary-100);
@@ -1494,6 +1505,7 @@ function onRowDrop(event: DragEvent) {
   --table-actions-color-success: var(--success-500);
   --table-mobile-border-color: var(--secondary-200);
   --table-text-color: var(--base-text-color, var(--neutrals-950));
+  --table-sort-icon-color: var(--neutrals-400);
 }
 
 $variants: (
@@ -1561,12 +1573,15 @@ $variants: (
     @apply tw-relative tw-box-border tw-w-full tw-h-full tw-flex tw-flex-col;
   }
 
+  &__header {
+  }
+
   &__header-row {
     @apply tw-flex tw-flex-row [box-shadow:var(--table-header-border)];
   }
 
   &__header-checkbox {
-    @apply tw-flex-1 tw-flex tw-items-center tw-justify-center tw-w-9 tw-max-w-9 tw-min-w-9 tw-bg-[--table-header-bg] [box-shadow:var(--table-header-border)] tw-shadow-none tw-box-border tw-sticky tw-top-0 tw-select-none tw-overflow-hidden tw-z-[1];
+    @apply tw-flex-1 tw-flex tw-items-center tw-justify-center tw-w-9 tw-max-w-9 tw-min-w-9 tw-bg-[--table-header-bg] tw-box-border tw-sticky tw-top-0 tw-select-none tw-overflow-hidden tw-z-[1];
     @apply tw-border-0 #{!important};
   }
 
@@ -1579,7 +1594,7 @@ $variants: (
   }
 
   &__header-cell {
-    @apply tw-flex-1 tw-flex tw-items-center tw-h-10 tw-bg-[--table-header-bg] [box-shadow:var(--table-header-border)] tw-box-border tw-sticky tw-top-0 tw-select-none tw-overflow-hidden tw-z-[1];
+    @apply tw-flex-1 tw-flex tw-items-center tw-h-[60px] tw-bg-[--table-header-bg] tw-box-border tw-sticky tw-top-0 tw-select-none tw-overflow-hidden tw-z-[1];
     @apply tw-border-0 #{!important};
   }
 
@@ -1597,7 +1612,7 @@ $variants: (
   }
 
   &__header-cell__content {
-    @apply tw-flex tw-items-center tw-flex-nowrap tw-truncate tw-px-3 tw-font-bold tw-text-sm tw-text-[color:var(--table-header-text-color)];
+    @apply tw-flex tw-items-center tw-flex-nowrap tw-truncate tw-px-3 tw-font-semibold tw-text-sm tw-text-[color:var(--table-header-text-color)] tw-leading-5;
   }
 
   &__header-cell__title {
@@ -1609,11 +1624,11 @@ $variants: (
   }
 
   &__header-cell__sort-icon {
-    @apply tw-ml-1;
+    @apply tw-ml-1 tw-text-[color:var(--table-sort-icon-color)];
   }
 
   &__header-cell__sort-icons {
-    @apply tw-flex tw-flex-col tw-ml-1 tw-invisible;
+    @apply tw-flex tw-flex-col tw-ml-1 tw-invisible tw-text-[color:var(--table-sort-icon-color)];
   }
 
   &__header-cell__resizer {
@@ -1727,7 +1742,7 @@ $variants: (
   }
 
   &__footer {
-    @apply tw-bg-[--table-footer-bg] tw-border-t tw-border-solid tw-border-[--table-footer-border-color] tw-flex-shrink-0 tw-flex tw-items-center tw-justify-between;
+    @apply tw-flex-shrink-0 tw-flex tw-items-center tw-justify-between;
   }
 
   &__footer--mobile {
@@ -1735,7 +1750,7 @@ $variants: (
   }
 
   &__footer--desktop {
-    @apply tw-p-4;
+    @apply tw-p-6;
   }
 
   /* Drag row styles */

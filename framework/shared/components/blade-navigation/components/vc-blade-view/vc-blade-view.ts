@@ -1,4 +1,4 @@
-import { Slot, defineComponent, h, provide, ref, VNode, PropType, Component, reactive } from "vue";
+import { Slot, defineComponent, h, provide, ref, VNode, PropType, Component, reactive, computed } from "vue";
 import { navigationViewLocation } from "./../../injectionKeys";
 import { BladeVNode, CoreBladeExposed } from "../../types";
 import { toRef, watchTriggerable } from "@vueuse/core";
@@ -10,8 +10,15 @@ export const VcBladeView = defineComponent({
     blade: {
       type: Object as PropType<BladeVNode>,
     },
+    expandable: {
+      type: Boolean,
+    },
+    error: {
+      type: String,
+    },
   },
   setup(props, { attrs, slots }) {
+    const maximized = ref(false);
     const viewRef = ref<CoreBladeExposed>();
 
     const bl = toRef(props.blade);
@@ -34,6 +41,14 @@ export const VcBladeView = defineComponent({
     );
 
     provide(navigationViewLocation, bl.value!);
+    provide(
+      "$blade",
+      computed(() => ({
+        expandable: props.expandable,
+        maximized: maximized.value,
+        error: props.error,
+      })),
+    );
     return () => {
       /**
        * Callback function onClose, which is passed while opening blade, called when a BladeVNode is unmounted.
@@ -60,8 +75,6 @@ export const VcBladeView = defineComponent({
         }
       };
 
-      const maximized = ref(false);
-
       function onExpand() {
         maximized.value = true;
       }
@@ -79,7 +92,6 @@ export const VcBladeView = defineComponent({
             onVnodeMounted,
             "onExpand:blade": onExpand,
             "onCollapse:blade": onCollapse,
-            maximized,
           }),
         );
 

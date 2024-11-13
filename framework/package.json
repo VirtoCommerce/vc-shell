@@ -27,10 +27,12 @@
     "build": "shx rm -rf ./dist && tsx scripts/build.mts",
     "build:lib": "vite build",
     "build:types": "vue-tsc --declaration --emitDeclarationOnly --outDir dist",
-    "type-check": "vue-tsc --noEmit"
+    "type-check": "vue-tsc --noEmit",
+    "generate-icons": "tsx scripts/generate-icons.mts"
   },
   "dependencies": {
     "@floating-ui/vue": "^1.0.6",
+    "@fontsource/plus-jakarta-sans": "^5.1.0",
     "@headlessui/vue": "^1.7.19",
     "@microsoft/signalr": "^8.0.0",
     "@vavt/cm-extension": "^1.5.0",

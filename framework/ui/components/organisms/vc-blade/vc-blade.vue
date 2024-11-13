@@ -6,7 +6,7 @@
       {
         'vc-blade--mobile': $isMobile.value,
         'vc-blade--expanded': expanded,
-        'vc-blade--maximized': maximized,
+        'vc-blade--maximized': blade.maximized,
       },
     ]"
     :style="{ width: typeof width === 'number' ? `${width}px` : width }"
@@ -15,8 +15,6 @@
     <VcBladeHeader
       v-if="!$isMobile.value || closable"
       class="vc-blade__header"
-      :maximized="maximized"
-      :expandable="expandable"
       :closable="closable"
       :icon="icon"
       :title="title"
@@ -35,13 +33,13 @@
     </VcBladeHeader>
 
     <!-- Show error message -->
-    <template v-if="error">
+    <template v-if="blade.error">
       <div class="vc-blade__error">
         <VcIcon
           size="s"
           icon="fas fa-exclamation-triangle"
         />
-        <div class="vc-blade__error-text">{{ error }}</div>
+        <div class="vc-blade__error-text">{{ blade.error }}</div>
         <VcButton
           text
           class="vc-blade__error-button"
@@ -69,7 +67,68 @@
     <VcBladeToolbar
       class="vc-blade__toolbar"
       :items="toolbarItems"
-    ></VcBladeToolbar>
+    >
+      <template
+        v-if="$slots['widgets'] && !isWidgetContainerEmpty"
+        #widgets-container
+      >
+        <div
+          ref="widgetsRef"
+          class="vc-blade__widgets"
+          :class="[
+            {
+              'vc-blade__widgets--desktop': $isDesktop.value,
+              'vc-blade__widgets--not-expanded': $isDesktop.value && !isExpanded,
+              'vc-blade__widgets--expanded': $isDesktop.value && isExpanded,
+              'vc-blade__widgets--mobile': $isMobile.value,
+            },
+          ]"
+        >
+          <div
+            ref="widgetsContainerRef"
+            class="vc-blade__widget-container"
+            :class="{
+              'vc-blade__widget-container--desktop': $isDesktop.value,
+              'vc-blade__widget-container--mobile': $isMobile.value,
+            }"
+          >
+            <slot
+              name="widgets"
+              :is-expanded="isExpanded"
+            ></slot>
+          </div>
+
+          <div class="vc-blade__widget-more">
+            <VcIcon :icon="CircleDotsIcon" />
+            <!-- TODO: More localization -->
+            More
+          </div>
+
+          <!-- <div
+            class="vc-blade__widget-toggle"
+            :class="{
+              'vc-blade__widget-toggle--desktop': $isDesktop.value,
+              'vc-blade__widget-toggle--mobile': $isMobile.value,
+            }"
+          >
+            <VcIcon
+              class="vc-blade__toggle-icon"
+              :class="{
+                'vc-blade__toggle-icon--desktop': $isDesktop.value,
+              }"
+              :icon="`fas fa-chevron-${$isDesktop.value ? (isExpanded ? 'right' : 'left') : isExpanded ? 'up' : 'down'}`"
+              @click="toggleWidgets"
+            ></VcIcon>
+          </div> -->
+        </div>
+      </template>
+      <!-- <template #custom-container>
+        <div
+          id="vc-blade-toolbar-container"
+          class="vc-blade__toolbar-container-inner"
+        />
+      </template> -->
+    </VcBladeToolbar>
 
     <div class="vc-blade__content">
       <div
@@ -86,7 +145,7 @@
           <slot></slot>
         </div>
 
-        <div
+        <!-- <div
           v-show="$slots['widgets'] && !isWidgetContainerEmpty"
           ref="widgetsRef"
           class="vc-blade__widgets"
@@ -129,20 +188,32 @@
               @click="toggleWidgets"
             ></VcIcon>
           </div>
-        </div>
+        </div> -->
       </div>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { computed, Ref, reactive, useAttrs, toRefs, toValue, ref, onMounted, onUpdated } from "vue";
+import {
+  computed,
+  Ref,
+  reactive,
+  useAttrs,
+  toRefs,
+  toValue,
+  ref,
+  onMounted,
+  onUpdated,
+  inject,
+  ComputedRef,
+} from "vue";
 import { IBladeToolbar } from "../../../../core/types";
 import { usePopup } from "./../../../../shared";
 import { useI18n } from "vue-i18n";
 import VcBladeHeader from "./_internal/vc-blade-header/vc-blade-header.vue";
 import VcBladeToolbar from "./_internal/vc-blade-toolbar/vc-blade-toolbar.vue";
-import { VcButton, VcIcon } from "./../../";
+import { VcButton, VcIcon, CircleDotsIcon } from "./../../";
 import vcPopupError from "../../../../shared/components/common/popup/vc-popup-error.vue";
 import { useLocalStorage } from "@vueuse/core";
 
@@ -152,7 +223,6 @@ export interface Props {
   subtitle?: string;
   width?: number | string;
   expanded?: boolean;
-  expandable?: boolean;
   closable?: boolean;
   toolbarItems?: IBladeToolbar[];
   modified?: boolean;
@@ -184,8 +254,7 @@ defineSlots<{
 
 defineEmits<Emits>();
 
-const attrs = useAttrs();
-const { maximized, error }: { maximized?: Ref<boolean>; error?: Ref<string> } = toRefs(reactive(attrs));
+const blade = inject("$blade") as ComputedRef<{ expandable: boolean; maximized: boolean; error?: string }>;
 const { t } = useI18n({ useScope: "global" });
 const widgetsRef = ref<HTMLElement | null>(null);
 const widgetsContainerRef = ref<HTMLElement | null>(null);
@@ -220,7 +289,7 @@ const { open } = usePopup({
     title: t("COMPONENTS.ORGANISMS.VC_BLADE.ERROR_POPUP.TITLE"),
   },
   slots: {
-    default: computed(() => toValue(error)),
+    default: computed(() => toValue(blade.value.error)),
   },
 });
 </script>
@@ -228,7 +297,6 @@ const { open } = usePopup({
 <style lang="scss">
 :root {
   --blade-background-color: var(--additional-50);
-  --blade-border-radius: 6px;
   --blade-color-error: var(--base-error-color, var(--danger-500));
   --blade-color-unsaved-changes: var(--secondary-600);
 
@@ -243,11 +311,14 @@ const { open } = usePopup({
   --blade-shadow: 2px 2px 8px rgb(from var(--blade-shadow-color) r g b / 14%);
 
   --blade-text-color: var(--additional-50);
+
+  --blade-widgets-bg-color: var(--neutrals-100);
+  --blade-widgets-more-color: var(--neutrals-600);
 }
 
 .vc-blade {
-  @apply tw-relative tw-flex tw-shrink-0 tw-flex-col [box-shadow:var(--blade-shadow)] tw-my-4 tw-mx-2 tw-overflow-hidden tw-transition-[width] tw-duration-200;
-  @apply tw-bg-[color:var(--blade-background-color)] tw-rounded-[var(--blade-border-radius)];
+  @apply tw-relative tw-flex tw-shrink-0 tw-flex-col [box-shadow:var(--blade-shadow)] tw-overflow-hidden tw-transition-[width] tw-duration-200;
+  @apply tw-bg-[color:var(--blade-background-color)] tw-border tw-border-solid tw-border-[--blade-border-color];
 
   &--mobile {
     @apply tw-w-full #{!important};
@@ -315,36 +386,44 @@ const { open } = usePopup({
     }
   }
 
-  &__widgets {
-    @apply tw-flex;
-
-    &--desktop {
-      @apply tw-border-l tw-border-solid tw-border-l-[color:var(--blade-border-color)];
-    }
-
-    &--not-expanded {
-      @apply tw-w-12 tw-flex-col;
-    }
-
-    &--expanded {
-      @apply tw-w-32 tw-flex-col;
-    }
-
-    &--mobile {
-      @apply tw-w-auto tw-border-t tw-border-solid tw-border-t-[color:var(--blade-border-color)] tw-flex-row;
-    }
+  &__widget-more {
+    @apply tw-flex tw-flex-col tw-items-center tw-justify-center tw-bg-[color:var(--blade-widgets-bg-color)] tw-px-2 tw-text-xs tw-gap-1 tw-text-[color:var(--blade-widgets-more-color)];
   }
 
+  &__widgets {
+    @apply tw-flex tw-flex-auto tw-h-full tw-bg-[color:var(--blade-widgets-bg-color)] tw-justify-between;
+  }
+
+  // &__widgets {
+  //   @apply tw-flex;
+
+  //   &--desktop {
+  //     @apply tw-border-l tw-border-solid tw-border-l-[color:var(--blade-border-color)];
+  //   }
+
+  //   &--not-expanded {
+  //     @apply tw-w-12 tw-flex-col;
+  //   }
+
+  //   &--expanded {
+  //     @apply tw-w-32 tw-flex-col;
+  //   }
+
+  //   &--mobile {
+  //     @apply tw-w-auto tw-border-t tw-border-solid tw-border-t-[color:var(--blade-border-color)] tw-flex-row;
+  //   }
+  // }
+
   &__widget-container {
-    @apply tw-flex tw-overflow-y-auto;
+    @apply tw-flex tw-overflow-y-auto tw-flex-row;
 
-    &--desktop {
-      @apply tw-flex-col tw-overflow-x-clip;
-    }
+    // &--desktop {
+    //   @apply tw-flex-col tw-overflow-x-clip;
+    // }
 
-    &--mobile {
-      @apply tw-flex-row;
-    }
+    // &--mobile {
+    //   @apply tw-flex-row;
+    // }
   }
 
   &__widget-toggle {
@@ -365,6 +444,18 @@ const { open } = usePopup({
   }
 
   &__toggle-icon--desktop {
+  }
+
+  &__spacer {
+    @apply tw-flex-1;
+  }
+
+  &__toolbar-container-inner {
+    @apply tw-flex-1 tw-justify-end;
+
+    &:empty {
+      @apply tw-hidden;
+    }
   }
 }
 

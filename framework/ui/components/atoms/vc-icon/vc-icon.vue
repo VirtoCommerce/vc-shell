@@ -1,18 +1,44 @@
 <template>
-  <i :class="[`vc-icon vc-icon_${size} ${(icon as string).toLowerCase()}`, variant ? `vc-icon_${variant}` : '']" />
+  <component
+    :is="isCustomIcon ? icon : 'i'"
+    :class="[
+      'vc-icon',
+      `vc-icon_${size}`,
+      variant ? `vc-icon_${variant}` : '',
+      !isCustomIcon ? (icon as string).toLowerCase() : '',
+    ]"
+    v-bind="isCustomIcon ? { width: iconSize, height: iconSize } : {}"
+  />
 </template>
 
 <script lang="ts" setup>
+import { computed } from "vue";
+import type { Component } from "vue";
+
 export interface Props {
-  icon?: string;
+  icon?: string | Component;
   size?: "xs" | "s" | "m" | "l" | "xl" | "xxl" | "xxxl";
   variant?: "warning" | "danger" | "success";
 }
 
-withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<Props>(), {
   icon: "fas fa-square-full",
   size: "m",
 });
+
+const isCustomIcon = computed(() => typeof props.icon !== "string");
+
+const sizeMap = {
+  xs: 12,
+  s: 14,
+  m: 18,
+  l: 20,
+  xl: 22,
+  xxl: 30,
+  xxxl: 64,
+} as const;
+
+const iconSize = computed(() => sizeMap[props.size]);
 </script>
 
 <style lang="scss">
@@ -43,6 +69,10 @@ $variants: warning, danger, success;
   @each $variant in $variants {
     &_#{$variant} {
       @apply tw-text-[color:var(--icon-color-#{$variant})];
+
+      :deep(path) {
+        stroke: var(--icon-color-#{$variant});
+      }
     }
   }
 }

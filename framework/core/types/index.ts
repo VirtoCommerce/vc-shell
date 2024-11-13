@@ -52,22 +52,18 @@ export interface IBladeDropdownItem {
   clickHandler?(): void;
 }
 
-export interface BladeMenu<T extends Component = Component> {
+export interface IMenuItem<T extends Component = Component> {
   title?: string | Ref<string>;
-  icon?: string;
+  icon?: string | Component;
   isVisible?: boolean | Ref<boolean>;
-  component?: BladeInstanceConstructor<T>;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  clickHandler?(app?: Record<string, any> | CoreBladeExposed | null): void;
-  children?: BladeMenu<T>[];
-  options?: ExtractedBladeOptions<InstanceType<BladeInstanceConstructor<T>>["$props"], "options">;
+  component?: T;
+  clickHandler?(): void;
 }
 
 export interface IBladeToolbar {
   id?: string;
   icon?: string | (() => string);
   disabled?: boolean | ComputedRef<boolean | undefined>;
-  dropdownItems?: IBladeDropdownItem[];
   title?: string | Ref<string> | ComputedRef<string>;
   isVisible?: boolean | Ref<boolean | undefined> | ComputedRef<boolean | undefined>;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

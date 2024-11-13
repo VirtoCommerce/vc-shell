@@ -21,7 +21,7 @@
         <VcIcon
           class="vc-app-menu-link__icon-content"
           :icon="icon"
-          size="m"
+          size="s"
         />
       </div>
       <div
@@ -31,12 +31,12 @@
         <div class="vc-app-menu-link__title-truncate">
           {{ title }}
         </div>
-        <VcIcon
+        <div
           v-if="!!children?.length || false"
           class="vc-app-menu-link__title-icon"
-          :icon="`fas fa-chevron-${isOpened ? 'up' : 'down'}`"
-          size="xs"
-        />
+        >
+          {{ isOpened ? "-" : "+" }}
+        </div>
       </div>
     </div>
   </div>
@@ -73,7 +73,7 @@
               'vc-app-menu-link__child-item',
             ]"
           >
-            <div
+            <!-- <div
               v-if="nested.icon"
               class="vc-app-menu-link__icon"
               :class="{
@@ -85,12 +85,12 @@
                 :icon="nested.icon"
                 size="m"
               />
-            </div>
+            </div> -->
             <p
               v-if="expand"
               class="vc-app-menu-link__child-item-title"
             >
-              {{ nested.title }}
+              — {{ nested.title }}
             </p>
           </div>
         </div>
@@ -182,26 +182,25 @@ watch(isOpened, (newValue) => {
 
 <style lang="scss">
 :root {
-  --app-menu-item-height: 36px;
-  --app-menu-item-icon-width: 22px;
-  --app-menu-item-icon-color: var(--secondary-600);
-  --app-menu-item-icon-color-active: var(--additional-50);
-  --app-menu-item-background-color-hover: var(--secondary-500);
-  --app-menu-item-background-color-active: var(--secondary-600);
-  --app-menu-item-hover-radius: 4px;
-  --app-menu-item-title-color: var(--base-text-color, var(--neutrals-950));
-  --app-menu-item-title-color-active: var(--additional-50);
+  --app-menu-item-height: 38px;
+  --app-menu-item-icon-width: 16px;
+  --app-menu-item-icon-color: var(--neutrals-600);
+  --app-menu-item-icon-color-active: var(--primary-700);
+  --app-menu-item-background-color-hover: var(--neutrals-100);
+  --app-menu-item-background-color-active: var(--primary-100);
+  --app-menu-item-hover-radius: 6px;
+  --app-menu-item-title-color: var(--neutrals-600);
+  --app-menu-item-title-color-active: var(--primary-700);
 
   --app-menu-item-active-text: var(--base-text-color, var(--neutrals-950));
   --app-menu-item-active-icon: var(--base-text-color, var(--neutrals-950));
 }
 
 .vc-app-menu-link {
-  @apply tw-cursor-pointer tw-px-5;
+  @apply tw-cursor-pointer tw-w-full;
 
   &:hover .vc-app-menu-link__item:not(.vc-app-menu-link__item_active) {
-    @apply tw-bg-[var(--app-menu-item-background-color-hover)] tw-bg-opacity-50
-      tw-rounded-[var(--app-menu-item-hover-radius)];
+    @apply tw-bg-[var(--app-menu-item-background-color-hover)] tw-bg-opacity-50;
 
     .vc-app-menu-link__title {
       @apply tw-text-[color:var(--app-menu-item-title-color-active)];
@@ -219,7 +218,7 @@ watch(isOpened, (newValue) => {
   &__item {
     @apply tw-flex tw-items-center tw-w-full tw-h-[var(--app-menu-item-height)]
       tw-border-none tw-flex-nowrap tw-box-border tw-cursor-pointer tw-relative
-      tw-uppercase tw-select-none tw-py-1 tw-px-2;
+      tw-uppercase tw-select-none tw-px-2;
 
     &_collapsed {
       @apply tw-w-10;
@@ -227,8 +226,7 @@ watch(isOpened, (newValue) => {
 
     &_active {
       @apply tw-bg-[color:var(--app-menu-item-background-color-active)]
-        tw-rounded-[var(--app-menu-item-hover-radius)]
-        before:tw-opacity-100;
+        tw-font-medium;
 
       .vc-app-menu-link__icon {
         @apply tw-text-[color:var(--app-menu-item-icon-color-active)];
@@ -243,15 +241,15 @@ watch(isOpened, (newValue) => {
       }
     }
 
-    &_child-opened {
-      .vc-app-menu-link__title {
-        @apply tw-font-bold tw-text-[color:var(--app-menu-item-active-text)] #{!important};
-      }
+    // &_child-opened {
+    //   .vc-app-menu-link__title {
+    //     @apply tw-text-[color:var(--app-menu-item-active-text)] #{!important};
+    //   }
 
-      .vc-app-menu-link__icon {
-        @apply tw-text-[color:var(--app-menu-item-active-icon)] #{!important};
-      }
-    }
+    //   .vc-app-menu-link__icon {
+    //     @apply tw-text-[color:var(--app-menu-item-active-icon)] #{!important};
+    //   }
+    // }
   }
 
   &__icon {
@@ -261,12 +259,18 @@ watch(isOpened, (newValue) => {
   }
 
   &__title {
-    @apply tw-capitalize tw-text-[color:var(--app-menu-item-title-color)] tw-truncate
+    @apply tw-text-[color:var(--app-menu-item-title-color)] tw-truncate
     tw-text-sm
-    tw-font-medium
-    tw-pl-2
+    tw-font-normal
+    tw-leading-normal
+    tw-normal-case
+    tw-pl-4
     [transition:color_0.2s_ease]
     tw-opacity-100 tw-w-full tw-flex tw-justify-between tw-items-center;
+  }
+
+  &__title-icon {
+    @apply tw-ml-3 tw-text-lg;
   }
 
   &__title-truncate {
@@ -287,8 +291,8 @@ watch(isOpened, (newValue) => {
 
   &__child-item {
     @apply tw-cursor-pointer tw-min-w-0 tw-flex tw-h-[var(--app-menu-item-height)]
-      tw-items-center tw-transition-[padding] tw-duration-150 tw-w-fit tw-py-1 tw-px-2 tw-rounded-[4px]
-    tw-text-[color:var(--app-menu-item-title-color)] tw-text-xs
+      tw-items-center tw-transition-[padding] tw-duration-150 tw-w-fit tw-py-2 tw-px-3
+    tw-text-[color:var(--app-menu-item-title-color)] tw-text-sm
     hover:tw-bg-[var(--app-menu-item-background-color-hover)]
     hover:tw-text-[color:var(--app-menu-item-title-color-active)];
 
@@ -301,11 +305,8 @@ watch(isOpened, (newValue) => {
     }
 
     &_active {
-      @apply tw-rounded-[var(--app-menu-item-hover-radius)]
-      tw-bg-[color:var(--app-menu-item-background-color-active)]
-      tw-text-[color:var(--app-menu-item-title-color-active)] tw-font-bold
-      hover:tw-bg-[color:var(--app-menu-item-background-color-active)]
-      hover:tw-text-[color:var(--app-menu-item-title-color-active)];
+      @apply tw-bg-[color:var(--app-menu-item-background-color-active)] #{!important};
+      @apply tw-font-medium;
 
       .vc-app-menu-link__icon {
         @apply tw-text-[color:var(--app-menu-item-icon-color-active)];
@@ -314,16 +315,15 @@ watch(isOpened, (newValue) => {
   }
 
   &__child-item-title {
-    @apply tw-truncate tw-pl-2;
+    @apply tw-truncate tw-pl-5;
   }
 
   &__child-item-link {
-    @apply tw-cursor-pointer tw-z-[2] tw-px-5;
+    @apply tw-cursor-pointer tw-z-[2];
   }
 
   &__child-item-link:hover .vc-app-menu-link__child-item:not(.vc-app-menu-link__child-item_active) {
-    @apply tw-bg-[var(--app-menu-item-background-color-hover)] tw-bg-opacity-50
-      tw-rounded-[var(--app-menu-item-hover-radius)];
+    @apply tw-bg-[var(--app-menu-item-background-color-hover)] tw-bg-opacity-50;
 
     .vc-app-menu-link__icon {
       @apply tw-text-[color:var(--app-menu-item-icon-color-active)];

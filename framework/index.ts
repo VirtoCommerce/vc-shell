@@ -23,10 +23,11 @@ import * as coreConstants from "./core/constants";
 import * as shared from "./shared";
 import * as Vue from "vue";
 import * as VueI18n from "vue-i18n";
-import * as VueUseCore from "@vueuse/core";
+import * as VueUse from "@vueuse/core";
 import _ from "lodash";
 
 import "normalize.css";
+import "@fontsource/plus-jakarta-sans";
 import "./assets/styles/index.scss";
 
 type I18NParams = Parameters<typeof i18n.global.mergeLocaleMessage>;
@@ -76,7 +77,7 @@ if (typeof window !== "undefined") {
   window.moment = corePlugins.moment;
   window.VueI18n = VueI18n;
   window._ = _;
-  window.VueUseCore = VueUseCore;
+  window.VueUse = VueUse;
 }
 
 export default {

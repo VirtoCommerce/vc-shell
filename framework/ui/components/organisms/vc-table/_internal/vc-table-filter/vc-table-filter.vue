@@ -1,33 +1,30 @@
 <template>
   <!-- Filter button -->
-  <VcButton
+  <VcTooltip
     ref="filterToggle"
-    icon="fas fa-filter"
-    icon-size="m"
-    class="vc-table-filter__button"
-    :disabled="disabled"
-    @click="openPanel"
+    :delay="1000"
   >
-    <template
-      v-if="title || counter"
-      #default
+    <VcButton
+      text
+      @click="openPanel"
     >
-      <div class="vc-table-filter__button-content">
-        <span
-          v-if="title"
-          class="vc-table-filter__button-title"
-        >
-          {{ title }}
-        </span>
-        <div
-          v-if="counter"
-          class="vc-table-filter__counter"
-        >
-          {{ counter }}
+      <VcBadge
+        :content="counter"
+        size="s"
+      >
+        <div class="vc-table-filter__icon-container">
+          <VcIcon
+            class="vc-table-filter__icon"
+            icon="fas fa-filter"
+            size="m"
+          />
         </div>
-      </div>
+      </VcBadge>
+    </VcButton>
+    <template #tooltip>
+      {{ title }}
     </template>
-  </VcButton>
+  </VcTooltip>
   <Sidebar
     :is-expanded="$isMobile.value ? isPanelVisible : false"
     position="left"
@@ -69,6 +66,8 @@ import { ref, watch, computed, inject, Ref } from "vue";
 import { offset, autoUpdate, useFloating, UseFloatingReturn } from "@floating-ui/vue";
 import { VcButton } from "./../../../../atoms/vc-button";
 import { Sidebar } from "./../../../../../../shared/components";
+import { VcBadge } from "./../../../../atoms/vc-badge";
+import { VcTooltip } from "./../../../../atoms/vc-tooltip";
 
 export interface Props {
   title?: string;
@@ -138,6 +137,18 @@ function closePanel() {
 
 .vc-table-filter {
   @apply tw-relative tw-overflow-visible;
+
+  &__icon-container {
+    @apply tw-flex tw-flex-col tw-items-center tw-justify-center;
+  }
+
+  &__icon {
+    @apply tw-text-[color:var(--widget-icon-color)];
+  }
+
+  &__title {
+    @apply tw-font-medium tw-text-xs tw-text-[color:var(--widget-title-color)] tw-mt-1 tw-mx-0 tw-text-center tw-line-clamp-2;
+  }
 
   &__button-content {
     @apply tw-flex tw-flex-row tw-items-center tw-gap-[10px];

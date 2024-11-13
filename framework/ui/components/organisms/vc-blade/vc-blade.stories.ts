@@ -11,7 +11,7 @@ export default {
     subtitle: "Optional Subtitle",
     width: 700,
     closable: false,
-    expandable: false,
+    // expandable: false,
 
     toolbarItems: [
       { id: "1", icon: "fas fa-sync-alt", title: "Refresh" },

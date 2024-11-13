@@ -61,33 +61,33 @@ function onClick(): void {
 
 <style lang="scss">
 :root {
-  --badge-background-color: var(--additional-50);
+  --badge-background-color: var(--accent-500);
   --badge-background-color-hover: var(--neutrals-200);
   --badge-background-color-active: var(--neutrals-200);
   --badge-background-color-disabled: var(--neutrals-300);
 
-  --badge-text-color: var(--neutrals-700);
+  --badge-text-color: var(--additional-50);
   --badge-text-color-hover: var(--neutrals-800);
   --badge-text-color-active: var(--neutrals-800);
   --badge-text-color-disabled: var(--neutrals-500);
 
   --badge-border-radius: 9999px;
 
-  --badge-border-color: var(--primary-400);
+  --badge-border-color: var(--additional-50);
   --badge-border-color-hover: var(--primary-300);
   --badge-border-color-active: var(--primary-300);
   --badge-border-color-disabled: var(--primary-200);
 
-  --badge-width-small: 18px;
-  --badge-width-medium: 18px;
+  --badge-width-small: 16px;
+  --badge-width-medium: 16px;
 
   --badge-padding-small: 0px 4px;
   --badge-padding-medium: 0 4px;
 
-  --badge-distance-top-small: -10px;
-  --badge-distance-right-small: -6px;
+  --badge-distance-top-small: -8px;
+  --badge-distance-right-small: -10px;
 
-  --badge-distance-top-medium: -10px;
+  --badge-distance-top-medium: -8px;
   --badge-distance-right-medium: -10px;
 }
 
@@ -101,6 +101,7 @@ $sizes: small, medium;
         padding: var(--badge-padding-#{$size});
         top: var(--badge-distance-top-#{$size});
         right: var(--badge-distance-right-#{$size});
+        width: 100%;
         @apply tw-text-xs tw-leading-snug;
       }
     }
@@ -112,7 +113,7 @@ $sizes: small, medium;
 }
 
 .vc-badge__badge {
-  @apply tw-absolute tw-inline-flex tw-justify-center tw-items-center tw-text-center tw-indent-0 tw-rounded-full tw-font-normal tw-bg-[color:var(--badge-background-color)] tw-text-[color:var(--badge-text-color)] tw-border tw-border-solid tw-border-[color:var(--badge-border-color)] tw-transition tw-duration-200;
+  @apply tw-absolute tw-inline-flex tw-justify-center tw-items-center tw-text-center tw-indent-0 tw-rounded-full tw-font-semibold tw-text-xxs tw-bg-[color:var(--badge-background-color)] tw-text-[color:var(--badge-text-color)] tw-border tw-border-solid tw-border-[color:var(--badge-border-color)] tw-transition tw-duration-200;
 }
 
 .vc-badge__badge--active {

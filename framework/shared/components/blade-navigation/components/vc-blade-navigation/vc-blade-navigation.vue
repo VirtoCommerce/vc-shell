@@ -3,10 +3,9 @@
     <VcBreadcrumbs
       v-if="blades && blades.length > 2"
       :items="breadcrumbs"
-      class="tw-bg-[--blade-navigation-bg-color] tw-p-2 [box-shadow:var(--blade-navigation-shadow)] tw-rounded-[var(--blade-navigation-border-radius)]"
+      class="tw-bg-[--blade-navigation-bg-color] tw-p-2"
       :class="[
         {
-          'tw-mt-4 tw-mx-2': !$isMobile.value,
           'tw-p-4': $isMobile.value,
         },
       ]"
@@ -18,7 +17,7 @@
 </template>
 
 <script lang="ts" setup>
-import { Ref, computed, inject, withDirectives, h, vShow, toRef, VNode, nextTick } from "vue";
+import { Ref, computed, inject, withDirectives, h, vShow, toRef, VNode, nextTick, provide } from "vue";
 import { RouterView, useRoute } from "vue-router";
 import { BladeVNode, IParentCallArgs, useBladeNavigation } from "./../../../../../shared";
 import { ErrorInterceptor } from "./../../../error-interceptor";
@@ -79,7 +78,6 @@ const render = () => {
           const hiddenQuantity = blades.value.filter(
             (x) => x.props.navigation.isVisible === false && x.props.navigation.idx < index,
           ).length;
-
           arr.push(
             h(
               ErrorInterceptor,
@@ -95,13 +93,16 @@ const render = () => {
                   return withDirectives(
                     h(
                       VcBladeView,
-                      { key: `${bladeVNode.type?.name}_${index}` || `blade_${index}`, blade: bladeVNode },
+                      {
+                        key: `${bladeVNode.type?.name}_${index}` || `blade_${index}`,
+                        blade: bladeVNode,
+                        expandable: quantity.value > 1,
+                        error,
+                      },
                       {
                         default: ({ Component }: { Component: BladeVNode }) => {
                           return h(Component, {
-                            error,
                             closable: index >= 1,
-                            expandable: quantity.value > 1,
                             expanded: index - hiddenQuantity === quantity.value - 1,
                             "onClose:blade": () => {
                               if (index === 0) return;

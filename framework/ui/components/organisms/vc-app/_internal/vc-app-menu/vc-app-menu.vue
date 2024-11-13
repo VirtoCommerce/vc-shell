@@ -11,35 +11,14 @@
         :class="{
           'vc-app-menu--mobile': $isMobile.value,
           'vc-app-menu--block': isMobileVisible,
-          'vc-app-menu--collapsed': $isDesktop.value && !isExpanded,
         }"
-        @mouseenter="!isExpanded && expandOverHandler(true)"
-        @mouseover="!isExpanded && expandOverHandler(true)"
-        @mouseleave="expandOverHandler(false)"
       >
         <div
           class="vc-app-menu__inner"
           :class="{
             'vc-app-menu__inner--desktop': $isDesktop.value,
-            'vc-app-menu__inner--collapsed': $isDesktop.value && !isExpanded && !isExpandedOver,
-            'vc-app-menu__inner--expanded': $isDesktop.value && (isExpanded || isExpandedOver),
           }"
         >
-          <div
-            v-if="$isDesktop.value"
-            class="vc-app-menu__burger-container"
-          >
-            <button
-              class="vc-app-menu__burger-button"
-              @click="toggleMenu"
-            >
-              <VcIcon
-                :icon="isExpanded ? 'fas fa-angle-double-left' : 'fas fa-angle-double-right'"
-                size="xl"
-              ></VcIcon>
-            </button>
-          </div>
-
           <!-- Show scrollable area with menu items -->
           <VcContainer
             :no-padding="true"
@@ -80,13 +59,13 @@
             </div>
           </VcContainer>
 
-          <div
+          <!-- <div
             v-if="version"
             class="vc-app-menu__version"
             @click="$emit('version:click')"
           >
             {{ version }}
-          </div>
+          </div> -->
         </div>
       </div>
     </template>
@@ -157,8 +136,6 @@ defineExpose({
 
 <style lang="scss">
 :root {
-  --app-menu-width: 230px;
-  --app-menu-width-collapse: 70px;
   --app-menu-background: var(--app-background, var(--primary-50));
   --app-menu-background-color: var(--additional-50);
   --app-menu-version-color: var(--neutrals-400);
@@ -175,7 +152,7 @@ defineExpose({
 }
 
 .vc-app-menu {
-  @apply tw-relative tw-w-[var(--app-menu-width)] tw-pt-6 -tw-mr-2 [transition:width_300ms_cubic-bezier(0.2,0,0,1)_0s] tw-z-[1001];
+  @apply tw-h-full;
 
   &.vc-app-menu--mobile {
     @apply tw-hidden tw-h-full tw-w-full #{!important};
@@ -198,11 +175,10 @@ defineExpose({
   }
 
   &__inner {
-    @apply tw-flex tw-flex-col tw-h-full tw-z-[1001] tw-top-0 tw-bottom-0 tw-bg-[color:var(--app-menu-background)] [transition:width_150ms_cubic-bezier(0.2,0,0,1)_0s];
-    @apply tw-absolute #{!important};
+    @apply tw-flex tw-flex-col tw-h-full;
 
     &--desktop {
-      @apply tw-left-0 tw-pt-6;
+      @apply tw-left-0 tw-pt-2;
     }
 
     &--collapsed {

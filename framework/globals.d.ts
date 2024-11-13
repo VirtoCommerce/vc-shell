@@ -6,6 +6,7 @@ import * as veeValidate from "vee-validate";
 import * as vueI18n from "vue-i18n";
 import * as VueUse from "@vueuse/core";
 import moment from "moment";
+import * as _ from "lodash-es";
 import type { Component } from "vue";
 
 declare global {
@@ -27,5 +28,6 @@ declare global {
     moment: moment;
     VcShellFramework: any;
     VueUse: typeof VueUse;
+    _: typeof _;
   }
 }

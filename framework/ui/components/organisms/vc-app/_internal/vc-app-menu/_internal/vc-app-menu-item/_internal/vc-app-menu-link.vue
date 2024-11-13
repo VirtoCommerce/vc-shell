@@ -200,7 +200,7 @@ watch(isOpened, (newValue) => {
   @apply tw-cursor-pointer tw-w-full;
 
   &:hover .vc-app-menu-link__item:not(.vc-app-menu-link__item_active) {
-    @apply tw-bg-[var(--app-menu-item-background-color-hover)] tw-bg-opacity-50;
+    @apply tw-bg-[var(--app-menu-item-background-color-hover)] tw-bg-opacity-50 tw-rounded;
 
     .vc-app-menu-link__title {
       @apply tw-text-[color:var(--app-menu-item-title-color-active)];
@@ -225,15 +225,14 @@ watch(isOpened, (newValue) => {
     }
 
     &_active {
-      @apply tw-bg-[color:var(--app-menu-item-background-color-active)]
-        tw-font-medium;
+      @apply tw-bg-[color:var(--app-menu-item-background-color-active)] tw-rounded;
 
       .vc-app-menu-link__icon {
         @apply tw-text-[color:var(--app-menu-item-icon-color-active)];
       }
 
       .vc-app-menu-link__title {
-        @apply tw-font-bold tw-text-[color:var(--app-menu-item-title-color-active)] #{!important};
+        @apply tw-text-[color:var(--app-menu-item-title-color-active)] #{!important};
       }
 
       .vc-app-menu-link__title-icon {
@@ -305,8 +304,9 @@ watch(isOpened, (newValue) => {
     }
 
     &_active {
-      @apply tw-bg-[color:var(--app-menu-item-background-color-active)] #{!important};
+      @apply tw-bg-[color:var(--app-menu-item-background-color-active)] tw-rounded #{!important};
       @apply tw-font-medium;
+      @apply tw-text-[color:var(--app-menu-item-title-color-active)] #{!important};
 
       .vc-app-menu-link__icon {
         @apply tw-text-[color:var(--app-menu-item-icon-color-active)];
@@ -323,7 +323,7 @@ watch(isOpened, (newValue) => {
   }
 
   &__child-item-link:hover .vc-app-menu-link__child-item:not(.vc-app-menu-link__child-item_active) {
-    @apply tw-bg-[var(--app-menu-item-background-color-hover)] tw-bg-opacity-50;
+    @apply tw-bg-[var(--app-menu-item-background-color-hover)] tw-bg-opacity-50 tw-rounded;
 
     .vc-app-menu-link__icon {
       @apply tw-text-[color:var(--app-menu-item-icon-color-active)];

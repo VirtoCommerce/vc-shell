@@ -72,8 +72,8 @@
         <div class="vc-app-bar__menu-close-button">
           <VcButton
             icon-class="vc-app-bar__menu-close-button-icon"
-            icon="fas fa-times"
-            icon-size="l"
+            :icon="CrossSignIcon"
+            icon-size="xs"
             text
             @click.stop="toggleMenu"
           >
@@ -150,7 +150,7 @@
 
 <script lang="ts" setup>
 import { useI18n } from "vue-i18n";
-import { VcIcon, VcLink } from "./../../../../";
+import { CrossSignIcon, VcIcon, VcLink } from "./../../../../";
 import { IBladeToolbar } from "./../../../../../../core/types";
 import { useBladeNavigation } from "./../../../../../../shared";
 import { Ref, computed, ref } from "vue";

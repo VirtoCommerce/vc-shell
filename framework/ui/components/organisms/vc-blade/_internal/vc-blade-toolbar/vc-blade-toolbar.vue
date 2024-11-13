@@ -1,5 +1,6 @@
 <template>
   <div
+    v-if="isToolbarVisible()"
     class="vc-blade-toolbar"
     :class="{ 'vc-blade-toolbar--expanded': isExpanded }"
   >
@@ -192,6 +193,13 @@ const overflowItems = computed(() => {
 const showMoreButton = computed(() => {
   return (slots["widgets-container"] && visibleItems.value.length >= 3) || isOverflowing.value;
 });
+
+function isToolbarVisible() {
+  const visibleItems = (props.items as { isVisible: boolean }[]).filter(
+    (item) => item.isVisible === undefined || item.isVisible,
+  );
+  return !!visibleItems.length;
+}
 
 provide("toolbarContainerId", "vc-blade-toolbar-container");
 </script>

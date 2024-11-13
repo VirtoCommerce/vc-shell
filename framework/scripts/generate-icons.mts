@@ -19,8 +19,7 @@ ${svg
         .replace(/\s+class="[^"]*"/g, '') +
       ' :width="width" :height="height">';
   })
-  .replace(/stroke="[^"]+"/g, 'stroke="currentColor"')
-  .replace(/fill="[^"]+"/g, 'fill="currentColor"')}
+  .replace(/stroke="[^"]+"/g, 'stroke="currentColor"')}
 </template>
 
 <script setup lang="ts">

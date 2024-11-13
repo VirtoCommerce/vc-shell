@@ -20,10 +20,10 @@
 </template>
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
-import { computed } from "vue";
+import { computed, type Component } from "vue";
 import { VcIcon } from "./../vc-icon";
 export interface Props {
-  icon?: string;
+  icon?: string | Component;
   iconClass?: string;
   iconSize?: InstanceType<typeof VcIcon>["$props"]["size"];
   variant?: "primary" | "warning" | "danger";

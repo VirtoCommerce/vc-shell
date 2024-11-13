@@ -422,6 +422,12 @@
           'vc-table__footer--desktop': $isDesktop.value,
         }"
       >
+        <!-- Table counter -->
+        <VcTableCounter
+          :label="totalLabel || $t('COMPONENTS.ORGANISMS.VC_TABLE.TOTALS')"
+          :value="totalCount"
+        ></VcTableCounter>
+
         <!-- Table pagination -->
         <VcPagination
           :expanded="expanded"
@@ -436,12 +442,6 @@
             }
           "
         ></VcPagination>
-
-        <!-- Table counter -->
-        <VcTableCounter
-          :label="totalLabel || $t('COMPONENTS.ORGANISMS.VC_TABLE.TOTALS')"
-          :value="totalCount"
-        ></VcTableCounter>
       </div>
     </slot>
   </div>
@@ -1750,7 +1750,7 @@ $variants: (
   }
 
   &__footer--desktop {
-    @apply tw-p-6;
+    @apply tw-py-3 tw-px-6;
   }
 
   /* Drag row styles */

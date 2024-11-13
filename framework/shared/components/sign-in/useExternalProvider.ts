@@ -4,7 +4,7 @@ import { ExternalSignInClient, ExternalSignInProviderInfo } from "../../../core/
 
 export interface IUseExternalProvider {
   storage: Ref<{ providerType?: string | undefined }>;
-  signIn: (authenticationType: string, oidcUrl: string) => void;
+  signIn: (authenticationType?: string) => void;
   signOut: (authenticationType: string) => void;
   getProviders: () => Promise<ExternalSignInProviderInfo[] | undefined>;
 }
@@ -28,7 +28,7 @@ export const useExternalProvider = (): IUseExternalProvider => {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async function externalSignIn(authenticationType: string, oidcUrl: string) {
+  async function externalSignIn(authenticationType?: string) {
     try {
       const origin = window.location.origin;
       const finalReturnUrl = window.location.pathname ?? getReturnUrlValue() ?? "/";

@@ -87,7 +87,10 @@
         class="vc-blade-header__button"
         @click="onClose"
       >
-        <VcIcon :icon="CrossSignIcon" />
+        <VcIcon
+          :icon="CrossSignIcon"
+          size="xs"
+        />
       </div>
     </div>
   </div>

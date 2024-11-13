@@ -1,6 +1,6 @@
 {
   "name": "@vc-shell/root",
-  "version": "1.0.327",
+  "version": "1.1.0-alpha.1",
   "private": true,
   "repository": "https://github.com/VirtoCommerce/vc-shell",
   "scripts": {
@@ -100,5 +100,6 @@
     "*.{js,ts,html,css}": "prettier --write 'framework/**/*.{ts,vue}' 'cli/**/*.{ts,vue}' 'configs/**/*.{ts,vue}'",
     "*.{js,ts,vue}": "eslint --fix --cache 'framework/**/*.{ts,vue}' 'cli/**/*.{ts,vue}' 'configs/**/*.{ts,vue}'"
   },
-  "packageManager": "yarn@4.5.1"
+  "packageManager": "yarn@4.5.1",
+  "stableVersion": "1.0.327"
 }

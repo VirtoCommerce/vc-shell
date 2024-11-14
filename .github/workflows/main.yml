@@ -77,7 +77,6 @@ jobs:
       run: yarn run publish
 
     - name: Update npm dist tags
-      needs: publish
       if: always()
       run: |
         declare -A PACKAGE_PATHS=(

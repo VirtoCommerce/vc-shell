@@ -109,7 +109,7 @@ jobs:
           if [ ! -f "${PKG_DIR}/package.json" ]; then
             echo "Error: package.json not found for $PACKAGE in ${PKG_DIR}"
             continue
-          }
+          fi
 
           CURRENT_VERSION=$(node -p "require('./${PKG_DIR}/package.json').version")
           if [ $? -ne 0 ]; then
@@ -117,40 +117,28 @@ jobs:
             continue
           fi
 
-          echo "Current version for $PACKAGE: $CURRENT_VERSION"
-
-          # Get the latest stable version
-          STABLE_VERSION=$(npm view "$PACKAGE" versions --json | jq -r 'map(select(test("^\\d+\\.\\d+\\.\\d+$"))) | .[-1]')
-          echo "Stable version for $PACKAGE: $STABLE_VERSION"
-
-          # Remove existing tags first
-          npm dist-tag rm "$PACKAGE" latest || true
-          npm dist-tag rm "$PACKAGE" alpha || true
-          npm dist-tag rm "$PACKAGE" beta || true
-
-          # Set new tags
           if [[ "$CURRENT_VERSION" == *"-alpha"* ]]; then
             echo "Setting alpha tag for $PACKAGE@${CURRENT_VERSION}"
             npm dist-tag add "$PACKAGE@${CURRENT_VERSION}" alpha --force
-            # Set latest to the latest stable version
+            # Get the latest stable version
+            STABLE_VERSION=$(npm view "$PACKAGE" versions --json | jq -r 'map(select(test("^\\d+\\.\\d+\\.\\d+$"))) | .[-1]')
             if [ ! -z "$STABLE_VERSION" ]; then
+              echo "Restoring latest tag to stable version $PACKAGE@${STABLE_VERSION}"
               npm dist-tag add "$PACKAGE@${STABLE_VERSION}" latest --force
             fi
           elif [[ "$CURRENT_VERSION" == *"-beta"* ]]; then
             echo "Setting beta tag for $PACKAGE@${CURRENT_VERSION}"
             npm dist-tag add "$PACKAGE@${CURRENT_VERSION}" beta --force
-            # Set latest to the latest stable version
+            # Get the latest stable version
+            STABLE_VERSION=$(npm view "$PACKAGE" versions --json | jq -r 'map(select(test("^\\d+\\.\\d+\\.\\d+$"))) | .[-1]')
             if [ ! -z "$STABLE_VERSION" ]; then
+              echo "Restoring latest tag to stable version $PACKAGE@${STABLE_VERSION}"
               npm dist-tag add "$PACKAGE@${STABLE_VERSION}" latest --force
             fi
           else
             echo "Setting latest tag for $PACKAGE@${CURRENT_VERSION}"
             npm dist-tag add "$PACKAGE@${CURRENT_VERSION}" latest --force
           fi
-
-          echo "Current tags for $PACKAGE:"
-          npm dist-tag ls "$PACKAGE"
-          echo "-------------------"
         done
       env:
         NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

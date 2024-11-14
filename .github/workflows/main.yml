@@ -77,7 +77,6 @@ jobs:
       run: yarn run publish
 
     - name: Update npm dist tags
-      if: ${{ github.event_name == 'workflow_dispatch' }}
       run: |
         declare -A PACKAGE_PATHS=(
           ["@vc-shell/framework"]="framework"
@@ -117,14 +116,17 @@ jobs:
             continue
           fi
 
-          # Get latest stable version (not alpha/beta)
-          STABLE_VERSION=$(npm view "$PACKAGE" versions --json | jq -r 'map(select(test("^\\d+\\.\\d+\\.\\d+$"))) | .[-1]')
-
-          echo "Current version: $CURRENT_VERSION"
-          echo "Latest stable version: $STABLE_VERSION"
-
-          npm dist-tag add "$PACKAGE@${STABLE_VERSION}" latest
-          npm dist-tag add "$PACKAGE@${CURRENT_VERSION}" alpha
+          # Check if the version is an alpha version
+          if [[ "$CURRENT_VERSION" == *"-alpha"* ]]; then
+            echo "Setting alpha tag for $PACKAGE@${CURRENT_VERSION}"
+            npm dist-tag add "$PACKAGE@${CURRENT_VERSION}" alpha --force
+          elif [[ "$CURRENT_VERSION" == *"-beta"* ]]; then
+            echo "Setting beta tag for $PACKAGE@${CURRENT_VERSION}"
+            npm dist-tag add "$PACKAGE@${CURRENT_VERSION}" beta --force
+          else
+            echo "Setting latest tag for $PACKAGE@${CURRENT_VERSION}"
+            npm dist-tag add "$PACKAGE@${CURRENT_VERSION}" latest --force
+          fi
         done
       env:
         NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

@@ -1,3 +1,12 @@
+## [1.0.329](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.328...v1.0.329) (2024-12-04)
+
+
+### Features
+
+* vc-1504 blade error content copy ([bba7a11](https://github.com/VirtoCommerce/vc-shell/commit/bba7a116ac3b23c40b6157de1fc01fc41b09adbd))
+
+
+
 ## [1.0.328](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.326...v1.0.328) (2024-11-14)
 
 

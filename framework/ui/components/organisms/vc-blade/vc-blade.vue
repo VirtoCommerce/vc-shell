@@ -136,13 +136,13 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, Ref, reactive, useAttrs, toRefs, toValue, ref, onMounted, onUpdated } from "vue";
+import { computed, Ref, reactive, useAttrs, toRefs, toValue, ref, onMounted, onUpdated, defineComponent, h } from "vue";
 import { IBladeToolbar } from "../../../../core/types";
 import { usePopup } from "./../../../../shared";
 import { useI18n } from "vue-i18n";
 import VcBladeHeader from "./_internal/vc-blade-header/vc-blade-header.vue";
 import VcBladeToolbar from "./_internal/vc-blade-toolbar/vc-blade-toolbar.vue";
-import { VcButton, VcIcon } from "./../../";
+import { VcButton, VcIcon, VcLink } from "./../../";
 import vcPopupError from "../../../../shared/components/common/popup/vc-popup-error.vue";
 import { useLocalStorage } from "@vueuse/core";
 
@@ -216,11 +216,20 @@ onUpdated(() => {
 
 const { open } = usePopup({
   component: vcPopupError,
-  props: {
-    title: t("COMPONENTS.ORGANISMS.VC_BLADE.ERROR_POPUP.TITLE"),
-  },
   slots: {
     default: computed(() => toValue(error)),
+    header: defineComponent({
+      render: () =>
+        h("div", [
+          t("COMPONENTS.ORGANISMS.VC_BLADE.ERROR_POPUP.TITLE"),
+          " ",
+          h(
+            VcLink,
+            { onClick: () => navigator.clipboard.writeText(toValue(error) ?? "") },
+            `(${t("COMPONENTS.ORGANISMS.VC_BLADE.ERROR_POPUP.COPY_ERROR")})`,
+          ),
+        ]),
+    }),
   },
 });
 </script>

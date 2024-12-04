@@ -1,5 +1,10 @@
 <template>
-  <div class="vc-notification-template">
+  <div
+    class="vc-notification-template"
+    :class="{ 'vc-notification-template--clickable': $attrs.onClick }"
+    v-bind="$attrs"
+    @click="handleTemplateClick"
+  >
     <div
       class="vc-notification-template__container"
       :class="{
@@ -24,7 +29,10 @@
           >
             {{ title }}
           </p>
-          <slot></slot>
+          <slot
+            v-bind="$attrs"
+            v-on="$attrs"
+          ></slot>
         </div>
       </div>
       <div
@@ -50,14 +58,28 @@ export interface Props {
   icon: string;
   title: string;
   notification: PushNotification;
+  clickable?: boolean;
+}
+
+export interface Emits {
+  (event: "onClick", notification: PushNotification): void;
 }
 
 const props = defineProps<Props>();
+const emit = defineEmits<Emits>();
 
 const locale = window.navigator.language;
 
 const pushTime = computed(() => {
   return moment(props.notification.created).locale(locale).format("L LT");
+});
+
+const handleTemplateClick = () => {
+  emit("onClick", props.notification);
+};
+
+defineOptions({
+  inheritAttrs: false,
 });
 </script>
 
@@ -70,6 +92,10 @@ const pushTime = computed(() => {
 
 .vc-notification-template {
   @apply tw-w-full;
+
+  &--clickable {
+    cursor: pointer;
+  }
 
   &__container {
     @apply tw-flex tw-flex-row tw-justify-between tw-grow tw-basis-0;
@@ -84,13 +110,11 @@ const pushTime = computed(() => {
   }
 
   &__icon-container {
-    @apply tw-w-[41px] tw-h-[41px] tw-rounded-full tw-text-[color:var(--notification-template-icon-color)]
-      tw-mr-4 tw-flex tw-items-center tw-justify-center tw-shrink-0;
+    @apply tw-w-[41px] tw-h-[41px] tw-rounded-full tw-text-[color:var(--notification-template-icon-color)] tw-mr-4 tw-flex tw-items-center tw-justify-center tw-shrink-0;
   }
 
   &__title {
-    @apply tw-text-[color:var(--notification-template-text-color)] tw-text-lg tw-leading-[19px]
-      tw-font-bold tw-m-0 tw-mb-1;
+    @apply tw-text-[color:var(--notification-template-text-color)] tw-text-lg tw-leading-[19px] tw-font-bold tw-m-0 tw-mb-1;
     word-break: break-word;
 
     &--desktop {

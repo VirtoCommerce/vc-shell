@@ -1,11 +1,14 @@
 <template>
   <div class="tw-flex">
     <VcRow class="tw-justify-between tw-grow tw-basis-0 !tw-flex">
-      <template v-if="currentTemplate">
-        <notificationTemplateRenderer />
-      </template>
-      <template v-else>
+      <div @click="handleClick">
+        <component
+          :is="currentTemplate"
+          v-if="currentTemplate"
+          v-bind="templateProps"
+        />
         <NotificationTemplate
+          v-else
           :color="notificationStyle.color"
           :title="notification.title ?? ''"
           :icon="notificationStyle.icon"
@@ -14,20 +17,20 @@
           <VcHint
             v-if="notification.description"
             class="tw-mb-1"
-            >{{ notification.description }}</VcHint
           >
+            {{ notification.description }}
+          </VcHint>
         </NotificationTemplate>
-      </template>
+      </div>
     </VcRow>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { computed, h } from "vue";
+import { computed } from "vue";
 import { PushNotification } from "./../../../../../core/api/platform";
-import { VcRow } from "./../../../../../ui/components";
-import { NotificationTemplate } from "./../../../notification-template";
 import { NotificationTemplateConstructor } from "../../../../../core/types";
+import { NotificationTemplate } from "../../../notification-template";
 
 export interface Props {
   notification: PushNotification;
@@ -35,28 +38,26 @@ export interface Props {
 }
 
 export interface Emits {
-  (event: "onClick"): void;
+  (event: "onClick", notification: PushNotification): void;
 }
 
 const props = defineProps<Props>();
-
 const emit = defineEmits<Emits>();
+
+const currentTemplate = computed(() => props.templates?.find((x) => x?.notifyType === props.notification.notifyType));
+
+const templateProps = computed(() => ({
+  notification: props.notification,
+}));
+
+const handleClick = () => {
+  emit("onClick", props.notification);
+};
 
 const notificationStyle = computed(() => ({
   color: "var(--notification-icon-color)",
   icon: "fas fa-info",
 }));
-
-const currentTemplate = computed(() => props.templates?.find((x) => x?.notifyType === props.notification.notifyType));
-
-function notificationTemplateRenderer() {
-  const notificationTemplate = currentTemplate.value;
-
-  return (
-    notificationTemplate &&
-    h(notificationTemplate, { notification: props.notification, onNotificationClick: () => emit("onClick") })
-  );
-}
 </script>
 
 <style lang="scss">

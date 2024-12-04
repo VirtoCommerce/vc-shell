@@ -123,7 +123,7 @@ function onOpen(state: boolean) {
 
   &__item {
     @apply tw-py-[18px] tw-px-[15px] tw-border-b tw-border-solid
-      tw-border-b-[var(--notification-dropdown-border-color)] tw-cursor-pointer;
+      tw-border-b-[var(--notification-dropdown-border-color)];
     transition: background-color 0.2s;
 
     &:last-of-type {

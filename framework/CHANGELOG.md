@@ -1,3 +1,12 @@
+## [1.0.330](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.329...v1.0.330) (2024-12-19)
+
+
+### Bug Fixes
+
+* **navigation:** param reset fix ([1ff50cc](https://github.com/VirtoCommerce/vc-shell/commit/1ff50ccd22b09263799ebf8741132eb379b396b0))
+
+
+
 ## [1.0.329](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.328...v1.0.329) (2024-12-04)
 
 

@@ -91,9 +91,8 @@ const utils = (router: Router) => {
 
   function parseWorkspaceUrl(path: string): string {
     // Object.values(route.params)[0] will always be base path of the app
-    if (!mainRouteBaseParamURL.value) {
-      mainRouteBaseParamURL.value = "/" + (Object.values(route.params)?.[0] ?? "");
-    }
+    mainRouteBaseParamURL.value = "/" + (Object.values(route.params)?.[0] ?? "");
+
     const pathWithoutBase = path.startsWith(mainRouteBaseParamURL.value)
       ? path.slice(mainRouteBaseParamURL.value.length)
       : path;
@@ -346,6 +345,7 @@ export function useBladeNavigation(): IUseBladeNavigation {
           if (wsroute && wsroute.components) {
             wsroute.components.default = createdComponent;
           }
+
           return await router.push({
             name: wsroute?.name,
             params: { ...params, ...route.params },

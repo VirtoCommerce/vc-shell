@@ -27,12 +27,7 @@
     <template v-else>
       <div
         v-if="!isWidgetView && toValue(scope?.breadcrumbs)?.length"
-        :class="[
-          {
-            '-tw-mb-4': typeof tableData?.header === 'undefined' || tableData.header,
-          },
-          'tw-p-4',
-        ]"
+        class="tw-p-4"
       >
         <VcBreadcrumbs
           :items="toValue(scope?.breadcrumbs)"
@@ -168,6 +163,7 @@ import {
   toRefs,
   provide,
   isRef,
+  inject,
 } from "vue";
 import { useI18n } from "vue-i18n";
 import { DynamicGridSchema, ListContentSchema, SettingsSchema } from "../types";
@@ -180,6 +176,8 @@ import { ListBaseBladeScope, ListBladeContext, UseList } from "../factories/type
 import { IParentCallArgs } from "../../../index";
 import { reactiveComputed, toReactive, useMounted } from "@vueuse/core";
 import { safeIn } from "../helpers/safeIn";
+import { useWidgets } from "../../../../core/composables/useWidgets";
+import { BladeInstance } from "../../../../injection-keys";
 
 export interface Props {
   expanded?: boolean;
@@ -211,6 +209,7 @@ const props = withDefaults(defineProps<Props>(), {
 const { t } = useI18n({ useScope: "global" });
 const { showConfirmation } = usePopup();
 const { debounce } = useFunctions();
+const widgetService = useWidgets();
 
 const emit = defineEmits<Emits>();
 
@@ -224,6 +223,7 @@ const sort = shallowRef();
 const selectedIds = shallowRef<string[]>([]);
 const itemsProxy = ref<Record<string, any>[]>();
 const isMixinReady = ref(false);
+const blade = inject(BladeInstance);
 
 const { setNavigationQuery, getNavigationQuery } = useBladeNavigation();
 
@@ -560,9 +560,11 @@ async function removeItems() {
         }
       }
     }
-    emit("parent:call", {
-      method: "updateActiveWidgetCount",
-    });
+    // emit("parent:call", {
+    //   method: "updateActiveWidgetCount",
+    // });
+
+    widgetService.updateActiveWidget();
     await reload();
   }
 }
@@ -658,11 +660,11 @@ function sortRows(event: { dragIndex: number; dropIndex: number; value: any[] })
   }
 }
 
-function updateActiveWidgetCount() {
-  emit("parent:call", {
-    method: "updateActiveWidgetCount",
-  });
-}
+// function updateActiveWidgetCount() {
+//   emit("parent:call", {
+//     method: "updateActiveWidgetCount",
+//   });
+// }
 
 async function handleSelectAllItems(all: boolean) {
   allSelected.value = all;
@@ -776,7 +778,7 @@ provide("isBladeEditable", isBladeEditable);
 defineExpose({
   reload,
   title,
-  updateActiveWidgetCount,
+  // updateActiveWidgetCount,
   ...toRefs(toValue(unreffedScope) ?? {}),
   selectedIds,
   settings: toValue(settings),

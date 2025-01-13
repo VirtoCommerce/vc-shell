@@ -1,85 +1,67 @@
 <template>
-  <Sidebar
-    :is-expanded="$isMobile.value ? isMobileVisible : false"
-    render="mobile"
-    @close="() => (isMobileVisible = false)"
+  <div
+    v-if="isMenuVisible"
+    class="vc-app-menu"
+    :class="{
+      'vc-app-menu--mobile': $isMobile.value,
+      'vc-app-menu--collapsed': !isExpanded,
+    }"
   >
-    <template #content>
-      <div
-        v-if="isMenuVisible"
-        class="vc-app-menu"
-        :class="{
-          'vc-app-menu--mobile': $isMobile.value,
-          'vc-app-menu--block': isMobileVisible,
-        }"
+    <div
+      class="vc-app-menu__inner"
+      :class="{
+        'vc-app-menu__inner--desktop': $isDesktop.value,
+        'vc-app-menu__inner--collapsed': !isExpanded,
+      }"
+    >
+      <!-- Show scrollable area with menu items -->
+      <VcContainer
+        :no-padding="true"
+        class="vc-app-menu__container"
       >
-        <div
-          class="vc-app-menu__inner"
-          :class="{
-            'vc-app-menu__inner--desktop': $isDesktop.value,
-          }"
-        >
-          <!-- Show scrollable area with menu items -->
-          <VcContainer
-            :no-padding="true"
-            class="vc-app-menu__container"
-          >
-            <div class="vc-app-menu__menu-items">
-              <div
-                v-if="$slots['mobile']"
-                class="vc-app-menu__mobile-slot"
-              >
-                <slot
-                  v-if="!$isDesktop.value"
-                  name="mobile"
-                ></slot>
-              </div>
+        <div class="vc-app-menu__menu-items">
+          <VcAppMenuItem
+            v-for="item in menuItems"
+            :id="item.id"
+            :key="item?.id"
+            :data-test-id="item?.routeId"
+            :is-visible="
+              $hasAccess(item.permissions!) && (item.children?.some((child) => $hasAccess(child.permissions!)) ?? true)
+            "
+            :url="item.url"
+            :icon="item.groupIcon || item.icon"
+            :title="item.title as string"
+            :children="item.children"
+            :expand="$isDesktop.value ? isExpanded : true"
+            @click="
+              (event) => {
+                $emit('item:click', event ? event : item);
+                toggleNavigation();
+              }
+            "
+          />
+        </div>
+      </VcContainer>
 
-              <VcAppMenuItem
-                v-for="item in menuItems"
-                :id="item.id"
-                :key="item?.id"
-                :data-test-id="item?.routeId"
-                :is-visible="
-                  $hasAccess(item.permissions!) &&
-                  (item.children?.some((child) => $hasAccess(child.permissions!)) ?? true)
-                "
-                :url="item.url"
-                :icon="item.groupIcon || item.icon"
-                :title="item.title as string"
-                :children="item.children"
-                :expand="$isDesktop.value ? isExpanded || isExpandedOver : true"
-                @click="
-                  (event) => {
-                    $emit('item:click', event ? event : item);
-                    isMobileVisible = false;
-                  }
-                "
-              />
-            </div>
-          </VcContainer>
-
-          <!-- <div
+      <!-- <div
             v-if="version"
             class="vc-app-menu__version"
             @click="$emit('version:click')"
           >
             {{ version }}
           </div> -->
-        </div>
-      </div>
-    </template>
-  </Sidebar>
+    </div>
+  </div>
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from "vue";
+import { computed } from "vue";
 import VcAppMenuItem from "./_internal/vc-app-menu-item/vc-app-menu-item.vue";
-import { VcContainer, VcIcon } from "./../../../../";
+import { VcContainer } from "./../../../../";
 import { useMenuService } from "../../../../../../core/composables";
 import { MenuItem } from "../../../../../../core/types";
 import { useLocalStorage } from "@vueuse/core";
-import { Sidebar } from "../../../../../../shared/components";
+import { useAppBarState } from "../../composables/useAppBarState";
 
 export interface Props {
   version: string | undefined;
@@ -98,46 +80,18 @@ withDefaults(defineProps<Props>(), {
 
 defineEmits<Emits>();
 const { menuItems } = useMenuService();
+const { toggleNavigation } = useAppBarState();
 const isExpanded = useLocalStorage("VC_APP_MENU_EXPANDED", true);
-const isExpandedOver = ref(false);
-
-const isMobileVisible = ref(false);
 
 const isMenuVisible = computed(() => {
   return !!menuItems.value.length;
-});
-
-function toggleMenu() {
-  isExpanded.value = !isExpanded.value;
-}
-
-let expandTimeout: ReturnType<typeof setTimeout> | null = null;
-
-function expandOverHandler(state: boolean) {
-  if (expandTimeout) {
-    clearTimeout(expandTimeout);
-  }
-
-  if (state) {
-    expandTimeout = setTimeout(() => {
-      if (isExpandedOver.value !== state) {
-        isExpandedOver.value = state;
-      }
-    }, 50);
-  } else {
-    isExpandedOver.value = state;
-  }
-}
-
-defineExpose({
-  isMobileVisible,
 });
 </script>
 
 <style lang="scss">
 :root {
   --app-menu-background: var(--app-background, var(--primary-50));
-  --app-menu-background-color: var(--additional-50);
+  --app-menu-background-color: var(--app-bar-background-color, var(--neutrals-50));
   --app-menu-version-color: var(--neutrals-400);
 
   --app-menu-close-color: var(--app-menu-burger-color, var(--primary-500));
@@ -155,7 +109,7 @@ defineExpose({
   @apply tw-h-full;
 
   &.vc-app-menu--mobile {
-    @apply tw-hidden tw-h-full tw-w-full #{!important};
+    @apply tw-h-full tw-w-full #{!important};
   }
 
   &.vc-app-menu--block {
@@ -178,11 +132,11 @@ defineExpose({
     @apply tw-flex tw-flex-col tw-h-full;
 
     &--desktop {
-      @apply tw-left-0 tw-pt-2;
+      @apply tw-left-0;
     }
 
     &--collapsed {
-      @apply tw-w-[var(--app-menu-width-collapse)] #{!important};
+      // @apply tw-pt-3;
     }
 
     &--expanded {
@@ -251,6 +205,24 @@ defineExpose({
 
   &__menu-toggler {
     @apply tw-text-[color:var(--app-bar-burger-color)] tw-w-12 tw-flex tw-items-center tw-justify-center tw-h-full tw-box-border tw-cursor-pointer;
+  }
+
+  &--collapsed {
+    // @apply tw-w-[50px];
+
+    .vc-app-menu__inner {
+      // @apply tw-w-[50px];
+    }
+  }
+
+  &--collapsed {
+    @apply tw-w-[50px];
+
+    .vc-app-menu__collapse-button {
+      svg {
+        @apply tw-rotate-180;
+      }
+    }
   }
 }
 </style>

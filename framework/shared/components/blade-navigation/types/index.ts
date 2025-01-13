@@ -12,6 +12,7 @@ import {
 } from "vue";
 import { ComponentPublicInstanceConstructor } from "../../../utilities/vueUtils";
 import { MenuItemConfig } from "../../../../core/types";
+import { Breadcrumbs } from "../../../../ui/types";
 
 export type CoreBladeComponentProps = {
   expanded?: boolean;
@@ -39,6 +40,15 @@ export interface CoreBladeExposed {
   title?: string;
   reloadParent?: () => void;
   reload?: () => void;
+}
+
+export interface IBladeInstance {
+  id: string;
+  expandable: boolean;
+  maximized: boolean;
+  error: string | undefined;
+  navigation: BladeVNode["props"]["navigation"] | undefined;
+  breadcrumbs: Breadcrumbs[] | undefined;
 }
 
 export interface IParentCallArgs {

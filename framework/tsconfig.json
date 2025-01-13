@@ -8,23 +8,18 @@
   "include": [
     "*.ts",
     "typings",
-
     "core/**/*.ts",
     "core/api/*.ts",
-
     "ui/components",
+    "ui/composables",
     "ui/types/*.ts",
     "ui/locales/*.ts",
     "ui/locales/*.json",
-    "ui/core/controls/models.ts",
-
     "shared/**/*.vue",
     "shared/**/*.ts",
     "shared/**/*.json",
-
     "utils/*.ts",
-
     "locales/*.ts",
     "locales/*.json"
-   ],
+  ]
 }

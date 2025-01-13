@@ -1,5 +1,6 @@
 <template>
   <div
+    ref="bladeRef"
     class="vc-blade"
     :class="[
       $attrs.class,
@@ -13,8 +14,10 @@
   >
     <!-- Init blade header -->
     <VcBladeHeader
-      v-if="!$isMobile.value || closable"
       class="vc-blade__header"
+      :class="{
+        'vc-blade__header--hidden': $isMobile.value && shouldHideHeader,
+      }"
       :closable="closable"
       :icon="icon"
       :title="title"
@@ -66,71 +69,30 @@
     <!-- Set up blade toolbar -->
     <VcBladeToolbar
       class="vc-blade__toolbar"
+      :class="{
+        'vc-blade__toolbar--hidden': $isMobile.value && shouldHideHeader,
+      }"
       :items="toolbarItems"
     >
       <template
-        v-if="$slots['widgets'] && !isWidgetContainerEmpty"
+        v-if="$slots['widgets']"
         #widgets-container
       >
-        <div
-          ref="widgetsRef"
-          class="vc-blade__widgets"
-          :class="[
-            {
-              'vc-blade__widgets--desktop': $isDesktop.value,
-              'vc-blade__widgets--not-expanded': $isDesktop.value && !isExpanded,
-              'vc-blade__widgets--expanded': $isDesktop.value && isExpanded,
-              'vc-blade__widgets--mobile': $isMobile.value,
-            },
-          ]"
-        >
-          <div
-            ref="widgetsContainerRef"
-            class="vc-blade__widget-container"
-            :class="{
-              'vc-blade__widget-container--desktop': $isDesktop.value,
-              'vc-blade__widget-container--mobile': $isMobile.value,
-            }"
+        <VcWidgetContainer :blade-id="blade?.id ?? ''">
+          <!-- TODO: remove is-expanded. -->
+          <slot
+            name="widgets"
+            :is-expanded="true"
           >
-            <slot
-              name="widgets"
-              :is-expanded="isExpanded"
-            ></slot>
-          </div>
-
-          <div class="vc-blade__widget-more">
-            <VcIcon :icon="CircleDotsIcon" />
-            <!-- TODO: More localization -->
-            More
-          </div>
-
-          <!-- <div
-            class="vc-blade__widget-toggle"
-            :class="{
-              'vc-blade__widget-toggle--desktop': $isDesktop.value,
-              'vc-blade__widget-toggle--mobile': $isMobile.value,
-            }"
-          >
-            <VcIcon
-              class="vc-blade__toggle-icon"
-              :class="{
-                'vc-blade__toggle-icon--desktop': $isDesktop.value,
-              }"
-              :icon="`fas fa-chevron-${$isDesktop.value ? (isExpanded ? 'right' : 'left') : isExpanded ? 'up' : 'down'}`"
-              @click="toggleWidgets"
-            ></VcIcon>
-          </div> -->
-        </div>
+          </slot>
+        </VcWidgetContainer>
       </template>
-      <!-- <template #custom-container>
-        <div
-          id="vc-blade-toolbar-container"
-          class="vc-blade__toolbar-container-inner"
-        />
-      </template> -->
     </VcBladeToolbar>
 
-    <div class="vc-blade__content">
+    <div
+      ref="contentRef"
+      class="vc-blade__content"
+    >
       <div
         class="vc-blade__main"
         :class="{ 'vc-blade__main--mobile': $isMobile.value }"
@@ -144,78 +106,24 @@
         >
           <slot></slot>
         </div>
-
-        <!-- <div
-          v-show="$slots['widgets'] && !isWidgetContainerEmpty"
-          ref="widgetsRef"
-          class="vc-blade__widgets"
-          :class="[
-            {
-              'vc-blade__widgets--desktop': $isDesktop.value,
-              'vc-blade__widgets--not-expanded': $isDesktop.value && !isExpanded,
-              'vc-blade__widgets--expanded': $isDesktop.value && isExpanded,
-              'vc-blade__widgets--mobile': $isMobile.value,
-            },
-          ]"
-        >
-          <div
-            ref="widgetsContainerRef"
-            class="vc-blade__widget-container"
-            :class="{
-              'vc-blade__widget-container--desktop': $isDesktop.value,
-              'vc-blade__widget-container--mobile': $isMobile.value,
-            }"
-          >
-            <slot
-              name="widgets"
-              :is-expanded="isExpanded"
-            ></slot>
-          </div>
-
-          <div
-            class="vc-blade__widget-toggle"
-            :class="{
-              'vc-blade__widget-toggle--desktop': $isDesktop.value,
-              'vc-blade__widget-toggle--mobile': $isMobile.value,
-            }"
-          >
-            <VcIcon
-              class="vc-blade__toggle-icon"
-              :class="{
-                'vc-blade__toggle-icon--desktop': $isDesktop.value,
-              }"
-              :icon="`fas fa-chevron-${$isDesktop.value ? (isExpanded ? 'right' : 'left') : isExpanded ? 'up' : 'down'}`"
-              @click="toggleWidgets"
-            ></VcIcon>
-          </div>
-        </div> -->
       </div>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import {
-  computed,
-  Ref,
-  reactive,
-  useAttrs,
-  toRefs,
-  toValue,
-  ref,
-  onMounted,
-  onUpdated,
-  inject,
-  ComputedRef,
-} from "vue";
+import { computed, ref, toValue, inject, onBeforeUnmount, getCurrentInstance, provide, watch, toRefs } from "vue";
 import { IBladeToolbar } from "../../../../core/types";
-import { usePopup } from "./../../../../shared";
+import { usePopup } from "../../../../shared";
 import { useI18n } from "vue-i18n";
-import VcBladeHeader from "./_internal/vc-blade-header/vc-blade-header.vue";
-import VcBladeToolbar from "./_internal/vc-blade-toolbar/vc-blade-toolbar.vue";
-import { VcButton, VcIcon, CircleDotsIcon } from "./../../";
+import { default as VcBladeHeader } from "./_internal/vc-blade-header/vc-blade-header.vue";
+import { default as VcBladeToolbar } from "./_internal/vc-blade-toolbar/vc-blade-toolbar.vue";
+import { VcButton, VcIcon } from "../../";
 import vcPopupError from "../../../../shared/components/common/popup/vc-popup-error.vue";
-import { useLocalStorage } from "@vueuse/core";
+import { useWidgets } from "../../../../core/composables/useWidgets";
+import { BladeInstance, BLADE_SCROLL_KEY } from "../../../../injection-keys";
+import { default as VcWidgetContainer } from "./_internal/vc-blade-widget-container/vc-widget-container.vue";
+import { useScroll, useSwipe } from "@vueuse/core";
 
 export interface Props {
   icon?: string;
@@ -233,6 +141,8 @@ export interface Emits {
   (event: "expand"): void;
   (event: "collapse"): void;
 }
+
+console.log(getCurrentInstance());
 
 defineOptions({
   inheritAttrs: false,
@@ -254,34 +164,24 @@ defineSlots<{
 
 defineEmits<Emits>();
 
-const blade = inject("$blade") as ComputedRef<{ expandable: boolean; maximized: boolean; error?: string }>;
+const blade = inject(
+  BladeInstance,
+  computed(() => ({
+    id: "fallback-blade-id",
+    error: undefined,
+    expandable: false,
+    maximized: false,
+    navigation: undefined,
+    breadcrumbs: undefined,
+  })),
+);
+
 const { t } = useI18n({ useScope: "global" });
-const widgetsRef = ref<HTMLElement | null>(null);
-const widgetsContainerRef = ref<HTMLElement | null>(null);
 
-const isExpanded = useLocalStorage("VC_BLADE_WIDGETS_IS_EXPANDED", true);
-
-const toggleWidgets = () => {
-  isExpanded.value = !isExpanded.value;
-};
-const isWidgetContainerEmpty = ref(false);
-
-const checkEmpty = (el: HTMLElement) => {
-  const isEmpty = !el.innerText.trim() && Array.from(el.children).every((node) => node.nodeType === Node.COMMENT_NODE);
-  isWidgetContainerEmpty.value = isEmpty;
-};
-
-onMounted(() => {
-  if (widgetsRef.value) {
-    checkEmpty(widgetsContainerRef.value!);
-  }
-});
-
-onUpdated(() => {
-  if (widgetsRef.value) {
-    checkEmpty(widgetsContainerRef.value!);
-  }
-});
+const widgetService = useWidgets();
+const bladeRef = ref<HTMLElement | null>(null);
+const contentRef = ref<HTMLElement | null>(null);
+const shouldHideHeader = ref(false);
 
 const { open } = usePopup({
   component: vcPopupError,
@@ -292,6 +192,26 @@ const { open } = usePopup({
     default: computed(() => toValue(blade.value.error)),
   },
 });
+
+onBeforeUnmount(() => {
+  if (blade.value.id) {
+    widgetService.clearBladeWidgets(blade.value.id);
+  }
+});
+
+const { isSwiping, direction, lengthY } = useSwipe(bladeRef, {
+  threshold: 30, // минимальное расстояние свайпа для срабатывания
+  onSwipe() {
+    if (direction.value === "up" && lengthY.value > 50) {
+      shouldHideHeader.value = true;
+    } else if (direction.value === "down") {
+      shouldHideHeader.value = false;
+    }
+  },
+});
+
+// Предоставляем значение для дочерних компонентов
+provide(BLADE_SCROLL_KEY, shouldHideHeader);
 </script>
 
 <style lang="scss">
@@ -317,7 +237,7 @@ const { open } = usePopup({
 }
 
 .vc-blade {
-  @apply tw-relative tw-flex tw-shrink-0 tw-flex-col [box-shadow:var(--blade-shadow)] tw-overflow-hidden tw-transition-[width] tw-duration-200;
+  @apply tw-relative tw-flex tw-shrink-0 tw-flex-col tw-overflow-hidden tw-transition-[width] tw-duration-200;
   @apply tw-bg-[color:var(--blade-background-color)] tw-border tw-border-solid tw-border-[--blade-border-color];
 
   &--mobile {
@@ -335,6 +255,10 @@ const { open } = usePopup({
 
   &__header {
     @apply tw-shrink-0;
+
+    &--hidden {
+      @apply tw-hidden;
+    }
   }
 
   &__error {
@@ -360,6 +284,10 @@ const { open } = usePopup({
 
   &__toolbar {
     @apply tw-shrink-0;
+
+    &--hidden {
+      @apply tw-hidden;
+    }
   }
 
   &__content {
@@ -391,7 +319,7 @@ const { open } = usePopup({
   }
 
   &__widgets {
-    @apply tw-flex tw-flex-auto tw-h-full tw-bg-[color:var(--blade-widgets-bg-color)] tw-justify-between;
+    @apply tw-flex tw-flex-row;
   }
 
   // &__widgets {
@@ -414,17 +342,17 @@ const { open } = usePopup({
   //   }
   // }
 
-  &__widget-container {
-    @apply tw-flex tw-overflow-y-auto tw-flex-row;
+  // &__widget-container {
+  //   @apply tw-flex tw-overflow-y-auto tw-flex-row;
 
-    // &--desktop {
-    //   @apply tw-flex-col tw-overflow-x-clip;
-    // }
+  //   // &--desktop {
+  //   //   @apply tw-flex-col tw-overflow-x-clip;
+  //   // }
 
-    // &--mobile {
-    //   @apply tw-flex-row;
-    // }
-  }
+  //   // &--mobile {
+  //   //   @apply tw-flex-row;
+  //   // }
+  // }
 
   &__widget-toggle {
     @apply tw-flex;

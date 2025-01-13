@@ -1,6 +1,6 @@
 import vue from "@vitejs/plugin-vue";
 import { getLibraryConfiguration } from "@vc-shell/config-generator";
-import * as path from "path";
+import * as path from "node:path";
 import { checker } from "vite-plugin-checker";
 
 const mode = process.env.APP_ENV as string;

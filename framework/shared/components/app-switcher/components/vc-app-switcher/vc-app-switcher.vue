@@ -9,7 +9,7 @@
       :opened="true"
       :items="appsList"
       :is-item-active="(item) => locationHandler(item.relativeUrl ?? '')"
-      :on-item-click="switchApp"
+      @item:click="switchApp"
     >
       <template #item="{ item }">
         <div class="vc-app-switcher__item">

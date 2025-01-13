@@ -19,28 +19,19 @@
     </template>
 
     <template #dropdown-content="{ opened, toggle }">
-      <Sidebar
-        :is-expanded="$isMobile.value ? opened : false"
-        position="right"
-        render="mobile"
-        @close="toggle"
+      <GenericDropdown
+        :opened="opened"
+        :items="notifications"
+        :empty-text="t('COMPONENTS.NOTIFICATION_DROPDOWN.EMPTY')"
+        :on-item-click="() => toggle()"
       >
-        <template #content>
-          <GenericDropdown
-            :opened="opened"
-            :items="notifications"
-            :empty-text="t('COMPONENTS.NOTIFICATION_DROPDOWN.EMPTY')"
-            :on-item-click="() => toggle()"
-          >
-            <template #item="{ item }">
-              <NotificationItem
-                :notification="item"
-                :templates="notificationTemplates || []"
-              />
-            </template>
-          </GenericDropdown>
+        <template #item="{ item }">
+          <NotificationItem
+            :notification="item"
+            :templates="notificationTemplates || []"
+          />
         </template>
-      </Sidebar>
+      </GenericDropdown>
     </template>
   </AppBarButtonTemplate>
 </template>
@@ -50,14 +41,13 @@ import { inject, computed } from "vue";
 import NotificationItem from "./_internal/notification/notification.vue";
 import { VcIcon } from "../../../ui/components";
 import { useI18n } from "vue-i18n";
-import { NotificationTemplateConstructor } from "../../../core/types";
 import { useNotifications } from "../../../core/composables";
 import { AppBarButtonTemplate } from "./../app-bar-button";
-import { Sidebar } from "./../sidebar";
 import { GenericDropdown } from "../generic-dropdown";
-import { BellIcon } from "./../../../ui/components/atoms/vc-icon/icons";
+import { BellIcon } from "../../../ui/components/atoms/vc-icon/icons";
+import { NotificationTemplatesSymbol } from "./../../../injection-keys";
 
-const notificationTemplates = inject<NotificationTemplateConstructor[]>("notificationTemplates");
+const notificationTemplates = inject(NotificationTemplatesSymbol);
 
 const { t } = useI18n({ useScope: "global" });
 const { notifications, markAllAsRead } = useNotifications();

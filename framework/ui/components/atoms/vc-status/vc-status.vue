@@ -1,26 +1,32 @@
 <template>
   <div
     class="vc-status"
-    :class="[`vc-status_${variant}`, { 'vc-status_outline': outline }, { 'vc-status_extended': extend }]"
+    :class="[
+      `vc-status_${variant}`,
+      {
+        'vc-status_extended': extend,
+      },
+    ]"
   >
-    <div
-      v-if="outline"
-      class="vc-status__dot"
-    ></div>
-    <slot></slot>
+    <div class="vc-status__content">
+      <slot></slot>
+    </div>
   </div>
 </template>
 
 <script lang="ts" setup>
 export interface Props {
   variant?: "info" | "warning" | "danger" | "success" | "light-danger" | "info-dark" | "primary";
+  /**
+   * @deprecated
+   */
   outline?: boolean;
   extend?: boolean;
 }
 
 withDefaults(defineProps<Props>(), {
   variant: "info",
-  outline: true,
+  outline: false,
 });
 
 defineSlots<{
@@ -39,61 +45,71 @@ defineSlots<{
   --status-border-width: 1px;
 
   --status-border-color: var(--neutrals-500);
+  --status-bg-color: var(--additional-50);
 
   --status-info-color: var(--additional-950);
   --status-info-main-color: var(--info-500);
+  --status-info-bg-color: var(--info-50);
 
   --status-warning-color: var(--additional-950);
   --status-warning-main-color: var(--warning-500);
+  --status-warning-bg-color: var(--warning-50);
 
   --status-danger-color: var(--additional-950);
   --status-danger-main-color: var(--danger-500);
+  --status-danger-bg-color: var(--danger-50);
 
   --status-success-color: var(--additional-950);
   --status-success-main-color: var(--success-500);
+  --status-success-bg-color: var(--success-50);
 
   --status-light-danger-color: var(--additional-950);
   --status-light-danger-main-color: var(--danger-300);
+  --status-light-danger-bg-color: var(--danger-50);
 
   --status-info-dark-color: var(--additional-50);
   --status-info-dark-main-color: var(--info-600);
+  --status-info-dark-bg-color: var(--info-600);
 
   --status-primary-color: var(--additional-950);
   --status-primary-main-color: var(--primary-500);
-
-  --status-outline-bg-color: var(--additional-50);
+  --status-primary-bg-color: var(--primary-50);
 }
 
 $variants: info, warning, danger, success, light-danger, info-dark, primary;
 
 .vc-status {
   @apply tw-inline-block tw-font-normal tw-whitespace-nowrap tw-text-xs tw-truncate tw-text-center tw-border tw-border-solid tw-box-border;
-
-  @apply tw-py-1 tw-px-3.5 tw-rounded-[var(--status-border-radius)];
-
-  border-width: var(--status-border-width);
+  @apply tw-py-1 tw-px-3 tw-rounded-[var(--status-border-radius)];
+  @apply tw-flex tw-items-center tw-justify-center tw-flex-row tw-relative;
+  @apply tw-border-[length:var(--status-border-width)] tw-bg-[color:var(--status-bg-color)] tw-border-[color:var(--status-border-color)];
 
   @each $variant in $variants {
     &.vc-status_#{$variant} {
-      @apply tw-border-[color:var(--status-#{$variant}-main-color)] tw-bg-[color:var(--status-#{$variant}-main-color)];
+      @apply tw-bg-[color:var(--status-bg-color)] tw-max-w-fit;
+      @apply tw-border-[color:var(--status-border-color)] #{!important};
 
-      &.vc-status_outline {
-        @apply tw-bg-[color:var(--status-outline-bg-color)];
-        @apply tw-flex tw-items-center tw-justify-center tw-flex-row tw-relative;
-        @apply tw-border-[color:var(--status-border-color)] #{!important};
+      &::before {
+        @apply tw-content-[''] tw-bg-[color:var(--status-#{$variant}-main-color)] tw-w-4 tw-h-4 tw-rounded-full tw-mr-2 tw-shrink-0;
+      }
+
+      &.vc-status_extended {
+        @apply tw-whitespace-normal tw-rounded-[var(--status-border-radius-extended)] tw-justify-start;
+        @apply tw-max-w-full tw-p-[var(--status-padding-extended)] tw-bg-[color:var(--status-#{$variant}-bg-color)] tw-border-none;
 
         &::before {
-          content: "";
-          @apply tw-bg-[color:var(--status-#{$variant}-main-color)] tw-w-4 tw-h-4 tw-rounded-full tw-mr-2 tw-shrink-0;
+          @apply tw-content-none;
+        }
+
+        .vc-status__content {
+          @apply tw-whitespace-normal tw-text-[color:var(--status-#{$variant}-color)] #{!important};
         }
       }
     }
   }
 
-  &.vc-status_extended {
-    @apply tw-whitespace-normal tw-rounded-[var(--status-border-radius-extended)];
-
-    padding: var(--status-padding-extended);
+  &__content {
+    @apply tw-truncate;
   }
 }
 </style>

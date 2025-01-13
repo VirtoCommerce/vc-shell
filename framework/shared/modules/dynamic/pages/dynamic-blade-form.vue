@@ -61,7 +61,7 @@
 
     <template
       v-if="item && bladeWidgets && bladeWidgets.length"
-      #widgets="{ isExpanded }"
+      #widgets
     >
       <component
         :is="widgetItem"
@@ -69,7 +69,6 @@
         :key="index"
         :ref="(el: HTMLElement) => widgetsRefs.set({ component: widgetItem, el })"
         v-model="bladeContext"
-        :is-expanded="isExpanded"
         @click="setActiveWidget(widgetItem)"
       ></component>
     </template>
@@ -96,6 +95,7 @@ import {
   toRefs,
   provide,
   type VNode,
+  inject,
 } from "vue";
 import { DynamicDetailsSchema, FormContentSchema, SettingsSchema } from "../types";
 import { reactiveComputed, toReactive, useMounted, useTemplateRefsList } from "@vueuse/core";
@@ -116,6 +116,8 @@ import * as _ from "lodash-es";
 import { useLanguages, useNotifications } from "../../../../core/composables";
 import { notification } from "../../../components";
 import { ComponentSlots } from "../../../utilities/vueUtils";
+import { useWidgets } from "../../../../core/composables/useWidgets";
+import { BladeInstance } from "../../../../injection-keys";
 
 interface Props {
   expanded?: boolean;
@@ -150,6 +152,7 @@ const { getFlag } = useLanguages();
 
 const widgetsRefs = useTemplateRefsList<{ el: HTMLDivElement; component: ConcreteComponent }>();
 const isMixinReady = ref(false);
+const blade = inject(BladeInstance);
 
 if (typeof props.composables?.[props.model?.settings?.composable ?? ""] === "undefined") {
   throw new Error(`Composable ( ${props.model?.settings?.composable} ) is not defined`);
@@ -200,6 +203,7 @@ if (props.mixinFn?.length) {
   isMixinReady.value = true;
 }
 
+const widgetService = useWidgets();
 const { onBeforeClose } = useBladeNavigation();
 const title = ref();
 const isReady = ref(false);
@@ -360,13 +364,6 @@ const bladeMultilanguage = reactiveComputed(() => {
   return {};
 });
 
-const bladeWidgets = computed(() => {
-  return widgets.value?.children?.map((x) => {
-    if (typeof x === "string") return resolveComponent(x);
-    else throw new Error(`Component is required in widget: ${x}`);
-  });
-});
-
 const bladeOptions = reactive({
   status: bladeStatus,
 });
@@ -396,6 +393,10 @@ const toolbarComputed =
                 method: "updateActiveWidgetCount",
               });
 
+              console.log("saveChanges", widgetService);
+
+              widgetService.updateActiveWidget();
+
               if (!unref(props.param)) {
                 emit("close:blade");
               }
@@ -422,6 +423,8 @@ const toolbarComputed =
               emit("parent:call", {
                 method: "updateActiveWidgetCount",
               });
+
+              widgetService.updateActiveWidget();
 
               emit("close:blade");
             }
@@ -478,6 +481,13 @@ onBeforeClose(async () => {
 
 provide("bladeContext", toReactive(bladeContext));
 provide("isBladeEditable", isBladeEditable);
+
+const bladeWidgets = computed(() => {
+  return widgets.value?.children?.map((x) => {
+    if (typeof x === "string") return resolveComponent(x);
+    else throw new Error(`Component is required in widget: ${x}`);
+  });
+});
 
 defineExpose({
   title: bladeTitle ?? "",

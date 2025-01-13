@@ -8,6 +8,9 @@ declare module "@vue/runtime-core" {
   }
 }
 
-export const AssetsManagerModule = createAppModule(components);
+export const AssetsManagerModule = async () => {
+  const { createAppModule } = await import("../../../core/plugins/modularity");
+  return createAppModule(components);
+};
 
 export * from "./components";

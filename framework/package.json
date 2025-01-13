@@ -28,7 +28,9 @@
     "build:lib": "vite build",
     "build:types": "vue-tsc --declaration --emitDeclarationOnly --outDir dist",
     "type-check": "vue-tsc --noEmit",
-    "generate-icons": "tsx scripts/generate-icons.mts"
+    "generate-icons": "tsx scripts/generate-icons.mts",
+    "update-source-imports": "tsx scripts/update-imports.mts",
+    "circ-deps": "tsx scripts/circ-deps.mts"
   },
   "dependencies": {
     "@floating-ui/vue": "^1.0.6",
@@ -68,6 +70,7 @@
     "cypress-signalr-mock": "^1.5.0",
     "sass": "^1.69.6",
     "shx": "^0.3.4",
+    "tsc-alias": "^1.8.8",
     "tsx": "^4.7.1",
     "typescript": "~5.3.3",
     "vite": "5.3.6",

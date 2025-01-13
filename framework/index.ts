@@ -29,6 +29,8 @@ import * as VeeValidate from "vee-validate";
 import "normalize.css";
 import "@fontsource/plus-jakarta-sans";
 import "./assets/styles/index.scss";
+import { createWidgetService } from "./core/services/widget-service";
+import { NotificationTemplatesSymbol, WidgetServiceKey } from "./injection-keys";
 
 type I18NParams = Parameters<typeof i18n.global.mergeLocaleMessage>;
 
@@ -170,7 +172,10 @@ export default {
 
     // Notification templates
     app.config.globalProperties.notificationTemplates = [];
-    app.provide("notificationTemplates", app.config.globalProperties.notificationTemplates);
+    app.provide(NotificationTemplatesSymbol, app.config.globalProperties.notificationTemplates);
+
+    // Widgets
+    app.provide(WidgetServiceKey, createWidgetService());
 
     // Shared module
     app.use(SharedModule, { router: args.router });
@@ -297,6 +302,8 @@ export default {
     });
   },
 } as VcShellFrameworkPlugin;
+
+export * from "./injection-keys";
 
 export * from "./ui/components";
 // eslint-disable-next-line import/export

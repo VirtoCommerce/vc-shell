@@ -3,42 +3,53 @@
     class="vc-app-menu-link"
     @click="onMenuItemClick"
   >
-    <div
-      class="vc-app-menu-link__item"
-      :class="[
-        {
-          'vc-app-menu-link__item_active': isMenuItemActive,
-          'vc-app-menu-link__item_no-hover': !children?.length,
-          'vc-app-menu-link__item_child-opened': expand && isOpened,
-          'vc-app-menu-link__item_collapsed': !expand,
-        },
-      ]"
-    >
-      <div
-        v-if="icon"
-        class="vc-app-menu-link__icon"
+    <VcTooltip>
+      <template
+        v-if="!expand"
+        #tooltip
+        >{{ title }}</template
       >
-        <VcIcon
-          class="vc-app-menu-link__icon-content"
-          :icon="icon"
-          size="s"
-        />
-      </div>
       <div
-        v-if="expand"
-        class="vc-app-menu-link__title"
+        class="vc-app-menu-link__item"
+        :class="[
+          {
+            'vc-app-menu-link__item_active': isMenuItemActive,
+            'vc-app-menu-link__item_no-hover': !children?.length,
+            'vc-app-menu-link__item_child-opened': expand && isOpened,
+            'vc-app-menu-link__item_collapsed': !expand,
+          },
+        ]"
       >
-        <div class="vc-app-menu-link__title-truncate">
-          {{ title }}
+        <div
+          v-if="icon"
+          class="vc-app-menu-link__icon"
+        >
+          <VcIcon
+            class="vc-app-menu-link__icon-content"
+            :icon="icon"
+            size="s"
+          />
         </div>
         <div
-          v-if="!!children?.length || false"
-          class="vc-app-menu-link__title-icon"
+          v-if="expand"
+          class="vc-app-menu-link__title"
         >
-          {{ isOpened ? "-" : "+" }}
+          <div class="vc-app-menu-link__title-truncate">
+            {{ title }}
+          </div>
+          <div
+            v-if="!!children?.length || false"
+            class="vc-app-menu-link__title-icon"
+          >
+            <VcIcon
+              class="vc-app-menu-item__title-icon"
+              :icon="isOpened ? ChevronUpIcon : ChevronDownIcon"
+              size="m"
+            ></VcIcon>
+          </div>
         </div>
       </div>
-    </div>
+    </VcTooltip>
   </div>
 
   <div
@@ -52,58 +63,67 @@
       v-for="(nested, i) in children"
       :key="i"
     >
-      <router-link
-        v-if="$hasAccess(nested.permissions!) && nested.url"
-        :to="nested.url"
-        custom
-      >
-        <div
-          class="vc-app-menu-link__child-item-link"
-          :data-test-id="nested.routeId"
-          @click="$emit('onClick', nested)"
+      <VcTooltip>
+        <template
+          v-if="!expand"
+          #tooltip
+          >{{ nested.title }}</template
+        >
+        <router-link
+          v-if="$hasAccess(nested.permissions!) && nested.url"
+          :to="nested.url"
+          custom
         >
           <div
-            :key="i"
-            :class="[
-              {
-                'vc-app-menu-link__child-item_active': isActive(nested.url ?? ''),
-                'vc-app-menu-link__child-item_collapsed': !expand,
-                'vc-app-menu-link__child-item_expanded': expand,
-              },
-              'vc-app-menu-link__child-item',
-            ]"
+            class="vc-app-menu-link__child-item-link"
+            :data-test-id="nested.routeId"
+            @click="$emit('onClick', nested)"
           >
-            <!-- <div
-              v-if="nested.icon"
-              class="vc-app-menu-link__icon"
-              :class="{
-                'vc-app-menu-link__icon-collapsed': !expand,
-              }"
+            <div
+              :key="i"
+              :class="[
+                {
+                  'vc-app-menu-link__child-item_active': isActive(nested.url ?? ''),
+                  'vc-app-menu-link__child-item_collapsed': !expand,
+                  'vc-app-menu-link__child-item_expanded': expand,
+                },
+                'vc-app-menu-link__child-item',
+              ]"
             >
-              <VcIcon
-                class="vc-app-menu-link__icon-content"
-                :icon="nested.icon"
-                size="m"
-              />
-            </div> -->
-            <p
-              v-if="expand"
-              class="vc-app-menu-link__child-item-title"
-            >
-              — {{ nested.title }}
-            </p>
+              <div
+                v-if="nested.icon"
+                class="vc-app-menu-link__icon"
+                :class="{
+                  'vc-app-menu-link__icon-collapsed': !expand,
+                }"
+              >
+                <VcIcon
+                  class="vc-app-menu-link__icon-content"
+                  :icon="nested.icon"
+                  size="m"
+                />
+              </div>
+              <p
+                v-if="expand"
+                class="vc-app-menu-link__child-item-title"
+              >
+                {{ nested.title }}
+              </p>
+            </div>
           </div>
-        </div>
-      </router-link>
+        </router-link>
+      </VcTooltip>
     </template>
   </div>
 </template>
 
 <script lang="ts" setup>
 import { ref, watch, computed, onMounted } from "vue";
-import { MenuItem } from "../../../../../../../../../core/types";
+import { MenuItem } from "./../../../../../../../../../core/types";
 import { VcIcon } from "./../../../../../../../";
 import { useRoute } from "vue-router";
+import ChevronUpIcon from "./../../../../../../../atoms/vc-icon/icons/ChevronUpIcon.vue";
+import ChevronDownIcon from "./../../../../../../../atoms/vc-icon/icons/ChevronDownIcon.vue";
 
 export interface Props {
   children?: MenuItem[];
@@ -221,7 +241,11 @@ watch(isOpened, (newValue) => {
       tw-uppercase tw-select-none tw-px-2;
 
     &_collapsed {
-      @apply tw-w-10;
+      @apply tw-justify-center;
+
+      .vc-app-menu-link__title {
+        @apply tw-hidden;
+      }
     }
 
     &_active {
@@ -300,7 +324,7 @@ watch(isOpened, (newValue) => {
     }
 
     &_collapsed {
-      @apply tw-w-10;
+      @apply tw-w-auto tw-justify-center;
     }
 
     &_active {
@@ -319,7 +343,7 @@ watch(isOpened, (newValue) => {
   }
 
   &__child-item-link {
-    @apply tw-cursor-pointer tw-z-[2];
+    @apply tw-cursor-pointer tw-z-[2] tw-w-full;
   }
 
   &__child-item-link:hover .vc-app-menu-link__child-item:not(.vc-app-menu-link__child-item_active) {

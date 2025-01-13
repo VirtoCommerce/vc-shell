@@ -58,19 +58,18 @@
         </div>
       </div>
     </div>
-    <Teleport
-      v-if="shouldTeleport"
-      :to="`#${toolbarContainerId}`"
-      defer
+    <!-- Header slot with filter and searchbar -->
+    <slot
+      v-else-if="
+        !($isMobile.value && isScrollingDown) &&
+        ($slots['header'] || header) &&
+        (!columnsInit || searchValue || searchValue === '' || activeFilterCount)
+      "
+      name="header"
+      :header="headerComponent"
     >
-      <!-- Header slot with filter and searchbar -->
-      <slot
-        name="header"
-        :header="headerComponent"
-      >
-        <headerComponent></headerComponent>
-      </slot>
-    </Teleport>
+      <headerComponent></headerComponent>
+    </slot>
     <div class="vc-table__content">
       <!-- Table scroll container -->
       <VcContainer
@@ -465,6 +464,8 @@ import {
   useSlots,
   VNode,
   inject,
+  onMounted,
+  defineComponent,
 } from "vue";
 import { useI18n } from "vue-i18n";
 import { VcButton, VcCheckbox, VcContainer, VcIcon, VcPagination, VcLabel } from "./../../";
@@ -480,6 +481,7 @@ import "core-js/actual/array/to-sorted";
 import VcTableAddNew from "./_internal/vc-table-add-new/vc-table-add-new.vue";
 import VcTableEmpty from "./_internal/vc-table-empty/vc-table-empty.vue";
 import type { ComponentProps } from "vue-component-type-helpers";
+import { BLADE_SCROLL_KEY } from "../../../../injection-keys";
 
 export interface StatusImage {
   image?: string;
@@ -583,8 +585,6 @@ const { t } = useI18n({ useScope: "global" });
 const instance = getCurrentInstance();
 const slots = useSlots();
 
-const toolbarContainerId = inject("toolbarContainerId", "vc-blade-toolbar-container");
-
 // template refs
 const reorderRef = ref<HTMLElement | null>();
 const tableRef = ref<HTMLElement | null>();
@@ -629,6 +629,8 @@ const draggedRowIndex = ref<number>();
 onBeforeUnmount(() => {
   unbindColumnResizeEvents();
 });
+
+const isScrollingDown = inject(BLADE_SCROLL_KEY, ref(false));
 
 const sortDirection = computed(() => {
   const entry = props.sort?.split(":");
@@ -707,7 +709,7 @@ const hasClickListener = typeof instance?.vnode.props?.["onItemClick"] === "func
 //   return el ? el.offsetWidth : 0;
 // };
 
-const shouldTeleport = computed(() => {
+const isHeaderVisible = computed(() => {
   return (
     (slots["header"] || props.header) &&
     (!columnsInit.value || props.searchValue || props.searchValue === "" || props.activeFilterCount)
@@ -1577,7 +1579,7 @@ $variants: (
   }
 
   &__header-row {
-    @apply tw-flex tw-flex-row [box-shadow:var(--table-header-border)];
+    @apply tw-flex tw-flex-row [box-shadow:var(--table-header-border)] tw-bg-[--table-header-bg];
   }
 
   &__header-checkbox {

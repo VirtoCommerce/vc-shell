@@ -20,7 +20,7 @@
         :logo="logo"
         :title="title"
         :disable-menu="disableMenu"
-        @menubutton:click="($refs.menu as Record<'isMobileVisible', boolean>).isMobileVisible = true"
+        @menubutton:click="toggleMobileMenu"
         @backlink:click="closeBlade(blades.length - 1)"
         @logo:click="openRoot"
       >
@@ -118,7 +118,7 @@ import {
 } from "./../../../../shared/components";
 import { useNotifications, useUser } from "../../../../core/composables";
 import { useRoute, useRouter } from "vue-router";
-import { watchOnce } from "@vueuse/core";
+import { watchOnce, useLocalStorage } from "@vueuse/core";
 import { MenuItem } from "../../../../core/types";
 import { useToolbarSlots } from "./composables/useToolbarSlots";
 
@@ -160,7 +160,7 @@ const internalRoutes = inject("bladeRoutes") as BladeRoutesRecord[];
 const dynamicModules = inject("$dynamicModules", undefined) as Record<string, unknown> | undefined;
 const router = useRouter();
 
-const { openBlade, closeBlade, resolveBladeByName, blades } = useBladeNavigation();
+const { openBlade, closeBlade, resolveBladeByName, blades, goToRoot } = useBladeNavigation();
 const { appsList, switchApp, getApps } = useAppSwitcher();
 
 const { loadFromHistory } = useNotifications();
@@ -169,6 +169,12 @@ const { isAuthenticated } = useUser();
 const routes = router.getRoutes();
 
 const { getToolbarMenuItems } = useToolbarSlots();
+
+const isMenuExpanded = useLocalStorage("VC_APP_MENU_EXPANDED", true);
+
+const toggleMobileMenu = () => {
+  isMenuExpanded.value = !isMenuExpanded.value;
+};
 
 const UserDropdownComponent = () => {
   return h(UserDropdownButton, {
@@ -181,6 +187,7 @@ const UserDropdownComponent = () => {
 
 const onMenuItemClick = function (item: MenuItem) {
   console.debug(`vc-app#onMenuItemClick() called.`);
+
   if (item.routeId) {
     openBlade(
       {
@@ -204,10 +211,7 @@ const openRoot = async () => {
   const isPrevented = await closeBlade(1);
 
   if (!isPrevented) {
-    const mainRoute = routes.find((route) => route.meta?.root);
-    const mainRouteAlias = routes.find((route) => route.aliasOf?.path === mainRoute?.path) ?? mainRoute;
-
-    router.push({ name: mainRouteAlias?.name, params: route.params });
+    router.push(goToRoot());
   }
 };
 
@@ -260,6 +264,12 @@ provide("$dynamicModules", dynamicModules);
 
   &__user-dropdown-button {
     @apply tw-p-0 tw-mb-2 tw-w-full tw-h-auto;
+  }
+
+  &_mobile {
+    .vc-app__main-content {
+      @apply tw-flex-col;
+    }
   }
 }
 </style>

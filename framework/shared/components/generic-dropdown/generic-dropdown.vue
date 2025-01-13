@@ -1,9 +1,14 @@
 <template>
-  <div
-    ref="referenceEl"
-    class="vc-dropdown-wrapper"
-  >
-    <slot name="trigger"></slot>
+  <div class="vc-dropdown">
+    <div
+      ref="referenceEl"
+      class="vc-dropdown__trigger"
+    >
+      <slot
+        name="trigger"
+        :is-active="opened"
+      ></slot>
+    </div>
 
     <teleport
       to="body"
@@ -13,11 +18,14 @@
         v-if="opened"
         ref="floatingEl"
         v-on-click-outside="[() => $emit('update:opened', false), { ignore: [referenceEl] }]"
-        class="vc-dropdown"
-        :class="{
-          'vc-dropdown--mobile': $isMobile.value,
-          'vc-dropdown--floating': floating,
-        }"
+        class="vc-dropdown__dropdown"
+        :class="[
+          {
+            'vc-dropdown__dropdown--mobile': $isMobile.value,
+            'vc-dropdown__dropdown--floating': floating,
+          },
+          `vc-dropdown__dropdown--${variant}`,
+        ]"
         :style="floatingStyle"
       >
         <VcContainer
@@ -33,12 +41,12 @@
                 'vc-dropdown__item--mobile': $isMobile.value,
                 'vc-dropdown__item--active': isItemActive?.(item),
               }"
-              @click="() => onItemClick?.(item)"
+              @click="() => $emit('item:click', item)"
             >
               <slot
                 name="item"
                 :item="item"
-                :click="() => onItemClick?.(item)"
+                :click="() => $emit('item:click', item)"
               >
                 {{ itemText?.(item) }}
               </slot>
@@ -71,9 +79,9 @@ interface Props {
   emptyText?: string;
   itemText?: (item: T) => string;
   isItemActive?: (item: T) => boolean;
-  onItemClick?: (item: T) => void;
   floating?: boolean;
   placement?: "bottom" | "bottom-end" | "bottom-start";
+  variant?: "default" | "light";
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -81,6 +89,7 @@ const props = withDefaults(defineProps<Props>(), {
   items: () => [],
   floating: false,
   placement: "bottom",
+  variant: "default",
 });
 
 defineEmits<{
@@ -91,7 +100,7 @@ defineEmits<{
 defineSlots<{
   item: (args: { item: T; click: () => void }) => any;
   empty: () => any;
-  trigger: void;
+  trigger: (args: { isActive: boolean }) => any;
 }>();
 
 const referenceEl = ref<HTMLElement | null>(null);
@@ -124,23 +133,51 @@ const floatingStyle = computed(() => {
   --dropdown-hover-bg-color: var(--primary-50);
   --dropdown-divider-color: var(--base-border-color, var(--neutrals-200));
   --dropdown-divider-item-color: var(--neutrals-100);
+
+  --dropdown-bg-color-light: var(--additional-50);
+  --dropdown-divider-item-color-light: var(--base-border-color, var(--neutrals-200));
 }
 
 .vc-dropdown {
-  @apply tw-bg-[color:var(--dropdown-bg-color)] tw-rounded-b-[6px] tw-w-full
-    tw-max-h-[350px] tw-overflow-hidden tw-flex tw-flex-col tw-relative;
+  @apply tw-relative tw-flex tw-w-full;
 
-  &--mobile {
-    @apply tw-max-h-full tw-w-full;
-    display: flex !important;
+  &__trigger {
+    @apply tw-flex tw-items-center tw-justify-center;
   }
 
-  &--floating {
-    box-shadow: var(--dropdown-shadow, 0 4px 6px -1px rgb(0 0 0 / 0.1));
+  &__dropdown {
+    @apply tw-rounded-b-[6px] tw-w-full
+    tw-max-h-[350px] tw-overflow-hidden tw-flex tw-flex-col tw-relative;
+
+    &--mobile {
+      @apply tw-max-h-full tw-w-full;
+      display: flex !important;
+    }
+
+    &--floating {
+      box-shadow:
+        0px 2px 10px 0px rgb(0 0 0 / 0.1),
+        0px 14px 25px -5px rgb(0 0 0 / 0.1);
+    }
+
+    &--light {
+      @apply tw-bg-[color:var(--dropdown-bg-color-light)];
+
+      .vc-dropdown__item {
+        @apply tw-border-b-[color:var(--dropdown-divider-item-color-light)];
+      }
+    }
+
+    &--default {
+      @apply tw-bg-[color:var(--dropdown-bg-color)];
+      .vc-dropdown__item {
+        @apply tw-border-b-[color:var(--dropdown-divider-item-color)];
+      }
+    }
   }
 
   &__item {
-    @apply tw-truncate tw-flex tw-items-center tw-p-3 tw-text-sm tw-text-[color:var(--dropdown-text-color)] tw-w-full tw-cursor-pointer tw-border-solid tw-border-b tw-border-b-[color:var(--dropdown-divider-item-color)];
+    @apply tw-truncate tw-flex tw-items-center tw-p-3 tw-text-sm tw-text-[color:var(--dropdown-text-color)] tw-w-full tw-cursor-pointer tw-border-solid tw-border-b;
     transition: background-color 0.2s;
 
     &:last-of-type {
@@ -163,9 +200,5 @@ const floatingStyle = computed(() => {
   &__empty {
     @apply tw-flex tw-justify-center tw-items-center tw-p-4 tw-text-sm;
   }
-}
-
-.vc-dropdown-wrapper {
-  @apply tw-relative tw-flex tw-w-full;
 }
 </style>

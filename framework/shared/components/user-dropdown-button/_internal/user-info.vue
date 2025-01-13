@@ -8,10 +8,12 @@
     <VcIcon
       v-else
       icon="fas fa-user-circle"
-      size="xxl"
       class="vc-user-info__icon"
     />
-    <div class="vc-user-info__info">
+    <div
+      v-if="isExpanded"
+      class="vc-user-info__info"
+    >
       <div class="vc-user-info__name">
         {{ name || (user && "fullName" in user && user.fullName) || user?.userName }}
       </div>
@@ -33,6 +35,7 @@ export interface Props {
   avatarUrl?: string;
   name?: string;
   role?: string;
+  isExpanded?: boolean;
 }
 
 const props = defineProps<Props>();
@@ -47,16 +50,21 @@ const imageHandler = computed(() => {
 </script>
 
 <style lang="scss">
+:root {
+  --user-info-avatar-width: 38px;
+  --user-info-avatar-height: 38px;
+}
+
 .vc-user-info {
   @apply tw-flex tw-items-center tw-gap-3;
 
   &__avatar {
-    @apply tw-rounded-full tw-overflow-hidden tw-w-[34px] tw-h-[34px] tw-bg-[color:var(--user-dropdown-account-info-role-color)]
+    @apply tw-rounded-full tw-overflow-hidden tw-w-[var(--user-info-avatar-width)] tw-h-[var(--user-info-avatar-height)] tw-bg-[color:var(--user-dropdown-account-info-role-color)]
     tw-bg-cover tw-bg-center tw-shrink-0;
   }
 
   &__icon {
-    @apply tw-text-[color:var(--user-dropdown-button-color)];
+    @apply tw-text-[color:var(--user-dropdown-button-color)] tw-text-[length:var(--user-info-avatar-height)];
   }
 
   &__info {

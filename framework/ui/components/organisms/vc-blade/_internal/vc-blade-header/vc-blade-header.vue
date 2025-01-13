@@ -1,5 +1,10 @@
 <template>
-  <div class="vc-blade-header">
+  <div
+    class="vc-blade-header"
+    :class="{
+      'vc-blade-header--mobile': $isMobile.value,
+    }"
+  >
     <div
       v-if="typeof modified !== 'undefined'"
       ref="tooltipIconRef"
@@ -28,6 +33,26 @@
     </div>
 
     <div
+      v-if="blade.breadcrumbs?.length"
+      class="vc-blade-header__breadcrumbs"
+    >
+      <VcBreadcrumbs :items="blade.breadcrumbs">
+        <template #trigger="{ click, isActive }">
+          <VcButton
+            text
+            :icon="CircleDotsIcon"
+            icon-size="m"
+            class="vc-blade-header__breadcrumbs-button"
+            :class="{
+              'vc-blade-header__breadcrumbs-button--active': isActive,
+            }"
+            @click="click"
+          />
+        </template>
+      </VcBreadcrumbs>
+    </div>
+
+    <div
       v-if="icon"
       class="vc-blade-header__icon"
     >
@@ -37,26 +62,30 @@
       />
     </div>
 
-    <div class="vc-blade-header__content">
-      <div
-        class="vc-blade-header__title"
-        :class="{ 'vc-blade-header__title-no-subtitle': !subtitle }"
-      >
-        {{ title }}
+    <div class="vc-blade-header__wrapper">
+      <div class="vc-blade-header__content">
+        <div
+          class="vc-blade-header__title"
+          :class="{
+            'vc-blade-header__title-no-subtitle': !subtitle,
+          }"
+        >
+          {{ title }}
+        </div>
+        <div
+          v-if="subtitle"
+          class="vc-blade-header__subtitle"
+        >
+          {{ subtitle }}
+        </div>
       </div>
-      <div
-        v-if="subtitle"
-        class="vc-blade-header__subtitle"
-      >
-        {{ subtitle }}
-      </div>
-    </div>
 
-    <div
-      v-if="$slots['actions']"
-      class="vc-blade-header__actions"
-    >
-      <slot name="actions"></slot>
+      <div
+        v-if="$slots['actions']"
+        class="vc-blade-header__actions"
+      >
+        <slot name="actions"></slot>
+      </div>
     </div>
 
     <div
@@ -98,9 +127,12 @@
 
 <script lang="ts" setup>
 import { VcIcon } from "./../../../../";
-import { ComputedRef, inject, ref } from "vue";
+import { ComputedRef, computed, inject, ref } from "vue";
 import { useFloating, shift } from "@floating-ui/vue";
 import { CrossSignIcon, AppWindowIcon } from "../../../../atoms/vc-icon/icons";
+import { BladeInstance } from "../../../../../../injection-keys";
+import { Breadcrumbs } from "./../../../../../../ui/types";
+import CircleDotsIcon from "../../../../atoms/vc-icon/icons/CircleDotsIcon.vue";
 
 export interface Props {
   closable?: boolean;
@@ -113,7 +145,17 @@ const props = defineProps<Props>();
 
 const emit = defineEmits(["close", "expand", "collapse"]);
 
-const blade = inject("$blade") as ComputedRef<{ expandable: boolean; maximized: boolean }>;
+const blade = inject(
+  BladeInstance,
+  computed(() => ({
+    id: "fallback-blade-id",
+    error: undefined,
+    expandable: false,
+    maximized: false,
+    navigation: undefined,
+    breadcrumbs: undefined,
+  })),
+);
 const tooltipVisible = ref(false);
 const tooltipIconRef = ref<HTMLElement | null>(null);
 const tooltipRef = ref<HTMLElement | null>(null);
@@ -144,10 +186,14 @@ function onClose(): void {
 <style lang="scss">
 :root {
   --blade-header-height: 82px;
+  --blade-header-mobile-height: 60px;
   --blade-header-background-color: var(--additional-50);
 
   --blade-header-button-color: var(--secondary-500);
   --blade-header-button-color-hover: var(--secondary-600);
+
+  --blade-header-breadcrumbs-button-color: var(--neutrals-500);
+  --blade-header-breadcrumbs-button-color-hover: var(--neutrals-700);
 
   --blade-header-icon-color: var(--secondary-500);
 
@@ -168,8 +214,24 @@ function onClose(): void {
 .vc-blade-header {
   @apply tw-shrink-0 tw-h-[var(--blade-header-height)] tw-bg-[color:var(--blade-header-background-color)] tw-flex tw-items-center tw-py-0 tw-px-5 tw-border-solid tw-border-b tw-border-b-[color:var(--blade-header-border-color)];
 
+  &--mobile {
+    @apply tw-h-[var(--blade-header-mobile-height)];
+
+    .vc-blade-header__title {
+      @apply tw-text-lg/[22px];
+    }
+  }
+
+  &--hidden {
+    @apply tw-hidden;
+  }
+
+  &__wrapper {
+    @apply tw-flex tw-items-center tw-justify-between tw-grow tw-basis-0 tw-overflow-hidden;
+  }
+
   &__actions {
-    @apply tw-grow tw-basis-0 tw-overflow-hidden tw-flex tw-justify-end;
+    @apply tw-overflow-hidden;
   }
 
   &__status {
@@ -193,7 +255,19 @@ function onClose(): void {
   }
 
   &__content {
-    @apply tw-overflow-hidden tw-grow tw-basis-0 tw-shrink-0;
+    @apply tw-overflow-hidden;
+  }
+
+  &__breadcrumbs {
+    @apply tw-mr-3;
+
+    &-button {
+      @apply tw-text-[color:var(--blade-header-breadcrumbs-button-color)] tw-ml-2.5 tw-cursor-pointer hover:tw-text-[color:var(--blade-header-breadcrumbs-button-color-hover)] #{!important};
+
+      &--active {
+        @apply tw-text-[color:var(--blade-header-breadcrumbs-button-color-hover)] #{!important};
+      }
+    }
   }
 
   &__title {

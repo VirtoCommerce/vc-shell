@@ -1,4 +1,4 @@
-import { useColorMode, useCycleList } from "@vueuse/core";
+import { BasicColorSchema, useColorMode, useCycleList } from "@vueuse/core";
 import { computed, watchEffect, ref, type Ref } from "vue";
 
 export interface IUseTheme {
@@ -35,6 +35,7 @@ export const useTheme = (): IUseTheme => {
 
   const mode = useColorMode({
     emitAuto: true,
+    initialValue: "light",
     modes: {
       ...registeredThemes.value.reduce(
         (acc, name) => {
@@ -48,7 +49,7 @@ export const useTheme = (): IUseTheme => {
 
   const { state, next } = useCycleList(registeredThemes.value, { initialValue: mode });
 
-  watchEffect(() => (mode.value = state.value));
+  watchEffect(() => (mode.value = state.value as BasicColorSchema));
 
   return {
     themes: computed(() => registeredThemes.value),

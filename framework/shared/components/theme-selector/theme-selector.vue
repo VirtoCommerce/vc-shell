@@ -10,7 +10,7 @@
       :opened="opened"
       :items="themes"
       :is-item-active="(theme) => theme === current"
-      :on-item-click="handleThemeSelect"
+      @item:click="handleThemeSelect"
     >
       <template #item="{ item: theme, click }">
         <SettingsMenuItem

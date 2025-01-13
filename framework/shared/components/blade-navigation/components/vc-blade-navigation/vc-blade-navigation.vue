@@ -1,17 +1,15 @@
 <template>
   <div class="tw-w-full tw-flex tw-flex-col tw-grow tw-basis-0">
-    <VcBreadcrumbs
-      v-if="blades && blades.length > 2"
+    <!-- <VcBreadcrumbs
       :items="breadcrumbs"
-      class="tw-bg-[--blade-navigation-bg-color] tw-p-2"
+      class="tw-bg-[--blade-navigation-bg-color] tw-px-3 tw-py-2"
       :class="[
         {
           'tw-p-4': $isMobile.value,
         },
       ]"
-      variant="light"
       with-arrow
-    />
+    /> -->
     <render></render>
   </div>
 </template>
@@ -78,6 +76,8 @@ const render = () => {
           const hiddenQuantity = blades.value.filter(
             (x) => x.props.navigation.isVisible === false && x.props.navigation.idx < index,
           ).length;
+
+          const filteredBreadcrumbs = breadcrumbs.value.slice(0, index);
           arr.push(
             h(
               ErrorInterceptor,
@@ -98,6 +98,7 @@ const render = () => {
                         blade: bladeVNode,
                         expandable: quantity.value > 1,
                         error,
+                        breadcrumbs: filteredBreadcrumbs,
                       },
                       {
                         default: ({ Component }: { Component: BladeVNode }) => {

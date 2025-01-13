@@ -1,6 +1,6 @@
 <template>
   <component
-    :is="isCustomIcon ? icon : 'i'"
+    :is="isCustomIcon ? safeIcon : 'i'"
     :class="[
       'vc-icon',
       `vc-icon_${size}`,
@@ -12,7 +12,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from "vue";
+import { computed, markRaw } from "vue";
 import type { Component } from "vue";
 
 export interface Props {
@@ -27,6 +27,8 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const isCustomIcon = computed(() => typeof props.icon !== "string");
+
+const safeIcon = computed(() => (typeof props.icon !== "string" ? markRaw(props.icon) : props.icon));
 
 const sizeMap = {
   xs: 12,
@@ -60,6 +62,7 @@ $sizes: xs, s, m, l, xl, xxl, xxxl;
 $variants: warning, danger, success;
 
 .vc-icon {
+  @apply tw-overflow-visible;
   @each $size in $sizes {
     &_#{$size} {
       @apply tw-text-[length:var(--icon-size-#{$size})];

@@ -6,6 +6,7 @@
         'vc-user-dropdown-button--active': false,
         'vc-user-dropdown-button--auto-width': disabled,
         'vc-user-dropdown-button--mobile': $isMobile.value,
+        'vc-user-dropdown-button--collapsed': !isExpanded,
       }"
     >
       <div
@@ -18,6 +19,7 @@
           :avatar-url="avatarUrl"
           :name="name"
           :role="role"
+          :is-expanded="isExpanded"
         />
         <UserActions
           :profile-menu="profileMenu"
@@ -42,6 +44,7 @@ import { default as UserInfo } from "./_internal/user-info.vue";
 import { default as UserActions } from "./_internal/user-actions.vue";
 import { default as UserSidebar } from "./_internal/user-sidebar.vue";
 import * as _ from "lodash-es";
+import { useLocalStorage } from "@vueuse/core";
 
 export interface Props {
   avatarUrl?: string | undefined;
@@ -58,6 +61,8 @@ const props = withDefaults(defineProps<Props>(), {
 
 const isSidebarOpened = ref(false);
 const { profileMenu, defaultMenuItems, settingsButton } = useUserActions();
+
+const isExpanded = useLocalStorage("VC_APP_MENU_EXPANDED", true);
 
 const menu = computed(() => {
   const defaultItems = handleDefaultMenuItems();
@@ -109,6 +114,7 @@ function handleMenuItemClick(item: IMenuItem) {
   --user-dropdown-wrap-bg: var(--neutrals-50);
   --user-dropdown-button-width: var(--app-bar-button-width);
   --user-dropdown-border-color: var(--neutrals-200);
+  --user-dropdown-wrap-padding-left: 18px;
 }
 
 .vc-user-dropdown-button {
@@ -125,7 +131,6 @@ function handleMenuItemClick(item: IMenuItem) {
   }
 
   &--mobile {
-    @apply tw-h-[var(--app-bar-height)];
   }
 
   &--auto-width {
@@ -133,7 +138,10 @@ function handleMenuItemClick(item: IMenuItem) {
   }
 
   &__wrap {
-    @apply tw-flex tw-justify-between tw-items-center tw-flex-auto tw-pl-5 tw-bg-[--user-dropdown-wrap-bg] tw-gap-3;
+    @apply tw-flex tw-justify-between tw-items-center tw-flex-auto tw-pl-[var(--user-dropdown-wrap-padding-left)] tw-bg-[--user-dropdown-wrap-bg] tw-gap-3;
+  }
+
+  &--collapsed {
   }
 }
 </style>

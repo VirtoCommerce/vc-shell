@@ -1,7 +1,8 @@
 import { Slot, defineComponent, h, provide, ref, VNode, PropType, Component, reactive, computed } from "vue";
-import { navigationViewLocation } from "./../../injectionKeys";
+import { BladeInstance, navigationViewLocation } from "./../../../../../injection-keys";
 import { BladeVNode, CoreBladeExposed } from "../../types";
 import { toRef, watchTriggerable } from "@vueuse/core";
+import { Breadcrumbs } from "../../../../..";
 
 export const VcBladeView = defineComponent({
   name: "BladeView",
@@ -15,6 +16,9 @@ export const VcBladeView = defineComponent({
     },
     error: {
       type: String,
+    },
+    breadcrumbs: {
+      type: Array as PropType<Breadcrumbs[]>,
     },
   },
   setup(props, { attrs, slots }) {
@@ -42,11 +46,14 @@ export const VcBladeView = defineComponent({
 
     provide(navigationViewLocation, bl.value!);
     provide(
-      "$blade",
+      BladeInstance,
       computed(() => ({
+        id: bl.value?.type.name ?? "fallback-blade-id",
         expandable: props.expandable,
         maximized: maximized.value,
         error: props.error,
+        navigation: bl.value?.props?.navigation,
+        breadcrumbs: props.breadcrumbs,
       })),
     );
     return () => {

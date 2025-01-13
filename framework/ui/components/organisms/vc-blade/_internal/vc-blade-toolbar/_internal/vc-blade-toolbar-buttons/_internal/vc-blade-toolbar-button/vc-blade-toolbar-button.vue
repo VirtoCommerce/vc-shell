@@ -13,26 +13,25 @@
       :class="{
         'vc-blade-toolbar-button_disabled': disabled || isWaiting,
         'vc-blade-toolbar-button_separator-left': separator === 'left',
+        'vc-blade-toolbar-button_horizontal': horizontal,
       }"
       :data-test-id="id ?? 'vc-blade-toolbar-button'"
       @click="onClick"
     >
-      <div>
+      <div
+        type="button"
+        class="vc-blade-toolbar-button__wrap"
+      >
+        <VcIcon
+          class="vc-blade-toolbar-button__icon"
+          :icon="icon as string"
+          size="m"
+        ></VcIcon>
         <div
-          type="button"
-          class="vc-blade-toolbar-button__wrap"
+          v-if="isExpanded"
+          class="vc-blade-toolbar-button__title"
         >
-          <VcIcon
-            class="vc-blade-toolbar-button__icon"
-            :icon="icon as string"
-            size="m"
-          ></VcIcon>
-          <div
-            v-if="isExpanded"
-            class="vc-blade-toolbar-button__title"
-          >
-            {{ title }}
-          </div>
+          {{ title }}
         </div>
       </div>
     </div>
@@ -41,7 +40,7 @@
 
 <script lang="ts" setup>
 import { ref } from "vue";
-import { VcIcon, VcTooltip } from "./../../../../../../";
+import { VcIcon, VcTooltip } from "../../../../../../../../";
 
 export interface Props {
   isExpanded: boolean;
@@ -51,6 +50,7 @@ export interface Props {
   clickHandler?(): void;
   separator?: "left" | "right" | "both";
   id?: string;
+  horizontal?: boolean;
 }
 
 export interface Emits {
@@ -68,6 +68,7 @@ const props = withDefaults(defineProps<Props>(), {
   title: undefined,
   dropdownItems: () => [],
   clickHandler: undefined,
+  horizontal: false,
 });
 
 const emit = defineEmits<Emits>();
@@ -117,10 +118,20 @@ async function onClick(): Promise<void> {
 }
 
 .vc-blade-toolbar-button {
-  @apply tw-px-2 tw-bg-[color:var(--blade-toolbar-button-background-color)] tw-box-border tw-cursor-pointer;
+  @apply tw-px-2 tw-bg-[color:var(--blade-toolbar-button-background-color)] tw-box-border tw-cursor-pointer tw-justify-center tw-flex;
 
   &__wrap {
     @apply tw-inline-flex tw-flex-col tw-justify-center tw-items-center tw-relative;
+  }
+
+  &_horizontal {
+    .vc-blade-toolbar-button__wrap {
+      @apply tw-flex-row tw-gap-2;
+    }
+
+    .vc-blade-toolbar-button__title {
+      @apply tw-mt-0 tw-ml-1;
+    }
   }
 
   &__title {
@@ -172,7 +183,7 @@ async function onClick(): Promise<void> {
     }
   }
 
-  &.vc-blade-toolbar-button_separator-left {
+  &_separator-left {
     @apply tw-border-l tw-border-solid tw-border-[color:var(--blade-toolbar-button-border-color)];
   }
 }

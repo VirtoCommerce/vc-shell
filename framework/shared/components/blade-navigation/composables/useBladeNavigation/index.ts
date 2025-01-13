@@ -10,6 +10,8 @@ import {
   RouteParams,
   Router,
   LocationQuery,
+  RouteParamsGeneric,
+  RouteRecordNameGeneric,
 } from "vue-router";
 import { bladeNavigationInstance } from "../../plugin";
 import {
@@ -22,7 +24,7 @@ import {
   BladeRoutesRecord,
   ExtractedBladeOptions,
 } from "../../types";
-import { navigationViewLocation } from "../../injectionKeys";
+import { navigationViewLocation } from "../../../../../injection-keys";
 import { useAppInsights, usePermissions } from "../../../../../core/composables";
 import { notification } from "./../../../notifications";
 import "core-js/actual/array/find-last";
@@ -37,6 +39,10 @@ interface IUseBladeNavigation {
     isWorkspace?: boolean,
   ) => Promise<void | NavigationFailure>;
   closeBlade: (index: number) => Promise<boolean>;
+  goToRoot: () => {
+    name: RouteRecordNameGeneric;
+    params: RouteParamsGeneric;
+  };
   onParentCall: (parentExposedMethods: Record<string, any>, args: IParentCallArgs) => void;
   onBeforeClose: (cb: () => Promise<boolean | undefined>) => void;
   resolveBladeByName: (name: string) => BladeInstanceConstructor;
@@ -296,6 +302,7 @@ export function useBladeNavigation(): IUseBladeNavigation {
   const instance = getCurrentInstance() as BladeComponentInternalInstance;
 
   const { router, route, navigationInstance, closeBlade, setupPageTracking } = useBladeNavigationSingleton();
+
   const { parseUrl, getURLQuery, routes: routerRoutes } = utils(router);
   const mainRoute = routerRoutes.find((r) => r.meta?.root);
   if (!mainRoute) {
@@ -645,6 +652,7 @@ export function useBladeNavigation(): IUseBladeNavigation {
     blades: computed(() => navigationInstance.blades.value),
     openBlade,
     closeBlade,
+    goToRoot,
     onParentCall,
     resolveBladeByName,
     routeResolver,

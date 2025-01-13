@@ -1,5 +1,5 @@
-import { Component, ComputedRef, Ref } from "vue";
-import { BladeInstanceConstructor, CoreBladeExposed, ExtractedBladeOptions } from "./../../shared";
+import { Component, ComputedRef, Ref, ShallowRef } from "vue";
+import { BladeInstanceConstructor, CoreBladeExposed, ExtractedBladeOptions } from "../../shared";
 import { ComponentPublicInstanceConstructor } from "../../shared/utilities/vueUtils";
 
 // Type instead of interface here is workaround for:

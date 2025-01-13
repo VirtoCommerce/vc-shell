@@ -39,10 +39,10 @@ export interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  placement: "bottom-end",
+  placement: "bottom",
   offset: () => ({
-    crossAxis: 5,
-    mainAxis: 5,
+    crossAxis: 0,
+    mainAxis: 0,
   }),
   delay: 0,
 });

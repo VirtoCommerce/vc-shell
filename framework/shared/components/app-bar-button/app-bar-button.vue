@@ -48,7 +48,7 @@
       ]"
       class="app-bar-button__dropdown"
     >
-      <Teleport to="#vc-app-bar__menu-dropdowns">
+      <AppBarButtonTeleport>
         <div class="app-bar-button__menu-dropdowns">
           <slot
             name="dropdown-content"
@@ -56,15 +56,15 @@
             :toggle="toggleNotificationsDrop"
           ></slot>
         </div>
-      </Teleport>
+      </AppBarButtonTeleport>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { ref, computed } from "vue";
+import { ref } from "vue";
 import { vOnClickOutside } from "@vueuse/components";
-// import { useFloating, shift, autoUpdate } from "@floating-ui/vue";
+import { default as AppBarButtonTeleport } from "./_internal/app-bar-button-teleport.vue";
 
 export interface Props {
   title?: string;
@@ -91,19 +91,6 @@ defineSlots<{
 const isDropdownVisible = ref(false);
 
 const referenceButton = ref<HTMLDivElement | null>(null);
-
-// const floater = useFloating(referenceButton, null, {
-//   placement: props.position,
-//   whileElementsMounted: autoUpdate,
-//   middleware: [shift({ mainAxis: false })],
-// });
-
-// const floatingDropStyle = computed(() => {
-//   return {
-//     top: `${floater.y.value ?? 0}px`,
-//     left: `${floater.x.value ?? 0}px`,
-//   };
-// });
 
 function toggleNotificationsDrop() {
   if (props.beforeOpen && typeof props.beforeOpen === "function" && props.beforeOpen() === false) {

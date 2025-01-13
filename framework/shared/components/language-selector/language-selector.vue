@@ -11,7 +11,7 @@
       :opened="opened"
       :items="languageItems"
       :is-item-active="(lang) => lang.lang === $i18n.locale"
-      :on-item-click="(lang) => lang.hasOwnProperty('clickHandler') && lang.clickHandler(lang.lang)"
+      @item:click="(lang) => lang.hasOwnProperty('clickHandler') && lang.clickHandler(lang.lang)"
     >
       <template #item="{ item: lang, click }">
         <SettingsMenuItem

@@ -65,6 +65,9 @@
 <script lang="ts" setup>
 import VcTableFilter from "./../vc-table-filter/vc-table-filter.vue";
 import { VcInput } from "./../../../../molecules";
+import { BLADE_SCROLL_KEY } from "../../../../../../injection-keys";
+import { inject, ref } from "vue";
+
 export interface Props {
   searchValue?: string;
   searchPlaceholder?: string;
@@ -96,7 +99,7 @@ defineEmits<Emits>();
   }
 
   &--desktop {
-    @apply tw-px-4;
+    @apply tw-p-4;
   }
 
   &__filter-mobile {

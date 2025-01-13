@@ -57,6 +57,10 @@ const props = withDefaults(defineProps<Props>(), {
   render: "always",
 });
 
+defineOptions({
+  inheritAttrs: false,
+});
+
 const header = h("div", { class: "sidebar__header" }, [
   props.title ? h("h3", { class: "sidebar__title" }, props.title) : null,
   h(VcIcon, { icon: "fas fa-times", size: "xl", onClick: () => emit("close") }),

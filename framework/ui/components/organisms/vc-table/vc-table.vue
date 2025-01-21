@@ -151,11 +151,12 @@
           >
             <div class="vc-table__header-row">
               <div
-                v-if="multiselect && items && items.length && !noHeaderCheckbox"
+                v-if="multiselect && items && items.length"
                 class="vc-table__header-checkbox"
               >
                 <div class="vc-table__header-checkbox__content">
                   <VcCheckbox
+                    v-if="!noHeaderCheckbox"
                     v-model="headerCheckbox"
                     size="m"
                     @click.stop

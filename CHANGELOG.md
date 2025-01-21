@@ -1,3 +1,12 @@
+## [1.0.332](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.331...v1.0.332) (2025-01-21)
+
+
+### Bug Fixes
+
+* param clearing fix ([d906aa1](https://github.com/VirtoCommerce/vc-shell/commit/d906aa173cc3d87f8a29460e0654e5b0d41bae72))
+
+
+
 ## [1.0.331](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.330...v1.0.331) (2025-01-21)
 
 

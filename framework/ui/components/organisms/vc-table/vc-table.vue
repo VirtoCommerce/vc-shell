@@ -4,7 +4,7 @@
     class="vc-table"
   >
     <div
-      v-if="multiselect && $isMobile.value && (selection.length > 0 || allSelected)"
+      v-if="multiselect && $isMobile.value && (selection.length > 0 || allSelected) && !noHeaderCheckbox"
       class="vc-table__multiselect-mobile"
     >
       <div class="vc-table__select-all-bar">
@@ -151,7 +151,7 @@
           >
             <div class="vc-table__header-row">
               <div
-                v-if="multiselect && items && items.length"
+                v-if="multiselect && items && items.length && !noHeaderCheckbox"
                 class="vc-table__header-checkbox"
               >
                 <div class="vc-table__header-checkbox__content">
@@ -546,6 +546,7 @@ const props = withDefaults(
     selectionItems?: T[];
     disableFilter?: boolean;
     columnSelector?: "auto" | "defined" | MaybeRef<ITableColumns[]> | (() => ITableColumns[]);
+    noHeaderCheckbox?: boolean;
   }>(),
   {
     items: () => [],

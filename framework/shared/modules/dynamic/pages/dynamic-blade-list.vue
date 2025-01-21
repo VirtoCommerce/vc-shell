@@ -748,6 +748,7 @@ const tableConfig = computed(() => {
     "onSelect:all": handleSelectAllItems,
     onEditComplete: onEditComplete,
     onCellBlur: onCellBlur,
+    noHeaderCheckbox: tableData?.value?.noHeaderCheckbox,
   };
 });
 

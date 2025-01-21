@@ -262,8 +262,10 @@ const useBladeNavigationSingleton = createSharedComposable(() => {
           prevBlade.props.navigation.isVisible = true;
         }
 
+        // Clear param of table blade when closing child blade to prevent table row selection from being preserved
         if (
           prevBlade &&
+          prevBlade.props.navigation.idx === 0 &&
           toValue(prevBlade.props?.param) === toValue(navigationInstance.blades.value[index]?.props?.param)
         ) {
           prevBlade.props.param = undefined;

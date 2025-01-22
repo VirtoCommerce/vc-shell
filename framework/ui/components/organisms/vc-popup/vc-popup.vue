@@ -156,9 +156,9 @@ const isMobile = inject("isMobile") as Ref<boolean>;
 const icon = computed(() => {
   switch (props.variant) {
     case "warning":
-      return "fas fa-exclamation-circle";
+      return "fas fa-exclamation-triangle";
     case "error":
-      return "fas fa-times-circle";
+      return "fas fa-exclamation-circle";
     case "success":
       return "fas fa-check-circle";
     case "info":

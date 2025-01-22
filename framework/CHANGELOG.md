@@ -1,3 +1,12 @@
+## [1.0.334](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.333...v1.0.334) (2025-01-22)
+
+
+### Bug Fixes
+
+* locale typo fix ([af3e87a](https://github.com/VirtoCommerce/vc-shell/commit/af3e87ab0135816f91961c23cb5c0881720d2c04))
+
+
+
 ## [1.0.333](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.332...v1.0.333) (2025-01-21)
 
 

@@ -1,3 +1,17 @@
+## [1.0.336](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.335...v1.0.336) (2025-01-29)
+
+
+### Bug Fixes
+
+* **routing:** improve authentication route guard using meta flag ([200b150](https://github.com/VirtoCommerce/vc-shell/commit/200b1501519b0d48f8abd9b062a13e9c2db2d2b9))
+
+
+### Features
+
+* **useAssets:** add configurable asset key for removal ([2abe831](https://github.com/VirtoCommerce/vc-shell/commit/2abe8310b4a1b203aa5cc811422cc7ad6430e2a5))
+
+
+
 ## [1.0.335](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.334...v1.0.335) (2025-01-22)
 
 

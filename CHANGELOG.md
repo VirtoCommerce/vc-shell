@@ -1,3 +1,12 @@
+## [1.0.337](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.336...v1.0.337) (2025-01-29)
+
+
+### Bug Fixes
+
+* **api-client:** correct type export path generation ([40464e9](https://github.com/VirtoCommerce/vc-shell/commit/40464e9d94be6409c8224cc8e90b1a39794b2328))
+
+
+
 ## [1.0.336](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.335...v1.0.336) (2025-01-29)
 
 

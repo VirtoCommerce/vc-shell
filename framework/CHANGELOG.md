@@ -1,3 +1,13 @@
+## [1.0.338](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.337...v1.0.338) (2025-02-05)
+
+
+### Features
+
+* **login:** add support for after-form extensions ([6addffd](https://github.com/VirtoCommerce/vc-shell/commit/6addffdc05384cafd360c1f147d227e0691b407c))
+* **modularity:** enhance dynamic module loading and extension support ([309739e](https://github.com/VirtoCommerce/vc-shell/commit/309739eb7aa965530647cc50d4820b5d2e0541f3))
+
+
+
 ## [1.0.337](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.336...v1.0.337) (2025-01-29)
 
 

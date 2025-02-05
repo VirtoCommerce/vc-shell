@@ -6,7 +6,7 @@ declare module "@vue/runtime-core" {
   }
 }
 
-export interface ExtensionPoint extends Extension {
+export interface ExtensionPoint {
   id: string;
   component: unknown;
 }
@@ -37,7 +37,7 @@ export interface ExtensionNamespace {
 
 export interface ExtensionsHelper {
   getInboundExtensions(namespace: string, point?: string): Extension;
-  getOutboundExtensions(point: string): (ExtensionPoint[] | ComposableFunction[] | Extension)[];
+  getOutboundExtensions(point: string): (ExtensionPoint | ComposableFunction | Extension)[];
   getModuleExtensions(namespace: string): {
     inbound: Record<string, Extension>;
     outbound: Record<string, ExtensionPoint[] | ComposableFunction[] | Extension>;
@@ -63,16 +63,22 @@ export function createExtensionsHelper(app: App): ExtensionsHelper {
     },
 
     getOutboundExtensions(point: string) {
-      const result: (ExtensionPoint[] | ComposableFunction[] | Extension)[] = [];
+      const result: (ExtensionPoint | ComposableFunction | Extension)[] = [];
       Object.values(app.config.globalProperties.$extensions.outbound).forEach((namespace: unknown) => {
         const typedNamespace = namespace as ExtensionNamespace;
         if (typedNamespace[point]) {
-          if (Array.isArray(typedNamespace[point])) {
-            result.push(...(typedNamespace[point] as ExtensionPoint[]));
-          } else if (typeof typedNamespace[point] === "object" && "fn" in typedNamespace[point]) {
-            result.push(typedNamespace[point]);
-          } else {
-            result.push(typedNamespace[point]);
+          const extension = typedNamespace[point];
+          if (Array.isArray(extension)) {
+            result.push(...extension);
+          } else if (
+            typeof extension === "object" &&
+            "id" in extension &&
+            "fn" in extension &&
+            typeof extension.fn === "function"
+          ) {
+            result.push(extension);
+          } else if (typeof extension === "object") {
+            result.push(extension as Extension);
           }
         }
       });
@@ -171,6 +177,16 @@ function initializeExtensionPoint(
   }
 }
 
+function isComposableFunction(value: unknown): value is ComposableFunction {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    "id" in value &&
+    "fn" in value &&
+    typeof (value as ComposableFunction).fn === "function"
+  );
+}
+
 function mergeExtension(
   moduleOutbound: ExtensionRegistry["outbound"][string],
   point: string,
@@ -178,8 +194,8 @@ function mergeExtension(
 ) {
   if (Array.isArray(extension) && Array.isArray(moduleOutbound[point])) {
     (moduleOutbound[point] as ExtensionPoint[]).push(...(extension as ExtensionPoint[]));
-  } else if (typeof extension === "object" && "fn" in extension && Array.isArray(moduleOutbound[point])) {
-    (moduleOutbound[point] as ComposableFunction[]).push(extension as ComposableFunction);
+  } else if (isComposableFunction(extension) && Array.isArray(moduleOutbound[point])) {
+    (moduleOutbound[point] as ComposableFunction[]).push(extension);
   } else if (isObjectExtension(extension) && isObjectExtension(moduleOutbound[point])) {
     moduleOutbound[point] = {
       ...(moduleOutbound[point] as Extension),

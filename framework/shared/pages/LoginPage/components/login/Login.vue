@@ -217,8 +217,7 @@ let forgotPassword: ForgotPasswordFunc;
 const extensionsHelper = inject(extensionsHelperSymbol);
 
 const afterLoginFormExtensions = computed(
-  (): ExtensionPoint[] =>
-    (extensionsHelper?.getOutboundExtensions("login-after-form").flat() as ExtensionPoint[]) || [],
+  (): ExtensionPoint[] => (extensionsHelper?.getOutboundExtensions("login-after-form") as ExtensionPoint[]) || [],
 );
 
 if (props.composable && typeof props.composable === "function") {

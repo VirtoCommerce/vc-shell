@@ -26,6 +26,13 @@
       >
         {{ title }}
       </div>
+
+      <div
+        v-if="$slots['logo:append']"
+        class="vc-app-bar__logo-append"
+      >
+        <slot name="logo:append"></slot>
+      </div>
     </template>
 
     <template v-if="$isMobile.value">
@@ -95,6 +102,12 @@ defineProps<Props>();
 
 defineEmits<Emits>();
 
+defineSlots<{
+  "logo:append": void;
+  "app-switcher": void;
+  toolbar: void;
+}>();
+
 const { t } = useI18n({ useScope: "global" });
 
 const { blades } = useBladeNavigation();
@@ -153,6 +166,10 @@ watchDebounced(
   &--mobile {
     @apply tw-mx-1;
   }
+}
+
+.vc-app-bar__logo-append {
+  @apply tw-ml-3;
 }
 
 .vc-app-bar__title {

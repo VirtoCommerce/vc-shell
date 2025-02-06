@@ -68,6 +68,10 @@
           </slot>
         </slot>
       </template>
+
+      <template #logo:append>
+        <slot name="logo:append"></slot>
+      </template>
     </VcAppBar>
 
     <div class="vc-app__main-content">
@@ -144,6 +148,7 @@ defineSlots<{
   "toolbar:user-dropdown": (props: { userDropdown: typeof UserDropdownButton }) => void;
   "blade-navigation": void;
   "toolbar:theme-selector": void;
+  "logo:append": void;
 }>();
 
 const props = defineProps<Props>();

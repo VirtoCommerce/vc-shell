@@ -29,6 +29,8 @@
       <slot name="content"></slot>
     </div>
   </template>
+
+  <!-- Pass through content if not expanded -->
   <template v-else>
     <slot name="content"></slot>
   </template>

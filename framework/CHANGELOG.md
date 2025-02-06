@@ -1,3 +1,20 @@
+## [1.0.340](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.339...v1.0.340) (2025-02-06)
+
+
+### Bug Fixes
+
+* **login:** improve error handling for incorrect credentials ([d9464d0](https://github.com/VirtoCommerce/vc-shell/commit/d9464d0e824f298800730a433bdc63ff2c1f246f))
+* **vc-table:** prevent potential null reference in table state key ([9b6c2da](https://github.com/VirtoCommerce/vc-shell/commit/9b6c2da2762c6e423557ba44139b0a4ec053dc64))
+
+
+### Features
+
+* **useSettings:** improve UI customization settings handling ([0a5c38d](https://github.com/VirtoCommerce/vc-shell/commit/0a5c38daa9f9fbea4eb7f60b481253c78b5bca62))
+* **vc-app:** add logo append slot to app bar and app components ([74018b3](https://github.com/VirtoCommerce/vc-shell/commit/74018b34dd10127e62413f00bc75c34254067b4d))
+* **vc-image:** add HTTPS URL conversion for secure image loading ([b38c31a](https://github.com/VirtoCommerce/vc-shell/commit/b38c31ad0c06ff9e22cb80e5bd9d13a0f0b2f3d6))
+
+
+
 ## [1.0.339](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.338...v1.0.339) (2025-02-05)
 
 

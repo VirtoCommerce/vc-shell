@@ -268,6 +268,10 @@ const login = async () => {
         localStorage.removeItem("redirectAfterLogin");
         await router.push(redirectTo);
       } else {
+        signInResult.value.error = "The login or password is incorrect.";
+        form.password = "";
+        validateField("password");
+
         if (signInResult.value.status) {
           if (signInResult.value.status === 401) {
             signInResult.value.error = "The login or password is incorrect.";

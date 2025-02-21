@@ -81,6 +81,16 @@
 
         <ExternalProviders :providers="loginProviders" />
       </div>
+
+      <!-- Extensions after form -->
+      <template
+        v-for="extension in afterLoginFormExtensions"
+        :key="extension.id"
+      >
+        <div class="vc-login-page__extension">
+          <component :is="extension.component" />
+        </div>
+      </template>
     </template>
     <template v-else>
       <template v-if="!forgotPasswordRequestSent">
@@ -162,7 +172,7 @@
 
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
-import { ref, reactive, computed, onMounted, Ref } from "vue";
+import { ref, reactive, computed, onMounted, Ref, inject } from "vue";
 import { useRouter } from "vue-router";
 import { useIsFormValid, Field, useIsFormDirty, useForm } from "vee-validate";
 import { useSettings, useUser } from "./../../../../../core/composables";
@@ -171,6 +181,7 @@ import { ExternalSignInProviderInfo, SignInResult } from "./../../../../../core/
 import { useI18n } from "vue-i18n";
 import { default as ExternalProviders } from "./../../../../../shared/components/sign-in/external-providers.vue";
 import { useExternalProvider } from "./../../../../../shared/components/sign-in/useExternalProvider";
+import { Extension, ExtensionPoint, extensionsHelperSymbol } from "./../../../../../core/plugins";
 
 type ForgotPasswordFunc = (args: { loginOrEmail: string }) => Promise<void>;
 
@@ -202,6 +213,12 @@ const isDirty = useIsFormDirty();
 const loadingForgotPassword = ref(false);
 const loginProviders = ref<ExternalSignInProviderInfo[]>();
 let forgotPassword: ForgotPasswordFunc;
+
+const extensionsHelper = inject(extensionsHelperSymbol);
+
+const afterLoginFormExtensions = computed(
+  (): ExtensionPoint[] => (extensionsHelper?.getOutboundExtensions("login-after-form") as ExtensionPoint[]) || [],
+);
 
 if (props.composable && typeof props.composable === "function") {
   useLogin = props.composable;
@@ -251,6 +268,10 @@ const login = async () => {
         localStorage.removeItem("redirectAfterLogin");
         await router.push(redirectTo);
       } else {
+        signInResult.value.error = "The login or password is incorrect.";
+        form.password = "";
+        validateField("password");
+
         if (signInResult.value.status) {
           if (signInResult.value.status === 401) {
             signInResult.value.error = "The login or password is incorrect.";
@@ -318,6 +339,10 @@ console.debug("Init login-page");
 
   &__submit-button {
     @apply tw-w-28;
+  }
+
+  &__extension {
+    @apply tw-mt-6 tw-pt-6 tw-border-t tw-border-t-[color:var(--login-separator)] tw-flex tw-justify-center;
   }
 
   &__separator {

@@ -70,7 +70,7 @@
     <VcBladeToolbar
       class="vc-blade__toolbar"
       :class="{
-        'vc-blade__toolbar--hidden': $isMobile.value && shouldHideHeader,
+        'vc-blade__toolbar--hidden': $isMobile.value,
       }"
       :items="toolbarItems"
     >
@@ -112,13 +112,25 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, toValue, inject, onBeforeUnmount, getCurrentInstance, provide, watch, toRefs } from "vue";
+import {
+  computed,
+  ref,
+  toValue,
+  inject,
+  onBeforeUnmount,
+  getCurrentInstance,
+  provide,
+  watch,
+  toRefs,
+  defineComponent,
+  h,
+} from "vue";
 import { IBladeToolbar } from "../../../../core/types";
 import { usePopup } from "../../../../shared";
 import { useI18n } from "vue-i18n";
 import { default as VcBladeHeader } from "./_internal/vc-blade-header/vc-blade-header.vue";
 import { default as VcBladeToolbar } from "./_internal/vc-blade-toolbar/vc-blade-toolbar.vue";
-import { VcButton, VcIcon } from "../../";
+import { VcButton, VcIcon, VcLink } from "../../";
 import vcPopupError from "../../../../shared/components/common/popup/vc-popup-error.vue";
 import { useWidgets } from "../../../../core/composables/useWidgets";
 import { BladeInstance, BLADE_SCROLL_KEY } from "../../../../injection-keys";
@@ -181,15 +193,23 @@ const { t } = useI18n({ useScope: "global" });
 const widgetService = useWidgets();
 const bladeRef = ref<HTMLElement | null>(null);
 const contentRef = ref<HTMLElement | null>(null);
-const shouldHideHeader = ref(false);
 
 const { open } = usePopup({
   component: vcPopupError,
-  props: {
-    title: t("COMPONENTS.ORGANISMS.VC_BLADE.ERROR_POPUP.TITLE"),
-  },
   slots: {
     default: computed(() => toValue(blade.value.error)),
+    header: defineComponent({
+      render: () =>
+        h("div", [
+          t("COMPONENTS.ORGANISMS.VC_BLADE.ERROR_POPUP.TITLE"),
+          " ",
+          h(
+            VcLink,
+            { onClick: () => navigator.clipboard.writeText(toValue(blade.value.error) ?? "") },
+            `(${t("COMPONENTS.ORGANISMS.VC_BLADE.ERROR_POPUP.COPY_ERROR")})`,
+          ),
+        ]),
+    }),
   },
 });
 
@@ -198,20 +218,6 @@ onBeforeUnmount(() => {
     widgetService.clearBladeWidgets(blade.value.id);
   }
 });
-
-const { isSwiping, direction, lengthY } = useSwipe(bladeRef, {
-  threshold: 30, // минимальное расстояние свайпа для срабатывания
-  onSwipe() {
-    if (direction.value === "up" && lengthY.value > 50) {
-      shouldHideHeader.value = true;
-    } else if (direction.value === "down") {
-      shouldHideHeader.value = false;
-    }
-  },
-});
-
-// Предоставляем значение для дочерних компонентов
-provide(BLADE_SCROLL_KEY, shouldHideHeader);
 </script>
 
 <style lang="scss">

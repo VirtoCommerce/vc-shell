@@ -77,5 +77,23 @@ function onOpen(state: boolean) {
   &__button {
     @apply tw-w-[var(--notification-dropdown-button-width)] tw-h-full tw-flex tw-items-center tw-justify-center tw-relative;
   }
+
+  &__item {
+    @apply tw-py-[18px] tw-px-[15px] tw-border-b tw-border-solid
+      tw-border-b-[var(--notification-dropdown-border-color)];
+    transition: background-color 0.2s;
+
+    &:last-of-type {
+      @apply tw-border-b-0;
+    }
+
+    &--mobile:not(:last-of-type) {
+      @apply tw-border-solid tw-border-b tw-border-b-[color:var(--notification-dropdown-divider-color)];
+    }
+  }
+
+  &__empty {
+    @apply tw-flex tw-justify-center tw-items-center tw-p-4 tw-text-sm;
+  }
 }
 </style>

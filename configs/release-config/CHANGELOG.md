@@ -1,3 +1,55 @@
+## [1.0.340](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.339...v1.0.340) (2025-02-06)
+
+
+
+## [1.0.339](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.338...v1.0.339) (2025-02-05)
+
+
+
+## [1.0.338](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.337...v1.0.338) (2025-02-05)
+
+
+
+## [1.0.337](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.336...v1.0.337) (2025-01-29)
+
+
+
+## [1.0.336](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.335...v1.0.336) (2025-01-29)
+
+
+
+## [1.0.335](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.334...v1.0.335) (2025-01-22)
+
+
+
+## [1.0.334](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.333...v1.0.334) (2025-01-22)
+
+
+
+## [1.0.333](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.332...v1.0.333) (2025-01-21)
+
+
+
+## [1.0.332](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.331...v1.0.332) (2025-01-21)
+
+
+
+## [1.0.331](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.330...v1.0.331) (2025-01-21)
+
+
+
+## [1.0.330](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.329...v1.0.330) (2024-12-19)
+
+
+
+## [1.0.329](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.328...v1.0.329) (2024-12-04)
+
+
+
+## [1.0.328](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.326...v1.0.328) (2024-11-14)
+
+
+
 # [1.1.0-alpha.1](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.326...v1.1.0-alpha.1) (2024-11-13)
 
 

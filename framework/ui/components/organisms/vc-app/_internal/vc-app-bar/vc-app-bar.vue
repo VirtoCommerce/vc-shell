@@ -25,7 +25,11 @@
       :expanded="state.isSidebarExpanded"
       @logo:click="$emit('logo:click')"
       @toggle-menu="toggleDropdown"
-    />
+    >
+      <template #logo:append>
+        <slot name="logo:append"></slot>
+      </template>
+    </AppBarHeader>
 
     <AppBarMenu
       v-model:is-open="state.isDropdownOpen"

@@ -149,7 +149,8 @@
         "SEE_DETAILS": "See details",
         "UNSAVED_CHANGES": "Has unsaved changes",
         "ERROR_POPUP": {
-          "TITLE": "Error details"
+          "TITLE": "Error details",
+          "COPY_ERROR": "copy content"
         }
       },
       "VC_BLADE_HEADER": {
@@ -225,7 +226,7 @@
       }
     },
     "APP_SWITCHER": {
-      "TITLE": "Appications"
+      "TITLE": "Applications"
     },
     "NOTIFICATION_DROPDOWN": {
       "TITLE": "Notifications",

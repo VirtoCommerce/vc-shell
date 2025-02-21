@@ -97,9 +97,8 @@ const utils = (router: Router) => {
 
   function parseWorkspaceUrl(path: string): string {
     // Object.values(route.params)[0] will always be base path of the app
-    if (!mainRouteBaseParamURL.value) {
-      mainRouteBaseParamURL.value = "/" + (Object.values(route.params)?.[0] ?? "");
-    }
+    mainRouteBaseParamURL.value = "/" + (Object.values(route.params)?.[0] ?? "");
+
     const pathWithoutBase = path.startsWith(mainRouteBaseParamURL.value)
       ? path.slice(mainRouteBaseParamURL.value.length)
       : path;
@@ -269,8 +268,10 @@ const useBladeNavigationSingleton = createSharedComposable(() => {
           prevBlade.props.navigation.isVisible = true;
         }
 
+        // Clear param of table blade when closing child blade to prevent table row selection from being preserved
         if (
           prevBlade &&
+          prevBlade.props.navigation.idx === 0 &&
           toValue(prevBlade.props?.param) === toValue(navigationInstance.blades.value[index]?.props?.param)
         ) {
           prevBlade.props.param = undefined;
@@ -353,6 +354,7 @@ export function useBladeNavigation(): IUseBladeNavigation {
           if (wsroute && wsroute.components) {
             wsroute.components.default = createdComponent;
           }
+
           return await router.push({
             name: wsroute?.name,
             params: { ...params, ...route.params },

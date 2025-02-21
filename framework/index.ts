@@ -248,7 +248,7 @@ export default {
     args.router.beforeEach(async (to, from, next) => {
       const { isAuthenticated } = useUser();
 
-      if (to.name !== "Login" && to.name !== "ResetPassword" && to.name !== "ChangePassword" && to.name !== "Invite") {
+      if (to.meta.root === true) {
         try {
           if (!isAuthenticated.value) {
             localStorage.setItem("redirectAfterLogin", to.fullPath);

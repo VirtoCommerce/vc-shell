@@ -648,6 +648,9 @@ watch(
       }
 
       optionsTemp.value = optionsList.value;
+    } else if (newVal && typeof props.options !== "function") {
+      optionsList.value = props.options as Option[];
+      optionsTemp.value = optionsList.value;
     }
   },
   { immediate: true },
@@ -656,7 +659,7 @@ watch(
 watch(
   options,
   async (newVal) => {
-    if (newVal && !optionsList.value.length && typeof props.options !== "function") {
+    if (newVal && typeof props.options !== "function") {
       if (props.options && Array.isArray(props.options)) {
         optionsList.value = props.options as Option[];
       }

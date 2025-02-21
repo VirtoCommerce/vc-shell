@@ -248,3 +248,4 @@ export const createAppModule = (
 };
 
 export * from "./loader";
+export * from "./extensions-helper";

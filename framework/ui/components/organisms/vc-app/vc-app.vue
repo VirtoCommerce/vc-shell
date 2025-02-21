@@ -33,6 +33,10 @@
           </slot>
         </template>
 
+        <template #logo:append>
+          <slot name="logo:append"></slot>
+        </template>
+
         <!-- Toolbar slot -->
         <template #toolbar>
           <!-- <slot
@@ -150,6 +154,7 @@ defineSlots<{
   "toolbar:user-dropdown": (props: { userDropdown: typeof UserDropdownButton }) => void;
   "blade-navigation": void;
   "toolbar:theme-selector": void;
+  "logo:append": void;
 }>();
 
 const props = defineProps<Props>();

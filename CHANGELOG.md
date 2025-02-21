@@ -1,3 +1,119 @@
+## [1.0.340](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.339...v1.0.340) (2025-02-06)
+
+
+### Bug Fixes
+
+* **login:** improve error handling for incorrect credentials ([d9464d0](https://github.com/VirtoCommerce/vc-shell/commit/d9464d0e824f298800730a433bdc63ff2c1f246f))
+* **vc-table:** prevent potential null reference in table state key ([9b6c2da](https://github.com/VirtoCommerce/vc-shell/commit/9b6c2da2762c6e423557ba44139b0a4ec053dc64))
+
+
+### Features
+
+* **useSettings:** improve UI customization settings handling ([0a5c38d](https://github.com/VirtoCommerce/vc-shell/commit/0a5c38daa9f9fbea4eb7f60b481253c78b5bca62))
+* **vc-app:** add logo append slot to app bar and app components ([74018b3](https://github.com/VirtoCommerce/vc-shell/commit/74018b34dd10127e62413f00bc75c34254067b4d))
+* **vc-image:** add HTTPS URL conversion for secure image loading ([b38c31a](https://github.com/VirtoCommerce/vc-shell/commit/b38c31ad0c06ff9e22cb80e5bd9d13a0f0b2f3d6))
+
+
+
+## [1.0.339](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.338...v1.0.339) (2025-02-05)
+
+
+
+## [1.0.338](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.337...v1.0.338) (2025-02-05)
+
+
+### Features
+
+* **login:** add support for after-form extensions ([6addffd](https://github.com/VirtoCommerce/vc-shell/commit/6addffdc05384cafd360c1f147d227e0691b407c))
+* **modularity:** enhance dynamic module loading and extension support ([309739e](https://github.com/VirtoCommerce/vc-shell/commit/309739eb7aa965530647cc50d4820b5d2e0541f3))
+
+
+
+## [1.0.337](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.336...v1.0.337) (2025-01-29)
+
+
+### Bug Fixes
+
+* **api-client:** correct type export path generation ([40464e9](https://github.com/VirtoCommerce/vc-shell/commit/40464e9d94be6409c8224cc8e90b1a39794b2328))
+
+
+
+## [1.0.336](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.335...v1.0.336) (2025-01-29)
+
+
+### Bug Fixes
+
+* **routing:** improve authentication route guard using meta flag ([200b150](https://github.com/VirtoCommerce/vc-shell/commit/200b1501519b0d48f8abd9b062a13e9c2db2d2b9))
+
+
+### Features
+
+* **useAssets:** add configurable asset key for removal ([2abe831](https://github.com/VirtoCommerce/vc-shell/commit/2abe8310b4a1b203aa5cc811422cc7ad6430e2a5))
+
+
+
+## [1.0.335](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.334...v1.0.335) (2025-01-22)
+
+
+
+## [1.0.334](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.333...v1.0.334) (2025-01-22)
+
+
+### Bug Fixes
+
+* locale typo fix ([af3e87a](https://github.com/VirtoCommerce/vc-shell/commit/af3e87ab0135816f91961c23cb5c0881720d2c04))
+
+
+
+## [1.0.333](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.332...v1.0.333) (2025-01-21)
+
+
+### Bug Fixes
+
+* **vc-table:** noHeaderCheckbox hide only checkbox ([99f072a](https://github.com/VirtoCommerce/vc-shell/commit/99f072a19e0d8f46fe8a9bc317553591aa360b61))
+
+
+
+## [1.0.332](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.331...v1.0.332) (2025-01-21)
+
+
+### Bug Fixes
+
+* param clearing fix ([d906aa1](https://github.com/VirtoCommerce/vc-shell/commit/d906aa173cc3d87f8a29460e0654e5b0d41bae72))
+
+
+
+## [1.0.331](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.330...v1.0.331) (2025-01-21)
+
+
+### Features
+
+* **vc-table:** noHeaderCheckbox prop ([5447efa](https://github.com/VirtoCommerce/vc-shell/commit/5447efaed36772a9421791aded9e1bbaddeeb892))
+
+
+
+## [1.0.330](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.329...v1.0.330) (2024-12-19)
+
+
+### Bug Fixes
+
+* **navigation:** param reset fix ([1ff50cc](https://github.com/VirtoCommerce/vc-shell/commit/1ff50ccd22b09263799ebf8741132eb379b396b0))
+
+
+
+## [1.0.329](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.328...v1.0.329) (2024-12-04)
+
+
+### Features
+
+* vc-1504 blade error content copy ([bba7a11](https://github.com/VirtoCommerce/vc-shell/commit/bba7a116ac3b23c40b6157de1fc01fc41b09adbd))
+
+
+
+## [1.0.328](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.326...v1.0.328) (2024-11-14)
+
+
+
 # [1.1.0-alpha.1](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.326...v1.1.0-alpha.1) (2024-11-13)
 
 

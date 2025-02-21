@@ -51,14 +51,14 @@ export function useAssets(): IUseAssets {
     }
   }
 
-  function remove(filesToDelete: ICommonAsset[], initialAssetArr: ICommonAsset[]): ICommonAsset[] {
+  function remove(filesToDelete: ICommonAsset[], initialAssetArr: ICommonAsset[], assetKey = "url"): ICommonAsset[] {
     try {
       loading.value = true;
 
       let updatedAssetArr = _.cloneDeep(initialAssetArr) || [];
 
       if (updatedAssetArr && updatedAssetArr.length && filesToDelete.length > 0) {
-        updatedAssetArr = _.differenceWith(updatedAssetArr, filesToDelete, (x, y) => x.url === y.url);
+        updatedAssetArr = _.differenceWith(updatedAssetArr, filesToDelete, (x, y) => x[assetKey] === y[assetKey]);
       }
 
       return updatedAssetArr;

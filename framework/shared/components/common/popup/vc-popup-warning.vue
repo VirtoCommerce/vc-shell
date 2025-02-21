@@ -5,6 +5,12 @@
     :title="title"
     @close="$emit('close')"
   >
+    <template
+      v-if="$slots.header"
+      #header
+    >
+      <slot name="header" />
+    </template>
     <template #content>
       <slot />
     </template>
@@ -38,6 +44,11 @@ export interface Emits {
 defineProps<Props>();
 
 defineEmits<Emits>();
+
+defineSlots<{
+  header: void;
+  default: void;
+}>();
 </script>
 
 <style lang="scss">

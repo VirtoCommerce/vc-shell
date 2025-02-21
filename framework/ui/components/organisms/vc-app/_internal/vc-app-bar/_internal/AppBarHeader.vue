@@ -13,6 +13,9 @@
           @click="$emit('logo:click')"
         />
       </div>
+      <div class="app-bar-header__logo-append">
+        <slot name="logo:append"></slot>
+      </div>
     </div>
 
     <div
@@ -101,6 +104,10 @@ const hasUnreadNotifications = computed(() => {
     .app-bar-header__logo {
       @apply tw-h-[var(--app-bar-mobile-height)];
     }
+  }
+
+  &__logo-append {
+    @apply tw-flex tw-items-center;
   }
 }
 </style>

@@ -155,6 +155,7 @@ export interface ListContentSchema {
   component: "vc-table";
   filter?: FilterSchema;
   multiselect?: boolean;
+  noHeaderCheckbox?: boolean;
   header?: boolean;
   footer?: boolean;
   columns?: ((

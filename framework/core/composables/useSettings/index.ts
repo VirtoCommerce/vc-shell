@@ -20,14 +20,17 @@ interface IUseSettings {
 
 export function useSettings(): IUseSettings {
   const uiSettings = ref<IUISetting | undefined>();
+  const customSettingsApplied = ref(false);
 
   const { getApiClient } = useApiClient(SettingClient);
 
   const { loading, action: getUiCustomizationSettings } = useAsync(async () => {
+    if (customSettingsApplied.value) return;
+
     const result = await (await getApiClient()).getUICustomizationSetting();
     const settings = await JSON.parse(result.defaultValue ?? null);
 
-    if (settings) {
+    if (settings && !uiSettings.value) {
       uiSettings.value = {
         contrast_logo: settings.contrast_logo,
         logo: settings.logo,
@@ -37,6 +40,7 @@ export function useSettings(): IUseSettings {
   });
 
   function applySettings(args: { logo?: string; title?: string; avatar?: string; role?: string }) {
+    customSettingsApplied.value = true;
     uiSettings.value = {
       ...uiSettings.value,
       logo: args.logo,
@@ -47,7 +51,7 @@ export function useSettings(): IUseSettings {
   }
 
   onMounted(async () => {
-    if (!uiSettings.value) {
+    if (!uiSettings.value && !customSettingsApplied.value) {
       await getUiCustomizationSettings();
     }
   });

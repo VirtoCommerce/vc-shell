@@ -57,9 +57,25 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<Emits>();
 
+function ensureHttps(url: string): string {
+  if (!url) return url;
+
+  try {
+    const urlObject = new URL(url);
+    if (urlObject.protocol === "http:" && window.location.protocol === "https:") {
+      urlObject.protocol = "https:";
+      return urlObject.href;
+    }
+  } catch (e) {
+    console.warn("Invalid URL:", url);
+  }
+  return url;
+}
+
 const imageHandler = computed(() => {
   if (props.src) {
-    return `background: url(${CSS.escape(props.src)}) center / ${props.background} no-repeat`;
+    const secureUrl = ensureHttps(props.src);
+    return `background: url(${CSS.escape(secureUrl)}) center / ${props.background} no-repeat`;
   }
   return undefined;
 });

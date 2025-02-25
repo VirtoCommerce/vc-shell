@@ -1,3 +1,21 @@
+## [v1.1.0-alpha.2](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.340...vv1.1.0-alpha.2) (2025-02-25)
+
+
+### Features
+
+* partial redesign ([846e215](https://github.com/VirtoCommerce/vc-shell/commit/846e2152c6e48753622ca7cf3a71300323c99d51))
+
+
+### Reverts
+
+* Revert "release: v1.1.0-alpha.2" ([80b0dc9](https://github.com/VirtoCommerce/vc-shell/commit/80b0dc99fdd318205f26bde81e6a49ab79214cb3))
+
+
+
+# [1.1.0-alpha.1](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.327...v1.1.0-alpha.1) (2024-11-13)
+
+
+
 ## [1.1.0-alpha.1](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.326...v1.1.0-alpha.1) (2024-11-13)
 
 

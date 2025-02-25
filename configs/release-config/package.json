@@ -1,6 +1,6 @@
 {
   "name": "@vc-shell/release-config",
-  "version": "1.1.0-alpha.1",
+  "version": "v1.1.0-alpha.2",
   "type": "module",
   "main": "dist/release-config.js",
   "types": "./dist/index.d.ts",
@@ -22,7 +22,7 @@
     "@types/cross-spawn": "^6.0.6",
     "@types/prompts": "^2.4.7",
     "@types/semver": "^7.5.4",
-    "@vc-shell/ts-config": "^1.1.0-alpha.1",
+    "@vc-shell/ts-config": "v1.1.0-alpha.2",
     "typescript": "~5.3.3",
     "vite-plugin-dts": "^3.6.4"
   },
@@ -30,5 +30,5 @@
     "access": "public",
     "registry": "https://registry.npmjs.org/"
   },
-  "stableVersion": "1.0.327"
+  "stableVersion": "1.0.340"
 }

@@ -1,7 +1,7 @@
 // eslint-disable-next-line import/no-named-as-default
 import prompts from "prompts";
 import { valid } from "semver";
-import { getPackageInfo, getVersionChoices, run, runIfNotDry, step } from "./utils";
+import { getPackageInfo, getVersionChoices, run, runIfNotDry, step, args } from "./utils";
 import chalk from "chalk";
 
 /**
@@ -59,6 +59,13 @@ export const release = async ({
   }
 
   const tag = toTag(targetVersion);
+
+  if (targetVersion.includes("beta") && !args.tag) {
+    args.tag = "beta";
+  }
+  if (targetVersion.includes("alpha") && !args.tag) {
+    args.tag = "alpha";
+  }
 
   const { yes }: { yes: boolean } = await prompts({
     type: "confirm",

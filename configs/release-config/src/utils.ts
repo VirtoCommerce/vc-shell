@@ -52,7 +52,16 @@ interface VersionChoice {
 }
 
 export function getVersionChoices(currentVersion: string): VersionChoice[] {
-  function inc(i: ReleaseType) {
+  function inc(i: ReleaseType, identifier?: string) {
+    if (i === "prerelease" && identifier === "alpha") {
+      if (currentVersion.includes("-alpha")) {
+        const [base, pre] = currentVersion.split("-alpha.");
+        const nextPre = parseInt(pre) + 1;
+        return `${base}-alpha.${nextPre}`;
+      }
+      const baseVersion = semverInc(currentVersion, "patch");
+      return `${baseVersion}-alpha.0`;
+    }
     return semverInc(currentVersion, i);
   }
 
@@ -60,6 +69,10 @@ export function getVersionChoices(currentVersion: string): VersionChoice[] {
     {
       title: "next",
       value: inc("patch"),
+    },
+    {
+      title: "alpha",
+      value: inc("prerelease", "alpha"),
     },
     {
       title: "minor",

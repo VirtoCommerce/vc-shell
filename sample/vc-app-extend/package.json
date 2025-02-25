@@ -1,6 +1,6 @@
 {
   "name": "vc-app-extend",
-  "version": "1.1.0-alpha.1",
+  "version": "v1.1.0-alpha.2",
   "private": true,
   "scripts": {
     "serve": "cross-env APP_ENV=development vite --force",
@@ -26,9 +26,9 @@
     "@types/node": "^20.10.5",
     "@typescript-eslint/eslint-plugin": "^7.4.0",
     "@typescript-eslint/parser": "^7.4.0",
-    "@vc-shell/api-client-generator": "^1.1.0-alpha.1",
-    "@vc-shell/release-config": "^1.1.0-alpha.1",
-    "@vc-shell/ts-config": "^1.1.0-alpha.1",
+    "@vc-shell/api-client-generator": "v1.1.0-alpha.2",
+    "@vc-shell/release-config": "v1.1.0-alpha.2",
+    "@vc-shell/ts-config": "v1.1.0-alpha.2",
     "@vitejs/plugin-vue": "5.0.3",
     "@vue/eslint-config-prettier": "^9.0.0",
     "@vue/eslint-config-typescript": "^13.0.0",
@@ -59,8 +59,8 @@
     "@fortawesome/fontawesome-free": "^5.15.3",
     "@vc-app-extend/api": "^1.0.113",
     "@vc-app/modules": "^1.0.113",
-    "@vc-shell/config-generator": "^1.1.0-alpha.1",
-    "@vc-shell/framework": "^1.1.0-alpha.1",
+    "@vc-shell/config-generator": "v1.1.0-alpha.2",
+    "@vc-shell/framework": "v1.1.0-alpha.2",
     "@vueuse/core": "^10.7.1",
     "@vueuse/integrations": "^10.7.1",
     "moment": "^2.30.1",
@@ -73,5 +73,5 @@
     "*.{js,ts,vue}": "eslint --fix --cache '**/*.{ts,vue}'"
   },
   "packageManager": "yarn@4.0.2",
-  "stableVersion": "1.0.327"
+  "stableVersion": "1.0.340"
 }

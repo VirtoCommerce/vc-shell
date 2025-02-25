@@ -1,7 +1,7 @@
 {
   "name": "@vc-shell/create-vc-app",
   "description": "Application scaffolding",
-  "version": "1.1.0-alpha.1",
+  "version": "v1.1.0-alpha.2",
   "type": "module",
   "bin": "./dist/index.js",
   "files": [
@@ -13,7 +13,7 @@
   },
   "devDependencies": {
     "@types/prompts": "^2.4.4",
-    "@vc-shell/ts-config": "^1.1.0-alpha.1",
+    "@vc-shell/ts-config": "v1.1.0-alpha.2",
     "copyfiles": "^2.4.1",
     "cross-env": "^7.0.3",
     "shx": "^0.3.4",
@@ -32,5 +32,5 @@
     "registry": "https://registry.npmjs.org/"
   },
   "packageManager": "yarn@4.0.2",
-  "stableVersion": "1.0.327"
+  "stableVersion": "1.0.340"
 }

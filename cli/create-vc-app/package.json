@@ -13,7 +13,7 @@
   },
   "devDependencies": {
     "@types/prompts": "^2.4.4",
-    "@vc-shell/ts-config": "v1.1.0-alpha.2",
+    "@vc-shell/ts-config": "^v1.1.0-alpha.2",
     "copyfiles": "^2.4.1",
     "cross-env": "^7.0.3",
     "shx": "^0.3.4",

@@ -62,9 +62,9 @@
   },
   "devDependencies": {
     "@types/dompurify": "^3.0.5",
-    "@vc-shell/api-client-generator": "v1.1.0-alpha.2",
-    "@vc-shell/config-generator": "v1.1.0-alpha.2",
-    "@vc-shell/ts-config": "v1.1.0-alpha.2",
+    "@vc-shell/api-client-generator": "^v1.1.0-alpha.2",
+    "@vc-shell/config-generator": "^v1.1.0-alpha.2",
+    "@vc-shell/ts-config": "^v1.1.0-alpha.2",
     "@vitejs/plugin-vue": "5.0.3",
     "cypress-signalr-mock": "^1.5.0",
     "sass": "^1.69.6",

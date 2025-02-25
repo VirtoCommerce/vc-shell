@@ -22,7 +22,7 @@
     "@types/cross-spawn": "^6.0.6",
     "@types/prompts": "^2.4.7",
     "@types/semver": "^7.5.4",
-    "@vc-shell/ts-config": "v1.1.0-alpha.2",
+    "@vc-shell/ts-config": "^v1.1.0-alpha.2",
     "typescript": "~5.3.3",
     "vite-plugin-dts": "^3.6.4"
   },

@@ -5,11 +5,10 @@
     class="vc-app-switcher"
     @contextmenu.prevent
   >
-
     <GenericDropdown
       :items="appsList"
       :is-item-active="(item) => locationHandler(item.relativeUrl ?? '')"
-      @item:click="switchApp"
+      @item-click="switchApp"
     >
       <template #item="{ item }">
         <div class="vc-app-switcher__item">
@@ -28,7 +27,6 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from "vue";
 import { AppDescriptor } from "../../../../../core/api/platform";
 import { GenericDropdown } from "../../../generic-dropdown";
 

@@ -53,7 +53,7 @@
         floating
         variant="light"
         placement="bottom-start"
-        @item:click="onItemClick"
+        @item-click="onItemClick"
         @update:opened="showBreadcrumbs = $event"
       >
         <template #trigger="{ isActive }">

@@ -32,7 +32,10 @@
           </slot>
         </template>
 
-        <template #logo:append>
+        <template
+          v-if="$slots['logo:append']"
+          #logo:append
+        >
           <slot name="logo:append"></slot>
         </template>
 
@@ -58,7 +61,7 @@
 
         <template #user-dropdown>
           <UserDropdownButton
-            :avatar="avatar"
+            :avatar-url="avatar"
             :name="name"
             :role="role"
           />

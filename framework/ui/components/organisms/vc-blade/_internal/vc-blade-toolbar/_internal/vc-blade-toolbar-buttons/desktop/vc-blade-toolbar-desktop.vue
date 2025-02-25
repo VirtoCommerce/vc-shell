@@ -39,7 +39,7 @@
         floating
         placement="bottom-end"
         variant="light"
-        @item:click="handleItemClick"
+        @item-click="handleItemClick"
         @update:opened="isMenuOpen = $event"
       >
         <template #trigger="{ isActive }">

@@ -33,7 +33,10 @@
         <template #notifications>
           <slot name="notifications-dropdown" />
         </template>
-        <template #logo:append>
+        <template
+          v-if="$slots['logo:append']"
+          #logo:append
+        >
           <slot name="logo:append"></slot>
         </template>
       </AppBarHeader>

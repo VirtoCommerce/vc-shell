@@ -11,7 +11,7 @@
       class="vc-user-info__icon"
     />
     <div
-      v-if="isExpanded"
+      v-if="isExpanded || $isMobile.value"
       class="vc-user-info__info"
     >
       <div class="vc-user-info__name">
@@ -68,7 +68,7 @@ const imageHandler = computed(() => {
   }
 
   &__info {
-    @apply tw-grow tw-basis-0 tw-overflow-hidden;
+    @apply tw-grow tw-basis-0 tw-overflow-hidden tw-flex tw-flex-col tw-items-start;
   }
 
   &__name {

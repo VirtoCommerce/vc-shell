@@ -14,6 +14,8 @@
         'vc-blade-toolbar-button_disabled': disabled || isWaiting,
         'vc-blade-toolbar-button_separator-left': separator === 'left',
         'vc-blade-toolbar-button_horizontal': horizontal,
+        'vc-blade-toolbar-button_circle': circle,
+        'vc-blade-toolbar-button_main-action': mainAction,
       }"
       :data-test-id="id ?? 'vc-blade-toolbar-button'"
       @click="onClick"
@@ -25,10 +27,10 @@
         <VcIcon
           class="vc-blade-toolbar-button__icon"
           :icon="icon as string"
-          size="m"
+          :size="circle ? 's' : 'm'"
         ></VcIcon>
         <div
-          v-if="isExpanded"
+          v-if="isExpanded || horizontal"
           class="vc-blade-toolbar-button__title"
         >
           {{ title }}
@@ -51,6 +53,8 @@ export interface Props {
   separator?: "left" | "right" | "both";
   id?: string;
   horizontal?: boolean;
+  circle?: boolean;
+  mainAction?: boolean;
 }
 
 export interface Emits {
@@ -69,6 +73,7 @@ const props = withDefaults(defineProps<Props>(), {
   dropdownItems: () => [],
   clickHandler: undefined,
   horizontal: false,
+  circle: false,
 });
 
 const emit = defineEmits<Emits>();
@@ -185,6 +190,26 @@ async function onClick(): Promise<void> {
 
   &_separator-left {
     @apply tw-border-l tw-border-solid tw-border-[color:var(--blade-toolbar-button-border-color)];
+  }
+
+  &_circle {
+    .vc-blade-toolbar-button__wrap {
+      @apply tw-flex-row-reverse;
+    }
+
+    .vc-blade-toolbar-button__icon {
+      @apply tw-w-9 tw-h-9 tw-bg-[var(--neutrals-500)] tw-rounded-full tw-flex tw-items-center tw-justify-center tw-text-[var(--additional-50)];
+    }
+
+    .vc-blade-toolbar-button__title {
+      @apply tw-text-[var(--additional-50)] tw-text-xs;
+    }
+  }
+
+  &_main-action {
+    .vc-blade-toolbar-button__icon {
+      @apply tw-w-[46px] tw-h-[46px] tw-bg-[var(--primary-500)] tw-rounded-full tw-flex tw-items-center tw-justify-center tw-text-[var(--additional-50)];
+    }
   }
 }
 </style>

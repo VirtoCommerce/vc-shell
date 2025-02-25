@@ -1,5 +1,5 @@
-import { Slot, defineComponent, h, provide, ref, VNode, PropType, Component, reactive, computed } from "vue";
-import { BladeInstance, navigationViewLocation } from "./../../../../../injection-keys";
+import { Slot, defineComponent, h, provide, ref, VNode, PropType, Component, reactive, computed, toRefs } from "vue";
+import { BladeInstance, navigationViewLocation, BLADE_BACK_BUTTON } from "./../../../../../injection-keys";
 import { BladeVNode, CoreBladeExposed } from "../../types";
 import { toRef, watchTriggerable } from "@vueuse/core";
 import { Breadcrumbs } from "../../../../..";
@@ -20,12 +20,17 @@ export const VcBladeView = defineComponent({
     breadcrumbs: {
       type: Array as PropType<Breadcrumbs[]>,
     },
+    backButton: {
+      type: Object as PropType<Component>,
+      default: undefined,
+    },
   },
   setup(props, { attrs, slots }) {
     const maximized = ref(false);
     const viewRef = ref<CoreBladeExposed>();
 
     const bl = toRef(props.blade);
+    const { backButton } = toRefs(props);
 
     const { trigger } = watchTriggerable(
       () => [viewRef.value, bl.value] as const,
@@ -43,8 +48,8 @@ export const VcBladeView = defineComponent({
       },
       { flush: "sync" },
     );
-
     provide(navigationViewLocation, bl.value!);
+    provide(BLADE_BACK_BUTTON, backButton);
     provide(
       BladeInstance,
       computed(() => ({

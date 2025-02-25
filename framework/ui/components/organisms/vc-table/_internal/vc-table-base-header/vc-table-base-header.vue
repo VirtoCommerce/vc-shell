@@ -1,14 +1,14 @@
 <template>
   <div
-    class="vc-table-header"
+    class="vc-table-base-header"
     :class="{
-      'vc-table-header--mobile': $isMobile.value,
-      'vc-table-header--desktop': $isDesktop.value,
+      'vc-table-base-header--mobile': $isMobile.value,
+      'vc-table-base-header--desktop': $isDesktop.value,
     }"
   >
     <div
       v-if="$isMobile.value && $slots['filters']"
-      class="vc-table-header__filter-mobile"
+      class="vc-table-base-header__filter-mobile"
     >
       <VcTableFilter
         :counter="activeFilterCount"
@@ -25,7 +25,7 @@
 
     <VcInput
       ref="searchInput"
-      class="vc-table-header__search-input"
+      class="vc-table-base-header__search-input"
       :placeholder="searchPlaceholder || $t('COMPONENTS.ORGANISMS.VC_TABLE.SEARCH')"
       clearable
       name="table_search"
@@ -35,7 +35,7 @@
       <template #prepend-inner="{ focus }">
         <VcIcon
           icon="fas fa-search"
-          class="vc-table-header__search-icon"
+          class="vc-table-base-header__search-icon"
           @click="focus?.()"
         ></VcIcon>
       </template>
@@ -43,7 +43,7 @@
 
     <div
       v-if="$isDesktop.value && $slots['filters']"
-      class="vc-table-header__filter-desktop"
+      class="vc-table-base-header__filter-desktop"
     >
       <VcTableFilter
         :title="$t('COMPONENTS.ORGANISMS.VC_TABLE.ALL_FILTERS')"
@@ -65,8 +65,9 @@
 <script lang="ts" setup>
 import VcTableFilter from "./../vc-table-filter/vc-table-filter.vue";
 import { VcInput } from "./../../../../molecules";
-import { BLADE_SCROLL_KEY } from "../../../../../../injection-keys";
-import { inject, ref } from "vue";
+import { inject, ref, watch, computed } from "vue";
+import { useGlobalSearch } from "../../../../../../core/composables/useGlobalSearch";
+import { useBladeNavigation } from "../../../../../../shared";
 
 export interface Props {
   searchValue?: string;
@@ -80,26 +81,28 @@ export interface Emits {
   (event: "search:change", value: string): void;
 }
 
-defineProps<Props>();
-defineEmits<Emits>();
+const props = defineProps<Props>();
+const emit = defineEmits<Emits>();
 </script>
 
 <style lang="scss">
 :root {
-  --table-header-border-color: var(--base-border-color, var(--neutrals-200));
-  --table-header-input-icon-color: var(--neutrals-300);
+  --table-base-header-border-color: var(--base-border-color, var(--neutrals-200));
+  --table-base-header-input-icon-color: var(--neutrals-300);
+  --table-base-header-padding: 18px;
+  --table-base-header-mobile-padding: 30px;
 }
 
-.vc-table-header {
+.vc-table-base-header {
   @apply tw-shrink-0 tw-flex tw-items-center tw-justify-between tw-box-border;
 
   &--mobile {
-    @apply tw-px-4 tw-border-b tw-border-solid;
-    border-color: var(--table-header-border-color);
+    @apply tw-px-[var(--table-base-header-mobile-padding)] tw-border-b tw-border-solid tw-py-2;
+    border-color: var(--table-base-header-border-color);
   }
 
   &--desktop {
-    @apply tw-p-4;
+    @apply tw-p-[var(--table-base-header-padding)];
   }
 
   &__filter-mobile {
@@ -115,7 +118,7 @@ defineEmits<Emits>();
   }
 
   &__search-icon {
-    @apply tw-text-[color:var(--table-header-input-icon-color)];
+    @apply tw-text-[color:var(--table-base-header-input-icon-color)];
   }
 }
 </style>

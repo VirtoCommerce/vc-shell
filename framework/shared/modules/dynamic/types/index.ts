@@ -166,6 +166,11 @@ export interface ListContentSchema {
           | {
               method: string;
             };
+        mobilePosition?: {
+          row: 1 | 2;
+          order: number;
+        };
+        mobileVisible?: boolean;
       }
   ) & {
     id: string;

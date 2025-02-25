@@ -50,10 +50,9 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, getCurrentInstance, inject, onMounted, markRaw, Component, ConcreteComponent } from "vue";
-import { useWidgets } from "./../../../../core/composables/useWidgets";
+import { computed, getCurrentInstance, inject } from "vue";
 import { VcIcon } from "./../vc-icon";
-import { BladeInstance, WidgetContainerKey } from "./../../../../injection-keys";
+import { useWidgets } from "../../../../core/composables";
 
 export interface Props {
   icon?: string;
@@ -71,17 +70,14 @@ const emit = defineEmits<{
 
 const instance = getCurrentInstance();
 
-const widgetContainer = inject(WidgetContainerKey);
-
-const blade = inject(BladeInstance);
+const widgetService = useWidgets();
 
 function onClick() {
   if (!props.disabled) {
     const widgetName = instance?.parent?.type.__name;
     if (widgetName && instance?.parent?.exposed) {
-      widgetContainer?.setActiveWidget(instance?.parent?.exposed);
+      widgetService.setActiveWidget(instance?.parent?.exposed);
     }
-
     emit("click");
   }
 }
@@ -94,25 +90,6 @@ const truncateCount = computed(() => {
     return "99+";
   } else {
     return props.value;
-  }
-});
-
-onMounted(() => {
-  if (widgetContainer) {
-    const widgetName = instance?.parent?.type.__name;
-
-    if (widgetName && !widgetContainer.isWidgetRegistered(widgetName)) {
-      widgetContainer.registerWidget(
-        {
-          title: props.title,
-          component: markRaw(instance?.parent?.type as ConcreteComponent),
-          id: widgetName,
-          props: instance?.parent?.props,
-          events: instance?.parent?.attrs,
-        },
-        blade?.value.id ?? "fallback-blade-id",
-      );
-    }
   }
 });
 </script>
@@ -131,7 +108,7 @@ onMounted(() => {
 
 .vc-widget {
   &__container {
-    @apply tw-relative tw-shrink-0 tw-px-2;
+    @apply tw-relative tw-shrink-0 tw-px-2 tw-w-max;
     @apply tw-flex tw-overflow-visible tw-box-border tw-flex-col tw-items-center tw-justify-center tw-cursor-pointer;
     @apply tw-bg-[color:var(--widget-bg-color)];
     @apply tw-transition-colors tw-duration-200;

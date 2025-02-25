@@ -4,14 +4,14 @@
     class="vc-app-menu"
     :class="{
       'vc-app-menu--mobile': $isMobile.value,
-      'vc-app-menu--collapsed': !isExpanded,
+      'vc-app-menu--collapsed': $isDesktop.value && !isExpanded,
     }"
   >
     <div
       class="vc-app-menu__inner"
       :class="{
         'vc-app-menu__inner--desktop': $isDesktop.value,
-        'vc-app-menu__inner--collapsed': !isExpanded,
+        'vc-app-menu__inner--collapsed': $isDesktop.value && !isExpanded,
       }"
     >
       <!-- Show scrollable area with menu items -->
@@ -33,12 +33,7 @@
             :title="item.title as string"
             :children="item.children"
             :expand="$isDesktop.value ? isExpanded : true"
-            @click="
-              (event) => {
-                $emit('item:click', event ? event : item);
-                toggleNavigation();
-              }
-            "
+            @click="handleMenuItemClick( item, $event)"
           />
         </div>
       </VcContainer>
@@ -55,13 +50,13 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from "vue";
+import { computed, Ref, inject } from "vue";
 import VcAppMenuItem from "./_internal/vc-app-menu-item/vc-app-menu-item.vue";
 import { VcContainer } from "./../../../../";
 import { useMenuService } from "../../../../../../core/composables";
 import { MenuItem } from "../../../../../../core/types";
-import { useLocalStorage } from "@vueuse/core";
-import { useAppBarState } from "../../composables/useAppBarState";
+import { useMenuExpanded } from "../../../../../../shared/composables/useMenuExpanded";
+import { useAppMenuState } from "../composables/useAppMenuState";
 
 export interface Props {
   version: string | undefined;
@@ -78,10 +73,19 @@ withDefaults(defineProps<Props>(), {
   version: "",
 });
 
-defineEmits<Emits>();
+const emit = defineEmits<Emits>();
+
+const isMobile = inject("isMobile") as Ref<boolean>;
 const { menuItems } = useMenuService();
-const { toggleNavigation } = useAppBarState();
-const isExpanded = useLocalStorage("VC_APP_MENU_EXPANDED", true);
+const { isExpanded } = useMenuExpanded();
+const { closeAll } = useAppMenuState();
+
+const handleMenuItemClick = (item: MenuItem, nestedItem?: MenuItem) => {
+  if (isMobile.value) {
+    closeAll();
+  }
+  emit("item:click", nestedItem ? nestedItem : item);
+};
 
 const isMenuVisible = computed(() => {
   return !!menuItems.value.length;
@@ -91,7 +95,7 @@ const isMenuVisible = computed(() => {
 <style lang="scss">
 :root {
   --app-menu-background: var(--app-background, var(--primary-50));
-  --app-menu-background-color: var(--app-bar-background-color, var(--neutrals-50));
+  --app-menu-background-color: var(--app-bar-background, var(--neutrals-50));
   --app-menu-version-color: var(--neutrals-400);
 
   --app-menu-close-color: var(--app-menu-burger-color, var(--primary-500));

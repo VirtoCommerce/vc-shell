@@ -151,7 +151,8 @@
         "ERROR_POPUP": {
           "TITLE": "Error details",
           "COPY_ERROR": "copy content"
-        }
+        },
+        "MORE": "More"
       },
       "VC_BLADE_HEADER": {
         "UNSAVED_CHANGES": "Has unsaved changes",

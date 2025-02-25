@@ -19,13 +19,7 @@
         ref="floatingEl"
         v-on-click-outside="[() => $emit('update:opened', false), { ignore: [referenceEl] }]"
         class="vc-dropdown__dropdown"
-        :class="[
-          {
-            'vc-dropdown__dropdown--mobile': $isMobile.value,
-            'vc-dropdown__dropdown--floating': floating,
-          },
-          `vc-dropdown__dropdown--${variant}`,
-        ]"
+        :class="dropdownClasses"
         :style="floatingStyle"
       >
         <VcContainer
@@ -41,12 +35,12 @@
                 'vc-dropdown__item--mobile': $isMobile.value,
                 'vc-dropdown__item--active': isItemActive?.(item),
               }"
-              @click="() => $emit('item:click', item)"
+              @click="() => $emit('item-click', item)"
             >
               <slot
                 name="item"
                 :item="item"
-                :click="() => $emit('item:click', item)"
+                :click="() => $emit('item-click', item)"
               >
                 {{ itemText?.(item) }}
               </slot>
@@ -69,23 +63,23 @@
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup generic="T">
 import { VcCol, VcContainer } from "../../../ui/components";
-import { ref, computed } from "vue";
+import { ref, computed, Ref, inject } from "vue";
 import { useFloating, shift, autoUpdate } from "@floating-ui/vue";
 import { vOnClickOutside } from "@vueuse/components";
 
 interface Props {
-  opened: boolean;
+  opened?: boolean;
   items: T[];
   emptyText?: string;
   itemText?: (item: T) => string;
   isItemActive?: (item: T) => boolean;
   floating?: boolean;
-  placement?: "bottom" | "bottom-end" | "bottom-start";
+  placement?: "bottom" | "bottom-end" | "bottom-start" | "top" | "top-end" | "top-start";
   variant?: "default" | "light";
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  opened: false,
+  opened: true,
   items: () => [],
   floating: false,
   placement: "bottom",
@@ -93,7 +87,7 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 defineEmits<{
-  (e: "item:click", item: T): void;
+  (e: "item-click", item: T): void;
   (e: "update:opened", opened: boolean): void;
 }>();
 
@@ -103,6 +97,8 @@ defineSlots<{
   trigger: (args: { isActive: boolean }) => any;
 }>();
 
+const isMobile = inject("isMobile") as Ref<boolean>;
+
 const referenceEl = ref<HTMLElement | null>(null);
 const floatingEl = ref<HTMLElement | null>(null);
 
@@ -110,6 +106,18 @@ const floater = useFloating(referenceEl, floatingEl, {
   placement: props.placement,
   whileElementsMounted: autoUpdate,
   middleware: [shift({ mainAxis: false })],
+});
+
+const dropdownClasses = computed(() => {
+  const placement = floater.placement.value;
+  return [
+    {
+      "vc-dropdown__dropdown--mobile": isMobile.value,
+      "vc-dropdown__dropdown--floating": props.floating,
+      "vc-dropdown__dropdown--top": placement?.startsWith("top"),
+    },
+    `vc-dropdown__dropdown--${props.variant}`,
+  ];
 });
 
 const floatingStyle = computed(() => {
@@ -139,18 +147,25 @@ const floatingStyle = computed(() => {
 }
 
 .vc-dropdown {
-  @apply tw-relative tw-flex tw-w-full;
+  @apply tw-relative tw-flex tw-w-full tw-h-full;
 
   &__trigger {
     @apply tw-flex tw-items-center tw-justify-center;
   }
 
   &__dropdown {
-    @apply tw-rounded-b-[6px] tw-w-full
-    tw-max-h-[350px] tw-overflow-hidden tw-flex tw-flex-col tw-relative;
+    @apply tw-rounded-[6px] tw-w-full tw-overflow-hidden tw-flex tw-flex-col tw-relative tw-h-max;
+
+    &--top {
+      @apply tw-rounded-t-[6px] tw-rounded-b-none;
+    }
+
+    &:not(&--top) {
+      @apply tw-rounded-t-none tw-rounded-b-[6px];
+    }
 
     &--mobile {
-      @apply tw-max-h-full tw-w-full;
+      @apply tw-w-full;
       display: flex !important;
     }
 

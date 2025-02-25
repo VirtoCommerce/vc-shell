@@ -20,7 +20,6 @@
         :logo="logo"
         :title="title"
         :disable-menu="disableMenu"
-        @menubutton:click="toggleMobileMenu"
         @backlink:click="closeBlade(blades.length - 1)"
         @logo:click="openRoot"
       >
@@ -39,36 +38,11 @@
 
         <!-- Toolbar slot -->
         <template #toolbar>
-          <!-- <slot
-            name="toolbar"
-            v-bind="{
-              LanguageSelector,
-              UserDropdownButton,
-              NotificationDropdown,
-              ThemeSelector,
-            }"
-          >
-            <slot
-              v-if="$slots['toolbar:prepend']"
-              name="toolbar:prepend"
-            ></slot>
-            <slot name="toolbar:theme-selector">
-              <ThemeSelector />
-            </slot>
-            <slot name="toolbar:language-selector">
-              <LanguageSelector />
-            </slot>
-            <slot name="toolbar:notifications-dropdown">
-              <NotificationDropdown />
-            </slot>
-          </slot> -->
+          <slot name="toolbar" />
+        </template>
 
-          <slot
-            name="toolbar:notifications-dropdown"
-            :notifications-dropdown="NotificationDropdown"
-          >
-            <NotificationDropdown />
-          </slot>
+        <template #notifications-dropdown>
+          <NotificationDropdown />
         </template>
 
         <template #navmenu>
@@ -83,12 +57,11 @@
         </template>
 
         <template #user-dropdown>
-          <slot
-            name="toolbar:user-dropdown"
-            :user-dropdown="UserDropdownComponent as unknown as typeof UserDropdownButton"
-          >
-            <UserDropdownComponent />
-          </slot>
+          <UserDropdownButton
+            :avatar="avatar"
+            :name="name"
+            :role="role"
+          />
         </template>
       </VcAppBar>
 
@@ -97,9 +70,7 @@
         v-if="isAuthenticated"
         class="vc-app__workspace"
       >
-        <slot name="blade-navigation">
-          <VcBladeNavigation />
-        </slot>
+        <VcBladeNavigation />
       </div>
 
       <!-- Popup container -->
@@ -109,7 +80,7 @@
 </template>
 
 <script lang="ts" setup>
-import { h, inject, provide } from "vue";
+import { h, inject, provide, computed } from "vue";
 import VcAppBar from "./_internal/vc-app-bar/vc-app-bar.vue";
 import VcAppMenu from "./_internal/vc-app-menu/vc-app-menu.vue";
 import {
@@ -125,6 +96,13 @@ import { useRoute, useRouter } from "vue-router";
 import { watchOnce, useLocalStorage } from "@vueuse/core";
 import { MenuItem } from "../../../../core/types";
 import { useToolbarSlots } from "./composables/useToolbarSlots";
+import { useSettingsMenu, SettingsMenuKey } from "../../../../shared/composables/useSettingsMenu";
+import { LanguageSelector } from "../../../../shared/components/language-selector";
+import { ThemeSelector } from "../../../../shared/components/theme-selector";
+import { ChangePasswordButton } from "../../../../shared/components/change-password-button";
+import { LogoutButton } from "../../../../shared/components/logout-button";
+import { useI18n } from "vue-i18n";
+import { createGlobalSearch } from "../../../../core/composables/useGlobalSearch";
 
 export interface Props {
   isReady: boolean;
@@ -143,16 +121,9 @@ defineOptions({
 
 defineSlots<{
   "app-switcher": void;
-  // toolbar: (props: {
-  //   UserDropdownButton: typeof UserDropdownButton;
-  //   LanguageSelector: typeof LanguageSelector;
-  //   NotificationDropdown: typeof NotificationDropdown;
-  // }) => void;
-  "toolbar:prepend": void;
-  "toolbar:language-selector": void;
-  "toolbar:notifications-dropdown": (props: { notificationsDropdown: typeof NotificationDropdown }) => void;
+  toolbar: void;
   "toolbar:user-dropdown": (props: { userDropdown: typeof UserDropdownButton }) => void;
-  "blade-navigation": void;
+  "toolbar:language-selector": void;
   "toolbar:theme-selector": void;
   "logo:append": void;
 }>();
@@ -164,6 +135,7 @@ console.debug("vc-app: Init vc-app");
 const internalRoutes = inject("bladeRoutes") as BladeRoutesRecord[];
 const dynamicModules = inject("$dynamicModules", undefined) as Record<string, unknown> | undefined;
 const router = useRouter();
+createGlobalSearch();
 
 const { openBlade, closeBlade, resolveBladeByName, blades, goToRoot } = useBladeNavigation();
 const { appsList, switchApp, getApps } = useAppSwitcher();
@@ -175,20 +147,36 @@ const routes = router.getRoutes();
 
 const { getToolbarMenuItems } = useToolbarSlots();
 
-const isMenuExpanded = useLocalStorage("VC_APP_MENU_EXPANDED", true);
+const settingsMenu = useSettingsMenu();
+provide(SettingsMenuKey, settingsMenu);
 
-const toggleMobileMenu = () => {
-  isMenuExpanded.value = !isMenuExpanded.value;
-};
+const { t } = useI18n({ useScope: "global" });
 
-const UserDropdownComponent = () => {
-  return h(UserDropdownButton, {
-    avatar: props.avatar,
-    role: props.role,
-    name: props.name,
-    menuItems: getToolbarMenuItems(),
-  });
-};
+const { registerMenuItem } = settingsMenu;
+
+registerMenuItem({
+  id: "language-selector",
+  component: LanguageSelector,
+  order: 20,
+});
+
+registerMenuItem({
+  id: "theme-selector",
+  component: ThemeSelector,
+  order: 10,
+});
+
+registerMenuItem({
+  id: "change-password",
+  component: ChangePasswordButton,
+  order: 30,
+});
+
+registerMenuItem({
+  id: "logout",
+  component: LogoutButton,
+  order: 100,
+});
 
 const onMenuItemClick = function (item: MenuItem) {
   console.debug(`vc-app#onMenuItemClick() called.`);

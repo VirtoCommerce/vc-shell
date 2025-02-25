@@ -10,7 +10,7 @@
     <div
       ref="target"
       class="vc-table-mobile__item"
-      :class="{ animated: !isSwiping, 'vc-table-mobile__item_selected': isSelected }"
+      :class="{ animated: !isSwiping, 'vc-table-mobile__item-selected': isSelected }"
     >
       <div
         v-if="anySelected"
@@ -23,26 +23,11 @@
         ></VcCheckbox>
       </div>
       <div class="vc-table-mobile__content">
-        <!-- Left swipe actions -->
-        <div
-          v-if="leftSwipeActions && leftSwipeActions.length && direction === 'right'"
-          class="vc-table-mobile__swipe-actions vc-table-mobile__swipe-actions_left"
-          :style="{ width: actionsWidth }"
-        >
-          <div
-            class="vc-table-mobile__action"
-            :class="`vc-table-mobile__item-action_${leftSwipeActions[0].type}`"
-            @click.stop="leftSwipeActions?.[0].clickHandler(items[index] as T, index)"
-            @touchstart.stop
-          >
-            <VcIcon :icon="leftSwipeActions[0].icon" />
-            <div class="vc-table-mobile__action-title">
-              {{ leftSwipeActions[0].title }}
-            </div>
-          </div>
-        </div>
         <div
           class="vc-table-mobile__slot"
+          :class="{
+            'vc-table-mobile__slot--left': anySelected,
+          }"
           :style="{ transform: `translateX(${left})` }"
         >
           <slot></slot>
@@ -131,9 +116,9 @@ import { IActionBuilderResult } from "../../../../../../core/types";
 import { useI18n } from "vue-i18n";
 import { useSwipe } from "@vueuse/core";
 import { vOnClickOutside } from "@vueuse/components";
+import { useTableSwipe } from "../../composables/useTableSwipe";
 
 export interface Emits {
-  (event: "swipeStart", id: string): void;
   (event: "click"): void;
   (event: "select"): void;
 }
@@ -145,12 +130,11 @@ export interface TableItem {
 
 const props = defineProps<{
   items: T[];
-  actionBuilder?: (item: T) => IActionBuilderResult[] | undefined;
-  swipingItem?: string;
-  isSelected?: boolean;
+  actionBuilder?: (item: T) => IActionBuilderResult<T>[] | undefined;
   index: number;
   selection?: T[];
   disabledSelection?: (TableItem | string)[];
+  isSelected?: boolean;
 }>();
 
 const emit = defineEmits<Emits>();
@@ -166,75 +150,66 @@ const anySelected = computed(() => props.selection && props.selection.length > 0
 
 const actionsWidth = ref("0");
 
+const { activeSwipeId, setActiveSwipe } = useTableSwipe();
+
 const { isSwiping, lengthX } = useSwipe(target, {
   threshold: 0,
   onSwipeStart() {
     getActions();
     const item = props.items[props.index];
     if (typeof item !== "string") {
-      emit("swipeStart", item.id);
-    }
-    if (containerWidth.value) {
-      reset();
+      setActiveSwipe(null);
+      setTimeout(() => {
+        setActiveSwipe(item.id);
+      }, 50);
     }
   },
   onSwipe() {
     if (containerWidth.value) {
-      if (lengthX.value < 0 && leftSwipeActions.value && leftSwipeActions.value.length) {
-        left.value = `${Math.abs(lengthX.value)}px`;
-      } else if (lengthX.value > 0 && rightSwipeActions.value && rightSwipeActions.value.length) {
-        left.value = `${-lengthX.value}px`;
+      const item = props.items[props.index];
+      if (typeof item !== "string" && activeSwipeId.value === item.id) {
+        if (lengthX.value > 0 && rightSwipeActions.value && rightSwipeActions.value.length) {
+          left.value = `${-lengthX.value}px`;
+          actionsWidth.value = `${Math.abs(lengthX.value)}px`;
+        }
       }
-
-      actionsWidth.value = `${Math.abs(lengthX.value)}px`;
     }
   },
   onSwipeEnd() {
-    if (containerWidth.value && Math.abs(lengthX.value) / containerWidth.value >= 0.1) {
-      if (lengthX.value < 0 && leftSwipeActions.value && leftSwipeActions.value.length) {
-        left.value = "80px";
-      } else if (lengthX.value > 0 && rightSwipeActions.value && rightSwipeActions.value.length) {
-        left.value = "-80px";
+    const item = props.items[props.index];
+    if (typeof item !== "string" && activeSwipeId.value === item.id) {
+      if (containerWidth.value && Math.abs(lengthX.value) / containerWidth.value >= 0.1) {
+        if (lengthX.value > 0 && rightSwipeActions.value && rightSwipeActions.value.length) {
+          left.value = "-80px";
+          actionsWidth.value = "80px";
+        }
+      } else {
+        reset();
       }
-
-      actionsWidth.value = "80px";
-    } else {
-      reset();
     }
   },
 });
 
-const rightSwipeActions = computed(
-  () =>
-    (props.selection?.length === 0 &&
-      itemActions.value &&
-      itemActions.value.length &&
-      itemActions.value.filter((actions: IActionBuilderResult) => actions.position === "right")) ||
-    undefined,
-);
-const leftSwipeActions = computed(
-  () =>
-    (props.selection?.length === 0 &&
-      itemActions.value &&
-      itemActions.value.length &&
-      itemActions.value.filter((actions: IActionBuilderResult) => actions.position === "left")) ||
-    undefined,
-);
+const rightSwipeActions = computed(() => (props.selection?.length === 0 && itemActions.value) || undefined);
 
 watch(
-  () => props.swipingItem,
+  activeSwipeId,
   (newVal) => {
     const item = props.items[props.index];
-    if (typeof item !== "string" && newVal !== item.id) {
-      left.value = "0";
-      actionsWidth.value = "0";
+    if (typeof item !== "string" && (!newVal || newVal !== item.id)) {
+      reset();
     }
   },
+  { immediate: true },
 );
 
 function reset() {
   left.value = "0";
   actionsWidth.value = "0";
+  const item = props.items[props.index];
+  if (typeof item !== "string" && activeSwipeId.value === item.id) {
+    setActiveSwipe(null);
+  }
 }
 
 const direction = computed(() => {
@@ -267,7 +242,6 @@ function handleClick() {
 
 <style lang="scss">
 :root {
-  --table-mobile-checkbox-border-color: var(--secondary-200);
   --table-mobile-background-color: var(--additional-50);
   --table-mobile-action-bg: var(--secondary-400);
   --table-mobile-border-color: var(--secondary-200);
@@ -282,7 +256,7 @@ function handleClick() {
   --table-mobile-action-popup-action-text-color: var(--primary-500);
   --table-mobile-action-success: var(--success-400);
   --table-mobile-action-danger: var(--danger-500);
-  --table-mobile-action-selected: var(--secondary-100);
+  --table-mobile-action-selected: var(--primary-100);
 }
 
 .vc-table-mobile {
@@ -295,13 +269,13 @@ function handleClick() {
       transition: transform 0.3s ease;
     }
 
-    &.vc-table-mobile__item_selected {
+    &.vc-table-mobile__item-selected {
       @apply tw-bg-[--table-mobile-action-selected]  #{!important};
     }
   }
 
   &__checkbox-container {
-    @apply tw-pl-4 tw-flex tw-items-center tw-justify-center tw-border-b tw-border-solid tw-border-b-[color:var(--table-mobile-checkbox-border-color)];
+    @apply tw-absolute tw-px-2 tw-pt-[10px] tw-flex tw-items-start tw-justify-center;
   }
 
   &__content {
@@ -335,12 +309,16 @@ function handleClick() {
     @apply tw-bg-[--table-mobile-action-danger];
   }
 
-  &__item_selected {
+  &__item-selected {
     @apply tw-bg-[--table-mobile-action-selected] #{!important};
   }
 
   &__slot {
-    @apply tw-flex tw-flex-col tw-border-b tw-border-solid tw-border-b-[color:var(--table-mobile-border-color)] tw-grow;
+    @apply tw-flex tw-flex-col tw-grow;
+
+    &--left {
+      @apply tw-translate-x-[34px] #{!important};
+    }
   }
 
   &__action_more {

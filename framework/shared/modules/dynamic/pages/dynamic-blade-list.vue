@@ -690,7 +690,6 @@ function actionBuilder(item: (typeof items.value)[number]): IActionBuilderResult
         icon: action.icon,
         title: computed(() => t(action.title)),
         type: action.type,
-        position: action.position,
         clickHandler: async (itemVal: (typeof items.value)[number]) => {
           try {
             if (isRef(toolbarComputed) && toolbarComputed.value && toolbarComputed.value.length > 0) {

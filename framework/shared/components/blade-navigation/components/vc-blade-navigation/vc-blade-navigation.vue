@@ -23,6 +23,8 @@ import VcBreadcrumbs from "./../../../../../ui/components/molecules/vc-breadcrum
 import { useBreadcrumbs } from "./../../../../../core/composables/useBreadcrumbs";
 import { VcBladeView } from "./../vc-blade-view/vc-blade-view";
 import { watchDebounced } from "@vueuse/core";
+import { VcButton, ArrowLeftIcon } from "./../../../../../ui/components";
+import VcMobileBackButton from "./_internal/vc-mobile-back-button.vue";
 
 const { blades, closeBlade, onParentCall } = useBladeNavigation();
 const { breadcrumbs, push, remove } = useBreadcrumbs();
@@ -99,6 +101,15 @@ const render = () => {
                         expandable: quantity.value > 1,
                         error,
                         breadcrumbs: filteredBreadcrumbs,
+                        backButton:
+                          quantity.value > 1
+                            ? h(VcMobileBackButton, {
+                                breadcrumbs: filteredBreadcrumbs,
+                                onBack: () => {
+                                  closeBlade(index);
+                                },
+                              })
+                            : undefined,
                       },
                       {
                         default: ({ Component }: { Component: BladeVNode }) => {

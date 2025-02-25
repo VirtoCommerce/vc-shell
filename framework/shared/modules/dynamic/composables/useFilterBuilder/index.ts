@@ -338,6 +338,7 @@ export default <Query>(args: {
     return h(
       VcContainer,
       {
+        noPadding: true,
         onVnodeBeforeMount: () => {
           filter.value = { ...appliedFilter.value };
         },
@@ -345,7 +346,7 @@ export default <Query>(args: {
       () => [
         h(VcRow, () =>
           Object.values(controls.value).map(({ title, fields }) => {
-            return h(VcCol, { class: "tw-p-2" }, () => [
+            return h(VcCol, { class: "tw-px-5 tw-py-[10px]" }, () => [
               title
                 ? h(
                     "div",
@@ -386,27 +387,35 @@ export default <Query>(args: {
           }),
         ),
         h(VcRow, () =>
-          h(VcCol, { class: "tw-p-2 !tw-flex-auto" }, () =>
-            h("div", { class: "tw-flex tw-justify-end" }, [
-              h(
-                VcButton,
-                {
-                  outline: true,
-                  class: "tw-mr-4",
-                  disabled: isDisabled(appliedFilter),
-                  onClick: () => resetFilters(slotMethods.close),
-                },
-                () => t("COMPONENTS.FILTERS.RESET"),
-              ),
-              h(
-                VcButton,
-                {
-                  disabled: isDisabled(filter),
-                  onClick: () => applyFilters(slotMethods.close),
-                },
-                () => t("COMPONENTS.FILTERS.APPLY"),
-              ),
-            ]),
+          h(
+            VcCol,
+            {
+              class:
+                "tw-px-5 tw-py-[10px] !tw-flex-auto tw-border-t tw-border-solid tw-border-[var(--base-border-color)]",
+            },
+            () =>
+              h("div", { class: "tw-flex tw-justify-start" }, [
+                h(
+                  VcButton,
+                  {
+                    class: "tw-mr-4",
+                    small: true,
+                    disabled: isDisabled(filter),
+                    onClick: () => applyFilters(slotMethods.close),
+                  },
+                  () => t("COMPONENTS.FILTERS.APPLY"),
+                ),
+                h(
+                  VcButton,
+                  {
+                    outline: true,
+                    small: true,
+                    disabled: isDisabled(appliedFilter),
+                    onClick: () => resetFilters(slotMethods.close),
+                  },
+                  () => t("COMPONENTS.FILTERS.RESET"),
+                ),
+              ]),
           ),
         ),
       ],

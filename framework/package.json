@@ -29,8 +29,7 @@
     "build:types": "vue-tsc --declaration --emitDeclarationOnly --outDir dist",
     "type-check": "vue-tsc --noEmit",
     "generate-icons": "tsx scripts/generate-icons.mts",
-    "update-source-imports": "tsx scripts/update-imports.mts",
-    "circ-deps": "tsx scripts/circ-deps.mts"
+    "check-locales": "tsx scripts/check-locales.mts"
   },
   "dependencies": {
     "@floating-ui/vue": "^1.0.6",

@@ -58,20 +58,6 @@
         </div>
       </VcContainer>
     </div>
-
-    <template
-      v-if="item && bladeWidgets && bladeWidgets.length"
-      #widgets
-    >
-      <component
-        :is="widgetItem"
-        v-for="(widgetItem, index) in bladeWidgets"
-        :key="index"
-        :ref="(el: HTMLElement) => widgetsRefs.set({ component: widgetItem, el })"
-        v-model="bladeContext"
-        @click="setActiveWidget(widgetItem)"
-      ></component>
-    </template>
   </VcBlade>
 </template>
 
@@ -96,6 +82,9 @@ import {
   provide,
   type VNode,
   inject,
+  onMounted,
+  onBeforeUnmount,
+  markRaw,
 } from "vue";
 import { DynamicDetailsSchema, FormContentSchema, SettingsSchema } from "../types";
 import { reactiveComputed, toReactive, useMounted, useTemplateRefsList } from "@vueuse/core";
@@ -118,6 +107,7 @@ import { notification } from "../../../components";
 import { ComponentSlots } from "../../../utilities/vueUtils";
 import { useWidgets } from "../../../../core/composables/useWidgets";
 import { BladeInstance } from "../../../../injection-keys";
+import { IWidget } from "../../../../core/types/widget";
 
 interface Props {
   expanded?: boolean;
@@ -366,6 +356,12 @@ const bladeMultilanguage = reactiveComputed(() => {
 
 const bladeOptions = reactive({
   status: bladeStatus,
+  backButton: computed(() => {
+    if (toValue(unreffedScope)?.backButton) {
+      return toValue(unreffedScope).backButton;
+    }
+    return undefined;
+  }),
 });
 
 const multilanguage = reactive({
@@ -437,16 +433,48 @@ const toolbarComputed =
     })) ??
   [];
 
-async function setActiveWidget(widget: string | ConcreteComponent) {
-  const component = typeof widget === "string" ? resolveComponent(widget) : widget;
+onMounted(() => {
+  if (blade?.value.id && widgets.value?.children) {
+    widgets.value.children.forEach((widgetComponent) => {
+      const component =
+        typeof widgetComponent === "string"
+          ? resolveComponent(widgetComponent)
+          : (widgetComponent as ConcreteComponent);
 
-  await nextTick(
-    () =>
-      (activeWidgetExposed.value = widgetsRefs.value.find((x) =>
-        _.isEqual(x.component, typeof component !== "string" ? component : resolveComponent(component)),
-      )?.el),
-  );
-}
+      if (!component) {
+        console.error(`Failed to resolve widget component: ${widgetComponent}`);
+        return;
+      }
+
+      const widgetId =
+        typeof component === "object" && "__name" in component ? component.__name : `widget-${Date.now()}`;
+
+      if (widgetId) {
+        widgetService.registerWidget(
+          {
+            id: widgetId,
+            component: markRaw(component as ConcreteComponent),
+            props: {
+              modelValue: bladeContext,
+            },
+            events: {
+              "update:modelValue": (val: unknown) => {
+                bladeContext.value = val as DetailsBladeContext;
+              },
+            },
+          },
+          blade.value.id,
+        );
+      }
+    });
+  }
+});
+
+onBeforeUnmount(() => {
+  if (blade?.value.id) {
+    widgetService.clearBladeWidgets(blade.value.id);
+  }
+});
 
 async function updateActiveWidgetCount() {
   if (

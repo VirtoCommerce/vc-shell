@@ -1,4 +1,4 @@
-import { ConcreteComponent, reactive, ref, ComponentInternalInstance } from "vue";
+import { ConcreteComponent, reactive, ref, ComponentInternalInstance, watch } from "vue";
 
 export type WidgetEventHandler = (...args: unknown[]) => void;
 
@@ -27,15 +27,10 @@ export interface IWidgetService {
   getWidgets: (bladeId: string) => IWidget[];
   clearBladeWidgets: (bladeId: string) => void;
   registeredWidgets: IWidgetRegistration[];
+  isActiveWidget: (id: string) => boolean;
   setActiveWidget: (ref: ComponentInternalInstance["exposed"]) => void;
   updateActiveWidget: () => void;
   isWidgetRegistered: (id: string) => boolean;
-}
-
-export interface IWidgetContainer {
-  registerWidget: (widget: IWidget, bladeId: string) => void;
-  isWidgetRegistered: (id: string) => boolean;
-  setActiveWidget: (ref: ComponentInternalInstance["exposed"]) => void;
 }
 
 export function createWidgetService(): IWidgetService {
@@ -98,9 +93,12 @@ export function createWidgetService(): IWidgetService {
     activeWidgetRef.value = undefined;
 
     activeWidgetRef.value = ref;
+
+    console.log("setActiveWidget", activeWidgetRef.value);
   };
 
   const updateActiveWidget = (): void => {
+    console.log("updateActiveWidget", activeWidgetRef.value);
     if (!activeWidgetRef.value) {
       return;
     }
@@ -114,12 +112,17 @@ export function createWidgetService(): IWidgetService {
     return registeredIds.has(id);
   };
 
+  const isActiveWidget = (id: string): boolean => {
+    return activeWidgetRef.value?.id === id;
+  };
+
   return {
     registerWidget,
     unregisterWidget,
     getWidgets,
     clearBladeWidgets,
     registeredWidgets,
+    isActiveWidget,
     setActiveWidget,
     updateActiveWidget,
     isWidgetRegistered,

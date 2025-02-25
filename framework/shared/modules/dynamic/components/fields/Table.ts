@@ -45,7 +45,6 @@ export default {
             icon: action.icon,
             title: computed(() => t(action.title)),
             type: action.type,
-            position: action.position,
             clickHandler: async (itemVal: (typeof items)[number], index: number) => {
               try {
                 await toValue(props.bladeContext.scope)?.[action.method]?.(itemVal, index);
@@ -188,7 +187,7 @@ export default {
         },
       });
 
-      return h(field.component as Component, field.props, field.slots);
+      return h(field.component as unknown as Component, field.props, field.slots);
     };
   },
 };

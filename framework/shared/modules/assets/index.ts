@@ -1,3 +1,4 @@
+import { createAppModule } from "../../../core/plugins/modularity";
 import * as components from "./components";
 
 declare module "@vue/runtime-core" {
@@ -6,9 +7,6 @@ declare module "@vue/runtime-core" {
   }
 }
 
-export const AssetsDetailsModule = async () => {
-  const { createAppModule } = await import("../../../core/plugins/modularity");
-  return createAppModule(components);
-};
+export const AssetsDetailsModule = createAppModule(components);
 
 export * from "./components";

@@ -5,6 +5,7 @@
       `vc-status_${variant}`,
       {
         'vc-status_extended': extend,
+        'vc-status_dot': dot,
       },
     ]"
   >
@@ -22,11 +23,13 @@ export interface Props {
    */
   outline?: boolean;
   extend?: boolean;
+  dot?: boolean;
 }
 
 withDefaults(defineProps<Props>(), {
   variant: "info",
   outline: false,
+  dot: false,
 });
 
 defineSlots<{
@@ -39,6 +42,7 @@ defineSlots<{
 :root {
   --status-padding: 4px 14px;
   --status-padding-extended: 8px;
+  --status-dot-size: 10px;
 
   --status-border-radius: 20px;
   --status-border-radius-extended: 4px;
@@ -84,6 +88,10 @@ $variants: info, warning, danger, success, light-danger, info-dark, primary;
   @apply tw-flex tw-items-center tw-justify-center tw-flex-row tw-relative;
   @apply tw-border-[length:var(--status-border-width)] tw-bg-[color:var(--status-bg-color)] tw-border-[color:var(--status-border-color)];
 
+  &.vc-status_dot {
+    @apply tw-p-0 tw-w-[var(--status-dot-size)] tw-h-[var(--status-dot-size)] tw-max-w-[var(--status-dot-size)] tw-rounded-full tw-border-0 #{!important};
+  }
+
   @each $variant in $variants {
     &.vc-status_#{$variant} {
       @apply tw-bg-[color:var(--status-bg-color)] tw-max-w-fit;
@@ -91,6 +99,13 @@ $variants: info, warning, danger, success, light-danger, info-dark, primary;
 
       &::before {
         @apply tw-content-[''] tw-bg-[color:var(--status-#{$variant}-main-color)] tw-w-4 tw-h-4 tw-rounded-full tw-mr-2 tw-shrink-0;
+      }
+
+      &.vc-status_dot {
+        @apply tw-bg-[color:var(--status-#{$variant}-main-color)];
+        &::before {
+          @apply tw-content-none;
+        }
       }
 
       &.vc-status_extended {
@@ -110,6 +125,9 @@ $variants: info, warning, danger, success, light-danger, info-dark, primary;
 
   &__content {
     @apply tw-truncate;
+    .vc-status_dot & {
+      @apply tw-hidden;
+    }
   }
 }
 </style>

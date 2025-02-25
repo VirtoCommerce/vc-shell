@@ -46,12 +46,17 @@
               class="vc-table-filter__panel-inner"
               @click.stop
             >
-              <VcIcon
-                class="vc-table-filter__panel-close"
-                icon="fas fa-times"
-                size="xl"
-                @click="closePanel"
-              />
+              <div class="vc-table-filter__panel-header">
+                <div class="vc-table-filter__panel-header-title">
+                  {{ title }}
+                </div>
+                <VcIcon
+                  class="vc-table-filter__panel-close"
+                  :icon="CrossSignIcon"
+                  size="xs"
+                  @click="closePanel"
+                />
+              </div>
               <slot :close-panel="closePanel"></slot>
             </div>
           </div>
@@ -68,6 +73,7 @@ import { VcButton } from "./../../../../atoms/vc-button";
 import { Sidebar } from "./../../../../../../shared/components";
 import { VcBadge } from "./../../../../atoms/vc-badge";
 import { VcTooltip } from "./../../../../atoms/vc-tooltip";
+import { CrossSignIcon } from "./../../../../atoms/vc-icon/icons";
 
 export interface Props {
   title?: string;
@@ -132,7 +138,9 @@ function closePanel() {
   --table-filter-desktop-shadow-color: var(--additional-950);
   --table-filter-desktop-shadow: 1px 1px 11px rgb(from var(--table-filter-desktop-shadow-color) r g b / 7%);
   --table-filter-panel-bg: var(--additional-50);
-  --table-filter-close-icon-color: var(--info-500);
+  --table-filter-close-icon-color: var(--neutrals-500);
+  --table-filter-panel-border-color: var(--base-border-color, var(--neutrals-200));
+  --table-filter-panel-header-title-color: var(--neutrals-600);
 }
 
 .vc-table-filter {
@@ -184,8 +192,16 @@ function closePanel() {
   }
 
   &__panel-inner {
-    @apply tw-bg-[--table-filter-panel-bg] tw-box-border tw-p-5 tw-flex tw-flex-col;
+    @apply tw-bg-[--table-filter-panel-bg] tw-box-border tw-flex tw-flex-col;
     box-shadow: var(--table-filter-desktop-shadow);
+  }
+
+  &__panel-header {
+    @apply tw-px-6 tw-py-[10px] tw-flex tw-flex-row tw-justify-between tw-items-center tw-border-b tw-border-solid tw-border-[var(--table-filter-panel-border-color)];
+  }
+
+  &__panel-header-title {
+    @apply tw-text-sm tw-font-bold tw-text-[var(--table-filter-panel-header-title-color)];
   }
 
   &__panel-close {

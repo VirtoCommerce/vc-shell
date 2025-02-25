@@ -1,27 +1,36 @@
 <template>
-  <div>
-    <SettingsMenuItem
-      icon="fas fa-palette"
-      :title="$t('COMPONENTS.THEME_SELECTOR.THEME_SELECTOR')"
-      @click="opened = !opened"
-    />
-
-    <GenericDropdown
-      :opened="opened"
-      :items="themes"
-      :is-item-active="(theme) => theme === current"
-      @item:click="handleThemeSelect"
-    >
-      <template #item="{ item: theme, click }">
-        <SettingsMenuItem
-          class="tw-py-0"
-          :title="_.capitalize(theme)"
-          :is-active="theme === current"
-          @click="click"
+  <SettingsMenuItem @trigger:click="opened = !opened">
+    <template #trigger>
+      <div class="vc-theme-selector__trigger">
+        <VcIcon
+          icon="fas fa-palette"
+          class="vc-theme-selector__icon"
         />
-      </template>
-    </GenericDropdown>
-  </div>
+        <span class="vc-theme-selector__title">
+          {{ $t("COMPONENTS.THEME_SELECTOR.THEME_SELECTOR") }}
+        </span>
+      </div>
+    </template>
+
+    <template #content>
+      <GenericDropdown
+        :opened="opened"
+        :items="themes"
+        :is-item-active="(theme) => theme === current"
+        @item-click="handleThemeSelect"
+      >
+        <template #item="{ item: theme, click }">
+          <div
+            class="vc-theme-selector__item"
+            :class="{ 'vc-theme-selector__item--active': theme === current }"
+            @click="click"
+          >
+            <span class="vc-theme-selector__item-title">{{ _.capitalize(theme) }}</span>
+          </div>
+        </template>
+      </GenericDropdown>
+    </template>
+  </SettingsMenuItem>
 </template>
 
 <script lang="ts" setup>
@@ -30,7 +39,8 @@ import { useTheme } from "../../../core/composables/useTheme";
 import { ref, watch } from "vue";
 import { notification } from "..";
 import * as _ from "lodash-es";
-import { SettingsMenuItem } from "../menu-item";
+import { SettingsMenuItem } from "../settings-menu-item";
+import { VcIcon } from "../../../ui/components";
 
 const { current, themes, setTheme } = useTheme();
 const opened = ref(false);
@@ -50,10 +60,31 @@ watch(
 </script>
 
 <style lang="scss">
-:root {
-  --theme-selector-bg-color: var(--additional-50);
-  --theme-selector-text-color: var(--base-text-color, var(--neutrals-950));
-  --theme-selector-border-color: var(--app-bar-divider-color);
-  --theme-selector-hover-bg-color: var(--primary-50);
+.vc-theme-selector {
+  &__trigger {
+    @apply tw-flex tw-items-center tw-w-full;
+  }
+
+  &__icon {
+    @apply tw-w-6 tw-mr-3;
+  }
+
+  &__title {
+    @apply tw-flex-grow;
+  }
+
+  &__item {
+    @apply tw-flex tw-items-center tw-w-full tw-px-3
+      tw-cursor-pointer tw-transition-colors
+      hover:tw-bg-[color:var(--menu-item-bg-hover)];
+
+    &--active {
+      @apply tw-bg-[color:var(--menu-item-bg-active)];
+    }
+  }
+
+  &__item-title {
+    @apply tw-flex-grow;
+  }
 }
 </style>

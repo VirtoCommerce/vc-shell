@@ -24,7 +24,7 @@
                 <VcInputCurrency
                   :model-value="value"
                   :options="[]"
-                  :option="(item[cell.currencyField || 'currency'] as string) || 'USD'"
+                  :option="(item as TableItem)[cell.currencyField || 'currency'] || 'USD'"
                   currency-display="symbol"
                   class="vc-table-cell__input-currency"
                   :error="errors.length > 0"
@@ -280,7 +280,6 @@
 <script lang="ts" setup>
 import { computed } from "vue";
 import moment from "moment";
-import { ITableColumns } from "./../../../../../../core/types";
 import * as _ from "lodash-es";
 import htmlTruncate from "truncate-html";
 import * as DOMPurify from "dompurify";
@@ -288,10 +287,11 @@ import VcInputCurrency from "../../../../molecules/vc-input-currency/vc-input-cu
 import VcInput from "../../../../molecules/vc-input/vc-input.vue";
 import VcTooltip from "../../../../atoms/vc-tooltip/vc-tooltip.vue";
 import { Field } from "vee-validate";
+import type { TableItem, ITableColumns } from "../../types";
 
 export interface Props {
   cell: ITableColumns;
-  item: Record<string, unknown>;
+  item: string | TableItem;
   width?: number;
   editing?: boolean;
   index?: number;
@@ -329,7 +329,7 @@ function intlMoney(value: number) {
   const currencyProp = props.cell.currencyField || "currency";
   return new Intl.NumberFormat(locale, {
     style: "currency",
-    currency: (props.item[currencyProp] as string) || "USD",
+    currency: (props.item as TableItem)[currencyProp] || "USD",
   }).format(value);
 }
 

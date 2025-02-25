@@ -1,10 +1,10 @@
-import { ref, Ref, watch, onMounted, onBeforeUnmount, nextTick } from "vue";
+import { ref, Ref, watch, onMounted, onBeforeUnmount, nextTick, MaybeRef, toValue, ComputedRef } from "vue";
 
 export interface UseVisibleElementsOptions<T> {
   containerRef: Ref<HTMLElement | null>;
   items: Ref<T[]>;
   getItemId: (item: T) => string;
-  maxVisibleItems?: number;
+  maxVisibleItems?: ComputedRef<number> | number;
   moreButtonWidth?: number;
   reverseCalculation?: boolean;
   resizeContainer?: string[];
@@ -25,7 +25,7 @@ export function useVisibleElements<T>({
   const showMoreButton = ref(false);
 
   const calculateVisibleElements = () => {
-    if (!containerRef.value || !items.value.length) {
+    if (!containerRef.value || !items.value?.length) {
       displayedItems.value = items.value;
       overflowItems.value = [];
       showMoreButton.value = false;
@@ -44,7 +44,10 @@ export function useVisibleElements<T>({
       const styles = getComputedStyle(element);
       const itemWidth = element.offsetWidth + parseFloat(styles.marginLeft) + parseFloat(styles.marginRight);
 
-      if (totalWidth + itemWidth <= availableWidth && (!maxVisibleItems || visibleCount < maxVisibleItems)) {
+      if (
+        totalWidth + itemWidth <= availableWidth &&
+        (!toValue(maxVisibleItems) || visibleCount < (toValue(maxVisibleItems) ?? Infinity))
+      ) {
         totalWidth += itemWidth;
         visibleCount++;
       } else {
@@ -63,7 +66,7 @@ export function useVisibleElements<T>({
     showMoreButton.value = overflowItems.value.length > 0;
   };
 
-  const setElementRef = (id: string, el: HTMLElement | Element | null) => {
+  const setElementRef = (id: string, el: HTMLElement | null) => {
     if (el) {
       elementRefs.set(id, el);
     } else {
@@ -98,6 +101,7 @@ export function useVisibleElements<T>({
       if (resizeContainer) {
         resizeContainer.forEach((cls) => {
           const container = containerRef.value?.closest(cls);
+          console.log(container);
           if (container) {
             observer?.observe(container);
           }

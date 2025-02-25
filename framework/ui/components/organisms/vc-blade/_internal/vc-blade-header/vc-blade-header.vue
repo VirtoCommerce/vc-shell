@@ -5,121 +5,105 @@
       'vc-blade-header--mobile': $isMobile.value,
     }"
   >
-    <div
-      v-if="typeof modified !== 'undefined'"
-      ref="tooltipIconRef"
-      :class="{
-        'vc-blade-header__status-not-edited': !modified,
-        'vc-blade-header__status-edited': modified,
-      }"
-      class="vc-blade-header__status"
-      @mouseenter="tooltipVisible = true"
-      @mouseleave="tooltipVisible = false"
-    >
-      <teleport to="body">
-        <span
-          v-if="tooltipVisible"
-          ref="tooltipRef"
-          :style="floatingStyles"
-          class="vc-blade-header__tooltip"
-        >
-          {{
-            modified
-              ? $t("COMPONENTS.ORGANISMS.VC_BLADE_HEADER.UNSAVED_CHANGES")
-              : $t("COMPONENTS.ORGANISMS.VC_BLADE_HEADER.NO_CHANGES")
-          }}
-        </span>
-      </teleport>
-    </div>
+    <slot name="prepend"></slot>
 
-    <div
-      v-if="blade.breadcrumbs?.length"
-      class="vc-blade-header__breadcrumbs"
-    >
-      <VcBreadcrumbs :items="blade.breadcrumbs">
-        <template #trigger="{ click, isActive }">
-          <VcButton
-            text
-            :icon="CircleDotsIcon"
-            icon-size="m"
-            class="vc-blade-header__breadcrumbs-button"
-            :class="{
-              'vc-blade-header__breadcrumbs-button--active': isActive,
-            }"
-            @click="click"
-          />
-        </template>
-      </VcBreadcrumbs>
-    </div>
-
-    <div
-      v-if="icon"
-      class="vc-blade-header__icon"
-    >
-      <VcIcon
-        :icon="icon"
-        size="xxl"
-      />
-    </div>
-
-    <div class="vc-blade-header__wrapper">
-      <div class="vc-blade-header__content">
-        <div
-          class="vc-blade-header__title"
-          :class="{
-            'vc-blade-header__title-no-subtitle': !subtitle,
-          }"
-        >
-          {{ title }}
-        </div>
-        <div
-          v-if="subtitle"
-          class="vc-blade-header__subtitle"
-        >
-          {{ subtitle }}
-        </div>
-      </div>
-
+    <div class="vc-blade-header__status-container">
       <div
-        v-if="$slots['actions']"
-        class="vc-blade-header__actions"
+        v-if="typeof modified !== 'undefined'"
+        ref="tooltipIconRef"
+        :class="{
+          'vc-blade-header__status-not-edited': !modified,
+          'vc-blade-header__status-edited': modified,
+        }"
+        class="vc-blade-header__status"
+        @mouseenter="tooltipVisible = true"
+        @mouseleave="tooltipVisible = false"
       >
-        <slot name="actions"></slot>
+        <teleport to="body">
+          <span
+            v-if="tooltipVisible"
+            ref="tooltipRef"
+            :style="floatingStyles"
+            class="vc-blade-header__tooltip"
+          >
+            {{
+              modified
+                ? $t("COMPONENTS.ORGANISMS.VC_BLADE_HEADER.UNSAVED_CHANGES")
+                : $t("COMPONENTS.ORGANISMS.VC_BLADE_HEADER.NO_CHANGES")
+            }}
+          </span>
+        </teleport>
       </div>
-    </div>
 
-    <div
-      v-if="!$isMobile.value"
-      class="vc-blade-header__controls"
-    >
-      <template v-if="blade.expandable">
-        <div
-          v-if="blade.maximized"
-          class="vc-blade-header__button"
-          @click="onCollapse"
-        >
-          <VcIcon
-            icon="fas fa-window-minimize"
-            size="s"
-          />
-        </div>
-        <div
-          v-else
-          class="vc-blade-header__button"
-          @click="onExpand"
-        >
-          <VcIcon :icon="AppWindowIcon" />
-        </div>
-      </template>
       <div
-        v-if="closable"
-        class="vc-blade-header__button"
-        @click="onClose"
+        v-if="icon"
+        class="vc-blade-header__icon"
       >
         <VcIcon
-          :icon="CrossSignIcon"
-          size="xs"
+          :icon="icon"
+          size="xxl"
         />
+      </div>
+
+      <div class="vc-blade-header__wrapper">
+        <div class="vc-blade-header__content">
+          <div
+            class="vc-blade-header__title"
+            :class="{
+              'vc-blade-header__title-no-subtitle': !subtitle,
+            }"
+          >
+            {{ title }}
+          </div>
+          <div
+            v-if="subtitle"
+            class="vc-blade-header__subtitle"
+          >
+            {{ subtitle }}
+          </div>
+        </div>
+
+        <div
+          v-if="$slots['actions']"
+          class="vc-blade-header__actions"
+        >
+          <slot name="actions"></slot>
+        </div>
+      </div>
+
+      <div
+        v-if="!$isMobile.value"
+        class="vc-blade-header__controls"
+      >
+        <template v-if="blade.expandable">
+          <div
+            v-if="blade.maximized"
+            class="vc-blade-header__button"
+            @click="onCollapse"
+          >
+            <VcIcon
+              icon="fas fa-window-minimize"
+              size="s"
+            />
+          </div>
+          <div
+            v-else
+            class="vc-blade-header__button"
+            @click="onExpand"
+          >
+            <VcIcon :icon="AppWindowIcon" />
+          </div>
+        </template>
+        <div
+          v-if="closable"
+          class="vc-blade-header__button"
+          @click="onClose"
+        >
+          <VcIcon
+            :icon="CrossSignIcon"
+            size="xs"
+          />
+        </div>
       </div>
     </div>
   </div>
@@ -132,7 +116,7 @@ import { useFloating, shift } from "@floating-ui/vue";
 import { CrossSignIcon, AppWindowIcon } from "../../../../atoms/vc-icon/icons";
 import { BladeInstance } from "../../../../../../injection-keys";
 import { Breadcrumbs } from "./../../../../../../ui/types";
-import CircleDotsIcon from "../../../../atoms/vc-icon/icons/CircleDotsIcon.vue";
+import VertDotsIcon from "../../../../atoms/vc-icon/icons/VertDotsIcon.vue";
 
 export interface Props {
   closable?: boolean;
@@ -185,7 +169,7 @@ function onClose(): void {
 
 <style lang="scss">
 :root {
-  --blade-header-height: 82px;
+  --blade-header-height: 70px;
   --blade-header-mobile-height: 60px;
   --blade-header-background-color: var(--additional-50);
 
@@ -212,7 +196,7 @@ function onClose(): void {
 }
 
 .vc-blade-header {
-  @apply tw-shrink-0 tw-h-[var(--blade-header-height)] tw-bg-[color:var(--blade-header-background-color)] tw-flex tw-items-center tw-py-0 tw-px-5 tw-border-solid tw-border-b tw-border-b-[color:var(--blade-header-border-color)];
+  @apply tw-shrink-0 tw-h-[var(--blade-header-height)] tw-bg-[color:var(--blade-header-background-color)] tw-flex tw-items-center tw-py-0 tw-px-6 tw-border-solid tw-border-b tw-border-b-[color:var(--blade-header-border-color)];
 
   &--mobile {
     @apply tw-h-[var(--blade-header-mobile-height)];
@@ -235,7 +219,11 @@ function onClose(): void {
   }
 
   &__status {
-    @apply tw-block tw-w-2 tw-h-2 tw-rounded-full tw-z-[1] tw-mr-2;
+    @apply tw-block tw-w-2 tw-h-2 tw-rounded-full tw-z-[1] tw-mr-[14px];
+  }
+
+  &__status-container {
+    @apply tw-flex tw-flex-1 tw-flex-row tw-items-center;
   }
 
   &__status-not-edited {
@@ -256,18 +244,6 @@ function onClose(): void {
 
   &__content {
     @apply tw-overflow-hidden;
-  }
-
-  &__breadcrumbs {
-    @apply tw-mr-3;
-
-    &-button {
-      @apply tw-text-[color:var(--blade-header-breadcrumbs-button-color)] tw-ml-2.5 tw-cursor-pointer hover:tw-text-[color:var(--blade-header-breadcrumbs-button-color-hover)] #{!important};
-
-      &--active {
-        @apply tw-text-[color:var(--blade-header-breadcrumbs-button-color-hover)] #{!important};
-      }
-    }
   }
 
   &__title {

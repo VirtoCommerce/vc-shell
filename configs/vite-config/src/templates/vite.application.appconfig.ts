@@ -1,6 +1,6 @@
 import vue from "@vitejs/plugin-vue";
 import * as fs from "node:fs";
-import { loadEnv, defineConfig, searchForWorkspaceRoot, splitVendorChunkPlugin, ProxyOptions } from "vite";
+import { loadEnv, defineConfig, ProxyOptions } from "vite";
 import mkcert from "vite-plugin-mkcert";
 import path from "node:path";
 import { checker } from "vite-plugin-checker";
@@ -111,7 +111,6 @@ export default defineConfig({
     checker({
       vueTsc: true,
     }),
-    splitVendorChunkPlugin(),
   ],
   define: {
     "import.meta.env.PACKAGE_VERSION": `"${version}"`,
@@ -161,8 +160,8 @@ export default defineConfig({
       output: {
         entryFileNames: `[name]` + hash + `.js`,
         chunkFileNames: `[name]` + hash + `.js`,
-      },
-    },
+      }
+    }
   },
   esbuild: {
     drop: mode === "production" ? ["console", "debugger"] : [],

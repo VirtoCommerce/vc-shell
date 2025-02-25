@@ -400,12 +400,12 @@ defineExpose({
   --md-bk-color: var(--additional-50);
   --md-bk-color-outstand: var(--neutrals-100);
   --md-bk-hover-color: var(--secondary-50);
-  --md-border-color: var(--neutrals-200);
+  --md-border-color: var(--base-border-color, var(--neutrals-200));
   --md-border-hover-color: var(--neutrals-400);
   --md-border-active-color: var(--neutrals-400);
   --md-modal-mask: rgba(0, 0, 0, 0.45);
   --md-modal-shadow: 0px 6px 24px 2px rgba(0, 0, 0, 0.1);
-  --md-scrollbar-bg-color: var(--neutrals-200);
+  --md-scrollbar-bg-color: var(--base-border-color, var(--neutrals-200));
   --md-scrollbar-thumb-color: rgba(0, 0, 0, 0.3);
   --md-scrollbar-thumb-hover-color: rgba(0, 0, 0, 0.35);
   --md-scrollbar-thumb-active-color: rgba(0, 0, 0, 0.38);

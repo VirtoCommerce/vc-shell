@@ -12,7 +12,12 @@
         <div
           v-if="item && item.title"
           :ref="
-            (el) => (el && '$el' in el ? setElementRef(item.id!, el?.$el) : el ? setElementRef(item.id!, el) : null)
+            (el) =>
+              el && '$el' in el
+                ? setElementRef(item.id!, el?.$el as HTMLElement)
+                : el
+                  ? setElementRef(item.id!, el as HTMLElement)
+                  : null
           "
           class="vc-breadcrumbs__item-wrapper"
         >
@@ -57,15 +62,25 @@
             :click="toggleBreadcrumbs"
             :is-active="isActive"
           >
-            <VcBreadcrumbsItem
+            <!-- <VcBreadcrumbsItem
               id="Expand"
               class="vc-breadcrumbs__expand-button"
               :class="{
                 'vc-breadcrumbs__expand-button--active': isActive,
               }"
               :current="false"
-              title="..."
               :variant="variant"
+              @click="toggleBreadcrumbs"
+            /> -->
+
+            <VcButton
+              text
+              :icon="VertDotsIcon"
+              icon-size="m"
+              class="vc-breadcrumbs__expand-button"
+              :class="{
+                'vc-breadcrumbs__expand-button--active': isActive,
+              }"
               @click="toggleBreadcrumbs"
             />
           </slot>
@@ -113,6 +128,7 @@ import { Breadcrumbs } from "../../../types";
 import VcBreadcrumbsItem from "./_internal/vc-breadcrumbs-item/vc-breadcrumbs-item.vue";
 import { GenericDropdown } from "./../../../../shared/components/generic-dropdown";
 import { useVisibleElements } from "./../../../composables/useVisibleElements";
+import { VertDotsIcon } from "./../../atoms/vc-icon/icons";
 
 export interface Props {
   items?: Breadcrumbs[];
@@ -163,6 +179,8 @@ setupResizeObserver();
   --separator-color: var(--neutrals-400);
   --breadcrumbs-item-border-color: var(--secondary-300);
   --breadcrumbs-item-border-color-hover: var(--secondary-400);
+  --breadcrumbs-expand-button-color: var(--neutrals-500);
+  --breadcrumbs-expand-button-color-hover: var(--neutrals-600);
 }
 
 .vc-breadcrumbs {
@@ -185,12 +203,7 @@ setupResizeObserver();
   }
 
   &__expand-button {
-    @apply tw-px-3 tw-mr-2.5 tw-border-solid  tw-rounded-[3px] tw-border tw-border-[color:var(--breadcrumbs-item-border-color)] tw-text-[color:var(--separator-color)] tw-cursor-pointer hover:tw-text-[color:var(--chevron-color)];
-
-    &--active,
-    &:hover {
-      @apply tw-border tw-border-solid tw-border-[color:var(--breadcrumbs-item-border-color-hover)];
-    }
+    @apply tw-mr-1 tw-border-solid  tw-rounded-[3px] tw-text-[color:var(--breadcrumbs-expand-button-color)] tw-cursor-pointer hover:tw-text-[color:var(--breadcrumbs-expand-button-color-hover)] #{!important};
   }
 }
 </style>

@@ -1,32 +1,47 @@
 <template>
-  <template v-if="(isContentOpen || $isDesktop.value) && !$isMobile.value">
-    <div class="app-bar-content">
-      <div class="app-bar-content__main">
-        <slot name="navmenu" />
-      </div>
-      <div class="app-bar-content__footer">
-        <slot name="user-dropdown" />
-      </div>
+  <div
+    class="app-bar-content"
+    :class="{ 'app-bar-content--collapsed': !expanded }"
+  >
+    <div class="app-bar-content__main">
+      <slot name="navmenu" />
     </div>
-  </template>
+    <div class="app-bar-content__footer">
+      <slot name="user-dropdown" />
+    </div>
+  </div>
 </template>
 
 <script lang="ts" setup>
 defineProps<{
-  isContentOpen: boolean;
+  expanded: boolean;
 }>();
 </script>
 
 <style lang="scss">
+
 .app-bar-content {
-  @apply tw-flex tw-flex-col tw-h-full;
+  @apply tw-flex tw-flex-col;
+  height: calc(100% - var(--app-bar-height));
+
+  &--collapsed {
+    height: calc(100% - var(--app-bar-collapsed-height));
+  }
 
   &__main {
-    @apply tw-flex-grow tw-px-[var(--app-bar-padding)] tw-pt-6;
+    @apply tw-flex-grow tw-overflow-auto;
+    padding: var(--app-bar-padding);
+    padding-top: 1.5rem;
   }
 
   &__footer {
-    @apply tw-flex-none;
+    @apply tw-flex-none tw-mt-auto;
+  }
+
+  &:before {
+    content: "";
+    @apply tw-absolute tw-left-0 tw-top-[-1px] tw-w-full tw-h-[1px] tw-z-[1];
+    background-color: var(--app-bar-border);
   }
 }
 </style>

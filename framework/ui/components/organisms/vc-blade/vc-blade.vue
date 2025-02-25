@@ -14,10 +14,8 @@
   >
     <!-- Init blade header -->
     <VcBladeHeader
+      v-if="!($isMobile.value && blades.length === 1 && !$slots['actions'])"
       class="vc-blade__header"
-      :class="{
-        'vc-blade__header--hidden': $isMobile.value && shouldHideHeader,
-      }"
       :closable="closable"
       :icon="icon"
       :title="title"
@@ -27,6 +25,34 @@
       @expand="$emit('expand')"
       @collapse="$emit('collapse')"
     >
+      <template #prepend>
+        <component
+          :is="backButton"
+          v-if="backButton && $isMobile.value"
+          class="vc-blade__back-button"
+        />
+
+        <div
+          v-if="blade.breadcrumbs?.length && $isDesktop.value"
+          class="vc-blade__breadcrumbs"
+        >
+          <VcBreadcrumbs :items="blade.breadcrumbs">
+            <template #trigger="{ click, isActive }">
+              <VcButton
+                text
+                :icon="VertDotsIcon"
+                icon-size="m"
+                class="vc-blade__breadcrumbs-button"
+                :class="{
+                  'vc-blade__breadcrumbs-button--active': isActive,
+                }"
+                @click="click"
+              />
+            </template>
+          </VcBreadcrumbs>
+        </div>
+      </template>
+
       <template
         v-if="$slots['actions']"
         #actions
@@ -69,23 +95,10 @@
     <!-- Set up blade toolbar -->
     <VcBladeToolbar
       class="vc-blade__toolbar"
-      :class="{
-        'vc-blade__toolbar--hidden': $isMobile.value,
-      }"
       :items="toolbarItems"
     >
-      <template
-        v-if="$slots['widgets']"
-        #widgets-container
-      >
-        <VcWidgetContainer :blade-id="blade?.id ?? ''">
-          <!-- TODO: remove is-expanded. -->
-          <slot
-            name="widgets"
-            :is-expanded="true"
-          >
-          </slot>
-        </VcWidgetContainer>
+      <template #widgets-container>
+        <VcWidgetContainer :blade-id="blade?.id ?? ''" />
       </template>
     </VcBladeToolbar>
 
@@ -112,30 +125,17 @@
 </template>
 
 <script lang="ts" setup>
-import {
-  computed,
-  ref,
-  toValue,
-  inject,
-  onBeforeUnmount,
-  getCurrentInstance,
-  provide,
-  watch,
-  toRefs,
-  defineComponent,
-  h,
-} from "vue";
+import { computed, ref, toValue, inject, useSlots, defineComponent, h } from "vue";
 import { IBladeToolbar } from "../../../../core/types";
-import { usePopup } from "../../../../shared";
+import { usePopup, useBladeNavigation } from "../../../../shared";
 import { useI18n } from "vue-i18n";
 import { default as VcBladeHeader } from "./_internal/vc-blade-header/vc-blade-header.vue";
 import { default as VcBladeToolbar } from "./_internal/vc-blade-toolbar/vc-blade-toolbar.vue";
 import { VcButton, VcIcon, VcLink } from "../../";
 import vcPopupError from "../../../../shared/components/common/popup/vc-popup-error.vue";
-import { useWidgets } from "../../../../core/composables/useWidgets";
-import { BladeInstance, BLADE_SCROLL_KEY } from "../../../../injection-keys";
+import { BladeInstance, BLADE_BACK_BUTTON } from "../../../../injection-keys";
 import { default as VcWidgetContainer } from "./_internal/vc-blade-widget-container/vc-widget-container.vue";
-import { useScroll, useSwipe } from "@vueuse/core";
+import VertDotsIcon from "../../atoms/vc-icon/icons/VertDotsIcon.vue";
 
 export interface Props {
   icon?: string;
@@ -154,8 +154,6 @@ export interface Emits {
   (event: "collapse"): void;
 }
 
-console.log(getCurrentInstance());
-
 defineOptions({
   inheritAttrs: false,
 });
@@ -168,13 +166,41 @@ withDefaults(defineProps<Props>(), {
   modified: undefined,
 });
 
-defineSlots<{
+const slots = defineSlots<{
   actions: void;
   default: void;
+  /**
+   * @deprecated
+   * Use `useWidgets` composable instead
+   * @example
+   * // Register widget in blade:
+   * const blade = inject(BladeInstance);
+   * const widgetService = useWidgets();
+   * widgetService.registerWidget({
+   *   id: "widget-id",
+   *   component: () => import("./MyWidget.vue"),
+   *   props: {
+   *     myProp: '123',
+   *    },
+   *   events: {
+   *     "onChangeProp": (val: unknown) => {
+   *       console.log(val);
+   *     },
+   *   },
+   * }, blade.id);
+   *
+   * // Clear widgets on blade unmount:
+   * onBeforeUnmount(() => {
+   *   if (blade?.value.id) {
+   *     widgetService.clearBladeWidgets(blade.value.id);
+   *   }
+   * });
+   */
   widgets: void;
+  backButton: void;
 }>();
 
-defineEmits<Emits>();
+const emit = defineEmits<Emits>();
 
 const blade = inject(
   BladeInstance,
@@ -188,9 +214,11 @@ const blade = inject(
   })),
 );
 
-const { t } = useI18n({ useScope: "global" });
+const backButton = inject(BLADE_BACK_BUTTON);
 
-const widgetService = useWidgets();
+const { t } = useI18n({ useScope: "global" });
+const { blades } = useBladeNavigation();
+
 const bladeRef = ref<HTMLElement | null>(null);
 const contentRef = ref<HTMLElement | null>(null);
 
@@ -211,12 +239,6 @@ const { open } = usePopup({
         ]),
     }),
   },
-});
-
-onBeforeUnmount(() => {
-  if (blade.value.id) {
-    widgetService.clearBladeWidgets(blade.value.id);
-  }
 });
 </script>
 
@@ -246,6 +268,10 @@ onBeforeUnmount(() => {
   @apply tw-relative tw-flex tw-shrink-0 tw-flex-col tw-overflow-hidden tw-transition-[width] tw-duration-200;
   @apply tw-bg-[color:var(--blade-background-color)] tw-border tw-border-solid tw-border-[--blade-border-color];
 
+  &__back-button {
+    @apply tw-mr-[14px];
+  }
+
   &--mobile {
     @apply tw-w-full #{!important};
   }
@@ -257,6 +283,7 @@ onBeforeUnmount(() => {
   &--maximized {
     @apply tw-absolute tw-z-[2] tw-top-0 tw-bottom-0 tw-left-0 tw-shrink #{!important};
     width: -webkit-fill-available !important;
+    width: -moz-available !important;
   }
 
   &__header {
@@ -326,6 +353,18 @@ onBeforeUnmount(() => {
 
   &__widgets {
     @apply tw-flex tw-flex-row;
+  }
+
+  &__breadcrumbs {
+    @apply tw-mr-3;
+
+    &-button {
+      @apply tw-text-[color:var(--blade-header-breadcrumbs-button-color)] tw-cursor-pointer hover:tw-text-[color:var(--blade-header-breadcrumbs-button-color-hover)] #{!important};
+
+      &--active {
+        @apply tw-text-[color:var(--blade-header-breadcrumbs-button-color-hover)] #{!important};
+      }
+    }
   }
 
   // &__widgets {

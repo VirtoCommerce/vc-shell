@@ -18,7 +18,11 @@
     "storybook-build": "cross-env APP_ENV=production storybook build .storybook/assets",
     "storybook-serve": "storybook dev .storybook/assets -p 6006 --no-open",
     "release": "tsx scripts/release.ts",
-    "storybook-compress": "vite-node --mode production scripts/compress-storybook.ts --"
+    "storybook-compress": "vite-node --mode production scripts/compress-storybook.ts --",
+    "check-locales": "tsx framework/scripts/check-locales.mts",
+    "generate-icons": "tsx framework/scripts/generate-icons.mts",
+    "prepare": "husky install",
+    "pre-commit": "yarn generate-icons && yarn check-locales"
   },
   "workspaces": [
     "apps/*",
@@ -61,13 +65,15 @@
     "cross-env": "^7.0.3",
     "eslint": "8.57.0",
     "eslint-define-config": "^2.1.0",
+    "eslint-import-resolver-alias": "^1.1.2",
+    "eslint-import-resolver-node": "^0.3.9",
     "eslint-import-resolver-typescript": "^3.6.1",
     "eslint-plugin-import": "^2.29.1",
     "eslint-plugin-prettier": "^5.1.3",
     "eslint-plugin-storybook": "^0.8.0",
     "eslint-plugin-vue": "^9.19.2",
     "globby": "^13.2.2",
-    "husky": "^8.0.3",
+    "husky": "^8.0.0",
     "lint-staged": "^15.2.2",
     "lodash-es": "^4.17.21",
     "path": "^0.12.7",
@@ -98,9 +104,14 @@
     "cross-spawn": "^7.0.3"
   },
   "lint-staged": {
-    "*.{js,ts,html,css}": "prettier --write",
-    "*.{js,ts,vue}": "eslint --fix --cache"
+    "*.{js,ts,vue}": [
+      "eslint --fix --cache --max-warnings=0",
+      "prettier --write"
+    ],
+    "*.{html,css,json,md}": [
+      "prettier --write"
+    ]
   },
   "packageManager": "yarn@4.5.1",
-  "stableVersion": "1.0.327"
+  "stableVersion": "1.0.340"
 }

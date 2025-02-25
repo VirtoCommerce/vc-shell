@@ -6,6 +6,7 @@
       }
     },
     "ACCOUNT": {
+      "SETTINGS": "Einstellungen",
       "CHANGE_PASSWORD": "Passwort ändern",
       "PROFILE": "Profil",
       "LOGOUT": "Abmelden"
@@ -148,8 +149,10 @@
         "SEE_DETAILS": "Details anzeigen",
         "UNSAVED_CHANGES": "Hat ungespeicherte Änderungen",
         "ERROR_POPUP": {
-          "TITLE": "Fehlerdetails"
-        }
+          "TITLE": "Fehlerdetails",
+          "COPY_ERROR": "Inhalt kopieren"
+        },
+        "MORE": "Mehr"
       },
       "VC_BLADE_HEADER": {
         "UNSAVED_CHANGES": "Hat ungespeicherte Änderungen",

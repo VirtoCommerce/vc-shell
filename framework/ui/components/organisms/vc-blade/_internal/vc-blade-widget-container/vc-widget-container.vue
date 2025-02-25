@@ -1,136 +1,37 @@
 <template>
-  <div class="widget-container">
-    <!-- Measure container -->
-    <div class="widget-container__measure">
-      <slot />
-    </div>
-
-    <!-- Actual widgets -->
-    <div
-      ref="containerRef"
-      class="widget-container__content"
-    >
-      <component
-        :is="widget.component"
-        v-for="widget in visibleWidgets"
-        :key="widget.id"
-        v-bind="widget.props || {}"
-        v-on="widget.events || {}"
-      />
-
-      <GenericDropdown
-        v-if="showMoreButton"
-        :opened="showToolbar"
-        :items="overflowWidgets"
-        floating
-        placement="bottom-end"
-        variant="light"
-        @update:opened="showToolbar = $event"
-      >
-        <template #trigger="{ isActive }">
-          <div
-            class="widget-container__more"
-            :class="{ 'widget-container__more--active': isActive }"
-            @click="toggleToolbar"
-          >
-            <VcIcon :icon="ChevronDownIcon" />
-          </div>
-        </template>
-
-        <template #item="{ item }">
-          <component
-            :is="item.component"
-            v-bind="item.props || {}"
-            horizontal
-            v-on="item.events || {}"
-          />
-        </template>
-      </GenericDropdown>
-    </div>
-  </div>
+  <template v-if="widgets.length > 0">
+  <WidgetContainerMobile
+    v-if="$isMobile.value"
+    :widgets="widgets"
+    :blade-id="bladeId"
+  />
+  <WidgetContainerDesktop
+    v-else
+    :widgets="widgets"
+    :blade-id="bladeId"
+  />
+</template>
 </template>
 
 <script setup lang="ts">
+import { computed } from "vue";
 import { useWidgets } from "../../../../../../core/composables/useWidgets";
-import { BladeInstance, WidgetContainerKey } from "../../../../../../injection-keys";
-import { inject, provide, ref, markRaw, watchEffect, onUnmounted, computed } from "vue";
-import { GenericDropdown } from "../../../../../../shared/components/generic-dropdown";
-import { VcIcon, ChevronDownIcon } from "../../../..";
-import { IWidget } from "../../../../../../core/services/widget-service";
+import { WidgetContainerDesktop, WidgetContainerMobile } from "./_internal";
 
 interface Props {
   bladeId: string;
 }
 
 const props = defineProps<Props>();
-const containerRef = ref<HTMLElement | null>(null);
 const widgetService = useWidgets();
-
-const showToolbar = ref(false);
-const blade = inject(BladeInstance);
-
-const widgets = ref<IWidget[]>([]);
-
-const toggleToolbar = () => {
-  showToolbar.value = !showToolbar.value;
-};
-
-const updateWidgets = () => {
-  const currentWidgets = widgetService.getWidgets(props.bladeId);
-  widgets.value = currentWidgets;
-};
-
-watchEffect(() => {
-  if (props.bladeId) {
-    updateWidgets();
-  }
-});
-
-provide(WidgetContainerKey, {
-  registerWidget(widget) {
-    widgetService.registerWidget(
-      {
-        id: widget.id,
-        component: markRaw(widget.component),
-        props: widget.props,
-        events: widget.events,
-      },
-      blade?.value.id ?? "",
-    );
-
-    updateWidgets();
-  },
-  isWidgetRegistered(id) {
-    return widgetService.isWidgetRegistered(id);
-  },
-  setActiveWidget(ref) {
-    widgetService.setActiveWidget(ref);
-  },
-});
-
-const visibleWidgets = computed(() => {
-  return widgets.value.slice(0, 3);
-});
-
-const showMoreButton = computed(() => {
-  return widgets.value.length > visibleWidgets.value.length;
-});
-
-const overflowWidgets = computed(() => {
-  return widgets.value.slice(visibleWidgets.value.length);
-});
-
-onUnmounted(() => {
-  if (props.bladeId) {
-    widgetService.clearBladeWidgets(props.bladeId);
-  }
-});
+const widgets = computed(() => widgetService.getWidgets(props.bladeId));
 </script>
 
 <style lang="scss">
 :root {
   --blade-toolbar-widgets-bg-color: var(--neutrals-100);
   --blade-toolbar-widgets-bg-hover-color: var(--neutrals-200);
+  --blade-toolbar-widgets-bg-color-mobile: var(--additional-50);
 }
 
 .widget-container {
@@ -140,6 +41,31 @@ onUnmounted(() => {
   user-select: none;
   background-color: var(--blade-toolbar-widgets-bg-color);
 
+  &--mobile {
+    position: fixed;
+    bottom: 0 !important;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: var(--blade-toolbar-widgets-mobile-height);
+    z-index: 100;
+
+    .widget-container__content {
+      height: 100%;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 30px;
+      height: 80px;
+      background-color: var(--blade-toolbar-widgets-bg-color-mobile);
+    }
+
+    .widget-container__measure {
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 30px;
+    }
+  }
+
   &__measure {
     position: absolute;
     visibility: hidden;
@@ -147,12 +73,20 @@ onUnmounted(() => {
     display: flex;
     height: 0;
     overflow: hidden;
+    left: -9999px;
+    gap: 4px;
+    width: 100%;
+  }
+
+  &__measure-item {
+    display: flex;
   }
 
   &__content {
+    width: 100%;
     display: flex;
     flex-direction: row;
-    width: 100%;
+
     gap: 4px;
   }
 

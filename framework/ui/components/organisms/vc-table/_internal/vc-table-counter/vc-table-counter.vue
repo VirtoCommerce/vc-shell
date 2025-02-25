@@ -20,11 +20,12 @@ withDefaults(defineProps<Props>(), {
 <style lang="scss">
 :root {
   --table-counter-label-color: var(--base-text-color, var(--secondary-950));
-  --table-counter-value-color: var(--info-500);
+  --table-counter-value-color: var(--primary-500);
+  --table-counter-value-border-color: var(--neutrals-500);
 }
 
 .vc-table-counter {
-  @apply tw-font-medium tw-text-sm;
+  @apply tw-font-medium tw-text-sm tw-border tw-border-solid tw-border-[var(--table-counter-value-border-color)] tw-rounded-full tw-px-3 tw-py-[6px];
 
   &__label {
     @apply tw-text-[color:var(--table-counter-label-color)];

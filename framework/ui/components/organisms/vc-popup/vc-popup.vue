@@ -264,7 +264,7 @@ function closeModal() {
   }
 
   &__content-wrapper {
-    @apply tw-flex tw-flex-auto tw-self-center tw-min-h-0 tw-max-h-[-webkit-fill-available];
+    @apply tw-flex tw-flex-auto tw-self-center tw-min-h-0 tw-max-h-[-webkit-fill-available] tw-max-h-[-moz-available];
 
     &--full {
       @apply tw-h-full;

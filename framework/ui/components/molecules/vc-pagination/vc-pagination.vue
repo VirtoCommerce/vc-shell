@@ -2,6 +2,19 @@
   <div class="vc-pagination">
     <!-- Pagination Controls -->
     <div class="vc-pagination__controls">
+      <!-- First page button -->
+      <div
+        class="vc-pagination__item"
+        :class="{ 'vc-pagination__item_disabled': currentPage === 1 }"
+        @click="currentPage !== 1 && setPage(1)"
+      >
+        <VcIcon
+          size="xs"
+          :icon="DoubleArrowLeftIcon"
+        ></VcIcon>
+      </div>
+
+      <!-- Previous page button -->
       <div
         class="vc-pagination__item"
         :class="{ 'vc-pagination__item_disabled': currentPage === 1 }"
@@ -19,13 +32,14 @@
         class="vc-pagination__item"
         :class="{
           'vc-pagination__item_current': page === currentPage,
-          'vc-pagination__item_hover': page !== '...' && page !== currentPage,
+          'vc-pagination__item_hover': page !== currentPage,
         }"
         @click="setPage(page)"
       >
         {{ page }}
       </div>
 
+      <!-- Next page button -->
       <div
         class="vc-pagination__item"
         :class="{ 'vc-pagination__item_disabled': currentPage === pages }"
@@ -37,39 +51,25 @@
         ></VcIcon>
       </div>
 
-      <!-- Jump to page input -->
+      <!-- Last page button -->
       <div
-        v-if="variant === 'default' && pages > 5"
-        class="vc-pagination__jump"
+        class="vc-pagination__item"
+        :class="{ 'vc-pagination__item_disabled': currentPage === pages }"
+        @click="currentPage !== pages && setPage(pages)"
       >
-        <p class="tw-mr-3">{{ $t("COMPONENTS.MOLECULES.VC_PAGINATION.JUMP") }}</p>
-
-        <VcInput
-          type="number"
-          size="small"
-          :model-value="jumpPage"
-          @update:model-value="handleInputChange"
-        >
-          <template #control="{ modelValue }">
-            <input
-              :value="modelValue"
-              class="vc-pagination__input"
-              :max="props.pages"
-              @input="(event) => handleInputChange((event.target as HTMLInputElement)?.value)"
-              @keyup.enter="setPage(jumpPage)"
-              @keydown="onKeyDown"
-            />
-          </template>
-        </VcInput>
+        <VcIcon
+          size="xs"
+          :icon="DoubleArrowRightIcon"
+        ></VcIcon>
       </div>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, toRefs } from "vue";
-import { VcIcon, VcInput } from "./../../";
-import { ArrowLeftIcon, ArrowRightIcon } from "./../../atoms/vc-icon/icons";
+import { ref, computed, toRefs, inject, type Ref } from "vue";
+import { VcIcon } from "./../../";
+import { ArrowLeftIcon, ArrowRightIcon, DoubleArrowLeftIcon, DoubleArrowRightIcon } from "./../../atoms/vc-icon/icons";
 
 export interface Props {
   expanded?: boolean;
@@ -90,73 +90,39 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<Emits>();
 
-const { currentPage, variant } = toRefs(props);
+const isMobile = inject("isMobile") as Ref<boolean>;
 
-const jumpPage = ref();
+const { currentPage, variant } = toRefs(props);
 
 const setPage = (page: number | string) => {
   if (typeof page === "undefined" || (typeof page === "number" && isNaN(page))) return;
   const pageNumber = typeof page === "string" ? parseInt(page) : page;
-  if (pageNumber < 1 || pageNumber > props.pages || page === "...") return;
+  if (pageNumber < 1 || pageNumber > props.pages) return;
   currentPage.value = pageNumber;
   emit("itemClick", pageNumber);
 };
 
-const handleInputChange = (value: unknown) => {
-  const numberValue: number = typeof value === "string" ? parseInt(value) : Number(value);
-  let parsedValue = numberValue;
-
-  if (parsedValue > props.pages) {
-    parsedValue = props.pages;
-  } else if (parsedValue < 1) {
-    parsedValue = 1;
-  }
-
-  jumpPage.value = parsedValue;
-};
-
-function onKeyDown(e: KeyboardEvent) {
-  const allowedKeys = ["Backspace", "Delete", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"];
-  if (
-    (!/^\d$/.test(e.key) && !allowedKeys.includes(e.key)) ||
-    (jumpPage.value >= props.pages && e.key !== "Backspace" && e.key !== "Delete")
-  ) {
-    e.preventDefault();
-  }
-}
-
 const pagesToShow = computed(() => {
   const pages = [];
-  const range = 1;
   const totalPages = props.pages;
   const current = currentPage.value;
+  const maxPages = isMobile.value ? 3 : 5;
 
-  if (props.pages <= 5) {
-    for (let i = 1; i <= props.pages; i++) {
+  if (totalPages <= maxPages) {
+    for (let i = 1; i <= totalPages; i++) {
       pages.push(i);
     }
   } else {
-    const addRange = (start: number, end: number) => {
-      for (let i = start; i <= end; i++) {
-        pages.push(i);
-      }
-    };
+    let start = Math.max(1, current - Math.floor(maxPages / 2));
+    const end = Math.min(start + maxPages - 1, totalPages);
 
-    pages.push(1);
-
-    if (current <= 4) {
-      addRange(2, 5);
-      pages.push("...");
-    } else if (current >= totalPages - 3) {
-      pages.push("...");
-      addRange(totalPages - 4, totalPages - 1);
-    } else {
-      pages.push("...");
-      addRange(current - range, current + range);
-      pages.push("...");
+    if (end - start + 1 < maxPages) {
+      start = Math.max(1, end - maxPages + 1);
     }
 
-    pages.push(props.pages);
+    for (let i = start; i <= end; i++) {
+      pages.push(i);
+    }
   }
 
   return pages;
@@ -165,8 +131,8 @@ const pagesToShow = computed(() => {
 
 <style lang="scss">
 :root {
-  --pagination-item-width: 30px;
-  --pagination-item-height: 30px;
+  --pagination-item-width: 29px;
+  --pagination-item-height: 29px;
   --pagination-item-color: var(--neutrals-500);
   --pagination-item-color-hover: var(--primary-500);
   --pagination-item-color-current: var(--additional-50);
@@ -185,19 +151,11 @@ const pagesToShow = computed(() => {
 .vc-pagination {
   display: flex;
   align-items: center;
-  gap: 10px;
-
-  &__results {
-    margin-right: 20px;
-  }
-
-  &__page-size {
-    margin-right: 20px;
-  }
 
   &__controls {
     display: flex;
     align-items: center;
+    gap: 8px;
   }
 
   &__item {
@@ -207,7 +165,7 @@ const pagesToShow = computed(() => {
     tw-text-[color:var(--pagination-item-color)]
     tw-box-border
     tw-transition tw-duration-200
-    tw-mr-3 tw-select-none last:tw-mr-0 tw-text-xs tw-cursor-pointer tw-shrink-0;
+    tw-select-none tw-text-xs tw-cursor-pointer tw-shrink-0 tw-font-semibold;
 
     &:hover {
       @apply tw-bg-[color:var(--pagination-item-background-color-hover)]
@@ -233,18 +191,6 @@ const pagesToShow = computed(() => {
       @apply hover:tw-bg-[color:var(--pagination-item-background-color-hover)]
     hover:tw-text-[color:var(--pagination-item-color-hover)] tw-cursor-pointer;
     }
-  }
-
-  &__jump {
-    @apply tw-flex tw-items-center tw-text-sm;
-  }
-
-  &__jump input {
-    @apply tw-w-10 tw-text-center;
-  }
-
-  &__input {
-    @apply tw-w-full tw-bg-transparent;
   }
 }
 </style>

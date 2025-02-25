@@ -7,37 +7,39 @@ import { useMenuService, useNotifications } from "../../composables";
 import * as _ from "lodash-es";
 import { notification } from "../../../shared";
 
-export const createModule = (components: { [key: string]: BladeInstanceConstructor }, locales?: unknown) => ({
-  install(app: App): void {
-    // Register components
-    Object.entries(components).forEach(([componentName, component]) => {
-      // Check if the component is already registered
-      if (app.component(componentName)) {
-        // Remove the existing component
-        // Note: Vue does not provide a method to remove a component, so we can overwrite it
-        console.warn(
-          `Component ${componentName} is already registered. It will be overwritten with the new component.`,
-        );
-      }
-      app.component(componentName, component);
-    });
-
-    // Load locales
-    if (locales) {
-      Object.entries(locales).forEach(([key, message]) => {
-        // Merge locale messages, overwriting existing ones
-        i18n.global.mergeLocaleMessage(key, message);
+export function createModule(components: { [key: string]: BladeInstanceConstructor }, locales?: unknown) {
+  return {
+    install(app: App): void {
+      // Register components
+      Object.entries(components).forEach(([componentName, component]) => {
+        // Check if the component is already registered
+        if (app.component(componentName)) {
+          // Remove the existing component
+          // Note: Vue does not provide a method to remove a component, so we can overwrite it
+          console.warn(
+            `Component ${componentName} is already registered. It will be overwritten with the new component.`,
+          );
+        }
+        app.component(componentName, component);
       });
-    }
-  },
-});
 
-export const createAppModule = (
+      // Load locales
+      if (locales) {
+        Object.entries(locales).forEach(([key, message]) => {
+          // Merge locale messages, overwriting existing ones
+          i18n.global.mergeLocaleMessage(key, message);
+        });
+      }
+    },
+  };
+}
+
+export function createAppModule(
   pages: { [key: string]: BladeInstanceConstructor },
   locales?: { [key: string]: object },
   notificationTemplates?: { [key: string]: Component & { notifyType?: string } },
   moduleComponents?: { [key: string]: Component },
-) => {
+) {
   return {
     install(app: App, options?: { router: Router }): void {
       let routerInstance: Router;
@@ -245,7 +247,7 @@ export const createAppModule = (
       }
     },
   };
-};
+}
 
 export * from "./loader";
 export * from "./extensions-helper";

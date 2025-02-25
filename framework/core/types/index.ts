@@ -90,7 +90,6 @@ export interface IActionBuilderResult<T = {}> {
   icon: string;
   title: string | Ref<string>;
   type: "danger" | "success";
-  position: "right" | "left";
   clickHandler(item?: T, index?: number): void;
 }
 
@@ -139,7 +138,6 @@ export type ITableColumnsBase = {
     | "time"
     | "image"
     | "date-time"
-    | "image"
     | "status"
     | "status-icon"
     | "number"
@@ -151,12 +149,14 @@ export type ITableColumnsBase = {
   align?: "start" | "end" | "center" | "between" | "around" | "evenly";
   visible?: boolean;
   editable?: boolean;
-  /**
-   * Field for currency property to show currency sign on money type.
-   * @default "currency"
-   */
   currencyField?: string;
   rules?: IValidationRules;
+  // Mobile view specific fields
+  mobilePosition?: {
+    row: 1 | 2; // In which row to show (1 or 2)
+    order: number; // Order within row
+  };
+  mobileVisible?: boolean; // Show in mobile view
 };
 
 type IImageColumn = {

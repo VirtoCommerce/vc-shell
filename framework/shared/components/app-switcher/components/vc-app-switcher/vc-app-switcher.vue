@@ -5,8 +5,8 @@
     class="vc-app-switcher"
     @contextmenu.prevent
   >
+
     <GenericDropdown
-      :opened="true"
       :items="appsList"
       :is-item-active="(item) => locationHandler(item.relativeUrl ?? '')"
       @item:click="switchApp"

@@ -164,10 +164,10 @@ jobs:
 
 
 
-  Storybook:
-    needs: 'CI'
-    uses: VirtoCommerce/vc-shell/.github/workflows/storybook-ci.yml@main
-    with:
-      event_name: ${{ github.event_name }}
-    secrets:
-      VCMP_PLATFORM_TOKEN: ${{ secrets.VCMP_PLATFORM_TOKEN }}
+  # Storybook:
+  #   needs: 'CI'
+  #   uses: VirtoCommerce/vc-shell/.github/workflows/storybook-ci.yml@main
+  #   with:
+  #     event_name: ${{ github.event_name }}
+  #   secrets:
+  #     VCMP_PLATFORM_TOKEN: ${{ secrets.VCMP_PLATFORM_TOKEN }}

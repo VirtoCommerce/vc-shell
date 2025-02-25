@@ -392,7 +392,6 @@ const actionBuilder = (): IActionBuilderResult<ICommonAsset>[] => {
     icon: "fas fa-trash",
     title: computed(() => t("ASSETS_MANAGER.TABLE.ACTIONS.DELETE")),
     type: "danger",
-    position: "left",
     async clickHandler(item: ICommonAsset) {
       defaultAssets.value = await props.options.assetsRemoveHandler([item]);
       selectedItems.value = [];

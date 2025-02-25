@@ -66,12 +66,7 @@ const isToolbarVisible = computed(() => visibleItems.value.length > 0);
   }
 
   &--mobile {
-    @apply tw-flex-col tw-items-start;
-
-    .vc-blade-toolbar__content {
-      // @apply tw-py-3;
-      @apply tw-flex-auto;
-    }
+    @apply tw-fixed tw-bottom-0 tw-right-0 tw-z-50 tw-p-4 tw-bg-transparent tw-border-0 tw-w-auto;
   }
 }
 </style>

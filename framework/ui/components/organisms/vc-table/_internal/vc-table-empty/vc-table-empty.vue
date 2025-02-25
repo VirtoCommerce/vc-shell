@@ -58,7 +58,7 @@ export interface Props {
   items: any[];
   columnsInit: boolean;
   searchValue?: string;
-  activeFilterCount: number;
+  activeFilterCount?: number;
   notfound?: {
     image?: string;
     text: string | Ref<string>;

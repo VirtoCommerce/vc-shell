@@ -56,9 +56,10 @@ import { ref, computed, watch } from "vue";
 import { ITableColumns } from "./../../../../../../core/types";
 import { vOnClickOutside } from "@vueuse/components";
 import { useFloating, flip, shift, autoUpdate } from "@floating-ui/vue";
+import { TableColPartial } from "../../types";
 
 export interface Props {
-  items: ITableColumns[];
+  items: TableColPartial[];
   stateKey: string;
 }
 

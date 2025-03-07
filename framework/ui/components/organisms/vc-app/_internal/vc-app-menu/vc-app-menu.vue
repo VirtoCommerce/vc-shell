@@ -5,6 +5,7 @@
     :class="{
       'vc-app-menu--mobile': $isMobile.value,
       'vc-app-menu--collapsed': $isDesktop.value && !isExpanded,
+      'vc-app-menu--hover-expanded': isHoverExpanded,
     }"
   >
     <div
@@ -12,6 +13,7 @@
       :class="{
         'vc-app-menu__inner--desktop': $isDesktop.value,
         'vc-app-menu__inner--collapsed': $isDesktop.value && !isExpanded,
+        'vc-app-menu__inner--hover-expanded': isHoverExpanded,
       }"
     >
       <!-- Show scrollable area with menu items -->
@@ -32,8 +34,8 @@
             :icon="item.groupIcon || item.icon"
             :title="item.title as string"
             :children="item.children"
-            :expand="$isDesktop.value ? isExpanded : true"
-            @click="handleMenuItemClick( item, $event)"
+            :expand="$isDesktop.value ? isExpanded || isHoverExpanded : true"
+            @click="handleMenuItemClick(item, $event)"
           />
         </div>
       </VcContainer>
@@ -77,7 +79,7 @@ const emit = defineEmits<Emits>();
 
 const isMobile = inject("isMobile") as Ref<boolean>;
 const { menuItems } = useMenuService();
-const { isExpanded } = useMenuExpanded();
+const { isExpanded, isHoverExpanded } = useMenuExpanded();
 const { closeAll } = useAppMenuState();
 
 const handleMenuItemClick = (item: MenuItem, nestedItem?: MenuItem) => {
@@ -105,8 +107,8 @@ const isMenuVisible = computed(() => {
   --app-backdrop-overlay: rgb(from var(--app-backdrop-overlay-bg) r g b / 75%);
 
   --app-backdrop-shadow-color: var(--additional-950);
-  --app-backdrop-shadow: 0 -6px 6px var(--additional-50),
-    1px 1px 22px rgb(from var(--notification-dropdown-shadow-color) r g b / 7%);
+  --app-backdrop-shadow:
+    0 -6px 6px var(--additional-50), 1px 1px 22px rgb(from var(--notification-dropdown-shadow-color) r g b / 7%);
 }
 
 .vc-app-menu {

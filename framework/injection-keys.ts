@@ -2,10 +2,17 @@ import { InjectionKey, ComputedRef, type Component } from "vue";
 import { BladeVNode, IBladeInstance } from "./shared/components/blade-navigation/types";
 import { NotificationTemplateConstructor } from "./core/types";
 import { IWidgetService } from "./core/services/widget-service";
+import { IDashboardService } from "./core/services/dashboard-service";
+import { GlobalSearchState } from "./core/composables/useGlobalSearch";
 
 export const navigationViewLocation: InjectionKey<BladeVNode> = Symbol("blade navigation view location");
 export const BladeInstance: InjectionKey<ComputedRef<IBladeInstance>> = Symbol("BladeInstance");
 export const NotificationTemplatesSymbol: InjectionKey<NotificationTemplateConstructor[]> =
   Symbol("NotificationTemplates");
-export const WidgetServiceKey: InjectionKey<IWidgetService> = Symbol("WidgetService");
-export const BLADE_BACK_BUTTON = Symbol('blade-back-button') as InjectionKey<Component | undefined>;
+export const WidgetServiceKey = Symbol("WidgetService") as InjectionKey<IWidgetService>;
+export const BLADE_BACK_BUTTON = Symbol("blade-back-button") as InjectionKey<Component | undefined>;
+export const DashboardServiceKey = Symbol("DashboardService") as InjectionKey<IDashboardService>;
+export const DynamicModulesKey = Symbol("DynamicModules") as InjectionKey<
+  typeof window.VcShellDynamicModules | undefined
+>;
+export const GlobalSearchKey = Symbol("GlobalSearch") as InjectionKey<GlobalSearchState>;

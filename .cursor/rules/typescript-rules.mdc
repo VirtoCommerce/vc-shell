@@ -1,6 +1,7 @@
 ---
 description: 
-globs: *.ts, *.mts
+globs: 
+alwaysApply: true
 ---
 
 # Your rule content

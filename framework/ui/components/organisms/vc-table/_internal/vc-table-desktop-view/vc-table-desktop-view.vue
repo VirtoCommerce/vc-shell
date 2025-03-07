@@ -89,7 +89,7 @@
 
 <script lang="ts" setup generic="T extends TableItem | string">
 import { toRefs, MaybeRef, useSlots } from "vue";
-import VcTableHeader from "./_internal/vc-table-header/vc-table-header.vue";
+import VcTableHeader from "./_internal/vc-table-columns-header/vc-table-columns-header.vue";
 import VcTableSelectAllHeader from "./_internal/vc-table-select-all-header/vc-table-select-all-header.vue";
 import VcTableBody from "./_internal/vc-table-body/vc-table-body.vue";
 import type { ITableColumns, TableItem, TableColPartial, StatusImage } from "../../types";

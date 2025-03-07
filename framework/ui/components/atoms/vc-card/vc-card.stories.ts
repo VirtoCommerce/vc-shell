@@ -81,7 +81,7 @@ export const Actions: StoryFn<typeof VcCard> = (args) => ({
         <p class="tw-p-4">{{args.default}}</p>
 
         <template #actions>
-          <VcButton variant="danger">Action button</VcButton>
+          <VcButton variant="primary">Action button</VcButton>
         </template>
       </vc-card>
     `,

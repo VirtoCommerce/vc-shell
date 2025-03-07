@@ -1,7 +1,7 @@
 import type { Meta, StoryFn } from "@storybook/vue3";
 import { VcButton } from "./";
 
-const COLORS = ["primary", "warning", "danger"];
+const COLORS = ["primary", "secondary"];
 
 const PROPERTY = ["disabled", "small", "outline", "selected", "text", "raised"];
 
@@ -61,20 +61,11 @@ export const Basic = Template.bind({});
 export const Disabled = Template.bind({});
 Disabled.args = { disabled: true };
 
-export const Small = Template.bind({});
-Small.args = { small: true };
-
-export const Outline = Template.bind({});
-Outline.args = { outline: true };
-
 export const Selected = Template.bind({});
 Selected.args = { selected: true };
 
 export const Text = Template.bind({});
 Text.args = { text: true };
-
-export const Raised = Template.bind({});
-Raised.args = { raised: true };
 
 export const Icon = Template.bind({});
 Icon.args = { icon: "fas fa-plus" };
@@ -84,12 +75,6 @@ IconClass.args = { icon: "fas fa-plus", iconClass: "tw-text-red" };
 
 export const IconSize = Template.bind({});
 IconSize.args = { icon: "fas fa-plus", iconSize: "l" };
-
-export const Warning = Template.bind({});
-Warning.args = { variant: "warning" };
-
-export const Danger = Template.bind({});
-Danger.args = { variant: "danger" };
 
 export const AllStates: StoryFn<typeof VcButton> = () => ({
   components: { VcButton },

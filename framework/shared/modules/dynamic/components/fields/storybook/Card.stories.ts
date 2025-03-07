@@ -148,8 +148,7 @@ WithAction.args = {
     component: "vc-button",
     content: "Action",
     method: "runFn",
-    small: true,
-    variant: "danger",
+    variant: "secondary",
   },
 };
 

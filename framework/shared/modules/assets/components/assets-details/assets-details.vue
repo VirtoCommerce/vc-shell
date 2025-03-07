@@ -54,7 +54,7 @@
                         </div>
                         <VcButton
                           icon="far fa-copy"
-                          size="m"
+                          icon-size="m"
                           class="tw-ml-2"
                           text
                           :title="t('ASSETS.PAGES.DETAILS.FIELDS.COPY')"

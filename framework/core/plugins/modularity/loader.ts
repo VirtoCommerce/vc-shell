@@ -1,6 +1,7 @@
 import { App, Plugin } from "vue";
 import { Router } from "vue-router";
 import { ExtensionRegistry, createExtensionsHelper, registerModuleExtensions } from "./extensions-helper";
+import { DynamicModulesKey } from "../../../injection-keys";
 
 interface ModuleManifest {
   file: string;
@@ -161,7 +162,7 @@ export function useDynamicModules(
       ...(app.config.globalProperties.$dynamicModules || {}),
       ...window.VcShellDynamicModules,
     };
-    app.provide("$dynamicModules", app.config.globalProperties.$dynamicModules);
+    app.provide(DynamicModulesKey, app.config.globalProperties.$dynamicModules);
   }
 
   return {

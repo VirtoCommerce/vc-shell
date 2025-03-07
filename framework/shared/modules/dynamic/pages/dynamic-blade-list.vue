@@ -1,151 +1,133 @@
 <template>
-  <component
-    :is="isWidgetView ? 'template' : 'VcBlade'"
+  <VcBlade
     v-if="!composables"
     :expanded="expanded"
     :closable="closable"
     :width="settings?.width || '50%'"
     :toolbar-items="toolbarComputed"
     :title="title"
-    :class="{
-      'tw-flex tw-flex-auto': isWidgetView,
-    }"
     :modified="unreffedScope?.modified"
     @close="$emit('close:blade')"
     @expand="$emit('expand:blade')"
     @collapse="$emit('collapse:blade')"
   >
-    <template v-if="isWidgetView && $isMobile.value">
-      <slot
-        name="widget-mobile"
-        :total-count="pagination.totalCount"
-        :loading="loading"
+    <div
+      v-if="toValue(scope?.breadcrumbs)?.length"
+      class="tw-p-4"
+    >
+      <VcBreadcrumbs
+        :items="toValue(scope?.breadcrumbs)"
+        variant="light"
+        with-arrow
+      />
+    </div>
+    <VcTable
+      class="tw-grow tw-basis-0"
+      v-bind="tableConfigComputed"
+      :expanded="expanded"
+      :total-label="$t(`${localizationPrefix}.PAGES.LIST.TABLE.TOTALS`)"
+      :active-filter-count="activeFilterCount"
+      :disable-filter="filterDisable"
+    >
+      <template
+        v-if="isFilterVisible && bladeOptions.tableData?.filter"
+        #filters="{ closePanel }"
       >
-        {{ pagination.totalCount }}</slot
+        <filterComponent :close="closePanel" />
+      </template>
+
+      <!-- Not found template -->
+      <template #notfound>
+        <template v-if="tableTemplates?.notFound">
+          <component
+            :is="tableTemplates.notFound"
+            :context="bladeContext"
+            @reset="resetSearch"
+          ></component>
+        </template>
+        <template v-else>
+          <div class="tw-w-full tw-h-full tw-box-border tw-flex tw-flex-col tw-items-center tw-justify-center">
+            <div class="tw-m-4 tw-text-xl tw-font-medium">
+              {{ $t(`${localizationPrefix}.PAGES.LIST.NOT_FOUND.EMPTY`) }}
+            </div>
+            <VcButton
+              v-if="isFilterVisible"
+              @click="resetSearch"
+              >{{ $t(`${localizationPrefix}.PAGES.LIST.NOT_FOUND.RESET`) }}</VcButton
+            >
+          </div>
+        </template>
+      </template>
+
+      <!-- Empty template -->
+      <template #empty>
+        <template v-if="tableTemplates?.empty">
+          <component
+            :is="tableTemplates.empty"
+            :context="bladeContext"
+            @add="openDetailsBlade"
+          ></component>
+        </template>
+        <template v-else>
+          <div class="tw-w-full tw-h-full tw-box-border tw-flex tw-flex-col tw-items-center tw-justify-center">
+            <div class="tw-m-4 tw-text-xl tw-font-medium">
+              {{ $t(`${localizationPrefix}.PAGES.LIST.EMPTY.NO_ITEMS`) }}
+            </div>
+          </div>
+        </template>
+      </template>
+
+      <!-- Override table templates-->
+      <template
+        v-for="(component, key, index) in tableTemplates?.templateOverrideComponents"
+        #[`item_${key}`]="itemData"
+        :key="`template_override_${index}`"
       >
-    </template>
-    <template v-else>
-      <div
-        v-if="!isWidgetView && toValue(scope?.breadcrumbs)?.length"
-        class="tw-p-4"
-      >
-        <VcBreadcrumbs
-          :items="toValue(scope?.breadcrumbs)"
-          variant="light"
-          with-arrow
+        <component
+          :is="component"
+          :context="itemData"
+          :blade-context="bladeContext"
         />
-      </div>
-      <VcTable
-        class="tw-grow tw-basis-0"
-        v-bind="tableConfigComputed"
-        :expanded="expanded"
-        :total-label="$t(`${localizationPrefix}.PAGES.LIST.TABLE.TOTALS`)"
-        :active-filter-count="activeFilterCount"
-        :disable-filter="filterDisable"
+      </template>
+
+      <!-- Override header -->
+      <template
+        v-if="tableTemplates?.header"
+        #header="headerData"
       >
-        <template
-          v-if="isFilterVisible && bladeOptions.tableData?.filter"
-          #filters="{ closePanel }"
-        >
-          <filterComponent :close="closePanel" />
-        </template>
+        <component
+          :is="tableTemplates.header"
+          :context="headerData"
+          :blade-context="bladeContext"
+        ></component>
+      </template>
 
-        <!-- Not found template -->
-        <template #notfound>
-          <template v-if="tableTemplates?.notFound">
-            <component
-              :is="tableTemplates.notFound"
-              :context="bladeContext"
-              @reset="resetSearch"
-            ></component>
-          </template>
-          <template v-else>
-            <div class="tw-w-full tw-h-full tw-box-border tw-flex tw-flex-col tw-items-center tw-justify-center">
-              <div class="tw-m-4 tw-text-xl tw-font-medium">
-                {{ $t(`${localizationPrefix}.PAGES.LIST.NOT_FOUND.EMPTY`) }}
-              </div>
-              <VcButton
-                v-if="isFilterVisible"
-                @click="resetSearch"
-                >{{ $t(`${localizationPrefix}.PAGES.LIST.NOT_FOUND.RESET`) }}</VcButton
-              >
-            </div>
-          </template>
-        </template>
+      <!-- Override footer -->
+      <template
+        v-if="tableTemplates?.footer"
+        #footer="footerData"
+      >
+        <component
+          :is="tableTemplates.footer"
+          :context="footerData"
+          :blade-context="bladeContext"
+        ></component>
+      </template>
 
-        <!-- Empty template -->
-        <template #empty>
-          <template v-if="tableTemplates?.empty">
-            <component
-              :is="tableTemplates.empty"
-              :class="{
-                'tw-py-6': isWidgetView,
-              }"
-              :context="bladeContext"
-              @add="openDetailsBlade"
-            ></component>
-          </template>
-          <template v-else>
-            <div class="tw-w-full tw-h-full tw-box-border tw-flex tw-flex-col tw-items-center tw-justify-center">
-              <div class="tw-m-4 tw-text-xl tw-font-medium">
-                {{ $t(`${localizationPrefix}.PAGES.LIST.EMPTY.NO_ITEMS`) }}
-              </div>
-            </div>
-          </template>
-        </template>
+      <!-- Override table mobile view -->
 
-        <!-- Override table templates-->
-        <template
-          v-for="(component, key, index) in tableTemplates?.templateOverrideComponents"
-          #[`item_${key}`]="itemData"
-          :key="`template_override_${index}`"
-        >
-          <component
-            :is="component"
-            :context="itemData"
-            :blade-context="bladeContext"
-          />
-        </template>
-
-        <!-- Override header -->
-        <template
-          v-if="tableTemplates?.header && !isWidgetView"
-          #header="headerData"
-        >
-          <component
-            :is="tableTemplates.header"
-            :context="headerData"
-            :blade-context="bladeContext"
-          ></component>
-        </template>
-
-        <!-- Override footer -->
-        <template
-          v-if="tableTemplates?.footer && !isWidgetView"
-          #footer="footerData"
-        >
-          <component
-            :is="tableTemplates.footer"
-            :context="footerData"
-            :blade-context="bladeContext"
-          ></component>
-        </template>
-
-        <!-- Override table mobile view -->
-
-        <template
-          v-if="tableTemplates?.mobileView"
-          #mobile-item="itemData"
-        >
-          <component
-            :is="tableTemplates.mobileView"
-            :context="itemData"
-            :blade-context="bladeContext"
-          ></component>
-        </template>
-      </VcTable>
-    </template>
-  </component>
+      <template
+        v-if="tableTemplates?.mobileView"
+        #mobile-item="itemData"
+      >
+        <component
+          :is="tableTemplates.mobileView"
+          :context="itemData"
+          :blade-context="bladeContext"
+        ></component>
+      </template>
+    </VcTable>
+  </VcBlade>
 </template>
 <script setup lang="ts">
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -168,10 +150,10 @@ import {
 import { useI18n } from "vue-i18n";
 import { DynamicGridSchema, ListContentSchema, SettingsSchema } from "../types";
 import { useFilterBuilder, useTableTemplates } from "../composables";
-import { useFunctions, useNotifications } from "../../../../core/composables";
+import { useFunctions } from "../../../../core/composables";
 import { IActionBuilderResult, ITableColumns } from "../../../../core/types";
 import { useToolbarReducer } from "../composables/useToolbarReducer";
-import { notification, useBladeNavigation, usePopup } from "../../../components";
+import { useBladeNavigation, usePopup } from "../../../components";
 import { ListBaseBladeScope, ListBladeContext, UseList } from "../factories/types";
 import { IParentCallArgs } from "../../../index";
 import { reactiveComputed, toReactive, useMounted } from "@vueuse/core";
@@ -186,7 +168,6 @@ export interface Props {
   options?: unknown;
   model?: DynamicGridSchema;
   composables?: Record<string, (...args: any[]) => Record<string, any>>;
-  isWidgetView?: boolean;
   mixinFn?: ((...args: any[]) => any)[];
 }
 
@@ -196,8 +177,6 @@ export interface Emits {
   (event: "collapse:blade"): void;
   (event: "expand:blade"): void;
   (event: "close:children"): void;
-  (event: "item-click", args: { param: string | undefined }): void;
-  (event: "add"): void;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -240,7 +219,7 @@ const stateKey =
   props.composables &&
   computed(() => {
     if (tableData?.value?.id) {
-      return tableData.value?.id && props.isWidgetView ? tableData.value?.id + "_dashboard" : tableData.value?.id;
+      return tableData.value?.id;
     }
 
     throw new Error('Table id is not defined. Please provide "id" property in table schema');
@@ -256,7 +235,6 @@ let { load, remove, items, loading, pagination, query, scope } = props.composabl
       emit,
       props,
       mounted: useMounted(),
-      isWidgetView: props.isWidgetView,
     }) as UseList<Record<string, any>[], Record<string, any>, ListBaseBladeScope>)
   : ({
       load: ref(true),
@@ -301,10 +279,6 @@ const selection = computed(() => {
   }
   return [];
 });
-
-if (props.isWidgetView) {
-  query.value.take = 5;
-}
 
 sort.value = query.value.sort ?? "createdDate:DESC";
 
@@ -421,7 +395,7 @@ onBeforeMount(async () => {
     await load({
       sort: sort.value,
       ...query.value,
-      ...(props.isWidgetView ? {} : getNavigationQuery()),
+      ...getNavigationQuery(),
     });
 });
 
@@ -472,54 +446,46 @@ const onCellBlur = async (data: { row: number | undefined; field: string }) => {
 };
 
 const openDetailsBlade = async () => {
-  if (!props.isWidgetView) {
-    if (
-      scope &&
-      "openDetailsBlade" in toValue(unreffedScope) &&
-      toValue(unreffedScope).openDetailsBlade &&
-      typeof toValue(unreffedScope).openDetailsBlade === "function"
-    ) {
-      await toValue(unreffedScope).openDetailsBlade?.();
-    }
-  } else {
-    emit("add");
+  if (
+    scope &&
+    "openDetailsBlade" in toValue(unreffedScope) &&
+    toValue(unreffedScope).openDetailsBlade &&
+    typeof toValue(unreffedScope).openDetailsBlade === "function"
+  ) {
+    await toValue(unreffedScope).openDetailsBlade?.();
   }
 };
 
 const onItemClick = (item: { [x: string]: any; id?: string }) => {
-  if (!props.isWidgetView) {
-    // TODO Add to docs
-    if (
-      scope &&
-      safeIn("onListItemClick", toValue(unreffedScope)) &&
-      typeof toValue(unreffedScope).onListItemClick === "function"
-    ) {
-      toValue(unreffedScope).onListItemClick?.({
-        item,
-        onOpen() {
-          selectedItemId.value = item.id;
-        },
-        onClose() {
-          selectedItemId.value = undefined;
-        },
-      });
-    } else if (
-      scope &&
-      safeIn("openDetailsBlade", toValue(unreffedScope)) &&
-      typeof toValue(unreffedScope).openDetailsBlade === "function"
-    ) {
-      toValue(unreffedScope).openDetailsBlade?.({
-        param: item.id,
-        onOpen() {
-          selectedItemId.value = item.id;
-        },
-        onClose() {
-          selectedItemId.value = undefined;
-        },
-      });
-    }
-  } else {
-    emit("item-click", { param: item.id });
+  // TODO Add to docs
+  if (
+    scope &&
+    safeIn("onListItemClick", toValue(unreffedScope)) &&
+    typeof toValue(unreffedScope).onListItemClick === "function"
+  ) {
+    toValue(unreffedScope).onListItemClick?.({
+      item,
+      onOpen() {
+        selectedItemId.value = item.id;
+      },
+      onClose() {
+        selectedItemId.value = undefined;
+      },
+    });
+  } else if (
+    scope &&
+    safeIn("openDetailsBlade", toValue(unreffedScope)) &&
+    typeof toValue(unreffedScope).openDetailsBlade === "function"
+  ) {
+    toValue(unreffedScope).openDetailsBlade?.({
+      param: item.id,
+      onOpen() {
+        selectedItemId.value = item.id;
+      },
+      onClose() {
+        selectedItemId.value = undefined;
+      },
+    });
   }
 };
 
@@ -722,20 +688,20 @@ const tableConfig = computed(() => {
     columns: tableColsWithLocales ?? [],
     stateKey: stateKey?.value ?? "",
     items: itemsProxy.value ?? [],
-    multiselect: props.isWidgetView ? false : tableData?.value?.multiselect,
-    header: props.isWidgetView ? false : tableData?.value?.header,
+    multiselect: tableData?.value?.multiselect,
+    header: tableData?.value?.header,
     itemActionBuilder: actionBuilder,
-    editing: props.isWidgetView ? false : isBladeEditable.value,
-    enableItemActions: !!tableData?.value?.actions && !props.isWidgetView,
-    footer: props.isWidgetView ? false : tableData?.value?.footer,
+    editing: isBladeEditable.value,
+    enableItemActions: !!tableData?.value?.actions,
+    footer: tableData?.value?.footer,
     sort: sort.value,
     pages: pagination.value?.pages,
     currentPage: pagination.value?.currentPage,
     searchValue: searchValue.value,
     selectedItemId: selectedItemId.value,
     totalCount: pagination.value?.totalCount,
-    reorderableRows: props.isWidgetView ? false : tableData?.value?.reorderableRows,
-    pullToReload: !props.isWidgetView,
+    reorderableRows: tableData?.value?.reorderableRows,
+    pullToReload: true,
     selectAll: tableData?.value?.selectAll,
     paginationVariant: tableData?.value?.paginationVariant,
     selectionItems: selection.value,

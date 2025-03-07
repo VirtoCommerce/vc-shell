@@ -1,4 +1,4 @@
-import { ConcreteComponent, reactive, ref, ComponentInternalInstance, watch } from "vue";
+import { ConcreteComponent, reactive, ref, ComponentInternalInstance } from "vue";
 
 export type WidgetEventHandler = (...args: unknown[]) => void;
 
@@ -93,12 +93,9 @@ export function createWidgetService(): IWidgetService {
     activeWidgetRef.value = undefined;
 
     activeWidgetRef.value = ref;
-
-    console.log("setActiveWidget", activeWidgetRef.value);
   };
 
   const updateActiveWidget = (): void => {
-    console.log("updateActiveWidget", activeWidgetRef.value);
     if (!activeWidgetRef.value) {
       return;
     }

@@ -31,23 +31,32 @@
           />
         </div>
         <div
-          v-if="expand"
-          class="vc-app-menu-link__title"
+          v-if="!expand && !icon"
+          class="vc-app-menu-link__icon-letters"
         >
-          <div class="vc-app-menu-link__title-truncate">
-            {{ title }}
-          </div>
-          <div
-            v-if="!!children?.length || false"
-            class="vc-app-menu-link__title-icon"
-          >
-            <VcIcon
-              class="vc-app-menu-item__title-icon"
-              :icon="isOpened ? ChevronUpIcon : ChevronDownIcon"
-              size="m"
-            ></VcIcon>
-          </div>
+          {{ twoLettersTitle(title) }}
         </div>
+
+        <Transition name="opacity">
+          <div
+            v-show="expand"
+            class="vc-app-menu-link__title"
+          >
+            <div class="vc-app-menu-link__title-truncate">
+              {{ title }}
+            </div>
+            <div
+              v-if="(!!children?.length && expand) || false"
+              class="vc-app-menu-link__title-icon"
+            >
+              <VcIcon
+                class="vc-app-menu-item__title-icon"
+                :icon="isOpened ? ChevronUpIcon : ChevronDownIcon"
+                size="m"
+              ></VcIcon>
+            </div>
+          </div>
+        </Transition>
       </div>
     </VcTooltip>
   </div>
@@ -92,7 +101,7 @@
             >
               <div
                 v-if="nested.icon"
-                class="vc-app-menu-link__icon"
+                class="vc-app-menu-link__icon vc-app-menu-link__icon--child"
                 :class="{
                   'vc-app-menu-link__icon-collapsed': !expand,
                 }"
@@ -103,12 +112,23 @@
                   size="m"
                 />
               </div>
-              <p
-                v-if="expand"
-                class="vc-app-menu-link__child-item-title"
+              <div
+                v-if="!expand && !nested.icon"
+                class="vc-app-menu-link__icon-letters"
               >
-                {{ nested.title }}
-              </p>
+                {{ twoLettersTitle(nested.title) }}
+              </div>
+              <Transition name="opacity">
+                <p
+                  v-show="expand"
+                  class="vc-app-menu-link__child-item-title"
+                  :class="{
+                    'vc-app-menu-link__child-item-title--no-icon': !nested.icon,
+                  }"
+                >
+                  {{ nested.title }}
+                </p>
+              </Transition>
             </div>
           </div>
         </router-link>
@@ -118,7 +138,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, watch, computed, onMounted } from "vue";
+import { ref, watch, computed, onMounted, Component, MaybeRef, unref } from "vue";
 import { MenuItem } from "./../../../../../../../../../core/types";
 import { VcIcon } from "./../../../../../../../";
 import { useRoute } from "vue-router";
@@ -128,7 +148,7 @@ import ChevronDownIcon from "./../../../../../../../atoms/vc-icon/icons/ChevronD
 export interface Props {
   children?: MenuItem[];
   sticky?: boolean;
-  icon: string;
+  icon: string | Component;
   title?: string;
   url?: string;
   expand?: boolean;
@@ -188,6 +208,15 @@ const isActive = (url: string) => {
   }
 };
 
+const twoLettersTitle = (title: MaybeRef<string> | undefined) => {
+  // get first letters in title words and combine them. Two letters maximum
+  return unref(title)
+    ?.split(" ")
+    .slice(0, 2)
+    .map((word) => word[0])
+    .join("");
+};
+
 onMounted(() => {
   const storedState = localStorage.getItem(`vc_menu_${props.id}_isOpened`);
   if (storedState) {
@@ -204,6 +233,7 @@ watch(isOpened, (newValue) => {
 :root {
   --app-menu-item-height: 38px;
   --app-menu-item-icon-width: 16px;
+  --app-menu-item-icon-width-container: 23px;
   --app-menu-item-icon-color: var(--neutrals-600);
   --app-menu-item-icon-color-active: var(--primary-700);
   --app-menu-item-background-color-hover: var(--neutrals-100);
@@ -218,6 +248,7 @@ watch(isOpened, (newValue) => {
 
 .vc-app-menu-link {
   @apply tw-cursor-pointer tw-w-full;
+  @apply tw-transition-transform tw-duration-[0] tw-ease-in-out #{!important};
 
   &:hover .vc-app-menu-link__item:not(.vc-app-menu-link__item_active) {
     @apply tw-bg-[var(--app-menu-item-background-color-hover)] tw-bg-opacity-50 tw-rounded;
@@ -238,14 +269,9 @@ watch(isOpened, (newValue) => {
   &__item {
     @apply tw-flex tw-items-center tw-w-full tw-h-[var(--app-menu-item-height)]
       tw-border-none tw-flex-nowrap tw-box-border tw-cursor-pointer tw-relative
-      tw-uppercase tw-select-none tw-px-2;
+      tw-uppercase tw-select-none tw-px-2 tw-gap-4;
 
     &_collapsed {
-      @apply tw-justify-center;
-
-      .vc-app-menu-link__title {
-        @apply tw-hidden;
-      }
     }
 
     &_active {
@@ -278,7 +304,15 @@ watch(isOpened, (newValue) => {
   &__icon {
     @apply tw-text-[color:var(--app-menu-item-icon-color)]
     tw-overflow-hidden tw-flex
-    tw-justify-center tw-shrink-0 tw-transition-[color] tw-duration-200 tw-w-[var(--app-menu-item-icon-width)];
+    tw-justify-center tw-shrink-0 tw-transition-[color] tw-duration-200 tw-w-[var(--app-menu-item-icon-width-container)];
+
+    &--child {
+      // @apply tw-mr-5;
+    }
+  }
+
+  &__icon-letters {
+    @apply tw-shrink-0 tw-w-[24px] tw-h-[24px] tw-rounded-full tw-flex tw-items-center tw-justify-center tw-text-xxs tw-leading-[10px] tw-font-extrabold tw-text-[var(--neutrals-500)] tw-border-[2px] tw-border-[var(--neutrals-500)];
   }
 
   &__title {
@@ -287,7 +321,7 @@ watch(isOpened, (newValue) => {
     tw-font-normal
     tw-leading-normal
     tw-normal-case
-    tw-pl-4
+
     [transition:color_0.2s_ease]
     tw-opacity-100 tw-w-full tw-flex tw-justify-between tw-items-center;
   }
@@ -301,11 +335,11 @@ watch(isOpened, (newValue) => {
   }
 
   &__title-icon {
-    @apply tw-ml-3 tw-text-[color:var(--app-menu-item-icon-color)];
+    @apply tw-ml-3;
   }
 
   &__icon-content {
-    @apply tw-text-center;
+    @apply tw-text-center  tw-text-[length:var(--app-menu-item-icon-width)];
   }
 
   &__child {
@@ -314,17 +348,17 @@ watch(isOpened, (newValue) => {
 
   &__child-item {
     @apply tw-cursor-pointer tw-min-w-0 tw-flex tw-h-[var(--app-menu-item-height)]
-      tw-items-center tw-transition-[padding] tw-duration-150 tw-w-fit tw-py-2 tw-px-3
+      tw-items-center tw-transition-[padding] tw-duration-150 tw-w-full tw-py-2 tw-px-3
     tw-text-[color:var(--app-menu-item-title-color)] tw-text-sm
     hover:tw-bg-[var(--app-menu-item-background-color-hover)]
-    hover:tw-text-[color:var(--app-menu-item-title-color-active)];
+    hover:tw-text-[color:var(--app-menu-item-title-color-active)] tw-gap-5;
 
     &_expanded {
-      @apply tw-pl-5 tw-w-full #{!important};
+      @apply tw-pl-7 tw-w-full #{!important};
     }
 
     &_collapsed {
-      @apply tw-w-auto tw-justify-center;
+      @apply tw-pl-2;
     }
 
     &_active {
@@ -339,7 +373,7 @@ watch(isOpened, (newValue) => {
   }
 
   &__child-item-title {
-    @apply tw-truncate tw-pl-5;
+    @apply tw-truncate;
   }
 
   &__child-item-link {
@@ -355,7 +389,17 @@ watch(isOpened, (newValue) => {
   }
 
   &__icon-collapsed {
-    @apply tw-p-0;
+    @apply tw-p-0 tw-m-0;
   }
+}
+
+.opacity-enter-active,
+.opacity-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.opacity-enter-from,
+.opacity-leave-to {
+  opacity: 0;
 }
 </style>

@@ -32,7 +32,42 @@
               >
                 <div
                   v-if="column.type === 'status-icon' || column.type === 'status'"
-                  :class="['vc-table-mobile-view__cell', 'vc-table-mobile-view__cell--status', column.class]"
+                  :class="[
+                    'vc-table-mobile-view__cell',
+                    {
+                      'vc-table-mobile-view__cell--status': column.type === 'status',
+                      'vc-table-mobile-view__cell--status-icon': column.type === 'status-icon',
+                    },
+                    column.class,
+                  ]"
+                >
+                  <slot
+                    :name="`item_${column.id}`"
+                    :item="item"
+                    :cell="column"
+                    :index="i"
+                  >
+                    <VcTableCell
+                      v-if="typeof item === 'object'"
+                      :key="`mobile-view-cell-${i}-${column.id}`"
+                      :cell="column"
+                      :item="item"
+                      :index="i"
+                      @update="$emit('onEditComplete', { event: $event, index: i })"
+                      @blur="$emit('onCellBlur', $event)"
+                    />
+                  </slot>
+                </div>
+              </template>
+
+              <!-- Image column -->
+              <template
+                v-for="column in firstRowColumns"
+                :key="column.id"
+              >
+                <div
+                  v-if="column.type === 'image'"
+                  :class="['vc-table-mobile-view__cell', 'vc-table-mobile-view__cell--image', column.class]"
                 >
                   <slot
                     :name="`item_${column.id}`"
@@ -62,7 +97,7 @@
                     :key="column.id"
                   >
                     <div
-                      v-if="column.type !== 'status-icon' && column.type !== 'status'"
+                      v-if="column.type !== 'status-icon' && column.type !== 'status' && column.type !== 'image'"
                       :class="[
                         'vc-table-mobile-view__cell',
                         `vc-table-mobile-view__cell--${column.type || 'default'}`,
@@ -303,10 +338,18 @@ provideTableSwipe();
   &__cell {
     @apply tw-flex tw-items-center tw-min-w-0 tw-max-w-[50%] tw-truncate;
 
+    &--image {
+      @apply tw-min-w-14 tw-min-h-14 tw-overflow-hidden tw-mr-4;
+    }
+
     // Status and icon cells
     &--status,
     &--status-icon {
       @apply tw-absolute tw-left-0 tw-w-6 tw-h-6 tw-flex-shrink-0 tw-flex tw-items-center tw-justify-center;
+    }
+
+    &--status-icon {
+      @apply tw-top-10;
     }
 
     &--title,

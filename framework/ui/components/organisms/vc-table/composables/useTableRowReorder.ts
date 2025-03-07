@@ -54,6 +54,7 @@ export function useTableRowReorder<T extends TableItem | string>(
   }
 
   function onRowDragStart(event: DragEvent, item: T) {
+    console.log("onRowDragStart", event, item);
     rowDragged.value = true;
     const index = internalItems.value.indexOf(item);
     draggedRow.value = index;

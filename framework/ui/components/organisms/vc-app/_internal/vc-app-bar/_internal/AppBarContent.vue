@@ -19,13 +19,12 @@ defineProps<{
 </script>
 
 <style lang="scss">
-
 .app-bar-content {
   @apply tw-flex tw-flex-col;
   height: calc(100% - var(--app-bar-height));
 
   &--collapsed {
-    height: calc(100% - var(--app-bar-collapsed-height));
+    height: calc(100% - var(--app-bar-height));
   }
 
   &__main {

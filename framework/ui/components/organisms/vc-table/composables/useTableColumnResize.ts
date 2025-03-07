@@ -122,7 +122,7 @@ export function useTableColumnResize(
 
     const colIndex = internalColumns.value.findIndex((col) => col.id === resizeColumnElement.value?.id);
     const widths: number[] = [];
-    const tableHeaders = headerRef.value.querySelectorAll(".vc-table-header__cell") as NodeListOf<HTMLElement>;
+    const tableHeaders = headerRef.value.querySelectorAll(".vc-table-columns-header__cell") as NodeListOf<HTMLElement>;
 
     tableHeaders.forEach((header) => widths.push(header.offsetWidth));
 

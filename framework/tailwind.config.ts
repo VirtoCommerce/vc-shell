@@ -1,4 +1,5 @@
 /** @type { import('tailwindcss').Config } */
+import type { Config } from "tailwindcss";
 
 export const content = [
   "../../node_modules/@vc-shell/**/*.{vue,js,ts,jsx,tsx}",
@@ -28,13 +29,13 @@ export default {
       sm: [
         "0.875rem", //14px
         {
-          lineHeight: "1rem", //18px
+          lineHeight: "1.125rem", //18px
         },
       ],
       s: [
         "0.875rem", //14px
         {
-          lineHeight: "1rem", //18px
+          lineHeight: "1.125rem", //18px
         },
       ],
       base: [
@@ -123,4 +124,4 @@ export default {
     },
   },
   content,
-};
+} as Config;

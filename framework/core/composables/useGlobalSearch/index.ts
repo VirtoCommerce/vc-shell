@@ -1,6 +1,5 @@
 import { ref, inject, provide, Ref } from "vue";
-
-const GLOBAL_SEARCH_KEY = Symbol("globalSearch");
+import { GlobalSearchKey } from "../../../injection-keys";
 
 export interface GlobalSearchState {
   isSearchVisible: Ref<Record<string, boolean>>;
@@ -15,7 +14,6 @@ export function createGlobalSearch() {
 
   const toggleSearch = (bladeId: number) => {
     isSearchVisible.value[bladeId] = !isSearchVisible.value[bladeId];
-    console.log("toggleSearch", bladeId, isSearchVisible.value[bladeId]);
   };
 
   const setSearchQuery = (bladeId: number, query: string) => {
@@ -29,12 +27,12 @@ export function createGlobalSearch() {
     setSearchQuery,
   };
 
-  provide(GLOBAL_SEARCH_KEY, state);
+  provide(GlobalSearchKey, state);
   return state;
 }
 
 export function useGlobalSearch() {
-  const state = inject<GlobalSearchState>(GLOBAL_SEARCH_KEY);
+  const state = inject<GlobalSearchState>(GlobalSearchKey);
 
   if (!state) {
     throw new Error("useGlobalSearch must be used within a component that has called createGlobalSearch");

@@ -16,3 +16,4 @@ export function useWidgets(): IWidgetService {
   }
   return service;
 }
+

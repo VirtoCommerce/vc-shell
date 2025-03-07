@@ -15,3 +15,4 @@ export * from "./useBreadcrumbs";
 export * from "./useAppInsights";
 export * from "./useTheme";
 export * from "./useWidgets";
+export * from "./useDashboard";

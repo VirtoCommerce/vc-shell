@@ -1,6 +1,7 @@
 ---
 description: generic vue 3 rules
-globs: *.vue, *.ts
+globs: 
+alwaysApply: true
 ---
 
 # Your rule content

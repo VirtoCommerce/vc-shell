@@ -8,13 +8,17 @@
       class="vc-card__header"
       @click="onHeaderClick"
     >
-      <VcIcon
-        v-if="icon"
-        class="vc-card__icon"
-        :icon="icon"
-        size="xl"
-      ></VcIcon>
-      <div class="vc-card__title">{{ header }}</div>
+      <slot name="header">
+        <div>
+          <VcIcon
+            v-if="icon"
+            class="vc-card__icon"
+            :icon="icon"
+            size="xl"
+          ></VcIcon>
+          <div class="vc-card__title">{{ header }}</div>
+        </div>
+      </slot>
       <div
         v-if="$slots['actions']"
         class="vc-card__actions"
@@ -69,6 +73,7 @@ const emit = defineEmits<Emits>();
 defineSlots<{
   default: (props?: any) => any;
   actions: (props?: any) => any;
+  header: (props?: any) => any;
 }>();
 
 const isCollapsedInternal = ref();
@@ -120,7 +125,7 @@ $variants: success, danger;
   tw-flex-grow tw-flex tw-flex-col;
 
   &__header {
-    @apply tw-bg-[color:var(--card-header-background)] tw-px-[var(--card-header-padding-hor)] tw-py-[var(--card-header-padding-vert)] tw-flex tw-items-center tw-content-between tw-w-full tw-box-border;
+    @apply tw-border-b tw-border-[color:var(--card-border-color)] tw-border-solid tw-bg-[color:var(--card-header-background)] tw-px-[var(--card-header-padding-hor)] tw-py-[var(--card-header-padding-vert)] tw-flex tw-items-center tw-content-between tw-w-full tw-box-border;
   }
 
   &_collapsable &__header {

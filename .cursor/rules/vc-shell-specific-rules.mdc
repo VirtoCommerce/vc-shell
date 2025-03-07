@@ -1,6 +1,7 @@
 ---
 description: Rules specific to the VC-Shell framework
-globs: ["framework/**/*"]
+globs: 
+alwaysApply: true
 ---
 
 # VC-Shell Framework Specific Rules
@@ -25,6 +26,9 @@ globs: ["framework/**/*"]
   - Shared pages in `shared/pages`
   - Utilities in `shared/utilities`
 
+### UI Colors
+- Use color pallete [colors.scss](mdc:framework/assets/styles/theme/colors.scss) like tailwind (tw-bg-[var(--primary-500)])
+
 ### UI Components
 - UI components in `ui/` directory following atomic design
 - Follow component architecture rules below
@@ -37,7 +41,7 @@ globs: ["framework/**/*"]
 - Create separate composables in the `composables` directory for complex components
 
 ### Naming Conventions
-- Use `Vc` prefix for all framework components
+- Use `Vc` prefix for all framework components in `ui/` folder
 - Add suffix based on component type (e.g., `VcButton`, `VcContainer`)
 - Internal components must have parent component prefix
 
@@ -125,3 +129,6 @@ globs: ["framework/**/*"]
 - Follow TypeScript strict mode
 - Maintain proper dependency management
 - Use proper environment variables
+
+### Git
+- Do not make auto commits

@@ -65,9 +65,6 @@
 <script lang="ts" setup>
 import VcTableFilter from "./../vc-table-filter/vc-table-filter.vue";
 import { VcInput } from "./../../../../molecules";
-import { inject, ref, watch, computed } from "vue";
-import { useGlobalSearch } from "../../../../../../core/composables/useGlobalSearch";
-import { useBladeNavigation } from "../../../../../../shared";
 
 export interface Props {
   searchValue?: string;
@@ -81,15 +78,16 @@ export interface Emits {
   (event: "search:change", value: string): void;
 }
 
-const props = defineProps<Props>();
-const emit = defineEmits<Emits>();
+defineProps<Props>();
+defineEmits<Emits>();
 </script>
 
 <style lang="scss">
 :root {
   --table-base-header-border-color: var(--base-border-color, var(--neutrals-200));
   --table-base-header-input-icon-color: var(--neutrals-300);
-  --table-base-header-padding: 18px;
+  --table-base-header-padding-horizontal: 12px;
+  --table-base-header-padding-vertical: 9px;
   --table-base-header-mobile-padding: 30px;
 }
 
@@ -102,7 +100,7 @@ const emit = defineEmits<Emits>();
   }
 
   &--desktop {
-    @apply tw-p-[var(--table-base-header-padding)];
+    @apply tw-px-[var(--table-base-header-padding-horizontal)] tw-py-[var(--table-base-header-padding-vertical)];
   }
 
   &__filter-mobile {

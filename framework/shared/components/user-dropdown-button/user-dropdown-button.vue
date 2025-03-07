@@ -21,7 +21,7 @@
           :avatar-url="avatarUrl"
           :name="name"
           :role="role"
-          :is-expanded="isExpanded"
+          :is-expanded="isExpanded || isHoverExpanded"
         />
         <!-- <UserActions
           :profile-menu="profileMenu"
@@ -59,7 +59,7 @@ defineProps<Props>();
 
 const { t } = useI18n({ useScope: "global" });
 const isSidebarOpened = ref(false);
-const { isExpanded } = useMenuExpanded();
+const { isExpanded, isHoverExpanded } = useMenuExpanded();
 
 function handleMenuItemClick(item: IMenuItem) {
   item.clickHandler?.();
@@ -115,7 +115,7 @@ function handleClick() {
   }
 
   &__actions {
-    @apply tw-relative tw-h-full;
+    @apply tw-h-full;
   }
 
   &__trigger {

@@ -30,7 +30,7 @@
         <VcButton
           v-if="copyable"
           icon="far fa-copy"
-          size="m"
+          icon-size="m"
           class="vc-field__copy-button"
           text
           @click="copy(modelValue)"

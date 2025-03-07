@@ -128,7 +128,7 @@ const hasUnread = computed(() => {
   @apply tw-flex tw-flex-row tw-items-center tw-justify-between tw-px-[var(--app-bar-padding)] tw-h-[var(--app-bar-height)] tw-py-[var(--app-bar-header-padding-top)];
 
   &--collapsed {
-    @apply tw-flex-col tw-items-center tw-justify-between tw-border-0 tw-gap-[16px] tw-h-[var(--app-bar-collapsed-height)];
+    @apply tw-flex-col tw-items-center tw-justify-between tw-border-0 tw-gap-[16px];
   }
 
   &--mobile {

@@ -27,7 +27,6 @@ defineEmits<{
 </script>
 
 <style lang="scss">
-
 .app-bar-overlay {
   @apply tw-w-auto tw-h-full tw-absolute tw-top-0 tw-right-0 tw-z-[11]
          tw-bg-[color:var(--app-bar-background)];

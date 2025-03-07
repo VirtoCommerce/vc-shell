@@ -1,6 +1,7 @@
 <template>
   <div
     class="vc-table-row"
+    role="button"
     :class="{
       'vc-table-row--odd': index % 2 === 0,
       'vc-table-row--clickable': hasClickListener,

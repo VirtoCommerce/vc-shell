@@ -13,3 +13,5 @@ export * from "./theme-selector";
 export * from "./sign-in";
 export * from "./settings-menu-item";
 export * from "./generic-dropdown";
+export * from "./draggable-dashboard";
+export * from "./dashboard-widget-card";

@@ -10,19 +10,22 @@
       icon="fas fa-user-circle"
       class="vc-user-info__icon"
     />
-    <div
-      v-if="isExpanded || $isMobile.value"
-      class="vc-user-info__info"
-    >
-      <div class="vc-user-info__name">
-        {{ name || (user && "fullName" in user && user.fullName) || user?.userName }}
+    <Transition name="opacity">
+      <div
+        v-show="isExpanded || $isMobile.value"
+        class="vc-user-info__info"
+      >
+        <div class="vc-user-info__name">
+          {{ name || (user && "fullName" in user && user.fullName) || user?.userName }}
+        </div>
+        <div class="vc-user-info__role">
+          {{
+            (role && $t(`SHELL.USER.ROLE.${role}`)) ||
+            (user?.isAdministrator ? $t("SHELL.USER.ROLE.ADMINISTRATOR") : "")
+          }}
+        </div>
       </div>
-      <div class="vc-user-info__role">
-        {{
-          (role && $t(`SHELL.USER.ROLE.${role}`)) || (user?.isAdministrator ? $t("SHELL.USER.ROLE.ADMINISTRATOR") : "")
-        }}
-      </div>
-    </div>
+    </Transition>
   </div>
 </template>
 
@@ -78,5 +81,15 @@ const imageHandler = computed(() => {
   &__role {
     @apply tw-text-sm tw-text-[color:var(--user-dropdown-account-info-role-color)];
   }
+}
+
+.opacity-enter-active,
+.opacity-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.opacity-enter-from,
+.opacity-leave-to {
+  opacity: 0;
 }
 </style>

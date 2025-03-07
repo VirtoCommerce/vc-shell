@@ -1,16 +1,16 @@
 <template>
   <div
     ref="headerRef"
-    class="vc-table-header"
+    class="vc-table-columns-header"
     @mouseenter="$emit('headerMouseOver', true)"
     @mouseleave="$emit('headerMouseOver', false)"
   >
-    <div class="vc-table-header__row">
+    <div class="vc-table-columns-header__row">
       <div
         v-if="multiselect && items && items.length"
-        class="vc-table-header__checkbox"
+        class="vc-table-columns-header__checkbox"
       >
-        <div class="vc-table-header__checkbox-content">
+        <div class="vc-table-columns-header__checkbox-content">
           <VcCheckbox
             :model-value="headerCheckbox"
             size="m"
@@ -18,17 +18,17 @@
             @click.stop
           />
         </div>
-        <div class="vc-table-header__checkbox-resizer" />
+        <div class="vc-table-columns-header__checkbox-resizer" />
       </div>
       <div
         v-for="(item, index) in filteredCols"
         :id="item.id"
         :key="item.id"
-        class="vc-table-header__cell"
+        class="vc-table-columns-header__cell"
         :class="[
           {
-            'vc-table-header__cell--sortable': item.sortable,
-            'vc-table-header__cell--last': index === filteredCols.length - 1,
+            'vc-table-columns-header__cell--sortable': item.sortable,
+            'vc-table-columns-header__cell--last': index === filteredCols.length - 1,
           },
           item.align ? tableAlignment[item.align] : '',
         ]"
@@ -40,18 +40,18 @@
         @drop="reorderableColumns && onColumnHeaderDrop($event, item)"
         @click="$emit('headerClick', item)"
       >
-        <div class="vc-table-header__cell-content">
-          <div class="vc-table-header__cell-title">
+        <div class="vc-table-columns-header__cell-content">
+          <div class="vc-table-columns-header__cell-title">
             <span
               v-if="editing && item.rules?.required"
-              class="vc-table-header__cell-required"
+              class="vc-table-columns-header__cell-required"
               >*</span
             >
             <slot :name="`header_${item.id}`">{{ item.title }}</slot>
           </div>
           <div
             v-if="sortField === item.id"
-            class="vc-table-header__cell-sort-icon"
+            class="vc-table-columns-header__cell-sort-icon"
           >
             <VcIcon
               size="xs"
@@ -60,7 +60,7 @@
           </div>
           <div
             v-else
-            class="vc-table-header__cell-sort-icons"
+            class="vc-table-columns-header__cell-sort-icons"
           >
             <VcIcon
               size="xs"
@@ -73,9 +73,9 @@
           </div>
         </div>
         <div
-          class="vc-table-header__cell-resizer"
+          class="vc-table-columns-header__cell-resizer"
           :class="{
-            'vc-table-header__cell-resizer--cursor': resizableColumns,
+            'vc-table-columns-header__cell-resizer--cursor': resizableColumns,
           }"
           @mousedown.stop="resizableColumns && handleMouseDown($event, item)"
         />
@@ -83,7 +83,7 @@
 
       <div
         v-if="isHeaderHover && expanded"
-        class="vc-table-header__column-switcher"
+        class="vc-table-columns-header__column-switcher"
       >
         <VcTableColumnSwitcher
           :items="internalColumnsSorted"
@@ -96,18 +96,18 @@
 
     <div
       ref="resizer"
-      class="vc-table-header__resizer"
+      class="vc-table-columns-header__resizer"
     />
     <div
       ref="reorderRef"
-      class="vc-table-header__reorder-ref"
+      class="vc-table-columns-header__reorder-ref"
     />
   </div>
 </template>
 
 <script lang="ts" setup generic="T extends TableItem | string">
 import { toRefs, ref } from "vue";
-import { VcCheckbox, VcIcon } from "../../../../../../";
+import { VcCheckbox, VcIcon } from "../../../../../..";
 import VcTableColumnSwitcher from "../../../vc-table-column-switcher/vc-table-column-switcher.vue";
 import type { ITableColumns, TableItem, TableColPartial } from "../../../../types";
 import { useTableColumnReorder } from "../../../../composables/useTableColumnReorder";
@@ -168,9 +168,11 @@ const { resizer, handleMouseDown } = useTableColumnResize(internalColumns, () =>
 <style lang="scss">
 :root {
   --table-header-height: 60px;
+  --table-header-border-color: var(--base-border-color, var(--neutrals-200));
 }
 
-.vc-table-header {
+.vc-table-columns-header {
+  @apply tw-border-y tw-border-[color:var(--table-header-border-color)] tw-border-solid;
   &__row {
     @apply tw-flex tw-flex-row [box-shadow:var(--table-header-border)] tw-bg-[--table-header-bg];
   }
@@ -194,7 +196,7 @@ const { resizer, handleMouseDown } = useTableColumnResize(internalColumns, () =>
       @apply tw-cursor-pointer;
 
       &:hover {
-        .vc-table-header__cell-sort-icons {
+        .vc-table-columns-header__cell-sort-icons {
           @apply tw-visible;
         }
       }

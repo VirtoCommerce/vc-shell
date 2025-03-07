@@ -23,6 +23,7 @@ import { VNode, computed, inject, Ref, h, useSlots } from "vue";
 import { useGlobalSearch } from "../../../../../../core/composables/useGlobalSearch";
 import { BladeInstance } from "../../../../../../injection-keys";
 import VcTableBaseHeader from "../vc-table-base-header/vc-table-base-header.vue";
+import { IBladeInstance } from "../../../../../../shared";
 
 const props = defineProps<{
   hasHeaderSlot: boolean;
@@ -44,7 +45,17 @@ defineSlots<{
   header: (props: { header: VNode }) => VNode;
 }>();
 
-const blade = inject(BladeInstance);
+const blade = inject(
+  BladeInstance,
+  computed(
+    (): Partial<IBladeInstance> => ({
+      navigation: {
+        idx: 0,
+        instance: null,
+      },
+    }),
+  ),
+);
 const globalSearch = useGlobalSearch();
 const isMobile = inject("isMobile") as Ref<boolean>;
 const slots = useSlots();

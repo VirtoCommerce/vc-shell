@@ -21,7 +21,7 @@
         :title="title"
         :disable-menu="disableMenu"
         @backlink:click="closeBlade(blades.length - 1)"
-        @logo:click="openRoot"
+        @logo:click="operateLogoClick"
       >
         <template #app-switcher>
           <slot name="app-switcher">
@@ -32,12 +32,12 @@
           </slot>
         </template>
 
-        <template
+        <!-- <template
           v-if="$slots['logo:append']"
           #logo:append
         >
           <slot name="logo:append"></slot>
-        </template>
+        </template> -->
 
         <!-- Toolbar slot -->
         <template #toolbar>
@@ -83,7 +83,7 @@
 </template>
 
 <script lang="ts" setup>
-import { h, inject, provide, computed } from "vue";
+import { h, inject, provide, computed, useAttrs } from "vue";
 import VcAppBar from "./_internal/vc-app-bar/vc-app-bar.vue";
 import VcAppMenu from "./_internal/vc-app-menu/vc-app-menu.vue";
 import {
@@ -96,9 +96,8 @@ import {
 } from "./../../../../shared/components";
 import { useNotifications, useUser } from "../../../../core/composables";
 import { useRoute, useRouter } from "vue-router";
-import { watchOnce, useLocalStorage } from "@vueuse/core";
+import { watchOnce } from "@vueuse/core";
 import { MenuItem } from "../../../../core/types";
-import { useToolbarSlots } from "./composables/useToolbarSlots";
 import { useSettingsMenu, SettingsMenuKey } from "../../../../shared/composables/useSettingsMenu";
 import { LanguageSelector } from "../../../../shared/components/language-selector";
 import { ThemeSelector } from "../../../../shared/components/theme-selector";
@@ -106,6 +105,8 @@ import { ChangePasswordButton } from "../../../../shared/components/change-passw
 import { LogoutButton } from "../../../../shared/components/logout-button";
 import { useI18n } from "vue-i18n";
 import { createGlobalSearch } from "../../../../core/composables/useGlobalSearch";
+import { provideDashboardService } from "../../../../core/composables/useDashboard";
+import { DynamicModulesKey } from "../../../../injection-keys";
 
 export interface Props {
   isReady: boolean;
@@ -116,7 +117,12 @@ export interface Props {
   name?: string;
   disableMenu?: boolean;
   role?: string;
+  // кастомное поведение при клике на лого
 }
+
+const emit = defineEmits<{
+  (e: "logo-click", goToRoot: () => void): void;
+}>();
 
 defineOptions({
   inheritAttrs: false,
@@ -125,20 +131,18 @@ defineOptions({
 defineSlots<{
   "app-switcher": void;
   toolbar: void;
-  "toolbar:user-dropdown": (props: { userDropdown: typeof UserDropdownButton }) => void;
-  "toolbar:language-selector": void;
-  "toolbar:theme-selector": void;
-  "logo:append": void;
+  // "logo:append": void;
 }>();
 
 const props = defineProps<Props>();
 
+const attrs = useAttrs();
+
 console.debug("vc-app: Init vc-app");
 
 const internalRoutes = inject("bladeRoutes") as BladeRoutesRecord[];
-const dynamicModules = inject("$dynamicModules", undefined) as Record<string, unknown> | undefined;
+const dynamicModules = inject(DynamicModulesKey, undefined);
 const router = useRouter();
-createGlobalSearch();
 
 const { openBlade, closeBlade, resolveBladeByName, blades, goToRoot } = useBladeNavigation();
 const { appsList, switchApp, getApps } = useAppSwitcher();
@@ -146,9 +150,10 @@ const { appsList, switchApp, getApps } = useAppSwitcher();
 const { loadFromHistory } = useNotifications();
 const route = useRoute();
 const { isAuthenticated } = useUser();
-const routes = router.getRoutes();
 
-const { getToolbarMenuItems } = useToolbarSlots();
+
+
+const routes = router.getRoutes();
 
 const settingsMenu = useSettingsMenu();
 provide(SettingsMenuKey, settingsMenu);
@@ -203,6 +208,10 @@ const onMenuItemClick = function (item: MenuItem) {
   }
 };
 
+const operateLogoClick = () => {
+  emit("logo-click", openRoot);
+};
+
 const openRoot = async () => {
   const isPrevented = await closeBlade(1);
 
@@ -222,7 +231,9 @@ watchOnce(
 );
 
 provide("internalRoutes", internalRoutes);
-provide("$dynamicModules", dynamicModules);
+provide(DynamicModulesKey, dynamicModules);
+provideDashboardService();
+createGlobalSearch();
 </script>
 
 <style lang="scss">

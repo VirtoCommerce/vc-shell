@@ -14,12 +14,12 @@ export function useTableColumnReorder<T extends TableItem | string>(
   const dragOffset = ref({ x: 0, y: 0 });
 
   function findParentHeader(element: HTMLElement) {
-    if (element.classList.contains("vc-table-header__cell")) {
+    if (element.classList.contains("vc-table-columns-header__cell")) {
       return element;
     } else {
       let parent = element.parentElement;
 
-      while (parent && !parent.classList.contains("vc-table-header__cell")) {
+      while (parent && !parent.classList.contains("vc-table-columns-header__cell")) {
         parent = parent.parentElement;
         if (!parent) break;
       }
@@ -60,7 +60,7 @@ export function useTableColumnReorder<T extends TableItem | string>(
       ghost.style.opacity = "0.8";
       ghost.style.background = "var(--table-header-bg)";
       ghost.style.display = "none";
-      ghost.classList.add("vc-table-header__ghost-header");
+      ghost.classList.add("vc-table-columns-header__ghost-header");
 
       document.body.appendChild(ghost);
       ghostRef.value = ghost;
@@ -91,7 +91,7 @@ export function useTableColumnReorder<T extends TableItem | string>(
 
   function onColumnHeaderDragOver(event: DragEvent) {
     const dropHeader = findParentHeader(event.target as HTMLElement);
-    const headerRow = (event.target as HTMLElement).closest(".vc-table-header__row");
+    const headerRow = (event.target as HTMLElement).closest(".vc-table-columns-header__row");
 
     if (headerRow) {
       const headerRowRect = headerRow.getBoundingClientRect();
@@ -179,7 +179,7 @@ export function useTableColumnReorder<T extends TableItem | string>(
   function onColumnHeaderDrop(event: DragEvent, item: TableColPartial) {
     event.preventDefault();
 
-    const headerRow = (event.target as HTMLElement).closest(".vc-table-header__row");
+    const headerRow = (event.target as HTMLElement).closest(".vc-table-columns-header__row");
     if (headerRow) {
       const headerRowRect = headerRow.getBoundingClientRect();
       const isWithinBounds =

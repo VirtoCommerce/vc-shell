@@ -21,5 +21,6 @@
     "utils/*.ts",
     "locales/*.ts",
     "locales/*.json"
-  ]
+  ],
+  "exclude": ["**/*.spec.ts", "vitest.config.ts"]
 }

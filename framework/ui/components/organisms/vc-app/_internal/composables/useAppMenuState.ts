@@ -7,7 +7,12 @@ export interface AppMenuState {
   activeButtonId: string | null;
 }
 
-const { isExpanded: isSidebarExpanded, toggleExpanded: toggleSidebarExpanded } = useMenuExpanded();
+const {
+  isExpanded: isSidebarExpanded,
+  toggleExpanded: toggleSidebarExpanded,
+  isHoverExpanded,
+  toggleHoverExpanded: toggleHoverExpandedFn,
+} = useMenuExpanded();
 
 const state = ref<AppMenuState>({
   isSidebarExpanded,
@@ -18,6 +23,10 @@ const state = ref<AppMenuState>({
 export const useAppMenuState = () => {
   const toggleSidebar = () => {
     toggleSidebarExpanded();
+  };
+
+  const toggleHoverExpanded = (shouldExpand?: boolean) => {
+    toggleHoverExpandedFn(shouldExpand);
   };
 
   const toggleMenu = () => {
@@ -44,6 +53,8 @@ export const useAppMenuState = () => {
     toggleSidebar,
     toggleMenu,
     setActiveButton,
+    toggleHoverExpanded,
+    isHoverExpanded,
     closeAll,
   };
 };

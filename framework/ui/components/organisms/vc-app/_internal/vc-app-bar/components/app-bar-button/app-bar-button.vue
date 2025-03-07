@@ -44,7 +44,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, getCurrentInstance, onUnmounted, useSlots, Slots, h, withDirectives } from "vue";
+import { ref, getCurrentInstance, onUnmounted, useSlots, Slots, h, withDirectives, onMounted } from "vue";
 import { useAppBarOverlay } from "./../../composables/useAppBarOverlay";
 import { vOnClickOutside } from "@vueuse/components";
 
@@ -54,6 +54,7 @@ export interface Props {
   position: "bottom" | "bottom-end" | "bottom-start";
   beforeOpen?: () => boolean;
   overlayed?: boolean;
+  isOpened?: boolean;
 }
 
 export interface Emits {
@@ -135,14 +136,20 @@ onUnmounted(() => {
     hideContent();
   }
 });
+
+onMounted(() => {
+  if (props.isOpened) {
+    toggleContent();
+  }
+});
 </script>
 
 <style lang="scss">
 :root {
   --app-bar-button-width: 52px;
   --app-bar-button-shadow-color: var(--additional-950);
-  --app-bar-button-shadow: 0 -6px 6px var(--additional-50),
-    1px 1px 22px rgb(from var(--app-bar-button-shadow-color) r g b / 7%);
+  --app-bar-button-shadow:
+    0 -6px 6px var(--additional-50), 1px 1px 22px rgb(from var(--app-bar-button-shadow-color) r g b / 7%);
   --app-bar-button-height: var(--app-bar-height);
   --app-bar-button-bg-color: var(--additional-50);
   --app-bar-button-dropdown-bg-color: var(--additional-50);

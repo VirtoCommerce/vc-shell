@@ -55,7 +55,7 @@
       >
         <AppBarHeader
           :logo="logo"
-          :expanded="state.isSidebarExpanded || isHoverExpanded"
+          :expanded="state.isSidebarExpanded"
           class="vc-app-bar__header"
           :class="{
             'vc-app-bar__header--hover-expanded': $isDesktop.value && isHoverExpanded && !state.isSidebarExpanded,
@@ -254,8 +254,7 @@ const shouldShowInMenu = computed(() => {
   // transition-duration: var(--app-bar-hover-transition-duration);
   background-color: var(--app-bar-background);
   // border-right: 1px solid var(--app-bar-border);
-
-  z-index: 10000;
+  z-index: 50;
 
   &--desktop {
     position: fixed;
@@ -390,7 +389,7 @@ const shouldShowInMenu = computed(() => {
     }
 
     &--hover-expanded {
-      @apply tw-w-[var(--app-bar-width)];
+      @apply tw-w-[var(--app-bar-collapsed-width)];
     }
 
     &--hover-collapsed {

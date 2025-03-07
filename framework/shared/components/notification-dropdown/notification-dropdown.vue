@@ -3,6 +3,7 @@
     :title="$t('COMPONENTS.NOTIFICATION_DROPDOWN.TITLE')"
     position="bottom-end"
     :overlayed="overlayed"
+    :is-opened="hasUnreadNotifications"
     @toggle="onOpen"
   >
     <template #trigger>

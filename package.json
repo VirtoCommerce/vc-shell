@@ -94,7 +94,8 @@
     "vue-tsc": "^1.8.27"
   },
   "dependencies": {
-    "cross-spawn": "^7.0.3"
+    "cross-spawn": "^7.0.3",
+    "roboto-fontface": "^0.10.0"
   },
   "lint-staged": {
     "*.{js,ts,html,css}": "prettier --write 'framework/**/*.{ts,vue}' 'cli/**/*.{ts,vue}' 'configs/**/*.{ts,vue}'",

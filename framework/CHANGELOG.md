@@ -1,3 +1,12 @@
+## [1.0.341](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.340...v1.0.341) (2025-03-11)
+
+
+### Features
+
+* **global style:** update base styles with Roboto font and tailwind configurations ([51722bf](https://github.com/VirtoCommerce/vc-shell/commit/51722bff7933816d2cbab9fecb7a7c05fcb8d2d3))
+
+
+
 ## [1.0.340](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.339...v1.0.340) (2025-02-06)
 
 

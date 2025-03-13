@@ -192,7 +192,7 @@ export interface MenuItemConfig {
   /**
    * Menu item icon.
    */
-  icon: string;
+  icon: string | Component;
   /**
    * Menu group icon.
    */

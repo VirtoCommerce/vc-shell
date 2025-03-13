@@ -4,6 +4,7 @@ import { NotificationTemplateConstructor } from "./core/types";
 import { IWidgetService } from "./core/services/widget-service";
 import { IDashboardService } from "./core/services/dashboard-service";
 import { GlobalSearchState } from "./core/composables/useGlobalSearch";
+import { MenuService } from "./core/services/menu-service";
 
 export const navigationViewLocation: InjectionKey<BladeVNode> = Symbol("blade navigation view location");
 export const BladeInstance: InjectionKey<ComputedRef<IBladeInstance>> = Symbol("BladeInstance");
@@ -16,3 +17,4 @@ export const DynamicModulesKey = Symbol("DynamicModules") as InjectionKey<
   typeof window.VcShellDynamicModules | undefined
 >;
 export const GlobalSearchKey = Symbol("GlobalSearch") as InjectionKey<GlobalSearchState>;
+export const MenuServiceKey = Symbol("MenuService") as InjectionKey<MenuService>;

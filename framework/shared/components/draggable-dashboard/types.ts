@@ -1,4 +1,4 @@
-import type { Component } from 'vue';
+import type { Component } from "vue";
 
 /**
  * Position type for a widget on the dashboard grid
@@ -63,6 +63,11 @@ export interface IDashboardWidget {
    * Widget size
    */
   size: DashboardWidgetSize;
+
+  /**
+   * Built-in widget position (optional)
+   */
+  position?: DashboardWidgetPosition;
 }
 
 /**

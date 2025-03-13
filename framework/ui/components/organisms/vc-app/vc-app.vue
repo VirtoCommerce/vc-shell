@@ -107,7 +107,7 @@ import { useI18n } from "vue-i18n";
 import { createGlobalSearch } from "../../../../core/composables/useGlobalSearch";
 import { provideDashboardService } from "../../../../core/composables/useDashboard";
 import { DynamicModulesKey } from "../../../../injection-keys";
-
+import { provideMenuService } from "../../../../core/composables/useMenuService";
 export interface Props {
   isReady: boolean;
   logo?: string;
@@ -150,8 +150,6 @@ const { appsList, switchApp, getApps } = useAppSwitcher();
 const { loadFromHistory } = useNotifications();
 const route = useRoute();
 const { isAuthenticated } = useUser();
-
-
 
 const routes = router.getRoutes();
 
@@ -233,6 +231,7 @@ watchOnce(
 provide("internalRoutes", internalRoutes);
 provide(DynamicModulesKey, dynamicModules);
 provideDashboardService();
+provideMenuService();
 createGlobalSearch();
 </script>
 

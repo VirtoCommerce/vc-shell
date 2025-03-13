@@ -1,9 +1,9 @@
-import { App, Component, h, watch } from "vue";
+import { App, Component, h, resolveComponent, watch } from "vue";
 import { i18n } from "./../i18n";
 import { Router } from "vue-router";
 import { BladeInstanceConstructor, BladeVNode } from "./../../../shared/components/blade-navigation/types";
 import { kebabToPascal } from "./../../utilities";
-import { useMenuService, useNotifications } from "../../composables";
+import { addMenuItem, useMenuService, useNotifications } from "../../composables";
 import * as _ from "lodash-es";
 import { notification } from "../../../shared";
 
@@ -200,9 +200,9 @@ export function createAppModule(
 
           // Add to menu
           if (page.menuItem) {
-            const { addMenuItem } = useMenuService();
             addMenuItem({
               ...page.menuItem,
+              icon: resolveComponent(page.menuItem.icon as string),
               url: page.url,
               routeId: routeName,
               permissions: page.permissions,

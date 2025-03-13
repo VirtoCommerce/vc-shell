@@ -34,7 +34,8 @@ import "@fontsource/plus-jakarta-sans/700.css";
 import "@fontsource/plus-jakarta-sans/800.css";
 import "./assets/styles/index.scss";
 import { createWidgetService } from "./core/services/widget-service";
-import { NotificationTemplatesSymbol, WidgetServiceKey } from "./injection-keys";
+import { MenuServiceKey, NotificationTemplatesSymbol, WidgetServiceKey } from "./injection-keys";
+import { createMenuService } from "./core/services/menu-service";
 
 type I18NParams = Parameters<typeof i18n.global.mergeLocaleMessage>;
 

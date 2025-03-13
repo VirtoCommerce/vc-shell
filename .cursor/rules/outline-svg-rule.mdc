@@ -1,0 +1,135 @@
+---
+description: Rules for SVG icons generaton
+globs:
+alwaysApply: false
+---
+
+# SVG Icon Generation Rules for VC-Shell Framework
+
+## Icon Style Guidelines
+
+### General Style
+- All icons should be in **outline style** (not filled)
+- Use `stroke="currentColor"` for dynamic color inheritance
+- Do not use `fill` attribute (except for special cases where needed)
+- Use clean, minimal designs with consistent stroke width
+- Maintain a minimalist, modern aesthetic consistent with the VC-Shell design system
+
+### Technical Specifications
+- Standard viewBox sizes: 12x12, 18x18, 20x20, 24x24 (choose appropriate size)
+- Standard stroke-width: 2px (consistently across the entire icon)
+- Use stroke-linecap="round" and stroke-linejoin="round" for smooth corners
+- XML namespace: `xmlns="http://www.w3.org/2000/svg"`
+- Set width and height attributes to match viewBox dimensions
+- Ensure the icon is pixel-perfect (align to pixel grid where possible)
+
+### SVG Structure
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="[SIZE]" height="[SIZE]" viewBox="0 0 [SIZE] [SIZE]" fill="none">
+  <!-- SVG elements like path, circle, rect, line, etc. -->
+  <!-- You can use multiple elements and groups as needed -->
+  <!-- Example with path -->
+  <path
+    d="[PATH_DATA]"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+
+  <!-- Example with circle -->
+  <circle
+    cx="[X]" cy="[Y]" r="[RADIUS]"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    fill="none"
+  />
+
+  <!-- Example with group -->
+  <g stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Multiple elements inside a group -->
+    <path d="[PATH_DATA]" />
+    <rect x="[X]" y="[Y]" width="[WIDTH]" height="[HEIGHT]" />
+  </g>
+</svg>
+```
+
+### Design Principles
+- Maintain consistent line thickness across all icons (2px standard)
+- Use geometric shapes and straight lines where possible
+- Maintain sufficient spacing between elements (minimum 1px gap)
+- Optimize SVG code for readability and file size
+- Center the icon design within the viewBox
+- Maintain a consistent padding around the icon within the viewBox (typically 1-2px)
+- Ensure symmetry and balance in the design
+- Use appropriate SVG elements for different parts of the icon
+- Group related elements when appropriate using `<g>` tags
+
+### File Naming
+- Use kebab-case: `icon-name.svg`
+- Name should be descriptive of the icon's function
+- Group related icons with common prefixes (e.g., arrow-left, arrow-right)
+- For directional icons, use cardinal directions (left, right, up, down)
+
+## Examples from Existing Icons
+
+### Simple Icons (chevron-down.svg)
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" fill="none">
+  <path d="M14 7L9.5 11.5L5 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+```
+
+### Complex Icons with Multiple Elements (example)
+```svg
+<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="10" cy="7" r="4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M3 18C3 13.5817 6.58172 10 11 10C15.4183 10 19 13.5817 19 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+```
+
+### UI Element Icons with Groups (example)
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+  <g stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="2" y="2" width="16" height="16" rx="2"/>
+    <path d="M6 6H14M6 10H14M6 14H10"/>
+  </g>
+</svg>
+```
+
+## Generation Guidelines
+
+When creating new icons:
+1. Start with a clear square canvas matching the intended viewBox
+2. Choose appropriate SVG elements for different parts of the icon (path, circle, rect, etc.)
+3. Use consistent stroke width and properties across all elements
+4. Group related elements when it makes sense using `<g>` tags
+5. Use rounded caps and joins for a smoother appearance
+6. Optimize the SVG code by simplifying elements and attributes
+7. Ensure the icon scales well at different sizes
+8. Test the icon with different colors via the `currentColor` inheritance
+9. Validate that the icon maintains visual clarity at smaller sizes
+10. Ensure consistent proportions with other icons in the library
+
+## SVG Code Optimization
+
+- Use relative commands where possible to reduce file size
+- Minimize the number of points and elements while maintaining visual quality
+- Group elements with common attributes using `<g>` tags
+- Avoid unnecessary complexity in path data and attributes
+- Use SVG optimization tools to clean up code
+- Remove unnecessary attributes and whitespace
+
+## Accessibility Considerations
+
+- Include descriptive `aria-label` attributes when implementing icons
+- Ensure sufficient contrast when using icons in the UI
+- Consider how icons appear to users with color vision deficiencies
+- Use icons consistently throughout the application to maintain usability
+
+
+
+

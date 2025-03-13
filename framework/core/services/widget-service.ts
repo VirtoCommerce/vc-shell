@@ -33,6 +33,18 @@ export interface IWidgetService {
   isWidgetRegistered: (id: string) => boolean;
 }
 
+// Global state for pre-registering widgets
+const preregisteredWidgets: IWidgetRegistration[] = [];
+const preregisteredIds = new Set<string>();
+
+/**
+ * Registers a widget before the service is initialized
+ */
+export function registerWidget(widget: IWidget, bladeId: string): void {
+  preregisteredWidgets.push({ bladeId, widget });
+  preregisteredIds.add(widget.id);
+}
+
 export function createWidgetService(): IWidgetService {
   const widgetRegistry = reactive<Record<string, IWidget[]>>({});
   const registeredWidgets = reactive<IWidgetRegistration[]>([]);
@@ -112,6 +124,14 @@ export function createWidgetService(): IWidgetService {
   const isActiveWidget = (id: string): boolean => {
     return activeWidgetRef.value?.id === id;
   };
+
+  preregisteredWidgets.forEach((widget) => {
+    try {
+      registerWidget(widget.widget, widget.bladeId);
+    } catch (e) {
+      console.warn(`Failed to register preregistered widget ${widget.widget.id}:`, e);
+    }
+  });
 
   return {
     registerWidget,

@@ -33,7 +33,10 @@
           v-bind="slotProps"
         />
       </template>
-      <template #filters="slotProps">
+      <template
+        v-if="$slots.filters"
+        #filters="slotProps"
+      >
         <slot
           name="filters"
           v-bind="slotProps"

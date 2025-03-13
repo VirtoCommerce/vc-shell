@@ -14,7 +14,7 @@
         :class="{
           'is-animating': isDragging,
         }"
-        :style="getPreviewStyles(draggedWidget, previewPosition)"
+        :style="widgetStyles.getPreviewStyles(draggedWidget, previewPosition)"
       ></div>
 
       <!-- Widgets -->
@@ -22,7 +22,7 @@
         v-for="widget in widgets"
         :key="widget.id"
         :widget="widget"
-        :style="getWidgetStyles(widget)"
+        :style="getWidgetStylesWithState(widget)"
         :is-dragging="draggedWidget?.id === widget.id"
         :class="{
           'is-dragging': draggedWidget?.id === widget.id,
@@ -37,12 +37,35 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, defineExpose, computed, watch, onUpdated } from "vue";
-import type { Ref, Component } from "vue";
+/**
+ * DraggableDashboard Component
+ *
+ * A flexible dashboard that allows widgets to be dragged and arranged in a grid layout.
+ * Features:
+ * - Drag and drop interface for arranging widgets
+ * - Automatic layout calculation
+ * - Collision detection and displacement
+ * - Responsive grid
+ * - Layout persistence in localStorage
+ * - Support for built-in widget positions
+ *
+ * Widget positions are automatically saved to localStorage whenever the layout changes
+ * and restored when the dashboard is initialized.
+ *
+ * Position initialization priority:
+ * 1. Positions from localStorage (if available)
+ * 2. Built-in widget positions (if defined)
+ * 3. Automatic arrangement in rows
+ */
+import { ref, onMounted, onUnmounted, defineExpose, computed, watch } from "vue";
+import type { Ref } from "vue";
 import type { IDashboardWidget } from "./types";
 import { useDashboardGrid } from "./composables/useDashboardGrid";
 import { useDashboardDragAndDrop } from "./composables/useDashboardDragAndDrop";
 import { useDashboard } from "../../../core/composables/useDashboard";
+import { useCellSizeCalculator } from "./composables/useCellSizeCalculator";
+import { useWidgetStyles } from "./composables/useWidgetStyles";
+import { useResizeObserver } from "./composables/useResizeObserver";
 import VcContainer from "../../../ui/components/atoms/vc-container/vc-container.vue";
 import DashboardWidget from "./_internal/DashboardWidget.vue";
 
@@ -54,15 +77,37 @@ const dashboard = useDashboard();
 const {
   widgets,
   layout,
-
+  GRID_COLUMNS,
+  getGridRows,
   arrangeWidgetsInRows,
   initializeLayout,
-  getGridRows,
+  saveLayoutToLocalStorage,
+  loadLayoutFromLocalStorage,
+  initializeWithBuiltInPositions,
 } = useDashboardGrid();
 
+// Initialize cellSize calculator
+const cellSizeCalculator = useCellSizeCalculator(GRID_COLUMNS);
+
+// Function for getting the cell sizes
+const getCellSize = () => {
+  return cellSizeCalculator.calculateCellSize(gridContainerRef.value);
+};
+
+// Initialize widget styles
+const widgetStyles = useWidgetStyles(getCellSize);
+
 // Initialize Drag & Drop
-const { draggedWidget, previewPosition, displacedWidgets, isDragging, handleMouseDown, setGridContainer } =
-  useDashboardDragAndDrop(dashboard.updateWidgetPosition, getGridRows);
+const {
+  draggedWidget,
+  previewPosition,
+  displacedWidgets,
+  isDragging,
+  handleMouseDown,
+  setGridContainer,
+  isWidgetDisplaced,
+  getDisplacedPosition,
+} = useDashboardDragAndDrop(dashboard.updateWidgetPosition, getGridRows);
 
 // Pass grid container reference to the dragging composable
 watch(gridContainerRef, (container) => {
@@ -71,37 +116,71 @@ watch(gridContainerRef, (container) => {
   }
 });
 
-// Cached cell size
-const cellSizeCache = ref<{ width: number; height: number } | null>(null);
-// Previous container width
-const previousContainerWidth = ref<number>(0);
-// ResizeObserver instance
-const resizeObserver = ref<ResizeObserver | null>(null);
-// Debounce timer
-const resizeDebounceTimer = ref<number | null>(null);
+// Watch for layout changes and save to localStorage
+watch(
+  layout,
+  () => {
+    saveLayoutToLocalStorage();
+  },
+  { deep: true },
+);
 
-// Function to get cell size with caching
-const getCellSize = () => {
-  if (cellSizeCache.value) return cellSizeCache.value;
-  if (!gridContainerRef.value) return { width: 0, height: 0 };
+// Handle container resize with debounce
+const handleContainerResize = (entries: ResizeObserverEntry[]) => {
+  if (!entries.length || isDragging.value) return;
 
-  const rect = gridContainerRef.value.getBoundingClientRect();
-  const availableWidth = rect.width - 2 * 18; // Subtract horizontal padding (18px on each side)
-  const cellWidthWithGap = availableWidth / 12; // Total width including gap
+  const entry = entries[0];
+  const container = gridContainerRef.value;
 
-  const size = {
-    width: Math.max(cellWidthWithGap, 0), // Protection from negative values
-    height: 80, // Cell height remains the same
-  };
-
-  cellSizeCache.value = size;
-  previousContainerWidth.value = rect.width;
-  return size;
+  if (container) {
+    cellSizeCalculator.handleContainerResize(container);
+  }
 };
 
-// Clear cache when window is resized
-const clearCellSizeCache = () => {
-  cellSizeCache.value = null;
+// Initialize resize observer
+const resizeObserver = useResizeObserver(handleContainerResize, { debounceMs: 300 });
+
+// Gets the styles for the widget depending on its state
+const getWidgetStylesWithState = (widget: IDashboardWidget) => {
+  const position = layout.value.get(widget.id);
+  const isDragged = draggedWidget.value?.id === widget.id;
+  const displacedPosition = isWidgetDisplaced(widget.id) ? getDisplacedPosition(widget.id) : undefined;
+
+  return widgetStyles.getWidgetStyles(widget, position, isDragged, displacedPosition);
+};
+
+// Public method for rearranging widgets
+const rearrangeWidgets = () => {
+  arrangeWidgetsInRows(widgets.value);
+};
+
+// Public method to manually trigger a layout recalculation
+const recalculateLayout = () => {
+  cellSizeCalculator.clearCache();
+  recalculateWidgetPositions();
+};
+
+/**
+ * Manually saves the current dashboard layout to localStorage
+ *
+ * The layout is automatically saved when it changes, but this method
+ * can be used to trigger a save operation manually if needed.
+ */
+const saveLayout = () => {
+  saveLayoutToLocalStorage();
+};
+
+/**
+ * Initializes dashboard widgets using their built-in positions
+ *
+ * This is used to reset the layout to the original widget positions
+ * defined when the widgets were registered.
+ *
+ * @returns {boolean} True if at least one widget had a built-in position
+ */
+const useBuiltInPositions = () => {
+  const result = initializeWithBuiltInPositions();
+  return result;
 };
 
 // Recalculate widget positions based on new container size
@@ -111,111 +190,8 @@ const recalculateWidgetPositions = () => {
 
   // Update previous width
   if (gridContainerRef.value) {
-    previousContainerWidth.value = gridContainerRef.value.getBoundingClientRect().width;
+    cellSizeCalculator.previousContainerWidth.value = gridContainerRef.value.getBoundingClientRect().width;
   }
-};
-
-// Handle container resize with debounce
-const handleContainerResize = (entries: ResizeObserverEntry[]) => {
-  if (!entries.length || isDragging.value) return;
-
-  const entry = entries[0];
-  const newWidth = entry.contentRect.width;
-
-  // Clear cache to force recalculation of sizes
-  clearCellSizeCache();
-
-  // If width changed significantly (more than 5% or 50px), reposition widgets
-  const widthChange = Math.abs(newWidth - previousContainerWidth.value);
-  const widthChangePercent = previousContainerWidth.value ? (widthChange / previousContainerWidth.value) * 100 : 0;
-
-  if (widthChangePercent > 5 || widthChange > 50) {
-    recalculateWidgetPositions();
-  }
-}; // 300ms debounce
-
-// Get styles for preview position indicator
-const getPreviewStyles = (widget: IDashboardWidget, position: { x: number; y: number }) => {
-  const cellSize = getCellSize();
-  if (!position || !widget?.size) return {};
-
-  const widgetGap = 20; // Widget gap in pixels
-
-  return {
-    width: `${widget.size.width * cellSize.width - widgetGap}px`,
-    height: `${widget.size.height * cellSize.height - widgetGap}px`,
-    transform: `translate(${position.x * cellSize.width + widgetGap / 2}px, ${position.y * cellSize.height + widgetGap / 2}px)`,
-  };
-};
-
-// Helper to check if widget is being displaced
-const isWidgetDisplaced = (widgetId: string) => {
-  return displacedWidgets.value.has(widgetId);
-};
-
-// Get combined widget styles for absolute positioning
-const getWidgetStyles = computed(() => (widget: IDashboardWidget) => {
-  const position = layout.value.get(widget.id);
-  if (!position) return { display: "none" };
-
-  const cellSize = getCellSize();
-  const widgetGap = 20; // Widget gap in pixels
-
-  // Calculate actual dimensions with gaps
-  const width = widget.size.width * cellSize.width - widgetGap;
-  const height = widget.size.height * cellSize.height - widgetGap;
-
-  // Calculate position with gaps
-  const left = position.x * cellSize.width + widgetGap / 2;
-  const top = position.y * cellSize.height + widgetGap / 2;
-
-  // Base styles for all widgets
-  const baseStyles = {
-    position: "absolute",
-    width: `${width}px`,
-    height: `${height}px`,
-  };
-
-  // If widget is being displaced by another widget
-  if (isWidgetDisplaced(widget.id)) {
-    const newPos = displacedWidgets.value.get(widget.id)!;
-    return {
-      ...baseStyles,
-      transform: `translate(${newPos.x * cellSize.width + widgetGap / 2}px, ${newPos.y * cellSize.height + widgetGap / 2}px)`,
-      transition: "transform var(--dashboard-transition-duration) var(--dashboard-transition-timing)",
-      zIndex: "10",
-    } as Record<string, string>;
-  }
-
-  // If widget is currently being dragged
-  if (draggedWidget.value?.id === widget.id) {
-    return {
-      ...baseStyles,
-      transform: `translate(${left}px, ${top}px)`,
-      opacity: "0", // Hide original since clone is displayed
-      pointerEvents: "none",
-      zIndex: "1",
-      transition: "none", // Disable animations for the source widget
-    } as Record<string, string>;
-  }
-
-  // Regular widget
-  return {
-    ...baseStyles,
-    transform: `translate(${left}px, ${top}px)`,
-    transition: "transform var(--dashboard-transition-duration) var(--dashboard-transition-timing)",
-  } as Record<string, string>;
-});
-
-// Public method for rearranging widgets
-const rearrangeWidgets = () => {
-  arrangeWidgetsInRows(widgets.value);
-};
-
-// Public method to manually trigger a layout recalculation
-const recalculateLayout = () => {
-  clearCellSizeCache();
-  recalculateWidgetPositions();
 };
 
 // Add cleanup on component unmount
@@ -225,35 +201,25 @@ onMounted(() => {
   getCellSize();
 
   // Initialize resize observer for the container
-  if (gridContainerRef.value && window.ResizeObserver) {
-    resizeObserver.value = new ResizeObserver(handleContainerResize);
-    resizeObserver.value.observe(gridContainerRef.value);
+  if (gridContainerRef.value && resizeObserver.isSupported) {
+    resizeObserver.observe(gridContainerRef.value);
   }
 
   // Also keep the window resize listener for fallback compatibility
-  window.addEventListener("resize", clearCellSizeCache);
+  window.addEventListener("resize", cellSizeCalculator.clearCache);
 });
 
 onUnmounted(() => {
-  // Cleanup resize observer
-  if (resizeObserver.value) {
-    resizeObserver.value.disconnect();
-    resizeObserver.value = null;
-  }
-
-  // Clear debounce timer if any
-  if (resizeDebounceTimer.value !== null) {
-    window.clearTimeout(resizeDebounceTimer.value);
-    resizeDebounceTimer.value = null;
-  }
-
-  window.removeEventListener("resize", clearCellSizeCache);
+  // Cleanup window event listener
+  window.removeEventListener("resize", cellSizeCalculator.clearCache);
 });
 
 // Export public methods
 defineExpose({
   rearrangeWidgets,
   recalculateLayout,
+  saveLayout,
+  useBuiltInPositions,
 });
 </script>
 

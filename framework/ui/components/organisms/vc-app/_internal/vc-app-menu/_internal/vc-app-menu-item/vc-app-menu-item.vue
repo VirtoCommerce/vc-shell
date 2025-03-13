@@ -35,12 +35,12 @@
 <script lang="ts" setup>
 import VcAppMenuLink from "./_internal/vc-app-menu-link.vue";
 import { MenuItem } from "../../../../../../../../core/types";
-
+import type { Component } from "vue";
 export interface Props {
   sticky?: boolean;
   isVisible?: boolean;
   url?: string;
-  icon?: string;
+  icon?: string | Component;
   title?: string;
   children?: MenuItem[];
   expand?: boolean;

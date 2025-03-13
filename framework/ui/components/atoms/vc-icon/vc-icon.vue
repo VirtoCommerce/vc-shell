@@ -12,7 +12,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, markRaw } from "vue";
+import { computed, markRaw, resolveComponent } from "vue";
 import type { Component } from "vue";
 
 export interface Props {
@@ -26,9 +26,27 @@ const props = withDefaults(defineProps<Props>(), {
   size: "m",
 });
 
-const isCustomIcon = computed(() => typeof props.icon !== "string");
+// Check if the icon is a component or can be resolved as a component
+const isCustomIcon = computed(() => {
+  if (typeof props.icon !== "string") {
+    return true; // Component instance passed directly
+  }
 
-const safeIcon = computed(() => (typeof props.icon !== "string" ? markRaw(props.icon) : props.icon));
+  // Check if string is a component name that can be resolved
+  const resolved = resolveComponent(props.icon);
+  return resolved !== props.icon; // If resolved is different from original string, it's a component name
+});
+
+// Get the component instance for rendering
+const safeIcon = computed(() => {
+  if (typeof props.icon !== "string") {
+    return markRaw(props.icon); // Use markRaw for direct component instances
+  }
+
+  // Try to resolve component by name
+  const resolved = resolveComponent(props.icon);
+  return resolved !== props.icon ? resolved : "i"; // Return resolved component or fallback to 'i'
+});
 
 const sizeMap = {
   xs: 12,
@@ -62,20 +80,21 @@ $sizes: xs, s, m, l, xl, xxl, xxxl;
 $variants: warning, danger, success;
 
 .vc-icon {
-  @apply tw-overflow-visible;
-  @each $size in $sizes {
-    &_#{$size} {
-      @apply tw-text-[length:var(--icon-size-#{$size})];
-    }
+  overflow: visible;
+}
+
+@each $size in $sizes {
+  .vc-icon_#{$size} {
+    font-size: var(--icon-size-#{$size});
   }
+}
 
-  @each $variant in $variants {
-    &_#{$variant} {
-      @apply tw-text-[color:var(--icon-color-#{$variant})];
+@each $variant in $variants {
+  .vc-icon_#{$variant} {
+    color: var(--icon-color-#{$variant});
 
-      :deep(path) {
-        stroke: var(--icon-color-#{$variant});
-      }
+    :deep(path) {
+      stroke: var(--icon-color-#{$variant});
     }
   }
 }

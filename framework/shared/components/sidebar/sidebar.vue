@@ -1,5 +1,8 @@
 <template>
-  <Teleport to="body">
+  <Teleport
+    to="body"
+    :disabled="$isDesktop.value"
+  >
     <template v-if="isExpanded">
       <div
         v-if="isExpanded"

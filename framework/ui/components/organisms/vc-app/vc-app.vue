@@ -1,6 +1,6 @@
 <template>
   <VcLoading
-    v-if="!isReady"
+    v-if="!isAppReady"
     active
     class="vc-app__loader"
   />
@@ -83,7 +83,7 @@
 </template>
 
 <script lang="ts" setup>
-import { h, inject, provide, computed, useAttrs } from "vue";
+import { h, inject, provide, computed, useAttrs, watch, toRef, ref, onBeforeUnmount, onUnmounted } from "vue";
 import VcAppBar from "./_internal/vc-app-bar/vc-app-bar.vue";
 import VcAppMenu from "./_internal/vc-app-menu/vc-app-menu.vue";
 import {
@@ -142,6 +142,9 @@ console.debug("vc-app: Init vc-app");
 
 const internalRoutes = inject("bladeRoutes") as BladeRoutesRecord[];
 const dynamicModules = inject(DynamicModulesKey, undefined);
+
+const isAppReady = ref(props.isReady);
+
 const router = useRouter();
 
 const { openBlade, closeBlade, resolveBladeByName, blades, goToRoot } = useBladeNavigation();
@@ -221,6 +224,7 @@ const openRoot = async () => {
 watchOnce(
   () => props.isReady,
   async (newVal) => {
+    isAppReady.value = newVal;
     if (isAuthenticated.value && newVal) {
       await loadFromHistory();
       await getApps();
@@ -228,11 +232,19 @@ watchOnce(
   },
 );
 
+watch(isAuthenticated, (newVal) => {
+  isAppReady.value = newVal;
+});
+
 provide("internalRoutes", internalRoutes);
 provide(DynamicModulesKey, dynamicModules);
 provideDashboardService();
 provideMenuService();
 createGlobalSearch();
+
+onUnmounted(() => {
+  isAppReady.value = false;
+});
 </script>
 
 <style lang="scss">

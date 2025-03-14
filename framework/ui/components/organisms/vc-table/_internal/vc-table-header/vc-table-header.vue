@@ -61,7 +61,7 @@ const isMobile = inject("isMobile") as Ref<boolean>;
 const slots = useSlots();
 
 const currentBladeId = computed(() => {
-  return blade?.value.navigation?.idx || 0;
+  return blade?.value?.id || 0;
 });
 
 const shouldShowSearch = computed(() => {

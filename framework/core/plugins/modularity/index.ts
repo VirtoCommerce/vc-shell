@@ -205,7 +205,7 @@ export function createAppModule(
               icon: resolveComponent(page.menuItem.icon as string),
               url: page.url,
               routeId: routeName,
-              permissions: page.permissions,
+              permissions: page.permissions || page.menuItem.permissions,
             });
           }
         }

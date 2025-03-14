@@ -2,7 +2,7 @@ import { Slot, defineComponent, h, provide, ref, VNode, PropType, Component, rea
 import { BladeInstance, navigationViewLocation, BLADE_BACK_BUTTON } from "./../../../../../injection-keys";
 import { BladeVNode, CoreBladeExposed } from "../../types";
 import { toRef, watchTriggerable } from "@vueuse/core";
-import { Breadcrumbs } from "../../../../..";
+import { Breadcrumbs, FALLBACK_BLADE_ID } from "../../../../..";
 
 export const VcBladeView = defineComponent({
   name: "BladeView",
@@ -53,7 +53,7 @@ export const VcBladeView = defineComponent({
     provide(
       BladeInstance,
       computed(() => ({
-        id: bl.value?.type.name ?? "fallback-blade-id",
+        id: bl.value?.type.name ?? FALLBACK_BLADE_ID,
         expandable: props.expandable,
         maximized: maximized.value,
         error: props.error,

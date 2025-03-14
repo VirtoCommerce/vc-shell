@@ -195,20 +195,33 @@ export interface MenuItemConfig {
   icon: string | Component;
   /**
    * Menu group icon.
+   *
+   * @deprecated Use groupConfig.icon instead for better robustness
    */
   groupIcon?: string;
   /**
    * Menu item group. Is used to group menu items with it's provided name.
    *
    * If the path is not specified, the menu item is added to the root of the menu.
+   *
+   * @deprecated Use groupConfig instead for better robustness
    */
   group?: string;
+  /**
+   * Group configuration for creating or updating a group when adding this menu item.
+   * This allows creating a group and adding an item to it in one step.
+   * If a group with the specified ID already exists, it will be updated with the provided properties.
+   */
+  groupConfig?: Omit<MenuItemConfig, "group" | "groupId" | "groupIcon" | "groupConfig" | "inGroupPriority">;
   /**
    * Position priority.
    */
   priority: number;
   /**
    * Position priority in group
+   *
+   * @deprecated Use groupConfig.priority instead for better robustness
    */
   inGroupPriority?: number;
+  permissions?: string | string[];
 }

@@ -1,18 +1,20 @@
 <template>
-  <div
-    class="app-bar-overlay"
-    :class="{
-      'app-bar-overlay--mobile': $isMobile.value,
-      'app-bar-overlay--desktop': $isDesktop.value,
-      'app-bar-overlay--sidebar': isSidebarMode,
-      'app-bar-overlay--standalone-mobile': $isMobile.value && !isSidebarMode,
-      'app-bar-overlay--collapsed': !expanded && !$isMobile.value,
-    }"
-  >
-    <div class="app-bar-overlay__content app-bar-overlay__dropdowns">
-      <slot />
+  <Teleport to="body">
+    <div
+      class="app-bar-overlay"
+      :class="{
+        'app-bar-overlay--mobile': $isMobile.value,
+        'app-bar-overlay--desktop': $isDesktop.value,
+        'app-bar-overlay--sidebar': isSidebarMode,
+        'app-bar-overlay--standalone-mobile': $isMobile.value && !isSidebarMode,
+        'app-bar-overlay--collapsed': !expanded && !$isMobile.value,
+      }"
+    >
+      <div class="app-bar-overlay__content app-bar-overlay__dropdowns">
+        <slot />
+      </div>
     </div>
-  </div>
+  </Teleport>
 </template>
 
 <script lang="ts" setup>

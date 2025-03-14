@@ -17,6 +17,8 @@
           'vc-badge__badge--active': active,
           'vc-badge__badge--clickable': clickable,
           'vc-badge__badge--disabled': disabled,
+          'vc-badge__badge--content-long': String(content).length > 1,
+          'vc-badge__badge--content-very-long': String(content).length > 2,
         }"
         @click="onClick"
       >
@@ -78,11 +80,8 @@ function onClick(): void {
   --badge-border-color-active: var(--primary-300);
   --badge-border-color-disabled: var(--primary-200);
 
-  --badge-width-small: 16px;
-  --badge-width-medium: 16px;
-
-  --badge-padding-small: 0px 4px;
-  --badge-padding-medium: 0 4px;
+  --badge-size-small: 17px;
+  --badge-size-medium: 20px;
 
   --badge-distance-top-small: -8px;
   --badge-distance-right-small: -10px;
@@ -97,12 +96,11 @@ $sizes: small, medium;
   .vc-badge {
     &--#{$size} {
       .vc-badge__badge {
-        min-width: var(--badge-width-#{$size});
-        padding: var(--badge-padding-#{$size});
+        height: var(--badge-size-#{$size});
+        min-width: var(--badge-size-#{$size});
         top: var(--badge-distance-top-#{$size});
         right: var(--badge-distance-right-#{$size});
-        width: 100%;
-        @apply tw-text-xs tw-leading-snug;
+        @apply tw-text-xxs tw-leading-snug;
       }
     }
   }
@@ -113,7 +111,25 @@ $sizes: small, medium;
 }
 
 .vc-badge__badge {
-  @apply tw-absolute tw-inline-flex tw-justify-center tw-items-center tw-text-center tw-indent-0 tw-rounded-full tw-font-semibold tw-text-xxs tw-bg-[color:var(--badge-background-color)] tw-text-[color:var(--badge-text-color)] tw-border tw-border-solid tw-border-[color:var(--badge-border-color)] tw-transition tw-duration-200;
+  @apply tw-absolute tw-inline-flex tw-justify-center tw-items-center tw-text-center tw-indent-0 tw-rounded-full tw-font-semibold tw-bg-[color:var(--badge-background-color)] tw-text-[color:var(--badge-text-color)] tw-border tw-border-solid tw-border-[color:var(--badge-border-color)] tw-transition tw-duration-200;
+  aspect-ratio: 1 / 1;
+  box-sizing: border-box;
+  white-space: nowrap;
+  line-height: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.vc-badge__badge--content-long {
+  aspect-ratio: auto;
+}
+
+.vc-badge__badge--content-very-long {
+  aspect-ratio: auto;
+  max-width: 40px;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 
 .vc-badge__badge--active {

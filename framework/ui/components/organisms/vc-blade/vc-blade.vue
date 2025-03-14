@@ -136,6 +136,7 @@ import vcPopupError from "../../../../shared/components/common/popup/vc-popup-er
 import { BladeInstance, BLADE_BACK_BUTTON } from "../../../../injection-keys";
 import { default as VcWidgetContainer } from "./_internal/vc-blade-widget-container/vc-widget-container.vue";
 import VertDotsIcon from "../../atoms/vc-icon/icons/VertDotsIcon.vue";
+import { FALLBACK_BLADE_ID } from "../../../../core/constants";
 
 export interface Props {
   icon?: string;
@@ -205,7 +206,7 @@ const emit = defineEmits<Emits>();
 const blade = inject(
   BladeInstance,
   computed(() => ({
-    id: "fallback-blade-id",
+    id: FALLBACK_BLADE_ID,
     error: undefined,
     expandable: false,
     maximized: false,
@@ -356,7 +357,7 @@ const { open } = usePopup({
   }
 
   &__breadcrumbs {
-    @apply tw-mr-3;
+    @apply tw-mr-[10px];
 
     &-button {
       @apply tw-text-[color:var(--blade-header-breadcrumbs-button-color)] tw-cursor-pointer hover:tw-text-[color:var(--blade-header-breadcrumbs-button-color-hover)] #{!important};
@@ -429,6 +430,10 @@ const { open } = usePopup({
     &:empty {
       @apply tw-hidden;
     }
+  }
+
+  &__breadcrumbs-button {
+    @apply tw-p-0 #{!important};
   }
 }
 

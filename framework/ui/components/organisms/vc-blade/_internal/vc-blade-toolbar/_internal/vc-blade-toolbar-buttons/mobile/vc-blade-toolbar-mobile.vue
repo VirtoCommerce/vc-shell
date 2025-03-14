@@ -115,7 +115,7 @@ function handleItemClick(item: IBladeToolbar) {
   }
 
   &__menu {
-    @apply tw-fixed tw-bottom-[167px] tw-right-[33px] tw-z-[60] tw-flex tw-flex-col tw-gap-2 tw-items-end;
+    @apply tw-fixed tw-bottom-[167px] tw-right-[33px] tw-z-[60] tw-flex tw-flex-col tw-gap-2 tw-items-end tw-px-2;
   }
 }
 

@@ -243,21 +243,18 @@ defineExpose({
   --dashboard-transition-timing: cubic-bezier(0.25, 0.1, 0.25, 1);
   --dashboard-drag-scale: 1.02;
   --dashboard-gap: 20px;
-  --dashboard-widget-shadow-base: 0px 0px 6px -2px rgb(from var(--neutrals-950) r g b / 0.1);
-  --dashboard-widget-shadow-elevated: 3px 9px 15px -3px rgb(from var(--neutrals-950) r g b / 0.08);
+
   --dashboard-position-preview-color: rgb(from var(--primary-500) r g b / 0.15);
   --dashboard-position-preview-border-color: rgb(from var(--primary-500) r g b / 0.5);
 }
 
 .vc-dashboard-grid {
-  @apply tw-w-full tw-h-full;
   background-color: var(--dashboard-background);
   touch-action: none;
 
   &__container {
-    @apply tw-w-full tw-h-full tw-relative;
+    @apply tw-w-full tw-h-full;
     padding: var(--dashboard-cell-gap-vertical) var(--dashboard-cell-gap-horizontal);
-    position: relative;
     overflow: auto;
     min-height: calc(var(--dashboard-cell-height) * 12 + var(--dashboard-cell-gap-vertical) * 2);
   }

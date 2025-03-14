@@ -8,25 +8,13 @@
   ></div>
   <div
     class="vc-app-bar"
-    :class="{
-      'vc-app-bar--mobile': $isMobile.value,
-      'vc-app-bar--desktop': $isDesktop.value,
-      'vc-app-bar--collapsed': !state.isSidebarExpanded && $isDesktop.value,
-      'vc-app-bar--hover-expanded': $isDesktop.value && isHoverExpanded,
-      'vc-app-bar--hover-collapsed': $isDesktop.value && !state.isSidebarExpanded && !isHoverExpanded,
-    }"
+    :class="appBarClasses"
     @mouseenter="$isDesktop.value && !state.isSidebarExpanded && handleHoverExpand(true)"
     @mouseleave="$isDesktop.value && !state.isSidebarExpanded && handleHoverExpand(false)"
   >
     <div
       class="vc-app-bar__wrap"
-      :class="{
-        'vc-app-bar__wrap--mobile-expanded': $isMobile.value && state.isSidebarExpanded,
-        'vc-app-bar__wrap--desktop-collapsed': $isDesktop.value && !state.isSidebarExpanded,
-        'vc-app-bar__wrap--desktop-expanded': $isDesktop.value && state.isSidebarExpanded,
-        'vc-app-bar__wrap--hover-expanded': $isDesktop.value && isHoverExpanded && !state.isSidebarExpanded,
-        'vc-app-bar__wrap--hover-collapsed': $isDesktop.value && !isHoverExpanded && !state.isSidebarExpanded,
-      }"
+      :class="wrapClasses"
     >
       <div
         v-if="!$isMobile.value"
@@ -139,7 +127,7 @@ import AppBarHeader from "./_internal/AppBarHeader.vue";
 import AppBarOverlay from "./_internal/AppBarOverlay.vue";
 import MenuSidebar from "./_internal/MenuSidebar.vue";
 import AppBarContent from "./_internal/AppBarContent.vue";
-import { ref, computed, provide } from "vue";
+import { ref, computed, provide, inject } from "vue";
 import { vOnClickOutside } from "@vueuse/components";
 
 export interface Props {
@@ -175,6 +163,9 @@ const {
 } = useAppMenuState();
 const { overlayContent, overlayProps, hideContent, isOverlayed } = useAppBarOverlay();
 
+const isMobile = inject("isMobile", ref(false));
+const isDesktop = inject("isDesktop", ref(true));
+
 // Provide appMenuState для дочерних компонентов
 provide("appMenuState", { closeAll });
 
@@ -203,6 +194,26 @@ const shouldShowOverlay = computed(() => {
 
 const shouldShowInMenu = computed(() => {
   return overlayContent.value && !isOverlayed.value && state.value.isMenuOpen;
+});
+
+const appBarClasses = computed(() => {
+  return {
+    "vc-app-bar--mobile": isMobile.value,
+    "vc-app-bar--desktop": isDesktop.value,
+    "vc-app-bar--collapsed": !state.value.isSidebarExpanded && isDesktop.value,
+    "vc-app-bar--hover-expanded": isDesktop.value && isHoverExpanded.value,
+    "vc-app-bar--hover-collapsed": isDesktop.value && !state.value.isSidebarExpanded && !isHoverExpanded.value,
+  };
+});
+
+const wrapClasses = computed(() => {
+  return {
+    "vc-app-bar__wrap--mobile-expanded": isMobile.value && state.value.isSidebarExpanded,
+    "vc-app-bar__wrap--desktop-collapsed": isDesktop.value && !state.value.isSidebarExpanded,
+    "vc-app-bar__wrap--desktop-expanded": isDesktop.value && state.value.isSidebarExpanded,
+    "vc-app-bar__wrap--hover-expanded": isDesktop.value && isHoverExpanded.value && !state.value.isSidebarExpanded,
+    "vc-app-bar__wrap--hover-collapsed": isDesktop.value && !isHoverExpanded.value && !state.value.isSidebarExpanded,
+  };
 });
 </script>
 

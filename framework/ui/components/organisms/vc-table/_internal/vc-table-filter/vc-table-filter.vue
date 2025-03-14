@@ -6,6 +6,7 @@
   >
     <VcButton
       text
+      class="vc-table-filter__button"
       @click="openPanel"
     >
       <VcBadge
@@ -31,36 +32,40 @@
     render="mobile"
     @close="closePanel"
   >
+    <template #header>
+      <span />
+    </template>
     <template #content>
       <div class="vc-table-filter">
         <!-- Filter panel -->
-        <teleport to="body">
+        <div
+          v-if="isPanelVisible"
+          ref="filterPanel"
+          :class="panelClass"
+          :style="filterStyle"
+          @click.self="closePanel"
+        >
           <div
-            v-if="isPanelVisible"
-            ref="filterPanel"
-            :class="panelClass"
-            :style="filterStyle"
-            @click.self="closePanel"
+            class="vc-table-filter__panel-inner"
+            :class="{
+              'vc-table-filter__panel-inner--desktop': $isDesktop.value,
+            }"
+            @click.stop
           >
-            <div
-              class="vc-table-filter__panel-inner"
-              @click.stop
-            >
-              <div class="vc-table-filter__panel-header">
-                <div class="vc-table-filter__panel-header-title">
-                  {{ title }}
-                </div>
-                <VcIcon
-                  class="vc-table-filter__panel-close"
-                  :icon="CrossSignIcon"
-                  size="xs"
-                  @click="closePanel"
-                />
+            <div class="vc-table-filter__panel-header">
+              <div class="vc-table-filter__panel-header-title">
+                {{ title }}
               </div>
-              <slot :close-panel="closePanel"></slot>
+              <VcIcon
+                class="vc-table-filter__panel-close"
+                :icon="CrossSignIcon"
+                size="xs"
+                @click="closePanel"
+              />
             </div>
+            <slot :close-panel="closePanel"></slot>
           </div>
-        </teleport>
+        </div>
       </div>
     </template>
   </Sidebar>
@@ -146,6 +151,10 @@ function closePanel() {
 .vc-table-filter {
   @apply tw-relative tw-overflow-visible;
 
+  &__button {
+    @apply tw-p-0 #{!important};
+  }
+
   &__icon-container {
     @apply tw-flex tw-flex-col tw-items-center tw-justify-center;
   }
@@ -176,14 +185,14 @@ function closePanel() {
       &-inner {
         @apply tw-w-full tw-h-full;
       }
-
-      &-close {
-        @apply tw-self-start;
-      }
     }
 
     .vc-row {
       @apply tw-block;
+    }
+
+    .vc-table-filter__panel-inner {
+      @apply tw-bg-transparent;
     }
   }
 
@@ -193,7 +202,10 @@ function closePanel() {
 
   &__panel-inner {
     @apply tw-bg-[--table-filter-panel-bg] tw-box-border tw-flex tw-flex-col;
-    box-shadow: var(--table-filter-desktop-shadow);
+
+    &--desktop {
+      box-shadow: var(--table-filter-desktop-shadow);
+    }
   }
 
   &__panel-header {
@@ -205,7 +217,7 @@ function closePanel() {
   }
 
   &__panel-close {
-    @apply tw-text-[var(--table-filter-close-icon-color)] tw-cursor-pointer tw-self-end tw-shrink-0;
+    @apply tw-text-[var(--table-filter-close-icon-color)] tw-cursor-pointer tw-shrink-0;
   }
 }
 </style>

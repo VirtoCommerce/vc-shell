@@ -1,41 +1,43 @@
 <template>
-  <template v-if="isExpanded">
-    <div
-      v-if="isExpanded"
-      class="sidebar__overlay"
-      @click.stop="$emit('close')"
-    ></div>
+  <Teleport to="body">
+    <template v-if="isExpanded">
+      <div
+        v-if="isExpanded"
+        class="sidebar__overlay"
+        @click.stop="$emit('close')"
+      ></div>
 
-    <div
-      v-if="isExpanded"
-      :class="[
-        'sidebar__dropdown',
-        {
-          'sidebar__dropdown--mobile': $isMobile.value && render === 'mobile',
-          'sidebar__dropdown--desktop': $isDesktop.value && render === 'desktop',
-          'sidebar__dropdown--always': render === 'always',
-          'sidebar__dropdown--left': position === 'left',
-          'sidebar__dropdown--right': position === 'right',
-          'sidebar__dropdown--title': title,
-        },
-      ]"
-    >
-      <slot
-        name="header"
-        :header="header"
+      <div
+        v-if="isExpanded"
+        :class="[
+          'sidebar__dropdown',
+          {
+            'sidebar__dropdown--mobile': $isMobile.value && render === 'mobile',
+            'sidebar__dropdown--desktop': $isDesktop.value && render === 'desktop',
+            'sidebar__dropdown--always': render === 'always',
+            'sidebar__dropdown--left': position === 'left',
+            'sidebar__dropdown--right': position === 'right',
+            'sidebar__dropdown--title': title,
+          },
+        ]"
       >
-        <component :is="header" />
-      </slot>
-      <div class="sidebar__content">
-        <slot name="content"></slot>
+        <slot
+          name="header"
+          :header="header"
+        >
+          <component :is="header" />
+        </slot>
+        <div class="sidebar__content">
+          <slot name="content"></slot>
+        </div>
       </div>
-    </div>
-  </template>
+    </template>
 
-  <!-- Pass through content if not expanded -->
-  <template v-else>
-    <slot name="content"></slot>
-  </template>
+    <!-- Pass through content if not expanded -->
+    <template v-else>
+      <slot name="content"></slot>
+    </template>
+  </Teleport>
 </template>
 
 <script lang="ts" setup>

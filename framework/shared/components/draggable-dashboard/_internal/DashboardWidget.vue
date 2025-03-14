@@ -22,7 +22,7 @@ interface Props {
 
 defineProps<Props>();
 
-// Список селекторов интерактивных элементов, на которых не должно срабатывать перетаскивание
+// List of selectors for interactive elements that should not trigger dragging
 const interactiveSelectors = [
   "button",
   "a",
@@ -38,40 +38,40 @@ const interactiveSelectors = [
   '[role="link"]',
 ];
 
-// Проверяем, был ли клик на интерактивном элементе
+// Check if the click was on an interactive element
 const isInteractiveElement = (target: EventTarget | null): boolean => {
   if (!target || !(target instanceof Element)) return false;
 
-  // Проверяем, соответствует ли элемент или его родители селектору интерактивного элемента
+  // Check if the element or its parents match the interactive element selector
   return interactiveSelectors.some((selector) => {
     return target.matches(selector) || !!target.closest(selector);
   });
 };
 
-// Обработчик mousedown
+// Mouse down handler
 const handleWidgetMouseDown = (event: MouseEvent) => {
-  // Если клик был на интерактивном элементе, не начинаем перетаскивание
+  // If the click was on an interactive element, do not start dragging
   if (isInteractiveElement(event.target)) {
     return;
   }
 
-  // Если клик был на пустой области, запускаем перетаскивание
+  // If the click was on an empty area, start dragging
   event.preventDefault();
   event.stopPropagation();
 
-  // Эмитим событие drag
+  // Emit the drag event
   emit("drag", event);
 };
 
-// Обработчик touchstart
+// Touch start handler
 const handleWidgetTouchStart = (event: TouchEvent) => {
-  // Если касание было на интерактивном элементе, не начинаем перетаскивание
+  // If the touch was on an interactive element, do not start dragging
   if (isInteractiveElement(event.target)) {
     return;
   }
 
-  // Если касание было на пустой области, запускаем перетаскивание
-  // Не используем preventDefault здесь, так как уже используем .passive
+  // If the touch was on an empty area, start dragging
+  // Do not use preventDefault here, as we already use .passive
   emit("drag", event);
 };
 
@@ -84,10 +84,10 @@ const emit = defineEmits<{
 :root {
   --dashboard-transition-duration: 0.35s;
   --dashboard-transition-timing: cubic-bezier(0.25, 0.1, 0.25, 1);
-  --dashboard-widget-shadow-color: rgb(from var(--additional-950) r g b / 0.08);
-  --dashboard-widget-shadow-color-secondary: rgb(from var(--additional-950) r g b / 0.06);
-  --dashboard-widget-shadow-active: 0px 6px 16px -2px rgb(from var(--additional-950) r g b / 0.12);
-  --dashboard-widget-border-radius: 12px;
+  --dashboard-widget-border-radius: 6px;
+
+  --dashboard-widget-shadow-base: 0px 0px 6px -2px rgb(from var(--neutrals-950) r g b / 0.1);
+  --dashboard-widget-shadow-elevated: 3px 9px 15px -3px rgb(from var(--neutrals-950) r g b / 0.08);
 }
 
 .dashboard-widget {
@@ -100,29 +100,13 @@ const emit = defineEmits<{
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
-  box-shadow:
-    0px 1px 4px -1px var(--dashboard-widget-shadow-color),
-    0px 4px 10px -2px var(--dashboard-widget-shadow-color-secondary);
+  box-shadow: var(--dashboard-widget-shadow-base), var(--dashboard-widget-shadow-elevated);
   transition:
     transform var(--dashboard-transition-duration) var(--dashboard-transition-timing),
     box-shadow 0.2s ease;
 
-  &:hover {
-    @apply tw-cursor-move;
-    transform: translateY(-2px);
-    box-shadow: var(--dashboard-widget-shadow-active);
-  }
-
-  /* Активное состояние для касаний - более выраженный эффект */
-  &:active {
-    @apply tw-cursor-grabbing;
-    transform: scale(1.02);
-    box-shadow: var(--dashboard-widget-shadow-active);
-  }
-
   &__content {
     @apply tw-w-full tw-h-full tw-rounded-md;
-    border-radius: var(--dashboard-widget-border-radius);
     overflow: hidden; /* Ensure nothing breaks out of the widget */
     position: relative;
     z-index: 1;

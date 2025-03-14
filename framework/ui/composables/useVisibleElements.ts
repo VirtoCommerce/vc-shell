@@ -41,6 +41,8 @@ export function useVisibleElements<T>({
       const element = elementRefs.get(getItemId(item));
       if (!element) continue;
 
+      if (!(element instanceof Element)) continue;
+
       const styles = getComputedStyle(element);
       const itemWidth = element.offsetWidth + parseFloat(styles.marginLeft) + parseFloat(styles.marginRight);
 

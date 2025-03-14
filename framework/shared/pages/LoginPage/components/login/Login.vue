@@ -154,7 +154,6 @@
     <VcHint
       v-if="!signInResult.succeeded"
       class="vc-login-page__error-hint"
-      style="color: #f14e4e"
     >
       <!-- TODO: stylizing-->
       {{ signInResult.error }}
@@ -162,7 +161,6 @@
     <VcHint
       v-if="!requestPassResult.succeeded"
       class="vc-login-page__error-hint"
-      style="color: #f14e4e"
     >
       <!-- TODO: stylizing-->
       {{ requestPassResult.error }}

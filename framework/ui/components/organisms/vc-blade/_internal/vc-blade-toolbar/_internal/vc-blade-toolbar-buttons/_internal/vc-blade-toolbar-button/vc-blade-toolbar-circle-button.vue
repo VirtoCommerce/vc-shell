@@ -78,7 +78,7 @@ const titleClassName = computed(() => {
     @apply tw-w-9 tw-h-9 tw-bg-[var(--blade-toolbar-circle-button-bg-color)] tw-rounded-full tw-flex tw-items-center tw-justify-center tw-text-[var(--blade-toolbar-circle-button-text-color)];
 
     &--main {
-      @apply tw-flex tw-w-auto tw-bg-[var(--blade-toolbar-circle-button-main-bg-color)] tw-ml-2;
+      @apply tw-flex tw-w-auto tw-bg-[var(--blade-toolbar-circle-button-main-bg-color)];
     }
 
     &--main-expanded {
@@ -95,7 +95,7 @@ const titleClassName = computed(() => {
   }
 
   &--main {
-    @apply tw-px-2;
+    @apply tw-px-4;
   }
 }
 </style>

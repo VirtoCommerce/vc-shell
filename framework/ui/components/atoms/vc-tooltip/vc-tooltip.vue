@@ -27,7 +27,7 @@
 
 <script lang="ts" setup>
 import { useFloating, shift, Placement, offset as floatingOffset } from "@floating-ui/vue";
-import { getCurrentInstance, ref } from "vue";
+import { getCurrentInstance, ref, computed } from "vue";
 
 export interface Props {
   placement?: Placement;
@@ -59,7 +59,7 @@ const target = ref(null);
 let showTimeout: NodeJS.Timeout | null = null;
 
 const instance = getCurrentInstance();
-const appContainer = instance?.appContext.app._container.id;
+const appContainer = computed(() => instance?.appContext.app._container?.id);
 
 const { floatingStyles } = useFloating(tooltipCompRef, tooltipRef, {
   placement: props.placement,

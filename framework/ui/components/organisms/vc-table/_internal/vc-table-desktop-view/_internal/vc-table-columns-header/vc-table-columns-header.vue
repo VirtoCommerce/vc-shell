@@ -73,6 +73,7 @@
           </div>
         </div>
         <div
+          v-if="resizableColumns"
           class="vc-table-columns-header__cell-resizer"
           :class="{
             'vc-table-columns-header__cell-resizer--cursor': resizableColumns,

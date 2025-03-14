@@ -6,7 +6,7 @@
       'vc-table-base-header--desktop': $isDesktop.value,
     }"
   >
-    <div
+    <!-- <div
       v-if="$isMobile.value && $slots['filters']"
       class="vc-table-base-header__filter-mobile"
     >
@@ -21,7 +21,7 @@
           ></slot>
         </template>
       </VcTableFilter>
-    </div>
+    </div> -->
 
     <VcInput
       ref="searchInput"
@@ -42,7 +42,7 @@
     </VcInput>
 
     <div
-      v-if="$isDesktop.value && $slots['filters']"
+      v-if="$slots['filters']"
       class="vc-table-base-header__filter-desktop"
     >
       <VcTableFilter
@@ -86,9 +86,9 @@ defineEmits<Emits>();
 :root {
   --table-base-header-border-color: var(--base-border-color, var(--neutrals-200));
   --table-base-header-input-icon-color: var(--neutrals-300);
-  --table-base-header-padding-horizontal: 12px;
+  --table-base-header-padding-horizontal: 18px;
   --table-base-header-padding-vertical: 9px;
-  --table-base-header-mobile-padding: 30px;
+  --table-base-header-mobile-padding: 28px;
 }
 
 .vc-table-base-header {

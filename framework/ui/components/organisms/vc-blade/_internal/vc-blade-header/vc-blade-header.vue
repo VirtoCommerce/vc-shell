@@ -111,12 +111,11 @@
 
 <script lang="ts" setup>
 import { VcIcon } from "./../../../../";
-import { ComputedRef, computed, inject, ref } from "vue";
+import { computed, inject, ref } from "vue";
 import { useFloating, shift } from "@floating-ui/vue";
 import { CrossSignIcon, AppWindowIcon } from "../../../../atoms/vc-icon/icons";
 import { BladeInstance } from "../../../../../../injection-keys";
-import { Breadcrumbs } from "./../../../../../../ui/types";
-import VertDotsIcon from "../../../../atoms/vc-icon/icons/VertDotsIcon.vue";
+import { FALLBACK_BLADE_ID } from "../../../../../../core/constants";
 
 export interface Props {
   closable?: boolean;
@@ -132,7 +131,7 @@ const emit = defineEmits(["close", "expand", "collapse"]);
 const blade = inject(
   BladeInstance,
   computed(() => ({
-    id: "fallback-blade-id",
+    id: FALLBACK_BLADE_ID,
     error: undefined,
     expandable: false,
     maximized: false,
@@ -219,7 +218,7 @@ function onClose(): void {
   }
 
   &__status {
-    @apply tw-block tw-w-2 tw-h-2 tw-rounded-full tw-z-[1] tw-mr-[14px];
+    @apply tw-block tw-w-2 tw-h-2 tw-rounded-full tw-z-[1] tw-mr-[10px];
   }
 
   &__status-container {

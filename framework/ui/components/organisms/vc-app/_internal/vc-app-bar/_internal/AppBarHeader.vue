@@ -45,7 +45,9 @@
           text
           :icon="SearchIcon"
           icon-size="l"
-          @click="globalSearch.toggleSearch(currentBladeId)"
+          class="app-bar-header__actions-button"
+          :class="{ 'app-bar-header__actions-button--active': isSearchVisible }"
+          @click="globalSearch.toggleSearch(bladeId)"
         />
       </div>
       <slot name="notifications" />
@@ -74,11 +76,12 @@
 <script lang="ts" setup>
 import { VcIcon } from "../../../../../";
 import { MenuBurgerIcon, SearchIcon } from "../../../../../atoms/vc-icon/icons";
-import { computed, Ref, ref, watchEffect } from "vue";
+import { computed, Ref, ref, watch, watchEffect } from "vue";
 import { useNotifications } from "../../../../../../../core/composables";
 import { watchDebounced } from "@vueuse/core";
 import { useBladeNavigation } from "./../../../../../../../shared";
 import { useGlobalSearch } from "../../../../../../../core/composables/useGlobalSearch";
+import { FALLBACK_BLADE_ID } from "../../../../../../../core/constants";
 
 defineProps<{
   logo?: string;
@@ -99,6 +102,17 @@ const { notifications } = useNotifications();
 const { blades, currentBladeNavigationData } = useBladeNavigation();
 const globalSearch = useGlobalSearch();
 
+watch(
+  () => globalSearch.isSearchVisible.value,
+  (value) => {
+    console.log(value);
+  },
+);
+
+const bladeId = computed(() => {
+  return blades.value[blades.value.length - 1]?.type.name || FALLBACK_BLADE_ID;
+});
+
 const viewTitle = ref("");
 const currentBladeId = ref(0);
 
@@ -115,6 +129,10 @@ watchEffect(
 const hasUnread = computed(() => {
   return notifications.value.some((item) => item.isNew);
 });
+
+const isSearchVisible = computed(() => {
+  return globalSearch.isSearchVisible.value[bladeId.value];
+});
 </script>
 
 <style lang="scss">
@@ -122,6 +140,9 @@ const hasUnread = computed(() => {
   --app-bar-header-padding-top: 18px;
   --app-bar-header-blade-title: var(--neutrals-950);
   --app-bar-accent-color: var(--danger-500);
+
+  --app-bar-header-actions-button-color: var(--neutrals-500);
+  --app-bar-header-actions-button-active-color: var(--primary-500);
 }
 
 .app-bar-header {
@@ -173,6 +194,14 @@ const hasUnread = computed(() => {
 
   &__logo-append {
     @apply tw-flex tw-items-center;
+  }
+
+  &__actions-button {
+    @apply tw-cursor-pointer tw-text-[var(--app-bar-header-actions-button-color)] #{!important};
+
+    &--active {
+      @apply tw-text-[var(--app-bar-header-actions-button-active-color)] #{!important};
+    }
   }
 }
 </style>

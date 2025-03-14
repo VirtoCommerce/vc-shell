@@ -1,6 +1,5 @@
 <template>
   <div
-    v-if="isToolbarVisible"
     class="vc-blade-toolbar"
     :class="{
       'vc-blade-toolbar--mobile': $isMobile.value,
@@ -44,8 +43,6 @@ const visibleItems = computed(() => {
     (item) => hasAccess(item.permissions) && (item.isVisible === undefined || item.isVisible) && !item.disabled,
   );
 });
-
-const isToolbarVisible = computed(() => visibleItems.value.length > 0);
 </script>
 
 <style lang="scss">

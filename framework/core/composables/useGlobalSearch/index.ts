@@ -4,19 +4,19 @@ import { GlobalSearchKey } from "../../../injection-keys";
 export interface GlobalSearchState {
   isSearchVisible: Ref<Record<string, boolean>>;
   searchQuery: Ref<Record<string, string>>;
-  toggleSearch: (bladeId: number) => void;
-  setSearchQuery: (bladeId: number, query: string) => void;
+  toggleSearch: (bladeId: string) => void;
+  setSearchQuery: (bladeId: string, query: string) => void;
 }
 
 export function createGlobalSearch() {
   const isSearchVisible = ref<Record<string, boolean>>({});
   const searchQuery = ref<Record<string, string>>({});
 
-  const toggleSearch = (bladeId: number) => {
+  const toggleSearch = (bladeId: string) => {
     isSearchVisible.value[bladeId] = !isSearchVisible.value[bladeId];
   };
 
-  const setSearchQuery = (bladeId: number, query: string) => {
+  const setSearchQuery = (bladeId: string, query: string) => {
     searchQuery.value[bladeId] = query;
   };
 

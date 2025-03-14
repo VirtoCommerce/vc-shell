@@ -1,3 +1,4 @@
+
 <template>
   <div
     v-loading:1000="unref(loading) || columnsInit"
@@ -447,13 +448,13 @@ function handleHeaderClick(item: TableColPartial) {
   --table-resizer-color: var(--base-border-color, var(--neutrals-200));
   --table-reorder-color: var(--primary-400);
   --table-select-all-bg: var(--primary-100);
-  --table-row-bg-hover: var(--primary-50);
+  --table-row-bg-hover: var(--primary-100);
   --table-row-bg-odd: var(--additional-50);
   --table-row-bg-even: var(--neutrals-50);
-  --table-row-hover: var(--primary-50);
+  --table-row-hover: var(--primary-100);
   --table-row-bg-selected: var(--primary-100);
-  --table-actions-bg: var(--neutrals-100);
-  --table-actions-bg-hover: var(--primary-50);
+  --table-actions-bg: var(--primary-100);
+  --table-actions-bg-hover: var(--primary-100);
   --table-actions-bg-hover-selected-item: var(--primary-100);
   --table-actions-text-color: var(--neutrals-600);
   --table-actions-tooltip-text: var(--neutrals-600);

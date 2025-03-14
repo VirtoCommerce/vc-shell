@@ -8,7 +8,12 @@
   >
     <template #trigger>
       <div class="vc-notification-dropdown__button">
-        <div class="vc-notification-dropdown__button-icon">
+        <div
+          class="vc-notification-dropdown__button-icon"
+          :class="{
+            'vc-notification-dropdown__button-icon--mobile': $isMobile.value,
+          }"
+        >
           <VcIcon
             :icon="BellIcon"
             size="l"
@@ -77,6 +82,7 @@ function onOpen(state: boolean) {
 <style lang="scss">
 :root {
   --notification-dropdown-accent-color: var(--danger-500);
+  --notification-dropdown-bell-color: var(--neutrals-500);
 }
 
 .vc-notification-dropdown {
@@ -90,6 +96,10 @@ function onOpen(state: boolean) {
 
   &__button-icon {
     @apply tw-relative;
+
+    &--mobile {
+      @apply tw-text-[color:var(--notification-dropdown-bell-color)];
+    }
   }
 
   &__item {

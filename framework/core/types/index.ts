@@ -1,4 +1,4 @@
-import { Component, ComputedRef, Ref, ShallowRef } from "vue";
+import { Component, Component, ComputedRef, Ref, ShallowRef } from "vue";
 import { BladeInstanceConstructor, CoreBladeExposed, ExtractedBladeOptions } from "../../shared";
 import { ComponentPublicInstanceConstructor } from "../../shared/utilities/vueUtils";
 
@@ -176,7 +176,7 @@ export interface MenuItem extends Omit<MenuItemConfig, "title" | "id"> {
   routeId?: string;
   title: ComputedRef<string> | string;
   url?: string;
-  groupIcon?: string;
+  groupIcon?: string | Component;
   groupId?: string;
   children?: MenuItem[];
   permissions?: string | string[];
@@ -198,7 +198,7 @@ export interface MenuItemConfig {
    *
    * @deprecated Use groupConfig.icon instead for better robustness
    */
-  groupIcon?: string;
+  groupIcon?: string | Component;
   /**
    * Menu item group. Is used to group menu items with it's provided name.
    *
@@ -212,7 +212,13 @@ export interface MenuItemConfig {
    * This allows creating a group and adding an item to it in one step.
    * If a group with the specified ID already exists, it will be updated with the provided properties.
    */
-  groupConfig?: Omit<MenuItemConfig, "group" | "groupId" | "groupIcon" | "groupConfig" | "inGroupPriority">;
+  groupConfig?: {
+    id: string;
+    title?: string;
+    icon?: string | Component | undefined;
+    priority?: number;
+    permissions?: string | string[];
+  };
   /**
    * Position priority.
    */

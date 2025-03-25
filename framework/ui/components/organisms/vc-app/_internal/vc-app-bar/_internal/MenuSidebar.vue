@@ -158,7 +158,7 @@ defineSlots<{
   }
 
   &__close-button {
-    @apply tw-px-1 tw-flex tw-items-center tw-justify-center;
+    @apply tw-px-4 tw-flex tw-items-center tw-justify-center;
 
     &-icon {
       @apply tw-text-[color:var(--app-bar-button)];

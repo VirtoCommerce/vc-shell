@@ -185,7 +185,7 @@ const customization = computed(() => {
 
 <style lang="scss">
 :root {
-  --reset-password-error-color: var(--base-error-color, var(--danger-500));
+  --reset-password-error-color: var(--danger-500);
 }
 
 .vc-reset-password-page {

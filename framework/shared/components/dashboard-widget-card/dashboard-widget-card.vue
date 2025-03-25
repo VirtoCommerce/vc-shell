@@ -38,7 +38,7 @@ const props = defineProps<Props>();
   --dashboard-widget-card-header-color: var(--additional-50);
   --dashboard-widget-card-header-text-color: var(--neutrals-950);
   --dashboard-widget-card-icon-color: var(--neutrals-950);
-  --dashboard-widget-card-header-border-color: var(--base-border-color, var(--neutrals-200));
+  --dashboard-widget-card-header-border-color: var(--neutrals-200);
 }
 
 .dashboard-widget-card {

@@ -1,67 +1,24 @@
 <template>
-  <AppBarButtonTemplate
-    :title="$t('COMPONENTS.NOTIFICATION_DROPDOWN.TITLE')"
-    position="bottom-end"
-    :overlayed="overlayed"
-    :is-opened="hasUnreadNotifications"
-    @toggle="onOpen"
+  <GenericDropdown
+    :items="notifications"
+    :empty-text="t('COMPONENTS.NOTIFICATION_DROPDOWN.EMPTY')"
   >
-    <template #trigger>
-      <div class="vc-notification-dropdown__button">
-        <div
-          class="vc-notification-dropdown__button-icon"
-          :class="{
-            'vc-notification-dropdown__button-icon--mobile': $isMobile.value,
-          }"
-        >
-          <VcIcon
-            :icon="BellIcon"
-            size="l"
-          />
-          <div
-            :class="{
-              'vc-notification-dropdown__accent': hasUnreadNotifications,
-            }"
-          ></div>
-        </div>
-      </div>
+    <template #item="{ item }">
+      <NotificationItem
+        :notification="item"
+        :templates="notificationTemplates || []"
+      />
     </template>
-
-    <template #content="{ toggle }">
-      <GenericDropdown
-        :items="notifications"
-        :empty-text="t('COMPONENTS.NOTIFICATION_DROPDOWN.EMPTY')"
-        @item-click="toggle"
-      >
-        <template #item="{ item }">
-          <NotificationItem
-            :notification="item"
-            :templates="notificationTemplates || []"
-          />
-        </template>
-      </GenericDropdown>
-    </template>
-  </AppBarButtonTemplate>
+  </GenericDropdown>
 </template>
 
 <script lang="ts" setup>
-import { inject, computed } from "vue";
+import { inject, computed, onMounted } from "vue";
 import NotificationItem from "./_internal/notification/notification.vue";
-import { VcIcon } from "../../../ui/components";
 import { useI18n } from "vue-i18n";
 import { useNotifications } from "../../../core/composables";
-import { AppBarButtonTemplate } from "./../../../ui/components/organisms/vc-app";
 import { GenericDropdown } from "../generic-dropdown";
-import { BellIcon } from "../../../ui/components/atoms/vc-icon/icons";
 import { NotificationTemplatesSymbol } from "./../../../injection-keys";
-
-export interface Props {
-  overlayed?: boolean;
-}
-
-const props = withDefaults(defineProps<Props>(), {
-  overlayed: false,
-});
 
 const notificationTemplates = inject(NotificationTemplatesSymbol);
 
@@ -77,6 +34,10 @@ function onOpen(state: boolean) {
     markAllAsRead();
   }
 }
+
+onMounted(() => {
+  onOpen(hasUnreadNotifications.value);
+});
 </script>
 
 <style lang="scss">

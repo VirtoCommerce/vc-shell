@@ -11,9 +11,10 @@
 
 <script lang="ts" setup>
 import { inject } from "vue";
-import { SettingsMenuKey, useSettingsMenu } from "../../composables/useSettingsMenu";
+import { useSettingsMenu } from "../../../core/composables/useSettingsMenu";
+import { SettingsMenuServiceKey } from "../../../injection-keys";
 
-const settingsMenu = inject(SettingsMenuKey, useSettingsMenu());
+const settingsMenu = useSettingsMenu();
 const { items } = settingsMenu;
 </script>
 

@@ -1,5 +1,5 @@
 import { ref, Ref } from "vue";
-import { TableColPartial } from "../types";
+import { TableColPartial } from "../vc-table.vue";
 import * as _ from "lodash-es";
 
 export function useTableColumnResize(

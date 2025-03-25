@@ -30,7 +30,7 @@
       <div class="vc-table-row__checkbox-content">
         <VcCheckbox
           :model-value="isSelected(item as T)"
-          size="m"
+          size="s"
           :disabled="disabledSelection.includes(item as T)"
           @update:model-value="$emit('rowCheckbox', item as T)"
         />
@@ -105,8 +105,8 @@
 <script lang="ts" setup generic="T extends TableItem | string">
 import { VcCheckbox, VcIcon, VcTooltip } from "../../../../../../";
 import VcTableCell from "../../../vc-table-cell/vc-table-cell.vue";
-import type { ITableColumns, TableItem, TableColPartial } from "../../../../types";
-import type { IActionBuilderResult } from "../../../../../../../../core/types";
+import type { TableItem, TableColPartial } from "../../../../vc-table.vue";
+import type { IActionBuilderResult, ITableColumns } from "../../../../../../../../core/types";
 import { MaybeRef } from "vue";
 defineProps<{
   item: T;

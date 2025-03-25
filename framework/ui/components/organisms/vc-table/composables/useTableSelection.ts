@@ -1,5 +1,5 @@
 import { computed, ref, Ref, watch } from "vue";
-import { TableItem } from "../types";
+import { TableItem } from "../vc-table.vue";
 import * as _ from "lodash-es";
 
 type TableItemType = TableItem | string;

@@ -40,10 +40,12 @@
           'vc-app-bar__wrapper--mobile': $isMobile.value,
           'vc-app-bar__wrapper--hover-collapsed': $isDesktop.value && !isHoverExpanded && !state.isSidebarExpanded,
         }"
+        @mouseenter="collapseButtonHover = true"
+        @mouseleave="collapseButtonHover = false"
       >
         <AppBarHeader
           :logo="logo"
-          :expanded="state.isSidebarExpanded"
+          :expanded="state.isSidebarExpanded || isHoverExpanded"
           class="vc-app-bar__header"
           :class="{
             'vc-app-bar__header--hover-expanded': $isDesktop.value && isHoverExpanded && !state.isSidebarExpanded,
@@ -52,23 +54,13 @@
           @logo:click="$emit('logo:click')"
           @toggle-menu="toggleMenu"
         >
-          <template #notifications>
-            <slot name="notifications-dropdown" />
+          <template #actions>
+            <AppBarMobileActions
+              :is-sidebar-mode="state.isMenuOpen"
+              :expanded="state.isSidebarExpanded"
+            />
           </template>
         </AppBarHeader>
-
-        <Transition name="overlay">
-          <AppBarOverlay
-            v-if="shouldShowOverlay"
-            :is-sidebar-mode="state.isMenuOpen"
-            :expanded="state.isSidebarExpanded"
-          >
-            <component
-              :is="overlayContent"
-              v-bind="overlayProps"
-            />
-          </AppBarOverlay>
-        </Transition>
 
         <MenuSidebar
           v-if="state.isMenuOpen"
@@ -76,10 +68,6 @@
           :expanded="state.isSidebarExpanded"
           @update:is-opened="handleMenuClose"
         >
-          <template #toolbar>
-            <slot name="notifications-dropdown" />
-            <slot name="toolbar" />
-          </template>
           <template #navmenu>
             <slot name="navmenu" />
           </template>
@@ -89,14 +77,18 @@
           <template #app-switcher>
             <slot name="app-switcher" />
           </template>
-          <template #active-content>
+          <template #widgets>
+            <AppBarWidgetsMenu />
+          </template>
+          <template #widgets-active-content>
             <div
-              v-if="shouldShowInMenu"
+              v-if="isAnyWidgetVisible"
               :class="['vc-app-bar__menu-dropdowns', { 'vc-app-bar__menu-dropdowns--mobile': $isMobile.value }]"
             >
               <component
-                :is="overlayContent"
-                v-bind="overlayProps || {}"
+                :is="currentWidget?.component"
+                v-bind="currentWidget?.props || {}"
+                @close="hideAllWidgets"
               />
             </div>
           </template>
@@ -122,13 +114,13 @@
 import { VcIcon } from "../../../../";
 import { ChevronLeftIcon } from "../../../../atoms/vc-icon/icons";
 import { useAppMenuState } from "../composables/useAppMenuState";
-import { useAppBarOverlay } from "./composables/useAppBarOverlay";
+import { useAppBarWidgets } from "./composables/useAppBarWidgets";
 import AppBarHeader from "./_internal/AppBarHeader.vue";
-import AppBarOverlay from "./_internal/AppBarOverlay.vue";
+import AppBarMobileActions from "./_internal/AppBarMobileActions.vue";
 import MenuSidebar from "./_internal/MenuSidebar.vue";
 import AppBarContent from "./_internal/AppBarContent.vue";
+import AppBarWidgetsMenu from "./_internal/AppBarWidgetsMenu.vue";
 import { ref, computed, provide, inject } from "vue";
-import { vOnClickOutside } from "@vueuse/components";
 
 export interface Props {
   logo?: string;
@@ -142,14 +134,12 @@ export interface Emits {
 }
 
 interface Slots {
-  "notifications-dropdown": () => void;
-  toolbar: () => void;
   "app-switcher": () => void;
   navmenu: () => void;
   "user-dropdown": () => void;
 }
 
-const props = defineProps<Props>();
+defineProps<Props>();
 defineEmits<Emits>();
 defineSlots<Slots>();
 
@@ -161,25 +151,27 @@ const {
   toggleHoverExpanded,
   isHoverExpanded,
 } = useAppMenuState();
-const { overlayContent, overlayProps, hideContent, isOverlayed } = useAppBarOverlay();
+
+const { currentWidget, hideAllWidgets, isAnyWidgetVisible } = useAppBarWidgets();
 
 const isMobile = inject("isMobile", ref(false));
 const isDesktop = inject("isDesktop", ref(true));
+const collapseButtonHover = ref(false);
 
-// Provide appMenuState для дочерних компонентов
+// Provide appMenuState for child components
 provide("appMenuState", { closeAll });
 
 const toggleMenu = () => {
   toggleMenuState();
   if (!state.value.isMenuOpen) {
-    hideContent();
+    hideAllWidgets();
   }
 };
 
 const handleMenuClose = (value: boolean) => {
   if (!value) {
     closeAll();
-    hideContent();
+    hideAllWidgets();
   }
 };
 
@@ -187,14 +179,6 @@ const handleMenuClose = (value: boolean) => {
 const handleHoverExpand = (shouldExpand?: boolean) => {
   toggleHoverExpanded(shouldExpand);
 };
-
-const shouldShowOverlay = computed(() => {
-  return isOverlayed.value || (!state.value.isMenuOpen && overlayContent.value);
-});
-
-const shouldShowInMenu = computed(() => {
-  return overlayContent.value && !isOverlayed.value && state.value.isMenuOpen;
-});
 
 const appBarClasses = computed(() => {
   return {
@@ -220,7 +204,7 @@ const wrapClasses = computed(() => {
 <style lang="scss">
 :root {
   // Sizes
-  --app-bar-height: 94px;
+  --app-bar-height: 70px;
   --app-bar-mobile-height: 58px;
   --app-bar-width: 246px;
   --app-bar-mobile-width: 300px;
@@ -395,13 +379,13 @@ const wrapClasses = computed(() => {
     transition-timing-function: var(--app-bar-hover-transition-timing-function);
     transition-duration: var(--app-bar-hover-transition-duration);
 
-    &--collapsed {
-      @apply tw-w-[var(--app-bar-collapsed-width)];
-    }
+    // &--collapsed {
+    //   @apply tw-w-[var(--app-bar-collapsed-width)];
+    // }
 
-    &--hover-expanded {
-      @apply tw-w-[var(--app-bar-collapsed-width)];
-    }
+    // &--hover-expanded {
+    //   @apply tw-w-[var(--app-bar-collapsed-width)];
+    // }
 
     &--hover-collapsed {
       transition-duration: var(--app-bar-hover-leave-duration);
@@ -439,7 +423,7 @@ const wrapClasses = computed(() => {
   transform: rotate(180deg);
 }
 
-// Анимация контента
+// Content animation
 .vc-app-content {
   margin-left: var(--app-bar-width);
   transition: margin-left var(--app-bar-hover-transition-duration) var(--app-bar-hover-transition-timing-function);

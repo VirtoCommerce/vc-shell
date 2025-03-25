@@ -1,10 +1,9 @@
 <template>
   <div
-    v-if="(hasFooterSlot || footer) && items?.length && !columnsInit"
     class="vc-table__footer"
     :class="{
-      'vc-table__footer--mobile': isMobile,
-      'vc-table__footer--desktop': isDesktop,
+      'vc-table__footer--mobile': $isMobile.value,
+      'vc-table__footer--desktop': $isDesktop.value,
     }"
   >
     <VcTableCounter
@@ -29,13 +28,6 @@ import VcTableCounter from "../vc-table-counter/vc-table-counter.vue";
 import type { ComponentProps } from "vue-component-type-helpers";
 
 const props = defineProps<{
-  hasFooterSlot: boolean;
-  footer: boolean;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  items?: any[];
-  columnsInit: boolean;
-  isMobile: boolean;
-  isDesktop: boolean;
   totalLabel?: string;
   totalCount: number;
   expanded: boolean;
@@ -64,7 +56,7 @@ function handlePaginationClick(event: number) {
   }
 
   &--desktop {
-    @apply tw-p-6;
+    @apply tw-p-[10px];
   }
 }
 </style>

@@ -125,7 +125,7 @@ function onMouseLeave() {
 :root {
   --notification-background: var(--additional-50);
   --notification-border-radius: var(--multivalue-border-radius);
-  --notification-border-color: var(--base-border-color, var(--neutrals-200));
+  --notification-border-color: var(--neutrals-200);
   --notification-dismiss-color: var(--secondary-500);
   --notification-content-color: var(--neutrals-600);
 

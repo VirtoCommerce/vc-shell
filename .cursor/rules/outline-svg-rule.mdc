@@ -1,6 +1,6 @@
 ---
 description: Rules for SVG icons generaton
-globs:
+globs: 
 alwaysApply: false
 ---
 
@@ -113,6 +113,8 @@ When creating new icons:
 8. Test the icon with different colors via the `currentColor` inheritance
 9. Validate that the icon maintains visual clarity at smaller sizes
 10. Ensure consistent proportions with other icons in the library
+11. Always verify that the created icon is easily recognizable and correctly interpreted by humans.
+12. Make sure that elements do not overlap unless required by the design, to avoid creating cluttered or unclear icons.
 
 ## SVG Code Optimization
 

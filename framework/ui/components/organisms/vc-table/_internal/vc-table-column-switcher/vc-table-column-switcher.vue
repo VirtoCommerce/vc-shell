@@ -56,7 +56,7 @@ import { ref, computed, watch } from "vue";
 import { ITableColumns } from "./../../../../../../core/types";
 import { vOnClickOutside } from "@vueuse/components";
 import { useFloating, flip, shift, autoUpdate } from "@floating-ui/vue";
-import { TableColPartial } from "../../types";
+import { TableColPartial } from "../../vc-table.vue";
 
 export interface Props {
   items: TableColPartial[];
@@ -127,9 +127,9 @@ function close() {
 <style lang="scss">
 :root {
   --table-column-switcher-dropdown-bg: var(--additional-50);
-  --table-column-switcher-dropdown-border: var(--base-border-color, var(--neutrals-200));
+  --table-column-switcher-dropdown-border: var(--neutrals-200);
   --table-column-switcher-dropdown-item-hover: var(--primary-50);
-  --table-column-switcher-text-color: var(--base-text-color, var(--neutrals-950));
+  --table-column-switcher-text-color: var(--neutrals-950);
 }
 
 .vc-table-column-switcher {

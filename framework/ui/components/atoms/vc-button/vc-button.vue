@@ -8,7 +8,7 @@
       v-if="icon"
       :class="['vc-button__icon', iconClass]"
       :icon="icon"
-      :size="small ? 'xs' : iconSize"
+      :size="small || size === 'sm' ? 'xs' : iconSize"
     ></VcIcon>
     <p
       v-if="$slots['default']"
@@ -77,6 +77,7 @@ const buttonClass = computed(() => {
       // "vc-button_outline": props.outline,
       "vc-button_selected": props.selected,
       "vc-button_text": props.text,
+      "vc-button_disabled": props.disabled,
       // "vc-button_raised": props.raised,
     },
   ];
@@ -152,7 +153,7 @@ $variants: primary, secondary;
       }
 
       &:disabled {
-        @apply tw-bg-[color:var(--button-#{$variant}-background-color-disabled)] tw-border-[color:var(--button-#{$variant}-border-color-disabled)] tw-cursor-not-allowed;
+        @apply tw-text-[color:var(--button-#{$variant}-text-color-disabled)] tw-bg-[color:var(--button-#{$variant}-background-color-disabled)] tw-border-[color:var(--button-#{$variant}-border-color-disabled)] tw-cursor-not-allowed;
       }
 
       // TODO: remove this after the migration
@@ -161,11 +162,13 @@ $variants: primary, secondary;
       }
 
       &.vc-button_text {
-        @apply tw-border-none tw-bg-transparent tw-p-0 tw-min-h-0
+        @apply tw-border-none tw-bg-transparent
         tw-text-[color:var(--button-#{$variant}-background-color)]
         hover:tw-text-[color:var(--button-#{$variant}-background-color-hover)]
         focus:tw-text-[color:var(--button-#{$variant}-background-color-hover)]
         disabled:tw-text-[color:rgb(from_var(--button-#{$variant}-background-color)_r_g_b/50%)];
+
+        @apply tw-p-0 tw-min-h-0 #{!important};
       }
 
       &.vc-button_selected {

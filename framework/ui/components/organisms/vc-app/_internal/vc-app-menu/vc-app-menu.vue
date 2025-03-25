@@ -97,7 +97,7 @@ const isMenuVisible = computed(() => {
 
 <style lang="scss">
 :root {
-  --app-menu-background: var(--app-background, var(--primary-50));
+  --app-menu-background: var(--primary-50);
   --app-menu-background-color: var(--app-bar-background, var(--neutrals-50));
   --app-menu-version-color: var(--neutrals-400);
 

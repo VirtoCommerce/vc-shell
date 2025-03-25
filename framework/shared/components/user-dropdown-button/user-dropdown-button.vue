@@ -78,7 +78,7 @@ function handleClick() {
   --user-dropdown-button-bg-logout: var(--danger-500);
   --user-dropdown-button-bg-logout-hover: var(--danger-700);
   --user-dropdown-button-icon-color: var(--additional-50);
-  --user-dropdown-account-info-name-color: var(--base-text-color, var(--neutrals-950));
+  --user-dropdown-account-info-name-color: var(--neutrals-950);
   --user-dropdown-account-info-role-color: var(--secondary-600);
   --user-dropdown-border-color: var(--app-bar-divider-color);
   --user-dropdown-button-color: var(--primary-500);

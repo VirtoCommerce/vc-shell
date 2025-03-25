@@ -154,7 +154,7 @@ export function useWidgetLayout(updatePositionCallback: (widgetId: string, posit
     let rowHeight = 0;
 
     sortedWidgets.forEach((widget) => {
-      // Проверяем, помещается ли виджет в текущую строку
+      // Check if the widget fits in the current row
       if (currentX + widget.size.width > grid.GRID_COLUMNS) {
         // If it doesn't fit, move to the next row
         currentX = 0;

@@ -28,14 +28,25 @@ import _ from "lodash";
 import * as VeeValidate from "vee-validate";
 import "normalize.css";
 import "@fontsource/plus-jakarta-sans";
+import "@fontsource/plus-jakarta-sans/200.css";
+import "@fontsource/plus-jakarta-sans/300.css";
+import "@fontsource/plus-jakarta-sans/400.css";
 import "@fontsource/plus-jakarta-sans/500.css";
 import "@fontsource/plus-jakarta-sans/600.css";
 import "@fontsource/plus-jakarta-sans/700.css";
 import "@fontsource/plus-jakarta-sans/800.css";
 import "./assets/styles/index.scss";
 import { createWidgetService } from "./core/services/widget-service";
-import { MenuServiceKey, NotificationTemplatesSymbol, WidgetServiceKey } from "./injection-keys";
+import {
+  AppBarWidgetServiceKey,
+  MenuServiceKey,
+  NotificationTemplatesSymbol,
+  SettingsMenuServiceKey,
+  WidgetServiceKey,
+} from "./injection-keys";
 import { createMenuService } from "./core/services/menu-service";
+import { createAppBarWidgetService } from "./core/services/app-bar-menu-service";
+import { createSettingsMenuService } from "./core/services/settings-menu-service";
 
 type I18NParams = Parameters<typeof i18n.global.mergeLocaleMessage>;
 
@@ -181,6 +192,15 @@ export default {
 
     // Widgets
     app.provide(WidgetServiceKey, createWidgetService());
+
+    // App bar widgets
+    app.provide(AppBarWidgetServiceKey, createAppBarWidgetService());
+
+    // Menu service
+    app.provide(MenuServiceKey, createMenuService());
+
+    // Settings menu
+    app.provide(SettingsMenuServiceKey, createSettingsMenuService());
 
     // Shared module
     app.use(SharedModule, { router: args.router });

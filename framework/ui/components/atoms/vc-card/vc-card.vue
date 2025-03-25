@@ -102,7 +102,7 @@ watch(
   --card-background: var(--additional-50);
   --card-border-radius: 6px;
   --card-header-background: var(--secondary-50);
-  --card-header-color: var(--base-text-color, var(--secondary-950));
+  --card-header-color: var(--secondary-950);
 
   --card-header-background-success: var(--success-100);
   --card-header-background-danger: var(--danger-100);
@@ -113,7 +113,7 @@ watch(
   --card-header-padding-hor: 24px;
   --card-header-padding-vert: 17px;
 
-  --card-border-color: var(--base-border-color, var(--neutrals-200));
+  --card-border-color: var(--neutrals-200);
 }
 
 $variants: success, danger;

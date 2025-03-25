@@ -41,7 +41,10 @@
             <template v-if="options && options.length">
               <button
                 class="vc-input-currency__toggle-button"
+                tabindex="0"
                 @click.stop.prevent="toggleHandler"
+                @keydown.enter.stop.prevent="toggleHandler"
+                @keydown.space.stop.prevent="toggleHandler"
               >
                 {{ unref(option) }}
               </button>
@@ -59,6 +62,7 @@
             :disabled="disabled"
             :placeholder="holder"
             class="vc-input-currency__control"
+            tabindex="0"
             @blur="handleBlur"
             @keydown="handleKeyDown"
             @paste="handlePaste"
@@ -293,6 +297,22 @@ function handleBlur(event: Event) {
 function handleKeyDown(e: KeyboardEvent) {
   if (e.key === "-" || e.key === "e") {
     e.preventDefault();
+  }
+
+  // Navigation with Tab and Enter
+  if (e.key === "Tab") {
+    // Standard behavior of tabulation
+  } else if (e.key === "Enter") {
+    // Complete editing and go to the next field
+    e.target && (e.target as HTMLElement).blur();
+
+    // Find all tabindex elements and go to the next one
+    const allElements = Array.from(document.querySelectorAll('[tabindex="0"]:not(:disabled)'));
+    const currentIndex = allElements.indexOf(e.target as HTMLElement);
+
+    if (currentIndex >= 0 && currentIndex < allElements.length - 1) {
+      (allElements[currentIndex + 1] as HTMLElement).focus();
+    }
   }
 }
 

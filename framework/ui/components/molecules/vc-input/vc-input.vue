@@ -7,6 +7,7 @@
         'vc-input_clearable': clearable,
         'vc-input_error': error,
         'vc-input_disabled': disabled,
+        'vc-input_focused': isFocused,
       },
     ]"
   >
@@ -17,6 +18,7 @@
       :required="required"
       :multilanguage="multilanguage"
       :current-language="currentLanguage"
+      :error="error"
     >
       <span>{{ label }}</span>
       <template
@@ -98,8 +100,12 @@
                   v-bind="datePickerOptions"
                   :teleport="$isDesktop.value ? 'body' : undefined"
                   class="vc-input__input"
+                  tabindex="0"
                   @keydown="onKeyDown"
-                  @blur="handleBlur"
+                  @focus="handleFocus"
+                  @closed="handleBlur"
+                  @tooltip-open="handleFocus"
+                  @tooltip-close="handleBlur"
                 />
               </template>
               <template v-else>
@@ -114,6 +120,7 @@
                   :autofocus="autofocus"
                   :max="maxDate"
                   class="vc-input__input"
+                  tabindex="0"
                   @keydown="onKeyDown"
                   @blur="handleBlur"
                   @focus="handleFocus"
@@ -131,7 +138,10 @@
             <div
               v-if="clearable && mutatedModel && !disabled && type !== 'password'"
               class="vc-input__clear"
+              tabindex="0"
               @click="onReset"
+              @keydown.enter="onReset"
+              @keydown.space="onReset"
             >
               <VcIcon
                 size="s"
@@ -142,7 +152,10 @@
             <div
               v-if="type === 'password' && internalType === 'password'"
               class="vc-input__showhide"
+              tabindex="0"
               @click="internalType = 'text'"
+              @keydown.enter="internalType = 'text'"
+              @keydown.space="internalType = 'text'"
             >
               <VcIcon
                 size="s"
@@ -153,7 +166,10 @@
             <div
               v-if="type === 'password' && internalType === 'text'"
               class="vc-input__showhide"
+              tabindex="0"
               @click="internalType = 'password'"
+              @keydown.enter="internalType = 'password'"
+              @keydown.space="internalType = 'password'"
             >
               <VcIcon
                 size="s"
@@ -204,7 +220,7 @@
         <slot name="error">
           <VcHint
             v-if="errorMessage"
-            class="vc-input__error"
+            class="vc-input__hint-error"
             >{{ errorMessage }}</VcHint
           >
         </slot>
@@ -406,6 +422,7 @@ const temp = ref();
 const inputRef = ref();
 const locale = window.navigator.language;
 const internalType = ref(unref(props.type));
+const isFocused = ref(false);
 
 const internalTypeComputed = computed({
   get() {
@@ -541,6 +558,7 @@ function onReset() {
 }
 
 function handleBlur(e: Event) {
+  isFocused.value = false;
   emit("blur", e);
 }
 
@@ -549,29 +567,37 @@ function focus() {
 }
 
 function handleFocus() {
+  isFocused.value = true;
   emit("focus");
 }
 </script>
 
 <style lang="scss">
 :root {
-  --input-height: 38px;
+  --input-height: 36px;
   --input-height-small: 30px;
-  --input-border-radius: 3px;
-  --input-border-color: var(--secondary-200);
-  --input-border-color-error: var(--base-error-color, var(--danger-500));
+  --input-border-radius: 4px;
+  --input-border-color: var(--neutrals-200);
+
   --input-background-color: var(--additional-50);
   --input-placeholder-color: var(--neutrals-400);
   --input-clear-color: var(--primary-500);
   --input-clear-color-hover: var(--primary-600);
+  --input-text-color: var(--neutrals-800);
+
+  // Disabled
   --input-disabled-text-color: var(--neutrals-400);
   --input-disabled-bg-color: var(--neutrals-50);
-  --input-text-color: var(--base-text-color, var(--neutrals-950));
+
+  // Error
+  --input-text-color-error: var(--danger-500);
+  --input-border-color-error: var(--danger-500);
+
+  // Focus
+  --input-border-color-focus: var(--primary-50);
 }
 
 .vc-input {
-  @apply tw-overflow-hidden;
-
   &__label {
     @apply tw-mb-2;
   }
@@ -586,7 +612,7 @@ function handleFocus() {
   }
 
   &__field-wrapper {
-    @apply tw-px-3 tw-relative tw-flex tw-flex-nowrap tw-w-full tw-outline-none  tw-min-w-0 tw-box-border tw-grow tw-border tw-border-solid tw-border-[color:var(--input-border-color)] tw-rounded-[var(--input-border-radius)] tw-bg-[color:var(--input-background-color)];
+    @apply tw-px-3 tw-relative tw-flex tw-flex-nowrap tw-w-full tw-min-w-0 tw-box-border tw-grow tw-border tw-border-solid tw-border-[color:var(--input-border-color)] tw-rounded-[var(--input-border-radius)] tw-bg-[color:var(--input-background-color)] tw-outline-none;
 
     &--default {
       @apply tw-h-[var(--input-height)];
@@ -693,8 +719,8 @@ function handleFocus() {
     }
   }
 
-  &__error {
-    @apply tw-mt-1 [--hint-color:var(--input-border-color-error)];
+  &__hint-error {
+    @apply tw-mt-1 [--hint-color:var(--input-text-color-error)];
   }
 
   &__desc {
@@ -705,9 +731,21 @@ function handleFocus() {
     @apply tw-border tw-border-solid tw-border-[color:var(--input-border-color-error)];
   }
 
+  &_error &__field input {
+    @apply tw-text-[color:var(--input-text-color-error)];
+  }
+
+  &_disabled input {
+    @apply tw-text-[color:var(--input-disabled-text-color)];
+  }
+
   &_disabled &__field-wrapper,
   &_disabled &__field {
     @apply tw-bg-[color:var(--input-disabled-bg-color)] tw-text-[color:var(--input-disabled-text-color)];
+  }
+
+  &_focused &__field-wrapper {
+    @apply tw-outline-2 tw-outline tw-outline-[color:var(--input-border-color-focus)] tw-outline-offset-[0px];
   }
 
   .slide-up-enter-active,
@@ -761,6 +799,11 @@ input.dp__input {
 
 input.dp__input::placeholder {
   color: var(--input-placeholder-color) !important;
+  opacity: 1;
+}
+
+input.dp__input:disabled {
+  background-color: var(--input-disabled-bg-color);
 }
 
 .dp--tp-wrap {
@@ -782,7 +825,8 @@ input.dp__input::placeholder {
   --dp-menu-border-color: var(--neutrals-300);
   --dp-border-color-hover: var(--neutrals-400);
   --dp-border-color-focus: var(--neutrals-400);
-  --dp-disabled-color: var(--neutrals-100);
+  --dp-disabled-color: var(--input-disabled-bg-color);
+  --dp-disabled-color-text: var(--input-disabled-text-color);
   --dp-scroll-bar-background: var(--neutrals-200);
   --dp-scroll-bar-color: var(--neutrals-400);
   --dp-success-color: var(--success-500);

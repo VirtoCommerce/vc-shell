@@ -197,10 +197,10 @@ function closeModal() {
   --popup-header-color: var(--primary-700);
   --popup-content-text-color: var(--primary-700);
   --popup-warning-icon-color: var(--warning-500);
-  --popup-error-icon-color: var(--base-error-color, var(--danger-500));
+  --popup-error-icon-color: var(--danger-500);
   --popup-success-icon-color: var(--success-500);
   --popup-info-icon-color: var(--info-500);
-  --popup-footer-separator: var(--base-border-color, var(--neutrals-200));
+  --popup-footer-separator: var(--neutrals-200);
   --popup-overlay-color: var(--additional-50);
   --popup-overlay: rgb(from var(--popup-overlay-color) r g b / 75%);
   --popup-bg: var(--additional-50);

@@ -220,7 +220,7 @@ function openLink(link: string | undefined) {
 
 <style lang="scss">
 :root {
-  --assets-details-border: var(--base-border-color, var(--neutrals-200));
+  --assets-details-border: var(--neutrals-200);
   --assets-details-thumbnail-color: var(--secondary-500);
 }
 </style>

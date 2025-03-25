@@ -84,8 +84,8 @@ defineEmits<Emits>();
 
 <style lang="scss">
 :root {
-  --table-base-header-border-color: var(--base-border-color, var(--neutrals-200));
-  --table-base-header-input-icon-color: var(--neutrals-300);
+  --table-base-header-border-color: var(--neutrals-200);
+  --table-base-header-input-icon-color: var(--neutrals-400);
   --table-base-header-padding-horizontal: 18px;
   --table-base-header-padding-vertical: 9px;
   --table-base-header-mobile-padding: 28px;

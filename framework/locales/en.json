@@ -122,6 +122,9 @@
           "MARKDOWN_TOTAL": "Total Markdown",
           "SCROLL_AUTO": "Auto Scroll"
         }
+      },
+      "VC_MULTIVALUE": {
+        "ADD": "Add +"
       }
     },
     "ORGANISMS": {

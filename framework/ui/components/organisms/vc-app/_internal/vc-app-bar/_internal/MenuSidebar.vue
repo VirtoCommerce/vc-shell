@@ -21,8 +21,8 @@
             'menu-sidebar__header--mobile': $isMobile.value,
           }"
         >
-          <div class="menu-sidebar__toolbar">
-            <slot name="toolbar" />
+          <div class="menu-sidebar__widgets">
+            <slot name="widgets" />
           </div>
           <div class="menu-sidebar__spacer" />
           <div
@@ -40,10 +40,10 @@
         </div>
         <div class="menu-sidebar__content">
           <div
-            v-if="$slots['active-content']"
+            v-if="$slots['widgets-active-content']"
             class="menu-sidebar__content-main"
           >
-            <slot name="active-content" />
+            <slot name="widgets-active-content" />
           </div>
 
           <template v-if="$isMobile.value">
@@ -66,10 +66,11 @@
 <script lang="ts" setup>
 import { Sidebar } from "../../../../../../../shared/components/sidebar";
 import { CrossSignIcon } from "../../../../../atoms/vc-icon/icons";
+import { MaybeRef } from "vue";
 
 defineProps<{
   isOpened: boolean;
-  expanded: boolean;
+  expanded: MaybeRef<boolean>;
 }>();
 
 defineEmits<{
@@ -77,11 +78,11 @@ defineEmits<{
 }>();
 
 defineSlots<{
-  toolbar: () => void;
   navmenu: () => void;
   "user-dropdown": () => void;
   "app-switcher": () => void;
-  "active-content": () => void;
+  "widgets-active-content": () => void;
+  widgets: () => void;
 }>();
 </script>
 
@@ -157,14 +158,14 @@ defineSlots<{
   }
 
   &__close-button {
-    @apply tw-px-4 tw-flex tw-items-center tw-justify-center;
+    @apply tw-px-1 tw-flex tw-items-center tw-justify-center;
 
     &-icon {
       @apply tw-text-[color:var(--app-bar-button)];
     }
   }
 
-  &__toolbar {
+  &__widgets {
     @apply tw-flex tw-flex-row tw-items-center tw-justify-between tw-overflow-auto;
   }
 }

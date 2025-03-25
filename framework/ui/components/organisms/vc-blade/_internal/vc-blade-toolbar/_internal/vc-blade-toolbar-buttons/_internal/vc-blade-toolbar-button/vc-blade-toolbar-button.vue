@@ -112,7 +112,7 @@ async function onClick(): Promise<void> {
   --blade-toolbar-button-background-color-hover: transparent;
   --blade-toolbar-button-background-color-disabled: transparent;
 
-  --blade-toolbar-button-border-color: var(--base-border-color, var(--neutrals-200));
+  --blade-toolbar-button-border-color: var(--neutrals-200);
 
   --blade-toolbar-shadow-color: var(--secondary-200);
   --blade-toolbar-shadow: 1px 1px 22px rgb(from var(--blade-toolbar-shadow-color) r g b / 20%);

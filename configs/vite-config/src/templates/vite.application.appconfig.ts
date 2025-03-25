@@ -160,8 +160,8 @@ export default defineConfig({
       output: {
         entryFileNames: `[name]` + hash + `.js`,
         chunkFileNames: `[name]` + hash + `.js`,
-      }
-    }
+      },
+    },
   },
   esbuild: {
     drop: mode === "production" ? ["console", "debugger"] : [],

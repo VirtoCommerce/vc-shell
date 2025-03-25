@@ -250,7 +250,7 @@ function handleClick() {
   --table-mobile-action-popup-bg: var(--additional-50);
   --table-mobile-action-popup-shadow-color: var(--secondary-200);
   --table-mobile-action-popup-shadow: 1px 1px 22px var(--table-mobile-action-popup-shadow-color);
-  --table-mobile-action-popup-border-color: var(--base-border-color, var(--neutrals-200));
+  --table-mobile-action-popup-border-color: var(--neutrals-200);
   --table-mobile-action-popup-title-color: var(--neutrals-700);
   --table-mobile-action-popup-icon-color: var(--secondary-600);
   --table-mobile-action-popup-action-text-color: var(--primary-500);

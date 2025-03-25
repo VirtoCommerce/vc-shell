@@ -84,7 +84,7 @@ const header = h("div", { class: "sidebar__header" }, [
   --sidebar-bg-color: var(--neutrals-100);
   --sidebar-header-height: 82px;
   --sidebar-dropdown-mobile-icon-color: var(--primary-500);
-  --sidebar-title-color: var(--base-text-color, var(--additional-950));
+  --sidebar-title-color: var(--additional-950);
   --sidebar-header-padding: 18px;
   --sidebar-dropdown-icon-color: var(--neutrals-500);
   --sidebar-overlay-color: var(--additional-950);

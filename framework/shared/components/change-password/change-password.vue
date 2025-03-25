@@ -222,7 +222,7 @@ function validate() {
 
 <style lang="scss">
 :root {
-  --change-password-error-color: var(--base-error-color, var(--danger-500));
-  --change-password-text-color: var(--base-text-color, var(--additional-950));
+  --change-password-error-color: var(--danger-500);
+  --change-password-text-color: var(--additional-950);
 }
 </style>

@@ -7,6 +7,7 @@
       'vc-select_disabled': disabled,
       'vc-select_has-hint-or-error': error || hint,
       'vc-select_no-outline': !outline,
+      'vc-select_focused': isFocused,
     }"
   >
     <!-- Select label -->
@@ -16,6 +17,7 @@
       :required="required"
       :multilanguage="multilanguage"
       :current-language="currentLanguage"
+      :error="error"
     >
       <span>{{ label }}</span>
       <template
@@ -69,7 +71,12 @@
                       <div
                         data-test-id="dropdown-toggle"
                         class="vc-select__input"
+                        tabindex="0"
                         @click.stop="toggleDropdown"
+                        @keydown.enter.stop="toggleDropdown"
+                        @keydown.space.stop="toggleDropdown"
+                        @focus="isFocused = true"
+                        @blur="isFocused = false"
                       >
                         <div
                           v-if="!hasValue"
@@ -141,7 +148,10 @@
                       <div
                         v-if="clearable && hasValue && !disabled"
                         class="vc-select__clear"
+                        tabindex="0"
                         @click="onReset"
+                        @keydown.enter="onReset"
+                        @keydown.space="onReset"
                       >
                         <VcIcon
                           size="s"
@@ -169,7 +179,10 @@
                     <div
                       v-if="!disabled"
                       class="vc-select__chevron-container"
+                      tabindex="0"
                       @click.stop="toggleDropdown"
+                      @keydown.enter.stop="toggleDropdown"
+                      @keydown.space.stop="toggleDropdown"
                     >
                       <div class="vc-select__chevron">
                         <VcIcon
@@ -227,12 +240,14 @@
           v-on-click-outside="[toggleDropdown, { ignore: [dropdownToggleRef] }]"
           data-test-id="dropdown"
           class="vc-select__dropdown"
+          role="menu"
           :style="dropdownStyle"
         >
           <input
             v-if="searchable"
             ref="searchRef"
             class="vc-select__search-input"
+            tabindex="0"
             @input="onInput"
           />
 
@@ -256,7 +271,11 @@
               class="vc-select__option"
               data-test-id="option"
               :class="{ 'vc-select__option--selected': item.selected }"
+              tabindex="0"
+              :data-index="i"
               @click="item.toggleOption(item.opt)"
+              @keydown.enter="item.toggleOption(item.opt)"
+              @keydown.space="item.toggleOption(item.opt)"
             >
               <slot
                 name="option"
@@ -293,6 +312,7 @@ import {
 } from "@floating-ui/vue";
 import { VcLabel, VcContainer, VcHint, VcIcon } from "./../../";
 import { useI18n } from "vue-i18n";
+import { useKeyboardNavigation } from "../../../../core/composables/useKeyboardNavigation";
 
 export type OptionProp<T> = ((option: T) => string) | string | undefined;
 type MaybeArray<T> = T | T[];
@@ -548,6 +568,7 @@ const dropdownRef = ref();
 const root = ref();
 const el = ref();
 const listLoading = ref(false);
+const isFocused = ref(false);
 
 const filterString = ref();
 
@@ -823,6 +844,7 @@ function isOptionSelected(opt: Option) {
 function closeDropdown() {
   onDropdownClose();
   isOpened.value = false;
+  isFocused.value = false;
   emit("close");
 }
 
@@ -839,17 +861,25 @@ const onDropdownClose = async () => {
   filterString.value = undefined;
 };
 
-async function toggleDropdown() {
-  if (!props.disabled) {
-    if (isOpened.value) {
-      closeDropdown();
-    } else {
-      isOpened.value = true;
+function toggleDropdown() {
+  if (props.disabled) return;
 
-      nextTick(() => {
-        searchRef?.value?.focus();
-      });
-    }
+  isOpened.value = !isOpened.value;
+
+  if (isOpened.value) {
+    nextTick(() => {
+      if (dropdownRef.value) {
+        keyboardNavigation.initKeyboardNavigation(dropdownRef.value);
+
+        if (props.searchable && searchRef.value) {
+          searchRef.value.focus();
+        } else {
+          keyboardNavigation.focusFirstElement();
+        }
+      }
+    });
+  } else {
+    keyboardNavigation.cleanupKeyboardNavigation();
   }
 }
 
@@ -981,23 +1011,35 @@ function onReset() {
   }
   emit("update:modelValue", null);
 }
+
+const keyboardNavigation = useKeyboardNavigation({
+  onEnter: (element: HTMLElement) => {
+    const index = parseInt(element.getAttribute("data-index") || "0", 10);
+    if (optionScope.value && optionScope.value[index]) {
+      optionScope.value[index].toggleOption(optionScope.value[index].opt);
+    }
+  },
+  onEscape: () => {
+    isOpened.value = false;
+  },
+});
 </script>
 
 <style lang="scss">
 :root {
-  --select-height: 38px;
+  --select-height: 36px;
   --select-height-small: 28px;
-  --select-border-radius: 3px;
-  --select-border-color: var(--secondary-200);
-  --select-border-color-error: var(--base-error-color, var(--danger-500));
+  --select-border-radius: 4px;
+  --select-border-color: var(--neutrals-200);
+  --select-text-color: var(--neutrals-800);
+
   --select-background-color: var(--additional-50);
-  --select-background-color-disabled: var(--neutrals-50);
+
   --select-placeholder-color: var(--neutrals-400);
   --select-chevron-color: var(--primary-500);
   --select-chevron-color-hover: var(--primary-600);
   --select-clear-color: var(--primary-500);
   --select-clear-color-hover: var(--primary-600);
-  --select-disabled-field-color: var(--neutrals-700);
 
   --select-loading-color: var(--info-500);
   --select-option-background-color-hover: var(--accent-100);
@@ -1005,6 +1047,16 @@ function onReset() {
   --select-border-color-input: var(--secondary-200);
 
   --select-search-background-color: var(--additional-50);
+
+  // Focus
+  --select-border-color-focus: var(--primary-50);
+
+  // Disabled
+  --select-background-color-disabled: var(--neutrals-50);
+  --select-disabled-text-color: var(--neutrals-400);
+
+  // Error
+  --select-border-color-error: var(--danger-500);
 }
 
 .vc-select {
@@ -1028,7 +1080,7 @@ function onReset() {
   }
 
   &__field-container {
-    @apply tw-flex tw-flex-nowrap tw-items-start tw-relative;
+    @apply tw-flex tw-flex-nowrap tw-items-start tw-relative tw-rounded-[var(--select-border-radius)];
   }
 
   &__dropdown-toggle {
@@ -1057,7 +1109,7 @@ function onReset() {
   }
 
   &__field {
-    @apply tw-truncate tw-relative tw-box-border tw-border tw-border-solid tw-border-[color:var(--select-border-color)] tw-rounded-sm tw-bg-[color:var(--select-background-color)] tw-flex tw-flex-col tw-flex-nowrap tw-flex-auto tw-items-stretch;
+    @apply tw-truncate tw-relative tw-box-border tw-border tw-border-solid tw-border-[color:var(--select-border-color)] tw-rounded-[var(--select-border-radius)] tw-bg-[color:var(--select-background-color)] tw-flex tw-flex-col tw-flex-nowrap tw-flex-auto tw-items-stretch tw-text-[color:var(--select-text-color)];
   }
 
   &__field-inner {
@@ -1107,7 +1159,7 @@ function onReset() {
   }
 
   &__multiple-item {
-    @apply tw-bg-[color:var(--select-option-background-color-selected)] tw-border tw-border-solid tw-border-[color:var(--select-border-color)] tw-rounded-sm tw-flex tw-items-center tw-h-7 tw-box-border tw-px-2;
+    @apply tw-bg-[color:var(--select-option-background-color-selected)] tw-border tw-border-solid tw-border-[color:var(--select-border-color)] tw-rounded-[var(--select-border-radius)] tw-flex tw-items-center tw-h-7 tw-box-border tw-px-2;
   }
 
   &__loading {
@@ -1147,11 +1199,11 @@ function onReset() {
   }
 
   &__dropdown {
-    @apply tw-flex tw-flex-col tw-box-border tw-max-h-72 tw-h-auto tw-z-[101] tw-overflow-hidden tw-absolute tw-bg-[color:var(--select-background-color)] tw-border tw-border-solid tw-border-[color:var(--select-border-color)] tw-border-t-[color:var(--select-background-color)] tw-rounded-b-sm tw-p-2;
+    @apply tw-flex tw-flex-col tw-box-border tw-max-h-72 tw-h-auto tw-z-[101] tw-overflow-hidden tw-absolute tw-bg-[color:var(--select-background-color)] tw-border tw-border-solid tw-border-[color:var(--select-border-color)] tw-border-t-[color:var(--select-background-color)] tw-rounded-b-[var(--select-border-radius)] tw-p-2;
   }
 
   &__search-input {
-    @apply tw-w-full tw-box-border tw-border tw-border-solid tw-border-[color:var(--select-border-color-input)] tw-bg-[color:var(--select-search-background-color)] tw-rounded-md tw-h-8 tw-leading-8 tw-outline-none tw-mb-3 tw-px-2;
+    @apply tw-w-full tw-box-border tw-border tw-border-solid tw-border-[color:var(--select-border-color-input)] tw-bg-transparent tw-rounded-[var(--select-border-radius)] tw-h-8 tw-leading-8 tw-outline-none tw-mb-3 tw-px-2;
   }
 
   &__no-options {
@@ -1163,10 +1215,10 @@ function onReset() {
   }
 
   &__option {
-    @apply tw-flex tw-items-center tw-min-h-9 tw-my-1 tw-box-border tw-px-2 tw-rounded-sm tw-cursor-pointer hover:tw-bg-[color:var(--select-option-background-color-hover)] tw-text-sm;
+    @apply tw-flex tw-items-center tw-min-h-9 tw-my-1 tw-box-border tw-px-2 tw-rounded-[var(--select-border-radius)] tw-cursor-pointer hover:tw-bg-[color:var(--select-option-background-color-hover)] tw-text-sm;
 
     &--selected {
-      @apply tw-bg-[color:var(--select-option-background-color-selected)];
+      @apply tw-bg-[color:var(--select-option-background-color-selected)] hover:tw-bg-[color:var(--select-option-background-color-selected)];
     }
   }
 
@@ -1175,7 +1227,7 @@ function onReset() {
   }
 
   &.vc-select_opened &__field {
-    @apply tw-rounded-t-sm tw-rounded-b-none;
+    @apply tw-rounded-t-[var(--select-border-radius)] tw-rounded-b-none;
   }
 
   &.vc-select_error &__field-wrapper {
@@ -1185,7 +1237,11 @@ function onReset() {
   &.vc-select_disabled &__field-wrapper,
   &.vc-select_disabled &__field,
   &.vc-select_disabled &__input {
-    @apply tw-bg-[color:var(--select-background-color-disabled)] tw-text-[color:var(--select-disabled-field-color)] tw-cursor-auto;
+    @apply tw-bg-[color:var(--select-background-color-disabled)] tw-text-[color:var(--select-disabled-text-color)] tw-cursor-auto;
+  }
+
+  &_focused .vc-select__field {
+    @apply tw-outline-2 tw-outline tw-outline-[color:var(--select-border-color-focus)] tw-outline-offset-[0px];
   }
 
   &.vc-select_has-hint-or-error {

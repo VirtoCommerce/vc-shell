@@ -82,7 +82,7 @@ async function handleClick(): Promise<void> {
 
 <style lang="scss">
 :root {
-  --blade-toolbar-base-button-separator-color: var(--base-border-color, var(--neutrals-200));
+  --blade-toolbar-base-button-separator-color: var(--neutrals-200);
   --blade-toolbar-base-button-title-color: var(--neutrals-600);
   --blade-toolbar-base-button-hover-color: var(--primary-600);
   --blade-toolbar-base-button-disabled-color: var(--neutrals-400);

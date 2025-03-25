@@ -13,7 +13,8 @@
         <div class="vc-table-columns-header__checkbox-content">
           <VcCheckbox
             :model-value="headerCheckbox"
-            size="m"
+            size="s"
+            :indeterminate="selection && selection.length > 0 && selection.length !== items.length"
             @update:model-value="$emit('update:headerCheckbox', $event)"
             @click.stop
           />
@@ -110,9 +111,10 @@
 import { toRefs, ref } from "vue";
 import { VcCheckbox, VcIcon } from "../../../../../..";
 import VcTableColumnSwitcher from "../../../vc-table-column-switcher/vc-table-column-switcher.vue";
-import type { ITableColumns, TableItem, TableColPartial } from "../../../../types";
+import type { TableItem, TableColPartial } from "../../../../vc-table.vue";
 import { useTableColumnReorder } from "../../../../composables/useTableColumnReorder";
 import { useTableColumnResize } from "../../../../composables/useTableColumnResize";
+import { ITableColumns } from "../../../../../../../../core/types";
 
 const props = defineProps<{
   items: T[];
@@ -129,6 +131,7 @@ const props = defineProps<{
   internalColumnsSorted: TableColPartial[];
   stateKey: string;
   internalColumns: TableColPartial[];
+  selection?: T[];
 }>();
 
 const emit = defineEmits<{
@@ -150,7 +153,7 @@ const tableAlignment = {
   evenly: "tw-justify-evenly",
 };
 
-const { filteredCols, internalColumns } = toRefs(props);
+const { internalColumns } = toRefs(props);
 
 const headerRef = ref<HTMLElement>();
 
@@ -169,7 +172,7 @@ const { resizer, handleMouseDown } = useTableColumnResize(internalColumns, () =>
 <style lang="scss">
 :root {
   --table-header-height: 60px;
-  --table-header-border-color: var(--base-border-color, var(--neutrals-200));
+  --table-header-border-color: var(--neutrals-200);
 }
 
 .vc-table-columns-header {

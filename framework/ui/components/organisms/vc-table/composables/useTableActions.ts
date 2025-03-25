@@ -1,6 +1,6 @@
 import { Ref, ref, shallowRef } from "vue";
 import { IActionBuilderResult } from "../../../../../core/types";
-import { TableItem } from "../types";
+import type { TableItem } from "./../vc-table.vue";
 
 export interface UseTableActionsOptions<T extends TableItem | string> {
   enableItemActions?: boolean;

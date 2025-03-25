@@ -1,7 +1,6 @@
-
 <template>
   <div
-    v-loading:1000="unref(loading) || columnsInit"
+    v-loading:49="unref(loading) || columnsInit"
     class="vc-table"
   >
     <VcTableSelectAll
@@ -161,51 +160,30 @@
       </VcContainer>
     </div>
 
-    <!-- Table footer -->
-    <slot
+    <VcTableFooter
       v-if="($slots['footer'] || footer) && items && items.length && !columnsInit"
-      name="footer"
-    >
-      <div
-        class="vc-table__footer"
-        :class="{
-          'vc-table__footer--mobile': $isMobile.value,
-          'vc-table__footer--desktop': $isDesktop.value,
-        }"
-      >
-        <!-- Table counter -->
-        <VcTableCounter
-          :label="totalLabel || $t('COMPONENTS.ORGANISMS.VC_TABLE.TOTALS')"
-          :value="totalCount"
-        ></VcTableCounter>
-
-        <!-- Table pagination -->
-        <VcPagination
-          :expanded="expanded"
-          :pages="pages"
-          :current-page="currentPage"
-          :variant="paginationVariant"
-          @item-click="
-            (event) => {
-              //scroll table to top
-              tableBody?.scrollTo(0, 0);
-              $emit('paginationClick', event);
-            }
-          "
-        ></VcPagination>
-      </div>
-    </slot>
+      :total-label="totalLabel"
+      :total-count="totalCount"
+      :expanded="expanded"
+      :pages="pages"
+      :current-page="currentPage"
+      :pagination-variant="paginationVariant"
+      @item-click="
+        (event: number) => {
+          //scroll table to top
+          tableBody?.scrollTo(0, 0);
+          $emit('paginationClick', event);
+        }
+      "
+    ></VcTableFooter>
   </div>
 </template>
 
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup generic="T extends TableItem | string">
-import { useCurrentElement } from "@vueuse/core";
 import { MaybeRef, Ref, computed, ref, unref, watch, getCurrentInstance, VNode, useSlots, toRefs } from "vue";
-import { useI18n } from "vue-i18n";
 import { VcContainer, VcPagination } from "./../../";
-import { IActionBuilderResult } from "./../../../../core/types";
-import VcTableCounter from "./_internal/vc-table-counter/vc-table-counter.vue";
+import { IActionBuilderResult, ITableColumns } from "./../../../../core/types";
 import * as _ from "lodash-es";
 import "core-js/actual/array/to-spliced";
 import "core-js/actual/array/to-sorted";
@@ -218,7 +196,7 @@ import VcTableMobileView from "./_internal/vc-table-mobile-view/vc-table-mobile-
 import VcTableDesktopView from "./_internal/vc-table-desktop-view/vc-table-desktop-view.vue";
 import VcTableHeader from "./_internal/vc-table-header/vc-table-header.vue";
 import VcTableSelectAll from "./_internal/vc-table-select-all/vc-table-select-all.vue";
-import type { ITableColumns } from "./types";
+import VcTableFooter from "./_internal/vc-table-footer/vc-table-footer.vue";
 
 export interface StatusImage {
   image?: string;
@@ -438,14 +416,14 @@ function handleHeaderClick(item: TableColPartial) {
 
 <style lang="scss">
 :root {
-  --table-border-color: var(--base-border-color, var(--neutrals-200));
-  --table-select-all-border-color: var(--base-border-color, var(--neutrals-200));
+  --table-border-color: var(--neutrals-200);
+  --table-select-all-border-color: var(--neutrals-200);
   --table-header-bg: var(--primary-50);
-  --table-header-border-color: var(--base-border-color, var(--neutrals-200));
+  --table-header-border-color: var(--neutrals-200);
   --table-header-border:
     inset 0px 1px 0px var(--table-header-border-color), inset 0px -1px 0px var(--table-header-border-color);
-  --table-header-text-color: var(--base-text-color, var(--secondary-950));
-  --table-resizer-color: var(--base-border-color, var(--neutrals-200));
+  --table-header-text-color: var(--secondary-950);
+  --table-resizer-color: var(--neutrals-200);
   --table-reorder-color: var(--primary-400);
   --table-select-all-bg: var(--primary-100);
   --table-row-bg-hover: var(--primary-100);
@@ -461,13 +439,13 @@ function handleHeaderClick(item: TableColPartial) {
   --table-actions-icon-color: var(--primary-500);
   --table-actions-icon-color-hover: var(--primary-600);
   --table-footer-bg: var(--neutrals-50);
-  --table-footer-border-color: var(--base-border-color, var(--neutrals-200));
+  --table-footer-border-color: var(--neutrals-200);
   --table-row-drag-color: var(--primary-400);
   --table-row-drag-shadow: inset 0 -2px 0 0 var(--table-row-drag-color);
   --table-actions-color-danger: var(--danger-500);
   --table-actions-color-success: var(--success-500);
   --table-mobile-border-color: var(--secondary-200);
-  --table-text-color: var(--base-text-color, var(--neutrals-950));
+  --table-text-color: var(--neutrals-950);
   --table-sort-icon-color: var(--neutrals-400);
 }
 
@@ -722,18 +700,6 @@ $variants: (
 
   &__body-empty {
     @apply tw-overflow-auto tw-flex tw-flex-col tw-flex-auto;
-  }
-
-  &__footer {
-    @apply tw-flex-shrink-0 tw-flex tw-items-center tw-justify-between;
-  }
-
-  &__footer--mobile {
-    @apply tw-p-6;
-  }
-
-  &__footer--desktop {
-    @apply tw-p-6;
   }
 
   /* Drag row styles */

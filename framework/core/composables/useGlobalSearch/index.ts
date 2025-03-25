@@ -1,32 +1,9 @@
-import { ref, inject, provide, Ref } from "vue";
+import { inject, provide } from "vue";
 import { GlobalSearchKey } from "../../../injection-keys";
+import { GlobalSearchState, createGlobalSearchService } from "../../services/global-search-service";
 
-export interface GlobalSearchState {
-  isSearchVisible: Ref<Record<string, boolean>>;
-  searchQuery: Ref<Record<string, string>>;
-  toggleSearch: (bladeId: string) => void;
-  setSearchQuery: (bladeId: string, query: string) => void;
-}
-
-export function createGlobalSearch() {
-  const isSearchVisible = ref<Record<string, boolean>>({});
-  const searchQuery = ref<Record<string, string>>({});
-
-  const toggleSearch = (bladeId: string) => {
-    isSearchVisible.value[bladeId] = !isSearchVisible.value[bladeId];
-  };
-
-  const setSearchQuery = (bladeId: string, query: string) => {
-    searchQuery.value[bladeId] = query;
-  };
-
-  const state: GlobalSearchState = {
-    isSearchVisible,
-    searchQuery,
-    toggleSearch,
-    setSearchQuery,
-  };
-
+export function provideGlobalSearch() {
+  const state = createGlobalSearchService();
   provide(GlobalSearchKey, state);
   return state;
 }

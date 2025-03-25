@@ -10,6 +10,7 @@
         :class="{
           'vc-radio-button_error': error,
         }"
+        tabindex="0"
         @change="onChange"
       />
 
@@ -97,15 +98,18 @@ function onChange() {
 
 <style lang="scss">
 :root {
-  --radio-active: var(--primary-400);
+  --radio-active: var(--primary-500);
   --radio-active-inner: var(--additional-50);
-  --radio-border: var(--secondary-300);
-  --radio-border-hover: var(--primary-400);
+  --radio-border: var(--neutrals-400);
+
   --radio-background: var(--additional-50);
   --radio-disabled: var(--secondary-100);
   --radio-disabled-inner: var(--secondary-200);
-  --radio-error: var(--base-error-color, var(--danger-500));
-  --radio-size: 14px;
+  --radio-error: var(--danger-500);
+  --radio-size: 20px;
+
+  // Outline
+  --radio-border-outline: var(--primary-50);
 }
 
 .vc-radio-button {
@@ -123,7 +127,7 @@ function onChange() {
     position: relative;
     margin: 0;
     cursor: pointer;
-    border: 1px solid var(--radio-border-color, var(--radio-border));
+    border: 2px solid var(--radio-border-color, var(--radio-border));
     background: var(--radio-bg, var(--radio-background));
     width: var(--radio-size);
     transition:
@@ -132,8 +136,8 @@ function onChange() {
       box-shadow 0.2s;
 
     &:after {
-      width: 12px;
-      height: 12px;
+      width: 16px;
+      height: 16px;
       border-radius: 50%;
       background: var(--radio-active-inner);
       opacity: 0;
@@ -176,6 +180,7 @@ function onChange() {
       &:not(:checked) {
         &:not(:disabled) {
           --radio-border-color: var(--radio-border-hover);
+          outline: 3px solid var(--radio-border-outline);
         }
       }
     }

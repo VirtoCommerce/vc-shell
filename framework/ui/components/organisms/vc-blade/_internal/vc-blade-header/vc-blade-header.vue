@@ -181,16 +181,16 @@ function onClose(): void {
   --blade-header-icon-color: var(--secondary-500);
 
   --blade-header-title-font-size: 19px;
-  --blade-header-title-color: var(--base-text-color, var(--neutrals-950));
+  --blade-header-title-color: var(--neutrals-950);
 
   --blade-header-subtitle-color: var(--secondary-500);
 
   --blade-not-edited: var(--success-400);
   --blade-edited: var(--warning-500);
-  --blade-header-border-color: var(--base-border-color, var(--neutrals-200));
+  --blade-header-border-color: var(--neutrals-200);
 
   --blade-tooltip-background: var(--additional-50);
-  --blade-tooltip-border: var(--base-border-color, var(--neutrals-200));
+  --blade-tooltip-border: var(--neutrals-200);
   --blade-tooltip-text: var(--neutrals-600);
 }
 

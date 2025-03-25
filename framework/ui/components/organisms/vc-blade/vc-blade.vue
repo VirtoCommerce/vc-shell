@@ -246,10 +246,10 @@ const { open } = usePopup({
 <style lang="scss">
 :root {
   --blade-background-color: var(--additional-50);
-  --blade-color-error: var(--base-error-color, var(--danger-500));
+  --blade-color-error: var(--danger-500);
   --blade-color-unsaved-changes: var(--secondary-600);
 
-  --blade-border-color: var(--base-border-color, var(--neutrals-200));
+  --blade-border-color: var(--neutrals-200);
   --blade-icon-color: var(--secondary-400);
   --blade-icon-hover-color: var(--secondary-500);
 

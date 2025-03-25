@@ -315,7 +315,7 @@ console.debug("Init login-page");
 :root {
   --login-separator: var(--secondary-200);
   --login-separator-text: var(--primary-300);
-  --login-error: var(--base-error-color, var(--danger-500));
+  --login-error: var(--danger-500);
 }
 
 .vc-login-page {

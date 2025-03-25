@@ -3,8 +3,12 @@ import { BladeVNode, IBladeInstance } from "./shared/components/blade-navigation
 import { NotificationTemplateConstructor } from "./core/types";
 import { IWidgetService } from "./core/services/widget-service";
 import { IDashboardService } from "./core/services/dashboard-service";
-import { GlobalSearchState } from "./core/composables/useGlobalSearch";
+import { GlobalSearchState } from "./core/services/global-search-service";
 import { MenuService } from "./core/services/menu-service";
+import { ISettingsMenuService } from "./core/services/settings-menu-service";
+import { IAppBarWidgetService } from "./core/services/app-bar-menu-service";
+
+import { IAppBarMobileButtonsService } from "./core/services/app-bar-mobile-buttons-service";
 
 export const navigationViewLocation: InjectionKey<BladeVNode> = Symbol("blade navigation view location");
 export const BladeInstance: InjectionKey<ComputedRef<IBladeInstance>> = Symbol("BladeInstance");
@@ -18,3 +22,8 @@ export const DynamicModulesKey = Symbol("DynamicModules") as InjectionKey<
 >;
 export const GlobalSearchKey = Symbol("GlobalSearch") as InjectionKey<GlobalSearchState>;
 export const MenuServiceKey = Symbol("MenuService") as InjectionKey<MenuService>;
+export const SettingsMenuServiceKey: InjectionKey<ISettingsMenuService> = Symbol("SettingsMenuService");
+export const AppBarWidgetServiceKey = Symbol("AppBarWidgetService") as InjectionKey<IAppBarWidgetService>;
+export const AppBarMobileButtonsServiceKey = Symbol(
+  "AppBarMobileButtonsService",
+) as InjectionKey<IAppBarMobileButtonsService>;

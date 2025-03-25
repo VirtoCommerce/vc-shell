@@ -6,7 +6,7 @@ export default {
     name: "@storybook/vue3-vite",
     options: {
       builder: {
-        viteConfigPath: ".storybook/vite.config.ts",
+        viteConfigPath: ".storybook/vite.config.mts",
       },
     },
   },

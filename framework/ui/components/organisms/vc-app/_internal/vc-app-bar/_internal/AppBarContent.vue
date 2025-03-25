@@ -13,8 +13,10 @@
 </template>
 
 <script lang="ts" setup>
+import { MaybeRef } from "vue";
+
 defineProps<{
-  expanded: boolean;
+  expanded: MaybeRef<boolean>;
 }>();
 </script>
 

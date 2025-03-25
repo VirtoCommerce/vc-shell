@@ -242,8 +242,8 @@ watch(isOpened, (newValue) => {
   --app-menu-item-title-color: var(--neutrals-600);
   --app-menu-item-title-color-active: var(--primary-700);
 
-  --app-menu-item-active-text: var(--base-text-color, var(--neutrals-950));
-  --app-menu-item-active-icon: var(--base-text-color, var(--neutrals-950));
+  --app-menu-item-active-text: var(--neutrals-950);
+  --app-menu-item-active-icon: var(--neutrals-950);
 }
 
 .vc-app-menu-link {

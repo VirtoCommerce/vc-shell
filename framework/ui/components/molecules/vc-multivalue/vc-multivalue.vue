@@ -7,6 +7,7 @@
         'vc-multivalue_opened': isOpened,
         'vc-multivalue_error vc-multivalue__error-padding': error,
         'vc-multivalue_disabled': disabled,
+        'vc-multivalue_focus': isFocused,
       },
     ]"
   >
@@ -17,6 +18,7 @@
       :required="required"
       :multilanguage="multilanguage"
       :current-language="currentLanguage"
+      :error="error"
     >
       <span>{{ label }}</span>
       <template
@@ -54,7 +56,12 @@
               class="vc-multivalue__field-value-clear"
               icon="fas fa-times"
               size="s"
+              tabindex="0"
+              role="button"
+              aria-label="Delete item"
               @click="onDelete(i)"
+              @keydown.enter="onDelete(i)"
+              @keydown.space="onDelete(i)"
             ></VcIcon>
           </div>
         </div>
@@ -62,10 +69,12 @@
         <template v-if="multivalue">
           <div class="vc-multivalue__field vc-multivalue__field_dictionary">
             <VcButton
-              small
+              size="sm"
+              variant="secondary"
               :disabled="disabled"
+              tabindex="0"
               @click.stop="toggleDropdown"
-              >Add +</VcButton
+              >{{ $t("COMPONENTS.MOLECULES.VC_MULTIVALUE.ADD") }}</VcButton
             >
             <teleport to="body">
               <div
@@ -73,11 +82,14 @@
                 ref="dropdownRef"
                 v-on-click-outside="[toggleDropdown, { ignore: [dropdownToggleRef] }]"
                 class="vc-multivalue__dropdown"
+                :class="{ 'vc-multivalue__dropdown_focused': isFocused }"
+                role="menu"
                 :style="dropdownStyle"
               >
                 <input
                   ref="searchRef"
                   class="vc-multivalue__search"
+                  tabindex="0"
                   @input="onSearch"
                 />
 
@@ -89,7 +101,11 @@
                     v-for="(item, i) in slicedDictionary"
                     :key="i"
                     class="vc-multivalue__item"
+                    tabindex="0"
+                    :data-index="i"
                     @click="onItemSelect(item)"
+                    @keydown.enter="onItemSelect(item)"
+                    @keydown.space="onItemSelect(item)"
                   >
                     <slot
                       name="option"
@@ -109,9 +125,11 @@
             :placeholder="placeholder"
             :type="internalTypeComputed"
             :disabled="disabled"
+            tabindex="0"
             @keypress.enter.stop.prevent="onInput"
-            @blur="onInput"
+            @blur="onBlur"
             @keydown="onKeyDown"
+            @focus="isFocused = true"
           />
         </template>
       </div>
@@ -160,6 +178,7 @@ import { unref, nextTick, ref, computed } from "vue";
 import { vOnClickOutside } from "@vueuse/components";
 import { useFloating, UseFloatingReturn, offset, flip, shift, autoUpdate, MiddlewareState } from "@floating-ui/vue";
 import { generateId } from "../../../../core/utilities";
+import { useKeyboardNavigation } from "../../../../core/composables/useKeyboardNavigation";
 
 export interface Props<T> {
   placeholder?: string;
@@ -223,6 +242,7 @@ const searchRef = ref();
 const isOpened = ref(false);
 const value = ref();
 const internalType = ref(unref(props.type));
+const isFocused = ref(false);
 
 const popper = useFloating(dropdownToggleRef, dropdownRef, {
   placement: "bottom",
@@ -275,6 +295,18 @@ const internalTypeComputed = computed({
   },
 });
 
+const keyboardNavigation = useKeyboardNavigation({
+  onEnter: (element: HTMLElement) => {
+    const index = parseInt(element.getAttribute("data-index") || "0", 10);
+    if (slicedDictionary.value && slicedDictionary.value[index]) {
+      onItemSelect(slicedDictionary.value[index]);
+    }
+  },
+  onEscape: () => {
+    closeDropdown();
+  },
+});
+
 function onKeyDown(e: KeyboardEvent) {
   const allowedKeys = ["Backspace", "Delete", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Enter"];
   const keypressed = e.key;
@@ -291,6 +323,19 @@ function onKeyDown(e: KeyboardEvent) {
       return;
     }
   }
+
+  if (keypressed === "Tab") {
+    // Default behavior of the tab key
+  } else if (keypressed === "ArrowUp" || keypressed === "ArrowDown") {
+    if (isOpened.value) {
+      e.preventDefault();
+    }
+  }
+}
+
+function onBlur(e: FocusEvent) {
+  onInput(e);
+  isFocused.value = false;
 }
 
 function onInput(e: KeyboardEvent | FocusEvent) {
@@ -353,9 +398,13 @@ async function toggleDropdown() {
       closeDropdown();
     } else {
       isOpened.value = true;
+      isFocused.value = true;
 
       nextTick(() => {
-        searchRef?.value?.focus();
+        if (dropdownRef.value) {
+          keyboardNavigation.initKeyboardNavigation(dropdownRef.value);
+          searchRef?.value?.focus();
+        }
       });
     }
   }
@@ -363,6 +412,8 @@ async function toggleDropdown() {
 
 function closeDropdown() {
   isOpened.value = false;
+  isFocused.value = false;
+  keyboardNavigation.cleanupKeyboardNavigation();
   emit("close");
 }
 
@@ -373,35 +424,37 @@ function onSearch(event: Event) {
 
 <style lang="scss">
 :root {
-  --multivalue-height: 38px;
-  --multivalue-border-radius: 3px;
-  --multivalue-border-color: var(--secondary-200);
-  --multivalue-border-color-error: var(--base-error-color, var(--danger-500));
+  --multivalue-height: 36px;
+  --multivalue-border-radius: 4px;
+  --multivalue-border-color: var(--neutrals-200);
+  --multivalue-border-color-error: var(--danger-100);
   --multivalue-background-color: var(--additional-50);
   --multivalue-placeholder-color: var(--neutrals-400);
+  --multivalue-text-color: var(--neutrals-800);
 
   --multivalue-select-border-radius: 3px;
-  --multivalue-select-border-color: var(--secondary-200);
-  --multivalue-select-border-color-error: var(--base-error-color, var(--danger-500));
+  --multivalue-select-border-color: var(--neutrals-200);
+  --multivalue-select-border-color-error: var(--danger-500);
   --multivalue-select-background-color: var(--additional-50);
-  --multivalue-select-background-color-disabled: var(--neutrals-50);
+
   --multivalue-select-placeholder-color: var(--neutrals-400);
   --multivalue-select-chevron-color: var(--primary-500);
   --multivalue-select-chevron-color-hover: var(--primary-600);
 
   --multivalue-search-border-color: var(--secondary-200);
-  --multivalue-item-hover-background-color: var(--accent-50);
-  --multivalue-hint-color: var(--base-error-color, var(--danger-500));
+  --multivalue-item-hover-background-color: var(--accent-100);
+  --multivalue-hint-color: var(--danger-500);
   --multivalue-field-value-background-color: var(--additional-50);
   --multivalue-field-value-border-color: var(--secondary-200);
   --multivalue-clear-icon-color: var(--primary-500);
+
+  // Disabled
+  --multivalue-select-background-color-disabled: var(--neutrals-50);
   --multivalue-disabled-text-color: var(--neutrals-400);
   --multivalue-disabled-background-color: var(--neutrals-50);
 }
 
 .vc-multivalue {
-  @apply tw-overflow-hidden;
-
   &_date,
   &_datetime-local {
     @apply tw-max-w-[220px];
@@ -424,7 +477,7 @@ function onSearch(event: Event) {
     tw-border-[color:var(--multivalue-border-color)]
     tw-rounded-[var(--multivalue-border-radius)]
     tw-items-center
-    tw-flex tw-justify-between;
+    tw-flex tw-justify-between tw-bg-[color:var(--multivalue-background-color)] tw-text-[color:var(--multivalue-text-color)];
   }
 
   &__content {

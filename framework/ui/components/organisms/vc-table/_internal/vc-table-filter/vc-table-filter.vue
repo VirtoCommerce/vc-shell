@@ -144,7 +144,7 @@ function closePanel() {
   --table-filter-desktop-shadow: 1px 1px 11px rgb(from var(--table-filter-desktop-shadow-color) r g b / 7%);
   --table-filter-panel-bg: var(--additional-50);
   --table-filter-close-icon-color: var(--neutrals-500);
-  --table-filter-panel-border-color: var(--base-border-color, var(--neutrals-200));
+  --table-filter-panel-border-color: var(--neutrals-200);
   --table-filter-panel-header-title-color: var(--neutrals-600);
 }
 

@@ -18,9 +18,11 @@
 </template>
 
 <script lang="ts" setup>
+import { MaybeRef } from "vue";
+
 defineProps<{
   isSidebarMode: boolean;
-  expanded: boolean;
+  expanded: MaybeRef<boolean>;
 }>();
 
 defineEmits<{
@@ -34,7 +36,7 @@ defineEmits<{
          tw-bg-[color:var(--app-bar-background)];
 
   &--standalone-mobile {
-    @apply tw-w-full !important;
+    @apply tw-w-full #{!important};
   }
 
   &--sidebar {
@@ -42,7 +44,7 @@ defineEmits<{
   }
 
   &--mobile {
-    @apply tw-fixed tw-top-[var(--app-bar-mobile-height)] tw-left-0 tw-bottom-0 tw-flex-1 tw-w-[var(--app-bar-mobile-width)] tw-z-[10001];
+    @apply tw-fixed tw-top-[var(--app-bar-mobile-height)] tw-left-0 tw-bottom-0 tw-flex-1 tw-w-[var(--app-bar-mobile-width)] tw-z-[9999];
 
     .app-bar-overlay__content {
       @apply tw-flex tw-flex-col tw-h-[calc(100%-var(--app-bar-mobile-height))];

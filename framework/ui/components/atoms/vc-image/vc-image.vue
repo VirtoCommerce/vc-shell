@@ -98,7 +98,7 @@ function onClick(): void {
   --image-size-xxl: 145px;
 
   --image-border-radius: 3px;
-  --image-border-color: var(--base-border-color, var(--neutrals-200));
+  --image-border-color: var(--neutrals-200);
   --image-empty-icon-color: var(--secondary-500);
 }
 

@@ -50,7 +50,7 @@ const visibleItems = computed(() => {
   --blade-toolbar-height: 54px;
   --blade-toolbar-height-expanded: 54px;
   --blade-toolbar-background-color: var(--additional-50);
-  --blade-toolbar-border-color: var(--base-border-color, var(--neutrals-200));
+  --blade-toolbar-border-color: var(--neutrals-200);
   --blade-toolbar-icon-color: var(--neutrals-700);
   --blade-toolbar-icon-hover-color: var(--primary-600);
 }

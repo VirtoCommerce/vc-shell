@@ -16,3 +16,5 @@ export * from "./useAppInsights";
 export * from "./useTheme";
 export * from "./useWidgets";
 export * from "./useDashboard";
+export * from "./useAppBarWidget";
+export * from "./useSettingsMenu";

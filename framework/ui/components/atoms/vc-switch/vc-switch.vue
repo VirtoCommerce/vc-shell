@@ -66,17 +66,15 @@ function onInput(e: Event) {
 
 <style lang="scss">
 :root {
-  --switch-width: 32px;
-  --switch-height: 18px;
+  --switch-width: 36px;
+  --switch-height: 22px;
   --switch-thumb-size: 16px;
   --switch-translate: 14px;
 
-  --switch-main-color: var(--primary-500);
+  --switch-main-color: var(--accent-500);
   --switch-secondary-color: var(--neutrals-300);
   --switch-icon-background: var(--additional-50);
   --switch-icon-color: var(--neutrals-400);
-  --switch-shadow-color: var(--additional-950);
-  --switch-shadow: inset 0px 2px 4px rgb(from var(--switch-shadow-color) r g b / 10%);
   --switch-transition: all 0.2s ease-in-out;
 }
 
@@ -114,10 +112,10 @@ function onInput(e: Event) {
   }
 
   &__slider {
-    @apply tw-absolute tw-inset-0 tw-bg-[color:var(--switch-secondary-color)] tw-rounded-full tw-transition tw-duration-200 [box-shadow:var(--switch-shadow)] tw-cursor-pointer;
+    @apply tw-absolute tw-inset-0 tw-bg-[color:var(--switch-secondary-color)] tw-rounded-full tw-transition tw-duration-200 tw-cursor-pointer;
 
     &::before {
-      @apply tw-absolute tw-left-px tw-top-1/2 tw-transition tw-duration-200 tw-bg-[color:var(--switch-icon-background)] tw-rounded-full tw-w-[var(--switch-thumb-size)] tw-h-[var(--switch-thumb-size)] [content:''] [box-shadow:var(--switch-shadow)] [transform:translateX(0)_translateY(-50%)];
+      @apply tw-absolute tw-left-[3px] tw-top-1/2 tw-transition tw-duration-200 tw-bg-[color:var(--switch-icon-background)] tw-rounded-full tw-w-[var(--switch-thumb-size)] tw-h-[var(--switch-thumb-size)] [content:''] [transform:translateX(0)_translateY(-50%)];
     }
   }
 }

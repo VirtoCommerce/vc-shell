@@ -88,7 +88,7 @@ const hideTooltip = () => {
 <style lang="scss">
 :root {
   --tooltip-background-color: var(--additional-50);
-  --tooltip-border-color: var(--base-border-color, var(--neutrals-200));
+  --tooltip-border-color: var(--neutrals-200);
   --tooltip-shadow-color: var(--secondary-300);
   --tooltip-shadow: 1px 1px 8px rgba(var(--tooltip-shadow-color), 0.25);
   --tooltip-text-color: var(--neutrals-600);

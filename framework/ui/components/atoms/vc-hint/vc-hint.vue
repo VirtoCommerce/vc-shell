@@ -7,7 +7,7 @@
 <style lang="scss">
 :root {
   --hint-color: var(--neutrals-500);
-  --hint-font-size: 12px;
+  --hint-font-size: 10px;
 }
 
 .vc-hint {

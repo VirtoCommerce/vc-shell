@@ -1,5 +1,10 @@
 <template>
-  <div class="vc-label">
+  <div
+    class="vc-label"
+    :class="{
+      'vc-label_error': error,
+    }"
+  >
     <div class="vc-label__text">
       <span class="vc-label__content">
         <slot></slot>
@@ -43,6 +48,7 @@ export interface Props {
   tooltipIcon?: string;
   multilanguage?: boolean;
   currentLanguage?: string;
+  error?: boolean;
 }
 
 withDefaults(defineProps<Props>(), {
@@ -60,6 +66,7 @@ defineSlots<{
   --label-required-color: var(--danger-500);
   --label-tooltip-color: var(--info-400);
   --label-lang-color: var(--neutrals-500);
+  --label-error-color: var(--danger-500);
 }
 
 .vc-label {
@@ -87,6 +94,10 @@ defineSlots<{
 
   &__language {
     @apply tw-text-[color:var(--label-lang-color)] tw-shrink-0 tw-text-sm;
+  }
+
+  &_error &__text {
+    @apply tw-text-[color:var(--label-error-color)];
   }
 }
 </style>

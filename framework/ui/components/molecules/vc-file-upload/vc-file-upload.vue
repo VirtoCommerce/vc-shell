@@ -150,12 +150,12 @@ function dragLeave() {
 :root {
   --file-upload-border-color: var(--secondary-200);
   --file-upload-border-color-hover: var(--secondary-400);
-  --file-upload-border-color-error: var(--base-error-color, var(--danger-500));
+  --file-upload-border-color-error: var(--danger-500);
   --file-upload-border-radius: 6px;
   --file-upload-drag-bg: var(--primary-100);
   --file-upload-icon-color: var(--secondary-200);
   --file-upload-text-color: var(--neutrals-400);
-  --file-upload-error-color: var(--base-error-color, var(--danger-500));
+  --file-upload-error-color: var(--danger-500);
   --file-upload-background-color: var(--primary-50);
 }
 

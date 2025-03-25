@@ -16,13 +16,10 @@
           :src="logo"
           @click="$isMobile.value ? $emit('toggle-menu') : $emit('logo:click')"
         />
-      </div>
-
-      <div
-        v-if="$slots['logo:append']"
-        class="app-bar-header__logo-append"
-      >
-        <slot name="logo:append"></slot>
+        <div
+          v-if="hasUnread && !expanded"
+          class="app-bar-header__menu-button-accent"
+        />
       </div>
 
       <template v-if="$isMobile.value && blades.length === 1">
@@ -37,55 +34,47 @@
       v-if="$isMobile.value"
       class="app-bar-header__actions"
     >
-      <div
-        v-if="blades.length === 1"
-        class="app-bar-header__actions"
-      >
-        <VcButton
-          text
-          :icon="SearchIcon"
-          icon-size="l"
-          class="app-bar-header__actions-button"
-          :class="{ 'app-bar-header__actions-button--active': isSearchVisible }"
-          @click="globalSearch.toggleSearch(bladeId)"
-        />
-      </div>
-      <slot name="notifications" />
+      <slot
+        v-if="$isMobile.value"
+        name="actions"
+      />
     </div>
 
-    <button
-      v-else
-      ref="menuButtonRef"
-      class="app-bar-header__menu-button"
-      @click="$emit('toggle-menu')"
+    <Transition
+      name="burger-fade"
+      mode="out-in"
     >
-      <div class="app-bar-header__menu-button-wrap">
-        <VcIcon
-          :icon="MenuBurgerIcon"
-          size="xs"
-        />
-        <div
-          v-if="hasUnread"
-          class="app-bar-header__menu-button-accent"
-        />
-      </div>
-    </button>
+      <button
+        v-if="expanded && $isDesktop.value"
+        ref="menuButtonRef"
+        class="app-bar-header__menu-button"
+        @click="$emit('toggle-menu')"
+      >
+        <div class="app-bar-header__menu-button-wrap">
+          <VcIcon
+            :icon="MenuBurgerIcon"
+            size="xs"
+          />
+          <div
+            v-if="hasUnread"
+            class="app-bar-header__menu-button-accent"
+          />
+        </div>
+      </button>
+    </Transition>
   </div>
 </template>
 
 <script lang="ts" setup>
 import { VcIcon } from "../../../../../";
-import { MenuBurgerIcon, SearchIcon } from "../../../../../atoms/vc-icon/icons";
-import { computed, Ref, ref, watch, watchEffect } from "vue";
+import { MenuBurgerIcon } from "../../../../../atoms/vc-icon/icons";
+import { computed, ref, watchEffect, MaybeRef } from "vue";
 import { useNotifications } from "../../../../../../../core/composables";
-import { watchDebounced } from "@vueuse/core";
 import { useBladeNavigation } from "./../../../../../../../shared";
-import { useGlobalSearch } from "../../../../../../../core/composables/useGlobalSearch";
-import { FALLBACK_BLADE_ID } from "../../../../../../../core/constants";
 
 defineProps<{
   logo?: string;
-  expanded: boolean;
+  expanded: MaybeRef<boolean>;
 }>();
 
 defineEmits<{
@@ -93,25 +82,8 @@ defineEmits<{
   (e: "toggle-menu"): void;
 }>();
 
-defineSlots<{
-  notifications: () => void;
-  "logo:append": () => void;
-}>();
-
 const { notifications } = useNotifications();
 const { blades, currentBladeNavigationData } = useBladeNavigation();
-const globalSearch = useGlobalSearch();
-
-watch(
-  () => globalSearch.isSearchVisible.value,
-  (value) => {
-    console.log(value);
-  },
-);
-
-const bladeId = computed(() => {
-  return blades.value[blades.value.length - 1]?.type.name || FALLBACK_BLADE_ID;
-});
 
 const viewTitle = ref("");
 const currentBladeId = ref(0);
@@ -129,10 +101,6 @@ watchEffect(
 const hasUnread = computed(() => {
   return notifications.value.some((item) => item.isNew);
 });
-
-const isSearchVisible = computed(() => {
-  return globalSearch.isSearchVisible.value[bladeId.value];
-});
 </script>
 
 <style lang="scss">
@@ -149,7 +117,7 @@ const isSearchVisible = computed(() => {
   @apply tw-flex tw-flex-row tw-items-center tw-justify-between tw-px-[var(--app-bar-padding)] tw-h-[var(--app-bar-height)] tw-py-[var(--app-bar-header-padding-top)];
 
   &--collapsed {
-    @apply tw-flex-col tw-items-center tw-justify-between tw-border-0 tw-gap-[16px];
+    @apply tw-items-center tw-justify-between tw-border-0 tw-gap-[16px];
   }
 
   &--mobile {
@@ -157,14 +125,14 @@ const isSearchVisible = computed(() => {
   }
 
   &__logo {
-    @apply tw-w-auto tw-flex tw-items-center tw-h-full;
+    @apply tw-w-auto tw-flex tw-items-center tw-h-full tw-relative;
 
     &-container {
       @apply tw-flex tw-flex-row tw-gap-3 tw-items-center;
     }
 
     &-image {
-      @apply tw-cursor-pointer tw-max-w-[var(--app-bar-logo-width)] tw-max-h-[var(--app-bar-logo-height)] tw-rounded-full tw-overflow-hidden tw-w-full;
+      @apply tw-cursor-pointer tw-max-w-[var(--app-bar-logo-width)] tw-max-h-[var(--app-bar-logo-height)] tw-rounded-full tw-overflow-hidden tw-w-full tw-shrink-0;
 
       &--mobile {
         @apply tw-mx-1 tw-max-w-[var(--app-bar-logo-mobile-width)] tw-max-h-[var(--app-bar-logo-mobile-height)];
@@ -189,19 +157,17 @@ const isSearchVisible = computed(() => {
   }
 
   &__actions {
-    @apply tw-flex tw-items-center tw-gap-2;
-  }
-
-  &__logo-append {
     @apply tw-flex tw-items-center;
   }
+}
 
-  &__actions-button {
-    @apply tw-cursor-pointer tw-text-[var(--app-bar-header-actions-button-color)] #{!important};
+.burger-fade-enter-active,
+.burger-fade-leave-active {
+  transition: opacity 0.1s ease;
+}
 
-    &--active {
-      @apply tw-text-[var(--app-bar-header-actions-button-active-color)] #{!important};
-    }
-  }
+.burger-fade-enter-from,
+.burger-fade-leave-to {
+  opacity: 0;
 }
 </style>

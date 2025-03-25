@@ -67,7 +67,7 @@ import { ref, computed, Ref, inject } from "vue";
 import { useFloating, shift, autoUpdate } from "@floating-ui/vue";
 import { vOnClickOutside } from "@vueuse/components";
 
-interface Props {
+export interface Props<T> {
   opened?: boolean;
   items: T[];
   emptyText?: string;
@@ -78,7 +78,7 @@ interface Props {
   variant?: "default" | "light";
 }
 
-const props = withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<Props<T>>(), {
   opened: true,
   items: () => [],
   floating: false,
@@ -136,14 +136,14 @@ const floatingStyle = computed(() => {
 <style lang="scss">
 :root {
   --dropdown-bg-color: var(--neutrals-50);
-  --dropdown-text-color: var(--base-text-color, var(--neutrals-950));
+  --dropdown-text-color: var(--neutrals-950);
   --dropdown-border-color: var(--app-bar-divider-color);
   --dropdown-hover-bg-color: var(--primary-50);
-  --dropdown-divider-color: var(--base-border-color, var(--neutrals-200));
+  --dropdown-divider-color: var(--neutrals-200);
   --dropdown-divider-item-color: var(--neutrals-100);
 
   --dropdown-bg-color-light: var(--additional-50);
-  --dropdown-divider-item-color-light: var(--base-border-color, var(--neutrals-200));
+  --dropdown-divider-item-color-light: var(--neutrals-200);
 }
 
 .vc-dropdown {

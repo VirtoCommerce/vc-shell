@@ -77,7 +77,7 @@ const handleTriggerClick = () => {
 <style lang="scss">
 :root {
   --menu-item-text-color: var(--additional-950);
-  --menu-item-border-color: var(--base-border-color, var(--neutrals-200));
+  --menu-item-border-color: var(--neutrals-200);
   --menu-item-bg: transparent;
   --menu-item-bg-hover: var(--primary-50);
   --menu-item-icon-color-hover: var(--primary-700);

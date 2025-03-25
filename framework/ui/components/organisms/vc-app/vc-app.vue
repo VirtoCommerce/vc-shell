@@ -21,7 +21,7 @@
         :title="title"
         :disable-menu="disableMenu"
         @backlink:click="closeBlade(blades.length - 1)"
-        @logo:click="operateLogoClick"
+        @logo:click="openRoot"
       >
         <template #app-switcher>
           <slot name="app-switcher">
@@ -30,22 +30,6 @@
               @on-click="switchApp($event)"
             />
           </slot>
-        </template>
-
-        <!-- <template
-          v-if="$slots['logo:append']"
-          #logo:append
-        >
-          <slot name="logo:append"></slot>
-        </template> -->
-
-        <!-- Toolbar slot -->
-        <template #toolbar>
-          <slot name="toolbar" />
-        </template>
-
-        <template #notifications-dropdown>
-          <NotificationDropdown />
         </template>
 
         <template #navmenu>
@@ -83,7 +67,7 @@
 </template>
 
 <script lang="ts" setup>
-import { h, inject, provide, computed, useAttrs, watch, toRef, ref, onBeforeUnmount, onUnmounted } from "vue";
+import { inject, provide, useAttrs, watch, ref, onUnmounted, computed } from "vue";
 import VcAppBar from "./_internal/vc-app-bar/vc-app-bar.vue";
 import VcAppMenu from "./_internal/vc-app-menu/vc-app-menu.vue";
 import {
@@ -94,20 +78,23 @@ import {
   NotificationDropdown,
   BladeRoutesRecord,
 } from "./../../../../shared/components";
-import { useNotifications, useUser } from "../../../../core/composables";
+import { provideAppBarWidget, provideWidgetService, useNotifications, useUser } from "../../../../core/composables";
 import { useRoute, useRouter } from "vue-router";
 import { watchOnce } from "@vueuse/core";
 import { MenuItem } from "../../../../core/types";
-import { useSettingsMenu, SettingsMenuKey } from "../../../../shared/composables/useSettingsMenu";
+import { provideSettingsMenu } from "../../../../core/composables/useSettingsMenu";
 import { LanguageSelector } from "../../../../shared/components/language-selector";
 import { ThemeSelector } from "../../../../shared/components/theme-selector";
 import { ChangePasswordButton } from "../../../../shared/components/change-password-button";
 import { LogoutButton } from "../../../../shared/components/logout-button";
 import { useI18n } from "vue-i18n";
-import { createGlobalSearch } from "../../../../core/composables/useGlobalSearch";
+import { provideGlobalSearch } from "../../../../core/composables/useGlobalSearch";
 import { provideDashboardService } from "../../../../core/composables/useDashboard";
 import { DynamicModulesKey } from "../../../../injection-keys";
 import { provideMenuService } from "../../../../core/composables/useMenuService";
+import { BellIcon } from "../../atoms/vc-icon/icons";
+import { provideAppBarMobileButtonsService } from "../../../../core/composables/useAppBarMobileButtons";
+
 export interface Props {
   isReady: boolean;
   logo?: string;
@@ -117,7 +104,6 @@ export interface Props {
   name?: string;
   disableMenu?: boolean;
   role?: string;
-  // кастомное поведение при клике на лого
 }
 
 const emit = defineEmits<{
@@ -130,13 +116,10 @@ defineOptions({
 
 defineSlots<{
   "app-switcher": void;
-  toolbar: void;
-  // "logo:append": void;
+  // toolbar: void;
 }>();
 
 const props = defineProps<Props>();
-
-const attrs = useAttrs();
 
 console.debug("vc-app: Init vc-app");
 
@@ -150,18 +133,22 @@ const router = useRouter();
 const { openBlade, closeBlade, resolveBladeByName, blades, goToRoot } = useBladeNavigation();
 const { appsList, switchApp, getApps } = useAppSwitcher();
 
-const { loadFromHistory } = useNotifications();
+const { loadFromHistory, notifications, markAllAsRead } = useNotifications();
 const route = useRoute();
 const { isAuthenticated } = useUser();
 
 const routes = router.getRoutes();
 
-const settingsMenu = useSettingsMenu();
-provide(SettingsMenuKey, settingsMenu);
+const { register: registerMenuItem } = provideSettingsMenu();
+const { register: registerAppBarWidget } = provideAppBarWidget();
+
+const hasUnreadNotifications = computed(() => {
+  return notifications.value.some((item) => item.isNew);
+});
 
 const { t } = useI18n({ useScope: "global" });
 
-const { registerMenuItem } = settingsMenu;
+const { register: registerMobileButton } = provideAppBarMobileButtonsService();
 
 registerMenuItem({
   id: "language-selector",
@@ -187,6 +174,21 @@ registerMenuItem({
   order: 100,
 });
 
+registerAppBarWidget({
+  id: "notification-dropdown",
+  component: NotificationDropdown,
+  icon: BellIcon,
+  order: 10,
+  badge: () => hasUnreadNotifications.value,
+});
+
+registerMobileButton({
+  id: "notification-dropdown",
+  component: NotificationDropdown,
+  icon: BellIcon,
+  order: 10,
+});
+
 const onMenuItemClick = function (item: MenuItem) {
   console.debug(`vc-app#onMenuItemClick() called.`);
 
@@ -207,10 +209,6 @@ const onMenuItemClick = function (item: MenuItem) {
       router.push({ name: menuRoute?.name, params: route.params });
     }
   }
-};
-
-const operateLogoClick = () => {
-  emit("logo-click", openRoot);
 };
 
 const openRoot = async () => {
@@ -240,7 +238,7 @@ provide("internalRoutes", internalRoutes);
 provide(DynamicModulesKey, dynamicModules);
 provideDashboardService();
 provideMenuService();
-createGlobalSearch();
+provideGlobalSearch();
 
 onUnmounted(() => {
   isAppReady.value = false;

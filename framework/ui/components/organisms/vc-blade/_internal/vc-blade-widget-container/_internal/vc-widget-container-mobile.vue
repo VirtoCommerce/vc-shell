@@ -37,6 +37,7 @@
         floating
         placement="top-end"
         variant="light"
+        class="widget-container-mobile__more-dropdown"
         @update:opened="showToolbar = $event"
       >
         <template #trigger="{ isActive }">
@@ -129,7 +130,7 @@ const toggleToolbar = () => {
   right: 0;
   width: 100%;
   height: var(--blade-toolbar-widgets-mobile-height);
-  z-index: 100;
+  z-index: 54;
   background-color: var(--blade-toolbar-widgets-bg-color-mobile);
 
   &__measure {
@@ -143,8 +144,7 @@ const toggleToolbar = () => {
     gap: 4px;
     width: 100%;
     align-items: center;
-    justify-content: space-between;
-    padding: 0 30px;
+    padding: 0 22px;
   }
 
   &__measure-item {
@@ -156,8 +156,7 @@ const toggleToolbar = () => {
     display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: space-between;
-    padding: 0 30px;
+    padding: 0 22px;
     gap: 4px;
     height: var(--blade-toolbar-widgets-mobile-height);
   }
@@ -176,6 +175,10 @@ const toggleToolbar = () => {
       color: var(--blade-toolbar-icon-hover-color);
       background-color: var(--blade-toolbar-widgets-bg-hover-color);
     }
+  }
+
+  &__more-dropdown {
+    @apply tw-w-auto tw-ml-auto;
   }
 }
 </style>

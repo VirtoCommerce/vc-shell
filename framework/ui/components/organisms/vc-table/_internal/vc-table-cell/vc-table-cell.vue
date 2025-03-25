@@ -287,7 +287,8 @@ import VcInputCurrency from "../../../../molecules/vc-input-currency/vc-input-cu
 import VcInput from "../../../../molecules/vc-input/vc-input.vue";
 import VcTooltip from "../../../../atoms/vc-tooltip/vc-tooltip.vue";
 import { Field } from "vee-validate";
-import type { TableItem, ITableColumns } from "../../types";
+import type { TableItem } from "../../vc-table.vue";
+import { ITableColumns } from "../../../../../../core/types";
 
 export interface Props {
   cell: ITableColumns;
@@ -343,9 +344,9 @@ function onBlur(args: { row: number | undefined; field: string; errors?: string[
 
 <style lang="scss">
 :root {
-  --table-cell-error-color: var(--base-error-color, var(--danger-500));
+  --table-cell-error-color: var(--danger-500);
   --table-cell-text-color: var(--neutrals-400);
-  --table-cell-text-base-color: var(--base-text-color, var(--additional-950));
+  --table-cell-text-base-color: var(--additional-950);
 }
 
 .vc-table-cell {

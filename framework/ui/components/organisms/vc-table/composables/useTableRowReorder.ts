@@ -1,5 +1,5 @@
 import { computed, ref, Ref } from "vue";
-import { TableItem } from "../types";
+import { TableItem } from "../vc-table.vue";
 
 export function useTableRowReorder<T extends TableItem | string>(
   items: Ref<T[]>,

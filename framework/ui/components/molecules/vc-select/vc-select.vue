@@ -93,28 +93,28 @@
                               class="vc-select__selected-item"
                             >
                               <template v-if="multiple">
-                                <div class="vc-select__multiple-item">
-                                  <template v-if="loading">
-                                    <span class="vc-select__loading">{{
-                                      t("COMPONENTS.MOLECULES.VC_SELECT.LOADING")
-                                    }}</span>
-                                  </template>
-                                  <template v-else>
-                                    <slot
-                                      name="selected-item"
-                                      v-bind="item"
-                                    >
+                                <slot
+                                  name="selected-item"
+                                  v-bind="item"
+                                >
+                                  <div class="vc-select__multiple-item">
+                                    <template v-if="loading">
+                                      <span class="vc-select__loading">{{
+                                        t("COMPONENTS.MOLECULES.VC_SELECT.LOADING")
+                                      }}</span>
+                                    </template>
+                                    <template v-else>
                                       <span>{{ getOptionLabel(item.opt) }}</span>
-                                    </slot>
-                                  </template>
-                                  <VcIcon
-                                    v-if="!disabled"
-                                    class="vc-select__icon-remove"
-                                    icon="fas fa-times"
-                                    size="s"
-                                    @click.stop="removeAtIndex(item.index)"
-                                  ></VcIcon>
-                                </div>
+                                    </template>
+                                    <VcIcon
+                                      v-if="!disabled"
+                                      class="vc-select__icon-remove"
+                                      icon="material-close"
+                                      size="s"
+                                      @click.stop="removeAtIndex(item.index)"
+                                    ></VcIcon>
+                                  </div>
+                                </slot>
                               </template>
                               <template v-else-if="!multiple">
                                 <template v-if="loading">
@@ -155,7 +155,7 @@
                       >
                         <VcIcon
                           size="s"
-                          icon="fas fa-times"
+                          icon="material-close"
                         ></VcIcon>
                       </div>
                     </div>
@@ -171,7 +171,8 @@
                       class="vc-select__loading-icon"
                     >
                       <VcIcon
-                        icon="fas fa-circle-notch tw-animate-spin"
+                        icon="lucide-loader"
+                        class="tw-animate-spin"
                         size="m"
                       ></VcIcon>
                     </div>
@@ -187,7 +188,7 @@
                       <div class="vc-select__chevron">
                         <VcIcon
                           size="s"
-                          icon="fas fa-chevron-down"
+                          icon="material-keyboard_arrow_down"
                         ></VcIcon>
                       </div>
                     </div>
@@ -517,12 +518,6 @@ const props = withDefaults(
     size?: "default" | "small";
     outline?: boolean;
     placement?: Placement;
-    offset?:
-      | {
-          crossAxis?: number;
-          mainAxis?: number;
-        }
-      | number;
   }>(),
   {
     optionValue: "id",
@@ -536,7 +531,6 @@ const props = withDefaults(
     options: (): T[] => [],
     outline: true,
     placement: "bottom",
-    offset: -2,
   },
 );
 
@@ -601,7 +595,9 @@ const popper = useFloating(dropdownToggleRef, dropdownRef, {
     flip({ fallbackPlacements: ["top", "bottom"] }),
     shift({ mainAxis: false }),
     sameWidthChangeBorders(),
-    uiOffset(props.offset),
+    uiOffset({
+      mainAxis: 3,
+    }),
   ],
 }) as FloatingInstanceType;
 
@@ -890,14 +886,17 @@ function sameWidthChangeBorders() {
       let borderTop;
       let borderBottom;
       let borderRadius;
+      let boxShadow;
       if (placement === "top") {
         borderTop = "1px solid var(--select-border-color)";
         borderBottom = "1px solid var(--select-background-color)";
         borderRadius = "var(--select-border-radius) var(--select-border-radius) 0 0";
+        boxShadow = "3px -9px 15px -3px rgba(0, 0, 0, 0.08), 0px 0px 6px -2px rgba(0, 0, 0, 0.1)";
       } else {
         borderBottom = "1px solid var(--select-border-color)";
         borderTop = "1px solid var(--select-background-color)";
         borderRadius = "0 0 var(--select-border-radius) var(--select-border-radius)";
+        boxShadow = "3px 9px 15px -3px rgba(0, 0, 0, 0.08), 0px 0px 6px -2px rgba(0, 0, 0, 0.1)";
       }
 
       const width = `${rects.reference.width}px`;
@@ -911,6 +910,7 @@ function sameWidthChangeBorders() {
               borderBottom,
               borderRadius,
               width,
+              boxShadow,
             }
           : {
               border: "1px solid var(--select-border-color)",
@@ -1030,8 +1030,9 @@ const keyboardNavigation = useKeyboardNavigation({
   --select-height: 36px;
   --select-height-small: 28px;
   --select-border-radius: 4px;
-  --select-border-color: var(--neutrals-200);
+  --select-border-color: var(--neutrals-300);
   --select-text-color: var(--neutrals-800);
+  --select-padding: 10px;
 
   --select-background-color: var(--additional-50);
 
@@ -1044,16 +1045,18 @@ const keyboardNavigation = useKeyboardNavigation({
   --select-loading-color: var(--info-500);
   --select-option-background-color-hover: var(--accent-100);
   --select-option-background-color-selected: var(--accent-200);
+  --select-multiple-options-background-color: var(--additional-50);
+  --select-multiple-options-border-color: var(--secondary-200);
   --select-border-color-input: var(--secondary-200);
 
   --select-search-background-color: var(--additional-50);
 
   // Focus
-  --select-border-color-focus: var(--primary-50);
+  --select-border-color-focus: var(--primary-100);
 
   // Disabled
-  --select-background-color-disabled: var(--neutrals-50);
-  --select-disabled-text-color: var(--neutrals-400);
+  --select-background-color-disabled: var(--neutrals-200);
+  --select-disabled-text-color: var(--neutrals-500);
 
   // Error
   --select-border-color-error: var(--danger-500);
@@ -1097,7 +1100,7 @@ const keyboardNavigation = useKeyboardNavigation({
   }
 
   &__field-wrapper {
-    @apply tw-relative tw-flex tw-flex-auto tw-overflow-x-clip tw-truncate;
+    @apply tw-relative tw-flex tw-flex-auto tw-overflow-x-clip tw-truncate tw-rounded-[var(--select-border-radius)];
 
     &--default {
       @apply tw-min-h-[var(--select-height)];
@@ -1117,7 +1120,7 @@ const keyboardNavigation = useKeyboardNavigation({
   }
 
   &__field-content {
-    @apply tw-flex tw-flex-nowrap tw-flex-auto tw-h-full tw-px-3;
+    @apply tw-flex tw-flex-nowrap tw-flex-auto tw-h-full tw-px-[10px];
   }
 
   &__prepend-inner,
@@ -1159,7 +1162,7 @@ const keyboardNavigation = useKeyboardNavigation({
   }
 
   &__multiple-item {
-    @apply tw-bg-[color:var(--select-option-background-color-selected)] tw-border tw-border-solid tw-border-[color:var(--select-border-color)] tw-rounded-[var(--select-border-radius)] tw-flex tw-items-center tw-h-7 tw-box-border tw-px-2;
+    @apply tw-bg-[color:var(--select-multiple-options-background-color)] tw-border tw-border-solid tw-border-[color:var(--select-multiple-options-border-color)] tw-rounded-[2px] tw-flex tw-items-center tw-h-7 tw-box-border tw-px-2;
   }
 
   &__loading {
@@ -1199,7 +1202,7 @@ const keyboardNavigation = useKeyboardNavigation({
   }
 
   &__dropdown {
-    @apply tw-flex tw-flex-col tw-box-border tw-max-h-72 tw-h-auto tw-z-[101] tw-overflow-hidden tw-absolute tw-bg-[color:var(--select-background-color)] tw-border tw-border-solid tw-border-[color:var(--select-border-color)] tw-border-t-[color:var(--select-background-color)] tw-rounded-b-[var(--select-border-radius)] tw-p-2;
+    @apply tw-flex tw-flex-col tw-box-border tw-max-h-72 tw-h-auto tw-z-[101] tw-overflow-hidden tw-absolute tw-bg-[color:var(--select-background-color)] tw-p-2;
   }
 
   &__search-input {
@@ -1227,7 +1230,11 @@ const keyboardNavigation = useKeyboardNavigation({
   }
 
   &.vc-select_opened &__field {
-    @apply tw-rounded-t-[var(--select-border-radius)] tw-rounded-b-none;
+    @apply tw-rounded-[var(--select-border-radius)];
+  }
+
+  &.vc-select_opened &__field-wrapper {
+    @apply tw-outline tw-outline-2 tw-outline-[color:var(--select-border-color-focus)];
   }
 
   &.vc-select_error &__field-wrapper {

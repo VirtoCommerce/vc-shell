@@ -89,7 +89,7 @@ export type NotificationTemplateConstructor = ComponentPublicInstanceConstructor
 export interface IActionBuilderResult<T = {}> {
   icon: string;
   title: string | Ref<string>;
-  type: "danger" | "success";
+  type: "danger" | "success" | "warning" | "info";
   clickHandler(item?: T, index?: number): void;
 }
 
@@ -152,10 +152,7 @@ export type ITableColumnsBase = {
   currencyField?: string;
   rules?: IValidationRules;
   // Mobile view specific fields
-  mobilePosition?: {
-    row: 1 | 2; // In which row to show (1 or 2)
-    order: number; // Order within row
-  };
+  mobilePosition?: "status" | "image" | "top-left" | "top-right" | "bottom-left" | "bottom-right";
   mobileVisible?: boolean; // Show in mobile view
 };
 

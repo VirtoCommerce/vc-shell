@@ -151,7 +151,7 @@ defineOptions({
   isWorkspace: true,
   menuItem: {
     title: "OFFERSCLASSIC.MENU.TITLE",
-    icon: "fas fa-file-invoice",
+    icon: "bi-file-earmark-invoice",
     priority: 3,
   },
 });
@@ -234,7 +234,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
   {
     id: "refresh",
     title: computed(() => t("OFFERSCLASSIC.PAGES.LIST.TOOLBAR.REFRESH")),
-    icon: "fas fa-sync-alt",
+    icon: "material-refresh",
     async clickHandler() {
       await reload();
     },
@@ -242,7 +242,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
   {
     id: "add",
     title: computed(() => t("OFFERSCLASSIC.PAGES.LIST.TOOLBAR.ADD")),
-    icon: "fas fa-plus",
+    icon: "material-add",
     clickHandler() {
       addOffer();
     },
@@ -250,7 +250,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
   {
     id: "deleteSelected",
     title: computed(() => t("OFFERSCLASSIC.PAGES.LIST.TOOLBAR.DELETE")),
-    icon: "fas fa-trash",
+    icon: "material-delete",
     async clickHandler() {
       removeOffers();
     },
@@ -422,7 +422,7 @@ const onSelectionChanged = (items: IOffer[]) => {
 const actionBuilder = (): IActionBuilderResult[] => {
   const result: IActionBuilderResult[] = [];
   result.push({
-    icon: "fas fa-trash",
+    icon: "material-delete",
     title: "Delete",
     type: "danger",
     position: "left",

@@ -1,32 +1,16 @@
 <template>
   <div class="vc-blade-toolbar-desktop">
-    <!-- Measure container -->
-    <div class="vc-blade-toolbar-desktop__measure">
-      <template
-        v-for="item in items"
-        :key="`measure-${item.id}`"
-      >
-        <div class="vc-blade-toolbar-desktop__measure-item">
-          <VcBladeToolbarBaseButton
-            v-bind="item"
-            :ref="(el) => (el && '$el' in el ? setElementRef(item.id!, el?.$el) : null)"
-            :show-title="isExpanded"
-          />
-        </div>
-      </template>
-    </div>
-
-    <!-- Actual toolbar content -->
     <div
       ref="toolbarContentRef"
       class="vc-blade-toolbar-desktop__content"
     >
       <template
-        v-for="item in displayedItems"
+        v-for="item in visibleItems"
         :key="item.id"
       >
         <VcBladeToolbarBaseButton
           v-bind="item"
+          :data-item-key="item.id"
           :show-title="isExpanded"
           :on-click="item.clickHandler"
         />
@@ -35,10 +19,10 @@
       <GenericDropdown
         v-if="showMoreButton"
         :opened="isMenuOpen"
-        :items="overflowItems"
+        :items="hiddenItems"
         floating
         placement="bottom-end"
-        variant="light"
+        variant="secondary"
         @item-click="handleItemClick"
         @update:opened="isMenuOpen = $event"
       >
@@ -48,7 +32,7 @@
             :class="{ 'vc-blade-toolbar-desktop__more--active': isActive }"
             @click="toggleToolbar"
           >
-            <VcIcon :icon="CircleDotsIcon" />
+            <VcIcon icon="more" />
             <span
               v-if="isExpanded"
               class="vc-blade-toolbar-desktop__more-text"
@@ -60,6 +44,7 @@
 
         <template #item="{ item, click }">
           <VcBladeToolbarBaseButton
+            class="tw-p-3 tw-w-full"
             v-bind="item"
             :show-title="true"
             content-direction="row"
@@ -77,11 +62,10 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted, onBeforeUnmount, nextTick, computed, watch, toRef } from "vue";
-import { VcIcon } from "../../../../../../../../../";
+import { ref, toRef, watch, nextTick } from "vue";
 import { GenericDropdown } from "../../../../../../../../../shared/components/generic-dropdown";
-import { CircleDotsIcon } from "../../../../../../../atoms/vc-icon/icons";
-import { useVisibleElements } from "../../../../../../../../composables/useVisibleElements";
+import { VcIcon } from "../../../../../../../atoms/vc-icon";
+import { useAdaptiveItems } from "../../../../../../../../composables/useAdaptiveItems";
 import type { IBladeToolbar } from "../../../../../../../../../core/types";
 import VcBladeToolbarBaseButton from "../_internal/vc-blade-toolbar-button/vc-blade-toolbar-base-button.vue";
 
@@ -93,13 +77,13 @@ const props = defineProps<{
 const isMenuOpen = ref(false);
 const toolbarContentRef = ref<HTMLElement | null>(null);
 
-const { setElementRef, displayedItems, overflowItems, showMoreButton, calculateVisibleElements, setupResizeObserver } =
-  useVisibleElements<IBladeToolbar>({
-    containerRef: toolbarContentRef,
-    items: toRef(props, "items"),
-    getItemId: (item: IBladeToolbar) => item.id ?? "",
-    moreButtonWidth: 70,
-  });
+const { visibleItems, hiddenItems, showMoreButton, recalculate, updateObserver } = useAdaptiveItems<IBladeToolbar>({
+  containerRef: toolbarContentRef,
+  items: toRef(props, "items"),
+  getItemKey: (item) => item.id ?? "",
+  moreButtonWidth: 70,
+  initialItemWidth: 60,
+});
 
 function handleItemClick(item: IBladeToolbar) {
   item.clickHandler?.();
@@ -110,38 +94,15 @@ const toggleToolbar = () => {
   isMenuOpen.value = !isMenuOpen.value;
 };
 
-// Observe DOM changes
-const observer = new MutationObserver(() => {
-  nextTick(calculateVisibleElements);
-});
-
-onMounted(() => {
-  nextTick(() => {
-    if (toolbarContentRef.value) {
-      observer.observe(toolbarContentRef.value, {
-        childList: true,
-        subtree: true,
-        attributes: true,
-      });
-      calculateVisibleElements();
-    }
-  });
-});
-
-// Recalculate when isExpanded changes
 watch(
   () => props.isExpanded,
   () => {
-    nextTick(calculateVisibleElements);
+    nextTick(() => {
+      recalculate();
+      updateObserver();
+    });
   },
 );
-
-// Set up resize observer
-setupResizeObserver();
-
-onBeforeUnmount(() => {
-  observer.disconnect();
-});
 </script>
 
 <style lang="scss">
@@ -152,15 +113,6 @@ onBeforeUnmount(() => {
 
 .vc-blade-toolbar-desktop {
   @apply tw-w-full tw-relative;
-
-  &__measure {
-    @apply tw-absolute tw-px-4 tw-invisible tw-pointer-events-none tw-flex tw-h-0 tw-overflow-hidden;
-    left: -9999px;
-  }
-
-  &__measure-item {
-    @apply tw-flex;
-  }
 
   &__content {
     @apply tw-flex tw-items-center tw-px-4 tw-h-full;

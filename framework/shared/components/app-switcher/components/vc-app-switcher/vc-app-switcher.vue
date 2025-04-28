@@ -70,7 +70,7 @@ const switchApp = (app: AppDescriptor) => {
   @apply tw-relative tw-flex tw-shrink-0;
 
   &__item {
-    @apply tw-flex tw-items-center tw-w-full;
+    @apply tw-flex tw-items-center tw-w-full tw-p-3 tw-w-full;
   }
 
   &__item-icon {

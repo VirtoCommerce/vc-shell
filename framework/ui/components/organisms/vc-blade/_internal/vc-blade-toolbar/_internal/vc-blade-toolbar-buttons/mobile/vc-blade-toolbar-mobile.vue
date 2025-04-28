@@ -19,7 +19,7 @@
         class="vc-blade-toolbar-mobile__toggle"
         @click="toggleMenu"
       >
-        <VcIcon icon="fas fa-chevron-up" />
+        <VcIcon icon="material-keyboard_arrow_up" />
       </button>
     </div>
 

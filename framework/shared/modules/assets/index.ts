@@ -9,4 +9,4 @@ declare module "@vue/runtime-core" {
 
 export const AssetsDetailsModule = createAppModule(components);
 
-export * from "./components";
+export default components;

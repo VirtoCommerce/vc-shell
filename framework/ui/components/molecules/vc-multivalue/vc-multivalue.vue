@@ -54,7 +54,7 @@
             <VcIcon
               v-if="!disabled"
               class="vc-multivalue__field-value-clear"
-              icon="fas fa-times"
+              icon="material-close"
               size="s"
               tabindex="0"
               role="button"
@@ -139,7 +139,7 @@
         class="vc-multivalue__loading"
       >
         <VcIcon
-          icon="fas fa-circle-notch"
+          icon="lucide-loader"
           class="vc-multivalue__loading-icon"
           size="m"
         ></VcIcon>
@@ -251,7 +251,9 @@ const popper = useFloating(dropdownToggleRef, dropdownRef, {
     flip({ fallbackPlacements: ["top", "bottom"] }),
     shift({ mainAxis: false }),
     sameWidthChangeBorders(),
-    offset(-2),
+    offset({
+      mainAxis: -2,
+    }),
   ],
 }) as FloatingInstanceType;
 
@@ -426,13 +428,14 @@ function onSearch(event: Event) {
 :root {
   --multivalue-height: 36px;
   --multivalue-border-radius: 4px;
-  --multivalue-border-color: var(--neutrals-200);
+  --multivalue-border-color: var(--neutrals-300);
   --multivalue-border-color-error: var(--danger-100);
   --multivalue-background-color: var(--additional-50);
   --multivalue-placeholder-color: var(--neutrals-400);
   --multivalue-text-color: var(--neutrals-800);
+  --multivalue-padding: 10px;
 
-  --multivalue-select-border-radius: 3px;
+  --multivalue-select-border-radius: 4px;
   --multivalue-select-border-color: var(--neutrals-200);
   --multivalue-select-border-color-error: var(--danger-500);
   --multivalue-select-background-color: var(--additional-50);
@@ -450,8 +453,8 @@ function onSearch(event: Event) {
 
   // Disabled
   --multivalue-select-background-color-disabled: var(--neutrals-50);
-  --multivalue-disabled-text-color: var(--neutrals-400);
-  --multivalue-disabled-background-color: var(--neutrals-50);
+  --multivalue-disabled-text-color: var(--neutrals-500);
+  --multivalue-disabled-background-color: var(--neutrals-200);
 }
 
 .vc-multivalue {
@@ -536,7 +539,7 @@ function onSearch(event: Event) {
 
   &__field {
     @apply tw-border-none tw-outline-none tw-min-h-[var(--multivalue-height)] tw-bg-[color:var(--multivalue-background-color)]
-      tw-min-w-[120px] tw-box-border placeholder:tw-text-[color:var(--multivalue-placeholder-color)] tw-text-sm;
+      tw-min-w-[120px] tw-box-border placeholder:tw-text-[color:var(--multivalue-placeholder-color)] tw-text-sm tw-rounded-[var(--multivalue-border-radius)];
 
     &::-webkit-input-placeholder {
       @apply tw-text-[color:var(--multivalue-placeholder-color)];
@@ -580,7 +583,7 @@ function onSearch(event: Event) {
   }
 
   &__input {
-    @apply tw-px-3;
+    @apply tw-px-[var(--multivalue-padding)];
   }
 
   &__loading {

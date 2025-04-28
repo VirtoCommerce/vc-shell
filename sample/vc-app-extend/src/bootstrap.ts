@@ -9,7 +9,7 @@ export function bootstrap(app: App) {
   // Add Dashboard to main menu item
   //   addMenuItem({
   //     title: "SHELL.MENU.DASHBOARD",
-  //     icon: "fas fa-home",
+  //     icon: "material-home",
   //     priority: 0,
   //     url: "/",
   //   });

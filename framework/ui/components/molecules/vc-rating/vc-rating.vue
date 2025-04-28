@@ -15,34 +15,40 @@
     </VcLabel>
 
     <!-- Rating icon -->
-    <template v-if="modelValue">
-      <template v-if="variant === 'stars'">
-        <VcIcon
-          v-for="index in modelValue"
-          :key="index"
-          icon="fas fa-star"
-          class="vc-rating__icon"
-        ></VcIcon>
-        <VcIcon
-          v-for="index in max - modelValue"
-          :key="index"
-          icon="far fa-star"
-          class="vc-rating__icon"
-        ></VcIcon>
+    <div class="vc-rating__content">
+      <template v-if="modelValue">
+        <template v-if="variant === 'stars'">
+          <div class="vc-rating__stars">
+            <VcIcon
+              v-for="index in modelValue"
+              :key="index"
+              icon="material-star"
+              class="vc-rating__icon"
+            ></VcIcon>
+            <VcIcon
+              v-for="index in max - modelValue"
+              :key="index"
+              icon="material-star"
+              class="vc-rating__icon vc-rating__icon--empty"
+            ></VcIcon>
+          </div>
+        </template>
+        <template v-else>
+          <div class="vc-rating__text-container">
+            <VcIcon
+              v-if="variant === 'star-and-text'"
+              icon="material-star"
+              class="vc-rating__icon"
+            ></VcIcon>
+            <span class="vc-rating__rating">{{ modelValue }}/{{ max }}</span>
+            <slot name="details"></slot>
+          </div>
+        </template>
       </template>
       <template v-else>
-        <VcIcon
-          v-if="variant === 'star-and-text'"
-          icon="fas fa-star"
-          class="vc-rating__icon"
-        ></VcIcon>
-        <span class="vc-rating__rating">{{ modelValue }}/{{ max }}</span>
-        <slot name="details"></slot>
+        <span class="vc-rating__placeholder">{{ placeholder }}</span>
       </template>
-    </template>
-    <template v-else>
-      <span class="vc-rating__placeholder">{{ placeholder }}</span>
-    </template>
+    </div>
   </div>
 </template>
 
@@ -76,17 +82,39 @@ defineSlots<{
 }
 
 .vc-rating {
-  @apply tw-align-middle;
+  @apply tw-flex tw-flex-col tw-align-middle;
+
+  &__content {
+    @apply tw-flex tw-flex-row tw-items-center;
+  }
+
+  &__stars {
+    @apply tw-flex tw-flex-row tw-items-center;
+  }
+
+  &__text-container {
+    @apply tw-flex tw-flex-row tw-items-center;
+  }
 
   &__placeholder {
     @apply tw-text-[color:var(--rating-placeholder-color)];
   }
+
   &__icon {
     @apply tw-text-[color:var(--rating-special-color)] tw-mr-1;
     font-size: inherit;
+
+    &--empty {
+      @apply tw-opacity-40;
+    }
   }
+
   &__rating {
     @apply tw-mr-1;
+  }
+
+  &__label {
+    @apply tw-mb-1;
   }
 }
 </style>

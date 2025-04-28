@@ -3,7 +3,7 @@
     <template #trigger>
       <div class="vc-theme-selector__trigger">
         <VcIcon
-          icon="fas fa-palette"
+          icon="material-palette"
           class="vc-theme-selector__icon"
         />
         <span class="vc-theme-selector__title">
@@ -74,7 +74,7 @@ watch(
   }
 
   &__item {
-    @apply tw-flex tw-items-center tw-w-full tw-px-3
+    @apply tw-flex tw-items-center tw-w-full tw-px-6 tw-py-3
       tw-cursor-pointer tw-transition-colors
       hover:tw-bg-[color:var(--menu-item-bg-hover)];
 

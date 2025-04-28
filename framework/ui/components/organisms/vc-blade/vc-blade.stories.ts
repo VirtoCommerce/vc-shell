@@ -14,9 +14,9 @@ export default {
     // expandable: false,
 
     toolbarItems: [
-      { id: "1", icon: "fas fa-sync-alt", title: "Refresh" },
-      { id: "2", icon: "fas fa-plus", title: "Add" },
-      { id: "3", icon: "fas fa-trash", title: "Delete", disabled: true },
+      { id: "1", icon: "material-refresh", title: "Refresh" },
+      { id: "2", icon: "material-add", title: "Add" },
+      { id: "3", icon: "material-delete", title: "Delete", disabled: true },
       { id: "4", icon: "fas fa-download", title: "Import" },
       { id: "5", icon: "fas fa-upload", title: "Export" },
       { id: "6", icon: "fas fa-cut", title: "Cut", disabled: true },

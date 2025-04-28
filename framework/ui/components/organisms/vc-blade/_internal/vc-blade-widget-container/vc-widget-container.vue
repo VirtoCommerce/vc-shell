@@ -1,20 +1,20 @@
 <template>
-  <template v-if="widgets.length > 0">
-  <WidgetContainerMobile
-    v-if="$isMobile.value"
-    :widgets="widgets"
-    :blade-id="bladeId"
-  />
-  <WidgetContainerDesktop
-    v-else
-    :widgets="widgets"
-    :blade-id="bladeId"
-  />
-</template>
+  <template v-if="visibleWidgets?.length > 0">
+    <WidgetContainerMobile
+      v-if="$isMobile.value"
+      :widgets="visibleWidgets"
+      :blade-id="bladeId"
+    />
+    <WidgetContainerDesktop
+      v-else
+      :widgets="visibleWidgets"
+      :blade-id="bladeId"
+    />
+  </template>
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, toValue } from "vue";
 import { useWidgets } from "../../../../../../core/composables/useWidgets";
 import { WidgetContainerDesktop, WidgetContainerMobile } from "./_internal";
 
@@ -25,6 +25,17 @@ interface Props {
 const props = defineProps<Props>();
 const widgetService = useWidgets();
 const widgets = computed(() => widgetService.getWidgets(props.bladeId));
+
+const visibleWidgets = computed(() =>
+  widgets.value.filter((widget) => {
+    if (typeof widget.isVisible === "function") {
+      return widget.isVisible();
+    } else if (typeof widget.isVisible === "boolean") {
+      return widget.isVisible;
+    }
+    return toValue(widget.isVisible);
+  }),
+);
 </script>
 
 <style lang="scss">

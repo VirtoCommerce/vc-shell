@@ -1,4 +1,4 @@
-import { ConcreteComponent, reactive, ref, ComponentInternalInstance } from "vue";
+import { ConcreteComponent, reactive, ref, ComponentInternalInstance, ComputedRef, Ref, getCurrentInstance } from "vue";
 
 export type WidgetEventHandler = (...args: unknown[]) => void;
 
@@ -12,6 +12,7 @@ export interface IWidget {
   component: ConcreteComponent;
   props?: Record<string, unknown>;
   events?: Record<string, unknown>;
+  isVisible?: boolean | ComputedRef<boolean> | Ref<boolean> | (() => boolean);
   onOpen?: (blade: { id: string }) => void;
   onClose?: (blade: { id: string }) => void;
 }
@@ -31,6 +32,7 @@ export interface IWidgetService {
   setActiveWidget: (ref: ComponentInternalInstance["exposed"]) => void;
   updateActiveWidget: () => void;
   isWidgetRegistered: (id: string) => boolean;
+  updateWidget: ({ id, bladeId, widget }: { id: string; bladeId: string; widget: Partial<IWidget> }) => void;
 }
 
 // Global state for pre-registering widgets
@@ -58,9 +60,18 @@ export function createWidgetService(): IWidgetService {
 
     const existingIndex = widgetRegistry[bladeId].findIndex((w) => w.id === widget.id);
     if (existingIndex === -1) {
-      widgetRegistry[bladeId].push(widget);
-      registeredWidgets.push({ bladeId, widget });
+      widgetRegistry[bladeId].push(reactive(widget));
+      registeredWidgets.push({ bladeId, widget: reactive(widget) });
       registeredIds.add(widget.id);
+    }
+  };
+
+  const updateWidget = ({ id, bladeId, widget }: { id: string; bladeId: string; widget: Partial<IWidget> }): void => {
+    if (widgetRegistry[bladeId]) {
+      const index = widgetRegistry[bladeId].findIndex((w) => w.id === id);
+      if (index !== -1) {
+        widgetRegistry[bladeId][index] = { ...widgetRegistry[bladeId][index], ...widget };
+      }
     }
   };
 
@@ -143,5 +154,6 @@ export function createWidgetService(): IWidgetService {
     setActiveWidget,
     updateActiveWidget,
     isWidgetRegistered,
+    updateWidget,
   };
 }

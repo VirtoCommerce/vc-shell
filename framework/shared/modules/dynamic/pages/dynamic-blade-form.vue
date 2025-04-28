@@ -103,7 +103,7 @@ import { useToolbarReducer } from "../composables/useToolbarReducer";
 import { useBeforeUnload } from "../../../../core/composables/useBeforeUnload";
 import * as _ from "lodash-es";
 import { useLanguages, useNotifications } from "../../../../core/composables";
-import { notification } from "../../../components";
+import { notification, GenericDropdown } from "../../../components";
 import { ComponentSlots } from "../../../utilities/vueUtils";
 import { useWidgets } from "../../../../core/composables/useWidgets";
 import { BladeInstance } from "../../../../injection-keys";
@@ -289,62 +289,58 @@ const bladeMultilanguage = reactiveComputed(() => {
     "multilanguage" in toValue(unreffedScope) &&
     toValue(unreffedScope).multilanguage
   ) {
+    const isOpened = ref(false);
     return {
       component: () => {
         return h(
-          VcSelect as Component,
+          GenericDropdown,
           {
-            name: "currentLocale",
-            modelValue: toValue(unreffedScope).multilanguage?.currentLocale,
-            options: localeOptions.value,
-            optionValue: "value",
-            optionLabel: "label",
-            disabled: "disabled" in toValue(unreffedScope) && toValue(unreffedScope).disabled,
-            required: true,
-            clearable: false,
-            outline: false,
+            opened: isOpened.value,
+            items: localeOptions.value || [],
+            floating: true,
+            placement: "bottom-end",
             offset: {
-              mainAxis: -2,
+              mainAxis: 10,
               crossAxis: -15,
             },
-            placement: "bottom-end",
-            "onUpdate:modelValue": (e: string) => {
-              toValue(unreffedScope).multilanguage?.setLocale(e);
+            variant: "light",
+            emptyText: t("COMMON.NO_OPTIONS"),
+            itemText: (item: any) => item.label,
+            isItemActive: (item: any) => item.value === toValue(unreffedScope).multilanguage?.currentLocale,
+            "onItem-click": (item: any) => {
+              isOpened.value = false;
+              toValue(unreffedScope).multilanguage?.setLocale(item.value);
+            },
+            "onUpdate:opened": (state: boolean) => {
+              isOpened.value = state;
             },
           },
-          ["selected-item", "option"].reduce(
-            (obj, slot) => {
-              obj[slot] = (
-                scope: Parameters<ComponentSlots<typeof VcSelect>["option"]>["0"] & {
-                  opt: { flag: string; label: string };
+          {
+            trigger: (props: { isActive: boolean }) => {
+              const currentLocale = localeOptions.value?.find(
+                (locale: any) => locale.value === toValue(unreffedScope).multilanguage?.currentLocale,
+              );
+              return h(
+                "div",
+                {
+                  onClick: () => {
+                    if ("disabled" in toValue(unreffedScope) && toValue(unreffedScope).disabled) return;
+                    isOpened.value = !isOpened.value;
+                  },
+                  class:
+                    "tw-flex tw-items-center tw-justify-center tw-bg-[--primary-100] tw-w-8 tw-h-8 tw-rounded-full tw-mr-1 hover:tw-bg-[--primary-200]",
                 },
-              ) => {
-                if (slot === "selected-item") {
-                  return h(
-                    "div",
-                    {
-                      class:
-                        "tw-flex tw-items-center tw-justify-center tw-bg-[--primary-100] tw-w-8 tw-h-8 tw-rounded-full tw-mr-1 hover:tw-bg-[--primary-200]",
-                    },
-                    [h(VcImage, { src: scope.opt.flag, class: "tw-w-6 tw-h-6", emptyIcon: "" })],
-                  );
-                }
-                return h("div", { class: "tw-flex tw-items-center tw-gap-2" }, [
-                  h(VcImage, { src: scope.opt.flag, class: "tw-w-6 tw-h-6", emptyIcon: "" }),
-                  h("span", { class: "tw-text-sm" }, scope.opt.label),
-                ]);
-              };
-              return obj;
+                [h(VcImage, { src: currentLocale?.flag, class: "tw-w-6 tw-h-6", emptyIcon: "" })],
+              );
             },
-            {} as Record<
-              string,
-              (
-                scope: Parameters<ComponentSlots<typeof VcSelect>["option"]>["0"] & {
-                  opt: { flag: string; label: string };
-                },
-              ) => VNode
-            >,
-          ),
+            item: (props: { item: any; click: () => void }) => {
+              return h("div", { class: "tw-flex tw-items-center tw-gap-2 tw-p-2" }, [
+                h(VcImage, { src: props.item.flag, class: "tw-w-6 tw-h-6", emptyIcon: "" }),
+                h("span", { class: "tw-text-sm" }, props.item.label),
+              ]);
+            },
+            empty: () => h("div", {}, t("COMMON.NO_OPTIONS")),
+          },
         );
       },
       currentLocale: toValue(unreffedScope).multilanguage?.currentLocale,
@@ -388,8 +384,6 @@ const toolbarComputed =
               emit("parent:call", {
                 method: "updateActiveWidgetCount",
               });
-
-              console.log("saveChanges", widgetService);
 
               widgetService.updateActiveWidget();
 
@@ -436,23 +430,31 @@ const toolbarComputed =
 onMounted(() => {
   if (blade?.value.id && widgets.value?.children) {
     widgets.value.children.forEach((widgetComponent) => {
-      const component =
-        typeof widgetComponent === "string"
+      const isObjectWidget = typeof widgetComponent === "object" && "id" in widgetComponent;
+      const widgetId = isObjectWidget ? widgetComponent.id : "";
+      const visibilityMethod = isObjectWidget && widgetComponent.visibility?.method;
+
+      const component = isObjectWidget
+        ? resolveComponent(widgetId)
+        : typeof widgetComponent === "string"
           ? resolveComponent(widgetComponent)
           : (widgetComponent as ConcreteComponent);
 
       if (!component) {
-        console.error(`Failed to resolve widget component: ${widgetComponent}`);
+        console.error(`Failed to resolve widget component: ${isObjectWidget ? widgetId : widgetComponent}`);
         return;
       }
 
-      const widgetId =
-        typeof component === "object" && "__name" in component ? component.__name : `widget-${Date.now()}`;
+      const finalWidgetId = isObjectWidget
+        ? widgetId
+        : typeof component === "object" && "__name" in component
+          ? component.__name
+          : `widget-${Date.now()}`;
 
-      if (widgetId) {
+      if (finalWidgetId) {
         widgetService.registerWidget(
           {
-            id: widgetId,
+            id: finalWidgetId,
             component: markRaw(component as ConcreteComponent),
             props: {
               modelValue: bladeContext,
@@ -462,6 +464,7 @@ onMounted(() => {
                 bladeContext.value = val as DetailsBladeContext;
               },
             },
+            isVisible: visibilityMethod ? computed(() => bladeContext.value.scope?.[visibilityMethod]) : true,
           },
           blade.value.id,
         );

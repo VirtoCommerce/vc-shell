@@ -411,7 +411,7 @@
                           { 'tw-pt-4': !$isMobile.value },
                           'tw-text-[#41afe6] tw-cursor-pointer hover:tw-text-[#319ed4]',
                         ]"
-                        icon="fas fa-times-circle"
+                        icon="material-cancel"
                         @click="removePrice(i)"
                       ></VcIcon>
                     </div>
@@ -737,7 +737,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
   {
     id: "save",
     title: computed(() => t("OFFERSCLASSIC.PAGES.DETAILS.TOOLBAR.SAVE")),
-    icon: "fas fa-save",
+    icon: "material-save",
     async clickHandler() {
       if (isFormValid.value) {
         if (offerDetails.value.id) {
@@ -767,7 +767,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
   {
     id: "enable",
     title: t("OFFERSCLASSIC.PAGES.DETAILS.TOOLBAR.ENABLE"),
-    icon: "fa fa-eye",
+    icon: "material-visibility",
     async clickHandler() {
       if (offerDetails.value.id) {
         offerDetails.value.isActive = true;
@@ -778,7 +778,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
   {
     id: "disable",
     title: t("OFFERSCLASSIC.PAGES.DETAILS.TOOLBAR.DISABLE"),
-    icon: "fa fa-eye-slash",
+    icon: "material-visibility_off",
     async clickHandler() {
       if (offerDetails.value.id) {
         offerDetails.value.isActive = false;
@@ -789,7 +789,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
   {
     id: "delete",
     title: t("OFFERSCLASSIC.PAGES.DETAILS.TOOLBAR.DELETE"),
-    icon: "fas fa-trash",
+    icon: "material-delete",
     async clickHandler() {
       if (await showConfirmation(unref(computed(() => t("OFFERSCLASSIC.PAGES.ALERTS.DELETE_OFFER"))))) {
         if (props.param) {

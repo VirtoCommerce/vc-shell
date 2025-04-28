@@ -12,7 +12,7 @@
       <slot></slot>
     </div>
 
-    <teleport :to="`#${appContainer}`">
+    <teleport to="body">
       <span
         v-if="tooltipVisible && $slots['tooltip']"
         ref="tooltipRef"
@@ -59,7 +59,7 @@ const target = ref(null);
 let showTimeout: NodeJS.Timeout | null = null;
 
 const instance = getCurrentInstance();
-const appContainer = computed(() => instance?.appContext.app._container?.id);
+// const appContainer = computed(() => instance?.appContext.app._container?.id || "app");
 
 const { floatingStyles } = useFloating(tooltipCompRef, tooltipRef, {
   placement: props.placement,

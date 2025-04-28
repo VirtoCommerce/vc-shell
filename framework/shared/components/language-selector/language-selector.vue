@@ -4,7 +4,7 @@
       <div class="vc-language-selector__trigger">
         <VcImage
           :src="currLocaleFlag"
-          :empty-icon="'fas fa-globe'"
+          empty-icon="material-language"
           class="vc-language-selector__flag"
         />
         <span class="vc-language-selector__title">
@@ -106,7 +106,7 @@ watch(
   }
 
   &__item {
-    @apply tw-flex tw-items-center tw-w-full tw-px-3
+    @apply tw-flex tw-items-center tw-w-full tw-px-6 tw-py-3
       tw-cursor-pointer tw-transition-colors
       hover:tw-bg-[color:var(--menu-item-bg-hover)];
 

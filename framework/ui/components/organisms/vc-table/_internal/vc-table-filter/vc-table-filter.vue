@@ -16,7 +16,7 @@
         <div class="vc-table-filter__icon-container">
           <VcIcon
             class="vc-table-filter__icon"
-            icon="fas fa-filter"
+            icon="lucide-funnel"
             size="m"
           />
         </div>

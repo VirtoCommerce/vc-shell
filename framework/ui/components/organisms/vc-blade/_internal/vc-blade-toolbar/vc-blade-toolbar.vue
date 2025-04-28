@@ -20,11 +20,15 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, useSlots } from "vue";
+import { ComputedRef, computed, inject, onBeforeMount, onBeforeUnmount, watch, useSlots } from "vue";
 import { useLocalStorage } from "@vueuse/core";
-import { usePermissions } from "../../../../../../core/composables";
-import { IBladeToolbar } from "./../../../../../../core/types";
+import { usePermissions, useToolbar } from "../../../../../../core/composables";
+import { IBladeToolbar } from "../../../../../../core/types";
 import VcBladeToolbarButtons from "./_internal/vc-blade-toolbar-buttons/vc-blade-toolbar-buttons.vue";
+import { BladeInstance } from "../../../../../../injection-keys";
+import { FALLBACK_BLADE_ID } from "../../../../../../core/constants";
+import { IBladeInstance } from "../../../../../../shared/components/blade-navigation/types";
+import { IToolbarItem } from "../../../../../../core/services/toolbar-service";
 
 export interface Props {
   items: IBladeToolbar[];
@@ -37,11 +41,84 @@ const props = withDefaults(defineProps<Props>(), {
 const slots = useSlots();
 const isExpanded = useLocalStorage("VC_BLADE_TOOLBAR_IS_EXPANDED", true);
 const { hasAccess } = usePermissions();
+const { registerToolbarItem, unregisterToolbarItem, getToolbarItems, clearBladeToolbarItems } = useToolbar();
 
+// Get the ID of the current blade
+const blade = inject<ComputedRef<IBladeInstance>>(
+  BladeInstance,
+  computed(() => ({
+    id: FALLBACK_BLADE_ID,
+    expandable: false,
+    maximized: false,
+    error: undefined,
+    navigation: undefined,
+    breadcrumbs: undefined,
+  })),
+);
+
+const bladeId = computed(() => blade.value?.id ?? FALLBACK_BLADE_ID);
+
+// Prefix for prop items to avoid ID conflicts
+const PROP_ITEM_ID_PREFIX = "prop_toolbar_item_";
+
+// Generate IDs for items without them
+function ensureItemHasId(item: IBladeToolbar, index: number): IToolbarItem {
+  const itemCopy = { ...item } as IToolbarItem;
+  if (!("id" in itemCopy) || !itemCopy.id) {
+    itemCopy.id = `${PROP_ITEM_ID_PREFIX}${bladeId.value}_${index}`;
+  }
+  return itemCopy;
+}
+
+// Register prop items in the service
+function registerPropItems() {
+  // Unregister previous items first to avoid duplicates
+  unregisterPropItems();
+
+  // Register new items
+  props.items.forEach((item, index) => {
+    const toolbarItem = ensureItemHasId(item, index);
+    registerToolbarItem(toolbarItem);
+  });
+}
+
+// Unregister prop items from the service
+function unregisterPropItems() {
+  const itemsToRemove = getToolbarItems().filter((item) => item.id.startsWith(PROP_ITEM_ID_PREFIX + bladeId.value));
+
+  itemsToRemove.forEach((item) => {
+    unregisterToolbarItem(item.id);
+  });
+}
+
+// Filter visible items from service
 const visibleItems = computed(() => {
-  return props.items.filter(
-    (item) => hasAccess(item.permissions) && (item.isVisible === undefined || item.isVisible) && !item.disabled,
-  );
+  return getToolbarItems()
+    .filter((item) => hasAccess(item.permissions) && (item.isVisible === undefined || item.isVisible) && !item.disabled)
+    .sort((a, b) => {
+      const priorityA = a.priority ?? 0;
+      const priorityB = b.priority ?? 0;
+      return priorityB - priorityA;
+    });
+});
+
+// Watch for changes in props.items
+watch(
+  () => props.items,
+  () => {
+    registerPropItems();
+  },
+  { deep: true },
+);
+
+// Initial registration
+onBeforeMount(() => {
+  registerPropItems();
+});
+
+// Cleanup on unmount
+onBeforeUnmount(() => {
+  unregisterPropItems();
 });
 </script>
 

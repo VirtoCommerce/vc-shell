@@ -9,7 +9,7 @@
       @click="onHeaderClick"
     >
       <slot name="header">
-        <div>
+        <div class="vc-card__header-content">
           <VcIcon
             v-if="icon"
             class="vc-card__icon"
@@ -28,7 +28,7 @@
       <VcIcon
         v-if="isCollapsable"
         class="vc-card__collapse"
-        :icon="`fas fa-chevron-${isCollapsedInternal ? 'down' : 'up'}`"
+        :icon="`material-keyboard_arrow_${isCollapsedInternal ? 'down' : 'up'}`"
         size="s"
       ></VcIcon>
     </div>
@@ -125,7 +125,11 @@ $variants: success, danger;
   tw-flex-grow tw-flex tw-flex-col;
 
   &__header {
-    @apply tw-border-b tw-border-[color:var(--card-border-color)] tw-border-solid tw-bg-[color:var(--card-header-background)] tw-px-[var(--card-header-padding-hor)] tw-py-[var(--card-header-padding-vert)] tw-flex tw-items-center tw-content-between tw-w-full tw-box-border;
+    @apply tw-border-b tw-border-[color:var(--card-border-color)] tw-border-solid tw-bg-[color:var(--card-header-background)] tw-px-[var(--card-header-padding-hor)] tw-py-[var(--card-header-padding-vert)] tw-flex tw-items-center tw-justify-between tw-w-full tw-box-border;
+  }
+
+  &__header-content {
+    @apply tw-flex tw-items-center;
   }
 
   &_collapsable &__header {

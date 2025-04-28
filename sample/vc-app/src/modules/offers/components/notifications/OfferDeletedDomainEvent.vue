@@ -28,6 +28,6 @@ defineOptions({
 
 const notificationStyle = {
   color: "#F14E4E",
-  icon: "fas fa-percentage",
+  icon: "material-percent",
 };
 </script>

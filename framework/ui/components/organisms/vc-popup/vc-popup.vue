@@ -156,13 +156,13 @@ const isMobile = inject("isMobile") as Ref<boolean>;
 const icon = computed(() => {
   switch (props.variant) {
     case "warning":
-      return "fas fa-exclamation-triangle";
+      return "material-warning";
     case "error":
-      return "fas fa-exclamation-circle";
+      return "material-error";
     case "success":
-      return "fas fa-check-circle";
+      return "material-check_circle";
     case "info":
-      return "fas fa-info-circle";
+      return "material-info";
     default:
       return "";
   }
@@ -208,7 +208,7 @@ function closeModal() {
 
 .vc-popup {
   &__overlay {
-    @apply tw-fixed tw-inset-0 tw-bg-[var(--popup-overlay)] tw-backdrop-blur-[3px];
+    @apply tw-fixed tw-inset-0 tw-bg-black/50 tw-backdrop-blur-[3px];
   }
 
   &__container {

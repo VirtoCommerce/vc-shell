@@ -85,7 +85,7 @@ const props = withDefaults(defineProps<Props>(), {
   variant: "gallery",
   accept: ".jpg, .png, .jpeg, .webp, .heic, .svg",
   name: "Gallery",
-  icon: "fas fa-cloud-upload-alt",
+  icon: "material-cloud_upload",
 });
 const emit = defineEmits<Emits>();
 
@@ -153,7 +153,7 @@ function dragLeave() {
   --file-upload-border-color-error: var(--danger-500);
   --file-upload-border-radius: 6px;
   --file-upload-drag-bg: var(--primary-100);
-  --file-upload-icon-color: var(--secondary-200);
+  --file-upload-icon-color: var(--primary-500);
   --file-upload-text-color: var(--neutrals-400);
   --file-upload-error-color: var(--danger-500);
   --file-upload-background-color: var(--primary-50);

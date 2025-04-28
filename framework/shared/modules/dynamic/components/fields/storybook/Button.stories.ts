@@ -176,11 +176,11 @@ Text.args = {
 
 export const Icon = Template.bind({});
 Icon.args = {
-  icon: "fas fa-truck-moving",
+  icon: "material-delivery_truck_speed",
 };
 
 export const IconSize = Template.bind({});
 IconSize.args = {
-  icon: "fas fa-truck-moving",
+  icon: "material-delivery_truck_speed",
   iconSize: "xxl",
 };

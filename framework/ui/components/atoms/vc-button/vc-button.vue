@@ -8,7 +8,7 @@
       v-if="icon"
       :class="['vc-button__icon', iconClass]"
       :icon="icon"
-      :size="small || size === 'sm' ? 'xs' : iconSize"
+      :size="iconSize"
     ></VcIcon>
     <p
       v-if="$slots['default']"
@@ -73,7 +73,7 @@ const buttonClass = computed(() => {
     {
       [`vc-button-${props.variant}`]: props.variant,
       [`vc-button_${props.size}`]: props.size,
-      "vc-button_small": props.small,
+      // "vc-button_small": props.small,
       // "vc-button_outline": props.outline,
       "vc-button_selected": props.selected,
       "vc-button_text": props.text,
@@ -157,9 +157,9 @@ $variants: primary, secondary;
       }
 
       // TODO: remove this after the migration
-      &.vc-button_small {
-        @apply tw-py-[var(--button-padding-vert-extra-small)] tw-min-h-[var(--button-height-extra-small)] tw-px-[var(--button-padding-hor-extra-small)] tw-text-xxs;
-      }
+      // &.vc-button_small {
+      //   @apply tw-py-[var(--button-padding-vert-extra-small)] tw-min-h-[var(--button-height-extra-small)] tw-px-[var(--button-padding-hor-extra-small)] tw-text-xxs #{!important};
+      // }
 
       &.vc-button_text {
         @apply tw-border-none tw-bg-transparent
@@ -180,11 +180,11 @@ $variants: primary, secondary;
       }
 
       &.vc-button_xs {
-        @apply tw-py-[var(--button-padding-vert-extra-small)] tw-min-h-[var(--button-height-extra-small)] tw-px-[var(--button-padding-hor-extra-small)] tw-text-xxs;
+        @apply tw-py-[var(--button-padding-vert-extra-small)] tw-min-h-[var(--button-height-extra-small)] tw-px-[var(--button-padding-hor-extra-small)] tw-text-xxs #{!important};
       }
 
       &.vc-button_sm {
-        @apply tw-py-[var(--button-padding-vert-small)] tw-min-h-[var(--button-height-small)] tw-px-[var(--button-padding-hor-small)] tw-text-xs;
+        @apply tw-py-[var(--button-padding-vert-small)] tw-min-h-[var(--button-height-small)] tw-px-[var(--button-padding-hor-small)] tw-text-xs #{!important};
       }
 
       &.vc-button_base {

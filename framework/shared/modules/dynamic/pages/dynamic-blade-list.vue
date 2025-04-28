@@ -18,7 +18,7 @@
       <VcBreadcrumbs
         :items="toValue(scope?.breadcrumbs)"
         variant="light"
-        with-arrow
+        separated
       />
     </div>
     <VcTable

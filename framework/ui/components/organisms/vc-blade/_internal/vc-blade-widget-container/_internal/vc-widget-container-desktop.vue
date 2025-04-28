@@ -15,7 +15,7 @@
         :items="overflowItems"
         floating
         placement="bottom-end"
-        variant="light"
+        variant="secondary"
         @update:opened="showToolbar = $event"
       >
         <template #trigger="{ isActive }">
@@ -31,6 +31,7 @@
         <template #item="{ item }">
           <component
             :is="item.component"
+            class="tw-p-3 tw-w-full"
             v-bind="item.props || {}"
             horizontal
             v-on="item.events || {}"
@@ -55,7 +56,11 @@ const props = defineProps<Props>();
 const showToolbar = ref(false);
 
 const displayedItems = computed(() => props.widgets.slice(0, 3));
-const overflowItems = computed(() => props.widgets.slice(3));
+
+const overflowItems = computed(() => {
+  return props.widgets.slice(3);
+});
+
 const showMoreButton = computed(() => props.widgets.length > 3);
 
 const toggleToolbar = () => {

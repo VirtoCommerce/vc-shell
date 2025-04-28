@@ -20,7 +20,7 @@
     >
       <div class="vc-container__status">
         <VcIcon
-          :icon="canRefresh || goingUp ? 'fas fa-arrow-up' : 'fas fa-arrow-down'"
+          :icon="canRefresh || goingUp ? 'material-arrow_upward' : 'material-arrow_downward'"
           class="vc-container__overscroll-icon"
         ></VcIcon>
         <span v-if="!(canRefresh || goingUp)">{{ $t("COMPONENTS.ATOMS.VC_CONTAINER.PULL_TO_REFRESH") }}</span>

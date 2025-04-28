@@ -145,7 +145,7 @@
             >
               <VcIcon
                 size="s"
-                icon="fas fa-times"
+                icon="material-close"
               ></VcIcon>
             </div>
 
@@ -159,7 +159,7 @@
             >
               <VcIcon
                 size="s"
-                icon="fas fa-eye-slash"
+                icon="material-visibility_off"
               ></VcIcon>
             </div>
 
@@ -173,7 +173,7 @@
             >
               <VcIcon
                 size="s"
-                icon="fas fa-eye"
+                icon="material-visibility"
               ></VcIcon>
             </div>
           </div>
@@ -193,7 +193,7 @@
             class="vc-input__loading"
           >
             <VcIcon
-              icon="fas fa-circle-notch"
+              icon="lucide-loader"
               class="vc-input__loading-icon"
               size="m"
             ></VcIcon>
@@ -577,7 +577,9 @@ function handleFocus() {
   --input-height: 36px;
   --input-height-small: 30px;
   --input-border-radius: 4px;
-  --input-border-color: var(--neutrals-200);
+  --input-border-color: var(--neutrals-300);
+
+  --input-padding: 10px;
 
   --input-background-color: var(--additional-50);
   --input-placeholder-color: var(--neutrals-400);
@@ -586,15 +588,15 @@ function handleFocus() {
   --input-text-color: var(--neutrals-800);
 
   // Disabled
-  --input-disabled-text-color: var(--neutrals-400);
-  --input-disabled-bg-color: var(--neutrals-50);
+  --input-disabled-text-color: var(--neutrals-500);
+  --input-disabled-bg-color: var(--neutrals-200);
 
   // Error
   --input-text-color-error: var(--danger-500);
   --input-border-color-error: var(--danger-500);
 
   // Focus
-  --input-border-color-focus: var(--primary-50);
+  --input-border-color-focus: var(--primary-100);
 }
 
 .vc-input {
@@ -612,7 +614,7 @@ function handleFocus() {
   }
 
   &__field-wrapper {
-    @apply tw-px-3 tw-relative tw-flex tw-flex-nowrap tw-w-full tw-min-w-0 tw-box-border tw-grow tw-border tw-border-solid tw-border-[color:var(--input-border-color)] tw-rounded-[var(--input-border-radius)] tw-bg-[color:var(--input-background-color)] tw-outline-none;
+    @apply tw-px-[var(--input-padding)] tw-relative tw-flex tw-flex-nowrap tw-w-full tw-min-w-0 tw-box-border tw-grow tw-border tw-border-solid tw-border-[color:var(--input-border-color)] tw-rounded-[var(--input-border-radius)] tw-bg-[color:var(--input-background-color)] tw-outline-none;
 
     &--default {
       @apply tw-h-[var(--input-height)];
@@ -786,6 +788,8 @@ function handleFocus() {
 }
 
 .dp__input {
+  @apply tw-font-jakarta #{!important};
+
   &::-ms-reveal,
   &::-ms-clear {
     @apply tw-hidden;
@@ -804,6 +808,10 @@ input.dp__input::placeholder {
 
 input.dp__input:disabled {
   background-color: var(--input-disabled-bg-color);
+}
+
+.dp__menu_inner {
+  @apply tw-font-jakarta tw-text-[14px] #{!important};
 }
 
 .dp--tp-wrap {

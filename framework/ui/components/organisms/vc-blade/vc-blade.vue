@@ -66,7 +66,7 @@
       <div class="vc-blade__error">
         <VcIcon
           size="s"
-          icon="fas fa-exclamation-triangle"
+          icon="material-warning"
         />
         <div class="vc-blade__error-text">{{ blade.error }}</div>
         <VcButton
@@ -84,7 +84,7 @@
       <div class="vc-blade__unsaved-changes">
         <VcIcon
           size="s"
-          icon="fas fa-info-circle"
+          icon="material-info"
         />
         <div class="vc-blade__unsaved-changes-text">
           {{ t("COMPONENTS.ORGANISMS.VC_BLADE.UNSAVED_CHANGES") }}

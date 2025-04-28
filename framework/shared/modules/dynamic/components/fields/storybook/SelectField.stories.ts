@@ -17,7 +17,7 @@ const customTemplateComponent = {
   </template>
   <template v-else-if="slotName === 'selected-item'">
     <div class="tw-flex tw-flex-row tw-gap-3 tw-items-center">
-      <VcIcon icon="fas fa-check" class="tw-text-green-500" />
+      <VcIcon icon="material-check" class="tw-text-green-500" />
       {{context.opt.title}}
     </div>
   </template>

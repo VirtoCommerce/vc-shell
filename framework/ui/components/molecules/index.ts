@@ -4,7 +4,7 @@ export * from "./vc-form";
 export * from "./vc-file-upload";
 export * from "./vc-input";
 export * from "./vc-input-currency";
-export * from "./vc-notification";
+export * from "./vc-toast";
 export * from "./vc-pagination";
 export * from "./vc-rating";
 export * from "./vc-select";

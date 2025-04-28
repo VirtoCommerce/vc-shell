@@ -1,7 +1,7 @@
 import { ref, computed } from "vue";
 import type { IDashboardWidget, DashboardWidgetPosition } from "../types";
 
-// Константы для работы с сеткой
+// Constants for working with the grid
 export const GRID_COLUMNS = 12;
 export const MIN_GRID_ROWS = 12;
 export const ROWS_BUFFER = 10;

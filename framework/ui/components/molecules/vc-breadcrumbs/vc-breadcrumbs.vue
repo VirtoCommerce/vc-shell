@@ -4,55 +4,22 @@
     ref="el"
     class="vc-breadcrumbs"
   >
-    <div class="vc-breadcrumbs__measure">
-      <template
-        v-for="(item, i) in items"
-        :key="`measure-${item?.id}`"
-      >
-        <div
-          v-if="item && item.title"
-          :ref="
-            (el) =>
-              el && '$el' in el
-                ? setElementRef(item.id!, el?.$el as HTMLElement)
-                : el
-                  ? setElementRef(item.id!, el as HTMLElement)
-                  : null
-          "
-          class="vc-breadcrumbs__item-wrapper"
-        >
-          <span
-            v-if="withArrow && i !== 0"
-            class="vc-breadcrumbs__item-chevron"
-          >
-            /
-          </span>
-          <VcBreadcrumbsItem
-            class="vc-breadcrumbs__item"
-            v-bind="item"
-            :current="false"
-            :variant="variant"
-          />
-        </div>
-      </template>
-      <!-- <VcBreadcrumbsItem
-        v-for="item in items"
-        :key="`measure-${item?.id}`"
-        :ref="(el) => (el && '$el' in el ? setElementRef(item.id!, el?.$el) : null)"
-        v-bind="item"
-        :current="false"
-        :variant="variant"
-      /> -->
-    </div>
-
-    <div class="vc-breadcrumbs__content">
+    <div
+      class="vc-breadcrumbs__content"
+      :class="{
+        'vc-breadcrumbs__content--separated': separated,
+      }"
+    >
       <GenericDropdown
         v-if="showMoreButton"
         :items="hiddenItems"
         :opened="showBreadcrumbs"
         floating
-        variant="light"
+        variant="secondary"
         placement="bottom-start"
+        :offset="{
+          mainAxis: 10,
+        }"
         @item-click="onItemClick"
         @update:opened="showBreadcrumbs = $event"
       >
@@ -62,17 +29,6 @@
             :click="toggleBreadcrumbs"
             :is-active="isActive"
           >
-            <!-- <VcBreadcrumbsItem
-              id="Expand"
-              class="vc-breadcrumbs__expand-button"
-              :class="{
-                'vc-breadcrumbs__expand-button--active': isActive,
-              }"
-              :current="false"
-              :variant="variant"
-              @click="toggleBreadcrumbs"
-            /> -->
-
             <VcButton
               text
               :icon="VertDotsIcon"
@@ -90,29 +46,31 @@
             v-bind="item"
             :current="false"
             :variant="variant"
+            class="tw-p-3 tw-w-full"
             @click="click"
           />
         </template>
       </GenericDropdown>
 
       <template
-        v-for="(item, i) in displayedItems"
+        v-for="(item, i) in visibleItems"
         :key="item?.id ?? `breadcrumb-item-${i}`"
       >
         <div
           v-if="item && item.title"
           class="vc-breadcrumbs__item-wrapper"
+          :data-item-key="item.id"
         >
           <span
-            v-if="withArrow && i !== 0"
-            class="vc-breadcrumbs__item-chevron"
+            v-if="separated && i !== 0"
+            class="vc-breadcrumbs__item-separator"
           >
             /
           </span>
           <VcBreadcrumbsItem
             class="vc-breadcrumbs__item"
             v-bind="item"
-            :current="i === displayedItems.length - 1"
+            :current="i === visibleItems.length - 1"
             :variant="variant"
           />
         </div>
@@ -122,24 +80,23 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, toRef, VNode } from "vue";
-import { useElementBounding } from "@vueuse/core";
+import { ref, toRef, VNode, nextTick } from "vue";
 import { Breadcrumbs } from "../../../types";
 import VcBreadcrumbsItem from "./_internal/vc-breadcrumbs-item/vc-breadcrumbs-item.vue";
 import { GenericDropdown } from "./../../../../shared/components/generic-dropdown";
-import { useVisibleElements } from "./../../../composables/useVisibleElements";
+import { useAdaptiveItems } from "../../../composables/useAdaptiveItems";
 import { VertDotsIcon } from "./../../atoms/vc-icon/icons";
 
 export interface Props {
   items?: Breadcrumbs[];
   variant?: "default" | "light";
-  withArrow?: boolean;
+  separated?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
   items: () => [],
   variant: "default",
-  withArrow: false,
+  separated: false,
 });
 
 defineSlots<{
@@ -149,18 +106,13 @@ defineSlots<{
 const el = ref<HTMLElement | null>(null);
 const showBreadcrumbs = ref(false);
 
-const {
-  setElementRef,
-  displayedItems,
-  overflowItems: hiddenItems,
-  showMoreButton,
-  setupResizeObserver,
-} = useVisibleElements({
+const { visibleItems, hiddenItems, showMoreButton, recalculate } = useAdaptiveItems({
   containerRef: el,
   items: toRef(props, "items"),
-  getItemId: (item) => item.id!,
+  getItemKey: (item) => item.id!,
   moreButtonWidth: 100,
-  reverseCalculation: true,
+  calculationStrategy: "reverse",
+  initialItemWidth: 100,
 });
 
 function toggleBreadcrumbs() {
@@ -171,7 +123,7 @@ function onItemClick(item: Breadcrumbs) {
   item.clickHandler?.(item.id);
 }
 
-setupResizeObserver();
+nextTick(recalculate);
 </script>
 
 <style lang="scss">
@@ -186,24 +138,24 @@ setupResizeObserver();
 .vc-breadcrumbs {
   @apply tw-flex tw-items-center tw-flex-wrap tw-gap-2.5;
 
-  &__measure {
-    @apply tw-absolute tw-invisible tw-pointer-events-none tw-flex tw-h-0 tw-overflow-hidden;
-  }
-
   &__content {
-    @apply tw-flex tw-items-center;
+    @apply tw-flex tw-items-center tw-gap-2.5;
+
+    &--separated {
+      @apply tw-gap-0;
+    }
   }
 
   &__item-wrapper {
     @apply tw-flex tw-flex-row tw-items-center tw-justify-center;
   }
 
-  &__item-chevron {
+  &__item-separator {
     @apply tw-text-[color:var(--separator-color)] tw-mx-2.5;
   }
 
   &__expand-button {
-    @apply tw-mr-1 tw-border-solid  tw-rounded-[3px] tw-text-[color:var(--breadcrumbs-expand-button-color)] tw-cursor-pointer hover:tw-text-[color:var(--breadcrumbs-expand-button-color-hover)] #{!important};
+    @apply tw-mr-1 tw-border-solid tw-rounded-[3px] tw-text-[color:var(--breadcrumbs-expand-button-color)] tw-cursor-pointer hover:tw-text-[color:var(--breadcrumbs-expand-button-color-hover)];
   }
 }
 </style>

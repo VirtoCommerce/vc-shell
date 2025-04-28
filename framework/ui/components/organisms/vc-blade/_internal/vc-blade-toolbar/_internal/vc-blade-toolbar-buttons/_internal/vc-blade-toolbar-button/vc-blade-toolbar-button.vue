@@ -68,7 +68,7 @@ defineOptions({
 const props = withDefaults(defineProps<Props>(), {
   disabled: false,
   isExpanded: true,
-  icon: "fas fa-question-circle",
+  icon: "material-help",
   title: undefined,
   dropdownItems: () => [],
   clickHandler: undefined,

@@ -44,15 +44,30 @@
 import { VcIcon, VcTooltip } from "./../../../components";
 
 export interface Props {
+  /**
+   * Shows required field indicator (asterisk)
+   */
   required?: boolean;
+  /**
+   * Icon to use for the tooltip
+   */
   tooltipIcon?: string;
+  /**
+   * Shows language indicator for multilanguage fields
+   */
   multilanguage?: boolean;
+  /**
+   * Current language code to display
+   */
   currentLanguage?: string;
+  /**
+   * Shows the label in error state
+   */
   error?: boolean;
 }
 
 withDefaults(defineProps<Props>(), {
-  tooltipIcon: "fas fa-info-circle",
+  tooltipIcon: "material-info",
 });
 
 defineSlots<{
@@ -73,7 +88,7 @@ defineSlots<{
   @apply tw-flex tw-flex-row tw-justify-between tw-items-center tw-relative;
 
   &__text {
-    @apply tw-flex-nowrap tw-font-bold tw-truncate;
+    @apply tw-flex-nowrap tw-font-semibold tw-truncate;
   }
 
   &__content {

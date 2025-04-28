@@ -1,103 +1,307 @@
-import type { Meta, StoryFn } from "@storybook/vue3";
+import type { Meta, StoryObj } from "@storybook/vue3";
 import { VcButton } from "./";
+import { VcIcon } from "../vc-icon";
 
-const COLORS = ["primary", "secondary"];
-
-const PROPERTY = ["disabled", "small", "outline", "selected", "text", "raised"];
-
-const ICON_SIZE = ["xs", "s", "m", "l", "xl", "xxl", "xxxl"];
-
-export default {
-  title: "atoms/VcButton",
+/**
+ * `VcButton` is a versatile UI component used for triggering actions when clicked.
+ * It supports multiple variants, states, and can include icons.
+ */
+const meta = {
+  title: "Atoms/VcButton",
   component: VcButton,
-  args: {
-    default: "I am a button",
-    variant: "primary",
-    iconSize: "s",
-  },
+  tags: ["autodocs"],
   argTypes: {
     default: {
+      description: "Button content text",
       control: "text",
-    },
-    icon: { control: "text" },
-    iconClass: { control: "text" },
-    iconSize: {
-      control: "radio",
       table: {
-        type: {
-          summary: ICON_SIZE.join(" | "),
-        },
+        category: "Slots",
+        type: { summary: "string" },
       },
-      options: ICON_SIZE,
+    },
+    icon: {
+      description: "Icon to display inside the button (FontAwesome class name or component)",
+      control: "text",
+      table: {
+        type: { summary: "string | Component" },
+        defaultValue: { summary: "undefined" },
+      },
+    },
+    iconClass: {
+      description: "Additional CSS classes to apply to the icon",
+      control: "text",
+      table: {
+        type: { summary: "string" },
+        defaultValue: { summary: "undefined" },
+      },
+    },
+    iconSize: {
+      description: "Size of the icon",
+      control: "select",
+      options: ["xs", "s", "m", "l", "xl", "xxl", "xxxl"],
+      table: {
+        type: { summary: "'xs' | 's' | 'm' | 'l' | 'xl' | 'xxl' | 'xxxl'" },
+        defaultValue: { summary: "'s'" },
+      },
     },
     variant: {
-      control: "radio",
-      options: ["primary", "warning", "danger"],
+      description: "Button style variant",
+      control: "select",
+      options: ["primary", "secondary"],
       table: {
-        type: {
-          summary: COLORS.join(" | "),
-        },
+        type: { summary: "'primary' | 'secondary'" },
+        defaultValue: { summary: "'primary'" },
       },
     },
-    disabled: { control: "boolean" },
-    small: { control: "boolean" },
-    outline: { control: "boolean" },
-    selected: { control: "boolean" },
-    text: { control: "boolean" },
-    raised: { control: "boolean" },
+    size: {
+      description: "Button size",
+      control: "select",
+      options: ["xs", "sm", "base"],
+      table: {
+        type: { summary: "'xs' | 'sm' | 'base'" },
+        defaultValue: { summary: "'base'" },
+      },
+    },
+    disabled: {
+      description: "Whether the button is disabled",
+      control: "boolean",
+      table: {
+        type: { summary: "boolean" },
+        defaultValue: { summary: "false" },
+      },
+    },
+    small: {
+      description: "Legacy prop: Whether the button is small (deprecated, use size instead)",
+      control: "boolean",
+      table: {
+        type: { summary: "boolean" },
+        defaultValue: { summary: "false" },
+      },
+    },
+    outline: {
+      description: "Legacy prop: Whether the button is outlined (deprecated, use variant instead)",
+      control: "boolean",
+      table: {
+        type: { summary: "boolean" },
+        defaultValue: { summary: "false" },
+      },
+    },
+    selected: {
+      description: "Whether the button appears selected/active",
+      control: "boolean",
+      table: {
+        type: { summary: "boolean" },
+        defaultValue: { summary: "false" },
+      },
+    },
+    text: {
+      description: "Whether the button should appear as text only (no background)",
+      control: "boolean",
+      table: {
+        type: { summary: "boolean" },
+        defaultValue: { summary: "false" },
+      },
+    },
+    raised: {
+      description: "Legacy prop: Whether the button is raised (deprecated, use variant instead)",
+      control: "boolean",
+      table: {
+        type: { summary: "boolean" },
+        defaultValue: { summary: "false" },
+      },
+    },
+    onClick: {
+      description: "Event emitted when the button is clicked",
+      action: "clicked",
+      table: {
+        category: "Events",
+        type: { summary: "(event: 'click', value: Event) => void" },
+      },
+    },
+  },
+  args: {
+    default: "Button Text",
+    variant: "primary",
+    size: "base",
+    iconSize: "s",
   },
 } satisfies Meta<typeof VcButton>;
 
-export const Template: StoryFn<typeof VcButton> = (args) => ({
-  components: { VcButton },
-  setup() {
-    return { args };
+export default meta;
+type Story = StoryObj<typeof meta>;
+
+/**
+ * Default button with primary styling and base size.
+ */
+export const Default: Story = {
+  render: (args) => ({
+    components: { VcButton },
+    setup() {
+      return { args };
+    },
+    template: '<VcButton v-bind="args" @click="(e) => console.log(\'Button clicked\', e)">{{args.default}}</VcButton>',
+  }),
+};
+
+/**
+ * Secondary variant with outline styling.
+ */
+export const Secondary: Story = {
+  args: {
+    variant: "secondary",
   },
-  template: '<VcButton v-bind="args">{{args.default}}</VcButton>',
-});
+  render: (args) => ({
+    components: { VcButton },
+    setup() {
+      return { args };
+    },
+    template: '<VcButton v-bind="args" @click="(e) => console.log(\'Button clicked\', e)">{{args.default}}</VcButton>',
+  }),
+};
 
-export const Basic = Template.bind({});
+/**
+ * Small-sized button.
+ */
+export const Small: Story = {
+  args: {
+    size: "sm",
+  },
+  render: (args) => ({
+    components: { VcButton },
+    setup() {
+      return { args };
+    },
+    template: '<VcButton v-bind="args" @click="(e) => console.log(\'Button clicked\', e)">{{args.default}}</VcButton>',
+  }),
+};
 
-export const Disabled = Template.bind({});
-Disabled.args = { disabled: true };
+/**
+ * Extra-small button.
+ */
+export const ExtraSmall: Story = {
+  args: {
+    size: "xs",
+  },
+  render: (args) => ({
+    components: { VcButton },
+    setup() {
+      return { args };
+    },
+    template: '<VcButton v-bind="args" @click="(e) => console.log(\'Button clicked\', e)">{{args.default}}</VcButton>',
+  }),
+};
 
-export const Selected = Template.bind({});
-Selected.args = { selected: true };
+/**
+ * Disabled button state.
+ */
+export const Disabled: Story = {
+  args: {
+    disabled: true,
+  },
+  render: (args) => ({
+    components: { VcButton },
+    setup() {
+      return { args };
+    },
+    template: '<VcButton v-bind="args" @click="(e) => console.log(\'Button clicked\', e)">{{args.default}}</VcButton>',
+  }),
+};
 
-export const Text = Template.bind({});
-Text.args = { text: true };
+/**
+ * Selected/active button state.
+ */
+export const Selected: Story = {
+  args: {
+    selected: true,
+  },
+  render: (args) => ({
+    components: { VcButton },
+    setup() {
+      return { args };
+    },
+    template: '<VcButton v-bind="args" @click="(e) => console.log(\'Button clicked\', e)">{{args.default}}</VcButton>',
+  }),
+};
 
-export const Icon = Template.bind({});
-Icon.args = { icon: "fas fa-plus" };
+/**
+ * Text-only button without background.
+ */
+export const TextOnly: Story = {
+  args: {
+    text: true,
+  },
+  render: (args) => ({
+    components: { VcButton },
+    setup() {
+      return { args };
+    },
+    template: '<VcButton v-bind="args" @click="(e) => console.log(\'Button clicked\', e)">{{args.default}}</VcButton>',
+  }),
+};
 
-export const IconClass = Template.bind({});
-IconClass.args = { icon: "fas fa-plus", iconClass: "tw-text-red" };
+/**
+ * Button with an icon.
+ */
+export const WithIcon: Story = {
+  args: {
+    icon: "material-add",
+  },
+  render: (args) => ({
+    components: { VcButton },
+    setup() {
+      return { args };
+    },
+    template: '<VcButton v-bind="args" @click="(e) => console.log(\'Button clicked\', e)">{{args.default}}</VcButton>',
+  }),
+};
 
-export const IconSize = Template.bind({});
-IconSize.args = { icon: "fas fa-plus", iconSize: "l" };
+/**
+ * Button with a customized icon class.
+ */
+export const WithCustomIconClass: Story = {
+  args: {
+    icon: "material-add",
+    iconClass: "tw-text-red-500",
+  },
+  render: (args) => ({
+    components: { VcButton },
+    setup() {
+      return { args };
+    },
+    template: '<VcButton v-bind="args" @click="(e) => console.log(\'Button clicked\', e)">{{args.default}}</VcButton>',
+  }),
+};
 
-export const AllStates: StoryFn<typeof VcButton> = () => ({
-  components: { VcButton },
-  setup: () => ({ colors: COLORS, properties: PROPERTY }),
-  template: `
-    <div class="tw-space-y-8">
-    <div v-for="property in properties" class="tw-space-y-8">
+/**
+ * Button with a large icon.
+ */
+export const WithLargeIcon: Story = {
+  args: {
+    icon: "material-add",
+    iconSize: "l",
+  },
+  render: (args) => ({
+    components: { VcButton },
+    setup() {
+      return { args };
+    },
+    template: '<VcButton v-bind="args" @click="(e) => console.log(\'Button clicked\', e)">{{args.default}}</VcButton>',
+  }),
+};
 
-    <h2 class="tw-font-bold tw-text-2xl">Property: {{property}}</h2>
-
-
-    <div v-for="color in colors" class="tw-space-y-2">
-      <p class="tw-font-bold">Color: {{color}}</p>
-      <div class="tw-flex tw-flex-row tw-space-x-4">
-          <div v-for="prop in properties.filter(x => x !== property)" class="tw-space-y-4">
-            <p class="tw-font-bold tw-text-sm">Property: {{prop}}</p>
-            <VcButton :[property]="true" :[prop]="true" :variant="color">I am a button</VcButton>
-
-          </div>
-      </div>
-    </div>
-
-    </div>
-    </div>
-  `,
-});
+/**
+ * Icon-only button without text.
+ */
+export const IconOnly: Story = {
+  args: {
+    icon: "material-add",
+    default: "",
+  },
+  render: (args) => ({
+    components: { VcButton },
+    setup() {
+      return { args };
+    },
+    template: '<VcButton v-bind="args" @click="(e) => console.log(\'Button clicked\', e)" />',
+  }),
+};

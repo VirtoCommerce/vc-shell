@@ -185,8 +185,7 @@
 </template>
 
 <script lang="ts" setup generic="T extends TableItem | string">
-import { toValue, computed } from "vue";
-import { VcLabel } from "../../../../atoms";
+import { computed } from "vue";
 import VcTableCell from "../vc-table-cell/vc-table-cell.vue";
 import VcTableEmpty from "../vc-table-empty/vc-table-empty.vue";
 import VcTableMobileItem from "../vc-table-mobile-item/vc-table-mobile-item.vue";
@@ -217,77 +216,126 @@ const emit = defineEmits<{
   (e: "onCellBlur", args: { row: number | undefined; field: string }): void;
 }>();
 
-const hasMobilePositions = computed(() => props.columns.some((col) => col.mobilePosition?.row !== undefined));
+// Check if any columns have specified mobilePosition
+const hasMobilePositions = computed(() => props.columns.some((col) => typeof col.mobilePosition === "string"));
 
-const autoDistributeColumns = (columns: ITableColumns[]) => {
-  const result: ITableColumns[] = [];
-
-  const statusColumn = columns.find((col) => col.type === "status" || col.type === "status-icon");
-  if (statusColumn) {
-    result.push(statusColumn);
-  }
-
-  const remainingColumns = columns.filter((col) => !result.includes(col));
-  const columnsToAdd = 4;
-  result.push(...remainingColumns.slice(0, columnsToAdd));
-
-  return result;
+// Define constants for positions and their order
+const POSITION_ORDER: { [key: string]: number } = {
+  status: 0,
+  image: 1,
+  "top-left": 2,
+  "top-right": 3,
+  "bottom-left": 4,
+  "bottom-right": 5,
 };
 
-const distributeColumnsToRows = (columns: ITableColumns[]) => {
-  const hasStatus = columns[0]?.type === "status" || columns[0]?.type === "status-icon";
+// Group positions by rows
+const TOP_ROW_POSITIONS = ["status", "image", "top-left", "top-right"];
+const BOTTOM_ROW_POSITIONS = ["bottom-left", "bottom-right"];
 
-  if (hasStatus) {
+/**
+ * Finds special columns (status and image) and distributes other
+ * columns by positions. Returns a list of columns in display order.
+ * @param columns Columns to distribute
+ * @returns Sorted list of columns
+ */
+const autoDistributeColumns = (columns: ITableColumns[]) => {
+  const statusColumns = columns.filter((col) => col.type === "status" || col.type === "status-icon");
+  const imageColumns = columns.filter((col) => col.type === "image");
+  const otherColumns = columns.filter((col) => !statusColumns.includes(col) && !imageColumns.includes(col));
+
+  // Form the resulting array, starting with special columns
+  const result = [...statusColumns, ...imageColumns, ...otherColumns];
+
+  // Return no more than 5 columns for optimal display
+  return result.slice(0, 5);
+};
+
+/**
+ * Distributes columns between first and second rows in mobile view
+ * @param columns Columns to distribute
+ * @returns Object with arrays of columns for first and second rows
+ */
+const distributeColumnsToRows = (columns: ITableColumns[]) => {
+  // Determine if there is a status column in the first position
+  const hasStatus = columns.some((col) => col.type === "status" || col.type === "status-icon");
+  const hasImage = columns.some((col) => col.type === "image");
+
+  // Distribute columns considering special types
+  if (hasStatus || hasImage) {
+    // For tables with statuses and images, allocate more space in first row
+    // for main content (usually the most important information)
     return {
-      firstRow: [columns[0], columns[1], columns[2]],
+      firstRow: columns.slice(0, 3),
       secondRow: columns.slice(3),
     };
   }
 
+  // Standard distribution - evenly
+  const midpoint = Math.ceil(Math.min(columns.length, 4) / 2);
   return {
-    firstRow: columns.slice(0, 2),
-    secondRow: columns.slice(2, 4),
+    firstRow: columns.slice(0, midpoint),
+    secondRow: columns.slice(midpoint, 4),
   };
 };
 
+/**
+ * Sorts columns according to their position
+ * @param columns Columns to sort
+ * @returns Sorted array of columns
+ */
+const sortColumnsByPosition = (columns: ITableColumns[]) => {
+  return [...columns].sort((a, b) => {
+    const posA = a.mobilePosition as string;
+    const posB = b.mobilePosition as string;
+
+    return (POSITION_ORDER[posA] ?? 999) - (POSITION_ORDER[posB] ?? 999);
+  });
+};
+
+/**
+ * Gets visible columns from the provided set
+ * @param columns Source columns
+ * @returns Only visible columns
+ */
+const getVisibleColumns = (columns: ITableColumns[]) => {
+  return columns.filter((col) => col.mobileVisible !== false);
+};
+
+// Columns for the first row
 const firstRowColumns = computed(() => {
   if (hasMobilePositions.value) {
-    return props.columns
-      .filter((col) => {
-        return col.mobileVisible !== false && col.mobilePosition?.row === 1;
-      })
-      .sort((a, b) => {
-        if (a.mobilePosition?.order !== undefined && b.mobilePosition?.order !== undefined) {
-          return a.mobilePosition.order - b.mobilePosition.order;
-        }
-        if (a.mobilePosition?.order !== undefined) return -1;
-        if (b.mobilePosition?.order !== undefined) return 1;
-        return 0;
-      });
+    // Filter columns for the first row and sort them
+    const topRowColumns = props.columns.filter(
+      (col) =>
+        col.mobileVisible !== false && col.mobilePosition && TOP_ROW_POSITIONS.includes(col.mobilePosition as string),
+    );
+
+    return sortColumnsByPosition(topRowColumns);
   }
 
-  const visibleColumns = props.columns.filter((col) => col.mobileVisible !== false);
+  // If no positions are specified, use automatic distribution
+  const visibleColumns = getVisibleColumns(props.columns);
   const autoDistributed = autoDistributeColumns(visibleColumns);
   return distributeColumnsToRows(autoDistributed).firstRow;
 });
 
+// Columns for the second row
 const secondRowColumns = computed(() => {
   if (hasMobilePositions.value) {
-    return props.columns
-      .filter((col) => {
-        return col.mobileVisible !== false && col.mobilePosition?.row === 2;
-      })
-      .sort((a, b) => {
-        if (a.mobilePosition?.order !== undefined && b.mobilePosition?.order !== undefined) {
-          return a.mobilePosition.order - b.mobilePosition.order;
-        }
-        if (a.mobilePosition?.order !== undefined) return -1;
-        if (b.mobilePosition?.order !== undefined) return 1;
-        return 0;
-      });
+    // Filter columns for the second row and sort them
+    const bottomRowColumns = props.columns.filter(
+      (col) =>
+        col.mobileVisible !== false &&
+        col.mobilePosition &&
+        BOTTOM_ROW_POSITIONS.includes(col.mobilePosition as string),
+    );
+
+    return sortColumnsByPosition(bottomRowColumns);
   }
 
-  const visibleColumns = props.columns.filter((col) => col.mobileVisible !== false);
+  // If no positions are specified, use automatic distribution
+  const visibleColumns = getVisibleColumns(props.columns);
   const autoDistributed = autoDistributeColumns(visibleColumns);
   return distributeColumnsToRows(autoDistributed).secondRow;
 });

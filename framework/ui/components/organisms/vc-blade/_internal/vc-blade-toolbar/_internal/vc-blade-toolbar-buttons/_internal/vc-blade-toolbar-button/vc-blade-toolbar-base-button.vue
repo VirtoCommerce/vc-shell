@@ -1,46 +1,39 @@
 <template>
-  <VcTooltip
-    placement="bottom"
-    :offset="{ crossAxis: 0, mainAxis: 0 }"
-    :delay="1000"
+  <button
+    class="vc-blade-toolbar-base-button"
+    :class="{
+      'vc-blade-toolbar-base-button--disabled': disabled || isWaiting,
+      'vc-blade-toolbar-base-button--with-separator-left': separator === 'left',
+      'vc-blade-toolbar-base-button--with-separator-right': separator === 'right',
+      'vc-blade-toolbar-base-button--with-separator-both': separator === 'both',
+    }"
+    :data-test-id="id ?? 'vc-blade-toolbar-button'"
+    v-bind="$attrs"
+    @click="handleClick"
   >
-    <template #tooltip>{{ title }}</template>
-    <button
-      class="vc-blade-toolbar-base-button"
-      :class="{
-        'vc-blade-toolbar-base-button--disabled': disabled || isWaiting,
-        'vc-blade-toolbar-base-button--with-separator-left': separator === 'left',
-        'vc-blade-toolbar-base-button--with-separator-right': separator === 'right',
-        'vc-blade-toolbar-base-button--with-separator-both': separator === 'both',
-      }"
-      :data-test-id="id ?? 'vc-blade-toolbar-button'"
-      v-bind="$attrs"
-      @click="handleClick"
+    <div
+      class="vc-blade-toolbar-base-button__content"
+      :style="{ flexDirection: contentDirection }"
     >
-      <div
-        class="vc-blade-toolbar-base-button__content"
-        :style="{ flexDirection: contentDirection }"
+      <VcIcon
+        class="vc-blade-toolbar-base-button__icon"
+        :class="iconClassName"
+        :icon="icon"
+        :size="size"
+      />
+      <span
+        class="vc-blade-toolbar-base-button__title"
+        :class="titleClassName"
       >
-        <VcIcon
-          class="vc-blade-toolbar-base-button__icon"
-          :class="iconClassName"
-          :icon="icon"
-          :size="size"
-        />
-        <span
-          class="vc-blade-toolbar-base-button__title"
-          :class="titleClassName"
-        >
-          {{ title }}
-        </span>
-      </div>
-    </button>
-  </VcTooltip>
+        {{ title }}
+      </span>
+    </div>
+  </button>
 </template>
 
 <script lang="ts" setup>
 import { ref, ComputedRef, Ref } from "vue";
-import { VcIcon, VcTooltip } from "../../../../../../../../";
+import { VcIcon } from "../../../../../../../../";
 
 export interface Props {
   id?: string;
@@ -93,7 +86,7 @@ async function handleClick(): Promise<void> {
   @apply tw-px-3 tw-bg-transparent tw-border-0 tw-cursor-pointer tw-shrink;
 
   &__content {
-    @apply tw-inline-flex tw-items-center tw-gap-2;
+    @apply tw-inline-flex tw-items-center tw-gap-1;
   }
 
   &__icon {

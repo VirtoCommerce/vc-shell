@@ -56,7 +56,7 @@
           >
             <VcIcon
               size="xs"
-              :icon="`fas fa-chevron-${sortDirection === 'DESC' ? 'down' : 'up'}`"
+              :icon="`material-keyboard_arrow_${sortDirection === 'DESC' ? 'down' : 'up'}`"
             />
           </div>
           <div
@@ -65,11 +65,11 @@
           >
             <VcIcon
               size="xs"
-              icon="fas fa-chevron-up"
+              icon="material-keyboard_arrow_up"
             />
             <VcIcon
               size="xs"
-              icon="fas fa-chevron-down"
+              icon="material-keyboard_arrow_down"
             />
           </div>
         </div>

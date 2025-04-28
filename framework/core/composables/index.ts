@@ -18,3 +18,4 @@ export * from "./useWidgets";
 export * from "./useDashboard";
 export * from "./useAppBarWidget";
 export * from "./useSettingsMenu";
+export * from "./useToolbar";

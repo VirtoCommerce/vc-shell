@@ -15,6 +15,9 @@ import * as locales from "./locales";
 import { AppInsightsPlugin, AppInsightsPluginOptions } from "vue3-application-insights";
 import { useAppInsights } from "./core/composables";
 
+// Import Material Icons
+import "./ui/components/atoms/vc-icon/material-icons";
+
 import * as coreComposables from "./core/composables";
 import * as corePlugins from "./core/plugins";
 import * as coreApiPlatform from "./core/api/platform";
@@ -42,11 +45,17 @@ import {
   MenuServiceKey,
   NotificationTemplatesSymbol,
   SettingsMenuServiceKey,
+  TOOLBAR_SERVICE,
   WidgetServiceKey,
 } from "./injection-keys";
 import { createMenuService } from "./core/services/menu-service";
 import { createAppBarWidgetService } from "./core/services/app-bar-menu-service";
 import { createSettingsMenuService } from "./core/services/settings-menu-service";
+import { createToolbarService } from "./core/services/toolbar-service";
+
+import "@fortawesome/fontawesome-free/css/all.min.css";
+import "bootstrap-icons/font/bootstrap-icons.css";
+import * as icons from "lucide-vue-next";
 
 type I18NParams = Parameters<typeof i18n.global.mergeLocaleMessage>;
 
@@ -125,7 +134,10 @@ export default {
     },
   ): void {
     // Register base theme
-    coreComposables.useTheme().register(["light", "dark"]);
+    coreComposables.useTheme().register([
+      "light",
+      // "dark"
+    ]);
 
     // HTTP Interceptors
     window.fetch = registerInterceptors(args.router);
@@ -136,6 +148,11 @@ export default {
     if (args.i18n?.fallbackLocale) {
       i18n.global.fallbackLocale.value = args.i18n.fallbackLocale;
     }
+
+    // Lucide Icons
+    Object.entries(icons).forEach(([key, value]) => {
+      app.component(key, value as Component);
+    });
 
     app.use(i18n);
 
@@ -192,6 +209,9 @@ export default {
 
     // Widgets
     app.provide(WidgetServiceKey, createWidgetService());
+
+    // Toolbar service
+    app.provide(TOOLBAR_SERVICE, createToolbarService());
 
     // App bar widgets
     app.provide(AppBarWidgetServiceKey, createAppBarWidgetService());

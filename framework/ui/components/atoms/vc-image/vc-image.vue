@@ -52,7 +52,7 @@ const props = withDefaults(defineProps<Props>(), {
   aspect: "1x1",
   size: "auto",
   background: "cover",
-  emptyIcon: "fas fa-image",
+  emptyIcon: "material-image",
 });
 
 const emit = defineEmits<Emits>();

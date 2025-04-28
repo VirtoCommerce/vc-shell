@@ -7,10 +7,11 @@ import { createRouter, createWebHashHistory } from "vue-router";
 import { vueRouter } from "storybook-vue3-router";
 import * as locales from "./assets/locales";
 import "./../framework/assets/styles/index.scss";
-import { ref, watch } from "vue";
+import { ref, watch, reactive } from "vue";
+import { withGlobalMocks } from "./decorators";
 
 setup((app) => {
-  app.use(framework, {
+    app.use(framework, {
     router: createRouter({
       history: createWebHashHistory(),
       routes: [],
@@ -43,6 +44,7 @@ const preview: Preview = {
   },
   decorators: [
     vueRouter(),
+    withGlobalMocks,
     (story, context) => {
       const theme = context.globals.theme || "light";
       return {

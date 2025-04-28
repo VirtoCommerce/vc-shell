@@ -1,5 +1,5 @@
 <template>
-  <div class="tw-flex">
+  <div class="tw-flex tw-p-3 tw-w-full">
     <VcRow class="tw-justify-between tw-grow tw-basis-0 !tw-flex">
       <div @click="handleClick">
         <component
@@ -56,7 +56,7 @@ const handleClick = () => {
 
 const notificationStyle = computed(() => ({
   color: "var(--notification-icon-color)",
-  icon: "fas fa-info",
+  icon: "material-exclamation",
 }));
 </script>
 

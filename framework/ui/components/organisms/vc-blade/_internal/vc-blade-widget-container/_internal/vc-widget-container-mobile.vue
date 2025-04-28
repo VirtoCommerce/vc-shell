@@ -1,42 +1,28 @@
 <template>
-  <div class="widget-container-mobile">
-    <!-- Measure container -->
-    <div class="widget-container-mobile__measure">
-      <template
-        v-for="widget in widgets"
-        :key="`measure-${widget.id}`"
-      >
-        <div class="widget-container-mobile__measure-item">
-          <component
-            :is="widget.component"
-            v-bind="widget.props || {}"
-            :ref="(el: any) => (el && '$el' in el ? setElementRef(widget.id, el.$el) : null)"
-            v-on="widget.events || {}"
-          />
-        </div>
-      </template>
-    </div>
-
-    <!-- Actual widgets -->
+  <div
+    v-show="isAnyVisible"
+    class="widget-container-mobile"
+  >
     <div
       ref="containerRef"
       class="widget-container-mobile__content"
     >
       <component
         :is="widget.component"
-        v-for="widget in displayedItems"
+        v-for="widget in visibleItems"
         :key="widget.id"
         v-bind="widget.props || {}"
+        :data-item-key="widget.id"
         v-on="widget.events || {}"
       />
 
       <GenericDropdown
         v-if="showMoreButton"
         :opened="showToolbar"
-        :items="overflowItems"
+        :items="hiddenItems"
         floating
         placement="top-end"
-        variant="light"
+        variant="secondary"
         class="widget-container-mobile__more-dropdown"
         @update:opened="showToolbar = $event"
       >
@@ -53,6 +39,7 @@
         <template #item="{ item }">
           <component
             :is="item.component"
+            class="tw-p-3 tw-w-full"
             v-bind="item.props || {}"
             horizontal
             v-on="item.events || {}"
@@ -64,8 +51,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount, nextTick, computed } from "vue";
-import { useVisibleElements } from "../../../../../../composables/useVisibleElements";
+import { ref, computed } from "vue";
+import { useAdaptiveItems } from "../../../../../../composables/useAdaptiveItems";
 import { IWidget } from "../../../../../../../core/types/widget";
 import { GenericDropdown } from "../../../../../../../shared/components/generic-dropdown";
 import { VcIcon, ChevronUpIcon } from "../../../../..";
@@ -78,39 +65,14 @@ const props = defineProps<Props>();
 const containerRef = ref<HTMLElement | null>(null);
 const showToolbar = ref(false);
 
-const { setElementRef, displayedItems, overflowItems, showMoreButton, calculateVisibleElements } =
-  useVisibleElements<IWidget>({
-    containerRef,
-    items: computed(() => props.widgets),
-    getItemId: (item: IWidget) => item.id ?? "",
-    moreButtonWidth: 70,
-  });
+const isAnyVisible = computed(() => props.widgets.some((widget) => widget.isVisible));
 
-const observer = new MutationObserver(() => {
-  nextTick(calculateVisibleElements);
-});
-
-onMounted(() => {
-  nextTick(() => {
-    if (containerRef.value) {
-      observer.observe(containerRef.value, {
-        childList: true,
-        subtree: true,
-        attributes: true,
-      });
-
-      const resizeObserver = new ResizeObserver(() => {
-        nextTick(calculateVisibleElements);
-      });
-
-      resizeObserver.observe(containerRef.value);
-      calculateVisibleElements();
-    }
-  });
-});
-
-onBeforeUnmount(() => {
-  observer.disconnect();
+const { visibleItems, showMoreButton, recalculate, hiddenItems, updateObserver } = useAdaptiveItems<IWidget>({
+  containerRef,
+  items: computed(() => props.widgets),
+  getItemKey: (item: IWidget) => item.id ?? "",
+  moreButtonWidth: 70,
+  initialItemWidth: 80,
 });
 
 const toggleToolbar = () => {
@@ -132,24 +94,6 @@ const toggleToolbar = () => {
   height: var(--blade-toolbar-widgets-mobile-height);
   z-index: 54;
   background-color: var(--blade-toolbar-widgets-bg-color-mobile);
-
-  &__measure {
-    position: absolute;
-    visibility: hidden;
-    pointer-events: none;
-    display: flex;
-    height: 0;
-    overflow: hidden;
-    left: -9999px;
-    gap: 4px;
-    width: 100%;
-    align-items: center;
-    padding: 0 22px;
-  }
-
-  &__measure-item {
-    display: flex;
-  }
 
   &__content {
     height: 100%;

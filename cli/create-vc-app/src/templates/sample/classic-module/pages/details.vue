@@ -206,7 +206,7 @@ watch(
 const bladeToolbar = ref<IBladeToolbar[]>([
   {
     id: "save",
-    icon: "fas fa-save",
+    icon: "material-save",
     title: "Save",
     async clickHandler() {
       await saveItem(item.value);
@@ -221,7 +221,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
   },
   {
     id: "delete",
-    icon: "fas fa-trash",
+    icon: "material-delete",
     title: "Delete",
     async clickHandler() {
       if (await showConfirmation(computed(() => t(`SAMPLE_APP.PAGES.ALERTS.DELETE`)))) {

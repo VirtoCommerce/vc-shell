@@ -27,7 +27,7 @@
           <VcIcon
             class="vc-app-menu-link__icon-content"
             :icon="icon"
-            size="s"
+            size="m"
           />
         </div>
         <div
@@ -339,7 +339,7 @@ watch(isOpened, (newValue) => {
   }
 
   &__icon-content {
-    @apply tw-text-center  tw-text-[length:var(--app-menu-item-icon-width)];
+    @apply tw-text-center;
   }
 
   &__child {

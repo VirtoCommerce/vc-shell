@@ -137,7 +137,7 @@ const checked = computed(() => {
   return value.value === props.trueValue;
 });
 
-// Управление indeterminate состоянием
+// Managing indeterminate state
 watch(
   () => props.indeterminate,
   (val) => {

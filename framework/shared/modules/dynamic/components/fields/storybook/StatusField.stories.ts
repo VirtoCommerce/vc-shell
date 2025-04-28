@@ -173,14 +173,14 @@ ContentAsComputed.args = {
 
 export const WithIcon = Template.bind({});
 WithIcon.args = {
-  icon: "fas fa-check",
+  icon: "material-check",
 };
 
 export const ExtendedWithTitle = Template.bind({});
 ExtendedWithTitle.args = {
   extend: true,
   title: "Extended status",
-  icon: "fas fa-check",
+  icon: "material-check",
 };
 
 export const WithVisibilityMethod: StoryFn<StatusSchema> = (args) => ({

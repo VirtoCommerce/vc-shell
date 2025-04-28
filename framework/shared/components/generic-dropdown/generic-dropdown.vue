@@ -22,39 +22,48 @@
         :class="dropdownClasses"
         :style="floatingStyle"
       >
-        <VcContainer
-          :no-padding="true"
+        <div
+          class="vc-dropdown__content"
           @click.stop
         >
-          <VcCol v-if="items && items.length">
+          <slot
+            name="items-container"
+            :items="items"
+            :close="() => $emit('update:opened', false)"
+          >
             <div
-              v-for="(item, index) in items"
-              :key="index"
-              class="vc-dropdown__item"
-              :class="{
-                'vc-dropdown__item--mobile': $isMobile.value,
-                'vc-dropdown__item--active': isItemActive?.(item),
-              }"
-              @click="() => $emit('item-click', item)"
+              v-if="items && items.length"
+              class="vc-dropdown__items-container"
             >
-              <slot
-                name="item"
-                :item="item"
-                :click="() => $emit('item-click', item)"
+              <div
+                v-for="(item, index) in items"
+                :key="index"
+                class="vc-dropdown__item"
+                :class="{
+                  'vc-dropdown__item--mobile': $isMobile.value,
+                  'vc-dropdown__item--active': isItemActive?.(item),
+                }"
+                @click="() => $emit('item-click', item)"
               >
-                {{ itemText?.(item) }}
+                <slot
+                  name="item"
+                  :item="item"
+                  :click="() => $emit('item-click', item)"
+                >
+                  {{ itemText?.(item) }}
+                </slot>
+              </div>
+            </div>
+            <div
+              v-else
+              class="vc-dropdown__empty"
+            >
+              <slot name="empty">
+                {{ emptyText }}
               </slot>
             </div>
-          </VcCol>
-          <div
-            v-else
-            class="vc-dropdown__empty"
-          >
-            <slot name="empty">
-              {{ emptyText }}
-            </slot>
-          </div>
-        </VcContainer>
+          </slot>
+        </div>
       </div>
     </teleport>
   </div>
@@ -62,9 +71,8 @@
 
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup generic="T">
-import { VcCol, VcContainer } from "../../../ui/components";
 import { ref, computed, Ref, inject } from "vue";
-import { useFloating, shift, autoUpdate } from "@floating-ui/vue";
+import { useFloating, shift, autoUpdate, offset as floatingOffset, flip } from "@floating-ui/vue";
 import { vOnClickOutside } from "@vueuse/components";
 
 export interface Props<T> {
@@ -75,7 +83,12 @@ export interface Props<T> {
   isItemActive?: (item: T) => boolean;
   floating?: boolean;
   placement?: "bottom" | "bottom-end" | "bottom-start" | "top" | "top-end" | "top-start";
-  variant?: "default" | "light";
+  variant?: "default" | "secondary";
+  offset?: {
+    mainAxis?: number;
+    crossAxis?: number;
+  };
+  maxHeight?: number | string;
 }
 
 const props = withDefaults(defineProps<Props<T>>(), {
@@ -84,6 +97,11 @@ const props = withDefaults(defineProps<Props<T>>(), {
   floating: false,
   placement: "bottom",
   variant: "default",
+  maxHeight: 300,
+  offset: () => ({
+    mainAxis: 0,
+    crossAxis: 0,
+  }),
 });
 
 defineEmits<{
@@ -95,6 +113,7 @@ defineSlots<{
   item: (args: { item: T; click: () => void }) => any;
   empty: () => any;
   trigger: (args: { isActive: boolean }) => any;
+  "items-container": (args: { items: T[]; close: () => void }) => any;
 }>();
 
 const isMobile = inject("isMobile") as Ref<boolean>;
@@ -105,7 +124,7 @@ const floatingEl = ref<HTMLElement | null>(null);
 const floater = useFloating(referenceEl, floatingEl, {
   placement: props.placement,
   whileElementsMounted: autoUpdate,
-  middleware: [shift({ mainAxis: false })],
+  middleware: [shift({ padding: 8 }), flip({ padding: 8 }), floatingOffset(props.offset)],
 });
 
 const dropdownClasses = computed(() => {
@@ -114,9 +133,9 @@ const dropdownClasses = computed(() => {
     {
       "vc-dropdown__dropdown--mobile": isMobile.value,
       "vc-dropdown__dropdown--floating": props.floating,
-      "vc-dropdown__dropdown--top": placement?.startsWith("top"),
     },
     `vc-dropdown__dropdown--${props.variant}`,
+    `vc-dropdown__dropdown--${placement}`,
   ];
 });
 
@@ -156,14 +175,6 @@ const floatingStyle = computed(() => {
   &__dropdown {
     @apply tw-rounded-[6px] tw-w-full tw-overflow-hidden tw-flex tw-flex-col tw-relative tw-h-max;
 
-    &--top {
-      @apply tw-rounded-t-[6px] tw-rounded-b-none;
-    }
-
-    &:not(&--top) {
-      @apply tw-rounded-t-none tw-rounded-b-[6px];
-    }
-
     &--mobile {
       @apply tw-w-full;
       display: flex !important;
@@ -175,7 +186,7 @@ const floatingStyle = computed(() => {
         0px 14px 25px -5px rgb(0 0 0 / 0.1);
     }
 
-    &--light {
+    &--secondary {
       @apply tw-bg-[color:var(--dropdown-bg-color-light)];
 
       .vc-dropdown__item {
@@ -191,8 +202,17 @@ const floatingStyle = computed(() => {
     }
   }
 
+  &__content {
+    @apply tw-w-full tw-h-full;
+  }
+
+  &__items-container {
+    @apply tw-overflow-y-auto;
+    max-height: v-bind('typeof props.maxHeight === "number" ? `${props.maxHeight}px` : props.maxHeight');
+  }
+
   &__item {
-    @apply tw-truncate tw-flex tw-items-center tw-p-3 tw-text-sm tw-text-[color:var(--dropdown-text-color)] tw-w-full tw-cursor-pointer tw-border-solid tw-border-b;
+    @apply tw-truncate tw-flex tw-items-center tw-text-sm tw-text-[color:var(--dropdown-text-color)] tw-w-full tw-cursor-pointer tw-border-solid tw-border-b;
     transition: background-color 0.2s;
 
     &:last-of-type {

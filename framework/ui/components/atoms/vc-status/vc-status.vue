@@ -43,6 +43,7 @@ defineSlots<{
   --status-padding: 4px 14px;
   --status-padding-extended: 8px;
   --status-dot-size: 10px;
+  --status-text-color: var(--neutrals-700);
 
   --status-border-radius: 20px;
   --status-border-radius-extended: 4px;
@@ -124,7 +125,7 @@ $variants: info, warning, danger, success, light-danger, info-dark, primary;
   }
 
   &__content {
-    @apply tw-truncate;
+    @apply tw-truncate tw-text-[color:var(--status-text-color)] tw-font-medium;
     .vc-status_dot & {
       @apply tw-hidden;
     }

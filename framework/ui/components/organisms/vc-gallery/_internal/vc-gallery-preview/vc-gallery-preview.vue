@@ -30,7 +30,7 @@
             @click="localIndex--"
           >
             <VcIcon
-              icon="fas fa-arrow-left"
+              icon="material-arrow_back"
               size="xl"
             ></VcIcon>
           </button>
@@ -40,7 +40,7 @@
             @click="localIndex++"
           >
             <VcIcon
-              icon="fas fa-arrow-right"
+              icon="material-arrow_forward"
               size="xl"
             ></VcIcon>
           </button>

@@ -61,7 +61,7 @@ defineOptions({
   isWorkspace: true,
   menuItem: {
     title: "{{ModuleNameUppercaseSnakeCase}}.MENU.TITLE",
-    icon: "fas fa-file-alt",
+    icon: "lucide-file",
     priority: 1,
   },
 });
@@ -97,7 +97,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
   {
     id: "refresh",
     title: computed(() => t("{{ModuleNameUppercaseSnakeCase}}.PAGES.LIST.TOOLBAR.REFRESH")),
-    icon: "fas fa-sync-alt",
+    icon: "material-refresh",
     async clickHandler() {
       await reload();
     },

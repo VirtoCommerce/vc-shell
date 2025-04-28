@@ -7,7 +7,7 @@
     ></div>
     <VcIcon
       v-else
-      icon="fas fa-user-circle"
+      icon="material-account_circle"
       class="vc-user-info__icon"
     />
     <Transition name="opacity">
@@ -59,7 +59,7 @@ const imageHandler = computed(() => {
 }
 
 .vc-user-info {
-  @apply tw-flex tw-items-center tw-gap-3;
+  @apply tw-flex tw-items-center tw-gap-3 tw-truncate;
 
   &__avatar {
     @apply tw-rounded-full tw-overflow-hidden tw-w-[var(--user-info-avatar-width)] tw-h-[var(--user-info-avatar-height)] tw-bg-[color:var(--user-dropdown-account-info-role-color)]
@@ -67,7 +67,7 @@ const imageHandler = computed(() => {
   }
 
   &__icon {
-    @apply tw-text-[color:var(--user-dropdown-button-color)] tw-text-[length:var(--user-info-avatar-height)];
+    @apply tw-text-[color:var(--user-dropdown-button-color)] tw-text-[length:var(--user-info-avatar-height)] #{!important};
   }
 
   &__info {
@@ -75,7 +75,7 @@ const imageHandler = computed(() => {
   }
 
   &__name {
-    @apply tw-text-sm tw-text-[color:var(--user-dropdown-account-info-name-color)] tw-max-w-[250px] tw-truncate;
+    @apply tw-text-sm tw-text-[color:var(--user-dropdown-account-info-name-color)] tw-max-w-[250px] tw-truncate tw-w-full;
   }
 
   &__role {

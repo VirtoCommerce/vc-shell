@@ -102,7 +102,7 @@ defineExpose({
 <style lang="scss">
 :root {
   --textarea-height: 120px;
-  --textarea-border-color: var(--neutrals-200);
+  --textarea-border-color: var(--neutrals-300);
   --textarea-text-color: var(--neutrals-800);
 
   --textarea-border-radius: 4px;
@@ -114,11 +114,11 @@ defineExpose({
   --textarea-border-color-error: var(--danger-500);
 
   // Focus
-  --textarea-border-color-focus: var(--primary-50);
+  --textarea-border-color-focus: var(--primary-100);
 
   // Disabled
-  --textarea-disabled-background-color: var(--neutrals-50);
-  --textarea-disabled-text-color: var(--neutrals-400);
+  --textarea-disabled-background-color: var(--neutrals-200);
+  --textarea-disabled-text-color: var(--neutrals-500);
 }
 
 .vc-textarea {
@@ -153,7 +153,7 @@ defineExpose({
     @apply tw-w-full tw-resize-y tw-box-border tw-border-none tw-outline-none
       tw-min-h-32
       placeholder:tw-text-[color:var(--textarea-placeholder-color)]
-      tw-px-3 tw-py-2 tw-bg-[color:var(--textarea-background-color)] tw-text-sm;
+      tw-px-3 tw-py-2 tw-bg-[color:var(--textarea-background-color)] tw-text-sm tw-rounded-[var(--textarea-border-radius)];
 
     &::-webkit-input-placeholder {
       @apply tw-text-[color:var(--textarea-placeholder-color)];

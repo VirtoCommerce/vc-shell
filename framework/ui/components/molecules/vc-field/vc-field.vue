@@ -29,7 +29,7 @@
       >
         <VcButton
           v-if="copyable"
-          icon="far fa-copy"
+          icon="material-content_copy"
           icon-size="m"
           class="vc-field__copy-button"
           text

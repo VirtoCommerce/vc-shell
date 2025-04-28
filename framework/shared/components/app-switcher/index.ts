@@ -10,5 +10,5 @@ declare module "@vue/runtime-core" {
 
 export const VcAppSwitcherComponent = createModule(components);
 
-export * from "./components";
+export { components };
 export * from "./composables";

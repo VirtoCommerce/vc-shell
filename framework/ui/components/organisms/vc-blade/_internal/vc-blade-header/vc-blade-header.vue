@@ -172,8 +172,8 @@ function onClose(): void {
   --blade-header-mobile-height: 60px;
   --blade-header-background-color: var(--additional-50);
 
-  --blade-header-button-color: var(--secondary-500);
-  --blade-header-button-color-hover: var(--secondary-600);
+  --blade-header-button-color: var(--neutrals-400);
+  --blade-header-button-color-hover: var(--neutrals-500);
 
   --blade-header-breadcrumbs-button-color: var(--neutrals-500);
   --blade-header-breadcrumbs-button-color-hover: var(--neutrals-700);
@@ -214,7 +214,7 @@ function onClose(): void {
   }
 
   &__actions {
-    @apply tw-overflow-hidden;
+    @apply tw-overflow-hidden tw-flex-shrink-0;
   }
 
   &__status {
@@ -222,7 +222,7 @@ function onClose(): void {
   }
 
   &__status-container {
-    @apply tw-flex tw-flex-1 tw-flex-row tw-items-center;
+    @apply tw-flex tw-flex-1 tw-flex-row tw-items-center tw-truncate;
   }
 
   &__status-not-edited {

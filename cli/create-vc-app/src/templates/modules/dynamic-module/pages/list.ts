@@ -12,14 +12,14 @@ export const grid: DynamicGridSchema = {
     toolbar: [
       {
         id: "refresh",
-        icon: "fas fa-sync-alt",
+        icon: "material-refresh",
         title: "Refresh",
         method: "refresh",
       },
     ],
     menuItem: {
       title: "{{ModuleNameUppercaseSnakeCase}}.MENU.TITLE",
-      icon: "fas fa-file-alt",
+      icon: "lucide-file",
       priority: 1,
     },
   },

@@ -29,7 +29,6 @@
 
 <script setup lang="ts">
 import { computed } from "vue";
-import { VcIcon } from "../../../ui/components";
 import moment from "moment";
 import { PushNotification } from "../../../core/api/platform";
 

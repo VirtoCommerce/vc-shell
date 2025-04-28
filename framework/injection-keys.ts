@@ -27,3 +27,4 @@ export const AppBarWidgetServiceKey = Symbol("AppBarWidgetService") as Injection
 export const AppBarMobileButtonsServiceKey = Symbol(
   "AppBarMobileButtonsService",
 ) as InjectionKey<IAppBarMobileButtonsService>;
+export const TOOLBAR_SERVICE = Symbol("toolbar-service");

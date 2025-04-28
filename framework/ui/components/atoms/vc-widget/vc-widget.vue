@@ -1,56 +1,42 @@
 <template>
-  <VcTooltip
+  <div
     class="vc-widget"
-    :placement="$isDesktop.value ? 'bottom' : 'top'"
-    :offset="{
-      crossAxis: 0,
-      mainAxis: -10,
-    }"
-    :delay="1000"
+    :data-widget-id="widgetName"
+    :data-widget-name="title"
+    :class="[
+      { 'vc-widget--expanded': isExpanded },
+      { 'vc-widget--collapsed': !isExpanded },
+      { 'vc-widget--disabled': disabled },
+      { 'vc-widget--horizontal': horizontal },
+    ]"
+    @click="onClick"
   >
-    <div
-      class="vc-widget__container"
-      :class="[
-        { 'vc-widget__container--expanded': isExpanded },
-        { 'vc-widget__container--collapsed': !isExpanded },
-        { 'vc-widget__container--disabled': disabled },
-        { 'vc-widget__container--horizontal': horizontal },
-      ]"
-      @click="onClick"
+    <VcBadge
+      :content="truncateCount"
+      size="s"
     >
-      <VcBadge
-        :content="truncateCount"
-        size="s"
-      >
-        <div class="vc-widget__icon-container">
-          <VcIcon
-            v-if="icon"
-            class="vc-widget__icon"
-            :icon="icon"
-            size="m"
-          ></VcIcon>
-        </div>
-      </VcBadge>
-      <div
-        v-if="title"
-        class="vc-widget__content"
-      >
-        <div class="vc-widget__title">
-          {{ title }}
-        </div>
+      <div class="vc-widget__icon-container">
+        <VcIcon
+          v-if="icon"
+          class="vc-widget__icon"
+          :icon="icon"
+          size="m"
+        ></VcIcon>
+      </div>
+    </VcBadge>
+    <div
+      v-if="title"
+      class="vc-widget__content"
+    >
+      <div class="vc-widget__title">
+        {{ title }}
       </div>
     </div>
-    <template
-      v-if="$isDesktop.value"
-      #tooltip
-    >
-      {{ title }}
-    </template>
-  </VcTooltip>
+  </div>
 </template>
 
 <script lang="ts" setup>
-import { computed, getCurrentInstance, inject } from "vue";
+import { computed, getCurrentInstance } from "vue";
 import { VcIcon } from "./../vc-icon";
 import { useWidgets } from "../../../../core/composables";
 
@@ -72,9 +58,10 @@ const instance = getCurrentInstance();
 
 const widgetService = useWidgets();
 
+const widgetName = instance?.parent?.type.__name;
+
 function onClick() {
   if (!props.disabled) {
-    const widgetName = instance?.parent?.type.__name;
     if (widgetName && instance?.parent?.exposed) {
       widgetService.setActiveWidget(instance?.parent?.exposed);
     }
@@ -107,34 +94,32 @@ const truncateCount = computed(() => {
 }
 
 .vc-widget {
-  &__container {
-    @apply tw-relative tw-shrink-0 tw-px-2 tw-w-max;
-    @apply tw-flex tw-overflow-visible tw-box-border tw-flex-col tw-items-center tw-justify-center tw-cursor-pointer;
-    @apply tw-bg-[color:var(--widget-bg-color)];
-    @apply tw-transition-colors tw-duration-200;
+  @apply tw-relative tw-shrink-0 tw-px-2 tw-w-max;
+  @apply tw-flex tw-overflow-visible tw-box-border tw-flex-col tw-items-center tw-justify-center tw-cursor-pointer;
+  @apply tw-bg-[color:var(--widget-bg-color)];
+  @apply tw-transition-colors tw-duration-200;
 
-    &--horizontal {
-      @apply tw-flex-row tw-gap-2;
+  &--horizontal {
+    @apply tw-flex-row tw-gap-2;
 
-      .vc-widget__content {
-        @apply tw-ml-1;
-      }
-
-      .vc-widget__title {
-        @apply tw-mt-0 tw-text-left tw-whitespace-nowrap;
-      }
+    .vc-widget__content {
+      @apply tw-ml-1;
     }
 
-    &:hover {
-      @apply tw-bg-[color:var(--widget-bg-hover-color)];
+    .vc-widget__title {
+      @apply tw-mt-0 tw-text-left tw-whitespace-nowrap;
+    }
+  }
 
-      .vc-widget__title {
-        @apply tw-text-[color:var(--widget-title-hover-color)];
-      }
+  &:hover {
+    @apply tw-bg-[color:var(--widget-bg-hover-color)];
 
-      .vc-widget__icon {
-        @apply tw-text-[color:var(--widget-icon-hover-color)];
-      }
+    .vc-widget__title {
+      @apply tw-text-[color:var(--widget-title-hover-color)];
+    }
+
+    .vc-widget__icon {
+      @apply tw-text-[color:var(--widget-icon-hover-color)];
     }
   }
 
@@ -154,7 +139,7 @@ const truncateCount = computed(() => {
     @apply tw-font-medium tw-text-xs tw-text-[color:var(--widget-title-color)] tw-mt-1 tw-mx-0 tw-text-center tw-line-clamp-2;
   }
 
-  &__container--disabled {
+  &--disabled {
     @apply tw-cursor-default tw-bg-[color:var(--widget-bg-color)];
 
     .vc-widget__icon {

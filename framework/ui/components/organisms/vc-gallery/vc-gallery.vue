@@ -105,7 +105,7 @@ export interface Emits {
 
 const props = withDefaults(defineProps<Props>(), {
   images: () => [],
-  uploadIcon: "fas fa-cloud-upload-alt",
+  uploadIcon: "material-cloud_upload",
   variant: "gallery",
   itemActions: () => ({
     preview: true,

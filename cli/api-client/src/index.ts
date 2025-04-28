@@ -46,7 +46,7 @@ async function generateApiClient(): Promise<void> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let tsConfig: Record<string, any> | undefined;
 
-  // Пропускаем генерацию tsconfig если установлен SKIP_BUILD
+  // Skip tsconfig generation if SKIP_BUILD is set
   if (!parsedArgs.SKIP_BUILD) {
     // Check if tsconfig.json exists and read it
     tsConfigPath = path.join(parsedArgs.APP_API_CLIENT_DIRECTORY, "tsconfig.json");
@@ -70,7 +70,7 @@ async function generateApiClient(): Promise<void> {
         tsConfig.compilerOptions = { ...tsConfig.compilerOptions, ...existingTsConfig.compilerOptions };
         tsConfig.files = Array.from(new Set(tsConfig.files.concat(existingTsConfig.files || [])));
         tsConfig.include = Array.from(new Set(tsConfig.include.concat(existingTsConfig.include || [])));
-      } // <-- Добавлена закрывающая скобка
+      }
 
       console.log("api-client-generator %s Generated tsconfig.json", chalk.greenBright("success"));
     }
@@ -107,7 +107,7 @@ async function generateApiClient(): Promise<void> {
         chalk.whiteBright(apiClientPaths.console),
       );
 
-      // Пропускаем обновление конфигурации если установлен SKIP_BUILD
+      // Skip configuration update if SKIP_BUILD is set
       if (!parsedArgs.SKIP_BUILD && tsConfig) {
         const platformModuleLower = platformModule.toLowerCase();
 
@@ -142,7 +142,7 @@ async function generateApiClient(): Promise<void> {
     }
   }
 
-  // Пропускаем компиляцию и генерацию package.json если установлен SKIP_BUILD
+  // Skip compilation and package.json generation if SKIP_BUILD is set
   if (!parsedArgs.SKIP_BUILD && tsConfigPath && tsConfig) {
     // Write the updated tsconfig.json with the included files
     writeFileSync(tsConfigPath, JSON.stringify(tsConfig, null, 2));

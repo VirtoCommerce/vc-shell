@@ -1,3 +1,13 @@
+# [1.1.0-alpha.11](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.0-alpha.2...v1.1.0-alpha.11) (2025-04-29)
+
+
+### Features
+
+* redesign alpha4 wip ([ac48f52](https://github.com/VirtoCommerce/vc-shell/commit/ac48f526f61e85518a238e1e6b49047ff3fcc786))
+* redesign alpha5 ([ac430b8](https://github.com/VirtoCommerce/vc-shell/commit/ac430b80f684d3b920c35778a83c33ec387b2484))
+
+
+
 ## [v1.1.0-alpha.2](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.340...vv1.1.0-alpha.2) (2025-02-25)
 
 

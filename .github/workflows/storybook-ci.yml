@@ -126,10 +126,10 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
-          push: ${{ github.ref == 'refs/heads/main' || inputs.event_name == 'pull_request' }}
+          push: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/feat/redesign' || inputs.event_name == 'pull_request' }}
           context: .
           file: .storybook/Dockerfile
-          tags: ${{ steps.urls.outputs.DOCKER_URL }}${{ env.DOCKER_TAG }},${{ steps.urls.outputs.DOCKER_URL }}${{ inputs.event_name != 'pull_request' && github.ref == 'refs/heads/dev' && 'dev-latest' || 'latest'}}
+          tags: ${{ steps.urls.outputs.DOCKER_URL }}${{ env.DOCKER_TAG }},${{ steps.urls.outputs.DOCKER_URL }}${{ inputs.event_name != 'pull_request' && (github.ref == 'refs/heads/dev' && 'dev-latest' || github.ref == 'refs/heads/feat/redesign' && 'redesign-latest') || 'latest'}}
 
       - name: Parse Jira Keys from All Commits
         uses: VirtoCommerce/vc-github-actions/get-jira-keys@master
@@ -146,7 +146,7 @@ jobs:
         uses: VirtoCommerce/jira-upload-build-info@master
         with:
           cloud-instance-base-url: '${{ secrets.CLOUD_INSTANCE_BASE_URL }}'
-          client-id: '${{ secrets.CLIENT_ID }}' 
+          client-id: '${{ secrets.CLIENT_ID }}'
           client-secret: '${{ secrets.CLIENT_SECRET }}'
           pipeline-id: '${{ github.repository }} ${{ github.workflow }}'
           build-number: ${{ github.run_number }}
@@ -166,7 +166,7 @@ jobs:
           echo "Jira Upload Build Info response: ${{ steps.push_build_info_to_jira.outputs.response }}"
 
   cd:
-    if: ${{ github.ref == 'refs/heads/main' || inputs.event_name == 'pull_request' }}
+    if: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/feat/redesign' || inputs.event_name == 'pull_request' }}
     runs-on: ubuntu-latest
     needs: 'ci'
     env:
@@ -176,7 +176,7 @@ jobs:
       CLOUD_TOKEN: ${{ secrets.VCMP_PLATFORM_TOKEN  }}
     steps:
       - uses: actions/checkout@v4
-   
+
       - name: Install vc-build
         run: |
           dotnet tool install --global VirtoCommerce.GlobalTool

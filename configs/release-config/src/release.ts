@@ -67,10 +67,36 @@ export const release = async ({
     args.tag = "alpha";
   }
 
+  // Ask for npm distribution tag if not already set
+  if (!args.tag) {
+    const { npmTag }: { npmTag: string } = await prompts({
+      type: "select",
+      name: "npmTag",
+      message: "Select npm distribution tag",
+      choices: [
+        { title: "latest (default)", value: "latest" },
+        { title: "next", value: "next" },
+        { title: "custom", value: "custom" },
+      ],
+    });
+
+    if (npmTag === "custom") {
+      const res: { customTag: string } = await prompts({
+        type: "text",
+        name: "customTag",
+        message: "Input custom npm tag",
+        initial: "latest",
+      });
+      args.tag = res.customTag;
+    } else if (npmTag !== "latest") {
+      args.tag = npmTag;
+    }
+  }
+
   const { yes }: { yes: boolean } = await prompts({
     type: "confirm",
     name: "yes",
-    message: `Releasing ${chalk.yellow(tag)} Confirm?`,
+    message: `Releasing ${chalk.yellow(tag)}${args.tag && args.tag !== "latest" ? ` with npm tag ${chalk.blue(args.tag)}` : ""} Confirm?`,
   });
 
   if (!yes) return;
@@ -100,6 +126,12 @@ export const release = async ({
   step("\nPushing to GitHub...");
   await runIfNotDry("git", ["push", "origin", `refs/tags/${tag}`]);
   await runIfNotDry("git", ["push"]);
+
+  if (args.tag) {
+    console.log(`\nNOTE: Use '--tag ${args.tag}' when publishing these packages to npm.`);
+    console.log(`Example: npm publish --tag ${args.tag}`);
+    console.log(`For yarn workspaces: yarn publish:tag --tag ${args.tag}`);
+  }
 
   console.log();
 };

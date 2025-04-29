@@ -208,6 +208,3 @@ export function useAdaptiveItems<T>(options: {
     updateObserver: setupElementsObserver,
   };
 }
-
-// For backward compatibility
-export { useAdaptiveItems as useAdaptiveContent };

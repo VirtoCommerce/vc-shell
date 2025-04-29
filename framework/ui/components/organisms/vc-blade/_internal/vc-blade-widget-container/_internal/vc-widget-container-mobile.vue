@@ -53,9 +53,10 @@
 <script setup lang="ts">
 import { ref, computed } from "vue";
 import { useAdaptiveItems } from "../../../../../../composables/useAdaptiveItems";
-import { IWidget } from "../../../../../../../core/types/widget";
+
 import { GenericDropdown } from "../../../../../../../shared/components/generic-dropdown";
 import { VcIcon, ChevronUpIcon } from "../../../../..";
+import { IWidget } from "../../../../../../../core/services";
 
 interface Props {
   widgets: IWidget[];

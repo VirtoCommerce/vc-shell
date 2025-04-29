@@ -64,7 +64,7 @@
 import AppBarWidgetItem from "./AppBarWidgetItem.vue";
 import { VcIcon } from "../../../../..";
 import { useAppBarWidget } from "../../../../../../../core/composables";
-import type { AppBarWidget } from "../../../../../../../core/services/app-bar-menu-service";
+import type { AppBarWidget } from "../../../../../../../core/services";
 
 const { items } = useAppBarWidget();
 

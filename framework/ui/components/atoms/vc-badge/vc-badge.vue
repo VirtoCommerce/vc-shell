@@ -14,16 +14,18 @@
         v-if="typeof content !== 'undefined'"
         ref="badge"
         class="vc-badge__badge"
-        :class="{
-          'vc-badge__badge--active': active,
-          'vc-badge__badge--clickable': clickable,
-          'vc-badge__badge--disabled': disabled,
-          'vc-badge__badge--content-long': String(content).length > 1,
-          'vc-badge__badge--content-very-long': String(content).length > 2,
-          'vc-badge__badge--dot': isDot,
-          [`vc-badge__badge--${variant}`]: variant !== 'default',
-          'vc-badge__badge--custom-position': customPosition,
-        }"
+        :class="[
+          `vc-badge__badge--${variant}`,
+          {
+            'vc-badge__badge--active': active,
+            'vc-badge__badge--clickable': clickable,
+            'vc-badge__badge--disabled': disabled,
+            'vc-badge__badge--content-long': String(content).length > 1,
+            'vc-badge__badge--content-very-long': String(content).length > 2,
+            'vc-badge__badge--dot': isDot,
+            'vc-badge__badge--custom-position': customPosition,
+          },
+        ]"
         :style="customPositionStyle"
         @click="onClick"
       >

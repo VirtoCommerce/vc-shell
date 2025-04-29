@@ -14,6 +14,7 @@ This document provides an overview of all services and their corresponding compo
     - [Global Search Service](#global-search-service)
     - [App Bar Menu Service](#app-bar-menu-service)
     - [Settings Menu Service](#settings-menu-service)
+    - [Toolbar Service](#toolbar-service)
   - [Composables](#composables)
     - [useWidgets](#usewidgets)
     - [useMenuService](#usemenuservice)
@@ -22,6 +23,7 @@ This document provides an overview of all services and their corresponding compo
     - [useGlobalSearch](#useglobalsearch)
     - [useAppBarWidget](#useappbarwidget)
     - [useSettingsMenu](#usesettingsmenu)
+    - [useToolbar](#usetoolbar)
 
 ## Services
 
@@ -140,6 +142,40 @@ The Settings Menu Service manages the items displayed in the settings menu. It p
 - Register and manage settings menu items
 - Support for grouping and organization
 - Priority-based ordering
+
+### Toolbar Service
+
+**File:** `/framework/core/services/toolbar-service.ts`
+
+The Toolbar Service manages toolbar items that can be associated with specific blades in the application. It provides functionality for registering, organizing, and accessing blade-specific toolbar actions.
+
+**Key Features:**
+- Register and unregister toolbar items for specific blades
+- Get toolbar items associated with a specific blade
+- Update toolbar item properties dynamically
+- Priority-based ordering of toolbar items
+- Pre-registration mechanism for items added before service initialization
+
+**API:**
+```typescript
+interface IToolbarService {
+  registerToolbarItem: (toolbarItem: IToolbarItem, bladeId: string) => void;
+  unregisterToolbarItem: (toolbarItemId: string, bladeId: string) => void;
+  getToolbarItems: (bladeId: string) => IToolbarItem[];
+  clearBladeToolbarItems: (bladeId: string) => void;
+  registeredToolbarItems: IToolbarRegistration[];
+  isToolbarItemRegistered: (id: string) => boolean;
+  updateToolbarItem: ({
+    id,
+    bladeId,
+    toolbarItem,
+  }: {
+    id: string;
+    bladeId: string;
+    toolbarItem: Partial<IToolbarItem>;
+  }) => void;
+}
+```
 
 ## Composables
 
@@ -283,3 +319,47 @@ The useSettingsMenu composable provides access to the Settings Menu Service with
 **Key Functions:**
 - `provideSettingsMenuService()`: Creates and provides the service to the component tree
 - `useSettingsMenu()`: Retrieves the service instance from the component's injection context 
+
+### useToolbar
+
+**File:** `/framework/core/composables/useToolbar.ts`
+
+The useToolbar composable provides access to the Toolbar Service within Vue components, with a focus on blade-specific toolbar actions.
+
+**Key Functions:**
+- `useToolbar()`: Retrieves the Toolbar Service instance, automatically associated with the current blade
+- `registerToolbarItem()`: Registers a toolbar item for the current blade
+- `unregisterToolbarItem()`: Removes a toolbar item from the current blade
+- `updateToolbarItem()`: Updates properties of an existing toolbar item
+- `getToolbarItems()`: Gets all toolbar items for the current blade
+- `clearBladeToolbarItems()`: Removes all toolbar items for the current blade
+
+**Usage Example:**
+```typescript
+import { useToolbar } from '@vc-shell/framework';
+
+export default {
+  setup() {
+    const toolbar = useToolbar();
+    
+    // Register a toolbar item for the current blade
+    toolbar.registerToolbarItem({
+      id: 'save-button',
+      title: 'Save',
+      icon: 'material-save',
+      priority: 100,
+      clickHandler: () => {
+        // Action when clicked
+        saveData();
+      }
+    });
+    
+    // The useToolbar composable automatically cleans up 
+    // items when the component unmounts
+    
+    return {
+      // Other component logic
+    };
+  }
+};
+``` 

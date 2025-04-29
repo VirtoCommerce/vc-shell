@@ -1,14 +1,16 @@
 import { InjectionKey, ComputedRef, type Component } from "vue";
 import { BladeVNode, IBladeInstance } from "./shared/components/blade-navigation/types";
 import { NotificationTemplateConstructor } from "./core/types";
-import { IWidgetService } from "./core/services/widget-service";
-import { IDashboardService } from "./core/services/dashboard-service";
-import { GlobalSearchState } from "./core/services/global-search-service";
-import { MenuService } from "./core/services/menu-service";
-import { ISettingsMenuService } from "./core/services/settings-menu-service";
-import { IAppBarWidgetService } from "./core/services/app-bar-menu-service";
 
-import { IAppBarMobileButtonsService } from "./core/services/app-bar-mobile-buttons-service";
+import {
+  IWidgetService,
+  IDashboardService,
+  GlobalSearchState,
+  MenuService,
+  ISettingsMenuService,
+  IAppBarWidgetService,
+  IAppBarMobileButtonsService,
+} from "./core/services";
 
 export const navigationViewLocation: InjectionKey<BladeVNode> = Symbol("blade navigation view location");
 export const BladeInstance: InjectionKey<ComputedRef<IBladeInstance>> = Symbol("BladeInstance");

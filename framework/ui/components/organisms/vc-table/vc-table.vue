@@ -207,7 +207,7 @@ export interface StatusImage {
 
 export interface TableItem {
   [x: string]: any;
-  actions?: IActionBuilderResult[];
+  actions?: IActionBuilderResult<any>[];
 }
 
 export type TableColPartial = Partial<
@@ -233,7 +233,7 @@ const props = withDefaults(
   defineProps<{
     columns: ITableColumns[];
     items: T[];
-    itemActionBuilder?: (item: T) => IActionBuilderResult[] | undefined;
+    itemActionBuilder?: (item: T) => IActionBuilderResult<T>[] | undefined;
     sort?: string;
     multiselect?: boolean;
     disableItemCheckbox?: (item: T) => boolean;
@@ -328,7 +328,7 @@ const {
   onSelectAll: (value) => emit("select:all", value),
 });
 
-const { itemActions, selectedRowIndex, calculateActions, showActions, closeActions } = useTableActions({
+const { itemActions, selectedRowIndex, calculateActions, showActions, closeActions } = useTableActions<T>({
   enableItemActions: props.enableItemActions,
   itemActionBuilder: props.itemActionBuilder,
 });

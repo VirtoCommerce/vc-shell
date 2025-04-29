@@ -34,7 +34,7 @@ const formatCode = async (src: string) => {
   const options = {
     parser: "typescript",
     singleQuote: true,
-    plugins: [parserTypeScript, prettierPluginEstree],
+    plugins: [parserTypeScript, prettierPluginEstree] as (string | { [key: string]: any })[],
     tabWidth: 2,
   };
   return await prettier.format(src, options);

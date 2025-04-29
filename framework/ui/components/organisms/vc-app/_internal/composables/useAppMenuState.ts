@@ -1,5 +1,5 @@
 import { ref, reactive, readonly, computed, MaybeRef, ComputedRef, inject, InjectionKey, provide, Ref } from "vue";
-import { useMenuExpanded } from "../../../../../../shared/composables/useMenuExpanded";
+import { useMenuExpanded } from "../../../../../../shared/composables";
 
 export interface AppMenuState {
   isSidebarExpanded: MaybeRef<boolean>;

@@ -307,7 +307,7 @@ const sizeMap = {
 const iconSize = computed(() => props.customSize || sizeMap[props.size]);
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 /* Base sizes */
 :deep(.vc-icon) {
   --icon-size-xs: 12px;

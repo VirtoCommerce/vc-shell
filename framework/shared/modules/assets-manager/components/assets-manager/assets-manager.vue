@@ -16,6 +16,7 @@
       @dragleave.prevent="dragLeave"
       @drop.prevent.stop="onDrop"
     >
+      <!-- @vue-generic {ICommonAsset} -->
       <VcTable
         :columns="columns"
         :expanded="expanded"

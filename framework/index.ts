@@ -15,9 +15,6 @@ import * as locales from "./locales";
 import { AppInsightsPlugin, AppInsightsPluginOptions } from "vue3-application-insights";
 import { useAppInsights } from "./core/composables";
 
-// Import Material Icons
-import "./ui/components/atoms/vc-icon/material-icons";
-
 import * as coreComposables from "./core/composables";
 import * as corePlugins from "./core/plugins";
 import * as coreApiPlatform from "./core/api/platform";
@@ -39,7 +36,13 @@ import "@fontsource/plus-jakarta-sans/600.css";
 import "@fontsource/plus-jakarta-sans/700.css";
 import "@fontsource/plus-jakarta-sans/800.css";
 import "./assets/styles/index.scss";
-import { createWidgetService } from "./core/services/widget-service";
+import {
+  createWidgetService,
+  createMenuService,
+  createAppBarWidgetService,
+  createSettingsMenuService,
+  createToolbarService,
+} from "./core/services";
 import {
   AppBarWidgetServiceKey,
   MenuServiceKey,
@@ -48,14 +51,13 @@ import {
   TOOLBAR_SERVICE,
   WidgetServiceKey,
 } from "./injection-keys";
-import { createMenuService } from "./core/services/menu-service";
-import { createAppBarWidgetService } from "./core/services/app-bar-menu-service";
-import { createSettingsMenuService } from "./core/services/settings-menu-service";
-import { createToolbarService } from "./core/services/toolbar-service";
 
-import "@fortawesome/fontawesome-free/css/all.min.css";
-import "bootstrap-icons/font/bootstrap-icons.css";
+import "@fortawesome/fontawesome-free/css/fontawesome.min.css";
+import "@fortawesome/fontawesome-free/css/solid.min.css";
+
+import "bootstrap-icons/font/bootstrap-icons.min.css";
 import * as icons from "lucide-vue-next";
+import "material-symbols/outlined.css";
 
 type I18NParams = Parameters<typeof i18n.global.mergeLocaleMessage>;
 

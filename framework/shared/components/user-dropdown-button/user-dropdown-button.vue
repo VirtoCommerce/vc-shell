@@ -45,7 +45,7 @@ import { ref } from "vue";
 import type { IMenuItem } from "../../../core/types";
 import { default as UserInfo } from "./_internal/user-info.vue";
 import { default as UserSidebar } from "./_internal/user-sidebar.vue";
-import { useMenuExpanded } from "../../../shared/composables/useMenuExpanded";
+import { useMenuExpanded } from "../../../shared/composables";
 import { useI18n } from "vue-i18n";
 
 export interface Props {

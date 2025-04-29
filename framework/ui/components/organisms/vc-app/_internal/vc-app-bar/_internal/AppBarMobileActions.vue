@@ -42,7 +42,7 @@ import AppBarOverlay from "./AppBarOverlay.vue";
 import { useAppBarMobileActions } from "./../composables/useAppBarMobileActions";
 import { MaybeRef, ref, watch } from "vue";
 import { vOnClickOutside } from "@vueuse/components";
-import { AppBarButtonContent } from "../../../../../../../core/services/app-bar-mobile-buttons-service";
+import { AppBarButtonContent } from "../../../../../../../core/services";
 import { useRoute } from "vue-router";
 export interface Props {
   isSidebarMode: boolean;

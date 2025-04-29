@@ -1,3 +1,4 @@
+@use './theme/colors.scss';
 @tailwind base;
 
 @layer base {
@@ -41,8 +42,6 @@ textarea {
 
 @tailwind components;
 @tailwind utilities;
-
-@import './theme/colors.scss';
 
 :root {
   --scroll-color: var(--primary-100);

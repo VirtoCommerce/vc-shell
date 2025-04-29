@@ -44,7 +44,7 @@
 
 <script setup lang="ts">
 import { ref, computed } from "vue";
-import { IWidget } from "../../../../../../../core/types/widget";
+import { IWidget } from "../../../../../../../core/services";
 import { GenericDropdown } from "../../../../../../../shared/components/generic-dropdown";
 import { VcIcon, ChevronDownIcon } from "../../../../..";
 

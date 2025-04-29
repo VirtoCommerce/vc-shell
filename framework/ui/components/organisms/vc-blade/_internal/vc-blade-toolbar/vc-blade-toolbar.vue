@@ -28,7 +28,7 @@ import VcBladeToolbarButtons from "./_internal/vc-blade-toolbar-buttons/vc-blade
 import { BladeInstance } from "../../../../../../injection-keys";
 import { FALLBACK_BLADE_ID } from "../../../../../../core/constants";
 import { IBladeInstance } from "../../../../../../shared/components/blade-navigation/types";
-import { IToolbarItem } from "../../../../../../core/services/toolbar-service";
+import { IToolbarItem } from "../../../../../../core/services";
 
 export interface Props {
   items: IBladeToolbar[];

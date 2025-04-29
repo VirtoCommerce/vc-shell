@@ -312,8 +312,6 @@ const meta = {
     docs: {
       description: {
         component: `
-# VcSelect
-
 A comprehensive select component for Vue 3 with the following features:
 
 ## Key Features
@@ -1422,7 +1420,7 @@ export const ComprehensiveSlotExample: Story = {
     setup() {
       const value = ref([]);
 
-      const getLevelBadge = (level) => {
+      const getLevelBadge = (level: string) => {
         const badges = {
           SMB: "tw-bg-green-100 tw-text-green-800",
           "Mid-Market": "tw-bg-blue-100 tw-text-blue-800",

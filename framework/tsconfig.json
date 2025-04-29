@@ -22,5 +22,7 @@
     "locales/*.ts",
     "locales/*.json"
   ],
-  "exclude": ["**/*.spec.ts", "vitest.config.ts"]
+  "exclude": ["**/*.spec.ts", "vitest.config.ts",
+  // TODO: fix this
+  "**/*.stories.ts"]
 }

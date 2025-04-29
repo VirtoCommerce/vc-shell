@@ -110,10 +110,10 @@ defineEmits<{
 }>();
 
 defineSlots<{
-  item: (args: { item: T; click: () => void }) => any;
-  empty: () => any;
-  trigger: (args: { isActive: boolean }) => any;
-  "items-container": (args: { items: T[]; close: () => void }) => any;
+  item?: (args: { item: T; click: () => void }) => any;
+  empty?: () => any;
+  trigger?: (args: { isActive: boolean }) => any;
+  "items-container"?: (args: { items: T[]; close: () => void }) => any;
 }>();
 
 const isMobile = inject("isMobile") as Ref<boolean>;

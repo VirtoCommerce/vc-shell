@@ -21,7 +21,7 @@ jobs:
       ARTIFACT_URL: ''
       GITHUB_USER: '${{ github.repository_owner }}'
       NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
+      NPM_TAG: 'latest'
 
     steps:
     - uses: actions/checkout@v4
@@ -72,9 +72,33 @@ jobs:
       env:
         NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
+    - name: Determine npm tag
+      run: |
+        for pkg in framework configs/ts-config configs/release-config cli/create-vc-app configs/vite-config cli/api-client; do
+          if [ -f "${pkg}/package.json" ]; then
+            CURRENT_VERSION=$(node -p "require('./${pkg}/package.json').version")
+            if [[ "$CURRENT_VERSION" == *"-alpha"* ]]; then
+              echo "NPM_TAG=alpha" >> $GITHUB_ENV
+              break
+            elif [[ "$CURRENT_VERSION" == *"-beta"* ]]; then
+              echo "NPM_TAG=beta" >> $GITHUB_ENV
+              break
+            elif [[ "$CURRENT_VERSION" == *"-next"* ]]; then
+              echo "NPM_TAG=next" >> $GITHUB_ENV
+              break
+            fi
+          fi
+        done
+        echo "Publishing with npm tag: $NPM_TAG"
+
     - name: Publish virto-shell npm
       # if: ${{ github.ref == 'refs/heads/main' }}
-      run: yarn run publish
+      run: |
+        if [ "$NPM_TAG" = "latest" ]; then
+          yarn run publish
+        else
+          yarn run publish:tag --tag=$NPM_TAG
+        fi
 
     - name: Update npm dist tags
       if: always()
@@ -135,6 +159,15 @@ jobs:
               echo "Restoring latest tag to stable version $PACKAGE@${STABLE_VERSION}"
               npm dist-tag add "$PACKAGE@${STABLE_VERSION}" latest --force
             fi
+          elif [[ "$CURRENT_VERSION" == *"-next"* ]] || [ "$NPM_TAG" = "next" ]; then
+            echo "Setting next tag for $PACKAGE@${CURRENT_VERSION}"
+            npm dist-tag add "$PACKAGE@${CURRENT_VERSION}" next --force
+            # Get the latest stable version
+            STABLE_VERSION=$(npm view "$PACKAGE" versions --json | jq -r 'map(select(test("^\\d+\\.\\d+\\.\\d+$"))) | .[-1]')
+            if [ ! -z "$STABLE_VERSION" ]; then
+              echo "Restoring latest tag to stable version $PACKAGE@${STABLE_VERSION}"
+              npm dist-tag add "$PACKAGE@${STABLE_VERSION}" latest --force
+            fi
           else
             echo "Setting latest tag for $PACKAGE@${CURRENT_VERSION}"
             npm dist-tag add "$PACKAGE@${CURRENT_VERSION}" latest --force
@@ -164,10 +197,10 @@ jobs:
 
 
 
-  # Storybook:
-  #   needs: 'CI'
-  #   uses: VirtoCommerce/vc-shell/.github/workflows/storybook-ci.yml@main
-  #   with:
-  #     event_name: ${{ github.event_name }}
-  #   secrets:
-  #     VCMP_PLATFORM_TOKEN: ${{ secrets.VCMP_PLATFORM_TOKEN }}
+  Storybook:
+    needs: 'CI'
+    uses: VirtoCommerce/vc-shell/.github/workflows/storybook-ci.yml@main
+    with:
+      event_name: ${{ github.event_name }}
+    secrets:
+      VCMP_PLATFORM_TOKEN: ${{ secrets.VCMP_PLATFORM_TOKEN }}

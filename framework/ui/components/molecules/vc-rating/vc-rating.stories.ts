@@ -29,7 +29,7 @@ const meta: Meta<typeof VcRating> = {
       table: {
         category: "Props",
         type: { summary: "number" },
-        defaultValue: { summary: 5 },
+        defaultValue: { summary: "5" },
       },
     },
     variant: {
@@ -68,14 +68,6 @@ const meta: Meta<typeof VcRating> = {
         type: { summary: "string" },
         defaultValue: { summary: "undefined" },
       },
-    },
-    "update:modelValue": {
-      description: "Event emitted when rating value changes",
-      table: {
-        category: "Events",
-        type: { summary: "number" },
-      },
-      action: "update:modelValue",
     },
   },
   parameters: {

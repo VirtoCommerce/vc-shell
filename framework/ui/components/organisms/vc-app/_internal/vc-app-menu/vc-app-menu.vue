@@ -58,7 +58,7 @@ import VcAppMenuItem from "./_internal/vc-app-menu-item/vc-app-menu-item.vue";
 import { VcContainer } from "./../../../../";
 import { useMenuService } from "../../../../../../core/composables";
 import { MenuItem } from "../../../../../../core/types";
-import { useMenuExpanded } from "../../../../../../shared/composables/useMenuExpanded";
+import { useMenuExpanded } from "../../../../../../shared/composables";
 import { useAppMenuState } from "../composables/useAppMenuState";
 
 export interface Props {

@@ -76,18 +76,16 @@ import {
   watch,
   onBeforeMount,
   ComputedRef,
-  type Component,
   ConcreteComponent,
   toRefs,
   provide,
-  type VNode,
   inject,
   onMounted,
   onBeforeUnmount,
   markRaw,
 } from "vue";
 import { DynamicDetailsSchema, FormContentSchema, SettingsSchema } from "../types";
-import { reactiveComputed, toReactive, useMounted, useTemplateRefsList } from "@vueuse/core";
+import { reactiveComputed, toReactive, useMounted } from "@vueuse/core";
 import {
   DetailsBladeContext,
   DetailsBaseBladeScope,
@@ -98,16 +96,13 @@ import {
   CoreBladeExposed,
 } from "../../../index";
 import SchemaRender from "../components/SchemaRender";
-import { VcSelect, VcImage } from "../../../../ui/components";
+import { VcImage } from "../../../../ui/components";
 import { useToolbarReducer } from "../composables/useToolbarReducer";
 import { useBeforeUnload } from "../../../../core/composables/useBeforeUnload";
-import * as _ from "lodash-es";
 import { useLanguages, useNotifications } from "../../../../core/composables";
 import { notification, GenericDropdown } from "../../../components";
-import { ComponentSlots } from "../../../utilities/vueUtils";
 import { useWidgets } from "../../../../core/composables/useWidgets";
 import { BladeInstance } from "../../../../injection-keys";
-import { IWidget } from "../../../../core/types/widget";
 
 interface Props {
   expanded?: boolean;
@@ -140,7 +135,6 @@ const { t } = useI18n({ useScope: "global" });
 const { showConfirmation } = usePopup();
 const { getFlag } = useLanguages();
 
-const widgetsRefs = useTemplateRefsList<{ el: HTMLDivElement; component: ConcreteComponent }>();
 const isMixinReady = ref(false);
 const blade = inject(BladeInstance);
 
@@ -303,11 +297,11 @@ const bladeMultilanguage = reactiveComputed(() => {
               mainAxis: 10,
               crossAxis: -15,
             },
-            variant: "light",
+            variant: "secondary",
             emptyText: t("COMMON.NO_OPTIONS"),
             itemText: (item: any) => item.label,
             isItemActive: (item: any) => item.value === toValue(unreffedScope).multilanguage?.currentLocale,
-            "onItem-click": (item: any) => {
+            onItemClick: (item: any) => {
               isOpened.value = false;
               toValue(unreffedScope).multilanguage?.setLocale(item.value);
             },
@@ -316,7 +310,7 @@ const bladeMultilanguage = reactiveComputed(() => {
             },
           },
           {
-            trigger: (props: { isActive: boolean }) => {
+            trigger: () => {
               const currentLocale = localeOptions.value?.find(
                 (locale: any) => locale.value === toValue(unreffedScope).multilanguage?.currentLocale,
               );
@@ -432,7 +426,7 @@ onMounted(() => {
     widgets.value.children.forEach((widgetComponent) => {
       const isObjectWidget = typeof widgetComponent === "object" && "id" in widgetComponent;
       const widgetId = isObjectWidget ? widgetComponent.id : "";
-      const visibilityMethod = isObjectWidget && widgetComponent.visibility?.method;
+      const visibilityMethod = isObjectWidget && "visibility" in widgetComponent && widgetComponent.visibility?.method;
 
       const component = isObjectWidget
         ? resolveComponent(widgetId)

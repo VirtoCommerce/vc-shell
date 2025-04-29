@@ -1,6 +1,6 @@
 import { Component, ComputedRef, Ref } from "vue";
 import { CoreBladeExposed } from "../../shared";
-import { ComponentPublicInstanceConstructor } from "../../shared/utilities/vueUtils";
+import { ComponentPublicInstanceConstructor } from "../../shared/utilities";
 
 // Type instead of interface here is workaround for:
 // https://github.com/microsoft/TypeScript/issues/15300

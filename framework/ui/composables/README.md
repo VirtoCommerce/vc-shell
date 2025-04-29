@@ -4,7 +4,7 @@ This directory contains reusable composables for UI components.
 
 ## Available Composables
 
-### useAdaptiveItems (useAdaptiveContent)
+### useAdaptiveItems
 
 A composable for adaptive rendering of elements in a container that automatically determines which elements fit in the available space without using hidden "measure" containers.
 
@@ -40,7 +40,7 @@ A composable for adaptive rendering of elements in a container that automaticall
 
 <script setup>
 import { ref, computed } from 'vue';
-import { useAdaptiveItems } from 'framework/ui/composables/useAdaptiveContent';
+import { useAdaptiveItems } from 'framework/ui/composables/useAdaptiveItems';
 
 const containerRef = ref(null);
 const items = ref([

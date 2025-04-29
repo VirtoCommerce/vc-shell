@@ -32,7 +32,7 @@
             :class="{ 'vc-blade-toolbar-desktop__more--active': isActive }"
             @click="toggleToolbar"
           >
-            <VcIcon icon="more" />
+            <VcIcon icon="material-more" />
             <span
               v-if="isExpanded"
               class="vc-blade-toolbar-desktop__more-text"

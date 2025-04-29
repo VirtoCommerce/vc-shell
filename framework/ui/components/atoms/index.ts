@@ -17,3 +17,4 @@ export * from "./vc-switch";
 export * from "./vc-video";
 export * from "./vc-widget";
 export * from "./vc-tooltip";
+export * from "./vc-skeleton";

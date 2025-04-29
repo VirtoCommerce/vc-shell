@@ -286,20 +286,20 @@ const meta = {
         type: { summary: "{ index: number, opt: any, selected: boolean, toggleOption: Function, label: string }" },
       },
     },
-    error: {
-      description: "Slot for custom error message",
-      table: {
-        category: "Slots",
-        type: { summary: "VNode | string" },
-      },
-    },
-    hint: {
-      description: "Slot for custom hint",
-      table: {
-        category: "Slots",
-        type: { summary: "VNode | string" },
-      },
-    },
+    // error: {
+    //   description: "Slot for custom error message",
+    //   table: {
+    //     category: "Slots",
+    //     type: { summary: "VNode | string" },
+    //   },
+    // },
+    // hint: {
+    //   description: "Slot for custom hint",
+    //   table: {
+    //     category: "Slots",
+    //     type: { summary: "VNode | string" },
+    //   },
+    // },
     "no-options": {
       description: "Slot for customizing the 'no options' state",
       table: {

@@ -28,7 +28,6 @@
     "../framework/ui/**/*.stories.ts",
   ],
   "references": [
-    { "path": "../framework/tsconfig.json" },
-    { "path": "../apps/vendor-portal/tsconfig.json" }
+    { "path": "../framework/tsconfig.json" }
   ]
 }

@@ -1,3 +1,12 @@
+## [1.1.1](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.0...v1.1.1) (2025-04-29)
+
+
+### Features
+
+* enhance release process with npm tag detection and commit message generation ([fbc92b6](https://github.com/VirtoCommerce/vc-shell/commit/fbc92b62922a5ba118a87507293334fa5138b9f1))
+
+
+
 # [1.1.0](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.0-alpha.2...v1.1.0) (2025-04-29)
 
 

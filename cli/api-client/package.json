@@ -1,7 +1,7 @@
 {
   "name": "@vc-shell/api-client-generator",
   "description": "Tool for API clients generation",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "type": "module",
   "bin": "./dist/api-client-generator.js",
   "files": [
@@ -13,7 +13,7 @@
   },
   "devDependencies": {
     "@types/cross-spawn": "^6.0.6",
-    "@vc-shell/ts-config": "^1.1.0",
+    "@vc-shell/ts-config": "^1.1.1",
     "typescript": "^5.8.3"
   },
   "dependencies": {
@@ -26,5 +26,6 @@
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"
-  }
+  },
+  "npmTag": "next"
 }

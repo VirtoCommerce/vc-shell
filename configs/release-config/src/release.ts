@@ -152,6 +152,12 @@ export const release = async ({
   // Generate git tag from version
   const gitTag = toTag(targetVersion);
 
+  // Generate commit message with npm tag info if necessary
+  let commitMessage = `release: ${gitTag}`;
+  if (args.tag && args.tag !== "latest") {
+    commitMessage += ` with npm tag ${args.tag}`;
+  }
+
   const { yes }: { yes: boolean } = await prompts({
     type: "confirm",
     name: "yes",
@@ -162,10 +168,18 @@ export const release = async ({
 
   for (let index = 0; index < packages.length; index++) {
     const element = packages[index];
-    const { pkg } = getPackageInfo(element);
+    const { pkg, pkgPath } = getPackageInfo(element);
 
     step(`\nUpdating ${chalk.green(pkg.name)} package version to ${chalk.green(targetVersion)}...`);
     await bumpVersion(pkg.name, targetVersion);
+
+    // Add npmTag to package.json if not latest
+    if (args.tag && args.tag !== "latest") {
+      const updatedPkg = getPackageInfo(element);
+      const pkgWithTag = { ...updatedPkg.pkg, npmTag: args.tag };
+      await writePackageJson(updatedPkg.pkgPath, pkgWithTag);
+      console.log(`Added npmTag: ${chalk.blue(args.tag)} to ${chalk.green(pkg.name)}`);
+    }
 
     step(`\nGenerating ${chalk.green(pkg.name)} changelog...`);
     await generateChangelog(pkg.name, targetVersion, element);
@@ -175,7 +189,7 @@ export const release = async ({
   if (stdout) {
     step("\nCommitting changes...");
     await runIfNotDry("git", ["add", "-A"]);
-    await runIfNotDry("git", ["commit", "-m", `release: ${gitTag}`, "--no-verify"]);
+    await runIfNotDry("git", ["commit", "-m", commitMessage, "--no-verify"]);
     await runIfNotDry("git", ["tag", gitTag]);
   } else {
     console.log("No changes to commit.");

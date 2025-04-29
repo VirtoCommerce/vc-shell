@@ -72,6 +72,5 @@
     "*.{js,ts,html,css}": "prettier --write '**/*.{ts,vue}'",
     "*.{js,ts,vue}": "eslint --fix --cache '**/*.{ts,vue}'"
   },
-  "packageManager": "yarn@4.0.2",
-  "stableVersion": "1.0.340"
+  "packageManager": "yarn@4.0.2"
 }

@@ -12,12 +12,5 @@
       "import": "./dist/marketplacevendor.js",
       "types": "./dist/types/marketplacevendor.d.ts"
     }
-  },
-  "scripts": {
-    "publish": "npm publish"
-  },
-  "publishConfig": {
-    "access": "public",
-    "registry": "https://registry.npmjs.org/"
   }
 }

@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import chalk from "chalk";
 import { SpawnSyncOptionsWithStringEncoding } from "node:child_process";
@@ -23,9 +23,18 @@ export function getPackageInfo(pkgName: string) {
   const pkg = JSON.parse(readFileSync(pkgPath, "utf-8")) as {
     name: string;
     version: string;
+    stableVersion?: string;
   };
 
   return { pkg, pkgDir, pkgPath };
+}
+
+export async function writePackageJson(pkgPath: string, pkg: any): Promise<void> {
+  if (isDryRun) {
+    console.log(chalk.blue(`[dryrun] Writing package.json to ${pkgPath}`));
+    return;
+  }
+  writeFileSync(pkgPath, JSON.stringify(pkg, null, 2) + "\n", "utf-8");
 }
 
 export async function run(bin: string, args: string[], opts?: Partial<SpawnSyncOptionsWithStringEncoding>) {

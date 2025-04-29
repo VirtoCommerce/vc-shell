@@ -114,6 +114,5 @@
       "prettier --write"
     ]
   },
-  "packageManager": "yarn@4.5.1",
-  "stableVersion": "1.0.340"
+  "packageManager": "yarn@4.5.1"
 }

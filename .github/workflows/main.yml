@@ -115,14 +115,16 @@ jobs:
     - name: Publish virto-shell npm
       # if: ${{ github.ref == 'refs/heads/main' }}
       run: |
+        echo "Using npm tag: $NPM_TAG"
         if [ "$NPM_TAG" = "latest" ]; then
-          yarn run publish
+          yarn publish
         else
-          yarn run publish:tag --tag=$NPM_TAG
+          # Заменяем исходное выражение на переменную NPM_TAG без $npm_config_tag
+          yarn workspaces foreach -v --worktree --from '{@vc-shell/config-generator,@vc-shell/api-client-generator,@vc-shell/framework,@vc-shell/create-vc-app,@vc-shell/release-config,@vc-shell/ts-config}' npm publish --tag $NPM_TAG
         fi
 
     - name: Update npm dist tags
-      if: always()
+      if: success() # Изменено с always() на success()
       run: |
         declare -A PACKAGE_PATHS=(
           ["@vc-shell/framework"]="framework"
@@ -162,12 +164,19 @@ jobs:
             continue
           fi
 
+          # Проверяем, существует ли версия уже в NPM
+          VERSION_EXISTS=$(npm view "$PACKAGE@$CURRENT_VERSION" version 2>/dev/null || echo "")
+          if [ -z "$VERSION_EXISTS" ]; then
+            echo "Version $CURRENT_VERSION of $PACKAGE not found in npm registry. Skipping dist-tag update."
+            continue
+          fi
+
           # Try to get npmTag from package.json
           PKG_NPM_TAG=$(node -p "try { const pkg = require('./${PKG_DIR}/package.json'); (pkg.npmTag || (pkg.publishConfig && pkg.publishConfig.tag)) || ''; } catch(e) { '' }")
 
           if [ ! -z "$PKG_NPM_TAG" ] && [ "$PKG_NPM_TAG" != "undefined" ] && [ "$PKG_NPM_TAG" != "null" ]; then
             echo "Using npmTag from package.json: $PKG_NPM_TAG for $PACKAGE@${CURRENT_VERSION}"
-            npm dist-tag add "$PACKAGE@${CURRENT_VERSION}" "$PKG_NPM_TAG" --force
+            npm dist-tag add "$PACKAGE@${CURRENT_VERSION}" "$PKG_NPM_TAG" --force || echo "Failed to add tag $PKG_NPM_TAG to $PACKAGE@${CURRENT_VERSION}"
 
             # Only restore latest tag if we're not setting it as latest already
             if [ "$PKG_NPM_TAG" != "latest" ]; then
@@ -175,45 +184,46 @@ jobs:
               STABLE_VERSION=$(npm view "$PACKAGE" versions --json | jq -r 'map(select(test("^\\d+\\.\\d+\\.\\d+$"))) | .[-1]')
               if [ ! -z "$STABLE_VERSION" ] && [ "$STABLE_VERSION" != "$CURRENT_VERSION" ]; then
                 echo "Restoring latest tag to stable version $PACKAGE@${STABLE_VERSION}"
-                npm dist-tag add "$PACKAGE@${STABLE_VERSION}" latest --force
+                npm dist-tag add "$PACKAGE@${STABLE_VERSION}" latest --force || echo "Failed to add tag latest to $PACKAGE@${STABLE_VERSION}"
               fi
             fi
           elif [[ "$CURRENT_VERSION" == *"-alpha"* ]]; then
             echo "Setting alpha tag for $PACKAGE@${CURRENT_VERSION}"
-            npm dist-tag add "$PACKAGE@${CURRENT_VERSION}" alpha --force
+            npm dist-tag add "$PACKAGE@${CURRENT_VERSION}" alpha --force || echo "Failed to add tag alpha to $PACKAGE@${CURRENT_VERSION}"
             # Get the latest stable version
             STABLE_VERSION=$(npm view "$PACKAGE" versions --json | jq -r 'map(select(test("^\\d+\\.\\d+\\.\\d+$"))) | .[-1]')
             if [ ! -z "$STABLE_VERSION" ]; then
               echo "Restoring latest tag to stable version $PACKAGE@${STABLE_VERSION}"
-              npm dist-tag add "$PACKAGE@${STABLE_VERSION}" latest --force
+              npm dist-tag add "$PACKAGE@${STABLE_VERSION}" latest --force || echo "Failed to add tag latest to $PACKAGE@${STABLE_VERSION}"
             fi
           elif [[ "$CURRENT_VERSION" == *"-beta"* ]]; then
             echo "Setting beta tag for $PACKAGE@${CURRENT_VERSION}"
-            npm dist-tag add "$PACKAGE@${CURRENT_VERSION}" beta --force
+            npm dist-tag add "$PACKAGE@${CURRENT_VERSION}" beta --force || echo "Failed to add tag beta to $PACKAGE@${CURRENT_VERSION}"
             # Get the latest stable version
             STABLE_VERSION=$(npm view "$PACKAGE" versions --json | jq -r 'map(select(test("^\\d+\\.\\d+\\.\\d+$"))) | .[-1]')
             if [ ! -z "$STABLE_VERSION" ]; then
               echo "Restoring latest tag to stable version $PACKAGE@${STABLE_VERSION}"
-              npm dist-tag add "$PACKAGE@${STABLE_VERSION}" latest --force
+              npm dist-tag add "$PACKAGE@${STABLE_VERSION}" latest --force || echo "Failed to add tag latest to $PACKAGE@${STABLE_VERSION}"
             fi
           elif [[ "$CURRENT_VERSION" == *"-next"* ]] || [ "$NPM_TAG" = "next" ]; then
             echo "Setting next tag for $PACKAGE@${CURRENT_VERSION}"
-            npm dist-tag add "$PACKAGE@${CURRENT_VERSION}" next --force
+            npm dist-tag add "$PACKAGE@${CURRENT_VERSION}" next --force || echo "Failed to add tag next to $PACKAGE@${CURRENT_VERSION}"
             # Get the latest stable version
             STABLE_VERSION=$(npm view "$PACKAGE" versions --json | jq -r 'map(select(test("^\\d+\\.\\d+\\.\\d+$"))) | .[-1]')
             if [ ! -z "$STABLE_VERSION" ] && [ "$STABLE_VERSION" != "$CURRENT_VERSION" ]; then
               echo "Restoring latest tag to stable version $PACKAGE@${STABLE_VERSION}"
-              npm dist-tag add "$PACKAGE@${STABLE_VERSION}" latest --force
+              npm dist-tag add "$PACKAGE@${STABLE_VERSION}" latest --force || echo "Failed to add tag latest to $PACKAGE@${STABLE_VERSION}"
             fi
           else
             echo "Setting latest tag for $PACKAGE@${CURRENT_VERSION}"
-            npm dist-tag add "$PACKAGE@${CURRENT_VERSION}" latest --force
+            npm dist-tag add "$PACKAGE@${CURRENT_VERSION}" latest --force || echo "Failed to add tag latest to $PACKAGE@${CURRENT_VERSION}"
           fi
         done
       env:
         NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
     - name: Verify npm dist tags
+      if: success()
       run: |
         PACKAGES=(
           "@vc-shell/framework"

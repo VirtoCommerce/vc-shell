@@ -20,7 +20,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ComputedRef, computed, inject, onBeforeMount, onBeforeUnmount, watch, useSlots } from "vue";
+import { ComputedRef, computed, inject, onBeforeMount, onBeforeUnmount, watch, useSlots, reactive } from "vue";
 import { useLocalStorage } from "@vueuse/core";
 import { usePermissions, useToolbar } from "../../../../../../core/composables";
 import { IBladeToolbar } from "../../../../../../core/types";
@@ -41,7 +41,8 @@ const props = withDefaults(defineProps<Props>(), {
 const slots = useSlots();
 const isExpanded = useLocalStorage("VC_BLADE_TOOLBAR_IS_EXPANDED", true);
 const { hasAccess } = usePermissions();
-const { registerToolbarItem, unregisterToolbarItem, getToolbarItems, clearBladeToolbarItems } = useToolbar();
+const { registerToolbarItem, unregisterToolbarItem, getToolbarItems, clearBladeToolbarItems, updateToolbarItem } =
+  useToolbar();
 
 // Get the ID of the current blade
 const blade = inject<ComputedRef<IBladeInstance>>(
@@ -58,43 +59,80 @@ const blade = inject<ComputedRef<IBladeInstance>>(
 
 const bladeId = computed(() => blade.value?.id ?? FALLBACK_BLADE_ID);
 
+const isMobile = inject<ComputedRef<boolean>>(
+  "isMobile",
+  computed(() => false),
+);
+
 // Prefix for prop items to avoid ID conflicts
 const PROP_ITEM_ID_PREFIX = "prop_toolbar_item_";
 
-// Generate IDs for items without them
-function ensureItemHasId(item: IBladeToolbar, index: number): IToolbarItem {
-  const itemCopy = { ...item } as IToolbarItem;
-  if (!("id" in itemCopy) || !itemCopy.id) {
-    itemCopy.id = `${PROP_ITEM_ID_PREFIX}${bladeId.value}_${index}`;
-  }
-  return itemCopy;
+// Create map to track registered item IDs
+const registeredItemIds = reactive(new Map<number, string>());
+
+// Convert IBladeToolbar to IToolbarItem
+function convertToToolbarItem(item: IBladeToolbar, index: number): IToolbarItem {
+  const id = item.id || `${PROP_ITEM_ID_PREFIX}${bladeId.value}_${index}`;
+
+  return {
+    ...item,
+    id,
+    bladeId: bladeId.value,
+    priority: index * -1,
+  } as unknown as IToolbarItem;
 }
 
-// Register prop items in the service
-function registerPropItems() {
-  // Unregister previous items first to avoid duplicates
-  unregisterPropItems();
-
-  // Register new items
+// Update all items from props
+function updateItems(): void {
+  // Register new items or update existing ones
   props.items.forEach((item, index) => {
-    const toolbarItem = ensureItemHasId(item, index);
-    registerToolbarItem(toolbarItem);
+    const id = registeredItemIds.get(index);
+
+    if (id) {
+      // Item already registered, update it
+      const toolbarItem = convertToToolbarItem(item, index);
+      updateToolbarItem(id, toolbarItem);
+    } else {
+      // New item, register it
+      const toolbarItem = convertToToolbarItem(item, index);
+      registerToolbarItem(toolbarItem);
+      registeredItemIds.set(index, toolbarItem.id);
+    }
+  });
+
+  // Remove items that no longer exist in props.items
+  const indices = [...registeredItemIds.keys()];
+  indices.forEach((index) => {
+    if (index >= props.items.length) {
+      const id = registeredItemIds.get(index);
+      if (id) {
+        unregisterToolbarItem(id);
+        registeredItemIds.delete(index);
+      }
+    }
   });
 }
 
-// Unregister prop items from the service
-function unregisterPropItems() {
-  const itemsToRemove = getToolbarItems().filter((item) => item.id.startsWith(PROP_ITEM_ID_PREFIX + bladeId.value));
+// Unregister all toolbar items
+function clearToolbarItems(): void {
+  // Clear all previously registered items
+  for (const id of registeredItemIds.values()) {
+    unregisterToolbarItem(id);
+  }
 
-  itemsToRemove.forEach((item) => {
-    unregisterToolbarItem(item.id);
-  });
+  // Clear the map
+  registeredItemIds.clear();
 }
 
 // Filter visible items from service
 const visibleItems = computed(() => {
   return getToolbarItems()
-    .filter((item) => hasAccess(item.permissions) && (item.isVisible === undefined || item.isVisible) && !item.disabled)
+    .filter(
+      (item) =>
+        hasAccess(item.permissions) &&
+        (item.isVisible === undefined || item.isVisible) &&
+        (isMobile.value ? !item.disabled : true),
+    )
     .sort((a, b) => {
       const priorityA = a.priority ?? 0;
       const priorityB = b.priority ?? 0;
@@ -106,19 +144,14 @@ const visibleItems = computed(() => {
 watch(
   () => props.items,
   () => {
-    registerPropItems();
+    updateItems();
   },
-  { deep: true },
+  { deep: true, immediate: true },
 );
-
-// Initial registration
-onBeforeMount(() => {
-  registerPropItems();
-});
 
 // Cleanup on unmount
 onBeforeUnmount(() => {
-  unregisterPropItems();
+  clearToolbarItems();
 });
 </script>
 

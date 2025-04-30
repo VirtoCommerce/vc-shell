@@ -13,6 +13,8 @@
   >
     <VcBadge
       :content="truncateCount"
+      custom-position
+      top="-6px"
       size="s"
     >
       <div class="vc-widget__icon-container">

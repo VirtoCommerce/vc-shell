@@ -1,3 +1,17 @@
+## [1.1.4](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.3...v1.1.4) (2025-04-30)
+
+
+### Bug Fixes
+
+* vc-blade-toolbar visibility issues ([2e215ed](https://github.com/VirtoCommerce/vc-shell/commit/2e215ed2324efb801116d9c3e15c549adf8e3e9b))
+
+
+### Features
+
+* add custom position to VcBadge in vc-widget component ([0d42845](https://github.com/VirtoCommerce/vc-shell/commit/0d4284515b8c3c777380b7a3b7cac2b54f63731e))
+
+
+
 ## [1.1.3](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.2...v1.1.3) (2025-04-29)
 
 

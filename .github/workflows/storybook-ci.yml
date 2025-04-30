@@ -183,7 +183,6 @@ jobs:
 
       - name: Update environment
         run: |
-          dotnet tool install --global VirtoCommerce.GlobalTool
           vc-build CloudEnvSetParameter -CloudUrl ${{ env.CLOUD_URL }} -CloudToken ${{ env.CLOUD_TOKEN }} -EnvironmentName ${{ env.ARGO_APP_NAME }} -HelmParameters custom.app1.image.tag=${{ env.STORYBOOK_TAG }}
 
       # - name: Check deployment start

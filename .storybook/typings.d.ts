@@ -11,8 +11,18 @@ interface AssetsManagerAPI {
   // add empty interface, which can be extended when needed
 }
 
+// Объявляем jQuery тип и глобальные переменные
+declare module 'jquery' {
+  export = jQuery;
+}
+
+declare const jQuery: any;
+declare const $: typeof jQuery;
+
 interface Window {
   notification: NotificationAPI;
   AssetsManager: AssetsManagerAPI;
   global: Window;
+  jQuery: any;
+  $: any;
 }

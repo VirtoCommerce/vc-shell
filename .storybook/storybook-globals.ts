@@ -5,6 +5,13 @@
  * add it here and declare in preview-head.html
  */
 
+// Import jQuery, to initialize it when the script is loaded
+import jQuery from 'jquery';
+
+// Make jQuery global
+(window as any).jQuery = jQuery;
+(window as any).$ = jQuery;
+
 // Mock for notifications
 export const mockNotification = {
   success: () => {},

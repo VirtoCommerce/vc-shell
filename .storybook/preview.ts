@@ -9,6 +9,12 @@ import * as locales from "./assets/locales";
 import "./../framework/assets/styles/index.scss";
 import { ref, watch, reactive } from "vue";
 import { withGlobalMocks } from "./decorators";
+// Import jQuery
+import jQuery from 'jquery';
+
+// Make jQuery global
+window.$ = jQuery;
+window.jQuery = jQuery;
 
 setup((app) => {
     app.use(framework, {

@@ -4008,6 +4008,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/jquery@npm:^3.5.32":
+  version: 3.5.32
+  resolution: "@types/jquery@npm:3.5.32"
+  dependencies:
+    "@types/sizzle": "npm:*"
+  checksum: 10/2c67cac338828870ead5c5e608f5fa5ab8101598ed4572cf49b58c342adffe8918d2e2fc94d7954e6b98a889cef8c3f4e6f44b8fecb75e80854b0f9cf9dd18a1
+  languageName: node
+  linkType: hard
+
 "@types/json-schema@npm:^7.0.12, @types/json-schema@npm:^7.0.9":
   version: 7.0.15
   resolution: "@types/json-schema@npm:7.0.15"
@@ -4146,7 +4155,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/sizzle@npm:^2.3.2":
+"@types/sizzle@npm:*, @types/sizzle@npm:^2.3.2":
   version: 2.3.9
   resolution: "@types/sizzle@npm:2.3.9"
   checksum: 10/413811a79e7e9f1d8f47e6047ae0aea1530449d612304cdda1c30018e3d053b8544861ec2c70bdeca75a0a010192e6bb78efc6fb4caaafdd65c4eee90066686a
@@ -4800,6 +4809,7 @@ __metadata:
     "@storybook/vue3": "npm:^8.6.12"
     "@storybook/vue3-vite": "npm:^8.6.12"
     "@types/adm-zip": "npm:^0.5.5"
+    "@types/jquery": "npm:^3.5.32"
     "@types/lodash": "npm:^4.17.9"
     "@types/lodash-es": "npm:^4.17.12"
     "@types/node": "npm:^20.10.5"
@@ -4827,6 +4837,7 @@ __metadata:
     eslint-plugin-vue: "npm:^9.19.2"
     globby: "npm:^13.2.2"
     husky: "npm:^8.0.0"
+    jquery: "npm:^3.7.1"
     lint-staged: "npm:^15.2.2"
     lodash-es: "npm:^4.17.21"
     path: "npm:^0.12.7"
@@ -10025,6 +10036,13 @@ __metadata:
   version: 1.4.0
   resolution: "jju@npm:1.4.0"
   checksum: 10/1067ff8ce02221faac5a842116ed0ec79a53312a111d0bf8342a80bd02c0a3fdf0b8449694a65947db0a3e8420e8b326dffb489c7dd5866efc380c0d1708a707
+  languageName: node
+  linkType: hard
+
+"jquery@npm:^3.7.1":
+  version: 3.7.1
+  resolution: "jquery@npm:3.7.1"
+  checksum: 10/17be9929f5fa37697d9848284f0d108c543318ef79ec794e130cd0c49f6c050d60c803a69e8cfa16fa19f5ff7cdb814a6905cceab0831186560c65ed113cd579
   languageName: node
   linkType: hard
 

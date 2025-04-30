@@ -5,7 +5,22 @@ import path from "path";
 
 const app = async () => {
   return defineConfig({
-    plugins: [vue()],
+    plugins: [
+      vue(),
+      {
+        // Кастомный плагин для предоставления глобальных переменных
+        name: 'provide-jquery',
+        transformIndexHtml() {
+          return [
+            {
+              tag: 'script',
+              attrs: { src: 'https://code.jquery.com/jquery-3.7.1.min.js' },
+              injectTo: 'head'
+            }
+          ]
+        }
+      }
+    ],
     assetsInclude: ["/sb-preview/runtime.js"],
     resolve: {
       alias: {
@@ -14,11 +29,17 @@ const app = async () => {
         "@": path.resolve(__dirname, "../"),
         "framework": path.resolve(__dirname, "../framework"),
         "~/": path.resolve(__dirname, "../"),
+        // Добавляем алиас для jQuery
+        'jquery': path.resolve(__dirname, '../node_modules/jquery/dist/jquery.js'),
       },
-      dedupe: ['vue', 'vue-router', 'vue-i18n']
+      dedupe: ['vue', 'vue-router', 'vue-i18n', 'jquery']
     },
     optimizeDeps: {
-      include: ['vue', 'vue-router', 'vue-i18n', '@vueuse/core', 'lodash-es']
+      include: ['vue', 'vue-router', 'vue-i18n', '@vueuse/core', 'lodash-es', 'jquery']
+    },
+    define: {
+      // Делаем jQuery доступным глобально как $
+      global: {},
     },
   });
 };

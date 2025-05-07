@@ -1,4 +1,4 @@
-// import "@vc-shell/framework/dist/index.css";
+import "./../framework/dist/index.css";
 import { setup, Preview } from "@storybook/vue3";
 import { useBreakpoints } from "@vueuse/core";
 import framework, { provideWidgetService, useLanguages, useTheme } from "./../framework";

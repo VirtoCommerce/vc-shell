@@ -16,7 +16,7 @@ import VcIconExamples from "./vc-icon-examples.vue";
  * - Custom Vue Components
  */
 const meta = {
-  title: "UI/Atoms/VcIcon",
+  title: "Atoms/VcIcon",
   component: VcIcon,
   parameters: {
     docs: {

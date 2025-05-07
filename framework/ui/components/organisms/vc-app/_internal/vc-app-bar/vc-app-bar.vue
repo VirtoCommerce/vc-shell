@@ -26,9 +26,8 @@
             <VcIcon
               v-show="true"
               class="vc-app-bar__collapse-button-icon"
-              :icon="ChevronLeftIcon"
+              :icon="state.isSidebarExpanded ? ChevronLeftIcon : ChevronRightIcon"
               size="xs"
-              :class="{ 'rotate-180': !state.isSidebarExpanded }"
             />
           </Transition>
         </div>
@@ -112,7 +111,7 @@
 
 <script lang="ts" setup>
 import { VcIcon } from "../../../../";
-import { ChevronLeftIcon } from "../../../../atoms/vc-icon/icons";
+import { ChevronLeftIcon, ChevronRightIcon } from "../../../../atoms/vc-icon/icons";
 import { useAppMenuState } from "../composables/useAppMenuState";
 import { useAppBarWidgets } from "./composables/useAppBarWidgets";
 import AppBarHeader from "./_internal/AppBarHeader.vue";

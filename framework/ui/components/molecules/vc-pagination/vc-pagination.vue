@@ -5,8 +5,8 @@
       <!-- First page button -->
       <div
         class="vc-pagination__item"
-        :class="{ 'vc-pagination__item_disabled': currentPage === 1 }"
-        @click="currentPage !== 1 && setPage(1)"
+        :class="{ 'vc-pagination__item_disabled': localCurrentPage === 1 }"
+        @click="localCurrentPage !== 1 && setPage(1)"
       >
         <VcIcon
           size="xs"
@@ -17,8 +17,8 @@
       <!-- Previous page button -->
       <div
         class="vc-pagination__item"
-        :class="{ 'vc-pagination__item_disabled': currentPage === 1 }"
-        @click="currentPage !== 1 && setPage(currentPage - 1)"
+        :class="{ 'vc-pagination__item_disabled': localCurrentPage === 1 }"
+        @click="localCurrentPage !== 1 && setPage(localCurrentPage - 1)"
       >
         <VcIcon
           size="xs"
@@ -31,8 +31,8 @@
         :key="page"
         class="vc-pagination__item"
         :class="{
-          'vc-pagination__item_current': page === currentPage,
-          'vc-pagination__item_hover': page !== currentPage,
+          'vc-pagination__item_current': page === localCurrentPage,
+          'vc-pagination__item_hover': page !== localCurrentPage,
         }"
         @click="setPage(page)"
       >
@@ -42,8 +42,8 @@
       <!-- Next page button -->
       <div
         class="vc-pagination__item"
-        :class="{ 'vc-pagination__item_disabled': currentPage === pages }"
-        @click="currentPage !== pages && setPage(currentPage + 1)"
+        :class="{ 'vc-pagination__item_disabled': localCurrentPage === pages }"
+        @click="localCurrentPage !== pages && setPage(localCurrentPage + 1)"
       >
         <VcIcon
           size="xs"
@@ -54,8 +54,8 @@
       <!-- Last page button -->
       <div
         class="vc-pagination__item"
-        :class="{ 'vc-pagination__item_disabled': currentPage === pages }"
-        @click="currentPage !== pages && setPage(pages)"
+        :class="{ 'vc-pagination__item_disabled': localCurrentPage === pages }"
+        @click="localCurrentPage !== pages && setPage(pages)"
       >
         <VcIcon
           size="xs"
@@ -67,7 +67,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, toRefs, inject, type Ref } from "vue";
+import { ref, computed, toRefs, inject, type Ref, watch } from "vue";
 import { VcIcon } from "./../../";
 import { ArrowLeftIcon, ArrowRightIcon, DoubleArrowLeftIcon, DoubleArrowRightIcon } from "./../../atoms/vc-icon/icons";
 
@@ -92,20 +92,29 @@ const emit = defineEmits<Emits>();
 
 const isMobile = inject("isMobile") as Ref<boolean>;
 
-const { currentPage, variant } = toRefs(props);
+const { variant } = toRefs(props);
+const localCurrentPage = ref(props.currentPage);
+
+watch(
+  () => props.currentPage,
+  (newValue) => {
+    localCurrentPage.value = newValue;
+  },
+  { immediate: true },
+);
 
 const setPage = (page: number | string) => {
   if (typeof page === "undefined" || (typeof page === "number" && isNaN(page))) return;
   const pageNumber = typeof page === "string" ? parseInt(page) : page;
   if (pageNumber < 1 || pageNumber > props.pages) return;
-  currentPage.value = pageNumber;
+  localCurrentPage.value = pageNumber;
   emit("itemClick", pageNumber);
 };
 
 const pagesToShow = computed(() => {
   const pages = [];
   const totalPages = props.pages;
-  const current = currentPage.value;
+  const current = localCurrentPage.value;
   const maxPages = isMobile.value ? 3 : 5;
 
   if (totalPages <= maxPages) {

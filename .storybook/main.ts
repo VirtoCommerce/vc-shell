@@ -8,7 +8,7 @@ export default {
   framework: {
     name: "@storybook/vue3-vite",
     options: {
-      docgen: "vue-component-meta",
+      // docgen: "vue-component-meta",
       builder: {
         viteConfigPath: ".storybook/vite.config.mts",
       },

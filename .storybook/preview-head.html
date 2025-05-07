@@ -29,20 +29,6 @@
   window.VcBladeNavigation = {}
 </script>
 
-<!-- Add jQuery from CDN -->
-<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
-<script>
-  // Check if jQuery is loaded
-  if (typeof jQuery === 'undefined') {
-    console.error('jQuery is not loaded! Attempting to create a fallback...');
-    window.jQuery = window.$ = function() {
-      console.warn('jQuery called but not available');
-      return { ready: function(fn) { fn(); } };
-    };
-  } else {
-    console.log('jQuery is successfully loaded!');
-  }
-</script>
 
 <style>
   /*

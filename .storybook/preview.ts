@@ -1,20 +1,13 @@
-// import "@vc-shell/framework/dist/index.css";
-import "@fortawesome/fontawesome-free/css/all.min.css";
+import "@vc-shell/framework/dist/index.css";
 import { setup, Preview } from "@storybook/vue3";
 import { useBreakpoints } from "@vueuse/core";
-import framework, { useLanguages, useTheme } from "./../framework";
+import framework, { provideWidgetService, useLanguages, useTheme } from "./../framework";
 import { createRouter, createWebHashHistory } from "vue-router";
 import { vueRouter } from "storybook-vue3-router";
 import * as locales from "./assets/locales";
 import "./../framework/assets/styles/index.scss";
 import { ref, watch, reactive } from "vue";
 import { withGlobalMocks } from "./decorators";
-// Import jQuery
-import jQuery from 'jquery';
-
-// Make jQuery global
-window.$ = jQuery;
-window.jQuery = jQuery;
 
 setup((app) => {
     app.use(framework, {
@@ -59,6 +52,7 @@ const preview: Preview = {
         </div>`,
         setup: () => {
           const { setTheme } = useTheme();
+
 
           watch(
             () => theme,

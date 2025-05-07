@@ -132,10 +132,10 @@ const hasUnread = computed(() => {
     }
 
     &-image {
-      @apply tw-cursor-pointer tw-max-w-[var(--app-bar-logo-width)] tw-max-h-[var(--app-bar-logo-height)] tw-rounded-full tw-overflow-hidden tw-w-full tw-shrink-0;
+      @apply tw-cursor-pointer tw-max-w-[var(--app-bar-logo-width)] tw-max-h-[var(--app-bar-logo-height)] tw-overflow-hidden tw-w-full tw-shrink-0;
 
       &--mobile {
-        @apply tw-mx-1 tw-max-w-[var(--app-bar-logo-mobile-width)] tw-max-h-[var(--app-bar-logo-mobile-height)];
+        @apply tw-mx-1 tw-max-w-[var(--app-bar-logo-mobile-width)] tw-max-h-[var(--app-bar-logo-mobile-height)] tw-rounded-full;
       }
     }
   }

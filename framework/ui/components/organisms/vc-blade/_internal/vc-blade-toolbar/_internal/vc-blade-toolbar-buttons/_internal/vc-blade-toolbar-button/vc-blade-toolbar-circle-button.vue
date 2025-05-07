@@ -16,7 +16,7 @@
 <script lang="ts" setup>
 import { computed } from "vue";
 import VcBladeToolbarBaseButton from "./vc-blade-toolbar-base-button.vue";
-import type { Props as BaseButtonProps } from "./vc-blade-toolbar-base-button.vue";
+import type { Props as BaseButtonProps } from "./props";
 
 export interface Props extends Omit<BaseButtonProps, "size" | "contentDirection" | "iconClassName"> {
   isMain?: boolean;

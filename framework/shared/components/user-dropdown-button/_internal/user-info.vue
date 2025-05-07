@@ -67,7 +67,7 @@ const imageHandler = computed(() => {
   }
 
   &__icon {
-    @apply tw-text-[color:var(--user-dropdown-button-color)] tw-text-[length:var(--user-info-avatar-height)] #{!important};
+    @apply tw-text-[color:var(--user-dropdown-button-color)] tw-text-[length:var(--user-info-avatar-height)] tw-shrink-0 tw-w-[var(--user-info-avatar-width)] tw-h-[var(--user-info-avatar-height)] #{!important};
   }
 
   &__info {
@@ -75,11 +75,11 @@ const imageHandler = computed(() => {
   }
 
   &__name {
-    @apply tw-text-sm tw-text-[color:var(--user-dropdown-account-info-name-color)] tw-max-w-[250px] tw-truncate tw-w-full;
+    @apply tw-text-sm tw-text-[color:var(--user-dropdown-account-info-name-color)] tw-max-w-[250px] tw-truncate tw-w-full tw-text-left;
   }
 
   &__role {
-    @apply tw-text-sm tw-text-[color:var(--user-dropdown-account-info-role-color)];
+    @apply tw-text-sm tw-text-[color:var(--user-dropdown-account-info-role-color)] tw-truncate tw-text-left;
   }
 }
 

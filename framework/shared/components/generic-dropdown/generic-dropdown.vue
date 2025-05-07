@@ -208,7 +208,7 @@ const floatingStyle = computed(() => {
 
   &__items-container {
     @apply tw-overflow-y-auto;
-    max-height: v-bind('typeof props.maxHeight === "number" ? `${props.maxHeight}px` : props.maxHeight');
+    // max-height: v-bind('typeof props.maxHeight === "number" ? `${props.maxHeight}px` : props.maxHeight');
   }
 
   &__item {

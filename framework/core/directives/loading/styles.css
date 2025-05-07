@@ -48,7 +48,7 @@
   display: inline-block;
 }
 
-/* Размеры спиннера */
+/* Spinner sizes */
 .v-loading[data-loading-size="small"]::after {
   --v-loading-spinner-size: var(--v-loading-spinner-size-small);
   border-width: 2px;

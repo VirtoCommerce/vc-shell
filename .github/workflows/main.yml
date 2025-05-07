@@ -119,12 +119,12 @@ jobs:
         if [ "$NPM_TAG" = "latest" ]; then
           yarn publish
         else
-          # Заменяем исходное выражение на переменную NPM_TAG без $npm_config_tag
+          # Changed the original expression to the NPM_TAG variable without $npm_config_tag
           yarn workspaces foreach -v --worktree --from '{@vc-shell/config-generator,@vc-shell/api-client-generator,@vc-shell/framework,@vc-shell/create-vc-app,@vc-shell/release-config,@vc-shell/ts-config}' npm publish --tag $NPM_TAG
         fi
 
     - name: Update npm dist tags
-      if: success() # Изменено с always() на success()
+      if: success()
       run: |
         declare -A PACKAGE_PATHS=(
           ["@vc-shell/framework"]="framework"
@@ -164,7 +164,7 @@ jobs:
             continue
           fi
 
-          # Проверяем, существует ли версия уже в NPM
+          # Check if the version already exists in NPM
           VERSION_EXISTS=$(npm view "$PACKAGE@$CURRENT_VERSION" version 2>/dev/null || echo "")
           if [ -z "$VERSION_EXISTS" ]; then
             echo "Version $CURRENT_VERSION of $PACKAGE not found in npm registry. Skipping dist-tag update."

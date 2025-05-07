@@ -18,7 +18,6 @@
             <VcIcon
               v-if="icon"
               :icon="icon"
-              size="l"
               class="vc-menu-item__icon"
             />
             <VcImage
@@ -98,10 +97,6 @@ const handleTriggerClick = () => {
 
     &:hover {
       @apply tw-bg-[color:var(--menu-item-bg-hover)];
-
-      .vc-menu-item__icon {
-        @apply tw-text-[color:var(--menu-item-icon-color-hover)];
-      }
     }
   }
 
@@ -122,7 +117,7 @@ const handleTriggerClick = () => {
   }
 
   &__icon {
-    @apply tw-w-6 tw-mr-3 tw-text-[color:var(--menu-item-icon-color)];
+    @apply tw-w-6 tw-mr-3 tw-text-[color:var(--menu-item-icon-color)] tw-text-[16px];
   }
 
   &__image {

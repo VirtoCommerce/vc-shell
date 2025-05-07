@@ -1,6 +1,7 @@
 import { ref } from "vue";
 import type { Meta, StoryObj } from "@storybook/vue3";
 import { VcWidget } from "./";
+import { provideWidgetService } from "../../../../core/composables";
 
 /**
  * `VcWidget` is a component that represents a clickable widget with an icon, title, and optional badge.
@@ -10,6 +11,18 @@ const meta = {
   title: "Atoms/VcWidget",
   component: VcWidget,
   tags: ["autodocs"],
+  decorators: [
+    () => ({
+      setup() {
+        provideWidgetService();
+      },
+      template: `
+      <div>
+        <story />
+      </div>
+    `,
+    }),
+  ],
   argTypes: {
     icon: {
       description: "Icon to display in the widget (Font Awesome format or component name)",

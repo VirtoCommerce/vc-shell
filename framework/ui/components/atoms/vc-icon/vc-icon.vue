@@ -2,27 +2,37 @@
   <div
     v-if="useContainer"
     :class="['vc-icon-container', `vc-icon-container_${size}`]"
+    :style="containerStyle"
+    v-bind="$attrs"
   >
-    <DefineTemplate>
-      <component
-        :is="renderComponent"
-        :class="[
-          'vc-icon',
-          `vc-icon_${size}`,
-          variant ? `vc-icon_${variant}` : '',
-          !isCustomIcon && !isMaterialIcon && !isLucideIcon && !isBootstrapIcon && !isFontAwesomeIcon
-            ? (icon as string).toLowerCase()
-            : '',
-        ]"
-        v-bind="componentProps"
-      />
-    </DefineTemplate>
-    <ReuseTemplate v-bind="$attrs" />
+    <component
+      :is="renderComponent"
+      :class="[
+        'vc-icon',
+        `vc-icon_${size}`,
+        variant ? `vc-icon_${variant}` : '',
+        !isCustomIcon && !isMaterialIcon && !isLucideIcon && !isBootstrapIcon && !isFontAwesomeIcon
+          ? (icon as string).toLowerCase()
+          : '',
+      ]"
+      :style="iconStyle"
+      v-bind="componentProps"
+    />
   </div>
 
-  <ReuseTemplate
+  <component
+    :is="renderComponent"
     v-else
-    v-bind="$attrs"
+    :class="[
+      'vc-icon',
+      `vc-icon_${size}`,
+      variant ? `vc-icon_${variant}` : '',
+      !isCustomIcon && !isMaterialIcon && !isLucideIcon && !isBootstrapIcon && !isFontAwesomeIcon
+        ? (icon as string).toLowerCase()
+        : '',
+    ]"
+    :style="iconStyle"
+    v-bind="{ ...componentProps, ...$attrs }"
   />
 </template>
 
@@ -33,28 +43,28 @@ import VcMaterialIcon from "./vc-material-icon.vue";
 import VcBootstrapIcon from "./vc-bootstrap-icon.vue";
 import VcLucideIcon from "./vc-lucide-icon.vue";
 import VcFontawesomeIcon from "./vc-fontawesome-icon.vue";
-import { createReusableTemplate } from "@vueuse/core";
+import VcSvgIcon from "./vc-svg-icon.vue";
 
-export type IconType = "fontawesome" | "material" | "bootstrap" | "lucide" | "custom";
+export type IconType = "fontawesome" | "material" | "bootstrap" | "lucide" | "custom" | "svg";
 export type IconSize = "xs" | "s" | "m" | "l" | "xl" | "xxl" | "xxxl";
 export type IconVariant = "warning" | "danger" | "success";
 
 export interface Props {
   /**
-   * The icon to display. Can be a string identifier or a component instance.
+   * Icon to display. Can be a string identifier or a component instance.
    * For string identifiers, use the following format:
    * - "fa-*" or "fas fa-*" for Font Awesome icons (e.g. "fas fa-home")
    * - "bi-*" for Bootstrap icons (e.g. "bi-house")
    * - "material-*" for Material icons (e.g. "material-home")
    * - "lucide-*" for Lucide icons (e.g. "lucide-home")
-   * All icons must use the appropriate prefix to identify their type.
+   * - "svg:path/to/icon.svg" for SVG icons
+   * All icons must use the corresponding prefix to determine their type.
    */
   icon?: string | Component;
 
   /**
-   * Size of the icon. The component provides predefined sizes from xs to xxxl.
-   * Each size corresponds to a specific pixel size as defined in the CSS variables.
-   * You can also use external CSS to set font-size for more flexibility.
+   * Icon size. The component provides predefined sizes from xs to xxxl.
+   * Each size corresponds to a specific size in pixels, as defined in the CSS variables.
    */
   size?: IconSize;
 
@@ -75,15 +85,40 @@ export interface Props {
    * This is useful when you need a specific size that's not in the predefined sizes.
    */
   customSize?: number;
+
+  /**
+   * Base path to SVG icons (only for SVG icons)
+   */
+  basePath?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
   icon: "fas fa-square-full",
   size: "m",
   useContainer: true,
+  basePath: "/assets/icons",
 });
 
-const [DefineTemplate, ReuseTemplate] = createReusableTemplate();
+// Sizes in px for each size value
+const sizeMap = {
+  xs: 12,
+  s: 14,
+  m: 18,
+  l: 20,
+  xl: 22,
+  xxl: 30,
+  xxxl: 64,
+} as const;
+
+// Scaling factors for different icon types to make them visually equal
+const scalingFactors = {
+  fontawesome: 1, // base reference
+  material: 1.1,
+  bootstrap: 0.95,
+  lucide: 1.2,
+  custom: 1,
+  svg: 1,
+};
 
 // Function to detect icon type if not explicitly specified
 const detectIconType = computed((): IconType => {
@@ -106,6 +141,11 @@ const detectIconType = computed((): IconType => {
 
   if (props.icon.startsWith("material-")) {
     return "material";
+  }
+
+  // SVG icon prefix
+  if (props.icon.startsWith("svg:")) {
+    return "svg";
   }
 
   // For backward compatibility with Lucide icons ending with Icon
@@ -222,7 +262,55 @@ const renderComponent = computed(() => {
     return VcFontawesomeIcon;
   }
 
+  if (isSvgIcon.value) {
+    return VcSvgIcon;
+  }
+
   return isCustomIcon.value ? safeIcon.value : "i";
+});
+
+// Calculate the actual pixel size based on props
+const calculatedSize = computed(() => {
+  if (props.customSize) {
+    return props.customSize;
+  }
+  return sizeMap[props.size];
+});
+
+// Icon styles
+const iconStyle = computed(() => {
+  const styles: Record<string, string> = {};
+
+  // If the size is set through customSize, apply it directly
+  if (props.customSize) {
+    // For text icons (FontAwesome, Bootstrap, Material) use font-size
+    if (isFontAwesomeIcon.value || isBootstrapIcon.value || isMaterialIcon.value) {
+      styles.fontSize = `${props.customSize}px`;
+    }
+
+    // For SVG and component icons, set explicit width and height
+    if (isCustomIcon.value || isLucideIcon.value || isSvgIcon.value) {
+      styles.width = `${props.customSize}px`;
+      styles.height = `${props.customSize}px`;
+    }
+  } else {
+    // For text icons, set font-size: inherit to inherit from the container
+    if (isFontAwesomeIcon.value || isBootstrapIcon.value || isMaterialIcon.value || isLucideIcon.value) {
+      styles.fontSize = "inherit";
+    }
+  }
+
+  return styles;
+});
+
+// Container styles
+const containerStyle = computed(() => {
+  if (props.customSize) {
+    return {
+      fontSize: `${props.customSize}px`,
+    };
+  }
+  return {};
 });
 
 // Prepare props for the rendered component
@@ -242,7 +330,7 @@ const componentProps = computed(() => {
       fill: 0,
       weight: 300,
       grade: 0,
-      customSize: props.customSize,
+      customSize: props.customSize, // Set custom size without scaling
     };
   }
 
@@ -254,7 +342,7 @@ const componentProps = computed(() => {
       icon: iconName,
       size: props.size,
       variant: props.variant,
-      customSize: props.customSize,
+      customSize: props.customSize, // Set custom size without scaling
     };
   }
 
@@ -267,8 +355,8 @@ const componentProps = computed(() => {
       icon: iconName,
       size: props.size,
       variant: props.variant,
-      strokeWidth: 1.25,
-      customSize: props.customSize,
+      strokeWidth: 1.5,
+      customSize: props.customSize, // Set custom size without scaling
     };
   }
 
@@ -278,14 +366,26 @@ const componentProps = computed(() => {
       icon: typeof props.icon === "string" ? props.icon : "",
       size: props.size,
       variant: props.variant,
-      customSize: props.customSize,
+      customSize: props.customSize, // Set custom size without scaling
+    };
+  }
+
+  if (isSvgIcon.value) {
+    return {
+      icon: svgPath.value,
+      size: props.size,
+      variant: props.variant,
+      strokeWidth: 1.5,
+      customSize: props.customSize, // Set custom size without scaling
+      basePath: props.basePath,
     };
   }
 
   if (isCustomIcon.value) {
     return {
-      width: props.customSize || iconSize.value,
-      height: props.customSize || iconSize.value,
+      size: props.size,
+      width: calculatedSize.value,
+      height: calculatedSize.value,
       color: props.variant ? `var(--icon-color-${props.variant})` : "currentColor",
     };
   }
@@ -293,23 +393,24 @@ const componentProps = computed(() => {
   return {};
 });
 
-const sizeMap = {
-  xs: 12,
-  s: 14,
-  m: 18,
-  l: 20,
-  xl: 22,
-  xxl: 30,
-  xxxl: 64,
-} as const;
+// Check if icon is an SVG icon
+const isSvgIcon = computed(() => detectIconType.value === "svg");
 
-// Calculate icon size based on props
-const iconSize = computed(() => props.customSize || sizeMap[props.size]);
+// Get the path to the SVG if it's an SVG icon
+const svgPath = computed(() => {
+  if (!isSvgIcon.value || typeof props.icon !== "string") {
+    return "";
+  }
+
+  // Remove the svg: prefix if present
+  return props.icon.startsWith("svg:") ? props.icon.substring(4) : props.icon;
+});
 </script>
 
 <style lang="scss">
 /* Base sizes */
-:deep(.vc-icon) {
+:root {
+  /* Define icon sizes */
   --icon-size-xs: 12px;
   --icon-size-s: 14px;
   --icon-size-m: 18px;
@@ -318,127 +419,127 @@ const iconSize = computed(() => props.customSize || sizeMap[props.size]);
   --icon-size-xxl: 30px;
   --icon-size-xxxl: 64px;
 
-  /* Container sizes (10% larger than icon) */
-  --icon-container-xs: calc(var(--icon-size-xs) * 1.1);
-  --icon-container-s: calc(var(--icon-size-s) * 1.1);
-  --icon-container-m: calc(var(--icon-size-m) * 1.1);
-  --icon-container-l: calc(var(--icon-size-l) * 1.1);
-  --icon-container-xl: calc(var(--icon-size-xl) * 1.1);
-  --icon-container-xxl: calc(var(--icon-size-xxl) * 1.1);
-  --icon-container-xxxl: calc(var(--icon-size-xxxl) * 1.1);
-
-  /* Optical adjustments for different icon libraries */
-  --material-icons-scale: 1.2; /* Material icons need to be larger */
-  --fontawesome-icons-scale: 0.9; /* FontAwesome icons need to be smaller */
-  --bootstrap-icons-scale: 1; /* Bootstrap icons are our baseline */
-  --lucide-icons-scale: 1; /* Lucide icons match bootstrap */
-
   /* Colors for variants */
   --icon-color-success: var(--success-500);
   --icon-color-danger: var(--danger-500);
   --icon-color-warning: var(--warning-500);
+}
 
+/* Base styles for all icons */
+.vc-icon {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  transition: color 0.2s ease-in-out;
+  flex-shrink: 0;
+  line-height: 1;
 
-  /* Allow font-size to control icon size by default */
-  width: 1em;
-  height: 1em;
-  font-size: inherit;
+  /* Ensure SVG icons respect font-size */
+  svg {
+    width: 1em;
+    height: 1em;
+    display: block;
+  }
 }
 
-/* Size classes - these can be overridden by external CSS */
-:deep(.vc-icon_xs) {
+/* Size classes - these use CSS variables */
+.vc-icon_xs {
   font-size: var(--icon-size-xs);
 }
 
-:deep(.vc-icon_s) {
+.vc-icon_s {
   font-size: var(--icon-size-s);
 }
 
-:deep(.vc-icon_m) {
+.vc-icon_m {
   font-size: var(--icon-size-m);
 }
 
-:deep(.vc-icon_l) {
+.vc-icon_l {
   font-size: var(--icon-size-l);
 }
 
-:deep(.vc-icon_xl) {
+.vc-icon_xl {
   font-size: var(--icon-size-xl);
 }
 
-:deep(.vc-icon_xxl) {
+.vc-icon_xxl {
   font-size: var(--icon-size-xxl);
 }
 
-:deep(.vc-icon_xxxl) {
+.vc-icon_xxxl {
   font-size: var(--icon-size-xxxl);
 }
 
-.vc-icon {
-  &-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  &-container_xs {
-    width: var(--icon-container-xs);
-    height: var(--icon-container-xs);
-  }
-
-  &-container_s {
-    width: var(--icon-container-s);
-    height: var(--icon-container-s);
-  }
-
-  &-container_m {
-    width: var(--icon-container-m);
-    height: var(--icon-container-m);
-  }
-
-  &-container_l {
-    width: var(--icon-container-l);
-    height: var(--icon-container-l);
-  }
-
-  &-container_xl {
-    width: var(--icon-container-xl);
-    height: var(--icon-container-xl);
-  }
-
-  &-container_xxl {
-    width: var(--icon-container-xxl);
-    height: var(--icon-container-xxl);
-  }
-
-  &-container_xxxl {
-    width: var(--icon-container-xxxl);
-    height: var(--icon-container-xxxl);
-  }
-}
-
 /* Variants */
-:deep(.vc-icon_warning) {
+.vc-icon_warning {
   color: var(--icon-color-warning);
 }
 
-:deep(.vc-icon_danger) {
+.vc-icon_danger {
   color: var(--icon-color-danger);
 }
 
-:deep(.vc-icon_success) {
+.vc-icon_success {
   color: var(--icon-color-success);
 }
 
+/* Styles for the container */
+.vc-icon-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  line-height: 1;
+  font-size: inherit; /* Inherit font-size from the parent */
+}
+
+.vc-icon-container_xs {
+  min-width: calc(var(--icon-size-xs) * 1.33);
+  min-height: calc(var(--icon-size-xs) * 1.33);
+  font-size: var(--icon-size-xs); /* Set font-size for the container */
+}
+
+.vc-icon-container_s {
+  min-width: calc(var(--icon-size-s) * 1.33);
+  min-height: calc(var(--icon-size-s) * 1.33);
+  font-size: var(--icon-size-s); /* Set font-size for the container */
+}
+
+.vc-icon-container_m {
+  min-width: calc(var(--icon-size-m) * 1.33);
+  min-height: calc(var(--icon-size-m) * 1.33);
+  font-size: var(--icon-size-m); /* Set font-size for the container */
+}
+
+.vc-icon-container_l {
+  min-width: calc(var(--icon-size-l) * 1.33);
+  min-height: calc(var(--icon-size-l) * 1.33);
+  font-size: var(--icon-size-l); /* Set font-size for the container */
+}
+
+.vc-icon-container_xl {
+  min-width: calc(var(--icon-size-xl) * 1.33);
+  min-height: calc(var(--icon-size-xl) * 1.33);
+  font-size: var(--icon-size-xl); /* Set font-size for the container */
+}
+
+.vc-icon-container_xxl {
+  min-width: calc(var(--icon-size-xxl) * 1.33);
+  min-height: calc(var(--icon-size-xxl) * 1.33);
+  font-size: var(--icon-size-xxl); /* Set font-size for the container */
+}
+
+.vc-icon-container_xxxl {
+  min-width: calc(var(--icon-size-xxxl) * 1.33);
+  min-height: calc(var(--icon-size-xxxl) * 1.33);
+  font-size: var(--icon-size-xxxl); /* Set font-size for the container */
+}
+
 /* Material Icons specific styles */
-:deep(.material-symbols-outlined),
-:deep(.material-symbols-rounded),
-:deep(.material-symbols-sharp) {
-  font-family: "Material Symbols Outlined", "Material Symbols Rounded", "Material Symbols Sharp";
+.material-symbols-outlined,
+.material-symbols-rounded,
+.material-symbols-sharp {
+  font-family: "Material Symbols Outlined";
   font-weight: normal;
   font-style: normal;
   line-height: 1;
@@ -450,12 +551,11 @@ const iconSize = computed(() => props.customSize || sizeMap[props.size]);
   font-feature-settings: "liga";
   -webkit-font-feature-settings: "liga";
   -webkit-font-smoothing: antialiased;
-  transform: scale(var(--material-icons-scale)); /* Optical adjustment */
 }
 
 /* Bootstrap Icons specific styles */
-:deep([class^="bi-"]),
-:deep([class*=" bi-"]) {
+[class^="bi-"],
+[class*=" bi-"] {
   font-family: bootstrap-icons !important;
   font-style: normal;
   font-weight: normal !important;
@@ -464,22 +564,21 @@ const iconSize = computed(() => props.customSize || sizeMap[props.size]);
   line-height: 1;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  transform: scale(var(--bootstrap-icons-scale)); /* Optical adjustment */
 }
 
 /* Font Awesome Icons */
-:deep([class^="fa-"]),
-:deep([class*=" fa-"]),
-:deep([class^="fas"]),
-:deep([class*=" fas"]),
-:deep([class^="far"]),
-:deep([class*=" far"]),
-:deep([class^="fal"]),
-:deep([class*=" fal"]),
-:deep([class^="fab"]),
-:deep([class*=" fab"]),
-:deep([class^="fad"]),
-:deep([class*=" fad"]) {
+[class^="fa-"],
+[class*=" fa-"],
+[class^="fas"],
+[class*=" fas"],
+[class^="far"],
+[class*=" far"],
+[class^="fal"],
+[class*=" fal"],
+[class^="fab"],
+[class*=" fab"],
+[class^="fad"],
+[class*=" fad"] {
   font-family: "Font Awesome 6 Free", "Font Awesome 6 Brands", "Font Awesome 6 Duotone", "Font Awesome 6 Pro";
   font-style: normal;
   font-weight: normal;
@@ -488,40 +587,26 @@ const iconSize = computed(() => props.customSize || sizeMap[props.size]);
   line-height: 1;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  transform: scale(var(--fontawesome-icons-scale)); /* Optical adjustment */
 }
 
 /* Font weight adjustments for Font Awesome */
-:deep(.fas),
-:deep(.fa-solid) {
+.fas,
+.fa-solid {
   font-weight: 900;
 }
 
-:deep(.far),
-:deep(.fa-regular) {
+.far,
+.fa-regular {
   font-weight: 400;
 }
 
-:deep(.fal),
-:deep(.fa-light) {
+.fal,
+.fa-light {
   font-weight: 300;
 }
 
-:deep(.fab),
-:deep(.fa-brands) {
+.fab,
+.fa-brands {
   font-family: "Font Awesome 6 Brands";
-}
-
-/* Lucide Icons specific styles */
-:deep(svg.vc-icon) {
-  transform: scale(var(--lucide-icons-scale)); /* Optical adjustment */
-}
-
-.vc-icon {
-  &-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
 }
 </style>

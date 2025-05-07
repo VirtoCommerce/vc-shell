@@ -1,226 +1,416 @@
 <template>
-  <div class="icon-test">
-    <h2>Icon Size Consistency Test</h2>
-    <p>All icons should appear visually the same size when using the same size value</p>
+  <div class="tw-p-6 tw-max-w-4xl tw-mx-auto">
+    <h1 class="tw-text-2xl tw-font-bold tw-mb-6">Icon Component Test Suite</h1>
 
-
-
-    <div
-      v-for="size in sizes"
-      :key="size"
-      class="size-row"
-    >
-      <div class="size-label">Size: {{ size }}</div>
-      <div class="icon-row">
-        <div class="icon-box">
-          <VcIcon
-            icon="fas fa-home"
-            :size="size"
-            :use-container="useContainer"
-          />
-          <span>Font Awesome</span>
+    <div class="tw-space-y-8">
+      <!-- Test 1: Basic Icon Types -->
+      <section class="tw-border tw-border-gray-200 tw-rounded-lg tw-p-5 tw-shadow-sm">
+        <h2 class="tw-text-xl tw-font-bold tw-mb-3 tw-border-b tw-pb-2">Test 1: Basic Icon Types</h2>
+        <div class="tw-grid tw-grid-cols-4 tw-gap-6 tw-mt-4">
+          <div class="tw-flex tw-flex-col tw-items-center tw-gap-2">
+            <VcIcon
+              icon="material-home"
+              size="l"
+            />
+            <span class="tw-text-sm tw-font-medium">Material</span>
+          </div>
+          <div class="tw-flex tw-flex-col tw-items-center tw-gap-2">
+            <VcIcon
+              icon="bi-house"
+              size="l"
+            />
+            <span class="tw-text-sm tw-font-medium">Bootstrap</span>
+          </div>
+          <div class="tw-flex tw-flex-col tw-items-center tw-gap-2">
+            <VcIcon
+              icon="lucide-home"
+              size="l"
+            />
+            <span class="tw-text-sm tw-font-medium">Lucide</span>
+          </div>
+          <div class="tw-flex tw-flex-col tw-items-center tw-gap-2">
+            <VcIcon
+              icon="fas fa-home"
+              size="l"
+            />
+            <span class="tw-text-sm tw-font-medium">FontAwesome</span>
+          </div>
         </div>
-        <div class="icon-box">
-          <VcIcon
-            icon="material-home"
-            :size="size"
-            :use-container="useContainer"
-          />
-          <span>Material</span>
-        </div>
-        <div class="icon-box">
-          <VcIcon
-            icon="bi-house"
-            :size="size"
-            :use-container="useContainer"
-          />
-          <span>Bootstrap</span>
-        </div>
-        <div class="icon-box">
-          <VcIcon
-            icon="lucide-home"
-            :size="size"
-            :use-container="useContainer"
-          />
-          <span>Lucide</span>
-        </div>
-      </div>
+      </section>
 
-      <div class="size-label">For comparison: square with size {{ sizeValues[size] }}</div>
-      <div
-        class="reference-container"
-        :class="`reference-${size}`"
-      ></div>
-    </div>
+      <!-- Test 2: Icon Sizes -->
+      <section class="tw-border tw-border-gray-200 tw-rounded-lg tw-p-5 tw-shadow-sm">
+        <h2 class="tw-text-xl tw-font-bold tw-mb-3 tw-border-b tw-pb-2">Test 2: Icon Sizes</h2>
+        <p class="tw-text-sm tw-mb-4 tw-text-gray-600">
+          All icons should be visually the same size when using the same size value
+        </p>
 
-    <div class="recommendation">
-      <h3>Recommendations</h3>
-      <p>
-        To ensure uniform icon sizes, the following approaches are used:
-        <ol>
-          <li>Unified size system for all icon types</li>
-          <li>Optical adjustments to compensate for each library's design characteristics</li>
-          <li>Containers slightly larger than the icon size for better visual appearance</li>
-        </ol>
-      </p>
-      <p>
-        Current optical adjustment settings:
-        <pre>
-:deep(.vc-icon) {
-  /* Optical adjustments for different icon libraries */
-  --material-icons-scale: {{ opticalCorrections.material }}; /* Material icons need to be larger */
-  --fontawesome-icons-scale: {{ opticalCorrections.fontawesome }}; /* FontAwesome icons need to be smaller */
-  --bootstrap-icons-scale: {{ opticalCorrections.bootstrap }}; /* Bootstrap icons are our baseline */
-  --lucide-icons-scale: {{ opticalCorrections.lucide }}; /* Lucide icons match bootstrap */
-}
-        </pre>
-      </p>
+        <div class="tw-space-y-6">
+          <div class="tw-bg-gray-50 tw-p-4 tw-rounded-lg">
+            <h3 class="tw-font-semibold tw-mb-3">Size: XS</h3>
+            <div class="tw-flex tw-flex-row tw-gap-8 tw-items-center tw-justify-center">
+              <div class="tw-flex tw-flex-col tw-items-center tw-gap-2">
+                <VcIcon
+                  icon="material-home"
+                  size="xs"
+                />
+                <span class="tw-text-xs">Material</span>
+              </div>
+              <div class="tw-flex tw-flex-col tw-items-center tw-gap-2">
+                <VcIcon
+                  icon="bi-house"
+                  size="xs"
+                />
+                <span class="tw-text-xs">Bootstrap</span>
+              </div>
+              <div class="tw-flex tw-flex-col tw-items-center tw-gap-2">
+                <VcIcon
+                  icon="lucide-home"
+                  size="xs"
+                />
+                <span class="tw-text-xs">Lucide</span>
+              </div>
+              <div class="tw-flex tw-flex-col tw-items-center tw-gap-2">
+                <VcIcon
+                  icon="fas fa-home"
+                  size="xs"
+                />
+                <span class="tw-text-xs">FontAwesome</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="tw-bg-gray-50 tw-p-4 tw-rounded-lg">
+            <h3 class="tw-font-semibold tw-mb-3">Size: M (default)</h3>
+            <div class="tw-flex tw-flex-row tw-gap-8 tw-items-center tw-justify-center">
+              <div class="tw-flex tw-flex-col tw-items-center tw-gap-2">
+                <VcIcon icon="material-home" />
+                <span class="tw-text-xs">Material</span>
+              </div>
+              <div class="tw-flex tw-flex-col tw-items-center tw-gap-2">
+                <VcIcon icon="bi-house" />
+                <span class="tw-text-xs">Bootstrap</span>
+              </div>
+              <div class="tw-flex tw-flex-col tw-items-center tw-gap-2">
+                <VcIcon icon="lucide-home" />
+                <span class="tw-text-xs">Lucide</span>
+              </div>
+              <div class="tw-flex tw-flex-col tw-items-center tw-gap-2">
+                <VcIcon icon="fas fa-home" />
+                <span class="tw-text-xs">FontAwesome</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="tw-bg-gray-50 tw-p-4 tw-rounded-lg">
+            <h3 class="tw-font-semibold tw-mb-3">Size: XL</h3>
+            <div class="tw-flex tw-flex-row tw-gap-8 tw-items-center tw-justify-center">
+              <div class="tw-flex tw-flex-col tw-items-center tw-gap-2">
+                <VcIcon
+                  icon="material-home"
+                  size="xl"
+                />
+                <span class="tw-text-xs">Material</span>
+              </div>
+              <div class="tw-flex tw-flex-col tw-items-center tw-gap-2">
+                <VcIcon
+                  icon="bi-house"
+                  size="xl"
+                />
+                <span class="tw-text-xs">Bootstrap</span>
+              </div>
+              <div class="tw-flex tw-flex-col tw-items-center tw-gap-2">
+                <VcIcon
+                  icon="lucide-home"
+                  size="xl"
+                />
+                <span class="tw-text-xs">Lucide</span>
+              </div>
+              <div class="tw-flex tw-flex-col tw-items-center tw-gap-2">
+                <VcIcon
+                  icon="fas fa-home"
+                  size="xl"
+                />
+                <span class="tw-text-xs">FontAwesome</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Test 3: Color Variants -->
+      <section class="tw-border tw-border-gray-200 tw-rounded-lg tw-p-5 tw-shadow-sm">
+        <h2 class="tw-text-xl tw-font-bold tw-mb-3 tw-border-b tw-pb-2">Test 3: Color Variants</h2>
+        <div class="tw-space-y-4 tw-mt-4">
+          <div class="tw-flex tw-flex-row tw-gap-4 tw-items-center">
+            <div class="tw-w-24 tw-font-medium tw-text-right">Default:</div>
+            <div class="tw-flex tw-gap-6">
+              <VcIcon
+                icon="material-info"
+                size="l"
+              />
+              <VcIcon
+                icon="bi-info-circle"
+                size="l"
+              />
+              <VcIcon
+                icon="lucide-info"
+                size="l"
+              />
+              <VcIcon
+                icon="fas fa-info-circle"
+                size="l"
+              />
+            </div>
+          </div>
+
+          <div class="tw-flex tw-flex-row tw-gap-4 tw-items-center">
+            <div class="tw-w-24 tw-font-medium tw-text-right">Warning:</div>
+            <div class="tw-flex tw-gap-6">
+              <VcIcon
+                icon="material-warning"
+                variant="warning"
+                size="l"
+              />
+              <VcIcon
+                icon="bi-exclamation-triangle"
+                variant="warning"
+                size="l"
+              />
+              <VcIcon
+                icon="lucide-alert-triangle"
+                variant="warning"
+                size="l"
+              />
+              <VcIcon
+                icon="fas fa-exclamation-triangle"
+                variant="warning"
+                size="l"
+              />
+            </div>
+          </div>
+
+          <div class="tw-flex tw-flex-row tw-gap-4 tw-items-center">
+            <div class="tw-w-24 tw-font-medium tw-text-right">Danger:</div>
+            <div class="tw-flex tw-gap-6">
+              <VcIcon
+                icon="material-error"
+                variant="danger"
+                size="l"
+              />
+              <VcIcon
+                icon="bi-exclamation-circle"
+                variant="danger"
+                size="l"
+              />
+              <VcIcon
+                icon="lucide-alert-circle"
+                variant="danger"
+                size="l"
+              />
+              <VcIcon
+                icon="fas fa-exclamation-circle"
+                variant="danger"
+                size="l"
+              />
+            </div>
+          </div>
+
+          <div class="tw-flex tw-flex-row tw-gap-4 tw-items-center">
+            <div class="tw-w-24 tw-font-medium tw-text-right">Success:</div>
+            <div class="tw-flex tw-gap-6">
+              <VcIcon
+                icon="material-check_circle"
+                variant="success"
+                size="l"
+              />
+              <VcIcon
+                icon="bi-check-circle"
+                variant="success"
+                size="l"
+              />
+              <VcIcon
+                icon="lucide-check-circle"
+                variant="success"
+                size="l"
+              />
+              <VcIcon
+                icon="fas fa-check-circle"
+                variant="success"
+                size="l"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Test 4: Custom Size -->
+      <section class="tw-border tw-border-gray-200 tw-rounded-lg tw-p-5 tw-shadow-sm">
+        <h2 class="tw-text-xl tw-font-bold tw-mb-3 tw-border-b tw-pb-2">Test 5: Custom Size</h2>
+        <div class="tw-flex tw-flex-row tw-gap-8 tw-items-end tw-justify-center tw-mt-4">
+          <div class="tw-flex tw-flex-col tw-items-center tw-gap-2">
+            <VcIcon
+              icon="material-star"
+              :custom-size="32"
+            />
+            <span class="tw-text-xs">Material (32px)</span>
+          </div>
+          <div class="tw-flex tw-flex-col tw-items-center tw-gap-2">
+            <VcIcon
+              icon="bi-star"
+              :custom-size="32"
+            />
+            <span class="tw-text-xs">Bootstrap (32px)</span>
+          </div>
+          <div class="tw-flex tw-flex-col tw-items-center tw-gap-2">
+            <VcIcon
+              icon="lucide-star"
+              :custom-size="32"
+            />
+            <span class="tw-text-xs">Lucide (32px)</span>
+          </div>
+          <div class="tw-flex tw-flex-col tw-items-center tw-gap-2">
+            <VcIcon
+              icon="fas fa-star"
+              :custom-size="32"
+            />
+            <span class="tw-text-xs">FontAwesome (32px)</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Test 5: With/Without Container -->
+      <section class="tw-border tw-border-gray-200 tw-rounded-lg tw-p-5 tw-shadow-sm">
+        <h2 class="tw-text-xl tw-font-bold tw-mb-3 tw-border-b tw-pb-2">Test 5: With/Without Container</h2>
+        <div class="tw-space-y-6 tw-mt-4">
+          <div class="tw-bg-gray-50 tw-p-4 tw-rounded-lg">
+            <h3 class="tw-font-semibold tw-mb-3">With Container (default)</h3>
+            <div class="tw-flex tw-flex-row tw-gap-8 tw-items-center tw-justify-center tw-bg-blue-50 tw-p-4 tw-rounded">
+              <VcIcon
+                icon="material-home"
+                size="l"
+              />
+              <VcIcon
+                icon="bi-house"
+                size="l"
+              />
+              <VcIcon
+                icon="lucide-home"
+                size="l"
+              />
+              <VcIcon
+                icon="fas fa-home"
+                size="l"
+              />
+            </div>
+          </div>
+
+          <div class="tw-bg-gray-50 tw-p-4 tw-rounded-lg">
+            <h3 class="tw-font-semibold tw-mb-3">Without Container</h3>
+            <div class="tw-flex tw-flex-row tw-gap-8 tw-items-center tw-justify-center tw-bg-blue-50 tw-p-4 tw-rounded">
+              <VcIcon
+                icon="material-home"
+                :use-container="false"
+                size="l"
+              />
+              <VcIcon
+                icon="bi-house"
+                :use-container="false"
+                size="l"
+              />
+              <VcIcon
+                icon="lucide-home"
+                :use-container="false"
+                size="l"
+              />
+              <VcIcon
+                icon="fas fa-home"
+                :use-container="false"
+                size="l"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Test 6: Icon Size Comparison -->
+      <section class="tw-border tw-border-gray-200 tw-rounded-lg tw-p-5 tw-shadow-sm">
+        <h2 class="tw-text-xl tw-font-bold tw-mb-3 tw-border-b tw-pb-2">Test 6: Icon Size Comparison</h2>
+        <div class="tw-space-y-6 tw-mt-4">
+          <div class="tw-bg-gray-50 tw-p-4 tw-rounded-lg">
+            <h3 class="tw-font-semibold tw-mb-3">Size "M" Comparison</h3>
+            <div class="tw-flex tw-flex-row tw-gap-8 tw-items-center tw-justify-center">
+              <div class="tw-flex tw-flex-col tw-items-center tw-gap-2">
+                <VcIcon
+                  icon="material-home"
+                  size="m"
+                />
+                <span class="tw-text-xs">Material</span>
+              </div>
+              <div class="tw-flex tw-flex-col tw-items-center tw-gap-2">
+                <VcIcon
+                  icon="bi-house"
+                  size="m"
+                />
+                <span class="tw-text-xs">Bootstrap</span>
+              </div>
+              <div class="tw-flex tw-flex-col tw-items-center tw-gap-2">
+                <VcIcon
+                  icon="lucide-home"
+                  size="m"
+                />
+                <span class="tw-text-xs">Lucide</span>
+              </div>
+              <div class="tw-flex tw-flex-col tw-items-center tw-gap-2">
+                <VcIcon
+                  icon="fas fa-home"
+                  size="m"
+                />
+                <span class="tw-text-xs">FontAwesome</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="tw-bg-gray-50 tw-p-4 tw-rounded-lg">
+            <h3 class="tw-font-semibold tw-mb-3">Heart Icons Comparison</h3>
+            <div class="tw-flex tw-flex-row tw-gap-8 tw-items-center tw-justify-center">
+              <div class="tw-flex tw-flex-col tw-items-center tw-gap-2">
+                <VcIcon
+                  icon="material-favorite"
+                  size="xl"
+                />
+                <span class="tw-text-xs">Material</span>
+              </div>
+              <div class="tw-flex tw-flex-col tw-items-center tw-gap-2">
+                <VcIcon
+                  icon="bi-heart"
+                  size="xl"
+                />
+                <span class="tw-text-xs">Bootstrap</span>
+              </div>
+              <div class="tw-flex tw-flex-col tw-items-center tw-gap-2">
+                <VcIcon
+                  icon="lucide-heart"
+                  size="xl"
+                />
+                <span class="tw-text-xs">Lucide</span>
+              </div>
+              <div class="tw-flex tw-flex-col tw-items-center tw-gap-2">
+                <VcIcon
+                  icon="fas fa-heart"
+                  size="xl"
+                />
+                <span class="tw-text-xs">FontAwesome</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   </div>
 </template>
 
-<script lang="ts" setup>
-import { ref, onMounted } from "vue";
-import VcIcon from "./vc-icon.vue";
+<script setup lang="ts">
+import { VcIcon } from "./index";
 import type { IconSize } from "./vc-icon.vue";
-
-const sizes: IconSize[] = ["xs", "s", "m", "l", "xl", "xxl", "xxxl"];
-const useContainer = ref(true);
-
-// Size values for display
-const sizeValues = {
-  xs: "12px",
-  s: "14px",
-  m: "18px",
-  l: "20px",
-  xl: "22px",
-  xxl: "30px",
-  xxxl: "64px"
-};
-
-// Optical adjustments for different icon types
-const opticalCorrections = ref({
-  material: 1.2,
-  bootstrap: 1.0,
-  lucide: 1.0,
-  fontawesome: 0.9
-});
-
-// Get current values from CSS on load
-onMounted(() => {
-  const style = getComputedStyle(document.documentElement);
-
-  const materialCorrection = style.getPropertyValue('--material-icons-scale').trim();
-  const bootstrapCorrection = style.getPropertyValue('--bootstrap-icons-scale').trim();
-  const lucideCorrection = style.getPropertyValue('--lucide-icons-scale').trim();
-  const fontawesomeCorrection = style.getPropertyValue('--fontawesome-icons-scale').trim();
-
-  if (materialCorrection) opticalCorrections.value.material = parseFloat(materialCorrection);
-  if (bootstrapCorrection) opticalCorrections.value.bootstrap = parseFloat(bootstrapCorrection);
-  if (lucideCorrection) opticalCorrections.value.lucide = parseFloat(lucideCorrection);
-  if (fontawesomeCorrection) opticalCorrections.value.fontawesome = parseFloat(fontawesomeCorrection);
-});
 </script>
-
-<style lang="scss" scoped>
-.icon-test {
-  padding: 20px;
-  font-family: sans-serif;
-
-  h2, h3 {
-    margin-bottom: 16px;
-  }
-
-
-
-  .size-row {
-    margin-bottom: 40px;
-    border: 1px solid #eee;
-    padding: 20px;
-    border-radius: 8px;
-  }
-
-  .size-label {
-    font-size: 16px;
-    font-weight: bold;
-    margin-bottom: 16px;
-    margin-top: 20px;
-  }
-
-  .icon-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-around;
-    margin-bottom: 30px;
-
-    .icon-box {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-
-      span {
-        margin-top: 10px;
-        font-size: 12px;
-      }
-    }
-  }
-
-  .reference-container {
-    border: 1px dashed #ccc;
-    background-color: rgba(200, 200, 200, 0.2);
-
-    &.reference-xs { width: 12px; height: 12px; }
-    &.reference-s { width: 14px; height: 14px; }
-    &.reference-m { width: 18px; height: 18px; }
-    &.reference-l { width: 20px; height: 20px; }
-    &.reference-xl { width: 22px; height: 22px; }
-    &.reference-xxl { width: 30px; height: 30px; }
-    &.reference-xxxl { width: 64px; height: 64px; }
-  }
-
-  .recommendation {
-    margin-top: 30px;
-    padding: 20px;
-    background-color: #f8f9fa;
-    border-radius: 8px;
-
-    h3 {
-      margin-top: 0;
-      margin-bottom: 16px;
-    }
-
-    p {
-      margin-bottom: 16px;
-
-      &:last-child {
-        margin-bottom: 0;
-      }
-    }
-
-    ol {
-      padding-left: 20px;
-      margin: 10px 0;
-
-      li {
-        margin-bottom: 10px;
-      }
-    }
-
-    code {
-      background-color: #eee;
-      padding: 2px 4px;
-      border-radius: 4px;
-      font-family: monospace;
-    }
-
-    pre {
-      background-color: #f1f1f1;
-      padding: 10px;
-      border-radius: 4px;
-      overflow: auto;
-      font-family: monospace;
-      font-size: 13px;
-    }
-  }
-}
-</style>

@@ -1,117 +1,80 @@
 # VcIcon Component
 
-The `VcIcon` component is a versatile icon component that supports multiple icon libraries:
+The `VcIcon` component is a versatile and flexible icon component that provides unified access to multiple icon libraries:
 
-- Font Awesome
 - Material Symbols
 - Bootstrap Icons
 - Lucide Icons
-- Custom SVG Components
+- Font Awesome (legacy support)
+- Custom SVG Icons
 
-## Installation
+## Features
 
-Before using specific icon types, make sure to install the corresponding libraries:
-
-### Font Awesome
-
-```bash
-npm install @fortawesome/fontawesome-free
-```
-
-Add to your main.js/ts:
-```js
-import '@fortawesome/fontawesome-free/css/all.css';
-```
-
-### Material Icons
-
-```bash
-npm install material-symbols
-```
-
-Add to your main.js/ts:
-```js
-import 'material-symbols';
-```
-
-### Bootstrap Icons
-
-```bash
-npm install bootstrap-icons
-```
-
-Add to your main.js/ts:
-```js
-import 'bootstrap-icons/font/bootstrap-icons.css';
-```
-
-### Lucide Icons
-
-```bash
-npm install lucide-vue-next
-```
-
-Register the icons you need:
-```js
-// For local component usage
-import { HomeIcon, UserIcon } from 'lucide-vue-next';
-
-// For global registration
-import { createApp } from 'vue';
-import { LucideVue } from 'lucide-vue-next';
-import App from './App.vue';
-
-const app = createApp(App);
-app.use(LucideVue, { 
-  componentPrefix: '' // optional - default is 'Lucide'
-});
-```
+- **Unified API** for all icon types
+- **Consistent sizing** across different icon libraries
+- **Automatic icon detection** based on prefix
+- **Color variants** for status indicators
+- **Customizable sizing** via props or CSS
+- **Container support** for consistent spacing
+- **SVG icon support** with customizable parameters
 
 ## Basic Usage
 
-### New Unified Syntax (Recommended)
-
-Use a consistent naming approach with library prefix for all icon types:
-
 ```vue
 <template>
-  <!-- Font Awesome Icon (unchanged, already has prefix) -->
-  <VcIcon icon="fas fa-home" />
-  
-  <!-- Material Icon with prefix -->
+  <!-- Material Icon -->
   <VcIcon icon="material-home" />
-  
-  <!-- Bootstrap Icon (unchanged, already has prefix) -->
-  <VcIcon icon="bi-house" />
-  
-  <!-- Lucide Icon with prefix -->
-  <VcIcon icon="lucide-home" />
-  
-  <!-- Direct component usage (for tree-shaking) -->
-  <VcIcon :icon="HomeIcon" />
-</template>
-
-<script setup lang="ts">
-import { HomeIcon } from 'lucide-vue-next';
-import VcIcon from 'path/to/vc-icon.vue';
-</script>
-```
-
-### Legacy Syntax (Still Supported)
-
-```vue
-<template>
-  <!-- Font Awesome Icon -->
-  <VcIcon icon="fas fa-home" />
-  
-  <!-- Material Icon (no prefix needed) -->
-  <VcIcon icon="home" />
   
   <!-- Bootstrap Icon -->
   <VcIcon icon="bi-house" />
   
-  <!-- Lucide Icon with explicit type parameter -->
-  <VcIcon icon="HomeIcon" type="lucide" />
+  <!-- Lucide Icon -->
+  <VcIcon icon="lucide-home" />
+  
+  <!-- Font Awesome Icon -->
+  <VcIcon icon="fas fa-home" />
+  
+  <!-- Custom SVG Component -->
+  <VcIcon :icon="HomeIcon" />
+  
+  <!-- External SVG Icon -->
+  <VcIcon icon="svg:/assets/icons/home.svg" />
+</template>
+
+<script setup lang="ts">
+import { HomeIcon } from 'lucide-vue-next';
+import { VcIcon } from '@framework/ui/components/atoms/vc-icon';
+</script>
+```
+
+## Icon Sizing
+
+The component provides predefined sizes that are consistent across all icon types:
+
+```vue
+<template>
+  <VcIcon icon="material-home" size="xs" /> <!-- 12px -->
+  <VcIcon icon="material-home" size="s" />  <!-- 14px -->
+  <VcIcon icon="material-home" size="m" />  <!-- 18px (default) -->
+  <VcIcon icon="material-home" size="l" />  <!-- 20px -->
+  <VcIcon icon="material-home" size="xl" /> <!-- 22px -->
+  <VcIcon icon="material-home" size="xxl" /> <!-- 30px -->
+  <VcIcon icon="material-home" size="xxxl" /> <!-- 64px -->
+  
+  <!-- Custom size (in pixels) -->
+  <VcIcon icon="material-home" :customSize="42" />
+</template>
+```
+
+## Color Variants
+
+Use the `variant` prop to apply predefined colors for status indicators:
+
+```vue
+<template>
+  <VcIcon icon="material-check_circle" variant="success" /> <!-- Success (green) -->
+  <VcIcon icon="material-warning" variant="warning" /> <!-- Warning (yellow) -->
+  <VcIcon icon="material-error" variant="danger" /> <!-- Danger (red) -->
 </template>
 ```
 
@@ -120,176 +83,191 @@ import VcIcon from 'path/to/vc-icon.vue';
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
 | `icon` | `string \| Component` | `"fas fa-square-full"` | The icon to display. Can be a string identifier or a component instance |
-| `size` | `"xs" \| "s" \| "m" \| "l" \| "xl" \| "xxl" \| "xxxl"` | `"m"` | Size of the icon |
-| `variant` | `"warning" \| "danger" \| "success"` | `undefined` | Color variant |
-| `type` | `"fontawesome" \| "material" \| "bootstrap" \| "lucide" \| "custom" \| "auto"` | `"auto"` | Icon library type. Use `auto` for automatic detection (legacy) |
-| `materialIconType` | `"outlined" \| "rounded" \| "sharp"` | `"outlined"` | Type of Material icon |
-| `materialIconFill` | `number` | `0` | Fill property for Material icons |
-| `materialIconWeight` | `number` | `400` | Weight property for Material icons |
-| `materialIconGrade` | `number` | `0` | Grade property for Material icons |
-| `strokeWidth` | `number` | `2` | Stroke width for Lucide icons |
+| `size` | `"xs" \| "s" \| "m" \| "l" \| "xl" \| "xxl" \| "xxxl"` | `"m"` | Predefined size of the icon |
+| `variant` | `"warning" \| "danger" \| "success"` | `undefined` | Color variant for status indication |
+| `useContainer` | `boolean` | `true` | Whether to wrap the icon in a container for consistent spacing |
+| `customSize` | `number` | `undefined` | Custom size in pixels (overrides `size` prop) |
+| `basePath` | `string` | `"/assets/icons"` | Base path for SVG icons (only for SVG icons) |
 
-## Auto Detection
+## Size Normalization
+
+The component automatically normalizes icon sizes across different libraries, ensuring they appear visually consistent when using the same size prop.
+
+This normalization is achieved through scaling factors for each icon library:
+
+- **Font Awesome** (base reference): 1.0
+- **Material Icons**: 1.3
+- **Bootstrap Icons**: 0.95
+- **Lucide Icons**: 1
+
+These scaling factors provide a consistent experience regardless of the icon library used.
+
+## Icon Detection
 
 The component automatically detects the icon type based on the icon name:
 
-- **Prefixed approach (recommended):**
-  - `material-name` → Material icon 
-  - `lucide-name` → Lucide icon
-  - `bi-name` → Bootstrap icon
-  - `fa-name` or `fas fa-name` → Font Awesome icon
+- Strings starting with `material-` → Material Symbols
+- Strings starting with `bi-` → Bootstrap Icons
+- Strings starting with `lucide-` → Lucide Icons
+- Strings starting with `fa-` or containing `fa-` → Font Awesome
+- Strings starting with `svg:` → SVG files
+- Component instances → Custom components
 
-- **Legacy approach (still supported):**
-  - Strings containing `fa-` are treated as Font Awesome icons
-  - Strings starting with `bi-` are treated as Bootstrap icons
-  - Strings ending with `Icon` are treated as Lucide icons
-  - Other strings without these patterns are treated as Material icons
-  - Component instances are treated as custom SVG components
+## Styling Icons with CSS
 
-## Size Mapping
+The `VcIcon` component supports inheriting size from CSS styles. This allows you to control the icon size through CSS styles applied to the parent element or directly to the icon component.
 
-The component maps the size prop to pixel values:
-
-- `xs`: 12px
-- `s`: 14px
-- `m`: 18px
-- `l`: 20px
-- `xl`: 22px
-- `xxl`: 30px
-- `xxxl`: 64px
-
-> **Note about icon sizing:** 
-> 
-> Different icon libraries have naturally different sizing characteristics:
-> - **Font Awesome** icons are used as the base sizes (reference standard)
-> - **Bootstrap Icons** require a slight reduction (factor 0.95)
-> - **Material Icons** require a slight increase (factor 1.1)
-> - **Lucide Icons** (SVG) require a significant increase (factor 1.2)
->
-> The `VcIcon` component automatically applies the necessary adjustments for visual consistency across all icon types. Thanks to this, developers can specify the same size (`size="m"`) for all icons and achieve a visually consistent result.
-
-## Examples
-
-### Font Awesome
-
-```vue
-<VcIcon icon="fas fa-home" />
-<VcIcon icon="far fa-user" />
-<VcIcon icon="fas fa-cog" size="xl" />
-<VcIcon icon="fas fa-exclamation-triangle" variant="warning" />
-```
-
-### Material Icons
-
-```vue
-<!-- Legacy syntax -->
-<VcIcon icon="home" />
-<VcIcon icon="settings" materialIconType="rounded" />
-
-<!-- New syntax with prefix -->
-<VcIcon icon="material-home" />
-<VcIcon icon="material-settings" materialIconType="rounded" />
-<VcIcon icon="material-warning" variant="warning" size="xl" />
-```
-
-### Bootstrap Icons
-
-```vue
-<VcIcon icon="bi-house" />
-<VcIcon icon="bi-person" />
-<VcIcon icon="bi-gear" size="xl" />
-<VcIcon icon="bi-exclamation-triangle" variant="warning" />
-```
-
-### Lucide Icons
+### Examples of CSS Styling
 
 ```vue
 <template>
-  <!-- Legacy syntax with type parameter -->
-  <VcIcon icon="HomeIcon" type="lucide" />
-  
-  <!-- New syntax with prefix -->
-  <VcIcon icon="lucide-home" />
-  <VcIcon icon="lucide-settings" size="xl" />
-  <VcIcon icon="lucide-alert-triangle" variant="warning" />
-  
-  <!-- Direct component usage (preferred for tree-shaking) -->
-  <VcIcon :icon="HomeIcon" />
+  <!-- Setting size through parent element -->
+  <div class="custom-icon-parent">
+    <VcIcon icon="fas fa-star" />
+  </div>
+
+  <!-- Inline styles -->
+  <div style="font-size: 32px;">
+    <VcIcon icon="material-home" />
+  </div>
+
+  <!-- Direct styling -->
+  <VcIcon 
+    icon="bi-heart" 
+    class="custom-icon"
+  />
+
+  <!-- Styling with hover effects -->
+  <VcIcon 
+    icon="lucide-settings" 
+    class="hover-icon"
+  />
 </template>
 
-<script setup>
-import { HomeIcon, SettingsIcon, AlertTriangle } from 'lucide-vue-next';
-</script>
+<style>
+.custom-icon-parent {
+  font-size: 24px; /* Icon will inherit this size */
+}
+
+.custom-icon {
+  font-size: 40px;
+  color: #f03e3e;
+}
+
+.hover-icon {
+  font-size: 24px;
+  transition: all 0.3s ease;
+}
+
+.hover-icon:hover {
+  font-size: 32px;
+  color: #4dabf7;
+}
+</style>
 ```
 
-## Migration Guide
+### Size Priority
 
-### From Custom SVG Components to Material Icons
+The icon size is determined in the following order of priority:
 
-```vue
-<!-- Before -->
-<VcIcon icon="SearchIcon" />
-<VcIcon icon="HomeIcon" />
+1. `customSize` prop (highest priority)
+2. External CSS styles (font-size applied to the icon)
+3. Preset size via the `size` prop (lowest priority)
 
-<!-- After (legacy) -->
-<VcIcon icon="search" />
-<VcIcon icon="home" />
+This allows flexible configuration of icon sizes in various usage contexts.
 
-<!-- After (new syntax) -->
-<VcIcon icon="material-search" />
-<VcIcon icon="material-home" />
-```
+## Library-Specific Features
 
-### From Font Awesome to Bootstrap Icons
+### Material Symbols
+
+Material Symbols support additional customization properties:
 
 ```vue
-<!-- Before -->
-<VcIcon icon="fas fa-home" />
-<VcIcon icon="fas fa-user" />
-<VcIcon icon="fas fa-cog" />
-
-<!-- After -->
-<VcIcon icon="bi-house" />
-<VcIcon icon="bi-person" />
-<VcIcon icon="bi-gear" />
-```
-
-### From Material Icons to Lucide Icons
-
-```vue
-<!-- Before -->
-<VcIcon icon="home" />
-<VcIcon icon="settings" />
-
-<!-- After (legacy) -->
-<VcIcon icon="HomeIcon" type="lucide" />
-<VcIcon icon="SettingsIcon" type="lucide" />
-
-<!-- After (new syntax) -->
-<VcIcon icon="lucide-home" />
-<VcIcon icon="lucide-settings" />
-
-<!-- Or with direct components (preferred for tree-shaking) -->
 <template>
-  <VcIcon :icon="HomeIcon" />
-  <VcIcon :icon="SettingsIcon" />
+  <!-- Different icon types -->
+  <VcIcon 
+    icon="material-settings" 
+    material-icon-type="outlined" 
+  />
+  <VcIcon 
+    icon="material-settings" 
+    material-icon-type="rounded" 
+  />
+  <VcIcon 
+    icon="material-settings" 
+    material-icon-type="sharp" 
+  />
+  
+  <!-- Fill variations -->
+  <VcIcon 
+    icon="material-favorite" 
+    :material-icon-fill="0" 
+  />
+  <VcIcon 
+    icon="material-favorite" 
+    :material-icon-fill="0.5" 
+  />
+  <VcIcon 
+    icon="material-favorite" 
+    :material-icon-fill="1" 
+  />
+  
+  <!-- Weight variations -->
+  <VcIcon 
+    icon="material-favorite" 
+    :material-icon-weight="100" 
+  />
+  <VcIcon 
+    icon="material-favorite" 
+    :material-icon-weight="400" 
+  />
+  <VcIcon 
+    icon="material-favorite" 
+    :material-icon-weight="700" 
+  />
 </template>
-
-<script setup>
-import { HomeIcon, SettingsIcon } from 'lucide-vue-next';
-</script>
 ```
 
-## Icon Picker Tool
+### Using SVG Icons
 
-To help developers choose the right icon name from each library, we recommend using these resources:
+You can use SVG icons with the `svg:` prefix:
 
-- **Font Awesome**: [https://fontawesome.com/icons](https://fontawesome.com/icons)
-- **Material Symbols**: [https://fonts.google.com/icons](https://fonts.google.com/icons)
-- **Bootstrap Icons**: [https://icons.getbootstrap.com/](https://icons.getbootstrap.com/)
-- **Lucide Icons**: [https://lucide.dev/icons/](https://lucide.dev/icons/)
+```vue
+<template>
+  <!-- Using path relative to basePath -->
+  <VcIcon icon="svg:menu.svg" />
+  
+  <!-- Using absolute path -->
+  <VcIcon icon="svg:/assets/icons/cart.svg" />
+  
+  <!-- With custom base path -->
+  <VcIcon icon="svg:star.svg" basePath="/custom/icons/path" />
+  
+  <!-- With stroke width -->
+  <VcIcon icon="svg:circle.svg" :stroke-width="1.5" />
+</template>
+```
 
-## Material Icon Documentation
-For a complete list of available Material icons, visit:
-- [Material Symbols Documentation](https://fonts.google.com/icons)
-- [Material Symbols Demo](https://marella.github.io/material-symbols/demo/) 
+By default, SVG icons are looked up in `/assets/icons`, but this path can be changed using the `basePath` parameter.
+
+## Container Support
+
+The component can wrap icons in a container for consistent spacing:
+
+```vue
+<template>
+  <!-- With container (default) -->
+  <VcIcon icon="material-home" />
+  
+  <!-- Without container -->
+  <VcIcon icon="material-home" :use-container="false" />
+</template>
+```
+
+
+## Best Practices
+
+1. Use the prefixed syntax (`material-`, `bi-`, `lucide-`, etc.) for all icons
+2. Use the same `size` prop across different icon types for visual consistency
+3. Use the container feature for consistent spacing in complex layouts
+4. Leverage CSS styling for dynamic effects like hover states

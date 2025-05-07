@@ -1,3 +1,13 @@
+## [1.1.5](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.4...v1.1.5) (2025-05-07)
+
+
+### Features
+
+* enhance VcIcon component ([58ad2ba](https://github.com/VirtoCommerce/vc-shell/commit/58ad2baaf306caa92375e81b170fdfb198a75b20))
+* implement module versioning and compatibility checks in the modularity plugin ([19c9553](https://github.com/VirtoCommerce/vc-shell/commit/19c95534c4ca0f6041015a0489dab7eabc1a322a))
+
+
+
 ## [1.1.4](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.3...v1.1.4) (2025-04-30)
 
 

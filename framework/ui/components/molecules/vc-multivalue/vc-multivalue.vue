@@ -539,7 +539,7 @@ function onSearch(event: Event) {
 
   &__field {
     @apply tw-border-none tw-outline-none tw-min-h-[var(--multivalue-height)] tw-bg-[color:var(--multivalue-background-color)]
-      tw-min-w-[120px] tw-box-border placeholder:tw-text-[color:var(--multivalue-placeholder-color)] tw-text-sm tw-rounded-[var(--multivalue-border-radius)];
+      tw-flex-grow tw-flex-shrink tw-w-auto tw-box-border placeholder:tw-text-[color:var(--multivalue-placeholder-color)] tw-text-sm tw-rounded-[var(--multivalue-border-radius)];
 
     &::-webkit-input-placeholder {
       @apply tw-text-[color:var(--multivalue-placeholder-color)];

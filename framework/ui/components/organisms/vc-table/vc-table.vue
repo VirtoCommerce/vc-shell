@@ -168,7 +168,7 @@
       :pages="pages"
       :current-page="currentPage"
       :pagination-variant="paginationVariant"
-      @item-click="
+      @pagination-click="
         (event: number) => {
           //scroll table to top
           tableBody?.scrollTo(0, 0);
@@ -197,35 +197,7 @@ import VcTableDesktopView from "./_internal/vc-table-desktop-view/vc-table-deskt
 import VcTableHeader from "./_internal/vc-table-header/vc-table-header.vue";
 import VcTableSelectAll from "./_internal/vc-table-select-all/vc-table-select-all.vue";
 import VcTableFooter from "./_internal/vc-table-footer/vc-table-footer.vue";
-
-export interface StatusImage {
-  image?: string;
-  text: string | Ref<string>;
-  action?: string;
-  clickHandler?: () => void;
-}
-
-export interface TableItem {
-  [x: string]: any;
-  actions?: IActionBuilderResult<any>[];
-}
-
-export type TableColPartial = Partial<
-  ITableColumns & {
-    predefined?: boolean;
-  }
->;
-
-export interface TableSlots<T> {
-  header: (props: { header: VNode }) => any;
-  filters: (args: { closePanel: () => void }) => any;
-  "mobile-item": (args: { item: T }) => any;
-  [key: `header_${string}`]: (props: any) => any;
-  [key: `item_${string}`]: (args: { item: T; cell: ITableColumns | TableColPartial; index: number }) => any;
-  notfound: (props: any) => any;
-  empty: (props: any) => any;
-  footer: (props: any) => any;
-}
+import type { TableSlots, TableItem, TableColPartial, StatusImage } from "./types";
 
 defineSlots<TableSlots<T>>();
 

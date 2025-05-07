@@ -2,7 +2,7 @@
 import { ref, Ref, computed, toValue, toRefs, MaybeRef } from "vue";
 import { useLocalStorage } from "@vueuse/core";
 import * as _ from "lodash-es";
-import { TableColPartial } from "../vc-table.vue";
+import { TableColPartial } from "../types";
 import { ITableColumns } from "../../../../../core/types";
 
 export interface UseTableStateOptions {

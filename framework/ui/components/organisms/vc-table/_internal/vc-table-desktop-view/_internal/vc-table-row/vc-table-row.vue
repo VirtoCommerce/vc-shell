@@ -105,7 +105,7 @@
 <script lang="ts" setup generic="T extends TableItem | string">
 import { VcCheckbox, VcIcon, VcTooltip } from "../../../../../../";
 import VcTableCell from "../../../vc-table-cell/vc-table-cell.vue";
-import type { TableItem, TableColPartial } from "../../../../vc-table.vue";
+import type { TableItem, TableColPartial } from "../../../../types";
 import type { IActionBuilderResult, ITableColumns } from "../../../../../../../../core/types";
 import { MaybeRef } from "vue";
 defineProps<{

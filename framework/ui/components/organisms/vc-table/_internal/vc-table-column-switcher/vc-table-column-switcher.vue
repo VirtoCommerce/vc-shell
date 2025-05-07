@@ -41,7 +41,7 @@
 <script lang="ts" setup>
 import { ref, watch } from "vue";
 import { ITableColumns } from "./../../../../../../core/types";
-import { TableColPartial } from "../../vc-table.vue";
+import { TableColPartial } from "../../types";
 import { GenericDropdown } from "../../../../../../shared/components/generic-dropdown";
 
 export interface Props {

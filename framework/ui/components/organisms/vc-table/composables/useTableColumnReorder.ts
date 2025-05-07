@@ -1,5 +1,5 @@
 import { ref, Ref } from "vue";
-import { TableItem, TableColPartial } from "../vc-table.vue";
+import { TableItem, TableColPartial } from "../types";
 
 export function useTableColumnReorder<T extends TableItem | string>(
   internalColumns: Ref<TableColPartial[]>,

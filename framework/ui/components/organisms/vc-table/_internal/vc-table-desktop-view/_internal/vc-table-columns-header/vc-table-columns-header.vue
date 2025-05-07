@@ -111,7 +111,7 @@
 import { toRefs, ref } from "vue";
 import { VcCheckbox, VcIcon } from "../../../../../..";
 import VcTableColumnSwitcher from "../../../vc-table-column-switcher/vc-table-column-switcher.vue";
-import type { TableItem, TableColPartial } from "../../../../vc-table.vue";
+import type { TableItem, TableColPartial } from "../../../../types";
 import { useTableColumnReorder } from "../../../../composables/useTableColumnReorder";
 import { useTableColumnResize } from "../../../../composables/useTableColumnResize";
 import { ITableColumns } from "../../../../../../../../core/types";

@@ -74,7 +74,7 @@
 import VcTableRow from "../vc-table-row/vc-table-row.vue";
 import VcTableEmpty from "../../../vc-table-empty/vc-table-empty.vue";
 import type { IActionBuilderResult } from "../../../../../../../../core/types";
-import type { TableSlots, TableItem, TableColPartial, StatusImage } from "../../../../vc-table.vue";
+import type { TableSlots, TableItem, TableColPartial, StatusImage } from "../../../../types";
 import { MaybeRef, useSlots } from "vue";
 
 defineProps<{

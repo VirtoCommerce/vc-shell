@@ -94,7 +94,7 @@ import VcTableSelectAllHeader from "./_internal/vc-table-select-all-header/vc-ta
 import VcTableBody from "./_internal/vc-table-body/vc-table-body.vue";
 import type { IActionBuilderResult, ITableColumns } from "../../../../../../core/types";
 import { useTableRowReorder } from "../../composables/useTableRowReorder";
-import type { TableSlots, TableItem, TableColPartial, StatusImage } from "../../vc-table.vue";
+import type { TableSlots, TableItem, TableColPartial, StatusImage } from "../../types";
 
 const props = defineProps<{
   items: T[];

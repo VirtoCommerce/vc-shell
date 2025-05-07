@@ -287,7 +287,7 @@ import VcInputCurrency from "../../../../molecules/vc-input-currency/vc-input-cu
 import VcInput from "../../../../molecules/vc-input/vc-input.vue";
 import VcTooltip from "../../../../atoms/vc-tooltip/vc-tooltip.vue";
 import { Field } from "vee-validate";
-import type { TableItem } from "../../vc-table.vue";
+import type { TableItem } from "../../types";
 import { ITableColumns } from "../../../../../../core/types";
 
 export interface Props {

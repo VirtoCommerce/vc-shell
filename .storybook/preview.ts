@@ -1,4 +1,4 @@
-import "./../framework/dist/index.css";
+// import "./../framework";
 import { setup, Preview } from "@storybook/vue3";
 import { useBreakpoints } from "@vueuse/core";
 import framework, { provideWidgetService, useLanguages, useTheme } from "./../framework";
@@ -8,6 +8,11 @@ import * as locales from "./assets/locales";
 import "./../framework/assets/styles/index.scss";
 import { ref, watch, reactive } from "vue";
 import { withGlobalMocks } from "./decorators";
+import "@fortawesome/fontawesome-free/css/fontawesome.min.css";
+import "@fortawesome/fontawesome-free/css/solid.min.css";
+
+import "bootstrap-icons/font/bootstrap-icons.min.css";
+import "material-symbols/outlined.css";
 
 setup((app) => {
     app.use(framework, {

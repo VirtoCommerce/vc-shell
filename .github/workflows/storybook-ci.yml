@@ -177,7 +177,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install vc-buildPost job cleanup.
+      - name: Install vc-build
         run: |
           dotnet tool install --global VirtoCommerce.GlobalTool
 
@@ -185,10 +185,10 @@ jobs:
         run: |
           vc-build CloudEnvSetParameter -CloudUrl ${{ env.CLOUD_URL }} -CloudToken ${{ env.CLOUD_TOKEN }} -EnvironmentName ${{ env.ARGO_APP_NAME }} -HelmParameters custom.app1.image.tag=${{ env.STORYBOOK_TAG }}
 
-      # - name: Check deployment start
-      #   run: |
-      #     vc-build CloudEnvStatus -CloudUrl ${{ env.CLOUD_URL }} -CloudToken ${{ env.CLOUD_TOKEN }} -EnvironmentName ${{ env.ARGO_APP_NAME }} -HealthStatus Progressing
+      - name: Check deployment start
+        run: |
+          vc-build CloudEnvStatus -CloudUrl ${{ env.CLOUD_URL }} -CloudToken ${{ env.CLOUD_TOKEN }} -EnvironmentName ${{ env.ARGO_APP_NAME }} -HealthStatus Progressing
 
-      # - name: Check deployment status
-      #   run: |
-      #     vc-build CloudEnvStatus -CloudUrl ${{ env.CLOUD_URL }} -CloudToken ${{ env.CLOUD_TOKEN }} -EnvironmentName ${{ env.ARGO_APP_NAME }} -HealthStatus Healthy -SyncStatus Synced
+      - name: Check deployment status
+        run: |
+          vc-build CloudEnvStatus -CloudUrl ${{ env.CLOUD_URL }} -CloudToken ${{ env.CLOUD_TOKEN }} -EnvironmentName ${{ env.ARGO_APP_NAME }} -HealthStatus Healthy -SyncStatus Synced

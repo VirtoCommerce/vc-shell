@@ -1,3 +1,13 @@
+## [1.1.6](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.5...v1.1.6) (2025-05-12)
+
+
+### Features
+
+* enhance module compatibility checks with error notifications ([4f9c44e](https://github.com/VirtoCommerce/vc-shell/commit/4f9c44ec73e3e83a31d5099ec641c761b5e96167))
+* VcInputDropdown component, replace VcSelect with VcInputDropdown and update related stories ([08f3c72](https://github.com/VirtoCommerce/vc-shell/commit/08f3c72d1cdee3a82868db5238c7e9879914cc8c))
+
+
+
 ## [1.1.5](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.4...v1.1.5) (2025-05-07)
 
 

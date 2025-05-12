@@ -1,3 +1,20 @@
+## [1.1.6](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.5...v1.1.6) (2025-05-12)
+
+
+### Bug Fixes
+
+* fix Storybook by adding FontAwesome and Bootstrap icons ([ec0e9d4](https://github.com/VirtoCommerce/vc-shell/commit/ec0e9d46d672cea8d3037b60859f97c3758bca51))
+
+
+### Features
+
+* add Storybook stories generation rules for VC-Shell UI components ([ed83dd7](https://github.com/VirtoCommerce/vc-shell/commit/ed83dd70922901fd31200bf60c0e002f5356270e))
+* add Vite configuration generator for dynamic modules with compatibility options ([0a4822e](https://github.com/VirtoCommerce/vc-shell/commit/0a4822e219f2fa120b476f420badf6b068891fdb))
+* enhance module compatibility checks with error notifications ([4f9c44e](https://github.com/VirtoCommerce/vc-shell/commit/4f9c44ec73e3e83a31d5099ec641c761b5e96167))
+* VcInputDropdown component, replace VcSelect with VcInputDropdown and update related stories ([08f3c72](https://github.com/VirtoCommerce/vc-shell/commit/08f3c72d1cdee3a82868db5238c7e9879914cc8c))
+
+
+
 ## [1.1.5](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.4...v1.1.5) (2025-05-07)
 
 

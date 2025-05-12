@@ -9,7 +9,7 @@ import { ref } from "vue";
 const meta = {
   title: "molecules/VcInputCurrency",
   component: VcInputCurrency,
-  tags: ["autodocs"],
+  //tags: ["autodocs"],
   args: {
     label: "Amount",
     placeholder: "Enter amount",

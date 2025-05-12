@@ -1,33 +1,15 @@
 {
+  "extends": "../framework/tsconfig.json",
   "compilerOptions": {
-    "target": "ESNext",
-    "useDefineForClassFields": true,
-    "module": "ESNext",
-    "moduleResolution": "Node",
-    "strict": true,
-    "sourceMap": true,
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "esModuleInterop": true,
-    "lib": ["ESNext", "DOM"],
-    "skipLibCheck": true,
-    "jsx": "preserve",
-    "baseUrl": ".",
-    "paths": {
-      "@vc-shell/framework": ["../framework"],
-      "@vc-shell/framework/*": ["../framework/*"]
-    },
-    "types": ["node", "vue"],
-    "forceConsistentCasingInFileNames": true,
-    "allowJs": true
+    "types": ["vite/client", "../framework/typings/declarations.d.ts", "@storybook/vue3"],
+    "rootDir": "..",
+    "baseUrl": ".."
   },
   "include": [
-    "../.storybook/**/*.ts",
-    "../.storybook/**/*.js",
-    "../.storybook/typings.d.ts",
-    "../framework/ui/**/*.stories.ts",
+    "../framework/**/*.ts",
+    "../framework/**/*.vue",
+    "../framework/**/*.d.ts",
+    "./**/*.ts"
   ],
-  "references": [
-    { "path": "../framework/tsconfig.json" }
-  ]
+  "exclude": ["../node_modules"]
 }

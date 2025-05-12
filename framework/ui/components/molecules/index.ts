@@ -14,3 +14,4 @@ export * from "./vc-multivalue";
 export * from "./vc-field";
 export * from "./vc-radio-button";
 export * from "./vc-checkbox";
+export * from "./vc-input-dropdown";

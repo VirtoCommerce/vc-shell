@@ -47,7 +47,7 @@
 <script lang="ts" setup>
 import { useCurrencyInput, CurrencyDisplay } from "vue-currency-input";
 import { unref, watch } from "vue";
-import { VcInputDropdown } from "./../../";
+import { VcInputDropdown } from "./../../molecules/vc-input-dropdown";
 import { OptionProp } from "../vc-select/vc-select.vue";
 
 export interface Props {
@@ -214,9 +214,11 @@ watch(numberValue, (value) => {
 });
 
 function updateModel(value: string | number | Date | null | undefined) {
-  inputRef.value.value = value as string;
-  numberValue.value = value as number | null;
-  emit("update:model-value", value as number);
+  if (inputRef.value) {
+    inputRef.value.value = value as string;
+  }
+  numberValue.value = typeof value === "number" ? value : value === null ? null : parseFloat(String(value)) || null;
+  emit("update:model-value", numberValue.value);
 }
 
 function handleBlur(event: Event) {

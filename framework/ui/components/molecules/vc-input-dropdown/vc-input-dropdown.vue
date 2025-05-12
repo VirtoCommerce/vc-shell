@@ -96,7 +96,7 @@ export interface Props {
   /**
    * Model of the input component
    */
-  modelValue: unknown;
+  modelValue: string | number | Date | null | undefined;
   /**
    * Input label text
    */
@@ -195,11 +195,11 @@ export interface Props {
    * Type of the input field
    * Default: text
    */
-  inputType?: string;
+  inputType?: "text" | "password" | "email" | "tel" | "number" | "integer" | "url" | "time" | "date" | "datetime-local";
 }
 
 export interface Emits {
-  (event: "update:model-value", value: unknown): void;
+  (event: "update:model-value", value: string | number | Date | null | undefined): void;
   (event: "update:option", value: unknown): void;
   (event: "change", value: unknown): void;
   (event: "blur", value: Event): void;
@@ -241,10 +241,10 @@ defineSlots<{
    * Slot for custom input control
    */
   control: (scope: {
-    placeholder: string;
-    focused: boolean;
-    modelValue: unknown;
-    emitValue: (value: unknown) => void;
+    placeholder?: string;
+    focused?: boolean;
+    modelValue: string | number | Date | null | undefined;
+    emitValue: (value: string | number | Date | null) => void;
   }) => unknown;
 }>();
 

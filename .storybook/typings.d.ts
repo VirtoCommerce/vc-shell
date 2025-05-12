@@ -11,12 +11,20 @@ interface AssetsManagerAPI {
   // add empty interface, which can be extended when needed
 }
 
-
-
-
 interface Window {
   notification: NotificationAPI;
   AssetsManager: AssetsManagerAPI;
   global: Window;
-
+  VcShellFramework?: any;
+  Vue?: any;
+  VueRouter?: any;
+  moment?: any;
+  VueI18n?: any;
+  _?: any;
+  VueUse?: any;
+  VeeValidate?: any;
+  Invite?: any;
+  Login?: any;
+  ResetPassword?: any;
+  VcBladeNavigation?: any;
 }

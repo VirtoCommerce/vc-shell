@@ -4,6 +4,28 @@ import { StorybookConfig } from "@storybook/vue3-vite";
 import path from "path";
 import type { Plugin, PluginOption } from 'vite';
 
+// Plugin to prevent usage of global variables from framework/index.ts
+const preventGlobalsPlugin = (): Plugin => {
+  return {
+    name: 'prevent-vc-shell-globals',
+    transform(code, id) {
+      // Detect framework/index.ts file
+      if (id.includes('framework/index.ts')) {
+        // Replace the block of global variables with an empty block
+        const modifiedCode = code.replace(
+          /if\s*\(typeof window !== "undefined"\)\s*{[\s\S]*?window\.VeeValidate[\s\S]*?}/g,
+          'if (typeof window !== "undefined" && false) { /* Disabled in Storybook */ }'
+        );
+        return {
+          code: modifiedCode,
+          map: null
+        };
+      }
+      return null;
+    }
+  };
+};
+
 export default {
   stories: [
     "../framework/ui/components/**/*.stories.ts",
@@ -43,6 +65,7 @@ export default {
       return mergeConfig(config, {
         plugins: [
           vue(),
+          preventGlobalsPlugin(),
         ],
         assetsInclude: ["/sb-preview/runtime.js"],
         resolve: {

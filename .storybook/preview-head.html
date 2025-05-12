@@ -27,6 +27,47 @@
   window.ResetPassword = {}
 
   window.VcBladeNavigation = {}
+
+  // Define empty objects/getters to prevent errors from framework/index.ts
+  Object.defineProperty(window, 'VcShellFramework', {
+    configurable: true,
+    get: function() { return {} }
+  });
+
+  Object.defineProperty(window, 'Vue', {
+    configurable: true,
+    get: function() { return {} }
+  });
+
+  Object.defineProperty(window, 'VueRouter', {
+    configurable: true,
+    get: function() { return {} }
+  });
+
+  Object.defineProperty(window, 'moment', {
+    configurable: true,
+    get: function() { return {} }
+  });
+
+  Object.defineProperty(window, 'VueI18n', {
+    configurable: true,
+    get: function() { return {} }
+  });
+
+  Object.defineProperty(window, '_', {
+    configurable: true,
+    get: function() { return {} }
+  });
+
+  Object.defineProperty(window, 'VueUse', {
+    configurable: true,
+    get: function() { return {} }
+  });
+
+  Object.defineProperty(window, 'VeeValidate', {
+    configurable: true,
+    get: function() { return {} }
+  });
 </script>
 
 

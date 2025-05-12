@@ -133,18 +133,6 @@ export const release = async ({
         if (usePreNum) {
           newVersion = `${newVersion}.${prereleaseNum}`;
         }
-
-        // Confirm version change
-        const { confirmVersionChange }: { confirmVersionChange: boolean } = await prompts({
-          type: "confirm",
-          name: "confirmVersionChange",
-          message: `Update version from ${chalk.yellow(targetVersion)} to ${chalk.green(newVersion)} to match ${chalk.blue(args.tag)} tag?`,
-        });
-
-        if (confirmVersionChange) {
-          targetVersion = newVersion;
-          console.log(`Version updated to ${chalk.green(targetVersion)}`);
-        }
       }
     }
   }

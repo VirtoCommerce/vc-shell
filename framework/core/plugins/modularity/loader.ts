@@ -3,6 +3,7 @@ import { Router } from "vue-router";
 import { ExtensionRegistry, createExtensionsHelper, registerModuleExtensions } from "./extensions-helper";
 import { DynamicModulesKey } from "../../../injection-keys";
 import * as semver from "semver";
+import { notification } from "../../../shared";
 
 interface ModuleManifest {
   file: string;
@@ -135,6 +136,7 @@ const DEFAULT_CONFIG: Partial<ModuleConfig> = {
   manifestFileName: "manifest.json",
   entryPointKey: "isEntry",
   skipVersionCheck: false,
+  frameworkVersion: "1.1.0",
 };
 
 function checkAppCompatibility(moduleId: string, versionInfo: VersionInfo, appName: string, appVersion?: string): void {
@@ -146,6 +148,11 @@ function checkAppCompatibility(moduleId: string, versionInfo: VersionInfo, appNa
 
   if (!appPattern) {
     const compatibleApps = Object.keys(versionInfo.appCompatibility).join(", ");
+
+    notification.error(
+      `Module ${moduleId} is not compatible with application ${appName}. Required apps: ${compatibleApps}`,
+    );
+
     throw new VersionCompatibilityError(moduleId, {
       required: compatibleApps || "none",
       current: appName,
@@ -155,6 +162,10 @@ function checkAppCompatibility(moduleId: string, versionInfo: VersionInfo, appNa
 
   if (appPattern !== "*" && appVersion) {
     if (!semver.satisfies(appVersion, appPattern)) {
+      notification.error(
+        `Module ${moduleId} is not compatible with application ${appName} v${appVersion}. Required apps: ${appPattern}`,
+      );
+
       throw new VersionCompatibilityError(moduleId, {
         required: appPattern,
         current: appVersion,
@@ -179,6 +190,12 @@ function checkVersionCompatibility(
     moduleVersion.compatibleWith.framework &&
     !semver.satisfies(frameworkVersion, moduleVersion.compatibleWith.framework)
   ) {
+    console.error(
+      `Module ${moduleId} requires framework version ${moduleVersion.compatibleWith.framework}, but current framework version is ${frameworkVersion}.`,
+    );
+    notification.error(
+      `Module ${moduleId} requires framework version ${moduleVersion.compatibleWith.framework}, but current framework version is ${frameworkVersion}.`,
+    );
     throw new VersionCompatibilityError(moduleId, {
       required: moduleVersion.compatibleWith.framework,
       current: frameworkVersion,
@@ -198,6 +215,12 @@ function checkVersionCompatibility(
       }
 
       if (!semver.satisfies(loadedDepVersion, versionRange)) {
+        console.error(
+          `Module ${moduleId} requires ${depModuleId} version ${versionRange}, but loaded version is ${loadedDepVersion}.`,
+        );
+        notification.error(
+          `Module ${moduleId} requires ${depModuleId} version ${versionRange}, but loaded version is ${loadedDepVersion}.`,
+        );
         throw new VersionCompatibilityError(moduleId, {
           required: versionRange,
           current: loadedDepVersion,
@@ -215,6 +238,13 @@ export function useDynamicModules(
   config: Partial<ModuleConfig> = {},
 ) {
   const finalConfig = { ...DEFAULT_CONFIG, ...config };
+
+  if (!config.frameworkVersion && finalConfig.frameworkVersion) {
+    console.warn(
+      `Framework version not specified in the configuration, using default ${finalConfig.frameworkVersion}. This may cause compatibility issues with modules.`,
+    );
+  }
+
   const loadedModules = new Set<string>();
   const loadedModulesWithVersions = new Map<string, string>();
   const extensionsHelper = createExtensionsHelper(app);
@@ -329,6 +359,7 @@ export function useDynamicModules(
                                 }. This module supports only: ${versionError.details.required || "none"}`,
                               );
                             }
+                            console.error(`Skipping installation of incompatible module: ${moduleId}`);
                             return;
                           } else {
                             throw versionError;

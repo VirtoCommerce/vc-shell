@@ -55,7 +55,7 @@
     </slot>
   </div>
 </template>
-
+<!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
 import { getCurrentInstance, ref, unref } from "vue";
 import { useField } from "vee-validate";
@@ -90,7 +90,7 @@ const props = withDefaults(defineProps<Props>(), {
 const emit = defineEmits<Emits>();
 
 defineSlots<{
-  error: void;
+  error: (props: any) => any;
 }>();
 
 const { t } = useI18n({ useScope: "global" });

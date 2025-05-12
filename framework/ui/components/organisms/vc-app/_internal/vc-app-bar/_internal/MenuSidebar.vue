@@ -62,7 +62,7 @@
     </template>
   </Sidebar>
 </template>
-
+<!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
 import { Sidebar } from "../../../../../../../shared/components/sidebar";
 import { CrossSignIcon } from "../../../../../atoms/vc-icon/icons";
@@ -78,11 +78,11 @@ defineEmits<{
 }>();
 
 defineSlots<{
-  navmenu: () => void;
-  "user-dropdown": () => void;
-  "app-switcher": () => void;
-  "widgets-active-content": () => void;
-  widgets: () => void;
+  navmenu: (props: any) => any;
+  "user-dropdown": (props: any) => any;
+  "app-switcher": (props: any) => any;
+  "widgets-active-content": (props: any) => any;
+  widgets: (props: any) => any;
 }>();
 </script>
 

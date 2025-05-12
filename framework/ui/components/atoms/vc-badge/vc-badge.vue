@@ -38,7 +38,7 @@
     </div>
   </div>
 </template>
-
+<!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
 import { computed } from "vue";
 
@@ -74,7 +74,7 @@ defineSlots<{
   /**
    * Slot for component content
    * */
-  default: void;
+  default: (props: any) => any;
 }>();
 
 function onClick(): void {

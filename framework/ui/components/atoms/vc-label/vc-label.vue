@@ -39,7 +39,7 @@
     </div>
   </div>
 </template>
-
+<!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
 import { VcIcon, VcTooltip } from "./../../../components";
 
@@ -71,8 +71,8 @@ withDefaults(defineProps<Props>(), {
 });
 
 defineSlots<{
-  default: void;
-  tooltip?: void;
+  default: (props: any) => any;
+  tooltip?: (props: any) => any;
 }>();
 </script>
 

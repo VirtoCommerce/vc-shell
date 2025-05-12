@@ -28,7 +28,7 @@
     </template>
   </VcPopup>
 </template>
-
+<!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
 import VcPopup from "./../../../../ui/components/organisms/vc-popup/vc-popup.vue";
 
@@ -46,8 +46,8 @@ defineProps<Props>();
 defineEmits<Emits>();
 
 defineSlots<{
-  header: void;
-  default: void;
+  header: (props: any) => any;
+  default: (props: any) => any;
 }>();
 </script>
 

@@ -82,7 +82,7 @@
     </slot>
   </div>
 </template>
-
+<!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
 import { MaybeRef, computed, unref, ref, watch, onMounted } from "vue";
 import { VcHint } from "./../../atoms/vc-hint";
@@ -117,9 +117,9 @@ const props = withDefaults(defineProps<Props>(), {
 const emit = defineEmits<Emits>();
 
 defineSlots<{
-  default: (props: Record<string, never>) => unknown;
-  error: (props: Record<string, never>) => unknown;
-  icon: (props: Record<string, never>) => unknown;
+  default: (props: Record<string, never>) => any;
+  error: (props: Record<string, never>) => any;
+  icon: (props: Record<string, never>) => any;
 }>();
 
 const checkboxRef = ref<HTMLInputElement | null>(null);

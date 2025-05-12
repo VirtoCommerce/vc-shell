@@ -51,7 +51,7 @@
     </div>
   </div>
 </template>
-
+<!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
 import { VNode } from "vue";
 import { VcLabel, VcIcon } from "./../../";
@@ -68,7 +68,7 @@ export interface Props {
 withDefaults(defineProps<Props>(), { max: 5, variant: "stars" });
 
 defineSlots<{
-  details: VNode[];
+  details: (props: any) => VNode[];
 }>();
 </script>
 

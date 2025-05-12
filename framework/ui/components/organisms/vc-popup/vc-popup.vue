@@ -119,7 +119,7 @@
     </Dialog>
   </TransitionRoot>
 </template>
-
+<!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
 import { Ref, computed, inject } from "vue";
 import { TransitionRoot, TransitionChild, Dialog, DialogPanel, DialogTitle } from "@headlessui/vue";
@@ -146,9 +146,9 @@ const props = withDefaults(defineProps<Props>(), {
 const emit = defineEmits<Emits>();
 
 defineSlots<{
-  header: void;
-  content: void;
-  footer: (props: { close: () => void }) => void;
+  header: (props: any) => any;
+  content: (props: any) => any;
+  footer: (props: { close: () => void }) => any;
 }>();
 
 const isMobile = inject("isMobile") as Ref<boolean>;

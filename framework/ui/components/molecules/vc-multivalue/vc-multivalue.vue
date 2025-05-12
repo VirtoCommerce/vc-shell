@@ -231,8 +231,8 @@ const emit = defineEmits<Emits<T>>();
 defineSlots<{
   option: (args: { item: T }) => any;
   "selected-item": (args: { value: string | number | T[keyof T]; item: T; remove: () => void }) => any;
-  hint: void;
-  error: void;
+  hint: (props: any) => any;
+  error: (props: any) => any;
 }>();
 
 const dropdownToggleRef = ref();

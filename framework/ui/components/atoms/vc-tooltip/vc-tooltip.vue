@@ -24,7 +24,7 @@
     </teleport>
   </div>
 </template>
-
+<!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
 import { useFloating, shift, Placement, offset as floatingOffset } from "@floating-ui/vue";
 import { getCurrentInstance, ref, computed } from "vue";
@@ -48,8 +48,8 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 defineSlots<{
-  default: void;
-  tooltip?: void;
+  default: (props: any) => any;
+  tooltip?: (props: any) => any;
 }>();
 
 const tooltipVisible = ref(false);

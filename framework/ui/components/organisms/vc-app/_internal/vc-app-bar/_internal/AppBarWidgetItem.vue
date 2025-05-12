@@ -38,7 +38,7 @@
     </VcTooltip>
   </div>
 </template>
-
+<!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
 import { ref, computed, onMounted, type Component } from "vue";
 import { useAppBarWidgets } from "./../composables/useAppBarWidgets";
@@ -59,8 +59,8 @@ const props = defineProps<Props>();
 const emit = defineEmits<Emits>();
 
 defineSlots<{
-  content: (props: { opened: boolean; toggle: () => void }) => void;
-  trigger: (props: { isActive: boolean; toggle: () => void }) => void;
+  content: (props: { opened: boolean; toggle: () => void }) => any;
+  trigger: (props: { isActive: boolean; toggle: () => void }) => any;
 }>();
 
 const { toggleWidget, currentWidget } = useAppBarWidgets();

@@ -51,7 +51,7 @@
     </slot>
   </div>
 </template>
-
+<!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
 import { ref } from "vue";
 import { VcHint, VcLabel } from "./../../";
@@ -76,7 +76,7 @@ export interface Emits {
 }
 
 defineSlots<{
-  error: void;
+  error: (props: any) => any;
 }>();
 
 withDefaults(defineProps<Props>(), {

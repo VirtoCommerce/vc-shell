@@ -65,7 +65,7 @@
     </div>
   </div>
 </template>
-
+<!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
 import { inject, provide, useAttrs, watch, ref, onUnmounted, computed } from "vue";
 import VcAppBar from "./_internal/vc-app-bar/vc-app-bar.vue";
@@ -115,8 +115,7 @@ defineOptions({
 });
 
 defineSlots<{
-  "app-switcher": void;
-  // toolbar: void;
+  "app-switcher": (props: any) => any;
 }>();
 
 const props = defineProps<Props>();

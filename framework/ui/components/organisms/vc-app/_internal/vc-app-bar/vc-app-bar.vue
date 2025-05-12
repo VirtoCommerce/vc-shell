@@ -108,7 +108,7 @@
     </div>
   </div>
 </template>
-
+<!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
 import { VcIcon } from "../../../../";
 import { ChevronLeftIcon, ChevronRightIcon } from "../../../../atoms/vc-icon/icons";
@@ -133,9 +133,9 @@ export interface Emits {
 }
 
 interface Slots {
-  "app-switcher": () => void;
-  navmenu: () => void;
-  "user-dropdown": () => void;
+  "app-switcher": (props: any) => any;
+  navmenu: (props: any) => any;
+  "user-dropdown": (props: any) => any;
 }
 
 defineProps<Props>();

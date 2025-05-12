@@ -123,7 +123,7 @@
     </div>
   </div>
 </template>
-
+<!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
 import { computed, ref, toValue, inject, useSlots, defineComponent, h } from "vue";
 import { IBladeToolbar } from "../../../../core/types";
@@ -168,8 +168,8 @@ withDefaults(defineProps<Props>(), {
 });
 
 const slots = defineSlots<{
-  actions: void;
-  default: void;
+  actions: (props: any) => any;
+  default: (props: any) => any;
   /**
    * @deprecated
    * Use `useWidgets` composable instead
@@ -197,8 +197,8 @@ const slots = defineSlots<{
    *   }
    * });
    */
-  widgets: void;
-  backButton: void;
+  widgets: (props: any) => any;
+  backButton: (props: any) => any;
 }>();
 
 const emit = defineEmits<Emits>();

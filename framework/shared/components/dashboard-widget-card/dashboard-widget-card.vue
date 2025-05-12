@@ -36,7 +36,7 @@
     </div>
   </div>
 </template>
-
+<!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script setup lang="ts">
 export interface Props {
   header?: string;
@@ -47,9 +47,9 @@ export interface Props {
 const props = defineProps<Props>();
 
 defineSlots<{
-  header: void;
-  actions: void;
-  content: void;
+  header: (props: any) => any;
+  actions: (props: any) => any;
+  content: (props: any) => any;
   // TODO: implement
   // "mobile-content": void;
 }>();

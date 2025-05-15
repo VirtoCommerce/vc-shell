@@ -7,9 +7,9 @@
     "rootDir": "./"
   },
   "files": [
-    "package.json",
+    "package.json"
   ],
   "include": [
-    "*.ts",
+    "*.ts"
   ]
 }

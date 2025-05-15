@@ -51,22 +51,35 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import { ref, computed, inject } from "vue";
 import { useAdaptiveItems } from "../../../../../../composables/useAdaptiveItems";
 
 import { GenericDropdown } from "../../../../../../../shared/components/generic-dropdown";
 import { VcIcon, ChevronUpIcon } from "../../../../..";
 import { IWidget } from "../../../../../../../core/services";
+import { BladeInstance } from "../../../../../../../injection-keys";
+import { IBladeInstance } from "../../../../../../../shared/components/blade-navigation/types";
 
 interface Props {
   widgets: IWidget[];
+  bladeId: string;
 }
 
 const props = defineProps<Props>();
 const containerRef = ref<HTMLElement | null>(null);
 const showToolbar = ref(false);
+const bladeInstance = inject<IBladeInstance>(BladeInstance);
 
-const isAnyVisible = computed(() => props.widgets.some((widget) => widget.isVisible));
+const isAnyVisible = computed(() =>
+  props.widgets.some((widget) => {
+    if (typeof widget.isVisible === "function") {
+      return widget.isVisible(bladeInstance);
+    } else if (typeof widget.isVisible === "boolean") {
+      return widget.isVisible;
+    }
+    return widget.isVisible;
+  }),
+);
 
 const { visibleItems, showMoreButton, recalculate, hiddenItems, updateObserver } = useAdaptiveItems<IWidget>({
   containerRef,

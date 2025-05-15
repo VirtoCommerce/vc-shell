@@ -14,9 +14,11 @@
 </template>
 
 <script setup lang="ts">
-import { computed, toValue } from "vue";
+import { computed, toValue, inject } from "vue";
 import { useWidgets } from "../../../../../../core/composables/useWidgets";
 import { WidgetContainerDesktop, WidgetContainerMobile } from "./_internal";
+import { BladeInstance } from "../../../../../../injection-keys";
+import { IBladeInstance } from "../../../../../../shared/components/blade-navigation/types";
 
 interface Props {
   bladeId: string;
@@ -25,11 +27,12 @@ interface Props {
 const props = defineProps<Props>();
 const widgetService = useWidgets();
 const widgets = computed(() => widgetService.getWidgets(props.bladeId));
+const bladeInstance = inject<IBladeInstance>(BladeInstance);
 
 const visibleWidgets = computed(() =>
   widgets.value.filter((widget) => {
     if (typeof widget.isVisible === "function") {
-      return widget.isVisible();
+      return widget.isVisible(bladeInstance);
     } else if (typeof widget.isVisible === "boolean") {
       return widget.isVisible;
     }

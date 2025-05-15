@@ -130,7 +130,9 @@ const visibleItems = computed(() => {
     .filter(
       (item) =>
         hasAccess(item.permissions) &&
-        (item.isVisible === undefined || item.isVisible) &&
+        (typeof item.isVisible === "function"
+          ? item.isVisible(blade.value)
+          : item.isVisible === undefined || item.isVisible) &&
         (isMobile.value ? !item.disabled : true),
     )
     .sort((a, b) => {

@@ -1,4 +1,5 @@
 import { ConcreteComponent, reactive, ref, ComponentInternalInstance, ComputedRef, Ref, getCurrentInstance } from "vue";
+import { IBladeInstance } from "../../shared/components/blade-navigation/types";
 
 export type WidgetEventHandler = (...args: unknown[]) => void;
 
@@ -12,7 +13,7 @@ export interface IWidget {
   component: ConcreteComponent;
   props?: Record<string, unknown>;
   events?: Record<string, unknown>;
-  isVisible?: boolean | ComputedRef<boolean> | Ref<boolean> | (() => boolean);
+  isVisible?: boolean | ComputedRef<boolean> | Ref<boolean> | ((blade?: IBladeInstance) => boolean);
   onOpen?: (blade: { id: string }) => void;
   onClose?: (blade: { id: string }) => void;
 }

@@ -1,6 +1,7 @@
 import { Component, ComputedRef, Ref } from "vue";
 import { CoreBladeExposed } from "../../shared";
 import { ComponentPublicInstanceConstructor } from "../../shared/utilities";
+import { IBladeInstance } from "../../shared/components/blade-navigation/types";
 
 // Type instead of interface here is workaround for:
 // https://github.com/microsoft/TypeScript/issues/15300
@@ -65,7 +66,11 @@ export interface IBladeToolbar {
   icon?: string | (() => string);
   disabled?: boolean | ComputedRef<boolean | undefined>;
   title?: string | Ref<string> | ComputedRef<string>;
-  isVisible?: boolean | Ref<boolean | undefined> | ComputedRef<boolean | undefined>;
+  isVisible?:
+    | boolean
+    | Ref<boolean | undefined>
+    | ComputedRef<boolean | undefined>
+    | ((blade?: IBladeInstance) => boolean | undefined);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   clickHandler?(app?: Record<string, any> | CoreBladeExposed | null): void;
   separator?: "left" | "right" | "both";

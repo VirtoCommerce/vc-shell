@@ -125,7 +125,7 @@
 </template>
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
-import { computed, ref, toValue, inject, useSlots, defineComponent, h } from "vue";
+import { computed, ref, toValue, inject, useSlots, defineComponent, h, getCurrentInstance } from "vue";
 import { IBladeToolbar } from "../../../../core/types";
 import { usePopup, useBladeNavigation } from "../../../../shared";
 import { useI18n } from "vue-i18n";
@@ -212,6 +212,8 @@ const blade = inject(
     maximized: false,
     navigation: undefined,
     breadcrumbs: undefined,
+    param: undefined,
+    options: undefined,
   })),
 );
 
@@ -241,6 +243,8 @@ const { open } = usePopup({
     }),
   },
 });
+
+console.log(getCurrentInstance());
 </script>
 
 <style lang="scss">

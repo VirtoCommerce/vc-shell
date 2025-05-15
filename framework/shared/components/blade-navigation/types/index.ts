@@ -49,6 +49,9 @@ export interface IBladeInstance {
   error: string | undefined;
   navigation: BladeVNode["props"]["navigation"] | undefined;
   breadcrumbs: Breadcrumbs[] | undefined;
+  title?: string;
+  param?: string;
+  options?: Record<string, any>;
 }
 
 export interface IParentCallArgs {

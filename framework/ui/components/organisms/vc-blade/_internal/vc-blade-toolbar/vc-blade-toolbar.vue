@@ -57,7 +57,7 @@ const blade = inject<ComputedRef<IBladeInstance>>(
   })),
 );
 
-const bladeId = computed(() => blade.value?.id ?? FALLBACK_BLADE_ID);
+const bladeId = computed(() => (blade.value?.id ?? FALLBACK_BLADE_ID).toLowerCase());
 
 const isMobile = inject<ComputedRef<boolean>>(
   "isMobile",

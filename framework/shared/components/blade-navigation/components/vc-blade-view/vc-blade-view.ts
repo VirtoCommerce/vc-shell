@@ -112,7 +112,7 @@ export const VcBladeView = defineComponent({
     provide(
       BladeInstance,
       computed<IBladeInstance>(() => ({
-        id: bl.value?.type.name ?? FALLBACK_BLADE_ID,
+        id: (bl.value?.type.name ?? FALLBACK_BLADE_ID).toLowerCase(),
         param: bl.value?.props?.param,
         options: bl.value?.props?.options,
         expandable: props.expandable ?? false,

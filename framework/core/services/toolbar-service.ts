@@ -38,7 +38,8 @@ const preregisteredIds = new Set<string>();
  * Registers a toolbar button before the service is initialized
  */
 export function registerToolbarItem(toolbarItem: IToolbarItem, bladeId: string): void {
-  preregisteredToolbarItems.push({ bladeId, toolbarItem });
+  const normalizedBladeId = bladeId.toLowerCase();
+  preregisteredToolbarItems.push({ bladeId: normalizedBladeId, toolbarItem });
   preregisteredIds.add(toolbarItem.id);
 }
 
@@ -48,14 +49,16 @@ export function createToolbarService(): IToolbarService {
   const registeredIds = reactive(new Set<string>());
 
   const registerToolbarItem = (toolbarItem: IToolbarItem, bladeId: string): void => {
-    if (!toolbarRegistry[bladeId]) {
-      toolbarRegistry[bladeId] = [];
+    const normalizedBladeId = bladeId.toLowerCase();
+
+    if (!toolbarRegistry[normalizedBladeId]) {
+      toolbarRegistry[normalizedBladeId] = [];
     }
 
-    const existingIndex = toolbarRegistry[bladeId].findIndex((t) => t.id === toolbarItem.id);
+    const existingIndex = toolbarRegistry[normalizedBladeId].findIndex((t) => t.id === toolbarItem.id);
     if (existingIndex === -1) {
-      toolbarRegistry[bladeId].push(reactive(toolbarItem));
-      registeredToolbarItems.push({ bladeId, toolbarItem: reactive(toolbarItem) });
+      toolbarRegistry[normalizedBladeId].push(reactive(toolbarItem));
+      registeredToolbarItems.push({ bladeId: normalizedBladeId, toolbarItem: reactive(toolbarItem) });
       registeredIds.add(toolbarItem.id);
     }
   };
@@ -69,25 +72,29 @@ export function createToolbarService(): IToolbarService {
     bladeId: string;
     toolbarItem: Partial<IToolbarItem>;
   }): void => {
-    if (toolbarRegistry[bladeId]) {
-      const index = toolbarRegistry[bladeId].findIndex((t) => t.id === id);
+    const normalizedBladeId = bladeId.toLowerCase();
+
+    if (toolbarRegistry[normalizedBladeId]) {
+      const index = toolbarRegistry[normalizedBladeId].findIndex((t) => t.id === id);
       if (index !== -1) {
-        toolbarRegistry[bladeId][index] = { ...toolbarRegistry[bladeId][index], ...toolbarItem };
+        toolbarRegistry[normalizedBladeId][index] = { ...toolbarRegistry[normalizedBladeId][index], ...toolbarItem };
       }
     }
   };
 
   const unregisterToolbarItem = (toolbarItemId: string, bladeId: string): void => {
-    if (toolbarRegistry[bladeId]) {
-      const index = toolbarRegistry[bladeId].findIndex((t) => t.id === toolbarItemId);
+    const normalizedBladeId = bladeId.toLowerCase();
+
+    if (toolbarRegistry[normalizedBladeId]) {
+      const index = toolbarRegistry[normalizedBladeId].findIndex((t) => t.id === toolbarItemId);
       if (index !== -1) {
-        toolbarRegistry[bladeId].splice(index, 1);
+        toolbarRegistry[normalizedBladeId].splice(index, 1);
         registeredIds.delete(toolbarItemId);
       }
     }
 
     const regIndex = registeredToolbarItems.findIndex(
-      (t) => t.bladeId === bladeId && t.toolbarItem.id === toolbarItemId,
+      (t) => t.bladeId === normalizedBladeId && t.toolbarItem.id === toolbarItemId,
     );
     if (regIndex !== -1) {
       registeredToolbarItems.splice(regIndex, 1);
@@ -95,19 +102,22 @@ export function createToolbarService(): IToolbarService {
   };
 
   const getToolbarItems = (bladeId: string): IToolbarItem[] => {
-    return toolbarRegistry[bladeId] || [];
+    const normalizedBladeId = bladeId ? bladeId.toLowerCase() : "";
+    return toolbarRegistry[normalizedBladeId] || [];
   };
 
   const clearBladeToolbarItems = (bladeId: string): void => {
-    if (toolbarRegistry[bladeId]) {
-      toolbarRegistry[bladeId].forEach((toolbarItem) => {
+    const normalizedBladeId = bladeId.toLowerCase();
+
+    if (toolbarRegistry[normalizedBladeId]) {
+      toolbarRegistry[normalizedBladeId].forEach((toolbarItem) => {
         registeredIds.delete(toolbarItem.id);
       });
-      delete toolbarRegistry[bladeId];
+      delete toolbarRegistry[normalizedBladeId];
     }
 
     const indices = registeredToolbarItems
-      .map((t, i) => (t.bladeId === bladeId ? i : -1))
+      .map((t, i) => (t.bladeId === normalizedBladeId ? i : -1))
       .filter((i) => i !== -1)
       .reverse();
 

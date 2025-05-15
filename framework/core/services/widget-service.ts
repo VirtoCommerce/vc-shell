@@ -44,7 +44,8 @@ const preregisteredIds = new Set<string>();
  * Registers a widget before the service is initialized
  */
 export function registerWidget(widget: IWidget, bladeId: string): void {
-  preregisteredWidgets.push({ bladeId, widget });
+  const normalizedBladeId = bladeId.toLowerCase();
+  preregisteredWidgets.push({ bladeId: normalizedBladeId, widget });
   preregisteredIds.add(widget.id);
 }
 
@@ -55,56 +56,65 @@ export function createWidgetService(): IWidgetService {
   const registeredIds = reactive(new Set<string>());
 
   const registerWidget = (widget: IWidget, bladeId: string): void => {
-    if (!widgetRegistry[bladeId]) {
-      widgetRegistry[bladeId] = [];
+    const normalizedBladeId = bladeId.toLowerCase();
+
+    if (!widgetRegistry[normalizedBladeId]) {
+      widgetRegistry[normalizedBladeId] = [];
     }
 
-    const existingIndex = widgetRegistry[bladeId].findIndex((w) => w.id === widget.id);
+    const existingIndex = widgetRegistry[normalizedBladeId].findIndex((w) => w.id === widget.id);
     if (existingIndex === -1) {
-      widgetRegistry[bladeId].push(reactive(widget));
-      registeredWidgets.push({ bladeId, widget: reactive(widget) });
+      widgetRegistry[normalizedBladeId].push(reactive(widget));
+      registeredWidgets.push({ bladeId: normalizedBladeId, widget: reactive(widget) });
       registeredIds.add(widget.id);
     }
   };
 
   const updateWidget = ({ id, bladeId, widget }: { id: string; bladeId: string; widget: Partial<IWidget> }): void => {
-    if (widgetRegistry[bladeId]) {
-      const index = widgetRegistry[bladeId].findIndex((w) => w.id === id);
+    const normalizedBladeId = bladeId.toLowerCase();
+
+    if (widgetRegistry[normalizedBladeId]) {
+      const index = widgetRegistry[normalizedBladeId].findIndex((w) => w.id === id);
       if (index !== -1) {
-        widgetRegistry[bladeId][index] = { ...widgetRegistry[bladeId][index], ...widget };
+        widgetRegistry[normalizedBladeId][index] = { ...widgetRegistry[normalizedBladeId][index], ...widget };
       }
     }
   };
 
   const unregisterWidget = (widgetId: string, bladeId: string): void => {
-    if (widgetRegistry[bladeId]) {
-      const index = widgetRegistry[bladeId].findIndex((w) => w.id === widgetId);
+    const normalizedBladeId = bladeId.toLowerCase();
+
+    if (widgetRegistry[normalizedBladeId]) {
+      const index = widgetRegistry[normalizedBladeId].findIndex((w) => w.id === widgetId);
       if (index !== -1) {
-        widgetRegistry[bladeId].splice(index, 1);
+        widgetRegistry[normalizedBladeId].splice(index, 1);
         registeredIds.delete(widgetId);
       }
     }
 
-    const regIndex = registeredWidgets.findIndex((w) => w.bladeId === bladeId && w.widget.id === widgetId);
+    const regIndex = registeredWidgets.findIndex((w) => w.bladeId === normalizedBladeId && w.widget.id === widgetId);
     if (regIndex !== -1) {
       registeredWidgets.splice(regIndex, 1);
     }
   };
 
   const getWidgets = (bladeId: string): IWidget[] => {
-    return widgetRegistry[bladeId] || [];
+    const normalizedBladeId = bladeId ? bladeId.toLowerCase() : "";
+    return widgetRegistry[normalizedBladeId] || [];
   };
 
   const clearBladeWidgets = (bladeId: string): void => {
-    if (widgetRegistry[bladeId]) {
-      widgetRegistry[bladeId].forEach((widget) => {
+    const normalizedBladeId = bladeId.toLowerCase();
+
+    if (widgetRegistry[normalizedBladeId]) {
+      widgetRegistry[normalizedBladeId].forEach((widget) => {
         registeredIds.delete(widget.id);
       });
-      delete widgetRegistry[bladeId];
+      delete widgetRegistry[normalizedBladeId];
     }
 
     const indices = registeredWidgets
-      .map((w, i) => (w.bladeId === bladeId ? i : -1))
+      .map((w, i) => (w.bladeId === normalizedBladeId ? i : -1))
       .filter((i) => i !== -1)
       .reverse();
 

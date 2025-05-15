@@ -50,9 +50,11 @@ import { VcIcon, ChevronDownIcon } from "../../../../..";
 
 interface Props {
   widgets: IWidget[];
+  bladeId: string;
 }
 
 const props = defineProps<Props>();
+const normalizedBladeId = computed(() => props.bladeId?.toLowerCase() || "");
 const showToolbar = ref(false);
 
 const displayedItems = computed(() => props.widgets.slice(0, 3));

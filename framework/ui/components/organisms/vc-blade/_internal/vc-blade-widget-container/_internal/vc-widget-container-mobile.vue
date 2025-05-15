@@ -66,6 +66,7 @@ interface Props {
 }
 
 const props = defineProps<Props>();
+const normalizedBladeId = computed(() => props.bladeId.toLowerCase());
 const containerRef = ref<HTMLElement | null>(null);
 const showToolbar = ref(false);
 const bladeInstance = inject<IBladeInstance>(BladeInstance);

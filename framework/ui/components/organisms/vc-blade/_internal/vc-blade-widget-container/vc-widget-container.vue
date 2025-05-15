@@ -3,12 +3,12 @@
     <WidgetContainerMobile
       v-if="$isMobile.value"
       :widgets="visibleWidgets"
-      :blade-id="bladeId"
+      :blade-id="normalizedBladeId"
     />
     <WidgetContainerDesktop
       v-else
       :widgets="visibleWidgets"
-      :blade-id="bladeId"
+      :blade-id="normalizedBladeId"
     />
   </template>
 </template>
@@ -25,8 +25,9 @@ interface Props {
 }
 
 const props = defineProps<Props>();
+const normalizedBladeId = computed(() => props.bladeId.toLowerCase());
 const widgetService = useWidgets();
-const widgets = computed(() => widgetService.getWidgets(props.bladeId));
+const widgets = computed(() => widgetService.getWidgets(normalizedBladeId.value));
 const bladeInstance = inject<IBladeInstance>(BladeInstance);
 
 const visibleWidgets = computed(() =>

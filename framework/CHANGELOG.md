@@ -1,3 +1,12 @@
+## [1.1.8](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.7...v1.1.8) (2025-05-15)
+
+
+### Bug Fixes
+
+* **vc-badge:** adjust badge dimensions in story and update visibility condition for content ([41d30de](https://github.com/VirtoCommerce/vc-shell/commit/41d30de789b199bebf94a73eb2dc42790ffdf3c8))
+
+
+
 ## [1.1.7](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.6...v1.1.7) (2025-05-12)
 
 

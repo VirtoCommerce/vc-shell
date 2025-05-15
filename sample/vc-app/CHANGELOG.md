@@ -1,3 +1,12 @@
+## [1.1.8](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.7...v1.1.8) (2025-05-15)
+
+
+### Features
+
+* **generate-api-client:** enhance API client generation with new features and improvements ([fcf85db](https://github.com/VirtoCommerce/vc-shell/commit/fcf85db675390abc218b4cd1fa3f204be9a50da3))
+
+
+
 ## [1.1.7](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.6...v1.1.7) (2025-05-12)
 
 

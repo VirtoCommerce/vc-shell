@@ -17,7 +17,7 @@ The Widget Service manages the lifecycle of widgets throughout the application, 
 export interface IWidget {
   id: string;
   title?: string;
-  component: ConcreteComponent;
+  component: Component;
   props?: Record<string, unknown>;
   events?: Record<string, unknown>;
   isVisible?: boolean | ComputedRef<boolean> | Ref<boolean> | ((blade?: IBladeInstance) => boolean);

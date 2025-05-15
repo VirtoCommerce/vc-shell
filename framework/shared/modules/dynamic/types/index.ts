@@ -843,7 +843,10 @@ export interface CardSchema
 
 export interface WidgetsSchema extends Pick<SchemaBase, "id" | "horizontalSeparator" | "permissions"> {
   component: "vc-widgets";
-  children: string[] | { id: string; visibility?: { method: string } }[];
+  children:
+    | string[]
+    | { id: string; visibility?: { method: string } }[]
+    | (string | { id: string; visibility?: { method: string } })[];
 }
 
 export interface CheckboxSchema extends Omit<SchemaBase, "multilanguage" | "placeholder" | "onBlur"> {

@@ -225,5 +225,4 @@ export type ListComposableArgs<
   readonly props: InstanceType<typeof DynamicBladeList>["$props"] & Props;
   readonly emit: InstanceType<typeof DynamicBladeList>["$emit"];
   readonly mounted: Ref<boolean>;
-  readonly isWidgetView: boolean;
 };

@@ -20,7 +20,7 @@ export interface IWidget {
   component: ConcreteComponent;
   props?: Record<string, unknown>;
   events?: Record<string, unknown>;
-  isVisible?: boolean | ComputedRef<boolean> | Ref<boolean> | (() => boolean);
+  isVisible?: boolean | ComputedRef<boolean> | Ref<boolean> | ((blade?: IBladeInstance) => boolean);
   onOpen?: (blade: { id: string }) => void;
   onClose?: (blade: { id: string }) => void;
 }
@@ -60,14 +60,14 @@ widgetService.registerWidget({
 
 ### Widget Visibility Control
 
-Widgets can be conditionally displayed based on a visibility setting, which can be a boolean, a computed reference, a reactive reference, or a function.
+Widgets can be conditionally displayed based on a visibility setting, which can be a boolean, a computed reference, a reactive reference, or a function. The function now receives the current blade instance as a parameter, allowing for visibility decisions based on blade context.
 
 ```typescript
-// Register a widget with conditional visibility
+// Register a widget with conditional visibility using blade context
 widgetService.registerWidget({
   id: 'conditional-widget',
   component: ConditionalWidgetComponent,
-  isVisible: () => userHasPermission('view-widget')
+  isVisible: (blade) => blade?.options?.mode === 'edit' && userHasPermission('view-widget')
 }, 'blade-id');
 ```
 
@@ -108,8 +108,10 @@ The Widget Service is typically accessed through the `useWidgets` composable. He
 
 ```typescript
 <script setup lang="ts">
-import { computed, toValue } from "vue";
+import { computed, toValue, inject } from "vue";
 import { useWidgets } from "../../../../../../core/composables/useWidgets";
+import { BladeInstance } from "../../../../../../injection-keys";
+import { IBladeInstance } from "../../../../../../shared/components/blade-navigation/types";
 
 interface Props {
   bladeId: string;
@@ -118,12 +120,13 @@ interface Props {
 const props = defineProps<Props>();
 const widgetService = useWidgets();
 const widgets = computed(() => widgetService.getWidgets(props.bladeId));
+const bladeInstance = inject<IBladeInstance>(BladeInstance);
 
 // Filter widgets by visibility
 const visibleWidgets = computed(() =>
   widgets.value.filter((widget) => {
     if (typeof widget.isVisible === "function") {
-      return widget.isVisible();
+      return widget.isVisible(bladeInstance);
     } else if (typeof widget.isVisible === "boolean") {
       return widget.isVisible;
     }
@@ -132,53 +135,6 @@ const visibleWidgets = computed(() =>
 );
 </script>
 ```
-
-<!-- ## Integration with Blade Components
-
-Widgets are typically displayed within blade components. The following example shows how widgets are registered and rendered in a dynamic blade:
-
-```typescript
-// From framework/shared/modules/dynamic/composables/useWidgetsHelper/index.ts
-export const useWidgetsHelper = () => {
-  const widgetService = useWidgets();
-
-  const registerWidgets = ({
-    bladeId,
-    bladeContext,
-    schema,
-  }: {
-    bladeId: string;
-    bladeContext: any;
-    schema: DynamicSchema;
-  }) => {
-    const widgets = schema.widgets;
-    if (widgets) {
-      widgets.forEach((widget) => {
-        const comp = typeof widget === "string" ? resolveComponent(widget) : widget;
-
-        if (!comp) {
-          throw new Error(`Widget ${widget} not found`);
-        }
-
-        const widgetId = typeof comp === "object" && "__name" in comp ? comp.__name : `widget-${Date.now()}`;
-
-        if (widgetId) {
-          widgetService.registerWidget(
-            {
-              id: widgetId,
-              component: markRaw(comp),
-              props: {
-                modelValue: bladeContext,
-              },
-            },
-            bladeId,
-          );
-        }
-      });
-    }
-  };
-};
-``` -->
 
 ## Best Practices
 
@@ -190,7 +146,19 @@ export const useWidgetsHelper = () => {
    
 4. **Pre-registration**: Use pre-registration for widgets that need to be available immediately when the application starts.
    
-5. **Widget Visibility**: Use computed properties or functions for dynamic widget visibility control.
+5. **Widget Visibility**: Use the blade context in visibility functions to make decisions based on the current blade state:
+
+```typescript
+// Example of using blade context to determine widget visibility
+widgetService.registerWidget({
+  id: 'edit-widget',
+  component: EditWidget,
+  isVisible: (blade) => {
+    // Only show in edit mode and when user has specific permissions
+    return blade?.options?.mode === 'edit' && userHasPermission('can-edit-content');
+  }
+}, bladeId);
+```
 
 ## Related Composables
 

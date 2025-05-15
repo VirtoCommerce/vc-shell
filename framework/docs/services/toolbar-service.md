@@ -123,16 +123,16 @@ toolbarService.unregisterToolbarItem('my-button', 'blade-id');
 
 ### Conditional Visibility and State
 
-Toolbar items can be conditionally displayed or enabled based on permissions or other application state.
+Toolbar items can be conditionally displayed or enabled based on permissions or other application state. The `isVisible` property now supports a function that receives the current blade instance as a parameter, allowing for visibility decisions based on blade context.
 
 ```typescript
-// Register a toolbar item with conditional visibility
+// Register a toolbar item with conditional visibility based on blade state
 toolbarService.registerToolbarItem({
-  id: 'conditional-button',
-  title: 'Conditional Action',
+  id: 'edit-button',
+  title: 'Edit',
   icon: 'material-edit',
-  isVisible: computed(() => userHasPermission('can-edit')),
-  disabled: computed(() => !isEditMode.value),
+  isVisible: (blade) => blade?.options?.mode === 'view' && userHasPermission('can-edit'),
+  disabled: computed(() => !isFormValid.value),
   clickHandler: () => {
     // Action to perform when clicked
   }
@@ -157,6 +157,7 @@ toolbar.registerToolbarItem({
   title: 'Save',
   icon: 'material-save',
   priority: 100,
+  isVisible: (blade) => blade?.options?.mode === 'edit',
   clickHandler: () => {
     saveData();
   }
@@ -167,6 +168,7 @@ toolbar.registerToolbarItem({
   title: 'Cancel',
   icon: 'material-cancel',
   priority: 90,
+  isVisible: (blade) => blade?.options?.mode === 'edit',
   clickHandler: () => {
     cancelEditing();
   }
@@ -195,28 +197,26 @@ function cancelEditing() {
 
 ## Integration with Blade Components
 
-In the VC-Shell framework, the VcBladeToolbar component automatically registers all toolbar items passed through props to the service:
+In the VC-Shell framework, the VcBladeToolbar component automatically checks if the `isVisible` property is a function and passes the blade instance to it:
 
 ```typescript
 // From framework/ui/components/organisms/vc-blade/_internal/vc-blade-toolbar/vc-blade-toolbar.vue
-const { registerToolbarItem, unregisterToolbarItem, getToolbarItems } = useToolbar();
-
-// Register prop items in the service
-function registerPropItems() {
-  // Unregister previous items first to avoid duplicates
-  unregisterPropItems();
-  
-  // Register new items
-  props.items.forEach((item, index) => {
-    const toolbarItem = ensureItemHasId(item, index);
-    registerToolbarItem(toolbarItem);
-  });
-}
-
-// Watch for changes in props.items
-watch(() => props.items, () => {
-  registerPropItems();
-}, { deep: true });
+const visibleItems = computed(() => {
+  return getToolbarItems()
+    .filter(
+      (item) =>
+        hasAccess(item.permissions) &&
+        (typeof item.isVisible === "function"
+          ? item.isVisible(blade.value)
+          : item.isVisible === undefined || item.isVisible) &&
+        (isMobile.value ? !item.disabled : true),
+    )
+    .sort((a, b) => {
+      const priorityA = a.priority ?? 0;
+      const priorityB = b.priority ?? 0;
+      return priorityB - priorityA;
+    });
+});
 ```
 
 ## Best Practices
@@ -232,6 +232,22 @@ watch(() => props.items, () => {
 5. **Permissions**: Use the permissions property to control access to actions.
 
 6. **Grouping**: Consider creating logical groups of buttons with similar priorities for better organization.
+
+7. **Blade Context**: Utilize the blade context in `isVisible` functions to control visibility based on the blade's mode, options, or other properties:
+
+```typescript
+// Example of using blade context to control button visibility
+toolbar.registerToolbarItem({
+  id: 'delete-button',
+  title: 'Delete',
+  icon: 'material-delete',
+  isVisible: (blade) => {
+    // Only show delete button if item is not new and user has delete permission
+    return !blade?.options?.isNew && userHasPermission('can-delete');
+  },
+  clickHandler: deleteItem
+}, 'blade-id');
+```
 
 ## Related Composables
 

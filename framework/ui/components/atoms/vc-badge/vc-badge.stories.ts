@@ -249,7 +249,7 @@ export const DotIndicator: Story = {
         <div class="tw-flex tw-gap-4">
           <div v-for="variant in variants" :key="variant" class="tw-flex tw-flex-col tw-items-center tw-gap-2">
             <VcBadge :isDot="true" :variant="variant">
-              <div class="tw-w-10 tw-h-10 tw-bg-gray-200 tw-rounded tw-flex tw-items-center tw-justify-center">
+              <div class="tw-w-5 tw-h-5 tw-bg-gray-200 tw-rounded tw-flex tw-items-center tw-justify-center">
                 <svg xmlns="http://www.w3.org/2000/svg" class="tw-h-5 tw-w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
                 </svg>
@@ -463,7 +463,7 @@ export const UseCases: Story = {
               :variant="example.variant"
               :isDot="example.isDot"
             >
-              <div class="tw-w-12 tw-h-12 tw-bg-gray-200 tw-rounded tw-flex tw-items-center tw-justify-center">
+              <div class="tw-w-8 tw-h-8 tw-bg-gray-200 tw-rounded tw-flex tw-items-center tw-justify-center">
                 <svg xmlns="http://www.w3.org/2000/svg" class="tw-h-6 tw-w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" :d="example.icon" />
                 </svg>

@@ -11,7 +11,7 @@
       <slot name="default"></slot>
 
       <div
-        v-if="typeof content !== 'undefined'"
+        v-if="typeof content !== 'undefined' || isDot"
         ref="badge"
         class="vc-badge__badge"
         :class="[

@@ -10,6 +10,7 @@
     @collapse="$emit('collapse:blade')"
   >
     <!-- Blade contents -->
+    <!-- @vue-generic {never} -->
     <VcTable
       :expanded="expanded"
       class="tw-grow tw-basis-0"

@@ -10,6 +10,7 @@
     @collapse="$emit('collapse:blade')"
   >
     <!-- Blade contents -->
+    <!-- @vue-generic {MockedItem} -->
     <VcTable
       :expanded="expanded"
       class="tw-grow tw-basis-0"
@@ -50,7 +51,7 @@ import {
 import { useI18n } from "vue-i18n";
 import { useList } from "./../composables";
 import Details from "./details.vue";
-import { MockedItem } from "../sample-data";
+import { MockedItem } from "./../composables/useList";
 
 export interface Props {
   expanded?: boolean;

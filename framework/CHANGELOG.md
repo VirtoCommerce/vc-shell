@@ -1,3 +1,12 @@
+## [1.1.10](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.9...v1.1.10) (2025-05-22)
+
+
+### Features
+
+* **dynamic-properties:** add useDynamicProperties composable for managing dynamic property values and dictionaries ([5af9e0b](https://github.com/VirtoCommerce/vc-shell/commit/5af9e0bd27dd9930589166e17ef234fd8dae5998))
+
+
+
 ## [1.1.9](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.8...v1.1.9) (2025-05-15)
 
 

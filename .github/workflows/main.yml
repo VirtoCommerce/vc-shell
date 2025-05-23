@@ -67,12 +67,14 @@ jobs:
         yarn build
 
     - name: Add auth token
+      if: success()
       run: |
         yarn config set --json npmRegistries '{ "//registry.npmjs.org": { "npmAuthToken": "'"${NPM_TOKEN}"'" } }'
       env:
         NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
     - name: Determine npm tag
+      if: success()
       run: |
         # First check for npmTag field in package.json files
         for pkg in framework configs/ts-config configs/release-config cli/create-vc-app configs/vite-config cli/api-client; do
@@ -113,6 +115,7 @@ jobs:
         echo "Publishing with npm tag: $NPM_TAG"
 
     - name: Publish virto-shell npm
+      if: success()
       # if: ${{ github.ref == 'refs/heads/main' }}
       run: |
         echo "Using npm tag: $NPM_TAG"
@@ -121,7 +124,6 @@ jobs:
         else
           # Changed the original expression to the NPM_TAG variable without $npm_config_tag
           yarn workspaces foreach -v --worktree --from '{@vc-shell/config-generator,@vc-shell/api-client-generator,@vc-shell/framework,@vc-shell/create-vc-app,@vc-shell/release-config,@vc-shell/ts-config}' npm publish --tag $NPM_TAG
-        fi
 
     - name: Update npm dist tags
       if: success()

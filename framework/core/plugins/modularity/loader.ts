@@ -69,7 +69,7 @@ class VersionCompatibilityError extends Error {
   details: {
     required: string;
     current: string;
-    type: "framework" | "module" | "app";
+    type: "framework" | "module";
     dependencyName?: string;
   };
 
@@ -78,7 +78,7 @@ class VersionCompatibilityError extends Error {
     details: {
       required: string;
       current: string;
-      type: "framework" | "module" | "app";
+      type: "framework" | "module";
       dependencyName?: string;
     },
   ) {
@@ -88,7 +88,7 @@ class VersionCompatibilityError extends Error {
     } else if (details.type === "module") {
       message = `Module ${moduleId} requires ${details.dependencyName} version ${details.required}, but current is ${details.current}`;
     } else {
-      message = `Module ${moduleId} is not compatible with ${details.current}. Required apps: ${details.required}`;
+      message = `Module ${moduleId} encountered an unknown compatibility issue.`;
     }
 
     super(message);
@@ -129,7 +129,6 @@ interface ModuleConfig {
   entryPointKey: string;
   frameworkVersion: string;
   skipVersionCheck?: boolean;
-  appVersion?: string;
 }
 
 const DEFAULT_CONFIG: Partial<ModuleConfig> = {
@@ -139,50 +138,11 @@ const DEFAULT_CONFIG: Partial<ModuleConfig> = {
   frameworkVersion: "1.1.0",
 };
 
-function checkAppCompatibility(moduleId: string, versionInfo: VersionInfo, appName: string, appVersion?: string): void {
-  if (!versionInfo.appCompatibility) return;
-
-  if (versionInfo.appCompatibility["*"]) return;
-
-  const appPattern = versionInfo.appCompatibility[appName];
-
-  if (!appPattern) {
-    const compatibleApps = Object.keys(versionInfo.appCompatibility).join(", ");
-
-    notification.error(
-      `Module ${moduleId} is not compatible with application ${appName}. Required apps: ${compatibleApps}`,
-    );
-
-    throw new VersionCompatibilityError(moduleId, {
-      required: compatibleApps || "none",
-      current: appName,
-      type: "app",
-    });
-  }
-
-  if (appPattern !== "*" && appVersion) {
-    if (!semver.satisfies(appVersion, appPattern)) {
-      notification.error(
-        `Module ${moduleId} is not compatible with application ${appName} v${appVersion}. Required apps: ${appPattern}`,
-      );
-
-      throw new VersionCompatibilityError(moduleId, {
-        required: appPattern,
-        current: appVersion,
-        type: "app",
-        dependencyName: appName,
-      });
-    }
-  }
-}
-
 function checkVersionCompatibility(
   moduleId: string,
   moduleVersion: VersionInfo | undefined,
   frameworkVersion: string,
   loadedModulesWithVersions: Map<string, string>,
-  appName: string,
-  appVersion?: string,
 ): void {
   if (!moduleVersion) return;
 
@@ -202,8 +162,6 @@ function checkVersionCompatibility(
       type: "framework",
     });
   }
-
-  checkAppCompatibility(moduleId, moduleVersion, appName, appVersion);
 
   if (moduleVersion.compatibleWith.modules) {
     for (const [depModuleId, versionRange] of Object.entries(moduleVersion.compatibleWith.modules)) {
@@ -344,21 +302,12 @@ export function useDynamicModules(
                             versionInfo,
                             finalConfig.frameworkVersion || "0.0.0",
                             loadedModulesWithVersions,
-                            appName,
-                            finalConfig.appVersion,
                           );
 
                           loadedModulesWithVersions.set(moduleId, versionInfo.version);
                         } catch (versionError) {
                           if (versionError instanceof VersionCompatibilityError) {
                             console.error(`Version compatibility error: ${versionError.message}`);
-                            if (versionError.details.type === "app") {
-                              console.error(
-                                `Module ${moduleId} is not compatible with application ${appName}${
-                                  finalConfig.appVersion ? ` v${finalConfig.appVersion}` : ""
-                                }. This module supports only: ${versionError.details.required || "none"}`,
-                              );
-                            }
                             console.error(`Skipping installation of incompatible module: ${moduleId}`);
                             return;
                           } else {

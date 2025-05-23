@@ -124,6 +124,7 @@ jobs:
         else
           # Changed the original expression to the NPM_TAG variable without $npm_config_tag
           yarn workspaces foreach -v --worktree --from '{@vc-shell/config-generator,@vc-shell/api-client-generator,@vc-shell/framework,@vc-shell/create-vc-app,@vc-shell/release-config,@vc-shell/ts-config}' npm publish --tag $NPM_TAG
+        fi
 
     - name: Update npm dist tags
       if: success()

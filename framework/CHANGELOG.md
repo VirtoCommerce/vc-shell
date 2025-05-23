@@ -1,3 +1,12 @@
+## [1.1.11](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.10...v1.1.11) (2025-05-23)
+
+
+### Features
+
+* **vc-select:** add loading and no options messages for improved user experience ([aa65256](https://github.com/VirtoCommerce/vc-shell/commit/aa65256b99238e6d7feae24177c4304eb25d1153))
+
+
+
 ## [1.1.10](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.9...v1.1.10) (2025-05-22)
 
 

@@ -13,7 +13,6 @@ export * from "./vc-progress";
 export * from "./vc-row";
 export * from "./vc-status";
 export * from "./vc-status-icon";
-export * from "./vc-switch";
 export * from "./vc-video";
 export * from "./vc-widget";
 export * from "./vc-tooltip";

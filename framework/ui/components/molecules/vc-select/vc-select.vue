@@ -338,8 +338,8 @@ import { VcLabel, VcContainer, VcHint, VcIcon } from "./../../";
 import { useI18n } from "vue-i18n";
 import { useKeyboardNavigation } from "../../../../core/composables/useKeyboardNavigation";
 
-type OptionProp<T> = ((option: T) => string) | string | undefined;
-type MaybeArray<T> = T | T[];
+export type OptionProp<T> = ((option: T) => string) | string | undefined;
+export type MaybeArray<T> = T | T[];
 type FloatingInstanceType = UseFloatingReturn & {
   middlewareData: {
     sameWidthChangeBorders: {

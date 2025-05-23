@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="vc-user-dropdown-button-container">
     <button
       type="button"
       class="vc-user-dropdown-button"
@@ -87,8 +87,12 @@ function handleClick() {
   --user-dropdown-wrap-padding-left: 18px;
 }
 
+.vc-user-dropdown-button-container {
+  @apply tw-flex tw-flex-col;
+}
+
 .vc-user-dropdown-button {
-  @apply tw-w-full tw-cursor-pointer tw-relative tw-flex tw-h-[var(--user-dropdown-height)] tw-flex-col tw-select-none tw-overflow-hidden tw-border-solid tw-border-t tw-border-t-[var(--user-dropdown-border-color)];
+  @apply tw-w-full tw-cursor-pointer tw-relative tw-flex tw-h-[var(--user-dropdown-height)] tw-flex-col tw-select-none tw-overflow-hidden tw-border-solid tw-border-t tw-border-t-[var(--user-dropdown-border-color)] tw-pl-[var(--user-dropdown-wrap-padding-left)];
 
   &:hover {
     .vc-user-dropdown-button__trigger {
@@ -108,7 +112,7 @@ function handleClick() {
   }
 
   &__wrap {
-    @apply tw-flex tw-justify-between tw-items-center tw-flex-auto tw-pl-[var(--user-dropdown-wrap-padding-left)] tw-bg-[--user-dropdown-wrap-bg] tw-gap-3;
+    @apply tw-flex tw-justify-between tw-items-center tw-flex-auto tw-bg-[--user-dropdown-wrap-bg] tw-gap-3;
   }
 
   &--collapsed {

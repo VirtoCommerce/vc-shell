@@ -59,7 +59,8 @@ const imageHandler = computed(() => {
 }
 
 .vc-user-info {
-  @apply tw-flex tw-items-center tw-gap-3 tw-truncate;
+  @apply tw-flex tw-items-center tw-gap-3 tw-truncate tw-w-full;
+  @apply tw-overflow-visible #{!important};
 
   &__avatar {
     @apply tw-rounded-full tw-overflow-hidden tw-w-[var(--user-info-avatar-width)] tw-h-[var(--user-info-avatar-height)] tw-bg-[color:var(--user-dropdown-account-info-role-color)]
@@ -79,7 +80,7 @@ const imageHandler = computed(() => {
   }
 
   &__role {
-    @apply tw-text-sm tw-text-[color:var(--user-dropdown-account-info-role-color)] tw-truncate tw-text-left;
+    @apply tw-text-sm tw-text-[color:var(--user-dropdown-account-info-role-color)] tw-truncate tw-text-left tw-w-full tw-max-w-[250px];
   }
 }
 

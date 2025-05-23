@@ -256,18 +256,9 @@
             ref="root"
             :no-padding="true"
           >
-            <div v-if="listLoading"></div>
-            <div
-              v-else-if="!(optionsList && optionsList.length)"
-              class="vc-select__no-options"
-            >
-              <slot name="no-options">
-                <span class="vc-select__no-options-text">No options</span>
-              </slot>
-            </div>
+            <!-- Render existing options -->
             <div
               v-for="(item, i) in optionScope"
-              v-else
               :key="i"
               class="vc-select__option"
               data-test-id="option"
@@ -284,9 +275,41 @@
                 >{{ item.label }}</slot
               >
             </div>
+
+            <!-- Loading Indicator (Initial or More) -->
+            <div
+              v-if="listLoading"
+              class="vc-select__list-loading-indicator"
+            >
+              <VcIcon
+                icon="lucide-loader"
+                class="tw-animate-spin"
+                size="m"
+              />
+              <span>
+                {{
+                  optionsList.length > 0
+                    ? t("COMPONENTS.MOLECULES.VC_SELECT.LOADING_MORE")
+                    : t("COMPONENTS.MOLECULES.VC_SELECT.LOADING")
+                }}
+              </span>
+            </div>
+
+            <!-- Show "No options" message -->
+            <div
+              v-if="!listLoading && !(optionsList && optionsList.length)"
+              class="vc-select__no-options"
+            >
+              <slot name="no-options">
+                <span class="vc-select__no-options-text">{{ t("COMPONENTS.MOLECULES.VC_SELECT.NO_OPTIONS") }}</span>
+              </slot>
+            </div>
+
+            <!-- Intersection observer target for loading more -->
             <span
-              v-if="hasNextPage"
+              v-if="hasNextPage && !listLoading"
               ref="el"
+              class="vc-select__load-more-trigger"
             ></span>
           </VcContainer>
         </div>
@@ -315,7 +338,7 @@ import { VcLabel, VcContainer, VcHint, VcIcon } from "./../../";
 import { useI18n } from "vue-i18n";
 import { useKeyboardNavigation } from "../../../../core/composables/useKeyboardNavigation";
 
-export type OptionProp<T> = ((option: T) => string) | string | undefined;
+type OptionProp<T> = ((option: T) => string) | string | undefined;
 type MaybeArray<T> = T | T[];
 type FloatingInstanceType = UseFloatingReturn & {
   middlewareData: {
@@ -327,7 +350,7 @@ type FloatingInstanceType = UseFloatingReturn & {
     };
   };
 };
-type ArrayElementType<T> = T extends Array<infer U> ? U : never;
+type ArrayElementType<U> = U extends Array<infer V> ? V : never;
 type Option = T & ArrayElementType<Required<P>["results"]>;
 
 defineSlots<{
@@ -1223,6 +1246,18 @@ const keyboardNavigation = useKeyboardNavigation({
     &--selected {
       @apply tw-bg-[color:var(--select-option-background-color-selected)] hover:tw-bg-[color:var(--select-option-background-color-selected)];
     }
+  }
+
+  &__list-loading-indicator {
+    @apply tw-flex tw-items-center tw-justify-center tw-p-2 tw-text-sm tw-text-[color:var(--select-text-color)];
+
+    span {
+      @apply tw-mr-2;
+    }
+  }
+
+  &__load-more-trigger {
+    @apply tw-block tw-h-[1px]; /* Ensures it's in layout flow for intersection observer */
   }
 
   &.vc-select_opened &__chevron {

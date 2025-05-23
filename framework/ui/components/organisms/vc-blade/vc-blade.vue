@@ -243,8 +243,6 @@ const { open } = usePopup({
     }),
   },
 });
-
-console.log(getCurrentInstance());
 </script>
 
 <style lang="scss">

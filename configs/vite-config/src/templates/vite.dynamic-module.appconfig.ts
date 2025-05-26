@@ -29,19 +29,15 @@ export default function dynamicModuleConfiguration(
     compatibility: {
       framework: string;
       modules?: Record<string, string>;
-      apps: Record<string, string>;
     };
     externals?: string[];
   },
 ) {
   const { name, version, dependencies = {} } = pkg;
-  const _dirname = dirname(fileURLToPath(import.meta.url));
 
   // Validate required compatibility settings
-  if (!options.compatibility || !options.compatibility.framework || !options.compatibility.apps) {
-    throw new Error(
-      "Required compatibility options are missing. You must specify compatibility.framework and compatibility.apps values.",
-    );
+  if (!options.compatibility || !options.compatibility.framework) {
+    throw new Error("Required compatibility options are missing. You must specify compatibility.framework value.");
   }
 
   // Extract customization options with defaults
@@ -89,7 +85,6 @@ export default function dynamicModuleConfiguration(
                 framework: compatibility.framework,
                 modules: compatibility.modules || {},
               },
-              appCompatibility: compatibility.apps,
             };
 
             return `
@@ -134,7 +129,6 @@ export default function dynamicModuleConfiguration(
                   framework: compatibility.framework,
                   modules: compatibility.modules || {},
                 },
-                appCompatibility: compatibility.apps,
               };
 
               // Write file with version

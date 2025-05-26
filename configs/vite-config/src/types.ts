@@ -15,12 +15,6 @@ export interface CompatibilityOptions {
    * @example { "@vc-shell/module-catalog": "^1.0.0" }
    */
   modules?: Record<string, string>;
-
-  /**
-   * Compatible applications version ranges
-   * @example { "vendor-portal-new": "^2.0.0" }
-   */
-  apps: Record<string, string>;
 }
 
 /**

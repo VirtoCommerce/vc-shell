@@ -189,6 +189,22 @@
       >
       </VcSwitch>
     </template>
+    <template v-else-if="computedProperty.valueType === 'Measure'">
+      <VcInputDropdown
+        v-bind="$attrs"
+        v-model="value"
+        v-model:option="defaultMeasurementOption"
+        :options="measurementOptions"
+        :loading="measurementLoading"
+        option-label="displayName"
+        option-value="displaySymbol"
+        input-type="number"
+        :label="computedProperty.displayName"
+        :placeholder="computedProperty.placeholder"
+        :required="computedProperty.required"
+        :disabled="disabled"
+      />
+    </template>
   </Field>
 </template>
 
@@ -216,6 +232,7 @@ const props = withDefaults(
       keyword?: string,
       locale?: string,
     ) => Promise<any[] | undefined> | any[] | undefined;
+    measurementsGetter?: (measureId: string, locale?: string) => Promise<any[] | undefined> | any[] | undefined;
     required: boolean;
     multivalue?: boolean;
     multilanguage?: boolean;
@@ -255,6 +272,9 @@ const loading = ref(false);
 const initialOptions = ref<any[]>([]);
 const internalProperty = ref(props.property) as Ref<typeof props.property>;
 const internalModel = ref(props.modelValue) as Ref<typeof props.modelValue>;
+const measurementOptions = ref<any[]>([]);
+const measurementLoading = ref(false);
+const defaultMeasurementOption = ref();
 
 watch(
   () => props.property,
@@ -333,6 +353,7 @@ const value = computed({
 
 onMounted(async () => {
   await getOptions();
+  await getMeasurements();
   initialOptions.value = items.value;
 });
 
@@ -347,6 +368,24 @@ async function getOptions(keyword: string | undefined = undefined) {
       }
     } finally {
       loading.value = false;
+    }
+  }
+}
+
+async function getMeasurements() {
+  if (props.measurementsGetter && internalProperty.value.valueType === "Measure" && internalProperty.value.measureId) {
+    try {
+      measurementLoading.value = true;
+      const measurements = await props.measurementsGetter(
+        internalProperty.value.measureId,
+        props.currentLanguage ?? "en-US",
+      );
+      if (measurements) {
+        measurementOptions.value = measurements;
+        defaultMeasurementOption.value = measurements.filter((x) => x.isDefault)[0].displaySymbol;
+      }
+    } finally {
+      measurementLoading.value = false;
     }
   }
 }

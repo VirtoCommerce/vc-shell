@@ -40,11 +40,21 @@ export interface IBasePropertyDictionaryItemSearchCriteria {
   take?: number | null;
 }
 
+export interface IBaseMeasurementDictionaryItem {
+  code?: string | null;
+  name?: string | null;
+  symbol?: string | null;
+  isDefault?: boolean;
+  id?: string | null;
+}
+
 export interface IUseDynamicProperties<
   TProperty extends IBaseProperty<TPropertyValue>,
   TPropertyValue extends IBasePropertyValue,
   TPropertyDictionaryItem extends IBasePropertyDictionaryItem,
   TPropertyDictionaryItemSearchCriteria extends IBasePropertyDictionaryItemSearchCriteria,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  TMeasurement extends IBaseMeasurementDictionaryItem = Record<string, any>,
 > {
   loading: ComputedRef<boolean>;
   loadDictionaries: (
@@ -63,6 +73,7 @@ export interface IUseDynamicProperties<
     locale?: string;
     initialProp?: TProperty;
   }) => void;
+  loadMeasurements(measureId: string, keyword?: string, locale?: string): Promise<TMeasurement[] | undefined>;
 }
 
 function isEmptyValues(value: unknown) {
@@ -80,12 +91,14 @@ export const useDynamicProperties = <
   TPropertyValue extends IBasePropertyValue,
   TPropertyDictionaryItem extends IBasePropertyDictionaryItem,
   TPropertyDictionaryItemSearchCriteria extends IBasePropertyDictionaryItemSearchCriteria,
+  TMeasurement extends IBaseMeasurementDictionaryItem,
 >(
   searchDictionaryItemsFunction: (
     criteria: TPropertyDictionaryItemSearchCriteria,
   ) => Promise<TPropertyDictionaryItem[] | undefined>,
   PropertyValueConstructor: new (data?: Partial<TPropertyValue>) => TPropertyValue,
   PropertyDictionaryItemConstructor: new (data?: Partial<TPropertyDictionaryItem>) => TPropertyDictionaryItem,
+  searchMeasurementFunction?: (measureId: string, locale?: string) => Promise<TMeasurement[] | undefined>,
 ): IUseDynamicProperties<TProperty, TPropertyValue, TPropertyDictionaryItem, TPropertyDictionaryItemSearchCriteria> => {
   const { loading: dictionaryItemsLoading, action: searchDictionaryItems } = useAsync<
     TPropertyDictionaryItemSearchCriteria,
@@ -154,6 +167,11 @@ export const useDynamicProperties = <
       }
       return dictionaryItems;
     }
+  }
+
+  async function loadMeasurements(measureId: string, locale?: string) {
+    if (!measureId || !searchMeasurementFunction) return undefined;
+    return await searchMeasurementFunction(measureId, locale);
   }
 
   function setPropertyValue(data: {
@@ -340,5 +358,6 @@ export const useDynamicProperties = <
     loadDictionaries,
     getPropertyValue,
     setPropertyValue,
+    loadMeasurements,
   };
 };

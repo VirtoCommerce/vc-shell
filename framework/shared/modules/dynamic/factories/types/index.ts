@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ComputedRef, MaybeRef, Ref, UnwrapNestedRefs } from "vue";
-import { AsyncAction } from "../../../../../core/composables";
+import { AsyncAction, IUseDynamicProperties } from "../../../../../core/composables";
 import { SettingsDetails, SettingsGrid, SettingsSchema } from "../../types";
 import {
   AssetsHandler,
@@ -155,22 +155,13 @@ export interface DetailsBaseBladeScope<Item = Record<string, any>> extends BaseB
     localesOptions: Ref<{ label: string | undefined; value: string }[]>;
     getLanguages: AsyncAction<void, void>;
   };
-  dynamicProperties?: {
-    loading: ComputedRef<boolean>;
-    loadDictionaries: (
-      propertyId: string,
-      keyword?: string,
-      locale?: string,
-    ) => Promise<Record<string, any>[] | undefined>;
-    getPropertyValue: (property: Record<string, any>, locale: string) => any;
-    setPropertyValue: (data: {
-      property: Record<string, any>;
-      value: string | Record<string, any>[];
-      dictionary?: Record<string, any>[];
-      locale?: string;
-      initialProp?: Record<string, any>;
-    }) => void;
-  };
+  dynamicProperties?: IUseDynamicProperties<
+    Record<string, any>,
+    Record<string, any>,
+    Record<string, any>,
+    Record<string, any>,
+    Record<string, any>
+  >;
   assetsHandler?: {
     assets?: AssetsHandler<ICommonAsset>;
     images?: AssetsHandler<ICommonAsset>;

@@ -255,7 +255,7 @@ defineSlots<{
   option: (scope: {
     index: number;
     //todo: Create generic component
-    opt: Record<string, any>;
+    opt: unknown;
     selected: boolean;
     toggleOption: (opt: any) => void;
   }) => unknown;

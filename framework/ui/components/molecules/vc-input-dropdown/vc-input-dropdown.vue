@@ -13,6 +13,12 @@
     :tooltip="tooltip"
     @update:model-value="$emit('update:option', $event)"
   >
+    <template #option="scope">
+      <slot
+        name="option"
+        v-bind="scope"
+      ></slot>
+    </template>
     <template #control="{ toggleHandler }">
       <VcInput
         :placeholder="placeholder"
@@ -245,6 +251,13 @@ defineSlots<{
     focused?: boolean;
     modelValue: string | number | Date | null | undefined;
     emitValue: (value: string | number | Date | null) => void;
+  }) => unknown;
+  option: (scope: {
+    index: number;
+    //todo: Create generic component
+    opt: Record<string, any>;
+    selected: boolean;
+    toggleOption: (opt: any) => void;
   }) => unknown;
 }>();
 

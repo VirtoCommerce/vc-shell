@@ -12,6 +12,7 @@ export interface IBaseProperty<TPropertyValue> {
   multivalue?: boolean | null;
   dictionary?: boolean | null;
   valueType?: string | null; // Consider using a more specific enum if possible
+  unitOfMeasureId?: string | null;
 }
 
 export interface IBasePropertyValue {
@@ -23,6 +24,7 @@ export interface IBasePropertyValue {
   value?: any; // eslint-disable-line @typescript-eslint/no-explicit-any
   valueId?: string | null;
   isInherited?: boolean;
+  unitOfMeasureId?: string | null;
 }
 
 export interface IBasePropertyDictionaryItem {
@@ -174,17 +176,34 @@ export const useDynamicProperties = <
     return await searchMeasurementFunction(measureId, locale);
   }
 
+  function isMeasureObject(val: unknown): val is { value: unknown; unitOfMeasureId?: string; measureId?: string } {
+    return !!val && typeof val === "object" && "value" in val && ("unitOfMeasureId" in val || "measureId" in val);
+  }
+
   function setPropertyValue(data: {
     property: TProperty;
     value: string | TPropertyValue[] | (TPropertyDictionaryItem & { value: string })[];
     dictionary?: TPropertyDictionaryItem[];
     locale?: string;
     initialProp?: TProperty;
+    unitOfMeasureId?: string;
   }) {
     const { property, value, dictionary, locale } = data;
 
+    if (property.valueType === "Measure") {
+      property.values = [
+        new PropertyValueConstructor({
+          value,
+          unitOfMeasureId: data.unitOfMeasureId,
+          isInherited: false,
+        } as unknown as Partial<TPropertyValue>),
+      ];
+      return;
+    }
+
     if (dictionary && dictionary.length > 0) {
       const dict = dictionary.map((x) => new PropertyDictionaryItemConstructor(x));
+
       if (property.multilanguage) {
         // Multivalue Dictionary Multilanguage
         if (Array.isArray(value)) {

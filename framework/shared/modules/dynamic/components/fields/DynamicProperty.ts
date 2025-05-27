@@ -74,8 +74,6 @@ export default {
     const initialProps = _.cloneDeep(dynamicProps.value);
 
     const properties: UnwrapNestedRefs<IDynamicProperties[]> = reactiveComputed(() => {
-      console.log("props.bladeContext.scope?.dynamicProperties: ", props.bladeContext.scope?.dynamicProperties);
-      console.log("dynamicProps.value: ", dynamicProps.value);
       return (dynamicProps.value || [])?.map((prop) =>
         DynamicProperties({
           props: {
@@ -98,17 +96,26 @@ export default {
               locale?: string | undefined,
             ) => Promise<Record<string, any>[]>,
             "onUpdate:model-value": (args: {
-              value: string | Record<string, any>[];
+              value: any;
+              unitOfMeasureId?: string;
               dictionary?: Record<string, any>[];
               locale?: string;
             }) => {
+              let finalValue = args.value;
+              if (prop.valueType === "Measure") {
+                finalValue = {
+                  value: args.value,
+                  unitOfMeasureId: args.unitOfMeasureId,
+                };
+              }
               props.bladeContext.scope?.dynamicProperties?.setPropertyValue({
                 property: prop,
-                value: args.value,
+                value: finalValue,
                 dictionary: args.dictionary,
                 locale: args.locale,
                 initialProp: _.cloneDeep(initialProps?.find((x) => x.id === prop.id)),
               });
+
               if (props.fieldContext) {
                 setModel({ context: props.fieldContext, property: props.element.property, value: internalModel.value });
               }

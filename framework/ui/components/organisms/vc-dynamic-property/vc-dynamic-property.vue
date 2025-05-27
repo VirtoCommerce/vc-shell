@@ -193,17 +193,30 @@
       <VcInputDropdown
         v-bind="$attrs"
         v-model="value"
-        v-model:option="defaultMeasurementOption"
+        v-model:option="measureUnit"
         :options="measurementOptions"
         :loading="measurementLoading"
         option-label="displayName"
-        option-value="displaySymbol"
+        option-value="id"
         input-type="number"
         :label="computedProperty.displayName"
         :placeholder="computedProperty.placeholder"
         :required="computedProperty.required"
         :disabled="disabled"
-      />
+        @update:option="onUpdateUnit"
+      >
+        <template #button="scope">
+          <button
+            class="vc-input-dropdown__toggle-button"
+            tabindex="0"
+            @click.stop.prevent="scope.toggleHandler"
+            @keydown.enter.stop.prevent="scope.toggleHandler"
+            @keydown.space.stop.prevent="scope.toggleHandler"
+          >
+            {{ measurementOptions?.find((e) => e.id === measureUnit)?.displaySymbol }}
+          </button>
+        </template>
+      </VcInputDropdown>
     </template>
   </Field>
 </template>
@@ -262,7 +275,14 @@ const props = withDefaults(
 );
 
 const emit = defineEmits<{
-  "update:model-value": [data: { readonly value: any; readonly dictionary?: any[]; readonly locale?: string }];
+  "update:model-value": [
+    data: {
+      readonly value: any;
+      readonly dictionary?: any[];
+      readonly locale?: string;
+      readonly unitOfMeasureId?: string;
+    },
+  ];
 }>();
 
 const { te, t } = useI18n({ useScope: "global" });
@@ -274,7 +294,7 @@ const internalProperty = ref(props.property) as Ref<typeof props.property>;
 const internalModel = ref(props.modelValue) as Ref<typeof props.modelValue>;
 const measurementOptions = ref<any[]>([]);
 const measurementLoading = ref(false);
-const defaultMeasurementOption = ref();
+const measureUnit = ref<Record<string, any>>();
 
 watch(
   () => props.property,
@@ -357,6 +377,16 @@ onMounted(async () => {
   initialOptions.value = items.value;
 });
 
+function onUpdateUnit(newUnitOfMeasureId: any) {
+  measureUnit.value = newUnitOfMeasureId;
+  emit("update:model-value", {
+    value: value.value,
+    unitOfMeasureId: newUnitOfMeasureId,
+    dictionary: items.value,
+    locale: props.currentLanguage,
+  });
+}
+
 async function getOptions(keyword: string | undefined = undefined) {
   if (props.optionsGetter && internalProperty.value.dictionary && internalProperty.value.id) {
     try {
@@ -382,7 +412,14 @@ async function getMeasurements() {
       );
       if (measurements) {
         measurementOptions.value = measurements;
-        defaultMeasurementOption.value = measurements.filter((x) => x.isDefault)[0].displaySymbol;
+
+        const firstVal = internalProperty.value.values?.[0];
+        if (firstVal?.unitOfMeasureId) {
+          measureUnit.value = firstVal.unitOfMeasureId;
+        } else {
+          const defaultValue = measurementOptions.value.find((x) => x.isDefault)?.id ?? measurementOptions.value[0]?.id;
+          measureUnit.value = defaultValue;
+        }
       }
     } finally {
       measurementLoading.value = false;

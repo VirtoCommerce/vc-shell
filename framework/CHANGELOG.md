@@ -1,3 +1,12 @@
+## [1.1.22](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.21...v1.1.22) (2025-05-28)
+
+
+### Features
+
+* **useKeyboardNavigation:** add validation for focused index and improve focus handling ([9f403f1](https://github.com/VirtoCommerce/vc-shell/commit/9f403f181d27497e9090ac52f6c256e2de387c3f))
+
+
+
 ## [1.1.21](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.20...v1.1.21) (2025-05-28)
 
 

@@ -1,3 +1,12 @@
+## [1.1.19](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.18...v1.1.19) (2025-05-28)
+
+
+### Bug Fixes
+
+* **vc-select:** update loading logic and add default option loading state ([d02ffa4](https://github.com/VirtoCommerce/vc-shell/commit/d02ffa4ffb226830ee1291e9e74d36bb87040611))
+
+
+
 ## [1.1.18](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.17...v1.1.18) (2025-05-27)
 
 

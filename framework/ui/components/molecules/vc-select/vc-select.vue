@@ -239,7 +239,13 @@
         <div
           v-if="isOpened"
           ref="dropdownRef"
-          v-on-click-outside="[toggleDropdown, { ignore: [dropdownToggleRef] }]"
+          v-on-click-outside="[
+            () => {
+              isOpened = false;
+              emit('close');
+            },
+            { ignore: [dropdownToggleRef] },
+          ]"
           data-test-id="dropdown"
           class="vc-select__dropdown"
           role="menu"
@@ -610,6 +616,10 @@ let innerValueCache: Option[];
 
 let rootVisibilityObserver: IntersectionObserver | null = null;
 
+const getOptionValue = computed(() => getPropValueFn(props.optionValue, "id"));
+
+const getOptionLabel = computed(() => getPropValueFn(props.optionLabel, "title"));
+
 onMounted(() => {
   if (selectRootRef.value) {
     rootVisibilityObserver = new IntersectionObserver(
@@ -778,6 +788,7 @@ watch(
       });
     } else if (!newIsOpened) {
       keyboardNavigation.cleanupKeyboardNavigation();
+      await onDropdownClose();
     }
   },
   { immediate: false },
@@ -854,10 +865,6 @@ async function onLoadMore() {
 const hasNextPage = computed(() => {
   return optionsList.value.length < totalItems.value;
 });
-
-const getOptionValue = computed(() => getPropValueFn(props.optionValue, "id"));
-
-const getOptionLabel = computed(() => getPropValueFn(props.optionLabel, "title"));
 
 const innerValue = computed((): Option[] => {
   const mapNull = props.mapOptions === true && props.multiple !== true;
@@ -977,25 +984,37 @@ function isOptionSelected(opt: Option) {
   return innerOptionsValue.value.find((v) => _.isEqual(v, val)) !== void 0;
 }
 
-function closeDropdown() {
-  onDropdownClose();
-  isOpened.value = false;
-  isFocused.value = false;
-  keyboardNavigation.cleanupKeyboardNavigation();
-  emit("close");
-}
-
 const onDropdownClose = async () => {
-  if (props.options && typeof props.options === "function") {
-    const data = await props.options();
-    optionsList.value = data.results as Option[];
-    totalItems.value = data.totalCount;
-  } else {
-    optionsList.value = props.options as Option[];
-  }
-  optionsTemp.value = optionsList.value;
-
   filterString.value = undefined;
+
+  if (searchRef.value) {
+    searchRef.value.value = "";
+  }
+
+  if (isSelectVisible.value) {
+    if (props.options && typeof props.options === "function") {
+      try {
+        listLoading.value = true;
+        const data = await props.options(undefined, 0);
+        optionsList.value = (data.results as Option[]) || [];
+        totalItems.value = data.totalCount || 0;
+      } catch (e) {
+        console.error("Error resetting optionsList on dropdown close:", e);
+        optionsList.value = [];
+        totalItems.value = 0;
+      } finally {
+        listLoading.value = false;
+      }
+    } else if (props.options && Array.isArray(props.options)) {
+      optionsList.value = [...props.options] as Option[];
+      totalItems.value = optionsList.value.length;
+    }
+  } else if (props.options && typeof props.options === "function") {
+    optionsList.value = [];
+    totalItems.value = 0;
+  }
+
+  optionsTemp.value = optionsList.value;
 };
 
 function toggleDropdown() {
@@ -1074,7 +1093,8 @@ function toggleOption(opt: Option) {
       emit("update:modelValue", props.emitValue === true ? optValue : opt);
     }
 
-    closeDropdown();
+    isOpened.value = false;
+    emit("close");
     return;
   }
 
@@ -1161,7 +1181,8 @@ const keyboardNavigation = useKeyboardNavigation({
     }
   },
   onEscape: () => {
-    closeDropdown();
+    isOpened.value = false;
+    emit("close");
   },
 });
 </script>

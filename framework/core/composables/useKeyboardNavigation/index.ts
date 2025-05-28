@@ -26,6 +26,15 @@ export function useKeyboardNavigation(options: UseKeyboardNavigationOptions = {}
   const focusedItemIndex = ref(-1);
 
   /**
+   * Validate and reset focused index if it's out of bounds
+   */
+  const validateFocusedIndex = (elements: HTMLElement[]) => {
+    if (focusedItemIndex.value >= elements.length || focusedItemIndex.value < 0) {
+      focusedItemIndex.value = elements.length > 0 ? 0 : -1;
+    }
+  };
+
+  /**
    * Handler for keydown events for navigation
    */
   const handleKeyDown = (event: KeyboardEvent) => {
@@ -34,6 +43,9 @@ export function useKeyboardNavigation(options: UseKeyboardNavigationOptions = {}
     const focusableElements = Array.from(container.value.querySelectorAll(itemSelector)) as HTMLElement[];
 
     if (!focusableElements.length) return;
+
+    // Validate focused index before processing any navigation
+    validateFocusedIndex(focusableElements);
 
     switch (event.key) {
       case "Tab":
@@ -54,11 +66,14 @@ export function useKeyboardNavigation(options: UseKeyboardNavigationOptions = {}
       case " ":
         // Selection of the current element
         if (focusedItemIndex.value >= 0 && focusedItemIndex.value < focusableElements.length) {
-          event.preventDefault();
-          if (onEnter) {
-            onEnter(focusableElements[focusedItemIndex.value]);
-          } else {
-            focusableElements[focusedItemIndex.value].click();
+          const currentElement = focusableElements[focusedItemIndex.value];
+          if (currentElement) {
+            event.preventDefault();
+            if (onEnter) {
+              onEnter(currentElement);
+            } else if (typeof currentElement.click === "function") {
+              currentElement.click();
+            }
           }
         }
         break;
@@ -91,13 +106,21 @@ export function useKeyboardNavigation(options: UseKeyboardNavigationOptions = {}
   const focusNextElement = (elements: HTMLElement[]) => {
     if (!elements.length) return;
 
+    validateFocusedIndex(elements);
+
     if (focusedItemIndex.value < elements.length - 1) {
       focusedItemIndex.value++;
     } else if (loop) {
       focusedItemIndex.value = 0;
+    } else {
+      // If loop is false and we're at the last element, stay at the last element
+      return;
     }
 
-    elements[focusedItemIndex.value].focus();
+    const elementToFocus = elements[focusedItemIndex.value];
+    if (elementToFocus && typeof elementToFocus.focus === "function") {
+      elementToFocus.focus();
+    }
   };
 
   /**
@@ -106,13 +129,21 @@ export function useKeyboardNavigation(options: UseKeyboardNavigationOptions = {}
   const focusPreviousElement = (elements: HTMLElement[]) => {
     if (!elements.length) return;
 
+    validateFocusedIndex(elements);
+
     if (focusedItemIndex.value > 0) {
       focusedItemIndex.value--;
     } else if (loop) {
       focusedItemIndex.value = elements.length - 1;
+    } else {
+      // If loop is false and we're at the first element, stay at the first element
+      return;
     }
 
-    elements[focusedItemIndex.value].focus();
+    const elementToFocus = elements[focusedItemIndex.value];
+    if (elementToFocus && typeof elementToFocus.focus === "function") {
+      elementToFocus.focus();
+    }
   };
 
   /**
@@ -121,7 +152,10 @@ export function useKeyboardNavigation(options: UseKeyboardNavigationOptions = {}
   const focusFirstElement = (elements: HTMLElement[]) => {
     if (!elements.length) return;
     focusedItemIndex.value = 0;
-    elements[0].focus();
+    const elementToFocus = elements[0];
+    if (elementToFocus && typeof elementToFocus.focus === "function") {
+      elementToFocus.focus();
+    }
   };
 
   /**
@@ -130,7 +164,10 @@ export function useKeyboardNavigation(options: UseKeyboardNavigationOptions = {}
   const focusLastElement = (elements: HTMLElement[]) => {
     if (!elements.length) return;
     focusedItemIndex.value = elements.length - 1;
-    elements[elements.length - 1].focus();
+    const elementToFocus = elements[elements.length - 1];
+    if (elementToFocus && typeof elementToFocus.focus === "function") {
+      elementToFocus.focus();
+    }
   };
 
   /**
@@ -192,7 +229,12 @@ export function useKeyboardNavigation(options: UseKeyboardNavigationOptions = {}
       }
     },
     setFocusedIndex: (index: number) => {
-      focusedItemIndex.value = index;
+      if (container.value) {
+        const elements = Array.from(container.value.querySelectorAll(itemSelector)) as HTMLElement[];
+        if (index >= 0 && index < elements.length) {
+          focusedItemIndex.value = index;
+        }
+      }
     },
     getFocusedIndex: () => focusedItemIndex.value,
   };

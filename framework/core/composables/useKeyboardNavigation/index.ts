@@ -41,13 +41,11 @@ export function useKeyboardNavigation(options: UseKeyboardNavigationOptions = {}
         handleTabNavigation(event, focusableElements);
         break;
       case "ArrowDown":
-      case "ArrowRight":
         // Navigation forward
         event.preventDefault();
         focusNextElement(focusableElements);
         break;
       case "ArrowUp":
-      case "ArrowLeft":
         // Navigation backward
         event.preventDefault();
         focusPreviousElement(focusableElements);
@@ -70,16 +68,6 @@ export function useKeyboardNavigation(options: UseKeyboardNavigationOptions = {}
           event.preventDefault();
           onEscape();
         }
-        break;
-      case "Home":
-        // Transition to the first element
-        event.preventDefault();
-        focusFirstElement(focusableElements);
-        break;
-      case "End":
-        // Transition to the last element
-        event.preventDefault();
-        focusLastElement(focusableElements);
         break;
     }
   };

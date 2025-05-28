@@ -1,3 +1,12 @@
+## [1.1.20](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.19...v1.1.20) (2025-05-28)
+
+
+### Bug Fixes
+
+* **vc-select:** enhance dropdown close logic and improve option loading handling ([c0ef43d](https://github.com/VirtoCommerce/vc-shell/commit/c0ef43d9c2a2175f65d2c74dcd98578e17f79c07))
+
+
+
 ## [1.1.19](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.18...v1.1.19) (2025-05-28)
 
 

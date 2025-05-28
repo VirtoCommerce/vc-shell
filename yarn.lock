@@ -4852,7 +4852,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vc-shell/release-config@npm:^1.1.18, @vc-shell/release-config@workspace:^, @vc-shell/release-config@workspace:configs/release-config":
+"@vc-shell/release-config@npm:^1.1.18, @vc-shell/release-config@workspace:configs/release-config":
   version: 0.0.0-use.local
   resolution: "@vc-shell/release-config@workspace:configs/release-config"
   dependencies:
@@ -4964,17 +4964,17 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vcmp-vendor-portal/api@npm:^1.1.13, @vcmp-vendor-portal/api@workspace:apps/vendor-portal/src/api_client":
+"@vcmp-vendor-portal/api@npm:^1.1.14, @vcmp-vendor-portal/api@workspace:apps/vendor-portal/src/api_client":
   version: 0.0.0-use.local
   resolution: "@vcmp-vendor-portal/api@workspace:apps/vendor-portal/src/api_client"
   languageName: unknown
   linkType: soft
 
-"@vcmp-vendor-portal/modules@npm:^1.1.13, @vcmp-vendor-portal/modules@workspace:apps/vendor-portal/src/modules":
+"@vcmp-vendor-portal/modules@npm:^1.1.14, @vcmp-vendor-portal/modules@workspace:apps/vendor-portal/src/modules":
   version: 0.0.0-use.local
   resolution: "@vcmp-vendor-portal/modules@workspace:apps/vendor-portal/src/modules"
   peerDependencies:
-    "@vcmp-vendor-portal/api": ^1.1.13
+    "@vcmp-vendor-portal/api": ^1.1.14
   languageName: unknown
   linkType: soft
 
@@ -5884,10 +5884,10 @@ __metadata:
     "@vc-shell/api-client-generator": "npm:^1.1.18"
     "@vc-shell/config-generator": "npm:^1.1.18"
     "@vc-shell/framework": "npm:^1.1.18"
-    "@vc-shell/release-config": "workspace:^"
+    "@vc-shell/release-config": "npm:^1.1.18"
     "@vc-shell/ts-config": "npm:^1.1.18"
-    "@vcmp-vendor-portal/api": "npm:^1.1.13"
-    "@vcmp-vendor-portal/modules": "npm:^1.1.13"
+    "@vcmp-vendor-portal/api": "npm:^1.1.14"
+    "@vcmp-vendor-portal/modules": "npm:^1.1.14"
     "@virtocommerce/import-app": "npm:^1.1.2"
     "@vitejs/plugin-vue": "npm:^5.2.3"
     "@vue/eslint-config-prettier": "npm:^9.0.0"

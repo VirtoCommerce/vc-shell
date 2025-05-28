@@ -1,5 +1,6 @@
 <template>
   <div
+    ref="selectRootRef"
     class="vc-select"
     :class="{
       'vc-select_opened': isOpened,
@@ -98,7 +99,7 @@
                                   v-bind="item"
                                 >
                                   <div class="vc-select__multiple-item">
-                                    <template v-if="loading">
+                                    <template v-if="loading || defaultOptionLoading">
                                       <span class="vc-select__loading">{{
                                         t("COMPONENTS.MOLECULES.VC_SELECT.LOADING")
                                       }}</span>
@@ -117,7 +118,7 @@
                                 </slot>
                               </template>
                               <template v-else-if="!multiple">
-                                <template v-if="loading">
+                                <template v-if="loading || defaultOptionLoading">
                                   <span class="vc-select__loading">{{
                                     t("COMPONENTS.MOLECULES.VC_SELECT.LOADING")
                                   }}</span>
@@ -128,7 +129,7 @@
                                     v-bind="item"
                                   >
                                     {{
-                                      loading
+                                      loading || defaultOptionLoading
                                         ? t("COMPONENTS.MOLECULES.VC_SELECT.LOADING")
                                         : getEmittingOptionValue(item.opt)
                                     }}
@@ -167,7 +168,7 @@
                     </div>
                     <!-- Loading-->
                     <div
-                      v-if="loading || listLoading"
+                      v-if="loading || listLoading || defaultOptionLoading"
                       class="vc-select__loading-icon"
                     >
                       <VcIcon
@@ -250,6 +251,8 @@
             class="vc-select__search-input"
             tabindex="0"
             @input="onInput"
+            @keydown.space.stop
+            @keydown.enter.stop
           />
 
           <VcContainer
@@ -320,7 +323,7 @@
 
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup generic="T, P extends { results?: T[]; totalCount?: number }">
-import { ref, computed, watch, nextTick, Ref, toRefs } from "vue";
+import { ref, computed, watch, nextTick, Ref, toRefs, onMounted, onUnmounted } from "vue";
 import { vOnClickOutside } from "@vueuse/components";
 import * as _ from "lodash-es";
 import { useIntersectionObserver } from "@vueuse/core";
@@ -577,6 +580,9 @@ const { t } = useI18n({ useScope: "global" });
 
 const { modelValue, options } = toRefs(props);
 
+const selectRootRef = ref<HTMLDivElement | null>(null);
+const isSelectVisible = ref(false);
+
 const isOpened = ref(false);
 
 const searchRef = ref();
@@ -585,6 +591,7 @@ const dropdownRef = ref();
 const root = ref();
 const el = ref();
 const listLoading = ref(false);
+const defaultOptionLoading = ref(false);
 const isFocused = ref(false);
 
 const filterString = ref();
@@ -600,6 +607,33 @@ const totalItems = ref();
 let emitValueFn;
 let emitTimer: NodeJS.Timeout;
 let innerValueCache: Option[];
+
+let rootVisibilityObserver: IntersectionObserver | null = null;
+
+onMounted(() => {
+  if (selectRootRef.value) {
+    rootVisibilityObserver = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          isSelectVisible.value = true;
+        } else {
+          isSelectVisible.value = false;
+        }
+      },
+      { threshold: 0.1 },
+    );
+    rootVisibilityObserver.observe(selectRootRef.value);
+  }
+});
+
+onUnmounted(() => {
+  if (rootVisibilityObserver && selectRootRef.value) {
+    rootVisibilityObserver.unobserve(selectRootRef.value);
+  }
+  if (rootVisibilityObserver) {
+    rootVisibilityObserver.disconnect();
+  }
+});
 
 useIntersectionObserver(
   el,
@@ -625,89 +659,150 @@ const popper = useFloating(dropdownToggleRef, dropdownRef, {
 }) as FloatingInstanceType;
 
 watch(
-  modelValue,
-  async (newVal, oldVal) => {
-    if (newVal && !oldVal) {
-      const initial = optionsList.value.filter((x) => {
-        if (props.modelValue && Array.isArray(props.modelValue)) {
-          return _.intersection(optionsList.value, props.modelValue);
-        } else if (props.modelValue && typeof props.modelValue === "object") {
-          return optionsList.value.includes(props.modelValue);
-        } else {
-          return x[props.optionLabel as keyof Option] === props.modelValue;
-        }
-      });
-
-      if (initial && initial.length) {
-        defaultValue.value = initial;
-      } else {
-        if (props.options && typeof props.options === "function") {
-          const data = await props.options(
-            undefined,
-            undefined,
-            Array.isArray(props.modelValue) ? props.modelValue : [props.modelValue],
-          );
-
-          if (typeof data === "object" && !Array.isArray(data) && "results" in data) {
-            if (props.multiple) {
-              defaultValue.value = data.results?.filter((x) =>
-                props.modelValue.includes(x[props.optionValue as keyof T]),
-              ) as Option[];
-            } else {
-              defaultValue.value = data.results?.filter(
-                (x) => x[props.optionValue as keyof T] === props.modelValue,
-              ) as Option[];
-            }
-          } else if (Array.isArray(data)) {
-            defaultValue.value = data?.filter((x) => x[props.optionValue as keyof T] === props.modelValue);
-          }
-        } else if (props.options && Array.isArray(props.options)) {
-          defaultValue.value = props.options.filter(
-            (x) => x[props.optionValue as keyof T] === props.modelValue,
-          ) as Option[];
-        }
-      }
+  [() => props.modelValue, isSelectVisible],
+  async ([currentModelVal, selectIsVisible]) => {
+    let modelAsArrayValueIds: (string | number | Record<string, any> | null)[] = [];
+    if (Array.isArray(currentModelVal)) {
+      modelAsArrayValueIds = props.emitValue
+        ? currentModelVal
+        : currentModelVal.map((v) => getOptionValue.value(v as Option));
+    } else if (currentModelVal != null) {
+      modelAsArrayValueIds = [props.emitValue ? currentModelVal : getOptionValue.value(currentModelVal as Option)];
     }
-  },
-  { immediate: true },
-);
 
-watch(
-  isOpened,
-  async (newVal) => {
-    if (newVal && !optionsList.value.length) {
+    const currentDefaultValueIds = defaultValue.value.map((opt) => getOptionValue.value(opt));
+
+    const sortedCurrentDefaultIds = [...currentDefaultValueIds].sort((a, b) => String(a).localeCompare(String(b)));
+    const sortedModelValueIds = [...modelAsArrayValueIds].sort((a, b) => String(a).localeCompare(String(b)));
+
+    const isDefaultValueResolved =
+      _.isEqual(sortedCurrentDefaultIds, sortedModelValueIds) &&
+      (modelAsArrayValueIds.length > 0 || defaultValue.value.length === 0);
+
+    if (!selectIsVisible) {
+      if (modelAsArrayValueIds.length === 0 && defaultValue.value.length > 0) {
+        defaultValue.value = [];
+      }
+      return;
+    }
+
+    if (modelAsArrayValueIds.length === 0) {
+      if (defaultValue.value.length > 0) {
+        defaultValue.value = [];
+      }
+      return;
+    }
+
+    if (!isDefaultValueResolved) {
       if (props.options && typeof props.options === "function") {
         try {
-          listLoading.value = true;
-          const data = await props.options();
-          optionsList.value = data.results as Option[];
-          totalItems.value = data.totalCount;
-        } finally {
-          listLoading.value = false;
-        }
-      }
+          defaultOptionLoading.value = true;
+          const idsToFetch = modelAsArrayValueIds.filter((id) => id != null) as string[];
 
-      optionsTemp.value = optionsList.value;
-    } else if (newVal && typeof props.options !== "function") {
-      optionsList.value = props.options as Option[];
-      optionsTemp.value = optionsList.value;
+          if (
+            idsToFetch.length === 0 &&
+            !(
+              modelAsArrayValueIds.length === 1 &&
+              modelAsArrayValueIds[0] == null &&
+              props.mapOptions &&
+              !props.multiple
+            )
+          ) {
+            defaultValue.value = [];
+            defaultOptionLoading.value = false;
+            return;
+          }
+
+          const data = await props.options(undefined, undefined, idsToFetch);
+
+          if (typeof data === "object" && !Array.isArray(data) && "results" in data && data.results) {
+            const results = data.results as Option[];
+            defaultValue.value = results.filter((rOpt) =>
+              modelAsArrayValueIds.some((mId) => _.isEqual(getOptionValue.value(rOpt), mId)),
+            );
+          } else {
+            defaultValue.value = [];
+          }
+        } catch (e) {
+          console.error("Error loading default options:", e);
+          defaultValue.value = [];
+        } finally {
+          defaultOptionLoading.value = false;
+        }
+      } else if (props.options && Array.isArray(props.options)) {
+        defaultValue.value = (props.options as Option[]).filter((opt) =>
+          modelAsArrayValueIds.some((mId) => _.isEqual(getOptionValue.value(opt), mId)),
+        );
+      }
     }
   },
-  { immediate: true },
+  { immediate: true, deep: true },
 );
 
 watch(
-  options,
-  async (newVal) => {
-    if (newVal && typeof props.options !== "function") {
-      if (props.options && Array.isArray(props.options)) {
-        optionsList.value = props.options as Option[];
+  [isOpened, isSelectVisible],
+  async ([newIsOpened, newIsSelectVisible]) => {
+    if (newIsOpened && newIsSelectVisible) {
+      const needsLoad =
+        optionsList.value.length === 0 ||
+        (props.options && typeof props.options === "function" && filterString.value && !listLoading.value);
+
+      if (needsLoad) {
+        if (props.options && typeof props.options === "function") {
+          await loadOptionsForOpenDropdown();
+        } else if (props.options && Array.isArray(props.options)) {
+          optionsList.value = [...props.options] as Option[];
+          optionsTemp.value = optionsList.value;
+          totalItems.value = optionsList.value.length;
+        }
       }
 
-      optionsTemp.value = optionsList.value;
+      nextTick(() => {
+        popper.update();
+        if (dropdownRef.value) {
+          keyboardNavigation.initKeyboardNavigation(dropdownRef.value);
+          if (props.searchable && searchRef.value) {
+            searchRef.value.focus();
+          } else {
+            const firstFocusable = dropdownRef.value.querySelector(
+              '.vc-select__option[tabindex="0"], .vc-select__search-input[tabindex="0"]',
+            ) as HTMLElement | null;
+
+            if (firstFocusable) {
+              firstFocusable.focus();
+            } else {
+              keyboardNavigation.focusFirstElement();
+            }
+          }
+        }
+      });
+    } else if (!newIsOpened) {
+      keyboardNavigation.cleanupKeyboardNavigation();
     }
   },
-  { immediate: true },
+  { immediate: false },
+);
+
+watch(
+  () => props.options,
+  async (newOptionsSource) => {
+    optionsList.value = [];
+    optionsTemp.value = [];
+    totalItems.value = 0;
+
+    if (isSelectVisible.value) {
+      if (Array.isArray(newOptionsSource)) {
+        optionsList.value = [...newOptionsSource] as Option[];
+        optionsTemp.value = optionsList.value;
+        totalItems.value = optionsList.value.length;
+      }
+
+      if (isOpened.value && typeof newOptionsSource === "function") {
+        await loadOptionsForOpenDropdown();
+      }
+    }
+  },
+  { deep: false },
 );
 
 watch(
@@ -718,6 +813,28 @@ watch(
     }
   },
 );
+
+async function loadOptionsForOpenDropdown() {
+  if (props.options && typeof props.options === "function" && !listLoading.value) {
+    try {
+      listLoading.value = true;
+      const data = await props.options(filterString.value, optionsList.value.length);
+      if (filterString.value || optionsList.value.length === 0) {
+        optionsList.value = (data.results as Option[]) || [];
+      } else {
+        optionsList.value = _.unionBy<Option>(optionsList.value, (data.results as Option[]) || [], "id");
+      }
+      totalItems.value = data.totalCount || 0;
+      optionsTemp.value = optionsList.value;
+    } catch (e) {
+      console.error("Error in loadOptionsForOpenDropdown:", e);
+      optionsList.value = [];
+      totalItems.value = 0;
+    } finally {
+      listLoading.value = false;
+    }
+  }
+}
 
 async function onLoadMore() {
   if (props.options && typeof props.options === "function") {
@@ -864,6 +981,7 @@ function closeDropdown() {
   onDropdownClose();
   isOpened.value = false;
   isFocused.value = false;
+  keyboardNavigation.cleanupKeyboardNavigation();
   emit("close");
 }
 
@@ -1043,7 +1161,7 @@ const keyboardNavigation = useKeyboardNavigation({
     }
   },
   onEscape: () => {
-    isOpened.value = false;
+    closeDropdown();
   },
 });
 </script>

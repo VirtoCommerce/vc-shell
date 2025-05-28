@@ -171,9 +171,9 @@ export interface Props {
    */
   required?: boolean;
   /**
-   * Option label
+   * Default selected option from dropdown
    */
-  option?: unknown;
+  option: unknown;
   /**
    * Available options that the user can select from.
    * Default value: []

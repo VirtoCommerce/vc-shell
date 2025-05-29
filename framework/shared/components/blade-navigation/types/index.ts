@@ -80,7 +80,7 @@ export type BladeInstanceConstructor<T extends Component = Component> = Extracto
   CoreBladeAdditionalSettings;
 
 export interface IBladeEvent<T extends Component = Component> {
-  blade: BladeInstanceConstructor<T>;
+  blade: BladeInstanceConstructor<T> | { name: string } | undefined;
   options?: ExtractedBladeOptions<InstanceType<BladeInstanceConstructor<T>>["$props"], "options">;
   param?: string;
   onOpen?: () => void;
@@ -90,12 +90,10 @@ export interface IBladeEvent<T extends Component = Component> {
 
 export interface BladeNavigationPlugin {
   router: Router;
-  internalRoutes: BladeRoutesRecord[];
-  blades: Ref<BladeVNode[]>;
 }
 
 export interface BladeRoutesRecord {
-  component: BladeVNode;
+  component: BladeInstanceConstructor;
   name: string;
   isWorkspace: boolean;
   route: string;

@@ -2,8 +2,17 @@ import { inject } from "vue";
 import { AppInsightsPluginOptions, useAppInsights as useInsights } from "vue3-application-insights";
 import { generateW3CId } from "@microsoft/applicationinsights-core-js";
 import { useUser } from "./../useUser";
+import { ApplicationInsights, Snippet } from "@microsoft/applicationinsights-web";
 
-export function useAppInsights() {
+export interface IUseAppInsights {
+  setupPageTracking: {
+    beforeEach: (route: { name: string }) => void;
+    afterEach: (route: { name: string; fullPath: string }) => void;
+  };
+  appInsights: ApplicationInsights;
+}
+
+export function useAppInsights(): IUseAppInsights {
   const appInsights = useInsights();
   const { user } = useUser();
   const appInsightsOptions = inject<AppInsightsPluginOptions>("appInsightsOptions");
@@ -40,5 +49,6 @@ export function useAppInsights() {
 
   return {
     setupPageTracking: setupPageTracking(),
+    appInsights,
   };
 }

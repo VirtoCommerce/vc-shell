@@ -1,3 +1,15 @@
+## [1.1.23](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.22...v1.1.23) (2025-05-29)
+
+
+### Features
+
+* **blade-navigation:** implement blade registry and enhance navigation functionality with state management and routing utilities ([ab76268](https://github.com/VirtoCommerce/vc-shell/commit/ab762680f03e1c2a130ff802b8fbbbbf96e7b86a))
+* **blade-registry:** integrate Blade Registry into the application, enhance error handling for main route validation, and update notification component types for improved type safety ([2535a78](https://github.com/VirtoCommerce/vc-shell/commit/2535a78be870edaf4f563aa69dd0f76b2a6729a5))
+* **useAppInsights:** enhance app insights integration with page tracking and expose appInsights instance ([603c2b8](https://github.com/VirtoCommerce/vc-shell/commit/603c2b81b82a320209ba5da7685fd36f2797074d))
+* **useDynamicProperties:** refactor dynamic properties composable with improved type definitions and utility functions; enhance vc-input-dropdown and vc-dynamic-property components for multilingual support ([4e13175](https://github.com/VirtoCommerce/vc-shell/commit/4e1317545c59cf3aeeaf9141a3f395825c04d285))
+
+
+
 ## [1.1.22](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.21...v1.1.22) (2025-05-28)
 
 

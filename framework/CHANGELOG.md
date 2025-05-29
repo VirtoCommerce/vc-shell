@@ -1,3 +1,12 @@
+## [1.1.24](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.23...v1.1.24) (2025-05-29)
+
+
+### Bug Fixes
+
+* **useDynamicProperties:** export SetPropertyValueParams interface for better accessibility in dynamic properties management ([bddd03f](https://github.com/VirtoCommerce/vc-shell/commit/bddd03f08fd0bb15754109064887ef22c7acf542))
+
+
+
 ## [1.1.23](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.22...v1.1.23) (2025-05-29)
 
 

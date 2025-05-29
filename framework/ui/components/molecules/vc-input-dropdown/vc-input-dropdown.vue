@@ -11,6 +11,8 @@
     :required="required"
     :model-value="option"
     :tooltip="tooltip"
+    :multilanguage="multilanguage"
+    :current-language="currentLanguage"
     @update:model-value="$emit('update:option', $event)"
   >
     <template #option="scope">
@@ -202,6 +204,8 @@ export interface Props {
    * Default: text
    */
   inputType?: "text" | "password" | "email" | "tel" | "number" | "integer" | "url" | "time" | "date" | "datetime-local";
+  multilanguage?: boolean;
+  currentLanguage?: string;
 }
 
 export interface Emits {

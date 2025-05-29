@@ -1,9 +1,9 @@
 import { useLoading } from "../useLoading";
 import { useAsync } from "../useAsync";
-import * as _ from "lodash-es";
 import { ComputedRef } from "vue";
 
-// Base interfaces that can be extended by specific API client types
+// === TYPE DEFINITIONS ===
+
 export interface IBaseProperty<TPropertyValue> {
   id?: string | null;
   name?: string | null;
@@ -11,7 +11,7 @@ export interface IBaseProperty<TPropertyValue> {
   multilanguage?: boolean | null;
   multivalue?: boolean | null;
   dictionary?: boolean | null;
-  valueType?: string | null; // Consider using a more specific enum if possible
+  valueType?: string | null;
   unitOfMeasureId?: string | null;
 }
 
@@ -68,25 +68,46 @@ export interface IUseDynamicProperties<
     property: TProperty,
     locale: string,
   ) => string | TPropertyValue[] | (TPropertyDictionaryItem & { value: string })[];
-  setPropertyValue: (data: {
-    property: TProperty;
-    value: string | TPropertyValue[] | (TPropertyDictionaryItem & { value: string })[];
-    dictionary?: TPropertyDictionaryItem[];
-    locale?: string;
-    initialProp?: TProperty;
-  }) => void;
+  setPropertyValue: (data: SetPropertyValueParams<TProperty, TPropertyValue, TPropertyDictionaryItem>) => void;
   loadMeasurements(measureId: string, keyword?: string, locale?: string): Promise<TMeasurement[] | undefined>;
 }
 
-function isEmptyValues(value: unknown) {
-  return (
-    value === undefined ||
-    value === null ||
-    (typeof value === "number" && isNaN(value)) ||
-    (typeof value === "object" && Object.keys(value).length === 0) ||
-    (typeof value === "string" && value.trim().length === 0)
-  );
+interface SetPropertyValueParams<TProperty, TPropertyValue, TPropertyDictionaryItem> {
+  property: TProperty;
+  value: string | TPropertyValue[] | (TPropertyDictionaryItem & { value: string })[];
+  dictionary?: TPropertyDictionaryItem[];
+  locale?: string;
+  initialProp?: TProperty;
+  unitOfMeasureId?: string;
 }
+
+// === UTILITY FUNCTIONS ===
+
+function isEmptyValue(value: unknown): boolean {
+  if (value === undefined || value === null) return true;
+  if (typeof value === "number" && isNaN(value)) return true;
+  if (typeof value === "string" && value.trim().length === 0) return true;
+  if (typeof value === "object" && Object.keys(value).length === 0) return true;
+  return false;
+}
+
+function isMultilanguageProperty<T extends IBaseProperty<unknown>>(property: T): boolean {
+  return Boolean(property.multilanguage);
+}
+
+function isMultivalueProperty<T extends IBaseProperty<unknown>>(property: T): boolean {
+  return Boolean(property.multivalue);
+}
+
+function isDictionaryProperty<T extends IBaseProperty<unknown>>(property: T): boolean {
+  return Boolean(property.dictionary);
+}
+
+function isMeasureProperty<T extends IBaseProperty<unknown>>(property: T): boolean {
+  return property.valueType === "Measure";
+}
+
+// === MAIN COMPOSABLE ===
 
 export const useDynamicProperties = <
   TProperty extends IBaseProperty<TPropertyValue>,
@@ -102,73 +123,34 @@ export const useDynamicProperties = <
   PropertyDictionaryItemConstructor: new (data?: Partial<TPropertyDictionaryItem>) => TPropertyDictionaryItem,
   searchMeasurementFunction?: (measureId: string, locale?: string) => Promise<TMeasurement[] | undefined>,
 ): IUseDynamicProperties<TProperty, TPropertyValue, TPropertyDictionaryItem, TPropertyDictionaryItemSearchCriteria> => {
+  // === ASYNC OPERATIONS ===
+
   const { loading: dictionaryItemsLoading, action: searchDictionaryItems } = useAsync<
     TPropertyDictionaryItemSearchCriteria,
     TPropertyDictionaryItem[] | undefined
   >(async (args: TPropertyDictionaryItemSearchCriteria | undefined) => {
-    if (args === undefined) {
-      return undefined;
-    }
+    if (!args) return undefined;
     return await searchDictionaryItemsFunction(args);
   });
 
-  function getPropertyValue(property: TProperty, locale: string) {
-    if (property.multilanguage) {
-      const propValue = property.values?.find((x) => x.languageCode == locale);
-
-      if (property.multivalue) {
-        return property.values?.filter((x) => x.languageCode === locale) as TPropertyValue[];
-      } else if (!propValue) {
-        const aliasProp = property.values?.find((x) => x.propertyId === property.id);
-
-        if (aliasProp) {
-          property.values?.push(
-            new PropertyValueConstructor({
-              propertyName: property.name,
-              propertyId: property.id,
-              languageCode: locale,
-              alias: aliasProp?.alias,
-              valueType: property.valueType,
-              valueId: aliasProp?.valueId,
-            } as unknown as Partial<TPropertyValue>),
-          );
-        }
-      }
-
-      if (property.dictionary) {
-        return (propValue && propValue?.valueId) as string;
-      }
-      return propValue?.value as string;
-    } else {
-      if (property.multivalue) {
-        return property.values as TPropertyValue[];
-      }
-      if (property.dictionary) {
-        return property.values?.[0]?.valueId as string;
-      }
-      return property.values?.[0]?.value as string;
-    }
-  }
-
   async function loadDictionaries(propertyId: string, keyword?: string, locale?: string) {
-    if (propertyId) {
-      let dictionaryItems = await searchDictionaryItems({
-        propertyIds: [propertyId],
-        keyword,
-        skip: 0,
-      } as TPropertyDictionaryItemSearchCriteria);
-      if (locale) {
-        dictionaryItems = dictionaryItems?.map((x: TPropertyDictionaryItem) => {
-          const localizedValue = x.localizedValues?.find(
-            (v: { languageCode?: string | null; value?: string | null }) => v.languageCode == locale,
-          )?.value;
-          return Object.assign(new PropertyDictionaryItemConstructor(x), {
-            value: localizedValue ?? x.alias,
-          });
-        });
-      }
-      return dictionaryItems;
-    }
+    if (!propertyId) return undefined;
+
+    const dictionaryItems = await searchDictionaryItems({
+      propertyIds: [propertyId],
+      keyword,
+      skip: 0,
+    } as TPropertyDictionaryItemSearchCriteria);
+
+    if (!locale || !dictionaryItems) return dictionaryItems;
+
+    return dictionaryItems.map((item: TPropertyDictionaryItem) => {
+      const localizedValue = item.localizedValues?.find((localized) => localized.languageCode === locale)?.value;
+
+      return Object.assign(new PropertyDictionaryItemConstructor(item), {
+        value: localizedValue ?? item.alias,
+      });
+    });
   }
 
   async function loadMeasurements(measureId: string, locale?: string) {
@@ -176,199 +158,342 @@ export const useDynamicProperties = <
     return await searchMeasurementFunction(measureId, locale);
   }
 
-  function isMeasureObject(val: unknown): val is { value: unknown; unitOfMeasureId?: string; measureId?: string } {
-    return !!val && typeof val === "object" && "value" in val && ("unitOfMeasureId" in val || "measureId" in val);
+  // === VALUE GETTERS ===
+
+  function getMultilanguageValue(property: TProperty, locale: string): string | TPropertyValue[] {
+    const valueForLocale = property.values?.find((x) => x.languageCode === locale);
+
+    if (isMultivalueProperty(property)) {
+      return property.values?.filter((x) => x.languageCode === locale) as TPropertyValue[];
+    }
+
+    // Create default value if not exists
+    if (!valueForLocale) {
+      const aliasValue = property.values?.find((x) => x.propertyId === property.id);
+      if (aliasValue) {
+        const newValue = new PropertyValueConstructor({
+          propertyName: property.name,
+          propertyId: property.id,
+          languageCode: locale,
+          alias: aliasValue.alias,
+          valueType: property.valueType,
+          valueId: aliasValue.valueId,
+        } as unknown as Partial<TPropertyValue>);
+
+        property.values?.push(newValue);
+      }
+    }
+
+    if (isDictionaryProperty(property)) {
+      return valueForLocale?.valueId as string;
+    }
+
+    return valueForLocale?.value as string;
   }
 
-  function setPropertyValue(data: {
-    property: TProperty;
-    value: string | TPropertyValue[] | (TPropertyDictionaryItem & { value: string })[];
-    dictionary?: TPropertyDictionaryItem[];
-    locale?: string;
-    initialProp?: TProperty;
-    unitOfMeasureId?: string;
-  }) {
-    const { property, value, dictionary, locale } = data;
+  function getSingleLanguageValue(property: TProperty): string | TPropertyValue[] {
+    if (isMultivalueProperty(property)) {
+      return property.values as TPropertyValue[];
+    }
 
-    if (property.valueType === "Measure") {
-      property.values = [
-        new PropertyValueConstructor({
-          value,
-          unitOfMeasureId: data.unitOfMeasureId,
-          isInherited: false,
-        } as unknown as Partial<TPropertyValue>),
-      ];
+    const firstValue = property.values?.[0];
+    if (!firstValue) return "";
+
+    if (isDictionaryProperty(property)) {
+      return firstValue.valueId as string;
+    }
+
+    return firstValue.value as string;
+  }
+
+  function getPropertyValue(property: TProperty, locale: string) {
+    if (isMultilanguageProperty(property)) {
+      return getMultilanguageValue(property, locale);
+    }
+    return getSingleLanguageValue(property);
+  }
+
+  // === VALUE SETTERS ===
+
+  function createPropertyValue(params: Partial<TPropertyValue>): TPropertyValue {
+    return new PropertyValueConstructor({
+      isInherited: false,
+      ...params,
+    } as unknown as Partial<TPropertyValue>);
+  }
+
+  function setMeasurePropertyValue(property: TProperty, value: unknown, unitOfMeasureId?: string): void {
+    property.values = [
+      createPropertyValue({
+        value,
+        unitOfMeasureId,
+      } as Partial<TPropertyValue>),
+    ];
+  }
+
+  function setDictionaryPropertyValue(
+    property: TProperty,
+    value: string | TPropertyValue[] | (TPropertyDictionaryItem & { value: string })[],
+    dictionary: TPropertyDictionaryItem[],
+  ): void {
+    const dict = dictionary.map((x) => new PropertyDictionaryItemConstructor(x));
+
+    if (isMultilanguageProperty(property)) {
+      handleMultilanguageDictionary(property, value, dict);
+    } else {
+      handleSingleLanguageDictionary(property, value, dict);
+    }
+  }
+
+  function handleMultilanguageDictionary(
+    property: TProperty,
+    value: string | TPropertyValue[] | (TPropertyDictionaryItem & { value: string })[],
+    dict: TPropertyDictionaryItem[],
+  ): void {
+    if (Array.isArray(value)) {
+      handleMultilanguageMultivalueDictionary(property, value as (TPropertyDictionaryItem & { value: string })[], dict);
+    } else {
+      handleMultilanguageSingleValueDictionary(property, value as string, dict);
+    }
+  }
+
+  function handleMultilanguageMultivalueDictionary(
+    property: TProperty,
+    values: (TPropertyDictionaryItem & { value: string })[],
+    dict: TPropertyDictionaryItem[],
+  ): void {
+    property.values = values.flatMap((item) => {
+      const dictItem = dict.find((x) => x.id === (item as unknown as TPropertyValue).valueId || x.id === item.id);
+
+      if (dictItem?.localizedValues?.length) {
+        return dictItem.localizedValues.map((locValue) =>
+          createPropertyValue({
+            propertyId: dictItem.propertyId,
+            alias: dictItem.alias,
+            languageCode: locValue.languageCode,
+            value: locValue.value ?? dictItem.alias,
+            valueId: dictItem.id,
+          } as Partial<TPropertyValue>),
+        );
+      }
+
+      return createPropertyValue(item as unknown as Partial<TPropertyValue>);
+    });
+  }
+
+  function handleMultilanguageSingleValueDictionary(
+    property: TProperty,
+    value: string,
+    dict: TPropertyDictionaryItem[],
+  ): void {
+    const dictionaryItem = dict.find((x) => x.id === value);
+
+    if (dictionaryItem?.localizedValues) {
+      property.values = dictionaryItem.localizedValues.map((locValue) =>
+        createPropertyValue({
+          propertyId: dictionaryItem.propertyId,
+          alias: dictionaryItem.alias,
+          languageCode: locValue.languageCode,
+          value: locValue.value ?? dictionaryItem.alias,
+          valueId: dictionaryItem.id,
+        } as Partial<TPropertyValue>),
+      );
+    } else {
+      property.values = [];
+    }
+  }
+
+  function handleSingleLanguageDictionary(
+    property: TProperty,
+    value: string | TPropertyValue[] | (TPropertyDictionaryItem & { value: string })[],
+    dict: TPropertyDictionaryItem[],
+  ): void {
+    if (Array.isArray(value)) {
+      handleSingleLanguageMultivalueDictionary(
+        property,
+        value as (TPropertyDictionaryItem & { value: string })[],
+        dict,
+      );
+    } else {
+      handleSingleLanguageSingleValueDictionary(property, value as string, dict);
+    }
+  }
+
+  function handleSingleLanguageMultivalueDictionary(
+    property: TProperty,
+    values: (TPropertyDictionaryItem & { value: string })[],
+    dict: TPropertyDictionaryItem[],
+  ): void {
+    property.values = values.flatMap((item) => {
+      const dictItem = dict.find((x) => x.id === (item as unknown as TPropertyValue).valueId || x.id === item.id);
+
+      if (dictItem) {
+        return createPropertyValue({
+          propertyId: dictItem.propertyId,
+          alias: dictItem.alias,
+          value: item.value ?? dictItem.alias,
+          valueId: dictItem.id,
+        } as Partial<TPropertyValue>);
+      }
+
+      return createPropertyValue(item as unknown as Partial<TPropertyValue>);
+    });
+  }
+
+  function handleSingleLanguageSingleValueDictionary(
+    property: TProperty,
+    value: string,
+    dict: TPropertyDictionaryItem[],
+  ): void {
+    if (isEmptyValue(value)) {
+      property.values = [];
       return;
     }
 
-    if (dictionary && dictionary.length > 0) {
-      const dict = dictionary.map((x) => new PropertyDictionaryItemConstructor(x));
+    const dictionaryItem = dict.find((x) => x.id === value);
+    property.values = [
+      createPropertyValue({
+        propertyId: dictionaryItem?.propertyId,
+        alias: dictionaryItem?.alias,
+        value: (dictionaryItem as TPropertyDictionaryItem & { value: string })?.value ?? dictionaryItem?.alias,
+        valueId: value,
+      } as Partial<TPropertyValue>),
+    ];
+  }
 
-      if (property.multilanguage) {
-        // Multivalue Dictionary Multilanguage
-        if (Array.isArray(value)) {
-          property.values = (value as (TPropertyDictionaryItem & { value: string })[]).flatMap((item) => {
-            const dictItem = dict.find((x) => x.id === (item as unknown as TPropertyValue).valueId || x.id === item.id);
-            if (dictItem?.localizedValues?.length) {
-              return dictItem.localizedValues.map(
-                (x) =>
-                  new PropertyValueConstructor({
-                    propertyId: dictItem.propertyId,
-                    alias: dictItem.alias,
-                    languageCode: x.languageCode,
-                    value: x.value ?? dictItem.alias,
-                    valueId: dictItem.id,
-                  } as unknown as Partial<TPropertyValue>),
-              );
-            }
-            return new PropertyValueConstructor(item as unknown as Partial<TPropertyValue>);
-          });
-        }
-        // Single value Dictionary Multilanguage
-        else {
-          const dictionaryItem = dictionary.find((x) => x.id === (value as string));
-          if (dictionaryItem) {
-            property.values = dictionaryItem?.localizedValues?.map(
-              (x) =>
-                new PropertyValueConstructor({
-                  propertyId: dictionaryItem.propertyId,
-                  alias: dictionaryItem.alias,
-                  languageCode: x.languageCode,
-                  value: x.value ?? dictionaryItem.alias,
-                  valueId: dictionaryItem.id,
-                } as unknown as Partial<TPropertyValue>),
-            );
-          } else {
-            property.values = [];
-          }
-        }
-      } else {
-        // Multivalue Dictionary
-        if (Array.isArray(value)) {
-          property.values = (value as (TPropertyDictionaryItem & { value: string })[]).flatMap((item) => {
-            const dictItem = dict.find((x) => x.id === (item as unknown as TPropertyValue).valueId || x.id === item.id);
-            if (dictItem) {
-              return new PropertyValueConstructor({
-                propertyId: dictItem.propertyId,
-                alias: dictItem.alias,
-                value: item.value ?? dictItem.alias,
-                valueId: dictItem.id,
-              } as unknown as Partial<TPropertyValue>);
-            }
-            return new PropertyValueConstructor(item as unknown as Partial<TPropertyValue>);
-          });
-        }
-        // Single value Dictionary
-        else {
-          const dictionaryItem = dictionary.find((x) => x.id === (value as string));
-
-          if (isEmptyValues(value)) {
-            property.values = [];
-          } else {
-            property.values = [
-              new PropertyValueConstructor({
-                propertyId: dictionaryItem?.propertyId,
-                alias: dictionaryItem?.alias,
-                value: (dictionaryItem as TPropertyDictionaryItem & { value: string })?.value ?? dictionaryItem?.alias,
-                valueId: value as string,
-              } as unknown as Partial<TPropertyValue>),
-            ];
-          }
-        }
-      }
+  function setRegularPropertyValue(
+    property: TProperty,
+    value: string | TPropertyValue[] | (TPropertyDictionaryItem & { value: string })[],
+    locale?: string,
+    initialProp?: TProperty,
+  ): void {
+    if (isMultilanguageProperty(property)) {
+      handleMultilanguageRegularProperty(property, value, locale);
     } else {
-      if (property.multilanguage) {
-        // Multivalue Multilanguage
-        if (Array.isArray(value)) {
-          property.values =
-            property.values &&
-            ([
-              ...property.values.filter((x) => x.languageCode !== locale),
-              ...(value as TPropertyValue[]).map(
-                (item) =>
-                  new PropertyValueConstructor({ ...item, languageCode: locale } as unknown as Partial<TPropertyValue>),
-              ),
-            ] as TPropertyValue[]);
-        }
-        // Single value Multilanguage
-        else {
-          const propValue = property.values?.find((x) => x.languageCode == locale);
-          if (propValue) {
-            propValue.value = value as string;
-          } else {
-            property.values = [
-              new PropertyValueConstructor({
-                value: value as string,
-                isInherited: false,
-                languageCode: locale,
-              } as unknown as Partial<TPropertyValue>),
-            ];
-          }
-        }
-      } else {
-        // Multivalue
-        if (Array.isArray(value)) {
-          property.values = (value as TPropertyValue[]).map(
-            (item) => new PropertyValueConstructor(item as unknown as Partial<TPropertyValue>),
-          );
-        }
-        // Single value
-        else {
-          if (typeof value === "boolean") {
-            if (data.initialProp?.values?.length) {
-              property.values = [
-                property.values?.[0]
-                  ? Object.assign(property.values[0], { value })
-                  : new PropertyValueConstructor({
-                      value: value,
-                      isInherited: false,
-                    } as unknown as Partial<TPropertyValue>),
-              ];
-            } else {
-              if (value) {
-                property.values = [
-                  new PropertyValueConstructor({
-                    value: value,
-                    isInherited: false,
-                  } as unknown as Partial<TPropertyValue>),
-                ];
-              } else {
-                property.values = [];
-              }
-            }
-          } else if (isEmptyValues(value)) {
-            // Ensure we create an empty PropertyValue if the original value was also empty, to signify an explicit clear.
-            // Otherwise, if there was a value and now it's empty, we clear the values array.
-            const hadOriginalValue = data.initialProp?.values?.find((v) =>
-              property.multilanguage ? v.languageCode === locale : true,
-            )?.value;
-            const originalValueWasEmpty = isEmptyValues(hadOriginalValue);
+      handleSingleLanguageRegularProperty(property, value, locale, initialProp);
+    }
+  }
 
-            if (originalValueWasEmpty) {
-              property.values = [
-                new PropertyValueConstructor({
-                  value: value as string,
-                  isInherited: false,
-                  languageCode: property.multilanguage ? locale : undefined,
-                } as unknown as Partial<TPropertyValue>),
-              ];
-            } else {
-              property.values = [];
-            }
-          } else {
-            property.values = property.values?.[0]
-              ? [Object.assign(property.values[0], { value: value as string })]
-              : [
-                  new PropertyValueConstructor({
-                    value: value as string,
-                    isInherited: false,
-                  } as unknown as Partial<TPropertyValue>),
-                ];
-          }
-        }
+  function handleMultilanguageRegularProperty(
+    property: TProperty,
+    value: string | TPropertyValue[] | (TPropertyDictionaryItem & { value: string })[],
+    locale?: string,
+  ): void {
+    if (Array.isArray(value)) {
+      // Multivalue multilanguage
+      property.values =
+        property.values &&
+        ([
+          ...property.values.filter((x) => x.languageCode !== locale),
+          ...(value as TPropertyValue[]).map((item) =>
+            createPropertyValue({ ...item, languageCode: locale } as Partial<TPropertyValue>),
+          ),
+        ] as TPropertyValue[]);
+    } else {
+      // Single value multilanguage
+      const existingValue = property.values?.find((x) => x.languageCode === locale);
+      if (existingValue) {
+        existingValue.value = value as string;
+      } else {
+        property.values = [
+          createPropertyValue({
+            value: value as string,
+            languageCode: locale,
+          } as Partial<TPropertyValue>),
+        ];
       }
     }
   }
+
+  function handleSingleLanguageRegularProperty(
+    property: TProperty,
+    value: string | TPropertyValue[] | (TPropertyDictionaryItem & { value: string })[],
+    locale?: string,
+    initialProp?: TProperty,
+  ): void {
+    if (Array.isArray(value)) {
+      // Multivalue
+      property.values = (value as TPropertyValue[]).map((item) => createPropertyValue(item as Partial<TPropertyValue>));
+    } else {
+      handleSingleValueRegularProperty(property, value, locale, initialProp);
+    }
+  }
+
+  function handleSingleValueRegularProperty(
+    property: TProperty,
+    value: string | (TPropertyDictionaryItem & { value: string }),
+    locale?: string,
+    initialProp?: TProperty,
+  ): void {
+    if (typeof value === "boolean") {
+      handleBooleanValue(property, value, initialProp);
+    } else if (isEmptyValue(value)) {
+      handleEmptyValue(property, value, locale, initialProp);
+    } else {
+      handleNonEmptyValue(property, value as string);
+    }
+  }
+
+  function handleBooleanValue(property: TProperty, value: boolean, initialProp?: TProperty): void {
+    if (initialProp?.values?.length) {
+      property.values = [
+        property.values?.[0]
+          ? Object.assign(property.values[0], { value })
+          : createPropertyValue({ value } as Partial<TPropertyValue>),
+      ];
+    } else if (value) {
+      property.values = [createPropertyValue({ value } as Partial<TPropertyValue>)];
+    } else {
+      property.values = [];
+    }
+  }
+
+  function handleEmptyValue(property: TProperty, value: unknown, locale?: string, initialProp?: TProperty): void {
+    const hadOriginalValue = initialProp?.values?.find((v) =>
+      isMultilanguageProperty(property) ? v.languageCode === locale : true,
+    )?.value;
+
+    const originalWasEmpty = isEmptyValue(hadOriginalValue);
+
+    if (originalWasEmpty) {
+      property.values = [
+        createPropertyValue({
+          value: value as string,
+          languageCode: isMultilanguageProperty(property) ? locale : undefined,
+        } as Partial<TPropertyValue>),
+      ];
+    } else {
+      property.values = [];
+    }
+  }
+
+  function handleNonEmptyValue(property: TProperty, value: string): void {
+    if (property.values?.[0]) {
+      Object.assign(property.values[0], { value });
+    } else {
+      property.values = [createPropertyValue({ value } as Partial<TPropertyValue>)];
+    }
+  }
+
+  // === MAIN SET PROPERTY VALUE FUNCTION ===
+
+  function setPropertyValue(params: SetPropertyValueParams<TProperty, TPropertyValue, TPropertyDictionaryItem>): void {
+    const { property, value, dictionary, locale, initialProp, unitOfMeasureId } = params;
+
+    if (isMeasureProperty(property)) {
+      setMeasurePropertyValue(property, value, unitOfMeasureId);
+      return;
+    }
+
+    if (dictionary?.length) {
+      setDictionaryPropertyValue(property, value, dictionary);
+      return;
+    }
+
+    setRegularPropertyValue(property, value, locale, initialProp);
+  }
+
+  // === RETURN API ===
 
   const loading = useLoading(dictionaryItemsLoading);
 

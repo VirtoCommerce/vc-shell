@@ -199,6 +199,8 @@
         option-label="displayName"
         option-value="id"
         input-type="number"
+        :multilanguage="multilanguage"
+        :current-language="currentLanguage"
         :label="computedProperty.displayName"
         :placeholder="computedProperty.placeholder"
         :required="computedProperty.required"
@@ -213,7 +215,7 @@
             @keydown.enter.stop.prevent="scope.toggleHandler"
             @keydown.space.stop.prevent="scope.toggleHandler"
           >
-            {{ measurementOptions?.find((e) => e.id === measureUnit)?.displaySymbol }}
+            {{ measurementSymbol }}
           </button>
         </template>
       </VcInputDropdown>
@@ -317,6 +319,13 @@ watch(
     immediate: true,
   },
 );
+
+const measurementSymbol = computed(() => {
+  const option = measurementOptions.value.find((x) => x.id === measureUnit.value);
+  const displaySymbol = option?.displaySymbol;
+  const localizedSymbol = option?.localizedSymbol.values[props.currentLanguage as string];
+  return localizedSymbol ? localizedSymbol : displaySymbol;
+});
 
 const computedProperty = computed(() => {
   const rules: IValidationRules = {};

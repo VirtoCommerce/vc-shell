@@ -55,18 +55,12 @@ const createBladeInstanceConstructor = (
   existingComposables?: { [key: string]: (...args: any[]) => any },
   existingMixins?: ((...args: any[]) => any)[],
 ) => {
-  if (json.settings.url) {
-    const rawUrl = json.settings.url as `/${string}`;
-    bladeComponent.url = rawUrl;
-  }
-
-  if (json.settings.permissions) {
-    bladeComponent.permissions = json.settings.permissions;
-  }
 
   return defineComponent({
     ...bladeComponent,
     name: bladeName,
+    url: json.settings.url ? (json.settings.url as `/${string}`) : undefined,
+    permissions: json.settings.permissions,
     isWorkspace: "isWorkspace" in json.settings && json.settings.isWorkspace,
     menuItem: ("menuItem" in json.settings && json.settings.menuItem) ?? undefined,
     moduleUid: args.moduleUid,

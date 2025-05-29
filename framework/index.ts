@@ -15,6 +15,14 @@ import * as locales from "./locales";
 import { AppInsightsPlugin, AppInsightsPluginOptions } from "vue3-application-insights";
 import { useAppInsights } from "./core/composables";
 
+// Import Blade Registry
+import {
+  createBladeRegistry,
+  BladeRegistryKey,
+  IBladeRegistryInstance,
+  IBladeRegistry,
+} from "./core/composables/useBladeRegistry";
+
 import * as coreComposables from "./core/composables";
 import * as corePlugins from "./core/plugins";
 import * as coreApiPlatform from "./core/api/platform";
@@ -224,7 +232,13 @@ export default {
     // Settings menu
     app.provide(SettingsMenuServiceKey, createSettingsMenuService());
 
-    // Shared module
+    // Initialize and provide Blade Registry
+    const bladeRegistryInstance: IBladeRegistryInstance = createBladeRegistry(app);
+    // Provide the full instance, so _registerBladeFn can be accessed if needed by advanced modules via inject + IBladeRegistryInstance type.
+    // General consumption via useBladeRegistry() will still get the IBladeRegistry interface due to how useBladeRegistry is typed.
+    app.provide(BladeRegistryKey, bladeRegistryInstance);
+
+    // Shared module - no longer needs bladeRegisterFn passed explicitly
     app.use(SharedModule, { router: args.router });
 
     // SignalR

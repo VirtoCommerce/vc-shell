@@ -130,7 +130,18 @@ export function createAppModule(
           const mainRoute = routerInstance.getRoutes().find((r) => r.meta?.root);
 
           if (!mainRoute) {
-            throw new Error("Main route not found. Make sure you have added `meta: {root: true}` to the main route.");
+            throw new Error(
+              "[vc-shell][createAppModule] Main route not found. Ensure `meta: { root: true }` is set on the main application route.",
+            );
+          }
+
+          if (!mainRoute.name || typeof mainRoute.name !== "string" || mainRoute.name.trim() === "") {
+            console.error(
+              "[vc-shell][createAppModule] Main route found, but its 'name' property is missing, not a string, or empty. Cannot add child routes for blades. Main route details:",
+              mainRoute,
+            );
+            // Potentially throw an error here or handle it, as blade routes won't be added
+            return; // Skip adding this blade route if mainRoute.name is invalid
           }
 
           const mainRouteName = mainRoute.name;
@@ -161,15 +172,15 @@ export function createAppModule(
           // Remove existing page in global properties if it exists
           if (app.config.globalProperties.pages) {
             const existingPageIndex = app.config.globalProperties.pages.findIndex(
-              (p: BladeInstanceConstructor) => p.name === bladeVNode.type.name,
+              (p: BladeInstanceConstructor) => p.name === (bladeVNode.type as BladeInstanceConstructor).name,
             );
             if (existingPageIndex !== -1) {
               app.config.globalProperties.pages.splice(existingPageIndex, 1);
             }
           }
 
-          // Add new page to global properties
-          app.config.globalProperties.pages?.push(bladeVNode);
+          // Add new page to global properties - storing the component constructor (VNode's type)
+          app.config.globalProperties.pages?.push(bladeVNode.type as BladeInstanceConstructor);
 
           // Remove existing bladeRoute if it exists
           if (app.config.globalProperties.bladeRoutes) {
@@ -181,9 +192,9 @@ export function createAppModule(
             }
           }
 
-          // Add new bladeRoute
+          // Add new bladeRoute - storing the component constructor (VNode's type) in the component field
           app.config.globalProperties.bladeRoutes?.push({
-            component: bladeVNode,
+            component: bladeVNode.type as BladeInstanceConstructor,
             route: page.url,
             name: routeName,
             isWorkspace: page.isWorkspace || false,

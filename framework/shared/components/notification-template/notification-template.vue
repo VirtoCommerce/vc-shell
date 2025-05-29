@@ -30,13 +30,13 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import moment from "moment";
-import { PushNotification } from "../../../core/api/platform";
+import { IPushNotification } from "../../../core/api/platform";
 
 export interface Props {
   color?: string;
   icon?: string;
   title: string;
-  notification: PushNotification;
+  notification: IPushNotification;
 }
 
 const props = defineProps<Props>();

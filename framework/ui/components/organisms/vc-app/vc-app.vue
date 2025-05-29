@@ -192,12 +192,17 @@ const onMenuItemClick = function (item: MenuItem) {
   console.debug(`vc-app#onMenuItemClick() called.`);
 
   if (item.routeId) {
-    openBlade(
-      {
-        blade: resolveBladeByName(item.routeId),
-      },
-      true,
-    );
+    const bladeComponent = resolveBladeByName(item.routeId);
+    if (bladeComponent) {
+      openBlade(
+        {
+          blade: bladeComponent,
+        },
+        true,
+      );
+    } else {
+      console.error(`Blade component with routeId '${item.routeId}' not found.`);
+    }
   } else if (!item.routeId && item.url) {
     const menuRoute = routes.find((r) => {
       return "/" + r.path.split("/").filter((part) => part !== "")[1] === item.url || r.path === item.url;

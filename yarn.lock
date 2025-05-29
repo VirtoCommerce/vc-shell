@@ -4974,7 +4974,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@vcmp-vendor-portal/modules@workspace:apps/vendor-portal/src/modules"
   peerDependencies:
-    "@vcmp-vendor-portal/api": ^1.1.14
+    "@vcmp-vendor-portal/api": ^1.1.16
   languageName: unknown
   linkType: soft
 

@@ -72,7 +72,7 @@ export interface IUseDynamicProperties<
   loadMeasurements(measureId: string, keyword?: string, locale?: string): Promise<TMeasurement[] | undefined>;
 }
 
-interface SetPropertyValueParams<TProperty, TPropertyValue, TPropertyDictionaryItem> {
+export interface SetPropertyValueParams<TProperty, TPropertyValue, TPropertyDictionaryItem> {
   property: TProperty;
   value: string | TPropertyValue[] | (TPropertyDictionaryItem & { value: string })[];
   dictionary?: TPropertyDictionaryItem[];

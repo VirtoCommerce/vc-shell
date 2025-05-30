@@ -569,16 +569,11 @@ const svgPath = computed(() => {
 /* Font Awesome Icons */
 [class^="fa-"],
 [class*=" fa-"],
-[class^="fas"],
-[class*=" fas"],
-[class^="far"],
-[class*=" far"],
-[class^="fal"],
-[class*=" fal"],
-[class^="fab"],
-[class*=" fab"],
-[class^="fad"],
-[class*=" fad"] {
+[class~="fas"],
+[class~="far"],
+[class~="fal"],
+[class~="fab"],
+[class~="fad"] {
   font-family: "Font Awesome 6 Free", "Font Awesome 6 Brands", "Font Awesome 6 Duotone", "Font Awesome 6 Pro";
   font-style: normal;
   font-weight: normal;

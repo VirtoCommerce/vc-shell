@@ -1,3 +1,14 @@
+## [1.1.26](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.25...v1.1.26) (2025-06-04)
+
+
+### Features
+
+* **global-search:** add useGlobalSearch composable and Global Search Service documentation for enhanced search functionality across the application ([e53be10](https://github.com/VirtoCommerce/vc-shell/commit/e53be1095b2b7067dc3ad9ce9f1ab23aafaa57a2))
+* **localization:** add theme localization support for German and English languages ([8d8fdb0](https://github.com/VirtoCommerce/vc-shell/commit/8d8fdb0a05814ea277f7ab07978902ae86ec3102))
+* **vc-popup:** add Storybook stories for VcPopup component, showcasing various configurations and customization options ([dc8e961](https://github.com/VirtoCommerce/vc-shell/commit/dc8e961be32469b7a06fed78aa68846ba95a1d70))
+
+
+
 ## [1.1.25](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.24...v1.1.25) (2025-05-30)
 
 

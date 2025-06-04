@@ -1,12 +1,12 @@
 import { Ref, ref } from "vue";
-import { useUser } from "./../useUser";
+import { useUserManagement } from "./../useUserManagement";
 
 interface IUsePermissions {
   hasAccess(permissions: string | string[] | undefined): boolean;
 }
 const userPermissions: Ref<string[]> = ref([]);
 export function usePermissions(): IUsePermissions {
-  const { user } = useUser();
+  const { user } = useUserManagement();
 
   if (user.value) {
     userPermissions.value = user.value?.permissions ?? [];

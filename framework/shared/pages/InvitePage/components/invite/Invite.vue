@@ -107,8 +107,9 @@
 import { reactive, onMounted, computed } from "vue";
 import { useRouter } from "vue-router";
 import { useIsFormValid, Field, useIsFormDirty, useForm } from "vee-validate";
-import { useUser, useSettings } from "./../../../../../core/composables";
+import { useSettings } from "./../../../../../core/composables";
 import { useI18n } from "vue-i18n";
+import { useUserManagement } from "./../../../../../core/composables/useUserManagement";
 
 useForm({ validateOnMount: false });
 
@@ -126,7 +127,7 @@ const props = withDefaults(
   },
 );
 
-const { validateToken, validatePassword, resetPasswordByToken, signIn, loading } = useUser();
+const { validateToken, validatePassword, resetPasswordByToken, signIn, loading } = useUserManagement();
 const router = useRouter();
 const { t } = useI18n({ useScope: "global" });
 const isFormValid = useIsFormValid();

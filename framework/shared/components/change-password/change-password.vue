@@ -137,7 +137,7 @@ import { nextTick, reactive, computed } from "vue";
 import { useIsFormValid, Field, useIsFormDirty, useForm } from "vee-validate";
 import { VcInput, VcHint, VcButton, VcPopup, VcForm } from "./../../../ui/components";
 import { IIdentityError } from "./../../../core/api/platform";
-import { useUser } from "./../../../core/composables/useUser";
+import { useUserManagement } from "./../../../core/composables/useUserManagement";
 import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
 
@@ -162,12 +162,11 @@ interface Emits {
 
 const emit = defineEmits<Emits>();
 const { t } = useI18n({ useScope: "global" });
-const { changeUserPassword, loading, validatePassword } = useUser();
+const { changeUserPassword, loading, validatePassword, signOut } = useUserManagement();
 useForm({ validateOnMount: false });
 const isValid = useIsFormValid();
 const isDirty = useIsFormDirty();
 const router = useRouter();
-const { signOut } = useUser();
 
 const form = reactive<IChangePassForm>({
   isValid: false,

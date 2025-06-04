@@ -9,11 +9,11 @@
 <script lang="ts" setup>
 import { SettingsMenuItem } from "../settings-menu-item";
 import { LogoutIcon } from "../../../ui/components/atoms/vc-icon/icons";
-import { useUser } from "../../../core/composables";
+import { useUserManagement } from "../../../core/composables/useUserManagement";
 import { useRouter } from "vue-router";
 import { useBladeNavigation } from "../blade-navigation";
 
-const { signOut } = useUser();
+const { signOut } = useUserManagement();
 const router = useRouter();
 const { closeBlade } = useBladeNavigation();
 

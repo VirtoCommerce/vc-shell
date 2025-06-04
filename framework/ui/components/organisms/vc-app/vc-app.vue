@@ -67,7 +67,7 @@
 </template>
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
-import { inject, provide, useAttrs, watch, ref, onUnmounted, computed } from "vue";
+import { inject, provide, watch, ref, onUnmounted, computed } from "vue";
 import VcAppBar from "./_internal/vc-app-bar/vc-app-bar.vue";
 import VcAppMenu from "./_internal/vc-app-menu/vc-app-menu.vue";
 import {
@@ -78,7 +78,7 @@ import {
   NotificationDropdown,
   BladeRoutesRecord,
 } from "./../../../../shared/components";
-import { provideAppBarWidget, provideWidgetService, useNotifications, useUser } from "../../../../core/composables";
+import { provideAppBarWidget, useNotifications } from "../../../../core/composables";
 import { useRoute, useRouter } from "vue-router";
 import { watchOnce } from "@vueuse/core";
 import { MenuItem } from "../../../../core/types";
@@ -94,6 +94,7 @@ import { DynamicModulesKey } from "../../../../injection-keys";
 import { provideMenuService } from "../../../../core/composables/useMenuService";
 import { BellIcon } from "../../atoms/vc-icon/icons";
 import { provideAppBarMobileButtonsService } from "../../../../core/composables/useAppBarMobileButtons";
+import { useUserManagement } from "../../../../core/composables/useUserManagement";
 
 export interface Props {
   isReady: boolean;
@@ -134,7 +135,7 @@ const { appsList, switchApp, getApps } = useAppSwitcher();
 
 const { loadFromHistory, notifications, markAllAsRead } = useNotifications();
 const route = useRoute();
-const { isAuthenticated } = useUser();
+const { isAuthenticated } = useUserManagement();
 
 const routes = router.getRoutes();
 

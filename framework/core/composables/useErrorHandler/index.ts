@@ -1,5 +1,6 @@
 import { onErrorCaptured, getCurrentInstance, ref, Ref } from "vue";
-import { useAppInsights, useUser } from "..";
+import { useAppInsights } from "..";
+import { useUserManagement } from "../useUserManagement";
 
 interface IUseErrorHandler {
   error: Ref<string | null>;
@@ -10,7 +11,7 @@ export function useErrorHandler(capture?: boolean): IUseErrorHandler {
   const error = ref<string | null>(null);
   const instance = getCurrentInstance();
   const { appInsights } = useAppInsights();
-  const { user } = useUser();
+  const { user } = useUserManagement();
 
   function reset() {
     error.value = null;

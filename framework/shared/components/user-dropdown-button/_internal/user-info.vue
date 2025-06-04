@@ -31,7 +31,7 @@
 
 <script lang="ts" setup>
 import { computed } from "vue";
-import { useUser } from "../../../../core/composables";
+import { useUserManagement } from "../../../../core/composables/useUserManagement";
 import { VcIcon } from "../../../../ui/components";
 
 export interface Props {
@@ -42,7 +42,7 @@ export interface Props {
 }
 
 const props = defineProps<Props>();
-const { user } = useUser();
+const { user } = useUserManagement();
 
 const imageHandler = computed(() => {
   if (props.avatarUrl) {

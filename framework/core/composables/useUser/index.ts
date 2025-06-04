@@ -16,11 +16,11 @@ import { RequestPasswordResult } from "./../../types";
 import { createSharedComposable } from "@vueuse/core";
 import { useExternalProvider } from "../../../shared/components/sign-in/useExternalProvider";
 
-interface IUseUser {
+// Interface for the full internal API provided by _createInternalUserLogic
+export interface IUserInternalAPI {
   user: ComputedRef<UserDetail | undefined>;
   loading: ComputedRef<boolean>;
   isAdministrator: ComputedRef<boolean | undefined>;
-  // getAccessToken: () => Promise<string | undefined>;
   loadUser: () => Promise<UserDetail>;
   signIn: (username: string, password: string) => Promise<SignInResult | { succeeded: boolean; error?: any }>;
   signOut: () => Promise<void>;
@@ -32,8 +32,19 @@ interface IUseUser {
   getLoginType: () => Promise<LoginType[]>;
   isAuthenticated: ComputedRef<boolean>;
 }
+
+export interface IAppUserAPI {
+  user: ComputedRef<UserDetail | undefined>;
+  loading: ComputedRef<boolean>;
+  isAuthenticated: ComputedRef<boolean>;
+  isAdministrator: ComputedRef<boolean | undefined>;
+  loadUser: () => Promise<UserDetail>;
+  signOut: () => Promise<void>;
+}
+
 const user: Ref<UserDetail | undefined> = ref();
-function useUserFn(): IUseUser {
+
+export function _createInternalUserLogic(): IUserInternalAPI {
   const loading: Ref<boolean> = ref(false);
 
   const { storage: externalSignInStorage, signOut: externalSignOut } = useExternalProvider();
@@ -72,7 +83,7 @@ function useUserFn(): IUseUser {
     username: string,
     password: string,
   ): Promise<SignInResult | { succeeded: boolean; error?: any; status?: number }> {
-    console.debug(`[@vc-shell/framework#useUser:signIn] - Entry point`);
+    console.debug(`[@vc-shell/framework#_createInternalUserLogic:signIn] - Entry point`);
     try {
       loading.value = true;
       const result = await securityClient.login(new LoginRequest({ userName: username, password }));
@@ -98,7 +109,7 @@ function useUserFn(): IUseUser {
   }
 
   async function signOut(): Promise<void> {
-    console.debug(`[@vc-shell/framework#useUser:signOut] - Entry point`);
+    console.debug(`[@vc-shell/framework#_createInternalUserLogic:signOut] - Entry point`);
 
     user.value = undefined;
 
@@ -110,12 +121,12 @@ function useUserFn(): IUseUser {
   }
 
   async function loadUser(): Promise<UserDetail> {
-    console.debug(`[@vc-shell/framework#useUser:loadUser] - Entry point`);
+    console.debug(`[@vc-shell/framework#_createInternalUserLogic:loadUser] - Entry point`);
 
     try {
       loading.value = true;
       user.value = await securityClient.getCurrentUser();
-      console.log("[useUser]: an user details has been loaded", user.value);
+      console.log("[_createInternalUserLogic]: an user details has been loaded", user.value);
     } catch (e: any) {
       console.error(e);
     } finally {
@@ -187,4 +198,14 @@ function useUserFn(): IUseUser {
   };
 }
 
-export const useUser = createSharedComposable(() => useUserFn());
+export const useUser = createSharedComposable((): IAppUserAPI => {
+  const internals = _createInternalUserLogic();
+  return {
+    user: internals.user,
+    loading: internals.loading,
+    isAuthenticated: internals.isAuthenticated,
+    isAdministrator: internals.isAdministrator,
+    loadUser: internals.loadUser,
+    signOut: internals.signOut,
+  };
+});

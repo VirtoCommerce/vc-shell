@@ -42,7 +42,7 @@
     </template>
   </Teleport>
 </template>
-
+<!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
 import { h } from "vue";
 import { VcIcon, CrossSignIcon } from "../../../ui/components";
@@ -58,6 +58,11 @@ export interface Props {
 export interface Emits {
   (event: "close"): void;
 }
+
+defineSlots<{
+  header: (props: any) => any;
+  content: (props: any) => any;
+}>();
 
 const emit = defineEmits<Emits>();
 

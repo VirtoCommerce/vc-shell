@@ -10,12 +10,9 @@
 </template>
 
 <script lang="ts" setup>
-import { inject } from "vue";
 import { useSettingsMenu } from "../../../core/composables/useSettingsMenu";
-import { SettingsMenuServiceKey } from "../../../injection-keys";
 
-const settingsMenu = useSettingsMenu();
-const { items } = settingsMenu;
+const { items } = useSettingsMenu();
 </script>
 
 <style lang="scss">

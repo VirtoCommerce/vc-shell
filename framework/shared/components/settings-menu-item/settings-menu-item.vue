@@ -41,7 +41,7 @@
     <slot name="content" />
   </div>
 </template>
-
+<!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
 import { Component } from "vue";
 import { VcIcon, VcImage } from "../../../ui/components";
@@ -61,6 +61,14 @@ const props = withDefaults(defineProps<Props>(), {
   isVisible: true,
   triggerAction: "click",
 });
+
+defineSlots<{
+  trigger: (props: any) => any;
+  icon: (props: any) => any;
+  title: (props: any) => any;
+  additional: (props: any) => any;
+  content: (props: any) => any;
+}>();
 
 const emit = defineEmits<{
   (e: "trigger:click"): void;

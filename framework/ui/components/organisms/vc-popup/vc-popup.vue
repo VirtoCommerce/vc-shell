@@ -124,7 +124,7 @@
 import { Ref, computed, inject } from "vue";
 import { TransitionRoot, TransitionChild, Dialog, DialogPanel, DialogTitle } from "@headlessui/vue";
 
-interface Props {
+export interface Props {
   title?: string;
   closable?: boolean;
   variant?: "default" | "error" | "warning" | "success" | "info";

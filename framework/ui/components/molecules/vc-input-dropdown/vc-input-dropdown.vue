@@ -58,6 +58,13 @@
               </button>
             </template>
           </slot>
+          <VcButton
+            icon="material-keyboard_arrow_down"
+            icon-size="s"
+            text
+            icon-class="vc-input-dropdown__toggle-button-icon"
+            @click.stop.prevent="toggleHandler"
+          ></VcButton>
           <slot
             v-if="$slots['append-inner']"
             name="append-inner"
@@ -280,6 +287,10 @@ defineEmits<Emits>();
 
   &__toggle-button {
     @apply tw-text-[color:var(--input-dropdown-toggle-color)] tw-not-italic tw-font-medium tw-text-sm tw-cursor-pointer;
+  }
+
+  &__toggle-button-icon {
+    @apply tw-text-[color:var(--input-dropdown-toggle-color)];
   }
 }
 </style>

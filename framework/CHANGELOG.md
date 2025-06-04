@@ -1,3 +1,12 @@
+## [1.1.28](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.27...v1.1.28) (2025-06-04)
+
+
+### Features
+
+* **modularity:** enhance Blade registration with inject support and improve route handling for workspace components ([1d5a8e3](https://github.com/VirtoCommerce/vc-shell/commit/1d5a8e386168079bd56e9cd633edf79a3c086ce1))
+
+
+
 ## [1.1.27](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.26...v1.1.27) (2025-06-04)
 
 

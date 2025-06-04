@@ -1,4 +1,10 @@
 {
+  "CORE": {
+    "THEMES": {
+      "LIGHT": "Light",
+      "DARK": "Dark"
+    }
+  },
   "SHELL": {
     "USER": {
       "ROLE": {

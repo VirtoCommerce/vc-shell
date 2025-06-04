@@ -13,7 +13,7 @@ import "@fortawesome/fontawesome-free/css/solid.min.css";
 
 import "bootstrap-icons/font/bootstrap-icons.min.css";
 import "material-symbols/outlined.css";
-import "@vc-shell/framework/dist/index.css";
+import "../framework/dist/index.css";
 
 setup((app) => {
     app.use(framework, {

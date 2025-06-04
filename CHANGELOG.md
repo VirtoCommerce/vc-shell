@@ -1,3 +1,17 @@
+## [1.1.27](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.26...v1.1.27) (2025-06-04)
+
+
+### Bug Fixes
+
+* **storybook:** update VC Shell framework CSS import path in Storybook preview for correct styling ([d8714ac](https://github.com/VirtoCommerce/vc-shell/commit/d8714ac2340d53278db6d3c515d2921c076cb002))
+
+
+### Features
+
+* **vc-input-dropdown:** add toggle button to dropdown component for improved user interaction ([1289dd5](https://github.com/VirtoCommerce/vc-shell/commit/1289dd5fbc7c2adcddd69184e8eb0792c7121c97))
+
+
+
 ## [1.1.26](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.25...v1.1.26) (2025-06-04)
 
 

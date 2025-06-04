@@ -1,3 +1,12 @@
+## [1.1.27](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.26...v1.1.27) (2025-06-04)
+
+
+### Features
+
+* **vc-input-dropdown:** add toggle button to dropdown component for improved user interaction ([1289dd5](https://github.com/VirtoCommerce/vc-shell/commit/1289dd5fbc7c2adcddd69184e8eb0792c7121c97))
+
+
+
 ## [1.1.26](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.25...v1.1.26) (2025-06-04)
 
 

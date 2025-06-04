@@ -215,7 +215,7 @@ export function _createBladeRouteResolver(
         effectiveBladeSegment = undefined;
       }
 
-      if (effectiveBladeSegment && bladeComponent && bladeComponent.isBlade) {
+      if (effectiveBladeSegment && bladeComponent && bladeComponent.isBlade && !bladeComponent.isWorkspace) {
         if (!hasAccess(bladeComponent.permissions)) {
           // No access to blade, workspace remains open
         } else {

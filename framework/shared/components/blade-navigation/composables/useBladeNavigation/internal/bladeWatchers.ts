@@ -57,30 +57,36 @@ export function _createBladeWatchers(
     bladeState.blades,
     (newBlades) => {
       const workspace = newBlades[0];
-      const lastBladeWithUrl = _.findLast(
-        newBlades,
-        (b: BladeVNode) => b && b.type.url && b.props?.navigation?.isVisible !== false,
+
+      const visibleBladesWithUrls = newBlades.filter(
+        (b): b is BladeVNode => !!(b && b.type && b.type.url && b.props?.navigation?.isVisible !== false),
       );
+      const lastBladeWithUrl: BladeVNode | undefined =
+        visibleBladesWithUrls.length > 0 ? visibleBladesWithUrls[visibleBladesWithUrls.length - 1] : undefined;
 
       if (workspace?.type?.url) {
-        const constructedPath = routerUtils.constructBladePath(workspace, lastBladeWithUrl as BladeVNode | undefined);
+        const constructedPath = routerUtils.constructBladePath(workspace, lastBladeWithUrl);
+
         if (constructedPath) {
           const query = routerUtils.getURLQuery();
-          const fullPath =
-            (routerUtils.mainRouteBaseParamURL.value &&
+          const pathPrefix =
+            routerUtils.mainRouteBaseParamURL.value &&
             !constructedPath.startsWith(routerUtils.mainRouteBaseParamURL.value)
               ? routerUtils.mainRouteBaseParamURL.value
-              : "") +
-            constructedPath +
-            (query.params ? "?" + query.params : "");
+              : "";
+          const querySuffix = query.params ? "?" + query.params : "";
 
-          if (route.fullPath !== fullPath) {
-            router.options.history.replace(fullPath);
-            if (lastBladeWithUrl && (lastBladeWithUrl as BladeVNode).type.name) {
-              setupPageTracking.afterEach({ name: (lastBladeWithUrl as BladeVNode).type.name!, fullPath });
-            } else if (workspace.type.name) {
-              setupPageTracking.afterEach({ name: workspace.type.name, fullPath });
-            }
+          const finalFullPathToSet = pathPrefix + constructedPath + querySuffix;
+
+          router.options.history.replace(finalFullPathToSet);
+
+          if (lastBladeWithUrl && lastBladeWithUrl.type.name) {
+            setupPageTracking.afterEach({
+              name: lastBladeWithUrl.type.name!,
+              fullPath: finalFullPathToSet,
+            });
+          } else if (workspace.type.name) {
+            setupPageTracking.afterEach({ name: workspace.type.name, fullPath: finalFullPathToSet });
           }
         }
       }

@@ -9,7 +9,7 @@ import { BladeVNode, SharedModule, notification } from "./shared";
 import * as sharedPages from "./shared/pages/plugin";
 import { registerInterceptors } from "./core/interceptors";
 import { usePermissions } from "./core/composables/usePermissions";
-import { useUser } from "./core/composables/useUser";
+import { useUserManagement } from "./core/composables/useUserManagement";
 import Vue3TouchEvents from "vue3-touch-events";
 import * as locales from "./locales";
 import { AppInsightsPlugin, AppInsightsPluginOptions } from "vue3-application-insights";
@@ -145,8 +145,8 @@ export default {
   ): void {
     // Register base theme
     coreComposables.useTheme().register([
-      "light",
-      // "dark"
+      { key: "light", localizationKey: "core.themes.light" },
+      // { key: "dark", localizationKey: "core.themes.dark" },
     ]);
 
     // HTTP Interceptors
@@ -307,7 +307,7 @@ export default {
      */
     // TODO add check if app has login page
     args.router.beforeEach(async (to, from, next) => {
-      const { isAuthenticated } = useUser();
+      const { isAuthenticated } = useUserManagement();
 
       if (to.meta.root === true) {
         try {

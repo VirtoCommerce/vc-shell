@@ -16,16 +16,16 @@
       <GenericDropdown
         :opened="opened"
         :items="themes"
-        :is-item-active="(theme) => theme === current"
+        :is-item-active="(theme) => theme.key === currentThemeKey"
         @item-click="handleThemeSelect"
       >
         <template #item="{ item: theme, click }">
           <div
             class="vc-theme-selector__item"
-            :class="{ 'vc-theme-selector__item--active': theme === current }"
+            :class="{ 'vc-theme-selector__item--active': theme.key === currentThemeKey }"
             @click="click"
           >
-            <span class="vc-theme-selector__item-title">{{ _.capitalize(theme) }}</span>
+            <span class="vc-theme-selector__item-title">{{ theme.name }}</span>
           </div>
         </template>
       </GenericDropdown>
@@ -38,24 +38,24 @@ import { GenericDropdown } from "../generic-dropdown";
 import { useTheme } from "../../../core/composables/useTheme";
 import { ref, watch } from "vue";
 import { notification } from "..";
-import * as _ from "lodash-es";
 import { SettingsMenuItem } from "../settings-menu-item";
 import { VcIcon } from "../../../ui/components";
 
-const { current, themes, setTheme } = useTheme();
+const { currentThemeKey, currentLocalizedName, themes, setTheme } = useTheme();
 const opened = ref(false);
 
-const handleThemeSelect = (theme: string) => {
-  setTheme(theme);
+const handleThemeSelect = (theme: { key: string; name: string }) => {
+  setTheme(theme.key);
   opened.value = false;
 };
 
 watch(
-  () => current.value,
-  (newVal) => {
-    notification(_.capitalize(newVal));
+  () => currentLocalizedName.value,
+  (newLocalizedName) => {
+    if (newLocalizedName) {
+      notification(newLocalizedName);
+    }
   },
-  { deep: true },
 );
 </script>
 

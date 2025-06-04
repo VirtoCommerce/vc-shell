@@ -3,7 +3,7 @@
 
 /* Apply color scheme example
 You also need to register color theme in startApp() using the 'register(['my-theme'])' method of the useTheme composable. */
-/* html.my-theme {
+/* :root[data-theme="your-theme-key"] {
   // Primary
   --primary-50: #1F2D3A;
   --primary-100: #2B3D4A;

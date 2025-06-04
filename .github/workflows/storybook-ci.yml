@@ -96,6 +96,10 @@ jobs:
         run: |
           yarn install
 
+      - name: Build framework
+        run: |
+          yarn build
+
       - name: Build
         run: |
           yarn storybook-build

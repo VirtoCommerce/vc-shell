@@ -6,6 +6,10 @@ export type WidgetEventHandler = (...args: unknown[]) => void;
 export interface IWidgetEvents {
   [key: string]: Set<WidgetEventHandler>;
 }
+export interface IExposedWidget {
+  id?: string;
+  [key: string]: unknown;
+}
 
 export interface IWidget {
   id: string;
@@ -14,8 +18,7 @@ export interface IWidget {
   props?: Record<string, unknown>;
   events?: Record<string, unknown>;
   isVisible?: boolean | ComputedRef<boolean> | Ref<boolean> | ((blade?: IBladeInstance) => boolean);
-  onOpen?: (blade: { id: string }) => void;
-  onClose?: (blade: { id: string }) => void;
+  updateFunctionName?: string;
 }
 
 export interface IWidgetRegistration {
@@ -30,7 +33,7 @@ export interface IWidgetService {
   clearBladeWidgets: (bladeId: string) => void;
   registeredWidgets: IWidgetRegistration[];
   isActiveWidget: (id: string) => boolean;
-  setActiveWidget: (ref: ComponentInternalInstance["exposed"]) => void;
+  setActiveWidget: ({ exposed, widgetId }: { exposed: ComponentInternalInstance["exposed"]; widgetId: string }) => void;
   updateActiveWidget: () => void;
   isWidgetRegistered: (id: string) => boolean;
   updateWidget: ({ id, bladeId, widget }: { id: string; bladeId: string; widget: Partial<IWidget> }) => void;
@@ -52,7 +55,7 @@ export function registerWidget(widget: IWidget, bladeId: string): void {
 export function createWidgetService(): IWidgetService {
   const widgetRegistry = reactive<Record<string, IWidget[]>>({});
   const registeredWidgets = reactive<IWidgetRegistration[]>([]);
-  const activeWidgetRef = ref();
+  const activeWidget = ref<{ exposed: ComponentInternalInstance["exposed"]; widgetId: string } | undefined>();
   const registeredIds = reactive(new Set<string>());
 
   const registerWidget = (widget: IWidget, bladeId: string): void => {
@@ -123,19 +126,39 @@ export function createWidgetService(): IWidgetService {
     });
   };
 
-  const setActiveWidget = (ref: ComponentInternalInstance["exposed"]): void => {
-    activeWidgetRef.value = undefined;
+  const setActiveWidget = ({
+    exposed,
+    widgetId,
+  }: {
+    exposed: ComponentInternalInstance["exposed"];
+    widgetId: string;
+  }): void => {
+    activeWidget.value = undefined;
 
-    activeWidgetRef.value = ref;
+    activeWidget.value = {
+      exposed,
+      widgetId,
+    };
   };
 
   const updateActiveWidget = (): void => {
-    if (!activeWidgetRef.value) {
+    const activeExposed = activeWidget.value?.exposed as IExposedWidget | undefined;
+
+    if (!activeExposed) {
       return;
     }
 
-    if (activeWidgetRef.value?.updateActiveWidgetCount) {
-      activeWidgetRef.value.updateActiveWidgetCount();
+    const widgetId = activeWidget.value?.widgetId;
+
+    if (widgetId) {
+      const registration = registeredWidgets.find((reg) => reg.widget.id === widgetId);
+      const functionNameToCall = registration?.widget?.updateFunctionName;
+
+      if (functionNameToCall && typeof activeExposed[functionNameToCall] === "function") {
+        activeExposed[functionNameToCall]();
+      } else {
+        console.warn(`Widget '${widgetId}' does not have an exposed function named '${functionNameToCall}'.`);
+      }
     }
   };
 
@@ -144,7 +167,7 @@ export function createWidgetService(): IWidgetService {
   };
 
   const isActiveWidget = (id: string): boolean => {
-    return activeWidgetRef.value?.id === id;
+    return activeWidget.value?.widgetId === id;
   };
 
   preregisteredWidgets.forEach((widget) => {

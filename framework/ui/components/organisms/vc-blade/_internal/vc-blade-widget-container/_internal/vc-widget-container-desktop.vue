@@ -6,6 +6,7 @@
         v-for="widget in displayedItems"
         :key="widget.id"
         v-bind="widget.props || {}"
+        :widget-id="widget.id"
         v-on="widget.events || {}"
       />
 
@@ -34,6 +35,7 @@
             class="tw-p-3 tw-w-full"
             v-bind="item.props || {}"
             horizontal
+            :widget-id="item.id"
             v-on="item.events || {}"
           />
         </template>
@@ -54,7 +56,6 @@ interface Props {
 }
 
 const props = defineProps<Props>();
-const normalizedBladeId = computed(() => props.bladeId?.toLowerCase() || "");
 const showToolbar = ref(false);
 
 const displayedItems = computed(() => props.widgets.slice(0, 3));

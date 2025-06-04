@@ -459,6 +459,7 @@ onMounted(() => {
               },
             },
             isVisible: visibilityMethod ? computed(() => bladeContext.value.scope?.[visibilityMethod]) : true,
+            updateFunctionName: "updateActiveWidgetCount",
           },
           blade.value.id,
         );

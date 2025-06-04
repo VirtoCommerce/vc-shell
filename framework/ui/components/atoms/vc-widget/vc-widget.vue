@@ -1,7 +1,7 @@
 <template>
   <div
     class="vc-widget"
-    :data-widget-id="widgetName"
+    :data-widget-id="actualWidgetId"
     :data-widget-name="title"
     :class="[
       { 'vc-widget--expanded': isExpanded },
@@ -38,7 +38,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, getCurrentInstance } from "vue";
+import { computed, getCurrentInstance, useAttrs } from "vue";
 import { VcIcon } from "./../vc-icon";
 import { useWidgets } from "../../../../core/composables";
 
@@ -57,15 +57,22 @@ const emit = defineEmits<{
 }>();
 
 const instance = getCurrentInstance();
-
+const attrs = useAttrs();
 const widgetService = useWidgets();
 
-const widgetName = instance?.parent?.type.__name;
+// Get widgetId from attributes passed by the parent container
+const actualWidgetId = computed(() => (attrs.widgetId || attrs["widget-id"]) as string | undefined);
 
 function onClick() {
   if (!props.disabled) {
-    if (widgetName && instance?.parent?.exposed) {
-      widgetService.setActiveWidget(instance?.parent?.exposed);
+    // Use the actualWidgetId from attrs
+    if (actualWidgetId.value && instance?.parent?.exposed) {
+      widgetService.setActiveWidget({
+        exposed: instance.parent.exposed,
+        widgetId: actualWidgetId.value,
+      });
+    } else if (!actualWidgetId.value) {
+      console.warn("VcWidget: widgetId is missing from attrs. Widget activation might not work as expected.");
     }
     emit("click");
   }

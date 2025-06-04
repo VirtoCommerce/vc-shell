@@ -273,8 +273,6 @@ const meta = {
     docs: {
       description: {
         component: `
-### VcInputDropdown Component
-
 The VcInputDropdown component combines an input field with a dropdown selection in a unified interface.
 This creates a powerful and flexible control ideal for scenarios where users need to both input a value
 and select a category, unit, or format for that value.

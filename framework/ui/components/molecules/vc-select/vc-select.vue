@@ -38,6 +38,7 @@
         <slot
           name="control"
           :toggle-handler="toggleDropdown"
+          :is-opened="isOpened"
         >
           <div class="vc-select__control">
             <div
@@ -366,7 +367,7 @@ defineSlots<{
   /**
    * Custom select control
    */
-  control: (scope: { toggleHandler: () => void }) => any;
+  control: (scope: { toggleHandler: () => void, isOpened: boolean }) => any;
   /**
    * Prepend inner field
    */

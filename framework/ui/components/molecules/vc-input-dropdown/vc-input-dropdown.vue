@@ -21,7 +21,7 @@
         v-bind="scope"
       ></slot>
     </template>
-    <template #control="{ toggleHandler }">
+    <template #control="{ toggleHandler, isOpened }">
       <VcInput
         :placeholder="placeholder"
         :hint="hint"
@@ -42,29 +42,31 @@
         @blur="$emit('blur', $event)"
       >
         <template #append-inner>
-          <slot
-            name="button"
-            :toggle-handler="toggleHandler"
-          >
-            <template v-if="options && options.length">
-              <button
-                class="vc-input-dropdown__toggle-button"
-                tabindex="0"
-                @click.stop.prevent="toggleHandler"
-                @keydown.enter.stop.prevent="toggleHandler"
-                @keydown.space.stop.prevent="toggleHandler"
-              >
-                {{ unref(option) }}
-              </button>
-            </template>
-          </slot>
-          <VcButton
-            icon="material-keyboard_arrow_down"
-            icon-size="s"
-            text
-            icon-class="vc-input-dropdown__toggle-button-icon"
-            @click.stop.prevent="toggleHandler"
-          ></VcButton>
+          <div class="tw-flex tw-items-center">
+            <slot
+              name="button"
+              :toggle-handler="toggleHandler"
+            >
+              <template v-if="options && options.length">
+                <button
+                  class="vc-input-dropdown__toggle-button"
+                  tabindex="0"
+                  @click.stop.prevent="toggleHandler"
+                  @keydown.enter.stop.prevent="toggleHandler"
+                  @keydown.space.stop.prevent="toggleHandler"
+                >
+                  {{ unref(option) }}
+                </button>
+              </template>
+            </slot>
+            <VcButton
+              :icon="isOpened ? 'material-keyboard_arrow_up' : 'material-keyboard_arrow_down'"
+              icon-size="s"
+              text
+              icon-class="vc-input-dropdown__toggle-button-icon"
+              @click.stop.prevent="toggleHandler"
+            ></VcButton>
+          </div>
           <slot
             v-if="$slots['append-inner']"
             name="append-inner"
@@ -290,7 +292,7 @@ defineEmits<Emits>();
   }
 
   &__toggle-button-icon {
-    @apply tw-text-[color:var(--input-dropdown-toggle-color)];
+    @apply tw-text-[color:var(--input-dropdown-toggle-color)] tw-ml-3;
   }
 }
 </style>

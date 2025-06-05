@@ -1,3 +1,12 @@
+## [1.1.29](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.28...v1.1.29) (2025-06-05)
+
+
+### Features
+
+* **vc-input-dropdown, vc-select:** enhance dropdown and select components with toggle state management for improved user experience ([af3ff4f](https://github.com/VirtoCommerce/vc-shell/commit/af3ff4fef54d07e2861d6b7cc8facdf741e50b35))
+
+
+
 ## [1.1.28](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.27...v1.1.28) (2025-06-04)
 
 

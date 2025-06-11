@@ -1,3 +1,12 @@
+## [1.1.30](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.29...v1.1.30) (2025-06-11)
+
+
+### Bug Fixes
+
+* **api-client-generator:** update import and types path construction for core modules to use path.join for improved path handling ([1d730a1](https://github.com/VirtoCommerce/vc-shell/commit/1d730a19c7c4aa4a309354875d34ba2e8fc3d335))
+
+
+
 ## [1.1.29](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.28...v1.1.29) (2025-06-05)
 
 

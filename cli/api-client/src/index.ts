@@ -268,8 +268,8 @@ function createExportsConfig(
     // Define the canonical import and types paths for this core module
     // Assuming the compiled output in dist will be virtocommerce.[coreModule].js
     const compiledBaseName = `virtocommerce.${coreModule}`;
-    const importPath = `./${buildDir}/${compiledBaseName}.js`;
-    const typesPath = `./${buildDir}/types/${compiledBaseName}.d.ts`;
+    const importPath = `./${path.join(buildDir, `${compiledBaseName}.js`)}`;
+    const typesPath = `./${path.join(buildDir, "types", `${compiledBaseName}.d.ts`)}`;
     const exportValue: ModuleExportPaths = { import: importPath, types: typesPath };
 
     const standardKeys = generateStandardExportKeys(coreModule);
@@ -370,8 +370,9 @@ function createExportsConfig(
 
   if (uniqueCoreModules.length === 1) {
     const singleCoreModule = uniqueCoreModules[0];
-    const rootImportPath = `./${buildDir}/${singleCoreModule}.js`;
-    const rootTypesPath = `./${buildDir}/types/${singleCoreModule}.d.ts`;
+    const compiledBaseName = `virtocommerce.${singleCoreModule}`;
+    const rootImportPath = `./${path.join(buildDir, `${compiledBaseName}.js`)}`;
+    const rootTypesPath = `./${path.join(buildDir, "types", `${compiledBaseName}.d.ts`)}`;
     finalExports["."] = {
       import: rootImportPath,
       types: rootTypesPath,
@@ -395,8 +396,9 @@ function createExportsConfig(
         if (coreModuleOfRootImport && uniqueCoreModules.includes(coreModuleOfRootImport)) {
           // The existing root export points to one of the modules we have in finalExports.
           // Re-evaluate its path based on that module's core name.
-          const importPath = `./${buildDir}/${coreModuleOfRootImport}.js`;
-          const typesPath = `./${buildDir}/types/${coreModuleOfRootImport}.d.ts`;
+          const compiledBaseName = `virtocommerce.${coreModuleOfRootImport}`;
+          const importPath = `./${path.join(buildDir, `${compiledBaseName}.js`)}`;
+          const typesPath = `./${path.join(buildDir, "types", `${compiledBaseName}.d.ts`)}`;
           finalExports["."] = { import: importPath, types: typesPath };
           if (verbose) {
             console.log(

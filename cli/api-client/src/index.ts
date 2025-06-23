@@ -19,6 +19,7 @@ interface ApiClientArgs {
   APP_BUILD_DIR?: string;
   SKIP_BUILD?: boolean;
   VERBOSE?: boolean;
+  APP_TYPE_STYLE?: "Class" | "Interface";
 }
 
 /**
@@ -582,6 +583,7 @@ async function generateApiClient(): Promise<void> {
 
   const platformUrl = process.env.APP_PLATFORM_URL ?? parsedArgs.APP_PLATFORM_URL;
   const verbose = parsedArgs.VERBOSE ?? false;
+  const typeStyle = parsedArgs.APP_TYPE_STYLE ?? "Class";
 
   // Validate required arguments
   if (!platformUrl) {
@@ -661,7 +663,7 @@ async function generateApiClient(): Promise<void> {
     const nswagCommand = [
       "run",
       paths.nswagPaths.configuration,
-      `/variables:APP_PLATFORM_URL=${platformUrl},APP_PLATFORM_MODULE=${platformModule},APP_AUTH_API_BASE_PATH=${paths.nswagPaths.authApiBase},APP_TEMPLATE_DIRECTORY=${paths.nswagPaths.templates},APP_API_CLIENT_PATH=${apiClientPaths.nswag}`,
+      `/variables:APP_PLATFORM_URL=${platformUrl},APP_PLATFORM_MODULE=${platformModule},APP_AUTH_API_BASE_PATH=${paths.nswagPaths.authApiBase},APP_TEMPLATE_DIRECTORY=${paths.nswagPaths.templates},APP_API_CLIENT_PATH=${apiClientPaths.nswag},APP_TYPE_STYLE=${typeStyle}`,
       "/runtime:Net60",
     ];
 

@@ -63,6 +63,7 @@ Add the dependencies to your project's **package.json**:
     | `--APP_PACKAGE_NAME`         	| Package name for generated API clients. <br>{==string==} 	    | `--APP_PACKAGE_NAME=@api-client`       	|
     | `--APP_PACKAGE_VERSION`         	| Package version for generated API clients. <br>{==string==} 	    | `--APP_PACKAGE_VERSION=1.1.0`       	|
     | `--APP_OUT_DIR`         	| Output directory for generated API clients. <br>{==string==} 	    | `--APP_OUT_DIR=./src/api_client/`       	|
+    | `--APP_TYPE_STYLE`           | Sets the type style for generated DTOs. Can be 'Class' or 'Interface'.<br>{==string==} | `--APP_TYPE_STYLE=Interface`                                |
     | `--APP_BUILD_DIR`         	| Directory where TypeScript files will be compiled. <br>{==string==} 	    | `--APP_BUILD_DIR=lib` (default is "dist")      	|
     | `--SKIP_BUILD`         	| Skip build step. <br>{==boolean==} 	    | `--SKIP_BUILD=true`       	|
     | `--VERBOSE`         	| Enable verbose logging. <br>{==boolean==} 	    | `--VERBOSE=true`       	|

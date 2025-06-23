@@ -63,6 +63,7 @@ export const useLanguages = createSharedComposable(() => {
   }
 
   async function getFlag(language: string): Promise<string> {
+    if (!language) return "";
     const countryCode = getCountryCode(language);
     return new URL(`../../../assets/icons/flags/${countryCode}.svg`, import.meta.url).href;
   }

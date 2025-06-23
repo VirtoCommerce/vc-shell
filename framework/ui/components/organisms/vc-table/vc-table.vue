@@ -1,6 +1,6 @@
 <template>
   <div
-    v-loading:49="unref(loading) || columnsInit"
+    v-loading:49="loading || columnsInit"
     class="vc-table"
   >
     <VcTableSelectAll
@@ -49,7 +49,7 @@
         ref="scrollContainer"
         :no-padding="true"
         class="vc-table__scroll-container"
-        :use-ptr="selection.length === 0 ? pullToReload : undefined"
+        :use-ptr="selection?.length === 0 ? pullToReload : undefined"
         @scroll:ptr="$emit('scroll:ptr')"
       >
         <!-- Mobile table view -->
@@ -110,7 +110,6 @@
           :selected-item-id="selectedItemId"
           :reorderable-rows="reorderableRows"
           :enable-item-actions="enableItemActions"
-          :item-action-builder="itemActionBuilder"
           :item-actions="itemActions"
           :selected-row-index="selectedRowIndex"
           :has-click-listener="hasClickListener"
@@ -254,6 +253,7 @@ const props = withDefaults(
     reorderableColumns: true,
     paginationVariant: "default",
     columnSelector: "auto",
+    stateKey: "FALLBACK_STATE_KEY",
   },
 );
 
@@ -273,7 +273,7 @@ const emit = defineEmits<{
 
 const instance = getCurrentInstance();
 
-const { items, columns, stateKey, columnSelector, expanded, selectionItems } = toRefs(props);
+const { items, columns, stateKey, columnSelector, expanded, selectionItems, enableItemActions, itemActionBuilder } = toRefs(props);
 
 // template refs
 const tableBody = ref<HTMLElement | null>();
@@ -301,8 +301,8 @@ const {
 });
 
 const { itemActions, selectedRowIndex, calculateActions, showActions, closeActions } = useTableActions<T>({
-  enableItemActions: props.enableItemActions,
-  itemActionBuilder: props.itemActionBuilder,
+  enableItemActions,
+  itemActionBuilder,
 });
 
 const isHeaderHover = ref(false);

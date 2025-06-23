@@ -19,7 +19,6 @@
       :has-click-listener="hasClickListener"
       :editing="editing"
       :enable-item-actions="enableItemActions"
-      :item-action-builder="itemActionBuilder"
       :item-actions="itemActions"
       :selected-row-index="selectedRowIndex"
       :is-selected="isSelected"
@@ -89,7 +88,6 @@ defineProps<{
   hasClickListener?: boolean;
   editing?: boolean;
   enableItemActions?: boolean;
-  itemActionBuilder?: (item: T) => IActionBuilderResult[] | undefined;
   itemActions: IActionBuilderResult[][];
   selectedRowIndex?: number;
   columnsInit: boolean;

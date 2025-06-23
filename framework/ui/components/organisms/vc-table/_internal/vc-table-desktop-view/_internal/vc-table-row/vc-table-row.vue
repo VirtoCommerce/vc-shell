@@ -64,7 +64,7 @@
       </div>
     </div>
     <div
-      v-if="enableItemActions && itemActionBuilder && typeof item === 'object' && selectedRowIndex === index"
+      v-if="enableItemActions && itemActions?.length && typeof item === 'object' && selectedRowIndex === index"
       class="vc-table-row__actions"
       :class="{
         'vc-table-row__actions--hover': hasClickListener,
@@ -121,7 +121,6 @@ defineProps<{
   hasClickListener?: boolean;
   editing?: boolean;
   enableItemActions?: boolean;
-  itemActionBuilder?: (item: T) => IActionBuilderResult[] | undefined;
   itemActions: IActionBuilderResult[][];
   selectedRowIndex?: number;
   isSelected: (item: T) => boolean;

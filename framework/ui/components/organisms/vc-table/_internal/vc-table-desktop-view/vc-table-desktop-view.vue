@@ -51,7 +51,6 @@
       :has-click-listener="hasClickListener"
       :editing="editing"
       :enable-item-actions="enableItemActions"
-      :item-action-builder="itemActionBuilder"
       :item-actions="itemActions"
       :selected-row-index="selectedRowIndex"
       :columns-init="columnsInit"
@@ -119,7 +118,6 @@ const props = defineProps<{
   reorderableRows?: boolean;
   reorderableColumns?: boolean;
   enableItemActions?: boolean;
-  itemActionBuilder?: (item: T) => IActionBuilderResult<T>[] | undefined;
   itemActions: IActionBuilderResult<T>[][];
   selectedRowIndex?: number;
   hasClickListener?: boolean;

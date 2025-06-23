@@ -1,25 +1,25 @@
 import { ref, computed, Component, ComputedRef } from "vue";
 
-export interface SettingsMenuItem {
+export interface ISettingsMenuItem {
   id: string;
   order?: number;
   component: Component;
   props?: Record<string, unknown>;
 }
 
-export interface RegisterSettingsMenuItemOptions extends Omit<SettingsMenuItem, "id"> {
+export interface RegisterSettingsMenuItemOptions extends Omit<ISettingsMenuItem, "id"> {
   id?: string;
 }
 
 export interface ISettingsMenuService {
   register: (options: RegisterSettingsMenuItemOptions) => string;
   unregister: (id: string) => void;
-  items: ComputedRef<SettingsMenuItem[]>;
+  items: ComputedRef<ISettingsMenuItem[]>;
 }
 
 // Global state for pre-registering settings menu items
-const preregisteredSettingsMenuItems: SettingsMenuItem[] = [];
-const settingsMenuItems = ref<Map<string, SettingsMenuItem>>(new Map());
+const preregisteredSettingsMenuItems: ISettingsMenuItem[] = [];
+const settingsMenuItems = ref<Map<string, ISettingsMenuItem>>(new Map());
 
 /**
  * Registers a settings menu item before the service is initialized
@@ -54,7 +54,7 @@ export function createSettingsMenuService(): ISettingsMenuService {
     settingsMenuItems.value.delete(id);
   };
 
-  const items = computed<SettingsMenuItem[]>(() => {
+  const items = computed<ISettingsMenuItem[]>(() => {
     return Array.from(settingsMenuItems.value.values()).sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
   });
 

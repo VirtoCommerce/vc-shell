@@ -15,3 +15,4 @@ export * from "./settings-menu-item";
 export * from "./generic-dropdown";
 export * from "./draggable-dashboard";
 export * from "./dashboard-widget-card";
+export * from "./multilanguage-selector";

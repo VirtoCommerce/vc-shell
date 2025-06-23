@@ -46,7 +46,7 @@ export interface IBladeInstance {
   id: string;
   expandable: boolean;
   maximized: boolean;
-  error: string | undefined;
+  error: Error | string | null;
   navigation: BladeVNode["props"]["navigation"] | undefined;
   breadcrumbs: Breadcrumbs[] | undefined;
   title?: string;
@@ -106,6 +106,7 @@ export interface BladeVNode extends VNode {
       onOpen?: () => void;
       onClose?: () => void;
       onBeforeClose?: () => Promise<boolean | undefined>;
+      error?: Ref<Error | null>;
       instance: CoreBladeExposed | undefined | null;
       idx: number;
       isVisible?: boolean;

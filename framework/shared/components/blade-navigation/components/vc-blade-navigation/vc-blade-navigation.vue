@@ -1,15 +1,5 @@
 <template>
   <div class="tw-w-full tw-flex tw-flex-col tw-grow tw-basis-0">
-    <!-- <VcBreadcrumbs
-      :items="breadcrumbs"
-      class="tw-bg-[--blade-navigation-bg-color] tw-px-3 tw-py-2"
-      :class="[
-        {
-          'tw-p-4': $isMobile.value,
-        },
-      ]"
-      with-arrow
-    /> -->
     <render></render>
   </div>
 </template>
@@ -19,14 +9,12 @@ import { Ref, computed, inject, withDirectives, h, vShow, toRef, VNode, nextTick
 import { RouterView, useRoute } from "vue-router";
 import { BladeVNode, IParentCallArgs, useBladeNavigation } from "./../../../../../shared";
 import { ErrorInterceptor } from "./../../../error-interceptor";
-import VcBreadcrumbs from "./../../../../../ui/components/molecules/vc-breadcrumbs/vc-breadcrumbs.vue";
 import { useBreadcrumbs } from "./../../../../../core/composables/useBreadcrumbs";
 import { VcBladeView } from "./../vc-blade-view/vc-blade-view";
 import { watchDebounced } from "@vueuse/core";
-import { VcButton, ArrowLeftIcon } from "./../../../../../ui/components";
 import VcMobileBackButton from "./_internal/vc-mobile-back-button.vue";
 
-const { blades, closeBlade, onParentCall } = useBladeNavigation();
+const { blades, closeBlade, onParentCall, clearBladeError } = useBladeNavigation();
 const { breadcrumbs, push, remove } = useBreadcrumbs();
 const route = useRoute();
 
@@ -67,7 +55,7 @@ watchDebounced(
 );
 
 const render = () => {
-  if (!(route.matched[1].components?.default as BladeVNode)?.type?.isBlade) {
+  if (!(route.matched[1]?.components?.default as BladeVNode)?.type?.isBlade) {
     return h(RouterView);
   }
 
@@ -89,9 +77,20 @@ const render = () => {
               },
               {
                 default: ({
-                  error,
-                  reset,
+                  error: interceptorError,
+                  reset: resetInterceptor,
                 }: Parameters<InstanceType<typeof ErrorInterceptor>["$slots"]["default"]>["0"]) => {
+                  const bladeNavigation = bladeVNode.props.navigation;
+                  const activeError = computed(() => interceptorError || bladeNavigation.error?.value);
+                  const handleResetError = () => {
+                    if (interceptorError) {
+                      resetInterceptor();
+                    }
+                    if (bladeNavigation.error?.value) {
+                      clearBladeError(bladeNavigation.idx);
+                    }
+                  };
+
                   return withDirectives(
                     h(
                       VcBladeView,
@@ -99,7 +98,8 @@ const render = () => {
                         key: `${bladeVNode.type?.name}_${index}` || `blade_${index}`,
                         blade: bladeVNode,
                         expandable: quantity.value > 1,
-                        error,
+                        error: activeError.value,
+                        "onReset:error": handleResetError,
                         breadcrumbs: filteredBreadcrumbs,
                         backButton:
                           quantity.value > 1
@@ -126,7 +126,7 @@ const render = () => {
                                 if (instance) onParentCall(instance, args);
                               });
                             },
-                            onVnodeUnmounted: reset,
+                            onVnodeUnmounted: resetInterceptor,
                           });
                         },
                       },

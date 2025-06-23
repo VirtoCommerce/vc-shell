@@ -1,4 +1,4 @@
-import { computed, getCurrentInstance, inject, warn, Component, ComputedRef } from "vue";
+import { computed, getCurrentInstance, inject, warn, Component, ComputedRef, Ref, shallowRef } from "vue";
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createSharedComposable } from "@vueuse/core";
 import * as _ from "lodash-es";
@@ -44,6 +44,10 @@ interface IUseBladeNavigation {
   routeResolver: (to: RouteLocationNormalized) => Promise<RouteLocationRaw | undefined> | RouteLocationRaw | undefined;
   setNavigationQuery: (query: Record<string, string | number>) => void;
   getNavigationQuery: () => Record<string, string | number> | undefined;
+
+  // TODO: add to docs
+  setBladeError: (bladeIdx: number, error: unknown) => void;
+  clearBladeError: (bladeIdx: number) => void;
 }
 
 // --- Singleton for useBladeNavigation ---
@@ -119,6 +123,8 @@ const useBladeNavigationSingleton = createSharedComposable(() => {
     closeBlade: bladeState.removeBladesStartingFrom,
     goToRoot: routerUtils.goToRoot,
     routeResolver: routeResolverInstance,
+    setBladeError: bladeState.setBladeError,
+    clearBladeError: bladeState.clearBladeError,
     onParentCall: async (parentExposedMethods: Record<string, any>, args: IParentCallArgs) => {
       if (args.method && parentExposedMethods && typeof parentExposedMethods[args.method] === "function") {
         const method = parentExposedMethods[args.method];
@@ -192,8 +198,11 @@ export function useBladeNavigation(): IUseBladeNavigation {
   const singleton = useBladeNavigationSingleton() as typeof useBladeNavigationSingleton extends () => infer R
     ? R
     : never;
+  console.log("useBladeNavigation singleton", singleton);
   const currentCallingInstance = getCurrentInstance() as BladeComponentInternalInstance | null;
+  console.log("useBladeNavigation currentCallingInstance", currentCallingInstance);
   const bladeRegistry = useBladeRegistry();
+  console.log("useBladeNavigation bladeRegistry", bladeRegistry);
 
   const currentBladeNavigationData = computed(() => {
     if (!currentCallingInstance) return undefined;
@@ -264,5 +273,7 @@ export function useBladeNavigation(): IUseBladeNavigation {
     onBeforeClose,
     setNavigationQuery: singleton.setNavigationQuery,
     getNavigationQuery: singleton.getNavigationQuery,
+    setBladeError: singleton.setBladeError,
+    clearBladeError: singleton.clearBladeError,
   };
 }

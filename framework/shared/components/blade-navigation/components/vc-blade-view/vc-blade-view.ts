@@ -11,6 +11,7 @@ import {
   Slot,
   defineComponent,
   SetupContext,
+  onErrorCaptured,
 } from "vue";
 import { BladeInstance, navigationViewLocation, BLADE_BACK_BUTTON } from "./../../../../../injection-keys";
 import { BladeVNode, CoreBladeExposed, IBladeInstance } from "../../types";
@@ -33,7 +34,7 @@ function normalizeSlot(slot: Slot | undefined, data: { Component: VNode }): VNod
 interface BladeViewProps {
   blade?: BladeVNode;
   expandable?: boolean;
-  error?: string;
+  error?: string | Error | null | undefined;
   breadcrumbs?: Breadcrumbs[];
   backButton?: Component;
 }
@@ -49,7 +50,8 @@ export const VcBladeView = defineComponent({
       type: Boolean,
     },
     error: {
-      type: String,
+      type: Object as PropType<string | Error | null | undefined>,
+      default: null,
     },
     breadcrumbs: {
       type: Array as PropType<Breadcrumbs[]>,
@@ -117,7 +119,7 @@ export const VcBladeView = defineComponent({
         options: bl.value?.props?.options,
         expandable: props.expandable ?? false,
         maximized: maximized.value,
-        error: props.error,
+        error: props.error ?? null,
         navigation: bl.value?.props?.navigation,
         breadcrumbs: props.breadcrumbs,
         title: bl.value?.props?.navigation?.instance?.title,

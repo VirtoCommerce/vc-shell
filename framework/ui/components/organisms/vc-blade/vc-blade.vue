@@ -68,11 +68,11 @@
           size="s"
           icon="material-warning"
         />
-        <div class="vc-blade__error-text">{{ blade.error }}</div>
+        <div class="vc-blade__error-text">{{ shortErrorMessage }}</div>
         <VcButton
           text
           class="vc-blade__error-button"
-          @click="open()"
+          @click="openErrorDetails"
         >
           {{ t("COMPONENTS.ORGANISMS.VC_BLADE.SEE_DETAILS") }}
         </VcButton>
@@ -153,6 +153,7 @@ export interface Emits {
   (event: "close"): void;
   (event: "expand"): void;
   (event: "collapse"): void;
+  (event: "reset:error"): void;
 }
 
 defineOptions({
@@ -198,7 +199,6 @@ const slots = defineSlots<{
    * });
    */
   widgets: (props: any) => any;
-  backButton: (props: any) => any;
 }>();
 
 const emit = defineEmits<Emits>();
@@ -207,7 +207,7 @@ const blade = inject(
   BladeInstance,
   computed(() => ({
     id: FALLBACK_BLADE_ID,
-    error: undefined,
+    error: null,
     expandable: false,
     maximized: false,
     navigation: undefined,
@@ -225,10 +225,27 @@ const { blades } = useBladeNavigation();
 const bladeRef = ref<HTMLElement | null>(null);
 const contentRef = ref<HTMLElement | null>(null);
 
+const error = computed(() => toValue(blade.value.error));
+
+const shortErrorMessage = computed(() => {
+  const err = error.value;
+  if (!err) return "";
+  return err instanceof Error ? err.message : err;
+});
+
+const errorDetails = computed(() => {
+  const err = error.value;
+  if (!err) return "";
+  if (err instanceof Error) {
+    return (err as any).details || err.stack || String(err);
+  }
+  return String(err);
+});
+
 const { open } = usePopup({
   component: vcPopupError,
   slots: {
-    default: computed(() => toValue(blade.value.error)),
+    default: errorDetails,
     header: defineComponent({
       render: () =>
         h("div", [
@@ -236,13 +253,17 @@ const { open } = usePopup({
           " ",
           h(
             VcLink,
-            { onClick: () => navigator.clipboard.writeText(toValue(blade.value.error) ?? "") },
+            { onClick: () => navigator.clipboard.writeText(errorDetails.value) },
             `(${t("COMPONENTS.ORGANISMS.VC_BLADE.ERROR_POPUP.COPY_ERROR")})`,
           ),
         ]),
     }),
   },
 });
+
+const openErrorDetails = () => {
+  open();
+};
 </script>
 
 <style lang="scss">
@@ -276,17 +297,18 @@ const { open } = usePopup({
   }
 
   &--mobile {
-    @apply tw-w-full #{!important};
+    @apply tw-w-full !important;
   }
 
   &--expanded {
-    @apply tw-w-full tw-shrink #{!important};
+    @apply tw-w-full tw-shrink !important;
   }
 
   &--maximized {
-    @apply tw-absolute tw-z-[2] tw-top-0 tw-bottom-0 tw-left-0 tw-shrink #{!important};
-    width: -webkit-fill-available !important;
-    width: -moz-available !important;
+    @apply tw-absolute tw-z-[2] tw-top-0 tw-bottom-0 tw-left-0 tw-shrink !important;
+    width: -webkit-fill-available;
+    width: -moz-available;
+    width: fill-available;
   }
 
   &__header {
@@ -306,8 +328,8 @@ const { open } = usePopup({
   }
 
   &__error-button {
-    @apply tw-shrink-0 tw-opacity-80  hover:tw-opacity-100 hover:tw-text-[color:var(--blade-text-color)];
-    @apply tw-text-[color:var(--blade-text-color)] #{!important};
+    @apply tw-shrink-0 tw-opacity-80 hover:tw-opacity-100 hover:tw-text-[color:var(--blade-text-color)];
+    @apply tw-text-[color:var(--blade-text-color)] !important;
   }
 
   &__unsaved-changes {
@@ -339,7 +361,7 @@ const { open } = usePopup({
   }
 
   &__slot {
-    @apply tw-flex tw-flex-auto tw-flex-col;
+    @apply tw-flex tw-flex-auto tw-flex-col tw-relative;
 
     &--desktop {
       @apply tw-w-0;
@@ -362,45 +384,13 @@ const { open } = usePopup({
     @apply tw-mr-[10px];
 
     &-button {
-      @apply tw-text-[color:var(--blade-header-breadcrumbs-button-color)] tw-cursor-pointer hover:tw-text-[color:var(--blade-header-breadcrumbs-button-color-hover)] #{!important};
+      @apply tw-text-[color:var(--blade-header-breadcrumbs-button-color)] tw-cursor-pointer hover:tw-text-[color:var(--blade-header-breadcrumbs-button-color-hover)] !important;
 
       &--active {
-        @apply tw-text-[color:var(--blade-header-breadcrumbs-button-color-hover)] #{!important};
+        @apply tw-text-[color:var(--blade-header-breadcrumbs-button-color-hover)] !important;
       }
     }
   }
-
-  // &__widgets {
-  //   @apply tw-flex;
-
-  //   &--desktop {
-  //     @apply tw-border-l tw-border-solid tw-border-l-[color:var(--blade-border-color)];
-  //   }
-
-  //   &--not-expanded {
-  //     @apply tw-w-12 tw-flex-col;
-  //   }
-
-  //   &--expanded {
-  //     @apply tw-w-32 tw-flex-col;
-  //   }
-
-  //   &--mobile {
-  //     @apply tw-w-auto tw-border-t tw-border-solid tw-border-t-[color:var(--blade-border-color)] tw-flex-row;
-  //   }
-  // }
-
-  // &__widget-container {
-  //   @apply tw-flex tw-overflow-y-auto tw-flex-row;
-
-  //   // &--desktop {
-  //   //   @apply tw-flex-col tw-overflow-x-clip;
-  //   // }
-
-  //   // &--mobile {
-  //   //   @apply tw-flex-row;
-  //   // }
-  // }
 
   &__widget-toggle {
     @apply tw-flex;
@@ -416,7 +406,7 @@ const { open } = usePopup({
 
   &__toggle-icon {
     @apply tw-flex-auto tw-items-center tw-self-center tw-justify-self-center tw-text-[color:var(--blade-icon-color)] tw-cursor-pointer hover:tw-text-[color:var(--blade-icon-hover-color)];
-    @apply tw-flex #{!important};
+    @apply tw-flex !important;
   }
 
   &__toggle-icon--desktop {
@@ -435,7 +425,7 @@ const { open } = usePopup({
   }
 
   &__breadcrumbs-button {
-    @apply tw-p-0 #{!important};
+    @apply tw-p-0 !important;
   }
 }
 

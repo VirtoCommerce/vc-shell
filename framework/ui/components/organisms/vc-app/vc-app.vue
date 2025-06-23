@@ -23,7 +23,10 @@
         @backlink:click="closeBlade(blades.length - 1)"
         @logo:click="openRoot"
       >
-        <template #app-switcher>
+        <template
+          v-if="!disableAppSwitcher"
+          #app-switcher
+        >
           <slot name="app-switcher">
             <VcAppSwitcher
               :apps-list="appsList"
@@ -95,6 +98,7 @@ import { provideMenuService } from "../../../../core/composables/useMenuService"
 import { BellIcon } from "../../atoms/vc-icon/icons";
 import { provideAppBarMobileButtonsService } from "../../../../core/composables/useAppBarMobileButtons";
 import { useUserManagement } from "../../../../core/composables/useUserManagement";
+import { BladeRegistryKey } from "../../../../core/composables/useBladeRegistry";
 
 export interface Props {
   isReady: boolean;
@@ -104,6 +108,7 @@ export interface Props {
   avatar?: string;
   name?: string;
   disableMenu?: boolean;
+  disableAppSwitcher?: boolean;
   role?: string;
 }
 

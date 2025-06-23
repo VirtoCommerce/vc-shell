@@ -1,4 +1,4 @@
-import { ref, computed, onUnmounted } from "vue";
+import { ref, computed, onUnmounted, type Ref } from "vue";
 import type { IDashboardWidget, DashboardWidgetPosition } from "../types";
 import { GRID_COLUMNS } from "./useGridSystem";
 import { useDashboard } from "../../../../core/composables/useDashboard";
@@ -12,6 +12,20 @@ import { useGridPosition, type CellSize } from "./useGridPosition";
 const CELL_HEIGHT = 80;
 
 /**
+ * Return type for the useDashboardDragAndDrop composable.
+ */
+export interface UseDashboardDragAndDropReturn {
+  draggedWidget: Ref<IDashboardWidget | null>;
+  previewPosition: Ref<{ x: number; y: number } | null>;
+  displacedWidgets: Ref<Map<string, DashboardWidgetPosition>>;
+  isDragging: Ref<boolean>;
+  handleMouseDown: (event: MouseEvent | TouchEvent, widget: IDashboardWidget, element: HTMLElement) => void;
+  setGridContainer: (container: HTMLElement | null) => void;
+  isWidgetDisplaced: (widgetId: string) => boolean;
+  getDisplacedPosition: (widgetId: string) => DashboardWidgetPosition | undefined;
+}
+
+/**
  * Composables for managing the dragging of widgets on the dashboard
  *
  * Provides functions for handling drag events, updating widget positions, and handling collisions
@@ -23,7 +37,7 @@ const CELL_HEIGHT = 80;
 export function useDashboardDragAndDrop(
   updateWidgetPosition: (widgetId: string, position: DashboardWidgetPosition) => void,
   getGridRows?: () => number,
-) {
+): UseDashboardDragAndDropReturn {
   const dashboard = useDashboard();
   const widgets = computed(() => dashboard.getWidgets());
   const gridContainer = ref<HTMLElement | null>(null);
@@ -320,7 +334,7 @@ export function useDashboardDragAndDrop(
     }
   };
 
-  const setGridContainer = (container: HTMLElement) => {
+  const setGridContainer = (container: HTMLElement | null) => {
     gridContainer.value = container;
   };
 

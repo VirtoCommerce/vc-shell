@@ -1,3 +1,26 @@
+## [1.1.31](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.30...v1.1.31) (2025-06-23)
+
+
+### Bug Fixes
+
+* **types:** update error property in IBladeInstance to allow undefined value ([c2f0fb5](https://github.com/VirtoCommerce/vc-shell/commit/c2f0fb58513e15ffadc581f2b75d43618c3b6f10))
+* **useLanguages:** add validation to getFlag function to handle empty language input ([853325e](https://github.com/VirtoCommerce/vc-shell/commit/853325ecc55e5e26f2e90021f8b4b7d7b6415142))
+* **vc-checkbox:** update v-model binding to use modelValue and enhance checked state logic for array support ([e3a70dd](https://github.com/VirtoCommerce/vc-shell/commit/e3a70ddc0badd12160319a259ccd592ddb823ca9))
+
+
+### Features
+
+* **api-client:** add APP_TYPE_STYLE argument for customizable DTO type generation in API client ([4ae0edd](https://github.com/VirtoCommerce/vc-shell/commit/4ae0edd272a580972adacf86a4da4929ef1c056a))
+* **composables:** add useModificationTracker composable for tracking value changes and modifications ([ad911e1](https://github.com/VirtoCommerce/vc-shell/commit/ad911e19640ea675a70cdaf2e6b6c6f5c0f2f0a4))
+* **dashboard:** enhance useDashboardDragAndDrop composable with TypeScript return type and improved setGridContainer function ([65a726f](https://github.com/VirtoCommerce/vc-shell/commit/65a726f65d396f073a21f3502fba7e62e2ce4f03))
+* **error-handling:** implement DisplayableError class and enhance useErrorHandler for better error normalization and handling ([a68473b](https://github.com/VirtoCommerce/vc-shell/commit/a68473b98726d436d3ab272e0afee9db2d92174b))
+* **multilanguage-selector:** add VcLanguageSelector component for language selection with dropdown functionality ([f620e1d](https://github.com/VirtoCommerce/vc-shell/commit/f620e1dfa94b4b468c5c40a276c411be4b993f9b))
+* **vc-app:** add disableAppSwitcher prop to control app switcher visibility in VcApp component ([ab2d6dc](https://github.com/VirtoCommerce/vc-shell/commit/ab2d6dc7c09cbf99f7501bb6a8b51d9c3be3d1af))
+* **vc-banner:** add VcBanner component for displaying contextual information with expandable content ([5fa7b4f](https://github.com/VirtoCommerce/vc-shell/commit/5fa7b4f77117a02aa559a48dc1f020414c380720))
+* **vc-card:** enhance VcCard component by adding v-bind for attribute inheritance and defining component options ([12d0096](https://github.com/VirtoCommerce/vc-shell/commit/12d0096809ce46cbff1cdf30c8b4f44d6f69a8ad))
+
+
+
 ## [1.1.30](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.29...v1.1.30) (2025-06-11)
 
 

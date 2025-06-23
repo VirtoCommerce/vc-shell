@@ -1,3 +1,12 @@
+## [1.1.31](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.30...v1.1.31) (2025-06-23)
+
+
+### Features
+
+* **api-client:** add APP_TYPE_STYLE argument for customizable DTO type generation in API client ([4ae0edd](https://github.com/VirtoCommerce/vc-shell/commit/4ae0edd272a580972adacf86a4da4929ef1c056a))
+
+
+
 ## [1.1.30](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.29...v1.1.30) (2025-06-11)
 
 

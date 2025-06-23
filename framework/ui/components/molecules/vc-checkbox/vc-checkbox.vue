@@ -25,7 +25,8 @@
     <label class="vc-checkbox__container">
       <input
         ref="checkboxRef"
-        v-model="value"
+        v-model="model"
+        :value="value"
         type="checkbox"
         class="vc-checkbox__input"
         :disabled="disabled"
@@ -90,6 +91,7 @@ import { VcLabel } from "../../atoms/vc-label";
 
 export interface Props {
   modelValue: MaybeRef<boolean>;
+  value?: any;
   disabled?: boolean;
   required?: boolean;
   name?: string;
@@ -124,7 +126,7 @@ defineSlots<{
 
 const checkboxRef = ref<HTMLInputElement | null>(null);
 
-const value = computed({
+const model = computed({
   get() {
     return unref(props.modelValue);
   },
@@ -134,7 +136,11 @@ const value = computed({
 });
 
 const checked = computed(() => {
-  return value.value === props.trueValue;
+  const modelVal = unref(props.modelValue);
+  if (Array.isArray(modelVal)) {
+    return modelVal.includes(props.value);
+  }
+  return modelVal === props.trueValue;
 });
 
 // Managing indeterminate state

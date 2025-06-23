@@ -140,14 +140,14 @@ export const release = async ({
 
   // Generate commit message with npm tag info if necessary
   let commitMessage = `release: ${gitTag}`;
-  if (args.tag && args.tag !== "latest") {
+  if (args.tag) {
     commitMessage += ` with npm tag ${args.tag}`;
   }
 
   const { yes }: { yes: boolean } = await prompts({
     type: "confirm",
     name: "yes",
-    message: `Releasing ${chalk.yellow(gitTag)}${args.tag && args.tag !== "latest" ? ` with npm tag ${chalk.blue(args.tag)}` : ""} Confirm?`,
+    message: `Releasing ${chalk.yellow(gitTag)}${args.tag ? ` with npm tag ${chalk.blue(args.tag)}` : ""} Confirm?`,
   });
 
   if (!yes) return;
@@ -159,8 +159,8 @@ export const release = async ({
     step(`\nUpdating ${chalk.green(pkg.name)} package version to ${chalk.green(targetVersion)}...`);
     await bumpVersion(pkg.name, targetVersion);
 
-    // Add npmTag to package.json if not latest
-    if (args.tag && args.tag !== "latest") {
+    // Add npmTag to package.json ]
+    if (args.tag) {
       const updatedPkg = getPackageInfo(element);
       const pkgWithTag = { ...updatedPkg.pkg, npmTag: args.tag };
       await writePackageJson(updatedPkg.pkgPath, pkgWithTag);
@@ -187,7 +187,7 @@ export const release = async ({
   await runIfNotDry("git", ["push"]);
 
   // Display npm tag info
-  if (args.tag && args.tag !== "latest") {
+  if (args.tag) {
     console.log(`\nNOTE: This release will be published to npm with tag ${chalk.blue(args.tag)}`);
   }
 

@@ -89,8 +89,6 @@ export const release = async ({
         initial: "latest",
       });
       args.tag = res.customTag;
-    } else if (npmTag !== "latest") {
-      args.tag = npmTag;
     }
   }
 

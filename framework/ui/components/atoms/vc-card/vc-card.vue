@@ -36,6 +36,7 @@
       <div
         v-show="!isCollapsedInternal"
         :class="[{ 'tw-flex': fill }, 'vc-card__body']"
+        v-bind="$attrs"
       >
         <slot></slot>
       </div>
@@ -69,6 +70,11 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const emit = defineEmits<Emits>();
+
+defineOptions({
+  name: "VcCard",
+  inheritAttrs: false,
+});
 
 defineSlots<{
   default: (props?: any) => any;

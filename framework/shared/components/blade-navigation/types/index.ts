@@ -46,7 +46,7 @@ export interface IBladeInstance {
   id: string;
   expandable: boolean;
   maximized: boolean;
-  error: Error | string | null;
+  error: Error | string | null | undefined;
   navigation: BladeVNode["props"]["navigation"] | undefined;
   breadcrumbs: Breadcrumbs[] | undefined;
   title?: string;

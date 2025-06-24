@@ -1,3 +1,12 @@
+## [1.1.36](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.35...v1.1.36) (2025-06-24)
+
+
+### Features
+
+* **composables:** add useTableSort composable for table sorting functionality ([1e4d768](https://github.com/VirtoCommerce/vc-shell/commit/1e4d768b22436ff7da4cad922b25da5b45dee7f9))
+
+
+
 ## [1.1.35](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.34...v1.1.35) (2025-06-24)
 
 

@@ -20,3 +20,4 @@ export const SharedModule = {
 export * from "./modules";
 export * from "./components";
 export * from "./pages";
+export * from "./composables";

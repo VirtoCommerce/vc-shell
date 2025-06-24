@@ -1,70 +1,82 @@
 <template>
-  <VcTooltip
-    :placement="$isDesktop.value ? 'bottom' : 'top'"
-    :offset="{
-      crossAxis: 0,
-      mainAxis: -10,
-    }"
+  <div
+    class="vc-widget"
+    :data-widget-id="actualWidgetId"
+    :data-widget-name="title"
+    :class="[
+      { 'vc-widget--expanded': isExpanded },
+      { 'vc-widget--collapsed': !isExpanded },
+      { 'vc-widget--disabled': disabled },
+      { 'vc-widget--horizontal': horizontal },
+    ]"
+    @click="onClick"
   >
-    <div
-      class="vc-widget"
-      :class="[
-        { 'vc-widget--expanded': isExpanded },
-        { 'vc-widget--collapsed': !isExpanded },
-        { 'vc-widget--mobile': $isMobile.value },
-        { 'vc-widget--disabled': disabled },
-      ]"
-      @click="onClick"
+    <VcBadge
+      :content="truncateCount"
+      custom-position
+      top="-6px"
+      size="s"
     >
-      <VcBadge
-        :content="truncateCount"
-        :size="isExpanded ? 'm' : 's'"
-      >
-        <div class="vc-widget__icon-container">
-          <VcIcon
-            v-if="icon"
-            class="vc-widget__icon"
-            :icon="icon"
-            :size="isExpanded ? 'xxl' : 'l'"
-          ></VcIcon>
-        </div>
-      </VcBadge>
-      <div class="vc-widget__content">
-        <div
-          v-if="title && isExpanded"
-          class="vc-widget__title"
-        >
-          {{ title }}
-        </div>
+      <div class="vc-widget__icon-container">
+        <VcIcon
+          v-if="icon"
+          class="vc-widget__icon"
+          :icon="icon"
+          size="m"
+        ></VcIcon>
+      </div>
+    </VcBadge>
+    <div
+      v-if="title"
+      class="vc-widget__content"
+    >
+      <div class="vc-widget__title">
+        {{ title }}
       </div>
     </div>
-    <template
-      v-if="$isDesktop.value"
-      #tooltip
-    >
-      {{ title }}
-    </template>
-  </VcTooltip>
+  </div>
 </template>
 
 <script lang="ts" setup>
-import { computed } from "vue";
+import { computed, getCurrentInstance, useAttrs } from "vue";
 import { VcIcon } from "./../vc-icon";
+import { useWidgets } from "../../../../core/composables";
+
 export interface Props {
   icon?: string;
   title?: string;
   value?: string | number;
   disabled?: boolean;
   isExpanded?: boolean;
-}
-
-export interface Emits {
-  (event: "click"): void;
+  horizontal?: boolean;
 }
 
 const props = defineProps<Props>();
+const emit = defineEmits<{
+  (event: "click"): void;
+}>();
 
-const emit = defineEmits<Emits>();
+const instance = getCurrentInstance();
+const attrs = useAttrs();
+const widgetService = useWidgets();
+
+// Get widgetId from attributes passed by the parent container
+const actualWidgetId = computed(() => (attrs.widgetId || attrs["widget-id"]) as string | undefined);
+
+function onClick() {
+  if (!props.disabled) {
+    // Use the actualWidgetId from attrs
+    if (actualWidgetId.value && instance?.parent?.exposed) {
+      widgetService.setActiveWidget({
+        exposed: instance.parent.exposed,
+        widgetId: actualWidgetId.value,
+      });
+    } else if (!actualWidgetId.value) {
+      console.warn("VcWidget: widgetId is missing from attrs. Widget activation might not work as expected.");
+    }
+    emit("click");
+  }
+}
 
 const truncateCount = computed(() => {
   if (
@@ -76,47 +88,48 @@ const truncateCount = computed(() => {
     return props.value;
   }
 });
-
-function onClick() {
-  if (!props.disabled) {
-    emit("click");
-  }
-}
 </script>
 
 <style lang="scss">
 :root {
-  --widget-bg-color: var(--additional-50);
-  --widget-border-color: var(--base-border-color, var(--neutrals-200));
-  --widget-bg-hover-color: var(--primary-50);
-  --widget-icon-color: var(--secondary-500);
-  --widget-icon-disabled-color: var(--neutrals-300);
-  --widget-title-color: var(--base-text-color, var(--neutrals-950));
-  --widget-title-disabled-color: var(--neutrals-300);
-  --widget-value-color: var(--primary-400);
-  --widget-value-disabled-color: var(--neutrals-300);
+  --widget-bg-color: transparent;
+  --widget-bg-hover-color: transparent;
+  --widget-icon-color: var(--neutrals-700);
+  --widget-icon-hover-color: var(--primary-600);
+  --widget-icon-disabled-color: var(--neutrals-400);
+  --widget-title-color: var(--neutrals-600);
+  --widget-title-hover-color: var(--primary-600);
+  --widget-title-disabled-color: var(--neutrals-400);
 }
 
 .vc-widget {
-  @apply tw-relative tw-shrink-0 tw-py-4 tw-px-2;
-  @apply tw-flex tw-overflow-hidden tw-box-border tw-flex-col tw-items-center tw-justify-center tw-border-b tw-border-solid tw-cursor-pointer;
-  @apply tw-bg-[color:var(--widget-bg-color)] tw-border-b-[color:var(--widget-border-color)];
+  @apply tw-relative tw-shrink-0 tw-px-2 tw-w-max;
+  @apply tw-flex tw-overflow-visible tw-box-border tw-flex-col tw-items-center tw-justify-center tw-cursor-pointer;
+  @apply tw-bg-[color:var(--widget-bg-color)];
+  @apply tw-transition-colors tw-duration-200;
+
+  &--horizontal {
+    @apply tw-flex-row tw-gap-2;
+
+    .vc-widget__content {
+      @apply tw-ml-1;
+    }
+
+    .vc-widget__title {
+      @apply tw-mt-0 tw-text-left tw-whitespace-nowrap;
+    }
+  }
 
   &:hover {
     @apply tw-bg-[color:var(--widget-bg-hover-color)];
-  }
 
-  &--expanded {
-    @apply tw-w-32 tw-h-32;
-  }
+    .vc-widget__title {
+      @apply tw-text-[color:var(--widget-title-hover-color)];
+    }
 
-  &--collapsed {
-    @apply tw-w-12 tw-h-12;
-  }
-
-  &--mobile {
-    @apply tw-w-28;
-    @apply tw-border-none #{!important};
+    .vc-widget__icon {
+      @apply tw-text-[color:var(--widget-icon-hover-color)];
+    }
   }
 
   &__icon-container {
@@ -127,27 +140,35 @@ function onClick() {
     @apply tw-text-[color:var(--widget-icon-color)];
   }
 
-  &--disabled &__icon {
-    @apply tw-text-[color:var(--widget-icon-disabled-color)];
+  &__content {
+    @apply tw-w-full;
   }
 
   &__title {
-    @apply tw-font-medium tw-text-sm tw-text-[color:var(--widget-title-color)] tw-mt-2 tw-mx-0 tw-text-center tw-line-clamp-2;
-  }
-
-  &--disabled &__title {
-    @apply tw-text-[color:var(--widget-title-disabled-color)];
-  }
-
-  &__content {
-    @apply tw-w-full;
+    @apply tw-font-medium tw-text-xs tw-text-[color:var(--widget-title-color)] tw-mt-1 tw-mx-0 tw-text-center tw-line-clamp-2;
   }
 
   &--disabled {
     @apply tw-cursor-default tw-bg-[color:var(--widget-bg-color)];
 
+    .vc-widget__icon {
+      @apply tw-text-[color:var(--widget-icon-disabled-color)];
+    }
+
+    .vc-widget__title {
+      @apply tw-text-[color:var(--widget-title-disabled-color)];
+    }
+
     &:hover {
       @apply tw-bg-[color:var(--widget-bg-color)];
+
+      .vc-widget__icon {
+        @apply tw-text-[color:var(--widget-icon-disabled-color)];
+      }
+
+      .vc-widget__title {
+        @apply tw-text-[color:var(--widget-title-disabled-color)];
+      }
     }
   }
 }

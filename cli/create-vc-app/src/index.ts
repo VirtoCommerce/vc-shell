@@ -74,10 +74,10 @@ function isEmpty(path: string) {
 }
 
 const AppVariants = [
-  {
-    name: "dynamic",
-    display: "Dynamic view modules boilerplate",
-  },
+  // {
+  //   name: "dynamic",
+  //   display: "Dynamic view modules boilerplate",
+  // },
   {
     name: "classic",
     display: "Classic view modules boilerplate",

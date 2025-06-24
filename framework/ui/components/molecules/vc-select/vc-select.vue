@@ -1,5 +1,6 @@
 <template>
   <div
+    ref="selectRootRef"
     class="vc-select"
     :class="{
       'vc-select_opened': isOpened,
@@ -7,6 +8,7 @@
       'vc-select_disabled': disabled,
       'vc-select_has-hint-or-error': error || hint,
       'vc-select_no-outline': !outline,
+      'vc-select_focused': isFocused,
     }"
   >
     <!-- Select label -->
@@ -16,6 +18,7 @@
       :required="required"
       :multilanguage="multilanguage"
       :current-language="currentLanguage"
+      :error="error"
     >
       <span>{{ label }}</span>
       <template
@@ -35,6 +38,7 @@
         <slot
           name="control"
           :toggle-handler="toggleDropdown"
+          :is-opened="isOpened"
         >
           <div class="vc-select__control">
             <div
@@ -69,7 +73,12 @@
                       <div
                         data-test-id="dropdown-toggle"
                         class="vc-select__input"
+                        tabindex="0"
                         @click.stop="toggleDropdown"
+                        @keydown.enter.stop="toggleDropdown"
+                        @keydown.space.stop="toggleDropdown"
+                        @focus="isFocused = true"
+                        @blur="isFocused = false"
                       >
                         <div
                           v-if="!hasValue"
@@ -86,31 +95,31 @@
                               class="vc-select__selected-item"
                             >
                               <template v-if="multiple">
-                                <div class="vc-select__multiple-item">
-                                  <template v-if="loading">
-                                    <span class="vc-select__loading">{{
-                                      t("COMPONENTS.MOLECULES.VC_SELECT.LOADING")
-                                    }}</span>
-                                  </template>
-                                  <template v-else>
-                                    <slot
-                                      name="selected-item"
-                                      v-bind="item"
-                                    >
+                                <slot
+                                  name="selected-item"
+                                  v-bind="item"
+                                >
+                                  <div class="vc-select__multiple-item">
+                                    <template v-if="loading || defaultOptionLoading">
+                                      <span class="vc-select__loading">{{
+                                        t("COMPONENTS.MOLECULES.VC_SELECT.LOADING")
+                                      }}</span>
+                                    </template>
+                                    <template v-else>
                                       <span>{{ getOptionLabel(item.opt) }}</span>
-                                    </slot>
-                                  </template>
-                                  <VcIcon
-                                    v-if="!disabled"
-                                    class="vc-select__icon-remove"
-                                    icon="fas fa-times"
-                                    size="s"
-                                    @click.stop="removeAtIndex(item.index)"
-                                  ></VcIcon>
-                                </div>
+                                    </template>
+                                    <VcIcon
+                                      v-if="!disabled"
+                                      class="vc-select__icon-remove"
+                                      icon="material-close"
+                                      size="s"
+                                      @click.stop="removeAtIndex(item.index)"
+                                    ></VcIcon>
+                                  </div>
+                                </slot>
                               </template>
                               <template v-else-if="!multiple">
-                                <template v-if="loading">
+                                <template v-if="loading || defaultOptionLoading">
                                   <span class="vc-select__loading">{{
                                     t("COMPONENTS.MOLECULES.VC_SELECT.LOADING")
                                   }}</span>
@@ -121,7 +130,7 @@
                                     v-bind="item"
                                   >
                                     {{
-                                      loading
+                                      loading || defaultOptionLoading
                                         ? t("COMPONENTS.MOLECULES.VC_SELECT.LOADING")
                                         : getEmittingOptionValue(item.opt)
                                     }}
@@ -141,11 +150,14 @@
                       <div
                         v-if="clearable && hasValue && !disabled"
                         class="vc-select__clear"
+                        tabindex="0"
                         @click="onReset"
+                        @keydown.enter="onReset"
+                        @keydown.space="onReset"
                       >
                         <VcIcon
                           size="s"
-                          icon="fas fa-times"
+                          icon="material-close"
                         ></VcIcon>
                       </div>
                     </div>
@@ -157,11 +169,12 @@
                     </div>
                     <!-- Loading-->
                     <div
-                      v-if="loading || listLoading"
+                      v-if="loading || listLoading || defaultOptionLoading"
                       class="vc-select__loading-icon"
                     >
                       <VcIcon
-                        icon="fas fa-circle-notch tw-animate-spin"
+                        icon="lucide-loader"
+                        class="tw-animate-spin"
                         size="m"
                       ></VcIcon>
                     </div>
@@ -169,12 +182,15 @@
                     <div
                       v-if="!disabled"
                       class="vc-select__chevron-container"
+                      tabindex="0"
                       @click.stop="toggleDropdown"
+                      @keydown.enter.stop="toggleDropdown"
+                      @keydown.space.stop="toggleDropdown"
                     >
                       <div class="vc-select__chevron">
                         <VcIcon
                           size="s"
-                          icon="fas fa-chevron-down"
+                          icon="material-keyboard_arrow_down"
                         ></VcIcon>
                       </div>
                     </div>
@@ -224,39 +240,44 @@
         <div
           v-if="isOpened"
           ref="dropdownRef"
-          v-on-click-outside="[toggleDropdown, { ignore: [dropdownToggleRef] }]"
+          v-on-click-outside="[
+            () => {
+              isOpened = false;
+              emit('close');
+            },
+            { ignore: [dropdownToggleRef] },
+          ]"
           data-test-id="dropdown"
           class="vc-select__dropdown"
+          role="menu"
           :style="dropdownStyle"
         >
           <input
             v-if="searchable"
             ref="searchRef"
             class="vc-select__search-input"
+            tabindex="0"
             @input="onInput"
+            @keydown.space.stop
+            @keydown.enter.stop
           />
 
           <VcContainer
             ref="root"
             :no-padding="true"
           >
-            <div v-if="listLoading"></div>
-            <div
-              v-else-if="!(optionsList && optionsList.length)"
-              class="vc-select__no-options"
-            >
-              <slot name="no-options">
-                <span class="vc-select__no-options-text">No options</span>
-              </slot>
-            </div>
+            <!-- Render existing options -->
             <div
               v-for="(item, i) in optionScope"
-              v-else
               :key="i"
               class="vc-select__option"
               data-test-id="option"
               :class="{ 'vc-select__option--selected': item.selected }"
+              tabindex="0"
+              :data-index="i"
               @click="item.toggleOption(item.opt)"
+              @keydown.enter="item.toggleOption(item.opt)"
+              @keydown.space="item.toggleOption(item.opt)"
             >
               <slot
                 name="option"
@@ -264,9 +285,41 @@
                 >{{ item.label }}</slot
               >
             </div>
+
+            <!-- Loading Indicator (Initial or More) -->
+            <div
+              v-if="listLoading"
+              class="vc-select__list-loading-indicator"
+            >
+              <VcIcon
+                icon="lucide-loader"
+                class="tw-animate-spin"
+                size="m"
+              />
+              <span>
+                {{
+                  optionsList.length > 0
+                    ? t("COMPONENTS.MOLECULES.VC_SELECT.LOADING_MORE")
+                    : t("COMPONENTS.MOLECULES.VC_SELECT.LOADING")
+                }}
+              </span>
+            </div>
+
+            <!-- Show "No options" message -->
+            <div
+              v-if="!listLoading && !(optionsList && optionsList.length)"
+              class="vc-select__no-options"
+            >
+              <slot name="no-options">
+                <span class="vc-select__no-options-text">{{ t("COMPONENTS.MOLECULES.VC_SELECT.NO_OPTIONS") }}</span>
+              </slot>
+            </div>
+
+            <!-- Intersection observer target for loading more -->
             <span
-              v-if="hasNextPage"
+              v-if="hasNextPage && !listLoading"
               ref="el"
+              class="vc-select__load-more-trigger"
             ></span>
           </VcContainer>
         </div>
@@ -277,7 +330,7 @@
 
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup generic="T, P extends { results?: T[]; totalCount?: number }">
-import { ref, computed, watch, nextTick, Ref, toRefs } from "vue";
+import { ref, computed, watch, nextTick, Ref, toRefs, onMounted, onUnmounted } from "vue";
 import { vOnClickOutside } from "@vueuse/components";
 import * as _ from "lodash-es";
 import { useIntersectionObserver } from "@vueuse/core";
@@ -293,9 +346,10 @@ import {
 } from "@floating-ui/vue";
 import { VcLabel, VcContainer, VcHint, VcIcon } from "./../../";
 import { useI18n } from "vue-i18n";
+import { useKeyboardNavigation } from "../../../../core/composables/useKeyboardNavigation";
 
 export type OptionProp<T> = ((option: T) => string) | string | undefined;
-type MaybeArray<T> = T | T[];
+export type MaybeArray<T> = T | T[];
 type FloatingInstanceType = UseFloatingReturn & {
   middlewareData: {
     sameWidthChangeBorders: {
@@ -306,14 +360,14 @@ type FloatingInstanceType = UseFloatingReturn & {
     };
   };
 };
-type ArrayElementType<T> = T extends Array<infer U> ? U : never;
+type ArrayElementType<U> = U extends Array<infer V> ? V : never;
 type Option = T & ArrayElementType<Required<P>["results"]>;
 
 defineSlots<{
   /**
    * Custom select control
    */
-  control: (scope: { toggleHandler: () => void }) => any;
+  control: (scope: { toggleHandler: () => void, isOpened: boolean }) => any;
   /**
    * Prepend inner field
    */
@@ -497,12 +551,6 @@ const props = withDefaults(
     size?: "default" | "small";
     outline?: boolean;
     placement?: Placement;
-    offset?:
-      | {
-          crossAxis?: number;
-          mainAxis?: number;
-        }
-      | number;
   }>(),
   {
     optionValue: "id",
@@ -516,7 +564,6 @@ const props = withDefaults(
     options: (): T[] => [],
     outline: true,
     placement: "bottom",
-    offset: -2,
   },
 );
 
@@ -540,6 +587,9 @@ const { t } = useI18n({ useScope: "global" });
 
 const { modelValue, options } = toRefs(props);
 
+const selectRootRef = ref<HTMLDivElement | null>(null);
+const isSelectVisible = ref(false);
+
 const isOpened = ref(false);
 
 const searchRef = ref();
@@ -548,6 +598,8 @@ const dropdownRef = ref();
 const root = ref();
 const el = ref();
 const listLoading = ref(false);
+const defaultOptionLoading = ref(false);
+const isFocused = ref(false);
 
 const filterString = ref();
 
@@ -562,6 +614,37 @@ const totalItems = ref();
 let emitValueFn;
 let emitTimer: NodeJS.Timeout;
 let innerValueCache: Option[];
+
+let rootVisibilityObserver: IntersectionObserver | null = null;
+
+const getOptionValue = computed(() => getPropValueFn(props.optionValue, "id"));
+
+const getOptionLabel = computed(() => getPropValueFn(props.optionLabel, "title"));
+
+onMounted(() => {
+  if (selectRootRef.value) {
+    rootVisibilityObserver = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          isSelectVisible.value = true;
+        } else {
+          isSelectVisible.value = false;
+        }
+      },
+      { threshold: 0.1 },
+    );
+    rootVisibilityObserver.observe(selectRootRef.value);
+  }
+});
+
+onUnmounted(() => {
+  if (rootVisibilityObserver && selectRootRef.value) {
+    rootVisibilityObserver.unobserve(selectRootRef.value);
+  }
+  if (rootVisibilityObserver) {
+    rootVisibilityObserver.disconnect();
+  }
+});
 
 useIntersectionObserver(
   el,
@@ -580,94 +663,158 @@ const popper = useFloating(dropdownToggleRef, dropdownRef, {
     flip({ fallbackPlacements: ["top", "bottom"] }),
     shift({ mainAxis: false }),
     sameWidthChangeBorders(),
-    uiOffset(props.offset),
+    uiOffset({
+      mainAxis: 3,
+    }),
   ],
 }) as FloatingInstanceType;
 
 watch(
-  modelValue,
-  async (newVal, oldVal) => {
-    if (newVal && !oldVal) {
-      const initial = optionsList.value.filter((x) => {
-        if (props.modelValue && Array.isArray(props.modelValue)) {
-          return _.intersection(optionsList.value, props.modelValue);
-        } else if (props.modelValue && typeof props.modelValue === "object") {
-          return optionsList.value.includes(props.modelValue);
-        } else {
-          return x[props.optionLabel as keyof Option] === props.modelValue;
-        }
-      });
-
-      if (initial && initial.length) {
-        defaultValue.value = initial;
-      } else {
-        if (props.options && typeof props.options === "function") {
-          const data = await props.options(
-            undefined,
-            undefined,
-            Array.isArray(props.modelValue) ? props.modelValue : [props.modelValue],
-          );
-
-          if (typeof data === "object" && !Array.isArray(data) && "results" in data) {
-            if (props.multiple) {
-              defaultValue.value = data.results?.filter((x) =>
-                props.modelValue.includes(x[props.optionValue as keyof T]),
-              ) as Option[];
-            } else {
-              defaultValue.value = data.results?.filter(
-                (x) => x[props.optionValue as keyof T] === props.modelValue,
-              ) as Option[];
-            }
-          } else if (Array.isArray(data)) {
-            defaultValue.value = data?.filter((x) => x[props.optionValue as keyof T] === props.modelValue);
-          }
-        } else if (props.options && Array.isArray(props.options)) {
-          defaultValue.value = props.options.filter(
-            (x) => x[props.optionValue as keyof T] === props.modelValue,
-          ) as Option[];
-        }
-      }
+  [() => props.modelValue, isSelectVisible],
+  async ([currentModelVal, selectIsVisible]) => {
+    let modelAsArrayValueIds: (string | number | Record<string, any> | null)[] = [];
+    if (Array.isArray(currentModelVal)) {
+      modelAsArrayValueIds = props.emitValue
+        ? currentModelVal
+        : currentModelVal.map((v) => getOptionValue.value(v as Option));
+    } else if (currentModelVal != null) {
+      modelAsArrayValueIds = [props.emitValue ? currentModelVal : getOptionValue.value(currentModelVal as Option)];
     }
-  },
-  { immediate: true },
-);
 
-watch(
-  isOpened,
-  async (newVal) => {
-    if (newVal && !optionsList.value.length) {
+    const currentDefaultValueIds = defaultValue.value.map((opt) => getOptionValue.value(opt));
+
+    const sortedCurrentDefaultIds = [...currentDefaultValueIds].sort((a, b) => String(a).localeCompare(String(b)));
+    const sortedModelValueIds = [...modelAsArrayValueIds].sort((a, b) => String(a).localeCompare(String(b)));
+
+    const isDefaultValueResolved =
+      _.isEqual(sortedCurrentDefaultIds, sortedModelValueIds) &&
+      (modelAsArrayValueIds.length > 0 || defaultValue.value.length === 0);
+
+    if (!selectIsVisible) {
+      if (modelAsArrayValueIds.length === 0 && defaultValue.value.length > 0) {
+        defaultValue.value = [];
+      }
+      return;
+    }
+
+    if (modelAsArrayValueIds.length === 0) {
+      if (defaultValue.value.length > 0) {
+        defaultValue.value = [];
+      }
+      return;
+    }
+
+    if (!isDefaultValueResolved) {
       if (props.options && typeof props.options === "function") {
         try {
-          listLoading.value = true;
-          const data = await props.options();
-          optionsList.value = data.results as Option[];
-          totalItems.value = data.totalCount;
-        } finally {
-          listLoading.value = false;
-        }
-      }
+          defaultOptionLoading.value = true;
+          const idsToFetch = modelAsArrayValueIds.filter((id) => id != null) as string[];
 
-      optionsTemp.value = optionsList.value;
-    } else if (newVal && typeof props.options !== "function") {
-      optionsList.value = props.options as Option[];
-      optionsTemp.value = optionsList.value;
+          if (
+            idsToFetch.length === 0 &&
+            !(
+              modelAsArrayValueIds.length === 1 &&
+              modelAsArrayValueIds[0] == null &&
+              props.mapOptions &&
+              !props.multiple
+            )
+          ) {
+            defaultValue.value = [];
+            defaultOptionLoading.value = false;
+            return;
+          }
+
+          const data = await props.options(undefined, undefined, idsToFetch);
+
+          if (typeof data === "object" && !Array.isArray(data) && "results" in data && data.results) {
+            const results = data.results as Option[];
+            defaultValue.value = results.filter((rOpt) =>
+              modelAsArrayValueIds.some((mId) => _.isEqual(getOptionValue.value(rOpt), mId)),
+            );
+          } else {
+            defaultValue.value = [];
+          }
+        } catch (e) {
+          console.error("Error loading default options:", e);
+          defaultValue.value = [];
+        } finally {
+          defaultOptionLoading.value = false;
+        }
+      } else if (props.options && Array.isArray(props.options)) {
+        defaultValue.value = (props.options as Option[]).filter((opt) =>
+          modelAsArrayValueIds.some((mId) => _.isEqual(getOptionValue.value(opt), mId)),
+        );
+      }
     }
   },
-  { immediate: true },
+  { immediate: true, deep: true },
 );
 
 watch(
-  options,
-  async (newVal) => {
-    if (newVal && typeof props.options !== "function") {
-      if (props.options && Array.isArray(props.options)) {
-        optionsList.value = props.options as Option[];
+  [isOpened, isSelectVisible],
+  async ([newIsOpened, newIsSelectVisible]) => {
+    if (newIsOpened && newIsSelectVisible) {
+      const needsLoad =
+        optionsList.value.length === 0 ||
+        (props.options && typeof props.options === "function" && filterString.value && !listLoading.value);
+
+      if (needsLoad) {
+        if (props.options && typeof props.options === "function") {
+          await loadOptionsForOpenDropdown();
+        } else if (props.options && Array.isArray(props.options)) {
+          optionsList.value = [...props.options] as Option[];
+          optionsTemp.value = optionsList.value;
+          totalItems.value = optionsList.value.length;
+        }
       }
 
-      optionsTemp.value = optionsList.value;
+      nextTick(() => {
+        popper.update();
+        if (dropdownRef.value) {
+          keyboardNavigation.initKeyboardNavigation(dropdownRef.value);
+          if (props.searchable && searchRef.value) {
+            searchRef.value.focus();
+          } else {
+            const firstFocusable = dropdownRef.value.querySelector(
+              '.vc-select__option[tabindex="0"], .vc-select__search-input[tabindex="0"]',
+            ) as HTMLElement | null;
+
+            if (firstFocusable) {
+              firstFocusable.focus();
+            } else {
+              keyboardNavigation.focusFirstElement();
+            }
+          }
+        }
+      });
+    } else if (!newIsOpened) {
+      keyboardNavigation.cleanupKeyboardNavigation();
+      await onDropdownClose();
     }
   },
-  { immediate: true },
+  { immediate: false },
+);
+
+watch(
+  () => props.options,
+  async (newOptionsSource) => {
+    optionsList.value = [];
+    optionsTemp.value = [];
+    totalItems.value = 0;
+
+    if (isSelectVisible.value) {
+      if (Array.isArray(newOptionsSource)) {
+        optionsList.value = [...newOptionsSource] as Option[];
+        optionsTemp.value = optionsList.value;
+        totalItems.value = optionsList.value.length;
+      }
+
+      if (isOpened.value && typeof newOptionsSource === "function") {
+        await loadOptionsForOpenDropdown();
+      }
+    }
+  },
+  { deep: false },
 );
 
 watch(
@@ -678,6 +825,28 @@ watch(
     }
   },
 );
+
+async function loadOptionsForOpenDropdown() {
+  if (props.options && typeof props.options === "function" && !listLoading.value) {
+    try {
+      listLoading.value = true;
+      const data = await props.options(filterString.value, optionsList.value.length);
+      if (filterString.value || optionsList.value.length === 0) {
+        optionsList.value = (data.results as Option[]) || [];
+      } else {
+        optionsList.value = _.unionBy<Option>(optionsList.value, (data.results as Option[]) || [], "id");
+      }
+      totalItems.value = data.totalCount || 0;
+      optionsTemp.value = optionsList.value;
+    } catch (e) {
+      console.error("Error in loadOptionsForOpenDropdown:", e);
+      optionsList.value = [];
+      totalItems.value = 0;
+    } finally {
+      listLoading.value = false;
+    }
+  }
+}
 
 async function onLoadMore() {
   if (props.options && typeof props.options === "function") {
@@ -697,10 +866,6 @@ async function onLoadMore() {
 const hasNextPage = computed(() => {
   return optionsList.value.length < totalItems.value;
 });
-
-const getOptionValue = computed(() => getPropValueFn(props.optionValue, "id"));
-
-const getOptionLabel = computed(() => getPropValueFn(props.optionLabel, "title"));
 
 const innerValue = computed((): Option[] => {
   const mapNull = props.mapOptions === true && props.multiple !== true;
@@ -820,36 +985,58 @@ function isOptionSelected(opt: Option) {
   return innerOptionsValue.value.find((v) => _.isEqual(v, val)) !== void 0;
 }
 
-function closeDropdown() {
-  onDropdownClose();
-  isOpened.value = false;
-  emit("close");
-}
-
 const onDropdownClose = async () => {
-  if (props.options && typeof props.options === "function") {
-    const data = await props.options();
-    optionsList.value = data.results as Option[];
-    totalItems.value = data.totalCount;
-  } else {
-    optionsList.value = props.options as Option[];
-  }
-  optionsTemp.value = optionsList.value;
-
   filterString.value = undefined;
+
+  if (searchRef.value) {
+    searchRef.value.value = "";
+  }
+
+  if (isSelectVisible.value) {
+    if (props.options && typeof props.options === "function") {
+      try {
+        listLoading.value = true;
+        const data = await props.options(undefined, 0);
+        optionsList.value = (data.results as Option[]) || [];
+        totalItems.value = data.totalCount || 0;
+      } catch (e) {
+        console.error("Error resetting optionsList on dropdown close:", e);
+        optionsList.value = [];
+        totalItems.value = 0;
+      } finally {
+        listLoading.value = false;
+      }
+    } else if (props.options && Array.isArray(props.options)) {
+      optionsList.value = [...props.options] as Option[];
+      totalItems.value = optionsList.value.length;
+    }
+  } else if (props.options && typeof props.options === "function") {
+    optionsList.value = [];
+    totalItems.value = 0;
+  }
+
+  optionsTemp.value = optionsList.value;
 };
 
-async function toggleDropdown() {
-  if (!props.disabled) {
-    if (isOpened.value) {
-      closeDropdown();
-    } else {
-      isOpened.value = true;
+function toggleDropdown() {
+  if (props.disabled) return;
 
-      nextTick(() => {
-        searchRef?.value?.focus();
-      });
-    }
+  isOpened.value = !isOpened.value;
+
+  if (isOpened.value) {
+    nextTick(() => {
+      if (dropdownRef.value) {
+        keyboardNavigation.initKeyboardNavigation(dropdownRef.value);
+
+        if (props.searchable && searchRef.value) {
+          searchRef.value.focus();
+        } else {
+          keyboardNavigation.focusFirstElement();
+        }
+      }
+    });
+  } else {
+    keyboardNavigation.cleanupKeyboardNavigation();
   }
 }
 
@@ -860,14 +1047,17 @@ function sameWidthChangeBorders() {
       let borderTop;
       let borderBottom;
       let borderRadius;
+      let boxShadow;
       if (placement === "top") {
         borderTop = "1px solid var(--select-border-color)";
         borderBottom = "1px solid var(--select-background-color)";
         borderRadius = "var(--select-border-radius) var(--select-border-radius) 0 0";
+        boxShadow = "3px -9px 15px -3px rgba(0, 0, 0, 0.08), 0px 0px 6px -2px rgba(0, 0, 0, 0.1)";
       } else {
         borderBottom = "1px solid var(--select-border-color)";
         borderTop = "1px solid var(--select-background-color)";
         borderRadius = "0 0 var(--select-border-radius) var(--select-border-radius)";
+        boxShadow = "3px 9px 15px -3px rgba(0, 0, 0, 0.08), 0px 0px 6px -2px rgba(0, 0, 0, 0.1)";
       }
 
       const width = `${rects.reference.width}px`;
@@ -881,6 +1071,7 @@ function sameWidthChangeBorders() {
               borderBottom,
               borderRadius,
               width,
+              boxShadow,
             }
           : {
               border: "1px solid var(--select-border-color)",
@@ -903,7 +1094,8 @@ function toggleOption(opt: Option) {
       emit("update:modelValue", props.emitValue === true ? optValue : opt);
     }
 
-    closeDropdown();
+    isOpened.value = false;
+    emit("close");
     return;
   }
 
@@ -981,30 +1173,56 @@ function onReset() {
   }
   emit("update:modelValue", null);
 }
+
+const keyboardNavigation = useKeyboardNavigation({
+  onEnter: (element: HTMLElement) => {
+    const index = parseInt(element.getAttribute("data-index") || "0", 10);
+    if (optionScope.value && optionScope.value[index]) {
+      optionScope.value[index].toggleOption(optionScope.value[index].opt);
+    }
+  },
+  onEscape: () => {
+    isOpened.value = false;
+    emit("close");
+  },
+});
 </script>
 
 <style lang="scss">
 :root {
-  --select-height: 38px;
+  --select-height: 36px;
   --select-height-small: 28px;
-  --select-border-radius: 3px;
-  --select-border-color: var(--secondary-200);
-  --select-border-color-error: var(--base-error-color, var(--danger-500));
+  --select-border-radius: 4px;
+  --select-border-color: var(--neutrals-300);
+  --select-text-color: var(--neutrals-800);
+  --select-padding: 10px;
+
   --select-background-color: var(--additional-50);
-  --select-background-color-disabled: var(--neutrals-50);
+
   --select-placeholder-color: var(--neutrals-400);
   --select-chevron-color: var(--primary-500);
   --select-chevron-color-hover: var(--primary-600);
   --select-clear-color: var(--primary-500);
   --select-clear-color-hover: var(--primary-600);
-  --select-disabled-field-color: var(--neutrals-700);
 
   --select-loading-color: var(--info-500);
   --select-option-background-color-hover: var(--accent-100);
   --select-option-background-color-selected: var(--accent-200);
+  --select-multiple-options-background-color: var(--additional-50);
+  --select-multiple-options-border-color: var(--secondary-200);
   --select-border-color-input: var(--secondary-200);
 
   --select-search-background-color: var(--additional-50);
+
+  // Focus
+  --select-border-color-focus: var(--primary-100);
+
+  // Disabled
+  --select-background-color-disabled: var(--neutrals-200);
+  --select-disabled-text-color: var(--neutrals-500);
+
+  // Error
+  --select-border-color-error: var(--danger-500);
 }
 
 .vc-select {
@@ -1028,7 +1246,7 @@ function onReset() {
   }
 
   &__field-container {
-    @apply tw-flex tw-flex-nowrap tw-items-start tw-relative;
+    @apply tw-flex tw-flex-nowrap tw-items-start tw-relative tw-rounded-[var(--select-border-radius)];
   }
 
   &__dropdown-toggle {
@@ -1045,7 +1263,7 @@ function onReset() {
   }
 
   &__field-wrapper {
-    @apply tw-relative tw-flex tw-flex-auto tw-overflow-x-clip tw-truncate;
+    @apply tw-relative tw-flex tw-flex-auto tw-overflow-x-clip tw-truncate tw-rounded-[var(--select-border-radius)];
 
     &--default {
       @apply tw-min-h-[var(--select-height)];
@@ -1057,7 +1275,7 @@ function onReset() {
   }
 
   &__field {
-    @apply tw-truncate tw-relative tw-box-border tw-border tw-border-solid tw-border-[color:var(--select-border-color)] tw-rounded-sm tw-bg-[color:var(--select-background-color)] tw-flex tw-flex-col tw-flex-nowrap tw-flex-auto tw-items-stretch;
+    @apply tw-truncate tw-relative tw-box-border tw-border tw-border-solid tw-border-[color:var(--select-border-color)] tw-rounded-[var(--select-border-radius)] tw-bg-[color:var(--select-background-color)] tw-flex tw-flex-col tw-flex-nowrap tw-flex-auto tw-items-stretch tw-text-[color:var(--select-text-color)];
   }
 
   &__field-inner {
@@ -1065,7 +1283,7 @@ function onReset() {
   }
 
   &__field-content {
-    @apply tw-flex tw-flex-nowrap tw-flex-auto tw-h-full tw-px-3;
+    @apply tw-flex tw-flex-nowrap tw-flex-auto tw-h-full tw-px-[10px];
   }
 
   &__prepend-inner,
@@ -1107,7 +1325,7 @@ function onReset() {
   }
 
   &__multiple-item {
-    @apply tw-bg-[color:var(--select-option-background-color-selected)] tw-border tw-border-solid tw-border-[color:var(--select-border-color)] tw-rounded-sm tw-flex tw-items-center tw-h-7 tw-box-border tw-px-2;
+    @apply tw-bg-[color:var(--select-multiple-options-background-color)] tw-border tw-border-solid tw-border-[color:var(--select-multiple-options-border-color)] tw-rounded-[2px] tw-flex tw-items-center tw-h-7 tw-box-border tw-px-2;
   }
 
   &__loading {
@@ -1147,11 +1365,11 @@ function onReset() {
   }
 
   &__dropdown {
-    @apply tw-flex tw-flex-col tw-box-border tw-max-h-72 tw-h-auto tw-z-[101] tw-overflow-hidden tw-absolute tw-bg-[color:var(--select-background-color)] tw-border tw-border-solid tw-border-[color:var(--select-border-color)] tw-border-t-[color:var(--select-background-color)] tw-rounded-b-sm tw-p-2;
+    @apply tw-flex tw-flex-col tw-box-border tw-max-h-72 tw-h-auto tw-z-[101] tw-overflow-hidden tw-absolute tw-bg-[color:var(--select-background-color)] tw-p-2;
   }
 
   &__search-input {
-    @apply tw-w-full tw-box-border tw-border tw-border-solid tw-border-[color:var(--select-border-color-input)] tw-bg-[color:var(--select-search-background-color)] tw-rounded-md tw-h-8 tw-leading-8 tw-outline-none tw-mb-3 tw-px-2;
+    @apply tw-w-full tw-box-border tw-border tw-border-solid tw-border-[color:var(--select-border-color-input)] tw-bg-transparent tw-rounded-[var(--select-border-radius)] tw-h-8 tw-leading-8 tw-outline-none tw-mb-3 tw-px-2;
   }
 
   &__no-options {
@@ -1163,11 +1381,23 @@ function onReset() {
   }
 
   &__option {
-    @apply tw-flex tw-items-center tw-min-h-9 tw-my-1 tw-box-border tw-px-2 tw-rounded-sm tw-cursor-pointer hover:tw-bg-[color:var(--select-option-background-color-hover)] tw-text-sm;
+    @apply tw-flex tw-items-center tw-min-h-9 tw-my-1 tw-box-border tw-px-2 tw-rounded-[var(--select-border-radius)] tw-cursor-pointer hover:tw-bg-[color:var(--select-option-background-color-hover)] tw-text-sm;
 
     &--selected {
-      @apply tw-bg-[color:var(--select-option-background-color-selected)];
+      @apply tw-bg-[color:var(--select-option-background-color-selected)] hover:tw-bg-[color:var(--select-option-background-color-selected)];
     }
+  }
+
+  &__list-loading-indicator {
+    @apply tw-flex tw-items-center tw-justify-center tw-p-2 tw-text-sm tw-text-[color:var(--select-text-color)];
+
+    span {
+      @apply tw-mr-2;
+    }
+  }
+
+  &__load-more-trigger {
+    @apply tw-block tw-h-[1px]; /* Ensures it's in layout flow for intersection observer */
   }
 
   &.vc-select_opened &__chevron {
@@ -1175,7 +1405,11 @@ function onReset() {
   }
 
   &.vc-select_opened &__field {
-    @apply tw-rounded-t-sm tw-rounded-b-none;
+    @apply tw-rounded-[var(--select-border-radius)];
+  }
+
+  &.vc-select_opened &__field-wrapper {
+    @apply tw-outline tw-outline-2 tw-outline-[color:var(--select-border-color-focus)];
   }
 
   &.vc-select_error &__field-wrapper {
@@ -1185,7 +1419,11 @@ function onReset() {
   &.vc-select_disabled &__field-wrapper,
   &.vc-select_disabled &__field,
   &.vc-select_disabled &__input {
-    @apply tw-bg-[color:var(--select-background-color-disabled)] tw-text-[color:var(--select-disabled-field-color)] tw-cursor-auto;
+    @apply tw-bg-[color:var(--select-background-color-disabled)] tw-text-[color:var(--select-disabled-text-color)] tw-cursor-auto;
+  }
+
+  &_focused .vc-select__field {
+    @apply tw-outline-2 tw-outline tw-outline-[color:var(--select-border-color-focus)] tw-outline-offset-[0px];
   }
 
   &.vc-select_has-hint-or-error {

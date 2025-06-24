@@ -2,17 +2,17 @@
   <div
     class="vc-checkbox"
     :class="{
-      'vc-checkbox_disabled': disabled,
-      'vc-checkbox_size-small': size === 's',
-      'vc-checkbox_size-medium': size === 'm',
-      'vc-checkbox_size-large': size === 'l',
+      'vc-checkbox--disabled': disabled,
+      'vc-checkbox--error': !!errorMessage,
+      'vc-checkbox--indeterminate': indeterminate,
+      [`vc-checkbox--size-${size}`]: true,
     }"
   >
-    <!-- Input label -->
     <VcLabel
       v-if="label"
       class="vc-checkbox__label"
       :required="required"
+      :error="!!errorMessage"
     >
       <span>{{ label }}</span>
       <template
@@ -21,24 +21,51 @@
         >{{ tooltip }}</template
       >
     </VcLabel>
+
     <label class="vc-checkbox__container">
       <input
-        v-model="value"
+        ref="checkboxRef"
+        v-model="model"
+        :value="value"
         type="checkbox"
         class="vc-checkbox__input"
         :disabled="disabled"
         :true-value="trueValue"
         :false-value="falseValue"
-        :class="{
-          'vc-checkbox__input--error': errorMessage,
-        }"
+        tabindex="0"
       />
+
+      <span class="vc-checkbox__custom-input">
+        <slot name="icon">
+          <svg
+            v-if="checked && !indeterminate"
+            class="vc-checkbox__check-icon"
+            width="14"
+            height="14"
+            viewBox="0 0 14 14"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M9.90927 3.80151C10.3113 3.3995 10.9631 3.3995 11.3651 3.80151C11.7671 4.20352 11.7671 4.85531 11.3651 5.25732L6.35527 10.2671C5.95326 10.6691 5.30148 10.6691 4.89947 10.2671L2.63476 8.00241C2.23275 7.6004 2.23275 6.94862 2.63476 6.54661C3.03677 6.14459 3.68856 6.14459 4.09057 6.54661L5.62737 8.08341L9.90927 3.80151Z"
+              fill="var(--additional-50)"
+            />
+          </svg>
+
+          <span
+            v-if="indeterminate"
+            class="vc-checkbox__indeterminate-line"
+          ></span>
+        </slot>
+      </span>
+
       <span
-        v-if="$slots['default']"
+        v-if="$slots.default"
         class="vc-checkbox__text"
       >
         <slot></slot>
       </span>
+
       <span
         v-if="!label && required"
         class="vc-checkbox__required"
@@ -58,12 +85,13 @@
 </template>
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
-import { MaybeRef, computed, unref } from "vue";
+import { MaybeRef, computed, unref, ref, watch, onMounted } from "vue";
 import { VcHint } from "./../../atoms/vc-hint";
 import { VcLabel } from "../../atoms/vc-label";
 
 export interface Props {
   modelValue: MaybeRef<boolean>;
+  value?: any;
   disabled?: boolean;
   required?: boolean;
   name?: string;
@@ -74,21 +102,31 @@ export interface Props {
   tooltip?: string;
   size?: "s" | "m" | "l";
   outline?: boolean;
+  indeterminate?: boolean;
 }
 
 export interface Emits {
   (event: "update:modelValue", value: boolean): void;
 }
 
-const props = withDefaults(defineProps<Props>(), { name: "Field", trueValue: true, falseValue: false, size: "s" });
+const props = withDefaults(defineProps<Props>(), {
+  name: "Field",
+  trueValue: true,
+  falseValue: false,
+  size: "s",
+  indeterminate: false,
+});
 const emit = defineEmits<Emits>();
 
 defineSlots<{
-  default: (props: any) => any;
-  error: (props: any) => any;
+  default: (props: Record<string, never>) => any;
+  error: (props: Record<string, never>) => any;
+  icon: (props: Record<string, never>) => any;
 }>();
 
-const value = computed({
+const checkboxRef = ref<HTMLInputElement | null>(null);
+
+const model = computed({
   get() {
     return unref(props.modelValue);
   },
@@ -96,148 +134,182 @@ const value = computed({
     emit("update:modelValue", newValue);
   },
 });
+
+const checked = computed(() => {
+  const modelVal = unref(props.modelValue);
+  if (Array.isArray(modelVal)) {
+    return modelVal.includes(props.value);
+  }
+  return modelVal === props.trueValue;
+});
+
+// Managing indeterminate state
+watch(
+  () => props.indeterminate,
+  (val) => {
+    if (checkboxRef.value) {
+      checkboxRef.value.indeterminate = val;
+    }
+  },
+  { immediate: true },
+);
+
+onMounted(() => {
+  if (checkboxRef.value && props.indeterminate) {
+    checkboxRef.value.indeterminate = props.indeterminate;
+  }
+});
 </script>
 
 <style lang="scss">
 :root {
-  --checkbox-size-small: 14px;
-  --checkbox-size-medium: 18px;
-  --checkbox-size-large: 24px;
+  /* Checkbox size */
+  --checkbox-size-s: 14px;
+  --checkbox-size-m: 18px;
+  --checkbox-size-l: 24px;
+
+  /* Main colors */
+  --checkbox-border-color: var(--neutrals-400);
+  --checkbox-bg-color: var(--additional-50);
+  --checkbox-text-color: var(--neutrals-900);
+
+  /* Checkbox checked state */
+  --checkbox-checked-bg-color: var(--primary-500);
+  --checkbox-checked-border-color: var(--primary-500);
+  --checkbox-icon-color: var(--additional-50);
+
+  /* Indeterminate state */
+  --checkbox-indeterminate-bg-color: var(--neutrals-500);
+  --checkbox-indeterminate-border-color: var(--neutrals-500);
+  --checkbox-indeterminate-line-color: var(--additional-50);
+
+  /* Error state */
+  --checkbox-error-border-color: var(--danger-500);
+  --checkbox-error-text-color: var(--danger-500);
+
+  /* Disabled state */
+  --checkbox-disabled-bg-color: var(--neutrals-200);
+  --checkbox-disabled-border-color: var(--neutrals-200);
+  --checkbox-disabled-opacity: 0.7;
+
+  /* Focus */
+  --checkbox-focus-shadow-color: var(--primary-50);
+  --checkbox-focus-shadow-size: 2px;
+
+  /* Other */
   --checkbox-border-radius: 2px;
-  --checkbox-background-color: var(--additional-50);
-  --checkbox-color-error: var(--base-error-color, var(--danger-500));
   --checkbox-required-color: var(--danger-500);
-
-  --checkbox-active: var(--primary-500);
-  --checkbox-active-inner: var(--additional-50);
-  --checkbox-focus-color: var(--info-400);
-  --checkbox-focus: 2px rgb(from var(--checkbox-focus-color) r g b / 30%);
-  --checkbox-border: var(--neutrals-300);
-  --checkbox-border-hover: var(--primary-500);
-  --checkbox-background: var(--additional-50);
-  --checkbox-disabled: var(--neutrals-100);
-  --checkbox-disabled-inner: var(--base-border-color, var(--neutrals-200));
-  --checkbox-error: var(--base-error-color, var(--danger-500));
-}
-
-$sizes: small, medium, large;
-
-@each $size in $sizes {
-  .vc-checkbox_size-#{$size} {
-    --checkbox-size: var(--checkbox-size-#{$size});
-  }
+  --checkbox-transition-duration: 0.2s;
+  --checkbox-margin-spacing: 0.5rem;
+  --checkbox-text-margin: 0.5rem;
 }
 
 .vc-checkbox {
+  display: flex;
+  flex-direction: column;
+
   &__label {
-    @apply tw-mb-2;
+    margin-bottom: var(--checkbox-margin-spacing);
   }
 
   &__container {
-    @apply tw-inline-flex tw-select-none tw-cursor-pointer tw-text-base tw-items-center;
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  &__input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+
+    &:hover + .vc-checkbox__custom-input {
+      outline: var(--checkbox-focus-shadow-size) solid var(--checkbox-focus-shadow-color);
+    }
+
+    &:disabled + .vc-checkbox__custom-input {
+      background-color: var(--checkbox-disabled-bg-color);
+      border-color: var(--checkbox-disabled-border-color);
+      cursor: not-allowed;
+    }
+  }
+
+  &__custom-input {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--checkbox-border-color);
+    border-radius: var(--checkbox-border-radius);
+    background-color: var(--checkbox-bg-color);
+    transition: all var(--checkbox-transition-duration) ease-in-out;
+    color: var(--checkbox-icon-color);
+
+    .vc-checkbox--size-s & {
+      width: var(--checkbox-size-s);
+      height: var(--checkbox-size-s);
+    }
+
+    .vc-checkbox--size-m & {
+      width: var(--checkbox-size-m);
+      height: var(--checkbox-size-m);
+    }
+
+    .vc-checkbox--size-l & {
+      width: var(--checkbox-size-l);
+      height: var(--checkbox-size-l);
+    }
+
+    .vc-checkbox__input:checked + & {
+      background-color: var(--checkbox-checked-bg-color);
+      border-color: var(--checkbox-checked-border-color);
+    }
+
+    .vc-checkbox--indeterminate & {
+      background-color: var(--checkbox-indeterminate-bg-color);
+      border-color: var(--checkbox-indeterminate-border-color);
+    }
+
+    .vc-checkbox--disabled & {
+      opacity: var(--checkbox-disabled-opacity);
+      cursor: not-allowed;
+    }
+  }
+
+  &__check-icon {
+    width: 100%;
+    height: 100%;
+  }
+
+  &__indeterminate-line {
+    width: 65%;
+    height: 2px;
+    background-color: var(--checkbox-indeterminate-line-color);
+    display: block;
   }
 
   &__text {
-    @apply tw-ml-2;
+    margin-left: var(--checkbox-text-margin);
+    font-size: 14px;
+    line-height: 21px;
+    color: var(--checkbox-text-color);
   }
 
   &__required {
-    @apply tw-text-[color:var(--checkbox-required-color)] tw-ml-1;
-  }
-
-  &__input--error {
-    --hint-color: var(--checkbox-error);
-  }
-
-  input[type="checkbox"] {
-    border-radius: var(--checkbox-border-radius);
-    appearance: none;
-    height: var(--checkbox-size);
-    outline: none;
-    display: inline-block;
-    vertical-align: top;
-    position: relative;
-    margin: 0;
-    cursor: pointer;
-    border: 1px solid var(--checkbox-border-color, var(--checkbox-border));
-    background: var(--checkbox-bg, var(--checkbox-background));
-    width: var(--checkbox-size);
-    transition:
-      background 0.3s,
-      border-color 0.3s,
-      box-shadow 0.2s;
-
-    &:checked {
-      --checkbox-bg: var(--checkbox-active);
-      --checkbox-border-color: var(--checkbox-active);
-      --checkbox-after-opacity-duration: 0.3s;
-      --checkbox-after-transform-duration: 0.6s;
-      --checkbox-after-transform-ease: cubic-bezier(0.2, 0.85, 0.32, 1.2);
-      --checkbox-scale: 0.5;
-      --checkbox-after-opacity: 1;
-      --r: 43deg;
-    }
-
-    &:disabled {
-      --checkbox-bg: var(--checkbox-disabled);
-      cursor: not-allowed;
-      opacity: 0.9;
-      &:checked {
-        --checkbox-bg: var(--checkbox-disabled-inner);
-        --checkbox-border-color: var(--checkbox-border);
-      }
-      & + label {
-        cursor: not-allowed;
-      }
-    }
-
-    &:hover {
-      &:not(:checked) {
-        &:not(:disabled) {
-          --checkbox-border-color: var(--checkbox-border-hover);
-        }
-      }
-    }
-
-    &:after {
-      content: "";
-      display: block;
-      position: absolute;
-      width: calc(var(--checkbox-size) * 0.35);
-      height: calc(var(--checkbox-size) * 0.6);
-      border: calc(var(--checkbox-size) * 0.1) solid var(--checkbox-background);
-      border-top: 0;
-      border-left: 0;
-      left: calc(var(--checkbox-size) * 0.3);
-      top: calc(var(--checkbox-size) * 0.1);
-      transform: rotate(var(--r, 43deg));
-      opacity: var(--checkbox-after-opacity, 0);
-      transition:
-        transform var(--checkbox-after-transform-duration, 0.3s) var(--checkbox-after-transform-ease, ease),
-        opacity var(--checkbox-after-opacity-duration, 0.2s);
-    }
-
-    & + label {
-      font-size: 14px;
-      line-height: 21px;
-      display: inline-flex;
-      align-items: center;
-      cursor: pointer;
-      margin-left: 4px;
-    }
-
-    &.vc-checkbox_error {
-      --checkbox-border-color: var(--checkbox-error);
-    }
-  }
-
-  &_disabled &__label {
-    cursor: auto;
+    color: var(--checkbox-required-color);
+    margin-left: 0.25rem;
   }
 
   &__error {
-    --hint-color: var(--checkbox-error);
-    @apply tw-mt-1;
+    --hint-color: var(--checkbox-error-text-color);
+    margin-top: 0.25rem;
+  }
+
+  &--error {
+    .vc-checkbox__custom-input {
+      border-color: var(--checkbox-error-border-color);
+    }
   }
 }
 </style>

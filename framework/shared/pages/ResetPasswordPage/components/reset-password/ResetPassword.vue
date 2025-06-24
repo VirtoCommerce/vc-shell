@@ -100,8 +100,9 @@
 import { reactive, onMounted, computed } from "vue";
 import { useRouter } from "vue-router";
 import { Field, useForm } from "vee-validate";
-import { useUser, useSettings } from "./../../../../../core/composables";
+import { useSettings } from "./../../../../../core/composables";
 import { useI18n } from "vue-i18n";
+import { useUserManagement } from "./../../../../../core/composables/useUserManagement";
 
 const props = withDefaults(
   defineProps<{
@@ -117,7 +118,7 @@ const props = withDefaults(
   },
 );
 
-const { validateToken, validatePassword, resetPasswordByToken, signIn, loading } = useUser();
+const { validateToken, validatePassword, resetPasswordByToken, signIn, loading } = useUserManagement();
 const router = useRouter();
 const { t } = useI18n({ useScope: "global" });
 const { validate: veeValidate } = useForm({ validateOnMount: false });
@@ -185,7 +186,7 @@ const customization = computed(() => {
 
 <style lang="scss">
 :root {
-  --reset-password-error-color: var(--base-error-color, var(--danger-500));
+  --reset-password-error-color: var(--danger-500);
 }
 
 .vc-reset-password-page {

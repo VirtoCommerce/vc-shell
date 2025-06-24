@@ -16,6 +16,7 @@
       @dragleave.prevent="dragLeave"
       @drop.prevent.stop="onDrop"
     >
+      <!-- @vue-generic {ICommonAsset} -->
       <VcTable
         :columns="columns"
         :expanded="expanded"
@@ -37,7 +38,7 @@
           <div class="tw-w-full tw-h-full tw-box-border tw-flex tw-flex-col tw-items-center tw-justify-center">
             <template v-if="!readonly">
               <VcIcon
-                icon="fas fa-cloud-upload-alt"
+                icon="material-cloud_upload"
                 class="tw-text-[100px] tw-text-[color:var(--assets-manager-empty-icon-color)]"
               ></VcIcon>
               <div class="tw-m-4 tw-text-l tw-font-medium tw-text-center">
@@ -209,7 +210,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
   {
     id: "add",
     title: computed(() => t("ASSETS_MANAGER.TOOLBAR.ADD")),
-    icon: "fas fa-plus",
+    icon: "material-add",
     clickHandler() {
       toggleUploader();
     },
@@ -219,7 +220,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
   {
     id: "delete",
     title: computed(() => t("ASSETS_MANAGER.TOOLBAR.DELETE")),
-    icon: "fas fa-trash",
+    icon: "material-delete",
     async clickHandler() {
       if (props.options.assetsRemoveHandler && typeof props.options.assetsRemoveHandler === "function") {
         defaultAssets.value = await props.options.assetsRemoveHandler(selectedItems.value);
@@ -389,10 +390,9 @@ const actionBuilder = (): IActionBuilderResult<ICommonAsset>[] => {
   const result: IActionBuilderResult<ICommonAsset>[] = [];
 
   result.push({
-    icon: "fas fa-trash",
+    icon: "material-delete",
     title: computed(() => t("ASSETS_MANAGER.TABLE.ACTIONS.DELETE")),
     type: "danger",
-    position: "left",
     async clickHandler(item: ICommonAsset) {
       defaultAssets.value = await props.options.assetsRemoveHandler([item]);
       selectedItems.value = [];

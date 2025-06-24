@@ -1,6 +1,7 @@
 import { Component, ComputedRef, Ref } from "vue";
-import { BladeInstanceConstructor, CoreBladeExposed, ExtractedBladeOptions } from "./../../shared";
-import { ComponentPublicInstanceConstructor } from "../../shared/utilities/vueUtils";
+import { CoreBladeExposed } from "../../shared";
+import { ComponentPublicInstanceConstructor } from "../../shared/utilities";
+import { IBladeInstance } from "../../shared/components/blade-navigation/types";
 
 // Type instead of interface here is workaround for:
 // https://github.com/microsoft/TypeScript/issues/15300
@@ -52,24 +53,24 @@ export interface IBladeDropdownItem {
   clickHandler?(): void;
 }
 
-export interface BladeMenu<T extends Component = Component> {
+export interface IMenuItem<T extends Component = Component> {
   title?: string | Ref<string>;
-  icon?: string;
+  icon?: string | Component;
   isVisible?: boolean | Ref<boolean>;
-  component?: BladeInstanceConstructor<T>;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  clickHandler?(app?: Record<string, any> | CoreBladeExposed | null): void;
-  children?: BladeMenu<T>[];
-  options?: ExtractedBladeOptions<InstanceType<BladeInstanceConstructor<T>>["$props"], "options">;
+  component?: T;
+  clickHandler?(): void;
 }
 
 export interface IBladeToolbar {
   id?: string;
   icon?: string | (() => string);
   disabled?: boolean | ComputedRef<boolean | undefined>;
-  dropdownItems?: IBladeDropdownItem[];
   title?: string | Ref<string> | ComputedRef<string>;
-  isVisible?: boolean | Ref<boolean | undefined> | ComputedRef<boolean | undefined>;
+  isVisible?:
+    | boolean
+    | Ref<boolean | undefined>
+    | ComputedRef<boolean | undefined>
+    | ((blade?: IBladeInstance) => boolean | undefined);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   clickHandler?(app?: Record<string, any> | CoreBladeExposed | null): void;
   separator?: "left" | "right" | "both";
@@ -93,8 +94,7 @@ export type NotificationTemplateConstructor = ComponentPublicInstanceConstructor
 export interface IActionBuilderResult<T = {}> {
   icon: string;
   title: string | Ref<string>;
-  type: "danger" | "success";
-  position: "right" | "left";
+  type: "danger" | "success" | "warning" | "info";
   clickHandler(item?: T, index?: number): void;
 }
 
@@ -143,7 +143,6 @@ export type ITableColumnsBase = {
     | "time"
     | "image"
     | "date-time"
-    | "image"
     | "status"
     | "status-icon"
     | "number"
@@ -155,12 +154,11 @@ export type ITableColumnsBase = {
   align?: "start" | "end" | "center" | "between" | "around" | "evenly";
   visible?: boolean;
   editable?: boolean;
-  /**
-   * Field for currency property to show currency sign on money type.
-   * @default "currency"
-   */
   currencyField?: string;
   rules?: IValidationRules;
+  // Mobile view specific fields
+  mobilePosition?: "status" | "image" | "top-left" | "top-right" | "bottom-left" | "bottom-right";
+  mobileVisible?: boolean; // Show in mobile view
 };
 
 type IImageColumn = {
@@ -180,7 +178,7 @@ export interface MenuItem extends Omit<MenuItemConfig, "title" | "id"> {
   routeId?: string;
   title: ComputedRef<string> | string;
   url?: string;
-  groupIcon?: string;
+  groupIcon?: string | Component;
   groupId?: string;
   children?: MenuItem[];
   permissions?: string | string[];
@@ -196,23 +194,42 @@ export interface MenuItemConfig {
   /**
    * Menu item icon.
    */
-  icon: string;
+  icon: string | Component;
   /**
    * Menu group icon.
+   *
+   * @deprecated Use groupConfig.icon instead for better robustness
    */
-  groupIcon?: string;
+  groupIcon?: string | Component;
   /**
    * Menu item group. Is used to group menu items with it's provided name.
    *
    * If the path is not specified, the menu item is added to the root of the menu.
+   *
+   * @deprecated Use groupConfig instead for better robustness
    */
   group?: string;
+  /**
+   * Group configuration for creating or updating a group when adding this menu item.
+   * This allows creating a group and adding an item to it in one step.
+   * If a group with the specified ID already exists, it will be updated with the provided properties.
+   */
+  groupConfig?: {
+    id: string;
+    title?: string;
+    icon?: string | Component | undefined;
+    priority?: number;
+    permissions?: string | string[];
+  };
   /**
    * Position priority.
    */
   priority: number;
   /**
    * Position priority in group
+   *
+   * @deprecated Use groupConfig.priority instead for better robustness
    */
   inGroupPriority?: number;
+  permissions?: string | string[];
 }

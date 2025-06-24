@@ -1,6 +1,6 @@
 {
   "name": "@vc-shell/release-config",
-  "version": "1.0.342",
+  "version": "1.1.36",
   "type": "module",
   "main": "dist/release-config.js",
   "types": "./dist/index.d.ts",
@@ -16,14 +16,14 @@
     "mri": "^1.2.0",
     "prompts": "^2.4.2",
     "semver": "^7.5.4",
-    "vite": "5.3.6"
+    "vite": "^6.3.3"
   },
   "devDependencies": {
     "@types/cross-spawn": "^6.0.6",
     "@types/prompts": "^2.4.7",
     "@types/semver": "^7.5.4",
-    "@vc-shell/ts-config": "^1.0.342",
-    "typescript": "~5.3.3",
+    "@vc-shell/ts-config": "^1.1.36",
+    "typescript": "^5.8.3",
     "vite-plugin-dts": "^3.6.4"
   },
   "publishConfig": {

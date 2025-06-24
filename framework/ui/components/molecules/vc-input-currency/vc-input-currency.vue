@@ -1,96 +1,53 @@
 <template>
-  <VcSelect
+  <VcInputDropdown
     class="vc-input-currency"
     :options="options"
     :option-label="optionLabel"
     :option-value="optionValue"
-    :searchable="true"
+    :searchable="searchable"
     :debounce="debounce"
     :disabled="disabled"
     :label="label"
     :required="required"
-    :model-value="option"
+    :option="option"
+    :model-value="numberValue"
     :tooltip="tooltip"
-    @update:model-value="$emit('update:option', $event)"
+    :placeholder="placeholder"
+    :hint="hint"
+    :clearable="clearable"
+    :prefix="prefix"
+    :suffix="suffix"
+    :name="name"
+    :loading="loading"
+    :autofocus="autofocus"
+    :error="error"
+    :error-message="errorMessage"
+    :maxlength="maxlength"
+    input-type="number"
+    @update:model-value="updateModel"
+    @update:option="$emit('update:option', $event)"
+    @blur="handleBlur"
   >
-    <template #control="{ toggleHandler }">
-      <VcInput
-        :placeholder="placeholder"
-        :hint="hint"
-        :clearable="clearable"
-        :prefix="prefix"
-        :suffix="suffix"
-        :name="name"
-        :model-value="numberValue"
-        :loading="loading"
+    <template #control="{ placeholder: holder }">
+      <input
+        ref="inputRef"
+        type="text"
         :disabled="disabled"
-        :autofocus="autofocus"
-        :error="error"
-        :error-message="errorMessage"
-        :maxlength="maxlength"
-        class="vc-input-currency__input"
-        type="number"
-        @update:model-value="updateModel"
+        :placeholder="holder"
+        class="vc-input-currency__control"
+        tabindex="0"
         @blur="handleBlur"
-      >
-        <template #append-inner>
-          <slot
-            name="button"
-            :toggle-handler="toggleHandler"
-          >
-            <template v-if="options && options.length">
-              <button
-                class="vc-input-currency__toggle-button"
-                @click.stop.prevent="toggleHandler"
-              >
-                {{ unref(option) }}
-              </button>
-            </template>
-          </slot>
-          <slot
-            v-if="$slots['append-inner']"
-            name="append-inner"
-          ></slot>
-        </template>
-        <template #control="{ placeholder: holder }">
-          <input
-            ref="inputRef"
-            type="text"
-            :disabled="disabled"
-            :placeholder="holder"
-            class="vc-input-currency__control"
-            @blur="handleBlur"
-            @keydown="handleKeyDown"
-            @paste="handlePaste"
-          />
-        </template>
-        <template
-          v-if="$slots['prepend-inner']"
-          #prepend-inner
-        >
-          <slot name="prepend-inner"></slot>
-        </template>
-        <template
-          v-if="$slots['append']"
-          #append
-        >
-          <slot name="append"></slot>
-        </template>
-        <template
-          v-if="$slots['prepend']"
-          #prepend
-        >
-          <slot name="prepend"></slot>
-        </template>
-      </VcInput>
+        @keydown="handleKeyDown"
+        @paste="handlePaste"
+      />
     </template>
-  </VcSelect>
+  </VcInputDropdown>
 </template>
 
 <script lang="ts" setup>
 import { useCurrencyInput, CurrencyDisplay } from "vue-currency-input";
 import { unref, watch } from "vue";
-import { VcSelect, VcInput } from "./../../";
+import { VcInputDropdown } from "./../../molecules/vc-input-dropdown";
 import { OptionProp } from "../vc-select/vc-select.vue";
 
 export interface Props {
@@ -193,6 +150,10 @@ export interface Props {
    */
   currencyDisplay?: `${CurrencyDisplay}`;
   precision?: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15;
+  /**
+   * Enable search in dropdown
+   */
+  searchable?: boolean;
 }
 
 export interface Emits {
@@ -206,36 +167,8 @@ const props = withDefaults(defineProps<Props>(), {
   debounce: 0,
   currencyDisplay: CurrencyDisplay.hidden,
   precision: 2,
+  searchable: false,
 });
-
-defineSlots<{
-  /**
-   * Slot for custom dropdown open handler
-   */
-  button: (scope: {
-    /**
-     * Dropdown open/close handler
-     */
-    toggleHandler: () => void;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  }) => any;
-  /**
-   * Slot for custom append-inner content
-   */
-  "append-inner": void;
-  /**
-   * Slot for custom prepend-inner content
-   */
-  "prepend-inner": void;
-  /**
-   * Slot for custom append content
-   */
-  append: void;
-  /**
-   * Slot for custom prepend content
-   */
-  prepend: void;
-}>();
 
 const emit = defineEmits<Emits>();
 
@@ -281,9 +214,11 @@ watch(numberValue, (value) => {
 });
 
 function updateModel(value: string | number | Date | null | undefined) {
-  inputRef.value.value = value as string;
-  numberValue.value = value as number | null;
-  emit("update:model-value", value as number);
+  if (inputRef.value) {
+    inputRef.value.value = value as string;
+  }
+  numberValue.value = typeof value === "number" ? value : value === null ? null : parseFloat(String(value)) || null;
+  emit("update:model-value", numberValue.value);
 }
 
 function handleBlur(event: Event) {
@@ -293,6 +228,22 @@ function handleBlur(event: Event) {
 function handleKeyDown(e: KeyboardEvent) {
   if (e.key === "-" || e.key === "e") {
     e.preventDefault();
+  }
+
+  // Navigation with Tab and Enter
+  if (e.key === "Tab") {
+    // Standard behavior of tabulation
+  } else if (e.key === "Enter") {
+    // Complete editing and go to the next field
+    e.target && (e.target as HTMLElement).blur();
+
+    // Find all tabindex elements and go to the next one
+    const allElements = Array.from(document.querySelectorAll('[tabindex="0"]:not(:disabled)'));
+    const currentIndex = allElements.indexOf(e.target as HTMLElement);
+
+    if (currentIndex >= 0 && currentIndex < allElements.length - 1) {
+      (allElements[currentIndex + 1] as HTMLElement).focus();
+    }
   }
 }
 
@@ -310,14 +261,6 @@ function handlePaste(e: ClipboardEvent) {
 }
 
 .vc-input-currency {
-  &__input {
-    @apply tw-w-full;
-  }
-
-  &__toggle-button {
-    @apply tw-text-[color:var(--input-curr-toggle-color)] tw-not-italic tw-font-medium tw-text-sm tw-cursor-pointer;
-  }
-
   &__control {
     @apply tw-border tw-border-solid tw-px-2 tw-py-1 tw-text-sm tw-outline-none tw-bg-transparent;
   }

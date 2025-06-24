@@ -20,10 +20,10 @@ export default {
     variant: {
       description: "Button variant.",
       control: "radio",
-      options: ["primary", "warning", "danger"],
+      options: ["primary", "secondary"],
       table: {
         type: {
-          summary: "primary | warning | danger",
+          summary: "primary | secondary",
         },
         defaultValue: {
           summary: "primary",
@@ -59,44 +59,8 @@ export default {
         },
       },
     },
-    small: {
-      description: "Small sized button.",
-      control: "boolean",
-      table: {
-        type: {
-          summary: "boolean",
-        },
-        defaultValue: {
-          summary: "false",
-        },
-      },
-    },
-    raised: {
-      description: "Raised button.",
-      control: "boolean",
-      table: {
-        type: {
-          summary: "boolean",
-        },
-        defaultValue: {
-          summary: "false",
-        },
-      },
-    },
     text: {
       description: "Button as text without overlay.",
-      control: "boolean",
-      table: {
-        type: {
-          summary: "boolean",
-        },
-        defaultValue: {
-          summary: "false",
-        },
-      },
-    },
-    outline: {
-      description: "Outlined button.",
       control: "boolean",
       table: {
         type: {
@@ -205,11 +169,6 @@ WithVisibilityMethod.args = {
   visibility: { method: "visibilityFn" },
 };
 
-export const Small = Template.bind({});
-Small.args = {
-  small: true,
-};
-
 export const Text = Template.bind({});
 Text.args = {
   text: true,
@@ -217,31 +176,11 @@ Text.args = {
 
 export const Icon = Template.bind({});
 Icon.args = {
-  icon: "fas fa-truck-moving",
+  icon: "material-delivery_truck_speed",
 };
 
 export const IconSize = Template.bind({});
 IconSize.args = {
-  icon: "fas fa-truck-moving",
+  icon: "material-delivery_truck_speed",
   iconSize: "xxl",
-};
-
-export const Raised = Template.bind({});
-Raised.args = {
-  raised: true,
-};
-
-export const Warning = Template.bind({});
-Warning.args = {
-  variant: "warning",
-};
-
-export const Danger = Template.bind({});
-Danger.args = {
-  variant: "danger",
-};
-
-export const Outline = Template.bind({});
-Outline.args = {
-  outline: true,
 };

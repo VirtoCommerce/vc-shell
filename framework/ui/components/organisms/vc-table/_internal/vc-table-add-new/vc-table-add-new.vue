@@ -12,7 +12,7 @@
       >
         <div class="vc-table-add-new-row__content">
           <VcIcon
-            icon="fas fa-plus"
+            icon="material-add"
             size="m"
             class="vc-table-add-new-row__icon"
           />

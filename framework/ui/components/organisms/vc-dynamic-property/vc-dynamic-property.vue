@@ -189,6 +189,37 @@
       >
       </VcSwitch>
     </template>
+    <template v-else-if="computedProperty.valueType === 'Measure'">
+      <VcInputDropdown
+        v-bind="$attrs"
+        v-model="value"
+        v-model:option="measureUnit"
+        :options="measurementOptions"
+        :loading="measurementLoading"
+        option-label="displayName"
+        option-value="id"
+        input-type="number"
+        :multilanguage="multilanguage"
+        :current-language="currentLanguage"
+        :label="computedProperty.displayName"
+        :placeholder="computedProperty.placeholder"
+        :required="computedProperty.required"
+        :disabled="disabled"
+        @update:option="onUpdateUnit"
+      >
+        <template #button="scope">
+          <button
+            class="vc-input-dropdown__toggle-button"
+            tabindex="0"
+            @click.stop.prevent="scope.toggleHandler"
+            @keydown.enter.stop.prevent="scope.toggleHandler"
+            @keydown.space.stop.prevent="scope.toggleHandler"
+          >
+            {{ measurementSymbol }}
+          </button>
+        </template>
+      </VcInputDropdown>
+    </template>
   </Field>
 </template>
 
@@ -216,6 +247,7 @@ const props = withDefaults(
       keyword?: string,
       locale?: string,
     ) => Promise<any[] | undefined> | any[] | undefined;
+    measurementsGetter?: (measureId: string, locale?: string) => Promise<any[] | undefined> | any[] | undefined;
     required: boolean;
     multivalue?: boolean;
     multilanguage?: boolean;
@@ -245,7 +277,14 @@ const props = withDefaults(
 );
 
 const emit = defineEmits<{
-  "update:model-value": [data: { readonly value: any; readonly dictionary?: any[]; readonly locale?: string }];
+  "update:model-value": [
+    data: {
+      readonly value: any;
+      readonly dictionary?: any[];
+      readonly locale?: string;
+      readonly unitOfMeasureId?: string;
+    },
+  ];
 }>();
 
 const { te, t } = useI18n({ useScope: "global" });
@@ -255,6 +294,9 @@ const loading = ref(false);
 const initialOptions = ref<any[]>([]);
 const internalProperty = ref(props.property) as Ref<typeof props.property>;
 const internalModel = ref(props.modelValue) as Ref<typeof props.modelValue>;
+const measurementOptions = ref<any[]>([]);
+const measurementLoading = ref(false);
+const measureUnit = ref<Record<string, any>>();
 
 watch(
   () => props.property,
@@ -277,6 +319,13 @@ watch(
     immediate: true,
   },
 );
+
+const measurementSymbol = computed(() => {
+  const option = measurementOptions.value.find((x) => x.id === measureUnit.value);
+  const displaySymbol = option?.displaySymbol;
+  const localizedSymbol = option?.localizedSymbol.values[props.currentLanguage as string];
+  return localizedSymbol ? localizedSymbol : displaySymbol;
+});
 
 const computedProperty = computed(() => {
   const rules: IValidationRules = {};
@@ -333,8 +382,19 @@ const value = computed({
 
 onMounted(async () => {
   await getOptions();
+  await getMeasurements();
   initialOptions.value = items.value;
 });
+
+function onUpdateUnit(newUnitOfMeasureId: any) {
+  measureUnit.value = newUnitOfMeasureId;
+  emit("update:model-value", {
+    value: value.value,
+    unitOfMeasureId: newUnitOfMeasureId,
+    dictionary: items.value,
+    locale: props.currentLanguage,
+  });
+}
 
 async function getOptions(keyword: string | undefined = undefined) {
   if (props.optionsGetter && internalProperty.value.dictionary && internalProperty.value.id) {
@@ -347,6 +407,31 @@ async function getOptions(keyword: string | undefined = undefined) {
       }
     } finally {
       loading.value = false;
+    }
+  }
+}
+
+async function getMeasurements() {
+  if (props.measurementsGetter && internalProperty.value.valueType === "Measure" && internalProperty.value.measureId) {
+    try {
+      measurementLoading.value = true;
+      const measurements = await props.measurementsGetter(
+        internalProperty.value.measureId,
+        props.currentLanguage ?? "en-US",
+      );
+      if (measurements) {
+        measurementOptions.value = measurements;
+
+        const firstVal = internalProperty.value.values?.[0];
+        if (firstVal?.unitOfMeasureId) {
+          measureUnit.value = firstVal.unitOfMeasureId;
+        } else {
+          const defaultValue = measurementOptions.value.find((x) => x.isDefault)?.id ?? measurementOptions.value[0]?.id;
+          measureUnit.value = defaultValue;
+        }
+      }
+    } finally {
+      measurementLoading.value = false;
     }
   }
 }

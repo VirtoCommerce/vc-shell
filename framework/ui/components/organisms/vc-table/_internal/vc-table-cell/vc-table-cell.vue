@@ -24,7 +24,7 @@
                 <VcInputCurrency
                   :model-value="value"
                   :options="[]"
-                  :option="(item[cell.currencyField || 'currency'] as string) || 'USD'"
+                  :option="(item as TableItem)[cell.currencyField || 'currency'] || 'USD'"
                   currency-display="symbol"
                   class="vc-table-cell__input-currency"
                   :error="errors.length > 0"
@@ -37,7 +37,7 @@
                     #append-inner
                   >
                     <VcIcon
-                      icon="fas fa-exclamation-circle"
+                      icon="material-error"
                       class="vc-table-cell__error-icon"
                     ></VcIcon>
                   </template>
@@ -180,7 +180,7 @@
                   #append-inner
                 >
                   <VcIcon
-                    icon="fas fa-exclamation-circle"
+                    icon="material-error"
                     class="vc-table-cell__error-icon"
                   ></VcIcon>
                 </template>
@@ -252,7 +252,7 @@
                   #append-inner
                 >
                   <VcIcon
-                    icon="fas fa-exclamation-circle"
+                    icon="material-error"
                     class="vc-table-cell__error-icon"
                   ></VcIcon>
                 </template>
@@ -280,7 +280,6 @@
 <script lang="ts" setup>
 import { computed } from "vue";
 import moment from "moment";
-import { ITableColumns } from "./../../../../../../core/types";
 import * as _ from "lodash-es";
 import htmlTruncate from "truncate-html";
 import * as DOMPurify from "dompurify";
@@ -288,10 +287,12 @@ import VcInputCurrency from "../../../../molecules/vc-input-currency/vc-input-cu
 import VcInput from "../../../../molecules/vc-input/vc-input.vue";
 import VcTooltip from "../../../../atoms/vc-tooltip/vc-tooltip.vue";
 import { Field } from "vee-validate";
+import type { TableItem } from "../../types";
+import { ITableColumns } from "../../../../../../core/types";
 
 export interface Props {
   cell: ITableColumns;
-  item: Record<string, unknown>;
+  item: string | TableItem;
   width?: number;
   editing?: boolean;
   index?: number;
@@ -329,7 +330,7 @@ function intlMoney(value: number) {
   const currencyProp = props.cell.currencyField || "currency";
   return new Intl.NumberFormat(locale, {
     style: "currency",
-    currency: (props.item[currencyProp] as string) || "USD",
+    currency: (props.item as TableItem)[currencyProp] || "USD",
   }).format(value);
 }
 
@@ -343,13 +344,13 @@ function onBlur(args: { row: number | undefined; field: string; errors?: string[
 
 <style lang="scss">
 :root {
-  --table-cell-error-color: var(--base-error-color, var(--danger-500));
+  --table-cell-error-color: var(--danger-500);
   --table-cell-text-color: var(--neutrals-400);
-  --table-cell-text-base-color: var(--base-text-color, var(--additional-950));
+  --table-cell-text-base-color: var(--additional-950);
 }
 
 .vc-table-cell {
-  @apply tw-text-sm tw-text-[color:var(--table-cell-text-base-color)];
+  @apply tw-text-sm tw-text-[color:var(--table-cell-text-base-color)] tw-leading-normal;
 
   &__not-set {
     @apply tw-truncate;

@@ -1,55 +1,50 @@
 <template>
-  <AppBarButtonTemplate
-    :title="$t('COMPONENTS.LANGUAGE_SELECTOR.TITLE')"
-    position="bottom-end"
-  >
-    <template #button>
-      <div class="vc-language-selector__button-wrap">
+  <SettingsMenuItem @trigger:click="opened = !opened">
+    <template #trigger>
+      <div class="vc-language-selector__trigger">
         <VcImage
           :src="currLocaleFlag"
-          class="vc-language-selector__img vc-language-selector__img--button"
-          empty-icon="fas fa-globe"
+          empty-icon="material-language"
+          class="vc-language-selector__flag"
         />
+        <span class="vc-language-selector__title">
+          {{ $t("COMPONENTS.LANGUAGE_SELECTOR.TITLE") }}
+        </span>
       </div>
     </template>
-    <template #dropdown-content="{ opened, toggle }">
-      <Sidebar
-        :is-expanded="$isMobile.value ? opened : false"
-        position="right"
-        render="mobile"
-        @close="toggle"
+
+    <template #content>
+      <GenericDropdown
+        :opened="opened"
+        :items="languageItems"
+        :is-item-active="(lang) => lang.lang === $i18n.locale"
+        @item-click="handleLanguageSelect"
       >
-        <template #content>
+        <template #item="{ item: lang, click }">
           <div
-            v-if="opened"
-            class="vc-language-selector__dropdown"
+            class="vc-language-selector__item"
+            :class="{ 'vc-language-selector__item--active': lang.lang === $i18n.locale }"
+            @click="click"
           >
-            <div
-              v-for="(lang, i) in languageItems"
-              :key="i"
-              class="vc-language-selector__item"
-              :class="{ 'vc-language-selector__item--active': lang.lang === $i18n.locale }"
-              @click="lang.hasOwnProperty('clickHandler') && lang.clickHandler(lang.lang)"
-            >
-              <VcImage
-                :src="lang.flag"
-                class="vc-language-selector__img"
-              />
-              {{ lang.title }}
-            </div>
+            <VcImage
+              :src="lang.flag"
+              class="vc-language-selector__flag"
+            />
+            <span class="vc-language-selector__item-title">{{ lang.title }}</span>
           </div>
         </template>
-      </Sidebar>
+      </GenericDropdown>
     </template>
-  </AppBarButtonTemplate>
+  </SettingsMenuItem>
 </template>
 
 <script lang="ts" setup>
 import { useI18n } from "vue-i18n";
 import { useLanguages } from "../../../core/composables";
-import { AppBarButtonTemplate } from "./../app-bar-button";
-import { Sidebar } from "./../sidebar";
+import { GenericDropdown } from "../generic-dropdown";
 import { watch, ref } from "vue";
+import { SettingsMenuItem } from "../settings-menu-item";
+import { VcImage } from "../../../ui/components";
 
 interface ILanguage {
   lang: string;
@@ -60,6 +55,9 @@ interface ILanguage {
 
 const { availableLocales, getLocaleMessage, locale } = useI18n({ useScope: "global" });
 const { setLocale, getFlag } = useLanguages();
+
+const opened = ref(false);
+const currLocaleFlag = ref<string>();
 
 const languageItems: ILanguage[] = availableLocales
   .map((locale: string) => ({
@@ -72,15 +70,21 @@ const languageItems: ILanguage[] = availableLocales
   }))
   .filter((item) => item.title);
 
-const currLocaleFlag = ref<string>();
+const handleLanguageSelect = (lang: ILanguage) => {
+  if (Object.prototype.hasOwnProperty.call(lang, "clickHandler")) {
+    lang.clickHandler(lang.lang);
+  }
+  opened.value = false;
+};
 
 watch(
   [() => languageItems, () => locale.value],
   async ([newValLangItem]) => {
     for (const lang of newValLangItem) {
       lang.flag = await getFlag(lang.lang);
-
-      currLocaleFlag.value = languageItems.find((lang) => lang.lang === locale.value)?.flag;
+      if (lang.lang === locale.value) {
+        currLocaleFlag.value = lang.flag;
+      }
     }
   },
   { immediate: true },
@@ -88,44 +92,31 @@ watch(
 </script>
 
 <style lang="scss">
-:root {
-  --language-selector-bg-color: var(--additional-50);
-  --language-selector-text-color: var(--base-text-color, var(--neutrals-950));
-  --language-selector-border-color: var(--app-bar-divider-color);
-  --language-selector-hover-bg-color: var(--primary-50);
-  --language-selector-button-width: var(--app-bar-button-width);
-}
-
 .vc-language-selector {
-  &__dropdown {
-    @apply tw-bg-[color:var(--language-selector-bg-color)] tw-min-w-max;
+  &__trigger {
+    @apply tw-flex tw-items-center tw-w-full;
+  }
+
+  &__flag {
+    @apply tw-w-6 tw-h-6 tw-mr-3;
+  }
+
+  &__title {
+    @apply tw-flex-grow;
   }
 
   &__item {
-    @apply tw-truncate tw-flex tw-items-center tw-p-3 tw-text-sm tw-text-[color:var(--language-selector-text-color)]
-      tw-border-l tw-border-solid tw-border-l-[var(--language-selector-border-color)]
-      tw-border-b tw-border-b-[var(--language-selector-border-color)] tw-w-full tw-cursor-pointer;
-    transition: background-color 0.2s;
-
-    &:hover {
-      background-color: var(--language-selector-hover-bg-color);
-    }
+    @apply tw-flex tw-items-center tw-w-full tw-px-6 tw-py-3
+      tw-cursor-pointer tw-transition-colors
+      hover:tw-bg-[color:var(--menu-item-bg-hover)];
 
     &--active {
-      @apply tw-bg-[color:var(--language-selector-hover-bg-color)];
+      @apply tw-bg-[color:var(--menu-item-bg-active)];
     }
   }
 
-  &__img {
-    @apply tw-w-6 tw-h-6 tw-mr-2;
-
-    &--button {
-      @apply tw-mr-0;
-    }
-  }
-
-  &__button-wrap {
-    @apply tw-w-[var(--language-selector-button-width)] tw-flex tw-justify-center;
+  &__item-title {
+    @apply tw-flex-grow;
   }
 }
 </style>

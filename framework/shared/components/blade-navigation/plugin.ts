@@ -1,7 +1,7 @@
 import { Router } from "vue-router";
-import { App, inject, ref } from "vue";
+import { App, ref } from "vue";
 import * as components from "./components";
-import { BladeNavigationPlugin, BladeRoutesRecord } from "./types";
+import { BladeNavigationPlugin } from "./types";
 
 // Declare globally
 declare module "@vue/runtime-core" {
@@ -14,22 +14,27 @@ export let bladeNavigationInstance: BladeNavigationPlugin;
 
 export const VcBladeNavigationComponent = {
   install(app: App, args: { router: Router }) {
-    // Register components
+    // Register framework's own blade UI components like VcBladeNavigation
     Object.entries(components).forEach(([componentName, component]) => {
       app.component(componentName, component);
     });
 
-    const internalRoutes = app.runWithContext(() => inject("bladeRoutes")) as BladeRoutesRecord[];
-
-    // Plugin
-    const bladeNavigationPlugin: BladeNavigationPlugin = {
+    // The plugin instance primarily provides the router.
+    // Blade resolution is now handled by useBladeNavigation via useBladeRegistry.
+    const bladeNavigationPluginData: BladeNavigationPlugin = {
       router: args.router,
-      internalRoutes,
-      blades: ref([]),
+      // blades: ref([]), // This state was for useBladeNavigation, it should manage its own state internally or via its singleton.
+      // If blades ref is truly global and shared, it needs careful consideration.
+      // For now, assuming blade state management is within useBladeNavigationSingleton.
     };
 
-    app.config.globalProperties.$bladeNavigationPlugin = bladeNavigationPlugin;
-    bladeNavigationInstance = bladeNavigationPlugin;
-    app.provide("bladeNavigationPlugin", bladeNavigationPlugin);
+    // This global instance is used as a fallback in useBladeNavigation.
+    // It should contain at least what useBladeNavigation might try to access from it.
+    // Primarily, the router.
+    bladeNavigationInstance = bladeNavigationPluginData;
+
+    // Provide the plugin instance (mainly for the router) for useBladeNavigation to inject.
+    // useBladeNavigation can then also useBladeRegistry() independently.
+    app.provide("bladeNavigationPlugin", bladeNavigationPluginData);
   },
 };

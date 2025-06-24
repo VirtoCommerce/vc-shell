@@ -1,14 +1,19 @@
+@use './theme/colors.scss';
+
+
+
 @tailwind base;
 
 @layer base {
   html,
   body,
   #app {
-    @apply tw-font-roboto tw-h-full tw-w-full tw-m-0 tw-fixed tw-overflow-hidden tw-overscroll-y-none;
+    @apply tw-h-full tw-w-full tw-m-0 tw-fixed tw-overflow-hidden tw-overscroll-y-none;
+    font-family: "Plus Jakarta Sans", sans-serif;
   }
 
   body {
-    @apply tw-text-sm tw-text-[color:var(--base-text-color)];
+    @apply tw-text-sm tw-text-[color:var(--additional-950)];
   }
 }
 
@@ -22,26 +27,24 @@ button,
 input,
 select,
 textarea {
-  @apply tw-font-roboto;
+   font-family: "Plus Jakarta Sans", sans-serif;
 }
 ::-webkit-input-placeholder {
-  @apply tw-font-roboto;
+   font-family: "Plus Jakarta Sans", sans-serif;
 }
 :-moz-placeholder {
-  @apply tw-font-roboto;
+   font-family: "Plus Jakarta Sans", sans-serif;
 }
 ::-moz-placeholder {
-  @apply tw-font-roboto;
+   font-family: "Plus Jakarta Sans", sans-serif;
 }
 :-ms-input-placeholder {
-  @apply tw-font-roboto;
+   font-family: "Plus Jakarta Sans", sans-serif;
 }
 
 
 @tailwind components;
 @tailwind utilities;
-
-@import './theme/colors.scss';
 
 :root {
   --scroll-color: var(--primary-100);

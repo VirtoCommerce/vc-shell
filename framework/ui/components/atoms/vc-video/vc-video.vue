@@ -30,7 +30,7 @@
         class="vc-video__placeholder"
       >
         <VcIcon
-          icon="fas fa-film"
+          icon="material-theaters"
           size="xl"
         ></VcIcon>
       </div>

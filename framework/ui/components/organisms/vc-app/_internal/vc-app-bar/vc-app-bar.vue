@@ -1,89 +1,125 @@
 <template>
   <div
+    v-if="$isDesktop.value"
+    class="vc-app-bar--padding"
+    :class="{
+      'vc-app-bar--padding-expanded': state.isSidebarExpanded,
+    }"
+  ></div>
+  <div
     class="vc-app-bar"
-    :class="{ 'vc-app-bar--mobile': $isMobile.value }"
+    :class="appBarClasses"
+    @mouseenter="$isDesktop.value && !state.isSidebarExpanded && handleHoverExpand(true)"
+    @mouseleave="$isDesktop.value && !state.isSidebarExpanded && handleHoverExpand(false)"
   >
-    <slot name="app-switcher"></slot>
-
-    <template v-if="!$isMobile.value || quantity === 0">
-      <div class="tw-w-auto tw-h-[var(--app-bar-height)] tw-flex tw-items-center">
-        <!-- Logo -->
-        <img
-          class="vc-app-bar__logo"
-          :class="{
-            'vc-app-bar__logo--mobile': $isMobile.value,
-          }"
-          alt="logo"
-          :src="logo"
-          @click="$emit('logo:click')"
-        />
-      </div>
-
-      <!-- Title -->
-      <div
-        v-if="title && $isDesktop.value"
-        class="vc-app-bar__title"
-      >
-        {{ title }}
-      </div>
-
-      <div
-        v-if="$slots['logo:append']"
-        class="vc-app-bar__logo-append"
-      >
-        <slot name="logo:append"></slot>
-      </div>
-    </template>
-
-    <template v-if="$isMobile.value">
-      <!-- Show blades name when at least one blade is opened -->
-      <div
-        v-if="quantity === 1"
-        class="vc-app-bar__blade-title"
-      >
-        {{ viewTitle }}
-      </div>
-
-      <!-- Show back link when more than one blade is opened -->
-      <VcLink
-        v-else-if="quantity > 1"
-        class="vc-app-bar__backlink"
-        @click="$emit('backlink:click')"
-      >
-        <VcIcon
-          icon="fas fa-chevron-left"
-          size="s"
-        ></VcIcon>
-        <span class="vc-app-bar__backlink-text">{{ t("COMPONENTS.ORGANISMS.VC_APP.INTERNAL.VC_APP_BAR.BACK") }}</span>
-      </VcLink>
-    </template>
-
-    <!-- Additional spacer -->
-    <div class="vc-app__spacer"></div>
-
-    <!-- Toolbar container -->
-    <div class="vc-app__toolbar">
-      <slot name="toolbar"></slot>
-    </div>
-
-    <!-- Show menu toggler on mobile devices -->
     <div
-      v-if="!disableMenu && $isMobile.value"
-      class="vc-app__menu-toggler"
-      @click="$emit('menubutton:click')"
+      class="vc-app-bar__wrap"
+      :class="wrapClasses"
     >
-      <VcIcon icon="fas fa-bars"></VcIcon>
+      <div
+        v-if="!$isMobile.value"
+        class="vc-app-bar__collapse-button"
+        @click="toggleSidebar"
+      >
+        <div class="vc-app-bar__collapse-button-wrap">
+          <Transition name="rotate">
+            <VcIcon
+              v-show="true"
+              class="vc-app-bar__collapse-button-icon"
+              :icon="state.isSidebarExpanded ? ChevronLeftIcon : ChevronRightIcon"
+              size="xs"
+            />
+          </Transition>
+        </div>
+      </div>
+
+      <div
+        class="vc-app-bar__wrapper"
+        :class="{
+          'vc-app-bar__wrapper--mobile': $isMobile.value,
+          'vc-app-bar__wrapper--hover-collapsed': $isDesktop.value && !isHoverExpanded && !state.isSidebarExpanded,
+        }"
+        @mouseenter="collapseButtonHover = true"
+        @mouseleave="collapseButtonHover = false"
+      >
+        <AppBarHeader
+          :logo="logo"
+          :expanded="state.isSidebarExpanded || isHoverExpanded"
+          class="vc-app-bar__header"
+          :class="{
+            'vc-app-bar__header--hover-expanded': $isDesktop.value && isHoverExpanded && !state.isSidebarExpanded,
+            'vc-app-bar__header--collapsed': $isDesktop.value && !state.isSidebarExpanded && !isHoverExpanded,
+          }"
+          @logo:click="$emit('logo:click')"
+          @toggle-menu="toggleMenu"
+        >
+          <template #actions>
+            <AppBarMobileActions
+              :is-sidebar-mode="state.isMenuOpen"
+              :expanded="state.isSidebarExpanded"
+            />
+          </template>
+        </AppBarHeader>
+
+        <MenuSidebar
+          v-if="state.isMenuOpen"
+          :is-opened="state.isMenuOpen"
+          :expanded="state.isSidebarExpanded"
+          @update:is-opened="handleMenuClose"
+        >
+          <template #navmenu>
+            <slot name="navmenu" />
+          </template>
+          <template #user-dropdown>
+            <slot name="user-dropdown" />
+          </template>
+          <template #app-switcher>
+            <slot name="app-switcher" />
+          </template>
+          <template #widgets>
+            <AppBarWidgetsMenu />
+          </template>
+          <template #widgets-active-content>
+            <div
+              v-if="isAnyWidgetVisible"
+              :class="['vc-app-bar__menu-dropdowns', { 'vc-app-bar__menu-dropdowns--mobile': $isMobile.value }]"
+            >
+              <component
+                :is="currentWidget?.component"
+                v-bind="currentWidget?.props || {}"
+                @close="hideAllWidgets"
+              />
+            </div>
+          </template>
+        </MenuSidebar>
+
+        <AppBarContent
+          v-if="$isDesktop.value"
+          :expanded="state.isSidebarExpanded"
+        >
+          <template #navmenu>
+            <slot name="navmenu" />
+          </template>
+          <template #user-dropdown>
+            <slot name="user-dropdown" />
+          </template>
+        </AppBarContent>
+      </div>
     </div>
   </div>
 </template>
-
+<!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
-import { useI18n } from "vue-i18n";
-import { VcIcon, VcLink } from "./../../../../";
-import { IBladeToolbar } from "./../../../../../../core/types";
-import { useBladeNavigation } from "./../../../../../../shared";
-import { Ref, ref } from "vue";
-import { watchDebounced } from "@vueuse/core";
+import { VcIcon } from "../../../../";
+import { ChevronLeftIcon, ChevronRightIcon } from "../../../../atoms/vc-icon/icons";
+import { useAppMenuState } from "../composables/useAppMenuState";
+import { useAppBarWidgets } from "./composables/useAppBarWidgets";
+import AppBarHeader from "./_internal/AppBarHeader.vue";
+import AppBarMobileActions from "./_internal/AppBarMobileActions.vue";
+import MenuSidebar from "./_internal/MenuSidebar.vue";
+import AppBarContent from "./_internal/AppBarContent.vue";
+import AppBarWidgetsMenu from "./_internal/AppBarWidgetsMenu.vue";
+import { ref, computed, provide, inject } from "vue";
 
 export interface Props {
   logo?: string;
@@ -94,111 +130,301 @@ export interface Props {
 export interface Emits {
   (event: "logo:click"): void;
   (event: "backlink:click"): void;
-  (event: "menubutton:click"): void;
-  (event: "button:click", item: IBladeToolbar): void;
+}
+
+interface Slots {
+  "app-switcher": (props: any) => any;
+  navmenu: (props: any) => any;
+  "user-dropdown": (props: any) => any;
 }
 
 defineProps<Props>();
-
 defineEmits<Emits>();
+defineSlots<Slots>();
 
-defineSlots<{
-  "logo:append": void;
-  "app-switcher": void;
-  toolbar: void;
-}>();
+const {
+  state,
+  toggleSidebar,
+  toggleMenu: toggleMenuState,
+  closeAll,
+  toggleHoverExpanded,
+  isHoverExpanded,
+} = useAppMenuState();
 
-const { t } = useI18n({ useScope: "global" });
+const { currentWidget, hideAllWidgets, isAnyWidgetVisible } = useAppBarWidgets();
 
-const { blades } = useBladeNavigation();
+const isMobile = inject("isMobile", ref(false));
+const isDesktop = inject("isDesktop", ref(true));
+const collapseButtonHover = ref(false);
 
-const viewTitle: Ref<string> = ref("");
-const quantity = ref();
+// Provide appMenuState for child components
+provide("appMenuState", { closeAll });
 
-watchDebounced(
-  blades,
-  (newVal) => {
-    viewTitle.value = newVal[newVal.length - 1]?.props?.navigation?.instance?.title ?? "";
+const toggleMenu = () => {
+  toggleMenuState();
+  if (!state.value.isMenuOpen) {
+    hideAllWidgets();
+  }
+};
 
-    quantity.value = newVal.length;
-  },
-  { deep: true, immediate: true, flush: "post", debounce: 1 },
-);
+const handleMenuClose = (value: boolean) => {
+  if (!value) {
+    closeAll();
+    hideAllWidgets();
+  }
+};
+
+// Simple hover effect processing
+const handleHoverExpand = (shouldExpand?: boolean) => {
+  toggleHoverExpanded(shouldExpand);
+};
+
+const appBarClasses = computed(() => {
+  return {
+    "vc-app-bar--mobile": isMobile.value,
+    "vc-app-bar--desktop": isDesktop.value,
+    "vc-app-bar--collapsed": !state.value.isSidebarExpanded && isDesktop.value,
+    "vc-app-bar--hover-expanded": isDesktop.value && isHoverExpanded.value,
+    "vc-app-bar--hover-collapsed": isDesktop.value && !state.value.isSidebarExpanded && !isHoverExpanded.value,
+  };
+});
+
+const wrapClasses = computed(() => {
+  return {
+    "vc-app-bar__wrap--mobile-expanded": isMobile.value && state.value.isSidebarExpanded,
+    "vc-app-bar__wrap--desktop-collapsed": isDesktop.value && !state.value.isSidebarExpanded,
+    "vc-app-bar__wrap--desktop-expanded": isDesktop.value && state.value.isSidebarExpanded,
+    "vc-app-bar__wrap--hover-expanded": isDesktop.value && isHoverExpanded.value && !state.value.isSidebarExpanded,
+    "vc-app-bar__wrap--hover-collapsed": isDesktop.value && !isHoverExpanded.value && !state.value.isSidebarExpanded,
+  };
+});
 </script>
 
 <style lang="scss">
 :root {
-  --app-bar-height: 60px;
-  --app-bar-background-color: var(--additional-50);
-  --app-bar-button-width: 50px;
-  --app-bar-button-border-color: var(--app-bar-background-color);
-  --app-bar-button-color: var(--secondary-600);
-  --app-bar-button-background-color: var(--app-bar-background-color);
-  --app-bar-button-color-hover: var(--secondary-700);
-  --app-bar-button-background-color-hover: var(--app-bar-background-color);
-  --app-bar-product-name-color: var(--neutrals-600);
-  --app-bar-product-name-size: 20px;
-  --app-bar-toolbar-icon-background-hover: var(--neutrals-600);
-  --app-bar-divider-color: var(--additional-50);
-  --app-bar-account-info-role-color: var(--neutrals-400);
+  // Sizes
+  --app-bar-height: 70px;
+  --app-bar-mobile-height: 58px;
+  --app-bar-width: 246px;
+  --app-bar-mobile-width: 300px;
+  --app-bar-collapsed-width: 76px;
+  --app-bar-padding: 18px;
+  --app-bar-padding-mobile: 28px;
+  --app-bar-shadow: 0 16px 10px 0 rgba(0, 0, 0, 0.14);
 
-  --app-bar-burger-color: var(--primary-500);
+  // Logo
+  --app-bar-logo-width: 125px;
+  --app-bar-logo-height: 46px;
+  --app-bar-logo-mobile-width: 46px;
+  --app-bar-logo-mobile-height: 46px;
 
-  --app-bar-shadow-color: var(--additional-950);
-  --app-bar-shadow: 0px 2px 4px 0px rgba(var(--app-bar-shadow-color), 0.07);
+  // Collapse button
+  --app-bar-collapse-button-width: 26px;
+  --app-bar-collapse-button-height: 26px;
+  --app-bar-collapse-button-border-radius: 3px;
+
+  // Colors
+  --app-bar-background: var(--neutrals-50);
+  --app-bar-border: var(--neutrals-200);
+  --app-bar-button: var(--neutrals-500);
+  --app-bar-button-hover: var(--neutrals-600);
+  --app-bar-product-name: var(--neutrals-600);
+  --app-bar-divider: var(--additional-50);
+  --app-bar-account-info-role: var(--neutrals-400);
+  --app-bar-content-visible-border: var(--primary-500);
+  --app-bar-burger: var(--primary-500);
+
+  // Transition
+  --app-bar-transition-duration: 200ms;
+  --app-bar-hover-transition-duration: 250ms;
+  --app-bar-hover-leave-duration: 400ms;
+  --app-bar-hover-transition-timing-function: cubic-bezier(0.25, 0.1, 0.25, 1);
 }
 
 .vc-app-bar {
-  @apply tw-relative tw-flex tw-items-center tw-justify-between tw-px-4;
-  height: var(--app-bar-height);
-  background-color: var(--app-bar-background-color);
-  box-shadow: var(--app-bar-shadow);
-  @apply tw-box-border;
-}
+  @apply tw-relative tw-flex tw-flex-col;
+  // transition-property: width, transform, box-shadow;
+  // transition-timing-function: var(--app-bar-hover-transition-timing-function);
+  // transition-duration: var(--app-bar-hover-transition-duration);
+  background-color: var(--app-bar-background);
+  // border-right: 1px solid var(--app-bar-border);
+  z-index: 50;
 
-.vc-app-bar--mobile {
-  @apply tw-pr-0 tw-pl-3 #{!important};
-}
-
-.vc-app-bar__logo {
-  @apply tw-h-1/2 tw-cursor-pointer tw-mx-4;
+  &--desktop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: var(--app-bar-width);
+  }
 
   &--mobile {
-    @apply tw-mx-1;
+    @apply tw-w-full;
+  }
+
+  &--padding {
+    @apply tw-w-[var(--app-bar-collapsed-width)];
+  }
+
+  &--padding-expanded {
+    @apply tw-w-[var(--app-bar-width)];
+  }
+
+  &--collapsed {
+    width: var(--app-bar-collapsed-width);
+    transition:
+      width var(--app-bar-hover-transition-duration) var(--app-bar-hover-transition-timing-function),
+      transform var(--app-bar-hover-transition-duration) var(--app-bar-hover-transition-timing-function);
+
+    &:not(.vc-app-bar--hover-expanded) {
+      ~ .vc-app-content {
+        margin-left: var(--app-bar-collapsed-width);
+        transition: margin-left var(--app-bar-hover-transition-duration) var(--app-bar-hover-transition-timing-function);
+      }
+    }
+  }
+
+  &--hover-expanded {
+    width: var(--app-bar-width) !important;
+    transition-duration: var(--app-bar-hover-transition-duration);
+
+    .vc-app-bar__wrap {
+      width: var(--app-bar-width);
+    }
+  }
+
+  &--hover-collapsed {
+    transition-duration: var(--app-bar-hover-leave-duration);
+  }
+
+  &__wrap {
+    @apply tw-h-full tw-relative;
+    transition-property: width, transform, box-shadow;
+    transition-timing-function: var(--app-bar-hover-transition-timing-function);
+    transition-duration: var(--app-bar-hover-transition-duration);
+
+    &--desktop-collapsed {
+      width: var(--app-bar-collapsed-width);
+    }
+
+    &--desktop-expanded {
+      width: var(--app-bar-width);
+    }
+
+    &--hover-expanded {
+      @apply tw-fixed tw-top-0 tw-left-0 tw-h-full tw-z-[100];
+      width: var(--app-bar-width) !important;
+      box-shadow: var(--app-bar-shadow);
+      background-color: var(--app-bar-background);
+      transition-duration: var(--app-bar-hover-transition-duration);
+    }
+
+    &--hover-collapsed {
+      transition-duration: var(--app-bar-hover-leave-duration);
+    }
+  }
+
+  &__collapse-button {
+    @apply tw-absolute tw-right-[-13px] tw-top-[50%] tw-translate-y-[-50%] tw-flex tw-items-center tw-justify-center tw-cursor-pointer tw-z-[12];
+    width: var(--app-bar-collapse-button-width);
+    height: var(--app-bar-collapse-button-height);
+    border-radius: var(--app-bar-collapse-button-border-radius);
+    background-color: var(--app-bar-background);
+    border: 1px solid var(--app-bar-border);
+    opacity: 0;
+    transition: opacity var(--app-bar-hover-transition-duration) var(--app-bar-hover-transition-timing-function);
+
+    &-wrap {
+      @apply tw-flex tw-items-center tw-justify-center;
+    }
+
+    &-icon {
+      color: var(--app-bar-button);
+    }
+  }
+
+  &:hover &__collapse-button {
+    @apply tw-opacity-100;
+  }
+
+  &__logo {
+    @apply tw-cursor-pointer tw-mx-2;
+    max-width: var(--app-bar-logo-width);
+    max-height: var(--app-bar-logo-height);
+    transition:
+      opacity var(--app-bar-hover-transition-duration) var(--app-bar-hover-transition-timing-function),
+      transform var(--app-bar-hover-transition-duration) var(--app-bar-hover-transition-timing-function);
+  }
+
+  &__title {
+    @apply tw-font-medium;
+    color: var(--app-bar-product-name);
+    transition:
+      opacity var(--app-bar-hover-transition-duration) var(--app-bar-hover-transition-timing-function),
+      transform var(--app-bar-hover-transition-duration) var(--app-bar-hover-transition-timing-function);
+  }
+
+  &__wrapper {
+    @apply tw-h-full tw-relative;
+    transition: opacity var(--app-bar-hover-transition-duration) var(--app-bar-hover-transition-timing-function);
+  }
+
+  &__menu-dropdowns {
+    @apply tw-overflow-auto tw-max-h-[250px];
+  }
+
+  &__header {
+    transition-property: all, width, transform;
+    transition-timing-function: var(--app-bar-hover-transition-timing-function);
+    transition-duration: var(--app-bar-hover-transition-duration);
+
+    // &--collapsed {
+    //   @apply tw-w-[var(--app-bar-collapsed-width)];
+    // }
+
+    // &--hover-expanded {
+    //   @apply tw-w-[var(--app-bar-collapsed-width)];
+    // }
+
+    &--hover-collapsed {
+      transition-duration: var(--app-bar-hover-leave-duration);
+    }
   }
 }
 
-.vc-app-bar__logo-append {
-  @apply tw-ml-3;
+.overlay-enter-active,
+.overlay-leave-active,
+.menu-enter-active,
+.menu-leave-active {
+  transition:
+    opacity var(--app-bar-hover-transition-duration) var(--app-bar-hover-transition-timing-function),
+    transform var(--app-bar-hover-transition-duration) var(--app-bar-hover-transition-timing-function);
 }
 
-.vc-app-bar__title {
-  @apply tw-text-[color:var(--app-bar-product-name-color)] tw-font-medium;
-  font-size: var(--app-bar-product-name-size);
+.overlay-enter-from,
+.menu-enter-from {
+  opacity: 0;
+  transform: translateY(-10px);
 }
 
-.vc-app-bar__blade-title {
-  @apply tw-overflow-ellipsis tw-overflow-hidden tw-whitespace-nowrap tw-text-2xl tw-ml-2;
-  @apply tw-leading-snug;
+.overlay-leave-to,
+.menu-leave-to {
+  opacity: 0;
+  transform: translateY(10px);
 }
 
-.vc-app-bar__backlink {
-  @apply tw-ml-3;
+.rotate-enter-active,
+.rotate-leave-active {
+  transition: transform var(--app-bar-hover-transition-duration) var(--app-bar-hover-transition-timing-function);
 }
 
-.vc-app-bar__backlink-text {
-  @apply tw-ml-2 tw-text-lg;
+.rotate-180 {
+  transform: rotate(180deg);
 }
 
-.vc-app__spacer {
-  @apply tw-grow tw-basis-0;
-}
-
-.vc-app__toolbar {
-  @apply tw-flex tw-h-full tw-box-border;
-}
-
-.vc-app__menu-toggler {
-  @apply tw-text-[color:var(--app-bar-burger-color)] tw-w-12 tw-flex tw-items-center tw-justify-center tw-h-full tw-box-border tw-cursor-pointer;
+// Content animation
+.vc-app-content {
+  margin-left: var(--app-bar-width);
+  transition: margin-left var(--app-bar-hover-transition-duration) var(--app-bar-hover-transition-timing-function);
 }
 </style>

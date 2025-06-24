@@ -9,11 +9,19 @@ import { BladeVNode, SharedModule, notification } from "./shared";
 import * as sharedPages from "./shared/pages/plugin";
 import { registerInterceptors } from "./core/interceptors";
 import { usePermissions } from "./core/composables/usePermissions";
-import { useUser } from "./core/composables/useUser";
+import { useUserManagement } from "./core/composables/useUserManagement";
 import Vue3TouchEvents from "vue3-touch-events";
 import * as locales from "./locales";
 import { AppInsightsPlugin, AppInsightsPluginOptions } from "vue3-application-insights";
 import { useAppInsights } from "./core/composables";
+
+// Import Blade Registry
+import {
+  createBladeRegistry,
+  BladeRegistryKey,
+  IBladeRegistryInstance,
+  IBladeRegistry,
+} from "./core/composables/useBladeRegistry";
 
 import * as coreComposables from "./core/composables";
 import * as corePlugins from "./core/plugins";
@@ -27,7 +35,37 @@ import * as VueUse from "@vueuse/core";
 import _ from "lodash";
 import * as VeeValidate from "vee-validate";
 import "normalize.css";
+import "@fontsource/plus-jakarta-sans";
+import "@fontsource/plus-jakarta-sans/200.css";
+import "@fontsource/plus-jakarta-sans/300.css";
+import "@fontsource/plus-jakarta-sans/400.css";
+import "@fontsource/plus-jakarta-sans/500.css";
+import "@fontsource/plus-jakarta-sans/600.css";
+import "@fontsource/plus-jakarta-sans/700.css";
+import "@fontsource/plus-jakarta-sans/800.css";
 import "./assets/styles/index.scss";
+import {
+  createWidgetService,
+  createMenuService,
+  createAppBarWidgetService,
+  createSettingsMenuService,
+  createToolbarService,
+} from "./core/services";
+import {
+  AppBarWidgetServiceKey,
+  MenuServiceKey,
+  NotificationTemplatesSymbol,
+  SettingsMenuServiceKey,
+  TOOLBAR_SERVICE,
+  WidgetServiceKey,
+} from "./injection-keys";
+
+import "@fortawesome/fontawesome-free/css/fontawesome.min.css";
+import "@fortawesome/fontawesome-free/css/solid.min.css";
+
+import "bootstrap-icons/font/bootstrap-icons.min.css";
+import * as icons from "lucide-vue-next";
+import "material-symbols/outlined.css";
 
 type I18NParams = Parameters<typeof i18n.global.mergeLocaleMessage>;
 
@@ -106,7 +144,10 @@ export default {
     },
   ): void {
     // Register base theme
-    coreComposables.useTheme().register(["light", "dark"]);
+    coreComposables.useTheme().register([
+      { key: "light", localizationKey: "core.themes.light" },
+      // { key: "dark", localizationKey: "core.themes.dark" },
+    ]);
 
     // HTTP Interceptors
     window.fetch = registerInterceptors(args.router);
@@ -117,6 +158,11 @@ export default {
     if (args.i18n?.fallbackLocale) {
       i18n.global.fallbackLocale.value = args.i18n.fallbackLocale;
     }
+
+    // Lucide Icons
+    Object.entries(icons).forEach(([key, value]) => {
+      app.component(key, value as Component);
+    });
 
     app.use(i18n);
 
@@ -169,9 +215,30 @@ export default {
 
     // Notification templates
     app.config.globalProperties.notificationTemplates = [];
-    app.provide("notificationTemplates", app.config.globalProperties.notificationTemplates);
+    app.provide(NotificationTemplatesSymbol, app.config.globalProperties.notificationTemplates);
 
-    // Shared module
+    // Widgets
+    app.provide(WidgetServiceKey, createWidgetService());
+
+    // Toolbar service
+    app.provide(TOOLBAR_SERVICE, createToolbarService());
+
+    // App bar widgets
+    app.provide(AppBarWidgetServiceKey, createAppBarWidgetService());
+
+    // Menu service
+    app.provide(MenuServiceKey, createMenuService());
+
+    // Settings menu
+    app.provide(SettingsMenuServiceKey, createSettingsMenuService());
+
+    // Initialize and provide Blade Registry
+    const bladeRegistryInstance: IBladeRegistryInstance = createBladeRegistry(app);
+    // Provide the full instance, so _registerBladeFn can be accessed if needed by advanced modules via inject + IBladeRegistryInstance type.
+    // General consumption via useBladeRegistry() will still get the IBladeRegistry interface due to how useBladeRegistry is typed.
+    app.provide(BladeRegistryKey, bladeRegistryInstance);
+
+    // Shared module - no longer needs bladeRegisterFn passed explicitly
     app.use(SharedModule, { router: args.router });
 
     // SignalR
@@ -240,7 +307,7 @@ export default {
      */
     // TODO add check if app has login page
     args.router.beforeEach(async (to, from, next) => {
-      const { isAuthenticated } = useUser();
+      const { isAuthenticated } = useUserManagement();
 
       if (to.meta.root === true) {
         try {
@@ -296,6 +363,8 @@ export default {
     });
   },
 } as VcShellFrameworkPlugin;
+
+export * from "./injection-keys";
 
 export * from "./ui/components";
 // eslint-disable-next-line import/export

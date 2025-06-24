@@ -23,6 +23,7 @@ declare module "@vue/runtime-core" {
     $isMobile: Ref<boolean>;
     $isDesktop: Ref<boolean>;
     $isTouch: boolean;
+    $t: (key: string, ...args: any[]) => string;
     $dynamicModules: {
       [x: string]: {
         components?: { [key: string]: Component };

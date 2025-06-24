@@ -1,85 +1,235 @@
-import type { Meta, StoryFn } from "@storybook/vue3";
+import type { Meta, StoryObj } from "@storybook/vue3";
 import { VcStatus } from "./";
 import { VcIcon } from "../vc-icon";
 
-const VARIANT = ["info", "warning", "danger", "success", "light-danger"];
-
-export default {
-  title: "atoms/VcStatus",
+/**
+ * `VcStatus` is a component for displaying status indicators with different visual styles.
+ * It's used to represent the state of items or processes in the application.
+ */
+const meta = {
+  title: "Atoms/VcStatus",
   component: VcStatus,
-  args: {
-    variant: "info",
-    outline: true,
-    extend: false,
-  },
+  tags: ["autodocs"],
   argTypes: {
     variant: {
-      control: "radio",
-      options: VARIANT,
+      description: "Visual style of the status indicator",
+      control: "select",
+      options: ["info", "warning", "danger", "success", "light-danger", "info-dark", "primary"],
       table: {
-        type: {
-          summary: VARIANT.join(", "),
-        },
+        type: { summary: "string" },
+        defaultValue: { summary: "info" },
       },
     },
     outline: {
+      description: "DEPRECATED: Whether to show only the outline of the status indicator",
       control: "boolean",
       table: {
-        type: {
-          summary: "boolean",
-        },
+        type: { summary: "boolean" },
+        defaultValue: { summary: "false" },
       },
     },
     extend: {
+      description: "Whether to use an extended layout with more padding and square corners",
       control: "boolean",
       table: {
-        type: {
-          summary: "boolean",
-        },
+        type: { summary: "boolean" },
+        defaultValue: { summary: "false" },
+      },
+    },
+    dot: {
+      description: "Whether to display only a colored dot without text",
+      control: "boolean",
+      table: {
+        type: { summary: "boolean" },
+        defaultValue: { summary: "false" },
+      },
+    },
+    default: {
+      description: "Text content of the status indicator",
+      control: "text",
+      table: {
+        category: "slots",
+        type: { summary: "VNode | string" },
+      },
+    },
+  },
+  args: {
+    variant: "info",
+    outline: false,
+    extend: false,
+    dot: false,
+  },
+  parameters: {
+    docs: {
+      description: {
+        component: `
+The VcStatus component provides visual status indicators with these features:
+
+- Multiple color variants (info, warning, danger, success, etc.)
+- Support for compact (dot) display mode
+- Extended layout for more detailed status information
+- Can contain text or complex content through default slot
+        `,
       },
     },
   },
 } satisfies Meta<typeof VcStatus>;
 
-export const Primary: StoryFn<typeof VcStatus> = (args) => ({
-  components: { VcStatus },
-  setup() {
-    return { args };
-  },
-  template: '<vc-status v-bind="args">Status text</vc-status>',
-});
+export default meta;
+type Story = StoryObj<typeof meta>;
 
-export const Extended: StoryFn<typeof VcStatus> = (args) => ({
-  components: { VcStatus, VcIcon },
-  setup() {
-    return { args };
+/**
+ * Default status indicator
+ */
+export const Default: Story = {
+  render: (args) => ({
+    components: { VcStatus },
+    setup() {
+      return { args };
+    },
+    template: '<vc-status v-bind="args">Status text</vc-status>',
+  }),
+};
+
+/**
+ * Success status variant
+ */
+export const Success: Story = {
+  args: {
+    variant: "success",
   },
-  template: `
-  <vc-status v-bind="args" extend variant="danger" >
-    <div class="tw-flex tw-flex-row tw-items-center">
-      <VcIcon icon="fas fa-warehouse" size="xl" variant="danger" class="tw-mr-3" />
-      <div>
-        <h3 class="tw-font-bold">Status</h3>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus pellentesque tortor id lacus viverra, ut mollis libero auctor. </p>
+  render: (args) => ({
+    components: { VcStatus },
+    setup() {
+      return { args };
+    },
+    template: '<vc-status v-bind="args">Success</vc-status>',
+  }),
+};
+
+/**
+ * Warning status variant
+ */
+export const Warning: Story = {
+  args: {
+    variant: "warning",
+  },
+  render: (args) => ({
+    components: { VcStatus },
+    setup() {
+      return { args };
+    },
+    template: '<vc-status v-bind="args">Warning</vc-status>',
+  }),
+};
+
+/**
+ * Danger status variant
+ */
+export const Danger: Story = {
+  args: {
+    variant: "danger",
+  },
+  render: (args) => ({
+    components: { VcStatus },
+    setup() {
+      return { args };
+    },
+    template: '<vc-status v-bind="args">Error</vc-status>',
+  }),
+};
+
+/**
+ * Dot-only display mode
+ */
+export const DotOnly: Story = {
+  args: {
+    dot: true,
+  },
+  render: (args) => ({
+    components: { VcStatus },
+    setup() {
+      return { args };
+    },
+    template: `
+      <div class="tw-space-x-2">
+        <vc-status v-bind="args" variant="info"></vc-status>
+        <vc-status v-bind="args" variant="success"></vc-status>
+        <vc-status v-bind="args" variant="warning"></vc-status>
+        <vc-status v-bind="args" variant="danger"></vc-status>
+        <vc-status v-bind="args" variant="primary"></vc-status>
       </div>
-    </div>
-  </vc-status>`,
-});
+    `,
+  }),
+};
 
-export const AllStates: StoryFn<typeof VcStatus> = (args) => ({
-  components: { VcStatus },
-  setup() {
-    return { args, variants: VARIANT };
+/**
+ * Extended status with rich content
+ */
+export const Extended: Story = {
+  args: {
+    extend: true,
+    variant: "danger",
   },
-  template: `
-    <div class="tw-space-y-4">
-      <div v-for="variant in variants" :key="variant">
-        <h2 class="tw-font-bold">Color: {{variant}}</h2>
-        <div class="tw-space-x-4 tw-flex tw-flex-row">
-          <vc-status v-bind="{...args, variant}">Outline {{variant}}</vc-status>
-          <vc-status v-bind="{...args, variant}" :outline="false">{{variant}}</vc-status>
+  render: (args) => ({
+    components: { VcStatus, VcIcon },
+    setup() {
+      return { args };
+    },
+    template: `
+      <vc-status v-bind="args">
+        <div class="tw-flex tw-flex-row tw-items-center">
+          <VcIcon icon="material-warning" size="xl" variant="danger" class="tw-mr-3" />
+          <div>
+            <h3 class="tw-font-bold">Error Status</h3>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus pellentesque tortor id lacus viverra, ut mollis libero auctor.</p>
+          </div>
+        </div>
+      </vc-status>
+    `,
+  }),
+};
+
+/**
+ * Primary variant with info-dark for contrast
+ */
+export const SpecialVariants: Story = {
+  render: (args) => ({
+    components: { VcStatus },
+    setup() {
+      return { args };
+    },
+    template: `
+      <div class="tw-space-y-2">
+        <vc-status variant="primary">Primary Status</vc-status>
+        <vc-status variant="info-dark">Info Dark Status</vc-status>
+        <vc-status variant="light-danger">Light Danger Status</vc-status>
+      </div>
+    `,
+  }),
+};
+
+/**
+ * All status variants side by side
+ */
+export const AllVariants: Story = {
+  render: (args) => ({
+    components: { VcStatus },
+    setup() {
+      const variants = ["info", "warning", "danger", "success", "light-danger", "info-dark", "primary"];
+      return { args, variants };
+    },
+    template: `
+      <div class="tw-space-y-4">
+        <div v-for="variant in variants" :key="variant" class="tw-space-y-2">
+          <h3 class="tw-font-medium tw-text-sm">{{ variant }}</h3>
+          <div class="tw-space-x-2">
+            <vc-status :variant="variant">Standard</vc-status>
+            <vc-status :variant="variant" extend>Extended</vc-status>
+            <vc-status :variant="variant" dot></vc-status>
+          </div>
         </div>
       </div>
-    </div>
-  `,
-});
+    `,
+  }),
+};

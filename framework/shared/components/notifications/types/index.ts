@@ -17,10 +17,19 @@ export interface NotificationOptions {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   payload?: string | Record<string, any>;
   updateId?: string | number;
+  position?: NotificationPosition;
 }
 
-export interface InternalNotificationOptions extends NotificationOptions {
-  closeNotification?(): void;
-}
+// Now InternalNotificationOptions doesn't need closeNotification
+export type InternalNotificationOptions = NotificationOptions;
+
+// Adding a new type for notification positioning
+export type NotificationPosition =
+  | "top-center"
+  | "top-right"
+  | "top-left"
+  | "bottom-center"
+  | "bottom-right"
+  | "bottom-left";
 
 export type Content = string | VNode | DefineComponent<{}, {}, any>;

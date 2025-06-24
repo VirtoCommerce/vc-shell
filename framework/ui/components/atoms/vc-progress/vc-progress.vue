@@ -31,7 +31,7 @@ withDefaults(defineProps<Props>(), {
   --progressbar-background-color: var(--additional-50);
   --progressbar-foreground-color: var(--accent-200);
   --progressbar-border-width: 1px;
-  --progressbar-border-color: var(--base-border-color, var(--neutrals-200));
+  --progressbar-border-color: var(--neutrals-200);
   --progressbar-striped-bg: linear-gradient(
         45deg,
         transparent 50%,

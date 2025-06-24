@@ -16,12 +16,5 @@
   },
   "peerDependencies": {
     "@vc-app/api": "^1.0.113"
-  },
-  "scripts": {
-    "publish": "npm publish"
-  },
-  "publishConfig": {
-    "access": "public",
-    "registry": "https://registry.npmjs.org/"
   }
 }

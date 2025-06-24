@@ -1,0 +1,222 @@
+---
+description: Storybook stories generation
+globs:
+alwaysApply: false
+---
+# Storybook Stories Generation Rules
+
+## Overview
+This rule defines the standard structure and patterns to be followed when creating Storybook stories for VC-Shell UI components.
+
+## File Structure
+- Stories should be placed in the same directory as the component
+- File naming pattern: `component-name.stories.ts`
+- Imports should include necessary Vue composables and Storybook types
+
+## Meta Object Structure
+
+```typescript
+const meta = {
+  title: "[Category]/[ComponentName]", // e.g. "Atoms/VcButton", "Molecules/VcInput"
+  component: ComponentName,
+  //tags: ["autodocs"], // Commented out by convention
+  argTypes: {
+    // Define all props with detailed descriptions
+    propName: {
+      description: "Detailed description of the prop",
+      control: "appropriate-control-type", // text, boolean, select, etc.
+      options: ["option1", "option2"], // For select controls
+      table: {
+        type: { summary: "prop-type" }, // e.g. "string", "boolean", "'option1' | 'option2'"
+        defaultValue: { summary: "default-value" },
+        category: "optional-category", // e.g. "Appearance", "Events", "Slots"
+      },
+    },
+    // Define events
+    eventName: {
+      action: "event-name", // e.g. "click", "input"
+      description: "Description of the event",
+      table: { category: "Events" },
+    },
+    // Define slots
+    slotName: {
+      description: "Description of the slot",
+      table: { category: "Slots" },
+    },
+  },
+  args: {
+    // Default args for all stories
+    propName: defaultValue,
+  },
+  parameters: {
+    docs: {
+      description: {
+        component: `
+        Detailed multi-paragraph description of the component.
+
+        This component features multiple customization options through props, including:
+        - Feature 1
+        - Feature 2
+        - Feature 3
+
+        ## Usage
+
+        \`\`\`vue
+        <ComponentName prop="value">
+          Content
+        </ComponentName>
+        \`\`\`
+        `,
+      },
+    },
+  },
+} satisfies Meta<typeof ComponentName>;
+
+export default meta;
+type Story = StoryObj<typeof meta>;
+```
+
+## Story Structure
+
+Stories should be exported as named exports, with a descriptive name matching a use case:
+
+```typescript
+/**
+ * Description of this specific story case
+ */
+export const StoryName: Story = {
+  args: {
+    // Override default args for this story
+    propName: specificValue,
+  },
+  render: (args) => ({
+    components: { ComponentName },
+    setup() {
+      // Setup logic, refs, etc.
+      return { args };
+    },
+    template: `
+      <div class="tw-container-class">
+        <ComponentName v-bind="args">
+          <!-- Template content -->
+        </ComponentName>
+      </div>
+    `,
+  }),
+  parameters: {
+    docs: {
+      description: {
+        story: "Detailed description specific to this story variation.",
+      },
+    },
+  },
+};
+```
+
+## Story Types and Patterns
+
+### 1. Default Story
+- Always include a Default story showing basic usage
+- Provide a simple example with minimal props
+
+### 2. Variant Showcase
+- Create stories for different variants if the component has them
+- Display multiple variants side by side for comparison
+
+### 3. Interactive Features
+- For components with user interactions, demonstrate those behaviors
+- Include click, hover, focus states as appropriate
+
+### 4. Responsive Behavior
+- Show how the component behaves at different screen sizes
+- Use appropriate container classes to demonstrate
+
+### 5. Edge Cases
+- Create stories for edge cases like:
+  - Empty/null values
+  - Long content
+  - Error states
+  - Loading states
+
+## Tailwind CSS Usage
+
+- Use `tw-` prefixed classes for all Tailwind styles
+- Create appropriate containers with flexbox or grid for layout
+- Use utility classes to demonstrate spacing and alignment
+
+## Component Documentation
+
+For each component story, include:
+
+1. JSDoc comments above each story export
+2. Detailed component description in the meta parameters
+3. Specific story descriptions in the story parameters
+4. Code examples in markdown format
+
+## Example Templates
+
+### Atomic Components (Atoms)
+
+```typescript
+export const Default: Story = {
+  render: (args) => ({
+    components: { ComponentName },
+    setup() {
+      return { args };
+    },
+    template: `
+      <div class="tw-container tw-p-4">
+        <ComponentName v-bind="args">
+          Content
+        </ComponentName>
+      </div>
+    `,
+  }),
+};
+```
+
+### Complex Components (Molecules, Organisms)
+
+```typescript
+export const WithInteractions: Story = {
+  render: (args) => ({
+    components: { ComponentName },
+    setup() {
+      const value = ref(initialValue);
+      const handleEvent = () => {
+        // Event handler logic
+      };
+      return { args, value, handleEvent };
+    },
+    template: `
+      <div class="tw-container tw-p-4">
+        <ComponentName
+          v-bind="args"
+          v-model="value"
+          @event="handleEvent"
+        >
+          <template #named-slot>
+            Slot content
+          </template>
+        </ComponentName>
+        <div class="tw-mt-4">
+          Current value: {{ value }}
+        </div>
+      </div>
+    `,
+  }),
+};
+```
+
+## Additional Guidelines
+
+1. Ensure all stories are properly typed with TypeScript
+2. Keep templates clean and readable
+3. Follow the project's naming conventions for components
+4. Use `v-bind="args"` to bind all story arguments to the component
+5. Demonstrate slot usage where applicable
+6. Show model-value binding for form components
+7. Include appropriate error and loading states
+8. For components with multiple variants, include a story showing all variants
+9. Add decorators for components that need specific context or styling
+10. Use proper semantic HTML elements in templates

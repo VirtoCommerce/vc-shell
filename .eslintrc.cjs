@@ -33,6 +33,10 @@ module.exports = {
           "configs/*/tsconfig.json",
         ],
       },
+      alias: {
+        map: [["@", "./framework"]],
+        extensions: [".ts", ".js", ".jsx", ".json", ".vue"],
+      },
     },
   },
   rules: {

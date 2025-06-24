@@ -58,7 +58,7 @@ export interface Props {
   items: any[];
   columnsInit: boolean;
   searchValue?: string;
-  activeFilterCount: number;
+  activeFilterCount?: number;
   notfound?: {
     image?: string;
     text: string | Ref<string>;
@@ -81,6 +81,7 @@ defineSlots<{
 </script>
 
 <style lang="scss">
+
 .vc-table-empty {
   @apply tw-w-full tw-h-full tw-box-border tw-flex tw-flex-col tw-items-center tw-justify-center;
 
@@ -88,7 +89,6 @@ defineSlots<{
     @apply tw-w-auto tw-h-auto;
   }
 
-  /* Элемент: Text */
   &__text {
     @apply tw-m-4;
     @apply tw-text-center;
@@ -97,12 +97,7 @@ defineSlots<{
 
   &__button {
     @apply tw-px-4 tw-py-2 tw-rounded tw-font-medium tw-text-sm tw-cursor-pointer;
-    @apply tw-bg-blue-500 tw-text-white;
     transition: background-color 0.3s ease;
-
-    &:hover {
-      @apply tw-bg-blue-600;
-    }
   }
 }
 </style>

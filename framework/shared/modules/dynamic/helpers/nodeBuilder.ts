@@ -147,7 +147,7 @@ function nodeBuilder<
     "data-test-id": controlSchema.id,
     classNames:
       "horizontalSeparator" in controlSchema && controlSchema.horizontalSeparator
-        ? "tw-border-b tw-border-solid tw-border-b-[var(--base-border-color, var(--neutrals-200))] tw-mb-[5px] tw-pb-[21px]"
+        ? "tw-border-b tw-border-solid tw-border-b-[var(--neutrals-200)] tw-mb-[5px] tw-pb-[21px]"
         : "",
   });
 

@@ -91,18 +91,31 @@ export default {
               keyword?: string | undefined,
               locale?: string | undefined,
             ) => Promise<Record<string, any>[]>,
+            measurementsGetter: props.bladeContext.scope?.dynamicProperties?.loadMeasurements as (
+              measureId: string,
+              locale?: string | undefined,
+            ) => Promise<Record<string, any>[]>,
             "onUpdate:model-value": (args: {
-              value: string | Record<string, any>[];
+              value: any;
+              unitOfMeasureId?: string;
               dictionary?: Record<string, any>[];
               locale?: string;
             }) => {
+              let finalValue = args.value;
+              if (prop.valueType === "Measure") {
+                finalValue = {
+                  value: args.value,
+                  unitOfMeasureId: args.unitOfMeasureId,
+                };
+              }
               props.bladeContext.scope?.dynamicProperties?.setPropertyValue({
                 property: prop,
-                value: args.value,
+                value: finalValue,
                 dictionary: args.dictionary,
                 locale: args.locale,
                 initialProp: _.cloneDeep(initialProps?.find((x) => x.id === prop.id)),
               });
+
               if (props.fieldContext) {
                 setModel({ context: props.fieldContext, property: props.element.property, value: internalModel.value });
               }

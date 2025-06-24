@@ -1,12 +1,12 @@
 const fileThumbnails = [
-  { image: "fas fa-file-pdf", extensions: ["pdf"] },
-  { image: "fas fa-file-word", extensions: ["doc", "docx"] },
-  { image: "fas fa-file-excel", extensions: ["xls", "xlsx"] },
-  { image: "fas fa-file-powerpoint", extensions: ["ppt", "pptx"] },
-  { image: "fas fa-file-csv", extensions: ["csv"] },
-  { image: "fas fa-file-archive", extensions: ["zip"] },
-  { image: "fas fa-file-music", extensions: ["mp3", "aac"] },
-  { image: "fas fa-file-video", extensions: ["mp4", "avi"] },
+  { image: "bi-filetype-pdf", extensions: ["pdf"] },
+  { image: "bi-filetype-doc", extensions: ["doc", "docx"] },
+  { image: "bi-filetype-xls", extensions: ["xls", "xlsx"] },
+  { image: "bi-filetype-ppt", extensions: ["ppt", "pptx"] },
+  { image: "bi-filetype-csv", extensions: ["csv"] },
+  { image: "bi-file-zip", extensions: ["zip"] },
+  { image: "bi-file-music", extensions: ["mp3", "aac"] },
+  { image: "bi-file-play", extensions: ["mp4", "avi"] },
 ];
 
 const imageExtensions = new Set(["png", "jpg", "jpeg", "svg", "gif"]);
@@ -21,9 +21,10 @@ function isImage(name: string | undefined) {
 }
 
 function getFileThumbnail(name: string | undefined) {
-  if (!name) return "fas fa-file";
+  if (!name) return "bi-file-earmark";
   return (
-    fileThumbnails.find((thumb) => thumb.extensions.some((ext) => ext === getExtension(name)))?.image || "fas fa-file"
+    fileThumbnails.find((thumb) => thumb.extensions.some((ext) => ext === getExtension(name)))?.image ||
+    "bi-file-earmark"
   );
 }
 

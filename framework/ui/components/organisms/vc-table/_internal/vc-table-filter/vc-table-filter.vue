@@ -1,64 +1,71 @@
 <template>
   <!-- Filter button -->
-  <VcButton
+  <VcTooltip
     ref="filterToggle"
-    icon="fas fa-filter"
-    icon-size="m"
-    class="vc-table-filter__button"
-    :disabled="disabled"
-    @click="openPanel"
+    :delay="1000"
   >
-    <template
-      v-if="title || counter"
-      #default
+    <VcButton
+      text
+      class="vc-table-filter__button"
+      @click="openPanel"
     >
-      <div class="vc-table-filter__button-content">
-        <span
-          v-if="title"
-          class="vc-table-filter__button-title"
-        >
-          {{ title }}
-        </span>
-        <div
-          v-if="counter"
-          class="vc-table-filter__counter"
-        >
-          {{ counter }}
+      <VcBadge
+        :content="counter"
+        size="s"
+      >
+        <div class="vc-table-filter__icon-container">
+          <VcIcon
+            class="vc-table-filter__icon"
+            icon="lucide-funnel"
+            size="m"
+          />
         </div>
-      </div>
+      </VcBadge>
+    </VcButton>
+    <template #tooltip>
+      {{ title }}
     </template>
-  </VcButton>
+  </VcTooltip>
   <Sidebar
     :is-expanded="$isMobile.value ? isPanelVisible : false"
     position="left"
     render="mobile"
     @close="closePanel"
   >
+    <template #header>
+      <span />
+    </template>
     <template #content>
       <div class="vc-table-filter">
         <!-- Filter panel -->
-        <teleport to="body">
+        <div
+          v-if="isPanelVisible"
+          ref="filterPanel"
+          :class="panelClass"
+          :style="filterStyle"
+          @click.self="closePanel"
+        >
           <div
-            v-if="isPanelVisible"
-            ref="filterPanel"
-            :class="panelClass"
-            :style="filterStyle"
-            @click.self="closePanel"
+            class="vc-table-filter__panel-inner"
+            :class="{
+              'vc-table-filter__panel-inner--desktop': $isDesktop.value,
+            }"
+            @click.stop
           >
-            <div
-              class="vc-table-filter__panel-inner"
-              @click.stop
-            >
+            <div class="vc-table-filter__panel-header">
+              <div class="vc-table-filter__panel-header-title">
+                {{ title }}
+              </div>
               <VcIcon
                 class="vc-table-filter__panel-close"
-                icon="fas fa-times"
-                size="xl"
+                :icon="CrossSignIcon"
+                size="xs"
                 @click="closePanel"
               />
-              <slot :close-panel="closePanel"></slot>
             </div>
+            <slot :close-panel="closePanel"></slot>
           </div>
-        </teleport>
+        </div>
       </div>
     </template>
   </Sidebar>
@@ -69,6 +76,9 @@ import { ref, watch, computed, inject, Ref } from "vue";
 import { offset, autoUpdate, useFloating, UseFloatingReturn } from "@floating-ui/vue";
 import { VcButton } from "./../../../../atoms/vc-button";
 import { Sidebar } from "./../../../../../../shared/components";
+import { VcBadge } from "./../../../../atoms/vc-badge";
+import { VcTooltip } from "./../../../../atoms/vc-tooltip";
+import { CrossSignIcon } from "./../../../../atoms/vc-icon/icons";
 
 export interface Props {
   title?: string;
@@ -133,11 +143,29 @@ function closePanel() {
   --table-filter-desktop-shadow-color: var(--additional-950);
   --table-filter-desktop-shadow: 1px 1px 11px rgb(from var(--table-filter-desktop-shadow-color) r g b / 7%);
   --table-filter-panel-bg: var(--additional-50);
-  --table-filter-close-icon-color: var(--info-500);
+  --table-filter-close-icon-color: var(--neutrals-500);
+  --table-filter-panel-border-color: var(--neutrals-200);
+  --table-filter-panel-header-title-color: var(--neutrals-600);
 }
 
 .vc-table-filter {
   @apply tw-relative tw-overflow-visible;
+
+  &__button {
+    @apply tw-p-0 #{!important};
+  }
+
+  &__icon-container {
+    @apply tw-flex tw-flex-col tw-items-center tw-justify-center;
+  }
+
+  &__icon {
+    @apply tw-text-[color:var(--widget-icon-color)];
+  }
+
+  &__title {
+    @apply tw-font-medium tw-text-xs tw-text-[color:var(--widget-title-color)] tw-mt-1 tw-mx-0 tw-text-center tw-line-clamp-2;
+  }
 
   &__button-content {
     @apply tw-flex tw-flex-row tw-items-center tw-gap-[10px];
@@ -157,14 +185,14 @@ function closePanel() {
       &-inner {
         @apply tw-w-full tw-h-full;
       }
-
-      &-close {
-        @apply tw-self-start;
-      }
     }
 
     .vc-row {
       @apply tw-block;
+    }
+
+    .vc-table-filter__panel-inner {
+      @apply tw-bg-transparent;
     }
   }
 
@@ -173,12 +201,23 @@ function closePanel() {
   }
 
   &__panel-inner {
-    @apply tw-bg-[--table-filter-panel-bg] tw-box-border tw-p-5 tw-flex tw-flex-col;
-    box-shadow: var(--table-filter-desktop-shadow);
+    @apply tw-bg-[--table-filter-panel-bg] tw-box-border tw-flex tw-flex-col;
+
+    &--desktop {
+      box-shadow: var(--table-filter-desktop-shadow);
+    }
+  }
+
+  &__panel-header {
+    @apply tw-px-6 tw-py-[10px] tw-flex tw-flex-row tw-justify-between tw-items-center tw-border-b tw-border-solid tw-border-[var(--table-filter-panel-border-color)];
+  }
+
+  &__panel-header-title {
+    @apply tw-text-sm tw-font-bold tw-text-[var(--table-filter-panel-header-title-color)];
   }
 
   &__panel-close {
-    @apply tw-text-[var(--table-filter-close-icon-color)] tw-cursor-pointer tw-self-end tw-shrink-0;
+    @apply tw-text-[var(--table-filter-close-icon-color)] tw-cursor-pointer tw-shrink-0;
   }
 }
 </style>

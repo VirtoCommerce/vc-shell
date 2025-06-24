@@ -1,10 +1,171 @@
 .notification__container {
   position: fixed;
-  top: 1em;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
+  z-index: 9999;
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 8px;
+
+  /* Default position - top center */
+  &:not([data-position]) {
+    top: 1em;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  /* Top center */
+  &[data-position="top-center"] {
+    top: 1em;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  /* Top right */
+  &[data-position="top-right"] {
+    top: 1em;
+    right: 1em;
+  }
+
+  /* Top left */
+  &[data-position="top-left"] {
+    top: 1em;
+    left: 1em;
+  }
+
+  /* Bottom center */
+  &[data-position="bottom-center"] {
+    bottom: 1em;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  /* Bottom right */
+  &[data-position="bottom-right"] {
+    bottom: 1em;
+    right: 1em;
+  }
+
+  /* Bottom left */
+  &[data-position="bottom-left"] {
+    bottom: 1em;
+    left: 1em;
+  }
+
+  /* Mobile styles */
+  @media screen and (max-width: 768px) {
+    width: 90%;
+    max-width: 400px;
+
+    &[data-position="top-left"],
+    &[data-position="bottom-left"] {
+      left: 5%;
+    }
+
+    &[data-position="top-right"],
+    &[data-position="bottom-right"] {
+      right: 5%;
+    }
+  }
+}
+
+/* Animation styles for toast notifications */
+:root {
+  --notification-slide-distance: 30px;
+}
+
+/* Exit animation classes */
+.notification-exit-top-center {
+  animation: notificationExitTopCenter 0.3s ease-out forwards;
+}
+
+.notification-exit-top-right {
+  animation: notificationExitTopRight 0.3s ease-out forwards;
+}
+
+.notification-exit-top-left {
+  animation: notificationExitTopLeft 0.3s ease-out forwards;
+}
+
+.notification-exit-bottom-center {
+  animation: notificationExitBottomCenter 0.3s ease-out forwards;
+}
+
+.notification-exit-bottom-right {
+  animation: notificationExitBottomRight 0.3s ease-out forwards;
+}
+
+.notification-exit-bottom-left {
+  animation: notificationExitBottomLeft 0.3s ease-out forwards;
+}
+
+/* Keyframes for exit animations */
+@keyframes notificationExitTopCenter {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+}
+
+@keyframes notificationExitTopRight {
+  from {
+    opacity: 1;
+    transform: translate(0, 0);
+  }
+  to {
+    opacity: 0;
+    transform: translate(30px, -30px);
+  }
+}
+
+@keyframes notificationExitTopLeft {
+  from {
+    opacity: 1;
+    transform: translate(0, 0);
+  }
+  to {
+    opacity: 0;
+    transform: translate(-30px, -30px);
+  }
+}
+
+@keyframes notificationExitBottomCenter {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+}
+
+@keyframes notificationExitBottomRight {
+  from {
+    opacity: 1;
+    transform: translate(0, 0);
+  }
+  to {
+    opacity: 0;
+    transform: translate(30px, 30px);
+  }
+}
+
+@keyframes notificationExitBottomLeft {
+  from {
+    opacity: 1;
+    transform: translate(0, 0);
+  }
+  to {
+    opacity: 0;
+    transform: translate(-30px, 30px);
+  }
+}
+
+.notification__container > * {
+  transition: opacity 300ms cubic-bezier(0.55, 0, 0.1, 1), transform 300ms cubic-bezier(0.55, 0, 0.1, 1);
+  opacity: 1;
+  transform: translateY(0) scale(1);
 }

@@ -1,29 +1,277 @@
 import type { Meta, StoryObj } from "@storybook/vue3";
 import { VcContainer } from "./";
 
+/**
+ * `VcContainer` is a scrollable container component that provides:
+ * - Custom scrolling behavior
+ * - Pull-to-refresh functionality for mobile
+ * - Optional shadows to indicate scrollable content
+ * - Configurable padding
+ */
 const meta: Meta<typeof VcContainer> = {
-  title: "atoms/VcContainer",
+  title: "Atoms/VcContainer",
   component: VcContainer,
+  tags: ["autodocs"],
+  argTypes: {
+    shadow: {
+      description: "Whether to show shadows when content is scrollable",
+      control: "boolean",
+      table: {
+        type: { summary: "boolean" },
+        defaultValue: { summary: "false" },
+      },
+    },
+    noPadding: {
+      description: "Removes default padding from the container",
+      control: "boolean",
+      table: {
+        type: { summary: "boolean" },
+        defaultValue: { summary: "false" },
+      },
+    },
+    usePtr: {
+      description: "Enables pull-to-refresh functionality for mobile devices",
+      control: "boolean",
+      table: {
+        type: { summary: "boolean" },
+        defaultValue: { summary: "false" },
+      },
+    },
+    default: {
+      description: "Default slot for content",
+      table: {
+        category: "Slots",
+        type: { summary: "VNode | VNode[]" },
+      },
+    },
+  },
+  parameters: {
+    actions: {
+      handles: ["scroll:ptr", "scroll"],
+    },
+    docs: {
+      description: {
+        component: `
+The VcContainer component is a versatile container for scrollable content with built-in functionality:
+
+- Wraps content in a scrollable container with customizable padding
+- Provides scroll shadows to indicate more content is available
+- Supports pull-to-refresh on mobile devices
+- Handles touch events and scroll behavior
+- Exposes methods for programmatic scrolling
+
+## Events
+- \`scroll:ptr\`: Emitted when pull-to-refresh action is triggered
+- \`scroll\`: Emitted when container is scrolled
+
+## Exposed Methods
+- \`scrollTop()\`: Scroll to the top of the container
+- \`component\`: Reference to the inner container element
+`,
+      },
+    },
+  },
 };
 
 export default meta;
 type Story = StoryObj<typeof VcContainer>;
 
-export const Primary: Story = {
+/**
+ * Basic container with scrollable content.
+ */
+export const Default: Story = {
   render: (args) => ({
     components: { VcContainer },
     setup() {
       return { args };
     },
-    template: `<div style="width: 400px; height: 300px"><vc-container v-bind="args">
-    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus pellentesque tortor id lacus viverra, ut mollis libero auctor. Curabitur viverra, justo eu convallis pulvinar, dui nisi luctus quam, ut egestas tortor dolor quis nisi. Sed dignissim tellus ac enim dignissim dapibus. Duis vitae ipsum sit amet leo ornare fringilla sit amet a felis. Quisque finibus elementum dolor eu rhoncus. Donec dapibus non nisl blandit lobortis. Suspendisse pellentesque elit nunc, at auctor orci dignissim sed. Cras malesuada nibh id porttitor hendrerit.</p>
-    <p>Maecenas ut malesuada risus, a euismod ligula. Mauris fringilla arcu a vestibulum varius. Phasellus et quam facilisis, egestas magna ut, ultrices est. Maecenas accumsan sit amet metus sit amet laoreet. Sed at accumsan orci, id tincidunt nibh. Nam laoreet eu nisl a condimentum. Fusce ac blandit justo. Vestibulum sollicitudin eros euismod, cursus arcu ac, blandit eros. Phasellus tempor mi et iaculis pulvinar. Cras blandit, tortor sit amet fermentum aliquet, metus ipsum ultricies est, eu congue dui nunc nec ligula.</p>
-    <p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Pellentesque porttitor felis non turpis volutpat, ut consequat nulla vestibulum. Donec ipsum dui, convallis a faucibus eget, vehicula faucibus quam. Maecenas et velit odio. Suspendisse posuere faucibus est vel condimentum. Mauris et est placerat risus tincidunt rutrum. Sed venenatis nunc a mollis dignissim. Nam felis nisl, blandit in venenatis et, sollicitudin ut eros. Quisque ornare lacus metus, sed placerat lacus malesuada et. Sed venenatis, turpis in porta suscipit, libero ex tristique erat, nec pretium lectus justo malesuada dolor.</p>
-    <p>Vivamus non nisi quis elit pellentesque pharetra quis eget augue. Donec tincidunt nunc id placerat tincidunt. Mauris ultrices quam id risus sodales, at euismod mauris convallis. Morbi quis aliquam nibh. Cras vitae mi a risus dapibus lacinia sit amet eu erat. Morbi ligula ex, aliquet ac nunc a, tempus lacinia lacus. Integer pretium arcu augue, vitae egestas libero rutrum eu.</p>
-    <p>Suspendisse malesuada nisl tempor tellus ullamcorper, ut varius enim molestie. Suspendisse eleifend at libero id ultricies. Duis sagittis quis metus eget condimentum. Praesent iaculis viverra mauris et mattis. Pellentesque cursus, turpis sed venenatis volutpat, nibh tortor eleifend eros, non varius neque lectus ut dolor. Sed eget lectus et risus hendrerit molestie. Cras lorem enim, rutrum sed pellentesque in, tristique et diam. Donec aliquet dolor sit amet cursus facilisis. Donec a placerat nibh.</p>
-  </vc-container></div>`,
+    template: `
+      <div style="width: 400px; height: 300px; border: 1px solid #ccc; border-radius: 8px;">
+        <vc-container v-bind="args">
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus pellentesque tortor id lacus viverra, ut mollis libero auctor. Curabitur viverra, justo eu convallis pulvinar, dui nisi luctus quam, ut egestas tortor dolor quis nisi.</p>
+          <p>Maecenas ut malesuada risus, a euismod ligula. Mauris fringilla arcu a vestibulum varius. Phasellus et quam facilisis, egestas magna ut, ultrices est.</p>
+          <p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Pellentesque porttitor felis non turpis volutpat, ut consequat nulla vestibulum.</p>
+          <p>Vivamus non nisi quis elit pellentesque pharetra quis eget augue. Donec tincidunt nunc id placerat tincidunt. Mauris ultrices quam id risus sodales, at euismod mauris convallis.</p>
+          <p>Suspendisse malesuada nisl tempor tellus ullamcorper, ut varius enim molestie. Suspendisse eleifend at libero id ultricies. Duis sagittis quis metus eget condimentum.</p>
+        </vc-container>
+      </div>
+    `,
   }),
   args: {
     shadow: false,
+    noPadding: false,
+    usePtr: false,
+  },
+};
+
+/**
+ * Container with a shadow indicating scrollable content.
+ */
+export const WithShadow: Story = {
+  render: (args) => ({
+    components: { VcContainer },
+    setup() {
+      return { args };
+    },
+    template: `
+      <div style="width: 400px; height: 300px; border: 1px solid #ccc; border-radius: 8px;">
+        <vc-container v-bind="args">
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus pellentesque tortor id lacus viverra, ut mollis libero auctor. Curabitur viverra, justo eu convallis pulvinar, dui nisi luctus quam, ut egestas tortor dolor quis nisi.</p>
+          <p>Maecenas ut malesuada risus, a euismod ligula. Mauris fringilla arcu a vestibulum varius. Phasellus et quam facilisis, egestas magna ut, ultrices est.</p>
+          <p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Pellentesque porttitor felis non turpis volutpat, ut consequat nulla vestibulum.</p>
+          <p>Vivamus non nisi quis elit pellentesque pharetra quis eget augue. Donec tincidunt nunc id placerat tincidunt. Mauris ultrices quam id risus sodales, at euismod mauris convallis.</p>
+          <p>Suspendisse malesuada nisl tempor tellus ullamcorper, ut varius enim molestie. Suspendisse eleifend at libero id ultricies. Duis sagittis quis metus eget condimentum.</p>
+        </vc-container>
+      </div>
+    `,
+  }),
+  args: {
+    shadow: true,
+    noPadding: false,
+    usePtr: false,
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: "Adding shadow: true creates a subtle shadow effect that indicates scrollable content.",
+      },
+    },
+  },
+};
+
+/**
+ * Container without padding for edge-to-edge content.
+ */
+export const NoPadding: Story = {
+  render: (args) => ({
+    components: { VcContainer },
+    setup() {
+      return { args };
+    },
+    template: `
+      <div style="width: 400px; height: 300px; border: 1px solid #ccc; border-radius: 8px;">
+        <vc-container v-bind="args">
+          <div style="background-color: #f0f0f0; padding: 16px;">
+            <h3 style="margin-top: 0;">Edge-to-edge content</h3>
+            <p>This content has no padding from the container, allowing it to extend all the way to the edges.</p>
+          </div>
+          <div style="padding: 16px;">
+            <p>Content can define its own padding as needed.</p>
+            <p>This is useful for creating sections with different background colors or for content that needs to be edge-to-edge.</p>
+          </div>
+          <div style="background-color: #e0e0e0; padding: 16px;">
+            <p>Another section with a different background.</p>
+          </div>
+        </vc-container>
+      </div>
+    `,
+  }),
+  args: {
+    shadow: true,
+    noPadding: true,
+    usePtr: false,
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "Using noPadding: true removes the default padding from the container, allowing content to extend to the edges.",
+      },
+    },
+  },
+};
+
+/**
+ * Container with pull-to-refresh functionality for mobile devices.
+ */
+export const PullToRefresh: Story = {
+  render: (args) => ({
+    components: { VcContainer },
+    setup() {
+      function onPtrEvent() {
+        alert("Pull-to-refresh triggered! This would typically refresh content.");
+      }
+      return { args, onPtrEvent };
+    },
+    template: `
+      <div style="width: 400px; height: 300px; border: 1px solid #ccc; border-radius: 8px;">
+        <vc-container v-bind="args"
+          @scroll:ptr="onPtrEvent"
+          @scroll="(e) => console.log('Container scrolled', e)">
+          <div style="text-align: center; color: #666; padding: 8px 0 16px;">
+            ↓ Pull down to refresh (on mobile devices) ↓
+          </div>
+          <p>This container has pull-to-refresh functionality enabled for mobile devices.</p>
+          <p>On mobile, you can pull down on the content to trigger a refresh event.</p>
+          <p>The component provides visual feedback during the pull action.</p>
+          <p>When testing on desktop, this functionality is only visible on mobile devices or when using mobile device emulation in developer tools.</p>
+        </vc-container>
+      </div>
+    `,
+  }),
+  args: {
+    shadow: true,
+    noPadding: false,
+    usePtr: true,
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "Setting usePtr: true enables pull-to-refresh functionality for mobile devices. This example shows how to handle the scroll:ptr event.",
+      },
+    },
+  },
+};
+
+/**
+ * Container used as a content panel with mixed content.
+ */
+export const ContentPanel: Story = {
+  render: (args) => ({
+    components: { VcContainer },
+    setup() {
+      return { args };
+    },
+    template: `
+      <div style="width: 400px; height: 400px; border: 1px solid #ccc; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+        <div style="background-color: #f5f5f5; padding: 16px; border-bottom: 1px solid #e0e0e0;">
+          <h2 style="margin: 0; font-size: 1.2rem;">Content Panel</h2>
+        </div>
+        <vc-container v-bind="args">
+          <h3>Section heading</h3>
+          <p>VcContainer is often used to create scrollable panels within a larger layout.</p>
+          <div style="background-color: #f9f9f9; border: 1px solid #e0e0e0; border-radius: 4px; padding: 12px; margin: 16px 0;">
+            <p style="margin: 0;"><strong>Note:</strong> This component handles overflow automatically.</p>
+          </div>
+          <h3>Another section</h3>
+          <p>You can include various types of content including:</p>
+          <ul>
+            <li>Lists like this one</li>
+            <li>Images and media</li>
+            <li>Form elements</li>
+            <li>Other components</li>
+          </ul>
+          <p>The container will handle scrolling as needed.</p>
+          <div style="height: 100px; background-color: #e0f7fa; display: flex; align-items: center; justify-content: center; border-radius: 4px;">
+            Sample content block
+          </div>
+          <p style="margin-top: 16px;">When content exceeds the container height, scrolling is enabled automatically.</p>
+        </vc-container>
+      </div>
+    `,
+  }),
+  args: {
+    shadow: true,
+    noPadding: false,
+    usePtr: false,
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "This example shows how VcContainer can be used as part of a content panel design with a fixed header and scrollable content area.",
+      },
+    },
   },
 };

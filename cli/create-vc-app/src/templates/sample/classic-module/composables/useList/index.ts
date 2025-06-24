@@ -12,6 +12,8 @@ export interface useClassicAppList {
   removeItems: (args: { ids: string[] }) => void;
 }
 
+export type { MockedItem };
+
 export default (): useClassicAppList => {
   const result = ref() as Ref<{ results: MockedItem[]; totalCount: number }>;
 

@@ -12,6 +12,8 @@ import {
 } from "vue";
 import { ComponentPublicInstanceConstructor } from "../../../utilities/vueUtils";
 import { MenuItemConfig } from "../../../../core/types";
+import { Breadcrumbs } from "../../../../ui/types";
+import { DisplayableError } from "../../../../core/utilities/error";
 
 export type CoreBladeComponentProps = {
   expanded?: boolean;
@@ -41,6 +43,18 @@ export interface CoreBladeExposed {
   reload?: () => void;
 }
 
+export interface IBladeInstance {
+  id: string;
+  expandable: boolean;
+  maximized: boolean;
+  error: DisplayableError | Error | string | null | undefined;
+  navigation: BladeVNode["props"]["navigation"] | undefined;
+  breadcrumbs: Breadcrumbs[] | undefined;
+  title?: string;
+  param?: string;
+  options?: Record<string, any>;
+}
+
 export interface IParentCallArgs {
   method: keyof CoreBladeExposed;
   args?: unknown;
@@ -67,7 +81,7 @@ export type BladeInstanceConstructor<T extends Component = Component> = Extracto
   CoreBladeAdditionalSettings;
 
 export interface IBladeEvent<T extends Component = Component> {
-  blade: BladeInstanceConstructor<T>;
+  blade: BladeInstanceConstructor<T> | { name: string } | undefined;
   options?: ExtractedBladeOptions<InstanceType<BladeInstanceConstructor<T>>["$props"], "options">;
   param?: string;
   onOpen?: () => void;
@@ -77,12 +91,10 @@ export interface IBladeEvent<T extends Component = Component> {
 
 export interface BladeNavigationPlugin {
   router: Router;
-  internalRoutes: BladeRoutesRecord[];
-  blades: Ref<BladeVNode[]>;
 }
 
 export interface BladeRoutesRecord {
-  component: BladeVNode;
+  component: BladeInstanceConstructor;
   name: string;
   isWorkspace: boolean;
   route: string;
@@ -95,6 +107,7 @@ export interface BladeVNode extends VNode {
       onOpen?: () => void;
       onClose?: () => void;
       onBeforeClose?: () => Promise<boolean | undefined>;
+      error?: Ref<Error | null>;
       instance: CoreBladeExposed | undefined | null;
       idx: number;
       isVisible?: boolean;

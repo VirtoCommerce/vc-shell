@@ -1,3 +1,39 @@
 <script>
-  window.global = window;
+  // window.global = window;
+
+  // Global mocks for objects used in Storybook
+  // If an error ReferenceError appears when starting Storybook for some object,
+  // add it here and in typings.d.ts
+
+  // Mock for notification
+  window.notification = {
+    success: function() {},
+    error: function() {},
+    warning: function() {},
+    clearAll: function() {},
+    remove: function() {},
+    update: function() {}
+  };
+
+  // Mock for AssetsManager
+  window.AssetsManager = {
+    // Empty object for the mock
+  };
+
+  window.Invite = {}
+
+  window.Login = {}
+
+  window.ResetPassword = {}
+
+  window.VcBladeNavigation = {}
+
 </script>
+
+
+<style>
+  /*
+  * Temporary fix for Storybook docs scrolling
+  */
+  .sb-main-padded.sb-show-main, #storybook-docs{ height: 100vh; overflow: auto; }
+</style>

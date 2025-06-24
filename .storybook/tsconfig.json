@@ -1,0 +1,15 @@
+{
+  "extends": "../framework/tsconfig.json",
+  "compilerOptions": {
+    "types": ["vite/client", "../framework/typings/declarations.d.ts", "@storybook/vue3"],
+    "rootDir": "..",
+    "baseUrl": ".."
+  },
+  "include": [
+    "../framework/**/*.ts",
+    "../framework/**/*.vue",
+    "../framework/**/*.d.ts",
+    "./**/*.ts"
+  ],
+  "exclude": ["../node_modules"]
+}

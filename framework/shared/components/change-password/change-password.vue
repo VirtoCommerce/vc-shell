@@ -16,9 +16,9 @@
             :outline="false"
             variant="info-dark"
           >
-            <div class="tw-flex tw-flex-row tw-items-center">
+            <div class="tw-flex tw-flex-row tw-items-center tw-text-[color:var(--change-password-text-color)]">
               <VcIcon
-                icon="far fa-lightbulb"
+                icon="material-lightbulb"
                 size="l"
                 class="tw-mr-3"
               />
@@ -137,7 +137,7 @@ import { nextTick, reactive, computed } from "vue";
 import { useIsFormValid, Field, useIsFormDirty, useForm } from "vee-validate";
 import { VcInput, VcHint, VcButton, VcPopup, VcForm } from "./../../../ui/components";
 import { IIdentityError } from "./../../../core/api/platform";
-import { useUser } from "./../../../core/composables/useUser";
+import { useUserManagement } from "./../../../core/composables/useUserManagement";
 import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
 
@@ -162,12 +162,11 @@ interface Emits {
 
 const emit = defineEmits<Emits>();
 const { t } = useI18n({ useScope: "global" });
-const { changeUserPassword, loading, validatePassword } = useUser();
+const { changeUserPassword, loading, validatePassword, signOut } = useUserManagement();
 useForm({ validateOnMount: false });
 const isValid = useIsFormValid();
 const isDirty = useIsFormDirty();
 const router = useRouter();
-const { signOut } = useUser();
 
 const form = reactive<IChangePassForm>({
   isValid: false,
@@ -222,6 +221,7 @@ function validate() {
 
 <style lang="scss">
 :root {
-  --change-password-error-color: var(--base-error-color, var(--danger-500));
+  --change-password-error-color: var(--danger-500);
+  --change-password-text-color: var(--additional-950);
 }
 </style>

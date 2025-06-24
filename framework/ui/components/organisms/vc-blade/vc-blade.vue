@@ -1,22 +1,21 @@
 <template>
   <div
+    ref="bladeRef"
     class="vc-blade"
     :class="[
       $attrs.class,
       {
         'vc-blade--mobile': $isMobile.value,
         'vc-blade--expanded': expanded,
-        'vc-blade--maximized': maximized,
+        'vc-blade--maximized': blade.maximized,
       },
     ]"
     :style="{ width: typeof width === 'number' ? `${width}px` : width }"
   >
     <!-- Init blade header -->
     <VcBladeHeader
-      v-if="!$isMobile.value || closable"
+      v-if="!($isMobile.value && blades.length === 1 && !$slots['actions'])"
       class="vc-blade__header"
-      :maximized="maximized"
-      :expandable="expandable"
       :closable="closable"
       :icon="icon"
       :title="title"
@@ -26,6 +25,34 @@
       @expand="$emit('expand')"
       @collapse="$emit('collapse')"
     >
+      <template #prepend>
+        <component
+          :is="backButton"
+          v-if="backButton && $isMobile.value"
+          class="vc-blade__back-button"
+        />
+
+        <div
+          v-if="blade.breadcrumbs?.length && $isDesktop.value"
+          class="vc-blade__breadcrumbs"
+        >
+          <VcBreadcrumbs :items="blade.breadcrumbs">
+            <template #trigger="{ click, isActive }">
+              <VcButton
+                text
+                :icon="VertDotsIcon"
+                icon-size="m"
+                class="vc-blade__breadcrumbs-button"
+                :class="{
+                  'vc-blade__breadcrumbs-button--active': isActive,
+                }"
+                @click="click"
+              />
+            </template>
+          </VcBreadcrumbs>
+        </div>
+      </template>
+
       <template
         v-if="$slots['actions']"
         #actions
@@ -35,17 +62,17 @@
     </VcBladeHeader>
 
     <!-- Show error message -->
-    <template v-if="error">
+    <template v-if="blade.error">
       <div class="vc-blade__error">
         <VcIcon
           size="s"
-          icon="fas fa-exclamation-triangle"
+          icon="material-warning"
         />
-        <div class="vc-blade__error-text">{{ error }}</div>
+        <div class="vc-blade__error-text">{{ shortErrorMessage }}</div>
         <VcButton
           text
           class="vc-blade__error-button"
-          @click="open()"
+          @click="openErrorDetails"
         >
           {{ t("COMPONENTS.ORGANISMS.VC_BLADE.SEE_DETAILS") }}
         </VcButton>
@@ -57,7 +84,7 @@
       <div class="vc-blade__unsaved-changes">
         <VcIcon
           size="s"
-          icon="fas fa-info-circle"
+          icon="material-info"
         />
         <div class="vc-blade__unsaved-changes-text">
           {{ t("COMPONENTS.ORGANISMS.VC_BLADE.UNSAVED_CHANGES") }}
@@ -69,9 +96,16 @@
     <VcBladeToolbar
       class="vc-blade__toolbar"
       :items="toolbarItems"
-    ></VcBladeToolbar>
+    >
+      <template #widgets-container>
+        <VcWidgetContainer :blade-id="blade?.id ?? ''" />
+      </template>
+    </VcBladeToolbar>
 
-    <div class="vc-blade__content">
+    <div
+      ref="contentRef"
+      class="vc-blade__content"
+    >
       <div
         class="vc-blade__main"
         :class="{ 'vc-blade__main--mobile': $isMobile.value }"
@@ -85,66 +119,24 @@
         >
           <slot></slot>
         </div>
-
-        <div
-          v-show="$slots['widgets'] && !isWidgetContainerEmpty"
-          ref="widgetsRef"
-          class="vc-blade__widgets"
-          :class="[
-            {
-              'vc-blade__widgets--desktop': $isDesktop.value,
-              'vc-blade__widgets--not-expanded': $isDesktop.value && !isExpanded,
-              'vc-blade__widgets--expanded': $isDesktop.value && isExpanded,
-              'vc-blade__widgets--mobile': $isMobile.value,
-            },
-          ]"
-        >
-          <div
-            ref="widgetsContainerRef"
-            class="vc-blade__widget-container"
-            :class="{
-              'vc-blade__widget-container--desktop': $isDesktop.value,
-              'vc-blade__widget-container--mobile': $isMobile.value,
-            }"
-          >
-            <slot
-              name="widgets"
-              :is-expanded="isExpanded"
-            ></slot>
-          </div>
-
-          <div
-            class="vc-blade__widget-toggle"
-            :class="{
-              'vc-blade__widget-toggle--desktop': $isDesktop.value,
-              'vc-blade__widget-toggle--mobile': $isMobile.value,
-            }"
-          >
-            <VcIcon
-              class="vc-blade__toggle-icon"
-              :class="{
-                'vc-blade__toggle-icon--desktop': $isDesktop.value,
-              }"
-              :icon="`fas fa-chevron-${$isDesktop.value ? (isExpanded ? 'right' : 'left') : isExpanded ? 'up' : 'down'}`"
-              @click="toggleWidgets"
-            ></VcIcon>
-          </div>
-        </div>
       </div>
     </div>
   </div>
 </template>
-
+<!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
-import { computed, Ref, reactive, useAttrs, toRefs, toValue, ref, onMounted, onUpdated, defineComponent, h } from "vue";
+import { computed, ref, toValue, inject, useSlots, defineComponent, h, getCurrentInstance } from "vue";
 import { IBladeToolbar } from "../../../../core/types";
-import { usePopup } from "./../../../../shared";
+import { usePopup, useBladeNavigation } from "../../../../shared";
 import { useI18n } from "vue-i18n";
-import VcBladeHeader from "./_internal/vc-blade-header/vc-blade-header.vue";
-import VcBladeToolbar from "./_internal/vc-blade-toolbar/vc-blade-toolbar.vue";
-import { VcButton, VcIcon, VcLink } from "./../../";
+import { default as VcBladeHeader } from "./_internal/vc-blade-header/vc-blade-header.vue";
+import { default as VcBladeToolbar } from "./_internal/vc-blade-toolbar/vc-blade-toolbar.vue";
+import { VcButton, VcIcon, VcLink } from "../../";
 import vcPopupError from "../../../../shared/components/common/popup/vc-popup-error.vue";
-import { useLocalStorage } from "@vueuse/core";
+import { BladeInstance, BLADE_BACK_BUTTON } from "../../../../injection-keys";
+import { default as VcWidgetContainer } from "./_internal/vc-blade-widget-container/vc-widget-container.vue";
+import VertDotsIcon from "../../atoms/vc-icon/icons/VertDotsIcon.vue";
+import { FALLBACK_BLADE_ID } from "../../../../core/constants";
 
 export interface Props {
   icon?: string;
@@ -152,7 +144,6 @@ export interface Props {
   subtitle?: string;
   width?: number | string;
   expanded?: boolean;
-  expandable?: boolean;
   closable?: boolean;
   toolbarItems?: IBladeToolbar[];
   modified?: boolean;
@@ -162,6 +153,7 @@ export interface Emits {
   (event: "close"): void;
   (event: "expand"): void;
   (event: "collapse"): void;
+  (event: "reset:error"): void;
 }
 
 defineOptions({
@@ -176,48 +168,84 @@ withDefaults(defineProps<Props>(), {
   modified: undefined,
 });
 
-defineSlots<{
-  actions: void;
-  default: void;
-  widgets: void;
+const slots = defineSlots<{
+  actions: (props: any) => any;
+  default: (props: any) => any;
+  /**
+   * @deprecated
+   * Use `useWidgets` composable instead
+   * @example
+   * // Register widget in blade:
+   * const blade = inject(BladeInstance);
+   * const widgetService = useWidgets();
+   * widgetService.registerWidget({
+   *   id: "widget-id",
+   *   component: () => import("./MyWidget.vue"),
+   *   props: {
+   *     myProp: '123',
+   *    },
+   *   events: {
+   *     "onChangeProp": (val: unknown) => {
+   *       console.log(val);
+   *     },
+   *   },
+   * }, blade.id);
+   *
+   * // Clear widgets on blade unmount:
+   * onBeforeUnmount(() => {
+   *   if (blade?.value.id) {
+   *     widgetService.clearBladeWidgets(blade.value.id);
+   *   }
+   * });
+   */
+  widgets: (props: any) => any;
 }>();
 
-defineEmits<Emits>();
+const emit = defineEmits<Emits>();
 
-const attrs = useAttrs();
-const { maximized, error }: { maximized?: Ref<boolean>; error?: Ref<string> } = toRefs(reactive(attrs));
+const blade = inject(
+  BladeInstance,
+  computed(() => ({
+    id: FALLBACK_BLADE_ID,
+    error: null,
+    expandable: false,
+    maximized: false,
+    navigation: undefined,
+    breadcrumbs: undefined,
+    param: undefined,
+    options: undefined,
+  })),
+);
+
+const backButton = inject(BLADE_BACK_BUTTON);
+
 const { t } = useI18n({ useScope: "global" });
-const widgetsRef = ref<HTMLElement | null>(null);
-const widgetsContainerRef = ref<HTMLElement | null>(null);
+const { blades } = useBladeNavigation();
 
-const isExpanded = useLocalStorage("VC_BLADE_WIDGETS_IS_EXPANDED", true);
+const bladeRef = ref<HTMLElement | null>(null);
+const contentRef = ref<HTMLElement | null>(null);
 
-const toggleWidgets = () => {
-  isExpanded.value = !isExpanded.value;
-};
-const isWidgetContainerEmpty = ref(false);
+const error = computed(() => toValue(blade.value.error));
 
-const checkEmpty = (el: HTMLElement) => {
-  const isEmpty = !el.innerText.trim() && Array.from(el.children).every((node) => node.nodeType === Node.COMMENT_NODE);
-  isWidgetContainerEmpty.value = isEmpty;
-};
-
-onMounted(() => {
-  if (widgetsRef.value) {
-    checkEmpty(widgetsContainerRef.value!);
-  }
+const shortErrorMessage = computed(() => {
+  const err = error.value;
+  if (!err) return "";
+  return err instanceof Error ? err.message : err;
 });
 
-onUpdated(() => {
-  if (widgetsRef.value) {
-    checkEmpty(widgetsContainerRef.value!);
+const errorDetails = computed(() => {
+  const err = error.value;
+  if (!err) return "";
+  if (err instanceof Error) {
+    return (err as any).details || err.stack || String(err);
   }
+  return String(err);
 });
 
 const { open } = usePopup({
   component: vcPopupError,
   slots: {
-    default: computed(() => toValue(error)),
+    default: errorDetails,
     header: defineComponent({
       render: () =>
         h("div", [
@@ -225,23 +253,26 @@ const { open } = usePopup({
           " ",
           h(
             VcLink,
-            { onClick: () => navigator.clipboard.writeText(toValue(error) ?? "") },
+            { onClick: () => navigator.clipboard.writeText(errorDetails.value) },
             `(${t("COMPONENTS.ORGANISMS.VC_BLADE.ERROR_POPUP.COPY_ERROR")})`,
           ),
         ]),
     }),
   },
 });
+
+const openErrorDetails = () => {
+  open();
+};
 </script>
 
 <style lang="scss">
 :root {
   --blade-background-color: var(--additional-50);
-  --blade-border-radius: 6px;
-  --blade-color-error: var(--base-error-color, var(--danger-500));
+  --blade-color-error: var(--danger-500);
   --blade-color-unsaved-changes: var(--secondary-600);
 
-  --blade-border-color: var(--base-border-color, var(--neutrals-200));
+  --blade-border-color: var(--neutrals-200);
   --blade-icon-color: var(--secondary-400);
   --blade-icon-hover-color: var(--secondary-500);
 
@@ -252,27 +283,40 @@ const { open } = usePopup({
   --blade-shadow: 2px 2px 8px rgb(from var(--blade-shadow-color) r g b / 14%);
 
   --blade-text-color: var(--additional-50);
+
+  --blade-widgets-bg-color: var(--neutrals-100);
+  --blade-widgets-more-color: var(--neutrals-600);
 }
 
 .vc-blade {
-  @apply tw-relative tw-flex tw-shrink-0 tw-flex-col [box-shadow:var(--blade-shadow)] tw-my-4 tw-mx-2 tw-overflow-hidden tw-transition-[width] tw-duration-200;
-  @apply tw-bg-[color:var(--blade-background-color)] tw-rounded-[var(--blade-border-radius)];
+  @apply tw-relative tw-flex tw-shrink-0 tw-flex-col tw-overflow-hidden tw-transition-[width] tw-duration-200;
+  @apply tw-bg-[color:var(--blade-background-color)] tw-border tw-border-solid tw-border-[--blade-border-color];
+
+  &__back-button {
+    @apply tw-mr-[14px];
+  }
 
   &--mobile {
-    @apply tw-w-full #{!important};
+    @apply tw-w-full !important;
   }
 
   &--expanded {
-    @apply tw-w-full tw-shrink #{!important};
+    @apply tw-w-full tw-shrink !important;
   }
 
   &--maximized {
-    @apply tw-absolute tw-z-[2] tw-top-0 tw-bottom-0 tw-left-0 tw-shrink #{!important};
-    width: -webkit-fill-available !important;
+    @apply tw-absolute tw-z-[2] tw-top-0 tw-bottom-0 tw-left-0 tw-shrink !important;
+    width: -webkit-fill-available;
+    width: -moz-available;
+    width: fill-available;
   }
 
   &__header {
     @apply tw-shrink-0;
+
+    &--hidden {
+      @apply tw-hidden;
+    }
   }
 
   &__error {
@@ -284,8 +328,8 @@ const { open } = usePopup({
   }
 
   &__error-button {
-    @apply tw-shrink-0 tw-opacity-80  hover:tw-opacity-100 hover:tw-text-[color:var(--blade-text-color)];
-    @apply tw-text-[color:var(--blade-text-color)] #{!important};
+    @apply tw-shrink-0 tw-opacity-80 hover:tw-opacity-100 hover:tw-text-[color:var(--blade-text-color)];
+    @apply tw-text-[color:var(--blade-text-color)] !important;
   }
 
   &__unsaved-changes {
@@ -298,6 +342,10 @@ const { open } = usePopup({
 
   &__toolbar {
     @apply tw-shrink-0;
+
+    &--hidden {
+      @apply tw-hidden;
+    }
   }
 
   &__content {
@@ -313,7 +361,7 @@ const { open } = usePopup({
   }
 
   &__slot {
-    @apply tw-flex tw-flex-auto tw-flex-col;
+    @apply tw-flex tw-flex-auto tw-flex-col tw-relative;
 
     &--desktop {
       @apply tw-w-0;
@@ -324,35 +372,23 @@ const { open } = usePopup({
     }
   }
 
-  &__widgets {
-    @apply tw-flex;
-
-    &--desktop {
-      @apply tw-border-l tw-border-solid tw-border-l-[color:var(--blade-border-color)];
-    }
-
-    &--not-expanded {
-      @apply tw-w-12 tw-flex-col;
-    }
-
-    &--expanded {
-      @apply tw-w-32 tw-flex-col;
-    }
-
-    &--mobile {
-      @apply tw-w-auto tw-border-t tw-border-solid tw-border-t-[color:var(--blade-border-color)] tw-flex-row;
-    }
+  &__widget-more {
+    @apply tw-flex tw-flex-col tw-items-center tw-justify-center tw-bg-[color:var(--blade-widgets-bg-color)] tw-px-2 tw-text-xs tw-gap-1 tw-text-[color:var(--blade-widgets-more-color)];
   }
 
-  &__widget-container {
-    @apply tw-flex tw-overflow-y-auto;
+  &__widgets {
+    @apply tw-flex tw-flex-row;
+  }
 
-    &--desktop {
-      @apply tw-flex-col tw-overflow-x-clip;
-    }
+  &__breadcrumbs {
+    @apply tw-mr-[10px];
 
-    &--mobile {
-      @apply tw-flex-row;
+    &-button {
+      @apply tw-text-[color:var(--blade-header-breadcrumbs-button-color)] tw-cursor-pointer hover:tw-text-[color:var(--blade-header-breadcrumbs-button-color-hover)] !important;
+
+      &--active {
+        @apply tw-text-[color:var(--blade-header-breadcrumbs-button-color-hover)] !important;
+      }
     }
   }
 
@@ -370,10 +406,26 @@ const { open } = usePopup({
 
   &__toggle-icon {
     @apply tw-flex-auto tw-items-center tw-self-center tw-justify-self-center tw-text-[color:var(--blade-icon-color)] tw-cursor-pointer hover:tw-text-[color:var(--blade-icon-hover-color)];
-    @apply tw-flex #{!important};
+    @apply tw-flex !important;
   }
 
   &__toggle-icon--desktop {
+  }
+
+  &__spacer {
+    @apply tw-flex-1;
+  }
+
+  &__toolbar-container-inner {
+    @apply tw-flex-1 tw-justify-end;
+
+    &:empty {
+      @apply tw-hidden;
+    }
+  }
+
+  &__breadcrumbs-button {
+    @apply tw-p-0 !important;
   }
 }
 

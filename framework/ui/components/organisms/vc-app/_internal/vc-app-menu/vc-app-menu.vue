@@ -1,106 +1,65 @@
+\
 <template>
-  <Sidebar
-    :is-expanded="$isMobile.value ? isMobileVisible : false"
-    render="mobile"
-    @close="() => (isMobileVisible = false)"
+  <div
+    v-if="isMenuVisible"
+    class="vc-app-menu"
+    :class="{
+      'vc-app-menu--mobile': $isMobile.value,
+      'vc-app-menu--collapsed': $isDesktop.value && !isExpanded,
+      'vc-app-menu--hover-expanded': isHoverExpanded,
+    }"
   >
-    <template #content>
-      <div
-        v-if="isMenuVisible"
-        class="vc-app-menu"
-        :class="{
-          'vc-app-menu--mobile': $isMobile.value,
-          'vc-app-menu--block': isMobileVisible,
-          'vc-app-menu--collapsed': $isDesktop.value && !isExpanded,
-        }"
-        @mouseenter="!isExpanded && expandOverHandler(true)"
-        @mouseover="!isExpanded && expandOverHandler(true)"
-        @mouseleave="expandOverHandler(false)"
+    <div
+      class="vc-app-menu__inner"
+      :class="{
+        'vc-app-menu__inner--desktop': $isDesktop.value,
+        'vc-app-menu__inner--collapsed': $isDesktop.value && !isExpanded,
+        'vc-app-menu__inner--hover-expanded': isHoverExpanded,
+      }"
+    >
+      <!-- Show scrollable area with menu items -->
+      <VcContainer
+        :no-padding="true"
+        class="vc-app-menu__container"
       >
-        <div
-          class="vc-app-menu__inner"
-          :class="{
-            'vc-app-menu__inner--desktop': $isDesktop.value,
-            'vc-app-menu__inner--collapsed': $isDesktop.value && !isExpanded && !isExpandedOver,
-            'vc-app-menu__inner--expanded': $isDesktop.value && (isExpanded || isExpandedOver),
-          }"
-        >
-          <div
-            v-if="$isDesktop.value"
-            class="vc-app-menu__burger-container"
-          >
-            <button
-              class="vc-app-menu__burger-button"
-              @click="toggleMenu"
-            >
-              <VcIcon
-                :icon="isExpanded ? 'fas fa-angle-double-left' : 'fas fa-angle-double-right'"
-                size="xl"
-              ></VcIcon>
-            </button>
-          </div>
+        <div class="vc-app-menu__menu-items">
+          <VcAppMenuItem
+            v-for="item in menuItems"
+            :id="item.id"
+            :key="item?.id"
+            :data-test-id="item?.routeId"
+            :is-visible="
+              $hasAccess(item.permissions!) && (item.children?.some((child) => $hasAccess(child.permissions!)) ?? true)
+            "
+            :url="item.url"
+            :icon="item.groupIcon || item.icon"
+            :title="item.title as string"
+            :children="item.children"
+            :expand="$isDesktop.value ? isExpanded || isHoverExpanded : true"
+            @click="handleMenuItemClick(item, $event)"
+          />
+        </div>
+      </VcContainer>
 
-          <!-- Show scrollable area with menu items -->
-          <VcContainer
-            :no-padding="true"
-            class="vc-app-menu__container"
-          >
-            <div class="vc-app-menu__menu-items">
-              <div
-                v-if="$slots['mobile']"
-                class="vc-app-menu__mobile-slot"
-              >
-                <slot
-                  v-if="!$isDesktop.value"
-                  name="mobile"
-                ></slot>
-              </div>
-
-              <VcAppMenuItem
-                v-for="item in menuItems"
-                :id="item.id"
-                :key="item?.id"
-                :data-test-id="item?.routeId"
-                :is-visible="
-                  $hasAccess(item.permissions!) &&
-                  (item.children?.some((child) => $hasAccess(child.permissions!)) ?? true)
-                "
-                :url="item.url"
-                :icon="item.groupIcon || item.icon"
-                :title="item.title as string"
-                :children="item.children"
-                :expand="$isDesktop.value ? isExpanded || isExpandedOver : true"
-                @click="
-                  (event) => {
-                    $emit('item:click', event ? event : item);
-                    isMobileVisible = false;
-                  }
-                "
-              />
-            </div>
-          </VcContainer>
-
-          <div
+      <!-- <div
             v-if="version"
             class="vc-app-menu__version"
             @click="$emit('version:click')"
           >
             {{ version }}
-          </div>
-        </div>
-      </div>
-    </template>
-  </Sidebar>
+          </div> -->
+    </div>
+  </div>
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from "vue";
+import { computed, Ref, inject } from "vue";
 import VcAppMenuItem from "./_internal/vc-app-menu-item/vc-app-menu-item.vue";
-import { VcContainer, VcIcon } from "./../../../../";
+import { VcContainer } from "./../../../../";
 import { useMenuService } from "../../../../../../core/composables";
 import { MenuItem } from "../../../../../../core/types";
-import { useLocalStorage } from "@vueuse/core";
-import { Sidebar } from "../../../../../../shared/components";
+import { useMenuExpanded } from "../../../../../../shared/composables";
+import { useAppMenuState } from "../composables/useAppMenuState";
 
 export interface Props {
   version: string | undefined;
@@ -117,50 +76,29 @@ withDefaults(defineProps<Props>(), {
   version: "",
 });
 
-defineEmits<Emits>();
-const { menuItems } = useMenuService();
-const isExpanded = useLocalStorage("VC_APP_MENU_EXPANDED", true);
-const isExpandedOver = ref(false);
+const emit = defineEmits<Emits>();
 
-const isMobileVisible = ref(false);
+const isMobile = inject("isMobile") as Ref<boolean>;
+const { menuItems } = useMenuService();
+const { isExpanded, isHoverExpanded } = useMenuExpanded();
+const { closeAll } = useAppMenuState();
+
+const handleMenuItemClick = (item: MenuItem, nestedItem?: MenuItem) => {
+  if (isMobile.value) {
+    closeAll();
+  }
+  emit("item:click", nestedItem ? nestedItem : item);
+};
 
 const isMenuVisible = computed(() => {
   return !!menuItems.value.length;
-});
-
-function toggleMenu() {
-  isExpanded.value = !isExpanded.value;
-}
-
-let expandTimeout: ReturnType<typeof setTimeout> | null = null;
-
-function expandOverHandler(state: boolean) {
-  if (expandTimeout) {
-    clearTimeout(expandTimeout);
-  }
-
-  if (state) {
-    expandTimeout = setTimeout(() => {
-      if (isExpandedOver.value !== state) {
-        isExpandedOver.value = state;
-      }
-    }, 50);
-  } else {
-    isExpandedOver.value = state;
-  }
-}
-
-defineExpose({
-  isMobileVisible,
 });
 </script>
 
 <style lang="scss">
 :root {
-  --app-menu-width: 230px;
-  --app-menu-width-collapse: 70px;
-  --app-menu-background: var(--app-background, var(--primary-50));
-  --app-menu-background-color: var(--additional-50);
+  --app-menu-background: var(--primary-50);
+  --app-menu-background-color: var(--app-bar-background, var(--neutrals-50));
   --app-menu-version-color: var(--neutrals-400);
 
   --app-menu-close-color: var(--app-menu-burger-color, var(--primary-500));
@@ -170,15 +108,15 @@ defineExpose({
   --app-backdrop-overlay: rgb(from var(--app-backdrop-overlay-bg) r g b / 75%);
 
   --app-backdrop-shadow-color: var(--additional-950);
-  --app-backdrop-shadow: 0 -6px 6px var(--additional-50),
-    1px 1px 22px rgb(from var(--notification-dropdown-shadow-color) r g b / 7%);
+  --app-backdrop-shadow:
+    0 -6px 6px var(--additional-50), 1px 1px 22px rgb(from var(--notification-dropdown-shadow-color) r g b / 7%);
 }
 
 .vc-app-menu {
-  @apply tw-relative tw-w-[var(--app-menu-width)] tw-pt-6 -tw-mr-2 [transition:width_300ms_cubic-bezier(0.2,0,0,1)_0s] tw-z-[1001];
+  @apply tw-h-full;
 
   &.vc-app-menu--mobile {
-    @apply tw-hidden tw-h-full tw-w-full #{!important};
+    @apply tw-h-full tw-w-full #{!important};
   }
 
   &.vc-app-menu--block {
@@ -198,15 +136,14 @@ defineExpose({
   }
 
   &__inner {
-    @apply tw-flex tw-flex-col tw-h-full tw-z-[1001] tw-top-0 tw-bottom-0 tw-bg-[color:var(--app-menu-background)] [transition:width_150ms_cubic-bezier(0.2,0,0,1)_0s];
-    @apply tw-absolute #{!important};
+    @apply tw-flex tw-flex-col tw-h-full;
 
     &--desktop {
-      @apply tw-left-0 tw-pt-6;
+      @apply tw-left-0;
     }
 
     &--collapsed {
-      @apply tw-w-[var(--app-menu-width-collapse)] #{!important};
+      // @apply tw-pt-3;
     }
 
     &--expanded {
@@ -275,6 +212,24 @@ defineExpose({
 
   &__menu-toggler {
     @apply tw-text-[color:var(--app-bar-burger-color)] tw-w-12 tw-flex tw-items-center tw-justify-center tw-h-full tw-box-border tw-cursor-pointer;
+  }
+
+  &--collapsed {
+    // @apply tw-w-[50px];
+
+    .vc-app-menu__inner {
+      // @apply tw-w-[50px];
+    }
+  }
+
+  &--collapsed {
+    @apply tw-w-[50px];
+
+    .vc-app-menu__collapse-button {
+      svg {
+        @apply tw-rotate-180;
+      }
+    }
   }
 }
 </style>

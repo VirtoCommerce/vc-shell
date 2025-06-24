@@ -1,407 +1,156 @@
 <template>
   <div
-    v-loading:1000="unref(loading) || columnsInit"
+    v-loading:49="loading || columnsInit"
     class="vc-table"
   >
-    <div
-      v-if="multiselect && $isMobile.value && (selection.length > 0 || allSelected) && !noHeaderCheckbox"
-      class="vc-table__multiselect-mobile"
+    <VcTableSelectAll
+      :multiselect="multiselect"
+      :selection="selection"
+      :all-selected="allSelected"
+      :total-count="totalCount"
+      :header-checkbox="headerCheckbox"
+      :select-all="selectAll"
+      :show-selection-choice="showSelectionChoice"
+      @update:selection="selection = $event"
+      @update:all-selected="allSelected = $event"
+      @update:header-checkbox="headerCheckbox = $event"
+      @select:all="handleSelectAll"
+    />
+    <VcTableHeader
+      :has-header-slot="!!$slots.header"
+      :header="header"
+      :columns-init="columnsInit"
+      :search-value="searchValue"
+      :active-filter-count="activeFilterCount"
+      :search-placeholder="searchPlaceholder"
+      :disable-filter="disableFilter"
+      :expanded="expanded"
+      @search:change="emit('search:change', $event)"
     >
-      <div class="vc-table__select-all-bar">
-        <div class="vc-table__select-all-content">
-          <div class="vc-table__select-all-checkbox">
-            <VcCheckbox
-              v-model="headerCheckbox"
-              class="vc-table__select-all-checkbox__checkbox"
-              size="m"
-              @click.stop
-            >
-              {{ $t("COMPONENTS.ORGANISMS.VC_TABLE.SELECT_ALL_TRUNCATED") }}
-            </VcCheckbox>
-            {{ $t("COMPONENTS.ORGANISMS.VC_TABLE.SELECTED") }}: {{ allSelected ? totalCount : selection.length }}
-          </div>
-
-          <VcButton
-            text
-            @click="
-              () => {
-                selection = [];
-                allSelected = false;
-              }
-            "
-          >
-            {{ $t("COMPONENTS.ORGANISMS.VC_TABLE.CANCEL") }}
-          </VcButton>
-        </div>
-      </div>
-      <div
-        v-if="selectAll && showSelectionChoice"
-        class="vc-table__select-all-choice"
+      <template #header="slotProps">
+        <slot
+          name="header"
+          v-bind="slotProps"
+        />
+      </template>
+      <template
+        v-if="$slots.filters"
+        #filters="slotProps"
       >
-        <div class="vc-table__select-all-choice__content">
-          <div>
-            {{
-              allSelected
-                ? t("COMPONENTS.ORGANISMS.VC_TABLE.ALL_SELECTED")
-                : t("COMPONENTS.ORGANISMS.VC_TABLE.CURRENT_PAGE_SELECTED")
-            }}
-            <VcButton
-              text
-              class="vc-table__select-all-choice__button"
-              @click="handleSelectAll"
-            >
-              {{
-                allSelected ? t("COMPONENTS.ORGANISMS.VC_TABLE.CANCEL") : t("COMPONENTS.ORGANISMS.VC_TABLE.SELECT_ALL")
-              }}
-            </VcButton>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Header slot with filter and searchbar -->
-    <slot
-      v-else-if="
-        ($slots['header'] || header) && (!columnsInit || searchValue || searchValue === '' || activeFilterCount)
-      "
-      name="header"
-      :header="headerComponent"
-    >
-      <headerComponent></headerComponent>
-    </slot>
-
+        <slot
+          name="filters"
+          v-bind="slotProps"
+        />
+      </template>
+    </VcTableHeader>
     <div class="vc-table__content">
       <!-- Table scroll container -->
       <VcContainer
         ref="scrollContainer"
         :no-padding="true"
-        class="vc-table__mobile-view"
-        :use-ptr="selection.length === 0 ? pullToReload : undefined"
+        class="vc-table__scroll-container"
+        :use-ptr="selection?.length === 0 ? pullToReload : undefined"
         @scroll:ptr="$emit('scroll:ptr')"
       >
         <!-- Mobile table view -->
-        <template v-if="$isMobile.value">
-          <div
-            v-if="items && items.length && !columnsInit"
-            class="vc-table__mobile-items"
+        <VcTableMobileView
+          v-if="$isMobile.value"
+          :items="items"
+          :columns="columns"
+          :item-action-builder="itemActionBuilder"
+          :multiselect="multiselect"
+          :disabled-selection="disabledSelection"
+          :selection="selection"
+          :is-selected="isSelected"
+          :row-checkbox="rowCheckbox"
+          :editing="editing"
+          :columns-init="columnsInit"
+          :search-value="searchValue"
+          :active-filter-count="activeFilterCount"
+          :notfound="notfound"
+          :empty="empty"
+          @item-click="$emit('itemClick', $event)"
+          @on-edit-complete="$emit('onEditComplete', $event)"
+          @on-cell-blur="$emit('onCellBlur', $event)"
+        >
+          <template
+            v-for="slot in slotNames"
+            :key="slot"
+            #[slot]="slotProps"
           >
-            <VcTableMobileItem
-              v-for="(item, i) in items"
-              :key="i"
-              :index="i"
-              :items="items"
-              :action-builder="itemActionBuilder"
-              :disabled-selection="disabledSelection"
-              :swiping-item="mobileSwipeItem"
-              :selection="selection"
-              :is-selected="isSelected(item)"
-              @click="$emit('itemClick', item)"
-              @swipe-start="handleSwipe"
-              @select="multiselect ? rowCheckbox(item) : undefined"
-            >
-              <slot
-                name="mobile-item"
-                :item="item"
-              >
-                <mobileTemplateRenderer
-                  :item="item"
-                  :index="i"
-                />
-              </slot>
-            </VcTableMobileItem>
-          </div>
-          <div
-            v-else
-            class="vc-table__mobile-empty"
-          >
-            <!-- Empty table view -->
-            <VcTableEmpty
-              :items="items"
-              :columns-init="columnsInit"
-              :search-value="searchValue"
-              :active-filter-count="activeFilterCount"
-              :notfound="notfound"
-              :empty="empty"
-            >
-              <template #notfound>
-                <slot name="notfound"></slot>
-              </template>
-              <template #empty>
-                <slot name="empty"></slot>
-              </template>
-            </VcTableEmpty>
-          </div>
-        </template>
+            <slot
+              :name="slot"
+              v-bind="slotProps"
+            />
+          </template>
+        </VcTableMobileView>
 
         <!-- Desktop table view -->
-        <div
+        <VcTableDesktopView
           v-else
-          ref="tableRef"
-          class="vc-table__desktop-table"
-          :class="{
-            'vc-table__empty': !items || !items.length,
-            'vc-table__multiselect': multiselect,
-          }"
+          :items="items"
+          :filtered-cols="filteredCols"
+          :multiselect="multiselect"
+          :header-checkbox="headerCheckbox"
+          :is-header-hover="isHeaderHover"
+          :expanded="expanded"
+          :editing="editing"
+          :sort-field="sortField"
+          :sort-direction="sortDirection"
+          :resizable-columns="resizableColumns"
+          :internal-columns-sorted="internalColumnsSorted"
+          :state-key="stateKey"
+          :select-all="selectAll"
+          :show-selection-choice="showSelectionChoice"
+          :all-selected="allSelected"
+          :selection="selection"
+          :is-selected="isSelected"
+          :disabled-selection="disabledSelection"
+          :columns-init="columnsInit"
+          :selected-item-id="selectedItemId"
+          :reorderable-rows="reorderableRows"
+          :enable-item-actions="enableItemActions"
+          :item-actions="itemActions"
+          :selected-row-index="selectedRowIndex"
+          :has-click-listener="hasClickListener"
+          :search-value="searchValue"
+          :active-filter-count="activeFilterCount"
+          :notfound="notfound"
+          :empty="empty"
+          :row-checkbox="rowCheckbox"
+          :reorderable-columns="reorderableColumns"
+          :internal-columns="internalColumns"
+          @item-click="$emit('itemClick', $event)"
+          @on-edit-complete="$emit('onEditComplete', $event)"
+          @on-cell-blur="$emit('onCellBlur', $event)"
+          @header-mouse-over="handleHeaderMouseOver"
+          @column-switcher="handleColumnSwitcher"
+          @header-click="handleHeaderClick"
+          @select-all="handleSelectAll"
+          @column-reorder="saveState"
+          @column-resize="saveState"
+          @row:reorder="$emit('row:reorder', $event)"
+          @show-actions="showActions"
+          @close-actions="closeActions"
+          @toggle-column="toggleColumn"
+          @update:header-checkbox="
+            (event: boolean) => {
+              headerCheckbox = event;
+            }
+          "
         >
-          <div
-            v-if="filteredCols.length"
-            class="vc-table__header"
-            @mouseenter="handleHeaderMouseOver(true)"
-            @mouseleave="handleHeaderMouseOver(false)"
+          <template
+            v-for="slot in slotNames"
+            :key="slot"
+            #[slot]="slotProps"
           >
-            <div class="vc-table__header-row">
-              <div
-                v-if="multiselect && items && items.length"
-                class="vc-table__header-checkbox"
-              >
-                <div class="vc-table__header-checkbox__content">
-                  <VcCheckbox
-                    v-if="!noHeaderCheckbox"
-                    v-model="headerCheckbox"
-                    size="m"
-                    @click.stop
-                  ></VcCheckbox>
-                </div>
-                <div class="vc-table__header-checkbox__resizer"></div>
-              </div>
-              <div
-                v-for="(item, index) in filteredCols"
-                :id="item.id"
-                :key="item.id"
-                class="vc-table__header-cell"
-                :class="[
-                  {
-                    'vc-table__header-cell--sortable': item.sortable,
-                    'vc-table__header-cell--last': index === filteredCols.length - 1,
-                  },
-                  item.align ? tableAlignment[item.align as keyof typeof tableAlignment] : '',
-                ]"
-                :style="{ maxWidth: item.width, width: item.width }"
-                @mousedown="onColumnHeaderMouseDown"
-                @dragstart="onColumnHeaderDragStart($event, item)"
-                @dragover="onColumnHeaderDragOver"
-                @dragleave="onColumnHeaderDragLeave"
-                @drop="onColumnHeaderDrop($event, item)"
-                @click="handleHeaderClick(item)"
-              >
-                <div class="vc-table__header-cell__content">
-                  <div class="vc-table__header-cell__title">
-                    <span
-                      v-if="editing && item.rules?.required"
-                      class="vc-table__header-cell__required"
-                      >*</span
-                    >
-                    <slot :name="`header_${item.id}`">{{ item.title }}</slot>
-                  </div>
-                  <div
-                    v-if="sortField === item.id"
-                    class="vc-table__header-cell__sort-icon"
-                  >
-                    <VcIcon
-                      size="xs"
-                      :icon="`fas fa-caret-${sortDirection === 'DESC' ? 'down' : 'up'}`"
-                    ></VcIcon>
-                  </div>
-                  <div
-                    v-else
-                    class="vc-table__header-cell__sort-icons"
-                  >
-                    <VcIcon
-                      size="xs"
-                      icon="fas fa-caret-up"
-                    ></VcIcon>
-                    <VcIcon
-                      size="xs"
-                      icon="fas fa-caret-down"
-                    ></VcIcon>
-                  </div>
-                </div>
-                <div
-                  class="vc-table__header-cell__resizer"
-                  :class="{
-                    'vc-table__header-cell__resizer--cursor': props.resizableColumns,
-                  }"
-                  @mousedown="handleMouseDown($event, item)"
-                ></div>
-              </div>
+            <slot
+              :name="slot"
+              v-bind="slotProps"
+            />
+          </template>
+        </VcTableDesktopView>
 
-              <div
-                v-if="isHeaderHover && props.expanded"
-                class="vc-table__column-switcher"
-              >
-                <VcTableColumnSwitcher
-                  :items="internalColumnsSorted"
-                  :state-key="stateKey"
-                  @change="toggleColumn"
-                  @on-active="handleColumnSwitcher"
-                ></VcTableColumnSwitcher>
-              </div>
-            </div>
-
-            <div
-              ref="resizer"
-              class="vc-table__resizer"
-            ></div>
-            <div
-              ref="reorderRef"
-              class="vc-table__reorder-ref"
-            ></div>
-          </div>
-          <div
-            v-if="selectAll && showSelectionChoice"
-            class="vc-table__select-all-footer"
-          >
-            <div class="vc-table__select-all-footer__content">
-              <div>
-                {{
-                  allSelected
-                    ? t("COMPONENTS.ORGANISMS.VC_TABLE.ALL_SELECTED")
-                    : t("COMPONENTS.ORGANISMS.VC_TABLE.CURRENT_PAGE_SELECTED")
-                }}
-                <VcButton
-                  text
-                  class="vc-table__select-all-footer__button"
-                  @click="handleSelectAll"
-                >
-                  {{
-                    allSelected
-                      ? t("COMPONENTS.ORGANISMS.VC_TABLE.CANCEL")
-                      : t("COMPONENTS.ORGANISMS.VC_TABLE.SELECT_ALL")
-                  }}
-                </VcButton>
-              </div>
-            </div>
-          </div>
-          <div
-            v-if="items && items.length && !columnsInit"
-            ref="tableBody"
-            class="vc-table__body"
-          >
-            <div
-              v-for="(item, itemIndex) in items"
-              :key="(typeof item === 'object' && 'id' in item && item.id) || itemIndex"
-              class="vc-table__body-row"
-              :class="{
-                'vc-table__body-row--odd': itemIndex % 2 === 0,
-                'vc-table__body-row--clickable': hasClickListener,
-                'vc-table__body-row--even': itemIndex % 2 === 1,
-                'vc-table__body-row--selected':
-                  typeof item === 'object' && 'id' in item && item.id ? toValue(selectedItemId) === item.id : false,
-                'vc-table__body-row--selection': selection && selection.length && selection.includes(item),
-              }"
-              @click="$emit('itemClick', item)"
-              @mouseleave="closeActions"
-              @mousedown="onRowMouseDown"
-              @dragstart="onRowDragStart($event, item)"
-              @dragover="onRowDragOver($event, item)"
-              @dragleave="onRowDragLeave"
-              @dragend="onRowDragEnd"
-              @drop="onRowDrop"
-              @mouseover="showActions(itemIndex)"
-            >
-              <div
-                v-if="multiselect && typeof item === 'object'"
-                class="vc-table__body-row-checkbox"
-                @click.stop
-              >
-                <div class="vc-table__body-row-checkbox-content">
-                  <VcCheckbox
-                    :model-value="isSelected(item)"
-                    size="m"
-                    :disabled="disabledSelection.includes(item)"
-                    @update:model-value="rowCheckbox(item)"
-                  ></VcCheckbox>
-                </div>
-                <div class="vc-table__body-row-checkbox-resizer"></div>
-              </div>
-              <div
-                v-for="cell in filteredCols"
-                :id="`${(typeof item === 'object' && 'id' in item && item.id) || itemIndex}_${cell.id}`"
-                :key="`${(typeof item === 'object' && 'id' in item && item.id) || itemIndex}_${cell.id}`"
-                class="vc-table__body-cell"
-                :class="[cell.class]"
-                :style="{ maxWidth: cell.width, width: cell.width }"
-              >
-                <div class="vc-table__body-cell__content">
-                  <slot
-                    :name="`item_${cell.id}`"
-                    :item="item"
-                    :cell="cell"
-                    :index="itemIndex"
-                  >
-                    <VcTableCell
-                      :item="item as TableItem"
-                      :cell="cell as ITableColumns"
-                      :index="itemIndex"
-                      :editing="editing"
-                      @update="$emit('onEditComplete', { event: $event, index: itemIndex })"
-                      @blur="$emit('onCellBlur', $event)"
-                    ></VcTableCell>
-                  </slot>
-                </div>
-              </div>
-              <div
-                v-if="
-                  enableItemActions && itemActionBuilder && typeof item === 'object' && selectedRowIndex === itemIndex
-                "
-                class="vc-table__body-actions"
-                :class="{
-                  'vc-table__body-actions--hover': hasClickListener,
-                  'vc-table__body-actions--selected':
-                    hasClickListener && selection && selection.length && selection.includes(item),
-                }"
-                @click.stop
-              >
-                <div class="vc-table__body-actions-content">
-                  <div
-                    v-for="(itemAction, i) in itemActions[itemIndex]"
-                    :key="i"
-                    class="vc-table__body-actions-item"
-                    @click.stop="itemAction.clickHandler(item, itemIndex)"
-                  >
-                    <VcTooltip
-                      placement="bottom"
-                      :offset="{
-                        mainAxis: 5,
-                      }"
-                    >
-                      <VcIcon
-                        :icon="itemAction.icon"
-                        size="m"
-                      />
-                      <template #tooltip>
-                        <div class="vc-table__body-actions-tooltip">
-                          {{ itemAction.title }}
-                        </div>
-                      </template>
-                    </VcTooltip>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div
-            v-else
-            class="vc-table__body-empty"
-          >
-            <!-- Empty table view -->
-            <VcTableEmpty
-              :items="items"
-              :columns-init="columnsInit"
-              :search-value="searchValue"
-              :active-filter-count="activeFilterCount"
-              :notfound="notfound"
-              :empty="empty"
-            >
-              <template #notfound>
-                <slot name="notfound"></slot>
-              </template>
-              <template #empty>
-                <slot name="empty"></slot>
-              </template>
-            </VcTableEmpty>
-          </div>
-        </div>
         <VcTableAddNew
           :editing="editing"
           :add-new-row-button="addNewRowButton"
@@ -410,110 +159,52 @@
       </VcContainer>
     </div>
 
-    <!-- Table footer -->
-    <slot
+    <VcTableFooter
       v-if="($slots['footer'] || footer) && items && items.length && !columnsInit"
-      name="footer"
-    >
-      <div
-        class="vc-table__footer"
-        :class="{
-          'vc-table__footer--mobile': $isMobile.value,
-          'vc-table__footer--desktop': $isDesktop.value,
-        }"
-      >
-        <!-- Table pagination -->
-        <VcPagination
-          :expanded="expanded"
-          :pages="pages"
-          :current-page="currentPage"
-          :variant="paginationVariant"
-          @item-click="
-            (event) => {
-              //scroll table to top
-              tableBody?.scrollTo(0, 0);
-              $emit('paginationClick', event);
-            }
-          "
-        ></VcPagination>
-
-        <!-- Table counter -->
-        <VcTableCounter
-          :label="totalLabel || $t('COMPONENTS.ORGANISMS.VC_TABLE.TOTALS')"
-          :value="totalCount"
-        ></VcTableCounter>
-      </div>
-    </slot>
+      :total-label="totalLabel"
+      :total-count="totalCount"
+      :expanded="expanded"
+      :pages="pages"
+      :current-page="currentPage"
+      :pagination-variant="paginationVariant"
+      @pagination-click="
+        (event: number) => {
+          //scroll table to top
+          tableBody?.scrollTo(0, 0);
+          $emit('paginationClick', event);
+        }
+      "
+    ></VcTableFooter>
   </div>
 </template>
 
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup generic="T extends TableItem | string">
-import { useCurrentElement, useLocalStorage } from "@vueuse/core";
-import {
-  MaybeRef,
-  Ref,
-  computed,
-  h,
-  onBeforeUnmount,
-  ref,
-  toValue,
-  unref,
-  watch,
-  getCurrentInstance,
-  shallowRef,
-  useSlots,
-  VNode,
-} from "vue";
-import { useI18n } from "vue-i18n";
-import { VcButton, VcCheckbox, VcContainer, VcIcon, VcPagination, VcLabel } from "./../../";
+import { MaybeRef, Ref, computed, ref, unref, watch, getCurrentInstance, VNode, useSlots, toRefs } from "vue";
+import { VcContainer, VcPagination } from "./../../";
 import { IActionBuilderResult, ITableColumns } from "./../../../../core/types";
-import VcTableCell from "./_internal/vc-table-cell/vc-table-cell.vue";
-import VcTableColumnSwitcher from "./_internal/vc-table-column-switcher/vc-table-column-switcher.vue";
-import VcTableCounter from "./_internal/vc-table-counter/vc-table-counter.vue";
-import VcTableMobileItem from "./_internal/vc-table-mobile-item/vc-table-mobile-item.vue";
-import VcTableBaseHeader from "./_internal/vc-table-base-header/vc-table-base-header.vue";
 import * as _ from "lodash-es";
 import "core-js/actual/array/to-spliced";
 import "core-js/actual/array/to-sorted";
 import VcTableAddNew from "./_internal/vc-table-add-new/vc-table-add-new.vue";
-import VcTableEmpty from "./_internal/vc-table-empty/vc-table-empty.vue";
 import type { ComponentProps } from "vue-component-type-helpers";
+import { useTableSelection } from "./composables/useTableSelection";
+import { useTableState } from "./composables/useTableState";
+import { useTableActions } from "./composables/useTableActions";
+import VcTableMobileView from "./_internal/vc-table-mobile-view/vc-table-mobile-view.vue";
+import VcTableDesktopView from "./_internal/vc-table-desktop-view/vc-table-desktop-view.vue";
+import VcTableHeader from "./_internal/vc-table-header/vc-table-header.vue";
+import VcTableSelectAll from "./_internal/vc-table-select-all/vc-table-select-all.vue";
+import VcTableFooter from "./_internal/vc-table-footer/vc-table-footer.vue";
+import type { TableSlots, TableItem, TableColPartial, StatusImage } from "./types";
 
-export interface StatusImage {
-  image?: string;
-  text: string | Ref<string>;
-  action?: string;
-  clickHandler?: () => void;
-}
-
-export interface TableItem {
-  [x: string]: any;
-  actions?: IActionBuilderResult[];
-}
-
-export type TableColPartial = Partial<
-  ITableColumns & {
-    predefined?: boolean;
-  }
->;
-
-defineSlots<{
-  header: (props: { header: VNode }) => any;
-  filters: (args: { closePanel: () => void }) => any;
-  "mobile-item": (args: { item: T }) => any;
-  [key: `header_${string}`]: (props: any) => any;
-  [key: `item_${string}`]: (args: { item: T; cell: ITableColumns | TableColPartial; index: number }) => any;
-  notfound: (props: any) => any;
-  empty: (props: any) => any;
-  footer: (props: any) => any;
-}>();
+defineSlots<TableSlots<T>>();
 
 const props = withDefaults(
   defineProps<{
     columns: ITableColumns[];
     items: T[];
-    itemActionBuilder?: (item: T) => IActionBuilderResult[] | undefined;
+    itemActionBuilder?: (item: T) => IActionBuilderResult<T>[] | undefined;
     sort?: string;
     multiselect?: boolean;
     disableItemCheckbox?: (item: T) => boolean;
@@ -562,6 +253,7 @@ const props = withDefaults(
     reorderableColumns: true,
     paginationVariant: "default",
     columnSelector: "auto",
+    stateKey: "FALLBACK_STATE_KEY",
   },
 );
 
@@ -579,192 +271,84 @@ const emit = defineEmits<{
   (e: "onCellBlur", args: { row: number | undefined; field: string }): void;
 }>();
 
-const { t } = useI18n({ useScope: "global" });
 const instance = getCurrentInstance();
-const slots = useSlots();
+
+const { items, columns, stateKey, columnSelector, expanded, selectionItems, enableItemActions, itemActionBuilder } = toRefs(props);
 
 // template refs
-const reorderRef = ref<HTMLElement | null>();
-const tableRef = ref<HTMLElement | null>();
 const tableBody = ref<HTMLElement | null>();
-
-// event listeners
-let columnResizeListener: ((...args: any[]) => any) | null = null;
-let columnResizeEndListener: ((...args: any[]) => any) | null = null;
-
-const selection = ref<T[]>([]) as Ref<T[]>;
-const allSelected = ref(false);
-
-const selectedRowIndex = shallowRef();
-
 const scrollContainer = ref<typeof VcContainer>();
 
-const itemActions: Ref<IActionBuilderResult[][]> = ref([]);
-const disabledSelection: Ref<T[]> = ref([]);
-const mobileSwipeItem = ref<string>();
-const columnResizing = ref(false);
-const resizeColumnElement = ref<TableColPartial>();
-const nextColumn = ref<TableColPartial>();
-const lastResize = ref<number>();
-const table = useCurrentElement();
-const resizer = ref();
+const slots = useSlots();
+
+const slotNames = Object.keys(slots) as unknown;
+
+const {
+  selection,
+  allSelected,
+  disabledSelection,
+  headerCheckbox,
+  showSelectionChoice,
+  isSelected,
+  handleSelectAll,
+  rowCheckbox,
+} = useTableSelection<T>({
+  items,
+  disableItemCheckbox: props.disableItemCheckbox,
+  totalCount: props.totalCount,
+  onSelectionChanged: (values) => emit("selectionChanged", values),
+  onSelectAll: (value) => emit("select:all", value),
+});
+
+const { itemActions, selectedRowIndex, calculateActions, showActions, closeActions } = useTableActions<T>({
+  enableItemActions,
+  itemActionBuilder,
+});
+
 const isHeaderHover = ref(false);
 const columnSwitcherActive = ref(false);
-const state = useLocalStorage<TableColPartial[]>("VC_TABLE_STATE_" + props.stateKey?.toUpperCase(), []);
-const internalColumns: Ref<TableColPartial[]> = ref([]);
-const draggedColumn = ref();
-const draggedElement = ref<HTMLElement>();
-const dropPosition = ref();
-const columnsInit = ref(true);
-// const isHovered = ref(undefined) as Ref<{ item: T; state: boolean } | undefined>;
 
-// row reordering variables
-const draggedRow = ref<T>();
-const rowDragged = ref(false);
-const droppedRowIndex = ref<number>();
-const draggedRowIndex = ref<number>();
-
-onBeforeUnmount(() => {
-  unbindColumnResizeEvents();
+const {
+  internalColumns,
+  columnsInit,
+  internalColumnsSorted,
+  filteredCols,
+  saveState,
+  toggleColumn,
+  initializeColumns,
+} = useTableState({
+  stateKey,
+  columnSelector,
+  expanded,
 });
 
 const sortDirection = computed(() => {
   const entry = props.sort?.split(":");
-  return entry && entry.length === 2 && entry[1];
+  return (entry && entry.length === 2 && entry[1]) || "";
 });
 
 const sortField = computed(() => {
   const entry = props.sort?.split(":");
-  return entry && entry.length === 2 && entry[0];
+  return (entry && entry.length === 2 && entry[0]) || "";
 });
 
 const hasClickListener = typeof instance?.vnode.props?.["onItemClick"] === "function";
 
-// const renderCellSlot = ({ item, cell, index }: { item: T; cell: ITableColumns; index: number }) => {
-//   const isSlotExist = slots[`item_${cell.id}`];
-
-//   const isFirstCell = filteredCols.value.indexOf(cell) === 0;
-
-//   const isRowSelected = isSelected(item);
-
-//   const checkboxComponent = h(
-//     "div",
-//     {
-//       class: "tw-absolute tw-z-10 tw-top-0 tw-bottom-0 tw-left-[20px] tw-right-0 tw-flex tw-items-center",
-//     },
-//     h(VcCheckbox, {
-//       class: "",
-//       size: "m",
-//       modelValue: isSelected(item),
-//       onClick: (e: Event) => e.stopPropagation(),
-//       onMouseover: () => (isHovered.value = { state: true, item: item }),
-//       onMouseout: () => (isHovered.value = { state: false, item: item }),
-//       "onUpdate:modelValue": () => {
-//         rowCheckbox(item);
-//       },
-//     }),
-//   );
-
-//   const checkboxVisibilityHandler =
-//     !props.editing &&
-//     props.multiselect &&
-//     props.items &&
-//     props.items.length &&
-//     ((isFirstCell && selectedRowIndex.value === index) || (isRowSelected && isFirstCell));
-
-//   return h("div", { class: "" }, [
-//     checkboxVisibilityHandler ? checkboxComponent : undefined,
-//     h(
-//       "div",
-//       {
-//         class: checkboxVisibilityHandler
-//           ? isHovered.value?.item === item && isHovered.value.state
-//             ? "tw-opacity-5"
-//             : "tw-opacity-15"
-//           : "",
-//       },
-//       !isSlotExist
-//         ? h(VcTableCell, {
-//             cell,
-
-//             item: item as TableItem,
-//             index,
-//             editing: props.editing,
-//             onUpdate: (event) => {
-//               emit("onEditComplete", { event, index });
-//             },
-//             onBlur: (event) => emit("onCellBlur", event),
-//           })
-//         : slots[`item_${cell.id}`]?.({ item, cell, index }),
-//     ),
-//   ]);
-// };
-
-// const calculateElWidth = (id: string) => {
-//   const el = document.getElementById(id);
-//   return el ? el.offsetWidth : 0;
-// };
-
-const headerComponent = () =>
-  h(
-    VcTableBaseHeader,
-    {
-      searchValue: props.searchValue,
-      searchPlaceholder: props.searchPlaceholder,
-      activeFilterCount: props.activeFilterCount,
-      expanded: props.expanded,
-      "onSearch:change": (value: string) => emit("search:change", value),
-      disableFilter: props.disableFilter,
-    },
-    slots.filters
-      ? {
-          filters: () => {
-            return slots.filters?.({ closePanel: () => {} });
-          },
-        }
-      : undefined,
-  );
-
-const allColumns = ref([]) as Ref<TableColPartial[]>;
-
-const mobileTemplateRenderer = ({ item, index }: { item: TableItem | string; index: number }) => {
-  return h(
-    "div",
-    {
-      class: "vc-table__mobile-items-renderer",
-    },
-    props.columns.map((x) => {
-      return h("div", { class: "tw-grow tw-w-[33%] tw-ml-3  tw-truncate", key: `mobile-view-item-${index}` }, [
-        h(VcLabel, { class: "tw-mb-1 tw-truncate", required: x?.rules?.required }, () => toValue(x.title)),
-        slots[`item_${x.id}`]
-          ? slots[`item_${x.id}`]?.({ item, cell: x, index })
-          : [
-              typeof item === "object"
-                ? h(VcTableCell, {
-                    cell: { ...x, class: "!tw-justify-start " },
-                    item,
-                    key: `mobile-view-cell-${index}`,
-                    class: "tw-mb-4",
-                    editing: props.editing,
-                    index,
-                    onUpdate: (event) => {
-                      emit("onEditComplete", { event: event, index });
-                    },
-                    onBlur: (event) => emit("onCellBlur", event),
-                  })
-                : undefined,
-            ],
-      ]);
-    }),
-  );
-};
+watch(
+  () => items.value,
+  (newVal) => {
+    scrollContainer.value?.scrollTop();
+    calculateActions(newVal);
+  },
+  { deep: true, immediate: true },
+);
 
 watch(
-  () => props.selectionItems,
+  () => selectionItems.value,
   (newVal) => {
     if (newVal) {
       if (!newVal?.length) return;
-      selection.value = _.merge(selection.value, newVal);
+      selection.value = _.merge([], selection.value, newVal) as T[];
     }
   },
   {
@@ -773,143 +357,11 @@ watch(
 );
 
 watch(
-  [() => props.items, () => props.columns],
+  [() => items.value, () => columns.value],
   ([newValItems, newValCols]) => {
-    let predefinedCols: ITableColumns[] = [];
-    let otherCols: ITableColumns[] = [];
-
-    // Helper function to process columns
-    const processColumns = (columns: ITableColumns[], predefined: boolean, defaultVisible: boolean) =>
-      columns.map((item) => ({
-        ...item,
-        predefined,
-        visible: typeof item.visible !== "undefined" ? item.visible : defaultVisible,
-      }));
-
-    // Process predefined columns
-    if (newValCols && newValCols.length) {
-      predefinedCols = processColumns(newValCols, true, true);
-    }
-
-    if (props.columnSelector === "auto") {
-      // Generate columns automatically from items
-      if (newValItems && newValItems.length) {
-        const itemKeys = Object.keys(newValItems[0]);
-        otherCols = itemKeys.map((key) => ({
-          id: key,
-          title: key.replace(/([A-Z])/g, " $1").replace(/^./, (str) => str.toUpperCase()),
-          visible: false,
-          predefined: false,
-        }));
-      }
-
-      // Combine columns and restore state
-      allColumns.value = _.unionBy(predefinedCols, otherCols, "id");
-      restoreState(predefinedCols);
-    } else if (props.columnSelector === "defined") {
-      allColumns.value = predefinedCols;
-      restoreState(predefinedCols);
-    } else {
-      // Get columns from columnSelector
-      const getDefinedColumns = (): ITableColumns[] => {
-        if (typeof props.columnSelector === "function") {
-          return props.columnSelector();
-        }
-        return toValue(props.columnSelector) as ITableColumns[];
-      };
-
-      const definedCols = processColumns(getDefinedColumns(), false, false);
-
-      // Combine columns and restore state
-      allColumns.value = _.unionBy(predefinedCols, definedCols, "id");
-      restoreState(allColumns.value);
-    }
-
-    columnsInit.value = false;
+    initializeColumns(newValCols, newValItems);
   },
   { deep: true, immediate: true },
-);
-
-const internalColumnsSorted = computed(() => {
-  // alphabetical order
-  return internalColumns.value /* @ts-expect-error  - toSorted is not parsed correctly by ts */
-    .toSorted((a, b) => {
-      if (a && b && a.title && b.title) {
-        return toValue(a.title).localeCompare(toValue(b.title));
-      }
-      return 0;
-    });
-});
-
-const tableAlignment = {
-  start: "tw-justify-start",
-  end: "tw-justify-end",
-  center: "tw-justify-center",
-  between: "tw-justify-between",
-  around: "tw-justify-around",
-  evenly: "tw-justify-evenly",
-};
-
-const headerCheckbox = computed({
-  get() {
-    return props.items && props.items.length
-      ? selection.value.length ===
-          props.items.length -
-            (disabledSelection.value.length !== props.items.length ? disabledSelection.value.length : 0)
-      : false;
-  },
-  set(checked: boolean) {
-    let _selected: T[] = [];
-
-    if (checked) {
-      _selected = props.items.filter((x) => !disabledSelection.value.includes(x));
-    }
-
-    selection.value = _selected;
-    allSelected.value = false;
-  },
-});
-
-const filteredCols = computed(() => {
-  return internalColumns.value.filter((x) => {
-    if (x.visible === false) {
-      return false;
-    }
-    if (!props.expanded) {
-      return x.alwaysVisible;
-    }
-    return x;
-  });
-});
-
-const showSelectionChoice = computed(() => selection.value.length === props.items.length && props.pages > 1);
-
-watch(
-  () => props.items,
-  (newVal) => {
-    scrollContainer.value?.scrollTop();
-
-    calculateActions(newVal);
-    handleMultiselect(newVal);
-
-    selection.value = selection.value.filter((selection) => newVal.includes(selection));
-  },
-  { deep: true, immediate: true },
-);
-
-watch(
-  () => selection.value,
-  (newVal) => {
-    emit("selectionChanged", newVal);
-  },
-  { deep: true },
-);
-
-watch(
-  () => allSelected.value,
-  (newVal) => {
-    emit("select:all", newVal);
-  },
 );
 
 function handleHeaderMouseOver(state: boolean) {
@@ -927,575 +379,46 @@ function handleColumnSwitcher(state: boolean) {
   }
 }
 
-function handleSelectAll() {
-  allSelected.value = !allSelected.value;
-
-  if (!allSelected.value) {
-    selection.value = [];
-    return;
-  }
-}
-
-function isSelected(item: T) {
-  return !!selection.value.find((x) => _.isEqual(x, item));
-}
-
-function rowCheckbox(item: T) {
-  const clear = item;
-
-  // const index = props.items.findIndex((x) => _.isEqual(x, clear));
-
-  if (disabledSelection.value.includes(item)) {
-    return;
-  }
-
-  const isExist = selection.value.find((x) => _.isEqual(x, clear));
-
-  if (isExist) {
-    selection.value = selection.value.filter((x) => !_.isEqual(x, clear));
-  } else {
-    selection.value.push(clear);
-  }
-}
-
-function showActions(index: number) {
-  if (typeof props.items[index] === "object") {
-    selectedRowIndex.value = index;
-  }
-}
-
-async function calculateActions(items: T[]) {
-  if (props.enableItemActions && typeof props.itemActionBuilder === "function") {
-    const populatedItems: IActionBuilderResult[][] = [];
-    for (let index = 0; index < items.length; index++) {
-      if (typeof items[index] === "object") {
-        const elementWithActions = await props.itemActionBuilder(items[index]);
-        if (elementWithActions) {
-          populatedItems.push(elementWithActions);
-        }
-      }
-    }
-    itemActions.value = populatedItems;
-  }
-}
-
-async function handleMultiselect(items: T[]) {
-  if (props.multiselect && props.disableItemCheckbox && typeof props.disableItemCheckbox === "function") {
-    const disabledMultiselect = [];
-    for (let index = 0; index < items.length; index++) {
-      if (typeof items[index] === "object") {
-        const element = await props.disableItemCheckbox(items[index]);
-
-        if (element) {
-          disabledMultiselect.push(items[index]);
-        }
-      }
-    }
-    disabledSelection.value = disabledMultiselect as T[];
-  }
-}
-
-function closeActions() {
-  selectedRowIndex.value = undefined;
-}
-
-function handleSwipe(id: string) {
-  mobileSwipeItem.value = id;
-}
-
 function handleHeaderClick(item: TableColPartial) {
   const cleanCol = item;
   delete cleanCol.predefined;
   emit("headerClick", cleanCol as ITableColumns);
 }
-
-function handleMouseDown(e: MouseEvent, item: TableColPartial) {
-  if (props.resizableColumns) {
-    const containerLeft = getOffset(table.value as HTMLElement).left;
-    resizeColumnElement.value = item;
-    columnResizing.value = true;
-    lastResize.value = e.pageX - containerLeft + (table.value as HTMLDivElement).scrollLeft;
-
-    bindColumnResizeEvents();
-  }
-}
-
-function bindColumnResizeEvents() {
-  if (!columnResizeListener) {
-    columnResizeListener = document.addEventListener("mousemove", (event: MouseEvent) => {
-      if (columnResizing.value) {
-        onColumnResize(event);
-      }
-    }) as unknown as typeof document.addEventListener;
-  }
-  if (!columnResizeEndListener) {
-    columnResizeEndListener = document.addEventListener("mouseup", () => {
-      if (columnResizing.value) {
-        columnResizing.value = false;
-        onColumnResizeEnd();
-      }
-    }) as unknown as typeof document.addEventListener;
-  }
-}
-
-function unbindColumnResizeEvents() {
-  if (columnResizeListener) {
-    document.removeEventListener("document", columnResizeListener);
-    columnResizeListener = null;
-  }
-  if (columnResizeEndListener) {
-    document.removeEventListener("document", columnResizeEndListener);
-    columnResizeEndListener = null;
-  }
-}
-
-function onColumnResize(event: MouseEvent) {
-  if (columnResizing.value) {
-    const containerLeft = getOffset(table.value as HTMLElement).left;
-
-    resizer.value.style.top = 0 + "px";
-    const leftOffset = event.pageX - containerLeft + (table.value as HTMLDivElement).scrollLeft;
-    resizer.value.style.left =
-      Math.min(leftOffset, (table.value as HTMLDivElement).offsetWidth - resizer.value.offsetWidth - 70) + "px";
-    resizer.value.style.display = "block";
-  }
-}
-
-function getOffset(element: HTMLElement) {
-  if (!element.getClientRects().length) {
-    return { top: 0, left: 0 };
-  }
-
-  const rect = element.getBoundingClientRect();
-  const win = element.ownerDocument.defaultView;
-  return {
-    top: rect.top + ((win && win.scrollY) ?? 0),
-    left: rect.left + ((win && win.scrollX) ?? 0),
-  };
-}
-
-function onColumnResizeEnd() {
-  const delta = resizer.value.offsetLeft - (lastResize.value ?? 0);
-
-  const columnElement: HTMLElement | null = (table.value as HTMLDivElement).querySelector(
-    `#${resizeColumnElement.value?.id}`,
-  );
-
-  if (columnElement) {
-    const columnWidth = columnElement.offsetWidth;
-    const newColumnWidth = columnWidth + delta;
-
-    const minWidth = 15;
-
-    if (columnWidth + delta > parseInt(minWidth.toString(), 10) && resizeColumnElement.value) {
-      nextColumn.value = filteredCols.value[filteredCols.value.indexOf(resizeColumnElement.value) + 1];
-
-      if (nextColumn.value) {
-        const nextColElement = (table.value as HTMLDivElement).querySelector(`#${nextColumn.value.id}`);
-
-        const nextColumnWidth = (nextColElement as HTMLElement).offsetWidth - delta;
-
-        if (newColumnWidth > 15 && nextColumnWidth > 15) {
-          resizeTableCells(newColumnWidth, nextColumnWidth);
-        }
-      } else {
-        if (newColumnWidth > 15) {
-          resizeColumnElement.value.width = newColumnWidth + "px";
-        }
-      }
-    }
-    resizer.value.style.display = "none";
-
-    unbindColumnResizeEvents();
-
-    saveState();
-  }
-}
-
-function resizeTableCells(newColumnWidth: number, nextColumnWidth: number) {
-  const colIndex = internalColumns.value.findIndex((col) => col.id === resizeColumnElement.value?.id);
-  const widths: number[] = [];
-  const tableHeaders = (table.value as HTMLDivElement)?.querySelectorAll(
-    ".vc-table__header-cell",
-  ) as NodeListOf<HTMLElement>;
-  tableHeaders.forEach((header) => widths.push(header.offsetWidth));
-
-  internalColumns.value.forEach((col, index) => {
-    col.width = widths[index] + "px";
-  });
-
-  widths.forEach((width, index) => {
-    const colWidth =
-      index === colIndex ? newColumnWidth : nextColumnWidth && index === colIndex + 1 ? nextColumnWidth : width;
-
-    internalColumns.value[index].width = colWidth + "px";
-  });
-}
-
-function onColumnHeaderDragStart(event: DragEvent, item: TableColPartial) {
-  if (columnResizing.value) {
-    event.preventDefault();
-    return;
-  }
-
-  draggedColumn.value = item;
-  draggedElement.value = event.target as HTMLElement;
-  if (event.dataTransfer) {
-    event.dataTransfer.setData("text", "reorder");
-  }
-}
-
-function findParentHeader(element: HTMLElement) {
-  if (element.classList.contains("vc-table__header-cell")) {
-    return element;
-  } else {
-    let parent = element.parentElement;
-
-    while (parent && !parent.classList.contains("vc-table__header-cell")) {
-      parent = parent.parentElement;
-      if (!parent) break;
-    }
-
-    return parent;
-  }
-}
-
-function onColumnHeaderDragOver(event: DragEvent) {
-  const dropHeader = findParentHeader(event.target as HTMLElement);
-
-  if (props.reorderableColumns && draggedColumn.value && dropHeader) {
-    event.preventDefault();
-    const containerOffset = getOffset(table.value as HTMLElement);
-    const dropHeaderOffset = getOffset(dropHeader);
-
-    if (draggedElement.value !== dropHeader && reorderRef.value && tableRef.value) {
-      const targetLeft = dropHeaderOffset.left - containerOffset.left;
-      const columnCenter = dropHeaderOffset.left + dropHeader.offsetWidth / 2;
-
-      reorderRef.value.style.top = dropHeaderOffset.top - getOffset(tableRef.value).top + "px";
-
-      if (event.pageX > columnCenter) {
-        reorderRef.value.style.left = targetLeft + dropHeader.offsetWidth - 5 + "px";
-
-        dropPosition.value = 1;
-      } else {
-        reorderRef.value.style.left = targetLeft - 5 + "px";
-        dropPosition.value = -1;
-      }
-
-      reorderRef.value.style.display = "block";
-    }
-  }
-}
-function onColumnHeaderDragLeave(event: DragEvent) {
-  if (props.reorderableColumns && draggedColumn.value) {
-    event.preventDefault();
-
-    if (reorderRef.value != undefined) {
-      reorderRef.value.style.display = "none";
-    }
-  }
-}
-
-function onColumnHeaderDrop(event: DragEvent, item: TableColPartial) {
-  event.preventDefault();
-
-  if (draggedColumn.value) {
-    const dragIndex = internalColumns.value.indexOf(draggedColumn.value);
-    const dropIndex = internalColumns.value.indexOf(item);
-
-    let allowDrop = dragIndex !== dropIndex;
-
-    if (
-      allowDrop &&
-      ((dropIndex - dragIndex === 1 && dropPosition.value === -1) ||
-        (dropIndex - dragIndex === -1 && dropPosition.value === 1))
-    ) {
-      allowDrop = false;
-    }
-
-    if (allowDrop) {
-      reorderArray(internalColumns.value, dragIndex, dropIndex);
-
-      saveState();
-    }
-
-    if (reorderRef.value) {
-      reorderRef.value.style.display = "none";
-    }
-    if (draggedElement.value) {
-      draggedElement.value.draggable = false;
-    }
-    draggedColumn.value = null;
-    dropPosition.value = null;
-  }
-}
-
-function saveState() {
-  console.debug("[@vc-shell/framework#vc-table.vue] - Save state");
-
-  const colsClone = _.cloneDeep(internalColumns.value);
-  state.value = colsClone.map((col) => _.pick(col, "id", "visible", "width", "predefined"));
-}
-
-function restoreState(predefinedColumns: TableColPartial[] = []) {
-  const storedState = state.value;
-
-  if (!storedState?.length) {
-    internalColumns.value = allColumns.value;
-    return;
-  }
-
-  const predefinedMap = new Map(predefinedColumns.map((col) => [col.id, col]));
-  const mergedColumns: TableColPartial[] = storedState
-    .map((storedCol) => {
-      const predefinedCol = predefinedMap.get(storedCol.id);
-      return mergeColumns(storedCol, predefinedCol);
-    })
-    .filter((col) => col.title);
-
-  // add predefined columns that are not in stored state
-  predefinedColumns.forEach((predefinedCol) => {
-    if (!mergedColumns.find((col) => col.id === predefinedCol.id)) {
-      mergedColumns.push({ ...predefinedCol, visible: true, predefined: true });
-    }
-  });
-
-  // add other columns to mergedColumns from allColumns array without duplicates
-  allColumns.value.forEach((col) => {
-    if (!mergedColumns.find((c) => c.id === col.id)) {
-      mergedColumns.push(col as TableColPartial);
-    }
-  });
-
-  resetRemovedColumns(storedState, predefinedMap, mergedColumns);
-
-  setTitles(mergedColumns);
-
-  allColumns.value = [...mergedColumns];
-  internalColumns.value = allColumns.value;
-
-  saveState();
-}
-
-function mergeColumns(storedCol: TableColPartial, predefinedCol: TableColPartial | undefined) {
-  if (predefinedCol) {
-    if (predefinedCol.predefined && !storedCol.predefined) {
-      return { ...predefinedCol, predefined: true };
-    } else {
-      return {
-        ...predefinedCol,
-        visible: storedCol.visible,
-        width: storedCol.width,
-        title: predefinedCol.title || storedCol.title || "",
-      };
-    }
-  } else {
-    return { ...storedCol, predefined: false };
-  }
-}
-
-function resetRemovedColumns(
-  storedState: TableColPartial[],
-  predefinedMap: Map<string | undefined, TableColPartial>,
-  mergedColumns: TableColPartial[],
-) {
-  storedState.forEach((storedCol) => {
-    if (storedCol.predefined && !predefinedMap.has(storedCol.id)) {
-      const existingColumnIndex = mergedColumns.findIndex((col) => col.id === storedCol.id);
-      if (existingColumnIndex !== -1) {
-        mergedColumns[existingColumnIndex] = {
-          ...mergedColumns[existingColumnIndex],
-          visible: false,
-          width: undefined,
-          predefined: false,
-        };
-      }
-    }
-  });
-}
-
-function setTitles(mergedColumns: TableColPartial[]) {
-  mergedColumns.forEach((col) => {
-    if (!col.title) {
-      const originalColumn = allColumns.value.find((c) => c.id === col.id);
-      if (originalColumn) {
-        col.title = originalColumn.title;
-      }
-    }
-  });
-}
-
-function reorderArray(value: unknown[], from: number, to: number) {
-  if (value && from !== to) {
-    if (to >= value.length) {
-      to %= value.length;
-      from %= value.length;
-    }
-
-    value.splice(to, 0, value.splice(from, 1)[0]);
-  }
-}
-
-function onColumnHeaderMouseDown(event: MouseEvent) {
-  if (props.reorderableColumns) {
-    (event.currentTarget as HTMLElement).draggable = true;
-  }
-}
-
-function toggleColumn(item: ITableColumns) {
-  // if item is not in internalColumns, add it
-  if (!internalColumns.value.find((x) => x.id === item.id)) {
-    internalColumns.value.push(item);
-  } else {
-    // internalColumns.value = internalColumns.value.filter((x) => x.id !== item.id);
-  }
-  if (item) {
-    internalColumns.value = internalColumns.value.map((x) => {
-      if (x.id === item.id) {
-        x = item;
-      }
-      return x;
-    });
-  }
-
-  saveState();
-}
-
-function onRowMouseDown(event: MouseEvent) {
-  if (props.reorderableRows) {
-    (event.currentTarget as HTMLElement).draggable = true;
-  }
-}
-
-function onRowDragStart(event: DragEvent, item: T) {
-  if (!props.reorderableRows) {
-    return;
-  }
-  rowDragged.value = true;
-  draggedRow.value = item;
-  draggedRowIndex.value = props.items.indexOf(item);
-  if (event.dataTransfer) {
-    event.dataTransfer.setData("text", "row-reorder");
-  }
-}
-
-function onRowDragOver(event: DragEvent, item: T) {
-  if (!props.reorderableRows) {
-    return;
-  }
-  const index = props.items.indexOf(item);
-
-  if (rowDragged.value && draggedRow.value !== item) {
-    const rowElement = event.currentTarget as HTMLElement;
-    const rowY = getOffset(rowElement).top;
-    const pageY = event.pageY;
-    const rowMidY = rowY + rowElement.offsetHeight / 2;
-    const previousRowElement = rowElement.previousElementSibling;
-
-    if (pageY < rowMidY) {
-      rowElement.classList.remove("vc-table__drag-row-bottom");
-      droppedRowIndex.value = index;
-
-      if (previousRowElement) {
-        previousRowElement.classList.add("vc-table__drag-row-bottom");
-      } else {
-        rowElement.classList.add("vc-table__drag-row-top");
-      }
-    } else {
-      if (previousRowElement) {
-        previousRowElement.classList.remove("vc-table__drag-row-bottom");
-      } else {
-        rowElement.classList.add("vc-table__drag-row-top");
-      }
-      droppedRowIndex.value = index + 1;
-      rowElement.classList.add("vc-table__drag-row-bottom");
-    }
-
-    event.preventDefault();
-  }
-}
-
-function onRowDragLeave(event: DragEvent) {
-  event.preventDefault();
-
-  const rowElement = event.currentTarget as HTMLElement;
-  const previousRowElement = rowElement.previousElementSibling;
-
-  if (previousRowElement) {
-    previousRowElement.classList.remove("vc-table__drag-row-bottom");
-  }
-
-  rowElement.classList.remove("vc-table__drag-row-top");
-  rowElement.classList.remove("vc-table__drag-row-bottom");
-}
-
-function onRowDragEnd(event: DragEvent) {
-  rowDragged.value = false;
-  draggedRowIndex.value = undefined;
-  droppedRowIndex.value = undefined;
-  (event.currentTarget as HTMLElement).draggable = false;
-}
-
-function onRowDrop(event: DragEvent) {
-  if (droppedRowIndex.value !== undefined && draggedRowIndex.value !== undefined) {
-    const dropIndex =
-      draggedRowIndex.value > droppedRowIndex.value
-        ? droppedRowIndex.value
-        : droppedRowIndex.value === 0
-          ? 0
-          : droppedRowIndex.value - 1;
-
-    const processedItems = [...props.items];
-
-    reorderArray(processedItems, draggedRowIndex.value, dropIndex);
-
-    emit("row:reorder", {
-      dragIndex: draggedRowIndex.value,
-      dropIndex: dropIndex,
-      value: processedItems as T[],
-    });
-  }
-
-  // cleanup
-  onRowDragLeave(event);
-  onRowDragEnd(event as DragEvent & { currentTarget?: { draggable: boolean } });
-  event.preventDefault();
-}
 </script>
 
 <style lang="scss">
 :root {
-  --table-border-color: var(--base-border-color, var(--neutrals-200));
-  --table-select-all-border-color: var(--base-border-color, var(--neutrals-200));
-  --table-header-bg: var(--neutrals-50);
-  --table-header-border-color: var(--base-border-color, var(--neutrals-200));
-  --table-header-border: inset 0px 1px 0px var(--table-header-border-color),
-    inset 0px -1px 0px var(--table-header-border-color);
-  --table-header-text-color: var(--secondary-700);
-  --table-resizer-color: var(--base-border-color, var(--neutrals-200));
+  --table-border-color: var(--neutrals-200);
+  --table-select-all-border-color: var(--neutrals-200);
+  --table-header-bg: var(--primary-50);
+  --table-header-border-color: var(--neutrals-200);
+  --table-header-border:
+    inset 0px 1px 0px var(--table-header-border-color), inset 0px -1px 0px var(--table-header-border-color);
+  --table-header-text-color: var(--secondary-950);
+  --table-resizer-color: var(--neutrals-200);
   --table-reorder-color: var(--primary-400);
   --table-select-all-bg: var(--primary-100);
-  --table-row-bg-hover: var(--primary-50);
+  --table-row-bg-hover: var(--primary-100);
   --table-row-bg-odd: var(--additional-50);
   --table-row-bg-even: var(--neutrals-50);
-  --table-row-hover: var(--primary-50);
+  --table-row-hover: var(--primary-100);
   --table-row-bg-selected: var(--primary-100);
-  --table-actions-bg: var(--neutrals-100);
-  --table-actions-bg-hover: var(--primary-50);
+  --table-actions-bg: var(--primary-100);
+  --table-actions-bg-hover: var(--primary-100);
   --table-actions-bg-hover-selected-item: var(--primary-100);
   --table-actions-text-color: var(--neutrals-600);
   --table-actions-tooltip-text: var(--neutrals-600);
   --table-actions-icon-color: var(--primary-500);
   --table-actions-icon-color-hover: var(--primary-600);
   --table-footer-bg: var(--neutrals-50);
-  --table-footer-border-color: var(--base-border-color, var(--neutrals-200));
+  --table-footer-border-color: var(--neutrals-200);
   --table-row-drag-color: var(--primary-400);
   --table-row-drag-shadow: inset 0 -2px 0 0 var(--table-row-drag-color);
   --table-actions-color-danger: var(--danger-500);
   --table-actions-color-success: var(--success-500);
   --table-mobile-border-color: var(--secondary-200);
-  --table-text-color: var(--base-text-color, var(--neutrals-950));
+  --table-text-color: var(--neutrals-950);
+  --table-sort-icon-color: var(--neutrals-400);
 }
 
 $variants: (
@@ -1505,7 +428,7 @@ $variants: (
 
 .vc-table {
   @apply tw-relative tw-overflow-hidden tw-flex tw-flex-col tw-grow tw-basis-0 tw-border-solid tw-border-t-0;
-  @apply tw-flex-auto #{!important};
+  @apply tw-flex-auto;
   border-color: var(--table-border-color);
 
   &__multiselect-mobile {
@@ -1544,6 +467,10 @@ $variants: (
     @apply tw-flex tw-relative tw-overflow-hidden tw-grow;
   }
 
+  &__scroll-container {
+    @apply tw-grow tw-basis-0 tw-relative;
+  }
+
   &__mobile-view {
     @apply tw-grow tw-basis-0 tw-relative;
     .vc-container__inner {
@@ -1552,7 +479,7 @@ $variants: (
   }
 
   &__mobile-items {
-    @apply tw-flex-grow tw-flex tw-flex-col tw-h-max [width:-webkit-fill-available];
+    @apply tw-flex-grow tw-flex tw-flex-col tw-h-max [width:-webkit-fill-available] [width:-moz-available];
   }
 
   &__mobile-empty {
@@ -1563,13 +490,17 @@ $variants: (
     @apply tw-relative tw-box-border tw-w-full tw-h-full tw-flex tw-flex-col;
   }
 
+  &__header {
+    @apply tw-relative;
+  }
+
   &__header-row {
-    @apply tw-flex tw-flex-row [box-shadow:var(--table-header-border)];
+    @apply tw-flex tw-flex-row [box-shadow:var(--table-header-border)] tw-bg-[--table-header-bg];
   }
 
   &__header-checkbox {
-    @apply tw-flex-1 tw-flex tw-items-center tw-justify-center tw-w-9 tw-max-w-9 tw-min-w-9 tw-bg-[--table-header-bg] [box-shadow:var(--table-header-border)] tw-shadow-none tw-box-border tw-sticky tw-top-0 tw-select-none tw-overflow-hidden tw-z-[1];
-    @apply tw-border-0 #{!important};
+    @apply tw-flex-1 tw-flex tw-items-center tw-justify-center tw-w-9 tw-max-w-9 tw-min-w-9 tw-bg-[--table-header-bg] tw-box-border tw-sticky tw-top-0 tw-select-none tw-overflow-hidden tw-z-[1];
+    @apply tw-border-0;
   }
 
   &__header-checkbox__content {
@@ -1581,8 +512,8 @@ $variants: (
   }
 
   &__header-cell {
-    @apply tw-flex-1 tw-flex tw-items-center tw-h-10 tw-bg-[--table-header-bg] [box-shadow:var(--table-header-border)] tw-box-border tw-sticky tw-top-0 tw-select-none tw-overflow-hidden tw-z-[1];
-    @apply tw-border-0 #{!important};
+    @apply tw-flex-1 tw-flex tw-items-center tw-h-[60px] tw-bg-[--table-header-bg] tw-box-border tw-sticky tw-top-0 tw-select-none tw-overflow-hidden tw-z-[1];
+    @apply tw-border-0;
   }
 
   &__header-cell--sortable {
@@ -1599,7 +530,7 @@ $variants: (
   }
 
   &__header-cell__content {
-    @apply tw-flex tw-items-center tw-flex-nowrap tw-truncate tw-px-3 tw-font-bold tw-text-sm tw-text-[color:var(--table-header-text-color)];
+    @apply tw-flex tw-items-center tw-flex-nowrap tw-truncate tw-px-3 tw-font-semibold tw-text-sm tw-text-[color:var(--table-header-text-color)] tw-leading-5;
   }
 
   &__header-cell__title {
@@ -1611,11 +542,11 @@ $variants: (
   }
 
   &__header-cell__sort-icon {
-    @apply tw-ml-1;
+    @apply tw-ml-1 tw-text-[color:var(--table-sort-icon-color)];
   }
 
   &__header-cell__sort-icons {
-    @apply tw-flex tw-flex-col tw-ml-1 tw-invisible;
+    @apply tw-flex tw-flex-col tw-ml-1 tw-invisible tw-text-[color:var(--table-sort-icon-color)];
   }
 
   &__header-cell__resizer {
@@ -1656,14 +587,29 @@ $variants: (
 
   &__body-row {
     @apply tw-flex tw-w-full tw-h-14 tw-min-h-14 tw-relative;
+    position: relative;
 
-    &:hover {
-      .vc-table__body-actions--hover {
-        @apply tw-bg-[--table-actions-bg-hover];
+    &.vc-table__drag-row-bottom {
+      &::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background-color: var(--table-row-drag-color);
       }
+    }
 
-      .vc-table__body-actions--selected {
-        @apply tw-bg-[--table-actions-bg-hover-selected-item];
+    &.vc-table__drag-row-top {
+      &::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background-color: var(--table-row-drag-color);
       }
     }
   }
@@ -1681,11 +627,11 @@ $variants: (
   }
 
   &__body-row--selected {
-    @apply tw-bg-[--table-row-hover] hover:tw-bg-[--table-row-hover] #{!important};
+    @apply tw-bg-[--table-row-hover] hover:tw-bg-[--table-row-hover];
   }
 
   &__body-row--selection {
-    @apply hover:tw-bg-[--table-row-bg-selected] tw-bg-[--table-row-bg-selected] #{!important};
+    @apply hover:tw-bg-[--table-row-bg-selected] tw-bg-[--table-row-bg-selected];
   }
 
   &__body-row-checkbox {
@@ -1728,25 +674,13 @@ $variants: (
     @apply tw-overflow-auto tw-flex tw-flex-col tw-flex-auto;
   }
 
-  &__footer {
-    @apply tw-bg-[--table-footer-bg] tw-border-t tw-border-solid tw-border-[--table-footer-border-color] tw-flex-shrink-0 tw-flex tw-items-center tw-justify-between;
-  }
-
-  &__footer--mobile {
-    @apply tw-py-2 tw-px-4;
-  }
-
-  &__footer--desktop {
-    @apply tw-p-4;
-  }
-
   /* Drag row styles */
   &__drag-row-bottom {
-    box-shadow: var(--table-row-drag-shadow);
+    box-shadow: inset 0 -2px 0 0 var(--table-row-drag-color);
   }
 
   &__drag-row-top {
-    box-shadow: var(--table-row-drag-shadow);
+    box-shadow: inset 0 2px 0 0 var(--table-row-drag-color);
   }
 
   /* Tooltip arrow styles */
@@ -1771,5 +705,20 @@ $variants: (
   &__mobile-items-renderer {
     @apply tw-border-b tw-border-solid tw-border-[--table-mobile-border-color] tw-p-3 tw-gap-2 tw-flex tw-flex-wrap;
   }
+}
+
+.table-header-enter-active,
+.table-header-leave-active {
+  @apply tw-transition-all tw-duration-200 tw-ease-in-out;
+}
+
+.table-header-enter-from,
+.table-header-leave-to {
+  @apply tw-opacity-0 tw-transform tw-translate-y-[-30px];
+}
+
+.table-header-enter-to,
+.table-header-leave-from {
+  @apply tw-opacity-100 tw-transform tw-translate-y-0;
 }
 </style>

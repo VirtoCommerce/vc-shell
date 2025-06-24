@@ -1,88 +1,31 @@
 <template>
-  <AppBarButtonTemplate
-    :title="$t('COMPONENTS.NOTIFICATION_DROPDOWN.TITLE')"
-    position="bottom-end"
-    @toggle="onOpen"
+  <GenericDropdown
+    :items="notifications"
+    :empty-text="t('COMPONENTS.NOTIFICATION_DROPDOWN.EMPTY')"
   >
-    <template #button>
-      <div class="vc-notification-dropdown__button">
-        <VcIcon
-          icon="fas fa-bell"
-          size="xl"
-        ></VcIcon>
-        <div
-          :class="{
-            'vc-notification-dropdown__accent': isAccent,
-          }"
-        ></div>
-      </div>
+    <template #item="{ item }">
+      <NotificationItem
+        :notification="item"
+        :templates="notificationTemplates || []"
+      />
     </template>
-
-    <template #dropdown-content="{ opened, toggle }">
-      <Sidebar
-        :is-expanded="$isMobile.value ? opened : false"
-        position="right"
-        render="mobile"
-        @close="toggle"
-      >
-        <template #content>
-          <div
-            v-if="opened"
-            :class="[
-              'vc-notification-dropdown__dropdown',
-              { 'vc-notification-dropdown__dropdown--mobile': $isMobile.value },
-            ]"
-          >
-            <VcContainer
-              :no-padding="true"
-              @click.stop
-            >
-              <VcCol v-if="notifications && notifications.length">
-                <div
-                  v-for="item in notifications"
-                  :key="`notification_${item.id}`"
-                  class="vc-notification-dropdown__item"
-                  :class="{
-                    'vc-notification-dropdown__item--mobile': $isMobile.value,
-                  }"
-                >
-                  <NotificationItem
-                    :notification="item"
-                    :templates="notificationTemplates || []"
-                    @on-click="toggle"
-                  />
-                </div>
-              </VcCol>
-              <div
-                v-else
-                class="vc-notification-dropdown__empty"
-              >
-                {{ t("COMPONENTS.NOTIFICATION_DROPDOWN.EMPTY") }}
-              </div>
-            </VcContainer>
-          </div>
-        </template>
-      </Sidebar>
-    </template>
-  </AppBarButtonTemplate>
+  </GenericDropdown>
 </template>
 
 <script lang="ts" setup>
-import { inject, computed } from "vue";
+import { inject, computed, onMounted } from "vue";
 import NotificationItem from "./_internal/notification/notification.vue";
-import { VcCol, VcContainer, VcIcon } from "../../../ui/components";
 import { useI18n } from "vue-i18n";
-import { NotificationTemplateConstructor } from "../../../core/types";
 import { useNotifications } from "../../../core/composables";
-import { AppBarButtonTemplate } from "./../app-bar-button";
-import { Sidebar } from "./../sidebar";
+import { GenericDropdown } from "../generic-dropdown";
+import { NotificationTemplatesSymbol } from "./../../../injection-keys";
 
-const notificationTemplates = inject<NotificationTemplateConstructor[]>("notificationTemplates");
+const notificationTemplates = inject(NotificationTemplatesSymbol);
 
 const { t } = useI18n({ useScope: "global" });
 const { notifications, markAllAsRead } = useNotifications();
 
-const isAccent = computed(() => {
+const hasUnreadNotifications = computed(() => {
   return notifications.value.some((item) => item.isNew);
 });
 
@@ -91,34 +34,33 @@ function onOpen(state: boolean) {
     markAllAsRead();
   }
 }
+
+onMounted(() => {
+  onOpen(hasUnreadNotifications.value);
+});
 </script>
 
 <style lang="scss">
 :root {
-  --notification-dropdown-border-color: var(--additional-50);
-  --notification-dropdown-bg-color: var(--additional-50);
   --notification-dropdown-accent-color: var(--danger-500);
-  --notification-dropdown-button-width: var(--app-bar-button-width);
-  --notification-dropdown-divider-color: var(--base-border-color, var(--neutrals-200));
+  --notification-dropdown-bell-color: var(--neutrals-500);
 }
 
 .vc-notification-dropdown {
   &__accent {
-    @apply tw-block tw-absolute tw-right-[12px] tw-top-[18px] tw-w-[7px] tw-h-[7px] tw-bg-[--notification-dropdown-accent-color] tw-rounded-full tw-z-[1];
-  }
-
-  &__dropdown {
-    @apply tw-bg-[--notification-dropdown-bg-color] tw-rounded-b-[6px] tw-w-[439px]
-      tw-max-h-[350px] tw-min-h-[50px] tw-overflow-hidden tw-flex tw-flex-col;
-
-    &--mobile {
-      @apply tw-max-h-full tw-w-full;
-      display: flex !important;
-    }
+    @apply tw-block tw-absolute -tw-right-[4px] tw-top-[0px] tw-w-[5px] tw-h-[5px] tw-bg-[--notification-dropdown-accent-color] tw-rounded-full tw-z-[1];
   }
 
   &__button {
-    @apply tw-w-[var(--notification-dropdown-button-width)] tw-h-full tw-flex tw-items-center tw-justify-center tw-relative;
+    @apply tw-flex tw-items-center tw-justify-center tw-relative;
+  }
+
+  &__button-icon {
+    @apply tw-relative;
+
+    &--mobile {
+      @apply tw-text-[color:var(--notification-dropdown-bell-color)];
+    }
   }
 
   &__item {

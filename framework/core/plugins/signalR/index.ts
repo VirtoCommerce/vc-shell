@@ -2,7 +2,7 @@ import { App, watch, ref, InjectionKey } from "vue";
 import { HubConnection, HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 import { PushNotification } from "../../api/platform";
 import { useNotifications } from "./../../composables/useNotifications";
-import { useUser } from "../../composables/useUser";
+import { useUserManagement } from "../../composables/useUserManagement";
 import { useCypressSignalRMock } from "cypress-signalr-mock";
 
 const { addNotification } = useNotifications();
@@ -34,7 +34,7 @@ export const signalR = {
     },
   ) {
     currentCreator.value = options?.creator;
-    const { isAuthenticated } = useUser();
+    const { isAuthenticated } = useUserManagement();
     let reconnect = false;
     const connection =
       useCypressSignalRMock("pushNotificationHub", { enableForVitest: true }) ??

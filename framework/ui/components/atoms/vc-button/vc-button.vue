@@ -8,7 +8,7 @@
       v-if="icon"
       :class="['vc-button__icon', iconClass]"
       :icon="icon"
-      :size="small ? 'xs' : iconSize"
+      :size="iconSize"
     ></VcIcon>
     <p
       v-if="$slots['default']"
@@ -20,18 +20,31 @@
 </template>
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
-import { computed } from "vue";
+import { computed, type Component } from "vue";
 import { VcIcon } from "./../vc-icon";
 export interface Props {
-  icon?: string;
+  icon?: string | Component;
   iconClass?: string;
   iconSize?: InstanceType<typeof VcIcon>["$props"]["size"];
-  variant?: "primary" | "warning" | "danger";
+  variant?: "primary" | "secondary";
   disabled?: boolean;
+  size?: "xs" | "sm" | "base";
+  /**
+   * @deprecated Use `size` instead
+   * Whether the button is small
+   * */
   small?: boolean;
+  /**
+   * @deprecated Use `variant` instead
+   * Whether the button is outlined
+   * */
   outline?: boolean;
   selected?: boolean;
   text?: boolean;
+  /**
+   * @deprecated Use `variant` instead
+   * Whether the button is raised
+   * */
   raised?: boolean;
 }
 
@@ -45,6 +58,7 @@ export interface Emits {
 const props = withDefaults(defineProps<Props>(), {
   variant: "primary",
   iconSize: "s",
+  size: "base",
 });
 
 const emit = defineEmits<Emits>();
@@ -58,11 +72,13 @@ const buttonClass = computed(() => {
     "vc-button",
     {
       [`vc-button-${props.variant}`]: props.variant,
-      "vc-button_small": props.small,
-      "vc-button_outline": props.outline,
+      [`vc-button_${props.size}`]: props.size,
+      // "vc-button_small": props.small,
+      // "vc-button_outline": props.outline,
       "vc-button_selected": props.selected,
       "vc-button_text": props.text,
-      "vc-button_raised": props.raised,
+      "vc-button_disabled": props.disabled,
+      // "vc-button_raised": props.raised,
     },
   ];
 });
@@ -80,38 +96,38 @@ function onClick(e: Event): void {
   --button-primary-background-color: var(--primary-500);
   --button-primary-background-color-hover: var(--primary-600);
   --button-primary-background-color-disabled: var(--primary-300);
-  --button-primary-text-color: var(--neutrals-50);
-  --button-primary-text-color-outlined: var(--button-primary-background-color);
-  --button-primary-text-color-hover: var(--button-primary-background-color-hover);
+  --button-primary-text-color: var(--additional-50);
+  --button-primary-text-color-disabled: var(--additional-50);
+  --button-primary-border-color: var(--primary-500);
+  --button-primary-border-color-hover: var(--primary-600);
+  --button-primary-border-color-disabled: var(--primary-300);
 
-  --button-warning-background-color: var(--warning-500);
-  --button-warning-background-color-hover: var(--warning-600);
-  --button-warning-background-color-disabled: var(--warning-300);
-  --button-warning-text-color: var(--neutrals-50);
-  --button-warning-text-color-outlined: var(--button-warning-background-color);
-  --button-warning-text-color-hover: var(--button-warning-background-color-hover);
+  --button-secondary-background-color: var(--additional-50);
+  --button-secondary-background-color-hover: var(--primary-100);
+  --button-secondary-background-color-disabled: var(--additional-50);
+  --button-secondary-text-color: var(--neutrals-700);
+  --button-secondary-text-color-disabled: var(--neutrals-400);
+  --button-secondary-border-color: var(--secondary-300);
+  --button-secondary-border-color-hover: var(--secondary-400);
+  --button-secondary-border-color-disabled: var(--secondary-300);
 
-  --button-danger-background-color: var(--danger-500);
-  --button-danger-background-color-hover: var(--danger-600);
-  --button-danger-background-color-disabled: var(--danger-300);
-  --button-danger-text-color: var(--neutrals-50);
-  --button-danger-text-color-outlined: var(--button-danger-background-color);
-  --button-danger-text-color-hover: var(--button-danger-background-color-hover);
+  --button-border-radius: 4px;
 
-  --button-border-radius: 3px;
   --button-padding-hor: 14px;
-  --button-padding-hor-small: 14px;
   --button-padding-vert: 10px;
-  --button-padding-vert-small: 7px;
+
+  --button-padding-hor-small: 12px;
+  --button-padding-vert-small: 8px;
+
+  --button-padding-vert-extra-small: 5px;
+  --button-padding-hor-extra-small: 12px;
 
   --button-height: 36px;
   --button-height-small: 28px;
-
-  --button-raised-shadow-color: var(--secondary-200);
-  --button-raised-shadow: 1px 4px 10px rgb(from var(--button-raised-shadow-color) r g b / 100%);
+  --button-height-extra-small: 22px;
 }
 
-$variants: primary, warning, danger;
+$variants: primary, secondary;
 
 .vc-button {
   &__icon + &__title {
@@ -120,53 +136,39 @@ $variants: primary, warning, danger;
 
   @each $variant in $variants {
     &.vc-button-#{$variant} {
-      @apply tw-inline-flex tw-items-center tw-font-medium tw-text-sm tw-cursor-pointer tw-box-border tw-transition tw-duration-200
-      tw-rounded-[var(--button-border-radius)] tw-px-[var(--button-padding-hor)] tw-py-[var(--button-padding-vert)]
+      @apply tw-inline-flex tw-items-center tw-font-semibold tw-cursor-pointer tw-box-border tw-transition tw-duration-200
+      tw-rounded-[var(--button-border-radius)]
       tw-min-h-[var(--button-height)]
       tw-bg-[color:var(--button-#{$variant}-background-color)]
+      tw-border tw-border-[color:var(--button-#{$variant}-border-color)] tw-border-solid
       tw-flex tw-justify-center
-      tw-text-[color:var(--button-#{$variant}-text-color)]
-      hover:tw-bg-[color:var(--button-#{$variant}-background-color-hover)]
-      focus:tw-bg-[color:var(--button-#{$variant}-background-color-hover)]
-      disabled:tw-cursor-not-allowed
-      disabled:tw-bg-[color:var(--button-#{$variant}-background-color-disabled)];
+      tw-text-[color:var(--button-#{$variant}-text-color)];
 
-      &.vc-button_small {
-        @apply tw-py-[var(--button-padding-vert-small)] tw-min-h-[var(--button-height-small)] tw-px-[var(--button-padding-hor-small)] tw-font-normal tw-text-xs;
-
-        .vc-button__icon + .vc-button__title {
-          @apply tw-ml-2;
-        }
+      &:hover {
+        @apply tw-bg-[color:var(--button-#{$variant}-background-color-hover)] tw-border-[color:var(--button-#{$variant}-border-color-hover)];
       }
 
-      &.vc-button_outline {
-        @apply tw-bg-transparent tw-border tw-border-[color:var(--button-#{$variant}-background-color)]
-        tw-text-[color:var(--button-#{$variant}-text-color-outlined)]
-        hover:tw-text-[color:var(--button-#{$variant}-text-color-hover)]
-        hover:tw-bg-transparent
-        hover:tw-border-[color:var(--button-#{$variant}-background-color-hover)]
-        disabled:tw-text-[color:rgb(from_var(--button-#{$variant}-text-color-hover)_r_g_b/50%)]
-        disabled:tw-border-[color:rgb(from_var(--button-#{$variant}-background-color)_r_g_b/50%)]
-        disabled:tw-bg-transparent;
+      &:focus {
+        @apply tw-bg-[color:var(--button-#{$variant}-background-color-hover)] tw-border-[color:var(--button-#{$variant}-border-color-hover)];
       }
+
+      &:disabled {
+        @apply tw-text-[color:var(--button-#{$variant}-text-color-disabled)] tw-bg-[color:var(--button-#{$variant}-background-color-disabled)] tw-border-[color:var(--button-#{$variant}-border-color-disabled)] tw-cursor-not-allowed;
+      }
+
+      // TODO: remove this after the migration
+      // &.vc-button_small {
+      //   @apply tw-py-[var(--button-padding-vert-extra-small)] tw-min-h-[var(--button-height-extra-small)] tw-px-[var(--button-padding-hor-extra-small)] tw-text-xxs #{!important};
+      // }
 
       &.vc-button_text {
-        @apply tw-border-none tw-bg-transparent tw-p-0 tw-min-h-0
+        @apply tw-border-none tw-bg-transparent
         tw-text-[color:var(--button-#{$variant}-background-color)]
         hover:tw-text-[color:var(--button-#{$variant}-background-color-hover)]
         focus:tw-text-[color:var(--button-#{$variant}-background-color-hover)]
         disabled:tw-text-[color:rgb(from_var(--button-#{$variant}-background-color)_r_g_b/50%)];
-      }
 
-      &.vc-button_raised {
-        @apply [box-shadow:var(--button-raised-shadow)] tw-px-[var(--button-padding-hor)] tw-py-[var(--button-padding-vert)];
-
-        &.vc-button_text:not(:disabled) {
-          &:hover,
-          &:focus {
-            @apply tw-bg-[color:rgb(from_var(--button-#{$variant}-background-color-hover)_r_g_b/7%)];
-          }
-        }
+        @apply tw-p-0 tw-min-h-0 #{!important};
       }
 
       &.vc-button_selected {
@@ -175,10 +177,22 @@ $variants: primary, warning, danger;
         &.vc-button_text {
           @apply tw-bg-[color:rgb(from_var(--button-#{$variant}-background-color-hover)_r_g_b/7%)] tw-p-1;
         }
+      }
 
-        &.vc-button_outline {
-          @apply tw-border-[color:var(--button-#{$variant}-background-color-hover)]  tw-bg-transparent  #{!important};
-        }
+      &.vc-button_xs {
+        @apply tw-py-[var(--button-padding-vert-extra-small)] tw-min-h-[var(--button-height-extra-small)] tw-px-[var(--button-padding-hor-extra-small)] tw-text-xxs #{!important};
+      }
+
+      &.vc-button_sm {
+        @apply tw-py-[var(--button-padding-vert-small)] tw-min-h-[var(--button-height-small)] tw-px-[var(--button-padding-hor-small)] tw-text-xs #{!important};
+      }
+
+      &.vc-button_base {
+        @apply tw-py-[var(--button-padding-vert)] tw-min-h-[var(--button-height)] tw-px-[var(--button-padding-hor)] tw-text-sm tw-leading-4;
+      }
+
+      .vc-button__icon + .vc-button__title {
+        @apply tw-ml-2;
       }
     }
   }

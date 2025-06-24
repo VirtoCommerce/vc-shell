@@ -12,19 +12,19 @@ export const grid: DynamicGridSchema = {
     toolbar: [
       {
         id: "refresh",
-        icon: "fas fa-sync-alt",
+        icon: "material-refresh",
         title: "Refresh",
         method: "refresh",
       },
       {
         id: "add",
-        icon: "fas fa-plus",
+        icon: "material-add",
         title: "Add",
         method: "openAddBlade",
       },
       {
         id: "deleteSelected",
-        icon: "fas fa-trash",
+        icon: "material-delete",
         title: "Delete selected",
         method: "removeItems",
       },
@@ -32,7 +32,7 @@ export const grid: DynamicGridSchema = {
     pushNotificationType: "OfferDeletedDomainEvent",
     menuItem: {
       title: "OFFERS.MENU.TITLE",
-      icon: "fas fa-file-invoice",
+      icon: "bi-file-earmark-invoice",
       priority: 3,
     },
   },

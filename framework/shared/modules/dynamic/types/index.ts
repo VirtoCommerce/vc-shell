@@ -13,7 +13,7 @@ import {
   VcPagination,
   VcInputCurrency,
 } from "./../../../../ui/components";
-import { ITableColumns, IValidationRules, MenuItemConfig } from "../../../../core/types";
+import { IActionBuilderResult, ITableColumns, IValidationRules, MenuItemConfig } from "../../../../core/types";
 import type { ComponentProps } from "./../../../utilities/vueUtils";
 
 export type KeysOfUnion<T> = T extends T ? keyof T : never;
@@ -136,7 +136,7 @@ export interface SettingsBase {
    * @example
    * {
    *  title: "Products",
-   *  icon: "fas fa-box-open",
+   *  icon: "lucide-package-open",
    *  group: "Products",
    * }
    * @type {{title: string, icon: string, path: string/string}}
@@ -166,6 +166,8 @@ export interface ListContentSchema {
           | {
               method: string;
             };
+        mobilePosition?: "status" | "image" | "top-left" | "top-right" | "bottom-left" | "bottom-right";
+        mobileVisible?: boolean;
       }
   ) & {
     id: string;
@@ -190,8 +192,7 @@ export interface ListContentSchema {
   // TODO Add to documentation
   actions?: (Partial<TableSchema> &
     Required<Pick<ToolbarSchema, "title" | "icon">> & {
-      position: "right" | "left";
-      type: "danger" | "success";
+      type: IActionBuilderResult["type"];
       disabled?: {
         method: string;
       };
@@ -842,7 +843,10 @@ export interface CardSchema
 
 export interface WidgetsSchema extends Pick<SchemaBase, "id" | "horizontalSeparator" | "permissions"> {
   component: "vc-widgets";
-  children: string[];
+  children:
+    | string[]
+    | { id: string; visibility?: { method: string } }[]
+    | (string | { id: string; visibility?: { method: string } })[];
 }
 
 export interface CheckboxSchema extends Omit<SchemaBase, "multilanguage" | "placeholder" | "onBlur"> {

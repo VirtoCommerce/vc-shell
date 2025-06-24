@@ -23,6 +23,9 @@ declare module "@vue/runtime-core" {
     $isMobile: Ref<boolean>;
     $isDesktop: Ref<boolean>;
     $isTouch: boolean;
+    $t: (key: string, ...args: any[]) => string;
+    $te: (key: string) => boolean;
+    $i18n: VueI18n;
   }
 }
 

@@ -1,4 +1,10 @@
 {
+  "CORE": {
+    "THEMES": {
+      "LIGHT": "Hell",
+      "DARK": "Dunkel"
+    }
+  },
   "SHELL": {
     "USER": {
       "ROLE": {
@@ -6,6 +12,7 @@
       }
     },
     "ACCOUNT": {
+      "SETTINGS": "Einstellungen",
       "CHANGE_PASSWORD": "Passwort ändern",
       "PROFILE": "Profil",
       "LOGOUT": "Abmelden"
@@ -17,7 +24,7 @@
         "PULL_TO_REFRESH": "Zum Aktualisieren ziehen",
         "REFRESHING": "Wird aktualisiert..."
       },
-      "VC_STATUS": {
+      "VC_BANNER": {
         "SHOW_MORE": "Mehr anzeigen",
         "SHOW_LESS": "Weniger anzeigen"
       }
@@ -25,7 +32,9 @@
     "MOLECULES": {
       "VC_SELECT": {
         "CLICK_TO_SELECT": "Zum Auswählen klicken...",
-        "LOADING": "Wird geladen..."
+        "LOADING": "Wird geladen...",
+        "LOADING_MORE": "Mehr laden...",
+        "NO_OPTIONS": "Keine Optionen"
       },
       "VC_FILE_UPLOAD": {
         "DRAG_HERE": "Datei hier ablegen oder",
@@ -121,6 +130,9 @@
           "MARKDOWN_TOTAL": "Markdown Gesamt",
           "SCROLL_AUTO": "Automatisches Scrollen"
         }
+      },
+      "VC_MULTIVALUE": {
+        "ADD": "Hinzufügen +"
       }
     },
     "ORGANISMS": {
@@ -148,8 +160,10 @@
         "SEE_DETAILS": "Details anzeigen",
         "UNSAVED_CHANGES": "Hat ungespeicherte Änderungen",
         "ERROR_POPUP": {
-          "TITLE": "Fehlerdetails"
-        }
+          "TITLE": "Fehlerdetails",
+          "COPY_ERROR": "Inhalt kopieren"
+        },
+        "MORE": "Mehr"
       },
       "VC_BLADE_HEADER": {
         "UNSAVED_CHANGES": "Hat ungespeicherte Änderungen",

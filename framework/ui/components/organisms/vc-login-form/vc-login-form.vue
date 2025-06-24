@@ -20,7 +20,7 @@
     </div>
   </div>
 </template>
-
+<!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
 import { computed } from "vue";
 import { useRouter } from "vue-router";
@@ -36,7 +36,7 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 defineSlots<{
-  default: void;
+  default: (props: any) => any;
 }>();
 
 const router = useRouter();

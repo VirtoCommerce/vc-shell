@@ -30,7 +30,7 @@
             @click="localIndex--"
           >
             <VcIcon
-              icon="fas fa-arrow-left"
+              icon="material-arrow_back"
               size="xl"
             ></VcIcon>
           </button>
@@ -40,7 +40,7 @@
             @click="localIndex++"
           >
             <VcIcon
-              icon="fas fa-arrow-right"
+              icon="material-arrow_forward"
               size="xl"
             ></VcIcon>
           </button>
@@ -121,7 +121,7 @@ function handleKeyDown(event: KeyboardEvent) {
 :root {
   --gallery-preview-btn-bg-color: var(--secondary-50);
   --gallery-preview-btn-icon-color: var(--secondary-400);
-  --gallery-preview-btn-shadow-color: var(--base-text-color, var(--neutrals-950));
+  --gallery-preview-btn-shadow-color: var(--neutrals-950);
   --gallery-preview-btn-shadow: 0 0 20px rgb(from var(--gallery-preview-btn-shadow-color) r g b / 15%);
   --gallery-preview-overlay-color: var(--primary-400);
 }

@@ -2,13 +2,13 @@
   <div class="vc-status-icon">
     <template v-if="status">
       <VcIcon
-        icon="fas fa-check-circle"
+        icon="material-check_circle"
         class="vc-status-icon__icon vc-status-icon__icon--success"
       ></VcIcon>
     </template>
     <template v-else>
       <VcIcon
-        icon="fas fa-times-circle"
+        icon="material-cancel"
         class="vc-status-icon__icon vc-status-icon__icon--info"
       ></VcIcon>
     </template>

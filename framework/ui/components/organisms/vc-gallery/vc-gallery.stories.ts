@@ -87,5 +87,5 @@ SingleFileUploadWithCustomUploadIcon.args = {
   label: "Gallery",
   images: [],
   variant: "file-upload",
-  uploadIcon: "fas fa-user",
+  uploadIcon: "material-account_circle",
 };

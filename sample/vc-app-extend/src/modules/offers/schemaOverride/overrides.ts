@@ -22,7 +22,7 @@ export const overrides: OverridesSchema = {
       value: {
         id: "newToolbarAction",
         title: "Click me!",
-        icon: "fas fa-plus",
+        icon: "material-add",
         method: "showAlert",
       },
     },

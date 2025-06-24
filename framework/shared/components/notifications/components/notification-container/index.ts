@@ -1,6 +1,6 @@
-import { VcNotification } from "./../../../../../ui/components";
+import { VcToast } from "./../../../../../ui/components";
 import { PropType, computed, defineComponent, h, toRaw } from "vue";
-import { Content, NotificationType } from "../../types";
+import { Content, NotificationType, NotificationPosition } from "../../types";
 import { useContainer } from "../../composables";
 
 const NotificationContainer = defineComponent({
@@ -42,11 +42,6 @@ const NotificationContainer = defineComponent({
       required: false,
       default: "default",
     },
-    closeNotification: {
-      type: Function as PropType<() => void>,
-      required: false,
-      default: undefined,
-    },
     onOpen: {
       type: Function as PropType<<T>(payload: T) => void>,
       required: false,
@@ -63,11 +58,17 @@ const NotificationContainer = defineComponent({
       required: false,
       default: () => ({}),
     },
+    position: {
+      type: String as PropType<NotificationPosition>,
+      required: false,
+      default: "top-center",
+    },
   },
-  setup() {
-    const { notificationContainer } = useContainer();
+  setup(props) {
+    const { notificationContainers, actions } = useContainer();
     const notificationsList = computed(() => {
-      return notificationContainer.value || [];
+      // Get notifications for the specific position
+      return notificationContainers[props.position as NotificationPosition].value || [];
     });
 
     function isComponent(content: Content) {
@@ -78,16 +79,27 @@ const NotificationContainer = defineComponent({
       );
     }
 
+    function handleClose(id: string | number | undefined) {
+      if (id) {
+        actions.dismiss(id);
+      }
+    }
+
     return () =>
       notificationsList.value.map((item) => {
+        const props = {
+          ...item,
+          key: item.notificationId,
+          onClose: handleClose,
+        };
+
         if (item.content && isComponent(item.content)) {
-          return h(VcNotification, {
-            ...item,
+          return h(VcToast, {
+            ...props,
             content: h(toRaw(item.content)),
-            key: item.notificationId,
           });
         }
-        return h(VcNotification, { ...item, key: item.notificationId });
+        return h(VcToast, props);
       });
   },
 });

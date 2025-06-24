@@ -53,8 +53,8 @@
                           >
                         </div>
                         <VcButton
-                          icon="far fa-copy"
-                          size="m"
+                          icon="material-content_copy"
+                          icon-size="m"
                           class="tw-ml-2"
                           text
                           :title="t('ASSETS.PAGES.DETAILS.FIELDS.COPY')"
@@ -174,7 +174,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
   {
     id: "save",
     title: t("ASSETS.PAGES.DETAILS.TOOLBAR.SAVE"),
-    icon: "fas fa-save",
+    icon: "material-save",
     async clickHandler() {
       if (props.options?.assetEditHandler && typeof props.options?.assetEditHandler === "function") {
         await props.options?.assetEditHandler(defaultAsset.value);
@@ -186,7 +186,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
   {
     id: "delete",
     title: t("ASSETS.PAGES.DETAILS.TOOLBAR.DELETE"),
-    icon: "fas fa-trash",
+    icon: "material-delete",
     async clickHandler() {
       if (props.options?.assetRemoveHandler && typeof props.options?.assetRemoveHandler === "function") {
         await props.options?.assetRemoveHandler(defaultAsset.value);
@@ -220,7 +220,7 @@ function openLink(link: string | undefined) {
 
 <style lang="scss">
 :root {
-  --assets-details-border: var(--base-border-color, var(--neutrals-200));
+  --assets-details-border: var(--neutrals-200);
   --assets-details-thumbnail-color: var(--secondary-500);
 }
 </style>

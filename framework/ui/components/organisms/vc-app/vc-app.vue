@@ -1,6 +1,6 @@
 <template>
   <VcLoading
-    v-if="!isReady"
+    v-if="!isAppReady"
     active
     class="vc-app__loader"
   />
@@ -12,87 +12,55 @@
     }"
   >
     <!-- Init application top bar -->
-    <VcAppBar
-      class="vc-app__app-bar"
-      :logo="logo"
-      :title="title"
-      :disable-menu="disableMenu"
-      @menubutton:click="($refs.menu as Record<'isMobileVisible', boolean>).isMobileVisible = true"
-      @backlink:click="closeBlade(blades.length - 1)"
-      @logo:click="openRoot"
-    >
-      <template #app-switcher>
-        <slot name="app-switcher">
-          <VcAppSwitcher
-            :apps-list="appsList"
-            @on-click="switchApp($event)"
-          />
-        </slot>
-      </template>
-
-      <!-- Toolbar slot -->
-      <template #toolbar>
-        <slot
-          name="toolbar"
-          v-bind="{
-            LanguageSelector,
-            UserDropdownButton,
-            NotificationDropdown,
-            ThemeSelector,
-          }"
-        >
-          <slot
-            v-if="$slots['toolbar:prepend']"
-            name="toolbar:prepend"
-          ></slot>
-          <slot name="toolbar:theme-selector">
-            <ThemeSelector />
-          </slot>
-          <slot name="toolbar:language-selector">
-            <LanguageSelector
-              v-if="$isDesktop.value ? $isDesktop.value : $isMobile.value ? route.path === '/' : false"
-            />
-          </slot>
-          <slot name="toolbar:notifications-dropdown">
-            <NotificationDropdown />
-          </slot>
-          <slot
-            name="toolbar:user-dropdown"
-            :user-dropdown="UserDropdownButton"
-          >
-            <UserDropdownButton
-              :avatar-url="avatar"
-              :role="role"
-              :name="name"
-            />
-          </slot>
-        </slot>
-      </template>
-
-      <template #logo:append>
-        <slot name="logo:append"></slot>
-      </template>
-    </VcAppBar>
 
     <div class="vc-app__main-content">
       <!-- Init main menu -->
-      <VcAppMenu
-        v-if="!disableMenu"
-        ref="menu"
-        class="vc-app__app-menu"
-        :version="version"
-        @item:click="onMenuItemClick"
+      <VcAppBar
+        class="vc-app__app-bar"
+        :logo="logo"
+        :title="title"
+        :disable-menu="disableMenu"
+        @backlink:click="closeBlade(blades.length - 1)"
+        @logo:click="openRoot"
       >
-      </VcAppMenu>
+        <template
+          v-if="!disableAppSwitcher"
+          #app-switcher
+        >
+          <slot name="app-switcher">
+            <VcAppSwitcher
+              :apps-list="appsList"
+              @on-click="switchApp($event)"
+            />
+          </slot>
+        </template>
+
+        <template #navmenu>
+          <VcAppMenu
+            v-if="!disableMenu"
+            ref="menu"
+            class="vc-app__app-menu"
+            :version="version"
+            @item:click="onMenuItemClick"
+          >
+          </VcAppMenu>
+        </template>
+
+        <template #user-dropdown>
+          <UserDropdownButton
+            :avatar-url="avatar"
+            :name="name"
+            :role="role"
+          />
+        </template>
+      </VcAppBar>
 
       <!-- Blade navigation -->
       <div
         v-if="isAuthenticated"
         class="vc-app__workspace"
       >
-        <slot name="blade-navigation">
-          <VcBladeNavigation />
-        </slot>
+        <VcBladeNavigation />
       </div>
 
       <!-- Popup container -->
@@ -100,25 +68,37 @@
     </div>
   </div>
 </template>
-
+<!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
-import { inject, provide } from "vue";
+import { inject, provide, watch, ref, onUnmounted, computed } from "vue";
 import VcAppBar from "./_internal/vc-app-bar/vc-app-bar.vue";
 import VcAppMenu from "./_internal/vc-app-menu/vc-app-menu.vue";
 import {
   VcPopupContainer,
-  LanguageSelector,
   UserDropdownButton,
   useAppSwitcher,
   useBladeNavigation,
   NotificationDropdown,
   BladeRoutesRecord,
-  ThemeSelector,
 } from "./../../../../shared/components";
-import { useNotifications, useUser } from "../../../../core/composables";
+import { provideAppBarWidget, useNotifications } from "../../../../core/composables";
 import { useRoute, useRouter } from "vue-router";
 import { watchOnce } from "@vueuse/core";
 import { MenuItem } from "../../../../core/types";
+import { provideSettingsMenu } from "../../../../core/composables/useSettingsMenu";
+import { LanguageSelector } from "../../../../shared/components/language-selector";
+import { ThemeSelector } from "../../../../shared/components/theme-selector";
+import { ChangePasswordButton } from "../../../../shared/components/change-password-button";
+import { LogoutButton } from "../../../../shared/components/logout-button";
+import { useI18n } from "vue-i18n";
+import { provideGlobalSearch } from "../../../../core/composables/useGlobalSearch";
+import { provideDashboardService } from "../../../../core/composables/useDashboard";
+import { DynamicModulesKey } from "../../../../injection-keys";
+import { provideMenuService } from "../../../../core/composables/useMenuService";
+import { BellIcon } from "../../atoms/vc-icon/icons";
+import { provideAppBarMobileButtonsService } from "../../../../core/composables/useAppBarMobileButtons";
+import { useUserManagement } from "../../../../core/composables/useUserManagement";
+import { BladeRegistryKey } from "../../../../core/composables/useBladeRegistry";
 
 export interface Props {
   isReady: boolean;
@@ -128,27 +108,20 @@ export interface Props {
   avatar?: string;
   name?: string;
   disableMenu?: boolean;
+  disableAppSwitcher?: boolean;
   role?: string;
 }
+
+const emit = defineEmits<{
+  (e: "logo-click", goToRoot: () => void): void;
+}>();
 
 defineOptions({
   inheritAttrs: false,
 });
 
 defineSlots<{
-  "app-switcher": void;
-  toolbar: (props: {
-    UserDropdownButton: typeof UserDropdownButton;
-    LanguageSelector: typeof LanguageSelector;
-    NotificationDropdown: typeof NotificationDropdown;
-  }) => void;
-  "toolbar:prepend": void;
-  "toolbar:language-selector": void;
-  "toolbar:notifications-dropdown": void;
-  "toolbar:user-dropdown": (props: { userDropdown: typeof UserDropdownButton }) => void;
-  "blade-navigation": void;
-  "toolbar:theme-selector": void;
-  "logo:append": void;
+  "app-switcher": (props: any) => any;
 }>();
 
 const props = defineProps<Props>();
@@ -156,26 +129,86 @@ const props = defineProps<Props>();
 console.debug("vc-app: Init vc-app");
 
 const internalRoutes = inject("bladeRoutes") as BladeRoutesRecord[];
-const dynamicModules = inject("$dynamicModules", undefined) as Record<string, unknown> | undefined;
+const dynamicModules = inject(DynamicModulesKey, undefined);
+
+const isAppReady = ref(props.isReady);
+
 const router = useRouter();
 
-const { openBlade, closeBlade, resolveBladeByName, blades } = useBladeNavigation();
+const { openBlade, closeBlade, resolveBladeByName, blades, goToRoot } = useBladeNavigation();
 const { appsList, switchApp, getApps } = useAppSwitcher();
 
-const { loadFromHistory } = useNotifications();
+const { loadFromHistory, notifications, markAllAsRead } = useNotifications();
 const route = useRoute();
-const { isAuthenticated } = useUser();
+const { isAuthenticated } = useUserManagement();
+
 const routes = router.getRoutes();
+
+const { register: registerMenuItem } = provideSettingsMenu();
+const { register: registerAppBarWidget } = provideAppBarWidget();
+
+const hasUnreadNotifications = computed(() => {
+  return notifications.value.some((item) => item.isNew);
+});
+
+const { t } = useI18n({ useScope: "global" });
+
+const { register: registerMobileButton } = provideAppBarMobileButtonsService();
+
+registerMenuItem({
+  id: "language-selector",
+  component: LanguageSelector,
+  order: 20,
+});
+
+registerMenuItem({
+  id: "theme-selector",
+  component: ThemeSelector,
+  order: 10,
+});
+
+registerMenuItem({
+  id: "change-password",
+  component: ChangePasswordButton,
+  order: 30,
+});
+
+registerMenuItem({
+  id: "logout",
+  component: LogoutButton,
+  order: 100,
+});
+
+registerAppBarWidget({
+  id: "notification-dropdown",
+  component: NotificationDropdown,
+  icon: BellIcon,
+  order: 10,
+  badge: () => hasUnreadNotifications.value,
+});
+
+registerMobileButton({
+  id: "notification-dropdown",
+  component: NotificationDropdown,
+  icon: BellIcon,
+  order: 10,
+});
 
 const onMenuItemClick = function (item: MenuItem) {
   console.debug(`vc-app#onMenuItemClick() called.`);
+
   if (item.routeId) {
-    openBlade(
-      {
-        blade: resolveBladeByName(item.routeId),
-      },
-      true,
-    );
+    const bladeComponent = resolveBladeByName(item.routeId);
+    if (bladeComponent) {
+      openBlade(
+        {
+          blade: bladeComponent,
+        },
+        true,
+      );
+    } else {
+      console.error(`Blade component with routeId '${item.routeId}' not found.`);
+    }
   } else if (!item.routeId && item.url) {
     const menuRoute = routes.find((r) => {
       return "/" + r.path.split("/").filter((part) => part !== "")[1] === item.url || r.path === item.url;
@@ -192,16 +225,14 @@ const openRoot = async () => {
   const isPrevented = await closeBlade(1);
 
   if (!isPrevented) {
-    const mainRoute = routes.find((route) => route.meta?.root);
-    const mainRouteAlias = routes.find((route) => route.aliasOf?.path === mainRoute?.path) ?? mainRoute;
-
-    router.push({ name: mainRouteAlias?.name, params: route.params });
+    router.push(goToRoot());
   }
 };
 
 watchOnce(
   () => props.isReady,
   async (newVal) => {
+    isAppReady.value = newVal;
     if (isAuthenticated.value && newVal) {
       await loadFromHistory();
       await getApps();
@@ -209,8 +240,19 @@ watchOnce(
   },
 );
 
+watch(isAuthenticated, (newVal) => {
+  isAppReady.value = newVal;
+});
+
 provide("internalRoutes", internalRoutes);
-provide("$dynamicModules", dynamicModules);
+provide(DynamicModulesKey, dynamicModules);
+provideDashboardService();
+provideMenuService();
+provideGlobalSearch();
+
+onUnmounted(() => {
+  isAppReady.value = false;
+});
 </script>
 
 <style lang="scss">
@@ -239,7 +281,7 @@ provide("$dynamicModules", dynamicModules);
   }
 
   &__workspace {
-    @apply tw-px-2 tw-w-full tw-overflow-hidden tw-flex tw-grow tw-basis-0 tw-relative;
+    @apply tw-w-full tw-overflow-hidden tw-flex tw-grow tw-basis-0 tw-relative;
 
     .vc-app_mobile & {
       @apply tw-p-0;
@@ -248,6 +290,12 @@ provide("$dynamicModules", dynamicModules);
 
   &__user-dropdown-button {
     @apply tw-p-0 tw-mb-2 tw-w-full tw-h-auto;
+  }
+
+  &_mobile {
+    .vc-app__main-content {
+      @apply tw-flex-col;
+    }
   }
 }
 </style>

@@ -1,9 +1,6 @@
+@use 'custom';
+@tailwind base;
+
 @tailwind components;
-
-@import 'base';
-
-@import 'colors';
-
-@import 'custom';
 
 @tailwind utilities;

@@ -18,7 +18,7 @@
         <VcIcon
           v-if="!readonly && !disableDrag"
           class="vc-gallery-item__move"
-          icon="fas fa-arrows-alt"
+          icon="material-drag_indicator"
           size="s"
         ></VcIcon>
         <div
@@ -36,7 +36,7 @@
         >
           <VcIcon
             class="vc-gallery-item__button-icon"
-            icon="fas fa-eye"
+            icon="material-open_in_full"
           ></VcIcon>
           <div class="vc-gallery-item__button-text">
             {{ t("COMPONENTS.ORGANISMS.VC_GALLERY.INTERNAL.VC_GALLERY_ITEM.FULLSCREEN") }}
@@ -49,7 +49,7 @@
         >
           <VcIcon
             class="vc-gallery-item__button-icon"
-            icon="fas fa-pen"
+            icon="material-edit"
           ></VcIcon>
           <div class="vc-gallery-item__button-text">
             {{ $t("COMPONENTS.ORGANISMS.VC_GALLERY.INTERNAL.VC_GALLERY_ITEM.EDIT") }}
@@ -62,7 +62,7 @@
         >
           <VcIcon
             class="vc-gallery-item__button-icon"
-            icon="fas fa-trash"
+            icon="material-delete"
           ></VcIcon>
           <div class="vc-gallery-item__button-text">
             {{ $t("COMPONENTS.ORGANISMS.VC_GALLERY.INTERNAL.VC_GALLERY_ITEM.DELETE") }}

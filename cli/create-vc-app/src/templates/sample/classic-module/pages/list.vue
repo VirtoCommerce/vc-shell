@@ -10,6 +10,7 @@
     @collapse="$emit('collapse:blade')"
   >
     <!-- Blade contents -->
+    <!-- @vue-generic {MockedItem} -->
     <VcTable
       :expanded="expanded"
       class="tw-grow tw-basis-0"
@@ -50,7 +51,7 @@ import {
 import { useI18n } from "vue-i18n";
 import { useList } from "./../composables";
 import Details from "./details.vue";
-import { MockedItem } from "../sample-data";
+import { MockedItem } from "./../composables/useList";
 
 export interface Props {
   expanded?: boolean;
@@ -73,7 +74,7 @@ defineOptions({
   isWorkspace: true,
   menuItem: {
     title: "SAMPLE_APP.MENU.TITLE",
-    icon: "fas fa-file-alt",
+    icon: "lucide-file",
     priority: 1,
   },
 });
@@ -112,14 +113,14 @@ const bladeToolbar = ref<IBladeToolbar[]>([
   {
     id: "refresh",
     title: computed(() => t("SAMPLE_APP.PAGES.LIST.TOOLBAR.REFRESH")),
-    icon: "fas fa-sync-alt",
+    icon: "material-refresh",
     async clickHandler() {
       await reload();
     },
   },
   {
     id: "remove",
-    icon: "fas fa-trash",
+    icon: "material-delete",
     title: computed(() => t("SAMPLE_APP.PAGES.LIST.TOOLBAR.REMOVE")),
     async clickHandler() {
       await remove(selectedIds.value);
@@ -216,10 +217,9 @@ const onSelectionChanged = (items: MockedItem[]) => {
 const actionBuilder = (): IActionBuilderResult[] => {
   const result: IActionBuilderResult[] = [];
   result.push({
-    icon: "fas fa-trash",
+    icon: "material-delete",
     title: computed(() => t("SAMPLE_APP.PAGES.LIST.TABLE.ACTIONS.DELETE")),
     type: "danger",
-    position: "left",
     clickHandler(item: MockedItem) {
       if (item.id) {
         if (!selectedIds.value.includes(item.id)) {

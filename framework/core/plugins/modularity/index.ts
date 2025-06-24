@@ -1,46 +1,64 @@
-import { App, Component, h, watch } from "vue";
+import { App, Component, h, inject, resolveComponent, watch } from "vue";
 import { i18n } from "./../i18n";
 import { Router } from "vue-router";
 import { BladeInstanceConstructor, BladeVNode } from "./../../../shared/components/blade-navigation/types";
 import { kebabToPascal } from "./../../utilities";
-import { useMenuService, useNotifications } from "../../composables";
+import { addMenuItem, useMenuService, useNotifications } from "../../composables";
 import * as _ from "lodash-es";
 import { notification } from "../../../shared";
+import { BladeRegistryKey, IBladeRegistrationData, IBladeRegistryInstance } from "../../composables/useBladeRegistry";
 
-export const createModule = (components: { [key: string]: BladeInstanceConstructor }, locales?: unknown) => ({
-  install(app: App): void {
-    // Register components
-    Object.entries(components).forEach(([componentName, component]) => {
-      // Check if the component is already registered
-      if (app.component(componentName)) {
-        // Remove the existing component
-        // Note: Vue does not provide a method to remove a component, so we can overwrite it
-        console.warn(
-          `Component ${componentName} is already registered. It will be overwritten with the new component.`,
-        );
-      }
-      app.component(componentName, component);
-    });
-
-    // Load locales
-    if (locales) {
-      Object.entries(locales).forEach(([key, message]) => {
-        // Merge locale messages, overwriting existing ones
-        i18n.global.mergeLocaleMessage(key, message);
+export function createModule(components: { [key: string]: BladeInstanceConstructor }, locales?: unknown) {
+  return {
+    install(app: App): void {
+      // Register components
+      Object.entries(components).forEach(([componentName, component]) => {
+        // Check if the component is already registered
+        if (app.component(componentName)) {
+          // Remove the existing component
+          // Note: Vue does not provide a method to remove a component, so we can overwrite it
+          console.warn(
+            `Component ${componentName} is already registered. It will be overwritten with the new component.`,
+          );
+        }
+        app.component(componentName, component);
       });
-    }
-  },
-});
 
-export const createAppModule = (
+      // Load locales
+      if (locales) {
+        Object.entries(locales).forEach(([key, message]) => {
+          // Merge locale messages, overwriting existing ones
+          i18n.global.mergeLocaleMessage(key, message);
+        });
+      }
+    },
+  };
+}
+
+export function createAppModule(
   pages: { [key: string]: BladeInstanceConstructor },
   locales?: { [key: string]: object },
   notificationTemplates?: { [key: string]: Component & { notifyType?: string } },
   moduleComponents?: { [key: string]: Component },
-) => {
+) {
   return {
     install(app: App, options?: { router: Router }): void {
       let routerInstance: Router;
+
+      // Inject the BladeRegistry instance
+      const bladeRegistry = app.runWithContext(() => inject<IBladeRegistryInstance>(BladeRegistryKey));
+      let registerBladeWithRegistry: (name: string, data: IBladeRegistrationData) => void;
+
+      if (bladeRegistry && bladeRegistry._registerBladeFn) {
+        registerBladeWithRegistry = bladeRegistry._registerBladeFn;
+      } else {
+        console.error(
+          "createAppModule: BladeRegistry or its _registerBladeFn not found via inject. Blade registration will be skipped.",
+        );
+        registerBladeWithRegistry = (name: string, data: IBladeRegistrationData) => {
+          console.warn(`BladeRegistry (noop): Tried to register '${name}' but _registerBladeFn is missing.`);
+        };
+      }
 
       if (options && options.router) {
         const { router } = options;
@@ -59,45 +77,60 @@ export const createAppModule = (
         page.isBlade = true;
 
         if (!page.url) {
-          // Remove existing page if it exists
-          if (app.config.globalProperties.pages) {
-            const existingPageIndex = app.config.globalProperties.pages.findIndex(
-              (p: BladeInstanceConstructor) => p.name === page.name,
+          if (page.name) {
+            registerBladeWithRegistry(page.name, {
+              component: page,
+              isWorkspace: page.isWorkspace || false,
+            });
+          } else {
+            console.warn(
+              "createAppModule: Page without URL is missing a name. Cannot register with BladeRegistry.",
+              page,
             );
-            if (existingPageIndex !== -1) {
-              app.config.globalProperties.pages.splice(existingPageIndex, 1);
-            }
+          }
+        } else {
+          const routeName = page.name || kebabToPascal(page.url.substring(1));
+          if (page.name !== routeName) {
+            page.name = routeName;
           }
 
-          // Add new page
-          app.config.globalProperties.pages?.push(page);
-
-          // Remove existing bladeRoute if it exists
-          if (app.config.globalProperties.bladeRoutes) {
-            const existingBladeRouteIndex = app.config.globalProperties.bladeRoutes.findIndex(
-              (r: BladeInstanceConstructor) => r.name === page.name,
-            );
-            if (existingBladeRouteIndex !== -1) {
-              app.config.globalProperties.bladeRoutes.splice(existingBladeRouteIndex, 1);
-            }
-          }
-
-          // Add new bladeRoute
-          app.config.globalProperties.bladeRoutes?.push({
+          registerBladeWithRegistry(routeName, {
             component: page,
-            name: page?.name,
+            route: page.url,
             isWorkspace: page.isWorkspace || false,
           });
 
-          // Register component globally
-          if (page.name) {
-            if (app.component(page.name)) {
-              // Overwrite existing component
-              console.warn(
-                `Component ${page.name} is already registered. It will be overwritten with the new component.`,
-              );
-            }
-            app.component(page.name, page);
+          const mainRoute = routerInstance.getRoutes().find((r) => r.meta?.root);
+          if (!mainRoute) {
+            throw new Error("Main route not found. Make sure you have added `meta: {root: true}` to the main route.");
+          }
+          const mainRouteName = mainRoute.name;
+
+          const bladeVNodeForRouter = h(page, {
+            navigation: {},
+          }) as BladeVNode;
+
+          if (routerInstance.hasRoute(routeName)) {
+            routerInstance.removeRoute(routeName);
+          }
+
+          routerInstance.addRoute(mainRouteName as string, {
+            name: routeName,
+            path: page.url.substring(1),
+            components: { default: bladeVNodeForRouter },
+            meta: {
+              permissions: page.permissions,
+            },
+          });
+
+          if (page.menuItem) {
+            addMenuItem({
+              ...page.menuItem,
+              icon: resolveComponent(page.menuItem.icon as string),
+              url: page.url,
+              routeId: routeName,
+              permissions: page.permissions || page.menuItem.permissions,
+            });
           }
         }
 
@@ -119,91 +152,6 @@ export const createAppModule = (
                   },
                 });
               }
-            });
-          }
-        }
-
-        // Dynamically add pages to Vue Router
-        if (page.url) {
-          const mainRoute = routerInstance.getRoutes().find((r) => r.meta?.root);
-
-          if (!mainRoute) {
-            throw new Error("Main route not found. Make sure you have added `meta: {root: true}` to the main route.");
-          }
-
-          const mainRouteName = mainRoute.name;
-
-          const routeName = page.name || kebabToPascal(page.url.substring(1));
-
-          const BladeInstanceConstructor = Object.assign({}, page, { name: routeName });
-
-          const bladeVNode = h(BladeInstanceConstructor, {
-            navigation: {},
-          }) as BladeVNode;
-
-          // Remove existing route if it exists
-          if (routerInstance.hasRoute(routeName)) {
-            routerInstance.removeRoute(routeName);
-          }
-
-          // Add new route
-          routerInstance.addRoute(mainRouteName as string, {
-            name: routeName,
-            path: page.url.substring(1),
-            components: { default: bladeVNode },
-            meta: {
-              permissions: page?.permissions,
-            },
-          });
-
-          // Remove existing page in global properties if it exists
-          if (app.config.globalProperties.pages) {
-            const existingPageIndex = app.config.globalProperties.pages.findIndex(
-              (p: BladeInstanceConstructor) => p.name === bladeVNode.type.name,
-            );
-            if (existingPageIndex !== -1) {
-              app.config.globalProperties.pages.splice(existingPageIndex, 1);
-            }
-          }
-
-          // Add new page to global properties
-          app.config.globalProperties.pages?.push(bladeVNode);
-
-          // Remove existing bladeRoute if it exists
-          if (app.config.globalProperties.bladeRoutes) {
-            const existingBladeRouteIndex = app.config.globalProperties.bladeRoutes.findIndex(
-              (r: BladeInstanceConstructor) => r.name === routeName,
-            );
-            if (existingBladeRouteIndex !== -1) {
-              app.config.globalProperties.bladeRoutes.splice(existingBladeRouteIndex, 1);
-            }
-          }
-
-          // Add new bladeRoute
-          app.config.globalProperties.bladeRoutes?.push({
-            component: bladeVNode,
-            route: page.url,
-            name: routeName,
-            isWorkspace: page.isWorkspace || false,
-          });
-
-          // Register component globally
-          if (app.component(BladeInstanceConstructor.name)) {
-            // Overwrite existing component
-            console.warn(
-              `Component ${BladeInstanceConstructor.name} is already registered. It will be overwritten with the new component.`,
-            );
-          }
-          app.component(BladeInstanceConstructor.name, BladeInstanceConstructor);
-
-          // Add to menu
-          if (page.menuItem) {
-            const { addMenuItem } = useMenuService();
-            addMenuItem({
-              ...page.menuItem,
-              url: page.url,
-              routeId: routeName,
-              permissions: page.permissions,
             });
           }
         }
@@ -245,7 +193,7 @@ export const createAppModule = (
       }
     },
   };
-};
+}
 
 export * from "./loader";
 export * from "./extensions-helper";

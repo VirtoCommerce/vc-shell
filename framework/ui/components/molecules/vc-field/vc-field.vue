@@ -29,8 +29,8 @@
       >
         <VcButton
           v-if="copyable"
-          icon="far fa-copy"
-          size="m"
+          icon="material-content_copy"
+          icon-size="m"
           class="vc-field__copy-button"
           text
           @click="copy(modelValue)"

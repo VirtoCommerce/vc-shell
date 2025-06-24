@@ -2,6 +2,8 @@
   <div
     ref="target"
     class="vc-tooltip"
+    @mouseenter="showTooltip"
+    @mouseleave="hideTooltip"
   >
     <div
       ref="tooltipCompRef"
@@ -10,7 +12,7 @@
       <slot></slot>
     </div>
 
-    <teleport :to="`#${appContainer}`">
+    <teleport to="body">
       <span
         v-if="tooltipVisible && $slots['tooltip']"
         ref="tooltipRef"
@@ -22,11 +24,10 @@
     </teleport>
   </div>
 </template>
-
+<!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
 import { useFloating, shift, Placement, offset as floatingOffset } from "@floating-ui/vue";
-import { getCurrentInstance, ref, watch } from "vue";
-import { useMouseInElement } from "@vueuse/core";
+import { getCurrentInstance, ref, computed } from "vue";
 
 export interface Props {
   placement?: Placement;
@@ -34,46 +35,60 @@ export interface Props {
     crossAxis?: number;
     mainAxis?: number;
   };
+  delay?: number;
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  placement: "bottom-end",
+  placement: "bottom",
   offset: () => ({
-    crossAxis: 5,
-    mainAxis: 5,
+    crossAxis: 0,
+    mainAxis: 0,
   }),
+  delay: 0,
 });
 
 defineSlots<{
-  default: void;
-  tooltip?: void;
+  default: (props: any) => any;
+  tooltip?: (props: any) => any;
 }>();
 
 const tooltipVisible = ref(false);
 const tooltipCompRef = ref<HTMLElement | null>(null);
 const tooltipRef = ref<HTMLElement | null>(null);
 const target = ref(null);
+let showTimeout: NodeJS.Timeout | null = null;
 
 const instance = getCurrentInstance();
-
-const appContainer = instance?.appContext.app._container.id;
+// const appContainer = computed(() => instance?.appContext.app._container?.id || "app");
 
 const { floatingStyles } = useFloating(tooltipCompRef, tooltipRef, {
   placement: props.placement,
   middleware: [floatingOffset(props.offset), shift()],
 });
 
-const { isOutside } = useMouseInElement(target);
+const showTooltip = () => {
+  if (props.delay > 0) {
+    showTimeout = setTimeout(() => {
+      tooltipVisible.value = true;
+    }, props.delay);
+  } else {
+    tooltipVisible.value = true;
+  }
+};
 
-watch(isOutside, (outside) => {
-  tooltipVisible.value = !outside;
-});
+const hideTooltip = () => {
+  if (showTimeout) {
+    clearTimeout(showTimeout);
+    showTimeout = null;
+  }
+  tooltipVisible.value = false;
+};
 </script>
 
 <style lang="scss">
 :root {
   --tooltip-background-color: var(--additional-50);
-  --tooltip-border-color: var(--base-border-color, var(--neutrals-200));
+  --tooltip-border-color: var(--neutrals-200);
   --tooltip-shadow-color: var(--secondary-300);
   --tooltip-shadow: 1px 1px 8px rgba(var(--tooltip-shadow-color), 0.25);
   --tooltip-text-color: var(--neutrals-600);
@@ -85,7 +100,7 @@ watch(isOutside, (outside) => {
   }
 
   &__content {
-    @apply tw-absolute tw-z-[1001] tw-bg-[color:var(--tooltip-background-color)] tw-border tw-border-solid tw-border-[color:var(--tooltip-border-color)] tw-shadow-lg tw-rounded tw-text-[color:var(--tooltip-text-color)] tw-font-normal tw-py-1 tw-px-2;
+    @apply tw-absolute tw-z-[1002] tw-bg-[color:var(--tooltip-background-color)] tw-border tw-border-solid tw-border-[color:var(--tooltip-border-color)] tw-shadow-lg tw-rounded tw-text-[color:var(--tooltip-text-color)] tw-font-normal tw-py-1 tw-px-2;
   }
 }
 </style>

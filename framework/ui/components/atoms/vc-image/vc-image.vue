@@ -52,7 +52,7 @@ const props = withDefaults(defineProps<Props>(), {
   aspect: "1x1",
   size: "auto",
   background: "cover",
-  emptyIcon: "fas fa-image",
+  emptyIcon: "material-image",
 });
 
 const emit = defineEmits<Emits>();
@@ -98,7 +98,7 @@ function onClick(): void {
   --image-size-xxl: 145px;
 
   --image-border-radius: 3px;
-  --image-border-color: var(--base-border-color, var(--neutrals-200));
+  --image-border-color: var(--neutrals-200);
   --image-empty-icon-color: var(--secondary-500);
 }
 

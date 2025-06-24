@@ -119,12 +119,12 @@
     </Dialog>
   </TransitionRoot>
 </template>
-
+<!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
 import { Ref, computed, inject } from "vue";
 import { TransitionRoot, TransitionChild, Dialog, DialogPanel, DialogTitle } from "@headlessui/vue";
 
-interface Props {
+export interface Props {
   title?: string;
   closable?: boolean;
   variant?: "default" | "error" | "warning" | "success" | "info";
@@ -146,9 +146,9 @@ const props = withDefaults(defineProps<Props>(), {
 const emit = defineEmits<Emits>();
 
 defineSlots<{
-  header: void;
-  content: void;
-  footer: (props: { close: () => void }) => void;
+  header: (props: any) => any;
+  content: (props: any) => any;
+  footer: (props: { close: () => void }) => any;
 }>();
 
 const isMobile = inject("isMobile") as Ref<boolean>;
@@ -156,13 +156,13 @@ const isMobile = inject("isMobile") as Ref<boolean>;
 const icon = computed(() => {
   switch (props.variant) {
     case "warning":
-      return "fas fa-exclamation-triangle";
+      return "material-warning";
     case "error":
-      return "fas fa-exclamation-circle";
+      return "material-error";
     case "success":
-      return "fas fa-check-circle";
+      return "material-check_circle";
     case "info":
-      return "fas fa-info-circle";
+      return "material-info";
     default:
       return "";
   }
@@ -197,10 +197,10 @@ function closeModal() {
   --popup-header-color: var(--primary-700);
   --popup-content-text-color: var(--primary-700);
   --popup-warning-icon-color: var(--warning-500);
-  --popup-error-icon-color: var(--base-error-color, var(--danger-500));
+  --popup-error-icon-color: var(--danger-500);
   --popup-success-icon-color: var(--success-500);
   --popup-info-icon-color: var(--info-500);
-  --popup-footer-separator: var(--base-border-color, var(--neutrals-200));
+  --popup-footer-separator: var(--neutrals-200);
   --popup-overlay-color: var(--additional-50);
   --popup-overlay: rgb(from var(--popup-overlay-color) r g b / 75%);
   --popup-bg: var(--additional-50);
@@ -208,7 +208,7 @@ function closeModal() {
 
 .vc-popup {
   &__overlay {
-    @apply tw-fixed tw-inset-0 tw-bg-[var(--popup-overlay)] tw-backdrop-blur-[3px];
+    @apply tw-fixed tw-inset-0 tw-bg-black/50 tw-backdrop-blur-[3px];
   }
 
   &__container {
@@ -264,7 +264,7 @@ function closeModal() {
   }
 
   &__content-wrapper {
-    @apply tw-flex tw-flex-auto tw-self-center tw-min-h-0 tw-max-h-[-webkit-fill-available];
+    @apply tw-flex tw-flex-auto tw-self-center tw-min-h-0 tw-max-h-[-webkit-fill-available] tw-max-h-[-moz-available];
 
     &--full {
       @apply tw-h-full;

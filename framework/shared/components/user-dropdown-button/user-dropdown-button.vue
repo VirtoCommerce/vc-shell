@@ -1,341 +1,129 @@
 <template>
-  <AppBarButtonTemplate
-    position="bottom-start"
-    :before-open="beforeOpen"
-    :title="user?.userName"
-  >
-    <template #button="{ opened }">
-      <template v-if="$isDesktop.value">
-        <div
-          class="vc-user-dropdown-button"
-          :class="{
-            'vc-user-dropdown-button--active': opened,
-            'vc-user-dropdown-button--auto-width': disabled,
-            'vc-user-dropdown-button--mobile': $isMobile.value,
-          }"
-        >
-          <div
-            class="vc-user-dropdown-button__wrap"
-            :class="{
-              'vc-user-dropdown-button__wrap--active': opened,
-            }"
-          >
-            <div
-              v-if="avatarUrl"
-              class="vc-user-dropdown-button__avatar"
-              :style="imageHandler"
-            ></div>
-            <VcIcon
-              v-else
-              icon="fas fa-user-circle"
-              size="xxl"
-              class="vc-user-dropdown-button__icon"
-            />
-            <div class="vc-user-dropdown-button__info">
-              <div class="vc-user-dropdown-button__name">
-                {{ name || (user && "fullName" in user && user.fullName) || user?.userName }}
-              </div>
-              <div class="vc-user-dropdown-button__role">
-                {{
-                  (role && $t(`SHELL.USER.ROLE.${role}`)) ||
-                  (user?.isAdministrator ? $t("SHELL.USER.ROLE.ADMINISTRATOR") : "")
-                }}
-              </div>
-            </div>
-            <div
-              v-if="!disabled && menu && menu.length"
-              class="vc-user-dropdown-button__chevron"
-            >
-              <VcIcon
-                icon="fas fa-chevron-down"
-                size="xl"
-              ></VcIcon>
-            </div>
-          </div>
-        </div>
-      </template>
-      <template v-else>
-        <div class="vc-user-dropdown-button__button">
-          <div
-            v-if="avatarUrl"
-            class="vc-user-dropdown-button__avatar"
-            :style="imageHandler"
-          ></div>
-          <VcIcon
-            v-else
-            icon="fas fa-user-circle"
-            size="xxl"
-            class="vc-user-dropdown-button__icon"
-          />
-        </div>
-      </template>
-    </template>
-    <template #dropdown-content="{ opened, toggle }">
-      <Sidebar
-        :is-expanded="$isMobile.value ? opened : false"
-        position="right"
-        render="mobile"
-        @close="toggle"
+  <div class="vc-user-dropdown-button-container">
+    <button
+      type="button"
+      class="vc-user-dropdown-button"
+      :class="{
+        'vc-user-dropdown-button--active': false,
+        'vc-user-dropdown-button--auto-width': disabled,
+        'vc-user-dropdown-button--mobile': $isMobile.value,
+        'vc-user-dropdown-button--collapsed': !isExpanded && $isDesktop.value,
+      }"
+      @click="handleClick"
+    >
+      <div
+        class="vc-user-dropdown-button__wrap"
+        :class="{
+          'vc-user-dropdown-button__wrap--active': false,
+        }"
       >
-        <template #header="{ header }">
-          <div class="vc-user-dropdown-button__header-wrap">
-            <div class="vc-user-dropdown-button__header">
-              <div
-                v-if="avatarUrl"
-                class="vc-user-dropdown-button__avatar"
-                :style="imageHandler"
-              ></div>
-              <VcIcon
-                v-else
-                icon="fas fa-user-circle"
-                size="xxl"
-                class="vc-user-dropdown-button__icon"
-              />
-              <div class="vc-user-dropdown-button__info">
-                <div class="vc-user-dropdown-button__name">
-                  {{ name || (user && "fullName" in user && user.fullName) || user?.userName }}
-                </div>
-                <div class="vc-user-dropdown-button__role">
-                  {{
-                    (role && $t(`SHELL.USER.ROLE.${role}`)) ||
-                    (user?.isAdministrator ? $t("SHELL.USER.ROLE.ADMINISTRATOR") : "")
-                  }}
-                </div>
-              </div>
-            </div>
-            <component :is="header" />
-          </div>
-        </template>
-        <template #content>
-          <div
-            v-if="menu && opened"
-            class="vc-user-dropdown-button__menu"
-            @click.stop="toggle"
-          >
-            <div
-              v-for="(item, i) in menu"
-              :key="`menu_item_${i}`"
-              class="vc-user-dropdown-button__menu-item"
-              @click="item.hasOwnProperty('clickHandler') ? item.clickHandler?.() : null"
-            >
-              <VcIcon
-                v-if="item.icon"
-                :icon="item.icon"
-                size="l"
-                class="vc-user-dropdown-button__menu-icon"
-              ></VcIcon>
-              <p>{{ item.title }}</p>
-            </div>
-          </div>
-        </template>
-      </Sidebar>
-    </template>
-  </AppBarButtonTemplate>
+        <UserInfo
+          :avatar-url="avatarUrl"
+          :name="name"
+          :role="role"
+          :is-expanded="isExpanded || isHoverExpanded"
+        />
+        <!-- <UserActions
+          :profile-menu="profileMenu"
+          @action:click="handleActionClick"
+        /> -->
+        <div class="vc-user-dropdown-button__actions">
+          <div class="vc-user-dropdown-button__trigger"></div>
+        </div>
+      </div>
+    </button>
+
+    <UserSidebar
+      v-model:is-opened="isSidebarOpened"
+      @item:click="handleMenuItemClick"
+    />
+  </div>
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from "vue";
-import { useUser } from "../../../core/composables";
-import { useRouter } from "vue-router";
+import { ref } from "vue";
+import type { IMenuItem } from "../../../core/types";
+import { default as UserInfo } from "./_internal/user-info.vue";
+import { default as UserSidebar } from "./_internal/user-sidebar.vue";
+import { useMenuExpanded } from "../../../shared/composables";
 import { useI18n } from "vue-i18n";
-import { VcIcon } from "../../../ui/components";
-import { BladeMenu } from "../../../core/types";
-import { usePopup } from "../popup-handler/composables/usePopup";
-import { ChangePassword } from "../change-password";
-import { useBladeNavigation } from "..";
-import { AppBarButtonTemplate } from "./../app-bar-button";
-import { Sidebar } from "./../sidebar";
 
 export interface Props {
   avatarUrl?: string | undefined;
   name?: string | undefined;
   role?: string | undefined;
-  menuItems?: BladeMenu[];
-  baseMenuItemsHandler?: (defaultMenuItems: BladeMenu[]) => BladeMenu[];
   disabled?: boolean;
 }
-const props = withDefaults(defineProps<Props>(), {
-  menuItems: () => [],
-});
 
-const { user, signOut } = useUser();
-const router = useRouter();
+defineProps<Props>();
+
 const { t } = useI18n({ useScope: "global" });
+const isSidebarOpened = ref(false);
+const { isExpanded, isHoverExpanded } = useMenuExpanded();
 
-const { open } = usePopup({
-  component: ChangePassword,
-});
-const { closeBlade } = useBladeNavigation();
-
-const defaultMenuItems = ref([
-  {
-    title: computed(() => t("SHELL.ACCOUNT.CHANGE_PASSWORD")),
-    icon: "fas fa-key",
-    clickHandler() {
-      open();
-    },
-  },
-  {
-    title: computed(() => t("SHELL.ACCOUNT.LOGOUT")),
-    icon: "fas fa-sign-out-alt",
-    async clickHandler() {
-      const isPrevented = await closeBlade(0);
-
-      if (!isPrevented) {
-        await signOut();
-        router.push({ name: "Login" });
-      }
-    },
-  },
-]);
-
-const menu = computed(() => {
-  const defaultItems = handleDefaultMenuItems();
-
-  if (defaultItems?.length) {
-    return [...props.menuItems, ...defaultItems];
-  }
-  return [...props.menuItems];
-});
-
-function handleDefaultMenuItems() {
-  if (props.baseMenuItemsHandler && typeof props.baseMenuItemsHandler === "function") {
-    return props.baseMenuItemsHandler(defaultMenuItems.value);
-  }
-  return defaultMenuItems.value;
+function handleMenuItemClick(item: IMenuItem) {
+  item.clickHandler?.();
 }
 
-function beforeOpen() {
-  return !props.disabled && menu.value?.length > 0;
+function handleClick() {
+  isSidebarOpened.value = !isSidebarOpened.value;
 }
-
-const imageHandler = computed(() => {
-  if (props.avatarUrl) {
-    return `background-image: url(${CSS.escape(props.avatarUrl)})`;
-  }
-  return undefined;
-});
 </script>
 
 <style lang="scss">
 :root {
-  --user-dropdown-account-info-name-color: var(--base-text-color, var(--neutrals-950));
+  --user-dropdown-height: 54px;
+  --user-dropdown-button-bg: var(--primary-500);
+  --user-dropdown-button-bg-hover: var(--primary-700);
+  --user-dropdown-button-bg-logout: var(--danger-500);
+  --user-dropdown-button-bg-logout-hover: var(--danger-700);
+  --user-dropdown-button-icon-color: var(--additional-50);
+  --user-dropdown-account-info-name-color: var(--neutrals-950);
   --user-dropdown-account-info-role-color: var(--secondary-600);
-  --user-dropdown-divider-color: var(--base-border-color, var(--neutrals-200));
   --user-dropdown-border-color: var(--app-bar-divider-color);
   --user-dropdown-button-color: var(--primary-500);
-  --user-dropdown-button-color-hover: var(--primary-700);
-  --user-dropdown-menu-item-bg-hover: var(--primary-50);
-  --user-dropdown-menu-item-bg: var(--additional-50);
-  --user-dropdown-menu-text-color: var(--additional-950);
-  --user-dropdown-chevron-color: var(--secondary-600);
-  --user-dropdown-chevron-color-hover: var(--secondary-700);
-  --user-dropdown-wrap-bg: var(--additional-50);
-  --user-dropdown-button-width: var(--app-bar-button-width);
+  --user-dropdown-wrap-bg: var(--neutrals-50);
+  --user-dropdown-border-color: var(--neutrals-200);
+  --user-dropdown-wrap-padding-left: 18px;
+}
+
+.vc-user-dropdown-button-container {
+  @apply tw-flex tw-flex-col;
 }
 
 .vc-user-dropdown-button {
-  @apply tw-border-l tw-border-solid tw-border-l-[color:var(--user-dropdown-border-color)]  tw-cursor-pointer
-  tw-relative tw-flex tw-h-full tw-flex-col tw-select-none;
+  @apply tw-w-full tw-cursor-pointer tw-relative tw-flex tw-h-[var(--user-dropdown-height)] tw-flex-col tw-select-none tw-overflow-hidden tw-border-solid tw-border-t tw-border-t-[var(--user-dropdown-border-color)] tw-pl-[var(--user-dropdown-wrap-padding-left)];
+
+  &:hover {
+    .vc-user-dropdown-button__trigger {
+      @apply tw-visible tw-translate-x-0;
+    }
+  }
 
   .vc-app_mobile & {
     @apply tw-w-full #{!important};
   }
 
   &--mobile {
-    @apply tw-h-[var(--app-bar-height)];
   }
 
   &--auto-width {
     @apply tw-w-auto;
   }
 
-  &__button {
-    @apply tw-w-[var(--user-dropdown-button-width)] tw-h-full tw-flex tw-items-center tw-justify-center tw-relative;
-  }
-
   &__wrap {
-    @apply tw-flex tw-justify-between tw-items-center tw-flex-auto tw-px-4 tw-bg-[--user-dropdown-wrap-bg] tw-gap-3;
+    @apply tw-flex tw-justify-between tw-items-center tw-flex-auto tw-bg-[--user-dropdown-wrap-bg] tw-gap-3;
   }
 
-  &__header {
-    @apply tw-flex tw-justify-between tw-items-center tw-px-3 tw-py-3 tw-bg-[--user-dropdown-wrap-bg] tw-gap-3 tw-truncate;
+  &--collapsed {
   }
 
-  &__header-wrap {
-    @apply tw-flex tw-justify-between tw-items-center;
+  &__actions {
+    @apply tw-h-full;
   }
 
-  &__avatar {
-    @apply tw-rounded-full tw-overflow-hidden tw-w-[34px] tw-h-[34px] tw-bg-[color:var(--user-dropdown-account-info-role-color)]
-    tw-bg-cover tw-bg-center tw-shrink-0;
-  }
-
-  &__icon {
-    @apply tw-text-[color:var(--user-dropdown-button-color)];
-  }
-
-  &__info {
-    @apply tw-grow tw-basis-0 tw-overflow-hidden;
-  }
-
-  &__name {
-    @apply tw-text-sm tw-text-[color:var(--user-dropdown-account-info-name-color)] tw-max-w-[250px] tw-truncate;
-  }
-
-  &__role {
-    @apply tw-text-sm tw-text-[color:var(--user-dropdown-account-info-role-color)];
-  }
-
-  &__chevron {
-    @apply tw-text-[color:var(--user-dropdown-chevron-color)] tw-transition-colors tw-duration-200;
-  }
-
-  &:hover &__chevron {
-    @apply tw-text-[color:var(--user-dropdown-chevron-color-hover)];
-  }
-
-  &--active &__chevron {
-    @apply -tw-scale-y-100;
-  }
-
-  &__menu {
-    @apply tw-w-full;
-
-    &-item {
-      @apply tw-p-3 tw-text-sm tw-text-[color:var(--user-dropdown-menu-text-color)] tw-border-solid tw-border-b tw-border-b-[color:var(--user-dropdown-divider-color)] tw-bg-[color:var(--user-dropdown-menu-item-bg)] tw-flex tw-flex-row tw-items-center tw-cursor-pointer;
-      transition: background-color 0.2s;
-
-      &:hover {
-        @apply tw-bg-[color:var(--user-dropdown-menu-item-bg-hover)];
-
-        .vc-user-dropdown-button__menu-icon {
-          @apply tw-text-[color:var(--user-dropdown-button-color-hover)];
-        }
-      }
-
-      &:last-of-type {
-        @apply tw-border-b-0;
-      }
-    }
-  }
-
-  &__menu-icon {
-    @apply tw-mr-3 tw-text-[color:var(--user-dropdown-button-color)];
-  }
-
-  .vc-app_mobile & {
-    &__menu {
-      @apply tw-static tw-shadow-none #{!important};
-    }
-
-    &__menu-item {
-      @apply tw-border-none #{!important};
-    }
-
-    &__wrap--active {
-      @apply tw-shadow-none;
-    }
+  &__trigger {
+    @apply tw-invisible tw-absolute tw-right-0 tw-top-0 tw-h-full tw-w-1 tw-bg-[--user-dropdown-button-bg] tw-translate-x-full tw-transition-all tw-duration-300 tw-ease-in-out;
   }
 }
 </style>

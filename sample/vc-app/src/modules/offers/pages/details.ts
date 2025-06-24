@@ -11,25 +11,25 @@ export const details: DynamicDetailsSchema = {
     toolbar: [
       {
         id: "save",
-        icon: "fas fa-save",
+        icon: "material-save",
         title: "Save",
         method: "saveChanges",
       },
       {
         id: "enable",
-        icon: "fa fa-eye",
+        icon: "material-visibility",
         title: "Enable",
         method: "enable",
       },
       {
         id: "disable",
-        icon: "fa fa-eye-slash",
+        icon: "material-visibility_off",
         title: "Disable",
         method: "disable",
       },
       {
         id: "delete",
-        icon: "fas fa-trash",
+        icon: "material-delete",
         title: "Delete",
         method: "remove",
       },

@@ -1,6 +1,10 @@
 :root {
   --v-loading-bg-color: var(--additional-50);
   --v-loading-bg: rgb(from var(--v-loading-bg-color) r g b / 75%);
+  --v-loading-spinner-color: var(--primary-500, #319ed4);
+  --v-loading-spinner-size-small: 20px;
+  --v-loading-spinner-size-medium: 30px;
+  --v-loading-spinner-size-large: 40px;
 }
 
 .v-loading {
@@ -11,7 +15,7 @@
 .v-loading::before {
   content: "";
   position: absolute;
-  z-index: var(--v-loading-z-index, 9998); /* Default to 9998 if not set */
+  z-index: var(--v-loading-z-index, 9998);
   top: 0;
   right: 0;
   bottom: 0;
@@ -20,19 +24,44 @@
   backdrop-filter: blur(3px);
 }
 
+.v-loading--no-blur::before {
+  backdrop-filter: none;
+}
+
+.v-loading--fullscreen {
+  position: fixed;
+  inset: 0;
+}
+
 .v-loading::after {
   content: "";
   position: absolute;
-  z-index: calc(var(--v-loading-z-index, 9999) + 1); /* Default to 9999 + 1 if not set */
-  width: 30px;
-  height: 30px;
-  border: 4px solid #319ed4;
+  z-index: calc(var(--v-loading-z-index, 9999) + 1);
+  width: var(--v-loading-spinner-size, var(--v-loading-spinner-size-medium));
+  height: var(--v-loading-spinner-size, var(--v-loading-spinner-size-medium));
+  border: 4px solid var(--v-loading-spinner-color);
   border-right-color: transparent;
   animation: 0.75s linear infinite v-loading;
   border-radius: 50%;
-  top: calc(50% - 30px / 2);
-  left: calc(50% - 30px / 2);
+  top: calc(50% - var(--v-loading-spinner-size, var(--v-loading-spinner-size-medium)) / 2);
+  left: calc(50% - var(--v-loading-spinner-size, var(--v-loading-spinner-size-medium)) / 2);
   display: inline-block;
+}
+
+/* Spinner sizes */
+.v-loading[data-loading-size="small"]::after {
+  --v-loading-spinner-size: var(--v-loading-spinner-size-small);
+  border-width: 2px;
+}
+
+.v-loading[data-loading-size="medium"]::after {
+  --v-loading-spinner-size: var(--v-loading-spinner-size-medium);
+  border-width: 3px;
+}
+
+.v-loading[data-loading-size="large"]::after {
+  --v-loading-spinner-size: var(--v-loading-spinner-size-large);
+  border-width: 4px;
 }
 
 @keyframes v-loading {

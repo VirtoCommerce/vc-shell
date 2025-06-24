@@ -2,8 +2,9 @@
   <div
     class="vc-textarea"
     :class="{
-      'vc-textarea_error': errorMessage,
+      'vc-textarea_error': error || !!errorMessage,
       'vc-textarea_disabled': disabled,
+      'vc-textarea_focus': isFocused,
     }"
   >
     <!-- Textarea label -->
@@ -13,6 +14,7 @@
       :required="required"
       :multilanguage="multilanguage"
       :current-language="currentLanguage"
+      :error="error || !!errorMessage"
     >
       <span>{{ label }}</span>
       <template
@@ -32,12 +34,15 @@
         :value="modelValue"
         :disabled="disabled"
         :maxlength="maxlength"
+        tabindex="0"
         @input="onInput"
+        @focus="isFocused = true"
+        @blur="isFocused = false"
       ></textarea>
     </div>
 
     <slot
-      v-if="errorMessage"
+      v-if="error || !!errorMessage"
       name="error"
     >
       <VcHint class="vc-textarea__error">
@@ -46,7 +51,7 @@
     </slot>
   </div>
 </template>
-
+<!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
 import { ref } from "vue";
 import { VcHint, VcLabel } from "./../../";
@@ -60,6 +65,7 @@ export interface Props {
   tooltip?: string;
   name?: string;
   maxlength?: string;
+  error?: boolean;
   errorMessage?: string;
   multilanguage?: boolean;
   currentLanguage?: string;
@@ -70,7 +76,7 @@ export interface Emits {
 }
 
 defineSlots<{
-  error: void;
+  error: (props: any) => any;
 }>();
 
 withDefaults(defineProps<Props>(), {
@@ -81,6 +87,7 @@ withDefaults(defineProps<Props>(), {
 const emit = defineEmits<Emits>();
 
 const textareaRef = ref<HTMLTextAreaElement>();
+const isFocused = ref(false);
 
 function onInput(e: Event) {
   const newValue = (e.target as HTMLInputElement).value;
@@ -95,13 +102,23 @@ defineExpose({
 <style lang="scss">
 :root {
   --textarea-height: 120px;
-  --textarea-border-color: var(--secondary-200);
-  --textarea-border-color-error: var(--base-error-color, var(--danger-500));
-  --textarea-border-radius: 3px;
+  --textarea-border-color: var(--neutrals-300);
+  --textarea-text-color: var(--neutrals-800);
+
+  --textarea-border-radius: 4px;
   --textarea-background-color: var(--additional-50);
   --textarea-placeholder-color: var(--neutrals-400);
-  --textarea-disabled-background-color: var(--neutrals-100);
-  --textarea-disabled-text-color: var(--neutrals-700);
+
+  // Error
+  --textarea-text-color-error: var(--danger-500);
+  --textarea-border-color-error: var(--danger-500);
+
+  // Focus
+  --textarea-border-color-focus: var(--primary-100);
+
+  // Disabled
+  --textarea-disabled-background-color: var(--neutrals-200);
+  --textarea-disabled-text-color: var(--neutrals-500);
 }
 
 .vc-textarea {
@@ -112,12 +129,20 @@ defineExpose({
   &__field-wrapper {
     @apply tw-border tw-border-solid
       tw-border-[color:var(--textarea-border-color)]
-      tw-rounded-sm tw-box-border
+      tw-rounded-[var(--textarea-border-radius)] tw-box-border
       tw-bg-[color:var(--textarea-background-color)] tw-flex tw-items-stretch;
+
+    textarea {
+      @apply tw-text-[color:var(--textarea-text-color)];
+    }
   }
 
   &_error &__field-wrapper {
     @apply tw-border tw-border-solid tw-border-[color:var(--textarea-border-color-error)];
+  }
+
+  &_error &__field-wrapper textarea {
+    @apply tw-text-[color:var(--textarea-text-color-error)];
   }
 
   &__error {
@@ -128,7 +153,7 @@ defineExpose({
     @apply tw-w-full tw-resize-y tw-box-border tw-border-none tw-outline-none
       tw-min-h-32
       placeholder:tw-text-[color:var(--textarea-placeholder-color)]
-      tw-px-3 tw-py-2 tw-bg-[color:var(--textarea-background-color)] tw-text-sm;
+      tw-px-3 tw-py-2 tw-bg-[color:var(--textarea-background-color)] tw-text-sm tw-rounded-[var(--textarea-border-radius)];
 
     &::-webkit-input-placeholder {
       @apply tw-text-[color:var(--textarea-placeholder-color)];
@@ -146,6 +171,10 @@ defineExpose({
   &_disabled &__field-wrapper,
   &_disabled &__field {
     @apply tw-bg-[var(--textarea-disabled-background-color)] tw-text-[var(--textarea-disabled-text-color)];
+  }
+
+  &_focus &__field-wrapper {
+    @apply tw-outline-2 tw-outline tw-outline-[color:var(--textarea-border-color-focus)] tw-outline-offset-[0px];
   }
 }
 </style>

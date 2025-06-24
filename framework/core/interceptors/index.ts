@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Router } from "vue-router";
-import { useUser } from "../composables/useUser";
+import { useUserManagement } from "../composables/useUserManagement";
 import { notification } from "../../shared";
 
 export function registerInterceptors(router: Router) {
   const { fetch: originalFetch } = window;
-  const { signOut, isAuthenticated } = useUser();
+  const { signOut, isAuthenticated } = useUserManagement();
 
   window.fetch = async (...args) => {
     /**

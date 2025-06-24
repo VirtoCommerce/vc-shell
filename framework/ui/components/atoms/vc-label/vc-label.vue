@@ -1,5 +1,10 @@
 <template>
-  <div class="vc-label">
+  <div
+    class="vc-label"
+    :class="{
+      'vc-label_error': error,
+    }"
+  >
     <div class="vc-label__text">
       <span class="vc-label__content">
         <slot></slot>
@@ -34,24 +39,40 @@
     </div>
   </div>
 </template>
-
+<!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
 import { VcIcon, VcTooltip } from "./../../../components";
 
 export interface Props {
+  /**
+   * Shows required field indicator (asterisk)
+   */
   required?: boolean;
+  /**
+   * Icon to use for the tooltip
+   */
   tooltipIcon?: string;
+  /**
+   * Shows language indicator for multilanguage fields
+   */
   multilanguage?: boolean;
+  /**
+   * Current language code to display
+   */
   currentLanguage?: string;
+  /**
+   * Shows the label in error state
+   */
+  error?: boolean;
 }
 
 withDefaults(defineProps<Props>(), {
-  tooltipIcon: "fas fa-info-circle",
+  tooltipIcon: "material-info",
 });
 
 defineSlots<{
-  default: void;
-  tooltip?: void;
+  default: (props: any) => any;
+  tooltip?: (props: any) => any;
 }>();
 </script>
 
@@ -60,13 +81,14 @@ defineSlots<{
   --label-required-color: var(--danger-500);
   --label-tooltip-color: var(--info-400);
   --label-lang-color: var(--neutrals-500);
+  --label-error-color: var(--danger-500);
 }
 
 .vc-label {
   @apply tw-flex tw-flex-row tw-justify-between tw-items-center tw-relative;
 
   &__text {
-    @apply tw-flex-nowrap tw-font-bold tw-truncate;
+    @apply tw-flex-nowrap tw-font-semibold tw-truncate;
   }
 
   &__content {
@@ -87,6 +109,10 @@ defineSlots<{
 
   &__language {
     @apply tw-text-[color:var(--label-lang-color)] tw-shrink-0 tw-text-sm;
+  }
+
+  &_error &__text {
+    @apply tw-text-[color:var(--label-error-color)];
   }
 }
 </style>

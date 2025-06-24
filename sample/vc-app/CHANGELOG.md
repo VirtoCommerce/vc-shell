@@ -1,8 +1,185 @@
-## [1.0.342](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.341...v1.0.342) (2025-04-29)
+## [1.1.36](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.35...v1.1.36) (2025-06-24)
 
 
 
-## [1.0.341](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.340...v1.0.341) (2025-03-11)
+## [1.1.35](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.34...v1.1.35) (2025-06-24)
+
+
+
+## [1.1.34](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.33...v1.1.34) (2025-06-23)
+
+
+
+## [1.1.33](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.32...v1.1.33) (2025-06-23)
+
+
+
+## [1.1.32](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.31...v1.1.32) (2025-06-23)
+
+
+
+## [1.1.31](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.30...v1.1.31) (2025-06-23)
+
+
+
+## [1.1.30](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.29...v1.1.30) (2025-06-11)
+
+
+
+## [1.1.29](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.28...v1.1.29) (2025-06-05)
+
+
+
+## [1.1.28](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.27...v1.1.28) (2025-06-04)
+
+
+
+## [1.1.27](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.26...v1.1.27) (2025-06-04)
+
+
+
+## [1.1.26](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.25...v1.1.26) (2025-06-04)
+
+
+
+## [1.1.25](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.24...v1.1.25) (2025-05-30)
+
+
+
+## [1.1.24](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.23...v1.1.24) (2025-05-29)
+
+
+
+## [1.1.23](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.22...v1.1.23) (2025-05-29)
+
+
+
+## [1.1.22](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.21...v1.1.22) (2025-05-28)
+
+
+
+## [1.1.21](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.20...v1.1.21) (2025-05-28)
+
+
+
+## [1.1.20](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.19...v1.1.20) (2025-05-28)
+
+
+
+## [1.1.19](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.18...v1.1.19) (2025-05-28)
+
+
+
+## [1.1.18](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.17...v1.1.18) (2025-05-27)
+
+
+
+## [1.1.17](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.16...v1.1.17) (2025-05-27)
+
+
+
+## [1.1.15](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.14...v1.1.15) (2025-05-23)
+
+
+
+## [1.1.14](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.13...v1.1.14) (2025-05-23)
+
+
+
+## [1.1.13](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.12...v1.1.13) (2025-05-23)
+
+
+
+## [1.1.12](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.11...v1.1.12) (2025-05-23)
+
+
+
+## [1.1.11](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.10...v1.1.11) (2025-05-23)
+
+
+
+## [1.1.10](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.9...v1.1.10) (2025-05-22)
+
+
+
+## [1.1.9](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.8...v1.1.9) (2025-05-15)
+
+
+
+## [1.1.8](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.7...v1.1.8) (2025-05-15)
+
+
+### Features
+
+* **generate-api-client:** enhance API client generation with new features and improvements ([fcf85db](https://github.com/VirtoCommerce/vc-shell/commit/fcf85db675390abc218b4cd1fa3f204be9a50da3))
+
+
+
+## [1.1.7](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.6...v1.1.7) (2025-05-12)
+
+
+
+## [1.1.6](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.5...v1.1.6) (2025-05-12)
+
+
+
+## [1.1.5](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.4...v1.1.5) (2025-05-07)
+
+
+
+## [1.1.4](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.3...v1.1.4) (2025-04-30)
+
+
+
+## [1.1.3](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.2...v1.1.3) (2025-04-29)
+
+
+
+## [1.1.2](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.1...v1.1.2) (2025-04-29)
+
+
+
+## [1.1.1](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.0...v1.1.1) (2025-04-29)
+
+
+
+# [1.1.0](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.0-alpha.2...v1.1.0) (2025-04-29)
+
+
+### Features
+
+* first release ([6685f10](https://github.com/VirtoCommerce/vc-shell/commit/6685f10f98982038206a55b637dc14628a341088))
+* redesign alpha4 wip ([ac48f52](https://github.com/VirtoCommerce/vc-shell/commit/ac48f526f61e85518a238e1e6b49047ff3fcc786))
+* redesign alpha5 ([ac430b8](https://github.com/VirtoCommerce/vc-shell/commit/ac430b80f684d3b920c35778a83c33ec387b2484))
+
+
+
+# [1.1.0-alpha.11](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.0-alpha.2...v1.1.0-alpha.11) (2025-04-29)
+
+
+### Features
+
+* first release ([6685f10](https://github.com/VirtoCommerce/vc-shell/commit/6685f10f98982038206a55b637dc14628a341088))
+* redesign alpha4 wip ([ac48f52](https://github.com/VirtoCommerce/vc-shell/commit/ac48f526f61e85518a238e1e6b49047ff3fcc786))
+* redesign alpha5 ([ac430b8](https://github.com/VirtoCommerce/vc-shell/commit/ac430b80f684d3b920c35778a83c33ec387b2484))
+
+
+
+## [v1.1.0-alpha.2pha.2pha.2pha.2](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.340...vv1.1.0-alpha.2) (2025-02-25)
+
+
+### Features
+
+* partial redesign ([846e215](https://github.com/VirtoCommerce/vc-shell/commit/846e2152c6e48753622ca7cf3a71300323c99d51))
+
+
+### Reverts
+
+* Revert "release: v1.1.0-alpha.2" ([80b0dc9](https://github.com/VirtoCommerce/vc-shell/commit/80b0dc99fdd318205f26bde81e6a49ab79214cb3))
+
+
+
+# [1.1.0-alpha.1](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.327...v1.1.0-alpha.1) (2024-11-13)
 
 
 
@@ -55,6 +232,10 @@
 
 
 ## [1.0.328](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.326...v1.0.328) (2024-11-14)
+
+
+
+# [1.1.0-alpha.1](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.326...v1.1.0-alpha.1) (2024-11-13)
 
 
 

@@ -1,6 +1,6 @@
 import vue from "@vitejs/plugin-vue";
 import * as fs from "node:fs";
-import { loadEnv, defineConfig, searchForWorkspaceRoot, splitVendorChunkPlugin, ProxyOptions } from "vite";
+import { loadEnv, defineConfig, ProxyOptions } from "vite";
 import mkcert from "vite-plugin-mkcert";
 import path from "node:path";
 import { checker } from "vite-plugin-checker";
@@ -28,9 +28,11 @@ const getProxyOptions = (targetUrl: ProxyOptions["target"], options: Omit<ProxyO
   };
 };
 
-const workspaceRoot = isMonorepo
-  ? searchForWorkspaceRoot(path.resolve(process.cwd(), "./../../framework/package.json"))
-  : searchForWorkspaceRoot(process.cwd());
+const workspaceRoot = isMonorepo ? path.resolve(process.cwd(), "../../") : process.cwd();
+
+const frameworkPath = isMonorepo
+  ? path.resolve(workspaceRoot, "framework")
+  : path.resolve(process.cwd(), "node_modules/@vc-shell/framework");
 
 const appBasePath = process.env.APP_BASE_PATH || "/";
 const appBasePathWithSlash = appBasePath.endsWith("/") ? appBasePath : `${appBasePath}/`;
@@ -92,8 +94,8 @@ export default defineConfig({
       mode === "development"
         ? isMonorepo
           ? {
-              "@vc-shell/framework/dist/index.css": workspaceRoot + "/framework/assets/styles/index.scss",
-              "@vc-shell/framework": "@vc-shell/framework/index.ts",
+              "@vc-shell/framework/dist/index.css": path.resolve(frameworkPath, "assets/styles/index.scss"),
+              "@vc-shell/framework": path.resolve(frameworkPath, "index.ts"),
             }
           : {
               "@vc-shell/framework/dist/index.css": "@vc-shell/framework/dist/index.css",
@@ -109,7 +111,6 @@ export default defineConfig({
     checker({
       vueTsc: true,
     }),
-    splitVendorChunkPlugin(),
   ],
   define: {
     "import.meta.env.PACKAGE_VERSION": `"${version}"`,
@@ -130,8 +131,11 @@ export default defineConfig({
   server: {
     fs: {
       allow: [
-        // search up for workspace root
+        // Allow access to the root of the monorepo and node_modules
         workspaceRoot,
+        process.cwd(),
+        // For the monorepo case, also allow access to the framework
+        ...(isMonorepo ? [frameworkPath] : []),
       ],
     },
     watch: {

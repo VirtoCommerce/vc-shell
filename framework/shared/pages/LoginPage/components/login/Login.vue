@@ -154,7 +154,6 @@
     <VcHint
       v-if="!signInResult.succeeded"
       class="vc-login-page__error-hint"
-      style="color: #f14e4e"
     >
       <!-- TODO: stylizing-->
       {{ signInResult.error }}
@@ -162,7 +161,6 @@
     <VcHint
       v-if="!requestPassResult.succeeded"
       class="vc-login-page__error-hint"
-      style="color: #f14e4e"
     >
       <!-- TODO: stylizing-->
       {{ requestPassResult.error }}
@@ -175,7 +173,8 @@
 import { ref, reactive, computed, onMounted, Ref, inject } from "vue";
 import { useRouter } from "vue-router";
 import { useIsFormValid, Field, useIsFormDirty, useForm } from "vee-validate";
-import { useSettings, useUser } from "./../../../../../core/composables";
+import { useSettings } from "./../../../../../core/composables";
+import { useUserManagement } from "./../../../../../core/composables/useUserManagement";
 import { RequestPasswordResult } from "./../../../../../core/types";
 import { ExternalSignInProviderInfo, SignInResult } from "./../../../../../core/api/platform";
 import { useI18n } from "vue-i18n";
@@ -203,7 +202,7 @@ let useLogin;
 const signInResult = ref({ succeeded: true }) as Ref<SignInResult & { status?: number; error?: any }>;
 const requestPassResult = ref<RequestPasswordResult>({ succeeded: true });
 const forgotPasswordRequestSent = ref(false);
-const { signIn, loading, user } = useUser();
+const { signIn, loading, user } = useUserManagement();
 const { getProviders } = useExternalProvider();
 
 const isLogin = ref(true);
@@ -317,7 +316,7 @@ console.debug("Init login-page");
 :root {
   --login-separator: var(--secondary-200);
   --login-separator-text: var(--primary-300);
-  --login-error: var(--base-error-color, var(--danger-500));
+  --login-error: var(--danger-500);
 }
 
 .vc-login-page {

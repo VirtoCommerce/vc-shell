@@ -12,20 +12,20 @@ export const grid: DynamicGridSchema = {
     toolbar: [
       {
         id: "refresh",
-        icon: "fas fa-sync-alt",
+        icon: "material-refresh",
         title: "SAMPLE_APP.PAGES.LIST.TOOLBAR.REFRESH",
         method: "refresh",
       },
       {
         id: "remove",
-        icon: "fas fa-trash",
+        icon: "material-delete",
         title: "SAMPLE_APP.PAGES.LIST.TOOLBAR.REMOVE",
         method: "removeItems",
       },
     ],
     menuItem: {
       title: "SAMPLE_APP.MENU.TITLE",
-      icon: "fas fa-file-alt",
+      icon: "lucide-file",
       priority: 1,
     },
   },
@@ -37,10 +37,9 @@ export const grid: DynamicGridSchema = {
       actions: [
         {
           id: "delete",
-          icon: "fas fa-trash",
+          icon: "material-delete",
           title: "SAMPLE_APP.PAGES.LIST.TABLE.ACTIONS.DELETE",
           method: "removeItems",
-          position: "left",
           type: "danger",
         },
       ],

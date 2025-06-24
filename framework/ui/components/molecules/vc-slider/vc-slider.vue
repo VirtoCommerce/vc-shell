@@ -24,14 +24,14 @@
       <div class="vc-slider__prev tw-left-0">
         <slot name="prevBtn">
           <button class="vc-slider__btn">
-            <VcIcon icon="fas fa-chevron-left"></VcIcon>
+            <VcIcon icon="material-keyboard_arrow_left"></VcIcon>
           </button>
         </slot>
       </div>
       <div class="vc-slider__next tw-right-0">
         <slot name="nextBtn">
           <button class="vc-slider__btn">
-            <VcIcon icon="fas fa-chevron-right"></VcIcon>
+            <VcIcon icon="material-keyboard_arrow_right"></VcIcon>
           </button>
         </slot>
       </div>

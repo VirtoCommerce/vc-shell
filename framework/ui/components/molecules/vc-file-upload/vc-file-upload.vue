@@ -55,7 +55,7 @@
     </slot>
   </div>
 </template>
-
+<!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
 import { getCurrentInstance, ref, unref } from "vue";
 import { useField } from "vee-validate";
@@ -85,12 +85,12 @@ const props = withDefaults(defineProps<Props>(), {
   variant: "gallery",
   accept: ".jpg, .png, .jpeg, .webp, .heic, .svg",
   name: "Gallery",
-  icon: "fas fa-cloud-upload-alt",
+  icon: "material-cloud_upload",
 });
 const emit = defineEmits<Emits>();
 
 defineSlots<{
-  error: void;
+  error: (props: any) => any;
 }>();
 
 const { t } = useI18n({ useScope: "global" });
@@ -150,12 +150,12 @@ function dragLeave() {
 :root {
   --file-upload-border-color: var(--secondary-200);
   --file-upload-border-color-hover: var(--secondary-400);
-  --file-upload-border-color-error: var(--base-error-color, var(--danger-500));
+  --file-upload-border-color-error: var(--danger-500);
   --file-upload-border-radius: 6px;
   --file-upload-drag-bg: var(--primary-100);
-  --file-upload-icon-color: var(--secondary-200);
+  --file-upload-icon-color: var(--primary-500);
   --file-upload-text-color: var(--neutrals-400);
-  --file-upload-error-color: var(--base-error-color, var(--danger-500));
+  --file-upload-error-color: var(--danger-500);
   --file-upload-background-color: var(--primary-50);
 }
 

@@ -4,6 +4,7 @@
     :class="{
       'vc-editor--error': errorMessage,
       'vc-editor--disabled': disabled,
+      'vc-editor--focused': isFocused,
     }"
   >
     <!-- Editor label -->
@@ -13,6 +14,7 @@
       :required="required"
       :multilanguage="multilanguage"
       :current-language="currentLanguage"
+      :error="!!errorMessage"
     >
       <span>{{ label }}</span>
       <template
@@ -36,8 +38,11 @@
       :toolbars="toolbars"
       no-katex
       no-mermaid
+      tabindex="0"
       class="vc-editor__editor"
       @on-upload-img="onUploadImage"
+      @focus="isFocused = true"
+      @blur="isFocused = false"
     />
 
     <slot
@@ -88,6 +93,7 @@ const { t } = useI18n({ useScope: "global" });
 
 const uid = getCurrentInstance()?.uid;
 const id = `editor-${uid}`;
+const isFocused = ref(false);
 
 const editorRef = ref(null) as Ref<typeof MdEditor | null>;
 defineSlots<{
@@ -161,7 +167,7 @@ const tagColors = [
   { tag: tags.paren, color: "var(--neutrals-700)" },
   { tag: tags.brace, color: "var(--neutrals-700)" },
 
-  { tag: tags.content, color: "var(--neutrals-900)" },
+  { tag: tags.content, color: "var(--neutrals-800)" },
 
   { tag: tags.heading, color: "var(--primary-700)" },
   { tag: tags.heading1, color: "var(--primary-800)" },
@@ -368,12 +374,16 @@ defineExpose({
 
 <style lang="scss">
 :root {
-  --editor-border-radius: 3px;
-  --editor-border-color: var(--secondary-200);
-  --editor-border-color-error: var(--base-error-color, var(--danger-500));
-  --editor-disabled-bg: var(--neutrals-50);
-  --editor-disabled-text: var(--neutrals-400);
+  --editor-border-radius: 4px;
+  --editor-border-color: var(--neutrals-300);
+  --editor-border-color-error: var(--danger-500);
+  --editor-disabled-bg: var(--neutrals-200);
+  --editor-disabled-text: var(--neutrals-500);
   --editor-placeholder-color: var(--neutrals-400);
+  --editor-text-color: var(--neutrals-800);
+
+  // Focus
+  --editor-border-color-focus: var(--primary-100);
 }
 
 .vc-editor {
@@ -392,6 +402,17 @@ defineExpose({
   &__error {
     @apply tw-text-[color:var(--editor-border-color-error)] tw-mt-1;
   }
+
+  &--focused .vc-editor__editor {
+    @apply tw-outline-2 tw-outline tw-outline-[color:var(--editor-border-color-focus)] tw-outline-offset-[0px];
+  }
+
+  &--disabled {
+    .cm-content *,
+    .md-editor * {
+      @apply tw-text-[color:var(--editor-disabled-text)] tw-bg-[var(--editor-disabled-bg)];
+    }
+  }
 }
 
 .md-editor {
@@ -400,7 +421,7 @@ defineExpose({
   --md-bk-color: var(--additional-50);
   --md-bk-color-outstand: var(--neutrals-100);
   --md-bk-hover-color: var(--secondary-50);
-  --md-border-color: var(--neutrals-200);
+  --md-border-color: var(--neutrals-300);
   --md-border-hover-color: var(--neutrals-400);
   --md-border-active-color: var(--neutrals-400);
   --md-modal-mask: rgba(0, 0, 0, 0.45);
@@ -410,13 +431,30 @@ defineExpose({
   --md-scrollbar-thumb-hover-color: rgba(0, 0, 0, 0.35);
   --md-scrollbar-thumb-active-color: rgba(0, 0, 0, 0.38);
   color: var(--md-color);
-  font-family: inherit;
   border: 1px solid var(--md-border-color);
   background-color: var(--md-bk-color);
   height: 350px;
+  border-radius: var(--editor-border-radius);
+  @apply tw-font-jakarta #{!important};
 }
 
 .ͼ15 {
-  color: var(--secondary-900);
+  color: var(--editor-text-color);
+}
+
+.ͼ1 .cm-placeholder {
+  color: var(--editor-placeholder-color);
+}
+
+.cm-content {
+  color: var(--editor-text-color);
+}
+
+.cm-scroller {
+  @apply tw-font-jakarta #{!important};
+}
+
+.md-editor-preview {
+  @apply tw-text-sm;
 }
 </style>

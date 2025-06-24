@@ -1,13 +1,318 @@
-## [1.0.342](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.341...v1.0.342) (2025-04-29)
-
-
-
-## [1.0.341](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.340...v1.0.341) (2025-03-11)
+## [1.1.36](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.35...v1.1.36) (2025-06-24)
 
 
 ### Features
 
-* **global style:** update base styles with Roboto font and tailwind configurations ([51722bf](https://github.com/VirtoCommerce/vc-shell/commit/51722bff7933816d2cbab9fecb7a7c05fcb8d2d3))
+* **composables:** add useTableSort composable for table sorting functionality ([1e4d768](https://github.com/VirtoCommerce/vc-shell/commit/1e4d768b22436ff7da4cad922b25da5b45dee7f9))
+
+
+
+## [1.1.35](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.34...v1.1.35) (2025-06-24)
+
+
+
+## [1.1.34](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.33...v1.1.34) (2025-06-23)
+
+
+
+## [1.1.33](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.32...v1.1.33) (2025-06-23)
+
+
+
+## [1.1.32](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.31...v1.1.32) (2025-06-23)
+
+
+
+## [1.1.31](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.30...v1.1.31) (2025-06-23)
+
+
+### Bug Fixes
+
+* **types:** update error property in IBladeInstance to allow undefined value ([c2f0fb5](https://github.com/VirtoCommerce/vc-shell/commit/c2f0fb58513e15ffadc581f2b75d43618c3b6f10))
+* **useLanguages:** add validation to getFlag function to handle empty language input ([853325e](https://github.com/VirtoCommerce/vc-shell/commit/853325ecc55e5e26f2e90021f8b4b7d7b6415142))
+* **vc-checkbox:** update v-model binding to use modelValue and enhance checked state logic for array support ([e3a70dd](https://github.com/VirtoCommerce/vc-shell/commit/e3a70ddc0badd12160319a259ccd592ddb823ca9))
+
+
+### Features
+
+* **api-client:** add APP_TYPE_STYLE argument for customizable DTO type generation in API client ([4ae0edd](https://github.com/VirtoCommerce/vc-shell/commit/4ae0edd272a580972adacf86a4da4929ef1c056a))
+* **composables:** add useModificationTracker composable for tracking value changes and modifications ([ad911e1](https://github.com/VirtoCommerce/vc-shell/commit/ad911e19640ea675a70cdaf2e6b6c6f5c0f2f0a4))
+* **dashboard:** enhance useDashboardDragAndDrop composable with TypeScript return type and improved setGridContainer function ([65a726f](https://github.com/VirtoCommerce/vc-shell/commit/65a726f65d396f073a21f3502fba7e62e2ce4f03))
+* **error-handling:** implement DisplayableError class and enhance useErrorHandler for better error normalization and handling ([a68473b](https://github.com/VirtoCommerce/vc-shell/commit/a68473b98726d436d3ab272e0afee9db2d92174b))
+* **multilanguage-selector:** add VcLanguageSelector component for language selection with dropdown functionality ([f620e1d](https://github.com/VirtoCommerce/vc-shell/commit/f620e1dfa94b4b468c5c40a276c411be4b993f9b))
+* **vc-app:** add disableAppSwitcher prop to control app switcher visibility in VcApp component ([ab2d6dc](https://github.com/VirtoCommerce/vc-shell/commit/ab2d6dc7c09cbf99f7501bb6a8b51d9c3be3d1af))
+* **vc-banner:** add VcBanner component for displaying contextual information with expandable content ([5fa7b4f](https://github.com/VirtoCommerce/vc-shell/commit/5fa7b4f77117a02aa559a48dc1f020414c380720))
+* **vc-card:** enhance VcCard component by adding v-bind for attribute inheritance and defining component options ([12d0096](https://github.com/VirtoCommerce/vc-shell/commit/12d0096809ce46cbff1cdf30c8b4f44d6f69a8ad))
+
+
+
+## [1.1.30](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.29...v1.1.30) (2025-06-11)
+
+
+### Bug Fixes
+
+* **api-client-generator:** update import and types path construction for core modules to use path.join for improved path handling ([1d730a1](https://github.com/VirtoCommerce/vc-shell/commit/1d730a19c7c4aa4a309354875d34ba2e8fc3d335))
+
+
+
+## [1.1.29](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.28...v1.1.29) (2025-06-05)
+
+
+### Features
+
+* **vc-input-dropdown, vc-select:** enhance dropdown and select components with toggle state management for improved user experience ([af3ff4f](https://github.com/VirtoCommerce/vc-shell/commit/af3ff4fef54d07e2861d6b7cc8facdf741e50b35))
+
+
+
+## [1.1.28](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.27...v1.1.28) (2025-06-04)
+
+
+### Features
+
+* **modularity:** enhance Blade registration with inject support and improve route handling for workspace components ([1d5a8e3](https://github.com/VirtoCommerce/vc-shell/commit/1d5a8e386168079bd56e9cd633edf79a3c086ce1))
+
+
+
+## [1.1.27](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.26...v1.1.27) (2025-06-04)
+
+
+### Bug Fixes
+
+* **storybook:** update VC Shell framework CSS import path in Storybook preview for correct styling ([d8714ac](https://github.com/VirtoCommerce/vc-shell/commit/d8714ac2340d53278db6d3c515d2921c076cb002))
+
+
+### Features
+
+* **vc-input-dropdown:** add toggle button to dropdown component for improved user interaction ([1289dd5](https://github.com/VirtoCommerce/vc-shell/commit/1289dd5fbc7c2adcddd69184e8eb0792c7121c97))
+
+
+
+## [1.1.26](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.25...v1.1.26) (2025-06-04)
+
+
+### Features
+
+* **global-search:** add useGlobalSearch composable and Global Search Service documentation for enhanced search functionality across the application ([e53be10](https://github.com/VirtoCommerce/vc-shell/commit/e53be1095b2b7067dc3ad9ce9f1ab23aafaa57a2))
+* **localization:** add theme localization support for German and English languages ([8d8fdb0](https://github.com/VirtoCommerce/vc-shell/commit/8d8fdb0a05814ea277f7ab07978902ae86ec3102))
+* **vc-popup:** add Storybook stories for VcPopup component, showcasing various configurations and customization options ([dc8e961](https://github.com/VirtoCommerce/vc-shell/commit/dc8e961be32469b7a06fed78aa68846ba95a1d70))
+
+
+
+## [1.1.25](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.24...v1.1.25) (2025-05-30)
+
+
+
+## [1.1.24](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.23...v1.1.24) (2025-05-29)
+
+
+### Bug Fixes
+
+* **useDynamicProperties:** export SetPropertyValueParams interface for better accessibility in dynamic properties management ([bddd03f](https://github.com/VirtoCommerce/vc-shell/commit/bddd03f08fd0bb15754109064887ef22c7acf542))
+
+
+
+## [1.1.23](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.22...v1.1.23) (2025-05-29)
+
+
+### Features
+
+* **blade-navigation:** implement blade registry and enhance navigation functionality with state management and routing utilities ([ab76268](https://github.com/VirtoCommerce/vc-shell/commit/ab762680f03e1c2a130ff802b8fbbbbf96e7b86a))
+* **blade-registry:** integrate Blade Registry into the application, enhance error handling for main route validation, and update notification component types for improved type safety ([2535a78](https://github.com/VirtoCommerce/vc-shell/commit/2535a78be870edaf4f563aa69dd0f76b2a6729a5))
+* **useAppInsights:** enhance app insights integration with page tracking and expose appInsights instance ([603c2b8](https://github.com/VirtoCommerce/vc-shell/commit/603c2b81b82a320209ba5da7685fd36f2797074d))
+* **useDynamicProperties:** refactor dynamic properties composable with improved type definitions and utility functions; enhance vc-input-dropdown and vc-dynamic-property components for multilingual support ([4e13175](https://github.com/VirtoCommerce/vc-shell/commit/4e1317545c59cf3aeeaf9141a3f395825c04d285))
+
+
+
+## [1.1.22](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.21...v1.1.22) (2025-05-28)
+
+
+### Features
+
+* **useKeyboardNavigation:** add validation for focused index and improve focus handling ([9f403f1](https://github.com/VirtoCommerce/vc-shell/commit/9f403f181d27497e9090ac52f6c256e2de387c3f))
+
+
+
+## [1.1.21](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.20...v1.1.21) (2025-05-28)
+
+
+
+## [1.1.20](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.19...v1.1.20) (2025-05-28)
+
+
+### Bug Fixes
+
+* **vc-select:** enhance dropdown close logic and improve option loading handling ([c0ef43d](https://github.com/VirtoCommerce/vc-shell/commit/c0ef43d9c2a2175f65d2c74dcd98578e17f79c07))
+
+
+
+## [1.1.19](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.18...v1.1.19) (2025-05-28)
+
+
+### Bug Fixes
+
+* **vc-select:** update loading logic and add default option loading state ([d02ffa4](https://github.com/VirtoCommerce/vc-shell/commit/d02ffa4ffb226830ee1291e9e74d36bb87040611))
+
+
+
+## [1.1.18](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.17...v1.1.18) (2025-05-27)
+
+
+
+## [1.1.17](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.16...v1.1.17) (2025-05-27)
+
+
+
+## [1.1.15](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.14...v1.1.15) (2025-05-23)
+
+
+
+## [1.1.14](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.13...v1.1.14) (2025-05-23)
+
+
+
+## [1.1.13](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.12...v1.1.13) (2025-05-23)
+
+
+
+## [1.1.12](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.11...v1.1.12) (2025-05-23)
+
+
+
+## [1.1.11](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.10...v1.1.11) (2025-05-23)
+
+
+### Features
+
+* **vc-select:** add loading and no options messages for improved user experience ([aa65256](https://github.com/VirtoCommerce/vc-shell/commit/aa65256b99238e6d7feae24177c4304eb25d1153))
+
+
+
+## [1.1.10](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.9...v1.1.10) (2025-05-22)
+
+
+### Features
+
+* **dynamic-properties:** add useDynamicProperties composable for managing dynamic property values and dictionaries ([5af9e0b](https://github.com/VirtoCommerce/vc-shell/commit/5af9e0bd27dd9930589166e17ef234fd8dae5998))
+
+
+
+## [1.1.9](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.8...v1.1.9) (2025-05-15)
+
+
+
+## [1.1.8](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.7...v1.1.8) (2025-05-15)
+
+
+### Bug Fixes
+
+* **vc-badge:** adjust badge dimensions in story and update visibility condition for content ([41d30de](https://github.com/VirtoCommerce/vc-shell/commit/41d30de789b199bebf94a73eb2dc42790ffdf3c8))
+
+
+### Features
+
+* **generate-api-client:** enhance API client generation with new features and improvements ([fcf85db](https://github.com/VirtoCommerce/vc-shell/commit/fcf85db675390abc218b4cd1fa3f204be9a50da3))
+
+
+
+## [1.1.7](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.6...v1.1.7) (2025-05-12)
+
+
+
+## [1.1.6](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.5...v1.1.6) (2025-05-12)
+
+
+### Bug Fixes
+
+* fix Storybook by adding FontAwesome and Bootstrap icons ([ec0e9d4](https://github.com/VirtoCommerce/vc-shell/commit/ec0e9d46d672cea8d3037b60859f97c3758bca51))
+
+
+### Features
+
+* add Storybook stories generation rules for VC-Shell UI components ([ed83dd7](https://github.com/VirtoCommerce/vc-shell/commit/ed83dd70922901fd31200bf60c0e002f5356270e))
+* add Vite configuration generator for dynamic modules with compatibility options ([0a4822e](https://github.com/VirtoCommerce/vc-shell/commit/0a4822e219f2fa120b476f420badf6b068891fdb))
+* enhance module compatibility checks with error notifications ([4f9c44e](https://github.com/VirtoCommerce/vc-shell/commit/4f9c44ec73e3e83a31d5099ec641c761b5e96167))
+* VcInputDropdown component, replace VcSelect with VcInputDropdown and update related stories ([08f3c72](https://github.com/VirtoCommerce/vc-shell/commit/08f3c72d1cdee3a82868db5238c7e9879914cc8c))
+
+
+
+## [1.1.5](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.4...v1.1.5) (2025-05-07)
+
+
+### Features
+
+* enhance VcIcon component ([58ad2ba](https://github.com/VirtoCommerce/vc-shell/commit/58ad2baaf306caa92375e81b170fdfb198a75b20))
+* implement module versioning and compatibility checks in the modularity plugin ([19c9553](https://github.com/VirtoCommerce/vc-shell/commit/19c95534c4ca0f6041015a0489dab7eabc1a322a))
+
+
+
+## [1.1.4](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.3...v1.1.4) (2025-04-30)
+
+
+### Bug Fixes
+
+* vc-blade-toolbar visibility issues ([2e215ed](https://github.com/VirtoCommerce/vc-shell/commit/2e215ed2324efb801116d9c3e15c549adf8e3e9b))
+
+
+### Features
+
+* add custom position to VcBadge in vc-widget component ([0d42845](https://github.com/VirtoCommerce/vc-shell/commit/0d4284515b8c3c777380b7a3b7cac2b54f63731e))
+
+
+
+## [1.1.3](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.2...v1.1.3) (2025-04-29)
+
+
+
+## [1.1.2](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.1...v1.1.2) (2025-04-29)
+
+
+
+## [1.1.1](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.0...v1.1.1) (2025-04-29)
+
+
+### Features
+
+* enhance release process with npm tag detection and commit message generation ([fbc92b6](https://github.com/VirtoCommerce/vc-shell/commit/fbc92b62922a5ba118a87507293334fa5138b9f1))
+
+
+
+# [1.1.0](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.0-alpha.2...v1.1.0) (2025-04-29)
+
+
+### Features
+
+* first release ([6685f10](https://github.com/VirtoCommerce/vc-shell/commit/6685f10f98982038206a55b637dc14628a341088))
+* redesign alpha4 wip ([ac48f52](https://github.com/VirtoCommerce/vc-shell/commit/ac48f526f61e85518a238e1e6b49047ff3fcc786))
+* redesign alpha5 ([ac430b8](https://github.com/VirtoCommerce/vc-shell/commit/ac430b80f684d3b920c35778a83c33ec387b2484))
+
+
+
+# [1.1.0-alpha.11](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.0-alpha.2...v1.1.0-alpha.11) (2025-04-29)
+
+
+### Features
+
+* first release ([6685f10](https://github.com/VirtoCommerce/vc-shell/commit/6685f10f98982038206a55b637dc14628a341088))
+* redesign alpha4 wip ([ac48f52](https://github.com/VirtoCommerce/vc-shell/commit/ac48f526f61e85518a238e1e6b49047ff3fcc786))
+* redesign alpha5 ([ac430b8](https://github.com/VirtoCommerce/vc-shell/commit/ac430b80f684d3b920c35778a83c33ec387b2484))
+
+
+
+## [v1.1.0-alpha.2](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.340...vv1.1.0-alpha.2) (2025-02-25)
+
+
+### Features
+
+* partial redesign ([846e215](https://github.com/VirtoCommerce/vc-shell/commit/846e2152c6e48753622ca7cf3a71300323c99d51))
+
+
+### Reverts
+
+* Revert "release: v1.1.0-alpha.2" ([80b0dc9](https://github.com/VirtoCommerce/vc-shell/commit/80b0dc99fdd318205f26bde81e6a49ab79214cb3))
+
+
+
+# [1.1.0-alpha.1](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.327...v1.1.0-alpha.1) (2024-11-13)
 
 
 
@@ -124,6 +429,10 @@
 
 
 ## [1.0.328](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.326...v1.0.328) (2024-11-14)
+
+
+
+# [1.1.0-alpha.1](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.326...v1.1.0-alpha.1) (2024-11-13)
 
 
 

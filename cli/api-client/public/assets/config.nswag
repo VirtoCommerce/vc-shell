@@ -42,7 +42,7 @@
       "operationGenerationMode": "MultipleClientsFromOperationId",
       "markOptionalProperties": true,
       "generateCloneMethod": false,
-      "typeStyle": "Class",
+      "typeStyle": "$(APP_TYPE_STYLE)",
       "enumStyle": "Enum",
       "useLeafType": false,
       "classTypes": [],

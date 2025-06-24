@@ -10,13 +10,13 @@ export const details: DynamicDetailsSchema = {
     toolbar: [
       {
         id: "save",
-        icon: "fas fa-save",
+        icon: "material-save",
         title: "SAMPLE_APP.PAGES.DETAILS.TOOLBAR.SAVE",
         method: "saveChanges",
       },
       {
         id: "delete",
-        icon: "fas fa-trash",
+        icon: "material-delete",
         title: "SAMPLE_APP.PAGES.DETAILS.TOOLBAR.DELETE",
         method: "remove",
       },

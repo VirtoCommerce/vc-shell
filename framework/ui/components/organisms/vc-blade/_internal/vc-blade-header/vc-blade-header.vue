@@ -1,96 +1,109 @@
 <template>
-  <div class="vc-blade-header">
-    <div
-      v-if="typeof modified !== 'undefined'"
-      ref="tooltipIconRef"
-      :class="{
-        'vc-blade-header__status-not-edited': !modified,
-        'vc-blade-header__status-edited': modified,
-      }"
-      class="vc-blade-header__status"
-      @mouseenter="tooltipVisible = true"
-      @mouseleave="tooltipVisible = false"
-    >
-      <teleport to="body">
-        <span
-          v-if="tooltipVisible"
-          ref="tooltipRef"
-          :style="floatingStyles"
-          class="vc-blade-header__tooltip"
-        >
-          {{
-            modified
-              ? $t("COMPONENTS.ORGANISMS.VC_BLADE_HEADER.UNSAVED_CHANGES")
-              : $t("COMPONENTS.ORGANISMS.VC_BLADE_HEADER.NO_CHANGES")
-          }}
-        </span>
-      </teleport>
-    </div>
+  <div
+    class="vc-blade-header"
+    :class="{
+      'vc-blade-header--mobile': $isMobile.value,
+    }"
+  >
+    <slot name="prepend"></slot>
 
-    <div
-      v-if="icon"
-      class="vc-blade-header__icon"
-    >
-      <VcIcon
-        :icon="icon"
-        size="xxl"
-      />
-    </div>
-
-    <div class="vc-blade-header__content">
+    <div class="vc-blade-header__status-container">
       <div
-        class="vc-blade-header__title"
-        :class="{ 'vc-blade-header__title-no-subtitle': !subtitle }"
+        v-if="typeof modified !== 'undefined'"
+        ref="tooltipIconRef"
+        :class="{
+          'vc-blade-header__status-not-edited': !modified,
+          'vc-blade-header__status-edited': modified,
+        }"
+        class="vc-blade-header__status"
+        @mouseenter="tooltipVisible = true"
+        @mouseleave="tooltipVisible = false"
       >
-        {{ title }}
+        <teleport to="body">
+          <span
+            v-if="tooltipVisible"
+            ref="tooltipRef"
+            :style="floatingStyles"
+            class="vc-blade-header__tooltip"
+          >
+            {{
+              modified
+                ? $t("COMPONENTS.ORGANISMS.VC_BLADE_HEADER.UNSAVED_CHANGES")
+                : $t("COMPONENTS.ORGANISMS.VC_BLADE_HEADER.NO_CHANGES")
+            }}
+          </span>
+        </teleport>
       </div>
+
       <div
-        v-if="subtitle"
-        class="vc-blade-header__subtitle"
+        v-if="icon"
+        class="vc-blade-header__icon"
       >
-        {{ subtitle }}
+        <VcIcon
+          :icon="icon"
+          size="xxl"
+        />
       </div>
-    </div>
 
-    <div
-      v-if="$slots['actions']"
-      class="vc-blade-header__actions"
-    >
-      <slot name="actions"></slot>
-    </div>
+      <div class="vc-blade-header__wrapper">
+        <div class="vc-blade-header__content">
+          <div
+            class="vc-blade-header__title"
+            :class="{
+              'vc-blade-header__title-no-subtitle': !subtitle,
+            }"
+          >
+            {{ title }}
+          </div>
+          <div
+            v-if="subtitle"
+            class="vc-blade-header__subtitle"
+          >
+            {{ subtitle }}
+          </div>
+        </div>
 
-    <div
-      v-if="!$isMobile.value"
-      class="vc-blade-header__controls"
-    >
-      <template v-if="expandable">
         <div
-          v-if="maximized"
+          v-if="$slots['actions']"
+          class="vc-blade-header__actions"
+        >
+          <slot name="actions"></slot>
+        </div>
+      </div>
+
+      <div
+        v-if="!$isMobile.value"
+        class="vc-blade-header__controls"
+      >
+        <template v-if="blade.expandable">
+          <div
+            v-if="blade.maximized"
+            class="vc-blade-header__button"
+            @click="onCollapse"
+          >
+            <VcIcon
+              icon="fas fa-window-minimize"
+              size="s"
+            />
+          </div>
+          <div
+            v-else
+            class="vc-blade-header__button"
+            @click="onExpand"
+          >
+            <VcIcon :icon="AppWindowIcon" />
+          </div>
+        </template>
+        <div
+          v-if="closable"
           class="vc-blade-header__button"
-          @click="onCollapse"
+          @click="onClose"
         >
           <VcIcon
-            icon="fas fa-window-minimize"
-            size="s"
+            :icon="CrossSignIcon"
+            size="xs"
           />
         </div>
-        <div
-          v-else
-          class="vc-blade-header__button"
-          @click="onExpand"
-        >
-          <VcIcon
-            icon="fas fa-window-maximize"
-            size="s"
-          />
-        </div>
-      </template>
-      <div
-        v-if="closable"
-        class="vc-blade-header__button"
-        @click="onClose"
-      >
-        <VcIcon icon="fas fa-times" />
       </div>
     </div>
   </div>
@@ -98,12 +111,13 @@
 
 <script lang="ts" setup>
 import { VcIcon } from "./../../../../";
-import { ref } from "vue";
+import { computed, inject, ref } from "vue";
 import { useFloating, shift } from "@floating-ui/vue";
+import { CrossSignIcon, AppWindowIcon } from "../../../../atoms/vc-icon/icons";
+import { BladeInstance } from "../../../../../../injection-keys";
+import { FALLBACK_BLADE_ID } from "../../../../../../core/constants";
 
 export interface Props {
-  expandable?: boolean;
-  maximized?: boolean;
   closable?: boolean;
   title?: string;
   subtitle?: string;
@@ -114,6 +128,17 @@ const props = defineProps<Props>();
 
 const emit = defineEmits(["close", "expand", "collapse"]);
 
+const blade = inject(
+  BladeInstance,
+  computed(() => ({
+    id: FALLBACK_BLADE_ID,
+    error: undefined,
+    expandable: false,
+    maximized: false,
+    navigation: undefined,
+    breadcrumbs: undefined,
+  })),
+);
 const tooltipVisible = ref(false);
 const tooltipIconRef = ref<HTMLElement | null>(null);
 const tooltipRef = ref<HTMLElement | null>(null);
@@ -123,13 +148,13 @@ const { floatingStyles } = useFloating(tooltipIconRef, tooltipRef, {
 });
 
 function onExpand(): void {
-  if (props.expandable) {
+  if (blade.value.expandable) {
     emit("expand");
   }
 }
 
 function onCollapse(): void {
-  if (props.expandable) {
+  if (blade.value.expandable) {
     emit("collapse");
   }
 }
@@ -143,37 +168,61 @@ function onClose(): void {
 
 <style lang="scss">
 :root {
-  --blade-header-height: 50px;
+  --blade-header-height: 70px;
+  --blade-header-mobile-height: 60px;
   --blade-header-background-color: var(--additional-50);
 
-  --blade-header-button-color: var(--secondary-500);
-  --blade-header-button-color-hover: var(--secondary-600);
+  --blade-header-button-color: var(--neutrals-400);
+  --blade-header-button-color-hover: var(--neutrals-500);
+
+  --blade-header-breadcrumbs-button-color: var(--neutrals-500);
+  --blade-header-breadcrumbs-button-color-hover: var(--neutrals-700);
 
   --blade-header-icon-color: var(--secondary-500);
 
   --blade-header-title-font-size: 19px;
-  --blade-header-title-color: var(--base-text-color, var(--neutrals-950));
+  --blade-header-title-color: var(--neutrals-950);
 
   --blade-header-subtitle-color: var(--secondary-500);
 
   --blade-not-edited: var(--success-400);
   --blade-edited: var(--warning-500);
-  --blade-header-border-color: var(--base-border-color, var(--neutrals-200));
+  --blade-header-border-color: var(--neutrals-200);
 
   --blade-tooltip-background: var(--additional-50);
-  --blade-tooltip-border: var(--base-border-color, var(--neutrals-200));
+  --blade-tooltip-border: var(--neutrals-200);
   --blade-tooltip-text: var(--neutrals-600);
 }
 
 .vc-blade-header {
-  @apply tw-shrink-0 tw-h-[var(--blade-header-height)] tw-bg-[color:var(--blade-header-background-color)] tw-flex tw-items-center tw-py-0 tw-px-4 tw-border-solid tw-border-b tw-border-b-[color:var(--blade-header-border-color)];
+  @apply tw-shrink-0 tw-h-[var(--blade-header-height)] tw-bg-[color:var(--blade-header-background-color)] tw-flex tw-items-center tw-py-0 tw-px-6 tw-border-solid tw-border-b tw-border-b-[color:var(--blade-header-border-color)];
+
+  &--mobile {
+    @apply tw-h-[var(--blade-header-mobile-height)];
+
+    .vc-blade-header__title {
+      @apply tw-text-lg/[22px];
+    }
+  }
+
+  &--hidden {
+    @apply tw-hidden;
+  }
+
+  &__wrapper {
+    @apply tw-flex tw-items-center tw-justify-between tw-grow tw-basis-0 tw-overflow-hidden;
+  }
 
   &__actions {
-    @apply tw-grow tw-basis-0 tw-overflow-hidden tw-flex tw-justify-end;
+    @apply tw-overflow-hidden tw-flex-shrink-0;
   }
 
   &__status {
-    @apply tw-block tw-w-2 tw-h-2 tw-rounded-full tw-z-[1] tw-mr-2;
+    @apply tw-block tw-w-2 tw-h-2 tw-rounded-full tw-z-[1] tw-mr-[10px];
+  }
+
+  &__status-container {
+    @apply tw-flex tw-flex-1 tw-flex-row tw-items-center tw-truncate;
   }
 
   &__status-not-edited {
@@ -193,15 +242,15 @@ function onClose(): void {
   }
 
   &__content {
-    @apply tw-overflow-hidden tw-grow tw-basis-0 tw-shrink-0;
+    @apply tw-overflow-hidden;
   }
 
   &__title {
-    @apply tw-text-[color:var(--blade-header-title-color)] tw-text-lg/[23px] tw-truncate;
+    @apply tw-text-[color:var(--blade-header-title-color)] tw-text-xl/[23px] tw-truncate;
   }
 
   &__title-no-subtitle {
-    @apply tw-text-[length:var(--blade-header-title-font-size)] tw-font-medium #{!important};
+    @apply tw-text-[length:var(--blade-header-title-font-size)] tw-font-semibold #{!important};
   }
 
   &__subtitle {
@@ -213,7 +262,7 @@ function onClose(): void {
   }
 
   &__button {
-    @apply tw-text-[color:var(--blade-header-button-color)] tw-ml-4 tw-cursor-pointer hover:tw-text-[color:var(--blade-header-button-color-hover)];
+    @apply tw-text-[color:var(--blade-header-button-color)] tw-ml-2.5 tw-cursor-pointer hover:tw-text-[color:var(--blade-header-button-color-hover)];
   }
 }
 </style>

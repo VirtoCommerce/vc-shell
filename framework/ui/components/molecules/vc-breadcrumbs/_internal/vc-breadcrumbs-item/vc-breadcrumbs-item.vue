@@ -49,28 +49,25 @@ function onClick(): void {
 
 <style lang="scss">
 :root {
-  --breadcrumbs-item-height: 28px;
-  --breadcrumbs-item-height-light: 20px;
-  --breadcrumbs-item-border-color: var(--secondary-300);
-  --breadcrumbs-item-border-color-hover: var(--secondary-400);
-  --breadcrumbs-item-border-color-current: var(--secondary-500);
-  --breadcrumbs-item-color: var(--primary-500);
-  --breadcrumbs-item-color-current: var(--primary-600);
+  --breadcrumbs-item-text-color: var(--secondary-300);
+  --breadcrumbs-item-text-color-hover: var(--neutrals-500);
+  --breadcrumbs-item-color: var(--neutrals-400);
+  --breadcrumbs-item-color-current: var(--primary-500);
   --breadcrumbs-item-icon-color: var(--secondary-300);
 }
 
 .vc-breadcrumbs-item {
-  @apply tw-box-border tw-rounded-[3px] tw-border tw-border-solid tw-text-sm tw-cursor-pointer tw-inline-flex tw-items-center;
-  @apply tw-h-[var(--breadcrumbs-item-height)] tw-px-3 tw-whitespace-nowrap;
-  @apply tw-border-[color:var(--breadcrumbs-item-border-color)] tw-text-[color:var(--breadcrumbs-item-color)];
+  @apply tw-box-border tw-text-sm tw-cursor-pointer tw-inline-flex tw-items-center;
+  @apply tw-h-[var(--breadcrumbs-item-height)] tw-whitespace-nowrap;
+  @apply tw-text-[color:var(--breadcrumbs-item-color)] tw-leading-normal;
   @apply tw-transition-colors tw-duration-300;
 
   &--current {
-    @apply tw-text-[color:var(--breadcrumbs-item-color-current)] tw-border-[color:var(--breadcrumbs-item-border-color-current)] tw-cursor-default tw-mr-0;
+    @apply tw-text-[color:var(--breadcrumbs-item-color-current)] tw-cursor-default tw-mr-0;
   }
 
   &--light {
-    @apply tw-px-1 tw-h-[var(--breadcrumbs-item-height-light)];
+    @apply tw-px-1;
   }
 
   &__icon {
@@ -82,11 +79,11 @@ function onClick(): void {
   }
 
   &--error {
-    @apply tw-border-[color:var(--breadcrumbs-item-border-color-error)] tw-text-[color:var(--breadcrumbs-item-color-error)];
+    @apply tw-text-[color:var(--breadcrumbs-item-color-error)];
   }
 
   &:hover {
-    @apply tw-border tw-border-solid tw-border-[color:var(--breadcrumbs-item-border-color-hover)];
+    @apply tw-text-[color:var(--breadcrumbs-item-text-color-hover)];
   }
 }
 </style>

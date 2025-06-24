@@ -1,101 +1,90 @@
 <template>
-  <AppBarButtonTemplate
-    icon="fas fa-palette"
-    :title="$t('COMPONENTS.THEME_SELECTOR.THEME_SELECTOR')"
-    position="bottom-end"
-  >
-    <template #dropdown-content="{ opened, toggle }">
-      <Sidebar
-        :is-expanded="$isMobile.value ? opened : false"
-        position="right"
-        render="mobile"
-        @close="toggle"
+  <SettingsMenuItem @trigger:click="opened = !opened">
+    <template #trigger>
+      <div class="vc-theme-selector__trigger">
+        <VcIcon
+          icon="material-palette"
+          class="vc-theme-selector__icon"
+        />
+        <span class="vc-theme-selector__title">
+          {{ $t("COMPONENTS.THEME_SELECTOR.THEME_SELECTOR") }}
+        </span>
+      </div>
+    </template>
+
+    <template #content>
+      <GenericDropdown
+        :opened="opened"
+        :items="themes"
+        :is-item-active="(theme) => theme.key === currentThemeKey"
+        @item-click="handleThemeSelect"
       >
-        <template #content>
+        <template #item="{ item: theme, click }">
           <div
-            v-if="opened"
-            class="vc-theme-selector__dropdown"
-            :class="{
-              'vc-theme-selector__dropdown--mobile': $isMobile.value,
-            }"
+            class="vc-theme-selector__item"
+            :class="{ 'vc-theme-selector__item--active': theme.key === currentThemeKey }"
+            @click="click"
           >
-            <div
-              v-for="(theme, i) in themes"
-              :key="i"
-              class="vc-theme-selector__item"
-              :class="{ 'vc-theme-selector__item--active': theme === current }"
-              @click="
-                () => {
-                  setTheme(theme);
-                  toggle();
-                }
-              "
-            >
-              {{ themeText(theme) }}
-            </div>
+            <span class="vc-theme-selector__item-title">{{ theme.name }}</span>
           </div>
         </template>
-      </Sidebar>
+      </GenericDropdown>
     </template>
-  </AppBarButtonTemplate>
+  </SettingsMenuItem>
 </template>
 
 <script lang="ts" setup>
-import { AppBarButtonTemplate } from "./../app-bar-button";
-import { Sidebar } from "./../sidebar";
-import { useTheme } from "./../../../core/composables/useTheme";
-import { watch, computed } from "vue";
-import { notification } from "./../";
-import * as _ from "lodash-es";
-import { createUnrefFn } from "@vueuse/core";
+import { GenericDropdown } from "../generic-dropdown";
+import { useTheme } from "../../../core/composables/useTheme";
+import { ref, watch } from "vue";
+import { notification } from "..";
+import { SettingsMenuItem } from "../settings-menu-item";
+import { VcIcon } from "../../../ui/components";
 
-const { current, themes, setTheme } = useTheme();
+const { currentThemeKey, currentLocalizedName, themes, setTheme } = useTheme();
+const opened = ref(false);
+
+const handleThemeSelect = (theme: { key: string; name: string }) => {
+  setTheme(theme.key);
+  opened.value = false;
+};
 
 watch(
-  () => current.value,
-  (newVal) => {
-    notification(_.capitalize(newVal));
+  () => currentLocalizedName.value,
+  (newLocalizedName) => {
+    if (newLocalizedName) {
+      notification(newLocalizedName);
+    }
   },
-  { deep: true },
 );
-
-const themeText = computed(() => {
-  return createUnrefFn((theme: string) => {
-    return _.capitalize(theme);
-  });
-});
 </script>
 
 <style lang="scss">
-:root {
-  --theme-selector-bg-color: var(--additional-50);
-  --theme-selector-text-color: var(--base-text-color, var(--neutrals-950));
-  --theme-selector-border-color: var(--app-bar-divider-color);
-  --theme-selector-hover-bg-color: var(--primary-50);
-}
-
 .vc-theme-selector {
-  &__dropdown {
-    @apply tw-bg-[color:var(--theme-selector-bg-color)] tw-min-w-20 tw-max-w-max;
+  &__trigger {
+    @apply tw-flex tw-items-center tw-w-full;
+  }
 
-    &--mobile {
-      @apply tw-min-w-full tw-max-w-full;
-    }
+  &__icon {
+    @apply tw-w-6 tw-mr-3;
+  }
+
+  &__title {
+    @apply tw-flex-grow;
   }
 
   &__item {
-    @apply tw-truncate tw-p-3 tw-text-sm tw-text-[color:var(--theme-selector-text-color)]
-      tw-border-l tw-border-solid tw-border-l-[var(--theme-selector-border-color)]
-      tw-border-b tw-border-b-[var(--theme-selector-border-color)] tw-w-full tw-cursor-pointer;
-    transition: background-color 0.2s;
-
-    &:hover {
-      background-color: var(--theme-selector-hover-bg-color);
-    }
+    @apply tw-flex tw-items-center tw-w-full tw-px-6 tw-py-3
+      tw-cursor-pointer tw-transition-colors
+      hover:tw-bg-[color:var(--menu-item-bg-hover)];
 
     &--active {
-      @apply tw-bg-[color:var(--theme-selector-hover-bg-color)];
+      @apply tw-bg-[color:var(--menu-item-bg-active)];
     }
+  }
+
+  &__item-title {
+    @apply tw-flex-grow;
   }
 }
 </style>

@@ -3,6 +3,6 @@ export const template = `
 `;
 
 export const templateWithVisibilityToggle = `
-<VcButton @click="toggle" class="tw-mb-4" outline small variant="danger">Toggle visibility</VcButton>
+<VcButton @click="toggle" class="tw-mb-4" small variant="secondary">Toggle visibility</VcButton>
 ${template}
 `;

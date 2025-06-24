@@ -181,7 +181,9 @@ export function useContainer(): IUseContainer {
 
         if (positionToRemoveFrom) {
           // Remove the notification from the corresponding container
-          _.remove(notificationContainers[positionToRemoveFrom].value, (item) => item.notificationId === id);
+          notificationContainers[positionToRemoveFrom].value = notificationContainers[
+            positionToRemoveFrom
+          ].value.filter((item) => item.notificationId !== id);
 
           // If container is empty and there are no pending notifications for this position - remove it
           const hasPendingForPosition = pending.items.some((item) => item.position === positionToRemoveFrom);
@@ -307,7 +309,9 @@ export function useContainer(): IUseContainer {
           // If the position changes, move the notification between containers
           if (option.position && option.position !== containerPosition) {
             // Remove from current container
-            _.remove(containerToUpdate.value, (item) => item.notificationId === option.notificationId);
+            containerToUpdate.value = containerToUpdate.value.filter(
+              (item) => item.notificationId !== option.notificationId,
+            );
 
             // Create updated notification with new properties
             const updatedNotification = {

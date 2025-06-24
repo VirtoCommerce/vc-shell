@@ -13,6 +13,7 @@ import {
 import { ComponentPublicInstanceConstructor } from "../../../utilities/vueUtils";
 import { MenuItemConfig } from "../../../../core/types";
 import { Breadcrumbs } from "../../../../ui/types";
+import { DisplayableError } from "../../../../core/utilities/error";
 
 export type CoreBladeComponentProps = {
   expanded?: boolean;
@@ -46,7 +47,7 @@ export interface IBladeInstance {
   id: string;
   expandable: boolean;
   maximized: boolean;
-  error: Error | string | null | undefined;
+  error: DisplayableError | Error | string | null | undefined;
   navigation: BladeVNode["props"]["navigation"] | undefined;
   breadcrumbs: Breadcrumbs[] | undefined;
   title?: string;

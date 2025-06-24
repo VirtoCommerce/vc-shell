@@ -17,6 +17,7 @@ import { BladeInstance, navigationViewLocation, BLADE_BACK_BUTTON } from "./../.
 import { BladeVNode, CoreBladeExposed, IBladeInstance } from "../../types";
 import { toRef, watchTriggerable } from "@vueuse/core";
 import { Breadcrumbs, FALLBACK_BLADE_ID } from "../../../../..";
+import { DisplayableError } from "../../../../../core/utilities/error";
 
 /**
  * Normalizes slot content
@@ -34,7 +35,7 @@ function normalizeSlot(slot: Slot | undefined, data: { Component: VNode }): VNod
 interface BladeViewProps {
   blade?: BladeVNode;
   expandable?: boolean;
-  error?: string | Error | null | undefined;
+  error?: DisplayableError | Error | null | undefined;
   breadcrumbs?: Breadcrumbs[];
   backButton?: Component;
 }
@@ -50,7 +51,7 @@ export const VcBladeView = defineComponent({
       type: Boolean,
     },
     error: {
-      type: Object as PropType<string | Error | null | undefined>,
+      type: Object as PropType<DisplayableError | Error | null | undefined>,
       default: null,
     },
     breadcrumbs: {

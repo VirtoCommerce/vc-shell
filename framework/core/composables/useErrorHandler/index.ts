@@ -1,4 +1,4 @@
-import { onErrorCaptured, getCurrentInstance, ref, Ref } from "vue";
+import { onErrorCaptured, getCurrentInstance, ref, Ref, nextTick } from "vue";
 import { useAppInsights } from "..";
 import { useUserManagement } from "../useUserManagement";
 import { DisplayableError, parseError } from "../../utilities/error";
@@ -21,6 +21,7 @@ export function useErrorHandler(capture?: boolean): IUseErrorHandler {
   const instance = getCurrentInstance();
   const { appInsights } = useAppInsights();
   const { user } = useUserManagement();
+  const isProcessing = ref(false);
 
   function reset() {
     error.value = null;
@@ -31,6 +32,12 @@ export function useErrorHandler(capture?: boolean): IUseErrorHandler {
   }
 
   onErrorCaptured((err: unknown) => {
+    if (isProcessing.value) {
+      return !capture;
+    }
+
+    isProcessing.value = true;
+
     const capturedError = parseError(err);
     error.value = capturedError;
 
@@ -49,6 +56,10 @@ export function useErrorHandler(capture?: boolean): IUseErrorHandler {
     if (instance) {
       instance.emit("error", capturedError);
     }
+
+    nextTick(() => {
+      isProcessing.value = false;
+    });
 
     // if `capture` is true, stop the error from propagating further.
     return !capture;

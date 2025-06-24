@@ -1,3 +1,7 @@
+## [1.1.35](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.34...v1.1.35) (2025-06-24)
+
+
+
 ## [1.1.34](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.33...v1.1.34) (2025-06-23)
 
 

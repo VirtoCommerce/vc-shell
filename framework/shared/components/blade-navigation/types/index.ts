@@ -82,7 +82,7 @@ export type BladeInstanceConstructor<T extends Component = Component> = Extracto
 
 export interface IBladeEvent<T extends Component = Component> {
   blade: BladeInstanceConstructor<T> | { name: string } | undefined;
-  options?: ExtractedBladeOptions<InstanceType<BladeInstanceConstructor<T>>["$props"], "options">;
+  options?: Record<string, any>;
   param?: string;
   onOpen?: () => void;
   onClose?: () => void;

@@ -1,3 +1,12 @@
+## [1.1.38](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.37...v1.1.38) (2025-06-25)
+
+
+### Bug Fixes
+
+* **useAsync:** correct payload handling in innerAction call to ensure proper execution ([8c1d238](https://github.com/VirtoCommerce/vc-shell/commit/8c1d2386e34b2f70523e4527f77a387ecc203876))
+
+
+
 ## [1.1.37](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.342...v1.1.37) (2025-06-25)
 
 

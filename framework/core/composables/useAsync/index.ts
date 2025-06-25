@@ -16,7 +16,7 @@ export function useAsync<Payload = void, Result = void>(
   async function action(payload?: Payload, ...rest: any[]): Promise<Result> {
     loading.value = true;
     try {
-      return await innerAction(payload ?? ({} as Payload), ...rest);
+      return await innerAction(payload, ...rest);
     } catch (e) {
       console.error(e);
       throw e;

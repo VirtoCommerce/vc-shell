@@ -100,7 +100,7 @@
                                   v-bind="item"
                                 >
                                   <div class="vc-select__multiple-item">
-                                    <template v-if="loading || defaultOptionLoading">
+                                    <template v-if="loading">
                                       <span class="vc-select__loading">{{
                                         t("COMPONENTS.MOLECULES.VC_SELECT.LOADING")
                                       }}</span>
@@ -119,7 +119,7 @@
                                 </slot>
                               </template>
                               <template v-else-if="!multiple">
-                                <template v-if="loading || defaultOptionLoading">
+                                <template v-if="loading">
                                   <span class="vc-select__loading">{{
                                     t("COMPONENTS.MOLECULES.VC_SELECT.LOADING")
                                   }}</span>
@@ -130,7 +130,7 @@
                                     v-bind="item"
                                   >
                                     {{
-                                      loading || defaultOptionLoading
+                                      loading
                                         ? t("COMPONENTS.MOLECULES.VC_SELECT.LOADING")
                                         : getEmittingOptionValue(item.opt)
                                     }}

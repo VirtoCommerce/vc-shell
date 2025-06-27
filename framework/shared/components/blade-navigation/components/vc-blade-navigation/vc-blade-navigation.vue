@@ -121,9 +121,9 @@ const render = () => {
                               closeBlade(index);
                             },
                             "onParent:call": async (args: IParentCallArgs) => {
-                              await nextTick(() => {
-                                const instance = blades.value?.[index - 1]?.props?.navigation?.instance;
-                                if (instance) onParentCall(instance, args);
+                              await nextTick(async () => {
+                                // Use the centralized onParentCall with the current blade index
+                                await onParentCall(args, index);
                               });
                             },
                             onVnodeUnmounted: resetInterceptor,

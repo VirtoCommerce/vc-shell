@@ -1,4 +1,4 @@
-import { computed, getCurrentInstance, inject, warn, Component, ComputedRef, Ref, shallowRef } from "vue";
+import { computed, getCurrentInstance, inject, warn, Component, ComputedRef, Ref, shallowRef, unref } from "vue";
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createSharedComposable } from "@vueuse/core";
 import * as _ from "lodash-es";
@@ -38,7 +38,7 @@ interface IUseBladeNavigation {
   ) => Promise<void | NavigationFailure>;
   closeBlade: (index: number) => Promise<boolean>;
   goToRoot: () => RouteLocationRaw;
-  onParentCall: (parentExposedMethods: Record<string, any>, args: IParentCallArgs) => void;
+  onParentCall: (args: IParentCallArgs, currentBladeIndex?: number) => void;
   onBeforeClose: (cb: () => Promise<boolean | undefined>) => void;
   resolveBladeByName: (name: string) => BladeInstanceConstructor | undefined;
   routeResolver: (to: RouteLocationNormalized) => Promise<RouteLocationRaw | undefined> | RouteLocationRaw | undefined;
@@ -125,17 +125,6 @@ const useBladeNavigationSingleton = createSharedComposable(() => {
     routeResolver: routeResolverInstance,
     setBladeError: bladeState.setBladeError,
     clearBladeError: bladeState.clearBladeError,
-    onParentCall: async (parentExposedMethods: Record<string, any>, args: IParentCallArgs) => {
-      if (args.method && parentExposedMethods && typeof parentExposedMethods[args.method] === "function") {
-        const method = parentExposedMethods[args.method];
-        const result = await method(args.args);
-        if (typeof args.callback === "function") args.callback(result);
-      } else {
-        console.error(
-          `No such method: ${args.method}. Please, add method with name ${args.method} and use defineExpose to expose it in parent blade`,
-        );
-      }
-    },
     onBeforeClose: (cb: () => Promise<boolean | undefined>) => {
       const targetBlade = bladeState.activeWorkspace.value;
       if (targetBlade && targetBlade.props.navigation) {
@@ -198,24 +187,43 @@ export function useBladeNavigation(): IUseBladeNavigation {
   const singleton = useBladeNavigationSingleton() as typeof useBladeNavigationSingleton extends () => infer R
     ? R
     : never;
-  console.log("useBladeNavigation singleton", singleton);
   const currentCallingInstance = getCurrentInstance() as BladeComponentInternalInstance | null;
-  console.log("useBladeNavigation currentCallingInstance", currentCallingInstance);
   const bladeRegistry = useBladeRegistry();
-  console.log("useBladeNavigation bladeRegistry", bladeRegistry);
+
+  // Find the closest parent blade in the component hierarchy
+  const findParentBlade = (instance: BladeComponentInternalInstance | null): BladeVNode | undefined => {
+    if (!instance) return undefined;
+
+    // Check if current instance provides navigationViewLocation
+    const viewNode = (instance as any).provides[navigationViewLocation as any] as BladeVNode | undefined;
+    if (viewNode) {
+      return viewNode;
+    }
+
+    // Check if current instance is a blade itself
+    if (
+      instance.vnode &&
+      singleton.activeWorkspace.value &&
+      _.isEqual(instance.vnode.type, singleton.activeWorkspace.value.type)
+    ) {
+      return singleton.activeWorkspace.value;
+    }
+
+    // Check if current instance is in the blades list
+    const matchingBlade = singleton.blades.value.find(
+      (blade) => blade && instance.vnode && _.isEqual(blade.type, instance.vnode.type),
+    );
+    if (matchingBlade) {
+      return matchingBlade;
+    }
+
+    // Recursively check parent instance
+    return findParentBlade(instance.parent as BladeComponentInternalInstance | null);
+  };
 
   const currentBladeNavigationData = computed(() => {
-    if (!currentCallingInstance) return undefined;
-    const viewNode = (currentCallingInstance as any).provides[navigationViewLocation as any] as BladeVNode | undefined;
-    if (
-      !viewNode &&
-      singleton.activeWorkspace.value &&
-      currentCallingInstance.vnode &&
-      _.isEqual(currentCallingInstance.vnode.type, singleton.activeWorkspace.value.type)
-    ) {
-      return singleton.activeWorkspace.value.props?.navigation;
-    }
-    return viewNode?.props?.navigation;
+    const parentBlade = findParentBlade(currentCallingInstance);
+    return parentBlade?.props?.navigation;
   });
 
   const onBeforeClose = (cb: () => Promise<boolean | undefined>) => {
@@ -223,19 +231,70 @@ export function useBladeNavigation(): IUseBladeNavigation {
       warn("onBeforeClose called outside of a component setup context.");
       return;
     }
-    const viewNode = (currentCallingInstance as any).provides[navigationViewLocation as any] as BladeVNode | undefined;
-    const targetBlade = singleton.blades.value.find(
-      (b) =>
-        (b && viewNode && _.isEqual(b, viewNode)) ||
-        (b &&
-          b.props?.navigation?.idx === 0 &&
-          currentCallingInstance.vnode &&
-          _.isEqual(b.type, currentCallingInstance.vnode.type)),
-    );
-    if (targetBlade && targetBlade.props.navigation) {
-      targetBlade.props.navigation.onBeforeClose = cb;
+    const parentBlade = findParentBlade(currentCallingInstance);
+    if (parentBlade && parentBlade.props.navigation) {
+      parentBlade.props.navigation.onBeforeClose = cb;
     } else {
       warn("Context-specific onBeforeClose: Could not identify the target blade in the global list.");
+    }
+  };
+
+  const onParentCall = async (args: IParentCallArgs, currentBladeIndex?: number) => {
+    let bladeIndex = currentBladeIndex;
+
+    // If currentBladeIndex is not provided, try to find it from the component hierarchy
+    if (bladeIndex === undefined) {
+      if (!currentCallingInstance) {
+        warn("onParentCall called outside of a component setup context and without currentBladeIndex.");
+        return;
+      }
+
+      // Find current blade in the blades list
+      const currentBlade = findParentBlade(currentCallingInstance);
+      if (!currentBlade) {
+        console.error("onParentCall: Could not identify current blade in the global list.");
+        return;
+      }
+
+      bladeIndex = currentBlade.props.navigation?.idx ?? -1;
+    }
+
+    if (bladeIndex <= 0) {
+      console.error("onParentCall: Current blade is workspace (index 0) or invalid, no parent blade available.");
+      return;
+    }
+
+    // Find parent blade (blade with index bladeIndex - 1)
+    const parentBlade = singleton.blades.value.find((blade) => blade && blade.props.navigation?.idx === bladeIndex - 1);
+
+    if (!parentBlade) {
+      console.error(`onParentCall: Parent blade with index ${bladeIndex - 1} not found.`);
+      return;
+    }
+
+    const parentExposedMethods = parentBlade.props.navigation?.instance;
+
+    if (!parentExposedMethods) {
+      console.error("onParentCall: Parent blade has no exposed methods (navigation.instance is undefined).");
+      return;
+    }
+
+    // Try to get the method from exposed methods with Vue refs handling
+    const targetMethod = parentExposedMethods[args.method];
+
+    if (args.method && typeof targetMethod === "function") {
+      const result = await targetMethod(args.args);
+      if (typeof args.callback === "function") args.callback(result);
+    } else {
+      console.error(
+        `onParentCall: Method '${args.method}' is not available or not a function in parent blade '${parentBlade.type?.name}'.`,
+      );
+      console.error("Available properties:", Object.keys(parentExposedMethods));
+      console.error(`Requested method '${args.method}' type:`, typeof targetMethod);
+      console.error(`Requested method '${args.method}' value:`, targetMethod);
+      console.error(
+        `Please ensure that the method '${args.method}' is defined and exposed using defineExpose() in the parent blade component.`,
+      );
     }
   };
 
@@ -246,12 +305,8 @@ export function useBladeNavigation(): IUseBladeNavigation {
       args: IBladeEvent<Blade>,
       isWorkspace?: boolean,
     ): Promise<void | NavigationFailure> => {
-      let sourceBladeInstanceForOpening: BladeVNode | undefined = undefined;
-      if (currentCallingInstance) {
-        sourceBladeInstanceForOpening = (currentCallingInstance as any).provides[navigationViewLocation as any] as
-          | BladeVNode
-          | undefined;
-      }
+      // Find the closest parent blade in the component hierarchy
+      let sourceBladeInstanceForOpening: BladeVNode | undefined = findParentBlade(currentCallingInstance);
 
       if (!sourceBladeInstanceForOpening) {
         sourceBladeInstanceForOpening = singleton.activeWorkspace.value;
@@ -266,7 +321,7 @@ export function useBladeNavigation(): IUseBladeNavigation {
     },
     closeBlade: singleton.closeBlade,
     goToRoot: singleton.goToRoot,
-    onParentCall: singleton.onParentCall,
+    onParentCall,
     resolveBladeByName: (name: string) => bladeRegistry.getBladeComponent(name),
     routeResolver: singleton.routeResolver,
     currentBladeNavigationData,

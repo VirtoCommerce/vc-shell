@@ -1,3 +1,12 @@
+## [1.1.40](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.39...v1.1.40) (2025-06-27)
+
+
+### Bug Fixes
+
+* **vc-widget-container:** set default visibility to true when isVisible is undefined ([09775ed](https://github.com/VirtoCommerce/vc-shell/commit/09775eda9f68b620cfec78206289c135dd9ba4cd))
+
+
+
 ## [1.1.38](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.37...v1.1.38) (2025-06-25)
 
 

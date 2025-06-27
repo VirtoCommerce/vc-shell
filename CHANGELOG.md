@@ -1,3 +1,12 @@
+## [1.1.43](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.42...v1.1.43) (2025-06-27)
+
+
+### Bug Fixes
+
+* **vc-select:** set default value for generic parameter P to undefined ([ed13c91](https://github.com/VirtoCommerce/vc-shell/commit/ed13c91a9f09d799df72baa62d1694c893c0e231))
+
+
+
 ## [1.1.42](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.41...v1.1.42) (2025-06-27)
 
 

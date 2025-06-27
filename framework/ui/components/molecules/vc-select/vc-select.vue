@@ -329,7 +329,7 @@
 </template>
 
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
-<script lang="ts" setup generic="T, P extends { results?: T[]; totalCount?: number } | undefined">
+<script lang="ts" setup generic="T, P extends { results?: T[]; totalCount?: number } | undefined = undefined">
 import { ref, computed, watch, nextTick, Ref, toRefs, onMounted, onUnmounted } from "vue";
 import { vOnClickOutside } from "@vueuse/components";
 import * as _ from "lodash-es";
@@ -361,7 +361,7 @@ type FloatingInstanceType = UseFloatingReturn & {
   };
 };
 type ArrayElementType<U> = U extends Array<infer V> ? V : never;
-type Option = T & (P extends { results?: T[]; totalCount?: number } ? ArrayElementType<Required<P>["results"]> : never);
+type Option = P extends { results?: T[]; totalCount?: number } ? T & ArrayElementType<Required<P>["results"]> : T;
 
 defineSlots<{
   /**

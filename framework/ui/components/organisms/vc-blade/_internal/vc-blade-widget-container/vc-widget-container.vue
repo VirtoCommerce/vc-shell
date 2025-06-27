@@ -36,6 +36,8 @@ const visibleWidgets = computed(() =>
       return widget.isVisible(bladeInstance);
     } else if (typeof widget.isVisible === "boolean") {
       return widget.isVisible;
+    } else if (widget.isVisible === undefined) {
+      return true; // Show widget by default if isVisible is not specified
     }
     return toValue(widget.isVisible);
   }),

@@ -329,7 +329,7 @@
 </template>
 
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
-<script lang="ts" setup generic="T, P extends { results?: T[]; totalCount?: number }">
+<script lang="ts" setup generic="T, P extends { results?: T[]; totalCount?: number } | undefined">
 import { ref, computed, watch, nextTick, Ref, toRefs, onMounted, onUnmounted } from "vue";
 import { vOnClickOutside } from "@vueuse/components";
 import * as _ from "lodash-es";
@@ -361,13 +361,13 @@ type FloatingInstanceType = UseFloatingReturn & {
   };
 };
 type ArrayElementType<U> = U extends Array<infer V> ? V : never;
-type Option = T & ArrayElementType<Required<P>["results"]>;
+type Option = T & (P extends { results?: T[]; totalCount?: number } ? ArrayElementType<Required<P>["results"]> : never);
 
 defineSlots<{
   /**
    * Custom select control
    */
-  control: (scope: { toggleHandler: () => void, isOpened: boolean }) => any;
+  control: (scope: { toggleHandler: () => void; isOpened: boolean }) => any;
   /**
    * Prepend inner field
    */
@@ -832,11 +832,11 @@ async function loadOptionsForOpenDropdown() {
       listLoading.value = true;
       const data = await props.options(filterString.value, optionsList.value.length);
       if (filterString.value || optionsList.value.length === 0) {
-        optionsList.value = (data.results as Option[]) || [];
+        optionsList.value = (data?.results as Option[]) || [];
       } else {
-        optionsList.value = _.unionBy<Option>(optionsList.value, (data.results as Option[]) || [], "id");
+        optionsList.value = _.unionBy<Option>(optionsList.value, (data?.results as Option[]) || [], "id");
       }
-      totalItems.value = data.totalCount || 0;
+      totalItems.value = data?.totalCount || 0;
       optionsTemp.value = optionsList.value;
     } catch (e) {
       console.error("Error in loadOptionsForOpenDropdown:", e);
@@ -853,9 +853,9 @@ async function onLoadMore() {
     try {
       listLoading.value = true;
       const data = await props.options(filterString.value, optionsList.value.length);
-      optionsList.value = _.unionBy<Option>(optionsList.value, data.results as Option[], "id");
+      optionsList.value = _.unionBy<Option>(optionsList.value, data?.results as Option[], "id");
 
-      totalItems.value = data.totalCount;
+      totalItems.value = data?.totalCount;
       optionsTemp.value = optionsList.value;
     } finally {
       listLoading.value = false;
@@ -997,8 +997,8 @@ const onDropdownClose = async () => {
       try {
         listLoading.value = true;
         const data = await props.options(undefined, 0);
-        optionsList.value = (data.results as Option[]) || [];
-        totalItems.value = data.totalCount || 0;
+        optionsList.value = (data?.results as Option[]) || [];
+        totalItems.value = data?.totalCount || 0;
       } catch (e) {
         console.error("Error resetting optionsList on dropdown close:", e);
         optionsList.value = [];
@@ -1130,8 +1130,8 @@ async function onSearch(value: string) {
 
       const data = await props.options(filterString.value);
 
-      optionsList.value = data.results as Option[];
-      totalItems.value = data.totalCount;
+      optionsList.value = data?.results as Option[];
+      totalItems.value = data?.totalCount;
     } finally {
       listLoading.value = false;
     }

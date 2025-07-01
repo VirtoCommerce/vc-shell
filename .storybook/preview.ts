@@ -1,18 +1,13 @@
 // import "./../framework";
 import { setup, Preview } from "@storybook/vue3";
-import { useBreakpoints } from "@vueuse/core";
-import framework, { provideWidgetService, useLanguages, useTheme } from "./../framework";
+import framework, { useLanguages, useTheme } from "./../framework";
 import { createRouter, createWebHashHistory } from "vue-router";
 import { vueRouter } from "storybook-vue3-router";
 import * as locales from "./assets/locales";
 import "./../framework/assets/styles/index.scss";
-import { ref, watch, reactive } from "vue";
+import { watch } from "vue";
 import { withGlobalMocks } from "./decorators";
-import "@fortawesome/fontawesome-free/css/fontawesome.min.css";
-import "@fortawesome/fontawesome-free/css/solid.min.css";
 
-import "bootstrap-icons/font/bootstrap-icons.min.css";
-import "material-symbols/outlined.css";
 import "../framework/dist/index.css";
 
 setup((app) => {

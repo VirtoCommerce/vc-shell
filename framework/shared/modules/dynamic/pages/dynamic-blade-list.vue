@@ -149,7 +149,8 @@ import {
 } from "vue";
 import { useI18n } from "vue-i18n";
 import { DynamicGridSchema, ListContentSchema, SettingsSchema } from "../types";
-import { useFilterBuilder, useTableTemplates } from "../composables";
+import useFilterBuilder from "../composables/useFilterBuilder";
+import { useTableTemplates } from "../composables";
 import { useFunctions } from "../../../../core/composables";
 import { IActionBuilderResult, ITableColumns } from "../../../../core/types";
 import { useToolbarReducer } from "../composables/useToolbarReducer";

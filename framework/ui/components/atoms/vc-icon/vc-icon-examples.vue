@@ -496,7 +496,7 @@
         </div>
         <div class="tw-flex tw-flex-col tw-items-center tw-p-4 tw-border tw-border-gray-200 tw-rounded-lg tw-shadow-sm">
           <VcIcon
-            icon="material-highlight_off"
+            icon="material-cancel"
             variant="danger"
             size="xl"
           />

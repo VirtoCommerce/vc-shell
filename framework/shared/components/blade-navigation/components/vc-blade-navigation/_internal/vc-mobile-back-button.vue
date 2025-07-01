@@ -10,9 +10,9 @@
       >
         <VcButton
           ref="buttonRef"
-          :icon="ArrowLeftIcon"
+          icon="material-arrow_back"
           icon-class="tw-text-[color:var(--neutrals-500)]"
-          icon-size="s"
+          icon-size="l"
           text
           @click="onClick"
           @contextmenu.prevent
@@ -25,7 +25,7 @@
 <script lang="ts" setup>
 import { ref } from "vue";
 import { onLongPress } from "@vueuse/core";
-import { VcButton, ArrowLeftIcon } from "../../../../../../ui/components";
+import { VcButton } from "../../../../../../ui/components";
 import VcBreadcrumbs from "../../../../../../ui/components/molecules/vc-breadcrumbs/vc-breadcrumbs.vue";
 import type { Breadcrumbs } from "../../../../../../ui/types";
 import { OnLongPress, vOnClickOutside } from "@vueuse/components";

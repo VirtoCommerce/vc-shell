@@ -33,7 +33,7 @@
             :class="{ 'widget-container-mobile__more--active': isActive }"
             @click="toggleToolbar"
           >
-            <VcIcon :icon="ChevronUpIcon" />
+            <VcIcon icon="lucide-chevron-up" />
           </div>
         </template>
 
@@ -57,7 +57,7 @@ import { ref, computed, inject } from "vue";
 import { useAdaptiveItems } from "../../../../../../composables/useAdaptiveItems";
 
 import { GenericDropdown } from "../../../../../../../shared/components/generic-dropdown";
-import { VcIcon, ChevronUpIcon } from "../../../../..";
+import { VcIcon } from "../../../../..";
 import { IWidget } from "../../../../../../../core/services";
 import { BladeInstance } from "../../../../../../../injection-keys";
 import { IBladeInstance } from "../../../../../../../shared/components/blade-navigation/types";

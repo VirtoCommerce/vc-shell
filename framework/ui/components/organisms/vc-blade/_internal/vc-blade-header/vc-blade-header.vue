@@ -81,17 +81,14 @@
             class="vc-blade-header__button"
             @click="onCollapse"
           >
-            <VcIcon
-              icon="fas fa-window-minimize"
-              size="s"
-            />
+            <VcIcon icon="material-minimize" />
           </div>
           <div
             v-else
             class="vc-blade-header__button"
             @click="onExpand"
           >
-            <VcIcon :icon="AppWindowIcon" />
+            <VcIcon icon="material-toolbar" />
           </div>
         </template>
         <div
@@ -99,10 +96,7 @@
           class="vc-blade-header__button"
           @click="onClose"
         >
-          <VcIcon
-            :icon="CrossSignIcon"
-            size="xs"
-          />
+          <VcIcon icon="material-close" />
         </div>
       </div>
     </div>
@@ -113,7 +107,6 @@
 import { VcIcon } from "./../../../../";
 import { computed, inject, ref } from "vue";
 import { useFloating, shift } from "@floating-ui/vue";
-import { CrossSignIcon, AppWindowIcon } from "../../../../atoms/vc-icon/icons";
 import { BladeInstance } from "../../../../../../injection-keys";
 import { FALLBACK_BLADE_ID } from "../../../../../../core/constants";
 

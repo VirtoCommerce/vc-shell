@@ -31,8 +31,7 @@
           >
             <VcButton
               icon-class="menu-sidebar__close-button-icon"
-              :icon="CrossSignIcon"
-              icon-size="xs"
+              icon="material-close"
               text
               @click.stop="$emit('update:isOpened', false)"
             />
@@ -65,7 +64,6 @@
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
 import { Sidebar } from "../../../../../../../shared/components/sidebar";
-import { CrossSignIcon } from "../../../../../atoms/vc-icon/icons";
 import { MaybeRef } from "vue";
 
 defineProps<{

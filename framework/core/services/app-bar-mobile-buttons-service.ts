@@ -4,7 +4,7 @@ export interface AppBarButtonContent {
   id: string;
   component?: Component;
   props?: Record<string, unknown>;
-  icon?: Component;
+  icon?: Component | string;
   onClick?: () => void;
   order?: number;
   onClose?: () => void;

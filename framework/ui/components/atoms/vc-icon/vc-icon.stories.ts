@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/vue3";
 import { VcIcon } from "./index";
-import { SearchIcon, ChevronRightIcon, PlusSignIcon } from "./icons";
 import VcIconTest from "./vc-icon-test.vue";
 import VcIconExamples from "./vc-icon-examples.vue";
 
@@ -413,7 +412,7 @@ export const FontAwesomeIcons: Story = {
  */
 export const CustomSvgIcon: Story = {
   args: {
-    icon: SearchIcon,
+    icon: "material-search",
     size: "l",
   },
   parameters: {
@@ -523,7 +522,7 @@ export const VariantWarning: Story = {
  */
 export const VariantDanger: Story = {
   args: {
-    icon: "material-highlight_off",
+    icon: "material-cancel",
     size: "l",
     variant: "danger",
   },
@@ -652,9 +651,9 @@ export const StatusIcons: Story = {
       const statusIcons = [
         { icon: "material-check_circle", variant: "success", label: "In Stock" },
         { icon: "material-error_outline", variant: "warning", label: "Low Stock" },
-        { icon: "material-highlight_off", variant: "danger", label: "Out of Stock" },
+        { icon: "material-cancel", variant: "danger", label: "Out of Stock" },
         { icon: "material-local_shipping", variant: "success", label: "Shipped" },
-        { icon: "material-access_time", variant: "warning", label: "Processing" },
+        { icon: "material-schedule", variant: "warning", label: "Processing" },
         { icon: "material-inventory_2", variant: undefined, label: "New Arrival" },
         { icon: "material-verified", variant: "success", label: "Verified" },
         { icon: "material-percent", variant: undefined, label: "On Sale" },

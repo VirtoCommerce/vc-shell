@@ -51,7 +51,7 @@
             >
               <VcIcon
                 class="vc-app-menu-item__title-icon"
-                :icon="isOpened ? ChevronUpIcon : ChevronDownIcon"
+                :icon="isOpened ? 'lucide-chevron-up' : 'lucide-chevron-down'"
                 size="m"
               ></VcIcon>
             </div>
@@ -142,8 +142,6 @@ import { ref, watch, computed, onMounted, Component, MaybeRef, unref } from "vue
 import { MenuItem } from "./../../../../../../../../../core/types";
 import { VcIcon } from "./../../../../../../../";
 import { useRoute } from "vue-router";
-import ChevronUpIcon from "./../../../../../../../atoms/vc-icon/icons/ChevronUpIcon.vue";
-import ChevronDownIcon from "./../../../../../../../atoms/vc-icon/icons/ChevronDownIcon.vue";
 
 export interface Props {
   children?: MenuItem[];

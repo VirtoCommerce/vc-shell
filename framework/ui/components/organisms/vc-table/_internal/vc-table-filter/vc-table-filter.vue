@@ -58,8 +58,7 @@
               </div>
               <VcIcon
                 class="vc-table-filter__panel-close"
-                :icon="CrossSignIcon"
-                size="xs"
+                icon="material-close"
                 @click="closePanel"
               />
             </div>
@@ -78,7 +77,6 @@ import { VcButton } from "./../../../../atoms/vc-button";
 import { Sidebar } from "./../../../../../../shared/components";
 import { VcBadge } from "./../../../../atoms/vc-badge";
 import { VcTooltip } from "./../../../../atoms/vc-tooltip";
-import { CrossSignIcon } from "./../../../../atoms/vc-icon/icons";
 
 export interface Props {
   title?: string;

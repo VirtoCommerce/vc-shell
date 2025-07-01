@@ -45,7 +45,7 @@
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
 import { h } from "vue";
-import { VcIcon, CrossSignIcon } from "../../../ui/components";
+import { VcIcon } from "../../../ui/components";
 
 export interface Props {
   position?: "left" | "right";
@@ -79,7 +79,7 @@ defineOptions({
 const header = h("div", { class: "sidebar__header" }, [
   props.title ? h("h3", { class: "sidebar__title" }, props.title) : null,
   props.closeCross
-    ? h(VcIcon, { icon: CrossSignIcon, size: "xs", onClick: () => emit("close"), class: "sidebar__close-icon" })
+    ? h(VcIcon, { icon: "material-close", size: "m", onClick: () => emit("close"), class: "sidebar__close-icon" })
     : null,
 ]);
 </script>

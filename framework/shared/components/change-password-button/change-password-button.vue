@@ -1,6 +1,6 @@
 <template>
   <SettingsMenuItem
-    :icon="SettingsBoltIcon"
+    icon="lucide-bolt"
     :title="$t('SHELL.ACCOUNT.CHANGE_PASSWORD')"
     @trigger:click="handleClick"
   />
@@ -8,7 +8,6 @@
 
 <script lang="ts" setup>
 import { SettingsMenuItem } from "../settings-menu-item";
-import { SettingsBoltIcon } from "../../../ui/components/atoms/vc-icon/icons";
 import { usePopup } from "../popup-handler/composables/usePopup";
 import { ChangePassword } from "../change-password";
 

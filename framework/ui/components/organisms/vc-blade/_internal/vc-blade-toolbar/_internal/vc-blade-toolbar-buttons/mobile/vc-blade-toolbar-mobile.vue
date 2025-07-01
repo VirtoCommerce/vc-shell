@@ -52,7 +52,7 @@
 
 <script lang="ts" setup>
 import { ref } from "vue";
-import { VcIcon } from "../../../../../../../../../";
+import { VcIcon } from "../../../../../../../atoms";
 import type { IBladeToolbar } from "../../../../../../../../../core/types";
 import VcBladeToolbarCircleButton from "../_internal/vc-blade-toolbar-button/vc-blade-toolbar-circle-button.vue";
 

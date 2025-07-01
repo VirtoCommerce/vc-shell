@@ -25,7 +25,7 @@
             :class="{ 'widget-container-desktop__more--active': isActive }"
             @click="toggleToolbar"
           >
-            <VcIcon :icon="ChevronDownIcon" />
+            <VcIcon icon="lucide-chevron-down" />
           </div>
         </template>
 
@@ -48,7 +48,7 @@
 import { ref, computed } from "vue";
 import { IWidget } from "../../../../../../../core/services";
 import { GenericDropdown } from "../../../../../../../shared/components/generic-dropdown";
-import { VcIcon, ChevronDownIcon } from "../../../../..";
+import { VcIcon } from "../../../../..";
 
 interface Props {
   widgets: IWidget[];

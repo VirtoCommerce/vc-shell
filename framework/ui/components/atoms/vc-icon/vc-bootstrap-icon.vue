@@ -1,18 +1,19 @@
 <template>
-  <i
+  <Icon
+    :icon="iconName"
     :class="[
       'vc-bootstrap-icon',
       !hasCustomSize && `vc-bootstrap-icon--${size}`,
-      iconClass,
       variant ? `vc-bootstrap-icon--${variant}` : '',
     ]"
     :style="mergedStyle"
     aria-hidden="true"
-  ></i>
+  />
 </template>
 
 <script lang="ts" setup>
 import { computed } from "vue";
+import { Icon } from "@iconify/vue";
 import type { IconSize, IconVariant } from "./types";
 import { useIcon } from "./composables";
 
@@ -66,16 +67,11 @@ const mergedStyle = computed(() => {
 });
 
 // Compute proper Bootstrap icon class
-const iconClass = computed(() => {
+const iconName = computed(() => {
   if (!props.icon) return "";
 
-  // If already includes the bi- prefix, use as is
-  if (props.icon.startsWith("bi-")) {
-    return props.icon;
-  }
-
-  // Otherwise, add the bi- prefix
-  return `bi-${props.icon}`;
+  const icon = props.icon.startsWith("bi-") ? props.icon.substring(3) : props.icon;
+  return `bi:${icon}`;
 });
 </script>
 

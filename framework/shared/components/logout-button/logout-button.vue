@@ -1,6 +1,6 @@
 <template>
   <SettingsMenuItem
-    :icon="LogoutIcon"
+    icon="lucide-log-out"
     :title="$t('SHELL.ACCOUNT.LOGOUT')"
     @trigger:click="handleLogout"
   />
@@ -8,7 +8,6 @@
 
 <script lang="ts" setup>
 import { SettingsMenuItem } from "../settings-menu-item";
-import { LogoutIcon } from "../../../ui/components/atoms/vc-icon/icons";
 import { useUserManagement } from "../../../core/composables/useUserManagement";
 import { useRouter } from "vue-router";
 import { useBladeNavigation } from "../blade-navigation";

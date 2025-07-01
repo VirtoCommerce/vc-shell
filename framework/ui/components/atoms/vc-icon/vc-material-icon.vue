@@ -1,20 +1,20 @@
 <template>
-  <span
+  <Icon
+    v-if="finalIconName"
+    :icon="finalIconName"
     :class="[
       'vc-material-icon',
       !hasCustomSize && `vc-material-icon--${size}`,
       variant ? `vc-material-icon--${variant}` : '',
-      materialIconClass,
     ]"
     :style="computedStyle"
     aria-hidden="true"
-  >
-    {{ icon }}
-  </span>
+  />
 </template>
 
 <script lang="ts" setup>
-import { computed } from "vue";
+import { ref, watch, computed } from "vue";
+import { Icon, loadIcon } from "@iconify/vue";
 import type { IconSize, IconVariant } from "./types";
 import { useIcon } from "./composables";
 
@@ -30,29 +30,9 @@ interface Props {
   size?: IconSize;
 
   /**
-   * Type of the Material icon (outlined, rounded, sharp)
-   */
-  type?: "outlined" | "rounded" | "sharp";
-
-  /**
    * Icon color variant
    */
   variant?: IconVariant;
-
-  /**
-   * Fill value (0-1)
-   */
-  fill?: number;
-
-  /**
-   * Weight value (100-700)
-   */
-  weight?: number;
-
-  /**
-   * Grade value (-25 to 200)
-   */
-  grade?: number;
 
   /**
    * Custom size in pixels
@@ -62,10 +42,6 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
   size: "m",
-  type: "outlined",
-  fill: 0,
-  weight: 300,
-  grade: 0,
 });
 
 // Check if using custom size to conditionally apply CSS class
@@ -79,26 +55,33 @@ const { iconStyle } = useIcon({
   customSize: props.customSize,
 });
 
-// Compute the Google Material Symbols class based on type
-const materialIconClass = computed(() => {
-  switch (props.type) {
-    case "rounded":
-      return "material-symbols-rounded";
-    case "sharp":
-      return "material-symbols-sharp";
-    case "outlined":
-    default:
-      return "material-symbols-outlined";
-  }
-});
+const finalIconName = ref("");
+
+watch(
+  () => props.icon,
+  (icon) => {
+    const collection = "material-symbols-light";
+
+    const cleanIconName = icon.replace(/_/g, "-");
+    const baseIcon = `${collection}:${cleanIconName}`;
+    const outlineIcon = `${collection}:${cleanIconName}-outline`;
+
+    loadIcon(outlineIcon)
+      .then(() => {
+        finalIconName.value = outlineIcon;
+      })
+      .catch(() => {
+        finalIconName.value = baseIcon;
+      });
+  },
+  { immediate: true },
+);
 
 // Combine the shared icon styles with Material-specific settings
 const computedStyle = computed(() => {
   const styles = { ...iconStyle.value };
 
-  // Apply Material variation settings
-  styles.fontVariationSettings = `'FILL' ${props.fill}, 'wght' ${props.weight}, 'GRAD' ${props.grade}`;
-
+  // font-variation-settings is not applicable for SVG icons
   // If using custom size, make sure fontSize is applied with !important
   if (hasCustomSize.value && styles.fontSize) {
     styles.fontSize = `${styles.fontSize.replace("px", "")}px !important`;
@@ -110,20 +93,6 @@ const computedStyle = computed(() => {
 
 <style lang="scss">
 .vc-material-icon {
-  font-family: "Material Symbols Outlined";
-  font-weight: normal;
-  font-style: normal;
-  line-height: 1;
-  letter-spacing: normal;
-  text-transform: none;
-  display: inline-block;
-  white-space: nowrap;
-  word-wrap: normal;
-  direction: ltr;
-  -webkit-font-feature-settings: "liga";
-  -webkit-font-smoothing: antialiased;
-  font-size: inherit;
-
   &--xs {
     font-size: var(--icon-size-xs);
   }

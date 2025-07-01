@@ -144,7 +144,7 @@
               @keydown.space="onReset"
             >
               <VcIcon
-                size="s"
+                size="m"
                 icon="material-close"
               ></VcIcon>
             </div>

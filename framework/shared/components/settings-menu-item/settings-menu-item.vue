@@ -18,6 +18,7 @@
             <VcIcon
               v-if="icon"
               :icon="icon"
+              size="l"
               class="vc-menu-item__icon"
             />
             <VcImage

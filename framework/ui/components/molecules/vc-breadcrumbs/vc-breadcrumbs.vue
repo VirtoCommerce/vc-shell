@@ -31,8 +31,8 @@
           >
             <VcButton
               text
-              :icon="VertDotsIcon"
-              icon-size="m"
+              icon="lucide-ellipsis-vertical"
+              icon-size="xl"
               class="vc-breadcrumbs__expand-button"
               :class="{
                 'vc-breadcrumbs__expand-button--active': isActive,
@@ -85,7 +85,6 @@ import { Breadcrumbs } from "../../../types";
 import VcBreadcrumbsItem from "./_internal/vc-breadcrumbs-item/vc-breadcrumbs-item.vue";
 import { GenericDropdown } from "./../../../../shared/components/generic-dropdown";
 import { useAdaptiveItems } from "../../../composables/useAdaptiveItems";
-import { VertDotsIcon } from "./../../atoms/vc-icon/icons";
 
 export interface Props {
   items?: Breadcrumbs[];

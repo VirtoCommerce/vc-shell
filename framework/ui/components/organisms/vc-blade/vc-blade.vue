@@ -40,8 +40,8 @@
             <template #trigger="{ click, isActive }">
               <VcButton
                 text
-                :icon="VertDotsIcon"
-                icon-size="m"
+                icon="lucide-ellipsis-vertical"
+                icon-size="xl"
                 class="vc-blade__breadcrumbs-button"
                 :class="{
                   'vc-blade__breadcrumbs-button--active': isActive,
@@ -125,7 +125,7 @@
 </template>
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
-import { computed, ref, toValue, inject, useSlots, defineComponent, h, getCurrentInstance } from "vue";
+import { computed, ref, toValue, inject, defineComponent, h } from "vue";
 import { IBladeToolbar } from "../../../../core/types";
 import { usePopup, useBladeNavigation } from "../../../../shared";
 import { useI18n } from "vue-i18n";
@@ -135,7 +135,6 @@ import { VcButton, VcIcon, VcLink } from "../../";
 import vcPopupError from "../../../../shared/components/common/popup/vc-popup-error.vue";
 import { BladeInstance, BLADE_BACK_BUTTON } from "../../../../injection-keys";
 import { default as VcWidgetContainer } from "./_internal/vc-blade-widget-container/vc-widget-container.vue";
-import VertDotsIcon from "../../atoms/vc-icon/icons/VertDotsIcon.vue";
 import { FALLBACK_BLADE_ID } from "../../../../core/constants";
 
 export interface Props {
@@ -308,7 +307,7 @@ const openErrorDetails = () => {
     @apply tw-absolute tw-z-[2] tw-top-0 tw-bottom-0 tw-left-0 tw-shrink !important;
     width: -webkit-fill-available;
     width: -moz-available;
-    width: fill-available;
+    width: stretch;
   }
 
   &__header {

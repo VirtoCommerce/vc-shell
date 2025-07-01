@@ -21,7 +21,6 @@ import { BladeInstance } from "../../../../../../injection-keys";
 import VcTableBaseHeader from "../vc-table-base-header/vc-table-base-header.vue";
 import { IBladeInstance } from "../../../../../../shared";
 import { useAppBarMobileButtons } from "../../../../../../core/composables/useAppBarMobileButtons";
-import { SearchIcon } from "../../../../atoms/vc-icon/icons";
 import { FALLBACK_BLADE_ID } from "../../../../../../core/constants";
 
 const props = defineProps<{
@@ -88,7 +87,7 @@ const bladeId = computed(() => {
 
 const searchButtonConfig = ref({
   id: "global-search",
-  icon: SearchIcon,
+  icon: "lucide-search",
   onClick: () => {
     globalSearch.toggleSearch(bladeId.value);
   },

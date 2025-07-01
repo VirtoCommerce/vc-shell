@@ -8,10 +8,7 @@
         :class="{ 'vc-pagination__item_disabled': localCurrentPage === 1 }"
         @click="localCurrentPage !== 1 && setPage(1)"
       >
-        <VcIcon
-          size="xs"
-          :icon="DoubleArrowLeftIcon"
-        ></VcIcon>
+        <VcIcon icon="material-keyboard_double_arrow_left"></VcIcon>
       </div>
 
       <!-- Previous page button -->
@@ -20,10 +17,7 @@
         :class="{ 'vc-pagination__item_disabled': localCurrentPage === 1 }"
         @click="localCurrentPage !== 1 && setPage(localCurrentPage - 1)"
       >
-        <VcIcon
-          size="xs"
-          :icon="ArrowLeftIcon"
-        ></VcIcon>
+        <VcIcon icon="material-arrow_left_alt"></VcIcon>
       </div>
 
       <div
@@ -45,10 +39,7 @@
         :class="{ 'vc-pagination__item_disabled': localCurrentPage === pages }"
         @click="localCurrentPage !== pages && setPage(localCurrentPage + 1)"
       >
-        <VcIcon
-          size="xs"
-          :icon="ArrowRightIcon"
-        ></VcIcon>
+        <VcIcon icon="material-arrow_right_alt"></VcIcon>
       </div>
 
       <!-- Last page button -->
@@ -57,10 +48,7 @@
         :class="{ 'vc-pagination__item_disabled': localCurrentPage === pages }"
         @click="localCurrentPage !== pages && setPage(pages)"
       >
-        <VcIcon
-          size="xs"
-          :icon="DoubleArrowRightIcon"
-        ></VcIcon>
+        <VcIcon icon="material-keyboard_double_arrow_right"></VcIcon>
       </div>
     </div>
   </div>
@@ -69,7 +57,6 @@
 <script lang="ts" setup>
 import { ref, computed, toRefs, inject, type Ref, watch } from "vue";
 import { VcIcon } from "./../../";
-import { ArrowLeftIcon, ArrowRightIcon, DoubleArrowLeftIcon, DoubleArrowRightIcon } from "./../../atoms/vc-icon/icons";
 
 export interface Props {
   expanded?: boolean;

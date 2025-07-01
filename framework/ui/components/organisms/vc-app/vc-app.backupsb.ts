@@ -1,6 +1,6 @@
 import type { Meta, StoryFn } from "@storybook/vue3";
 import { VcApp } from "./";
-import { usePopup } from "../../../..";
+import { usePopup } from "../../../../shared/components/popup-handler/composables/usePopup";
 import { VcPopup } from "..";
 import { useMenuService } from "../../../../core/composables/useMenuService";
 

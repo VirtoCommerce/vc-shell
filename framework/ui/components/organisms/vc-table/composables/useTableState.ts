@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ref, Ref, computed, toValue, toRefs, MaybeRef } from "vue";
 import { useLocalStorage } from "@vueuse/core";
-import * as _ from "lodash-es";
+import { cloneDeep, pick, unionBy } from "lodash-es";
 import { TableColPartial } from "../types";
 import { ITableColumns } from "../../../../../core/types";
 
@@ -47,8 +47,8 @@ export function useTableState(options: UseTableStateOptions) {
 
   function saveState() {
     console.debug("[@vc-shell/framework#vc-table.vue] - Save state");
-    const colsClone = _.cloneDeep(internalColumns.value);
-    state.value = colsClone.map((col) => _.pick(col, "id", "visible", "width", "predefined"));
+    const colsClone = cloneDeep(internalColumns.value);
+    state.value = colsClone.map((col) => pick(col, "id", "visible", "width", "predefined"));
   }
 
   function mergeColumns(storedCol: TableColPartial, predefinedCol: TableColPartial | undefined) {
@@ -192,7 +192,7 @@ export function useTableState(options: UseTableStateOptions) {
       }
 
       // Combine columns and restore state
-      allColumns.value = _.unionBy(predefinedCols, otherCols, "id");
+      allColumns.value = unionBy(predefinedCols, otherCols, "id");
       restoreState(predefinedCols);
     } else if (columnSelector.value === "defined") {
       allColumns.value = predefinedCols;
@@ -209,7 +209,7 @@ export function useTableState(options: UseTableStateOptions) {
       const definedCols = processColumns(getDefinedColumns(), false, false);
 
       // Combine columns and restore state
-      allColumns.value = _.unionBy(predefinedCols, definedCols, "id");
+      allColumns.value = unionBy(predefinedCols, definedCols, "id");
       restoreState(allColumns.value);
     }
 

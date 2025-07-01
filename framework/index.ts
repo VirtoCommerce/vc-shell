@@ -32,7 +32,7 @@ import * as shared from "./shared";
 import * as Vue from "vue";
 import * as VueI18n from "vue-i18n";
 import * as VueUse from "@vueuse/core";
-import _ from "lodash";
+import * as _ from "lodash-es";
 import * as VeeValidate from "vee-validate";
 import "normalize.css";
 import "@fontsource/plus-jakarta-sans";
@@ -59,13 +59,6 @@ import {
   TOOLBAR_SERVICE,
   WidgetServiceKey,
 } from "./injection-keys";
-
-import "@fortawesome/fontawesome-free/css/fontawesome.min.css";
-import "@fortawesome/fontawesome-free/css/solid.min.css";
-
-import "bootstrap-icons/font/bootstrap-icons.min.css";
-import * as icons from "lucide-vue-next";
-import "material-symbols/outlined.css";
 
 type I18NParams = Parameters<typeof i18n.global.mergeLocaleMessage>;
 
@@ -158,11 +151,6 @@ export default {
     if (args.i18n?.fallbackLocale) {
       i18n.global.fallbackLocale.value = args.i18n.fallbackLocale;
     }
-
-    // Lucide Icons
-    Object.entries(icons).forEach(([key, value]) => {
-      app.component(key, value as Component);
-    });
 
     app.use(i18n);
 

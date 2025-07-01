@@ -4,6 +4,8 @@
   </div>
 </template>
 
+<script lang="ts" setup></script>
+
 <style lang="scss">
 :root {
   --hint-color: var(--neutrals-500);

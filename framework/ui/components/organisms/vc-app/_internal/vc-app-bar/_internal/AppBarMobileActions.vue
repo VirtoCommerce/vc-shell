@@ -36,7 +36,7 @@
 </template>
 
 <script lang="ts" setup>
-import { VcButton } from "../../../../../../..";
+import { VcButton } from "../../../../../.././components";
 import { useAppBarMobileButtons } from "../../../../../../../core/composables/useAppBarMobileButtons";
 import AppBarOverlay from "./AppBarOverlay.vue";
 import { useAppBarMobileActions } from "./../composables/useAppBarMobileActions";

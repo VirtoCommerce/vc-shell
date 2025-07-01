@@ -1,6 +1,6 @@
 import { mergeProps } from "vue";
 import { Content, InternalNotificationOptions, NotificationOptions, NotificationPosition } from "../types";
-import { useContainer } from "../composables";
+import { useContainer } from "../composables/useContainer";
 
 const {
   defaultOptions,

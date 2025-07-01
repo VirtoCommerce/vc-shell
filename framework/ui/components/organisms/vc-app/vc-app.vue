@@ -76,11 +76,11 @@ import VcAppMenu from "./_internal/vc-app-menu/vc-app-menu.vue";
 import {
   VcPopupContainer,
   UserDropdownButton,
-  useAppSwitcher,
   useBladeNavigation,
   NotificationDropdown,
   BladeRoutesRecord,
 } from "./../../../../shared/components";
+import { useAppSwitcher } from "../../../../shared/components/app-switcher/composables/useAppSwitcher";
 import { provideAppBarWidget, useNotifications } from "../../../../core/composables";
 import { useRoute, useRouter } from "vue-router";
 import { watchOnce } from "@vueuse/core";
@@ -95,10 +95,8 @@ import { provideGlobalSearch } from "../../../../core/composables/useGlobalSearc
 import { provideDashboardService } from "../../../../core/composables/useDashboard";
 import { DynamicModulesKey } from "../../../../injection-keys";
 import { provideMenuService } from "../../../../core/composables/useMenuService";
-import { BellIcon } from "../../atoms/vc-icon/icons";
 import { provideAppBarMobileButtonsService } from "../../../../core/composables/useAppBarMobileButtons";
 import { useUserManagement } from "../../../../core/composables/useUserManagement";
-import { BladeRegistryKey } from "../../../../core/composables/useBladeRegistry";
 
 export interface Props {
   isReady: boolean;
@@ -182,7 +180,7 @@ registerMenuItem({
 registerAppBarWidget({
   id: "notification-dropdown",
   component: NotificationDropdown,
-  icon: BellIcon,
+  icon: "lucide-bell",
   order: 10,
   badge: () => hasUnreadNotifications.value,
 });
@@ -190,7 +188,7 @@ registerAppBarWidget({
 registerMobileButton({
   id: "notification-dropdown",
   component: NotificationDropdown,
-  icon: BellIcon,
+  icon: "lucide-bell",
   order: 10,
 });
 

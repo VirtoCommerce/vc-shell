@@ -123,6 +123,7 @@ export function _createBladeRouteResolver(
 
       if (toPathDecoded.startsWith(currentPathDecoded) && toSegments.length === currentSegments.length) {
         const targetRoute = routerUtils.allRoutes.find((r) => r.name === to.name);
+
         if (
           targetRoute &&
           bladeState.activeWorkspace.value &&

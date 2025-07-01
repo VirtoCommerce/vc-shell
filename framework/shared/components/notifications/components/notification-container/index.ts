@@ -1,7 +1,7 @@
 import { VcToast } from "./../../../../../ui/components";
 import { PropType, computed, defineComponent, h, toRaw } from "vue";
 import { Content, NotificationType, NotificationPosition } from "../../types";
-import { useContainer } from "../../composables";
+import { useContainer } from "../../composables/useContainer";
 
 const NotificationContainer = defineComponent({
   name: "NotificationContainer",

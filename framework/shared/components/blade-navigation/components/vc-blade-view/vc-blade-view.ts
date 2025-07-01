@@ -16,8 +16,9 @@ import {
 import { BladeInstance, navigationViewLocation, BLADE_BACK_BUTTON } from "./../../../../../injection-keys";
 import { BladeVNode, CoreBladeExposed, IBladeInstance } from "../../types";
 import { toRef, watchTriggerable } from "@vueuse/core";
-import { Breadcrumbs, FALLBACK_BLADE_ID } from "../../../../..";
 import { DisplayableError } from "../../../../../core/utilities/error";
+import { Breadcrumbs } from "../../../../../ui/types";
+import { FALLBACK_BLADE_ID } from "../../../../../core/constants";
 
 /**
  * Normalizes slot content

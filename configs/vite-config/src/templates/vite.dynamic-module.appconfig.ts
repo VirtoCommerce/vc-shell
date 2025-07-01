@@ -97,6 +97,20 @@ export default function dynamicModuleConfiguration(
               })();
             `;
           },
+          // Add footer to properly register module in global scope
+          footer: () => {
+            return `
+              /* Module Registration */
+              (function() {
+                if (typeof window !== 'undefined' && typeof ${moduleName} !== 'undefined') {
+                  window.VcShellDynamicModules = window.VcShellDynamicModules || {};
+                  // Use module name as key to avoid conflicts
+                  window.VcShellDynamicModules["${name}"] = ${moduleName};
+                  console.log('Registered module: ${name}');
+                }
+              })();
+            `;
+          },
         },
         external: allExternals,
       },

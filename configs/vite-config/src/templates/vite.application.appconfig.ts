@@ -1,9 +1,10 @@
 import vue from "@vitejs/plugin-vue";
 import * as fs from "node:fs";
-import { loadEnv, defineConfig, ProxyOptions } from "vite";
+import { loadEnv, defineConfig, ProxyOptions, type PluginOption } from "vite";
 import mkcert from "vite-plugin-mkcert";
 import path from "node:path";
 import { checker } from "vite-plugin-checker";
+// import { visualizer } from "rollup-plugin-visualizer";
 
 const packageJson = fs.readFileSync(process.cwd() + "/package.json");
 const version = JSON.parse(packageJson.toString()).version || 0;
@@ -98,7 +99,7 @@ export default defineConfig({
               "@vc-shell/framework": path.resolve(frameworkPath, "index.ts"),
             }
           : {
-              "@vc-shell/framework/dist/index.css": "@vc-shell/framework/dist/index.css",
+              "@vc-shell/framework/dist/index.css": "@vc-shell/framework/dist/framework-core.css",
               "vue-router": "vue-router/dist/vue-router.cjs.js",
             }
         : undefined,
@@ -111,6 +112,10 @@ export default defineConfig({
     checker({
       vueTsc: true,
     }),
+    // visualizer({
+    //   open: true,
+    //   filename: "dist/stats.html",
+    // }) as PluginOption,
   ],
   define: {
     "import.meta.env.PACKAGE_VERSION": `"${version}"`,
@@ -147,19 +152,139 @@ export default defineConfig({
   },
   optimizeDeps: {
     exclude: ["@vc-shell/framework"],
+    include: [
+      // Pre-bundle commonly used libraries for faster dev startup
+      "vue",
+      "vue-router",
+      "vue-i18n",
+      "@vueuse/core",
+      "@vueuse/integrations",
+      "lodash-es",
+      "moment",
+      "@headlessui/vue",
+      "vee-validate",
+    ],
     esbuildOptions: {
       target: ["esnext", "safari14"],
     },
   },
   build: {
     target: "esnext",
-    minify: true,
+    minify: mode === "production" ? "terser" : false,
     sourcemap: mode === "development",
     emptyOutDir: true,
     rollupOptions: {
+      // Improve tree-shaking
+      treeshake: {
+        moduleSideEffects: false,
+        propertyReadSideEffects: false,
+        unknownGlobalSideEffects: false,
+      },
+      // plugins: mode === "production" ? [analyzer({ summaryOnly: true })] : [],
       output: {
         entryFileNames: `[name]` + hash + `.js`,
         chunkFileNames: `[name]` + hash + `.js`,
+        // Optimize chunk loading order
+        experimentalMinChunkSize: 1000,
+        // Add preload/prefetch hints for better loading
+        inlineDynamicImports: false,
+        // Optimize asset URLs
+        assetFileNames: (assetInfo) => {
+          if (!assetInfo.name) return `assets/[name]${hash}[extname]`;
+
+          if (/\.(png|jpe?g|gif|svg|webp|avif)$/i.test(assetInfo.name)) {
+            return `assets/images/[name]${hash}[extname]`;
+          }
+          if (/\.(woff2?|eot|ttf|otf)$/i.test(assetInfo.name)) {
+            return `assets/fonts/[name]${hash}[extname]`;
+          }
+          return `assets/[name]${hash}[extname]`;
+        },
+        manualChunks: (id: string) => {
+          // Normalize path for cross-platform compatibility
+          const normalizedId = id.replace(/\\/g, "/");
+
+          // PRIORITY: Handle API clients first (before any other logic)
+          if (normalizedId.includes("/api_client/") && (normalizedId.endsWith(".ts") || normalizedId.endsWith(".js"))) {
+            const fullPath = normalizedId.split("/").pop();
+            if (fullPath) {
+              // Remove extension and get filename
+              const fileName = fullPath.replace(/\.(ts|js)$/, "");
+
+              // Create chunk name from filename (any API client becomes separate chunk)
+              if (fileName && fileName !== "index") {
+                const chunkName = `api-${fileName.toLowerCase().replace(/[^a-z0-9]/g, "-")}`;
+                return chunkName;
+              }
+            }
+            return "app-api";
+          }
+
+          // Handle VC-Shell framework files (both npm and local development)
+          const isVcShellFramework =
+            normalizedId.includes("@vc-shell/framework") || normalizedId.includes("/framework/dist/");
+
+          if (isVcShellFramework) {
+            // Handle main framework file
+            if (
+              normalizedId.includes("/framework.js") ||
+              (normalizedId.includes("@vc-shell/framework") && !normalizedId.includes("/vendor-"))
+            ) {
+              return "vc-shell-framework";
+            }
+
+            // Handle framework vendor chunks
+            if (normalizedId.includes("/vendor-")) {
+              const filename = normalizedId.split("/").pop() || "";
+              const vendorMatch = filename.match(/vendor-([^-]+)/);
+              if (vendorMatch) {
+                return `vc-shell-vendor-${vendorMatch[1]}`;
+              }
+              return "vc-shell-vendors";
+            }
+
+            // Any other framework files
+            return "vc-shell-framework";
+          }
+
+          // Each node_modules library gets its own chunk (application vendors)
+          if (normalizedId.includes("node_modules")) {
+            // Extract library name from path
+            const parts = normalizedId.split("node_modules/")[1].split("/");
+            let libName = parts[0];
+
+            // Handle scoped packages like @tiptap/core -> tiptap-core
+            if (libName.startsWith("@")) {
+              const scopedParts = normalizedId.split("node_modules/")[1].split("/").slice(0, 2);
+              libName = scopedParts.join("-").replace("@", "");
+            }
+
+            // Clean up library name for chunk name - prefix with 'app-' to distinguish from framework vendors
+            return `app-vendor-${libName.replace(/[^a-z0-9-]/gi, "-")}`;
+          }
+
+          // Application code - minimal chunking to reduce complexity
+          if (normalizedId.includes("/src/")) {
+            // Pages should use dynamic imports in router, so they auto-chunk
+            if (normalizedId.includes("/pages/")) return "app-pages";
+
+            // Large component groups
+            if (normalizedId.includes("/components/")) {
+              const pathParts = normalizedId.split("/components/")[1]?.split("/");
+              if (pathParts && pathParts.length > 1) {
+                const subfolder = pathParts[0];
+                return `app-${subfolder}-components`;
+              }
+              return "app-components";
+            }
+
+            // App modules
+            if (normalizedId.includes("/modules/")) return "app-modules";
+          }
+
+          // Everything else goes to main chunk for simplicity
+          return undefined;
+        },
       },
     },
   },

@@ -52,9 +52,6 @@ const getPackageJson = () => {
  *   // Custom configuration options
  *   compatibility: {
  *     framework: '^1.1.0',
- *     apps: {
- *       'vendor-portal-new': '^2.0.0'
- *     }
  *   }
  * });
  * ```

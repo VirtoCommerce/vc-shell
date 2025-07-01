@@ -58,11 +58,7 @@ export default getDynamicModuleConfiguration({
     modules: {
       '@vc-shell/module-catalog': '^1.0.0'
     },
-    
-    // Compatibility with applications (required)
-    apps: {
-      'vendor-portal-new': '^2.0.0'
-    }
+  
   },
   
   // Additional configuration options (optional)
@@ -85,7 +81,6 @@ export default getDynamicModuleConfiguration({
 | `compatibility` | `object` | **Required:** Compatibility constraints for the module |
 | `compatibility.framework` | `string` | **Required:** Compatible framework version range |
 | `compatibility.modules` | `object` | Compatible version ranges for other modules |
-| `compatibility.apps` | `object` | **Required:** Compatible application version ranges |
 | `externals` | `string[]` | Additional external dependencies |
 
 ## Dynamic Modules Configuration Features
@@ -133,10 +128,6 @@ export default getDynamicModuleConfiguration({
       '@vc-shell/module-catalog': '^1.0.0',
       '@vc-shell/module-auth': '^1.5.0'
     },
-    apps: {
-      'vendor-portal-new': '^2.0.0',
-      'admin-portal': '^1.5.0'
-    }
   },
   
   externals: [

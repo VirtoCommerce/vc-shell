@@ -248,7 +248,8 @@ export function useDynamicModules(
           (result): result is NonNullable<typeof result> => result !== null,
         );
 
-        for (const { moduleId, moduleUrl, manifest, moduleVersion } of validManifests) {
+        // Parallel loading of all modules
+        const moduleLoadPromises = validManifests.map(async ({ moduleId, moduleUrl, manifest, moduleVersion }) => {
           try {
             const entry = Object.values(manifest).find((file) => (file as ModuleManifest).isEntry);
             if (!entry) {
@@ -259,92 +260,137 @@ export function useDynamicModules(
               | VersionManifest
               | undefined;
 
-            let versionInfoFromFile: VersionInfo | null = null;
-            if (versionFile) {
-              versionInfoFromFile = await loadVersionInfo(moduleUrl + versionFile.file);
-              if (versionInfoFromFile) {
-                console.info(`Loaded version info for module ${moduleId}: v${versionInfoFromFile.version}`);
-              }
+            // Load version info and CSS in parallel
+            const [versionInfoFromFile] = await Promise.all([
+              versionFile ? loadVersionInfo(moduleUrl + versionFile.file) : Promise.resolve(null),
+              // Load CSS files in parallel
+              Promise.all(
+                Object.values(manifest)
+                  .filter((file) => file.file.endsWith(".css"))
+                  .map((file) => loadCSS(moduleUrl + file.file)),
+              ).catch((error) => {
+                console.error(`Failed to load styles for module ${moduleId}:`, error);
+              }),
+            ]);
+
+            if (versionInfoFromFile) {
+              console.info(`Loaded version info for module ${moduleId}: v${versionInfoFromFile.version}`);
             }
 
-            const cssFiles = Object.values(manifest)
-              .filter((file) => file.file.endsWith(".css"))
-              .map((file) => loadCSS(moduleUrl + file.file));
-
-            await Promise.all(cssFiles).catch((error) => {
-              console.error(`Failed to load styles for module ${moduleId}:`, error);
-            });
-
+            // Import module
             await import(/* @vite-ignore */ moduleUrl + entry.file);
 
-            if (typeof window !== "undefined" && window.VcShellDynamicModules) {
-              Object.values(window.VcShellDynamicModules).forEach((mod) => {
-                try {
-                  const moduleExports = mod as ModuleExports;
-                  const moduleToInstall = "default" in moduleExports ? moduleExports.default : moduleExports;
+            return {
+              moduleId,
+              moduleUrl,
+              moduleVersion,
+              versionInfoFromFile,
+              success: true,
+            };
+          } catch (error) {
+            console.error(`Failed to load module ${moduleId}:`, error);
+            return {
+              moduleId,
+              moduleUrl,
+              moduleVersion,
+              versionInfoFromFile: null,
+              success: false,
+              error,
+            };
+          }
+        });
 
-                  if ("install" in moduleToInstall) {
-                    if (!finalConfig.skipVersionCheck) {
-                      const versionInfo =
-                        moduleToInstall.version ||
-                        versionInfoFromFile ||
-                        (moduleVersion
-                          ? {
-                              version: moduleVersion,
-                              compatibleWith: { framework: "*" },
-                            }
-                          : undefined);
+        // Wait for all modules to be loaded
+        const moduleLoadResults = await Promise.all(moduleLoadPromises);
 
-                      if (versionInfo) {
-                        try {
-                          checkVersionCompatibility(
-                            moduleId,
-                            versionInfo,
-                            finalConfig.frameworkVersion || "0.0.0",
-                            loadedModulesWithVersions,
-                          );
+        // Create a map for easy lookup of load results
+        const loadResultsMap = new Map(
+          moduleLoadResults.filter((result) => result.success).map((result) => [result.moduleId, result]),
+        );
 
-                          loadedModulesWithVersions.set(moduleId, versionInfo.version);
-                        } catch (versionError) {
-                          if (versionError instanceof VersionCompatibilityError) {
-                            console.error(`Version compatibility error: ${versionError.message}`);
-                            console.error(`Skipping installation of incompatible module: ${moduleId}`);
-                            return;
-                          } else {
-                            throw versionError;
-                          }
+        // Install all modules after loading
+        if (typeof window !== "undefined" && window.VcShellDynamicModules) {
+          Object.entries(window.VcShellDynamicModules).forEach(([moduleKey, mod]) => {
+            // Skip if module is already loaded
+            if (loadedModules.has(moduleKey)) {
+              console.log(`Module ${moduleKey} already loaded, skipping`);
+              return;
+            }
+
+            try {
+              const moduleExports = mod as ModuleExports;
+              const moduleToInstall = "default" in moduleExports ? moduleExports.default : moduleExports;
+
+              if ("install" in moduleToInstall) {
+                // Use moduleKey as the primary identifier
+                const currentModuleId = moduleKey;
+
+                // Try to find corresponding load result for version info
+                const loadResult = loadResultsMap.get(currentModuleId);
+                const versionInfoFromFile = loadResult?.versionInfoFromFile;
+                const moduleVersion = loadResult?.moduleVersion;
+
+                console.log(`Installing module: ${currentModuleId}`);
+
+                if (!finalConfig.skipVersionCheck) {
+                  const versionInfo =
+                    moduleToInstall.version ||
+                    versionInfoFromFile ||
+                    (moduleVersion
+                      ? {
+                          version: moduleVersion,
+                          compatibleWith: { framework: "*" },
                         }
+                      : undefined);
+
+                  if (versionInfo) {
+                    try {
+                      checkVersionCompatibility(
+                        currentModuleId,
+                        versionInfo,
+                        finalConfig.frameworkVersion || "0.0.0",
+                        loadedModulesWithVersions,
+                      );
+
+                      loadedModulesWithVersions.set(currentModuleId, versionInfo.version);
+                    } catch (versionError) {
+                      if (versionError instanceof VersionCompatibilityError) {
+                        console.error(`Version compatibility error: ${versionError.message}`);
+                        console.error(`Skipping installation of incompatible module: ${currentModuleId}`);
+                        return;
+                      } else {
+                        throw versionError;
                       }
                     }
-
-                    app.use(moduleToInstall.install as Plugin, { router });
-
-                    if (moduleToInstall.extensions) {
-                      registerModuleExtensions(app, moduleId, moduleToInstall.extensions);
-                    }
-
-                    loadedModules.add(moduleId);
-
-                    if (moduleToInstall.version) {
-                      console.info(`Module ${moduleId} v${moduleToInstall.version.version} loaded successfully`);
-                    } else if (versionInfoFromFile) {
-                      console.info(`Module ${moduleId} v${versionInfoFromFile.version} loaded successfully`);
-                    } else if (moduleVersion) {
-                      console.info(`Module ${moduleId} v${moduleVersion} loaded successfully`);
-                    } else {
-                      console.info(`Module ${moduleId} loaded successfully (no version info)`);
-                    }
-                  } else {
-                    console.error(`Module ${moduleId} does not have an 'install' function`);
                   }
-                } catch (error) {
-                  console.error(`Failed to register plugin for module ${moduleId}:`, error);
                 }
-              });
+
+                app.use(moduleToInstall.install as Plugin, { router });
+
+                if (moduleToInstall.extensions) {
+                  registerModuleExtensions(app, currentModuleId, moduleToInstall.extensions);
+                }
+
+                loadedModules.add(currentModuleId);
+
+                if (moduleToInstall.version) {
+                  console.info(
+                    `✅ Module ${currentModuleId} v${moduleToInstall.version.version} installed successfully`,
+                  );
+                } else if (versionInfoFromFile) {
+                  console.info(`✅ Module ${currentModuleId} v${versionInfoFromFile.version} installed successfully`);
+                } else if (moduleVersion) {
+                  console.info(`✅ Module ${currentModuleId} v${moduleVersion} installed successfully`);
+                } else {
+                  console.info(`✅ Module ${currentModuleId} installed successfully (no version info)`);
+                }
+              } else {
+                console.error(`❌ Module ${moduleKey} does not have an 'install' function`);
+              }
+            } catch (error) {
+              console.error(`❌ Failed to register plugin for module ${moduleKey}:`, error);
             }
-          } catch (error) {
-            console.error(`Failed to process module ${moduleId}:`, error);
-          }
+          });
         }
       }
     } catch (error) {

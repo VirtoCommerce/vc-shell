@@ -4,4 +4,3 @@
 # yarn lint-staged
 
 yarn check-locales
-yarn generate-icons

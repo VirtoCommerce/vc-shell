@@ -2,14 +2,15 @@
   <div
     class="vc-editor"
     :class="{
-      'vc-editor--error': errorMessage,
+      'vc-editor--error': !!errorMessage,
       'vc-editor--disabled': disabled,
       'vc-editor--focused': isFocused,
+      'vc-editor--fullscreen': isFullscreen,
+      'vc-editor--side-by-side': currentMode === 'split',
     }"
   >
-    <!-- Editor label -->
     <VcLabel
-      v-if="label"
+      v-if="label && !isFullscreen"
       class="vc-editor__label"
       :required="required"
       :multilanguage="multilanguage"
@@ -20,52 +21,162 @@
       <template
         v-if="tooltip"
         #tooltip
+        >{{ tooltip }}</template
       >
-        {{ tooltip }}
-      </template>
     </VcLabel>
 
-    <!-- Editor field -->
-    <md-editor
-      ref="editorRef"
-      v-model="model"
-      language="any"
-      :editor-id="id"
-      :disabled="disabled"
-      :read-only="disabled"
-      :sanitize="sanitize"
-      :placeholder="placeholder"
-      :toolbars="toolbars"
-      no-katex
-      no-mermaid
-      tabindex="0"
-      class="vc-editor__editor"
-      @on-upload-img="onUploadImage"
-      @focus="isFocused = true"
-      @blur="isFocused = false"
+    <div
+      v-if="editor"
+      class="vc-editor__header"
+    >
+      <VcEditorToolbar
+        v-if="currentMode === 'editor' || currentMode === 'split'"
+        :editor="editor"
+        :disabled="disabled"
+        :content-type="detectedType"
+        :toolbar="filteredToolbar"
+        @upload-image="triggerImageUpload"
+      />
+
+      <div class="vc-editor__header-actions">
+        <VcEditorButton
+          icon="lucide-eye"
+          :active="currentMode === 'preview'"
+          :disabled="disabled"
+          @action="togglePreview"
+        />
+        <VcEditorButton
+          icon="lucide-columns-2"
+          :active="currentMode === 'split'"
+          @action="toggleSideBySideView"
+        />
+        <VcEditorButton
+          icon="lucide-code"
+          :active="currentMode === 'source'"
+          :disabled="disabled"
+          @action="toggleSourceView"
+        />
+        <VcEditorButton
+          :icon="isFullscreen ? 'lucide-shrink' : 'lucide-expand'"
+          @action="isFullscreen = !isFullscreen"
+        />
+      </div>
+    </div>
+
+    <div class="vc-editor__body">
+      <!-- Normal editor view -->
+      <editor-content
+        v-if="currentMode === 'editor'"
+        :editor="editor"
+        class="vc-editor__content"
+      />
+
+      <!-- Full preview view -->
+      <div
+        v-if="currentMode === 'preview'"
+        class="vc-editor__preview ProseMirror"
+        v-html="previewContent"
+      />
+
+      <!-- Source code view -->
+      <textarea
+        v-if="currentMode === 'source'"
+        class="vc-editor__source ProseMirror"
+        :value="formattedSource"
+        :maxlength="maxlength"
+        @input="handleSourceInput"
+        @focus="isFocused = true"
+        @blur="isFocused = false"
+      />
+
+      <!-- Side-by-side view: Editor left, Code right -->
+      <div
+        v-if="currentMode === 'split'"
+        class="vc-editor__split-view"
+      >
+        <div class="vc-editor__split-editor">
+          <editor-content
+            :editor="editor"
+            class="vc-editor__content"
+          />
+        </div>
+        <div class="vc-editor__split-preview">
+          <textarea
+            class="vc-editor__source ProseMirror"
+            :value="formattedSource"
+            :maxlength="maxlength"
+            @input="handleSourceInput"
+            @focus="isFocused = true"
+            @blur="isFocused = false"
+          />
+        </div>
+      </div>
+    </div>
+
+    <!-- Character count display -->
+    <div
+      v-if="maxlength && (currentMode === 'source' || currentMode === 'split')"
+      class="vc-editor__char-count"
+      :class="{ 'vc-editor__char-count--warning': isNearLimit }"
+    >
+      {{ characterCount }} / {{ maxlength }}
+    </div>
+
+    <input
+      ref="imageInput"
+      type="file"
+      hidden
+      multiple
+      accept="image/*"
+      @change="handleImageSelection"
     />
 
     <slot
-      v-if="errorMessage"
+      v-if="errorMessage && !isFullscreen"
       name="error"
     >
-      <VcHint class="vc-editor__error">
-        {{ errorMessage }}
-      </VcHint>
+      <VcHint class="vc-editor__error-hint">{{ errorMessage }}</VcHint>
     </slot>
   </div>
 </template>
-<!-- eslint-disable @typescript-eslint/no-explicit-any -->
+
 <script lang="ts" setup>
-import { ref, getCurrentInstance, Ref, computed, ComputedRef } from "vue";
+import { ref, watch, onBeforeUnmount, computed } from "vue";
+import { useEditor, EditorContent } from "@tiptap/vue-3";
+import { StarterKit } from "@tiptap/starter-kit";
+import { Underline } from "@tiptap/extension-underline";
+import { Table } from "@tiptap/extension-table";
+import { TableRow } from "@tiptap/extension-table-row";
+import { TableHeader } from "@tiptap/extension-table-header";
+import { TableCell } from "@tiptap/extension-table-cell";
+import { Link } from "@tiptap/extension-link";
+import { Image } from "@tiptap/extension-image";
+import { Placeholder } from "@tiptap/extension-placeholder";
+import { Markdown } from "tiptap-markdown";
+import { format } from "prettier/standalone";
+import * as prettierPluginHtml from "prettier/parser-html";
+// eslint-disable-next-line import/no-named-as-default
 import DOMPurify from "dompurify";
 import { VcLabel, VcHint } from "../..";
-import { MdEditor, ToolbarNames, config } from "md-editor-v3";
-import "md-editor-v3/lib/style.css";
-import { useI18n } from "vue-i18n";
-import { reactiveComputed } from "@vueuse/core";
-import { tags } from "@lezer/highlight";
-import { HighlightStyle, syntaxHighlighting } from "@codemirror/language";
+import VcEditorToolbar from "./_internal/vc-editor-toolbar.vue";
+import VcEditorButton from "./_internal/vc-editor-button.vue";
+
+// Define toolbar button types
+type ToolbarNames =
+  | "bold"
+  | "italic"
+  | "underline"
+  | "strikethrough"
+  | "heading1"
+  | "heading2"
+  | "heading3"
+  | "bulletList"
+  | "orderedList"
+  | "blockquote"
+  | "link"
+  | "image"
+  | "table"
+  | "separator";
 
 export interface Props {
   placeholder?: string;
@@ -75,7 +186,7 @@ export interface Props {
   label?: string;
   tooltip?: string;
   errorMessage?: string;
-  assetsFolder: string;
+  assetsFolder?: string;
   multilanguage?: boolean;
   currentLanguage?: string;
   maxlength?: number;
@@ -83,378 +194,573 @@ export interface Props {
 }
 
 export interface Emits {
-  (event: "update:modelValue", value: string | number | Date | null | undefined): void;
+  (event: "update:modelValue", value?: string): void;
+  (event: "upload-image"): void;
 }
 
-const props = defineProps<Props>();
+const props = withDefaults(defineProps<Props>(), {
+  modelValue: "",
+  disabled: false,
+});
+
 const emit = defineEmits<Emits>();
 
-const { t } = useI18n({ useScope: "global" });
-
-const uid = getCurrentInstance()?.uid;
-const id = `editor-${uid}`;
 const isFocused = ref(false);
+const isFullscreen = ref(false);
+const imageInput = ref<HTMLInputElement | null>(null);
+const detectedType = ref<"html" | "markdown">("markdown");
 
-const editorRef = ref(null) as Ref<typeof MdEditor | null>;
-defineSlots<{
-  error?: (props: any) => any;
-}>();
+// Computed property for filtered toolbar based on props
+const filteredToolbar = computed(() => {
+  if (!props.toolbar) {
+    // Default toolbar if none specified
+    return [
+      "bold",
+      "italic",
+      "underline",
+      "strikethrough",
+      "separator",
+      "heading1",
+      "heading2",
+      "heading3",
+      "separator",
+      "bulletList",
+      "orderedList",
+      "blockquote",
+      "separator",
+      "link",
+      "image",
+      "table",
+    ] as ToolbarNames[];
+  }
+  return props.toolbar;
+});
 
-const tagColors = [
-  { tag: tags.comment, color: "var(--neutrals-500)" },
-  { tag: tags.lineComment, color: "var(--neutrals-500)" },
-  { tag: tags.blockComment, color: "var(--neutrals-500)" },
-  { tag: tags.docComment, color: "var(--neutrals-500)" },
+// Character count for maxlength
+const characterCount = computed(() => {
+  return (props.modelValue || "").length;
+});
 
-  { tag: tags.name, color: "var(--primary-500)" },
-  { tag: tags.variableName, color: "var(--primary-500)" },
-  { tag: tags.propertyName, color: "var(--primary-500)" },
-  { tag: tags.labelName, color: "var(--primary-500)" },
+const isNearLimit = computed(() => {
+  if (!props.maxlength) return false;
+  return characterCount.value > props.maxlength * 0.9;
+});
 
-  { tag: tags.typeName, color: "var(--secondary-500)" },
-  { tag: tags.tagName, color: "var(--secondary-600)" },
-  { tag: tags.namespace, color: "var(--secondary-700)" },
+// Function to detect content type
+function detectContentType(content: string): "html" | "markdown" {
+  if (!content || content.trim() === "") return "markdown";
 
-  { tag: tags.attributeName, color: "var(--primary-600)" },
-  { tag: tags.className, color: "var(--primary-700)" },
+  // HTML indicators
+  const htmlPatterns = [
+    /<[^>]+>/g, // HTML tags
+    /&[a-zA-Z]+;/g, // HTML entities
+  ];
 
-  { tag: tags.macroName, color: "var(--accent-500)" },
+  // Markdown indicators
+  const markdownPatterns = [
+    /^#{1,6}\s/m, // Headers
+    /^\*\s/m, // Bullet lists
+    /^\d+\.\s/m, // Numbered lists
+    /\*\*[^*]+\*\*/g, // Bold
+    /\*[^*]+\*/g, // Italic
+    /\[[^\]]+\]\([^)]+\)/g, // Links
+    /```[\s\S]*?```/g, // Code blocks
+    /`[^`]+`/g, // Inline code
+    /^>/m, // Blockquotes
+  ];
 
-  { tag: tags.literal, color: "var(--info-500)" },
-  { tag: tags.string, color: "var(--success-500)" },
-  { tag: tags.docString, color: "var(--success-400)" },
-  { tag: tags.character, color: "var(--success-300)" },
-  { tag: tags.attributeValue, color: "var(--success-300)" },
+  let htmlScore = 0;
+  let markdownScore = 0;
 
-  { tag: tags.number, color: "var(--info-500)" },
-  { tag: tags.integer, color: "var(--info-500)" },
-  { tag: tags.float, color: "var(--info-500)" },
+  // Count HTML patterns
+  htmlPatterns.forEach((pattern) => {
+    const matches = content.match(pattern);
+    if (matches) htmlScore += matches.length;
+  });
 
-  { tag: tags.bool, color: "var(--warning-500)" },
-  { tag: tags.atom, color: "var(--warning-500)" },
-  { tag: tags.unit, color: "var(--warning-500)" },
+  // Count Markdown patterns
+  markdownPatterns.forEach((pattern) => {
+    const matches = content.match(pattern);
+    if (matches) markdownScore += matches.length;
+  });
 
-  { tag: tags.regexp, color: "var(--accent-600)" },
-  { tag: tags.escape, color: "var(--accent-500)" },
-  { tag: tags.color, color: "var(--accent-500)" },
-  { tag: tags.url, color: "var(--accent-500)" },
+  // Only switch to HTML if there are significantly more HTML patterns
+  if (htmlScore > markdownScore * 2) {
+    return "html";
+  }
 
-  { tag: tags.keyword, color: "var(--primary-700)" },
-  { tag: tags.self, color: "var(--primary-700)" },
-  { tag: tags.operatorKeyword, color: "var(--primary-700)" },
-  { tag: tags.controlKeyword, color: "var(--primary-700)" },
-  { tag: tags.definitionKeyword, color: "var(--primary-700)" },
-  { tag: tags.moduleKeyword, color: "var(--primary-700)" },
+  // Default to Markdown for most cases
+  return "markdown";
+}
 
-  { tag: tags.null, color: "var(--warning-600)" },
-
-  { tag: tags.operator, color: "var(--primary-500)" },
-  { tag: tags.derefOperator, color: "var(--primary-500)" },
-  { tag: tags.arithmeticOperator, color: "var(--primary-500)" },
-  { tag: tags.logicOperator, color: "var(--primary-500)" },
-  { tag: tags.bitwiseOperator, color: "var(--primary-500)" },
-  { tag: tags.compareOperator, color: "var(--primary-500)" },
-  { tag: tags.updateOperator, color: "var(--primary-500)" },
-  { tag: tags.definitionOperator, color: "var(--primary-500)" },
-  { tag: tags.typeOperator, color: "var(--primary-500)" },
-  { tag: tags.controlOperator, color: "var(--primary-500)" },
-
-  { tag: tags.punctuation, color: "var(--neutrals-700)" },
-  { tag: tags.separator, color: "var(--neutrals-700)" },
-  { tag: tags.bracket, color: "var(--neutrals-700)" },
-  { tag: tags.angleBracket, color: "var(--neutrals-700)" },
-  { tag: tags.squareBracket, color: "var(--neutrals-700)" },
-  { tag: tags.paren, color: "var(--neutrals-700)" },
-  { tag: tags.brace, color: "var(--neutrals-700)" },
-
-  { tag: tags.content, color: "var(--neutrals-800)" },
-
-  { tag: tags.heading, color: "var(--primary-700)" },
-  { tag: tags.heading1, color: "var(--primary-800)" },
-  { tag: tags.heading2, color: "var(--primary-700)" },
-  { tag: tags.heading3, color: "var(--primary-600)" },
-  { tag: tags.heading4, color: "var(--primary-500)" },
-  { tag: tags.heading5, color: "var(--primary-400)" },
-  { tag: tags.heading6, color: "var(--primary-300)" },
-
-  { tag: tags.contentSeparator, color: "var(--neutrals-300)" },
-
-  { tag: tags.list, color: "var(--neutrals-900)" },
-  { tag: tags.quote, color: "var(--neutrals-700)" },
-
-  { tag: tags.emphasis, color: "var(--primary-500)" },
-  { tag: tags.strong, color: "var(--primary-700)" },
-
-  { tag: tags.link, color: "var(--accent-500)" },
-
-  { tag: tags.monospace, color: "var(--neutrals-900)" },
-
-  { tag: tags.strikethrough, color: "var(--danger-500)" },
-
-  { tag: tags.inserted, color: "var(--success-500)" },
-  { tag: tags.deleted, color: "var(--danger-500)" },
-  { tag: tags.changed, color: "var(--warning-500)" },
-
-  { tag: tags.invalid, color: "var(--danger-700)" },
-
-  { tag: tags.meta, color: "var(--neutrals-600)" },
-  { tag: tags.documentMeta, color: "var(--neutrals-600)" },
-  { tag: tags.annotation, color: "var(--neutrals-600)" },
-  { tag: tags.processingInstruction, color: "var(--neutrals-600)" },
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const extensions: any[] = [
+  StarterKit,
+  Underline,
+  Table.configure({ resizable: true }),
+  TableRow,
+  TableHeader,
+  TableCell,
+  Link.configure({ openOnClick: false }),
+  Image,
+  Placeholder.configure({ placeholder: props.placeholder }),
+  Markdown.configure({
+    html: true, // Allow HTML input/output
+    tightLists: true, // No <p> inside <li> in markdown output
+    tightListClass: "tight", // Add class to <ul> allowing you to remove <p> margins when tight
+    bulletListMarker: "-", // <li> prefix in markdown output
+    linkify: false, // Create links from "https://..." text
+    breaks: true, // New lines (\n) in markdown input are converted to <br>
+    transformPastedText: false, // Allow to paste markdown text in the editor
+    transformCopiedText: false, // Copied text is transformed to markdown
+  }),
 ];
 
-const myHighlightStyle = HighlightStyle.define(tagColors);
+const formattedSource = ref(props.modelValue || "");
 
-const toolbars: ComputedRef<ToolbarNames[]> = computed(() =>
-  props.disabled
-    ? []
-    : props.toolbar
-      ? props.toolbar
-      : [
-          "bold",
-          "underline",
-          "italic",
-          "-",
-          "title",
-          "strikeThrough",
-          "quote",
-          "unorderedList",
-          "orderedList",
-          "-",
-          "link",
-          "image",
-          "table",
-          "-",
-          "revoke",
-          "next",
-          "-",
-          "pageFullscreen",
-          "fullscreen",
-          "preview",
-          "previewOnly",
-        ],
+watch(
+  () => props.modelValue,
+  async (value) => {
+    // Detect content type
+    detectedType.value = detectContentType(value || "");
+
+    if (detectedType.value === "html") {
+      try {
+        formattedSource.value = await format(value || "", {
+          parser: "html",
+          plugins: [prettierPluginHtml],
+          vueIndentScriptAndStyle: true,
+        });
+      } catch (e) {
+        formattedSource.value = value || "";
+      }
+    } else {
+      formattedSource.value = value || "";
+    }
+  },
+  { immediate: true },
 );
 
-config({
-  codeMirrorExtensions: (theme, extensions) => {
-    return [syntaxHighlighting(myHighlightStyle), ...extensions];
+const previewContent = computed(() => {
+  let htmlContent = "";
+
+  if (detectedType.value === "markdown" && editor.value) {
+    // Use Tiptap's built-in HTML conversion from Markdown
+    htmlContent = editor.value.getHTML();
+  } else {
+    htmlContent = props.modelValue || "";
+  }
+
+  // Sanitize HTML to prevent XSS attacks
+  return DOMPurify.sanitize(htmlContent, {
+    // Allow safe HTML tags and attributes
+    ALLOWED_TAGS: [
+      "p",
+      "br",
+      "strong",
+      "em",
+      "u",
+      "s",
+      "h1",
+      "h2",
+      "h3",
+      "h4",
+      "h5",
+      "h6",
+      "ul",
+      "ol",
+      "li",
+      "blockquote",
+      "pre",
+      "code",
+      "a",
+      "img",
+      "table",
+      "thead",
+      "tbody",
+      "tr",
+      "th",
+      "td",
+      "hr",
+      "div",
+      "span",
+    ],
+    ALLOWED_ATTR: ["href", "src", "alt", "title", "class", "id", "style", "colspan", "rowspan", "align", "valign"],
+    // Remove dangerous protocols
+    ALLOWED_URI_REGEXP: /^(?:(?:(?:f|ht)tps?|mailto|tel|callto|sms|cid|xmpp):|[^a-z]|[a-z+.-]+(?:[^a-z+.-:]|$))/i,
+    // Keep relative URLs
+    KEEP_CONTENT: true,
+    // Remove script tags and event handlers
+    FORBID_TAGS: ["script", "object", "embed", "form", "input"],
+    FORBID_ATTR: ["onerror", "onload", "onclick", "onmouseover", "onfocus", "onblur"],
+  });
+});
+
+// Single reactive state for editor mode
+const editorMode = ref<"editor" | "preview" | "source" | "split">("editor");
+
+// Computed property for current mode
+const currentMode = computed(() => editorMode.value);
+
+function togglePreview() {
+  editorMode.value = editorMode.value === "preview" ? "editor" : "preview";
+}
+
+function toggleSourceView() {
+  editorMode.value = editorMode.value === "source" ? "editor" : "source";
+}
+
+function toggleSideBySideView() {
+  editorMode.value = editorMode.value === "split" ? "editor" : "split";
+}
+
+const editor = useEditor({
+  content: props.modelValue,
+  editable: !props.disabled,
+  extensions,
+  onUpdate: ({ editor: tipTapEditor }) => {
+    // Always output in Markdown by default, unless HTML is detected
+    const output =
+      detectedType.value === "html"
+        ? tipTapEditor.getHTML()
+        : (tipTapEditor.storage.markdown as { getMarkdown: () => string }).getMarkdown();
+
+    // Check maxlength if specified
+    if (props.maxlength && output.length > props.maxlength) {
+      return; // Don't emit if exceeds maxlength
+    }
+
+    emit("update:modelValue", output);
   },
-  editorConfig: {
-    languageUserDefined: {
-      any: reactiveComputed(() => ({
-        toolbarTips: {
-          bold: t("COMPONENTS.MOLECULES.VC_EDITOR.TOOLBAR_TIPS.BOLD"),
-          underline: t("COMPONENTS.MOLECULES.VC_EDITOR.TOOLBAR_TIPS.UNDERLINE"),
-          italic: t("COMPONENTS.MOLECULES.VC_EDITOR.TOOLBAR_TIPS.ITALIC"),
-          strikeThrough: t("COMPONENTS.MOLECULES.VC_EDITOR.TOOLBAR_TIPS.STRIKE_THROUGH"),
-          title: t("COMPONENTS.MOLECULES.VC_EDITOR.TOOLBAR_TIPS.TITLE"),
-          sub: t("COMPONENTS.MOLECULES.VC_EDITOR.TOOLBAR_TIPS.SUB"),
-          sup: t("COMPONENTS.MOLECULES.VC_EDITOR.TOOLBAR_TIPS.SUP"),
-          quote: t("COMPONENTS.MOLECULES.VC_EDITOR.TOOLBAR_TIPS.QUOTE"),
-          unorderedList: t("COMPONENTS.MOLECULES.VC_EDITOR.TOOLBAR_TIPS.UNORDERED_LIST"),
-          orderedList: t("COMPONENTS.MOLECULES.VC_EDITOR.TOOLBAR_TIPS.ORDERED_LIST"),
-          task: t("COMPONENTS.MOLECULES.VC_EDITOR.TOOLBAR_TIPS.TASK"),
-          codeRow: t("COMPONENTS.MOLECULES.VC_EDITOR.TOOLBAR_TIPS.CODE_ROW"),
-          code: t("COMPONENTS.MOLECULES.VC_EDITOR.TOOLBAR_TIPS.CODE"),
-          link: t("COMPONENTS.MOLECULES.VC_EDITOR.TOOLBAR_TIPS.LINK"),
-          image: t("COMPONENTS.MOLECULES.VC_EDITOR.TOOLBAR_TIPS.IMAGE"),
-          table: t("COMPONENTS.MOLECULES.VC_EDITOR.TOOLBAR_TIPS.TABLE"),
-          mermaid: t("COMPONENTS.MOLECULES.VC_EDITOR.TOOLBAR_TIPS.MERMAID"),
-          katex: t("COMPONENTS.MOLECULES.VC_EDITOR.TOOLBAR_TIPS.KATEX"),
-          revoke: t("COMPONENTS.MOLECULES.VC_EDITOR.TOOLBAR_TIPS.REVOKE"),
-          next: t("COMPONENTS.MOLECULES.VC_EDITOR.TOOLBAR_TIPS.NEXT"),
-          save: t("COMPONENTS.MOLECULES.VC_EDITOR.TOOLBAR_TIPS.SAVE"),
-          prettier: t("COMPONENTS.MOLECULES.VC_EDITOR.TOOLBAR_TIPS.PRETTIER"),
-          pageFullscreen: t("COMPONENTS.MOLECULES.VC_EDITOR.TOOLBAR_TIPS.PAGE_FULLSCREEN"),
-          fullscreen: t("COMPONENTS.MOLECULES.VC_EDITOR.TOOLBAR_TIPS.FULLSCREEN"),
-          preview: t("COMPONENTS.MOLECULES.VC_EDITOR.TOOLBAR_TIPS.PREVIEW"),
-          previewOnly: t("COMPONENTS.MOLECULES.VC_EDITOR.TOOLBAR_TIPS.PREVIEW_ONLY"),
-          htmlPreview: t("COMPONENTS.MOLECULES.VC_EDITOR.TOOLBAR_TIPS.HTML_PREVIEW"),
-          catalog: t("COMPONENTS.MOLECULES.VC_EDITOR.TOOLBAR_TIPS.CATALOG"),
-          github: t("COMPONENTS.MOLECULES.VC_EDITOR.TOOLBAR_TIPS.GITHUB"),
-          "-": t("COMPONENTS.MOLECULES.VC_EDITOR.TOOLBAR_TIPS.DASH"),
-          "=": t("COMPONENTS.MOLECULES.VC_EDITOR.TOOLBAR_TIPS.EQUALS"),
-        },
-        titleItem: {
-          h1: t("COMPONENTS.MOLECULES.VC_EDITOR.TITLE_ITEM.H1"),
-          h2: t("COMPONENTS.MOLECULES.VC_EDITOR.TITLE_ITEM.H2"),
-          h3: t("COMPONENTS.MOLECULES.VC_EDITOR.TITLE_ITEM.H3"),
-          h4: t("COMPONENTS.MOLECULES.VC_EDITOR.TITLE_ITEM.H4"),
-          h5: t("COMPONENTS.MOLECULES.VC_EDITOR.TITLE_ITEM.H5"),
-          h6: t("COMPONENTS.MOLECULES.VC_EDITOR.TITLE_ITEM.H6"),
-        },
-        imgTitleItem: {
-          link: t("COMPONENTS.MOLECULES.VC_EDITOR.IMG_TITLE_ITEM.LINK"),
-          upload: t("COMPONENTS.MOLECULES.VC_EDITOR.IMG_TITLE_ITEM.UPLOAD"),
-          clip2upload: t("COMPONENTS.MOLECULES.VC_EDITOR.IMG_TITLE_ITEM.CLIP2UPLOAD"),
-        },
-        linkModalTips: {
-          linkTitle: t("COMPONENTS.MOLECULES.VC_EDITOR.LINK_MODAL_TIPS.LINK_TITLE"),
-          imageTitle: t("COMPONENTS.MOLECULES.VC_EDITOR.LINK_MODAL_TIPS.IMAGE_TITLE"),
-          descLabel: t("COMPONENTS.MOLECULES.VC_EDITOR.LINK_MODAL_TIPS.DESC_LABEL"),
-          descLabelPlaceHolder: t("COMPONENTS.MOLECULES.VC_EDITOR.LINK_MODAL_TIPS.DESC_LABEL_PLACEHOLDER"),
-          urlLabel: t("COMPONENTS.MOLECULES.VC_EDITOR.LINK_MODAL_TIPS.URL_LABEL"),
-          urlLabelPlaceHolder: t("COMPONENTS.MOLECULES.VC_EDITOR.LINK_MODAL_TIPS.URL_LABEL_PLACEHOLDER"),
-          buttonOK: t("COMPONENTS.MOLECULES.VC_EDITOR.LINK_MODAL_TIPS.BUTTON_OK"),
-        },
-        clipModalTips: {
-          title: t("COMPONENTS.MOLECULES.VC_EDITOR.CLIP_MODAL_TIPS.TITLE"),
-          buttonUpload: t("COMPONENTS.MOLECULES.VC_EDITOR.CLIP_MODAL_TIPS.BUTTON_UPLOAD"),
-        },
-        copyCode: {
-          text: t("COMPONENTS.MOLECULES.VC_EDITOR.COPY_CODE.TEXT"),
-          successTips: t("COMPONENTS.MOLECULES.VC_EDITOR.COPY_CODE.SUCCESS_TIPS"),
-          failTips: t("COMPONENTS.MOLECULES.VC_EDITOR.COPY_CODE.FAIL_TIPS"),
-        },
-        mermaid: {
-          flow: t("COMPONENTS.MOLECULES.VC_EDITOR.MERMAID.FLOW"),
-          sequence: t("COMPONENTS.MOLECULES.VC_EDITOR.MERMAID.SEQUENCE"),
-          gantt: t("COMPONENTS.MOLECULES.VC_EDITOR.MERMAID.GANTT"),
-          class: t("COMPONENTS.MOLECULES.VC_EDITOR.MERMAID.CLASS"),
-          state: t("COMPONENTS.MOLECULES.VC_EDITOR.MERMAID.STATE"),
-          pie: t("COMPONENTS.MOLECULES.VC_EDITOR.MERMAID.PIE"),
-          relationship: t("COMPONENTS.MOLECULES.VC_EDITOR.MERMAID.RELATIONSHIP"),
-          journey: t("COMPONENTS.MOLECULES.VC_EDITOR.MERMAID.JOURNEY"),
-        },
-        katex: {
-          inline: t("COMPONENTS.MOLECULES.VC_EDITOR.KATEX.INLINE"),
-          block: t("COMPONENTS.MOLECULES.VC_EDITOR.KATEX.BLOCK"),
-        },
-        footer: {
-          markdownTotal: t("COMPONENTS.MOLECULES.VC_EDITOR.FOOTER.MARKDOWN_TOTAL"),
-          scrollAuto: t("COMPONENTS.MOLECULES.VC_EDITOR.FOOTER.SCROLL_AUTO"),
-        },
-      })),
-    },
+  onFocus: () => {
+    isFocused.value = true;
+  },
+  onBlur: () => {
+    isFocused.value = false;
   },
 });
 
-const model = computed({
-  get() {
-    return props.modelValue;
+watch(
+  () => props.modelValue,
+  (value) => {
+    if (!editor.value) return;
+
+    const editorContent =
+      detectedType.value === "html"
+        ? editor.value.getHTML()
+        : (editor.value.storage.markdown as { getMarkdown: () => string }).getMarkdown();
+
+    if (editorContent !== value) {
+      editor.value.commands.setContent(value || "", false);
+    }
   },
-  set(value) {
-    emit("update:modelValue", value);
+);
+
+watch(
+  () => props.disabled,
+  (isDisabled) => {
+    editor.value?.setEditable(!isDisabled);
   },
+);
+
+onBeforeUnmount(() => {
+  editor.value?.destroy();
 });
 
-async function onUploadImage(files: File[], callback: (urls: string[]) => void) {
+function triggerImageUpload() {
+  imageInput.value?.click();
+}
+
+function handleSourceInput(event: Event) {
+  const target = event.target as HTMLTextAreaElement;
+  const value = target.value;
+
+  // Check maxlength if specified
+  if (props.maxlength && value.length > props.maxlength) {
+    target.value = value.substring(0, props.maxlength);
+    return;
+  }
+
+  emit("update:modelValue", value);
+}
+
+async function handleImageSelection(event: Event) {
+  const target = event.target as HTMLInputElement;
+  if (!target.files?.length || !props.assetsFolder) return;
+
+  const files = Array.from(target.files);
   const formData = new FormData();
+  files.forEach((file) => formData.append("image", file));
 
-  files.forEach((file) => {
-    formData.append("image", file);
-  });
+  try {
+    const result = await fetch(`/api/assets?folderUrl=/${props.assetsFolder}`, {
+      method: "POST",
+      body: formData,
+    });
+    const response = await result.json();
 
-  const result = await fetch(`/api/assets?folderUrl=/${props.assetsFolder}`, {
-    method: "POST",
-    body: formData,
-  });
-
-  console.log(result);
-
-  const response = await result.json();
-
-  callback(
-    response.map((item: any) => ({
-      url: item.url,
-      alt: item.name,
-      title: item.name,
-    })),
-  );
+    response.forEach((item: { url: string }) => {
+      if (item.url) {
+        editor.value?.chain().focus().setImage({ src: item.url }).run();
+      }
+    });
+  } catch (error) {
+    console.error("Image upload failed:", error);
+  }
 }
-
-function sanitize(html: string) {
-  return DOMPurify.sanitize(html);
-}
-
-defineExpose({
-  editorRef,
-});
 </script>
 
 <style lang="scss">
 :root {
-  --editor-border-radius: 4px;
-  --editor-border-color: var(--neutrals-300);
-  --editor-border-color-error: var(--danger-500);
-  --editor-disabled-bg: var(--neutrals-200);
-  --editor-disabled-text: var(--neutrals-500);
-  --editor-placeholder-color: var(--neutrals-400);
-  --editor-text-color: var(--neutrals-800);
-
-  // Focus
-  --editor-border-color-focus: var(--primary-100);
+  // Editor color variables
+  --vc-editor-border: var(--neutrals-300);
+  --vc-editor-background: var(--neutrals-50);
+  --vc-editor-surface: var(--additional-50);
+  --vc-editor-text-primary: var(--neutrals-900);
+  --vc-editor-text-secondary: var(--neutrals-500);
+  --vc-editor-text-muted: var(--neutrals-400);
+  --vc-editor-text-disabled: var(--neutrals-400);
+  --vc-editor-background-disabled: var(--neutrals-100);
+  --vc-editor-focus-border: var(--primary-500);
+  --vc-editor-focus-shadow: var(--primary-500);
+  --vc-editor-error-border: var(--danger-500);
+  --vc-editor-error-text: var(--danger-500);
+  --vc-editor-table-header: var(--neutrals-100);
+  --vc-editor-separator: var(--neutrals-200);
 }
 
 .vc-editor {
-  @apply tw-flex tw-flex-col;
-
-  &--error {
-    .md-editor {
-      @apply tw-border-[color:var(--editor-border-color-error)];
-    }
-  }
+  display: flex;
+  flex-direction: column;
 
   &__label {
-    @apply tw-mb-2;
+    margin-bottom: 0.5rem;
   }
 
-  &__error {
-    @apply tw-text-[color:var(--editor-border-color-error)] tw-mt-1;
+  &__header {
+    display: flex;
+    border: 1px solid var(--vc-editor-border);
+    border-bottom: none;
+    border-radius: 4px 4px 0 0;
+    background-color: var(--vc-editor-background);
+    padding: 0.5rem;
   }
 
-  &--focused .vc-editor__editor {
-    @apply tw-outline-2 tw-outline tw-outline-[color:var(--editor-border-color-focus)] tw-outline-offset-[0px];
+  &__source {
+    font-family: monospace;
+    resize: vertical;
   }
 
-  &--disabled {
-    .cm-content *,
-    .md-editor * {
-      @apply tw-text-[color:var(--editor-disabled-text)] tw-bg-[var(--editor-disabled-bg)];
+  &__header-actions {
+    margin-left: auto;
+    display: flex;
+    gap: 0.25rem;
+  }
+
+  &__body {
+    flex-grow: 1;
+    display: flex;
+  }
+
+  &__content,
+  &__preview {
+    flex: 1;
+  }
+
+  &__split-view {
+    display: flex;
+    width: 100%;
+    gap: 1px;
+  }
+
+  &__split-editor,
+  &__split-preview {
+    flex: 1;
+  }
+
+  &__split-editor .ProseMirror {
+    border-radius: 0 0 0 4px;
+    border-right: none;
+  }
+
+  &__split-preview .ProseMirror {
+    border-radius: 0 0 4px 0;
+    border-left: none;
+  }
+
+  &--side-by-side {
+    .vc-editor__body {
+      flex-direction: row;
     }
   }
-}
 
-.md-editor {
-  --md-color: var(--secondary-800);
-  --md-hover-color: var(--additional-950);
-  --md-bk-color: var(--additional-50);
-  --md-bk-color-outstand: var(--neutrals-100);
-  --md-bk-hover-color: var(--secondary-50);
-  --md-border-color: var(--neutrals-300);
-  --md-border-hover-color: var(--neutrals-400);
-  --md-border-active-color: var(--neutrals-400);
-  --md-modal-mask: rgba(0, 0, 0, 0.45);
-  --md-modal-shadow: 0px 6px 24px 2px rgba(0, 0, 0, 0.1);
-  --md-scrollbar-bg-color: var(--neutrals-200);
-  --md-scrollbar-thumb-color: rgba(0, 0, 0, 0.3);
-  --md-scrollbar-thumb-hover-color: rgba(0, 0, 0, 0.35);
-  --md-scrollbar-thumb-active-color: rgba(0, 0, 0, 0.38);
-  color: var(--md-color);
-  border: 1px solid var(--md-border-color);
-  background-color: var(--md-bk-color);
-  height: 350px;
-  border-radius: var(--editor-border-radius);
-  @apply tw-font-jakarta #{!important};
-}
+  .ProseMirror {
+    border: 1px solid var(--vc-editor-border);
+    border-radius: 0 0 4px 4px;
+    padding: 0.5rem 0.75rem;
+    min-height: 20rem;
+    outline: none;
+    transition: border-color 0.2s;
+    background-color: var(--vc-editor-surface);
+    color: var(--vc-editor-text-primary);
+    width: 100%;
 
-.ͼ15 {
-  color: var(--editor-text-color);
-}
+    p.is-editor-empty:first-child::before {
+      content: attr(data-placeholder);
+      float: left;
+      color: var(--vc-editor-text-muted);
+      pointer-events: none;
+      height: 0;
+    }
 
-.ͼ1 .cm-placeholder {
-  color: var(--editor-placeholder-color);
-}
+    h1,
+    h2,
+    h3 {
+      line-height: 1.1;
+      margin-top: 1.25em;
+      margin-bottom: 0.5em;
+      font-weight: bold;
+      color: var(--vc-editor-text-primary);
+    }
 
-.cm-content {
-  color: var(--editor-text-color);
-}
+    h1 {
+      font-size: 2em;
+      margin-top: 0.67em;
+      margin-bottom: 0.67em;
+    }
 
-.cm-scroller {
-  @apply tw-font-jakarta #{!important};
-}
+    h2 {
+      font-size: 1.5em;
+      margin-top: 0.83em;
+      margin-bottom: 0.83em;
+    }
 
-.md-editor-preview {
-  @apply tw-text-sm;
+    h3 {
+      font-size: 1.17em;
+      margin-top: 1em;
+      margin-bottom: 1em;
+    }
+
+    ul,
+    ol {
+      padding: 0 1rem;
+    }
+
+    blockquote {
+      padding-left: 1rem;
+      border-left: 2px solid var(--vc-editor-separator);
+      color: var(--vc-editor-text-secondary);
+    }
+
+    hr {
+      border: none;
+      border-top: 1px solid var(--vc-editor-separator);
+      margin: 1rem 0;
+    }
+
+    table {
+      border-collapse: collapse;
+      table-layout: fixed;
+      width: 100%;
+    }
+
+    td,
+    th {
+      border: 1px solid var(--vc-editor-separator);
+      padding: 0.5rem;
+      text-align: left;
+    }
+
+    th {
+      background-color: var(--vc-editor-table-header);
+      font-weight: 600;
+      color: var(--vc-editor-text-primary);
+    }
+
+    // Links
+    a {
+      color: var(--primary-600);
+      text-decoration: underline;
+
+      &:hover {
+        color: var(--primary-700);
+      }
+    }
+
+    // Code blocks
+    pre {
+      background-color: var(--vc-editor-background);
+      border: 1px solid var(--vc-editor-border);
+      border-radius: 4px;
+      padding: 0.75rem;
+      overflow-x: auto;
+    }
+
+    code {
+      background-color: var(--vc-editor-background);
+      color: var(--vc-editor-text-primary);
+      padding: 0.125rem 0.25rem;
+      border-radius: 2px;
+      font-size: 0.875em;
+    }
+  }
+
+  &--focused .ProseMirror {
+    border-color: var(--vc-editor-focus-border);
+    box-shadow: 0 0 0 3px rgba(49, 158, 212, 0.2); // primary-500 with 20% opacity
+  }
+
+  &--disabled .ProseMirror {
+    background-color: var(--vc-editor-background-disabled);
+    cursor: not-allowed;
+    color: var(--vc-editor-text-disabled);
+  }
+
+  &--error .ProseMirror {
+    border-color: var(--vc-editor-error-border);
+  }
+
+  &__error-hint {
+    color: var(--vc-editor-error-text);
+    margin-top: 0.25rem;
+  }
+
+  &__char-count {
+    font-size: 0.75rem;
+    color: var(--vc-editor-text-secondary);
+    text-align: right;
+    padding: 0.25rem 0.5rem;
+    border: 1px solid var(--vc-editor-border);
+    border-top: none;
+    border-radius: 0 0 4px 4px;
+    background-color: var(--vc-editor-background);
+
+    &--warning {
+      color: var(--warning-600);
+      font-weight: 600;
+    }
+  }
+
+  &--fullscreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: var(--vc-editor-surface);
+    z-index: 1000;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+
+    .vc-editor__body {
+      height: 100%;
+    }
+
+    .ProseMirror {
+      height: 100%;
+      min-height: 0;
+    }
+  }
 }
 </style>

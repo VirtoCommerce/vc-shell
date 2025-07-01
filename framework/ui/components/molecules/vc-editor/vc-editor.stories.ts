@@ -113,15 +113,12 @@ const meta = {
     docs: {
       description: {
         component: `
-The VcEditor component is a rich Markdown editor built on top of md-editor-v3 with additional features:
+The VcEditor component is a rich Markdown editor built on top of tiptap with additional features:
 
 - Full Markdown support with live preview
 - Image upload functionality
-- Syntax highlighting with custom theme
-- Localization support
 - Customizable toolbar
 - Error handling and validation
-- Accessibility features
 
 This component is ideal for content management, blog posts, documentation, and any other rich text editing needs.
         `,

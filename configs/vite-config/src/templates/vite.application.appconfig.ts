@@ -99,7 +99,7 @@ export default defineConfig({
               "@vc-shell/framework": path.resolve(frameworkPath, "index.ts"),
             }
           : {
-              "@vc-shell/framework/dist/index.css": "@vc-shell/framework/dist/framework-core.css",
+              "@vc-shell/framework/dist/index.css": "@vc-shell/framework/dist/index.css",
               "vue-router": "vue-router/dist/vue-router.cjs.js",
             }
         : undefined,

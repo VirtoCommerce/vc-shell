@@ -265,24 +265,9 @@ export default defineConfig({
 
           // Application code - minimal chunking to reduce complexity
           if (normalizedId.includes("/src/")) {
-            // Pages should use dynamic imports in router, so they auto-chunk
-            if (normalizedId.includes("/pages/")) return "app-pages";
-
-            // Large component groups
-            if (normalizedId.includes("/components/")) {
-              const pathParts = normalizedId.split("/components/")[1]?.split("/");
-              if (pathParts && pathParts.length > 1) {
-                const subfolder = pathParts[0];
-                return `app-${subfolder}-components`;
-              }
-              return "app-components";
-            }
-
-            // App modules
-            if (normalizedId.includes("/modules/")) return "app-modules";
+            return "app-core";
           }
 
-          // Everything else goes to main chunk for simplicity
           return undefined;
         },
       },

@@ -1,3 +1,12 @@
+## [1.1.49](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.48...v1.1.49) (2025-07-02)
+
+
+### Bug Fixes
+
+* **vite-config:** correct path for framework CSS in application configuration ([95d9a60](https://github.com/VirtoCommerce/vc-shell/commit/95d9a6083072fdc953b09f44092d8f0d594a1c6a))
+
+
+
 ## [1.1.48](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.47...v1.1.48) (2025-07-02)
 
 

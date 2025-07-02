@@ -83,7 +83,8 @@ const iconName = computed(() => {
 
 <style lang="scss">
 .vc-lucide-icon {
-  & * {
+  & g,
+  & path {
     stroke-width: var(--vc-lucide-icon-stroke-width, 1.5);
   }
 

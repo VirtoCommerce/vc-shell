@@ -2,6 +2,7 @@ import vue from "@vitejs/plugin-vue";
 import { getLibraryConfiguration } from "@vc-shell/config-generator";
 import * as path from "node:path";
 import { checker } from "vite-plugin-checker";
+import libAssetsPlugin from "@laynezh/vite-plugin-lib-assets";
 
 const mode = process.env.APP_ENV as string;
 
@@ -11,6 +12,7 @@ export default getLibraryConfiguration({
     checker({
       vueTsc: true,
     }),
+    libAssetsPlugin(),
   ],
   build: {
     target: "esnext",

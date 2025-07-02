@@ -2137,6 +2137,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@laynezh/vite-plugin-lib-assets@npm:v1.1.0":
+  version: 1.1.0
+  resolution: "@laynezh/vite-plugin-lib-assets@npm:1.1.0"
+  dependencies:
+    escape-string-regexp: "npm:^4.0.0"
+    loader-utils: "npm:^3.2.1"
+    mrmime: "npm:^1.0.1"
+    semver: "npm:^7.6.0"
+  peerDependencies:
+    vite: ^3.0.0 || ^4.0.0 || ^5.0.0 || ^6.0.0
+  checksum: 10/2cc06acc3fade9d911a7be1cdfc4ed8112c99fea200a38c49279016ffa421f78c6924b2ffb0e0ec94a773539c9d80acd433e1fd25434ede8dc56bd63e5b495ec
+  languageName: node
+  linkType: hard
+
 "@mdx-js/react@npm:^3.0.0":
   version: 3.1.0
   resolution: "@mdx-js/react@npm:3.1.0"
@@ -4653,6 +4667,7 @@ __metadata:
     "@fullhuman/postcss-purgecss": "npm:^7.0.2"
     "@headlessui/vue": "npm:^1.7.19"
     "@iconify/vue": "npm:^5.0.0"
+    "@laynezh/vite-plugin-lib-assets": "npm:v1.1.0"
     "@microsoft/signalr": "npm:^8.0.0"
     "@tiptap/extension-image": "npm:^2.23.0"
     "@tiptap/extension-link": "npm:^2.23.0"

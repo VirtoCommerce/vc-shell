@@ -80,6 +80,7 @@
   },
   "devDependencies": {
     "@fullhuman/postcss-purgecss": "^7.0.2",
+    "@laynezh/vite-plugin-lib-assets": "v1.1.0",
     "@types/dompurify": "^3.0.5",
     "@vc-shell/api-client-generator": "^1.1.46",
     "@vc-shell/config-generator": "^1.1.46",

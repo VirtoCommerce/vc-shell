@@ -34,15 +34,12 @@ import * as VueI18n from "vue-i18n";
 import * as VueUse from "@vueuse/core";
 import * as _ from "lodash-es";
 import * as VeeValidate from "vee-validate";
+import "@headlessui/vue";
 import "normalize.css";
-import "@fontsource/plus-jakarta-sans";
-import "@fontsource/plus-jakarta-sans/200.css";
-import "@fontsource/plus-jakarta-sans/300.css";
-import "@fontsource/plus-jakarta-sans/400.css";
-import "@fontsource/plus-jakarta-sans/500.css";
-import "@fontsource/plus-jakarta-sans/600.css";
-import "@fontsource/plus-jakarta-sans/700.css";
-import "@fontsource/plus-jakarta-sans/800.css";
+import "whatwg-fetch";
+import "swiper/swiper-bundle.min.css";
+import "@vuepic/vue-datepicker/dist/main.css";
+import "./assets/styles/fonts.scss";
 import "./assets/styles/index.scss";
 import {
   createWidgetService,

@@ -190,6 +190,46 @@ function checkVersionCompatibility(
   }
 }
 
+/**
+ * Recursively searches for a module with an 'install' function.
+ *
+ * This function is designed to handle various module export structures,
+ * including default exports, named exports, or nested objects, ensuring
+ * the installable part of a module is always found.
+ *
+ * @param module - The module object to search within.
+ * @returns The sub-module containing the 'install' function, or null if not found.
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function getModuleInstall(module: any): { install: Plugin; extensions?: ExtensionRegistry } | null {
+  if (!module) {
+    return null;
+  }
+
+  // Case 1: The module itself has an 'install' function (most common for simple modules).
+  if (typeof module.install === "function") {
+    return module;
+  }
+
+  // Case 2: The module uses a 'default' export which may contain the 'install' function.
+  if (module.default && typeof module.default.install === "function") {
+    return module.default;
+  }
+
+  // Case 3: The module is an object containing other objects, one of which might be the installable module.
+  // This handles complex exports where the installable part is a named export.
+  if (typeof module === "object") {
+    for (const key of Object.keys(module)) {
+      const nestedModule = getModuleInstall(module[key]);
+      if (nestedModule) {
+        return nestedModule;
+      }
+    }
+  }
+
+  return null;
+}
+
 export function useDynamicModules(
   app: App,
   { router, appName }: { router: Router; appName: string },
@@ -319,109 +359,98 @@ export function useDynamicModules(
         console.log("🔍 LoadedModules set:", Array.from(loadedModules));
         console.log("🔍 LoadResultsMap keys:", Array.from(loadResultsMap.keys()));
 
-        // Install all modules after loading
-        if (typeof window !== "undefined" && window.VcShellDynamicModules) {
-          const modulesToInstall = Object.entries(window.VcShellDynamicModules);
-          console.log(
-            `🚀 Found ${modulesToInstall.length} modules to process:`,
-            modulesToInstall.map(([key]) => key),
-          );
+        // Wait for the next animation frame to allow all module scripts to complete their registration.
+        // This helps prevent race conditions where processing starts before modules are available in the global scope.
+        await new Promise((resolve) => requestAnimationFrame(resolve));
 
-          modulesToInstall.forEach(([moduleKey, mod]) => {
-            console.log(`📦 Processing module: ${moduleKey}`);
+        const moduleVersions = new Map<string, VersionInfo>();
+        for (const [moduleId, result] of loadResultsMap.entries()) {
+          if (result.versionInfoFromFile) {
+            moduleVersions.set(moduleId, result.versionInfoFromFile);
+          }
+        }
 
-            // Skip if module is already loaded
-            if (loadedModules.has(moduleKey)) {
-              console.log(`⏭️ Module ${moduleKey} already loaded, skipping`);
-              return;
-            }
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const modulesToProcess: [string, any][] = Object.entries(window.VcShellDynamicModules || {});
+
+        console.log(
+          `🚀 Found ${modulesToProcess.length} modules to process:`,
+          modulesToProcess.map(([name]) => name),
+        );
+
+        for (const [moduleName, moduleObject] of modulesToProcess) {
+          if (loadedModules.has(moduleName)) {
+            continue;
+          }
+
+          console.log(`📦 Processing module: ${moduleName}`);
+
+          const loadResult = loadResultsMap.get(moduleName);
+          const versionFromFile = moduleVersions.get(moduleName);
+
+          const mainModule = getModuleInstall(moduleObject);
+
+          console.log(`🔍 Module ${moduleName} exports:`, Object.keys(moduleObject));
+          console.log(`🔍 Module ${moduleName} has install function:`, !!mainModule);
+
+          if (mainModule) {
+            const moduleVersionInfo = (mainModule as ModuleWithNamedExport).version || versionFromFile;
 
             try {
-              const moduleExports = mod as ModuleExports;
-              console.log(`🔍 Module ${moduleKey} exports:`, Object.keys(moduleExports));
-
-              const moduleToInstall = "default" in moduleExports ? moduleExports.default : moduleExports;
-              console.log(`🔍 Module ${moduleKey} has install function:`, "install" in moduleToInstall);
-
-              if ("install" in moduleToInstall) {
-                // Use moduleKey as the primary identifier
-                const currentModuleId = moduleKey;
-
-                // Try to find corresponding load result for version info
-                const loadResult = loadResultsMap.get(currentModuleId);
-                const versionInfoFromFile = loadResult?.versionInfoFromFile;
-                const moduleVersion = loadResult?.moduleVersion;
-
-                console.log(`🔧 Installing module: ${currentModuleId}`, {
-                  hasLoadResult: !!loadResult,
-                  versionFromFile: versionInfoFromFile?.version,
-                  moduleVersion,
-                });
-
-                if (!finalConfig.skipVersionCheck) {
-                  const versionInfo =
-                    moduleToInstall.version ||
-                    versionInfoFromFile ||
-                    (moduleVersion
-                      ? {
-                          version: moduleVersion,
-                          compatibleWith: { framework: "*" },
-                        }
-                      : undefined);
-
-                  if (versionInfo) {
-                    try {
-                      checkVersionCompatibility(
-                        currentModuleId,
-                        versionInfo,
-                        finalConfig.frameworkVersion || "0.0.0",
-                        loadedModulesWithVersions,
-                      );
-
-                      loadedModulesWithVersions.set(currentModuleId, versionInfo.version);
-                    } catch (versionError) {
-                      if (versionError instanceof VersionCompatibilityError) {
-                        console.error(`Version compatibility error: ${versionError.message}`);
-                        console.error(`Skipping installation of incompatible module: ${currentModuleId}`);
-                        return;
-                      } else {
-                        throw versionError;
-                      }
-                    }
-                  }
-                }
-
-                app.use(moduleToInstall.install as Plugin, { router });
-
-                if (moduleToInstall.extensions) {
-                  registerModuleExtensions(app, currentModuleId, moduleToInstall.extensions);
-                }
-
-                loadedModules.add(currentModuleId);
-
-                if (moduleToInstall.version) {
-                  console.info(
-                    `✅ Module ${currentModuleId} v${moduleToInstall.version.version} installed successfully`,
-                  );
-                } else if (versionInfoFromFile) {
-                  console.info(`✅ Module ${currentModuleId} v${versionInfoFromFile.version} installed successfully`);
-                } else if (moduleVersion) {
-                  console.info(`✅ Module ${currentModuleId} v${moduleVersion} installed successfully`);
-                } else {
-                  console.info(`✅ Module ${currentModuleId} installed successfully (no version info)`);
-                }
-              } else {
-                console.error(`❌ Module ${moduleKey} does not have an 'install' function`);
+              if (!finalConfig.skipVersionCheck) {
+                console.log(
+                  `🔎 Checking compatibility for ${moduleName} (version: ${moduleVersionInfo?.version || "N/A"})`,
+                );
+                checkVersionCompatibility(
+                  moduleName,
+                  moduleVersionInfo,
+                  finalConfig.frameworkVersion || "0.0.0",
+                  loadedModulesWithVersions,
+                );
               }
-            } catch (error) {
-              console.error(`❌ Failed to register plugin for module ${moduleKey}:`, error);
-            }
-          });
 
-          console.log("🏁 Final loadedModules set:", Array.from(loadedModules));
-        } else {
-          console.warn("⚠️ No window.VcShellDynamicModules found or window is undefined");
+              console.log(`🔧 Installing module: ${moduleName}`, {
+                hasLoadResult: !!loadResult,
+                versionFromFile: versionFromFile?.version,
+                moduleVersion: moduleVersionInfo?.version,
+              });
+
+              // Register extensions if they exist
+              if (mainModule.extensions) {
+                registerModuleExtensions(app, moduleName, mainModule.extensions);
+              }
+
+              // Install the module plugin
+              app.use(mainModule.install, { router });
+
+              // Track loaded module
+              loadedModules.add(moduleName);
+              if (moduleVersionInfo?.version) {
+                loadedModulesWithVersions.set(moduleName, moduleVersionInfo.version);
+              }
+
+              console.log(
+                `✅ Module ${moduleName} installed successfully (version: ${
+                  moduleVersionInfo?.version || "no version info"
+                })`,
+              );
+            } catch (e) {
+              if (e instanceof VersionCompatibilityError) {
+                console.error(`Compatibility error in module ${e.moduleId}:`, e.details);
+              } else {
+                console.error(`Failed to install module ${moduleName}:`, e);
+                notification.error(`Failed to install module ${moduleName}`);
+              }
+            }
+          } else {
+            console.error(`❌ Module ${moduleName} does not have an 'install' function`);
+            notification.error(
+              `Module ${moduleName} is not a valid module because it does not have an 'install' function.`,
+            );
+          }
         }
+
+        console.log("🏁 Final loadedModules set:", Array.from(loadedModules));
       }
     } catch (error) {
       console.error("Failed to load modules:", error);

@@ -170,7 +170,7 @@ export default defineConfig({
   },
   build: {
     target: "esnext",
-    minify: mode === "production" ? "terser" : false,
+    minify: true,
     sourcemap: mode === "development",
     emptyOutDir: true,
     rollupOptions: {

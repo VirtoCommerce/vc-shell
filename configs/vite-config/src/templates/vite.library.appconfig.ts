@@ -79,7 +79,7 @@ export default defineConfig({
         unknownGlobalSideEffects: false,
       },
     },
-    minify: "terser",
+    minify: true,
     terserOptions: {
       compress: {
         drop_console: process.env.APP_ENV === "production",

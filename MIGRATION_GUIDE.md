@@ -158,14 +158,16 @@ You need to extend the `ComponentCustomProperties` interface with types for `vue
     **Updated `shims-vue.d.ts`:**
     ```typescript
     /* eslint-disable */
-    import { CoreBladeAdditionalSettings, DynamicGridSchema, DynamicDetailsSchema } from "@vc-shell/framework";
 
-    import type { Component, Ref } from "vue";
-    import type {
-      ComponentCustomProperties as _ComponentCustomProperties,
-    } from 'vue';
+    import { CoreBladeAdditionalSettings } from "@vc-shell/framework";
+    import type { Ref } from "vue";
     import type { Composer } from "vue-i18n";
-    // ... other imports
+
+    declare module "*.vue" {
+      import type { DefineComponent } from "vue";
+      const component: DefineComponent<{}, {}, any>;
+      export default component;
+    }
 
     declare module "@vue/runtime-core" {
       interface ComponentCustomProperties extends _ComponentCustomProperties {
@@ -177,15 +179,13 @@ You need to extend the `ComponentCustomProperties` interface with types for `vue
         $isDesktop: Ref<boolean>;
         $isTouch: boolean;
         $t: (key: string, ...args: any[]) => string;
-        $dynamicModules: {
-            // ...
-        };
       }
 
       interface ComponentOptionsBase extends CoreBladeAdditionalSettings {}
     }
-    // ... rest of the file
+
     export {};
+
     ```
     **Key Changes:**
     -   Added declaration for `$t: (key: string, ...args: any[]) => string;`.

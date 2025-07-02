@@ -14,6 +14,7 @@ export default defineConfig({
     dedupe: ["@intlify", "vue", "@vue/runtime-core"],
   },
   build: {
+    cssCodeSplit: false,
     lib: {
       entry: path.resolve(cwd(), "index.ts"),
       formats: ["es"],
@@ -51,9 +52,18 @@ export default defineConfig({
           // Normalize path for cross-platform compatibility
           const normalizedId = id.replace(/\\/g, "/");
 
-          // Each node_modules library gets its own chunk
           if (normalizedId.includes("node_modules")) {
-            // Extract library name from path
+            // If the import is a CSS file or from a CSS-related package, keep in main chunk
+            if (
+              normalizedId.match(/\.(css|scss|sass|less|styl)$/i) ||
+              normalizedId.includes("/css/") ||
+              normalizedId.includes("/styles/") ||
+              normalizedId.includes("normalize")
+            ) {
+              return undefined; // Keep in main chunk
+            }
+
+            // Extract library name from path for non-CSS libraries
             const parts = normalizedId.split("node_modules/")[1].split("/");
             let libName = parts[0];
 

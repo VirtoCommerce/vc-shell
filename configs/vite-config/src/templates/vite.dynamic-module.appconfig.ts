@@ -106,10 +106,24 @@ export default function dynamicModuleConfiguration(
               /* Module Registration */
               (function() {
                 if (typeof window !== 'undefined' && typeof ${uniqueModuleName} !== 'undefined') {
-                  window.VcShellDynamicModules = window.VcShellDynamicModules || {};
-                  // Use module name as key to avoid conflicts
+                  // Ensure global object exists
+                  if (!window.VcShellDynamicModules) {
+                    window.VcShellDynamicModules = {};
+                  }
+
+                  // Register module with unique name to avoid conflicts
                   window.VcShellDynamicModules["${name}"] = ${uniqueModuleName};
                   console.log('Registered module: ${name}');
+
+                  // Dispatch custom event to notify that module is registered
+                  if (typeof CustomEvent !== 'undefined') {
+                    window.dispatchEvent(new CustomEvent('vc-shell-module-registered', {
+                      detail: { moduleName: '${name}', moduleObject: ${uniqueModuleName} }
+                    }));
+                  }
+
+                  // For debugging: log the current state
+                  console.log('Current VcShellDynamicModules:', Object.keys(window.VcShellDynamicModules));
                 }
               })();
             `;

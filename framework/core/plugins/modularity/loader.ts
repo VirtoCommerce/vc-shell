@@ -308,18 +308,40 @@ export function useDynamicModules(
           moduleLoadResults.filter((result) => result.success).map((result) => [result.moduleId, result]),
         );
 
+        // Debug: log what we have in window.VcShellDynamicModules
+        console.log(
+          "🔍 Available modules in window.VcShellDynamicModules:",
+          typeof window !== "undefined" && window.VcShellDynamicModules
+            ? Object.keys(window.VcShellDynamicModules)
+            : "No modules found",
+        );
+
+        console.log("🔍 LoadedModules set:", Array.from(loadedModules));
+        console.log("🔍 LoadResultsMap keys:", Array.from(loadResultsMap.keys()));
+
         // Install all modules after loading
         if (typeof window !== "undefined" && window.VcShellDynamicModules) {
-          Object.entries(window.VcShellDynamicModules).forEach(([moduleKey, mod]) => {
+          const modulesToInstall = Object.entries(window.VcShellDynamicModules);
+          console.log(
+            `🚀 Found ${modulesToInstall.length} modules to process:`,
+            modulesToInstall.map(([key]) => key),
+          );
+
+          modulesToInstall.forEach(([moduleKey, mod]) => {
+            console.log(`📦 Processing module: ${moduleKey}`);
+
             // Skip if module is already loaded
             if (loadedModules.has(moduleKey)) {
-              console.log(`Module ${moduleKey} already loaded, skipping`);
+              console.log(`⏭️ Module ${moduleKey} already loaded, skipping`);
               return;
             }
 
             try {
               const moduleExports = mod as ModuleExports;
+              console.log(`🔍 Module ${moduleKey} exports:`, Object.keys(moduleExports));
+
               const moduleToInstall = "default" in moduleExports ? moduleExports.default : moduleExports;
+              console.log(`🔍 Module ${moduleKey} has install function:`, "install" in moduleToInstall);
 
               if ("install" in moduleToInstall) {
                 // Use moduleKey as the primary identifier
@@ -330,7 +352,11 @@ export function useDynamicModules(
                 const versionInfoFromFile = loadResult?.versionInfoFromFile;
                 const moduleVersion = loadResult?.moduleVersion;
 
-                console.log(`Installing module: ${currentModuleId}`);
+                console.log(`🔧 Installing module: ${currentModuleId}`, {
+                  hasLoadResult: !!loadResult,
+                  versionFromFile: versionInfoFromFile?.version,
+                  moduleVersion,
+                });
 
                 if (!finalConfig.skipVersionCheck) {
                   const versionInfo =
@@ -391,6 +417,10 @@ export function useDynamicModules(
               console.error(`❌ Failed to register plugin for module ${moduleKey}:`, error);
             }
           });
+
+          console.log("🏁 Final loadedModules set:", Array.from(loadedModules));
+        } else {
+          console.warn("⚠️ No window.VcShellDynamicModules found or window is undefined");
         }
       }
     } catch (error) {

@@ -49,6 +49,9 @@ export default function dynamicModuleConfiguration(
     externals = [],
   } = options;
 
+  // Generate unique UMD name based on package name to avoid conflicts
+  const uniqueModuleName = `VcShellModule_${name.replace(/[^a-zA-Z0-9]/g, "_")}`;
+
   // Merge default externals with custom ones
   const allExternals = [...DEFAULT_EXTERNALS, ...externals, /node_modules/];
   console.log(resolve(cwd(), entry), cwd(), entry);
@@ -62,7 +65,7 @@ export default function dynamicModuleConfiguration(
         entry: resolve(cwd(), entry),
         fileName: (format, name) => `${name}.js`,
         formats: ["umd"],
-        name: moduleName,
+        name: uniqueModuleName,
       },
       outDir: join(cwd(), outDir),
       rollupOptions: {
@@ -102,10 +105,10 @@ export default function dynamicModuleConfiguration(
             return `
               /* Module Registration */
               (function() {
-                if (typeof window !== 'undefined' && typeof ${moduleName} !== 'undefined') {
+                if (typeof window !== 'undefined' && typeof ${uniqueModuleName} !== 'undefined') {
                   window.VcShellDynamicModules = window.VcShellDynamicModules || {};
                   // Use module name as key to avoid conflicts
-                  window.VcShellDynamicModules["${name}"] = ${moduleName};
+                  window.VcShellDynamicModules["${name}"] = ${uniqueModuleName};
                   console.log('Registered module: ${name}');
                 }
               })();

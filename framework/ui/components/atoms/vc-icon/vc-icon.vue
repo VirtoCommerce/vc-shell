@@ -176,7 +176,7 @@ const isLucideIcon = computed(() => detectIconType.value === "lucide");
 // Check if icon is a Font Awesome Icon
 const isFontAwesomeIcon = computed(() => detectIconType.value === "fontawesome");
 
-// Check if the icon is a component or can be resolved as a component
+// Check if icon is a component or can be resolved as a component
 const isCustomIcon = computed(() => {
   if (typeof props.icon !== "string") {
     return true; // Component instance passed directly
@@ -191,25 +191,13 @@ const isCustomIcon = computed(() => {
     return false;
   }
 
-  // Check for Lucide icons - they could be resolved as components
+  // For Lucide icons, assume they can be resolved (safer approach)
   if (isLucideIcon.value) {
-    try {
-      const iconName =
-        typeof normalizedIconName.value === "string" ? normalizedIconName.value : String(normalizedIconName.value);
-      const resolved = resolveComponent(iconName);
-      return resolved !== iconName;
-    } catch (e) {
-      return false;
-    }
+    return true; // Assume Lucide icons are available as components
   }
 
-  // Check if string is a component name that can be resolved
-  try {
-    const resolved = resolveComponent(props.icon);
-    return resolved !== props.icon; // If resolved is different from original string, it's a component name
-  } catch (e) {
-    return false;
-  }
+  // For other cases, assume it's not a component to avoid resolveComponent calls
+  return false;
 });
 
 // Get the component instance for rendering
@@ -223,15 +211,14 @@ const safeIcon = computed(() => {
     return "i";
   }
 
-  // Try to resolve component by name (mostly for Lucide icons)
-  try {
+  // For Lucide icons, return the normalized name directly
+  if (isLucideIcon.value) {
     const iconName =
       typeof normalizedIconName.value === "string" ? normalizedIconName.value : String(normalizedIconName.value);
-    const resolved = resolveComponent(iconName);
-    return resolved !== iconName ? resolved : "i"; // Return resolved component or fallback to 'i'
-  } catch (e) {
-    return "i";
+    return iconName; // Let Vue handle component resolution in template
   }
+
+  return "i";
 });
 
 // Determine which component to render

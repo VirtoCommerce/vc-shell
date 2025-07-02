@@ -348,20 +348,94 @@ export function useDynamicModules(
           moduleLoadResults.filter((result) => result.success).map((result) => [result.moduleId, result]),
         );
 
-        // Debug: log what we have in window.VcShellDynamicModules
-        console.log(
-          "🔍 Available modules in window.VcShellDynamicModules:",
-          typeof window !== "undefined" && window.VcShellDynamicModules
-            ? Object.keys(window.VcShellDynamicModules)
-            : "No modules found",
-        );
-
-        console.log("🔍 LoadedModules set:", Array.from(loadedModules));
         console.log("🔍 LoadResultsMap keys:", Array.from(loadResultsMap.keys()));
 
-        // Wait for the next animation frame to allow all module scripts to complete their registration.
-        // This helps prevent race conditions where processing starts before modules are available in the global scope.
-        await new Promise((resolve) => requestAnimationFrame(resolve));
+        // Wait for all modules to register themselves in the global scope
+        const expectedModuleIds = Array.from(loadResultsMap.keys());
+
+        const getAvailableModules = () =>
+          typeof window !== "undefined" && window.VcShellDynamicModules
+            ? Object.keys(window.VcShellDynamicModules)
+            : [];
+
+        const isModuleRegistered = (moduleId: string, availableModules: string[]) =>
+          availableModules.some(
+            (registeredId) =>
+              registeredId === moduleId || registeredId.includes(moduleId) || moduleId.includes(registeredId),
+          );
+
+        const areAllModulesRegistered = () => {
+          const availableModules = getAvailableModules();
+          return (
+            expectedModuleIds.length > 0 &&
+            expectedModuleIds.every((moduleId) => isModuleRegistered(moduleId, availableModules)) &&
+            availableModules.length > 0
+          );
+        };
+
+        // Check if modules are already registered
+        if (areAllModulesRegistered()) {
+          console.log("✅ All modules are already registered, proceeding with installation");
+        } else {
+          console.log(`🔍 Waiting for ${expectedModuleIds.length} modules to register:`, expectedModuleIds);
+
+          // Wait for module registration with timeout
+          await new Promise<void>((resolve) => {
+            let timeoutId: NodeJS.Timeout | null = null;
+            let eventListener: EventListener | null = null;
+            let attempts = 0;
+            const maxAttempts = 50; // 5 seconds max wait time
+
+            const cleanup = () => {
+              if (timeoutId) {
+                clearTimeout(timeoutId);
+                timeoutId = null;
+              }
+              if (eventListener && typeof window !== "undefined") {
+                window.removeEventListener("vc-shell-module-registered", eventListener);
+              }
+            };
+
+            const checkAndResolve = () => {
+              if (areAllModulesRegistered()) {
+                console.log("✅ All modules are registered, proceeding with installation");
+                cleanup();
+                resolve();
+                return true;
+              }
+              return false;
+            };
+
+            // Set up event listener for immediate response
+            if (typeof window !== "undefined") {
+              eventListener = () => checkAndResolve();
+              window.addEventListener("vc-shell-module-registered", eventListener);
+            }
+
+            // Fallback polling with timeout
+            const poll = async () => {
+              while (attempts < maxAttempts) {
+                const availableModules = getAvailableModules();
+                console.log(
+                  `🔍 Attempt ${attempts + 1}: Available modules:`,
+                  availableModules,
+                  `(${availableModules.length}/${expectedModuleIds.length})`,
+                );
+
+                if (checkAndResolve()) return;
+
+                attempts++;
+                await new Promise((r) => setTimeout(r, 100));
+              }
+
+              console.warn("⚠️ Timeout waiting for all modules to register, proceeding with available modules");
+              cleanup();
+              resolve();
+            };
+
+            poll();
+          });
+        }
 
         const moduleVersions = new Map<string, VersionInfo>();
         for (const [moduleId, result] of loadResultsMap.entries()) {
@@ -380,13 +454,24 @@ export function useDynamicModules(
 
         for (const [moduleName, moduleObject] of modulesToProcess) {
           if (loadedModules.has(moduleName)) {
+            console.log(`⏭️ Skipping already loaded module: ${moduleName}`);
             continue;
           }
 
           console.log(`📦 Processing module: ${moduleName}`);
 
-          const loadResult = loadResultsMap.get(moduleName);
-          const versionFromFile = moduleVersions.get(moduleName);
+          // Try to find the corresponding load result by matching module names
+          const loadResult =
+            loadResultsMap.get(moduleName) ||
+            Array.from(loadResultsMap.entries()).find(
+              ([moduleId]) => moduleId.includes(moduleName) || moduleName.includes(moduleId),
+            )?.[1];
+
+          const versionFromFile =
+            moduleVersions.get(moduleName) ||
+            Array.from(moduleVersions.entries()).find(
+              ([moduleId]) => moduleId.includes(moduleName) || moduleName.includes(moduleId),
+            )?.[1];
 
           const mainModule = getModuleInstall(moduleObject);
 

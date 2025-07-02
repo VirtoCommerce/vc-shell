@@ -88,7 +88,7 @@ const iconName = computed(() => {
         style = "duotone";
         break;
       default:
-        name = props.icon.replace("fa-", "");
+        // Use the already processed name from slice(1), not the original props.icon
         break;
     }
   } else {

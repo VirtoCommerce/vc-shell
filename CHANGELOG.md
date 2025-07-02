@@ -1,3 +1,12 @@
+## [1.1.46](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.45...v1.1.46) (2025-07-02)
+
+
+### Features
+
+* **dynamic-module:** enhance UMD name generation and improve logging for dynamic module loading ([8d43f21](https://github.com/VirtoCommerce/vc-shell/commit/8d43f216e6ec3f9f61ab93953f297d80832f9ed7))
+
+
+
 ## [1.1.45](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.44...v1.1.45) (2025-07-01)
 
 

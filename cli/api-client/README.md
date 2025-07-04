@@ -68,6 +68,12 @@ Add the dependencies to your project's **package.json**:
     | `--SKIP_BUILD`         	| Skip build step. <br>{==boolean==} 	    | `--SKIP_BUILD=true`       	|
     | `--VERBOSE`         	| Enable verbose logging. <br>{==boolean==} 	    | `--VERBOSE=true`       	|
 
+    !!! note
+        For the `--APP_TYPE_STYLE` parameter, use **exactly** `"Class"` or `"Interface"` (case-sensitive). Any other value will cause an error.
+
+    !!! tip
+        Use `--APP_TYPE_STYLE=Interface` for better TypeScript integration and smaller bundle sizes. Use `--APP_TYPE_STYLE=Class` when you need runtime type checking or class-specific features.
+
 3. Configure Platform URL to ensure your project can access the platform's API configurations. Add the platform URL to your project's **.env** file:
 
     ```title="vc-app-extend/.env"
@@ -197,3 +203,32 @@ If you encounter issues during API client generation:
 5. If you encounter JSON parsing errors in tsconfig.json or package.json, try using the `--VERBOSE=true` flag to see detailed error messages
 6. Check for duplicate exports in your package.json which might cause conflicts
 7. If you manually modified exports in package.json, ensure they follow the correct format
+
+### Common Issues
+
+#### APP_TYPE_STYLE Error
+
+If you see an error like:
+```
+Error converting value "$(APP_TYPE_STYLE)" to type 'NJsonSchema.CodeGeneration.TypeScript.TypeScriptTypeStyle'
+```
+
+This means the `APP_TYPE_STYLE` parameter was not properly validated or passed to NSwag:
+
+**Solution:**
+1. Ensure you're using exactly `"Class"` or `"Interface"` (case-sensitive)
+2. Check that you're passing the parameter correctly: `--APP_TYPE_STYLE=Interface`
+3. Enable verbose logging to see what value is being passed: `--VERBOSE=true`
+
+**Example of correct usage:**
+```bash
+yarn generate-api-client --APP_TYPE_STYLE=Interface --VERBOSE=true
+```
+
+#### NSwag Command Failed
+
+If NSwag fails with exit code, check:
+1. .NET Core 6.0 or later is installed
+2. The platform URL is accessible
+3. The specified modules exist on the platform
+4. Enable verbose logging to see the full error output

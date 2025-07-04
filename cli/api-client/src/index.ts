@@ -585,6 +585,20 @@ async function generateApiClient(): Promise<void> {
   const verbose = parsedArgs.VERBOSE ?? false;
   const typeStyle = parsedArgs.APP_TYPE_STYLE ?? "Class";
 
+  // Validate APP_TYPE_STYLE parameter
+  if (typeStyle !== "Class" && typeStyle !== "Interface") {
+    console.error(
+      "api-client-generator %s Invalid APP_TYPE_STYLE value: %s. Must be either 'Class' or 'Interface'",
+      chalk.red("error"),
+      chalk.whiteBright(typeStyle),
+    );
+    return;
+  }
+
+  if (verbose) {
+    console.log("api-client-generator %s Using APP_TYPE_STYLE: %s", chalk.blue("debug"), chalk.whiteBright(typeStyle));
+  }
+
   // Validate required arguments
   if (!platformUrl) {
     return console.log(
@@ -659,21 +673,26 @@ async function generateApiClient(): Promise<void> {
       chalk.whiteBright(platformUrl),
     );
 
-    // Construct nswag command
-    const nswagCommand = [
-      "run",
-      paths.nswagPaths.configuration,
-      `/variables:APP_PLATFORM_URL=${platformUrl},APP_PLATFORM_MODULE=${platformModule},APP_AUTH_API_BASE_PATH=${paths.nswagPaths.authApiBase},APP_TEMPLATE_DIRECTORY=${paths.nswagPaths.templates},APP_API_CLIENT_PATH=${apiClientPaths.nswag},APP_TYPE_STYLE=${typeStyle}`,
-      "/runtime:Net60",
-    ];
+    // Construct nswag command with validated parameters
+    const nswagVariables = [
+      `APP_PLATFORM_URL=${platformUrl}`,
+      `APP_PLATFORM_MODULE=${platformModule}`,
+      `APP_AUTH_API_BASE_PATH=${paths.nswagPaths.authApiBase}`,
+      `APP_TEMPLATE_DIRECTORY=${paths.nswagPaths.templates}`,
+      `APP_API_CLIENT_PATH=${apiClientPaths.nswag}`,
+      `APP_TYPE_STYLE=${typeStyle}`,
+    ].join(",");
+
+    const nswagCommand = ["run", paths.nswagPaths.configuration, `/variables:${nswagVariables}`, "/runtime:Net60"];
 
     if (verbose) {
       console.log("api-client-generator %s Running command: npx nswag %s", chalk.blue("debug"), nswagCommand.join(" "));
+      console.log("api-client-generator %s Variables: %s", chalk.blue("debug"), nswagVariables);
     }
 
     // Execute nswag command
     const nswag = sync("npx nswag", nswagCommand, {
-      stdio: ["ignore", "inherit", "ignore"],
+      stdio: ["ignore", verbose ? "inherit" : "pipe", "inherit"],
       shell: true,
     });
 
@@ -694,6 +713,14 @@ async function generateApiClient(): Promise<void> {
         chalk.red("error"),
         chalk.whiteBright(apiClientPaths.console),
       );
+
+      if (verbose) {
+        console.error(
+          "api-client-generator %s NSwag command failed with exit code: %s",
+          chalk.red("error"),
+          nswag.status,
+        );
+      }
     }
   }
 

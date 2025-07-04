@@ -1,3 +1,12 @@
+## [1.1.53](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.52...v1.1.53) (2025-07-04)
+
+
+### Bug Fixes
+
+* **api-client:** validate APP_TYPE_STYLE parameter and enhance error handling in API client generation ([506228d](https://github.com/VirtoCommerce/vc-shell/commit/506228d19deb14ba3d4f17e3180130395d001278))
+
+
+
 ## [1.1.52](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.51...v1.1.52) (2025-07-02)
 
 

@@ -1,3 +1,12 @@
+## [1.1.54](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.53...v1.1.54) (2025-07-07)
+
+
+### Features
+
+* **cli:** enhance CLI argument parsing and validation, add help and version options ([f8508cc](https://github.com/VirtoCommerce/vc-shell/commit/f8508ccac11bce142a03839e44b893520e9546ce))
+
+
+
 ## [1.1.53](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.52...v1.1.53) (2025-07-04)
 
 

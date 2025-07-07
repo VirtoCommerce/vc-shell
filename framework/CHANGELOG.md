@@ -1,3 +1,17 @@
+## [1.1.55](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.54...v1.1.55) (2025-07-07)
+
+
+### Bug Fixes
+
+* **vc-blade-toolbar:** adjust spacing in 'more' button for improved layout consistency ([2075e5b](https://github.com/VirtoCommerce/vc-shell/commit/2075e5b37b351a89d9aa1a7dde01dd939e76a212))
+
+
+### Features
+
+* **widget-service:** add external widget registration functionality and enhance widget management ([cd35c9b](https://github.com/VirtoCommerce/vc-shell/commit/cd35c9b50bf44af8f466dc6a2d4ce29ad01e9514))
+
+
+
 ## [1.1.54](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.53...v1.1.54) (2025-07-07)
 
 

@@ -1,5 +1,10 @@
 import { getCurrentInstance, inject, provide } from "vue";
-import { createWidgetService, IWidgetService, registerWidget } from "./../../services/widget-service";
+import {
+  createWidgetService,
+  IWidgetService,
+  registerWidget,
+  registerExternalWidget,
+} from "./../../services/widget-service";
 import { WidgetServiceKey } from "./../../../injection-keys";
 
 export function provideWidgetService(): IWidgetService {
@@ -17,4 +22,4 @@ export function useWidgets(): IWidgetService {
   return service;
 }
 
-export { registerWidget };
+export { registerWidget, registerExternalWidget };

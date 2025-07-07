@@ -11,11 +11,23 @@ export interface IExposedWidget {
   [key: string]: unknown;
 }
 
+export interface IWidgetConfig {
+  // Required data that the widget MUST receive
+  requiredData?: string[];
+  // Optional data that the widget can use if available
+  optionalData?: string[];
+  // Function to transform blade data into widget props
+  propsResolver?: (bladeData: Record<string, unknown>) => Record<string, unknown>;
+  // Field mapping (if names in blade and widget differ)
+  fieldMapping?: Record<string, string>;
+}
+
 export interface IWidget {
   id: string;
   title?: string;
   component: Component;
   props?: Record<string, unknown>;
+  config?: IWidgetConfig;
   events?: Record<string, unknown>;
   isVisible?: boolean | ComputedRef<boolean> | Ref<boolean> | ((blade?: IBladeInstance) => boolean);
   updateFunctionName?: string;
@@ -24,6 +36,17 @@ export interface IWidget {
 export interface IWidgetRegistration {
   bladeId: string;
   widget: IWidget;
+}
+
+// Interface for global registration of external widgets
+export interface IExternalWidgetRegistration {
+  id: string;
+  component: Component;
+  config: IWidgetConfig;
+  targetBlades?: string[]; // For which blades is the widget intended
+  isVisible?: boolean | ComputedRef<boolean> | Ref<boolean> | ((blade?: IBladeInstance) => boolean);
+  title?: string;
+  updateFunctionName?: string;
 }
 
 export interface IWidgetService {
@@ -37,11 +60,16 @@ export interface IWidgetService {
   updateActiveWidget: () => void;
   isWidgetRegistered: (id: string) => boolean;
   updateWidget: ({ id, bladeId, widget }: { id: string; bladeId: string; widget: Partial<IWidget> }) => void;
+  resolveWidgetProps: (widget: IWidget, bladeData: Record<string, unknown>) => Record<string, unknown>;
+  getExternalWidgetsForBlade: (bladeType: string) => IExternalWidgetRegistration[];
 }
 
 // Global state for pre-registering widgets
 const preregisteredWidgets: IWidgetRegistration[] = [];
 const preregisteredIds = new Set<string>();
+
+// Global state for external widgets
+const externalWidgets: IExternalWidgetRegistration[] = [];
 
 /**
  * Registers a widget before the service is initialized
@@ -50,6 +78,20 @@ export function registerWidget(widget: IWidget, bladeId: string): void {
   const normalizedBladeId = bladeId.toLowerCase();
   preregisteredWidgets.push({ bladeId: normalizedBladeId, widget });
   preregisteredIds.add(widget.id);
+}
+
+/**
+ * Registers an external widget for use across different blades
+ */
+export function registerExternalWidget(widget: IExternalWidgetRegistration): void {
+  externalWidgets.push(widget);
+}
+
+/**
+ * Gets list of external widgets for a specific blade type
+ */
+export function getExternalWidgetsForBlade(bladeType: string): IExternalWidgetRegistration[] {
+  return externalWidgets.filter((widget) => !widget.targetBlades || widget.targetBlades.includes(bladeType));
 }
 
 export function createWidgetService(): IWidgetService {
@@ -71,6 +113,49 @@ export function createWidgetService(): IWidgetService {
       registeredWidgets.push({ bladeId: normalizedBladeId, widget: reactive(widget) });
       registeredIds.add(widget.id);
     }
+  };
+
+  // Add method to resolve props
+  const resolveWidgetProps = (widget: IWidget, bladeData: Record<string, unknown>): Record<string, unknown> => {
+    // If no configuration, return existing props or empty object
+    if (!widget.config) {
+      return widget.props || {};
+    }
+
+    let resolvedProps: Record<string, unknown> = { ...widget.props };
+
+    // If there is a custom resolver
+    if (widget.config.propsResolver) {
+      try {
+        const customProps = widget.config.propsResolver(bladeData);
+        resolvedProps = { ...resolvedProps, ...customProps };
+      } catch (error) {
+        console.error(`Error in propsResolver for widget '${widget.id}':`, error);
+      }
+    } else {
+      // Standard logic for resolving props
+      const { requiredData = [], optionalData = [], fieldMapping = {} } = widget.config;
+
+      // Add required data
+      requiredData.forEach((key) => {
+        const bladeKey = fieldMapping[key] || key;
+        if (bladeData[bladeKey] !== undefined) {
+          resolvedProps[key] = bladeData[bladeKey];
+        } else {
+          console.warn(`Required data '${key}' not found in blade data for widget '${widget.id}'`);
+        }
+      });
+
+      // Add optional data
+      optionalData.forEach((key) => {
+        const bladeKey = fieldMapping[key] || key;
+        if (bladeData[bladeKey] !== undefined) {
+          resolvedProps[key] = bladeData[bladeKey];
+        }
+      });
+    }
+
+    return resolvedProps;
   };
 
   const updateWidget = ({ id, bladeId, widget }: { id: string; bladeId: string; widget: Partial<IWidget> }): void => {
@@ -170,6 +255,10 @@ export function createWidgetService(): IWidgetService {
     return activeWidget.value?.widgetId === id;
   };
 
+  const getExternalWidgetsForBladeLocal = (bladeType: string): IExternalWidgetRegistration[] => {
+    return getExternalWidgetsForBlade(bladeType);
+  };
+
   preregisteredWidgets.forEach((widget) => {
     try {
       registerWidget(widget.widget, widget.bladeId);
@@ -189,5 +278,7 @@ export function createWidgetService(): IWidgetService {
     updateActiveWidget,
     isWidgetRegistered,
     updateWidget,
+    resolveWidgetProps,
+    getExternalWidgetsForBlade: getExternalWidgetsForBladeLocal,
   };
 }

@@ -119,7 +119,7 @@ watch(
   }
 
   &__more {
-    @apply tw-flex tw-items-center tw-gap-2 tw-px-2 tw-cursor-pointer tw-text-[var(--blade-toolbar-desktop-more-color)] tw-flex-col;
+    @apply tw-flex tw-items-center tw-gap-1 tw-px-2 tw-cursor-pointer tw-text-[var(--blade-toolbar-desktop-more-color)] tw-flex-col;
 
     &-text {
       @apply tw-text-xs;

@@ -1,3 +1,12 @@
+## [1.1.56](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.55...v1.1.56) (2025-07-08)
+
+
+### Bug Fixes
+
+* **vc-editor:** update list styles for unordered and ordered lists in the editor component ([2dd3fc2](https://github.com/VirtoCommerce/vc-shell/commit/2dd3fc22e9fef098c800ebe93c5e3e5f5e760333))
+
+
+
 ## [1.1.55](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.54...v1.1.55) (2025-07-07)
 
 

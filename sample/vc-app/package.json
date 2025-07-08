@@ -1,6 +1,6 @@
 {
   "name": "vc-app",
-  "version": "1.1.55",
+  "version": "1.1.56",
   "private": true,
   "scripts": {
     "bootstrap": "yarn build:api && yarn build:modules-library",
@@ -33,9 +33,9 @@
     "@types/node": "^20.10.5",
     "@typescript-eslint/eslint-plugin": "^7.4.0",
     "@typescript-eslint/parser": "^7.4.0",
-    "@vc-shell/api-client-generator": "^1.1.55",
-    "@vc-shell/release-config": "^1.1.55",
-    "@vc-shell/ts-config": "^1.1.55",
+    "@vc-shell/api-client-generator": "^1.1.56",
+    "@vc-shell/release-config": "^1.1.56",
+    "@vc-shell/ts-config": "^1.1.56",
     "@vitejs/plugin-vue": "^5.2.3",
     "@vue/eslint-config-prettier": "^9.0.0",
     "@vue/eslint-config-typescript": "^13.0.0",
@@ -65,8 +65,8 @@
   "dependencies": {
     "@vc-app/api": "^1.0.113",
     "@vc-app/modules": "^1.0.113",
-    "@vc-shell/config-generator": "^1.1.55",
-    "@vc-shell/framework": "^1.1.55",
+    "@vc-shell/config-generator": "^1.1.56",
+    "@vc-shell/framework": "^1.1.56",
     "@vueuse/core": "^10.7.1",
     "@vueuse/integrations": "^10.7.1",
     "moment": "^2.30.1",

@@ -61,7 +61,7 @@ export interface IWidgetService {
   isWidgetRegistered: (id: string) => boolean;
   updateWidget: ({ id, bladeId, widget }: { id: string; bladeId: string; widget: Partial<IWidget> }) => void;
   resolveWidgetProps: (widget: IWidget, bladeData: Record<string, unknown>) => Record<string, unknown>;
-  getExternalWidgetsForBlade: (bladeType: string) => IExternalWidgetRegistration[];
+  getExternalWidgetsForBlade: (bladeId: string) => IExternalWidgetRegistration[];
 }
 
 // Global state for pre-registering widgets
@@ -90,8 +90,8 @@ export function registerExternalWidget(widget: IExternalWidgetRegistration): voi
 /**
  * Gets list of external widgets for a specific blade type
  */
-export function getExternalWidgetsForBlade(bladeType: string): IExternalWidgetRegistration[] {
-  return externalWidgets.filter((widget) => !widget.targetBlades || widget.targetBlades.includes(bladeType));
+export function getExternalWidgetsForBlade(bladeId: string): IExternalWidgetRegistration[] {
+  return externalWidgets.filter((widget) => !widget.targetBlades || widget.targetBlades.includes(bladeId));
 }
 
 export function createWidgetService(): IWidgetService {
@@ -122,17 +122,22 @@ export function createWidgetService(): IWidgetService {
       return widget.props || {};
     }
 
-    let resolvedProps: Record<string, unknown> = { ...widget.props };
+    let resolvedProps: Record<string, unknown> = {};
 
     // If there is a custom resolver
     if (widget.config.propsResolver) {
       try {
         const customProps = widget.config.propsResolver(bladeData);
-        resolvedProps = { ...resolvedProps, ...customProps };
+        resolvedProps = { ...widget.props, ...customProps };
       } catch (error) {
         console.error(`Error in propsResolver for widget '${widget.id}':`, error);
+        // Fallback to existing props if resolver fails
+        resolvedProps = { ...widget.props };
       }
     } else {
+      // Start with existing props as base
+      resolvedProps = { ...widget.props };
+
       // Standard logic for resolving props
       const { requiredData = [], optionalData = [], fieldMapping = {} } = widget.config;
 
@@ -164,7 +169,11 @@ export function createWidgetService(): IWidgetService {
     if (widgetRegistry[normalizedBladeId]) {
       const index = widgetRegistry[normalizedBladeId].findIndex((w) => w.id === id);
       if (index !== -1) {
-        widgetRegistry[normalizedBladeId][index] = { ...widgetRegistry[normalizedBladeId][index], ...widget };
+        // Preserve reactivity by updating properties instead of replacing the entire object
+        const existingWidget = widgetRegistry[normalizedBladeId][index];
+
+        // Update properties using Object.assign to maintain reactivity
+        Object.assign(existingWidget, widget);
       }
     }
   };
@@ -255,8 +264,8 @@ export function createWidgetService(): IWidgetService {
     return activeWidget.value?.widgetId === id;
   };
 
-  const getExternalWidgetsForBladeLocal = (bladeType: string): IExternalWidgetRegistration[] => {
-    return getExternalWidgetsForBlade(bladeType);
+  const getExternalWidgetsForBladeLocal = (bladeId: string): IExternalWidgetRegistration[] => {
+    return getExternalWidgetsForBlade(bladeId.toLowerCase());
   };
 
   preregisteredWidgets.forEach((widget) => {

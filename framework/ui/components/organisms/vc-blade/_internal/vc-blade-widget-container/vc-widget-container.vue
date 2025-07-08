@@ -14,11 +14,12 @@
 </template>
 
 <script setup lang="ts">
-import { computed, toValue, inject } from "vue";
+import { computed, toValue, inject, isRef } from "vue";
 import { useWidgets } from "../../../../../../core/composables/useWidgets";
 import { WidgetContainerDesktop, WidgetContainerMobile } from "./_internal";
 import { BladeInstance } from "../../../../../../injection-keys";
 import { IBladeInstance } from "../../../../../../shared/components/blade-navigation/types";
+import { IWidget } from "../../../../../../core/services";
 
 interface Props {
   bladeId: string;
@@ -28,20 +29,37 @@ const props = defineProps<Props>();
 const normalizedBladeId = computed(() => props.bladeId.toLowerCase());
 const widgetService = useWidgets();
 const widgets = computed(() => widgetService.getWidgets(normalizedBladeId.value));
+
 const bladeInstance = inject<IBladeInstance>(BladeInstance);
 
-const visibleWidgets = computed(() =>
-  widgets.value.filter((widget) => {
-    if (typeof widget.isVisible === "function") {
-      return widget.isVisible(bladeInstance);
-    } else if (typeof widget.isVisible === "boolean") {
-      return widget.isVisible;
-    } else if (widget.isVisible === undefined) {
-      return true; // Show widget by default if isVisible is not specified
-    }
-    return toValue(widget.isVisible);
-  }),
-);
+const isWidgetVisible = (widget: IWidget, bladeInstance: IBladeInstance | undefined): boolean => {
+  const { isVisible } = widget;
+
+  // Default to visible if isVisible is not specified
+  if (isVisible === undefined) {
+    return true;
+  }
+
+  // Handle function: call with blade instance context
+  if (typeof isVisible === "function") {
+    return isVisible(toValue(bladeInstance));
+  }
+
+  // Handle reactive reference: unwrap the value
+  if (isRef(isVisible)) {
+    return toValue(isVisible);
+  }
+
+  // Handle boolean: return as-is
+  if (typeof isVisible === "boolean") {
+    return isVisible;
+  }
+
+  // Fallback: attempt to unwrap any other reactive value
+  return toValue(isVisible);
+};
+
+const visibleWidgets = computed(() => widgets.value.filter((widget) => isWidgetVisible(widget, bladeInstance)));
 </script>
 
 <style lang="scss">

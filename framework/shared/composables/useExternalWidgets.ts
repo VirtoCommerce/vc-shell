@@ -1,29 +1,63 @@
 import { computed, inject, onMounted, watchEffect, Ref, ComputedRef } from "vue";
 import { WidgetServiceKey, BladeInstance } from "../../injection-keys";
-import { IWidget, IExternalWidgetRegistration } from "../../core/services/widget-service";
+import { IWidget } from "../../core/services/widget-service";
+
+/**
+ * Deep comparison function to check if props have changed
+ */
+function isPropsChanged(oldProps: Record<string, unknown>, newProps: Record<string, unknown>): boolean {
+  const oldKeys = Object.keys(oldProps);
+  const newKeys = Object.keys(newProps);
+
+  // Quick check for key count difference
+  if (oldKeys.length !== newKeys.length) {
+    return true;
+  }
+
+  // Check each key for changes
+  return newKeys.some((key) => {
+    const oldValue = oldProps[key];
+    const newValue = newProps[key];
+
+    // For objects and arrays, do a shallow comparison
+    if (typeof oldValue === "object" && typeof newValue === "object") {
+      if (oldValue === null || newValue === null) {
+        return oldValue !== newValue;
+      }
+      // For now, consider objects as changed if they're different references
+      // In future, we might want to implement deep comparison
+      return oldValue !== newValue;
+    }
+
+    return oldValue !== newValue;
+  });
+}
 
 export interface UseExternalWidgetsOptions {
-  bladeType: string;
+  bladeId: string;
   bladeData: Ref<Record<string, unknown>> | ComputedRef<Record<string, unknown>>;
   autoRegister?: boolean; // Automatic registration when mounted
   autoUpdateProps?: boolean; // Automatic update of props when data changes
 }
 
 export function useExternalWidgets(options: UseExternalWidgetsOptions) {
-  const { bladeType, bladeData, autoRegister = true, autoUpdateProps = true } = options;
+  const { bladeId, bladeData, autoRegister = true, autoUpdateProps = true } = options;
 
   const widgetService = inject(WidgetServiceKey);
   const blade = inject(BladeInstance);
 
+  // Normalize bladeId to lowercase for consistency
+  const normalizedBladeId = computed(() => bladeId.toLowerCase());
+
   const registeredExternalWidgetIds = new Set<string>();
 
   const registerExternalWidgets = () => {
-    if (!widgetService || !blade?.value.id) {
+    if (!widgetService || !normalizedBladeId.value) {
       console.warn("Widget service or blade ID not available");
       return;
     }
 
-    const externalWidgets = widgetService.getExternalWidgetsForBlade(bladeType);
+    const externalWidgets = widgetService.getExternalWidgetsForBlade(normalizedBladeId.value);
 
     externalWidgets.forEach((externalWidget) => {
       // Check if the widget is already registered
@@ -46,7 +80,7 @@ export function useExternalWidgets(options: UseExternalWidgetsOptions) {
       };
 
       try {
-        widgetService.registerWidget(widget, blade.value.id);
+        widgetService.registerWidget(widget, normalizedBladeId.value);
         registeredExternalWidgetIds.add(externalWidget.id);
       } catch (error) {
         console.error(`Failed to register external widget '${externalWidget.id}':`, error);
@@ -65,11 +99,17 @@ export function useExternalWidgets(options: UseExternalWidgetsOptions) {
         try {
           const resolvedProps = widgetService.resolveWidgetProps(widget, bladeData.value);
 
-          widgetService.updateWidget({
-            id: widget.id,
-            bladeId: blade.value.id,
-            widget: { props: resolvedProps },
-          });
+          // Only update if props have actually changed to avoid unnecessary re-renders
+          const currentProps = widget.props || {};
+          const hasChanged = isPropsChanged(currentProps, resolvedProps);
+
+          if (hasChanged) {
+            widgetService.updateWidget({
+              id: widget.id,
+              bladeId: normalizedBladeId.value,
+              widget: { props: resolvedProps },
+            });
+          }
         } catch (error) {
           console.error(`Failed to update props for widget '${widget.id}':`, error);
         }
@@ -79,11 +119,11 @@ export function useExternalWidgets(options: UseExternalWidgetsOptions) {
 
   // Unregister external widgets when unmounted
   const unregisterExternalWidgets = () => {
-    if (!widgetService || !blade?.value.id) return;
+    if (!widgetService || !normalizedBladeId.value) return;
 
     registeredExternalWidgetIds.forEach((widgetId) => {
       try {
-        widgetService.unregisterWidget(widgetId, blade.value.id);
+        widgetService.unregisterWidget(widgetId, normalizedBladeId.value);
       } catch (error) {
         console.error(`Failed to unregister external widget '${widgetId}':`, error);
       }

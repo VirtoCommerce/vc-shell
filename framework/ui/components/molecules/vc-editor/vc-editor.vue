@@ -644,6 +644,15 @@ async function handleImageSelection(event: Event) {
     ul,
     ol {
       padding: 0 1rem;
+      list-style: disc;
+    }
+
+    ul {
+      list-style: disc;
+    }
+
+    ol {
+      list-style: decimal;
     }
 
     blockquote {

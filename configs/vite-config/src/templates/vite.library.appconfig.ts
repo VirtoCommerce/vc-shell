@@ -92,7 +92,6 @@ export default defineConfig({
     minify: true,
     terserOptions: {
       compress: {
-        drop_console: process.env.APP_ENV === "production",
         drop_debugger: process.env.APP_ENV === "production",
         pure_funcs: process.env.APP_ENV === "production" ? ["console.log", "console.info", "console.debug"] : [],
       },
@@ -102,7 +101,7 @@ export default defineConfig({
     },
   },
   esbuild: {
-    drop: process.env.APP_ENV === "production" ? ["console", "debugger"] : [],
+    drop: process.env.APP_ENV === "production" ? ["debugger"] : [],
     treeShaking: true,
   },
 });

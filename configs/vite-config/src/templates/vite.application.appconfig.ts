@@ -274,7 +274,8 @@ export default defineConfig({
     },
   },
   esbuild: {
-    drop: mode === "production" ? ["console", "debugger"] : [],
+    drop: mode === "production" ? ["debugger"] : [],
+    pure: mode === "production" ? ["console.log", "console.info", "console.debug"] : [],
   },
   css: {
     preprocessorOptions: {

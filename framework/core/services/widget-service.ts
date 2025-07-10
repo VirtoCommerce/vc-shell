@@ -1,4 +1,4 @@
-import { Component, reactive, ref, ComponentInternalInstance, ComputedRef, Ref, getCurrentInstance } from "vue";
+import { Component, reactive, ref, ComponentInternalInstance, ComputedRef, Ref, markRaw, Raw } from "vue";
 import { IBladeInstance } from "../../shared/components/blade-navigation/types";
 import { cloneDeep } from "lodash-es";
 
@@ -36,7 +36,7 @@ export interface IWidget {
 
 export interface IWidgetRegistration {
   bladeId: string;
-  widget: IWidget;
+  widget: Raw<IWidget>;
 }
 
 // Interface for global registration of external widgets
@@ -128,8 +128,10 @@ export function createWidgetService(): IWidgetService {
 
     const existingIndex = widgetRegistry[normalizedBladeId].findIndex((w) => w.id === widget.id);
     if (existingIndex === -1) {
-      widgetRegistry[normalizedBladeId].push(reactive(widget));
-      registeredWidgets.push({ bladeId: normalizedBladeId, widget: reactive(widget) });
+      const rawWidget: IWidget = markRaw(widget);
+
+      widgetRegistry[normalizedBladeId].push(rawWidget);
+      registeredWidgets.push({ bladeId: normalizedBladeId, widget: rawWidget });
       registeredIds.add(widget.id);
     }
   };

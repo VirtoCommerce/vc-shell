@@ -1,5 +1,6 @@
 import { Component, reactive, ref, ComponentInternalInstance, ComputedRef, Ref, getCurrentInstance } from "vue";
 import { IBladeInstance } from "../../shared/components/blade-navigation/types";
+import { cloneDeep } from "lodash-es";
 
 export type WidgetEventHandler = (...args: unknown[]) => void;
 
@@ -62,6 +63,8 @@ export interface IWidgetService {
   updateWidget: ({ id, bladeId, widget }: { id: string; bladeId: string; widget: Partial<IWidget> }) => void;
   resolveWidgetProps: (widget: IWidget, bladeData: Record<string, unknown>) => Record<string, unknown>;
   getExternalWidgetsForBlade: (bladeId: string) => IExternalWidgetRegistration[];
+  getAllExternalWidgets: () => IExternalWidgetRegistration[];
+  cloneWidget: <T extends IWidget | IExternalWidgetRegistration>(widget: T) => T;
 }
 
 // Global state for pre-registering widgets
@@ -92,6 +95,22 @@ export function registerExternalWidget(widget: IExternalWidgetRegistration): voi
  */
 export function getExternalWidgetsForBlade(bladeId: string): IExternalWidgetRegistration[] {
   return externalWidgets.filter((widget) => !widget.targetBlades || widget.targetBlades.includes(bladeId));
+}
+
+/**
+ * Gets all external widgets
+ */
+export function getAllExternalWidgets(): IExternalWidgetRegistration[] {
+  return externalWidgets;
+}
+
+/**
+ * Deep clones a widget to avoid modifying the original registered widget
+ * For now, this is a structured clone, but we can make it more robust if needed
+ */
+export function cloneWidget<T extends IWidget | IExternalWidgetRegistration>(widget: T): T {
+  // Using structuredClone for a deep copy
+  return cloneDeep(widget);
 }
 
 export function createWidgetService(): IWidgetService {
@@ -289,5 +308,7 @@ export function createWidgetService(): IWidgetService {
     updateWidget,
     resolveWidgetProps,
     getExternalWidgetsForBlade: getExternalWidgetsForBladeLocal,
+    getAllExternalWidgets,
+    cloneWidget,
   };
 }

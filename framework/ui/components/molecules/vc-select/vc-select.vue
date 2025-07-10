@@ -572,7 +572,7 @@ const emit = defineEmits<{
    * Emitted when the component needs to change the model; Is also used by v-model
    */
 
-  "update:modelValue": [inputValue: MaybeArray<string | Option> | null];
+  "update:modelValue": [inputValue: MaybeArray<Option> | MaybeArray<string> | null];
   /**
    * Emitted when user wants to filter a value
    */

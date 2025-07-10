@@ -40,7 +40,7 @@ const emit = defineEmits<{
 
 defineSlots<{
   filters: (props: { closePanel: () => void }) => VNode;
-  header: (props: { header: VNode }) => VNode;
+  header: (props: { header: () => VNode }) => VNode;
 }>();
 
 const blade = inject(

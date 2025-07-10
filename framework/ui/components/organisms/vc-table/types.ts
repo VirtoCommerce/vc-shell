@@ -3,7 +3,7 @@ import type { Ref, VNode } from "vue";
 import { IActionBuilderResult, ITableColumns } from "../../../../core/types";
 
 export interface TableSlots<T> {
-  header: (props: { header: VNode }) => any;
+  header: (props: { header: () => VNode }) => any;
   filters: (args: { closePanel: () => void }) => any;
   "mobile-item": (args: { item: T }) => any;
   [key: `header_${string}`]: (props: any) => any;

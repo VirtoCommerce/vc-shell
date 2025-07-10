@@ -37,6 +37,7 @@
             horizontal
             :widget-id="item.id"
             v-on="item.events || {}"
+            @click="toggleToolbar"
           />
         </template>
       </GenericDropdown>

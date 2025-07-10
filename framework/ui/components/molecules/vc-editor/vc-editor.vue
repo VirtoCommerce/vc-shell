@@ -519,8 +519,8 @@ async function handleImageSelection(event: Event) {
   --vc-editor-text-primary: var(--neutrals-900);
   --vc-editor-text-secondary: var(--neutrals-500);
   --vc-editor-text-muted: var(--neutrals-400);
-  --vc-editor-text-disabled: var(--neutrals-400);
-  --vc-editor-background-disabled: var(--neutrals-100);
+  --vc-editor-text-disabled: var(--neutrals-500);
+  --vc-editor-background-disabled: var(--neutrals-200);
   --vc-editor-focus-border: var(--primary-500);
   --vc-editor-focus-shadow: var(--primary-500);
   --vc-editor-error-border: var(--danger-500);

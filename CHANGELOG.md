@@ -1,3 +1,19 @@
+## [1.1.57](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.56...v1.1.57) (2025-07-10)
+
+
+### Bug Fixes
+
+* **vc-editor:** update disabled text and background colors ([0ee79c5](https://github.com/VirtoCommerce/vc-shell/commit/0ee79c59bcc631ae5ee8868032dc626ec8fca890))
+* **vc-select:** update modelValue type to support multiple option formats ([1f163a8](https://github.com/VirtoCommerce/vc-shell/commit/1f163a8cc7679d2aa5f5a94db49d79b3f98fe247))
+
+
+### Features
+
+* **vc-widget-container:** add click event to toggle toolbar visibility on click ([007931f](https://github.com/VirtoCommerce/vc-shell/commit/007931f8c86b224a5b03a1ad321f633eace715ec))
+* **widget-service:** add methods to retrieve all external widgets and clone widgets for improved widget management ([2806152](https://github.com/VirtoCommerce/vc-shell/commit/2806152873d85bbee9877ef2ead9d2ceabcca0a6))
+
+
+
 ## [1.1.56](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.55...v1.1.56) (2025-07-08)
 
 

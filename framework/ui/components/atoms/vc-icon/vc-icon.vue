@@ -110,6 +110,16 @@ const sizeMap = {
   xxxl: 64,
 } as const;
 
+// Scaling factors for different icon types to make them visually equal
+const scalingFactors = {
+  fontawesome: 1, // base reference
+  material: 1.1,
+  bootstrap: 0.95,
+  lucide: 1.2,
+  custom: 1,
+  svg: 1,
+};
+
 // Function to detect icon type if not explicitly specified
 const detectIconType = computed((): IconType => {
   if (typeof props.icon !== "string") {
@@ -152,16 +162,16 @@ const normalizedIconName = computed(() => {
     return props.icon;
   }
 
-  const type = detectIconType.value;
-
-  switch (type) {
-    case "material":
-      return props.icon.replace(/^material-/, "");
-    case "lucide":
-      return props.icon.replace(/^lucide-/, "");
-    default:
-      return props.icon;
+  if (detectIconType.value === "material" && props.icon.startsWith("material-")) {
+    return props.icon.replace(/^material-/, "");
   }
+
+  if (detectIconType.value === "lucide" && props.icon.startsWith("lucide-")) {
+    const baseName = props.icon.replace(/^lucide-/, "");
+    return baseName.endsWith("Icon") ? baseName : `${baseName}Icon`;
+  }
+
+  return props.icon;
 });
 
 // Check if icon is a Material Design symbol
@@ -176,7 +186,7 @@ const isLucideIcon = computed(() => detectIconType.value === "lucide");
 // Check if icon is a Font Awesome Icon
 const isFontAwesomeIcon = computed(() => detectIconType.value === "fontawesome");
 
-// Check if icon is a component or can be resolved as a component
+// Check if the icon is a component or can be resolved as a component
 const isCustomIcon = computed(() => {
   if (typeof props.icon !== "string") {
     return true; // Component instance passed directly
@@ -191,13 +201,25 @@ const isCustomIcon = computed(() => {
     return false;
   }
 
-  // For Lucide icons, assume they can be resolved (safer approach)
+  // Check for Lucide icons - they could be resolved as components
   if (isLucideIcon.value) {
-    return true; // Assume Lucide icons are available as components
+    try {
+      const iconName =
+        typeof normalizedIconName.value === "string" ? normalizedIconName.value : String(normalizedIconName.value);
+      const resolved = resolveComponent(iconName);
+      return resolved !== iconName;
+    } catch (e) {
+      return false;
+    }
   }
 
-  // For other cases, assume it's not a component to avoid resolveComponent calls
-  return false;
+  // Check if string is a component name that can be resolved
+  try {
+    const resolved = resolveComponent(props.icon);
+    return resolved !== props.icon; // If resolved is different from original string, it's a component name
+  } catch (e) {
+    return false;
+  }
 });
 
 // Get the component instance for rendering
@@ -211,14 +233,15 @@ const safeIcon = computed(() => {
     return "i";
   }
 
-  // For Lucide icons, return the normalized name directly
-  if (isLucideIcon.value) {
+  // Try to resolve component by name (mostly for Lucide icons)
+  try {
     const iconName =
       typeof normalizedIconName.value === "string" ? normalizedIconName.value : String(normalizedIconName.value);
-    return iconName; // Let Vue handle component resolution in template
+    const resolved = resolveComponent(iconName);
+    return resolved !== iconName ? resolved : "i"; // Return resolved component or fallback to 'i'
+  } catch (e) {
+    return "i";
   }
-
-  return "i";
 });
 
 // Determine which component to render
@@ -292,32 +315,82 @@ const containerStyle = computed(() => {
 
 // Prepare props for the rendered component
 const componentProps = computed(() => {
-  const type = detectIconType.value;
+  if (isMaterialIcon.value) {
+    // Clean the name from possible suffixes of the icon type
+    const cleanIconName =
+      typeof normalizedIconName.value === "string"
+        ? normalizedIconName.value.replace(/-outlined$|-rounded$|-sharp$/, "")
+        : normalizedIconName.value;
 
-  switch (type) {
-    case "lucide":
-    case "material":
-    case "bootstrap":
-    case "fontawesome":
-      return { icon: normalizedIconName.value, size: props.size, variant: props.variant, customSize: props.customSize };
-    case "svg":
-      return {
-        icon: svgPath.value,
-        size: props.size,
-        variant: props.variant,
-        strokeWidth: 1.5,
-        customSize: props.customSize, // Set custom size without scaling
-        basePath: props.basePath,
-      };
-    default:
-      // For custom components, no extra props needed
-      return {
-        size: props.size,
-        width: calculatedSize.value,
-        height: calculatedSize.value,
-        color: props.variant ? `var(--icon-color-${props.variant})` : "currentColor",
-      };
+    return {
+      icon: cleanIconName,
+      size: props.size,
+      variant: props.variant,
+      type: "outlined",
+      fill: 0,
+      weight: 300,
+      grade: 0,
+      customSize: props.customSize, // Set custom size without scaling
+    };
   }
+
+  if (isBootstrapIcon.value) {
+    // For Bootstrap icons
+    const iconName = typeof props.icon === "string" ? props.icon : "";
+
+    return {
+      icon: iconName,
+      size: props.size,
+      variant: props.variant,
+      customSize: props.customSize, // Set custom size without scaling
+    };
+  }
+
+  if (isLucideIcon.value) {
+    // For Lucide icons
+    const iconName =
+      typeof normalizedIconName.value === "string" ? normalizedIconName.value : String(normalizedIconName.value);
+
+    return {
+      icon: iconName,
+      size: props.size,
+      variant: props.variant,
+      strokeWidth: 1.5,
+      customSize: props.customSize, // Set custom size without scaling
+    };
+  }
+
+  if (isFontAwesomeIcon.value) {
+    // For Font Awesome icons
+    return {
+      icon: typeof props.icon === "string" ? props.icon : "",
+      size: props.size,
+      variant: props.variant,
+      customSize: props.customSize, // Set custom size without scaling
+    };
+  }
+
+  if (isSvgIcon.value) {
+    return {
+      icon: svgPath.value,
+      size: props.size,
+      variant: props.variant,
+      strokeWidth: 1.5,
+      customSize: props.customSize, // Set custom size without scaling
+      basePath: props.basePath,
+    };
+  }
+
+  if (isCustomIcon.value) {
+    return {
+      size: props.size,
+      width: calculatedSize.value,
+      height: calculatedSize.value,
+      color: props.variant ? `var(--icon-color-${props.variant})` : "currentColor",
+    };
+  }
+
+  return {};
 });
 
 // Check if icon is an SVG icon
@@ -460,5 +533,75 @@ const svgPath = computed(() => {
   min-width: calc(var(--icon-size-xxxl) * 1.33);
   min-height: calc(var(--icon-size-xxxl) * 1.33);
   font-size: var(--icon-size-xxxl); /* Set font-size for the container */
+}
+
+/* Material Icons specific styles */
+.material-symbols-outlined,
+.material-symbols-rounded,
+.material-symbols-sharp {
+  font-family: "Material Symbols Outlined";
+  font-weight: normal;
+  font-style: normal;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  font-feature-settings: "liga";
+  -webkit-font-feature-settings: "liga";
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Bootstrap Icons specific styles */
+[class^="bi-"],
+[class*=" bi-"] {
+  font-family: bootstrap-icons !important;
+  font-style: normal;
+  font-weight: normal !important;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Font Awesome Icons */
+[class^="fa-"],
+[class*=" fa-"],
+[class~="fas"],
+[class~="far"],
+[class~="fal"],
+[class~="fab"],
+[class~="fad"] {
+  font-family: "Font Awesome 6 Free", "Font Awesome 6 Brands", "Font Awesome 6 Duotone", "Font Awesome 6 Pro";
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Font weight adjustments for Font Awesome */
+.fas,
+.fa-solid {
+  font-weight: 900;
+}
+
+.far,
+.fa-regular {
+  font-weight: 400;
+}
+
+.fal,
+.fa-light {
+  font-weight: 300;
+}
+
+.fab,
+.fa-brands {
+  font-family: "Font Awesome 6 Brands";
 }
 </style>

@@ -1,26 +1,26 @@
 <template>
-  <Icon
-    v-if="finalIconName"
-    :icon="finalIconName"
+  <span
     :class="[
       'vc-material-icon',
+      'material-symbols-' + type,
       !hasCustomSize && `vc-material-icon--${size}`,
       variant ? `vc-material-icon--${variant}` : '',
     ]"
-    :style="computedStyle"
+    :style="iconStyle"
     aria-hidden="true"
-  />
+  >
+    {{ icon }}
+  </span>
 </template>
 
 <script lang="ts" setup>
-import { ref, watch, computed } from "vue";
-import { Icon, loadIcon } from "@iconify/vue";
+import { computed } from "vue";
 import type { IconSize, IconVariant } from "./types";
 import { useIcon } from "./composables";
 
 interface Props {
   /**
-   * Material icon name
+   * Material icon name (e.g., "home", "settings", "account_circle")
    */
   icon: string;
 
@@ -28,6 +28,11 @@ interface Props {
    * Icon size
    */
   size?: IconSize;
+
+  /**
+   * Type of the Material icon (outlined, rounded, sharp)
+   */
+  type?: "outlined" | "rounded" | "sharp";
 
   /**
    * Icon color variant
@@ -42,57 +47,36 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
   size: "m",
+  type: "outlined",
 });
 
-// Check if using custom size to conditionally apply CSS class
 const hasCustomSize = computed(() => typeof props.customSize === "number" && props.customSize > 0);
 
-// Use the shared icon composable for consistent scaling
 const { iconStyle } = useIcon({
   type: "material",
   size: props.size,
   variant: props.variant,
   customSize: props.customSize,
 });
-
-const finalIconName = ref("");
-
-watch(
-  () => props.icon,
-  (icon) => {
-    const collection = "material-symbols-light";
-
-    const cleanIconName = icon.replace(/_/g, "-");
-    const baseIcon = `${collection}:${cleanIconName}`;
-    const outlineIcon = `${collection}:${cleanIconName}-outline`;
-
-    loadIcon(outlineIcon)
-      .then(() => {
-        finalIconName.value = outlineIcon;
-      })
-      .catch(() => {
-        finalIconName.value = baseIcon;
-      });
-  },
-  { immediate: true },
-);
-
-// Combine the shared icon styles with Material-specific settings
-const computedStyle = computed(() => {
-  const styles = { ...iconStyle.value };
-
-  // font-variation-settings is not applicable for SVG icons
-  // If using custom size, make sure fontSize is applied with !important
-  if (hasCustomSize.value && styles.fontSize) {
-    styles.fontSize = `${styles.fontSize.replace("px", "")}px !important`;
-  }
-
-  return styles;
-});
 </script>
 
 <style lang="scss">
 .vc-material-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-feature-settings: "liga"; // Enable ligatures for icons
+  font-style: normal;
+  font-weight: normal;
+  letter-spacing: normal;
+  line-height: 1;
+  text-transform: none;
+  white-space: nowrap;
+  word-wrap: normal;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+
+  // Sizes
   &--xs {
     font-size: var(--icon-size-xs);
   }
@@ -121,6 +105,7 @@ const computedStyle = computed(() => {
     font-size: var(--icon-size-xxxl);
   }
 
+  // Variants
   &--warning {
     color: var(--icon-color-warning);
   }
@@ -132,5 +117,12 @@ const computedStyle = computed(() => {
   &--success {
     color: var(--icon-color-success);
   }
+}
+
+// Base class provided by the @material-symbols/font-300 package
+.material-symbols-outlined,
+.material-symbols-rounded,
+.material-symbols-sharp {
+  font-family: "Material Symbols Outlined", "Material Symbols Rounded", "Material Symbols Sharp";
 }
 </style>

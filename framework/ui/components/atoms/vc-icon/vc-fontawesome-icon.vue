@@ -1,15 +1,18 @@
 <template>
-  <Icon
-    :icon="iconName"
-    :class="['vc-fa-icon', !hasCustomSize && `vc-fa-icon--${size}`, variant ? `vc-fa-icon--${variant}` : '']"
+  <i
+    :class="[
+      'vc-fa-icon',
+      !hasCustomSize && `vc-fa-icon--${size}`,
+      iconClasses,
+      variant ? `vc-fa-icon--${variant}` : '',
+    ]"
     :style="mergedStyle"
     aria-hidden="true"
-  />
+  ></i>
 </template>
 
 <script lang="ts" setup>
 import { computed } from "vue";
-import { Icon } from "@iconify/vue";
 import type { IconSize, IconVariant } from "./types";
 import { useIcon } from "./composables";
 
@@ -62,40 +65,31 @@ const mergedStyle = computed(() => {
   return styles;
 });
 
-const iconName = computed(() => {
-  const iconParts = props.icon.split(" ");
-  let style = "solid";
-  let name = props.icon;
-
-  if (iconParts.length > 1) {
-    const prefix = iconParts[0];
-    name = iconParts.slice(1).join(" ").replace("fa-", "");
-
-    switch (prefix) {
-      case "fas":
-        style = "solid";
-        break;
-      case "far":
-        style = "regular";
-        break;
-      case "fab":
-        style = "brands";
-        break;
-      case "fal":
-        style = "light";
-        break;
-      case "fad":
-        style = "duotone";
-        break;
-      default:
-        // Use the already processed name from slice(1), not the original props.icon
-        break;
-    }
-  } else {
-    name = name.replace("fa-", "");
+// Compute the FontAwesome class from the icon string
+const iconClasses = computed(() => {
+  // If icon already has a style prefix (fas, far, fal, fab), use it as is
+  if (
+    props.icon.startsWith("fas ") ||
+    props.icon.startsWith("far ") ||
+    props.icon.startsWith("fal ") ||
+    props.icon.startsWith("fab ") ||
+    props.icon.startsWith("fad ")
+  ) {
+    return props.icon;
   }
 
-  return `fa-${style}:${name}`;
+  // If icon starts with fa-, add the default style prefix
+  if (props.icon.startsWith("fa-")) {
+    return `fas ${props.icon}`;
+  }
+
+  // If icon contains fa- but doesn't start with a style prefix, assume the style prefix is included
+  if (props.icon.includes("fa-")) {
+    return props.icon;
+  }
+
+  // Otherwise, assume it's a bare icon name and add both the style prefix and fa- prefix
+  return `fas fa-${props.icon}`;
 });
 </script>
 

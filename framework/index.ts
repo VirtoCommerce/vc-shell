@@ -53,6 +53,12 @@ import {
   WidgetServiceKey,
 } from "./injection-keys";
 
+import "@fortawesome/fontawesome-free/css/fontawesome.min.css";
+import "@fortawesome/fontawesome-free/css/solid.min.css";
+import "bootstrap-icons/font/bootstrap-icons.min.css";
+import * as icons from "lucide-vue-next";
+import "@material-symbols/font-300/index.css";
+
 type I18NParams = Parameters<typeof i18n.global.mergeLocaleMessage>;
 
 export interface VcShellFrameworkPlugin {
@@ -144,6 +150,11 @@ export default {
     if (args.i18n?.fallbackLocale) {
       i18n.global.fallbackLocale.value = args.i18n.fallbackLocale;
     }
+
+    // Lucide Icons
+    Object.entries(icons).forEach(([key, value]) => {
+      app.component(key, value as Component);
+    });
 
     app.use(i18n);
 

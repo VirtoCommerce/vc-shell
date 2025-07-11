@@ -1,19 +1,18 @@
 <template>
-  <Icon
-    :icon="iconName"
+  <i
     :class="[
       'vc-bootstrap-icon',
       !hasCustomSize && `vc-bootstrap-icon--${size}`,
+      iconClass,
       variant ? `vc-bootstrap-icon--${variant}` : '',
     ]"
     :style="mergedStyle"
     aria-hidden="true"
-  />
+  ></i>
 </template>
 
 <script lang="ts" setup>
 import { computed } from "vue";
-import { Icon } from "@iconify/vue";
 import type { IconSize, IconVariant } from "./types";
 import { useIcon } from "./composables";
 
@@ -67,11 +66,11 @@ const mergedStyle = computed(() => {
 });
 
 // Compute proper Bootstrap icon class
-const iconName = computed(() => {
+const iconClass = computed(() => {
   if (!props.icon) return "";
 
   const icon = props.icon.startsWith("bi-") ? props.icon.substring(3) : props.icon;
-  return `bi:${icon}`;
+  return `bi-${icon}`;
 });
 </script>
 

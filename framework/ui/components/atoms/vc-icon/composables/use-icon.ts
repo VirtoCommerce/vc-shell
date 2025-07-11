@@ -90,7 +90,7 @@ export function useIcon(options: UseIconOptions) {
     const styles: Record<string, string> = {};
 
     // For SVG and Lucide icons, we need width and height
-    if (type === "svg") {
+    if (type === "svg" || type === "lucide") {
       styles.width = "1em";
       styles.height = "1em";
     }

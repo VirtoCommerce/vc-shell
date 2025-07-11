@@ -1,6 +1,7 @@
 <template>
-  <Icon
-    :icon="iconName"
+  <component
+    :is="resolvedIconComponent"
+    v-if="resolvedIconComponent"
     :class="[
       'vc-lucide-icon',
       !hasCustomSize && `vc-lucide-icon--${size}`,
@@ -9,12 +10,18 @@
     :style="computedStyle"
     aria-hidden="true"
   />
+  <span
+    v-else
+    :class="['vc-lucide-icon', !hasCustomSize && `vc-lucide-icon--${size}`]"
+  >
+    <i class="vc-lucide-icon__fallback">❓</i>
+  </span>
 </template>
 
 <script lang="ts" setup>
-import { computed } from "vue";
-import { Icon } from "@iconify/vue";
+import { computed, markRaw, onMounted, ref } from "vue";
 import type { IconSize, IconVariant } from "./types";
+import type { Component } from "vue";
 import { useIcon } from "./composables";
 
 interface Props {
@@ -34,6 +41,11 @@ interface Props {
   variant?: IconVariant;
 
   /**
+   * Stroke width for SVG
+   */
+  strokeWidth?: number;
+
+  /**
    * Custom size in pixels
    */
   customSize?: number;
@@ -41,10 +53,14 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
   size: "m",
+  strokeWidth: 1.5,
 });
 
 // Check if using custom size to conditionally apply CSS class
 const hasCustomSize = computed(() => typeof props.customSize === "number" && props.customSize > 0);
+
+// Component reference for Lucide icon
+const resolvedIconComponent = ref<Component | null>(null);
 
 // Use the shared icon composable for consistent scaling
 const { iconStyle } = useIcon({
@@ -54,40 +70,71 @@ const { iconStyle } = useIcon({
   customSize: props.customSize,
 });
 
+// Normalize the icon name for Lucide
+const normalizedIconName = computed(() => {
+  if (!props.icon) return "HelpCircleIcon";
+
+  // Handle removal of lucide- prefix
+  let name = props.icon;
+  if (name.startsWith("lucide-")) {
+    name = name.substring(7);
+  }
+
+  // Ensure name ends with 'Icon'
+  if (!name.endsWith("Icon")) {
+    name = `${name}Icon`;
+  }
+
+  // Convert to PascalCase if kebab-case
+  if (name.includes("-")) {
+    name = name
+      .split("-")
+      .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+      .join("");
+  }
+
+  // Ensure first letter is capitalized
+  return name.charAt(0).toUpperCase() + name.slice(1);
+});
+
 // Combine the shared icon styles with Lucide-specific settings
 const computedStyle = computed(() => {
   const styles = { ...iconStyle.value };
 
+  if (props.strokeWidth) {
+    styles.strokeWidth = props.strokeWidth.toString();
+  }
+
   // If using custom size, make sure size is applied with !important
-  // if (hasCustomSize.value) {
-  //   if (styles.width) styles.width = `${styles.width.replace("px", "")}px !important`;
-  //   if (styles.height) styles.height = `${styles.height.replace("px", "")}px !important`;
-  // }
+  if (hasCustomSize.value) {
+    if (styles.width) styles.width = `${styles.width.replace("px", "")}px !important`;
+    if (styles.height) styles.height = `${styles.height.replace("px", "")}px !important`;
+  }
 
   return styles;
 });
 
-const iconName = computed(() => {
-  let name = props.icon;
+// Dynamically import the Lucide icon
+onMounted(async () => {
+  try {
+    // Import from lucide-vue-next
+    const module = await import("lucide-vue-next");
 
-  // Convert from PascalCaseIcon or kebab-caseIcon to kebab-case.
-  name = name.replace(/([a-z0-9]|(?=[A-Z]))([A-Z])/g, "$1-$2").toLowerCase();
-
-  if (name.endsWith("-icon")) {
-    name = name.slice(0, -5);
+    // Get the icon component safely with type checking
+    const iconName = normalizedIconName.value;
+    if (module && typeof module === "object" && iconName in module) {
+      resolvedIconComponent.value = markRaw(module[iconName as keyof typeof module] as Component);
+    } else {
+      console.warn(`Lucide icon not found: ${iconName}`);
+    }
+  } catch (error) {
+    console.error(`Error loading Lucide icon: ${normalizedIconName.value}`, error);
   }
-
-  return `lucide:${name}`;
 });
 </script>
 
 <style lang="scss">
 .vc-lucide-icon {
-  & g,
-  & path {
-    stroke-width: var(--vc-lucide-icon-stroke-width, 1.5);
-  }
-
   display: inline-flex;
   align-items: center;
   justify-content: center;

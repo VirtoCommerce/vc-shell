@@ -1,1 +1,0 @@
-export { useOfferDetails } from "./useOfferDetails";

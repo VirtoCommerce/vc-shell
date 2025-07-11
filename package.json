@@ -28,8 +28,7 @@
     "apps/*",
     "framework",
     "cli/*",
-    "configs/*",
-    "sample/*"
+    "configs/*"
   ],
   "devDependencies": {
     "@chromatic-com/storybook": "^3",

@@ -1,5 +1,6 @@
 import { RouteRecordRaw } from "vue-router";
 import App from "../pages/App.vue";
+import Dashboard from "../pages/Dashboard.vue";
 import { Invite, Login, ResetPassword, useBladeNavigation, ChangePasswordPage } from "@vc-shell/framework";
 // eslint-disable-next-line import/no-unresolved
 import whiteLogoImage from "/assets/logo-white.svg";
@@ -14,13 +15,14 @@ export const routes: RouteRecordRaw[] = [
     meta: {
       root: true,
     },
-    children: [],
-    redirect: (to) => {
-      if (to.name === "App") {
-        return { path: "/{{ModuleName}}", params: to.params };
-      }
-      return to.path;
-    },
+    children: [
+      {
+        name: "Dashboard",
+        path: "",
+        alias: `/`,
+        component: Dashboard,
+      },
+    ],
   },
   {
     name: "Login",

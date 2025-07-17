@@ -1,3 +1,13 @@
+## [1.1.60](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.59...v1.1.60) (2025-07-17)
+
+
+### Features
+
+* **create-vc-ap):** updated sample and base layout ([9ec1677](https://github.com/VirtoCommerce/vc-shell/commit/9ec1677dc52eb99b0238f9e466904185bbfc2acb))
+* **create-vc-app:** implement initial dashboard setup with welcome widget and routing ([d924e71](https://github.com/VirtoCommerce/vc-shell/commit/d924e715467f766b88bd746ac31a7a2b4dec168f))
+
+
+
 ## [1.1.59](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.58...v1.1.59) (2025-07-11)
 
 

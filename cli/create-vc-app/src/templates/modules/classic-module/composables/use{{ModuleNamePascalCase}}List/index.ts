@@ -1,23 +1,40 @@
 import { computed, ref } from "vue";
 import { useAsync, useLoading } from "@vc-shell/framework";
 
-export default () => {
-  const data = ref([]);
-  const dataRes = ref();
+// Replace with the actual search query interface from the API client
+interface SearchQuery {
+  take?: number;
+  skip?: number;
+  sort?: string;
+}
+
+export default (options?: { pageSize?: number, sort?: string }) => {
+  const pageSize = options?.pageSize || 20;
+  const searchResult = ref();
+  const searchQuery = ref<SearchQuery>({
+    take: pageSize,
+    skip: 0,
+    sort: options?.sort || "createdDate:DESC",
+  });
 
   // Implement your own load function
-  const { loading: itemLoading, action: getItems } = useAsync(async (payload) => {
-    data.value = [];
+  const { loading: itemLoading, action: getItems } = useAsync<SearchQuery>(async (payload) => {
+    searchQuery.value = { ...searchQuery.value, ...payload };
+    searchResult.value = {
+      totalCount: 0,
+      items: [],
+    };
   });
 
   const loading = useLoading(itemLoading);
 
   return {
-    data: computed(() => data.value),
+    data: computed(() => searchResult.value?.items),
     loading: computed(() => loading.value),
-    totalCount: computed(() => dataRes.value?.totalCount),
-    pages: computed(() => Math.ceil(dataRes.value?.totalCount / 20)),
-    currentPage: 0 / Math.max(1, 20) + 1,
+    totalCount: computed(() => searchResult.value?.totalCount || 0),
+    pages: computed(() => Math.ceil((searchResult.value?.totalCount || 1) / pageSize)),
+    currentPage: computed(() => Math.ceil((searchQuery.value?.skip || 0) / Math.max(1, pageSize) + 1)),
     getItems,
+    searchQuery,
   };
 };

@@ -169,22 +169,19 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<Emits>();
 
-const { loading, getItem, saveItem, removeItem, item, currencyOptions } = useDetails();
+const { loading, getItem, saveItem, removeItem, item, currencyOptions, isModified } = useDetails();
 const { showConfirmation } = usePopup();
 const { onBeforeClose } = useBladeNavigation();
 const { t } = useI18n({ useScope: "global" });
-useForm({
+
+const { meta } = useForm({
   validateOnMount: false,
 });
-useBeforeUnload(computed(() => !isDisabled.value && modified.value));
 
-const modified = ref(false);
-const isFormValid = useIsFormValid();
-const isDirty = useIsFormDirty();
 const isDisabled = computed(() => {
-  return !isDirty.value || !isFormValid.value;
+  return !meta.value.dirty || !meta.value.valid;
 });
-let itemCopy: MockedItem;
+
 const title = computed(() => {
   return props.param
     ? item.value?.name
@@ -193,16 +190,6 @@ const title = computed(() => {
     : "Test App" + t("SAMPLE_APP.PAGES.DETAILS.TITLE.DETAILS");
 });
 
-watch(
-  () => item.value,
-  (state) => {
-    if (itemCopy) {
-      modified.value = !_.isEqual(itemCopy, state);
-    }
-  },
-  { deep: true },
-);
-
 const bladeToolbar = ref<IBladeToolbar[]>([
   {
     id: "save",
@@ -210,14 +197,13 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     title: "Save",
     async clickHandler() {
       await saveItem(item.value);
-      itemCopy = _.cloneDeep(item.value);
-      modified.value = false;
+
       emit("parent:call", {
         method: "reload",
       });
       emit("close:blade");
     },
-    disabled: computed(() => !(modified.value && !isDisabled.value)),
+    disabled: computed(() => !(isModified.value && !isDisabled.value)),
   },
   {
     id: "delete",
@@ -241,15 +227,16 @@ const bladeToolbar = ref<IBladeToolbar[]>([
 onMounted(async () => {
   if (props.param) {
     await getItem({ id: props.param });
-    itemCopy = _.cloneDeep(item.value);
   }
 });
 
 onBeforeClose(async () => {
-  if (!isDisabled.value && modified.value) {
-    return await showConfirmation(unref(computed(() => t("SAMPLE_APP.PAGES.ALERTS.CLOSE_CONFIRMATION"))));
+  if (!isDisabled.value && isModified.value) {
+    return await showConfirmation(t("SAMPLE_APP.PAGES.ALERTS.CLOSE_CONFIRMATION"));
   }
 });
+
+useBeforeUnload(computed(() => !isDisabled.value && isModified.value));
 
 defineExpose({
   title,

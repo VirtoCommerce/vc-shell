@@ -11,10 +11,6 @@
   "i18n-ally.localesPaths": [
     "framework/locales",
     "import-module/src/locales",
-    "sample/vc-app/src/locales",
-    "sample/vc-app-extend/src/locales",
-    "sample/vc-app/src/modules/sample/locales",
-    "sample/vc-app/src/modules/legacy-sample/locales"
   ],
   "i18n-ally.keystyle": "nested",
   "typescript.tsdk": "node_modules/typescript/lib",

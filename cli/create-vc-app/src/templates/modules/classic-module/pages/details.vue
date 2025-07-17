@@ -1,7 +1,7 @@
 <template>
   <VcBlade
     v-loading="loading"
-    :title="$t('{{ModuleNameUppercaseSnakeCase}}.PAGES.DETAILS.TITLE')"
+    :title="title"
     :expanded="expanded"
     :closable="closable"
     width="70%"
@@ -21,7 +21,8 @@
 <script lang="ts" setup>
 import { IBladeToolbar, IParentCallArgs } from "@vc-shell/framework";
 import { use{{ModuleNamePascalCase}}Details } from "./../composables";
-import { onMounted, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
+import { useI18n } from "vue-i18n";
 
 export interface Props {
   expanded?: boolean;
@@ -50,12 +51,18 @@ const props = withDefaults(defineProps<Props>(), {
 defineEmits<Emits>();
 
 const { loading, getItem } = use{{ModuleNamePascalCase}}Details();
+const { t } = useI18n({ useScope: "global" });
 
 const bladeToolbar = ref<IBladeToolbar[]>([]);
+const title = computed(() => t("{{ModuleNameUppercaseSnakeCase}}.PAGES.DETAILS.TITLE"));
 
 onMounted(async () => {
   if (props.param) {
     await getItem({ id: props.param });
   }
+});
+
+defineExpose({
+  title,
 });
 </script>

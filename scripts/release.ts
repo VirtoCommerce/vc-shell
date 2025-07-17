@@ -11,8 +11,6 @@ release({
     "configs/release-config",
     "configs/vite-config",
     "configs/ts-config",
-    "sample/vc-app",
-    "sample/vc-app-extend",
   ],
   toTag: (version) => `v${version}`,
   bumpVersion: async (pkgName, pkgVersion) => {

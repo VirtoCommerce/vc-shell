@@ -11,6 +11,9 @@ interface MockedItem {
 
 interface MockedQuery {
   keyword?: string;
+  take?: number;
+  skip?: number;
+  sort?: string;
 }
 
 const mockedItems: MockedItem[] = [

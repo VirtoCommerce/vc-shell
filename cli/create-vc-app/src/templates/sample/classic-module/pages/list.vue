@@ -17,7 +17,7 @@
       multiselect
       :loading="loading"
       :columns="columns"
-      :sort="sort"
+      :sort="sortExpression"
       :pages="pages"
       :total-count="totalCount"
       :search-value="searchValue"
@@ -41,12 +41,12 @@
 import { computed, ref, markRaw, onMounted, watch } from "vue";
 import {
   IActionBuilderResult,
-  IBladeEvent,
   IBladeToolbar,
   IParentCallArgs,
   ITableColumns,
   useBladeNavigation,
   usePopup,
+  useTableSort,
 } from "@vc-shell/framework";
 import { useI18n } from "vue-i18n";
 import { useList } from "./../composables";
@@ -64,7 +64,6 @@ export interface Emits {
   (event: "parent:call", args: IParentCallArgs): void;
   (event: "collapse:blade"): void;
   (event: "expand:blade"): void;
-  (event: "open:blade", blade: IBladeEvent): void;
   (event: "close:blade"): void;
 }
 
@@ -89,13 +88,20 @@ defineEmits<Emits>();
 const { t } = useI18n({ useScope: "global" });
 const { openBlade } = useBladeNavigation();
 const { showConfirmation } = usePopup();
-const { getItems, removeItems, data, loading, totalCount, pages, currentPage } = useList();
 
-const sort = ref("createdDate:DESC");
+const { sortExpression, handleSortChange: tableSortHandler } = useTableSort({
+  initialDirection: "DESC",
+  initialProperty: "createdDate",
+});
+
+const { getItems, removeItems, data, loading, totalCount, pages, currentPage, searchQuery } = useList({
+  sort: sortExpression.value,
+  pageSize: 20,
+});
+
 const searchValue = ref();
 const selectedItemId = ref<string>();
 const selectedIds = ref<string[]>([]);
-const query = ref();
 
 watch(
   () => props.param,
@@ -106,7 +112,10 @@ watch(
 );
 
 onMounted(async () => {
-  await reload();
+  await getItems({
+    ...searchQuery.value,
+    sort: sortExpression.value,
+  });
 });
 
 const bladeToolbar = ref<IBladeToolbar[]>([
@@ -165,7 +174,11 @@ const columns = ref<ITableColumns[]>([
 const title = computed(() => t("SAMPLE_APP.PAGES.LIST.HEADER.TITLE"));
 
 const reload = async () => {
-  await getItems(query.value);
+  await getItems({
+    ...searchQuery.value,
+    skip: (currentPage.value - 1) * (searchQuery.value.take ?? 10),
+    sort: sortExpression.value,
+  });
 };
 
 const onItemClick = (item: { id: string }) => {
@@ -182,32 +195,7 @@ const onItemClick = (item: { id: string }) => {
 };
 
 const onHeaderClick = (item: ITableColumns) => {
-  const sortOptions = ["DESC", "ASC", ""];
-
-  if (item.sortable) {
-    if (sort.value.split(":")[0] === item.id) {
-      const index = sortOptions.findIndex((x) => {
-        const sorting = sort.value.split(":")[1];
-        if (sorting) {
-          return x === sorting;
-        } else {
-          return x === "";
-        }
-      });
-
-      if (index !== -1) {
-        const newSort = sortOptions[(index + 1) % sortOptions.length];
-
-        if (newSort === "") {
-          sort.value = `${item.id}`;
-        } else {
-          sort.value = `${item.id}:${newSort}`;
-        }
-      }
-    } else {
-      sort.value = `${item.id}:${sortOptions[0]}`;
-    }
-  }
+  tableSortHandler(item.id);
 };
 
 const onSelectionChanged = (items: MockedItem[]) => {
@@ -246,6 +234,15 @@ async function remove(ids: string[]) {
     await reload();
   }
 }
+
+watch(
+  () => sortExpression.value,
+  async (newVal) => {
+    await getItems({
+      sort: newVal,
+    });
+  },
+);
 
 defineExpose({
   title,

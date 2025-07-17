@@ -7,7 +7,3 @@ cli/api-client/public
 cli/config/dist
 cli/create-vc-app/src/templates
 api-client.ts
-sample/vc-app/dist
-sample/vc-app-extends/dist
-sample/vc-app/src/api-client
-sample/vc-app-extend/src/api-client

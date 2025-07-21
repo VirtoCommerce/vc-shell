@@ -38,10 +38,10 @@ export const routes: RouteRecordRaw[] = [
     name: "Invite",
     path: "/invite",
     component: Invite,
-    props: (route) => ({
-      userId: route.query.userId,
-      token: route.query.token,
-      userName: route.query.userName,
+    props: (_route) => ({
+      userId: _route.query.userId,
+      token: _route.query.token,
+      userName: _route.query.userName,
       logo: whiteLogoImage,
       background: bgImage,
     }),
@@ -50,10 +50,10 @@ export const routes: RouteRecordRaw[] = [
     name: "ResetPassword",
     path: "/resetpassword",
     component: ResetPassword,
-    props: (route) => ({
-      userId: route.query.userId,
-      token: route.query.token,
-      userName: route.query.userName,
+    props: (_route) => ({
+      userId: _route.query.userId,
+      token: _route.query.token,
+      userName: _route.query.userName,
       logo: whiteLogoImage,
       background: bgImage,
     }),
@@ -65,16 +65,16 @@ export const routes: RouteRecordRaw[] = [
     meta: {
       forced: true,
     },
-    props: (route) => ({
+    props: () => ({
       background: bgImage,
     }),
   },
   {
     path: "/:pathMatch(.*)*",
     component: App,
-    beforeEnter: async (to) => {
+    beforeEnter: async (_to) => {
       const { routeResolver } = useBladeNavigation();
-      return routeResolver(to);
+      return routeResolver(_to);
     },
   },
 ];

@@ -93,7 +93,7 @@ import { LogoutButton } from "../../../../shared/components/logout-button";
 import { useI18n } from "vue-i18n";
 import { provideGlobalSearch } from "../../../../core/composables/useGlobalSearch";
 import { provideDashboardService } from "../../../../core/composables/useDashboard";
-import { DynamicModulesKey } from "../../../../injection-keys";
+import { DynamicModulesKey, EMBEDDED_MODE } from "../../../../injection-keys";
 import { provideMenuService } from "../../../../core/composables/useMenuService";
 import { provideAppBarMobileButtonsService } from "../../../../core/composables/useAppBarMobileButtons";
 import { useUserManagement } from "../../../../core/composables/useUserManagement";
@@ -247,6 +247,7 @@ provide(DynamicModulesKey, dynamicModules);
 provideDashboardService();
 provideMenuService();
 provideGlobalSearch();
+provide(EMBEDDED_MODE, route.query.EmbeddedMode === "true");
 
 onUnmounted(() => {
   isAppReady.value = false;

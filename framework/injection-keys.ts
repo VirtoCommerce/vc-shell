@@ -30,3 +30,4 @@ export const AppBarMobileButtonsServiceKey = Symbol(
   "AppBarMobileButtonsService",
 ) as InjectionKey<IAppBarMobileButtonsService>;
 export const TOOLBAR_SERVICE = Symbol("toolbar-service");
+export const EMBEDDED_MODE = Symbol("embedded-mode") as InjectionKey<boolean>;

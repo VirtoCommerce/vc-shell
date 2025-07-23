@@ -1,6 +1,6 @@
 <template>
   <div
-    v-if="($isMobile.value && blades.length <= 1) || $isDesktop.value"
+    v-if="showAppBar"
     class="app-bar-header"
     :class="{
       'app-bar-header--collapsed': !expanded && !$isMobile.value,
@@ -68,9 +68,10 @@
 <script lang="ts" setup>
 import { VcIcon } from "../../../../../";
 import { MenuBurgerIcon } from "../../../../../atoms/vc-icon/icons";
-import { computed, ref, watchEffect, MaybeRef } from "vue";
+import { computed, ref, watchEffect, MaybeRef, inject, Ref } from "vue";
 import { useNotifications } from "../../../../../../../core/composables";
 import { useBladeNavigation } from "./../../../../../../../shared";
+import { EMBEDDED_MODE } from "../../../../../../../injection-keys";
 
 defineProps<{
   logo?: string;
@@ -87,6 +88,16 @@ const { blades, currentBladeNavigationData } = useBladeNavigation();
 
 const viewTitle = ref("");
 const currentBladeId = ref(0);
+const isEmbedded = inject(EMBEDDED_MODE);
+const isMobile = inject("isMobile") as Ref<boolean>;
+const isDesktop = inject("isDesktop") as Ref<boolean>;
+
+const showAppBar = computed(() => {
+  if (isEmbedded) {
+    return false;
+  }
+  return (isMobile.value && blades.value.length <= 1) || isDesktop.value;
+});
 
 watchEffect(
   () => {

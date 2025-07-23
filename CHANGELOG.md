@@ -1,3 +1,12 @@
+## [1.1.61](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.60...v1.1.61) (2025-07-23)
+
+
+### Features
+
+* add embedded mode support ([647253b](https://github.com/VirtoCommerce/vc-shell/commit/647253be9bcd5c1b347fd1727cfef9810e9d0d5f))
+
+
+
 ## [1.1.60](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.59...v1.1.60) (2025-07-17)
 
 

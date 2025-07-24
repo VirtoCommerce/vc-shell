@@ -1,6 +1,5 @@
-import { Component, computed, ComputedRef, ref, watch, type Ref } from "vue";
+import { Component, ref, type Ref } from "vue";
 import * as _ from "lodash-es";
-import { i18n } from "./../plugins/i18n";
 import type { MenuItem } from "../types";
 import { createUnrefFn, useArrayFind } from "@vueuse/core";
 
@@ -33,8 +32,6 @@ const rawMenu: Ref<MenuItem[]> = ref([]);
  * Handles the registration and organization of menu items
  */
 export function createMenuService(): MenuService {
-  const { t } = i18n.global;
-
   /**
    * Add a new menu item to the raw menu and rebuild the menu structure
    * @param item - The menu item to add
@@ -89,16 +86,8 @@ export function createMenuService(): MenuService {
   /**
    * Creates a localized ID from a title
    */
-  function createItemId(title: string | ComputedRef<string>): string {
-    const titleValue = typeof title === "string" ? t(title) : title.value;
-    return _.snakeCase(titleValue);
-  }
-
-  /**
-   * Creates a localized computed title
-   */
-  function createLocalizedTitle(title: string): ComputedRef<string> {
-    return computed(() => t(title));
+  function createItemId(title: string): string {
+    return _.snakeCase(title);
   }
 
   /**
@@ -135,7 +124,7 @@ export function createMenuService(): MenuService {
     // Create the item to be added to the group
     const groupItem = {
       ..._.omit(item, ["group", "groupIcon", "groupPriority", "groupConfig"]),
-      title: createLocalizedTitle(item.title as string),
+      title: item.title,
     } as MenuItem;
 
     if (existingGroup.value && existingGroup.value.children) {
@@ -145,7 +134,7 @@ export function createMenuService(): MenuService {
       // Update existing group properties if using groupConfig
       if (item.groupConfig) {
         if (item.groupConfig.title) {
-          existingGroup.value.title = createLocalizedTitle(item.groupConfig.title);
+          existingGroup.value.title = item.groupConfig.title;
         }
         if (item.groupConfig.icon !== undefined) {
           existingGroup.value.groupIcon = item.groupConfig.icon;
@@ -162,7 +151,7 @@ export function createMenuService(): MenuService {
       const group = {
         groupId,
         groupIcon: groupIcon ?? "",
-        title: createLocalizedTitle(groupTitle),
+        title: groupTitle,
         children: [groupItem],
         priority: groupPriority ?? item.priority ?? DEFAULT_PRIORITY,
         permissions: groupPermissions,
@@ -178,7 +167,7 @@ export function createMenuService(): MenuService {
     if (item.title) {
       const standaloneItem = {
         ...item,
-        title: createLocalizedTitle(item.title as string),
+        title: item.title,
       } as MenuItem;
       upsert(constructedMenu.value, standaloneItem);
     }
@@ -192,8 +181,8 @@ export function createMenuService(): MenuService {
       .map(
         (item): MenuItem => ({
           ...item,
-          title: createLocalizedTitle(item.title as string),
-          id: item.id || createItemId(item.title as ComputedRef<string>),
+          title: item.title,
+          id: item.id || createItemId(item.title),
           children: item.children?.sort(sortByGroupPriority),
         }),
       )

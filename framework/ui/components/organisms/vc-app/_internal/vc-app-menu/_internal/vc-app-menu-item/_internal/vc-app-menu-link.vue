@@ -7,7 +7,7 @@
       <template
         v-if="!expand"
         #tooltip
-        >{{ title }}</template
+        >{{ $t(title ?? "") }}</template
       >
       <div
         class="vc-app-menu-link__item"
@@ -43,7 +43,7 @@
             class="vc-app-menu-link__title"
           >
             <div class="vc-app-menu-link__title-truncate">
-              {{ title }}
+              {{ $t(title ?? "") }}
             </div>
             <div
               v-if="(!!children?.length && expand) || false"
@@ -76,7 +76,7 @@
         <template
           v-if="!expand"
           #tooltip
-          >{{ nested.title }}</template
+          >{{ $t(nested.title) }}</template
         >
         <router-link
           v-if="$hasAccess(nested.permissions!) && nested.url"
@@ -126,7 +126,7 @@
                     'vc-app-menu-link__child-item-title--no-icon': !nested.icon,
                   }"
                 >
-                  {{ nested.title }}
+                  {{ $t(nested.title) }}
                 </p>
               </Transition>
             </div>

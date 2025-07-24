@@ -176,7 +176,7 @@ export type ITableColumns = ITableColumnsBase | (ITableColumnsBase & IImageColum
 export interface MenuItem extends Omit<MenuItemConfig, "title" | "id"> {
   priority: number;
   routeId?: string;
-  title: ComputedRef<string> | string;
+  title: string;
   url?: string;
   groupIcon?: string | Component;
   groupId?: string;

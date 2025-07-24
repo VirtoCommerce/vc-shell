@@ -36,7 +36,7 @@
 <script lang="ts" setup>
 import { GenericDropdown } from "../generic-dropdown";
 import { useTheme } from "../../../core/composables/useTheme";
-import { ref, watch } from "vue";
+import { ref } from "vue";
 import { notification } from "..";
 import { SettingsMenuItem } from "../settings-menu-item";
 import { VcIcon } from "../../../ui/components";
@@ -47,16 +47,11 @@ const opened = ref(false);
 const handleThemeSelect = (theme: { key: string; name: string }) => {
   setTheme(theme.key);
   opened.value = false;
-};
 
-watch(
-  () => currentLocalizedName.value,
-  (newLocalizedName) => {
-    if (newLocalizedName) {
-      notification(newLocalizedName);
-    }
-  },
-);
+  if (currentLocalizedName.value) {
+    notification(currentLocalizedName.value);
+  }
+};
 </script>
 
 <style lang="scss">

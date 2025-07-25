@@ -1,3 +1,12 @@
+## [1.1.63](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.62...v1.1.63) (2025-07-25)
+
+
+### Bug Fixes
+
+* **vite-config:** dedupe and externalize vue-i18n ([98c7def](https://github.com/VirtoCommerce/vc-shell/commit/98c7def46db6f21866125946607bbb25c447ebad))
+
+
+
 ## [1.1.62](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.61...v1.1.62) (2025-07-24)
 
 

@@ -1,3 +1,12 @@
+## [1.1.64](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.63...v1.1.64) (2025-07-25)
+
+
+### Bug Fixes
+
+* remove intlify and vue-i18n from CSS chunk splitting logic ([a1c14c0](https://github.com/VirtoCommerce/vc-shell/commit/a1c14c0f8eae1126aef6ddcbd146533ac60360a3))
+
+
+
 ## [1.1.63](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.62...v1.1.63) (2025-07-25)
 
 

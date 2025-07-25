@@ -91,6 +91,7 @@ if (process.env.APP_PLATFORM_URL) {
 export default defineConfig({
   mode,
   resolve: {
+    dedupe: ["@intlify", "vue", "@vue/runtime-core", "vue-i18n"],
     alias:
       mode === "development"
         ? isMonorepo
@@ -129,6 +130,7 @@ export default defineConfig({
     // https://vue-i18n.intlify.dev/guide/advanced/optimization.html#reduce-bundle-size-with-feature-build-flags
     __VUE_I18N_FULL_INSTALL__: true,
     __VUE_I18N_LEGACY_API__: false,
+    __INTLIFY_PROD_DEVTOOLS__: mode === "development",
 
     // Set demo mode
     __DEMO_MODE__: isDemo,
@@ -174,6 +176,7 @@ export default defineConfig({
     sourcemap: mode === "development",
     emptyOutDir: true,
     rollupOptions: {
+      external: ["@intlify", "vue-i18n"],
       // Improve tree-shaking
       treeshake: {
         moduleSideEffects: false,
@@ -182,6 +185,10 @@ export default defineConfig({
       },
       // plugins: mode === "production" ? [analyzer({ summaryOnly: true })] : [],
       output: {
+        globals: {
+          "@intlify": "@intlify",
+          "vue-i18n": "vue-i18n",
+        },
         entryFileNames: `[name]` + hash + `.js`,
         chunkFileNames: `[name]` + hash + `.js`,
         // Optimize chunk loading order

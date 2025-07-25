@@ -11,7 +11,7 @@ export default defineConfig({
   //   }) as PluginOption,
   // ],
   resolve: {
-    dedupe: ["@intlify", "vue", "@vue/runtime-core"],
+    dedupe: ["@intlify", "vue", "@vue/runtime-core", "vue-i18n"],
   },
   build: {
     cssCodeSplit: false,
@@ -58,7 +58,9 @@ export default defineConfig({
               normalizedId.match(/\.(css|scss|sass|less|styl)$/i) ||
               normalizedId.includes("/css/") ||
               normalizedId.includes("/styles/") ||
-              normalizedId.includes("normalize")
+              normalizedId.includes("normalize") ||
+              normalizedId.includes("intlify") ||
+              normalizedId.includes("vue-i18n")
             ) {
               return undefined; // Keep in main chunk
             }
@@ -83,11 +85,11 @@ export default defineConfig({
         },
       },
       // Improved tree-shaking
-      treeshake: {
-        moduleSideEffects: false,
-        propertyReadSideEffects: false,
-        unknownGlobalSideEffects: false,
-      },
+      // treeshake: {
+      //   moduleSideEffects: false,
+      //   propertyReadSideEffects: false,
+      //   unknownGlobalSideEffects: false,
+      // },
     },
     minify: true,
     terserOptions: {

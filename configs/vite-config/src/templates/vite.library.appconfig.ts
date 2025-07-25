@@ -58,9 +58,10 @@ export default defineConfig({
               normalizedId.match(/\.(css|scss|sass|less|styl)$/i) ||
               normalizedId.includes("/css/") ||
               normalizedId.includes("/styles/") ||
-              normalizedId.includes("normalize") ||
-              normalizedId.includes("intlify") ||
-              normalizedId.includes("vue-i18n")
+              normalizedId.includes("normalize")
+              //  ||
+              // normalizedId.includes("intlify") ||
+              // normalizedId.includes("vue-i18n")
             ) {
               return undefined; // Keep in main chunk
             }

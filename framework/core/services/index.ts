@@ -2,6 +2,7 @@ export * from "./app-bar-menu-service";
 export * from "./app-bar-mobile-buttons-service";
 export * from "./dashboard-service";
 export * from "./global-search-service";
+export * from "./language-service";
 export * from "./menu-service";
 export * from "./settings-menu-service";
 export * from "./toolbar-service";

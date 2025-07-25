@@ -16,12 +16,7 @@ import { AppInsightsPlugin, AppInsightsPluginOptions } from "vue3-application-in
 import { useAppInsights } from "./core/composables";
 
 // Import Blade Registry
-import {
-  createBladeRegistry,
-  BladeRegistryKey,
-  IBladeRegistryInstance,
-  IBladeRegistry,
-} from "./core/composables/useBladeRegistry";
+import { createBladeRegistry, BladeRegistryKey, IBladeRegistryInstance } from "./core/composables/useBladeRegistry";
 
 import * as coreComposables from "./core/composables";
 import * as corePlugins from "./core/plugins";
@@ -43,6 +38,7 @@ import {
   createAppBarWidgetService,
   createSettingsMenuService,
   createToolbarService,
+  createLanguageService,
 } from "./core/services";
 import {
   AppBarWidgetServiceKey,
@@ -51,6 +47,7 @@ import {
   SettingsMenuServiceKey,
   TOOLBAR_SERVICE,
   WidgetServiceKey,
+  LanguageServiceKey,
 } from "./injection-keys";
 
 import "@fortawesome/fontawesome-free/css/fontawesome.min.css";
@@ -158,7 +155,10 @@ export default {
 
     app.use(i18n);
 
-    const { resolveCamelCaseLocale } = coreComposables.useLanguages();
+    const languageService = createLanguageService();
+    app.provide(LanguageServiceKey, languageService);
+
+    const { resolveCamelCaseLocale } = languageService;
 
     app.config.globalProperties.$mergeLocaleMessage = (locale: I18NParams[0], message: I18NParams[1]) => {
       i18n.global.mergeLocaleMessage(resolveCamelCaseLocale(locale), message);
@@ -298,7 +298,7 @@ export default {
      * Check if user is authenticated and redirect to login page if not.
      */
     // TODO add check if app has login page
-    args.router.beforeEach(async (to, from, next) => {
+    args.router.beforeEach(async (to, _, next) => {
       const { isAuthenticated } = useUserManagement();
 
       if (to.meta.root === true) {

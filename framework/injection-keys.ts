@@ -10,6 +10,7 @@ import {
   ISettingsMenuService,
   IAppBarWidgetService,
   IAppBarMobileButtonsService,
+  ILanguageService,
 } from "./core/services";
 
 export const navigationViewLocation: InjectionKey<BladeVNode> = Symbol("blade navigation view location");
@@ -29,5 +30,6 @@ export const AppBarWidgetServiceKey = Symbol("AppBarWidgetService") as Injection
 export const AppBarMobileButtonsServiceKey = Symbol(
   "AppBarMobileButtonsService",
 ) as InjectionKey<IAppBarMobileButtonsService>;
+export const LanguageServiceKey = Symbol("LanguageService") as InjectionKey<ILanguageService>;
 export const TOOLBAR_SERVICE = Symbol("toolbar-service");
 export const EMBEDDED_MODE = Symbol("embedded-mode") as InjectionKey<boolean>;

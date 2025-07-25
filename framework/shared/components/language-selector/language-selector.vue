@@ -3,9 +3,15 @@
     <template #trigger>
       <div class="vc-language-selector__trigger">
         <VcImage
+          v-if="currLocaleFlag"
           :src="currLocaleFlag"
-          empty-icon="material-language"
           class="vc-language-selector__flag"
+        />
+        <VcIcon
+          v-else
+          icon="material-language"
+          class="vc-language-selector__flag"
+          size="m"
         />
         <span class="vc-language-selector__title">
           {{ $t("COMPONENTS.LANGUAGE_SELECTOR.TITLE") }}
@@ -17,13 +23,13 @@
       <GenericDropdown
         :opened="opened"
         :items="languageItems"
-        :is-item-active="(lang) => lang.lang === $i18n.locale"
+        :is-item-active="(lang) => lang.lang === currentLocale"
         @item-click="handleLanguageSelect"
       >
         <template #item="{ item: lang, click }">
           <div
             class="vc-language-selector__item"
-            :class="{ 'vc-language-selector__item--active': lang.lang === $i18n.locale }"
+            :class="{ 'vc-language-selector__item--active': lang.lang === currentLocale }"
             @click="click"
           >
             <VcImage
@@ -54,7 +60,7 @@ interface ILanguage {
 }
 
 const { availableLocales, getLocaleMessage, locale } = useI18n({ useScope: "global" });
-const { setLocale, getFlag } = useLanguages();
+const { setLocale, getFlag, currentLocale } = useLanguages();
 
 const opened = ref(false);
 const currLocaleFlag = ref<string>();
@@ -63,8 +69,8 @@ const languageItems: ILanguage[] = availableLocales
   .map((locale: string) => ({
     lang: locale,
     title: (getLocaleMessage(locale) as { language_name: string }).language_name,
-    clickHandler(lang: string) {
-      setLocale(lang);
+    async clickHandler(lang: string) {
+      await setLocale(lang);
     },
     flag: "",
   }))
@@ -77,12 +83,14 @@ const handleLanguageSelect = (lang: ILanguage) => {
   opened.value = false;
 };
 
+// Watch both i18n locale and currentLocale from language service
 watch(
-  [() => languageItems, () => locale.value],
+  [() => languageItems, () => locale.value, () => currentLocale.value],
   async ([newValLangItem]) => {
     for (const lang of newValLangItem) {
       lang.flag = await getFlag(lang.lang);
-      if (lang.lang === locale.value) {
+      // Use currentLocale from language service for consistency
+      if (lang.lang === currentLocale.value) {
         currLocaleFlag.value = lang.flag;
       }
     }

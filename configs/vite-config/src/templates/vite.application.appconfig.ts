@@ -176,19 +176,19 @@ export default defineConfig({
     sourcemap: mode === "development",
     emptyOutDir: true,
     rollupOptions: {
-      external: ["@intlify", "vue-i18n"],
+      // external: ["@intlify", "vue-i18n"],
       // Improve tree-shaking
-      treeshake: {
-        moduleSideEffects: false,
-        propertyReadSideEffects: false,
-        unknownGlobalSideEffects: false,
-      },
+      // treeshake: {
+      //   moduleSideEffects: false,
+      //   propertyReadSideEffects: false,
+      //   unknownGlobalSideEffects: false,
+      // },
       // plugins: mode === "production" ? [analyzer({ summaryOnly: true })] : [],
       output: {
-        globals: {
-          "@intlify": "@intlify",
-          "vue-i18n": "vue-i18n",
-        },
+        // globals: {
+        //   "@intlify": "@intlify",
+        //   "vue-i18n": "vue-i18n",
+        // },
         entryFileNames: `[name]` + hash + `.js`,
         chunkFileNames: `[name]` + hash + `.js`,
         // Optimize chunk loading order

@@ -56,10 +56,10 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   render: (args) => ({
     components: { VcCol, VcImage },
-  setup() {
-    return { args };
-  },
-  template: `
+    setup() {
+      return { args };
+    },
+    template: `
       <vc-col v-bind="args">
         <vc-image src="https://picsum.photos/200" size="xl"/>
         <vc-image src="https://picsum.photos/200" size="xl"/>

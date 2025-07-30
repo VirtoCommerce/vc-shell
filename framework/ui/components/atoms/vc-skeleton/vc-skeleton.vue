@@ -25,14 +25,14 @@ const props = withDefaults(
   {
     rows: 1,
     animated: false,
-  }
+  },
 );
 
 function getRowWidth(index: number) {
   if (index === props.rows) {
-    return '60%';
+    return "60%";
   }
-  return '100%';
+  return "100%";
 }
 </script>
 

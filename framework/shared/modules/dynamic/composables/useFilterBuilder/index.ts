@@ -390,8 +390,7 @@ export default <Query>(args: {
           h(
             VcCol,
             {
-              class:
-                "tw-px-5 tw-py-[10px] !tw-flex-auto tw-border-t tw-border-solid tw-border-[var(--neutrals-200)]",
+              class: "tw-px-5 tw-py-[10px] !tw-flex-auto tw-border-t tw-border-solid tw-border-[var(--neutrals-200)]",
             },
             () =>
               h("div", { class: "tw-flex tw-justify-start" }, [

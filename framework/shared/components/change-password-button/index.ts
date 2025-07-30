@@ -1,1 +1,1 @@
-export { default as ChangePasswordButton } from './change-password-button.vue';
+export { default as ChangePasswordButton } from "./change-password-button.vue";

@@ -55,7 +55,6 @@ const createBladeInstanceConstructor = (
   existingComposables?: { [key: string]: (...args: any[]) => any },
   existingMixins?: ((...args: any[]) => any)[],
 ) => {
-
   return defineComponent({
     ...bladeComponent,
     name: bladeName,

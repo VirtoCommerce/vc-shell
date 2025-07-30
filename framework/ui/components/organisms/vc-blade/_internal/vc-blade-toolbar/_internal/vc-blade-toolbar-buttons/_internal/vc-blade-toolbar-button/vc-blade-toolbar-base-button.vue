@@ -36,7 +36,6 @@ import { ref, ComputedRef, Ref } from "vue";
 import { VcIcon } from "../../../../../../../../";
 import type { Props } from "./props";
 
-
 const props = withDefaults(defineProps<Props>(), {
   disabled: false,
   size: "m",

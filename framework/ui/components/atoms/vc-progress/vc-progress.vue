@@ -32,14 +32,9 @@ withDefaults(defineProps<Props>(), {
   --progressbar-foreground-color: var(--accent-200);
   --progressbar-border-width: 1px;
   --progressbar-border-color: var(--neutrals-200);
-  --progressbar-striped-bg: linear-gradient(
-        45deg,
-        transparent 50%,
-        var(--accent-200) 50%,
-        var(--accent-200) 75%,
-        transparent 75%
-      )
-      left/30px 30px repeat-x,
+  --progressbar-striped-bg:
+    linear-gradient(45deg, transparent 50%, var(--accent-200) 50%, var(--accent-200) 75%, transparent 75%) left/30px
+      30px repeat-x,
     var(--accent-50);
   --progressbar-striped-color: var(--accent-200);
 }

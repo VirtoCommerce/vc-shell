@@ -1,3 +1,13 @@
+## [1.1.66](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.65...v1.1.66) (2025-07-30)
+
+
+### Features
+
+* **generic-dropdown:** improve height applying ([8a39233](https://github.com/VirtoCommerce/vc-shell/commit/8a3923316f6ae488d08ad0e585d1b417d1eaaa5b))
+* **vc-table:** improve columns sorting, resizing ([fdcac27](https://github.com/VirtoCommerce/vc-shell/commit/fdcac270c342aa76411f153991faf938ca868cf3))
+
+
+
 ## [1.1.65](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.64...v1.1.65) (2025-07-29)
 
 

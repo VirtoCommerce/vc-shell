@@ -19,8 +19,11 @@
         ref="floatingEl"
         v-on-click-outside="[() => $emit('update:opened', false), { ignore: [referenceEl] }]"
         class="vc-dropdown__dropdown"
+        :style="{
+          maxHeight: calcHeight,
+          ...floatingStyle,
+        }"
         :class="dropdownClasses"
-        :style="floatingStyle"
       >
         <div
           class="vc-dropdown__content"
@@ -150,6 +153,11 @@ const floatingStyle = computed(() => {
     width: "max-content",
   };
 });
+
+const calcHeight = computed(() => {
+  if (!props.maxHeight) return "";
+  return typeof props.maxHeight === "number" ? `${props.maxHeight}px` : props.maxHeight;
+});
 </script>
 
 <style lang="scss">
@@ -173,7 +181,7 @@ const floatingStyle = computed(() => {
   }
 
   &__dropdown {
-    @apply tw-rounded-[6px] tw-w-full tw-overflow-hidden tw-flex tw-flex-col tw-relative tw-h-max;
+    @apply tw-rounded-[6px] tw-w-full tw-overflow-auto tw-flex tw-flex-col tw-relative tw-h-max;
 
     &--mobile {
       @apply tw-w-full;

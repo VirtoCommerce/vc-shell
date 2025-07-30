@@ -81,7 +81,6 @@ defineSlots<{
 </script>
 
 <style lang="scss">
-
 .vc-table-empty {
   @apply tw-w-full tw-h-full tw-box-border tw-flex tw-flex-col tw-items-center tw-justify-center;
 

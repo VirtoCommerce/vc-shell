@@ -5,6 +5,7 @@
       :items="internalItems"
       placement="bottom-end"
       floating
+      max-height="40%"
       @item-click="selectItem"
       @update:opened="(state) => emit('onActive', state)"
     >

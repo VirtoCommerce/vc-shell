@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ref, Ref, computed, toValue, toRefs, MaybeRef } from "vue";
+import { ref, Ref, computed, toValue, toRefs, MaybeRef, nextTick } from "vue";
 import { useLocalStorage } from "@vueuse/core";
 import { cloneDeep, pick, unionBy } from "lodash-es";
 import { TableColPartial } from "../types";
@@ -12,10 +12,11 @@ export interface UseTableStateOptions {
     "auto" | "defined" | MaybeRef<ITableColumns[]> | (() => ITableColumns[])
   >;
   expanded: Ref<boolean, boolean>;
+  headerRef?: Ref<HTMLElement | undefined>;
 }
 
 export function useTableState(options: UseTableStateOptions) {
-  const { stateKey, columnSelector, expanded } = toRefs(options);
+  const { stateKey, columnSelector, expanded, headerRef } = toRefs(options);
 
   const state = useLocalStorage<TableColPartial[]>(`VC_TABLE_STATE_${stateKey.value.toUpperCase()}`, []);
   const internalColumns = ref<TableColPartial[]>([]) as Ref<TableColPartial[]>;
@@ -41,25 +42,30 @@ export function useTableState(options: UseTableStateOptions) {
       if (!expanded?.value) {
         return x.alwaysVisible;
       }
-      return x;
+      return true;
     });
   });
 
   function saveState() {
     console.debug("[@vc-shell/framework#vc-table.vue] - Save state");
     const colsClone = cloneDeep(internalColumns.value);
-    state.value = colsClone.map((col) => pick(col, "id", "visible", "width", "predefined"));
+    state.value = colsClone.map((col) => pick(col, "id", "visible", "width", "predefined", "title"));
   }
 
   function mergeColumns(storedCol: TableColPartial, predefinedCol: TableColPartial | undefined) {
     if (predefinedCol) {
       if (predefinedCol.predefined && !storedCol.predefined) {
-        return { ...predefinedCol, predefined: true };
+        return { 
+          ...predefinedCol, 
+          predefined: true,
+          width: storedCol.width || predefinedCol.width,
+          visible: storedCol.visible !== undefined ? storedCol.visible : predefinedCol.visible
+        };
       } else {
         return {
           ...predefinedCol,
           visible: storedCol.visible,
-          width: storedCol.width,
+          width: storedCol.width || predefinedCol.width,
           title: predefinedCol.title || storedCol.title || "",
         };
       }
@@ -145,15 +151,62 @@ export function useTableState(options: UseTableStateOptions) {
   }
 
   function toggleColumn(item: ITableColumns) {
+    // Find the original column to preserve its title
+    const originalColumn = allColumns.value.find((col) => col.id === item.id);
+
     // if item is not in internalColumns, add it
     if (!internalColumns.value.find((x) => x.id === item.id)) {
-      internalColumns.value.push(item);
+      const newCol = {
+        ...item,
+        title: item.title || originalColumn?.title || "",
+        width: item.width || originalColumn?.width,
+      };
+      
+      // Don't set any width for new columns - they'll take available space
+      // The flexbox will handle the distribution
+      if (!newCol.width) {
+        // Keep it undefined to use flexbox
+        newCol.width = undefined;
+      }
+      
+      internalColumns.value.push(newCol);
+      
+      // When adding a new column, check if we need to adjust widths to prevent overflow
+      const visibleColumns = internalColumns.value.filter(col => col.visible !== false);
+      const hasFixedWidths = visibleColumns.some(col => col.width);
+      
+      if (hasFixedWidths) {
+        // Calculate total fixed width
+        let totalFixedWidth = 0;
+        visibleColumns.forEach(col => {
+          if (col.width && typeof col.width === 'string') {
+            const width = parseInt(col.width);
+            if (!isNaN(width)) {
+              totalFixedWidth += width;
+            }
+          }
+        });
+        
+        // If total fixed width is too large, remove fixed widths to allow flex distribution
+        if (totalFixedWidth > 800) { // Assuming a reasonable container width
+          internalColumns.value = internalColumns.value.map(col => ({
+            ...col,
+            width: undefined // Let flexbox handle it
+          }));
+        }
+      }
     }
 
     if (item) {
       internalColumns.value = internalColumns.value.map((x) => {
         if (x.id === item.id) {
-          x = item;
+          const updatedCol = {
+            ...item,
+            title: item.title || originalColumn?.title || x.title || "",
+            width: item.width || originalColumn?.width || x.width,
+          };
+          
+          return updatedCol;
         }
         return x;
       });

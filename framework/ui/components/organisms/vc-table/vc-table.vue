@@ -273,7 +273,8 @@ const emit = defineEmits<{
 
 const instance = getCurrentInstance();
 
-const { items, columns, stateKey, columnSelector, expanded, selectionItems, enableItemActions, itemActionBuilder } = toRefs(props);
+const { items, columns, stateKey, columnSelector, expanded, selectionItems, enableItemActions, itemActionBuilder } =
+  toRefs(props);
 
 // template refs
 const tableBody = ref<HTMLElement | null>();

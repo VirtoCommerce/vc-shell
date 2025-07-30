@@ -42,8 +42,8 @@
       :id="`${(item && typeof item === 'object' && 'id' in item && item.id) || index}_${cell.id}`"
       :key="`${(item && typeof item === 'object' && 'id' in item && item.id) || index}_${cell.id}`"
       class="vc-table-row__cell"
-      :class="[cell.class]"
-      :style="{ maxWidth: cell.width, width: cell.width }"
+      :class="[cell.class, { 'vc-table-row__cell--fixed-width': !!cell.width }]"
+      :style="cell.width ? { maxWidth: cell.width, width: cell.width, flex: '0 1 auto', minWidth: '60px' } : { flex: '1 1 0', minWidth: '60px' }"
     >
       <div class="vc-table-row__cell-content">
         <slot
@@ -144,7 +144,7 @@ defineEmits<{
 
 <style lang="scss">
 .vc-table-row {
-  @apply tw-flex tw-w-full tw-h-14 tw-min-h-14 tw-relative;
+  @apply tw-flex tw-w-full tw-h-14 tw-min-h-14 tw-relative tw-overflow-x-hidden;
 
   &--odd {
     @apply tw-bg-[--table-row-bg-odd];
@@ -167,7 +167,7 @@ defineEmits<{
   }
 
   &__checkbox {
-    @apply tw-w-[36px] tw-max-w-[36px] tw-min-w-[36px] tw-relative tw-flex-1 tw-flex tw-items-center tw-justify-center;
+    @apply tw-w-[36px] tw-max-w-[36px] tw-min-w-[36px] tw-relative tw-flex tw-items-center tw-justify-center;
   }
 
   &__checkbox-content {
@@ -179,7 +179,11 @@ defineEmits<{
   }
 
   &__cell {
-    @apply tw-box-border tw-overflow-hidden tw-px-3 tw-flex-1 tw-flex tw-items-center tw-relative;
+    @apply tw-box-border tw-overflow-hidden tw-px-3 tw-flex tw-items-center tw-relative tw-flex-1;
+
+    &--fixed-width {
+      @apply tw-flex-1;
+    }
   }
 
   &__cell-content {

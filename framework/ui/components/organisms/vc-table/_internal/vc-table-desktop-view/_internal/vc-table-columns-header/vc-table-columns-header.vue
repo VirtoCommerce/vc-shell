@@ -30,16 +30,21 @@
           {
             'vc-table-columns-header__cell--sortable': item.sortable,
             'vc-table-columns-header__cell--last': index === filteredCols.length - 1,
+            'vc-table-columns-header__cell--fixed-width': !!item.width,
           },
           item.align ? tableAlignment[item.align] : '',
         ]"
-        :style="{ maxWidth: item.width, width: item.width }"
+        :style="
+          item.width
+            ? { maxWidth: item.width, width: item.width, flex: '0 1 auto', minWidth: '60px' }
+            : { flex: '1 1 0', minWidth: '60px' }
+        "
         @mousedown="reorderableColumns && onColumnHeaderMouseDown($event)"
         @dragstart="reorderableColumns && onColumnHeaderDragStart($event, item)"
         @dragover="reorderableColumns && onColumnHeaderDragOver($event)"
         @dragleave="reorderableColumns && onColumnHeaderDragLeave($event)"
         @drop="reorderableColumns && onColumnHeaderDrop($event, item)"
-        @click="$emit('headerClick', item)"
+        @click="!columnResizing && !isResizing && $emit('headerClick', item)"
       >
         <div class="vc-table-columns-header__cell-content">
           <div class="vc-table-columns-header__cell-title">
@@ -78,8 +83,10 @@
           class="vc-table-columns-header__cell-resizer"
           :class="{
             'vc-table-columns-header__cell-resizer--cursor': resizableColumns,
+            'vc-table-columns-header__cell-resizer--last': index === filteredCols.length - 1,
           }"
-          @mousedown.stop="resizableColumns && handleMouseDown($event, item)"
+          @mousedown.stop.prevent="handleResizerMouseDown($event, item)"
+          @click.stop.prevent
         />
       </div>
 
@@ -166,7 +173,47 @@ const {
   onColumnHeaderDrop,
 } = useTableColumnReorder<T>(internalColumns, () => emit("columnReorder"), headerRef);
 
-const { resizer, handleMouseDown } = useTableColumnResize(internalColumns, () => emit("columnResize"), headerRef);
+const { resizer, handleMouseDown, columnResizing } = useTableColumnResize(
+  internalColumns,
+  () => emit("columnResize"),
+  headerRef,
+);
+
+// Additional flag to prevent clicks during resize
+const isResizing = ref(false);
+let resizeTimeout: NodeJS.Timeout;
+
+const handleResizerMouseDown = (e: MouseEvent, item: TableColPartial) => {
+  e.preventDefault();
+  e.stopPropagation();
+
+  isResizing.value = true;
+
+  // Disable pointer events on header cells during resize
+  const headerCells = headerRef.value?.querySelectorAll(".vc-table-columns-header__cell");
+  headerCells?.forEach((cell) => {
+    (cell as HTMLElement).style.pointerEvents = "none";
+  });
+
+  // Re-enable pointer events on resizers
+  const resizers = headerRef.value?.querySelectorAll(".vc-table-columns-header__cell-resizer");
+  resizers?.forEach((resizer) => {
+    (resizer as HTMLElement).style.pointerEvents = "auto";
+  });
+
+  handleMouseDown(e, item);
+
+  // Re-enable pointer events after mouse up
+  const restorePointerEvents = () => {
+    headerCells?.forEach((cell) => {
+      (cell as HTMLElement).style.pointerEvents = "";
+    });
+    isResizing.value = false;
+    document.removeEventListener("mouseup", restorePointerEvents);
+  };
+
+  document.addEventListener("mouseup", restorePointerEvents);
+};
 </script>
 
 <style lang="scss">
@@ -176,13 +223,13 @@ const { resizer, handleMouseDown } = useTableColumnResize(internalColumns, () =>
 }
 
 .vc-table-columns-header {
-  @apply tw-border-y tw-border-[color:var(--table-header-border-color)] tw-border-solid;
+  @apply tw-border-y tw-border-[color:var(--table-header-border-color)] tw-border-solid tw-relative;
   &__row {
-    @apply tw-flex tw-flex-row [box-shadow:var(--table-header-border)] tw-bg-[--table-header-bg];
+    @apply tw-flex tw-flex-row [box-shadow:var(--table-header-border)] tw-bg-[--table-header-bg] tw-overflow-x-hidden;
   }
 
   &__checkbox {
-    @apply tw-flex-1 tw-flex tw-items-center tw-justify-center tw-w-9 tw-max-w-9 tw-min-w-9 tw-bg-[--table-header-bg] tw-box-border tw-sticky tw-top-0 tw-select-none tw-overflow-hidden tw-z-[1];
+    @apply tw-w-[36px] tw-max-w-[36px] tw-min-w-[36px] tw-relative tw-flex tw-items-center tw-justify-center tw-bg-[--table-header-bg] tw-box-border tw-sticky tw-top-0 tw-select-none tw-overflow-hidden tw-z-[1];
   }
 
   &__checkbox-content {
@@ -194,7 +241,16 @@ const { resizer, handleMouseDown } = useTableColumnResize(internalColumns, () =>
   }
 
   &__cell {
-    @apply tw-flex-1 tw-flex tw-items-center tw-h-[var(--table-header-height)] tw-bg-[--table-header-bg] tw-box-border tw-sticky tw-top-0 tw-select-none tw-overflow-hidden tw-z-[1];
+    @apply tw-flex tw-items-center tw-h-[var(--table-header-height)] tw-bg-[--table-header-bg] tw-box-border tw-sticky tw-top-0 tw-select-none tw-z-[1] tw-relative tw-flex-1;
+    overflow: hidden;
+
+    &--last {
+      overflow: visible;
+    }
+
+    &--fixed-width {
+      @apply tw-flex-1;
+    }
 
     &--sortable {
       @apply tw-cursor-pointer;
@@ -228,19 +284,33 @@ const { resizer, handleMouseDown } = useTableColumnResize(internalColumns, () =>
   }
 
   &__cell-resizer {
-    @apply tw-w-3 tw-mr-1 tw-border-r tw-border-[--table-resizer-color] tw-border-solid tw-h-full tw-absolute tw-right-0 tw-flex tw-justify-end;
+    @apply tw-w-1 tw-border-r tw-border-[--table-resizer-color] tw-border-solid tw-h-full tw-absolute tw-right-0 tw-flex tw-justify-end tw-z-10;
+
+    &::before {
+      content: "";
+      @apply tw-absolute tw-right-0 tw-w-[9px] tw-h-full tw-cursor-col-resize tw-z-10;
+    }
 
     &--cursor {
       @apply tw-cursor-col-resize;
     }
+
+    &--last {
+      @apply tw-z-[100];
+    }
   }
 
   &__column-switcher {
-    @apply tw-absolute tw-h-[var(--table-header-height)] tw-z-10 tw-right-0 tw-flex tw-items-center;
+    @apply tw-absolute tw-z-10 tw-right-0 tw-top-[11px] tw-flex tw-items-center tw-pointer-events-none;
+
+    > * {
+      @apply tw-pointer-events-auto;
+    }
   }
 
   &__resizer {
     @apply tw-w-px tw-absolute tw-z-10 tw-hidden tw-h-full tw-bg-[--table-resizer-color] tw-cursor-col-resize;
+    max-width: 100%;
   }
 
   &__reorder-ref {

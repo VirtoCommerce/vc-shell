@@ -172,7 +172,9 @@ export function useTableColumnReorder<T extends TableItem | string>(
         from %= value.length;
       }
 
-      value.splice(to, 0, value.splice(from, 1)[0]);
+      // Store the item being moved with all its properties
+      const [movedItem] = value.splice(from, 1);
+      value.splice(to, 0, movedItem);
     }
   }
 
@@ -199,10 +201,10 @@ export function useTableColumnReorder<T extends TableItem | string>(
       return;
     }
 
-    const dragIndex = internalColumns.value.indexOf(draggedColumn.value);
-    const dropIndex = internalColumns.value.indexOf(item);
+    const dragIndex = internalColumns.value.findIndex((col) => col.id === draggedColumn.value!.id);
+    const dropIndex = internalColumns.value.findIndex((col) => col.id === item.id);
 
-    let allowDrop = dragIndex !== dropIndex;
+    let allowDrop = dragIndex !== -1 && dropIndex !== -1 && dragIndex !== dropIndex;
 
     if (
       allowDrop &&

@@ -36,7 +36,7 @@ export interface IWidget {
 
 export interface IWidgetRegistration {
   bladeId: string;
-  widget: Raw<IWidget>;
+  widget: IWidget;
 }
 
 // Interface for global registration of external widgets
@@ -115,7 +115,7 @@ export function cloneWidget<T extends IWidget | IExternalWidgetRegistration>(wid
 
 export function createWidgetService(): IWidgetService {
   const widgetRegistry = reactive<Record<string, IWidget[]>>({});
-  const registeredWidgets = reactive<IWidgetRegistration[]>([]);
+  const registeredWidgets = reactive([]) as IWidgetRegistration[];
   const activeWidget = ref<{ exposed: ComponentInternalInstance["exposed"]; widgetId: string } | undefined>();
   const registeredIds = reactive(new Set<string>());
 
@@ -128,7 +128,7 @@ export function createWidgetService(): IWidgetService {
 
     const existingIndex = widgetRegistry[normalizedBladeId].findIndex((w) => w.id === widget.id);
     if (existingIndex === -1) {
-      const rawWidget: IWidget = markRaw(widget);
+      const rawWidget: IWidget = reactive(widget);
 
       widgetRegistry[normalizedBladeId].push(rawWidget);
       registeredWidgets.push({ bladeId: normalizedBladeId, widget: rawWidget });

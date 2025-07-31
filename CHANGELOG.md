@@ -1,3 +1,12 @@
+## [1.1.67](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.66...v1.1.67) (2025-07-31)
+
+
+### Bug Fixes
+
+* add !important to width properties for maximized blade component ([aee8edc](https://github.com/VirtoCommerce/vc-shell/commit/aee8edc7d67b534b4a43e5ca2c15875f4a8bb1bf))
+
+
+
 ## [1.1.66](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.65...v1.1.66) (2025-07-30)
 
 

@@ -772,6 +772,12 @@ function handleFocus() {
   & > div {
     @apply tw-w-full tw-h-full tw-flex tw-items-center;
   }
+
+  .vc-app_mobile & {
+    & > div {
+      @apply tw-w-auto tw-h-auto tw-flex-auto tw-items-center;
+    }
+  }
 }
 
 .dp__pm_am_button {
@@ -789,6 +795,8 @@ function handleFocus() {
 
 .dp__input {
   @apply tw-font-jakarta #{!important};
+
+  --dp-input-padding: 6px 12px 6px 12px;
 
   &::-ms-reveal,
   &::-ms-clear {

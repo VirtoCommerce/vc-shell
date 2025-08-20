@@ -1,6 +1,6 @@
 <template>
   <Teleport
-    to="body"
+     to=".vc-app" defer
     :disabled="$isDesktop.value"
   >
     <template v-if="isExpanded">

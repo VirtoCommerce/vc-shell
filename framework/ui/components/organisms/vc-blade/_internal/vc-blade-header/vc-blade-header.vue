@@ -19,7 +19,7 @@
         @mouseenter="tooltipVisible = true"
         @mouseleave="tooltipVisible = false"
       >
-        <teleport to="body">
+        <teleport  to=".vc-app" defer>
           <span
             v-if="tooltipVisible"
             ref="tooltipRef"

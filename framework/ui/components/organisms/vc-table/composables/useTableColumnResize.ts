@@ -48,7 +48,6 @@ export function useTableColumnResize(
     document.body.style.overflow = "hidden";
     document.body.style.userSelect = "none";
 
-
     // If resizing any column and there are flexible columns, fix all column widths
     if (headerRef.value) {
       const hasFlexibleColumns = internalColumns.value.some((col) => col.visible !== false && !col.width);

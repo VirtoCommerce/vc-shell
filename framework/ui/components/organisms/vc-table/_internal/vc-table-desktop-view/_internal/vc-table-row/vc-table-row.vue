@@ -43,7 +43,11 @@
       :key="`${(item && typeof item === 'object' && 'id' in item && item.id) || index}_${cell.id}`"
       class="vc-table-row__cell"
       :class="[cell.class, { 'vc-table-row__cell--fixed-width': !!cell.width }]"
-      :style="cell.width ? { maxWidth: cell.width, width: cell.width, flex: '0 1 auto', minWidth: '60px' } : { flex: '1 1 0', minWidth: '60px' }"
+      :style="
+        cell.width
+          ? { maxWidth: cell.width, width: cell.width, flex: '0 1 auto', minWidth: '60px' }
+          : { flex: '1 1 0', minWidth: '60px' }
+      "
     >
       <div class="vc-table-row__cell-content">
         <slot

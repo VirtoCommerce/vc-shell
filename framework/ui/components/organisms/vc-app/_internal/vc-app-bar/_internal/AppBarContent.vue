@@ -1,15 +1,15 @@
 <template>
   <div
     class="app-bar-content"
-    :class="{ 'app-bar-content--collapsed': !expanded, 'app-bar-content--embedded': isEmbedded }"
+    :class="{
+      'app-bar-content--collapsed': !expanded,
+      // 'app-bar-content--embedded': isEmbedded
+    }"
   >
     <div class="app-bar-content__main">
       <slot name="navmenu" />
     </div>
-    <div
-      v-if="!isEmbedded"
-      class="app-bar-content__footer"
-    >
+    <div class="app-bar-content__footer">
       <slot name="user-dropdown" />
     </div>
   </div>

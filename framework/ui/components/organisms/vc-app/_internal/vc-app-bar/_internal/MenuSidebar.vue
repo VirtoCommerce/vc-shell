@@ -11,11 +11,12 @@
       <div
         class="menu-sidebar__wrapper"
         :class="{
+          'menu-sidebar__wrapper--desktop': $isDesktop.value,
           'menu-sidebar__wrapper--expanded': $isDesktop.value && expanded,
-          'menu-sidebar__wrapper--collapsed': $isDesktop.value && !expanded,
         }"
       >
         <div
+          v-if="!isEmbedded"
           class="menu-sidebar__header"
           :class="{
             'menu-sidebar__header--mobile': $isMobile.value,
@@ -64,7 +65,8 @@
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
 import { Sidebar } from "../../../../../../../shared/components/sidebar";
-import { MaybeRef } from "vue";
+import { MaybeRef, inject } from "vue";
+import { EMBEDDED_MODE } from "../../../../../../../injection-keys";
 
 defineProps<{
   isOpened: boolean;
@@ -82,24 +84,26 @@ defineSlots<{
   "widgets-active-content": (props: any) => any;
   widgets: (props: any) => any;
 }>();
+
+const isEmbedded = inject(EMBEDDED_MODE);
 </script>
 
 <style lang="scss">
 .menu-sidebar {
   &__wrapper {
-    @apply tw-absolute tw-top-0 tw-left-0 tw-w-full  tw-bottom-0 tw-z-10 tw-flex tw-flex-col;
+    @apply tw-absolute tw-top-0 tw-left-0 tw-w-full tw-bottom-0 tw-z-10 tw-flex tw-flex-col;
+
+    &--desktop {
+      @apply tw-w-[var(--app-bar-width)] tw-z-[12];
+    }
 
     &--expanded {
       @apply tw-absolute tw-top-0 tw-left-0;
     }
-
-    &--collapsed {
-      @apply tw-w-[var(--app-bar-width)] tw-z-[12];
-    }
   }
 
   &__content {
-    @apply tw-flex tw-flex-col tw-h-full tw-bg-[var(--app-bar-background)] tw-flex-1 tw-relative;
+    @apply tw-flex tw-flex-col tw-h-[calc(100vh-var(--app-bar-height))] tw-bg-[var(--app-bar-background)] tw-flex-1 tw-relative;
 
     &:before {
       content: "";

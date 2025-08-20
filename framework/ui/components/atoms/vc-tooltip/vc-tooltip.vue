@@ -12,7 +12,7 @@
       <slot></slot>
     </div>
 
-    <teleport to="body">
+    <teleport  to=".vc-app" defer>
       <span
         v-if="tooltipVisible && $slots['tooltip']"
         ref="tooltipRef"

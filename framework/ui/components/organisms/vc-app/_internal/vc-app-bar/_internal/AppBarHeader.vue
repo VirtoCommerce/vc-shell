@@ -34,10 +34,7 @@
       v-if="$isMobile.value"
       class="app-bar-header__actions"
     >
-      <slot
-        v-if="$isMobile.value"
-        name="actions"
-      />
+      <slot name="actions" />
     </div>
 
     <Transition
@@ -93,10 +90,10 @@ const isMobile = inject("isMobile") as Ref<boolean>;
 const isDesktop = inject("isDesktop") as Ref<boolean>;
 
 const showAppBar = computed(() => {
-  if (isEmbedded) {
-    return false;
-  }
-  return (isMobile.value && blades.value.length <= 1) || isDesktop.value;
+  // if (isEmbedded) {
+  //   return false;
+  // }
+  return (isMobile.value && blades.value.length <= 1) || (isDesktop.value && !isEmbedded);
 });
 
 watchEffect(

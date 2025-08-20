@@ -37,8 +37,6 @@
           'vc-app-bar__wrapper--mobile': $isMobile.value,
           'vc-app-bar__wrapper--hover-collapsed': $isDesktop.value && !isHoverExpanded && !state.isSidebarExpanded,
         }"
-        @mouseenter="collapseButtonHover = true"
-        @mouseleave="collapseButtonHover = false"
       >
         <AppBarHeader
           :logo="logo"
@@ -59,49 +57,7 @@
           </template>
         </AppBarHeader>
 
-        <MenuSidebar
-          v-if="state.isMenuOpen"
-          :is-opened="state.isMenuOpen"
-          :expanded="state.isSidebarExpanded"
-          @update:is-opened="handleMenuClose"
-        >
-          <template #navmenu>
-            <slot name="navmenu" />
-          </template>
-          <template #user-dropdown>
-            <slot name="user-dropdown" />
-          </template>
-          <template #app-switcher>
-            <slot name="app-switcher" />
-          </template>
-          <template #widgets>
-            <AppBarWidgetsMenu />
-          </template>
-          <template #widgets-active-content>
-            <div
-              v-if="isAnyWidgetVisible"
-              :class="['vc-app-bar__menu-dropdowns', { 'vc-app-bar__menu-dropdowns--mobile': $isMobile.value }]"
-            >
-              <component
-                :is="currentWidget?.component"
-                v-bind="currentWidget?.props || {}"
-                @close="hideAllWidgets"
-              />
-            </div>
-          </template>
-        </MenuSidebar>
-
-        <AppBarContent
-          v-if="$isDesktop.value"
-          :expanded="state.isSidebarExpanded"
-        >
-          <template #navmenu>
-            <slot name="navmenu" />
-          </template>
-          <template #user-dropdown>
-            <slot name="user-dropdown" />
-          </template>
-        </AppBarContent>
+        <AppBarSlots />
       </div>
     </div>
   </div>
@@ -110,12 +66,9 @@
 <script lang="ts" setup>
 import { VcIcon } from "../../../../";
 import { useAppMenuState } from "../composables/useAppMenuState";
-import { useAppBarWidgets } from "./composables/useAppBarWidgets";
 import AppBarHeader from "./_internal/AppBarHeader.vue";
 import AppBarMobileActions from "./_internal/AppBarMobileActions.vue";
-import MenuSidebar from "./_internal/MenuSidebar.vue";
-import AppBarContent from "./_internal/AppBarContent.vue";
-import AppBarWidgetsMenu from "./_internal/AppBarWidgetsMenu.vue";
+import AppBarSlots from "./_internal/AppBarSlots.vue";
 import { ref, computed, provide, inject } from "vue";
 
 export interface Props {
@@ -139,37 +92,13 @@ defineProps<Props>();
 defineEmits<Emits>();
 defineSlots<Slots>();
 
-const {
-  state,
-  toggleSidebar,
-  toggleMenu: toggleMenuState,
-  closeAll,
-  toggleHoverExpanded,
-  isHoverExpanded,
-} = useAppMenuState();
-
-const { currentWidget, hideAllWidgets, isAnyWidgetVisible } = useAppBarWidgets();
+const { state, toggleSidebar, toggleMenu, closeAll, toggleHoverExpanded, isHoverExpanded } = useAppMenuState();
 
 const isMobile = inject("isMobile", ref(false));
 const isDesktop = inject("isDesktop", ref(true));
-const collapseButtonHover = ref(false);
 
 // Provide appMenuState for child components
 provide("appMenuState", { closeAll });
-
-const toggleMenu = () => {
-  toggleMenuState();
-  if (!state.value.isMenuOpen) {
-    hideAllWidgets();
-  }
-};
-
-const handleMenuClose = (value: boolean) => {
-  if (!value) {
-    closeAll();
-    hideAllWidgets();
-  }
-};
 
 // Simple hover effect processing
 const handleHoverExpand = (shouldExpand?: boolean) => {

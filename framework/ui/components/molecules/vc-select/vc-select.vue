@@ -236,7 +236,7 @@
         </slot>
       </div>
 
-      <teleport to="body">
+      <teleport  to=".vc-app" defer>
         <div
           v-if="isOpened"
           ref="dropdownRef"

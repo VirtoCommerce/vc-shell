@@ -1,5 +1,5 @@
 <template>
-  <Teleport to="body">
+  <Teleport  to=".vc-app" defer>
     <div
       class="app-bar-overlay"
       :class="{

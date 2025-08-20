@@ -55,11 +55,11 @@ export function useTableState(options: UseTableStateOptions) {
   function mergeColumns(storedCol: TableColPartial, predefinedCol: TableColPartial | undefined) {
     if (predefinedCol) {
       if (predefinedCol.predefined && !storedCol.predefined) {
-        return { 
-          ...predefinedCol, 
+        return {
+          ...predefinedCol,
           predefined: true,
           width: storedCol.width || predefinedCol.width,
-          visible: storedCol.visible !== undefined ? storedCol.visible : predefinedCol.visible
+          visible: storedCol.visible !== undefined ? storedCol.visible : predefinedCol.visible,
         };
       } else {
         return {
@@ -161,37 +161,38 @@ export function useTableState(options: UseTableStateOptions) {
         title: item.title || originalColumn?.title || "",
         width: item.width || originalColumn?.width,
       };
-      
+
       // Don't set any width for new columns - they'll take available space
       // The flexbox will handle the distribution
       if (!newCol.width) {
         // Keep it undefined to use flexbox
         newCol.width = undefined;
       }
-      
+
       internalColumns.value.push(newCol);
-      
+
       // When adding a new column, check if we need to adjust widths to prevent overflow
-      const visibleColumns = internalColumns.value.filter(col => col.visible !== false);
-      const hasFixedWidths = visibleColumns.some(col => col.width);
-      
+      const visibleColumns = internalColumns.value.filter((col) => col.visible !== false);
+      const hasFixedWidths = visibleColumns.some((col) => col.width);
+
       if (hasFixedWidths) {
         // Calculate total fixed width
         let totalFixedWidth = 0;
-        visibleColumns.forEach(col => {
-          if (col.width && typeof col.width === 'string') {
+        visibleColumns.forEach((col) => {
+          if (col.width && typeof col.width === "string") {
             const width = parseInt(col.width);
             if (!isNaN(width)) {
               totalFixedWidth += width;
             }
           }
         });
-        
+
         // If total fixed width is too large, remove fixed widths to allow flex distribution
-        if (totalFixedWidth > 800) { // Assuming a reasonable container width
-          internalColumns.value = internalColumns.value.map(col => ({
+        if (totalFixedWidth > 800) {
+          // Assuming a reasonable container width
+          internalColumns.value = internalColumns.value.map((col) => ({
             ...col,
-            width: undefined // Let flexbox handle it
+            width: undefined, // Let flexbox handle it
           }));
         }
       }
@@ -205,7 +206,7 @@ export function useTableState(options: UseTableStateOptions) {
             title: item.title || originalColumn?.title || x.title || "",
             width: item.width || originalColumn?.width || x.width,
           };
-          
+
           return updatedCol;
         }
         return x;

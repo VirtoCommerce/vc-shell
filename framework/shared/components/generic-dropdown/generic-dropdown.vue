@@ -1,6 +1,7 @@
 <template>
   <div class="vc-dropdown">
     <div
+      v-if="$slots.trigger"
       ref="referenceEl"
       class="vc-dropdown__trigger"
     >
@@ -11,7 +12,8 @@
     </div>
 
     <teleport
-      to="body"
+      to=".vc-app"
+      defer
       :disabled="!floating"
     >
       <div
@@ -25,10 +27,7 @@
         }"
         :class="dropdownClasses"
       >
-        <div
-          class="vc-dropdown__content"
-          @click.stop
-        >
+        <div class="vc-dropdown__content">
           <slot
             name="items-container"
             :items="items"
@@ -95,7 +94,7 @@ export interface Props<T> {
 }
 
 const props = withDefaults(defineProps<Props<T>>(), {
-  opened: true,
+  opened: false,
   items: () => [],
   floating: false,
   placement: "bottom",
@@ -119,16 +118,22 @@ defineSlots<{
   "items-container"?: (args: { items: T[]; close: () => void }) => any;
 }>();
 
-const isMobile = inject("isMobile") as Ref<boolean>;
+const isMobile = inject<Ref<boolean>>("isMobile", ref(false));
 
 const referenceEl = ref<HTMLElement | null>(null);
 const floatingEl = ref<HTMLElement | null>(null);
 
-const floater = useFloating(referenceEl, floatingEl, {
+const { floatingStyles, placement, update, x, y } = useFloating(referenceEl, floatingEl, {
   placement: props.placement,
-  whileElementsMounted: autoUpdate,
+  whileElementsMounted: props.floating ? autoUpdate : undefined,
   middleware: [shift({ padding: 8 }), flip({ padding: 8 }), floatingOffset(props.offset)],
 });
+
+const floater = {
+  placement,
+  x,
+  y,
+};
 
 const dropdownClasses = computed(() => {
   const placement = floater.placement.value;
@@ -181,7 +186,7 @@ const calcHeight = computed(() => {
   }
 
   &__dropdown {
-    @apply tw-rounded-[6px] tw-w-full tw-overflow-auto tw-flex tw-flex-col tw-relative tw-h-max;
+    @apply tw-rounded-[6px] tw-w-full tw-overflow-auto tw-flex tw-flex-col tw-relative tw-h-full;
 
     &--mobile {
       @apply tw-w-full;

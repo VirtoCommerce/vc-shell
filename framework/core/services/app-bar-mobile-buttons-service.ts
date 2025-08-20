@@ -1,4 +1,4 @@
-import { ComputedRef, ref, computed, Component, MaybeRef, Ref } from "vue";
+import { ComputedRef, ref, computed, Component, MaybeRef, Ref, toValue } from "vue";
 
 export interface AppBarButtonContent {
   id: string;
@@ -45,7 +45,11 @@ export function createAppBarMobileButtonsService(): IAppBarMobileButtonsService 
     return registeredButtonsState.value.find((button) => button.id === buttonId);
   };
 
-  const getButtons = computed(() => [...registeredButtonsState.value].sort((a, b) => (a.order || 0) - (b.order || 0)));
+  const getButtons = computed(() =>
+    [...registeredButtonsState.value]
+      .filter((button) => toValue(button.isVisible) !== false)
+      .sort((a, b) => (a.order || 0) - (b.order || 0)),
+  );
 
   return {
     registeredButtons,

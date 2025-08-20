@@ -22,38 +22,7 @@
         :disable-menu="disableMenu"
         @backlink:click="closeBlade(blades.length - 1)"
         @logo:click="openRoot"
-      >
-        <template
-          v-if="!disableAppSwitcher"
-          #app-switcher
-        >
-          <slot name="app-switcher">
-            <VcAppSwitcher
-              :apps-list="appsList"
-              @on-click="switchApp($event)"
-            />
-          </slot>
-        </template>
-
-        <template #navmenu>
-          <VcAppMenu
-            v-if="!disableMenu"
-            ref="menu"
-            class="vc-app__app-menu"
-            :version="version"
-            @item:click="onMenuItemClick"
-          >
-          </VcAppMenu>
-        </template>
-
-        <template #user-dropdown>
-          <UserDropdownButton
-            :avatar-url="avatar"
-            :name="name"
-            :role="role"
-          />
-        </template>
-      </VcAppBar>
+      />
 
       <!-- Blade navigation -->
       <div
@@ -70,12 +39,11 @@
 </template>
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
-import { inject, provide, watch, ref, onUnmounted, computed } from "vue";
+import { inject, provide, watch, ref, onUnmounted, computed, useSlots } from "vue";
 import VcAppBar from "./_internal/vc-app-bar/vc-app-bar.vue";
-import VcAppMenu from "./_internal/vc-app-menu/vc-app-menu.vue";
+import { provideAppSlots } from "./composables/useAppSlots";
 import {
   VcPopupContainer,
-  UserDropdownButton,
   useBladeNavigation,
   NotificationDropdown,
   BladeRoutesRecord,
@@ -90,7 +58,6 @@ import { LanguageSelector } from "../../../../shared/components/language-selecto
 import { ThemeSelector } from "../../../../shared/components/theme-selector";
 import { ChangePasswordButton } from "../../../../shared/components/change-password-button";
 import { LogoutButton } from "../../../../shared/components/logout-button";
-import { useI18n } from "vue-i18n";
 import { provideGlobalSearch } from "../../../../core/composables/useGlobalSearch";
 import { provideDashboardService } from "../../../../core/composables/useDashboard";
 import { DynamicModulesKey, EMBEDDED_MODE } from "../../../../injection-keys";
@@ -110,7 +77,7 @@ export interface Props {
   role?: string;
 }
 
-const emit = defineEmits<{
+defineEmits<{
   (e: "logo-click", goToRoot: () => void): void;
 }>();
 
@@ -123,6 +90,7 @@ defineSlots<{
 }>();
 
 const props = defineProps<Props>();
+const slots = useSlots();
 
 console.debug("vc-app: Init vc-app");
 
@@ -131,13 +99,16 @@ const dynamicModules = inject(DynamicModulesKey, undefined);
 
 const isAppReady = ref(props.isReady);
 
+const route = useRoute();
 const router = useRouter();
+
+const isEmbedded = route.query.EmbeddedMode === "true";
 
 const { openBlade, closeBlade, resolveBladeByName, blades, goToRoot } = useBladeNavigation();
 const { appsList, switchApp, getApps } = useAppSwitcher();
 
-const { loadFromHistory, notifications, markAllAsRead } = useNotifications();
-const route = useRoute();
+const { loadFromHistory, notifications } = useNotifications();
+
 const { isAuthenticated } = useUserManagement();
 
 const routes = router.getRoutes();
@@ -148,8 +119,6 @@ const { register: registerAppBarWidget } = provideAppBarWidget();
 const hasUnreadNotifications = computed(() => {
   return notifications.value.some((item) => item.isNew);
 });
-
-const { t } = useI18n({ useScope: "global" });
 
 const { register: registerMobileButton } = provideAppBarMobileButtonsService();
 
@@ -190,6 +159,7 @@ registerMobileButton({
   component: NotificationDropdown,
   icon: "lucide-bell",
   order: 10,
+  isVisible: !isEmbedded,
 });
 
 const onMenuItemClick = function (item: MenuItem) {
@@ -247,7 +217,25 @@ provide(DynamicModulesKey, dynamicModules);
 provideDashboardService();
 provideMenuService();
 provideGlobalSearch();
-provide(EMBEDDED_MODE, route.query.EmbeddedMode === "true");
+provide(EMBEDDED_MODE, isEmbedded);
+// Provide slots to child components with all necessary props and handlers
+provideAppSlots(
+  slots,
+  {
+    disableMenu: props.disableMenu,
+    disableAppSwitcher: props.disableAppSwitcher,
+    version: props.version,
+    avatar: props.avatar,
+    name: props.name,
+    role: props.role,
+    appsList: appsList,
+    isEmbedded,
+  },
+  {
+    onMenuItemClick,
+    switchApp,
+  },
+);
 
 onUnmounted(() => {
   isAppReady.value = false;

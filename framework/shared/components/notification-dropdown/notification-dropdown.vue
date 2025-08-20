@@ -1,5 +1,6 @@
 <template>
   <GenericDropdown
+    opened
     :items="notifications"
     :empty-text="t('COMPONENTS.NOTIFICATION_DROPDOWN.EMPTY')"
   >

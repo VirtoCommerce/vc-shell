@@ -76,7 +76,7 @@
               @click.stop="toggleDropdown"
               >{{ $t("COMPONENTS.MOLECULES.VC_MULTIVALUE.ADD") }}</VcButton
             >
-            <teleport to="body">
+            <teleport  to=".vc-app" defer>
               <div
                 v-if="isOpened"
                 ref="dropdownRef"

@@ -1,3 +1,12 @@
+## [1.1.71](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.70...v1.1.71) (2025-08-21)
+
+
+### Bug Fixes
+
+* update event binding for menu item click in useAppSlots composable ([c45e045](https://github.com/VirtoCommerce/vc-shell/commit/c45e045bb10ffc0603d61f79b6ae2de1f7d36d5a))
+
+
+
 ## [1.1.70](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.69...v1.1.70) (2025-08-20)
 
 

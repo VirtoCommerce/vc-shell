@@ -39,7 +39,7 @@ export function provideAppSlots(
       if (props.disableMenu) return [];
       return h(VcAppMenu, {
         version: props.version,
-        onItemClick: handlers.onMenuItemClick,
+        "onItem:click": handlers.onMenuItemClick,
       });
     },
     userDropdown: () => {

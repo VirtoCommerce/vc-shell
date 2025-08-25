@@ -186,7 +186,7 @@ const calcHeight = computed(() => {
   }
 
   &__dropdown {
-    @apply tw-rounded-[6px] tw-w-full tw-overflow-auto tw-flex tw-flex-col tw-relative tw-h-full;
+    @apply tw-rounded-[6px] tw-w-full tw-overflow-auto tw-flex tw-flex-col tw-relative;
 
     &--mobile {
       @apply tw-w-full;

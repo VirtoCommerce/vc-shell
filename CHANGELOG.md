@@ -1,3 +1,12 @@
+## [1.1.72](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.71...v1.1.72) (2025-08-25)
+
+
+### Bug Fixes
+
+* update max height for generic dropdown ([37abe30](https://github.com/VirtoCommerce/vc-shell/commit/37abe30c5994a622798af3919e70f06aca72d482))
+
+
+
 ## [1.1.71](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.70...v1.1.71) (2025-08-21)
 
 

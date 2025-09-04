@@ -5,6 +5,7 @@ import * as locales from "./locales";
 import { RouterView } from "vue-router";
 import {{ModuleNamePascalCase}} from "./modules/{{ModuleName}}";
 import SampleModule from "./modules/sample";
+import { bootstrap } from "./bootstrap";
 
 // Load required CSS
 import "@vc-shell/framework/dist/index.css";
@@ -28,6 +29,8 @@ async function startApp() {
     // Sample module initialization
     .use(SampleModule, { router })
     .use(router);
+
+  bootstrap(app);
 
   Object.entries(locales).forEach(([key, message]) => {
     app.config.globalProperties.$mergeLocaleMessage(key, message);

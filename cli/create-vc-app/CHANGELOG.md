@@ -1,3 +1,12 @@
+## [1.1.73](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.72...v1.1.73) (2025-09-04)
+
+
+### Bug Fixes
+
+* **create-vc-app:** integrate bootstrap function into main application file ([3eded62](https://github.com/VirtoCommerce/vc-shell/commit/3eded6272e424d8599ab14ec25666d8d8ed92557))
+
+
+
 ## [1.1.72](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.71...v1.1.72) (2025-08-25)
 
 

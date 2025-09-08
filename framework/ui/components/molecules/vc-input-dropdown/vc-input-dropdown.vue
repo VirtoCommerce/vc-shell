@@ -60,6 +60,7 @@
               </template>
             </slot>
             <VcButton
+              v-if="options && options.length"
               :icon="isOpened ? 'material-keyboard_arrow_up' : 'material-keyboard_arrow_down'"
               icon-size="s"
               text

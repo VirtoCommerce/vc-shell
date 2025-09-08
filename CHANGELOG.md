@@ -1,3 +1,12 @@
+## [1.1.74](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.73...v1.1.74) (2025-09-08)
+
+
+### Bug Fixes
+
+* **vc-input-dropdown:** conditionally render button based on options availability ([9182d1f](https://github.com/VirtoCommerce/vc-shell/commit/9182d1f50356df76bfb0b6e2840a73d3d4537a6e))
+
+
+
 ## [1.1.73](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.72...v1.1.73) (2025-09-04)
 
 

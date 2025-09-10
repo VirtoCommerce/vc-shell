@@ -12,18 +12,18 @@
     "build": "tsc && tsc-alias"
   },
   "dependencies": {
-    "@vitejs/plugin-vue": "^5.2.3",
-    "vite": "^6.3.3",
-    "vite-plugin-checker": "^0.9.1",
+    "@vitejs/plugin-vue": "^6.0.1",
+    "vite": "^7.1.5",
+    "vite-plugin-checker": "^0.10.3",
     "vite-plugin-mkcert": "^1.17.1",
-    "vue": "^3.5.13"
+    "vue": "^3.5.21"
   },
   "devDependencies": {
     "@vc-shell/ts-config": "^1.1.74",
     "http-proxy-middleware": "^3.0.2",
     "rollup-plugin-visualizer": "^6.0.3",
     "tsc-alias": "^1.8.8",
-    "typescript": "^5.8.3"
+    "typescript": "^5.9.2"
   },
   "publishConfig": {
     "access": "public",

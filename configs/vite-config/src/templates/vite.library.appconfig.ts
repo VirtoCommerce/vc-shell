@@ -93,15 +93,6 @@ export default defineConfig({
       // },
     },
     minify: true,
-    terserOptions: {
-      compress: {
-        drop_debugger: process.env.APP_ENV === "production",
-        pure_funcs: process.env.APP_ENV === "production" ? ["console.log", "console.info", "console.debug"] : [],
-      },
-      mangle: {
-        safari10: true,
-      },
-    },
   },
   esbuild: {
     drop: process.env.APP_ENV === "production" ? ["debugger"] : [],

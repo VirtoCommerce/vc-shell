@@ -30,7 +30,10 @@ export default {
   stories: [
     "../framework/ui/components/**/*.stories.ts",
   ],
-  addons: ["@storybook/addon-links", "@storybook/addon-essentials"],
+  addons: [
+    "@storybook/addon-links",
+    "@storybook/addon-docs"
+  ],
   staticDirs: ["./assets"],
   framework: {
     name: "@storybook/vue3-vite",

@@ -6,15 +6,16 @@
         'vc-slider__swiper_overflow-visible': overflow,
         'vc-slider__swiper_navigation': navigation,
       }"
+      :modules="modules"
       :space-between="spaceBetweenSlides"
-      :navigation="buttonsList as any"
+      :navigation="navigation ? buttonsList : false"
       :slides-per-view="slidesPerView as any"
-      :resize-observer="true"
+      :observer="true"
+      :observe-parents="true"
     >
       <swiper-slide
         v-for="(slide, i) in slides"
         :key="i"
-        :swiper-ref="SwiperCore"
       >
         <slot :slide="slide"></slot>
       </swiper-slide>
@@ -43,10 +44,9 @@
 import { VcIcon } from "./../../";
 import { computed } from "vue";
 import { Swiper, SwiperSlide } from "swiper/vue";
-import SwiperCore, { Navigation } from "swiper";
-import "swiper/swiper-bundle.min.css";
-import "swiper/swiper.min.css";
-import "swiper/components/navigation/navigation.min.css";
+import { Navigation } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/navigation";
 
 export interface Props {
   slides?: Record<string, unknown>[] | unknown[];
@@ -62,7 +62,7 @@ withDefaults(defineProps<Props>(), {
   spaceBetweenSlides: 10,
 });
 
-SwiperCore.use([Navigation]);
+const modules = [Navigation];
 
 const buttonsList = computed(() => ({
   nextEl: ".vc-slider__next",

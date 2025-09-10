@@ -1,3 +1,12 @@
+## [1.1.75](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.74...v1.1.75) (2025-09-10)
+
+
+### Features
+
+* **vc-editor:** enhance editor with custom toolbar buttons and font size selector ([a4b0e6e](https://github.com/VirtoCommerce/vc-shell/commit/a4b0e6eac49880b58d7373c134cb42151f4df4a6))
+
+
+
 ## [1.1.74](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.73...v1.1.74) (2025-09-08)
 
 

@@ -35,6 +35,7 @@
         :disabled="disabled"
         :content-type="detectedType"
         :toolbar="filteredToolbar"
+        :custom-buttons="props.customButtons || []"
         @upload-image="triggerImageUpload"
       />
 
@@ -139,7 +140,7 @@
     </slot>
   </div>
 </template>
-
+<!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
 import { ref, watch, onBeforeUnmount, computed } from "vue";
 import { useEditor, EditorContent } from "@tiptap/vue-3";
@@ -152,7 +153,9 @@ import { TableCell } from "@tiptap/extension-table-cell";
 import { Link } from "@tiptap/extension-link";
 import { Image } from "@tiptap/extension-image";
 import { Placeholder } from "@tiptap/extension-placeholder";
+import { TextStyle } from "@tiptap/extension-text-style";
 import { Markdown } from "tiptap-markdown";
+import { FontSize } from "./_internal/extensions/font-size";
 import { format } from "prettier/standalone";
 import * as prettierPluginHtml from "prettier/parser-html";
 // eslint-disable-next-line import/no-named-as-default
@@ -160,6 +163,10 @@ import DOMPurify from "dompurify";
 import { VcLabel, VcHint } from "../..";
 import VcEditorToolbar from "./_internal/vc-editor-toolbar.vue";
 import VcEditorButton from "./_internal/vc-editor-button.vue";
+import type { CustomToolbarItem } from "./_internal/toolbar-types";
+
+// Export types for external use
+export type { CustomToolbarItem, CustomToolbarButton, CustomToolbarDropdown } from "./_internal/toolbar-types";
 
 // Define toolbar button types
 type ToolbarNames =
@@ -176,6 +183,7 @@ type ToolbarNames =
   | "link"
   | "image"
   | "table"
+  | "fontSize"
   | "separator";
 
 export interface Props {
@@ -191,6 +199,8 @@ export interface Props {
   currentLanguage?: string;
   maxlength?: number;
   toolbar?: ToolbarNames[];
+  extensions?: any[];
+  customButtons?: CustomToolbarItem[];
 }
 
 export interface Emits {
@@ -231,6 +241,7 @@ const filteredToolbar = computed(() => {
       "link",
       "image",
       "table",
+      "fontSize",
     ] as ToolbarNames[];
   }
   return props.toolbar;
@@ -294,27 +305,38 @@ function detectContentType(content: string): "html" | "markdown" {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const extensions: any[] = [
-  StarterKit,
-  Underline,
-  Table.configure({ resizable: true }),
-  TableRow,
-  TableHeader,
-  TableCell,
-  Link.configure({ openOnClick: false }),
-  Image,
-  Placeholder.configure({ placeholder: props.placeholder }),
-  Markdown.configure({
-    html: true, // Allow HTML input/output
-    tightLists: true, // No <p> inside <li> in markdown output
-    tightListClass: "tight", // Add class to <ul> allowing you to remove <p> margins when tight
-    bulletListMarker: "-", // <li> prefix in markdown output
-    linkify: false, // Create links from "https://..." text
-    breaks: true, // New lines (\n) in markdown input are converted to <br>
-    transformPastedText: false, // Allow to paste markdown text in the editor
-    transformCopiedText: false, // Copied text is transformed to markdown
-  }),
-];
+const extensions = computed(() => {
+  const baseExtensions: any[] = [
+    StarterKit,
+    Underline,
+    TextStyle,
+    FontSize,
+    Table.configure({ resizable: true }),
+    TableRow,
+    TableHeader,
+    TableCell,
+    Link.configure({ openOnClick: false }),
+    Image,
+    Placeholder.configure({ placeholder: props.placeholder }),
+    Markdown.configure({
+      html: true, // Allow HTML input/output
+      tightLists: true, // No <p> inside <li> in markdown output
+      tightListClass: "tight", // Add class to <ul> allowing you to remove <p> margins when tight
+      bulletListMarker: "-", // <li> prefix in markdown output
+      linkify: false, // Create links from "https://..." text
+      breaks: true, // New lines (\n) in markdown input are converted to <br>
+      transformPastedText: false, // Allow to paste markdown text in the editor
+      transformCopiedText: false, // Copied text is transformed to markdown
+    }),
+  ];
+
+  // Add custom extensions if provided
+  if (props.extensions && props.extensions.length > 0) {
+    baseExtensions.push(...props.extensions);
+  }
+
+  return baseExtensions;
+});
 
 const formattedSource = ref(props.modelValue || "");
 
@@ -417,13 +439,13 @@ function toggleSideBySideView() {
 const editor = useEditor({
   content: props.modelValue,
   editable: !props.disabled,
-  extensions,
+  extensions: extensions.value,
   onUpdate: ({ editor: tipTapEditor }) => {
     // Always output in Markdown by default, unless HTML is detected
     const output =
       detectedType.value === "html"
         ? tipTapEditor.getHTML()
-        : (tipTapEditor.storage.markdown as { getMarkdown: () => string }).getMarkdown();
+        : (tipTapEditor.storage as any).markdown?.getMarkdown?.() || tipTapEditor.getHTML();
 
     // Check maxlength if specified
     if (props.maxlength && output.length > props.maxlength) {
@@ -448,10 +470,10 @@ watch(
     const editorContent =
       detectedType.value === "html"
         ? editor.value.getHTML()
-        : (editor.value.storage.markdown as { getMarkdown: () => string }).getMarkdown();
+        : (editor.value.storage as any).markdown?.getMarkdown?.() || editor.value.getHTML();
 
     if (editorContent !== value) {
-      editor.value.commands.setContent(value || "", false);
+      editor.value.commands.setContent(value || "");
     }
   },
 );
@@ -508,6 +530,7 @@ async function handleImageSelection(event: Event) {
     console.error("Image upload failed:", error);
   }
 }
+
 </script>
 
 <style lang="scss">

@@ -125,6 +125,25 @@
         :disabled="disabled"
         @action="editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()"
       />
+
+      <!-- Font Selector -->
+      <VcEditorFontSelector
+        v-else-if="item === 'fontSize'"
+        :editor="editor"
+        :disabled="disabled"
+      />
+    </template>
+
+    <!-- Custom buttons -->
+    <template v-if="props.customButtons.length > 0">
+      <div class="vc-editor-toolbar__separator" />
+      <VcEditorCustomButton
+        v-for="customButton in sortedCustomButtons"
+        :key="customButton.id"
+        :editor="editor"
+        :custom-button="customButton"
+        :disabled="disabled"
+      />
     </template>
 
     <!-- Table controls (always show when table is active) -->
@@ -173,12 +192,16 @@
 import type { Editor } from "@tiptap/vue-3";
 import { computed } from "vue";
 import VcEditorButton from "./vc-editor-button.vue";
+import VcEditorCustomButton from "./vc-editor-custom-button.vue";
+import VcEditorFontSelector from "./vc-editor-font-selector.vue";
+import type { CustomToolbarItem } from "./toolbar-types";
 
 export interface Props {
   editor: Editor;
   disabled: boolean;
   contentType: "html" | "markdown";
   toolbar: ToolbarNames[];
+  customButtons: CustomToolbarItem[];
 }
 
 // Define toolbar button types
@@ -196,10 +219,12 @@ type ToolbarNames =
   | "link"
   | "image"
   | "table"
+  | "fontSize"
   | "separator";
 
 const props = withDefaults(defineProps<Props>(), {
   contentType: "html",
+  customButtons: () => [],
 });
 
 const emit = defineEmits(["uploadImage"]);
@@ -207,6 +232,22 @@ const emit = defineEmits(["uploadImage"]);
 // Computed property to get toolbar items
 const toolbarItems = computed(() => {
   return props.toolbar || [];
+});
+
+// Computed property to sort custom buttons
+const sortedCustomButtons = computed(() => {
+  return [...props.customButtons].sort((a, b) => {
+    const groupA = a.group || 'default';
+    const groupB = b.group || 'default';
+    const orderA = a.order || 0;
+    const orderB = b.order || 0;
+
+    if (groupA !== groupB) {
+      return groupA.localeCompare(groupB);
+    }
+
+    return orderA - orderB;
+  });
 });
 
 function setLink() {
@@ -248,5 +289,6 @@ function triggerImageUpload() {
     margin: 0 0.5rem;
     flex-shrink: 0;
   }
+
 }
 </style>

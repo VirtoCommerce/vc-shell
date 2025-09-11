@@ -3373,12 +3373,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vc-shell/api-client-generator@npm:^1.1.74, @vc-shell/api-client-generator@npm:^1.1.76, @vc-shell/api-client-generator@workspace:cli/api-client":
+"@vc-shell/api-client-generator@npm:^1.1.77, @vc-shell/api-client-generator@workspace:cli/api-client":
   version: 0.0.0-use.local
   resolution: "@vc-shell/api-client-generator@workspace:cli/api-client"
   dependencies:
     "@types/cross-spawn": "npm:^6.0.6"
-    "@vc-shell/ts-config": "npm:^1.1.76"
+    "@vc-shell/ts-config": "npm:^1.1.77"
     chalk: "npm:^2.4.2"
     cross-spawn: "npm:^7.0.3"
     mri: "npm:^1.2.0"
@@ -3391,11 +3391,11 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vc-shell/config-generator@npm:^1.1.76, @vc-shell/config-generator@workspace:configs/vite-config":
+"@vc-shell/config-generator@npm:^1.1.77, @vc-shell/config-generator@workspace:configs/vite-config":
   version: 0.0.0-use.local
   resolution: "@vc-shell/config-generator@workspace:configs/vite-config"
   dependencies:
-    "@vc-shell/ts-config": "npm:^1.1.76"
+    "@vc-shell/ts-config": "npm:^1.1.77"
     "@vitejs/plugin-vue": "npm:^5.2.3"
     http-proxy-middleware: "npm:^3.0.2"
     rollup-plugin-visualizer: "npm:^6.0.3"
@@ -3413,7 +3413,7 @@ __metadata:
   resolution: "@vc-shell/create-vc-app@workspace:cli/create-vc-app"
   dependencies:
     "@types/prompts": "npm:^2.4.4"
-    "@vc-shell/ts-config": "npm:^1.1.76"
+    "@vc-shell/ts-config": "npm:^1.1.77"
     chalk: "npm:^2.4.2"
     copyfiles: "npm:^2.4.1"
     cross-env: "npm:^7.0.3"
@@ -3429,7 +3429,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vc-shell/framework@npm:^1.1.76, @vc-shell/framework@workspace:framework":
+"@vc-shell/framework@npm:^1.1.77, @vc-shell/framework@workspace:framework":
   version: 0.0.0-use.local
   resolution: "@vc-shell/framework@workspace:framework"
   dependencies:
@@ -3458,9 +3458,9 @@ __metadata:
     "@tiptap/starter-kit": "npm:^3.4.2"
     "@tiptap/vue-3": "npm:^3.4.2"
     "@types/dompurify": "npm:^3.0.5"
-    "@vc-shell/api-client-generator": "npm:^1.1.76"
-    "@vc-shell/config-generator": "npm:^1.1.76"
-    "@vc-shell/ts-config": "npm:^1.1.76"
+    "@vc-shell/api-client-generator": "npm:^1.1.77"
+    "@vc-shell/config-generator": "npm:^1.1.77"
+    "@vc-shell/ts-config": "npm:^1.1.77"
     "@vee-validate/i18n": "npm:^4.12.4"
     "@vee-validate/rules": "npm:^4.12.4"
     "@vitejs/plugin-vue": "npm:^5.2.3"
@@ -3502,14 +3502,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vc-shell/release-config@npm:^1.1.74, @vc-shell/release-config@workspace:configs/release-config":
+"@vc-shell/release-config@npm:^1.1.77, @vc-shell/release-config@workspace:configs/release-config":
   version: 0.0.0-use.local
   resolution: "@vc-shell/release-config@workspace:configs/release-config"
   dependencies:
     "@types/cross-spawn": "npm:^6.0.6"
     "@types/prompts": "npm:^2.4.7"
     "@types/semver": "npm:^7.5.4"
-    "@vc-shell/ts-config": "npm:^1.1.76"
+    "@vc-shell/ts-config": "npm:^1.1.77"
     chalk: "npm:^2.4.2"
     cross-spawn: "npm:^7.0.3"
     mri: "npm:^1.2.0"
@@ -3596,7 +3596,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vc-shell/ts-config@npm:^1.1.74, @vc-shell/ts-config@npm:^1.1.76, @vc-shell/ts-config@workspace:configs/ts-config":
+"@vc-shell/ts-config@npm:^1.1.77, @vc-shell/ts-config@workspace:configs/ts-config":
   version: 0.0.0-use.local
   resolution: "@vc-shell/ts-config@workspace:configs/ts-config"
   languageName: unknown
@@ -4549,11 +4549,11 @@ __metadata:
     "@types/node": "npm:^20.10.5"
     "@typescript-eslint/eslint-plugin": "npm:^7.4.0"
     "@typescript-eslint/parser": "npm:^7.4.0"
-    "@vc-shell/api-client-generator": "npm:^1.1.74"
-    "@vc-shell/config-generator": "npm:^1.1.76"
-    "@vc-shell/framework": "npm:^1.1.76"
-    "@vc-shell/release-config": "npm:^1.1.74"
-    "@vc-shell/ts-config": "npm:^1.1.74"
+    "@vc-shell/api-client-generator": "npm:^1.1.77"
+    "@vc-shell/config-generator": "npm:^1.1.77"
+    "@vc-shell/framework": "npm:^1.1.77"
+    "@vc-shell/release-config": "npm:^1.1.77"
+    "@vc-shell/ts-config": "npm:^1.1.77"
     "@vcmp-vendor-portal/api": "npm:^1.1.39"
     "@vcmp-vendor-portal/modules": "npm:^1.1.39"
     "@virtocommerce/import-app": "npm:^1.1.2"

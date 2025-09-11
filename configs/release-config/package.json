@@ -16,14 +16,14 @@
     "mri": "^1.2.0",
     "prompts": "^2.4.2",
     "semver": "^7.5.4",
-    "vite": "^7.1.5"
+    "vite": "^6.3.3"
   },
   "devDependencies": {
     "@types/cross-spawn": "^6.0.6",
     "@types/prompts": "^2.4.7",
     "@types/semver": "^7.5.4",
     "@vc-shell/ts-config": "^1.1.76",
-    "typescript": "^5.9.2",
+    "typescript": "^5.8.3",
     "vite-plugin-dts": "^3.6.4"
   },
   "publishConfig": {

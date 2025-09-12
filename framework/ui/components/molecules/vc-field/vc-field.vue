@@ -10,7 +10,6 @@
       <!-- Field label -->
       <VcLabel
         v-if="label"
-        class="vc-field__label"
       >
         <span>{{ label }}</span>
         <template
@@ -92,15 +91,11 @@ function copy(value: string) {
   @apply tw-flex;
 
   &--vertical {
-    @apply tw-flex-col;
+    @apply tw-flex-col tw-gap-2;
   }
 
   &--horizontal {
     @apply tw-flex-row tw-items-center;
-  }
-
-  &__label {
-    @apply tw-mb-2;
   }
 
   &__copy-button {

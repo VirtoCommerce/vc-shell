@@ -1,3 +1,17 @@
+## [1.1.78](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.77...v1.1.78) (2025-09-12)
+
+
+### Bug Fixes
+
+* **vc-radio-button:** prevent radio button from shrinking by adding flex-shrink property ([276bd6a](https://github.com/VirtoCommerce/vc-shell/commit/276bd6ac81b74b3d93d8652d75e88b32fae10c38))
+
+
+### Features
+
+* **dashboard:** enhance widget placement logic to handle new widgets without collisions ([1faf444](https://github.com/VirtoCommerce/vc-shell/commit/1faf444cb7c919c7a0ddb4447e7dab560c8f0e93))
+
+
+
 ## [1.1.77](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.76...v1.1.77) (2025-09-11)
 
 

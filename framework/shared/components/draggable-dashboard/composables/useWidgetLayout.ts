@@ -255,10 +255,49 @@ export function useWidgetLayout(updatePositionCallback: (widgetId: string, posit
     return true;
   };
 
+  /**
+   * Places new widgets without collisions with existing ones
+   *
+   * @param newWidgets The array of new widgets to place
+   * @param allWidgets The array of all widgets
+   * @param layout The map of widget positions
+   */
+  const placeNewWidgets = (
+    newWidgets: IDashboardWidget[],
+    allWidgets: IDashboardWidget[],
+    layout: Map<string, DashboardWidgetPosition>,
+  ): void => {
+    if (newWidgets.length === 0) return;
+
+    // Create a map of occupied cells from existing widgets
+    const occupiedCells = grid.createOccupiedCellsMap(allWidgets, layout);
+
+    // Sort new widgets by size (bigger first)
+    const sortedWidgets = [...newWidgets].sort((a, b) => {
+      const aSize = a.size.width * a.size.height;
+      const bSize = b.size.width * b.size.height;
+      return bSize - aSize;
+    });
+
+    // Place each new widget
+    for (const widget of sortedWidgets) {
+      const position = findOptimalPosition(widget, occupiedCells, grid.dynamicRows.value + grid.ROWS_BUFFER);
+      updatePositionCallback(widget.id, position);
+
+      // Update the map of occupied cells
+      for (let x = position.x; x < position.x + widget.size.width; x++) {
+        for (let y = position.y; y < position.y + widget.size.height; y++) {
+          occupiedCells.add(`${x},${y}`);
+        }
+      }
+    }
+  };
+
   return {
     findFreePosition,
     findOptimalPosition,
     arrangeWidgetsInRows,
     initializeWithBuiltInPositions,
+    placeNewWidgets,
   };
 }

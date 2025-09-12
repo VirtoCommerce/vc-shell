@@ -78,6 +78,15 @@ export function useDashboardGrid() {
   const initializeLayout = (): void => {
     // Priority 1: Loading from localStorage
     const layoutLoadedFromStorage = loadLayoutFromLocalStorage();
+    
+    // Check for new widgets that don't have positions in localStorage
+    const savedPositions = persistence.getSavedPositions();
+    const widgetsWithoutSavedPosition = widgets.value.filter(w => !savedPositions[w.id] && !layout.value.has(w.id));
+    
+    if (widgetsWithoutSavedPosition.length > 0) {
+      // Place new widgets without collisions
+      widgetLayout.placeNewWidgets(widgetsWithoutSavedPosition, widgets.value, layout.value);
+    }
 
     // Priority 2: Using built-in widget positions
     if (!layoutLoadedFromStorage) {
@@ -90,6 +99,21 @@ export function useDashboardGrid() {
     }
   };
 
+  /**
+   * Handles registration of new widgets after initialization
+   */
+  const handleNewWidget = (widget: IDashboardWidget): void => {
+    // Check if widget already has a valid position from localStorage
+    const savedPositions = persistence.getSavedPositions();
+    if (savedPositions[widget.id]) {
+      return; // Position already loaded from localStorage
+    }
+    
+    // Find a free position for the new widget
+    const position = widgetLayout.findFreePosition(widget, widgets.value, layout.value);
+    dashboard.updateWidgetPosition(widget.id, position);
+  };
+
   return {
     widgets,
     layout,
@@ -100,5 +124,6 @@ export function useDashboardGrid() {
     arrangeWidgetsInRows,
     initializeWithBuiltInPositions,
     initializeLayout,
+    handleNewWidget,
   };
 }

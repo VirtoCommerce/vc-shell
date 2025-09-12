@@ -84,6 +84,7 @@ const {
   saveLayoutToLocalStorage,
   loadLayoutFromLocalStorage,
   initializeWithBuiltInPositions,
+  handleNewWidget,
 } = useDashboardGrid();
 
 // Initialize cellSize calculator
@@ -115,6 +116,28 @@ watch(gridContainerRef, (container) => {
     setGridContainer(container);
   }
 });
+
+// Watch for new widgets and handle their placement
+watch(
+  widgets,
+  (newWidgets, oldWidgets) => {
+    if (!oldWidgets || newWidgets.length > oldWidgets.length) {
+      // New widgets have been added
+      const newWidgetIds = newWidgets
+        .filter(w => !oldWidgets?.some(ow => ow.id === w.id))
+        .map(w => w.id);
+      
+      newWidgetIds.forEach(widgetId => {
+        const widget = newWidgets.find(w => w.id === widgetId);
+        if (widget && !layout.value.has(widgetId)) {
+          // Widget doesn't have a position yet, find a free one
+          handleNewWidget(widget);
+        }
+      });
+    }
+  },
+  { immediate: false },
+);
 
 // Watch for layout changes and save to localStorage
 watch(

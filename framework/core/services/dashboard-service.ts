@@ -61,19 +61,13 @@ export function createDashboardService(): IDashboardService {
 
     state.widgets.set(widget.id, widget);
 
-    // If the position is not specified, add the widget to the end
-    if (!widget.position) {
-      const lastWidget = Array.from(state.layout.values()).reduce((max, pos) => {
-        return pos.y > max ? pos.y : max;
-      }, 0);
-
-      state.layout.set(widget.id, {
-        x: 0,
-        y: lastWidget + 1,
-      });
-    } else {
+    // If the position is not specified, we don't set it here
+    // The DraggableDashboard component will handle finding a free position
+    if (widget.position) {
       state.layout.set(widget.id, widget.position);
     }
+    // If no position is specified, the widget will be placed by the dashboard component
+    // to avoid collisions with existing widgets
   };
 
   /**

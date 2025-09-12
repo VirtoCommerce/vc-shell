@@ -67,6 +67,15 @@ export function useLayoutPersistence(
   };
 
   /**
+   * Gets saved positions for specific widgets
+   *
+   * @returns The saved positions
+   */
+  const getSavedPositions = (): Record<string, DashboardWidgetPosition> => {
+    return savedLayout.value;
+  };
+
+  /**
    * Clears the saved layout from localStorage
    */
   const clearSavedLayout = (): void => {
@@ -85,5 +94,6 @@ export function useLayoutPersistence(
     loadLayout,
     clearSavedLayout,
     hasSavedLayout,
+    getSavedPositions,
   };
 }

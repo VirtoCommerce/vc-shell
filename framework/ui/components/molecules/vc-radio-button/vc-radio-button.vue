@@ -118,6 +118,7 @@ function onChange() {
   }
 
   input[type="radio"] {
+    flex-shrink: 0;
     border-radius: 50%;
     appearance: none;
     height: var(--radio-size);

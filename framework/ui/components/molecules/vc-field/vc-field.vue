@@ -28,7 +28,7 @@
       >
         <VcButton
           v-if="copyable"
-          icon="material-content_copy"
+          :icon="copyIcon"
           icon-size="m"
           class="vc-field__copy-button"
           text
@@ -40,6 +40,7 @@
 </template>
 
 <script lang="ts" setup>
+import { ref } from "vue";
 import { VcLabel, VcCol } from "./../../";
 import VcFieldType from "./_internal/vc-field-type/vc-field-type.vue";
 
@@ -81,8 +82,14 @@ withDefaults(defineProps<Props>(), {
   aspectRatio: () => [1, 1],
 });
 
+const copyIcon = ref("material-content_copy");
+
 function copy(value: string) {
   navigator.clipboard?.writeText(value);
+  copyIcon.value = "material-check";
+  setTimeout(() => {
+    copyIcon.value = "material-content_copy";
+  }, 1000);
 }
 </script>
 

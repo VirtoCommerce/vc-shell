@@ -20,3 +20,4 @@ export * from "./useAppBarWidget";
 export * from "./useSettingsMenu";
 export * from "./useToolbar";
 export * from "./useDynamicProperties";
+export * from "./useBlade";

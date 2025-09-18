@@ -99,7 +99,7 @@ import SchemaRender from "../components/SchemaRender";
 import { VcImage } from "../../../../ui/components";
 import { useToolbarReducer } from "../composables/useToolbarReducer";
 import { useBeforeUnload } from "../../../../core/composables/useBeforeUnload";
-import { useLanguages, useNotifications } from "../../../../core/composables";
+import { useLanguages, useNotifications, useBlade } from "../../../../core/composables";
 import { notification, GenericDropdown } from "../../../components";
 import { useWidgets } from "../../../../core/composables/useWidgets";
 import { BladeInstance } from "../../../../injection-keys";
@@ -136,7 +136,7 @@ const { showConfirmation } = usePopup();
 const { getFlag } = useLanguages();
 
 const isMixinReady = ref(false);
-const blade = inject(BladeInstance);
+const blade = useBlade();
 
 if (typeof props.composables?.[props.model?.settings?.composable ?? ""] === "undefined") {
   throw new Error(`Composable ( ${props.model?.settings?.composable} ) is not defined`);

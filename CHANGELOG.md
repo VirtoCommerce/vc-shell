@@ -1,3 +1,13 @@
+## [1.1.79](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.78...v1.1.79) (2025-09-18)
+
+
+### Features
+
+* **composables:** add useBlade composable for accessing the current blade instance ([e1d1c59](https://github.com/VirtoCommerce/vc-shell/commit/e1d1c591e3472c38eb459f878f7a69f5e6df8f4a))
+* **vc-field:** update copy button icon dynamically on copy action ([fe47e62](https://github.com/VirtoCommerce/vc-shell/commit/fe47e62a591df136800f4e5e8872e5392f8fb7df))
+
+
+
 ## [1.1.78](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.77...v1.1.78) (2025-09-12)
 
 

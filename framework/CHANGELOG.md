@@ -1,3 +1,12 @@
+## [1.1.80](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.79...v1.1.80) (2025-09-22)
+
+
+### Bug Fixes
+
+* **vc-editor:** export ToolbarNames type for better accessibility in toolbar components ([e24ba37](https://github.com/VirtoCommerce/vc-shell/commit/e24ba37bd33059dfbe7a8d285c75e4e9724ca329))
+
+
+
 ## [1.1.79](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.78...v1.1.79) (2025-09-18)
 
 

@@ -169,7 +169,7 @@ import type { CustomToolbarItem } from "./_internal/toolbar-types";
 export type { CustomToolbarItem, CustomToolbarButton, CustomToolbarDropdown } from "./_internal/toolbar-types";
 
 // Define toolbar button types
-type ToolbarNames =
+export type ToolbarNames =
   | "bold"
   | "italic"
   | "underline"

@@ -423,7 +423,7 @@ const actionBuilder = (): IActionBuilderResult<ICommonAsset>[] => {
 };
 
 defineExpose({
-  title: t("ASSETS_MANAGER.TITLE"),
+  title: bladeTitle,
 });
 </script>
 

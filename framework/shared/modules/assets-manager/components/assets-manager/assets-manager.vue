@@ -1,6 +1,6 @@
 <template>
   <VcBlade
-    :title="t('ASSETS_MANAGER.TITLE')"
+    :title="bladeTitle"
     :expanded="expanded"
     :closable="closable"
     :toolbar-items="bladeToolbar"
@@ -165,6 +165,7 @@ export interface Props {
   expanded?: boolean;
   closable?: boolean;
   options: {
+    title?: string;
     assets: ICommonAsset[];
     loading: Ref<boolean>;
     assetsEditHandler: (assets: ICommonAsset[]) => ICommonAsset[];
@@ -196,6 +197,8 @@ defineOptions({
 const { t } = useI18n({ useScope: "global" });
 
 const defaultAssets = ref<ICommonAsset[]>([]);
+
+const bladeTitle = computed(() => props.options.title || t("ASSETS_MANAGER.TITLE"));
 
 const isDragging = ref(false);
 const uploader = ref();
@@ -310,7 +313,13 @@ async function onDrop(event: DragEvent) {
     const fileList = event.dataTransfer?.files;
 
     if (fileList && fileList.length) {
-      await upload(fileList);
+      try {
+        await upload(fileList);
+      } catch (error) {
+        console.error(error);
+        throw error;
+      }
+
     }
     isDragging.value = false;
   }
@@ -349,7 +358,12 @@ async function upload(files: FileList) {
       modifiedFileList.items.add(file);
     });
     if (props.options.assetsUploadHandler && typeof props.options.assetsUploadHandler === "function")
+    try {
       defaultAssets.value = await props.options.assetsUploadHandler(modifiedFileList.files);
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
   }
 }
 
@@ -358,7 +372,13 @@ async function inputUpload(event: Event) {
   const fileList = target.files;
 
   if (fileList && fileList.length) {
-    upload(fileList);
+    try {
+      await upload(fileList);
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+
   }
 }
 

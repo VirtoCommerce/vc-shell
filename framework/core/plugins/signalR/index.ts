@@ -11,7 +11,7 @@ const currentCreator = ref<string | undefined>();
 export const updateSignalRCreatorSymbol: InjectionKey<(creator: string | undefined) => void> =
   Symbol("updateSignalRCreator");
 
-function setupSystemEventsHandler(connection: HubConnection, creator?: string) {
+function setupSystemEventsHandler(connection: any, creator?: string) {
   // Unsubscribe from the previous handler if it was
   connection.off("SendSystemEvents");
 

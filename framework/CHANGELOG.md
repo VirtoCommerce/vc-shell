@@ -1,3 +1,13 @@
+## [1.1.83-alpha.0](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.82...v1.1.83-alpha.0) (2025-09-24)
+
+
+### Features
+
+* **extension-points:** introduce new extension system with composables for slot management and data exchange ([b427cd4](https://github.com/VirtoCommerce/vc-shell/commit/b427cd4a141d4dc39c454b12259b2a8c566179b9))
+* **useModificationTracker:** add pristineValue reference to track original state ([adaf67d](https://github.com/VirtoCommerce/vc-shell/commit/adaf67d34ceac0b7b490c2906a7b3f25b57c32e1))
+
+
+
 ## [1.1.82](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.81...v1.1.82) (2025-09-23)
 
 

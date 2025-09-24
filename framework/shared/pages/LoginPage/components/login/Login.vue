@@ -83,14 +83,10 @@
       </div>
 
       <!-- Extensions after form -->
-      <template
-        v-for="extension in afterLoginFormExtensions"
-        :key="extension.id"
-      >
-        <div class="vc-login-page__extension">
-          <component :is="extension.component" />
-        </div>
-      </template>
+      <!-- Simple extension slot -->
+      <div class="vc-login-page__extensions">
+        <ExtensionSlot name="login-after-form" />
+      </div>
     </template>
     <template v-else>
       <template v-if="!forgotPasswordRequestSent">
@@ -180,7 +176,7 @@ import { ExternalSignInProviderInfo, SignInResult } from "./../../../../../core/
 import { useI18n } from "vue-i18n";
 import { default as ExternalProviders } from "./../../../../../shared/components/sign-in/external-providers.vue";
 import { useExternalProvider } from "./../../../../../shared/components/sign-in/useExternalProvider";
-import { Extension, ExtensionPoint, extensionsHelperSymbol } from "./../../../../../core/plugins";
+import { ExtensionSlot } from '../../../../../core/plugins/extension-points';
 
 type ForgotPasswordFunc = (args: { loginOrEmail: string }) => Promise<void>;
 
@@ -212,12 +208,6 @@ const isDirty = useIsFormDirty();
 const loadingForgotPassword = ref(false);
 const loginProviders = ref<ExternalSignInProviderInfo[]>();
 let forgotPassword: ForgotPasswordFunc;
-
-const extensionsHelper = inject(extensionsHelperSymbol);
-
-const afterLoginFormExtensions = computed(
-  (): ExtensionPoint[] => (extensionsHelper?.getOutboundExtensions("login-after-form") as ExtensionPoint[]) || [],
-);
 
 if (props.composable && typeof props.composable === "function") {
   useLogin = props.composable;

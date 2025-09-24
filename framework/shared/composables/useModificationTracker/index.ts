@@ -12,6 +12,11 @@ export interface UseModificationTrackerReturn<T> {
    */
   currentValue: Ref<T>;
   /**
+   * Reactive reference to the pristine value.
+   * It is a "clean" version representing the original, unmodified state.
+   */
+  pristineValue: Ref<T>;
+  /**
    * Shows if currentValue has been modified compared to its "pristine" state.
    * Read-only.
    */
@@ -87,6 +92,7 @@ export function useModificationTracker<T>(initialValueProp: T | Ref<T>): UseModi
 
   return {
     currentValue,
+    pristineValue,
     isModified: computed(() => isModified.value),
     resetModificationState,
   };

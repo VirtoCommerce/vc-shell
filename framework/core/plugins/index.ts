@@ -4,3 +4,4 @@ export * from "./validation";
 export * from "./modularity";
 export * from "./signalR";
 export * from "./permissions";
+export * from "./extension-points";

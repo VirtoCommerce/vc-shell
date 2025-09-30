@@ -1,3 +1,12 @@
+## [1.1.83](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.83-alpha.0...v1.1.83) (2025-09-30)
+
+
+### Features
+
+* **create-vc-app:** add type definitions for internationalization properties in Vue components ([c215a55](https://github.com/VirtoCommerce/vc-shell/commit/c215a558a113dfc48b53667a6f32ab2537f311f0))
+
+
+
 ## [1.1.83-alpha.0](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.82...v1.1.83-alpha.0) (2025-09-24)
 
 

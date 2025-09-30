@@ -1,3 +1,20 @@
+## [1.1.83](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.83-alpha.0...v1.1.83) (2025-09-30)
+
+
+### Bug Fixes
+
+* **loader:** enhance version compatibility checks to include prerelease versions ([d1af321](https://github.com/VirtoCommerce/vc-shell/commit/d1af32163d34e4540b49df5d0ed9de71cc5ef0c2))
+* **vc-select:** update model value type definition to support multiple option formats ([92c70f0](https://github.com/VirtoCommerce/vc-shell/commit/92c70f04448ab1de015cd68c2dd782355a40d9fe))
+
+
+### Features
+
+* **login:** add localization support for "OR" text in login components ([6ed87e6](https://github.com/VirtoCommerce/vc-shell/commit/6ed87e67963acfaf681ca472e577c3bb79d4f9de))
+* **notification-template:** add click event emission to notification template component ([b313b7c](https://github.com/VirtoCommerce/vc-shell/commit/b313b7c0c1ba8aaef4eacd104338a8348a5b8d40))
+* **vc-form:** implement submit event emission in form component ([31019a0](https://github.com/VirtoCommerce/vc-shell/commit/31019a078cb3e3caede67bf8396dc0d985015f6c))
+
+
+
 ## [1.1.83-alpha.0](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.82...v1.1.83-alpha.0) (2025-09-24)
 
 

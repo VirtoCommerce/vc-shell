@@ -633,6 +633,17 @@ onMounted(() => {
       { threshold: 0.1 },
     );
     rootVisibilityObserver.observe(selectRootRef.value);
+
+    // Fallback for iframe: check visibility after a delay
+    setTimeout(() => {
+      if (selectRootRef.value && !isSelectVisible.value) {
+        const rect = selectRootRef.value.getBoundingClientRect();
+        const isVisible = rect.top < window.innerHeight && rect.bottom > 0 && rect.left < window.innerWidth && rect.right > 0;
+        if (isVisible) {
+          isSelectVisible.value = true;
+        }
+      }
+    }, 100);
   }
 });
 
@@ -1019,6 +1030,15 @@ const onDropdownClose = async () => {
 
 function toggleDropdown() {
   if (props.disabled) return;
+
+  // Ensure isSelectVisible is true when opening dropdown (fallback for iframe)
+  if (!isOpened.value && !isSelectVisible.value && selectRootRef.value) {
+    const rect = selectRootRef.value.getBoundingClientRect();
+    const isVisible = rect.top < window.innerHeight && rect.bottom > 0 && rect.left < window.innerWidth && rect.right > 0;
+    if (isVisible) {
+      isSelectVisible.value = true;
+    }
+  }
 
   isOpened.value = !isOpened.value;
 

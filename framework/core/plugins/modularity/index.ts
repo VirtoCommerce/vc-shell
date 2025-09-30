@@ -196,4 +196,3 @@ export function createAppModule(
 }
 
 export * from "./loader";
-export * from "./extensions-helper";

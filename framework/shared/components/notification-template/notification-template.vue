@@ -1,5 +1,5 @@
 <template>
-  <div class="vc-notification-template">
+  <div class="vc-notification-template" @click="$emit('click')">
     <div
       class="vc-notification-template__container"
       :class="{
@@ -38,8 +38,12 @@ export interface Props {
   title: string;
   notification: IPushNotification;
 }
+export interface Emits {
+  (e: "click"): void;
+}
 
 const props = defineProps<Props>();
+const emit = defineEmits<Emits>();
 
 const locale = window.navigator.language;
 

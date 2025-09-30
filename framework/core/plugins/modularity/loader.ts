@@ -148,7 +148,7 @@ function checkVersionCompatibility(
 
   if (
     moduleVersion.compatibleWith.framework &&
-    !semver.satisfies(frameworkVersion, moduleVersion.compatibleWith.framework)
+    !semver.satisfies(frameworkVersion, moduleVersion.compatibleWith.framework, { includePrerelease: true })
   ) {
     console.error(
       `Module ${moduleId} requires framework version ${moduleVersion.compatibleWith.framework}, but current framework version is ${frameworkVersion}.`,
@@ -172,7 +172,7 @@ function checkVersionCompatibility(
         continue;
       }
 
-      if (!semver.satisfies(loadedDepVersion, versionRange)) {
+      if (!semver.satisfies(loadedDepVersion, versionRange, { includePrerelease: true })) {
         console.error(
           `Module ${moduleId} requires ${depModuleId} version ${versionRange}, but loaded version is ${loadedDepVersion}.`,
         );

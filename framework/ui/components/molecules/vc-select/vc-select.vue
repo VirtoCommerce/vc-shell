@@ -955,7 +955,12 @@ function getPropValueFn(propValue: OptionProp<Option>, defaultVal: OptionProp<Op
     return val;
   } else {
     return (opt: Option) => {
-      if (opt !== null && typeof opt === "object" && val && val in opt) {
+      // Support for primitive types (string, number, etc.)
+      if (opt === null || typeof opt !== "object") {
+        return opt;
+      }
+
+      if (val && val in opt) {
         return opt[val as keyof Option];
       } else {
         return opt;
@@ -1156,7 +1161,8 @@ async function onSearch(value: string) {
     }
   } else {
     optionsList.value = optionsTemp.value.filter((x: Option) => {
-      return (x[props.optionLabel as keyof Option] as string).toLowerCase().includes(filterString.value.toLowerCase());
+      const label = getOptionLabel.value(x);
+      return String(label).toLowerCase().includes(filterString.value.toLowerCase());
     });
   }
 }

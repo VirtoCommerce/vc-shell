@@ -9,7 +9,7 @@
       <VcForm @submit.prevent="login">
         <Field
           v-slot="{ errorMessage, handleChange, errors }"
-          :label="t('LOGIN.FIELDS.LOGIN.LABEL')"
+          :label="$t('LOGIN.FIELDS.LOGIN.LABEL')"
           name="username"
           :model-value="form.username"
           rules="required"
@@ -18,8 +18,8 @@
             ref="loginField"
             v-model="form.username"
             class="vc-login-page__input"
-            :label="t('LOGIN.FIELDS.LOGIN.LABEL')"
-            :placeholder="t('LOGIN.FIELDS.LOGIN.PLACEHOLDER')"
+            :label="$t('LOGIN.FIELDS.LOGIN.LABEL')"
+            :placeholder="$t('LOGIN.FIELDS.LOGIN.PLACEHOLDER')"
             required
             :error="!!errors.length"
             :error-message="errorMessage"
@@ -28,7 +28,7 @@
         </Field>
         <Field
           v-slot="{ errorMessage, handleChange, errors }"
-          :label="t('LOGIN.FIELDS.PASSWORD.LABEL')"
+          :label="$t('LOGIN.FIELDS.PASSWORD.LABEL')"
           name="password"
           :model-value="form.password"
           rules="required"
@@ -37,8 +37,8 @@
             ref="passwordField"
             v-model="form.password"
             class="vc-login-page__input--small"
-            :label="t('LOGIN.FIELDS.PASSWORD.LABEL')"
-            :placeholder="t('LOGIN.FIELDS.PASSWORD.PLACEHOLDER')"
+            :label="$t('LOGIN.FIELDS.PASSWORD.LABEL')"
+            :placeholder="$t('LOGIN.FIELDS.PASSWORD.PLACEHOLDER')"
             type="password"
             required
             :error="!!errors.length"
@@ -49,7 +49,6 @@
         </Field>
 
         <div
-          v-if="!!forgotPassword"
           class="vc-login-page__forgot-password-container"
         >
           <VcButton
@@ -57,7 +56,7 @@
             type="button"
             @click="togglePassRequest"
           >
-            {{ t("LOGIN.FORGOT_PASSWORD_BUTTON") }}
+            {{ $t("LOGIN.FORGOT_PASSWORD_BUTTON") }}
           </VcButton>
         </div>
         <div class="vc-login-page__button-container">
@@ -66,7 +65,7 @@
             class="vc-login-page__submit-button"
             @click="login"
           >
-            {{ t("LOGIN.BUTTON") }}
+            {{ $t("LOGIN.BUTTON") }}
           </vc-button>
         </div>
       </VcForm>
@@ -76,24 +75,31 @@
       >
         <div class="vc-login-page__separator-line">
           <!-- TODO add to localization -->
-          OR
+          {{ $t("LOGIN.OR") }}
         </div>
 
         <ExternalProviders :providers="loginProviders" />
       </div>
 
-      <!-- Extensions after form -->
       <!-- Simple extension slot -->
-      <div class="vc-login-page__extensions">
+      <div
+        v-if="hasComponents"
+        class="vc-login-page__separator"
+      >
+        <div class="vc-login-page__separator-line">
+          <!-- TODO add to localization -->
+          {{ $t("LOGIN.OR") }}
+        </div>
+
         <ExtensionSlot name="login-after-form" />
       </div>
     </template>
     <template v-else>
       <template v-if="!forgotPasswordRequestSent">
-        <VcForm @submit.prevent="forgot">
+        <VcForm>
           <Field
             v-slot="{ field, errorMessage, handleChange, errors }"
-            :label="t('LOGIN.FIELDS.FORGOT_PASSWORD.LABEL')"
+            :label="$t('LOGIN.FIELDS.FORGOT_PASSWORD.LABEL')"
             name="loginOrEmail"
             :model-value="forgotPasswordForm.loginOrEmail"
             rules="required|email"
@@ -103,9 +109,9 @@
               ref="forgotPasswordField"
               v-model="forgotPasswordForm.loginOrEmail"
               class="vc-login-page__input"
-              :label="t('LOGIN.FIELDS.FORGOT_PASSWORD.LABEL')"
-              :placeholder="t('LOGIN.FIELDS.FORGOT_PASSWORD.PLACEHOLDER')"
-              :hint="t('LOGIN.RESET_EMAIL_TEXT')"
+              :label="$t('LOGIN.FIELDS.FORGOT_PASSWORD.LABEL')"
+              :placeholder="$t('LOGIN.FIELDS.FORGOT_PASSWORD.PLACEHOLDER')"
+              :hint="$t('LOGIN.RESET_EMAIL_TEXT')"
               required
               :error="!!errors.length"
               :error-message="errorMessage"
@@ -118,20 +124,20 @@
               type="button"
               @click="togglePassRequest"
             >
-              {{ t("LOGIN.BACK_BUTTON") }}
+              {{ $t("LOGIN.BACK_BUTTON") }}
             </vc-button>
             <vc-button
               :disabled="loading || isDisabled || loadingForgotPassword"
               @click="forgot"
             >
-              {{ t("LOGIN.FORGOT_BUTTON") }}
+              {{ $t("LOGIN.FORGOT_BUTTON") }}
             </vc-button>
           </div>
         </VcForm>
       </template>
 
       <template v-if="requestPassResult.succeeded && forgotPasswordRequestSent">
-        <div>{{ t("LOGIN.RESET_EMAIL_SENT") }}</div>
+        <div>{{ $t("LOGIN.RESET_EMAIL_SENT") }}</div>
         <div class="vc-login-page__button-container">
           <span
             v-if="$isDesktop.value"
@@ -141,7 +147,7 @@
             :disabled="loading"
             @click="togglePassRequest"
           >
-            {{ t("LOGIN.BUTTON_OK") }}
+            {{ $t("LOGIN.BUTTON_OK") }}
           </vc-button>
         </div>
       </template>
@@ -176,7 +182,7 @@ import { ExternalSignInProviderInfo, SignInResult } from "./../../../../../core/
 import { useI18n } from "vue-i18n";
 import { default as ExternalProviders } from "./../../../../../shared/components/sign-in/external-providers.vue";
 import { useExternalProvider } from "./../../../../../shared/components/sign-in/useExternalProvider";
-import { ExtensionSlot } from '../../../../../core/plugins/extension-points';
+import { ExtensionSlot, useExtensionSlot } from '../../../../../core/plugins/extension-points';
 
 type ForgotPasswordFunc = (args: { loginOrEmail: string }) => Promise<void>;
 
@@ -193,13 +199,13 @@ const router = useRouter();
 
 const { validateField } = useForm({ validateOnMount: false });
 const { uiSettings, loading: customizationLoading } = useSettings();
-const { t } = useI18n({ useScope: "global" });
 let useLogin;
 const signInResult = ref({ succeeded: true }) as Ref<SignInResult & { status?: number; error?: any }>;
 const requestPassResult = ref<RequestPasswordResult>({ succeeded: true });
 const forgotPasswordRequestSent = ref(false);
 const { signIn, loading, user } = useUserManagement();
 const { getProviders } = useExternalProvider();
+const { hasComponents } = useExtensionSlot('login-after-form');
 
 const isLogin = ref(true);
 const isValid = useIsFormValid();

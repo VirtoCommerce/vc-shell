@@ -349,7 +349,6 @@ import { useI18n } from "vue-i18n";
 import { useKeyboardNavigation } from "../../../../core/composables/useKeyboardNavigation";
 
 export type OptionProp<T> = ((option: T) => string) | string | undefined;
-export type MaybeArray<T> = T | T[];
 type FloatingInstanceType = UseFloatingReturn & {
   middlewareData: {
     sameWidthChangeBorders: {
@@ -572,7 +571,7 @@ const emit = defineEmits<{
    * Emitted when the component needs to change the model; Is also used by v-model
    */
 
-  "update:modelValue": [inputValue: MaybeArray<Option> | MaybeArray<string> | null];
+  "update:modelValue": [inputValue: Option | Option[] | string | string[] | null];
   /**
    * Emitted when user wants to filter a value
    */

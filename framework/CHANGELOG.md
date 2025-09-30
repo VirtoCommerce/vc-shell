@@ -1,3 +1,12 @@
+## [1.1.84-alpha.0](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.83...v1.1.84-alpha.0) (2025-09-30)
+
+
+### Bug Fixes
+
+* **vc-select:** add fallback visibility check for iframe support in dropdown component ([dd3fc7d](https://github.com/VirtoCommerce/vc-shell/commit/dd3fc7d498c1a0d694804332c3fac3513bb4e78f))
+
+
+
 ## [1.1.83](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.83-alpha.0...v1.1.83) (2025-09-30)
 
 

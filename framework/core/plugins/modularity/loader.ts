@@ -1,6 +1,5 @@
 import { App, Plugin } from "vue";
 import { Router } from "vue-router";
-import { ExtensionRegistry, createExtensionsHelper, registerModuleExtensions } from "./extensions-helper";
 import { DynamicModulesKey } from "../../../injection-keys";
 import * as semver from "semver";
 import { notification } from "../../../shared";
@@ -51,18 +50,14 @@ interface Apps {
 interface ModuleWithDefaultExport {
   default: {
     install: Plugin;
-    extensions?: ExtensionRegistry;
     version?: VersionInfo;
   };
 }
 
 interface ModuleWithNamedExport {
   install: Plugin;
-  extensions?: ExtensionRegistry;
   version?: VersionInfo;
 }
-
-type ModuleExports = ModuleWithDefaultExport | ModuleWithNamedExport;
 
 class VersionCompatibilityError extends Error {
   moduleId: string;
@@ -201,7 +196,7 @@ function checkVersionCompatibility(
  * @returns The sub-module containing the 'install' function, or null if not found.
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function getModuleInstall(module: any): { install: Plugin; extensions?: ExtensionRegistry } | null {
+function getModuleInstall(module: any): { install: Plugin } | null {
   if (!module) {
     return null;
   }
@@ -245,7 +240,6 @@ export function useDynamicModules(
 
   const loadedModules = new Set<string>();
   const loadedModulesWithVersions = new Map<string, string>();
-  const extensionsHelper = createExtensionsHelper(app);
 
   async function load() {
     try {
@@ -500,11 +494,6 @@ export function useDynamicModules(
                 moduleVersion: moduleVersionInfo?.version,
               });
 
-              // Register extensions if they exist
-              if (mainModule.extensions) {
-                registerModuleExtensions(app, moduleName, mainModule.extensions);
-              }
-
               // Install the module plugin
               app.use(mainModule.install, { router });
 
@@ -550,7 +539,6 @@ export function useDynamicModules(
 
   return {
     load,
-    extensionsHelper,
     getLoadedModulesWithVersions: () => new Map(loadedModulesWithVersions),
   };
 }

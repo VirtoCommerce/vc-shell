@@ -114,11 +114,11 @@ export interface ICommonAsset {
   name?: string | undefined;
   url?: string | undefined;
   readableSize?: string;
-  relativeUrl?: string;
-  description?: string;
+  relativeUrl?: string | undefined;
+  description?: string | undefined;
   modifiedDate?: Date;
-  id?: string;
-  altText?: string;
+  id?: string | undefined;
+  altText?: string | undefined;
   typeId?: string;
   size?: number;
   createdDate?: Date;

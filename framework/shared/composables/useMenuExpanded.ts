@@ -13,7 +13,7 @@ const isHoverExpanded = ref(false);
 function getStorageKey(): string {
   // Extract app name from pathname (e.g., "/vendor-portal/" -> "vendor-portal")
   const pathSegments = window.location.pathname.split("/").filter(Boolean);
-  const appName = pathSegments[0] || "default";
+  const appName = pathSegments[pathSegments.length - 1] || "default";
   return `${STORAGE_KEY_PREFIX}_${appName}`;
 }
 

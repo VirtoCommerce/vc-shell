@@ -216,6 +216,10 @@ function openLink(link: string | undefined) {
   }
   location.href = link;
 }
+
+defineExpose({
+  title: defaultAsset.value.name,
+});
 </script>
 
 <style lang="scss">

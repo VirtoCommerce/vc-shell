@@ -458,7 +458,7 @@ export interface InputSchema extends SchemaBase {
    * Input type.
    * @type {"number" | "text" | "password" | "email" | "tel" | "url" | "time" | "date" | "datetime-local"}
    */
-  variant?: ComponentProps<typeof VcInput>["type"];
+  variant?: "text" | "password" | "email" | "tel" | "number" | "integer" | "url" | "time" | "date" | "datetime-local";
   /**
    * Whether the input is clearable or not.
    * @type {boolean}
@@ -496,7 +496,7 @@ export interface InputSchema extends SchemaBase {
   /**
    * Datepicker options.
    */
-  datePickerOptions?: ComponentProps<typeof VcInput>["datePickerOptions"];
+  datePickerOptions?: import("@vuepic/vue-datepicker").VueDatePickerProps;
   /**
    * Whether the input is in loading state or not.
    * @type {boolean}

@@ -196,7 +196,7 @@ import VcTableDesktopView from "./_internal/vc-table-desktop-view/vc-table-deskt
 import VcTableHeader from "./_internal/vc-table-header/vc-table-header.vue";
 import VcTableSelectAll from "./_internal/vc-table-select-all/vc-table-select-all.vue";
 import VcTableFooter from "./_internal/vc-table-footer/vc-table-footer.vue";
-import type { TableSlots, TableItem, TableColPartial, StatusImage } from "./types";
+import type { TableSlots, TableItem, TableColPartial, TableEmptyAction } from "./types";
 
 defineSlots<TableSlots<T>>();
 
@@ -216,8 +216,8 @@ const props = withDefaults(
     searchPlaceholder?: string;
     searchValue?: string;
     loading?: MaybeRef<boolean>;
-    empty?: StatusImage;
-    notfound?: StatusImage;
+    empty?: TableEmptyAction;
+    notfound?: TableEmptyAction;
     header?: boolean;
     footer?: boolean;
     activeFilterCount?: number;

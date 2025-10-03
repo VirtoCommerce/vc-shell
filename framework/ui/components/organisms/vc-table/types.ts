@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { Ref, VNode } from "vue";
+import type { ComputedRef, Ref, VNode } from "vue";
 import { IActionBuilderResult, ITableColumns } from "../../../../core/types";
 
 export interface TableSlots<T> {
@@ -24,9 +24,9 @@ export type TableColPartial = Partial<
   }
 >;
 
-export interface StatusImage {
-  image?: string;
-  text: string | Ref<string>;
-  action?: string;
+export interface TableEmptyAction {
+  icon?: string;
+  text: string | Ref<string> | ComputedRef<string>;
+  action?: string | Ref<string> | ComputedRef<string>;
   clickHandler?: () => void;
 }

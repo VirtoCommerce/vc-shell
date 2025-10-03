@@ -93,7 +93,7 @@ import VcTableSelectAllHeader from "./_internal/vc-table-select-all-header/vc-ta
 import VcTableBody from "./_internal/vc-table-body/vc-table-body.vue";
 import type { IActionBuilderResult, ITableColumns } from "../../../../../../core/types";
 import { useTableRowReorder } from "../../composables/useTableRowReorder";
-import type { TableSlots, TableItem, TableColPartial, StatusImage } from "../../types";
+import type { TableSlots, TableItem, TableColPartial, TableEmptyAction } from "../../types";
 
 const props = defineProps<{
   items: T[];
@@ -123,8 +123,8 @@ const props = defineProps<{
   hasClickListener?: boolean;
   searchValue?: string;
   activeFilterCount?: number;
-  notfound?: StatusImage;
-  empty?: StatusImage;
+  notfound?: TableEmptyAction;
+  empty?: TableEmptyAction;
   isSelected: (item: T) => boolean;
   rowCheckbox: (item: T) => void;
   internalColumns: TableColPartial[];

@@ -189,7 +189,7 @@ import { computed } from "vue";
 import VcTableCell from "../vc-table-cell/vc-table-cell.vue";
 import VcTableEmpty from "../vc-table-empty/vc-table-empty.vue";
 import VcTableMobileItem from "../vc-table-mobile-item/vc-table-mobile-item.vue";
-import type { TableItem, StatusImage } from "../../types";
+import type { TableItem, TableEmptyAction } from "../../types";
 import { IActionBuilderResult, ITableColumns } from "../../../../../../core/types";
 import { provideTableSwipe } from "../../composables/useTableSwipe";
 
@@ -206,8 +206,8 @@ const props = defineProps<{
   columnsInit: boolean;
   searchValue?: string;
   activeFilterCount?: number;
-  notfound?: StatusImage;
-  empty?: StatusImage;
+  notfound?: TableEmptyAction;
+  empty?: TableEmptyAction;
 }>();
 
 const emit = defineEmits<{

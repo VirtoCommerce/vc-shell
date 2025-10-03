@@ -6,18 +6,17 @@
       name="notfound"
     >
       <div class="vc-table-empty">
-        <img
-          v-if="notfound?.image"
-          :src="notfound.image"
-          alt="Not Found"
-          class="vc-table-empty__image"
+        <VcIcon
+          v-if="notfound?.icon"
+          :icon="notfound.icon"
+          size="xxxl"
+          class="vc-table-empty__icon"
         />
         <div class="vc-table-empty__text">
           {{ notfound?.text || $t("COMPONENTS.ORGANISMS.VC_TABLE.NOT_FOUND") }}
         </div>
         <VcButton
           v-if="notfound?.action"
-          class="vc-table-empty__button"
           @click="notfound?.clickHandler"
         >
           {{ notfound.action }}
@@ -29,18 +28,17 @@
       name="empty"
     >
       <div class="vc-table-empty vc-table-empty--default">
-        <img
-          v-if="empty?.image"
-          :src="empty.image"
-          alt="Empty Table"
-          class="vc-table-empty__image"
-        />
+        <VcIcon
+          v-if="empty?.icon"
+          :icon="empty.icon"
+          size="xxxl"
+          class="vc-table-empty__icon"
+        />  
         <div class="vc-table-empty__text">
           {{ empty?.text || $t("COMPONENTS.ORGANISMS.VC_TABLE.EMPTY") }}
         </div>
         <VcButton
           v-if="empty?.action"
-          class="vc-table-empty__button"
           @click="empty?.clickHandler"
         >
           {{ empty.action }}
@@ -53,24 +51,15 @@
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
 import { Ref } from "vue";
+import { TableEmptyAction } from "../../types";
 
 export interface Props {
   items: any[];
   columnsInit: boolean;
   searchValue?: string;
   activeFilterCount?: number;
-  notfound?: {
-    image?: string;
-    text: string | Ref<string>;
-    action?: string;
-    clickHandler?: () => void;
-  };
-  empty?: {
-    image?: string;
-    text: string | Ref<string>;
-    action?: string;
-    clickHandler?: () => void;
-  };
+  notfound?: TableEmptyAction;
+  empty?: TableEmptyAction;
 }
 
 defineProps<Props>();
@@ -81,22 +70,19 @@ defineSlots<{
 </script>
 
 <style lang="scss">
+:root {
+  --table-empty-icon-color: var(--secondary-500);
+}
+
 .vc-table-empty {
   @apply tw-w-full tw-h-full tw-box-border tw-flex tw-flex-col tw-items-center tw-justify-center;
 
-  &__image {
-    @apply tw-w-auto tw-h-auto;
+  &__icon {
+    @apply tw-text-[color:var(--table-empty-icon-color)];
   }
 
   &__text {
-    @apply tw-m-4;
-    @apply tw-text-center;
-    @apply tw-text-xl tw-font-medium;
-  }
-
-  &__button {
-    @apply tw-px-4 tw-py-2 tw-rounded tw-font-medium tw-text-sm tw-cursor-pointer;
-    transition: background-color 0.3s ease;
+    @apply tw-m-4 tw-text-xl tw-font-medium;
   }
 }
 </style>

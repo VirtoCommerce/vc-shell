@@ -73,7 +73,7 @@
 import VcTableRow from "../vc-table-row/vc-table-row.vue";
 import VcTableEmpty from "../../../vc-table-empty/vc-table-empty.vue";
 import type { IActionBuilderResult } from "../../../../../../../../core/types";
-import type { TableSlots, TableItem, TableColPartial, StatusImage } from "../../../../types";
+import type { TableSlots, TableItem, TableColPartial, TableEmptyAction } from "../../../../types";
 import { MaybeRef, useSlots } from "vue";
 
 defineProps<{
@@ -93,8 +93,8 @@ defineProps<{
   columnsInit: boolean;
   searchValue?: string;
   activeFilterCount?: number;
-  notfound?: StatusImage;
-  empty?: StatusImage;
+  notfound?: TableEmptyAction;
+  empty?: TableEmptyAction;
   isSelected: (item: T) => boolean;
 }>();
 

@@ -175,7 +175,7 @@ const slots = defineSlots<{
    * Use `useWidgets` composable instead
    * @example
    * // Register widget in blade:
-   * const blade = inject(BladeInstance);
+   * const blade = useBlade();
    * const widgetService = useWidgets();
    * widgetService.registerWidget({
    *   id: "widget-id",

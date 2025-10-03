@@ -500,11 +500,11 @@ Widgets must now be registered programmatically inside the `<script setup>` of y
 
 <script setup lang="ts">
 import { onMounted, onBeforeUnmount, inject } from "vue";
-import { useWidgets, type IWidget, BladeInstance } from "@vc-shell/framework";
+import { useWidgets, type IWidget, useBlade } from "@vc-shell/framework";
 import MyWidget from "../components/MyWidget.vue";
 
 // 1. Inject the instance of the current blade to get its ID
-const blade = inject(BladeInstance);
+const blade = useBlade();
 
 // 2. Get the functions for widget registration
 const { registerWidget, unregisterWidget } = useWidgets();

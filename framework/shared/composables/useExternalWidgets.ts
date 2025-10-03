@@ -1,6 +1,7 @@
 import { computed, inject, onMounted, onUnmounted, watch, toValue, Ref, ComputedRef } from "vue";
 import { WidgetServiceKey, BladeInstance } from "../../injection-keys";
 import { IWidget } from "../../core/services";
+import { useBlade } from "../../core/composables";
 
 export interface UseExternalWidgetsOptions {
   bladeId: Ref<string> | string;
@@ -11,7 +12,7 @@ export function useExternalWidgets(options: UseExternalWidgetsOptions) {
   const { bladeId, bladeData } = options;
 
   const widgetService = inject(WidgetServiceKey);
-  const blade = inject(BladeInstance);
+  const blade = useBlade();
 
   // Normalize bladeId to lowercase for consistency
   const normalizedBladeId = computed(() => blade?.value.id?.toLowerCase() ?? "");

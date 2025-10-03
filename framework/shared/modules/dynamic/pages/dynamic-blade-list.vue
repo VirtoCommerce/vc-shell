@@ -160,7 +160,7 @@ import { IParentCallArgs } from "../../../index";
 import { reactiveComputed, toReactive, useMounted } from "@vueuse/core";
 import { safeIn } from "../helpers/safeIn";
 import { useWidgets } from "../../../../core/composables/useWidgets";
-import { BladeInstance } from "../../../../injection-keys";
+import { useBlade } from "../../../../core/composables";
 
 export interface Props {
   expanded?: boolean;
@@ -203,7 +203,7 @@ const sort = shallowRef();
 const selectedIds = shallowRef<string[]>([]);
 const itemsProxy = ref<Record<string, any>[]>();
 const isMixinReady = ref(false);
-const blade = inject(BladeInstance);
+const blade = useBlade();
 
 const { setNavigationQuery, getNavigationQuery } = useBladeNavigation();
 

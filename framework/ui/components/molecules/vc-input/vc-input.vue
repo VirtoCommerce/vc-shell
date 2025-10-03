@@ -241,14 +241,13 @@
 <script lang="ts" setup>
 import { computed, ref, unref, watch } from "vue";
 import { VcLabel, VcIcon, VcHint } from "./../../";
-import VueDatePicker, { VueDatePickerProps } from "@vuepic/vue-datepicker";
+import VueDatePicker, { VueDatePickerProps, ModelValue } from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
 
-export interface Props {
-  /**
-   * Model of the component; Use with a listener for 'update:model-value' event OR use v-model directive
-   */
-  modelValue?: string | number | Date | null | undefined;
+/**
+ * Base props for VcInput
+ */
+interface VcInputBaseProps {
   /**
    * Input label text
    */
@@ -257,15 +256,6 @@ export interface Props {
    * Input placeholder text
    */
   placeholder?: string;
-  /**
-   * Input type
-   * Default value: text
-   */
-  type?: "text" | "password" | "email" | "tel" | "number" | "integer" | "url" | "time" | "date" | "datetime-local";
-  /**
-   * The step attribute is a number that specifies the granularity that the value must adhere to.
-   */
-  step?: string;
   /**
    * Input description (hint) text below input component
    */
@@ -333,6 +323,56 @@ export interface Props {
    */
   currentLanguage?: string;
   /**
+   * The step attribute is a number that specifies the granularity that the value must adhere to.
+   */
+  step?: string;
+  size?: "default" | "small";
+}
+
+/**
+ * Props for string-based inputs
+ */
+interface VcInputStringProps extends VcInputBaseProps {
+  /**
+   * Model of the component; Use with a listener for 'update:model-value' event OR use v-model directive
+   */
+  modelValue?: string | null;
+  /**
+   * Input type
+   * Default value: text
+   */
+  type?: "text" | "password" | "email" | "tel" | "url" | "time";
+  datePickerOptions?: never;
+}
+
+/**
+ * Props for number-based inputs
+ */
+interface VcInputNumberProps extends VcInputBaseProps {
+  /**
+   * Model of the component; Use with a listener for 'update:model-value' event OR use v-model directive
+   */
+  modelValue?: number | null;
+  /**
+   * Input type
+   */
+  type: "number" | "integer";
+  datePickerOptions?: never;
+}
+
+/**
+ * Props for date-based inputs
+ */
+interface VcInputDateProps extends VcInputBaseProps {
+  /**
+   * Model of the component; Use with a listener for 'update:model-value' event OR use v-model directive
+   */
+  modelValue?: ModelValue;
+  /**
+   * Input type
+   */
+  type: "date" | "datetime-local";
+  /**
    * VueDatePicker options
    *
    * Used only when type is 'date' or 'datetime-local'
@@ -340,14 +380,19 @@ export interface Props {
    * @see https://vue3datepicker.com/
    */
   datePickerOptions?: VueDatePickerProps;
-  size?: "default" | "small";
 }
+
+export type Props = VcInputStringProps | VcInputNumberProps | VcInputDateProps;
 
 export interface Emits {
   /**
    * Emitted when the component needs to change the model; Is also used by v-model
+   * Type of value depends on input type:
+   * - string inputs: string | null
+   * - number inputs: number | null
+   * - date inputs: ModelValue
    */
-  (event: "update:modelValue", value: string | number | Date | null | undefined): void;
+  (event: "update:modelValue", value: string | number | ModelValue | null | undefined): void;
   (event: "blur", value: Event): void;
   (event: "focus"): void;
 }
@@ -377,14 +422,14 @@ defineSlots<{
      */
     focused: boolean | undefined;
     /**
-     * Field's value
+     * Field's value - type depends on input type
      */
-    modelValue: string | number | Date | null;
+    modelValue: string | number | ModelValue | null;
     /**
      * Function that emits an @input event in the context of the field
-     * @param value Value to be emitted
+     * @param value Value to be emitted - type depends on input type
      */
-    emitValue: (value: string | number | Date | null) => void;
+    emitValue: (value: string | number | ModelValue | null) => void;
     /**
      * Field placeholder text
      */
@@ -522,11 +567,11 @@ function onKeyDown(e: KeyboardEvent) {
 }
 
 // Handle input event and emit changes
-function onInput(value: string | number | Date | null) {
+function onInput(value: string | number | ModelValue | null) {
   emitValue(value);
 }
 
-function emitValue(val: string | number | Date | null) {
+function emitValue(val: string | number | ModelValue | null) {
   emitValueFn = () => {
     if (mutatedModel.value !== val) {
       let value;

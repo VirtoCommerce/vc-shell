@@ -53,6 +53,7 @@
                       :cell="column"
                       :item="item"
                       :index="i"
+                      :editing="editing"
                       @update="$emit('onEditComplete', { event: $event, index: i })"
                       @blur="$emit('onCellBlur', $event)"
                     />
@@ -81,6 +82,7 @@
                       :cell="column"
                       :item="item"
                       :index="i"
+                      :editing="editing"
                       @update="$emit('onEditComplete', { event: $event, index: i })"
                       @blur="$emit('onCellBlur', $event)"
                     />
@@ -116,6 +118,7 @@
                           :cell="column"
                           :item="item"
                           :index="i"
+                          :editing="editing"
                           @update="$emit('onEditComplete', { event: $event, index: i })"
                           @blur="$emit('onCellBlur', $event)"
                         />
@@ -148,6 +151,7 @@
                           :cell="column"
                           :item="item"
                           :index="i"
+                          :editing="editing"
                           @update="$emit('onEditComplete', { event: $event, index: i })"
                           @blur="$emit('onCellBlur', $event)"
                         />

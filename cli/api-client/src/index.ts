@@ -220,33 +220,72 @@ function normalizeExportPath(filePath: string): string {
 }
 
 /**
- * Extracts the core module name from a path or module name string.
- * e.g., "./dist/virtocommerce.myModule.d.ts" -> "myModule"
- * e.g., "./virtocommerce.myModule" -> "myModule"
- * e.g., "myModule.ts" -> "myModule"
+ * Extracts module information (prefix and core name) from a path or module name string.
+ * e.g., "./dist/virtocommerce.myModule.d.ts" -> { prefix: "virtocommerce", coreName: "myModule", fullName: "virtocommerce.myModule" }
+ * e.g., "./opus.myModule" -> { prefix: "opus", coreName: "myModule", fullName: "opus.myModule" }
+ * e.g., "myModule.ts" -> { prefix: undefined, coreName: "myModule", fullName: "myModule" }
  */
-function getCoreModuleName(nameOrPath: string): string {
+function parseModuleName(nameOrPath: string): { prefix?: string; coreName: string; fullName: string } {
   // Normalize path and strip extensions first
   let p = normalizeExportPath(nameOrPath);
 
   // Get the basename (e.g., from "./dist/foo" to "foo")
   p = path.basename(p);
 
-  // Remove "virtocommerce." prefix if it exists
-  p = p.replace(/^virtocommerce\./i, "");
+  const lowerP = p.toLowerCase();
 
-  return p.toLowerCase();
+  // Check if there's a dot-separated prefix (e.g., "virtocommerce.orders" or "opus.catalog")
+  const dotIndex = lowerP.indexOf(".");
+  if (dotIndex > 0) {
+    const prefix = lowerP.substring(0, dotIndex);
+    const coreName = lowerP.substring(dotIndex + 1);
+    return {
+      prefix,
+      coreName,
+      fullName: lowerP,
+    };
+  }
+
+  return {
+    prefix: undefined,
+    coreName: lowerP,
+    fullName: lowerP,
+  };
 }
 
 /**
- * Generates standardized export key formats for a core module name.
+ * Extracts the core module name from a path or module name string.
+ * e.g., "./dist/virtocommerce.myModule.d.ts" -> "myModule"
+ * e.g., "./virtocommerce.myModule" -> "myModule"
+ * e.g., "myModule.ts" -> "myModule"
  */
-function generateStandardExportKeys(coreModuleName: string): string[] {
-  if (!coreModuleName) {
+function getCoreModuleName(nameOrPath: string): string {
+  return parseModuleName(nameOrPath).coreName;
+}
+
+/**
+ * Generates standardized export key formats for a module.
+ * Returns export keys with and without prefix if prefix exists.
+ */
+function generateStandardExportKeys(coreName: string, prefix?: string): string[] {
+  if (!coreName) {
     return [];
   }
-  // Returns standard export keys, e.g., ["./myModule", "./virtocommerce.myModule"]
-  return [`./${coreModuleName}`, `./virtocommerce.${coreModuleName}`];
+  // Returns standard export keys, e.g., ["./myModule", "./prefix.myModule"] if prefix exists
+  // or just ["./myModule"] if no prefix
+  const keys = [`./${coreName}`];
+  if (prefix) {
+    keys.push(`./${prefix}.${coreName}`);
+  }
+  return keys;
+}
+
+/**
+ * Normalizes path separators to forward slashes for use in package.json exports.
+ * This ensures cross-platform compatibility.
+ */
+function normalizePathSeparators(filePath: string): string {
+  return filePath.replace(/\\/g, "/");
 }
 
 /**
@@ -263,17 +302,17 @@ function createExportsConfig(
 
   // 1. Generate standard exports for all NEWLY generated modules
   for (const moduleFile of generatedModuleFiles) {
-    const coreModule = getCoreModuleName(moduleFile);
-    if (!coreModule) continue;
+    const moduleInfo = parseModuleName(moduleFile);
+    if (!moduleInfo.coreName) continue;
 
-    // Define the canonical import and types paths for this core module
-    // Assuming the compiled output in dist will be virtocommerce.[coreModule].js
-    const compiledBaseName = `virtocommerce.${coreModule}`;
-    const importPath = `./${path.join(buildDir, `${compiledBaseName}.js`)}`;
-    const typesPath = `./${path.join(buildDir, "types", `${compiledBaseName}.d.ts`)}`;
+    // Define the canonical import and types paths for this module
+    // Use the full name (with prefix if it exists) as the compiled base name
+    const compiledBaseName = moduleInfo.fullName;
+    const importPath = normalizePathSeparators(`./${path.join(buildDir, `${compiledBaseName}.js`)}`);
+    const typesPath = normalizePathSeparators(`./${path.join(buildDir, "types", `${compiledBaseName}.d.ts`)}`);
     const exportValue: ModuleExportPaths = { import: importPath, types: typesPath };
 
-    const standardKeys = generateStandardExportKeys(coreModule);
+    const standardKeys = generateStandardExportKeys(moduleInfo.coreName, moduleInfo.prefix);
     for (const key of standardKeys) {
       newStandardExports[key] = exportValue;
       if (verbose) {
@@ -286,7 +325,7 @@ function createExportsConfig(
         );
       }
     }
-    processedCoreModulesForNewGeneration.add(coreModule);
+    processedCoreModulesForNewGeneration.add(moduleInfo.coreName);
   }
 
   const finalExports: Record<string, unknown> = { ...newStandardExports };
@@ -334,8 +373,8 @@ function createExportsConfig(
         const typesBasePath = normalizeExportPath(existingValue.types);
 
         finalExports[normalizedExistingKey] = {
-          import: `${importBasePath}.js`,
-          types: `${typesBasePath}.d.ts`,
+          import: normalizePathSeparators(`${importBasePath}.js`),
+          types: normalizePathSeparators(`${typesBasePath}.d.ts`),
         };
         if (verbose) {
           console.log(
@@ -359,21 +398,21 @@ function createExportsConfig(
   }
 
   // 3. Handle root export "."
-  const allCoreModulesInFinalExports = new Set<string>();
+  const allModulesInFinalExports = new Map<string, string>(); // coreName -> fullName
   for (const key in finalExports) {
     if (key === ".") continue;
-    const coreModule = getCoreModuleName(key);
-    if (coreModule) {
-      allCoreModulesInFinalExports.add(coreModule);
+    const moduleInfo = parseModuleName(key);
+    if (moduleInfo.coreName) {
+      allModulesInFinalExports.set(moduleInfo.coreName, moduleInfo.fullName);
     }
   }
-  const uniqueCoreModules = Array.from(allCoreModulesInFinalExports);
+  const uniqueCoreModules = Array.from(allModulesInFinalExports.keys());
 
   if (uniqueCoreModules.length === 1) {
     const singleCoreModule = uniqueCoreModules[0];
-    const compiledBaseName = `virtocommerce.${singleCoreModule}`;
-    const rootImportPath = `./${path.join(buildDir, `${compiledBaseName}.js`)}`;
-    const rootTypesPath = `./${path.join(buildDir, "types", `${compiledBaseName}.d.ts`)}`;
+    const compiledBaseName = allModulesInFinalExports.get(singleCoreModule)!;
+    const rootImportPath = normalizePathSeparators(`./${path.join(buildDir, `${compiledBaseName}.js`)}`);
+    const rootTypesPath = normalizePathSeparators(`./${path.join(buildDir, "types", `${compiledBaseName}.d.ts`)}`);
     finalExports["."] = {
       import: rootImportPath,
       types: rootTypesPath,
@@ -382,7 +421,7 @@ function createExportsConfig(
       console.log(
         "api-client-generator %s Set root export for single module '%s': { import: %s, types: %s }",
         chalk.blue("debug"),
-        chalk.whiteBright(singleCoreModule),
+        chalk.whiteBright(compiledBaseName),
         chalk.whiteBright(rootImportPath),
         chalk.whiteBright(rootTypesPath),
       );
@@ -393,19 +432,20 @@ function createExportsConfig(
     if (typeof rootExportValueUntyped === "object" && rootExportValueUntyped !== null) {
       const rootExportValue = rootExportValueUntyped as Partial<ModuleExportPaths>;
       if (rootExportValue.import && rootExportValue.types) {
-        const coreModuleOfRootImport = getCoreModuleName(rootExportValue.import);
+        const moduleInfoOfRootImport = parseModuleName(rootExportValue.import);
+        const coreModuleOfRootImport = moduleInfoOfRootImport.coreName;
         if (coreModuleOfRootImport && uniqueCoreModules.includes(coreModuleOfRootImport)) {
           // The existing root export points to one of the modules we have in finalExports.
-          // Re-evaluate its path based on that module's core name.
-          const compiledBaseName = `virtocommerce.${coreModuleOfRootImport}`;
-          const importPath = `./${path.join(buildDir, `${compiledBaseName}.js`)}`;
-          const typesPath = `./${path.join(buildDir, "types", `${compiledBaseName}.d.ts`)}`;
+          // Re-evaluate its path based on that module's full name.
+          const compiledBaseName = allModulesInFinalExports.get(coreModuleOfRootImport)!;
+          const importPath = normalizePathSeparators(`./${path.join(buildDir, `${compiledBaseName}.js`)}`);
+          const typesPath = normalizePathSeparators(`./${path.join(buildDir, "types", `${compiledBaseName}.d.ts`)}`);
           finalExports["."] = { import: importPath, types: typesPath };
           if (verbose) {
             console.log(
               "api-client-generator %s Preserved and standardized existing root export pointing to module '%s'",
               chalk.blue("debug"),
-              chalk.whiteBright(coreModuleOfRootImport),
+              chalk.whiteBright(compiledBaseName),
             );
           }
         } else if (verbose) {

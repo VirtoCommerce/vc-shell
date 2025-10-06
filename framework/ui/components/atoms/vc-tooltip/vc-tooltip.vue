@@ -30,7 +30,7 @@ import { useFloating, shift, Placement, offset as floatingOffset } from "@floati
 import { getCurrentInstance, ref, computed } from "vue";
 
 export interface Props {
-  placement?: Placement;
+  placement?: "top" | "right" | "bottom" | "left" | "top-start" | "top-end" | "bottom-start" | "bottom-end" | "right-start" | "right-end" | "left-start" | "left-end";
   offset?: {
     crossAxis?: number;
     mainAxis?: number;

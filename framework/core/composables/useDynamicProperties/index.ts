@@ -12,7 +12,6 @@ export interface IBaseProperty<TPropertyValue> {
   multivalue?: boolean | null;
   dictionary?: boolean | null;
   valueType?: string | null;
-  unitOfMeasureId?: string | null;
 }
 
 export interface IBasePropertyValue {
@@ -25,6 +24,7 @@ export interface IBasePropertyValue {
   valueId?: string | null;
   isInherited?: boolean;
   unitOfMeasureId?: string | null;
+  colorCode?: string | null;
 }
 
 export interface IBasePropertyDictionaryItem {
@@ -33,6 +33,7 @@ export interface IBasePropertyDictionaryItem {
   alias?: string | null;
   localizedValues?: { languageCode?: string | null; value?: string | null }[] | null;
   value?: string;
+  colorCode?: string | null;
 }
 
 export interface IBasePropertyDictionaryItemSearchCriteria {
@@ -79,6 +80,7 @@ export interface SetPropertyValueParams<TProperty, TPropertyValue, TPropertyDict
   locale?: string;
   initialProp?: TProperty;
   unitOfMeasureId?: string;
+  colorCode?: string;
 }
 
 // === UTILITY FUNCTIONS ===
@@ -105,6 +107,10 @@ function isDictionaryProperty<T extends IBaseProperty<unknown>>(property: T): bo
 
 function isMeasureProperty<T extends IBaseProperty<unknown>>(property: T): boolean {
   return property.valueType === "Measure";
+}
+
+function isColorProperty<T extends IBaseProperty<unknown>>(property: T): boolean {
+  return property.valueType === "Color";
 }
 
 // === MAIN COMPOSABLE ===
@@ -231,6 +237,15 @@ export const useDynamicProperties = <
     ];
   }
 
+  function setColorPropertyValue(property: TProperty, value: unknown, colorCode?: string): void {
+    property.values = [
+      createPropertyValue({
+        value,
+        colorCode,
+      } as Partial<TPropertyValue>),
+    ];
+  }
+
   function setDictionaryPropertyValue(
     property: TProperty,
     value: string | TPropertyValue[] | (TPropertyDictionaryItem & { value: string })[],
@@ -251,7 +266,11 @@ export const useDynamicProperties = <
     dict: TPropertyDictionaryItem[],
   ): void {
     if (Array.isArray(value)) {
-      handleMultilanguageMultivalueDictionary(property, value as (TPropertyDictionaryItem & { value: string })[], dict);
+      handleMultilanguageMultivalueDictionary(
+        property,
+        value as (TPropertyDictionaryItem & { value: string })[],
+        dict,
+      );
     } else {
       handleMultilanguageSingleValueDictionary(property, value as string, dict);
     }
@@ -273,6 +292,7 @@ export const useDynamicProperties = <
             languageCode: locValue.languageCode,
             value: locValue.value ?? dictItem.alias,
             valueId: dictItem.id,
+            colorCode: dictItem.colorCode,
           } as Partial<TPropertyValue>),
         );
       }
@@ -296,6 +316,7 @@ export const useDynamicProperties = <
           languageCode: locValue.languageCode,
           value: locValue.value ?? dictionaryItem.alias,
           valueId: dictionaryItem.id,
+          colorCode: dictionaryItem.colorCode,
         } as Partial<TPropertyValue>),
       );
     } else {
@@ -333,6 +354,7 @@ export const useDynamicProperties = <
           alias: dictItem.alias,
           value: item.value ?? dictItem.alias,
           valueId: dictItem.id,
+          colorCode: dictItem.colorCode,
         } as Partial<TPropertyValue>);
       }
 
@@ -357,6 +379,7 @@ export const useDynamicProperties = <
         alias: dictionaryItem?.alias,
         value: (dictionaryItem as TPropertyDictionaryItem & { value: string })?.value ?? dictionaryItem?.alias,
         valueId: value,
+        colorCode: dictionaryItem?.colorCode,
       } as Partial<TPropertyValue>),
     ];
   }
@@ -478,10 +501,15 @@ export const useDynamicProperties = <
   // === MAIN SET PROPERTY VALUE FUNCTION ===
 
   function setPropertyValue(params: SetPropertyValueParams<TProperty, TPropertyValue, TPropertyDictionaryItem>): void {
-    const { property, value, dictionary, locale, initialProp, unitOfMeasureId } = params;
+    const { property, value, dictionary, locale, initialProp, unitOfMeasureId, colorCode } = params;
 
     if (isMeasureProperty(property)) {
       setMeasurePropertyValue(property, value, unitOfMeasureId);
+      return;
+    }
+
+    if (isColorProperty(property) && !dictionary?.length) {
+      setColorPropertyValue(property, value, colorCode);
       return;
     }
 

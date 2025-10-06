@@ -236,7 +236,10 @@
         </slot>
       </div>
 
-      <teleport  to=".vc-app" defer>
+      <teleport
+        to=".vc-app"
+        defer
+      >
         <div
           v-if="isOpened"
           ref="dropdownRef"
@@ -549,7 +552,19 @@ const props = withDefaults(
     currentLanguage?: string;
     size?: "default" | "small";
     outline?: boolean;
-    placement?: Placement;
+    placement?:
+      | "top"
+      | "right"
+      | "bottom"
+      | "left"
+      | "top-start"
+      | "top-end"
+      | "bottom-start"
+      | "bottom-end"
+      | "right-start"
+      | "right-end"
+      | "left-start"
+      | "left-end";
   }>(),
   {
     optionValue: "id",
@@ -638,7 +653,8 @@ onMounted(() => {
     setTimeout(() => {
       if (selectRootRef.value && !isSelectVisible.value) {
         const rect = selectRootRef.value.getBoundingClientRect();
-        const isVisible = rect.top < window.innerHeight && rect.bottom > 0 && rect.left < window.innerWidth && rect.right > 0;
+        const isVisible =
+          rect.top < window.innerHeight && rect.bottom > 0 && rect.left < window.innerWidth && rect.right > 0;
         if (isVisible) {
           isSelectVisible.value = true;
         }
@@ -1039,7 +1055,8 @@ function toggleDropdown() {
   // Ensure isSelectVisible is true when opening dropdown (fallback for iframe)
   if (!isOpened.value && !isSelectVisible.value && selectRootRef.value) {
     const rect = selectRootRef.value.getBoundingClientRect();
-    const isVisible = rect.top < window.innerHeight && rect.bottom > 0 && rect.left < window.innerWidth && rect.right > 0;
+    const isVisible =
+      rect.top < window.innerHeight && rect.bottom > 0 && rect.left < window.innerWidth && rect.right > 0;
     if (isVisible) {
       isSelectVisible.value = true;
     }

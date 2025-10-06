@@ -179,13 +179,25 @@
           </div>
 
           <div
-            v-if="$slots['append-inner']"
+            v-if="$slots['append-inner'] || type === 'color'"
             class="vc-input__append-inner"
           >
             <slot
               name="append-inner"
               :focus="focus"
             ></slot>
+
+            <div
+              v-if="type === 'color'"
+              class="vc-input__color-picker-container"
+            >
+              <input
+                v-model="handleValue"
+                type="color"
+                class="vc-input__color-picker"
+                tabindex="-1"
+              />
+            </div>
           </div>
 
           <div
@@ -341,7 +353,7 @@ interface VcInputStringProps extends VcInputBaseProps {
    * Input type
    * Default value: text
    */
-  type?: "text" | "password" | "email" | "tel" | "url" | "time";
+  type?: "text" | "password" | "email" | "tel" | "url" | "time" | "color";
   datePickerOptions?: never;
 }
 
@@ -474,6 +486,11 @@ const internalTypeComputed = computed({
     if (internalType.value === "integer") {
       return "number";
     }
+
+    if (internalType.value === "color") {
+      return "text";
+    }
+
     return internalType.value;
   },
   set(value) {
@@ -723,6 +740,22 @@ function handleFocus() {
 
   &__loading-icon {
     @apply tw-animate-spin tw-text-[color:var(--input-clear-color)];
+  }
+
+  &__color-picker-container {
+    @apply tw-flex tw-items-center;
+  }
+
+  &__color-picker {
+    @apply tw-w-5 tw-h-5 tw-p-0 tw-border-none tw-rounded tw-bg-transparent;
+
+    &::-webkit-color-swatch-wrapper {
+      @apply tw-p-0;
+    }
+
+    &::-webkit-color-swatch {
+      @apply tw-border tw-border-solid tw-border-gray-300 tw-rounded;
+    }
   }
 
   &__input {

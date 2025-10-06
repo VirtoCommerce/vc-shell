@@ -41,7 +41,7 @@
         :error-message="errorMessage"
         :label="computedProperty.displayName"
         :required="computedProperty.required"
-        placeholder="Add value"
+        :placeholder="$t('COMPONENTS.ORGANISMS.VC_DYNAMIC_PROPERTY.ADD')"
         :disabled="disabled"
         :multilanguage="multilanguage"
         :current-language="currentLanguage"
@@ -59,7 +59,7 @@
         :error-message="errorMessage"
         :label="computedProperty.displayName"
         :required="computedProperty.required"
-        placeholder="Add value"
+        :placeholder="$t('COMPONENTS.ORGANISMS.VC_DYNAMIC_PROPERTY.ADD')"
         :disabled="disabled"
         :multilanguage="multilanguage"
         :current-language="currentLanguage"
@@ -81,7 +81,7 @@
         :label="computedProperty.displayName"
         clearable
         :required="computedProperty.required"
-        :placeholder="computedProperty.displayName || 'Add value'"
+        :placeholder="computedProperty.displayName || $t('COMPONENTS.ORGANISMS.VC_DYNAMIC_PROPERTY.ADD')"
         :disabled="disabled"
         :current-language="currentLanguage"
         :loading="loading"
@@ -93,7 +93,7 @@
         v-model="value"
         :label="computedProperty.displayName"
         :required="computedProperty.required"
-        placeholder="Add value"
+        :placeholder="$t('COMPONENTS.ORGANISMS.VC_DYNAMIC_PROPERTY.ADD')"
         :disabled="disabled"
         type="number"
         :error="!!errors.length"
@@ -109,7 +109,7 @@
         v-model="value"
         :label="computedProperty.displayName"
         :required="computedProperty.required"
-        placeholder="Add value"
+        :placeholder="$t('COMPONENTS.ORGANISMS.VC_DYNAMIC_PROPERTY.ADD')"
         :disabled="disabled"
         type="integer"
         :error="!!errors.length"
@@ -220,6 +220,72 @@
         </template>
       </VcInputDropdown>
     </template>
+    <template
+      v-else-if="computedProperty.valueType === 'Color' && computedProperty.multivalue && computedProperty.dictionary"
+    >
+      <VcMultivalue
+        v-bind="$attrs"
+        v-model="value"
+        :error="!!errors.length"
+        :error-message="errorMessage"
+        :label="computedProperty.displayName"
+        :required="computedProperty.required"
+        :placeholder="$t('COMPONENTS.ORGANISMS.VC_DYNAMIC_PROPERTY.ADD')"
+        :disabled="disabled"
+        :multilanguage="multilanguage"
+        :current-language="currentLanguage"
+        :options="items"
+        :option-label="multilanguage ? 'value' : 'alias'"
+        :option-value="multilanguage ? 'value' : 'alias'"
+        :multivalue="computedProperty.multivalue"
+        :loading="loading"
+        @search="onSearch"
+        @close="onClose"
+      >
+        <template #selected-item="scope">
+          <div class="tw-flex tw-items-center tw-gap-2">
+            <div
+              class="tw-w-5 tw-h-5 tw-rounded"
+              :style="{ backgroundColor: scope.item.colorCode }"
+            ></div>
+            <span>{{ scope.item.value }}</span>
+          </div>
+        </template>
+        <template #option="scope">
+          <div class="tw-flex tw-items-center tw-gap-2">
+            <div
+              class="tw-w-5 tw-h-5 tw-rounded"
+              :style="{ backgroundColor: scope.item.colorCode }"
+            ></div>
+            <span>{{ scope.item.value }}</span>
+          </div>
+        </template>
+      </VcMultivalue>
+    </template>
+    <template
+      v-else-if="computedProperty.valueType === 'Color' && !computedProperty.multivalue && !computedProperty.dictionary"
+    >
+      <VcRow class="tw-flex tw-items-end tw-gap-4">
+        <VcCol :size="2"
+          ><VcInput
+            v-bind="$attrs"
+            v-model="value"
+            :label="computedProperty.displayName"
+            :error="!!errors.length"
+            :error-message="errorMessage"
+            :placeholder="$t('COMPONENTS.ORGANISMS.VC_DYNAMIC_PROPERTY.VALUE_TYPE.COLOR.NAME')"
+          ></VcInput
+        ></VcCol>
+        <VcCol :size="1"
+          ><VcInput
+            v-bind="$attrs"
+            v-model="singleColorCode"
+            type="color"
+            :placeholder="$t('COMPONENTS.ORGANISMS.VC_DYNAMIC_PROPERTY.VALUE_TYPE.COLOR.PLACEHOLDER')"
+          ></VcInput
+        ></VcCol>
+      </VcRow>
+    </template>
   </Field>
 </template>
 
@@ -283,6 +349,7 @@ const emit = defineEmits<{
       readonly dictionary?: any[];
       readonly locale?: string;
       readonly unitOfMeasureId?: string;
+      readonly colorCode?: string;
     },
   ];
 }>();
@@ -372,8 +439,26 @@ const value = computed({
     return internalModel.value;
   },
   set(newValue) {
+
+    console.log(newValue);
     emit("update:model-value", {
       value: newValue,
+      dictionary: items.value,
+      locale: props.currentLanguage,
+    });
+  },
+});
+
+// Removed colorCode computed property as it interferes with multivalue color selection
+
+const singleColorCode = computed({
+  get() {
+    return internalProperty.value.values?.[0]?.colorCode;
+  },
+  set(newValue) {
+    emit("update:model-value", {
+      value: value.value,
+      colorCode: newValue,
       dictionary: items.value,
       locale: props.currentLanguage,
     });

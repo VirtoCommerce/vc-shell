@@ -3425,15 +3425,18 @@ __metadata:
   linkType: soft
 
 "@vcmp-vendor-portal/api@npm:^1.1.46, @vcmp-vendor-portal/api@workspace:apps/vendor-portal/src/api_client":
+"@vcmp-vendor-portal/api@npm:^1.1.46, @vcmp-vendor-portal/api@workspace:apps/vendor-portal/src/api_client":
   version: 0.0.0-use.local
   resolution: "@vcmp-vendor-portal/api@workspace:apps/vendor-portal/src/api_client"
   languageName: unknown
   linkType: soft
 
 "@vcmp-vendor-portal/modules@npm:^1.1.46, @vcmp-vendor-portal/modules@workspace:apps/vendor-portal/src/modules":
+"@vcmp-vendor-portal/modules@npm:^1.1.46, @vcmp-vendor-portal/modules@workspace:apps/vendor-portal/src/modules":
   version: 0.0.0-use.local
   resolution: "@vcmp-vendor-portal/modules@workspace:apps/vendor-portal/src/modules"
   peerDependencies:
+    "@vcmp-vendor-portal/api": ^1.1.46
     "@vcmp-vendor-portal/api": ^1.1.46
   languageName: unknown
   linkType: soft

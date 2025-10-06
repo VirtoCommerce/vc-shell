@@ -52,6 +52,15 @@
       }
     },
     "ORGANISMS": {
+      "VC_DYNAMIC_PROPERTY": {
+        "ADD": "Add value",
+        "VALUE_TYPE": {
+          "COLOR": {
+            "PLACEHOLDER": "Color code",
+            "NAME": "Color name"
+          }
+        }
+      },
       "VC_GALLERY": {
         "INTERNAL": {
           "VC_GALLERY_ITEM": {

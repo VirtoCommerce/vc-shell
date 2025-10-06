@@ -67,6 +67,7 @@
               </VcRow>
 
               <Field
+                v-if="!options?.hiddenFields?.includes('name')"
                 v-slot="{ errorMessage, handleChange, errors }"
                 :label="t('ASSETS.PAGES.DETAILS.FIELDS.NAME.TITLE')"
                 name="asset_name"
@@ -87,7 +88,7 @@
                 ></VcInput>
               </Field>
               <VcInput
-                v-if="assetType === 'Image'"
+                v-if="assetType === 'Image' && !options?.hiddenFields?.includes('altText')"
                 v-model="defaultAsset.altText"
                 class="tw-mb-4"
                 :label="t('ASSETS.PAGES.DETAILS.FIELDS.ALT.TITLE')"
@@ -97,6 +98,7 @@
                 :disabled="readonly"
               ></VcInput>
               <VcTextarea
+                v-if="!options?.hiddenFields?.includes('description')"
                 v-model="defaultAsset.description"
                 class="tw-mb-4"
                 :label="t('ASSETS.PAGES.DETAILS.FIELDS.DESCRIPTION.TITLE')"
@@ -126,6 +128,7 @@ export interface Props {
   options?: {
     asset: ICommonAsset;
     disabled?: boolean;
+    hiddenFields?: string[];
     assetEditHandler?: (defaultAsset: ICommonAsset) => void;
     assetRemoveHandler?: (defaultAsset: ICommonAsset) => Promise<void>;
   };

@@ -172,6 +172,7 @@ export interface Props {
     assetsUploadHandler: (files: FileList) => Promise<ICommonAsset[]>;
     assetsRemoveHandler: (assets: ICommonAsset[]) => Promise<ICommonAsset[]>;
     disabled: boolean;
+    hiddenFields: string[];
   };
 }
 
@@ -388,6 +389,7 @@ function onItemClick(item: ICommonAsset) {
     options: {
       asset: unref(item),
       disabled: readonly.value,
+      hiddenFields: props.options.hiddenFields,
       assetEditHandler: (asset: ICommonAsset) => {
         if (props.options.assetsEditHandler && typeof props.options.assetsEditHandler === "function") {
           defaultAssets.value = props.options.assetsEditHandler([asset]);

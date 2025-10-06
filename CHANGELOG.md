@@ -1,3 +1,17 @@
+## [1.1.87](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.86...v1.1.87) (2025-10-06)
+
+
+### Bug Fixes
+
+* **api-client:** enhance module name parsing and export generation for improved flexibility and compatibility ([37d3e20](https://github.com/VirtoCommerce/vc-shell/commit/37d3e20831e6931d4fcc93c7127a53b7af2d7540))
+
+
+### Features
+
+* **vc-dynamic-property, input:** color type in dynamic propery and input  VM-1645 ([1ff529e](https://github.com/VirtoCommerce/vc-shell/commit/1ff529eab6e560a21cb64a5de6a28f11c80b4b30))
+
+
+
 ## [1.1.86](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.85...v1.1.86) (2025-10-06)
 
 

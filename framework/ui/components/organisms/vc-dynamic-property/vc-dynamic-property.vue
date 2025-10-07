@@ -7,7 +7,9 @@
     :model-value="value"
     :rules="computedProperty.rules"
   >
-    <template v-if="computedProperty.dictionary && !computedProperty.multivalue">
+    <template
+      v-if="computedProperty.valueType !== 'Color' && computedProperty.dictionary && !computedProperty.multivalue"
+    >
       <VcSelect
         v-bind="$attrs"
         v-model="value"
@@ -286,6 +288,48 @@
         ></VcCol>
       </VcRow>
     </template>
+    <template
+      v-if="computedProperty.valueType === 'Color' && computedProperty.dictionary && !computedProperty.multivalue"
+    >
+      <VcSelect
+        v-bind="$attrs"
+        v-model="value"
+        :error="!!errors.length"
+        :error-message="errorMessage"
+        :label="computedProperty.displayName"
+        :required="computedProperty.required"
+        :placeholder="computedProperty.placeholder"
+        :options="items"
+        :option-value="computedProperty.optionValue"
+        :option-label="computedProperty.optionLabel"
+        :disabled="disabled"
+        searchable
+        :multilanguage="multilanguage"
+        :current-language="currentLanguage"
+        :loading="loading"
+        @search="onSearch"
+        @close="onClose"
+      >
+        <template #selected-item="scope">
+          <div class="tw-flex tw-items-center tw-gap-2">
+            <div
+              class="tw-w-5 tw-h-5 tw-rounded"
+              :style="{ backgroundColor: scope.opt.colorCode }"
+            ></div>
+            <span>{{ scope.opt.value }}</span>
+          </div>
+        </template>
+        <template #option="scope">
+          <div class="tw-flex tw-items-center tw-gap-2">
+            <div
+              class="tw-w-5 tw-h-5 tw-rounded"
+              :style="{ backgroundColor: scope.opt.colorCode }"
+            ></div>
+            <span>{{ scope.opt.value }}</span>
+          </div>
+        </template>
+      </VcSelect>
+    </template>
   </Field>
 </template>
 
@@ -439,7 +483,6 @@ const value = computed({
     return internalModel.value;
   },
   set(newValue) {
-
     console.log(newValue);
     emit("update:model-value", {
       value: newValue,

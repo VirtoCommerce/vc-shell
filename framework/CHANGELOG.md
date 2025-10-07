@@ -1,3 +1,12 @@
+## [1.1.88](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.87...v1.1.88) (2025-10-07)
+
+
+### Features
+
+* **vc-dynamic-property:** add color type dictionary select ([4a21112](https://github.com/VirtoCommerce/vc-shell/commit/4a211124acd4b66d0f4b9f37fc4cb33c70b69a5d))
+
+
+
 ## [1.1.87](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.86...v1.1.87) (2025-10-06)
 
 

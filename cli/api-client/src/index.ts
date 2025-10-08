@@ -17,6 +17,7 @@ interface ApiClientArgs {
   APP_PACKAGE_VERSION?: string;
   APP_OUT_DIR?: string;
   APP_BUILD_DIR?: string;
+  RUNTIME?: string;
   SKIP_BUILD?: boolean;
   VERBOSE?: boolean;
   APP_TYPE_STYLE?: "Class" | "Interface";
@@ -622,6 +623,7 @@ async function generateApiClient(): Promise<void> {
   const parsedArgs = mri(process.argv.slice(2)) as ApiClientArgs;
 
   const platformUrl = process.env.APP_PLATFORM_URL ?? parsedArgs.APP_PLATFORM_URL;
+  const runtime = parsedArgs.RUNTIME ?? "Net80";
   const verbose = parsedArgs.VERBOSE ?? false;
   const typeStyle = parsedArgs.APP_TYPE_STYLE ?? "Class";
 
@@ -723,7 +725,7 @@ async function generateApiClient(): Promise<void> {
       `APP_TYPE_STYLE=${typeStyle}`,
     ].join(",");
 
-    const nswagCommand = ["run", paths.nswagPaths.configuration, `/variables:${nswagVariables}`, "/runtime:Net60"];
+    const nswagCommand = ["run", paths.nswagPaths.configuration, `/variables:${nswagVariables}`, `/runtime:${runtime}`];
 
     if (verbose) {
       console.log("api-client-generator %s Running command: npx nswag %s", chalk.blue("debug"), nswagCommand.join(" "));

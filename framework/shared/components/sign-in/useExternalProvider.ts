@@ -4,8 +4,8 @@ import { ExternalSignInClient, ExternalSignInProviderInfo } from "../../../core/
 
 export interface IUseExternalProvider {
   storage: Ref<{ providerType?: string | undefined }>;
-  signIn: (authenticationType?: string) => void;
-  signOut: (authenticationType: string) => void;
+  signIn: (authenticationType?: string) => Promise<void>;
+  signOut: (authenticationType: string) => Promise<void>;
   getProviders: () => Promise<ExternalSignInProviderInfo[] | undefined>;
 }
 
@@ -58,7 +58,7 @@ export const useExternalProvider = (): IUseExternalProvider => {
     }
   }
 
-  async function externalSignOut(authenticationType: string): Promise<void> {
+  async function externalSignOut(authenticationType: string) {
     try {
       const origin = window.location.origin;
       const returnUrl = window.location.pathname ?? "/";

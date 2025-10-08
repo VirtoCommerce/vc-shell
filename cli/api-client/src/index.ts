@@ -623,10 +623,18 @@ async function generateApiClient(): Promise<void> {
 
     const parsedArgs = mri(process.argv.slice(2)) as ApiClientArgs;
 
+    // Get values from environment variables first, then from CLI arguments
     const platformUrl = process.env.APP_PLATFORM_URL ?? parsedArgs.APP_PLATFORM_URL;
-    const runtime = parsedArgs.RUNTIME ?? "Net80";
-    const verbose = parsedArgs.VERBOSE ?? false;
-    const typeStyle = parsedArgs.APP_TYPE_STYLE ?? "Class";
+    const platformModules = process.env.APP_PLATFORM_MODULES ?? parsedArgs.APP_PLATFORM_MODULES;
+    const apiClientDirectory = process.env.APP_API_CLIENT_DIRECTORY ?? parsedArgs.APP_API_CLIENT_DIRECTORY;
+    const packageName = process.env.APP_PACKAGE_NAME ?? parsedArgs.APP_PACKAGE_NAME;
+    const packageVersion = process.env.APP_PACKAGE_VERSION ?? parsedArgs.APP_PACKAGE_VERSION;
+    const outDir = process.env.APP_OUT_DIR ?? parsedArgs.APP_OUT_DIR ?? "./";
+    const buildDir = process.env.APP_BUILD_DIR ?? parsedArgs.APP_BUILD_DIR ?? "dist";
+    const runtime = process.env.RUNTIME ?? parsedArgs.RUNTIME ?? "Net80";
+    const skipBuild = process.env.SKIP_BUILD === "true" || parsedArgs.SKIP_BUILD === true;
+    const verbose = process.env.VERBOSE === "true" || parsedArgs.VERBOSE === true;
+    const typeStyle = (process.env.APP_TYPE_STYLE ?? parsedArgs.APP_TYPE_STYLE ?? "Class") as "Class" | "Interface";
 
     // Validate APP_TYPE_STYLE parameter
     if (typeStyle !== "Class" && typeStyle !== "Interface") {
@@ -635,7 +643,7 @@ async function generateApiClient(): Promise<void> {
         chalk.red("error"),
         chalk.whiteBright(typeStyle),
       );
-      return;
+      process.exit(1);
     }
 
     if (verbose) {
@@ -648,50 +656,57 @@ async function generateApiClient(): Promise<void> {
 
     // Validate required arguments
     if (!platformUrl) {
-      return console.log(
+      console.error(
+        "api-client-generator %s APP_PLATFORM_URL is required in .env config or as api-client-generator argument",
         chalk.red("error"),
-        "api-client-generator APP_PLATFORM_URL is required in .env config or as api-client-generator argument",
       );
+      process.exit(1);
     }
 
-    if (!parsedArgs.APP_PLATFORM_MODULES) {
-      return console.log(chalk.red("error"), "api-client-generator modules command is required");
+    if (!platformModules) {
+      console.error(
+        "api-client-generator %s APP_PLATFORM_MODULES is required in .env config or as api-client-generator argument",
+        chalk.red("error"),
+      );
+      process.exit(1);
     }
 
-    if (!parsedArgs.APP_API_CLIENT_DIRECTORY) {
-      return console.log(chalk.red("error"), "api-client-generator outDir command is required");
+    if (!apiClientDirectory) {
+      console.error(
+        "api-client-generator %s APP_API_CLIENT_DIRECTORY is required in .env config or as api-client-generator argument",
+        chalk.red("error"),
+      );
+      process.exit(1);
     }
 
-    const outDir = parsedArgs.APP_OUT_DIR ?? "./";
-    const buildDir = parsedArgs.APP_BUILD_DIR ?? "dist";
-    const paths = new Paths(parsedArgs.APP_API_CLIENT_DIRECTORY);
+    const paths = new Paths(apiClientDirectory);
 
     // Ensure target directory exists
-    if (!existsSync(parsedArgs.APP_API_CLIENT_DIRECTORY)) {
+    if (!existsSync(apiClientDirectory)) {
       try {
-        mkdirSync(parsedArgs.APP_API_CLIENT_DIRECTORY, { recursive: true });
+        mkdirSync(apiClientDirectory, { recursive: true });
         console.log(
           "api-client-generator %s Created directory %s",
           chalk.greenBright("success"),
-          chalk.whiteBright(parsedArgs.APP_API_CLIENT_DIRECTORY),
+          chalk.whiteBright(apiClientDirectory),
         );
       } catch (error) {
         console.error(
           "api-client-generator %s Failed to create directory %s",
           chalk.red("error"),
-          chalk.whiteBright(parsedArgs.APP_API_CLIENT_DIRECTORY),
+          chalk.whiteBright(apiClientDirectory),
         );
         console.error(chalk.red("Error details:"), error);
         console.error("api-client-generator %s Directory creation troubleshooting:", chalk.blue("info"));
         console.error(chalk.blue("  - Check if you have write permissions in the parent directory"));
         console.error(chalk.blue("  - Ensure the path is valid and not too long"));
         console.error(chalk.blue("  - Try running with elevated permissions if needed"));
-        return;
+        process.exit(1);
       }
     }
 
     // Ensure build directory exists
-    const fullBuildDir = path.join(parsedArgs.APP_API_CLIENT_DIRECTORY, buildDir);
+    const fullBuildDir = path.join(apiClientDirectory, buildDir);
     if (!existsSync(fullBuildDir)) {
       try {
         mkdirSync(fullBuildDir, { recursive: true });
@@ -717,10 +732,16 @@ async function generateApiClient(): Promise<void> {
       }
     }
 
-    const platformModules = parsedArgs.APP_PLATFORM_MODULES.replace(/[[\]]/g, "").split(",");
+    // Parse platform modules with improved space handling
+    const platformModulesList = platformModules
+      .replace(/[[\]]/g, "") // Remove brackets
+      .split(",") // Split by comma
+      .map(module => module.trim()) // Trim whitespace from each module
+      .filter(module => module.length > 0); // Remove empty entries
+
     const generatedFiles: string[] = [];
 
-    for (const platformModule of platformModules) {
+    for (const platformModule of platformModulesList) {
       const apiClientPaths = paths.resolveApiClientPaths(platformModule);
 
       console.log(
@@ -766,7 +787,7 @@ async function generateApiClient(): Promise<void> {
         );
 
         // Skip configuration update if SKIP_BUILD is set
-        if (!parsedArgs.SKIP_BUILD) {
+        if (!skipBuild) {
           generatedFiles.push(`${platformModule.toLowerCase()}.ts`);
         }
       } else {
@@ -801,13 +822,14 @@ async function generateApiClient(): Promise<void> {
         console.error(chalk.blue("  - Verify the module name '%s' exists on the platform"), platformModule);
         console.error(chalk.blue(`  - Ensure .NET Core ${runtime} is installed`));
         console.error(chalk.blue("  - Try running with --VERBOSE=true for more details"));
+        process.exit(1);
       }
     }
 
     // Skip compilation and package.json generation if SKIP_BUILD is set
-    if (!parsedArgs.SKIP_BUILD) {
+    if (!skipBuild) {
       // Handle tsconfig generation and updates
-      const tsConfigPath = path.join(parsedArgs.APP_API_CLIENT_DIRECTORY, "tsconfig.json");
+      const tsConfigPath = path.join(apiClientDirectory, "tsconfig.json");
       const tsConfig = handleTsConfig(tsConfigPath, generatedFiles, outDir, buildDir);
 
       // Write updated tsconfig.json
@@ -823,6 +845,7 @@ async function generateApiClient(): Promise<void> {
         console.error(chalk.blue("  - Check if you have write permissions in the API client directory"));
         console.error(chalk.blue("  - Ensure the file path is valid and not locked by another process"));
         console.error(chalk.blue("  - Try running with elevated permissions if needed"));
+        process.exit(1);
       }
 
       // Compile generated TypeScript files to JavaScript with declaration files
@@ -857,12 +880,19 @@ async function generateApiClient(): Promise<void> {
         console.error(chalk.blue("  - Ensure generated API files are valid TypeScript"));
         console.error(chalk.blue("  - Try running with --VERBOSE=true for more details"));
 
-        // Continue even if compilation fails, to still generate package.json
+        // Exit on TypeScript compilation errors
+        process.exit(1);
       }
 
       // Handle package.json generation and updates
-      const packageJsonPath = path.join(parsedArgs.APP_API_CLIENT_DIRECTORY, "package.json");
-      const packageJson = handlePackageJson(packageJsonPath, generatedFiles, parsedArgs);
+      const packageJsonPath = path.join(apiClientDirectory, "package.json");
+      const packageJson = handlePackageJson(packageJsonPath, generatedFiles, {
+        ...parsedArgs,
+        APP_PACKAGE_NAME: packageName,
+        APP_PACKAGE_VERSION: packageVersion,
+        APP_BUILD_DIR: buildDir,
+        VERBOSE: verbose,
+      });
 
       // Write updated package.json with proper formatting
       try {
@@ -875,6 +905,7 @@ async function generateApiClient(): Promise<void> {
         console.error(chalk.blue("  - Check if you have write permissions in the API client directory"));
         console.error(chalk.blue("  - Ensure the file path is valid and not locked by another process"));
         console.error(chalk.blue("  - Try running with elevated permissions if needed"));
+        process.exit(1);
       }
     }
   } catch (error) {

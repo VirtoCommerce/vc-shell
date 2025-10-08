@@ -57,7 +57,7 @@ Add the dependencies to your project's **package.json**:
 
     |          Options           	|                        Description                            	|                          Example                          	|
     |-----------------------------	|----------------------------------------------------------------	|------------------------------------------------------------	|
-    | `--APP_PLATFORM_MODULES`     	| Platform modules to generate API client.<br>{==string[]==} <br> Customize the `--APP_PLATFORM_MODULES` list<br>to match your project's requirements.	| `--APP_PLATFORM_MODULES='[Virtocommerce.MarketplaceVendor,Virtocommerce.Orders,Virtocommerce.Catalog]'` 	|
+    | `--APP_PLATFORM_MODULES`     	| Platform modules to generate API client.<br>{==string[]==} <br> Supports spaces in module lists: `[Module1, Module2]` or `[Module1,Module2]`<br>Customize the `--APP_PLATFORM_MODULES` list<br>to match your project's requirements.	| `--APP_PLATFORM_MODULES='[Virtocommerce.MarketplaceVendor, Virtocommerce.Orders, Virtocommerce.Catalog]'` 	|
     | `--APP_API_CLIENT_DIRECTORY` 	| Output directory for generated API clients. <br>{==string==} 	| `--APP_API_CLIENT_DIRECTORY=./src/api_client/`                	|
     | `--APP_PLATFORM_URL`         	| Platform URL to obtain client API configs. <br>{==string==} 	    | `--APP_PLATFORM_URL=https://vcmp-dev.govirto.com/`       	|
     | `--APP_PACKAGE_NAME`         	| Package name for generated API clients. <br>{==string==} 	    | `--APP_PACKAGE_NAME=@api-client`       	|
@@ -74,14 +74,21 @@ Add the dependencies to your project's **package.json**:
     !!! tip
         Use `--APP_TYPE_STYLE=Interface` for better TypeScript integration and smaller bundle sizes. Use `--APP_TYPE_STYLE=Class` when you need runtime type checking or class-specific features.
 
-3. Configure Platform URL to ensure your project can access the platform's API configurations. Add the platform URL to your project's **.env** file:
+3. Configure Platform URL and other settings in your project's **.env** file:
 
     ```title="vc-app-extend/.env"
     APP_PLATFORM_URL=https://vcmp-dev.govirto.com/
+    APP_PLATFORM_MODULES=[Virtocommerce.MarketplaceVendor,Virtocommerce.Catalog,Virtocommerce.Orders]
+    APP_API_CLIENT_DIRECTORY=./src/api_client/
+    APP_PACKAGE_NAME=@my-app/api-client
+    APP_PACKAGE_VERSION=1.0.0
+    APP_BUILD_DIR=dist
+    VERBOSE=true
+    SKIP_BUILD=false
     ```
 
     !!! note
-        Alternatively, you can specify the Platform URL as a command option in the previous step when running the `"generate-api-client"` command.
+        All configuration options can be set via environment variables in `.env` file or passed as command line arguments. Environment variables take precedence over CLI arguments.
 
 4. Generate the API clients using the following command:
 
@@ -168,7 +175,14 @@ By default, the build directory is "dist".
 
 Better error handling and reporting make it easier to diagnose issues during client generation.
 
-## Recent Improvements (v1.1.8)
+## Recent Improvements (v1.1.9)
+
+### New Features
+
+- **Environment Variables Support**: All configuration options can now be set via environment variables in `.env` file
+- **Improved Module List Parsing**: Enhanced support for spaces in module lists (e.g., `[Module1, Module2]` or `[Module1,Module2]`)
+- **Better Boolean Handling**: Improved handling of boolean environment variables (`true`/`false` strings)
+- **Enhanced Error Messages**: More descriptive error messages for missing required parameters
 
 ### Fixed Issues
 
@@ -181,7 +195,7 @@ Better error handling and reporting make it easier to diagnose issues during cli
 - **Error Handling**: Improved JSON parsing error handling with better fallback strategies
 - **Root Export Handling**: Fixed issue with root exports being ignored or improperly handled
 
-### New Features
+### Previous Features
 
 - **Intelligent Config Merging**: Complete rewrite of configuration merging logic to better preserve user settings
 - **Export Path Standardization**: New system for standardizing export paths to improve consistency

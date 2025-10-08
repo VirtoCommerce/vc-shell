@@ -799,7 +799,7 @@ async function generateApiClient(): Promise<void> {
         console.error("api-client-generator %s Troubleshooting tips:", chalk.blue("info"));
         console.error(chalk.blue("  - Check if the platform URL is accessible: %s"), platformUrl);
         console.error(chalk.blue("  - Verify the module name '%s' exists on the platform"), platformModule);
-        console.error(chalk.blue("  - Ensure .NET Core 9.0+ is installed"));
+        console.error(chalk.blue(`  - Ensure .NET Core ${runtime} is installed`));
         console.error(chalk.blue("  - Try running with --VERBOSE=true for more details"));
       }
     }

@@ -1,3 +1,17 @@
+## [1.1.90](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.89...v1.1.90) (2025-10-08)
+
+
+### Bug Fixes
+
+* **api-client:** update error message to reflect dynamic .NET Core version requirement ([bbfbaa0](https://github.com/VirtoCommerce/vc-shell/commit/bbfbaa0df92a91e56b36ca48d449d258c90c88bc))
+
+
+### Features
+
+* **generate-api-client:** enhance configuration options with environment variable support and improved module list parsing ([30c00f9](https://github.com/VirtoCommerce/vc-shell/commit/30c00f9f963b0fdba5cf64e3ac3769f09f1ddf0b))
+
+
+
 ## [1.1.89](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.88...v1.1.89) (2025-10-08)
 
 

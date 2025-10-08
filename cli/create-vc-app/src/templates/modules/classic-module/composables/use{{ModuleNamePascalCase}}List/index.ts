@@ -6,6 +6,7 @@ interface SearchQuery {
   take?: number;
   skip?: number;
   sort?: string;
+  keyword?: string;
 }
 
 export default (options?: { pageSize?: number, sort?: string }) => {
@@ -26,7 +27,12 @@ export default (options?: { pageSize?: number, sort?: string }) => {
     };
   });
 
-  const loading = useLoading(itemLoading);
+  // Implement your own remove function
+  const { loading: removeLoading, action: removeItems } = useAsync<{ ids: string[] }>(async (payload) => {
+    return;
+  });
+
+  const loading = useLoading(itemLoading, removeLoading);
 
   return {
     data: computed(() => searchResult.value?.items),
@@ -35,6 +41,7 @@ export default (options?: { pageSize?: number, sort?: string }) => {
     pages: computed(() => Math.ceil((searchResult.value?.totalCount || 1) / pageSize)),
     currentPage: computed(() => Math.ceil((searchQuery.value?.skip || 0) / Math.max(1, pageSize) + 1)),
     getItems,
+    removeItems,
     searchQuery,
   };
 };

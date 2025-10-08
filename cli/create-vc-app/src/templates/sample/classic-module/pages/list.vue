@@ -1,6 +1,6 @@
 <template>
   <VcBlade
-    :title="$t('SAMPLE_APP.PAGES.LIST.TITLE')"
+    :title="title"
     width="50%"
     :expanded="expanded"
     :closable="closable"
@@ -22,16 +22,20 @@
       :total-count="totalCount"
       :search-value="searchValue"
       :current-page="currentPage"
+      enable-item-actions
+      :item-action-builder="actionBuilder"
+      :empty="empty"
+      :notfound="notfound"
       :search-placeholder="$t('SAMPLE_APP.PAGES.LIST.SEARCH.PLACEHOLDER')"
       :total-label="$t('SAMPLE_APP.PAGES.LIST.TABLE.TOTALS')"
       :selected-item-id="selectedItemId"
       state-key="SAMPLE_APP"
-      :items="data"
-      :item-action-builder="actionBuilder"
-      enable-item-actions
+      :items="data ?? []"
       @item-click="onItemClick"
       @header-click="onHeaderClick"
       @selection-changed="onSelectionChanged"
+      @search:change="onSearchList"
+      @pagination-click="onPaginationClick"
     >
     </VcTable>
   </VcBlade>
@@ -47,6 +51,7 @@ import {
   useBladeNavigation,
   usePopup,
   useTableSort,
+  useFunctions,
 } from "@vc-shell/framework";
 import { useI18n } from "vue-i18n";
 import { useList } from "./../composables";
@@ -88,6 +93,7 @@ defineEmits<Emits>();
 const { t } = useI18n({ useScope: "global" });
 const { openBlade } = useBladeNavigation();
 const { showConfirmation } = usePopup();
+const { debounce } = useFunctions();
 
 const { sortExpression, handleSortChange: tableSortHandler } = useTableSort({
   initialDirection: "DESC",
@@ -103,10 +109,32 @@ const searchValue = ref();
 const selectedItemId = ref<string>();
 const selectedIds = ref<string[]>([]);
 
+const empty = {
+  icon: "lucide-file",
+  text: computed(() => t("SAMPLE_APP.PAGES.LIST.EMPTY.NO_ITEMS")),
+  action: computed(() => t("SAMPLE_APP.PAGES.LIST.EMPTY.ADD")),
+  clickHandler: () => {
+    addItem();
+  },
+};
+
+const notfound = {
+  icon: "lucide-file",
+  text: computed(() => t("SAMPLE_APP.PAGES.LIST.NOT_FOUND.EMPTY")),
+  action: computed(() => t("SAMPLE_APP.PAGES.LIST.NOT_FOUND.RESET")),
+  clickHandler: async () => {
+    searchValue.value = "";
+    await getItems({
+      ...searchQuery.value,
+      keyword: "",
+    });
+  },
+};
+
 watch(
   () => props.param,
   (newVal) => {
-      selectedItemId.value = newVal;
+    selectedItemId.value = newVal;
   },
   { immediate: true },
 );
@@ -117,6 +145,27 @@ onMounted(async () => {
     sort: sortExpression.value,
   });
 });
+
+const onSearchList = debounce(async (keyword: string) => {
+  searchValue.value = keyword;
+  await getItems({
+    ...searchQuery.value,
+    keyword,
+  });
+}, 1000);
+
+const addItem = () => {
+  openBlade({
+    blade: markRaw(Details),
+  });
+};
+
+const onPaginationClick = async (page: number) => {
+  await getItems({
+    ...searchQuery.value,
+    skip: (page - 1) * (searchQuery.value.take ?? 20),
+  });
+};
 
 const bladeToolbar = ref<IBladeToolbar[]>([
   {
@@ -171,7 +220,7 @@ const columns = ref<ITableColumns[]>([
   },
 ]);
 
-const title = computed(() => t("SAMPLE_APP.PAGES.LIST.HEADER.TITLE"));
+const title = computed(() => t("SAMPLE_APP.PAGES.LIST.TITLE"));
 
 const reload = async () => {
   await getItems({
@@ -208,12 +257,12 @@ const actionBuilder = (): IActionBuilderResult[] => {
     icon: "material-delete",
     title: computed(() => t("SAMPLE_APP.PAGES.LIST.TABLE.ACTIONS.DELETE")),
     type: "danger",
-    clickHandler(item: MockedItem) {
-      if (item.id) {
-        if (!selectedIds.value.includes(item.id)) {
-          selectedIds.value.push(item.id);
+    async clickHandler(_item: MockedItem) {
+      if (_item.id) {
+        if (!selectedIds.value.includes(_item.id)) {
+          selectedIds.value.push(_item.id);
         }
-        remove(selectedIds.value);
+        await remove(selectedIds.value);
         selectedIds.value = [];
       }
     },

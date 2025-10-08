@@ -11,7 +11,7 @@
     @collapse="$emit('collapse:blade')"
   >
     <VcContainer class="tw-p-2">
-      <VcForm>
+      <VcForm class="tw-space-y-4">
         <Field
           v-slot="{ errorMessage, handleChange, errors }"
           name="name"
@@ -25,15 +25,11 @@
             required
             :error="!!errors.length"
             :error-message="errorMessage"
-            class="tw-mb-4"
             @update:model-value="handleChange"
           ></VcInput>
         </Field>
-        <VcCard
-          header="Content"
-          class="tw-mb-4"
-        >
-          <div class="tw-p-4">
+        <VcCard header="Content">
+          <div class="tw-p-4 tw-space-y-4">
             <Field
               v-slot="{ errorMessage, handleChange, errors }"
               name="guid"
@@ -50,7 +46,6 @@
                 required
                 :error="!!errors.length"
                 :error-message="errorMessage"
-                class="tw-mb-4"
                 @update:model-value="handleChange"
               ></VcInput>
             </Field>
@@ -137,11 +132,10 @@
 <script lang="ts" setup>
 import { IBladeToolbar, IParentCallArgs, useBeforeUnload, useBladeNavigation, usePopup } from "@vc-shell/framework";
 import { useDetails } from "./../composables";
-import { computed, onMounted, ref, unref, watch } from "vue";
-import { Field, useForm, useIsFormDirty, useIsFormValid } from "vee-validate";
+import { computed, onMounted, ref } from "vue";
+import { Field, useForm } from "vee-validate";
 import { useI18n } from "vue-i18n";
 import * as _ from "lodash-es";
-import { MockedItem } from "../sample-data";
 
 export interface Props {
   expanded?: boolean;
@@ -210,7 +204,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     icon: "material-delete",
     title: "Delete",
     async clickHandler() {
-      if (await showConfirmation(computed(() => t(`SAMPLE_APP.PAGES.ALERTS.DELETE`)))) {
+      if (await showConfirmation(t(`SAMPLE_APP.PAGES.ALERTS.DELETE`))) {
         if (props.param) {
           await removeItem({ id: props.param });
           emit("parent:call", {

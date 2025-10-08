@@ -19,10 +19,11 @@
 </template>
 
 <script lang="ts" setup>
-import { IBladeToolbar, IParentCallArgs } from "@vc-shell/framework";
+import { IBladeToolbar, IParentCallArgs, useBladeNavigation, usePopup, useBeforeUnload } from "@vc-shell/framework";
 import { use{{ModuleNamePascalCase}}Details } from "./../composables";
 import { computed, onMounted, ref } from "vue";
 import { useI18n } from "vue-i18n";
+import { useForm } from "vee-validate";
 
 export interface Props {
   expanded?: boolean;
@@ -50,8 +51,18 @@ const props = withDefaults(defineProps<Props>(), {
 
 defineEmits<Emits>();
 
-const { loading, getItem } = use{{ModuleNamePascalCase}}Details();
+const { loading, getItem, isModified } = use{{ModuleNamePascalCase}}Details();
+const { onBeforeClose } = useBladeNavigation();
+const { showConfirmation } = usePopup();
 const { t } = useI18n({ useScope: "global" });
+
+const { meta } = useForm({
+  validateOnMount: false,
+});
+
+const isDisabled = computed(() => {
+  return !meta.value.dirty || !meta.value.valid;
+});
 
 const bladeToolbar = ref<IBladeToolbar[]>([]);
 const title = computed(() => t("{{ModuleNameUppercaseSnakeCase}}.PAGES.DETAILS.TITLE"));
@@ -61,6 +72,14 @@ onMounted(async () => {
     await getItem({ id: props.param });
   }
 });
+
+onBeforeClose(async () => {
+  if (!isDisabled.value && isModified.value) {
+    return await showConfirmation(t("SAMPLE_APP.PAGES.ALERTS.CLOSE_CONFIRMATION"));
+  }
+});
+
+useBeforeUnload(computed(() => !isDisabled.value && isModified.value));
 
 defineExpose({
   title,

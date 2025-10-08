@@ -7,7 +7,8 @@
       "LIST": {
         "TITLE": "{{ModuleNameSentenceCase}} list",
         "TOOLBAR": {
-          "REFRESH": "Refresh"
+          "REFRESH": "Refresh",
+          "ADD": "Add"
         },
         "SEARCH": {
           "PLACEHOLDER": "Search keywords"
@@ -15,6 +16,14 @@
         "TABLE": {
           "TOTALS": "Count:",
           "HEADER": {}
+        },
+        "EMPTY": {
+          "NO_ITEMS": "No items found",
+          "ADD": "Add items"
+        },
+        "NOT_FOUND": {
+          "EMPTY": "No items found",
+          "RESET": "Reset"
         }
       },
       "DETAILS": {

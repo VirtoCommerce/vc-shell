@@ -26,6 +26,14 @@
           "ACTIONS": {
             "DELETE": "Delete"
           }
+        },
+        "EMPTY": {
+          "NO_ITEMS": "No items found",
+          "ADD": "Add item"
+        },
+        "NOT_FOUND": {
+          "EMPTY": "No items found",
+          "RESET": "Reset"
         }
       },
       "DETAILS": {

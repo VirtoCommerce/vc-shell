@@ -9,6 +9,7 @@
   ],
   "scripts": {
     "build": "vite build && yarn postbuild",
+    "type-check": "vue-tsc --noEmit",
     "postbuild": "shx cp -R src/templates dist/"
   },
   "devDependencies": {

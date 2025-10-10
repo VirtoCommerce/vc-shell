@@ -60,10 +60,11 @@ import { ChangePasswordButton } from "../../../../shared/components/change-passw
 import { LogoutButton } from "../../../../shared/components/logout-button";
 import { provideGlobalSearch } from "../../../../core/composables/useGlobalSearch";
 import { provideDashboardService } from "../../../../core/composables/useDashboard";
-import { DynamicModulesKey, EMBEDDED_MODE } from "../../../../injection-keys";
+import { DynamicModulesKey, EMBEDDED_MODE, AuthProviderKey } from "../../../../injection-keys";
 import { provideMenuService } from "../../../../core/composables/useMenuService";
 import { provideAppBarMobileButtonsService } from "../../../../core/composables/useAppBarMobileButtons";
 import { useUserManagement } from "../../../../core/composables/useUserManagement";
+import { PlatformAuthProvider } from "../../../../core/providers/platform-auth-provider";
 
 export interface Props {
   isReady: boolean;
@@ -96,6 +97,23 @@ console.debug("vc-app: Init vc-app");
 
 const internalRoutes = inject("bladeRoutes") as BladeRoutesRecord[];
 const dynamicModules = inject(DynamicModulesKey, undefined);
+
+// Inject auth provider to check if platform features should be enabled
+const authProvider = inject(AuthProviderKey);
+
+// Automatically disable app switcher for custom authentication providers
+const shouldDisableAppSwitcher = computed(() => {
+  // If explicitly disabled via prop, respect that
+  if (props.disableAppSwitcher) return true;
+
+  // If using custom auth provider, disable platform-specific features
+  if (authProvider && !(authProvider instanceof PlatformAuthProvider)) {
+    console.log("[VcApp] App Switcher disabled - custom authentication provider detected");
+    return true;
+  }
+
+  return false;
+});
 
 const isAppReady = ref(props.isReady);
 
@@ -223,7 +241,7 @@ provideAppSlots(
   slots,
   {
     disableMenu: props.disableMenu,
-    disableAppSwitcher: props.disableAppSwitcher,
+    disableAppSwitcher: shouldDisableAppSwitcher.value,
     version: props.version,
     avatar: props.avatar,
     name: props.name,

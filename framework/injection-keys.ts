@@ -1,6 +1,6 @@
 import { InjectionKey, ComputedRef, type Component } from "vue";
 import { BladeVNode, IBladeInstance } from "./shared/components/blade-navigation/types";
-import { NotificationTemplateConstructor } from "./core/types";
+import { NotificationTemplateConstructor, IAuthProvider } from "./core/types";
 
 import {
   IWidgetService,
@@ -33,3 +33,4 @@ export const AppBarMobileButtonsServiceKey = Symbol(
 export const LanguageServiceKey = Symbol("LanguageService") as InjectionKey<ILanguageService>;
 export const TOOLBAR_SERVICE = Symbol("toolbar-service");
 export const EMBEDDED_MODE = Symbol("embedded-mode") as InjectionKey<boolean>;
+export const AuthProviderKey = Symbol("AuthProvider") as InjectionKey<IAuthProvider>;

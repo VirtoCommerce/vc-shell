@@ -6,7 +6,7 @@
     @contextmenu.prevent
   >
     <GenericDropdown
-      :opened="true"
+      opened
       :items="appsList"
       :is-item-active="(item) => locationHandler(item.relativeUrl ?? '')"
       max-height="auto"
@@ -72,7 +72,7 @@ const switchApp = (app: AppDescriptor) => {
   @apply tw-relative tw-flex tw-shrink-0 tw-h-full;
 
   &__item {
-    @apply tw-flex tw-items-center tw-w-full tw-p-3 tw-w-full;
+    @apply tw-flex tw-items-center tw-w-full tw-p-3;
   }
 
   &__item-icon {

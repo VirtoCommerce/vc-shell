@@ -233,3 +233,5 @@ export interface MenuItemConfig {
   inGroupPriority?: number;
   permissions?: string | string[];
 }
+
+export * from "./auth-provider";

@@ -1,211 +1,114 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { computed, Ref, ref, ComputedRef } from "vue";
+import { computed, inject, ComputedRef, getCurrentInstance } from "vue";
 import {
   UserDetail,
-  SecurityClient,
-  ResetPasswordConfirmRequest,
   SecurityResult,
-  ValidatePasswordResetTokenRequest,
   IdentityResult,
-  ChangePasswordRequest,
   LoginType,
-  LoginRequest,
   SignInResult,
+  IUserDetail,
+  ISecurityResult,
+  ILoginType,
+  IIdentityResult,
 } from "./../../api/platform";
-import { RequestPasswordResult } from "./../../types";
+import { RequestPasswordResult, IAuthProvider } from "./../../types";
 import { createSharedComposable } from "@vueuse/core";
-import { useExternalProvider } from "../../../shared/components/sign-in/useExternalProvider";
+import { AuthProviderKey } from "../../../injection-keys";
+import { authProviderManager } from "../../providers/auth-provider-manager";
 
-// Interface for the full internal API provided by _createInternalUserLogic
+/**
+ * Interface for the full internal API
+ * @deprecated This interface is kept for backward compatibility but will be removed in future versions
+ */
 export interface IUserInternalAPI {
-  user: ComputedRef<UserDetail | undefined>;
+  user: ComputedRef<IUserDetail | undefined>;
   loading: ComputedRef<boolean>;
   isAdministrator: ComputedRef<boolean | undefined>;
-  loadUser: () => Promise<UserDetail>;
+  loadUser: () => Promise<IUserDetail>;
   signIn: (username: string, password: string) => Promise<SignInResult | { succeeded: boolean; error?: any }>;
   signOut: () => Promise<void>;
   validateToken: (userId: string, token: string) => Promise<boolean>;
-  validatePassword: (password: string) => Promise<IdentityResult>;
-  resetPasswordByToken: (userId: string, password: string, token: string) => Promise<SecurityResult>;
+  validatePassword: (password: string) => Promise<IIdentityResult>;
+  resetPasswordByToken: (userId: string, password: string, token: string) => Promise<ISecurityResult>;
   requestPasswordReset: (loginOrEmail: string) => Promise<RequestPasswordResult>;
-  changeUserPassword: (oldPassword: string, newPassword: string) => Promise<SecurityResult | undefined>;
-  getLoginType: () => Promise<LoginType[]>;
+  changeUserPassword: (oldPassword: string, newPassword: string) => Promise<ISecurityResult | undefined>;
+  getLoginType: () => Promise<ILoginType[]>;
   isAuthenticated: ComputedRef<boolean>;
 }
 
 export interface IAppUserAPI {
-  user: ComputedRef<UserDetail | undefined>;
+  user: ComputedRef<IUserDetail | undefined>;
   loading: ComputedRef<boolean>;
   isAuthenticated: ComputedRef<boolean>;
   isAdministrator: ComputedRef<boolean | undefined>;
-  loadUser: () => Promise<UserDetail>;
+  loadUser: () => Promise<IUserDetail>;
   signOut: () => Promise<void>;
 }
 
-const user: Ref<UserDetail | undefined> = ref();
+/**
+ * Get auth provider with fallback to global instance
+ * This allows composables to work before Vue app context is available
+ * Priority: Vue DI > Global Manager (always has default PlatformAuthProvider)
+ */
+function getAuthProvider(): IAuthProvider {
+  // Try to get from Vue DI first (preferred method for components)
+  const instance = getCurrentInstance();
+  if (instance) {
+    const injectedProvider = inject(AuthProviderKey, null);
+    if (injectedProvider) {
+      return injectedProvider;
+    }
+  }
 
+  // Fallback to global provider (always available with default PlatformAuthProvider)
+  return authProviderManager.getProvider();
+}
+
+/**
+ * Internal user logic - delegates to auth provider
+ * @deprecated This function is kept for backward compatibility but will be removed in future versions
+ * Use auth provider directly or useUser/useUserManagement composables
+ */
 export function _createInternalUserLogic(): IUserInternalAPI {
-  const loading: Ref<boolean> = ref(false);
-
-  const { storage: externalSignInStorage, signOut: externalSignOut } = useExternalProvider();
-
-  const securityClient = new SecurityClient();
-
-  const isAuthenticated = computed(() => user.value?.userName != null);
-
-  async function validateToken(userId: string, token: string): Promise<boolean> {
-    let result = false;
-    try {
-      loading.value = true;
-      result = await securityClient.validatePasswordResetToken(userId, {
-        token,
-      } as ValidatePasswordResetTokenRequest);
-    } catch (e) {
-      //TODO: log error
-    } finally {
-      loading.value = false;
-    }
-    return result;
-  }
-
-  async function validatePassword(password: string): Promise<IdentityResult> {
-    return securityClient.validatePassword(password);
-  }
-
-  async function resetPasswordByToken(userId: string, password: string, token: string): Promise<SecurityResult> {
-    return securityClient.resetPasswordByToken(userId, {
-      newPassword: password,
-      token,
-    } as ResetPasswordConfirmRequest);
-  }
-
-  async function signIn(
-    username: string,
-    password: string,
-  ): Promise<SignInResult | { succeeded: boolean; error?: any; status?: number }> {
-    console.debug(`[@vc-shell/framework#_createInternalUserLogic:signIn] - Entry point`);
-    try {
-      loading.value = true;
-      const result = await securityClient.login(new LoginRequest({ userName: username, password }));
-      return await securityClient
-        .getCurrentUser()
-        .then((res) => {
-          if (res) {
-            user.value = res;
-            return result;
-          }
-          throw { succeeded: false };
-        })
-        .catch((e) => {
-          throw e;
-        });
-    } catch (e: any) {
-      //TODO: log error
-      console.log(e);
-      return { succeeded: false, error: e.message, status: e.status };
-    } finally {
-      loading.value = false;
-    }
-  }
-
-  async function signOut(): Promise<void> {
-    console.debug(`[@vc-shell/framework#_createInternalUserLogic:signOut] - Entry point`);
-
-    user.value = undefined;
-
-    if (externalSignInStorage.value?.providerType) {
-      await externalSignOut(externalSignInStorage.value.providerType);
-    } else {
-      securityClient.logout();
-    }
-  }
-
-  async function loadUser(): Promise<UserDetail> {
-    console.debug(`[@vc-shell/framework#_createInternalUserLogic:loadUser] - Entry point`);
-
-    try {
-      loading.value = true;
-      user.value = await securityClient.getCurrentUser();
-      console.log("[_createInternalUserLogic]: an user details has been loaded", user.value);
-    } catch (e: any) {
-      console.error(e);
-    } finally {
-      loading.value = false;
-    }
-
-    return { ...user.value } as UserDetail;
-  }
-
-  async function requestPasswordReset(loginOrEmail: string): Promise<RequestPasswordResult> {
-    try {
-      loading.value = true;
-      await securityClient.requestPasswordReset(loginOrEmail);
-      return { succeeded: true };
-    } catch (e) {
-      //TODO: log error
-      return { succeeded: false, error: e as string };
-    } finally {
-      loading.value = false;
-    }
-  }
-
-  async function changeUserPassword(oldPassword: string, newPassword: string): Promise<SecurityResult | undefined> {
-    let result;
-
-    try {
-      loading.value = true;
-      const command = new ChangePasswordRequest({
-        oldPassword,
-        newPassword,
-      });
-
-      result = await securityClient.changeCurrentUserPassword(command);
-    } catch (e: any) {
-      return { succeeded: false, errors: [e.message] } as SecurityResult;
-    } finally {
-      loading.value = false;
-    }
-
-    return result;
-  }
-
-  async function getLoginType() {
-    let result: LoginType[] | null = null;
-    try {
-      result = await securityClient.getLoginTypes();
-    } catch (e) {
-      console.error(e);
-      throw e;
-    }
-
-    return result;
-  }
+  const authProvider = getAuthProvider();
 
   return {
-    user: computed(() => user.value),
-    loading: computed(() => loading.value),
-    isAdministrator: computed(() => user.value?.isAdministrator),
-    isAuthenticated,
-    loadUser,
-    signIn,
-    signOut,
-    validateToken,
-    validatePassword,
-    resetPasswordByToken,
-    requestPasswordReset,
-    changeUserPassword,
-    getLoginType,
+    user: authProvider.user,
+    loading: authProvider.loading,
+    isAdministrator: authProvider.isAdministrator,
+    isAuthenticated: authProvider.isAuthenticated,
+    loadUser: authProvider.loadUser.bind(authProvider),
+    signIn: authProvider.signIn.bind(authProvider),
+    signOut: authProvider.signOut.bind(authProvider),
+    validateToken: authProvider.validateToken.bind(authProvider),
+    validatePassword: authProvider.validatePassword.bind(authProvider),
+    resetPasswordByToken: authProvider.resetPasswordByToken.bind(authProvider),
+    requestPasswordReset: authProvider.requestPasswordReset.bind(authProvider),
+    changeUserPassword: authProvider.changeUserPassword.bind(authProvider),
+    getLoginType: authProvider.getLoginType.bind(authProvider),
   };
 }
 
 export const useUser = createSharedComposable((): IAppUserAPI => {
-  const internals = _createInternalUserLogic();
+  // Get provider dynamically on each access to ensure correct provider is used
+  // This is important because custom auth providers may be set after composable creation
+
   return {
-    user: internals.user,
-    loading: internals.loading,
-    isAuthenticated: internals.isAuthenticated,
-    isAdministrator: internals.isAdministrator,
-    loadUser: internals.loadUser,
-    signOut: internals.signOut,
+    // Computed properties should get provider dynamically
+    get user() {
+      return getAuthProvider().user;
+    },
+    get loading() {
+      return getAuthProvider().loading;
+    },
+    get isAuthenticated() {
+      return getAuthProvider().isAuthenticated;
+    },
+    get isAdministrator() {
+      return getAuthProvider().isAdministrator;
+    },
+    // Methods get provider dynamically on each call
+    loadUser: () => getAuthProvider().loadUser(),
+    signOut: () => getAuthProvider().signOut(),
   };
 });

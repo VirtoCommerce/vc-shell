@@ -1,9 +1,12 @@
-import { App, watch, ref, InjectionKey } from "vue";
+import { App, watch, ref, InjectionKey, inject } from "vue";
 import { HubConnection, HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 import { PushNotification } from "../../api/platform";
 import { useNotifications } from "./../../composables/useNotifications";
 import { useUserManagement } from "../../composables/useUserManagement";
 import { useCypressSignalRMock } from "cypress-signalr-mock";
+import { AuthProviderKey } from "../../../injection-keys";
+import { IAuthProvider } from "../../types/auth-provider";
+import { PlatformAuthProvider } from "../../providers/platform-auth-provider";
 
 const { addNotification } = useNotifications();
 const currentCreator = ref<string | undefined>();
@@ -31,8 +34,31 @@ export const signalR = {
     app: App,
     options?: {
       creator?: string;
+      authProvider?: IAuthProvider;
     },
   ) {
+    // Check if we should enable SignalR (only for platform providers)
+    const authProvider = options?.authProvider;
+
+    console.log("[SignalR] Auth provider: ", authProvider);
+
+    // Check if this is a platform provider using instanceof
+    if (authProvider && !(authProvider instanceof PlatformAuthProvider)) {
+      console.log("[SignalR] Skipping initialization - custom authentication provider detected");
+      console.log("[SignalR] SignalR is only available with platform authentication");
+
+      // Provide empty implementations to prevent errors
+      app.config.globalProperties.$updateSignalRCreator = () => {
+        console.warn("[SignalR] Not available with custom authentication provider");
+      };
+      app.provide(updateSignalRCreatorSymbol, () => {
+        console.warn("[SignalR] Not available with custom authentication provider");
+      });
+
+      return;
+    }
+
+    console.log("[SignalR] Initializing with platform authentication");
     currentCreator.value = options?.creator;
     const { isAuthenticated } = useUserManagement();
     let reconnect = false;

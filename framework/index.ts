@@ -14,6 +14,9 @@ import Vue3TouchEvents from "vue3-touch-events";
 import * as locales from "./locales";
 import { AppInsightsPlugin, AppInsightsPluginOptions } from "vue3-application-insights";
 import { useAppInsights } from "./core/composables";
+import { PlatformAuthProvider } from "./core/providers/platform-auth-provider";
+import { IAuthProvider } from "./core/types/auth-provider";
+import { authProviderManager } from "./core/providers/auth-provider-manager";
 
 // Import Blade Registry
 import { createBladeRegistry, BladeRegistryKey, IBladeRegistryInstance } from "./core/composables/useBladeRegistry";
@@ -48,6 +51,7 @@ import {
   TOOLBAR_SERVICE,
   WidgetServiceKey,
   LanguageServiceKey,
+  AuthProviderKey,
 } from "./injection-keys";
 
 import "@fortawesome/fontawesome-free/css/fontawesome.min.css";
@@ -59,6 +63,10 @@ import "@material-symbols/font-300/index.css";
 type I18NParams = Parameters<typeof i18n.global.mergeLocaleMessage>;
 
 export interface VcShellFrameworkPlugin {
+  configure(options: {
+    authProvider?: IAuthProvider;
+  }): void;
+
   install(
     app: App,
     args: {
@@ -108,6 +116,38 @@ if (typeof window !== "undefined") {
 }
 
 export default {
+  /**
+   * Configure framework before initialization
+   * This should be called before any composables that need authentication
+   *
+   * @example
+   * ```typescript
+   * // Configure with custom auth provider
+   * VirtoShellFramework.configure({
+   *   authProvider: new CustomAuthProvider()
+   * });
+   *
+   * // Now useUser() can be called safely
+   * const { loadUser } = useUser();
+   * await loadUser();
+   *
+   * // Then initialize framework
+   * app.use(VirtoShellFramework, { router, ... });
+   * ```
+   */
+  configure(options: {
+    /**
+     * Custom authentication provider
+     * If not provided, PlatformAuthProvider will be used as default
+     */
+    authProvider?: IAuthProvider;
+  }): void {
+    if (options.authProvider) {
+      console.log("[VirtoShellFramework] Configuring with custom auth provider:", options.authProvider.constructor.name);
+      authProviderManager.setProvider(options.authProvider);
+    }
+  },
+
   install(
     app: App,
     args: {
@@ -138,8 +178,14 @@ export default {
       // { key: "dark", localizationKey: "core.themes.dark" },
     ]);
 
+    // Get the configured provider (will create default PlatformAuthProvider if configure() was not called)
+    const authProvider = authProviderManager.getProvider();
+
+    // Also provide through Vue DI for component usage
+    app.provide(AuthProviderKey, authProvider);
+
     // HTTP Interceptors
-    window.fetch = registerInterceptors(args.router);
+    window.fetch = registerInterceptors(args.router, authProvider);
 
     if (args.i18n?.locale) {
       i18n.global.locale.value = args.i18n.locale;
@@ -233,8 +279,8 @@ export default {
     // Shared module - no longer needs bladeRegisterFn passed explicitly
     app.use(SharedModule, { router: args.router });
 
-    // SignalR
-    app.use(signalR, args.signalR);
+    // SignalR - pass authProvider to check if platform features should be enabled
+    app.use(signalR, { ...args.signalR, authProvider });
 
     // Permissions check
     app.use(permissions);
@@ -371,3 +417,8 @@ export * from "./core/utilities";
 export * from "./core/constants";
 
 export * from "./shared";
+
+// Export auth provider class, interface, types and manager for custom implementations
+export { PlatformAuthProvider } from "./core/providers/platform-auth-provider";
+export { authProviderManager } from "./core/providers/auth-provider-manager";
+export type { IAuthProvider } from "./core/types/auth-provider";

@@ -1,3 +1,12 @@
+## [1.1.91-alpha.0](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.90...v1.1.91-alpha.0) (2025-10-10)
+
+
+### Features
+
+* **auth:** introduce customizable authentication provider system with PlatformAuthProvider and authProviderManager for enhanced flexibility ([424af98](https://github.com/VirtoCommerce/vc-shell/commit/424af98fe04f60b54cc2baf1db1c6d3dc184f9bc))
+
+
+
 ## [1.1.90](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.89...v1.1.90) (2025-10-08)
 
 

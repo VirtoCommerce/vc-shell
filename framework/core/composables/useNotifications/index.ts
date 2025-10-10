@@ -1,6 +1,8 @@
 import { PushNotification, PushNotificationClient } from "./../../api/platform";
-import { computed, ComputedRef, ref, onUnmounted } from "vue";
+import { computed, ComputedRef, ref, onUnmounted, inject } from "vue";
 import * as _ from "lodash-es";
+import { AuthProviderKey } from "../../../injection-keys";
+import { PlatformAuthProvider } from "../../providers/platform-auth-provider";
 
 const notificationsClient = new PushNotificationClient();
 
@@ -29,6 +31,10 @@ const subscribers = new Map<
 let subscriberCounter = 0;
 
 export function useNotifications(notifyType?: string | string[]): INotifications {
+  // Check if we're using a custom auth provider
+  const authProvider = inject(AuthProviderKey);
+  const isPlatformProvider = authProvider instanceof PlatformAuthProvider;
+
   if (notifyType) {
     const types = Array.isArray(notifyType) ? notifyType : [notifyType];
 
@@ -49,6 +55,12 @@ export function useNotifications(notifyType?: string | string[]): INotifications
   }
 
   async function loadFromHistory(take = 10) {
+    // Skip platform API calls for custom authentication providers
+    if (!isPlatformProvider) {
+      console.log("[useNotifications] Skipping loadFromHistory - custom authentication provider detected");
+      return;
+    }
+
     // TODO temporary workaround to get push notifications without base type
     try {
       const result = await fetch("/api/platform/pushnotifications", {
@@ -106,6 +118,25 @@ export function useNotifications(notifyType?: string | string[]): INotifications
   }
 
   async function markAllAsRead() {
+    // Skip platform API calls for custom authentication providers
+    if (!isPlatformProvider) {
+      console.log("[useNotifications] Skipping markAllAsRead - custom authentication provider detected");
+      // Still update local state
+      notifications.value = notifications.value.map((x) => {
+        if (x.isNew) {
+          x.isNew = false;
+        }
+        return x;
+      });
+      pushNotifications.value = pushNotifications.value.map((x) => {
+        if (x.isNew) {
+          x.isNew = false;
+        }
+        return x;
+      });
+      return;
+    }
+
     try {
       notifications.value = notifications.value.map((x) => {
         if (x.isNew) {

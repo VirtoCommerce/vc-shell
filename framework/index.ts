@@ -63,9 +63,7 @@ import "@material-symbols/font-300/index.css";
 type I18NParams = Parameters<typeof i18n.global.mergeLocaleMessage>;
 
 export interface VcShellFrameworkPlugin {
-  configure(options: {
-    authProvider?: IAuthProvider;
-  }): void;
+  configure(options: { authProvider?: IAuthProvider }): void;
 
   install(
     app: App,
@@ -142,8 +140,12 @@ export default {
      */
     authProvider?: IAuthProvider;
   }): void {
+    console.log("[VirtoShellFramework] Configure");
     if (options.authProvider) {
-      console.log("[VirtoShellFramework] Configuring with custom auth provider:", options.authProvider.constructor.name);
+      console.log(
+        "[VirtoShellFramework] Configuring with custom auth provider:",
+        options.authProvider.constructor.name,
+      );
       authProviderManager.setProvider(options.authProvider);
     }
   },

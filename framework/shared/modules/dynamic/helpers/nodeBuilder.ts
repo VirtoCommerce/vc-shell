@@ -14,7 +14,15 @@ import { toRefs } from "@vueuse/core";
 import { unrefNested } from "./unrefNested";
 import { usePermissions } from "../../../../core/composables";
 
-const { hasAccess } = usePermissions();
+// Lazy initialization to avoid calling composables at module level
+let hasAccess: ReturnType<typeof usePermissions>["hasAccess"] | null = null;
+function getHasAccess() {
+  if (!hasAccess) {
+    const permissions = usePermissions();
+    hasAccess = permissions.hasAccess;
+  }
+  return hasAccess;
+}
 
 function disabledHandler(
   disabled: { method?: string } | boolean,
@@ -169,7 +177,7 @@ function nodeBuilder<
     if (toValue(model) && Array.isArray(toValue(model))) {
       return toValue(model).map((modelItem: ToRefs<{ [x: string]: unknown; id: string }>) => {
         return controlSchema.fields.reduce((arr, fieldItem) => {
-          if (safeIn("permissions", fieldItem) && !hasAccess(fieldItem.permissions)) {
+          if (safeIn("permissions", fieldItem) && !getHasAccess()(fieldItem.permissions)) {
             return arr;
           }
 
@@ -198,7 +206,7 @@ function nodeBuilder<
 
     return [
       controlSchema.fields.reduce((arr, field) => {
-        if (safeIn("permissions", field) && !hasAccess(field.permissions)) {
+        if (safeIn("permissions", field) && !getHasAccess()(field.permissions)) {
           return arr;
         }
 

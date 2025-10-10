@@ -10,7 +10,7 @@ on:
       - 'docs/**'
       - 'README.md'
       - 'LICENSE'
-    branches: [ main ]
+    branches: [ main, feat/vm-1646-custom-auth ]
 
 jobs:
   CI:
@@ -50,7 +50,7 @@ jobs:
         projectType: theme
 
     - name: Set release variables
-      if: ${{ github.ref == 'refs/heads/main' }}
+      if: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/feat/vm-1646-custom-auth' }}
       run: |
         echo "VERSION_SUFFIX=${{ steps.image.outputs.prefix }}" >> $GITHUB_ENV
     - name: Set release-alpha variables
@@ -116,7 +116,7 @@ jobs:
 
     - name: Publish virto-shell npm
       if: success()
-      # if: ${{ github.ref == 'refs/heads/main' }}
+      # if: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/feat/vm-1646-custom-auth' }}
       run: |
         echo "Using npm tag: $NPM_TAG"
         if [ "$NPM_TAG" = "latest" ]; then

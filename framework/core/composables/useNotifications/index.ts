@@ -2,7 +2,7 @@ import { PushNotification, PushNotificationClient } from "./../../api/platform";
 import { computed, ComputedRef, ref, onUnmounted, inject } from "vue";
 import * as _ from "lodash-es";
 import { AuthProviderKey } from "../../../injection-keys";
-import { PlatformAuthProvider } from "../../providers/platform-auth-provider";
+import { shouldEnablePlatformFeatures } from "../../providers/auth-provider-utils";
 
 const notificationsClient = new PushNotificationClient();
 
@@ -33,7 +33,7 @@ let subscriberCounter = 0;
 export function useNotifications(notifyType?: string | string[]): INotifications {
   // Check if we're using a custom auth provider
   const authProvider = inject(AuthProviderKey);
-  const isPlatformProvider = authProvider instanceof PlatformAuthProvider;
+  const isPlatformProvider = shouldEnablePlatformFeatures(authProvider);
 
   if (notifyType) {
     const types = Array.isArray(notifyType) ? notifyType : [notifyType];

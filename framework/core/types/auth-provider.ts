@@ -9,6 +9,7 @@ import {
   IUserDetail,
   ISecurityResult,
   ILoginType,
+  IIdentityResult,
 } from "../api/platform";
 import { RequestPasswordResult } from "./index";
 
@@ -34,7 +35,7 @@ export interface IAuthProvider {
 
   // Password management methods
   validateToken(userId: string, token: string): Promise<boolean>;
-  validatePassword(password: string): Promise<IdentityResult>;
+  validatePassword(password: string): Promise<IIdentityResult>;
   resetPasswordByToken(userId: string, password: string, token: string): Promise<ISecurityResult>;
   requestPasswordReset(loginOrEmail: string): Promise<RequestPasswordResult>;
   changeUserPassword(oldPassword: string, newPassword: string): Promise<ISecurityResult | undefined>;

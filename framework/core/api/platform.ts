@@ -6931,7 +6931,7 @@ export interface IIdentityError {
 
 export class IdentityResult implements IIdentityResult {
   readonly succeeded?: boolean;
-  readonly errors?: IdentityError[] | undefined;
+  readonly errors?: IIdentityError[] | undefined;
 
   constructor(data?: IIdentityResult) {
     if (data) {

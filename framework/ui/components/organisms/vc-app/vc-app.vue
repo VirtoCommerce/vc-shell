@@ -64,7 +64,7 @@ import { DynamicModulesKey, EMBEDDED_MODE, AuthProviderKey } from "../../../../i
 import { provideMenuService } from "../../../../core/composables/useMenuService";
 import { provideAppBarMobileButtonsService } from "../../../../core/composables/useAppBarMobileButtons";
 import { useUserManagement } from "../../../../core/composables/useUserManagement";
-import { PlatformAuthProvider } from "../../../../core/providers/platform-auth-provider";
+import { shouldEnablePlatformFeatures } from "../../../../core/providers/auth-provider-utils";
 
 export interface Props {
   isReady: boolean;
@@ -107,7 +107,7 @@ const shouldDisableAppSwitcher = computed(() => {
   if (props.disableAppSwitcher) return true;
 
   // If using custom auth provider, disable platform-specific features
-  if (authProvider && !(authProvider instanceof PlatformAuthProvider)) {
+  if (!shouldEnablePlatformFeatures(authProvider)) {
     console.log("[VcApp] App Switcher disabled - custom authentication provider detected");
     return true;
   }

@@ -6,7 +6,7 @@ import { useUserManagement } from "../../composables/useUserManagement";
 import { useCypressSignalRMock } from "cypress-signalr-mock";
 import { AuthProviderKey } from "../../../injection-keys";
 import { IAuthProvider } from "../../types/auth-provider";
-import { PlatformAuthProvider } from "../../providers/platform-auth-provider";
+import { shouldEnablePlatformFeatures } from "../../providers/auth-provider-utils";
 
 const { addNotification } = useNotifications();
 const currentCreator = ref<string | undefined>();
@@ -42,8 +42,8 @@ export const signalR = {
 
     console.log("[SignalR] Auth provider: ", authProvider);
 
-    // Check if this is a platform provider using instanceof
-    if (authProvider && !(authProvider instanceof PlatformAuthProvider)) {
+    // Check if platform features should be enabled
+    if (!shouldEnablePlatformFeatures(authProvider)) {
       console.log("[SignalR] Skipping initialization - custom authentication provider detected");
       console.log("[SignalR] SignalR is only available with platform authentication");
 

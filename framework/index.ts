@@ -424,3 +424,10 @@ export * from "./shared";
 export { PlatformAuthProvider } from "./core/providers/platform-auth-provider";
 export { authProviderManager } from "./core/providers/auth-provider-manager";
 export type { IAuthProvider } from "./core/types/auth-provider";
+
+// Export auth provider utilities for centralized checks
+export {
+  isPlatformProvider,
+  shouldEnablePlatformFeatures,
+  getSafeProvider
+} from "./core/providers/auth-provider-utils";

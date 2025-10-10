@@ -5,7 +5,7 @@ import { notification } from "./../../../notifications";
 import { i18n } from "../../../../../core/plugins";
 import { AuthProviderKey } from "../../../../../injection-keys";
 import { IAuthProvider } from "../../../../../core/types/auth-provider";
-import { PlatformAuthProvider } from "../../../../../core/providers/platform-auth-provider";
+import { shouldEnablePlatformFeatures } from "../../../../../core/providers/auth-provider-utils";
 
 interface IUseAppSwitcher {
   readonly appsList: Ref<AppDescriptor[]>;
@@ -27,7 +27,7 @@ export function useAppSwitcher(): IUseAppSwitcher {
 
   async function getApps() {
     // Skip loading apps for custom authentication providers
-    if (authProvider && !(authProvider instanceof PlatformAuthProvider)) {
+    if (!shouldEnablePlatformFeatures(authProvider)) {
       console.log("[useAppSwitcher] Skipping getApps - custom authentication provider detected");
       appsList.value = []; // Ensure empty list for custom providers
       return;

@@ -61,35 +61,33 @@ interface VersionChoice {
 }
 
 export function getVersionChoices(currentVersion: string): VersionChoice[] {
-  function inc(i: ReleaseType, identifier?: string) {
-    if (i === "prerelease" && identifier === "alpha") {
-      if (currentVersion.includes("-alpha")) {
-        const [base, pre] = currentVersion.split("-alpha.");
-        const nextPre = parseInt(pre) + 1;
-        return `${base}-alpha.${nextPre}`;
-      }
-      const baseVersion = semverInc(currentVersion, "patch");
-      return `${baseVersion}-alpha.0`;
+  // Yarn supports only standard semver strategies: major, minor, patch, prerelease
+  // For prerelease versions, we need to handle them properly
+  function getNextVersion(strategy: ReleaseType, identifier?: string): string {
+    if (strategy === "prerelease") {
+      // For prerelease, use standard semver prerelease without custom identifiers
+      // This ensures yarn compatibility
+      return semverInc(currentVersion, "prerelease") || currentVersion;
     }
-    return semverInc(currentVersion, i);
+    return semverInc(currentVersion, strategy) || currentVersion;
   }
 
   const versionChoices: VersionChoice[] = [
     {
-      title: "next",
-      value: inc("patch"),
-    },
-    {
-      title: "alpha",
-      value: inc("prerelease", "alpha"),
+      title: "patch",
+      value: getNextVersion("patch"),
     },
     {
       title: "minor",
-      value: inc("minor"),
+      value: getNextVersion("minor"),
     },
     {
       title: "major",
-      value: inc("major"),
+      value: getNextVersion("major"),
+    },
+    {
+      title: "prerelease",
+      value: getNextVersion("prerelease"),
     },
     {
       value: "custom",

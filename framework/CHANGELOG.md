@@ -1,6 +1,15 @@
 ## [1.1.91-0](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.91-alpha.0...v1.1.91-0) (2025-10-10)
 
 
+### Features
+
+* update auth providers and fix tsx path in pre-commit hook ([a92d957](https://github.com/VirtoCommerce/vc-shell/commit/a92d957e2b0a0be177519e7256af9279d3419713))
+
+
+
+## [1.1.91-0](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.91-alpha.0...v1.1.91-0) (2025-10-10)
+
+
 
 ## [1.1.91-alpha.0](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.90...v1.1.91-alpha.0) (2025-10-10)
 

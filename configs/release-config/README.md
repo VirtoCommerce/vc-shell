@@ -4,10 +4,11 @@ A utility package for managing releases in VC-Shell projects.
 
 ## Features
 
-- Versioning with [semver](https://semver.org/) support
+- Versioning with [semver](https://semver.org/) support and yarn compatibility
 - Changelog generation with [conventional-changelog](https://github.com/conventional-changelog/conventional-changelog)
 - Git tagging and commits
 - Support for npm distribution tags (`latest`, `next`, `beta`, `alpha`, etc.)
+- Yarn-compatible version strategies: `major`, `minor`, `patch`, `prerelease`
 
 ## Usage
 

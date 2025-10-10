@@ -61,9 +61,13 @@ export const release = async ({
   }
 
   // Set default npm tag based on version suffix
-  const prereleaseMatch = targetVersion.match(/-([a-zA-Z]+)(?:\.(\d+))?$/);
-  if (prereleaseMatch && !args.tag) {
-    args.tag = prereleaseMatch[1]; // extract prerelease type (next, alpha, beta)
+  const parsedVersion = parse(targetVersion);
+  if (parsedVersion && parsedVersion.prerelease.length > 0 && !args.tag) {
+    // Extract prerelease identifier (alpha, beta, rc, etc.)
+    const prereleaseId = parsedVersion.prerelease[0];
+    if (typeof prereleaseId === "string") {
+      args.tag = prereleaseId;
+    }
   }
 
   // Ask for npm distribution tag if not already set
@@ -91,49 +95,6 @@ export const release = async ({
       args.tag = res.customTag;
     } else if (npmTag !== "latest") {
       args.tag = npmTag;
-    }
-  }
-
-  // Modify version based on selected npm tag if necessary
-  if (args.tag && args.tag !== "latest") {
-    const parsedVersion = parse(targetVersion);
-    if (parsedVersion) {
-      // Check if version needs updating
-      const needsUpdate = !targetVersion.includes(`-${args.tag}`);
-
-      if (needsUpdate) {
-        // For non-latest tags, prepare new version
-        let newVersion;
-        let prereleaseNum = 0;
-
-        // If the version is already a prerelease, just change the suffix
-        if (parsedVersion.prerelease.length > 0) {
-          // Keep prerelease number if applicable
-          if (parsedVersion.prerelease.length > 1 && typeof parsedVersion.prerelease[1] === "number") {
-            prereleaseNum = parsedVersion.prerelease[1];
-          }
-
-          // Replace existing prerelease tag
-          const majorMinorPatch = `${parsedVersion.major}.${parsedVersion.minor}.${parsedVersion.patch}`;
-          newVersion = `${majorMinorPatch}-${args.tag}`;
-        } else {
-          // For stable versions, bump minor and add prerelease tag
-          const minorBumped = semverInc(targetVersion, "minor");
-          newVersion = `${minorBumped}-${args.tag}`;
-        }
-
-        // Ask if user wants to add prerelease number
-        const { usePreNum }: { usePreNum: boolean } = await prompts({
-          type: "confirm",
-          name: "usePreNum",
-          message: `Add prerelease number to version? (e.g. ${newVersion}.${prereleaseNum})`,
-          initial: true,
-        });
-
-        if (usePreNum) {
-          newVersion = `${newVersion}.${prereleaseNum}`;
-        }
-      }
     }
   }
 

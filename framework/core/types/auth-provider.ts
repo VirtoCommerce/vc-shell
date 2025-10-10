@@ -1,10 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ComputedRef } from "vue";
 import {
-  UserDetail,
-  SecurityResult,
-  IdentityResult,
-  LoginType,
   SignInResult,
   IUserDetail,
   ISecurityResult,
@@ -18,7 +14,6 @@ import { RequestPasswordResult } from "./index";
  * Allows custom authentication implementations while maintaining compatibility with all framework pages
  */
 export interface IAuthProvider {
-
   // Core properties
   user: ComputedRef<IUserDetail | undefined>;
   loading: ComputedRef<boolean>;

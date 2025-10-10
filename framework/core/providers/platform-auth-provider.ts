@@ -11,6 +11,8 @@ import {
   LoginType,
   LoginRequest,
   SignInResult,
+  IIdentityResult,
+  ISecurityResult,
 } from "../api/platform";
 import { RequestPasswordResult } from "../types";
 import { useExternalProvider } from "../../shared/components/sign-in/useExternalProvider";
@@ -72,11 +74,11 @@ export class PlatformAuthProvider implements IAuthProvider {
     return result;
   }
 
-  async validatePassword(password: string): Promise<IdentityResult> {
-    return this.securityClient.validatePassword(password);
+  async validatePassword(password: string): Promise<IIdentityResult> {
+    return this.securityClient.validatePassword(password) as Promise<IIdentityResult>;
   }
 
-  async resetPasswordByToken(userId: string, password: string, token: string): Promise<SecurityResult> {
+  async resetPasswordByToken(userId: string, password: string, token: string): Promise<ISecurityResult> {
     return this.securityClient.resetPasswordByToken(userId, {
       newPassword: password,
       token,

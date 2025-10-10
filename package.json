@@ -1,6 +1,6 @@
 {
   "name": "@vc-shell/root",
-  "version": "1.1.91-0",
+  "version": "1.1.91-alpha.0",
   "private": true,
   "repository": "https://github.com/VirtoCommerce/vc-shell",
   "scripts": {
@@ -18,9 +18,9 @@
     "generate:api-client": "yarn workspace @vc-shell/framework exec cross-env api-client-generator --APP_PLATFORM_MODULES='[VirtoCommerce.Platform]' --APP_API_CLIENT_DIRECTORY=./core/api/ --SKIP_BUILD=true",
     "storybook-build": "cross-env APP_ENV=production shx rm -rf storybook-static && storybook build",
     "storybook-serve": "storybook dev -p 6006 --no-open",
-    "release": "tsx scripts/release.ts",
+    "release": "tsx scripts/release.ts --dry",
     "storybook-compress": "vite-node --mode production scripts/compress-storybook.ts --",
-    "check-locales": "tsx framework/scripts/check-locales.mts",
+    "check-locales": "npx tsx framework/scripts/check-locales.mts",
     "prepare": "husky install",
     "pre-commit": "yarn check-locales"
   },

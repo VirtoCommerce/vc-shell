@@ -26,6 +26,7 @@ import {
   IdentityResult,
   LoginType,
   SignInResult,
+  IIdentityResult,
 } from "../api/platform";
 import { RequestPasswordResult } from "../types";
 import { IAuthProvider } from "../types/auth-provider";
@@ -121,10 +122,10 @@ export class CustomAuthProvider implements IAuthProvider {
     return false;
   }
 
-  async validatePassword(password: string): Promise<IdentityResult> {
+  async validatePassword(password: string): Promise<IIdentityResult> {
     // Implement your custom password validation logic
     console.debug("[CustomAuthProvider] Validating password...");
-    return { succeeded: true } as IdentityResult;
+    return { succeeded: true } as IIdentityResult;
   }
 
   async resetPasswordByToken(

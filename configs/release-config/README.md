@@ -36,16 +36,27 @@ release({
 
 ## How It Works
 
-1. Lerna analyzes git history using conventional commits
-2. Determines which packages changed
-3. Suggests version bump (patch/minor/major/prerelease)
-4. Updates all package versions (fixed versioning, including root)
-5. Generates CHANGELOG.md for each package
-6. Synchronizes internal dependencies automatically
-7. Updates @vc-shell/* dependencies in apps/ directory
-8. Creates git commit and tag
-9. Updates npmTag field in package.json
-10. Enhances changelogs for packages without changes
+**Pre-version:**
+1. User prompts - select release type (automatic/prerelease/graduate/custom)
+2. User prompts - select npm tag (latest/next/alpha/beta/rc)
+3. User confirmation
+
+**Version bump:**
+4. Lerna analyzes git history using conventional commits
+5. Determines which packages changed
+6. Updates all package versions (fixed versioning)
+7. Generates CHANGELOG.md for each package
+8. Synchronizes internal dependencies automatically
+9. Creates git commit and tag
+
+**Post-version:**
+10. Updates root package.json version to match framework
+11. **Runs custom hooks with new version** (updateBoilerplatePkgVersions, updateAppsDependencies)
+12. Updates @vc-shell/* dependencies in apps/ directory ⭐
+13. Enhances changelogs for packages without changes
+14. Generates root CHANGELOG.md with package grouping
+15. Updates npmTag field in package.json
+16. Amends git commit with all changes
 
 ## Commands
 

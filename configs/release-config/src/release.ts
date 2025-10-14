@@ -224,7 +224,13 @@ export const release = async ({
       sync("git", ["add", "-A"], { stdio: "inherit" });
       sync("git", ["commit", "--amend", "--no-edit", "--no-verify"], { stdio: "inherit" });
       sync("git", ["tag", "-f", tag], { stdio: "inherit" });
-      console.log(chalk.green("\n✅ Updated changelogs and package.json\n"));
+      
+      // Push updated commit and tag to remote
+      console.log(chalk.cyan("\nPushing changes to remote...\n"));
+      sync("git", ["push", "origin", "HEAD", "--force-with-lease"], { stdio: "inherit" });
+      sync("git", ["push", "origin", tag, "--force"], { stdio: "inherit" });
+      
+      console.log(chalk.green("\n✅ Updated changelogs, package.json, and pushed to remote\n"));
     }
   }
 

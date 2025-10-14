@@ -1,3 +1,4 @@
+# CHANGELOG
 
 ## [1.1.91-alpha.4](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.91-alpha.3...v1.1.91-alpha.4) (2025-10-14)
 

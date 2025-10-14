@@ -424,32 +424,44 @@ async function generateRootChangelog(packages: string[]) {
   // Build content for each version
   for (const version of allVersions) {
     const changes = versionChanges[version];
-    const hasAnyChanges = Object.values(changes).some((content) => content && content.trim().length > 0);
+
+    // Check if version has real changes (not just "Version bump only")
+    const hasRealChanges = Object.values(changes).some((content) => {
+      if (!content || !content.trim()) return false;
+      // Exclude "Version bump only" notes
+      const withoutNotes = content.replace(/\*\*Note:\*\*\s+Version bump only[^\n]*/gi, "").trim();
+      return withoutNotes.length > 0;
+    });
 
     // Use the original header from package changelogs (with links and dates)
     const versionHeader = versionHeaders[version] || version;
     rootContent += `## ${versionHeader}\n\n`;
 
-    if (!hasAnyChanges) {
+    if (!hasRealChanges) {
       rootContent += `**Note:** Version bump only for package\n\n`;
       continue;
     }
 
-    // Add changes grouped by package
-    let versionHasContent = false;
+    // Add changes grouped by package (only packages with real changes)
+    let addedAnyPackage = false;
     for (const pkgPath of packages) {
       if (pkgPath === ".") continue;
       const displayName = packageDisplayNames[pkgPath] || pkgPath;
       const pkgContent = changes[displayName];
 
       if (pkgContent && pkgContent.trim()) {
-        versionHasContent = true;
-        rootContent += `### ${displayName}\n\n`;
-        rootContent += `${pkgContent}\n\n`;
+        // Check if package has real changes (not just "Version bump only")
+        const withoutNotes = pkgContent.replace(/\*\*Note:\*\*\s+Version bump only[^\n]*/gi, "").trim();
+        if (withoutNotes.length > 0) {
+          addedAnyPackage = true;
+          rootContent += `### ${displayName}\n\n`;
+          rootContent += `${pkgContent}\n\n`;
+        }
       }
     }
 
-    if (!versionHasContent) {
+    // This should not happen if hasRealChanges is true, but just in case
+    if (!addedAnyPackage) {
       rootContent += `**Note:** Version bump only for package\n\n`;
     }
   }

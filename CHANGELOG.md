@@ -1,21 +1,9 @@
-# CHANGELOG
-
-All notable changes to this monorepo will be documented in this file.
-
-## 1.1.91-alpha.4
+## [1.1.91-alpha.4](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.91-alpha.3...v1.1.91-alpha.4) (2025-10-14)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **locales:** add newline for better readability in localization check output ([ee8c2fd](https://github.com/VirtoCommerce/vc-shell/commit/ee8c2fd873f2c4a0a8c4d574c2c8b715215fbe4d))
-
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package @vc-shell/api-client-generator
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package @vc-shell/create-vc-app
 
 ### Release Config (@vc-shell/release-config)
 
@@ -23,68 +11,18 @@ All notable changes to this monorepo will be documented in this file.
 - **release-config:** clean up comments and formatting in release.ts for improved clarity ([2a1130d](https://github.com/VirtoCommerce/vc-shell/commit/2a1130d7cc89a69069ca959f0647fb84ce1924c2))
 - **release:** disable Lerna push to avoid double CI runs ([78aef0a](https://github.com/VirtoCommerce/vc-shell/commit/78aef0aebd10c5089df0cb96d35591d57bdbcee6))
 
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package @vc-shell/config-generator
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package @vc-shell/ts-config
-
-## 1.1.91-alpha.3
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package @vc-shell/framework
-
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package @vc-shell/api-client-generator
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package @vc-shell/create-vc-app
+## [1.1.91-alpha.3](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.91-alpha.2...v1.1.91-alpha.3) (2025-10-14)
 
 ### Release Config (@vc-shell/release-config)
 
 ### Bug Fixes
 - **release:** add automatic push after amend to sync commits and tags ([0aa84c4](https://github.com/VirtoCommerce/vc-shell/commit/0aa84c4f4791533f3423f49c06910becf224b1a4))
 
-### Vite Config (@vc-shell/config-generator)
+## [1.1.91-alpha.2](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.91-alpha.1...v1.1.91-alpha.2) (2025-10-14)
 
-**Note:** Version bump only for package @vc-shell/config-generator
+**Note:** Version bump only for package
 
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package @vc-shell/ts-config
-
-## 1.1.91-alpha.2
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package @vc-shell/framework
-
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package @vc-shell/api-client-generator
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package @vc-shell/create-vc-app
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package @vc-shell/release-config
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package @vc-shell/config-generator
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package @vc-shell/ts-config
-
-## 1.1.91-alpha.1
+## [1.1.91-alpha.1](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.90...v1.1.91-alpha.1) (2025-10-14)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -103,10 +41,6 @@ All notable changes to this monorepo will be documented in this file.
 ### Features
 - update auth providers and fix tsx path in pre-commit hook ([a92d957](https://github.com/VirtoCommerce/vc-shell/commit/a92d957e2b0a0be177519e7256af9279d3419713))
 
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package @vc-shell/release-config
-
 ### Vite Config (@vc-shell/config-generator)
 
 ### Features
@@ -117,7 +51,7 @@ All notable changes to this monorepo will be documented in this file.
 ### Features
 - update auth providers and fix tsx path in pre-commit hook ([a92d957](https://github.com/VirtoCommerce/vc-shell/commit/a92d957e2b0a0be177519e7256af9279d3419713))
 
-## 1.1.91-alpha.0
+## [1.1.91-alpha.0](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.90...v1.1.91-alpha.0) (2025-10-14)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -135,10 +69,6 @@ All notable changes to this monorepo will be documented in this file.
 ### Features
 - update auth providers and fix tsx path in pre-commit hook ([a92d957](https://github.com/VirtoCommerce/vc-shell/commit/a92d957e2b0a0be177519e7256af9279d3419713))
 
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
 ### Vite Config (@vc-shell/config-generator)
 
 ### Features
@@ -149,11 +79,7 @@ All notable changes to this monorepo will be documented in this file.
 ### Features
 - update auth providers and fix tsx path in pre-commit hook ([a92d957](https://github.com/VirtoCommerce/vc-shell/commit/a92d957e2b0a0be177519e7256af9279d3419713))
 
-## 1.1.90
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package
+## [1.1.90](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.89...v1.1.90) (2025-10-08)
 
 ### API Client Generator (@vc-shell/api-client-generator)
 
@@ -162,77 +88,21 @@ All notable changes to this monorepo will be documented in this file.
 ### Bug Fixes
 - **api-client:** update error message to reflect dynamic .NET Core version requirement ([bbfbaa0](https://github.com/VirtoCommerce/vc-shell/commit/bbfbaa0df92a91e56b36ca48d449d258c90c88bc))
 
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.1.89
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package
+## [1.1.89](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.88...v1.1.89) (2025-10-08)
 
 ### API Client Generator (@vc-shell/api-client-generator)
 
 ### Bug Fixes
 - **api-client:** update runtime configuration and enhance error handling in API client generation process ([c9a762a](https://github.com/VirtoCommerce/vc-shell/commit/c9a762ac4e4d120d66b0ab3a16ebfe9078f33fdd))
 
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.1.88
+## [1.1.88](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.87...v1.1.88) (2025-10-07)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **vc-dynamic-property:** add color type dictionary select ([4a21112](https://github.com/VirtoCommerce/vc-shell/commit/4a211124acd4b66d0f4b9f37fc4cb33c70b69a5d))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.1.87
+## [1.1.87](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.86...v1.1.87) (2025-10-06)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -244,130 +114,32 @@ All notable changes to this monorepo will be documented in this file.
 ### Bug Fixes
 - **api-client:** enhance module name parsing and export generation for improved flexibility and compatibility ([37d3e20](https://github.com/VirtoCommerce/vc-shell/commit/37d3e20831e6931d4fcc93c7127a53b7af2d7540))
 
-### Create VC App (@vc-shell/create-vc-app)
+## [1.1.86](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.85...v1.1.86) (2025-10-06)
 
 **Note:** Version bump only for package
 
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.1.86
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package
-
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.1.85
+## [1.1.85](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.84...v1.1.85) (2025-10-03)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **useMenuExpanded:** correct app name extraction logic for dynamic storage key generation ([3cdaeab](https://github.com/VirtoCommerce/vc-shell/commit/3cdaeabf7bf1192a641cb5150a9a8b5b8f34efcf))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.1.84-alpha.0
+## [1.1.84-alpha.0](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.83...v1.1.84-alpha.0) (2025-09-30)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **vc-select:** add fallback visibility check for iframe support in dropdown component ([dd3fc7d](https://github.com/VirtoCommerce/vc-shell/commit/dd3fc7d498c1a0d694804332c3fac3513bb4e78f))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.1.84
+## [1.1.84](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.84-alpha.0...v1.1.84) (2025-09-30)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **vc-select:** enhance option value retrieval to support primitive types and improve label filtering ([90c9530](https://github.com/VirtoCommerce/vc-shell/commit/90c9530c66e31df7216db9b873fba275c566d8f7))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.1.83-alpha.0
+## [1.1.83-alpha.0](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.82...v1.1.83-alpha.0) (2025-09-24)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -375,27 +147,7 @@ All notable changes to this monorepo will be documented in this file.
 - **extension-points:** introduce new extension system with composables for slot management and data exchange ([b427cd4](https://github.com/VirtoCommerce/vc-shell/commit/b427cd4a141d4dc39c454b12259b2a8c566179b9))
 - **useModificationTracker:** add pristineValue reference to track original state ([adaf67d](https://github.com/VirtoCommerce/vc-shell/commit/adaf67d34ceac0b7b490c2906a7b3f25b57c32e1))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.1.83
+## [1.1.83](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.83-alpha.0...v1.1.83) (2025-09-30)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -407,107 +159,27 @@ All notable changes to this monorepo will be documented in this file.
 - **loader:** enhance version compatibility checks to include prerelease versions ([d1af321](https://github.com/VirtoCommerce/vc-shell/commit/d1af32163d34e4540b49df5d0ed9de71cc5ef0c2))
 - **vc-select:** update model value type definition to support multiple option formats ([92c70f0](https://github.com/VirtoCommerce/vc-shell/commit/92c70f04448ab1de015cd68c2dd782355a40d9fe))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
 ### Create VC App (@vc-shell/create-vc-app)
 
 ### Features
 - **create-vc-app:** add type definitions for internationalization properties in Vue components ([c215a55](https://github.com/VirtoCommerce/vc-shell/commit/c215a558a113dfc48b53667a6f32ab2537f311f0))
 
-### Release Config (@vc-shell/release-config)
+## [1.1.82](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.81...v1.1.82) (2025-09-23)
 
 **Note:** Version bump only for package
 
-### Vite Config (@vc-shell/config-generator)
+## [1.1.81](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.80...v1.1.81) (2025-09-23)
 
 **Note:** Version bump only for package
 
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.1.82
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package
-
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.1.81
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package
-
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.1.80
+## [1.1.80](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.79...v1.1.80) (2025-09-22)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **vc-editor:** export ToolbarNames type for better accessibility in toolbar components ([e24ba37](https://github.com/VirtoCommerce/vc-shell/commit/e24ba37bd33059dfbe7a8d285c75e4e9724ca329))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.1.79
+## [1.1.79](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.78...v1.1.79) (2025-09-18)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -515,27 +187,7 @@ All notable changes to this monorepo will be documented in this file.
 - **composables:** add useBlade composable for accessing the current blade instance ([e1d1c59](https://github.com/VirtoCommerce/vc-shell/commit/e1d1c591e3472c38eb459f878f7a69f5e6df8f4a))
 - **vc-field:** update copy button icon dynamically on copy action ([fe47e62](https://github.com/VirtoCommerce/vc-shell/commit/fe47e62a591df136800f4e5e8872e5392f8fb7df))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.1.78
+## [1.1.78](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.77...v1.1.78) (2025-09-12)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -544,321 +196,77 @@ All notable changes to this monorepo will be documented in this file.
 ### Bug Fixes
 - **vc-radio-button:** prevent radio button from shrinking by adding flex-shrink property ([276bd6a](https://github.com/VirtoCommerce/vc-shell/commit/276bd6ac81b74b3d93d8652d75e88b32fae10c38))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
 ### Create VC App (@vc-shell/create-vc-app)
 
 ### Features
 - **locales:** add dashboard menu translation to English locale ([710ea73](https://github.com/VirtoCommerce/vc-shell/commit/710ea732a7fa79ad84f637634e3ca8f0c77bb097))
 
-### Release Config (@vc-shell/release-config)
+## [1.1.77](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.76...v1.1.77) (2025-09-11)
 
 **Note:** Version bump only for package
 
-### Vite Config (@vc-shell/config-generator)
+## [1.1.76](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.75...v1.1.76) (2025-09-10)
 
 **Note:** Version bump only for package
 
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.1.77
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package
-
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.1.76
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package
-
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.1.75
+## [1.1.75](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.74...v1.1.75) (2025-09-10)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **vc-editor:** enhance editor with custom toolbar buttons and font size selector ([a4b0e6e](https://github.com/VirtoCommerce/vc-shell/commit/a4b0e6eac49880b58d7373c134cb42151f4df4a6))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.1.74
+## [1.1.74](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.73...v1.1.74) (2025-09-08)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **vc-input-dropdown:** conditionally render button based on options availability ([9182d1f](https://github.com/VirtoCommerce/vc-shell/commit/9182d1f50356df76bfb0b6e2840a73d3d4537a6e))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.1.73
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package
-
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
+## [1.1.73](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.72...v1.1.73) (2025-09-04)
 
 ### Create VC App (@vc-shell/create-vc-app)
 
 ### Bug Fixes
 - **create-vc-app:** integrate bootstrap function into main application file ([3eded62](https://github.com/VirtoCommerce/vc-shell/commit/3eded6272e424d8599ab14ec25666d8d8ed92557))
 
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.1.72
+## [1.1.72](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.71...v1.1.72) (2025-08-25)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - update max height for generic dropdown ([37abe30](https://github.com/VirtoCommerce/vc-shell/commit/37abe30c5994a622798af3919e70f06aca72d482))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.1.71
+## [1.1.71](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.70...v1.1.71) (2025-08-21)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - update event binding for menu item click in useAppSlots composable ([c45e045](https://github.com/VirtoCommerce/vc-shell/commit/c45e045bb10ffc0603d61f79b6ae2de1f7d36d5a))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.1.70
+## [1.1.70](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.69...v1.1.70) (2025-08-20)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - VCST-3680 embedded mode fixes ([2f6a82f](https://github.com/VirtoCommerce/vc-shell/commit/2f6a82f60b4cbb179f00e36bbbbe59d3fe438dd0))
 
-### API Client Generator (@vc-shell/api-client-generator)
+## [1.1.69](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.68...v1.1.69) (2025-08-13)
 
 **Note:** Version bump only for package
 
-### Create VC App (@vc-shell/create-vc-app)
+## [1.1.68](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.67...v1.1.68) (2025-07-31)
 
 **Note:** Version bump only for package
 
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.1.69
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package
-
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.1.68
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package
-
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.1.67
+## [1.1.67](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.66...v1.1.67) (2025-07-31)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - add !important to width properties for maximized blade component ([aee8edc](https://github.com/VirtoCommerce/vc-shell/commit/aee8edc7d67b534b4a43e5ca2c15875f4a8bb1bf))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.1.66
+## [1.1.66](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.65...v1.1.66) (2025-07-30)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -866,168 +274,36 @@ All notable changes to this monorepo will be documented in this file.
 - **generic-dropdown:** improve height applying ([8a39233](https://github.com/VirtoCommerce/vc-shell/commit/8a3923316f6ae488d08ad0e585d1b417d1eaaa5b))
 - **vc-table:** improve columns sorting, resizing ([fdcac27](https://github.com/VirtoCommerce/vc-shell/commit/fdcac270c342aa76411f153991faf938ca868cf3))
 
-### API Client Generator (@vc-shell/api-client-generator)
+## [1.1.65](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.64...v1.1.65) (2025-07-29)
 
 **Note:** Version bump only for package
 
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.1.65
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package
-
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.1.64
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package
-
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
+## [1.1.64](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.63...v1.1.64) (2025-07-25)
 
 ### Vite Config (@vc-shell/config-generator)
 
 ### Bug Fixes
 - remove intlify and vue-i18n from CSS chunk splitting logic ([a1c14c0](https://github.com/VirtoCommerce/vc-shell/commit/a1c14c0f8eae1126aef6ddcbd146533ac60360a3))
 
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.1.63
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package
-
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
+## [1.1.63](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.62...v1.1.63) (2025-07-25)
 
 ### Vite Config (@vc-shell/config-generator)
 
 ### Bug Fixes
 - **vite-config:** dedupe and externalize vue-i18n ([98c7def](https://github.com/VirtoCommerce/vc-shell/commit/98c7def46db6f21866125946607bbb25c447ebad))
 
-### TypeScript Config (@vc-shell/ts-config)
+## [1.1.62](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.61...v1.1.62) (2025-07-24)
 
 **Note:** Version bump only for package
 
-## 1.1.62
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package
-
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.1.61
+## [1.1.61](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.60...v1.1.61) (2025-07-23)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - add embedded mode support ([647253b](https://github.com/VirtoCommerce/vc-shell/commit/647253be9bcd5c1b347fd1727cfef9810e9d0d5f))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.1.60
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package
-
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
+## [1.1.60](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.59...v1.1.60) (2025-07-17)
 
 ### Create VC App (@vc-shell/create-vc-app)
 
@@ -1035,72 +311,18 @@ All notable changes to this monorepo will be documented in this file.
 - **create-vc-ap):** updated sample and base layout ([9ec1677](https://github.com/VirtoCommerce/vc-shell/commit/9ec1677dc52eb99b0238f9e466904185bbfc2acb))
 - **create-vc-app:** implement initial dashboard setup with welcome widget and routing ([d924e71](https://github.com/VirtoCommerce/vc-shell/commit/d924e715467f766b88bd746ac31a7a2b4dec168f))
 
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.1.59
+## [1.1.59](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.58...v1.1.59) (2025-07-11)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **icon-components:** revert, material symbols size optimization ([c4b8771](https://github.com/VirtoCommerce/vc-shell/commit/c4b87712503d6bca3edf94efecd2585d7643472c))
 
-### API Client Generator (@vc-shell/api-client-generator)
+## [1.1.58](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.57...v1.1.58) (2025-07-10)
 
 **Note:** Version bump only for package
 
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.1.58
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package
-
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.1.57
+## [1.1.57](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.56...v1.1.57) (2025-07-10)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -1111,54 +333,14 @@ All notable changes to this monorepo will be documented in this file.
 - **vc-editor:** update disabled text and background colors ([0ee79c5](https://github.com/VirtoCommerce/vc-shell/commit/0ee79c59bcc631ae5ee8868032dc626ec8fca890))
 - **vc-select:** update modelValue type to support multiple option formats ([1f163a8](https://github.com/VirtoCommerce/vc-shell/commit/1f163a8cc7679d2aa5f5a94db49d79b3f98fe247))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.1.56
+## [1.1.56](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.55...v1.1.56) (2025-07-08)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **vc-editor:** update list styles for unordered and ordered lists in the editor component ([2dd3fc2](https://github.com/VirtoCommerce/vc-shell/commit/2dd3fc22e9fef098c800ebe93c5e3e5f5e760333))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.1.55
+## [1.1.55](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.54...v1.1.55) (2025-07-07)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -1167,266 +349,60 @@ All notable changes to this monorepo will be documented in this file.
 ### Bug Fixes
 - **vc-blade-toolbar:** adjust spacing in 'more' button for improved layout consistency ([2075e5b](https://github.com/VirtoCommerce/vc-shell/commit/2075e5b37b351a89d9aa1a7dde01dd939e76a212))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.1.54
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package
-
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
+## [1.1.54](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.53...v1.1.54) (2025-07-07)
 
 ### Create VC App (@vc-shell/create-vc-app)
 
 ### Features
 - **cli:** enhance CLI argument parsing and validation, add help and version options ([f8508cc](https://github.com/VirtoCommerce/vc-shell/commit/f8508ccac11bce142a03839e44b893520e9546ce))
 
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.1.53
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package
+## [1.1.53](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.52...v1.1.53) (2025-07-04)
 
 ### API Client Generator (@vc-shell/api-client-generator)
 
 ### Bug Fixes
 - **api-client:** validate APP_TYPE_STYLE parameter and enhance error handling in API client generation ([506228d](https://github.com/VirtoCommerce/vc-shell/commit/506228d19deb14ba3d4f17e3180130395d001278))
 
-### Create VC App (@vc-shell/create-vc-app)
+## [1.1.52](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.51...v1.1.52) (2025-07-02)
 
 **Note:** Version bump only for package
 
-### Release Config (@vc-shell/release-config)
+## [1.1.51](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.50...v1.1.51) (2025-07-02)
 
 **Note:** Version bump only for package
 
-### Vite Config (@vc-shell/config-generator)
+## [1.1.50](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.49...v1.1.50) (2025-07-02)
 
 **Note:** Version bump only for package
 
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.1.52
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package
-
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.1.51
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package
-
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.1.50
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package
-
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.1.49
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package
-
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
+## [1.1.49](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.48...v1.1.49) (2025-07-02)
 
 ### Vite Config (@vc-shell/config-generator)
 
 ### Bug Fixes
 - **vite-config:** correct path for framework CSS in application configuration ([95d9a60](https://github.com/VirtoCommerce/vc-shell/commit/95d9a6083072fdc953b09f44092d8f0d594a1c6a))
 
-### TypeScript Config (@vc-shell/ts-config)
+## [1.1.48](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.47...v1.1.48) (2025-07-02)
 
 **Note:** Version bump only for package
 
-## 1.1.48
-
-### VC-Shell Framework (@vc-shell/framework)
+## [1.1.47](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.46...v1.1.47) (2025-07-02)
 
 **Note:** Version bump only for package
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.1.47
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package
-
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.1.46
+## [1.1.46](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.45...v1.1.46) (2025-07-02)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **dynamic-module:** enhance UMD name generation and improve logging for dynamic module loading ([8d43f21](https://github.com/VirtoCommerce/vc-shell/commit/8d43f216e6ec3f9f61ab93953f297d80832f9ed7))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
 ### Vite Config (@vc-shell/config-generator)
 
 ### Features
 - **dynamic-module:** enhance UMD name generation and improve logging for dynamic module loading ([8d43f21](https://github.com/VirtoCommerce/vc-shell/commit/8d43f216e6ec3f9f61ab93953f297d80832f9ed7))
 
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.1.45
+## [1.1.45](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.44...v1.1.45) (2025-07-01)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -1435,273 +411,67 @@ All notable changes to this monorepo will be documented in this file.
 - remove icon packs in favor of iconify lib ([983f7fc](https://github.com/VirtoCommerce/vc-shell/commit/983f7fc6252816dc9cafbd2defc7eb5292947b96))
 - **vc-editor:** migrate to Tiptap editor, enhance functionality with new toolbar and button components ([2b77c73](https://github.com/VirtoCommerce/vc-shell/commit/2b77c734cee3bae8c3d01dd50207e9052c298ac8))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
 ### Vite Config (@vc-shell/config-generator)
 
 ### Features
 - **vite-config:** enhansed chunking config ([6e8dde4](https://github.com/VirtoCommerce/vc-shell/commit/6e8dde4c6fc2be14bcf39ffb8f6ac6e75ff609a7))
 
-### TypeScript Config (@vc-shell/ts-config)
+## [1.1.44](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.43...v1.1.44) (2025-06-30)
 
 **Note:** Version bump only for package
 
-## 1.1.44
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package
-
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.1.43
+## [1.1.43](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.42...v1.1.43) (2025-06-27)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **vc-select:** set default value for generic parameter P to undefined ([ed13c91](https://github.com/VirtoCommerce/vc-shell/commit/ed13c91a9f09d799df72baa62d1694c893c0e231))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.1.42
+## [1.1.42](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.41...v1.1.42) (2025-06-27)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **vc-select:** fix generic type ([95d78ac](https://github.com/VirtoCommerce/vc-shell/commit/95d78aca9c2fbd68d3116f24f2e8130236dbc56e))
 
-### API Client Generator (@vc-shell/api-client-generator)
+## [1.1.41](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.40...v1.1.41) (2025-06-27)
 
 **Note:** Version bump only for package
 
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.1.41
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package
-
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.1.40
+## [1.1.40](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.39...v1.1.40) (2025-06-27)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **vc-widget-container:** set default visibility to true when isVisible is undefined ([09775ed](https://github.com/VirtoCommerce/vc-shell/commit/09775eda9f68b620cfec78206289c135dd9ba4cd))
 
-### API Client Generator (@vc-shell/api-client-generator)
+## [1.1.39](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.38...v1.1.39) (2025-06-26)
 
 **Note:** Version bump only for package
 
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.1.39
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package
-
-## 1.1.38
+## [1.1.38](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.37...v1.1.38) (2025-06-25)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **useAsync:** correct payload handling in innerAction call to ensure proper execution ([8c1d238](https://github.com/VirtoCommerce/vc-shell/commit/8c1d2386e34b2f70523e4527f77a387ecc203876))
 
-### API Client Generator (@vc-shell/api-client-generator)
+## [1.1.37](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.342...v1.1.37) (2025-06-25)
 
 **Note:** Version bump only for package
 
-### Create VC App (@vc-shell/create-vc-app)
+## [1.0.342](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.341...v1.0.342) (2025-04-29)
 
 **Note:** Version bump only for package
 
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.1.37
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package
-
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.342
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package
-
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.341
+## [1.0.341](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.340...v1.0.341) (2025-03-11)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **global style:** update base styles with Roboto font and tailwind configurations ([51722bf](https://github.com/VirtoCommerce/vc-shell/commit/51722bff7933816d2cbab9fecb7a7c05fcb8d2d3))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.340
+## [1.0.340](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.339...v1.0.340) (2025-02-06)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -1713,53 +483,11 @@ All notable changes to this monorepo will be documented in this file.
 - **login:** improve error handling for incorrect credentials ([d9464d0](https://github.com/VirtoCommerce/vc-shell/commit/d9464d0e824f298800730a433bdc63ff2c1f246f))
 - **vc-table:** prevent potential null reference in table state key ([9b6c2da](https://github.com/VirtoCommerce/vc-shell/commit/9b6c2da2762c6e423557ba44139b0a4ec053dc64))
 
-### API Client Generator (@vc-shell/api-client-generator)
+## [1.0.339](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.338...v1.0.339) (2025-02-05)
 
 **Note:** Version bump only for package
 
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.339
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package
-
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.338
+## [1.0.338](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.337...v1.0.338) (2025-02-05)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -1767,54 +495,14 @@ All notable changes to this monorepo will be documented in this file.
 - **login:** add support for after-form extensions ([6addffd](https://github.com/VirtoCommerce/vc-shell/commit/6addffdc05384cafd360c1f147d227e0691b407c))
 - **modularity:** enhance dynamic module loading and extension support ([309739e](https://github.com/VirtoCommerce/vc-shell/commit/309739eb7aa965530647cc50d4820b5d2e0541f3))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.337
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package
+## [1.0.337](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.336...v1.0.337) (2025-01-29)
 
 ### API Client Generator (@vc-shell/api-client-generator)
 
 ### Bug Fixes
 - **api-client:** correct type export path generation ([40464e9](https://github.com/VirtoCommerce/vc-shell/commit/40464e9d94be6409c8224cc8e90b1a39794b2328))
 
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.336
+## [1.0.336](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.335...v1.0.336) (2025-01-29)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -1823,373 +511,83 @@ All notable changes to this monorepo will be documented in this file.
 ### Bug Fixes
 - **routing:** improve authentication route guard using meta flag ([200b150](https://github.com/VirtoCommerce/vc-shell/commit/200b1501519b0d48f8abd9b062a13e9c2db2d2b9))
 
-### API Client Generator (@vc-shell/api-client-generator)
+## [1.0.335](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.334...v1.0.335) (2025-01-22)
 
 **Note:** Version bump only for package
 
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.335
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package
-
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.334
+## [1.0.334](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.333...v1.0.334) (2025-01-22)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - locale typo fix ([af3e87a](https://github.com/VirtoCommerce/vc-shell/commit/af3e87ab0135816f91961c23cb5c0881720d2c04))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.333
+## [1.0.333](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.332...v1.0.333) (2025-01-21)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **vc-table:** noHeaderCheckbox hide only checkbox ([99f072a](https://github.com/VirtoCommerce/vc-shell/commit/99f072a19e0d8f46fe8a9bc317553591aa360b61))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.332
+## [1.0.332](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.331...v1.0.332) (2025-01-21)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - param clearing fix ([d906aa1](https://github.com/VirtoCommerce/vc-shell/commit/d906aa173cc3d87f8a29460e0654e5b0d41bae72))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.331
+## [1.0.331](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.330...v1.0.331) (2025-01-21)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **vc-table:** noHeaderCheckbox prop ([5447efa](https://github.com/VirtoCommerce/vc-shell/commit/5447efaed36772a9421791aded9e1bbaddeeb892))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.330
+## [1.0.330](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.329...v1.0.330) (2024-12-19)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **navigation:** param reset fix ([1ff50cc](https://github.com/VirtoCommerce/vc-shell/commit/1ff50ccd22b09263799ebf8741132eb379b396b0))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.329
+## [1.0.329](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.328...v1.0.329) (2024-12-04)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - vc-1504 blade error content copy ([bba7a11](https://github.com/VirtoCommerce/vc-shell/commit/bba7a116ac3b23c40b6157de1fc01fc41b09adbd))
 
-### API Client Generator (@vc-shell/api-client-generator)
+## [1.0.328](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.327...v1.0.328) (2024-11-14)
 
 **Note:** Version bump only for package
 
-### Create VC App (@vc-shell/create-vc-app)
+## [1.0.327](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.326...v1.0.327) (2024-11-12)
 
 **Note:** Version bump only for package
 
-### Release Config (@vc-shell/release-config)
+## [1.0.326](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.325...v1.0.326) (2024-11-12)
 
 **Note:** Version bump only for package
 
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.328
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package
-
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.327
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package
-
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.326
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package
-
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.325
+## [1.0.325](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.324...v1.0.325) (2024-11-08)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **core:** sso fixes ([decbec2](https://github.com/VirtoCommerce/vc-shell/commit/decbec29ae48deca6183e8f92e1155f5faced943))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.324
+## [1.0.324](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.323...v1.0.324) (2024-11-06)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **core:** dynamic loader fix ([503408c](https://github.com/VirtoCommerce/vc-shell/commit/503408c68852d2660b6ecaf06f0b818ece474d69))
 
-### API Client Generator (@vc-shell/api-client-generator)
+## [1.0.323](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.322...v1.0.323) (2024-11-05)
 
 **Note:** Version bump only for package
 
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.323
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package
-
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.322
+## [1.0.322](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.321...v1.0.322) (2024-11-05)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -2202,50 +600,14 @@ All notable changes to this monorepo will be documented in this file.
 ### Features
 - **api-client:** skip build arg ([f67a69f](https://github.com/VirtoCommerce/vc-shell/commit/f67a69fc0b09129a5b2e7ec51039bcc2ba435ea1))
 
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.321
+## [1.0.321](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.320...v1.0.321) (2024-10-23)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **shared:** clear param fix ([eeca977](https://github.com/VirtoCommerce/vc-shell/commit/eeca97759c2d5e5de91c85d24a71795739cf7336))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.320
+## [1.0.320](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.319...v1.0.320) (2024-10-21)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -2255,135 +617,35 @@ All notable changes to this monorepo will be documented in this file.
 - **dynamic:** multilanguage selector color ([83afdd3](https://github.com/VirtoCommerce/vc-shell/commit/83afdd3a29f9b0d33f4491df3816c58ee5208bbe))
 - **ui:** vc-blade action 50% header width ([611f8f4](https://github.com/VirtoCommerce/vc-shell/commit/611f8f48fda9a59228cfd7d4c29dbaf68c0d2443))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.319
+## [1.0.319](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.318...v1.0.319) (2024-10-18)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **navigation:** fix param ([2e07a2d](https://github.com/VirtoCommerce/vc-shell/commit/2e07a2d6c5343b1ad3b2efc858d9d86ef1db316c))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.318
+## [1.0.318](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.317...v1.0.318) (2024-10-18)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - refactored multilanguage selector ([fef81c0](https://github.com/VirtoCommerce/vc-shell/commit/fef81c0d647465a3c81b667fc2df54ffce6d2f84))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.317
+## [1.0.317](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.316...v1.0.317) (2024-10-17)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **dynamic:** added support of loader method ([2166d1b](https://github.com/VirtoCommerce/vc-shell/commit/2166d1b55fbed6b18653d1fa012fa5d1319c777f))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.316
+## [1.0.316](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.315...v1.0.316) (2024-10-17)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **ui:** vc-multivalue prevent symbols in num/int ([3b83ca5](https://github.com/VirtoCommerce/vc-shell/commit/3b83ca56202fdc1f630e1d8ecd79b621c75e6bf6))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.315
+## [1.0.315](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.314...v1.0.315) (2024-10-17)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -2394,81 +656,21 @@ All notable changes to this monorepo will be documented in this file.
 - **dynamic:** fix emitting of edited data ([2a17d42](https://github.com/VirtoCommerce/vc-shell/commit/2a17d42fbd6c02f524be06723b9aceb8d36ed8ca))
 - **ui:** prevent + sign in input type num/int ([885294d](https://github.com/VirtoCommerce/vc-shell/commit/885294d69ceaea06e16f595195f0472acc06d89d))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.314
+## [1.0.314](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.313...v1.0.314) (2024-10-16)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **dynamic:** normaliza data in isModified calculation ([2389032](https://github.com/VirtoCommerce/vc-shell/commit/238903269ae31ce62169260f7c164ac580d4f519))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.313
+## [1.0.313](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.312...v1.0.313) (2024-10-15)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **ui:** logo height fix ([b24bb02](https://github.com/VirtoCommerce/vc-shell/commit/b24bb0237cdb770a94d5df7f8be4c397ace4d159))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.312
+## [1.0.312](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.311...v1.0.312) (2024-10-15)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -2477,27 +679,7 @@ All notable changes to this monorepo will be documented in this file.
 ### Bug Fixes
 - **dynamic:** overrides fix, redundant comments remove ([3de9436](https://github.com/VirtoCommerce/vc-shell/commit/3de94367320ef81e3b518e9f085205a9684df20a))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.311
+## [1.0.311](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.310...v1.0.311) (2024-10-11)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -2510,27 +692,7 @@ All notable changes to this monorepo will be documented in this file.
 - **ui/vc-pagination:** enhance pagination item styles with hover effects and cursor pointer ([b89296f](https://github.com/VirtoCommerce/vc-shell/commit/b89296f23bc826ada4cb0196f8ffb937657013d4))
 - **ui:** update status field styles and color variables for improved visibility ([00a4c3f](https://github.com/VirtoCommerce/vc-shell/commit/00a4c3f464f5883c98337aecc9161036f423acf7))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.310
+## [1.0.310](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.309...v1.0.310) (2024-10-11)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -2538,423 +700,85 @@ All notable changes to this monorepo will be documented in this file.
 - **dynamic:** isModified undef/null equality ([1756fbb](https://github.com/VirtoCommerce/vc-shell/commit/1756fbb66206bfb5d200859ebcbff8e1a4c3bc5f))
 - **ui:** user dropdown button full name ([44f411f](https://github.com/VirtoCommerce/vc-shell/commit/44f411fc30be3c859416eb232efa633200f05b71))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.309
+## [1.0.309](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.308...v1.0.309) (2024-10-09)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **dynamic:** mixin in list ([c6d954d](https://github.com/VirtoCommerce/vc-shell/commit/c6d954d77643d303fde3333352b023891f5222ef))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.308
+## [1.0.308](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.307...v1.0.308) (2024-10-08)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **core:** dynamic module add fix ([9d458ca](https://github.com/VirtoCommerce/vc-shell/commit/9d458ca08da8ad2bab835caa803f89b10b096ef8))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.307
+## [1.0.307](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.306...v1.0.307) (2024-10-07)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **UI:** vc-table flex important ([ebc01dc](https://github.com/VirtoCommerce/vc-shell/commit/ebc01dccecf20ba182300a86010acc1882b0ec17))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.306
+## [1.0.306](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.305...v1.0.306) (2024-10-07)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - md-editor-v3 instead quill, info popup, clickable form table ([aebb563](https://github.com/VirtoCommerce/vc-shell/commit/aebb563e4dd7819a3ae91eb7ce2cc5629234a9ab))
 
-### API Client Generator (@vc-shell/api-client-generator)
+## [1.0.305](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.304...v1.0.305) (2024-10-04)
 
 **Note:** Version bump only for package
 
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.305
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package
-
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.304
+## [1.0.304](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.303...v1.0.304) (2024-10-04)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **shared:** notification flex container ([e253f8c](https://github.com/VirtoCommerce/vc-shell/commit/e253f8cceebac0e0324befef121b9a03830518b8))
 
-### API Client Generator (@vc-shell/api-client-generator)
+## [1.0.303](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.302...v1.0.303) (2024-10-04)
 
 **Note:** Version bump only for package
 
-### Create VC App (@vc-shell/create-vc-app)
+## [1.0.302](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.301...v1.0.302) (2024-10-02)
 
 **Note:** Version bump only for package
 
-### Release Config (@vc-shell/release-config)
+## [1.0.301](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.300...v1.0.301) (2024-10-01)
 
 **Note:** Version bump only for package
 
-### Vite Config (@vc-shell/config-generator)
+## [1.0.300](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.299...v1.0.300) (2024-10-01)
 
 **Note:** Version bump only for package
 
-### TypeScript Config (@vc-shell/ts-config)
+## [1.0.299](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.298...v1.0.299) (2024-10-01)
 
 **Note:** Version bump only for package
 
-## 1.0.303
-
-### VC-Shell Framework (@vc-shell/framework)
+## [1.0.298](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.297...v1.0.298) (2024-10-01)
 
 **Note:** Version bump only for package
 
-### API Client Generator (@vc-shell/api-client-generator)
+## [1.0.297](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.296...v1.0.297) (2024-10-01)
 
 **Note:** Version bump only for package
 
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.302
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package
-
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.301
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package
-
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.300
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package
-
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.299
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package
-
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.298
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package
-
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.297
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package
-
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.296
+## [1.0.296](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.295...v1.0.296) (2024-10-01)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - providers ([f47bab9](https://github.com/VirtoCommerce/vc-shell/commit/f47bab93feaaddc717617d79537bb41dbc14e55f))
 
-### API Client Generator (@vc-shell/api-client-generator)
+## [1.0.295](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.294...v1.0.295) (2024-10-01)
 
 **Note:** Version bump only for package
 
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.295
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package
-
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.294
+## [1.0.294](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.293...v1.0.294) (2024-10-01)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -2966,263 +790,49 @@ All notable changes to this monorepo will be documented in this file.
 - **ui:** components fixes and updates ([37148ec](https://github.com/VirtoCommerce/vc-shell/commit/37148ec889065d7e76c7c3466f5bc23a86080389))
 - **ui:** sidebar component optional position prop ([61a7018](https://github.com/VirtoCommerce/vc-shell/commit/61a7018f88d42f0a84c6d3fbe9b3318f94152c99))
 
-### API Client Generator (@vc-shell/api-client-generator)
+## [1.0.293](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.290...v1.0.293) (2024-09-23)
 
 **Note:** Version bump only for package
 
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.293
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package
-
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.290
+## [1.0.290](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.289...v1.0.290) (2024-09-13)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **shared:** user-dropdown-button - add baseMenuItemsHandler prop and handle default menu items ([e5f4017](https://github.com/VirtoCommerce/vc-shell/commit/e5f40174dae9445ed074493d824e3c95c37c7150))
 
-### API Client Generator (@vc-shell/api-client-generator)
+## [1.0.289](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.288...v1.0.289) (2024-09-10)
 
 **Note:** Version bump only for package
 
-### Create VC App (@vc-shell/create-vc-app)
+## [1.0.288](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.287...v1.0.288) (2024-09-09)
 
 **Note:** Version bump only for package
 
-### Release Config (@vc-shell/release-config)
+## [1.0.287](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.286...v1.0.287) (2024-09-06)
 
 **Note:** Version bump only for package
 
-### Vite Config (@vc-shell/config-generator)
+## [1.0.286](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.285...v1.0.286) (2024-09-06)
 
 **Note:** Version bump only for package
 
-### TypeScript Config (@vc-shell/ts-config)
+## [1.0.285](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.284...v1.0.285) (2024-09-06)
 
 **Note:** Version bump only for package
 
-## 1.0.289
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package
-
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.288
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package
-
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.287
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package
-
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.286
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package
-
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.285
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package
-
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.284
+## [1.0.284](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.283...v1.0.284) (2024-09-06)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **dynamic:** dynamic-blade-list grid component ability to config externally ([692d354](https://github.com/VirtoCommerce/vc-shell/commit/692d354302452be5b90454377144c0ca0bb515fd))
 
-### API Client Generator (@vc-shell/api-client-generator)
+## [1.0.283](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.282...v1.0.283) (2024-09-03)
 
 **Note:** Version bump only for package
 
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.283
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package
-
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.282
+## [1.0.282](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.281...v1.0.282) (2024-08-30)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -3230,164 +840,52 @@ All notable changes to this monorepo will be documented in this file.
 - **dynamic:** vc-table expandable header slot ([9a3cd40](https://github.com/VirtoCommerce/vc-shell/commit/9a3cd407d3ba1125c38f3d7a7a296923a1a5a8be))
 - **shared:** toast notification container and core to support component content ([7c17099](https://github.com/VirtoCommerce/vc-shell/commit/7c17099cbb4f797c009282a3af74c655a8c4f8c8))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.281
+## [1.0.281](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.280...v1.0.281) (2024-08-29)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - vm-1464 bgimage for change password page ([5259707](https://github.com/VirtoCommerce/vc-shell/commit/525970745a95e94483ace2cfad507b67e49892ac))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.280
+## [1.0.280](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.279...v1.0.280) (2024-08-28)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - vm-1464 expired password change form ([4645cba](https://github.com/VirtoCommerce/vc-shell/commit/4645cba7ecc1844b9cd12bb95baf760871b44053))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.279
+## [1.0.279](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.278...v1.0.279) (2024-08-27)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **create-vc-app:** update currency option in details.vue and dynamic-blade-list.vue ([40a363a](https://github.com/VirtoCommerce/vc-shell/commit/40a363a292457d0f74e961a342909ed6f425d3b4))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
 ### Create VC App (@vc-shell/create-vc-app)
 
 ### Bug Fixes
 - **create-vc-app:** update currency option in details.vue and dynamic-blade-list.vue ([40a363a](https://github.com/VirtoCommerce/vc-shell/commit/40a363a292457d0f74e961a342909ed6f425d3b4))
 
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.278
+## [1.0.278](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.277...v1.0.278) (2024-08-27)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **ui:** vc-app-menu-link truncating ([e7fe836](https://github.com/VirtoCommerce/vc-shell/commit/e7fe836e8e28d9ec92469f8bdf7dc8353104363f))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
 ### Create VC App (@vc-shell/create-vc-app)
 
 ### Bug Fixes
 - **create-vc-app:** add shims and change sample constants ([bfdc2d6](https://github.com/VirtoCommerce/vc-shell/commit/bfdc2d6bb50b17d88387b2f71aef8c8c931c3452))
 
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.277
+## [1.0.277](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.276...v1.0.277) (2024-08-22)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **ui:** adjust min-width and max-width for dp--tp-wrap to prevent timepicker overflow ([b606d9a](https://github.com/VirtoCommerce/vc-shell/commit/b606d9a9ad3026a38d7230550b8ed71194b18d54))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.276
+## [1.0.276](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.275...v1.0.276) (2024-08-22)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -3395,506 +893,112 @@ All notable changes to this monorepo will be documented in this file.
 - **dynamic:** InputField exposed datePickerOptions prop ([2ce0972](https://github.com/VirtoCommerce/vc-shell/commit/2ce0972beab48e2655795d7630e881053d10b042))
 - **ui:** vc-table highlight multiselected rows vm-1431 ([67dde13](https://github.com/VirtoCommerce/vc-shell/commit/67dde13314a4e8ae906f737dea03c10fa39e5273))
 
-### API Client Generator (@vc-shell/api-client-generator)
+## [1.0.275](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.274...v1.0.275) (2024-08-20)
 
 **Note:** Version bump only for package
 
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.275
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package
-
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.274
+## [1.0.274](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.273...v1.0.274) (2024-08-19)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **ui:** vc-pagination pagesToShow logic refactor ([92153d8](https://github.com/VirtoCommerce/vc-shell/commit/92153d8a91990274682fca1490cdc5a9cc9e784a))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.273
+## [1.0.273](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.272...v1.0.273) (2024-08-16)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - remove vcmp locales, scope variables to mayberef ([a2c29d1](https://github.com/VirtoCommerce/vc-shell/commit/a2c29d1cf60d065f8dd38fdea731455fbb5ce1ec))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.272
+## [1.0.272](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.271...v1.0.272) (2024-08-13)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **dynamic:** TableSchema interface fix ([d3c4c40](https://github.com/VirtoCommerce/vc-shell/commit/d3c4c4061f285db8b8c26f7bcf0dfc1d6956fb23))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.271
+## [1.0.271](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.270...v1.0.271) (2024-08-13)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **ui,dynamic:** vc-table external access to selectedIds, searchValue ([33ddec1](https://github.com/VirtoCommerce/vc-shell/commit/33ddec108d88cb118f29102de11d55a7111eb838))
 
-### API Client Generator (@vc-shell/api-client-generator)
+## [1.0.270](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.269...v1.0.270) (2024-08-13)
 
 **Note:** Version bump only for package
 
-### Create VC App (@vc-shell/create-vc-app)
+## [1.0.269](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.268...v1.0.269) (2024-08-09)
 
 **Note:** Version bump only for package
 
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.270
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package
-
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.269
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package
-
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.268
+## [1.0.268](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.267...v1.0.268) (2024-08-02)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - vm-763 display user role ([6d98e13](https://github.com/VirtoCommerce/vc-shell/commit/6d98e1364d003156d71db73a12ce2ee529d41eee))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.267
+## [1.0.267](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.266...v1.0.267) (2024-08-02)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **ui:** vc-pagination show jump if pages > 5 ([1523282](https://github.com/VirtoCommerce/vc-shell/commit/1523282abd92d4af4a346b2529f2437172a22e00))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.266
+## [1.0.266](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.265...v1.0.266) (2024-08-02)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **ui:** improved vc-pagination vm-1430 ([2119b72](https://github.com/VirtoCommerce/vc-shell/commit/2119b72fbd232bdaca9adc0ecb7693aee3a6ac42))
 
-### API Client Generator (@vc-shell/api-client-generator)
+## [1.0.265](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.264...v1.0.265) (2024-08-02)
 
 **Note:** Version bump only for package
 
-### Create VC App (@vc-shell/create-vc-app)
+## [1.0.264](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.263...v1.0.264) (2024-08-02)
 
 **Note:** Version bump only for package
 
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.265
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package
-
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.264
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package
-
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.263
+## [1.0.263](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.262...v1.0.263) (2024-07-31)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **ui:** sanitize vc-editor content to prevent XSS attacks ([0b625f9](https://github.com/VirtoCommerce/vc-shell/commit/0b625f93e26a576ebf04141246b9d8e2ae659c3c))
 
-### API Client Generator (@vc-shell/api-client-generator)
+## [1.0.262](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.261...v1.0.262) (2024-07-31)
 
 **Note:** Version bump only for package
 
-### Create VC App (@vc-shell/create-vc-app)
+## [1.0.261](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.260...v1.0.261) (2024-07-26)
 
 **Note:** Version bump only for package
 
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.262
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package
-
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.261
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package
-
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.260
+## [1.0.260](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.259...v1.0.260) (2024-07-26)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **ui:** vc-select truncating ([ba67161](https://github.com/VirtoCommerce/vc-shell/commit/ba6716135fa55e17c5670964efef70e01d94c195))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.259
+## [1.0.259](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.258...v1.0.259) (2024-07-25)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **dynamic:** editable blade condition fix ([c446afa](https://github.com/VirtoCommerce/vc-shell/commit/c446afaf736db86a9b4e0618d200376fae242fff))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.258
+## [1.0.258](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.257...v1.0.258) (2024-07-24)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **dynamic:** grid blade editable table ([5b41467](https://github.com/VirtoCommerce/vc-shell/commit/5b414675c1148fb8652c0125253a882b1f9a665e))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.257
+## [1.0.257](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.256...v1.0.257) (2024-07-23)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -3902,319 +1006,69 @@ All notable changes to this monorepo will be documented in this file.
 - **core:** memoize opened nested nav groups ([20942b0](https://github.com/VirtoCommerce/vc-shell/commit/20942b0ffbe440cbf607e821314078aa1972083c))
 - **ui:** widgets 2 line/equal height vm-1442, fix table breadcrumbs position ([53a801b](https://github.com/VirtoCommerce/vc-shell/commit/53a801b68743161391e48de77db7ed0e72da1abf))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.256
+## [1.0.256](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.255...v1.0.256) (2024-07-12)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **core:** fix useDynamicModules error ([f85b5ec](https://github.com/VirtoCommerce/vc-shell/commit/f85b5ecf0d9b39c66b1389796ad453aaae3800da))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.255
+## [1.0.255](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.254...v1.0.255) (2024-07-12)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **core:** useDynamicModules fix ([b38d966](https://github.com/VirtoCommerce/vc-shell/commit/b38d9668b410d7bbb0d798f2218f2b6051416cc9))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.254
+## [1.0.254](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.253...v1.0.254) (2024-07-12)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - dynamic module loader ([4d15575](https://github.com/VirtoCommerce/vc-shell/commit/4d15575bb5448e16b4034782bafc7097189742f1))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.253
+## [1.0.253](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.252...v1.0.253) (2024-07-12)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **shared:** update login logic to redirect to the previous page after successful login ([8701044](https://github.com/VirtoCommerce/vc-shell/commit/8701044315a7b13609474e00e83a069d542bb256))
 
-### API Client Generator (@vc-shell/api-client-generator)
+## [1.0.252](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.251...v1.0.252) (2024-07-08)
 
 **Note:** Version bump only for package
 
-### Create VC App (@vc-shell/create-vc-app)
+## [1.0.251](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.250...v1.0.251) (2024-07-08)
 
 **Note:** Version bump only for package
 
-### Release Config (@vc-shell/release-config)
+## [1.0.250](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.249...v1.0.250) (2024-07-08)
 
 **Note:** Version bump only for package
 
-### Vite Config (@vc-shell/config-generator)
+## [1.0.249](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.248...v1.0.249) (2024-07-05)
 
 **Note:** Version bump only for package
 
-### TypeScript Config (@vc-shell/ts-config)
+## [1.0.248](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.247...v1.0.248) (2024-07-03)
 
 **Note:** Version bump only for package
 
-## 1.0.252
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package
-
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.251
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package
-
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.250
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package
-
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.249
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package
-
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.248
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package
-
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.247
+## [1.0.247](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.246...v1.0.247) (2024-07-01)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **useAppInsights:** add return if appInsights is not active ([5724a14](https://github.com/VirtoCommerce/vc-shell/commit/5724a1437f95e726216079f7a77b976434436b51))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.246
+## [1.0.246](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.245...v1.0.246) (2024-06-28)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - add useAppInsights composable for application insights pageview logging ([7c030d6](https://github.com/VirtoCommerce/vc-shell/commit/7c030d6947529a93f0476adc9d59b94336c3580b))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.245
+## [1.0.245](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.244...v1.0.245) (2024-06-28)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -4231,19 +1085,7 @@ All notable changes to this monorepo will be documented in this file.
 ### Features
 - **api-client-generator:** build api after generation, tsconfig/package.json creation, new args ([de115fe](https://github.com/VirtoCommerce/vc-shell/commit/de115fe05c9849dcdbbd9bd072a51472103e33a1))
 
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.244
+## [1.0.244](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.243...v1.0.244) (2024-06-24)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -4270,89 +1112,19 @@ All notable changes to this monorepo will be documented in this file.
 ### Features
 - application insights logger ([536db4d](https://github.com/VirtoCommerce/vc-shell/commit/536db4db35c91f4fb566717d2d6c536e48aacc95))
 
-### TypeScript Config (@vc-shell/ts-config)
+## [1.0.243](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.242...v1.0.243) (2024-06-21)
 
 **Note:** Version bump only for package
 
-## 1.0.243
-
-### VC-Shell Framework (@vc-shell/framework)
+## [1.0.242](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.241...v1.0.242) (2024-06-21)
 
 **Note:** Version bump only for package
 
-### API Client Generator (@vc-shell/api-client-generator)
+## [1.0.241](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.240...v1.0.241) (2024-06-18)
 
 **Note:** Version bump only for package
 
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.242
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package
-
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.241
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package
-
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.240
+## [1.0.240](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.239...v1.0.240) (2024-06-18)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -4361,54 +1133,14 @@ All notable changes to this monorepo will be documented in this file.
 ### Bug Fixes
 - **dynamic:** clear selectedIds after executing custom action ([4591f9b](https://github.com/VirtoCommerce/vc-shell/commit/4591f9b030d6277e1f77b92857679367759b49d1))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.239
+## [1.0.239](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.238...v1.0.239) (2024-06-18)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **ui:** fixed flickering when hover on tooltip ([df11271](https://github.com/VirtoCommerce/vc-shell/commit/df112712cd8542a6a69fd0f3eda38d3040936df1))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.238
+## [1.0.238](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.237...v1.0.238) (2024-06-17)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -4420,54 +1152,14 @@ All notable changes to this monorepo will be documented in this file.
 ### Bug Fixes
 - **navigation:** show router pages via RouterView only if it's not blades ([59d41a0](https://github.com/VirtoCommerce/vc-shell/commit/59d41a0059101350b230a7c07144b1641546f1f8))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.237
+## [1.0.237](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.236...v1.0.237) (2024-06-17)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - vm-1348 avatar for user ([9caf962](https://github.com/VirtoCommerce/vc-shell/commit/9caf962bd881611744ea1849155475b897049df6))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.236
+## [1.0.236](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.235...v1.0.236) (2024-06-17)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -4478,27 +1170,7 @@ All notable changes to this monorepo will be documented in this file.
 - **shared:** update asset manager table column widths ([83195cb](https://github.com/VirtoCommerce/vc-shell/commit/83195cb6ee271f2adbfcc81fadbe47f8495fa08e))
 - **ui:** do not shrink checkbox in first col ([e8c8071](https://github.com/VirtoCommerce/vc-shell/commit/e8c807170846c3c0c06c7e1a5004adf1fb7851e8))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.235
+## [1.0.235](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.234...v1.0.235) (2024-06-17)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -4508,53 +1180,11 @@ All notable changes to this monorepo will be documented in this file.
 ### Bug Fixes
 - **ui:** ensure pull-to-reload works only on mobile and when scrolled to the top of the list ([4bb1faf](https://github.com/VirtoCommerce/vc-shell/commit/4bb1faf259152ec8b0772a4ff78ec5c9ba8b7757))
 
-### API Client Generator (@vc-shell/api-client-generator)
+## [1.0.234](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.233...v1.0.234) (2024-06-13)
 
 **Note:** Version bump only for package
 
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.234
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package
-
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.233
+## [1.0.233](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.232...v1.0.233) (2024-06-13)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -4570,27 +1200,7 @@ All notable changes to this monorepo will be documented in this file.
 ### Bug Fixes
 - **ui:** vc-editor handle empty text value in onTextChange function ([c71bbda](https://github.com/VirtoCommerce/vc-shell/commit/c71bbda701bc0eaa7583bb43306b0110774e50db))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.232
+## [1.0.232](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.231...v1.0.232) (2024-06-07)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -4600,162 +1210,42 @@ All notable changes to this monorepo will be documented in this file.
 ### Bug Fixes
 - **ui:** vc-table columns reordering fix ([48b4994](https://github.com/VirtoCommerce/vc-shell/commit/48b499480f208db81b97de4e5638c8079b6eb98e))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.231
+## [1.0.231](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.230...v1.0.231) (2024-06-05)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - vc-input-currency decimal precision ([c278a90](https://github.com/VirtoCommerce/vc-shell/commit/c278a90248888bd63f275908d5379a3fdcd7fc0a))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.230
+## [1.0.230](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.229...v1.0.230) (2024-06-05)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - refactor InputCurrency component to handle currency display option ([f11a193](https://github.com/VirtoCommerce/vc-shell/commit/f11a193289c0992444ff11e3c0c16970693c5bb0))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.229
+## [1.0.229](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.228...v1.0.229) (2024-06-05)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **dynamic:** permissions prop in controls/toolbar ([5230a23](https://github.com/VirtoCommerce/vc-shell/commit/5230a235acd049cb19613a3ac855f26b3bffb146))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.228
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package
-
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
+## [1.0.228](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.227...v1.0.228) (2024-06-05)
 
 ### Create VC App (@vc-shell/create-vc-app)
 
 ### Features
 - refactor sample and scaffold template to use object literal syntax for scope ([083d039](https://github.com/VirtoCommerce/vc-shell/commit/083d039f2d5dcbbd1ad1f914220cab5c11651b46))
 
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.227
+## [1.0.227](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.226...v1.0.227) (2024-06-04)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **ui:** vc-table add last column resizer ([f63a7a0](https://github.com/VirtoCommerce/vc-shell/commit/f63a7a010366fd55fc0add08701d0d983fe4280a))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.226
+## [1.0.226](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.225...v1.0.226) (2024-06-04)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -4765,54 +1255,14 @@ All notable changes to this monorepo will be documented in this file.
 - reset dirty validation with update of initial ([a4f820c](https://github.com/VirtoCommerce/vc-shell/commit/a4f820c3ab71296f334a3192069dcf6771031018))
 - **ui:** vc-table mobile view fixes ([08f6474](https://github.com/VirtoCommerce/vc-shell/commit/08f647471732d875eacf4d5f2907eb75686b7c4d))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.225
+## [1.0.225](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.224...v1.0.225) (2024-06-04)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - update useDetailsFactory to reset dirty validation state ([a037847](https://github.com/VirtoCommerce/vc-shell/commit/a03784713e504231a13171a46a06ffa61b9cb117))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.224
+## [1.0.224](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.223...v1.0.224) (2024-06-04)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -4827,27 +1277,7 @@ All notable changes to this monorepo will be documented in this file.
 ### Bug Fixes
 - vc-1359 ([fbd5d92](https://github.com/VirtoCommerce/vc-shell/commit/fbd5d92c5945694669ef3cb27e7f77faaa42795a))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.223
+## [1.0.223](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.222...v1.0.223) (2024-05-29)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -4856,10 +1286,6 @@ All notable changes to this monorepo will be documented in this file.
 ### Features
 - **dynamic:** refactoring of scope, composable args interface, dynamic hint for some components ([e6b8099](https://github.com/VirtoCommerce/vc-shell/commit/e6b8099a120cef9429896904947e13fdae670541))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
 ### Create VC App (@vc-shell/create-vc-app)
 
 ### ⚠ BREAKING CHANGES
@@ -4867,45 +1293,11 @@ All notable changes to this monorepo will be documented in this file.
 ### Features
 - **dynamic:** refactoring of scope, composable args interface, dynamic hint for some components ([e6b8099](https://github.com/VirtoCommerce/vc-shell/commit/e6b8099a120cef9429896904947e13fdae670541))
 
-### Release Config (@vc-shell/release-config)
+## [1.0.222](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.221...v1.0.222) (2024-05-28)
 
 **Note:** Version bump only for package
 
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.222
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package
-
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.221
+## [1.0.221](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.220...v1.0.221) (2024-05-28)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -4915,27 +1307,7 @@ All notable changes to this monorepo will be documented in this file.
 - **dynamic:** Add hint text to input fields ([31b3ded](https://github.com/VirtoCommerce/vc-shell/commit/31b3ded3e7685085b9d9c9e398bddb7b9e7264e8))
 - Update useToolbarReducer to handle toolbarItemCtx as an array or object ([cc598eb](https://github.com/VirtoCommerce/vc-shell/commit/cc598eb38570f617c5e241a6439fcb0e87885667))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.220
+## [1.0.220](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.219...v1.0.220) (2024-05-24)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -4947,106 +1319,22 @@ All notable changes to this monorepo will be documented in this file.
 - **ui:** update vc-input-currency component to support custom slots for prepend and append content ([4ae9f90](https://github.com/VirtoCommerce/vc-shell/commit/4ae9f906c7d89833b46aea7d4f3bb23a4ddb031b))
 - **ui:** vc-tooltip component and refactor of vc-label ([1eafd03](https://github.com/VirtoCommerce/vc-shell/commit/1eafd036e4b693563d1987d41ae6de620def7d34))
 
-### API Client Generator (@vc-shell/api-client-generator)
+## [1.0.219](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.218...v1.0.219) (2024-05-21)
 
 **Note:** Version bump only for package
 
-### Create VC App (@vc-shell/create-vc-app)
+## [1.0.218](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.217...v1.0.218) (2024-05-21)
 
 **Note:** Version bump only for package
 
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.219
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package
-
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.218
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package
-
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.217
+## [1.0.217](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.216...v1.0.217) (2024-05-21)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - message about edited blade is not displayed, fixed ([6b8e3a3](https://github.com/VirtoCommerce/vc-shell/commit/6b8e3a3f2245c442df7da788d7e6b0627cbcd79c))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.216
+## [1.0.216](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.215...v1.0.216) (2024-05-21)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -5064,164 +1352,52 @@ All notable changes to this monorepo will be documented in this file.
 ### Bug Fixes
 - disable preserve of ui settings in useSettings ([b41ee37](https://github.com/VirtoCommerce/vc-shell/commit/b41ee371ab6e5e329e578206a39c2c819c4d0ed8))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.215
+## [1.0.215](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.214...v1.0.215) (2024-05-20)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **navigation:** support of blade replacing, permissions check on generateRoute ([40d934c](https://github.com/VirtoCommerce/vc-shell/commit/40d934c056bebc1a023cc1498d40a2c672ec43dd))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
 ### Vite Config (@vc-shell/config-generator)
 
 ### Features
 - **vite-config:** add hash to app build to prevent caching ([aafe494](https://github.com/VirtoCommerce/vc-shell/commit/aafe4945bca52a62520217ea8948abe6f442614b))
 
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.214
+## [1.0.214](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.212...v1.0.214) (2024-05-16)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **ui:** has unsaved changes banner, updated switch ([5caa82b](https://github.com/VirtoCommerce/vc-shell/commit/5caa82bc68b599feeb205395aa55850230851f66))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.212
+## [1.0.212](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.211...v1.0.212) (2024-05-09)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - fix param type ([059d80c](https://github.com/VirtoCommerce/vc-shell/commit/059d80c924f5a18fe9457994c49b77249c8a7890))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.211
+## [1.0.211](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.210...v1.0.211) (2024-05-09)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - fix grid selection persistance on child blade close ([5e5ee3f](https://github.com/VirtoCommerce/vc-shell/commit/5e5ee3f70b27bed8c983dab092b610cf2cb78db7))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.210
+## [1.0.210](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.209...v1.0.210) (2024-05-08)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - remove auto-open blade on param change, as it can lead to unpredictable behavior ([898e0d9](https://github.com/VirtoCommerce/vc-shell/commit/898e0d9ffc5812b71e8215a355c9ad0918c48dfe))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
 ### Create VC App (@vc-shell/create-vc-app)
 
 ### Bug Fixes
 - remove auto-open blade on param change, as it can lead to unpredictable behavior ([898e0d9](https://github.com/VirtoCommerce/vc-shell/commit/898e0d9ffc5812b71e8215a355c9ad0918c48dfe))
 
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.209
+## [1.0.209](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.208...v1.0.209) (2024-05-07)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -5229,54 +1405,16 @@ All notable changes to this monorepo will be documented in this file.
 - img extensions, renaming vm-1315 ([cd02d04](https://github.com/VirtoCommerce/vc-shell/commit/cd02d04d924f9049521b2f116e0ed192f29ce981))
 - support of edit mode for blade and vc-table vm-1312 ([b1c8daa](https://github.com/VirtoCommerce/vc-shell/commit/b1c8daae2255befdadd8a3012354ba3efa813e84))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
 ### Create VC App (@vc-shell/create-vc-app)
 
 ### Bug Fixes
 - **create-vc-app:** fixed boilerplate release script ([b1e3124](https://github.com/VirtoCommerce/vc-shell/commit/b1e312445acb99402850e22208c1c9e4b7912502))
 
-### Release Config (@vc-shell/release-config)
+## [1.0.208](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.207...v1.0.208) (2024-04-30)
 
 **Note:** Version bump only for package
 
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.208
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package
-
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.207
+## [1.0.207](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.206...v1.0.207) (2024-04-30)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -5284,134 +1422,34 @@ All notable changes to this monorepo will be documented in this file.
 - vm-1309 decode uri asset file name ([cf290f6](https://github.com/VirtoCommerce/vc-shell/commit/cf290f624b81f6a4a61ab4a092b2f784e9c350b6))
 - vm-1309 unescape asset file url ([d4fc236](https://github.com/VirtoCommerce/vc-shell/commit/d4fc23689e742b9da6a4bf01d34a16adc6fe91ad))
 
-### API Client Generator (@vc-shell/api-client-generator)
+## [1.0.206](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.205...v1.0.206) (2024-04-30)
 
 **Note:** Version bump only for package
 
-### Create VC App (@vc-shell/create-vc-app)
+## [1.0.205](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.204...v1.0.205) (2024-04-30)
 
 **Note:** Version bump only for package
 
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.206
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package
-
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.205
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package
-
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.204
+## [1.0.204](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.203...v1.0.204) (2024-04-30)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **navigation:** fixed loss of instance when opening the same workspace ([dda83bc](https://github.com/VirtoCommerce/vc-shell/commit/dda83bc4fd0a8b4583d0c9f607d0ba678fe3c0ff))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
 ### Create VC App (@vc-shell/create-vc-app)
 
 ### Features
 - **create-vc-app:** new prompt with ability to add sample data module ([7816a8b](https://github.com/VirtoCommerce/vc-shell/commit/7816a8b2ce872f3ca7e54c7a328481edf4adb854))
 
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.203
+## [1.0.203](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.202...v1.0.203) (2024-04-25)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - error fix ([2a106ba](https://github.com/VirtoCommerce/vc-shell/commit/2a106ba9ed958d6b1081d4c5c65324260b80f13a))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.202
+## [1.0.202](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.200...v1.0.202) (2024-04-25)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -5445,34 +1483,14 @@ All notable changes to this monorepo will be documented in this file.
 ### Features
 - **dynamic:** saveChanges response ([#207](https://github.com/VirtoCommerce/vc-shell/issues/207)) ([a05313b](https://github.com/VirtoCommerce/vc-shell/commit/a05313bd0fc5b25b927570c31e14aea69c4a5ddd))
 
-## 1.0.200
+## [1.0.200](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.199...v1.0.200) (2024-04-23)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **ui:** vc-multivalue input on blur, removed arrows with number type ([ff0b293](https://github.com/VirtoCommerce/vc-shell/commit/ff0b29305dd495f2f9577b34c122d33fb67596d0))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.199
+## [1.0.199](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.198...v1.0.199) (2024-04-22)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -5484,134 +1502,32 @@ All notable changes to this monorepo will be documented in this file.
 - **ui:** vc-breadcrumbs arrow color fix ([9ad6aa9](https://github.com/VirtoCommerce/vc-shell/commit/9ad6aa95863f0321e1a9c6575cd1b090a593c11e))
 - vc-dynamic-properties refactoring ([3aaf821](https://github.com/VirtoCommerce/vc-shell/commit/3aaf8213716ddf4c1695dafce4fe826de35e3d7d))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.198
+## [1.0.198](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.197...v1.0.198) (2024-04-16)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - blade navigation breadcrumbs, useDynamicViewsUtils composable ([506cee1](https://github.com/VirtoCommerce/vc-shell/commit/506cee114479717b2745c8f85968249959eb16af))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.197
+## [1.0.197](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.196...v1.0.197) (2024-04-12)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - instance removal fix ([9eeb850](https://github.com/VirtoCommerce/vc-shell/commit/9eeb850603b18fcd3e6dc7b03a9bfe3ceb224680))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.196
+## [1.0.196](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.195...v1.0.196) (2024-04-11)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **ui:** vc-table mobile view hidden fix ([d5d0353](https://github.com/VirtoCommerce/vc-shell/commit/d5d035352bd5afcb3ae5c5e07a332d06bc34a72e))
 
-### API Client Generator (@vc-shell/api-client-generator)
+## [1.0.195](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.192...v1.0.195) (2024-04-11)
 
 **Note:** Version bump only for package
 
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.195
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package
-
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.192
+## [1.0.192](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.191...v1.0.192) (2024-04-11)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -5620,54 +1536,14 @@ All notable changes to this monorepo will be documented in this file.
 ### Bug Fixes
 - router param lost ([9931a84](https://github.com/VirtoCommerce/vc-shell/commit/9931a848c18389f80fad6f22e5e864952aa0e277))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.191
+## [1.0.191](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.190...v1.0.191) (2024-04-09)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **dynamic:** support fetched data in filters ([c6c133d](https://github.com/VirtoCommerce/vc-shell/commit/c6c133d8224d6905a3a4a3d45ef474c3dabd56f3))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.190
+## [1.0.190](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.189...v1.0.190) (2024-04-03)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -5679,406 +1555,112 @@ All notable changes to this monorepo will be documented in this file.
 - **ui/vc-blade-header:** fixed line height ([c3df1e2](https://github.com/VirtoCommerce/vc-shell/commit/c3df1e2bbb96f87c15ba17961a88542502a8ab36))
 - windows build with cross-spawn, other small changes ([a8e576d](https://github.com/VirtoCommerce/vc-shell/commit/a8e576d8556cebb7dd648de68954f87989b7f3ca))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
 ### Create VC App (@vc-shell/create-vc-app)
 
 ### Features
 - **create-vc-app:** updated scaffold app, new prompts and removed redundant mocks ([e7a5b98](https://github.com/VirtoCommerce/vc-shell/commit/e7a5b98e8dcaf417841819677b0f4af0ee8ca0a9))
 
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.189
+## [1.0.189](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.188...v1.0.189) (2024-03-26)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **storybook:** dynamic views components and some components refactoring ([19f9d20](https://github.com/VirtoCommerce/vc-shell/commit/19f9d2055d76166a8b38be0149346c0bec12ad77))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.188
+## [1.0.188](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.187...v1.0.188) (2024-03-19)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **dynamic:** isDirty reset in useDetailsFactory ([bf7341e](https://github.com/VirtoCommerce/vc-shell/commit/bf7341ece299dac32784222aeee72f2ef9c7ead6))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.187
+## [1.0.187](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.186...v1.0.187) (2024-03-19)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **dynamic:** confirmation logics refactor, sort in list priority change ([c98d639](https://github.com/VirtoCommerce/vc-shell/commit/c98d639878599932630b0b868f9dca536710b6b6))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.186
+## [1.0.186](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.185...v1.0.186) (2024-03-15)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - administrator full access on permissions check ([9f96645](https://github.com/VirtoCommerce/vc-shell/commit/9f96645ae03c0920e83d2a8ecca5b3f565a910b9))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.185
+## [1.0.185](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.184...v1.0.185) (2024-03-15)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **ui:** table width fix, hover with date on date-ago ([a249e0c](https://github.com/VirtoCommerce/vc-shell/commit/a249e0cff939cf9ef555b93373b62980cfed4182))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.184
+## [1.0.184](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.183...v1.0.184) (2024-03-14)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Reverts
 - tailwind package remove and config change ([2bf54da](https://github.com/VirtoCommerce/vc-shell/commit/2bf54dad5e9d02a49396e0031e24c01ec045c797))
 
-### API Client Generator (@vc-shell/api-client-generator)
+## [1.0.183](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.182...v1.0.183) (2024-03-14)
 
 **Note:** Version bump only for package
 
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.183
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package
-
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.182
+## [1.0.182](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.181...v1.0.182) (2024-03-14)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **framework:** storybook, component fixes ([965b242](https://github.com/VirtoCommerce/vc-shell/commit/965b242d6afccd325fa09f8315b52cbe7c58527c))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.181
+## [1.0.181](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.180...v1.0.181) (2024-03-14)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **ui:** vc-select initial multiple fix ([edcb55c](https://github.com/VirtoCommerce/vc-shell/commit/edcb55c172ea4ffc63110360ca4fefa446d2a10a))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.180
+## [1.0.180](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.179...v1.0.180) (2024-03-14)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **navigation:** fixed multiple close confirmations, component update in vue router instance ([966e779](https://github.com/VirtoCommerce/vc-shell/commit/966e7796ff190110a583e674da149b56634264c3))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.179
+## [1.0.179](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.178...v1.0.179) (2024-03-13)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **ui/dynamic:** components update, multiple in dynamic select, fixed close blade confirmation ([ced10db](https://github.com/VirtoCommerce/vc-shell/commit/ced10db4f2b3db555716e14159203aec4b048885))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.178
+## [1.0.178](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.177...v1.0.178) (2024-03-08)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - shell locales moved to locales, expose locales ([9d6099e](https://github.com/VirtoCommerce/vc-shell/commit/9d6099ed2d43dba38a71a5e868ed335cf2bd8170))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
 ### Create VC App (@vc-shell/create-vc-app)
 
 ### Features
 - shell locales moved to locales, expose locales ([9d6099e](https://github.com/VirtoCommerce/vc-shell/commit/9d6099ed2d43dba38a71a5e868ed335cf2bd8170))
 
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.177
+## [1.0.177](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.176...v1.0.177) (2024-03-08)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **ui:** vc-breadcrumbs key fix ([192debc](https://github.com/VirtoCommerce/vc-shell/commit/192debc1791beca4e8bd253362584736dfb1de0e))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.176
+## [1.0.176](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.175...v1.0.176) (2024-03-07)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **dynamic:** bladeContext exposure to list composable ([37a30c9](https://github.com/VirtoCommerce/vc-shell/commit/37a30c91239b60f2c5d7b9d859d6f48962627ee5))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.175
+## [1.0.175](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.174...v1.0.175) (2024-03-07)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -6087,96 +1669,30 @@ All notable changes to this monorepo will be documented in this file.
 ### Bug Fixes
 - **dynamic:** remove table actions from widgetView ([e51fb3f](https://github.com/VirtoCommerce/vc-shell/commit/e51fb3f8e63c56ed0146f61a036581a45f386830))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
 ### Create VC App (@vc-shell/create-vc-app)
 
 ### Features
 - **create-vc-app:** remove redundant and dupe code, decouple mocks, remove demo mode from configs ([2b3fd6b](https://github.com/VirtoCommerce/vc-shell/commit/2b3fd6b945c21b5a3f4a177a7e6a183662eb480d))
 
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### Vite Config (@vc-shell/config-generator)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.174
+## [1.0.174](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.173...v1.0.174) (2024-03-06)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **dynamic:** disabled method for actions ([a575064](https://github.com/VirtoCommerce/vc-shell/commit/a5750642339e0fedf3e937370361968eea144368))
 
-### API Client Generator (@vc-shell/api-client-generator)
+## [1.0.173](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.172...v1.0.173) (2024-03-06)
 
 **Note:** Version bump only for package
 
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.173
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package
-
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.172
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package
-
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
+## [1.0.172](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.171...v1.0.172) (2024-03-06)
 
 ### Create VC App (@vc-shell/create-vc-app)
 
 ### Features
 - **create-vc-app:** added table actions ([4545c92](https://github.com/VirtoCommerce/vc-shell/commit/4545c92b5c48da897ad9631ed06f058f1c448e6a))
 
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.171
+## [1.0.171](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.170...v1.0.171) (2024-03-06)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -6189,23 +1705,7 @@ All notable changes to this monorepo will be documented in this file.
 - **core:** fixed old push display after page refresh ([2155a6e](https://github.com/VirtoCommerce/vc-shell/commit/2155a6e8bd6e0bcd3c90d4a4233130302255cf3e))
 - **ui:** user-dropdown-button auto width when disabled ([1249bbf](https://github.com/VirtoCommerce/vc-shell/commit/1249bbfac96943ede03064adbf268b9abba35481))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.170
+## [1.0.170](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.169...v1.0.170) (2024-02-27)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -6214,47 +1714,19 @@ All notable changes to this monorepo will be documented in this file.
 - **framework:** removed redundant localizations, moved to app ([9eb0ca7](https://github.com/VirtoCommerce/vc-shell/commit/9eb0ca789f75e4959e9d3d61eaebb2f8723511df))
 - **shared:** field validation improvements ([e36f900](https://github.com/VirtoCommerce/vc-shell/commit/e36f9009940b5b91d4a20552dd033b854ef30af6))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
 ### Create VC App (@vc-shell/create-vc-app)
 
 ### Features
 - **create-vc-app:** updated localizations ([ebb3839](https://github.com/VirtoCommerce/vc-shell/commit/ebb38390b1208da522281efd8a6e54f027d12b9d))
 
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.169
+## [1.0.169](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.168...v1.0.169) (2024-02-23)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **dynamic:** id style path notation in overrides ([edd8a3b](https://github.com/VirtoCommerce/vc-shell/commit/edd8a3ba6289c9364c548d2fe80cdda1bf3cfa0d))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.168
+## [1.0.168](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.167...v1.0.168) (2024-02-21)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -6262,69 +1734,21 @@ All notable changes to this monorepo will be documented in this file.
 - **dynamic:** card visibility fix ([8f224c9](https://github.com/VirtoCommerce/vc-shell/commit/8f224c95549c9aea60b62521143ed7698b22721b))
 - **ui:** vc-select duplicates remove on search when backend totalCount corrupted ([fafce05](https://github.com/VirtoCommerce/vc-shell/commit/fafce051d87267148c4332adbced097aa78644b2))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.167
+## [1.0.167](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.166...v1.0.167) (2024-02-21)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **ui:** vc-select fix search in array ([c172fac](https://github.com/VirtoCommerce/vc-shell/commit/c172fac5b892d804d61f5eca37cbccf2a795026b))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.166
+## [1.0.166](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.165...v1.0.166) (2024-02-21)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **ui:** vc-select search fix ([d1de088](https://github.com/VirtoCommerce/vc-shell/commit/d1de08889c64526ed24496e0ee32437bd853e9e4))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.165
+## [1.0.165](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.164...v1.0.165) (2024-02-14)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -6333,253 +1757,77 @@ All notable changes to this monorepo will be documented in this file.
 ### Bug Fixes
 - **dynamic:** component fixes ([77acf38](https://github.com/VirtoCommerce/vc-shell/commit/77acf38f64a5638bbaa4aede1fd3b4d44165e08e))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.164
+## [1.0.164](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.163...v1.0.164) (2024-02-09)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **framework:** Add i18n support to StatusField component and fix Quill editor issue ([7749feb](https://github.com/VirtoCommerce/vc-shell/commit/7749feba938b8011220c6139908daa7e68df5bcd))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.163
+## [1.0.163](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.162...v1.0.163) (2024-02-09)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **dynamic:** update class property to classNames ([4297cb0](https://github.com/VirtoCommerce/vc-shell/commit/4297cb088be767b42a892a078c450d54a571ad32))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.162
+## [1.0.162](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.161...v1.0.162) (2024-02-09)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **dynamic:** horizontalSeparator in fieldset ([e2f63cf](https://github.com/VirtoCommerce/vc-shell/commit/e2f63cfccb859ae15c217f8e3e9b4e1b71d294da))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.161
+## [1.0.161](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.160...v1.0.161) (2024-02-09)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - filter reset condition, return reactive filter ([68af932](https://github.com/VirtoCommerce/vc-shell/commit/68af9323e0d3d2edc58560487e8c66a817b34ceb))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.160
+## [1.0.160](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.159...v1.0.160) (2024-02-09)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - filter reset ([49aec1b](https://github.com/VirtoCommerce/vc-shell/commit/49aec1b7ee488d86f0248a10e933fd132bf6ec10))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.159
+## [1.0.159](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.158...v1.0.159) (2024-02-09)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **framework:** blade navigation bug and update dynamic filter checkbox data structure ([ae97351](https://github.com/VirtoCommerce/vc-shell/commit/ae97351548d65b9f1eca44fc54e13495446ecf12))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.158
+## [1.0.158](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.157...v1.0.158) (2024-02-08)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **dynamic:** reactivity losing fixes ([2f129ee](https://github.com/VirtoCommerce/vc-shell/commit/2f129ee993200f8aa0ac651d1a0adc94f1834a67))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.157
+## [1.0.157](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.156...v1.0.157) (2024-02-07)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **framework:** useFilterBuilder localization update ([75a387d](https://github.com/VirtoCommerce/vc-shell/commit/75a387db7da5e07d3e6538b9217d2e1b270b694d))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.156
+## [1.0.156](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.155...v1.0.156) (2024-02-07)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - localization ([8de6e9f](https://github.com/VirtoCommerce/vc-shell/commit/8de6e9f406487f7457327561547efc414b327729))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.155
+## [1.0.155](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.154...v1.0.155) (2024-02-06)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **framework:** titles in mobile ([91cca71](https://github.com/VirtoCommerce/vc-shell/commit/91cca71f8a6be855243b822242f7be33bcc562db))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.154
+## [1.0.154](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.153...v1.0.154) (2024-02-06)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -6591,70 +1839,26 @@ All notable changes to this monorepo will be documented in this file.
 ### Bug Fixes
 - **framework:** fixed parent blade calling ([ab59609](https://github.com/VirtoCommerce/vc-shell/commit/ab59609d615534a3dc9cc617d080886970d8040a))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
 ### Create VC App (@vc-shell/create-vc-app)
 
 ### Features
 - **create-vc-app:** updated configs and locales ([e46ccf6](https://github.com/VirtoCommerce/vc-shell/commit/e46ccf680a12e82400ec03c3d7c72e4f5e3c2c68))
 
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.153
+## [1.0.153](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.152...v1.0.153) (2024-01-29)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **framework:** menu permissions hide fix ([43a0e98](https://github.com/VirtoCommerce/vc-shell/commit/43a0e98db361bdcb296239fd6fc6e3bc967a6246))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.152
+## [1.0.152](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.151...v1.0.152) (2024-01-29)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **framework:** redirect to root fix ([cfd7e43](https://github.com/VirtoCommerce/vc-shell/commit/cfd7e43903cd46af87b31106b4a0fcadfc24cddd))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.151
+## [1.0.151](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.150...v1.0.151) (2024-01-25)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -6663,46 +1867,14 @@ All notable changes to this monorepo will be documented in this file.
 ### Bug Fixes
 - **framework:** user-dropdown-button disabling fix ([2f9cb62](https://github.com/VirtoCommerce/vc-shell/commit/2f9cb62e326152a64d9fd3d719b01a5043c195ca))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.150
+## [1.0.150](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.149...v1.0.150) (2024-01-24)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **framework:** possibility to disable menu ([65b1eb0](https://github.com/VirtoCommerce/vc-shell/commit/65b1eb0ad71026e992a7bcecb0a7616415115a6e))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.149
+## [1.0.149](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.148...v1.0.149) (2024-01-24)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -6714,70 +1886,24 @@ All notable changes to this monorepo will be documented in this file.
 - **dynamic:** fixed overrides remove order ([a3e5980](https://github.com/VirtoCommerce/vc-shell/commit/a3e59801c1d8fd963cb5f4fe4e445dab0e2d5d32))
 - **framework:** fix ui styling issues in multiple components ([61f56d6](https://github.com/VirtoCommerce/vc-shell/commit/61f56d603b15f385c32d0270c939d539b606b37c))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
 ### Create VC App (@vc-shell/create-vc-app)
 
 ### Features
 - **create-vc-app:** update package.json and useList composable ([f1ccde1](https://github.com/VirtoCommerce/vc-shell/commit/f1ccde11a9e1e2f91af1a4b82e2c4a072996e008))
 - **framework:** updated localization setup, i18n locales config, dynamic modules localization ([209b92f](https://github.com/VirtoCommerce/vc-shell/commit/209b92fe2bf95379d908064d553ab59e16928569))
 
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.148
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package
+## [1.0.148](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.147...v1.0.148) (2024-01-16)
 
 ### API Client Generator (@vc-shell/api-client-generator)
 
 ### Bug Fixes
 - **api-client:** remove default prefix ([c6f1c37](https://github.com/VirtoCommerce/vc-shell/commit/c6f1c375b7acb95c73d2eeef4b22e3ceacc39885))
 
-### Create VC App (@vc-shell/create-vc-app)
+## [1.0.147](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.146...v1.0.147) (2024-01-12)
 
 **Note:** Version bump only for package
 
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.147
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package
-
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.146
+## [1.0.146](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.145...v1.0.146) (2024-01-11)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -6785,70 +1911,26 @@ All notable changes to this monorepo will be documented in this file.
 - **dynamic:** modified as base disabled state in saveChanges method ([9895efb](https://github.com/VirtoCommerce/vc-shell/commit/9895efb16aa70f1b1d5e90359084a25c7237a56e))
 - **useMenuService:** prevent duplication ([1c35bb7](https://github.com/VirtoCommerce/vc-shell/commit/1c35bb72b2c6cd2a035d8c370218b1e869f65044))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.145
+## [1.0.145](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.144...v1.0.145) (2024-01-10)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **shell:** base navigator.language i18n locale ([8a59a63](https://github.com/VirtoCommerce/vc-shell/commit/8a59a636643f94ffac282ac37514a4f253007c7a))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.144
+## [1.0.144](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.143...v1.0.144) (2024-01-10)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **shell:** removed common pages locales ([e8d54e5](https://github.com/VirtoCommerce/vc-shell/commit/e8d54e5bea8746a678e17b6a79ebbdc59da6e3c3))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
 ### Create VC App (@vc-shell/create-vc-app)
 
 ### Features
 - **create-vc-app:** update base favicon; common pages locales ([b284f33](https://github.com/VirtoCommerce/vc-shell/commit/b284f331f17b58c472fdc4c6c671962a646388b3))
 
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.143
+## [1.0.143](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.142...v1.0.143) (2024-01-10)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -6856,116 +1938,40 @@ All notable changes to this monorepo will be documented in this file.
 - **dynamic:** table columns localized titles support ([dfccb58](https://github.com/VirtoCommerce/vc-shell/commit/dfccb58492ad126402858974d84a50f3dbf09152))
 - locales moved to app scope ([ee08999](https://github.com/VirtoCommerce/vc-shell/commit/ee089996fd204ada7b8320218680d47f3418dc68))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
 ### Create VC App (@vc-shell/create-vc-app)
 
 ### Features
 - locales moved to app scope ([ee08999](https://github.com/VirtoCommerce/vc-shell/commit/ee089996fd204ada7b8320218680d47f3418dc68))
 
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.142
+## [1.0.142](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.141...v1.0.142) (2024-01-10)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **shell:** navigation slash duplication fix ([370fe03](https://github.com/VirtoCommerce/vc-shell/commit/370fe0398ef6626c541a4af5b2f7895fad49b874))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.141
+## [1.0.141](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.140...v1.0.141) (2024-01-10)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **dynamic:** using locale key as blade title ([057a188](https://github.com/VirtoCommerce/vc-shell/commit/057a188dbb9d73611e609d7fd6064502a1f95560))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.140
+## [1.0.140](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.139...v1.0.140) (2024-01-09)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - condition in getOptions ([c363f13](https://github.com/VirtoCommerce/vc-shell/commit/c363f134da870341e4840d132f1d5d5e9a0fa2d7))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.139
+## [1.0.139](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.138...v1.0.139) (2024-01-08)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **shell:** update optionsGetter signature in vc-dynamic-property.vue ([0c71460](https://github.com/VirtoCommerce/vc-shell/commit/0c71460d2d3c785cd5d8fe2b0b58ebc2c3020248))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.138
+## [1.0.138](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.137...v1.0.138) (2024-01-08)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -6974,23 +1980,7 @@ All notable changes to this monorepo will be documented in this file.
 ### Bug Fixes
 - **shell:** base url param support, routes injection in navigation plugin ([414fe2d](https://github.com/VirtoCommerce/vc-shell/commit/414fe2d0509b0642b1afe5aac96d83f0975ddd95))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.137
+## [1.0.137](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.136...v1.0.137) (2024-01-04)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -6998,46 +1988,14 @@ All notable changes to this monorepo will be documented in this file.
 - **dynamic:** refactored condition on route leave ([25f23e5](https://github.com/VirtoCommerce/vc-shell/commit/25f23e5311c4754e26c125f1ea717fe6d196a79b))
 - **ui:** remove unused options property from vc-blade-toolbar-button.vue ([4fc462b](https://github.com/VirtoCommerce/vc-shell/commit/4fc462b28dabe384689ebd3b9a4d5f5eab114ed9))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.136
+## [1.0.136](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.135...v1.0.136) (2024-01-03)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **dynamic:** nested fields context reactivity fix ([9613105](https://github.com/VirtoCommerce/vc-shell/commit/9613105f6c1b4c7dc47b386203603763c75595b1))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.135
+## [1.0.135](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.134...v1.0.135) (2024-01-03)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -7047,23 +2005,7 @@ All notable changes to this monorepo will be documented in this file.
 - **shell:** refactor vc-multivalue component to improve readability and maintainability ([e49fd74](https://github.com/VirtoCommerce/vc-shell/commit/e49fd74f23e14d252d0969773edb169a7556eddb))
 - **shell:** replace url if blade have no url ([bb97100](https://github.com/VirtoCommerce/vc-shell/commit/bb97100aa94bdc76d0d8c1b01560d35593ce8dfa))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.134
+## [1.0.134](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.133...v1.0.134) (2023-12-29)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -7071,46 +2013,14 @@ All notable changes to this monorepo will be documented in this file.
 - **shell:** intercept seller load error ([9f94420](https://github.com/VirtoCommerce/vc-shell/commit/9f94420aad2aaac02ca4efc56c5e22c885662c93))
 - **shell:** refactor vc-notification component styling to support scrolling ([93345c5](https://github.com/VirtoCommerce/vc-shell/commit/93345c59d415d27dee20e3abc6642b3f2ea07da1))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.133
+## [1.0.133](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.132...v1.0.133) (2023-12-28)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **shell:** useMenuService permissions ([73ca465](https://github.com/VirtoCommerce/vc-shell/commit/73ca4650e2b4458e47b78c2a99e50003ce02c6bd))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.132
+## [1.0.132](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.131...v1.0.132) (2023-12-28)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -7129,61 +2039,23 @@ All notable changes to this monorepo will be documented in this file.
 ### Features
 - **create-vc-app:** strict types ([f336f8d](https://github.com/VirtoCommerce/vc-shell/commit/f336f8daaddd5268f0c68a625bcb1dc7719f542f))
 
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
 ### TypeScript Config (@vc-shell/ts-config)
 
 ### Features
 - **ts-config:** always strict ([09ba244](https://github.com/VirtoCommerce/vc-shell/commit/09ba2444add7e9717e0cc097141f16585b490b23))
 
-## 1.0.131
+## [1.0.131](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.130...v1.0.131) (2023-12-28)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **shell:** interceptor method name fix ([293ba14](https://github.com/VirtoCommerce/vc-shell/commit/293ba14952c779141b6be417653e317afd2e98e9))
 
-### API Client Generator (@vc-shell/api-client-generator)
+## [1.0.130](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.129...v1.0.130) (2023-12-27)
 
 **Note:** Version bump only for package
 
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.130
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package
-
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.129
+## [1.0.129](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.128...v1.0.129) (2023-12-27)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -7234,122 +2106,42 @@ All notable changes to this monorepo will be documented in this file.
 ### Features
 - **configs:** update release-config package.json and utils.ts ([cd932ce](https://github.com/VirtoCommerce/vc-shell/commit/cd932cea266840df372dbddd9d0cfd339a54ed51))
 
-## 1.0.128
+## [1.0.128](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.127...v1.0.128) (2023-12-14)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **dynamic:** ability to add custom visibility method to columns schema ([68922fd](https://github.com/VirtoCommerce/vc-shell/commit/68922fda60310f1f85d5c34122248693897354e4))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.127
+## [1.0.127](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.126...v1.0.127) (2023-12-13)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **dynamic:** props pass to created component instance ([29331fb](https://github.com/VirtoCommerce/vc-shell/commit/29331fb60bacf142d48eccc1af117a0b8fc299dd))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.126
+## [1.0.126](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.125...v1.0.126) (2023-11-28)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **dynamic:** multivalueschema emitValue emitLabel type ([ecd5f61](https://github.com/VirtoCommerce/vc-shell/commit/ecd5f61fe3afbfc9c9685d6596223936f20e7e4c))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.125
+## [1.0.125](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.124...v1.0.125) (2023-11-27)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **dynamic:** vc-multivalue component for dynamic views ([9b9befc](https://github.com/VirtoCommerce/vc-shell/commit/9b9befc7b2caa3413c6af317322394e79f0cc9ad))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.124
+## [1.0.124](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.123...v1.0.124) (2023-11-27)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **framework:** Fix defaultValue assignment in vc-select.vue ([516a749](https://github.com/VirtoCommerce/vc-shell/commit/516a74980fb3c52ec1a322f19233fc5298a0f0fd))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.123
+## [1.0.123](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.122...v1.0.123) (2023-11-24)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -7361,54 +2153,16 @@ All notable changes to this monorepo will be documented in this file.
 - **framework:** vc-card redundant css class fix ([10d4cc1](https://github.com/VirtoCommerce/vc-shell/commit/10d4cc172e7daae41fbe7ea8d89ffde5f9f70795))
 - **framework:** vc-table pullToReload fix ([10007c5](https://github.com/VirtoCommerce/vc-shell/commit/10007c53f2a278a629efc780243c2abadb642cfa))
 
-### API Client Generator (@vc-shell/api-client-generator)
+## [1.0.122](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.121...v1.0.122) (2023-11-14)
 
 **Note:** Version bump only for package
 
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.122
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package
-
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.121
+## [1.0.121](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.120...v1.0.121) (2023-11-14)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - strict type check in framework ([4e46e67](https://github.com/VirtoCommerce/vc-shell/commit/4e46e679154da42b4f0194c193708ee581be2f1b))
-
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
 
 ### Create VC App (@vc-shell/create-vc-app)
 
@@ -7422,18 +2176,14 @@ All notable changes to this monorepo will be documented in this file.
 ### Features
 - **release-config:** custom version ([40ffc20](https://github.com/VirtoCommerce/vc-shell/commit/40ffc202f5cf89aa32456bff713b3787d2e7e7cb))
 
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.120
+## [1.0.120](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.119...v1.0.120) (2023-11-09)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Reverts
 - vc-table TableItem type ([6b09d1f](https://github.com/VirtoCommerce/vc-shell/commit/6b09d1f5387fb26f34d1fdd7b3715c1404f54c9d))
 
-## 1.0.119
+## [1.0.119](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.118...v1.0.119) (2023-11-07)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -7446,23 +2196,7 @@ All notable changes to this monorepo will be documented in this file.
 - **framework:** vc-popup error/warning binding ([d380ae1](https://github.com/VirtoCommerce/vc-shell/commit/d380ae12d2df1a16476fa25654ff40ce17b0cf1f))
 - **framewrok:** vc-field removed redundant div wrapper ([1b35c20](https://github.com/VirtoCommerce/vc-shell/commit/1b35c2066bfe9b28060d672fdbd7429010d62ffc))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.118
+## [1.0.118](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.117...v1.0.118) (2023-11-06)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -7476,69 +2210,21 @@ All notable changes to this monorepo will be documented in this file.
 - **framework:** vc-table-cell condition fix ([b96dbcc](https://github.com/VirtoCommerce/vc-shell/commit/b96dbcc9adb671542b27d285c648fafd93cd8dfb))
 - nodeBuilder reactivity loss fix ([ace445e](https://github.com/VirtoCommerce/vc-shell/commit/ace445e3525355b879cb59cdac4a2876421e594c))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.117
+## [1.0.117](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.116...v1.0.117) (2023-11-06)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **@vc-shell/framework:** isWorkspace blade option ([8647e66](https://github.com/VirtoCommerce/vc-shell/commit/8647e66ab6eed51efbfcb1e8f01323fba5dd7579))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.116
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package
-
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
+## [1.0.116](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.115...v1.0.116) (2023-11-02)
 
 ### Create VC App (@vc-shell/create-vc-app)
 
 ### Features
 - updated release in boilerplate and sample ([382265b](https://github.com/VirtoCommerce/vc-shell/commit/382265b1a740504b5a4de89cbb7cba38b3d74539))
 
-### Release Config (@vc-shell/release-config)
-
-**Note:** Version bump only for package
-
-### TypeScript Config (@vc-shell/ts-config)
-
-**Note:** Version bump only for package
-
-## 1.0.115
+## [1.0.115](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.114...v1.0.115) (2023-11-02)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -7570,22 +2256,14 @@ All notable changes to this monorepo will be documented in this file.
 ### Features
 - release-config and ts-config packages ([c901ebf](https://github.com/VirtoCommerce/vc-shell/commit/c901ebffa19569f647a351de484e3d807425b920))
 
-## 1.0.114
+## [1.0.114](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.113...v1.0.114) (2023-10-25)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - vm-1215 expose in dynamic blade ([58cf7ef](https://github.com/VirtoCommerce/vc-shell/commit/58cf7effba8b48865373ce444fc2c7902ae16669))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-## 1.0.113
+## [1.0.113](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.111...v1.0.113) (2023-10-25)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -7613,7 +2291,7 @@ All notable changes to this monorepo will be documented in this file.
 ### Features
 - **@vc-shell/api-client:** Replace .env variables to command line args ([4bcfade](https://github.com/VirtoCommerce/vc-shell/commit/4bcfade6f0eee7f6e2b74ed898d5b90da1198da8))
 
-## 1.0.111
+## [1.0.111](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.110...v1.0.111) (2023-10-17)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -7627,16 +2305,12 @@ All notable changes to this monorepo will be documented in this file.
 - open blade on mount fix in import-module ([6644e03](https://github.com/VirtoCommerce/vc-shell/commit/6644e03bcac5b1298db160f3b749c8a44bb8c9c7))
 - override ts-ignore toSpliced ([c360888](https://github.com/VirtoCommerce/vc-shell/commit/c3608889c4bc987f475f9d25a9149aad4b59bac6))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
 ### Create VC App (@vc-shell/create-vc-app)
 
 ### Features
 - dynamic modules ([ed4af3a](https://github.com/VirtoCommerce/vc-shell/commit/ed4af3ad65e47b0d633d6e2eb23e9c90d73ff50d))
 
-## 1.0.110
+## [1.0.110](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.109...v1.0.110) (2023-10-16)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -7647,229 +2321,79 @@ All notable changes to this monorepo will be documented in this file.
 - code review improvements ([5453ba0](https://github.com/VirtoCommerce/vc-shell/commit/5453ba0388a51b2946408b980e119a0ad20f7647))
 - delete index.ts from framework api ([8cc2fee](https://github.com/VirtoCommerce/vc-shell/commit/8cc2feef30ac38bcf229234456cac78c8e23f158))
 
-### API Client Generator (@vc-shell/api-client-generator)
+## [1.0.109](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.108...v1.0.109) (2023-10-13)
 
 **Note:** Version bump only for package
 
-### Create VC App (@vc-shell/create-vc-app)
+## [1.0.108](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.107...v1.0.108) (2023-10-13)
 
 **Note:** Version bump only for package
 
-## 1.0.109
-
-### VC-Shell Framework (@vc-shell/framework)
+## [1.0.107](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.106...v1.0.107) (2023-10-12)
 
 **Note:** Version bump only for package
 
-### API Client Generator (@vc-shell/api-client-generator)
+## [1.0.106](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.105...v1.0.106) (2023-10-12)
 
 **Note:** Version bump only for package
 
-### Create VC App (@vc-shell/create-vc-app)
+## [1.0.105](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.104...v1.0.105) (2023-10-02)
 
 **Note:** Version bump only for package
 
-## 1.0.108
-
-### VC-Shell Framework (@vc-shell/framework)
+## [1.0.104](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.103...v1.0.104) (2023-10-02)
 
 **Note:** Version bump only for package
 
-### API Client Generator (@vc-shell/api-client-generator)
+## [1.0.103](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.102...v1.0.103) (2023-09-29)
 
 **Note:** Version bump only for package
 
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-## 1.0.107
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package
-
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-## 1.0.106
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package
-
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-## 1.0.105
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package
-
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-## 1.0.104
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package
-
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-## 1.0.103
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package
-
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-## 1.0.102
+## [1.0.102](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.101...v1.0.102) (2023-09-29)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - escape images url ([7bc4f95](https://github.com/VirtoCommerce/vc-shell/commit/7bc4f95a6718300d0fa158d17c08ef6bc3b61429))
 
-### API Client Generator (@vc-shell/api-client-generator)
+## [1.0.101](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.100...v1.0.101) (2023-09-28)
 
 **Note:** Version bump only for package
 
-### Create VC App (@vc-shell/create-vc-app)
+## [1.0.100](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.99...v1.0.100) (2023-09-22)
 
 **Note:** Version bump only for package
 
-## 1.0.101
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package
-
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-## 1.0.100
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package
-
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-## 1.0.99
+## [1.0.99](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.98...v1.0.99) (2023-09-22)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - encode/decode image url ([d0b32b1](https://github.com/VirtoCommerce/vc-shell/commit/d0b32b1d46a58eb3814ce0086244375df90c5f24))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-## 1.0.98
+## [1.0.98](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.97...v1.0.98) (2023-09-21)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - decode image url ([8ce7dbf](https://github.com/VirtoCommerce/vc-shell/commit/8ce7dbfeb9c8c675fe971a134736743357cdc9b7))
 
-### API Client Generator (@vc-shell/api-client-generator)
+## [1.0.97](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.96...v1.0.97) (2023-09-12)
 
 **Note:** Version bump only for package
 
-### Create VC App (@vc-shell/create-vc-app)
+## [1.0.96](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.95...v1.0.96) (2023-08-28)
 
 **Note:** Version bump only for package
 
-## 1.0.97
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package
-
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-## 1.0.96
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package
-
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-## 1.0.95
+## [1.0.95](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.94...v1.0.95) (2023-08-28)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - controls for multilang properties ([b07940d](https://github.com/VirtoCommerce/vc-shell/commit/b07940d02f97387929c0081b033f87185fa375b9))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-## 1.0.94
+## [1.0.94](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.92...v1.0.94) (2023-08-04)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -7881,72 +2405,26 @@ All notable changes to this monorepo will be documented in this file.
 - dynamic properties fix ([1f2738a](https://github.com/VirtoCommerce/vc-shell/commit/1f2738a95c1da6fc83ea9086aafab935f4f79bfe))
 - temporary ([65d7a58](https://github.com/VirtoCommerce/vc-shell/commit/65d7a58e159a4f5a06581710156a533790437f4b))
 
-### API Client Generator (@vc-shell/api-client-generator)
+## [1.0.92](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.91...v1.0.92) (2023-07-12)
 
 **Note:** Version bump only for package
 
-### Create VC App (@vc-shell/create-vc-app)
+## [1.0.91](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.90...v1.0.91) (2023-07-12)
 
 **Note:** Version bump only for package
 
-## 1.0.92
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package
-
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-## 1.0.91
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package
-
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-## 1.0.90
+## [1.0.90](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.89...v1.0.90) (2023-07-12)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - editor update on status change/val rule fix ([ad269a4](https://github.com/VirtoCommerce/vc-shell/commit/ad269a4a74a5d5539aa08d353367b11ecbf6b99b))
 
-### API Client Generator (@vc-shell/api-client-generator)
+## [1.0.89](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.88...v1.0.89) (2023-07-07)
 
 **Note:** Version bump only for package
 
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-## 1.0.89
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package
-
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-## 1.0.88
+## [1.0.88](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.87...v1.0.88) (2023-06-27)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -7954,173 +2432,65 @@ All notable changes to this monorepo will be documented in this file.
 - azure ([419830f](https://github.com/VirtoCommerce/vc-shell/commit/419830f01ea3e8d0c93779ebfb8725a7af551e9e))
 - vc-select search ([3aaf55e](https://github.com/VirtoCommerce/vc-shell/commit/3aaf55ec5fb0b6a311f332ab5b0d4e3a227e525d))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-## 1.0.87
+## [1.0.87](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.86...v1.0.87) (2023-06-26)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - navigation exact blade ([7a20053](https://github.com/VirtoCommerce/vc-shell/commit/7a20053705a5e98eeb9bdf3768ab45be113ba66a))
 
-### API Client Generator (@vc-shell/api-client-generator)
+## [1.0.86](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.85...v1.0.86) (2023-06-23)
 
 **Note:** Version bump only for package
 
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-## 1.0.86
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package
-
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-## 1.0.85
+## [1.0.85](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.84...v1.0.85) (2023-06-23)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - check permissions plugin ([cc65272](https://github.com/VirtoCommerce/vc-shell/commit/cc65272d933e29f427b1403df2bdd627b15dd1e6))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
 ### Create VC App (@vc-shell/create-vc-app)
 
 ### Bug Fixes
 - check permissions plugin ([cc65272](https://github.com/VirtoCommerce/vc-shell/commit/cc65272d933e29f427b1403df2bdd627b15dd1e6))
 
-## 1.0.84
-
-### VC-Shell Framework (@vc-shell/framework)
+## [1.0.84](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.83...v1.0.84) (2023-06-23)
 
 **Note:** Version bump only for package
 
-### API Client Generator (@vc-shell/api-client-generator)
+## [1.0.83](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.82...v1.0.83) (2023-06-23)
 
 **Note:** Version bump only for package
 
-### Create VC App (@vc-shell/create-vc-app)
+## [1.0.82](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.81...v1.0.82) (2023-06-23)
 
 **Note:** Version bump only for package
 
-## 1.0.83
-
-### VC-Shell Framework (@vc-shell/framework)
+## [1.0.81](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.80...v1.0.81) (2023-06-23)
 
 **Note:** Version bump only for package
 
-### API Client Generator (@vc-shell/api-client-generator)
+## [1.0.80](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.79...v1.0.80) (2023-06-22)
 
 **Note:** Version bump only for package
 
-### Create VC App (@vc-shell/create-vc-app)
+## [1.0.79](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.78...v1.0.79) (2023-06-22)
 
 **Note:** Version bump only for package
 
-## 1.0.82
-
-### VC-Shell Framework (@vc-shell/framework)
+## [1.0.78](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.77...v1.0.78) (2023-06-22)
 
 **Note:** Version bump only for package
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-## 1.0.81
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package
-
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-## 1.0.80
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package
-
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-## 1.0.79
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package
-
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-## 1.0.78
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package
-
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-## 1.0.77
+## [1.0.77](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.76...v1.0.77) (2023-06-22)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - base url ([848feb7](https://github.com/VirtoCommerce/vc-shell/commit/848feb7e607cdfc6eb230e3c392ed4ca92457596))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-## 1.0.76
+## [1.0.76](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.75...v1.0.76) (2023-06-22)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -8128,30 +2498,14 @@ All notable changes to this monorepo will be documented in this file.
 - azure login ([bd2d822](https://github.com/VirtoCommerce/vc-shell/commit/bd2d8221f0e3a286fa944da4c7be7eda81786588))
 - base app path ([146b01b](https://github.com/VirtoCommerce/vc-shell/commit/146b01b2e9001ab170dce1c4758d46761ab5e21f))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-## 1.0.75
+## [1.0.75](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.74...v1.0.75) (2023-06-21)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - forgotPassword condition ([428a339](https://github.com/VirtoCommerce/vc-shell/commit/428a33950bd2aa43b04a5112682032e6fddd7d2e))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-## 1.0.74
+## [1.0.74](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.73...v1.0.74) (2023-06-21)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -8159,31 +2513,19 @@ All notable changes to this monorepo will be documented in this file.
 - azure base env ([b511031](https://github.com/VirtoCommerce/vc-shell/commit/b511031c302be5f2ae251eddeb09f5f3fbf2f2bb))
 - pass platformUrl to shell ([6265790](https://github.com/VirtoCommerce/vc-shell/commit/62657901ae6738883ed785e4f54507db85ba7d66))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
 ### Create VC App (@vc-shell/create-vc-app)
 
 ### Bug Fixes
 - pass platformUrl to shell ([6265790](https://github.com/VirtoCommerce/vc-shell/commit/62657901ae6738883ed785e4f54507db85ba7d66))
 
-## 1.0.73
+## [1.0.73](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.72...v1.0.73) (2023-06-08)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - vc-select generic ([8aca326](https://github.com/VirtoCommerce/vc-shell/commit/8aca3260cc1d5912f5c8063314d820b14078373e))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-## 1.0.72
+## [1.0.72](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.71...v1.0.72) (2023-06-07)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -8194,15 +2536,7 @@ All notable changes to this monorepo will be documented in this file.
 - vc-app-bar mobile styles ([75955d4](https://github.com/VirtoCommerce/vc-shell/commit/75955d4cb9692a3430395f8dbf5943b5c2eb8f36))
 - vc-select dropdown closing ([ecde06f](https://github.com/VirtoCommerce/vc-shell/commit/ecde06ffd679d06f7d8f75304437510f4e46063c))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-### Create VC App (@vc-shell/create-vc-app)
-
-**Note:** Version bump only for package
-
-## 1.0.71
+## [1.0.71](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.70...v1.0.71) (2023-06-02)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -8233,7 +2567,7 @@ All notable changes to this monorepo will be documented in this file.
 ### Bug Fixes
 - fixed create-vc-app template ([f433fea](https://github.com/VirtoCommerce/vc-shell/commit/f433feaf4b75badeea427b61061a08b9a6056c8a))
 
-## 1.0.70
+## [1.0.70](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.69...v1.0.70) (2023-05-18)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -8267,7 +2601,7 @@ All notable changes to this monorepo will be documented in this file.
 ### Bug Fixes
 - other fixes/refactors and types updated ([46ebd82](https://github.com/VirtoCommerce/vc-shell/commit/46ebd823234741b1e0f8c987b5bcdd65808dbd7a))
 
-## 1.0.69
+## [1.0.69](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.68...v1.0.69) (2023-04-26)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -8281,7 +2615,7 @@ All notable changes to this monorepo will be documented in this file.
 ### Bug Fixes
 - fixed api-generation ([1e39974](https://github.com/VirtoCommerce/vc-shell/commit/1e39974ec27fa2ab2a3d5346c590be30f5d689d3))
 
-## 1.0.68
+## [1.0.68](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.67...v1.0.68) (2023-04-24)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -8304,69 +2638,49 @@ All notable changes to this monorepo will be documented in this file.
 ### Reverts
 - version ([9c36dfd](https://github.com/VirtoCommerce/vc-shell/commit/9c36dfd1b91d391763ae7576be6c2eedd65a4828))
 
-## 1.0.67
+## [1.0.67](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.66...v1.0.67) (2023-04-18)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - base prop in app-switcher ([b797317](https://github.com/VirtoCommerce/vc-shell/commit/b797317c72b89fca50814c5c84ca472640e3bf04))
 
-## 1.0.66
+## [1.0.66](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.65...v1.0.66) (2023-04-17)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - navigation fix ([5a0fd23](https://github.com/VirtoCommerce/vc-shell/commit/5a0fd23969922026b9fad467004dca89d4a9d105))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-## 1.0.65
+## [1.0.65](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.64...v1.0.65) (2023-04-17)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - navigation fix ([7e062d9](https://github.com/VirtoCommerce/vc-shell/commit/7e062d9cab016faa2a6341961f0c857d930d016b))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-## 1.0.64
+## [1.0.64](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.63...v1.0.64) (2023-04-14)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - querystring alias ([723bc10](https://github.com/VirtoCommerce/vc-shell/commit/723bc103687d07c350dd4a9720fe674a50e0e131))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-## 1.0.63
+## [1.0.63](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.62...v1.0.63) (2023-04-13)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - bulk delete in vc-table ([56e8a43](https://github.com/VirtoCommerce/vc-shell/commit/56e8a43dd079654a6ee6d45c1a543b9bbb591f36))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-## 1.0.62
+## [1.0.62](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.61...v1.0.62) (2023-04-13)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Reverts
 - vc-table without bulk delete ([ca2865b](https://github.com/VirtoCommerce/vc-shell/commit/ca2865bea4c5b9b72fc7b704dfc229f0762fa149))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-## 1.0.61
+## [1.0.61](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.60...v1.0.61) (2023-04-13)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -8392,7 +2706,7 @@ All notable changes to this monorepo will be documented in this file.
 ### Bug Fixes
 - deps revert ([6068096](https://github.com/VirtoCommerce/vc-shell/commit/6068096bdef9a3021208399a048e36d027304e89))
 
-## 1.0.60
+## [1.0.60](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.59...v1.0.60) (2023-03-30)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -8401,11 +2715,7 @@ All notable changes to this monorepo will be documented in this file.
 - pk-223 ([c93149c](https://github.com/VirtoCommerce/vc-shell/commit/c93149c4bf65d3a536d4a69b8905671b2a80eb30))
 - vm-1134 ([3413aec](https://github.com/VirtoCommerce/vc-shell/commit/3413aec15023581cd77e32d71d4adc89c2ef3289))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-## 1.0.59
+## [1.0.59](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.58...v1.0.59) (2023-03-29)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -8421,11 +2731,7 @@ All notable changes to this monorepo will be documented in this file.
 - pk-216 pk-215 ([d800f0c](https://github.com/VirtoCommerce/vc-shell/commit/d800f0c39fc7c0b8b211d3e8690139e0678dcc35))
 - vm-1121 ([26a8ce3](https://github.com/VirtoCommerce/vc-shell/commit/26a8ce3857c9bb3864d24c6a890af5ef7bf42bcd))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-## 1.0.58
+## [1.0.58](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.57...v1.0.58) (2023-03-23)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -8434,11 +2740,7 @@ All notable changes to this monorepo will be documented in this file.
 ### Bug Fixes
 - fixed closing child blades ([8c3f853](https://github.com/VirtoCommerce/vc-shell/commit/8c3f853370f30b5c35fb2c3bcc03c59bab032838))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-## 1.0.57
+## [1.0.57](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.56...v1.0.57) (2023-03-22)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -8464,18 +2766,14 @@ All notable changes to this monorepo will be documented in this file.
 ### Bug Fixes
 - some fixes and up version ([ee3d33f](https://github.com/VirtoCommerce/vc-shell/commit/ee3d33f68015cf13cc250346a89c538a0218361b))
 
-## 1.0.55
+## [1.0.55](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.54...v1.0.55) (2023-03-14)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - table sorting/drag'n'drop/column edit ([e542e5c](https://github.com/VirtoCommerce/vc-shell/commit/e542e5c62f589d6d6a4e5d011289a0845bf1326b))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-## 1.0.54
+## [1.0.54](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.53...v1.0.54) (2023-03-07)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -8490,18 +2788,14 @@ All notable changes to this monorepo will be documented in this file.
 ### Features
 - deps new versions, vc-shell as ES module, config builder refactoring, new logger ([2cee26c](https://github.com/VirtoCommerce/vc-shell/commit/2cee26c6017b449481dd5c3562043b116a95387f))
 
-## 1.0.53
+## [1.0.53](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.52...v1.0.53) (2023-03-02)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - types fix/revert unwanted changes ([bf00500](https://github.com/VirtoCommerce/vc-shell/commit/bf00500be7ecdfea1f190556f2d933c2173e66c9))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-## 1.0.52
+## [1.0.52](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.51...v1.0.52) (2023-03-02)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -8513,18 +2807,14 @@ All notable changes to this monorepo will be documented in this file.
 ### Bug Fixes
 - routing fix ([86f38c6](https://github.com/VirtoCommerce/vc-shell/commit/86f38c6a3c0ce2461fd0c49bd446f5c94c359d61))
 
-## 1.0.51
+## [1.0.51](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.50...v1.0.51) (2023-03-02)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - shared tailwind styles ([9f9be99](https://github.com/VirtoCommerce/vc-shell/commit/9f9be99aa0709d7f5e3a056e7298cb64af8940ef))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-## 1.0.50
+## [1.0.50](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.49...v1.0.50) (2023-03-01)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -8536,7 +2826,7 @@ All notable changes to this monorepo will be documented in this file.
 ### Bug Fixes
 - api client generation ([c362166](https://github.com/VirtoCommerce/vc-shell/commit/c362166740d9fde2c3135d20bd31ab62eecfd241))
 
-## 1.0.49
+## [1.0.49](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.48...v1.0.49) (2023-02-27)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -8552,11 +2842,7 @@ All notable changes to this monorepo will be documented in this file.
 - typo ([ebb4f20](https://github.com/VirtoCommerce/vc-shell/commit/ebb4f207d714c42051626e600f883b4f87aa293c))
 - unused var fix ([b0f62e9](https://github.com/VirtoCommerce/vc-shell/commit/b0f62e93adceb10d8c34ce61d18bb6a5622417c1))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-## 1.0.48
+## [1.0.48](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.47...v1.0.48) (2023-02-27)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -8565,11 +2851,7 @@ All notable changes to this monorepo will be documented in this file.
 ### Bug Fixes
 - slider fix ([52586c4](https://github.com/VirtoCommerce/vc-shell/commit/52586c45a2afccad5d9d4afa4e830389ec3b192f))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-## 1.0.47
+## [1.0.47](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.46...v1.0.47) (2023-02-22)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -8581,18 +2863,14 @@ All notable changes to this monorepo will be documented in this file.
 ### Bug Fixes
 - fixed types ([88c89e2](https://github.com/VirtoCommerce/vc-shell/commit/88c89e20430bbd727827ba82ca3427f11aff0c1c))
 
-## 1.0.46
+## [1.0.46](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.45...v1.0.46) (2023-02-16)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - tailwind blade fix ([ffdbf5a](https://github.com/VirtoCommerce/vc-shell/commit/ffdbf5a8ee00d4fb2a77d185b271dfbf048e9961))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-## 1.0.45
+## [1.0.45](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.44...v1.0.45) (2023-02-15)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -8606,50 +2884,32 @@ All notable changes to this monorepo will be documented in this file.
 ### Features
 - version up ([dd20390](https://github.com/VirtoCommerce/vc-shell/commit/dd203905f203990f31e1dd57c16ed6fe43ac0b4b))
 
-## 1.0.44
+## [1.0.44](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.43...v1.0.44) (2023-02-08)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - version ([#153](https://github.com/VirtoCommerce/vc-shell/issues/153)) ([2a9b571](https://github.com/VirtoCommerce/vc-shell/commit/2a9b57151e66df6608e13dd101ce0844fe315f7e))
 
-### API Client Generator (@vc-shell/api-client-generator)
+## [1.0.43](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.42...v1.0.43) (2023-02-02)
 
 **Note:** Version bump only for package
 
-## 1.0.43
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package
-
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-## 1.0.42
+## [1.0.42](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.41...v1.0.42) (2023-02-02)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - add composables for popular code duplicates ([#152](https://github.com/VirtoCommerce/vc-shell/issues/152)) ([da9d3f3](https://github.com/VirtoCommerce/vc-shell/commit/da9d3f300e43d536c563bb5ca1214ec8b54fefa3))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-## 1.0.41
+## [1.0.41](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.40...v1.0.41) (2023-01-20)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - extended customization ([07275b8](https://github.com/VirtoCommerce/vc-shell/commit/07275b862e8fddfe01ab9ceabca85f4e1449cace))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-## 1.0.40
+## [1.0.40](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.39...v1.0.40) (2023-01-17)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -8662,11 +2922,7 @@ All notable changes to this monorepo will be documented in this file.
 - components refactoring ([3eccded](https://github.com/VirtoCommerce/vc-shell/commit/3eccdeddaa04d208793a3408847aca298be95ee9))
 - useBladeNavigation parent routing error fix ([7e03eff](https://github.com/VirtoCommerce/vc-shell/commit/7e03effef5961aa0e23d5db337eda6b36563922e))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-## 1.0.39
+## [1.0.39](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.38...v1.0.39) (2022-12-12)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -8677,11 +2933,7 @@ All notable changes to this monorepo will be documented in this file.
 - refactored aliases, main blade expanded fix/param fix, eslint config in framework ([673b714](https://github.com/VirtoCommerce/vc-shell/commit/673b7144abb98aa66cf4c13f54d457a78213dcf4))
 - removed console.log ([f5c6001](https://github.com/VirtoCommerce/vc-shell/commit/f5c60017d72c115cfd8b83624175fcd8b0180cf7))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-## 1.0.38
+## [1.0.38](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.37...v1.0.38) (2022-12-05)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -8706,17 +2958,11 @@ All notable changes to this monorepo will be documented in this file.
 ### Features
 - merged framework library ([46a2691](https://github.com/VirtoCommerce/vc-shell/commit/46a26910b5c437fddec8d280445209999ff77240))
 
-## 1.0.37
-
-### VC-Shell Framework (@vc-shell/framework)
+## [1.0.37](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.36...v1.0.37) (2022-11-22)
 
 **Note:** Version bump only for package
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-## 1.0.36
+## [1.0.36](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.35...v1.0.36) (2022-11-21)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -8730,7 +2976,7 @@ All notable changes to this monorepo will be documented in this file.
 ### Bug Fixes
 - remove unwanted gitHead ([3ec4f11](https://github.com/VirtoCommerce/vc-shell/commit/3ec4f115d030375da0b1675be645bad43ee9c544))
 
-## 1.0.34
+## [1.0.34](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.33...v1.0.34) (2022-11-15)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -8741,11 +2987,7 @@ All notable changes to this monorepo will be documented in this file.
 - vuedraggable fix ([e5a78c1](https://github.com/VirtoCommerce/vc-shell/commit/e5a78c19a6581c7e545163731a13b16b7bbf104d))
 - vuedraggable fix ([f449489](https://github.com/VirtoCommerce/vc-shell/commit/f4494896149c50c2ef27bca82f87b45266e36807))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-## 1.0.33
+## [1.0.33](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.32...v1.0.33) (2022-10-24)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -8754,21 +2996,11 @@ All notable changes to this monorepo will be documented in this file.
 - vuedraggable fix ([cbeeaae](https://github.com/VirtoCommerce/vc-shell/commit/cbeeaae13805b4b933b1bdb696585eb208aed445))
 - vuedraggable fix ([cac509c](https://github.com/VirtoCommerce/vc-shell/commit/cac509c2a3fa5cfbd1cf532e5cc8ec0e0d85ea15))
 
-### API Client Generator (@vc-shell/api-client-generator)
+## [1.0.31](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.30...v1.0.31) (2022-10-14)
 
 **Note:** Version bump only for package
 
-## 1.0.31
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package
-
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-## 1.0.30
+## [1.0.30](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.29...v1.0.30) (2022-10-14)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -8782,7 +3014,7 @@ All notable changes to this monorepo will be documented in this file.
 ### Features
 - full lib content to npm ([28cc487](https://github.com/VirtoCommerce/vc-shell/commit/28cc4874abb7806e073c976cd12baf1f8bd22f1a))
 
-## 1.0.28
+## [1.0.28](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.27...v1.0.28) (2022-10-10)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -8791,54 +3023,32 @@ All notable changes to this monorepo will be documented in this file.
 ### Bug Fixes
 - signIn issue ([c54ae9a](https://github.com/VirtoCommerce/vc-shell/commit/c54ae9aacbab57b5c650304bb2aa9bbb40b85227))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-## 1.0.27
+## [1.0.27](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.26...v1.0.27) (2022-10-07)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - fix sharing auth data ([6493fc1](https://github.com/VirtoCommerce/vc-shell/commit/6493fc1691925e9dc91061428f42c3e8fbfbe35a))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-## 1.0.26
+## [1.0.26](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.25...v1.0.26) (2022-10-07)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - local storage auth key ([5d999d6](https://github.com/VirtoCommerce/vc-shell/commit/5d999d60cf465bca29db559a9ea9312857f9ecb2))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-## 1.0.25
+## [1.0.25](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.24...v1.0.25) (2022-10-07)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - share auth data between platform manager and custom apps ([c466d00](https://github.com/VirtoCommerce/vc-shell/commit/c466d00b341e8e3d9dc7d6861449daad64d9b1c7))
 
-### API Client Generator (@vc-shell/api-client-generator)
+## [1.0.24](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.23...v1.0.24) (2022-10-06)
 
 **Note:** Version bump only for package
 
-## 1.0.24
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package
-
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-## 1.0.23
+## [1.0.23](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.22...v1.0.23) (2022-10-06)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -8855,17 +3065,11 @@ All notable changes to this monorepo will be documented in this file.
 ### Reverts
 - Revert "chore: %s publish" ([bfdda26](https://github.com/VirtoCommerce/vc-shell/commit/bfdda2630a86d545e5800a3508a77c0fb377fd82))
 
-## 1.0.22
-
-### VC-Shell Framework (@vc-shell/framework)
+## [1.0.22](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.21...v1.0.22) (2022-09-29)
 
 **Note:** Version bump only for package
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-## 1.0.21
+## [1.0.21](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.20...v1.0.21) (2022-09-14)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -8878,38 +3082,22 @@ All notable changes to this monorepo will be documented in this file.
 ### Features
 - vm-801 1042 800 569 1043 914 814 1054 920 1019 ([8bf48a3](https://github.com/VirtoCommerce/vc-shell/commit/8bf48a32989c1b64b2aac4a5bc96b9bdcf7f995a))
 
-## 1.0.20
-
-### VC-Shell Framework (@vc-shell/framework)
+## [1.0.20](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.19...v1.0.20) (2022-09-06)
 
 **Note:** Version bump only for package
 
-### API Client Generator (@vc-shell/api-client-generator)
+## [1.0.19](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.17...v1.0.19) (2022-08-30)
 
 **Note:** Version bump only for package
 
-## 1.0.19
-
-### VC-Shell Framework (@vc-shell/framework)
-
-**Note:** Version bump only for package
-
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-## 1.0.17
+## [1.0.17](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.16...v1.0.17) (2022-08-05)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - permissions fix ([d53c3c3](https://github.com/VirtoCommerce/vc-shell/commit/d53c3c39196e9a8aa5dac6b223bbfb81b5a5f54c))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-**Note:** Version bump only for package
-
-## 1.0.16
+## [1.0.16](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.14...v1.0.16) (2022-08-05)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -8939,7 +3127,7 @@ All notable changes to this monorepo will be documented in this file.
 - shorter human-readable names ([23033f7](https://github.com/VirtoCommerce/vc-shell/commit/23033f77aa6f6788b4e2ef1353a3c14cc6fe7392))
 - small fixes ([48db643](https://github.com/VirtoCommerce/vc-shell/commit/48db643b9bb4a19dfff03d5c326c359530beb377))
 
-## 1.0.13
+## [1.0.13](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.12...v1.0.13) (2022-07-14)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -8947,13 +3135,11 @@ All notable changes to this monorepo will be documented in this file.
 - npm publish configuration ([41e3ff8](https://github.com/VirtoCommerce/vc-shell/commit/41e3ff8c04eccff1ed9a934c5a3457aec26a32dc))
 - product details improvements ([#120](https://github.com/VirtoCommerce/vc-shell/issues/120)) ([199455c](https://github.com/VirtoCommerce/vc-shell/commit/199455c88ff1b932d2ab5e79a0f40485cdb5e181))
 
-## 1.0.12
-
-### VC-Shell Framework (@vc-shell/framework)
+## [1.0.12](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.11...v1.0.12) (2022-07-12)
 
 **Note:** Version bump only for package
 
-## 1.0.11
+## [1.0.11](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.10...v1.0.11) (2022-07-08)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -8961,187 +3147,127 @@ All notable changes to this monorepo will be documented in this file.
 - org page ([9aa669f](https://github.com/VirtoCommerce/vc-shell/commit/9aa669f2430857f1d599e8b57425ad2ba7d8758a))
 - org page ([d058bfc](https://github.com/VirtoCommerce/vc-shell/commit/d058bfcf414550707db7c2a39d76fa5a513a1350))
 
-## 1.0.10
-
-### VC-Shell Framework (@vc-shell/framework)
+## [1.0.10](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.9...v1.0.10) (2022-06-29)
 
 **Note:** Version bump only for package
 
-## 1.0.9
-
-### VC-Shell Framework (@vc-shell/framework)
+## [1.0.9](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.8...v1.0.9) (2022-06-21)
 
 **Note:** Version bump only for package
 
-## 1.0.8
-
-### VC-Shell Framework (@vc-shell/framework)
+## [1.0.8](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.7...v1.0.8) (2022-06-16)
 
 **Note:** Version bump only for package
 
-## 1.0.7
-
-### VC-Shell Framework (@vc-shell/framework)
+## [1.0.7](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.6...v1.0.7) (2022-06-09)
 
 **Note:** Version bump only for package
 
-## 1.0.6
-
-### VC-Shell Framework (@vc-shell/framework)
+## [1.0.6](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.5...v1.0.6) (2022-06-09)
 
 **Note:** Version bump only for package
 
-## 1.0.5
-
-### VC-Shell Framework (@vc-shell/framework)
+## [1.0.5](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.4...v1.0.5) (2022-06-07)
 
 **Note:** Version bump only for package
 
-## 1.0.4
-
-### VC-Shell Framework (@vc-shell/framework)
+## [1.0.4](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.3...v1.0.4) (2022-06-03)
 
 **Note:** Version bump only for package
 
-## 1.0.3
-
-### VC-Shell Framework (@vc-shell/framework)
+## [1.0.3](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.2...v1.0.3) (2022-05-30)
 
 **Note:** Version bump only for package
 
-## 1.0.2
-
-### VC-Shell Framework (@vc-shell/framework)
+## [1.0.2](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.1...v1.0.2) (2022-05-25)
 
 **Note:** Version bump only for package
 
-## 1.0.1
-
-### VC-Shell Framework (@vc-shell/framework)
+## [1.0.1](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.0...v1.0.1) (2022-05-24)
 
 **Note:** Version bump only for package
 
-## 1.0.0
-
-### VC-Shell Framework (@vc-shell/framework)
+## [1.0.0](https://github.com/VirtoCommerce/vc-shell/compare/v0.1.20...v1.0.0) (2022-05-13)
 
 **Note:** Version bump only for package
 
-## 0.1.20
-
-### VC-Shell Framework (@vc-shell/framework)
+## [0.1.20](https://github.com/VirtoCommerce/vc-shell/compare/v0.1.19...v0.1.20) (2022-04-27)
 
 **Note:** Version bump only for package
 
-## 0.1.19
-
-### VC-Shell Framework (@vc-shell/framework)
+## [0.1.19](https://github.com/VirtoCommerce/vc-shell/compare/v0.1.18...v0.1.19) (2022-04-19)
 
 **Note:** Version bump only for package
 
-## 0.1.18
-
-### VC-Shell Framework (@vc-shell/framework)
+## [0.1.18](https://github.com/VirtoCommerce/vc-shell/compare/v0.1.17...v0.1.18) (2022-04-15)
 
 **Note:** Version bump only for package
 
-## 0.1.17
-
-### VC-Shell Framework (@vc-shell/framework)
+## [0.1.17](https://github.com/VirtoCommerce/vc-shell/compare/v0.1.16...v0.1.17) (2022-04-15)
 
 **Note:** Version bump only for package
 
-## 0.1.16
-
-### VC-Shell Framework (@vc-shell/framework)
+## [0.1.16](https://github.com/VirtoCommerce/vc-shell/compare/v0.1.15...v0.1.16) (2022-04-15)
 
 **Note:** Version bump only for package
 
-## 0.1.15
-
-### VC-Shell Framework (@vc-shell/framework)
+## [0.1.15](https://github.com/VirtoCommerce/vc-shell/compare/v0.1.13...v0.1.15) (2022-04-15)
 
 **Note:** Version bump only for package
 
-## 0.1.13
-
-### VC-Shell Framework (@vc-shell/framework)
+## [0.1.13](https://github.com/VirtoCommerce/vc-shell/compare/v0.1.12...v0.1.13) (2022-04-14)
 
 **Note:** Version bump only for package
 
-## 0.1.12
-
-### VC-Shell Framework (@vc-shell/framework)
+## [0.1.12](https://github.com/VirtoCommerce/vc-shell/compare/v0.1.11...v0.1.12) (2022-04-07)
 
 **Note:** Version bump only for package
 
-## 0.1.11
-
-### VC-Shell Framework (@vc-shell/framework)
+## [0.1.11](https://github.com/VirtoCommerce/vc-shell/compare/v0.1.10...v0.1.11) (2022-04-05)
 
 **Note:** Version bump only for package
 
-## 0.1.10
-
-### VC-Shell Framework (@vc-shell/framework)
+## [0.1.10](https://github.com/VirtoCommerce/vc-shell/compare/v0.1.9...v0.1.10) (2022-04-04)
 
 **Note:** Version bump only for package
 
-## 0.1.9
-
-### VC-Shell Framework (@vc-shell/framework)
+## [0.1.9](https://github.com/VirtoCommerce/vc-shell/compare/v0.1.8...v0.1.9) (2022-04-01)
 
 **Note:** Version bump only for package
 
-## 0.1.8
-
-### VC-Shell Framework (@vc-shell/framework)
+## [0.1.8](https://github.com/VirtoCommerce/vc-shell/compare/v0.1.7...v0.1.8) (2022-03-29)
 
 **Note:** Version bump only for package
 
-## 0.1.7
-
-### VC-Shell Framework (@vc-shell/framework)
+## [0.1.7](https://github.com/VirtoCommerce/vc-shell/compare/v0.1.6...v0.1.7) (2022-03-17)
 
 **Note:** Version bump only for package
 
-## 0.1.6
-
-### VC-Shell Framework (@vc-shell/framework)
+## [0.1.6](https://github.com/VirtoCommerce/vc-shell/compare/v0.1.5...v0.1.6) (2022-03-16)
 
 **Note:** Version bump only for package
 
-## 0.1.5
-
-### VC-Shell Framework (@vc-shell/framework)
+## [0.1.5](https://github.com/VirtoCommerce/vc-shell/compare/v0.1.4...v0.1.5) (2022-03-16)
 
 **Note:** Version bump only for package
 
-## 0.1.4
-
-### VC-Shell Framework (@vc-shell/framework)
+## [0.1.4](https://github.com/VirtoCommerce/vc-shell/compare/v0.1.3...v0.1.4) (2022-03-16)
 
 **Note:** Version bump only for package
 
-## 0.1.3
-
-### VC-Shell Framework (@vc-shell/framework)
+## [0.1.3](https://github.com/VirtoCommerce/vc-shell/compare/v0.1.2...v0.1.3) (2022-03-14)
 
 **Note:** Version bump only for package
 
-## 0.1.2
-
-### VC-Shell Framework (@vc-shell/framework)
+## [0.1.2](https://github.com/VirtoCommerce/vc-shell/compare/v0.1.1...v0.1.2) (2022-03-10)
 
 **Note:** Version bump only for package
 
-## 0.1.1
-
-### VC-Shell Framework (@vc-shell/framework)
+## [0.1.1](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.123...v0.1.1) (2022-03-10)
 
 **Note:** Version bump only for package
 
-## 0.0.123
+## [0.0.123](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.122...v0.0.123) (2022-03-04)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -9150,188 +3276,130 @@ All notable changes to this monorepo will be documented in this file.
 - dynamic name fix ([b083495](https://github.com/VirtoCommerce/vc-shell/commit/b0834951087f720562f28fc78a28a69ea0e65cb9))
 - required key change ([5de380f](https://github.com/VirtoCommerce/vc-shell/commit/5de380f3a2f1493a3a45b1f1199aaa9cb224df76))
 
-## 0.0.122
-
-### VC-Shell Framework (@vc-shell/framework)
+## [0.0.122](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.121...v0.0.122) (2022-02-28)
 
 **Note:** Version bump only for package
 
-## 0.0.121
-
-### VC-Shell Framework (@vc-shell/framework)
+## [0.0.121](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.120...v0.0.121) (2022-02-24)
 
 **Note:** Version bump only for package
 
-## 0.0.120
-
-### VC-Shell Framework (@vc-shell/framework)
+## [0.0.120](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.119...v0.0.120) (2022-02-17)
 
 **Note:** Version bump only for package
 
-## 0.0.119
-
-### VC-Shell Framework (@vc-shell/framework)
+## [0.0.119](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.117...v0.0.119) (2022-02-16)
 
 **Note:** Version bump only for package
 
-## 0.0.117
-
-### VC-Shell Framework (@vc-shell/framework)
+## [0.0.117](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.116...v0.0.117) (2022-02-16)
 
 **Note:** Version bump only for package
 
-## 0.0.116
-
-### VC-Shell Framework (@vc-shell/framework)
+## [0.0.116](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.115...v0.0.116) (2022-02-14)
 
 **Note:** Version bump only for package
 
-## 0.0.115
-
-### VC-Shell Framework (@vc-shell/framework)
+## [0.0.115](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.114...v0.0.115) (2022-02-04)
 
 **Note:** Version bump only for package
 
-## 0.0.114
-
-### VC-Shell Framework (@vc-shell/framework)
+## [0.0.114](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.113...v0.0.114) (2022-02-03)
 
 **Note:** Version bump only for package
 
-## 0.0.113
-
-### VC-Shell Framework (@vc-shell/framework)
+## [0.0.113](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.112...v0.0.113) (2022-02-03)
 
 **Note:** Version bump only for package
 
-## 0.0.112
-
-### VC-Shell Framework (@vc-shell/framework)
+## [0.0.112](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.111...v0.0.112) (2022-02-03)
 
 **Note:** Version bump only for package
 
-## 0.0.111
-
-### VC-Shell Framework (@vc-shell/framework)
+## [0.0.111](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.110...v0.0.111) (2022-01-31)
 
 **Note:** Version bump only for package
 
-## 0.0.110
-
-### VC-Shell Framework (@vc-shell/framework)
+## [0.0.110](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.109...v0.0.110) (2022-01-31)
 
 **Note:** Version bump only for package
 
-## 0.0.109
-
-### VC-Shell Framework (@vc-shell/framework)
+## [0.0.109](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.108...v0.0.109) (2022-01-28)
 
 **Note:** Version bump only for package
 
-## 0.0.108
-
-### VC-Shell Framework (@vc-shell/framework)
+## [0.0.108](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.107...v0.0.108) (2022-01-24)
 
 **Note:** Version bump only for package
 
-## 0.0.107
-
-### VC-Shell Framework (@vc-shell/framework)
+## [0.0.107](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.106...v0.0.107) (2022-01-20)
 
 **Note:** Version bump only for package
 
-## 0.0.106
-
-### VC-Shell Framework (@vc-shell/framework)
+## [0.0.106](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.105...v0.0.106) (2022-01-10)
 
 **Note:** Version bump only for package
 
-## 0.0.105
-
-### VC-Shell Framework (@vc-shell/framework)
+## [0.0.105](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.104...v0.0.105) (2021-12-30)
 
 **Note:** Version bump only for package
 
-## 0.0.104
-
-### VC-Shell Framework (@vc-shell/framework)
+## [0.0.104](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.103...v0.0.104) (2021-12-29)
 
 **Note:** Version bump only for package
 
-## 0.0.103
-
-### VC-Shell Framework (@vc-shell/framework)
+## [0.0.103](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.102...v0.0.103) (2021-12-28)
 
 **Note:** Version bump only for package
 
-## 0.0.102
-
-### VC-Shell Framework (@vc-shell/framework)
+## [0.0.102](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.101...v0.0.102) (2021-12-27)
 
 **Note:** Version bump only for package
 
-## 0.0.101
+## [0.0.101](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.100...v0.0.101) (2021-12-24)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **ui:** deps ([3b5a375](https://github.com/VirtoCommerce/vc-shell/commit/3b5a375f5794cf1c87d042f0e541f3badfe66f47))
 
-## 0.0.100
-
-### VC-Shell Framework (@vc-shell/framework)
+## [0.0.100](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.99...v0.0.100) (2021-12-24)
 
 **Note:** Version bump only for package
 
-## 0.0.99
-
-### VC-Shell Framework (@vc-shell/framework)
+## [0.0.99](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.98...v0.0.99) (2021-12-15)
 
 **Note:** Version bump only for package
 
-## 0.0.98
-
-### VC-Shell Framework (@vc-shell/framework)
+## [0.0.98](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.97...v0.0.98) (2021-12-15)
 
 **Note:** Version bump only for package
 
-## 0.0.97
-
-### VC-Shell Framework (@vc-shell/framework)
+## [0.0.97](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.96...v0.0.97) (2021-12-15)
 
 **Note:** Version bump only for package
 
-## 0.0.96
-
-### VC-Shell Framework (@vc-shell/framework)
+## [0.0.96](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.95...v0.0.96) (2021-12-13)
 
 **Note:** Version bump only for package
 
-## 0.0.95
-
-### VC-Shell Framework (@vc-shell/framework)
+## [0.0.95](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.94...v0.0.95) (2021-12-07)
 
 **Note:** Version bump only for package
 
-## 0.0.94
-
-### VC-Shell Framework (@vc-shell/framework)
+## [0.0.94](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.93...v0.0.94) (2021-12-07)
 
 **Note:** Version bump only for package
 
-## 0.0.93
-
-### VC-Shell Framework (@vc-shell/framework)
+## [0.0.93](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.92...v0.0.93) (2021-12-07)
 
 **Note:** Version bump only for package
 
-## 0.0.92
-
-### VC-Shell Framework (@vc-shell/framework)
+## [0.0.92](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.91...v0.0.92) (2021-12-04)
 
 **Note:** Version bump only for package
 
-## 0.0.91
+## [0.0.91](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.90...v0.0.91) (2021-12-03)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -9342,20 +3410,18 @@ All notable changes to this monorepo will be documented in this file.
 - vm-271 input fix ([0b1b538](https://github.com/VirtoCommerce/vc-shell/commit/0b1b5388560a7f9346c8ab666f0303247c74f2a3))
 - vm-271 removed currency sign ([579257b](https://github.com/VirtoCommerce/vc-shell/commit/579257bab5ba9b44cb59590f6c989cbb81c16444))
 
-## 0.0.90
-
-### VC-Shell Framework (@vc-shell/framework)
+## [0.0.90](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.89...v0.0.90) (2021-12-02)
 
 **Note:** Version bump only for package
 
-## 0.0.89
+## [0.0.89](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.88...v0.0.89) (2021-12-02)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - vm-100 tooltip disabled state ([f7c5527](https://github.com/VirtoCommerce/vc-shell/commit/f7c55271dafb439a44a59683389c007a92f7ae2b))
 
-## 0.0.88
+## [0.0.88](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.87...v0.0.88) (2021-12-02)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -9370,20 +3436,18 @@ All notable changes to this monorepo will be documented in this file.
 - vm-346, vm-280, vm-267 ([29c74a1](https://github.com/VirtoCommerce/vc-shell/commit/29c74a1f51dba58b61c46e14076592488322d1d8))
 - vm-346, vm-280, vm-267 ([96061ce](https://github.com/VirtoCommerce/vc-shell/commit/96061ce6195ced76ec1e543ef09754ce49e6b5f1))
 
-## 0.0.87
-
-### VC-Shell Framework (@vc-shell/framework)
+## [0.0.87](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.86...v0.0.87) (2021-12-01)
 
 **Note:** Version bump only for package
 
-## 0.0.86
+## [0.0.86](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.85...v0.0.86) (2021-12-01)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - build failure ([9911a30](https://github.com/VirtoCommerce/vc-shell/commit/9911a307973c6a55b324f857a577afec4c54a669))
 
-## 0.0.85
+## [0.0.85](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.84...v0.0.85) (2021-12-01)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -9391,69 +3455,67 @@ All notable changes to this monorepo will be documented in this file.
 - vm-346, vm-280, vm-267 ([5859b36](https://github.com/VirtoCommerce/vc-shell/commit/5859b36b1e88414e83a36589b3ae0c4f95763d93))
 - vm-346, vm-280, vm-267 ([803c581](https://github.com/VirtoCommerce/vc-shell/commit/803c581e723feed4a8430d078b27b3e70db2a763))
 
-## 0.0.84
+## [0.0.84](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.83...v0.0.84) (2021-11-26)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - signalr push notifications ([3a4e327](https://github.com/VirtoCommerce/vc-shell/commit/3a4e32707147ae36f91648242d7db12d83ee367e))
 
-## 0.0.83
+## [0.0.83](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.82...v0.0.83) (2021-11-24)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - dynamic property select search ([02b7726](https://github.com/VirtoCommerce/vc-shell/commit/02b77266eed60282fe2cb6591344d77439f287ce))
 
-## 0.0.82
+## [0.0.82](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.81...v0.0.82) (2021-11-24)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - signalr integration (WIP) ([1db00e8](https://github.com/VirtoCommerce/vc-shell/commit/1db00e835c2a6a62338d62934da317aa8c1ddf98))
 
-## 0.0.81
+## [0.0.81](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.80...v0.0.81) (2021-11-23)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - vm-320, 330, 331, 332, 333 ([21a8fa5](https://github.com/VirtoCommerce/vc-shell/commit/21a8fa54ec28a854b3ad039a47340f058ed52706))
 
-## 0.0.80
+## [0.0.80](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.79...v0.0.80) (2021-11-22)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - vc-widget disabled state, vc-gallery disabled state, vc-table row highlight ([a87dc75](https://github.com/VirtoCommerce/vc-shell/commit/a87dc7544d89cec7bc7f6de50d2c9d5185db0fe7))
 
-## 0.0.79
+## [0.0.79](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.78...v0.0.79) (2021-11-22)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - download invoice + some minor UI bug fixes ([bbb6cca](https://github.com/VirtoCommerce/vc-shell/commit/bbb6cca09895d24420d7184354efaf8f7db7722f))
 
-## 0.0.78
+## [0.0.78](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.77...v0.0.78) (2021-11-22)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - multivalue fields, table cell templates ([0096eda](https://github.com/VirtoCommerce/vc-shell/commit/0096eda8c565db8d69255d0c7232469dce5a658e))
 
-## 0.0.77
-
-### VC-Shell Framework (@vc-shell/framework)
+## [0.0.77](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.76...v0.0.77) (2021-11-18)
 
 **Note:** Version bump only for package
 
-## 0.0.76
+## [0.0.76](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.75...v0.0.76) (2021-11-18)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - offer tier prices ([f19f6e9](https://github.com/VirtoCommerce/vc-shell/commit/f19f6e9ce2a9927f2a6b5b4d64f9dfd9b8ee93a0))
 
-## 0.0.75
+## [0.0.75](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.74...v0.0.75) (2021-11-18)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -9462,81 +3524,75 @@ All notable changes to this monorepo will be documented in this file.
 - properties validation (WIP) ([9d021d0](https://github.com/VirtoCommerce/vc-shell/commit/9d021d062ea32b1ab945b88134641a98bf7f10b9))
 - properties validation (WIP) ([1180217](https://github.com/VirtoCommerce/vc-shell/commit/11802175cf15b4bf66b593c125c9b7b04a392269))
 
-## 0.0.74
-
-### VC-Shell Framework (@vc-shell/framework)
+## [0.0.74](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.73...v0.0.74) (2021-11-12)
 
 **Note:** Version bump only for package
 
-## 0.0.73
+## [0.0.73](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.71...v0.0.73) (2021-11-11)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - tier prices for offer ([1531a61](https://github.com/VirtoCommerce/vc-shell/commit/1531a6152ff1023a41c92f84ceb6cf01e8d1b115))
 
-## 0.0.71
-
-### VC-Shell Framework (@vc-shell/framework)
+## [0.0.71](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.70...v0.0.71) (2021-11-11)
 
 **Note:** Version bump only for package
 
-## 0.0.70
+## [0.0.70](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.69...v0.0.70) (2021-11-08)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - vm-283, vm-284, vm-285, vm-286, vm-287, vm-288, vm-289, vm-290, vm-291, vm-292, vm-293 ([55541a8](https://github.com/VirtoCommerce/vc-shell/commit/55541a8fa355999cdc9a222d2e79723e387b618e))
 
-## 0.0.69
+## [0.0.69](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.68...v0.0.69) (2021-11-03)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - dynamic select properties ([b19e44e](https://github.com/VirtoCommerce/vc-shell/commit/b19e44e09cb7ddb430d31069ffb1d6d9b78e6822))
 
-## 0.0.68
-
-### VC-Shell Framework (@vc-shell/framework)
+## [0.0.68](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.67...v0.0.68) (2021-11-02)
 
 **Note:** Version bump only for package
 
-## 0.0.67
+## [0.0.67](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.66...v0.0.67) (2021-11-02)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - mobile dashboard, image dnd upload ([eae8508](https://github.com/VirtoCommerce/vc-shell/commit/eae85084a41dad38dc2d5dea26aedc53ebd5a2e1))
 
-## 0.0.66
+## [0.0.66](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.65...v0.0.66) (2021-11-02)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - new product details ui, vc-card collapsable ([3f2d1b4](https://github.com/VirtoCommerce/vc-shell/commit/3f2d1b4eaeacfb032399b7fd8abedf252d7693a7))
 
-## 0.0.65
+## [0.0.65](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.64...v0.0.65) (2021-11-01)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - new dashboard ([28c7d82](https://github.com/VirtoCommerce/vc-shell/commit/28c7d824b49147be20215301f091253467e35b16))
 
-## 0.0.64
+## [0.0.64](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.63...v0.0.64) (2021-10-28)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - active row highlight ([cc4f7f9](https://github.com/VirtoCommerce/vc-shell/commit/cc4f7f90d0aad690aa9cac5f1e52b5c027964ed4))
 
-## 0.0.63
+## [0.0.63](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.62...v0.0.63) (2021-10-28)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - filter counter ([15c6bab](https://github.com/VirtoCommerce/vc-shell/commit/15c6babdf294591c627ad27df570507a3585f57b))
 
-## 0.0.62
+## [0.0.62](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.61...v0.0.62) (2021-10-28)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -9544,28 +3600,28 @@ All notable changes to this monorepo will be documented in this file.
 - filters ([2a89cf8](https://github.com/VirtoCommerce/vc-shell/commit/2a89cf872729667cbaa1c9457eadb0fbee2a0018))
 - filters (WIP) ([b25ad3a](https://github.com/VirtoCommerce/vc-shell/commit/b25ad3a23a0f08cd9b3d3837d5223dc045eb8b55))
 
-## 0.0.61
+## [0.0.61](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.60...v0.0.61) (2021-10-26)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - dashboard ([683f65a](https://github.com/VirtoCommerce/vc-shell/commit/683f65ac6d01b974dc05d931f62277891688ef1f))
 
-## 0.0.60
+## [0.0.60](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.59...v0.0.60) (2021-10-22)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - order details page ([b8fe53d](https://github.com/VirtoCommerce/vc-shell/commit/b8fe53d7282a6e0381af5eedbf272001a63b3ba9))
 
-## 0.0.59
+## [0.0.59](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.58...v0.0.59) (2021-10-20)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - seller accept invitation form ([8f5d5b9](https://github.com/VirtoCommerce/vc-shell/commit/8f5d5b9cae6a0c057b1831a48fc41fae13792f00))
 
-## 0.0.58
+## [0.0.58](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.57...v0.0.58) (2021-10-20)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -9573,27 +3629,25 @@ All notable changes to this monorepo will be documented in this file.
 - additional fields (WIP) ([27596bd](https://github.com/VirtoCommerce/vc-shell/commit/27596bdcdf30790c56e8c2d571309fb9dd05f9b4))
 - orders edit and additional components ([e8cf8a3](https://github.com/VirtoCommerce/vc-shell/commit/e8cf8a3333664c8d326fdd5df28a2fd9981c550a))
 
-## 0.0.57
-
-### VC-Shell Framework (@vc-shell/framework)
+## [0.0.57](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.56...v0.0.57) (2021-10-15)
 
 **Note:** Version bump only for package
 
-## 0.0.56
+## [0.0.56](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.55...v0.0.56) (2021-10-13)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - password field unhide ([2e6deb0](https://github.com/VirtoCommerce/vc-shell/commit/2e6deb01657515c3128ec62c287ecbda5ef92e9e))
 
-## 0.0.55
+## [0.0.55](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.54...v0.0.55) (2021-10-13)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - new icons, ptr improvements, offers list ptr ([fe0438b](https://github.com/VirtoCommerce/vc-shell/commit/fe0438b6c43b9a0d4baa52293e619c645c2f6f8d))
 
-## 0.0.54
+## [0.0.54](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.53...v0.0.54) (2021-10-13)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -9602,26 +3656,22 @@ All notable changes to this monorepo will be documented in this file.
 ### Bug Fixes
 - ptr overscroll height ([88f3a1e](https://github.com/VirtoCommerce/vc-shell/commit/88f3a1e356fcf0f7e4855c9b77d8db28bbcdd607))
 
-## 0.0.53
+## [0.0.53](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.52...v0.0.53) (2021-10-13)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - scroll ptr, menu styling ([4eff9a0](https://github.com/VirtoCommerce/vc-shell/commit/4eff9a0fffc9feef8dbad433d210f0537702efd2))
 
-## 0.0.52
-
-### VC-Shell Framework (@vc-shell/framework)
+## [0.0.52](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.51...v0.0.52) (2021-10-13)
 
 **Note:** Version bump only for package
 
-## 0.0.51
-
-### VC-Shell Framework (@vc-shell/framework)
+## [0.0.51](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.50...v0.0.51) (2021-10-13)
 
 **Note:** Version bump only for package
 
-## 0.0.50
+## [0.0.50](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.49...v0.0.50) (2021-10-12)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -9629,33 +3679,29 @@ All notable changes to this monorepo will be documented in this file.
 - list mobile actions ([c269a88](https://github.com/VirtoCommerce/vc-shell/commit/c269a88b9ca304520b9157a51ccd4c602fd0059b))
 - mobile swipe transition ([8fdccb1](https://github.com/VirtoCommerce/vc-shell/commit/8fdccb1345ba3f2d495a6f9344503f1c50b27a7b))
 
-## 0.0.49
+## [0.0.49](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.48...v0.0.49) (2021-10-12)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - mobile extended actions, vendor-portal detached ([c92a317](https://github.com/VirtoCommerce/vc-shell/commit/c92a31743ded9788c939641ccff9922328b6f2f6))
 
-## 0.0.48
-
-### VC-Shell Framework (@vc-shell/framework)
+## [0.0.48](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.47...v0.0.48) (2021-10-06)
 
 **Note:** Version bump only for package
 
-## 0.0.47
+## [0.0.47](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.46...v0.0.47) (2021-10-06)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - filters and swipe actions ([a463ad5](https://github.com/VirtoCommerce/vc-shell/commit/a463ad59519925ea5fd1ee2f90d45e85d5ef2008))
 
-## 0.0.46
-
-### VC-Shell Framework (@vc-shell/framework)
+## [0.0.46](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.45...v0.0.46) (2021-09-30)
 
 **Note:** Version bump only for package
 
-## 0.0.45
+## [0.0.45](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.44...v0.0.45) (2021-09-30)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -9671,7 +3717,7 @@ All notable changes to this monorepo will be documented in this file.
 - deepClone for product ([d587e39](https://github.com/VirtoCommerce/vc-shell/commit/d587e39345fcca9a28f8290ba9761e0325e933de))
 - minor refactoring ([a0c287c](https://github.com/VirtoCommerce/vc-shell/commit/a0c287ccf4678a315737c98961d1ea51394f24a8))
 
-## 0.0.43
+## [0.0.43](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.42...v0.0.43) (2021-09-24)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -9682,20 +3728,18 @@ All notable changes to this monorepo will be documented in this file.
 - product list update on changes ([198731f](https://github.com/VirtoCommerce/vc-shell/commit/198731ff5b8b5a0539ccca5c4998bb02f2d5b4fb))
 - routing update ([d7ec6ef](https://github.com/VirtoCommerce/vc-shell/commit/d7ec6effd07aa5c5156a7f36cf652dbe024803c7))
 
-## 0.0.42
-
-### VC-Shell Framework (@vc-shell/framework)
+## [0.0.42](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.41...v0.0.42) (2021-09-23)
 
 **Note:** Version bump only for package
 
-## 0.0.41
+## [0.0.41](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.40...v0.0.41) (2021-09-23)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - apply new statuses matrix ([31f2ab0](https://github.com/VirtoCommerce/vc-shell/commit/31f2ab0fa9ee28491cb43d993a56be2a86ff835e))
 
-## 0.0.40
+## [0.0.40](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.39...v0.0.40) (2021-09-23)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -9704,7 +3748,7 @@ All notable changes to this monorepo will be documented in this file.
 ### Reverts
 - Revert "chore: %s publish" ([9e60760](https://github.com/VirtoCommerce/vc-shell/commit/9e607601cfed4e10d4cc33ceb81a408967b82eee))
 
-## 0.0.39
+## [0.0.39](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.38...v0.0.39) (2021-09-13)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -9713,7 +3757,7 @@ All notable changes to this monorepo will be documented in this file.
 - vm-26 - form components improvements ([2ffc621](https://github.com/VirtoCommerce/vc-shell/commit/2ffc62184f436c2e029e529975c5f1c379ce8c3a))
 - vm-94 - gallery component ([ee288e2](https://github.com/VirtoCommerce/vc-shell/commit/ee288e2107771e8ae6787fbd3bdbf03fd4ef3b4a))
 
-## 0.0.38
+## [0.0.38](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.37...v0.0.38) (2021-09-09)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -9721,28 +3765,28 @@ All notable changes to this monorepo will be documented in this file.
 - naming standarts ([45a4eae](https://github.com/VirtoCommerce/vc-shell/commit/45a4eae642d1f7d67efe8551ea7e3a37d6d47abb))
 - repository-level storybook ([436addd](https://github.com/VirtoCommerce/vc-shell/commit/436addda5f2b546e780ae895f9316b52447b5fc1))
 
-## 0.0.37
+## [0.0.37](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.36...v0.0.37) (2021-09-07)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - vm-20 offers list ([ebafb36](https://github.com/VirtoCommerce/vc-shell/commit/ebafb36bb151f28f4415e5ebb4223d029514e90a))
 
-## 0.0.36
+## [0.0.36](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.35...v0.0.36) (2021-09-07)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - vm-97 extended products ([496db62](https://github.com/VirtoCommerce/vc-shell/commit/496db62414726df80561945f80d8957c543c00c3))
 
-## 0.0.35
+## [0.0.35](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.34...v0.0.35) (2021-09-07)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - vm-97 extended products ([cab5998](https://github.com/VirtoCommerce/vc-shell/commit/cab5998e2254a2c5d810e3e0e28dc3dc4b8ed8e0))
 
-## 0.0.34
+## [0.0.34](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.33...v0.0.34) (2021-09-07)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -9752,7 +3796,7 @@ All notable changes to this monorepo will be documented in this file.
 - vm-97 extended products ([b617328](https://github.com/VirtoCommerce/vc-shell/commit/b617328ccac90cf84b59d7f31f901b51ad2f41ff))
 - vm-97 extended products ([1b6e54a](https://github.com/VirtoCommerce/vc-shell/commit/1b6e54a2ecddc95944b5885b1c4821a939b8c038))
 
-## 0.0.33
+## [0.0.33](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.32...v0.0.33) (2021-09-02)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -9766,7 +3810,7 @@ All notable changes to this monorepo will be documented in this file.
 - vm-35 table sorting ([e26abf5](https://github.com/VirtoCommerce/vc-shell/commit/e26abf5eb21fe928d379282c1df5269c82b9b877))
 - vm-66 - product list search component ([8abc12d](https://github.com/VirtoCommerce/vc-shell/commit/8abc12d66ba3c56f9bc426af3efc1564218f51c0))
 
-## 0.0.31
+## [0.0.31](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.30...v0.0.31) (2021-08-30)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -9784,7 +3828,7 @@ All notable changes to this monorepo will be documented in this file.
 - watching fix ([a7da180](https://github.com/VirtoCommerce/vc-shell/commit/a7da180682a15b9dedf206067df70000ff869c9d))
 - watching fix ([f65ba67](https://github.com/VirtoCommerce/vc-shell/commit/f65ba67b68d6082d22bb00885ac4ef82baca6ce1))
 
-## 0.0.29
+## [0.0.29](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.28...v0.0.29) (2021-08-20)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -9794,47 +3838,43 @@ All notable changes to this monorepo will be documented in this file.
 ### Bug Fixes
 - **app-demo-manager:** add missed changes after merging ([2d6be5e](https://github.com/VirtoCommerce/vc-shell/commit/2d6be5e40526d3dccb1933384f5fb86cde4ce4b1))
 
-## 0.0.28
+## [0.0.28](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.27...v0.0.28) (2021-08-19)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **app-demo-manager:** order blade ([72e2efe](https://github.com/VirtoCommerce/vc-shell/commit/72e2efe64aea0fdecf7ddfcd9cfc6766eafa89c0))
 
-## 0.0.27
-
-### VC-Shell Framework (@vc-shell/framework)
+## [0.0.27](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.26...v0.0.27) (2021-08-19)
 
 **Note:** Version bump only for package
 
-## 0.0.26
-
-### VC-Shell Framework (@vc-shell/framework)
+## [0.0.26](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.25...v0.0.26) (2021-08-19)
 
 **Note:** Version bump only for package
 
-## 0.0.25
+## [0.0.25](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.24...v0.0.25) (2021-08-12)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - sample workspace with blade ([1c772fc](https://github.com/VirtoCommerce/vc-shell/commit/1c772fcfa09311f38dfb68c4c16345caf2372d38))
 
-## 0.0.24
+## [0.0.24](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.23...v0.0.24) (2021-08-12)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **ui:** some codestyle improvements ([443fcc4](https://github.com/VirtoCommerce/vc-shell/commit/443fcc4b4e0e9030365cf0eb5d0325358cd88f1d))
 
-## 0.0.23
+## [0.0.23](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.22...v0.0.23) (2021-08-11)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **ui:** vc-icon component update ([1c7d84f](https://github.com/VirtoCommerce/vc-shell/commit/1c7d84f01dbe782d7709779becb9bd3ae646ef31))
 
-## 0.0.22
+## [0.0.22](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.21...v0.0.22) (2021-08-11)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -9846,14 +3886,14 @@ All notable changes to this monorepo will be documented in this file.
 - **ui:** vc-progressbar component ([5dbb3f0](https://github.com/VirtoCommerce/vc-shell/commit/5dbb3f0e3ae4fb36804bc68e89768b43a3d25bcf))
 - **ui:** vc-tooltip component ([82face9](https://github.com/VirtoCommerce/vc-shell/commit/82face9ce96889aad8dfc83cba4db059997c76c0))
 
-## 0.0.21
+## [0.0.21](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.20...v0.0.21) (2021-08-11)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **ui:** storybook static assets ([6794188](https://github.com/VirtoCommerce/vc-shell/commit/679418826ba785a817e0c5b33950564ed64cc73f))
 
-## 0.0.20
+## [0.0.20](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.19...v0.0.20) (2021-08-11)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -9868,14 +3908,14 @@ All notable changes to this monorepo will be documented in this file.
 - **ui:** vc-breadcrumbs component update ([dea9e89](https://github.com/VirtoCommerce/vc-shell/commit/dea9e8940c18daaefb743fc8df0e0dc50f25d28a))
 - **ui:** vc-breadcrumbs-item component ([062d653](https://github.com/VirtoCommerce/vc-shell/commit/062d6532c8bfd07bf170d63e7224ea606b92e637))
 
-## 0.0.19
+## [0.0.19](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.18...v0.0.19) (2021-08-11)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **ui:** vc-blade-header component ([80207b2](https://github.com/VirtoCommerce/vc-shell/commit/80207b2a2f7c417cbf572230f4eaf36513ec7f40))
 
-## 0.0.18
+## [0.0.18](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.17...v0.0.18) (2021-08-11)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -9884,14 +3924,14 @@ All notable changes to this monorepo will be documented in this file.
 - **ui:** vc-thumbnail component ([fa00029](https://github.com/VirtoCommerce/vc-shell/commit/fa00029729c20ec4c5e73862f13df6200e7cfb02))
 - **ui:** vc-thumbnail component ([f83e401](https://github.com/VirtoCommerce/vc-shell/commit/f83e40195ec401a0eaf31ae527f9cd0b8dd9b3a6))
 
-## 0.0.17
+## [0.0.17](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.16...v0.0.17) (2021-08-10)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - login component style minor update ([244e147](https://github.com/VirtoCommerce/vc-shell/commit/244e1476f610dc28ceb5d7582573a33491fbb2c5))
 
-## 0.0.16
+## [0.0.16](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.15...v0.0.16) (2021-08-10)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -9904,34 +3944,32 @@ All notable changes to this monorepo will be documented in this file.
 - **ui:** vc-button component ([98fa9c3](https://github.com/VirtoCommerce/vc-shell/commit/98fa9c35309ff80a8c8f190bba1e73b7edd22e85))
 - **ui:** vc-link component ([83e62c5](https://github.com/VirtoCommerce/vc-shell/commit/83e62c578d6b36ba1b4b649998e2f750e0c1f7d6))
 
-## 0.0.15
-
-### VC-Shell Framework (@vc-shell/framework)
+## [0.0.15](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.14...v0.0.15) (2021-08-09)
 
 **Note:** Version bump only for package
 
-## 0.0.14
+## [0.0.14](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.13...v0.0.14) (2021-08-05)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - workspace layout WIP ([1edc014](https://github.com/VirtoCommerce/vc-shell/commit/1edc014b320c1f57b7a83d2bc7150f3a834d7724))
 
-## 0.0.13
+## [0.0.13](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.12...v0.0.13) (2021-08-05)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - login form ([8acb2c6](https://github.com/VirtoCommerce/vc-shell/commit/8acb2c6bc58c1c9355293a1c514a0a777e7fc65c))
 
-## 0.0.12
+## [0.0.12](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.11...v0.0.12) (2021-08-05)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - storybook build pipeline ([c27dba0](https://github.com/VirtoCommerce/vc-shell/commit/c27dba0e054e85a8a7f5539d2e09f864cd3dfd50))
 
-## 0.0.11
+## [0.0.11](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.10...v0.0.11) (2021-08-05)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -9939,13 +3977,11 @@ All notable changes to this monorepo will be documented in this file.
 - login form and route guarding ([78813af](https://github.com/VirtoCommerce/vc-shell/commit/78813afc10753f4972d2e120c3ea48295131b2ed))
 - ui component structure aligned with docs ([2001f40](https://github.com/VirtoCommerce/vc-shell/commit/2001f404583a385531d1395591f16a251ee41f95))
 
-## 0.0.10
-
-### VC-Shell Framework (@vc-shell/framework)
+## [0.0.10](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.9...v0.0.10) (2021-08-04)
 
 **Note:** Version bump only for package
 
-## 0.0.9
+## [0.0.9](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.8...v0.0.9) (2021-08-03)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
@@ -9954,7 +3990,7 @@ All notable changes to this monorepo will be documented in this file.
 - core composables ([7713230](https://github.com/VirtoCommerce/vc-shell/commit/771323097efd7aef41fc77d320e153e589c2f0e0))
 - demo manager version display and locale ([674dc7e](https://github.com/VirtoCommerce/vc-shell/commit/674dc7e4a993f12477764ef3e1ad1c4b5f2f7a3b))
 
-## 0.0.8
+## [0.0.8](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.7...v0.0.8) (2021-08-02)
 
 ### VC-Shell Framework (@vc-shell/framework)
 

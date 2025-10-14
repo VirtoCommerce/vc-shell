@@ -1,6 +1,8 @@
 import { useLocalStorage } from "@vueuse/core";
-import type { Ref } from "vue";
+import { inject, type Ref } from "vue";
 import { ExternalSignInClient, ExternalSignInProviderInfo } from "../../../core/api/platform";
+import { shouldEnablePlatformFeatures } from "../../../core/providers/auth-provider-utils";
+import { AuthProviderKey } from "../../../injection-keys";
 
 export interface IUseExternalProvider {
   storage: Ref<{ providerType?: string | undefined }>;
@@ -12,6 +14,9 @@ export interface IUseExternalProvider {
 const VC_EXTERNAL_AUTH_DATA_KEY = "externalSignIn";
 
 export const useExternalProvider = (): IUseExternalProvider => {
+  // Check if we're using a custom auth provider
+  const authProvider = inject(AuthProviderKey);
+  const isPlatformProvider = shouldEnablePlatformFeatures(authProvider);
   const externalSecurityClient = new ExternalSignInClient();
   const externalSignInStorage = useLocalStorage<{ providerType?: string | undefined }>(
     VC_EXTERNAL_AUTH_DATA_KEY,
@@ -81,6 +86,11 @@ export const useExternalProvider = (): IUseExternalProvider => {
   }
 
   async function getExternalLoginProviders() {
+    if (!isPlatformProvider) {
+      console.log("[useExternalProvider] Skipping getExternalLoginProviders - custom authentication provider detected");
+      return undefined;
+    }
+
     let result: ExternalSignInProviderInfo[] | undefined = undefined;
     try {
       result = await externalSecurityClient.getExternalLoginProviders();

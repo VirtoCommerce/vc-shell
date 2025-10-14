@@ -1,8 +1,10 @@
 import { useAsync } from "./../useAsync";
 import { useApiClient } from "./../useApiClient";
-import { computed, Ref, ref, ComputedRef, onMounted } from "vue";
+import { computed, Ref, ref, ComputedRef, onMounted, inject } from "vue";
 import { SettingClient } from "./../../api/platform";
 import { useLoading } from "../useLoading";
+import { shouldEnablePlatformFeatures } from "../../providers/auth-provider-utils";
+import { AuthProviderKey } from "../../../injection-keys";
 
 interface IUISetting {
   contrast_logo?: string;
@@ -19,13 +21,16 @@ interface IUseSettings {
 }
 
 export function useSettings(): IUseSettings {
+  // Check if we're using a custom auth provider
+  const authProvider = inject(AuthProviderKey);
+  const isPlatformProvider = shouldEnablePlatformFeatures(authProvider);
   const uiSettings = ref<IUISetting | undefined>();
   const customSettingsApplied = ref(false);
 
   const { getApiClient } = useApiClient(SettingClient);
 
   const { loading, action: getUiCustomizationSettings } = useAsync(async () => {
-    if (customSettingsApplied.value) return;
+    if (customSettingsApplied.value || !isPlatformProvider) return;
 
     const result = await (await getApiClient()).getUICustomizationSetting();
     const settings = await JSON.parse(result.defaultValue ?? null);
@@ -51,7 +56,7 @@ export function useSettings(): IUseSettings {
   }
 
   onMounted(async () => {
-    if (!uiSettings.value && !customSettingsApplied.value) {
+    if (!uiSettings.value && !customSettingsApplied.value && isPlatformProvider) {
       await getUiCustomizationSettings();
     }
   });

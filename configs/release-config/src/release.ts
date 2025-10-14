@@ -13,6 +13,7 @@ import path from "node:path";
  * @param bumpVersion - A function that takes a package name and version (deprecated, Lerna handles this).
  * @param generateChangelog - A function that generates a changelog for a package with a given version.
  * @param toTag - A function that takes a version and returns a tag name.
+ * @param customHooks - A function that takes a package name, version, and workspace name and returns a void or Promise<void>.
  * @returns void
  * @throws Error if there are no packages to release or if the target version is invalid.
  */
@@ -21,11 +22,23 @@ export const release = async ({
   bumpVersion,
   generateChangelog,
   toTag,
+  customHooks,
 }: {
   packages: string[];
-  bumpVersion: (pkgName: string, version: string) => void | Promise<void>;
-  generateChangelog: (pkgName: string, version: string, workspaceName?: string) => void | Promise<void>;
-  toTag: (version: string) => string;
+  /**
+   * 
+   * @param pkgName 
+   * @param version 
+   * @param workspaceName 
+   * @returns 
+   */
+  customHooks: (version: string) => void | Promise<void>;
+  /** @deprecated Lerna handles version bumping automatically */
+  bumpVersion?: (pkgName: string, version: string) => void | Promise<void>;
+  /** @deprecated Lerna generates changelogs automatically */
+  generateChangelog?: (pkgName: string, version: string, workspaceName?: string) => void | Promise<void>;
+  /** @deprecated Lerna handles version bumping automatically */
+  toTag?: (version: string) => string;
 }) => {
   if (packages.length === 0) {
     throw new Error("No packages to release");
@@ -36,10 +49,6 @@ export const release = async ({
   if (isDryRun) {
     console.log(chalk.yellow("\n⚠️  DRY RUN MODE - No git operations will be performed\n"));
   }
-
-  // Execute custom hooks (e.g. updateBoilerplatePkgVersions)
-  console.log(chalk.cyan("\nRunning pre-version hooks...\n"));
-  await generateChangelog("", "", ""); // Call for side effects
 
   // Determine release type
   const { releaseType } = await prompts({
@@ -59,7 +68,7 @@ export const release = async ({
     return;
   }
 
-  const lernaArgs = ["lerna", "version", "--no-private", "--conventional-commits"];
+  const lernaArgs = ["lerna", "version", "--conventional-commits"];
 
   // Configure lerna command based on release type
   if (releaseType === "prerelease") {
@@ -186,8 +195,21 @@ export const release = async ({
     process.exit(result.status || 1);
   }
 
+  // Update root package.json version to match framework (needed for customHooks)
+  await updateRootVersion(packages);
+
+  // Execute custom hooks AFTER version bump (e.g. updateBoilerplatePkgVersions, updateAppsDependencies)
+  if (customHooks) {
+    console.log(chalk.cyan("\nRunning post-version hooks...\n"));
+    const { pkg } = getPackageInfo(packages[0] === "." ? packages[1] : packages[0]);
+    await customHooks(pkg.version); // Pass new version for custom logic
+  }
+
   // Enhance changelogs for packages without changes
   await enhanceChangelogs(packages);
+
+  // Generate root CHANGELOG with package grouping
+  await generateRootChangelog(packages);
 
   // Update npmTag in package.json if needed
   await updateNpmTags(packages);
@@ -265,11 +287,14 @@ async function enhanceChangelogs(packages: string[]) {
 
     // Improve changelog formatting
     content = content.replace(/^All notable changes to this project will be documented in this file\.\s*\n/gm, "");
-    content = content.replace(/^See \[Conventional Commits\]\(https:\/\/conventionalcommits\.org\) for commit guidelines\.\s*\n/gm, "");
+    content = content.replace(
+      /^See \[Conventional Commits\]\(https:\/\/conventionalcommits\.org\) for commit guidelines\.\s*\n/gm,
+      "",
+    );
     content = content.replace(/\n{3,}/g, "\n\n"); // Remove multiple empty lines
 
     // Check packages without changes and add "Version bump only" for empty versions
-    const lines = content.split('\n');
+    const lines = content.split("\n");
     const result: string[] = [];
     let i = 0;
 
@@ -287,7 +312,7 @@ async function enhanceChangelogs(packages: string[]) {
         i++;
 
         // Skip empty lines after header
-        while (i < lines.length && lines[i].trim() === '') {
+        while (i < lines.length && lines[i].trim() === "") {
           result.push(lines[i]);
           i++;
         }
@@ -300,7 +325,7 @@ async function enhanceChangelogs(packages: string[]) {
         while (j < lines.length && !lines[j].match(/^##\s+(\[)?[\d.a-z-]+(\])?/i)) {
           const trimmed = lines[j].trim();
           // Ignore empty lines and existing "Note:" messages
-          if (trimmed !== '' && !trimmed.startsWith('**Note:**')) {
+          if (trimmed !== "" && !trimmed.startsWith("**Note:**")) {
             hasContent = true;
             break;
           }
@@ -311,15 +336,15 @@ async function enhanceChangelogs(packages: string[]) {
         if (!hasContent) {
           // Check if "Note:" message already exists
           const nextFewLines = lines.slice(contentStart, Math.min(contentStart + 5, lines.length));
-          const alreadyHasNote = nextFewLines.some(l => l.includes('**Note:**'));
+          const alreadyHasNote = nextFewLines.some((l) => l.includes("**Note:**"));
 
           if (!alreadyHasNote) {
             if (isCurrentVersion && !hasChanges) {
-              result.push('**Note:** Version bump only - Updated dependencies to match framework version');
+              result.push("**Note:** Version bump only - Updated dependencies to match framework version");
             } else {
-              result.push('**Note:** Version bump only for package');
+              result.push("**Note:** Version bump only for package");
             }
-            result.push('');
+            result.push("");
           }
         }
       } else {
@@ -328,11 +353,166 @@ async function enhanceChangelogs(packages: string[]) {
       }
     }
 
-    content = result.join('\n');
+    content = result.join("\n");
 
     // Write cleaned content
     writeFileSync(changelogPath, content, "utf-8");
   }
+}
+
+/**
+ * Updates root package.json version to match framework packages
+ */
+async function updateRootVersion(packages: string[]) {
+  // Get version from first package (all have same version in fixed mode)
+  const firstPkg = packages.find((p) => p !== ".");
+  if (!firstPkg) return;
+
+  const { pkg } = getPackageInfo(firstPkg);
+  const newVersion = pkg.version;
+
+  // Update root package.json
+  const rootPkgPath = "package.json";
+  const rootPkg = JSON.parse(readFileSync(rootPkgPath, "utf-8"));
+
+  if (rootPkg.version !== newVersion) {
+    rootPkg.version = newVersion;
+    writeFileSync(rootPkgPath, JSON.stringify(rootPkg, null, 2) + "\n", "utf-8");
+    console.log(chalk.gray(`  Updated root package.json version: ${newVersion}`));
+  }
+}
+
+/**
+ * Generates root CHANGELOG with package grouping
+ */
+async function generateRootChangelog(packages: string[]) {
+  console.log(chalk.cyan("\nGenerating root CHANGELOG with package grouping...\n"));
+
+  const rootChangelogPath = "CHANGELOG.md";
+
+  // Package display names mapping
+  const packageDisplayNames: Record<string, string> = {
+    framework: "VC-Shell Framework (@vc-shell/framework)",
+    "cli/api-client": "API Client Generator (@vc-shell/api-client-generator)",
+    "cli/create-vc-app": "Create VC App (@vc-shell/create-vc-app)",
+    "configs/release-config": "Release Config (@vc-shell/release-config)",
+    "configs/vite-config": "Vite Config (@vc-shell/config-generator)",
+    "configs/ts-config": "TypeScript Config (@vc-shell/ts-config)",
+  };
+
+  // Collect versions and changes from package changelogs
+  const versionChanges: Record<string, Record<string, string>> = {};
+
+  for (const pkgPath of packages) {
+    if (pkgPath === ".") continue;
+
+    const pkgChangelogPath = path.join(pkgPath, "CHANGELOG.md");
+    const displayName = packageDisplayNames[pkgPath] || pkgPath;
+
+    if (!existsSync(pkgChangelogPath)) continue;
+
+    const content = readFileSync(pkgChangelogPath, "utf-8");
+    const lines = content.split("\n");
+    let currentVersion: string | null = null;
+    let currentContent: string[] = [];
+
+    for (const line of lines) {
+      // Check version header (supports both ## 1.2.3 and ## [1.2.3])
+      const versionMatch = line.match(/^##\s+(?:\[)?([\d.a-z-]+)(?:\])?(?:\s+\([^)]+\))?/i);
+
+      if (versionMatch) {
+        // Save previous version
+        if (currentVersion && currentContent.length > 0) {
+          const contentStr = currentContent.join("\n").trim();
+          if (!versionChanges[currentVersion]) {
+            versionChanges[currentVersion] = {};
+          }
+          versionChanges[currentVersion][displayName] = contentStr;
+        }
+
+        // Start new version
+        currentVersion = versionMatch[1];
+        currentContent = [];
+      } else if (currentVersion && line.trim() !== "") {
+        // Add content (skip file header)
+        if (!line.startsWith("# CHANGELOG") && !line.startsWith("All notable changes")) {
+          currentContent.push(line);
+        }
+      }
+    }
+
+    // Save last version
+    if (currentVersion && currentContent.length > 0) {
+      const contentStr = currentContent.join("\n").trim();
+      if (!versionChanges[currentVersion]) {
+        versionChanges[currentVersion] = {};
+      }
+      versionChanges[currentVersion][displayName] = contentStr;
+    }
+  }
+
+  // Build root changelog
+  let rootContent = `# CHANGELOG
+
+All notable changes to this monorepo will be documented in this file.
+
+`;
+
+  // Sort versions (newest first)
+  const allVersions = Object.keys(versionChanges).sort((a, b) => {
+    const aParts = a.split(/[.-]/).map((x) => (isNaN(parseInt(x)) ? x : parseInt(x)));
+    const bParts = b.split(/[.-]/).map((x) => (isNaN(parseInt(x)) ? x : parseInt(x)));
+
+    for (let i = 0; i < Math.max(aParts.length, bParts.length); i++) {
+      const aVal = aParts[i] ?? 0;
+      const bVal = bParts[i] ?? 0;
+
+      if (aVal !== bVal) {
+        if (typeof aVal === "number" && typeof bVal === "number") {
+          return bVal - aVal;
+        }
+        return String(bVal).localeCompare(String(aVal));
+      }
+    }
+    return 0;
+  });
+
+  // Build content for each version
+  for (const version of allVersions) {
+    const changes = versionChanges[version];
+    const hasAnyChanges = Object.values(changes).some((content) => content && content.trim().length > 0);
+
+    rootContent += `## ${version}\n\n`;
+
+    if (!hasAnyChanges) {
+      rootContent += `**Note:** Version bump only for package\n\n`;
+      continue;
+    }
+
+    // Add changes grouped by package
+    let versionHasContent = false;
+    for (const pkgPath of packages) {
+      if (pkgPath === ".") continue;
+      const displayName = packageDisplayNames[pkgPath] || pkgPath;
+      const pkgContent = changes[displayName];
+
+      if (pkgContent && pkgContent.trim()) {
+        versionHasContent = true;
+        rootContent += `### ${displayName}\n\n`;
+        rootContent += `${pkgContent}\n\n`;
+      }
+    }
+
+    if (!versionHasContent) {
+      rootContent += `**Note:** Version bump only for package\n\n`;
+    }
+  }
+
+  // Clean up extra empty lines
+  rootContent = rootContent.replace(/\n{3,}/g, "\n\n");
+
+  writeFileSync(rootChangelogPath, rootContent, "utf-8");
+  console.log(chalk.green("  ✓ Generated root CHANGELOG.md with package grouping"));
 }
 
 /**

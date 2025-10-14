@@ -1,5 +1,13 @@
 # Change Log
 
+## [1.1.91-alpha.3](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.91-alpha.2...v1.1.91-alpha.3) (2025-10-14)
+
+### Bug Fixes
+
+- **release:** add automatic push after amend to sync commits and tags ([0aa84c4](https://github.com/VirtoCommerce/vc-shell/commit/0aa84c4f4791533f3423f49c06910becf224b1a4))
+
+# Change Log
+
 ## [1.1.91-alpha.2](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.91-alpha.1...v1.1.91-alpha.2) (2025-10-14)
 
 **Note:** Version bump only for package @vc-shell/release-config

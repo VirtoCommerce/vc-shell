@@ -2,6 +2,39 @@
 
 All notable changes to this monorepo will be documented in this file.
 
+## 1.1.91-alpha.3
+
+### VC-Shell Framework (@vc-shell/framework)
+
+**Note:** Version bump only for package @vc-shell/framework
+# Change Log
+
+### API Client Generator (@vc-shell/api-client-generator)
+
+**Note:** Version bump only for package @vc-shell/api-client-generator
+# Change Log
+
+### Create VC App (@vc-shell/create-vc-app)
+
+**Note:** Version bump only for package @vc-shell/create-vc-app
+# Change Log
+
+### Release Config (@vc-shell/release-config)
+
+### Bug Fixes
+- **release:** add automatic push after amend to sync commits and tags ([0aa84c4](https://github.com/VirtoCommerce/vc-shell/commit/0aa84c4f4791533f3423f49c06910becf224b1a4))
+# Change Log
+
+### Vite Config (@vc-shell/config-generator)
+
+**Note:** Version bump only for package @vc-shell/config-generator
+# Change Log
+
+### TypeScript Config (@vc-shell/ts-config)
+
+**Note:** Version bump only for package @vc-shell/ts-config
+# Change Log
+
 ## 1.1.91-alpha.2
 
 ### VC-Shell Framework (@vc-shell/framework)

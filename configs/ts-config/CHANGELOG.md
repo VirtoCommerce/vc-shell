@@ -1,5 +1,11 @@
 # Change Log
 
+## [1.1.91-alpha.2](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.91-alpha.1...v1.1.91-alpha.2) (2025-10-14)
+
+**Note:** Version bump only for package @vc-shell/ts-config
+
+# Change Log
+
 ## [1.1.91-alpha.1](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.90...v1.1.91-alpha.1) (2025-10-14)
 
 ### Features

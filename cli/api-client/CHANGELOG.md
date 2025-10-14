@@ -1,24 +1,32 @@
+# Change Log
+
+## [1.1.91-alpha.1](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.90...v1.1.91-alpha.1) (2025-10-14)
+
+### Features
+
+- update auth providers and fix tsx path in pre-commit hook ([a92d957](https://github.com/VirtoCommerce/vc-shell/commit/a92d957e2b0a0be177519e7256af9279d3419713))
+
 ## [1.1.91-alpha.0](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.90...v1.1.91-alpha.0) (2025-10-14)
 
 ### Features
 
-* update auth providers and fix tsx path in pre-commit hook ([a92d957](https://github.com/VirtoCommerce/vc-shell/commit/a92d957e2b0a0be177519e7256af9279d3419713))
+- update auth providers and fix tsx path in pre-commit hook ([a92d957](https://github.com/VirtoCommerce/vc-shell/commit/a92d957e2b0a0be177519e7256af9279d3419713))
 
 ## [1.1.90](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.89...v1.1.90) (2025-10-08)
 
 ### Features
 
-* **generate-api-client:** enhance configuration options with environment variable support and improved module list parsing ([30c00f9](https://github.com/VirtoCommerce/vc-shell/commit/30c00f9f963b0fdba5cf64e3ac3769f09f1ddf0b))
+- **generate-api-client:** enhance configuration options with environment variable support and improved module list parsing ([30c00f9](https://github.com/VirtoCommerce/vc-shell/commit/30c00f9f963b0fdba5cf64e3ac3769f09f1ddf0b))
 
 ### Bug Fixes
 
-* **api-client:** update error message to reflect dynamic .NET Core version requirement ([bbfbaa0](https://github.com/VirtoCommerce/vc-shell/commit/bbfbaa0df92a91e56b36ca48d449d258c90c88bc))
+- **api-client:** update error message to reflect dynamic .NET Core version requirement ([bbfbaa0](https://github.com/VirtoCommerce/vc-shell/commit/bbfbaa0df92a91e56b36ca48d449d258c90c88bc))
 
 ## [1.1.89](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.88...v1.1.89) (2025-10-08)
 
 ### Bug Fixes
 
-* **api-client:** update runtime configuration and enhance error handling in API client generation process ([c9a762a](https://github.com/VirtoCommerce/vc-shell/commit/c9a762ac4e4d120d66b0ab3a16ebfe9078f33fdd))
+- **api-client:** update runtime configuration and enhance error handling in API client generation process ([c9a762a](https://github.com/VirtoCommerce/vc-shell/commit/c9a762ac4e4d120d66b0ab3a16ebfe9078f33fdd))
 
 ## [1.1.88](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.87...v1.1.88) (2025-10-07)
 
@@ -28,7 +36,7 @@
 
 ### Bug Fixes
 
-* **api-client:** enhance module name parsing and export generation for improved flexibility and compatibility ([37d3e20](https://github.com/VirtoCommerce/vc-shell/commit/37d3e20831e6931d4fcc93c7127a53b7af2d7540))
+- **api-client:** enhance module name parsing and export generation for improved flexibility and compatibility ([37d3e20](https://github.com/VirtoCommerce/vc-shell/commit/37d3e20831e6931d4fcc93c7127a53b7af2d7540))
 
 ## [1.1.86](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.85...v1.1.86) (2025-10-06)
 
@@ -174,7 +182,7 @@
 
 ### Bug Fixes
 
-* **api-client:** validate APP_TYPE_STYLE parameter and enhance error handling in API client generation ([506228d](https://github.com/VirtoCommerce/vc-shell/commit/506228d19deb14ba3d4f17e3180130395d001278))
+- **api-client:** validate APP_TYPE_STYLE parameter and enhance error handling in API client generation ([506228d](https://github.com/VirtoCommerce/vc-shell/commit/506228d19deb14ba3d4f17e3180130395d001278))
 
 ## [1.1.52](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.51...v1.1.52) (2025-07-02)
 
@@ -260,7 +268,7 @@
 
 ### Bug Fixes
 
-* **api-client:** correct type export path generation ([40464e9](https://github.com/VirtoCommerce/vc-shell/commit/40464e9d94be6409c8224cc8e90b1a39794b2328))
+- **api-client:** correct type export path generation ([40464e9](https://github.com/VirtoCommerce/vc-shell/commit/40464e9d94be6409c8224cc8e90b1a39794b2328))
 
 ## [1.0.336](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.335...v1.0.336) (2025-01-29)
 
@@ -322,7 +330,7 @@
 
 ### Features
 
-* **api-client:** skip build arg ([f67a69f](https://github.com/VirtoCommerce/vc-shell/commit/f67a69fc0b09129a5b2e7ec51039bcc2ba435ea1))
+- **api-client:** skip build arg ([f67a69f](https://github.com/VirtoCommerce/vc-shell/commit/f67a69fc0b09129a5b2e7ec51039bcc2ba435ea1))
 
 ## [1.0.321](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.320...v1.0.321) (2024-10-23)
 
@@ -624,13 +632,13 @@
 
 ### Features
 
-* **api-client-generator:** build api after generation, tsconfig/package.json creation, new args ([de115fe](https://github.com/VirtoCommerce/vc-shell/commit/de115fe05c9849dcdbbd9bd072a51472103e33a1))
+- **api-client-generator:** build api after generation, tsconfig/package.json creation, new args ([de115fe](https://github.com/VirtoCommerce/vc-shell/commit/de115fe05c9849dcdbbd9bd072a51472103e33a1))
 
 ## [1.0.244](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.243...v1.0.244) (2024-06-24)
 
 ### Features
 
-* application insights logger ([536db4d](https://github.com/VirtoCommerce/vc-shell/commit/536db4db35c91f4fb566717d2d6c536e48aacc95))
+- application insights logger ([536db4d](https://github.com/VirtoCommerce/vc-shell/commit/536db4db35c91f4fb566717d2d6c536e48aacc95))
 
 ## [1.0.243](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.242...v1.0.243) (2024-06-21)
 
@@ -796,7 +804,7 @@
 
 ### Features
 
-* **dynamic:** saveChanges response ([#207](https://github.com/VirtoCommerce/vc-shell/issues/207)) ([a05313b](https://github.com/VirtoCommerce/vc-shell/commit/a05313bd0fc5b25b927570c31e14aea69c4a5ddd))
+- **dynamic:** saveChanges response ([#207](https://github.com/VirtoCommerce/vc-shell/issues/207)) ([a05313b](https://github.com/VirtoCommerce/vc-shell/commit/a05313bd0fc5b25b927570c31e14aea69c4a5ddd))
 
 ## [1.0.200](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.199...v1.0.200) (2024-04-23)
 
@@ -1002,7 +1010,7 @@
 
 ### Bug Fixes
 
-* **api-client:** remove default prefix ([c6f1c37](https://github.com/VirtoCommerce/vc-shell/commit/c6f1c375b7acb95c73d2eeef4b22e3ceacc39885))
+- **api-client:** remove default prefix ([c6f1c37](https://github.com/VirtoCommerce/vc-shell/commit/c6f1c375b7acb95c73d2eeef4b22e3ceacc39885))
 
 ## [1.0.147](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.146...v1.0.147) (2024-01-12)
 
@@ -1068,7 +1076,7 @@
 
 ### Bug Fixes
 
-* **api-client-generator:** add [@ts-nocheck](https://github.com/ts-nocheck) to every generated api-client ([ec63e8d](https://github.com/VirtoCommerce/vc-shell/commit/ec63e8dadb252ae29294632357bced6725d5c8c9))
+- **api-client-generator:** add [@ts-nocheck](https://github.com/ts-nocheck) to every generated api-client ([ec63e8d](https://github.com/VirtoCommerce/vc-shell/commit/ec63e8dadb252ae29294632357bced6725d5c8c9))
 
 ## [1.0.131](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.130...v1.0.131) (2023-12-28)
 
@@ -1082,7 +1090,7 @@
 
 ### Features
 
-* **api-client:** update dependencies and build configuration ([cfb7929](https://github.com/VirtoCommerce/vc-shell/commit/cfb7929c703622daddd5152eff95d58582d2a662))
+- **api-client:** update dependencies and build configuration ([cfb7929](https://github.com/VirtoCommerce/vc-shell/commit/cfb7929c703622daddd5152eff95d58582d2a662))
 
 ## [1.0.128](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.127...v1.0.128) (2023-12-14)
 
@@ -1136,8 +1144,8 @@
 
 ### Features
 
-* **@vc-shell/create-vc-app:** changed boilerplate ([740915b](https://github.com/VirtoCommerce/vc-shell/commit/740915baea40f4ac25375679dac9e9a209ae1937))
-* **@vc-shell/framework:** updated tsconfigs ([921d000](https://github.com/VirtoCommerce/vc-shell/commit/921d000de8a0ca1b3eed4712eb5cc87e6d6a6616))
+- **@vc-shell/create-vc-app:** changed boilerplate ([740915b](https://github.com/VirtoCommerce/vc-shell/commit/740915baea40f4ac25375679dac9e9a209ae1937))
+- **@vc-shell/framework:** updated tsconfigs ([921d000](https://github.com/VirtoCommerce/vc-shell/commit/921d000de8a0ca1b3eed4712eb5cc87e6d6a6616))
 
 ## [1.0.114](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.113...v1.0.114) (2023-10-25)
 
@@ -1147,12 +1155,12 @@
 
 ### ⚠ BREAKING CHANGES
 
-* **@vc-shell/api-client:** api client generator now uses
-command line arguments instead of environment variables
+- **@vc-shell/api-client:** api client generator now uses
+  command line arguments instead of environment variables
 
 ### Features
 
-* **@vc-shell/api-client:** Replace .env variables to command line args ([4bcfade](https://github.com/VirtoCommerce/vc-shell/commit/4bcfade6f0eee7f6e2b74ed898d5b90da1198da8))
+- **@vc-shell/api-client:** Replace .env variables to command line args ([4bcfade](https://github.com/VirtoCommerce/vc-shell/commit/4bcfade6f0eee7f6e2b74ed898d5b90da1198da8))
 
 ## [1.0.111](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.110...v1.0.111) (2023-10-17)
 
@@ -1314,33 +1322,33 @@ command line arguments instead of environment variables
 
 ### Features
 
-* common pages moved to shell ([fca5967](https://github.com/VirtoCommerce/vc-shell/commit/fca5967bfa8fdfee09c043dfc565e8aa2534ada1))
+- common pages moved to shell ([fca5967](https://github.com/VirtoCommerce/vc-shell/commit/fca5967bfa8fdfee09c043dfc565e8aa2534ada1))
 
 ## [1.0.70](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.69...v1.0.70) (2023-05-18)
 
 ### Features
 
-* eslint vue3-recommended/deps up ([b695f9b](https://github.com/VirtoCommerce/vc-shell/commit/b695f9b40e53ea73fdf0b672956e11c29f8c5de7))
+- eslint vue3-recommended/deps up ([b695f9b](https://github.com/VirtoCommerce/vc-shell/commit/b695f9b40e53ea73fdf0b672956e11c29f8c5de7))
 
 ### Bug Fixes
 
-* other fixes/refactors and types updated ([46ebd82](https://github.com/VirtoCommerce/vc-shell/commit/46ebd823234741b1e0f8c987b5bcdd65808dbd7a))
+- other fixes/refactors and types updated ([46ebd82](https://github.com/VirtoCommerce/vc-shell/commit/46ebd823234741b1e0f8c987b5bcdd65808dbd7a))
 
 ## [1.0.69](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.68...v1.0.69) (2023-04-26)
 
 ### Features
 
-* transition to yarn berry monorepo ([73a4da7](https://github.com/VirtoCommerce/vc-shell/commit/73a4da7905fffa030501175d76aeaa0f4caae99a))
+- transition to yarn berry monorepo ([73a4da7](https://github.com/VirtoCommerce/vc-shell/commit/73a4da7905fffa030501175d76aeaa0f4caae99a))
 
 ### Bug Fixes
 
-* fixed api-generation ([1e39974](https://github.com/VirtoCommerce/vc-shell/commit/1e39974ec27fa2ab2a3d5346c590be30f5d689d3))
+- fixed api-generation ([1e39974](https://github.com/VirtoCommerce/vc-shell/commit/1e39974ec27fa2ab2a3d5346c590be30f5d689d3))
 
 ## [1.0.68](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.67...v1.0.68) (2023-04-24)
 
 ### Reverts
 
-* version ([9c36dfd](https://github.com/VirtoCommerce/vc-shell/commit/9c36dfd1b91d391763ae7576be6c2eedd65a4828))
+- version ([9c36dfd](https://github.com/VirtoCommerce/vc-shell/commit/9c36dfd1b91d391763ae7576be6c2eedd65a4828))
 
 ## [1.0.66](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.65...v1.0.66) (2023-04-17)
 
@@ -1366,11 +1374,11 @@ command line arguments instead of environment variables
 
 ### Features
 
-* updated lerna and scripts ([0c73bc7](https://github.com/VirtoCommerce/vc-shell/commit/0c73bc70ed62932baf03d9e028f3d59dad056bf5))
+- updated lerna and scripts ([0c73bc7](https://github.com/VirtoCommerce/vc-shell/commit/0c73bc70ed62932baf03d9e028f3d59dad056bf5))
 
 ### Bug Fixes
 
-* deps revert ([6068096](https://github.com/VirtoCommerce/vc-shell/commit/6068096bdef9a3021208399a048e36d027304e89))
+- deps revert ([6068096](https://github.com/VirtoCommerce/vc-shell/commit/6068096bdef9a3021208399a048e36d027304e89))
 
 ## [1.0.60](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.59...v1.0.60) (2023-03-30)
 
@@ -1388,7 +1396,7 @@ command line arguments instead of environment variables
 
 ### Bug Fixes
 
-* some fixes and up version ([ee3d33f](https://github.com/VirtoCommerce/vc-shell/commit/ee3d33f68015cf13cc250346a89c538a0218361b))
+- some fixes and up version ([ee3d33f](https://github.com/VirtoCommerce/vc-shell/commit/ee3d33f68015cf13cc250346a89c538a0218361b))
 
 ## [1.0.55](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.54...v1.0.55) (2023-03-14)
 
@@ -1398,7 +1406,7 @@ command line arguments instead of environment variables
 
 ### Features
 
-* deps new versions, vc-shell as ES module, config builder refactoring, new logger ([2cee26c](https://github.com/VirtoCommerce/vc-shell/commit/2cee26c6017b449481dd5c3562043b116a95387f))
+- deps new versions, vc-shell as ES module, config builder refactoring, new logger ([2cee26c](https://github.com/VirtoCommerce/vc-shell/commit/2cee26c6017b449481dd5c3562043b116a95387f))
 
 ## [1.0.53](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.52...v1.0.53) (2023-03-02)
 
@@ -1408,7 +1416,7 @@ command line arguments instead of environment variables
 
 ### Bug Fixes
 
-* routing fix ([86f38c6](https://github.com/VirtoCommerce/vc-shell/commit/86f38c6a3c0ce2461fd0c49bd446f5c94c359d61))
+- routing fix ([86f38c6](https://github.com/VirtoCommerce/vc-shell/commit/86f38c6a3c0ce2461fd0c49bd446f5c94c359d61))
 
 ## [1.0.50](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.49...v1.0.50) (2023-03-01)
 
@@ -1422,7 +1430,7 @@ command line arguments instead of environment variables
 
 ### Bug Fixes
 
-* api client generation ([c362166](https://github.com/VirtoCommerce/vc-shell/commit/c362166740d9fde2c3135d20bd31ab62eecfd241))
+- api client generation ([c362166](https://github.com/VirtoCommerce/vc-shell/commit/c362166740d9fde2c3135d20bd31ab62eecfd241))
 
 ## [1.0.49](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.48...v1.0.49) (2023-02-27)
 
@@ -1436,7 +1444,7 @@ command line arguments instead of environment variables
 
 ### Bug Fixes
 
-* fixed types ([88c89e2](https://github.com/VirtoCommerce/vc-shell/commit/88c89e20430bbd727827ba82ca3427f11aff0c1c))
+- fixed types ([88c89e2](https://github.com/VirtoCommerce/vc-shell/commit/88c89e20430bbd727827ba82ca3427f11aff0c1c))
 
 ## [1.0.46](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.45...v1.0.46) (2023-02-16)
 
@@ -1446,7 +1454,7 @@ command line arguments instead of environment variables
 
 ### Features
 
-* version up ([dd20390](https://github.com/VirtoCommerce/vc-shell/commit/dd203905f203990f31e1dd57c16ed6fe43ac0b4b))
+- version up ([dd20390](https://github.com/VirtoCommerce/vc-shell/commit/dd203905f203990f31e1dd57c16ed6fe43ac0b4b))
 
 ## [1.0.44](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.43...v1.0.44) (2023-02-08)
 
@@ -1476,7 +1484,7 @@ command line arguments instead of environment variables
 
 ### Features
 
-* merged framework library ([46a2691](https://github.com/VirtoCommerce/vc-shell/commit/46a26910b5c437fddec8d280445209999ff77240))
+- merged framework library ([46a2691](https://github.com/VirtoCommerce/vc-shell/commit/46a26910b5c437fddec8d280445209999ff77240))
 
 ## [1.0.37](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.36...v1.0.37) (2022-11-22)
 
@@ -1486,7 +1494,7 @@ command line arguments instead of environment variables
 
 ### Bug Fixes
 
-* remove unwanted gitHead ([3ec4f11](https://github.com/VirtoCommerce/vc-shell/commit/3ec4f115d030375da0b1675be645bad43ee9c544))
+- remove unwanted gitHead ([3ec4f11](https://github.com/VirtoCommerce/vc-shell/commit/3ec4f115d030375da0b1675be645bad43ee9c544))
 
 ## [1.0.34](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.33...v1.0.34) (2022-11-15)
 
@@ -1504,7 +1512,7 @@ command line arguments instead of environment variables
 
 ### Features
 
-* full lib content to npm ([28cc487](https://github.com/VirtoCommerce/vc-shell/commit/28cc4874abb7806e073c976cd12baf1f8bd22f1a))
+- full lib content to npm ([28cc487](https://github.com/VirtoCommerce/vc-shell/commit/28cc4874abb7806e073c976cd12baf1f8bd22f1a))
 
 ## [1.0.28](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.27...v1.0.28) (2022-10-10)
 
@@ -1530,11 +1538,11 @@ command line arguments instead of environment variables
 
 ### Bug Fixes
 
-* rename virto-shell -> virtocommerce ([ba74f8f](https://github.com/VirtoCommerce/vc-shell/commit/ba74f8fb7fcb61744f2348e8521dfae77775418b))
+- rename virto-shell -> virtocommerce ([ba74f8f](https://github.com/VirtoCommerce/vc-shell/commit/ba74f8fb7fcb61744f2348e8521dfae77775418b))
 
 ### Reverts
 
-* Revert "chore: %s publish" ([bfdda26](https://github.com/VirtoCommerce/vc-shell/commit/bfdda2630a86d545e5800a3508a77c0fb377fd82))
+- Revert "chore: %s publish" ([bfdda26](https://github.com/VirtoCommerce/vc-shell/commit/bfdda2630a86d545e5800a3508a77c0fb377fd82))
 
 ## [1.0.22](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.21...v1.0.22) (2022-09-29)
 
@@ -1544,7 +1552,7 @@ command line arguments instead of environment variables
 
 ### Features
 
-* vm-801 1042 800 569 1043 914 814 1054 920 1019 ([8bf48a3](https://github.com/VirtoCommerce/vc-shell/commit/8bf48a32989c1b64b2aac4a5bc96b9bdcf7f995a))
+- vm-801 1042 800 569 1043 914 814 1054 920 1019 ([8bf48a3](https://github.com/VirtoCommerce/vc-shell/commit/8bf48a32989c1b64b2aac4a5bc96b9bdcf7f995a))
 
 ## [1.0.20](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.19...v1.0.20) (2022-09-06)
 
@@ -1562,16 +1570,15 @@ command line arguments instead of environment variables
 
 ### Features
 
-* generate API clients from command line ([d8c1870](https://github.com/VirtoCommerce/vc-shell/commit/d8c1870aa38f4376181a584c3259aae3f547d792))
-* version up ([85d5ab5](https://github.com/VirtoCommerce/vc-shell/commit/85d5ab59926cc4fe8c2e6464a0d6cb1e849c975d))
+- generate API clients from command line ([d8c1870](https://github.com/VirtoCommerce/vc-shell/commit/d8c1870aa38f4376181a584c3259aae3f547d792))
+- version up ([85d5ab5](https://github.com/VirtoCommerce/vc-shell/commit/85d5ab59926cc4fe8c2e6464a0d6cb1e849c975d))
 
 ### Bug Fixes
 
-* baseUrl ([7306cf9](https://github.com/VirtoCommerce/vc-shell/commit/7306cf9f3218f6cbab639a460b982e4bd7e1220c))
-* config ([a32eae3](https://github.com/VirtoCommerce/vc-shell/commit/a32eae37557a43ce28b615d0a55e2a7b571c9186))
-* nswag output ([09df7dd](https://github.com/VirtoCommerce/vc-shell/commit/09df7dd986feea1eb113d0d0d3307d31e13e4b23))
-* readme, add prerequisite ([50ba1fb](https://github.com/VirtoCommerce/vc-shell/commit/50ba1fb2f06be28a15ded7f27a65a843661c2c0a))
-* refactoring ([d20e1cd](https://github.com/VirtoCommerce/vc-shell/commit/d20e1cd36cf7e85e4dc7ca89a1599194619d353a))
-* shorter human-readable names ([23033f7](https://github.com/VirtoCommerce/vc-shell/commit/23033f77aa6f6788b4e2ef1353a3c14cc6fe7392))
-* small fixes ([48db643](https://github.com/VirtoCommerce/vc-shell/commit/48db643b9bb4a19dfff03d5c326c359530beb377))
-
+- baseUrl ([7306cf9](https://github.com/VirtoCommerce/vc-shell/commit/7306cf9f3218f6cbab639a460b982e4bd7e1220c))
+- config ([a32eae3](https://github.com/VirtoCommerce/vc-shell/commit/a32eae37557a43ce28b615d0a55e2a7b571c9186))
+- nswag output ([09df7dd](https://github.com/VirtoCommerce/vc-shell/commit/09df7dd986feea1eb113d0d0d3307d31e13e4b23))
+- readme, add prerequisite ([50ba1fb](https://github.com/VirtoCommerce/vc-shell/commit/50ba1fb2f06be28a15ded7f27a65a843661c2c0a))
+- refactoring ([d20e1cd](https://github.com/VirtoCommerce/vc-shell/commit/d20e1cd36cf7e85e4dc7ca89a1599194619d353a))
+- shorter human-readable names ([23033f7](https://github.com/VirtoCommerce/vc-shell/commit/23033f77aa6f6788b4e2ef1353a3c14cc6fe7392))
+- small fixes ([48db643](https://github.com/VirtoCommerce/vc-shell/commit/48db643b9bb4a19dfff03d5c326c359530beb377))

@@ -1,6 +1,6 @@
 {
   "$schema": "node_modules/lerna/schemas/lerna-schema.json",
-  "version": "1.1.91-alpha.0",
+  "version": "1.1.91-alpha.1",
   "npmClient": "yarn",
   "packages": ["framework", "cli/*", "configs/*"],
   "ignoreChanges": [
@@ -20,17 +20,57 @@
       "changelogPreset": {
         "name": "angular",
         "types": [
-          { "type": "feat", "section": "Features" },
-          { "type": "fix", "section": "Bug Fixes" },
-          { "type": "perf", "section": "Performance Improvements" },
-          { "type": "revert", "section": "Reverts" },
-          { "type": "docs", "section": "Documentation", "hidden": false },
-          { "type": "style", "section": "Styles", "hidden": false },
-          { "type": "refactor", "section": "Code Refactoring", "hidden": false },
-          { "type": "test", "section": "Tests", "hidden": false },
-          { "type": "build", "section": "Build System", "hidden": false },
-          { "type": "ci", "section": "CI/CD", "hidden": false },
-          { "type": "chore", "section": "Chores", "hidden": true }
+          {
+            "type": "feat",
+            "section": "Features"
+          },
+          {
+            "type": "fix",
+            "section": "Bug Fixes"
+          },
+          {
+            "type": "perf",
+            "section": "Performance Improvements"
+          },
+          {
+            "type": "revert",
+            "section": "Reverts"
+          },
+          {
+            "type": "docs",
+            "section": "Documentation",
+            "hidden": false
+          },
+          {
+            "type": "style",
+            "section": "Styles",
+            "hidden": false
+          },
+          {
+            "type": "refactor",
+            "section": "Code Refactoring",
+            "hidden": false
+          },
+          {
+            "type": "test",
+            "section": "Tests",
+            "hidden": false
+          },
+          {
+            "type": "build",
+            "section": "Build System",
+            "hidden": false
+          },
+          {
+            "type": "ci",
+            "section": "CI/CD",
+            "hidden": false
+          },
+          {
+            "type": "chore",
+            "section": "Chores",
+            "hidden": true
+          }
         ],
         "preMajor": false,
         "commitUrlFormat": "{{host}}/{{owner}}/{{repository}}/commit/{{hash}}",

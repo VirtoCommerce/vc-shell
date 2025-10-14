@@ -1,8 +1,16 @@
+# Change Log
+
+## [1.1.91-alpha.1](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.90...v1.1.91-alpha.1) (2025-10-14)
+
+### Features
+
+- update auth providers and fix tsx path in pre-commit hook ([a92d957](https://github.com/VirtoCommerce/vc-shell/commit/a92d957e2b0a0be177519e7256af9279d3419713))
+
 ## [1.1.91-alpha.0](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.90...v1.1.91-alpha.0) (2025-10-14)
 
 ### Features
 
-* update auth providers and fix tsx path in pre-commit hook ([a92d957](https://github.com/VirtoCommerce/vc-shell/commit/a92d957e2b0a0be177519e7256af9279d3419713))
+- update auth providers and fix tsx path in pre-commit hook ([a92d957](https://github.com/VirtoCommerce/vc-shell/commit/a92d957e2b0a0be177519e7256af9279d3419713))
 
 ## [1.1.90](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.89...v1.1.90) (2025-10-08)
 
@@ -776,7 +784,7 @@
 
 ### Features
 
-* **dynamic:** saveChanges response ([#207](https://github.com/VirtoCommerce/vc-shell/issues/207)) ([a05313b](https://github.com/VirtoCommerce/vc-shell/commit/a05313bd0fc5b25b927570c31e14aea69c4a5ddd))
+- **dynamic:** saveChanges response ([#207](https://github.com/VirtoCommerce/vc-shell/issues/207)) ([a05313b](https://github.com/VirtoCommerce/vc-shell/commit/a05313bd0fc5b25b927570c31e14aea69c4a5ddd))
 
 ## [1.0.200](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.199...v1.0.200) (2024-04-23)
 
@@ -1046,7 +1054,7 @@
 
 ### Features
 
-* **ts-config:** always strict ([09ba244](https://github.com/VirtoCommerce/vc-shell/commit/09ba2444add7e9717e0cc097141f16585b490b23))
+- **ts-config:** always strict ([09ba244](https://github.com/VirtoCommerce/vc-shell/commit/09ba2444add7e9717e0cc097141f16585b490b23))
 
 ## [1.0.131](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.130...v1.0.131) (2023-12-28)
 
@@ -1060,7 +1068,7 @@
 
 ### Features
 
-* **configs:** update release-config package.json and utils.ts ([cd932ce](https://github.com/VirtoCommerce/vc-shell/commit/cd932cea266840df372dbddd9d0cfd339a54ed51))
+- **configs:** update release-config package.json and utils.ts ([cd932ce](https://github.com/VirtoCommerce/vc-shell/commit/cd932cea266840df372dbddd9d0cfd339a54ed51))
 
 ## [1.0.128](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.127...v1.0.128) (2023-12-14)
 
@@ -1114,5 +1122,4 @@
 
 ### Features
 
-* release-config and ts-config packages ([c901ebf](https://github.com/VirtoCommerce/vc-shell/commit/c901ebffa19569f647a351de484e3d807425b920))
-
+- release-config and ts-config packages ([c901ebf](https://github.com/VirtoCommerce/vc-shell/commit/c901ebffa19569f647a351de484e3d807425b920))

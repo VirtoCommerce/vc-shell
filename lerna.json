@@ -18,7 +18,7 @@
     "version": {
       "conventionalCommits": true,
       "changelogPreset": {
-        "name": "conventionalcommits",
+        "name": "angular",
         "types": [
           { "type": "feat", "section": "Features" },
           { "type": "fix", "section": "Bug Fixes" },
@@ -30,7 +30,7 @@
           { "type": "test", "section": "Tests", "hidden": false },
           { "type": "build", "section": "Build System", "hidden": false },
           { "type": "ci", "section": "CI/CD", "hidden": false },
-          { "type": "chore", "section": "Chores", "hidden": false }
+          { "type": "chore", "section": "Chores", "hidden": true }
         ],
         "preMajor": false,
         "commitUrlFormat": "{{host}}/{{owner}}/{{repository}}/commit/{{hash}}",

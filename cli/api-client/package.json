@@ -13,7 +13,7 @@
   },
   "devDependencies": {
     "@types/cross-spawn": "^6.0.6",
-    "@vc-shell/ts-config": "^1.1.97",
+    "@vc-shell/ts-config": "workspace:*",
     "typescript": "^5.8.3"
   },
   "dependencies": {

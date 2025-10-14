@@ -76,7 +76,7 @@ jobs:
     - name: Determine npm tag
       if: success()
       run: |
-        # First check for npmTag field in package.json files
+        # Check for npmTag field in package.json files (set by Lerna release process)
         for pkg in framework configs/ts-config configs/release-config cli/create-vc-app configs/vite-config cli/api-client; do
           if [ -f "${pkg}/package.json" ]; then
             # Try to read npmTag or publishConfig.tag from package.json
@@ -87,26 +87,22 @@ jobs:
               break
             fi
 
-            # Check commit message for release tag
-            LAST_COMMIT_MSG=$(git log -1 --pretty=%B)
-            if [[ "$LAST_COMMIT_MSG" == *"with npm tag"* ]]; then
-              COMMIT_NPM_TAG=$(echo "$LAST_COMMIT_MSG" | grep -o "with npm tag [a-zA-Z0-9\-]\+" | sed 's/with npm tag //')
-              if [ ! -z "$COMMIT_NPM_TAG" ]; then
-                echo "Found npm tag in commit message: $COMMIT_NPM_TAG"
-                echo "NPM_TAG=$COMMIT_NPM_TAG" >> $GITHUB_ENV
-                break
-              fi
-            fi
-
             # Fallback to version-based detection
             CURRENT_VERSION=$(node -p "require('./${pkg}/package.json').version")
             if [[ "$CURRENT_VERSION" == *"-alpha"* ]]; then
+              echo "Detected alpha version, using alpha tag"
               echo "NPM_TAG=alpha" >> $GITHUB_ENV
               break
             elif [[ "$CURRENT_VERSION" == *"-beta"* ]]; then
+              echo "Detected beta version, using beta tag"
               echo "NPM_TAG=beta" >> $GITHUB_ENV
               break
+            elif [[ "$CURRENT_VERSION" == *"-rc"* ]]; then
+              echo "Detected rc version, using rc tag"
+              echo "NPM_TAG=rc" >> $GITHUB_ENV
+              break
             elif [[ "$CURRENT_VERSION" == *"-next"* ]]; then
+              echo "Detected next version, using next tag"
               echo "NPM_TAG=next" >> $GITHUB_ENV
               break
             fi

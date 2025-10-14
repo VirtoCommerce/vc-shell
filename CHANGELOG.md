@@ -8,99 +8,81 @@ All notable changes to this monorepo will be documented in this file.
 
 ### Bug Fixes
 - **locales:** add newline for better readability in localization check output ([ee8c2fd](https://github.com/VirtoCommerce/vc-shell/commit/ee8c2fd873f2c4a0a8c4d574c2c8b715215fbe4d))
-# Change Log
 
 ### API Client Generator (@vc-shell/api-client-generator)
 
 **Note:** Version bump only for package @vc-shell/api-client-generator
-# Change Log
 
 ### Create VC App (@vc-shell/create-vc-app)
 
 **Note:** Version bump only for package @vc-shell/create-vc-app
-# Change Log
 
 ### Release Config (@vc-shell/release-config)
 
 ### Bug Fixes
 - **release-config:** clean up comments and formatting in release.ts for improved clarity ([2a1130d](https://github.com/VirtoCommerce/vc-shell/commit/2a1130d7cc89a69069ca959f0647fb84ce1924c2))
 - **release:** disable Lerna push to avoid double CI runs ([78aef0a](https://github.com/VirtoCommerce/vc-shell/commit/78aef0aebd10c5089df0cb96d35591d57bdbcee6))
-# Change Log
 
 ### Vite Config (@vc-shell/config-generator)
 
 **Note:** Version bump only for package @vc-shell/config-generator
-# Change Log
 
 ### TypeScript Config (@vc-shell/ts-config)
 
 **Note:** Version bump only for package @vc-shell/ts-config
-# Change Log
 
 ## 1.1.91-alpha.3
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 **Note:** Version bump only for package @vc-shell/framework
-# Change Log
 
 ### API Client Generator (@vc-shell/api-client-generator)
 
 **Note:** Version bump only for package @vc-shell/api-client-generator
-# Change Log
 
 ### Create VC App (@vc-shell/create-vc-app)
 
 **Note:** Version bump only for package @vc-shell/create-vc-app
-# Change Log
 
 ### Release Config (@vc-shell/release-config)
 
 ### Bug Fixes
 - **release:** add automatic push after amend to sync commits and tags ([0aa84c4](https://github.com/VirtoCommerce/vc-shell/commit/0aa84c4f4791533f3423f49c06910becf224b1a4))
-# Change Log
 
 ### Vite Config (@vc-shell/config-generator)
 
 **Note:** Version bump only for package @vc-shell/config-generator
-# Change Log
 
 ### TypeScript Config (@vc-shell/ts-config)
 
 **Note:** Version bump only for package @vc-shell/ts-config
-# Change Log
 
 ## 1.1.91-alpha.2
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 **Note:** Version bump only for package @vc-shell/framework
-# Change Log
 
 ### API Client Generator (@vc-shell/api-client-generator)
 
 **Note:** Version bump only for package @vc-shell/api-client-generator
-# Change Log
 
 ### Create VC App (@vc-shell/create-vc-app)
 
 **Note:** Version bump only for package @vc-shell/create-vc-app
-# Change Log
 
 ### Release Config (@vc-shell/release-config)
 
 **Note:** Version bump only for package @vc-shell/release-config
-# Change Log
 
 ### Vite Config (@vc-shell/config-generator)
 
 **Note:** Version bump only for package @vc-shell/config-generator
-# Change Log
 
 ### TypeScript Config (@vc-shell/ts-config)
 
 **Note:** Version bump only for package @vc-shell/ts-config
-# Change Log
 
 ## 1.1.91-alpha.1
 

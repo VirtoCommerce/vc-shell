@@ -295,6 +295,7 @@ async function enhanceChangelogs(packages: string[]) {
     let content = readFileSync(changelogPath, "utf-8");
 
     // Improve changelog formatting
+    content = content.replace(/^# Change Log\s*\n/gm, ""); // Remove duplicate "Change Log" headers
     content = content.replace(/^All notable changes to this project will be documented in this file\.\s*\n/gm, "");
     content = content.replace(
       /^See \[Conventional Commits\]\(https:\/\/conventionalcommits\.org\) for commit guidelines\.\s*\n/gm,
@@ -443,8 +444,12 @@ async function generateRootChangelog(packages: string[]) {
         currentVersion = versionMatch[1];
         currentContent = [];
       } else if (currentVersion && line.trim() !== "") {
-        // Add content (skip file header)
-        if (!line.startsWith("# CHANGELOG") && !line.startsWith("All notable changes")) {
+        // Add content (skip file headers)
+        if (
+          !line.startsWith("# CHANGELOG") &&
+          !line.startsWith("# Change Log") &&
+          !line.startsWith("All notable changes")
+        ) {
           currentContent.push(line);
         }
       }

@@ -1,4 +1,3 @@
-# Change Log
 
 ## [1.1.91-alpha.4](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.91-alpha.3...v1.1.91-alpha.4) (2025-10-14)
 
@@ -7,7 +6,6 @@
 - **release-config:** clean up comments and formatting in release.ts for improved clarity ([2a1130d](https://github.com/VirtoCommerce/vc-shell/commit/2a1130d7cc89a69069ca959f0647fb84ce1924c2))
 - **release:** disable Lerna push to avoid double CI runs ([78aef0a](https://github.com/VirtoCommerce/vc-shell/commit/78aef0aebd10c5089df0cb96d35591d57bdbcee6))
 
-# Change Log
 
 ## [1.1.91-alpha.3](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.91-alpha.2...v1.1.91-alpha.3) (2025-10-14)
 
@@ -15,13 +13,11 @@
 
 - **release:** add automatic push after amend to sync commits and tags ([0aa84c4](https://github.com/VirtoCommerce/vc-shell/commit/0aa84c4f4791533f3423f49c06910becf224b1a4))
 
-# Change Log
 
 ## [1.1.91-alpha.2](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.91-alpha.1...v1.1.91-alpha.2) (2025-10-14)
 
 **Note:** Version bump only for package @vc-shell/release-config
 
-# Change Log
 
 ## [1.1.91-alpha.1](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.90...v1.1.91-alpha.1) (2025-10-14)
 

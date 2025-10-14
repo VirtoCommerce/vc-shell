@@ -87,11 +87,11 @@ async function checkLocales(): Promise<boolean> {
       console.log(); // Empty line for better readability
     }
 
-    console.log(chalk.red("\n❌ Localization check failed. Please fix the issues above."));
+    console.log(chalk.red("\n❌ Localization check failed. Please fix the issues above.\n"));
     return false;
   }
 
-  console.log(chalk.green("✓ All localizations are in sync with en.json!"));
+  console.log(chalk.green("✓ All localizations are in sync with en.json!\n"));
   return true;
 }
 

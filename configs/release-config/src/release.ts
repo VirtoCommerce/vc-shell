@@ -26,11 +26,11 @@ export const release = async ({
 }: {
   packages: string[];
   /**
-   * 
-   * @param pkgName 
-   * @param version 
-   * @param workspaceName 
-   * @returns 
+   *
+   * @param pkgName
+   * @param version
+   * @param workspaceName
+   * @returns
    */
   customHooks: (version: string) => void | Promise<void>;
   /** @deprecated Lerna handles version bumping automatically */
@@ -227,12 +227,12 @@ export const release = async ({
       sync("git", ["add", "-A"], { stdio: "inherit" });
       sync("git", ["commit", "--amend", "--no-edit", "--no-verify"], { stdio: "inherit" });
       sync("git", ["tag", "-f", tag], { stdio: "inherit" });
-      
+
       // Push updated commit and tag to remote
       console.log(chalk.cyan("\nPushing changes to remote...\n"));
       sync("git", ["push", "origin", "HEAD", "--force-with-lease"], { stdio: "inherit" });
       sync("git", ["push", "origin", tag, "--force"], { stdio: "inherit" });
-      
+
       console.log(chalk.green("\n✅ Updated changelogs, package.json, and pushed to remote\n"));
     }
   }

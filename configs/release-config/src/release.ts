@@ -184,6 +184,9 @@ export const release = async ({
   // Add flags for dry-run mode
   if (isDryRun) {
     lernaArgs.push("--no-git-tag-version", "--no-push");
+  } else {
+    // Always disable Lerna's push - we'll push manually after all changes
+    lernaArgs.push("--no-push");
   }
 
   // Run lerna version

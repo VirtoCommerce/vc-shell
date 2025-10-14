@@ -1,3 +1,11 @@
+## [1.1.91-alpha.5](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.91-alpha.4...v1.1.91-alpha.5) (2025-10-14)
+
+### Release Config (@vc-shell/release-config)
+
+### Bug Fixes
+- **release-config:** enhance changelog cleanup and add version bump notes for empty versions ([cd2b9b0](https://github.com/VirtoCommerce/vc-shell/commit/cd2b9b0250018f4a26a65c41a31d308b3dc6aa51))
+- **release-config:** improve root changelog generation to exclude empty version bumps ([19ac0ee](https://github.com/VirtoCommerce/vc-shell/commit/19ac0ee6536b6172088c919a5ce2d10ab4718863))
+
 ## [1.1.91-alpha.4](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.91-alpha.3...v1.1.91-alpha.4) (2025-10-14)
 
 ### VC-Shell Framework (@vc-shell/framework)

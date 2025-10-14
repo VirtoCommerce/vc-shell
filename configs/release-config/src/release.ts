@@ -1,15 +1,16 @@
 // eslint-disable-next-line import/no-named-as-default
 import prompts from "prompts";
-import { valid, inc as semverInc, parse, gt } from "semver";
-import { getPackageInfo, getVersionChoices, run, runIfNotDry, step, args, writePackageJson } from "./utils";
+import { valid, parse } from "semver";
+import { getPackageInfo, args, writePackageJson } from "./utils";
 import chalk from "chalk";
-import fs from "node:fs";
+import { sync } from "cross-spawn";
+import { readFileSync, writeFileSync, existsSync } from "node:fs";
 import path from "node:path";
 
 /**
- * Release function that prompts the user to select a release type and version, generates changelogs, commits changes, and pushes to GitHub.
+ * Release function that uses Lerna for versioning and changelog generation
  * @param packages - An array of package names to release.
- * @param bumpVersion - A function that takes a package name and version and updates the package.json file with the new version.
+ * @param bumpVersion - A function that takes a package name and version (deprecated, Lerna handles this).
  * @param generateChangelog - A function that generates a changelog for a package with a given version.
  * @param toTag - A function that takes a version and returns a tag name.
  * @returns void
@@ -26,49 +27,114 @@ export const release = async ({
   generateChangelog: (pkgName: string, version: string, workspaceName?: string) => void | Promise<void>;
   toTag: (version: string) => string;
 }) => {
-  let targetVersion: string | undefined;
-
   if (packages.length === 0) {
     throw new Error("No packages to release");
   }
 
-  // Get any package.json info
-  const { pkg } = getPackageInfo(packages[0]);
+  const isDryRun = !!args.dry;
 
-  if (!targetVersion) {
-    const { release }: { release: string } = await prompts({
+  if (isDryRun) {
+    console.log(chalk.yellow("\n⚠️  DRY RUN MODE - No git operations will be performed\n"));
+  }
+
+  // Execute custom hooks (e.g. updateBoilerplatePkgVersions)
+  console.log(chalk.cyan("\nRunning pre-version hooks...\n"));
+  await generateChangelog("", "", ""); // Call for side effects
+
+  // Determine release type
+  const { releaseType } = await prompts({
+    type: "select",
+    name: "releaseType",
+    message: "Select release type",
+    choices: [
+      { title: "Automatic (based on commits)", value: "auto" },
+      { title: "Prerelease (alpha/beta/rc)", value: "prerelease" },
+      { title: "Graduate prerelease to stable", value: "graduate" },
+      { title: "Custom version", value: "custom" },
+    ],
+  });
+
+  if (!releaseType) {
+    console.log(chalk.yellow("\nRelease cancelled\n"));
+    return;
+  }
+
+  const lernaArgs = ["lerna", "version", "--no-private", "--conventional-commits"];
+
+  // Configure lerna command based on release type
+  if (releaseType === "prerelease") {
+    // Get current version and check if it's already a prerelease
+    const { pkg } = getPackageInfo(packages[0]);
+    const currentVersion = parse(pkg.version);
+    const isCurrentPrerelease = currentVersion && currentVersion.prerelease.length > 0;
+    const currentPreid = isCurrentPrerelease ? currentVersion.prerelease[0] : null;
+
+    const { preid } = await prompts({
       type: "select",
-      name: "release",
-      message: "Select release type",
-      choices: getVersionChoices(pkg.version),
+      name: "preid",
+      message: "Select prerelease identifier",
+      choices: [
+        {
+          title: isCurrentPrerelease && currentPreid === "alpha" ? "alpha (continue)" : "alpha",
+          value: "alpha",
+        },
+        {
+          title: isCurrentPrerelease && currentPreid === "beta" ? "beta (continue)" : "beta",
+          value: "beta",
+        },
+        { title: isCurrentPrerelease && currentPreid === "rc" ? "rc (continue)" : "rc", value: "rc" },
+      ],
     });
 
-    if (release === "custom") {
-      const res: { version: string } = await prompts({
-        type: "text",
-        name: "version",
-        message: "Input custom version",
-        initial: pkg.version,
-      });
-      targetVersion = res.version;
+    if (!preid) {
+      console.log(chalk.yellow("\nRelease cancelled\n"));
+      return;
+    }
+
+    // If current version is already a prerelease with the same preid, just increment
+    // Otherwise start a new prerelease line
+    if (isCurrentPrerelease && currentPreid === preid) {
+      lernaArgs.push("prerelease");
     } else {
-      targetVersion = release;
+      lernaArgs.push("prerelease", "--preid", preid);
+    }
+
+    // Determine npm tag from preid
+    if (!args.tag) {
+      args.tag = preid;
+    }
+  } else if (releaseType === "graduate") {
+    lernaArgs.push("--conventional-graduate");
+  } else if (releaseType === "custom") {
+    const { pkg } = getPackageInfo(packages[0]);
+    const { customVersion } = await prompts({
+      type: "text",
+      name: "customVersion",
+      message: "Enter custom version",
+      initial: pkg.version,
+      validate: (v) => (valid(v) ? true : "Invalid semver version"),
+    });
+
+    if (!customVersion) {
+      console.log(chalk.yellow("\nRelease cancelled\n"));
+      return;
+    }
+
+    lernaArgs.push(customVersion);
+
+    // Determine npm tag from version
+    const parsed = parse(customVersion);
+    if (parsed && parsed.prerelease.length > 0 && !args.tag) {
+      const prereleaseId = parsed.prerelease[0];
+      if (typeof prereleaseId === "string") {
+        args.tag = prereleaseId;
+      }
     }
   }
 
-  if (!valid(targetVersion)) {
-    throw new Error(`invalid target version: ${targetVersion}`);
-  }
-
-  // Set default npm tag based on version suffix
-  const prereleaseMatch = targetVersion.match(/-([a-zA-Z]+)(?:\.(\d+))?$/);
-  if (prereleaseMatch && !args.tag) {
-    args.tag = prereleaseMatch[1]; // extract prerelease type (next, alpha, beta)
-  }
-
-  // Ask for npm distribution tag if not already set
+  // Ask about npm tag if not determined
   if (!args.tag) {
-    const { npmTag }: { npmTag: string } = await prompts({
+    const { npmTag } = await prompts({
       type: "select",
       name: "npmTag",
       message: "Select npm distribution tag",
@@ -82,7 +148,7 @@ export const release = async ({
     });
 
     if (npmTag === "custom") {
-      const res: { customTag: string } = await prompts({
+      const res = await prompts({
         type: "text",
         name: "customTag",
         message: "Input custom npm tag",
@@ -94,110 +160,199 @@ export const release = async ({
     }
   }
 
-  // Modify version based on selected npm tag if necessary
-  if (args.tag && args.tag !== "latest") {
-    const parsedVersion = parse(targetVersion);
-    if (parsedVersion) {
-      // Check if version needs updating
-      const needsUpdate = !targetVersion.includes(`-${args.tag}`);
-
-      if (needsUpdate) {
-        // For non-latest tags, prepare new version
-        let newVersion;
-        let prereleaseNum = 0;
-
-        // If the version is already a prerelease, just change the suffix
-        if (parsedVersion.prerelease.length > 0) {
-          // Keep prerelease number if applicable
-          if (parsedVersion.prerelease.length > 1 && typeof parsedVersion.prerelease[1] === "number") {
-            prereleaseNum = parsedVersion.prerelease[1];
-          }
-
-          // Replace existing prerelease tag
-          const majorMinorPatch = `${parsedVersion.major}.${parsedVersion.minor}.${parsedVersion.patch}`;
-          newVersion = `${majorMinorPatch}-${args.tag}`;
-        } else {
-          // For stable versions, bump minor and add prerelease tag
-          const minorBumped = semverInc(targetVersion, "minor");
-          newVersion = `${minorBumped}-${args.tag}`;
-        }
-
-        // Ask if user wants to add prerelease number
-        const { usePreNum }: { usePreNum: boolean } = await prompts({
-          type: "confirm",
-          name: "usePreNum",
-          message: `Add prerelease number to version? (e.g. ${newVersion}.${prereleaseNum})`,
-          initial: true,
-        });
-
-        if (usePreNum) {
-          newVersion = `${newVersion}.${prereleaseNum}`;
-        }
-      }
-    }
-  }
-
-  // Generate git tag from version
-  const gitTag = toTag(targetVersion);
-
-  // Generate commit message with npm tag info if necessary
-  let commitMessage = `release: ${gitTag}`;
-  if (args.tag && args.tag !== "latest") {
-    commitMessage += ` with npm tag ${args.tag}`;
-  }
-
-  const { yes }: { yes: boolean } = await prompts({
+  // Final confirmation
+  const { yes } = await prompts({
     type: "confirm",
     name: "yes",
-    message: `Releasing ${chalk.yellow(gitTag)}${args.tag && args.tag !== "latest" ? ` with npm tag ${chalk.blue(args.tag)}` : ""} Confirm?`,
+    message: `Ready to release${args.tag && args.tag !== "latest" ? ` with npm tag ${chalk.blue(args.tag)}` : ""}. Continue?`,
   });
 
-  if (!yes) return;
-
-  for (let index = 0; index < packages.length; index++) {
-    const element = packages[index];
-    const { pkg, pkgPath } = getPackageInfo(element);
-
-    step(`\nUpdating ${chalk.green(pkg.name)} package version to ${chalk.green(targetVersion)}...`);
-    await bumpVersion(pkg.name, targetVersion);
-
-    // Add or remove npmTag in package.json
-    const updatedPkg = getPackageInfo(element);
-    const pkgData: Record<string, unknown> = { ...updatedPkg.pkg };
-
-    if (args.tag && args.tag !== "latest") {
-      pkgData.npmTag = args.tag;
-      await writePackageJson(updatedPkg.pkgPath, pkgData);
-      console.log(`Set npmTag: ${chalk.blue(args.tag)} to ${chalk.green(pkg.name)}`);
-    } else if (pkgData.npmTag) {
-      delete pkgData.npmTag;
-      await writePackageJson(updatedPkg.pkgPath, pkgData);
-      console.log(`Removed npmTag from ${chalk.green(pkg.name)} for latest release.`);
-    }
-
-    step(`\nGenerating ${chalk.green(pkg.name)} changelog...`);
-    await generateChangelog(pkg.name, targetVersion, element);
-  }
-
-  const { stdout } = await run("git", ["diff"], { stdio: "pipe" });
-  if (stdout) {
-    step("\nCommitting changes...");
-    await runIfNotDry("git", ["add", "-A"]);
-    await runIfNotDry("git", ["commit", "-m", commitMessage, "--no-verify"]);
-    await runIfNotDry("git", ["tag", gitTag]);
-  } else {
-    console.log("No changes to commit.");
+  if (!yes) {
+    console.log(chalk.yellow("\nRelease cancelled\n"));
     return;
   }
 
-  step("\nPushing to GitHub...");
-  await runIfNotDry("git", ["push", "origin", `refs/tags/${gitTag}`]);
-  await runIfNotDry("git", ["push"]);
-
-  // Display npm tag info
-  if (args.tag && args.tag !== "latest") {
-    console.log(`\nNOTE: This release will be published to npm with tag ${chalk.blue(args.tag)}`);
+  // Add flags for dry-run mode
+  if (isDryRun) {
+    lernaArgs.push("--no-git-tag-version", "--no-push");
   }
 
-  console.log();
+  // Run lerna version
+  console.log(chalk.cyan(`\nRunning: npx ${lernaArgs.join(" ")}\n`));
+  const result = sync("npx", lernaArgs, { stdio: "inherit" });
+
+  if (result.status !== 0) {
+    console.error(chalk.red("\n❌ Release process failed\n"));
+    process.exit(result.status || 1);
+  }
+
+  // Enhance changelogs for packages without changes
+  await enhanceChangelogs(packages);
+
+  // Update npmTag in package.json if needed
+  await updateNpmTags(packages);
+
+  // Commit changes only if NOT dry-run
+  if (!isDryRun) {
+    const gitStatus = sync("git", ["status", "--porcelain"], { stdio: "pipe" });
+    if (gitStatus.stdout?.toString().trim()) {
+      const lastTag = sync("git", ["describe", "--tags", "--abbrev=0"], { stdio: "pipe" });
+      const tag = lastTag.stdout?.toString().trim() || "HEAD";
+
+      sync("git", ["add", "-A"], { stdio: "inherit" });
+      sync("git", ["commit", "--amend", "--no-edit", "--no-verify"], { stdio: "inherit" });
+      sync("git", ["tag", "-f", tag], { stdio: "inherit" });
+      console.log(chalk.green("\n✅ Updated changelogs and package.json\n"));
+    }
+  }
+
+  if (isDryRun) {
+    console.log(chalk.yellow("\n✅ Dry run completed successfully!\n"));
+    console.log(chalk.cyan("Changes made:"));
+    console.log(chalk.cyan("  - Updated package versions"));
+    console.log(chalk.cyan("  - Generated/updated CHANGELOG.md files"));
+    console.log(chalk.cyan("  - Updated npmTag fields in package.json\n"));
+    console.log(chalk.yellow("No git operations performed. Review changes with:"));
+    console.log(chalk.cyan("  git diff\n"));
+    console.log(chalk.yellow("To revert all changes:"));
+    console.log(chalk.cyan("  git checkout -- .\n"));
+  } else {
+    console.log(chalk.green("\n✅ Release completed successfully!\n"));
+
+    if (args.tag && args.tag !== "latest") {
+      console.log(chalk.cyan(`\nℹ️  Package files updated with npmTag: ${chalk.blue(args.tag)}`));
+      console.log(chalk.cyan(`   GitHub Actions will automatically publish with this tag\n`));
+    }
+  }
 };
+
+/**
+ * Enhances changelogs for packages without changes and cleans up generated files
+ */
+async function enhanceChangelogs(packages: string[]) {
+  console.log(chalk.cyan("\nEnhancing changelogs...\n"));
+
+  // Get list of changed packages from Lerna
+  const changedResult = sync("npx", ["lerna", "changed", "--json"], { stdio: "pipe" });
+  const changedPackages = new Set<string>();
+
+  if (changedResult.stdout) {
+    try {
+      const changed = JSON.parse(changedResult.stdout.toString());
+      changed.forEach((p: { name: string }) => changedPackages.add(p.name));
+    } catch {
+      // If parsing error, consider all packages as changed
+    }
+  }
+
+  for (const pkgPath of packages) {
+    if (pkgPath === ".") continue; // Skip root
+
+    const changelogPath = path.join(pkgPath, "CHANGELOG.md");
+    const { pkg } = getPackageInfo(pkgPath);
+    const hasChanges = changedPackages.has(pkg.name);
+
+    // If file doesn't exist, create it
+    if (!existsSync(changelogPath)) {
+      const initialContent = `# CHANGELOG\n\nAll notable changes to this package will be documented in this file.\n\n## [${pkg.version}] (${new Date().toISOString().split("T")[0]})\n\n**Note:** Version bump only - Updated dependencies to match framework version\n`;
+      writeFileSync(changelogPath, initialContent, "utf-8");
+      console.log(chalk.gray(`  Created changelog for ${pkg.name}`));
+      continue;
+    }
+
+    // Read existing changelog
+    let content = readFileSync(changelogPath, "utf-8");
+
+    // Improve changelog formatting
+    content = content.replace(/^All notable changes to this project will be documented in this file\.\s*\n/gm, "");
+    content = content.replace(/^See \[Conventional Commits\]\(https:\/\/conventionalcommits\.org\) for commit guidelines\.\s*\n/gm, "");
+    content = content.replace(/\n{3,}/g, "\n\n"); // Remove multiple empty lines
+
+    // Check packages without changes and add "Version bump only" for empty versions
+    const lines = content.split('\n');
+    const result: string[] = [];
+    let i = 0;
+
+    while (i < lines.length) {
+      const line = lines[i];
+
+      // Check version header (support both formats: with [] and without)
+      const versionMatch = line.match(/^##\s+(\[)?([\d.a-z-]+)(\])?(\s+\([^)]+\))?/i);
+
+      if (versionMatch) {
+        const versionNumber = versionMatch[2];
+        const isCurrentVersion = versionNumber === pkg.version;
+
+        result.push(line);
+        i++;
+
+        // Skip empty lines after header
+        while (i < lines.length && lines[i].trim() === '') {
+          result.push(lines[i]);
+          i++;
+        }
+
+        // Check if there's content before next version
+        let hasContent = false;
+        let contentStart = i;
+        let j = i;
+
+        while (j < lines.length && !lines[j].match(/^##\s+(\[)?[\d.a-z-]+(\])?/i)) {
+          const trimmed = lines[j].trim();
+          // Ignore empty lines and existing "Note:" messages
+          if (trimmed !== '' && !trimmed.startsWith('**Note:**')) {
+            hasContent = true;
+            break;
+          }
+          j++;
+        }
+
+        // If this is current version without changes OR old empty version
+        if (!hasContent) {
+          // Check if "Note:" message already exists
+          const nextFewLines = lines.slice(contentStart, Math.min(contentStart + 5, lines.length));
+          const alreadyHasNote = nextFewLines.some(l => l.includes('**Note:**'));
+
+          if (!alreadyHasNote) {
+            if (isCurrentVersion && !hasChanges) {
+              result.push('**Note:** Version bump only - Updated dependencies to match framework version');
+            } else {
+              result.push('**Note:** Version bump only for package');
+            }
+            result.push('');
+          }
+        }
+      } else {
+        result.push(line);
+        i++;
+      }
+    }
+
+    content = result.join('\n');
+
+    // Write cleaned content
+    writeFileSync(changelogPath, content, "utf-8");
+  }
+}
+
+/**
+ * Updates npmTag field in package.json files
+ */
+async function updateNpmTags(packages: string[]) {
+  if (!args.tag) return;
+
+  for (const pkgPath of packages) {
+    if (pkgPath === ".") continue;
+
+    const { pkg, pkgPath: jsonPath } = getPackageInfo(pkgPath);
+    const pkgData: Record<string, unknown> = { ...pkg };
+
+    if (args.tag !== "latest") {
+      pkgData.npmTag = args.tag;
+      await writePackageJson(jsonPath, pkgData);
+    } else if (pkgData.npmTag) {
+      delete pkgData.npmTag;
+      await writePackageJson(jsonPath, pkgData);
+    }
+  }
+}

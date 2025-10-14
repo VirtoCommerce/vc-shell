@@ -2,7 +2,10 @@
   "name": "@vc-shell/root",
   "version": "1.1.97",
   "private": true,
-  "repository": "https://github.com/VirtoCommerce/vc-shell",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/VirtoCommerce/vc-shell.git"
+  },
   "scripts": {
     "postinstall": "husky install",
     "publish": "yarn workspaces foreach -v --worktree --from '{@vc-shell/config-generator,@vc-shell/api-client-generator,@vc-shell/framework,@vc-shell/create-vc-app,@vc-shell/release-config,@vc-shell/ts-config}' npm publish",
@@ -19,6 +22,10 @@
     "storybook-build": "cross-env APP_ENV=production shx rm -rf storybook-static && storybook build",
     "storybook-serve": "storybook dev -p 6006 --no-open",
     "release": "tsx scripts/release.ts",
+    "release:dry": "tsx scripts/release.ts --dry",
+    "changelog:init": "tsx scripts/generate-initial-changelogs.ts",
+    "changed": "lerna changed",
+    "diff": "lerna diff",
     "storybook-compress": "vite-node --mode production scripts/compress-storybook.ts --",
     "check-locales": "tsx framework/scripts/check-locales.mts",
     "prepare": "husky install",
@@ -71,6 +78,7 @@
     "globby": "^13.2.2",
     "husky": "^8.0.0",
     "jquery": "^3.7.1",
+    "lerna": "^9.0.0",
     "lightningcss": "^1.30.1",
     "lint-staged": "^15.2.2",
     "lodash-es": "^4.17.21",

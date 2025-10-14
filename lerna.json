@@ -1,0 +1,54 @@
+{
+  "$schema": "node_modules/lerna/schemas/lerna-schema.json",
+  "version": "1.1.97",
+  "npmClient": "yarn",
+  "packages": [
+    ".",
+    "apps/*",
+    "framework",
+    "cli/*",
+    "configs/*"
+  ],
+  "ignoreChanges": [
+    "**/*.md",
+    "**/*.spec.ts",
+    "**/*.spec.js",
+    "**/test/**",
+    "**/tests/**",
+    "**/__tests__/**",
+    "**/stories/**",
+    "**/*.story.ts",
+    "**/*.stories.ts"
+  ],
+  "command": {
+    "version": {
+      "conventionalCommits": true,
+      "changelogPreset": {
+        "name": "conventionalcommits",
+        "types": [
+          { "type": "feat", "section": "Features" },
+          { "type": "fix", "section": "Bug Fixes" },
+          { "type": "perf", "section": "Performance Improvements" },
+          { "type": "revert", "section": "Reverts" },
+          { "type": "docs", "section": "Documentation", "hidden": false },
+          { "type": "style", "section": "Styles", "hidden": false },
+          { "type": "refactor", "section": "Code Refactoring", "hidden": false },
+          { "type": "test", "section": "Tests", "hidden": false },
+          { "type": "build", "section": "Build System", "hidden": false },
+          { "type": "ci", "section": "CI/CD", "hidden": false },
+          { "type": "chore", "section": "Chores", "hidden": false }
+        ],
+        "preMajor": false,
+        "commitUrlFormat": "{{host}}/{{owner}}/{{repository}}/commit/{{hash}}",
+        "compareUrlFormat": "{{host}}/{{owner}}/{{repository}}/compare/{{previousTag}}...{{currentTag}}",
+        "issueUrlFormat": "{{host}}/{{owner}}/{{repository}}/issues/{{id}}",
+        "userUrlFormat": "{{host}}/{{user}}",
+        "issuePrefixes": ["#"]
+      },
+      "exact": true,
+      "message": "release: %s",
+      "allowBranch": ["main", "master", "develop", "feat/*"],
+      "yes": false
+    }
+  }
+}

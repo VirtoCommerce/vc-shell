@@ -23,7 +23,6 @@
     "storybook-serve": "storybook dev -p 6006 --no-open",
     "release": "tsx scripts/release.ts",
     "release:dry": "tsx scripts/release.ts --dry",
-    "changelog:init": "tsx scripts/generate-initial-changelogs.ts",
     "changed": "lerna changed",
     "diff": "lerna diff",
     "storybook-compress": "vite-node --mode production scripts/compress-storybook.ts --",

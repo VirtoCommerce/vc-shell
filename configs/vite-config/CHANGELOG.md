@@ -1,3 +1,12 @@
+## [1.1.92](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.91...v1.1.92) (2025-10-17)
+
+
+### Bug Fixes
+
+* **vite-config:** remove deprecated vue-router path resolution from appconfig ([5743e12](https://github.com/VirtoCommerce/vc-shell/commit/5743e129b667192a23b894421b54b851d48dffa2))
+
+
+
 ## [1.1.91](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.90...v1.1.91) (2025-10-17)
 
 

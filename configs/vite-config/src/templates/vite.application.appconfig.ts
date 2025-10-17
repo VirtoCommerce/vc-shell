@@ -101,7 +101,6 @@ export default defineConfig({
             }
           : {
               "@vc-shell/framework/dist/index.css": "@vc-shell/framework/dist/index.css",
-              "vue-router": path.resolve(process.cwd(), "node_modules/vue-router/dist/vue-router.cjs.js"),
             }
         : undefined,
   },

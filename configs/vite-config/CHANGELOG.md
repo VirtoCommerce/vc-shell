@@ -1,3 +1,12 @@
+## [1.1.91](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.90...v1.1.91) (2025-10-17)
+
+
+### Bug Fixes
+
+* **vite-config:** update vue-router path resolution to use absolute path from node_modules ([5418c14](https://github.com/VirtoCommerce/vc-shell/commit/5418c142daa1e9940a0a9a670b3f66f085165e03))
+
+
+
 ## [1.1.90](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.89...v1.1.90) (2025-10-08)
 
 

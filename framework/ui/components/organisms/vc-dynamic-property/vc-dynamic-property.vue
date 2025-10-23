@@ -267,26 +267,15 @@
     <template
       v-else-if="computedProperty.valueType === 'Color' && !computedProperty.multivalue && !computedProperty.dictionary"
     >
-      <VcRow class="tw-flex tw-items-end tw-gap-4">
-        <VcCol :size="2"
-          ><VcInput
-            v-bind="$attrs"
-            v-model="value"
-            :label="computedProperty.displayName"
-            :error="!!errors.length"
-            :error-message="errorMessage"
-            :placeholder="$t('COMPONENTS.ORGANISMS.VC_DYNAMIC_PROPERTY.VALUE_TYPE.COLOR.NAME')"
-          ></VcInput
-        ></VcCol>
-        <VcCol :size="1"
-          ><VcInput
-            v-bind="$attrs"
-            v-model="singleColorCode"
-            type="color"
-            :placeholder="$t('COMPONENTS.ORGANISMS.VC_DYNAMIC_PROPERTY.VALUE_TYPE.COLOR.PLACEHOLDER')"
-          ></VcInput
-        ></VcCol>
-      </VcRow>
+      <VcInput
+        v-bind="$attrs"
+        v-model="value"
+        type="color"
+        :label="computedProperty.displayName"
+        :error="!!errors.length"
+        :error-message="errorMessage"
+        :placeholder="$t('COMPONENTS.ORGANISMS.VC_DYNAMIC_PROPERTY.VALUE_TYPE.COLOR.NAME')"
+      ></VcInput>
     </template>
     <template
       v-if="computedProperty.valueType === 'Color' && computedProperty.dictionary && !computedProperty.multivalue"
@@ -486,22 +475,6 @@ const value = computed({
     console.log(newValue);
     emit("update:model-value", {
       value: newValue,
-      dictionary: items.value,
-      locale: props.currentLanguage,
-    });
-  },
-});
-
-// Removed colorCode computed property as it interferes with multivalue color selection
-
-const singleColorCode = computed({
-  get() {
-    return internalProperty.value.values?.[0]?.colorCode;
-  },
-  set(newValue) {
-    emit("update:model-value", {
-      value: value.value,
-      colorCode: newValue,
       dictionary: items.value,
       locale: props.currentLanguage,
     });

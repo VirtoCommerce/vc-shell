@@ -247,7 +247,7 @@
         <template #selected-item="scope">
           <div class="tw-flex tw-items-center tw-gap-2">
             <div
-              class="tw-w-5 tw-h-5 tw-rounded"
+              class="tw-w-5 tw-h-5 tw-rounded tw-border"
               :style="{ backgroundColor: scope.item.colorCode }"
             ></div>
             <span>{{ scope.item.value }}</span>
@@ -256,7 +256,7 @@
         <template #option="scope">
           <div class="tw-flex tw-items-center tw-gap-2">
             <div
-              class="tw-w-5 tw-h-5 tw-rounded"
+              class="tw-w-5 tw-h-5 tw-rounded tw-border"
               :style="{ backgroundColor: scope.item.colorCode }"
             ></div>
             <span>{{ scope.item.value }}</span>
@@ -302,7 +302,7 @@
         <template #selected-item="scope">
           <div class="tw-flex tw-items-center tw-gap-2">
             <div
-              class="tw-w-5 tw-h-5 tw-rounded"
+              class="tw-w-5 tw-h-5 tw-rounded tw-border"
               :style="{ backgroundColor: scope.opt.colorCode }"
             ></div>
             <span>{{ scope.opt.value }}</span>
@@ -311,7 +311,7 @@
         <template #option="scope">
           <div class="tw-flex tw-items-center tw-gap-2">
             <div
-              class="tw-w-5 tw-h-5 tw-rounded"
+              class="tw-w-5 tw-h-5 tw-rounded tw-border"
               :style="{ backgroundColor: scope.opt.colorCode }"
             ></div>
             <span>{{ scope.opt.value }}</span>

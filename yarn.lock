@@ -4211,7 +4211,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vc-shell/api-client-generator@npm:^1.1.91-alpha.4, @vc-shell/api-client-generator@workspace:*, @vc-shell/api-client-generator@workspace:cli/api-client":
+"@vc-shell/api-client-generator@npm:^1.1.92":
+  version: 1.1.92
+  resolution: "@vc-shell/api-client-generator@npm:1.1.92"
+  dependencies:
+    chalk: "npm:^2.4.2"
+    cross-spawn: "npm:^7.0.3"
+    mri: "npm:^1.2.0"
+    nswag: "npm:^14.5.0"
+    vite: "npm:^6.3.3"
+    vite-plugin-dts: "npm:^3.6.4"
+  bin:
+    api-client-generator: ./dist/api-client-generator.js
+  checksum: 10/8a6221a079eace5ad93cd5b68fd12195bba66f3a8eb725b8d1c86af4e90fcb90410696a83a8dd2c74866885001b3a7c89a6671894a43a55534ca3e9bc9df747f
+  languageName: node
+  linkType: hard
+
+"@vc-shell/api-client-generator@workspace:*, @vc-shell/api-client-generator@workspace:cli/api-client":
   version: 0.0.0-use.local
   resolution: "@vc-shell/api-client-generator@workspace:cli/api-client"
   dependencies:
@@ -4229,7 +4245,20 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vc-shell/config-generator@npm:^1.1.91-alpha.4, @vc-shell/config-generator@workspace:*, @vc-shell/config-generator@workspace:configs/vite-config":
+"@vc-shell/config-generator@npm:^1.1.92":
+  version: 1.1.92
+  resolution: "@vc-shell/config-generator@npm:1.1.92"
+  dependencies:
+    "@vitejs/plugin-vue": "npm:^5.2.3"
+    vite: "npm:^6.3.3"
+    vite-plugin-checker: "npm:^0.9.1"
+    vite-plugin-mkcert: "npm:^1.17.1"
+    vue: "npm:^3.5.13"
+  checksum: 10/21485e49bb176d6e6e78196639281deebab5049c42bd099d09369af3b01a63d0b2a363a002961b87a1ad7c7d8196694a6570bf8e417892fa85d9937a510a6af8
+  languageName: node
+  linkType: hard
+
+"@vc-shell/config-generator@workspace:*, @vc-shell/config-generator@workspace:configs/vite-config":
   version: 0.0.0-use.local
   resolution: "@vc-shell/config-generator@workspace:configs/vite-config"
   dependencies:
@@ -4267,7 +4296,61 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vc-shell/framework@npm:^1.1.91-alpha.4, @vc-shell/framework@workspace:framework":
+"@vc-shell/framework@npm:^1.1.92":
+  version: 1.1.92
+  resolution: "@vc-shell/framework@npm:1.1.92"
+  dependencies:
+    "@floating-ui/dom": "npm:^1.7.4"
+    "@floating-ui/vue": "npm:^1.0.6"
+    "@fontsource/plus-jakarta-sans": "npm:^5.1.0"
+    "@fortawesome/fontawesome-free": "npm:^6.7.2"
+    "@headlessui/vue": "npm:^1.7.19"
+    "@material-symbols/font-300": "npm:^0.32.0"
+    "@microsoft/signalr": "npm:^8.0.0"
+    "@tiptap/core": "npm:^3.4.2"
+    "@tiptap/extension-font-size": "npm:^3.0.0-next.3"
+    "@tiptap/extension-image": "npm:^3.4.2"
+    "@tiptap/extension-link": "npm:^3.4.2"
+    "@tiptap/extension-placeholder": "npm:^3.4.2"
+    "@tiptap/extension-table": "npm:^3.4.2"
+    "@tiptap/extension-table-cell": "npm:^3.4.2"
+    "@tiptap/extension-table-header": "npm:^3.4.2"
+    "@tiptap/extension-table-row": "npm:^3.4.2"
+    "@tiptap/extension-text-style": "npm:^3.4.2"
+    "@tiptap/extension-underline": "npm:^3.4.2"
+    "@tiptap/extensions": "npm:^3.4.2"
+    "@tiptap/pm": "npm:^3.4.2"
+    "@tiptap/starter-kit": "npm:^3.4.2"
+    "@tiptap/vue-3": "npm:^3.4.2"
+    "@vee-validate/i18n": "npm:^4.12.4"
+    "@vee-validate/rules": "npm:^4.12.4"
+    "@vuepic/vue-datepicker": "npm:^11.0.2"
+    "@vueuse/components": "npm:^10.7.1"
+    "@vueuse/core": "npm:^10.7.1"
+    "@vueuse/integrations": "npm:^10.7.1"
+    bootstrap-icons: "npm:^1.11.3"
+    core-js: "npm:^3.35.0"
+    dompurify: "npm:^3.0.11"
+    iso-639-1: "npm:^3.1.0"
+    lucide-vue-next: "npm:^0.503.0"
+    moment: "npm:^2.30.1"
+    normalize.css: "npm:^8.0.1"
+    swiper: "npm:^11.2.10"
+    tiptap-markdown: "npm:^0.9.0"
+    truncate-html: "npm:^1.1.1"
+    vee-validate: "npm:^4.12.4"
+    vue: "npm:^3.5.13"
+    vue-currency-input: "npm:^3.0.5"
+    vue-i18n: "npm:^11.1.11"
+    vue-router: "npm:^4.2.5"
+    vue3-application-insights: "npm:^1.1.0"
+    vue3-touch-events: "npm:^4.1.8"
+    whatwg-fetch: "npm:^3.6.19"
+  checksum: 10/11a9f755ff96bd4e9c935943a47009c0d8f13ac5f1d62ed0038daf7738a279157ff64e91513dc36092626050042b31e06774f24bd8bd96906a0287064c2033f5
+  languageName: node
+  linkType: hard
+
+"@vc-shell/framework@workspace:framework":
   version: 0.0.0-use.local
   resolution: "@vc-shell/framework@workspace:framework"
   dependencies:
@@ -4340,7 +4423,21 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vc-shell/release-config@npm:^1.1.91-alpha.4, @vc-shell/release-config@workspace:configs/release-config":
+"@vc-shell/release-config@npm:^1.1.92":
+  version: 1.1.92
+  resolution: "@vc-shell/release-config@npm:1.1.92"
+  dependencies:
+    chalk: "npm:^2.4.2"
+    cross-spawn: "npm:^7.0.3"
+    mri: "npm:^1.2.0"
+    prompts: "npm:^2.4.2"
+    semver: "npm:^7.5.4"
+    vite: "npm:^6.3.3"
+  checksum: 10/f57e7e676265556cc0c8b51c256efe7e260db47ac2d284a7dd37e3c156fc7b2a75ac2392e3d22724835ea3aef05b38c3a35e9a2079a25e5cf183f84d0b9549f0
+  languageName: node
+  linkType: hard
+
+"@vc-shell/release-config@workspace:configs/release-config":
   version: 0.0.0-use.local
   resolution: "@vc-shell/release-config@workspace:configs/release-config"
   dependencies:
@@ -4436,7 +4533,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vc-shell/ts-config@npm:^1.1.91-alpha.4, @vc-shell/ts-config@workspace:*, @vc-shell/ts-config@workspace:configs/ts-config":
+"@vc-shell/ts-config@npm:^1.1.92":
+  version: 1.1.92
+  resolution: "@vc-shell/ts-config@npm:1.1.92"
+  checksum: 10/b459347fa7454b4583606ab1542ef91493ba073de863a80c38f4cad5330b78c6fbf550027c889cdaba04d281d1c8774c50f5d7abd03f215ccadbb41031921313
+  languageName: node
+  linkType: hard
+
+"@vc-shell/ts-config@workspace:*, @vc-shell/ts-config@workspace:configs/ts-config":
   version: 0.0.0-use.local
   resolution: "@vc-shell/ts-config@workspace:configs/ts-config"
   languageName: unknown
@@ -5360,11 +5464,11 @@ __metadata:
     "@types/node": "npm:^20.10.5"
     "@typescript-eslint/eslint-plugin": "npm:^7.4.0"
     "@typescript-eslint/parser": "npm:^7.4.0"
-    "@vc-shell/api-client-generator": "npm:^1.1.91-alpha.4"
-    "@vc-shell/config-generator": "npm:^1.1.91-alpha.4"
-    "@vc-shell/framework": "npm:^1.1.91-alpha.4"
-    "@vc-shell/release-config": "npm:^1.1.91-alpha.4"
-    "@vc-shell/ts-config": "npm:^1.1.91-alpha.4"
+    "@vc-shell/api-client-generator": "npm:^1.1.92"
+    "@vc-shell/config-generator": "npm:^1.1.92"
+    "@vc-shell/framework": "npm:^1.1.92"
+    "@vc-shell/release-config": "npm:^1.1.92"
+    "@vc-shell/ts-config": "npm:^1.1.92"
     "@vcmp-vendor-portal/api": "npm:^1.1.49"
     "@vcmp-vendor-portal/modules": "npm:^1.1.49"
     "@virtocommerce/import-app": "npm:^1.1.2"
@@ -5702,11 +5806,11 @@ __metadata:
     "@types/node": "npm:^20.10.5"
     "@typescript-eslint/eslint-plugin": "npm:^7.4.0"
     "@typescript-eslint/parser": "npm:^7.4.0"
-    "@vc-shell/api-client-generator": "npm:^1.1.91-alpha.4"
-    "@vc-shell/config-generator": "npm:^1.1.91-alpha.4"
-    "@vc-shell/framework": "npm:^1.1.91-alpha.4"
-    "@vc-shell/release-config": "npm:^1.1.91-alpha.4"
-    "@vc-shell/ts-config": "npm:^1.1.91-alpha.4"
+    "@vc-shell/api-client-generator": "npm:^1.1.92"
+    "@vc-shell/config-generator": "npm:^1.1.92"
+    "@vc-shell/framework": "npm:^1.1.92"
+    "@vc-shell/release-config": "npm:^1.1.92"
+    "@vc-shell/ts-config": "npm:^1.1.92"
     "@vitejs/plugin-vue": "npm:^5.2.3"
     "@vue/eslint-config-prettier": "npm:^9.0.0"
     "@vue/eslint-config-typescript": "npm:^13.0.0"

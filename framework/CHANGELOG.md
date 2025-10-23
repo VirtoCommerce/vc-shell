@@ -1,3 +1,12 @@
+## [1.1.94](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.93...v1.1.94) (2025-10-23)
+
+
+### Features
+
+* **vc-dynamic-property:** enhance color handling ([479b8fc](https://github.com/VirtoCommerce/vc-shell/commit/479b8fcb0eecb2ac2180ff6a2481c7b14e0c20c6))
+
+
+
 ## [1.1.93](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.92...v1.1.93) (2025-10-23)
 
 

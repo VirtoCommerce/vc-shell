@@ -3218,12 +3218,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vc-shell/api-client-generator@npm:^1.1.92, @vc-shell/api-client-generator@workspace:cli/api-client":
+"@vc-shell/api-client-generator@npm:^1.1.93, @vc-shell/api-client-generator@workspace:cli/api-client":
   version: 0.0.0-use.local
   resolution: "@vc-shell/api-client-generator@workspace:cli/api-client"
   dependencies:
     "@types/cross-spawn": "npm:^6.0.6"
-    "@vc-shell/ts-config": "npm:^1.1.92"
+    "@vc-shell/ts-config": "npm:^1.1.93"
     chalk: "npm:^2.4.2"
     cross-spawn: "npm:^7.0.3"
     mri: "npm:^1.2.0"
@@ -3236,11 +3236,11 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vc-shell/config-generator@npm:^1.1.92, @vc-shell/config-generator@workspace:configs/vite-config":
+"@vc-shell/config-generator@npm:^1.1.93, @vc-shell/config-generator@workspace:configs/vite-config":
   version: 0.0.0-use.local
   resolution: "@vc-shell/config-generator@workspace:configs/vite-config"
   dependencies:
-    "@vc-shell/ts-config": "npm:^1.1.92"
+    "@vc-shell/ts-config": "npm:^1.1.93"
     "@vitejs/plugin-vue": "npm:^5.2.3"
     http-proxy-middleware: "npm:^3.0.2"
     rollup-plugin-visualizer: "npm:^6.0.3"
@@ -3258,7 +3258,7 @@ __metadata:
   resolution: "@vc-shell/create-vc-app@workspace:cli/create-vc-app"
   dependencies:
     "@types/prompts": "npm:^2.4.4"
-    "@vc-shell/ts-config": "npm:^1.1.92"
+    "@vc-shell/ts-config": "npm:^1.1.93"
     chalk: "npm:^2.4.2"
     copyfiles: "npm:^2.4.1"
     cross-env: "npm:^7.0.3"
@@ -3274,7 +3274,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vc-shell/framework@npm:^1.1.92, @vc-shell/framework@workspace:framework":
+"@vc-shell/framework@npm:^1.1.93, @vc-shell/framework@workspace:framework":
   version: 0.0.0-use.local
   resolution: "@vc-shell/framework@workspace:framework"
   dependencies:
@@ -3303,9 +3303,9 @@ __metadata:
     "@tiptap/starter-kit": "npm:^3.4.2"
     "@tiptap/vue-3": "npm:^3.4.2"
     "@types/dompurify": "npm:^3.0.5"
-    "@vc-shell/api-client-generator": "npm:^1.1.92"
-    "@vc-shell/config-generator": "npm:^1.1.92"
-    "@vc-shell/ts-config": "npm:^1.1.92"
+    "@vc-shell/api-client-generator": "npm:^1.1.93"
+    "@vc-shell/config-generator": "npm:^1.1.93"
+    "@vc-shell/ts-config": "npm:^1.1.93"
     "@vee-validate/i18n": "npm:^4.12.4"
     "@vee-validate/rules": "npm:^4.12.4"
     "@vitejs/plugin-vue": "npm:^5.2.3"
@@ -3315,6 +3315,7 @@ __metadata:
     "@vueuse/core": "npm:^10.7.1"
     "@vueuse/integrations": "npm:^10.7.1"
     bootstrap-icons: "npm:^1.11.3"
+    color-namer: "npm:^1.4.0"
     core-js: "npm:^3.35.0"
     cypress-signalr-mock: "npm:^1.5.0"
     dompurify: "npm:^3.0.11"
@@ -3347,14 +3348,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vc-shell/release-config@npm:^1.1.92, @vc-shell/release-config@workspace:configs/release-config":
+"@vc-shell/release-config@npm:^1.1.93, @vc-shell/release-config@workspace:configs/release-config":
   version: 0.0.0-use.local
   resolution: "@vc-shell/release-config@workspace:configs/release-config"
   dependencies:
     "@types/cross-spawn": "npm:^6.0.6"
     "@types/prompts": "npm:^2.4.7"
     "@types/semver": "npm:^7.5.4"
-    "@vc-shell/ts-config": "npm:^1.1.92"
+    "@vc-shell/ts-config": "npm:^1.1.93"
     chalk: "npm:^2.4.2"
     cross-spawn: "npm:^7.0.3"
     mri: "npm:^1.2.0"
@@ -3441,23 +3442,23 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vc-shell/ts-config@npm:^1.1.92, @vc-shell/ts-config@workspace:configs/ts-config":
+"@vc-shell/ts-config@npm:^1.1.93, @vc-shell/ts-config@workspace:configs/ts-config":
   version: 0.0.0-use.local
   resolution: "@vc-shell/ts-config@workspace:configs/ts-config"
   languageName: unknown
   linkType: soft
 
-"@vcmp-vendor-portal/api@npm:^1.1.49, @vcmp-vendor-portal/api@workspace:apps/vendor-portal/src/api_client":
+"@vcmp-vendor-portal/api@npm:^1.1.52, @vcmp-vendor-portal/api@workspace:apps/vendor-portal/src/api_client":
   version: 0.0.0-use.local
   resolution: "@vcmp-vendor-portal/api@workspace:apps/vendor-portal/src/api_client"
   languageName: unknown
   linkType: soft
 
-"@vcmp-vendor-portal/modules@npm:^1.1.49, @vcmp-vendor-portal/modules@workspace:apps/vendor-portal/src/modules":
+"@vcmp-vendor-portal/modules@npm:^1.1.52, @vcmp-vendor-portal/modules@workspace:apps/vendor-portal/src/modules":
   version: 0.0.0-use.local
   resolution: "@vcmp-vendor-portal/modules@workspace:apps/vendor-portal/src/modules"
   peerDependencies:
-    "@vcmp-vendor-portal/api": ^1.1.49
+    "@vcmp-vendor-portal/api": ^1.1.52
   languageName: unknown
   linkType: soft
 
@@ -4337,13 +4338,13 @@ __metadata:
     "@types/node": "npm:^20.10.5"
     "@typescript-eslint/eslint-plugin": "npm:^7.4.0"
     "@typescript-eslint/parser": "npm:^7.4.0"
-    "@vc-shell/api-client-generator": "npm:^1.1.92"
-    "@vc-shell/config-generator": "npm:^1.1.92"
-    "@vc-shell/framework": "npm:^1.1.92"
-    "@vc-shell/release-config": "npm:^1.1.92"
-    "@vc-shell/ts-config": "npm:^1.1.92"
-    "@vcmp-vendor-portal/api": "npm:^1.1.49"
-    "@vcmp-vendor-portal/modules": "npm:^1.1.49"
+    "@vc-shell/api-client-generator": "npm:^1.1.93"
+    "@vc-shell/config-generator": "npm:^1.1.93"
+    "@vc-shell/framework": "npm:^1.1.93"
+    "@vc-shell/release-config": "npm:^1.1.93"
+    "@vc-shell/ts-config": "npm:^1.1.93"
+    "@vcmp-vendor-portal/api": "npm:^1.1.52"
+    "@vcmp-vendor-portal/modules": "npm:^1.1.52"
     "@virtocommerce/import-app": "npm:^1.1.2"
     "@vitejs/plugin-vue": "npm:^5.2.3"
     "@vue/eslint-config-prettier": "npm:^9.0.0"
@@ -4651,11 +4652,11 @@ __metadata:
     "@types/node": "npm:^20.10.5"
     "@typescript-eslint/eslint-plugin": "npm:^7.4.0"
     "@typescript-eslint/parser": "npm:^7.4.0"
-    "@vc-shell/api-client-generator": "npm:^1.1.92"
-    "@vc-shell/config-generator": "npm:^1.1.92"
-    "@vc-shell/framework": "npm:^1.1.92"
-    "@vc-shell/release-config": "npm:^1.1.92"
-    "@vc-shell/ts-config": "npm:^1.1.92"
+    "@vc-shell/api-client-generator": "npm:^1.1.93"
+    "@vc-shell/config-generator": "npm:^1.1.93"
+    "@vc-shell/framework": "npm:^1.1.93"
+    "@vc-shell/release-config": "npm:^1.1.93"
+    "@vc-shell/ts-config": "npm:^1.1.93"
     "@vitejs/plugin-vue": "npm:^5.2.3"
     "@vue/eslint-config-prettier": "npm:^9.0.0"
     "@vue/eslint-config-typescript": "npm:^13.0.0"
@@ -5152,6 +5153,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"chroma-js@npm:^1.3.4":
+  version: 1.4.1
+  resolution: "chroma-js@npm:1.4.1"
+  checksum: 10/cf0874588a57021c928d0d626972791dfce846e03c1d209f7368db1bcf483c52802d22bf952100c49695dc2754024f2a0206b8361dacde4617c60240b2c703df
+  languageName: node
+  linkType: hard
+
 "chromatic@npm:^12.0.0":
   version: 12.2.0
   resolution: "chromatic@npm:12.2.0"
@@ -5287,6 +5295,16 @@ __metadata:
   version: 1.1.4
   resolution: "color-name@npm:1.1.4"
   checksum: 10/b0445859521eb4021cd0fb0cc1a75cecf67fceecae89b63f62b201cca8d345baf8b952c966862a9d9a2632987d4f6581f0ec8d957dfacece86f0a7919316f610
+  languageName: node
+  linkType: hard
+
+"color-namer@npm:^1.4.0":
+  version: 1.4.0
+  resolution: "color-namer@npm:1.4.0"
+  dependencies:
+    chroma-js: "npm:^1.3.4"
+    es6-weak-map: "npm:^2.0.3"
+  checksum: 10/a1e8e02ba5033404804e69726208d223d5e62343621280c83c0f1ea1114fd9121c97813aedc05ab92759b9995486c05b3cc9d1ec99876caca8c3c682f0bbac47
   languageName: node
   linkType: hard
 
@@ -5806,6 +5824,16 @@ __metadata:
   bin:
     cypress: bin/cypress
   checksum: 10/4d1a7d1e81ff9b915fb0b82219e378037169ab7346d8b8537de4304bc73bc6b15ef5e1263ccf6c33ae4b7dd7f52ea87b362414e2558b1ccd4f6dd06e152bfbb8
+  languageName: node
+  linkType: hard
+
+"d@npm:1, d@npm:^1.0.1, d@npm:^1.0.2":
+  version: 1.0.2
+  resolution: "d@npm:1.0.2"
+  dependencies:
+    es5-ext: "npm:^0.10.64"
+    type: "npm:^2.7.2"
+  checksum: 10/a3f45ef964622f683f6a1cb9b8dcbd75ce490cd2f4ac9794099db3d8f0e2814d412d84cd3fe522e58feb1f273117bb480f29c5381f6225f0abca82517caaa77a
   languageName: node
   linkType: hard
 
@@ -6424,6 +6452,51 @@ __metadata:
   languageName: node
   linkType: hard
 
+"es5-ext@npm:^0.10.35, es5-ext@npm:^0.10.46, es5-ext@npm:^0.10.62, es5-ext@npm:^0.10.64, es5-ext@npm:~0.10.14":
+  version: 0.10.64
+  resolution: "es5-ext@npm:0.10.64"
+  dependencies:
+    es6-iterator: "npm:^2.0.3"
+    es6-symbol: "npm:^3.1.3"
+    esniff: "npm:^2.0.1"
+    next-tick: "npm:^1.1.0"
+  checksum: 10/0c5d8657708b1695ddc4b06f4e0b9fbdda4d2fe46d037b6bedb49a7d1931e542ec9eecf4824d59e1d357e93229deab014bb4b86485db2d41b1d68e54439689ce
+  languageName: node
+  linkType: hard
+
+"es6-iterator@npm:^2.0.3":
+  version: 2.0.3
+  resolution: "es6-iterator@npm:2.0.3"
+  dependencies:
+    d: "npm:1"
+    es5-ext: "npm:^0.10.35"
+    es6-symbol: "npm:^3.1.1"
+  checksum: 10/dbadecf3d0e467692815c2b438dfa99e5a97cbbecf4a58720adcb467a04220e0e36282399ba297911fd472c50ae4158fffba7ed0b7d4273fe322b69d03f9e3a5
+  languageName: node
+  linkType: hard
+
+"es6-symbol@npm:^3.1.1, es6-symbol@npm:^3.1.3":
+  version: 3.1.4
+  resolution: "es6-symbol@npm:3.1.4"
+  dependencies:
+    d: "npm:^1.0.2"
+    ext: "npm:^1.7.0"
+  checksum: 10/3743119fe61f89e2f049a6ce52bd82fab5f65d13e2faa72453b73f95c15292c3cb9bdf3747940d504517e675e45fd375554c6b5d35d2bcbefd35f5489ecba546
+  languageName: node
+  linkType: hard
+
+"es6-weak-map@npm:^2.0.3":
+  version: 2.0.3
+  resolution: "es6-weak-map@npm:2.0.3"
+  dependencies:
+    d: "npm:1"
+    es5-ext: "npm:^0.10.46"
+    es6-iterator: "npm:^2.0.3"
+    es6-symbol: "npm:^3.1.1"
+  checksum: 10/5958a321cf8dfadc82b79eeaa57dc855893a4afd062b4ef5c9ded0010d3932099311272965c3d3fdd3c85df1d7236013a570e704fa6c1f159bbf979c203dd3a3
+  languageName: node
+  linkType: hard
+
 "esbuild-register@npm:^3.5.0":
   version: 3.6.0
   resolution: "esbuild-register@npm:3.6.0"
@@ -6991,6 +7064,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"esniff@npm:^2.0.1":
+  version: 2.0.1
+  resolution: "esniff@npm:2.0.1"
+  dependencies:
+    d: "npm:^1.0.1"
+    es5-ext: "npm:^0.10.62"
+    event-emitter: "npm:^0.3.5"
+    type: "npm:^2.7.2"
+  checksum: 10/f6a2abd2f8c5fe57c5fcf53e5407c278023313d0f6c3a92688e7122ab9ac233029fd424508a196ae5bc561aa1f67d23f4e2435b1a0d378030f476596129056ac
+  languageName: node
+  linkType: hard
+
 "espree@npm:^10.0.1, espree@npm:^10.3.0, espree@npm:^10.4.0":
   version: 10.4.0
   resolution: "espree@npm:10.4.0"
@@ -7068,6 +7153,16 @@ __metadata:
   version: 2.0.3
   resolution: "esutils@npm:2.0.3"
   checksum: 10/b23acd24791db11d8f65be5ea58fd9a6ce2df5120ae2da65c16cfc5331ff59d5ac4ef50af66cd4bde238881503ec839928a0135b99a036a9cdfa22d17fd56cdb
+  languageName: node
+  linkType: hard
+
+"event-emitter@npm:^0.3.5":
+  version: 0.3.5
+  resolution: "event-emitter@npm:0.3.5"
+  dependencies:
+    d: "npm:1"
+    es5-ext: "npm:~0.10.14"
+  checksum: 10/a7f5ea80029193f4869782d34ef7eb43baa49cd397013add1953491b24588468efbe7e3cc9eb87d53f33397e7aab690fd74c079ec440bf8b12856f6bdb6e9396
   languageName: node
   linkType: hard
 
@@ -7177,6 +7272,15 @@ __metadata:
   version: 3.1.3
   resolution: "exponential-backoff@npm:3.1.3"
   checksum: 10/ca25962b4bbab943b7c4ed0b5228e263833a5063c65e1cdeac4be9afad350aae5466e8e619b5051f4f8d37b2144a2d6e8fcc771b6cc82934f7dade2f964f652c
+  languageName: node
+  linkType: hard
+
+"ext@npm:^1.7.0":
+  version: 1.7.0
+  resolution: "ext@npm:1.7.0"
+  dependencies:
+    type: "npm:^2.7.2"
+  checksum: 10/666a135980b002df0e75c8ac6c389140cdc59ac953db62770479ee2856d58ce69d2f845e5f2586716350b725400f6945e51e9159573158c39f369984c72dcd84
   languageName: node
   linkType: hard
 
@@ -10018,6 +10122,13 @@ __metadata:
   version: 2.6.2
   resolution: "neo-async@npm:2.6.2"
   checksum: 10/1a7948fea86f2b33ec766bc899c88796a51ba76a4afc9026764aedc6e7cde692a09067031e4a1bf6db4f978ccd99e7f5b6c03fe47ad9865c3d4f99050d67e002
+  languageName: node
+  linkType: hard
+
+"next-tick@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "next-tick@npm:1.1.0"
+  checksum: 10/83b5cf36027a53ee6d8b7f9c0782f2ba87f4858d977342bfc3c20c21629290a2111f8374d13a81221179603ffc4364f38374b5655d17b6a8f8a8c77bdea4fe8b
   languageName: node
   linkType: hard
 
@@ -13303,6 +13414,13 @@ __metadata:
   version: 2.19.0
   resolution: "type-fest@npm:2.19.0"
   checksum: 10/7bf9e8fdf34f92c8bb364c0af14ca875fac7e0183f2985498b77be129dc1b3b1ad0a6b3281580f19e48c6105c037fb966ad9934520c69c6434d17fd0af4eed78
+  languageName: node
+  linkType: hard
+
+"type@npm:^2.7.2":
+  version: 2.7.3
+  resolution: "type@npm:2.7.3"
+  checksum: 10/82e99e7795b3de3ecfe685680685e79a77aea515fad9f60b7c55fbf6d43a5c360b1e6e9443354ec8906b38cdf5325829c69f094cb7cd2a1238e85bef9026dc04
   languageName: node
   linkType: hard
 

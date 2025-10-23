@@ -1,3 +1,12 @@
+## [1.1.93](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.92...v1.1.93) (2025-10-23)
+
+
+### Features
+
+* **color-picker:** add color utilities and integrate color selection in vc-input component ([f284c1d](https://github.com/VirtoCommerce/vc-shell/commit/f284c1d8bcd13caf3b82e382e22d3f2962cb87e4))
+
+
+
 ## [1.1.92](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.91...v1.1.92) (2025-10-17)
 
 

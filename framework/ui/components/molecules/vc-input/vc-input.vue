@@ -560,6 +560,11 @@ watch(
     if (temp.value !== mutatedModel.value) {
       temp.value = mutatedModel.value;
     }
+
+    // Handle color type initialization
+    if (props.type === "color" && newVal) {
+      handleColorTextChange(newVal as string);
+    }
   },
   { immediate: true },
 );

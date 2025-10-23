@@ -329,6 +329,7 @@ import { Field } from "vee-validate";
 import { useI18n } from "vue-i18n";
 import { VcSelect, VcInput, VcTextarea, VcSwitch } from "./../../";
 import * as _ from "lodash-es";
+import { convertColorNameToHex } from "../../../../shared/utilities";
 
 type IValidationRules = {
   required?: boolean;
@@ -473,10 +474,29 @@ const value = computed({
   },
   set(newValue) {
     console.log(newValue);
+
+    // For color type without dictionary, extract colorCode
+    let colorCode: string | undefined;
+    if (computedProperty.value.valueType === "Color" && !computedProperty.value.dictionary) {
+      if (typeof newValue === "string") {
+        // If it's already a hex color, use it directly
+        if (newValue.startsWith("#")) {
+          colorCode = newValue;
+        } else {
+          // Try to convert color name to hex
+          const hexColor = convertColorNameToHex(newValue);
+          if (hexColor) {
+            colorCode = hexColor;
+          }
+        }
+      }
+    }
+
     emit("update:model-value", {
       value: newValue,
       dictionary: items.value,
       locale: props.currentLanguage,
+      colorCode,
     });
   },
 });

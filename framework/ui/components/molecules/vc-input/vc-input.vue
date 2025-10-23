@@ -263,7 +263,7 @@
 </template>
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
-import { computed, ref, unref, watch } from "vue";
+import { computed, ref, unref, watch, nextTick } from "vue";
 import { VcLabel, VcIcon, VcHint } from "./../../";
 import VueDatePicker, { VueDatePickerProps, ModelValue } from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
@@ -536,10 +536,7 @@ const handleValue = computed({
       temp.value = value;
     }
 
-    // Handle color type synchronization
-    if (props.type === "color") {
-      handleColorTextChange(value);
-    }
+    // Color type synchronization is handled by watcher
 
     onInput(temp.value);
   },
@@ -561,9 +558,34 @@ watch(
       temp.value = mutatedModel.value;
     }
 
-    // Handle color type initialization
-    if (props.type === "color" && newVal) {
-      handleColorTextChange(newVal as string);
+    // Color type initialization is handled by watcher
+  },
+  { immediate: true },
+);
+
+// Watch colorValue changes to sync with text input
+watch(
+  colorValue,
+  (newColorValue) => {
+    if (props.type === "color" && newColorValue) {
+      // Update the hidden color picker input
+      if (colorPickerRef.value) {
+        colorPickerRef.value.value = newColorValue;
+      }
+    }
+  },
+  { immediate: true },
+);
+
+// Watch text input changes to sync with color picker
+watch(
+  () => temp.value,
+  (newValue) => {
+    if (props.type === "color" && newValue) {
+      // Use nextTick to avoid infinite loops
+      nextTick(() => {
+        handleColorTextChange(newValue as string);
+      });
     }
   },
   { immediate: true },
@@ -666,7 +688,6 @@ function handleFocus() {
 // Color handling functions
 function handleColorTextChange(value: string) {
   if (!value || typeof value !== "string") {
-    colorValue.value = "";
     return;
   }
 
@@ -674,7 +695,8 @@ function handleColorTextChange(value: string) {
 
   // If it's already a valid hex, use it directly
   if (isValidHexColor(trimmedValue)) {
-    colorValue.value = normalizeHexColor(trimmedValue);
+    const normalizedHex = normalizeHexColor(trimmedValue);
+    colorValue.value = normalizedHex;
     return;
   }
 
@@ -690,16 +712,6 @@ function handleColorPickerChange(event: Event) {
   if (target && target.value) {
     const hexColor = normalizeHexColor(target.value);
     colorValue.value = hexColor;
-
-    // Try to convert hex to color name
-    const colorName = convertHexToColorName(hexColor);
-    if (colorName) {
-      temp.value = colorName;
-    } else {
-      temp.value = hexColor;
-    }
-
-    onInput(temp.value);
   }
 }
 

@@ -1,8 +1,6 @@
-import namer from "color-namer";
-
 /**
- * Convert color name to hex code
- * @param colorName - Color name (e.g., "red", "blue", "dark green")
+ * Convert CSS color name to hex code using Canvas API
+ * @param colorName - CSS color name (e.g., "red", "blue", "lime")
  * @returns Hex code or null if not found
  */
 export function convertColorNameToHex(colorName: string): string | null {
@@ -10,68 +8,39 @@ export function convertColorNameToHex(colorName: string): string | null {
     return null;
   }
 
-  const trimmedName = colorName.trim().toLowerCase();
+  try {
+    // Create temporary canvas to use browser's color parsing
+    const canvas = document.createElement("canvas");
+    canvas.width = 1;
+    canvas.height = 1;
+    const ctx = canvas.getContext("2d");
 
-  // Try to get color from different dictionaries
-  const result = namer(trimmedName);
+    if (!ctx) return null;
 
-  // Check basic colors first (most common)
-  if (result.basic && result.basic.length > 0) {
-    return result.basic[0].hex;
+    // Try to set the color
+    ctx.fillStyle = colorName.trim();
+
+    // If browser doesn't recognize it, fillStyle stays as default
+    if (ctx.fillStyle === "#000000" && colorName.trim().toLowerCase() !== "black") {
+      return null;
+    }
+
+    return ctx.fillStyle; // Returns hex format
+  } catch (error) {
+    console.warn("Error converting color name to hex:", error);
+    return null;
   }
-
-  // Check HTML colors
-  if (result.html && result.html.length > 0) {
-    return result.html[0].hex;
-  }
-
-  // Check NTC colors
-  if (result.ntc && result.ntc.length > 0) {
-    return result.ntc[0].hex;
-  }
-
-  return null;
 }
 
 /**
  * Convert hex code to human-readable color name
  * @param hex - Hex color code (e.g., "#ff0000", "ff0000")
- * @returns Color name or null if not found
+ * @returns Always returns null - don't auto-fill color names
  */
 export function convertHexToColorName(hex: string): string | null {
-  if (!hex || typeof hex !== "string") {
-    return null;
-  }
-
-  // Normalize hex format
-  const normalizedHex = hex.startsWith("#") ? hex : `#${hex}`;
-
-  // Validate hex format
-  if (!/^#[0-9A-Fa-f]{6}$/.test(normalizedHex)) {
-    return null;
-  }
-
-  try {
-    const result = namer(normalizedHex);
-
-    // Try to get the most accurate name
-    if (result.basic && result.basic.length > 0) {
-      return result.basic[0].name;
-    }
-
-    if (result.html && result.html.length > 0) {
-      return result.html[0].name;
-    }
-
-    if (result.ntc && result.ntc.length > 0) {
-      return result.ntc[0].name;
-    }
-
-    return null;
-  } catch (error) {
-    console.warn("Error converting hex to color name:", error);
-    return null;
-  }
+  // Always return null - don't auto-fill
+  // User should enter custom color name manually
+  return null;
 }
 
 /**

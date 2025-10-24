@@ -223,6 +223,26 @@
       </VcInputDropdown>
     </template>
     <template
+      v-else-if="computedProperty.valueType === 'Color' && computedProperty.multivalue && !computedProperty.dictionary"
+    >
+      <VcMultivalue
+        v-bind="$attrs"
+        v-model="value"
+        type="color"
+        :name="computedProperty.name"
+        :error="!!errors.length"
+        :error-message="errorMessage"
+        :label="computedProperty.displayName"
+        :required="computedProperty.required"
+        :placeholder="$t('COMPONENTS.ORGANISMS.VC_DYNAMIC_PROPERTY.VALUE_TYPE.COLOR.NAME')"
+        :disabled="disabled"
+        :multilanguage="multilanguage"
+        :current-language="currentLanguage"
+        option-label="value"
+        option-value="value"
+      ></VcMultivalue>
+    </template>
+    <template
       v-else-if="computedProperty.valueType === 'Color' && computedProperty.multivalue && computedProperty.dictionary"
     >
       <VcMultivalue
@@ -470,12 +490,34 @@ const computedProperty = computed(() => {
 
 const value = computed({
   get() {
+    // For multivalue, extract array from PropertyValue.value if needed
+    if (computedProperty.value.multivalue) {
+      // If internalModel.value is already an array, return it
+      if (Array.isArray(internalModel.value)) {
+        return internalModel.value;
+      }
+      // If it has a value property that's an array, extract it
+      if (internalModel.value?.value && Array.isArray(internalModel.value.value)) {
+        return internalModel.value.value;
+      }
+      // Return empty array as fallback
+      return [];
+    }
     return internalModel.value;
   },
   set(newValue) {
-    console.log(newValue);
 
-    // For color type without dictionary, extract colorCode
+    // For multivalue (array), pass it directly
+    if (computedProperty.value.multivalue && Array.isArray(newValue)) {
+      emit("update:model-value", {
+        value: newValue,
+        dictionary: items.value,
+        locale: props.currentLanguage,
+      });
+      return;
+    }
+
+    // For color type without dictionary (single value), extract colorCode
     let colorCode: string | undefined;
     if (computedProperty.value.valueType === "Color" && !computedProperty.value.dictionary) {
       if (typeof newValue === "string") {

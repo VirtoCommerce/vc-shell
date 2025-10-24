@@ -43,6 +43,22 @@
             v-if="item"
             class="vc-multivalue__field-value"
           >
+            <!-- Color square for color type -->
+            <div
+              v-if="type === 'color'"
+              class="vc-multivalue__color-square"
+              :style="{ backgroundColor: item.colorCode || '#cccccc' }"
+              @click="openColorPicker(i)"
+            >
+              <input
+                :ref="(el) => setColorPickerRef(el as HTMLInputElement, i)"
+                type="color"
+                class="vc-multivalue__color-picker-hidden"
+                :value="item.colorCode || '#000000'"
+                @change="(e) => handleColorChange(e, i)"
+              />
+            </div>
+
             <slot
               name="selected-item"
               :value="formatValue(item)"
@@ -76,7 +92,10 @@
               @click.stop="toggleDropdown"
               >{{ $t("COMPONENTS.MOLECULES.VC_MULTIVALUE.ADD") }}</VcButton
             >
-            <teleport  to=".vc-app" defer>
+            <teleport
+              to=".vc-app"
+              defer
+            >
               <div
                 v-if="isOpened"
                 ref="dropdownRef"
@@ -173,19 +192,20 @@
 </template>
 
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
-<script lang="ts" setup generic="T extends { id?: string }">
+<script lang="ts" setup generic="T extends { id?: string; colorCode?: string }">
 import { unref, nextTick, ref, computed } from "vue";
 import { vOnClickOutside } from "@vueuse/components";
 import { useFloating, UseFloatingReturn, offset, flip, shift, autoUpdate, MiddlewareState } from "@floating-ui/vue";
 import { generateId } from "../../../../core/utilities";
 import { useKeyboardNavigation } from "../../../../core/composables/useKeyboardNavigation";
+import { convertColorNameToHex } from "../../../../shared/utilities";
 
 export interface Props<T> {
   placeholder?: string;
   modelValue?: T[];
   required?: boolean;
   disabled?: boolean;
-  type?: "text" | "number" | "integer";
+  type?: "text" | "number" | "integer" | "color";
   label?: string;
   tooltip?: string;
   name?: string;
@@ -243,6 +263,7 @@ const isOpened = ref(false);
 const value = ref();
 const internalType = ref(unref(props.type));
 const isFocused = ref(false);
+const colorPickerRefs = ref<Map<number, HTMLInputElement>>(new Map());
 
 const popper = useFloating(dropdownToggleRef, dropdownRef, {
   placement: "bottom",
@@ -289,6 +310,9 @@ const internalTypeComputed = computed({
   get() {
     if (internalType.value === "integer") {
       return "number";
+    }
+    if (internalType.value === "color") {
+      return "text";
     }
     return internalType.value;
   },
@@ -345,7 +369,20 @@ function onInput(e: KeyboardEvent | FocusEvent) {
   if (newValue === "" || newValue === undefined || newValue === null) {
     return;
   }
-  emit("update:model-value", [...props.modelValue, { [props.optionLabel]: newValue } as T]);
+
+  if (props.type === "color") {
+    // Try to convert color name to hex
+    const hexColor = convertColorNameToHex(newValue);
+    emit("update:model-value", [
+      ...props.modelValue,
+      {
+        [props.optionLabel]: newValue,
+        colorCode: hexColor || "#000000",
+      } as unknown as T,
+    ]);
+  } else {
+    emit("update:model-value", [...props.modelValue, { [props.optionLabel]: newValue } as T]);
+  }
   value.value = undefined;
 }
 
@@ -421,6 +458,29 @@ function closeDropdown() {
 
 function onSearch(event: Event) {
   emit("search", (event.target as HTMLInputElement).value);
+}
+
+function setColorPickerRef(el: HTMLInputElement | null, index: number) {
+  if (el) {
+    colorPickerRefs.value.set(index, el);
+  }
+}
+
+function openColorPicker(index: number) {
+  const picker = colorPickerRefs.value.get(index);
+  picker?.click();
+}
+
+function handleColorChange(event: Event, index: number) {
+  const target = event.target as HTMLInputElement;
+  if (target && target.value) {
+    const updatedValues = [...props.modelValue];
+    updatedValues[index] = {
+      ...updatedValues[index],
+      colorCode: target.value,
+    };
+    emit("update:model-value", updatedValues);
+  }
 }
 </script>
 
@@ -596,6 +656,23 @@ function onSearch(event: Event) {
 
   &__hint {
     @apply tw-text-[color:var(--multivalue-placeholder-color)] tw-mt-1 tw-break-words tw-p-0;
+  }
+
+  &__color-square {
+    @apply tw-w-5 tw-h-5 tw-rounded-[2px] tw-border tw-border-solid tw-border-[color:var(--neutrals-300)]
+      tw-cursor-pointer tw-mr-2 tw-flex-shrink-0 tw-relative;
+
+    &:hover {
+      @apply tw-border-[color:var(--primary-500)];
+    }
+  }
+
+  &__color-picker-hidden {
+    @apply tw-opacity-0 tw-absolute tw-w-0 tw-h-0 tw-pointer-events-none;
+  }
+
+  &__field-value {
+    @apply tw-flex tw-items-center;
   }
 }
 </style>

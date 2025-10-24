@@ -79,10 +79,14 @@
         "userUrlFormat": "{{host}}/{{user}}",
         "issuePrefixes": ["#"]
       },
-      "exact": true,
+      "exact": false,
       "message": "release: %s",
       "allowBranch": ["main", "feat/*"],
-      "yes": false
+      "yes": false,
+      "changelog": {
+        "preset": "angular",
+        "releaseCount": 0
+      }
     },
     "publish": {
       "registry": "https://registry.npmjs.org",

@@ -1,6 +1,6 @@
 {
   "name": "@vc-shell/ts-config",
-  "version": "1.1.97",
+  "version": "1.1.98-rc.0",
   "main": "./tsconfig.json",
   "files": [
     "tsconfig.json"
@@ -9,5 +9,6 @@
     "access": "public",
     "registry": "https://registry.npmjs.org/"
   },
-  "packageManager": "yarn@4.0.2"
+  "packageManager": "yarn@4.0.2",
+  "npmTag": "rc"
 }

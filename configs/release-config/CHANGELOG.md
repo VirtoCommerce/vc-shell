@@ -1,3 +1,13 @@
+## [1.1.98-rc.0](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.97...v1.1.98-rc.0) (2025-10-24)
+
+### Bug Fixes
+
+- **release-config:** clean up comments and formatting in release.ts for improved clarity ([e42e568](https://github.com/VirtoCommerce/vc-shell/commit/e42e5689ac696406c8ba001f1b557ce7ae61fa21))
+- **release-config:** enhance changelog cleanup and add version bump notes for empty versions ([b4632c8](https://github.com/VirtoCommerce/vc-shell/commit/b4632c8881d12e5f577a7af5d2452879a3535eba))
+- **release-config:** improve root changelog generation to exclude empty version bumps ([b02c775](https://github.com/VirtoCommerce/vc-shell/commit/b02c7755d239be2b2a372722d4e851e1ad6ffdd6))
+- **release:** add automatic push after amend to sync commits and tags ([7dfacf5](https://github.com/VirtoCommerce/vc-shell/commit/7dfacf53a560be083b993d7217c088a6b98eb2e6))
+- **release:** disable Lerna push to avoid double CI runs ([fe9fd18](https://github.com/VirtoCommerce/vc-shell/commit/fe9fd18c3d77196568c05446e307e325cb017125))
+
 ## [1.1.97](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.96...v1.1.97) (2025-10-24)
 
 **Note:** Version bump only for package
@@ -634,7 +644,7 @@
 
 ### Features
 
-* application insights logger ([536db4d](https://github.com/VirtoCommerce/vc-shell/commit/536db4db35c91f4fb566717d2d6c536e48aacc95))
+- application insights logger ([536db4d](https://github.com/VirtoCommerce/vc-shell/commit/536db4db35c91f4fb566717d2d6c536e48aacc95))
 
 ## [1.0.243](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.242...v1.0.243) (2024-06-21)
 
@@ -800,7 +810,7 @@
 
 ### Features
 
-* **dynamic:** saveChanges response ([#207](https://github.com/VirtoCommerce/vc-shell/issues/207)) ([a05313b](https://github.com/VirtoCommerce/vc-shell/commit/a05313bd0fc5b25b927570c31e14aea69c4a5ddd))
+- **dynamic:** saveChanges response ([#207](https://github.com/VirtoCommerce/vc-shell/issues/207)) ([a05313b](https://github.com/VirtoCommerce/vc-shell/commit/a05313bd0fc5b25b927570c31e14aea69c4a5ddd))
 
 ## [1.0.200](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.199...v1.0.200) (2024-04-23)
 
@@ -1082,7 +1092,7 @@
 
 ### Features
 
-* **configs:** update release-config package.json and utils.ts ([cd932ce](https://github.com/VirtoCommerce/vc-shell/commit/cd932cea266840df372dbddd9d0cfd339a54ed51))
+- **configs:** update release-config package.json and utils.ts ([cd932ce](https://github.com/VirtoCommerce/vc-shell/commit/cd932cea266840df372dbddd9d0cfd339a54ed51))
 
 ## [1.0.128](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.127...v1.0.128) (2023-12-14)
 
@@ -1116,7 +1126,7 @@
 
 ### Features
 
-* **release-config:** custom version ([40ffc20](https://github.com/VirtoCommerce/vc-shell/commit/40ffc202f5cf89aa32456bff713b3787d2e7e7cb))
+- **release-config:** custom version ([40ffc20](https://github.com/VirtoCommerce/vc-shell/commit/40ffc202f5cf89aa32456bff713b3787d2e7e7cb))
 
 ## [1.0.119](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.118...v1.0.119) (2023-11-07)
 
@@ -1138,5 +1148,4 @@
 
 ### Features
 
-* release-config and ts-config packages ([c901ebf](https://github.com/VirtoCommerce/vc-shell/commit/c901ebffa19569f647a351de484e3d807425b920))
-
+- release-config and ts-config packages ([c901ebf](https://github.com/VirtoCommerce/vc-shell/commit/c901ebffa19569f647a351de484e3d807425b920))

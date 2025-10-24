@@ -49,7 +49,7 @@ jobs:
 
     - name: Install dependencies
       run: |
-        yarn install --immutable
+        yarn install
       env:
         YARN_ENABLE_IMMUTABLE_INSTALLS: false
 

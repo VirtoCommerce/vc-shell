@@ -1,3 +1,12 @@
+## [1.1.96](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.95...v1.1.96) (2025-10-24)
+
+
+### Features
+
+* **vc-multivalue, vc-dynamic-property:** add support for multivalue color properties ([2dbc590](https://github.com/VirtoCommerce/vc-shell/commit/2dbc5905eb072bf0aaaa7b5f4998cf9ad49fab0b))
+
+
+
 ## [1.1.95](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.94...v1.1.95) (2025-10-23)
 
 

@@ -91,38 +91,34 @@ jobs:
         # Ensure clean working directory for Lerna
         git status --porcelain
 
-    - name: Publish with Lerna
+    - name: Determine npm tag
       if: success()
       run: |
-        echo "Publishing packages with Lerna..."
-        # Lerna automatically:
-        # - Detects changed packages from package.json
-        # - Sets correct npm tags based on versions (rc, alpha, beta, latest)
-        # - Handles dependencies between packages
-        # - Excludes private packages and root package
-        npx lerna publish from-package --yes --no-git-reset --no-private
-      env:
-        NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-    - name: Fix npm dist tags
-      if: success()
-      run: |
-        echo "Ensuring correct npm dist tags..."
+        echo "Determining npm tag for publishing..."
         
         # Get current version from framework package
         CURRENT_VERSION=$(node -p "require('./framework/package.json').version")
         echo "Current version: $CURRENT_VERSION"
         
-        # Determine correct tag using multiple strategies
-        NPM_TAG="latest"
-        
-        # Strategy 1: Check npmTag from package.json
-        PACKAGE_NPM_TAG=$(node -p "try { require('./framework/package.json').npmTag || ''; } catch(e) { ''; }")
-        if [ ! -z "$PACKAGE_NPM_TAG" ] && [ "$PACKAGE_NPM_TAG" != "undefined" ]; then
-          NPM_TAG="$PACKAGE_NPM_TAG"
-          echo "Using npmTag from package.json: $NPM_TAG"
+        # Strategy 1: Get npm tag from git tag (most reliable)
+        GIT_TAG=$(git describe --tags --exact-match HEAD 2>/dev/null || echo "")
+        if [ ! -z "$GIT_TAG" ]; then
+          echo "Found git tag: $GIT_TAG"
+          # Extract npm tag from git tag (e.g., v1.1.98-rc.3 -> rc)
+          if [[ "$GIT_TAG" == *"-rc"* ]]; then
+            NPM_TAG="rc"
+          elif [[ "$GIT_TAG" == *"-alpha"* ]]; then
+            NPM_TAG="alpha"
+          elif [[ "$GIT_TAG" == *"-beta"* ]]; then
+            NPM_TAG="beta"
+          elif [[ "$GIT_TAG" == *"-next"* ]]; then
+            NPM_TAG="next"
+          else
+            NPM_TAG="latest"
+          fi
+          echo "Using npm tag from git tag: $NPM_TAG"
         else
-          # Strategy 2: Analyze version pattern
+          # Strategy 2: Analyze version pattern (fallback)
           if [[ "$CURRENT_VERSION" == *"-rc"* ]]; then
             NPM_TAG="rc"
           elif [[ "$CURRENT_VERSION" == *"-alpha"* ]]; then
@@ -131,23 +127,45 @@ jobs:
             NPM_TAG="beta"
           elif [[ "$CURRENT_VERSION" == *"-next"* ]]; then
             NPM_TAG="next"
+          else
+            NPM_TAG="latest"
           fi
-          echo "Using version-based tag: $NPM_TAG"
+          echo "Using version-based tag (no git tag found): $NPM_TAG"
         fi
         
-        # Strategy 3: Check commit message for explicit tag
+        # Strategy 3: Check commit message for explicit tag (override)
         COMMIT_MESSAGE=$(git log -1 --pretty=%B)
         if [[ "$COMMIT_MESSAGE" == *"npmTag:"* ]]; then
           COMMIT_TAG=$(echo "$COMMIT_MESSAGE" | grep -o "npmTag:[a-zA-Z0-9-]*" | cut -d: -f2)
           if [ ! -z "$COMMIT_TAG" ]; then
             NPM_TAG="$COMMIT_TAG"
-            echo "Using tag from commit message: $NPM_TAG"
+            echo "Using tag from commit message (override): $NPM_TAG"
           fi
         fi
         
+        echo "NPM_TAG=$NPM_TAG" >> $GITHUB_ENV
         echo "Final npm tag: $NPM_TAG"
+
+    - name: Publish with Lerna
+      if: success()
+      run: |
+        echo "Publishing packages with Lerna using tag: $NPM_TAG"
+        # Lerna automatically:
+        # - Detects changed packages from package.json
+        # - Uses the specified npm tag for all packages
+        # - Handles dependencies between packages
+        # - Excludes private packages and root package
+        npx lerna publish from-package --yes --no-git-reset --no-private --npm-tag="$NPM_TAG"
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+    - name: Verify npm dist tags
+      if: success()
+      run: |
+        echo "Verifying npm dist tags..."
+        echo "Published packages with tag: $NPM_TAG"
         
-        # Apply tags to all published packages
+        # Show current tags for verification
         PACKAGES=(
           "@vc-shell/framework"
           "@vc-shell/ts-config"
@@ -158,22 +176,13 @@ jobs:
         )
         
         for PACKAGE in "${PACKAGES[@]}"; do
-          echo "Setting $NPM_TAG tag for $PACKAGE@$CURRENT_VERSION"
-          npm dist-tag add "$PACKAGE@$CURRENT_VERSION" "$NPM_TAG" --force || echo "Failed to set tag for $PACKAGE"
+          echo "Tags for $PACKAGE:"
+          npm dist-tag ls "$PACKAGE" 2>/dev/null || echo "Package not found in npm"
+          echo "---"
         done
       env:
         NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-    - name: Verify published packages
-      if: success()
-      run: |
-        echo "Verifying published packages:"
-        npx lerna list --json | jq '.[].name' | while read package; do
-          echo "Package: $package"
-          npm view "$package" version dist-tags 2>/dev/null || echo "Package not found in npm"
-        done
-      env:
-        NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
 
 

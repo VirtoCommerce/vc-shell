@@ -78,7 +78,3 @@ package-lock.json
 !.yarn/versions
 
 *storybook.log
-docs/CHANGELOG_GUIDE.md
-scripts/generate-initial-changelogs.ts
-LERNA_INTEGRATION.md
-docs/WORKSPACE_ARCHITECTURE.md

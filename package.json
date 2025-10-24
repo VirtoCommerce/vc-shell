@@ -28,7 +28,8 @@
     "storybook-compress": "vite-node --mode production scripts/compress-storybook.ts --",
     "check-locales": "tsx framework/scripts/check-locales.mts",
     "prepare": "husky install",
-    "pre-commit": "yarn check-locales"
+    "pre-commit": "yarn check-locales",
+    "generate-changelogs": "tsx scripts/generate-initial-changelogs.ts"
   },
   "workspaces": [
     "apps/*",

@@ -83,6 +83,21 @@
       "message": "release: %s",
       "allowBranch": ["main", "feat/*"],
       "yes": false
+    },
+    "publish": {
+      "registry": "https://registry.npmjs.org",
+      "access": "public",
+      "ignoreChanges": [
+        "**/*.md",
+        "**/*.spec.ts",
+        "**/*.spec.js",
+        "**/test/**",
+        "**/tests/**",
+        "**/__tests__/**",
+        "**/stories/**",
+        "**/*.story.ts",
+        "**/*.stories.ts"
+      ]
     }
   }
 }

@@ -97,8 +97,9 @@ jobs:
         echo "Publishing packages with Lerna..."
         # Lerna automatically:
         # - Detects changed packages from package.json
-        # - Sets correct npm tags based on versions
+        # - Sets correct npm tags based on versions (rc, alpha, beta, latest)
         # - Handles dependencies between packages
+        # - Excludes private packages
         npx lerna publish from-package --yes --no-git-reset
       env:
         NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

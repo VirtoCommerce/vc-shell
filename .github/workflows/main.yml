@@ -107,27 +107,47 @@ jobs:
     - name: Fix npm dist tags
       if: success()
       run: |
-        echo "Fixing npm dist tags for RC versions..."
+        echo "Ensuring correct npm dist tags..."
+        
         # Get current version from framework package
         CURRENT_VERSION=$(node -p "require('./framework/package.json').version")
         echo "Current version: $CURRENT_VERSION"
         
-        # Determine correct tag based on version
-        if [[ "$CURRENT_VERSION" == *"-rc"* ]]; then
-          NPM_TAG="rc"
-        elif [[ "$CURRENT_VERSION" == *"-alpha"* ]]; then
-          NPM_TAG="alpha"
-        elif [[ "$CURRENT_VERSION" == *"-beta"* ]]; then
-          NPM_TAG="beta"
-        elif [[ "$CURRENT_VERSION" == *"-next"* ]]; then
-          NPM_TAG="next"
+        # Determine correct tag using multiple strategies
+        NPM_TAG="latest"
+        
+        # Strategy 1: Check npmTag from package.json
+        PACKAGE_NPM_TAG=$(node -p "try { require('./framework/package.json').npmTag || ''; } catch(e) { ''; }")
+        if [ ! -z "$PACKAGE_NPM_TAG" ] && [ "$PACKAGE_NPM_TAG" != "undefined" ]; then
+          NPM_TAG="$PACKAGE_NPM_TAG"
+          echo "Using npmTag from package.json: $NPM_TAG"
         else
-          NPM_TAG="latest"
+          # Strategy 2: Analyze version pattern
+          if [[ "$CURRENT_VERSION" == *"-rc"* ]]; then
+            NPM_TAG="rc"
+          elif [[ "$CURRENT_VERSION" == *"-alpha"* ]]; then
+            NPM_TAG="alpha"
+          elif [[ "$CURRENT_VERSION" == *"-beta"* ]]; then
+            NPM_TAG="beta"
+          elif [[ "$CURRENT_VERSION" == *"-next"* ]]; then
+            NPM_TAG="next"
+          fi
+          echo "Using version-based tag: $NPM_TAG"
         fi
         
-        echo "Setting npm tag: $NPM_TAG for version: $CURRENT_VERSION"
+        # Strategy 3: Check commit message for explicit tag
+        COMMIT_MESSAGE=$(git log -1 --pretty=%B)
+        if [[ "$COMMIT_MESSAGE" == *"npmTag:"* ]]; then
+          COMMIT_TAG=$(echo "$COMMIT_MESSAGE" | grep -o "npmTag:[a-zA-Z0-9-]*" | cut -d: -f2)
+          if [ ! -z "$COMMIT_TAG" ]; then
+            NPM_TAG="$COMMIT_TAG"
+            echo "Using tag from commit message: $NPM_TAG"
+          fi
+        fi
         
-        # Fix tags for all published packages
+        echo "Final npm tag: $NPM_TAG"
+        
+        # Apply tags to all published packages
         PACKAGES=(
           "@vc-shell/framework"
           "@vc-shell/ts-config"

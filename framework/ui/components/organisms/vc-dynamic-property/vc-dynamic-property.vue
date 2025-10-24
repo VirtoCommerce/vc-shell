@@ -267,7 +267,7 @@
         <template #selected-item="scope">
           <div class="tw-flex tw-items-center tw-gap-2">
             <div
-              class="tw-w-5 tw-h-5 tw-rounded tw-border"
+              class="tw-w-5 tw-h-5 tw-rounded tw-border tw-border-solid tw-border-[color:var(--neutrals-300)]"
               :style="{ backgroundColor: scope.item.colorCode }"
             ></div>
             <span>{{ scope.item.value }}</span>
@@ -276,7 +276,7 @@
         <template #option="scope">
           <div class="tw-flex tw-items-center tw-gap-2">
             <div
-              class="tw-w-5 tw-h-5 tw-rounded tw-border"
+              class="tw-w-5 tw-h-5 tw-rounded tw-border tw-border-solid tw-border-[color:var(--neutrals-300)]"
               :style="{ backgroundColor: scope.item.colorCode }"
             ></div>
             <span>{{ scope.item.value }}</span>
@@ -322,7 +322,7 @@
         <template #selected-item="scope">
           <div class="tw-flex tw-items-center tw-gap-2">
             <div
-              class="tw-w-5 tw-h-5 tw-rounded tw-border"
+              class="tw-w-5 tw-h-5 tw-rounded tw-border tw-border-solid tw-border-[color:var(--neutrals-300)]"
               :style="{ backgroundColor: scope.opt.colorCode }"
             ></div>
             <span>{{ scope.opt.value }}</span>
@@ -331,7 +331,7 @@
         <template #option="scope">
           <div class="tw-flex tw-items-center tw-gap-2">
             <div
-              class="tw-w-5 tw-h-5 tw-rounded tw-border"
+              class="tw-w-5 tw-h-5 tw-rounded tw-border tw-border-solid tw-border-[color:var(--neutrals-300)]"
               :style="{ backgroundColor: scope.opt.colorCode }"
             ></div>
             <span>{{ scope.opt.value }}</span>

@@ -659,12 +659,8 @@ function handleColorChange(event: Event, index: number) {
   }
 
   &__color-square {
-    @apply tw-w-5 tw-h-5 tw-rounded-[2px] tw-border tw-border-solid tw-border-[color:var(--neutrals-300)]
+    @apply tw-w-5 tw-h-5 tw-rounded tw-border tw-border-solid tw-border-[color:var(--neutrals-300)]
       tw-cursor-pointer tw-mr-2 tw-flex-shrink-0 tw-relative;
-
-    &:hover {
-      @apply tw-border-[color:var(--primary-500)];
-    }
   }
 
   &__color-picker-hidden {

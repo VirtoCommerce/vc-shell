@@ -48,7 +48,7 @@ jobs:
 
     - name: Install dependencies
       run: |
-        yarn
+        yarn install --frozen-lockfile
       env:
         YARN_ENABLE_IMMUTABLE_INSTALLS: false
 
@@ -82,6 +82,14 @@ jobs:
       env:
         NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
+    - name: Clean git state
+      if: success()
+      run: |
+        # Reset any changes to yarn.lock that might have occurred during install
+        git checkout -- yarn.lock || true
+        # Ensure clean working directory for Lerna
+        git status --porcelain
+
     - name: Publish with Lerna
       if: success()
       run: |
@@ -90,7 +98,7 @@ jobs:
         # - Detects changed packages from package.json
         # - Sets correct npm tags based on versions
         # - Handles dependencies between packages
-        npx lerna publish from-package --yes
+        npx lerna publish from-package --yes --no-git-reset
       env:
         NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 

@@ -99,8 +99,48 @@ jobs:
         # - Detects changed packages from package.json
         # - Sets correct npm tags based on versions (rc, alpha, beta, latest)
         # - Handles dependencies between packages
-        # - Excludes private packages
-        npx lerna publish from-package --yes --no-git-reset
+        # - Excludes private packages and root package
+        npx lerna publish from-package --yes --no-git-reset --no-private
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+    - name: Fix npm dist tags
+      if: success()
+      run: |
+        echo "Fixing npm dist tags for RC versions..."
+        # Get current version from framework package
+        CURRENT_VERSION=$(node -p "require('./framework/package.json').version")
+        echo "Current version: $CURRENT_VERSION"
+        
+        # Determine correct tag based on version
+        if [[ "$CURRENT_VERSION" == *"-rc"* ]]; then
+          NPM_TAG="rc"
+        elif [[ "$CURRENT_VERSION" == *"-alpha"* ]]; then
+          NPM_TAG="alpha"
+        elif [[ "$CURRENT_VERSION" == *"-beta"* ]]; then
+          NPM_TAG="beta"
+        elif [[ "$CURRENT_VERSION" == *"-next"* ]]; then
+          NPM_TAG="next"
+        else
+          NPM_TAG="latest"
+        fi
+        
+        echo "Setting npm tag: $NPM_TAG for version: $CURRENT_VERSION"
+        
+        # Fix tags for all published packages
+        PACKAGES=(
+          "@vc-shell/framework"
+          "@vc-shell/ts-config"
+          "@vc-shell/release-config"
+          "@vc-shell/create-vc-app"
+          "@vc-shell/config-generator"
+          "@vc-shell/api-client-generator"
+        )
+        
+        for PACKAGE in "${PACKAGES[@]}"; do
+          echo "Setting $NPM_TAG tag for $PACKAGE@$CURRENT_VERSION"
+          npm dist-tag add "$PACKAGE@$CURRENT_VERSION" "$NPM_TAG" --force || echo "Failed to set tag for $PACKAGE"
+        done
       env:
         NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 

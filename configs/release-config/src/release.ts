@@ -208,6 +208,14 @@ export const release = async ({
     await customHooks(pkg.version); // Pass new version for custom logic
   }
 
+  // Update yarn.lock to reflect new package versions
+  console.log(chalk.cyan("\nUpdating yarn.lock with new package versions...\n"));
+  const yarnResult = sync("yarn", ["install"], { stdio: "inherit" });
+  if (yarnResult.status !== 0) {
+    console.error(chalk.red("\n❌ Failed to update yarn.lock\n"));
+    process.exit(yarnResult.status || 1);
+  }
+
   // Enhance changelogs for packages without changes
   await enhanceChangelogs(packages);
 
@@ -242,7 +250,8 @@ export const release = async ({
     console.log(chalk.cyan("Changes made:"));
     console.log(chalk.cyan("  - Updated package versions"));
     console.log(chalk.cyan("  - Generated/updated CHANGELOG.md files"));
-    console.log(chalk.cyan("  - Updated npmTag fields in package.json\n"));
+    console.log(chalk.cyan("  - Updated npmTag fields in package.json"));
+    console.log(chalk.cyan("  - Updated yarn.lock with new package versions\n"));
     console.log(chalk.yellow("No git operations performed. Review changes with:"));
     console.log(chalk.cyan("  git diff\n"));
     console.log(chalk.yellow("To revert all changes:"));

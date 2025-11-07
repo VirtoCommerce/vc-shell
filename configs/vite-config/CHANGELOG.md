@@ -86,9 +86,7 @@
 
 **Note:** Version bump only for package @vc-shell/config-generator
 
-
 **Note:** Version bump only for package @vc-shell/config-generator
-
 
 **Note:** Version bump only for package @vc-shell/config-generator
 
@@ -96,17 +94,13 @@
 
 **Note:** Version bump only for package @vc-shell/config-generator
 
-
 ## [1.1.87](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.86...v1.1.87) (2025-10-06)
-
-
-
-## [1.1.86](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.85...v1.1.86) (2025-10-06)
-
-
 
 **Note:** Version bump only for package
 
+## [1.1.86](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.85...v1.1.86) (2025-10-06)
+
+**Note:** Version bump only for package
 
 **Note:** Version bump only for package
 
@@ -114,17 +108,13 @@
 
 **Note:** Version bump only for package
 
-
 **Note:** Version bump only for package
-
-
 
 ## [1.1.83](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.83-alpha.0...v1.1.83) (2025-09-30)
 
-
+**Note:** Version bump only for package
 
 ## [1.1.83-alpha.0](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.82...v1.1.83-alpha.0) (2025-09-24)
-
 
 **Note:** Version bump only for package
 
@@ -132,9 +122,7 @@
 
 **Note:** Version bump only for package
 
-
 **Note:** Version bump only for package
-
 
 **Note:** Version bump only for package
 
@@ -142,62 +130,35 @@
 
 **Note:** Version bump only for package
 
-
 **Note:** Version bump only for package
-
-
 
 ## [1.1.84-alpha.0](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.83...v1.1.84-alpha.0) (2025-09-30)
 
-
-
 **Note:** Version bump only for package
-
-
 
 ## [1.1.82](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.81...v1.1.82) (2025-09-23)
 
-
-
 **Note:** Version bump only for package
-
-
 
 ## [1.1.79](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.78...v1.1.79) (2025-09-18)
 
-
-
 **Note:** Version bump only for package
-
-
 
 ## [1.1.76](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.75...v1.1.76) (2025-09-10)
 
-
-
 **Note:** Version bump only for package
-
-
 
 ## [1.1.73](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.72...v1.1.73) (2025-09-04)
 
-
-
 **Note:** Version bump only for package
-
-
 
 ## [1.1.70](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.69...v1.1.70) (2025-08-20)
 
-
-
 **Note:** Version bump only for package
-
-
 
 ## [1.1.67](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.66...v1.1.67) (2025-07-31)
 
-
+**Note:** Version bump only for package
 
 ## [1.1.65](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.64...v1.1.65) (2025-07-29)
 

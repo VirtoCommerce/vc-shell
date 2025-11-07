@@ -88,48 +88,35 @@
 
 - **api-client:** update error message to reflect dynamic .NET Core version requirement ([bbfbaa0](https://github.com/VirtoCommerce/vc-shell/commit/bbfbaa0df92a91e56b36ca48d449d258c90c88bc))
 
-
 ## [1.1.89](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.88...v1.1.89) (2025-10-08)
-
 
 ### Bug Fixes
 
 * **api-client:** update runtime configuration and enhance error handling in API client generation process ([c9a762a](https://github.com/VirtoCommerce/vc-shell/commit/c9a762ac4e4d120d66b0ab3a16ebfe9078f33fdd))
 
-
-
 ## [1.1.88](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.87...v1.1.88) (2025-10-07)
 
-
+**Note:** Version bump only for package
 
 ## [1.1.87](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.86...v1.1.87) (2025-10-06)
-
 
 ### Bug Fixes
 
 * **api-client:** enhance module name parsing and export generation for improved flexibility and compatibility ([37d3e20](https://github.com/VirtoCommerce/vc-shell/commit/37d3e20831e6931d4fcc93c7127a53b7af2d7540))
 
-
-
 ## [1.1.86](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.85...v1.1.86) (2025-10-06)
-
-
-
-## [1.1.85](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.84...v1.1.85) (2025-10-03)
-
-
-
-## [1.1.86](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.85...v1.1.86) (2025-10-06)
-
-
 
 **Note:** Version bump only for package
 
+## [1.1.85](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.84...v1.1.85) (2025-10-03)
 
+## [1.1.86](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.85...v1.1.86) (2025-10-06)
+
+**Note:** Version bump only for package
 
 ## [1.1.84-alpha.0](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.83...v1.1.84-alpha.0) (2025-09-30)
 
-
+**Note:** Version bump only for package
 
 ## [1.1.83-alpha.0](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.82...v1.1.83-alpha.0) (2025-09-24)
 

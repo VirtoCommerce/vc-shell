@@ -70,13 +70,6 @@
 ### Bug Fixes
 - **vite-config:** remove deprecated vue-router path resolution from appconfig ([5743e12](https://github.com/VirtoCommerce/vc-shell/commit/5743e129b667192a23b894421b54b851d48dffa2))
 
-## [1.1.91](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.90...v1.1.91) (2025-10-17)
-
-### Vite Config (@vc-shell/config-generator)
-
-### Bug Fixes
-- **vite-config:** update vue-router path resolution to use absolute path from node_modules ([5418c14](https://github.com/VirtoCommerce/vc-shell/commit/5418c142daa1e9940a0a9a670b3f66f085165e03))
-
 ## [1.1.91-alpha.5](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.91-alpha.4...v1.1.91-alpha.5) (2025-10-14)
 
 ### Release Config (@vc-shell/release-config)
@@ -166,122 +159,90 @@
 ### Features
 - update auth providers and fix tsx path in pre-commit hook ([a92d957](https://github.com/VirtoCommerce/vc-shell/commit/a92d957e2b0a0be177519e7256af9279d3419713))
 
-## [1.1.90](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.89...v1.1.90) (2025-10-08)
+## [1.1.91](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.90...v1.1.91) (2025-10-17)
 
+### Vite Config (@vc-shell/config-generator)
 
 ### Bug Fixes
+- **vite-config:** update vue-router path resolution to use absolute path from node_modules ([5418c14](https://github.com/VirtoCommerce/vc-shell/commit/5418c142daa1e9940a0a9a670b3f66f085165e03))
 
-* **api-client:** update error message to reflect dynamic .NET Core version requirement ([bbfbaa0](https://github.com/VirtoCommerce/vc-shell/commit/bbfbaa0df92a91e56b36ca48d449d258c90c88bc))
+## [1.1.90](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.89...v1.1.90) (2025-10-08)
 
+### API Client Generator (@vc-shell/api-client-generator)
 
 ### Features
-
-* **generate-api-client:** enhance configuration options with environment variable support and improved module list parsing ([30c00f9](https://github.com/VirtoCommerce/vc-shell/commit/30c00f9f963b0fdba5cf64e3ac3769f09f1ddf0b))
-
-
+- **generate-api-client:** enhance configuration options with environment variable support and improved module list parsing ([30c00f9](https://github.com/VirtoCommerce/vc-shell/commit/30c00f9f963b0fdba5cf64e3ac3769f09f1ddf0b))
+### Bug Fixes
+- **api-client:** update error message to reflect dynamic .NET Core version requirement ([bbfbaa0](https://github.com/VirtoCommerce/vc-shell/commit/bbfbaa0df92a91e56b36ca48d449d258c90c88bc))
 
 ## [1.1.89](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.88...v1.1.89) (2025-10-08)
 
+### API Client Generator (@vc-shell/api-client-generator)
 
 ### Bug Fixes
-
 * **api-client:** update runtime configuration and enhance error handling in API client generation process ([c9a762a](https://github.com/VirtoCommerce/vc-shell/commit/c9a762ac4e4d120d66b0ab3a16ebfe9078f33fdd))
 
-
-
 ## [1.1.88](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.87...v1.1.88) (2025-10-07)
-
-
-### Features
-
-* **vc-dynamic-property:** add color type dictionary select ([4a21112](https://github.com/VirtoCommerce/vc-shell/commit/4a211124acd4b66d0f4b9f37fc4cb33c70b69a5d))
-
-
-
-## [1.1.87](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.86...v1.1.87) (2025-10-06)
-
-
-### Bug Fixes
-
-* **api-client:** enhance module name parsing and export generation for improved flexibility and compatibility ([37d3e20](https://github.com/VirtoCommerce/vc-shell/commit/37d3e20831e6931d4fcc93c7127a53b7af2d7540))
-
-
-### Features
-
-* **vc-dynamic-property, input:** color type in dynamic propery and input  VM-1645 ([1ff529e](https://github.com/VirtoCommerce/vc-shell/commit/1ff529eab6e560a21cb64a5de6a28f11c80b4b30))
-
-
-
-## [1.1.86](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.85...v1.1.86) (2025-10-06)
-
-
-
-## [1.1.85](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.84...v1.1.85) (2025-10-03)
-
-
-### Bug Fixes
-
-* **useMenuExpanded:** correct app name extraction logic for dynamic storage key generation ([3cdaeab](https://github.com/VirtoCommerce/vc-shell/commit/3cdaeabf7bf1192a641cb5150a9a8b5b8f34efcf))
-
-
-
-## [1.1.84](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.84-alpha.0...v1.1.84) (2025-09-30)
-
-
-### Bug Fixes
-
-* **vc-select:** enhance option value retrieval to support primitive types and improve label filtering ([90c9530](https://github.com/VirtoCommerce/vc-shell/commit/90c9530c66e31df7216db9b873fba275c566d8f7))
-
-
-
-## [1.1.84-alpha.0](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.83...v1.1.84-alpha.0) (2025-09-30)
-
-
-### Bug Fixes
-
-* **vc-select:** add fallback visibility check for iframe support in dropdown component ([dd3fc7d](https://github.com/VirtoCommerce/vc-shell/commit/dd3fc7d498c1a0d694804332c3fac3513bb4e78f))
-
-
-### Features
-
-* **utils:** enhance boilerplate package version synchronization with app dependencies ([7f1e315](https://github.com/VirtoCommerce/vc-shell/commit/7f1e315503d09c75e2f2a10247ad71b2b11db3b6))
-
-
-
-## [1.1.83](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.83-alpha.0...v1.1.83) (2025-09-30)
-
-
-### Bug Fixes
-
-* **loader:** enhance version compatibility checks to include prerelease versions ([d1af321](https://github.com/VirtoCommerce/vc-shell/commit/d1af32163d34e4540b49df5d0ed9de71cc5ef0c2))
-* **vc-select:** update model value type definition to support multiple option formats ([92c70f0](https://github.com/VirtoCommerce/vc-shell/commit/92c70f04448ab1de015cd68c2dd782355a40d9fe))
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
+* **vc-dynamic-property:** add color type dictionary select ([4a21112](https://github.com/VirtoCommerce/vc-shell/commit/4a211124acd4b66d0f4b9f37fc4cb33c70b69a5d))
 
-* **create-vc-app:** add type definitions for internationalization properties in Vue components ([c215a55](https://github.com/VirtoCommerce/vc-shell/commit/c215a558a113dfc48b53667a6f32ab2537f311f0))
+## [1.1.87](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.86...v1.1.87) (2025-10-06)
+
+### VC-Shell Framework (@vc-shell/framework)
+
+* **vc-select:** add fallback visibility check for iframe support in dropdown component ([dd3fc7d](https://github.com/VirtoCommerce/vc-shell/commit/dd3fc7d498c1a0d694804332c3fac3513bb4e78f))
+
+### API Client Generator (@vc-shell/api-client-generator)
+
+### Bug Fixes
+* **api-client:** enhance module name parsing and export generation for improved flexibility and compatibility ([37d3e20](https://github.com/VirtoCommerce/vc-shell/commit/37d3e20831e6931d4fcc93c7127a53b7af2d7540))
+
+## [1.1.86](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.85...v1.1.86) (2025-10-06)
+
+**Note:** Version bump only for package
+
+## [1.1.85](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.84...v1.1.85) (2025-10-03)
+
+### VC-Shell Framework (@vc-shell/framework)
+
+### Bug Fixes
+* **useMenuExpanded:** correct app name extraction logic for dynamic storage key generation ([3cdaeab](https://github.com/VirtoCommerce/vc-shell/commit/3cdaeabf7bf1192a641cb5150a9a8b5b8f34efcf))
+**Note:** Version bump only for package
+**Note:** Version bump only for package
+* **vc-select:** enhance option value retrieval to support primitive types and improve label filtering ([90c9530](https://github.com/VirtoCommerce/vc-shell/commit/90c9530c66e31df7216db9b873fba275c566d8f7))
+
+## [1.1.84-alpha.0](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.83...v1.1.84-alpha.0) (2025-09-30)
+
+**Note:** Version bump only for package
+
+## [1.1.84](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.84-alpha.0...v1.1.84) (2025-09-30)
+
+**Note:** Version bump only for package
+
+## [1.1.83-alpha.0](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.82...v1.1.83-alpha.0) (2025-09-24)
+
+**Note:** Version bump only for package
+
+## [1.1.83](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.83-alpha.0...v1.1.83) (2025-09-30)
+
+### VC-Shell Framework (@vc-shell/framework)
+
+### Bug Fixes
+* **loader:** enhance version compatibility checks to include prerelease versions ([d1af321](https://github.com/VirtoCommerce/vc-shell/commit/d1af32163d34e4540b49df5d0ed9de71cc5ef0c2))
+* **vc-select:** update model value type definition to support multiple option formats ([92c70f0](https://github.com/VirtoCommerce/vc-shell/commit/92c70f04448ab1de015cd68c2dd782355a40d9fe))
+### Bug Fixes
 * **login:** add localization support for "OR" text in login components ([6ed87e6](https://github.com/VirtoCommerce/vc-shell/commit/6ed87e67963acfaf681ca472e577c3bb79d4f9de))
 * **notification-template:** add click event emission to notification template component ([b313b7c](https://github.com/VirtoCommerce/vc-shell/commit/b313b7c0c1ba8aaef4eacd104338a8348a5b8d40))
 * **vc-form:** implement submit event emission in form component ([31019a0](https://github.com/VirtoCommerce/vc-shell/commit/31019a078cb3e3caede67bf8396dc0d985015f6c))
 
-### VC-Shell Framework (@vc-shell/framework)
-
-
-## [1.1.83](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.83-alpha.0...v1.1.83) (2025-09-30)
-
-### VC-Shell Framework (@vc-shell/framework)
-
-### Features
-
-* **extension-points:** introduce new extension system with composables for slot management and data exchange ([b427cd4](https://github.com/VirtoCommerce/vc-shell/commit/b427cd4a141d4dc39c454b12259b2a8c566179b9))
-* **useModificationTracker:** add pristineValue reference to track original state ([adaf67d](https://github.com/VirtoCommerce/vc-shell/commit/adaf67d34ceac0b7b490c2906a7b3f25b57c32e1))
-
-
-
 ## [1.1.82](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.81...v1.1.82) (2025-09-23)
 
-**Note:** Version bump only for package
+### Create VC App (@vc-shell/create-vc-app)
+
+* **locales:** add dashboard menu translation to English locale ([710ea73](https://github.com/VirtoCommerce/vc-shell/commit/710ea732a7fa79ad84f637634e3ca8f0c77bb097))
 
 ## [1.1.81](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.80...v1.1.81) (2025-09-23)
 
@@ -293,6 +254,11 @@
 
 ### Bug Fixes
 - **vc-editor:** export ToolbarNames type for better accessibility in toolbar components ([e24ba37](https://github.com/VirtoCommerce/vc-shell/commit/e24ba37bd33059dfbe7a8d285c75e4e9724ca329))
+
+### Create VC App (@vc-shell/create-vc-app)
+
+**Note:** Version bump only for package
+- **locales:** add dashboard menu translation to English locale ([710ea73](https://github.com/VirtoCommerce/vc-shell/commit/710ea732a7fa79ad84f637634e3ca8f0c77bb097))
 
 ## [1.1.79](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.78...v1.1.79) (2025-09-18)
 
@@ -310,11 +276,6 @@
 - **dashboard:** enhance widget placement logic to handle new widgets without collisions ([1faf444](https://github.com/VirtoCommerce/vc-shell/commit/1faf444cb7c919c7a0ddb4447e7dab560c8f0e93))
 ### Bug Fixes
 - **vc-radio-button:** prevent radio button from shrinking by adding flex-shrink property ([276bd6a](https://github.com/VirtoCommerce/vc-shell/commit/276bd6ac81b74b3d93d8652d75e88b32fae10c38))
-
-### Create VC App (@vc-shell/create-vc-app)
-
-### Features
-- **locales:** add dashboard menu translation to English locale ([710ea73](https://github.com/VirtoCommerce/vc-shell/commit/710ea732a7fa79ad84f637634e3ca8f0c77bb097))
 
 ## [1.1.77](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.76...v1.1.77) (2025-09-11)
 
@@ -342,8 +303,8 @@
 
 ### Create VC App (@vc-shell/create-vc-app)
 
-### Bug Fixes
-- **create-vc-app:** integrate bootstrap function into main application file ([3eded62](https://github.com/VirtoCommerce/vc-shell/commit/3eded6272e424d8599ab14ec25666d8d8ed92557))
+**Note:** Version bump only for package
+* **create-vc-app:** integrate bootstrap function into main application file ([3eded62](https://github.com/VirtoCommerce/vc-shell/commit/3eded6272e424d8599ab14ec25666d8d8ed92557))
 
 ## [1.1.72](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.71...v1.1.72) (2025-08-25)
 

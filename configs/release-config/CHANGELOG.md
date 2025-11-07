@@ -90,59 +90,37 @@
 
 ## [1.1.90](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.89...v1.1.90) (2025-10-08)
 
-
+**Note:** Version bump only for package
 
 ## [1.1.89](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.88...v1.1.89) (2025-10-08)
 
-
-
 ## [1.1.88](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.87...v1.1.88) (2025-10-07)
 
-
+**Note:** Version bump only for package
 
 ## [1.1.91-alpha.2](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.91-alpha.1...v1.1.91-alpha.2) (2025-10-14)
 
-
-
 **Note:** Version bump only for package @vc-shell/release-config
-
-
 
 ## [1.1.90](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.89...v1.1.90) (2025-10-08)
 
-
-
 **Note:** Version bump only for package
-
-
 
 ## [1.1.87](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.86...v1.1.87) (2025-10-06)
 
-
-
 **Note:** Version bump only for package
-
-
 
 ## [1.1.84](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.84-alpha.0...v1.1.84) (2025-09-30)
 
-
-
 **Note:** Version bump only for package
-
-
 
 ## [1.1.83-alpha.0](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.82...v1.1.83-alpha.0) (2025-09-24)
 
-
-
 **Note:** Version bump only for package
-
-
 
 ## [1.1.80](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.79...v1.1.80) (2025-09-22)
 
-
+**Note:** Version bump only for package
 
 ## [1.1.78](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.77...v1.1.78) (2025-09-12)
 

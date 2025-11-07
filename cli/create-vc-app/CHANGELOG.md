@@ -82,9 +82,7 @@
 
 **Note:** Version bump only for package @vc-shell/create-vc-app
 
-
 **Note:** Version bump only for package @vc-shell/create-vc-app
-
 
 **Note:** Version bump only for package @vc-shell/create-vc-app
 
@@ -92,17 +90,13 @@
 
 **Note:** Version bump only for package @vc-shell/create-vc-app
 
-
 ## [1.1.87](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.86...v1.1.87) (2025-10-06)
-
-
-
-## [1.1.86](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.85...v1.1.86) (2025-10-06)
-
-
 
 **Note:** Version bump only for package
 
+## [1.1.86](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.85...v1.1.86) (2025-10-06)
+
+**Note:** Version bump only for package
 
 **Note:** Version bump only for package
 
@@ -110,9 +104,7 @@
 
 **Note:** Version bump only for package
 
-
 **Note:** Version bump only for package
-
 
 **Note:** Version bump only for package
 
@@ -124,62 +116,43 @@
 
 **Note:** Version bump only for package
 
-
 **Note:** Version bump only for package
 
 ## [1.1.83-alpha.0](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.82...v1.1.83-alpha.0) (2025-09-24)
 
-
+**Note:** Version bump only for package
 
 ## [1.1.82](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.81...v1.1.82) (2025-09-23)
 
-
-
 ## [1.1.85](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.84...v1.1.85) (2025-10-03)
-
-
 
 **Note:** Version bump only for package
 
-
-
 ## [1.1.83](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.83-alpha.0...v1.1.83) (2025-09-30)
 
-
+**Note:** Version bump only for package
 
 ## [1.1.78](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.77...v1.1.78) (2025-09-12)
-
 
 ## [1.1.82](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.81...v1.1.82) (2025-09-23)
 
 * **locales:** add dashboard menu translation to English locale ([710ea73](https://github.com/VirtoCommerce/vc-shell/commit/710ea732a7fa79ad84f637634e3ca8f0c77bb097))
 
-
-
 ## [1.1.80](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.79...v1.1.80) (2025-09-22)
-
-
 
 **Note:** Version bump only for package
 
-
-
 - **locales:** add dashboard menu translation to English locale ([710ea73](https://github.com/VirtoCommerce/vc-shell/commit/710ea732a7fa79ad84f637634e3ca8f0c77bb097))
-
-
 
 ## [1.1.76](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.75...v1.1.76) (2025-09-10)
 
-
+**Note:** Version bump only for package
 
 ## [1.1.73](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.72...v1.1.73) (2025-09-04)
-
 
 **Note:** Version bump only for package
 
 * **create-vc-app:** integrate bootstrap function into main application file ([3eded62](https://github.com/VirtoCommerce/vc-shell/commit/3eded6272e424d8599ab14ec25666d8d8ed92557))
-
-
 
 ## [1.1.72](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.71...v1.1.72) (2025-08-25)
 

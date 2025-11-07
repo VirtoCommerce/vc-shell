@@ -82,9 +82,7 @@
 
 **Note:** Version bump only for package @vc-shell/ts-config
 
-
 **Note:** Version bump only for package @vc-shell/ts-config
-
 
 **Note:** Version bump only for package @vc-shell/ts-config
 
@@ -92,17 +90,13 @@
 
 **Note:** Version bump only for package @vc-shell/ts-config
 
-
 ## [1.1.87](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.86...v1.1.87) (2025-10-06)
-
-
-
-## [1.1.86](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.85...v1.1.86) (2025-10-06)
-
-
 
 **Note:** Version bump only for package
 
+## [1.1.86](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.85...v1.1.86) (2025-10-06)
+
+**Note:** Version bump only for package
 
 **Note:** Version bump only for package
 
@@ -110,9 +104,7 @@
 
 **Note:** Version bump only for package
 
-
 **Note:** Version bump only for package
-
 
 **Note:** Version bump only for package
 
@@ -120,9 +112,7 @@
 
 **Note:** Version bump only for package
 
-
 **Note:** Version bump only for package
-
 
 **Note:** Version bump only for package
 
@@ -130,9 +120,7 @@
 
 **Note:** Version bump only for package
 
-
 **Note:** Version bump only for package
-
 
 **Note:** Version bump only for package
 
@@ -140,54 +128,31 @@
 
 **Note:** Version bump only for package
 
-
 **Note:** Version bump only for package
-
-
 
 ## [1.1.83](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.83-alpha.0...v1.1.83) (2025-09-30)
 
-
-
 **Note:** Version bump only for package
-
-
 
 ## [1.1.81](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.80...v1.1.81) (2025-09-23)
 
-
-
 **Note:** Version bump only for package
-
-
 
 ## [1.1.78](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.77...v1.1.78) (2025-09-12)
 
-
-
 **Note:** Version bump only for package
-
-
 
 ## [1.1.75](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.74...v1.1.75) (2025-09-10)
 
-
-
 **Note:** Version bump only for package
-
-
 
 ## [1.1.72](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.71...v1.1.72) (2025-08-25)
 
-
-
 **Note:** Version bump only for package
-
-
 
 ## [1.1.69](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.68...v1.1.69) (2025-08-13)
 
-
+**Note:** Version bump only for package
 
 ## [1.1.67](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.66...v1.1.67) (2025-07-31)
 

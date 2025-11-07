@@ -223,6 +223,26 @@
       </VcInputDropdown>
     </template>
     <template
+      v-else-if="computedProperty.valueType === 'Color' && computedProperty.multivalue && !computedProperty.dictionary"
+    >
+      <VcMultivalue
+        v-bind="$attrs"
+        v-model="value"
+        type="color"
+        :name="computedProperty.name"
+        :error="!!errors.length"
+        :error-message="errorMessage"
+        :label="computedProperty.displayName"
+        :required="computedProperty.required"
+        :placeholder="$t('COMPONENTS.ORGANISMS.VC_DYNAMIC_PROPERTY.VALUE_TYPE.COLOR.NAME')"
+        :disabled="disabled"
+        :multilanguage="multilanguage"
+        :current-language="currentLanguage"
+        option-label="value"
+        option-value="value"
+      ></VcMultivalue>
+    </template>
+    <template
       v-else-if="computedProperty.valueType === 'Color' && computedProperty.multivalue && computedProperty.dictionary"
     >
       <VcMultivalue
@@ -247,7 +267,7 @@
         <template #selected-item="scope">
           <div class="tw-flex tw-items-center tw-gap-2">
             <div
-              class="tw-w-5 tw-h-5 tw-rounded"
+              class="tw-w-5 tw-h-5 tw-rounded tw-border tw-border-solid tw-border-[color:var(--neutrals-300)]"
               :style="{ backgroundColor: scope.item.colorCode }"
             ></div>
             <span>{{ scope.item.value }}</span>
@@ -256,7 +276,7 @@
         <template #option="scope">
           <div class="tw-flex tw-items-center tw-gap-2">
             <div
-              class="tw-w-5 tw-h-5 tw-rounded"
+              class="tw-w-5 tw-h-5 tw-rounded tw-border tw-border-solid tw-border-[color:var(--neutrals-300)]"
               :style="{ backgroundColor: scope.item.colorCode }"
             ></div>
             <span>{{ scope.item.value }}</span>
@@ -267,26 +287,15 @@
     <template
       v-else-if="computedProperty.valueType === 'Color' && !computedProperty.multivalue && !computedProperty.dictionary"
     >
-      <VcRow class="tw-flex tw-items-end tw-gap-4">
-        <VcCol :size="2"
-          ><VcInput
-            v-bind="$attrs"
-            v-model="value"
-            :label="computedProperty.displayName"
-            :error="!!errors.length"
-            :error-message="errorMessage"
-            :placeholder="$t('COMPONENTS.ORGANISMS.VC_DYNAMIC_PROPERTY.VALUE_TYPE.COLOR.NAME')"
-          ></VcInput
-        ></VcCol>
-        <VcCol :size="1"
-          ><VcInput
-            v-bind="$attrs"
-            v-model="singleColorCode"
-            type="color"
-            :placeholder="$t('COMPONENTS.ORGANISMS.VC_DYNAMIC_PROPERTY.VALUE_TYPE.COLOR.PLACEHOLDER')"
-          ></VcInput
-        ></VcCol>
-      </VcRow>
+      <VcInput
+        v-bind="$attrs"
+        v-model="value"
+        type="color"
+        :label="computedProperty.displayName"
+        :error="!!errors.length"
+        :error-message="errorMessage"
+        :placeholder="$t('COMPONENTS.ORGANISMS.VC_DYNAMIC_PROPERTY.VALUE_TYPE.COLOR.NAME')"
+      ></VcInput>
     </template>
     <template
       v-if="computedProperty.valueType === 'Color' && computedProperty.dictionary && !computedProperty.multivalue"
@@ -313,7 +322,7 @@
         <template #selected-item="scope">
           <div class="tw-flex tw-items-center tw-gap-2">
             <div
-              class="tw-w-5 tw-h-5 tw-rounded"
+              class="tw-w-5 tw-h-5 tw-rounded tw-border tw-border-solid tw-border-[color:var(--neutrals-300)]"
               :style="{ backgroundColor: scope.opt.colorCode }"
             ></div>
             <span>{{ scope.opt.value }}</span>
@@ -322,7 +331,7 @@
         <template #option="scope">
           <div class="tw-flex tw-items-center tw-gap-2">
             <div
-              class="tw-w-5 tw-h-5 tw-rounded"
+              class="tw-w-5 tw-h-5 tw-rounded tw-border tw-border-solid tw-border-[color:var(--neutrals-300)]"
               :style="{ backgroundColor: scope.opt.colorCode }"
             ></div>
             <span>{{ scope.opt.value }}</span>
@@ -340,6 +349,7 @@ import { Field } from "vee-validate";
 import { useI18n } from "vue-i18n";
 import { VcSelect, VcInput, VcTextarea, VcSwitch } from "./../../";
 import * as _ from "lodash-es";
+import { convertColorNameToHex } from "../../../../shared/utilities";
 
 type IValidationRules = {
   required?: boolean;
@@ -480,30 +490,55 @@ const computedProperty = computed(() => {
 
 const value = computed({
   get() {
+    // For multivalue, extract array from PropertyValue.value if needed
+    if (computedProperty.value.multivalue) {
+      // If internalModel.value is already an array, return it
+      if (Array.isArray(internalModel.value)) {
+        return internalModel.value;
+      }
+      // If it has a value property that's an array, extract it
+      if (internalModel.value?.value && Array.isArray(internalModel.value.value)) {
+        return internalModel.value.value;
+      }
+      // Return empty array as fallback
+      return [];
+    }
     return internalModel.value;
   },
   set(newValue) {
-    console.log(newValue);
+
+    // For multivalue (array), pass it directly
+    if (computedProperty.value.multivalue && Array.isArray(newValue)) {
+      emit("update:model-value", {
+        value: newValue,
+        dictionary: items.value,
+        locale: props.currentLanguage,
+      });
+      return;
+    }
+
+    // For color type without dictionary (single value), extract colorCode
+    let colorCode: string | undefined;
+    if (computedProperty.value.valueType === "Color" && !computedProperty.value.dictionary) {
+      if (typeof newValue === "string") {
+        // If it's already a hex color, use it directly
+        if (newValue.startsWith("#")) {
+          colorCode = newValue;
+        } else {
+          // Try to convert color name to hex
+          const hexColor = convertColorNameToHex(newValue);
+          if (hexColor) {
+            colorCode = hexColor;
+          }
+        }
+      }
+    }
+
     emit("update:model-value", {
       value: newValue,
       dictionary: items.value,
       locale: props.currentLanguage,
-    });
-  },
-});
-
-// Removed colorCode computed property as it interferes with multivalue color selection
-
-const singleColorCode = computed({
-  get() {
-    return internalProperty.value.values?.[0]?.colorCode;
-  },
-  set(newValue) {
-    emit("update:model-value", {
-      value: value.value,
-      colorCode: newValue,
-      dictionary: items.value,
-      locale: props.currentLanguage,
+      colorCode,
     });
   },
 });

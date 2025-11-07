@@ -1,6 +1,6 @@
 {
   "name": "@vc-shell/root",
-  "version": "1.1.91-alpha.5",
+  "version": "1.1.98-rc.5",
   "private": true,
   "repository": {
     "type": "git",
@@ -8,8 +8,6 @@
   },
   "scripts": {
     "postinstall": "husky install",
-    "publish": "yarn workspaces foreach -v --worktree --from '{@vc-shell/config-generator,@vc-shell/api-client-generator,@vc-shell/framework,@vc-shell/create-vc-app,@vc-shell/release-config,@vc-shell/ts-config}' npm publish",
-    "publish:tag": "yarn workspaces foreach -v --worktree --from '{@vc-shell/config-generator,@vc-shell/api-client-generator,@vc-shell/framework,@vc-shell/create-vc-app,@vc-shell/release-config,@vc-shell/ts-config}' npm publish --tag=$npm_config_tag",
     "lint": "eslint --fix --cache 'framework/**/*.{ts,vue}' 'cli/**/*.{ts,vue}' 'configs/**/*.{ts,vue}'",
     "lint-staged": "lint-staged",
     "build": "yarn workspaces foreach -v --worktree --from '{@vc-shell/config-generator,@vc-shell/api-client-generator,@vc-shell/create-vc-app,@vc-shell/framework,@vc-shell/release-config}' run build",
@@ -28,7 +26,8 @@
     "storybook-compress": "vite-node --mode production scripts/compress-storybook.ts --",
     "check-locales": "npx tsx framework/scripts/check-locales.mts",
     "prepare": "husky install",
-    "pre-commit": "yarn check-locales"
+    "pre-commit": "yarn check-locales",
+    "generate-changelogs": "tsx scripts/generate-initial-changelogs.ts"
   },
   "workspaces": [
     "apps/*",

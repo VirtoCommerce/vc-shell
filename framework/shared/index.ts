@@ -21,3 +21,4 @@ export * from "./modules";
 export * from "./components";
 export * from "./pages";
 export * from "./composables";
+export * from "./utilities";

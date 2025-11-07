@@ -238,12 +238,24 @@ export const useDynamicProperties = <
   }
 
   function setColorPropertyValue(property: TProperty, value: unknown, colorCode?: string): void {
-    property.values = [
-      createPropertyValue({
-        value,
-        colorCode,
-      } as Partial<TPropertyValue>),
-    ];
+    // Handle multivalue array
+    if (Array.isArray(value)) {
+      property.values = (value as TPropertyValue[]).map((item) =>
+        createPropertyValue({
+          ...item,
+          value: item.value,
+          colorCode: item.colorCode,
+        } as Partial<TPropertyValue>),
+      );
+    } else {
+      // Handle single value
+      property.values = [
+        createPropertyValue({
+          value,
+          colorCode,
+        } as Partial<TPropertyValue>),
+      ];
+    }
   }
 
   function setDictionaryPropertyValue(

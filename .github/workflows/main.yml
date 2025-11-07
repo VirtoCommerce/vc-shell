@@ -1,4 +1,4 @@
-# v2.0.0
+# v2.2.0
 name: Virto-shell CI
 
 on:
@@ -10,11 +10,26 @@ on:
       - 'docs/**'
       - 'README.md'
       - 'LICENSE'
-    branches: [ main, feat/vm-1646-custom-auth ]
+    branches: [ main ]
+    # Only on commits with package changes or release commits
+    paths:
+      - 'framework/**'
+      - 'cli/**'
+      - 'configs/**'
+      - '**/package.json'
+      - '**/CHANGELOG.md'
+  release:
+    types: [published]
 
 jobs:
   CI:
     runs-on: ubuntu-latest
+    # Only runs on release commits, releases, or manual dispatch
+    if: |
+      github.event_name == 'release' ||
+      github.event_name == 'workflow_dispatch' ||
+      contains(github.event.head_commit.message, 'release:') ||
+      contains(github.event.head_commit.message, 'chore: release')
     env:
       GITHUB_TOKEN: ${{ secrets.REPO_TOKEN }}
       VERSION_SUFFIX: ''
@@ -31,6 +46,7 @@ jobs:
           node-version: '20.x'
           registry-url: 'https://registry.npmjs.org'
           cache: 'yarn'
+          cache-dependency-path: 'yarn.lock'
           always-auth: true
 
     - name: Set GITHUB_USER to lowercase
@@ -39,7 +55,7 @@ jobs:
 
     - name: Install dependencies
       run: |
-        yarn
+        yarn install
       env:
         YARN_ENABLE_IMMUTABLE_INSTALLS: false
 
@@ -66,164 +82,96 @@ jobs:
       run: |
         yarn build
 
-    - name: Add auth token
+    - name: Configure npm
       if: success()
       run: |
-        yarn config set --json npmRegistries '{ "//registry.npmjs.org": { "npmAuthToken": "'"${NPM_TOKEN}"'" } }'
+        echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
       env:
         NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+    - name: Clean git state
+      if: success()
+      run: |
+        # Reset any changes to yarn.lock that might have occurred during install
+        git checkout -- yarn.lock || true
+        # Ensure clean working directory for Lerna
+        git status --porcelain
 
     - name: Determine npm tag
       if: success()
       run: |
-        # Check for npmTag field in package.json files (set by Lerna release process)
-        for pkg in framework configs/ts-config configs/release-config cli/create-vc-app configs/vite-config cli/api-client; do
-          if [ -f "${pkg}/package.json" ]; then
-            # Try to read npmTag or publishConfig.tag from package.json
-            NPM_TAG_FROM_PKG=$(node -p "try { const pkg = require('./${pkg}/package.json'); (pkg.npmTag || (pkg.publishConfig && pkg.publishConfig.tag)) || ''; } catch(e) { '' }")
-            if [ ! -z "$NPM_TAG_FROM_PKG" ] && [ "$NPM_TAG_FROM_PKG" != "undefined" ] && [ "$NPM_TAG_FROM_PKG" != "null" ]; then
-              echo "Found npmTag in ${pkg}/package.json: $NPM_TAG_FROM_PKG"
-              echo "NPM_TAG=$NPM_TAG_FROM_PKG" >> $GITHUB_ENV
-              break
-            fi
+        echo "Determining npm tag for publishing..."
 
-            # Fallback to version-based detection
-            CURRENT_VERSION=$(node -p "require('./${pkg}/package.json').version")
-            if [[ "$CURRENT_VERSION" == *"-alpha"* ]]; then
-              echo "Detected alpha version, using alpha tag"
-              echo "NPM_TAG=alpha" >> $GITHUB_ENV
-              break
-            elif [[ "$CURRENT_VERSION" == *"-beta"* ]]; then
-              echo "Detected beta version, using beta tag"
-              echo "NPM_TAG=beta" >> $GITHUB_ENV
-              break
-            elif [[ "$CURRENT_VERSION" == *"-rc"* ]]; then
-              echo "Detected rc version, using rc tag"
-              echo "NPM_TAG=rc" >> $GITHUB_ENV
-              break
-            elif [[ "$CURRENT_VERSION" == *"-next"* ]]; then
-              echo "Detected next version, using next tag"
-              echo "NPM_TAG=next" >> $GITHUB_ENV
-              break
-            fi
+        # Get current version from framework package
+        CURRENT_VERSION=$(node -p "require('./framework/package.json').version")
+        echo "Current version: $CURRENT_VERSION"
+
+        # Strategy 1: Get npm tag from git tag (most reliable)
+        GIT_TAG=$(git describe --tags --exact-match HEAD 2>/dev/null || echo "")
+        if [ ! -z "$GIT_TAG" ]; then
+          echo "Found git tag: $GIT_TAG"
+          # Extract npm tag from git tag (e.g., v1.1.98-rc.3 -> rc)
+          if [[ "$GIT_TAG" == *"-rc"* ]]; then
+            NPM_TAG="rc"
+          elif [[ "$GIT_TAG" == *"-alpha"* ]]; then
+            NPM_TAG="alpha"
+          elif [[ "$GIT_TAG" == *"-beta"* ]]; then
+            NPM_TAG="beta"
+          elif [[ "$GIT_TAG" == *"-next"* ]]; then
+            NPM_TAG="next"
+          else
+            NPM_TAG="latest"
           fi
-        done
-        echo "Publishing with npm tag: $NPM_TAG"
-
-    - name: Publish virto-shell npm
-      if: success()
-      # if: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/feat/vm-1646-custom-auth' }}
-      run: |
-        echo "Using npm tag: $NPM_TAG"
-        if [ "$NPM_TAG" = "latest" ]; then
-          yarn publish
+          echo "Using npm tag from git tag: $NPM_TAG"
         else
-          # Changed the original expression to the NPM_TAG variable without $npm_config_tag
-          yarn workspaces foreach -v --worktree --from '{@vc-shell/config-generator,@vc-shell/api-client-generator,@vc-shell/framework,@vc-shell/create-vc-app,@vc-shell/release-config,@vc-shell/ts-config}' npm publish --tag $NPM_TAG
+          # Strategy 2: Analyze version pattern (fallback)
+          if [[ "$CURRENT_VERSION" == *"-rc"* ]]; then
+            NPM_TAG="rc"
+          elif [[ "$CURRENT_VERSION" == *"-alpha"* ]]; then
+            NPM_TAG="alpha"
+          elif [[ "$CURRENT_VERSION" == *"-beta"* ]]; then
+            NPM_TAG="beta"
+          elif [[ "$CURRENT_VERSION" == *"-next"* ]]; then
+            NPM_TAG="next"
+          else
+            NPM_TAG="latest"
+          fi
+          echo "Using version-based tag (no git tag found): $NPM_TAG"
         fi
 
-    - name: Update npm dist tags
+        # Strategy 3: Check commit message for explicit tag (override)
+        COMMIT_MESSAGE=$(git log -1 --pretty=%B)
+        if [[ "$COMMIT_MESSAGE" == *"npmTag:"* ]]; then
+          COMMIT_TAG=$(echo "$COMMIT_MESSAGE" | grep -o "npmTag:[a-zA-Z0-9-]*" | cut -d: -f2)
+          if [ ! -z "$COMMIT_TAG" ]; then
+            NPM_TAG="$COMMIT_TAG"
+            echo "Using tag from commit message (override): $NPM_TAG"
+          fi
+        fi
+
+        echo "NPM_TAG=$NPM_TAG" >> $GITHUB_ENV
+        echo "Final npm tag: $NPM_TAG"
+
+    - name: Publish with Lerna
       if: success()
       run: |
-        declare -A PACKAGE_PATHS=(
-          ["@vc-shell/framework"]="framework"
-          ["@vc-shell/ts-config"]="configs/ts-config"
-          ["@vc-shell/release-config"]="configs/release-config"
-          ["@vc-shell/create-vc-app"]="cli/create-vc-app"
-          ["@vc-shell/config-generator"]="configs/vite-config"
-          ["@vc-shell/api-client-generator"]="cli/api-client"
-        )
-
-        PACKAGES=(
-          "@vc-shell/framework"
-          "@vc-shell/ts-config"
-          "@vc-shell/release-config"
-          "@vc-shell/create-vc-app"
-          "@vc-shell/config-generator"
-          "@vc-shell/api-client-generator"
-        )
-
-        for PACKAGE in "${PACKAGES[@]}"; do
-          echo "Processing $PACKAGE"
-
-          PKG_DIR="${PACKAGE_PATHS[$PACKAGE]}"
-          if [ -z "$PKG_DIR" ]; then
-            echo "Error: Path not found for $PACKAGE"
-            continue
-          fi
-
-          if [ ! -f "${PKG_DIR}/package.json" ]; then
-            echo "Error: package.json not found for $PACKAGE in ${PKG_DIR}"
-            continue
-          fi
-
-          CURRENT_VERSION=$(node -p "require('./${PKG_DIR}/package.json').version")
-          if [ $? -ne 0 ]; then
-            echo "Error: Failed to get current version for $PACKAGE"
-            continue
-          fi
-
-          # Check if the version already exists in NPM
-          VERSION_EXISTS=$(npm view "$PACKAGE@$CURRENT_VERSION" version 2>/dev/null || echo "")
-          if [ -z "$VERSION_EXISTS" ]; then
-            echo "Version $CURRENT_VERSION of $PACKAGE not found in npm registry. Skipping dist-tag update."
-            continue
-          fi
-
-          # Try to get npmTag from package.json
-          PKG_NPM_TAG=$(node -p "try { const pkg = require('./${PKG_DIR}/package.json'); (pkg.npmTag || (pkg.publishConfig && pkg.publishConfig.tag)) || ''; } catch(e) { '' }")
-
-          if [ ! -z "$PKG_NPM_TAG" ] && [ "$PKG_NPM_TAG" != "undefined" ] && [ "$PKG_NPM_TAG" != "null" ]; then
-            echo "Using npmTag from package.json: $PKG_NPM_TAG for $PACKAGE@${CURRENT_VERSION}"
-            npm dist-tag add "$PACKAGE@${CURRENT_VERSION}" "$PKG_NPM_TAG" --force || echo "Failed to add tag $PKG_NPM_TAG to $PACKAGE@${CURRENT_VERSION}"
-
-            # Only restore latest tag if we're not setting it as latest already
-            if [ "$PKG_NPM_TAG" != "latest" ]; then
-              # Get the latest stable version
-              STABLE_VERSION=$(npm view "$PACKAGE" versions --json | jq -r 'map(select(test("^\\d+\\.\\d+\\.\\d+$"))) | .[-1]')
-              if [ ! -z "$STABLE_VERSION" ] && [ "$STABLE_VERSION" != "$CURRENT_VERSION" ]; then
-                echo "Restoring latest tag to stable version $PACKAGE@${STABLE_VERSION}"
-                npm dist-tag add "$PACKAGE@${STABLE_VERSION}" latest --force || echo "Failed to add tag latest to $PACKAGE@${STABLE_VERSION}"
-              fi
-            fi
-          elif [[ "$CURRENT_VERSION" == *"-alpha"* ]]; then
-            echo "Setting alpha tag for $PACKAGE@${CURRENT_VERSION}"
-            npm dist-tag add "$PACKAGE@${CURRENT_VERSION}" alpha --force || echo "Failed to add tag alpha to $PACKAGE@${CURRENT_VERSION}"
-            # Get the latest stable version
-            STABLE_VERSION=$(npm view "$PACKAGE" versions --json | jq -r 'map(select(test("^\\d+\\.\\d+\\.\\d+$"))) | .[-1]')
-            if [ ! -z "$STABLE_VERSION" ]; then
-              echo "Restoring latest tag to stable version $PACKAGE@${STABLE_VERSION}"
-              npm dist-tag add "$PACKAGE@${STABLE_VERSION}" latest --force || echo "Failed to add tag latest to $PACKAGE@${STABLE_VERSION}"
-            fi
-          elif [[ "$CURRENT_VERSION" == *"-beta"* ]]; then
-            echo "Setting beta tag for $PACKAGE@${CURRENT_VERSION}"
-            npm dist-tag add "$PACKAGE@${CURRENT_VERSION}" beta --force || echo "Failed to add tag beta to $PACKAGE@${CURRENT_VERSION}"
-            # Get the latest stable version
-            STABLE_VERSION=$(npm view "$PACKAGE" versions --json | jq -r 'map(select(test("^\\d+\\.\\d+\\.\\d+$"))) | .[-1]')
-            if [ ! -z "$STABLE_VERSION" ]; then
-              echo "Restoring latest tag to stable version $PACKAGE@${STABLE_VERSION}"
-              npm dist-tag add "$PACKAGE@${STABLE_VERSION}" latest --force || echo "Failed to add tag latest to $PACKAGE@${STABLE_VERSION}"
-            fi
-          elif [[ "$CURRENT_VERSION" == *"-next"* ]] || [ "$NPM_TAG" = "next" ]; then
-            echo "Setting next tag for $PACKAGE@${CURRENT_VERSION}"
-            npm dist-tag add "$PACKAGE@${CURRENT_VERSION}" next --force || echo "Failed to add tag next to $PACKAGE@${CURRENT_VERSION}"
-            # Get the latest stable version
-            STABLE_VERSION=$(npm view "$PACKAGE" versions --json | jq -r 'map(select(test("^\\d+\\.\\d+\\.\\d+$"))) | .[-1]')
-            if [ ! -z "$STABLE_VERSION" ] && [ "$STABLE_VERSION" != "$CURRENT_VERSION" ]; then
-              echo "Restoring latest tag to stable version $PACKAGE@${STABLE_VERSION}"
-              npm dist-tag add "$PACKAGE@${STABLE_VERSION}" latest --force || echo "Failed to add tag latest to $PACKAGE@${STABLE_VERSION}"
-            fi
-          else
-            echo "Setting latest tag for $PACKAGE@${CURRENT_VERSION}"
-            npm dist-tag add "$PACKAGE@${CURRENT_VERSION}" latest --force || echo "Failed to add tag latest to $PACKAGE@${CURRENT_VERSION}"
-          fi
-        done
+        echo "Publishing packages with Lerna using tag: $NPM_TAG"
+        # Lerna automatically:
+        # - Detects changed packages from package.json
+        # - Uses the specified npm tag for all packages
+        # - Handles dependencies between packages
+        # - Excludes private packages and root package
+        npx lerna publish from-package --yes --no-git-reset --no-private --npm-tag="$NPM_TAG"
       env:
         NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
     - name: Verify npm dist tags
       if: success()
       run: |
+        echo "Verifying npm dist tags..."
+        echo "Published packages with tag: $NPM_TAG"
+
+        # Show current tags for verification
         PACKAGES=(
           "@vc-shell/framework"
           "@vc-shell/ts-config"
@@ -235,11 +183,12 @@ jobs:
 
         for PACKAGE in "${PACKAGES[@]}"; do
           echo "Tags for $PACKAGE:"
-          npm dist-tag ls "$PACKAGE"
-          echo "-------------------"
+          npm dist-tag ls "$PACKAGE" 2>/dev/null || echo "Package not found in npm"
+          echo "---"
         done
       env:
         NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
 
 
 

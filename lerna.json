@@ -1,6 +1,6 @@
 {
   "$schema": "node_modules/lerna/schemas/lerna-schema.json",
-  "version": "1.1.91-alpha.5",
+  "version": "1.1.98-rc.5",
   "npmClient": "yarn",
   "packages": ["framework", "cli/*", "configs/*"],
   "ignoreChanges": [
@@ -79,10 +79,29 @@
         "userUrlFormat": "{{host}}/{{user}}",
         "issuePrefixes": ["#"]
       },
-      "exact": true,
+      "exact": false,
       "message": "release: %s",
       "allowBranch": ["main", "feat/*"],
-      "yes": false
+      "yes": false,
+      "changelog": {
+        "preset": "angular",
+        "releaseCount": 0
+      }
+    },
+    "publish": {
+      "registry": "https://registry.npmjs.org",
+      "access": "public",
+      "ignoreChanges": [
+        "**/*.md",
+        "**/*.spec.ts",
+        "**/*.spec.js",
+        "**/test/**",
+        "**/tests/**",
+        "**/__tests__/**",
+        "**/stories/**",
+        "**/*.story.ts",
+        "**/*.stories.ts"
+      ]
     }
   }
 }

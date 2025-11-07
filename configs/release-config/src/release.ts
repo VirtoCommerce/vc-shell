@@ -141,39 +141,14 @@ export const release = async ({
     }
   }
 
-  // Ask about npm tag if not determined
-  if (!args.tag) {
-    const { npmTag } = await prompts({
-      type: "select",
-      name: "npmTag",
-      message: "Select npm distribution tag",
-      choices: [
-        { title: "latest (default)", value: "latest" },
-        { title: "next", value: "next" },
-        { title: "beta", value: "beta" },
-        { title: "alpha", value: "alpha" },
-        { title: "custom", value: "custom" },
-      ],
-    });
-
-    if (npmTag === "custom") {
-      const res = await prompts({
-        type: "text",
-        name: "customTag",
-        message: "Input custom npm tag",
-        initial: "latest",
-      });
-      args.tag = res.customTag;
-    } else if (npmTag !== "latest") {
-      args.tag = npmTag;
-    }
-  }
+  // Note: npmTag is now automatically determined from git tag in CI
+  // No need to ask user for npm tag selection
 
   // Final confirmation
   const { yes } = await prompts({
     type: "confirm",
     name: "yes",
-    message: `Ready to release${args.tag && args.tag !== "latest" ? ` with npm tag ${chalk.blue(args.tag)}` : ""}. Continue?`,
+    message: "Ready to release. Continue?",
   });
 
   if (!yes) {
@@ -208,14 +183,21 @@ export const release = async ({
     await customHooks(pkg.version); // Pass new version for custom logic
   }
 
+  // Update yarn.lock to reflect new package versions
+  console.log(chalk.cyan("\nUpdating yarn.lock with new package versions...\n"));
+  const yarnResult = sync("yarn", ["install"], { stdio: "inherit" });
+  if (yarnResult.status !== 0) {
+    console.error(chalk.red("\n❌ Failed to update yarn.lock\n"));
+    process.exit(yarnResult.status || 1);
+  }
+
   // Enhance changelogs for packages without changes
   await enhanceChangelogs(packages);
 
   // Generate root CHANGELOG with package grouping
   await generateRootChangelog(packages);
 
-  // Update npmTag in package.json if needed
-  await updateNpmTags(packages);
+  // Note: npmTag is now determined from git tag in CI, no need to update package.json
 
   // Commit changes only if NOT dry-run
   if (!isDryRun) {
@@ -242,7 +224,8 @@ export const release = async ({
     console.log(chalk.cyan("Changes made:"));
     console.log(chalk.cyan("  - Updated package versions"));
     console.log(chalk.cyan("  - Generated/updated CHANGELOG.md files"));
-    console.log(chalk.cyan("  - Updated npmTag fields in package.json\n"));
+    console.log(chalk.cyan("  - npmTag will be determined from git tag in CI"));
+    console.log(chalk.cyan("  - Updated yarn.lock with new package versions\n"));
     console.log(chalk.yellow("No git operations performed. Review changes with:"));
     console.log(chalk.cyan("  git diff\n"));
     console.log(chalk.yellow("To revert all changes:"));
@@ -250,10 +233,8 @@ export const release = async ({
   } else {
     console.log(chalk.green("\n✅ Release completed successfully!\n"));
 
-    if (args.tag && args.tag !== "latest") {
-      console.log(chalk.cyan(`\nℹ️  Package files updated with npmTag: ${chalk.blue(args.tag)}`));
-      console.log(chalk.cyan(`   GitHub Actions will automatically publish with this tag\n`));
-    }
+    console.log(chalk.cyan(`\nℹ️  npmTag will be automatically determined from git tag in CI`));
+    console.log(chalk.cyan(`   GitHub Actions will publish with the correct tag based on the git tag\n`));
   }
 };
 
@@ -473,24 +454,3 @@ async function generateRootChangelog(packages: string[]) {
   console.log(chalk.green("  ✓ Generated root CHANGELOG.md with package grouping"));
 }
 
-/**
- * Updates npmTag field in package.json files
- */
-async function updateNpmTags(packages: string[]) {
-  if (!args.tag) return;
-
-  for (const pkgPath of packages) {
-    if (pkgPath === ".") continue;
-
-    const { pkg, pkgPath: jsonPath } = getPackageInfo(pkgPath);
-    const pkgData: Record<string, unknown> = { ...pkg };
-
-    if (args.tag !== "latest") {
-      pkgData.npmTag = args.tag;
-      await writePackageJson(jsonPath, pkgData);
-    } else if (pkgData.npmTag) {
-      delete pkgData.npmTag;
-      await writePackageJson(jsonPath, pkgData);
-    }
-  }
-}

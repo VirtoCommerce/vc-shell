@@ -135,6 +135,30 @@
               {{ suffix }}
             </div>
 
+            <!-- Color picker square for color type -->
+            <div
+              class="vc-input__color-container"
+              v-if="type === 'color'"
+            >
+              <div
+                class="vc-input__color-square"
+                :style="{ backgroundColor: colorValue || '#ffffff' }"
+                tabindex="0"
+                @click="openColorPicker"
+                @keydown.enter="openColorPicker"
+                @keydown.space="openColorPicker"
+              >
+                <!-- Hidden native color input -->
+                <input
+                  ref="colorPickerRef"
+                  type="color"
+                  :value="colorValue"
+                  class="vc-input__color-picker-hidden"
+                  @change="handleColorPickerChange"
+                />
+              </div>
+            </div>
+
             <div
               v-if="clearable && mutatedModel && !disabled && type !== 'password'"
               class="vc-input__clear"
@@ -179,25 +203,13 @@
           </div>
 
           <div
-            v-if="$slots['append-inner'] || type === 'color'"
+            v-if="$slots['append-inner']"
             class="vc-input__append-inner"
           >
             <slot
               name="append-inner"
               :focus="focus"
             ></slot>
-
-            <div
-              v-if="type === 'color'"
-              class="vc-input__color-picker-container"
-            >
-              <input
-                v-model="handleValue"
-                type="color"
-                class="vc-input__color-picker"
-                tabindex="-1"
-              />
-            </div>
           </div>
 
           <div
@@ -251,10 +263,16 @@
 </template>
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
-import { computed, ref, unref, watch } from "vue";
+import { computed, ref, unref, watch, nextTick } from "vue";
 import { VcLabel, VcIcon, VcHint } from "./../../";
 import VueDatePicker, { VueDatePickerProps, ModelValue } from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
+import {
+  convertColorNameToHex,
+  convertHexToColorName,
+  isValidHexColor,
+  normalizeHexColor,
+} from "../../../../shared/utilities";
 
 /**
  * Base props for VcInput
@@ -480,6 +498,8 @@ const inputRef = ref();
 const locale = window.navigator.language;
 const internalType = ref(unref(props.type));
 const isFocused = ref(false);
+const colorPickerRef = ref();
+const colorValue = ref("");
 
 const internalTypeComputed = computed({
   get() {
@@ -516,6 +536,8 @@ const handleValue = computed({
       temp.value = value;
     }
 
+    // Color type synchronization is handled by watcher
+
     onInput(temp.value);
   },
 });
@@ -534,6 +556,36 @@ watch(
 
     if (temp.value !== mutatedModel.value) {
       temp.value = mutatedModel.value;
+    }
+
+    // Color type initialization is handled by watcher
+  },
+  { immediate: true },
+);
+
+// Watch colorValue changes to sync with text input
+watch(
+  colorValue,
+  (newColorValue) => {
+    if (props.type === "color" && newColorValue) {
+      // Update the hidden color picker input
+      if (colorPickerRef.value) {
+        colorPickerRef.value.value = newColorValue;
+      }
+    }
+  },
+  { immediate: true },
+);
+
+// Watch text input changes to sync with color picker
+watch(
+  () => temp.value,
+  (newValue) => {
+    if (props.type === "color" && newValue) {
+      // Use nextTick to avoid infinite loops
+      nextTick(() => {
+        handleColorTextChange(newValue as string);
+      });
     }
   },
   { immediate: true },
@@ -631,6 +683,40 @@ function focus() {
 function handleFocus() {
   isFocused.value = true;
   emit("focus");
+}
+
+// Color handling functions
+function handleColorTextChange(value: string) {
+  if (!value || typeof value !== "string") {
+    return;
+  }
+
+  const trimmedValue = value.trim();
+
+  // If it's already a valid hex, use it directly
+  if (isValidHexColor(trimmedValue)) {
+    const normalizedHex = normalizeHexColor(trimmedValue);
+    colorValue.value = normalizedHex;
+    return;
+  }
+
+  // Try to convert color name to hex
+  const hexColor = convertColorNameToHex(trimmedValue);
+  if (hexColor) {
+    colorValue.value = hexColor;
+  }
+}
+
+function handleColorPickerChange(event: Event) {
+  const target = event.target as HTMLInputElement;
+  if (target && target.value) {
+    const hexColor = normalizeHexColor(target.value);
+    colorValue.value = hexColor;
+  }
+}
+
+function openColorPicker() {
+  colorPickerRef.value?.click();
 }
 </script>
 
@@ -742,20 +828,23 @@ function handleFocus() {
     @apply tw-animate-spin tw-text-[color:var(--input-clear-color)];
   }
 
-  &__color-picker-container {
-    @apply tw-flex tw-items-center;
+  &__color-container {
+    @apply tw-relative tw-flex tw-items-center;
+  }
+  &__color-square {
+    @apply tw-w-5 tw-h-5 tw-rounded tw-border tw-border-solid tw-border-gray-300 tw-cursor-pointer tw-flex tw-items-center tw-justify-center tw-ml-2;
+
+    &:hover {
+      @apply tw-border-gray-400;
+    }
+
+    &:focus {
+      @apply tw-outline-2 tw-outline tw-outline-blue-500 tw-outline-offset-1;
+    }
   }
 
-  &__color-picker {
-    @apply tw-w-5 tw-h-5 tw-p-0 tw-border-none tw-rounded tw-bg-transparent;
-
-    &::-webkit-color-swatch-wrapper {
-      @apply tw-p-0;
-    }
-
-    &::-webkit-color-swatch {
-      @apply tw-border tw-border-solid tw-border-gray-300 tw-rounded;
-    }
+  &__color-picker-hidden {
+    @apply tw-opacity-0 tw-absolute tw-pointer-events-none tw-w-0 tw-h-0;
   }
 
   &__input {
@@ -872,7 +961,7 @@ function handleFocus() {
 }
 
 .dp__input {
-  @apply tw-font-jakarta #{!important};
+  @apply tw-font-jakarta !important;
 
   --dp-input-padding: 6px 12px 6px 12px;
 
@@ -897,7 +986,7 @@ input.dp__input:disabled {
 }
 
 .dp__menu_inner {
-  @apply tw-font-jakarta tw-text-[14px] #{!important};
+  @apply tw-font-jakarta tw-text-[14px] !important;
 }
 
 .dp--tp-wrap {

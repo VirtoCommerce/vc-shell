@@ -1,3 +1,10 @@
+## [1.1.99-alpha.2](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.99-alpha.1...v1.1.99-alpha.2) (2025-11-07)
+
+### Create VC App (@vc-shell/create-vc-app)
+
+### Bug Fixes
+- update template path in getTemplateRoot function for correct template resolution ([9072ae4](https://github.com/VirtoCommerce/vc-shell/commit/9072ae4d74abbaa2fceec382a4b5042fa8747ae5))
+
 ## [1.1.99-alpha.1](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.99-alpha.0...v1.1.99-alpha.1) (2025-11-07)
 
 ### Create VC App (@vc-shell/create-vc-app)

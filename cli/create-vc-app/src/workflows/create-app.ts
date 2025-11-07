@@ -205,7 +205,7 @@ function buildReplacementMap(config: CreateAppConfig): Map<string, string> {
 }
 
 function renderTemplate(options: RenderTemplateOptions): number {
-  const templateRoot = path.resolve(fileURLToPath(import.meta.url), "..", "..", "templates");
+  const templateRoot = path.resolve(fileURLToPath(import.meta.url), "..", "templates");
   const templateDirectory = path.join(templateRoot, options.templateName);
   let filesCreated = 0;
 

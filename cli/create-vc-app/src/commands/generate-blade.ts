@@ -1266,7 +1266,7 @@ ${unregisterCall}
 }
 
 function getTemplateRoot(): string {
-  return path.resolve(fileURLToPath(import.meta.url), "..", "..", "templates");
+  return path.resolve(fileURLToPath(import.meta.url), "..", "templates");
 }
 
 async function generateBladeFile(

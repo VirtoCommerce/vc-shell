@@ -1,3 +1,7 @@
+## [1.1.99-alpha.0](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.98-rc.5...v1.1.99-alpha.0) (2025-11-07)
+
+**Note:** Version bump only for package @vc-shell/release-config
+
 ## [1.1.98-rc.5](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.98-rc.4...v1.1.98-rc.5) (2025-10-24)
 
 **Note:** Version bump only for package @vc-shell/release-config
@@ -93,6 +97,8 @@
 **Note:** Version bump only for package
 
 ## [1.1.89](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.88...v1.1.89) (2025-10-08)
+
+**Note:** Version bump only for package
 
 ## [1.1.88](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.87...v1.1.88) (2025-10-07)
 

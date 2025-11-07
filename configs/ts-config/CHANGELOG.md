@@ -1,3 +1,7 @@
+## [1.1.99-alpha.1](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.99-alpha.0...v1.1.99-alpha.1) (2025-11-07)
+
+**Note:** Version bump only for package @vc-shell/ts-config
+
 ## [1.1.99-alpha.0](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.98-rc.5...v1.1.99-alpha.0) (2025-11-07)
 
 **Note:** Version bump only for package @vc-shell/ts-config

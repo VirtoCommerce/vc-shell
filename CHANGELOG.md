@@ -1,3 +1,10 @@
+## [1.1.99-alpha.1](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.99-alpha.0...v1.1.99-alpha.1) (2025-11-07)
+
+### Create VC App (@vc-shell/create-vc-app)
+
+### Bug Fixes
+- correct template path in create-app workflow for accurate template rendering ([3974046](https://github.com/VirtoCommerce/vc-shell/commit/3974046b5a753e00e199c93d44da020c83942af3))
+
 ## [1.1.99-alpha.0](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.98-rc.5...v1.1.99-alpha.0) (2025-11-07)
 
 **Note:** Version bump only for package

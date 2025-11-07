@@ -7,6 +7,7 @@ const Configuration: UserConfig = {
   formatter: "@commitlint/format",
   rules: {
     "subject-case": [2, "never", ["upper-case", "pascal-case", "start-case"]],
+    "body-max-line-length": [RuleConfigSeverity.Error, "always", 200] as const,
     "footer-max-line-length": [RuleConfigSeverity.Error, "always", 200] as const,
     "type-enum": [
       2,

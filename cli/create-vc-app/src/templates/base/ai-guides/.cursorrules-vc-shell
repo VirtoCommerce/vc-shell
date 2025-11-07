@@ -1,0 +1,529 @@
+# VC-Shell Framework AI Guidance
+
+You are an expert in the VC-Shell framework. This file contains complete framework knowledge to help you build applications efficiently.
+
+## Framework Overview
+
+VC-Shell is a Vue 3 + TypeScript framework for building enterprise applications with:
+- Blade-based navigation system
+- Modular architecture
+- Built-in UI components
+- API client generation
+- Form validation with VeeValidate
+- Internationalization support
+
+## Blade System
+
+### Core Concepts
+- Blades are horizontal modal-like containers that stack
+- Two main types: List blades (with tables) and Details blades (with forms)
+- Navigation handled via useBladeNavigation composable
+
+### Required Blade Props (4 total)
+```typescript
+interface BladeProps {
+  expanded?: boolean;    // Expansion state
+  closable?: boolean;   // Can be closed
+  param?: string;       // Entity ID
+  options?: unknown;    // Additional data
+}
+```
+
+### Blade Events
+- `parent:call` - Communication with parent blade
+- `close:blade` - Close current blade
+- `collapse:blade` - Collapse blade
+- `expand:blade` - Expand blade
+
+### Blade Toolbar
+```typescript
+interface IBladeToolbar {
+  id: string;
+  title: string;
+  icon?: string;
+  onClick: () => void;
+  disabled?: boolean;
+  loading?: boolean;
+}
+```
+
+## Module Structure
+
+Standard module layout:
+```
+src/modules/[name]/
+├── pages/
+│   ├── list.vue          // List blade with VcTable
+│   ├── details.vue       // Details blade with VcForm
+│   └── index.ts          // Export pages
+├── composables/
+│   ├── use[Name]List/
+│   │   └── index.ts      // List logic with useAsync
+│   ├── use[Name]Details/
+│   │   └── index.ts      // Details logic with useModificationTracker
+│   └── index.ts          // Export composables
+├── locales/
+│   ├── en.json           // Translations
+│   └── index.ts          // Export locales
+├── components/           // Optional module-specific components
+└── index.ts              // Module registration with createAppModule
+```
+
+## Core Composables
+
+### useAsync
+Handles async operations with loading states and error handling:
+```typescript
+const { action, loading, error } = useAsync(async () => {
+  return await apiCall();
+});
+```
+
+### useBladeNavigation
+Manages blade navigation:
+```typescript
+const { openBlade, closeBlade } = useBladeNavigation();
+
+// Open blade
+openBlade({
+  blade: DetailsComponent,
+  param: id,
+  options: { data }
+});
+
+// Close current blade
+closeBlade();
+```
+
+### useModificationTracker
+Tracks form changes for dirty state:
+```typescript
+const item = ref({ /* form data */ });
+const { isModified, currentValue, pristineValue, resetModificationState } = useModificationTracker(item);
+
+// Use currentValue for data operations
+currentValue.value = await loadItem(id);
+await saveItem(currentValue.value);
+resetModificationState(); // After successful save
+```
+
+### useApiClient
+Provides API client with authentication:
+```typescript
+const { getApiClient } = useApiClient(GeneratedClient);
+const client = getApiClient();
+```
+
+### useMenuService
+Registers menu items:
+```typescript
+useMenuService().addMenuItem({
+  id: 'my-module',
+  title: 'My Module',
+  url: '/my-module',
+  icon: 'my-icon',
+  priority: 100
+});
+```
+
+### usePermissions
+Handles access control:
+```typescript
+const { checkPermission } = usePermissions();
+const canEdit = checkPermission('my-module:edit');
+```
+
+## API Integration
+
+### Setup Process
+1. Scaffolded apps already have `generate-api-client` script
+2. Add to `.env.local`: `APP_PLATFORM_URL=https://platform-url/`
+3. Run: `yarn generate-api-client`
+4. Use: `const { getApiClient } = useApiClient(Client)`
+
+### Module Integration
+```typescript
+// In src/main.ts
+import MyModule from './modules/my-module';
+app.use(MyModule, { router });
+```
+
+## Form Validation Pattern
+
+Correct VeeValidate integration:
+```vue
+<Field name="fieldName" v-slot="{ errors, errorMessage, handleChange }" :rules="{ required: true }">
+  <VcInput 
+    :model-value="data.fieldName" 
+    :error-message="errorMessage"
+    :error="!!errors.length"
+    @update:model-value="(v) => { data.fieldName = v; handleChange(v); }"
+  />
+</Field>
+```
+
+## UI Components Reference
+
+### ATOMS (20 components)
+
+**VcBadge** - Notification badge
+- Props: content, active, disabled, clickable, size (s|m), isDot, variant (primary|success|warning|danger|info|secondary), customPosition, top, right
+- Emits: click
+- Slots: default
+
+**VcButton** - Action button
+- Props: icon, iconClass, iconSize, variant (primary|secondary), disabled, size (xs|sm|base), selected, text
+- Emits: click
+- Slots: default
+
+**VcCard** - Container card
+- Props: header, icon, isCollapsable, isCollapsed, fill, variant (default|success|danger)
+- Emits: header:click, state:collapsed
+- Slots: default, actions, header
+
+**VcCol** - Column layout
+- Props: size (number)
+- Slots: default
+
+**VcContainer** - Scrollable container
+- Props: shadow, noPadding, usePtr
+- Emits: scroll:ptr, scroll
+- Methods: scrollTop()
+
+**VcHint** - Helper text
+- Slots: default
+
+**VcIcon** - Universal icon
+- Props: icon, size (xs|s|m|l|xl|xxl|xxxl), variant (warning|danger|success), customSize, useContainer
+- Supports: material-, bi-, lucide-, fas fa-, svg:
+
+**VcImage** - Image display
+- Props: src, alt, size, aspectRatio, bordered, rounded
+
+**VcLabel** - Text label
+- Props: text, required
+- Slots: default
+
+**VcLink** - Hyperlink
+- Props: to, href, target
+- Slots: default
+
+**VcLoading** - Loading indicator
+- Props: active
+
+**VcProgress** - Progress bar
+- Props: value (0-100), variant
+
+**VcRow** - Row layout
+- Slots: default
+
+**VcSkeleton** - Loading skeleton
+- Props: variant (text|circle|rect), width, height, count
+
+**VcStatus** - Status indicator
+- Props: variant, outline, extend
+- Slots: default
+
+**VcStatusIcon** - Status icon
+- Props: variant
+
+**VcTooltip** - Tooltip
+- Props: text, placement, width, maxWidth
+- Slots: default
+
+**VcVideo** - Video player
+- Props: src, poster, controls, autoplay, loop, muted
+
+**VcWidget** - Dashboard widget
+- Props: title, icon, value, loading
+- Emits: click
+
+**VcBanner** - Banner message
+- Props: variant, icon, iconSize, iconVariant
+- Slots: title, default, trigger
+
+### MOLECULES (18 components)
+
+**VcBreadcrumbs** - Navigation breadcrumbs
+- Props: items (array of {id, title, icon?})
+- Emits: item:click
+
+**VcCheckbox** - Checkbox input
+- Props: modelValue, label, disabled, errorMessage, hint
+- Emits: update:modelValue
+
+**VcEditor** - Rich text editor (TipTap)
+- Props: modelValue, placeholder, editable, customToolbar
+- Emits: update:modelValue
+
+**VcField** - Form field wrapper
+- Props: label, required, errorMessage, hint, tooltip
+- Slots: default
+
+**VcFileUpload** - File upload
+- Props: accept, multiple, disabled, maxSize, errorMessage
+- Emits: upload
+
+**VcForm** - Form container (VeeValidate)
+- Emits: submit
+- Slots: default
+
+**VcInput** - Text input
+- Props: modelValue, label, placeholder, type, disabled, required, clearable, errorMessage, tooltip, maxlength, prefix, suffix
+- Emits: update:modelValue, blur, focus, clear
+
+**VcInputCurrency** - Currency input
+- Props: modelValue, label, currency, locale, disabled, required, errorMessage
+- Emits: update:modelValue
+
+**VcInputDropdown** - Input with dropdown
+- Props: modelValue, option, options, label, placeholder, disabled
+- Emits: update:modelValue, update:option
+
+**VcMultivalue** - Multi-value input
+- Props: modelValue, placeholder, disabled, dictionary
+- Emits: update:modelValue
+
+**VcPagination** - Pagination
+- Props: pages, currentPage, maxVisiblePages
+- Emits: itemClick
+
+**VcRadioButton** - Radio button
+- Props: modelValue, value, label, name, disabled
+- Emits: update:modelValue
+
+**VcRating** - Star rating
+- Props: modelValue, max, readonly, size
+- Emits: update:modelValue
+
+**VcSelect** - Dropdown select (async search)
+- Props: modelValue, options, label, placeholder, multiple, searchable, clearable, disabled, loading, errorMessage, optionValue, optionLabel, searchMethod, tooltip
+- Emits: update:modelValue, search, open, close
+
+**VcSlider** - Range slider
+- Props: modelValue, min, max, step, disabled
+- Emits: update:modelValue
+
+**VcSwitch** - Toggle switch
+- Props: modelValue, label, disabled
+- Emits: update:modelValue
+
+**VcTextarea** - Multi-line text
+- Props: modelValue, label, placeholder, rows, maxlength, disabled, required, errorMessage
+- Emits: update:modelValue
+
+**VcToast** - Toast notification
+- Props: variant, text, timeout, closable
+- Use via: notification() API
+
+### ORGANISMS (7 components)
+
+**VcApp** - Application shell
+- Props: disableMenu, disableAppSwitcher, version, avatar, name, role, appsList, isEmbedded
+- Emits: menuItemClick, switchApp
+- Slots: navmenu, userDropdown, appSwitcher, toolbar, default
+
+**VcBlade** - Blade container
+- Props: title, toolbarItems (IBladeToolbar[]), expanded, closable, width, modified
+- Emits: parent:call, close:blade, collapse:blade, expand:blade
+- Slots: default, toolbar, actions
+
+**VcDynamicProperty** - Dynamic properties
+- Props: properties, modelValue, disabled
+- Emits: update:modelValue
+
+**VcGallery** - Image gallery
+- Props: images, activeIndex
+- Emits: update:activeIndex, close
+
+**VcLoginForm** - Login form
+- Props: logo, title
+- Emits: submit
+
+**VcPopup** - Modal popup
+- Props: modelValue, title, variant, width, maxWidth, closable
+- Emits: update:modelValue, close
+- Slots: default, actions, title
+
+**VcTable** - Data table
+- Props: items, columns (ITableColumns[]), loading, selectedItemId, totalCount, pages, currentPage, enableItemActions, itemActionBuilder, multiselect, stateKey
+- Emits: itemClick, selectionChanged, headerClick, pageChanged, reorder
+- Slots: header, filters, mobile-item, item_[field], header_[field], notfound, empty, footer
+- Columns: { id, title, field, type, sortable, width, alwaysVisible }
+
+## Common Patterns
+
+### List Blade Pattern
+```vue
+<template>
+  <VcBlade :expanded="true" :closable="true" :param="undefined" :options="undefined">
+    <VcTable 
+      :items="items" 
+      :columns="columns" 
+      :loading="loading"
+      @item-click="handleItemClick"
+    />
+  </VcBlade>
+</template>
+```
+
+### Details Blade Pattern
+```vue
+<template>
+  <VcBlade :expanded="true" :closable="true" :param="id" :options="undefined">
+    <VcForm @submit="handleSubmit">
+      <Field name="name" v-slot="{ errors, errorMessage, handleChange }" :rules="{ required: true }">
+        <VcInput 
+          :model-value="data.name" 
+          :error-message="errorMessage"
+          @update:model-value="(v) => { data.name = v; handleChange(v); }"
+        />
+      </Field>
+    </VcForm>
+  </VcBlade>
+</template>
+```
+
+## CLI Commands Reference
+
+### Application Creation
+```bash
+# Interactive mode
+npx create-vc-app my-app
+
+# Non-interactive mode
+npx create-vc-app my-app --package-name "my-app" --base-path "/apps/my-app/" --skip-module-gen
+```
+
+### Module Generation
+```bash
+# Interactive mode
+npx create-vc-app blade
+
+# Generate module with grid blade
+npx create-vc-app blade --module products --type grid --name products --is-workspace
+
+# Generate details blade with form fields
+npx create-vc-app blade --module products --type details --name product-details --form-fields '[...]'
+
+# Generate widget
+npx create-vc-app blade --widget
+```
+
+### Development Commands
+- `yarn serve` - Start development server
+- `yarn build` - Build for production
+- `yarn generate-api-client` - Generate API client from OpenAPI
+- `yarn lint` - Run ESLint
+- `yarn type-check` - Run TypeScript checks
+- `yarn test` - Run tests
+
+## Common Development Patterns
+
+### Pattern 1: Generate Module with CLI
+```typescript
+// When user says: "Create a products module"
+// Use CLI in non-interactive mode:
+npx create-vc-app blade --module products --type grid --name products --is-workspace
+npx create-vc-app blade --module products --type details --name product-details
+```
+
+### Pattern 2: Connect to Custom API
+```typescript
+// Create API client
+// src/api_client/custom-api.ts
+const API_URL = import.meta.env.VITE_API_URL;
+
+export const api = {
+  async getProducts(params) {
+    const response = await fetch(`${API_URL}/products`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    return response.json();
+  }
+};
+
+// Use in composable
+import { api } from '../../../api_client/custom-api';
+const { data } = await api.getProducts({ page, limit });
+```
+
+### Pattern 3: Dynamic Form Fields
+```typescript
+// Control field visibility with computed
+const showAdvancedFields = computed(() => item.value.type === 'advanced');
+
+// In template
+<template v-if="showAdvancedFields">
+  <Field name="advancedOption">...</Field>
+</template>
+```
+
+### Pattern 4: Master-Detail Relationship
+```typescript
+// Order items array
+const items = ref<OrderItem[]>([]);
+
+// Calculated total
+const total = computed(() => 
+  items.value.reduce((sum, item) => sum + item.quantity * item.price, 0)
+);
+
+// Add/remove items
+const addItem = (product) => items.value.push({ ...product, quantity: 1 });
+const removeItem = (index) => items.value.splice(index, 1);
+```
+
+### Pattern 5: File Upload
+```typescript
+const handleUpload = async (files: FileList) => {
+  for (const file of Array.from(files)) {
+    const formData = new FormData();
+    formData.append('file', file);
+    
+    await api.upload(formData, {
+      onUploadProgress: (event) => {
+        progress.value = (event.loaded / event.total) * 100;
+      }
+    });
+  }
+};
+```
+
+## Best Practices
+
+1. **Use CLI for generation:** Always use `create-vc-app` CLI to generate modules
+2. **4 Required Blade Props:** Always include expanded, closable, param, options
+3. **VeeValidate for Forms:** Use Field component for validation
+4. **useAsync for API:** Wrap API calls for loading states
+5. **Modification Tracking:** Use useModificationTracker for dirty state
+6. **Module Structure:** Follow standard module layout
+7. **TypeScript:** Use proper interfaces and types
+8. **Error Handling:** Try-catch with user-friendly messages
+9. **Localization:** Use i18n for all text
+10. **Naming:** Vc prefix for components, use prefix for composables
+
+## Error Handling
+
+```typescript
+const { action: loadData, error } = useAsync(async () => {
+  try {
+    const response = await api.getData();
+    return response.data;
+  } catch (err) {
+    notification.error('Failed to load data', { timeout: 5000 });
+    console.error('API Error:', err);
+    throw err;
+  }
+});
+```
+
+## Performance Tips
+
+- Use `computed` for derived values
+- Implement loading states with `useAsync`
+- Lazy load routes: `component: () => import('./page.vue')`
+- Use proper TypeScript types
+- Debounce search inputs
+- Paginate large datasets
+

@@ -4,12 +4,6 @@ name: Virto-shell CI
 on:
   workflow_dispatch:
   push:
-    paths-ignore:
-      - '.github/**'
-      - '.deployment/**'
-      - 'docs/**'
-      - 'README.md'
-      - 'LICENSE'
     branches: [ main ]
     # Only on commits with package changes or release commits
     paths:

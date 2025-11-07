@@ -13,20 +13,25 @@
     "postbuild": "shx cp -R src/templates dist/"
   },
   "devDependencies": {
+    "@types/lodash-es": "^4.17.12",
+    "@types/pluralize": "^0.0.33",
     "@types/prompts": "^2.4.4",
     "@vc-shell/ts-config": "workspace:*",
     "copyfiles": "^2.4.1",
     "cross-env": "^7.0.3",
     "shx": "^0.3.4",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "vite": "^6.3.3",
+    "vite-plugin-dts": "^3.6.4"
   },
   "dependencies": {
     "chalk": "^2.4.2",
+    "lodash-es": "^4.17.21",
     "mri": "^1.2.0",
+    "pluralize": "^8.0.0",
+    "prettier": "^3.4.2",
     "prompts": "^2.4.2",
-    "tslib": "^2.5.3",
-    "vite": "^6.3.3",
-    "vite-plugin-dts": "^3.6.4"
+    "tslib": "^2.5.3"
   },
   "publishConfig": {
     "access": "public",

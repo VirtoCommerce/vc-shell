@@ -4,6 +4,6 @@
     "baseUrl": ".",
     "rootDir": "./"
   },
-  "include": ["src/index.ts"],
+  "include": ["src/**/*.ts"],
   "exclude": ["node_modules", "dist", "./src/templates"]
 }

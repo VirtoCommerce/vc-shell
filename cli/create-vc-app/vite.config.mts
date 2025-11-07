@@ -10,7 +10,25 @@ export default defineConfig({
       fileName: "index",
     },
     rollupOptions: {
-      external: [...Object.keys(pkg.dependencies), /^node:.*/],
+      external: [
+        ...Object.keys(pkg.dependencies),
+        // Node.js built-in modules
+        /^node:.*/,
+        "fs",
+        "path",
+        "process",
+        "url",
+        "stream",
+        "util",
+        "events",
+        "buffer",
+        "os",
+        "crypto",
+        "http",
+        "https",
+        "zlib",
+        "child_process",
+      ],
       output: {
         banner: "#!/usr/bin/env node",
       },

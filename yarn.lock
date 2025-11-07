@@ -3775,6 +3775,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/pluralize@npm:^0.0.33":
+  version: 0.0.33
+  resolution: "@types/pluralize@npm:0.0.33"
+  checksum: 10/282d42dc0187e5e0912f9f36ee0f5615bfd273a08d40afe5bf5881cb28daf1977abe10564543032aa0f42352ebba739ff3d86bf5562ac4691c6d1761fcc7cf39
+  languageName: node
+  linkType: hard
+
 "@types/prompts@npm:^2.4.4, @types/prompts@npm:^2.4.7":
   version: 2.4.9
   resolution: "@types/prompts@npm:2.4.9"
@@ -4301,12 +4308,17 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@vc-shell/create-vc-app@workspace:cli/create-vc-app"
   dependencies:
+    "@types/lodash-es": "npm:^4.17.12"
+    "@types/pluralize": "npm:^0.0.33"
     "@types/prompts": "npm:^2.4.4"
     "@vc-shell/ts-config": "workspace:*"
     chalk: "npm:^2.4.2"
     copyfiles: "npm:^2.4.1"
     cross-env: "npm:^7.0.3"
+    lodash-es: "npm:^4.17.21"
     mri: "npm:^1.2.0"
+    pluralize: "npm:^8.0.0"
+    prettier: "npm:^3.4.2"
     prompts: "npm:^2.4.2"
     shx: "npm:^0.3.4"
     tslib: "npm:^2.5.3"
@@ -13473,6 +13485,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"pluralize@npm:^8.0.0":
+  version: 8.0.0
+  resolution: "pluralize@npm:8.0.0"
+  checksum: 10/17877fdfdb7ddb3639ce257ad73a7c51a30a966091e40f56ea9f2f545b5727ce548d4928f8cb3ce38e7dc0c5150407d318af6a4ed0ea5265d378473b4c2c61ec
+  languageName: node
+  linkType: hard
+
 "possible-typed-array-names@npm:^1.0.0":
   version: 1.1.0
   resolution: "possible-typed-array-names@npm:1.1.0"
@@ -13592,7 +13611,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prettier@npm:^3.1.1, prettier@npm:^3.6.2":
+"prettier@npm:^3.1.1, prettier@npm:^3.4.2, prettier@npm:^3.6.2":
   version: 3.6.2
   resolution: "prettier@npm:3.6.2"
   bin:

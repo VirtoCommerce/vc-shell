@@ -522,26 +522,6 @@ Complete reference for all 45 UI components in VC-Shell framework, organized by 
 <VcMultivalue v-model="tags" placeholder="Add tags" />
 ```
 
-### VcPagination
-**Purpose**: Pagination controls
-
-**Props**:
-- `pages`: number - Total pages
-- `currentPage`: number - Current page
-- `maxVisiblePages`: number - Max visible pages
-
-**Events**:
-- `itemClick` - Page click
-
-**Example**:
-```vue
-<VcPagination 
-  :pages="totalPages" 
-  :current-page="currentPage"
-  @item-click="handlePageChange"
-/>
-```
-
 ### VcRadioButton
 **Purpose**: Radio button
 

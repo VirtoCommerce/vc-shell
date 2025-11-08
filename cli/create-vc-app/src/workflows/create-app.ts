@@ -9,6 +9,7 @@ import { isValidName, toValidBasePath, toValidName } from "../cli/utils.js";
 import { formatDirectory } from "../utils/format.js";
 import { generateBlade } from "../commands/generate-blade.js";
 import { ValidationError, UserCancelledError } from "../cli/errors.js";
+import { findTemplateRoot } from "../utils/templates";
 
 interface CreateAppContext {
   cwd: string;
@@ -205,7 +206,7 @@ function buildReplacementMap(config: CreateAppConfig): Map<string, string> {
 }
 
 function renderTemplate(options: RenderTemplateOptions): number {
-  const templateRoot = path.resolve(fileURLToPath(import.meta.url), "..", "templates");
+  const templateRoot = findTemplateRoot(import.meta.url);
   const templateDirectory = path.join(templateRoot, options.templateName);
   let filesCreated = 0;
 

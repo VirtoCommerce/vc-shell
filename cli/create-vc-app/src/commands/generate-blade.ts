@@ -18,6 +18,7 @@ import {
 } from "../utils/form-builder.js";
 import { registerModuleInMainTs, registerBladesInIndex } from "../utils/register-module.js";
 import { CLIError, UserCancelledError } from "../cli/errors.js";
+import { findTemplateRoot } from "../utils/templates";
 
 function ensureFileDoesNotExist(filePath: string): void {
   if (!fs.existsSync(filePath)) {
@@ -40,6 +41,12 @@ interface BladeGeneratorArgs {
   // Form builder args
   formFields?: string; // JSON string with form fields
   skipFormEditor?: boolean; // Skip interactive form builder
+  // Widget non-interactive args
+  widgetModule?: string;
+  widgetBlade?: string;
+  widgetName?: string;
+  widgetEntity?: string;
+  widgetIcon?: string;
   // App creation mode - skip "What would you like to generate?" prompt
   _skipActionPrompt?: boolean;
 }
@@ -90,6 +97,19 @@ export async function generateBlade(args: BladeGeneratorArgs = {}) {
 
     // Widget-only mode
     if (args.widget) {
+      // Non-interactive widget mode: check if all required params are provided
+      if (args.widgetModule && args.widgetBlade && args.widgetName && args.widgetEntity) {
+        console.log(chalk.cyan("📝 Running widget generation in non-interactive mode\n"));
+        await generateWidgetNonInteractive(cwd, {
+          moduleName: kebabCase(args.widgetModule),
+          bladeName: args.widgetBlade.replace(".vue", ""),
+          widgetName: args.widgetName,
+          entityName: args.widgetEntity,
+          icon: args.widgetIcon || "material-list",
+        });
+        return;
+      }
+      // Interactive widget mode
       await generateWidget(cwd);
       return;
     }
@@ -189,7 +209,7 @@ async function generateBladeNonInteractive(
 
   const naming = createNamingConfig(options.entityName, options.moduleName);
   const replacements = createReplacementsMap(naming);
-  const templateRoot = getTemplateRoot();
+  const templateRoot = findTemplateRoot(import.meta.url);
   const generatedFiles: string[] = [];
 
   // Parse form fields for details blade
@@ -466,7 +486,7 @@ async function createModuleStructure(
       }
     }
 
-    const templateRoot = getTemplateRoot();
+    const templateRoot = findTemplateRoot(import.meta.url);
     const generatedFiles: string[] = [];
 
     // Variables for form customization
@@ -697,7 +717,7 @@ async function generateBladeInExistingModule(cwd: string) {
     const naming = createNamingConfig(answers.entitySingular, answers.moduleName);
     const replacements = createReplacementsMap(naming);
     const modulePath = path.join(modulesPath, answers.moduleName);
-    const templateRoot = getTemplateRoot();
+    const templateRoot = findTemplateRoot(import.meta.url);
     const generatedFiles: string[] = [];
 
     // Handle form customization
@@ -792,6 +812,59 @@ async function generateBladeInExistingModule(cwd: string) {
   } catch (error: any) {
     console.error(chalk.red("\n❌ Blade generation failed:"), error.message);
     throw error; // Re-throw to be caught by main handler
+  }
+}
+
+async function generateWidgetNonInteractive(
+  cwd: string,
+  options: {
+    moduleName: string;
+    bladeName: string;
+    widgetName: string;
+    entityName: string;
+    icon: string;
+  },
+) {
+  try {
+    console.log(chalk.cyan("\n🧩 Creating widget (non-interactive mode)\n"));
+
+    const modulesPath = path.join(cwd, "src", "modules");
+    if (!fs.existsSync(modulesPath)) {
+      throw new CLIError("❌ No modules directory found");
+    }
+
+    const modulePath = path.join(modulesPath, options.moduleName);
+    if (!fs.existsSync(modulePath)) {
+      throw new CLIError(`❌ Module "${options.moduleName}" not found`);
+    }
+
+    const pagesPath = path.join(modulePath, "pages");
+    if (!fs.existsSync(pagesPath)) {
+      throw new CLIError("❌ No pages directory found in this module");
+    }
+
+    // Validate blade exists
+    const bladeFilePath = path.join(pagesPath, `${options.bladeName}.vue`);
+    if (!fs.existsSync(bladeFilePath)) {
+      throw new CLIError(`❌ Blade "${options.bladeName}.vue" not found in module "${options.moduleName}"`);
+    }
+
+    await createWidgetFile(
+      modulePath,
+      {
+        bladeName: options.bladeName,
+        widgetName: options.widgetName,
+        entityName: options.entityName,
+      },
+      options.icon,
+      options.moduleName,
+    );
+  } catch (error: any) {
+    if (error instanceof CLIError) {
+      throw error;
+    }
+    console.error(chalk.red("\n❌ Widget generation failed:"), error.message);
+    throw error;
   }
 }
 
@@ -921,7 +994,7 @@ async function createWidgetFile(
 ) {
   try {
     const naming = createNamingConfig(widgetAnswers.entityName, moduleName);
-    const templateRoot = getTemplateRoot();
+    const templateRoot = findTemplateRoot(import.meta.url);
     const widgetTemplatePath = path.join(templateRoot, "widgets", "widget.vue");
 
     if (!fs.existsSync(widgetTemplatePath)) {
@@ -1263,10 +1336,6 @@ ${unregisterCall}
   }
 
   fs.writeFileSync(bladeFilePath, content);
-}
-
-function getTemplateRoot(): string {
-  return path.resolve(fileURLToPath(import.meta.url), "..", "templates");
 }
 
 async function generateBladeFile(

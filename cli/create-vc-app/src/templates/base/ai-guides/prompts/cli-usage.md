@@ -218,15 +218,35 @@ The widget should:
 Use CLI to generate and register the widget.
 ```
 
-**AI will run:**
+**AI will run (Non-Interactive - Recommended):**
 ```bash
-npx create-vc-app blade --widget
+npx create-vc-app generate \
+  --widget \
+  --widget-module products \
+  --widget-blade product-details \
+  --widget-name Stats \
+  --widget-entity Product \
+  --widget-icon material-sell
+```
+
+**Alternative (Interactive):**
+```bash
+npx create-vc-app generate --widget
 
 # Interactive prompts:
 # - Select module: products
 # - Select blade: product-details
-# - Widget name: product-stats
+# - Widget name: Stats
+# - Entity: Product
+# - Icon: Sell/Price (material-sell)
 ```
+
+**What Gets Created:**
+- `components/widgets/stats/stats-widget.vue`
+- `components/widgets/stats/index.ts`
+- Auto-export in `components/widgets/index.ts`
+- Auto-registration in `product-details.vue` with `useWidgets()`
+- Auto-updates `locales/en.json` with `WIDGETS.STATS.TITLE`
 
 ---
 

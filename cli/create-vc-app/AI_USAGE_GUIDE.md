@@ -36,7 +36,7 @@ node /path/to/cli/create-vc-app/dist/index.js blade \
 ### Basic App Creation (without module)
 
 ```bash
-node dist/index.js my-app \
+npx create-vc-app my-app \
   --package-name "my-app" \
   --base-path "/apps/my-app/" \
   --skip-module-gen \
@@ -54,7 +54,7 @@ node dist/index.js my-app \
 ```bash
 # Note: Module creation requires interactive input
 # Use this command, then provide inputs when prompted
-node dist/index.js my-app
+npx create-vc-app my-app
 
 # Inputs needed:
 # - Module name: (e.g., products)
@@ -68,7 +68,7 @@ node dist/index.js my-app
 
 ```bash
 # Step 1: Create app
-node dist/index.js my-app --skip-module-gen
+npx create-vc-app my-app --skip-module-gen
 
 # Step 2: Add module (see Module Generation section)
 cd my-app
@@ -80,23 +80,65 @@ node ../../cli/create-vc-app/dist/index.js blade \
 
 ## 2. Module Generation
 
-### Complete Module (Grid + Details)
+### Complete Module (Grid + Details) - Recommended Approach
+
+**Three-step process for complete app with module:**
+
+```bash
+# Step 1: Create base app (no module)
+npx create-vc-app my-shop --skip-module-gen
+cd my-shop
+
+# Step 2: Create grid blade (creates module automatically)
+npx create-vc-app generate \
+  --module products \
+  --type grid \
+  --name product \
+  --form-fields '[
+    {"name":"name","type":"text"},
+    {"name":"sku","type":"text"},
+    {"name":"price","type":"currency"},
+    {"name":"status","type":"select"}
+  ]'
+
+# Step 3: Add details blade to existing module
+npx create-vc-app generate \
+  --module products \
+  --type details \
+  --name product \
+  --form-fields '[
+    {"name":"name","type":"text"},
+    {"name":"sku","type":"text"},
+    {"name":"description","type":"editor"},
+    {"name":"price","type":"currency"},
+    {"name":"images","type":"gallery"},
+    {"name":"active","type":"switch"}
+  ]'
+```
+
+**Result:**
+- Complete app with products module
+- Grid blade (list view) + Details blade (form)
+- Both blades registered automatically
+- Module registered in main.ts
+
+### Alternative: Add Blades Separately
 
 ```bash
 # Grid blade (list view)
-node dist/index.js blade \
+npx create-vc-app generate \
   --module products \
   --type grid \
-  --name products \
+  --name product \
   --composable \
   --locales \
   --is-workspace
 
 # Details blade (form view)
-node dist/index.js blade \
+npx create-vc-app generate \
   --module products \
   --type details \
-  --name product-details \
+  --name product \
   --composable \
   --locales
 ```
@@ -104,7 +146,7 @@ node dist/index.js blade \
 ### Module with Custom Form Fields (JSON)
 
 ```bash
-node dist/index.js blade \
+npx create-vc-app blade \
   --module products \
   --type details \
   --name product-details \
@@ -204,19 +246,55 @@ type FieldType =
 
 ## 4. Widget Generation
 
-### Basic Widget
+### Non-Interactive Widget Generation (Recommended for AI)
 
 ```bash
-# Must be run interactively (requires module/blade selection)
-node dist/index.js blade --widget
+npx create-vc-app generate \
+  --widget \
+  --widget-module products \
+  --widget-blade product-details \
+  --widget-name Stats \
+  --widget-entity Product \
+  --widget-icon material-sell
+```
+
+**Parameters:**
+- `--widget` - Enable widget generation mode
+- `--widget-module` - Module name (e.g., `products`)
+- `--widget-blade` - Blade name without `.vue` (e.g., `product-details`)
+- `--widget-name` - Widget display name (e.g., `Stats`, `Chart`)
+- `--widget-entity` - Related entity name (e.g., `Product`, `Order`)
+- `--widget-icon` - Material icon name (optional, default: `material-list`)
+
+**Available Icons:**
+- `material-list` - List icon
+- `material-sell` - Price/sell icon
+- `material-shopping_cart` - Shopping cart
+- `material-star` - Star/rating
+- `material-image` - Image icon
+- `material-description` - Description/document
+- Any Material Design icon name
+
+**What Gets Created:**
+- `components/widgets/{widget-name}/{widget-name}-widget.vue`
+- `components/widgets/{widget-name}/index.ts`
+- Auto-export in `components/widgets/index.ts`
+- Auto-registration in parent blade with `useWidgets()`
+- Auto-updates locales with `WIDGETS.{WIDGET_NAME}.TITLE`
+
+### Interactive Widget Generation
+
+```bash
+# Interactive mode (prompts for all parameters)
+npx create-vc-app generate --widget
 
 # Then select:
 # - Module: products
 # - Blade: product-details
-# - Widget name: ProductStats
+# - Widget name: Stats
+# - Entity: Product
+# - Icon: Sell/Price (material-sell)
 ```
-
-**Note:** Widget generation requires interactive input to select module and blade.
 
 ---
 
@@ -226,7 +304,7 @@ node dist/index.js blade --widget
 
 ```bash
 # Grid blade for product list
-node dist/index.js blade \
+npx create-vc-app blade \
   --module products \
   --type grid \
   --name products \
@@ -235,7 +313,7 @@ node dist/index.js blade \
   --locales
 
 # Details blade with comprehensive form
-node dist/index.js blade \
+npx create-vc-app blade \
   --module products \
   --type details \
   --name product-details \
@@ -258,7 +336,7 @@ node dist/index.js blade \
 
 ```bash
 # Orders list
-node dist/index.js blade \
+npx create-vc-app blade \
   --module orders \
   --type grid \
   --name orders \
@@ -267,7 +345,7 @@ node dist/index.js blade \
   --locales
 
 # Order details with form
-node dist/index.js blade \
+npx create-vc-app blade \
   --module orders \
   --type details \
   --name order-details \
@@ -289,19 +367,19 @@ node dist/index.js blade \
 
 ```bash
 # Customers list
-node dist/index.js blade \
+npx create-vc-app generate \
   --module customers \
   --type grid \
-  --name customers \
+  --name customer \
   --is-workspace \
   --composable \
   --locales
 
 # Customer details
-node dist/index.js blade \
+npx create-vc-app generate \
   --module customers \
   --type details \
-  --name customer-details \
+  --name customer \
   --composable \
   --locales \
   --skip-form-editor \
@@ -315,6 +393,45 @@ node dist/index.js blade \
     {"name":"notes","type":"textarea","required":false}
   ]'
 ```
+
+### Pattern 4: Product Module with Widget
+
+```bash
+# Step 1: Create grid blade
+npx create-vc-app generate \
+  --module products \
+  --type grid \
+  --name product \
+  --is-workspace
+
+# Step 2: Create details blade
+npx create-vc-app generate \
+  --module products \
+  --type details \
+  --name product \
+  --form-fields '[
+    {"name":"name","type":"text","required":true},
+    {"name":"sku","type":"text","required":true},
+    {"name":"price","type":"currency","required":true},
+    {"name":"description","type":"editor","required":false},
+    {"name":"images","type":"gallery","required":false}
+  ]'
+
+# Step 3: Add widget to details blade
+npx create-vc-app generate \
+  --widget \
+  --widget-module products \
+  --widget-blade product-details \
+  --widget-name Variants \
+  --widget-entity ProductVariant \
+  --widget-icon material-list
+```
+
+**Result:**
+- Complete products module with grid and details blades
+- Variants widget automatically registered in product-details blade
+- Widget displays count of product variants
+- All locales updated automatically
 
 ---
 
@@ -342,9 +459,19 @@ node dist/index.js blade \
 | `--composable` | boolean | Generate composable | `true` |
 | `--locales` | boolean | Generate locales | `true` |
 | `--is-workspace` | boolean | Mark as workspace blade | `false` |
-| `--widget` | boolean | Generate widget instead | `false` |
 | `--form-fields` | string | JSON form field definitions | - |
 | `--skip-form-editor` | boolean | Skip interactive form builder | `false` |
+
+### Widget Generation Options
+
+| Option | Type | Description | Default |
+|--------|------|-------------|---------|
+| `--widget` | boolean | Enable widget generation mode | `false` |
+| `--widget-module` | string | Module name for widget | - |
+| `--widget-blade` | string | Blade name (without .vue) | - |
+| `--widget-name` | string | Widget display name | - |
+| `--widget-entity` | string | Related entity name | - |
+| `--widget-icon` | string | Material icon name | `material-list` |
 
 ---
 
@@ -440,13 +567,15 @@ The CLI automatically:
 ✅ **Use non-interactive when:**
 - Creating base app without module
 - Adding blade to existing module
+- Adding widget to existing blade
 - Have all form field definitions in JSON
 - Automating app generation
+- Scripting or CI/CD pipelines
 
 ❌ **Don't use non-interactive when:**
-- Need to create initial module (use app creation)
-- Want to add widget (requires module/blade selection)
-- Prefer step-by-step guidance
+- Prefer step-by-step guidance with prompts
+- Want to explore available options interactively
+- Learning the CLI for the first time
 
 ### Handling User Requirements
 
@@ -461,7 +590,7 @@ The CLI automatically:
 **Example commands:**
 ```bash
 # Create app (requires interactive input for module)
-node dist/index.js my-shop
+npx create-vc-app my-shop
 
 # When prompted, use:
 # Module: products
@@ -500,7 +629,7 @@ node dist/index.js my-shop
 
 ```bash
 # Create app (interactive)
-node dist/index.js my-blog
+npx create-vc-app my-blog
 
 # When prompted:
 # Module: posts
@@ -520,7 +649,7 @@ node dist/index.js my-blog
 
 ```bash
 # Grid blade
-node dist/index.js blade \
+npx create-vc-app blade \
   --module inventory \
   --type grid \
   --name inventory-items \
@@ -529,7 +658,7 @@ node dist/index.js blade \
   --locales
 
 # Details blade
-node dist/index.js blade \
+npx create-vc-app blade \
   --module inventory \
   --type details \
   --name inventory-item-details \
@@ -550,7 +679,7 @@ node dist/index.js blade \
 
 ```bash
 # Events list
-node dist/index.js blade \
+npx create-vc-app blade \
   --module events \
   --type grid \
   --name events \
@@ -559,7 +688,7 @@ node dist/index.js blade \
   --locales
 
 # Event details
-node dist/index.js blade \
+npx create-vc-app blade \
   --module events \
   --type details \
   --name event-details \
@@ -590,7 +719,7 @@ cd /path/to/vc-shell/cli/create-vc-app
 yarn build
 
 # Then use
-node dist/index.js --help
+npx create-vc-app --help
 ```
 
 ### Module Not Appearing

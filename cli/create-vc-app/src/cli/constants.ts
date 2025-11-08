@@ -15,9 +15,9 @@ export const renameFiles: Record<string, string | undefined> = {
   _vscode: ".vscode",
   _yarn: ".yarn",
   "_package.json": "package.json",
+  _cursorrules: ".cursorrules",
 };
 
 export const SUPPORTED_TEMPLATE_EXTENSIONS = [".ts", ".vue", ".js", ".json", ".md"];
 
 export const MIN_NODE_VERSION = "18.0.0";
-

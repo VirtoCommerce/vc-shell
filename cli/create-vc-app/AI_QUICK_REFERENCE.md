@@ -6,20 +6,36 @@
 
 ## 🚀 Quick Commands
 
+### Create App + Module (Grid + Details)
+```bash
+# Step 1: Create app
+npx create-vc-app <app-name> --skip-module-gen
+
+# Step 2: Create grid blade (creates module)
+cd <app-name>
+npx create-vc-app generate --module <module> --type grid --name <entity> \
+  --form-fields '[{"name":"field","type":"text"}]'
+
+# Step 3: Add details blade
+npx create-vc-app generate --module <module> --type details --name <entity> \
+  --form-fields '[{"name":"field","type":"text"}]'
+```
+
 ### Create App (base only)
 ```bash
-node dist/index.js <app-name> --skip-module-gen
+npx create-vc-app <app-name> --skip-module-gen
 ```
 
-### Add Grid Blade
+### Add Grid Blade (creates module if not exists)
 ```bash
-node dist/index.js blade --module <name> --type grid --name <name> --is-workspace
+npx create-vc-app generate --module <name> --type grid --name <entity> \
+  --form-fields '<json>'
 ```
 
-### Add Details Blade with Form
+### Add Details Blade to Existing Module
 ```bash
-node dist/index.js blade --module <name> --type details --name <name> \
-  --skip-form-editor --form-fields '<json>'
+npx create-vc-app generate --module <name> --type details --name <entity> \
+  --form-fields '<json>'
 ```
 
 ---
@@ -160,13 +176,16 @@ node dist/index.js blade --module <name> --type details --name <name> \
 ```
 User wants...
 
-├─ New app
-│  ├─ With module → Use interactive (requires input)
-│  └─ Without module → Use --skip-module-gen
+├─ New app with module (grid + details)
+│  └─ 3 commands: create app → add grid → add details
+│
+├─ New app without module
+│  └─ Use --skip-module-gen
 │
 ├─ Add module to existing app
-│  ├─ List view → --type grid
-│  └─ Form view → --type details + --form-fields
+│  ├─ List view → --type grid (creates module if not exists)
+│  ├─ Form view → --type details (to existing module)
+│  └─ Both → run grid command, then details command
 │
 └─ Add widget → Use --widget (requires interactive)
 ```

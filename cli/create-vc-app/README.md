@@ -65,17 +65,40 @@ The process is now streamlined - after basic app configuration, the powerful bla
 
 ## Non-Interactive Mode
 
-For automation, CI/CD, or when you want to skip prompts, you can use command line arguments:
+For automation, CI/CD, or when you want to skip prompts, you can use command line arguments.
+
+### Option 1: Create App with Module (Grid + Details Blades)
+
+Complete setup with both blades in three commands:
+
+```bash
+# Step 1: Create app without module
+$ npx create-vc-app my-shop --skip-module-gen
+
+# Step 2: Create grid blade (creates module)
+$ cd my-shop
+$ npx create-vc-app generate \
+  --module products \
+  --type grid \
+  --name product \
+  --form-fields '[{"name":"name","type":"text"},{"name":"price","type":"currency"}]'
+
+# Step 3: Add details blade to module
+$ npx create-vc-app generate \
+  --module products \
+  --type details \
+  --name product \
+  --form-fields '[{"name":"name","type":"text"},{"name":"price","type":"currency"},{"name":"description","type":"editor"}]'
+```
+
+Result: Complete application with products module (grid + details).
+
+### Option 2: Create App, Add Module Later
 
 ```bash
 $ npx create-vc-app my-app --skip-module-gen
-```
-
-Then add modules later using the blade generator:
-
-```bash
 $ cd my-app
-$ npx create-vc-app blade
+$ npx create-vc-app blade  # Interactive module creation
 ```
 
 ### Available Options
@@ -282,8 +305,16 @@ $ npx create-vc-app blade --module orders --type grid --name Order
 # Add a details blade with workspace flag
 $ npx create-vc-app blade --module products --type details --name Product --workspace
 
-# Generate a widget
+# Generate a widget (interactive)
 $ npx create-vc-app blade --widget
+
+# Generate a widget (non-interactive)
+$ npx create-vc-app blade --widget \
+  --widget-module products \
+  --widget-blade products-list \
+  --widget-name Stats \
+  --widget-entity Product \
+  --widget-icon material-sell
 ```
 
 **Available Flags:**
@@ -296,6 +327,11 @@ $ npx create-vc-app blade --widget
 | `--workspace` | Make it a workspace blade | `--workspace` |
 | `--composable` | Include composable (default: true) | `--no-composable` |
 | `--widget` | Generate widget only | `--widget` |
+| `--widget-module` | Module name for widget (non-interactive) | `--widget-module products` |
+| `--widget-blade` | Blade name for widget (non-interactive) | `--widget-blade products-list` |
+| `--widget-name` | Widget name (non-interactive) | `--widget-name Stats` |
+| `--widget-entity` | Related entity name (non-interactive) | `--widget-entity Product` |
+| `--widget-icon` | Widget icon (non-interactive, default: material-list) | `--widget-icon material-sell` |
 | `--path` | Project path | `--path ./my-app` |
 
 **Security & Safety:**

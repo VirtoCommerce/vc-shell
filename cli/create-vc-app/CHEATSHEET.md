@@ -89,10 +89,28 @@ npx create-vc-app blade \
 
 ## 🧩 Add Widget
 
+### Interactive
 ```bash
 npx create-vc-app blade --widget
 # Select module → Select blade → Enter widget name
 ```
+
+### Non-Interactive
+```bash
+npx create-vc-app blade --widget \
+  --widget-module products \
+  --widget-blade products-list \
+  --widget-name Stats \
+  --widget-entity Product \
+  --widget-icon material-sell
+```
+
+**Parameters:**
+- `--widget-module` - Module name (required)
+- `--widget-blade` - Blade name without .vue extension (required)
+- `--widget-name` - Widget name (required)
+- `--widget-entity` - Related entity name (required)
+- `--widget-icon` - Icon name (optional, default: material-list)
 
 ---
 

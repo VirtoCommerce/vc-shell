@@ -2,6 +2,95 @@
 
 Comprehensive AI guidance system for the VC-Shell framework, allowing clients without framework knowledge to create and modify applications using natural language.
 
+---
+
+## 🤖 FOR AI ASSISTANTS: CRITICAL INSTRUCTIONS
+
+**You are in a VC-Shell project. Read this FIRST before any task.**
+
+### 📋 Your Capabilities & Workflow
+
+1. **Generate Complete App with Module (Grid + Details)**
+   ```bash
+   # Step 1: Create app
+   npx create-vc-app {app-name} --skip-module-gen
+   cd {app-name}
+   
+   # Step 2: Create grid blade (creates module)
+   npx create-vc-app generate --module {name} --type grid --name {entity} --form-fields '{fields}'
+   
+   # Step 3: Add details blade
+   npx create-vc-app generate --module {name} --type details --name {entity} --form-fields '{fields}'
+   ```
+   - See: `prompts/cli-usage.md` for complete CLI reference
+   - See: `prompts/quick-start-scenarios.md` for ready-to-use templates
+
+2. **Modify Existing Code**
+   - See: `prompts/simple-modifications.md` for 65+ modification templates
+   - See: `prompts/advanced-scenarios.md` for complex patterns
+   - Always follow patterns from root `.cursorrules`
+
+3. **Use VC-Shell Components**
+   - **ALWAYS check:** `UI_COMPONENTS_REFERENCE.md` (27 components documented)
+   - **NEVER create custom** if VC-Shell has it
+   - See: `guides/ui-components-reference.md` for advanced usage
+
+4. **Follow Framework Patterns**
+   - Composables: `guides/composables-reference.md`
+   - Blade System: `guides/blade-patterns.md`
+   - Complete Workflow: `guides/complete-workflow.md`
+
+### ⚡ Quick Decision Tree
+
+```
+User Request
+  ├─ New App with Module? → 3 commands
+  │   ├─ Create app: npx create-vc-app {app} --skip-module-gen
+  │   ├─ Add grid: npx create-vc-app generate --module {name} --type grid --name {entity}
+  │   └─ Add details: npx create-vc-app generate --module {name} --type details --name {entity}
+  │
+  ├─ New Module in Existing App? → Use CLI (`prompts/cli-usage.md`)
+  │   ├─ Common type? → Use template (`prompts/quick-start-scenarios.md`)
+  │   └─ Custom? → Build from scratch with CLI
+  │
+  ├─ Modify Existing? → Check template (`prompts/simple-modifications.md`)
+  │   ├─ Simple change? → Use template as-is
+  │   └─ Complex? → Combine patterns (`prompts/advanced-scenarios.md`)
+  │
+  ├─ Component Question? → Check `UI_COMPONENTS_REFERENCE.md`
+  │
+  └─ Error/Issue? → Check `guides/troubleshooting.md`
+```
+
+### ✅ CRITICAL RULES (From `.cursorrules`)
+
+**ALWAYS:**
+- Use `npx create-vc-app generate` for new modules/blades
+- Check `UI_COMPONENTS_REFERENCE.md` before using components
+- Use `VcCard` for sections (tabs don't exist!)
+- Follow composable patterns
+- Add validation (VeeValidate)
+- Use i18n for all text
+- Track modifications with `useModificationTracker`
+
+**NEVER:**
+- Create custom components if VC-Shell has one
+- Add custom HTML inside `VcWidget` (props only!)
+- Use tabs (use `VcCard`)
+- Skip validation or i18n
+- Modify `core/` or `shared/` directories
+
+### 📖 File Priority Order
+
+When answering questions, consult in this order:
+1. **Root `.cursorrules`** - Framework rules & patterns
+2. **`UI_COMPONENTS_REFERENCE.md`** - Component documentation
+3. **`prompts/{relevant}.md`** - Task-specific templates
+4. **`guides/{relevant}.md`** - Technical guides
+5. **User's existing code** - Current implementation
+
+---
+
 ## What is this?
 
 This system provides AI assistants with complete knowledge of the VC-Shell framework, including:
@@ -58,10 +147,16 @@ Copy the `.cursorrules-vc-shell` file to your project root and rename it to `.cu
 
 ### Choose Your Prompt
 
-Use this decision tree to find the right prompt:
+Use this decision tree to find the right resource:
 
 ```
 Need to...
+├── Understand core patterns?
+│   └── Read: .cursorrules-vc-shell (PRIMARY REFERENCE)
+│
+├── Find component API?
+│   └── Check: UI_COMPONENTS_REFERENCE.md
+│
 ├── Create new app?
 │   └── See: prompts/cli-usage.md (Section: Create New Application)
 │
@@ -86,7 +181,8 @@ Need to...
 │       └── See: prompts/advanced-scenarios.md
 │
 ├── Having issues?
-│   └── See: guides/troubleshooting.md
+│   ├── First: guides/troubleshooting.md
+│   └── Then: .cursorrules-vc-shell (Common Pitfalls section)
 │
 └── Want full walkthrough?
     └── See: guides/complete-workflow.md
@@ -94,9 +190,22 @@ Need to...
 
 ## System Structure
 
-### Main files
+### Main Files ⭐
 
-- **`.cursorrules-vc-shell`** - Main file with complete framework knowledge
+- **`.cursorrules-vc-shell`** - **PRIMARY AI RULESET**. Auto-loaded by Cursor IDE. Contains:
+  - Complete framework patterns
+  - Essential code examples
+  - Deprecated patterns to avoid
+  - Verification checklist
+  - Common pitfalls and solutions
+  
+- **`UI_COMPONENTS_REFERENCE.md`** - **COMPLETE COMPONENTS GUIDE**:
+  - All 45+ UI components with props and events
+  - Form components (VcInput, VcSelect, VcEditor, VcGallery, etc.)
+  - Layout components (VcCard, VcBlade)
+  - Data display (VcTable, VcWidget)
+  - Usage examples and patterns
+  
 - **`README.md`** - This overview file
 
 ### Prompt Templates (`prompts/`)
@@ -119,13 +228,6 @@ Need to...
 
 - **`complete-workflow.md`** - Full development workflow from creation to deployment
 - **`troubleshooting.md`** - Solutions for common issues
-
-**Reference:**
-
-- **`blade-patterns.md`** - Complete blade patterns and examples
-- **`composables-reference.md`** - All composables with usage examples
-- **`ui-components-reference.md`** - Reference for all 45 UI components
-- **`AI_GUIDE.md`** - Quick reference for AI assistants
 
 ## Real-World Examples
 

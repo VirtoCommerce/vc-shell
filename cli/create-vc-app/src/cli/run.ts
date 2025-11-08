@@ -70,6 +70,11 @@ async function runBladeGenerator(args: CLIArgs): Promise<void> {
     path: args.path,
     formFields: args["form-fields"],
     skipFormEditor: args["skip-form-editor"],
+    widgetModule: args["widget-module"],
+    widgetBlade: args["widget-blade"],
+    widgetName: args["widget-name"],
+    widgetEntity: args["widget-entity"],
+    widgetIcon: args["widget-icon"],
   });
 }
 

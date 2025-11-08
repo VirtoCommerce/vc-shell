@@ -26,6 +26,11 @@ ${chalk.bold("Blade Generator Options:")}
   --name <name>                      Blade name
   --is-workspace                     Mark blade as workspace (main module blade)
   --widget                           Generate widget instead of blade
+  --widget-module <name>             Module name for widget (non-interactive)
+  --widget-blade <name>              Blade name for widget (non-interactive)
+  --widget-name <name>               Widget name (non-interactive)
+  --widget-entity <name>             Related entity name (non-interactive)
+  --widget-icon <icon>               Widget icon (non-interactive, default: material-list)
   --composable                       Generate composable
   --locales                          Generate locales
   --path <path>                      Target path
@@ -64,6 +69,10 @@ ${chalk.bold("Examples:")}
 
   ${chalk.gray("# Generate widget interactively")}
   create-vc-app blade --widget
+
+  ${chalk.gray("# Generate widget non-interactively")}
+  create-vc-app blade --widget --widget-module products --widget-blade products-list \\
+    --widget-name Stats --widget-entity Product --widget-icon material-sell
 `);
 }
 

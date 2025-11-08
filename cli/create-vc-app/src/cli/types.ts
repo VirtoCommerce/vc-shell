@@ -20,6 +20,11 @@ export interface CLIArgs {
   "form-fields"?: string;
   "skip-form-editor"?: boolean;
   "skip-module-gen"?: boolean;
+  "widget-module"?: string;
+  "widget-blade"?: string;
+  "widget-name"?: string;
+  "widget-entity"?: string;
+  "widget-icon"?: string;
 }
 
 export interface CreateAppConfig {

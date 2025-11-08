@@ -19,7 +19,22 @@ export function parseArgs(rawArgv: string[] = processArgv.slice(2)): CLIArgs {
       "skip-form-editor",
       "skip-module-gen",
     ],
-    string: ["name", "app-name", "package-name", "module-name", "base-path", "type", "module", "path", "form-fields"],
+    string: [
+      "name",
+      "app-name",
+      "package-name",
+      "module-name",
+      "base-path",
+      "type",
+      "module",
+      "path",
+      "form-fields",
+      "widget-module",
+      "widget-blade",
+      "widget-name",
+      "widget-entity",
+      "widget-icon",
+    ],
   }) as CLIArgs;
 }
 

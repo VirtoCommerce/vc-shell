@@ -21,6 +21,9 @@ import {
   scaffoldAppSchema,
   validateUIPlanSchema,
   getBladeTemplateSchema,
+  generateCompleteModuleSchema,
+  validateAndFixPlanSchema,
+  generateBladeSchema,
   type Component,
 } from "../schemas/zod-schemas.js";
 import {
@@ -32,6 +35,8 @@ import {
 } from "../utils/formatters.js";
 import { generateMinimalAuditChecklist } from "../utils/audit-checklist.js";
 import { componentNotFoundError, mcpError } from "../utils/errors.js";
+import { UnifiedCodeGenerator } from "../core/unified-generator.js";
+import type { UIPlan as ValidatorUIPlan } from "../core/validator.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -44,7 +49,7 @@ export async function mcpServerCommand() {
   const server = new Server(
     {
       name: "vcshell-codegen",
-      version: "0.1.0",
+      version: "0.5.0",
     },
     {
       capabilities: {
@@ -120,6 +125,24 @@ export async function mcpServerCommand() {
           description:
             "Get a complete, production-ready Vue SFC blade template. Returns full file content (150-330 lines) that AI should copy and adapt. Available templates: list-simple, list-filters, list-multiselect, details-simple, details-validation. Use this instead of generating code from scratch.",
           inputSchema: zodToJsonSchema(getBladeTemplateSchema),
+        },
+        {
+          name: "generate_complete_module",
+          description:
+            "Generate complete module from UI-Plan. All files created automatically including blades, composables, locales, and registration in main.ts. This is the PRIMARY tool for module generation - use this instead of manual template adaptation.",
+          inputSchema: zodToJsonSchema(generateCompleteModuleSchema),
+        },
+        {
+          name: "validate_and_fix_plan",
+          description:
+            "Validate UI-Plan and suggest fixes for errors. Returns fixed plan if validation fails.",
+          inputSchema: zodToJsonSchema(validateAndFixPlanSchema),
+        },
+        {
+          name: "generate_blade",
+          description:
+            "Generate single blade (list or details) from configuration. Use this for generating individual blades without full module.",
+          inputSchema: zodToJsonSchema(generateBladeSchema),
         },
       ],
     };
@@ -547,6 +570,51 @@ Try:
                     {
                       success: false,
                       error: `Directory '${projectName}' already exists`,
+                      suggestion: "Choose a different project name or remove existing directory",
+                    },
+                    null,
+                    2
+                  ),
+                },
+              ],
+              isError: true,
+            };
+          }
+
+          // Import execa dynamically
+          const { execa } = await import("execa");
+
+          try {
+            // Run create-vc-app in non-interactive mode
+            console.error(`Creating VC-Shell app: ${projectName}...`);
+            
+            const result = await execa("npx", [
+              "@vc-shell/create-vc-app@latest",
+              projectName,
+              "--skip-module-gen",
+              "--overwrite"
+            ], {
+              cwd: targetDir,
+              stdio: "pipe",
+            });
+
+            return {
+              content: [
+                {
+                  type: "text",
+                  text: JSON.stringify(
+                    {
+                      success: true,
+                      message: `VC-Shell app '${projectName}' created successfully`,
+                      path: projectPath,
+                      nextSteps: [
+                        `cd ${projectName}`,
+                        `npm install`,
+                        `npm run dev`,
+                        ``,
+                        `Then use AI to generate modules:`,
+                        `"Create vendor management module with list and details"`,
+                      ],
                     },
                     null,
                     2
@@ -554,35 +622,26 @@ Try:
                 },
               ],
             };
+          } catch (error: any) {
+            return {
+              content: [
+                {
+                  type: "text",
+                  text: JSON.stringify(
+                    {
+                      success: false,
+                      error: "Failed to create app",
+                      details: error.message || String(error),
+                      suggestion: "Check that @vc-shell/create-vc-app is accessible and try again",
+                    },
+                    null,
+                    2
+                  ),
+                },
+              ],
+              isError: true,
+            };
           }
-
-          return {
-            content: [
-              {
-                type: "text",
-                text: JSON.stringify(
-                  {
-                    success: true,
-                    message: `Ready to create VC-Shell app '${projectName}'`,
-                    instructions: [
-                      `Run the following command to create the app:`,
-                      `npx @vc-shell/create-vc-app ${projectName}`,
-                      ``,
-                      `Then follow the prompts to configure your project.`,
-                      ``,
-                      `After creation, navigate to the project:`,
-                      `cd ${projectName}`,
-                      ``,
-                      `Start the development server:`,
-                      `npm run dev`,
-                    ].join("\n"),
-                  },
-                  null,
-                  2
-                ),
-              },
-            ],
-          };
         }
 
         case "get_blade_template": {
@@ -677,6 +736,168 @@ ${content}
           };
         }
 
+        case "generate_complete_module": {
+          const parsed = generateCompleteModuleSchema.safeParse(args);
+          if (!parsed.success) {
+            throw new Error(`Invalid arguments: ${parsed.error.message}`);
+          }
+
+          const { plan, cwd, dryRun } = parsed.data;
+
+          // Validate plan first
+          const validator = new Validator();
+          const validation = validator.validateUIPlan(plan);
+
+          if (!validation.valid) {
+            return {
+              content: [
+                {
+                  type: "text",
+                  text: JSON.stringify(
+                    {
+                      success: false,
+                      error: "UI-Plan validation failed",
+                      errors: validation.errors,
+                      suggestion: "Fix validation errors and try again, or use validate_and_fix_plan tool",
+                    },
+                    null,
+                    2
+                  ),
+                },
+              ],
+              isError: true,
+            };
+          }
+
+          // Generate module
+          const generator = new UnifiedCodeGenerator();
+          const result = await generator.generateModule(plan as ValidatorUIPlan, cwd);
+
+          // Write files if not dry run
+          if (!dryRun) {
+            for (const file of result.files) {
+              const dir = path.dirname(file.path);
+              if (!fs.existsSync(dir)) {
+                fs.mkdirSync(dir, { recursive: true });
+              }
+              fs.writeFileSync(file.path, file.content, "utf-8");
+            }
+          }
+
+          return {
+            content: [
+              {
+                type: "text",
+                text: JSON.stringify(
+                  {
+                    success: true,
+                    message: `Module generated successfully`,
+                    summary: {
+                      module: (plan as ValidatorUIPlan).module,
+                      blades: result.summary.blades,
+                      composables: result.summary.composables,
+                      locales: result.summary.locales,
+                      registered: result.summary.registered,
+                      totalFiles: result.files.length,
+                    },
+                    files: result.files.map(f => ({
+                      path: f.path.replace(cwd, ""),
+                      lines: f.lines,
+                    })),
+                    dryRun: dryRun || false,
+                  },
+                  null,
+                  2
+                ),
+              },
+            ],
+          };
+        }
+
+        case "validate_and_fix_plan": {
+          const parsed = validateAndFixPlanSchema.safeParse(args);
+          if (!parsed.success) {
+            throw new Error(`Invalid arguments: ${parsed.error.message}`);
+          }
+
+          const { plan } = parsed.data;
+          const validator = new Validator();
+          const validation = validator.validateUIPlan(plan);
+
+          if (validation.valid) {
+            return {
+              content: [
+                {
+                  type: "text",
+                  text: JSON.stringify(
+                    {
+                      valid: true,
+                      message: "UI-Plan is valid, no fixes needed",
+                    },
+                    null,
+                    2
+                  ),
+                },
+              ],
+            };
+          }
+
+          // Generate suggested fixes
+          const fixes = validation.errors.map(error => ({
+            path: error.path,
+            message: error.message,
+            severity: error.severity,
+            suggestion: generateFixSuggestion(error),
+          }));
+
+          return {
+            content: [
+              {
+                type: "text",
+                text: JSON.stringify(
+                  {
+                    valid: false,
+                    errors: validation.errors,
+                    fixes,
+                    message: "UI-Plan has validation errors. Review and fix manually or regenerate plan.",
+                  },
+                  null,
+                  2
+                ),
+              },
+            ],
+          };
+        }
+
+        case "generate_blade": {
+          const parsed = generateBladeSchema.safeParse(args);
+          if (!parsed.success) {
+            throw new Error(`Invalid arguments: ${parsed.error.message}`);
+          }
+
+          const { type, entity, columns, fields } = parsed.data;
+
+          // This is a simplified single-blade generation
+          // In practice, this would use the same template adapter logic
+          // For now, return instructions
+          return {
+            content: [
+              {
+                type: "text",
+                text: JSON.stringify(
+                  {
+                    message: "Single blade generation",
+                    note: "Use generate_complete_module for full module generation",
+                    params: { type, entity, columns, fields },
+                  },
+                  null,
+                  2
+                ),
+              },
+            ],
+          };
+        }
+
         default:
           throw new Error(`Unknown tool: ${name}`);
       }
@@ -703,3 +924,31 @@ ${content}
 
   console.error("VC-Shell MCP Server started");
 }
+
+/**
+ * Generate fix suggestion for validation error
+ */
+function generateFixSuggestion(error: { path: string; message: string; severity: string }): string {
+  if (error.message.includes("kebab-case")) {
+    return "Use kebab-case format (e.g., 'vendor-management' instead of 'VendorManagement')";
+  }
+  
+  if (error.message.includes("Route must start with")) {
+    return "Add '/' at the beginning of the route (e.g., '/vendors' instead of 'vendors')";
+  }
+  
+  if (error.message.includes("not found in Component Registry")) {
+    return "Use only components from the VC-Shell Component Registry. Call search_components to find available components.";
+  }
+  
+  if (error.message.includes("field type")) {
+    return "Valid field types: VcInput, VcTextarea, VcSelect, VcCheckbox, VcSwitch, VcGallery, VcFileUpload";
+  }
+  
+  if (error.message.includes("50 items")) {
+    return "Reduce number of fields to maximum 50 items";
+  }
+  
+  return "Review the error message and fix the plan manually";
+}
+

@@ -45,6 +45,36 @@ export const getBladeTemplateSchema = z.object({
     .describe("Complexity level: simple (basic CRUD), filters (with filters slot), multiselect (bulk actions), validation (async validation)"),
 });
 
+export const generateCompleteModuleSchema = z.object({
+  plan: z.record(z.unknown()).describe("UI-Plan JSON object to generate from"),
+  cwd: z.string().describe("Working directory (project root)"),
+  dryRun: z.boolean().optional().describe("If true, shows what would be generated without writing files"),
+});
+
+export const validateAndFixPlanSchema = z.object({
+  plan: z.record(z.unknown()).describe("UI-Plan JSON object to validate and fix"),
+});
+
+export const generateBladeSchema = z.object({
+  type: z.enum(["list", "details"]).describe("Blade type to generate"),
+  entity: z.string().describe("Entity name (singular, e.g., 'vendor', 'product')"),
+  columns: z.array(z.object({
+    key: z.string(),
+    title: z.string(),
+    type: z.string().optional(),
+    sortable: z.boolean().optional(),
+  })).optional().describe("Column definitions for list blades"),
+  fields: z.array(z.object({
+    key: z.string(),
+    as: z.string(),
+    label: z.string(),
+    type: z.string().optional(),
+    required: z.boolean().optional(),
+    validation: z.string().optional(),
+  })).optional().describe("Field definitions for details blades"),
+  features: z.array(z.string()).optional().describe("Additional features: filters, multiselect, validation, gallery"),
+});
+
 // CLI Command Schemas
 
 export const viewCommandOptionsSchema = z.object({
@@ -197,4 +227,7 @@ export type SearchResultItem = z.infer<typeof searchResultItemSchema>;
 export type DiffResult = z.infer<typeof diffResultSchema>;
 export type DiffChange = z.infer<typeof diffChangeSchema>;
 export type GetBladeTemplateInput = z.infer<typeof getBladeTemplateSchema>;
+export type GenerateCompleteModuleInput = z.infer<typeof generateCompleteModuleSchema>;
+export type ValidateAndFixPlanInput = z.infer<typeof validateAndFixPlanSchema>;
+export type GenerateBladeInput = z.infer<typeof generateBladeSchema>;
 

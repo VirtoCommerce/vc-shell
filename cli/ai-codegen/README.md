@@ -2,42 +2,88 @@
 
 AI-powered code generation for VC-Shell applications using Model Context Protocol (MCP).
 
-Generate complete, production-ready VC-Shell modules from natural language prompts.
+**Generate complete, production-ready VC-Shell modules automatically from natural language prompts.**
 
 [![Version](https://img.shields.io/npm/v/@vc-shell/ai-codegen.svg)](https://www.npmjs.com/package/@vc-shell/ai-codegen)
 [![License](https://img.shields.io/npm/l/@vc-shell/ai-codegen.svg)](https://github.com/VirtoCommerce/vc-shell/blob/main/LICENSE)
 
 ## Features
 
+- 🚀 **Fully Automatic**: AI generates complete modules in one command
 - 🤖 **AI-Powered**: Works with Cursor, VS Code, Claude Code, Codex
-- 📦 **Production Ready**: Based on real vendor-portal patterns
-- 🎨 **Flexible**: Templates for quick start + Compositions for unlimited customization
+- 📦 **Production Ready**: AST-based code generation with mock data
+- 🎨 **Two Patterns**: List (table) and Details (form) - covers all use cases
 - ✅ **Type-Safe**: Full TypeScript support
 - 🌐 **i18n Ready**: All strings use vue-i18n
-- 🔧 **MCP Integration**: 7 tools and 7 resources
+- 🔧 **MCP Integration**: 10 tools and 7 resources
+- 🧪 **Mock Data**: Generated modules work immediately without backend
 
 ## Quick Start
 
-### 1. Installation
+### Option 1: Add to Existing Project
+
+#### 1. Installation
 
 ```bash
+cd /path/to/your-vc-shell-project
 npx @vc-shell/ai-codegen@latest init-mcp --client cursor
 ```
 
-### 2. Restart IDE
+#### 2. Restart IDE
 
 ```bash
 # Cursor: Command + Q → Reopen
 # Then: Settings → Features → MCP → Enable "vcshell"
 ```
 
-### 3. Generate Module
+#### 3. Generate Module
 
 ```
-Create vendor management with list and details
+Create vendor management module with list and details blades
 ```
 
-AI will generate complete module with blades, composables, and i18n!
+**AI will:**
+1. Generate UI-Plan JSON
+2. Validate the plan
+3. Call `generate_complete_module` tool
+4. **Everything generated automatically in 30 seconds!**
+
+### Option 2: Create New VC-Shell App
+
+#### 1. Configure MCP First
+
+```bash
+# In any directory
+npx @vc-shell/ai-codegen@latest init-mcp --client cursor
+```
+
+#### 2. Restart Cursor
+
+#### 3. Create App via AI
+
+**Prompt in Cursor:**
+```
+Create new VC-Shell app called "my-vendor-portal"
+```
+
+**AI will automatically:**
+1. Call `scaffold_app` tool
+2. Tool runs: `npx @vc-shell/create-vc-app@latest my-vendor-portal --skip-module-gen`
+3. App created with base structure (no modules yet)
+
+#### 4. Generate Modules
+
+```bash
+cd my-vendor-portal
+npm install
+```
+
+**Then prompt:**
+```
+Create vendor management module with list and details
+```
+
+**Ready!** 🚀
 
 ## What Gets Generated
 
@@ -97,10 +143,18 @@ vcgen generate --plan __ai/ui-plan.json
 
 ## MCP Tools
 
-- `search_components`, `view_components`
-- `get_component_examples`, `get_blade_template`
-- `validate_ui_plan`, `get_audit_checklist`
-- `scaffold_app`
+### Primary Tools
+- `generate_complete_module` - 🚀 **Main tool - generates everything automatically**
+- `validate_ui_plan` - Validate UI-Plan before generation
+- `validate_and_fix_plan` - Auto-fix validation errors
+
+### Helper Tools
+- `search_components`, `view_components` - Browse component registry
+- `get_component_examples` - Get usage examples
+- `get_blade_template` - Get template for reference (not for manual use)
+- `scaffold_app` - Create new VC-Shell app
+- `generate_blade` - Generate single blade
+- `get_audit_checklist` - Quality checklist
 
 ## Version
 

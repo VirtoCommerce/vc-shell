@@ -15,7 +15,7 @@ const program = new Command();
 program
   .name("vcgen")
   .description("AI-powered code generation for VC Shell applications")
-  .version("0.1.0");
+  .version("0.5.0");
 
 program
   .command("plan")

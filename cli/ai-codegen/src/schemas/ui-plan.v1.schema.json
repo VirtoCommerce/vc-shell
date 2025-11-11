@@ -71,6 +71,21 @@
             "enum": ["save", "delete", "refresh", "add", "edit", "remove", "next", "back", "submit"]
           }
         },
+        "features": {
+          "type": "array",
+          "description": "Additional features for the blade",
+          "items": {
+            "type": "string",
+            "enum": ["filters", "multiselect", "validation", "gallery", "widgets"]
+          }
+        },
+        "customSlots": {
+          "type": "array",
+          "description": "Custom slot components for table columns",
+          "items": {
+            "$ref": "#/definitions/customSlot"
+          }
+        },
         "theme": {
           "type": "object",
           "properties": {
@@ -171,6 +186,11 @@
         "label": {
           "type": "string"
         },
+        "type": {
+          "type": "string",
+          "description": "Field data type",
+          "enum": ["text", "email", "number", "date", "boolean", "url", "tel"]
+        },
         "placeholder": {
           "type": "string"
         },
@@ -210,12 +230,35 @@
         "title": {
           "type": "string"
         },
+        "type": {
+          "type": "string",
+          "description": "Column display type",
+          "enum": ["text", "number", "money", "date", "date-ago", "status", "boolean", "image", "email"]
+        },
         "sortable": {
           "type": "boolean",
           "default": true
         },
         "width": {
           "type": "string"
+        }
+      }
+    },
+    "customSlot": {
+      "type": "object",
+      "required": ["name"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Slot name (e.g., 'item_status')"
+        },
+        "component": {
+          "type": "string",
+          "description": "Component name to use in slot (e.g., 'StatusBadge')"
+        },
+        "props": {
+          "type": "object",
+          "description": "Props to pass to component"
         }
       }
     },

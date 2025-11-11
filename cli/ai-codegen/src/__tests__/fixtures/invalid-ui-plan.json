@@ -1,0 +1,13 @@
+{
+  "$schema": "https://vc-shell.dev/schemas/ui-plan.v1.json",
+  "module": "InvalidModuleName",
+  "blades": [
+    {
+      "id": "invalid blade",
+      "route": "products",
+      "layout": "grid",
+      "title": "Products"
+    }
+  ]
+}
+

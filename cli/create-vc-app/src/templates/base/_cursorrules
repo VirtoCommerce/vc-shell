@@ -1,0 +1,111 @@
+# VC-Shell AI Generation Rules (v1)
+
+## Context
+- Framework: Vc-shell (Vue 3.4 + TypeScript 5.8)
+- UI Components: from @vc-shell/framework
+- Architecture: Blade-based navigation, Module structure
+- Routing: Dynamic blade routes with params
+
+## Commands
+
+### /ui-plan
+**Purpose:** Generate UI-Plan JSON from natural language prompt
+
+**Input:** Short prompt describing desired UI (e.g., "Product catalog grid with edit form")
+
+**Output:** Valid `ui-plan.v1.json` adhering to schema
+
+**Rules:**
+1. Return ONLY valid JSON, no explanations
+2. Use ONLY components from Component Registry (VcForm, VcInput, VcTextarea, VcSelect, VcTable, VcBlade, VcButton, VcField)
+3. Never invent props or components not in Registry
+4. Prefer simple layouts unless explicitly requested
+5. Add permissions when feature mutates data (e.g., "product:update")
+6. Include accessible labels and validation rules for forms
+7. If steps/wizard requested: use `steps[]` array in blade config
+8. Theme: `light` | `dark` | `system` (default: system)
+9. Conservative assumptions: if prompt ambiguous → minimal plan
+
+**Field Types:**
+- Text, Email, Url, Number, Date, Password (for VcInput)
+- Textarea (for VcTextarea)
+- Select, Checkbox, Switch (for form selections)
+- Gallery, FileUpload (for media)
+
+**Example:**
+User: "Vendor list with status filter and add button"
+
+Output:
+```json
+{
+  "$schema": "https://vc-shell.dev/schemas/ui-plan.v1.json",
+  "module": "vendors",
+  "blades": [
+    {
+      "id": "vendor-list",
+      "route": "/vendors",
+      "layout": "grid",
+      "title": "Vendors",
+      "isWorkspace": true,
+      "components": [
+        {
+          "type": "DataTable",
+          "dataSource": "vendors",
+          "columns": [
+            {"key": "name", "title": "Name"},
+            {"key": "status", "title": "Status"}
+          ],
+          "actions": ["add"],
+          "filters": [{"key": "status", "type": "select"}]
+        }
+      ],
+      "permissions": ["vendor:read"],
+      "theme": {"variant": "system"}
+    }
+  ],
+  "data": {
+    "sources": {
+      "vendors": {"type": "api", "endpoint": "/api/vendors"}
+    }
+  }
+}
+```
+
+### /ui-gen
+**Purpose:** Generate code from UI-Plan JSON
+
+**Steps:**
+1. If UI-Plan not already created, run /ui-plan first
+2. Save plan to `./__ai/plan.json` (or use existing path)
+3. Run: `pnpm vcgen generate --plan ./__ai/plan.json --fix --story`
+4. Show diff of changes
+5. Inform user about next steps (review code, update API clients, run dev server)
+
+**Note:** This command uses terminal to execute CLI. Generated code includes TODO comments for API integration.
+
+### /ui-validate
+**Purpose:** Validate UI-Plan JSON without generating code
+
+**Usage:** `pnpm vcgen validate --plan ./__ai/plan.json`
+
+Shows validation errors, warnings, and plan summary.
+
+## Naming Conventions
+- Module names: kebab-case (e.g., `vendor-onboarding`)
+- Entity names: PascalCase (e.g., `VendorProfile`)
+- Files: kebab-case (e.g., `vendor-profile-details.vue`)
+- Composables: camelCase with `use` prefix (e.g., `useVendorDetails`)
+- I18n keys: UPPER_SNAKE_CASE (e.g., `VENDORS.PAGES.LIST.TITLE`)
+
+## Validation
+- All generated plans MUST validate against `ui-plan.v1.schema.json`
+- All components MUST exist in Component Registry
+- All props MUST match Registry signatures
+- Module names MUST be kebab-case
+- Routes MUST start with `/`
+
+## Code Generation Workflow
+
+**Typical flow:**
+```
+User: "Product catalog: grid with search, details form with gallery"

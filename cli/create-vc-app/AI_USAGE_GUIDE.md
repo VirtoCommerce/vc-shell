@@ -1,6 +1,128 @@
 # AI Usage Guide for create-vc-app
 
-This guide is specifically designed for AI assistants to help users generate VC Shell applications, modules, blades, and widgets using non-interactive commands.
+This guide is specifically designed for AI assistants to help users generate VC Shell applications, modules, blades, and widgets using non-interactive commands and AI-powered code generation.
+
+## AI-Generated UI (NEW!)
+
+### Quick Start with AI Generation
+
+Generate complete VC Shell modules from natural language prompts:
+
+```bash
+# 1. Generate UI-Plan from prompt
+pnpm vcgen plan --from-prompt "Product catalog: grid with search, details form with gallery"
+
+# 2. Generate code from plan
+pnpm vcgen generate --plan ./__ai/ui-plan.json --fix --story
+
+# 3. Start development server
+pnpm dev
+```
+
+### Using Cursor AI
+
+If you're using Cursor IDE, you can use custom commands:
+
+**Generate UI-Plan:**
+```
+/ui-plan "Vendor list with status filter and add button"
+```
+
+**Generate Code:**
+```
+/ui-gen
+```
+
+See `.cursorrules` in your project for detailed commands and @Docs for component registry.
+
+### UI-Plan Structure
+
+A UI-Plan is a declarative JSON that describes your UI. Example:
+
+```json
+{
+  "$schema": "https://vc-shell.dev/schemas/ui-plan.v1.json",
+  "module": "products",
+  "blades": [
+    {
+      "id": "product-list",
+      "route": "/products",
+      "layout": "grid",
+      "title": "Products",
+      "components": [
+        {
+          "type": "DataTable",
+          "dataSource": "products",
+          "columns": [
+            {"key": "name", "title": "Name"},
+            {"key": "price", "title": "Price"}
+          ],
+          "actions": ["add", "edit"]
+        }
+      ],
+      "permissions": ["product:read"]
+    }
+  ]
+}
+```
+
+### Available vcgen Commands
+
+**`vcgen plan`** - Generate UI-Plan from prompt
+- `--from-prompt <text>` - Natural language description
+- `--output <path>` - Output path (default: `./__ai/ui-plan.json`)
+- `--module <name>` - Force module name
+
+**`vcgen generate`** - Generate code from UI-Plan
+- `--plan <path>` - Path to UI-Plan JSON (required)
+- `--dry-run` - Show what would be generated
+- `--fix` - Run ESLint/Prettier after generation
+- `--story` - Generate Storybook stories
+- `--cwd <path>` - Working directory
+
+**`vcgen validate`** - Validate UI-Plan
+- `--plan <path>` - Path to UI-Plan JSON
+
+### Examples
+
+**Example 1: Simple List**
+```bash
+pnpm vcgen plan --from-prompt "Orders list with search and date filter"
+```
+Result: Grid blade with VcTable, search bar, date range filter
+
+**Example 2: Complete Module**
+```bash
+pnpm vcgen plan --from-prompt "Product catalog: grid with name, price, status. Details form with validation. Admin can add/edit/delete."
+```
+Result: Grid + Details blades, full CRUD operations
+
+**Example 3: Multi-step Wizard**
+```bash
+pnpm vcgen plan --from-prompt "Vendor onboarding: Step 1 company info, Step 2 contacts, Step 3 review"
+```
+Result: Details blade with steps[], navigation buttons
+
+### Generated Files
+
+For a typical module, vcgen generates:
+- `pages/{module}.vue` - Grid blade (if applicable)
+- `pages/{module}-details.vue` - Details blade (if applicable)
+- `composables/use{Module}List.ts` - Grid composable
+- `composables/use{Module}Details.ts` - Details composable
+- `locales/en.json` - i18n translations
+- `pages/index.ts` - Blade exports
+- `index.ts` - Module entry point
+
+### Next Steps After Generation
+
+1. **Review generated code** - Check all files
+2. **Update API clients** - Replace TODO comments with actual API calls
+3. **Test the UI** - Run `pnpm dev` and navigate to your module
+4. **Customize as needed** - Adjust fields, validation, styling
+5. **Commit changes** - `git add` and `git commit`
+
+---
 
 ## Quick Reference
 

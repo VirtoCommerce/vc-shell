@@ -1,0 +1,346 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://vc-shell.dev/schemas/component-registry.v1.json",
+  "title": "VC Shell Component Registry",
+  "description": "Registry of available UI components for code generation",
+  "type": "object",
+  "properties": {
+    "VcForm": {
+      "type": "object",
+      "properties": {
+        "import": {
+          "type": "string",
+          "const": "@vc-shell/framework"
+        },
+        "component": {
+          "type": "string",
+          "const": "VcForm"
+        },
+        "description": {
+          "type": "string",
+          "const": "Form container component with validation support"
+        },
+        "props": {
+          "type": "object",
+          "properties": {
+            "model": {
+              "type": "string",
+              "const": "object"
+            },
+            "fields": {
+              "type": "string",
+              "const": "Field[]"
+            }
+          }
+        },
+        "constraints": {
+          "type": "object",
+          "properties": {
+            "maxFields": {
+              "type": "number",
+              "const": 50
+            },
+            "supportsValidation": {
+              "type": "boolean",
+              "const": true
+            }
+          }
+        },
+        "examples": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "VcField": {
+      "type": "object",
+      "properties": {
+        "import": {
+          "type": "string",
+          "const": "@vc-shell/framework"
+        },
+        "component": {
+          "type": "string",
+          "const": "VcField"
+        },
+        "description": {
+          "type": "string",
+          "const": "IMPORTANT: VcField is ONLY for displaying read-only data with label-value pairs. NOT for form inputs! Use Field from vee-validate for forms."
+        },
+        "props": {
+          "type": "object",
+          "properties": {
+            "label": {
+              "type": "string",
+              "const": "string"
+            },
+            "required": {
+              "type": "string",
+              "const": "boolean"
+            },
+            "rules": {
+              "type": "string",
+              "const": "ValidationRule[]"
+            }
+          }
+        }
+      }
+    },
+    "VcInput": {
+      "type": "object",
+      "properties": {
+        "import": {
+          "type": "string",
+          "const": "@vc-shell/framework"
+        },
+        "component": {
+          "type": "string",
+          "const": "VcInput"
+        },
+        "description": {
+          "type": "string",
+          "const": "Text input field with various types"
+        },
+        "props": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "text | email | url | number | date | password"
+            },
+            "placeholder": {
+              "type": "string",
+              "const": "string"
+            },
+            "label": {
+              "type": "string",
+              "const": "string"
+            },
+            "required": {
+              "type": "string",
+              "const": "boolean"
+            },
+            "disabled": {
+              "type": "string",
+              "const": "boolean"
+            }
+          }
+        }
+      }
+    },
+    "VcTextarea": {
+      "type": "object",
+      "properties": {
+        "import": {
+          "type": "string",
+          "const": "@vc-shell/framework"
+        },
+        "component": {
+          "type": "string",
+          "const": "VcTextarea"
+        },
+        "description": {
+          "type": "string",
+          "const": "Multi-line text input"
+        },
+        "props": {
+          "type": "object",
+          "properties": {
+            "rows": {
+              "type": "string",
+              "const": "number"
+            },
+            "maxlength": {
+              "type": "string",
+              "const": "number"
+            },
+            "placeholder": {
+              "type": "string",
+              "const": "string"
+            },
+            "label": {
+              "type": "string",
+              "const": "string"
+            }
+          }
+        }
+      }
+    },
+    "VcSelect": {
+      "type": "object",
+      "properties": {
+        "import": {
+          "type": "string",
+          "const": "@vc-shell/framework"
+        },
+        "component": {
+          "type": "string",
+          "const": "VcSelect"
+        },
+        "description": {
+          "type": "string",
+          "const": "Dropdown select component"
+        },
+        "props": {
+          "type": "object",
+          "properties": {
+            "options": {
+              "type": "string",
+              "const": "SelectOption[]"
+            },
+            "multiple": {
+              "type": "string",
+              "const": "boolean"
+            },
+            "label": {
+              "type": "string",
+              "const": "string"
+            }
+          }
+        }
+      }
+    },
+    "VcTable": {
+      "type": "object",
+      "properties": {
+        "import": {
+          "type": "string",
+          "const": "@vc-shell/framework"
+        },
+        "component": {
+          "type": "string",
+          "const": "VcTable"
+        },
+        "description": {
+          "type": "string",
+          "const": "Data table with sorting, pagination, and filtering"
+        },
+        "props": {
+          "type": "object",
+          "properties": {
+            "items": {
+              "type": "string",
+              "const": "any[]"
+            },
+            "columns": {
+              "type": "string",
+              "const": "Column[]"
+            },
+            "multiselect": {
+              "type": "string",
+              "const": "boolean"
+            },
+            "sort": {
+              "type": "string",
+              "const": "string"
+            },
+            "totalCount": {
+              "type": "string",
+              "const": "number"
+            },
+            "pages": {
+              "type": "string",
+              "const": "number"
+            },
+            "currentPage": {
+              "type": "string",
+              "const": "number"
+            }
+          }
+        },
+        "constraints": {
+          "type": "object",
+          "properties": {
+            "rowSelect": {
+              "type": "boolean",
+              "const": true
+            },
+            "pagination": {
+              "type": "boolean",
+              "const": true
+            }
+          }
+        }
+      }
+    },
+    "VcBlade": {
+      "type": "object",
+      "properties": {
+        "import": {
+          "type": "string",
+          "const": "@vc-shell/framework"
+        },
+        "component": {
+          "type": "string",
+          "const": "VcBlade"
+        },
+        "description": {
+          "type": "string",
+          "const": "Blade container component"
+        },
+        "props": {
+          "type": "object",
+          "properties": {
+            "title": {
+              "type": "string",
+              "const": "string"
+            },
+            "width": {
+              "type": "string",
+              "const": "string"
+            },
+            "closable": {
+              "type": "string",
+              "const": "boolean"
+            },
+            "expanded": {
+              "type": "string",
+              "const": "boolean"
+            },
+            "toolbarItems": {
+              "type": "string",
+              "const": "IBladeToolbar[]"
+            }
+          }
+        }
+      }
+    },
+    "VcButton": {
+      "type": "object",
+      "properties": {
+        "import": {
+          "type": "string",
+          "const": "@vc-shell/framework"
+        },
+        "component": {
+          "type": "string",
+          "const": "VcButton"
+        },
+        "description": {
+          "type": "string",
+          "const": "Button component with variants"
+        },
+        "props": {
+          "type": "object",
+          "properties": {
+            "variant": {
+              "type": "string",
+              "const": "primary | secondary | danger"
+            },
+            "disabled": {
+              "type": "string",
+              "const": "boolean"
+            },
+            "icon": {
+              "type": "string",
+              "const": "string"
+            }
+          }
+        }
+      }
+    }
+  }
+}
+

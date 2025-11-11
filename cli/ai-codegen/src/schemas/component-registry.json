@@ -1,0 +1,444 @@
+{
+  "VcBlade": {
+    "import": "@vc-shell/framework",
+    "component": "VcBlade",
+    "description": "Blade container component that implements the blade pattern for UI organization. Blades are panels that slide in from the right side of the screen.",
+    "category": "Layout",
+    "demos": ["VcBlade-demo.md"],
+    "keywords": ["blade", "panel", "container", "layout", "sidebar"],
+    "dependencies": [],
+    "templates": [
+      {
+        "id": "list-simple",
+        "file": "templates/list-simple.vue",
+        "complexity": "basic",
+        "lines": 150,
+        "features": ["search", "sort", "pagination", "toolbar"],
+        "description": "Simple list blade with basic table, toolbar, and navigation"
+      },
+      {
+        "id": "list-filters",
+        "file": "templates/list-filters.vue",
+        "complexity": "medium",
+        "lines": 290,
+        "features": ["filters", "search", "sort", "custom-slots"],
+        "description": "List blade with custom filters slot (radio buttons, date range)",
+        "requiredComponents": ["status-badge"]
+      },
+      {
+        "id": "list-multiselect",
+        "file": "templates/list-multiselect.vue",
+        "complexity": "advanced",
+        "lines": 330,
+        "features": ["multiselect", "bulk-actions", "item-actions", "notifications"],
+        "description": "List blade with multiselect, bulk operations, and item actions"
+      },
+      {
+        "id": "details-simple",
+        "file": "templates/details-simple.vue",
+        "complexity": "basic",
+        "lines": 180,
+        "features": ["form", "validation", "save", "delete"],
+        "description": "Simple details blade with form fields and basic validation"
+      },
+      {
+        "id": "details-validation",
+        "file": "templates/details-validation.vue",
+        "complexity": "advanced",
+        "lines": 290,
+        "features": ["form", "async-validation", "async-select", "gallery", "widgets"],
+        "description": "Advanced details blade with async validation, selects, and gallery"
+      }
+    ],
+    "compositions": [
+      {
+        "id": "with-table",
+        "file": "compositions/list-basic.md",
+        "structure": "VcBlade > VcTable",
+        "description": "Basic list blade composition"
+      },
+      {
+        "id": "with-form",
+        "file": "compositions/form-basic.md",
+        "structure": "VcBlade > VcContainer > VcForm",
+        "description": "Basic form blade composition"
+      }
+    ],
+    "props": {
+      "title": "string - Title displayed in the blade header",
+      "subtitle": "string - Subtitle displayed in the blade header",
+      "icon": "string - Icon displayed in the blade header",
+      "width": "number | string - Width of the blade (default: 30%)",
+      "expanded": "boolean - Whether the blade is expanded to full width",
+      "closable": "boolean - Whether the blade can be closed by the user",
+      "modified": "boolean - Shows unsaved changes indicator",
+      "toolbarItems": "IBladeToolbar[] - Array of toolbar items to display"
+    },
+    "events": {
+      "close": "Emitted when blade is closed",
+      "expand": "Emitted when blade is expanded",
+      "collapse": "Emitted when blade is collapsed"
+    },
+    "examples": [
+      {
+        "title": "Basic Blade",
+        "code": "<VcBlade\n  v-loading=\"loading\"\n  :title=\"bladeTitle\"\n  :toolbar-items=\"bladeToolbar\"\n  :closable=\"closable\"\n  :expanded=\"expanded\"\n  width=\"50%\"\n  @close=\"$emit('close:blade')\"\n>\n  <!-- Blade content here -->\n</VcBlade>"
+      }
+    ]
+  },
+  "VcTable": {
+    "import": "@vc-shell/framework",
+    "component": "VcTable",
+    "description": "Highly customizable data table component with sorting, pagination, filtering, and multi-select support",
+    "category": "Data",
+    "demos": ["VcTable-demo.md"],
+    "keywords": ["table", "grid", "list", "data", "datatable", "datagrid"],
+    "dependencies": [],
+    "props": {
+      "items": "T[] - Array of data items to display",
+      "columns": "ITableColumns[] - Array of column definitions",
+      "loading": "boolean - Shows loading state",
+      "totalCount": "number - Total number of items",
+      "pages": "number - Total number of pages",
+      "currentPage": "number - Current page number",
+      "sort": "string - Sort expression (e.g., 'name:ASC')",
+      "searchValue": "string - Search keyword",
+      "stateKey": "string - Unique key for persisting table state",
+      "multiselect": "boolean - Enable multi-row selection",
+      "selectedItemId": "string - ID of selected item",
+      "expanded": "boolean - Whether table is expanded",
+      "activeFilterCount": "number - Number of active filters",
+      "empty": "{ icon?: string, text: string | ComputedRef<string>, action?: string, clickHandler?: () => void } - Empty state configuration",
+      "notfound": "{ icon?: string, text: string | ComputedRef<string>, action?: string, clickHandler?: () => void } - Not found state configuration"
+    },
+    "events": {
+      "item-click": "(item: T) => void - Emitted when row is clicked",
+      "header-click": "(column: ITableColumns) => void - Emitted when column header is clicked",
+      "pagination-click": "(page: number) => void - Emitted when pagination is clicked",
+      "search:change": "(value: string) => void - Emitted when search value changes",
+      "selection-changed": "(items: T[]) => void - Emitted when selection changes"
+    },
+    "slots": {
+      "mobile-item": "Custom mobile view for each item",
+      "filters": "Custom filters panel"
+    },
+    "examples": [
+      {
+        "title": "Basic Table with Sorting",
+        "code": "<VcTable\n  :items=\"items\"\n  :columns=\"columns\"\n  :loading=\"loading\"\n  :sort=\"sortExpression\"\n  :total-count=\"totalCount\"\n  :current-page=\"currentPage\"\n  :pages=\"pages\"\n  state-key=\"products-list\"\n  @item-click=\"onItemClick\"\n  @header-click=\"onHeaderClick\"\n  @pagination-click=\"onPaginationClick\"\n/>"
+      },
+      {
+        "title": "Table with Empty and Not Found States",
+        "code": "// Define empty and notfound objects\nconst empty = {\n  icon: \"material-shopping_cart\",\n  text: computed(() => t(\"PAGES.LIST.EMPTY.NO_ITEMS\")),\n};\n\nconst notfound = {\n  icon: \"material-shopping_cart\",\n  text: computed(() => t(\"PAGES.LIST.NOT_FOUND.EMPTY\")),\n  action: computed(() => t(\"PAGES.LIST.NOT_FOUND.RESET\")),\n  clickHandler: async () => {\n    resetSearch();\n  },\n};\n\n// Use in template\n<VcTable\n  :items=\"items\"\n  :columns=\"columns\"\n  :empty=\"empty\"\n  :notfound=\"notfound\"\n/>"
+      }
+    ],
+    "compositions": [
+      {
+        "id": "basic",
+        "file": "compositions/list-basic.md",
+        "features": ["items", "columns", "loading", "sort", "pagination"],
+        "description": "Basic table with sorting and pagination"
+      },
+      {
+        "id": "with-filters",
+        "file": "compositions/list-with-filters.md",
+        "features": ["filters slot", "VcRadioButton", "VcInput", "VcButton"],
+        "description": "Table with custom filter panel"
+      },
+      {
+        "id": "with-multiselect",
+        "file": "compositions/list-with-multiselect.md",
+        "features": ["multiselect", "select-all", "item-action-builder"],
+        "description": "Table with multiselect and bulk actions"
+      },
+      {
+        "id": "custom-slots",
+        "file": "compositions/custom-column-slots.md",
+        "features": ["item_{column} slots", "VcStatus", "VcImage", "VcHint"],
+        "description": "Custom column templates"
+      }
+    ]
+  },
+  "VcField": {
+    "import": "@vc-shell/framework",
+    "component": "VcField",
+    "description": "IMPORTANT: VcField is for DISPLAYING read-only data with label-value pairs. It is NOT a wrapper for form inputs! For forms, use Field from vee-validate.",
+    "category": "Display",
+    "demos": ["VcField-demo.md"],
+    "keywords": ["field", "form", "label", "validation", "read-only", "display"],
+    "dependencies": [],
+    "props": {
+      "label": "string - Field label text",
+      "modelValue": "string | number - Field value (for read-only display)",
+      "required": "boolean - Shows required indicator",
+      "tooltip": "string - Tooltip text",
+      "orientation": "string - Layout orientation: 'horizontal' or 'vertical'",
+      "aspectRatio": "[number, number] - Label to value width ratio for horizontal layout",
+      "copyable": "boolean - Show copy button for read-only fields",
+      "type": "string - Field type (affects rendering)"
+    },
+    "examples": [
+      {
+        "title": "Read-only Field with Horizontal Layout",
+        "code": "<VcField\n  :label=\"$t('FORM.ORDER_REF')\"\n  :model-value=\"item?.number || item?.id\"\n  orientation=\"horizontal\"\n  :aspect-ratio=\"[1, 2]\"\n  copyable\n  type=\"text\"\n/>"
+      },
+      {
+        "title": "Read-only Field with Vertical Layout",
+        "code": "<VcField\n  :label=\"$t('FORM.ORDER_REF')\"\n  :model-value=\"item?.number || item?.id\"\n  orientation=\"vertical\"\n  :aspect-ratio=\"[1, 2]\"\n  copyable\n  type=\"text\"\n/>"
+      }
+    ]
+  },
+  "VcInput": {
+    "import": "@vc-shell/framework",
+    "component": "VcInput",
+    "description": "Text input field component with validation support, including date inputs and debounced search",
+    "category": "Form",
+    "demos": ["VcInput-demo.md"],
+    "keywords": ["input", "text", "email", "date", "form", "validation"],
+    "dependencies": [],
+    "props": {
+      "modelValue": "string | number - Input value",
+      "type": "string - Input type (text, email, url, number, date, password)",
+      "label": "string - Input label",
+      "placeholder": "string - Placeholder text",
+      "disabled": "boolean - Disable input",
+      "required": "boolean - Shows required indicator",
+      "error": "boolean - Shows error state",
+      "errorMessage": "string - Validation error message",
+      "clearable": "boolean - Show clear button",
+      "loading": "boolean - Shows loading spinner",
+      "maxlength": "number - Maximum length"
+    },
+    "events": {
+      "update:modelValue": "(value: string | number) => void - Emitted when value changes"
+    },
+    "examples": [
+      {
+        "title": "Date Input",
+        "code": "<VcInput\n  v-model=\"stagedFilters.startDate\"\n  type=\"date\"\n  :label=\"$t('DATE_FILTER.START_DATE')\"\n  @update:model-value=\"(value) => toggleFilter('startDate', String(value || ''), true)\"\n/>"
+      },
+      {
+        "title": "Text Input with Validation (vee-validate)",
+        "code": "<Field\n  v-slot=\"{ errorMessage, handleChange, errors }\"\n  :label=\"$t('OFFER_DETAILS.FIELDS.SKU.TITLE')\"\n  :model-value=\"offer.sku\"\n  rules=\"required|min:3\"\n  name=\"sku\"\n>\n  <VcInput\n    v-model=\"offer.sku\"\n    :label=\"$t('OFFER_DETAILS.FIELDS.SKU.TITLE')\"\n    :placeholder=\"$t('OFFER_DETAILS.FIELDS.SKU.PLACEHOLDER')\"\n    required\n    maxlength=\"61\"\n    :loading=\"isSkuValidating\"\n    clearable\n    :error=\"!!errors.length\"\n    :error-message=\"errorMessage\"\n    @update:model-value=\"handleChange\"\n  ></VcInput>\n</Field>"
+      }
+    ]
+  },
+  "VcTextarea": {
+    "import": "@vc-shell/framework",
+    "component": "VcTextarea",
+    "description": "Multi-line text input component",
+    "props": {
+      "modelValue": "string - Textarea value",
+      "placeholder": "string - Placeholder text",
+      "disabled": "boolean - Disable textarea",
+      "errorMessage": "string - Validation error message",
+      "rows": "number - Number of visible rows"
+    },
+    "events": {
+      "update:modelValue": "(value: string) => void - Emitted when value changes"
+    },
+    "examples": [
+      {
+        "title": "Basic Textarea",
+        "code": "<VcTextarea\n  v-model=\"item.description\"\n  :placeholder=\"$t('FORM.DESCRIPTION_PLACEHOLDER')\"\n  :rows=\"4\"\n/>"
+      }
+    ]
+  },
+  "VcSelect": {
+    "import": "@vc-shell/framework",
+    "component": "VcSelect",
+    "description": "Dropdown select component with search support, async options loading, and custom templates",
+    "category": "Form",
+    "demos": ["VcSelect-demo.md"],
+    "keywords": ["select", "dropdown", "form", "validation", "searchable", "async"],
+    "dependencies": [],
+    "props": {
+      "modelValue": "any - Selected value",
+      "options": "Array | Function - Select options array or async function that returns options",
+      "optionValue": "string - Property name to use as option value",
+      "optionLabel": "string - Property name to use as option label",
+      "label": "string - Select label",
+      "placeholder": "string - Placeholder text",
+      "disabled": "boolean - Disable select",
+      "required": "boolean - Shows required indicator",
+      "error": "boolean - Shows error state",
+      "errorMessage": "string - Validation error message",
+      "searchable": "boolean - Enable search",
+      "clearable": "boolean - Show clear button",
+      "multiple": "boolean - Allow multiple selection",
+      "loading": "boolean - Shows loading spinner",
+      "tooltip": "string - Tooltip text"
+    },
+    "slots": {
+      "selected-item": "Custom template for selected item display",
+      "option": "Custom template for dropdown options"
+    },
+    "events": {
+      "update:modelValue": "(value: any) => void - Emitted when value changes"
+    },
+    "examples": [
+      {
+        "title": "Searchable Select with Async Options",
+        "code": "<Field\n  v-slot=\"{ errorMessage, handleChange, errors }\"\n  :label=\"$t('OFFERS.PAGES.DETAILS.FIELDS.PRODUCT.TITLE')\"\n  :model-value=\"offer.productId\"\n  name=\"product\"\n  rules=\"required\"\n>\n  <VcSelect\n    v-model=\"offer.productId\"\n    :label=\"$t('OFFERS.PAGES.DETAILS.FIELDS.PRODUCT.TITLE')\"\n    required\n    searchable\n    :loading=\"fetchProductsLoading\"\n    :placeholder=\"$t('OFFERS.PAGES.DETAILS.FIELDS.PRODUCT.PLACEHOLDER')\"\n    :options=\"fetchProducts\"\n    option-value=\"id\"\n    option-label=\"name\"\n    :disabled=\"!!offer.id\"\n    :error=\"!!errors.length\"\n    :error-message=\"errorMessage\"\n    :clearable=\"false\"\n    @update:model-value=\"handleChange\"\n  >\n    <template #selected-item=\"{ opt }\">\n      <OfferProductsSelectCategoryTemplate\n        :opt=\"opt\"\n        slot-name=\"selected-item\"\n      />\n    </template>\n    <template #option=\"{ opt }\">\n      <OfferProductsSelectCategoryTemplate\n        :opt=\"opt\"\n        slot-name=\"option\"\n      />\n    </template>\n  </VcSelect>\n</Field>"
+      },
+      {
+        "title": "Simple Select with Static Options",
+        "code": "<Field\n  v-slot=\"{ errorMessage, handleChange, errors }\"\n  rules=\"required\"\n  :label=\"$t('OFFERS.PAGES.DETAILS.FIELDS.PRODUCT_TYPE.TITLE')\"\n  :model-value=\"offer.productType\"\n  name=\"productType\"\n>\n  <VcSelect\n    v-model=\"offer.productType\"\n    :label=\"$t('OFFERS.PAGES.DETAILS.FIELDS.PRODUCT_TYPE.TITLE')\"\n    required\n    :placeholder=\"$t('OFFERS.PAGES.DETAILS.FIELDS.PRODUCT_TYPE.PLACEHOLDER')\"\n    :disabled=\"!!offer.id\"\n    :error=\"!!errors.length\"\n    :error-message=\"errorMessage\"\n    :options=\"productTypeOptions\"\n    :tooltip=\"$t('OFFERS.PAGES.DETAILS.FIELDS.PRODUCT_TYPE.TOOLTIP')\"\n    option-value=\"value\"\n    option-label=\"label\"\n    @update:model-value=\"handleChange\"\n  ></VcSelect>\n</Field>"
+      }
+    ]
+  },
+  "VcCheckbox": {
+    "import": "@vc-shell/framework",
+    "component": "VcCheckbox",
+    "description": "Checkbox input component",
+    "props": {
+      "modelValue": "boolean - Checkbox state",
+      "label": "string - Checkbox label",
+      "disabled": "boolean - Disable checkbox"
+    },
+    "events": {
+      "update:modelValue": "(value: boolean) => void - Emitted when checked state changes"
+    },
+    "examples": [
+      {
+        "title": "Basic Checkbox",
+        "code": "<VcCheckbox\n  v-model=\"item.isActive\"\n  :label=\"$t('FORM.IS_ACTIVE')\"\n/>"
+      }
+    ]
+  },
+  "VcSwitch": {
+    "import": "@vc-shell/framework",
+    "component": "VcSwitch",
+    "description": "Toggle switch component",
+    "props": {
+      "modelValue": "boolean - Switch state",
+      "label": "string - Switch label",
+      "disabled": "boolean - Disable switch"
+    },
+    "events": {
+      "update:modelValue": "(value: boolean) => void - Emitted when state changes"
+    },
+    "examples": [
+      {
+        "title": "Basic Switch",
+        "code": "<VcSwitch\n  v-model=\"item.enabled\"\n  :label=\"$t('FORM.ENABLED')\"\n/>"
+      }
+    ]
+  },
+  "VcForm": {
+    "import": "@vc-shell/framework",
+    "component": "VcForm",
+    "description": "Form container component, use with vee-validate Field for validation",
+    "category": "Form",
+    "keywords": ["form", "validation"],
+    "dependencies": [],
+    "props": {},
+    "examples": [
+      {
+        "title": "Basic Form",
+        "code": "<VcForm>\n  <Field v-slot=\"{ field, errors }\" name=\"name\" rules=\"required\">\n    <VcInput v-bind=\"field\" :error=\"!!errors.length\" />\n  </Field>\n</VcForm>"
+      }
+    ]
+  },
+  "VcCard": {
+    "import": "@vc-shell/framework",
+    "component": "VcCard",
+    "description": "Card container for grouping content and form sections",
+    "category": "Layout",
+    "keywords": ["card", "section", "container"],
+    "dependencies": [],
+    "props": {
+      "header": "string - Card header text",
+      "is-collapsable": "boolean - Can be collapsed",
+      "is-collapsed": "boolean - Initial collapsed state"
+    },
+    "events": {
+      "state:collapsed": "(collapsed: boolean) => void - Emitted when collapse state changes"
+    },
+    "examples": [
+      {
+        "title": "Basic Card",
+        "code": "<VcCard header=\"Section Title\">\n  <div class=\"tw-p-4\">\n    <!-- Content -->\n  </div>\n</VcCard>"
+      }
+    ]
+  },
+  "VcButton": {
+    "import": "@vc-shell/framework",
+    "component": "VcButton",
+    "description": "Button component with variants and states, commonly used in filter controls",
+    "category": "Form",
+    "demos": ["VcButton-demo.md"],
+    "keywords": ["button", "action", "click", "filter", "form"],
+    "dependencies": [],
+    "props": {
+      "variant": "string - Button variant (primary, secondary, danger, etc.)",
+      "disabled": "boolean - Disable button",
+      "loading": "boolean - Show loading state",
+      "icon": "string - Icon name"
+    },
+    "events": {
+      "click": "() => void - Emitted when button is clicked"
+    },
+    "examples": [
+      {
+        "title": "Filter Buttons",
+        "code": "<div class=\"tw-flex tw-gap-2\">\n  <VcButton\n    variant=\"primary\"\n    :disabled=\"!hasFilterChanges\"\n    @click=\"applyFilters\"\n  >\n    {{ $t(\"BUTTONS.APPLY\") }}\n  </VcButton>\n\n  <VcButton\n    variant=\"secondary\"\n    :disabled=\"!hasFiltersApplied\"\n    @click=\"resetFilters\"\n  >\n    {{ $t(\"BUTTONS.RESET\") }}\n  </VcButton>\n</div>"
+      },
+      {
+        "title": "Primary Button",
+        "code": "<VcButton variant=\"primary\" @click=\"save\">\n  {{ $t('COMMON.SAVE') }}\n</VcButton>"
+      }
+    ]
+  },
+  "VcContainer": {
+    "import": "@vc-shell/framework",
+    "component": "VcContainer",
+    "description": "Layout container component",
+    "examples": [
+      {
+        "title": "Basic Container",
+        "code": "<VcContainer class=\"tw-p-4\">\n  <!-- Content here -->\n</VcContainer>"
+      }
+    ]
+  },
+  "VcRow": {
+    "import": "@vc-shell/framework",
+    "component": "VcRow",
+    "description": "Grid row component for layout",
+    "examples": [
+      {
+        "title": "Basic Row",
+        "code": "<VcRow class=\"tw-space-x-4\">\n  <VcCol :size=\"6\">Column 1</VcCol>\n  <VcCol :size=\"6\">Column 2</VcCol>\n</VcRow>"
+      }
+    ]
+  },
+  "VcCol": {
+    "import": "@vc-shell/framework",
+    "component": "VcCol",
+    "description": "Grid column component for layout",
+    "props": {
+      "size": "number - Column size (1-12)"
+    },
+    "examples": [
+      {
+        "title": "Half Width Column",
+        "code": "<VcCol :size=\"6\">\n  <!-- Content here -->\n</VcCol>"
+      }
+    ]
+  },
+  "_slotComponents": {
+    "description": "Example slot component from real vendor-portal projects. Create custom slot components as needed for your specific entity.",
+    "components": [
+      {
+        "name": "StatusBadge",
+        "file": "components/status-badge.vue",
+        "description": "Status badge component with VcStatus and customizable variant mapping. Based on OrderStatusTemplateNew and TeamStatus from vendor-portal.",
+        "usage": "Create custom status badge component in your module's /components directory. Adapt status mappings for your entity.",
+        "props": {
+          "status": "string | undefined - Status value"
+        },
+        "example": "<template #item_status=\"{ item }\">\n  <YourEntityStatusBadge :status=\"item.status\" />\n</template>"
+      }
+    ]
+  }
+}

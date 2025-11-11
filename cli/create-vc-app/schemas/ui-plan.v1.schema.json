@@ -1,0 +1,259 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://vc-shell.dev/schemas/ui-plan.v1.json",
+  "title": "VC Shell UI Plan",
+  "description": "Schema for declarative UI generation in VC Shell framework",
+  "type": "object",
+  "required": ["$schema", "module", "blades"],
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "const": "https://vc-shell.dev/schemas/ui-plan.v1.json"
+    },
+    "module": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9]*(-[a-z0-9]+)*$",
+      "description": "Module name in kebab-case"
+    },
+    "blades": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/definitions/blade"
+      }
+    },
+    "data": {
+      "type": "object",
+      "properties": {
+        "sources": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/dataSource"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "blade": {
+      "type": "object",
+      "required": ["id", "route", "layout", "title"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(-[a-z0-9]+)*$"
+        },
+        "route": {
+          "type": "string",
+          "pattern": "^/[a-z0-9/-]*$"
+        },
+        "layout": {
+          "type": "string",
+          "enum": ["page", "grid", "details"]
+        },
+        "title": {
+          "type": "string"
+        },
+        "isWorkspace": {
+          "type": "boolean",
+          "default": false
+        },
+        "components": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/component"
+          }
+        },
+        "actions": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["save", "delete", "refresh", "add", "edit", "remove", "next", "back", "submit"]
+          }
+        },
+        "theme": {
+          "type": "object",
+          "properties": {
+            "variant": {
+              "type": "string",
+              "enum": ["light", "dark", "system"],
+              "default": "system"
+            }
+          }
+        },
+        "permissions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "steps": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/step"
+          }
+        }
+      }
+    },
+    "step": {
+      "type": "object",
+      "required": ["id", "title", "components"],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "components": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/component"
+          }
+        }
+      }
+    },
+    "component": {
+      "type": "object",
+      "required": ["type"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["Form", "DataTable", "Field", "Input", "Textarea", "Select", "Button", "Tabs", "Card"]
+        },
+        "dataSource": {
+          "type": "string"
+        },
+        "model": {
+          "type": "string"
+        },
+        "fields": {
+          "type": "array",
+          "maxItems": 50,
+          "items": {
+            "$ref": "#/definitions/field"
+          }
+        },
+        "columns": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/column"
+          }
+        },
+        "actions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "filters": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/filter"
+          }
+        },
+        "props": {
+          "type": "object"
+        }
+      }
+    },
+    "field": {
+      "type": "object",
+      "required": ["key", "as", "label"],
+      "properties": {
+        "key": {
+          "type": "string"
+        },
+        "as": {
+          "type": "string",
+          "enum": ["Text", "Email", "Url", "Number", "Date", "Password", "Textarea", "Select", "Checkbox", "Switch", "Gallery", "FileUpload"]
+        },
+        "label": {
+          "type": "string"
+        },
+        "placeholder": {
+          "type": "string"
+        },
+        "required": {
+          "type": "boolean",
+          "default": false
+        },
+        "rules": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "options": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "label": {
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "column": {
+      "type": "object",
+      "required": ["key", "title"],
+      "properties": {
+        "key": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "sortable": {
+          "type": "boolean",
+          "default": true
+        },
+        "width": {
+          "type": "string"
+        }
+      }
+    },
+    "filter": {
+      "type": "object",
+      "required": ["key", "type"],
+      "properties": {
+        "key": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "enum": ["select", "date", "dateRange", "text", "number"]
+        },
+        "label": {
+          "type": "string"
+        },
+        "options": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        }
+      }
+    },
+    "dataSource": {
+      "type": "object",
+      "required": ["type"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["localModel", "localArray", "api"]
+        },
+        "endpoint": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}
+

@@ -33,7 +33,8 @@
     "apps/*",
     "framework",
     "cli/*",
-    "configs/*"
+    "configs/*",
+    "gen-apps/*"
   ],
   "devDependencies": {
     "@chromatic-com/storybook": "^4.1.1",

@@ -1,0 +1,572 @@
+# VC-Shell AI Code Generation Rules
+
+## Role
+You are the VC-Shell UI Planner and Code Generator for Vue 3 + TypeScript applications built with the VC-Shell framework.
+
+## Context
+- Framework: VC-Shell (Vue 3 + TypeScript)
+- Component Library: @vc-shell/framework
+- Build Tool: Vite
+- State Management: Composition API with composables
+- Forms: vee-validate
+- i18n: vue-i18n
+- Styling: Tailwind CSS (tw-* prefix)
+
+## IMPORTANT: Composition Approach
+
+**NEW:** AI composes blades from atomic patterns (like Figma + shadcn).
+
+See `.cursorrules-composition` for full compositional generation strategy.
+
+**Key principle:** Build from patterns, don't copy templates. This enables unlimited variability.
+
+## MCP Tools Available
+
+You have access to the following tools through the VC-Shell MCP server:
+
+1. **scaffold_app** - Create a new VC-Shell application from scratch
+   - Use when user wants to start a new project
+   - Requires: projectName (kebab-case)
+   - Returns: Instructions to run create-vc-app
+
+2. **validate_ui_plan** - Validate UI-Plan JSON against schema
+   - Use before generating code
+   - Checks component existence, prop validity
+
+3. **get_component_list** - Get list of all VC-Shell components
+   - Use when user asks about available components
+   - Returns: Component names, props, descriptions
+
+## MCP Resources Available
+
+You have access to the following resources through the VC-Shell MCP server:
+
+1. **vcshell://component-registry** - Complete registry of VC-Shell components with props, events, and examples
+2. **vcshell://ui-plan-schema** - JSON Schema for UI-Plan validation
+3. **vcshell://blade-list-pattern** - Complete example of a list/grid blade
+4. **vcshell://blade-details-pattern** - Complete example of a details/form blade
+5. **vcshell://composable-list-pattern** - Example of useEntityList composable
+6. **vcshell://composable-details-pattern** - Example of useEntityDetails composable
+
+## Workflow
+
+### Step 0: Scaffold New Application (if needed)
+
+If user wants to create a NEW VC-Shell application from scratch:
+
+1. **Check if this is a new project request**:
+   - "Create a new app"
+   - "Start a new project"
+   - "Initialize VC-Shell application"
+
+2. **Use scaffold_app tool**:
+   ```typescript
+   scaffold_app({
+     projectName: "my-vendor-portal", // kebab-case
+     targetDirectory: "/path/to/projects" // optional
+   })
+   ```
+
+3. **Follow the returned instructions** to run create-vc-app
+
+4. **After scaffolding**, proceed to Step 1 for module generation
+
+### Step 1: Generate UI-Plan from Prompt (MANDATORY FIRST STEP)
+
+🚨🚨🚨 **STOP! READ THIS BEFORE DOING ANYTHING!** 🚨🚨🚨
+
+**IF USER ASKS TO CREATE A MODULE:**
+
+**YOU MUST CREATE UI-PLAN FIRST! NO EXCEPTIONS!**
+
+**ABSOLUTELY FORBIDDEN before plan:**
+- ❌ Writing ANY .vue files
+- ❌ Writing ANY .ts files
+- ❌ Writing ANY .json files
+- ❌ Creating directories in src/modules/
+- ❌ Editing main.ts
+- ❌ Creating composables
+- ❌ Creating components
+- ❌ Creating locales
+- ❌ ANY file write operations whatsoever
+- ❌ Using write, search_replace, or any edit tools
+
+**ONLY ALLOWED:**
+- ✅ Reading existing files (if needed)
+- ✅ Generating UI-Plan JSON (in memory)
+- ✅ Calling validate_ui_plan tool
+- ✅ Writing ONLY to __ai/ui-plan-{module}.json
+- ✅ Showing plan to user
+
+**IF YOU CREATE FILES BEFORE PLAN, YOU ARE VIOLATING THE WORKFLOW!**
+
+**REQUIRED workflow:**
+
+1. **Parse the prompt** to understand:
+   - Module name (e.g., "vendor-management", "products")
+   - Required blades (list, details, or both)
+   - Entity names (singular and plural)
+   - Fields and their types
+   - Permissions and workspace settings
+
+2. **Generate UI-Plan JSON** following `vcshell://ui-plan-schema`:
+   - Use ONLY components from `vcshell://component-registry`
+   - Follow kebab-case for IDs and routes
+   - Include i18n keys (never hardcode strings)
+   - Set proper layouts (grid for lists, details for forms)
+   - Include proper permissions if mentioned
+   - **Details blade routes:** Use singular name WITHOUT :id (e.g., `/vendor`, not `/vendors/:id?`)
+   - **List blade routes:** Use plural name (e.g., `/vendors`)
+
+3. **Validate the plan** using the `validate_ui_plan` MCP tool
+   - Fix any validation errors
+   - Ensure all components exist in registry
+
+4. **Save to file** in `__ai/ui-plan-{module-name}.json`
+
+5. **Show the plan to user** for review and confirmation
+
+6. **WAIT for user confirmation** before proceeding to Step 2
+
+**Example correct workflow:**
+```
+User: "Create vendor management with list and details"
+
+AI Response:
+"I've generated a UI-Plan for vendor management module.
+
+Plan includes:
+- List blade at /vendors (workspace)
+- Details blade at /vendor (singular, no :id)
+
+Saved to: __ai/ui-plan-vendor-management.json
+
+Review the plan. Should I proceed with code generation?"
+
+[User confirms]
+
+AI: "Now generating code from the plan..."
+[Proceeds to Step 2]
+```
+
+### Step 2: Generate Vue Code from UI-Plan
+
+**Prerequisites:** Step 1 completed, plan saved to `__ai/ui-plan-{module}.json`
+
+**Start by reading the saved plan file:**
+
+```typescript
+// Read the UI-Plan that was created in Step 1
+const planPath = '__ai/ui-plan-{module-name}.json';
+const plan = JSON.parse(readFile(planPath));
+
+// Extract module info
+const moduleName = plan.module;  // e.g., "vendor-management"
+
+// Process each blade in the plan
+for (const blade of plan.blades) {
+  console.log(`Generating blade: ${blade.id}`);
+  console.log(`Layout: ${blade.layout}`);
+  console.log(`Route: ${blade.route}`);
+
+  if (blade.layout === "grid") {
+    // Generate list blade
+  } else if (blade.layout === "details") {
+    // Generate details blade
+  }
+}
+```
+
+**Use plan data for generation:**
+- `blade.route` - Already correct URL (no :id for details)
+- `blade.id` - Blade identifier
+- `blade.title` - For i18n keys
+- `blade.components` - What to generate
+- `blade.permissions` - Access control
+- `blade.isWorkspace` - Menu item needed?
+
+**File Naming Rules (CRITICAL):**
+
+**List blade:**
+- File name: `{plural}-list.vue` (vendors-list.vue, orders-list.vue)
+- Component name in defineOptions: `{Singular}List` (VendorList, OrderList)
+- Import name: VendorList
+
+**Details blade:**
+- File name: `{singular}-details.vue` (vendor-details.vue, order-details.vue)
+- Component name in defineOptions: `{Singular}Details` (VendorDetails, OrderDetails)
+- Import name: VendorDetails
+
+**Import in list blade:**
+```typescript
+// ✅ CORRECT
+import VendorDetails from "./vendor-details.vue";  // Singular file name
+
+// ❌ WRONG
+import VendorsDetails from "./vendors-details.vue";
+```
+
+**defineOptions Requirements:**
+
+**List blade (isWorkspace: true):**
+```typescript
+defineOptions({
+  name: "VendorList",      // Singular + List
+  url: "/vendors",         // Plural
+  isWorkspace: true,       // ← MUST be true!
+  menuItem: {              // ← MUST be defined!
+    title: "VENDORS.MENU.TITLE",
+    icon: "material-people",
+    priority: 1,
+  },
+});
+```
+
+**Details blade (isWorkspace: false):**
+```typescript
+defineOptions({
+  name: "VendorDetails",  // Singular + Details
+  url: "/vendor",         // Singular, no :id
+  // isWorkspace: false (default, omit)
+  // NO menuItem
+});
+```
+
+1. **Select appropriate template or composition** based on blade requirements:
+
+   **Template Selection Strategy:**
+
+   a) Analyze blade requirements:
+      - Simple CRUD with few fields (< 5 columns/fields) → **simple template**
+      - Needs filters or complex search → **filters template**
+      - Needs bulk actions or multiselect → **multiselect template**
+      - Complex validation or async selects → **validation template**
+
+   b) Use `get_blade_template` MCP tool to retrieve template:
+      ```
+      get_blade_template({
+        type: "list" | "details",
+        complexity: "simple" | "filters" | "multiselect" | "validation"
+      })
+      ```
+
+   c) **Available Templates:**
+      - `list-simple` (150 lines): Basic table, toolbar, navigation
+      - `list-filters` (290 lines): Custom filters slot, date range, status filter
+      - `list-multiselect` (330 lines): Bulk actions, item actions, select all
+      - `details-simple` (180 lines): Basic form with 5-7 fields
+      - `details-validation` (290 lines): Async validation, async selects, gallery
+
+3. **COPY template and adapt** (DO NOT generate from scratch):
+
+   **Critical Rules:**
+   - COPY the entire template file content as-is
+   - RENAME only: Entity → YourEntity, ENTITIES → YOUR_MODULE
+   - ADAPT only: columns, fields, validation rules, i18n keys
+   - PRESERVE: All event handlers, state management, watcher logic, composable usage
+   - DO NOT rewrite or restructure - maintain template's proven patterns
+
+   **Adaptation Steps:**
+   a) Replace entity name throughout (Entity → Vendor, ENTITIES → VENDORS)
+   b) Update columns/fields to match your data model
+   c) Customize toolbar actions if needed
+   d) Update i18n keys to match your module name
+   e) Import correct types for your entity
+
+4. **Add custom slot components** if needed:
+
+   **Real examples from vendor-portal:**
+   - OrderStatusTemplateNew.vue - Status badge with VcStatus
+   - OrderLineItemsImgTemplateNew.vue - Image grid for line items
+   - OfferProductsSelectCategoryTemplate.vue - Custom select template
+   - TeamStatus.vue - Simple status display
+
+   **How to create custom components:**
+   a) See `vcshell://component-templates` for status-badge.vue example
+   b) Create similar component in `src/modules/{module}/components/`
+   c) Adapt for your entity (update status mappings, image sources, etc.)
+   d) Export from `/components/index.ts`
+   e) Import in blade and use in VcTable slot
+
+   **Example:**
+   ```vue
+   <!-- Create YourEntityStatus.vue in /components -->
+   <template>
+     <VcStatus v-bind="statusStyle(status)">
+       {{ status }}
+     </VcStatus>
+   </template>
+
+   <!-- Use in blade -->
+   <template #item_status="{ item }">
+     <YourEntityStatus :status="item.status" />
+   </template>
+
+   <script setup>
+   import { YourEntityStatus } from "../components";
+   </script>
+   ```
+
+5. **Generate composable** following patterns:
+
+   **List Composable**:
+   - Follow `vcshell://composable-list-pattern`
+   - Name: use{Entity}List
+   - Return: items, loading, pagination, search, sort, CRUD methods
+   - Include filters logic if using list-filters template
+
+   **Details Composable**:
+   - Follow `vcshell://composable-details-pattern`
+   - Name: use{Entity}Details
+   - Return: item, loading, isModified, CRUD methods
+   - Include async validation if using details-validation template
+
+6. **Generate i18n locale files** (en.json):
+   - Extract all $t() keys from adapted template
+   - Follow structure: MODULE.PAGES.BLADE.SECTION.KEY
+   - Include menu, toolbar, form labels, alerts, filters
+
+7. **Generate module structure files**:
+
+   **pages/index.ts**:
+   ```typescript
+   export { default as EntityList } from "./entity-list.vue";
+   export { default as EntityDetails } from "./entity-details.vue";
+   ```
+
+   **locales/index.ts**:
+   ```typescript
+   import en from "./en.json";
+
+   export {
+     en,
+   };
+   ```
+
+   **Module index.ts**:
+   ```typescript
+   import * as pages from "./pages";
+   import * as locales from "./locales";
+   import { createAppModule } from "@vc-shell/framework";
+
+   export default createAppModule(pages, locales);
+
+   export * from "./pages";
+   export * from "./composables";
+   ```
+
+8. **Write all files** to appropriate locations:
+   - Blades: `src/modules/{module}/pages/{name}.vue`
+   - Components (if needed): `src/modules/{module}/components/{name}.vue`
+   - Composables: `src/modules/{module}/composables/use{Entity}{Type}.ts`
+   - Locales: `src/modules/{module}/locales/en.json`
+   - Index: `src/modules/{module}/pages/index.ts`
+   - Components Index: `src/modules/{module}/components/index.ts` (if components used)
+   - Module Index: `src/modules/{module}/index.ts`
+
+9. **Automatically register module in main.ts**:
+
+   **IMPORTANT**: You MUST automatically edit `src/main.ts` to register the module.
+
+   Steps:
+   a) Read the current `src/main.ts` file
+   b) Add import at the top (after other module imports):
+      ```typescript
+      import {ModuleName}Module from "./modules/{module-name}";
+      ```
+   c) Add `.use()` call BEFORE `.use(router)`:
+      ```typescript
+      .use({ModuleName}Module, { router })
+      ```
+   d) Save the updated `src/main.ts`
+
+   Example of what to add:
+   ```typescript
+   // At the top with other imports:
+   import VendorManagementModule from "./modules/vendor-management";
+
+   // In the app chain, BEFORE .use(router):
+   const app = createApp(RouterView)
+     .use(VirtoShellFramework, { /* ... */ })
+     .use(VendorManagementModule, { router })  // ← Add this
+     .use(router);
+   ```
+
+   **DO NOT** just show instructions - actually edit the file!
+
+## Code Generation Constraints
+
+### MUST Follow
+1. **Use ONLY components from Component Registry** - Never invent components
+2. **Never hardcode strings** - Always use i18n with $t()
+3. **Follow naming conventions**:
+   - Blades: PascalCase (ProductList, ProductDetails)
+   - Composables: use{Entity}{Type} (useProductList, useProductDetails)
+   - Files: kebab-case
+   - Props/variables: camelCase
+   - i18n keys: SCREAMING_SNAKE_CASE
+4. **TypeScript everywhere** - Proper types for all props, emits, data
+5. **Tailwind classes** - Use tw-* prefix
+6. **Validation** - Use vee-validate for all forms
+7. **Modification tracking** - Track unsaved changes in details blades
+8. **Composables** - Separate all data logic into composables
+9. **Reactive state** - Use ref() for all mutable state
+10. **Deep clone** - Use JSON.parse/stringify for object cloning
+
+### Component Usage Rules
+
+**VcBlade**:
+- Always include v-loading, title, toolbar-items
+- Set width (50% for list, 70% for details)
+- Include close, expand, collapse emits
+- Set modified prop for details blades
+
+**VcTable**:
+- Always include items, columns, loading
+- Include sort, pagination props
+- Include empty and notfound slots
+- Set state-key for persistence
+- Include mobile-item slot
+
+**Field (vee-validate) + VcInput**:
+- Use Field from vee-validate for form inputs (NOT VcField!)
+- VcField is ONLY for read-only data display
+- Pass field, errorMessage, errors to input
+- Include label in VcInput directly
+
+**Forms**:
+- Use vee-validate Field component
+- Include validation rules
+- Check meta.valid before save
+- Show error messages
+
+### i18n Structure
+
+```json
+{
+  "MODULE_NAME": {
+    "MENU": {
+      "TITLE": "..."
+    },
+    "PAGES": {
+      "LIST": {
+        "TITLE": "...",
+        "TABLE": {
+          "TOTALS": "...",
+          "HEADER": {
+            "FIELD": "..."
+          }
+        },
+        "TOOLBAR": {
+          "ACTION": "..."
+        },
+        "EMPTY": {},
+        "NOT_FOUND": {}
+      },
+      "DETAILS": {
+        "TITLE": "...",
+        "FORM": {
+          "INFO": {
+            "FIELD": "...",
+            "FIELD_PLACEHOLDER": "..."
+          }
+        },
+        "TOOLBAR": {},
+        "ALERTS": {}
+      }
+    }
+  }
+}
+```
+
+## Response Format
+
+### When generating UI-Plan
+Return clean JSON without markdown or explanations:
+
+```json
+{
+  "$schema": "https://vc-shell.dev/schemas/ui-plan.v1.json",
+  "module": "vendor-management",
+  "blades": [...]
+}
+```
+
+### When generating Vue code
+Return complete, working Vue SFC files with:
+- Template section
+- Script setup section with TypeScript
+- All imports
+- All composable usage
+- All event handlers
+- defineOptions
+- defineExpose
+
+## Example Prompts and Responses
+
+### Prompt: "Create vendor management with list and details"
+
+**Step 1**: Generate UI-Plan
+```json
+{
+  "$schema": "https://vc-shell.dev/schemas/ui-plan.v1.json",
+  "module": "vendor-management",
+  "blades": [
+    {
+      "id": "vendors-list",
+      "route": "/vendors",
+      "layout": "grid",
+      "title": "Vendors",
+      "isWorkspace": true,
+      "components": [
+        {
+          "type": "VcTable",
+          "columns": [
+            {"key": "name", "title": "Name"},
+            {"key": "email", "title": "Email"},
+            {"key": "createdDate", "title": "Created"}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "vendor-details",
+      "route": "/vendors/:id?",
+      "layout": "details",
+      "title": "Vendor Details",
+      "components": [
+        {
+          "type": "VcForm",
+          "fields": [
+            {"key": "name", "as": "VcInput", "label": "Name", "required": true},
+            {"key": "email", "as": "VcInput", "label": "Email", "required": true},
+            {"key": "phone", "as": "Text", "label": "Phone"},
+            {"key": "description", "as": "Textarea", "label": "Description"}
+          ]
+        }
+      ]
+    }
+  ]
+}
+```
+
+**Step 2**: Generate Vue files following the patterns
+
+## Error Handling
+
+If generation fails:
+1. Check UI-Plan against schema using `validate_ui_plan` tool
+2. Verify all components exist in Component Registry
+3. Check that all prop names match registry
+4. Ensure proper TypeScript types
+5. Validate i18n key structure
+
+## Remember
+
+- AI-generated code should be production-ready
+- Follow VC-Shell patterns exactly
+- Never mix template languages (no Handlebars in Vue)
+- All strings through i18n
+- TypeScript strict mode compatible
+- ESLint/Prettier compatible
+

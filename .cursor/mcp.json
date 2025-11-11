@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "vcshell-codegen": {
+      "command": "node",
+      "args": ["/Users/symbot/DEV/vc-shell/cli/ai-codegen/dist/index.js", "mcp"],
+      "env": {},
+      "description": "VC-Shell AI Code Generation"
+    }
+  }
+}

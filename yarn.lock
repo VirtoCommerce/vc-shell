@@ -4341,7 +4341,6 @@ __metadata:
     "@types/cross-spawn": "npm:^6.0.6"
     "@types/prompts": "npm:^2.4.7"
     "@types/semver": "npm:^7.5.4"
-    "@vc-shell/ts-config": "workspace:*"
     chalk: "npm:^2.4.2"
     cross-spawn: "npm:^7.0.3"
     lerna: "npm:^9.0.0"

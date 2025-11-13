@@ -7,11 +7,15 @@
   "files": [
     "dist"
   ],
+  "bin": {
+    "vc-generate-changelogs": "./dist/cli-generate-changelogs.js"
+  },
   "scripts": {
     "build": "vite build"
   },
   "dependencies": {
     "chalk": "^2.4.2",
+    "conventional-changelog-cli": "^5.0.0",
     "cross-spawn": "^7.0.3",
     "lerna": "^9.0.0",
     "mri": "^1.2.0",

@@ -96,6 +96,94 @@ This command:
 
 **Note:** This is typically a one-time operation during initial setup or migration.
 
+## Programmatic API for Changelog Generation
+
+You can also use the changelog generation functionality programmatically in your own scripts:
+
+### Using the CLI
+
+```bash
+# Install the package
+yarn add -D @vc-shell/release-config
+
+# Create a configuration file
+npx vc-generate-changelogs --help
+
+# Run with your config
+npx vc-generate-changelogs changelog-config.js
+```
+
+### Using the JavaScript API
+
+```typescript
+import { generateInitialChangelogs, PackageConfig } from "@vc-shell/release-config";
+
+const packages: PackageConfig[] = [
+  {
+    name: "framework",
+    path: "framework",
+    displayName: "Framework (@vc-shell/framework)"
+  },
+  {
+    name: "cli/api-client",
+    path: "cli/api-client",
+    displayName: "API Client Generator (@vc-shell/api-client-generator)"
+  },
+  // ... more packages
+];
+
+await generateInitialChangelogs({
+  packages,
+  rootDir: process.cwd(),           // Optional: root directory
+  generateRoot: true,                // Optional: generate root changelog
+  includeRootHeader: true            // Optional: include header in root changelog
+});
+```
+
+### Configuration File Format
+
+Create a `changelog-config.js` file:
+
+```javascript
+export default {
+  packages: [
+    {
+      name: "framework",
+      path: "framework",
+      displayName: "Framework (@vc-shell/framework)"
+    },
+    // ... more packages
+  ],
+  rootDir: process.cwd(),
+  generateRoot: true,
+  includeRootHeader: true,
+};
+```
+
+### Generating Only Root Changelog
+
+If you already have package changelogs and want to regenerate just the root one:
+
+```typescript
+import { generateRootChangelog } from "@vc-shell/release-config";
+
+await generateRootChangelog({
+  packages,
+  rootDir: process.cwd(),
+  includeRootHeader: true,
+});
+```
+
+### Use Cases
+
+This programmatic API is useful for:
+- **Custom monorepo structures** - Different from standard VC-Shell layout
+- **CI/CD pipelines** - Automated changelog generation
+- **Migration scripts** - One-time setup for new repositories
+- **Custom workflows** - Integration with other release tools
+
+See [changelog-config.example.js](./changelog-config.example.js) for a complete configuration example.
+
 ### Root CHANGELOG Format
 
 The root `CHANGELOG.md` groups changes by package for each version:

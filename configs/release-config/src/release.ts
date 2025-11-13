@@ -32,7 +32,7 @@ export const release = async ({
    * @param workspaceName
    * @returns
    */
-  customHooks: (version: string) => void | Promise<void>;
+  customHooks?: (version: string) => void | Promise<void>;
   /** @deprecated Lerna handles version bumping automatically */
   bumpVersion?: (pkgName: string, version: string) => void | Promise<void>;
   /** @deprecated Lerna generates changelogs automatically */
@@ -48,6 +48,25 @@ export const release = async ({
 
   if (isDryRun) {
     console.log(chalk.yellow("\n⚠️  DRY RUN MODE - No git operations will be performed\n"));
+  }
+
+  // Find the correct last tag to compare against
+  const { pkg } = getPackageInfo(packages.find((p) => p !== ".") || packages[0]);
+  const currentVersion = pkg.version;
+  const majorMinor = currentVersion.split(".").slice(0, 2).join(".");
+
+  // Try to find the last tag matching current major.minor version
+  const tagResult = sync("git", ["describe", "--tags", "--abbrev=0", "--match", `v${majorMinor}.*`], {
+    stdio: "pipe",
+    encoding: "utf-8"
+  });
+
+  let lastMatchingTag: string | null = null;
+  if (tagResult.status === 0 && tagResult.stdout) {
+    lastMatchingTag = tagResult.stdout.toString().trim();
+    console.log(chalk.gray(`ℹ️  Using ${lastMatchingTag} as reference point for changes\n`));
+  } else {
+    console.log(chalk.yellow(`⚠️  No matching tag found for v${majorMinor}.*, Lerna will use default behavior\n`));
   }
 
   // Determine release type
@@ -68,10 +87,13 @@ export const release = async ({
     return;
   }
 
-  const lernaArgs = ["lerna", "version", "--conventional-commits"];
+  const lernaArgs = ["lerna", "version"];
 
   // Configure lerna command based on release type
-  if (releaseType === "prerelease") {
+  if (releaseType === "auto") {
+    // For automatic release, use conventional commits to determine version
+    lernaArgs.push("--conventional-commits");
+  } else if (releaseType === "prerelease") {
     // Get current version and check if it's already a prerelease
     const { pkg } = getPackageInfo(packages[0]);
     const currentVersion = parse(pkg.version);

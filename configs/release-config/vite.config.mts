@@ -5,11 +5,17 @@ import pkg from "./package.json";
 export default defineConfig({
   build: {
     lib: {
-      entry: "./src/index.ts",
+      entry: {
+        "release-config": "./src/index.ts",
+        "cli-generate-changelogs": "./src/cli-generate-changelogs.ts",
+      },
       formats: ["es"], // pure ESM package
     },
     rollupOptions: {
       external: [...Object.keys(pkg.dependencies), /^node:.*/],
+      output: {
+        preserveModules: false,
+      },
     },
     target: "esnext",
   },

@@ -35,11 +35,35 @@ export interface Blade {
   isWorkspace?: boolean;
   components?: Component[];
   actions?: string[];
+  features?: string[];
+  customSlots?: Array<{
+    name: string;
+    component?: string;
+    props?: Record<string, unknown>;
+  }>;
   theme?: {
     variant: "light" | "dark" | "system";
   };
   permissions?: string[];
   steps?: Step[];
+  logic?: {
+    handlers?: Record<string, string>;
+    toolbar?: Array<{
+      id: string;
+      icon?: string;
+      action: string;
+    }>;
+    state?: Record<string, {
+      source: "composable" | "local" | "prop";
+      reactive: boolean;
+      default?: unknown;
+    }>;
+  };
+  composable?: {
+    name?: string;
+    methods?: string[];
+    mockData?: boolean;
+  };
 }
 
 export interface Step {

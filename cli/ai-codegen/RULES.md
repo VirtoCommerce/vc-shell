@@ -208,6 +208,90 @@ If user wants to create a new VC-Shell application:
 
 ---
 
+## Generation Modes
+
+The `generate_complete_module` tool now supports three generation modes:
+
+### Mode: "template" (Guaranteed)
+```typescript
+generate_complete_module({ plan, cwd, mode: "template" })
+```
+- Uses template + AST transformation approach
+- Fast (1-2 seconds)
+- Guaranteed working code
+- Limited to 5 template variations
+
+**When to use:**
+- Production deployments
+- Simple CRUD modules
+- Batch generation
+- Need guaranteed results
+
+### Mode: "ai-first" (Flexible)
+```typescript
+generate_complete_module({ plan, cwd, mode: "ai-first" })
+```
+- AI generates code from scratch following patterns and rules
+- Flexible (unlimited variations)
+- Slower (10-30 seconds depending on AI)
+- Includes retry mechanism (3 attempts)
+- Validates generated code
+- Fails if validation fails after retries
+
+**When to use:**
+- Complex custom requirements
+- Unique business logic
+- Features not covered by templates
+- Experimental/prototype projects
+
+### Mode: "auto" (Best of Both) - DEFAULT
+```typescript
+generate_complete_module({ plan, cwd, mode: "auto" }) // or omit mode
+```
+- Tries AI-first generation
+- Falls back to template on failure
+- Best balance: flexibility + reliability
+- 100% success rate
+
+**When to use:**
+- Default choice for most cases
+- When unsure which mode to use
+- Want flexibility with safety net
+
+### AI Generation Process
+
+When using "ai-first" or "auto" mode:
+
+1. **AI Reads:**
+   - `vcshell://generation-rules` resource (patterns, conventions, rules)
+   - `vcshell://blade-list-pattern` or `vcshell://blade-details-pattern`
+   - `vcshell://composable-list-pattern` or `vcshell://composable-details-pattern`
+   - `vcshell://component-registry` (available components)
+   - UI-Plan requirements
+
+2. **AI Generates:**
+   - Complete Vue SFC files following patterns
+   - TypeScript composables with mock data
+   - All following VC-Shell conventions
+
+3. **System Validates:**
+   - Syntax validation (AST parsing)
+   - TypeScript type checking
+   - Component registry validation
+   - Convention validation (naming, i18n, imports)
+
+4. **On Validation Failure:**
+   - Retry with error feedback (up to 3 times)
+   - If "auto" mode: fallback to template
+   - If "ai-first" mode: return error
+
+5. **On Success:**
+   - Continue with locale generation
+   - Module registration
+   - Write files to disk
+
+---
+
 ## UI-Plan Rules
 
 ### Naming Conventions

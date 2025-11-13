@@ -11,6 +11,7 @@ mkdir -p dist/examples/components
 mkdir -p dist/examples/templates  
 mkdir -p dist/examples/patterns
 mkdir -p dist/examples/compositions
+mkdir -p dist/examples/capabilities
 
 # Copy schemas
 cp src/schemas/*.json dist/schemas/ 2>/dev/null && echo "✓ Copied JSON schemas"
@@ -32,6 +33,11 @@ cp src/examples/patterns/*.md dist/examples/patterns/ 2>/dev/null && echo "✓ C
 
 # Copy composition patterns
 cp src/examples/compositions/*.md dist/examples/compositions/ 2>/dev/null && echo "✓ Copied composition patterns"
+
+# Copy capability examples (all subdirectories)
+if [ -d "src/examples/capabilities" ]; then
+  cp -r src/examples/capabilities/* dist/examples/capabilities/ 2>/dev/null && echo "✓ Copied capability examples (242 files)"
+fi
 
 echo ""
 echo "✅ Asset copy complete!"

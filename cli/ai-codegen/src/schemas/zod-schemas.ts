@@ -49,6 +49,7 @@ export const generateCompleteModuleSchema = z.object({
   plan: z.record(z.unknown()).describe("UI-Plan JSON object to generate from"),
   cwd: z.string().describe("Working directory (project root)"),
   dryRun: z.boolean().optional().describe("If true, shows what would be generated without writing files"),
+  mode: z.enum(["ai-first", "template", "auto"]).optional().default("auto").describe("Generation mode: ai-first (AI generates code), template (use templates+AST), auto (try AI, fallback to template)"),
 });
 
 export const validateAndFixPlanSchema = z.object({
@@ -160,6 +161,30 @@ export const uiPlanBladeSchema = z.object({
     })
   ),
   permissions: z.array(z.string()).optional(),
+  features: z.array(z.enum(["filters", "multiselect", "validation", "gallery", "widgets"])).optional(),
+  customSlots: z.array(z.object({
+    name: z.string(),
+    component: z.string().optional(),
+    props: z.record(z.unknown()).optional(),
+  })).optional(),
+  logic: z.object({
+    handlers: z.record(z.string()).optional(),
+    toolbar: z.array(z.object({
+      id: z.string(),
+      icon: z.string().optional(),
+      action: z.string(),
+    })).optional(),
+    state: z.record(z.object({
+      source: z.enum(["composable", "local", "prop"]),
+      reactive: z.boolean(),
+      default: z.unknown().optional(),
+    })).optional(),
+  }).optional(),
+  composable: z.object({
+    name: z.string().optional(),
+    methods: z.array(z.string()).optional(),
+    mockData: z.boolean().optional().default(true),
+  }).optional(),
 });
 
 export const uiPlanSchema = z.object({
@@ -230,4 +255,20 @@ export type GetBladeTemplateInput = z.infer<typeof getBladeTemplateSchema>;
 export type GenerateCompleteModuleInput = z.infer<typeof generateCompleteModuleSchema>;
 export type ValidateAndFixPlanInput = z.infer<typeof validateAndFixPlanSchema>;
 export type GenerateBladeInput = z.infer<typeof generateBladeSchema>;
+
+// Component Capabilities MCP Tools Schemas
+
+export const searchComponentsByIntentSchema = z.object({
+  intent: z.string().describe("Natural language description of what you need (e.g., 'I need filtering', 'show images', 'bulk delete')"),
+  context: z.enum(["list", "details", "general"]).optional().describe("Optional context to narrow search"),
+});
+
+export const getComponentCapabilitiesSchema = z.object({
+  component: z.string().describe("Component name (e.g., 'VcTable')"),
+  capability: z.string().optional().describe("Optional filter for specific capability ID"),
+  includeExamples: z.boolean().optional().default(true).describe("Include code examples"),
+});
+
+export type SearchComponentsByIntentInput = z.infer<typeof searchComponentsByIntentSchema>;
+export type GetComponentCapabilitiesInput = z.infer<typeof getComponentCapabilitiesSchema>;
 

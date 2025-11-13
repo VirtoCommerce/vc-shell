@@ -8,7 +8,9 @@ VC-Shell AI Codegen is a **fully automatic code generator** that transforms UI-P
 
 ---
 
-## Architecture Diagram
+## Architecture Diagrams
+
+### Template-Based Generation (mode="template")
 
 ```
 User Prompt
@@ -59,6 +61,54 @@ Complete Module
 Write to Disk
     ↓
 ✅ Ready to Use!
+```
+
+### AI-First Generation (mode="ai-first" or mode="auto")
+
+```
+User Prompt → AI → UI-Plan JSON → validate_ui_plan
+                                        ↓
+                            generate_complete_module (ai-first/auto mode)
+                                        ↓
+┌─────────────────────────────────────────────────────────┐
+│   UnifiedCodeGenerator (AI Mode)                        │
+│                                                         │
+│  ┌─────────────────────────────────────────────┐       │
+│  │  GenerationRulesProvider                    │       │
+│  │  - Load composition patterns                │       │
+│  │  - Load naming conventions                  │       │
+│  │  - Load validation rules                    │       │
+│  │  - Build context for AI                     │       │
+│  └─────────────────────────────────────────────┘       │
+│           ↓                                             │
+│  ┌─────────────────────────────────────────────┐       │
+│  │  AICodeGenerator                            │       │
+│  │  - Generate instructions for AI             │       │
+│  │  - AI reads patterns + rules via MCP        │       │
+│  │  - AI generates Vue SFC from scratch        │       │
+│  │  - AI generates TypeScript composables      │       │
+│  └─────────────────────────────────────────────┘       │
+│           ↓                                             │
+│  ┌─────────────────────────────────────────────┐       │
+│  │  CodeValidator                              │       │
+│  │  - Syntax validation (AST)                  │       │
+│  │  - TypeScript type checking                 │       │
+│  │  - Component registry check                 │       │
+│  │  - Convention validation                    │       │
+│  └─────────────────────────────────────────────┘       │
+│           ↓                                             │
+│     Valid?  ──No──> Retry (3x) ──Still No──┐           │
+│       │                                     │           │
+│      Yes                                    ↓           │
+│       ↓                              (if auto mode)     │
+│  [LocaleGenerator]               → Fallback to Template │
+│       ↓                                                 │
+│  [ModuleRegistrar]                                      │
+│       ↓                                                 │
+│  Write to Disk                                          │
+└─────────────────────────────────────────────────────────┘
+    ↓
+✅ Complete Module (Flexible, Validated)
 ```
 
 ---
@@ -516,6 +566,76 @@ VcBlade
 - `vitest` - Testing
 - `typescript` - Type checking
 - `tsup` - Build tool
+
+---
+
+## Component Capabilities System
+
+AI-driven discovery and usage of component features with 242 documented capabilities.
+
+### ComponentAnalyzer
+
+Extracts capabilities from three sources:
+1. **Documentation** - Parses `vc-docs` markdown for props, slots, events
+2. **Source Code** - Analyzes Vue SFC using AST 
+3. **Real Usage** - Greps projects for patterns
+
+**Output:** `component-registry-enhanced.json` (37 components, 242 capabilities)
+
+### Enhanced Registry
+
+Each component includes:
+- **Props capabilities** - All available properties
+- **Slot capabilities** - Custom rendering slots  
+- **Event capabilities** - Emitted events
+- **Feature capabilities** - Complex features (filters, multiselect, etc.)
+
+### MCP Tools
+
+**search_components_by_intent(intent, context?)**
+- Semantic search by natural language
+- Returns ranked components with capabilities
+- Example: "filter by status" → VcTable + filters-slot
+
+**get_component_capabilities(component, capability?, includeExamples?)**
+- Get all or specific capabilities
+- Includes 242 code examples from `src/examples/capabilities/`
+- Used by AI before generating code
+
+### MCP Resources
+
+**vcshell://component-capabilities**
+- Complete enhanced registry as JSON
+- All 242 capabilities with examples
+- Used by AI for reference
+
+### Integration with Generation
+
+**GenerationRulesProvider:**
+- `getRelevantCapabilities(component, features)` 
+- Maps UI-Plan features → component capabilities
+- Powers AI prompt engineering
+
+**AICodeGenerator:**
+- Includes capabilities in prompts
+- AI uses examples as templates
+- Reduces hallucination
+
+### Workflow
+
+1. User requests "table with filters"
+2. AI calls `search_components_by_intent("filters", "list")`
+3. Returns VcTable with filters-slot capability
+4. AI calls `get_component_capabilities("VcTable", "feature-filters")`
+5. Gets working example from `VcTable/feature-filters.md`
+6. AI generates code using example as reference
+
+### Benefits
+
+- **242 documented capabilities** reduce AI errors
+- **Semantic search** finds right components
+- **Working examples** for each capability
+- **Auto-updates** via build-enhanced-registry script
 
 ---
 

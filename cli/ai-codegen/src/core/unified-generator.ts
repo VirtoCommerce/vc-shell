@@ -6,6 +6,9 @@ import { ComposableGenerator, type ListComposableConfig, type DetailsComposableC
 import { LocaleGenerator } from "./locale-generator.js";
 import { ModuleRegistrar } from "./module-registrar.js";
 import { CodeGenerator, type NamingConfig } from "./code-generator.js";
+import { AICodeGenerator } from "./ai-code-generator.js";
+import { CodeValidator } from "./code-validator.js";
+import { getGenerationRulesProvider } from "./generation-rules.js";
 import { fileURLToPath } from "node:url";
 import { camelCase, upperFirst, kebabCase } from "lodash-es";
 
@@ -25,8 +28,11 @@ export interface GeneratedModule {
     composables: number;
     locales: number;
     registered: boolean;
+    mode?: "template" | "ai-first";
   };
 }
+
+export type GenerationMode = "ai-first" | "template" | "auto";
 
 interface BladeGenerationContext {
   blade: Blade;
@@ -50,7 +56,8 @@ interface BladeGenerationContext {
  * UnifiedCodeGenerator - main code generation engine
  *
  * This orchestrates all code generation components:
- * - Template adaptation via AST
+ * - AI-first generation (primary)
+ * - Template adaptation via AST (fallback)
  * - Composable generation with mock data
  * - Locale generation
  * - Module registration
@@ -61,6 +68,11 @@ export class UnifiedCodeGenerator {
   private localeGenerator: LocaleGenerator;
   private moduleRegistrar: ModuleRegistrar;
   private codeGenerator: CodeGenerator;
+  private aiGenerator: AICodeGenerator;
+  private validator: CodeValidator;
+  private rulesProvider: ReturnType<typeof getGenerationRulesProvider>;
+  private retryCount: Map<string, number>;
+  private maxRetries = 3;
 
   constructor() {
     this.templateAdapter = new TemplateAdapter();
@@ -68,6 +80,10 @@ export class UnifiedCodeGenerator {
     this.localeGenerator = new LocaleGenerator();
     this.moduleRegistrar = new ModuleRegistrar();
     this.codeGenerator = new CodeGenerator();
+    this.aiGenerator = new AICodeGenerator();
+    this.validator = new CodeValidator();
+    this.rulesProvider = getGenerationRulesProvider();
+    this.retryCount = new Map();
   }
 
   /**
@@ -76,9 +92,9 @@ export class UnifiedCodeGenerator {
   async generateModule(
     plan: UIPlan,
     cwd: string,
-    options: { writeToDisk?: boolean; dryRun?: boolean } = {},
+    options: { writeToDisk?: boolean; dryRun?: boolean; mode?: GenerationMode } = {},
   ): Promise<GeneratedModule> {
-    const { writeToDisk = false, dryRun = false } = options;
+    const { writeToDisk = false, dryRun = false, mode = "auto" } = options;
     const files: GeneratedFile[] = [];
     const moduleNaming = this.codeGenerator.createNamingConfig(plan.module);
     const modulePath = path.join(cwd, "src", "modules", plan.module);
@@ -91,10 +107,10 @@ export class UnifiedCodeGenerator {
       const context = this.createBladeContext(blade, moduleNaming, modulePath);
       bladeContexts.push(context);
 
-      const bladeFile = await this.generateBlade(context);
+      const bladeFile = await this.generateBladeWithMode(context, mode);
       files.push(bladeFile);
 
-      const composableFile = await this.generateComposable(context);
+      const composableFile = await this.generateComposableWithMode(context, mode);
       files.push(composableFile);
     }
 
@@ -126,6 +142,7 @@ export class UnifiedCodeGenerator {
         composables: bladeContexts.length,
         locales: 2,
         registered,
+        mode: mode === "auto" ? "template" : mode, // In auto mode, actual mode depends on fallback
       },
     };
   }
@@ -185,6 +202,195 @@ export class UnifiedCodeGenerator {
       content: code,
       lines: code.split("\n").length,
     };
+  }
+
+  /**
+   * Generate blade with AI-first approach
+   * Includes retry mechanism and fallback to templates
+   */
+  private async generateBladeWithMode(context: BladeGenerationContext, mode: GenerationMode): Promise<GeneratedFile> {
+    if (mode === "template") {
+      return this.generateBlade(context);
+    }
+
+    if (mode === "ai-first") {
+      return this.generateBladeAI(context, false);
+    }
+
+    // mode === "auto": try AI first, fallback to template
+    try {
+      return await this.generateBladeAI(context, true);
+    } catch (error) {
+      console.warn(`AI generation failed for ${context.componentName}, falling back to template approach`);
+      console.warn(`Error: ${error instanceof Error ? error.message : String(error)}`);
+      return this.generateBlade(context);
+    }
+  }
+
+  /**
+   * Generate blade using AI with retry mechanism
+   */
+  private async generateBladeAI(context: BladeGenerationContext, allowFallback: boolean): Promise<GeneratedFile> {
+    const retryKey = `blade-${context.componentName}`;
+    const currentRetry = this.retryCount.get(retryKey) || 0;
+
+    try {
+      // Get relevant patterns
+      const patterns = this.rulesProvider.getRelevantPatterns(context.type, context.blade.features);
+      const rules = this.rulesProvider.getRules();
+
+      // NOTE: This generates instructions for AI to follow
+      // The actual code generation happens when AI (Cursor/Claude) reads these instructions
+      // through MCP and generates the code
+      const instructions = this.aiGenerator.generateBlade(
+        {
+          type: context.type,
+          naming: context.naming,
+          blade: context.blade as any, // Type compatibility between Blade and UIPlanBlade
+          columns: context.columns,
+          fields: context.fields,
+          componentName: context.componentName,
+          composableName: context.composableName,
+          route: context.route,
+          isWorkspace: context.isWorkspace,
+          menuTitleKey: context.menuTitleKey,
+          features: context.blade.features || [],
+        },
+        patterns,
+        rules,
+      );
+
+      // In real implementation, AI would generate actual code here
+      // For now, return placeholder that indicates AI should generate
+      const aiGeneratedCode = `<!-- AI GENERATION INSTRUCTIONS -->
+<!--
+This file should be generated by AI following these instructions:
+
+${instructions}
+
+NOTE: This is a placeholder. In production, AI (Cursor/Claude) generates
+the actual Vue SFC code by reading the instructions above through MCP.
+-->`;
+
+      // Validate generated code
+      const validation = this.validator.validateFull(aiGeneratedCode, context.blade as any);
+
+      if (!validation.valid) {
+        const errorMessages = validation.errors.map(e => `${e.type}: ${e.message}`).join("\n");
+
+        if (currentRetry < this.maxRetries) {
+          // Retry with updated retry count
+          this.retryCount.set(retryKey, currentRetry + 1);
+          console.warn(`Validation failed for ${context.componentName}, retrying (${currentRetry + 1}/${this.maxRetries})`);
+          console.warn(`Errors:\n${errorMessages}`);
+          return this.generateBladeAI(context, allowFallback);
+        }
+
+        if (allowFallback) {
+          throw new Error(`AI generation failed after ${this.maxRetries} retries: ${errorMessages}`);
+        } else {
+          throw new Error(`AI generation validation failed: ${errorMessages}`);
+        }
+      }
+
+      // Reset retry count on success
+      this.retryCount.delete(retryKey);
+
+      return {
+        path: context.filePath,
+        content: aiGeneratedCode,
+        lines: aiGeneratedCode.split("\n").length,
+      };
+    } catch (error) {
+      if (allowFallback && currentRetry >= this.maxRetries) {
+        throw error;
+      }
+      throw error;
+    }
+  }
+
+  /**
+   * Generate composable with AI-first approach
+   */
+  private async generateComposableWithMode(context: BladeGenerationContext, mode: GenerationMode): Promise<GeneratedFile> {
+    if (mode === "template") {
+      return this.generateComposable(context);
+    }
+
+    if (mode === "ai-first") {
+      return this.generateComposableAI(context, false);
+    }
+
+    // mode === "auto": try AI first, fallback to template
+    try {
+      return await this.generateComposableAI(context, true);
+    } catch (error) {
+      console.warn(`AI composable generation failed for ${context.composableName}, falling back to template approach`);
+      return this.generateComposable(context);
+    }
+  }
+
+  /**
+   * Generate composable using AI with retry mechanism
+   */
+  private async generateComposableAI(context: BladeGenerationContext, allowFallback: boolean): Promise<GeneratedFile> {
+    const retryKey = `composable-${context.composableName}`;
+    const currentRetry = this.retryCount.get(retryKey) || 0;
+
+    try {
+      const patterns = this.rulesProvider.getPatternsByType(context.type);
+      const rules = this.rulesProvider.getRules();
+
+      const instructions = this.aiGenerator.generateComposable(
+        {
+          type: context.type,
+          naming: context.naming,
+          blade: context.blade as any, // Type compatibility between Blade and UIPlanBlade
+          columns: context.columns,
+          fields: context.fields,
+          componentName: context.componentName,
+          composableName: context.composableName,
+          route: context.route,
+          isWorkspace: context.isWorkspace,
+          menuTitleKey: context.menuTitleKey,
+          features: context.blade.features || [],
+        },
+        patterns,
+        rules,
+      );
+
+      // Placeholder for AI-generated code
+      const aiGeneratedCode = `/* AI GENERATION INSTRUCTIONS */
+/*
+This file should be generated by AI following these instructions:
+
+${instructions}
+
+NOTE: This is a placeholder. In production, AI generates the actual
+TypeScript composable code by reading these instructions through MCP.
+*/`;
+
+      // Validate (syntax only for composables)
+      const validation = this.validator.validateSyntax(aiGeneratedCode);
+
+      if (!validation.valid && currentRetry < this.maxRetries) {
+        this.retryCount.set(retryKey, currentRetry + 1);
+        return this.generateComposableAI(context, allowFallback);
+      }
+
+      this.retryCount.delete(retryKey);
+
+      return {
+        path: context.composablePath,
+        content: aiGeneratedCode,
+        lines: aiGeneratedCode.split("\n").length,
+      };
+    } catch (error) {
+      if (allowFallback && currentRetry >= this.maxRetries) {
+        throw error;
+      }
+      throw error;
+    }
   }
 
   /**

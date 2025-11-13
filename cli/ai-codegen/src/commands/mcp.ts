@@ -24,6 +24,8 @@ import {
   generateCompleteModuleSchema,
   validateAndFixPlanSchema,
   generateBladeSchema,
+  searchComponentsByIntentSchema,
+  getComponentCapabilitiesSchema,
   type Component,
 } from "../schemas/zod-schemas.js";
 import {
@@ -73,6 +75,15 @@ export async function mcpServerCommand() {
   const registry: Record<string, Component> = JSON.parse(
     fs.readFileSync(registryPath, "utf-8")
   );
+
+  // Load enhanced registry with capabilities
+  const enhancedRegistryPath = path.join(schemasPath, "component-registry-enhanced.json");
+  let enhancedRegistry: any = {};
+  try {
+    enhancedRegistry = JSON.parse(fs.readFileSync(enhancedRegistryPath, "utf-8"));
+  } catch (error) {
+    console.warn("Enhanced registry not found, capabilities features will be limited");
+  }
 
   // Initialize search engine
   const searchEngine = new SearchEngine(registry);
@@ -144,6 +155,18 @@ export async function mcpServerCommand() {
             "Generate single blade (list or details) from configuration. Use this for generating individual blades without full module.",
           inputSchema: zodToJsonSchema(generateBladeSchema),
         },
+        {
+          name: "search_components_by_intent",
+          description:
+            "Semantic search for components based on user intent. Returns components with relevant capabilities ranked by relevance. Example: 'I need to filter items by status' → VcTable with filters-slot capability.",
+          inputSchema: zodToJsonSchema(searchComponentsByIntentSchema),
+        },
+        {
+          name: "get_component_capabilities",
+          description:
+            "Get all capabilities of a component with examples. Returns detailed information about props, slots, events, features, and patterns. Use this to understand what a component can do before using it.",
+          inputSchema: zodToJsonSchema(getComponentCapabilitiesSchema),
+        },
       ],
     };
   });
@@ -192,6 +215,18 @@ export async function mcpServerCommand() {
           uri: "vcshell://component-templates",
           name: "Slot Component Templates",
           description: "Reusable Vue components for table slots and blade composition (status-badge, image-grid, actions-dropdown, widget-container)",
+          mimeType: "application/json",
+        },
+        {
+          uri: "vcshell://component-capabilities",
+          name: "Enhanced Component Registry with Capabilities",
+          description: "Complete registry with 242 capabilities across all components including props, slots, events, features, and usage examples",
+          mimeType: "application/json",
+        },
+        {
+          uri: "vcshell://generation-rules",
+          name: "Code Generation Rules",
+          description: "Complete rules for AI code generation including blade structure, naming conventions, i18n patterns, composition patterns, and validation rules",
           mimeType: "application/json",
         },
       ],
@@ -302,15 +337,15 @@ export async function mcpServerCommand() {
         // Return slot component metadata and code
         const slotComponents = registry._slotComponents?.components || [];
         const componentsPath = path.join(examplesPath, "components");
-        
+
         const componentsData = slotComponents.map((comp: any) => {
           const compPath = path.join(examplesPath, comp.file);
           let code = "";
-          
+
           if (fs.existsSync(compPath)) {
             code = fs.readFileSync(compPath, "utf-8");
           }
-          
+
           return {
             name: comp.name,
             file: comp.file,
@@ -332,6 +367,40 @@ export async function mcpServerCommand() {
                 description: "Reusable components for custom table slots and blade composition",
                 components: componentsData,
               }, null, 2),
+            },
+          ],
+        };
+      }
+
+      case "vcshell://generation-rules": {
+        // Import getGenerationRulesProvider dynamically
+        const { getGenerationRulesProvider } = await import("../core/generation-rules.js");
+        const rulesProvider = getGenerationRulesProvider();
+        const rulesJSON = rulesProvider.exportRulesAsJSON();
+
+        return {
+          contents: [
+            {
+              uri,
+              mimeType: "application/json",
+              text: rulesJSON,
+            },
+          ],
+        };
+      }
+
+      case "vcshell://component-capabilities": {
+        // Return enhanced registry with all capabilities
+        if (Object.keys(enhancedRegistry).length === 0) {
+          throw new Error("Enhanced registry not loaded. Run build-enhanced-registry script first.");
+        }
+
+        return {
+          contents: [
+            {
+              uri,
+              mimeType: "application/json",
+              text: JSON.stringify(enhancedRegistry, null, 2),
             },
           ],
         };
@@ -493,7 +562,7 @@ export async function mcpServerCommand() {
 
 Try:
 - "VcTable" for component demos
-- "list" for list blade templates  
+- "list" for list blade templates
 - "details" for details blade templates
 - "filter" for examples with filters`,
                 },
@@ -510,11 +579,11 @@ Try:
             const fileType = type === "template" ? "Production Template" : "Demo";
 
             output += `## ${title} (${fileType})\n\n`;
-            
+
             if (type === "template") {
               const templates = registry.VcBlade?.templates || [];
               const templateInfo = templates.find((t: any) => t.file === `templates/${file}`);
-              
+
               if (templateInfo) {
                 output += `**Complexity:** ${templateInfo.complexity}\n`;
                 output += `**Features:** ${templateInfo.features?.join(", ")}\n`;
@@ -587,7 +656,7 @@ Try:
           try {
             // Run create-vc-app in non-interactive mode
             console.error(`Creating VC-Shell app: ${projectName}...`);
-            
+
             const result = await execa("npx", [
               "@vc-shell/create-vc-app@latest",
               projectName,
@@ -651,7 +720,7 @@ Try:
           }
 
           const { type, complexity } = parsed.data;
-          
+
           // Map type + complexity to template filename
           const templateMap: Record<string, string> = {
             "list-simple": "list-simple.vue",
@@ -677,7 +746,7 @@ Try:
           }
 
           const templatePath = path.join(examplesPath, "templates", templateFile);
-          
+
           if (!fs.existsSync(templatePath)) {
             return {
               content: [
@@ -691,7 +760,7 @@ Try:
           }
 
           const content = fs.readFileSync(templatePath, "utf-8");
-          
+
           // Get template metadata from registry
           const templates = registry.VcBlade?.templates || [];
           const templateInfo = templates.find((t: any) => t.id === templateKey);
@@ -742,7 +811,7 @@ ${content}
             throw new Error(`Invalid arguments: ${parsed.error.message}`);
           }
 
-          const { plan, cwd, dryRun } = parsed.data;
+          const { plan, cwd, dryRun, mode } = parsed.data;
 
           // Validate plan first
           const validator = new Validator();
@@ -774,6 +843,7 @@ ${content}
           const result = await generator.generateModule(plan as ValidatorUIPlan, cwd, {
             writeToDisk: !dryRun,
             dryRun,
+            mode,
           });
 
           return {
@@ -791,6 +861,7 @@ ${content}
                       locales: result.summary.locales,
                       registered: result.summary.registered,
                       totalFiles: result.files.length,
+                      mode: result.summary.mode || mode,
                     },
                     files: result.files.map(f => ({
                       path: f.path.replace(cwd, ""),
@@ -890,6 +961,136 @@ ${content}
           };
         }
 
+        case "search_components_by_intent": {
+          const parsed = searchComponentsByIntentSchema.safeParse(args);
+          if (!parsed.success) {
+            throw new Error(`Invalid arguments: ${parsed.error.message}`);
+          }
+
+          const { intent, context } = parsed.data;
+
+          // Simple keyword matching for semantic search
+          // In production, this could use embeddings or more sophisticated NLP
+          const keywords = intent.toLowerCase().split(/\s+/);
+          const results: any[] = [];
+
+          for (const [componentName, component] of Object.entries(enhancedRegistry)) {
+            if (!componentName.startsWith("Vc")) continue;
+
+            let score = 0;
+            const matchedCapabilities: any[] = [];
+
+            // Search in capabilities
+            for (const [capId, capability] of Object.entries(component.capabilities as any)) {
+              const capText = `${capability.name} ${capability.description} ${capability.useCases?.join(" ")}`.toLowerCase();
+
+              for (const keyword of keywords) {
+                if (capText.includes(keyword)) {
+                  score += 10;
+                  matchedCapabilities.push({
+                    id: capId,
+                    name: capability.name,
+                    type: capability.type,
+                    description: capability.description,
+                  });
+                }
+              }
+            }
+
+            // Context filtering
+            if (context) {
+              if (context === "list" && !componentName.includes("Table")) score *= 0.5;
+              if (context === "details" && !componentName.includes("Form")) score *= 0.5;
+            }
+
+            if (score > 0) {
+              results.push({
+                component: componentName,
+                score,
+                capabilities: matchedCapabilities.slice(0, 3), // Top 3 capabilities
+                description: component.description,
+              });
+            }
+          }
+
+          // Sort by score
+          results.sort((a, b) => b.score - a.score);
+
+          return {
+            content: [
+              {
+                type: "text",
+                text: JSON.stringify(
+                  {
+                    intent,
+                    results: results.slice(0, 5), // Top 5 results
+                    totalFound: results.length,
+                  },
+                  null,
+                  2
+                ),
+              },
+            ],
+          };
+        }
+
+        case "get_component_capabilities": {
+          const parsed = getComponentCapabilitiesSchema.safeParse(args);
+          if (!parsed.success) {
+            throw new Error(`Invalid arguments: ${parsed.error.message}`);
+          }
+
+          const { component, capability, includeExamples } = parsed.data;
+
+          if (!enhancedRegistry[component]) {
+            throw new Error(`Component ${component} not found in enhanced registry`);
+          }
+
+          const componentData = enhancedRegistry[component];
+          let capabilities = componentData.capabilities;
+
+          // Filter by specific capability if requested
+          if (capability) {
+            capabilities = { [capability]: capabilities[capability] };
+            if (!capabilities[capability]) {
+              throw new Error(`Capability ${capability} not found for ${component}`);
+            }
+          }
+
+          // Load examples if requested
+          if (includeExamples) {
+            for (const [capId, cap] of Object.entries(capabilities as any)) {
+              try {
+                const examplePath = path.join(examplesPath, "capabilities", component, `${capId}.md`);
+                if (fs.existsSync(examplePath)) {
+                  cap.exampleFile = fs.readFileSync(examplePath, "utf-8");
+                }
+              } catch (error) {
+                // Example not found, skip
+              }
+            }
+          }
+
+          return {
+            content: [
+              {
+                type: "text",
+                text: JSON.stringify(
+                  {
+                    component,
+                    description: componentData.description,
+                    category: componentData.category,
+                    capabilities,
+                    capabilityCount: Object.keys(capabilities).length,
+                  },
+                  null,
+                  2
+                ),
+              },
+            ],
+          };
+        }
+
         default:
           throw new Error(`Unknown tool: ${name}`);
       }
@@ -924,22 +1125,22 @@ function generateFixSuggestion(error: { path: string; message: string; severity:
   if (error.message.includes("kebab-case")) {
     return "Use kebab-case format (e.g., 'vendor-management' instead of 'VendorManagement')";
   }
-  
+
   if (error.message.includes("Route must start with")) {
     return "Add '/' at the beginning of the route (e.g., '/vendors' instead of 'vendors')";
   }
-  
+
   if (error.message.includes("not found in Component Registry")) {
     return "Use only components from the VC-Shell Component Registry. Call search_components to find available components.";
   }
-  
+
   if (error.message.includes("field type")) {
     return "Valid field types: VcInput, VcTextarea, VcSelect, VcCheckbox, VcSwitch, VcGallery, VcFileUpload";
   }
-  
+
   if (error.message.includes("50 items")) {
     return "Reduce number of fields to maximum 50 items";
   }
-  
+
   return "Review the error message and fix the plan manually";
 }

@@ -188,6 +188,10 @@ export const useDynamicProperties = <
 
         property.values?.push(newValue);
       }
+      // For boolean properties, return false if no value exists
+      if (property.valueType === "Boolean") {
+        return false;
+      }
     }
 
     if (isDictionaryProperty(property)) {
@@ -203,7 +207,13 @@ export const useDynamicProperties = <
     }
 
     const firstValue = property.values?.[0];
-    if (!firstValue) return "";
+    if (!firstValue) {
+      // For boolean properties, return false instead of empty string
+      if (property.valueType === "Boolean") {
+        return false;
+      }
+      return "";
+    }
 
     if (isDictionaryProperty(property)) {
       return firstValue.valueId as string;
@@ -470,16 +480,12 @@ export const useDynamicProperties = <
   }
 
   function handleBooleanValue(property: TProperty, value: boolean, initialProp?: TProperty): void {
-    if (initialProp?.values?.length) {
-      property.values = [
-        property.values?.[0]
-          ? Object.assign(property.values[0], { value })
-          : createPropertyValue({ value } as Partial<TPropertyValue>),
-      ];
-    } else if (value) {
-      property.values = [createPropertyValue({ value } as Partial<TPropertyValue>)];
+    // Always create or update the value, even if it's false
+    // This ensures the state is properly reflected in the UI
+    if (property.values?.[0]) {
+      Object.assign(property.values[0], { value });
     } else {
-      property.values = [];
+      property.values = [createPropertyValue({ value } as Partial<TPropertyValue>)];
     }
   }
 

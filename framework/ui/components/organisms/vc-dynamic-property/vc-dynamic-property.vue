@@ -503,6 +503,10 @@ const value = computed({
       // Return empty array as fallback
       return [];
     }
+    // For boolean and other types, extract value from PropertyValue object if needed
+    if (internalModel.value && typeof internalModel.value === "object" && "value" in internalModel.value) {
+      return internalModel.value.value;
+    }
     return internalModel.value;
   },
   set(newValue) {

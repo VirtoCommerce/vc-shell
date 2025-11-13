@@ -68,7 +68,7 @@ export interface IUseDynamicProperties<
   getPropertyValue: (
     property: TProperty,
     locale: string,
-  ) => string | TPropertyValue[] | (TPropertyDictionaryItem & { value: string })[];
+  ) => string | TPropertyValue[] | boolean | (TPropertyDictionaryItem & { value: string })[];
   setPropertyValue: (data: SetPropertyValueParams<TProperty, TPropertyValue, TPropertyDictionaryItem>) => void;
   loadMeasurements(measureId: string, keyword?: string, locale?: string): Promise<TMeasurement[] | undefined>;
 }
@@ -166,7 +166,7 @@ export const useDynamicProperties = <
 
   // === VALUE GETTERS ===
 
-  function getMultilanguageValue(property: TProperty, locale: string): string | TPropertyValue[] {
+  function getMultilanguageValue(property: TProperty, locale: string): string | TPropertyValue[] | boolean {
     const valueForLocale = property.values?.find((x) => x.languageCode === locale);
 
     if (isMultivalueProperty(property)) {
@@ -201,7 +201,7 @@ export const useDynamicProperties = <
     return valueForLocale?.value as string;
   }
 
-  function getSingleLanguageValue(property: TProperty): string | TPropertyValue[] {
+  function getSingleLanguageValue(property: TProperty): string | TPropertyValue[] | boolean {
     if (isMultivalueProperty(property)) {
       return property.values as TPropertyValue[];
     }
@@ -222,7 +222,7 @@ export const useDynamicProperties = <
     return firstValue.value as string;
   }
 
-  function getPropertyValue(property: TProperty, locale: string) {
+  function getPropertyValue(property: TProperty, locale: string): string | TPropertyValue[] | boolean {
     if (isMultilanguageProperty(property)) {
       return getMultilanguageValue(property, locale);
     }
@@ -288,11 +288,7 @@ export const useDynamicProperties = <
     dict: TPropertyDictionaryItem[],
   ): void {
     if (Array.isArray(value)) {
-      handleMultilanguageMultivalueDictionary(
-        property,
-        value as (TPropertyDictionaryItem & { value: string })[],
-        dict,
-      );
+      handleMultilanguageMultivalueDictionary(property, value as (TPropertyDictionaryItem & { value: string })[], dict);
     } else {
       handleMultilanguageSingleValueDictionary(property, value as string, dict);
     }

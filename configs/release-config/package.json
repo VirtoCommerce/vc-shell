@@ -3,7 +3,7 @@
   "version": "1.2.0",
   "type": "module",
   "main": "dist/release-config.js",
-  "types": "./dist/index.d.ts",
+  "types": "./dist/src/index.d.ts",
   "files": [
     "dist"
   ],

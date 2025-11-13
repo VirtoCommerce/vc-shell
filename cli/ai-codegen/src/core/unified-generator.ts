@@ -7,6 +7,7 @@ import { LocaleGenerator } from "./locale-generator.js";
 import { ModuleRegistrar } from "./module-registrar.js";
 import { CodeGenerator, type NamingConfig } from "./code-generator.js";
 import { fileURLToPath } from "node:url";
+import { camelCase, upperFirst, kebabCase } from "lodash-es";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -25,6 +26,24 @@ export interface GeneratedModule {
     locales: number;
     registered: boolean;
   };
+}
+
+interface BladeGenerationContext {
+  blade: Blade;
+  type: "list" | "details";
+  naming: NamingConfig;
+  columns?: Column[];
+  fields?: Field[];
+  componentName: string;
+  fileName: string;
+  filePath: string;
+  composableName: string;
+  composableFileName: string;
+  composablePath: string;
+  menuTitleKey: string;
+  route: string;
+  isWorkspace?: boolean;
+  requiresStatusBadge: boolean;
 }
 
 /**
@@ -54,66 +73,58 @@ export class UnifiedCodeGenerator {
   /**
    * Generate complete module from UI-Plan
    */
-  async generateModule(plan: UIPlan, cwd: string): Promise<GeneratedModule> {
+  async generateModule(
+    plan: UIPlan,
+    cwd: string,
+    options: { writeToDisk?: boolean; dryRun?: boolean } = {},
+  ): Promise<GeneratedModule> {
+    const { writeToDisk = false, dryRun = false } = options;
     const files: GeneratedFile[] = [];
-    const naming = this.codeGenerator.createNamingConfig(plan.module);
+    const moduleNaming = this.codeGenerator.createNamingConfig(plan.module);
     const modulePath = path.join(cwd, "src", "modules", plan.module);
 
-    // Create module structure
     await this.createModuleStructure(modulePath);
 
-    // Generate blades and composables for each blade in plan
-    const bladeConfigs: Array<{ type: "list" | "details"; columns?: Column[]; fields?: Field[] }> = [];
+    const bladeContexts: BladeGenerationContext[] = [];
 
     for (const blade of plan.blades) {
-      // Determine blade type from layout
-      const bladeType = blade.layout === "grid" ? "list" : "details";
+      const context = this.createBladeContext(blade, moduleNaming, modulePath);
+      bladeContexts.push(context);
 
-      // Generate blade
-      const bladeFile = await this.generateBlade(blade, plan, naming, modulePath);
+      const bladeFile = await this.generateBlade(context);
       files.push(bladeFile);
 
-      // Generate composable
-      const composableFile = await this.generateComposable(blade, naming, modulePath);
+      const composableFile = await this.generateComposable(context);
       files.push(composableFile);
-
-      // Track for locale generation
-      if (bladeType === "list") {
-        bladeConfigs.push({
-          type: "list",
-          columns: this.extractColumnsFromBlade(blade),
-        });
-      } else {
-        bladeConfigs.push({
-          type: "details",
-          fields: this.extractFieldsFromBlade(blade),
-        });
-      }
     }
 
-    // Generate locales
-    const localeFiles = await this.generateLocales(naming, bladeConfigs, modulePath);
+    const localeFiles = await this.generateLocales(moduleNaming, bladeContexts, modulePath);
     files.push(...localeFiles);
 
-    // Generate module files (index.ts, pages/index.ts)
-    const moduleFiles = await this.generateModuleFiles(plan, naming, modulePath);
+    const moduleFiles = await this.generateModuleFiles(bladeContexts, modulePath);
     files.push(...moduleFiles);
 
-    // Register module in main.ts
+    const componentFiles = this.generateComponentStubs(bladeContexts, modulePath);
+    files.push(...componentFiles);
+
     let registered = false;
     try {
-      await this.moduleRegistrar.registerModule(plan.module, naming, cwd);
+      await this.moduleRegistrar.registerModule(plan.module, moduleNaming, cwd);
       registered = true;
     } catch (error) {
       console.warn(`Warning: Could not register module in main.ts: ${error}`);
     }
 
+    if (writeToDisk && !dryRun) {
+      this.writeFilesToDisk(files);
+    }
+
     return {
       files,
       summary: {
-        blades: plan.blades.length,
-        composables: plan.blades.length,
-        locales: 2, // en.json + index.ts
+        blades: bladeContexts.length,
+        composables: bladeContexts.length,
+        locales: 2,
         registered,
       },
     };
@@ -122,38 +133,28 @@ export class UnifiedCodeGenerator {
   /**
    * Generate single blade
    */
-  private async generateBlade(blade: Blade, plan: UIPlan, naming: NamingConfig, modulePath: string): Promise<GeneratedFile> {
-    const bladeType = blade.layout === "grid" ? "list" : "details";
+  private async generateBlade(context: BladeGenerationContext): Promise<GeneratedFile> {
+    const template = this.loadTemplate(context.type, context.blade.features);
 
-    // Load template
-    const template = this.loadTemplate(bladeType);
-
-    // Prepare adapt config
     const adaptConfig: AdaptConfig = {
-      naming,
-      features: [],
+      naming: context.naming,
+      columns: context.type === "list" ? context.columns : undefined,
+      fields: context.type === "details" ? context.fields : undefined,
+      customSlots: context.blade.customSlots,
+      features: context.blade.features,
+      componentName: context.componentName,
+      composableName: context.composableName,
+      route: context.route,
+      isWorkspace: context.isWorkspace,
+      menuTitleKey: context.menuTitleKey,
     };
 
-    if (bladeType === "list") {
-      adaptConfig.columns = this.extractColumnsFromBlade(blade);
-    } else {
-      adaptConfig.fields = this.extractFieldsFromBlade(blade);
-    }
-
-    // Adapt template
-    const code = bladeType === "list"
+    const code = context.type === "list"
       ? this.templateAdapter.adaptListTemplate(template, adaptConfig)
       : this.templateAdapter.adaptDetailsTemplate(template, adaptConfig);
 
-    // Determine file name
-    const fileName = bladeType === "list"
-      ? `${naming.entityPluralKebab}-list.vue`
-      : `${naming.entitySingularKebab}-details.vue`;
-
-    const filePath = path.join(modulePath, "pages", fileName);
-
     return {
-      path: filePath,
+      path: context.filePath,
       content: code,
       lines: code.split("\n").length,
     };
@@ -162,32 +163,25 @@ export class UnifiedCodeGenerator {
   /**
    * Generate composable for blade
    */
-  private async generateComposable(blade: Blade, naming: NamingConfig, modulePath: string): Promise<GeneratedFile> {
-    const bladeType = blade.layout === "grid" ? "list" : "details";
-
+  private async generateComposable(context: BladeGenerationContext): Promise<GeneratedFile> {
     let code: string;
-    let fileName: string;
 
-    if (bladeType === "list") {
+    if (context.type === "list") {
       const config: ListComposableConfig = {
-        naming,
-        columns: this.extractColumnsFromBlade(blade),
+        naming: context.naming,
+        columns: context.columns || this.extractColumnsFromBlade(context.blade),
       };
       code = this.composableGenerator.generateListComposable(config);
-      fileName = `use${naming.entitySingularPascal}List.ts`;
     } else {
       const config: DetailsComposableConfig = {
-        naming,
-        fields: this.extractFieldsFromBlade(blade),
+        naming: context.naming,
+        fields: context.fields || this.extractFieldsFromBlade(context.blade),
       };
       code = this.composableGenerator.generateDetailsComposable(config);
-      fileName = `use${naming.entitySingularPascal}Details.ts`;
     }
 
-    const filePath = path.join(modulePath, "composables", fileName);
-
     return {
-      path: filePath,
+      path: context.composablePath,
       content: code,
       lines: code.split("\n").length,
     };
@@ -198,12 +192,18 @@ export class UnifiedCodeGenerator {
    */
   private async generateLocales(
     naming: NamingConfig,
-    bladeConfigs: Array<{ type: "list" | "details"; columns?: Column[]; fields?: Field[] }>,
-    modulePath: string
+    contexts: BladeGenerationContext[],
+    modulePath: string,
   ): Promise<GeneratedFile[]> {
     const files: GeneratedFile[] = [];
 
     // Generate en.json
+    const bladeConfigs = contexts.map((context) => ({
+      type: context.type,
+      columns: context.columns,
+      fields: context.fields,
+    }));
+
     const localeData = this.localeGenerator.generateModuleLocales(naming, bladeConfigs);
     const enJsonContent = JSON.stringify(localeData, null, 2);
 
@@ -228,7 +228,7 @@ export class UnifiedCodeGenerator {
   /**
    * Generate module structure files (index.ts, pages/index.ts)
    */
-  private async generateModuleFiles(plan: UIPlan, naming: NamingConfig, modulePath: string): Promise<GeneratedFile[]> {
+  private async generateModuleFiles(contexts: BladeGenerationContext[], modulePath: string): Promise<GeneratedFile[]> {
     const files: GeneratedFile[] = [];
 
     // Generate module index.ts
@@ -249,15 +249,9 @@ export * from "./composables";
     });
 
     // Generate pages/index.ts
-    const pageExports = plan.blades.map((blade, index) => {
-      const bladeType = blade.layout === "grid" ? "List" : "Details";
-      const componentName = `${naming.entitySingularPascal}${bladeType}`;
-      const fileName = blade.layout === "grid"
-        ? `${naming.entityPluralKebab}-list.vue`
-        : `${naming.entitySingularKebab}-details.vue`;
-
-      return `export { default as ${componentName} } from "./${fileName.replace(".vue", "")}";`;
-    }).join("\n");
+    const pageExports = contexts
+      .map((context) => `export { default as ${context.componentName} } from "./${context.fileName}";`)
+      .join("\n");
 
     files.push({
       path: path.join(modulePath, "pages", "index.ts"),
@@ -266,12 +260,12 @@ export * from "./composables";
     });
 
     // Generate composables/index.ts
-    const composableExports = plan.blades.map((blade) => {
-      const bladeType = blade.layout === "grid" ? "List" : "Details";
-      const composableName = `use${naming.entitySingularPascal}${bladeType}`;
-
-      return `export { default as ${composableName} } from "./${composableName}";`;
-    }).join("\n");
+    const composableExports = contexts
+      .map((context) => {
+        const importPath = context.composableFileName.replace(/\.ts$/, "");
+        return `export { default as ${context.composableName} } from "./${importPath}";`;
+      })
+      .join("\n");
 
     files.push({
       path: path.join(modulePath, "composables", "index.ts"),
@@ -304,21 +298,44 @@ export * from "./composables";
   /**
    * Load blade template
    */
-  private loadTemplate(type: "list" | "details"): string {
-    // Try to load from examples/templates
-    const templatesPath = __dirname.includes("/dist")
-      ? path.join(__dirname, "..", "examples", "templates")
-      : path.join(__dirname, "..", "..", "src", "examples", "templates");
+  private loadTemplate(type: "list" | "details", features?: string[]): string {
+    const templatesPath = path.join(this.getExamplesPath(), "templates");
+    const candidates = this.resolveTemplateCandidates(type, features);
 
-    const templateFile = type === "list" ? "list-simple.vue" : "details-simple.vue";
-    const templatePath = path.join(templatesPath, templateFile);
-
-    if (fs.existsSync(templatePath)) {
-      return fs.readFileSync(templatePath, "utf-8");
+    for (const candidate of candidates) {
+      const templatePath = path.join(templatesPath, candidate);
+      if (fs.existsSync(templatePath)) {
+        return fs.readFileSync(templatePath, "utf-8");
+      }
     }
 
-    // Fallback: generate minimal template
     return this.generateMinimalTemplate(type);
+  }
+
+  private resolveTemplateCandidates(type: "list" | "details", features?: string[]): string[] {
+    const options: string[] = [];
+
+    if (type === "list") {
+      if (features?.includes("multiselect")) {
+        options.push("list-multiselect.vue");
+      } else if (features?.includes("filters")) {
+        options.push("list-filters.vue");
+      }
+      options.push("list-simple.vue");
+      return options;
+    }
+
+    if (features?.includes("validation")) {
+      options.push("details-validation.vue");
+    }
+    options.push("details-simple.vue");
+    return options;
+  }
+
+  private getExamplesPath(): string {
+    return __dirname.includes("/dist")
+      ? path.join(__dirname, "..", "examples")
+      : path.join(__dirname, "..", "..", "src", "examples");
   }
 
   /**
@@ -334,19 +351,37 @@ export * from "./composables";
     :closable="closable"
     :toolbar-items="bladeToolbar"
     @close="$emit('close:blade')"
+    @expand="$emit('expand:blade')"
+    @collapse="$emit('collapse:blade')"
   >
     <VcTable
       :items="items"
       :columns="columns"
       :loading="loading"
+      state-key="uniquie-list-key"
       @item-click="onItemClick"
     />
   </VcBlade>
 </template>
 
 <script setup lang="ts">
+import { IParentCallArgs } from "@vc-shell/framework";
 import { ref, computed } from "vue";
-import { useEntityList } from "../composables/useEntityList";
+import { default as useEntityList } from "../composables/useEntityList";
+
+export interface Props {
+  expanded?: boolean;
+  closable?: boolean;
+  param?: string;
+  options?: Record<string, any>;
+}
+
+export interface Emits {
+  (event: "close:blade"): void;
+  (event: "collapse:blade"): void;
+  (event: "expand:blade"): void;
+  (event: "parent:call", args: IParentCallArgs): void;
+}
 
 defineOptions({
   name: "EntityList",
@@ -359,10 +394,12 @@ defineOptions({
   },
 });
 
-const props = withDefaults(defineProps<{ expanded?: boolean; closable?: boolean }>(), {
+const props = withDefaults(defineProps<Props>(), {
   expanded: true,
   closable: true,
 });
+
+const emits = defineEmits<Emits>();
 
 const { items, loading } = useEntityList();
 const title = computed(() => "Entities");
@@ -374,17 +411,24 @@ const columns = ref([
 function onItemClick(item: any) {
   console.log("Item clicked:", item);
 }
+
+defineExpose({
+   title,
+   onItemClick,
+});
 </script>
 `;
     } else {
       return `<template>
   <VcBlade
     :title="title"
-    width="70%"
+    width="50%"
     :expanded="expanded"
     :closable="closable"
     :toolbar-items="bladeToolbar"
     @close="$emit('close:blade')"
+    @expand="$emit('expand:blade')"
+    @collapse="$emit('collapse:blade')"
   >
     <VcContainer>
       <VcForm>
@@ -399,17 +443,214 @@ function onItemClick(item: any) {
 <script setup lang="ts">
 import { computed } from "vue";
 import { Field } from "vee-validate";
+import { IParentCallArgs } from "@vc-shell/framework";
+
+export interface Props {
+  expanded: boolean;
+  closable: boolean;
+  param?: string;
+  options?: Record<string, any>;
+}
+
+export interface Emits {
+  (event: "parent:call", args: IParentCallArgs): void;
+  (event: "close:blade"): void;
+  (event: "collapse:blade"): void;
+  (event: "expand:blade"): void;
+}
 
 defineOptions({
   name: "EntityDetails",
   url: "/entity",
 });
 
+const props = withDefaults(defineProps<Props>(), {
+  expanded: true,
+  closable: true,
+});
+
+const emit = defineEmits<Emits>();
+
 const title = computed(() => "Entity Details");
 const bladeToolbar = ref([]);
+
+defineExpose({
+  title,
+});
 </script>
 `;
     }
+  }
+
+  private createBladeContext(blade: Blade, moduleNaming: NamingConfig, modulePath: string): BladeGenerationContext {
+    const type: "list" | "details" = blade.layout === "grid" ? "list" : "details";
+    const entityToken = this.resolveEntityToken(blade, moduleNaming);
+    const entitySingularKebab = this.toSingularToken(entityToken);
+    const entityPluralKebab = this.toPluralToken(entitySingularKebab);
+
+    const naming: NamingConfig = {
+      ...moduleNaming,
+      entitySingular: entitySingularKebab,
+      entitySingularKebab,
+      entitySingularCamel: camelCase(entitySingularKebab),
+      entitySingularPascal: this.toPascalCase(entitySingularKebab),
+      entityPlural: entityPluralKebab,
+      entityPluralKebab,
+      entityPluralCamel: camelCase(entityPluralKebab),
+      entityPluralPascal: this.toPascalCase(entityPluralKebab),
+    };
+
+    const componentBaseToken = this.toSingularToken(this.stripBladeSuffix(blade.id) || entityPluralKebab);
+    const componentBasePascal = this.toPascalCase(componentBaseToken);
+    const suffix = type === "list" ? "List" : "Details";
+    const componentName = componentBasePascal.endsWith(suffix)
+      ? componentBasePascal
+      : `${componentBasePascal}${suffix}`;
+    const composableName = `use${componentName}`;
+
+    const fileName = blade.id.endsWith(".vue") ? blade.id : `${blade.id}.vue`;
+    const filePath = path.join(modulePath, "pages", fileName);
+    const composableFileName = `${composableName}.ts`;
+    const composablePath = path.join(modulePath, "composables", composableFileName);
+
+    const columns = type === "list" ? this.extractColumnsFromBlade(blade) : undefined;
+    const fields = type === "details" ? this.extractFieldsFromBlade(blade) : undefined;
+    const requiresStatusBadge = type === "list" && Boolean(blade.features?.some((feature) => ["filters", "multiselect"].includes(feature)));
+
+    const normalizedRoute = blade.route?.startsWith("/") ? blade.route : `/${blade.route ?? naming.entityPluralKebab}`;
+
+    return {
+      blade,
+      type,
+      naming,
+      columns,
+      fields,
+      componentName,
+      fileName,
+      filePath,
+      composableName,
+      composableFileName,
+      composablePath,
+      menuTitleKey: `${moduleNaming.moduleNameUpperSnake}.MENU.TITLE`,
+      route: normalizedRoute,
+      isWorkspace: blade.isWorkspace,
+      requiresStatusBadge,
+    };
+  }
+
+  private resolveEntityToken(blade: Blade, moduleNaming: NamingConfig): string {
+    for (const component of blade.components || []) {
+      if (component.model) {
+        return kebabCase(component.model);
+      }
+      if (component.dataSource) {
+        return kebabCase(component.dataSource);
+      }
+    }
+
+    return this.stripBladeSuffix(blade.id) || moduleNaming.entitySingularKebab;
+  }
+
+  private stripBladeSuffix(id: string): string {
+    if (!id) {
+      return id;
+    }
+
+    const normalized = kebabCase(id);
+    const suffixes = ["-list", "-details", "-page"];
+    for (const suffix of suffixes) {
+      if (normalized.endsWith(suffix)) {
+        const value = normalized.slice(0, -suffix.length);
+        return value || normalized;
+      }
+    }
+    return normalized;
+  }
+
+  private toSingularToken(token: string): string {
+    const segments = token.split("-");
+    const last = segments.pop() || token;
+    const singularLast = this.basicSingular(last);
+    return [...segments, singularLast].filter(Boolean).join("-") || singularLast;
+  }
+
+  private toPluralToken(token: string): string {
+    const segments = token.split("-");
+    const last = segments.pop() || token;
+    const pluralLast = this.basicPlural(last);
+    return [...segments, pluralLast].filter(Boolean).join("-") || pluralLast;
+  }
+
+  private basicSingular(word: string): string {
+    if (word.endsWith("ies")) {
+      return `${word.slice(0, -3)}y`;
+    }
+    if (word.endsWith("ses") || word.endsWith("xes") || word.endsWith("ches") || word.endsWith("shes")) {
+      return word.slice(0, -2);
+    }
+    if (word.endsWith("s") && word.length > 1) {
+      return word.slice(0, -1);
+    }
+    return word;
+  }
+
+  private basicPlural(word: string): string {
+    if (word.endsWith("y")) {
+      return `${word.slice(0, -1)}ies`;
+    }
+    if (/(s|x|z|ch|sh)$/.test(word)) {
+      return `${word}es`;
+    }
+    return `${word}s`;
+  }
+
+  private toPascalCase(value: string): string {
+    return upperFirst(camelCase(value));
+  }
+
+  private writeFilesToDisk(files: GeneratedFile[]): void {
+    for (const file of files) {
+      const dir = path.dirname(file.path);
+      if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, { recursive: true });
+      }
+      fs.writeFileSync(file.path, file.content, "utf-8");
+    }
+  }
+
+  private generateComponentStubs(contexts: BladeGenerationContext[], modulePath: string): GeneratedFile[] {
+    const files: GeneratedFile[] = [];
+    const needsStatusBadge = contexts.some((context) => context.requiresStatusBadge);
+
+    if (!needsStatusBadge) {
+      return files;
+    }
+
+    const badgeContent = this.loadStatusBadgeTemplate();
+    const badgePath = path.join(modulePath, "components", "status-badge.vue");
+    files.push({
+      path: badgePath,
+      content: badgeContent,
+      lines: badgeContent.split("\n").length,
+    });
+
+    const indexContent = `export { default as StatusBadge } from "./status-badge.vue";\n`;
+    files.push({
+      path: path.join(modulePath, "components", "index.ts"),
+      content: indexContent,
+      lines: indexContent.split("\n").length,
+    });
+
+    return files;
+  }
+
+  private loadStatusBadgeTemplate(): string {
+    const componentPath = path.join(this.getExamplesPath(), "components", "status-badge.vue");
+    if (fs.existsSync(componentPath)) {
+      return fs.readFileSync(componentPath, "utf-8");
+    }
+
+    return `<template>\n  <span class="tw-text-sm">Status</span>\n</template>\n`;
   }
 
   /**
@@ -461,4 +702,3 @@ const bladeToolbar = ref([]);
     ];
   }
 }
-

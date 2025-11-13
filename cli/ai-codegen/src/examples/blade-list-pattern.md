@@ -10,7 +10,11 @@ This pattern is used for displaying a list/table of items with search, sorting, 
 
 ## Key Features
 - VcTable with columns and sorting
-- Search functionality
+- **Built-in search field in table header** (controlled by `header` prop, default `true`)
+- **Built-in filters** via `#filters` slot (button appears when slot is provided)
+- No need for separate VcInput component for search
+- To disable search, set `:header="false"` on VcTable
+- Active filter count badge via `:active-filter-count` prop
 - Pagination
 - Empty and not-found states
 - Mobile-responsive view

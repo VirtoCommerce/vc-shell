@@ -153,7 +153,9 @@ If user wants to create a new VC-Shell application:
 
 ### Phase 2: Code Generation (AUTOMATIC)
 
-**User confirms:** "Yes, generate"
+**AI MUST automatically proceed to code generation after Phase 1:**
+
+**CRITICAL:** Execute ALL tasks from the user's prompt completely. Do NOT stop and ask for confirmation. If the prompt mentions widgets, filters, or any other features - implement them all without asking.
 
 **AI MUST:**
 
@@ -465,6 +467,43 @@ validate_and_fix_plan({ plan })
 3. Check field/column definitions
 4. Re-generate plan
 5. Try again
+
+---
+
+## TypeScript Typing Rules
+
+### Critical Type Safety Rules
+
+1. **Composable Return Types:**
+   - Use `isModified` (not `modified`) for modification tracking
+   - `createEntity` accepts `Omit<Entity, "id">` - id is generated automatically
+   - `updateEntity` accepts `Entity & { id: string }` - id is required
+
+2. **Async Selectors for VcSelect:**
+   - Function signature: `(keyword?: string, skip?: number, ids?: string[]) => Promise<{ results: T[], totalCount: number }>`
+   - **NOT:** `(keyword?: string, skip?: number, take?: number) => Promise<...>`
+   - Use `ids` parameter (not `take`) for filtering by specific IDs
+
+3. **Popup Functions:**
+   - `showInfo(message: string)` - pass string directly
+   - `showError(message: string)` - pass string directly
+   - `showConfirmation(message: string)` - pass string directly
+   - **NOT:** `showInfo({ title: message })` - this is wrong!
+
+4. **Blade Navigation:**
+   - Use `emit('close:blade')` from within blade component
+   - **NOT:** `closeBlade()` without arguments
+
+5. **Image Removal:**
+   - Use `remove([file], existingImages)` - pass array and existing images
+   - **NOT:** `remove(file.id)` - this is wrong!
+
+### Type Checking
+
+After code generation, type checking is automatically run:
+- Uses `vue-tsc --noEmit` to check types
+- Errors are reported but don't block generation
+- Fix type errors before running the application
 
 ---
 

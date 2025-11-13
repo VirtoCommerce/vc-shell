@@ -6,99 +6,117 @@
     :closable="closable"
     :expanded="expanded"
     :toolbar-items="bladeToolbar"
-    :modified="modified"
+    :modified="isModified"
     @close="$emit('close:blade')"
     @expand="$emit('expand:blade')"
     @collapse="$emit('collapse:blade')"
   >
     <VcContainer>
-      <VcForm>
-        <Field
-          v-slot="{ field, errorMessage, handleChange, errors }"
-          :label="$t('ENTITIES.PAGES.DETAILS.FORM.NAME.LABEL')"
-          :model-value="entity.name"
-          name="name"
-          rules="required"
+      <VcForm class="tw-space-y-4">
+        <!-- Basic Information Card -->
+        <VcCard
+          :header="$t('ENTITIES.PAGES.DETAILS.FORM.BASIC_INFO.TITLE')"
+          icon="material-info"
         >
-          <VcInput
-            v-bind="field"
-            v-model="entity.name"
-            :label="$t('ENTITIES.PAGES.DETAILS.FORM.NAME.LABEL')"
-            :placeholder="$t('ENTITIES.PAGES.DETAILS.FORM.NAME.PLACEHOLDER')"
-            required
-            :error="!!errors.length"
-            :error-message="errorMessage"
-            @update:model-value="handleChange"
-          />
-        </Field>
+          <!-- IMPORTANT: Always add tw-p-4 for padding inside VcCard -->
+          <div class="tw-p-4 tw-space-y-4">
+            <Field
+              v-slot="{ field, errorMessage, handleChange, errors }"
+              :label="$t('ENTITIES.PAGES.DETAILS.FORM.NAME.LABEL')"
+              :model-value="entity.name"
+              name="name"
+              rules="required"
+            >
+              <VcInput
+                v-bind="field"
+                v-model="entity.name"
+                :label="$t('ENTITIES.PAGES.DETAILS.FORM.NAME.LABEL')"
+                :placeholder="$t('ENTITIES.PAGES.DETAILS.FORM.NAME.PLACEHOLDER')"
+                required
+                :error="!!errors.length"
+                :error-message="errorMessage"
+                @update:model-value="handleChange"
+              />
+            </Field>
 
-        <Field
-          v-slot="{ field, errorMessage, handleChange, errors }"
-          :label="$t('ENTITIES.PAGES.DETAILS.FORM.EMAIL.LABEL')"
-          :model-value="entity.email"
-          name="email"
-          rules="required|email"
+            <Field
+              v-slot="{ field, errorMessage, handleChange, errors }"
+              :label="$t('ENTITIES.PAGES.DETAILS.FORM.EMAIL.LABEL')"
+              :model-value="entity.email"
+              name="email"
+              rules="required|email"
+            >
+              <VcInput
+                v-bind="field"
+                v-model="entity.email"
+                type="email"
+                :label="$t('ENTITIES.PAGES.DETAILS.FORM.EMAIL.LABEL')"
+                :placeholder="$t('ENTITIES.PAGES.DETAILS.FORM.EMAIL.PLACEHOLDER')"
+                :disabled="!!props.param"
+                required
+                :error="!!errors.length"
+                :error-message="errorMessage"
+                @update:model-value="handleChange"
+              />
+            </Field>
+
+            <Field
+              v-slot="{ field, errorMessage, handleChange, errors }"
+              :label="$t('ENTITIES.PAGES.DETAILS.FORM.STATUS.LABEL')"
+              :model-value="entity.status"
+              name="status"
+              rules="required"
+            >
+              <VcSelect
+                v-bind="field"
+                v-model="entity.status"
+                :label="$t('ENTITIES.PAGES.DETAILS.FORM.STATUS.LABEL')"
+                :placeholder="$t('ENTITIES.PAGES.DETAILS.FORM.STATUS.PLACEHOLDER')"
+                :options="statusOptions"
+                option-value="value"
+                option-label="label"
+                required
+                :error="!!errors.length"
+                :error-message="errorMessage"
+                :clearable="false"
+                @update:model-value="handleChange"
+              />
+            </Field>
+
+            <VcSwitch
+              v-if="entity.id"
+              v-model="entity.isActive"
+              :label="$t('ENTITIES.PAGES.DETAILS.FORM.IS_ACTIVE.LABEL')"
+            />
+          </div>
+        </VcCard>
+
+        <!-- Additional Details Card (Collapsible Example) -->
+        <VcCard
+          :header="$t('ENTITIES.PAGES.DETAILS.FORM.ADDITIONAL.TITLE')"
+          icon="material-description"
+          :is-collapsable="true"
         >
-          <VcInput
-            v-bind="field"
-            v-model="entity.email"
-            type="email"
-            :label="$t('ENTITIES.PAGES.DETAILS.FORM.EMAIL.LABEL')"
-            :placeholder="$t('ENTITIES.PAGES.DETAILS.FORM.EMAIL.PLACEHOLDER')"
-            :disabled="!!props.param"
-            required
-            :error="!!errors.length"
-            :error-message="errorMessage"
-            @update:model-value="handleChange"
-          />
-        </Field>
-
-        <Field
-          v-slot="{ field, errorMessage, handleChange, errors }"
-          :label="$t('ENTITIES.PAGES.DETAILS.FORM.STATUS.LABEL')"
-          :model-value="entity.status"
-          name="status"
-          rules="required"
-        >
-          <VcSelect
-            v-bind="field"
-            v-model="entity.status"
-            :label="$t('ENTITIES.PAGES.DETAILS.FORM.STATUS.LABEL')"
-            :placeholder="$t('ENTITIES.PAGES.DETAILS.FORM.STATUS.PLACEHOLDER')"
-            :options="statusOptions"
-            option-value="value"
-            option-label="label"
-            required
-            :error="!!errors.length"
-            :error-message="errorMessage"
-            :clearable="false"
-            @update:model-value="handleChange"
-          />
-        </Field>
-
-        <Field
-          v-slot="{ field, errorMessage, handleChange, errors }"
-          :label="$t('ENTITIES.PAGES.DETAILS.FORM.DESCRIPTION.LABEL')"
-          :model-value="entity.description"
-          name="description"
-        >
-          <VcTextarea
-            v-bind="field"
-            v-model="entity.description"
-            :label="$t('ENTITIES.PAGES.DETAILS.FORM.DESCRIPTION.LABEL')"
-            :placeholder="$t('ENTITIES.PAGES.DETAILS.FORM.DESCRIPTION.PLACEHOLDER')"
-            :rows="4"
-            :error="!!errors.length"
-            :error-message="errorMessage"
-            @update:model-value="handleChange"
-          />
-        </Field>
-
-        <VcSwitch
-          v-if="entity.id"
-          v-model="entity.isActive"
-          :label="$t('ENTITIES.PAGES.DETAILS.FORM.IS_ACTIVE.LABEL')"
-        />
+          <div class="tw-p-4 tw-space-y-4">
+            <Field
+              v-slot="{ field, errorMessage, handleChange, errors }"
+              :label="$t('ENTITIES.PAGES.DETAILS.FORM.DESCRIPTION.LABEL')"
+              :model-value="entity.description"
+              name="description"
+            >
+              <VcTextarea
+                v-bind="field"
+                v-model="entity.description"
+                :label="$t('ENTITIES.PAGES.DETAILS.FORM.DESCRIPTION.LABEL')"
+                :placeholder="$t('ENTITIES.PAGES.DETAILS.FORM.DESCRIPTION.PLACEHOLDER')"
+                :rows="4"
+                :error="!!errors.length"
+                :error-message="errorMessage"
+                @update:model-value="handleChange"
+              />
+            </Field>
+          </div>
+        </VcCard>
       </VcForm>
     </VcContainer>
   </VcBlade>
@@ -108,7 +126,7 @@
 import { computed, ref, onMounted, unref } from "vue";
 import { IParentCallArgs, IBladeToolbar, useBladeNavigation, usePopup, useBeforeUnload } from "@vc-shell/framework";
 // TODO: Update import path for your entity's composable
-import { useEntityDetails } from "../composables/useEntityDetails";
+import { default as useEntityDetails } from "../composables/useEntityDetails";
 import { Field, useForm } from "vee-validate";
 import { useI18n } from "vue-i18n";
 import type { Entity } from "../types";
@@ -140,7 +158,7 @@ const emit = defineEmits<Emits>();
 const { onBeforeClose } = useBladeNavigation();
 const { t } = useI18n({ useScope: "global" });
 
-const { createEntity, updateEntity, resetModificationState, entity, loadEntity, loading, deleteEntity, modified } =
+const { createEntity, updateEntity, resetModificationState, entity, loadEntity, loading, deleteEntity, isModified } =
   useEntityDetails();
 
 const { showError, showConfirmation } = usePopup();
@@ -176,25 +194,37 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     icon: "material-save",
     async clickHandler() {
       if (meta.value.valid) {
-        if (entity.value.id) {
-          await updateEntity(entity.value);
-        } else {
-          await createEntity(entity.value);
-        }
+        try {
+          if (entity.value.id) {
+            await updateEntity({ ...entity.value, id: entity.value.id });
+          } else {
+            const { id, ...entityWithoutId } = entity.value;
+            const created = await createEntity(entityWithoutId);
+            if (created?.id) {
+              emit("close:blade");
+              emit("parent:call", {
+                method: "reload",
+              });
+              return;
+            }
+          }
 
-        resetModificationState();
-        emit("parent:call", {
-          method: "reload",
-        });
+          resetModificationState();
+          emit("parent:call", {
+            method: "reload",
+          });
 
-        if (!props.param) {
-          emit("close:blade");
+          if (!props.param) {
+            emit("close:blade");
+          }
+        } catch (error) {
+          showError(t("ENTITIES.PAGES.ALERTS.SAVE_ERROR"));
         }
       } else {
-        showError(unref(computed(() => t("ENTITIES.PAGES.ALERTS.NOT_VALID"))));
+        showError(t("ENTITIES.PAGES.ALERTS.NOT_VALID"));
       }
     },
-    disabled: computed(() => !(meta.value.valid && modified.value)),
+    disabled: computed(() => !(meta.value.valid && isModified.value)),
   },
   {
     id: "delete",
@@ -214,12 +244,12 @@ const bladeToolbar = ref<IBladeToolbar[]>([
 ]);
 
 onBeforeClose(async () => {
-  if (!isDisabled.value && modified.value && !loading.value) {
+  if (!isDisabled.value && isModified.value && !loading.value) {
     return await showConfirmation(t("ENTITIES.PAGES.ALERTS.CLOSE_CONFIRMATION"));
   }
 });
 
-useBeforeUnload(computed(() => !isDisabled.value && modified.value));
+useBeforeUnload(computed(() => !isDisabled.value && isModified.value));
 
 defineExpose({
   title,

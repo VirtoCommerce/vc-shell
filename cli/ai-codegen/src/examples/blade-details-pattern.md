@@ -20,6 +20,98 @@ This pattern is used for creating or editing a single item with form fields, val
 
 **IMPORTANT:** Use Field from vee-validate, NOT VcField! VcField is only for read-only data display.
 
+## Using VcCard for Field Grouping
+
+VcCard is used to group related form fields into visually distinct sections.
+
+### Important Rules
+
+1. **VcCard default slot has NO padding** - Always add `tw-p-4` for forms, `tw-p-2` for galleries
+2. **Use icons for clarity** - Add meaningful icons to identify card purpose (`icon` prop)
+3. **Collapsible sections** - Use `is-collapsable` for large forms to reduce visual clutter
+4. **Persist collapse state** - Save user preferences in localStorage
+
+### Basic Example
+
+```vue
+<VcCard 
+  :header="$t('PRODUCTS.FORM.BASIC_INFO.TITLE')"
+  icon="material-info"
+>
+  <!-- ALWAYS add padding! -->
+  <div class="tw-p-4 tw-space-y-4">
+    <Field v-slot="{ field }" name="name" rules="required">
+      <VcInput v-bind="field" v-model="product.name" label="Name" />
+    </Field>
+    <Field v-slot="{ field }" name="sku" rules="required">
+      <VcInput v-bind="field" v-model="product.sku" label="SKU" />
+    </Field>
+  </div>
+</VcCard>
+```
+
+### Collapsible Card Example
+
+```vue
+<VcCard
+  :header="$t('PRODUCTS.FORM.GALLERY.TITLE')"
+  :is-collapsable="true"
+  :is-collapsed="restoreCollapsed('product_gallery')"
+  @state:collapsed="handleCollapsed('product_gallery', $event)"
+>
+  <div class="tw-p-2">
+    <VcGallery :images="product.images" />
+  </div>
+</VcCard>
+```
+
+**See:** `VcCard-demo.md` for complete documentation and examples.
+
+## Widgets
+
+Widgets are interactive UI components that can be registered in details blades. They appear in a dedicated widget area and are typically used for related data or actions.
+
+### Important Rules
+
+1. **Widget registration BEFORE onMounted** - Register widgets immediately after defining the registration function, NOT inside `onMounted`
+2. **Unregister in onBeforeUnmount** - Always clean up widgets when blade closes
+3. **Use VcWidget component as base** - All widgets should extend/use VcWidget
+4. **Location:** `components/widgets/{widget-name}/` within the module
+
+### Basic Widget Registration
+
+```typescript
+import { useWidgets } from "@vc-shell/framework";
+import { ShippingWidget } from "../components/widgets";
+
+const { registerWidget, unregisterWidget } = useWidgets();
+
+// Define registration function
+function registerWidgets() {
+  registerWidget(
+    {
+      id: "ShippingWidget",
+      component: ShippingWidget,
+      props: { 
+        order: computed(() => order.value)
+      },
+      isVisible: computed(() => !!props.param),
+    },
+    blade?.value.id,
+  );
+}
+
+// ✅ CORRECT: Register BEFORE onMounted
+registerWidgets();
+
+// Clean up on unmount
+onBeforeUnmount(() => {
+  unregisterWidget("ShippingWidget", blade?.value.id);
+});
+```
+
+**See:** `widgets-pattern.md` for complete documentation, `VcWidget-demo.md` for widget component examples.
+
 ## Complete Example
 
 ### ProductDetails.vue

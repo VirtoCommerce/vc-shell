@@ -68,7 +68,8 @@ describe("ComposableGenerator", () => {
       expect(result).toContain("export default function useVendorDetails");
       expect(result).toContain("export interface Vendor");
       expect(result).toContain("loadVendor");
-      expect(result).toContain("saveVendor");
+      expect(result).toContain("createVendor");
+      expect(result).toContain("updateVendor");
       expect(result).toContain("deleteVendor");
       expect(result).toContain("resetModificationState");
       expect(result).toContain("modified");

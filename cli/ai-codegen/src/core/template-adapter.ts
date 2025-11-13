@@ -36,6 +36,11 @@ export interface CustomSlot {
 
 export interface AdaptConfig {
   naming: NamingConfig;
+  componentName: string;
+  composableName: string;
+  route: string;
+  isWorkspace?: boolean;
+  menuTitleKey?: string;
   columns?: Column[];
   fields?: Field[];
   customSlots?: CustomSlot[];
@@ -134,24 +139,16 @@ export class TemplateAdapter {
             : config.naming.entityPluralCamel;
         }
 
-        // useEntityList → useYourEntityList
-        if (name === "useEntityList") {
-          path.node.name = `use${config.naming.entitySingularPascal}List`;
+        if (name === "useEntityList" && type === "list") {
+          path.node.name = config.composableName;
         }
 
-        // useEntityDetails → useYourEntityDetails
-        if (name === "useEntityDetails") {
-          path.node.name = `use${config.naming.entitySingularPascal}Details`;
+        if (name === "useEntityDetails" && type === "details") {
+          path.node.name = config.composableName;
         }
 
-        // EntityList → YourEntityList (component name)
-        if (name === "EntityList") {
-          path.node.name = `${config.naming.entitySingularPascal}List`;
-        }
-
-        // EntityDetails → YourEntityDetails
-        if (name === "EntityDetails") {
-          path.node.name = `${config.naming.entitySingularPascal}Details`;
+        if (name === "EntityList" || name === "EntityDetails") {
+          path.node.name = config.componentName;
         }
       },
 
@@ -168,7 +165,7 @@ export class TemplateAdapter {
       // Update columns array for list blades
       ArrayExpression: (path: NodePath<t.ArrayExpression>) => {
         if (type === "list" && config.columns && this.isColumnsArray(path)) {
-          path.node.elements = this.generateColumnsAST(config.columns);
+          path.node.elements = this.generateColumnsAST(config.columns, config.naming.moduleNameUpperSnake);
         }
       },
 
@@ -224,8 +221,9 @@ export class TemplateAdapter {
   /**
    * Generate columns AST from column definitions
    */
-  private generateColumnsAST(columns: Column[]): t.Expression[] {
+  private generateColumnsAST(columns: Column[], moduleKey: string): t.Expression[] {
     return columns.map(col => {
+      const translationKey = `${moduleKey}.PAGES.LIST.TABLE.HEADER.${col.key.toUpperCase()}`;
       const properties: t.ObjectProperty[] = [
         t.objectProperty(t.identifier("id"), t.stringLiteral(col.key)),
         t.objectProperty(
@@ -236,7 +234,7 @@ export class TemplateAdapter {
               [],
               t.callExpression(
                 t.identifier("t"),
-                [t.stringLiteral(`${col.title}`)]
+                [t.stringLiteral(translationKey)]
               )
             )]
           )
@@ -278,18 +276,16 @@ export class TemplateAdapter {
       if (t.isObjectProperty(prop) && t.isIdentifier(prop.key)) {
         // Update name
         if (prop.key.name === "name") {
-          const componentName = type === "list"
-            ? `${config.naming.entitySingularPascal}List`
-            : `${config.naming.entitySingularPascal}Details`;
-          prop.value = t.stringLiteral(componentName);
+          prop.value = t.stringLiteral(config.componentName);
         }
 
         // Update url
         if (prop.key.name === "url") {
-          const url = type === "list"
-            ? `/${config.naming.entityPluralKebab}`
-            : `/${config.naming.entitySingularKebab}`;
-          prop.value = t.stringLiteral(url);
+          prop.value = t.stringLiteral(config.route);
+        }
+
+        if (prop.key.name === "isWorkspace" && typeof config.isWorkspace === "boolean") {
+          prop.value = t.booleanLiteral(config.isWorkspace);
         }
 
         // Update menuItem title
@@ -297,7 +293,7 @@ export class TemplateAdapter {
           prop.value.properties.forEach((menuProp: any) => {
             if (t.isObjectProperty(menuProp) && t.isIdentifier(menuProp.key)) {
               if (menuProp.key.name === "title") {
-                menuProp.value = t.stringLiteral(`${config.naming.moduleNameUpperSnake}.MENU.TITLE`);
+                menuProp.value = t.stringLiteral(config.menuTitleKey || `${config.naming.moduleNameUpperSnake}.MENU.TITLE`);
               }
             }
           });
@@ -364,4 +360,3 @@ export class TemplateAdapter {
     return lines.join("\n");
   }
 }
-

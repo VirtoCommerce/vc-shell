@@ -109,14 +109,14 @@ If user wants to create a NEW VC-Shell application from scratch:
 4. **Report results:**
    ```
    ✅ VC-Shell app 'my-vendor-portal' created successfully!
-   
+
    Path: /path/to/projects/my-vendor-portal
-   
+
    Next steps:
    1. cd my-vendor-portal
    2. npm install
    3. npm run dev
-   
+
    Then use AI to generate modules!
    ```
 
@@ -175,13 +175,13 @@ If user wants to create a NEW VC-Shell application from scratch:
 
 4. **Save to file** in `__ai/ui-plan-{module-name}.json`
 
-5. **Show the plan to user** for review and confirmation
+5. **Automatically proceed to Step 2** - Do NOT wait for confirmation
 
-6. **WAIT for user confirmation** before proceeding to Step 2
+**CRITICAL RULE:** Execute ALL tasks from the user's prompt completely. If the prompt mentions widgets, filters, validation, or any other features - implement them ALL without stopping to ask. Do NOT ask "Should I proceed?" or "Do you want me to add X?" - just do it.
 
 **Example correct workflow:**
 ```
-User: "Create vendor management with list and details"
+User: "Create vendor management with list and details, add widgets"
 
 AI Response:
 "I've generated a UI-Plan for vendor management module.
@@ -189,15 +189,13 @@ AI Response:
 Plan includes:
 - List blade at /vendors (workspace)
 - Details blade at /vendor (singular, no :id)
+- Widgets as specified
 
 Saved to: __ai/ui-plan-vendor-management.json
 
-Review the plan. Should I proceed with code generation?"
-
-[User confirms]
-
-AI: "Now generating code from the plan..."
-[Proceeds to Step 2]
+Now generating code from the plan..."
+[Immediately proceeds to Step 2 without waiting]
+[Generates all code including widgets]
 ```
 
 ### Step 2: Generate Code from UI-Plan (AUTOMATIC via MCP)

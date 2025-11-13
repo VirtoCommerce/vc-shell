@@ -29,7 +29,7 @@ describe("TemplateAdapter", () => {
 </template>
 
 <script setup lang="ts">
-import { useEntityList } from "../composables/useEntityList";
+import { default as useEntityList } from "../composables/useEntityList";
 
 defineOptions({
   name: "EntityList",
@@ -41,7 +41,14 @@ const title = "ENTITIES.PAGES.LIST.TITLE";
 </script>
 `;
 
-      const result = adapter.adaptListTemplate(template, { naming: mockNaming });
+      const result = adapter.adaptListTemplate(template, {
+        naming: mockNaming,
+        componentName: "VendorList",
+        composableName: "useVendorList",
+        route: "/vendors",
+        menuTitleKey: "VENDORS.MENU.TITLE",
+        isWorkspace: true,
+      });
 
       expect(result).toContain("useVendorList");
       expect(result).toContain("VendorList");
@@ -63,7 +70,7 @@ const title = "ENTITIES.PAGES.LIST.TITLE";
 </template>
 
 <script setup lang="ts">
-import { useEntityDetails } from "../composables/useEntityDetails";
+import { default as useEntityDetails } from "../composables/useEntityDetails";
 
 defineOptions({
   name: "EntityDetails",
@@ -74,7 +81,13 @@ const { item } = useEntityDetails();
 </script>
 `;
 
-      const result = adapter.adaptDetailsTemplate(template, { naming: mockNaming });
+      const result = adapter.adaptDetailsTemplate(template, {
+        naming: mockNaming,
+        componentName: "VendorDetails",
+        composableName: "useVendorDetails",
+        route: "/vendor",
+        menuTitleKey: "VENDORS.MENU.TITLE",
+      });
 
       expect(result).toContain("useVendorDetails");
       expect(result).toContain("VendorDetails");
@@ -82,4 +95,3 @@ const { item } = useEntityDetails();
     });
   });
 });
-

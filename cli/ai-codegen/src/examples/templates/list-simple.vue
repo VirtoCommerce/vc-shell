@@ -20,11 +20,15 @@
       :current-page="currentPage"
       :total-count="totalCount"
       :selected-item-id="selectedItemId"
+      :search-value="searchValue"
+      :search-placeholder="$t('ENTITIES.PAGES.LIST.SEARCH.PLACEHOLDER')"
       state-key="ENTITY_LIST"
       :empty="empty"
+      :notfound="notfound"
       @header-click="onHeaderClick"
       @item-click="onItemClick"
       @pagination-click="onPaginationClick"
+      @search:change="onSearchList"
       @scroll:ptr="reload"
     >
       <!-- Custom column templates can be added here -->
@@ -39,10 +43,10 @@
 
 <script lang="ts" setup>
 import { ref, computed, watch, onMounted, markRaw } from "vue";
-import { IBladeToolbar, IParentCallArgs, ITableColumns, useBladeNavigation, useTableSort } from "@vc-shell/framework";
+import { IBladeToolbar, IParentCallArgs, ITableColumns, useBladeNavigation, useTableSort, useFunctions } from "@vc-shell/framework";
 import { useI18n } from "vue-i18n";
 // TODO: Update import path for your entity's composable
-import { useEntityList } from "../composables/useEntityList";
+import { default as useEntityList } from "../composables/useEntityList";
 // TODO: Update import for your entity's details blade file name
 import EntityDetails from "./entity-details.vue";
 
@@ -78,6 +82,7 @@ const props = withDefaults(defineProps<Props>(), {
 defineEmits<Emits>();
 const { openBlade } = useBladeNavigation();
 const { t } = useI18n({ useScope: "global" });
+const { debounce } = useFunctions();
 const { getEntities, searchQuery, loading, items, currentPage, pages, totalCount } = useEntityList();
 
 const { sortExpression, handleSortChange: tableSortHandler } = useTableSort({
@@ -86,6 +91,7 @@ const { sortExpression, handleSortChange: tableSortHandler } = useTableSort({
 });
 
 const selectedItemId = ref();
+const searchValue = ref<string>();
 const title = computed(() => t("ENTITIES.PAGES.LIST.TITLE"));
 
 const empty = {
@@ -93,6 +99,16 @@ const empty = {
   text: computed(() => t("ENTITIES.PAGES.LIST.EMPTY.NO_ITEMS")),
   action: computed(() => t("ENTITIES.PAGES.LIST.EMPTY.ADD")),
   clickHandler: onAddEntity,
+};
+
+const notfound = {
+  icon: "material-search",
+  text: computed(() => t("ENTITIES.PAGES.LIST.NOT_FOUND.EMPTY")),
+  action: computed(() => t("ENTITIES.PAGES.LIST.NOT_FOUND.RESET")),
+  clickHandler: async () => {
+    searchValue.value = "";
+    await getEntities({ ...searchQuery.value, keyword: "", skip: 0 });
+  },
 };
 
 const bladeToolbar = ref<IBladeToolbar[]>([
@@ -192,6 +208,15 @@ function onAddEntity() {
     blade: markRaw(EntityDetails),
   });
 }
+
+const onSearchList = debounce(async (keyword: string | undefined) => {
+  searchValue.value = keyword;
+  await getEntities({
+    ...searchQuery.value,
+    keyword,
+    skip: 0,
+  });
+}, 1000);
 
 defineExpose({
   reload,

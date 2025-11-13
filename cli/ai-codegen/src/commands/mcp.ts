@@ -771,18 +771,10 @@ ${content}
 
           // Generate module
           const generator = new UnifiedCodeGenerator();
-          const result = await generator.generateModule(plan as ValidatorUIPlan, cwd);
-
-          // Write files if not dry run
-          if (!dryRun) {
-            for (const file of result.files) {
-              const dir = path.dirname(file.path);
-              if (!fs.existsSync(dir)) {
-                fs.mkdirSync(dir, { recursive: true });
-              }
-              fs.writeFileSync(file.path, file.content, "utf-8");
-            }
-          }
+          const result = await generator.generateModule(plan as ValidatorUIPlan, cwd, {
+            writeToDisk: !dryRun,
+            dryRun,
+          });
 
           return {
             content: [
@@ -951,4 +943,3 @@ function generateFixSuggestion(error: { path: string; message: string; severity:
   
   return "Review the error message and fix the plan manually";
 }
-

@@ -85,6 +85,35 @@ Create vendor management module with list and details
 
 **Ready!** 🚀
 
+## Components
+
+VC-Shell AI Codegen knows about all 35 VC-Shell UI components:
+
+### Layout & Structure (4)
+**VcBlade**, **VcCard**, **VcContainer**, **VcRow**, **VcCol**
+
+### Data Display (2)
+**VcTable**, **VcField**
+
+### Form Inputs (11)
+**VcInput**, **VcTextarea**, **VcSelect**, **VcCheckbox**, **VcSwitch**, **VcRadioButton**, **VcInputCurrency**, **VcInputDropdown**, **VcMultivalue**, **VcEditor**, **VcFileUpload**
+
+### UI Components (14)
+**VcBadge**, **VcBanner**, **VcButton**, **VcIcon**, **VcImage**, **VcLabel**, **VcLink**, **VcStatus**, **VcStatusIcon**, **VcTooltip**, **VcHint**, **VcRating**, **VcSlider**, **VcVideo**
+
+### Navigation (1)
+**VcBreadcrumbs**
+
+### Organisms (2)
+**VcForm**, **VcGallery**
+
+**All components include:**
+- Complete props documentation
+- Event handlers
+- Slots information
+- Usage examples
+- Real-world use cases
+
 ## What Gets Generated
 
 ```

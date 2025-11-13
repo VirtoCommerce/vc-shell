@@ -1,8 +1,10 @@
 # VcTable Demo
 
-Real-world examples from vendor-portal application.
+Real-world table examples.
 
-## Basic List with Empty/NotFound States
+**IMPORTANT**: VcTable has built-in search and filters in its header. No need for separate input components!
+
+## Basic List with Search and Empty States (from orders-list.vue)
 
 ```vue
 <template>
@@ -17,7 +19,6 @@ Real-world examples from vendor-portal application.
     :current-page="currentPage"
     :total-count="totalCount"
     :expanded="expanded"
-    :active-filter-count="activeFilterCount"
     column-selector="defined"
     state-key="ORDERS"
     :multiselect="false"
@@ -29,7 +30,6 @@ Real-world examples from vendor-portal application.
     @pagination-click="onPaginationClick"
     @search:change="onSearchChange"
   >
-    <!-- Custom column template -->
     <template #item_status="{ item }">
       <OrderStatusTemplate :status="item.status" />
     </template>
@@ -39,11 +39,11 @@ Real-world examples from vendor-portal application.
 <script setup lang="ts">
 import { computed, ref } from "vue";
 import { useI18n } from "vue-i18n";
-import { ITableColumns } from "@vc-shell/framework";
+import { ITableColumns, useFunctions } from "@vc-shell/framework";
 
 const { t } = useI18n();
+const { debounce } = useFunctions();
 
-// Table data
 const items = ref([]);
 const totalCount = ref(0);
 const pages = ref(0);
@@ -51,26 +51,25 @@ const currentPage = ref(1);
 const selectedItemId = ref<string>();
 const searchKeyword = ref<string>();
 const sortExpression = ref("createdDate:DESC");
-const activeFilterCount = ref(0);
 
-// Empty and NotFound states (IMPORTANT: these are objects, not components!)
+// Empty state
 const empty = {
   icon: "material-shopping_cart",
   text: computed(() => t("ORDERS.PAGES.LIST.EMPTY.NO_ITEMS")),
 };
 
+// Not found state
 const notfound = {
   icon: "material-shopping_cart",
   text: computed(() => t("ORDERS.PAGES.LIST.NOT_FOUND.EMPTY")),
   action: computed(() => t("ORDERS.PAGES.LIST.NOT_FOUND.RESET")),
   clickHandler: async () => {
-    // Reset search
     searchKeyword.value = "";
     await loadOrders({ keyword: "" });
   },
 };
 
-// Column configuration
+// Columns configuration
 const columns = computed((): ITableColumns[] => [
   {
     id: "lineItemsImg",
@@ -115,7 +114,6 @@ const columns = computed((): ITableColumns[] => [
 // Event handlers
 async function onItemClick(item: any) {
   selectedItemId.value = item.id;
-  // Open details blade
 }
 
 function onHeaderClick(column: ITableColumns) {
@@ -129,22 +127,30 @@ async function onPaginationClick(page: number) {
   await loadOrders({ skip });
 }
 
+// Debounced search
 const onSearchChange = debounce(async (keyword: string | undefined) => {
   searchKeyword.value = keyword;
   await loadOrders({ keyword, skip: 0 });
 }, 1000);
+
+async function loadOrders(params: any) {
+  // Load orders from API
+}
 </script>
 ```
 
-## Table with Filters
+## Table with Filters (from orders-list.vue)
 
 ```vue
 <template>
   <VcTable
     :items="items"
     :columns="columns"
+    :active-filter-count="activeFilterCount"
+    :search-value="searchKeyword"
     :empty="empty"
     :notfound="notfound"
+    @search:change="onSearchChange"
   >
     <template #filters>
       <div class="tw-p-4">
@@ -210,9 +216,60 @@ const onSearchChange = debounce(async (keyword: string | undefined) => {
     </template>
   </VcTable>
 </template>
+
+<script setup lang="ts">
+import { ref, computed } from "vue";
+import { VcTable, VcRow, VcInput, VcRadioButton, VcButton } from "@vc-shell/framework";
+
+// Staged filters (user's current selections)
+const stagedFilters = ref({ status: [], startDate: undefined, endDate: undefined });
+
+// Applied filters (actually used for data fetching)
+const appliedFilters = ref({ status: [], startDate: undefined, endDate: undefined });
+
+const hasFilterChanges = computed(() => {
+  return JSON.stringify(stagedFilters.value) !== JSON.stringify(appliedFilters.value);
+});
+
+const hasFiltersApplied = computed(() => {
+  return appliedFilters.value.status.length > 0 
+    || !!appliedFilters.value.startDate 
+    || !!appliedFilters.value.endDate;
+});
+
+const activeFilterCount = computed(() => {
+  let count = 0;
+  if (appliedFilters.value.status.length > 0) count++;
+  if (appliedFilters.value.startDate) count++;
+  if (appliedFilters.value.endDate) count++;
+  return count;
+});
+
+function toggleFilter(filterType: string, value: string, replace = false) {
+  if (replace) {
+    stagedFilters.value[filterType] = value;
+  }
+}
+
+function toggleStatusFilter(value: string) {
+  stagedFilters.value.status = [value];
+}
+
+async function applyFilters() {
+  appliedFilters.value = JSON.parse(JSON.stringify(stagedFilters.value));
+  await loadOrders({ ...appliedFilters.value, skip: 0 });
+}
+
+async function resetFilters() {
+  const empty = { status: [], startDate: undefined, endDate: undefined };
+  stagedFilters.value = empty;
+  appliedFilters.value = empty;
+  await loadOrders({ skip: 0 });
+}
+</script>
 ```
 
-## Table with Multiselect and Actions
+## Table with Multiselect and Actions (from offers-list.vue)
 
 ```vue
 <template>
@@ -239,8 +296,10 @@ const onSearchChange = debounce(async (keyword: string | undefined) => {
 </template>
 
 <script setup lang="ts">
-import { IActionBuilderResult } from "@vc-shell/framework";
+import { ref } from "vue";
+import { IActionBuilderResult, VcTable } from "@vc-shell/framework";
 
+const offers = ref([]);
 const selectedOfferIds = ref<string[]>([]);
 
 function onSelectionChanged(items: any[]) {
@@ -263,10 +322,18 @@ const actionBuilder = (): IActionBuilderResult[] => {
     },
   ];
 };
+
+async function selectAllOffers() {
+  // Select all offers logic
+}
+
+async function removeOffers() {
+  // Remove offers logic
+}
 </script>
 ```
 
-## Editable Table
+## Editable Table (from order-details.vue)
 
 ```vue
 <template>
@@ -289,6 +356,12 @@ const actionBuilder = (): IActionBuilderResult[] => {
 </template>
 
 <script setup lang="ts">
+import { computed } from "vue";
+import { ITableColumns, VcTable } from "@vc-shell/framework";
+import { useI18n } from "vue-i18n";
+
+const { t } = useI18n();
+
 const itemsColumns = computed((): ITableColumns[] => [
   {
     id: "imageUrl",
@@ -330,15 +403,168 @@ function onEditComplete(args: {
 function onCellBlur() {
   calculateTotals();
 }
+
+function calculateTotals() {
+  // Calculate order totals
+}
+</script>
+```
+
+## Table Without Search/Header
+
+```vue
+<template>
+  <!-- Disable header to hide search -->
+  <VcTable
+    :items="items"
+    :columns="columns"
+    :header="false"
+    :footer="false"
+    expanded
+    state-key="compact-table"
+  />
+</template>
+
+<script setup lang="ts">
+import { ref } from "vue";
+import { VcTable } from "@vc-shell/framework";
+
+const items = ref([
+  { id: "1", name: "Item 1", quantity: 10 },
+  { id: "2", name: "Item 2", quantity: 5 },
+]);
+
+const columns = ref([
+  { id: "name", title: "Name" },
+  { id: "quantity", title: "Quantity" },
+]);
 </script>
 ```
 
 ## Key Points
 
-1. **Empty/NotFound** are objects with `icon`, `text` (computed), `action`, `clickHandler`
-2. **Columns** support various types: `image`, `money`, `status`, `date-ago`, `status-icon`
-3. **Custom templates** via `#item_{columnId}="{ item }"`
-4. **Mobile positions** for responsive design: `image`, `top-left`, `top-right`, `bottom-left`, `status`
-5. **state-key** for persisting table state
-6. **Multiselect** with `selection-changed` and `select-all` events
-7. **Editable** mode with `editing`, `rules`, and edit events
+### Built-in Search
+- **Header prop** - Controls search visibility (default: `true`)
+- **Search value** - Use `:search-value` for controlled search
+- **Search event** - Use `@search:change` with debounce (1000ms recommended)
+- **Disable search** - Set `:header="false"` to hide search
+
+### Built-in Filters
+- **Filters slot** - Use `#filters` slot to show filter button
+- **Active count** - Use `:active-filter-count` to display badge
+- **Pattern** - Use staged/applied filters for better UX
+- **Reset** - Always reset to page 0 when applying filters
+
+### Column Types
+- `image` - Display images
+- `money` - Format as currency
+- `status` - Status badges
+- `date-ago` - Relative time
+- `status-icon` - Icon with status
+- `number` - Numeric values
+
+### Mobile Positions
+- `image` - Top-left image
+- `top-left` - Primary text
+- `top-right` - Secondary text (e.g., price)
+- `bottom-left` - Tertiary text
+- `bottom-right` - Date/time
+- `status` - Status badge
+
+### States
+- **Empty** - Object with `icon`, `text`, optional `action`/`clickHandler`
+- **NotFound** - Same as empty, shown when search returns no results
+- **Loading** - Use `:loading` prop during data fetch
+
+### Props
+- `:items` - Array of data
+- `:columns` - Column configuration
+- `:search-value` - Current search term
+- `:active-filter-count` - Number of active filters
+- `:sort` - Sort expression (e.g., "name:ASC")
+- `:pages` - Total pages
+- `:current-page` - Current page number
+- `:total-count` - Total items
+- `:selected-item-id` - Selected row ID
+- `state-key` - Key for persisting table state
+- `:header` - Show/hide header (default: `true`)
+- `:footer` - Show/hide footer
+- `expanded` - Expanded layout
+- `multiselect` - Enable row selection
+- `enable-item-actions` - Show row actions
+
+### Events
+- `@item-click` - Row clicked
+- `@header-click` - Column header clicked (for sorting)
+- `@pagination-click` - Page changed
+- `@search:change` - Search value changed
+- `@selection-changed` - Selected rows changed
+- `@on-edit-complete` - Cell edit complete (editable mode)
+
+### Slots
+- `#filters` - Filter UI (makes filter button visible)
+- `#item_{columnId}` - Custom cell template
+- `#empty` - Custom empty state
+- `#notfound` - Custom not found state
+- `#mobile-item` - Custom mobile row template
+
+## Common Patterns
+
+### Basic List with Search
+```vue
+<VcTable
+  :items="items"
+  :columns="columns"
+  :search-value="searchValue"
+  @search:change="debounce((k) => loadItems({ keyword: k }), 1000)"
+/>
+```
+
+### With Filters
+```vue
+<VcTable
+  :items="items"
+  :columns="columns"
+  :active-filter-count="activeFilterCount"
+>
+  <template #filters>
+    <!-- Filter UI here -->
+  </template>
+</VcTable>
+```
+
+### Sortable Columns
+```vue
+<VcTable
+  :columns="columns"
+  :sort="sortExpression"
+  @header-click="(col) => {
+    if (col.sortable) toggleSort(col.id);
+  }"
+/>
+```
+
+### With Empty/NotFound States
+```vue
+<VcTable
+  :empty="{
+    icon: 'material-list',
+    text: t('NO_ITEMS'),
+  }"
+  :notfound="{
+    icon: 'material-search',
+    text: t('NOT_FOUND'),
+    action: t('RESET'),
+    clickHandler: () => resetSearch(),
+  }"
+/>
+```
+
+### Custom Cell Template
+```vue
+<VcTable :items="items" :columns="columns">
+  <template #item_status="{ item }">
+    <VcBadge :content="item.status" :variant="getVariant(item.status)" />
+  </template>
+</VcTable>
+```

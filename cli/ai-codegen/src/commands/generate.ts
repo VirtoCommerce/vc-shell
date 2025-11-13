@@ -4,7 +4,7 @@ import chalk from "chalk";
 import { exec } from "node:child_process";
 import { promisify } from "node:util";
 import { getValidator, type UIPlan } from "../core/validator.js";
-import { CodeGenerator } from "../core/code-generator.js";
+import { UnifiedCodeGenerator, type GeneratedModule } from "../core/unified-generator.js";
 
 const execAsync = promisify(exec);
 
@@ -14,6 +14,7 @@ export interface GenerateOptions {
   fix?: boolean;
   story?: boolean;
   test?: boolean;
+  checkTypes?: boolean;
   cwd?: string;
 }
 
@@ -24,6 +25,7 @@ export async function generateCommand(options: GenerateOptions): Promise<void> {
     fix = false,
     story = false,
     test = false,
+    checkTypes = true,
     cwd = process.cwd(),
   } = options;
 
@@ -63,16 +65,13 @@ export async function generateCommand(options: GenerateOptions): Promise<void> {
   }
 
   // Generate code
-  const generator = new CodeGenerator();
+  const generator = new UnifiedCodeGenerator();
+  let generationResult: GeneratedModule;
 
   try {
-    await generator.generate({
-      plan,
-      cwd,
+    generationResult = await generator.generateModule(plan, cwd, {
+      writeToDisk: !dryRun,
       dryRun,
-      generateStories: story,
-      generateTests: test,
-      verbose: true,
     });
   } catch (error) {
     console.error(chalk.red("\n❌ Code generation failed:"));
@@ -80,8 +79,45 @@ export async function generateCommand(options: GenerateOptions): Promise<void> {
   }
 
   if (dryRun) {
+    console.log(chalk.blue("📁 Planned files:"));
+    for (const file of generationResult.files) {
+      console.log(chalk.gray(`  • ${path.relative(cwd, file.path)}`));
+    }
     console.log(chalk.yellow("\n🔍 Dry run completed - no files were written"));
     return;
+  }
+
+  // Run type checking if requested
+  if (checkTypes && !dryRun) {
+    console.log(chalk.cyan("\n🔍 Checking TypeScript types...\n"));
+
+    try {
+      // Try to run vue-tsc
+      try {
+        const { stdout, stderr } = await execAsync(`npx vue-tsc --noEmit`, { cwd });
+        if (stderr && !stderr.includes("Found 0 errors")) {
+          console.log(chalk.yellow("⚠️  Type checking found issues:"));
+          console.log(chalk.yellow(stderr));
+        } else {
+          console.log(chalk.green("✓ Type checking passed"));
+        }
+      } catch (error: any) {
+        if (error.stdout || error.stderr) {
+          const output = (error.stdout || error.stderr) as string;
+          if (output.includes("Found 0 errors")) {
+            console.log(chalk.green("✓ Type checking passed"));
+          } else {
+            console.log(chalk.red("❌ Type checking found errors:"));
+            console.log(chalk.red(output));
+            console.log(chalk.yellow("\n⚠️  Please fix type errors before running the application"));
+          }
+        } else {
+          console.log(chalk.yellow("⚠️  vue-tsc not available or failed to run"));
+        }
+      }
+    } catch (error) {
+      console.log(chalk.yellow("⚠️  Type checking failed, but code was generated"));
+    }
   }
 
   // Run linter/formatter if requested
@@ -112,19 +148,11 @@ export async function generateCommand(options: GenerateOptions): Promise<void> {
   }
 
   // Final summary
-  const summary = generator.getSummary();
   console.log(chalk.green("\n✅ Code generation completed!\n"));
 
   console.log(chalk.blue("📁 Generated files:"));
-  for (const file of summary.filesWritten) {
-    console.log(chalk.gray(`  + ${path.relative(cwd, file)}`));
-  }
-
-  if (summary.filesUpdated.length > 0) {
-    console.log(chalk.blue("\n📝 Updated files:"));
-    for (const file of summary.filesUpdated) {
-      console.log(chalk.gray(`  ~ ${path.relative(cwd, file)}`));
-    }
+  for (const file of generationResult.files) {
+    console.log(chalk.gray(`  + ${path.relative(cwd, file.path)}`));
   }
 
   console.log();
@@ -135,4 +163,3 @@ export async function generateCommand(options: GenerateOptions): Promise<void> {
   console.log(`  4. Run: pnpm dev`);
   console.log();
 }
-

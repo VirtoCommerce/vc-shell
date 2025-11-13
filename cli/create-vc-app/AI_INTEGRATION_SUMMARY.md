@@ -508,3 +508,4 @@ User Request → Classification → Documentation Lookup → Pattern Application
 - Все файлы в `/prompts/` и `/guides/` (без изменений)
 
 
+

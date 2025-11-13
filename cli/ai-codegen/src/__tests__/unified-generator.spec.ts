@@ -178,6 +178,38 @@ describe("UnifiedCodeGenerator", () => {
       expect(pagesIndex).toBeDefined();
       expect(pagesIndex?.content).toContain("export { default as VendorList }");
     });
+
+    it("should include helper components when advanced list features are requested", async () => {
+      const plan: UIPlan = {
+        $schema: "https://vc-shell.dev/schemas/ui-plan.v1.json",
+        module: "inventory",
+        blades: [
+          {
+            id: "inventory-list",
+            route: "/inventory",
+            layout: "grid",
+            title: "Inventory",
+            features: ["multiselect"],
+            components: [
+              {
+                type: "VcTable",
+                columns: [{ key: "sku", title: "SKU" }],
+              },
+            ],
+          },
+        ],
+      };
+
+      const result = await generator.generateModule(plan, "/tmp/test-project");
+
+      const statusBadge = result.files.find(f => f.path.includes("components/status-badge.vue"));
+      expect(statusBadge).toBeDefined();
+      expect(statusBadge?.content).toContain("VcStatus");
+
+      const componentsIndex = result.files.find(f => f.path.includes("components/index.ts"));
+      expect(componentsIndex).toBeDefined();
+      expect(componentsIndex?.content).toContain("StatusBadge");
+    });
   });
 });
 

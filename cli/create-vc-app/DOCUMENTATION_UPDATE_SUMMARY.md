@@ -269,3 +269,4 @@ npx create-vc-app generate \
 **Все изменения синхронизированы между CLI документацией и AI guides templates.**
 
 
+

@@ -69,7 +69,7 @@ import {
 } from "@vc-shell/framework";
 import type { Entity } from "../types";
 // TODO: Update import path for your entity's composable
-import { useEntityList } from "../composables/useEntityList";
+import { default as useEntityList } from "../composables/useEntityList";
 // TODO: Update import for your entity's details blade file name
 import EntityDetails from "./entity-details.vue";
 import { useI18n } from "vue-i18n";

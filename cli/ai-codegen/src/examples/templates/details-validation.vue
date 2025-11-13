@@ -6,7 +6,7 @@
     :expanded="expanded"
     :closable="closable"
     :toolbar-items="bladeToolbar"
-    :modified="modified"
+    :modified="isModified"
     @close="$emit('close:blade')"
     @expand="$emit('expand:blade')"
     @collapse="$emit('collapse:blade')"
@@ -99,6 +99,7 @@
             </Field>
 
             <!-- Code field with validation -->
+            <!-- IMPORTANT: VcCard default slot has NO padding. Always add tw-p-4 for forms, tw-p-2 for galleries -->
             <VcCard :header="$t('ENTITIES.PAGES.DETAILS.FIELDS.INFO.TITLE')">
               <div class="tw-p-4 tw-space-y-4">
                 <div class="tw-flex tw-flex-row tw-items-center">
@@ -198,7 +199,7 @@ import {
   useLoading,
 } from "@vc-shell/framework";
 // TODO: Update import path for your entity's composable
-import { useEntityDetails } from "../composables/useEntityDetails";
+import { default as useEntityDetails } from "../composables/useEntityDetails";
 import type { Entity, IImage } from "../types";
 import { Field, useForm } from "vee-validate";
 import { useI18n } from "vue-i18n";
@@ -245,7 +246,7 @@ const {
   loading,
   deleteEntity,
   validateEntity,
-  modified,
+  isModified,
 } = useEntityDetails();
 
 const { showError, showConfirmation } = usePopup();
@@ -290,30 +291,37 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     icon: "material-save",
     async clickHandler() {
       if (meta.value.valid) {
-        if (entity.value.id) {
-          await updateEntity(entity.value);
-        } else {
-          await createEntity(entity.value);
-        }
+        try {
+          if (entity.value.id) {
+            await updateEntity({ ...entity.value, id: entity.value.id });
+          } else {
+            const { id, ...entityWithoutId } = entity.value;
+            const created = await createEntity(entityWithoutId);
+            if (created?.id) {
+              emit("close:blade");
+              emit("parent:call", {
+                method: "reload",
+              });
+              return;
+            }
+          }
 
-        resetModificationState();
-        emit("parent:call", {
-          method: "reload",
-        });
-
-        if (!props.param) {
+          resetModificationState();
           emit("parent:call", {
-            method: "onItemClick",
-            args: {
-              id: entity.value.id,
-            },
+            method: "reload",
           });
+
+          if (!props.param) {
+            emit("close:blade");
+          }
+        } catch (error) {
+          showError(t("ENTITIES.PAGES.ALERTS.SAVE_ERROR"));
         }
       } else {
-        showError(unref(computed(() => t("ENTITIES.PAGES.ALERTS.NOT_VALID"))));
+        showError(t("ENTITIES.PAGES.ALERTS.NOT_VALID"));
       }
     },
-    disabled: computed(() => isCodeValidating.value || !(meta.value.valid && modified.value)),
+    disabled: computed(() => isCodeValidating.value || !(meta.value.valid && isModified.value)),
   },
   {
     id: "delete",
@@ -414,12 +422,12 @@ const validateCode = (value: string, property: string) => {
 };
 
 onBeforeClose(async () => {
-  if (!isDisabled.value && modified.value && !loading.value) {
+  if (!isDisabled.value && isModified.value && !loading.value) {
     return await showConfirmation(t("ENTITIES.PAGES.ALERTS.CLOSE_CONFIRMATION"));
   }
 });
 
-useBeforeUnload(computed(() => !isDisabled.value && modified.value));
+useBeforeUnload(computed(() => !isDisabled.value && isModified.value));
 
 defineExpose({
   title,

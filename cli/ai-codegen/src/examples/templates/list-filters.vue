@@ -117,7 +117,7 @@ import {
   useFunctions,
 } from "@vc-shell/framework";
 // TODO: Update import path for your entity's composable
-import { useEntityList } from "../composables/useEntityList";
+import { default as useEntityList } from "../composables/useEntityList";
 // TODO: Create and import your entity's status badge component if needed
 import { StatusBadge } from "../components";
 import type { Entity } from "../types";

@@ -1,12 +1,8 @@
 {
   "$schema": "node_modules/lerna/schemas/lerna-schema.json",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "npmClient": "yarn",
-  "packages": [
-    "framework",
-    "cli/*",
-    "configs/*"
-  ],
+  "packages": ["framework", "cli/*", "configs/*"],
   "ignoreChanges": [
     "**/*.md",
     "**/*.spec.ts",
@@ -81,16 +77,11 @@
         "compareUrlFormat": "{{host}}/{{owner}}/{{repository}}/compare/{{previousTag}}...{{currentTag}}",
         "issueUrlFormat": "{{host}}/{{owner}}/{{repository}}/issues/{{id}}",
         "userUrlFormat": "{{host}}/{{user}}",
-        "issuePrefixes": [
-          "#"
-        ]
+        "issuePrefixes": ["#"]
       },
       "exact": false,
       "message": "release: %s",
-      "allowBranch": [
-        "main",
-        "feat/*"
-      ],
+      "allowBranch": ["main", "feat/*"],
       "yes": false,
       "changelog": {
         "preset": "angular",

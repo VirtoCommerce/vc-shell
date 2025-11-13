@@ -1,3 +1,7 @@
+## [1.2.2](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.1...v1.2.2) (2025-11-13)
+
+**Note:** Version bump only for package @vc-shell/api-client-generator
+
 ## [1.2.1](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.0...v1.2.1) (2025-11-13)
 
 **Note:** Version bump only for package @vc-shell/api-client-generator

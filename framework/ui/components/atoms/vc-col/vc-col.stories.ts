@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/vue3";
+import type { Meta, StoryObj } from "@storybook/vue3-vite";
 import { VcCol } from "./";
 import { VcRow } from "./../vc-row";
 import { VcImage } from "./../../";

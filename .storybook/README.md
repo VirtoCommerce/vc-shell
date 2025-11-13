@@ -28,7 +28,7 @@ Stories can be added to any component in the following locations:
 Stories should follow this structure:
 
 ```typescript
-import type { Meta, StoryObj } from '@storybook/vue3';
+import type { Meta, StoryObj } from '@storybook/vue3-vite';
 import YourComponent from './YourComponent.vue';
 import { withContainer } from '../../../.storybook/decorators';
 

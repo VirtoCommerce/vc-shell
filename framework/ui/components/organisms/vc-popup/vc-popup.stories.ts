@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/vue3";
+import type { Meta, StoryObj } from "@storybook/vue3-vite";
 import { ref } from "vue";
 import { VcPopup } from ".";
 import VcButton from "../../atoms/vc-button/vc-button.vue";

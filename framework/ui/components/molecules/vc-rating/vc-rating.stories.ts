@@ -1,5 +1,5 @@
 import { ref } from "vue";
-import { Meta, StoryObj } from "@storybook/vue3";
+import { Meta, StoryObj } from "@storybook/vue3-vite";
 import VcRating from "./vc-rating.vue";
 
 // More on default export: https://storybook.js.org/docs/vue/writing-stories/introduction#default-export

@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/vue3";
+import type { Meta, StoryObj } from "@storybook/vue3-vite";
 import { VcIcon } from "./index";
 import VcIconTest from "./vc-icon-test.vue";
 import VcIconExamples from "./vc-icon-examples.vue";

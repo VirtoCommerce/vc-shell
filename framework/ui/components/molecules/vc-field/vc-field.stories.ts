@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/vue3";
+import type { Meta, StoryObj } from "@storybook/vue3-vite";
 import VcField from "./vc-field.vue";
 
 const TYPE = ["text", "date", "date-ago", "link", "email"];

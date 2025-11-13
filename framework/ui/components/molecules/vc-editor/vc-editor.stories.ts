@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/vue3";
+import type { Meta, StoryObj } from "@storybook/vue3-vite";
 import { VcEditor, type CustomToolbarButton, type CustomToolbarDropdown } from "./";
 import { ref, defineComponent, h } from "vue";
 import type { Editor } from "@tiptap/vue-3";

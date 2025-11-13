@@ -1,7 +1,7 @@
 {
   "extends": "../framework/tsconfig.json",
   "compilerOptions": {
-    "types": ["vite/client", "../framework/typings/declarations.d.ts", "@storybook/vue3"],
+    "types": ["vite/client", "../framework/typings/declarations.d.ts", "@storybook/vue3-vite"],
     "rootDir": "..",
     "baseUrl": ".."
   },

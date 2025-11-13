@@ -1,5 +1,5 @@
 import { ref } from "vue";
-import type { Meta, StoryObj } from "@storybook/vue3";
+import type { Meta, StoryObj } from "@storybook/vue3-vite";
 import VcSwitch from "./vc-switch.vue";
 import VcHint from "../../atoms/vc-hint/vc-hint.vue";
 

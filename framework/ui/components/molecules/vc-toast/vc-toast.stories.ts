@@ -1,5 +1,5 @@
 import { ref, defineComponent } from "vue";
-import type { Meta, StoryObj } from "@storybook/vue3";
+import type { Meta, StoryObj } from "@storybook/vue3-vite";
 import { VcToast } from ".";
 import { notification } from "../../../../shared/components/notifications";
 

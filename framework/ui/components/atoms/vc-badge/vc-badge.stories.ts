@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/vue3";
+import type { Meta, StoryObj } from "@storybook/vue3-vite";
 import VcBadge from "./vc-badge.vue";
 import { ref } from "vue";
 

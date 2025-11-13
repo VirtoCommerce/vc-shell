@@ -1,5 +1,5 @@
 // import "./../framework";
-import { setup, Preview } from "@storybook/vue3";
+import { setup, Preview } from "@storybook/vue3-vite";
 import framework, { useLanguages, useTheme } from "./../framework";
 import { createRouter, createWebHashHistory } from "vue-router";
 import { vueRouter } from "storybook-vue3-router";
@@ -7,8 +7,16 @@ import * as locales from "./assets/locales";
 import "./../framework/assets/styles/index.scss";
 import { watch } from "vue";
 import { withGlobalMocks } from "./decorators";
+import { mockUseExtensionSlot, mockUseExtensionData, mockUseExtensions } from "./storybook-globals";
 
 import "../framework/dist/index.css";
+
+// Make extension points available globally for components that import them directly
+if (typeof window !== "undefined") {
+  (window as any).useExtensionSlot = mockUseExtensionSlot;
+  (window as any).useExtensionData = mockUseExtensionData;
+  (window as any).useExtensions = mockUseExtensions;
+}
 
 setup((app) => {
     app.use(framework, {
@@ -39,9 +47,11 @@ const preview: Preview = {
       },
     },
   },
+
   initialGlobals: {
     theme: "light",
   },
+
   decorators: [
     vueRouter(),
     withGlobalMocks,
@@ -66,6 +76,7 @@ const preview: Preview = {
       };
     },
   ],
+
   parameters: {
     actions: { argTypesRegex: "^on[A-Z].*" },
     controls: {
@@ -75,5 +86,7 @@ const preview: Preview = {
       },
     },
   },
+
+  tags: ["autodocs"]
 };
 export default preview;

@@ -1,21 +1,30 @@
+import { createRequire } from "node:module";
 import { mergeConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
 import { StorybookConfig } from "@storybook/vue3-vite";
-import path from "path";
+import path, { dirname, join } from "path";
 import type { Plugin, PluginOption } from 'vite';
 
-// Plugin to prevent usage of global variables from framework/index.ts
+const require = createRequire(import.meta.url);
+
+// Plugin to selectively disable some global variables from framework/index.ts
+// but keep extension-points available
 const preventGlobalsPlugin = (): Plugin => {
   return {
     name: 'prevent-vc-shell-globals',
     transform(code, id) {
       // Detect framework/index.ts file
-      if (id.includes('framework/index.ts')) {
-        // Replace the block of global variables with an empty block
-        const modifiedCode = code.replace(
-          /if\s*\(typeof window !== "undefined"\)\s*{[\s\S]*?window\.VeeValidate[\s\S]*?}/g,
-          'if (typeof window !== "undefined" && false) { /* Disabled in Storybook */ }'
+      if (id.includes('framework/index.ts') && !id.includes('node_modules')) {
+        // Keep extension-points and core functionality, disable only problematic globals
+        // We'll keep the window.VcShellFramework but remove specific problematic assignments
+        let modifiedCode = code;
+
+        // Comment out specific problematic global assignments but keep the structure
+        modifiedCode = modifiedCode.replace(
+          /window\.VeeValidate\s*=\s*VeeValidate;/g,
+          '// window.VeeValidate = VeeValidate; // Disabled in Storybook'
         );
+
         return {
           code: modifiedCode,
           map: null
@@ -30,20 +39,21 @@ export default {
   stories: [
     "../framework/ui/components/**/*.stories.ts",
   ],
+
   addons: [
-    "@storybook/addon-links",
-    "@storybook/addon-docs"
+    getAbsolutePath("@storybook/addon-links"),
+    getAbsolutePath("@storybook/addon-docs")
   ],
+
   staticDirs: ["./assets"],
+
   framework: {
-    name: "@storybook/vue3-vite",
+    name: getAbsolutePath("@storybook/vue3-vite"),
     options: {
       docgen: require('./advanced-docgen.js')
     },
   },
-  docs: {
-    autodocs: true,
-  },
+
   async viteFinal(config, { configType }) {
       // Plugin setup to make vue-component-meta work after vue
       const plugins = config.plugins || [];
@@ -77,6 +87,8 @@ export default {
             "@": path.resolve(__dirname, "../"),
             "framework": path.resolve(__dirname, "../framework"),
             "~/": path.resolve(__dirname, "../"),
+            // Override extension-points imports to use the actual implementation
+            "framework/core/plugins/extension-points": path.resolve(__dirname, "../framework/core/plugins/extension-points/index.ts"),
           },
           dedupe: ['vue', 'vue-router', 'vue-i18n']
         },
@@ -89,5 +101,9 @@ export default {
         }
       });
 
-  },
+  }
 } as StorybookConfig;
+
+function getAbsolutePath(value: string): any {
+  return dirname(require.resolve(join(value, "package.json")));
+}

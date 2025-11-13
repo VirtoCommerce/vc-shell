@@ -1,3 +1,5 @@
+import { computed } from 'vue';
+
 /**
  * Mocks for global objects used in Storybook
  *
@@ -20,9 +22,43 @@ export const mockAssetsManager = {
   // Empty object for the mock
 };
 
+// Mock for extension points
+export const mockUseExtensionSlot = (_slotName: string) => {
+  return {
+    components: computed(() => []),
+    addComponent: () => {},
+    removeComponent: () => {},
+    hasComponents: computed(() => false),
+  };
+};
+
+export const mockUseExtensionData = (_namespace: string) => {
+  return {
+    data: computed(() => ({})),
+    updateData: () => {},
+    setData: () => {},
+    getValue: () => undefined,
+    setValue: () => {},
+  };
+};
+
+export const mockUseExtensions = () => {
+  return {
+    getAllSlots: () => [],
+    getSlotComponents: () => [],
+    getAllData: () => ({}),
+    getNamespaceData: () => ({}),
+    clearSlot: () => {},
+    clearData: () => {},
+  };
+};
+
 // Export all mocks together for convenience
 export const mockGlobals = {
   notification: mockNotification,
   AssetsManager: mockAssetsManager,
+  useExtensionSlot: mockUseExtensionSlot,
+  useExtensionData: mockUseExtensionData,
+  useExtensions: mockUseExtensions,
   // Add new objects here
 };

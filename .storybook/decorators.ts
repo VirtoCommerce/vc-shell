@@ -1,4 +1,4 @@
-import { Decorator } from '@storybook/vue3';
+import { Decorator } from '@storybook/vue3-vite';
 import { mockGlobals } from './storybook-globals';
 
 /**

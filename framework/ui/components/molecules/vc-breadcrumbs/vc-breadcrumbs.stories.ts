@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/vue3";
+import type { Meta, StoryObj } from "@storybook/vue3-vite";
 import { VcBreadcrumbs } from "./";
 import { ref, watch, onMounted } from "vue";
 // Import for example only - not needed in projects where useBreadcrumbs is already injected

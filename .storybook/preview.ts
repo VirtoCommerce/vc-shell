@@ -4,12 +4,14 @@ import framework, { useLanguages, useTheme } from "./../framework";
 import { createRouter, createWebHashHistory } from "vue-router";
 import { vueRouter } from "storybook-vue3-router";
 import * as locales from "./assets/locales";
-import "./../framework/assets/styles/index.scss";
 import { watch } from "vue";
 import { withGlobalMocks } from "./decorators";
 import { mockUseExtensionSlot, mockUseExtensionData, mockUseExtensions } from "./storybook-globals";
 
-import "../framework/dist/index.css";
+// Import framework styles
+// - In production (CI/CD): uses compiled CSS from framework/dist/index.css (after yarn build)
+// - In development: resolved via alias to SCSS sources from framework/assets/styles/index.scss
+import "@vc-shell/framework/dist/index.css";
 
 // Make extension points available globally for components that import them directly
 if (typeof window !== "undefined") {

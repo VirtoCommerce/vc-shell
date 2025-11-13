@@ -74,6 +74,11 @@ export default {
         console.log('Vue Component Meta Plugin configured with enforce: post');
       }
 
+      // Check if framework/dist/index.css exists (production build)
+      const fs = require('fs');
+      const distCssPath = path.resolve(__dirname, "../framework/dist/index.css");
+      const hasDist = fs.existsSync(distCssPath);
+
       return mergeConfig(config, {
         plugins: [
           vue(),
@@ -82,13 +87,15 @@ export default {
         assetsInclude: ["/sb-preview/runtime.js"],
         resolve: {
           alias: {
-            "@vc-shell/framework/dist/index.css": "@vc-shell/framework/dist/index.css",
+            // In dev mode (no dist), resolve to SCSS sources
+            // In production mode (with dist), resolve to compiled CSS
+            "@vc-shell/framework/dist/index.css": hasDist
+              ? distCssPath
+              : path.resolve(__dirname, "../framework/assets/styles/index.scss"),
             "@vc-shell/framework": "@vc-shell/framework/index.ts",
             "@": path.resolve(__dirname, "../"),
             "framework": path.resolve(__dirname, "../framework"),
             "~/": path.resolve(__dirname, "../"),
-            // Override extension-points imports to use the actual implementation
-            "framework/core/plugins/extension-points": path.resolve(__dirname, "../framework/core/plugins/extension-points/index.ts"),
           },
           dedupe: ['vue', 'vue-router', 'vue-i18n']
         },

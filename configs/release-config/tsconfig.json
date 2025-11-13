@@ -1,8 +1,23 @@
 {
-  "extends": "@vc-shell/ts-config/tsconfig.json",
   "compilerOptions": {
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "importHelpers": true,
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "Bundler",
+    "target": "es2020",
+    "isolatedModules": true,
+    "useDefineForClassFields": true,
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "strict": true,
     "baseUrl": ".",
     "rootDir": "./"
   },
-  "include": ["src/*.ts"]
+  "include": ["src/*.ts"],
+  "exclude": ["node_modules", "dist"]
 }

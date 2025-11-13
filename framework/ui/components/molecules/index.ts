@@ -1,3 +1,4 @@
+export * from "./vc-accordion";
 export * from "./vc-breadcrumbs";
 export * from "./vc-editor";
 export * from "./vc-form";

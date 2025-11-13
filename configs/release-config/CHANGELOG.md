@@ -1,3 +1,9 @@
+## [1.2.1](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.0...v1.2.1) (2025-11-13)
+
+### Bug Fixes
+
+- update type definitions in useDynamicProperties ([df5ca52](https://github.com/VirtoCommerce/vc-shell/commit/df5ca52cbf3d2ac6036b85028ffb231ad30c0795))
+
 # [1.2.0](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.98-rc.4...v1.2.0) (2025-11-13)
 
 **Note:** Version bump only for package @vc-shell/release-config

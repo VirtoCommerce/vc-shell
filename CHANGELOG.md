@@ -1,3 +1,46 @@
+## [1.2.1](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.0...v1.2.1) (2025-11-13)
+
+### VC-Shell Framework (@vc-shell/framework)
+
+### Bug Fixes
+- update type definitions in useDynamicProperties ([df5ca52](https://github.com/VirtoCommerce/vc-shell/commit/df5ca52cbf3d2ac6036b85028ffb231ad30c0795))
+# [1.2.0](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.98-rc.4...v1.2.0) (2025-11-13)
+### Bug Fixes
+- handle boolean property values correctly in useDynamicProperties and vc-dynamic-property ([5286329](https://github.com/VirtoCommerce/vc-shell/commit/5286329598f6701ebb457b1bfec5aee872834204))
+### Features
+- **ui:** add VcAccordion component with customizable items and storybook documentation ([cc40911](https://github.com/VirtoCommerce/vc-shell/commit/cc409114b0e52008e24a7cfe59204949295a6307))
+
+### API Client Generator (@vc-shell/api-client-generator)
+
+**Note:** Version bump only for package @vc-shell/api-client-generator
+# [1.2.0](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.98-rc.4...v1.2.0) (2025-11-13)
+**Note:** Version bump only for package @vc-shell/api-client-generator
+
+### Create VC App (@vc-shell/create-vc-app)
+
+**Note:** Version bump only for package @vc-shell/create-vc-app
+# [1.2.0](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.98-rc.4...v1.2.0) (2025-11-13)
+**Note:** Version bump only for package @vc-shell/create-vc-app
+
+### Release Config (@vc-shell/release-config)
+
+### Bug Fixes
+- update type definitions in useDynamicProperties ([df5ca52](https://github.com/VirtoCommerce/vc-shell/commit/df5ca52cbf3d2ac6036b85028ffb231ad30c0795))
+# [1.2.0](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.98-rc.4...v1.2.0) (2025-11-13)
+**Note:** Version bump only for package @vc-shell/release-config
+
+### Vite Config (@vc-shell/config-generator)
+
+**Note:** Version bump only for package @vc-shell/config-generator
+# [1.2.0](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.98-rc.4...v1.2.0) (2025-11-13)
+**Note:** Version bump only for package @vc-shell/config-generator
+
+### TypeScript Config (@vc-shell/ts-config)
+
+**Note:** Version bump only for package @vc-shell/ts-config
+# [1.2.0](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.98-rc.4...v1.2.0) (2025-11-13)
+**Note:** Version bump only for package @vc-shell/ts-config
+
 ## [1.1.98-rc.5](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.98-rc.4...v1.1.98-rc.5) (2025-10-24)
 
 **Note:** Version bump only for package

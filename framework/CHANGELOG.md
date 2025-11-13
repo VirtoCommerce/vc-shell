@@ -1,3 +1,13 @@
+# [1.2.0](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.98-rc.4...v1.2.0) (2025-11-13)
+
+### Bug Fixes
+
+- handle boolean property values correctly in useDynamicProperties and vc-dynamic-property ([5286329](https://github.com/VirtoCommerce/vc-shell/commit/5286329598f6701ebb457b1bfec5aee872834204))
+
+### Features
+
+- **ui:** add VcAccordion component with customizable items and storybook documentation ([cc40911](https://github.com/VirtoCommerce/vc-shell/commit/cc409114b0e52008e24a7cfe59204949295a6307))
+
 ## [1.1.98-rc.5](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.98-rc.4...v1.1.98-rc.5) (2025-10-24)
 
 **Note:** Version bump only for package @vc-shell/framework

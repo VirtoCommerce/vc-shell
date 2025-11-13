@@ -5376,6 +5376,7 @@ __metadata:
     eslint-plugin-vue: "npm:^9.19.2"
     husky: "npm:^8.0.3"
     jsdom: "npm:^24.1.0"
+    lerna: "npm:^9.0.0"
     lint-staged: "npm:^15.2.0"
     lodash-es: "npm:^4.17.21"
     moment: "npm:^2.30.1"

@@ -164,6 +164,12 @@ export const release = async ({
     lernaArgs.push("--no-push");
   }
 
+  // Add --force-publish flag if specified
+  if (args.force) {
+    lernaArgs.push("--force-publish");
+    console.log(chalk.yellow("\n⚠️  Force publish mode - all packages will be versioned\n"));
+  }
+
   // Run lerna version
   console.log(chalk.cyan(`\nRunning: npx ${lernaArgs.join(" ")}\n`));
   const result = sync("npx", lernaArgs, { stdio: "inherit" });

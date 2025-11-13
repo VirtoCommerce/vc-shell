@@ -40,7 +40,6 @@ const renameFiles: Record<string, string | undefined> = {
   _prettierrc: ".prettierrc",
   "_eslintrc.js": ".eslintrc.js",
   _github: ".github",
-  _husky: ".husky",
   _vscode: ".vscode",
   _yarn: ".yarn",
   "_package.json": "package.json",

@@ -16,12 +16,12 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 async function main() {
-  console.log("🚀 Building Enhanced Component Registry");
+  console.log("🚀 Building Component Registry with Capabilities");
   console.log("=" .repeat(50));
 
   // Load base registry
-  const registryPath = path.join(__dirname, "..", "schemas", "component-registry.json");
-  const baseRegistry = JSON.parse(fs.readFileSync(registryPath, "utf-8"));
+  const baseRegistryPath = path.join(__dirname, "..", "schemas", "component-registry.json");
+  const baseRegistry = JSON.parse(fs.readFileSync(baseRegistryPath, "utf-8"));
 
   console.log(`\n📋 Loaded base registry with ${Object.keys(baseRegistry).length} components`);
 
@@ -48,9 +48,24 @@ async function main() {
   // Analyze all components
   const enhanced = await analyzer.analyzeAll();
 
-  // Save results
-  const outputPath = path.join(__dirname, "..", "schemas", "component-registry-enhanced.json");
-  await analyzer.saveRegistry(enhanced, outputPath);
+  // Merge with base registry
+  console.log("\n🔄 Merging capabilities into base registry...");
+
+  // Add capabilities to base registry
+  for (const [componentName, enhancedData] of Object.entries(enhanced)) {
+    if (baseRegistry[componentName]) {
+      baseRegistry[componentName].capabilities = enhancedData.capabilities;
+    }
+  }
+
+  // Backup original
+  const backupPath = path.join(__dirname, "..", "schemas", "component-registry.backup.json");
+  fs.copyFileSync(baseRegistryPath, backupPath);
+  console.log(`📦 Created backup: component-registry.backup.json`);
+
+  // Save merged registry
+  fs.writeFileSync(baseRegistryPath, JSON.stringify(baseRegistry, null, 2), "utf-8");
+  console.log(`✅ Updated component-registry.json with capabilities`);
 
   // Print summary
   console.log("\n" + "=".repeat(50));
@@ -90,8 +105,8 @@ async function main() {
     console.log(`   ${i + 1}. ${name}: ${count} capabilities`);
   });
 
-  console.log("\n✅ Enhanced registry built successfully!");
-  console.log(`📁 Output: ${outputPath}`);
+  console.log("\n✅ Component registry updated with capabilities!");
+  console.log(`📁 Output: ${baseRegistryPath}`);
 }
 
 main().catch((error) => {

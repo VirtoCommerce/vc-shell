@@ -56,7 +56,85 @@ If user wants to create a new VC-Shell application:
 
 ---
 
-### Phase 1: UI-Plan Generation (MANDATORY FIRST)
+### Phase 0.5: Discover Component Capabilities (MANDATORY)
+
+🚨 **BEFORE creating UI-Plan, discover what components can do!**
+
+**For EVERY component you plan to use:**
+
+1. **Get its capabilities:**
+   ```typescript
+   get_component_capabilities({
+     component: "VcTable",
+     includeExamples: true
+   })
+   ```
+
+2. **Review ALL capabilities returned:**
+   - Props (what data it accepts)
+   - Slots (where you can customize rendering)
+   - Events (what it emits)
+   - Features (complex capabilities like filters, multiselect)
+
+3. **Map user requirements to capabilities:**
+   
+   User: "table with filters and bulk delete"
+   
+   VcTable capabilities to use:
+   - `feature-filters` → #filters slot + :active-filter-count prop
+   - `feature-multiselect` → :multiselect prop + @selection-changed event
+   - `feature-row-actions` → :item-action-builder prop
+
+4. **Include discovered features in UI-Plan:**
+   ```json
+   {
+     "components": [{
+       "type": "VcTable",
+       "features": ["filters", "multiselect", "row-actions"]
+     }]
+   }
+   ```
+
+**FORBIDDEN without capabilities check:**
+- ❌ Guessing component props
+- ❌ Inventing slot names
+- ❌ Assuming event names
+- ❌ Creating UI-Plan without knowing API
+
+**Example Discovery Session:**
+
+```typescript
+// User wants: "Product list with search and filters"
+
+// Step 1: Find component  
+search_components_by_intent({
+  intent: "table with search and filters",
+  context: "list"
+})
+// Returns: VcTable (score: 220)
+
+// Step 2: Get VcTable capabilities
+get_component_capabilities({
+  component: "VcTable",
+  includeExamples: true
+})
+// Returns: 25 capabilities including:
+// - feature-filters (with full example)
+// - prop-searchValue
+// - event-search:change
+
+// Step 3: Use in UI-Plan
+{
+  "type": "VcTable",
+  "features": ["search", "filters", "sorting"]
+}
+
+// Step 4: Generated code uses correct API from examples
+```
+
+---
+
+### Phase 1: UI-Plan Generation (AFTER Discovering Capabilities)
 
 **User Request Examples:**
 - "Create vendor management module"
@@ -591,8 +669,71 @@ After code generation, type checking is automatically run:
 
 ---
 
+## Component Capabilities Quick Reference
+
+**37 components, 242 total capabilities available**
+
+### Top Components by Capabilities
+
+**VcTable (25 capabilities) - Grid/List display:**
+- `feature-filters` - Custom filter panel (#filters slot, :active-filter-count)
+- `feature-multiselect` - Row selection (:multiselect, @selection-changed)
+- `feature-row-actions` - Per-row actions (:item-action-builder, :enable-item-actions)
+- `feature-custom-columns` - Custom cell rendering (#item_{columnKey} slots)
+- `prop-searchValue` + `event-search:change` - Built-in search
+- `prop-sort` + `event-header-click` - Column sorting
+- `prop-pages`, `prop-currentPage`, `event-pagination-click` - Pagination
+
+**VcSelect (35 capabilities) - Dropdown selector:**
+- `feature-async-options` - Async searchable dropdown
+- `slot-selected-item` - Custom selected display
+- `slot-item` - Custom option display
+- `prop-searchable` - Enable search
+- `event-search-change` - Search handler
+
+**VcMultivalue (21 capabilities) - Multi-select:**
+- Multiple tags/values input
+- Dropdown or manual entry
+
+**VcInput (19 capabilities) - Text input:**
+- Types: text, email, url, number, date, password
+- `prop-debounce` - Debounced input
+- `prop-clearable` - Clear button
+
+**VcGallery (10 capabilities) - Image gallery:**
+- `:multiple` - Multiple images
+- `:sortable` - Drag-to-reorder
+- `:upload-path` - Upload destination
+- `@upload`, `@reorder`, `@remove` - Events
+
+**VcBlade (9 capabilities) - Page container:**
+- `:width` - Blade width
+- `:modified` - Unsaved changes
+- `#widgets` slot - Widgets
+
+### How to Use
+
+**Get ALL capabilities of a component:**
+```typescript
+get_component_capabilities({ 
+  component: "VcTable",
+  includeExamples: true 
+})
+```
+
+**Find components by intent:**
+```typescript
+search_components_by_intent({
+  intent: "I need filtering and bulk operations",
+  context: "list"
+})
+```
+
+---
+
 ## Remember
 
+- ✅ **ALWAYS discover capabilities FIRST!**
 - ✅ Two patterns only: List (table) and Details (form)
 - ✅ Mock data for all composables
 - ✅ Automatic generation via MCP

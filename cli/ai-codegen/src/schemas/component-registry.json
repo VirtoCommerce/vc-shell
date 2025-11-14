@@ -4,8 +4,16 @@
     "component": "VcBlade",
     "description": "Blade container component that implements the blade pattern for UI organization. Blades are panels that slide in from the right side of the screen.",
     "category": "Layout",
-    "demos": ["VcBlade-demo.md"],
-    "keywords": ["blade", "panel", "container", "layout", "sidebar"],
+    "demos": [
+      "VcBlade-demo.md"
+    ],
+    "keywords": [
+      "blade",
+      "panel",
+      "container",
+      "layout",
+      "sidebar"
+    ],
     "dependencies": [],
     "templates": [
       {
@@ -13,7 +21,12 @@
         "file": "templates/list-simple.vue",
         "complexity": "basic",
         "lines": 150,
-        "features": ["search", "sort", "pagination", "toolbar"],
+        "features": [
+          "search",
+          "sort",
+          "pagination",
+          "toolbar"
+        ],
         "description": "Simple list blade with basic table, toolbar, and navigation"
       },
       {
@@ -21,16 +34,28 @@
         "file": "templates/list-filters.vue",
         "complexity": "medium",
         "lines": 290,
-        "features": ["filters", "search", "sort", "custom-slots"],
+        "features": [
+          "filters",
+          "search",
+          "sort",
+          "custom-slots"
+        ],
         "description": "List blade with custom filters slot (radio buttons, date range)",
-        "requiredComponents": ["status-badge"]
+        "requiredComponents": [
+          "status-badge"
+        ]
       },
       {
         "id": "list-multiselect",
         "file": "templates/list-multiselect.vue",
         "complexity": "advanced",
         "lines": 330,
-        "features": ["multiselect", "bulk-actions", "item-actions", "notifications"],
+        "features": [
+          "multiselect",
+          "bulk-actions",
+          "item-actions",
+          "notifications"
+        ],
         "description": "List blade with multiselect, bulk operations, and item actions"
       },
       {
@@ -38,7 +63,12 @@
         "file": "templates/details-simple.vue",
         "complexity": "basic",
         "lines": 180,
-        "features": ["form", "validation", "save", "delete"],
+        "features": [
+          "form",
+          "validation",
+          "save",
+          "delete"
+        ],
         "description": "Simple details blade with form fields and basic validation"
       },
       {
@@ -46,7 +76,13 @@
         "file": "templates/details-validation.vue",
         "complexity": "advanced",
         "lines": 290,
-        "features": ["form", "async-validation", "async-select", "gallery", "widgets"],
+        "features": [
+          "form",
+          "async-validation",
+          "async-select",
+          "gallery",
+          "widgets"
+        ],
         "description": "Advanced details blade with async validation, selects, and gallery"
       }
     ],
@@ -84,15 +120,125 @@
         "title": "Basic Blade",
         "code": "<VcBlade\n  v-loading=\"loading\"\n  :title=\"bladeTitle\"\n  :toolbar-items=\"bladeToolbar\"\n  :closable=\"closable\"\n  :expanded=\"expanded\"\n  width=\"50%\"\n  @close=\"$emit('close:blade')\"\n>\n  <!-- Blade content here -->\n</VcBlade>"
       }
-    ]
+    ],
+    "capabilities": {
+      "prop-width": {
+        "id": "prop-width",
+        "type": "prop",
+        "name": "width",
+        "description": "Width of the blade (can be in pixels or percentage)",
+        "requiredProps": [
+          "width"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-expanded": {
+        "id": "prop-expanded",
+        "type": "prop",
+        "name": "expanded",
+        "description": "Whether the blade is expanded to full width. If not provided, defaults to `false`.",
+        "requiredProps": [
+          "expanded"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-closable": {
+        "id": "prop-closable",
+        "type": "prop",
+        "name": "closable",
+        "description": "Whether the blade can be closed by the user",
+        "requiredProps": [
+          "closable"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-toolbarItems": {
+        "id": "prop-toolbarItems",
+        "type": "prop",
+        "name": "toolbarItems",
+        "description": "Array of toolbar items to display",
+        "requiredProps": [
+          "toolbarItems"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-modified": {
+        "id": "prop-modified",
+        "type": "prop",
+        "name": "modified",
+        "description": "Indicates whether there are unsaved changes in the blade content. Defaults to `undefined`.",
+        "requiredProps": [
+          "modified"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "slot-default": {
+        "id": "slot-default",
+        "type": "slot",
+        "name": "default",
+        "description": "The main content of the blade",
+        "relatedSlots": [
+          "default"
+        ],
+        "useCases": [],
+        "complexity": "medium"
+      },
+      "slot-actions": {
+        "id": "slot-actions",
+        "type": "slot",
+        "name": "actions",
+        "description": "Custom actions slot",
+        "relatedSlots": [
+          "actions"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "slot-backButton": {
+        "id": "slot-backButton",
+        "type": "slot",
+        "name": "backButton",
+        "description": "Custom back button for mobile view",
+        "relatedSlots": [
+          "backButton"
+        ],
+        "useCases": [],
+        "complexity": "medium"
+      },
+      "slot-widgets": {
+        "id": "slot-widgets",
+        "type": "slot",
+        "name": "widgets",
+        "description": "**Deprecated**. Use `useWidgets()` composable instead. Slot for blade widgets.",
+        "relatedSlots": [
+          "widgets"
+        ],
+        "useCases": [],
+        "complexity": "medium"
+      }
+    }
   },
   "VcTable": {
     "import": "@vc-shell/framework",
     "component": "VcTable",
     "description": "Highly customizable data table component with sorting, pagination, filtering, and multi-select support",
     "category": "Data",
-    "demos": ["VcTable-demo.md"],
-    "keywords": ["table", "grid", "list", "data", "datatable", "datagrid"],
+    "demos": [
+      "VcTable-demo.md"
+    ],
+    "keywords": [
+      "table",
+      "grid",
+      "list",
+      "data",
+      "datatable",
+      "datagrid"
+    ],
     "dependencies": [],
     "props": {
       "items": "T[] - Array of data items to display",
@@ -136,36 +282,364 @@
       {
         "id": "basic",
         "file": "compositions/list-basic.md",
-        "features": ["items", "columns", "loading", "sort", "pagination"],
+        "features": [
+          "items",
+          "columns",
+          "loading",
+          "sort",
+          "pagination"
+        ],
         "description": "Basic table with sorting and pagination"
       },
       {
         "id": "with-filters",
         "file": "compositions/list-with-filters.md",
-        "features": ["filters slot", "VcRadioButton", "VcInput", "VcButton"],
+        "features": [
+          "filters slot",
+          "VcRadioButton",
+          "VcInput",
+          "VcButton"
+        ],
         "description": "Table with custom filter panel"
       },
       {
         "id": "with-multiselect",
         "file": "compositions/list-with-multiselect.md",
-        "features": ["multiselect", "select-all", "item-action-builder"],
+        "features": [
+          "multiselect",
+          "select-all",
+          "item-action-builder"
+        ],
         "description": "Table with multiselect and bulk actions"
       },
       {
         "id": "custom-slots",
         "file": "compositions/custom-column-slots.md",
-        "features": ["item_{column} slots", "VcStatus", "VcImage", "VcHint"],
+        "features": [
+          "item_{column} slots",
+          "VcStatus",
+          "VcImage",
+          "VcHint"
+        ],
         "description": "Custom column templates"
       }
-    ]
+    ],
+    "capabilities": {
+      "prop-columns": {
+        "id": "prop-columns",
+        "type": "prop",
+        "name": "columns",
+        "description": "Array of column definitions for the table",
+        "requiredProps": [
+          "columns"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-items": {
+        "id": "prop-items",
+        "type": "prop",
+        "name": "items",
+        "description": "Array of data items to display in the table",
+        "requiredProps": [
+          "items"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-multiselect": {
+        "id": "prop-multiselect",
+        "type": "prop",
+        "name": "multiselect",
+        "description": "Enables row selection with checkboxes",
+        "requiredProps": [
+          "multiselect"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-expanded": {
+        "id": "prop-expanded",
+        "type": "prop",
+        "name": "expanded",
+        "description": "Controls whether the table is in expanded view",
+        "requiredProps": [
+          "expanded"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-totalCount": {
+        "id": "prop-totalCount",
+        "type": "prop",
+        "name": "totalCount",
+        "description": "Total count of items (used for pagination)",
+        "requiredProps": [
+          "totalCount"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-pages": {
+        "id": "prop-pages",
+        "type": "prop",
+        "name": "pages",
+        "description": "Total number of pages",
+        "requiredProps": [
+          "pages"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-currentPage": {
+        "id": "prop-currentPage",
+        "type": "prop",
+        "name": "currentPage",
+        "description": "Current active page",
+        "requiredProps": [
+          "currentPage"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-header": {
+        "id": "prop-header",
+        "type": "prop",
+        "name": "header",
+        "description": "Controls visibility of the table header",
+        "requiredProps": [
+          "header"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-footer": {
+        "id": "prop-footer",
+        "type": "prop",
+        "name": "footer",
+        "description": "Controls visibility of the table footer",
+        "requiredProps": [
+          "footer"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-activeFilterCount": {
+        "id": "prop-activeFilterCount",
+        "type": "prop",
+        "name": "activeFilterCount",
+        "description": "Number of active filters",
+        "requiredProps": [
+          "activeFilterCount"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-resizableColumns": {
+        "id": "prop-resizableColumns",
+        "type": "prop",
+        "name": "resizableColumns",
+        "description": "Enables column resizing",
+        "requiredProps": [
+          "resizableColumns"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-reorderableColumns": {
+        "id": "prop-reorderableColumns",
+        "type": "prop",
+        "name": "reorderableColumns",
+        "description": "Enables column reordering",
+        "requiredProps": [
+          "reorderableColumns"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-reorderableRows": {
+        "id": "prop-reorderableRows",
+        "type": "prop",
+        "name": "reorderableRows",
+        "description": "Enables row reordering",
+        "requiredProps": [
+          "reorderableRows"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-paginationVariant": {
+        "id": "prop-paginationVariant",
+        "type": "prop",
+        "name": "paginationVariant",
+        "description": "Variant of pagination to use",
+        "requiredProps": [
+          "paginationVariant"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-columnSelector": {
+        "id": "prop-columnSelector",
+        "type": "prop",
+        "name": "columnSelector",
+        "description": "Controls column selection behavior",
+        "requiredProps": [
+          "columnSelector"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "slot-header": {
+        "id": "slot-header",
+        "type": "slot",
+        "name": "header",
+        "description": "Custom header slot",
+        "relatedSlots": [
+          "header"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "slot-filters": {
+        "id": "slot-filters",
+        "type": "slot",
+        "name": "filters",
+        "description": "Custom filters slot",
+        "relatedSlots": [
+          "filters"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "slot-mobile-item": {
+        "id": "slot-mobile-item",
+        "type": "slot",
+        "name": "mobile-item",
+        "description": "`{ item: T }`",
+        "relatedSlots": [
+          "mobile-item"
+        ],
+        "useCases": [],
+        "complexity": "medium"
+      },
+      "slot-item_{fieldName}": {
+        "id": "slot-item_{fieldName}",
+        "type": "slot",
+        "name": "item_{fieldName}",
+        "description": "`{ item: T; cell: ITableColumns \\",
+        "relatedSlots": [
+          "item_{fieldName}"
+        ],
+        "useCases": [],
+        "complexity": "medium"
+      },
+      "slot-notfound": {
+        "id": "slot-notfound",
+        "type": "slot",
+        "name": "notfound",
+        "description": "-",
+        "relatedSlots": [
+          "notfound"
+        ],
+        "useCases": [],
+        "complexity": "medium"
+      },
+      "slot-empty": {
+        "id": "slot-empty",
+        "type": "slot",
+        "name": "empty",
+        "description": "-",
+        "relatedSlots": [
+          "empty"
+        ],
+        "useCases": [],
+        "complexity": "medium"
+      },
+      "slot-footer": {
+        "id": "slot-footer",
+        "type": "slot",
+        "name": "footer",
+        "description": "-",
+        "relatedSlots": [
+          "footer"
+        ],
+        "useCases": [],
+        "complexity": "medium"
+      },
+      "feature-row-actions": {
+        "id": "feature-row-actions",
+        "type": "feature",
+        "name": "Row Actions",
+        "description": "Contextual actions for each table row",
+        "requiredProps": [
+          "item-action-builder",
+          "enable-item-actions"
+        ],
+        "codeExample": "<template>\n  <VcTable\n    :columns=\"columns\"\n    :items=\"products\"\n    multiselect\n    select-all\n    :item-action-builder=\"actionBuilder\"\n    enable-item-actions\n    state-key=\"products-table\"\n    @selection-changed=\"onSelectionChanged\"\n  >\n    <template #item_status=\"{ item }\">\n      <VcBadge :variant=\"item.isActive ? 'success' : 'danger'\">\n        {{ item.isActive ? 'Active' : 'Inactive' }}\n      </VcBadge>\n    </template>\n  </VcTable>\n</template>\n\n<script lang=\"ts\" setup>\nimport { ref } from 'vue';\nimport { VcTable, VcBadge, ITableColumns, IActionBuilderResult } from '@vc-shell/framework';\n\nconst columns = ref<ITableColumns[]>([\n  { id: 'name', title: 'Product Name', sortable: true, alwaysVisible: true },\n  { id: 'sku', title: 'SKU', sortable: true, width: 120 },\n  { id: 'price', title: 'Price', sortable: true, width: 100, type: 'money' },\n  { id: 'status', title: 'Status', sortable: true, width: 120 }\n]);\n\nconst products = ref([\n  { id: '1', name: 'Product A', sku: 'SKU001', price: 29.99, isActive: true },\n  { id: '2', name: 'Product B', sku: 'SKU002', price: 49.99, isActive: true },\n  { id: '3', name: 'Product C', sku: 'SKU003', price: 19.99, isActive: false }\n]);\n\nconst selectedProducts = ref([]);\n\nfunction actionBuilder(item) {\n  return [\n    {\n      title: 'Edit',\n      icon: 'material-edit',\n      clickHandler: () => editProduct(item)\n    },\n    {\n      title: 'Delete',\n      icon: 'material-delete',\n      type: 'danger',\n      clickHandler: () => deleteProduct(item)\n    }\n  ];\n}\n\nfunction onSelectionChanged(items) {\n  selectedProducts.value = items;\n}\n\nfunction editProduct(product) {\n  // Edit logic\n}\n\nfunction deleteProduct(product) {\n  // Delete logic\n}\n</script>",
+        "useCases": [
+          "Edit",
+          "Delete",
+          "Conditional actions"
+        ],
+        "complexity": "medium"
+      },
+      "feature-multiselect": {
+        "id": "feature-multiselect",
+        "type": "feature",
+        "name": "Multiselect",
+        "description": "Row selection with bulk actions",
+        "requiredProps": [
+          "multiselect"
+        ],
+        "relatedEvents": [
+          "selection-changed"
+        ],
+        "codeExample": "<template>\n  <VcTable\n    :columns=\"columns\"\n    :items=\"products\"\n    multiselect\n    select-all\n    :item-action-builder=\"actionBuilder\"\n    enable-item-actions\n    state-key=\"products-table\"\n    @selection-changed=\"onSelectionChanged\"\n  >\n    <template #item_status=\"{ item }\">\n      <VcBadge :variant=\"item.isActive ? 'success' : 'danger'\">\n        {{ item.isActive ? 'Active' : 'Inactive' }}\n      </VcBadge>\n    </template>\n  </VcTable>\n</template>\n\n<script lang=\"ts\" setup>\nimport { ref } from 'vue';\nimport { VcTable, VcBadge, ITableColumns, IActionBuilderResult } from '@vc-shell/framework';\n\nconst columns = ref<ITableColumns[]>([\n  { id: 'name', title: 'Product Name', sortable: true, alwaysVisible: true },\n  { id: 'sku', title: 'SKU', sortable: true, width: 120 },\n  { id: 'price', title: 'Price', sortable: true, width: 100, type: 'money' },\n  { id: 'status', title: 'Status', sortable: true, width: 120 }\n]);\n\nconst products = ref([\n  { id: '1', name: 'Product A', sku: 'SKU001', price: 29.99, isActive: true },\n  { id: '2', name: 'Product B', sku: 'SKU002', price: 49.99, isActive: true },\n  { id: '3', name: 'Product C', sku: 'SKU003', price: 19.99, isActive: false }\n]);\n\nconst selectedProducts = ref([]);\n\nfunction actionBuilder(item) {\n  return [\n    {\n      title: 'Edit',\n      icon: 'material-edit',\n      clickHandler: () => editProduct(item)\n    },\n    {\n      title: 'Delete',\n      icon: 'material-delete',\n      type: 'danger',\n      clickHandler: () => deleteProduct(item)\n    }\n  ];\n}\n\nfunction onSelectionChanged(items) {\n  selectedProducts.value = items;\n}\n\nfunction editProduct(product) {\n  // Edit logic\n}\n\nfunction deleteProduct(product) {\n  // Delete logic\n}\n</script>",
+        "useCases": [
+          "Bulk delete",
+          "Bulk status change",
+          "Export selected"
+        ],
+        "complexity": "medium"
+      },
+      "feature-filters": {
+        "id": "feature-filters",
+        "type": "feature",
+        "name": "Advanced Filters",
+        "description": "Custom filter panel with staged/applied pattern",
+        "relatedSlots": [
+          "filters"
+        ],
+        "requiredProps": [
+          "active-filter-count"
+        ],
+        "codeExample": "<template>\n  <VcTable\n    :columns=\"columns\"\n    :items=\"items\"\n    :loading=\"isLoading\"\n    :active-filter-count=\"activeFilterCount\"\n    state-key=\"users-table-with-filters\"\n  >\n    <template #filters=\"{ closePanel }\">\n      <div class=\"tw-p-4\">\n        <h3 class=\"tw-font-semibold tw-mb-4\">Filter by Role</h3>\n        <div class=\"tw-flex tw-flex-col tw-gap-2\">\n          <VcCheckbox v-for=\"role in allRoles\" :key=\"role\" v-model=\"stagedFilters.roles\" :value=\"role\">\n            {{ role }}\n          </VcCheckbox>\n        </div>\n\n        <div class=\"tw-flex tw-gap-2 tw-mt-6\">\n          <VcButton @click=\"applyFilters(closePanel)\">Apply</VcButton>\n          <VcButton variant=\"secondary\" @click=\"resetFilters(closePanel)\">\n            Reset\n          </VcButton>\n        </div>\n      </div>\n    </template>\n  </VcTable>\n</template>\n\n<script lang=\"ts\" setup>\nimport { ref, computed, onMounted } from \"vue\";\nimport { VcTable, VcCheckbox, VcButton, type ITableColumns } from \"@vc-shell/framework\";\n\n// --- Mock API ---\n// This would typically be a call to an API client (e.g., using useApiClient).\n// For demonstration, we simulate it with a local function.\nconst FAKE_DB = [\n  { id: \"1\", name: \"John Doe\", email: \"john@example.com\", role: \"Admin\" },\n  { id: \"2\", name: \"Jane Smith\", email: \"jane@example.com\", role: \"Editor\" },\n  { id: \"3\", name: \"Bob Johnson\", email: \"bob@example.com\", role: \"Viewer\" },\n  { id: \"4\", name: \"Alice Williams\", email: \"alice@example.com\", role: \"Editor\" },\n  { id: \"5\", name: \"Charlie Brown\", email: \"charlie@example.com\", role: \"Admin\" },\n];\n\nasync function fetchUsers(query: { roles?: string[] }) {\n  console.log(\"Fetching users with query:\", query);\n  if (!query.roles || query.roles.length === 0) {\n    return { results: FAKE_DB, totalCount: FAKE_DB.length };\n  }\n  const filtered = FAKE_DB.filter((user) => query.roles?.includes(user.role));\n  return { results: filtered, totalCount: filtered.length };\n}\n// --- End Mock API ---\n\nconst columns = ref<ITableColumns[]>([\n  { id: \"name\", title: \"Name\", sortable: true },\n  { id: \"email\", title: \"Email\", sortable: true },\n  { id: \"role\", title: \"Role\", sortable: true },\n]);\n\nconst items = ref<any[]>([]);\nconst isLoading = ref(true);\nconst allRoles = [\"Admin\", \"Editor\", \"Viewer\"];\n\n// Staged filters are bound to the UI controls in the filter panel.\nconst stagedFilters = ref({\n  roles: [] as string[],\n});\n\n// The query object contains the currently applied filters for the API request.\nconst query = ref({\n  roles: [] as string[],\n});\n\nconst activeFilterCount = computed(() => {\n  return query.value.roles.length > 0 ? 1 : 0;\n});\n\nasync function loadItems() {\n  isLoading.value = true;\n  try {\n    const response = await fetchUsers(query.value);\n    items.value = response.results;\n    // In a real app, you would also update pagination state here.\n  } catch (e) {\n    console.error(\"Failed to load items\", e);\n    items.value = []; // Clear items on error\n  } finally {\n    isLoading.value = false;\n  }\n}\n\nfunction applyFilters(closePanel: () => void) {\n  // 1. Copy staged filters to the main query object.\n  query.value.roles = [...stagedFilters.value.roles];\n  // 2. Trigger a data reload with the new query.\n  loadItems();\n  // 3. Close the filter panel.\n  closePanel();\n}\n\nfunction resetFilters(closePanel: () => void) {\n  // 1. Clear both staged and active query filters.\n  stagedFilters.value.roles = [];\n  query.value.roles = [];\n  // 2. Trigger a data reload.\n  loadItems();\n  // 3. Close the filter panel.\n  closePanel();\n}\n\n// Load initial data when the component mounts.\nonMounted(() => {\n  loadItems();\n});\n</script>",
+        "useCases": [
+          "Status filter",
+          "Date range filter",
+          "Multi-criteria filtering"
+        ],
+        "complexity": "advanced"
+      }
+    }
   },
   "VcField": {
     "import": "@vc-shell/framework",
     "component": "VcField",
     "description": "IMPORTANT: VcField is for DISPLAYING read-only data with label-value pairs. It is NOT a wrapper for form inputs! For forms, use Field from vee-validate.",
     "category": "Display",
-    "demos": ["VcField-demo.md"],
-    "keywords": ["field", "form", "label", "validation", "read-only", "display"],
+    "demos": [
+      "VcField-demo.md"
+    ],
+    "keywords": [
+      "field",
+      "form",
+      "label",
+      "validation",
+      "read-only",
+      "display"
+    ],
     "dependencies": [],
     "props": {
       "label": "string - Field label text",
@@ -186,15 +660,81 @@
         "title": "Read-only Field with Vertical Layout",
         "code": "<VcField\n  :label=\"$t('FORM.ORDER_REF')\"\n  :model-value=\"item?.number || item?.id\"\n  orientation=\"vertical\"\n  :aspect-ratio=\"[1, 2]\"\n  copyable\n  type=\"text\"\n/>"
       }
-    ]
+    ],
+    "capabilities": {
+      "prop-modelValue": {
+        "id": "prop-modelValue",
+        "type": "prop",
+        "name": "modelValue",
+        "description": "Content to display in the field",
+        "requiredProps": [
+          "modelValue"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-label": {
+        "id": "prop-label",
+        "type": "prop",
+        "name": "label",
+        "description": "Label text for the field",
+        "requiredProps": [
+          "label"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-tooltip": {
+        "id": "prop-tooltip",
+        "type": "prop",
+        "name": "tooltip",
+        "description": "Tooltip text for additional information",
+        "requiredProps": [
+          "tooltip"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-copyable": {
+        "id": "prop-copyable",
+        "type": "prop",
+        "name": "copyable",
+        "description": "Whether to show a copy button",
+        "requiredProps": [
+          "copyable"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-aspectRatio": {
+        "id": "prop-aspectRatio",
+        "type": "prop",
+        "name": "aspectRatio",
+        "description": "Aspect ratio for label and content columns",
+        "requiredProps": [
+          "aspectRatio"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      }
+    }
   },
   "VcInput": {
     "import": "@vc-shell/framework",
     "component": "VcInput",
     "description": "Text input field component with validation support, including date inputs and debounced search",
     "category": "Form",
-    "demos": ["VcInput-demo.md"],
-    "keywords": ["input", "text", "email", "date", "form", "validation"],
+    "demos": [
+      "VcInput-demo.md"
+    ],
+    "keywords": [
+      "input",
+      "text",
+      "email",
+      "date",
+      "form",
+      "validation"
+    ],
     "dependencies": [],
     "props": {
       "modelValue": "string | number - Input value",
@@ -221,7 +761,218 @@
         "title": "Text Input with Validation (vee-validate)",
         "code": "<Field\n  v-slot=\"{ errorMessage, handleChange, errors }\"\n  :label=\"$t('OFFER_DETAILS.FIELDS.SKU.TITLE')\"\n  :model-value=\"offer.sku\"\n  rules=\"required|min:3\"\n  name=\"sku\"\n>\n  <VcInput\n    v-model=\"offer.sku\"\n    :label=\"$t('OFFER_DETAILS.FIELDS.SKU.TITLE')\"\n    :placeholder=\"$t('OFFER_DETAILS.FIELDS.SKU.PLACEHOLDER')\"\n    required\n    maxlength=\"61\"\n    :loading=\"isSkuValidating\"\n    clearable\n    :error=\"!!errors.length\"\n    :error-message=\"errorMessage\"\n    @update:model-value=\"handleChange\"\n  ></VcInput>\n</Field>"
       }
-    ]
+    ],
+    "capabilities": {
+      "prop-type": {
+        "id": "prop-type",
+        "type": "prop",
+        "name": "type",
+        "description": "Type of input (`'text'`, `'password'`, `'email'`, `'tel'`, `'number'`, `'integer'`, `'url'`, `'time'`, `'date'`, `'datetime-local'`)",
+        "requiredProps": [
+          "type"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-step": {
+        "id": "prop-step",
+        "type": "prop",
+        "name": "step",
+        "description": "Step value for number inputs",
+        "requiredProps": [
+          "step"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-clearable": {
+        "id": "prop-clearable",
+        "type": "prop",
+        "name": "clearable",
+        "description": "Whether to show a clear button when input has a value",
+        "requiredProps": [
+          "clearable"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-name": {
+        "id": "prop-name",
+        "type": "prop",
+        "name": "name",
+        "description": "Name attribute for the input element",
+        "requiredProps": [
+          "name"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-loading": {
+        "id": "prop-loading",
+        "type": "prop",
+        "name": "loading",
+        "description": "Shows a loading spinner inside the input",
+        "requiredProps": [
+          "loading"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-disabled": {
+        "id": "prop-disabled",
+        "type": "prop",
+        "name": "disabled",
+        "description": "Disables the input",
+        "requiredProps": [
+          "disabled"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-autofocus": {
+        "id": "prop-autofocus",
+        "type": "prop",
+        "name": "autofocus",
+        "description": "Automatically focuses the input on render",
+        "requiredProps": [
+          "autofocus"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-error": {
+        "id": "prop-error",
+        "type": "prop",
+        "name": "error",
+        "description": "Indicates an error state for the input",
+        "requiredProps": [
+          "error"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-maxlength": {
+        "id": "prop-maxlength",
+        "type": "prop",
+        "name": "maxlength",
+        "description": "Maximum character length for the input",
+        "requiredProps": [
+          "maxlength"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-required": {
+        "id": "prop-required",
+        "type": "prop",
+        "name": "required",
+        "description": "Adds a required indicator to the label",
+        "requiredProps": [
+          "required"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-multilanguage": {
+        "id": "prop-multilanguage",
+        "type": "prop",
+        "name": "multilanguage",
+        "description": "Indicates if the field supports multiple languages",
+        "requiredProps": [
+          "multilanguage"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-size": {
+        "id": "prop-size",
+        "type": "prop",
+        "name": "size",
+        "description": "Size of the input",
+        "requiredProps": [
+          "size"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "slot-control": {
+        "id": "slot-control",
+        "type": "slot",
+        "name": "control",
+        "description": "Custom control slot",
+        "relatedSlots": [
+          "control"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "slot-prepend": {
+        "id": "slot-prepend",
+        "type": "slot",
+        "name": "prepend",
+        "description": "Custom prepend slot",
+        "relatedSlots": [
+          "prepend"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "slot-prepend-inner": {
+        "id": "slot-prepend-inner",
+        "type": "slot",
+        "name": "prepend-inner",
+        "description": "Custom prepend-inner slot",
+        "relatedSlots": [
+          "prepend-inner"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "slot-append-inner": {
+        "id": "slot-append-inner",
+        "type": "slot",
+        "name": "append-inner",
+        "description": "Custom append-inner slot",
+        "relatedSlots": [
+          "append-inner"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "slot-append": {
+        "id": "slot-append",
+        "type": "slot",
+        "name": "append",
+        "description": "Custom append slot",
+        "relatedSlots": [
+          "append"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "slot-error": {
+        "id": "slot-error",
+        "type": "slot",
+        "name": "error",
+        "description": "Custom error slot",
+        "relatedSlots": [
+          "error"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "slot-hint": {
+        "id": "slot-hint",
+        "type": "slot",
+        "name": "hint",
+        "description": "Custom hint slot",
+        "relatedSlots": [
+          "hint"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      }
+    }
   },
   "VcTextarea": {
     "import": "@vc-shell/framework",
@@ -242,15 +993,169 @@
         "title": "Basic Textarea",
         "code": "<VcTextarea\n  v-model=\"item.description\"\n  :placeholder=\"$t('FORM.DESCRIPTION_PLACEHOLDER')\"\n  :rows=\"4\"\n/>"
       }
-    ]
+    ],
+    "capabilities": {
+      "prop-modelValue": {
+        "id": "prop-modelValue",
+        "type": "prop",
+        "name": "modelValue",
+        "description": "Value of the textarea (v-model)",
+        "requiredProps": [
+          "modelValue"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-label": {
+        "id": "prop-label",
+        "type": "prop",
+        "name": "label",
+        "description": "Label displayed above the textarea",
+        "requiredProps": [
+          "label"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-placeholder": {
+        "id": "prop-placeholder",
+        "type": "prop",
+        "name": "placeholder",
+        "description": "Placeholder text when textarea is empty",
+        "requiredProps": [
+          "placeholder"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-required": {
+        "id": "prop-required",
+        "type": "prop",
+        "name": "required",
+        "description": "Whether the field is required",
+        "requiredProps": [
+          "required"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-disabled": {
+        "id": "prop-disabled",
+        "type": "prop",
+        "name": "disabled",
+        "description": "Whether the textarea is disabled",
+        "requiredProps": [
+          "disabled"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-error": {
+        "id": "prop-error",
+        "type": "prop",
+        "name": "error",
+        "description": "Whether to show the textarea in error state",
+        "requiredProps": [
+          "error"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-errorMessage": {
+        "id": "prop-errorMessage",
+        "type": "prop",
+        "name": "errorMessage",
+        "description": "Error message to display below the textarea",
+        "requiredProps": [
+          "errorMessage"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-tooltip": {
+        "id": "prop-tooltip",
+        "type": "prop",
+        "name": "tooltip",
+        "description": "Tooltip text for additional information",
+        "requiredProps": [
+          "tooltip"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-name": {
+        "id": "prop-name",
+        "type": "prop",
+        "name": "name",
+        "description": "Name attribute for the textarea element",
+        "requiredProps": [
+          "name"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-maxlength": {
+        "id": "prop-maxlength",
+        "type": "prop",
+        "name": "maxlength",
+        "description": "Maximum number of characters",
+        "requiredProps": [
+          "maxlength"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-multilanguage": {
+        "id": "prop-multilanguage",
+        "type": "prop",
+        "name": "multilanguage",
+        "description": "Whether the label should show multilanguage icon",
+        "requiredProps": [
+          "multilanguage"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-currentLanguage": {
+        "id": "prop-currentLanguage",
+        "type": "prop",
+        "name": "currentLanguage",
+        "description": "Current language code for multilanguage support",
+        "requiredProps": [
+          "currentLanguage"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "slot-error": {
+        "id": "slot-error",
+        "type": "slot",
+        "name": "error",
+        "description": "Custom content for error message display",
+        "relatedSlots": [
+          "error"
+        ],
+        "useCases": [],
+        "complexity": "medium"
+      }
+    }
   },
   "VcSelect": {
     "import": "@vc-shell/framework",
     "component": "VcSelect",
     "description": "Dropdown select component with search support, async options loading, and custom templates",
     "category": "Form",
-    "demos": ["VcSelect-demo.md"],
-    "keywords": ["select", "dropdown", "form", "validation", "searchable", "async"],
+    "demos": [
+      "VcSelect-demo.md"
+    ],
+    "keywords": [
+      "select",
+      "dropdown",
+      "form",
+      "validation",
+      "searchable",
+      "async"
+    ],
     "dependencies": [],
     "props": {
       "modelValue": "any - Selected value",
@@ -285,7 +1190,394 @@
         "title": "Simple Select with Static Options",
         "code": "<Field\n  v-slot=\"{ errorMessage, handleChange, errors }\"\n  rules=\"required\"\n  :label=\"$t('OFFERS.PAGES.DETAILS.FIELDS.PRODUCT_TYPE.TITLE')\"\n  :model-value=\"offer.productType\"\n  name=\"productType\"\n>\n  <VcSelect\n    v-model=\"offer.productType\"\n    :label=\"$t('OFFERS.PAGES.DETAILS.FIELDS.PRODUCT_TYPE.TITLE')\"\n    required\n    :placeholder=\"$t('OFFERS.PAGES.DETAILS.FIELDS.PRODUCT_TYPE.PLACEHOLDER')\"\n    :disabled=\"!!offer.id\"\n    :error=\"!!errors.length\"\n    :error-message=\"errorMessage\"\n    :options=\"productTypeOptions\"\n    :tooltip=\"$t('OFFERS.PAGES.DETAILS.FIELDS.PRODUCT_TYPE.TOOLTIP')\"\n    option-value=\"value\"\n    option-label=\"label\"\n    @update:model-value=\"handleChange\"\n  ></VcSelect>\n</Field>"
       }
-    ]
+    ],
+    "capabilities": {
+      "prop-modelValue": {
+        "id": "prop-modelValue",
+        "type": "prop",
+        "name": "modelValue",
+        "description": "Value of the select (v-model)",
+        "requiredProps": [
+          "modelValue"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-options": {
+        "id": "prop-options",
+        "type": "prop",
+        "name": "options",
+        "description": "Options array or async function returning options",
+        "requiredProps": [
+          "options"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-optionValue": {
+        "id": "prop-optionValue",
+        "type": "prop",
+        "name": "optionValue",
+        "description": "Property name or function to get option value",
+        "requiredProps": [
+          "optionValue"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-optionLabel": {
+        "id": "prop-optionLabel",
+        "type": "prop",
+        "name": "optionLabel",
+        "description": "Property name or function to get option label",
+        "requiredProps": [
+          "optionLabel"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-label": {
+        "id": "prop-label",
+        "type": "prop",
+        "name": "label",
+        "description": "Label displayed above the select",
+        "requiredProps": [
+          "label"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-placeholder": {
+        "id": "prop-placeholder",
+        "type": "prop",
+        "name": "placeholder",
+        "description": "Placeholder text when no value is selected",
+        "requiredProps": [
+          "placeholder"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-debounce": {
+        "id": "prop-debounce",
+        "type": "prop",
+        "name": "debounce",
+        "description": "Debounce time for search input (in milliseconds)",
+        "requiredProps": [
+          "debounce"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-clearable": {
+        "id": "prop-clearable",
+        "type": "prop",
+        "name": "clearable",
+        "description": "Whether the value can be cleared",
+        "requiredProps": [
+          "clearable"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-emitValue": {
+        "id": "prop-emitValue",
+        "type": "prop",
+        "name": "emitValue",
+        "description": "Emit only the value instead of the entire option",
+        "requiredProps": [
+          "emitValue"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-searchable": {
+        "id": "prop-searchable",
+        "type": "prop",
+        "name": "searchable",
+        "description": "Enable searching/filtering options",
+        "requiredProps": [
+          "searchable"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-multiple": {
+        "id": "prop-multiple",
+        "type": "prop",
+        "name": "multiple",
+        "description": "Allow selecting multiple values",
+        "requiredProps": [
+          "multiple"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-disabled": {
+        "id": "prop-disabled",
+        "type": "prop",
+        "name": "disabled",
+        "description": "Disable the select component",
+        "requiredProps": [
+          "disabled"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-required": {
+        "id": "prop-required",
+        "type": "prop",
+        "name": "required",
+        "description": "Mark the select as required (shows asterisk)",
+        "requiredProps": [
+          "required"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-error": {
+        "id": "prop-error",
+        "type": "prop",
+        "name": "error",
+        "description": "Show the select in error state",
+        "requiredProps": [
+          "error"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-errorMessage": {
+        "id": "prop-errorMessage",
+        "type": "prop",
+        "name": "errorMessage",
+        "description": "Error message to display below the select",
+        "requiredProps": [
+          "errorMessage"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-hint": {
+        "id": "prop-hint",
+        "type": "prop",
+        "name": "hint",
+        "description": "Hint text to display below the select",
+        "requiredProps": [
+          "hint"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-tooltip": {
+        "id": "prop-tooltip",
+        "type": "prop",
+        "name": "tooltip",
+        "description": "Tooltip text to display next to the label",
+        "requiredProps": [
+          "tooltip"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-prefix": {
+        "id": "prop-prefix",
+        "type": "prop",
+        "name": "prefix",
+        "description": "Prefix text inside the select field",
+        "requiredProps": [
+          "prefix"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-suffix": {
+        "id": "prop-suffix",
+        "type": "prop",
+        "name": "suffix",
+        "description": "Suffix text inside the select field",
+        "requiredProps": [
+          "suffix"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-size": {
+        "id": "prop-size",
+        "type": "prop",
+        "name": "size",
+        "description": "Size of the select field",
+        "requiredProps": [
+          "size"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-mapOptions": {
+        "id": "prop-mapOptions",
+        "type": "prop",
+        "name": "mapOptions",
+        "description": "Map labels of model from options array",
+        "requiredProps": [
+          "mapOptions"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-loading": {
+        "id": "prop-loading",
+        "type": "prop",
+        "name": "loading",
+        "description": "Show loading state",
+        "requiredProps": [
+          "loading"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-outline": {
+        "id": "prop-outline",
+        "type": "prop",
+        "name": "outline",
+        "description": "Whether to show an outline around the select",
+        "requiredProps": [
+          "outline"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-multilanguage": {
+        "id": "prop-multilanguage",
+        "type": "prop",
+        "name": "multilanguage",
+        "description": "Whether the label should show multilanguage icon",
+        "requiredProps": [
+          "multilanguage"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-currentLanguage": {
+        "id": "prop-currentLanguage",
+        "type": "prop",
+        "name": "currentLanguage",
+        "description": "Current language code for multilanguage support",
+        "requiredProps": [
+          "currentLanguage"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "slot-control": {
+        "id": "slot-control",
+        "type": "slot",
+        "name": "control",
+        "description": "Custom control slot",
+        "relatedSlots": [
+          "control"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "slot-prepend": {
+        "id": "slot-prepend",
+        "type": "slot",
+        "name": "prepend",
+        "description": "Custom prepend slot",
+        "relatedSlots": [
+          "prepend"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "slot-prepend-inner": {
+        "id": "slot-prepend-inner",
+        "type": "slot",
+        "name": "prepend-inner",
+        "description": "Custom prepend-inner slot",
+        "relatedSlots": [
+          "prepend-inner"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "slot-append": {
+        "id": "slot-append",
+        "type": "slot",
+        "name": "append",
+        "description": "Custom append slot",
+        "relatedSlots": [
+          "append"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "slot-append-inner": {
+        "id": "slot-append-inner",
+        "type": "slot",
+        "name": "append-inner",
+        "description": "Custom append-inner slot",
+        "relatedSlots": [
+          "append-inner"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "slot-option": {
+        "id": "slot-option",
+        "type": "slot",
+        "name": "option",
+        "description": "Custom option slot",
+        "relatedSlots": [
+          "option"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "slot-selected-item": {
+        "id": "slot-selected-item",
+        "type": "slot",
+        "name": "selected-item",
+        "description": "Custom selected-item slot",
+        "relatedSlots": [
+          "selected-item"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "slot-error": {
+        "id": "slot-error",
+        "type": "slot",
+        "name": "error",
+        "description": "Custom error slot",
+        "relatedSlots": [
+          "error"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "slot-hint": {
+        "id": "slot-hint",
+        "type": "slot",
+        "name": "hint",
+        "description": "Custom hint slot",
+        "relatedSlots": [
+          "hint"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "slot-no-options": {
+        "id": "slot-no-options",
+        "type": "slot",
+        "name": "no-options",
+        "description": "Custom no-options slot",
+        "relatedSlots": [
+          "no-options"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      }
+    }
   },
   "VcCheckbox": {
     "import": "@vc-shell/framework",
@@ -304,7 +1596,163 @@
         "title": "Basic Checkbox",
         "code": "<VcCheckbox\n  v-model=\"item.isActive\"\n  :label=\"$t('FORM.IS_ACTIVE')\"\n/>"
       }
-    ]
+    ],
+    "capabilities": {
+      "prop-modelValue": {
+        "id": "prop-modelValue",
+        "type": "prop",
+        "name": "modelValue",
+        "description": "Current value of the checkbox (v-model)",
+        "requiredProps": [
+          "modelValue"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-disabled": {
+        "id": "prop-disabled",
+        "type": "prop",
+        "name": "disabled",
+        "description": "Whether the checkbox is disabled",
+        "requiredProps": [
+          "disabled"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-required": {
+        "id": "prop-required",
+        "type": "prop",
+        "name": "required",
+        "description": "Whether the checkbox is required",
+        "requiredProps": [
+          "required"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-name": {
+        "id": "prop-name",
+        "type": "prop",
+        "name": "name",
+        "description": "Name attribute for the input element",
+        "requiredProps": [
+          "name"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-errorMessage": {
+        "id": "prop-errorMessage",
+        "type": "prop",
+        "name": "errorMessage",
+        "description": "Error message to display below the checkbox",
+        "requiredProps": [
+          "errorMessage"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-trueValue": {
+        "id": "prop-trueValue",
+        "type": "prop",
+        "name": "trueValue",
+        "description": "Value representing the checked state",
+        "requiredProps": [
+          "trueValue"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-falseValue": {
+        "id": "prop-falseValue",
+        "type": "prop",
+        "name": "falseValue",
+        "description": "Value representing the unchecked state",
+        "requiredProps": [
+          "falseValue"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-label": {
+        "id": "prop-label",
+        "type": "prop",
+        "name": "label",
+        "description": "Label displayed above the checkbox",
+        "requiredProps": [
+          "label"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-tooltip": {
+        "id": "prop-tooltip",
+        "type": "prop",
+        "name": "tooltip",
+        "description": "Tooltip text displayed with the label",
+        "requiredProps": [
+          "tooltip"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-size": {
+        "id": "prop-size",
+        "type": "prop",
+        "name": "size",
+        "description": "Size of the checkbox",
+        "requiredProps": [
+          "size"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-indeterminate": {
+        "id": "prop-indeterminate",
+        "type": "prop",
+        "name": "indeterminate",
+        "description": "Whether to show the checkbox in indeterminate state",
+        "requiredProps": [
+          "indeterminate"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "slot-default": {
+        "id": "slot-default",
+        "type": "slot",
+        "name": "default",
+        "description": "Content displayed next to the checkbox",
+        "relatedSlots": [
+          "default"
+        ],
+        "useCases": [],
+        "complexity": "medium"
+      },
+      "slot-error": {
+        "id": "slot-error",
+        "type": "slot",
+        "name": "error",
+        "description": "Custom content for error message display",
+        "relatedSlots": [
+          "error"
+        ],
+        "useCases": [],
+        "complexity": "medium"
+      },
+      "slot-icon": {
+        "id": "slot-icon",
+        "type": "slot",
+        "name": "icon",
+        "description": "Custom icon slot",
+        "relatedSlots": [
+          "icon"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      }
+    }
   },
   "VcSwitch": {
     "import": "@vc-shell/framework",
@@ -323,14 +1771,63 @@
         "title": "Basic Switch",
         "code": "<VcSwitch\n  v-model=\"item.enabled\"\n  :label=\"$t('FORM.ENABLED')\"\n/>"
       }
-    ]
+    ],
+    "capabilities": {
+      "prop-disabled": {
+        "id": "prop-disabled",
+        "type": "prop",
+        "name": "disabled",
+        "description": "Whether the switch is disabled",
+        "requiredProps": [
+          "disabled"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-required": {
+        "id": "prop-required",
+        "type": "prop",
+        "name": "required",
+        "description": "Whether the switch is required",
+        "requiredProps": [
+          "required"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-trueValue": {
+        "id": "prop-trueValue",
+        "type": "prop",
+        "name": "trueValue",
+        "description": "Value when switch is in the on state",
+        "requiredProps": [
+          "trueValue"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-falseValue": {
+        "id": "prop-falseValue",
+        "type": "prop",
+        "name": "falseValue",
+        "description": "Value when switch is in the off state",
+        "requiredProps": [
+          "falseValue"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      }
+    }
   },
   "VcForm": {
     "import": "@vc-shell/framework",
     "component": "VcForm",
     "description": "Form container component, use with vee-validate Field for validation",
     "category": "Form",
-    "keywords": ["form", "validation"],
+    "keywords": [
+      "form",
+      "validation"
+    ],
     "dependencies": [],
     "props": {},
     "examples": [
@@ -338,15 +1835,37 @@
         "title": "Basic Form",
         "code": "<VcForm>\n  <Field v-slot=\"{ field, errors }\" name=\"name\" rules=\"required\">\n    <VcInput v-bind=\"field\" :error=\"!!errors.length\" />\n  </Field>\n</VcForm>"
       }
-    ]
+    ],
+    "capabilities": {
+      "slot-default": {
+        "id": "slot-default",
+        "type": "slot",
+        "name": "default",
+        "description": "Content of the form",
+        "relatedSlots": [
+          "default"
+        ],
+        "useCases": [],
+        "complexity": "medium"
+      }
+    }
   },
   "VcCard": {
     "import": "@vc-shell/framework",
     "component": "VcCard",
     "description": "Card container for grouping related form fields and content into visually distinct sections. IMPORTANT: Default slot has NO padding - always add tw-p-4 for forms or tw-p-2 for galleries.",
     "category": "Layout",
-    "demos": ["VcCard-demo.md"],
-    "keywords": ["card", "section", "container", "group", "form", "collapsible"],
+    "demos": [
+      "VcCard-demo.md"
+    ],
+    "keywords": [
+      "card",
+      "section",
+      "container",
+      "group",
+      "form",
+      "collapsible"
+    ],
     "dependencies": [],
     "props": {
       "header": "string - Card header text",
@@ -393,15 +1912,47 @@
       "Persist collapse state to localStorage for better UX",
       "Add tw-space-y-4 to card content div for field spacing",
       "See VcCard-demo.md for complete examples"
-    ]
+    ],
+    "capabilities": {
+      "slot-header": {
+        "id": "slot-header",
+        "type": "slot",
+        "name": "header",
+        "description": "Custom header slot",
+        "relatedSlots": [
+          "header"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "slot-actions": {
+        "id": "slot-actions",
+        "type": "slot",
+        "name": "actions",
+        "description": "Custom actions slot",
+        "relatedSlots": [
+          "actions"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      }
+    }
   },
   "VcButton": {
     "import": "@vc-shell/framework",
     "component": "VcButton",
     "description": "Button component with variants and states, commonly used in filter controls",
     "category": "Form",
-    "demos": ["VcButton-demo.md"],
-    "keywords": ["button", "action", "click", "filter", "form"],
+    "demos": [
+      "VcButton-demo.md"
+    ],
+    "keywords": [
+      "button",
+      "action",
+      "click",
+      "filter",
+      "form"
+    ],
     "dependencies": [],
     "props": {
       "variant": "string - Button variant (primary, secondary, danger, etc.)",
@@ -421,7 +1972,53 @@
         "title": "Primary Button",
         "code": "<VcButton variant=\"primary\" @click=\"save\">\n  {{ $t('COMMON.SAVE') }}\n</VcButton>"
       }
-    ]
+    ],
+    "capabilities": {
+      "prop-disabled": {
+        "id": "prop-disabled",
+        "type": "prop",
+        "name": "disabled",
+        "description": "Whether the button is disabled",
+        "requiredProps": [
+          "disabled"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-selected": {
+        "id": "prop-selected",
+        "type": "prop",
+        "name": "selected",
+        "description": "Whether the button is in a selected state",
+        "requiredProps": [
+          "selected"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-text": {
+        "id": "prop-text",
+        "type": "prop",
+        "name": "text",
+        "description": "Whether the button should be rendered as text without borders",
+        "requiredProps": [
+          "text"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "slot-default": {
+        "id": "slot-default",
+        "type": "slot",
+        "name": "default",
+        "description": "Content to display inside the button",
+        "relatedSlots": [
+          "default"
+        ],
+        "useCases": [],
+        "complexity": "medium"
+      }
+    }
   },
   "VcContainer": {
     "import": "@vc-shell/framework",
@@ -432,7 +2029,42 @@
         "title": "Basic Container",
         "code": "<VcContainer class=\"tw-p-4\">\n  <!-- Content here -->\n</VcContainer>"
       }
-    ]
+    ],
+    "capabilities": {
+      "prop-shadow": {
+        "id": "prop-shadow",
+        "type": "prop",
+        "name": "shadow",
+        "description": "Whether to show shadows when content is scrollable",
+        "requiredProps": [
+          "shadow"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-noPadding": {
+        "id": "prop-noPadding",
+        "type": "prop",
+        "name": "noPadding",
+        "description": "Removes default padding from the container",
+        "requiredProps": [
+          "noPadding"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-usePtr": {
+        "id": "prop-usePtr",
+        "type": "prop",
+        "name": "usePtr",
+        "description": "Enables pull-to-refresh functionality for mobile",
+        "requiredProps": [
+          "usePtr"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      }
+    }
   },
   "VcRow": {
     "import": "@vc-shell/framework",
@@ -443,7 +2075,8 @@
         "title": "Basic Row",
         "code": "<VcRow class=\"tw-space-x-4\">\n  <VcCol :size=\"6\">Column 1</VcCol>\n  <VcCol :size=\"6\">Column 2</VcCol>\n</VcRow>"
       }
-    ]
+    ],
+    "capabilities": {}
   },
   "VcCol": {
     "import": "@vc-shell/framework",
@@ -457,15 +2090,24 @@
         "title": "Half Width Column",
         "code": "<VcCol :size=\"6\">\n  <!-- Content here -->\n</VcCol>"
       }
-    ]
+    ],
+    "capabilities": {}
   },
   "VcBadge": {
     "import": "@vc-shell/framework",
     "component": "VcBadge",
     "description": "Display notification badges and status indicators with count or dot variants",
     "category": "UI",
-    "demos": ["VcBadge-demo.md"],
-    "keywords": ["badge", "notification", "count", "indicator", "dot"],
+    "demos": [
+      "VcBadge-demo.md"
+    ],
+    "keywords": [
+      "badge",
+      "notification",
+      "count",
+      "indicator",
+      "dot"
+    ],
     "dependencies": [],
     "props": {
       "content": "string | number - Content to display inside the badge",
@@ -505,15 +2147,91 @@
       "Unread message badges",
       "New item indicators",
       "Count displays in toolbar"
-    ]
+    ],
+    "capabilities": {
+      "prop-isDot": {
+        "id": "prop-isDot",
+        "type": "prop",
+        "name": "isDot",
+        "description": "Whether to display the badge as a dot without text",
+        "requiredProps": [
+          "isDot"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-active": {
+        "id": "prop-active",
+        "type": "prop",
+        "name": "active",
+        "description": "Whether the badge is in an active state",
+        "requiredProps": [
+          "active"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-disabled": {
+        "id": "prop-disabled",
+        "type": "prop",
+        "name": "disabled",
+        "description": "Whether the badge is disabled",
+        "requiredProps": [
+          "disabled"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-clickable": {
+        "id": "prop-clickable",
+        "type": "prop",
+        "name": "clickable",
+        "description": "Whether the badge is clickable",
+        "requiredProps": [
+          "clickable"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-customPosition": {
+        "id": "prop-customPosition",
+        "type": "prop",
+        "name": "customPosition",
+        "description": "Whether to use custom positioning for the badge",
+        "requiredProps": [
+          "customPosition"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "slot-default": {
+        "id": "slot-default",
+        "type": "slot",
+        "name": "default",
+        "description": "Custom default slot",
+        "relatedSlots": [
+          "default"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      }
+    }
   },
   "VcBanner": {
     "import": "@vc-shell/framework",
     "component": "VcBanner",
     "description": "Display informational messages, warnings, or alerts at the top of content areas",
     "category": "UI",
-    "demos": ["VcBanner-demo.md"],
-    "keywords": ["banner", "alert", "notification", "message", "info"],
+    "demos": [
+      "VcBanner-demo.md"
+    ],
+    "keywords": [
+      "banner",
+      "alert",
+      "notification",
+      "message",
+      "info"
+    ],
     "dependencies": [],
     "props": {
       "variant": "'info' | 'success' | 'warning' | 'danger' - Visual variant",
@@ -540,15 +2258,58 @@
       "Important announcements",
       "Warning messages",
       "Feature announcements"
-    ]
+    ],
+    "capabilities": {
+      "slot-title": {
+        "id": "slot-title",
+        "type": "slot",
+        "name": "title",
+        "description": "Custom title slot",
+        "relatedSlots": [
+          "title"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "slot-default": {
+        "id": "slot-default",
+        "type": "slot",
+        "name": "default",
+        "description": "Custom default slot",
+        "relatedSlots": [
+          "default"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "slot-trigger": {
+        "id": "slot-trigger",
+        "type": "slot",
+        "name": "trigger",
+        "description": "Custom trigger slot",
+        "relatedSlots": [
+          "trigger"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      }
+    }
   },
   "VcHint": {
     "import": "@vc-shell/framework",
     "component": "VcHint",
     "description": "Display supplementary information or guidance text with subtle styling",
     "category": "UI",
-    "demos": ["VcHint-demo.md"],
-    "keywords": ["hint", "help", "info", "text", "note"],
+    "demos": [
+      "VcHint-demo.md"
+    ],
+    "keywords": [
+      "hint",
+      "help",
+      "info",
+      "text",
+      "note"
+    ],
     "dependencies": [],
     "props": {},
     "slots": {
@@ -574,16 +2335,40 @@
       "Help text",
       "Format requirements",
       "Secondary information"
-    ]
+    ],
+    "capabilities": {
+      "slot-default": {
+        "id": "slot-default",
+        "type": "slot",
+        "name": "default",
+        "description": "Content to display inside the hint",
+        "relatedSlots": [
+          "default"
+        ],
+        "useCases": [],
+        "complexity": "medium"
+      }
+    }
   },
   "VcLabel": {
     "import": "@vc-shell/framework",
     "component": "VcLabel",
     "description": "Form field label with required indicator, tooltip, and multilanguage support",
     "category": "Form",
-    "demos": ["VcLabel-demo.md"],
-    "keywords": ["label", "form", "required", "tooltip", "field"],
-    "dependencies": ["VcIcon", "VcTooltip"],
+    "demos": [
+      "VcLabel-demo.md"
+    ],
+    "keywords": [
+      "label",
+      "form",
+      "required",
+      "tooltip",
+      "field"
+    ],
+    "dependencies": [
+      "VcIcon",
+      "VcTooltip"
+    ],
     "props": {
       "required": "boolean - Shows required field indicator (asterisk)",
       "tooltipIcon": "string - Icon for tooltip (default: 'material-info')",
@@ -615,16 +2400,94 @@
       "Required field indicators",
       "Multilingual fields",
       "Form validation states"
-    ]
+    ],
+    "capabilities": {
+      "prop-required": {
+        "id": "prop-required",
+        "type": "prop",
+        "name": "required",
+        "description": "Shows required field indicator (asterisk)",
+        "requiredProps": [
+          "required"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-tooltipIcon": {
+        "id": "prop-tooltipIcon",
+        "type": "prop",
+        "name": "tooltipIcon",
+        "description": "Icon to use for the tooltip",
+        "requiredProps": [
+          "tooltipIcon"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-multilanguage": {
+        "id": "prop-multilanguage",
+        "type": "prop",
+        "name": "multilanguage",
+        "description": "Shows language indicator for multilanguage fields",
+        "requiredProps": [
+          "multilanguage"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-error": {
+        "id": "prop-error",
+        "type": "prop",
+        "name": "error",
+        "description": "Shows the label in error state",
+        "requiredProps": [
+          "error"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "slot-default": {
+        "id": "slot-default",
+        "type": "slot",
+        "name": "default",
+        "description": "Main content of the label",
+        "relatedSlots": [
+          "default"
+        ],
+        "useCases": [],
+        "complexity": "medium"
+      },
+      "slot-tooltip": {
+        "id": "slot-tooltip",
+        "type": "slot",
+        "name": "tooltip",
+        "description": "Custom tooltip slot",
+        "relatedSlots": [
+          "tooltip"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      }
+    }
   },
   "VcStatusIcon": {
     "import": "@vc-shell/framework",
     "component": "VcStatusIcon",
     "description": "Simple status indicator using icons for success/error states",
     "category": "UI",
-    "demos": ["VcStatusIcon-demo.md"],
-    "keywords": ["status", "icon", "success", "error", "indicator"],
-    "dependencies": ["VcIcon"],
+    "demos": [
+      "VcStatusIcon-demo.md"
+    ],
+    "keywords": [
+      "status",
+      "icon",
+      "success",
+      "error",
+      "indicator"
+    ],
+    "dependencies": [
+      "VcIcon"
+    ],
     "props": {
       "status": "boolean - Whether to show success (true) or error (false) status"
     },
@@ -648,15 +2511,24 @@
       "Availability indicators",
       "Boolean status display",
       "System health checks"
-    ]
+    ],
+    "capabilities": {}
   },
   "VcTooltip": {
     "import": "@vc-shell/framework",
     "component": "VcTooltip",
     "description": "Tooltip component for displaying additional information on hover",
     "category": "UI",
-    "demos": ["VcTooltip-demo.md"],
-    "keywords": ["tooltip", "popover", "hint", "help", "info"],
+    "demos": [
+      "VcTooltip-demo.md"
+    ],
+    "keywords": [
+      "tooltip",
+      "popover",
+      "hint",
+      "help",
+      "info"
+    ],
     "dependencies": [],
     "props": {
       "placement": "'top' | 'right' | 'bottom' | 'left' | 'top-start' | 'top-end' | 'bottom-start' | 'bottom-end' | 'right-start' | 'right-end' | 'left-start' | 'left-end' - Tooltip placement (default: 'bottom')",
@@ -683,16 +2555,40 @@
       "Field descriptions",
       "Button hints",
       "Contextual information"
-    ]
+    ],
+    "capabilities": {
+      "slot-tooltip": {
+        "id": "slot-tooltip",
+        "type": "slot",
+        "name": "tooltip",
+        "description": "Custom tooltip slot",
+        "relatedSlots": [
+          "tooltip"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      }
+    }
   },
   "VcVideo": {
     "import": "@vc-shell/framework",
     "component": "VcVideo",
     "description": "Video embed component with label and tooltip support",
     "category": "UI",
-    "demos": ["VcVideo-demo.md"],
-    "keywords": ["video", "embed", "media", "player", "youtube"],
-    "dependencies": ["VcLabel", "VcIcon"],
+    "demos": [
+      "VcVideo-demo.md"
+    ],
+    "keywords": [
+      "video",
+      "embed",
+      "media",
+      "player",
+      "youtube"
+    ],
+    "dependencies": [
+      "VcLabel",
+      "VcIcon"
+    ],
     "props": {
       "label": "string - Label displayed above video",
       "tooltip": "string - Tooltip text",
@@ -714,15 +2610,59 @@
       "Promotional content",
       "Video galleries",
       "Educational content"
-    ]
+    ],
+    "capabilities": {
+      "prop-label": {
+        "id": "prop-label",
+        "type": "prop",
+        "name": "label",
+        "description": "Label displayed above the video",
+        "requiredProps": [
+          "label"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-tooltip": {
+        "id": "prop-tooltip",
+        "type": "prop",
+        "name": "tooltip",
+        "description": "Additional information shown in a tooltip",
+        "requiredProps": [
+          "tooltip"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-source": {
+        "id": "prop-source",
+        "type": "prop",
+        "name": "source",
+        "description": "URL of the video to be embedded",
+        "requiredProps": [
+          "source"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      }
+    }
   },
   "VcWidget": {
     "import": "@vc-shell/framework",
     "component": "VcWidget",
     "description": "Base widget component for details blades. Displays clickable cards with icon, title, and badge value. Used as foundation for all custom widgets.",
     "category": "UI",
-    "demos": ["VcWidget-demo.md"],
-    "keywords": ["widget", "card", "badge", "interactive", "details", "blade"],
+    "demos": [
+      "VcWidget-demo.md"
+    ],
+    "keywords": [
+      "widget",
+      "card",
+      "badge",
+      "interactive",
+      "details",
+      "blade"
+    ],
     "dependencies": [],
     "props": {
       "icon": "string - Material icon name (e.g., 'material-info')",
@@ -763,16 +2703,93 @@
       "Always unregister in onBeforeUnmount",
       "Use computed() for reactive props",
       "See widgets-pattern.md for complete registration examples"
-    ]
+    ],
+    "capabilities": {
+      "prop-icon": {
+        "id": "prop-icon",
+        "type": "prop",
+        "name": "icon",
+        "description": "Icon to display in the widget",
+        "requiredProps": [
+          "icon"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-title": {
+        "id": "prop-title",
+        "type": "prop",
+        "name": "title",
+        "description": "Title text displayed below the icon",
+        "requiredProps": [
+          "title"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-value": {
+        "id": "prop-value",
+        "type": "prop",
+        "name": "value",
+        "description": "Value to display as a badge count (truncated at 99+)",
+        "requiredProps": [
+          "value"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-disabled": {
+        "id": "prop-disabled",
+        "type": "prop",
+        "name": "disabled",
+        "description": "Whether the widget is disabled",
+        "requiredProps": [
+          "disabled"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-isExpanded": {
+        "id": "prop-isExpanded",
+        "type": "prop",
+        "name": "isExpanded",
+        "description": "Whether the widget is expanded",
+        "requiredProps": [
+          "isExpanded"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-horizontal": {
+        "id": "prop-horizontal",
+        "type": "prop",
+        "name": "horizontal",
+        "description": "Whether to arrange the widget horizontally",
+        "requiredProps": [
+          "horizontal"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      }
+    }
   },
   "VcBreadcrumbs": {
     "import": "@vc-shell/framework",
     "component": "VcBreadcrumbs",
     "description": "Adaptive navigation breadcrumbs with overflow handling and click handlers",
     "category": "Navigation",
-    "demos": ["VcBreadcrumbs-demo.md"],
-    "keywords": ["breadcrumbs", "navigation", "hierarchy", "path"],
-    "dependencies": ["VcButton"],
+    "demos": [
+      "VcBreadcrumbs-demo.md"
+    ],
+    "keywords": [
+      "breadcrumbs",
+      "navigation",
+      "hierarchy",
+      "path"
+    ],
+    "dependencies": [
+      "VcButton"
+    ],
     "props": {
       "items": "Breadcrumbs[] - Array of breadcrumb items with { id, title, icon, clickHandler }",
       "variant": "'default' | 'light' - Visual style (default: 'default')",
@@ -797,16 +2814,72 @@
       "Multi-step forms",
       "Category navigation",
       "Workflow steps"
-    ]
+    ],
+    "capabilities": {
+      "prop-items": {
+        "id": "prop-items",
+        "type": "prop",
+        "name": "items",
+        "description": "Array of breadcrumb items to display",
+        "requiredProps": [
+          "items"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-variant": {
+        "id": "prop-variant",
+        "type": "prop",
+        "name": "variant",
+        "description": "Visual style variant ('default' or 'light')",
+        "requiredProps": [
+          "variant"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-separated": {
+        "id": "prop-separated",
+        "type": "prop",
+        "name": "separated",
+        "description": "Whether to show separators between items",
+        "requiredProps": [
+          "separated"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "slot-trigger": {
+        "id": "slot-trigger",
+        "type": "slot",
+        "name": "trigger",
+        "description": "Custom trigger slot",
+        "relatedSlots": [
+          "trigger"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      }
+    }
   },
   "VcInputCurrency": {
     "import": "@vc-shell/framework",
     "component": "VcInputCurrency",
     "description": "Specialized input for monetary values with currency selection and formatting",
     "category": "Form",
-    "demos": ["VcInputCurrency-demo.md"],
-    "keywords": ["currency", "money", "price", "amount", "input"],
-    "dependencies": ["VcInputDropdown"],
+    "demos": [
+      "VcInputCurrency-demo.md"
+    ],
+    "keywords": [
+      "currency",
+      "money",
+      "price",
+      "amount",
+      "input"
+    ],
+    "dependencies": [
+      "VcInputDropdown"
+    ],
     "props": {
       "modelValue": "number | null - Numeric value",
       "label": "string - Field label",
@@ -850,16 +2923,29 @@
       "Currency conversion",
       "Billing information",
       "Payment forms"
-    ]
+    ],
+    "capabilities": {}
   },
   "VcInputDropdown": {
     "import": "@vc-shell/framework",
     "component": "VcInputDropdown",
     "description": "Combined input and dropdown for value entry with unit/category selection",
     "category": "Form",
-    "demos": ["VcInputDropdown-demo.md"],
-    "keywords": ["input", "dropdown", "combo", "select", "unit"],
-    "dependencies": ["VcInput", "VcSelect", "VcButton"],
+    "demos": [
+      "VcInputDropdown-demo.md"
+    ],
+    "keywords": [
+      "input",
+      "dropdown",
+      "combo",
+      "select",
+      "unit"
+    ],
+    "dependencies": [
+      "VcInput",
+      "VcSelect",
+      "VcButton"
+    ],
     "props": {
       "modelValue": "string | number | Date | null - Input value",
       "option": "unknown - Selected dropdown option",
@@ -911,16 +2997,30 @@
       "Time duration inputs",
       "Quantity with unit selection",
       "Any value with category"
-    ]
+    ],
+    "capabilities": {}
   },
   "VcMultivalue": {
     "import": "@vc-shell/framework",
     "component": "VcMultivalue",
     "description": "Multi-select input for tags, categories, or multiple value entry with dropdown or manual input",
     "category": "Form",
-    "demos": ["VcMultivalue-demo.md"],
-    "keywords": ["multiselect", "tags", "multivalue", "multiple", "chips"],
-    "dependencies": ["VcLabel", "VcIcon", "VcButton", "VcContainer"],
+    "demos": [
+      "VcMultivalue-demo.md"
+    ],
+    "keywords": [
+      "multiselect",
+      "tags",
+      "multivalue",
+      "multiple",
+      "chips"
+    ],
+    "dependencies": [
+      "VcLabel",
+      "VcIcon",
+      "VcButton",
+      "VcContainer"
+    ],
     "props": {
       "modelValue": "any[] - Array of selected values",
       "placeholder": "string - Input placeholder",
@@ -972,16 +3072,259 @@
       "Email recipients",
       "SKU lists",
       "Keyword entry"
-    ]
+    ],
+    "capabilities": {
+      "prop-modelValue": {
+        "id": "prop-modelValue",
+        "type": "prop",
+        "name": "modelValue",
+        "description": "Array of selected values",
+        "requiredProps": [
+          "modelValue"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-placeholder": {
+        "id": "prop-placeholder",
+        "type": "prop",
+        "name": "placeholder",
+        "description": "Placeholder text for the input field",
+        "requiredProps": [
+          "placeholder"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-label": {
+        "id": "prop-label",
+        "type": "prop",
+        "name": "label",
+        "description": "Label text for the field",
+        "requiredProps": [
+          "label"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-tooltip": {
+        "id": "prop-tooltip",
+        "type": "prop",
+        "name": "tooltip",
+        "description": "Tooltip text for additional information",
+        "requiredProps": [
+          "tooltip"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-name": {
+        "id": "prop-name",
+        "type": "prop",
+        "name": "name",
+        "description": "Name attribute for the field",
+        "requiredProps": [
+          "name"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-hint": {
+        "id": "prop-hint",
+        "type": "prop",
+        "name": "hint",
+        "description": "Helper text displayed below the field",
+        "requiredProps": [
+          "hint"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-options": {
+        "id": "prop-options",
+        "type": "prop",
+        "name": "options",
+        "description": "Available options for selection",
+        "requiredProps": [
+          "options"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-optionValue": {
+        "id": "prop-optionValue",
+        "type": "prop",
+        "name": "optionValue",
+        "description": "Property name to use as the option value",
+        "requiredProps": [
+          "optionValue"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-optionLabel": {
+        "id": "prop-optionLabel",
+        "type": "prop",
+        "name": "optionLabel",
+        "description": "Property name to use as the option label",
+        "requiredProps": [
+          "optionLabel"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-multivalue": {
+        "id": "prop-multivalue",
+        "type": "prop",
+        "name": "multivalue",
+        "description": "Enables multiple value selection mode",
+        "requiredProps": [
+          "multivalue"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-error": {
+        "id": "prop-error",
+        "type": "prop",
+        "name": "error",
+        "description": "Indicates an error state",
+        "requiredProps": [
+          "error"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-errorMessage": {
+        "id": "prop-errorMessage",
+        "type": "prop",
+        "name": "errorMessage",
+        "description": "Error message to display",
+        "requiredProps": [
+          "errorMessage"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-required": {
+        "id": "prop-required",
+        "type": "prop",
+        "name": "required",
+        "description": "Makes the field required",
+        "requiredProps": [
+          "required"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-disabled": {
+        "id": "prop-disabled",
+        "type": "prop",
+        "name": "disabled",
+        "description": "Disables the field",
+        "requiredProps": [
+          "disabled"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-loading": {
+        "id": "prop-loading",
+        "type": "prop",
+        "name": "loading",
+        "description": "Shows a loading indicator",
+        "requiredProps": [
+          "loading"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-multilanguage": {
+        "id": "prop-multilanguage",
+        "type": "prop",
+        "name": "multilanguage",
+        "description": "Enable multilanguage support for the label",
+        "requiredProps": [
+          "multilanguage"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-currentLanguage": {
+        "id": "prop-currentLanguage",
+        "type": "prop",
+        "name": "currentLanguage",
+        "description": "Current language code for multilanguage support",
+        "requiredProps": [
+          "currentLanguage"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "slot-option": {
+        "id": "slot-option",
+        "type": "slot",
+        "name": "option",
+        "description": "Custom option slot",
+        "relatedSlots": [
+          "option"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "slot-selected-item": {
+        "id": "slot-selected-item",
+        "type": "slot",
+        "name": "selected-item",
+        "description": "Custom selected-item slot",
+        "relatedSlots": [
+          "selected-item"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "slot-error": {
+        "id": "slot-error",
+        "type": "slot",
+        "name": "error",
+        "description": "Custom error slot",
+        "relatedSlots": [
+          "error"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "slot-hint": {
+        "id": "slot-hint",
+        "type": "slot",
+        "name": "hint",
+        "description": "Custom hint slot",
+        "relatedSlots": [
+          "hint"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      }
+    }
   },
   "VcRadioButton": {
     "import": "@vc-shell/framework",
     "component": "VcRadioButton",
     "description": "Radio button input for single selection from multiple options",
     "category": "Form",
-    "demos": ["VcRadioButton-demo.md"],
-    "keywords": ["radio", "button", "choice", "option", "selection"],
-    "dependencies": ["VcHint"],
+    "demos": [
+      "VcRadioButton-demo.md"
+    ],
+    "keywords": [
+      "radio",
+      "button",
+      "choice",
+      "option",
+      "selection"
+    ],
+    "dependencies": [
+      "VcHint"
+    ],
     "props": {
       "modelValue": "any - Current selected value",
       "value": "any - This radio button's value",
@@ -1015,15 +3358,25 @@
       "Payment methods",
       "Shipping options",
       "Survey questions"
-    ]
+    ],
+    "capabilities": {}
   },
   "VcIcon": {
     "import": "@vc-shell/framework",
     "component": "VcIcon",
     "description": "Universal icon component supporting Material, Bootstrap, Lucide, Font Awesome and custom SVG icons",
     "category": "UI",
-    "demos": ["VcIcon-demo.md"],
-    "keywords": ["icon", "material", "lucide", "fontawesome", "bootstrap", "svg"],
+    "demos": [
+      "VcIcon-demo.md"
+    ],
+    "keywords": [
+      "icon",
+      "material",
+      "lucide",
+      "fontawesome",
+      "bootstrap",
+      "svg"
+    ],
     "dependencies": [],
     "props": {
       "icon": "string | Component - Icon identifier (e.g., 'material-home', 'bi-house', 'lucide-home', 'fas fa-home', 'svg:path.svg')",
@@ -1053,16 +3406,71 @@
       "Status indicators",
       "Action buttons",
       "Empty state illustrations"
-    ]
+    ],
+    "capabilities": {
+      "prop-icon": {
+        "id": "prop-icon",
+        "type": "prop",
+        "name": "icon",
+        "description": "The icon to display (string identifier or component)",
+        "requiredProps": [
+          "icon"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-size": {
+        "id": "prop-size",
+        "type": "prop",
+        "name": "size",
+        "description": "Predefined size: \"xs\", \"s\", \"m\", \"l\", \"xl\", \"xxl\", \"xxxl\"",
+        "requiredProps": [
+          "size"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-useContainer": {
+        "id": "prop-useContainer",
+        "type": "prop",
+        "name": "useContainer",
+        "description": "Whether to wrap the icon in a container for consistent spacing",
+        "requiredProps": [
+          "useContainer"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-basePath": {
+        "id": "prop-basePath",
+        "type": "prop",
+        "name": "basePath",
+        "description": "Base path for SVG icons (only for SVG icons)",
+        "requiredProps": [
+          "basePath"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      }
+    }
   },
   "VcImage": {
     "import": "@vc-shell/framework",
     "component": "VcImage",
     "description": "Image display component with aspect ratio control, sizing, and placeholder support",
     "category": "UI",
-    "demos": ["VcImage-demo.md"],
-    "keywords": ["image", "picture", "thumbnail", "photo"],
-    "dependencies": ["VcIcon"],
+    "demos": [
+      "VcImage-demo.md"
+    ],
+    "keywords": [
+      "image",
+      "picture",
+      "thumbnail",
+      "photo"
+    ],
+    "dependencies": [
+      "VcIcon"
+    ],
     "props": {
       "src": "string - Image source URL",
       "aspect": "'1x1' | '16x9' | '4x3' | '3x2' - Aspect ratio (default: '1x1')",
@@ -1096,15 +3504,113 @@
       "Profile pictures",
       "Gallery previews",
       "Logo displays"
-    ]
+    ],
+    "capabilities": {
+      "prop-src": {
+        "id": "prop-src",
+        "type": "prop",
+        "name": "src",
+        "description": "Source URL of the image",
+        "requiredProps": [
+          "src"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-aspect": {
+        "id": "prop-aspect",
+        "type": "prop",
+        "name": "aspect",
+        "description": "The aspect ratio of the image container",
+        "requiredProps": [
+          "aspect"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-size": {
+        "id": "prop-size",
+        "type": "prop",
+        "name": "size",
+        "description": "Predefined size of the image",
+        "requiredProps": [
+          "size"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-background": {
+        "id": "prop-background",
+        "type": "prop",
+        "name": "background",
+        "description": "Background image sizing method",
+        "requiredProps": [
+          "background"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-rounded": {
+        "id": "prop-rounded",
+        "type": "prop",
+        "name": "rounded",
+        "description": "Whether to display the image with rounded corners",
+        "requiredProps": [
+          "rounded"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-bordered": {
+        "id": "prop-bordered",
+        "type": "prop",
+        "name": "bordered",
+        "description": "Whether to display a border around the image",
+        "requiredProps": [
+          "bordered"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-clickable": {
+        "id": "prop-clickable",
+        "type": "prop",
+        "name": "clickable",
+        "description": "Whether the image can be clicked, emitting a click event",
+        "requiredProps": [
+          "clickable"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-emptyIcon": {
+        "id": "prop-emptyIcon",
+        "type": "prop",
+        "name": "emptyIcon",
+        "description": "The icon to display when no src is provided",
+        "requiredProps": [
+          "emptyIcon"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      }
+    }
   },
   "VcStatus": {
     "import": "@vc-shell/framework",
     "component": "VcStatus",
     "description": "Status indicator component with color variants and dot mode for displaying item states",
     "category": "UI",
-    "demos": ["VcStatus-demo.md"],
-    "keywords": ["status", "state", "indicator", "badge", "label"],
+    "demos": [
+      "VcStatus-demo.md"
+    ],
+    "keywords": [
+      "status",
+      "state",
+      "indicator",
+      "badge",
+      "label"
+    ],
     "dependencies": [],
     "props": {
       "variant": "'info' | 'warning' | 'danger' | 'success' | 'light-danger' | 'info-dark' | 'primary' - Visual variant (default: 'info')",
@@ -1134,15 +3640,79 @@
       "User account status",
       "Item availability",
       "Process state indicators"
-    ]
+    ],
+    "capabilities": {
+      "prop-variant": {
+        "id": "prop-variant",
+        "type": "prop",
+        "name": "variant",
+        "description": "Visual style of the status indicator",
+        "requiredProps": [
+          "variant"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-outline": {
+        "id": "prop-outline",
+        "type": "prop",
+        "name": "outline",
+        "description": "**DEPRECATED**: Whether to show only the outline",
+        "requiredProps": [
+          "outline"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-extend": {
+        "id": "prop-extend",
+        "type": "prop",
+        "name": "extend",
+        "description": "Whether to use an extended layout with more padding & square corners",
+        "requiredProps": [
+          "extend"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-dot": {
+        "id": "prop-dot",
+        "type": "prop",
+        "name": "dot",
+        "description": "Whether to display only a colored dot without text",
+        "requiredProps": [
+          "dot"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "slot-default": {
+        "id": "slot-default",
+        "type": "slot",
+        "name": "default",
+        "description": "Content of the status indicator (text or complex content)",
+        "relatedSlots": [
+          "default"
+        ],
+        "useCases": [],
+        "complexity": "medium"
+      }
+    }
   },
   "VcLink": {
     "import": "@vc-shell/framework",
     "component": "VcLink",
     "description": "Clickable link component with active and disabled states",
     "category": "UI",
-    "demos": ["VcLink-demo.md"],
-    "keywords": ["link", "anchor", "navigation", "hyperlink"],
+    "demos": [
+      "VcLink-demo.md"
+    ],
+    "keywords": [
+      "link",
+      "anchor",
+      "navigation",
+      "hyperlink"
+    ],
     "dependencies": [],
     "props": {
       "active": "boolean - Active state",
@@ -1175,16 +3745,61 @@
       "Table actions",
       "Empty state actions",
       "Inline text links"
-    ]
+    ],
+    "capabilities": {
+      "prop-active": {
+        "id": "prop-active",
+        "type": "prop",
+        "name": "active",
+        "description": "Sets the link to active state",
+        "requiredProps": [
+          "active"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-disabled": {
+        "id": "prop-disabled",
+        "type": "prop",
+        "name": "disabled",
+        "description": "Disables the link, making it not clickable",
+        "requiredProps": [
+          "disabled"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "slot-default": {
+        "id": "slot-default",
+        "type": "slot",
+        "name": "default",
+        "description": "Content of the link",
+        "relatedSlots": [
+          "default"
+        ],
+        "useCases": [],
+        "complexity": "medium"
+      }
+    }
   },
   "VcEditor": {
     "import": "@vc-shell/framework",
     "component": "VcEditor",
     "description": "Rich Markdown editor with image upload, preview, source view, and split mode",
     "category": "Form",
-    "demos": ["VcEditor-demo.md"],
-    "keywords": ["editor", "markdown", "rich-text", "wysiwyg", "content"],
-    "dependencies": ["VcLabel"],
+    "demos": [
+      "VcEditor-demo.md"
+    ],
+    "keywords": [
+      "editor",
+      "markdown",
+      "rich-text",
+      "wysiwyg",
+      "content"
+    ],
+    "dependencies": [
+      "VcLabel"
+    ],
     "props": {
       "modelValue": "string - Editor content",
       "label": "string - Field label",
@@ -1221,16 +3836,161 @@
       "Email templates",
       "News articles",
       "Rich content fields"
-    ]
+    ],
+    "capabilities": {
+      "prop-modelValue": {
+        "id": "prop-modelValue",
+        "type": "prop",
+        "name": "modelValue",
+        "description": "Content of the editor",
+        "requiredProps": [
+          "modelValue"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-label": {
+        "id": "prop-label",
+        "type": "prop",
+        "name": "label",
+        "description": "Label text for the editor",
+        "requiredProps": [
+          "label"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-placeholder": {
+        "id": "prop-placeholder",
+        "type": "prop",
+        "name": "placeholder",
+        "description": "Placeholder text when editor is empty",
+        "requiredProps": [
+          "placeholder"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-required": {
+        "id": "prop-required",
+        "type": "prop",
+        "name": "required",
+        "description": "Whether the editor is required",
+        "requiredProps": [
+          "required"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-disabled": {
+        "id": "prop-disabled",
+        "type": "prop",
+        "name": "disabled",
+        "description": "Whether the editor is disabled",
+        "requiredProps": [
+          "disabled"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-tooltip": {
+        "id": "prop-tooltip",
+        "type": "prop",
+        "name": "tooltip",
+        "description": "Tooltip text for the editor label",
+        "requiredProps": [
+          "tooltip"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-errorMessage": {
+        "id": "prop-errorMessage",
+        "type": "prop",
+        "name": "errorMessage",
+        "description": "Error message to display",
+        "requiredProps": [
+          "errorMessage"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-multilanguage": {
+        "id": "prop-multilanguage",
+        "type": "prop",
+        "name": "multilanguage",
+        "description": "Whether the editor supports multiple languages",
+        "requiredProps": [
+          "multilanguage"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-currentLanguage": {
+        "id": "prop-currentLanguage",
+        "type": "prop",
+        "name": "currentLanguage",
+        "description": "Current selected language code",
+        "requiredProps": [
+          "currentLanguage"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-maxlength": {
+        "id": "prop-maxlength",
+        "type": "prop",
+        "name": "maxlength",
+        "description": "Maximum number of characters allowed",
+        "requiredProps": [
+          "maxlength"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-toolbar": {
+        "id": "prop-toolbar",
+        "type": "prop",
+        "name": "toolbar",
+        "description": "Custom toolbar configuration",
+        "requiredProps": [
+          "toolbar"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "slot-error": {
+        "id": "slot-error",
+        "type": "slot",
+        "name": "error",
+        "description": "Custom content for error message display",
+        "relatedSlots": [
+          "error"
+        ],
+        "useCases": [],
+        "complexity": "medium"
+      }
+    }
   },
   "VcFileUpload": {
     "import": "@vc-shell/framework",
     "component": "VcFileUpload",
     "description": "File upload component with drag-and-drop support and validation",
     "category": "Form",
-    "demos": ["VcFileUpload-demo.md"],
-    "keywords": ["file", "upload", "drag-drop", "attachment"],
-    "dependencies": ["VcIcon", "VcLink", "VcHint"],
+    "demos": [
+      "VcFileUpload-demo.md"
+    ],
+    "keywords": [
+      "file",
+      "upload",
+      "drag-drop",
+      "attachment"
+    ],
+    "dependencies": [
+      "VcIcon",
+      "VcLink",
+      "VcHint"
+    ],
     "props": {
       "variant": "'gallery' | 'file-upload' - Layout variant (default: 'gallery')",
       "loading": "boolean - Loading state",
@@ -1262,16 +4022,27 @@
       "Image uploads (used by VcGallery)",
       "File attachments in forms",
       "Bulk file uploads"
-    ]
+    ],
+    "capabilities": {}
   },
   "VcRating": {
     "import": "@vc-shell/framework",
     "component": "VcRating",
     "description": "Rating display component with stars, text, or combined variants",
     "category": "UI",
-    "demos": ["VcRating-demo.md"],
-    "keywords": ["rating", "stars", "review", "score"],
-    "dependencies": ["VcLabel", "VcIcon"],
+    "demos": [
+      "VcRating-demo.md"
+    ],
+    "keywords": [
+      "rating",
+      "stars",
+      "review",
+      "score"
+    ],
+    "dependencies": [
+      "VcLabel",
+      "VcIcon"
+    ],
     "props": {
       "modelValue": "number - Rating value",
       "max": "number - Maximum rating value (default: 5)",
@@ -1298,16 +4069,104 @@
       "Review scores",
       "Quality indicators",
       "Performance metrics"
-    ]
+    ],
+    "capabilities": {
+      "prop-modelValue": {
+        "id": "prop-modelValue",
+        "type": "prop",
+        "name": "modelValue",
+        "description": "Current rating value (use with v-model)",
+        "requiredProps": [
+          "modelValue"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-max": {
+        "id": "prop-max",
+        "type": "prop",
+        "name": "max",
+        "description": "Maximum rating value",
+        "requiredProps": [
+          "max"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-variant": {
+        "id": "prop-variant",
+        "type": "prop",
+        "name": "variant",
+        "description": "Rating display variant",
+        "requiredProps": [
+          "variant"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-label": {
+        "id": "prop-label",
+        "type": "prop",
+        "name": "label",
+        "description": "Label for the rating component",
+        "requiredProps": [
+          "label"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-placeholder": {
+        "id": "prop-placeholder",
+        "type": "prop",
+        "name": "placeholder",
+        "description": "Placeholder text when no rating is available",
+        "requiredProps": [
+          "placeholder"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-tooltip": {
+        "id": "prop-tooltip",
+        "type": "prop",
+        "name": "tooltip",
+        "description": "Additional tooltip information",
+        "requiredProps": [
+          "tooltip"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "slot-details": {
+        "id": "slot-details",
+        "type": "slot",
+        "name": "details",
+        "description": "Custom details slot",
+        "relatedSlots": [
+          "details"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      }
+    }
   },
   "VcSlider": {
     "import": "@vc-shell/framework",
     "component": "VcSlider",
     "description": "Carousel/slider component for displaying content in horizontal scrollable container",
     "category": "UI",
-    "demos": ["VcSlider-demo.md"],
-    "keywords": ["slider", "carousel", "swiper", "slideshow"],
-    "dependencies": ["VcIcon"],
+    "demos": [
+      "VcSlider-demo.md"
+    ],
+    "keywords": [
+      "slider",
+      "carousel",
+      "swiper",
+      "slideshow"
+    ],
+    "dependencies": [
+      "VcIcon"
+    ],
     "props": {
       "slides": "Record<string, unknown>[] | unknown[] - Array of slide data",
       "navigation": "boolean - Enable navigation buttons",
@@ -1332,16 +4191,118 @@
       "Featured items",
       "Testimonial sliders",
       "Category navigation"
-    ]
+    ],
+    "capabilities": {
+      "prop-slides": {
+        "id": "prop-slides",
+        "type": "prop",
+        "name": "slides",
+        "description": "Array of objects representing slides to display",
+        "requiredProps": [
+          "slides"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-navigation": {
+        "id": "prop-navigation",
+        "type": "prop",
+        "name": "navigation",
+        "description": "Enables/disables navigation buttons for the slider",
+        "requiredProps": [
+          "navigation"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-overflow": {
+        "id": "prop-overflow",
+        "type": "prop",
+        "name": "overflow",
+        "description": "Allows slides to be visible outside the container",
+        "requiredProps": [
+          "overflow"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-slidesPerView": {
+        "id": "prop-slidesPerView",
+        "type": "prop",
+        "name": "slidesPerView",
+        "description": "Number of slides visible simultaneously",
+        "requiredProps": [
+          "slidesPerView"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-spaceBetweenSlides": {
+        "id": "prop-spaceBetweenSlides",
+        "type": "prop",
+        "name": "spaceBetweenSlides",
+        "description": "Space between slides in pixels",
+        "requiredProps": [
+          "spaceBetweenSlides"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "slot-default": {
+        "id": "slot-default",
+        "type": "slot",
+        "name": "default",
+        "description": "`{ slide: Object }`",
+        "relatedSlots": [
+          "default"
+        ],
+        "useCases": [],
+        "complexity": "medium"
+      },
+      "slot-prevBtn": {
+        "id": "slot-prevBtn",
+        "type": "slot",
+        "name": "prevBtn",
+        "description": "Custom prevBtn slot",
+        "relatedSlots": [
+          "prevBtn"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "slot-nextBtn": {
+        "id": "slot-nextBtn",
+        "type": "slot",
+        "name": "nextBtn",
+        "description": "Custom nextBtn slot",
+        "relatedSlots": [
+          "nextBtn"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      }
+    }
   },
   "VcGallery": {
     "import": "@vc-shell/framework",
     "component": "VcGallery",
     "description": "Image gallery component with upload, preview, edit, delete, and drag-to-reorder functionality",
     "category": "Form",
-    "demos": ["VcGallery-demo.md"],
-    "keywords": ["gallery", "images", "upload", "drag-drop", "reorder"],
-    "dependencies": ["VcLabel", "VcFileUpload", "VcHint"],
+    "demos": [
+      "VcGallery-demo.md"
+    ],
+    "keywords": [
+      "gallery",
+      "images",
+      "upload",
+      "drag-drop",
+      "reorder"
+    ],
+    "dependencies": [
+      "VcLabel",
+      "VcFileUpload",
+      "VcHint"
+    ],
     "props": {
       "images": "ICommonAsset[] - Array of image objects",
       "disabled": "boolean - Disabled state",
@@ -1380,7 +4341,119 @@
       "Document attachments",
       "Media galleries",
       "Image collections with ordering"
-    ]
+    ],
+    "capabilities": {
+      "prop-images": {
+        "id": "prop-images",
+        "type": "prop",
+        "name": "images",
+        "description": "Array of images to display in the gallery",
+        "requiredProps": [
+          "images"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-disabled": {
+        "id": "prop-disabled",
+        "type": "prop",
+        "name": "disabled",
+        "description": "Disables all interactions with the gallery",
+        "requiredProps": [
+          "disabled"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-required": {
+        "id": "prop-required",
+        "type": "prop",
+        "name": "required",
+        "description": "Indicates if the field is required",
+        "requiredProps": [
+          "required"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-uploadIcon": {
+        "id": "prop-uploadIcon",
+        "type": "prop",
+        "name": "uploadIcon",
+        "description": "Icon for the upload button",
+        "requiredProps": [
+          "uploadIcon"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-multiple": {
+        "id": "prop-multiple",
+        "type": "prop",
+        "name": "multiple",
+        "description": "Allows multiple file selection during upload",
+        "requiredProps": [
+          "multiple"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-variant": {
+        "id": "prop-variant",
+        "type": "prop",
+        "name": "variant",
+        "description": "Visual variant of the component",
+        "requiredProps": [
+          "variant"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-itemActions": {
+        "id": "prop-itemActions",
+        "type": "prop",
+        "name": "itemActions",
+        "description": "Controls which actions are available for each image",
+        "requiredProps": [
+          "itemActions"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-hideAfterUpload": {
+        "id": "prop-hideAfterUpload",
+        "type": "prop",
+        "name": "hideAfterUpload",
+        "description": "Hides the upload button after files are uploaded",
+        "requiredProps": [
+          "hideAfterUpload"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-name": {
+        "id": "prop-name",
+        "type": "prop",
+        "name": "name",
+        "description": "Name of the gallery (used for identification)",
+        "requiredProps": [
+          "name"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      },
+      "prop-loading": {
+        "id": "prop-loading",
+        "type": "prop",
+        "name": "loading",
+        "description": "Shows loading state during operations",
+        "requiredProps": [
+          "loading"
+        ],
+        "useCases": [],
+        "complexity": "simple"
+      }
+    }
   },
   "_slotComponents": {
     "description": "Example slot component from real vendor-portal projects. Create custom slot components as needed for your specific entity.",
@@ -1395,6 +4468,7 @@
         },
         "example": "<template #item_status=\"{ item }\">\n  <YourEntityStatusBadge :status=\"item.status\" />\n</template>"
       }
-    ]
+    ],
+    "capabilities": {}
   }
 }

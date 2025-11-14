@@ -6,6 +6,79 @@
 - Architecture: Blade-based navigation, Module structure
 - Routing: Dynamic blade routes with params
 
+## Module Generation Workflow
+
+### Step 0: Discover Component Capabilities (MANDATORY FIRST STEP)
+
+🚨 **BEFORE creating UI-Plan or generating ANY code:**
+
+**1. Identify required components** from user's request:
+- List/Grid → VcTable
+- Form/Details → VcForm + VcInput/VcSelect/VcTextarea
+- Images/Gallery → VcGallery  
+- File uploads → VcFileUpload
+- etc.
+
+**2. Get capabilities for EACH component:**
+
+```typescript
+get_component_capabilities({ 
+  component: "VcTable",
+  includeExamples: true 
+})
+```
+
+**Returns:** Complete API documentation including:
+- Props (all available properties)
+- Slots (custom rendering opportunities)
+- Events (emitted events)
+- Features (filters, multiselect, row-actions, etc.)
+- **Code examples** for each capability
+
+**3. Study examples in capabilities:**
+- Each capability includes complete working code
+- Copy and adapt examples to your entity
+- Use EXACT prop/event/slot names from examples
+
+**4. Map requirements to capabilities:**
+
+```
+User: "Product list with filters and bulk delete"
+
+Capabilities to use:
+✅ VcTable feature-filters → #filters slot + :active-filter-count
+✅ VcTable feature-multiselect → :multiselect + @selection-changed
+✅ VcTable feature-row-actions → :item-action-builder
+```
+
+**Example Discovery Session:**
+
+```typescript
+// User wants: "Offers table with search and filters"
+
+// Step 1: Get VcTable capabilities
+get_component_capabilities({
+  component: "VcTable",
+  includeExamples: true
+})
+
+// Returns 25 capabilities including:
+// - feature-filters (with full filters slot example)
+// - prop-searchValue  
+// - event-search:change
+// - prop-activeFilterCount
+
+// Step 2: Use in UI-Plan
+{
+  "type": "VcTable",
+  "features": ["filters", "search", "sorting", "multiselect"]
+}
+```
+
+**CRITICAL:** Never guess component API. Always check capabilities first!
+
+---
+
 ## Commands
 
 ### /ui-plan
@@ -15,16 +88,20 @@
 
 **Output:** Valid `ui-plan.v1.json` adhering to schema
 
+**MANDATORY:** Before creating plan, call `get_component_capabilities` for each component!
+
 **Rules:**
-1. Return ONLY valid JSON, no explanations
-2. Use ONLY components from Component Registry (VcForm, VcInput, VcTextarea, VcSelect, VcTable, VcBlade, VcButton, VcField)
-3. Never invent props or components not in Registry
-4. Prefer simple layouts unless explicitly requested
-5. Add permissions when feature mutates data (e.g., "product:update")
-6. Include accessible labels and validation rules for forms
-7. If steps/wizard requested: use `steps[]` array in blade config
-8. Theme: `light` | `dark` | `system` (default: system)
-9. Conservative assumptions: if prompt ambiguous → minimal plan
+1. **FIRST:** Discover capabilities for all components
+2. Return ONLY valid JSON, no explanations
+3. Use ONLY components from Component Registry (VcForm, VcInput, VcTextarea, VcSelect, VcTable, VcBlade, VcButton, VcField)
+4. Use ONLY props/slots/events from capabilities
+5. Never invent props or components not in Registry
+6. Prefer simple layouts unless explicitly requested
+7. Add permissions when feature mutates data (e.g., "product:update")
+8. Include accessible labels and validation rules for forms
+9. If steps/wizard requested: use `steps[]` array in blade config
+10. Theme: `light` | `dark` | `system` (default: system)
+11. Conservative assumptions: if prompt ambiguous → minimal plan
 
 **Field Types:**
 - Text, Email, Url, Number, Date, Password (for VcInput)
@@ -103,6 +180,40 @@ Shows validation errors, warnings, and plan summary.
 - All props MUST match Registry signatures
 - Module names MUST be kebab-case
 - Routes MUST start with `/`
+
+## Component Capabilities Quick Reference
+
+**37 components, 242 total capabilities via MCP tools**
+
+### Most Used Components
+
+**VcTable (25 capabilities):**
+- `feature-filters` - Custom filter panel (#filters slot)
+- `feature-multiselect` - Bulk selection (@selection-changed)
+- `feature-row-actions` - Per-row actions (:item-action-builder)
+- `:search-value`, `@search:change` - Built-in search
+- `:sort`, `@header-click` - Column sorting
+
+**VcSelect (35 capabilities):**
+- `feature-async-options` - Async searchable
+- `#selected-item`, `#item` slots - Custom templates
+- `:searchable` - Enable search
+
+**VcGallery (10 capabilities):**
+- `:multiple`, `:sortable` - Multiple sortable images
+- `:upload-path` - Upload destination
+- `@upload`, `@reorder`, `@remove` - Events
+
+**VcForm + Field:**
+- Use Field from vee-validate (NOT VcField!)
+- VcField is READ-ONLY display only
+
+**Get all capabilities:**
+```typescript
+get_component_capabilities({ component: "VcTable" })
+```
+
+---
 
 ## Code Generation Workflow
 

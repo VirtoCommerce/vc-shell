@@ -20,56 +20,166 @@ See `.cursorrules-composition` for full compositional generation strategy.
 
 **Key principle:** Build from patterns, don't copy templates. This enables unlimited variability.
 
+## Component Capabilities Discovery (MANDATORY)
+
+🚨 **BEFORE generating ANY code or UI-Plan, you MUST discover component capabilities!**
+
+### Why This Matters
+
+The VC-Shell has **37 components with 242 documented capabilities**. Each component has specific props, slots, events, and features. Without checking capabilities first, you will:
+- ❌ Invent non-existent props (`v-model:selected` instead of `:selected-item-id`)
+- ❌ Miss important features (filters slot, row actions, multiselect)
+- ❌ Regenerate code multiple times to fix API errors
+- ❌ Create incomplete implementations
+
+### MANDATORY Workflow Before Code Generation
+
+**For EVERY component you plan to use:**
+
+1. **Get its capabilities:**
+   ```typescript
+   get_component_capabilities({
+     component: "VcTable",  // or VcForm, VcGallery, VcSelect, etc.
+     includeExamples: true
+   })
+   ```
+
+2. **Study ALL returned capabilities:**
+   - **Props capabilities** - Every available property with types
+   - **Slot capabilities** - Custom rendering opportunities
+   - **Event capabilities** - All emitted events
+   - **Feature capabilities** - Complex features (filters, multiselect, row-actions)
+   - **Code examples** - Complete working examples for each capability
+
+3. **Map user requirements to capabilities:**
+   ```
+   User: "table with filters and bulk delete"
+
+   VcTable capabilities needed:
+   → feature-filters: #filters slot + :active-filter-count prop
+   → feature-multiselect: :multiselect prop + @selection-changed event
+   → feature-row-actions: :item-action-builder for delete button
+   ```
+
+4. **Use EXACT API from capabilities:**
+   - Copy prop names exactly: `:active-filter-count` not `:activeFilters`
+   - Copy event names exactly: `@selection-changed` not `@select`
+   - Copy slot names exactly: `#filters` not `#filter`
+   - Use code examples as templates
+
+### Common Components Quick Reference
+
+**VcTable (25 capabilities):**
+- `feature-filters` → Custom filter panel with #filters slot
+- `feature-multiselect` → Row selection with @selection-changed
+- `feature-row-actions` → Per-row actions with :item-action-builder
+- `feature-custom-columns` → Custom rendering with #item_{columnKey}
+- Required props: `:items`, `:columns`, `:loading`
+- Search: `:search-value`, `@search:change`
+- Pagination: `:pages`, `:current-page`, `@pagination-click`
+
+**VcSelect (35 capabilities):**
+- `feature-async-options` → Async searchable dropdown
+- `slot-selected-item` → Custom selected display template
+- `slot-item` → Custom option display template
+- Required: `:model-value`, `:options`
+
+**VcForm:**
+- Use **Field** from vee-validate for inputs (NOT VcField!)
+- VcField is READ-ONLY display component only
+
+**VcGallery (10 capabilities):**
+- `:multiple` → Multiple images
+- `:sortable` → Drag-to-reorder
+- `:upload-path` → Upload destination
+- `@upload`, `@reorder`, `@remove` events
+
+### Semantic Search (Optional)
+
+If unsure which component has a feature:
+
+```typescript
+search_components_by_intent({
+  intent: "I need filtering and bulk delete",
+  context: "list"
+})
+// Returns: VcTable (score: 220) with relevant capabilities
+```
+
+### FORBIDDEN Without Capabilities Check
+
+- ❌ Guessing component props
+- ❌ Inventing slot names
+- ❌ Assuming event names
+- ❌ Creating UI-Plan without knowing component API
+- ❌ Using `v-model` on components that don't support it
+
+---
+
 ## MCP Tools Available
 
 You have access to the following tools through the VC-Shell MCP server:
 
-### PRIMARY TOOLS (Use These!)
+### DISCOVERY TOOLS (Use FIRST!)
 
-1. **generate_complete_module** - 🚀 MAIN GENERATION TOOL
+**NEW: Component Capabilities Tools**
+
+1. **search_components_by_intent** - Find components by natural language
+   - Input: Natural language intent + context
+   - Output: Ranked components with relevant capabilities
+   - Example: "I need filtering" → VcTable + filters-slot capability
+
+2. **get_component_capabilities** - Get ALL capabilities of a component
+   - Input: Component name (e.g., "VcTable")
+   - Output: 242 capabilities with code examples
+   - **USE THIS BEFORE using any component!**
+
+### PRIMARY TOOLS (Use After Discovery!)
+
+3. **generate_complete_module** - 🚀 MAIN GENERATION TOOL
    - Generates complete module from UI-Plan in ONE call
    - Creates blades, composables, locales automatically
    - Registers module in main.ts
    - Uses mock data for immediate testing
    - **THIS IS THE PRIMARY TOOL FOR ALL MODULE GENERATION!**
 
-2. **validate_ui_plan** - Validate UI-Plan JSON against schema
+4. **validate_ui_plan** - Validate UI-Plan JSON against schema
    - Use BEFORE generation
    - Checks component existence, prop validity
    - Returns validation errors
 
-3. **validate_and_fix_plan** - Validate and suggest fixes
+5. **validate_and_fix_plan** - Validate and suggest fixes
    - Use if validation fails
    - Returns suggested fixes for errors
    - Helps correct plan before generation
 
 ### HELPER TOOLS
 
-4. **search_components** - Search for VC-Shell components
+6. **search_components** - Search for VC-Shell components
    - Use to find available components
    - Fuzzy matching support
 
-5. **view_components** - Get detailed component info
+7. **view_components** - Get detailed component info
    - Props, events, slots, examples
    - Use when need component details
 
-6. **get_component_examples** - Get usage examples
+8. **get_component_examples** - Get usage examples
    - Returns demo code
    - Useful for understanding component usage
 
-7. **scaffold_app** - Create new VC-Shell application AUTOMATICALLY
+9. **scaffold_app** - Create new VC-Shell application AUTOMATICALLY
    - Use when user wants new project
    - Requires: projectName (kebab-case)
    - Runs create-vc-app with --skip-module-gen
    - Returns: Success + path to created app
 
-8. **get_blade_template** - Get blade template (DEPRECATED for manual use)
-   - Only use if generate_complete_module fails
-   - Prefer generate_complete_module instead
+10. **get_blade_template** - Get blade template (DEPRECATED for manual use)
+    - Only use if generate_complete_module fails
+    - Prefer generate_complete_module instead
 
-9. **get_audit_checklist** - Quality checklist after generation
-   - Use after module is generated
-   - Verify everything works
+11. **get_audit_checklist** - Quality checklist after generation
+    - Use after module is generated
+    - Verify everything works
 
 ## MCP Resources Available
 
@@ -507,4 +617,79 @@ If generation fails:
 - All strings through i18n
 - TypeScript strict mode compatible
 - ESLint/Prettier compatible
+
+---
+
+## Component Capabilities Quick Reference
+
+**37 components, 242 total capabilities available via MCP**
+
+### Top Components by Capabilities
+
+**VcTable (25 capabilities) - Data display with advanced features:**
+- `feature-filters` - Custom filter panel (#filters slot, :active-filter-count)
+- `feature-multiselect` - Row selection (:multiselect, @selection-changed)
+- `feature-row-actions` - Contextual actions (:item-action-builder, :enable-item-actions)
+- `feature-custom-columns` - Custom cell rendering (#item_{columnKey} slots)
+- `prop-searchValue` + `event-search:change` - Built-in search
+- `prop-sort` + `event-header-click` - Column sorting
+- `prop-pages`, `prop-currentPage`, `event-pagination-click` - Pagination
+
+**VcSelect (35 capabilities) - Dropdown with async support:**
+- `feature-async-options` - Async searchable dropdown (:options as function)
+- `slot-selected-item` - Custom selected display template
+- `slot-item` - Custom option display template
+- `prop-searchable` - Enable search in dropdown
+- `event-search-change` - Search input handler
+
+**VcMultivalue (21 capabilities) - Multi-value input:**
+- Multiple tags/values input
+- Dropdown or manual entry
+- Validation support
+
+**VcInput (19 capabilities) - Text input with types:**
+- Types: text, email, url, number, date, password, tel
+- `prop-debounce` - Debounced input
+- `prop-clearable` - Show clear button
+- Validation integration
+
+**VcCheckbox (14 capabilities) - Checkbox input:**
+- Boolean value binding
+- Validation support
+- Disabled states
+
+**VcEditor (12 capabilities) - Rich text editor:**
+- WYSIWYG editing
+- Markdown support
+- Custom toolbars
+
+**VcGallery (10 capabilities) - Image gallery:**
+- `:multiple` - Multiple images
+- `:sortable` - Drag-to-reorder
+- `:upload-path` - Upload destination
+- `@upload`, `@reorder`, `@remove` events
+
+**VcBlade (9 capabilities) - Container for pages:**
+- `:width` - Blade width (30%, 50%, 70%)
+- `:expanded` - Full-width mode
+- `:modified` - Unsaved changes indicator
+- `:toolbar-items` - Toolbar actions
+- `#widgets` slot - Blade widgets
+
+### Critical Rules
+
+**ALWAYS call `get_component_capabilities` BEFORE using a component!**
+
+**To see all capabilities of any component:**
+```typescript
+get_component_capabilities({ component: "VcTable" })
+```
+
+**To find components by intent:**
+```typescript
+search_components_by_intent({
+  intent: "I need image upload and reordering",
+  context: "details"
+})
+```
 

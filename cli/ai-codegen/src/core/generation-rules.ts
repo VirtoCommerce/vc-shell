@@ -336,24 +336,24 @@ ${rules.validation.forbidden.map(r => `- ${r}`).join("\n")}
     component: string,
     features: string[] = []
   ): Array<{ id: string; name: string; type: string; description: string }> {
-    // Load enhanced registry - use path relative to patterns directory
-    const enhancedRegistryPath = path.join(
+    // Load unified registry with capabilities - use path relative to patterns directory
+    const registryPath = path.join(
       this.patternsPath, 
       "..", 
       "..", 
       "schemas", 
-      "component-registry-enhanced.json"
+      "component-registry.json"
     );
     
-    let enhancedRegistry: any = {};
+    let registry: any = {};
     try {
-      enhancedRegistry = JSON.parse(fs.readFileSync(enhancedRegistryPath, "utf-8"));
+      registry = JSON.parse(fs.readFileSync(registryPath, "utf-8"));
     } catch (error) {
-      console.warn("Enhanced registry not found", error);
+      console.warn("Component registry not found", error);
       return [];
     }
 
-    const componentData = enhancedRegistry[component];
+    const componentData = registry[component];
     if (!componentData || !componentData.capabilities) {
       return [];
     }

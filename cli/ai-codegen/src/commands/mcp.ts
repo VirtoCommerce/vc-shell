@@ -70,20 +70,11 @@ export async function mcpServerCommand() {
     ? path.join(__dirname, "examples")
     : path.join(__dirname, "..", "examples");
 
-  // Load component registry once
+  // Load unified component registry with capabilities
   const registryPath = path.join(schemasPath, "component-registry.json");
   const registry: Record<string, Component> = JSON.parse(
     fs.readFileSync(registryPath, "utf-8")
   );
-
-  // Load enhanced registry with capabilities
-  const enhancedRegistryPath = path.join(schemasPath, "component-registry-enhanced.json");
-  let enhancedRegistry: any = {};
-  try {
-    enhancedRegistry = JSON.parse(fs.readFileSync(enhancedRegistryPath, "utf-8"));
-  } catch (error) {
-    console.warn("Enhanced registry not found, capabilities features will be limited");
-  }
 
   // Initialize search engine
   const searchEngine = new SearchEngine(registry);
@@ -218,12 +209,6 @@ export async function mcpServerCommand() {
           mimeType: "application/json",
         },
         {
-          uri: "vcshell://component-capabilities",
-          name: "Enhanced Component Registry with Capabilities",
-          description: "Complete registry with 242 capabilities across all components including props, slots, events, features, and usage examples",
-          mimeType: "application/json",
-        },
-        {
           uri: "vcshell://generation-rules",
           name: "Code Generation Rules",
           description: "Complete rules for AI code generation including blade structure, naming conventions, i18n patterns, composition patterns, and validation rules",
@@ -337,15 +322,15 @@ export async function mcpServerCommand() {
         // Return slot component metadata and code
         const slotComponents = registry._slotComponents?.components || [];
         const componentsPath = path.join(examplesPath, "components");
-
+        
         const componentsData = slotComponents.map((comp: any) => {
           const compPath = path.join(examplesPath, comp.file);
           let code = "";
-
+          
           if (fs.existsSync(compPath)) {
             code = fs.readFileSync(compPath, "utf-8");
           }
-
+          
           return {
             name: comp.name,
             file: comp.file,
@@ -389,22 +374,6 @@ export async function mcpServerCommand() {
         };
       }
 
-      case "vcshell://component-capabilities": {
-        // Return enhanced registry with all capabilities
-        if (Object.keys(enhancedRegistry).length === 0) {
-          throw new Error("Enhanced registry not loaded. Run build-enhanced-registry script first.");
-        }
-
-        return {
-          contents: [
-            {
-              uri,
-              mimeType: "application/json",
-              text: JSON.stringify(enhancedRegistry, null, 2),
-            },
-          ],
-        };
-      }
 
       default:
         throw new Error(`Unknown resource: ${uri}`);
@@ -562,7 +531,7 @@ export async function mcpServerCommand() {
 
 Try:
 - "VcTable" for component demos
-- "list" for list blade templates
+- "list" for list blade templates  
 - "details" for details blade templates
 - "filter" for examples with filters`,
                 },
@@ -579,11 +548,11 @@ Try:
             const fileType = type === "template" ? "Production Template" : "Demo";
 
             output += `## ${title} (${fileType})\n\n`;
-
+            
             if (type === "template") {
               const templates = registry.VcBlade?.templates || [];
               const templateInfo = templates.find((t: any) => t.file === `templates/${file}`);
-
+              
               if (templateInfo) {
                 output += `**Complexity:** ${templateInfo.complexity}\n`;
                 output += `**Features:** ${templateInfo.features?.join(", ")}\n`;
@@ -656,7 +625,7 @@ Try:
           try {
             // Run create-vc-app in non-interactive mode
             console.error(`Creating VC-Shell app: ${projectName}...`);
-
+            
             const result = await execa("npx", [
               "@vc-shell/create-vc-app@latest",
               projectName,
@@ -720,7 +689,7 @@ Try:
           }
 
           const { type, complexity } = parsed.data;
-
+          
           // Map type + complexity to template filename
           const templateMap: Record<string, string> = {
             "list-simple": "list-simple.vue",
@@ -746,7 +715,7 @@ Try:
           }
 
           const templatePath = path.join(examplesPath, "templates", templateFile);
-
+          
           if (!fs.existsSync(templatePath)) {
             return {
               content: [
@@ -760,7 +729,7 @@ Try:
           }
 
           const content = fs.readFileSync(templatePath, "utf-8");
-
+          
           // Get template metadata from registry
           const templates = registry.VcBlade?.templates || [];
           const templateInfo = templates.find((t: any) => t.id === templateKey);
@@ -974,14 +943,15 @@ ${content}
           const keywords = intent.toLowerCase().split(/\s+/);
           const results: any[] = [];
 
-          for (const [componentName, component] of Object.entries(enhancedRegistry)) {
+          for (const [componentName, component] of Object.entries(registry)) {
             if (!componentName.startsWith("Vc")) continue;
 
             let score = 0;
             const matchedCapabilities: any[] = [];
 
-            // Search in capabilities
-            for (const [capId, capability] of Object.entries(component.capabilities as any)) {
+            // Search in capabilities (if they exist)
+            const capabilities = (component as any).capabilities || {};
+            for (const [capId, capability] of Object.entries(capabilities)) {
               const capText = `${capability.name} ${capability.description} ${capability.useCases?.join(" ")}`.toLowerCase();
 
               for (const keyword of keywords) {
@@ -1042,12 +1012,12 @@ ${content}
 
           const { component, capability, includeExamples } = parsed.data;
 
-          if (!enhancedRegistry[component]) {
-            throw new Error(`Component ${component} not found in enhanced registry`);
+          if (!registry[component]) {
+            throw new Error(`Component ${component} not found in registry`);
           }
 
-          const componentData = enhancedRegistry[component];
-          let capabilities = componentData.capabilities;
+          const componentData: any = registry[component];
+          let capabilities = componentData.capabilities || {};
 
           // Filter by specific capability if requested
           if (capability) {
@@ -1125,22 +1095,22 @@ function generateFixSuggestion(error: { path: string; message: string; severity:
   if (error.message.includes("kebab-case")) {
     return "Use kebab-case format (e.g., 'vendor-management' instead of 'VendorManagement')";
   }
-
+  
   if (error.message.includes("Route must start with")) {
     return "Add '/' at the beginning of the route (e.g., '/vendors' instead of 'vendors')";
   }
-
+  
   if (error.message.includes("not found in Component Registry")) {
     return "Use only components from the VC-Shell Component Registry. Call search_components to find available components.";
   }
-
+  
   if (error.message.includes("field type")) {
     return "Valid field types: VcInput, VcTextarea, VcSelect, VcCheckbox, VcSwitch, VcGallery, VcFileUpload";
   }
-
+  
   if (error.message.includes("50 items")) {
     return "Reduce number of fields to maximum 50 items";
   }
-
+  
   return "Review the error message and fix the plan manually";
 }

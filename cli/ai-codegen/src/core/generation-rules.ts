@@ -66,9 +66,11 @@ export class GenerationRulesProvider {
 
   constructor() {
     // Determine path to examples/compositions
+    // In production (dist/): dist/examples/compositions
+    // In development (src/): src/examples/compositions
     this.patternsPath = __dirname.includes("/dist")
-      ? path.join(__dirname, "..", "examples", "compositions")
-      : path.join(__dirname, "..", "..", "src", "examples", "compositions");
+      ? path.join(__dirname, "examples", "compositions")
+      : path.join(__dirname, "..", "examples", "compositions");
   }
 
   /**

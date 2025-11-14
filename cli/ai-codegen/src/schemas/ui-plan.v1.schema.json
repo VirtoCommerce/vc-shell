@@ -45,7 +45,8 @@
         },
         "route": {
           "type": "string",
-          "pattern": "^/[a-z0-9/-]*$"
+          "pattern": "^/[a-z0-9/:?*-]*$",
+          "description": "Blade route supporting Vue Router params (e.g., /offers/:id?)"
         },
         "layout": {
           "type": "string",
@@ -85,6 +86,18 @@
           "items": {
             "$ref": "#/definitions/customSlot"
           }
+        },
+        "widgets": {
+          "type": "array",
+          "description": "Custom widgets to integrate in the blade",
+          "items": {
+            "$ref": "#/definitions/widget"
+          }
+        },
+        "width": {
+          "type": "string",
+          "description": "Blade width (e.g., '50%', '100%', '600px')",
+          "default": "100%"
         },
         "theme": {
           "type": "object",
@@ -134,7 +147,7 @@
                   },
                   "action": {
                     "type": "string",
-                    "description": "Action description (e.g., 'reload()', 'openBlade(EntityDetails)')"
+                    "description": "Action description (e.g., 'reload()', 'openBlade({blade: markRaw(EntityDetails)})')"
                   }
                 }
               }
@@ -209,13 +222,49 @@
       "properties": {
         "type": {
           "type": "string",
-          "enum": ["VcTable", "VcForm", "VcInput", "VcTextarea", "VcSelect", "VcCheckbox", "VcSwitch", "VcButton", "VcCard"]
+          "enum": [
+            "VcTable",
+            "VcForm",
+            "VcInput",
+            "VcTextarea",
+            "VcSelect",
+            "VcCheckbox",
+            "VcSwitch",
+            "VcButton",
+            "VcCard",
+            "VcCollapsibleCard",
+            "VcGallery",
+            "VcFileUpload",
+            "VcDatepicker",
+            "VcImage",
+            "VcBadge",
+            "VcStatus"
+          ]
         },
         "dataSource": {
           "type": "string"
         },
         "model": {
           "type": "string"
+        },
+        "title": {
+          "type": "string",
+          "description": "Component title (e.g., for VcCard)"
+        },
+        "collapsible": {
+          "type": "boolean",
+          "description": "Is component collapsible (for VcCard)",
+          "default": false
+        },
+        "multiselect": {
+          "type": "boolean",
+          "description": "Enable multiselect (for VcTable)",
+          "default": false
+        },
+        "enableSelectAll": {
+          "type": "boolean",
+          "description": "Enable select all (for VcTable with multiselect)",
+          "default": false
         },
         "fields": {
           "type": "array",
@@ -249,10 +298,15 @@
     },
     "field": {
       "type": "object",
-      "required": ["key", "as", "label"],
+      "required": ["as", "label"],
       "properties": {
+        "id": {
+          "type": "string",
+          "description": "Field identifier (can use 'id' or 'key', will be normalized to 'key')"
+        },
         "key": {
-          "type": "string"
+          "type": "string",
+          "description": "Field identifier (can use 'id' or 'key')"
         },
         "as": {
           "type": "string",
@@ -279,6 +333,20 @@
             "type": "string"
           }
         },
+        "validation": {
+          "type": "string",
+          "description": "Validation rules (e.g., 'min:3|max:61|unique:sku')"
+        },
+        "async": {
+          "type": "boolean",
+          "description": "Is this an async field (e.g., async select)",
+          "default": false
+        },
+        "searchable": {
+          "type": "boolean",
+          "description": "Is this field searchable (for selects)",
+          "default": false
+        },
         "options": {
           "type": "array",
           "items": {
@@ -292,15 +360,43 @@
               }
             }
           }
+        },
+        "uploadPath": {
+          "type": "string",
+          "description": "Upload path for file/gallery fields"
+        },
+        "multiple": {
+          "type": "boolean",
+          "description": "Allow multiple values/files",
+          "default": false
+        },
+        "sortable": {
+          "type": "boolean",
+          "description": "Allow sorting (for galleries)",
+          "default": false
+        },
+        "disabled": {
+          "type": "boolean",
+          "description": "Is field disabled",
+          "default": false
+        },
+        "tooltip": {
+          "type": "string",
+          "description": "Tooltip text for the field"
         }
       }
     },
     "column": {
       "type": "object",
-      "required": ["key", "title"],
+      "required": ["title"],
       "properties": {
+        "id": {
+          "type": "string",
+          "description": "Column identifier (can use 'id' or 'key', will be normalized to 'key')"
+        },
         "key": {
-          "type": "string"
+          "type": "string",
+          "description": "Column identifier (can use 'id' or 'key')"
         },
         "title": {
           "type": "string"
@@ -308,14 +404,18 @@
         "type": {
           "type": "string",
           "description": "Column display type",
-          "enum": ["text", "number", "money", "date", "date-ago", "status", "boolean", "image", "email"]
+          "enum": ["text", "number", "money", "date", "date-ago", "status", "boolean", "image", "email", "link", "badge", "actions", "custom"]
         },
         "sortable": {
           "type": "boolean",
           "default": true
         },
         "width": {
-          "type": "string"
+          "oneOf": [
+            {"type": "string"},
+            {"type": "number"}
+          ],
+          "description": "Column width (number for px, or string like '10%' or '100px')"
         }
       }
     },
@@ -334,6 +434,28 @@
         "props": {
           "type": "object",
           "description": "Props to pass to component"
+        }
+      }
+    },
+    "widget": {
+      "type": "object",
+      "required": ["id", "component"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Widget identifier"
+        },
+        "component": {
+          "type": "string",
+          "description": "Widget component name (e.g., 'SpecialPricesWidget')"
+        },
+        "condition": {
+          "type": "string",
+          "description": "Condition for widget visibility (e.g., 'item.id')"
+        },
+        "props": {
+          "type": "object",
+          "description": "Props to pass to widget"
         }
       }
     },
@@ -374,4 +496,3 @@
     }
   }
 }
-

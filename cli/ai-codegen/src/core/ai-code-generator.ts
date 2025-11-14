@@ -2,6 +2,7 @@ import type { NamingConfig } from "./code-generator.js";
 import type { Column, Field } from "./template-adapter.js";
 import type { CompositionPattern, GenerationRules } from "./generation-rules.js";
 import type { UIPlanBlade } from "../schemas/zod-schemas.js";
+import type { BladeLogic, ComposableDefinition } from "./logic-planner.js";
 
 export interface BladeGenerationContext {
   type: "list" | "details";
@@ -15,134 +16,227 @@ export interface BladeGenerationContext {
   isWorkspace?: boolean;
   menuTitleKey: string;
   features: string[];
+  logic?: BladeLogic;
+  composableDefinition?: ComposableDefinition;
 }
 
-export interface GenerationContext {
-  patterns: CompositionPattern[];
-  rules: GenerationRules;
-  componentRegistry: string[];
-}
-
-export interface GeneratedCode {
-  code: string;
-  metadata: {
-    linesOfCode: number;
-    importsCount: number;
-    componentsUsed: string[];
-    i18nKeys: string[];
+export interface AIGenerationGuide {
+  task: string;
+  context: {
+    type: string;
+    entity: string;
+    features: string[];
   };
+  patterns: {
+    name: string;
+    description: string;
+    code: string;
+  }[];
+  rules: {
+    structure: string;
+    naming: string[];
+    validation: string[];
+    forbidden: string[];
+  };
+  requirements: {
+    components: string[];
+    imports: string[];
+    logic: string;
+  };
+  examples: string[];
+  constraints: string[];
+  estimatedComplexity: number;
 }
 
 /**
- * AICodeGenerator provides structure and context for AI code generation
+ * AICodeGenerator builds comprehensive guidance for AI via MCP
  *
- * This class does NOT call AI APIs directly.
- * Instead, it prepares the context (patterns, rules, examples) that AI
- * uses when generating code through MCP tools.
+ * ARCHITECTURE (MCP Server Pattern):
+ * ┌─────────────────────────────────────────────────────────────┐
+ * │ AI (Cursor/Claude)                                          │
+ * │   ↓ calls MCP tool                                          │
+ * │ generate_with_composition({plan, features})                 │
+ * │   ↓                                                          │
+ * │ MCP Server (this code)                                      │
+ * │   → AICodeGenerator.buildGenerationGuide()                  │
+ * │   → Returns structured guide with patterns/rules/examples   │
+ * │   ↓                                                          │
+ * │ AI reads guide                                              │
+ * │   → Composes code from patterns                             │
+ * │   → Follows rules and constraints                           │
+ * │   → Generates Vue SFC/TypeScript                            │
+ * │   ↓                                                          │
+ * │ Returns generated code                                      │
+ * │   ↓                                                          │
+ * │ MCP Server validates code                                   │
+ * │   → If valid: success                                       │
+ * │   → If invalid: AI retries with error feedback              │
+ * └─────────────────────────────────────────────────────────────┘
  *
- * The actual code generation happens when AI (Cursor/Claude) reads:
- * 1. Generation rules from this context
- * 2. Composition patterns
- * 3. UI-Plan requirements
- * 4. Component registry
- *
- * And generates Vue SFC or TypeScript composables following these rules.
+ * KEY POINTS:
+ * - NO direct AI API calls (Claude/GPT)
+ * - AI calls US via MCP
+ * - We provide structured context
+ * - AI generates code based on patterns
+ * - We validate result
  */
 export class AICodeGenerator {
   /**
-   * Generate blade code (Vue SFC)
+   * Build comprehensive generation guide for AI consumption via MCP
    *
-   * This method returns a structured prompt/context that AI uses
-   * to generate the actual code.
+   * This creates a structured guide that AI reads to understand:
+   * - What patterns to compose
+   * - What rules to follow
+   * - What components to use
+   * - How to structure the code
    */
-  generateBlade(
+  buildGenerationGuide(
     context: BladeGenerationContext,
     patterns: CompositionPattern[],
     rules: GenerationRules,
-  ): string {
-    // Build generation instructions for AI
-    const instructions = this.buildBladeInstructions(context, patterns, rules);
+  ): AIGenerationGuide {
+    const { type, naming, componentName, features, logic, composableDefinition } = context;
 
-    // In actual implementation, AI reads these instructions and generates code
-    // For now, return instructions as documentation
-    return instructions;
+    return {
+      task: `Generate ${type} blade: ${componentName}`,
+
+      context: {
+        type: type,
+        entity: naming.entitySingularPascal,
+        features: features,
+      },
+
+      patterns: patterns.map(p => ({
+        name: p.name,
+        description: p.description,
+        code: p.codeExample || p.content,
+      })),
+
+      rules: {
+        structure: type === "list" ? rules.bladeStructure.list : rules.bladeStructure.details,
+        naming: [
+          `Component: ${rules.naming.components}`,
+          `Files: ${rules.naming.files}`,
+          `Variables: ${rules.naming.variables}`,
+        ],
+        validation: rules.validation.required,
+        forbidden: rules.validation.forbidden,
+      },
+
+      requirements: {
+        components: this.extractRequiredComponents(context, patterns),
+        imports: this.buildRequiredImports(context),
+        logic: logic ? this.describeLogic(logic) : "Standard CRUD logic",
+      },
+
+      examples: this.selectRelevantExamples(patterns, features),
+
+      constraints: this.buildConstraints(rules, context),
+
+      estimatedComplexity: this.estimateComplexity(context),
+    };
   }
 
   /**
-   * Generate composable code (TypeScript)
+   * Build detailed blade generation instructions
+   *
+   * This is the main guidance text that AI reads
    */
-  generateComposable(
+  buildBladeInstructions(
     context: BladeGenerationContext,
     patterns: CompositionPattern[],
     rules: GenerationRules,
   ): string {
-    const instructions = this.buildComposableInstructions(context, patterns, rules);
-    return instructions;
-  }
+    const { type, naming, blade, columns, fields, componentName, composableName, route, isWorkspace, menuTitleKey, features, logic } = context;
 
-  /**
-   * Build blade generation instructions for AI
-   */
-  private buildBladeInstructions(
-    context: BladeGenerationContext,
-    patterns: CompositionPattern[],
-    rules: GenerationRules,
-  ): string {
-    const { type, naming, blade, columns, fields, componentName, composableName, route, isWorkspace, menuTitleKey, features } = context;
+    let instructions = `# 🎯 Generate Vue SFC Blade: ${componentName}
 
-    return `# Generate Vue SFC Blade: ${componentName}
+## 📋 Task Overview
 
-## Requirements
+You are generating a **${type} blade** for the **${naming.moduleName}** module.
+This blade will ${type === "list" ? "display a table of items with CRUD operations" : "show a form for creating/editing items"}.
 
-**Type:** ${type} blade
-**Component Name:** ${componentName}
-**Composable:** ${composableName}
-**Route:** ${route}
-**Workspace:** ${isWorkspace ? "Yes (add menuItem)" : "No"}
-**Features:** ${features.join(", ") || "none"}
+## 🏗️ Requirements
 
-## Entity Information
+- **Component Name:** \`${componentName}\`
+- **Composable:** \`${composableName}\`
+- **Route:** \`${route}\`
+- **Is Workspace:** ${isWorkspace ? "✅ Yes (add to menu)" : "❌ No"}
+- **Features:** ${features.length > 0 ? features.join(", ") : "Basic (no special features)"}
 
-- Singular: ${naming.entitySingularPascal}
-- Plural: ${naming.entityPluralPascal}
-- Module: ${naming.moduleName}
+## 🎨 Entity Information
 
-${type === "list" ? `## Columns
+- **Singular:** ${naming.entitySingularPascal}
+- **Plural:** ${naming.entityPluralPascal}
+- **Module:** ${naming.moduleName}
+- **Module Key (i18n):** ${naming.moduleNameUpperSnake}
 
-${columns?.map(col => `- ${col.key}: ${col.title} (${col.type || "text"}${col.sortable ? ", sortable" : ""})`).join("\n") || "No columns defined"}` : ""}
+`;
 
-${type === "details" ? `## Fields
+    // Add columns/fields section
+    if (type === "list" && columns) {
+      instructions += `## 📊 Columns to Display
 
-${fields?.map(field => `- ${field.key}: ${field.label} (${field.as}, ${field.type || "text"}${field.required ? ", required" : ""})`).join("\n") || "No fields defined"}` : ""}
+${columns.map(col => `- **${col.key}**: ${col.title} (${col.type || "text"}${col.sortable ? ", sortable" : ""})`).join("\n")}
 
-## Structure Rules
+`;
+    } else if (type === "details" && fields) {
+      instructions += `## 📝 Form Fields
 
+${fields.map(field => `- **${field.key}**: ${field.label} (${field.as}, ${field.type || "text"}${field.required ? ", required" : ""})`).join("\n")}
+
+`;
+    }
+
+    // Add logic section if provided
+    if (logic) {
+      instructions += `## ⚙️ Logic Requirements
+
+${this.describeLogic(logic)}
+
+`;
+    }
+
+    // Add patterns section
+    instructions += `## 🧩 Composition Patterns to Use
+
+You should compose your code from these patterns:
+
+${patterns.map((p, i) => `### ${i + 1}. ${p.name}
+
+${p.description}
+
+**Required Components:** ${p.requiredComponents.join(", ")}
+**Features:** ${p.features.join(", ") || "Basic"}
+
+${p.codeExample ? `**Example:**
+\`\`\`vue
+${p.codeExample}
+\`\`\`
+` : ""}`).join("\n")}
+
+`;
+
+    // Add structure rules
+    instructions += `## 📐 Structure Rules
+
+**Blade Structure:**
 ${type === "list" ? rules.bladeStructure.list : rules.bladeStructure.details}
 
-## Patterns to Follow
-
-${patterns.map(p => `### ${p.name}
-${p.description}
-**Required Components:** ${p.requiredComponents.join(", ")}
-**Features:** ${p.features.join(", ")}
-`).join("\n")}
-
-## Naming Conventions
-
-- Component name: ${rules.naming.components}
-- File name: ${rules.naming.files}
+**Naming Conventions:**
+- Components: ${rules.naming.components}
+- Files: ${rules.naming.files}
 - Variables: ${rules.naming.variables}
 
-## i18n Requirements
-
+**i18n:**
 - Structure: ${rules.i18n.structure}
 - Case: ${rules.i18n.case}
 - Usage: ${rules.i18n.usage}
 
-**Module Key:** ${naming.moduleNameUpperSnake}
-**Menu Title Key:** ${menuTitleKey}
+`;
 
-## defineOptions
+    // Add defineOptions template
+    instructions += `## 🔧 defineOptions Template
 
 \`\`\`typescript
 defineOptions({
@@ -157,7 +251,10 @@ defineOptions({
 });
 \`\`\`
 
-## Required Imports
+`;
+
+    // Add required imports
+    instructions += `## 📦 Required Imports
 
 \`\`\`typescript
 import { ref, computed, onMounted } from "vue";
@@ -167,172 +264,416 @@ import { ${composableName} } from "../composables";
 ${type === "details" ? 'import { Field } from "vee-validate";' : ""}
 \`\`\`
 
-## Validation Rules
+`;
 
-**Required:**
+    // Add validation rules
+    instructions += `## ✅ Validation Rules
+
+**REQUIRED:**
 ${rules.validation.required.map(r => `- ${r}`).join("\n")}
 
-**Forbidden:**
+**FORBIDDEN:**
 ${rules.validation.forbidden.map(r => `- ${r}`).join("\n")}
 
-## Code Generation
-
-Generate a complete Vue SFC file following these rules and patterns.
-Use the composition patterns as reference for structure and logic.
-Include all required sections: template, script setup with TypeScript.
 `;
+
+    // Add generation instructions
+    instructions += `## 🚀 Code Generation Instructions
+
+1. **Study the composition patterns above** - understand the structure and logic
+2. **Compose your code** by combining relevant parts from patterns
+3. **Adapt entity names** - replace generic names with ${naming.entitySingularPascal}/${naming.entityPluralPascal}
+4. **Implement the required logic** from the Logic Requirements section
+5. **Use proper i18n keys** - all strings must use $t() with ${naming.moduleNameUpperSnake} prefix
+6. **Follow TypeScript best practices** - proper types, interfaces, and generics
+7. **Include error handling** - try/catch blocks in async methods
+8. **Add loading states** - use loading ref from composable
+
+## 📤 Output Format
+
+Generate a **complete, production-ready Vue SFC file** with:
+- \`<template>\` section with VcComponents
+- \`<script setup lang="ts">\` section with TypeScript
+- All imports, types, and logic
+- Proper i18n usage throughout
+- No placeholder comments or TODOs
+
+**Generate ONLY the code - no explanations or markdown outside the code block.**
+
+`;
+
+    return instructions;
   }
 
   /**
-   * Build composable generation instructions for AI
+   * Build composable generation instructions
    */
-  private buildComposableInstructions(
+  buildComposableInstructions(
     context: BladeGenerationContext,
     patterns: CompositionPattern[],
     rules: GenerationRules,
   ): string {
-    const { type, naming, columns, fields, composableName } = context;
+    const { type, naming, columns, fields, composableName, composableDefinition } = context;
 
-    return `# Generate TypeScript Composable: ${composableName}
+    let instructions = `# 🎯 Generate TypeScript Composable: ${composableName}
 
-## Requirements
+## 📋 Task Overview
 
-**Type:** ${type === "list" ? "useEntityList" : "useEntityDetails"} pattern
-**Composable Name:** ${composableName}
-**Entity:** ${naming.entitySingularPascal}
-**Mock Data:** Required
+You are generating a **${type === "list" ? "list" : "details"} composable** for the **${naming.entitySingularPascal}** entity.
+This composable will ${type === "list" ? "manage a collection of items with search, pagination, and CRUD" : "manage a single item with save, delete, and validation"}.
 
-## Entity Interface
+## 🏗️ Requirements
 
-${type === "list" ? `Based on columns:
-${columns?.map(col => `- ${col.key}: ${this.inferTypeFromColumn(col)}`).join("\n")}` : ""}
+- **Composable Name:** \`${composableName}\`
+- **Entity:** ${naming.entitySingularPascal}
+- **Pattern:** ${type === "list" ? "useEntityList" : "useEntityDetails"}
+- **Mock Data:** ✅ Required
 
-${type === "details" ? `Based on fields:
-${fields?.map(field => `- ${field.key}: ${field.type || "string"}${field.required ? "" : " | undefined"}`).join("\n")}` : ""}
+`;
 
-## Pattern Structure
+    // Add methods if defined
+    if (composableDefinition?.methods && composableDefinition.methods.length > 0) {
+      instructions += `## 🔧 Required Methods
+
+${composableDefinition.methods.map(m => `- \`${m}()\``).join("\n")}
+
+`;
+    }
+
+    // Add entity interface
+    if (type === "list" && columns) {
+      instructions += `## 🗂️ Entity Interface (from columns)
+
+\`\`\`typescript
+interface ${naming.entitySingularPascal} {
+${columns.map(col => `  ${col.key}: ${this.inferTypeFromColumn(col)};`).join("\n")}
+  id: string;
+  createdDate?: Date;
+  modifiedDate?: Date;
+}
+\`\`\`
+
+`;
+    } else if (type === "details" && fields) {
+      instructions += `## 🗂️ Entity Interface (from fields)
+
+\`\`\`typescript
+interface ${naming.entitySingularPascal} {
+${fields.map(field => `  ${field.key}${field.required ? "" : "?"}: ${this.inferTypeFromField(field)};`).join("\n")}
+  id: string;
+}
+\`\`\`
+
+`;
+    }
+
+    // Add pattern structure
+    instructions += `## 🧩 Pattern Structure
 
 ${type === "list" ? `### useEntityList Pattern
 
 \`\`\`typescript
-// Mock data array
-const MOCK_${naming.entityPluralCamel.toUpperCase()}: ${naming.entitySingularPascal}[] = [...]
+// 1. Mock data array
+const MOCK_${naming.entityPluralCamel.toUpperCase()}: ${naming.entitySingularPascal}[] = [
+  // Generate 3-5 realistic mock items
+];
 
-// Reactive state
-const items = ref<${naming.entitySingularPascal}[]>([])
-const loading = ref(false)
-const totalCount = ref(0)
-const currentPage = ref(1)
+// 2. Reactive state
+const items = ref<${naming.entitySingularPascal}[]>([]);
+const loading = ref(false);
+const totalCount = ref(0);
+const currentPage = ref(1);
 
-// Computed
-const pages = computed(() => Math.ceil(totalCount.value / pageSize))
+// 3. Computed properties
+const pages = computed(() => Math.ceil(totalCount.value / pageSize));
 
-// Methods
-async function load${naming.entityPluralPascal}(query?: SearchQuery)
-async function delete${naming.entitySingularPascal}(id: string)
-async function reload()
+// 4. Methods
+async function load(query?: SearchQuery) {
+  loading.value = true;
+  await simulateDelay();
+  // Filter and paginate MOCK_DATA
+  loading.value = false;
+}
 
-// Return
+async function deleteItem(id: string) {
+  // Remove from MOCK_DATA
+  await reload();
+}
+
+// 5. Return object
 return {
   items,
   loading,
   totalCount,
   currentPage,
   pages,
-  load${naming.entityPluralPascal},
-  delete${naming.entitySingularPascal},
+  load,
+  deleteItem,
   reload,
-}
+};
 \`\`\`
 ` : `### useEntityDetails Pattern
 
 \`\`\`typescript
-// Factory function
-function createEmpty${naming.entitySingularPascal}(): ${naming.entitySingularPascal}
+// 1. Factory function
+function createEmpty(): ${naming.entitySingularPascal} {
+  return {
+    id: "",
+    // ... all fields with default values
+  };
+}
 
-// Reactive state
-const item = ref<${naming.entitySingularPascal}>(createEmpty${naming.entitySingularPascal}())
-const loading = ref(false)
-const originalItem = ref<${naming.entitySingularPascal}>()
+// 2. Reactive state
+const item = ref<${naming.entitySingularPascal}>(createEmpty());
+const loading = ref(false);
+const originalItem = ref<${naming.entitySingularPascal}>();
 
-// Computed
+// 3. Computed properties
 const isModified = computed(() =>
   JSON.stringify(item.value) !== JSON.stringify(originalItem.value)
-)
+);
 
-// Methods
-async function load${naming.entitySingularPascal}(args: { id: string })
-async function save${naming.entitySingularPascal}()
-async function delete${naming.entitySingularPascal}()
-function reset()
+// 4. Methods
+async function load(args: { id: string }) {
+  loading.value = true;
+  await simulateDelay();
+  // Mock load
+  item.value = mockData;
+  originalItem.value = JSON.parse(JSON.stringify(item.value));
+  loading.value = false;
+}
 
-// Return
+async function save() {
+  loading.value = true;
+  await simulateDelay();
+  console.log("Saving:", item.value);
+  originalItem.value = JSON.parse(JSON.stringify(item.value));
+  loading.value = false;
+}
+
+// 5. Return object
 return {
   item,
   loading,
   isModified,
-  load${naming.entitySingularPascal},
-  save${naming.entitySingularPascal},
-  delete${naming.entitySingularPascal},
+  load,
+  save,
+  deleteItem,
   reset,
-}
+};
 \`\`\`
 `}
 
-## Mock Data Requirements
+## 📦 Mock Data Requirements
 
-${type === "list" ? `Generate 3 mock items with realistic data:
-- IDs: "1", "2", "3"
-- Dates: Use Date.now() - random days
-- All columns should have values
-` : `Generate default values for all fields:
-- Strings: empty ""
-- Numbers: 0
-- Booleans: false
-- Dates: new Date()
-- Arrays: []
+${type === "list" ? `Generate **3-5 mock items** with realistic data:
+- IDs: "1", "2", "3", ...
+- Dates: Use \`new Date(Date.now() - Math.random() * 30 * 86400000)\` for variety
+- All columns should have realistic values
+- Use faker-like patterns for names, emails, etc.
+` : `Generate **default values** for all fields:
+- Strings: empty \`""\`
+- Numbers: \`0\`
+- Booleans: \`false\`
+- Dates: \`new Date()\`
+- Arrays: \`[]\`
+- Objects: \`{}\`
 `}
 
-## Async Behavior
+## ⏱️ Async Behavior
 
-All methods should:
-1. Set loading = true
-2. Simulate API delay: await new Promise(resolve => setTimeout(resolve, 300))
-3. Perform operation (filter, update, delete)
-4. Set loading = false
-5. Include try/catch with error logging
+All async methods should:
+1. Set \`loading.value = true\`
+2. Simulate API delay: \`await new Promise(resolve => setTimeout(resolve, 300))\`
+3. Perform operation (filter, update, delete with mock data)
+4. Set \`loading.value = false\`
+5. Include try/catch with proper error handling
 
-## TypeScript Types
-
-Define proper interfaces:
-- ${naming.entitySingularPascal} interface with all properties
-- SearchQuery interface (for list)
-- LoadArgs interface (for details)
-
-## Export
+## 📤 Export
 
 \`\`\`typescript
 export default function ${composableName}() {
   // ... implementation
-  return { ... }
+  return { ... };
 }
 \`\`\`
 
-## Patterns to Follow
+## 🚀 Code Generation Instructions
 
-${patterns.filter(p => p.name.includes("composable")).map(p => `### ${p.name}
-${p.description}
-`).join("\n")}
+1. **Follow the pattern structure** above exactly
+2. **Generate realistic mock data** with proper types
+3. **Implement all required methods** from the pattern
+4. **Use proper TypeScript types** - no \`any\`, proper interfaces
+5. **Add error handling** - try/catch in all async methods
+6. **Include helper functions** if needed (e.g., \`simulateDelay\`)
+7. **Export default** as shown above
 
-## Code Generation
+Generate a **complete, production-ready TypeScript composable** with mock data.
 
-Generate a complete TypeScript composable following these rules and patterns.
-Include mock data, type definitions, and all required methods.
 `;
+
+    return instructions;
   }
 
   /**
-   * Infer TypeScript type from column definition
+   * Describe blade logic for AI context
+   */
+  private describeLogic(logic: BladeLogic): string {
+    let description = "";
+
+    if (Object.keys(logic.handlers).length > 0) {
+      description += "### Event Handlers\n\n";
+      for (const [event, handler] of Object.entries(logic.handlers)) {
+        description += `- **${event}**: \`${handler}\`\n`;
+      }
+      description += "\n";
+    }
+
+    if (logic.toolbar.length > 0) {
+      description += "### Toolbar Actions\n\n";
+      for (const action of logic.toolbar) {
+        description += `- **${action.id}** (${action.icon || "no icon"}): \`${action.action}\`\n`;
+      }
+      description += "\n";
+    }
+
+    if (Object.keys(logic.state).length > 0) {
+      description += "### State Management\n\n";
+      for (const [name, def] of Object.entries(logic.state)) {
+        const defaultValue = def.default !== undefined ? ` (default: ${JSON.stringify(def.default)})` : "";
+        description += `- **${name}**: source=${def.source}, reactive=${def.reactive}${defaultValue}\n`;
+      }
+    }
+
+    return description;
+  }
+
+  /**
+   * Extract required components from context and patterns
+   */
+  private extractRequiredComponents(context: BladeGenerationContext, patterns: CompositionPattern[]): string[] {
+    const components = new Set<string>();
+
+    // From patterns
+    for (const pattern of patterns) {
+      for (const comp of pattern.requiredComponents) {
+        components.add(comp);
+      }
+    }
+
+    // From blade type
+    if (context.type === "list") {
+      components.add("VcBlade");
+      components.add("VcTable");
+    } else {
+      components.add("VcBlade");
+      components.add("VcContainer");
+      components.add("VcForm");
+    }
+
+    // From features
+    if (context.features.includes("gallery")) {
+      components.add("VcGallery");
+    }
+
+    return Array.from(components).sort();
+  }
+
+  /**
+   * Build required imports list
+   */
+  private buildRequiredImports(context: BladeGenerationContext): string[] {
+    const imports = [
+      "{ ref, computed, onMounted } from 'vue'",
+      "{ useI18n } from 'vue-i18n'",
+      "{ IBladeToolbar, useBladeNavigation } from '@vc-shell/framework'",
+      `{ ${context.composableName} } from '../composables'`,
+    ];
+
+    if (context.type === "details") {
+      imports.push("{ Field } from 'vee-validate'");
+    }
+
+    return imports;
+  }
+
+  /**
+   * Select relevant examples from patterns
+   */
+  private selectRelevantExamples(patterns: CompositionPattern[], features: string[]): string[] {
+    const examples: string[] = [];
+
+    for (const pattern of patterns) {
+      if (pattern.codeExample) {
+        examples.push(`### ${pattern.name}\n\`\`\`vue\n${pattern.codeExample}\n\`\`\``);
+      }
+    }
+
+    return examples;
+  }
+
+  /**
+   * Build constraints list
+   */
+  private buildConstraints(rules: GenerationRules, context: BladeGenerationContext): string[] {
+    const constraints: string[] = [
+      "Use ONLY components from VC-Shell registry",
+      "ALL strings must use i18n ($t())",
+      "NO hardcoded text",
+      "Use TypeScript - no `any` types",
+      "Include error handling in async methods",
+      "Follow naming conventions strictly",
+    ];
+
+    constraints.push(...rules.validation.forbidden);
+
+    return constraints;
+  }
+
+  /**
+   * Estimate code complexity
+   */
+  private estimateComplexity(context: BladeGenerationContext): number {
+    let complexity = 0;
+
+    // Base complexity
+    complexity += context.type === "list" ? 5 : 4;
+
+    // Features
+    complexity += context.features.length * 2;
+
+    // Columns/fields
+    complexity += (context.columns?.length || 0) * 0.5;
+    complexity += (context.fields?.length || 0) * 0.5;
+
+    // Logic
+    if (context.logic) {
+      complexity += Object.keys(context.logic.handlers).length;
+      complexity += context.logic.toolbar.length;
+      complexity += Object.keys(context.logic.state).length * 0.5;
+    }
+
+    return Math.round(complexity);
+  }
+
+  /**
+   * Estimate lines of code
+   */
+  private estimateLines(context: BladeGenerationContext): number {
+    let lines = context.type === "list" ? 200 : 180;
+
+    // Features add lines
+    lines += context.features.length * 30;
+
+    // Columns/fields
+    lines += (context.columns?.length || 0) * 5;
+    lines += (context.fields?.length || 0) * 10;
+
+    return lines;
+  }
+
+  /**
+   * Infer TypeScript type from column
    */
   private inferTypeFromColumn(column: Column): string {
     switch (column.type) {
@@ -352,30 +693,18 @@ Include mock data, type definitions, and all required methods.
   }
 
   /**
-   * Extract metadata from generated code
+   * Infer TypeScript type from field
    */
-  extractMetadata(code: string): GeneratedCode["metadata"] {
-    const lines = code.split("\n");
-    const linesOfCode = lines.filter(line => line.trim() && !line.trim().startsWith("//")).length;
-
-    // Extract imports
-    const importMatches = code.matchAll(/^import\s+.*from\s+["']([^"']+)["']/gm);
-    const imports = Array.from(importMatches).map(m => m[1]);
-
-    // Extract components used
-    const componentMatches = code.matchAll(/<(Vc[A-Z][a-zA-Z]*)/g);
-    const components = Array.from(new Set(Array.from(componentMatches).map(m => m[1])));
-
-    // Extract i18n keys
-    const i18nMatches = code.matchAll(/\$t\s*\(\s*["']([^"']+)["']/g);
-    const i18nKeys = Array.from(new Set(Array.from(i18nMatches).map(m => m[1])));
-
-    return {
-      linesOfCode,
-      importsCount: imports.length,
-      componentsUsed: components,
-      i18nKeys,
-    };
+  private inferTypeFromField(field: Field): string {
+    switch (field.type) {
+      case "number":
+        return "number";
+      case "boolean":
+        return "boolean";
+      case "date":
+        return "Date | string";
+      default:
+        return "string";
+    }
   }
 }
-

@@ -242,7 +242,7 @@ export class UnifiedCodeGenerator {
       // NOTE: This generates instructions for AI to follow
       // The actual code generation happens when AI (Cursor/Claude) reads these instructions
       // through MCP and generates the code
-      const instructions = this.aiGenerator.generateBlade(
+      const instructions = this.aiGenerator.buildBladeInstructions(
         {
           type: context.type,
           naming: context.naming,

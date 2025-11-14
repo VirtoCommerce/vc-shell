@@ -26,6 +26,9 @@ import {
   generateBladeSchema,
   searchComponentsByIntentSchema,
   getComponentCapabilitiesSchema,
+  generateWithCompositionSchema,
+  inferBladeLogicSchema,
+  getCompositionGuideSchema,
   type Component,
 } from "../schemas/zod-schemas.js";
 import {
@@ -38,7 +41,11 @@ import {
 import { generateMinimalAuditChecklist } from "../utils/audit-checklist.js";
 import { componentNotFoundError, mcpError } from "../utils/errors.js";
 import { UnifiedCodeGenerator } from "../core/unified-generator.js";
-import type { UIPlan as ValidatorUIPlan } from "../core/validator.js";
+import type { UIPlan as ValidatorUIPlan, Blade } from "../core/validator.js";
+import { LogicPlanner } from "../core/logic-planner.js";
+import { BladeComposer } from "../core/blade-composer.js";
+import { SmartCodeGenerator, GenerationStrategy } from "../core/smart-generator.js";
+import { getGenerationRulesProvider } from "../core/generation-rules.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -158,6 +165,24 @@ export async function mcpServerCommand() {
             "Get all capabilities of a component with examples. Returns detailed information about props, slots, events, features, and patterns. Use this to understand what a component can do before using it.",
           inputSchema: zodToJsonSchema(getComponentCapabilitiesSchema),
         },
+        {
+          name: "generate_with_composition",
+          description:
+            "Generate complete module using smart strategy selection (template/composition/ai-full). This is the ENHANCED version of generate_complete_module with AI-driven pattern composition. Automatically selects optimal generation strategy based on complexity analysis.",
+          inputSchema: zodToJsonSchema(generateWithCompositionSchema),
+        },
+        {
+          name: "infer_blade_logic",
+          description:
+            "Automatically infer blade logic (handlers, toolbar, state) from blade structure and features. Use this to generate logic definitions for UI-Plan or to understand what logic a blade should have. Can merge with existing user-provided logic.",
+          inputSchema: zodToJsonSchema(inferBladeLogicSchema),
+        },
+        {
+          name: "get_composition_guide",
+          description:
+            "Get comprehensive composition guide for AI code generation. Returns patterns, rules, examples, and instructions for composing blade code from patterns. Use this to understand how to compose code for specific blade types and features.",
+          inputSchema: zodToJsonSchema(getCompositionGuideSchema),
+        },
       ],
     };
   });
@@ -212,6 +237,18 @@ export async function mcpServerCommand() {
           uri: "vcshell://generation-rules",
           name: "Code Generation Rules",
           description: "Complete rules for AI code generation including blade structure, naming conventions, i18n patterns, composition patterns, and validation rules",
+          mimeType: "application/json",
+        },
+        {
+          uri: "vcshell://composition-guide",
+          name: "Pattern Composition Guide",
+          description: "Guide for composing blades from patterns using AI. Explains pattern selection, composition strategies, and generation workflows",
+          mimeType: "text/markdown",
+        },
+        {
+          uri: "vcshell://logic-patterns",
+          name: "Common Logic Patterns",
+          description: "Common blade logic patterns (handlers, toolbar, state) for list and details blades with various features",
           mimeType: "application/json",
         },
       ],
@@ -374,6 +411,298 @@ export async function mcpServerCommand() {
         };
       }
 
+      case "vcshell://composition-guide": {
+        const guide = `# 🎨 Pattern Composition Guide
+
+## Overview
+
+This guide explains how to compose VC-Shell blade code from multiple patterns instead of using fixed templates.
+
+## Pattern Composition Philosophy
+
+**OLD APPROACH (v0.5.0):**
+- 5 fixed templates
+- Token replacement
+- Limited variations
+
+**NEW APPROACH (v0.6.0):**
+- Unlimited pattern combinations
+- Smart composition
+- AI-driven generation
+
+## Available Patterns
+
+### Base Patterns
+1. **list-basic** - Basic list blade with VcTable
+2. **form-basic** - Basic details blade with VcForm
+
+### Feature Patterns
+3. **filters-pattern** - Add filters slot to list
+4. **list-with-multiselect** - Add row selection
+5. **validation-pattern** - Add VeeValidate
+6. **gallery-pattern** - Add image gallery
+
+### Custom Patterns
+7. **custom-column-slots** - Custom table columns
+8. **custom-toolbar** - Custom toolbar actions
+9. **widget-integration** - Add custom widgets
+
+### Shared Patterns
+10. **error-handling** - Comprehensive error handling
+11. **async-select** - Async searchable selects
+12. **i18n-integration** - Internationalization
+
+## Composition Strategy
+
+### Step 1: Select Base Pattern
+Choose either list-basic or form-basic based on blade layout.
+
+### Step 2: Add Feature Patterns
+Add patterns for each feature (filters, multiselect, etc.)
+
+### Step 3: Add Custom Patterns
+If blade has customSlots, widgets, or custom logic, add custom patterns.
+
+### Step 4: Merge Patterns
+Combine all patterns cohesively:
+- Merge imports
+- Combine template sections
+- Merge script setup code
+- Combine styles
+
+### Step 5: Apply Logic
+Apply blade.logic definitions:
+- Wire up handlers
+- Add toolbar actions
+- Setup state management
+
+## Composition Rules
+
+### Structure Rules
+1. All VC-Shell blades must use Composition API
+2. Always use \`<script setup lang="ts">\`
+3. Use \`markRaw()\` for blade references
+4. Props: interface Props defined at top
+5. Emits: defineEmits() after props
+
+### Naming Rules
+1. Components: PascalCase (EntityList, EntityDetails)
+2. Composables: use + PascalCase (useEntityList)
+3. Files: kebab-case (entity-list.vue)
+4. Variables: camelCase
+5. Constants: UPPER_CASE
+
+### i18n Rules
+1. ALL text must use $t()
+2. Keys: pages.{module}.{blade}.{section}.{key}
+3. Tooltips: pages.{module}.{blade}.tooltips.{key}
+4. Errors: pages.{module}.{blade}.errors.{key}
+
+### Import Rules
+1. Vue imports first
+2. VC-Shell composables second
+3. Local imports last
+4. Always import { markRaw } from 'vue'
+
+## Example Composition
+
+\`\`\`vue
+<template>
+  <!-- Base: VcTable -->
+  <VcTable
+    :items="items"
+    :loading="loading"
+    @item-click="onItemClick"
+  >
+    <!-- Feature: Filters -->
+    <template #filters>
+      <VcInput v-model="stagedFilters.keyword" />
+    </template>
+
+    <!-- Custom: Column slots -->
+    <template #item_status="{ item }">
+      <VcStatus :value="item.isActive" />
+    </template>
+  </VcTable>
+</template>
+
+<script setup lang="ts">
+// Imports (Base + Feature patterns)
+import { ref, computed, onMounted } from 'vue';
+import { markRaw } from 'vue';
+import { useEntityList } from './composables/useEntityList';
+
+// Props & Emits
+interface Props {
+  param?: string;
+}
+const props = defineProps<Props>();
+const emit = defineEmits<{
+  close: [];
+}>();
+
+// Composable (Base pattern)
+const { items, loading, load, deleteItem } = useEntityList();
+
+// State (Feature patterns)
+const selectedItemId = ref<string>();
+const selectedItems = ref<string[]>([]);
+const stagedFilters = ref({});
+const appliedFilters = ref({});
+
+// Handlers (Logic from UI-Plan)
+const onItemClick = (item: any) => {
+  openBlade({
+    blade: markRaw(EntityDetails),
+    param: item.id,
+    onOpen: () => { selectedItemId.value = item.id },
+    onClose: () => { selectedItemId.value = undefined; load() }
+  });
+};
+
+// Lifecycle
+onMounted(() => {
+  load();
+});
+</script>
+\`\`\`
+
+## Quality Checklist
+
+Before generating code, ensure:
+- [ ] Uses only VC-Shell components from registry
+- [ ] All text uses i18n ($t())
+- [ ] Handlers match blade.logic definitions
+- [ ] State matches blade.logic.state
+- [ ] Toolbar matches blade.logic.toolbar
+- [ ] TypeScript types are correct
+- [ ] Error handling is comprehensive
+- [ ] Loading states are handled
+- [ ] Empty states are handled
+
+## Common Mistakes
+
+❌ **DON'T:**
+- Use HTML elements instead of VC components
+- Hardcode text strings
+- Use Options API
+- Forget markRaw() for blades
+- Mix naming conventions
+
+✅ **DO:**
+- Use VcInput, VcButton, VcTable, etc.
+- Use $t() for all text
+- Use Composition API with <script setup>
+- Always markRaw() blade components
+- Follow naming conventions strictly
+
+## Strategy Selection
+
+The system automatically chooses:
+- **TEMPLATE** (complexity ≤5): Fast AST transformation
+- **COMPOSITION** (5-10): Pattern composition (THIS GUIDE)
+- **AI_FULL** (>10): Full AI generation with all patterns
+
+When using COMPOSITION strategy, follow this guide precisely.
+`;
+
+        return {
+          contents: [
+            {
+              uri,
+              mimeType: "text/markdown",
+              text: guide,
+            },
+          ],
+        };
+      }
+
+      case "vcshell://logic-patterns": {
+        const patterns = {
+          listPatterns: {
+            basic: {
+              handlers: {
+                onItemClick: "openBlade({blade: markRaw(EntityDetails), param: item.id, onOpen: () => { selectedItemId.value = item.id }, onClose: () => { selectedItemId.value = undefined; load() }})",
+              },
+              toolbar: [
+                { id: "refresh", icon: "fas fa-sync", action: "load()" },
+                { id: "add", icon: "fas fa-plus", action: "openBlade({blade: markRaw(EntityDetails)})" },
+              ],
+              state: {
+                items: { source: "composable", reactive: true },
+                loading: { source: "composable", reactive: true },
+                selectedItemId: { source: "local", reactive: true, default: "undefined" },
+              },
+            },
+            withFilters: {
+              handlers: {
+                onApplyFilters: "appliedFilters.value = stagedFilters.value; load()",
+              },
+              state: {
+                stagedFilters: { source: "local", reactive: true, default: "{}" },
+                appliedFilters: { source: "composable", reactive: true },
+              },
+            },
+            withMultiselect: {
+              handlers: {
+                onSelectionChange: "selectedItems.value = selectedIds",
+                onDelete: "confirmAndDelete(item.id)",
+              },
+              toolbar: [
+                { id: "delete-selected", icon: "fas fa-trash", action: "deleteSelectedItems()", condition: "selectedItems.value.length > 0" },
+              ],
+              state: {
+                selectedItems: { source: "local", reactive: true, default: "[]" },
+              },
+            },
+          },
+          detailsPatterns: {
+            basic: {
+              handlers: {
+                onSave: "validateAndSave()",
+              },
+              toolbar: [
+                { id: "save", icon: "fas fa-save", action: "save()", condition: "modified && !loading" },
+                { id: "cancel", icon: "fas fa-times", action: "close()" },
+              ],
+              state: {
+                item: { source: "composable", reactive: true },
+                loading: { source: "composable", reactive: true },
+                modified: { source: "local", reactive: true, default: "false" },
+              },
+            },
+            withValidation: {
+              handlers: {
+                onValidate: "validateForm()",
+              },
+              state: {
+                errors: { source: "local", reactive: true, default: "{}" },
+                validating: { source: "local", reactive: true, default: "false" },
+              },
+            },
+            withGallery: {
+              handlers: {
+                onImageUpload: "uploadImage(file)",
+                onImageDelete: "deleteImage(imageId)",
+              },
+              state: {
+                images: { source: "local", reactive: true, default: "[]" },
+                uploading: { source: "local", reactive: true, default: "false" },
+              },
+            },
+          },
+        };
+
+        return {
+          contents: [
+            {
+              uri,
+              mimeType: "application/json",
+              text: JSON.stringify(patterns, null, 2),
+            },
+          ],
+        };
+      }
 
       default:
         throw new Error(`Unknown resource: ${uri}`);
@@ -854,7 +1183,12 @@ ${content}
 
           const { plan } = parsed.data;
           const validator = new Validator();
-          const validation = validator.validateUIPlan(plan);
+
+          // First, normalize the plan (auto-fix id → key, width, etc.)
+          const { plan: normalizedPlan, changes } = validator.normalizePlan(plan);
+
+          // Then validate normalized plan
+          const validation = validator.validateUIPlan(normalizedPlan);
 
           if (validation.valid) {
             return {
@@ -864,7 +1198,12 @@ ${content}
                   text: JSON.stringify(
                     {
                       valid: true,
-                      message: "UI-Plan is valid, no fixes needed",
+                      fixed: changes.length > 0,
+                      message: changes.length > 0
+                        ? "UI-Plan fixed and validated successfully"
+                        : "UI-Plan is valid, no fixes needed",
+                      plan: normalizedPlan,
+                      changes,
                     },
                     null,
                     2
@@ -874,7 +1213,7 @@ ${content}
             };
           }
 
-          // Generate suggested fixes
+          // Generate suggested fixes for remaining errors
           const fixes = validation.errors.map(error => ({
             path: error.path,
             message: error.message,
@@ -1056,6 +1395,249 @@ ${content}
                   null,
                   2
                 ),
+              },
+            ],
+          };
+        }
+
+        case "generate_with_composition": {
+          const parsed = generateWithCompositionSchema.safeParse(args);
+          if (!parsed.success) {
+            throw new Error(`Invalid arguments: ${parsed.error.message}`);
+          }
+
+          const { plan, cwd, strategy, dryRun } = parsed.data;
+
+          // Validate plan first
+          const validator = new Validator();
+          const validation = validator.validateUIPlan(plan);
+
+          if (!validation.valid) {
+            return {
+              content: [
+                {
+                  type: "text",
+                  text: JSON.stringify(
+                    {
+                      success: false,
+                      error: "UI-Plan validation failed",
+                      errors: validation.errors,
+                      suggestion: "Fix validation errors and try again, or use validate_and_fix_plan tool",
+                    },
+                    null,
+                    2
+                  ),
+                },
+              ],
+              isError: true,
+            };
+          }
+
+          const validatedPlan = plan as ValidatorUIPlan;
+
+          // Initialize smart generator
+          const smartGen = new SmartCodeGenerator();
+          const logicPlanner = new LogicPlanner();
+
+          // For each blade: infer logic if not provided
+          for (const blade of validatedPlan.blades) {
+            if (!blade.logic) {
+              blade.logic = logicPlanner.inferLogic(blade as any);
+            }
+            if (!blade.composable) {
+              blade.composable = logicPlanner.inferComposable(blade as any);
+            }
+          }
+
+          // Determine strategy using SmartCodeGenerator
+          let selectedStrategy: GenerationStrategy;
+          let decision;
+
+          if (strategy && strategy !== "auto") {
+            // User forced strategy
+            selectedStrategy = strategy as GenerationStrategy;
+          } else {
+            // Use SmartCodeGenerator to decide
+            // For now, analyze first blade to determine strategy
+            if (validatedPlan.blades.length > 0) {
+              const firstBlade = validatedPlan.blades[0];
+              const mockContext = {
+                type: firstBlade.layout === "grid" ? "list" : "details",
+                features: firstBlade.features || [],
+                blade: firstBlade,
+                columns: firstBlade.components?.find(c => c.type === "VcTable")?.columns,
+                fields: firstBlade.components?.find(c => c.type === "VcForm")?.fields,
+                naming: {
+                  entitySingularCamel: validatedPlan.module,
+                  entitySingularPascal: validatedPlan.module.charAt(0).toUpperCase() + validatedPlan.module.slice(1),
+                },
+                logic: firstBlade.logic,
+              } as any;
+
+              decision = await smartGen.decide(mockContext);
+              selectedStrategy = decision.strategy;
+            } else {
+              selectedStrategy = GenerationStrategy.TEMPLATE;
+            }
+          }
+
+          // Generate module
+          const generator = new UnifiedCodeGenerator();
+          const result = await generator.generateModule(validatedPlan, cwd, {
+            writeToDisk: !dryRun,
+            dryRun,
+            mode: selectedStrategy === GenerationStrategy.AI_FULL ? "ai-first" :
+                  selectedStrategy === GenerationStrategy.COMPOSITION ? "auto" : "template",
+          });
+
+          return {
+            content: [
+              {
+                type: "text",
+                text: JSON.stringify(
+                  {
+                    success: true,
+                    message: `Module generated successfully using ${selectedStrategy} strategy`,
+                    strategy: selectedStrategy,
+                    decision: decision ? {
+                      reason: decision.reason,
+                      complexity: decision.complexity,
+                      estimatedTime: decision.estimatedTime,
+                      willUseFallback: decision.willUseFallback,
+                    } : undefined,
+                    summary: {
+                      module: validatedPlan.module,
+                      blades: result.summary.blades,
+                      composables: result.summary.composables,
+                      locales: result.summary.locales,
+                      registered: result.summary.registered,
+                      totalFiles: result.files.length,
+                      logicInferred: validatedPlan.blades.every(b => b.logic),
+                    },
+                    files: result.files.map(f => ({
+                      path: f.path.replace(cwd, ""),
+                      lines: f.lines,
+                    })),
+                    dryRun: dryRun || false,
+                  },
+                  null,
+                  2
+                ),
+              },
+            ],
+          };
+        }
+
+        case "infer_blade_logic": {
+          const parsed = inferBladeLogicSchema.safeParse(args);
+          if (!parsed.success) {
+            throw new Error(`Invalid arguments: ${parsed.error.message}`);
+          }
+
+          const { blade, merge } = parsed.data;
+          const planner = new LogicPlanner();
+
+          // Infer logic
+          const inferred = planner.inferLogic(blade as any as Blade);
+          const composable = planner.inferComposable(blade as any as Blade);
+
+          // Merge with existing if requested
+          const finalLogic = merge && (blade as any).logic
+            ? planner.mergeLogic(inferred, (blade as any).logic)
+            : inferred;
+
+          return {
+            content: [
+              {
+                type: "text",
+                text: JSON.stringify(
+                  {
+                    blade: {
+                      id: blade.id,
+                      layout: blade.layout,
+                    },
+                    inferred: {
+                      logic: finalLogic,
+                      composable,
+                    },
+                    description: planner.describeLogic(finalLogic),
+                    merged: merge && !!(blade as any).logic,
+                  },
+                  null,
+                  2
+                ),
+              },
+            ],
+          };
+        }
+
+        case "get_composition_guide": {
+          const parsed = getCompositionGuideSchema.safeParse(args);
+          if (!parsed.success) {
+            throw new Error(`Invalid arguments: ${parsed.error.message}`);
+          }
+
+          const { type, features, complexity } = parsed.data;
+          const composer = new BladeComposer();
+          const rulesProvider = getGenerationRulesProvider();
+
+          // Get relevant patterns
+          const mockContext = {
+            type: type,
+            features: features || [],
+            blade: {
+              id: `example-${type}`,
+              layout: type === "list" ? "grid" : "details",
+              features: features || [],
+            } as any,
+          } as any;
+
+          const patterns = (composer as any).selectPatterns(mockContext);
+          const rules = rulesProvider.getRules();
+
+          // Build guide
+          let guide = `# Pattern Composition Guide for ${type.toUpperCase()} Blade\n\n`;
+          guide += `**Type:** ${type}\n`;
+          guide += `**Features:** ${features?.join(", ") || "Basic"}\n`;
+          guide += `**Complexity:** ${complexity || "auto"}\n\n`;
+
+          guide += `## Selected Patterns (${patterns.length})\n\n`;
+          guide += composer.describePatterns(patterns);
+
+          guide += `\n## Composition Strategy\n\n`;
+          guide += `To generate this blade, AI should:\n\n`;
+          guide += `1. **Study base pattern** - Understand the core structure\n`;
+          guide += `2. **Apply feature patterns** - Add filters, multiselect, etc.\n`;
+          guide += `3. **Compose cohesively** - Merge patterns without conflicts\n`;
+          guide += `4. **Follow rules strictly** - Use only VC-Shell components\n`;
+          guide += `5. **Validate thoroughly** - Ensure all parts work together\n\n`;
+
+          guide += `## Rules\n\n`;
+          guide += `**Structure:** ${type === "list" ? rules.bladeStructure.list : rules.bladeStructure.details}\n\n`;
+          guide += `**Naming:**\n`;
+          guide += `- ${rules.naming.components}\n`;
+          guide += `- ${rules.naming.files}\n\n`;
+
+          guide += `**i18n:**\n`;
+          guide += `- ${rules.i18n.usage}\n`;
+          guide += `- ${rules.i18n.case}\n\n`;
+
+          guide += `## Pattern Details\n\n`;
+          for (const pattern of patterns) {
+            guide += `### ${pattern.name}\n`;
+            guide += `${pattern.description}\n\n`;
+            guide += `**Components:** ${pattern.requiredComponents.join(", ")}\n`;
+            guide += `**Features:** ${pattern.features.join(", ") || "Basic"}\n\n`;
+            if (pattern.codeExample) {
+              guide += `**Example:**\n\`\`\`vue\n${pattern.codeExample.substring(0, 500)}...\n\`\`\`\n\n`;
+            }
+          }
+
+          return {
+            content: [
+              {
+                type: "text",
+                text: guide,
               },
             ],
           };

@@ -1,0 +1,97 @@
+{
+  "$schema": "https://vc-shell.dev/schemas/ui-plan.v1.json",
+  "module": "products",
+  "blades": [
+    {
+      "id": "products-list",
+      "route": "/products",
+      "layout": "grid",
+      "title": "pages.products.title",
+      "isWorkspace": true,
+      "features": ["filters", "multiselect"],
+      "components": [
+        {
+          "type": "VcTable",
+          "dataSource": "products",
+          "multiselect": true,
+          "columns": [
+            { "key": "name", "title": "Name", "sortable": true, "type": "link" },
+            { "key": "sku", "title": "SKU", "sortable": true },
+            { "key": "price", "title": "Price", "type": "custom" },
+            { "key": "status", "title": "Status", "type": "badge" },
+            { "key": "createdDate", "title": "Created", "type": "date-ago" },
+            { "key": "actions", "title": "", "type": "actions", "width": 60 }
+          ],
+          "filters": [
+            { "key": "status", "type": "select", "label": "Status" },
+            { "key": "price", "type": "text", "label": "Price Range" }
+          ]
+        }
+      ],
+      "widgets": [
+        {
+          "id": "total-products",
+          "component": "VcCard",
+          "props": {
+            "title": "Total Products",
+            "variant": "info"
+          }
+        }
+      ]
+    },
+    {
+      "id": "products-details",
+      "route": "/products/:id?",
+      "layout": "details",
+      "title": "pages.products.details.title",
+      "features": ["validation", "gallery"],
+      "components": [
+        {
+          "type": "VcForm",
+          "model": "product",
+          "fields": [
+            { 
+              "key": "name", 
+              "as": "VcInput", 
+              "label": "Name", 
+              "required": true,
+              "validation": "required|min:3"
+            },
+            { 
+              "key": "sku", 
+              "as": "VcInput", 
+              "label": "SKU",
+              "required": true
+            },
+            { 
+              "key": "price", 
+              "as": "VcInput", 
+              "label": "Price",
+              "required": true
+            },
+            { 
+              "key": "status", 
+              "as": "VcSelect", 
+              "label": "Status",
+              "options": [
+                { "label": "Active", "value": "active" },
+                { "label": "Inactive", "value": "inactive" }
+              ]
+            },
+            {
+              "key": "description",
+              "as": "VcTextarea",
+              "label": "Description"
+            },
+            {
+              "key": "images",
+              "as": "VcGallery",
+              "label": "Product Images",
+              "uploadPath": "/api/products/images"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

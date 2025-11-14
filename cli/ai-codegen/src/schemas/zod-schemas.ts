@@ -272,3 +272,32 @@ export const getComponentCapabilitiesSchema = z.object({
 export type SearchComponentsByIntentInput = z.infer<typeof searchComponentsByIntentSchema>;
 export type GetComponentCapabilitiesInput = z.infer<typeof getComponentCapabilitiesSchema>;
 
+// New AI-First Generation Schemas
+
+export const generateWithCompositionSchema = z.object({
+  plan: z.record(z.unknown()).describe("UI-Plan JSON object to generate from"),
+  cwd: z.string().describe("Working directory (project root)"),
+  strategy: z.enum(["auto", "template", "composition", "ai-full"]).optional().default("auto").describe("Generation strategy: auto (smart selection), template (fast AST), composition (pattern-based), ai-full (complete AI)"),
+  dryRun: z.boolean().optional().describe("If true, shows what would be generated without writing files"),
+});
+
+export const inferBladeLogicSchema = z.object({
+  blade: z.object({
+    id: z.string(),
+    layout: z.enum(["grid", "details", "page"]),
+    features: z.array(z.string()).optional(),
+    components: z.array(z.unknown()).optional(),
+  }).describe("Blade definition to infer logic from"),
+  merge: z.boolean().optional().default(false).describe("If true, merges with existing blade.logic (if provided)"),
+});
+
+export const getCompositionGuideSchema = z.object({
+  type: z.enum(["list", "details"]).describe("Blade type"),
+  features: z.array(z.string()).optional().describe("Features to include (filters, multiselect, validation, gallery, widgets)"),
+  complexity: z.enum(["simple", "moderate", "complex"]).optional().describe("Optional complexity hint"),
+});
+
+export type GenerateWithCompositionInput = z.infer<typeof generateWithCompositionSchema>;
+export type InferBladeLogicInput = z.infer<typeof inferBladeLogicSchema>;
+export type GetCompositionGuideInput = z.infer<typeof getCompositionGuideSchema>;
+

@@ -3,6 +3,7 @@ import addFormats from "ajv-formats";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { PlanNormalizer } from "./plan-normalizer.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -116,8 +117,10 @@ export class Validator {
   private ajv: Ajv;
   private uiPlanSchema: unknown;
   private componentRegistry: Record<string, unknown>;
+  private normalizer: PlanNormalizer;
 
   constructor() {
+    this.normalizer = new PlanNormalizer();
     this.ajv = new Ajv({ allErrors: true, strict: false });
     addFormats(this.ajv);
 
@@ -138,13 +141,19 @@ export class Validator {
 
   /**
    * Validate UI-Plan against JSON Schema
+   * Automatically normalizes plan before validation
    */
   validateUIPlan(plan: unknown): ValidationResult {
     const errors: ValidationError[] = [];
 
+    // Normalize plan first (id → key, etc.)
+    const normalizedPlan = typeof plan === 'object' && plan !== null
+      ? this.normalizer.normalize(plan as Record<string, unknown>).plan
+      : plan;
+
     // JSON Schema validation
     const validate = this.ajv.compile(this.uiPlanSchema as any);
-    const valid = validate(plan);
+    const valid = validate(normalizedPlan);
 
     if (!valid && validate.errors) {
       for (const error of validate.errors) {
@@ -158,8 +167,8 @@ export class Validator {
 
     // Additional validations (always run, even if schema validation failed)
     // This provides more helpful error messages
-    if (plan && typeof plan === "object" && "blades" in plan) {
-      const uiPlan = plan as UIPlan;
+    if (normalizedPlan && typeof normalizedPlan === "object" && "blades" in normalizedPlan) {
+      const uiPlan = normalizedPlan as UIPlan;
 
       // Validate component usage
       const componentErrors = this.validateComponentUsage(uiPlan);
@@ -266,10 +275,16 @@ export class Validator {
       }
 
       // Routes must start with /
-      if (!blade.route.startsWith("/")) {
+      if (blade.route && !blade.route.startsWith("/")) {
         errors.push({
           path: `/blades/${blade.id}/route`,
           message: `Route must start with "/" (got "${blade.route}")`,
+          severity: "error",
+        });
+      } else if (!blade.route) {
+        errors.push({
+          path: `/blades/${blade.id}/route`,
+          message: `Route is required`,
           severity: "error",
         });
       }
@@ -293,6 +308,13 @@ export class Validator {
    */
   getComponentRegistry(): Record<string, unknown> {
     return this.componentRegistry;
+  }
+
+  /**
+   * Normalize UI-Plan (fix common issues like id → key)
+   */
+  normalizePlan(plan: Record<string, unknown>): { plan: Record<string, unknown>; changes: string[] } {
+    return this.normalizer.normalize(plan);
   }
 }
 

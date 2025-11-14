@@ -1,0 +1,39 @@
+{
+  "$schema": "https://vc-shell.dev/schemas/ui-plan.v1.json",
+  "module": "vendors",
+  "blades": [
+    {
+      "id": "vendors-list",
+      "route": "/vendors",
+      "layout": "grid",
+      "title": "pages.vendors.title",
+      "isWorkspace": true,
+      "components": [
+        {
+          "type": "VcTable",
+          "dataSource": "vendors",
+          "columns": [
+            { "key": "name", "title": "Name", "sortable": true },
+            { "key": "status", "title": "Status", "type": "badge" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "vendors-details",
+      "route": "/vendors/:id?",
+      "layout": "details",
+      "title": "pages.vendors.details.title",
+      "components": [
+        {
+          "type": "VcForm",
+          "model": "vendor",
+          "fields": [
+            { "key": "name", "as": "VcInput", "label": "Name", "required": true },
+            { "key": "status", "as": "VcSelect", "label": "Status" }
+          ]
+        }
+      ]
+    }
+  ]
+}

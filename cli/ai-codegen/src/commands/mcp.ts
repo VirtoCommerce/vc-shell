@@ -23,10 +23,8 @@ import {
   getComponentExamplesSchema,
   scaffoldAppSchema,
   validateUIPlanSchema,
-  getBladeTemplateSchema,
   generateCompleteModuleSchema,
   validateAndFixPlanSchema,
-  generateBladeSchema,
   searchComponentsByIntentSchema,
   getComponentCapabilitiesSchema,
   generateWithCompositionSchema,
@@ -42,19 +40,12 @@ import {
   getFrameworkExamplesSchema,
 } from "./mcp/tool-schemas.js";
 
-import {
-  type Component,
-  type ComponentRegistry,
-  type FrameworkRegistry,
-} from "../schemas/zod-schemas.js";
+import { type Component, type ComponentRegistry, type FrameworkRegistry } from "../schemas/zod-schemas.js";
 
 import { RegistryLoader } from "./mcp/registry-loader.js";
 import { getResourceDefinitions, readResource } from "./mcp/resources.js";
-import {
-  formatMultipleComponentDetails,
-  formatSearchResults,
-  formatMcpError,
-} from "../utils/formatters.js";
+import { MCPMetricsTracker } from "./mcp/mcp-metrics.js";
+import { formatMultipleComponentDetails, formatSearchResults, formatMcpError } from "../utils/formatters.js";
 import { generateMinimalAuditChecklist } from "../utils/audit-checklist.js";
 import { componentNotFoundError } from "../utils/errors.js";
 import { UnifiedCodeGenerator } from "../core/unified-generator.js";
@@ -126,6 +117,18 @@ export async function mcpServerCommand() {
   // Get examples path for tool handlers (still needed for component examples, templates, etc.)
   const examplesPath = path.join(rootPath, "src", "examples");
 
+  // ✅ Initialize MCP Metrics Tracker
+  const debugMode = process.env.DEBUG_MCP === "true";
+  const metricsTracker = new MCPMetricsTracker(debugMode);
+  const metricsFile = process.env.MCP_METRICS_FILE;
+
+  if (debugMode) {
+    console.log("[MCP] Debug mode enabled");
+    if (metricsFile) {
+      console.log(`[MCP] Metrics will be saved to: ${metricsFile}`);
+    }
+  }
+
   // List available tools
   server.setRequestHandler(ListToolsRequestSchema, async () => {
     return {
@@ -168,12 +171,6 @@ export async function mcpServerCommand() {
           inputSchema: zodToJsonSchema(scaffoldAppSchema),
         },
         {
-          name: "get_blade_template",
-          description:
-            "Get a complete, production-ready Vue SFC blade template. Returns full file content (150-330 lines) that AI should copy and adapt. Available templates: list-simple, list-filters, list-multiselect, details-simple, details-validation. Use this instead of generating code from scratch.",
-          inputSchema: zodToJsonSchema(getBladeTemplateSchema),
-        },
-        {
           name: "generate_complete_module",
           description:
             "⚠️ STRATEGY CHANGE: This tool generates AI INSTRUCTION GUIDES only (AI_FULL strategy), NOT actual code files. It creates detailed per-blade guides that AI must follow to manually write code. Templates and auto-code-generation have been removed. Output is comprehensive instructions for implementing blades/composables/locales.",
@@ -183,12 +180,6 @@ export async function mcpServerCommand() {
           name: "validate_and_fix_plan",
           description: "Validate UI-Plan and suggest fixes for errors. Returns fixed plan if validation fails.",
           inputSchema: zodToJsonSchema(validateAndFixPlanSchema),
-        },
-        {
-          name: "generate_blade",
-          description:
-            "Generate single blade (list or details) from configuration. Use this for generating individual blades without full module.",
-          inputSchema: zodToJsonSchema(generateBladeSchema),
         },
         {
           name: "search_components_by_intent",
@@ -329,6 +320,15 @@ export async function mcpServerCommand() {
   server.setRequestHandler(CallToolRequestSchema, async (request) => {
     const { name, arguments: args } = request.params;
 
+    // ✅ Track tool call start
+    const startTime = metricsTracker.startToolCall(name, args);
+
+    // Helper to track success and return result
+    const trackSuccess = <T>(result: T): T => {
+      metricsTracker.endToolCall(name, startTime, true);
+      return result;
+    };
+
     try {
       switch (name) {
         case "validate_ui_plan": {
@@ -337,25 +337,28 @@ export async function mcpServerCommand() {
             throw new Error(`Invalid arguments: ${parsed.error.message}`);
           }
 
-          const validator = new Validator();
-          const result = validator.validateUIPlan(parsed.data.plan);
+          // Parse plan if it's a string (MCP protocol may send JSON objects as strings)
+          const plan = typeof parsed.data.plan === 'string' ? JSON.parse(parsed.data.plan) : parsed.data.plan;
 
-          return {
+          const validator = new Validator();
+          const validationResult = validator.validateUIPlan(plan);
+
+          return trackSuccess({
             content: [
               {
                 type: "text",
                 text: JSON.stringify(
                   {
-                    valid: result.valid,
-                    message: result.valid ? "UI-Plan is valid" : "UI-Plan has validation errors",
-                    errors: result.errors || undefined,
+                    valid: validationResult.valid,
+                    message: validationResult.valid ? "UI-Plan is valid" : "UI-Plan has validation errors",
+                    errors: validationResult.errors || undefined,
                   },
                   null,
                   2,
                 ),
               },
             ],
-          };
+          });
         }
 
         case "search_components": {
@@ -373,14 +376,14 @@ export async function mcpServerCommand() {
 
           const formatted = formatSearchResults(searchResult);
 
-          return {
+          return trackSuccess({
             content: [
               {
                 type: "text",
                 text: formatted,
               },
             ],
-          };
+          });
         }
 
         case "view_components": {
@@ -570,7 +573,13 @@ Try:
 
             const result = await execa(
               "npx",
-              ["@vc-shell/create-vc-app@latest", projectName, "--skip-module-gen", "--overwrite"],
+              [
+                "tsx",
+                path.resolve(__dirname, "..", "..", "create-vc-app", "src", "index.ts"),
+                projectName,
+                "--skip-module-gen",
+                "--overwrite",
+              ],
               {
                 cwd: targetDir,
                 stdio: "pipe",
@@ -623,112 +632,22 @@ Try:
           }
         }
 
-        case "get_blade_template": {
-          const parsed = getBladeTemplateSchema.safeParse(args);
-          if (!parsed.success) {
-            throw new Error(`Invalid arguments: ${parsed.error.message}`);
-          }
-
-          const { type, complexity } = parsed.data;
-
-          // Map type + complexity to template filename
-          const templateMap: Record<string, string> = {
-            "list-simple": "list-simple.vue",
-            "list-filters": "list-filters.vue",
-            "list-multiselect": "list-multiselect.vue",
-            "details-simple": "details-simple.vue",
-            "details-validation": "details-validation.vue",
-          };
-
-          const templateKey = `${type}-${complexity}`;
-          const templateFile = templateMap[templateKey];
-
-          if (!templateFile) {
-            return {
-              content: [
-                {
-                  type: "text",
-                  text: `Template not found for type="${type}" complexity="${complexity}". Available: list-simple, list-filters, list-multiselect, details-simple, details-validation`,
-                },
-              ],
-              isError: true,
-            };
-          }
-
-          const templatePath = path.join(examplesPath, "templates", templateFile);
-
-          if (!fs.existsSync(templatePath)) {
-            return {
-              content: [
-                {
-                  type: "text",
-                  text: `Template file not found: ${templateFile}`,
-                },
-              ],
-              isError: true,
-            };
-          }
-
-          const content = fs.readFileSync(templatePath, "utf-8");
-
-          // Get template metadata from registry
-          const templates = registry.VcBlade?.templates || [];
-          const templateInfo = templates.find((t) => t.id === templateKey);
-
-          const metadata = templateInfo
-            ? `
-## Template: ${templateInfo.description}
-
-**Complexity:** ${templateInfo.complexity}
-**Features:** ${templateInfo.features?.join(", ")}
-**Lines:** ~${templateInfo.lines}
-${templateInfo.requiredComponents ? `**Required Components:** ${templateInfo.requiredComponents.join(", ")}` : ""}
-
-**Instructions:**
-1. COPY the template code below as-is
-2. RENAME entity names (Entity → YourEntity)
-3. ADAPT columns/fields for your data model
-4. UPDATE i18n keys (ENTITIES → YOUR_MODULE)
-5. PRESERVE all event handlers and state management logic
-
-`
-            : "";
-
-          return {
-            content: [
-              {
-                type: "text",
-                text: `${metadata}
-\`\`\`vue
-${content}
-\`\`\`
-
-**Next Steps:**
-- Copy this template
-- Adapt entity names and types
-- Customize columns/fields
-- Update translation keys
-- Create corresponding composable (useEntityList or useEntityDetails)
-`,
-              },
-            ],
-          };
-        }
-
         case "generate_complete_module": {
           const parsed = generateCompleteModuleSchema.safeParse(args);
           if (!parsed.success) {
             throw new Error(`Invalid arguments: ${parsed.error.message}`);
           }
 
-          const { plan, cwd, dryRun, mode } = parsed.data;
+          // Parse plan if it's a string (MCP protocol may send JSON objects as strings)
+          const plan = typeof parsed.data.plan === 'string' ? JSON.parse(parsed.data.plan) : parsed.data.plan;
+          const { cwd, dryRun, mode } = parsed.data;
 
           // Validate plan first
           const validator = new Validator();
           const validation = validator.validateUIPlan(plan);
 
           if (!validation.valid) {
-            return {
+            return trackSuccess({
               content: [
                 {
                   type: "text",
@@ -745,19 +664,19 @@ ${content}
                 },
               ],
               isError: true,
-            };
+            });
           }
 
           // Generate module
           const validatedPlan = plan as unknown as ValidatorUIPlan;
           const generator = new UnifiedCodeGenerator();
-          const result = await generator.generateModule(validatedPlan, cwd, {
+          const generateResult = await generator.generateModule(validatedPlan, cwd, {
             writeToDisk: !dryRun,
             dryRun,
             mode,
           });
 
-          return {
+          return trackSuccess({
             content: [
               {
                 type: "text",
@@ -767,14 +686,14 @@ ${content}
                     message: `Module generated successfully`,
                     summary: {
                       module: validatedPlan.module,
-                      blades: result.summary.blades,
-                      composables: result.summary.composables,
-                      locales: result.summary.locales,
-                      registered: result.summary.registered,
-                      totalFiles: result.files.length,
-                      mode: result.summary.mode || mode,
+                      blades: generateResult.summary.blades,
+                      composables: generateResult.summary.composables,
+                      locales: generateResult.summary.locales,
+                      registered: generateResult.summary.registered,
+                      totalFiles: generateResult.files.length,
+                      mode: generateResult.summary.mode || mode,
                     },
-                    files: result.files.map((f) => ({
+                    files: generateResult.files.map((f) => ({
                       path: f.path.replace(cwd, ""),
                       lines: f.lines,
                     })),
@@ -785,7 +704,7 @@ ${content}
                 ),
               },
             ],
-          };
+          });
         }
 
         case "validate_and_fix_plan": {
@@ -794,7 +713,8 @@ ${content}
             throw new Error(`Invalid arguments: ${parsed.error.message}`);
           }
 
-          const { plan } = parsed.data;
+          // Parse plan if it's a string (MCP protocol may send JSON objects as strings)
+          const plan = typeof parsed.data.plan === 'string' ? JSON.parse(parsed.data.plan) : parsed.data.plan;
           const validator = new Validator();
 
           // First, normalize the plan (auto-fix id → key, width, etc.)
@@ -845,35 +765,6 @@ ${content}
                     errors: validation.errors,
                     fixes,
                     message: "UI-Plan has validation errors. Review and fix manually or regenerate plan.",
-                  },
-                  null,
-                  2,
-                ),
-              },
-            ],
-          };
-        }
-
-        case "generate_blade": {
-          const parsed = generateBladeSchema.safeParse(args);
-          if (!parsed.success) {
-            throw new Error(`Invalid arguments: ${parsed.error.message}`);
-          }
-
-          const { type, entity, columns, fields } = parsed.data;
-
-          // This is a simplified single-blade generation
-          // In practice, this would use the same template adapter logic
-          // For now, return instructions
-          return {
-            content: [
-              {
-                type: "text",
-                text: JSON.stringify(
-                  {
-                    message: "Single blade generation",
-                    note: "Use generate_complete_module for full module generation",
-                    params: { type, entity, columns, fields },
                   },
                   null,
                   2,
@@ -1016,12 +907,30 @@ ${content}
         }
 
         case "generate_with_composition": {
+          // Debug: Log what we actually received
+          if (debugMode) {
+            console.log(`\n[DEBUG] generate_with_composition args type: ${typeof args}`);
+            console.log(`[DEBUG] args.plan type: ${typeof args?.plan}`);
+            if (typeof args?.plan === 'string') {
+              console.log(`[DEBUG] args.plan is STRING: ${args.plan.substring(0, 100)}...`);
+            }
+          }
+
           const parsed = generateWithCompositionSchema.safeParse(args);
           if (!parsed.success) {
             throw new Error(`Invalid arguments: ${parsed.error.message}`);
           }
 
-          let { plan, cwd, dryRun } = parsed.data;
+          const parsedData = parsed.data as { plan: any; cwd: string; dryRun?: boolean; strategy?: "ai-full"; bladeId?: string };
+          const { plan: rawPlan, cwd, dryRun, bladeId } = parsedData;
+
+          // Debug: Log what zod returned
+          if (debugMode) {
+            console.log(`[DEBUG] After zod parse, rawPlan type: ${typeof rawPlan}`);
+          }
+
+          // Parse plan if it's a string (MCP sends JSON as string)
+          let plan = typeof rawPlan === 'string' ? JSON.parse(rawPlan) : rawPlan;
 
           // Auto-fix common UI-Plan errors
           const fixResult = autoFixUIPlan(plan);
@@ -1074,7 +983,29 @@ ${content}
 
           const guides: Array<{ bladeId: string; decision: any; instructions: string }> = [];
 
-          for (const blade of validatedPlan.blades) {
+          // Filter blades if bladeId is specified
+          const bladesToGenerate = bladeId
+            ? validatedPlan.blades.filter(b => b.id === bladeId)
+            : validatedPlan.blades;
+
+          if (bladeId && bladesToGenerate.length === 0) {
+            return {
+              content: [
+                {
+                  type: "text",
+                  text: JSON.stringify({
+                    success: false,
+                    error: `Blade '${bladeId}' not found in UI-Plan`,
+                    availableBlades: validatedPlan.blades.map(b => b.id),
+                    suggestion: `Specify one of the available blade IDs or omit bladeId to generate all blades`
+                  }, null, 2)
+                }
+              ],
+              isError: true
+            };
+          }
+
+          for (const blade of bladesToGenerate) {
             if (!blade.logic) {
               blade.logic = logicPlanner.inferLogic(blade as Blade);
             }
@@ -1531,7 +1462,8 @@ ${content}
             throw new Error(`Invalid arguments: ${parsed.error.message}`);
           }
 
-          const { analysis } = parsed.data;
+          // Parse analysis if it's a string (MCP protocol may send JSON objects as strings)
+          const analysis = typeof parsed.data.analysis === 'string' ? JSON.parse(parsed.data.analysis) : parsed.data.analysis;
 
           // Use PlannerV2 to generate UI-Plan from V2 analysis
           const plannerV2 = new PlannerV2();
@@ -1576,7 +1508,8 @@ ${content}
               hasWorkflow: !!analysis.workflow,
               complexity: analysis.complexity,
               customActionsCount: analysis.entities.reduce(
-                (acc: number, e: any) => acc + e.blades.reduce((bacc: number, b: any) => bacc + (b.actions?.length || 0), 0),
+                (acc: number, e: any) =>
+                  acc + e.blades.reduce((bacc: number, b: any) => bacc + (b.actions?.length || 0), 0),
                 0,
               ),
             };
@@ -2005,14 +1938,18 @@ ${content}
           throw new Error(`Unknown tool: ${name}`);
       }
     } catch (error) {
+      // ✅ Track tool call failure
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      metricsTracker.endToolCall(name, startTime, false, errorMessage);
+
       // Format error for MCP
-      const errorMessage = error instanceof Error ? formatMcpError(error) : String(error);
+      const formattedError = error instanceof Error ? formatMcpError(error) : String(error);
 
       return {
         content: [
           {
             type: "text",
-            text: errorMessage,
+            text: formattedError,
           },
         ],
         isError: true,
@@ -2025,6 +1962,23 @@ ${content}
   await server.connect(transport);
 
   console.error("VC-Shell MCP Server started");
+
+  // ✅ Handle graceful shutdown and print metrics
+  process.on("SIGINT", () => {
+    if (metricsTracker.hasActivity()) {
+      metricsTracker.printSummary();
+
+      if (metricsFile) {
+        try {
+          fs.writeFileSync(metricsFile, metricsTracker.exportJSON());
+          console.log(`\n[MCP] Metrics saved to: ${metricsFile}`);
+        } catch (error) {
+          console.error(`[MCP] Failed to save metrics: ${error}`);
+        }
+      }
+    }
+    process.exit(0);
+  });
 }
 
 /**

@@ -16,7 +16,12 @@ export class RegistryLoader {
   private examplesPath: string;
 
   constructor(private options: RegistryLoaderOptions) {
-    this.examplesPath = path.join(options.rootPath, "src", "examples");
+    // Detect if running from dist/ or src/
+    const isCompiledBuild = options.rootPath.includes("/dist");
+    const schemasDir = isCompiledBuild ? "schemas" : path.join("src", "schemas");
+    const examplesDir = isCompiledBuild ? "examples" : path.join("src", "examples");
+
+    this.examplesPath = path.join(options.rootPath, examplesDir);
   }
 
   /**
@@ -27,7 +32,10 @@ export class RegistryLoader {
       return this.componentRegistry;
     }
 
-    const registryPath = path.join(this.options.rootPath, "src", "schemas", "component-registry.json");
+    // Detect if running from dist/ or src/
+    const isCompiledBuild = this.options.rootPath.includes("/dist");
+    const schemasDir = isCompiledBuild ? "schemas" : path.join("src", "schemas");
+    const registryPath = path.join(this.options.rootPath, schemasDir, "component-registry.json");
 
     if (!fs.existsSync(registryPath)) {
       throw new Error(`Component registry not found at: ${registryPath}`);
@@ -45,7 +53,10 @@ export class RegistryLoader {
       return this.frameworkRegistry;
     }
 
-    const registryPath = path.join(this.options.rootPath, "src", "schemas", "framework-api-registry.json");
+    // Detect if running from dist/ or src/
+    const isCompiledBuild = this.options.rootPath.includes("/dist");
+    const schemasDir = isCompiledBuild ? "schemas" : path.join("src", "schemas");
+    const registryPath = path.join(this.options.rootPath, schemasDir, "framework-api-registry.json");
 
     if (!fs.existsSync(registryPath)) {
       throw new Error(`Framework API registry not found at: ${registryPath}`);

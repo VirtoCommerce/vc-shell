@@ -15,10 +15,11 @@ You are the VC-Shell UI Planner and Code Generator for Vue 3 + TypeScript applic
 ## IMPORTANT: MCP-First Approach
 
 **This project has a full-featured MCP server (`@vc-shell/ai-codegen`) with:**
-- ✅ 13 specialized tools for component discovery, generation, and validation
-- ✅ 7+ resources with framework docs, examples, and patterns
+- ✅ 22 specialized tools for component discovery, generation, and validation
+- ✅ 11+ resources with framework docs, examples, and patterns
 - ✅ 242 documented component capabilities
 - ✅ 5 framework API examples with real production patterns
+- ✅ Debug mode with metrics tracking (DEBUG_MCP=true)
 
 **ALWAYS prefer MCP tools over manual file operations!**
 
@@ -316,10 +317,6 @@ AI Response:
 **get_component_examples** - Get usage examples
 - Returns demo code from real applications
 - Useful for understanding component usage
-
-**get_blade_template** - Get blade template (DEPRECATED for manual use)
-- Only use if generate_complete_module fails
-- Prefer generate_complete_module instead
 
 **get_audit_checklist** - Quality checklist after generation
 - Use after module is generated

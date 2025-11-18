@@ -122,9 +122,15 @@ export async function readResource(
   rootPath: string,
   context?: ResourceReaderContext,
 ): Promise<string> {
-  const schemasPath = path.join(rootPath, "src", "schemas");
-  const examplesPath = path.join(rootPath, "src", "examples");
-  const docsPath = path.join(rootPath, "docs");
+  // Detect if running from dist/ or src/
+  const isCompiledBuild = rootPath.includes("/dist");
+  const schemasDir = isCompiledBuild ? "schemas" : path.join("src", "schemas");
+  const examplesDir = isCompiledBuild ? "examples" : path.join("src", "examples");
+  const docsDir = isCompiledBuild ? "docs" : "docs";
+
+  const schemasPath = path.join(rootPath, schemasDir);
+  const examplesPath = path.join(rootPath, examplesDir);
+  const docsPath = path.join(rootPath, docsDir);
 
   switch (uri) {
     case "vcshell://component-registry":

@@ -431,6 +431,7 @@ export const generateWithCompositionSchema = z.object({
   cwd: z.string().describe("Working directory (project root)"),
   strategy: z.literal("ai-full").optional().default("ai-full").describe("Generation strategy: ai-full only (templates/composition removed)"),
   dryRun: z.boolean().optional().describe("If true, shows what would be generated without writing files"),
+  bladeId: z.string().optional().describe("Optional: Generate guide for specific blade only (e.g., 'offers-list'). Reduces response size for large modules."),
 });
 
 export const inferBladeLogicSchema = z.object({

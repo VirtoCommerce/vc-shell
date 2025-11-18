@@ -15,7 +15,7 @@ import { CodeValidator } from "./code-validator.js";
 import { getGenerationRulesProvider } from "./generation-rules.js";
 import { LogicPlanner, type BladeLogic, type ComposableDefinition } from "./logic-planner.js";
 import { BladeComposer } from "./blade-composer.js";
-import { SmartCodeGenerator, GenerationStrategy } from "./smart-generator.js";
+import { SmartCodeGenerator } from "./smart-generator.js";
 import type { BladeGenerationContext } from "../types/blade-context.js";
 import { fileURLToPath } from "node:url";
 import { camelCase, upperFirst, kebabCase } from "lodash-es";
@@ -36,11 +36,11 @@ export interface GeneratedModule {
     composables: number;
     locales: number;
     registered: boolean;
-    mode?: "template" | "ai-first";
+    mode?: "ai-full";
   };
 }
 
-export type GenerationMode = "ai-first" | "template" | "auto";
+export type GenerationMode = "ai-full";
 
 /**
  * UnifiedCodeGenerator - main code generation engine
@@ -100,7 +100,7 @@ export class UnifiedCodeGenerator {
     cwd: string,
     options: { writeToDisk?: boolean; dryRun?: boolean; mode?: GenerationMode } = {},
   ): Promise<GeneratedModule> {
-    const { writeToDisk = false, dryRun = false, mode = "auto" } = options;
+    const { writeToDisk = false, dryRun = false, mode = "ai-full" } = options;
     const files: GeneratedFile[] = [];
     const moduleNaming = this.codeGenerator.createNamingConfig(plan.module);
     const modulePath = path.join(cwd, "src", "modules", plan.module);
@@ -163,7 +163,7 @@ export class UnifiedCodeGenerator {
         composables: bladeContexts.length,
         locales: 2,
         registered,
-        mode: mode === "auto" ? "template" : mode, // In auto mode, actual mode depends on fallback
+        mode: "ai-full",
       },
     };
   }
@@ -231,18 +231,6 @@ export class UnifiedCodeGenerator {
    * Uses SmartCodeGenerator to choose best approach based on complexity
    */
   private async generateBladeWithMode(context: BladeGenerationContext, mode: GenerationMode): Promise<GeneratedFile> {
-    // If explicit mode specified, use it
-    if (mode === "template") {
-      return this.generateBlade(context);
-    }
-
-    if (mode === "ai-first") {
-      // ai-first mode in CLI: fall back to composition
-      console.log(`\n📘 AI-first mode: delegating to AI IDE (CLI fallback to composition)\n`);
-      return this.generateBladeWithComposition(context);
-    }
-
-    // mode === "auto": Use SmartCodeGenerator to decide strategy
     const bladeGenerationContext = {
       type: context.type,
       entity: context.naming.entitySingularKebab,
@@ -268,31 +256,14 @@ export class UnifiedCodeGenerator {
     console.log(`   Complexity: ${decision.complexity}/20`);
     console.log(`   Reason: ${decision.reason}`);
     console.log(`   Estimated time: ${decision.estimatedTime}\n`);
+    const instructions = await this.smartGenerator.buildInstructions(bladeGenerationContext, decision);
+    const content = `<!-- AI-FULL: ${context.componentName} -->\n${instructions}\n`;
 
-    // Execute selected strategy
-    switch (decision.strategy) {
-      case GenerationStrategy.TEMPLATE:
-        return this.generateBlade(context);
-
-      case GenerationStrategy.COMPOSITION:
-        return this.generateBladeWithComposition(context);
-
-      case GenerationStrategy.AI_GUIDED:
-      case GenerationStrategy.AI_FULL:
-        // AI_GUIDED and AI_FULL strategies delegate code generation to AI IDE
-        // System provides comprehensive guide via MCP, AI generates and submits code
-        console.log(`\n📘 ${decision.strategy.toUpperCase()} generation selected`);
-        console.log(`   Code generation delegated to AI IDE`);
-        console.log(`   Guide available via get_composition_guide MCP tool`);
-        console.log(`   AI should generate code and call submit_generated_code tool\n`);
-
-        // In CLI mode, we can't delegate to AI, so fall back to composition
-        console.log(`   CLI mode detected: falling back to composition strategy\n`);
-        return this.generateBladeWithComposition(context);
-
-      default:
-        return this.generateBlade(context);
-    }
+    return {
+      path: context.filePath!,
+      content,
+      lines: content.split("\n").length,
+    };
   }
 
   /**
@@ -342,18 +313,14 @@ export class UnifiedCodeGenerator {
     context: BladeGenerationContext,
     mode: GenerationMode,
   ): Promise<GeneratedFile> {
-    if (mode === "template") {
-      return this.generateComposable(context);
-    }
+    const composableNotes = `// AI-FULL: implement ${context.composableName} for ${context.componentName}\n` +
+      `// Generate this composable with the same guide used for the blade and submit via submit_generated_code.\n`;
 
-    if (mode === "ai-first") {
-      // ai-first mode in CLI: fall back to template
-      console.log(`\n📘 AI-first composable mode: delegating to AI IDE (CLI fallback to template)\n`);
-      return this.generateComposable(context);
-    }
-
-    // mode === "auto": use template (AI generation via MCP only)
-    return this.generateComposable(context);
+    return {
+      path: context.composablePath!,
+      content: composableNotes,
+      lines: composableNotes.split("\n").length,
+    };
   }
 
   /**

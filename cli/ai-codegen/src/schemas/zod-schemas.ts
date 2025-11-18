@@ -49,7 +49,7 @@ export const generateCompleteModuleSchema = z.object({
   plan: z.record(z.unknown()).describe("UI-Plan JSON object to generate from"),
   cwd: z.string().describe("Working directory (project root)"),
   dryRun: z.boolean().optional().describe("If true, shows what would be generated without writing files"),
-  mode: z.enum(["ai-first", "template", "auto"]).optional().default("auto").describe("Generation mode: ai-first (AI generates code), template (use templates+AST), auto (try AI, fallback to template)"),
+  mode: z.literal("ai-full").optional().default("ai-full").describe("Generation mode: ai-full (LLM produces code; templates/composition removed)"),
 });
 
 export const validateAndFixPlanSchema = z.object({
@@ -429,7 +429,7 @@ export type GetComponentCapabilitiesInput = z.infer<typeof getComponentCapabilit
 export const generateWithCompositionSchema = z.object({
   plan: z.record(z.unknown()).describe("UI-Plan JSON object to generate from"),
   cwd: z.string().describe("Working directory (project root)"),
-  strategy: z.enum(["auto", "template", "composition", "ai-full"]).optional().default("auto").describe("Generation strategy: auto (smart selection), template (fast AST), composition (pattern-based), ai-full (complete AI)"),
+  strategy: z.literal("ai-full").optional().default("ai-full").describe("Generation strategy: ai-full only (templates/composition removed)"),
   dryRun: z.boolean().optional().describe("If true, shows what would be generated without writing files"),
 });
 
@@ -462,7 +462,7 @@ export const submitGeneratedCodeSchema = z.object({
     module: z.string().describe("Module name (e.g., 'products', 'vendors')"),
     layout: z.enum(["grid", "details", "page"]).describe("Blade layout type"),
     features: z.array(z.string()).optional().describe("Features used in the blade (filters, multiselect, validation, gallery, widgets)"),
-    strategy: z.enum(["AI_GUIDED", "AI_FULL"]).describe("Generation strategy used"),
+    strategy: z.literal("AI_FULL").describe("Generation strategy used (AI_FULL only)"),
     guideId: z.string().optional().describe("Optional: ID of the generation guide that was followed"),
   }).describe("Context about the generated code"),
   composable: z.object({
@@ -476,52 +476,6 @@ export const submitGeneratedCodeSchema = z.object({
 });
 
 export type SubmitGeneratedCodeInput = z.infer<typeof submitGeneratedCodeSchema>;
-
-/**
- * Schema for analyze_prompt tool
- * Returns instructions for AI to analyze user prompt
- */
-export const analyzePromptSchema = z.object({
-  prompt: z.string().describe("User's natural language prompt describing the desired UI (any language: English, Russian, French, etc.)"),
-  module: z.string().optional().describe("Optional: Override module name (kebab-case)"),
-});
-
-export type AnalyzePromptInput = z.infer<typeof analyzePromptSchema>;
-
-/**
- * Schema for create_ui_plan_from_analysis tool
- * Creates UI-Plan from AI-analyzed prompt
- */
-export const createUIPlanFromAnalysisSchema = z.object({
-  analysis: z.object({
-    entityName: z.string().describe("Entity name (plural, kebab-case)"),
-    entityNameSingular: z.string().describe("Entity name (singular, kebab-case)"),
-    listFeatures: z.array(z.string()).describe("Features for list blade (filters, multiselect, reorderable)"),
-    detailsFeatures: z.array(z.string()).describe("Features for details blade (validation, gallery, widgets)"),
-    columns: z.array(z.object({
-      id: z.string(),
-      title: z.string(),
-      type: z.string().optional(),
-      sortable: z.boolean().optional(),
-    })).optional().describe("Table columns for list view"),
-    fields: z.array(z.object({
-      key: z.string(),
-      label: z.string(),
-      as: z.string(),
-      required: z.boolean().optional(),
-      type: z.string().optional(),
-    })).optional().describe("Form fields for details view"),
-    relationships: z.array(z.object({
-      type: z.enum(["hasMany", "belongsTo", "manyToMany"]),
-      entity: z.string(),
-    })).optional().describe("Relationships to other entities"),
-    businessRules: z.array(z.string()).optional().describe("Business rules"),
-    confidence: z.number().min(0).max(1).describe("Confidence score 0-1"),
-  }).describe("AI-analyzed prompt structure from analyze_prompt tool"),
-  module: z.string().optional().describe("Optional: Override module name (kebab-case)"),
-});
-
-export type CreateUIPlanFromAnalysisInput = z.infer<typeof createUIPlanFromAnalysisSchema>;
 
 /**
  * Schema for analyze_prompt_v2 tool (Extended)

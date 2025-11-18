@@ -95,6 +95,27 @@ export class ModuleRegistrar {
     }
 
     // Add .use() call before .use(router)
+    let foundRouterUse = false;
+    let foundAppVariable = false;
+    let appVariableName = "app";
+
+    // First pass: detect patterns
+    traverse(ast, {
+      VariableDeclarator: (path: NodePath<t.VariableDeclarator>) => {
+        // Detect: const app = createApp(...)
+        if (
+          t.isIdentifier(path.node.id) &&
+          t.isCallExpression(path.node.init) &&
+          t.isIdentifier(path.node.init.callee) &&
+          path.node.init.callee.name === "createApp"
+        ) {
+          foundAppVariable = true;
+          appVariableName = path.node.id.name;
+        }
+      },
+    });
+
+    // Second pass: add module registration
     traverse(ast, {
       CallExpression: (path: NodePath<t.CallExpression>) => {
         // Look for .use(router)
@@ -106,7 +127,7 @@ export class ModuleRegistrar {
           t.isIdentifier(path.node.arguments[0]) &&
           path.node.arguments[0].name === "router"
         ) {
-          // Found .use(router), need to add .use(Module, { router }) before it
+          foundRouterUse = true;
 
           // Get the object being chained (.use is called on this)
           const chainObject = path.node.callee.object;
@@ -127,6 +148,24 @@ export class ModuleRegistrar {
         }
       },
     });
+
+    // ✅ IMPROVED: Handle alternative patterns
+    if (!foundRouterUse) {
+      console.warn(`
+⚠️  WARNING: Could not find standard .use(router) pattern in main.ts
+
+Detected patterns:
+  - App variable found: ${foundAppVariable} (name: ${appVariableName})
+  - Router use found: ${foundRouterUse}
+
+Expected pattern:
+  ${appVariableName}.use(Module, { router }).use(router).mount('#app')
+
+Alternative patterns detected - module registration may need manual adjustment.
+Please add the following line manually before .use(router):
+  ${appVariableName}.use(${moduleImportName}, { router })
+      `);
+    }
 
     const output = generate(ast, { retainLines: true, compact: false });
     return output.code;

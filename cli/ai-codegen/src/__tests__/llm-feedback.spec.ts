@@ -20,7 +20,7 @@ describe("LLMFeedbackFormatter", () => {
 
       const feedback = formatter.formatValidationFeedback(validation, {
         attempt: 1,
-        strategy: "AI_GUIDED",
+        strategy: "AI_FULL",
       });
 
       expect(feedback.success).toBe(true);
@@ -38,7 +38,7 @@ describe("LLMFeedbackFormatter", () => {
 
       const feedback = formatter.formatValidationFeedback(validation, {
         attempt: 1,
-        strategy: "AI_GUIDED",
+        strategy: "AI_FULL",
       });
 
       expect(feedback.success).toBe(true);
@@ -61,7 +61,7 @@ describe("LLMFeedbackFormatter", () => {
 
       const feedback = formatter.formatValidationFeedback(validation, {
         attempt: 1,
-        strategy: "AI_GUIDED",
+        strategy: "AI_FULL",
       });
 
       expect(feedback.success).toBe(false);
@@ -124,12 +124,12 @@ describe("LLMFeedbackFormatter", () => {
 
       const feedback = formatter.formatValidationFeedback(validation, {
         attempt: 3,
-        strategy: "AI_GUIDED",
+        strategy: "AI_FULL",
       });
 
       expect(feedback.success).toBe(false);
       expect(feedback.message).toContain("after 3 attempts");
-      expect(feedback.message).toContain("Falling back");
+      expect(feedback.message).toContain("no automated fallback");
       expect(feedback.canRetry).toBe(false);
     });
   });
@@ -151,7 +151,7 @@ describe("LLMFeedbackFormatter", () => {
 
       const feedback = formatter.formatValidationFeedback(validation, {
         attempt: 1,
-        strategy: "AI_GUIDED",
+        strategy: "AI_FULL",
       });
 
       const error = feedback.errors?.[0];
@@ -176,7 +176,7 @@ describe("LLMFeedbackFormatter", () => {
 
       const feedback = formatter.formatValidationFeedback(validation, {
         attempt: 1,
-        strategy: "AI_GUIDED",
+        strategy: "AI_FULL",
       });
 
       const error = feedback.errors?.[0];
@@ -200,7 +200,7 @@ describe("LLMFeedbackFormatter", () => {
 
       const feedback = formatter.formatValidationFeedback(validation, {
         attempt: 1,
-        strategy: "AI_GUIDED",
+        strategy: "AI_FULL",
       });
 
       const error = feedback.errors?.[0];
@@ -226,7 +226,7 @@ describe("LLMFeedbackFormatter", () => {
 
       const feedback = formatter.formatValidationFeedback(validation, {
         attempt: 1,
-        strategy: "AI_GUIDED",
+        strategy: "AI_FULL",
       });
 
       const error = feedback.errors?.[0];
@@ -250,7 +250,7 @@ describe("LLMFeedbackFormatter", () => {
 
       const feedback = formatter.formatValidationFeedback(validation, {
         attempt: 1,
-        strategy: "AI_GUIDED",
+        strategy: "AI_FULL",
       });
 
       const error = feedback.errors?.[0];
@@ -275,7 +275,7 @@ describe("LLMFeedbackFormatter", () => {
 
       const feedback = formatter.formatValidationFeedback(validation, {
         attempt: 1,
-        strategy: "AI_GUIDED",
+        strategy: "AI_FULL",
       });
 
       const error = feedback.errors?.[0];
@@ -299,7 +299,7 @@ describe("LLMFeedbackFormatter", () => {
 
       const feedback = formatter.formatValidationFeedback(validation, {
         attempt: 1,
-        strategy: "AI_GUIDED",
+        strategy: "AI_FULL",
       });
 
       expect(feedback.suggestions).toBeDefined();
@@ -326,7 +326,7 @@ describe("LLMFeedbackFormatter", () => {
 
       const feedback = formatter.formatValidationFeedback(validation, {
         attempt: 1,
-        strategy: "AI_GUIDED",
+        strategy: "AI_FULL",
       });
 
       expect(
@@ -352,7 +352,7 @@ describe("LLMFeedbackFormatter", () => {
 
       const feedback = formatter.formatValidationFeedback(validation, {
         attempt: 1,
-        strategy: "AI_GUIDED",
+        strategy: "AI_FULL",
       });
 
       expect(
@@ -378,7 +378,7 @@ describe("LLMFeedbackFormatter", () => {
 
       const feedback = formatter.formatValidationFeedback(validation, {
         attempt: 1,
-        strategy: "AI_GUIDED",
+        strategy: "AI_FULL",
       });
 
       expect(
@@ -387,7 +387,7 @@ describe("LLMFeedbackFormatter", () => {
       expect(feedback.suggestions?.some((s) => s.includes("vue"))).toBe(true);
     });
 
-    it("should add AI_GUIDED strategy-specific suggestions", () => {
+    it("should add AI_FULL strategy-specific suggestions", () => {
       const validation: ValidationResult = {
         valid: false,
         errors: [
@@ -402,7 +402,7 @@ describe("LLMFeedbackFormatter", () => {
 
       const feedback = formatter.formatValidationFeedback(validation, {
         attempt: 1,
-        strategy: "AI_GUIDED",
+        strategy: "AI_FULL",
       });
 
       expect(
@@ -425,7 +425,7 @@ describe("LLMFeedbackFormatter", () => {
 
       const feedback = formatter.formatValidationFeedback(validation, {
         attempt: 2,
-        strategy: "AI_GUIDED",
+        strategy: "AI_FULL",
       });
 
       expect(
@@ -463,13 +463,13 @@ describe("LLMFeedbackFormatter", () => {
         maxAttempts: 3,
         previousErrors: [],
         bladeId: "products-list",
-        strategy: "AI_GUIDED",
+        strategy: "AI_FULL",
       });
 
       expect(report).toContain("VALIDATION FAILED");
       expect(report).toContain("Attempt 1/3");
       expect(report).toContain("Blade: products-list");
-      expect(report).toContain("Strategy: AI_GUIDED");
+      expect(report).toContain("Strategy: AI_FULL");
       expect(report).toContain("Syntax Error");
       expect(report).toContain("Convention Error");
       expect(report).toContain("Parse error");

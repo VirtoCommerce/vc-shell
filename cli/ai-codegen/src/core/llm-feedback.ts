@@ -12,7 +12,7 @@ export interface RetryContext {
   maxAttempts: number;
   previousErrors: ValidationError[];
   bladeId: string;
-  strategy: "AI_GUIDED" | "AI_FULL";
+  strategy: "AI_FULL";
 }
 
 export interface FeedbackMessage {
@@ -68,7 +68,7 @@ export class LLMFeedbackFormatter {
       success: false,
       message: canRetry
         ? `❌ Code validation failed (attempt ${attempt}/${this.MAX_ATTEMPTS}). Please review errors and regenerate.`
-        : `❌ Code validation failed after ${this.MAX_ATTEMPTS} attempts. Falling back to composition strategy.`,
+        : `❌ Code validation failed after ${this.MAX_ATTEMPTS} attempts. AI full mode has no automated fallback; regenerate using the guide.`,
       errors: formattedErrors,
       suggestions,
       canRetry,
@@ -234,12 +234,12 @@ export class LLMFeedbackFormatter {
     }
 
     // Strategy-specific suggestions
-    if (context.strategy === "AI_GUIDED") {
+    if (context.strategy === "AI_FULL") {
       suggestions.push(
-        "Review the generation guide provided and ensure all steps are followed"
+        "Re-read the AI generation guide provided for this blade and ensure every constraint is applied"
       );
       suggestions.push(
-        "Pay special attention to constraints and validation rules in the guide"
+        "Validate component imports against the registry to avoid missing/invalid components"
       );
     }
 

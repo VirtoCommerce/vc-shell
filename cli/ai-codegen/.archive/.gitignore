@@ -1,0 +1,4 @@
+# Archive directory - work summaries and historical documents
+# These files are kept for reference but not published with the package
+*
+!.gitignore

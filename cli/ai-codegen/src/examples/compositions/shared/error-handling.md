@@ -15,9 +15,9 @@ Apply to any async operations (load, save, delete, etc.).
 ## Code
 
 ```typescript
-import { useNotifications } from "@vc-shell/framework";
+import { notification, usePopup } from "@vc-shell/framework";
 
-const { notification } = useNotifications();
+const { showConfirmation } = usePopup();
 
 // Load with error handling
 async function loadWithErrorHandling(id: string) {
@@ -68,7 +68,7 @@ async function saveWithErrorHandling() {
 
 // Delete with error handling and confirmation
 async function deleteWithErrorHandling(id: string) {
-  const confirmed = await confirm(
+  const confirmed = await showConfirmation(
     "Delete this item?",
     "This action cannot be undone."
   );
@@ -101,7 +101,7 @@ async function deleteWithErrorHandling(id: string) {
 
 // Batch operation with partial error handling
 async function batchDeleteWithErrorHandling(ids: string[]) {
-  const confirmed = await confirm(
+  const confirmed = await showConfirmation(
     `Delete ${ids.length} items?`,
     "This action cannot be undone."
   );

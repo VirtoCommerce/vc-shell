@@ -201,7 +201,7 @@ const data = ref([]);
 
       const feedbackMessage = feedback.formatValidationFeedback(validation, {
         attempt: 1,
-        strategy: "AI_GUIDED",
+        strategy: "AI_FULL",
       });
 
       expect(feedbackMessage.success).toBe(false);
@@ -216,7 +216,7 @@ const data = ref([]);
 
       const feedbackMessage = feedback.formatValidationFeedback(validation, {
         attempt: 1,
-        strategy: "AI_GUIDED",
+        strategy: "AI_FULL",
       });
 
       expect(feedbackMessage.canRetry).toBe(true);
@@ -228,11 +228,11 @@ const data = ref([]);
 
       const feedbackMessage = feedback.formatValidationFeedback(validation, {
         attempt: 3,
-        strategy: "AI_GUIDED",
+        strategy: "AI_FULL",
       });
 
       expect(feedbackMessage.canRetry).toBe(false);
-      expect(feedbackMessage.message).toContain("Falling back");
+      expect(feedbackMessage.message.toLowerCase()).toContain("no automated fallback");
     });
   });
 
@@ -390,7 +390,7 @@ onMounted(async () => {
       // Step 2: Format feedback
       const feedbackMessage = feedback.formatValidationFeedback(validation, {
         attempt: 1,
-        strategy: "AI_GUIDED",
+        strategy: "AI_FULL",
       });
 
       // Step 3: Check success
@@ -432,7 +432,7 @@ const items = ref([]);
       const validation1 = validator.validateFull(invalidCode1);
       const feedback1 = feedback.formatValidationFeedback(validation1, {
         attempt: 1,
-        strategy: "AI_GUIDED",
+        strategy: "AI_FULL",
       });
 
       expect(feedback1.success).toBe(false);
@@ -465,7 +465,7 @@ const items = ref([]);
       const validation2 = validator.validateFull(invalidCode2);
       const feedback2 = feedback.formatValidationFeedback(validation2, {
         attempt: 2,
-        strategy: "AI_GUIDED",
+        strategy: "AI_FULL",
         previousErrors: validation1.errors,
       });
 
@@ -506,7 +506,7 @@ const items = ref([]);
         strategy: "AI_FULL",
       });
       expect(feedback3.canRetry).toBe(false);
-      expect(feedback3.message).toContain("Falling back to composition");
+      expect(feedback3.message.toLowerCase()).toContain("no automated fallback");
     });
   });
 
@@ -518,7 +518,7 @@ const items = ref([]);
         context: {
           module: "products",
           layout: "grid",
-          strategy: "AI_GUIDED",
+          strategy: "AI_FULL",
         },
       };
 
@@ -536,7 +536,7 @@ const items = ref([]);
         context: {
           module: "products",
           layout: "grid",
-          strategy: "AI_GUIDED",
+          strategy: "AI_FULL",
         },
         composable: {
           name: "useProductList",
@@ -555,7 +555,7 @@ const items = ref([]);
         context: {
           module: "products",
           layout: "grid",
-          strategy: "AI_GUIDED",
+          strategy: "AI_FULL",
         },
         retry: {
           attempt: 2,

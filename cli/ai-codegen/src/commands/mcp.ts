@@ -56,18 +56,35 @@ import { generateMinimalAuditChecklist } from "../utils/audit-checklist.js";
 import { componentNotFoundError, mcpError } from "../utils/errors.js";
 import { UnifiedCodeGenerator } from "../core/unified-generator.js";
 import type { UIPlan as ValidatorUIPlan, Blade } from "../core/validator.js";
-import { LogicPlanner } from "../core/logic-planner.js";
+import type { BladeGenerationContext } from "../types/blade-context.js";
+import { LogicPlanner, type BladeLogic } from "../core/logic-planner.js";
 import { BladeComposer } from "../core/blade-composer.js";
-import { SmartCodeGenerator, GenerationStrategy } from "../core/smart-generator.js";
+import { SmartCodeGenerator } from "../core/smart-generator.js";
 import { getGenerationRulesProvider } from "../core/generation-rules.js";
 import { autoFixUIPlan } from "../utils/ui-plan-fixer.js";
-import { CodeValidator } from "../core/code-validator.js";
+import { CodeValidator, type ValidationError } from "../core/code-validator.js";
 import { LLMFeedbackFormatter } from "../core/llm-feedback.js";
 import { PlannerV2 } from "../core/planner-v2.js";
+import { CodeGenerator } from "../core/code-generator.js";
 import { buildAnalysisPromptV2, getPromptAnalysisSchemaV2 } from "../core/prompt-analyzer-v2.js";
+import type { Column, Field } from "../core/template-adapter.js";
+import { camelCase, kebabCase, upperFirst } from "lodash-es";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+const normalizeBladeLogic = (logic?: Blade["logic"]): BladeLogic | undefined => {
+  if (!logic) return undefined;
+
+  return {
+    handlers: logic.handlers || {},
+    toolbar: (logic.toolbar || []).map((action) => ({
+      ...action,
+      icon: action.icon || "",
+    })),
+    state: logic.state || {},
+  } as BladeLogic;
+};
 
 /**
  * MCP Server for VC-Shell AI Code Generation
@@ -1509,8 +1526,8 @@ ${content}
             throw new Error(`Component ${component} not found in registry`);
           }
 
-          const componentData: any = registry[component];
-          let capabilities = componentData.capabilities || {};
+          const componentData: Component = registry[component] as Component;
+          let capabilities: Record<string, any> = { ...(componentData as any).capabilities };
 
           // Filter by specific capability if requested
           if (capability) {
@@ -1522,7 +1539,7 @@ ${content}
 
           // Load examples if requested
           if (includeExamples) {
-            for (const [capId, cap] of Object.entries(capabilities)) {
+            for (const [capId, cap] of Object.entries(capabilities) as [string, any][]) {
               try {
                 const examplePath = path.join(examplesPath, "capabilities", component, `${capId}.md`);
                 if (fs.existsSync(examplePath)) {
@@ -1560,12 +1577,13 @@ ${content}
             throw new Error(`Invalid arguments: ${parsed.error.message}`);
           }
 
-          let { plan, cwd, strategy, dryRun } = parsed.data;
+          let { plan, cwd, dryRun } = parsed.data;
 
           // Auto-fix common UI-Plan errors
           const fixResult = autoFixUIPlan(plan);
           if (fixResult.fixed) {
-            console.log(`\n🔧 Auto-fixed ${fixResult.changes.length} UI-Plan issues:`);
+            console.log(`
+🔧 Auto-fixed ${fixResult.changes.length} UI-Plan issues:`);
             fixResult.changes.forEach((change) => console.log(`   - ${change}`));
             plan = fixResult.plan;
           }
@@ -1587,13 +1605,13 @@ ${content}
                       autoFixAttempted: fixResult.fixed,
                       autoFixChanges: fixResult.changes,
                       suggestion:
-                        "Auto-fix attempted but validation still failed. Common issues:\n" +
-                        "1. module must be STRING in kebab-case, not object\n" +
-                        "2. components must have 'type' field, not 'name' or 'component'\n" +
-                        "3. route is REQUIRED for each blade\n" +
-                        "4. state values must be OBJECTS with {source, reactive}, not strings\n" +
-                        "5. toolbar must have 'action' field, not 'onClick' or 'handler'\n" +
-                        "6. features can only be: filters, multiselect, validation, gallery, widgets\n\n" +
+                        "Auto-fix attempted but validation still failed. Common issues:\\n" +
+                        "1. module must be STRING in kebab-case, not object\\n" +
+                        "2. components must have 'type' field, not 'name' or 'component'\\n" +
+                        "3. route is REQUIRED for each blade\\n" +
+                        "4. state values must be OBJECTS with {source, reactive}, not strings\\n" +
+                        "5. toolbar must have 'action' field, not 'onClick' or 'handler'\\n" +
+                        "6. features can only be: filters, multiselect, validation, gallery, widgets\\n\\n" +
                         "READ vcshell://ui-plan-example-complete to see correct format!",
                     },
                     null,
@@ -1605,115 +1623,70 @@ ${content}
             };
           }
 
-          const validatedPlan = plan as ValidatorUIPlan;
-
-          // Initialize smart generator
+          const validatedPlan = plan as unknown as ValidatorUIPlan;
           const smartGen = new SmartCodeGenerator();
           const logicPlanner = new LogicPlanner();
+          const codeGenerator = new CodeGenerator();
 
-          // For each blade: infer logic if not provided
+          const guides: Array<{ bladeId: string; decision: any; instructions: string }> = [];
+
           for (const blade of validatedPlan.blades) {
             if (!blade.logic) {
-              blade.logic = logicPlanner.inferLogic(blade);
+              blade.logic = logicPlanner.inferLogic(blade as Blade);
             }
             if (!blade.composable) {
-              blade.composable = logicPlanner.inferComposable(blade);
+              blade.composable = logicPlanner.inferComposable(blade as Blade);
             }
-          }
 
-          // Determine strategy using SmartCodeGenerator
-          let selectedStrategy: GenerationStrategy;
-          let decision;
+            const bladeLogic: BladeLogic = normalizeBladeLogic(blade.logic) ?? logicPlanner.inferLogic(blade as Blade);
 
-          if (strategy && strategy !== "auto") {
-            // User forced strategy
-            selectedStrategy = strategy as GenerationStrategy;
-          } else {
-            // Use SmartCodeGenerator to decide
-            // For now, analyze first blade to determine strategy
-            if (validatedPlan.blades.length > 0) {
-              const firstBlade = validatedPlan.blades[0];
-
-              // Extract entity from blade ID (remove -list, -details, -page suffixes)
-              const entityToken = firstBlade.id.replace(/-list$|-details$|-page$/, "") || validatedPlan.module;
-
-              const bladeType: "list" | "details" = firstBlade.layout === "grid" ? "list" : "details";
-
-              const mockContext = {
-                type: bladeType as "list" | "details",
-                entity: entityToken, // ✅ REQUIRED: entity name
-                module: validatedPlan.module, // ✅ REQUIRED: module name
-                features: firstBlade.features || [],
-                blade: firstBlade,
-                columns: firstBlade.components?.find((c) => c.type === "VcTable")?.columns,
-                fields: firstBlade.components?.find((c) => c.type === "VcForm")?.fields,
-                naming: {
-                  moduleName: validatedPlan.module,
-                  entitySingular: entityToken.charAt(0).toUpperCase() + entityToken.slice(1),
-                  entityPlural: validatedPlan.module.charAt(0).toUpperCase() + validatedPlan.module.slice(1),
-                  entitySingularCamel: entityToken,
-                  entityPluralCamel: validatedPlan.module,
-                  entitySingularKebab: entityToken,
-                  entityPluralKebab: validatedPlan.module,
-                  entitySingularPascal: entityToken.charAt(0).toUpperCase() + entityToken.slice(1),
-                  entityPluralPascal: validatedPlan.module.charAt(0).toUpperCase() + validatedPlan.module.slice(1),
-                },
-                componentName: `${entityToken.charAt(0).toUpperCase() + entityToken.slice(1)}${bladeType === "list" ? "List" : "Details"}`,
-                composableName: `use${entityToken.charAt(0).toUpperCase() + entityToken.slice(1)}${bladeType === "list" ? "List" : "Details"}`,
-                route: firstBlade.route || `/${validatedPlan.module}`,
-                menuTitleKey: `${validatedPlan.module.toUpperCase()}.MENU_TITLE`,
-                logic: firstBlade.logic,
-                complexity: 0, // ✅ REQUIRED: will be calculated in decide()
-              };
-
-              decision = await smartGen.decide(mockContext);
-              selectedStrategy = decision.strategy;
-            } else {
-              selectedStrategy = GenerationStrategy.TEMPLATE;
-            }
-          }
-
-          // Handle AI_GUIDED strategy - return guide instead of generating code
-          if (selectedStrategy === GenerationStrategy.AI_GUIDED && decision?.aiGuide) {
-            // Return AI generation guide for AI to follow
-            return {
-              content: [
-                {
-                  type: "text",
-                  text: JSON.stringify(
-                    {
-                      success: true,
-                      mode: "ai-guided",
-                      message: "AI-Guided generation: Follow the detailed instructions below to generate this blade",
-                      strategy: selectedStrategy,
-                      decision: {
-                        reason: decision.reason,
-                        complexity: decision.complexity,
-                        estimatedTime: decision.estimatedTime,
-                        willUseFallback: decision.willUseFallback,
-                      },
-                      guide: decision.aiGuide,
-                      instruction:
-                        "Read the guide above and generate the Vue SFC code following each step carefully. Ensure all constraints are met and the verification checklist passes.",
-                    },
-                    null,
-                    2,
-                  ),
-                },
-              ],
+            const normalizedBlade: Blade = {
+              ...(blade as Blade),
+              route: blade.route || `/${validatedPlan.module}`,
+              title: blade.title || blade.id,
+              logic: bladeLogic,
             };
+            const namingBase = codeGenerator.createNamingConfig(validatedPlan.module);
+            const entityToken = blade.id.replace(/-list$|-details$|-page$/, "") || validatedPlan.module;
+            const entityPascal = upperFirst(camelCase(entityToken));
+            const entityCamel = camelCase(entityToken);
+            const entityKebab = kebabCase(entityToken);
+
+            const naming = {
+              ...namingBase,
+              entitySingular: entityKebab,
+              entitySingularPascal: entityPascal,
+              entitySingularCamel: entityCamel,
+              entitySingularKebab: entityKebab,
+            } as BladeGenerationContext["naming"];
+
+            const bladeType: "list" | "details" = blade.layout === "grid" ? "list" : "details";
+
+            const context: BladeGenerationContext = {
+              type: bladeType,
+              entity: entityToken,
+              module: validatedPlan.module,
+              features: blade.features || [],
+              blade: normalizedBlade,
+              columns: normalizedBlade.components?.find?.((c) => (c as any).type === "VcTable")?.columns as
+                | Column[]
+                | undefined,
+              fields: normalizedBlade.components?.find?.((c) => (c as any).type === "VcForm")?.fields as
+                | Field[]
+                | undefined,
+              naming,
+              componentName: `${entityPascal}${bladeType === "list" ? "List" : "Details"}`,
+              composableName: `use${entityPascal}${bladeType === "list" ? "List" : "Details"}`,
+              route: normalizedBlade.route || `/${validatedPlan.module}`,
+              menuTitleKey: `${validatedPlan.module.toUpperCase()}.MENU_TITLE`,
+              logic: normalizedBlade.logic as BladeLogic,
+              complexity: 0,
+            };
+
+            const decision = await smartGen.decide(context);
+            const instructions = await smartGen.buildInstructions(context, decision);
+            guides.push({ bladeId: blade.id, decision, instructions });
           }
-
-          // Generate module
-          // NOTE: AI_FULL is now the only supported strategy
-          const effectiveMode: "ai-full" = "ai-full";
-
-          const generator = new UnifiedCodeGenerator();
-          const result = await generator.generateModule(validatedPlan, cwd, {
-            writeToDisk: !dryRun,
-            dryRun,
-            mode: effectiveMode,
-          });
 
           return {
             content: [
@@ -1722,30 +1695,10 @@ ${content}
                 text: JSON.stringify(
                   {
                     success: true,
-                    message: `Module generated successfully using ${selectedStrategy} strategy`,
-                    strategy: selectedStrategy,
-                    decision: decision
-                      ? {
-                          reason: decision.reason,
-                          complexity: decision.complexity,
-                          estimatedTime: decision.estimatedTime,
-                          willUseFallback: decision.willUseFallback,
-                        }
-                      : undefined,
-                    summary: {
-                      module: validatedPlan.module,
-                      blades: result.summary.blades,
-                      composables: result.summary.composables,
-                      locales: result.summary.locales,
-                      registered: result.summary.registered,
-                      totalFiles: result.files.length,
-                      logicInferred: validatedPlan.blades.every((b) => b.logic),
-                    },
-                    files: result.files.map((f) => ({
-                      path: f.path.replace(cwd, ""),
-                      lines: f.lines,
-                    })),
-                    dryRun: dryRun || false,
+                    strategy: "AI_FULL",
+                    message:
+                      "AI-full mode only: use the generated guides to synthesize Vue code and submit via submit_generated_code",
+                    guides,
                   },
                   null,
                   2,
@@ -1763,13 +1716,15 @@ ${content}
 
           const { blade, merge } = parsed.data;
           const planner = new LogicPlanner();
+          const bladeWithLogic = blade as Blade & { logic?: Blade["logic"] };
 
           // Infer logic
-          const inferred = planner.inferLogic(blade as Blade);
-          const composable = planner.inferComposable(blade as Blade);
+          const inferred = planner.inferLogic(bladeWithLogic);
+          const composable = planner.inferComposable(bladeWithLogic);
 
           // Merge with existing if requested
-          const finalLogic = merge && blade.logic ? planner.mergeLogic(inferred, blade.logic) : inferred;
+          const existingLogic = normalizeBladeLogic(bladeWithLogic.logic);
+          const finalLogic = merge && existingLogic ? planner.mergeLogic(inferred, existingLogic) : inferred;
 
           return {
             content: [
@@ -1786,7 +1741,7 @@ ${content}
                       composable,
                     },
                     description: planner.describeLogic(finalLogic),
-                    merged: merge && !!blade.logic,
+                    merged: merge && !!existingLogic,
                   },
                   null,
                   2,
@@ -1805,6 +1760,8 @@ ${content}
           const { type, features, complexity } = parsed.data;
           const composer = new BladeComposer();
           const rulesProvider = getGenerationRulesProvider();
+          const complexityScore =
+            complexity === "simple" ? 1 : complexity === "moderate" ? 5 : complexity === "complex" ? 8 : 0;
 
           // Get relevant patterns
           const mockContext = {
@@ -1814,11 +1771,16 @@ ${content}
             features: features || [],
             blade: {
               id: `example-${type}`,
-              layout: type === "list" ? "grid" : "details",
+              layout: type === "list" ? ("grid" as const) : ("details" as const),
               features: features || [],
+              route: `/examples/${type}`,
+              title: `Example ${type}`,
             },
             naming: {
               moduleName: "examples",
+              moduleNamePascal: "Examples",
+              moduleNameCamel: "examples",
+              moduleNameUpperSnake: "EXAMPLES",
               entitySingular: "Example",
               entityPlural: "Examples",
               entitySingularCamel: "example",
@@ -1832,7 +1794,7 @@ ${content}
             composableName: `useExample${type === "list" ? "List" : "Details"}`,
             route: "/examples",
             menuTitleKey: "EXAMPLES.MENU_TITLE",
-            complexity: complexity || 0, // ✅ ADDED: complexity field
+            complexity: complexityScore, // ✅ ADDED: complexity field
           };
 
           const patterns = composer.selectPatterns(mockContext);
@@ -1902,10 +1864,19 @@ ${content}
           const validation = validator.validateFull(code);
 
           const attempt = retry?.attempt || 1;
+          const previousErrors: ValidationError[] = (retry?.previousErrors || []).map(
+            (message) =>
+              ({
+                type: "typescript",
+                severity: "error",
+                message,
+              }) as ValidationError,
+          );
+
           const retryContext = {
             attempt,
             maxAttempts: feedback.getMaxAttempts(),
-            previousErrors: retry?.previousErrors || [],
+            previousErrors,
             bladeId,
             strategy: context.strategy,
           };
@@ -1931,8 +1902,9 @@ ${content}
                       message: feedbackMessage.message,
                       errors: feedbackMessage.errors,
                       fallback: {
-                        strategy: "COMPOSITION",
-                        message: "Maximum retry attempts reached. System will fall back to composition strategy.",
+                        strategy: "AI_FULL",
+                        message:
+                          "Maximum retry attempts reached. Regenerate using the AI guide and resubmit your code.",
                       },
                     },
                     null,

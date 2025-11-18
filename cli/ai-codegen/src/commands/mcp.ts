@@ -15,6 +15,8 @@ import { zodToJsonSchema } from "zod-to-json-schema";
 import { Validator } from "../core/validator.js";
 import { SearchEngine } from "../core/search-engine.js";
 import { FrameworkAPISearchEngine } from "../core/framework-search-engine.js";
+
+// ✅ Import from refactored modules
 import {
   searchComponentsSchema,
   viewComponentsSchema,
@@ -38,22 +40,23 @@ import {
   searchFrameworkByIntentSchema,
   getFrameworkCapabilitiesSchema,
   getFrameworkExamplesSchema,
+} from "./mcp/tool-schemas.js";
+
+import {
   type Component,
   type ComponentRegistry,
-  type ComponentCapability,
-  type ComponentTemplate,
   type FrameworkRegistry,
-  type SlotComponent,
 } from "../schemas/zod-schemas.js";
+
+import { RegistryLoader } from "./mcp/registry-loader.js";
+import { getResourceDefinitions, readResource } from "./mcp/resources.js";
 import {
-  formatComponentList,
   formatMultipleComponentDetails,
   formatSearchResults,
-  formatComponentExamples,
   formatMcpError,
 } from "../utils/formatters.js";
 import { generateMinimalAuditChecklist } from "../utils/audit-checklist.js";
-import { componentNotFoundError, mcpError } from "../utils/errors.js";
+import { componentNotFoundError } from "../utils/errors.js";
 import { UnifiedCodeGenerator } from "../core/unified-generator.js";
 import type { UIPlan as ValidatorUIPlan, Blade } from "../core/validator.js";
 import type { BladeGenerationContext } from "../types/blade-context.js";
@@ -104,28 +107,24 @@ export async function mcpServerCommand() {
     },
   );
 
-  // Get paths to schemas and examples
-  const schemasPath = __dirname.includes("/dist")
-    ? path.join(__dirname, "schemas")
-    : path.join(__dirname, "..", "schemas");
-
-  const examplesPath = __dirname.includes("/dist")
-    ? path.join(__dirname, "examples")
-    : path.join(__dirname, "..", "examples");
+  // ✅ Use RegistryLoader for loading registries
+  const rootPath = __dirname.includes("/dist") ? __dirname : path.join(__dirname, "..");
+  const registryLoader = new RegistryLoader({ rootPath });
 
   // Load unified component registry with capabilities
-  const registryPath = path.join(schemasPath, "component-registry.json");
-  const registry: ComponentRegistry = JSON.parse(fs.readFileSync(registryPath, "utf-8"));
+  const registry: ComponentRegistry = registryLoader.loadComponentRegistry();
 
   // Initialize search engine
   const searchEngine = new SearchEngine(registry);
 
   // Load framework API registry
-  const frameworkRegistryPath = path.join(schemasPath, "framework-api-registry.json");
-  const frameworkRegistry: FrameworkRegistry = JSON.parse(fs.readFileSync(frameworkRegistryPath, "utf-8"));
+  const frameworkRegistry: FrameworkRegistry = registryLoader.loadFrameworkRegistry();
 
   // Initialize framework search engine
   const frameworkSearchEngine = new FrameworkAPISearchEngine(frameworkRegistry);
+
+  // Get examples path for tool handlers (still needed for component examples, templates, etc.)
+  const examplesPath = path.join(rootPath, "src", "examples");
 
   // List available tools
   server.setRequestHandler(ListToolsRequestSchema, async () => {
@@ -283,601 +282,46 @@ export async function mcpServerCommand() {
     };
   });
 
-  // List available resources
+  // ✅ List available resources using getResourceDefinitions()
   server.setRequestHandler(ListResourcesRequestSchema, async () => {
+    const resourceDefinitions = getResourceDefinitions(rootPath);
     return {
-      resources: [
-        {
-          uri: "vcshell://component-registry",
-          name: "VC-Shell Component Registry",
-          description: "Complete registry of available VC-Shell components with examples",
-          mimeType: "application/json",
-        },
-        {
-          uri: "vcshell://ui-plan-schema",
-          name: "UI-Plan JSON Schema",
-          description: "JSON Schema for VC-Shell UI-Plan validation",
-          mimeType: "application/json",
-        },
-        {
-          uri: "vcshell://blade-list-pattern",
-          name: "Blade List Pattern",
-          description: "Complete example of a list/grid blade with table, search, and CRUD operations",
-          mimeType: "text/markdown",
-        },
-        {
-          uri: "vcshell://blade-details-pattern",
-          name: "Blade Details Pattern",
-          description: "Complete example of a details/form blade with validation and save/delete",
-          mimeType: "text/markdown",
-        },
-        {
-          uri: "vcshell://composable-list-pattern",
-          name: "List Composable Pattern",
-          description: "Example of useEntityList composable for list blades",
-          mimeType: "text/markdown",
-        },
-        {
-          uri: "vcshell://composable-details-pattern",
-          name: "Details Composable Pattern",
-          description: "Example of useEntityDetails composable for details blades",
-          mimeType: "text/markdown",
-        },
-        {
-          uri: "vcshell://component-templates",
-          name: "Slot Component Templates",
-          description:
-            "Reusable Vue components for table slots and blade composition (status-badge, image-grid, actions-dropdown, widget-container)",
-          mimeType: "application/json",
-        },
-        {
-          uri: "vcshell://generation-rules",
-          name: "Code Generation Rules",
-          description:
-            "Complete rules for AI code generation including blade structure, naming conventions, i18n patterns, composition patterns, and validation rules",
-          mimeType: "application/json",
-        },
-        {
-          uri: "vcshell://composition-guide",
-          name: "Pattern Composition Guide",
-          description:
-            "Guide for composing blades from patterns using AI. Explains pattern selection, composition strategies, and generation workflows",
-          mimeType: "text/markdown",
-        },
-        {
-          uri: "vcshell://prompt-analysis-guide-v2",
-          name: "Prompt Analysis Guide V2 (Extended)",
-          description:
-            "V2 Extended: Comprehensive guide for deep analysis of complex multi-entity scenarios. Supports multiple entities, custom routes/permissions/actions, workflows (linear/branching/parallel), 40+ features, data sources (API/GraphQL/static), and business rules. Use for COMPLEX scenarios.",
-          mimeType: "text/markdown",
-        },
-        {
-          uri: "vcshell://prompt-analysis-schema-v2",
-          name: "Prompt Analysis JSON Schema V2 (Extended)",
-          description:
-            "V2 Extended: JSON Schema for PromptAnalysisV2 with support for multiple entities, workflows, custom configurations, and rich feature set. Use for complex multi-entity analysis.",
-          mimeType: "application/json",
-        },
-        {
-          uri: "vcshell://ui-plan-example-complete",
-          name: "Complete UI-Plan Example",
-          description:
-            "IMPORTANT: Full example of a VALID UI-Plan JSON with list and details blades. Shows correct schema format, component types, logic structure, and ALL required fields. ALWAYS reference this when creating UI-Plans!",
-          mimeType: "application/json",
-        },
-        {
-          uri: "vcshell://logic-patterns",
-          name: "Common Logic Patterns",
-          description:
-            "Common blade logic patterns (handlers, toolbar, state) for list and details blades with various features",
-          mimeType: "application/json",
-        },
-      ],
+      resources: resourceDefinitions,
     };
   });
 
-  // Read resource content
+  // ✅ Read resource content using readResource()
   server.setRequestHandler(ReadResourceRequestSchema, async (request) => {
     const uri = request.params.uri;
 
-    switch (uri) {
-      case "vcshell://component-registry": {
-        const content = fs.readFileSync(registryPath, "utf-8");
-        return {
-          contents: [
-            {
-              uri,
-              mimeType: "application/json",
-              text: content,
-            },
-          ],
-        };
-      }
+    try {
+      // Prepare context for dynamic resources
+      const { getGenerationRulesProvider } = await import("../core/generation-rules.js");
+      const resourceContext = {
+        registry,
+        buildAnalysisPromptV2,
+        getPromptAnalysisSchemaV2,
+        getGenerationRulesProvider,
+      };
 
-      case "vcshell://ui-plan-schema": {
-        const schemaPath = path.join(schemasPath, "ui-plan.v1.schema.json");
-        const content = fs.readFileSync(schemaPath, "utf-8");
-        return {
-          contents: [
-            {
-              uri,
-              mimeType: "application/json",
-              text: content,
-            },
-          ],
-        };
-      }
+      // Get resource content
+      const content = await readResource(uri, rootPath, resourceContext);
 
-      case "vcshell://blade-list-pattern": {
-        const examplePath = path.join(examplesPath, "blade-list-pattern.md");
-        if (fs.existsSync(examplePath)) {
-          const content = fs.readFileSync(examplePath, "utf-8");
-          return {
-            contents: [
-              {
-                uri,
-                mimeType: "text/markdown",
-                text: content,
-              },
-            ],
-          };
-        }
-        throw new Error("Blade list pattern example not found");
-      }
+      // Determine MIME type from resource definitions
+      const resourceDef = getResourceDefinitions(rootPath).find((r) => r.uri === uri);
+      const mimeType = resourceDef?.mimeType || "text/plain";
 
-      case "vcshell://blade-details-pattern": {
-        const examplePath = path.join(examplesPath, "blade-details-pattern.md");
-        if (fs.existsSync(examplePath)) {
-          const content = fs.readFileSync(examplePath, "utf-8");
-          return {
-            contents: [
-              {
-                uri,
-                mimeType: "text/markdown",
-                text: content,
-              },
-            ],
-          };
-        }
-        throw new Error("Blade details pattern example not found");
-      }
-
-      case "vcshell://composable-list-pattern": {
-        const examplePath = path.join(examplesPath, "composable-list-pattern.md");
-        if (fs.existsSync(examplePath)) {
-          const content = fs.readFileSync(examplePath, "utf-8");
-          return {
-            contents: [
-              {
-                uri,
-                mimeType: "text/markdown",
-                text: content,
-              },
-            ],
-          };
-        }
-        throw new Error("Composable list pattern example not found");
-      }
-
-      case "vcshell://composable-details-pattern": {
-        const examplePath = path.join(examplesPath, "composable-details-pattern.md");
-        if (fs.existsSync(examplePath)) {
-          const content = fs.readFileSync(examplePath, "utf-8");
-          return {
-            contents: [
-              {
-                uri,
-                mimeType: "text/markdown",
-                text: content,
-              },
-            ],
-          };
-        }
-        throw new Error("Composable details pattern example not found");
-      }
-
-      case "vcshell://component-templates": {
-        // Return slot component metadata and code
-        const slotComponents: SlotComponent[] = registry._slotComponents?.components || [];
-        const componentsPath = path.join(examplesPath, "components");
-
-        const componentsData = slotComponents.map((comp) => {
-          const compPath = path.join(examplesPath, comp.file);
-          let code = "";
-
-          if (fs.existsSync(compPath)) {
-            code = fs.readFileSync(compPath, "utf-8");
-          }
-
-          return {
-            name: comp.name,
-            file: comp.file,
-            description: comp.description,
-            usage: comp.usage,
-            props: comp.props,
-            events: comp.events,
-            example: comp.example,
-            code,
-          };
-        });
-
-        return {
-          contents: [
-            {
-              uri,
-              mimeType: "application/json",
-              text: JSON.stringify(
-                {
-                  description: "Reusable components for custom table slots and blade composition",
-                  components: componentsData,
-                },
-                null,
-                2,
-              ),
-            },
-          ],
-        };
-      }
-
-      case "vcshell://generation-rules": {
-        // Import getGenerationRulesProvider dynamically
-        const { getGenerationRulesProvider } = await import("../core/generation-rules.js");
-        const rulesProvider = getGenerationRulesProvider();
-        const rulesJSON = rulesProvider.exportRulesAsJSON();
-
-        return {
-          contents: [
-            {
-              uri,
-              mimeType: "application/json",
-              text: rulesJSON,
-            },
-          ],
-        };
-      }
-
-      case "vcshell://prompt-analysis-guide-v2": {
-        const dummyPrompt = "Example: Order management with approval workflow. Orders have line items.";
-        const guide = buildAnalysisPromptV2(dummyPrompt);
-        return {
-          contents: [
-            {
-              uri,
-              mimeType: "text/markdown",
-              text: guide,
-            },
-          ],
-        };
-      }
-
-      case "vcshell://prompt-analysis-schema-v2": {
-        const schema = getPromptAnalysisSchemaV2();
-        return {
-          contents: [
-            {
-              uri,
-              mimeType: "application/json",
-              text: JSON.stringify(schema, null, 2),
-            },
-          ],
-        };
-      }
-
-      case "vcshell://ui-plan-example-complete": {
-        const examplePath = path.join(examplesPath, "ui-plan-example-complete.json");
-        const content = fs.readFileSync(examplePath, "utf-8");
-        return {
-          contents: [
-            {
-              uri,
-              mimeType: "application/json",
-              text: content,
-            },
-          ],
-        };
-      }
-
-      case "vcshell://composition-guide": {
-        const guide = `# 🎨 Pattern Composition Guide
-
-## Overview
-
-This guide explains how to compose VC-Shell blade code from multiple patterns instead of using fixed templates.
-
-## Pattern Composition Philosophy
-
-**OLD APPROACH (v0.5.0):**
-- 5 fixed templates
-- Token replacement
-- Limited variations
-
-**NEW APPROACH (v0.6.0):**
-- Unlimited pattern combinations
-- Smart composition
-- AI-driven generation
-
-## Available Patterns
-
-### Base Patterns
-1. **list-basic** - Basic list blade with VcTable
-2. **form-basic** - Basic details blade with VcForm
-
-### Feature Patterns
-3. **filters-pattern** - Add filters slot to list
-4. **list-with-multiselect** - Add row selection
-5. **validation-pattern** - Add VeeValidate
-6. **gallery-pattern** - Add image gallery
-
-### Custom Patterns
-7. **custom-column-slots** - Custom table columns
-8. **custom-toolbar** - Custom toolbar actions
-9. **widget-integration** - Add custom widgets
-
-### Shared Patterns
-10. **error-handling** - Comprehensive error handling
-11. **async-select** - Async searchable selects
-12. **i18n-integration** - Internationalization
-
-## Composition Strategy
-
-### Step 1: Select Base Pattern
-Choose either list-basic or form-basic based on blade layout.
-
-### Step 2: Add Feature Patterns
-Add patterns for each feature (filters, multiselect, etc.)
-
-### Step 3: Add Custom Patterns
-If blade has customSlots, widgets, or custom logic, add custom patterns.
-
-### Step 4: Merge Patterns
-Combine all patterns cohesively:
-- Merge imports
-- Combine template sections
-- Merge script setup code
-- Combine styles
-
-### Step 5: Apply Logic
-Apply blade.logic definitions:
-- Wire up handlers
-- Add toolbar actions
-- Setup state management
-
-## Composition Rules
-
-### Structure Rules
-1. All VC-Shell blades must use Composition API
-2. Always use \`<script setup lang="ts">\`
-3. Use \`markRaw()\` for blade references
-4. Props: interface Props defined at top
-5. Emits: defineEmits() after props
-
-### Naming Rules
-1. Components: PascalCase (EntityList, EntityDetails)
-2. Composables: use + PascalCase (useEntityList)
-3. Files: kebab-case (entity-list.vue)
-4. Variables: camelCase
-5. Constants: UPPER_CASE
-
-### i18n Rules
-1. ALL text must use $t()
-2. Keys: pages.{module}.{blade}.{section}.{key}
-3. Tooltips: pages.{module}.{blade}.tooltips.{key}
-4. Errors: pages.{module}.{blade}.errors.{key}
-
-### Import Rules
-1. Vue imports first
-2. VC-Shell composables second
-3. Local imports last
-4. Always import { markRaw } from 'vue'
-
-## Example Composition
-
-\`\`\`vue
-<template>
-  <!-- Base: VcTable -->
-  <VcTable
-    :items="items"
-    :loading="loading"
-    @item-click="onItemClick"
-  >
-    <!-- Feature: Filters -->
-    <template #filters>
-      <VcInput v-model="stagedFilters.keyword" />
-    </template>
-
-    <!-- Custom: Column slots -->
-    <template #item_status="{ item }">
-      <VcStatus :value="item.isActive" />
-    </template>
-  </VcTable>
-</template>
-
-<script setup lang="ts">
-// Imports (Base + Feature patterns)
-import { ref, computed, onMounted } from 'vue';
-import { markRaw } from 'vue';
-import { useEntityList } from './composables/useEntityList';
-
-// Props & Emits
-interface Props {
-  param?: string;
-}
-const props = defineProps<Props>();
-const emit = defineEmits<{
-  close: [];
-}>();
-
-// Composable (Base pattern)
-const { items, loading, load, deleteItem } = useEntityList();
-
-// State (Feature patterns)
-const selectedItemId = ref<string>();
-const selectedItems = ref<string[]>([]);
-const stagedFilters = ref({});
-const appliedFilters = ref({});
-
-// Handlers (Logic from UI-Plan)
-const onItemClick = (item: any) => {
-  openBlade({
-    blade: markRaw(EntityDetails),
-    param: item.id,
-    onOpen: () => { selectedItemId.value = item.id },
-    onClose: () => { selectedItemId.value = undefined; load() }
-  });
-};
-
-// Lifecycle
-onMounted(() => {
-  load();
-});
-</script>
-\`\`\`
-
-## Quality Checklist
-
-Before generating code, ensure:
-- [ ] Uses only VC-Shell components from registry
-- [ ] All text uses i18n ($t())
-- [ ] Handlers match blade.logic definitions
-- [ ] State matches blade.logic.state
-- [ ] Toolbar matches blade.logic.toolbar
-- [ ] TypeScript types are correct
-- [ ] Error handling is comprehensive
-- [ ] Loading states are handled
-- [ ] Empty states are handled
-
-## Common Mistakes
-
-❌ **DON'T:**
-- Use HTML elements instead of VC components
-- Hardcode text strings
-- Use Options API
-- Forget markRaw() for blades
-- Mix naming conventions
-
-✅ **DO:**
-- Use VcInput, VcButton, VcTable, etc.
-- Use $t() for all text
-- Use Composition API with <script setup>
-- Always markRaw() blade components
-- Follow naming conventions strictly
-
-## Strategy Selection
-
-The system automatically chooses:
-- **TEMPLATE** (complexity ≤5): Fast AST transformation
-- **COMPOSITION** (5-10): Pattern composition (THIS GUIDE)
-- **AI_FULL** (>10): Full AI generation with all patterns
-
-When using COMPOSITION strategy, follow this guide precisely.
-`;
-
-        return {
-          contents: [
-            {
-              uri,
-              mimeType: "text/markdown",
-              text: guide,
-            },
-          ],
-        };
-      }
-
-      case "vcshell://logic-patterns": {
-        const patterns = {
-          listPatterns: {
-            basic: {
-              handlers: {
-                onItemClick:
-                  "openBlade({blade: markRaw(EntityDetails), param: item.id, onOpen: () => { selectedItemId.value = item.id }, onClose: () => { selectedItemId.value = undefined; load() }})",
-              },
-              toolbar: [
-                { id: "refresh", icon: "fas fa-sync", action: "load()" },
-                { id: "add", icon: "fas fa-plus", action: "openBlade({blade: markRaw(EntityDetails)})" },
-              ],
-              state: {
-                items: { source: "composable", reactive: true },
-                loading: { source: "composable", reactive: true },
-                selectedItemId: { source: "local", reactive: true, default: "undefined" },
-              },
-            },
-            withFilters: {
-              handlers: {
-                onApplyFilters: "appliedFilters.value = stagedFilters.value; load()",
-              },
-              state: {
-                stagedFilters: { source: "local", reactive: true, default: "{}" },
-                appliedFilters: { source: "composable", reactive: true },
-              },
-            },
-            withMultiselect: {
-              handlers: {
-                onSelectionChange: "selectedItems.value = selectedIds",
-                onDelete: "confirmAndDelete(item.id)",
-              },
-              toolbar: [
-                {
-                  id: "delete-selected",
-                  icon: "fas fa-trash",
-                  action: "deleteSelectedItems()",
-                  condition: "selectedItems.value.length > 0",
-                },
-              ],
-              state: {
-                selectedItems: { source: "local", reactive: true, default: "[]" },
-              },
-            },
+      return {
+        contents: [
+          {
+            uri,
+            mimeType,
+            text: content,
           },
-          detailsPatterns: {
-            basic: {
-              handlers: {
-                onSave: "validateAndSave()",
-              },
-              toolbar: [
-                { id: "save", icon: "fas fa-save", action: "save()", condition: "modified && !loading" },
-                { id: "cancel", icon: "fas fa-times", action: "close()" },
-              ],
-              state: {
-                item: { source: "composable", reactive: true },
-                loading: { source: "composable", reactive: true },
-                modified: { source: "local", reactive: true, default: "false" },
-              },
-            },
-            withValidation: {
-              handlers: {
-                onValidate: "validateForm()",
-              },
-              state: {
-                errors: { source: "local", reactive: true, default: "{}" },
-                validating: { source: "local", reactive: true, default: "false" },
-              },
-            },
-            withGallery: {
-              handlers: {
-                onImageUpload: "uploadImage(file)",
-                onImageDelete: "deleteImage(imageId)",
-              },
-              state: {
-                images: { source: "local", reactive: true, default: "[]" },
-                uploading: { source: "local", reactive: true, default: "false" },
-              },
-            },
-          },
-        };
-
-        return {
-          contents: [
-            {
-              uri,
-              mimeType: "application/json",
-              text: JSON.stringify(patterns, null, 2),
-            },
-          ],
-        };
-      }
-
-      default:
-        throw new Error(`Unknown resource: ${uri}`);
+        ],
+      };
+    } catch (error) {
+      throw new Error(`Failed to read resource ${uri}: ${error instanceof Error ? error.message : String(error)}`);
     }
   });
 
@@ -2132,7 +1576,7 @@ ${content}
               hasWorkflow: !!analysis.workflow,
               complexity: analysis.complexity,
               customActionsCount: analysis.entities.reduce(
-                (acc, e) => acc + e.blades.reduce((bacc, b) => bacc + (b.actions?.length || 0), 0),
+                (acc: number, e: any) => acc + e.blades.reduce((bacc: number, b: any) => bacc + (b.actions?.length || 0), 0),
                 0,
               ),
             };

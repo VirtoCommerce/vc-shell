@@ -196,7 +196,8 @@ export class Validator {
     const errors: ValidationError[] = [];
 
     for (const blade of plan.blades) {
-      const components = blade.components || [];
+      // ✅ FIXED: Work with a copy to avoid mutating the original plan
+      const components = [...(blade.components || [])];
 
       // Also check components in steps
       if (blade.steps) {

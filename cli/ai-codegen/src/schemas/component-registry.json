@@ -1179,7 +1179,28 @@
       "option": "Custom template for dropdown options"
     },
     "events": {
-      "update:modelValue": "(value: any) => void - Emitted when value changes"
+      "update:modelValue": {
+        "signature": "(value: unknown) => void",
+        "description": "Emitted when selected value changes. Type is unknown - value can be string, object, array, or null depending on props (emitValue, multiple)",
+        "params": [
+          {
+            "name": "value",
+            "type": "unknown",
+            "description": "Selected value (type depends on emitValue and multiple props)"
+          }
+        ]
+      },
+      "search": {
+        "signature": "(keyword: string) => void",
+        "description": "Emitted when user types in search field (requires searchable=true)",
+        "params": [
+          {
+            "name": "keyword",
+            "type": "string",
+            "description": "Search keyword entered by user"
+          }
+        ]
+      }
     },
     "examples": [
       {
@@ -1955,10 +1976,42 @@
     ],
     "dependencies": [],
     "props": {
-      "variant": "string - Button variant (primary, secondary, danger, etc.)",
-      "disabled": "boolean - Disable button",
-      "loading": "boolean - Show loading state",
-      "icon": "string - Icon name"
+      "variant": {
+        "type": "enum",
+        "values": ["primary", "secondary"],
+        "default": "primary",
+        "description": "Button variant style. ONLY 'primary' or 'secondary' are valid."
+      },
+      "size": {
+        "type": "enum",
+        "values": ["xs", "sm", "base"],
+        "default": "base",
+        "description": "Button size. ONLY 'xs', 'sm', or 'base' are valid."
+      },
+      "disabled": {
+        "type": "boolean",
+        "default": false,
+        "description": "Disable button interaction"
+      },
+      "loading": {
+        "type": "boolean",
+        "default": false,
+        "description": "Show loading spinner state"
+      },
+      "icon": {
+        "type": "string | Component",
+        "description": "Icon name (FontAwesome class) or Vue component"
+      },
+      "text": {
+        "type": "boolean",
+        "default": false,
+        "description": "Render button without background/border (text-only style)"
+      },
+      "selected": {
+        "type": "boolean",
+        "default": false,
+        "description": "Toggle selected state (used in filter buttons)"
+      }
     },
     "events": {
       "click": "() => void - Emitted when button is clicked"
@@ -4320,10 +4373,56 @@
       "customText": "{ dragHere: string, browse: string } - Custom upload text"
     },
     "events": {
-      "upload": "(files: FileList, startingSortOrder?: number) => void - Emitted when files selected",
-      "sort": "(sorted: ICommonAsset[]) => void - Emitted when images reordered",
-      "edit": "(image: ICommonAsset) => void - Emitted when edit action triggered",
-      "remove": "(image: ICommonAsset) => void - Emitted when remove action triggered"
+      "upload": {
+        "signature": "(files: FileList, startingSortOrder?: number) => void",
+        "description": "Emitted when files are selected for upload",
+        "params": [
+          {
+            "name": "files",
+            "type": "FileList",
+            "description": "Selected files from file input"
+          },
+          {
+            "name": "startingSortOrder",
+            "type": "number",
+            "description": "Optional starting sort order for uploaded images",
+            "required": false
+          }
+        ]
+      },
+      "sort": {
+        "signature": "(sorted: ICommonAsset[]) => void",
+        "description": "Emitted when images are reordered via drag-and-drop",
+        "params": [
+          {
+            "name": "sorted",
+            "type": "ICommonAsset[]",
+            "description": "Reordered array of images"
+          }
+        ]
+      },
+      "edit": {
+        "signature": "(image: ICommonAsset) => void",
+        "description": "Emitted when edit action is triggered on an image",
+        "params": [
+          {
+            "name": "image",
+            "type": "ICommonAsset",
+            "description": "The FULL image object being edited (not just ID)"
+          }
+        ]
+      },
+      "remove": {
+        "signature": "(image: ICommonAsset) => void",
+        "description": "Emitted when remove action is triggered on an image",
+        "params": [
+          {
+            "name": "image",
+            "type": "ICommonAsset",
+            "description": "The FULL image object being removed (not just ID)"
+          }
+        ]
+      }
     },
     "examples": [
       {

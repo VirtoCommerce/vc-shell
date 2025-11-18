@@ -31,8 +31,6 @@ import {
   inferBladeLogicSchema,
   getCompositionGuideSchema,
   submitGeneratedCodeSchema,
-  analyzePromptSchema,
-  createUIPlanFromAnalysisSchema,
   analyzePromptV2Schema,
   createUIPlanFromAnalysisV2Schema,
   searchFrameworkAPIsSchema,
@@ -40,15 +38,10 @@ import {
   searchFrameworkByIntentSchema,
   getFrameworkCapabilitiesSchema,
   getFrameworkExamplesSchema,
-  type CreateUIPlanFromAnalysisInput,
-  type InferBladeLogicInput,
   type Component,
   type ComponentRegistry,
   type ComponentCapability,
   type ComponentTemplate,
-  type FrameworkAPI,
-  type FrameworkCapability,
-  type FrameworkExample,
   type FrameworkRegistry,
   type SlotComponent,
 } from "../schemas/zod-schemas.js";
@@ -63,77 +56,18 @@ import { generateMinimalAuditChecklist } from "../utils/audit-checklist.js";
 import { componentNotFoundError, mcpError } from "../utils/errors.js";
 import { UnifiedCodeGenerator } from "../core/unified-generator.js";
 import type { UIPlan as ValidatorUIPlan, Blade } from "../core/validator.js";
-import type { Column, Field } from "../core/template-adapter.js";
-import type { BladeGenerationContext } from "../types/blade-context.js";
-import { LogicPlanner, type BladeLogic } from "../core/logic-planner.js";
+import { LogicPlanner } from "../core/logic-planner.js";
 import { BladeComposer } from "../core/blade-composer.js";
 import { SmartCodeGenerator, GenerationStrategy } from "../core/smart-generator.js";
-import { CodeGenerator } from "../core/code-generator.js";
 import { getGenerationRulesProvider } from "../core/generation-rules.js";
 import { autoFixUIPlan } from "../utils/ui-plan-fixer.js";
-import { CodeValidator, type ValidationError } from "../core/code-validator.js";
-import { LLMFeedbackFormatter, type RetryContext } from "../core/llm-feedback.js";
-import { Planner } from "../core/planner.js";
+import { CodeValidator } from "../core/code-validator.js";
+import { LLMFeedbackFormatter } from "../core/llm-feedback.js";
 import { PlannerV2 } from "../core/planner-v2.js";
-import { buildAnalysisPrompt, getPromptAnalysisSchema, type PromptAnalysis } from "../core/prompt-analyzer.js";
 import { buildAnalysisPromptV2, getPromptAnalysisSchemaV2 } from "../core/prompt-analyzer-v2.js";
-import { camelCase, kebabCase, upperFirst } from "lodash-es";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
-interface CapabilityMatch {
-  id: string;
-  name?: string;
-  type?: string;
-  description?: string;
-}
-
-interface ComponentIntentMatch {
-  component: string;
-  score: number;
-  capabilities: CapabilityMatch[];
-  description?: string;
-}
-
-type FrameworkAPIResult = (FrameworkAPI & { name: string }) | { name: string; error: string };
-type MatchedFrameworkExample = FrameworkExample & { api: string; import: string };
-type PromptAnalysisColumn = NonNullable<PromptAnalysis["columns"]>[number];
-
-const normalizeBladeLogic = (logic?: Blade["logic"]): BladeLogic | undefined => {
-  if (!logic) return undefined;
-
-  return {
-    handlers: logic.handlers || {},
-    toolbar: (logic.toolbar || []).map(action => ({
-      ...action,
-      icon: action.icon || "",
-    })),
-    state: logic.state || {},
-  };
-};
-
-const ALLOWED_COLUMN_TYPES: Set<PromptAnalysisColumn["type"]> = new Set([
-  "text",
-  "number",
-  "date",
-  "boolean",
-  "image",
-  "badge",
-  "status",
-]);
-
-const normalizePromptAnalysis = (
-  analysis: CreateUIPlanFromAnalysisInput["analysis"]
-): PromptAnalysis => ({
-  ...analysis,
-  columns: analysis.columns?.map((column) => ({
-    ...column,
-    type: ALLOWED_COLUMN_TYPES.has(column.type as PromptAnalysisColumn["type"])
-      ? (column.type as PromptAnalysisColumn["type"])
-      : undefined,
-  })),
-});
 
 /**
  * MCP Server for VC-Shell AI Code Generation
@@ -150,7 +84,7 @@ export async function mcpServerCommand() {
         tools: {},
         resources: {},
       },
-    }
+    },
   );
 
   // Get paths to schemas and examples
@@ -164,18 +98,14 @@ export async function mcpServerCommand() {
 
   // Load unified component registry with capabilities
   const registryPath = path.join(schemasPath, "component-registry.json");
-  const registry: ComponentRegistry = JSON.parse(
-    fs.readFileSync(registryPath, "utf-8")
-  );
+  const registry: ComponentRegistry = JSON.parse(fs.readFileSync(registryPath, "utf-8"));
 
   // Initialize search engine
   const searchEngine = new SearchEngine(registry);
 
   // Load framework API registry
   const frameworkRegistryPath = path.join(schemasPath, "framework-api-registry.json");
-  const frameworkRegistry: FrameworkRegistry = JSON.parse(
-    fs.readFileSync(frameworkRegistryPath, "utf-8")
-  );
+  const frameworkRegistry: FrameworkRegistry = JSON.parse(fs.readFileSync(frameworkRegistryPath, "utf-8"));
 
   // Initialize framework search engine
   const frameworkSearchEngine = new FrameworkAPISearchEngine(frameworkRegistry);
@@ -186,8 +116,7 @@ export async function mcpServerCommand() {
       tools: [
         {
           name: "validate_ui_plan",
-          description:
-            "Validate a UI-Plan JSON against the VC-Shell schema and component registry",
+          description: "Validate a UI-Plan JSON against the VC-Shell schema and component registry",
           inputSchema: zodToJsonSchema(validateUIPlanSchema),
         },
         {
@@ -204,8 +133,7 @@ export async function mcpServerCommand() {
         },
         {
           name: "get_component_examples",
-          description:
-            "Search for component examples and demos. Returns full code examples from demo files.",
+          description: "Search for component examples and demos. Returns full code examples from demo files.",
           inputSchema: zodToJsonSchema(getComponentExamplesSchema),
         },
         {
@@ -232,13 +160,12 @@ export async function mcpServerCommand() {
         {
           name: "generate_complete_module",
           description:
-            "Generate complete module from UI-Plan. All files created automatically including blades, composables, locales, and registration in main.ts. This is the PRIMARY tool for module generation - use this instead of manual template adaptation.",
+            "⚠️ STRATEGY CHANGE: This tool generates AI INSTRUCTION GUIDES only (AI_FULL strategy), NOT actual code files. It creates detailed per-blade guides that AI must follow to manually write code. Templates and auto-code-generation have been removed. Output is comprehensive instructions for implementing blades/composables/locales.",
           inputSchema: zodToJsonSchema(generateCompleteModuleSchema),
         },
         {
           name: "validate_and_fix_plan",
-          description:
-            "Validate UI-Plan and suggest fixes for errors. Returns fixed plan if validation fails.",
+          description: "Validate UI-Plan and suggest fixes for errors. Returns fixed plan if validation fails.",
           inputSchema: zodToJsonSchema(validateAndFixPlanSchema),
         },
         {
@@ -294,27 +221,15 @@ export async function mcpServerCommand() {
           inputSchema: zodToJsonSchema(submitGeneratedCodeSchema),
         },
         {
-          name: "analyze_prompt",
-          description:
-            "Get instructions for analyzing a user's natural language prompt. Returns a detailed guide with schema, examples, and rules for AI to analyze the prompt and extract structured information (entity names, features, columns, fields, relationships, business rules). Supports any language (English, Russian, French, etc.). Use this BEFORE create_ui_plan_from_analysis.",
-          inputSchema: zodToJsonSchema(analyzePromptSchema),
-        },
-        {
-          name: "create_ui_plan_from_analysis",
-          description:
-            "Create a complete UI-Plan from AI-analyzed prompt data. Takes structured PromptAnalysis (from analyze_prompt) and generates a valid UI-Plan with list and details blades, columns, fields, features, and proper schema format. This is the recommended workflow: analyze_prompt → AI analyzes → create_ui_plan_from_analysis → generate_with_composition.",
-          inputSchema: zodToJsonSchema(createUIPlanFromAnalysisSchema),
-        },
-        {
           name: "analyze_prompt_v2",
           description:
-            "V2 (Extended): Get comprehensive instructions for deep analysis of complex prompts. Supports multiple entities, custom routes/permissions/actions, workflows, rich features (40+), data sources, and business rules. Returns detailed guide with examples. Use this for COMPLEX scenarios. For simple CRUD, use analyze_prompt (V1).",
+            "Get comprehensive instructions for deep analysis of complex prompts (multi-entity, custom routes/actions/permissions, workflows, rich features, data sources). Returns detailed guide with examples.",
           inputSchema: zodToJsonSchema(analyzePromptV2Schema),
         },
         {
           name: "create_ui_plan_from_analysis_v2",
           description:
-            "V2 (Extended): Create rich multi-entity UI-Plan from V2 analysis. Supports multiple entities per module, custom routes/permissions/actions, dashboard/wizard blades, workflows, and 40+ features. Recommended workflow: analyze_prompt_v2 → AI deep analysis → create_ui_plan_from_analysis_v2 → generate_with_composition. For simple CRUD, use V1 tools.",
+            "Create rich multi-entity UI-Plan from V2 analysis. Supports multiple entities per module, custom routes/permissions/actions, dashboard/wizard blades, workflows, and 40+ features.",
           inputSchema: zodToJsonSchema(createUIPlanFromAnalysisV2Schema),
         },
         {
@@ -394,55 +309,50 @@ export async function mcpServerCommand() {
         {
           uri: "vcshell://component-templates",
           name: "Slot Component Templates",
-          description: "Reusable Vue components for table slots and blade composition (status-badge, image-grid, actions-dropdown, widget-container)",
+          description:
+            "Reusable Vue components for table slots and blade composition (status-badge, image-grid, actions-dropdown, widget-container)",
           mimeType: "application/json",
         },
         {
           uri: "vcshell://generation-rules",
           name: "Code Generation Rules",
-          description: "Complete rules for AI code generation including blade structure, naming conventions, i18n patterns, composition patterns, and validation rules",
+          description:
+            "Complete rules for AI code generation including blade structure, naming conventions, i18n patterns, composition patterns, and validation rules",
           mimeType: "application/json",
         },
         {
           uri: "vcshell://composition-guide",
           name: "Pattern Composition Guide",
-          description: "Guide for composing blades from patterns using AI. Explains pattern selection, composition strategies, and generation workflows",
+          description:
+            "Guide for composing blades from patterns using AI. Explains pattern selection, composition strategies, and generation workflows",
           mimeType: "text/markdown",
-        },
-        {
-          uri: "vcshell://prompt-analysis-guide",
-          name: "Prompt Analysis Guide",
-          description: "Comprehensive guide for AI to analyze user prompts. Includes schema, examples (English, Russian, French), rules for extracting entities, features, columns, fields, and business rules. Use this to understand how to analyze natural language prompts.",
-          mimeType: "text/markdown",
-        },
-        {
-          uri: "vcshell://prompt-analysis-schema",
-          name: "Prompt Analysis JSON Schema (V1)",
-          description: "JSON Schema for PromptAnalysis structure (V1 - simple). Use this for structured output when analyzing basic user prompts.",
-          mimeType: "application/json",
         },
         {
           uri: "vcshell://prompt-analysis-guide-v2",
           name: "Prompt Analysis Guide V2 (Extended)",
-          description: "V2 Extended: Comprehensive guide for deep analysis of complex multi-entity scenarios. Supports multiple entities, custom routes/permissions/actions, workflows (linear/branching/parallel), 40+ features, data sources (API/GraphQL/static), and business rules. Use for COMPLEX scenarios.",
+          description:
+            "V2 Extended: Comprehensive guide for deep analysis of complex multi-entity scenarios. Supports multiple entities, custom routes/permissions/actions, workflows (linear/branching/parallel), 40+ features, data sources (API/GraphQL/static), and business rules. Use for COMPLEX scenarios.",
           mimeType: "text/markdown",
         },
         {
           uri: "vcshell://prompt-analysis-schema-v2",
           name: "Prompt Analysis JSON Schema V2 (Extended)",
-          description: "V2 Extended: JSON Schema for PromptAnalysisV2 with support for multiple entities, workflows, custom configurations, and rich feature set. Use for complex multi-entity analysis.",
+          description:
+            "V2 Extended: JSON Schema for PromptAnalysisV2 with support for multiple entities, workflows, custom configurations, and rich feature set. Use for complex multi-entity analysis.",
           mimeType: "application/json",
         },
         {
           uri: "vcshell://ui-plan-example-complete",
           name: "Complete UI-Plan Example",
-          description: "IMPORTANT: Full example of a VALID UI-Plan JSON with list and details blades. Shows correct schema format, component types, logic structure, and ALL required fields. ALWAYS reference this when creating UI-Plans!",
+          description:
+            "IMPORTANT: Full example of a VALID UI-Plan JSON with list and details blades. Shows correct schema format, component types, logic structure, and ALL required fields. ALWAYS reference this when creating UI-Plans!",
           mimeType: "application/json",
         },
         {
           uri: "vcshell://logic-patterns",
           name: "Common Logic Patterns",
-          description: "Common blade logic patterns (handlers, toolbar, state) for list and details blades with various features",
+          description:
+            "Common blade logic patterns (handlers, toolbar, state) for list and details blades with various features",
           mimeType: "application/json",
         },
       ],
@@ -579,10 +489,14 @@ export async function mcpServerCommand() {
             {
               uri,
               mimeType: "application/json",
-              text: JSON.stringify({
-                description: "Reusable components for custom table slots and blade composition",
-                components: componentsData,
-              }, null, 2),
+              text: JSON.stringify(
+                {
+                  description: "Reusable components for custom table slots and blade composition",
+                  components: componentsData,
+                },
+                null,
+                2,
+              ),
             },
           ],
         };
@@ -600,34 +514,6 @@ export async function mcpServerCommand() {
               uri,
               mimeType: "application/json",
               text: rulesJSON,
-            },
-          ],
-        };
-      }
-
-      case "vcshell://prompt-analysis-guide": {
-        // Return the analysis prompt guide for dummy prompt
-        const dummyPrompt = "Example: Vendor management with filtering and bulk operations";
-        const guide = buildAnalysisPrompt(dummyPrompt);
-        return {
-          contents: [
-            {
-              uri,
-              mimeType: "text/markdown",
-              text: guide,
-            },
-          ],
-        };
-      }
-
-      case "vcshell://prompt-analysis-schema": {
-        const schema = getPromptAnalysisSchema();
-        return {
-          contents: [
-            {
-              uri,
-              mimeType: "application/json",
-              text: JSON.stringify(schema, null, 2),
             },
           ],
         };
@@ -885,7 +771,8 @@ When using COMPOSITION strategy, follow this guide precisely.
           listPatterns: {
             basic: {
               handlers: {
-                onItemClick: "openBlade({blade: markRaw(EntityDetails), param: item.id, onOpen: () => { selectedItemId.value = item.id }, onClose: () => { selectedItemId.value = undefined; load() }})",
+                onItemClick:
+                  "openBlade({blade: markRaw(EntityDetails), param: item.id, onOpen: () => { selectedItemId.value = item.id }, onClose: () => { selectedItemId.value = undefined; load() }})",
               },
               toolbar: [
                 { id: "refresh", icon: "fas fa-sync", action: "load()" },
@@ -912,7 +799,12 @@ When using COMPOSITION strategy, follow this guide precisely.
                 onDelete: "confirmAndDelete(item.id)",
               },
               toolbar: [
-                { id: "delete-selected", icon: "fas fa-trash", action: "deleteSelectedItems()", condition: "selectedItems.value.length > 0" },
+                {
+                  id: "delete-selected",
+                  icon: "fas fa-trash",
+                  action: "deleteSelectedItems()",
+                  condition: "selectedItems.value.length > 0",
+                },
               ],
               state: {
                 selectedItems: { source: "local", reactive: true, default: "[]" },
@@ -998,7 +890,7 @@ When using COMPOSITION strategy, follow this guide precisely.
                     errors: result.errors || undefined,
                   },
                   null,
-                  2
+                  2,
                 ),
               },
             ],
@@ -1041,10 +933,7 @@ When using COMPOSITION strategy, follow this guide precisely.
 
           if (componentData.length === 0) {
             const availableComponents = Array.from(searchEngine.getAllComponents().keys());
-            throw componentNotFoundError(
-              components.join(", "),
-              availableComponents
-            );
+            throw componentNotFoundError(components.join(", "), availableComponents);
           }
 
           const componentsWithDetails = componentData.map(({ name, component }) => ({
@@ -1203,7 +1092,7 @@ Try:
                       suggestion: "Choose a different project name or remove existing directory",
                     },
                     null,
-                    2
+                    2,
                   ),
                 },
               ],
@@ -1218,15 +1107,14 @@ Try:
             // Run create-vc-app in non-interactive mode
             console.error(`Creating VC-Shell app: ${projectName}...`);
 
-            const result = await execa("npx", [
-              "@vc-shell/create-vc-app@latest",
-              projectName,
-              "--skip-module-gen",
-              "--overwrite"
-            ], {
-              cwd: targetDir,
-              stdio: "pipe",
-            });
+            const result = await execa(
+              "npx",
+              ["@vc-shell/create-vc-app@latest", projectName, "--skip-module-gen", "--overwrite"],
+              {
+                cwd: targetDir,
+                stdio: "pipe",
+              },
+            );
 
             return {
               content: [
@@ -1247,12 +1135,12 @@ Try:
                       ],
                     },
                     null,
-                    2
+                    2,
                   ),
                 },
               ],
             };
-          } catch (error: unknown) {
+          } catch (error: any) {
             return {
               content: [
                 {
@@ -1261,11 +1149,11 @@ Try:
                     {
                       success: false,
                       error: "Failed to create app",
-                      details: error instanceof Error ? error.message : String(error),
+                      details: error.message || String(error),
                       suggestion: "Check that @vc-shell/create-vc-app is accessible and try again",
                     },
                     null,
-                    2
+                    2,
                   ),
                 },
               ],
@@ -1391,7 +1279,7 @@ ${content}
                       suggestion: "Fix validation errors and try again, or use validate_and_fix_plan tool",
                     },
                     null,
-                    2
+                    2,
                   ),
                 },
               ],
@@ -1425,14 +1313,14 @@ ${content}
                       totalFiles: result.files.length,
                       mode: result.summary.mode || mode,
                     },
-                    files: result.files.map(f => ({
+                    files: result.files.map((f) => ({
                       path: f.path.replace(cwd, ""),
                       lines: f.lines,
                     })),
                     dryRun: dryRun || false,
                   },
                   null,
-                  2
+                  2,
                 ),
               },
             ],
@@ -1463,14 +1351,15 @@ ${content}
                     {
                       valid: true,
                       fixed: changes.length > 0,
-                      message: changes.length > 0
-                        ? "UI-Plan fixed and validated successfully"
-                        : "UI-Plan is valid, no fixes needed",
+                      message:
+                        changes.length > 0
+                          ? "UI-Plan fixed and validated successfully"
+                          : "UI-Plan is valid, no fixes needed",
                       plan: normalizedPlan,
                       changes,
                     },
                     null,
-                    2
+                    2,
                   ),
                 },
               ],
@@ -1478,7 +1367,7 @@ ${content}
           }
 
           // Generate suggested fixes for remaining errors
-          const fixes = validation.errors.map(error => ({
+          const fixes = validation.errors.map((error) => ({
             path: error.path,
             message: error.message,
             severity: error.severity,
@@ -1497,7 +1386,7 @@ ${content}
                     message: "UI-Plan has validation errors. Review and fix manually or regenerate plan.",
                   },
                   null,
-                  2
+                  2,
                 ),
               },
             ],
@@ -1526,7 +1415,7 @@ ${content}
                     params: { type, entity, columns, fields },
                   },
                   null,
-                  2
+                  2,
                 ),
               },
             ],
@@ -1544,22 +1433,19 @@ ${content}
           // Simple keyword matching for semantic search
           // In production, this could use embeddings or more sophisticated NLP
           const keywords = intent.toLowerCase().split(/\s+/);
-          const results: ComponentIntentMatch[] = [];
+          const results: any[] = [];
 
           for (const [componentName, component] of Object.entries(registry)) {
             if (!componentName.startsWith("Vc")) continue;
 
             let score = 0;
-            const matchedCapabilities: CapabilityMatch[] = [];
+            const matchedCapabilities: any[] = [];
 
             // Search in capabilities (if they exist)
             const capabilities = component.capabilities || {};
             for (const [capId, capability] of Object.entries(capabilities)) {
-              const capText = [
-                capability.name ?? "",
-                capability.description ?? "",
-                ...(capability.useCases || []),
-              ].join(" ").toLowerCase();
+              const capText =
+                `${capability.name} ${capability.description} ${capability.useCases?.join(" ")}`.toLowerCase();
 
               for (const keyword of keywords) {
                 if (capText.includes(keyword)) {
@@ -1604,7 +1490,7 @@ ${content}
                     totalFound: results.length,
                   },
                   null,
-                  2
+                  2,
                 ),
               },
             ],
@@ -1623,33 +1509,29 @@ ${content}
             throw new Error(`Component ${component} not found in registry`);
           }
 
-          const componentData = registry[component];
-          const baseCapabilities = componentData.capabilities || {};
-          let capabilities: Record<string, ComponentCapability & { exampleFile?: string }> = baseCapabilities;
+          const componentData: any = registry[component];
+          let capabilities = componentData.capabilities || {};
 
           // Filter by specific capability if requested
           if (capability) {
-            const selectedCapability = baseCapabilities[capability];
-            if (!selectedCapability) {
+            capabilities = { [capability]: capabilities[capability] };
+            if (!capabilities[capability]) {
               throw new Error(`Capability ${capability} not found for ${component}`);
             }
-            capabilities = { [capability]: selectedCapability };
           }
 
           // Load examples if requested
           if (includeExamples) {
-            const capabilitiesWithExamples: Record<string, ComponentCapability & { exampleFile?: string }> = {};
-
             for (const [capId, cap] of Object.entries(capabilities)) {
-              const examplePath = path.join(examplesPath, "capabilities", component, `${capId}.md`);
-              const exampleFile = fs.existsSync(examplePath)
-                ? fs.readFileSync(examplePath, "utf-8")
-                : undefined;
-
-              capabilitiesWithExamples[capId] = { ...cap, exampleFile };
+              try {
+                const examplePath = path.join(examplesPath, "capabilities", component, `${capId}.md`);
+                if (fs.existsSync(examplePath)) {
+                  cap.exampleFile = fs.readFileSync(examplePath, "utf-8");
+                }
+              } catch (error) {
+                // Example not found, skip
+              }
             }
-
-            capabilities = capabilitiesWithExamples;
           }
 
           return {
@@ -1665,7 +1547,7 @@ ${content}
                     capabilityCount: Object.keys(capabilities).length,
                   },
                   null,
-                  2
+                  2,
                 ),
               },
             ],
@@ -1684,7 +1566,7 @@ ${content}
           const fixResult = autoFixUIPlan(plan);
           if (fixResult.fixed) {
             console.log(`\n🔧 Auto-fixed ${fixResult.changes.length} UI-Plan issues:`);
-            fixResult.changes.forEach(change => console.log(`   - ${change}`));
+            fixResult.changes.forEach((change) => console.log(`   - ${change}`));
             plan = fixResult.plan;
           }
 
@@ -1704,7 +1586,8 @@ ${content}
                       errors: validation.errors,
                       autoFixAttempted: fixResult.fixed,
                       autoFixChanges: fixResult.changes,
-                      suggestion: "Auto-fix attempted but validation still failed. Common issues:\n" +
+                      suggestion:
+                        "Auto-fix attempted but validation still failed. Common issues:\n" +
                         "1. module must be STRING in kebab-case, not object\n" +
                         "2. components must have 'type' field, not 'name' or 'component'\n" +
                         "3. route is REQUIRED for each blade\n" +
@@ -1714,7 +1597,7 @@ ${content}
                         "READ vcshell://ui-plan-example-complete to see correct format!",
                     },
                     null,
-                    2
+                    2,
                   ),
                 },
               ],
@@ -1722,7 +1605,7 @@ ${content}
             };
           }
 
-          const validatedPlan = plan as unknown as ValidatorUIPlan;
+          const validatedPlan = plan as ValidatorUIPlan;
 
           // Initialize smart generator
           const smartGen = new SmartCodeGenerator();
@@ -1731,10 +1614,10 @@ ${content}
           // For each blade: infer logic if not provided
           for (const blade of validatedPlan.blades) {
             if (!blade.logic) {
-              blade.logic = logicPlanner.inferLogic(blade as Blade);
+              blade.logic = logicPlanner.inferLogic(blade);
             }
             if (!blade.composable) {
-              blade.composable = logicPlanner.inferComposable(blade as Blade);
+              blade.composable = logicPlanner.inferComposable(blade);
             }
           }
 
@@ -1752,38 +1635,35 @@ ${content}
               const firstBlade = validatedPlan.blades[0];
 
               // Extract entity from blade ID (remove -list, -details, -page suffixes)
-              const entityToken = firstBlade.id
-                .replace(/-list$|-details$|-page$/, '')
-                || validatedPlan.module;
+              const entityToken = firstBlade.id.replace(/-list$|-details$|-page$/, "") || validatedPlan.module;
 
               const bladeType: "list" | "details" = firstBlade.layout === "grid" ? "list" : "details";
-              const namingFromModule = new CodeGenerator().createNamingConfig(validatedPlan.module);
-              const entityPascal = upperFirst(camelCase(entityToken));
-              const entityCamel = camelCase(entityToken);
-              const entityKebab = kebabCase(entityToken);
-              const naming: BladeGenerationContext["naming"] = {
-                ...namingFromModule,
-                entitySingular: entityKebab,
-                entitySingularPascal: entityPascal,
-                entitySingularCamel: entityCamel,
-                entitySingularKebab: entityKebab,
-              };
 
-              const mockContext: BladeGenerationContext = {
-                type: bladeType,
-                entity: entityToken,
-                module: validatedPlan.module,
+              const mockContext = {
+                type: bladeType as "list" | "details",
+                entity: entityToken, // ✅ REQUIRED: entity name
+                module: validatedPlan.module, // ✅ REQUIRED: module name
                 features: firstBlade.features || [],
                 blade: firstBlade,
-                columns: firstBlade.components?.find(c => c.type === "VcTable")?.columns,
-                fields: firstBlade.components?.find(c => c.type === "VcForm")?.fields,
-                naming,
-                componentName: `${entityPascal}${bladeType === "list" ? "List" : "Details"}`,
-                composableName: `use${entityPascal}${bladeType === "list" ? "List" : "Details"}`,
+                columns: firstBlade.components?.find((c) => c.type === "VcTable")?.columns,
+                fields: firstBlade.components?.find((c) => c.type === "VcForm")?.fields,
+                naming: {
+                  moduleName: validatedPlan.module,
+                  entitySingular: entityToken.charAt(0).toUpperCase() + entityToken.slice(1),
+                  entityPlural: validatedPlan.module.charAt(0).toUpperCase() + validatedPlan.module.slice(1),
+                  entitySingularCamel: entityToken,
+                  entityPluralCamel: validatedPlan.module,
+                  entitySingularKebab: entityToken,
+                  entityPluralKebab: validatedPlan.module,
+                  entitySingularPascal: entityToken.charAt(0).toUpperCase() + entityToken.slice(1),
+                  entityPluralPascal: validatedPlan.module.charAt(0).toUpperCase() + validatedPlan.module.slice(1),
+                },
+                componentName: `${entityToken.charAt(0).toUpperCase() + entityToken.slice(1)}${bladeType === "list" ? "List" : "Details"}`,
+                composableName: `use${entityToken.charAt(0).toUpperCase() + entityToken.slice(1)}${bladeType === "list" ? "List" : "Details"}`,
                 route: firstBlade.route || `/${validatedPlan.module}`,
                 menuTitleKey: `${validatedPlan.module.toUpperCase()}.MENU_TITLE`,
-                logic: normalizeBladeLogic(firstBlade.logic),
-                complexity: 0,  // ✅ REQUIRED: will be calculated in decide()
+                logic: firstBlade.logic,
+                complexity: 0, // ✅ REQUIRED: will be calculated in decide()
               };
 
               decision = await smartGen.decide(mockContext);
@@ -1813,10 +1693,11 @@ ${content}
                         willUseFallback: decision.willUseFallback,
                       },
                       guide: decision.aiGuide,
-                      instruction: "Read the guide above and generate the Vue SFC code following each step carefully. Ensure all constraints are met and the verification checklist passes.",
+                      instruction:
+                        "Read the guide above and generate the Vue SFC code following each step carefully. Ensure all constraints are met and the verification checklist passes.",
                     },
                     null,
-                    2
+                    2,
                   ),
                 },
               ],
@@ -1824,19 +1705,8 @@ ${content}
           }
 
           // Generate module
-          // NOTE: AI_FULL strategy is deprecated, fallback to COMPOSITION
-          // AI_GUIDED is handled above
-          let effectiveMode: "template" | "auto" | "ai-first";
-          if (selectedStrategy === GenerationStrategy.AI_FULL) {
-            // AI_FULL generates markdown instructions for AI consumption
-            // In MCP tool context, we want real code, so use COMPOSITION instead
-            effectiveMode = "auto"; // Will use COMPOSITION via smart selection
-            selectedStrategy = GenerationStrategy.COMPOSITION; // Update for response
-          } else if (selectedStrategy === GenerationStrategy.COMPOSITION) {
-            effectiveMode = "auto";
-          } else {
-            effectiveMode = "template";
-          }
+          // NOTE: AI_FULL is now the only supported strategy
+          const effectiveMode: "ai-full" = "ai-full";
 
           const generator = new UnifiedCodeGenerator();
           const result = await generator.generateModule(validatedPlan, cwd, {
@@ -1854,12 +1724,14 @@ ${content}
                     success: true,
                     message: `Module generated successfully using ${selectedStrategy} strategy`,
                     strategy: selectedStrategy,
-                    decision: decision ? {
-                      reason: decision.reason,
-                      complexity: decision.complexity,
-                      estimatedTime: decision.estimatedTime,
-                      willUseFallback: decision.willUseFallback,
-                    } : undefined,
+                    decision: decision
+                      ? {
+                          reason: decision.reason,
+                          complexity: decision.complexity,
+                          estimatedTime: decision.estimatedTime,
+                          willUseFallback: decision.willUseFallback,
+                        }
+                      : undefined,
                     summary: {
                       module: validatedPlan.module,
                       blades: result.summary.blades,
@@ -1867,16 +1739,16 @@ ${content}
                       locales: result.summary.locales,
                       registered: result.summary.registered,
                       totalFiles: result.files.length,
-                      logicInferred: validatedPlan.blades.every(b => b.logic),
+                      logicInferred: validatedPlan.blades.every((b) => b.logic),
                     },
-                    files: result.files.map(f => ({
+                    files: result.files.map((f) => ({
                       path: f.path.replace(cwd, ""),
                       lines: f.lines,
                     })),
                     dryRun: dryRun || false,
                   },
                   null,
-                  2
+                  2,
                 ),
               },
             ],
@@ -1891,29 +1763,13 @@ ${content}
 
           const { blade, merge } = parsed.data;
           const planner = new LogicPlanner();
-          const normalizedLogic = normalizeBladeLogic(
-            (blade as InferBladeLogicInput["blade"] & { logic?: Blade["logic"] }).logic
-          );
-
-          const bladeWithDefaults: Blade = {
-            id: blade.id,
-            route: blade.id,
-            layout: blade.layout,
-            title: blade.id,
-            features: blade.features,
-            components: blade.components as Blade["components"],
-            logic: normalizedLogic,
-          };
 
           // Infer logic
-          const inferred = planner.inferLogic(bladeWithDefaults);
-          const composable = planner.inferComposable(bladeWithDefaults);
-          const existingLogic = normalizedLogic;
+          const inferred = planner.inferLogic(blade as Blade);
+          const composable = planner.inferComposable(blade as Blade);
 
           // Merge with existing if requested
-          const finalLogic = merge && existingLogic
-            ? planner.mergeLogic(inferred, existingLogic)
-            : inferred;
+          const finalLogic = merge && blade.logic ? planner.mergeLogic(inferred, blade.logic) : inferred;
 
           return {
             content: [
@@ -1930,10 +1786,10 @@ ${content}
                       composable,
                     },
                     description: planner.describeLogic(finalLogic),
-                    merged: merge && !!existingLogic,
+                    merged: merge && !!blade.logic,
                   },
                   null,
-                  2
+                  2,
                 ),
               },
             ],
@@ -1951,26 +1807,32 @@ ${content}
           const rulesProvider = getGenerationRulesProvider();
 
           // Get relevant patterns
-          const exampleNaming = new CodeGenerator().createNamingConfig("examples");
-          const complexityScore = complexity === "simple" ? 1 : complexity === "moderate" ? 5 : complexity ? 8 : 0;
-          const mockContext: BladeGenerationContext = {
-            type,
-            entity: "example",
-            module: "examples",
+          const mockContext = {
+            type: type,
+            entity: "example", // ✅ ADDED: placeholder entity
+            module: "examples", // ✅ ADDED: placeholder module
             features: features || [],
             blade: {
               id: `example-${type}`,
               layout: type === "list" ? "grid" : "details",
-              route: `/examples/${type}`,
-              title: "Example",
               features: features || [],
             },
-            naming: exampleNaming,
+            naming: {
+              moduleName: "examples",
+              entitySingular: "Example",
+              entityPlural: "Examples",
+              entitySingularCamel: "example",
+              entityPluralCamel: "examples",
+              entitySingularKebab: "example",
+              entityPluralKebab: "examples",
+              entitySingularPascal: "Example",
+              entityPluralPascal: "Examples",
+            },
             componentName: `Example${type === "list" ? "List" : "Details"}`,
             composableName: `useExample${type === "list" ? "List" : "Details"}`,
             route: "/examples",
             menuTitleKey: "EXAMPLES.MENU_TITLE",
-            complexity: complexityScore,  // ✅ ADDED: complexity field
+            complexity: complexity || 0, // ✅ ADDED: complexity field
           };
 
           const patterns = composer.selectPatterns(mockContext);
@@ -2040,15 +1902,10 @@ ${content}
           const validation = validator.validateFull(code);
 
           const attempt = retry?.attempt || 1;
-          const previousErrors: ValidationError[] = (retry?.previousErrors || []).map((message) => ({
-            type: "typescript",
-            severity: "error",
-            message,
-          }));
-          const retryContext: RetryContext = {
+          const retryContext = {
             attempt,
             maxAttempts: feedback.getMaxAttempts(),
-            previousErrors,
+            previousErrors: retry?.previousErrors || [],
             bladeId,
             strategy: context.strategy,
           };
@@ -2079,7 +1936,7 @@ ${content}
                       },
                     },
                     null,
-                    2
+                    2,
                   ),
                 },
               ],
@@ -2105,7 +1962,7 @@ ${content}
                       },
                     },
                     null,
-                    2
+                    2,
                   ),
                 },
               ],
@@ -2171,12 +2028,12 @@ ${content}
                       ],
                     },
                     null,
-                    2
+                    2,
                   ),
                 },
               ],
             };
-          } catch (error: unknown) {
+          } catch (error: any) {
             return {
               content: [
                 {
@@ -2185,145 +2042,11 @@ ${content}
                     {
                       success: false,
                       message: "Code validation passed but failed to save files",
-                      error: error instanceof Error ? error.message : String(error),
+                      error: error.message,
                       suggestion: "Check file permissions and ensure the project structure exists",
                     },
                     null,
-                    2
-                  ),
-                },
-              ],
-              isError: true,
-            };
-          }
-        }
-
-        case "analyze_prompt": {
-          const parsed = analyzePromptSchema.safeParse(args);
-          if (!parsed.success) {
-            throw new Error(`Invalid arguments: ${parsed.error.message}`);
-          }
-
-          const { prompt, module } = parsed.data;
-
-          // Build analysis prompt for AI
-          const analysisPrompt = buildAnalysisPrompt(prompt);
-          const schema = getPromptAnalysisSchema();
-
-          return {
-            content: [
-              {
-                type: "text",
-                text: JSON.stringify(
-                  {
-                    success: true,
-                    message: "Follow the instructions below to analyze the user prompt",
-                    userPrompt: prompt,
-                    moduleOverride: module,
-                    instructions: analysisPrompt,
-                    schema,
-                    workflow: [
-                      "1. Read the instructions above carefully",
-                      "2. Analyze the user prompt according to the rules",
-                      "3. Extract: entity names, features, columns, fields, relationships, business rules",
-                      "4. Return ONLY valid JSON following the schema",
-                      "5. Use the result with create_ui_plan_from_analysis tool",
-                    ],
-                    nextStep: "After AI analysis, call create_ui_plan_from_analysis with the result",
-                  },
-                  null,
-                  2
-                ),
-              },
-            ],
-          };
-        }
-
-        case "create_ui_plan_from_analysis": {
-          const parsed = createUIPlanFromAnalysisSchema.safeParse(args);
-          if (!parsed.success) {
-            throw new Error(`Invalid arguments: ${parsed.error.message}`);
-          }
-
-          const { analysis, module } = parsed.data;
-
-          // Use Planner (V1) because analyze_prompt returns PromptAnalysis shape
-          const planner = new Planner();
-
-          try {
-            const normalizedAnalysis = normalizePromptAnalysis(analysis);
-            const uiPlan = planner.generatePlan({
-              prompt: "", // Not used when analysis is provided
-              module,
-              analysis: normalizedAnalysis,
-            });
-
-            // Validate the generated UI-Plan
-            const validator = new Validator();
-            const validation = validator.validateUIPlan(uiPlan);
-
-            if (!validation.valid) {
-              return {
-                content: [
-                  {
-                    type: "text",
-                    text: JSON.stringify(
-                      {
-                        success: false,
-                        message: "Generated UI-Plan failed validation",
-                        errors: validation.errors,
-                        generatedPlan: uiPlan,
-                        suggestion: "The planner generated an invalid UI-Plan. This might be a bug. Try simplifying the analysis or use a manual UI-Plan.",
-                      },
-                      null,
-                      2
-                    ),
-                  },
-                ],
-                isError: true,
-              };
-            }
-
-            return {
-              content: [
-                {
-                  type: "text",
-                  text: JSON.stringify(
-                    {
-                      success: true,
-                      message: "UI-Plan generated successfully from analysis",
-                      plan: uiPlan,
-                      validation: {
-                        valid: true,
-                        bladesCount: uiPlan.blades.length,
-                      },
-                      nextSteps: [
-                        "UI-Plan is ready and validated",
-                        "Use generate_with_composition to generate code from this plan",
-                        "Or use generate_complete_module for full module generation",
-                      ],
-                    },
-                    null,
-                    2
-                  ),
-                },
-              ],
-            };
-          } catch (error) {
-            return {
-              content: [
-                {
-                  type: "text",
-                  text: JSON.stringify(
-                    {
-                      success: false,
-                      message: "Failed to generate UI-Plan from analysis",
-                      error: error instanceof Error ? error.message : String(error),
-                      analysis,
-                      suggestion: "Check the analysis structure. Ensure all required fields are present: entityName, entityNameSingular, listFeatures, detailsFeatures, confidence",
-                    },
-                    null,
-                    2
+                    2,
                   ),
                 },
               ],
@@ -2379,7 +2102,7 @@ ${content}
                     nextStep: "After deep AI analysis, call create_ui_plan_from_analysis_v2 with the V2 result",
                   },
                   null,
-                  2
+                  2,
                 ),
               },
             ],
@@ -2418,10 +2141,11 @@ ${content}
                         message: "Generated UI-Plan failed validation",
                         errors: validation.errors,
                         generatedPlan: uiPlan,
-                        suggestion: "The planner V2 generated an invalid UI-Plan. This might be due to unsupported V2 features in the current UI-Plan schema. Try simplifying the analysis or use manual UI-Plan.",
+                        suggestion:
+                          "The planner V2 generated an invalid UI-Plan. This might be due to unsupported V2 features in the current UI-Plan schema. Try simplifying the analysis or use manual UI-Plan.",
                       },
                       null,
-                      2
+                      2,
                     ),
                   },
                 ],
@@ -2435,8 +2159,9 @@ ${content}
               bladesCount: uiPlan.blades.length,
               hasWorkflow: !!analysis.workflow,
               complexity: analysis.complexity,
-              customActionsCount: analysis.entities.reduce((acc, e) =>
-                acc + (e.blades.reduce((bacc, b) => bacc + (b.actions?.length || 0), 0)), 0
+              customActionsCount: analysis.entities.reduce(
+                (acc, e) => acc + e.blades.reduce((bacc, b) => bacc + (b.actions?.length || 0), 0),
+                0,
               ),
             };
 
@@ -2467,7 +2192,7 @@ ${content}
                       ],
                     },
                     null,
-                    2
+                    2,
                   ),
                 },
               ],
@@ -2483,10 +2208,11 @@ ${content}
                       message: "Failed to generate UI-Plan from V2 analysis",
                       error: error instanceof Error ? error.message : String(error),
                       analysis,
-                      suggestion: "Check the V2 analysis structure. Ensure all required fields are present: moduleName, entities (array), confidence, complexity",
+                      suggestion:
+                        "Check the V2 analysis structure. Ensure all required fields are present: moduleName, entities (array), confidence, complexity",
                     },
                     null,
-                    2
+                    2,
                   ),
                 },
               ],
@@ -2546,7 +2272,7 @@ ${content}
           }
 
           const { apis } = parsed.data;
-          const results: FrameworkAPIResult[] = [];
+          const results: any[] = [];
 
           for (const apiName of apis) {
             const api = frameworkSearchEngine.getAPI(apiName);
@@ -2559,15 +2285,27 @@ ${content}
             }
 
             results.push({
-              ...api,
               name: apiName,
+              import: api.import,
+              type: api.type,
+              category: api.category,
+              description: api.description,
+              keywords: api.keywords,
+              methods: api.methods,
+              state: api.state,
+              capabilities: api.capabilities,
+              examples: api.examples,
+              dependencies: api.dependencies,
+              relatedAPIs: api.relatedAPIs,
+              requiresPlugin: api.requiresPlugin,
+              requiresContext: api.requiresContext,
             });
           }
 
           // Format output
           const formatted = results
             .map((result) => {
-              if ("error" in result) {
+              if (result.error) {
                 return `## ❌ ${result.name}\n\n${result.error}`;
               }
 
@@ -2583,13 +2321,13 @@ ${content}
 
               if (result.methods && result.methods.length > 0) {
                 parts.push(``, `### Methods`);
-                result.methods.forEach((method) => {
+                result.methods.forEach((method: any) => {
                   parts.push(
                     ``,
                     `**${method.name}**`,
                     `- Signature: \`${method.signature}\``,
                     `- Description: ${method.description}`,
-                    `- Returns: \`${method.returns}\``
+                    `- Returns: \`${method.returns}\``,
                   );
                   if (method.useCases && method.useCases.length > 0) {
                     parts.push(`- Use cases: ${method.useCases.join(", ")}`);
@@ -2599,10 +2337,8 @@ ${content}
 
               if (result.state && result.state.length > 0) {
                 parts.push(``, `### State`);
-                result.state.forEach((state) => {
-                  parts.push(
-                    `- **${state.name}**: \`${state.type}\` - ${state.description}`
-                  );
+                result.state.forEach((state: any) => {
+                  parts.push(`- **${state.name}**: \`${state.type}\` - ${state.description}`);
                 });
               }
 
@@ -2610,23 +2346,21 @@ ${content}
                 const capCount = Object.keys(result.capabilities).length;
                 if (capCount > 0) {
                   parts.push(``, `### Capabilities (${capCount})`);
-                  Object.values(result.capabilities).forEach((cap) => {
-                    parts.push(
-                      `- **${cap.name}** (${cap.complexity}): ${cap.description}`
-                    );
+                  Object.values(result.capabilities).forEach((cap: any) => {
+                    parts.push(`- **${cap.name}** (${cap.complexity}): ${cap.description}`);
                   });
                 }
               }
 
               if (result.examples && result.examples.length > 0) {
                 parts.push(``, `### Examples`);
-                result.examples.forEach((example, idx: number) => {
+                result.examples.forEach((example: any, idx: number) => {
                   parts.push(
                     ``,
                     `**Example ${idx + 1}: ${example.title}**`,
                     `\`\`\`typescript`,
                     example.code,
-                    `\`\`\``
+                    `\`\`\``,
                   );
                 });
               }
@@ -2673,10 +2407,7 @@ ${content}
               }
 
               if (result.capability) {
-                parts.push(
-                  `   Matched capability: ${result.capability.name}`,
-                  `   ${result.capability.description}`
-                );
+                parts.push(`   Matched capability: ${result.capability.name}`, `   ${result.capability.description}`);
               }
 
               return parts.join("\n");
@@ -2717,23 +2448,9 @@ ${content}
             };
           }
 
-          let capabilities: Record<string, FrameworkCapability> = api.capabilities;
-
-          if (capabilityFilter) {
-            const capabilityEntry = api.capabilities[capabilityFilter];
-            if (!capabilityEntry) {
-              return {
-                content: [
-                  {
-                    type: "text",
-                    text: `Capability "${capabilityFilter}" not found in ${apiName}.`,
-                  },
-                ],
-              };
-            }
-
-            capabilities = { [capabilityFilter]: capabilityEntry };
-          }
+          const capabilities = capabilityFilter
+            ? { [capabilityFilter]: api.capabilities[capabilityFilter] }
+            : api.capabilities;
 
           if (!capabilities || Object.keys(capabilities).length === 0) {
             return {
@@ -2747,15 +2464,9 @@ ${content}
           }
 
           // Format capabilities
-          const parts = [
-            `# ${apiName} Capabilities`,
-            ``,
-            `**Import:** \`${api.import}\``,
-            `**Type:** ${api.type}`,
-            ``,
-          ];
+          const parts = [`# ${apiName} Capabilities`, ``, `**Import:** \`${api.import}\``, `**Type:** ${api.type}`, ``];
 
-          Object.entries(capabilities).forEach(([id, cap]) => {
+          Object.entries(capabilities).forEach(([id, cap]: [string, any]) => {
             parts.push(
               `## ${cap.name}`,
               ``,
@@ -2764,7 +2475,7 @@ ${content}
               `**Complexity:** ${cap.complexity}`,
               ``,
               `**Description:** ${cap.description}`,
-              ``
+              ``,
             );
 
             if (cap.useCases && cap.useCases.length > 0) {
@@ -2777,19 +2488,11 @@ ${content}
 
             // Find related examples
             if (includeExamples !== false && api.examples) {
-              const relatedExamples = api.examples.filter(
-                (example) => example.method === cap.name || !example.method
-              );
+              const relatedExamples = api.examples.filter((ex: any) => ex.method === cap.name || !ex.method);
               if (relatedExamples.length > 0) {
                 parts.push(`**Examples:**`, ``);
-                relatedExamples.forEach((example) => {
-                  parts.push(
-                    `### ${example.title}`,
-                    `\`\`\`typescript`,
-                    example.code,
-                    `\`\`\``,
-                    ``
-                  );
+                relatedExamples.forEach((example: any) => {
+                  parts.push(`### ${example.title}`, `\`\`\`typescript`, example.code, `\`\`\``, ``);
                 });
               }
             }
@@ -2816,7 +2519,7 @@ ${content}
             ? [frameworkSearchEngine.getAPI(apiFilter)].filter(Boolean)
             : frameworkSearchEngine.getAllAPIs();
 
-          const matchedExamples: MatchedFrameworkExample[] = [];
+          const matchedExamples: any[] = [];
           const queryLower = query.toLowerCase();
 
           for (const api of allAPIs) {
@@ -2887,8 +2590,7 @@ ${content}
       }
     } catch (error) {
       // Format error for MCP
-      const errorMessage =
-        error instanceof Error ? formatMcpError(error) : String(error);
+      const errorMessage = error instanceof Error ? formatMcpError(error) : String(error);
 
       return {
         content: [

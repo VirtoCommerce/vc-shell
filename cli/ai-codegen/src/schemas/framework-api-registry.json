@@ -558,6 +558,40 @@
         }],
         "returns": "void",
         "useCases": ["Save failed", "API error", "Validation error"]
+      }, {
+        "name": "warning",
+        "description": "Show warning notification",
+        "signature": "(message: string, title?: string) => void",
+        "params": [{
+          "name": "message",
+          "type": "string",
+          "description": "Warning message",
+          "required": true
+        }, {
+          "name": "title",
+          "type": "string",
+          "description": "Optional title",
+          "required": false
+        }],
+        "returns": "void",
+        "useCases": ["Validation warning", "Operation warning", "Incomplete data"]
+      }, {
+        "name": "info",
+        "description": "Show info notification",
+        "signature": "(message: string, title?: string) => void",
+        "params": [{
+          "name": "message",
+          "type": "string",
+          "description": "Info message",
+          "required": true
+        }, {
+          "name": "title",
+          "type": "string",
+          "description": "Optional title",
+          "required": false
+        }],
+        "returns": "void",
+        "useCases": ["General information", "Status update", "Informational message"]
       }],
       "state": [],
       "capabilities": {
@@ -575,6 +609,22 @@
           "name": "error",
           "description": "Show error toast",
           "useCases": ["Save failed", "API error"],
+          "complexity": "simple"
+        },
+        "warning-notification": {
+          "id": "warning-notification",
+          "type": "method",
+          "name": "warning",
+          "description": "Show warning toast",
+          "useCases": ["Validation warning", "Operation warning"],
+          "complexity": "simple"
+        },
+        "info-notification": {
+          "id": "info-notification",
+          "type": "method",
+          "name": "info",
+          "description": "Show info toast",
+          "useCases": ["Status update", "Information message"],
           "complexity": "simple"
         }
       },

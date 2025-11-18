@@ -193,7 +193,10 @@ describe("UnifiedCodeGenerator", () => {
             components: [
               {
                 type: "VcTable",
-                columns: [{ key: "sku", title: "SKU" }],
+                columns: [
+                  { key: "sku", title: "SKU" },
+                  { key: "status", title: "Status", type: "status" }, // status column triggers StatusBadge component
+                ],
               },
             ],
           },

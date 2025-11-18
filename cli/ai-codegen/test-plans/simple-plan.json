@@ -1,0 +1,31 @@
+{
+  "$schema": "https://vc-shell.dev/schemas/ui-plan.v1.json",
+  "module": "products",
+  "blades": [
+    {
+      "id": "products-list",
+      "route": "/products",
+      "layout": "grid",
+      "title": "Products",
+      "components": [
+        {
+          "type": "VcTable",
+          "columns": [
+            { "key": "name", "title": "Name", "sortable": true },
+            { "key": "sku", "title": "SKU" },
+            { "key": "price", "title": "Price", "type": "money" }
+          ]
+        }
+      ],
+      "logic": {
+        "state": {
+          "loading": { "source": "composable", "reactive": true },
+          "items": { "source": "composable", "reactive": true }
+        },
+        "toolbar": [
+          { "id": "refresh", "icon": "fas fa-sync", "action": "reload()" }
+        ]
+      }
+    }
+  ]
+}

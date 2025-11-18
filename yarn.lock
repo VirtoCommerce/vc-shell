@@ -13787,9 +13787,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"offers-app@workspace:gen-apps/offers-app":
+"offers-management@workspace:gen-apps/offers-management":
   version: 0.0.0-use.local
-  resolution: "offers-app@workspace:gen-apps/offers-app"
+  resolution: "offers-management@workspace:gen-apps/offers-management"
   dependencies:
     "@commitlint/cli": "npm:^18.4.3"
     "@commitlint/config-conventional": "npm:^18.4.3"

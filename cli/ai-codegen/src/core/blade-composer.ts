@@ -1,7 +1,15 @@
 import { AICodeGenerator, type BladeGenerationContext, type AIGenerationGuide } from "./ai-code-generator.js";
 import { getGenerationRulesProvider, type CompositionPattern } from "./generation-rules.js";
 import { CodeValidator } from "./code-validator.js";
+import { TemplateAdapter } from "./template-adapter.js";
+import { PatternMerger } from "./pattern-merger.js";
+import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import type { Blade } from "./validator.js";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 export interface CompositionConfig {
   context: BladeGenerationContext;
@@ -48,11 +56,13 @@ export class BladeComposer {
   private aiGenerator: AICodeGenerator;
   private rulesProvider: ReturnType<typeof getGenerationRulesProvider>;
   private validator: CodeValidator;
+  private patternMerger: PatternMerger;
 
   constructor() {
     this.aiGenerator = new AICodeGenerator();
     this.rulesProvider = getGenerationRulesProvider();
     this.validator = new CodeValidator();
+    this.patternMerger = new PatternMerger();
   }
 
   /**
@@ -86,101 +96,168 @@ export class BladeComposer {
   /**
    * Select relevant composition patterns based on context
    *
-   * This implements the pattern selection algorithm
+   * This implements the pattern selection algorithm using new pattern library
    */
   private selectPatterns(context: BladeGenerationContext): CompositionPattern[] {
     const patterns: CompositionPattern[] = [];
     const { type, features, blade } = context;
 
     // 1. BASE PATTERN (always required)
-    const baseName = type === "list" ? "list-basic" : "form-basic";
-    const basePattern = this.rulesProvider.getPattern(baseName);
-    if (basePattern) {
-      patterns.push(basePattern);
+    if (type === "list") {
+      const basePattern = this.loadPatternFromFile("list/list-basic.md");
+      if (basePattern) patterns.push(basePattern);
+    } else {
+      const basePattern = this.loadPatternFromFile("details/form-basic.md");
+      if (basePattern) patterns.push(basePattern);
     }
 
     // 2. FEATURE-SPECIFIC PATTERNS
     if (features.includes("filters")) {
-      const filtersPattern = this.rulesProvider.getPattern("filters-pattern");
-      if (filtersPattern) {
-        patterns.push(filtersPattern);
-      }
-
-      // If list with filters, also need list-with-filters pattern
-      if (type === "list") {
-        const listFiltersPattern = this.rulesProvider.getPattern("list-with-filters");
-        if (listFiltersPattern) {
-          patterns.push(listFiltersPattern);
-        }
-      }
+      const filtersPattern = this.loadPatternFromFile("list/filters-pattern.md");
+      if (filtersPattern) patterns.push(filtersPattern);
     }
 
     if (features.includes("multiselect")) {
-      const multiselectPattern = this.rulesProvider.getPattern("list-with-multiselect");
-      if (multiselectPattern) {
-        patterns.push(multiselectPattern);
-      }
+      const multiselectPattern = this.loadPatternFromFile("list/multiselect.md");
+      if (multiselectPattern) patterns.push(multiselectPattern);
+    }
+
+    if (features.includes("reorderable")) {
+      const reorderPattern = this.loadPatternFromFile("list/reorderable-table.md");
+      if (reorderPattern) patterns.push(reorderPattern);
     }
 
     if (features.includes("validation")) {
-      // Form validation patterns would go here
-      // For now, validation is part of form-basic
+      const validationPattern = this.loadPatternFromFile("details/validation-patterns.md");
+      if (validationPattern) patterns.push(validationPattern);
     }
 
     if (features.includes("gallery")) {
-      // Gallery pattern for image uploads
-      // Would be in form-with-gallery pattern
+      const galleryPattern = this.loadPatternFromFile("details/gallery-patterns.md");
+      if (galleryPattern) patterns.push(galleryPattern);
     }
 
     if (features.includes("widgets")) {
-      // Dashboard widgets pattern
-      // This is a complex case
+      const widgetsPattern = this.loadPatternFromFile("details/widgets-registration.md");
+      if (widgetsPattern) patterns.push(widgetsPattern);
     }
 
-    // 3. CUSTOM SLOTS PATTERN
-    if (blade.customSlots && blade.customSlots.length > 0) {
-      const customSlotsPattern = this.rulesProvider.getPattern("custom-column-slots");
-      if (customSlotsPattern) {
-        patterns.push(customSlotsPattern);
-      }
-    }
+    // 3. SHARED PATTERNS
 
-    // 4. TOOLBAR PATTERN
-    // If blade has custom toolbar actions beyond standard
-    if (context.logic?.toolbar && context.logic.toolbar.length > 2) {
-      const toolbarPattern = this.rulesProvider.getPattern("toolbar-patterns");
-      if (toolbarPattern) {
-        patterns.push(toolbarPattern);
-      }
-    }
+    // Always include error handling
+    const errorPattern = this.loadPatternFromFile("shared/error-handling.md");
+    if (errorPattern) patterns.push(errorPattern);
 
-    // 5. SHARED PATTERNS
-    // Error handling (always good to include)
-    const errorPattern = this.rulesProvider.getPattern("error-handling");
-    if (errorPattern) {
-      patterns.push(errorPattern);
+    // Parent-child communication for list blades
+    if (type === "list") {
+      const parentChildPattern = this.loadPatternFromFile("shared/parent-child-communication.md");
+      if (parentChildPattern) patterns.push(parentChildPattern);
     }
 
     // Async select fields detection
     if (this.hasAsyncSelectFields(context)) {
-      const asyncSelectPattern = this.rulesProvider.getPattern("async-select-patterns");
-      if (asyncSelectPattern) {
-        patterns.push(asyncSelectPattern);
-      }
+      const asyncSelectPattern = this.loadPatternFromFile("shared/async-select-patterns.md");
+      if (asyncSelectPattern) patterns.push(asyncSelectPattern);
     }
 
-    // Reorderable table
-    if (features.includes("reorderable")) {
-      const reorderPattern = this.rulesProvider.getPattern("reorderable-table");
-      if (reorderPattern) {
-        patterns.push(reorderPattern);
-      }
+    // Custom column slots for list blades with custom rendering
+    if (type === "list" && this.hasCustomColumnSlots(context)) {
+      const customSlotsPattern = this.loadPatternFromFile("shared/custom-column-slots.md");
+      if (customSlotsPattern) patterns.push(customSlotsPattern);
     }
 
-    // 6. REMOVE DUPLICATES (keep unique patterns)
+    // 4. REMOVE DUPLICATES (keep unique patterns)
     const uniquePatterns = this.deduplicatePatterns(patterns);
 
     return uniquePatterns;
+  }
+
+  /**
+   * Load pattern from markdown file
+   */
+  private loadPatternFromFile(relativePath: string): CompositionPattern | null {
+    try {
+      const compositionsPath = __dirname.includes("/dist")
+        ? path.join(__dirname, "examples", "compositions")
+        : path.join(__dirname, "..", "examples", "compositions");
+
+      const patternPath = path.join(compositionsPath, relativePath);
+
+      if (!fs.existsSync(patternPath)) {
+        console.warn(`Pattern file not found: ${patternPath}`);
+        return null;
+      }
+
+      const content = fs.readFileSync(patternPath, "utf-8");
+      const name = path.basename(relativePath, ".md");
+
+      // Extract description from markdown (first paragraph after title)
+      const descriptionMatch = content.match(/^# .+?\n\n(.+?)(?:\n\n|$)/s);
+      const description = descriptionMatch ? descriptionMatch[1].trim() : "Pattern";
+
+      // Determine category from file path
+      const category = relativePath.startsWith("list/") ? "list"
+        : relativePath.startsWith("details/") ? "details"
+        : "shared";
+
+      return {
+        name,
+        description,
+        category,
+        content,
+        requiredComponents: this.extractComponentsFromPattern(content),
+        features: this.extractFeaturesFromPattern(content),
+      };
+    } catch (error) {
+      console.error(`Failed to load pattern ${relativePath}:`, error);
+      return null;
+    }
+  }
+
+  /**
+   * Extract component names from pattern content
+   */
+  private extractComponentsFromPattern(content: string): string[] {
+    const components = new Set<string>();
+    const componentPattern = /(Vc[A-Z][a-zA-Z]+)/g;
+    let match;
+
+    while ((match = componentPattern.exec(content)) !== null) {
+      components.add(match[1]);
+    }
+
+    return Array.from(components);
+  }
+
+  /**
+   * Extract features from pattern content
+   */
+  private extractFeaturesFromPattern(content: string): string[] {
+    const features: string[] = [];
+
+    if (content.includes("filters") || content.includes("Filter")) features.push("filters");
+    if (content.includes("multiselect") || content.includes("selection")) features.push("multiselect");
+    if (content.includes("validation") || content.includes("vee-validate")) features.push("validation");
+    if (content.includes("gallery") || content.includes("VcGallery")) features.push("gallery");
+    if (content.includes("widgets") || content.includes("useWidgets")) features.push("widgets");
+    if (content.includes("reorderable") || content.includes("drag")) features.push("reorderable");
+
+    return features;
+  }
+
+  /**
+   * Check if blade has custom column slots
+   */
+  private hasCustomColumnSlots(context: BladeGenerationContext): boolean {
+    // Check if any columns have custom rendering needs
+    if (!context.columns) return false;
+
+    return context.columns.some(col =>
+      col.type === "image" ||
+      col.type === "badge" ||
+      col.type === "status" ||
+      col.type === "custom"
+    );
   }
 
   /**
@@ -223,6 +300,144 @@ export class BladeComposer {
     } else {
       return "complex"; // Full AI generation with multiple retries
     }
+  }
+
+  /**
+   * Compose blade code from patterns using PatternMerger
+   *
+   * This generates actual Vue SFC code by intelligently merging patterns
+   */
+  composeBlade(context: BladeGenerationContext, patterns: CompositionPattern[]): string {
+    const patternNames = patterns.map(p => p.name);
+
+    try {
+      // Use PatternMerger to compose from patterns
+      const merged = this.patternMerger.merge(patterns, {
+        deduplicateImports: true,
+        sortImports: true,
+        addComments: true,
+        indentSize: 2,
+      });
+
+      // Build complete SFC
+      let code = this.patternMerger.buildSFC(merged, {
+        addComments: true,
+        indentSize: 2,
+      });
+
+      // Add generation metadata as comment
+      const metadata = `<!--
+  Generated by PATTERN COMPOSITION strategy
+  Patterns merged: ${patternNames.join(", ")}
+
+  This code was dynamically composed from ${patterns.length} patterns:
+  ${patterns.map(p => `  - ${p.name}: ${p.description}`).join("\n")}
+-->
+
+`;
+
+      code = metadata + code;
+
+      // Apply entity name replacements
+      code = this.applyEntityReplacements(code, context);
+
+      return code;
+    } catch (error) {
+      console.error("PatternMerger failed, falling back to TemplateAdapter:", error);
+
+      // Fallback to template adapter if pattern merging fails
+      return this.composeBladeFromTemplate(context, patterns);
+    }
+  }
+
+  /**
+   * Fallback method using TemplateAdapter
+   */
+  private composeBladeFromTemplate(context: BladeGenerationContext, patterns: CompositionPattern[]): string {
+    const patternNames = patterns.map(p => p.name);
+    const hasFilters = patternNames.some(p => p.includes("filter"));
+    const hasMultiselect = patternNames.some(p => p.includes("multiselect"));
+
+    // Determine template name based on features
+    let templateName = context.type === "list" ? "list-simple" : "details-simple";
+
+    if (context.type === "list") {
+      if (hasFilters) {
+        templateName = "list-filters";
+      } else if (hasMultiselect) {
+        templateName = "list-multiselect";
+      }
+    } else {
+      if (context.features.includes("validation")) {
+        templateName = "details-validation";
+      }
+    }
+
+    const adapter = new TemplateAdapter();
+
+    const config = {
+      naming: context.naming,
+      componentName: context.componentName,
+      composableName: context.composableName,
+      route: context.route,
+      isWorkspace: context.isWorkspace,
+      menuTitleKey: context.menuTitleKey,
+      columns: context.columns,
+      fields: context.fields,
+      features: context.features,
+    };
+
+    const templatesPath = __dirname.includes("/dist")
+      ? path.join(__dirname, "examples", "templates")
+      : path.join(__dirname, "..", "examples", "templates");
+
+    const templatePath = path.join(templatesPath, `${templateName}.vue`);
+    const templateContent = fs.readFileSync(templatePath, "utf-8");
+
+    const code = context.type === "list"
+      ? adapter.adaptListTemplate(templateContent, config)
+      : adapter.adaptDetailsTemplate(templateContent, config);
+
+    const patternComment = `<!--
+  Generated by TEMPLATE FALLBACK
+  Attempted patterns: ${patternNames.join(", ")}
+
+  Note: PatternMerger failed, using template adaptation
+-->
+
+`;
+
+    return patternComment + code;
+  }
+
+  /**
+   * Apply entity name replacements to generated code
+   */
+  private applyEntityReplacements(code: string, context: BladeGenerationContext): string {
+    if (!context.naming) return code;
+
+    const { naming } = context;
+
+    // Replace placeholders with actual entity names
+    let replaced = code;
+
+    // Entity names
+    replaced = replaced.replace(/useEntityList/g, naming.composableList || "useEntityList");
+    replaced = replaced.replace(/useEntityDetails/g, naming.composableDetails || "useEntityDetails");
+    replaced = replaced.replace(/EntityList/g, naming.componentList || "EntityList");
+    replaced = replaced.replace(/EntityDetails/g, naming.componentDetails || "EntityDetails");
+
+    // Routes
+    if (context.route) {
+      replaced = replaced.replace(/\/entity/g, context.route);
+    }
+
+    // Titles
+    if (context.menuTitleKey) {
+      replaced = replaced.replace(/pages\.entity/g, context.menuTitleKey);
+    }
+
+    return replaced;
   }
 
   /**

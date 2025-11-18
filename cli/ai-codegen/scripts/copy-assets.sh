@@ -19,6 +19,9 @@ cp src/schemas/*.json dist/schemas/ 2>/dev/null && echo "✓ Copied JSON schemas
 # Copy example markdown files
 cp src/examples/*.md dist/examples/ 2>/dev/null && echo "✓ Copied example markdown files"
 
+# Copy example JSON files (UI-Plan examples)
+cp src/examples/*.json dist/examples/ 2>/dev/null && echo "✓ Copied example JSON files"
+
 # Copy component demos (md)
 cp src/examples/components/*.md dist/examples/components/ 2>/dev/null && echo "✓ Copied component demos (md)"
 

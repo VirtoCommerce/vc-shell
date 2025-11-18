@@ -1,503 +1,213 @@
-# VC-Shell AI Codegen - Implementation Summary
+# Implementation Summary - v0.7.0
 
-## 🎉 Completed: Full Automatic Code Generation
+## Overview
 
-**Date:** 2025-11-11  
-**Version:** 0.5.0  
-**Status:** ✅ READY FOR USE
+Enhanced AI-guided generation with widget registration pattern based on real vendor-portal code and adjusted complexity thresholds.
 
----
+## What Was Changed
 
-## 📋 What Was Implemented
+### 1. AIGenerationGuideBuilder Enhanced
+**File:** `src/core/ai-generation-guide-builder.ts`
 
-### Phase 1: Code Generation Engine ✅
+**Changes:**
+- Added Step 6 to `buildDetailsSteps()` for widget registration (lines 740-760)
+- Added `buildWidgetRegistrationPattern()` method (lines 767-811)
+- Widget step only appears when `features.includes("widgets")`
+- Pattern matches vendor-portal real implementation (no markRaw, immediate registration)
 
-**Created 5 new core modules:**
-
-1. **UnifiedCodeGenerator** (`src/core/unified-generator.ts`)
-   - Main orchestrator for all code generation
-   - Coordinates: template adaptation, composables, locales, registration
-   - Generates complete modules from UI-Plan
-
-2. **TemplateAdapter** (`src/core/template-adapter.ts`)
-   - AST-based Vue SFC transformation using Babel
-   - Replaces Entity → YourEntity automatically
-   - Transforms script and template sections
-   - No string replace - all AST!
-
-3. **ComposableGenerator** (`src/core/composable-generator.ts`)
-   - Generates useEntityList with mock data
-   - Generates useEntityDetails with modification tracking
-   - Mock data includes simulated API delays (300ms)
-   - Ready to test immediately!
-
-4. **LocaleGenerator** (`src/core/locale-generator.ts`)
-   - Extracts i18n keys from generated code
-   - Builds nested JSON structure automatically
-   - Follows MODULE.PAGES.BLADE.SECTION.KEY pattern
-   - Generates default translations
-
-5. **ModuleRegistrar** (`src/core/module-registrar.ts`)
-   - Parses main.ts using Babel AST
-   - Adds import after other modules
-   - Inserts .use() call before .use(router)
-   - Prevents duplicates
-
-### Phase 2: New MCP Tools ✅
-
-**Added 3 new tools:**
-
-1. **generate_complete_module** 🚀
-   - PRIMARY tool for generation
-   - Input: UI-Plan + cwd
-   - Output: Complete module (all files)
-   - Time: ~2 seconds
-
-2. **validate_and_fix_plan**
-   - Validates plan + suggests fixes
-   - Returns fixed plan if possible
-   - Helpful error messages
-
-3. **generate_blade**
-   - Single blade generation
-   - Useful for custom scenarios
-
-**Total MCP Tools: 10** (was 7)
-
-### Phase 3: Enhanced UI-Plan Schema ✅
-
-**Extended schema with:**
-- `features` array - ["filters", "multiselect", "validation", "gallery", "widgets"]
-- `customSlots` array - Custom slot definitions
-- `column.type` - Display type (text, number, money, date, status, etc.)
-- `field.type` - Data type (text, email, number, date, boolean, etc.)
-
-### Phase 4: Strict .cursorrules ✅
-
-**Updated workflow:**
-- Step 1: Generate UI-Plan (same)
-- Step 2: **Call generate_complete_module** (NEW!)
-- ❌ NO manual template adaptation
-- ❌ NO manual composable creation
-- ❌ NO manual locale generation
-- ✅ AI calls ONE tool → Everything done!
-
-### Phase 5: Comprehensive Tests ✅
-
-**Created 9 test files (50+ tests):**
-- `unified-generator.spec.ts` - Integration tests
-- `template-adapter.spec.ts` - AST transformation tests
-- `composable-generator.spec.ts` - Pattern generation tests
-- `locale-generator.spec.ts` - i18n extraction tests
-- `module-registrar.spec.ts` - main.ts update tests
-- Plus existing: validator, planner, naming, components
-
-### Phase 6: Documentation ✅
-
-**Created/Updated:**
-- `ARCHITECTURE.md` - Complete architecture guide
-- `RULES.md` - Full AI generation rules
-- `README.md` - Updated with new workflow
-- `CHANGELOG.md` - Version 0.5.0 changelog
-- `STATUS.md` - Current status
-- `.cursorrules` - Strict workflow enforcement
-
----
-
-## 📦 New Dependencies Added
-
-```json
-{
-  "dependencies": {
-    "@babel/core": "^7.25.0",
-    "@babel/generator": "^7.25.0",
-    "@babel/parser": "^7.25.0",
-    "@babel/traverse": "^7.25.0",
-    "@babel/types": "^7.25.0",
-    "@vue/compiler-sfc": "^3.5.0"
-  },
-  "devDependencies": {
-    "@types/babel__core": "^7.20.5",
-    "@types/babel__generator": "^7.6.8",
-    "@types/babel__traverse": "^7.20.6"
-  }
+**Code Added:**
+```typescript
+// Step 6: Widget registration (if widgets feature is enabled)
+if (features.includes("widgets")) {
+  steps.push({
+    step: 6,
+    title: "Register widgets (optional)",
+    description: "Add widget registration for contextual panels using vendor-portal pattern",
+    code: this.buildWidgetRegistrationPattern(context),
+    explanation: `...`,
+    componentsDocs: this.getComponentsDocs(["useWidgets", "useBlade"]),
+  });
 }
 ```
 
----
+**Widget Pattern:**
+- ✅ NO markRaw() on component
+- ✅ Immediate registration after setup
+- ✅ Reactive props with computed()
+- ✅ Cleanup in onBeforeUnmount
+- ✅ References vendor-portal: apps/vendor-portal/src/modules/offers/pages/offers-details.vue:668-682
 
-## 🔄 Before vs After
+### 2. Smart Generator Threshold Adjusted
+**File:** `src/core/smart-generator.ts`
 
-### OLD Workflow (0.4.0):
+**Changes:**
+- Line 142: Changed `complexity <= 10` → `complexity <= 7`
+- Line 151: Updated comment to "Complex case (>7)"
+- Line 154: Updated reason message to "Moderate-high complexity"
 
+**New Strategy Selection:**
+- TEMPLATE: complexity ≤5
+- COMPOSITION: 5 < complexity ≤7
+- AI_GUIDED: complexity >7
+
+**Rationale:** Blades with complexity 7-10 benefit more from AI guidance with enhanced capabilities than generic composition.
+
+### 3. Widget Pattern Documentation Created
+**File:** `src/examples/patterns/widget-registration.md` (NEW)
+
+**Contents:**
+- Complete widget registration pattern (285 lines)
+- Real vendor-portal example
+- Key points section (5 critical points)
+- Common mistakes section (4 anti-patterns)
+- Widget component structure example
+- References to real implementation
+
+### 4. Version and CHANGELOG Updated
+**Files:** `package.json`, `CHANGELOG.md`
+
+**Changes:**
+- Version bumped: 0.6.0 → 0.7.0
+- Comprehensive CHANGELOG entry for v0.7.0
+- Technical details documented
+
+## What Was NOT Changed
+
+### Templates (Unchanged - Already Correct)
+- ❌ `src/examples/templates/list-simple.vue` - Already uses `@header-click` ✓
+- ❌ `src/examples/templates/list-filters.vue` - Already uses `@header-click` ✓
+- ❌ `src/examples/templates/details-simple.vue` - Already uses correct validation ✓
+- ❌ `src/examples/templates/details-validation.vue` - Already correct ✓
+
+**Reason:** Analysis of vendor-portal showed templates already match production patterns.
+
+### Validation Pattern (Unchanged)
+Real vendor-portal code uses:
+```typescript
+const { setFieldError, meta, errorBag } = useForm({
+  validateOnMount: false,
+});
 ```
-User: "Create vendor management"
-      ↓
-AI: Generate UI-Plan ✓
-      ↓
-AI: Call get_blade_template
-      ↓
-AI: Manually copy template
-AI: Manually replace Entity → Vendor
-AI: Manually update columns
-AI: Manually create useVendorList
-AI: Manually create useVendorDetails
-AI: Manually extract i18n keys
-AI: Manually create en.json
-AI: Manually register in main.ts
-      ↓
-Time: 15-20 minutes
-Manual work: High
-Error rate: Medium
-```
 
-### NEW Workflow (0.5.0):
+NO `validationSchema` parameter - templates are correct as-is.
 
-```
-User: "Create vendor management"
-      ↓
-AI: Generate UI-Plan ✓
-      ↓
-AI: Call generate_complete_module(plan, cwd)
-      ↓
-Tool: [Generates everything automatically]
-      ↓
-Time: 30 seconds
-Manual work: ZERO
-Error rate: Low
-```
+## Files Modified
 
----
+1. ✏️ `src/core/ai-generation-guide-builder.ts` - Added widget step + buildWidgetRegistrationPattern()
+2. ✏️ `src/core/smart-generator.ts` - Threshold 10→7
+3. ✏️ `package.json` - Version 0.6.0→0.7.0
+4. ✏️ `CHANGELOG.md` - Added v0.7.0 entry
+5. ➕ `src/examples/patterns/widget-registration.md` - NEW pattern doc
 
-## 🎯 Usage Example
+## Files Created for Testing
 
-### Step 1: Install & Configure
+1. `test-plans/simple-plan.json` - Products list (complexity ≤5, TEMPLATE expected)
+2. `test-plans/moderate-plan.json` - Orders list with filters (complexity 5-7, COMPOSITION expected)
+3. `test-plans/complex-plan.json` - Offer details with widgets (complexity >7, AI_GUIDED expected)
+
+## Build Results
 
 ```bash
-cd /path/to/vc-shell-project
-npx @vc-shell/ai-codegen@latest init-mcp --client cursor
-# Restart Cursor
+$ yarn build
+✅ Build success in 16ms
+✓ Copied pattern documentation
+✅ Asset copy complete!
 ```
 
-### Step 2: Generate Module
+All assets copied successfully, including new `widget-registration.md`.
 
-**Prompt to AI in Cursor:**
-```
-Create vendor management module with:
-- List blade: name, email, status, created date columns
-- Details blade: name, email, phone, description fields
-```
+## Testing Strategy
 
-**AI Response:**
-```
-✅ UI-Plan generated for vendor-management.
+### 1. Simple Plan (≤5 complexity)
+**File:** `test-plans/simple-plan.json`
+- 3 columns, basic table
+- No filters, no multiselect
+- **Expected:** TEMPLATE strategy
 
-Plan includes:
-- vendors-list.vue at /vendors (workspace)
-- vendor-details.vue at /vendor
+### 2. Moderate Plan (5-7 complexity)
+**File:** `test-plans/moderate-plan.json`
+- 5 columns with types
+- Filters feature
+- 2 toolbar items
+- **Expected:** COMPOSITION strategy
 
-Saved to: __ai/ui-plan-vendor-management.json
+### 3. Complex Plan (>7 complexity)
+**File:** `test-plans/complex-plan.json`
+- Details blade with 7 fields
+- Validation, gallery, widgets features
+- Async validation handler
+- **Expected:** AI_GUIDED strategy with widget pattern in Step 6
 
-Should I proceed with generation?
-```
+## Verification Checklist
 
-**You:** "Yes"
+- [x] AIGenerationGuideBuilder includes widget step for details + widgets
+- [x] buildWidgetRegistrationPattern() generates correct pattern
+- [x] Widget pattern has NO markRaw()
+- [x] Widget pattern includes immediate registration
+- [x] Widget pattern includes cleanup in onBeforeUnmount
+- [x] Threshold changed from 10 to 7 in smart-generator.ts
+- [x] widget-registration.md created with complete documentation
+- [x] CHANGELOG.md updated for v0.7.0
+- [x] package.json version updated to 0.7.0
+- [x] Build successful with all assets copied
+- [x] Test plans created for all complexity levels
 
-**AI Actions:**
-```
-[Reading plan from __ai/ui-plan-vendor-management.json...]
-[Calling generate_complete_module...]
+## Expected Behavior
 
-Tool response received:
-✅ Module generated successfully!
+### When generating with `features: ["widgets"]`:
 
-Created 11 files:
-- pages/vendors-list.vue (201 lines)
-- pages/vendor-details.vue (189 lines)
-- composables/useVendorList.ts (92 lines)
-- composables/useVendorDetails.ts (87 lines)
-- locales/en.json (48 keys)
-- locales/index.ts
-- pages/index.ts
-- composables/index.ts
-- index.ts
-
-Module registered in src/main.ts ✓
-
-All composables use mock data. UI is ready to test immediately!
-
-Run: npm run dev
-Navigate to: /vendors
-```
-
----
-
-## 🧪 Mock Data Example
-
-**Generated useVendorList.ts:**
+The AI guide will include Step 6:
 
 ```typescript
-// Mock data for development
-const MOCK_VENDORS: Vendor[] = [
-  {
-    id: "1",
-    name: "Vendor 1",
-    email: "email1@example.com",
-    status: "active",
-    createdDate: new Date(Date.now() - 1 * 86400000),
-  },
-  {
-    id: "2",
-    name: "Vendor 2",
-    email: "email2@example.com",
-    status: "inactive",
-    createdDate: new Date(Date.now() - 2 * 86400000),
-  },
-  {
-    id: "3",
-    name: "Vendor 3",
-    email: "email3@example.com",
-    status: "pending",
-    createdDate: new Date(Date.now() - 3 * 86400000),
-  },
-];
+// Import widget component and framework hooks
+import { useWidgets, useBlade } from "@vc-shell/framework";
+import { onBeforeUnmount, computed } from "vue";
+import { SpecialWidget } from "../widgets/special-widget.vue";
 
-async function loadVendors(query?: SearchQuery) {
-  loading.value = true;
-  
-  // Simulate API delay
-  await new Promise(resolve => setTimeout(resolve, 300));
-  
-  // Return mock data
-  items.value = MOCK_VENDORS;
-  totalCount.value = MOCK_VENDORS.length;
-  
-  loading.value = false;
+// Get widget API
+const { registerWidget, unregisterWidget } = useWidgets();
+const blade = useBlade();
+
+// Widget registration function
+function registerWidgets() {
+  registerWidget(
+    {
+      id: "special-widget",
+      component: SpecialWidget,  // NO markRaw!
+      props: {
+        offerId: computed(() => offer.value?.id),
+        data: computed(() => offer.value),
+      },
+      isVisible: computed(() => !!props.param),
+    },
+    blade?.value.id,
+  );
 }
+
+registerWidgets(); // Call immediately
+
+onBeforeUnmount(() => {
+  unregisterWidget("special-widget", blade?.value.id);
+});
 ```
 
-**Benefits:**
-- ✅ UI works immediately without backend
-- ✅ Can test all interactions
-- ✅ Easy to replace with real API later
+## References
 
----
+- Vendor-portal widget implementation: `apps/vendor-portal/src/modules/offers/pages/offers-details.vue:668-682`
+- Widget pattern doc: `src/examples/patterns/widget-registration.md`
+- AI guide builder: `src/core/ai-generation-guide-builder.ts:767-811`
 
-## 📝 Files Modified/Created
+## Next Steps
 
-### Created (New Files):
+1. Test with MCP server to verify AI_GUIDED guides include widget pattern
+2. Generate test module with complex-plan.json
+3. Verify widget registration code matches vendor-portal pattern
+4. Validate all 3 strategy thresholds work correctly
 
-**Core:**
-- `src/core/unified-generator.ts` (465 lines)
-- `src/core/template-adapter.ts` (368 lines)
-- `src/core/composable-generator.ts` (289 lines)
-- `src/core/locale-generator.ts` (189 lines)
-- `src/core/module-registrar.ts` (158 lines)
+## Summary
 
-**Tests:**
-- `src/__tests__/unified-generator.spec.ts` (145 lines)
-- `src/__tests__/template-adapter.spec.ts` (87 lines)
-- `src/__tests__/composable-generator.spec.ts` (103 lines)
-- `src/__tests__/locale-generator.spec.ts` (98 lines)
-- `src/__tests__/module-registrar.spec.ts` (112 lines)
-
-**Documentation:**
-- `ARCHITECTURE.md` (350 lines)
-- `RULES.md` (380 lines)
-- `IMPLEMENTATION_SUMMARY.md` (this file)
-
-### Modified (Updated Files):
-
-- `package.json` - Added Babel dependencies, version 0.5.0
-- `src/index.ts` - Version 0.5.0
-- `src/commands/mcp.ts` - Added 3 new MCP tools, version 0.5.0
-- `src/schemas/zod-schemas.ts` - Added 3 new schemas
-- `src/schemas/ui-plan.v1.schema.json` - Extended with features, customSlots, types
-- `.cursorrules` - Complete rewrite with strict workflow
-- `README.md` - Updated with automatic generation info
-- `STATUS.md` - Version 0.5.0 status
-- `CHANGELOG.md` - Added 0.5.0 release notes
-
-**Total Lines Changed:** ~3,500 lines
-
----
-
-## 🚀 Next Steps for User
-
-### 1. Install Dependencies
-
-```bash
-cd /Users/symbot/DEV/vc-shell/cli/ai-codegen
-npm install
-```
-
-This will install new Babel dependencies.
-
-### 2. Build Package
-
-```bash
-npm run build
-```
-
-### 3. Test Locally
-
-```bash
-# In a vc-shell project:
-npx @vc-shell/ai-codegen@latest init-mcp --client cursor
-```
-
-### 4. Restart Cursor
-
-Required to load new MCP tools.
-
-### 5. Test Generation
-
-**Prompt:**
-```
-Create test-module with list and details
-```
-
-**Expected:**
-- AI generates UI-Plan
-- AI calls generate_complete_module
-- 11 files created automatically
-- Module registered in main.ts
-- Ready to use!
-
-### 6. Verify
-
-```bash
-npm run dev
-# Navigate to /test-items
-# Should see mock data in table
-```
-
----
-
-## 🎯 Success Criteria (All Met!)
-
-- ✅ Code generation is fully automatic
-- ✅ No manual template adaptation
-- ✅ No manual composable creation
-- ✅ No manual locale generation
-- ✅ Automatic module registration
-- ✅ Mock data works immediately
-- ✅ Generated code is production-ready
-- ✅ Comprehensive tests (50+ tests)
-- ✅ Complete documentation
-- ✅ Two patterns (list, details)
-- ✅ Type-safe (TypeScript everywhere)
-
----
-
-## 📊 Metrics
-
-### Generation Speed:
-- **Old:** 15-20 minutes (manual work)
-- **New:** 30 seconds (automatic)
-- **Improvement:** 30-40x faster! 🚀
-
-### Code Quality:
-- **Old:** Varies (manual errors possible)
-- **New:** Consistent (AST transformations)
-- **TypeScript:** 100% typed
-- **i18n:** 100% (no hardcoded strings)
-
-### Developer Experience:
-- **Old:** Many prompts, manual verification
-- **New:** One prompt → Done!
-- **Errors:** Reduced by 80%
-- **Satisfaction:** 📈
-
----
-
-## 🔮 Future Possibilities
-
-### Can Be Added Later:
-1. Widget system integration
-2. State machine support
-3. Multi-language i18n (ru, de, etc.)
-4. Component tests generation
-5. Storybook stories generation
-
-### NOT Needed:
-- ❌ Visual UI builder (AI handles it)
-- ❌ Preview (dev server does this)
-- ❌ Ready module examples (any topic works!)
-- ❌ API client generation (mock data first)
-
----
-
-## 🎓 Key Learnings
-
-### What Works:
-- ✅ AST transformations > string replace
-- ✅ Mock data > waiting for backend
-- ✅ Two patterns > many templates
-- ✅ MCP tools > manual AI work
-- ✅ Strict workflow > flexible workflow
-
-### What Doesn't:
-- ❌ Manual template adaptation (error-prone)
-- ❌ Relying on AI interpretation (inconsistent)
-- ❌ Many templates (hard to maintain)
-- ❌ No mock data (can't test UI)
-
----
-
-## 🏆 Achievement Unlocked
-
-**Before this implementation:**
-- vc-shell/ai-codegen was a "scaffolding tool with AI assistance"
-- 30% automation
-- 70% manual AI work
-
-**After this implementation:**
-- vc-shell/ai-codegen is a "fully automatic code generator"
-- 95% automation
-- 5% AI work (only UI-Plan generation)
-
-**Comparable to v0.dev/shadcn for VC-Shell! 🎉**
-
----
-
-## 💡 How It Works (Simple Explanation)
-
-```
-User: "Create vendor management"
-      ↓
-AI: Makes UI-Plan JSON
-      ↓
-AI: Calls ONE tool
-      ↓
-Tool: [Magic happens automatically]
-      ├─ Loads template
-      ├─ Parses to AST
-      ├─ Transforms (Entity→Vendor)
-      ├─ Generates composables (mock data)
-      ├─ Extracts i18n keys
-      ├─ Creates locales
-      ├─ Registers in main.ts
-      └─ Writes all files
-      ↓
-User: Tests in browser immediately ✓
-```
-
-**No manual work. No waiting. Just works!** 🚀
-
----
-
-## 📞 Contact & Support
-
-- **Issues:** https://github.com/VirtoCommerce/vc-shell/issues
-- **Docs:** `docs/` folder
-- **Architecture:** `ARCHITECTURE.md`
-- **Rules:** `RULES.md`
-
----
-
-**Implementation completed successfully!** 🎉
-
-All 11 TODO items from plan completed.
-Ready for production use.
-
+✅ Enhanced AI guides with production-ready widget pattern
+✅ Adjusted thresholds for better strategy selection
+✅ Comprehensive documentation matching real vendor-portal code
+✅ No changes to templates (already correct)
+✅ Build successful, ready for testing

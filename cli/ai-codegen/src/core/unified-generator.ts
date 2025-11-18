@@ -9,6 +9,9 @@ import { CodeGenerator, type NamingConfig } from "./code-generator.js";
 import { AICodeGenerator } from "./ai-code-generator.js";
 import { CodeValidator } from "./code-validator.js";
 import { getGenerationRulesProvider } from "./generation-rules.js";
+import { LogicPlanner } from "./logic-planner.js";
+import { BladeComposer } from "./blade-composer.js";
+import { SmartCodeGenerator, GenerationStrategy } from "./smart-generator.js";
 import { fileURLToPath } from "node:url";
 import { camelCase, upperFirst, kebabCase } from "lodash-es";
 
@@ -71,8 +74,9 @@ export class UnifiedCodeGenerator {
   private aiGenerator: AICodeGenerator;
   private validator: CodeValidator;
   private rulesProvider: ReturnType<typeof getGenerationRulesProvider>;
-  private retryCount: Map<string, number>;
-  private maxRetries = 3;
+  private logicPlanner: LogicPlanner;
+  private bladeComposer: BladeComposer;
+  private smartGenerator: SmartCodeGenerator;
 
   constructor() {
     this.templateAdapter = new TemplateAdapter();
@@ -83,7 +87,9 @@ export class UnifiedCodeGenerator {
     this.aiGenerator = new AICodeGenerator();
     this.validator = new CodeValidator();
     this.rulesProvider = getGenerationRulesProvider();
-    this.retryCount = new Map();
+    this.logicPlanner = new LogicPlanner();
+    this.bladeComposer = new BladeComposer();
+    this.smartGenerator = new SmartCodeGenerator();
   }
 
   /**
@@ -104,6 +110,20 @@ export class UnifiedCodeGenerator {
     const bladeContexts: BladeGenerationContext[] = [];
 
     for (const blade of plan.blades) {
+      // Auto-infer logic if not provided
+      if (!blade.logic) {
+        const inferredLogic = this.logicPlanner.inferLogic(blade);
+        blade.logic = inferredLogic;
+      }
+
+      // Auto-infer composable definition if not provided
+      if (!blade.composable) {
+        blade.composable = this.logicPlanner.inferComposable(blade, {
+          entitySingularCamel: moduleNaming.entitySingularCamel,
+          entitySingularPascal: moduleNaming.entitySingularPascal,
+        });
+      }
+
       const context = this.createBladeContext(blade, moduleNaming, modulePath);
       bladeContexts.push(context);
 
@@ -205,112 +225,113 @@ export class UnifiedCodeGenerator {
   }
 
   /**
-   * Generate blade with AI-first approach
-   * Includes retry mechanism and fallback to templates
+   * Generate blade with smart strategy selection
+   * Uses SmartCodeGenerator to choose best approach based on complexity
    */
   private async generateBladeWithMode(context: BladeGenerationContext, mode: GenerationMode): Promise<GeneratedFile> {
+    // If explicit mode specified, use it
     if (mode === "template") {
       return this.generateBlade(context);
     }
 
     if (mode === "ai-first") {
-      return this.generateBladeAI(context, false);
+      // ai-first mode in CLI: fall back to composition
+      console.log(`\n📘 AI-first mode: delegating to AI IDE (CLI fallback to composition)\n`);
+      return this.generateBladeWithComposition(context);
     }
 
-    // mode === "auto": try AI first, fallback to template
-    try {
-      return await this.generateBladeAI(context, true);
-    } catch (error) {
-      console.warn(`AI generation failed for ${context.componentName}, falling back to template approach`);
-      console.warn(`Error: ${error instanceof Error ? error.message : String(error)}`);
-      return this.generateBlade(context);
+    // mode === "auto": Use SmartCodeGenerator to decide strategy
+    const bladeGenerationContext = {
+      type: context.type,
+      naming: context.naming,
+      blade: context.blade as any,
+      columns: context.columns,
+      fields: context.fields,
+      componentName: context.componentName,
+      composableName: context.composableName,
+      route: context.route,
+      isWorkspace: context.isWorkspace,
+      menuTitleKey: context.menuTitleKey,
+      features: context.blade.features || [],
+      logic: context.blade.logic,
+      composableDefinition: context.blade.composable,
+    };
+
+    const decision = await this.smartGenerator.decide(bladeGenerationContext);
+
+    console.log(`\n🎯 Strategy selected for ${context.componentName}: ${decision.strategy.toUpperCase()}`);
+    console.log(`   Complexity: ${decision.complexity}/20`);
+    console.log(`   Reason: ${decision.reason}`);
+    console.log(`   Estimated time: ${decision.estimatedTime}\n`);
+
+    // Execute selected strategy
+    switch (decision.strategy) {
+      case GenerationStrategy.TEMPLATE:
+        return this.generateBlade(context);
+
+      case GenerationStrategy.COMPOSITION:
+        return this.generateBladeWithComposition(context);
+
+      case GenerationStrategy.AI_GUIDED:
+      case GenerationStrategy.AI_FULL:
+        // AI_GUIDED and AI_FULL strategies delegate code generation to AI IDE
+        // System provides comprehensive guide via MCP, AI generates and submits code
+        console.log(`\n📘 ${decision.strategy.toUpperCase()} generation selected`);
+        console.log(`   Code generation delegated to AI IDE`);
+        console.log(`   Guide available via get_composition_guide MCP tool`);
+        console.log(`   AI should generate code and call submit_generated_code tool\n`);
+
+        // In CLI mode, we can't delegate to AI, so fall back to composition
+        console.log(`   CLI mode detected: falling back to composition strategy\n`);
+        return this.generateBladeWithComposition(context);
+
+      default:
+        return this.generateBlade(context);
     }
   }
 
   /**
-   * Generate blade using AI with retry mechanism
+   * Generate blade using pattern composition
+   * Uses BladeComposer to compose from multiple patterns
    */
-  private async generateBladeAI(context: BladeGenerationContext, allowFallback: boolean): Promise<GeneratedFile> {
-    const retryKey = `blade-${context.componentName}`;
-    const currentRetry = this.retryCount.get(retryKey) || 0;
+  private async generateBladeWithComposition(context: BladeGenerationContext): Promise<GeneratedFile> {
+    // Use BladeComposer to select and compose patterns from file-based pattern library
+    const compositionContext = {
+      type: context.type,
+      entity: context.entity,
+      module: context.module,
+      naming: context.naming,
+      blade: context.blade as any,
+      columns: context.columns,
+      fields: context.fields,
+      componentName: context.componentName,
+      composableName: context.composableName,
+      route: context.route,
+      isWorkspace: context.isWorkspace,
+      menuTitleKey: context.menuTitleKey,
+      features: context.blade.features || [],
+      logic: context.blade.logic,
+      composableDefinition: context.blade.composable,
+    };
 
-    try {
-      // Get relevant patterns
-      const patterns = this.rulesProvider.getRelevantPatterns(context.type, context.blade.features);
-      const rules = this.rulesProvider.getRules();
+    // Let BladeComposer handle pattern selection and composition
+    const compositionResult = await this.bladeComposer.compose({
+      context: compositionContext,
+      strategy: GenerationStrategy.COMPOSITION,
+    });
 
-      // NOTE: This generates instructions for AI to follow
-      // The actual code generation happens when AI (Cursor/Claude) reads these instructions
-      // through MCP and generates the code
-      const instructions = this.aiGenerator.buildBladeInstructions(
-        {
-          type: context.type,
-          naming: context.naming,
-          blade: context.blade as any, // Type compatibility between Blade and UIPlanBlade
-          columns: context.columns,
-          fields: context.fields,
-          componentName: context.componentName,
-          composableName: context.composableName,
-          route: context.route,
-          isWorkspace: context.isWorkspace,
-          menuTitleKey: context.menuTitleKey,
-          features: context.blade.features || [],
-        },
-        patterns,
-        rules,
-      );
+    const code = this.bladeComposer.composeBlade(compositionContext, compositionResult.selectedPatterns);
 
-      // In real implementation, AI would generate actual code here
-      // For now, return placeholder that indicates AI should generate
-      const aiGeneratedCode = `<!-- AI GENERATION INSTRUCTIONS -->
-<!--
-This file should be generated by AI following these instructions:
-
-${instructions}
-
-NOTE: This is a placeholder. In production, AI (Cursor/Claude) generates
-the actual Vue SFC code by reading the instructions above through MCP.
--->`;
-
-      // Validate generated code
-      const validation = this.validator.validateFull(aiGeneratedCode, context.blade as any);
-
-      if (!validation.valid) {
-        const errorMessages = validation.errors.map(e => `${e.type}: ${e.message}`).join("\n");
-
-        if (currentRetry < this.maxRetries) {
-          // Retry with updated retry count
-          this.retryCount.set(retryKey, currentRetry + 1);
-          console.warn(`Validation failed for ${context.componentName}, retrying (${currentRetry + 1}/${this.maxRetries})`);
-          console.warn(`Errors:\n${errorMessages}`);
-          return this.generateBladeAI(context, allowFallback);
-        }
-
-        if (allowFallback) {
-          throw new Error(`AI generation failed after ${this.maxRetries} retries: ${errorMessages}`);
-        } else {
-          throw new Error(`AI generation validation failed: ${errorMessages}`);
-        }
-      }
-
-      // Reset retry count on success
-      this.retryCount.delete(retryKey);
-
-      return {
-        path: context.filePath,
-        content: aiGeneratedCode,
-        lines: aiGeneratedCode.split("\n").length,
-      };
-    } catch (error) {
-      if (allowFallback && currentRetry >= this.maxRetries) {
-        throw error;
-      }
-      throw error;
-    }
+    return {
+      path: context.filePath,
+      content: code,
+      lines: code.split("\n").length,
+    };
   }
 
   /**
    * Generate composable with AI-first approach
+   * NOTE: Removed in favor of MCP-based AI generation via submit_generated_code tool
    */
   private async generateComposableWithMode(context: BladeGenerationContext, mode: GenerationMode): Promise<GeneratedFile> {
     if (mode === "template") {
@@ -318,79 +339,13 @@ the actual Vue SFC code by reading the instructions above through MCP.
     }
 
     if (mode === "ai-first") {
-      return this.generateComposableAI(context, false);
-    }
-
-    // mode === "auto": try AI first, fallback to template
-    try {
-      return await this.generateComposableAI(context, true);
-    } catch (error) {
-      console.warn(`AI composable generation failed for ${context.composableName}, falling back to template approach`);
+      // ai-first mode in CLI: fall back to template
+      console.log(`\n📘 AI-first composable mode: delegating to AI IDE (CLI fallback to template)\n`);
       return this.generateComposable(context);
     }
-  }
 
-  /**
-   * Generate composable using AI with retry mechanism
-   */
-  private async generateComposableAI(context: BladeGenerationContext, allowFallback: boolean): Promise<GeneratedFile> {
-    const retryKey = `composable-${context.composableName}`;
-    const currentRetry = this.retryCount.get(retryKey) || 0;
-
-    try {
-      const patterns = this.rulesProvider.getPatternsByType(context.type);
-      const rules = this.rulesProvider.getRules();
-
-      const instructions = this.aiGenerator.generateComposable(
-        {
-          type: context.type,
-          naming: context.naming,
-          blade: context.blade as any, // Type compatibility between Blade and UIPlanBlade
-          columns: context.columns,
-          fields: context.fields,
-          componentName: context.componentName,
-          composableName: context.composableName,
-          route: context.route,
-          isWorkspace: context.isWorkspace,
-          menuTitleKey: context.menuTitleKey,
-          features: context.blade.features || [],
-        },
-        patterns,
-        rules,
-      );
-
-      // Placeholder for AI-generated code
-      const aiGeneratedCode = `/* AI GENERATION INSTRUCTIONS */
-/*
-This file should be generated by AI following these instructions:
-
-${instructions}
-
-NOTE: This is a placeholder. In production, AI generates the actual
-TypeScript composable code by reading these instructions through MCP.
-*/`;
-
-      // Validate (syntax only for composables)
-      const validation = this.validator.validateSyntax(aiGeneratedCode);
-
-      if (!validation.valid && currentRetry < this.maxRetries) {
-        this.retryCount.set(retryKey, currentRetry + 1);
-        return this.generateComposableAI(context, allowFallback);
-      }
-
-      this.retryCount.delete(retryKey);
-
-      return {
-        path: context.composablePath,
-        content: aiGeneratedCode,
-        lines: aiGeneratedCode.split("\n").length,
-      };
-    } catch (error) {
-      if (allowFallback && currentRetry >= this.maxRetries) {
-        throw error;
-      }
-      throw error;
-    }
+    // mode === "auto": use template (AI generation via MCP only)
+    return this.generateComposable(context);
   }
 
   /**
@@ -504,7 +459,7 @@ export * from "./composables";
   /**
    * Load blade template
    */
-  private loadTemplate(type: "list" | "details", features?: string[]): string {
+  private loadTemplate(type: "list" | "details" | "page", features?: string[]): string {
     const templatesPath = path.join(this.getExamplesPath(), "templates");
     const candidates = this.resolveTemplateCandidates(type, features);
 
@@ -518,8 +473,14 @@ export * from "./composables";
     return this.generateMinimalTemplate(type);
   }
 
-  private resolveTemplateCandidates(type: "list" | "details", features?: string[]): string[] {
+  private resolveTemplateCandidates(type: "list" | "details" | "page", features?: string[]): string[] {
     const options: string[] = [];
+
+    if (type === "page") {
+      // Page layout for dashboards
+      options.push("page-dashboard.vue");
+      return options;
+    }
 
     if (type === "list") {
       if (features?.includes("multiselect")) {
@@ -531,6 +492,13 @@ export * from "./composables";
       return options;
     }
 
+    // Details blade - check for widgets/gallery features
+    if (features?.includes("widgets")) {
+      options.push("details-widgets.vue");
+    }
+    if (features?.includes("gallery")) {
+      options.push("details-gallery.vue");
+    }
     if (features?.includes("validation")) {
       options.push("details-validation.vue");
     }
@@ -547,8 +515,39 @@ export * from "./composables";
   /**
    * Generate minimal template as fallback
    */
-  private generateMinimalTemplate(type: "list" | "details"): string {
-    if (type === "list") {
+  private generateMinimalTemplate(type: "list" | "details" | "page"): string {
+    if (type === "page") {
+      return `<template>
+  <VcContainer>
+    <DraggableDashboard
+      :widgets="widgets"
+    />
+  </VcContainer>
+</template>
+
+<script setup lang="ts">
+import { ref, onMounted } from "vue";
+import { DraggableDashboard } from "@vc-shell/framework";
+
+const widgets = ref([]);
+
+onMounted(async () => {
+  // Load widgets configuration
+  widgets.value = [];
+});
+
+defineOptions({
+  name: "Dashboard",
+  url: "/dashboard",
+  isWorkspace: true
+});
+
+defineExpose({
+  widgets,
+});
+</script>
+`;
+    } else if (type === "list") {
       return `<template>
   <VcBlade
     :title="title"
@@ -689,10 +688,18 @@ defineExpose({
   }
 
   private createBladeContext(blade: Blade, moduleNaming: NamingConfig, modulePath: string): BladeGenerationContext {
-    const type: "list" | "details" = blade.layout === "grid" ? "list" : "details";
+    const type = this.resolveBladeType(blade);
     const entityToken = this.resolveEntityToken(blade, moduleNaming);
     const entitySingularKebab = this.toSingularToken(entityToken);
     const entityPluralKebab = this.toPluralToken(entitySingularKebab);
+
+    const componentBaseToken = this.toSingularToken(this.stripBladeSuffix(blade.id) || entityPluralKebab);
+    const componentBasePascal = this.toPascalCase(componentBaseToken);
+    const suffix = type === "list" ? "List" : type === "page" ? "Dashboard" : "Details";
+    const componentName = componentBasePascal.endsWith(suffix)
+      ? componentBasePascal
+      : `${componentBasePascal}${suffix}`;
+    const composableName = type === "page" ? `useDashboard` : `use${componentName}`;
 
     const naming: NamingConfig = {
       ...moduleNaming,
@@ -704,15 +711,11 @@ defineExpose({
       entityPluralKebab,
       entityPluralCamel: camelCase(entityPluralKebab),
       entityPluralPascal: this.toPascalCase(entityPluralKebab),
+      composableList: `use${this.toPascalCase(entitySingularKebab)}List`,
+      composableDetails: `use${this.toPascalCase(entitySingularKebab)}Details`,
+      componentList: `${this.toPascalCase(entitySingularKebab)}List`,
+      componentDetails: `${this.toPascalCase(entitySingularKebab)}Details`,
     };
-
-    const componentBaseToken = this.toSingularToken(this.stripBladeSuffix(blade.id) || entityPluralKebab);
-    const componentBasePascal = this.toPascalCase(componentBaseToken);
-    const suffix = type === "list" ? "List" : "Details";
-    const componentName = componentBasePascal.endsWith(suffix)
-      ? componentBasePascal
-      : `${componentBasePascal}${suffix}`;
-    const composableName = `use${componentName}`;
 
     const fileName = blade.id.endsWith(".vue") ? blade.id : `${blade.id}.vue`;
     const filePath = path.join(modulePath, "pages", fileName);
@@ -721,7 +724,12 @@ defineExpose({
 
     const columns = type === "list" ? this.extractColumnsFromBlade(blade) : undefined;
     const fields = type === "details" ? this.extractFieldsFromBlade(blade) : undefined;
-    const requiresStatusBadge = type === "list" && Boolean(blade.features?.some((feature) => ["filters", "multiselect"].includes(feature)));
+    // Status badge only needed if there's a status column (not based on features)
+    const requiresStatusBadge = Boolean(columns?.some((column) => {
+      if (!column) return false;
+      if (column.type && column.type.toLowerCase().includes("status")) return true;
+      return /status/i.test(column.key);
+    }));
 
     const normalizedRoute = blade.route?.startsWith("/") ? blade.route : `/${blade.route ?? naming.entityPluralKebab}`;
 
@@ -742,6 +750,25 @@ defineExpose({
       isWorkspace: blade.isWorkspace,
       requiresStatusBadge,
     };
+  }
+
+  private resolveBladeType(blade: Blade): "list" | "details" | "page" {
+    if (blade.layout === "grid") {
+      return "list";
+    }
+
+    if (blade.layout === "details") {
+      return "details";
+    }
+
+    if (blade.layout === "page") {
+      return "page";
+    }
+
+    // Fallback: choose list if there is a table, otherwise details
+    const hasTable = blade.components?.some((component) => component.type === "VcTable");
+    console.warn(`Unsupported blade layout "${blade.layout}", falling back to "${hasTable ? "list" : "details"}" type`);
+    return hasTable ? "list" : "details";
   }
 
   private resolveEntityToken(blade: Blade, moduleNaming: NamingConfig): string {

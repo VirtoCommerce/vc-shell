@@ -1,0 +1,39 @@
+{
+  "$schema": "https://vc-shell.dev/schemas/ui-plan.v1.json",
+  "module": "orders",
+  "blades": [
+    {
+      "id": "orders-list",
+      "route": "/orders",
+      "layout": "grid",
+      "title": "Orders",
+      "features": ["filters"],
+      "components": [
+        {
+          "type": "VcTable",
+          "columns": [
+            { "key": "orderNumber", "title": "Order #", "sortable": true },
+            { "key": "customer", "title": "Customer", "sortable": true },
+            { "key": "status", "title": "Status", "type": "status" },
+            { "key": "total", "title": "Total", "type": "money", "sortable": true },
+            { "key": "createdDate", "title": "Created", "type": "date-ago", "sortable": true }
+          ]
+        }
+      ],
+      "logic": {
+        "state": {
+          "loading": { "source": "composable", "reactive": true },
+          "items": { "source": "composable", "reactive": true },
+          "filters": { "source": "local", "reactive": true }
+        },
+        "toolbar": [
+          { "id": "refresh", "icon": "fas fa-sync", "action": "reload()" },
+          { "id": "export", "icon": "fas fa-download", "action": "exportOrders()" }
+        ],
+        "handlers": {
+          "onFilterChange": "Apply filters and reload data"
+        }
+      }
+    }
+  ]
+}

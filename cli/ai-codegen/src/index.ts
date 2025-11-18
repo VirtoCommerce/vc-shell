@@ -15,7 +15,7 @@ const program = new Command();
 program
   .name("vcgen")
   .description("AI-powered code generation for VC Shell applications")
-  .version("0.5.0");
+  .version("0.7.0");
 
 program
   .command("plan")
@@ -37,8 +37,6 @@ program
   .requiredOption("--plan <path>", "Path to UI-Plan JSON file")
   .option("--dry-run", "Show diff without writing files")
   .option("--fix", "Run ESLint/Prettier after generation")
-  .option("--story", "Generate Storybook stories")
-  .option("--test", "Generate unit/e2e tests")
   .option("--cwd <path>", "Working directory", process.cwd())
   .action(async (options) => {
     try {

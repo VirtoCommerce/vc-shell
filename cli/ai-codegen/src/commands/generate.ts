@@ -12,8 +12,6 @@ export interface GenerateOptions {
   plan: string;
   dryRun?: boolean;
   fix?: boolean;
-  story?: boolean;
-  test?: boolean;
   checkTypes?: boolean;
   cwd?: string;
 }
@@ -23,8 +21,6 @@ export async function generateCommand(options: GenerateOptions): Promise<void> {
     plan: planPath,
     dryRun = false,
     fix = false,
-    story = false,
-    test = false,
     checkTypes = true,
     cwd = process.cwd(),
   } = options;

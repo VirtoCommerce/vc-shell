@@ -74,7 +74,7 @@ export function generateAuditChecklist(
       ### Dependencies
 
       - [ ] All required dependencies are installed in package.json
-      - [ ] Run \`npm install\` if new dependencies were added
+      - [ ] Run \`yarn install\` if new dependencies were added
       - [ ] Check for any peer dependency warnings
       - [ ] Verify @vc-shell/framework version is compatible
     `);

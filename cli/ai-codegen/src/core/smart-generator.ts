@@ -1,6 +1,7 @@
 import { BladeComposer, type CompositionConfig } from "./blade-composer.js";
 import { TemplateAdapter } from "./template-adapter.js";
 import { LogicPlanner } from "./logic-planner.js";
+import { AIGenerationGuideBuilder } from "./ai-generation-guide-builder.js";
 import type { BladeGenerationContext } from "./ai-code-generator.js";
 import type { Blade } from "./validator.js";
 import type { UIPlan } from "./validator.js";
@@ -25,10 +26,19 @@ export enum GenerationStrategy {
   COMPOSITION = "composition",
 
   /**
-   * Full AI generation
-   * - Slower (10-30 seconds)
-   * - Maximum flexibility
-   * - Can handle complex/novel requirements
+   * AI-Guided generation (NEW in v0.7.0)
+   * - Returns detailed step-by-step instructions for AI
+   * - AI (Cursor/Claude) reads instructions and generates code
+   * - No Anthropic API key needed
+   * - Best for complex cases (complexity > 10)
+   * - Maximum quality (AI knows project context)
+   */
+  AI_GUIDED = "ai-guided",
+
+  /**
+   * Full AI generation (DEPRECATED - kept for compatibility)
+   * - Falls back to AI_GUIDED in MCP mode
+   * - Falls back to COMPOSITION in CLI mode
    * - Best for complex cases or custom logic
    */
   AI_FULL = "ai-full",
@@ -40,6 +50,7 @@ export interface StrategyDecision {
   complexity: number;
   estimatedTime: string;
   willUseFallback: boolean;
+  aiGuide?: any; // AIGenerationGuide when AI_GUIDED is selected
 }
 
 export interface GenerationOptions {
@@ -87,11 +98,13 @@ export class SmartCodeGenerator {
   private composer: BladeComposer;
   private logicPlanner: LogicPlanner;
   private templateAdapter: TemplateAdapter;
+  private guideBuilder: AIGenerationGuideBuilder;
 
   constructor() {
     this.composer = new BladeComposer();
     this.logicPlanner = new LogicPlanner();
     this.templateAdapter = new TemplateAdapter();
+    this.guideBuilder = new AIGenerationGuideBuilder();
   }
 
   /**
@@ -126,7 +139,7 @@ export class SmartCodeGenerator {
         complexity,
         false, // No fallback needed for simple cases
       );
-    } else if (complexity <= 10 && hasKnownPatterns) {
+    } else if (complexity <= 7 && hasKnownPatterns) {
       // Moderate case: use composition
       return this.createDecision(
         GenerationStrategy.COMPOSITION,
@@ -135,16 +148,20 @@ export class SmartCodeGenerator {
         true, // Fallback to template if composition fails
       );
     } else {
-      // Complex case: use full AI
+      // Complex case (>7): use AI-Guided generation
       const reason = !hasKnownPatterns
-        ? `No known patterns for this combination`
-        : `High complexity (${complexity}/20) requires custom generation`;
+        ? `No known patterns for this combination - AI guidance needed`
+        : `Moderate-high complexity (${complexity}/20) requires AI-guided generation`;
+
+      // Build AI guide for complex blades
+      const aiGuide = this.guideBuilder.buildGuide(context);
 
       return this.createDecision(
-        GenerationStrategy.AI_FULL,
+        GenerationStrategy.AI_GUIDED,
         reason,
         complexity,
         true, // Fallback to composition if AI fails
+        aiGuide,
       );
     }
   }
@@ -158,14 +175,15 @@ export class SmartCodeGenerator {
     // Base complexity
     score += context.type === "list" ? 5 : 4;
 
-    // Features
-    score += context.features.length * 2;
+    // Features (safe access)
+    const features = context.features || [];
+    score += features.length * 2;
 
     // Special high-complexity features
-    if (context.features.includes("widgets")) {
+    if (features.includes("widgets")) {
       score += 5; // Widgets are complex
     }
-    if (context.features.includes("gallery")) {
+    if (features.includes("gallery")) {
       score += 2; // Gallery adds complexity
     }
 
@@ -174,15 +192,21 @@ export class SmartCodeGenerator {
     score += Math.min(fieldCount * 0.3, 3); // Max +3 for fields
 
     // Custom slots
-    if (context.blade.customSlots && context.blade.customSlots.length > 0) {
+    if (context.blade?.customSlots && context.blade.customSlots.length > 0) {
       score += context.blade.customSlots.length * 0.5;
     }
 
-    // Custom logic
+    // Custom logic (safe access)
     if (context.logic) {
-      score += Object.keys(context.logic.handlers).length * 0.5;
-      score += context.logic.toolbar.length * 0.3;
-      score += Object.keys(context.logic.state).length * 0.2;
+      if (context.logic.handlers) {
+        score += Object.keys(context.logic.handlers).length * 0.5;
+      }
+      if (context.logic.toolbar) {
+        score += context.logic.toolbar.length * 0.3;
+      }
+      if (context.logic.state) {
+        score += Object.keys(context.logic.state).length * 0.2;
+      }
     }
 
     // Cap at 20
@@ -193,7 +217,7 @@ export class SmartCodeGenerator {
    * Check if blade uses known pattern combinations
    */
   private hasKnownPatterns(context: BladeGenerationContext): boolean {
-    const features = new Set(context.features);
+    const features = new Set(context.features || []);
 
     // Known simple patterns
     if (features.size === 0) {
@@ -271,6 +295,7 @@ export class SmartCodeGenerator {
     reason: string,
     complexity: number,
     willUseFallback: boolean,
+    aiGuide?: any,
   ): StrategyDecision {
     const estimatedTime = this.estimateTime(strategy);
 
@@ -280,6 +305,7 @@ export class SmartCodeGenerator {
       complexity,
       estimatedTime,
       willUseFallback,
+      aiGuide,
     };
   }
 
@@ -292,8 +318,10 @@ export class SmartCodeGenerator {
         return "1-2 seconds";
       case GenerationStrategy.COMPOSITION:
         return "3-5 seconds";
+      case GenerationStrategy.AI_GUIDED:
+        return "AI reads guide and generates (depends on AI)";
       case GenerationStrategy.AI_FULL:
-        return "10-30 seconds";
+        return "10-30 seconds (fallback to AI_GUIDED)";
     }
   }
 
@@ -412,14 +440,26 @@ This blade has high complexity and requires **careful, thoughtful generation**.
         explanation += `4. If validation fails, fallback to template approach\n`;
         break;
 
-      case GenerationStrategy.AI_FULL:
-        explanation += `This blade is complex and requires full AI generation with comprehensive guidance and validation.\n\n`;
+      case GenerationStrategy.AI_GUIDED:
+        explanation += `This blade is complex and requires AI-guided generation. The system will provide comprehensive step-by-step instructions for AI to follow.\n\n`;
         explanation += `**Process:**\n`;
-        explanation += `1. AI reads all available patterns and rules\n`;
-        explanation += `2. AI generates code from scratch\n`;
-        explanation += `3. System validates with strict checks\n`;
-        explanation += `4. If validation fails, AI retries with error feedback\n`;
-        explanation += `5. If all retries fail, fallback to composition approach\n`;
+        explanation += `1. System builds detailed generation guide with 5-6 steps\n`;
+        explanation += `2. Guide includes code examples, component docs, constraints\n`;
+        explanation += `3. AI (Cursor/Claude) reads guide through MCP\n`;
+        explanation += `4. AI generates complete Vue SFC following instructions\n`;
+        explanation += `5. No Anthropic API key needed - your AI does the work\n`;
+        explanation += `\n**Benefits:**\n`;
+        explanation += `- AI knows your project context\n`;
+        explanation += `- Higher quality than template/composition\n`;
+        explanation += `- No API costs\n`;
+        break;
+
+      case GenerationStrategy.AI_FULL:
+        explanation += `This blade is complex and will use AI-guided generation (AI_FULL deprecated, uses AI_GUIDED).\n\n`;
+        explanation += `**Process:**\n`;
+        explanation += `1. Falls back to AI_GUIDED in MCP mode\n`;
+        explanation += `2. Falls back to COMPOSITION in CLI mode\n`;
+        explanation += `3. See AI_GUIDED strategy for details\n`;
         break;
     }
 

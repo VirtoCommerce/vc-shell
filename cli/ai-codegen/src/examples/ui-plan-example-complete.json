@@ -1,0 +1,180 @@
+{
+  "$schema": "https://vc-shell.dev/schemas/ui-plan.v1.json",
+  "module": "offers",
+  "blades": [
+    {
+      "id": "offers-list",
+      "route": "/offers",
+      "layout": "grid",
+      "title": "Offers",
+      "isWorkspace": true,
+      "components": [
+        {
+          "type": "VcTable",
+          "columns": [
+            {
+              "key": "image",
+              "title": "Product",
+              "type": "image",
+              "width": 60
+            },
+            {
+              "key": "name",
+              "title": "Name",
+              "sortable": true
+            },
+            {
+              "key": "sku",
+              "title": "SKU",
+              "sortable": true
+            },
+            {
+              "key": "createdDate",
+              "title": "Created",
+              "type": "date-ago",
+              "sortable": true
+            },
+            {
+              "key": "isActive",
+              "title": "Enabled",
+              "type": "status",
+              "sortable": true
+            }
+          ]
+        }
+      ],
+      "features": ["filters", "multiselect"],
+      "logic": {
+        "state": {
+          "loading": {
+            "source": "composable",
+            "reactive": true
+          },
+          "items": {
+            "source": "composable",
+            "reactive": true
+          },
+          "selectedIds": {
+            "source": "local",
+            "reactive": true,
+            "default": []
+          },
+          "searchQuery": {
+            "source": "local",
+            "reactive": true,
+            "default": ""
+          }
+        },
+        "handlers": {
+          "onMounted": "Load offers using composable",
+          "onItemClick": "Open details blade for selected offer",
+          "onDelete": "Delete selected offers with confirmation",
+          "onSearch": "Filter offers by search query"
+        },
+        "toolbar": [
+          {
+            "id": "refresh",
+            "icon": "fas fa-sync-alt",
+            "action": "reload()"
+          },
+          {
+            "id": "add",
+            "icon": "fas fa-plus",
+            "action": "openBlade({ blade: markRaw(OffersDetails) })"
+          },
+          {
+            "id": "delete",
+            "icon": "fas fa-trash",
+            "action": "deleteSelected()"
+          }
+        ]
+      }
+    },
+    {
+      "id": "offers-details",
+      "route": "/offers/:id?",
+      "layout": "details",
+      "title": "Offer details",
+      "components": [
+        {
+          "type": "VcForm",
+          "fields": [
+            {
+              "key": "productId",
+              "as": "VcSelect",
+              "label": "Product",
+              "required": true,
+              "rules": ["required"]
+            },
+            {
+              "key": "name",
+              "as": "VcInput",
+              "label": "Name",
+              "required": true,
+              "rules": ["required"]
+            },
+            {
+              "key": "sku",
+              "as": "VcInput",
+              "label": "SKU",
+              "required": true,
+              "rules": ["required", "min:3", "max:61"]
+            },
+            {
+              "key": "trackInventory",
+              "as": "VcSwitch",
+              "label": "Track Inventory"
+            }
+          ]
+        }
+      ],
+      "features": ["validation", "gallery", "widgets"],
+      "widgets": [
+        {
+          "id": "special-prices",
+          "component": "SpecialPricesWidget",
+          "condition": "item.id"
+        }
+      ],
+      "logic": {
+        "state": {
+          "loading": {
+            "source": "composable",
+            "reactive": true
+          },
+          "offerId": {
+            "source": "prop",
+            "reactive": false
+          },
+          "offer": {
+            "source": "composable",
+            "reactive": true
+          },
+          "modified": {
+            "source": "local",
+            "reactive": true,
+            "default": false
+          }
+        },
+        "handlers": {
+          "onMounted": "Load offer data by ID using composable",
+          "onSave": "Save offer with validation",
+          "onDelete": "Delete offer with confirmation",
+          "validateSku": "Check SKU uniqueness via API"
+        },
+        "toolbar": [
+          {
+            "id": "save",
+            "icon": "fas fa-save",
+            "action": "save()"
+          },
+          {
+            "id": "delete",
+            "icon": "fas fa-trash",
+            "action": "deleteOffer()"
+          }
+        ]
+      }
+    }
+  ]
+}

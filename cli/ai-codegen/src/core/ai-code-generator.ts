@@ -8,6 +8,8 @@ export interface BladeGenerationContext {
   type: "list" | "details";
   naming: NamingConfig;
   blade: UIPlanBlade;
+  entity: string;  // Entity name (e.g., "offer", "vendor")
+  module: string;  // Module name (e.g., "offers", "vendors")
   columns?: Column[];
   fields?: Field[];
   componentName: string;
@@ -521,7 +523,7 @@ Generate a **complete, production-ready TypeScript composable** with mock data.
   private describeLogic(logic: BladeLogic): string {
     let description = "";
 
-    if (Object.keys(logic.handlers).length > 0) {
+    if (logic.handlers && Object.keys(logic.handlers).length > 0) {
       description += "### Event Handlers\n\n";
       for (const [event, handler] of Object.entries(logic.handlers)) {
         description += `- **${event}**: \`${handler}\`\n`;
@@ -529,7 +531,7 @@ Generate a **complete, production-ready TypeScript composable** with mock data.
       description += "\n";
     }
 
-    if (logic.toolbar.length > 0) {
+    if (logic.toolbar && logic.toolbar.length > 0) {
       description += "### Toolbar Actions\n\n";
       for (const action of logic.toolbar) {
         description += `- **${action.id}** (${action.icon || "no icon"}): \`${action.action}\`\n`;
@@ -537,7 +539,7 @@ Generate a **complete, production-ready TypeScript composable** with mock data.
       description += "\n";
     }
 
-    if (Object.keys(logic.state).length > 0) {
+    if (logic.state && Object.keys(logic.state).length > 0) {
       description += "### State Management\n\n";
       for (const [name, def] of Object.entries(logic.state)) {
         const defaultValue = def.default !== undefined ? ` (default: ${JSON.stringify(def.default)})` : "";
@@ -648,9 +650,9 @@ Generate a **complete, production-ready TypeScript composable** with mock data.
 
     // Logic
     if (context.logic) {
-      complexity += Object.keys(context.logic.handlers).length;
-      complexity += context.logic.toolbar.length;
-      complexity += Object.keys(context.logic.state).length * 0.5;
+      complexity += context.logic.handlers ? Object.keys(context.logic.handlers).length : 0;
+      complexity += context.logic.toolbar ? context.logic.toolbar.length : 0;
+      complexity += context.logic.state ? Object.keys(context.logic.state).length * 0.5 : 0;
     }
 
     return Math.round(complexity);

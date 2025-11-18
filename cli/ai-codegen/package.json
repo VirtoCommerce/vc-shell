@@ -1,6 +1,6 @@
 {
   "name": "@vc-shell/ai-codegen",
-  "version": "0.5.0",
+  "version": "0.7.5",
   "description": "AI-powered code generation tools for VC Shell applications with MCP support",
   "type": "module",
   "main": "./dist/index.js",

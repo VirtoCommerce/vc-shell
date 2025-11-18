@@ -12,6 +12,7 @@ import { getGenerationRulesProvider } from "./generation-rules.js";
 import { LogicPlanner } from "./logic-planner.js";
 import { BladeComposer } from "./blade-composer.js";
 import { SmartCodeGenerator, GenerationStrategy } from "./smart-generator.js";
+import type { BladeGenerationContext } from "../types/blade-context.js";
 import { fileURLToPath } from "node:url";
 import { camelCase, upperFirst, kebabCase } from "lodash-es";
 
@@ -36,24 +37,6 @@ export interface GeneratedModule {
 }
 
 export type GenerationMode = "ai-first" | "template" | "auto";
-
-interface BladeGenerationContext {
-  blade: Blade;
-  type: "list" | "details";
-  naming: NamingConfig;
-  columns?: Column[];
-  fields?: Field[];
-  componentName: string;
-  fileName: string;
-  filePath: string;
-  composableName: string;
-  composableFileName: string;
-  composablePath: string;
-  menuTitleKey: string;
-  route: string;
-  isWorkspace?: boolean;
-  requiresStatusBadge: boolean;
-}
 
 /**
  * UnifiedCodeGenerator - main code generation engine
@@ -243,6 +226,8 @@ export class UnifiedCodeGenerator {
     // mode === "auto": Use SmartCodeGenerator to decide strategy
     const bladeGenerationContext = {
       type: context.type,
+      entity: context.naming.entitySingularKebab,
+      module: context.naming.moduleName,
       naming: context.naming,
       blade: context.blade as any,
       columns: context.columns,
@@ -255,6 +240,7 @@ export class UnifiedCodeGenerator {
       features: context.blade.features || [],
       logic: context.blade.logic,
       composableDefinition: context.blade.composable,
+      complexity: 0,  // ✅ ADDED: Will be calculated by SmartCodeGenerator.decide()
     };
 
     const decision = await this.smartGenerator.decide(bladeGenerationContext);
@@ -736,6 +722,8 @@ defineExpose({
     return {
       blade,
       type,
+      entity: entitySingularKebab,
+      module: moduleNaming.moduleName,
       naming,
       columns,
       fields,
@@ -749,6 +737,8 @@ defineExpose({
       route: normalizedRoute,
       isWorkspace: blade.isWorkspace,
       requiresStatusBadge,
+      features: blade.features || [],
+      complexity: 0,  // Will be calculated by SmartCodeGenerator if needed
     };
   }
 

@@ -1,4 +1,5 @@
-import { AICodeGenerator, type BladeGenerationContext, type AIGenerationGuide } from "./ai-code-generator.js";
+import { AICodeGenerator, type AIGenerationGuide } from "./ai-code-generator.js";
+import type { BladeGenerationContext } from "../types/blade-context.js";
 import { getGenerationRulesProvider, type CompositionPattern } from "./generation-rules.js";
 import { CodeValidator } from "./code-validator.js";
 import { TemplateAdapter } from "./template-adapter.js";

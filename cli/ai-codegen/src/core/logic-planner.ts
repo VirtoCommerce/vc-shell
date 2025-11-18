@@ -107,6 +107,34 @@ export class LogicPlanner {
       if (features.has("gallery")) {
         handlers.onImageClick = `openImagePreview(image)`;
       }
+
+      // NEW: Export feature
+      if (features.has("export")) {
+        handlers.onExport = `exportData(items.value, exportFormat.value)`;
+      }
+
+      // NEW: Import feature
+      if (features.has("import")) {
+        handlers.onImport = `importData(file)`;
+        handlers.onImportComplete = `load()`;
+      }
+
+      // NEW: Pagination feature
+      if (features.has("pagination")) {
+        handlers.onPageChange = `currentPage.value = page; load()`;
+        handlers.onPageSizeChange = `pageSize.value = size; currentPage.value = 1; load()`;
+      }
+
+      // NEW: Reorderable feature
+      if (features.has("reorderable")) {
+        handlers.onReorder = `reorderItems(fromIndex, toIndex); saveOrder()`;
+      }
+
+      // NEW: Inline editing feature
+      if (features.has("inline-editing")) {
+        handlers.onCellEdit = `updateCell(item.id, field, value)`;
+        handlers.onRowSave = `saveRow(item.id)`;
+      }
     } else {
       // Details blade handlers
       handlers.onSave = `validateAndSave()`;
@@ -118,6 +146,12 @@ export class LogicPlanner {
       if (features.has("gallery")) {
         handlers.onImageUpload = `uploadImage(file)`;
         handlers.onImageDelete = `deleteImage(imageId)`;
+      }
+
+      // NEW: Widgets feature (for dashboard/details)
+      if (features.has("widgets")) {
+        handlers.onWidgetRefresh = `refreshWidget(widgetId)`;
+        handlers.onWidgetConfigure = `configureWidget(widgetId)`;
       }
     }
 
@@ -159,6 +193,26 @@ export class LogicPlanner {
           title: `pages.${kebabCase(entityName)}.toolbar.delete-selected`,
           action: "deleteSelectedItems()",
           condition: "selectedItems.length > 0",
+        });
+      }
+
+      // NEW: Export feature
+      if (features.has("export")) {
+        toolbar.push({
+          id: "export",
+          icon: "fas fa-download",
+          title: `pages.${kebabCase(entityName)}.toolbar.export`,
+          action: "onExport()",
+        });
+      }
+
+      // NEW: Import feature
+      if (features.has("import")) {
+        toolbar.push({
+          id: "import",
+          icon: "fas fa-upload",
+          title: `pages.${kebabCase(entityName)}.toolbar.import`,
+          action: "onImport()",
         });
       }
     } else {
@@ -255,6 +309,81 @@ export class LogicPlanner {
           reactive: true,
           default: null,
           description: "Currently selected image for preview",
+        };
+      }
+
+      // NEW: Export feature
+      if (features.has("export")) {
+        state.exportFormat = {
+          source: "local",
+          reactive: true,
+          default: "csv",
+          description: "Selected export format (csv, excel, pdf)",
+        };
+      }
+
+      // NEW: Import feature
+      if (features.has("import")) {
+        state.importing = {
+          source: "local",
+          reactive: true,
+          default: false,
+          description: "Import in progress state",
+        };
+
+        state.importProgress = {
+          source: "local",
+          reactive: true,
+          default: 0,
+          description: "Import progress (0-100)",
+        };
+      }
+
+      // NEW: Pagination feature
+      if (features.has("pagination")) {
+        state.currentPage = {
+          source: "composable",
+          reactive: true,
+          description: "Current page number",
+        };
+
+        state.pageSize = {
+          source: "composable",
+          reactive: true,
+          description: "Items per page",
+        };
+
+        state.totalPages = {
+          source: "composable",
+          reactive: true,
+          description: "Total pages count",
+        };
+      }
+
+      // NEW: Real-time feature
+      if (features.has("real-time")) {
+        state.wsConnected = {
+          source: "local",
+          reactive: true,
+          default: false,
+          description: "WebSocket connection status",
+        };
+
+        state.lastUpdate = {
+          source: "local",
+          reactive: true,
+          default: null,
+          description: "Timestamp of last real-time update",
+        };
+      }
+
+      // NEW: Inline editing feature
+      if (features.has("inline-editing")) {
+        state.editingCells = {
+          source: "local",
+          reactive: true,
+          default: {},
+          description: "Map of currently editing cells (itemId.field → value)",
         };
       }
     } else {

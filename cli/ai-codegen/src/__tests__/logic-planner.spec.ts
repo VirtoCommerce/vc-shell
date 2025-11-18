@@ -544,4 +544,183 @@ describe("LogicPlanner", () => {
       expect(logic.handlers.onApplyFilters).toBe("appliedFilters.value = stagedFilters.value; load()");
     });
   });
+
+  describe("new features support (export, import, pagination, etc.)", () => {
+    describe("export feature", () => {
+      it("should generate export handler for list blade", () => {
+        const blade = createBlade("products-list", "grid", ["export"]);
+        const logic = planner.inferLogic(blade);
+
+        expect(logic.handlers.onExport).toBe("exportData(items.value, exportFormat.value)");
+      });
+
+      it("should add export button to toolbar", () => {
+        const blade = createBlade("products-list", "grid", ["export"]);
+        const logic = planner.inferLogic(blade);
+
+        const exportButton = logic.toolbar.find((t) => t.id === "export");
+        expect(exportButton).toBeDefined();
+        expect(exportButton?.icon).toBe("fas fa-download");
+        expect(exportButton?.action).toBe("onExport()");
+      });
+
+      it("should add exportFormat state", () => {
+        const blade = createBlade("products-list", "grid", ["export"]);
+        const logic = planner.inferLogic(blade);
+
+        expect(logic.state.exportFormat).toBeDefined();
+        expect(logic.state.exportFormat.source).toBe("local");
+        expect(logic.state.exportFormat.reactive).toBe(true);
+        expect(logic.state.exportFormat.default).toBe("csv");
+      });
+    });
+
+    describe("import feature", () => {
+      it("should generate import handlers for list blade", () => {
+        const blade = createBlade("products-list", "grid", ["import"]);
+        const logic = planner.inferLogic(blade);
+
+        expect(logic.handlers.onImport).toBe("importData(file)");
+        expect(logic.handlers.onImportComplete).toBe("load()");
+      });
+
+      it("should add import button to toolbar", () => {
+        const blade = createBlade("products-list", "grid", ["import"]);
+        const logic = planner.inferLogic(blade);
+
+        const importButton = logic.toolbar.find((t) => t.id === "import");
+        expect(importButton).toBeDefined();
+        expect(importButton?.icon).toBe("fas fa-upload");
+        expect(importButton?.action).toBe("onImport()");
+      });
+
+      it("should add import progress state", () => {
+        const blade = createBlade("products-list", "grid", ["import"]);
+        const logic = planner.inferLogic(blade);
+
+        expect(logic.state.importing).toBeDefined();
+        expect(logic.state.importing.default).toBe(false);
+        expect(logic.state.importProgress).toBeDefined();
+        expect(logic.state.importProgress.default).toBe(0);
+      });
+    });
+
+    describe("pagination feature", () => {
+      it("should generate pagination handlers for list blade", () => {
+        const blade = createBlade("products-list", "grid", ["pagination"]);
+        const logic = planner.inferLogic(blade);
+
+        expect(logic.handlers.onPageChange).toBe("currentPage.value = page; load()");
+        expect(logic.handlers.onPageSizeChange).toBe("pageSize.value = size; currentPage.value = 1; load()");
+      });
+
+      it("should add pagination state from composable", () => {
+        const blade = createBlade("products-list", "grid", ["pagination"]);
+        const logic = planner.inferLogic(blade);
+
+        expect(logic.state.currentPage).toBeDefined();
+        expect(logic.state.currentPage.source).toBe("composable");
+        expect(logic.state.pageSize).toBeDefined();
+        expect(logic.state.pageSize.source).toBe("composable");
+        expect(logic.state.totalPages).toBeDefined();
+        expect(logic.state.totalPages.source).toBe("composable");
+      });
+    });
+
+    describe("reorderable feature", () => {
+      it("should generate reorder handler for list blade", () => {
+        const blade = createBlade("products-list", "grid", ["reorderable"]);
+        const logic = planner.inferLogic(blade);
+
+        expect(logic.handlers.onReorder).toBe("reorderItems(fromIndex, toIndex); saveOrder()");
+      });
+    });
+
+    describe("inline-editing feature", () => {
+      it("should generate inline editing handlers for list blade", () => {
+        const blade = createBlade("products-list", "grid", ["inline-editing"]);
+        const logic = planner.inferLogic(blade);
+
+        expect(logic.handlers.onCellEdit).toBe("updateCell(item.id, field, value)");
+        expect(logic.handlers.onRowSave).toBe("saveRow(item.id)");
+      });
+
+      it("should add editingCells state", () => {
+        const blade = createBlade("products-list", "grid", ["inline-editing"]);
+        const logic = planner.inferLogic(blade);
+
+        expect(logic.state.editingCells).toBeDefined();
+        expect(logic.state.editingCells.source).toBe("local");
+        expect(logic.state.editingCells.reactive).toBe(true);
+        expect(logic.state.editingCells.default).toEqual({});
+      });
+    });
+
+    describe("widgets feature", () => {
+      it("should generate widget handlers for details blade", () => {
+        const blade = createBlade("product-details", "details", ["widgets"]);
+        const logic = planner.inferLogic(blade);
+
+        expect(logic.handlers.onWidgetRefresh).toBe("refreshWidget(widgetId)");
+        expect(logic.handlers.onWidgetConfigure).toBe("configureWidget(widgetId)");
+      });
+
+      it("should work with list blade (dashboard scenario)", () => {
+        const blade = createBlade("products-dashboard", "grid", ["widgets"]);
+        const logic = planner.inferLogic(blade);
+
+        // Should not generate widget handlers for list blades
+        expect(logic.handlers.onWidgetRefresh).toBeUndefined();
+        expect(logic.handlers.onWidgetConfigure).toBeUndefined();
+      });
+    });
+
+    describe("real-time feature", () => {
+      it("should add real-time connection state for list blade", () => {
+        const blade = createBlade("products-list", "grid", ["real-time"]);
+        const logic = planner.inferLogic(blade);
+
+        expect(logic.state.wsConnected).toBeDefined();
+        expect(logic.state.wsConnected.source).toBe("local");
+        expect(logic.state.wsConnected.default).toBe(false);
+        expect(logic.state.lastUpdate).toBeDefined();
+        expect(logic.state.lastUpdate.default).toBe(null);
+      });
+    });
+
+    describe("multiple features combined", () => {
+      it("should support export + import + pagination together", () => {
+        const blade = createBlade("products-list", "grid", ["export", "import", "pagination"]);
+        const logic = planner.inferLogic(blade);
+
+        // Handlers
+        expect(logic.handlers.onExport).toBeDefined();
+        expect(logic.handlers.onImport).toBeDefined();
+        expect(logic.handlers.onPageChange).toBeDefined();
+
+        // Toolbar
+        expect(logic.toolbar.find((t) => t.id === "export")).toBeDefined();
+        expect(logic.toolbar.find((t) => t.id === "import")).toBeDefined();
+
+        // State
+        expect(logic.state.exportFormat).toBeDefined();
+        expect(logic.state.importing).toBeDefined();
+        expect(logic.state.currentPage).toBeDefined();
+      });
+
+      it("should support inline-editing + real-time together", () => {
+        const blade = createBlade("products-list", "grid", ["inline-editing", "real-time"]);
+        const logic = planner.inferLogic(blade);
+
+        // Handlers
+        expect(logic.handlers.onCellEdit).toBeDefined();
+        expect(logic.handlers.onRowSave).toBeDefined();
+
+        // State
+        expect(logic.state.editingCells).toBeDefined();
+        expect(logic.state.wsConnected).toBeDefined();
+        expect(logic.state.lastUpdate).toBeDefined();
+      });
+    });
+  });
 });

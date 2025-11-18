@@ -1,0 +1,592 @@
+{
+  "composables": {
+    "useBladeNavigation": {
+      "name": "useBladeNavigation",
+      "import": "@vc-shell/framework",
+      "type": "composable",
+      "description": "Core blade navigation system for opening, closing, and managing blade navigation stack",
+      "category": "Navigation",
+      "keywords": [
+        "blade",
+        "navigation",
+        "open",
+        "close",
+        "route",
+        "stack",
+        "workspace"
+      ],
+      "methods": [
+        {
+          "name": "openBlade",
+          "description": "Open a new blade in the navigation stack",
+          "signature": "(args: IBladeEvent, isWorkspace?: boolean) => Promise<void | NavigationFailure>",
+          "params": [
+            {
+              "name": "args",
+              "type": "IBladeEvent",
+              "description": "Blade configuration object",
+              "required": true
+            },
+            {
+              "name": "isWorkspace",
+              "type": "boolean",
+              "description": "Whether to open as workspace blade",
+              "required": false,
+              "default": false
+            }
+          ],
+          "returns": "Promise<void | NavigationFailure>",
+          "useCases": [
+            "Open details blade from list",
+            "Navigate to child blade",
+            "Modal-like blade interaction",
+            "Parent-child blade relationship"
+          ]
+        },
+        {
+          "name": "closeBlade",
+          "description": "Close blade at specific index in the navigation stack",
+          "signature": "(index: number) => Promise<boolean>",
+          "params": [
+            {
+              "name": "index",
+              "type": "number",
+              "description": "Index of blade to close in navigation stack",
+              "required": true
+            }
+          ],
+          "returns": "Promise<boolean>",
+          "useCases": [
+            "Close current blade programmatically",
+            "Cancel operation",
+            "After successful save"
+          ]
+        },
+        {
+          "name": "onBeforeClose",
+          "description": "Register callback to execute before blade closes",
+          "signature": "(cb: () => Promise<boolean | undefined>) => void",
+          "params": [
+            {
+              "name": "cb",
+              "type": "() => Promise<boolean | undefined>",
+              "description": "Callback function that returns true to prevent close",
+              "required": true
+            }
+          ],
+          "returns": "void",
+          "useCases": [
+            "Prevent close with unsaved changes",
+            "Show confirmation dialog",
+            "Validate before closing"
+          ]
+        }
+      ],
+      "state": [
+        {
+          "name": "blades",
+          "type": "ComputedRef<BladeVNode[]>",
+          "description": "Array of currently open blades in navigation stack",
+          "reactive": true
+        },
+        {
+          "name": "activeWorkspace",
+          "type": "ComputedRef<BladeVNode | undefined>",
+          "description": "Currently active workspace blade",
+          "reactive": true
+        },
+        {
+          "name": "currentBladeNavigationData",
+          "type": "ComputedRef<BladeVNode['props']['navigation'] | undefined>",
+          "description": "Navigation data for current blade",
+          "reactive": true
+        }
+      ],
+      "capabilities": {
+        "open-blade": {
+          "id": "open-blade",
+          "type": "method",
+          "name": "openBlade",
+          "description": "Open child blade with navigation",
+          "useCases": [
+            "List to details navigation",
+            "Parent-child relationship",
+            "Drill-down navigation"
+          ],
+          "complexity": "medium"
+        },
+        "close-blade": {
+          "id": "close-blade",
+          "type": "method",
+          "name": "closeBlade",
+          "description": "Close blade programmatically",
+          "useCases": [
+            "Cancel button",
+            "After save success",
+            "Programmatic close"
+          ],
+          "complexity": "simple"
+        },
+        "prevent-close": {
+          "id": "prevent-close",
+          "type": "method",
+          "name": "onBeforeClose",
+          "description": "Prevent blade close with confirmation",
+          "useCases": [
+            "Unsaved changes warning",
+            "Validation before close",
+            "Custom confirmation"
+          ],
+          "complexity": "medium"
+        }
+      },
+      "examples": [
+        {
+          "title": "Open details blade from list",
+          "method": "openBlade",
+          "code": "import { useBladeNavigation } from '@vc-shell/framework';\nimport { markRaw } from 'vue';\nimport ProductDetails from './product-details.vue';\n\nconst { openBlade } = useBladeNavigation();\n\nfunction onItemClick(item: Product) {\n  openBlade({\n    blade: markRaw(ProductDetails),\n    param: item.id,\n    onOpen() {\n      selectedItemId.value = item.id;\n    },\n    onClose() {\n      selectedItemId.value = undefined;\n      reload();\n    },\n  });\n}"
+        },
+        {
+          "title": "Close blade after save",
+          "method": "closeBlade",
+          "code": "import { useBladeNavigation } from '@vc-shell/framework';\n\nconst { closeBlade, currentBladeNavigationData } = useBladeNavigation();\n\nasync function save() {\n  await saveProduct();\n  closeBlade(currentBladeNavigationData.value.idx);\n}\n\n// Or use emit instead:\nemit('close:blade');"
+        },
+        {
+          "title": "Prevent close with unsaved changes",
+          "method": "onBeforeClose",
+          "code": "import { useBladeNavigation, usePopup } from '@vc-shell/framework';\n\nconst { onBeforeClose } = useBladeNavigation();\nconst { showConfirmation } = usePopup();\nconst { modified } = useModificationTracker(formData);\n\nonBeforeClose(async () => {\n  if (modified.value) {\n    return await showConfirmation(\n      computed(() => t('ALERTS.UNSAVED_CHANGES'))\n    );\n  }\n});"
+        }
+      ],
+      "dependencies": ["vue-router"],
+      "relatedAPIs": ["useBlade", "useBladeRegistry"],
+      "requiresPlugin": "BladeNavigationPlugin",
+      "requiresContext": true
+    },
+    "usePopup": {
+      "name": "usePopup",
+      "import": "@vc-shell/framework",
+      "type": "composable",
+      "description": "Display modal dialogs, confirmations, and notifications",
+      "category": "UI",
+      "keywords": [
+        "popup",
+        "modal",
+        "dialog",
+        "confirmation",
+        "alert",
+        "notification"
+      ],
+      "methods": [
+        {
+          "name": "showConfirmation",
+          "description": "Show confirmation dialog with Yes/No buttons",
+          "signature": "(message: string | ComputedRef<string>) => Promise<boolean>",
+          "params": [
+            {
+              "name": "message",
+              "type": "string | ComputedRef<string>",
+              "description": "Confirmation message to display",
+              "required": true
+            }
+          ],
+          "returns": "Promise<boolean>",
+          "useCases": [
+            "Confirm delete action",
+            "Confirm unsaved changes",
+            "Confirm destructive operation"
+          ]
+        },
+        {
+          "name": "showError",
+          "description": "Show error message popup",
+          "signature": "(message: string) => void",
+          "params": [
+            {
+              "name": "message",
+              "type": "string",
+              "description": "Error message to display",
+              "required": true
+            }
+          ],
+          "returns": "void",
+          "useCases": [
+            "Display API error",
+            "Show validation error",
+            "Generic error message"
+          ]
+        }
+      ],
+      "state": [],
+      "capabilities": {
+        "confirmation-dialog": {
+          "id": "confirmation-dialog",
+          "type": "method",
+          "name": "showConfirmation",
+          "description": "Show Yes/No confirmation dialog",
+          "useCases": [
+            "Delete confirmation",
+            "Unsaved changes",
+            "Destructive action"
+          ],
+          "complexity": "simple"
+        },
+        "error-message": {
+          "id": "error-message",
+          "type": "method",
+          "name": "showError",
+          "description": "Display error message",
+          "useCases": [
+            "API error",
+            "Validation error",
+            "Operation failed"
+          ],
+          "complexity": "simple"
+        }
+      },
+      "examples": [
+        {
+          "title": "Confirm delete action",
+          "method": "showConfirmation",
+          "code": "import { usePopup } from '@vc-shell/framework';\nimport { useI18n } from 'vue-i18n';\n\nconst { showConfirmation } = usePopup();\nconst { t } = useI18n();\n\nasync function deleteItem(item: Product) {\n  const confirmed = await showConfirmation(\n    computed(() => t('CONFIRM_DELETE', { name: item.name }))\n  );\n  \n  if (!confirmed) return;\n  \n  await api.delete(item.id);\n  await reload();\n}"
+        },
+        {
+          "title": "Show error message",
+          "method": "showError",
+          "code": "import { usePopup } from '@vc-shell/framework';\nimport { useI18n } from 'vue-i18n';\n\nconst { showError } = usePopup();\nconst { t } = useI18n();\n\nasync function saveProduct() {\n  try {\n    await api.save(product.value);\n  } catch (error) {\n    showError(t('ERROR_SAVING_PRODUCT'));\n    console.error('Save failed:', error);\n  }\n}"
+        }
+      ],
+      "dependencies": [],
+      "relatedAPIs": ["notification"],
+      "requiresContext": true
+    },
+    "useBeforeUnload": {
+      "name": "useBeforeUnload",
+      "import": "@vc-shell/framework",
+      "type": "composable",
+      "description": "Prevent accidental page close/navigation when there are unsaved changes",
+      "category": "Utility",
+      "keywords": [
+        "beforeunload",
+        "unsaved",
+        "changes",
+        "prevent",
+        "close",
+        "navigate"
+      ],
+      "methods": [],
+      "state": [],
+      "capabilities": {
+        "prevent-unload": {
+          "id": "prevent-unload",
+          "type": "feature",
+          "name": "Prevent Unload",
+          "description": "Show browser confirmation when closing tab with unsaved changes",
+          "useCases": [
+            "Form with unsaved changes",
+            "Prevent accidental data loss",
+            "Warn before navigation"
+          ],
+          "complexity": "simple"
+        }
+      },
+      "examples": [
+        {
+          "title": "Prevent close with unsaved changes",
+          "code": "import { useBeforeUnload } from '@vc-shell/framework';\nimport { useModificationTracker } from '@vc-shell/framework';\n\nconst { modified } = useModificationTracker(formData);\n\n// Automatically shows browser confirmation if modified is true\nuseBeforeUnload(modified);"
+        }
+      ],
+      "dependencies": [],
+      "relatedAPIs": ["useModificationTracker", "useBladeNavigation"],
+      "requiresContext": false
+    },
+    "useAsync": {
+      "name": "useAsync",
+      "import": "@vc-shell/framework",
+      "type": "composable",
+      "description": "Wrap async operations with automatic loading state management",
+      "category": "Utility",
+      "keywords": ["async", "loading", "promise", "state"],
+      "methods": [{
+        "name": "action",
+        "description": "Wrapped async function with loading state",
+        "signature": "(...args: any[]) => Promise<T>",
+        "params": [],
+        "returns": "Promise<T>",
+        "useCases": ["API calls with loading", "Async operations", "Data fetching"]
+      }],
+      "state": [{
+        "name": "loading",
+        "type": "Ref<boolean>",
+        "description": "Loading state of async operation",
+        "reactive": true
+      }],
+      "capabilities": {
+        "async-loading": {
+          "id": "async-loading",
+          "type": "feature",
+          "name": "Async Loading State",
+          "description": "Automatic loading state for async operations",
+          "useCases": ["API calls", "Data fetching"],
+          "complexity": "simple"
+        }
+      },
+      "examples": [{
+        "title": "Wrap API call with loading state",
+        "code": "import { useAsync } from '@vc-shell/framework';\n\nconst { action: loadProducts, loading } = useAsync(async () => {\n  const products = await api.getProducts();\n  return products;\n});\n\nawait loadProducts();"
+      }],
+      "dependencies": [],
+      "relatedAPIs": ["useLoading"],
+      "requiresContext": false
+    },
+    "useApiClient": {
+      "name": "useApiClient",
+      "import": "@vc-shell/framework",
+      "type": "composable",
+      "description": "Get typed API client instance for backend communication",
+      "category": "Data",
+      "keywords": ["api", "client", "http", "rest"],
+      "methods": [{
+        "name": "getApiClient",
+        "description": "Get API client instance",
+        "signature": "() => Promise<T>",
+        "params": [],
+        "returns": "Promise<T>",
+        "useCases": ["Backend API calls", "Data fetching", "CRUD operations"]
+      }],
+      "state": [],
+      "capabilities": {
+        "api-access": {
+          "id": "api-access",
+          "type": "method",
+          "name": "getApiClient",
+          "description": "Access backend API",
+          "useCases": ["Search API", "Save data", "Delete records"],
+          "complexity": "medium"
+        }
+      },
+      "examples": [{
+        "title": "Use API client in composable",
+        "code": "import { useApiClient } from '@vc-shell/framework';\nimport { ApiClient } from '../api';\n\nconst { getApiClient } = useApiClient(ApiClient);\n\nasync function searchProducts(query) {\n  const client = await getApiClient();\n  return await client.searchProducts(query);\n}"
+      }],
+      "dependencies": [],
+      "relatedAPIs": ["useAsync", "useLoading"],
+      "requiresContext": false
+    },
+    "useModificationTracker": {
+      "name": "useModificationTracker",
+      "import": "@vc-shell/framework",
+      "type": "composable",
+      "description": "Track form modifications and detect unsaved changes",
+      "category": "Utility",
+      "keywords": ["form", "modified", "dirty", "changes", "unsaved"],
+      "methods": [{
+        "name": "resetModificationState",
+        "description": "Reset modification tracking",
+        "signature": "() => void",
+        "params": [],
+        "returns": "void",
+        "useCases": ["After successful save", "Reset form"]
+      }],
+      "state": [{
+        "name": "modified",
+        "type": "Ref<boolean>",
+        "description": "Whether data has been modified",
+        "reactive": true
+      }, {
+        "name": "currentValue",
+        "type": "Ref<T>",
+        "description": "Current modified value",
+        "reactive": true
+      }],
+      "capabilities": {
+        "track-changes": {
+          "id": "track-changes",
+          "type": "feature",
+          "name": "Track Modifications",
+          "description": "Detect and track form changes",
+          "useCases": ["Unsaved changes warning", "Enable save button", "Form dirty state"],
+          "complexity": "simple"
+        }
+      },
+      "examples": [{
+        "title": "Track form modifications",
+        "code": "import { useModificationTracker } from '@vc-shell/framework';\n\nconst formData = ref({ name: '', email: '' });\nconst { modified, currentValue, resetModificationState } = useModificationTracker(formData);\n\nasync function save() {\n  await api.save(currentValue.value);\n  resetModificationState();\n}"
+      }],
+      "dependencies": [],
+      "relatedAPIs": ["useBeforeUnload"],
+      "requiresContext": false
+    },
+    "useUser": {
+      "name": "useUser",
+      "import": "@vc-shell/framework",
+      "type": "composable",
+      "description": "Access current user information and authentication state",
+      "category": "Data",
+      "keywords": ["user", "auth", "authentication", "profile"],
+      "methods": [],
+      "state": [{
+        "name": "user",
+        "type": "ComputedRef<User | undefined>",
+        "description": "Current authenticated user",
+        "reactive": true
+      }],
+      "capabilities": {
+        "user-info": {
+          "id": "user-info",
+          "type": "state",
+          "name": "User Information",
+          "description": "Access current user data",
+          "useCases": ["Display user name", "Check user role", "User settings"],
+          "complexity": "simple"
+        }
+      },
+      "examples": [{
+        "title": "Display current user name",
+        "code": "import { useUser } from '@vc-shell/framework';\n\nconst { user } = useUser();\n\nconst userName = computed(() => user.value?.userName || 'Guest');"
+      }],
+      "dependencies": [],
+      "relatedAPIs": ["usePermissions"],
+      "requiresContext": true
+    },
+    "usePermissions": {
+      "name": "usePermissions",
+      "import": "@vc-shell/framework",
+      "type": "composable",
+      "description": "Check user permissions and role-based access control",
+      "category": "Utility",
+      "keywords": ["permissions", "access", "roles", "authorization"],
+      "methods": [{
+        "name": "hasPermission",
+        "description": "Check if user has specific permission",
+        "signature": "(permission: string) => boolean",
+        "params": [{
+          "name": "permission",
+          "type": "string",
+          "description": "Permission name to check",
+          "required": true
+        }],
+        "returns": "boolean",
+        "useCases": ["Show/hide UI elements", "Enable/disable actions", "Guard routes"]
+      }],
+      "state": [],
+      "capabilities": {
+        "permission-check": {
+          "id": "permission-check",
+          "type": "method",
+          "name": "hasPermission",
+          "description": "Check user permissions",
+          "useCases": ["Conditional UI", "Access control", "Feature flags"],
+          "complexity": "simple"
+        }
+      },
+      "examples": [{
+        "title": "Conditional toolbar action",
+        "code": "import { usePermissions } from '@vc-shell/framework';\n\nconst { hasPermission } = usePermissions();\n\nconst bladeToolbar = computed(() => [\n  {\n    id: 'delete',\n    isVisible: hasPermission('Products:Delete')\n  }\n]);"
+      }],
+      "dependencies": [],
+      "relatedAPIs": ["useUser"],
+      "requiresContext": true
+    },
+    "useLoading": {
+      "name": "useLoading",
+      "import": "@vc-shell/framework",
+      "type": "composable",
+      "description": "Combine multiple loading states into a single reactive ref",
+      "category": "Utility",
+      "keywords": ["loading", "state", "combine", "multiple"],
+      "methods": [],
+      "state": [],
+      "capabilities": {
+        "combine-loading": {
+          "id": "combine-loading",
+          "type": "feature",
+          "name": "Combine Loading States",
+          "description": "Merge multiple loading states",
+          "useCases": ["Multiple API calls", "Parallel operations"],
+          "complexity": "simple"
+        }
+      },
+      "examples": [{
+        "title": "Combine multiple loading states",
+        "code": "import { useLoading, useAsync } from '@vc-shell/framework';\n\nconst { loading: loading1 } = useAsync(loadProducts);\nconst { loading: loading2 } = useAsync(loadCategories);\n\nconst loading = useLoading(loading1, loading2);\n// loading.value is true if any operation is loading"
+      }],
+      "dependencies": [],
+      "relatedAPIs": ["useAsync"],
+      "requiresContext": false
+    }
+  },
+  "plugins": {},
+  "utilities": {
+    "notification": {
+      "name": "notification",
+      "import": "@vc-shell/framework",
+      "type": "utility",
+      "description": "Display toast notifications for success, error, warning, and info messages",
+      "category": "UI",
+      "keywords": ["notification", "toast", "message", "alert", "success", "error"],
+      "methods": [{
+        "name": "success",
+        "description": "Show success notification",
+        "signature": "(message: string, title?: string) => void",
+        "params": [{
+          "name": "message",
+          "type": "string",
+          "description": "Success message",
+          "required": true
+        }, {
+          "name": "title",
+          "type": "string",
+          "description": "Optional title",
+          "required": false
+        }],
+        "returns": "void",
+        "useCases": ["Save success", "Operation complete", "Action confirmed"]
+      }, {
+        "name": "error",
+        "description": "Show error notification",
+        "signature": "(message: string, title?: string) => void",
+        "params": [{
+          "name": "message",
+          "type": "string",
+          "description": "Error message",
+          "required": true
+        }, {
+          "name": "title",
+          "type": "string",
+          "description": "Optional title",
+          "required": false
+        }],
+        "returns": "void",
+        "useCases": ["Save failed", "API error", "Validation error"]
+      }],
+      "state": [],
+      "capabilities": {
+        "success-notification": {
+          "id": "success-notification",
+          "type": "method",
+          "name": "success",
+          "description": "Show success toast",
+          "useCases": ["Save success", "Delete success"],
+          "complexity": "simple"
+        },
+        "error-notification": {
+          "id": "error-notification",
+          "type": "method",
+          "name": "error",
+          "description": "Show error toast",
+          "useCases": ["Save failed", "API error"],
+          "complexity": "simple"
+        }
+      },
+      "examples": [{
+        "title": "Show success after save",
+        "method": "success",
+        "code": "import { notification } from '@vc-shell/framework';\nimport { useI18n } from 'vue-i18n';\n\nconst { t } = useI18n();\n\nasync function save() {\n  try {\n    await saveProduct();\n    notification.success(t('PRODUCT.SAVE_SUCCESS'));\n  } catch (error) {\n    notification.error(t('PRODUCT.SAVE_ERROR'));\n  }\n}"
+      }],
+      "dependencies": [],
+      "relatedAPIs": ["usePopup"],
+      "requiresContext": false
+    }
+  },
+  "services": {}
+}

@@ -1,26 +1,7 @@
-import type { NamingConfig } from "./code-generator.js";
-import type { Column, Field } from "./template-adapter.js";
 import type { CompositionPattern, GenerationRules } from "./generation-rules.js";
-import type { UIPlanBlade } from "../schemas/zod-schemas.js";
-import type { BladeLogic, ComposableDefinition } from "./logic-planner.js";
-
-export interface BladeGenerationContext {
-  type: "list" | "details";
-  naming: NamingConfig;
-  blade: UIPlanBlade;
-  entity: string;  // Entity name (e.g., "offer", "vendor")
-  module: string;  // Module name (e.g., "offers", "vendors")
-  columns?: Column[];
-  fields?: Field[];
-  componentName: string;
-  composableName: string;
-  route: string;
-  isWorkspace?: boolean;
-  menuTitleKey: string;
-  features: string[];
-  logic?: BladeLogic;
-  composableDefinition?: ComposableDefinition;
-}
+import type { BladeGenerationContext } from "../types/blade-context.js";
+import type { Column, Field } from "./template-adapter.js";
+import type { BladeLogic } from "./logic-planner.js";
 
 export interface AIGenerationGuide {
   task: string;

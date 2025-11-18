@@ -228,6 +228,106 @@ export const diffResultSchema = z.object({
   changes: z.array(diffChangeSchema).optional(),
 });
 
+// Framework API Registry Schema
+
+export const frameworkMethodParamSchema = z.object({
+  name: z.string(),
+  type: z.string(),
+  description: z.string(),
+  required: z.boolean(),
+  default: z.unknown().optional(),
+});
+
+export const frameworkMethodSchema = z.object({
+  name: z.string(),
+  description: z.string(),
+  signature: z.string(),
+  params: z.array(frameworkMethodParamSchema),
+  returns: z.string(),
+  useCases: z.array(z.string()).optional(),
+});
+
+export const frameworkStateSchema = z.object({
+  name: z.string(),
+  type: z.string(),
+  description: z.string(),
+  reactive: z.boolean(),
+  default: z.unknown().optional(),
+});
+
+export const frameworkCapabilitySchema = z.object({
+  id: z.string(),
+  type: z.enum(["method", "state", "feature"]),
+  name: z.string(),
+  description: z.string(),
+  useCases: z.array(z.string()),
+  complexity: z.enum(["simple", "medium", "advanced"]),
+});
+
+export const frameworkExampleSchema = z.object({
+  title: z.string(),
+  code: z.string(),
+  method: z.string().optional(),
+  description: z.string().optional(),
+});
+
+export const frameworkAPISchema = z.object({
+  name: z.string(),
+  import: z.string(),
+  type: z.enum(["composable", "plugin", "utility", "service"]),
+  description: z.string(),
+  category: z.string(),
+  keywords: z.array(z.string()),
+  methods: z.array(frameworkMethodSchema).optional(),
+  state: z.array(frameworkStateSchema).optional(),
+  capabilities: z.record(frameworkCapabilitySchema).optional(),
+  examples: z.array(frameworkExampleSchema).optional(),
+  dependencies: z.array(z.string()).optional(),
+  relatedAPIs: z.array(z.string()).optional(),
+  requiresPlugin: z.string().optional(),
+  requiresContext: z.boolean().optional(),
+});
+
+export const frameworkRegistrySchema = z.object({
+  composables: z.record(frameworkAPISchema),
+  plugins: z.record(frameworkAPISchema),
+  utilities: z.record(frameworkAPISchema),
+  services: z.record(frameworkAPISchema),
+});
+
+// MCP Tool Schemas for Framework APIs
+
+export const searchFrameworkAPIsSchema = z.object({
+  query: z.string().optional().describe("Search query for fuzzy matching"),
+  category: z.string().optional().describe("Filter by category (Navigation, Data, UI, Utility)"),
+  type: z.enum(["composable", "plugin", "utility", "service"]).optional().describe("Filter by API type"),
+  limit: z.number().optional().describe("Maximum number of results to return"),
+  offset: z.number().optional().describe("Number of results to skip for pagination"),
+});
+
+export const viewFrameworkAPIsSchema = z.object({
+  apis: z
+    .array(z.string())
+    .min(1)
+    .describe("Array of framework API names to view (e.g., ['useBladeNavigation', 'useApiClient'])"),
+});
+
+export const searchFrameworkByIntentSchema = z.object({
+  intent: z.string().describe("Natural language description of what you need (e.g., 'I need to close a blade after saving')"),
+  context: z.enum(["list", "details", "general"]).optional().describe("Optional context to narrow search"),
+});
+
+export const getFrameworkCapabilitiesSchema = z.object({
+  api: z.string().describe("Framework API name (e.g., 'useBladeNavigation')"),
+  capability: z.string().optional().describe("Optional specific capability ID to filter"),
+  includeExamples: z.boolean().optional().default(true).describe("Include code examples"),
+});
+
+export const getFrameworkExamplesSchema = z.object({
+  query: z.string().describe("Search query for examples (e.g., 'blade navigation', 'close blade')"),
+  api: z.string().optional().describe("Optional API name to filter examples"),
+});
+
 // Type exports
 
 export type SearchComponentsInput = z.infer<typeof searchComponentsSchema>;
@@ -237,6 +337,22 @@ export type ScaffoldAppInput = z.infer<typeof scaffoldAppSchema>;
 export type ValidateUIPlanInput = z.infer<typeof validateUIPlanSchema>;
 
 export type ViewCommandOptions = z.infer<typeof viewCommandOptionsSchema>;
+
+// Framework API Type exports
+
+export type FrameworkMethodParam = z.infer<typeof frameworkMethodParamSchema>;
+export type FrameworkMethod = z.infer<typeof frameworkMethodSchema>;
+export type FrameworkState = z.infer<typeof frameworkStateSchema>;
+export type FrameworkCapability = z.infer<typeof frameworkCapabilitySchema>;
+export type FrameworkExample = z.infer<typeof frameworkExampleSchema>;
+export type FrameworkAPI = z.infer<typeof frameworkAPISchema>;
+export type FrameworkRegistry = z.infer<typeof frameworkRegistrySchema>;
+
+export type SearchFrameworkAPIsInput = z.infer<typeof searchFrameworkAPIsSchema>;
+export type ViewFrameworkAPIsInput = z.infer<typeof viewFrameworkAPIsSchema>;
+export type SearchFrameworkByIntentInput = z.infer<typeof searchFrameworkByIntentSchema>;
+export type GetFrameworkCapabilitiesInput = z.infer<typeof getFrameworkCapabilitiesSchema>;
+export type GetFrameworkExamplesInput = z.infer<typeof getFrameworkExamplesSchema>;
 export type SearchCommandOptions = z.infer<typeof searchCommandOptionsSchema>;
 export type DiffCommandOptions = z.infer<typeof diffCommandOptionsSchema>;
 export type McpInitOptions = z.infer<typeof mcpInitOptionsSchema>;
@@ -370,4 +486,103 @@ export const createUIPlanFromAnalysisSchema = z.object({
 });
 
 export type CreateUIPlanFromAnalysisInput = z.infer<typeof createUIPlanFromAnalysisSchema>;
+
+/**
+ * Schema for analyze_prompt_v2 tool (Extended)
+ * Returns instructions for AI to perform deep analysis
+ */
+export const analyzePromptV2Schema = z.object({
+  prompt: z.string().describe("User's natural language prompt (any language, any complexity)"),
+  module: z.string().optional().describe("Optional: Override module name (kebab-case)"),
+});
+
+export type AnalyzePromptV2Input = z.infer<typeof analyzePromptV2Schema>;
+
+/**
+ * Schema for create_ui_plan_from_analysis_v2 tool
+ * Creates UI-Plan from V2 extended analysis
+ */
+export const createUIPlanFromAnalysisV2Schema = z.object({
+  analysis: z.object({
+    moduleName: z.string().describe("Primary module name (kebab-case)"),
+    entities: z.array(z.object({
+      name: z.string().describe("Entity name (plural, kebab-case)"),
+      singular: z.string().describe("Entity name (singular, kebab-case)"),
+      blades: z.array(z.object({
+        type: z.enum(["list", "details", "dashboard", "wizard", "custom"]).describe("Blade type"),
+        route: z.string().optional().describe("Custom route (e.g., /vendors/pending)"),
+        features: z.array(z.string()).describe("Features for this blade"),
+        columns: z.array(z.object({
+          key: z.string(),
+          title: z.string(),
+          type: z.string().optional(),
+          sortable: z.boolean().optional(),
+          width: z.string().optional(),
+          align: z.enum(["left", "center", "right"]).optional(),
+        })).optional().describe("Columns for list blades"),
+        fields: z.array(z.object({
+          key: z.string(),
+          label: z.string(),
+          as: z.string(),
+          required: z.boolean().optional(),
+          type: z.string().optional(),
+          placeholder: z.string().optional(),
+          options: z.array(z.string()).optional(),
+          validation: z.string().optional(),
+        })).optional().describe("Fields for details/form blades"),
+        actions: z.array(z.object({
+          id: z.string(),
+          label: z.string(),
+          icon: z.string().optional(),
+          type: z.enum(["primary", "secondary", "danger"]),
+          condition: z.string().optional(),
+        })).optional().describe("Custom actions"),
+        permissions: z.array(z.string()).optional().describe("Required permissions"),
+        isWorkspace: z.boolean().optional(),
+      })).describe("Blades for this entity"),
+      dataSource: z.object({
+        type: z.enum(["api", "graphql", "static", "computed"]),
+        endpoint: z.string().optional(),
+        query: z.string().optional(),
+        transform: z.string().optional(),
+      }).optional().describe("Data source configuration"),
+      relationships: z.array(z.object({
+        type: z.enum(["hasMany", "belongsTo", "manyToMany"]),
+        entity: z.string(),
+        foreignKey: z.string().optional(),
+        displayIn: z.enum(["list", "details", "both"]).optional(),
+      })).optional().describe("Relationships to other entities"),
+    })).describe("All detected entities"),
+    workflow: z.object({
+      type: z.enum(["linear", "branching", "parallel"]),
+      steps: z.array(z.object({
+        id: z.string(),
+        title: z.string(),
+        bladeId: z.string(),
+        nextStep: z.union([z.string(), z.array(z.string())]).optional(),
+        condition: z.string().optional(),
+      })),
+    }).optional().describe("Workflow definition"),
+    globalFeatures: z.array(z.object({
+      name: z.string(),
+      config: z.record(z.any()).optional(),
+    })).optional().describe("Global features"),
+    businessRules: z.array(z.object({
+      type: z.enum(["validation", "workflow", "permission", "calculation"]),
+      description: z.string(),
+      appliesTo: z.string().optional(),
+    })).optional().describe("Business rules"),
+    integrations: z.array(z.object({
+      service: z.string(),
+      purpose: z.string(),
+      entities: z.array(z.string()).optional(),
+    })).optional().describe("External integrations"),
+    confidence: z.number().min(0).max(1).describe("Confidence score"),
+    complexity: z.enum(["simple", "moderate", "complex"]).describe("Detected complexity"),
+    requiresCustomCode: z.boolean().optional(),
+    notes: z.array(z.string()).optional(),
+  }).describe("Extended V2 analysis from AI"),
+});
+
+export type CreateUIPlanFromAnalysisV2Input = z.infer<typeof createUIPlanFromAnalysisV2Schema>;
 

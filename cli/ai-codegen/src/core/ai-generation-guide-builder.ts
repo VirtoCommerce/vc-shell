@@ -8,8 +8,9 @@
  * @since 0.7.0
  */
 
-import type { ComponentRegistry } from "./component-registry.js";
 import type { GenerationRules } from "./generation-rules.js";
+import type { FrameworkAPISearchEngine } from "./framework-search-engine.js";
+import type { BladeGenerationContext } from "../types/blade-context.js";
 
 export interface AIGenerationStep {
   step: number;
@@ -59,29 +60,12 @@ export interface AIGenerationGuide {
   };
 }
 
-export interface BladeGenerationContext {
-  blade: {
-    id: string;
-    layout: string;
-    title: string;
-    route: string;
-    features?: string[];
-    components?: any[];
-  };
-  type: "list" | "details";
-  entity: string;
-  module: string;
-  features: string[];
-  columns?: any[];
-  fields?: any[];
-  logic?: any;
-  complexity: number;
-}
+// BladeGenerationContext is now imported from ../types/blade-context.js
 
 export class AIGenerationGuideBuilder {
   constructor(
-    private registry: ComponentRegistry,
-    private rules: GenerationRules
+    private rules?: GenerationRules,
+    private frameworkSearch?: FrameworkAPISearchEngine
   ) {}
 
   /**
@@ -259,11 +243,15 @@ VcTable displays the data with:
 <script setup lang="ts">
 import { ref, computed, onMounted } from "vue";
 import { useI18n } from "vue-i18n";
+import { useBladeNavigation } from "@vc-shell/framework";
 import type { IBladeToolbar } from "@vc-shell/framework";
 import use${entityCapitalized}List from "../composables/use${entityCapitalized}List";
 import ${entityCapitalized}Details from "./${entity}-details.vue";
 
 const { t } = useI18n({ useScope: "global" });
+
+// Navigation
+const { openBlade } = useBladeNavigation();
 
 // Props
 interface Props {
@@ -277,18 +265,18 @@ const props = withDefaults(defineProps<Props>(), {
   closable: true,
 });
 
-// Composable
+// Composable for list data and operations
 const {
   items,
   loading,
   totalCount,
+  currentPage,
+  pageSize,
   load${entityCapitalized}s,
   delete${entityCapitalized}s,
 } = use${entityCapitalized}List();
 
-// State
-const currentPage = ref(1);
-const pageSize = ref(20);
+// Local UI state
 ${features.includes("filters") ? `const searchKeyword = ref("");` : ""}
 ${features.includes("filters") ? `const activeFilterCount = ref(0);` : ""}
 ${features.includes("multiselect") ? `const selectedItemId = ref<string>();` : ""}
@@ -305,14 +293,26 @@ onMounted(async () => {
     itemsPerPage: pageSize.value,
   });
 });
+
+// Expose methods for parent blade
+defineExpose({
+  title: computed(() => t("${moduleUpper}.PAGES.LIST.TITLE")),
+  reload: () => load${entityCapitalized}s({
+    page: currentPage.value,
+    itemsPerPage: pageSize.value,
+    sort: sortExpression.value,
+  }),
+});
 </script>`,
       explanation: `
 Key concepts:
-1. **Composable pattern**: Business logic is separated into use${entityCapitalized}List composable
-2. **TypeScript**: Strong typing with Props interface
-3. **Reactive state**: ref() for mutable state, computed() for derived values
-4. **i18n**: All strings use $t() for internationalization
-5. **Lifecycle**: onMounted() loads initial data
+1. **useBladeNavigation**: Framework composable for opening/closing blades
+2. **Composable pattern**: Business logic (data, pagination) is in use${entityCapitalized}List composable
+3. **TypeScript**: Strong typing with Props interface
+4. **Reactive state**: ref() for UI state, composable provides data state
+5. **i18n**: All strings use $t() for internationalization
+6. **Lifecycle**: onMounted() loads initial data
+7. **defineExpose**: Exposes title and reload() for parent blade to access
 `,
     });
 
@@ -324,7 +324,9 @@ Key concepts:
       code: `
 // Event Handlers
 async function onItemClick(item: { id: string }) {
-  // Open details blade
+  // Open details blade using useBladeNavigation
+  const { openBlade } = useBladeNavigation();
+
   await openBlade({
     blade: ${entityCapitalized}Details,
     param: item.id,
@@ -557,14 +559,20 @@ Each field is wrapped in Field component for error handling.
       description: "Configure form validation, state management, and lifecycle",
       code: `
 <script setup lang="ts">
-import { ref, computed, watch, onMounted } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { useForm, Field } from "vee-validate";
 import { useI18n } from "vue-i18n";
-import { useBeforeUnload } from "@vueuse/core";
+import { useBeforeUnload, useBladeNavigation, notification } from "@vc-shell/framework";
 import type { IBladeToolbar } from "@vc-shell/framework";
 import use${entityCapitalized}Details from "../composables/use${entityCapitalized}Details";
 
 const { t } = useI18n({ useScope: "global" });
+
+// Navigation
+const { closeBlade } = useBladeNavigation();
+
+// Prevent page unload with unsaved changes
+useBeforeUnload();
 
 // Props
 interface Props {
@@ -578,7 +586,7 @@ const props = withDefaults(defineProps<Props>(), {
   closable: true,
 });
 
-// Composable
+// Composable for details data and operations
 const {
   item: ${entity},
   loading,
@@ -599,25 +607,32 @@ const title = computed(() =>
     : t("${moduleUpper}.PAGES.DETAILS.TITLE_NEW")
 );
 
-// Warn on unsaved changes
-const { isRevealed } = useBeforeUnload();
-watch(modified, (value) => {
-  isRevealed.value = value;
-});
-
 // Load data on mount
 onMounted(async () => {
   if (props.param) {
     await load${entityCapitalized}({ id: props.param });
   }
 });
+
+// Expose methods for parent blade
+defineExpose({
+  title,
+  reload: () => {
+    if (props.param) {
+      return load${entityCapitalized}({ id: props.param });
+    }
+  },
+  save: onSave,
+});
 </script>`,
       explanation: `
 Key features:
+- **useBeforeUnload**: Framework composable that warns user on browser refresh with unsaved changes
+- **useBladeNavigation**: Provides closeBlade() for programmatic blade closing
 - **vee-validate**: Form validation with meta and setFieldError
-- **useBeforeUnload**: Warns user on browser refresh with unsaved changes
-- **Modification tracking**: watch() monitors changes to enable/disable save
+- **Composable pattern**: Details data and operations in use${entityCapitalized}Details composable
 - **Conditional loading**: Only loads data if param (ID) is provided
+- **defineExpose**: Exposes title, reload(), and save() for parent blade
 `,
     });
 
@@ -638,51 +653,60 @@ async function onSave() {
     if (${entity}.value.id) {
       // Update existing
       await update${entityCapitalized}(${entity}.value);
+      notification.success(t("COMMON.SAVE_SUCCESS"));
     } else {
       // Create new
       const created = await create${entityCapitalized}(${entity}.value);
+      notification.success(t("COMMON.CREATE_SUCCESS"));
 
-      // Update route to show ID
-      router.replace({ params: { id: created.id } });
+      // Update route to show ID (optional)
+      // router.replace({ params: { id: created.id } });
     }
-
-    // Close blade after save (optional)
-    // closeCurrentBlade();
   } catch (error) {
     console.error("Error saving ${entity}:", error);
+    notification.error(t("COMMON.SAVE_ERROR"));
   }
 }
 
 async function onDelete() {
   if (!${entity}.value.id) return;
 
-  if (!confirm(t("COMMON.CONFIRM_DELETE"))) return;
+  // Use framework's usePopup for confirmations
+  const { showConfirmation } = await import("@vc-shell/framework");
+  const confirmed = await showConfirmation(t("COMMON.CONFIRM_DELETE"));
+
+  if (!confirmed) return;
 
   try {
     await delete${entityCapitalized}({ id: ${entity}.value.id });
+    notification.success(t("COMMON.DELETE_SUCCESS"));
 
-    // Close blade and reload parent
-    closeCurrentBlade();
-    parentBlade.value?.reload?.();
+    // Close blade using closeBlade() or emit
+    closeBlade();
   } catch (error) {
     console.error("Error deleting ${entity}:", error);
+    notification.error(t("COMMON.DELETE_ERROR"));
   }
 }
 
 function onClose() {
   if (modified.value) {
+    // Simple browser confirm for unsaved changes
     if (!confirm(t("COMMON.UNSAVED_CHANGES"))) return;
   }
 
-  closeCurrentBlade();
+  // Close via emit, not closeCurrentBlade()
+  emit("close:blade");
 }`,
       explanation: `
-CRUD operations:
-- **onSave**: Validates, then creates or updates based on whether ID exists
-- **onDelete**: Confirms, deletes, closes blade, reloads parent list
-- **onClose**: Confirms if unsaved changes, then closes
+CRUD operations with correct framework APIs:
+- **onSave**: Validates, creates/updates, shows notifications
+- **onDelete**: Uses showConfirmation() from framework, shows notifications
+- **onClose**: Emits "close:blade" event instead of calling closeCurrentBlade()
+- **notification**: Framework utility for success/error/warning messages
+- **closeBlade()**: From useBladeNavigation for programmatic close
 
-Error handling is included for all operations.
+Error handling with user feedback included for all operations.
 `,
     });
 
@@ -993,6 +1017,15 @@ ${columns
       "Import only existing components, don't create new ones",
       "Handle all errors with try-catch and notifications",
       "Show loading states during async operations",
+      "",
+      "FRAMEWORK COMPOSABLES - MUST USE CORRECT APIS:",
+      "- Navigation: useBladeNavigation() - provides openBlade(), closeBlade()",
+      "- Confirmations: usePopup() - provides showConfirmation(), showError()",
+      "- Prevent unload: useBeforeUnload() - prevents accidental page close",
+      "- Notifications: import { notification } from '@vc-shell/framework'",
+      "- Close blade: emit('close:blade') OR closeBlade() - NEVER closeCurrentBlade()",
+      "- Pagination state: In composable, NOT in component",
+      "- MUST use defineExpose() to expose title and reload() method",
     ];
 
     // Add feature-specific constraints
@@ -1069,6 +1102,13 @@ ${columns
       "Direct API calls (use composable methods)",
       "'any' TypeScript types (use proper types)",
       "Duplicate code (extract to functions)",
+      "",
+      "FORBIDDEN PATTERNS:",
+      "❌ closeCurrentBlade() - This function does NOT exist!",
+      "❌ window.addEventListener('beforeunload') - Use useBeforeUnload() instead",
+      "❌ Pagination state in component - Must be in composable",
+      "❌ markRaw() for widgets - Pass component directly",
+      "❌ Missing defineExpose() - Required for parent blade access",
     ];
   }
 

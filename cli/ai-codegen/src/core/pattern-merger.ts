@@ -14,14 +14,17 @@
  *
  * MERGING STRATEGY:
  * 1. Template section: Merge DOM elements (VcBlade > VcTable + filters slot + etc)
- * 2. Script section: Merge imports, composables, refs, functions
+ * 2. Script section: Merge imports, composables, refs, functions (AST-based)
  * 3. Style section: Concatenate styles
  * 4. Deduplicate: Remove duplicate imports, refs, handlers
+ *
+ * NOTE: Now uses AST-based parsing (@vue/compiler-sfc) instead of regex
  *
  * @since 0.7.0
  */
 
 import type { CompositionPattern } from "./generation-rules.js";
+import { parse as parseVue } from "@vue/compiler-sfc";
 
 export interface MergedCode {
   template: string;
@@ -289,34 +292,42 @@ export class PatternMerger {
   }
 
   /**
-   * Parse Vue SFC into sections
+   * Parse Vue SFC into sections using @vue/compiler-sfc (AST-based)
+   *
+   * Replaces old regex-based approach with proper AST parsing
    */
   private parseVueSFC(code: string): {
     template?: string;
     script?: string;
     style?: string;
   } {
-    const result: ReturnType<typeof this.parseVueSFC> = {};
+    // Check if code has template or script (required by @vue/compiler-sfc)
+    const hasTemplate = /<template[\s>]/.test(code);
+    const hasScript = /<script[\s>]/.test(code);
 
-    // Extract template
-    const templateMatch = code.match(/<template>([\s\S]*?)<\/template>/);
-    if (templateMatch) {
-      result.template = templateMatch[1].trim();
+    // If only style section (edge case), parse manually
+    if (!hasTemplate && !hasScript) {
+      const styleMatch = code.match(/<style[^>]*>([\s\S]*?)<\/style>/);
+      return {
+        style: styleMatch ? styleMatch[1].trim() : undefined,
+      };
     }
 
-    // Extract script
-    const scriptMatch = code.match(/<script[^>]*>([\s\S]*?)<\/script>/);
-    if (scriptMatch) {
-      result.script = scriptMatch[1].trim();
+    const { descriptor, errors } = parseVue(code, {
+      filename: "pattern.vue",
+    });
+
+    if (errors.length > 0) {
+      // Fallback to empty sections if parsing fails
+      console.warn("Vue SFC parsing errors:", errors);
+      return {};
     }
 
-    // Extract style
-    const styleMatch = code.match(/<style[^>]*>([\s\S]*?)<\/style>/);
-    if (styleMatch) {
-      result.style = styleMatch[1].trim();
-    }
-
-    return result;
+    return {
+      template: descriptor.template?.content || undefined,
+      script: descriptor.script?.content || descriptor.scriptSetup?.content || undefined,
+      style: descriptor.styles?.map((s) => s.content).join("\n") || undefined,
+    };
   }
 
   /**

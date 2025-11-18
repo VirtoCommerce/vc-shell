@@ -1675,18 +1675,40 @@ ${content}
             // For now, analyze first blade to determine strategy
             if (validatedPlan.blades.length > 0) {
               const firstBlade = validatedPlan.blades[0];
+
+              // Extract entity from blade ID (remove -list, -details, -page suffixes)
+              const entityToken = firstBlade.id
+                .replace(/-list$|-details$|-page$/, '')
+                || validatedPlan.module;
+
+              const bladeType: "list" | "details" = firstBlade.layout === "grid" ? "list" : "details";
+
               const mockContext = {
-                type: firstBlade.layout === "grid" ? "list" : "details",
+                type: bladeType as "list" | "details",
+                entity: entityToken,  // ✅ REQUIRED: entity name
+                module: validatedPlan.module,  // ✅ REQUIRED: module name
                 features: firstBlade.features || [],
                 blade: firstBlade,
                 columns: firstBlade.components?.find(c => c.type === "VcTable")?.columns,
                 fields: firstBlade.components?.find(c => c.type === "VcForm")?.fields,
                 naming: {
-                  entitySingularCamel: validatedPlan.module,
-                  entitySingularPascal: validatedPlan.module.charAt(0).toUpperCase() + validatedPlan.module.slice(1),
+                  moduleName: validatedPlan.module,
+                  entitySingular: entityToken.charAt(0).toUpperCase() + entityToken.slice(1),
+                  entityPlural: validatedPlan.module.charAt(0).toUpperCase() + validatedPlan.module.slice(1),
+                  entitySingularCamel: entityToken,
+                  entityPluralCamel: validatedPlan.module,
+                  entitySingularKebab: entityToken,
+                  entityPluralKebab: validatedPlan.module,
+                  entitySingularPascal: entityToken.charAt(0).toUpperCase() + entityToken.slice(1),
+                  entityPluralPascal: validatedPlan.module.charAt(0).toUpperCase() + validatedPlan.module.slice(1),
                 },
+                componentName: `${entityToken.charAt(0).toUpperCase() + entityToken.slice(1)}${bladeType === "list" ? "List" : "Details"}`,
+                composableName: `use${entityToken.charAt(0).toUpperCase() + entityToken.slice(1)}${bladeType === "list" ? "List" : "Details"}`,
+                route: firstBlade.route || `/${validatedPlan.module}`,
+                menuTitleKey: `${validatedPlan.module.toUpperCase()}.MENU_TITLE`,
                 logic: firstBlade.logic,
-              } as any;
+                complexity: 0,  // ✅ REQUIRED: will be calculated in decide()
+              };
 
               decision = await smartGen.decide(mockContext);
               selectedStrategy = decision.strategy;
@@ -1841,13 +1863,31 @@ ${content}
           // Get relevant patterns
           const mockContext = {
             type: type,
+            entity: "example",  // ✅ ADDED: placeholder entity
+            module: "examples",  // ✅ ADDED: placeholder module
             features: features || [],
             blade: {
               id: `example-${type}`,
               layout: type === "list" ? "grid" : "details",
               features: features || [],
-            } as any,
-          } as any;
+            },
+            naming: {
+              moduleName: "examples",
+              entitySingular: "Example",
+              entityPlural: "Examples",
+              entitySingularCamel: "example",
+              entityPluralCamel: "examples",
+              entitySingularKebab: "example",
+              entityPluralKebab: "examples",
+              entitySingularPascal: "Example",
+              entityPluralPascal: "Examples",
+            },
+            componentName: `Example${type === "list" ? "List" : "Details"}`,
+            composableName: `useExample${type === "list" ? "List" : "Details"}`,
+            route: "/examples",
+            menuTitleKey: "EXAMPLES.MENU_TITLE",
+            complexity: complexity || 0,  // ✅ ADDED: complexity field
+          };
 
           const patterns = (composer as any).selectPatterns(mockContext);
           const rules = rulesProvider.getRules();

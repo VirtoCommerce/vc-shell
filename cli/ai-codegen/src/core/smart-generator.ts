@@ -2,7 +2,8 @@ import { BladeComposer, type CompositionConfig } from "./blade-composer.js";
 import { TemplateAdapter } from "./template-adapter.js";
 import { LogicPlanner } from "./logic-planner.js";
 import { AIGenerationGuideBuilder } from "./ai-generation-guide-builder.js";
-import type { BladeGenerationContext } from "./ai-code-generator.js";
+import { getGenerationRulesProvider } from "./generation-rules.js";
+import type { BladeGenerationContext } from "../types/blade-context.js";
 import type { Blade } from "./validator.js";
 import type { UIPlan } from "./validator.js";
 
@@ -104,7 +105,12 @@ export class SmartCodeGenerator {
     this.composer = new BladeComposer();
     this.logicPlanner = new LogicPlanner();
     this.templateAdapter = new TemplateAdapter();
-    this.guideBuilder = new AIGenerationGuideBuilder();
+
+    // Initialize AIGenerationGuideBuilder with optional rules
+    const rulesProvider = getGenerationRulesProvider();
+    const rules = rulesProvider.getRules();
+
+    this.guideBuilder = new AIGenerationGuideBuilder(rules);
   }
 
   /**

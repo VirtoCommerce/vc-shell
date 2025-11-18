@@ -127,9 +127,9 @@ describe("Prompt Analyzer", () => {
     it("should define column structure", () => {
       const schema = getPromptAnalysisSchema();
 
-      expect(schema.properties.columns.items.required).toContain("key");
+      expect(schema.properties.columns.items.required).toContain("id");
       expect(schema.properties.columns.items.required).toContain("title");
-      expect(schema.properties.columns.items.properties).toHaveProperty("key");
+      expect(schema.properties.columns.items.properties).toHaveProperty("id");
       expect(schema.properties.columns.items.properties).toHaveProperty("title");
       expect(schema.properties.columns.items.properties).toHaveProperty("type");
       expect(schema.properties.columns.items.properties).toHaveProperty("sortable");
@@ -160,12 +160,8 @@ describe("Prompt Analyzer", () => {
         entityNameSingular: "product",
         listFeatures: ["filters"],
         detailsFeatures: ["validation"],
-        columns: [
-          { key: "name", title: "Name", type: "text", sortable: true },
-        ],
-        fields: [
-          { key: "name", label: "Name", as: "VcInput", required: true },
-        ],
+        columns: [{ id: "name", title: "Name", type: "text", sortable: true }],
+        fields: [{ id: "name", label: "Name", as: "VcInput", required: true }],
         confidence: 0.9,
       };
 
@@ -294,7 +290,7 @@ describe("Prompt Analyzer", () => {
 
       const result = validatePromptAnalysis(analysis);
       expect(result.valid).toBe(false);
-      expect(result.errors[0]).toContain("Invalid list feature: \"invalid-feature\"");
+      expect(result.errors[0]).toContain('Invalid list feature: "invalid-feature"');
       expect(result.errors[0]).toContain("filters, multiselect, reorderable");
     });
 
@@ -309,7 +305,7 @@ describe("Prompt Analyzer", () => {
 
       const result = validatePromptAnalysis(analysis);
       expect(result.valid).toBe(false);
-      expect(result.errors[0]).toContain("Invalid details feature: \"bad-feature\"");
+      expect(result.errors[0]).toContain('Invalid details feature: "bad-feature"');
       expect(result.errors[0]).toContain("validation, gallery, widgets");
     });
 

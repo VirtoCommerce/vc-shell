@@ -8,8 +8,8 @@ import type { NamingConfig } from "./code-generator.js";
 import type { NodePath } from "@babel/traverse";
 
 // Handle ESM default exports
-const traverse = (_traverse as any).default || _traverse;
-const generate = (_generate as any).default || _generate;
+const traverse = (_traverse as unknown as { default?: typeof _traverse }).default || _traverse;
+const generate = (_generate as unknown as { default?: typeof _generate }).default || _generate;
 
 /**
  * ModuleRegistrar automatically registers modules in main.ts
@@ -91,7 +91,7 @@ export class ModuleRegistrar {
 
       // Insert after last module import, or at beginning if none found
       const insertIndex = lastModuleImportIndex >= 0 ? lastModuleImportIndex + 1 : 0;
-      programBody.splice(insertIndex, 0, newImport);
+      (programBody as t.Statement[]).splice(insertIndex, 0, newImport);
     }
 
     // Add .use() call before .use(router)
@@ -154,4 +154,3 @@ export class ModuleRegistrar {
     return hasImport && hasUse;
   }
 }
-

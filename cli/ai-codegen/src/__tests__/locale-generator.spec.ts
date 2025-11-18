@@ -26,8 +26,8 @@ describe("LocaleGenerator", () => {
         {
           type: "list",
           columns: [
-            { key: "name", title: "Name" },
-            { key: "email", title: "Email" },
+            { id: "name", title: "Name" },
+            { id: "email", title: "Email" },
           ],
         },
       ]);
@@ -35,8 +35,8 @@ describe("LocaleGenerator", () => {
       expect(result).toHaveProperty("VENDORS");
       expect(result.VENDORS).toHaveProperty("MENU");
       expect(result.VENDORS).toHaveProperty("PAGES");
-      
-      const pages = result.VENDORS as any;
+
+      const pages = result.VENDORS ;
       expect(pages.PAGES).toHaveProperty("LIST");
       expect(pages.PAGES.LIST).toHaveProperty("TITLE");
       expect(pages.PAGES.LIST).toHaveProperty("TOOLBAR");
@@ -54,7 +54,7 @@ describe("LocaleGenerator", () => {
         },
       ]);
 
-      const pages = result.VENDORS as any;
+      const pages = result.VENDORS ;
       expect(pages.PAGES).toHaveProperty("DETAILS");
       expect(pages.PAGES.DETAILS).toHaveProperty("TITLE");
       expect(pages.PAGES.DETAILS).toHaveProperty("TOOLBAR");
@@ -67,16 +67,16 @@ describe("LocaleGenerator", () => {
         {
           type: "list",
           columns: [
-            { key: "name", title: "Vendor Name" },
-            { key: "email", title: "Email Address" },
-            { key: "status", title: "Status" },
+            { id: "name", title: "Vendor Name" },
+            { id: "email", title: "Email Address" },
+            { id: "status", title: "Status" },
           ],
         },
       ]);
 
-      const pages = result.VENDORS as any;
+      const pages = result.VENDORS ;
       const headers = pages.PAGES.LIST.TABLE.HEADER;
-      
+
       expect(headers.NAME).toBe("Vendor Name");
       expect(headers.EMAIL).toBe("Email Address");
       expect(headers.STATUS).toBe("Status");

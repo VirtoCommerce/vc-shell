@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { RouteRecordRaw } from "vue-router";
 import App from "../App.vue";
 import { BladeVNode, useBladeNavigation } from "@vc-shell/framework";

@@ -60,7 +60,7 @@ export const generateBladeSchema = z.object({
   type: z.enum(["list", "details"]).describe("Blade type to generate"),
   entity: z.string().describe("Entity name (singular, e.g., 'vendor', 'product')"),
   columns: z.array(z.object({
-    key: z.string(),
+    id: z.string(),
     title: z.string(),
     type: z.string().optional(),
     sortable: z.boolean().optional(),
@@ -118,6 +118,36 @@ export const validateCommandOptionsSchema = z.object({
 
 // Component Registry Schema
 
+const componentCapabilitySchema = z.object({
+  id: z.string(),
+  type: z.string().optional(),
+  name: z.string().optional(),
+  description: z.string().optional(),
+  requiredProps: z.array(z.string()).optional(),
+  useCases: z.array(z.string()).optional(),
+  complexity: z.string().optional(),
+});
+
+const componentTemplateSchema = z.object({
+  id: z.string(),
+  file: z.string(),
+  complexity: z.string().optional(),
+  lines: z.number().optional(),
+  features: z.array(z.string()).optional(),
+  description: z.string().optional(),
+  requiredComponents: z.array(z.string()).optional(),
+});
+
+const slotComponentSchema = z.object({
+  name: z.string(),
+  file: z.string(),
+  description: z.string().optional(),
+  usage: z.string().optional(),
+  props: z.record(z.string()).optional(),
+  events: z.record(z.string()).optional(),
+  example: z.string().optional(),
+});
+
 export const componentSchema = z.object({
   import: z.string(),
   component: z.string().optional(),
@@ -138,6 +168,9 @@ export const componentSchema = z.object({
   demos: z.array(z.string()).optional(),
   keywords: z.array(z.string()).optional(),
   constraints: z.record(z.unknown()).optional(),
+  capabilities: z.record(componentCapabilitySchema).optional(),
+  templates: z.array(componentTemplateSchema).optional(),
+  components: z.array(slotComponentSchema).optional(),
 });
 
 export const componentRegistrySchema = z.record(componentSchema);
@@ -359,6 +392,9 @@ export type McpInitOptions = z.infer<typeof mcpInitOptionsSchema>;
 export type GenerateOptions = z.infer<typeof generateOptionsSchema>;
 export type ValidateCommandOptions = z.infer<typeof validateCommandOptionsSchema>;
 
+export type ComponentCapability = z.infer<typeof componentCapabilitySchema>;
+export type ComponentTemplate = z.infer<typeof componentTemplateSchema>;
+export type SlotComponent = z.infer<typeof slotComponentSchema>;
 export type Component = z.infer<typeof componentSchema>;
 export type ComponentRegistry = z.infer<typeof componentRegistrySchema>;
 export type UIPlan = z.infer<typeof uiPlanSchema>;
@@ -463,7 +499,7 @@ export const createUIPlanFromAnalysisSchema = z.object({
     listFeatures: z.array(z.string()).describe("Features for list blade (filters, multiselect, reorderable)"),
     detailsFeatures: z.array(z.string()).describe("Features for details blade (validation, gallery, widgets)"),
     columns: z.array(z.object({
-      key: z.string(),
+      id: z.string(),
       title: z.string(),
       type: z.string().optional(),
       sortable: z.boolean().optional(),
@@ -513,7 +549,7 @@ export const createUIPlanFromAnalysisV2Schema = z.object({
         route: z.string().optional().describe("Custom route (e.g., /vendors/pending)"),
         features: z.array(z.string()).describe("Features for this blade"),
         columns: z.array(z.object({
-          key: z.string(),
+          id: z.string(),
           title: z.string(),
           type: z.string().optional(),
           sortable: z.boolean().optional(),
@@ -585,4 +621,3 @@ export const createUIPlanFromAnalysisV2Schema = z.object({
 });
 
 export type CreateUIPlanFromAnalysisV2Input = z.infer<typeof createUIPlanFromAnalysisV2Schema>;
-

@@ -34,7 +34,7 @@ export interface AIGenerationGuide {
     entity: string;
     module: string;
     features: string[];
-    columns?: Array<{ key: string; title: string; type: string; sortable?: boolean; width?: number }>;
+    columns?: Array<{ id: string; title: string; type: string; sortable?: boolean; width?: number }>;
     fields?: Array<{ key: string; as: string; label: string; required?: boolean; validation?: string }>;
     logic?: any;
     complexity: number;
@@ -65,7 +65,7 @@ export interface AIGenerationGuide {
 export class AIGenerationGuideBuilder {
   constructor(
     private rules?: GenerationRules,
-    private frameworkSearch?: FrameworkAPISearchEngine
+    private frameworkSearch?: FrameworkAPISearchEngine,
   ) {}
 
   /**
@@ -83,13 +83,19 @@ export class AIGenerationGuideBuilder {
         blade: {
           id: context.blade.id,
           layout: context.blade.layout,
-          title: context.blade.title,
-          route: context.blade.route,
+          title: context.blade.title || `${context.entity} ${context.type}`,
+          route: context.blade.route || `/${context.module}`,
         },
         entity: context.entity,
         module: context.module,
         features: context.features,
-        columns: context.columns,
+        columns: context.columns?.map((col) => ({
+          id: col.id,
+          title: col.title,
+          type: col.type || "string",
+          sortable: col.sortable,
+          width: col.width ? Number(col.width) : undefined,
+        })),
         fields: context.fields,
         logic: context.logic,
         complexity: context.complexity,
@@ -466,7 +472,7 @@ Each column defines:
 - **sortable**: Enable/disable sorting
 - **width**: Optional fixed width (for images, actions)
 
-Custom rendering is done via <template #item_{key}> slots in template section.
+Custom rendering is done via <template #item_{id}> slots in template section.
 `,
     });
 
@@ -479,7 +485,7 @@ Custom rendering is done via <template #item_{key}> slots in template section.
 // Types
 interface ${entityCapitalized} {
   id: string;
-${columns?.map((col) => `  ${col.key}: ${this.inferTypeFromColumnType(col.type)};`).join("\n") || "  name: string;"}
+${columns?.map((col) => `  ${col.id}: ${this.inferTypeFromColumnType(col.type || "string")};`).join("\n") || "  name: string;"}
 }
 
 interface SearchArgs {
@@ -870,37 +876,37 @@ onBeforeUnmount(() => {
         switch (col.type) {
           case "link":
             return `
-      <template #item_${col.key}="{ item }">
+      <template #item_${col.id}="{ item }">
         <div class="tw-truncate tw-cursor-pointer" @click="onItemClick(item)">
-          {{ item.${col.key} }}
+          {{ item.${col.id} }}
         </div>
       </template>`;
 
           case "status":
             return `
-      <template #item_${col.key}="{ item }">
+      <template #item_${col.id}="{ item }">
         <VcStatus
-          :variant="item.${col.key} ? 'success' : 'danger'"
+          :variant="item.${col.id} ? 'success' : 'danger'"
           :outline="false"
         >
-          {{ item.${col.key} ? $t('COMMON.ENABLED') : $t('COMMON.DISABLED') }}
+          {{ item.${col.id} ? $t('COMMON.ENABLED') : $t('COMMON.DISABLED') }}
         </VcStatus>
       </template>`;
 
           case "date-ago":
             return `
-      <template #item_${col.key}="{ item }">
-        {{ moment(item.${col.key}).fromNow() }}
+      <template #item_${col.id}="{ item }">
+        {{ moment(item.${col.id}).fromNow() }}
       </template>`;
 
           case "image":
             return `
-      <template #item_${col.key}="{ item }">
-        <VcImage :src="item.${col.key}" size="s" />
+      <template #item_${col.id}="{ item }">
+        <VcImage :src="item.${col.id}" size="s" />
       </template>`;
 
           default:
-            return `      <!-- Column ${col.key} uses default rendering -->`;
+            return `      <!-- Column ${col.id} uses default rendering -->`;
         }
       })
       .join("\n");
@@ -915,11 +921,11 @@ const columns = [
 ${columns
   .map(
     (col) => `  {
-    id: "${col.key}",
-    title: computed(() => t("${moduleUpper}.PAGES.LIST.COLUMNS.${col.key.toUpperCase()}")),
+    id: "${col.id}",
+    title: computed(() => t("${moduleUpper}.PAGES.LIST.COLUMNS.${col.id.toUpperCase()}")),
     ${col.sortable ? "sortable: true," : ""}
     ${col.width ? `width: ${col.width},` : ""}
-  }`
+  }`,
   )
   .join(",\n")}
 ];`;
@@ -947,7 +953,7 @@ ${columns
                 :error="!!errors.length"
                 :error-message="errorMessage"
               />
-            </Field>`
+            </Field>`,
       )
       .join("\n");
   }
@@ -1112,7 +1118,9 @@ ${columns
     ];
   }
 
-  private loadRelevantPatterns(context: BladeGenerationContext): Array<{ name: string; description: string; code: string }> {
+  private loadRelevantPatterns(
+    context: BladeGenerationContext,
+  ): Array<{ name: string; description: string; code: string }> {
     // Load relevant patterns based on context
     const patterns = [];
 
@@ -1153,8 +1161,6 @@ ${columns
 
   private getComponentsDocs(componentNames: string[]): string {
     // Would fetch from registry in real implementation
-    return componentNames
-      .map((name) => `See component documentation: examples/components/${name}-demo.md`)
-      .join("\n");
+    return componentNames.map((name) => `See component documentation: examples/components/${name}-demo.md`).join("\n");
   }
 }

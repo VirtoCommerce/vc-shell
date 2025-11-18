@@ -40,8 +40,17 @@ import {
   searchFrameworkByIntentSchema,
   getFrameworkCapabilitiesSchema,
   getFrameworkExamplesSchema,
+  type CreateUIPlanFromAnalysisInput,
+  type InferBladeLogicInput,
   type Component,
+  type ComponentRegistry,
+  type ComponentCapability,
+  type ComponentTemplate,
+  type FrameworkAPI,
+  type FrameworkCapability,
+  type FrameworkExample,
   type FrameworkRegistry,
+  type SlotComponent,
 } from "../schemas/zod-schemas.js";
 import {
   formatComponentList,
@@ -54,20 +63,77 @@ import { generateMinimalAuditChecklist } from "../utils/audit-checklist.js";
 import { componentNotFoundError, mcpError } from "../utils/errors.js";
 import { UnifiedCodeGenerator } from "../core/unified-generator.js";
 import type { UIPlan as ValidatorUIPlan, Blade } from "../core/validator.js";
-import { LogicPlanner } from "../core/logic-planner.js";
+import type { Column, Field } from "../core/template-adapter.js";
+import type { BladeGenerationContext } from "../types/blade-context.js";
+import { LogicPlanner, type BladeLogic } from "../core/logic-planner.js";
 import { BladeComposer } from "../core/blade-composer.js";
 import { SmartCodeGenerator, GenerationStrategy } from "../core/smart-generator.js";
+import { CodeGenerator } from "../core/code-generator.js";
 import { getGenerationRulesProvider } from "../core/generation-rules.js";
 import { autoFixUIPlan } from "../utils/ui-plan-fixer.js";
-import { CodeValidator } from "../core/code-validator.js";
-import { LLMFeedbackFormatter } from "../core/llm-feedback.js";
+import { CodeValidator, type ValidationError } from "../core/code-validator.js";
+import { LLMFeedbackFormatter, type RetryContext } from "../core/llm-feedback.js";
 import { Planner } from "../core/planner.js";
 import { PlannerV2 } from "../core/planner-v2.js";
-import { buildAnalysisPrompt, getPromptAnalysisSchema } from "../core/prompt-analyzer.js";
+import { buildAnalysisPrompt, getPromptAnalysisSchema, type PromptAnalysis } from "../core/prompt-analyzer.js";
 import { buildAnalysisPromptV2, getPromptAnalysisSchemaV2 } from "../core/prompt-analyzer-v2.js";
+import { camelCase, kebabCase, upperFirst } from "lodash-es";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+interface CapabilityMatch {
+  id: string;
+  name?: string;
+  type?: string;
+  description?: string;
+}
+
+interface ComponentIntentMatch {
+  component: string;
+  score: number;
+  capabilities: CapabilityMatch[];
+  description?: string;
+}
+
+type FrameworkAPIResult = (FrameworkAPI & { name: string }) | { name: string; error: string };
+type MatchedFrameworkExample = FrameworkExample & { api: string; import: string };
+type PromptAnalysisColumn = NonNullable<PromptAnalysis["columns"]>[number];
+
+const normalizeBladeLogic = (logic?: Blade["logic"]): BladeLogic | undefined => {
+  if (!logic) return undefined;
+
+  return {
+    handlers: logic.handlers || {},
+    toolbar: (logic.toolbar || []).map(action => ({
+      ...action,
+      icon: action.icon || "",
+    })),
+    state: logic.state || {},
+  };
+};
+
+const ALLOWED_COLUMN_TYPES: Set<PromptAnalysisColumn["type"]> = new Set([
+  "text",
+  "number",
+  "date",
+  "boolean",
+  "image",
+  "badge",
+  "status",
+]);
+
+const normalizePromptAnalysis = (
+  analysis: CreateUIPlanFromAnalysisInput["analysis"]
+): PromptAnalysis => ({
+  ...analysis,
+  columns: analysis.columns?.map((column) => ({
+    ...column,
+    type: ALLOWED_COLUMN_TYPES.has(column.type as PromptAnalysisColumn["type"])
+      ? (column.type as PromptAnalysisColumn["type"])
+      : undefined,
+  })),
+});
 
 /**
  * MCP Server for VC-Shell AI Code Generation
@@ -77,7 +143,7 @@ export async function mcpServerCommand() {
   const server = new Server(
     {
       name: "vcshell-codegen",
-      version: "0.5.0",
+      version: "0.7.6",
     },
     {
       capabilities: {
@@ -98,7 +164,7 @@ export async function mcpServerCommand() {
 
   // Load unified component registry with capabilities
   const registryPath = path.join(schemasPath, "component-registry.json");
-  const registry: Record<string, Component> = JSON.parse(
+  const registry: ComponentRegistry = JSON.parse(
     fs.readFileSync(registryPath, "utf-8")
   );
 
@@ -485,10 +551,10 @@ export async function mcpServerCommand() {
 
       case "vcshell://component-templates": {
         // Return slot component metadata and code
-        const slotComponents = registry._slotComponents?.components || [];
+        const slotComponents: SlotComponent[] = registry._slotComponents?.components || [];
         const componentsPath = path.join(examplesPath, "components");
 
-        const componentsData = slotComponents.map((comp: any) => {
+        const componentsData = slotComponents.map((comp) => {
           const compPath = path.join(examplesPath, comp.file);
           let code = "";
 
@@ -1077,7 +1143,7 @@ Try:
 
             if (type === "template") {
               const templates = registry.VcBlade?.templates || [];
-              const templateInfo = templates.find((t: any) => t.file === `templates/${file}`);
+              const templateInfo = templates.find((t) => t.file === `templates/${file}`);
 
               if (templateInfo) {
                 output += `**Complexity:** ${templateInfo.complexity}\n`;
@@ -1186,7 +1252,7 @@ Try:
                 },
               ],
             };
-          } catch (error: any) {
+          } catch (error: unknown) {
             return {
               content: [
                 {
@@ -1195,7 +1261,7 @@ Try:
                     {
                       success: false,
                       error: "Failed to create app",
-                      details: error.message || String(error),
+                      details: error instanceof Error ? error.message : String(error),
                       suggestion: "Check that @vc-shell/create-vc-app is accessible and try again",
                     },
                     null,
@@ -1258,7 +1324,7 @@ Try:
 
           // Get template metadata from registry
           const templates = registry.VcBlade?.templates || [];
-          const templateInfo = templates.find((t: any) => t.id === templateKey);
+          const templateInfo = templates.find((t) => t.id === templateKey);
 
           const metadata = templateInfo
             ? `
@@ -1334,8 +1400,9 @@ ${content}
           }
 
           // Generate module
+          const validatedPlan = plan as unknown as ValidatorUIPlan;
           const generator = new UnifiedCodeGenerator();
-          const result = await generator.generateModule(plan as ValidatorUIPlan, cwd, {
+          const result = await generator.generateModule(validatedPlan, cwd, {
             writeToDisk: !dryRun,
             dryRun,
             mode,
@@ -1350,7 +1417,7 @@ ${content}
                     success: true,
                     message: `Module generated successfully`,
                     summary: {
-                      module: (plan as ValidatorUIPlan).module,
+                      module: validatedPlan.module,
                       blades: result.summary.blades,
                       composables: result.summary.composables,
                       locales: result.summary.locales,
@@ -1477,18 +1544,22 @@ ${content}
           // Simple keyword matching for semantic search
           // In production, this could use embeddings or more sophisticated NLP
           const keywords = intent.toLowerCase().split(/\s+/);
-          const results: any[] = [];
+          const results: ComponentIntentMatch[] = [];
 
           for (const [componentName, component] of Object.entries(registry)) {
             if (!componentName.startsWith("Vc")) continue;
 
             let score = 0;
-            const matchedCapabilities: any[] = [];
+            const matchedCapabilities: CapabilityMatch[] = [];
 
             // Search in capabilities (if they exist)
-            const capabilities = (component as any).capabilities || {};
+            const capabilities = component.capabilities || {};
             for (const [capId, capability] of Object.entries(capabilities)) {
-              const capText = `${capability.name} ${capability.description} ${capability.useCases?.join(" ")}`.toLowerCase();
+              const capText = [
+                capability.name ?? "",
+                capability.description ?? "",
+                ...(capability.useCases || []),
+              ].join(" ").toLowerCase();
 
               for (const keyword of keywords) {
                 if (capText.includes(keyword)) {
@@ -1552,29 +1623,33 @@ ${content}
             throw new Error(`Component ${component} not found in registry`);
           }
 
-          const componentData: any = registry[component];
-          let capabilities = componentData.capabilities || {};
+          const componentData = registry[component];
+          const baseCapabilities = componentData.capabilities || {};
+          let capabilities: Record<string, ComponentCapability & { exampleFile?: string }> = baseCapabilities;
 
           // Filter by specific capability if requested
           if (capability) {
-            capabilities = { [capability]: capabilities[capability] };
-            if (!capabilities[capability]) {
+            const selectedCapability = baseCapabilities[capability];
+            if (!selectedCapability) {
               throw new Error(`Capability ${capability} not found for ${component}`);
             }
+            capabilities = { [capability]: selectedCapability };
           }
 
           // Load examples if requested
           if (includeExamples) {
-            for (const [capId, cap] of Object.entries(capabilities as any)) {
-              try {
-                const examplePath = path.join(examplesPath, "capabilities", component, `${capId}.md`);
-                if (fs.existsSync(examplePath)) {
-                  cap.exampleFile = fs.readFileSync(examplePath, "utf-8");
-                }
-              } catch (error) {
-                // Example not found, skip
-              }
+            const capabilitiesWithExamples: Record<string, ComponentCapability & { exampleFile?: string }> = {};
+
+            for (const [capId, cap] of Object.entries(capabilities)) {
+              const examplePath = path.join(examplesPath, "capabilities", component, `${capId}.md`);
+              const exampleFile = fs.existsSync(examplePath)
+                ? fs.readFileSync(examplePath, "utf-8")
+                : undefined;
+
+              capabilitiesWithExamples[capId] = { ...cap, exampleFile };
             }
+
+            capabilities = capabilitiesWithExamples;
           }
 
           return {
@@ -1647,7 +1722,7 @@ ${content}
             };
           }
 
-          const validatedPlan = plan as ValidatorUIPlan;
+          const validatedPlan = plan as unknown as ValidatorUIPlan;
 
           // Initialize smart generator
           const smartGen = new SmartCodeGenerator();
@@ -1656,10 +1731,10 @@ ${content}
           // For each blade: infer logic if not provided
           for (const blade of validatedPlan.blades) {
             if (!blade.logic) {
-              blade.logic = logicPlanner.inferLogic(blade as any);
+              blade.logic = logicPlanner.inferLogic(blade as Blade);
             }
             if (!blade.composable) {
-              blade.composable = logicPlanner.inferComposable(blade as any);
+              blade.composable = logicPlanner.inferComposable(blade as Blade);
             }
           }
 
@@ -1682,31 +1757,32 @@ ${content}
                 || validatedPlan.module;
 
               const bladeType: "list" | "details" = firstBlade.layout === "grid" ? "list" : "details";
+              const namingFromModule = new CodeGenerator().createNamingConfig(validatedPlan.module);
+              const entityPascal = upperFirst(camelCase(entityToken));
+              const entityCamel = camelCase(entityToken);
+              const entityKebab = kebabCase(entityToken);
+              const naming: BladeGenerationContext["naming"] = {
+                ...namingFromModule,
+                entitySingular: entityKebab,
+                entitySingularPascal: entityPascal,
+                entitySingularCamel: entityCamel,
+                entitySingularKebab: entityKebab,
+              };
 
-              const mockContext = {
-                type: bladeType as "list" | "details",
-                entity: entityToken,  // ✅ REQUIRED: entity name
-                module: validatedPlan.module,  // ✅ REQUIRED: module name
+              const mockContext: BladeGenerationContext = {
+                type: bladeType,
+                entity: entityToken,
+                module: validatedPlan.module,
                 features: firstBlade.features || [],
                 blade: firstBlade,
                 columns: firstBlade.components?.find(c => c.type === "VcTable")?.columns,
                 fields: firstBlade.components?.find(c => c.type === "VcForm")?.fields,
-                naming: {
-                  moduleName: validatedPlan.module,
-                  entitySingular: entityToken.charAt(0).toUpperCase() + entityToken.slice(1),
-                  entityPlural: validatedPlan.module.charAt(0).toUpperCase() + validatedPlan.module.slice(1),
-                  entitySingularCamel: entityToken,
-                  entityPluralCamel: validatedPlan.module,
-                  entitySingularKebab: entityToken,
-                  entityPluralKebab: validatedPlan.module,
-                  entitySingularPascal: entityToken.charAt(0).toUpperCase() + entityToken.slice(1),
-                  entityPluralPascal: validatedPlan.module.charAt(0).toUpperCase() + validatedPlan.module.slice(1),
-                },
-                componentName: `${entityToken.charAt(0).toUpperCase() + entityToken.slice(1)}${bladeType === "list" ? "List" : "Details"}`,
-                composableName: `use${entityToken.charAt(0).toUpperCase() + entityToken.slice(1)}${bladeType === "list" ? "List" : "Details"}`,
+                naming,
+                componentName: `${entityPascal}${bladeType === "list" ? "List" : "Details"}`,
+                composableName: `use${entityPascal}${bladeType === "list" ? "List" : "Details"}`,
                 route: firstBlade.route || `/${validatedPlan.module}`,
                 menuTitleKey: `${validatedPlan.module.toUpperCase()}.MENU_TITLE`,
-                logic: firstBlade.logic,
+                logic: normalizeBladeLogic(firstBlade.logic),
                 complexity: 0,  // ✅ REQUIRED: will be calculated in decide()
               };
 
@@ -1815,14 +1891,28 @@ ${content}
 
           const { blade, merge } = parsed.data;
           const planner = new LogicPlanner();
+          const normalizedLogic = normalizeBladeLogic(
+            (blade as InferBladeLogicInput["blade"] & { logic?: Blade["logic"] }).logic
+          );
+
+          const bladeWithDefaults: Blade = {
+            id: blade.id,
+            route: blade.id,
+            layout: blade.layout,
+            title: blade.id,
+            features: blade.features,
+            components: blade.components as Blade["components"],
+            logic: normalizedLogic,
+          };
 
           // Infer logic
-          const inferred = planner.inferLogic(blade as any as Blade);
-          const composable = planner.inferComposable(blade as any as Blade);
+          const inferred = planner.inferLogic(bladeWithDefaults);
+          const composable = planner.inferComposable(bladeWithDefaults);
+          const existingLogic = normalizedLogic;
 
           // Merge with existing if requested
-          const finalLogic = merge && (blade as any).logic
-            ? planner.mergeLogic(inferred, (blade as any).logic)
+          const finalLogic = merge && existingLogic
+            ? planner.mergeLogic(inferred, existingLogic)
             : inferred;
 
           return {
@@ -1840,7 +1930,7 @@ ${content}
                       composable,
                     },
                     description: planner.describeLogic(finalLogic),
-                    merged: merge && !!(blade as any).logic,
+                    merged: merge && !!existingLogic,
                   },
                   null,
                   2
@@ -1861,35 +1951,29 @@ ${content}
           const rulesProvider = getGenerationRulesProvider();
 
           // Get relevant patterns
-          const mockContext = {
-            type: type,
-            entity: "example",  // ✅ ADDED: placeholder entity
-            module: "examples",  // ✅ ADDED: placeholder module
+          const exampleNaming = new CodeGenerator().createNamingConfig("examples");
+          const complexityScore = complexity === "simple" ? 1 : complexity === "moderate" ? 5 : complexity ? 8 : 0;
+          const mockContext: BladeGenerationContext = {
+            type,
+            entity: "example",
+            module: "examples",
             features: features || [],
             blade: {
               id: `example-${type}`,
               layout: type === "list" ? "grid" : "details",
+              route: `/examples/${type}`,
+              title: "Example",
               features: features || [],
             },
-            naming: {
-              moduleName: "examples",
-              entitySingular: "Example",
-              entityPlural: "Examples",
-              entitySingularCamel: "example",
-              entityPluralCamel: "examples",
-              entitySingularKebab: "example",
-              entityPluralKebab: "examples",
-              entitySingularPascal: "Example",
-              entityPluralPascal: "Examples",
-            },
+            naming: exampleNaming,
             componentName: `Example${type === "list" ? "List" : "Details"}`,
             composableName: `useExample${type === "list" ? "List" : "Details"}`,
             route: "/examples",
             menuTitleKey: "EXAMPLES.MENU_TITLE",
-            complexity: complexity || 0,  // ✅ ADDED: complexity field
+            complexity: complexityScore,  // ✅ ADDED: complexity field
           };
 
-          const patterns = (composer as any).selectPatterns(mockContext);
+          const patterns = composer.selectPatterns(mockContext);
           const rules = rulesProvider.getRules();
 
           // Build guide
@@ -1956,10 +2040,15 @@ ${content}
           const validation = validator.validateFull(code);
 
           const attempt = retry?.attempt || 1;
-          const retryContext = {
+          const previousErrors: ValidationError[] = (retry?.previousErrors || []).map((message) => ({
+            type: "typescript",
+            severity: "error",
+            message,
+          }));
+          const retryContext: RetryContext = {
             attempt,
             maxAttempts: feedback.getMaxAttempts(),
-            previousErrors: retry?.previousErrors || [],
+            previousErrors,
             bladeId,
             strategy: context.strategy,
           };
@@ -2087,7 +2176,7 @@ ${content}
                 },
               ],
             };
-          } catch (error: any) {
+          } catch (error: unknown) {
             return {
               content: [
                 {
@@ -2096,7 +2185,7 @@ ${content}
                     {
                       success: false,
                       message: "Code validation passed but failed to save files",
-                      error: error.message,
+                      error: error instanceof Error ? error.message : String(error),
                       suggestion: "Check file permissions and ensure the project structure exists",
                     },
                     null,
@@ -2158,15 +2247,15 @@ ${content}
 
           const { analysis, module } = parsed.data;
 
-          // Use PlannerV2 for better multi-entity and feature support
-          // Falls back to V1 Planner for simple scenarios automatically
-          const planner = new PlannerV2();
+          // Use Planner (V1) because analyze_prompt returns PromptAnalysis shape
+          const planner = new Planner();
 
           try {
+            const normalizedAnalysis = normalizePromptAnalysis(analysis);
             const uiPlan = planner.generatePlan({
               prompt: "", // Not used when analysis is provided
               module,
-              analysis,
+              analysis: normalizedAnalysis,
             });
 
             // Validate the generated UI-Plan
@@ -2457,7 +2546,7 @@ ${content}
           }
 
           const { apis } = parsed.data;
-          const results: any[] = [];
+          const results: FrameworkAPIResult[] = [];
 
           for (const apiName of apis) {
             const api = frameworkSearchEngine.getAPI(apiName);
@@ -2470,27 +2559,15 @@ ${content}
             }
 
             results.push({
+              ...api,
               name: apiName,
-              import: api.import,
-              type: api.type,
-              category: api.category,
-              description: api.description,
-              keywords: api.keywords,
-              methods: api.methods,
-              state: api.state,
-              capabilities: api.capabilities,
-              examples: api.examples,
-              dependencies: api.dependencies,
-              relatedAPIs: api.relatedAPIs,
-              requiresPlugin: api.requiresPlugin,
-              requiresContext: api.requiresContext,
             });
           }
 
           // Format output
           const formatted = results
             .map((result) => {
-              if (result.error) {
+              if ("error" in result) {
                 return `## ❌ ${result.name}\n\n${result.error}`;
               }
 
@@ -2506,7 +2583,7 @@ ${content}
 
               if (result.methods && result.methods.length > 0) {
                 parts.push(``, `### Methods`);
-                result.methods.forEach((method: any) => {
+                result.methods.forEach((method) => {
                   parts.push(
                     ``,
                     `**${method.name}**`,
@@ -2522,7 +2599,7 @@ ${content}
 
               if (result.state && result.state.length > 0) {
                 parts.push(``, `### State`);
-                result.state.forEach((state: any) => {
+                result.state.forEach((state) => {
                   parts.push(
                     `- **${state.name}**: \`${state.type}\` - ${state.description}`
                   );
@@ -2533,7 +2610,7 @@ ${content}
                 const capCount = Object.keys(result.capabilities).length;
                 if (capCount > 0) {
                   parts.push(``, `### Capabilities (${capCount})`);
-                  Object.values(result.capabilities).forEach((cap: any) => {
+                  Object.values(result.capabilities).forEach((cap) => {
                     parts.push(
                       `- **${cap.name}** (${cap.complexity}): ${cap.description}`
                     );
@@ -2543,7 +2620,7 @@ ${content}
 
               if (result.examples && result.examples.length > 0) {
                 parts.push(``, `### Examples`);
-                result.examples.forEach((example: any, idx: number) => {
+                result.examples.forEach((example, idx: number) => {
                   parts.push(
                     ``,
                     `**Example ${idx + 1}: ${example.title}**`,
@@ -2640,9 +2717,23 @@ ${content}
             };
           }
 
-          const capabilities = capabilityFilter
-            ? { [capabilityFilter]: api.capabilities[capabilityFilter] }
-            : api.capabilities;
+          let capabilities: Record<string, FrameworkCapability> = api.capabilities;
+
+          if (capabilityFilter) {
+            const capabilityEntry = api.capabilities[capabilityFilter];
+            if (!capabilityEntry) {
+              return {
+                content: [
+                  {
+                    type: "text",
+                    text: `Capability "${capabilityFilter}" not found in ${apiName}.`,
+                  },
+                ],
+              };
+            }
+
+            capabilities = { [capabilityFilter]: capabilityEntry };
+          }
 
           if (!capabilities || Object.keys(capabilities).length === 0) {
             return {
@@ -2664,7 +2755,7 @@ ${content}
             ``,
           ];
 
-          Object.entries(capabilities).forEach(([id, cap]: [string, any]) => {
+          Object.entries(capabilities).forEach(([id, cap]) => {
             parts.push(
               `## ${cap.name}`,
               ``,
@@ -2687,11 +2778,11 @@ ${content}
             // Find related examples
             if (includeExamples !== false && api.examples) {
               const relatedExamples = api.examples.filter(
-                (ex: any) => ex.method === cap.name || !ex.method
+                (example) => example.method === cap.name || !example.method
               );
               if (relatedExamples.length > 0) {
                 parts.push(`**Examples:**`, ``);
-                relatedExamples.forEach((example: any) => {
+                relatedExamples.forEach((example) => {
                   parts.push(
                     `### ${example.title}`,
                     `\`\`\`typescript`,
@@ -2725,7 +2816,7 @@ ${content}
             ? [frameworkSearchEngine.getAPI(apiFilter)].filter(Boolean)
             : frameworkSearchEngine.getAllAPIs();
 
-          const matchedExamples: any[] = [];
+          const matchedExamples: MatchedFrameworkExample[] = [];
           const queryLower = query.toLowerCase();
 
           for (const api of allAPIs) {

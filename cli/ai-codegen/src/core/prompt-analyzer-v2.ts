@@ -37,7 +37,7 @@ export interface PromptAnalysisV2 {
 
       /** Columns (for list blades) */
       columns?: Array<{
-        key: string;
+        id: string;
         title: string;
         type?: string;
         sortable?: boolean;
@@ -241,9 +241,9 @@ Perform deep analysis and extract:
           "route": "/orders",
           "features": ["filters", "multiselect"],
           "columns": [
-            { "key": "orderNumber", "title": "Order #", "type": "text", "sortable": true },
-            { "key": "status", "title": "Status", "type": "status", "sortable": true },
-            { "key": "total", "title": "Total", "type": "number", "sortable": true }
+            { "id": "orderNumber", "title": "Order #", "type": "text", "sortable": true },
+            { "id": "status", "title": "Status", "type": "status", "sortable": true },
+            { "id": "total", "title": "Total", "type": "number", "sortable": true }
           ],
           "actions": [
             { "id": "approve", "label": "Approve", "icon": "fas fa-check", "type": "primary", "condition": "status === 'pending'" },
@@ -280,10 +280,10 @@ Perform deep analysis and extract:
           "type": "list",
           "features": ["inline-editing"],
           "columns": [
-            { "key": "productName", "title": "Product", "type": "text" },
-            { "key": "quantity", "title": "Qty", "type": "number" },
-            { "key": "price", "title": "Price", "type": "number" },
-            { "key": "total", "title": "Total", "type": "number" }
+            { "id": "productName", "title": "Product", "type": "text" },
+            { "id": "quantity", "title": "Qty", "type": "number" },
+            { "id": "price", "title": "Price", "type": "number" },
+            { "id": "total", "title": "Total", "type": "number" }
           ]
         }
       ],

@@ -18,8 +18,8 @@ describe("Planner with AI Analysis", () => {
         listFeatures: [],
         detailsFeatures: [],
         columns: [
-          { key: "name", title: "Name", type: "text", sortable: true },
-          { key: "price", title: "Price", type: "number", sortable: true },
+          { id: "name", title: "Name", type: "text", sortable: true },
+          { id: "price", title: "Price", type: "number", sortable: true },
         ],
         fields: [
           { key: "name", label: "Product Name", as: "VcInput", required: true },
@@ -59,7 +59,7 @@ describe("Planner with AI Analysis", () => {
         listFeatures: ["filters", "multiselect"],
         detailsFeatures: ["validation", "gallery"],
         columns: [
-          { key: "name", title: "Name", type: "text", sortable: true },
+          { id: "name", title: "Name", type: "text", sortable: true },
         ],
         fields: [
           { key: "name", label: "Vendor Name", as: "VcInput", required: true },
@@ -86,10 +86,10 @@ describe("Planner with AI Analysis", () => {
         listFeatures: [],
         detailsFeatures: [],
         columns: [
-          { key: "orderNumber", title: "Order #", type: "text", sortable: true },
-          { key: "status", title: "Status", type: "status", sortable: false },
-          { key: "total", title: "Total", type: "number", sortable: true },
-          { key: "createdDate", title: "Created", type: "date", sortable: true },
+          { id: "orderNumber", title: "Order #", type: "text", sortable: true },
+          { id: "status", title: "Status", type: "status", sortable: false },
+          { id: "total", title: "Total", type: "number", sortable: true },
+          { id: "createdDate", title: "Created", type: "date", sortable: true },
         ],
         fields: [
           { key: "orderNumber", label: "Order Number", as: "VcInput", required: true },
@@ -115,7 +115,7 @@ describe("Planner with AI Analysis", () => {
         listFeatures: [],
         detailsFeatures: ["validation"],
         columns: [
-          { key: "email", title: "Email", type: "text", sortable: true },
+          { id: "email", title: "Email", type: "text", sortable: true },
         ],
         fields: [
           { key: "email", label: "Email", as: "VcInput", required: true, type: "email" },
@@ -172,7 +172,7 @@ describe("Planner with AI Analysis", () => {
 
       const listBlade = plan.blades.find((b) => b.id === "items-list");
       expect(listBlade?.components?.[0].columns).toEqual([
-        { key: "name", title: "Name", sortable: true },
+        { id: "name", title: "Name", sortable: true },
       ]);
 
       const detailsBlade = plan.blades.find((b) => b.id === "item-details");
@@ -188,8 +188,8 @@ describe("Planner with AI Analysis", () => {
         listFeatures: [],
         detailsFeatures: [],
         columns: [
-          { key: "name", title: "Category Name", type: "text", sortable: true },
-          { key: "count", title: "Product Count", type: "number", sortable: true },
+          { id: "name", title: "Category Name", type: "text", sortable: true },
+          { id: "count", title: "Product Count", type: "number", sortable: true },
         ],
         confidence: 0.9,
       };
@@ -240,7 +240,7 @@ describe("Planner with AI Analysis", () => {
       // Check that default columns/fields are used
       const listBlade = plan.blades[0];
       expect(listBlade.components?.[0].columns).toEqual([
-        { key: "name", title: "Name", sortable: true },
+        { id: "name", title: "Name", sortable: true },
       ]);
 
       const detailsBlade = plan.blades[1];

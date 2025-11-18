@@ -17,6 +17,10 @@ export interface NamingConfig {
   entityPluralPascal: string;
   entityPluralCamel: string;
   entityPluralKebab: string;
+  composableList?: string;
+  composableDetails?: string;
+  componentList?: string;
+  componentDetails?: string;
 }
 
 export interface GeneratedFile {

@@ -25,7 +25,7 @@ describe("AIGenerationGuideBuilder", () => {
       getComponents: vi.fn().mockReturnValue([]),
       getAllComponents: vi.fn().mockReturnValue([]),
       searchComponents: vi.fn().mockReturnValue([]),
-    } as any;
+    } ;
 
     // Mock GenerationRules
     mockRules = {
@@ -46,7 +46,7 @@ describe("AIGenerationGuideBuilder", () => {
         utilities: [],
       },
       patterns: [],
-    } as any;
+    } ;
 
     builder = new AIGenerationGuideBuilder(mockRegistry, mockRules);
   });
@@ -68,8 +68,8 @@ describe("AIGenerationGuideBuilder", () => {
       entity,
       module: `${entity}s`,
       features,
-      columns: type === "list" ? [{ key: "name", title: "Name" }] : undefined,
-      fields: type === "details" ? [{ key: "name", as: "VcInput", label: "Name" }] : undefined,
+      columns: type === "list" ? [{ id: "name", title: "Name" }] : undefined,
+      fields: type === "details" ? [{ id: "name", as: "VcInput", label: "Name" }] : undefined,
       complexity: 5,
     };
   }

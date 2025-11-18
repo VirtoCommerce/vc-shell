@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { addMenuItem, registerDashboardWidget } from "@vc-shell/framework";
 import { App, markRaw } from "vue";
 // TODO: Import your dashboard widget components

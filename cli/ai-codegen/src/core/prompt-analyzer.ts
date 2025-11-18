@@ -31,7 +31,7 @@ export interface PromptAnalysis {
 
   /** Detected columns for table */
   columns?: Array<{
-    key: string;
+    id: string;
     title: string;
     type?: "text" | "number" | "date" | "boolean" | "image" | "badge" | "status";
     sortable?: boolean;
@@ -117,9 +117,9 @@ Return JSON in this EXACT format:
   "listFeatures": ["filters", "multiselect"],
   "detailsFeatures": ["validation", "gallery"],
   "columns": [
-    { "key": "name", "title": "Name", "type": "text", "sortable": true },
-    { "key": "price", "title": "Price", "type": "number", "sortable": true },
-    { "key": "status", "title": "Status", "type": "badge", "sortable": false }
+    { "id": "name", "title": "Name", "type": "text", "sortable": true },
+    { "id": "price", "title": "Price", "type": "number", "sortable": true },
+    { "id": "status", "title": "Status", "type": "badge", "sortable": false }
   ],
   "fields": [
     { "key": "name", "label": "Product Name", "as": "VcInput", "required": true },
@@ -152,8 +152,8 @@ Return JSON in this EXACT format:
   "listFeatures": [],
   "detailsFeatures": [],
   "columns": [
-    { "key": "name", "title": "Name", "type": "text", "sortable": true },
-    { "key": "price", "title": "Price", "type": "number", "sortable": true }
+    { "id": "name", "title": "Name", "type": "text", "sortable": true },
+    { "id": "price", "title": "Price", "type": "number", "sortable": true }
   ],
   "fields": [
     { "key": "name", "label": "Product Name", "as": "VcInput", "required": true },
@@ -174,9 +174,9 @@ Return JSON in this EXACT format:
   "listFeatures": ["filters", "multiselect"],
   "detailsFeatures": ["validation"],
   "columns": [
-    { "key": "name", "title": "Name", "type": "text", "sortable": true },
-    { "key": "email", "title": "Email", "type": "text", "sortable": true },
-    { "key": "status", "title": "Status", "type": "badge", "sortable": true }
+    { "id": "name", "title": "Name", "type": "text", "sortable": true },
+    { "id": "email", "title": "Email", "type": "text", "sortable": true },
+    { "id": "status", "title": "Status", "type": "badge", "sortable": true }
   ],
   "fields": [
     { "key": "name", "label": "Vendor Name", "as": "VcInput", "required": true },
@@ -202,9 +202,9 @@ Return JSON in this EXACT format:
   "listFeatures": ["filters"],
   "detailsFeatures": ["gallery"],
   "columns": [
-    { "key": "name", "title": "Название", "type": "text", "sortable": true },
-    { "key": "price", "title": "Цена", "type": "number", "sortable": true },
-    { "key": "image", "title": "Изображение", "type": "image", "sortable": false }
+    { "id": "name", "title": "Название", "type": "text", "sortable": true },
+    { "id": "price", "title": "Цена", "type": "number", "sortable": true },
+    { "id": "image", "title": "Изображение", "type": "image", "sortable": false }
   ],
   "fields": [
     { "key": "name", "label": "Название товара", "as": "VcInput", "required": true },
@@ -261,11 +261,11 @@ export function getPromptAnalysisSchema() {
         description: "Table columns for list view",
         items: {
           type: "object",
-          required: ["key", "title"],
+          required: ["id", "title"],
           properties: {
-            key: {
+            id: {
               type: "string",
-              description: "Column key (camelCase)",
+              description: "Column id (camelCase)",
             },
             title: {
               type: "string",

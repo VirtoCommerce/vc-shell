@@ -52,7 +52,7 @@ export interface CompositionPattern {
 
 /**
  * GenerationRulesProvider loads and consolidates rules from composition patterns
- * 
+ *
  * Provides:
  * - Blade structure rules
  * - Naming conventions
@@ -159,7 +159,7 @@ export class GenerationRulesProvider {
 
       const filePath = path.join(this.patternsPath, file);
       const content = fs.readFileSync(filePath, "utf-8");
-      
+
       const pattern = this.parsePattern(file, content);
       if (pattern) {
         patterns.set(pattern.name, pattern);
@@ -174,7 +174,7 @@ export class GenerationRulesProvider {
    */
   private parsePattern(filename: string, content: string): CompositionPattern | null {
     const name = filename.replace(".md", "");
-    
+
     // Determine type from name
     let type: "list" | "details" | "shared" = "shared";
     if (name.includes("list")) type = "list";
@@ -270,7 +270,7 @@ export class GenerationRulesProvider {
   private getPatternSummary(patternName: string): string {
     const patterns = this.loadPatterns();
     const pattern = patterns.get(patternName);
-    
+
     if (!pattern) {
       return `Pattern ${patternName} (see compositions/${patternName}.md)`;
     }
@@ -283,7 +283,7 @@ export class GenerationRulesProvider {
    */
   getRulesAsText(): string {
     const rules = this.getRules();
-    
+
     return `# VC-Shell Code Generation Rules
 
 ## Blade Structure
@@ -340,14 +340,15 @@ ${rules.validation.forbidden.map(r => `- ${r}`).join("\n")}
   ): Array<{ id: string; name: string; type: string; description: string }> {
     // Load unified registry with capabilities - use path relative to patterns directory
     const registryPath = path.join(
-      this.patternsPath, 
-      "..", 
-      "..", 
-      "schemas", 
+      this.patternsPath,
+      "..",
+      "..",
+      "schemas",
       "component-registry.json"
     );
-    
-    let registry: any = {};
+
+    type CapabilityEntry = { name?: string; type?: string; description?: string };
+    let registry: Record<string, { capabilities?: Record<string, CapabilityEntry> }> = {};
     try {
       registry = JSON.parse(fs.readFileSync(registryPath, "utf-8"));
     } catch (error) {
@@ -359,6 +360,7 @@ ${rules.validation.forbidden.map(r => `- ${r}`).join("\n")}
     if (!componentData || !componentData.capabilities) {
       return [];
     }
+    const capabilities = componentData.capabilities as Record<string, CapabilityEntry>;
 
     const relevantCaps: Array<{ id: string; name: string; type: string; description: string }> = [];
 
@@ -378,12 +380,12 @@ ${rules.validation.forbidden.map(r => `- ${r}`).join("\n")}
 
     // If no features specified, return all capabilities
     if (features.length === 0) {
-      for (const [capId, cap] of Object.entries(componentData.capabilities)) {
+      for (const [capId, cap] of Object.entries(capabilities)) {
         relevantCaps.push({
           id: capId,
-          name: (cap as any).name,
-          type: (cap as any).type,
-          description: (cap as any).description,
+          name: cap.name || capId,
+          type: cap.type || "capability",
+          description: cap.description || "",
         });
       }
       return relevantCaps;
@@ -398,29 +400,29 @@ ${rules.validation.forbidden.map(r => `- ${r}`).join("\n")}
 
     // Get matching capabilities
     for (const capId of capabilityIds) {
-      const cap = componentData.capabilities[capId];
+      const cap = capabilities[capId];
       if (cap) {
         relevantCaps.push({
           id: capId,
-          name: cap.name,
-          type: cap.type,
-          description: cap.description,
+          name: cap.name || capId,
+          type: cap.type || "capability",
+          description: cap.description || "",
         });
       }
     }
 
     // Also include capabilities that match feature keywords
-    for (const [capId, cap] of Object.entries(componentData.capabilities)) {
+    for (const [capId, cap] of Object.entries(capabilities)) {
       if (capabilityIds.has(capId)) continue; // Already added
 
-      const capText = `${(cap as any).name} ${(cap as any).description}`.toLowerCase();
+      const capText = `${cap.name || ""} ${cap.description || ""}`.toLowerCase();
       for (const feature of features) {
         if (capText.includes(feature.toLowerCase())) {
           relevantCaps.push({
             id: capId,
-            name: (cap as any).name,
-            type: (cap as any).type,
-            description: (cap as any).description,
+            name: cap.name || capId,
+            type: cap.type || "capability",
+            description: cap.description || "",
           });
           break;
         }
@@ -435,7 +437,7 @@ ${rules.validation.forbidden.map(r => `- ${r}`).join("\n")}
    */
   exportRulesAsJSON(): string {
     const rules = this.getRules();
-    
+
     // Convert patterns Map to object for JSON serialization
     const patternsObj: Record<string, Omit<CompositionPattern, "content">> = {};
     for (const [name, pattern] of rules.patterns) {
@@ -470,4 +472,3 @@ export function getGenerationRulesProvider(): GenerationRulesProvider {
   }
   return rulesProvider;
 }
-

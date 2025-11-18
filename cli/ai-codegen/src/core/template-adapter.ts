@@ -7,11 +7,11 @@ import type { NamingConfig } from "./code-generator.js";
 import type { NodePath } from "@babel/traverse";
 
 // Handle ESM default exports
-const traverse = (_traverse as any).default || _traverse;
-const generate = (_generate as any).default || _generate;
+const traverse = (_traverse as unknown as { default?: typeof _traverse }).default || _traverse;
+const generate = (_generate as unknown as { default?: typeof _generate }).default || _generate;
 
 export interface Column {
-  key: string;
+  id: string;
   title: string;
   type?: string;
   sortable?: boolean;
@@ -152,6 +152,22 @@ export class TemplateAdapter {
         }
       },
 
+      // Replace import paths and remove TODO comments
+      ImportDeclaration: (path: NodePath<t.ImportDeclaration>) => {
+        const source = path.node.source.value;
+
+        // Replace ../composables/useEntityList with actual composable path
+        if (source.includes("../composables/useEntity")) {
+          path.node.source.value = `../composables/${config.composableName}`;
+        }
+
+        // Replace ./entity-details.vue with actual details blade
+        if (source.includes("./entity-details")) {
+          const detailsFileName = `${config.naming.entitySingularKebab}-details`;
+          path.node.source.value = `./${detailsFileName}.vue`;
+        }
+      },
+
       // Replace strings in i18n keys
       StringLiteral: (path: NodePath<t.StringLiteral>) => {
         const value = path.node.value;
@@ -180,8 +196,18 @@ export class TemplateAdapter {
       },
     });
 
-    const output = generate(ast, { retainLines: false, compact: false });
-    return output.code;
+    const output = generate(ast, {
+      retainLines: false,
+      compact: false,
+      comments: false // Remove all comments including TODOs
+    });
+
+    // Remove any remaining TODO comments from output
+    let cleanedCode = output.code;
+    cleanedCode = cleanedCode.replace(/\/\/\s*TODO:.*$/gm, '');
+    cleanedCode = cleanedCode.replace(/\/\*\s*TODO:[\s\S]*?\*\//g, '');
+
+    return cleanedCode;
   }
 
   /**
@@ -223,9 +249,10 @@ export class TemplateAdapter {
    */
   private generateColumnsAST(columns: Column[], moduleKey: string): t.Expression[] {
     return columns.map(col => {
-      const translationKey = `${moduleKey}.PAGES.LIST.TABLE.HEADER.${col.key.toUpperCase()}`;
+      const translationKey = `${moduleKey}.PAGES.LIST.TABLE.HEADER.${col.id.toUpperCase()}`;
       const properties: t.ObjectProperty[] = [
-        t.objectProperty(t.identifier("id"), t.stringLiteral(col.key)),
+        // Use 'id' to match VcTable component API
+        t.objectProperty(t.identifier("id"), t.stringLiteral(col.id)),
         t.objectProperty(
           t.identifier("title"),
           t.callExpression(

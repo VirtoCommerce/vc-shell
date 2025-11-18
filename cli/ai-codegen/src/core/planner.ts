@@ -98,7 +98,7 @@ export class Planner {
         {
           type: "VcTable",
           dataSource: moduleName,
-          columns: analysis.columns || [{ key: "name", title: "Name", sortable: true }],
+          columns: analysis.columns || [{ id: "name", title: "Name", sortable: true }],
           actions: ["add", "edit", "delete"],
           filters: [],
         },
@@ -147,10 +147,12 @@ export class Planner {
   private generateFallbackPlan(prompt: string, moduleOverride?: string): UIPlan {
     const moduleName = moduleOverride || this.extractModuleName(prompt);
     const singularName = this.toSingular(moduleName);
+    const features = this.extractFeatures(prompt);
+    const columns = this.extractColumns(prompt);
 
     const blades = [
-      this.generateGridBlade(moduleName),
-      this.generateDetailsBlade(moduleName, singularName),
+      this.generateGridBlade(moduleName, features.list, columns),
+      this.generateDetailsBlade(moduleName, singularName, features.details),
     ];
 
     return {
@@ -169,8 +171,27 @@ export class Planner {
   }
 
   private extractModuleName(prompt: string): string {
-    const tokens = prompt.split(/[\s,]+/).filter(Boolean);
-    const candidate = tokens[0] || "items";
+    // Try to extract entity name from common patterns
+    const patterns = [
+      /(?:create|manage|build|generate|make|add)\s+(?:a\s+)?(?:module\s+for\s+)?(\w+)/i,
+      /(?:CRUD|crud)\s+(?:for\s+)?(\w+)/i,
+      /(\w+)\s+(?:management|manager|list|catalog|module)/i,
+      /(?:module|entity|resource)\s+(?:called\s+)?(\w+)/i,
+    ];
+
+    // Try each pattern
+    for (const pattern of patterns) {
+      const match = prompt.match(pattern);
+      if (match && match[1]) {
+        return kebabCase(match[1]);
+      }
+    }
+
+    // Fallback: get first meaningful word (skip common verbs/articles)
+    const skipWords = new Set(['create', 'make', 'build', 'generate', 'add', 'new', 'a', 'an', 'the', 'for', 'module', 'entity']);
+    const tokens = prompt.toLowerCase().split(/[\s,]+/).filter(Boolean);
+    const candidate = tokens.find(t => !skipWords.has(t)) || tokens[0] || "items";
+
     return kebabCase(candidate);
   }
 
@@ -183,7 +204,76 @@ export class Planner {
     return word;
   }
 
-  private generateGridBlade(moduleName: string) {
+  private extractFeatures(prompt: string): { list: string[], details: string[] } {
+    const lower = prompt.toLowerCase();
+    const listFeatures: string[] = [];
+    const detailsFeatures: string[] = [];
+
+    // List features
+    if (lower.includes("filter") || lower.includes("search")) {
+      listFeatures.push("filters");
+    }
+    if (lower.includes("multiselect") || lower.includes("bulk") || lower.includes("multi-select")) {
+      listFeatures.push("multiselect");
+    }
+    if (lower.includes("reorder") || lower.includes("drag") || lower.includes("sort order")) {
+      listFeatures.push("reorderable");
+    }
+
+    // Details features
+    if (lower.includes("validat") || lower.includes("require")) {
+      detailsFeatures.push("validation");
+    }
+    if (lower.includes("image") || lower.includes("photo") || lower.includes("gallery")) {
+      detailsFeatures.push("gallery");
+    }
+    if (lower.includes("widget") || lower.includes("dashboard")) {
+      detailsFeatures.push("widgets");
+    }
+
+    return { list: listFeatures, details: detailsFeatures };
+  }
+
+  private extractColumns(prompt: string): Array<{ id: string, title: string, sortable?: boolean, type?: string }> {
+    const lower = prompt.toLowerCase();
+    const columns: Array<{ id: string, title: string, sortable?: boolean, type?: string }> = [];
+
+    // Common field patterns
+    const fieldPatterns = [
+      { keywords: ['name', 'title'], id: 'name', title: 'Name', sortable: true },
+      { keywords: ['email', 'mail'], id: 'email', title: 'Email', sortable: true },
+      { keywords: ['status'], id: 'status', title: 'Status', sortable: true },
+      { keywords: ['date', 'created'], id: 'createdDate', title: 'Created', sortable: true, type: 'date-ago' },
+      { keywords: ['price', 'cost', 'amount'], id: 'price', title: 'Price', sortable: true },
+      { keywords: ['description', 'desc'], id: 'description', title: 'Description' },
+    ];
+
+    // Add columns based on keywords found
+    for (const pattern of fieldPatterns) {
+      if (pattern.keywords.some(kw => lower.includes(kw))) {
+        const col: { id: string, title: string, sortable?: boolean, type?: string } = {
+          id: pattern.id,
+          title: pattern.title,
+        };
+        if (pattern.sortable) col.sortable = pattern.sortable;
+        if (pattern.type) col.type = pattern.type;
+        columns.push(col);
+      }
+    }
+
+    // Always include at least name and createdDate if nothing found
+    if (columns.length === 0) {
+      columns.push({ id: 'name', title: 'Name', sortable: true });
+      columns.push({ id: 'createdDate', title: 'Created', sortable: true, type: 'date-ago' });
+    }
+
+    return columns;
+  }
+
+  private generateGridBlade(moduleName: string, features: string[] = [], columns?: Array<{ id: string, title: string, sortable?: boolean, type?: string }>) {
+    const defaultColumns = [{ id: "name", title: "Name", sortable: true }];
+    const tableColumns = columns && columns.length > 0 ? columns : defaultColumns;
+
     return {
       id: `${moduleName}-list`,
       route: `/${moduleName}`,
@@ -194,18 +284,18 @@ export class Planner {
         {
           type: "VcTable",
           dataSource: moduleName,
-          columns: [{ key: "name", title: "Name", sortable: true }],
+          columns: tableColumns,
           actions: ["add", "edit", "delete"],
           filters: [],
         },
       ],
-      features: [],
+      features,
       permissions: [`${moduleName}:read`],
       theme: { variant: "system" as const },
     };
   }
 
-  private generateDetailsBlade(moduleName: string, singularName: string) {
+  private generateDetailsBlade(moduleName: string, singularName: string, features: string[] = []) {
     return {
       id: `${singularName}-details`,
       route: `/${singularName}`,
@@ -221,6 +311,7 @@ export class Planner {
           ],
         },
       ],
+      features,
       actions: ["save", "delete"],
       permissions: [`${singularName}:update`, `${moduleName}:read`],
       theme: { variant: "system" as const },

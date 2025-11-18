@@ -25,8 +25,8 @@ describe("Validator", () => {
                 type: "VcTable",
                 dataSource: "products",
                 columns: [
-                  { key: "name", title: "Name" },
-                  { key: "price", title: "Price" },
+                  { id: "name", title: "Name" },
+                  { id: "price", title: "Price" },
                 ],
                 actions: ["add"],
               },

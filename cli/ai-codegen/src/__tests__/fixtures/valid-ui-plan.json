@@ -13,13 +13,13 @@
           "type": "VcTable",
           "dataSource": "products",
           "columns": [
-            {"key": "name", "title": "Name"},
-            {"key": "price", "title": "Price"},
-            {"key": "status", "title": "Status"}
+            {"id": "name", "title": "Name"},
+            {"id": "price", "title": "Price"},
+            {"id": "status", "title": "Status"}
           ],
           "actions": ["add", "edit", "delete"],
           "filters": [
-            {"key": "status", "type": "select"}
+            {"id": "status", "type": "select"}
           ]
         }
       ],

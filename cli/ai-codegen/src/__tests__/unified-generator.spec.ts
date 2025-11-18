@@ -25,9 +25,9 @@ describe("UnifiedCodeGenerator", () => {
               {
                 type: "VcTable",
                 columns: [
-                  { key: "name", title: "Name", sortable: true },
-                  { key: "email", title: "Email" },
-                  { key: "status", title: "Status" },
+                  { id: "name", title: "Name", sortable: true },
+                  { id: "email", title: "Email" },
+                  { id: "status", title: "Status" },
                 ],
               },
             ],
@@ -71,7 +71,7 @@ describe("UnifiedCodeGenerator", () => {
             components: [
               {
                 type: "VcTable",
-                columns: [{ key: "name", title: "Name" }],
+                columns: [{ id: "name", title: "Name" }],
               },
             ],
           },
@@ -131,7 +131,7 @@ describe("UnifiedCodeGenerator", () => {
             components: [
               {
                 type: "VcTable",
-                columns: [{ key: "number", title: "Order Number" }],
+                columns: [{ id: "number", title: "Order Number" }],
               },
             ],
           },
@@ -194,8 +194,8 @@ describe("UnifiedCodeGenerator", () => {
               {
                 type: "VcTable",
                 columns: [
-                  { key: "sku", title: "SKU" },
-                  { key: "status", title: "Status", type: "status" }, // status column triggers StatusBadge component
+                  { id: "sku", title: "SKU" },
+                  { id: "status", title: "Status", type: "status" }, // status column triggers StatusBadge component
                 ],
               },
             ],

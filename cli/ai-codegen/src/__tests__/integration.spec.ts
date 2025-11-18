@@ -34,10 +34,10 @@ describe("Integration Tests - End-to-End Generation", () => {
               {
                 type: "VcTable",
                 columns: [
-                  { key: "name", title: "Name", sortable: true },
-                  { key: "sku", title: "SKU", sortable: true },
-                  { key: "price", title: "Price", sortable: true },
-                  { key: "status", title: "Status" },
+                  { id: "name", title: "Name", sortable: true },
+                  { id: "sku", title: "SKU", sortable: true },
+                  { id: "price", title: "Price", sortable: true },
+                  { id: "status", title: "Status" },
                 ],
               },
             ],
@@ -100,8 +100,8 @@ describe("Integration Tests - End-to-End Generation", () => {
               {
                 type: "VcTable",
                 columns: [
-                  { key: "name", title: "Name", sortable: true },
-                  { key: "status", title: "Status" },
+                  { id: "name", title: "Name", sortable: true },
+                  { id: "status", title: "Status" },
                 ],
               },
             ],
@@ -156,9 +156,9 @@ describe("Integration Tests - End-to-End Generation", () => {
               {
                 type: "VcTable",
                 columns: [
-                  { key: "number", title: "Order #", sortable: true },
-                  { key: "customer", title: "Customer" },
-                  { key: "total", title: "Total" },
+                  { id: "number", title: "Order #", sortable: true },
+                  { id: "customer", title: "Customer" },
+                  { id: "total", title: "Total" },
                 ],
               },
             ],
@@ -393,8 +393,8 @@ describe("Integration Tests - End-to-End Generation", () => {
               {
                 type: "VcTable",
                 columns: [
-                  { key: "name", title: "Name", sortable: true },
-                  { key: "price", title: "Price", sortable: true },
+                  { id: "name", title: "Name", sortable: true },
+                  { id: "price", title: "Price", sortable: true },
                 ],
               },
             ],
@@ -570,7 +570,7 @@ describe("Integration Tests - End-to-End Generation", () => {
               {
                 type: "VcTable",
                 columns: [
-                  { key: "name", title: "Name", sortable: true },
+                  { id: "name", title: "Name", sortable: true },
                 ],
               },
             ],
@@ -636,7 +636,7 @@ describe("Integration Tests - End-to-End Generation", () => {
             components: [
               {
                 type: "VcTable",
-                columns: [{ key: "name", title: "Name" }],
+                columns: [{ id: "name", title: "Name" }],
               },
             ],
           },
@@ -730,7 +730,7 @@ describe("Integration Tests - End-to-End Generation", () => {
             components: [
               {
                 type: "VcTable",
-                columns: [{ key: "name", title: "Name" }],
+                columns: [{ id: "name", title: "Name" }],
               },
             ],
           },
@@ -761,8 +761,8 @@ describe("Integration Tests - End-to-End Generation", () => {
               {
                 type: "VcTable",
                 columns: [
-                  { key: "name", title: "Name", sortable: true },
-                  { key: "status", title: "Status" },
+                  { id: "name", title: "Name", sortable: true },
+                  { id: "status", title: "Status" },
                 ],
               },
             ],

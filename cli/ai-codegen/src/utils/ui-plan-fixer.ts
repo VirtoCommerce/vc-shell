@@ -163,10 +163,10 @@ function fixBlade(blade: any, moduleName: string): string[] {
       if (comp.type === "VcTable" && Array.isArray(comp.columns)) {
         for (const col of comp.columns) {
           if (col.type) {
-            const typeMap: Record<string, string> = {
+            const typeMap: Record<string, string | undefined> = {
               "image-thumbnail": "image",
               "clickable": "link",
-              "text": undefined as any, // Remove type for text
+              "text": undefined , // Remove type for text
               "status-icon": "status",
               "status-icon-conditional": "status",
             };

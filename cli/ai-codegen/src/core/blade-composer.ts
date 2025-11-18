@@ -8,6 +8,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import type { Blade } from "./validator.js";
+import type { UIPlanBlade } from "../schemas/zod-schemas.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -99,7 +100,7 @@ export class BladeComposer {
    *
    * This implements the pattern selection algorithm using new pattern library
    */
-  private selectPatterns(context: BladeGenerationContext): CompositionPattern[] {
+  selectPatterns(context: BladeGenerationContext): CompositionPattern[] {
     const patterns: CompositionPattern[] = [];
     const { type, features, blade } = context;
 
@@ -197,14 +198,14 @@ export class BladeComposer {
       const description = descriptionMatch ? descriptionMatch[1].trim() : "Pattern";
 
       // Determine category from file path
-      const category = relativePath.startsWith("list/") ? "list"
+      const type: CompositionPattern["type"] = relativePath.startsWith("list/") ? "list"
         : relativePath.startsWith("details/") ? "details"
         : "shared";
 
       return {
         name,
         description,
-        category,
+        type,
         content,
         requiredComponents: this.extractComponentsFromPattern(content),
         features: this.extractFeaturesFromPattern(content),
@@ -473,7 +474,7 @@ export class BladeComposer {
    * Validate generated code
    */
   validateResult(code: string, blade: Blade): { valid: boolean; errors: string[] } {
-    const validation = this.validator.validateFull(code, blade);
+    const validation = this.validator.validateFull(code, blade as unknown as UIPlanBlade);
 
     return {
       valid: validation.valid,

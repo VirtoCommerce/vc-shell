@@ -347,8 +347,15 @@ export class SmartCodeGenerator {
       case GenerationStrategy.COMPOSITION:
         return this.composer.buildInstructions(config);
 
+      case GenerationStrategy.AI_GUIDED:
+        return this.buildAIGuidedInstructions(context);
+
       case GenerationStrategy.AI_FULL:
         return this.buildAIFullInstructions(context);
+
+      default:
+        // Fallback to composition for unknown strategies
+        return this.composer.buildInstructions(config);
     }
   }
 
@@ -373,6 +380,41 @@ The template will be automatically adapted with:
 
 **No AI generation needed - this is handled automatically by the system.**
 `;
+  }
+
+  /**
+   * Build instructions for AI-guided strategy (moderate complexity)
+   */
+  private buildAIGuidedInstructions(context: BladeGenerationContext): string {
+    const config: CompositionConfig = { context, strategy: "moderate" };
+    const baseInstructions = this.composer.buildInstructions(config);
+
+    // Add guidance for AI-guided generation
+    const guidance = `
+
+---
+
+## AI-Guided Generation Mode
+
+This blade has **moderate complexity** and uses pattern-based generation with AI assistance.
+
+**Approach:**
+1. Use the provided patterns and composition examples
+2. Adapt them to your specific entity and requirements
+3. Follow the VC-Shell component API strictly
+4. Ensure all features are properly integrated
+
+**Key Points:**
+- [ ] Use components from the registry (VcTable, VcBlade, VcInput, etc.)
+- [ ] All strings must use i18n with proper keys
+- [ ] Implement all required handlers and state
+- [ ] Follow TypeScript best practices
+- [ ] Include proper error handling
+
+**Quality is important - follow the patterns closely.**
+`;
+
+    return baseInstructions + guidance;
   }
 
   /**

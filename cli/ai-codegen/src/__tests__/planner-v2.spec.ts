@@ -23,8 +23,8 @@ describe("PlannerV2", () => {
                 type: "list",
                 features: ["filters", "multiselect"],
                 columns: [
-                  { key: "orderNumber", title: "Order #" },
-                  { key: "status", title: "Status", type: "status" },
+                  { id: "orderNumber", title: "Order #" },
+                  { id: "status", title: "Status", type: "status" },
                 ],
               },
             ],
@@ -37,8 +37,8 @@ describe("PlannerV2", () => {
                 type: "list",
                 features: ["inline-editing"],
                 columns: [
-                  { key: "productName", title: "Product" },
-                  { key: "quantity", title: "Qty" },
+                  { id: "productName", title: "Product" },
+                  { id: "quantity", title: "Qty" },
                 ],
               },
             ],
@@ -213,8 +213,8 @@ describe("PlannerV2", () => {
 
       const plan = planner.generatePlan({ prompt: "", analysis });
 
-      expect((plan as any).workflow).toBeDefined();
-      expect((plan as any).workflow.steps).toHaveLength(2);
+      expect((plan ).workflow).toBeDefined();
+      expect((plan ).workflow.steps).toHaveLength(2);
     });
 
     it("should include globalFeatures in plan", () => {
@@ -236,8 +236,8 @@ describe("PlannerV2", () => {
 
       const plan = planner.generatePlan({ prompt: "", analysis });
 
-      expect((plan as any).globalFeatures).toBeDefined();
-      expect((plan as any).globalFeatures).toHaveLength(1);
+      expect((plan ).globalFeatures).toBeDefined();
+      expect((plan ).globalFeatures).toHaveLength(1);
     });
   });
 

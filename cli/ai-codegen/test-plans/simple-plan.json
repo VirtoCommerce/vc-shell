@@ -11,9 +11,9 @@
         {
           "type": "VcTable",
           "columns": [
-            { "key": "name", "title": "Name", "sortable": true },
-            { "key": "sku", "title": "SKU" },
-            { "key": "price", "title": "Price", "type": "money" }
+            { "id": "name", "title": "Name", "sortable": true },
+            { "id": "sku", "title": "SKU" },
+            { "id": "price", "title": "Price", "type": "money" }
           ]
         }
       ],

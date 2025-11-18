@@ -74,7 +74,7 @@ export class LocaleGenerator {
     // Add column headers
     const headers: LocaleJSON = {};
     columns.forEach(col => {
-      headers[col.key.toUpperCase()] = col.title;
+      headers[col.id.toUpperCase()] = col.title;
     });
     (locale.TABLE as LocaleJSON).HEADER = headers;
 

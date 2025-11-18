@@ -1,4 +1,4 @@
-import Ajv from "ajv";
+import Ajv, { type AnySchema } from "ajv";
 import addFormats from "ajv-formats";
 import fs from "node:fs";
 import path from "node:path";
@@ -26,6 +26,8 @@ export interface UIPlan {
   data?: {
     sources?: Record<string, DataSource>;
   };
+  workflow?: unknown;
+  globalFeatures?: Array<{ name: string; config?: unknown }>;
 }
 
 export interface Blade {
@@ -88,6 +90,7 @@ export interface Field {
   key: string;
   as: string;
   label: string;
+  type?: string;
   placeholder?: string;
   required?: boolean;
   rules?: string[];
@@ -95,14 +98,15 @@ export interface Field {
 }
 
 export interface Column {
-  key: string;
+  id: string;
   title: string;
+  type?: string;
   sortable?: boolean;
   width?: string;
 }
 
 export interface Filter {
-  key: string;
+  id: string;
   type: string;
   label?: string;
   options?: unknown[];
@@ -115,7 +119,7 @@ export interface DataSource {
 
 export class Validator {
   private ajv: Ajv;
-  private uiPlanSchema: unknown;
+  private uiPlanSchema: AnySchema;
   private componentRegistry: Record<string, unknown>;
   private normalizer: PlanNormalizer;
 
@@ -152,7 +156,7 @@ export class Validator {
       : plan;
 
     // JSON Schema validation
-    const validate = this.ajv.compile(this.uiPlanSchema as any);
+    const validate = this.ajv.compile(this.uiPlanSchema );
     const valid = validate(normalizedPlan);
 
     if (!valid && validate.errors) {
@@ -327,4 +331,3 @@ export function getValidator(): Validator {
   }
   return validatorInstance;
 }
-

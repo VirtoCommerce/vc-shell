@@ -278,7 +278,7 @@ ${asyncSelectorsCode}
     ];
 
     columns.forEach(col => {
-      if (col.key === "id" || col.key === "name") return;
+      if (col.id === "id" || col.id === "name") return;
 
       let type = "string";
       if (col.type === "date" || col.type === "date-ago") {
@@ -289,7 +289,7 @@ ${asyncSelectorsCode}
         type = "boolean";
       }
 
-      fields.push(`  ${col.key}: ${type};`);
+      fields.push(`  ${col.id}: ${type};`);
     });
 
     return fields.join("\n");
@@ -337,21 +337,21 @@ ${asyncSelectorsCode}
       ];
 
       columns.forEach(col => {
-        if (col.key === "id" || col.key === "name") return;
+        if (col.id === "id" || col.id === "name") return;
 
         if (col.type === "email") {
-          fields.push(`    ${col.key}: "${col.key}${i}@example.com"`);
+          fields.push(`    ${col.id}: "${col.id}${i}@example.com"`);
         } else if (col.type === "status") {
           const statuses = ["active", "inactive", "pending"];
-          fields.push(`    ${col.key}: "${statuses[i % 3]}"`);
+          fields.push(`    ${col.id}: "${statuses[i % 3]}"`);
         } else if (col.type === "date" || col.type === "date-ago") {
-          fields.push(`    ${col.key}: new Date(Date.now() - ${i} * 86400000)`);
+          fields.push(`    ${col.id}: new Date(Date.now() - ${i} * 86400000)`);
         } else if (col.type === "number" || col.type === "money") {
-          fields.push(`    ${col.key}: ${i * 100}`);
+          fields.push(`    ${col.id}: ${i * 100}`);
         } else if (col.type === "boolean") {
-          fields.push(`    ${col.key}: ${i % 2 === 0}`);
+          fields.push(`    ${col.id}: ${i % 2 === 0}`);
         } else {
-          fields.push(`    ${col.key}: "Mock ${col.title || col.key} ${i}"`);
+          fields.push(`    ${col.id}: "Mock ${col.title || col.id} ${i}"`);
         }
       });
 

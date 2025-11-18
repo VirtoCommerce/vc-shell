@@ -170,7 +170,6 @@ export class ASTPatternMerger {
         directives: [],
         sourceType: "module",
         interpreter: null,
-        sourceFile: "merged.ts",
       },
       comments: [],
       tokens: undefined,

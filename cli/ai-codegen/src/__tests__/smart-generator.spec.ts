@@ -18,7 +18,7 @@ describe("SmartCodeGenerator", () => {
     // The SmartCodeGenerator passes ai-code-generator's BladeGenerationContext
     // But AIGenerationGuideBuilder expects its own BladeGenerationContext format
     // This is a known issue - for tests we mock it
-    (generator as any).guideBuilder = {
+    (generator ).guideBuilder = {
       buildGuide: vi.fn().mockReturnValue({
         task: "Generate blade",
         context: { blade: {}, entity: "Product", module: "products", features: [], complexity: 10 },

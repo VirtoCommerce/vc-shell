@@ -13,29 +13,29 @@
           "type": "VcTable",
           "columns": [
             {
-              "key": "image",
+              "id": "image",
               "title": "Product",
               "type": "image",
               "width": 60
             },
             {
-              "key": "name",
+              "id": "name",
               "title": "Name",
               "sortable": true
             },
             {
-              "key": "sku",
+              "id": "sku",
               "title": "SKU",
               "sortable": true
             },
             {
-              "key": "createdDate",
+              "id": "createdDate",
               "title": "Created",
               "type": "date-ago",
               "sortable": true
             },
             {
-              "key": "isActive",
+              "id": "isActive",
               "title": "Enabled",
               "type": "status",
               "sortable": true

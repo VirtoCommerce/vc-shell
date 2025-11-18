@@ -95,12 +95,12 @@ export class PlannerV2 {
 
     // Add workflow if present
     if (analysis.workflow) {
-      (plan as any).workflow = analysis.workflow;
+      (plan ).workflow = analysis.workflow;
     }
 
     // Add global features if present
     if (analysis.globalFeatures && analysis.globalFeatures.length > 0) {
-      (plan as any).globalFeatures = analysis.globalFeatures;
+      (plan ).globalFeatures = analysis.globalFeatures;
     }
 
     return plan;
@@ -241,7 +241,7 @@ export class PlannerV2 {
     bladeConfig: PromptAnalysisV2["entities"][0]["blades"][0]
   ): any {
     const columns = (bladeConfig.columns || [
-      { key: "name", title: "Name", sortable: true },
+      { id: "name", title: "Name", sortable: true },
     ]).map(col => this.normalizeColumn(col));
 
     return {
@@ -495,7 +495,7 @@ export class PlannerV2 {
         {
           type: "VcTable",
           dataSource: moduleName,
-          columns: [{ key: "name", title: "Name", sortable: true }],
+          columns: [{ id: "name", title: "Name", sortable: true }],
           actions: ["add", "edit", "delete"],
           filters: [],
         },

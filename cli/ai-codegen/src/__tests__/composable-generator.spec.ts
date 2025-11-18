@@ -25,9 +25,9 @@ describe("ComposableGenerator", () => {
       const result = generator.generateListComposable({
         naming: mockNaming,
         columns: [
-          { key: "name", title: "Name" },
-          { key: "email", title: "Email", type: "email" },
-          { key: "status", title: "Status", type: "status" },
+          { id: "name", title: "Name" },
+          { id: "email", title: "Email", type: "email" },
+          { id: "status", title: "Status", type: "status" },
         ],
       });
 
@@ -44,8 +44,8 @@ describe("ComposableGenerator", () => {
       const result = generator.generateListComposable({
         naming: mockNaming,
         columns: [
-          { key: "name", title: "Name" },
-          { key: "price", title: "Price", type: "money" },
+          { id: "name", title: "Name" },
+          { id: "price", title: "Price", type: "money" },
           { key: "createdDate", title: "Created", type: "date-ago" },
         ],
       });

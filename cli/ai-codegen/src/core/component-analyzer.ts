@@ -6,7 +6,7 @@ import * as parser from "@babel/parser";
 import _traverse from "@babel/traverse";
 import { execa } from "execa";
 
-const traverse = (_traverse as any).default || _traverse;
+const traverse = (_traverse as unknown as { default?: typeof _traverse }).default || _traverse;
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -134,14 +134,14 @@ export class ComponentAnalyzer {
    */
   private async extractFromDocs(componentName: string): Promise<CapabilityMap> {
     const capabilities: CapabilityMap = {};
-    
+
     // Convert VcTable -> vc-table.md
     // Remove Vc prefix, then add dash before capitals, then add vc- back
     const withoutVc = componentName.replace(/^Vc/, "");
     const filename = "vc-" + withoutVc
       .replace(/([A-Z])/g, (match, offset) => (offset > 0 ? "-" + match.toLowerCase() : match.toLowerCase()))
       .toLowerCase();
-    
+
     const docPath = path.join(
       this.config.docsPath,
       "platform/developer-guide/docs/custom-apps-development/vc-shell/Essentials/ui-components",
@@ -261,7 +261,7 @@ export class ComponentAnalyzer {
     }
 
     const content = fs.readFileSync(componentPath, "utf-8");
-    
+
     // Parse Vue SFC
     const { descriptor } = parseVueSFC(content);
 
@@ -289,7 +289,7 @@ export class ComponentAnalyzer {
     // Extract props and emits from script
     if (descriptor.script || descriptor.scriptSetup) {
       const scriptContent = descriptor.script?.content || descriptor.scriptSetup?.content || "";
-      
+
       try {
         const ast = parser.parse(scriptContent, {
           sourceType: "module",
@@ -338,7 +338,7 @@ export class ComponentAnalyzer {
 
     // Search for component usage
     const pattern = `<${componentName}`;
-    
+
     for (const projectPath of this.config.projectPaths) {
       if (!fs.existsSync(projectPath)) {
         continue;
@@ -354,7 +354,7 @@ export class ComponentAnalyzer {
         ]);
 
         const lines = stdout.split("\n").filter(Boolean);
-        
+
         // Analyze usage patterns
         for (const line of lines) {
           // Look for common patterns
@@ -482,4 +482,3 @@ export class ComponentAnalyzer {
     console.log(`\n✅ Enhanced registry saved to ${outputPath}`);
   }
 }
-

@@ -1,6 +1,6 @@
 import type { NamingConfig } from "../core/code-generator.js";
 import type { Column, Field } from "../core/template-adapter.js";
-import type { UIPlanBlade } from "../schemas/zod-schemas.js";
+import type { Blade } from "../core/validator.js";
 import type { BladeLogic, ComposableDefinition } from "../core/logic-planner.js";
 
 /**
@@ -22,9 +22,9 @@ export interface BladeGenerationContext {
   // ============================================
 
   /**
-   * Blade type: list or details
+   * Blade type: list, details, or page (mapped to details generation)
    */
-  type: "list" | "details";
+  type: "list" | "details" | "page";
 
   /**
    * Entity name in singular kebab-case
@@ -43,16 +43,7 @@ export interface BladeGenerationContext {
   /**
    * Blade definition from UI-Plan
    */
-  blade: UIPlanBlade | {
-    id: string;
-    layout: string;
-    title?: string;
-    route?: string;
-    features?: string[];
-    components?: any[];
-    customSlots?: any[];
-    widgets?: any[];
-  };
+  blade: Blade;
 
   /**
    * Naming conventions for all generated code

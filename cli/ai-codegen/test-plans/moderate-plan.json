@@ -12,11 +12,11 @@
         {
           "type": "VcTable",
           "columns": [
-            { "key": "orderNumber", "title": "Order #", "sortable": true },
-            { "key": "customer", "title": "Customer", "sortable": true },
-            { "key": "status", "title": "Status", "type": "status" },
-            { "key": "total", "title": "Total", "type": "money", "sortable": true },
-            { "key": "createdDate", "title": "Created", "type": "date-ago", "sortable": true }
+            { "id": "orderNumber", "title": "Order #", "sortable": true },
+            { "id": "customer", "title": "Customer", "sortable": true },
+            { "id": "status", "title": "Status", "type": "status" },
+            { "id": "total", "title": "Total", "type": "money", "sortable": true },
+            { "id": "createdDate", "title": "Created", "type": "date-ago", "sortable": true }
           ]
         }
       ],

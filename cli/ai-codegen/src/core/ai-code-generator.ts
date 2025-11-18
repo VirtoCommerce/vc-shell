@@ -160,7 +160,7 @@ This blade will ${type === "list" ? "display a table of items with CRUD operatio
     if (type === "list" && columns) {
       instructions += `## 📊 Columns to Display
 
-${columns.map(col => `- **${col.key}**: ${col.title} (${col.type || "text"}${col.sortable ? ", sortable" : ""})`).join("\n")}
+${columns.map(col => `- **${col.id}**: ${col.title} (${col.type || "text"}${col.sortable ? ", sortable" : ""})`).join("\n")}
 
 `;
     } else if (type === "details" && fields) {
@@ -329,7 +329,7 @@ ${composableDefinition.methods.map(m => `- \`${m}()\``).join("\n")}
 
 \`\`\`typescript
 interface ${naming.entitySingularPascal} {
-${columns.map(col => `  ${col.key}: ${this.inferTypeFromColumn(col)};`).join("\n")}
+${columns.map(col => `  ${col.id}: ${this.inferTypeFromColumn(col)};`).join("\n")}
   id: string;
   createdDate?: Date;
   modifiedDate?: Date;

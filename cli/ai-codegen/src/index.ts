@@ -10,7 +10,7 @@ const program = new Command();
 program
   .name("vcgen")
   .description("MCP server for AI-powered VC Shell code generation")
-  .version("0.7.0");
+  .version("0.7.6");
 
 program
   .command("mcp")

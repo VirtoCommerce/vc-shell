@@ -11,6 +11,11 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import fs from "node:fs";
 
+interface RegistryEntry {
+  capabilities?: Record<string, unknown>;
+  [key: string]: unknown;
+}
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -22,12 +27,12 @@ async function main() {
   
   // Load base registry
   const baseRegistryPath = path.join(schemasPath, "component-registry.json");
-  const baseRegistry = JSON.parse(fs.readFileSync(baseRegistryPath, "utf-8"));
+  const baseRegistry: Record<string, RegistryEntry> = JSON.parse(fs.readFileSync(baseRegistryPath, "utf-8"));
   console.log(`✅ Loaded base registry: ${Object.keys(baseRegistry).length} components`);
 
   // Load enhanced registry
   const enhancedRegistryPath = path.join(schemasPath, "component-registry-enhanced.json");
-  let enhancedRegistry: any = {};
+  let enhancedRegistry: Record<string, RegistryEntry> = {};
   
   if (fs.existsSync(enhancedRegistryPath)) {
     enhancedRegistry = JSON.parse(fs.readFileSync(enhancedRegistryPath, "utf-8"));
@@ -37,7 +42,7 @@ async function main() {
   }
 
   // Merge registries
-  const merged: Record<string, any> = {};
+  const merged: Record<string, RegistryEntry> = {};
   let totalCapabilities = 0;
 
   for (const [componentName, baseData] of Object.entries(baseRegistry)) {
@@ -47,7 +52,7 @@ async function main() {
     // Add capabilities from enhanced registry if they exist
     if (enhancedRegistry[componentName]?.capabilities) {
       merged[componentName].capabilities = enhancedRegistry[componentName].capabilities;
-      totalCapabilities += Object.keys(enhancedRegistry[componentName].capabilities).length;
+      totalCapabilities += Object.keys(enhancedRegistry[componentName].capabilities || {}).length;
     } else {
       // Empty capabilities object for components without enhanced data
       merged[componentName].capabilities = {};
@@ -78,7 +83,7 @@ async function main() {
   console.log("=".repeat(50));
   console.log(`✅ Total components: ${Object.keys(merged).length}`);
   console.log(`✅ Total capabilities: ${totalCapabilities}`);
-  console.log(`✅ Components with capabilities: ${Object.values(merged).filter((c: any) => Object.keys(c.capabilities || {}).length > 0).length}`);
+  console.log(`✅ Components with capabilities: ${Object.values(merged).filter((component) => Object.keys(component.capabilities || {}).length > 0).length}`);
   
   console.log("\n✅ Registry merge complete!");
   console.log("📝 Next steps:");

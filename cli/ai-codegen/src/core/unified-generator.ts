@@ -2,14 +2,18 @@ import fs from "node:fs";
 import path from "node:path";
 import type { UIPlan, Blade } from "./validator.js";
 import { TemplateAdapter, type AdaptConfig, type Column, type Field } from "./template-adapter.js";
-import { ComposableGenerator, type ListComposableConfig, type DetailsComposableConfig } from "./composable-generator.js";
+import {
+  ComposableGenerator,
+  type ListComposableConfig,
+  type DetailsComposableConfig,
+} from "./composable-generator.js";
 import { LocaleGenerator } from "./locale-generator.js";
 import { ModuleRegistrar } from "./module-registrar.js";
 import { CodeGenerator, type NamingConfig } from "./code-generator.js";
 import { AICodeGenerator } from "./ai-code-generator.js";
 import { CodeValidator } from "./code-validator.js";
 import { getGenerationRulesProvider } from "./generation-rules.js";
-import { LogicPlanner } from "./logic-planner.js";
+import { LogicPlanner, type BladeLogic, type ComposableDefinition } from "./logic-planner.js";
 import { BladeComposer } from "./blade-composer.js";
 import { SmartCodeGenerator, GenerationStrategy } from "./smart-generator.js";
 import type { BladeGenerationContext } from "../types/blade-context.js";
@@ -75,6 +79,19 @@ export class UnifiedCodeGenerator {
     this.smartGenerator = new SmartCodeGenerator();
   }
 
+  private normalizeBladeLogic(logic?: Blade["logic"]): BladeLogic | undefined {
+    if (!logic) return undefined;
+
+    return {
+      handlers: logic.handlers || {},
+      toolbar: (logic.toolbar || []).map((action) => ({
+        ...action,
+        icon: action.icon || "",
+      })),
+      state: logic.state || {},
+    };
+  }
+
   /**
    * Generate complete module from UI-Plan
    */
@@ -94,10 +111,11 @@ export class UnifiedCodeGenerator {
 
     for (const blade of plan.blades) {
       // Auto-infer logic if not provided
-      if (!blade.logic) {
-        const inferredLogic = this.logicPlanner.inferLogic(blade);
-        blade.logic = inferredLogic;
+      let logic = this.normalizeBladeLogic(blade.logic);
+      if (!logic) {
+        logic = this.logicPlanner.inferLogic(blade);
       }
+      blade.logic = logic;
 
       // Auto-infer composable definition if not provided
       if (!blade.composable) {
@@ -169,12 +187,13 @@ export class UnifiedCodeGenerator {
       menuTitleKey: context.menuTitleKey,
     };
 
-    const code = context.type === "list"
-      ? this.templateAdapter.adaptListTemplate(template, adaptConfig)
-      : this.templateAdapter.adaptDetailsTemplate(template, adaptConfig);
+    const code =
+      context.type === "list"
+        ? this.templateAdapter.adaptListTemplate(template, adaptConfig)
+        : this.templateAdapter.adaptDetailsTemplate(template, adaptConfig);
 
     return {
-      path: context.filePath,
+      path: context.filePath!,
       content: code,
       lines: code.split("\n").length,
     };
@@ -201,7 +220,7 @@ export class UnifiedCodeGenerator {
     }
 
     return {
-      path: context.composablePath,
+      path: context.composablePath!,
       content: code,
       lines: code.split("\n").length,
     };
@@ -229,7 +248,7 @@ export class UnifiedCodeGenerator {
       entity: context.naming.entitySingularKebab,
       module: context.naming.moduleName,
       naming: context.naming,
-      blade: context.blade as any,
+      blade: context.blade,
       columns: context.columns,
       fields: context.fields,
       componentName: context.componentName,
@@ -238,9 +257,9 @@ export class UnifiedCodeGenerator {
       isWorkspace: context.isWorkspace,
       menuTitleKey: context.menuTitleKey,
       features: context.blade.features || [],
-      logic: context.blade.logic,
-      composableDefinition: context.blade.composable,
-      complexity: 0,  // ✅ ADDED: Will be calculated by SmartCodeGenerator.decide()
+      logic: context.logic,
+      composableDefinition: context.composableDefinition,
+      complexity: 0, // ✅ ADDED: Will be calculated by SmartCodeGenerator.decide()
     };
 
     const decision = await this.smartGenerator.decide(bladeGenerationContext);
@@ -287,7 +306,7 @@ export class UnifiedCodeGenerator {
       entity: context.entity,
       module: context.module,
       naming: context.naming,
-      blade: context.blade as any,
+      blade: context.blade,
       columns: context.columns,
       fields: context.fields,
       componentName: context.componentName,
@@ -296,20 +315,20 @@ export class UnifiedCodeGenerator {
       isWorkspace: context.isWorkspace,
       menuTitleKey: context.menuTitleKey,
       features: context.blade.features || [],
-      logic: context.blade.logic,
-      composableDefinition: context.blade.composable,
+      logic: context.logic,
+      composableDefinition: context.composableDefinition,
+      complexity: context.complexity,
     };
 
     // Let BladeComposer handle pattern selection and composition
     const compositionResult = await this.bladeComposer.compose({
       context: compositionContext,
-      strategy: GenerationStrategy.COMPOSITION,
     });
 
     const code = this.bladeComposer.composeBlade(compositionContext, compositionResult.selectedPatterns);
 
     return {
-      path: context.filePath,
+      path: context.filePath || "",
       content: code,
       lines: code.split("\n").length,
     };
@@ -319,7 +338,10 @@ export class UnifiedCodeGenerator {
    * Generate composable with AI-first approach
    * NOTE: Removed in favor of MCP-based AI generation via submit_generated_code tool
    */
-  private async generateComposableWithMode(context: BladeGenerationContext, mode: GenerationMode): Promise<GeneratedFile> {
+  private async generateComposableWithMode(
+    context: BladeGenerationContext,
+    mode: GenerationMode,
+  ): Promise<GeneratedFile> {
     if (mode === "template") {
       return this.generateComposable(context);
     }
@@ -345,11 +367,13 @@ export class UnifiedCodeGenerator {
     const files: GeneratedFile[] = [];
 
     // Generate en.json
-    const bladeConfigs = contexts.map((context) => ({
-      type: context.type,
-      columns: context.columns,
-      fields: context.fields,
-    }));
+    const bladeConfigs = contexts
+      .filter((context) => context.type === "list" || context.type === "details")
+      .map((context) => ({
+        type: context.type === "page" ? "details" : context.type,
+        columns: context.columns,
+        fields: context.fields,
+      }));
 
     const localeData = this.localeGenerator.generateModuleLocales(naming, bladeConfigs);
     const enJsonContent = JSON.stringify(localeData, null, 2);
@@ -408,8 +432,9 @@ export * from "./composables";
 
     // Generate composables/index.ts
     const composableExports = contexts
+      .filter((context) => Boolean(context.composableFileName))
       .map((context) => {
-        const importPath = context.composableFileName.replace(/\.ts$/, "");
+        const importPath = context.composableFileName!.replace(/\.ts$/, "");
         return `export { default as ${context.composableName} } from "./${importPath}";`;
       })
       .join("\n");
@@ -711,13 +736,30 @@ defineExpose({
     const columns = type === "list" ? this.extractColumnsFromBlade(blade) : undefined;
     const fields = type === "details" ? this.extractFieldsFromBlade(blade) : undefined;
     // Status badge only needed if there's a status column (not based on features)
-    const requiresStatusBadge = Boolean(columns?.some((column) => {
-      if (!column) return false;
-      if (column.type && column.type.toLowerCase().includes("status")) return true;
-      return /status/i.test(column.key);
-    }));
+    const requiresStatusBadge = Boolean(
+      columns?.some((column) => {
+        if (!column) return false;
+        if (column.type && column.type.toLowerCase().includes("status")) return true;
+        return /status/i.test(column.id);
+      }),
+    );
 
     const normalizedRoute = blade.route?.startsWith("/") ? blade.route : `/${blade.route ?? naming.entityPluralKebab}`;
+    const logic = this.normalizeBladeLogic(blade.logic) || this.logicPlanner.inferLogic(blade);
+    const composableDefinition: ComposableDefinition =
+      blade.composable && blade.composable.name
+        ? {
+            name: blade.composable.name,
+            methods: blade.composable.methods || [],
+            mockData: blade.composable.mockData,
+          }
+        : this.logicPlanner.inferComposable(blade, {
+            entitySingularCamel: naming.entitySingularCamel,
+            entitySingularPascal: naming.entitySingularPascal,
+          });
+
+    blade.logic = logic;
+    blade.composable = composableDefinition;
 
     return {
       blade,
@@ -738,7 +780,9 @@ defineExpose({
       isWorkspace: blade.isWorkspace,
       requiresStatusBadge,
       features: blade.features || [],
-      complexity: 0,  // Will be calculated by SmartCodeGenerator if needed
+      complexity: 0, // Will be calculated by SmartCodeGenerator if needed
+      logic,
+      composableDefinition,
     };
   }
 
@@ -881,13 +925,13 @@ defineExpose({
    */
   private extractColumnsFromBlade(blade: Blade): Column[] {
     // Try to get columns from blade components
-    const tableComponent = blade.components?.find(c => c.type === "VcTable");
+    const tableComponent = blade.components?.find((c) => c.type === "VcTable");
 
     if (tableComponent?.columns) {
-      return tableComponent.columns.map(col => ({
-        key: col.key,
+      return tableComponent.columns.map((col) => ({
+        id: col.id,
         title: col.title,
-        type: (col as any).type as string | undefined,
+        type: col.type as string | undefined,
         sortable: col.sortable,
         width: col.width,
       }));
@@ -895,8 +939,8 @@ defineExpose({
 
     // Default columns
     return [
-      { key: "name", title: "Name", sortable: true },
-      { key: "createdDate", title: "Created", type: "date-ago", sortable: true },
+      { id: "name", title: "Name", sortable: true },
+      { id: "createdDate", title: "Created", type: "date-ago", sortable: true },
     ];
   }
 
@@ -905,14 +949,14 @@ defineExpose({
    */
   private extractFieldsFromBlade(blade: Blade): Field[] {
     // Try to get fields from blade components
-    const formComponent = blade.components?.find(c => c.type === "VcForm");
+    const formComponent = blade.components?.find((c) => c.type === "VcForm");
 
     if (formComponent?.fields) {
-      return formComponent.fields.map(field => ({
+      return formComponent.fields.map((field) => ({
         key: field.key,
         as: field.as || "VcInput",
         label: field.label,
-        type: (field as any).type as string | undefined,
+        type: field.type as string | undefined,
         validation: field.rules?.join("|"),
         required: field.required,
         placeholder: field.placeholder,
@@ -920,8 +964,6 @@ defineExpose({
     }
 
     // Default fields
-    return [
-      { key: "name", as: "VcInput", label: "Name", type: "text", required: true },
-    ];
+    return [{ key: "name", as: "VcInput", label: "Name", type: "text", required: true }];
   }
 }

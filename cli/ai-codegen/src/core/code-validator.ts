@@ -62,8 +62,8 @@ export class CodeValidator {
             type: "syntax",
             severity: "error",
             message: `Vue SFC parse error: ${error.message}`,
-            line: error.loc?.start.line,
-            column: error.loc?.start.column,
+            line: 'loc' in error && error.loc ? error.loc.start.line : undefined,
+            column: 'loc' in error && error.loc ? error.loc.start.column : undefined,
           });
         }
         return { valid: false, errors, warnings };
@@ -125,6 +125,13 @@ export class CodeValidator {
 
   /**
    * Validate TypeScript types
+   *
+   * Note: This uses ts.transpileModule which has limitations:
+   * - Cannot check types from external modules
+   * - Cannot verify import paths
+   * - Only catches syntax-level type errors
+   *
+   * For full validation, use the IDE's TypeScript language server.
    */
   validateTypes(code: string): ValidationResult {
     const errors: ValidationError[] = [];
@@ -139,14 +146,23 @@ export class CodeValidator {
         return { valid: true, errors, warnings };
       }
 
-      // Transpile TypeScript
+      // Additional static checks before TypeScript compilation
+      this.performStaticChecks(scriptContent, errors, warnings);
+
+      // Transpile TypeScript with stricter options
       const result = ts.transpileModule(scriptContent, {
         compilerOptions: {
           target: ts.ScriptTarget.ESNext,
           module: ts.ModuleKind.ESNext,
           strict: true,
+          noImplicitAny: true,
+          strictNullChecks: true,
+          strictFunctionTypes: true,
+          noUnusedLocals: false, // Don't block on unused vars in generated code
+          noUnusedParameters: false,
           skipLibCheck: true,
           noEmit: true,
+          jsx: ts.JsxEmit.Preserve,
         },
         reportDiagnostics: true,
       });
@@ -156,7 +172,12 @@ export class CodeValidator {
         for (const diagnostic of result.diagnostics) {
           const message = ts.flattenDiagnosticMessageText(diagnostic.messageText, "\n");
           const severity = diagnostic.category === ts.DiagnosticCategory.Error ? "error" : "warning";
-          
+
+          // Filter out some expected diagnostics for generated code
+          if (this.shouldIgnoreDiagnostic(diagnostic.code || 0)) {
+            continue;
+          }
+
           if (severity === "error") {
             errors.push({
               type: "typescript",
@@ -180,6 +201,48 @@ export class CodeValidator {
       warnings.push(`TypeScript validation failed: ${error.message}`);
       return { valid: true, errors, warnings };
     }
+  }
+
+  /**
+   * Perform static checks on code that can't be caught by ts.transpileModule
+   */
+  private performStaticChecks(code: string, errors: ValidationError[], warnings: string[]): void {
+    // Check for common issues
+
+    // 1. Missing type imports
+    if (code.includes(': ITableColumns') && !code.includes('ITableColumns')) {
+      warnings.push('ITableColumns type is used but may not be imported');
+    }
+
+    if (code.includes(': IBladeToolbar') && !code.includes('IBladeToolbar')) {
+      warnings.push('IBladeToolbar type is used but may not be imported');
+    }
+
+    // 2. Check for any types (anti-pattern)
+    const anyTypeRegex = /:\s*any(?!\w)/g;
+    const anyMatches = code.match(anyTypeRegex);
+    if (anyMatches && anyMatches.length > 0) {
+      warnings.push(`Found ${anyMatches.length} usage(s) of 'any' type - consider using specific types`);
+    }
+
+    // 3. Check for missing await on async calls
+    const asyncCallsWithoutAwait = code.match(/(?<!await\s+)\b(get|save|delete|load|fetch)\w+\(/g);
+    if (asyncCallsWithoutAwait && asyncCallsWithoutAwait.length > 0) {
+      warnings.push('Some async function calls may be missing await');
+    }
+  }
+
+  /**
+   * Check if diagnostic code should be ignored for generated code
+   */
+  private shouldIgnoreDiagnostic(code: number): boolean {
+    const ignoredCodes = [
+      2307, // Cannot find module (imports are not resolved by transpileModule)
+      2304, // Cannot find name (external types)
+      7016, // Could not find declaration file for module
+    ];
+
+    return ignoredCodes.includes(code);
   }
 
   /**

@@ -1,5 +1,60 @@
 # Changelog
 
+## [0.7.6] - 2025-01-18
+
+### 🔧 Critical Bug Fixes
+
+Six critical and important issues fixed based on production testing findings.
+
+### Fixed
+
+- **🔴 HIGH:** Template adapter now correctly replaces placeholder imports
+  - Fixed: `useEntityList` and `entity-details.vue` imports now parameterized with actual entity names
+  - Example: `../composables/useEntityList` → `../composables/useProductList`
+  - TODO comments automatically removed from generated code
+  - Files: `src/core/template-adapter.ts`, all list templates
+
+- **🔴 HIGH CRITICAL:** REVERTED - Table columns correctly use `id` (not `key`)
+  - **CRITICAL FIX:** ITableColumns from @vc-shell/framework uses `id: string`, NOT `key`
+  - Previous change to use `key` was INCORRECT and has been reverted
+  - Fixed: composable-generator.ts, locale-generator.ts, zod-schemas.ts now correctly use `id`
+  - Note: Fields (for forms) correctly use `key` - this distinction is intentional
+  - Files: `src/core/composable-generator.ts:281,292,340-354`, `src/core/locale-generator.ts:77`, `src/schemas/zod-schemas.ts:63,466,516`
+
+- **🟡 MEDIUM:** Added missing AI_GUIDED strategy handler
+  - Fixed: SmartCodeGenerator.buildInstructions now handles `AI_GUIDED` case (complexity >7)
+  - Added `buildAIGuidedInstructions()` method with moderate complexity guidance
+  - Added fallback to COMPOSITION for unknown strategies
+  - Files: `src/core/smart-generator.ts:350-418`
+
+- **🟡 MEDIUM:** Synchronized version numbers
+  - Fixed inconsistent versions: CLI (0.7.0), MCP (0.5.0), package.json (0.7.5)
+  - All now: 0.7.5
+  - Files: `src/index.ts:13`, `src/commands/mcp.ts:80`
+
+- **🟡 MEDIUM:** Improved fallback planner prompt analysis
+  - Fixed: Planner now extracts entity names, features, and columns from prompts
+  - Enhanced `extractModuleName()`: pattern matching + skip common words
+  - Added `extractFeatures()`: detects filters, multiselect, validation, gallery, widgets
+  - Added `extractColumns()`: detects name, email, status, price, description fields
+  - Example: "Create products with filters and price" → module `products`, features `["filters"]`, columns with price
+  - Files: `src/core/planner.ts:147-319`
+
+### Improved
+
+- **🔵 LOW:** Enhanced CodeValidator with static checks
+  - Added documentation about `ts.transpileModule` limitations
+  - Implemented `performStaticChecks()`: missing imports, `any` types, missing `await`
+  - Added `shouldIgnoreDiagnostic()`: filters TS2307, TS2304, TS7016 (cannot find module)
+  - Stricter compiler options: `noImplicitAny`, `strictNullChecks`, `strictFunctionTypes`
+  - Files: `src/core/code-validator.ts:136-246`
+
+### Note
+
+For full TypeScript validation, use IDE's TypeScript language server. `transpileModule` is for basic syntax checks only.
+
+---
+
 ## [0.7.5] - 2025-11-18
 
 ### 🎯 Framework API Examples - Production Corrections

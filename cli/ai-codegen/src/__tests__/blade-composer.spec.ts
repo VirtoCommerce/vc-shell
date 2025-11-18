@@ -31,8 +31,8 @@ describe("BladeComposer", () => {
           components: [],
         },
         columns: [
-          { key: "name", title: "Name", sortable: true },
-          { key: "price", title: "Price", type: "money" },
+          { id: "name", title: "Name", sortable: true },
+          { id: "price", title: "Price", type: "money" },
         ],
       };
 
@@ -192,7 +192,7 @@ describe("BladeComposer", () => {
           ],
         },
         columns: [
-          { key: "status", title: "Status", type: "status" }, // status column triggers custom slots pattern
+          { id: "status", title: "Status", type: "status" }, // status column triggers custom slots pattern
         ],
       };
 
@@ -258,7 +258,7 @@ describe("BladeComposer", () => {
           components: [],
         },
         columns: [
-          { key: "name", title: "Name" },
+          { id: "name", title: "Name" },
         ],
       };
 
@@ -289,9 +289,9 @@ describe("BladeComposer", () => {
           components: [],
         },
         columns: [
-          { key: "name", title: "Name" },
-          { key: "price", title: "Price" },
-          { key: "stock", title: "Stock" },
+          { id: "name", title: "Name" },
+          { id: "price", title: "Price" },
+          { id: "stock", title: "Stock" },
         ],
       };
 

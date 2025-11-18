@@ -121,7 +121,7 @@ export async function mcpInitCommand(options: McpInitOptions): Promise<void> {
     }
   }
 
-  const config = MCP_CONFIGS[client];
+  const config = MCP_CONFIGS[client as keyof typeof MCP_CONFIGS];
 
   // Handle Codex (TOML format, global config)
   if (client === "codex") {
@@ -153,8 +153,15 @@ export async function mcpInitCommand(options: McpInitOptions): Promise<void> {
     console.log(chalk.green(`✓ Created ${path.basename(configDir)}/ directory`));
   }
 
+  type MCPServerConfig = { command: string; args: string[] };
+  type MCPConfig = {
+    mcpServers?: Record<string, MCPServerConfig>;
+    servers?: Record<string, MCPServerConfig>;
+    [key: string]: unknown;
+  };
+
   // Check if file exists
-  let existingConfig: any = {};
+  let existingConfig: MCPConfig = {};
   if (fs.existsSync(configPath)) {
     try {
       existingConfig = JSON.parse(fs.readFileSync(configPath, "utf-8"));
@@ -167,11 +174,15 @@ export async function mcpInitCommand(options: McpInitOptions): Promise<void> {
 
   // Merge configurations (VS Code uses 'servers', others use 'mcpServers')
   const serverKey = client === "vscode" ? "servers" : "mcpServers";
+  const targetConfig =
+    ((config.content as MCPConfig)[serverKey] as Record<string, MCPServerConfig> | undefined) || {};
+  const existingServers =
+    (existingConfig[serverKey] as Record<string, MCPServerConfig> | undefined) || {};
   const newConfig = {
     ...existingConfig,
     [serverKey]: {
-      ...(existingConfig[serverKey] || {}),
-      vcshell: (config.content as any)[serverKey].vcshell,
+      ...existingServers,
+      ...targetConfig,
     },
   };
 

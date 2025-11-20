@@ -1,0 +1,173 @@
+id: "15"
+name: "Filters Slot Usage"
+category: "critical"
+priority: 95
+enabled: true
+applies_to:
+  - "list"
+
+description: |
+  The #filters slot in VcTable is ONLY for custom filters (status, date range, categories, etc.).
+  DO NOT use #filters slot for search or sorting - these are built into VcTable.
+
+correct_pattern:
+  inline: |
+    ```vue
+    <!-- ✅ CORRECT: Search and sort are built-in, filters slot for custom filters -->
+    <template>
+      <VcBlade>
+        <VcTable
+          :items="items"
+          :columns="columns"
+          :pages="pages"
+          :current-page="currentPage"
+          :search-value="searchValue"
+          :sort="sortExpression"
+          @header-click="handleSortChange"
+          @search:change="handleSearchChange"
+        >
+          <!-- Only add #filters slot if there are CUSTOM filters (status, date, etc.) -->
+          <template v-if="hasCustomFilters" #filters>
+            <div class="tw-p-4">
+              <VcRow class="tw-gap-16">
+                <!-- Custom filter: Status -->
+                <div class="tw-flex tw-flex-col">
+                  <h3 class="tw-text-sm tw-font-medium tw-mb-3">
+                    {{ $t("MODULE.PAGES.LIST.TABLE.FILTER.STATUS.TITLE") }}
+                  </h3>
+                  <div class="tw-space-y-2">
+                    <VcRadioButton
+                      v-for="status in statuses"
+                      :key="status.value"
+                      :model-value="stagedFilters.status[0] || ''"
+                      :value="status.value"
+                      :label="status.displayValue"
+                      @update:model-value="(value) => toggleFilter('status', String(value), true)"
+                    />
+                  </div>
+                </div>
+              </VcRow>
+
+              <div class="tw-flex tw-gap-2 tw-mt-4">
+                <VcButton variant="primary" :disabled="!hasFilterChanges" @click="applyFilters">
+                  {{ $t("MODULE.PAGES.LIST.TABLE.FILTER.APPLY") }}
+                </VcButton>
+                <VcButton variant="secondary" :disabled="!hasFiltersApplied" @click="resetFilters">
+                  {{ $t("MODULE.PAGES.LIST.TABLE.FILTER.RESET") }}
+                </VcButton>
+              </div>
+            </div>
+          </template>
+        </VcTable>
+      </VcBlade>
+    </template>
+
+    <script setup lang="ts">
+    import { useTableSort } from "@vc-shell/framework";
+
+    // ✅ Search is built-in VcTable prop
+    const searchValue = ref("");
+
+    // ✅ Sort uses useTableSort composable
+    const { sortExpression, handleSortChange } = useTableSort({
+      initialProperty: "createdDate",
+      initialDirection: "DESC",
+    });
+
+    function handleSearchChange(keyword: string) {
+      searchValue.value = keyword;
+      loadItems({ keyword, sort: sortExpression.value });
+    }
+    </script>
+    ```
+
+wrong_pattern:
+  inline: |
+    ```vue
+    <!-- ❌ WRONG: Using #filters slot for search/sort -->
+    <template>
+      <VcBlade>
+        <VcTable>
+          <template #filters>
+            <!-- ❌ WRONG: Search in filters slot -->
+            <VcInput v-model="searchKeyword" placeholder="Search..." />
+
+            <!-- ❌ WRONG: Sort options in filters slot -->
+            <VcSelect v-model="sortField" :options="sortOptions" />
+          </template>
+        </VcTable>
+      </VcBlade>
+    </template>
+    ```
+
+    <!-- ❌ WRONG: Keeping default filters when prompt has NO custom filters -->
+    <template>
+      <VcTable>
+        <template #filters>
+          <div class="tw-p-4">
+            <!-- User requested only "Search by keywords" and "Sorting by fields" -->
+            <!-- These are built-in, so this #filters slot should be REMOVED! -->
+            <VcRow>
+              <div>Status Filter</div> <!-- ❌ Not requested in prompt! -->
+            </VcRow>
+          </div>
+        </template>
+      </VcTable>
+    </template>
+    ```
+
+instructions: |
+  **CRITICAL UNDERSTANDING:**
+  1. **Search** → Use VcTable's built-in :search-value prop and @search:change event
+  2. **Sorting** → Use VcTable's built-in :sort prop and useTableSort composable
+  3. **Filters slot** → ONLY for CUSTOM filters like status, date range, categories, tags, etc.
+
+  **Decision Tree:**
+
+  Q: Does prompt mention "Search by keywords/fields"?
+  A: Use VcTable :search-value prop (NOT #filters slot)
+
+  Q: Does prompt mention "Sorting by fields"?
+  A: Use useTableSort composable and VcTable :sort prop (NOT #filters slot)
+
+  Q: Does prompt mention custom filters (status, date, category, etc.)?
+  A: Use #filters slot with VcRadioButton/VcCheckbox/VcInput for those specific filters
+
+  Q: Prompt has NO custom filters, only search/sort?
+  A: DO NOT add #filters slot at all, or REMOVE it if base template has it
+
+  **Examples:**
+
+  Prompt: "Search by keywords (name, SKU), Sorting by: name, date"
+  → NO #filters slot needed
+
+  Prompt: "Filter by status (active/inactive), Search by name"
+  → #filters slot with Status filter (VcRadioButton for active/inactive)
+  → Search uses :search-value prop
+
+  Prompt: "Filter by date range and category, Sort by price"
+  → #filters slot with Date Range (VcInput) and Category (VcRadioButton) filters
+  → Sort uses useTableSort
+
+  **Base Template Cleanup:**
+  The base blade from create-vc-app may contain default #filters with Status and Date filters.
+  If the prompt does NOT request these specific filters:
+  - REMOVE the entire #filters slot
+  - OR replace with only the filters requested in the prompt
+
+validations:
+  - type: "template"
+    pattern: ":search-value|@search:change"
+    message: "✓ Using VcTable built-in search"
+  - type: "script"
+    pattern: "useTableSort"
+    message: "✓ Using useTableSort for sorting"
+
+forbidden_patterns:
+  - pattern: "<template #filters>.*<VcInput.*search.*</template>"
+    message: "❌ Do not put search input in #filters slot - use :search-value prop"
+  - pattern: "<template #filters>.*sortOptions.*</template>"
+    message: "❌ Do not put sort selector in #filters slot - use useTableSort"
+
+auto_fix:
+  enabled: false

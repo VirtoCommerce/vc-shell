@@ -78,14 +78,29 @@ export async function generateBlade(args: BladeGeneratorArgs = {}) {
   }
 
   try {
+    // Check if user is attempting non-interactive mode with partial flags
+    const hasAnyBladeFlag = args.module || args.type || args.name;
+    const hasAllBladeFlags = args.module && args.type && args.name;
+
+    if (hasAnyBladeFlag && !hasAllBladeFlags) {
+      const missing: string[] = [];
+      if (!args.module) missing.push("--module");
+      if (!args.type) missing.push("--type");
+      if (!args.name) missing.push("--name");
+
+      throw new CLIError(
+        `❌ Non-interactive mode requires all flags: --module, --type, and --name.\n   Missing: ${missing.join(", ")}\n\n   Run without flags for interactive mode, or provide all required flags.`,
+      );
+    }
+
     // Non-interactive mode: use CLI flags
-    if (args.module && args.type && args.name) {
+    if (hasAllBladeFlags) {
       console.log(chalk.cyan("📝 Running in non-interactive mode\n"));
 
       await generateBladeNonInteractive(cwd, {
-        moduleName: kebabCase(args.module), // Normalize to kebab-case
-        bladeType: args.type,
-        entityName: args.name,
+        moduleName: kebabCase(args.module!), // Normalize to kebab-case (! is safe due to hasAllBladeFlags check)
+        bladeType: args.type!,
+        entityName: args.name!,
         isWorkspace: args.isWorkspace ?? false,
         includeComposable: args.composable ?? true,
         includeLocales: args.locales ?? true,
@@ -97,18 +112,36 @@ export async function generateBlade(args: BladeGeneratorArgs = {}) {
 
     // Widget-only mode
     if (args.widget) {
-      // Non-interactive widget mode: check if all required params are provided
-      if (args.widgetModule && args.widgetBlade && args.widgetName && args.widgetEntity) {
+      // Check for partial widget flags
+      const hasAnyWidgetFlag =
+        args.widgetModule || args.widgetBlade || args.widgetName || args.widgetEntity || args.widgetIcon;
+      const hasAllWidgetFlags = args.widgetModule && args.widgetBlade && args.widgetName && args.widgetEntity;
+
+      if (hasAnyWidgetFlag && !hasAllWidgetFlags) {
+        const missing: string[] = [];
+        if (!args.widgetModule) missing.push("--widget-module");
+        if (!args.widgetBlade) missing.push("--widget-blade");
+        if (!args.widgetName) missing.push("--widget-name");
+        if (!args.widgetEntity) missing.push("--widget-entity");
+
+        throw new CLIError(
+          `❌ Non-interactive widget mode requires all flags: --widget-module, --widget-blade, --widget-name, and --widget-entity.\n   Missing: ${missing.join(", ")}\n\n   Run with only --widget flag for interactive mode, or provide all required flags.`,
+        );
+      }
+
+      // Non-interactive widget mode
+      if (hasAllWidgetFlags) {
         console.log(chalk.cyan("📝 Running widget generation in non-interactive mode\n"));
         await generateWidgetNonInteractive(cwd, {
-          moduleName: kebabCase(args.widgetModule),
-          bladeName: args.widgetBlade.replace(".vue", ""),
-          widgetName: args.widgetName,
-          entityName: args.widgetEntity,
+          moduleName: kebabCase(args.widgetModule!),
+          bladeName: args.widgetBlade!.replace(".vue", ""),
+          widgetName: args.widgetName!,
+          entityName: args.widgetEntity!,
           icon: args.widgetIcon || "material-list",
         });
         return;
       }
+
       // Interactive widget mode
       await generateWidget(cwd);
       return;
@@ -276,7 +309,7 @@ async function generateBladeNonInteractive(
     options.bladeType === "grid" ? `${naming.entitySingularPascal}List` : `${naming.entitySingularPascal}Details`;
   const bladeFileName =
     options.bladeType === "grid"
-      ? replacements["{{entity-name-plural}}"]
+      ? replacements["{{entity-name-list}}"]
       : `${replacements["{{entity-name}}"]}-details`;
 
   await registerBladesInIndex(modulePath, [{ exportName: bladeExportName, fileName: bladeFileName }]);
@@ -589,7 +622,7 @@ export * from "./composables";
     if (config.createGridBlade) {
       bladesToRegister.push({
         exportName: `${naming.entitySingularPascal}List`,
-        fileName: naming.entityPluralKebab,
+        fileName: naming.entityListKebab,
       });
     }
 
@@ -797,7 +830,7 @@ async function generateBladeInExistingModule(cwd: string) {
       answers.bladeType === "grid" ? `${naming.entitySingularPascal}List` : `${naming.entitySingularPascal}Details`;
     const bladeFileName =
       answers.bladeType === "grid"
-        ? replacements["{{entity-name-plural}}"]
+        ? replacements["{{entity-name-list}}"]
         : `${replacements["{{entity-name}}"]}-details`;
 
     await registerBladesInIndex(modulePath, [{ exportName: bladeExportName, fileName: bladeFileName }]);
@@ -1350,7 +1383,7 @@ async function generateBladeFile(
   const templatePath = path.join(templateRoot, "blades", bladeType, "blade.vue");
   const fileName =
     bladeType === "grid"
-      ? `${replacements["{{entity-name-plural}}"]}.vue`
+      ? `${replacements["{{entity-name-list}}"]}.vue`
       : `${replacements["{{entity-name}}"]}-details.vue`;
   const targetPath = path.join(modulePath, "pages", fileName);
 
@@ -1373,6 +1406,61 @@ async function generateBladeFile(
   } else {
     content = content.replace(/{{isWorkspace}}/g, "false");
     content = content.replace(/{{menuItem}}/g, "undefined");
+  }
+
+  // Handle conditional imports for grid blade
+  if (bladeType === "grid") {
+    // Check if details blade exists
+    const detailsBladeFileName = `${replacements["{{entity-name}}"]}-details.vue`;
+    const detailsBladeExists = fs.existsSync(path.join(modulePath, "pages", detailsBladeFileName));
+
+    if (detailsBladeExists) {
+      // Add details blade import
+      content = content.replace(
+        /\{\{DETAILS_BLADE_IMPORT\}\}/g,
+        `import ${replacements["{{EntityName}}"]}Details from "./{{entity-name}}-details.vue";\n`,
+      );
+
+      // Add full openBlade functionality for item click
+      content = content.replace(
+        /\{\{DETAILS_BLADE_OPEN_ITEM\}\}/g,
+        `openBlade({
+    blade: markRaw(${replacements["{{EntityName}}"]}Details),
+    param: item.id,
+    onOpen() {
+      selectedItemId.value = item.id;
+    },
+    onClose() {
+      selectedItemId.value = undefined;
+    },
+  });`,
+      );
+
+      // Add full openBlade functionality for new item
+      content = content.replace(
+        /\{\{DETAILS_BLADE_OPEN_NEW\}\}/g,
+        `openBlade({
+    blade: markRaw(${replacements["{{EntityName}}"]}Details),
+  });`,
+      );
+    } else {
+      // Remove import placeholder
+      content = content.replace(/\{\{DETAILS_BLADE_IMPORT\}\}/g, "");
+
+      // Add TODO comment for item click
+      content = content.replace(
+        /\{\{DETAILS_BLADE_OPEN_ITEM\}\}/g,
+        `// TODO: Implement item click handler
+  console.log("Item clicked:", item);`,
+      );
+
+      // Add TODO comment for new item
+      content = content.replace(
+        /\{\{DETAILS_BLADE_OPEN_NEW\}\}/g,
+        `// TODO: Implement add handler
+  console.log("Add new item");`,
+      );
+    }
   }
 
   // Apply form fields template

@@ -370,15 +370,27 @@ export class CodeValidator {
       const scriptContent = descriptor.script?.content || descriptor.scriptSetup?.content || "";
       const templateContent = descriptor.template?.content || "";
 
-      // 1. Check defineOptions
-      const defineOptionsMatch = scriptContent.match(/defineOptions\s*\(\s*\{([^}]+)\}\s*\)/s);
-      if (!defineOptionsMatch) {
+      // 1. Check defineOptions (must exist exactly once)
+      const defineOptionsMatches = scriptContent.match(/defineOptions\s*\(/g);
+      const defineOptionsCount = defineOptionsMatches ? defineOptionsMatches.length : 0;
+
+      if (defineOptionsCount === 0) {
         errors.push({
           type: "convention",
           severity: "error",
           message: "Missing defineOptions() call",
         });
-      } else {
+      } else if (defineOptionsCount > 1) {
+        errors.push({
+          type: "convention",
+          severity: "error",
+          message: `Duplicate defineOptions() call (found ${defineOptionsCount} times). It should appear only once.`,
+        });
+      }
+
+      // Continue validation only if exactly one defineOptions exists
+      const defineOptionsMatch = scriptContent.match(/defineOptions\s*\(\s*\{([^}]+)\}\s*\)/s);
+      if (defineOptionsMatch) {
         const optionsContent = defineOptionsMatch[1];
 
         // Check name property (PascalCase)

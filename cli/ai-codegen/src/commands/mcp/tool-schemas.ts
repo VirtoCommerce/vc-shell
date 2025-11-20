@@ -108,6 +108,7 @@ export const getCompositionGuideSchema = z.object({
 export const submitGeneratedCodeSchema = z.object({
   bladeId: z.string(),
   code: z.string(),
+  cwd: z.string().optional(), // Optional: working directory (fallback to workflow state)
   composable: z
     .object({
       name: z.string(),
@@ -200,4 +201,17 @@ export const getRelevantPatternsSchema = z.object({
   features: z.array(z.string()).optional().describe("Features to find patterns for"),
   isWorkspace: z.boolean().optional().describe("Whether this is a workspace blade"),
   patterns: z.array(z.string()).optional().describe("Specific pattern IDs to retrieve (workspace-blade, module-registration, etc.)"),
+});
+
+/**
+ * Generate widget using create-vc-app
+ * Creates a widget component for a specific blade
+ */
+export const generateWidgetSchema = z.object({
+  cwd: z.string().describe("Project root directory (must be VC-Shell project)"),
+  module: z.string().describe("Module name (e.g., 'offers', 'products')"),
+  blade: z.string().describe("Blade name where widget will be used (e.g., 'offer-details', 'products-list')"),
+  widgetName: z.string().describe("Widget name in PascalCase (e.g., 'SpecialPrices', 'Stats')"),
+  entityName: z.string().optional().describe("Related entity name (e.g., 'Offer', 'Product')"),
+  icon: z.string().optional().describe("Material icon name (default: 'material-list')"),
 });

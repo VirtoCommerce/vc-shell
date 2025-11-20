@@ -8,28 +8,70 @@ applies_to:
 
 description: |
   Use useApiClient with proper client class and command objects.
+  When creating mock API clients, ensure they properly implement IAuthApiBase.
 
 correct_pattern:
   inline: |
     ```typescript
-    // ✅ CORRECT
+    // ✅ CORRECT: Using API client in composable
     const { getApiClient } = useApiClient(ClientClass);
     const client = await getApiClient();
     const result = await client.methodName(new CommandObject(data));
+
+    // ✅ CORRECT: Mock API client implementation
+    import { IAuthApiBase } from "@vc-shell/framework";
+
+    export class OffersClient implements IAuthApiBase {
+      public authToken: string = ""; // ✅ Must be string, not string | undefined
+
+      constructor(
+        private baseUrl?: string,
+        private http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }
+      ) {}
+
+      setAuthToken(token: string): void {
+        this.authToken = token;
+      }
+
+      getBaseUrl(): string {
+        return this.baseUrl || "";
+      }
+
+      async searchOffers(query: SearchOffersQuery): Promise<SearchOffersResult> {
+        // implementation
+      }
+    }
     ```
 
 wrong_pattern:
   inline: |
     ```typescript
-    // ❌ WRONG
+    // ❌ WRONG: Missing client class
     const apiClient = useApiClient(); // Missing client class!
     await apiClient.method({ ... }); // No command object!
+
+    // ❌ WRONG: Optional authToken
+    export class OffersClient implements IAuthApiBase {
+      public authToken?: string; // ❌ Must be string, not string | undefined
+      // This will cause TypeScript error:
+      // Type 'string | undefined' is not assignable to type 'string'
+    }
     ```
 
 validations:
   - type: "regex"
     pattern: "useApiClient\\(\\w+\\)"
     message: "✓ useApiClient called with client class"
+  - type: "regex"
+    pattern: "public authToken: string ="
+    message: "✓ authToken is string (not optional)"
+
+instructions: |
+  When creating a mock API client:
+  1. Always declare authToken as `public authToken: string = "";` (non-optional)
+  2. Implement all IAuthApiBase methods: setAuthToken(), getBaseUrl()
+  3. For command objects, use `new CommandClass({ ...data })`
+  4. For BulkDeleteCommand, always use: `const command = new BulkDeleteCommand({ ids: [...] });`
 
 auto_fix:
   enabled: false

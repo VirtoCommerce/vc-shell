@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 
-import { Server } from "@modelcontextprotocol/sdk/server/index";
-import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio";
+import { Server } from "@modelcontextprotocol/sdk/server/index.js";
+import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import {
   CallToolRequestSchema,
   ListToolsRequestSchema,
   ListResourcesRequestSchema,
   ReadResourceRequestSchema,
-} from "@modelcontextprotocol/sdk/types";
+} from "@modelcontextprotocol/sdk/types.js";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -43,6 +43,7 @@ import {
   getApplicableRulesSchema,
   getBestTemplateSchema,
   getRelevantPatternsSchema,
+  generateWidgetSchema,
 } from "./mcp/tool-schemas";
 
 import { type Component, type ComponentRegistry, type FrameworkRegistry } from "../schemas/zod-schemas";
@@ -316,6 +317,12 @@ export async function mcpServerCommand() {
             "Get relevant architectural patterns and examples for blade context. Returns full markdown content for patterns like workspace-blade.md, module-registration.md, parent-child-communication.md, error-handling.md, etc. Patterns are organized by category (architectural, blade-specific, communication, component-usage, best-practice). Use this to understand how to implement specific features correctly.",
           inputSchema: zodToJsonSchema(getRelevantPatternsSchema),
         },
+        {
+          name: "generate_widget",
+          description:
+            "Generate a widget component using create-vc-app CLI. Widgets are self-contained Vue components that can be embedded in blade details pages to show related information (e.g., stats, charts, lists). The widget will be created in the module's components/widgets directory. IMPORTANT: Use this tool instead of manually creating widget files to ensure proper structure and registration.",
+          inputSchema: zodToJsonSchema(generateWidgetSchema),
+        },
       ],
     };
   });
@@ -421,7 +428,7 @@ export async function mcpServerCommand() {
       // ✅ Update workflow state after successful tool execution
       // 🔥 Don't update workflow state if result is an error
       if (!result.isError) {
-        globalWorkflow.updateState(name, result);
+        globalWorkflow.updateState(name, result, args);
       }
       return result;
     };
@@ -929,17 +936,38 @@ Try:
             throw new Error(`Invalid arguments: ${parsed.error.message}`);
           }
 
-          const parsedData = parsed.data as { plan?: any; cwd: string; dryRun?: boolean; strategy?: "ai-full"; bladeId?: string };
-          const { plan: rawPlan, cwd, dryRun, bladeId } = parsedData;
+          const parsedData = parsed.data as { plan?: any; cwd?: string; dryRun?: boolean; strategy?: "ai-full"; bladeId?: string };
+          const { plan: rawPlan, dryRun, bladeId } = parsedData;
+
+          // 🔥 CRITICAL: Use cwd from args, or fallback to workflow state
+          const workflowState = globalWorkflow.getState();
+          let cwd = parsedData.cwd || workflowState.cwd;
+
+          if (!cwd) {
+            return {
+              content: [{
+                type: "text",
+                text: JSON.stringify({
+                  success: false,
+                  error: "Missing working directory (cwd)",
+                  reason: "cwd was not provided in arguments and not found in workflow state",
+                  suggestion: "Provide 'cwd' parameter pointing to your VC-Shell project root directory",
+                  example: { cwd: "/Users/user/my-app" }
+                }, null, 2)
+              }],
+              isError: true
+            };
+          }
 
           // Debug: Log what zod returned
           debugLog(`After zod parse, rawPlan type: ${typeof rawPlan}`);
+          debugLog(`Using cwd: ${cwd} (from ${parsedData.cwd ? 'args' : 'workflow state'})`);
 
           // Parse plan if it's a string (MCP sends JSON as string)
           // If plan is not provided, get it from workflow state
           let plan = rawPlan
             ? (typeof rawPlan === 'string' ? JSON.parse(rawPlan) : rawPlan)
-            : globalWorkflow.getState().plan;
+            : workflowState.plan;
 
           // Check if plan is available
           if (!plan) {
@@ -1038,35 +1066,211 @@ Try:
             };
           }
 
-          for (const blade of bladesToGenerate) {
-            // ⚠️ STRICT MODE: blade.logic is REQUIRED in UI-Plan
-            // No automatic inference - AI must provide complete logic
-            if (!blade.logic) {
+          // 🔥 PRE-FLIGHT CHECK: Validate project structure exists
+          if (!fs.existsSync(cwd)) {
+            return {
+              content: [{
+                type: "text",
+                text: JSON.stringify({
+                  success: false,
+                  error: "Project directory does not exist",
+                  cwd: cwd,
+                  suggestion: "Create project first using scaffold_app:\n" +
+                             `scaffold_app({ projectName: "${validatedPlan.module}-app" })`
+                }, null, 2)
+              }],
+              isError: true
+            };
+          }
+
+          // Validate project structure (has package.json)
+          const packageJsonPath = path.join(cwd, "package.json");
+          if (!fs.existsSync(packageJsonPath)) {
+            return {
+              content: [{
+                type: "text",
+                text: JSON.stringify({
+                  success: false,
+                  error: "Invalid project structure - not a VC-Shell project",
+                  cwd: cwd,
+                  missingFile: "package.json",
+                  suggestion: "Ensure 'cwd' parameter points to a valid VC-Shell project root (directory containing package.json)"
+                }, null, 2)
+              }],
+              isError: true
+            };
+          }
+
+          // 🔥 PRE-CHECK: If multiple blades without bladeId, return error BEFORE creating files
+          if (!bladeId && bladesToGenerate.length > 1) {
+            // Estimate response size (roughly 15-20k tokens per blade)
+            const estimatedTokensPerBlade = 16000;
+            const estimatedTotalTokens = bladesToGenerate.length * estimatedTokensPerBlade;
+
+            if (estimatedTotalTokens > 20000) {
               return {
                 content: [
                   {
                     type: "text",
-                    text: JSON.stringify({
-                      success: false,
-                      error: `Blade '${blade.id}' is missing required 'logic' field`,
-                      blade: blade.id,
-                      reason: "UI-Plan must include complete blade logic (handlers, toolbar, state)",
-                      fix: "Add 'logic' field to blade in UI-Plan with handlers, toolbar, and state definitions",
-                      example: {
-                        logic: {
-                          handlers: { onMounted: "Load data", onSave: "Save changes" },
-                          toolbar: [{ id: "save", icon: "fas fa-save", action: "save()" }],
-                          state: { loading: { source: "composable", reactive: true } }
-                        }
-                      }
-                    }, null, 2)
-                  }
+                    text: JSON.stringify(
+                      {
+                        success: false,
+                        error: "Response too large",
+                        bladesCount: bladesToGenerate.length,
+                        estimatedTokens: estimatedTotalTokens,
+                        maxTokens: 25000,
+                        suggestion: "Response exceeds MCP token limit. Use 'bladeId' parameter to generate one blade at a time.",
+                        availableBlades: bladesToGenerate.map(b => ({
+                          id: b.id,
+                          layout: b.layout,
+                          title: b.title,
+                        })),
+                        example: {
+                          tool: "generate_with_composition",
+                          bladeId: bladesToGenerate[0].id,
+                          cwd: cwd,
+                          strategy: "ai-full",
+                        },
+                        workflow: [
+                          `1. Call generate_with_composition with bladeId: "${bladesToGenerate[0].id}"`,
+                          "2. Wait for instructions and generate code",
+                          "3. Submit code using submit_generated_code",
+                          `4. Repeat for remaining blades: ${bladesToGenerate.slice(1).map(b => b.id).join(", ")}`,
+                        ],
+                        note: "⚠️ NO FILES WERE CREATED. Generate blades one at a time using bladeId parameter."
+                      },
+                      null,
+                      2,
+                    ),
+                  },
                 ],
+              };
+            }
+          }
+
+          // 🔥 STEP 1: Generate base blades using create-vc-app
+          // This provides production-ready templates with all logic pre-implemented
+          const { execa } = await import("execa");
+
+          console.error(`Generating ${bladesToGenerate.length} blade(s) using create-vc-app...`);
+
+          // Check if module already exists
+          const modulePath = path.join(cwd, "src", "modules", validatedPlan.module);
+          const moduleExists = fs.existsSync(modulePath);
+          console.error(`Module '${validatedPlan.module}' ${moduleExists ? "exists" : "does not exist"}`);
+
+          // Determine workspace blade (only first blade in new module can be workspace)
+          let hasWorkspaceBlade = false;
+          let hasGridBlade = false;
+
+          // First pass: check if there's a grid blade
+          for (const blade of bladesToGenerate) {
+            if (blade.layout === "grid") {
+              hasGridBlade = true;
+              break;
+            }
+          }
+
+          // Second pass: assign workspace status
+          for (const blade of bladesToGenerate) {
+            // Only assign workspace if:
+            // 1. Module doesn't exist yet (new module)
+            // 2. We haven't assigned workspace to any blade yet
+            // 3. This is a grid blade OR (no grid exists and this is details)
+            if (!moduleExists && !hasWorkspaceBlade) {
+              if (blade.layout === "grid") {
+                // Grid blade is always workspace if module is new
+                blade.isWorkspace = true;
+                hasWorkspaceBlade = true;
+                console.error(`🏠 Blade '${blade.id}' marked as workspace (grid blade in new module)`);
+              } else if (blade.layout === "details" && !hasGridBlade) {
+                // Details blade is workspace only if no grid exists
+                blade.isWorkspace = true;
+                hasWorkspaceBlade = true;
+                console.error(`🏠 Blade '${blade.id}' marked as workspace (details blade, no grid in module)`);
+              } else {
+                blade.isWorkspace = false;
+              }
+            } else {
+              // Module exists or workspace already assigned
+              blade.isWorkspace = false;
+              if (moduleExists) {
+                console.error(`   Blade '${blade.id}' is NOT workspace (module already exists)`);
+              }
+            }
+
+            const entityToken = blade.id.replace(/-list$|-details$|-page$/, "") || validatedPlan.module;
+            const bladeType: "grid" | "details" = blade.layout === "grid" ? "grid" : "details";
+            const entityName = upperFirst(camelCase(entityToken));
+
+            try {
+              // Generate blade using create-vc-app 'blade' command (non-interactive)
+              // Use local create-vc-app from monorepo
+              const createVcAppPath = path.resolve(__dirname, "..", "..", "create-vc-app", "src", "index.ts");
+              const args = [
+                "tsx",
+                createVcAppPath,
+                "blade",
+                "--module", validatedPlan.module,
+                "--type", bladeType,
+                "--name", entityName,  // Required for non-interactive mode
+                ...(blade.isWorkspace ? ["--is-workspace"] : []),
+                "--composable",
+                "--locales",
+                "--skip-form-editor"
+              ];
+
+              console.error(`Running: npx ${args.join(" ")}`);
+
+              await execa("npx", args, {
+                cwd: cwd,
+                stdio: "pipe",  // Use pipe to capture output (inherit causes issues with MCP)
+              });
+
+              console.error(`✅ Generated blade: ${blade.id} (${bladeType}${blade.isWorkspace ? ", workspace" : ""})`);
+            } catch (error: any) {
+              console.error(`❌ Failed to generate blade ${blade.id}:`, error.message);
+
+              return {
+                content: [{
+                  type: "text",
+                  text: JSON.stringify({
+                    success: false,
+                    error: `Failed to generate blade '${blade.id}' using create-vc-app`,
+                    blade: blade.id,
+                    bladeType: bladeType,
+                    entityName: entityName,
+                    command: `npx tsx <create-vc-app-path> blade --module ${validatedPlan.module} --type ${bladeType}${blade.isWorkspace ? " --is-workspace" : ""}`,
+                    cwd: cwd,
+                    moduleExists,
+                    errorDetails: {
+                      message: error.message || String(error),
+                      stdout: error.stdout || "(no stdout)",
+                      stderr: error.stderr || "(no stderr)",
+                      exitCode: error.exitCode || "(unknown)"
+                    },
+                    suggestion: [
+                      "Check the error details above",
+                      "Verify project structure is valid (must be VC-Shell project root)",
+                      "Ensure create-vc-app is accessible in monorepo",
+                      "Check directory write permissions",
+                      `Command used: npx tsx <create-vc-app-path> blade --module ${validatedPlan.module} --type ${bladeType}`,
+                    ].join("\n")
+                  }, null, 2)
+                }],
                 isError: true
               };
             }
+          }
 
-            const bladeLogic: BladeLogic = normalizeBladeLogic(blade.logic)!;
+          // 🔥 STEP 2: Build AI instructions to adapt generated files to UI-Plan
+          for (const blade of bladesToGenerate) {
+            const bladeEntityToken = blade.id.replace(/-list$|-details$|-page$/, "") || validatedPlan.module;
+            const bladeLogic: BladeLogic = blade.logic ? normalizeBladeLogic(blade.logic)! : {
+              handlers: {},
+              toolbar: [],
+              state: {}
+            };
 
             const normalizedBlade: Blade = {
               ...(blade as Blade),
@@ -1075,10 +1279,9 @@ Try:
               logic: bladeLogic,
             };
             const namingBase = codeGenerator.createNamingConfig(validatedPlan.module);
-            const entityToken = blade.id.replace(/-list$|-details$|-page$/, "") || validatedPlan.module;
-            const entityPascal = upperFirst(camelCase(entityToken));
-            const entityCamel = camelCase(entityToken);
-            const entityKebab = kebabCase(entityToken);
+            const entityPascal = upperFirst(camelCase(bladeEntityToken));
+            const entityCamel = camelCase(bladeEntityToken);
+            const entityKebab = kebabCase(bladeEntityToken);
 
             const naming = {
               ...namingBase,
@@ -1092,7 +1295,7 @@ Try:
 
             const context: BladeGenerationContext = {
               type: bladeType,
-              entity: entityToken,
+              entity: bladeEntityToken,
               module: validatedPlan.module,
               features: blade.features || [],
               blade: normalizedBlade,
@@ -1119,62 +1322,58 @@ Try:
           // 🔥 Check response size before returning
           const responsePayload = {
             success: true,
-            strategy: "AI_FULL",
+            strategy: "CREATE_VC_APP_TEMPLATES",
             message:
-              "✅ Generation guides created successfully!\n\n" +
-              "NEXT STEPS:\n" +
-              "1. Read the generation guide for each blade (contains requirements, patterns, constraints)\n" +
-              "2. Generate complete Vue SFC code based on the guide instructions\n" +
-              "3. Call submit_generated_code tool with the generated code\n" +
-              "4. MCP server will validate and save the code, providing feedback if needed\n\n" +
-              "⚠️ DO NOT write files manually with Write/Edit tools - use submit_generated_code instead!",
+              "✅ Base blades generated successfully using create-vc-app!\n\n" +
+              `Generated ${bladesToGenerate.length} blade(s) with production-ready templates:\n` +
+              bladesToGenerate.map(b => `  - ${b.id} (${b.layout})`).join("\n") + "\n\n" +
+              "📁 Generated files:\n" +
+              bladesToGenerate.map(b => {
+                const entity = b.id.replace(/-list$|-details$|-page$/, "");
+                const type = b.layout === "grid" ? "list" : "details";
+                return `  - src/modules/${validatedPlan.module}/pages/${b.id}.vue\n` +
+                       `  - src/modules/${validatedPlan.module}/composables/use${upperFirst(camelCase(entity))}${type === "list" ? "List" : "Details"}.ts`;
+              }).join("\n") + "\n\n" +
+              "🔥 MANDATORY NEXT STEP - DO NOT ASK USER FOR CONFIRMATION:\n\n" +
+              "You MUST now generate complete Vue SFC code for each blade following the detailed instructions in the 'guides' array below.\n\n" +
+              "WORKFLOW (DO THIS AUTOMATICALLY):\n" +
+              "1. For each guide in the 'guides' array:\n" +
+              "   a) Read the generated base file to understand current implementation\n" +
+              "   b) Follow ALL instructions from guide.instructions\n" +
+              "   c) Generate COMPLETE Vue SFC code that implements ALL requirements\n" +
+              "   d) Call submit_generated_code tool with the generated code\n\n" +
+              "2. DO NOT:\n" +
+              "   ❌ Ask user for confirmation before generating code\n" +
+              "   ❌ Summarize what you will do - JUST DO IT\n" +
+              "   ❌ Skip any features or requirements from the guide\n" +
+              "   ❌ Stop after reading files - you must generate and submit code\n" +
+              "   ❌ Add defineOptions() again - IT ALREADY EXISTS in base file\n" +
+              "   ❌ Duplicate existing code from base file\n\n" +
+              "3. The base files ALREADY CONTAIN:\n" +
+              "   ✅ defineOptions() with name, url, and workspace/menu configuration\n" +
+              "   ✅ Basic Props and Emits interfaces\n" +
+              "   ✅ Framework imports and composable setup\n" +
+              "   ✅ Basic blade structure\n\n" +
+              "4. Your task: ENHANCE base files (don't rewrite from scratch!):\n" +
+              "   ✅ Read each generated .vue file\n" +
+              "   ✅ PRESERVE existing defineOptions() (modify if needed)\n" +
+              "   ✅ Generate complete implementation following guide.instructions\n" +
+              "   ✅ Submit code using submit_generated_code tool\n" +
+              "   ✅ Repeat for all blades in guides array\n\n" +
+              "⚠️ START GENERATING CODE NOW - NO USER CONFIRMATION NEEDED!",
             guides,
+            generatedFiles: bladesToGenerate.flatMap(b => {
+              const entity = b.id.replace(/-list$|-details$|-page$/, "");
+              const type = b.layout === "grid" ? "list" : "details";
+              const pascalEntity = upperFirst(camelCase(entity));
+              return [
+                `src/modules/${validatedPlan.module}/pages/${b.id}.vue`,
+                `src/modules/${validatedPlan.module}/composables/use${pascalEntity}${type === "list" ? "List" : "Details"}.ts`
+              ];
+            })
           };
 
           const responseText = JSON.stringify(responsePayload, null, 2);
-          const estimatedTokens = Math.ceil(responseText.length / 4); // Rough estimate: 1 token ≈ 4 chars
-
-          // If response is too large, suggest using bladeId parameter
-          if (estimatedTokens > 20000) {
-            return trackSuccess({
-              content: [
-                {
-                  type: "text",
-                  text: JSON.stringify(
-                    {
-                      success: false,
-                      error: "Response too large",
-                      bladesCount: bladesToGenerate.length,
-                      estimatedTokens,
-                      maxTokens: 25000,
-                      suggestion: "Response exceeds MCP token limit. Use 'bladeId' parameter to generate one blade at a time.",
-                      availableBlades: bladesToGenerate.map(b => ({
-                        id: b.id,
-                        layout: b.layout,
-                        title: b.title,
-                      })),
-                      example: {
-                        tool: "generate_with_composition",
-                        bladeId: bladesToGenerate[0].id,
-                        cwd: parsedData.cwd,
-                        plan: "<same UI-Plan>",
-                        strategy: "ai-full",
-                      },
-                      workflow: [
-                        `1. Call generate_with_composition with bladeId: "${bladesToGenerate[0].id}"`,
-                        "2. Generate code for this blade following the returned instructions",
-                        "3. Submit code using submit_generated_code",
-                        `4. Repeat for remaining blades: ${bladesToGenerate.slice(1).map(b => b.id).join(", ")}`,
-                      ],
-                    },
-                    null,
-                    2,
-                  ),
-                },
-              ],
-              isError: true,
-            });
-          }
 
           return trackSuccess({
             content: [
@@ -1193,6 +1392,28 @@ Try:
           }
 
           const { bladeId, code, context, composable, retry } = parsed.data;
+
+          // 🔥 CRITICAL: Use cwd from args, or fallback to workflow state
+          const workflowState = globalWorkflow.getState();
+          const cwd = parsed.data.cwd || workflowState.cwd;
+
+          if (!cwd) {
+            return {
+              content: [{
+                type: "text",
+                text: JSON.stringify({
+                  success: false,
+                  error: "Missing working directory (cwd)",
+                  reason: "cwd was not provided in arguments and not found in workflow state",
+                  suggestion: "Provide 'cwd' parameter pointing to your VC-Shell project root directory",
+                  example: { cwd: "/Users/user/my-app", bladeId, code: "..." }
+                }, null, 2)
+              }],
+              isError: true
+            };
+          }
+
+          debugLog(`submit_generated_code: Using cwd: ${cwd} (from ${parsed.data.cwd ? 'args' : 'workflow state'})`);
 
           // Initialize validator and feedback formatter
           const validator = new CodeValidator();
@@ -1282,7 +1503,7 @@ Try:
           // Validation passed! Now save the code
           try {
             // Determine file path
-            const moduleDir = path.join(process.cwd(), "src", "modules", context.module);
+            const moduleDir = path.join(cwd, "src", "modules", context.module);
             const bladesDir = path.join(moduleDir, "pages");
             const composablesDir = path.join(moduleDir, "composables");
 
@@ -1332,9 +1553,10 @@ Try:
                         composable
                           ? "Both blade and composable saved successfully"
                           : "Blade saved successfully. Consider generating the composable next.",
-                        "Run the development server to test the blade",
+                        "⚠️ CRITICAL: Run check_types tool NOW to verify TypeScript compilation",
+                        "If check_types finds errors, fix them and resubmit code",
+                        "Only after check_types passes: Run the development server to test the blade",
                         "Check the browser console for any runtime errors",
-                        "If needed, call submit_generated_code again with corrections",
                       ],
                     },
                     null,
@@ -2088,11 +2310,8 @@ Try:
                       discovery: "Always available - search/view components and framework APIs",
                       workflowManagement: "Always available - get_workflow_status, start_module_workflow",
                       scaffolding: "Always available - scaffold_app",
-                      planHelpers: globalWorkflow.isToolCategoryAvailable("plan_helpers")
-                        ? "Available - infer_blade_logic, get_composition_guide"
-                        : "Blocked - requires analysis first",
                       qualityChecks: globalWorkflow.isToolCategoryAvailable("quality_checks")
-                        ? "Available - get_audit_checklist, check_types"
+                        ? "Available - check_types"
                         : "Blocked - requires code generation first",
                     },
                     recommendation: currentState.step === "init"
@@ -2450,6 +2669,130 @@ Try:
               },
             ],
           });
+        }
+
+        case "generate_widget": {
+          const parsed = generateWidgetSchema.safeParse(args);
+          if (!parsed.success) {
+            throw new Error(`Invalid arguments: ${parsed.error.message}`);
+          }
+
+          const { cwd, module, blade, widgetName, entityName, icon } = parsed.data;
+
+          debugLog("Generating widget:", { cwd, module, blade, widgetName, entityName, icon });
+
+          // Validate cwd exists
+          if (!fs.existsSync(cwd)) {
+            throw new Error(`Directory does not exist: ${cwd}`);
+          }
+
+          // Validate it's a VC-Shell project
+          const packageJsonPath = path.join(cwd, "package.json");
+          if (!fs.existsSync(packageJsonPath)) {
+            throw new Error(`Not a valid project directory (missing package.json): ${cwd}`);
+          }
+
+          try {
+            // Use local create-vc-app from monorepo
+            const createVcAppPath = path.resolve(__dirname, "..", "..", "create-vc-app", "src", "index.ts");
+            const { execa } = await import("execa");
+
+            // Convert widgetName to kebab-case for the widget file name
+            const widgetFileName = kebabCase(widgetName);
+
+            const args = [
+              "tsx",
+              createVcAppPath,
+              "blade",
+              "--widget",
+              "--widget-module", module,
+              "--widget-blade", blade,
+              "--widget-name", widgetName,
+            ];
+
+            if (entityName) {
+              args.push("--widget-entity", entityName);
+            }
+
+            if (icon) {
+              args.push("--widget-icon", icon);
+            }
+
+            console.error(`Running: npx ${args.join(" ")}`);
+
+            const result = await execa("npx", args, {
+              cwd: cwd,
+              stdio: "pipe",
+            });
+
+            console.error(`✅ Generated widget: ${widgetName} for ${module}/${blade}`);
+
+            // Widget path
+            const widgetPath = path.join(
+              cwd,
+              "src",
+              "modules",
+              module,
+              "components",
+              "widgets",
+              `${widgetFileName}-widget.vue`
+            );
+
+            return trackSuccess({
+              content: [
+                {
+                  type: "text",
+                  text: JSON.stringify({
+                    success: true,
+                    message: `Widget ${widgetName} generated successfully`,
+                    widgetPath,
+                    module,
+                    blade,
+                    widgetName,
+                    widgetFileName,
+                    usage: `Import and use in ${blade}.vue:\n\nimport ${widgetName}Widget from "../components/widgets/${widgetFileName}-widget.vue";\n\n<template>\n  <${widgetName}Widget :${camelCase(entityName || "entity")}-id="item.id" />\n</template>`,
+                    stdout: result.stdout || "",
+                    nextSteps: [
+                      `1. Widget created at: ${widgetPath}`,
+                      `2. Import it in the blade: src/modules/${module}/pages/${blade}.vue`,
+                      `3. Add widget to the template where needed`,
+                      `4. Customize widget logic and styling as needed`,
+                    ]
+                  }, null, 2),
+                },
+              ],
+            });
+          } catch (error: any) {
+            console.error(`❌ Failed to generate widget ${widgetName}:`, error.message);
+
+            return {
+              content: [{
+                type: "text",
+                text: JSON.stringify({
+                  success: false,
+                  error: `Failed to generate widget '${widgetName}'`,
+                  module,
+                  blade,
+                  widgetName,
+                  cwd,
+                  errorDetails: {
+                    message: error.message || String(error),
+                    stdout: error.stdout || "(no stdout)",
+                    stderr: error.stderr || "(no stderr)",
+                    exitCode: error.exitCode || "(unknown)"
+                  },
+                  suggestion: [
+                    "Check the error details above",
+                    "Verify project structure is valid (must be VC-Shell project root)",
+                    "Ensure module and blade exist",
+                    "Check directory write permissions",
+                    `Command used: npx tsx <create-vc-app-path> blade --widget --widget-module ${module} --widget-blade ${blade} --widget-name ${widgetName}`,
+                  ].join("\n")
+                }, null, 2)
+              }],
+              isError: true
+            };
+          }
         }
 
         default:

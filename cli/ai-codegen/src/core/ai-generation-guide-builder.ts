@@ -127,7 +127,7 @@ export class AIGenerationGuideBuilder {
 
     if (context.type === "list") {
       return `
-Generate a Vue SFC list blade component for **${entity}** with the following requirements:
+🔥 GENERATE COMPLETE VUE SFC CODE - DO THIS IMMEDIATELY
 
 **Module:** ${module}
 **Entity:** ${entity} (singular)
@@ -135,9 +135,11 @@ Generate a Vue SFC list blade component for **${entity}** with the following req
 **Columns:** ${columns?.length || 0} columns
 **Complexity:** ${complexity}/20
 
-The blade should display a table of ${entity} items with:
+⚠️ YOU MUST GENERATE COMPLETE CODE NOW - NO USER CONFIRMATION NEEDED
+
+REQUIRED IMPLEMENTATION:
 - VcBlade container with toolbar
-- VcTable with ${columns?.length || 0} columns
+- VcTable with ${columns?.length || 0} columns (see context.columns for exact specs)
 ${features.includes("filters") ? "- Filter panel with search and custom filters" : ""}
 ${features.includes("multiselect") ? "- Row selection with checkboxes for bulk operations" : ""}
 - Click handler to open details blade
@@ -145,11 +147,22 @@ ${features.includes("multiselect") ? "- Row selection with checkboxes for bulk o
 - i18n support for all text
 - TypeScript types
 
-This is a **complex blade** (${complexity}/20), so follow the detailed step-by-step instructions below.
+WORKFLOW:
+1. Read the base generated .vue file
+2. Follow EVERY step in the 'steps' array below
+3. Generate complete Vue SFC code with ALL requirements
+4. Call submit_generated_code tool immediately
+
+❌ DO NOT:
+- Ask user for confirmation
+- Summarize what you will do
+- Stop after reading files
+
+✅ COMPLEXITY: ${complexity}/20 - Follow ALL step-by-step instructions below
 `.trim();
     } else {
       return `
-Generate a Vue SFC details blade component for **${entity}** with the following requirements:
+🔥 GENERATE COMPLETE VUE SFC CODE - DO THIS IMMEDIATELY
 
 **Module:** ${module}
 **Entity:** ${entity} (singular)
@@ -157,9 +170,11 @@ Generate a Vue SFC details blade component for **${entity}** with the following 
 **Fields:** ${fields?.length || 0} fields
 **Complexity:** ${complexity}/20
 
-The blade should display a form for ${entity} with:
+⚠️ YOU MUST GENERATE COMPLETE CODE NOW - NO USER CONFIRMATION NEEDED
+
+REQUIRED IMPLEMENTATION:
 - VcBlade container with toolbar
-- VcForm with ${fields?.length || 0} fields
+- VcForm with ${fields?.length || 0} fields (see context.fields for exact specs)
 ${features.includes("validation") ? "- vee-validate integration for form validation" : ""}
 ${features.includes("gallery") ? "- Image gallery section with upload/edit/remove" : ""}
 ${features.includes("widgets") ? "- Widget integration in sidebar" : ""}
@@ -169,7 +184,18 @@ ${features.includes("widgets") ? "- Widget integration in sidebar" : ""}
 - i18n support for all text
 - TypeScript types
 
-This is a **complex blade** (${complexity}/20), so follow the detailed step-by-step instructions below.
+WORKFLOW:
+1. Read the base generated .vue file
+2. Follow EVERY step in the 'steps' array below
+3. Generate complete Vue SFC code with ALL requirements
+4. Call submit_generated_code tool immediately
+
+❌ DO NOT:
+- Ask user for confirmation
+- Summarize what you will do
+- Stop after reading files
+
+✅ COMPLEXITY: ${complexity}/20 - Follow ALL step-by-step instructions below
 `.trim();
     }
   }

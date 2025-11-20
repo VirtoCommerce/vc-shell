@@ -18,6 +18,7 @@ export type WorkflowStep =
 
 export interface WorkflowState {
   step: WorkflowStep;
+  cwd?: string; // Working directory for the current workflow
   analysis?: any;
   plan?: any;
   generatedGuides?: any;
@@ -35,7 +36,7 @@ const STATE_FILE = path.join(os.tmpdir(), ".vc-shell-workflow-state.json");
  */
 const TOOL_CATEGORIES = {
   // App scaffolding (independent workflow)
-  scaffolding: ["scaffold_app"],
+  scaffolding: ["scaffold_app", "generate_widget"],
 
   // Main workflow tools (strict sequence)
   workflow_critical: [
@@ -213,9 +214,14 @@ export class WorkflowOrchestrator {
   /**
    * Update workflow state after tool execution
    */
-  updateState(toolName: string, result: any) {
+  updateState(toolName: string, result: any, args?: any) {
     // ⚠️ IMPORTANT: analyze_prompt_v2 returns INSTRUCTIONS, not analysis result
     // It does NOT change workflow state - only provides guidance to AI
+
+    // Store cwd from args if provided (for generate_with_composition, submit_generated_code, check_types)
+    if (args?.cwd && typeof args.cwd === 'string') {
+      this.state.cwd = args.cwd;
+    }
 
     const stateTransitions: Record<string, WorkflowStep> = {
       // analyze_prompt_v2: Intentionally NOT here - returns instructions only, no state change

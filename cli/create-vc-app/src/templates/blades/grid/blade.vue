@@ -129,7 +129,7 @@ import {
   useBlade,
 } from "@vc-shell/framework";
 import { use{{EntityName}}List } from "../composables";
-import {{EntityName}}Details from "./{{entity-name}}-details.vue";
+{{DETAILS_BLADE_IMPORT}}
 import { useI18n } from "vue-i18n";
 
 // TODO: Replace with your actual types
@@ -151,7 +151,7 @@ export interface Emits {
 
 defineOptions({
   name: "{{EntityName}}List",
-  url: "/{{entity-name-plural}}",
+  url: "/{{entity-name-list}}",
   notifyType: "{{EntityName}}DeletedDomainEvent",
   isWorkspace: {{isWorkspace}},
   menuItem: {{menuItem}},
@@ -303,16 +303,7 @@ const notfound = {
 };
 
 const onItemClick = (item: { id?: string }) => {
-  openBlade({
-    blade: markRaw({{EntityName}}Details),
-    param: item.id,
-    onOpen() {
-      selectedItemId.value = item.id;
-    },
-    onClose() {
-      selectedItemId.value = undefined;
-    },
-  });
+  {{DETAILS_BLADE_OPEN_ITEM}}
 };
 
 const onHeaderClick = (item: ITableColumns) => {
@@ -320,9 +311,7 @@ const onHeaderClick = (item: ITableColumns) => {
 };
 
 const add{{EntityName}} = () => {
-  openBlade({
-    blade: markRaw({{EntityName}}Details),
-  });
+  {{DETAILS_BLADE_OPEN_NEW}}
 };
 
 const onPaginationClick = async (page: number) => {

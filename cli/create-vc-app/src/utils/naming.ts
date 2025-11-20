@@ -21,6 +21,9 @@ export interface NamingConfig {
   entityPluralCamel: string; // "offers" (valid JS identifier)
   entityPluralKebab: string; // "offers"
 
+  // Blade naming
+  entityListKebab: string; // "offer-list" (for list blade files)
+
   // Module naming
   moduleNamePascal: string; // "Offers"
   moduleNameUpperSnake: string; // "OFFERS"
@@ -56,6 +59,8 @@ export function createNamingConfig(singular: string, module: string): NamingConf
     entityPluralCamel: sanitizePlural,
     entityPluralKebab: kebabCase(plural),
 
+    entityListKebab: `${kebabCase(singular)}-list`,
+
     moduleNamePascal: upperFirst(camelCase(module)),
     moduleNameUpperSnake: snakeCase(module).toUpperCase(),
   };
@@ -76,6 +81,7 @@ export function createReplacementsMap(config: NamingConfig): Record<string, stri
     "{{entityNamePlural}}": config.entityPluralCamel,
     "{{entity-name}}": config.entitySingularKebab,
     "{{entity-name-plural}}": config.entityPluralKebab,
+    "{{entity-name-list}}": config.entityListKebab,
     "{{entity_name}}": snakeCase(config.entitySingular),
     "{{entity_name_plural}}": snakeCase(config.entityPlural),
     "{{ModuleName}}": config.moduleNamePascal,

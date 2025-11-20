@@ -47,17 +47,17 @@ export class PlanNormalizer {
               });
             }
 
-            // Normalize columns (id → key, width number → string)
+            // Normalize columns (key → id, width number → string)
             if (Array.isArray(component.columns)) {
               component.columns.forEach((column: any, colIndex: number) => {
-                // id → key
-                if (column.id && !column.key) {
-                  changes.push(`blade[${bladeIndex}].components[${compIndex}].columns[${colIndex}]: Migrated 'id' → 'key' (${column.id})`);
-                  column.key = column.id;
-                  delete column.id;
+                // key → id (columns use 'id', not 'key')
+                if (column.key && !column.id) {
+                  changes.push(`blade[${bladeIndex}].components[${compIndex}].columns[${colIndex}]: Migrated 'key' → 'id' (${column.key})`);
+                  column.id = column.key;
+                  delete column.key;
                 } else if (column.id && column.key) {
-                  changes.push(`blade[${bladeIndex}].components[${compIndex}].columns[${colIndex}]: Removed duplicate 'id' (kept 'key')`);
-                  delete column.id;
+                  changes.push(`blade[${bladeIndex}].components[${compIndex}].columns[${colIndex}]: Removed duplicate 'key' (kept 'id')`);
+                  delete column.key;
                 }
 
                 // width: number → string

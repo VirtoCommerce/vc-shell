@@ -16,8 +16,10 @@ export interface AIGenerationStep {
   step: number;
   title: string;
   description: string;
-  code: string;
   explanation: string;
+  requirements?: string[];
+  patternReferences?: string[];
+  code?: string; // Legacy field - kept for backward compatibility but deprecated
   componentsDocs?: string;
   warnings?: string[];
 }
@@ -188,41 +190,6 @@ This is a **complex blade** (${complexity}/20), so follow the detailed step-by-s
       step: 1,
       title: "Create <template> section with VcBlade and VcTable",
       description: "Build the main template structure with VcBlade container and VcTable for data display",
-      code: `
-<template>
-  <VcBlade
-    v-loading="loading"
-    :title="$t('${moduleUpper}.PAGES.LIST.TITLE')"
-    :toolbar-items="bladeToolbar"
-    :closable="closable"
-    :expanded="expanded"
-    width="30%"
-    @close="$emit('close:blade')"
-    @expand="$emit('expand:blade')"
-    @collapse="$emit('collapse:blade')"
-  >
-    <VcTable
-      :total-label="$t('${moduleUpper}.PAGES.LIST.TABLE.TOTALS')"
-      :items="items"
-      :columns="columns"
-      :total-count="totalCount"
-      :pages="pages"
-      :current-page="currentPage"
-      ${features.includes("multiselect") ? `:multiselect="true"` : ""}
-      ${features.includes("multiselect") ? `:selected-item-id="selectedItemId"` : ""}
-      ${features.includes("filters") ? `:search-value="searchKeyword"` : ""}
-      ${features.includes("filters") ? `:active-filter-count="activeFilterCount"` : ""}
-      state-key="${entityUpper}_LIST"
-      @item-click="onItemClick"
-      @header-click="onHeaderClick"
-      @pagination-click="onPaginationClick"
-      ${features.includes("filters") ? `@search:change="onSearchChange"` : ""}
-    >
-      ${features.includes("filters") ? this.generateFiltersSlotCode(context) : ""}
-      ${this.generateColumnSlotsCode(context)}
-    </VcTable>
-  </VcBlade>
-</template>`,
       explanation: `
 VcBlade is the container component that provides:
 - Title with i18n
@@ -237,6 +204,23 @@ VcTable displays the data with:
 - ${features.includes("filters") ? "Search and filter capabilities" : "Basic sorting"}
 - Custom cell rendering via slots
 `,
+      requirements: [
+        "Use VcBlade as root component",
+        "Set v-loading to loading state from composable",
+        "Use $t() for title: ${moduleUpper}.PAGES.LIST.TITLE",
+        "Bind toolbar-items to bladeToolbar array",
+        "Add VcTable inside VcBlade",
+        "Configure VcTable columns from columns array",
+        features.includes("multiselect") ? "Enable multiselect with :multiselect='true'" : "",
+        features.includes("filters") ? "Add <template #filters> slot with search input" : "",
+        "Add <template #item_{columnId}> slots for custom column rendering"
+      ].filter(Boolean),
+      patternReferences: [
+        "examples/blade-list-pattern.md",
+        "examples/components/VcBlade-demo.md",
+        "examples/components/VcTable-demo.md",
+        features.includes("filters") ? "examples/compositions/list/filters-pattern.md" : "",
+      ].filter(Boolean),
       componentsDocs: this.getComponentsDocs(["VcBlade", "VcTable"]),
     });
 
@@ -1027,7 +1011,8 @@ ${columns
       "FRAMEWORK COMPOSABLES - MUST USE CORRECT APIS:",
       "- Navigation: useBladeNavigation() - provides openBlade(), closeBlade()",
       "- Confirmations: usePopup() - provides showConfirmation(), showError()",
-      "- Prevent unload: useBeforeUnload() - prevents accidental page close",
+      "- Prevent browser unload: useBeforeUnload(modifiedRef) - NEVER window.onbeforeunload!",
+      "- Prevent blade close: onBeforeClose(async () => { ... }) - NEVER manual confirm() in onClose!",
       "- Notifications: import { notification } from '@vc-shell/framework'",
       "- Close blade: emit('close:blade') OR closeBlade() - NEVER closeCurrentBlade()",
       "- Pagination state: In composable, NOT in component",
@@ -1051,6 +1036,38 @@ ${columns
       "✅ Handler signature: (event: Event) => void, then cast: const e = event as CustomEvent; e.detail",
       "❌ Dynamic field access can be undefined - add null coalescing",
       "✅ const value = obj[field as keyof T] ?? ''; // Prevent undefined errors",
+      "",
+      "⚠️ BROWSER UNLOAD PREVENTION (CRITICAL):",
+      "❌ NEVER use window.onbeforeunload manually - causes memory leaks and issues",
+      "❌ WRONG pattern: watch(modified, (val) => { window.onbeforeunload = val ? () => message : null })",
+      "✅ ALWAYS use: useBeforeUnload(modifiedRef) - framework handles cleanup",
+      "✅ CORRECT: import { useBeforeUnload } from '@vc-shell/framework'; useBeforeUnload(modified);",
+      "",
+      "⚠️ BLADE CLOSE CONFIRMATION (CRITICAL):",
+      "❌ NEVER use manual confirm() in onClose handler - not async and poor UX",
+      "❌ WRONG pattern: function onClose() { if (modified.value && !confirm('Sure?')) return; emit('close:blade'); }",
+      "✅ ALWAYS use: onBeforeClose hook with showConfirmation",
+      "✅ CORRECT pattern:",
+      "  import { onBeforeClose } from '@vc-shell/framework';",
+      "  const { showConfirmation } = usePopup();",
+      "  onBeforeClose(async () => {",
+      "    if (modified.value) {",
+      "      return await showConfirmation(t('COMMON.UNSAVED_CHANGES'));",
+      "    }",
+      "  });",
+      "",
+      "⚠️ MODULE REGISTRATION (AI_FULL STRATEGY ONLY):",
+      "❌ NEVER create or modify bootstrap.ts - module registration is automated",
+      "❌ NEVER use registerModule() or addMenuItem() manually in bootstrap.ts",
+      "✅ System automatically registers module in main.ts using .use(ModuleName, { router })",
+      "✅ Focus ONLY on creating blade components and module index.ts file",
+      "",
+      "⚠️ MENU ITEMS (CRITICAL):",
+      "❌ NEVER add menu items in bootstrap.ts using addMenuItem()",
+      "✅ ALWAYS define menuItem in workspace blade's defineOptions",
+      "✅ Pattern: defineOptions({ isWorkspace: true, menuItem: { title, icon, priority } })",
+      "✅ Each module should have ONE workspace blade with menuItem defined",
+      "✅ bootstrap.ts is ONLY for dashboard widgets, NOT for menu items",
     ];
 
     // Add feature-specific constraints
@@ -1134,6 +1151,26 @@ ${columns
       "❌ Pagination state in component - Must be in composable",
       "❌ markRaw() for widgets - Pass component directly",
       "❌ Missing defineExpose() - Required for parent blade access",
+      "",
+      "FORBIDDEN: MODULE REGISTRATION (AI_FULL ONLY):",
+      "❌ Creating bootstrap.ts file - Registration is automated",
+      "❌ Calling registerModule() function - System handles this",
+      "❌ Using addMenuItem() in bootstrap.ts - Menu items go in blade defineOptions",
+      "❌ Modifying main.ts manually - System uses ModuleRegistrar class",
+      "",
+      "FORBIDDEN: MENU ITEMS:",
+      "❌ addMenuItem() in bootstrap.ts - WRONG! Use defineOptions menuItem in workspace blade",
+      "❌ Missing isWorkspace: true in main blade - Required for menu integration",
+      "❌ Missing menuItem in defineOptions - Workspace blade needs menu configuration",
+      "",
+      "FORBIDDEN: BROWSER UNLOAD:",
+      "❌ window.onbeforeunload = ... - WRONG! Use useBeforeUnload(modifiedRef)",
+      "❌ watch(modified) setting window.onbeforeunload - Use useBeforeUnload instead",
+      "",
+      "FORBIDDEN: BLADE CLOSE:",
+      "❌ Manual confirm() in onClose handler - WRONG! Use onBeforeClose hook",
+      "❌ function onClose() { if (!confirm()) return; emit('close:blade') } - Use onBeforeClose",
+      "❌ Emitting close:blade after confirmation - onBeforeClose handles it automatically",
     ];
   }
 
@@ -1143,39 +1180,334 @@ ${columns
     // Load relevant patterns based on context
     const patterns = [];
 
+    // ALWAYS ADD CRITICAL PATTERN RULES FIRST
+    patterns.push({
+      name: "CRITICAL_PATTERN_RULES",
+      description: "MANDATORY patterns that MUST be followed in all generated code",
+      code: this.getCriticalPatternRules(context),
+    });
+
+    // Add blade-specific pattern examples
     if (context.type === "list") {
       patterns.push({
-        name: "list-basic",
-        description: "Basic list blade pattern with VcTable",
-        code: "See examples/compositions/list-basic.md",
+        name: "blade-list-pattern",
+        description: "Complete list blade pattern with VcTable (READ THIS CAREFULLY)",
+        code: "Reference: examples/blade-list-pattern.md - Shows correct props/emits structure, VcTable usage with <!-- @vue-generic {Type} --> comment, toolbar, pagination",
+      });
+
+      patterns.push({
+        name: "composable-list-pattern",
+        description: "List composable pattern with useApiClient + useAsync",
+        code: "Reference: examples/composable-list-pattern.md - Shows useApiClient(ClientClass) → getApiClient() → command objects, useAsync for loading, computed properties for pagination",
       });
 
       if (context.features.includes("filters")) {
         patterns.push({
           name: "filters-pattern",
           description: "Filter panel with search and custom filters",
-          code: "See examples/compositions/filters-pattern.md",
+          code: "Reference: examples/compositions/list/filters-pattern.md",
+        });
+      }
+
+      if (context.features.includes("multiselect")) {
+        patterns.push({
+          name: "multiselect-pattern",
+          description: "Multi-select pattern with bulk operations",
+          code: "Reference: examples/compositions/list/multiselect.md",
         });
       }
     }
 
     if (context.type === "details") {
       patterns.push({
-        name: "form-basic",
-        description: "Basic form pattern with vee-validate",
-        code: "See examples/compositions/form-basic.md",
+        name: "blade-details-pattern",
+        description: "Complete details blade pattern with VcForm (READ THIS CAREFULLY)",
+        code: "Reference: examples/blade-details-pattern.md - Shows correct props/emits structure, Field wrapper for validation, useModificationTracker, useBeforeUnload usage",
+      });
+
+      patterns.push({
+        name: "composable-details-pattern",
+        description: "Details composable pattern with useApiClient + useAsync + useModificationTracker",
+        code: "Reference: examples/composable-details-pattern.md - Shows useModificationTracker with currentValue/isModified/resetModificationState, useAsync for CRUD operations",
       });
 
       if (context.features.includes("validation")) {
         patterns.push({
           name: "validation-pattern",
-          description: "Form validation with vee-validate",
-          code: "See examples/patterns/details-patterns.md",
+          description: "Form validation with vee-validate and Field wrapper",
+          code: "Reference: examples/compositions/details/validation-patterns.md - IMPORTANT: Only wrap inputs WITH validation rules in Field component",
+        });
+      }
+
+      if (context.features.includes("gallery")) {
+        patterns.push({
+          name: "gallery-pattern",
+          description: "Image gallery patterns with VcGallery",
+          code: "Reference: examples/compositions/details/gallery-patterns.md",
         });
       }
     }
 
+    // Add domain events pattern if needed
+    if (context.blade?.defineOptions?.notifyType) {
+      patterns.push({
+        name: "domain-events",
+        description: "CRITICAL: Domain events pattern - NEVER use window.addEventListener!",
+        code: "Reference: examples/patterns/domain-events.md - Shows useNotifications + setNotificationHandler, explains why window.addEventListener is WRONG",
+      });
+    }
+
+    // Add component-specific patterns
+    const usedComponents = this.extractUsedComponents(context);
+    if (usedComponents.includes("VcSelect") && this.hasCustomSlot(context, "option")) {
+      patterns.push({
+        name: "VcSelect-slot-option",
+        description: "CRITICAL: VcSelect #option slot uses { opt }, NOT { option }!",
+        code: "Reference: examples/capabilities/VcSelect/slot-option.md - Slot scope: { opt, index, selected, toggleOption }",
+      });
+    }
+
+    if (usedComponents.includes("VcTable")) {
+      patterns.push({
+        name: "VcTable-generic-SFC",
+        description: "CRITICAL: VcTable REQUIRES <!-- @vue-generic {Type} --> comment on FIRST LINE!",
+        code: "Reference: examples/capabilities/VcTable/GENERIC_SFC.md - WITHOUT this comment, TypeScript will fail!",
+      });
+    }
+
     return patterns;
+  }
+
+  /**
+   * Extract critical pattern rules that MUST be followed
+   */
+  private getCriticalPatternRules(context: BladeGenerationContext): string {
+    return `
+# CRITICAL PATTERN RULES - MUST FOLLOW
+
+## 1. BLADE PROPS/EMITS STRUCTURE (MANDATORY)
+\`\`\`typescript
+export interface Props {
+  expanded?: boolean;
+  closable?: boolean;
+  param?: string;
+  options?: Record<string, unknown>;
+}
+
+export interface Emits {
+  (event: "parent:call", args: IParentCallArgs): void;
+  (event: "close:blade"): void;
+  (event: "expand:blade"): void;
+  (event: "collapse:blade"): void;
+}
+\`\`\`
+
+## 2. API CLIENT PATTERN (MANDATORY)
+✅ CORRECT:
+\`\`\`typescript
+const { getApiClient } = useApiClient(ClientClass);
+const client = await getApiClient();
+const result = await client.methodName(new CommandObject(data));
+\`\`\`
+
+❌ WRONG:
+\`\`\`typescript
+const apiClient = useApiClient(); // Missing client class!
+await apiClient.method({ ... }); // No command object!
+\`\`\`
+
+## 3. ASYNC OPERATIONS (MANDATORY)
+✅ CORRECT:
+\`\`\`typescript
+const { action: loadData, loading } = useAsync(async () => {
+  // async logic
+});
+\`\`\`
+
+❌ WRONG:
+\`\`\`typescript
+const loading = ref(false);
+loading.value = true; // Manual state management!
+\`\`\`
+
+## 4. MODIFICATION TRACKING (MANDATORY for details)
+${context.type === 'details' ? `
+✅ CORRECT:
+\`\`\`typescript
+const { currentValue, isModified, resetModificationState } = useModificationTracker(entity);
+
+// After save:
+resetModificationState();
+
+// Return currentValue, not original ref:
+return {
+  entity: currentValue,
+  modified: isModified,
+};
+\`\`\`
+` : ''}
+
+## 5. FORM VALIDATION (IMPORTANT)
+✅ Field wrapper ONLY for inputs WITH validation:
+\`\`\`vue
+<Field v-slot="{ errorMessage, handleChange, errors }" rules="required">
+  <VcInput v-model="value" @update:model-value="handleChange" />
+</Field>
+\`\`\`
+
+✅ NO Field wrapper for inputs WITHOUT validation:
+\`\`\`vue
+<VcInput v-model="description" />
+\`\`\`
+
+## 6. BLADE CLOSE (MANDATORY)
+✅ Close self: \`emit("close:blade")\`
+❌ WRONG: \`closeBlade(currentBladeNavigationData.value.idx)\`
+
+## 7. DOMAIN EVENTS (MANDATORY)
+❌ NEVER: \`window.addEventListener('DomainEvent', ...)\`
+✅ ALWAYS: \`useNotifications('DomainEvent') + setNotificationHandler\`
+
+## 8. MODULE INDEX FILE (MANDATORY)
+✅ CORRECT: \`createAppModule(pages, locales, notificationTemplates)\`
+❌ WRONG: \`createDynamicAppModule({ ... })\`
+
+## 9. MAIN.TS REGISTRATION (MANDATORY - AI_FULL ONLY)
+⚠️ **FOR AI_FULL STRATEGY**: Module registration is AUTOMATED by the system.
+✅ **DO NOT** tell AI to modify bootstrap.ts or use registerModule()
+✅ **DO NOT** tell AI to use addMenuItem() in bootstrap.ts
+✅ System automatically adds to main.ts:
+\`\`\`typescript
+import {ModuleName}Module from "./modules/{module}";
+
+const app = createApp(RouterView)
+  .use(VirtoShellFramework, { router, i18n })
+  .use({ModuleName}Module, { router })  // ← Automatically added
+  .use(router);
+\`\`\`
+
+## 9a. MENU ITEMS (MANDATORY - WORKSPACE BLADES)
+⚠️ **CRITICAL**: Menu items are defined in workspace blade's \`defineOptions\`, NOT in bootstrap.ts!
+❌ WRONG: \`addMenuItem()\` in bootstrap.ts
+✅ CORRECT: Define \`menuItem\` in workspace blade's \`defineOptions\`:
+\`\`\`typescript
+defineOptions({
+  name: "OffersList",
+  url: "/offers",
+  isWorkspace: true,  // ← Required for workspace
+  menuItem: {         // ← Menu item configuration
+    title: "OFFERS.MENU.TITLE",  // Use i18n key
+    icon: "fas fa-tags",
+    priority: 10,
+  },
+});
+\`\`\`
+**WHY**: Framework automatically registers menu items from workspace blades.
+**bootstrap.ts**: ONLY for dashboard widgets (\`registerDashboardWidget\`), NOT menu items!
+
+## 10. VCTABLE GENERIC (MANDATORY)
+✅ FIRST LINE: \`<!-- @vue-generic {IEntityType} -->\`
+❌ Missing this = TypeScript errors!
+
+## 11. VCSELECT SLOT (MANDATORY)
+✅ CORRECT: \`#option="{ opt, selected }"\`
+❌ WRONG: \`#option="{ option }"\` (doesn't exist!)
+
+## 12. ICONS (FLEXIBLE)
+✅ All valid: material-, bi-, lucide-, fas fa-, svg:
+Example: material-save, bi-house, fas fa-home
+
+## 13. BROWSER UNLOAD PREVENTION (MANDATORY - DETAILS BLADES)
+❌ NEVER use \`window.onbeforeunload\` manually:
+\`\`\`typescript
+// ❌ WRONG - Manual window.onbeforeunload
+watch(modified, (isModified) => {
+  if (isModified) {
+    window.onbeforeunload = () => t("COMMON.UNSAVED_CHANGES");
+  } else {
+    window.onbeforeunload = null;
+  }
+});
+\`\`\`
+
+✅ ALWAYS use \`useBeforeUnload(modifiedRef)\`:
+\`\`\`typescript
+// ✅ CORRECT - useBeforeUnload composable
+import { useBeforeUnload } from '@vc-shell/framework';
+
+const modified = ref(false);
+useBeforeUnload(modified);  // Pass ref directly, NOT a function!
+\`\`\`
+
+**WHY**: Framework handles cleanup, prevents memory leaks, works with blade system.
+
+## 14. BLADE CLOSE CONFIRMATION (MANDATORY - DETAILS BLADES)
+❌ NEVER use manual \`confirm()\` in close handler:
+\`\`\`typescript
+// ❌ WRONG - Manual confirm
+function onClose() {
+  if (modified.value) {
+    const confirmed = confirm(t("COMMON.UNSAVED_CHANGES"));
+    if (!confirmed) return;
+  }
+  emit("close:blade");
+}
+\`\`\`
+
+✅ ALWAYS use \`onBeforeClose\` hook with \`showConfirmation\`:
+\`\`\`typescript
+// ✅ CORRECT - onBeforeClose hook
+import { onBeforeClose } from '@vc-shell/framework';
+import { usePopup } from '@vc-shell/framework';
+
+const { showConfirmation } = usePopup();
+
+onBeforeClose(async () => {
+  if (modified.value && !loading.value) {
+    return await showConfirmation(t("COMMON.UNSAVED_CHANGES"));
+  }
+  // Return nothing or true to allow close
+});
+
+// DON'T emit close:blade manually - framework handles it
+\`\`\`
+
+**WHY**: Async confirmation, better UX, integrates with blade navigation system.
+
+See detailed examples in blade-list-pattern.md and blade-details-pattern.md!
+`;
+  }
+
+  /**
+   * Extract components used in the blade
+   */
+  private extractUsedComponents(context: BladeGenerationContext): string[] {
+    const components = [];
+
+    if (context.type === "list") {
+      components.push("VcBlade", "VcTable");
+    } else {
+      components.push("VcBlade", "VcForm");
+    }
+
+    // Check for features that require specific components
+    if (context.features.includes("gallery")) {
+      components.push("VcGallery");
+    }
+
+    // Check for fields that might use VcSelect
+    if (context.fields?.some((f) => f.as === "select")) {
+      components.push("VcSelect");
+    }
+
+    return components;
+  }
+
+  /**
+   * Check if blade has custom slot usage
+   */
+  private hasCustomSlot(context: BladeGenerationContext, slotName: string): boolean {
+    return context.blade?.customSlots?.some((slot) => slot.name === slotName) || false;
   }
 
   private getComponentsDocs(componentNames: string[]): string {

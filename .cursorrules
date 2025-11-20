@@ -292,7 +292,66 @@ AI Response:
 - Supports advanced features (filters, validation, widgets, gallery)
 - Returns generated code or composition guide
 
-### 3. VALIDATION TOOLS
+**🚨 IMPORTANT: AUTO-COMPLETE BLADE GENERATION 🚨**
+
+When `generate_complete_module` or `generate_with_composition` returns AI-FULL guides (markdown files with generation instructions):
+
+**YOU MUST AUTOMATICALLY CONTINUE AND COMPLETE THE GENERATION!**
+
+DO NOT stop after guides are created. Follow this workflow:
+
+1. **Read each generated guide** (`.vue` files containing AI-FULL instructions)
+2. **For each blade guide**:
+   - Parse the JSON guide from the markdown
+   - Generate the actual Vue SFC code following the instructions
+   - Call `submit_generated_code` with the generated code
+   - If validation fails, fix errors and resubmit (up to 3 attempts)
+3. **After all blades are generated**:
+   - Call `check_types` to verify TypeScript/Vue type safety
+   - If type errors found, fix them and regenerate affected files
+4. **Only then** report completion to user
+
+**Example workflow:**
+```typescript
+// Step 1: Generate module (creates guides)
+const result = await generate_complete_module({ plan, cwd });
+
+// Step 2: If AI-FULL guides were created, continue automatically
+if (result.mode === "ai-full") {
+  for (const file of result.files) {
+    if (file.path.endsWith(".vue") && file.lines > 100) {
+      // This is a guide file, generate actual code
+      const guide = readFile(file.path);
+      const code = generateCodeFromGuide(guide);
+      await submit_generated_code({ bladeId, code, context });
+    }
+  }
+
+  // Step 3: Check types
+  const typeCheck = await check_types({ cwd });
+  if (!typeCheck.success) {
+    // Fix type errors...
+  }
+}
+```
+
+**NEVER leave guides incomplete!** The user expects a working module, not instruction files.
+
+### 3. CODE COMPLETION TOOLS
+
+**submit_generated_code** - Submit AI-generated blade code
+- Use after generating code from AI-FULL guides
+- Validates code structure, TypeScript, imports
+- Provides detailed feedback for fixing errors
+- Allows up to 3 retry attempts
+
+**check_types** - Run vue-tsc type checking
+- Use after all blades are generated
+- Finds TypeScript and Vue type errors
+- Returns errors with file paths and line numbers
+- Use to ensure type safety before completion
+
+### 4. VALIDATION TOOLS
 
 **validate_ui_plan** - Validate UI-Plan JSON against schema
 - Use BEFORE generation
@@ -426,6 +485,17 @@ cd /path && npx @vc-shell/create-vc-app my-app --yes
 
 **YOU MUST CREATE UI-PLAN FIRST! NO EXCEPTIONS!**
 
+**⚠️ CRITICAL WARNING ⚠️**
+**DO NOT CREATE UI-PLAN MANUALLY!**
+**DO NOT WRITE JSON BY HAND!**
+**YOU WILL MAKE VALIDATION ERRORS!**
+
+Common errors when creating UI-Plan manually:
+- ❌ Using invalid features like "refresh" (should be filters/multiselect/validation/gallery/widgets)
+- ❌ Using invalid component types like "VcContainer", "VcCard" in blades (only VcTable/VcForm allowed)
+- ❌ Missing required fields like "id" for columns
+- ❌ Wrong schema structure
+
 **ABSOLUTELY FORBIDDEN before plan:**
 - ❌ Writing ANY .vue files
 - ❌ Writing ANY .ts files
@@ -437,18 +507,20 @@ cd /path && npx @vc-shell/create-vc-app my-app --yes
 - ❌ Creating locales
 - ❌ ANY file write operations whatsoever
 - ❌ Using write, search_replace, or any edit tools
+- ❌ **Calling generate_complete_module with hand-written UI-Plan!**
 
 **ONLY ALLOWED:**
 - ✅ Reading existing files (if needed)
-- ✅ Calling analyze_prompt_v2 tool
-- ✅ Calling create_ui_plan_from_analysis_v2 tool
+- ✅ Calling analyze_prompt_v2 tool (REQUIRED!)
+- ✅ Calling create_ui_plan_from_analysis_v2 tool (REQUIRED!)
 - ✅ Calling validate_ui_plan tool
 - ✅ Writing ONLY to __ai/ui-plan-{module}.json
 - ✅ Showing plan to user
 
 **IF YOU CREATE FILES BEFORE PLAN, YOU ARE VIOLATING THE WORKFLOW!**
+**IF YOU SKIP analyze_prompt_v2, YOU WILL CREATE INVALID UI-PLAN!**
 
-**REQUIRED workflow:**
+**REQUIRED workflow (MUST FOLLOW EXACTLY):**
 
 1. **Analyze the prompt using analyze_prompt_v2:**
    ```typescript
@@ -457,6 +529,11 @@ cd /path && npx @vc-shell/create-vc-app my-app --yes
      module: "offers" // optional, can be inferred
    })
    ```
+   **This tool returns validated analysis with:**
+   - Correct entity names
+   - Valid features (filters/multiselect/validation/gallery/widgets)
+   - Proper blade structure
+   - All required fields
 
 2. **Create UI-Plan from analysis:**
    ```typescript
@@ -464,6 +541,10 @@ cd /path && npx @vc-shell/create-vc-app my-app --yes
      analysis: { /* result from step 1 */ }
    })
    ```
+   **This tool creates VALID UI-Plan automatically!**
+   - No manual JSON writing
+   - No validation errors
+   - All fields present
 
 3. **Validate the plan:**
    ```typescript

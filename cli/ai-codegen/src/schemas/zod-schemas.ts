@@ -576,3 +576,9 @@ export const createUIPlanFromAnalysisV2Schema = z.object({
 });
 
 export type CreateUIPlanFromAnalysisV2Input = z.infer<typeof createUIPlanFromAnalysisV2Schema>;
+
+// Type checking schema
+export const checkTypesSchema = z.object({
+  cwd: z.string().describe("Working directory (project root) to run vue-tsc"),
+  fix: z.boolean().optional().default(false).describe("If true, attempt to auto-fix type errors"),
+});

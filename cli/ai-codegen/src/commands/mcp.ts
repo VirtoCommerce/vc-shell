@@ -38,6 +38,10 @@ import {
   searchFrameworkByIntentSchema,
   getFrameworkCapabilitiesSchema,
   getFrameworkExamplesSchema,
+  checkTypesSchema,
+  getWorkflowStatusSchema,
+  resetWorkflowSchema,
+  startModuleWorkflowSchema,
 } from "./mcp/tool-schemas.js";
 
 import { type Component, type ComponentRegistry, type FrameworkRegistry } from "../schemas/zod-schemas.js";
@@ -46,6 +50,7 @@ import { RegistryLoader } from "./mcp/registry-loader.js";
 import { getResourceDefinitions, readResource } from "./mcp/resources.js";
 import { MCPMetricsTracker } from "./mcp/mcp-metrics.js";
 import { formatMultipleComponentDetails, formatSearchResults, formatMcpError } from "../utils/formatters.js";
+import { globalWorkflow } from "./mcp/workflow-orchestrator.js";
 import { generateMinimalAuditChecklist } from "../utils/audit-checklist.js";
 import { componentNotFoundError } from "../utils/errors.js";
 import { UnifiedCodeGenerator } from "../core/unified-generator.js";
@@ -122,10 +127,17 @@ export async function mcpServerCommand() {
   const metricsTracker = new MCPMetricsTracker(debugMode);
   const metricsFile = process.env.MCP_METRICS_FILE;
 
+  // Helper function for debug logging (MUST use stderr, not stdout)
+  const debugLog = (...args: any[]) => {
+    if (debugMode) {
+      console.error("[MCP DEBUG]", ...args);
+    }
+  };
+
   if (debugMode) {
-    console.log("[MCP] Debug mode enabled");
+    debugLog("Debug mode enabled");
     if (metricsFile) {
-      console.log(`[MCP] Metrics will be saved to: ${metricsFile}`);
+      debugLog(`Metrics will be saved to: ${metricsFile}`);
     }
   }
 
@@ -173,7 +185,7 @@ export async function mcpServerCommand() {
         {
           name: "generate_complete_module",
           description:
-            "⚠️ STRATEGY CHANGE: This tool generates AI INSTRUCTION GUIDES only (AI_FULL strategy), NOT actual code files. It creates detailed per-blade guides that AI must follow to manually write code. Templates and auto-code-generation have been removed. Output is comprehensive instructions for implementing blades/composables/locales.",
+            "⚠️ REQUIRES VALIDATED UI-PLAN ⚠️ This tool generates AI INSTRUCTION GUIDES only (AI_FULL strategy), NOT actual code files. It creates detailed per-blade guides that AI must follow to manually write code. WORKFLOW REQUIREMENT: Can only be called after UI-Plan has been created and validated (steps: analyze → create plan → validate). Attempting to use without validated plan will result in workflow violation.",
           inputSchema: zodToJsonSchema(generateCompleteModuleSchema),
         },
         {
@@ -196,17 +208,16 @@ export async function mcpServerCommand() {
         {
           name: "generate_with_composition",
           description:
-            "Generate complete module using smart strategy selection (template/composition/ai-guided). IMPORTANT: UI-Plan MUST follow exact schema format:\n\n" +
-            "REQUIRED STRUCTURE:\n" +
-            '{\n  "$schema": "https://vc-shell.dev/schemas/ui-plan.v1.json",\n  "module": "kebab-case-string",  // STRING not object!\n  "blades": [{\n' +
-            '    "id": "blade-id",\n    "route": "/path",  // REQUIRED!\n    "layout": "grid"|"details"|"page",\n    "title": "Title",\n' +
-            '    "components": [{\n      "type": "VcTable",  // type not name!\n      "columns": [...]\n    }],\n' +
-            '    "features": ["filters","multiselect","validation","gallery","widgets"],  // ONLY these!\n' +
-            '    "logic": {\n      "state": {\n        "loading": {"source":"composable","reactive":true},  // OBJECT not string!\n' +
-            '        "items": {"source":"composable","reactive":true}\n      },\n' +
-            '      "toolbar": [{"id":"save","icon":"fas fa-save","action":"save()"}],  // action not onClick!\n' +
-            '      "handlers": {"onSave":"Save handler description"}\n    }\n  }]\n}\n\n' +
-            "READ vcshell://ui-plan-example-complete BEFORE creating UI-Plan!",
+            "⚠️ REQUIRES VALIDATED UI-PLAN ⚠️ Generate AI instructions for Vue SFC code generation (AI_FULL strategy). WORKFLOW: analyze → create plan → validate → generate → **submit code**.\n\n" +
+            "**WHAT THIS TOOL DOES:**\n" +
+            "1. Returns structured generation guide with requirements, patterns, and constraints\n" +
+            "2. Guide contains step-by-step instructions for synthesizing Vue SFC code\n" +
+            "3. You MUST read the guide, generate complete Vue SFC code, then call submit_generated_code tool\n\n" +
+            "**NEXT STEP AFTER THIS TOOL:**\n" +
+            "- Generate complete Vue SFC code based on the returned guide\n" +
+            "- Call submit_generated_code with: { bladeId, code, context }\n" +
+            "- MCP server will validate and save the code\n\n" +
+            "❌ FORBIDDEN: NEVER use Write/Edit tools to create module files manually. ALWAYS use submit_generated_code for validation and pattern compliance.",
           inputSchema: zodToJsonSchema(generateWithCompositionSchema),
         },
         {
@@ -224,19 +235,25 @@ export async function mcpServerCommand() {
         {
           name: "submit_generated_code",
           description:
-            "Submit AI-generated code for validation and saving. Use this tool when you have generated Vue SFC code following a generation guide (AI_GUIDED or AI_FULL strategy). The system will validate the code, provide detailed feedback if there are errors, and allow up to 3 retry attempts. If validation fails after 3 attempts, the system will fall back to composition strategy.",
+            "Submit AI-generated code for validation and saving. Use this tool when you have generated Vue SFC code following a generation guide (AI_GUIDED or AI_FULL strategy). The system will validate the code, provide detailed feedback if there are errors, and allow up to 3 retry attempts. If validation fails after 3 attempts, the system will fall back to composition strategy.\n\n❌ FORBIDDEN: NEVER write code directly to files using Write/Edit tools. ALWAYS use this tool to submit code. This ensures validation, type checking, and pattern compliance.",
           inputSchema: zodToJsonSchema(submitGeneratedCodeSchema),
+        },
+        {
+          name: "check_types",
+          description:
+            "Run vue-tsc type checking on the project to find TypeScript/Vue type errors. Returns list of errors with file paths and line numbers. Use this after code generation to ensure type safety. Optionally can attempt to auto-fix common errors.",
+          inputSchema: zodToJsonSchema(checkTypesSchema),
         },
         {
           name: "analyze_prompt_v2",
           description:
-            "Get comprehensive instructions for deep analysis of complex prompts (multi-entity, custom routes/actions/permissions, workflows, rich features, data sources). Returns detailed guide with examples.",
+            "⚠️ MANDATORY FIRST STEP ⚠️ This tool MUST be used before creating any UI-Plan. It performs deep analysis of user prompts to extract entities, relationships, workflows, custom routes/actions/permissions, and features. Returns comprehensive analysis with schema. ALL module generation workflows MUST start with this tool. Skipping this step will result in workflow violation errors.",
           inputSchema: zodToJsonSchema(analyzePromptV2Schema),
         },
         {
           name: "create_ui_plan_from_analysis_v2",
           description:
-            "Create rich multi-entity UI-Plan from V2 analysis. Supports multiple entities per module, custom routes/permissions/actions, dashboard/wizard blades, workflows, and 40+ features.",
+            "⚠️ REQUIRES ANALYSIS ⚠️ Create rich multi-entity UI-Plan from V2 analysis result. This tool can ONLY be called AFTER analyze_prompt_v2. It converts deep prompt analysis into a validated UI-Plan with multiple entities, custom routes/permissions/actions, dashboard/wizard blades, workflows, and 40+ features. Attempting to use this without prior analysis will result in workflow violation.",
           inputSchema: zodToJsonSchema(createUIPlanFromAnalysisV2Schema),
         },
         {
@@ -268,6 +285,24 @@ export async function mcpServerCommand() {
           description:
             "Search for framework API code examples. Returns complete working code snippets filtered by query and API name. Use this to get ready-to-use implementation examples for framework composables, plugins, and utilities.",
           inputSchema: zodToJsonSchema(getFrameworkExamplesSchema),
+        },
+        {
+          name: "get_workflow_status",
+          description:
+            "Get current workflow status and next required step. Use this to check what step you're on and what to do next. The workflow enforces: 1) analyze_prompt_v2 (MANDATORY) → 2) create_ui_plan_from_analysis_v2 → 3) validate_ui_plan → 4) generate_with_composition → 5) submit_generated_code.",
+          inputSchema: zodToJsonSchema(getWorkflowStatusSchema),
+        },
+        {
+          name: "reset_workflow",
+          description:
+            "Reset workflow state to initial. Use this when the workflow is stuck, encounters errors, or when you want to start generating a new module from scratch. This clears all workflow state including analysis, plan, and generated guides.",
+          inputSchema: zodToJsonSchema(resetWorkflowSchema),
+        },
+        {
+          name: "start_module_workflow",
+          description:
+            "RECOMMENDED STARTING POINT: Use this tool to start a complete guided workflow for module generation. It will orchestrate all steps automatically: prompt analysis → UI-Plan creation → validation → guide generation. This ensures you follow the correct sequence and don't skip mandatory steps like prompt analysis.",
+          inputSchema: zodToJsonSchema(startModuleWorkflowSchema),
         },
       ],
     };
@@ -320,12 +355,55 @@ export async function mcpServerCommand() {
   server.setRequestHandler(CallToolRequestSchema, async (request) => {
     const { name, arguments: args } = request.params;
 
+    debugLog(`Tool call: ${name}`, args);
+
+    // ✅ Check workflow before executing tool
+    const workflowCheck = globalWorkflow.canExecuteTool(name);
+    if (!workflowCheck.allowed) {
+      const currentState = globalWorkflow.getState();
+      debugLog(`Workflow blocked: ${name} at step ${currentState.step}`);
+
+      return {
+        content: [
+          {
+            type: "text",
+            text: JSON.stringify(
+              {
+                success: false,
+                error: "Workflow violation",
+                tool: name,
+                currentStep: currentState.step,
+                reason: workflowCheck.reason,
+                nextStep: workflowCheck.nextStep || currentState.nextStep,
+                suggestion:
+                  "You MUST follow the correct workflow sequence:\n" +
+                  "1. analyze_prompt_v2 (MANDATORY FIRST STEP)\n" +
+                  "2. create_ui_plan_from_analysis_v2\n" +
+                  "3. validate_ui_plan or validate_and_fix_plan\n" +
+                  "4. generate_with_composition\n" +
+                  "5. submit_generated_code\n\n" +
+                  "Use get_workflow_status to see current state, or use start_module_workflow for guided experience.",
+              },
+              null,
+              2
+            ),
+          },
+        ],
+        isError: true,
+      };
+    }
+
     // ✅ Track tool call start
     const startTime = metricsTracker.startToolCall(name, args);
 
     // Helper to track success and return result
-    const trackSuccess = <T>(result: T): T => {
+    const trackSuccess = <T extends Record<string, any>>(result: T): T => {
       metricsTracker.endToolCall(name, startTime, true);
+      // ✅ Update workflow state after successful tool execution
+      // 🔥 Don't update workflow state if result is an error
+      if (!result.isError) {
+        globalWorkflow.updateState(name, result);
+      }
       return result;
     };
 
@@ -724,7 +802,7 @@ Try:
           const validation = validator.validateUIPlan(normalizedPlan);
 
           if (validation.valid) {
-            return {
+            return trackSuccess({
               content: [
                 {
                   type: "text",
@@ -744,7 +822,7 @@ Try:
                   ),
                 },
               ],
-            };
+            });
           }
 
           // Generate suggested fixes for remaining errors
@@ -908,12 +986,10 @@ Try:
 
         case "generate_with_composition": {
           // Debug: Log what we actually received
-          if (debugMode) {
-            console.log(`\n[DEBUG] generate_with_composition args type: ${typeof args}`);
-            console.log(`[DEBUG] args.plan type: ${typeof args?.plan}`);
-            if (typeof args?.plan === 'string') {
-              console.log(`[DEBUG] args.plan is STRING: ${args.plan.substring(0, 100)}...`);
-            }
+          debugLog(`generate_with_composition args type: ${typeof args}`);
+          debugLog(`args.plan type: ${typeof args?.plan}`);
+          if (typeof args?.plan === 'string') {
+            debugLog(`args.plan is STRING: ${args.plan.substring(0, 100)}...`);
           }
 
           const parsed = generateWithCompositionSchema.safeParse(args);
@@ -925,9 +1001,7 @@ Try:
           const { plan: rawPlan, cwd, dryRun, bladeId } = parsedData;
 
           // Debug: Log what zod returned
-          if (debugMode) {
-            console.log(`[DEBUG] After zod parse, rawPlan type: ${typeof rawPlan}`);
-          }
+          debugLog(`After zod parse, rawPlan type: ${typeof rawPlan}`);
 
           // Parse plan if it's a string (MCP sends JSON as string)
           let plan = typeof rawPlan === 'string' ? JSON.parse(rawPlan) : rawPlan;
@@ -935,9 +1009,8 @@ Try:
           // Auto-fix common UI-Plan errors
           const fixResult = autoFixUIPlan(plan);
           if (fixResult.fixed) {
-            console.log(`
-🔧 Auto-fixed ${fixResult.changes.length} UI-Plan issues:`);
-            fixResult.changes.forEach((change) => console.log(`   - ${change}`));
+            console.error(`\n🔧 Auto-fixed ${fixResult.changes.length} UI-Plan issues:`);
+            fixResult.changes.forEach((change) => console.error(`   - ${change}`));
             plan = fixResult.plan;
           }
 
@@ -1063,24 +1136,74 @@ Try:
             guides.push({ bladeId: blade.id, decision, instructions });
           }
 
-          return {
+          // 🔥 Check response size before returning
+          const responsePayload = {
+            success: true,
+            strategy: "AI_FULL",
+            message:
+              "✅ Generation guides created successfully!\n\n" +
+              "NEXT STEPS:\n" +
+              "1. Read the generation guide for each blade (contains requirements, patterns, constraints)\n" +
+              "2. Generate complete Vue SFC code based on the guide instructions\n" +
+              "3. Call submit_generated_code tool with the generated code\n" +
+              "4. MCP server will validate and save the code, providing feedback if needed\n\n" +
+              "⚠️ DO NOT write files manually with Write/Edit tools - use submit_generated_code instead!",
+            guides,
+          };
+
+          const responseText = JSON.stringify(responsePayload, null, 2);
+          const estimatedTokens = Math.ceil(responseText.length / 4); // Rough estimate: 1 token ≈ 4 chars
+
+          // If response is too large, suggest using bladeId parameter
+          if (estimatedTokens > 20000) {
+            return trackSuccess({
+              content: [
+                {
+                  type: "text",
+                  text: JSON.stringify(
+                    {
+                      success: false,
+                      error: "Response too large",
+                      bladesCount: bladesToGenerate.length,
+                      estimatedTokens,
+                      maxTokens: 25000,
+                      suggestion: "Response exceeds MCP token limit. Use 'bladeId' parameter to generate one blade at a time.",
+                      availableBlades: bladesToGenerate.map(b => ({
+                        id: b.id,
+                        layout: b.layout,
+                        title: b.title,
+                      })),
+                      example: {
+                        tool: "generate_with_composition",
+                        bladeId: bladesToGenerate[0].id,
+                        cwd: parsedData.cwd,
+                        plan: "<same UI-Plan>",
+                        strategy: "ai-full",
+                      },
+                      workflow: [
+                        `1. Call generate_with_composition with bladeId: "${bladesToGenerate[0].id}"`,
+                        "2. Generate code for this blade following the returned instructions",
+                        "3. Submit code using submit_generated_code",
+                        `4. Repeat for remaining blades: ${bladesToGenerate.slice(1).map(b => b.id).join(", ")}`,
+                      ],
+                    },
+                    null,
+                    2,
+                  ),
+                },
+              ],
+              isError: true,
+            });
+          }
+
+          return trackSuccess({
             content: [
               {
                 type: "text",
-                text: JSON.stringify(
-                  {
-                    success: true,
-                    strategy: "AI_FULL",
-                    message:
-                      "AI-full mode only: use the generated guides to synthesize Vue code and submit via submit_generated_code",
-                    guides,
-                  },
-                  null,
-                  2,
-                ),
+                text: responseText,
               },
             ],
-          };
+          });
         }
 
         case "infer_blade_logic": {
@@ -1402,6 +1525,90 @@ Try:
           }
         }
 
+        case "check_types": {
+          const parsed = checkTypesSchema.safeParse(args);
+          if (!parsed.success) {
+            throw new Error(`Invalid arguments: ${parsed.error.message}`);
+          }
+
+          const { cwd, fix } = parsed.data;
+
+          try {
+            // Run vue-tsc --noEmit in the specified directory
+            const { execSync } = await import("child_process");
+
+            try {
+              execSync("npx vue-tsc --noEmit", {
+                cwd,
+                encoding: "utf-8",
+                stdio: ["pipe", "pipe", "pipe"],
+              });
+
+              return {
+                content: [
+                  {
+                    type: "text",
+                    text: JSON.stringify({
+                      success: true,
+                      message: "No type errors found!",
+                      errors: [],
+                    }, null, 2),
+                  },
+                ],
+              };
+            } catch (error: any) {
+              // Parse error output
+              const stderr = error.stderr || error.stdout || "";
+              const errors = stderr
+                .split("\n")
+                .filter((line: string) => line.includes("error TS"))
+                .map((line: string) => {
+                  const match = line.match(/(.+?)\((\d+),(\d+)\): error (TS\d+): (.+)/);
+                  if (match) {
+                    return {
+                      file: match[1],
+                      line: parseInt(match[2]),
+                      column: parseInt(match[3]),
+                      code: match[4],
+                      message: match[5],
+                    };
+                  }
+                  return { raw: line };
+                });
+
+              return {
+                content: [
+                  {
+                    type: "text",
+                    text: JSON.stringify({
+                      success: false,
+                      message: `Found ${errors.length} type errors`,
+                      errors,
+                      suggestion: fix
+                        ? "Auto-fix is not yet implemented. Please review and fix errors manually."
+                        : "Run with fix: true to attempt auto-fixing common errors.",
+                    }, null, 2),
+                  },
+                ],
+              };
+            }
+          } catch (error) {
+            return {
+              content: [
+                {
+                  type: "text",
+                  text: JSON.stringify({
+                    success: false,
+                    message: "Failed to run vue-tsc",
+                    error: error instanceof Error ? error.message : String(error),
+                  }, null, 2),
+                },
+              ],
+              isError: true,
+            };
+          }
+        }
+
         case "analyze_prompt_v2": {
           const parsed = analyzePromptV2Schema.safeParse(args);
           if (!parsed.success) {
@@ -1469,10 +1676,18 @@ Try:
           const plannerV2 = new PlannerV2();
 
           try {
-            const uiPlan = plannerV2.generatePlan({
+            let uiPlan = plannerV2.generatePlan({
               prompt: "", // Not used when analysis is provided
               analysis,
             });
+
+            // Auto-fix common UI-Plan errors before validation
+            const fixResult = autoFixUIPlan(uiPlan);
+            if (fixResult.fixed) {
+              console.error(`\n🔧 Auto-fixed ${fixResult.changes.length} UI-Plan issues during V2 plan creation:`);
+              fixResult.changes.forEach((change) => console.error(`   - ${change}`));
+              uiPlan = fixResult.plan;
+            }
 
             // Validate the generated UI-Plan
             const validator = new Validator();
@@ -1514,7 +1729,7 @@ Try:
               ),
             };
 
-            return {
+            return trackSuccess({
               content: [
                 {
                   type: "text",
@@ -1534,8 +1749,9 @@ Try:
                         customActions: stats.customActionsCount > 0,
                       },
                       nextSteps: [
-                        "UI-Plan V2 is ready and validated",
-                        "Use generate_with_composition to generate code from this plan",
+                        "✅ UI-Plan V2 is ready and validated (workflow state: validated)",
+                        "✅ Validation step completed during plan creation - no separate validation needed",
+                        "Use generate_with_composition to generate code guides (AI_FULL strategy)",
                         "Or use generate_complete_module for full module generation",
                         "Note: Some advanced V2 features (workflows, custom actions) may require manual implementation",
                       ],
@@ -1545,7 +1761,7 @@ Try:
                   ),
                 },
               ],
-            };
+            });
           } catch (error) {
             return {
               content: [
@@ -1932,6 +2148,202 @@ Try:
               },
             ],
           };
+        }
+
+        case "get_workflow_status": {
+          const currentState = globalWorkflow.getState();
+          const progress = globalWorkflow.getProgress();
+
+          // Determine status for each step
+          const getStepStatus = (stepName: string): "completed" | "current" | "pending" | "blocked" => {
+            const stepOrder = ["init", "analyzed", "planned", "validated", "generated", "code_submitted", "completed"];
+            const currentIndex = stepOrder.indexOf(currentState.step);
+
+            if (stepName === "analyze_prompt_v2") {
+              return currentIndex > 0 ? "completed" : "current";
+            } else if (stepName === "create_ui_plan_from_analysis_v2") {
+              if (currentIndex > 1) return "completed";
+              if (currentIndex === 1) return "current";
+              return "blocked";
+            } else if (stepName === "validate_ui_plan") {
+              if (currentIndex > 2) return "completed";
+              if (currentIndex === 2) return "current";
+              return "blocked";
+            } else if (stepName === "generate") {
+              if (currentIndex > 3) return "completed";
+              if (currentIndex === 3) return "current";
+              return "blocked";
+            } else if (stepName === "submit_generated_code") {
+              if (currentIndex > 4) return "completed";
+              if (currentIndex === 4) return "current";
+              return "blocked";
+            } else if (stepName === "check_types") {
+              if (currentIndex >= 6) return "completed";
+              if (currentIndex === 5) return "current";
+              return "blocked";
+            }
+            return "pending";
+          };
+
+          return trackSuccess({
+            content: [
+              {
+                type: "text",
+                text: JSON.stringify(
+                  {
+                    success: true,
+                    workflow: {
+                      currentStep: currentState.step,
+                      progress: `${progress}%`,
+                      nextStep: currentState.nextStep,
+                      canProceed: currentState.canProceed,
+                      hasAnalysis: !!currentState.analysis,
+                      hasPlan: !!currentState.plan,
+                      hasGeneratedGuides: !!currentState.generatedGuides,
+                    },
+                    sequence: [
+                      {
+                        step: 1,
+                        tool: "analyze_prompt_v2",
+                        status: getStepStatus("analyze_prompt_v2"),
+                        required: true,
+                        description: "Deep analysis of user prompt to extract entities, relationships, features"
+                      },
+                      {
+                        step: 2,
+                        tool: "create_ui_plan_from_analysis_v2",
+                        status: getStepStatus("create_ui_plan_from_analysis_v2"),
+                        required: true,
+                        description: "Create UI-Plan JSON from analysis result"
+                      },
+                      {
+                        step: 3,
+                        tool: "validate_ui_plan or validate_and_fix_plan",
+                        status: getStepStatus("validate_ui_plan"),
+                        required: true,
+                        description: "Validate UI-Plan against schema and component registry"
+                      },
+                      {
+                        step: 4,
+                        tool: "generate_with_composition or generate_complete_module",
+                        status: getStepStatus("generate"),
+                        required: true,
+                        description: "Generate AI instructions for writing Vue SFC code"
+                      },
+                      {
+                        step: 5,
+                        tool: "submit_generated_code",
+                        status: getStepStatus("submit_generated_code"),
+                        required: false,
+                        description: "Submit and validate AI-written code"
+                      },
+                      {
+                        step: 6,
+                        tool: "check_types",
+                        status: getStepStatus("check_types"),
+                        required: false,
+                        description: "Run TypeScript type checking"
+                      },
+                    ],
+                    availableToolCategories: {
+                      discovery: "Always available - search/view components and framework APIs",
+                      workflowManagement: "Always available - get_workflow_status, start_module_workflow",
+                      scaffolding: "Always available - scaffold_app",
+                      planHelpers: globalWorkflow.isToolCategoryAvailable("plan_helpers")
+                        ? "Available - infer_blade_logic, get_composition_guide"
+                        : "Blocked - requires analysis first",
+                      qualityChecks: globalWorkflow.isToolCategoryAvailable("quality_checks")
+                        ? "Available - get_audit_checklist, check_types"
+                        : "Blocked - requires code generation first",
+                    },
+                    recommendation: currentState.step === "init"
+                      ? "RECOMMENDED: Use start_module_workflow for guided experience, or use analyze_prompt_v2 to start manually."
+                      : `Next: ${currentState.nextStep}`,
+                  },
+                  null,
+                  2
+                ),
+              },
+            ],
+          });
+        }
+
+        case "reset_workflow": {
+          // Reset workflow state to initial
+          globalWorkflow.reset();
+
+          return {
+            content: [
+              {
+                type: "text",
+                text: JSON.stringify(
+                  {
+                    success: true,
+                    message: "Workflow state has been reset to initial",
+                    currentStep: "init",
+                    nextStep: "Start by analyzing the user prompt using analyze_prompt_v2 tool",
+                    note: "Use this when workflow is stuck or you want to start a new module generation",
+                  },
+                  null,
+                  2
+                ),
+              },
+            ],
+          };
+        }
+
+        case "start_module_workflow": {
+          const parsed = startModuleWorkflowSchema.safeParse(args);
+          if (!parsed.success) {
+            throw new Error(`Invalid arguments: ${parsed.error.message}`);
+          }
+
+          const { prompt, cwd, module: moduleOverride } = parsed.data;
+
+          debugLog("Starting guided workflow for:", prompt);
+
+          // Reset workflow
+          globalWorkflow.reset();
+
+          // Step 1: Analyze prompt
+          const analysisPrompt = buildAnalysisPromptV2(prompt);
+          const analysisSchema = getPromptAnalysisSchemaV2();
+
+          return trackSuccess({
+            content: [
+              {
+                type: "text",
+                text: JSON.stringify(
+                  {
+                    success: true,
+                    workflow: "started",
+                    step: 1,
+                    stepName: "analyze_prompt_v2",
+                    message: "Guided workflow started. Follow the instructions below to analyze the prompt.",
+                    userPrompt: prompt,
+                    cwd,
+                    moduleOverride,
+                    instructions: analysisPrompt,
+                    schema: analysisSchema,
+                    nextSteps: [
+                      "1. Read the comprehensive V2 instructions above",
+                      "2. Analyze the prompt deeply - extract ALL entities, relationships, workflows",
+                      "3. Detect custom routes, actions, permissions, workflows",
+                      "4. Return ONLY valid JSON following the V2 schema",
+                      "5. After analysis, call create_ui_plan_from_analysis_v2 automatically",
+                      "6. The workflow will guide you through validation and generation",
+                    ],
+                    autoNext: {
+                      tool: "create_ui_plan_from_analysis_v2",
+                      description: "After you complete the analysis, automatically proceed to create UI-Plan",
+                    },
+                  },
+                  null,
+                  2
+                ),
+              },
+            ],
+          });
         }
 
         default:

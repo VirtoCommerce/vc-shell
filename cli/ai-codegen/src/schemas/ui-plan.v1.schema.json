@@ -97,7 +97,7 @@
         "width": {
           "type": "string",
           "description": "Blade width (e.g., '50%', '100%', '600px')",
-          "default": "100%"
+          "default": "50%"
         },
         "theme": {
           "type": "object",
@@ -324,7 +324,14 @@
           "type": "string"
         },
         "required": {
-          "type": "boolean",
+          "oneOf": [
+            { "type": "boolean" },
+            {
+              "type": "string",
+              "description": "Expression for conditional required state (e.g., 'status === \"active\"')"
+            }
+          ],
+          "description": "Is field required (boolean) or expression for dynamic required state (string)",
           "default": false
         },
         "rules": {
@@ -376,9 +383,34 @@
           "default": false
         },
         "disabled": {
-          "type": "boolean",
-          "description": "Is field disabled",
+          "oneOf": [
+            { "type": "boolean" },
+            {
+              "type": "string",
+              "description": "Expression for conditional disabled state (e.g., '!!item.id', '!canEdit')"
+            }
+          ],
+          "description": "Is field disabled (boolean) or expression for dynamic disabled state (string)",
           "default": false
+        },
+        "readonly": {
+          "oneOf": [
+            { "type": "boolean" },
+            {
+              "type": "string",
+              "description": "Expression for conditional readonly state (e.g., 'status === \"published\"')"
+            }
+          ],
+          "description": "Is field readonly (boolean) or expression for dynamic readonly state (string)",
+          "default": false
+        },
+        "visible": {
+          "oneOf": [
+            { "type": "boolean" },
+            { "type": "string", "description": "Expression for conditional visibility (e.g., 'type === \"custom\"')" }
+          ],
+          "description": "Is field visible (boolean) or expression for dynamic visibility (string)",
+          "default": true
         },
         "tooltip": {
           "type": "string",
@@ -392,11 +424,11 @@
       "properties": {
         "id": {
           "type": "string",
-          "description": "Column identifier (can use 'id' or 'key', will be normalized to 'key')"
+          "description": "Column identifier - MUST use 'id' for table columns (not 'key'). Will be normalized from 'key' to 'id' if needed."
         },
         "key": {
           "type": "string",
-          "description": "Column identifier (can use 'id' or 'key')"
+          "description": "Legacy: use 'id' instead. Will be migrated to 'id' during normalization."
         },
         "title": {
           "type": "string"
@@ -404,17 +436,28 @@
         "type": {
           "type": "string",
           "description": "Column display type",
-          "enum": ["text", "number", "money", "date", "date-ago", "status", "boolean", "image", "email", "link", "badge", "actions", "custom"]
+          "enum": [
+            "text",
+            "number",
+            "money",
+            "date",
+            "date-ago",
+            "status",
+            "boolean",
+            "image",
+            "email",
+            "link",
+            "badge",
+            "actions",
+            "custom"
+          ]
         },
         "sortable": {
           "type": "boolean",
           "default": true
         },
         "width": {
-          "oneOf": [
-            {"type": "string"},
-            {"type": "number"}
-          ],
+          "oneOf": [{ "type": "string" }, { "type": "number" }],
           "description": "Column width (number for px, or string like '10%' or '100px')"
         }
       }

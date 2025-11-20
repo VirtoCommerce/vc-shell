@@ -292,7 +292,7 @@
       "examples": [
         {
           "title": "Prevent close with unsaved changes",
-          "code": "import { useBeforeUnload } from '@vc-shell/framework';\nimport { useModificationTracker } from '@vc-shell/framework';\n\nconst { modified } = useModificationTracker(formData);\n\n// Automatically shows browser confirmation if modified is true\nuseBeforeUnload(modified);"
+          "code": "import { useBeforeUnload } from '@vc-shell/framework';\nimport { useModificationTracker } from '@vc-shell/framework';\n\nconst { modified } = useModificationTracker(formData);\n\n// ✅ CORRECT: Pass modified ref directly\nuseBeforeUnload(modified);\n\n// ❌ WRONG: Don't call as function with callback\n// useBeforeUnload(() => modified.value); // WRONG!"
         }
       ],
       "dependencies": [],
@@ -636,6 +636,66 @@
       "dependencies": [],
       "relatedAPIs": ["usePopup"],
       "requiresContext": false
+    },
+    "createAppModule": {
+      "name": "createAppModule",
+      "import": "@vc-shell/framework",
+      "type": "utility",
+      "description": "Register app module with pages, locales, and notification templates. This is the CORRECT way to export a module (NOT createDynamicAppModule).",
+      "category": "Module",
+      "keywords": ["module", "register", "export", "pages", "locales", "notifications"],
+      "methods": [],
+      "state": [],
+      "signature": "(pages: object, locales: object, notificationTemplates?: object) => Module",
+      "params": [
+        {
+          "name": "pages",
+          "type": "object",
+          "description": "Pages export object (import * as pages from './pages')",
+          "required": true
+        },
+        {
+          "name": "locales",
+          "type": "object",
+          "description": "Locales export object (import * as locales from './locales')",
+          "required": true
+        },
+        {
+          "name": "notificationTemplates",
+          "type": "object",
+          "description": "Notification templates object (import * as notificationTemplates from './components/notifications')",
+          "required": false
+        }
+      ],
+      "capabilities": {
+        "module-registration": {
+          "id": "module-registration",
+          "type": "function",
+          "name": "createAppModule",
+          "description": "Register module with pages and locales",
+          "useCases": ["Module export", "App registration"],
+          "complexity": "simple"
+        }
+      },
+      "examples": [
+        {
+          "title": "Register module with pages and locales",
+          "code": "// src/modules/offers/index.ts\nimport * as pages from './pages';\nimport * as locales from './locales';\nimport * as notificationTemplates from './components/notifications';\nimport { createAppModule } from '@vc-shell/framework';\n\n// Export module\nexport default createAppModule(pages, locales, notificationTemplates);\n\n// Export composables and components\nexport * from './pages';\nexport * from './composables';"
+        },
+        {
+          "title": "Register module with dashboard widgets",
+          "code": "// src/modules/offers/index.ts\nimport * as pages from './pages';\nimport * as locales from './locales';\nimport * as components from './components';\nimport * as notificationTemplates from './components/notifications';\nimport { createAppModule, registerDashboardWidget } from '@vc-shell/framework';\nimport { markRaw } from 'vue';\n\n// Register dashboard widgets BEFORE exporting module\nregisterDashboardWidget({\n  id: 'offers-widget',\n  name: 'Offers',\n  component: markRaw(components.OffersDashboardCard),\n  size: { width: 6, height: 6 },\n});\n\nexport default createAppModule(pages, locales, notificationTemplates);\n\nexport * from './pages';\nexport * from './composables';"
+        }
+      ],
+      "dependencies": [],
+      "relatedAPIs": ["registerDashboardWidget"],
+      "requiresContext": false,
+      "notes": [
+        "ALWAYS use createAppModule, NOT createDynamicAppModule",
+        "Pass pages, locales, and notificationTemplates as separate arguments",
+        "Export composables and pages for external use",
+        "Register dashboard widgets BEFORE calling createAppModule"
+      ]
     }
   },
   "services": {}

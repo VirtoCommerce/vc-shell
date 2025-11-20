@@ -1,0 +1,111 @@
+{
+  "sessionStart": 1763537779688,
+  "sessionDuration": 11471413,
+  "totalCalls": 5,
+  "toolStats": [
+    {
+      "name": "start_module_workflow",
+      "callCount": 1,
+      "successCount": 1,
+      "failureCount": 0,
+      "avgDuration": 1,
+      "totalDuration": 1,
+      "lastCalled": 1763537868311
+    },
+    {
+      "name": "create_ui_plan_from_analysis_v2",
+      "callCount": 1,
+      "successCount": 1,
+      "failureCount": 0,
+      "avgDuration": 68,
+      "totalDuration": 68,
+      "lastCalled": 1763537947575
+    },
+    {
+      "name": "validate_and_fix_plan",
+      "callCount": 1,
+      "successCount": 1,
+      "failureCount": 0,
+      "avgDuration": 20,
+      "totalDuration": 20,
+      "lastCalled": 1763538016403
+    },
+    {
+      "name": "generate_with_composition",
+      "callCount": 1,
+      "successCount": 1,
+      "failureCount": 0,
+      "avgDuration": 18,
+      "totalDuration": 18,
+      "lastCalled": 1763538040573
+    },
+    {
+      "name": "get_workflow_status",
+      "callCount": 1,
+      "successCount": 1,
+      "failureCount": 0,
+      "avgDuration": 0,
+      "totalDuration": 0,
+      "lastCalled": 1763538079670
+    }
+  ],
+  "workflow": [
+    {
+      "toolName": "start_module_workflow",
+      "timestamp": 1763537868311,
+      "success": true
+    },
+    {
+      "toolName": "create_ui_plan_from_analysis_v2",
+      "timestamp": 1763537947575,
+      "success": true
+    },
+    {
+      "toolName": "validate_and_fix_plan",
+      "timestamp": 1763538016403,
+      "success": true
+    },
+    {
+      "toolName": "generate_with_composition",
+      "timestamp": 1763538040573,
+      "success": true
+    },
+    {
+      "toolName": "get_workflow_status",
+      "timestamp": 1763538079670,
+      "success": true
+    }
+  ],
+  "allMetrics": [
+    {
+      "toolName": "start_module_workflow",
+      "timestamp": 1763537868311,
+      "duration": 1,
+      "success": true
+    },
+    {
+      "toolName": "create_ui_plan_from_analysis_v2",
+      "timestamp": 1763537947575,
+      "duration": 68,
+      "success": true
+    },
+    {
+      "toolName": "validate_and_fix_plan",
+      "timestamp": 1763538016403,
+      "duration": 20,
+      "success": true
+    },
+    {
+      "toolName": "generate_with_composition",
+      "timestamp": 1763538040573,
+      "duration": 18,
+      "success": true
+    },
+    {
+      "toolName": "get_workflow_status",
+      "timestamp": 1763538079670,
+      "duration": 0,
+      "success": true
+    }
+  ]
+}

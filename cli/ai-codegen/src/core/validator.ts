@@ -67,6 +67,9 @@ export interface Blade {
     methods?: string[];
     mockData?: boolean;
   };
+  defineOptions?: {
+    notifyType?: string;
+  };
 }
 
 export interface Step {

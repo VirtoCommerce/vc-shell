@@ -91,6 +91,12 @@ export const generateWithCompositionSchema = z.object({
   cwd: z.string(),
   dryRun: z.boolean().optional().default(false),
   strategy: z.literal("ai-full").optional().default("ai-full"),
+  bladeId: z.string().optional().describe(
+    "Generate instructions for a specific blade only. " +
+    "Use this when full module generation exceeds MCP token limit (25000 tokens). " +
+    "Generate one blade at a time, then repeat for remaining blades. " +
+    "Example: 'offers-list' or 'offer-details'"
+  ),
 });
 
 export const inferBladeLogicSchema = z.object({
@@ -146,4 +152,21 @@ export const getAuditChecklistSchema = z.object({});
 export const scaffoldAppSchema = z.object({
   projectName: z.string().regex(/^[a-z0-9-]+$/, "Project name must be in kebab-case"),
   targetDirectory: z.string().optional(),
+});
+
+// Type checking schema
+export const checkTypesSchema = z.object({
+  cwd: z.string().describe("Working directory (project root) to run vue-tsc"),
+  fix: z.boolean().optional().default(false).describe("If true, attempt to auto-fix type errors"),
+});
+
+// Workflow orchestration schema
+export const getWorkflowStatusSchema = z.object({});
+
+export const resetWorkflowSchema = z.object({});
+
+export const startModuleWorkflowSchema = z.object({
+  prompt: z.string().describe("User's module request (e.g., 'Create vendor management module with list and details')"),
+  cwd: z.string().describe("Project directory where module should be generated"),
+  module: z.string().optional().describe("Module name override (if not provided, will be inferred from prompt)"),
 });

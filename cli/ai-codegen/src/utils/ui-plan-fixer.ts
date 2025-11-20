@@ -201,12 +201,9 @@ function fixBlade(blade: any, moduleName: string): string[] {
             continue;
           }
 
-          // Fix: Convert disabled string to boolean (remove expression)
-          if (field.disabled && typeof field.disabled === "string") {
-            // Just remove it - expressions not supported in schema
-            delete field.disabled;
-            changes.push(`Removed field.disabled expression for "${field.key}" (not supported in schema)`);
-          }
+          // Note: disabled/readonly/visible can be boolean OR string expressions
+          // String expressions are now supported in schema v1 (e.g., "!!item.id", "!canEdit")
+          // No fix needed for expression strings
 
           // Fix: Convert validation object to string
           if (field.validation && typeof field.validation === "object") {

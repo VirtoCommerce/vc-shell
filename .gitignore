@@ -67,6 +67,7 @@ package-lock.json
 
 # Apps
 /apps/
+/gen-apps/
 
 .pnp.*
 .yarn/*

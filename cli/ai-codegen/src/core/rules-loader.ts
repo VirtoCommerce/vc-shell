@@ -180,6 +180,8 @@ export class RulesLoader {
     category?: RuleCategory;
     strategy?: GenerationStrategy;
     bladeType?: BladeType;
+    isWorkspace?: boolean;
+    features?: string[];
   }): Promise<Rule[]> {
     let rules = await this.loadAllRules();
 
@@ -200,7 +202,72 @@ export class RulesLoader {
       );
     }
 
+    // Filter by workspace requirement
+    // Rules with id "09a" (menu items) only apply to workspace blades
+    if (options.isWorkspace !== undefined) {
+      rules = rules.filter((r) => {
+        // Rule 09a only applies to workspace blades
+        if (r.id === "09a" || r.name?.includes("Menu Items")) {
+          return options.isWorkspace === true;
+        }
+        // Other rules apply to all blades
+        return true;
+      });
+    }
+
+    // Filter by features (future use - can match rule.examples or rule.description)
+    if (options.features && options.features.length > 0) {
+      // For now, include all rules - feature-specific filtering can be added later
+      // This is a placeholder for future feature-aware rule filtering
+    }
+
     return rules;
+  }
+
+  /**
+   * Get applicable rules for a blade with context
+   */
+  async getApplicableRules(options: {
+    bladeType: BladeType;
+    isWorkspace?: boolean;
+    features?: string[];
+    strategy?: GenerationStrategy;
+  }): Promise<Array<Rule & { applies: boolean; reason: string }>> {
+    const rules = await this.loadFiltered({
+      bladeType: options.bladeType,
+      strategy: options.strategy || "AI_FULL",
+      isWorkspace: options.isWorkspace,
+      features: options.features,
+    });
+
+    // Add applicability context to each rule
+    return rules.map((rule) => {
+      let applies = true;
+      let reason = "This rule applies to all blades of this type";
+
+      // Special handling for workspace-only rules
+      if (rule.id === "09a" || rule.name?.includes("Menu Items")) {
+        if (options.isWorkspace) {
+          reason = "This is a workspace blade (isWorkspace: true)";
+        } else {
+          applies = false;
+          reason = "This rule only applies to workspace blades";
+        }
+      }
+
+      // Special handling for specific blade types
+      if (rule.applies_to && !rule.applies_to.includes("all")) {
+        if (rule.applies_to.includes(options.bladeType)) {
+          reason = `This rule applies to ${options.bladeType} blades`;
+        }
+      }
+
+      return {
+        ...rule,
+        applies,
+        reason,
+      };
+    });
   }
 
   /**

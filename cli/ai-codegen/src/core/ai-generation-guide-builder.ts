@@ -216,7 +216,7 @@ VcTable displays the data with:
         "Add <template #item_{columnId}> slots for custom column rendering"
       ].filter(Boolean),
       patternReferences: [
-        "examples/blade-list-pattern.md",
+        "examples/patterns/blade-list-complete.md",
         "examples/components/VcBlade-demo.md",
         "examples/components/VcTable-demo.md",
         features.includes("filters") ? "examples/compositions/list/filters-pattern.md" : "",
@@ -1190,15 +1190,15 @@ ${columns
     // Add blade-specific pattern examples
     if (context.type === "list") {
       patterns.push({
-        name: "blade-list-pattern",
+        name: "blade-list-complete",
         description: "Complete list blade pattern with VcTable (READ THIS CAREFULLY)",
-        code: "Reference: examples/blade-list-pattern.md - Shows correct props/emits structure, VcTable usage with <!-- @vue-generic {Type} --> comment, toolbar, pagination",
+        code: "Reference: examples/patterns/blade-list-complete.md - Shows correct props/emits structure, VcTable usage with <!-- @vue-generic {Type} --> comment, toolbar, pagination",
       });
 
       patterns.push({
-        name: "composable-list-pattern",
+        name: "composable-list-complete",
         description: "List composable pattern with useApiClient + useAsync",
-        code: "Reference: examples/composable-list-pattern.md - Shows useApiClient(ClientClass) → getApiClient() → command objects, useAsync for loading, computed properties for pagination",
+        code: "Reference: examples/patterns/composable-list-complete.md - Shows useApiClient(ClientClass) → getApiClient() → command objects, useAsync for loading, computed properties for pagination",
       });
 
       if (context.features.includes("filters")) {
@@ -1220,15 +1220,15 @@ ${columns
 
     if (context.type === "details") {
       patterns.push({
-        name: "blade-details-pattern",
+        name: "blade-details-complete",
         description: "Complete details blade pattern with VcForm (READ THIS CAREFULLY)",
-        code: "Reference: examples/blade-details-pattern.md - Shows correct props/emits structure, Field wrapper for validation, useModificationTracker, useBeforeUnload usage",
+        code: "Reference: examples/patterns/blade-details-complete.md - Shows correct props/emits structure, Field wrapper for validation, useModificationTracker, useBeforeUnload usage",
       });
 
       patterns.push({
-        name: "composable-details-pattern",
+        name: "composable-details-complete",
         description: "Details composable pattern with useApiClient + useAsync + useModificationTracker",
-        code: "Reference: examples/composable-details-pattern.md - Shows useModificationTracker with currentValue/isModified/resetModificationState, useAsync for CRUD operations",
+        code: "Reference: examples/patterns/composable-details-complete.md - Shows useModificationTracker with currentValue/isModified/resetModificationState, useAsync for CRUD operations",
       });
 
       if (context.features.includes("validation")) {
@@ -1474,7 +1474,7 @@ onBeforeClose(async () => {
 
 **WHY**: Async confirmation, better UX, integrates with blade navigation system.
 
-See detailed examples in blade-list-pattern.md and blade-details-pattern.md!
+See detailed examples in blade-list-complete.md and blade-details-complete.md!
 `;
   }
 

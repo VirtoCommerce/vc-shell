@@ -76,7 +76,6 @@ instructions: |
 
 examples:
   - "patterns/module-registration.md"
-  - "pages/README.md"
 
 validations:
   - type: "forbidden_file"

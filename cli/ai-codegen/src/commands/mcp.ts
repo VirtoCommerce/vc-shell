@@ -42,6 +42,10 @@ import {
   getWorkflowStatusSchema,
   resetWorkflowSchema,
   startModuleWorkflowSchema,
+  // NEW: Transparent tools for rules, templates, patterns
+  getApplicableRulesSchema,
+  getBestTemplateSchema,
+  getRelevantPatternsSchema,
 } from "./mcp/tool-schemas.js";
 
 import { type Component, type ComponentRegistry, type FrameworkRegistry } from "../schemas/zod-schemas.js";
@@ -324,6 +328,27 @@ export async function mcpServerCommand() {
           description:
             "RECOMMENDED STARTING POINT: Use this tool to start a complete guided workflow for module generation. It will orchestrate all steps automatically: prompt analysis → UI-Plan creation → validation → guide generation. This ensures you follow the correct sequence and don't skip mandatory steps like prompt analysis.",
           inputSchema: zodToJsonSchema(startModuleWorkflowSchema),
+        },
+        // ====================================================================
+        // NEW TRANSPARENT TOOLS - Rules, Templates, Patterns
+        // ====================================================================
+        {
+          name: "get_applicable_rules",
+          description:
+            "Get applicable rules for a blade with full context. Returns critical rules (e.g., workspace blade menu items, module registration, form validation) with complete YAML content including forbidden/required patterns, correct/wrong examples, and instructions. Replaces implicit rule embedding with explicit MCP tool call for transparency.",
+          inputSchema: zodToJsonSchema(getApplicableRulesSchema),
+        },
+        {
+          name: "get_best_template",
+          description:
+            "Get best matching production-ready Vue SFC template. Returns full .vue file content for list or details blades with features like filters, multiselect, validation, gallery, widgets, etc. Templates are organized by complexity (simple ~150 lines, moderate ~250-300 lines, complex ~300-400+ lines). Use this to get complete working code as a starting point.",
+          inputSchema: zodToJsonSchema(getBestTemplateSchema),
+        },
+        {
+          name: "get_relevant_patterns",
+          description:
+            "Get relevant architectural patterns and examples for blade context. Returns full markdown content for patterns like workspace-blade.md, module-registration.md, parent-child-communication.md, error-handling.md, etc. Patterns are organized by category (architectural, blade-specific, communication, component-usage, best-practice). Use this to understand how to implement specific features correctly.",
+          inputSchema: zodToJsonSchema(getRelevantPatternsSchema),
         },
       ],
     };
@@ -2399,6 +2424,273 @@ Try:
                   null,
                   2
                 ),
+              },
+            ],
+          });
+        }
+
+        // ========================================================================
+        // NEW TRANSPARENT TOOLS - Rules, Templates, Patterns
+        // ========================================================================
+
+        case "get_applicable_rules": {
+          const parsed = getApplicableRulesSchema.safeParse(args);
+          if (!parsed.success) {
+            throw new Error(`Invalid arguments: ${parsed.error.message}`);
+          }
+
+          const { bladeType, isWorkspace, features, strategy } = parsed.data;
+
+          debugLog("Getting applicable rules for:", { bladeType, isWorkspace, features, strategy });
+
+          // Use RulesLoader to get applicable rules
+          const { RulesLoader } = await import("../core/rules-loader.js");
+          const rulesLoader = new RulesLoader();
+
+          const applicableRules = await rulesLoader.getApplicableRules({
+            bladeType,
+            isWorkspace,
+            features,
+            strategy: strategy as any,
+          });
+
+          // Format output with full rule content
+          let output = `# Applicable Rules for ${bladeType.charAt(0).toUpperCase() + bladeType.slice(1)} Blade\n\n`;
+
+          if (isWorkspace !== undefined) {
+            output += `**Workspace Blade:** ${isWorkspace ? "Yes" : "No"}\n`;
+          }
+          if (features && features.length > 0) {
+            output += `**Features:** ${features.join(", ")}\n`;
+          }
+          output += `**Strategy:** ${strategy || "AI_FULL"}\n\n`;
+          output += `**Found ${applicableRules.length} applicable rules**\n\n`;
+          output += "---\n\n";
+
+          for (const rule of applicableRules) {
+            output += `## Rule ${rule.id}: ${rule.name}\n\n`;
+            output += `**Category:** ${rule.category}\n`;
+            output += `**Priority:** ${rule.priority}\n`;
+            output += `**Applies:** ${rule.applies ? "✅ Yes" : "❌ No"}\n`;
+            output += `**Reason:** ${rule.reason}\n\n`;
+
+            if (rule.description) {
+              output += `### Description\n\n${rule.description}\n\n`;
+            }
+
+            if (rule.rationale) {
+              output += `### Rationale\n\n${rule.rationale}\n\n`;
+            }
+
+            if (rule.correct_pattern) {
+              output += `### ✅ Correct Pattern\n\n`;
+              if (rule.correct_pattern.inline) {
+                output += `${rule.correct_pattern.inline}\n\n`;
+              }
+              if (rule.correct_pattern.description) {
+                output += `${rule.correct_pattern.description}\n\n`;
+              }
+            }
+
+            if (rule.wrong_pattern) {
+              output += `### ❌ Wrong Pattern\n\n`;
+              if (rule.wrong_pattern.inline) {
+                output += `${rule.wrong_pattern.inline}\n\n`;
+              }
+            }
+
+            if (rule.instructions) {
+              output += `### Instructions\n\n${rule.instructions}\n\n`;
+            }
+
+            if (rule.forbidden && rule.forbidden.length > 0) {
+              output += `### 🚫 Forbidden Patterns\n\n`;
+              for (const forbidden of rule.forbidden) {
+                output += `- **Pattern:** \`${forbidden.pattern}\`\n`;
+                output += `  **Reason:** ${forbidden.reason}\n`;
+                output += `  **Severity:** ${forbidden.severity}\n\n`;
+              }
+            }
+
+            if (rule.required && rule.required.length > 0) {
+              output += `### ✔️ Required Patterns\n\n`;
+              for (const required of rule.required) {
+                output += `- **Pattern:** \`${required.pattern}\`\n`;
+                if (required.when) {
+                  output += `  **When:** ${required.when}\n`;
+                }
+                output += `  **Severity:** ${required.severity}\n\n`;
+              }
+            }
+
+            if (rule.examples && rule.examples.length > 0) {
+              output += `### 📚 Examples\n\n`;
+              for (const examplePath of rule.examples) {
+                output += `- ${examplePath}\n`;
+              }
+              output += "\n";
+            }
+
+            output += "---\n\n";
+          }
+
+          return trackSuccess({
+            content: [
+              {
+                type: "text",
+                text: output,
+              },
+            ],
+          });
+        }
+
+        case "get_best_template": {
+          const parsed = getBestTemplateSchema.safeParse(args);
+          if (!parsed.success) {
+            throw new Error(`Invalid arguments: ${parsed.error.message}`);
+          }
+
+          const { bladeType, features, complexity } = parsed.data;
+
+          debugLog("Getting best template for:", { bladeType, features, complexity });
+
+          // Use PatternsLoader to get best template
+          const { PatternsLoader } = await import("../core/patterns-loader.js");
+          const patternsLoader = new PatternsLoader();
+
+          const template = await patternsLoader.getBestTemplate({
+            bladeType,
+            features,
+          });
+
+          if (!template) {
+            return trackSuccess({
+              content: [
+                {
+                  type: "text",
+                  text: JSON.stringify(
+                    {
+                      success: false,
+                      message: `No template found for ${bladeType} blade`,
+                      suggestion: `Available blade types: list, details`,
+                    },
+                    null,
+                    2
+                  ),
+                },
+              ],
+            });
+          }
+
+          // Filter by complexity if specified
+          if (complexity && template.complexity !== complexity) {
+            // Try to find another template with matching complexity
+            const allTemplates = await patternsLoader.loadAllTemplates();
+            const complexityMatch = allTemplates.find(
+              (t) => t.bladeType === bladeType && t.complexity === complexity
+            );
+            if (complexityMatch) {
+              const output = `# Template: ${complexityMatch.id}\n\n` +
+                `**Blade Type:** ${complexityMatch.bladeType}\n` +
+                `**Complexity:** ${complexityMatch.complexity}\n` +
+                `**Features:** ${complexityMatch.features.join(", ")}\n` +
+                `**Lines:** ${complexityMatch.lines || "N/A"}\n\n` +
+                `**File:** ${complexityMatch.file}\n\n` +
+                `---\n\n` +
+                `## Full Vue SFC Content\n\n` +
+                `\`\`\`vue\n${complexityMatch.content}\n\`\`\`\n`;
+
+              return trackSuccess({
+                content: [
+                  {
+                    type: "text",
+                    text: output,
+                  },
+                ],
+              });
+            }
+          }
+
+          // Return best match template
+          const output = `# Template: ${template.id}\n\n` +
+            `**Blade Type:** ${template.bladeType}\n` +
+            `**Complexity:** ${template.complexity}\n` +
+            `**Features:** ${template.features.join(", ")}\n` +
+            `**Lines:** ${template.lines || "N/A"}\n` +
+            `**Match Reason:** Best match for requested features\n\n` +
+            `**File:** ${template.file}\n\n` +
+            `---\n\n` +
+            `## Full Vue SFC Content\n\n` +
+            `\`\`\`vue\n${template.content}\n\`\`\`\n`;
+
+          return trackSuccess({
+            content: [
+              {
+                type: "text",
+                text: output,
+              },
+            ],
+          });
+        }
+
+        case "get_relevant_patterns": {
+          const parsed = getRelevantPatternsSchema.safeParse(args);
+          if (!parsed.success) {
+            throw new Error(`Invalid arguments: ${parsed.error.message}`);
+          }
+
+          const { bladeType, features, isWorkspace, patterns: specificPatterns } = parsed.data;
+
+          debugLog("Getting relevant patterns for:", { bladeType, features, isWorkspace, specificPatterns });
+
+          // Use PatternsLoader to get relevant patterns
+          const { PatternsLoader } = await import("../core/patterns-loader.js");
+          const patternsLoader = new PatternsLoader();
+
+          let patterns = await patternsLoader.getRelevantPatterns({
+            bladeType: bladeType as any,
+            features,
+            isWorkspace,
+          });
+
+          // If specific pattern IDs requested, filter to those
+          if (specificPatterns && specificPatterns.length > 0) {
+            patterns = patterns.filter((p) => specificPatterns.includes(p.id));
+          }
+
+          // Format output with full pattern content
+          let output = `# Relevant Patterns for ${bladeType.charAt(0).toUpperCase() + bladeType.slice(1)} Blade\n\n`;
+
+          if (isWorkspace !== undefined) {
+            output += `**Workspace Blade:** ${isWorkspace ? "Yes" : "No"}\n`;
+          }
+          if (features && features.length > 0) {
+            output += `**Features:** ${features.join(", ")}\n`;
+          }
+          output += `\n**Found ${patterns.length} relevant patterns**\n\n`;
+          output += "---\n\n";
+
+          for (const pattern of patterns) {
+            output += `## Pattern: ${pattern.title || pattern.id}\n\n`;
+            output += `**ID:** ${pattern.id}\n`;
+            output += `**Category:** ${pattern.category}\n`;
+            if (pattern.bladeType) {
+              output += `**Blade Type:** ${pattern.bladeType}\n`;
+            }
+            if (pattern.features && pattern.features.length > 0) {
+              output += `**Features:** ${pattern.features.join(", ")}\n`;
+            }
+            output += `**File:** ${pattern.file}\n\n`;
+            output += "---\n\n";
+            output += `${pattern.content}\n\n`;
+            output += "---\n\n";
+          }
+
+          return trackSuccess({
+            content: [
+              {
+                type: "text",
+                text: output,
               },
             ],
           });

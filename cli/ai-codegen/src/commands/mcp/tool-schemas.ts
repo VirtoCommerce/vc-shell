@@ -172,3 +172,39 @@ export const startModuleWorkflowSchema = z.object({
   cwd: z.string().describe("Project directory where module should be generated"),
   module: z.string().optional().describe("Module name override (if not provided, will be inferred from prompt)"),
 });
+
+// ============================================================================
+// NEW TRANSPARENT TOOLS - Rules, Templates, Patterns
+// ============================================================================
+
+/**
+ * Get applicable rules for a blade with full context
+ * Replaces implicit rule embedding with explicit MCP tool call
+ */
+export const getApplicableRulesSchema = z.object({
+  bladeType: z.enum(["list", "details"]).describe("Type of blade being generated"),
+  isWorkspace: z.boolean().optional().describe("Whether this is a workspace blade (appears in sidebar menu)"),
+  features: z.array(z.string()).optional().describe("Features to include (filters, multiselect, validation, etc.)"),
+  strategy: z.enum(["AI_FULL", "COMPOSITION", "TEMPLATE", "ALL"]).optional().default("AI_FULL").describe("Generation strategy"),
+});
+
+/**
+ * Get best matching template with full .vue content
+ * Returns production-ready Vue SFC template (different from old getBladeTemplate)
+ */
+export const getBestTemplateSchema = z.object({
+  bladeType: z.enum(["list", "details"]).describe("Type of blade template needed"),
+  features: z.array(z.string()).optional().describe("Features to match (filters, multiselect, gallery, validation, etc.)"),
+  complexity: z.enum(["simple", "moderate", "complex"]).optional().describe("Desired complexity level"),
+});
+
+/**
+ * Get relevant patterns for blade context
+ * Returns architectural patterns and examples
+ */
+export const getRelevantPatternsSchema = z.object({
+  bladeType: z.enum(["list", "details", "all"]).describe("Type of blade"),
+  features: z.array(z.string()).optional().describe("Features to find patterns for"),
+  isWorkspace: z.boolean().optional().describe("Whether this is a workspace blade"),
+  patterns: z.array(z.string()).optional().describe("Specific pattern IDs to retrieve (workspace-blade, module-registration, etc.)"),
+});

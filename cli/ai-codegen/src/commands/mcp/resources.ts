@@ -140,7 +140,7 @@ export async function readResource(
       return fs.readFileSync(path.join(schemasPath, "ui-plan.v1.schema.json"), "utf-8");
 
     case "vcshell://blade-list-pattern": {
-      const examplePath = path.join(examplesPath, "blade-list-pattern.md");
+      const examplePath = path.join(examplesPath, "patterns/blade-list-complete.md");
       if (!fs.existsSync(examplePath)) {
         throw new Error("Blade list pattern example not found");
       }
@@ -148,7 +148,7 @@ export async function readResource(
     }
 
     case "vcshell://blade-details-pattern": {
-      const examplePath = path.join(examplesPath, "blade-details-pattern.md");
+      const examplePath = path.join(examplesPath, "patterns/blade-details-complete.md");
       if (!fs.existsSync(examplePath)) {
         throw new Error("Blade details pattern example not found");
       }
@@ -156,7 +156,7 @@ export async function readResource(
     }
 
     case "vcshell://composable-list-pattern": {
-      const examplePath = path.join(examplesPath, "composable-list-pattern.md");
+      const examplePath = path.join(examplesPath, "patterns/composable-list-complete.md");
       if (!fs.existsSync(examplePath)) {
         throw new Error("Composable list pattern example not found");
       }
@@ -164,7 +164,7 @@ export async function readResource(
     }
 
     case "vcshell://composable-details-pattern": {
-      const examplePath = path.join(examplesPath, "composable-details-pattern.md");
+      const examplePath = path.join(examplesPath, "patterns/composable-details-complete.md");
       if (!fs.existsSync(examplePath)) {
         throw new Error("Composable details pattern example not found");
       }

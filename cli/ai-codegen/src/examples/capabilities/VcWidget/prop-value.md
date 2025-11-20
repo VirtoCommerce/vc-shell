@@ -1,3 +1,14 @@
+---
+id: vcwidget-prop-value
+component: VcWidget
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, value]
+title: "VcWidget :value prop"
+description: "value property for VcWidget"
+---
+
 # Capability: value
 
 ## Type

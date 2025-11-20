@@ -1,3 +1,14 @@
+---
+id: vcbutton-slot-default
+component: VcButton
+type: SLOT
+complexity: MODERATE
+category: component
+tags: [slot, default]
+title: "VcButton #default slot"
+description: "default slot for VcButton"
+---
+
 # Capability: default
 
 ## Type

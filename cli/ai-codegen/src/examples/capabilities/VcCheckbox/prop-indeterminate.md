@@ -1,3 +1,14 @@
+---
+id: vccheckbox-prop-indeterminate
+component: VcCheckbox
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, indeterminate]
+title: "VcCheckbox :indeterminate prop"
+description: "indeterminate property for VcCheckbox"
+---
+
 # Capability: indeterminate
 
 ## Type

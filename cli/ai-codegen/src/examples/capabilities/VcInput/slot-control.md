@@ -1,3 +1,14 @@
+---
+id: vcinput-slot-control
+component: VcInput
+type: SLOT
+complexity: MODERATE
+category: component
+tags: [slot, control]
+title: "VcInput #control slot"
+description: "control slot for VcInput"
+---
+
 # Capability: control
 
 ## Type

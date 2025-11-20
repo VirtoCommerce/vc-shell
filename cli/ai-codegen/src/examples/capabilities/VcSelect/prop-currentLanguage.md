@@ -1,3 +1,14 @@
+---
+id: vcselect-prop-currentLanguage
+component: VcSelect
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, currentLanguage]
+title: "VcSelect :currentLanguage prop"
+description: "currentLanguage property for VcSelect"
+---
+
 # Capability: currentLanguage
 
 ## Type

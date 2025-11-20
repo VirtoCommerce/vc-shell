@@ -1,3 +1,14 @@
+---
+id: vctable-prop-items
+component: VcTable
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, items]
+title: "VcTable :items prop"
+description: "items property for VcTable"
+---
+
 # Capability: items
 
 ## Type

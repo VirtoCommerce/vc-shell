@@ -1,3 +1,14 @@
+---
+id: vcgallery-prop-loading
+component: VcGallery
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, loading]
+title: "VcGallery :loading prop"
+description: "loading property for VcGallery"
+---
+
 # Capability: loading
 
 ## Type

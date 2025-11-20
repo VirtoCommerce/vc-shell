@@ -1,3 +1,14 @@
+---
+id: vcselect-prop-optionLabel
+component: VcSelect
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, optionLabel]
+title: "VcSelect :optionLabel prop"
+description: "optionLabel property for VcSelect"
+---
+
 # Capability: optionLabel
 
 ## Type

@@ -1,3 +1,9 @@
+---
+id: null
+type: null
+complexity: SIMPLE
+---
+
 # Blade Details Pattern (Form Layout)
 
 This pattern is used for creating or editing a single item with form fields, validation, and save/delete operations.

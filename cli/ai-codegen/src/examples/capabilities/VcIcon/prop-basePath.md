@@ -1,3 +1,14 @@
+---
+id: vcicon-prop-basePath
+component: VcIcon
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, basePath]
+title: "VcIcon :basePath prop"
+description: "basePath property for VcIcon"
+---
+
 # Capability: basePath
 
 ## Type

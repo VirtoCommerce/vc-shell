@@ -1,3 +1,14 @@
+---
+id: vctextarea-prop-modelValue
+component: VcTextarea
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, modelValue]
+title: "VcTextarea :modelValue prop"
+description: "modelValue property for VcTextarea"
+---
+
 # Capability: modelValue
 
 ## Type

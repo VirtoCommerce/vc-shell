@@ -1,3 +1,14 @@
+---
+id: vcfield-prop-label
+component: VcField
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, label]
+title: "VcField :label prop"
+description: "label property for VcField"
+---
+
 # Capability: label
 
 ## Type

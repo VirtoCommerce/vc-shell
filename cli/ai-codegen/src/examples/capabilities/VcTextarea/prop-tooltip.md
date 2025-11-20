@@ -1,3 +1,14 @@
+---
+id: vctextarea-prop-tooltip
+component: VcTextarea
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, tooltip]
+title: "VcTextarea :tooltip prop"
+description: "tooltip property for VcTextarea"
+---
+
 # Capability: tooltip
 
 ## Type

@@ -1,3 +1,14 @@
+---
+id: vcinput-prop-clearable
+component: VcInput
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, clearable]
+title: "VcInput :clearable prop"
+description: "clearable property for VcInput"
+---
+
 # Capability: clearable
 
 ## Type

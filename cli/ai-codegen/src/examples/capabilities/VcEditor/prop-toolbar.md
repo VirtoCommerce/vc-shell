@@ -1,3 +1,14 @@
+---
+id: vceditor-prop-toolbar
+component: VcEditor
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, toolbar]
+title: "VcEditor :toolbar prop"
+description: "toolbar property for VcEditor"
+---
+
 # Capability: toolbar
 
 ## Type

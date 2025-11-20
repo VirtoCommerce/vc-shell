@@ -1,3 +1,14 @@
+---
+id: vcmultivalue-prop-loading
+component: VcMultivalue
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, loading]
+title: "VcMultivalue :loading prop"
+description: "loading property for VcMultivalue"
+---
+
 # Capability: loading
 
 ## Type

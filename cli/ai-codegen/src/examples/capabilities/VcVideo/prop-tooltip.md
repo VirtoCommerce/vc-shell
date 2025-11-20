@@ -1,3 +1,14 @@
+---
+id: vcvideo-prop-tooltip
+component: VcVideo
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, tooltip]
+title: "VcVideo :tooltip prop"
+description: "tooltip property for VcVideo"
+---
+
 # Capability: tooltip
 
 ## Type

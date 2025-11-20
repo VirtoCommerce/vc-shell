@@ -1,3 +1,14 @@
+---
+id: vcimage-prop-rounded
+component: VcImage
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, rounded]
+title: "VcImage :rounded prop"
+description: "rounded property for VcImage"
+---
+
 # Capability: rounded
 
 ## Type

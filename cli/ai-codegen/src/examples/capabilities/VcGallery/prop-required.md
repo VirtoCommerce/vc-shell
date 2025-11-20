@@ -1,3 +1,14 @@
+---
+id: vcgallery-prop-required
+component: VcGallery
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, required]
+title: "VcGallery :required prop"
+description: "required property for VcGallery"
+---
+
 # Capability: required
 
 ## Type

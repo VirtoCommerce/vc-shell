@@ -1,3 +1,14 @@
+---
+id: vccheckbox-prop-size
+component: VcCheckbox
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, size]
+title: "VcCheckbox :size prop"
+description: "size property for VcCheckbox"
+---
+
 # Capability: size
 
 ## Type

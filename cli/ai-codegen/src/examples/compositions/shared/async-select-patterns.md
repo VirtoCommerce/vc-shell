@@ -1,3 +1,13 @@
+---
+id: composition-shared-async-select-patterns
+type: COMPOSITION
+complexity: MODERATE
+category: composition
+tags: [composition, shared]
+title: "Async Select Patterns"
+description: "Async Select Patterns composition for shared blades"
+---
+
 # Async Select Patterns
 
 Dynamic VcSelect with async data loading and search.

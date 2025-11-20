@@ -1,3 +1,14 @@
+---
+id: vctable-slot-header
+component: VcTable
+type: SLOT
+complexity: MODERATE
+category: component
+tags: [slot, header]
+title: "VcTable #header slot"
+description: "header slot for VcTable"
+---
+
 # Capability: header
 
 ## Type

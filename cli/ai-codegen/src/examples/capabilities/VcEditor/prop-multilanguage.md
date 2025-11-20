@@ -1,3 +1,14 @@
+---
+id: vceditor-prop-multilanguage
+component: VcEditor
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, multilanguage]
+title: "VcEditor :multilanguage prop"
+description: "multilanguage property for VcEditor"
+---
+
 # Capability: multilanguage
 
 ## Type

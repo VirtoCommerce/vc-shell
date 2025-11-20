@@ -1,3 +1,14 @@
+---
+id: vcgallery-prop-disabled
+component: VcGallery
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, disabled]
+title: "VcGallery :disabled prop"
+description: "disabled property for VcGallery"
+---
+
 # Capability: disabled
 
 ## Type

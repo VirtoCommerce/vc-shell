@@ -1,3 +1,14 @@
+---
+id: vcinput-slot-prepend
+component: VcInput
+type: SLOT
+complexity: MODERATE
+category: component
+tags: [slot, prepend]
+title: "VcInput #prepend slot"
+description: "prepend slot for VcInput"
+---
+
 # Capability: prepend
 
 ## Type

@@ -1,3 +1,14 @@
+---
+id: vctable-prop-paginationVariant
+component: VcTable
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, paginationVariant]
+title: "VcTable :paginationVariant prop"
+description: "paginationVariant property for VcTable"
+---
+
 # Capability: paginationVariant
 
 ## Type

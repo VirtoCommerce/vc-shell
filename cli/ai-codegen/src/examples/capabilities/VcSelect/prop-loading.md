@@ -1,3 +1,14 @@
+---
+id: vcselect-prop-loading
+component: VcSelect
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, loading]
+title: "VcSelect :loading prop"
+description: "loading property for VcSelect"
+---
+
 # Capability: loading
 
 ## Type

@@ -1,3 +1,14 @@
+---
+id: vccheckbox-prop-falseValue
+component: VcCheckbox
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, falseValue]
+title: "VcCheckbox :falseValue prop"
+description: "falseValue property for VcCheckbox"
+---
+
 # Capability: falseValue
 
 ## Type

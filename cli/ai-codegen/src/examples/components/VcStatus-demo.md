@@ -1,3 +1,13 @@
+---
+id: component-VcStatus-demo
+type: COMPONENT
+complexity: SIMPLE
+category: component
+tags: [component]
+title: "VcStatus Demo"
+description: "VcStatus Demo component example"
+---
+
 # VcStatus Demo
 
 Real-world status badge examples for orders, products, services, and workflows.

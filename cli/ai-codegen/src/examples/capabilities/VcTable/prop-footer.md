@@ -1,3 +1,14 @@
+---
+id: vctable-prop-footer
+component: VcTable
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, footer]
+title: "VcTable :footer prop"
+description: "footer property for VcTable"
+---
+
 # Capability: footer
 
 ## Type

@@ -1,3 +1,14 @@
+---
+id: vcbreadcrumbs-slot-trigger
+component: VcBreadcrumbs
+type: SLOT
+complexity: MODERATE
+category: component
+tags: [slot, trigger]
+title: "VcBreadcrumbs #trigger slot"
+description: "trigger slot for VcBreadcrumbs"
+---
+
 # Capability: trigger
 
 ## Type

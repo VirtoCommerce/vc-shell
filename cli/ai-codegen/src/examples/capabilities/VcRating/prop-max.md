@@ -1,3 +1,14 @@
+---
+id: vcrating-prop-max
+component: VcRating
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, max]
+title: "VcRating :max prop"
+description: "max property for VcRating"
+---
+
 # Capability: max
 
 ## Type

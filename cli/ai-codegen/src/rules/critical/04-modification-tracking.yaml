@@ -1,0 +1,35 @@
+id: "04"
+name: "Modification Tracking"
+category: "critical"
+priority: 100
+enabled: true
+applies_to:
+  - "details"
+  - "edit"
+
+description: |
+  Use useModificationTracker for tracking entity changes in details blades.
+
+correct_pattern:
+  inline: |
+    ```typescript
+    // ✅ CORRECT
+    const { currentValue, isModified, resetModificationState } = useModificationTracker(entity);
+    
+    // After save:
+    resetModificationState();
+    
+    // Return currentValue, not original ref:
+    return {
+      entity: currentValue,
+      modified: isModified,
+    };
+    ```
+
+validations:
+  - type: "regex"
+    pattern: "useModificationTracker\\("
+    message: "✓ Using useModificationTracker for modification tracking"
+
+auto_fix:
+  enabled: false

@@ -1,3 +1,14 @@
+---
+id: vcselect-prop-prefix
+component: VcSelect
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, prefix]
+title: "VcSelect :prefix prop"
+description: "prefix property for VcSelect"
+---
+
 # Capability: prefix
 
 ## Type

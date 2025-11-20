@@ -1,3 +1,13 @@
+---
+id: component-VcBadge-demo
+type: COMPONENT
+complexity: SIMPLE
+category: component
+tags: [component]
+title: "VcBadge Demo"
+description: "VcBadge Demo component example"
+---
+
 # VcBadge Demo
 
 Real-world badge examples from vendor-portal application.

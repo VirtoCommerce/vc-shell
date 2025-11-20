@@ -1,3 +1,14 @@
+---
+id: vcbadge-prop-clickable
+component: VcBadge
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, clickable]
+title: "VcBadge :clickable prop"
+description: "clickable property for VcBadge"
+---
+
 # Capability: clickable
 
 ## Type

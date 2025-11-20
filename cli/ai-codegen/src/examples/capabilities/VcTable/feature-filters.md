@@ -1,3 +1,14 @@
+---
+id: vctable-feature-filters
+component: VcTable
+type: USAGE
+complexity: SIMPLE
+category: component
+tags: [usage]
+title: "VcTable - feature-filters"
+description: "Usage example for VcTable"
+---
+
 # Capability: Advanced Filters
 
 ## Type

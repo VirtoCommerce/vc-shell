@@ -1,3 +1,14 @@
+---
+id: vcbreadcrumbs-prop-variant
+component: VcBreadcrumbs
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, variant]
+title: "VcBreadcrumbs :variant prop"
+description: "variant property for VcBreadcrumbs"
+---
+
 # Capability: variant
 
 ## Type

@@ -1,3 +1,14 @@
+---
+id: vcmultivalue-prop-errorMessage
+component: VcMultivalue
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, errorMessage]
+title: "VcMultivalue :errorMessage prop"
+description: "errorMessage property for VcMultivalue"
+---
+
 # Capability: errorMessage
 
 ## Type

@@ -1,3 +1,14 @@
+---
+id: vcslider-slot-nextBtn
+component: VcSlider
+type: SLOT
+complexity: MODERATE
+category: component
+tags: [slot, nextBtn]
+title: "VcSlider #nextBtn slot"
+description: "nextBtn slot for VcSlider"
+---
+
 # Capability: nextBtn
 
 ## Type

@@ -1,3 +1,14 @@
+---
+id: vcinput-slot-hint
+component: VcInput
+type: SLOT
+complexity: MODERATE
+category: component
+tags: [slot, hint]
+title: "VcInput #hint slot"
+description: "hint slot for VcInput"
+---
+
 # Capability: hint
 
 ## Type

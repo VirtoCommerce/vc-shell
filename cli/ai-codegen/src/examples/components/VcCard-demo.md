@@ -1,3 +1,13 @@
+---
+id: component-VcCard-demo
+type: COMPONENT
+complexity: SIMPLE
+category: component
+tags: [component]
+title: "VcCard Demo"
+description: "VcCard Demo component example"
+---
+
 # VcCard Demo
 
 Real-world card examples.

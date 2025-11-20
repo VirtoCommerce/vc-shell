@@ -1,3 +1,13 @@
+---
+id: component-VcSlider-demo
+type: COMPONENT
+complexity: SIMPLE
+category: component
+tags: [component]
+title: "VcSlider Demo"
+description: "VcSlider Demo component example"
+---
+
 # VcSlider Demo
 
 Real-world slider/carousel examples for image galleries, product showcases, and content carousels.

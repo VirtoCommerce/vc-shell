@@ -1,3 +1,13 @@
+---
+id: composition-list-multiselect
+type: COMPOSITION
+complexity: MODERATE
+category: composition
+tags: [composition, list, list]
+title: "Multiselect"
+description: "Multiselect composition for list blades"
+---
+
 # Multiselect Pattern
 
 Adds row selection with bulk actions.

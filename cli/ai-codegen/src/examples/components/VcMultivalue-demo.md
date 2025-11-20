@@ -1,3 +1,13 @@
+---
+id: component-VcMultivalue-demo
+type: COMPONENT
+complexity: SIMPLE
+category: component
+tags: [component]
+title: "VcMultivalue Demo"
+description: "VcMultivalue Demo component example"
+---
+
 # VcMultivalue Demo
 
 Real-world multivalue input examples for tags, keywords, and multi-select lists.

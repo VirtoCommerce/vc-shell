@@ -1,143 +1,136 @@
+<!-- @vue-generic {IOffer} -->
 <template>
   <VcBlade
     v-loading="loading"
-    :title="$t('OFFERS.PAGES.LIST.TITLE')"
+    :title="bladeTitle"
+    width="50%"
     :expanded="expanded"
     :closable="closable"
     :toolbar-items="bladeToolbar"
-    width="100%"
     @close="$emit('close:blade')"
     @expand="$emit('expand:blade')"
     @collapse="$emit('collapse:blade')"
   >
     <VcTable
-      :expanded="props.expanded"
-      :multiselect="true"
-      :columns="columns"
+      :total-label="$t('OFFERS.PAGES.LIST.TABLE.TOTALS')"
       :items="items"
+      :selected-item-id="selectedItemId"
+      :search-value="searchValue"
+      :columns="tableColumns"
+      :sort="sortExpression"
       :pages="pages"
       :current-page="currentPage"
-      :search-value="searchKeyword"
-      :selected-item-id="selectedItemId"
+      :total-count="totalCount"
+      :expanded="expanded"
       :active-filter-count="activeFilterCount"
+      :empty="empty"
+      :notfound="notfound"
+      :multiselect="true"
       state-key="offers_list"
-      @itemClick="onItemClick"
-      @headerClick="onHeaderClick"
-      @paginationClick="onPaginationClick"
-      @selectionChanged="onSelectionChanged"
-      @search:change="onSearchChange"
+      class="tw-grow tw-basis-0"
+      @item-click="onItemClick"
+      @header-click="onHeaderClick"
+      @pagination-click="onPaginationClick"
+      @search:change="onSearchList"
+      @scroll:ptr="reload"
+      @selection-changed="onSelectionChanged"
     >
-      <template #filters="{ closePanel }">
-        <div class="tw-p-4">
+      <!-- Custom column slots -->
+      <template #item_image="{ item }">
+        <VcImage
+          :src="item.product?.imgSrc"
+          size="s"
+          aspect="1x1"
+          :bordered="true"
+        />
+      </template>
+
+      <template #item_productName="{ item }">
+        <div class="tw-truncate">
+          {{ item.product?.name }}
+        </div>
+      </template>
+
+      <template #item_createdDate="{ item }">
+        <span>{{ formatDateAgo(item.createdDate) }}</span>
+      </template>
+
+      <template #item_isActive="{ item }">
+        <VcStatusIcon :status="item.isActive" />
+      </template>
+
+      <template #item_isDefault="{ item }">
+        <VcStatusIcon
+          v-if="showDefaultColumn"
+          :status="item.isDefault"
+        />
+      </template>
+
+      <!-- Filters slot -->
+      <template #filters>
+        <div class="tw-p-4 tw-space-y-4">
+          <!-- Search by keywords -->
           <VcInput
-            v-model="searchKeyword"
+            v-model="stagedFilters.keyword"
+            :label="$t('OFFERS.PAGES.LIST.FILTERS.SEARCH')"
             :placeholder="$t('OFFERS.PAGES.LIST.FILTERS.SEARCH_PLACEHOLDER')"
-            class="tw-mb-4"
             clearable
-            @update:model-value="onSearchChange"
           />
+
+          <!-- Sort by -->
+          <VcSelect
+            v-model="stagedFilters.sort"
+            :label="$t('OFFERS.PAGES.LIST.FILTERS.SORT_BY')"
+            :options="sortOptions"
+            option-label="label"
+            option-value="value"
+          />
+
+          <!-- Filter actions -->
           <div class="tw-flex tw-gap-2 tw-justify-end">
             <VcButton
-              size="sm"
-              @click="
-                resetFilters();
-                closePanel();
-              "
+              @click="resetFilters"
+              variant="outline"
             >
-              {{ $t("COMMON.RESET") }}
+              {{ $t("OFFERS.PAGES.LIST.FILTERS.RESET") }}
             </VcButton>
             <VcButton
+              @click="applyFilters"
               variant="primary"
-              size="sm"
-              @click="
-                applyFilters();
-                closePanel();
-              "
             >
-              {{ $t("COMMON.APPLY") }}
+              {{ $t("OFFERS.PAGES.LIST.FILTERS.APPLY") }}
             </VcButton>
           </div>
         </div>
       </template>
 
-      <template #item_productImage="{ item }">
-        <div
-          class="tw-w-10 tw-h-10 tw-rounded tw-overflow-hidden tw-flex tw-items-center tw-justify-center tw-bg-gray-100"
-        >
-          <img
-            v-if="item.productImage"
-            :src="item.productImage"
-            :alt="item.productName"
-            class="tw-w-full tw-h-full tw-object-cover"
+      <!-- Mobile item template -->
+      <template #mobile-item="{ item }">
+        <div class="tw-flex tw-items-center tw-gap-3 tw-p-3">
+          <VcImage
+            :src="item.product?.imgSrc"
+            size="m"
+            aspect="1x1"
+            :bordered="true"
           />
-          <VcIcon
-            v-else
-            icon="fas fa-image"
-            size="sm"
-            class="tw-text-gray-400"
-          />
-        </div>
-      </template>
-
-      <template #item_productName="{ item }">
-        <span class="tw-text-blue-600 tw-cursor-pointer hover:tw-underline">
-          {{ item.productName }}
-        </span>
-      </template>
-
-      <template #item_createdDate="{ item }">
-        {{ formatDateAgo(item.createdDate) }}
-      </template>
-
-      <template #item_isActive="{ item }">
-        <VcIcon
-          :icon="item.isActive ? 'fas fa-check-circle' : 'fas fa-times-circle'"
-          :class="item.isActive ? 'tw-text-green-500' : 'tw-text-red-500'"
-        />
-      </template>
-
-      <template #item_isDefault="{ item }">
-        <VcIcon
-          v-if="settings.allowDefault"
-          :icon="item.isDefault ? 'fas fa-star' : 'far fa-star'"
-          :class="item.isDefault ? 'tw-text-yellow-500' : 'tw-text-gray-400'"
-        />
-      </template>
-
-      <template #empty>
-        <div class="tw-flex tw-flex-col tw-items-center tw-justify-center tw-py-12">
-          <VcIcon
-            icon="fas fa-box-open"
-            size="xxl"
-            class="tw-text-gray-300 tw-mb-4"
-          />
-          <p class="tw-text-lg tw-font-medium tw-mb-2">{{ $t("OFFERS.PAGES.LIST.EMPTY.TITLE") }}</p>
-          <p class="tw-text-gray-500 tw-mb-6">{{ $t("OFFERS.PAGES.LIST.EMPTY.MESSAGE") }}</p>
-          <VcButton
-            variant="primary"
-            @click="openDetailsForNew"
-          >
-            <VcIcon
-              icon="fas fa-plus"
-              class="tw-mr-2"
+          <div class="tw-flex-1 tw-min-w-0">
+            <div class="tw-font-semibold tw-truncate">
+              {{ item.product?.name }}
+            </div>
+            <div class="tw-text-sm tw-text-gray-500">
+              {{ $t("OFFERS.PAGES.LIST.TABLE.HEADER.SKU") }}: {{ item.sku }}
+            </div>
+            <div class="tw-text-xs tw-text-gray-400">
+              {{ formatDateAgo(item.createdDate) }}
+            </div>
+          </div>
+          <div class="tw-flex tw-flex-col tw-items-end tw-gap-1">
+            <VcStatusIcon :status="item.isActive" />
+            <VcStatusIcon
+              v-if="showDefaultColumn"
+              :status="item.isDefault"
             />
-            {{ $t("OFFERS.PAGES.LIST.EMPTY.ACTION") }}
-          </VcButton>
-        </div>
-      </template>
-
-      <template #notfound>
-        <div class="tw-flex tw-flex-col tw-items-center tw-justify-center tw-py-12">
-          <VcIcon
-            icon="fas fa-search"
-            size="xxl"
-            class="tw-text-gray-300 tw-mb-4"
-          />
-          <p class="tw-text-lg tw-font-medium tw-mb-2">{{ $t("OFFERS.PAGES.LIST.NOTFOUND.TITLE") }}</p>
-          <p class="tw-text-gray-500 tw-mb-6">{{ $t("OFFERS.PAGES.LIST.NOTFOUND.MESSAGE") }}</p>
-          <VcButton @click="resetSearch">
-            {{ $t("OFFERS.PAGES.LIST.NOTFOUND.ACTION") }}
-          </VcButton>
+          </div>
         </div>
       </template>
     </VcTable>
@@ -145,36 +138,35 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, markRaw } from "vue";
+import { computed, markRaw, onMounted, ref } from "vue";
 import { useI18n } from "vue-i18n";
-import { useBladeNavigation } from "@vc-shell/framework";
-import { notification } from "@vc-shell/framework";
-import type { IBladeToolbar } from "@vc-shell/framework";
-import { usePopup } from "@vc-shell/framework";
-import useOffersList from "../composables/useOffersList";
+import { IBladeToolbar, IParentCallArgs, useBladeNavigation, usePopup, notification } from "@vc-shell/framework";
+import { useOffersList } from "../composables";
 import OfferDetails from "./offer-details.vue";
 import moment from "moment";
 
-defineOptions({
-  name: "OffersList",
-  url: "/offers",
-  isWorkspace: true,
-  menuItem: {
-    title: "OFFERS.MENU.TITLE",
-    icon: "fas fa-tags",
-    priority: 10,
-  },
-});
+interface IOffer {
+  id: string;
+  sku: string;
+  isActive: boolean;
+  isDefault: boolean;
+  createdDate: string;
+  product?: {
+    id: string;
+    name: string;
+    imgSrc?: string;
+  };
+}
 
-interface Props {
+export interface Props {
   expanded?: boolean;
   closable?: boolean;
   param?: string;
   options?: Record<string, unknown>;
 }
 
-interface Emits {
-  (event: "parent:call", args: { method: string; args?: unknown }): void;
+export interface Emits {
+  (event: "parent:call", args: IParentCallArgs): void;
   (event: "close:blade"): void;
   (event: "expand:blade"): void;
   (event: "collapse:blade"): void;
@@ -187,28 +179,167 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<Emits>();
 
+defineOptions({
+  name: "OffersList",
+  url: "/offers",
+  isWorkspace: true,
+  menuItem: {
+    title: "OFFERS.MENU.TITLE",
+    icon: "material-sell",
+    priority: 1,
+  },
+});
+
 const { t } = useI18n({ useScope: "global" });
 const { openBlade } = useBladeNavigation();
 const { showConfirmation } = usePopup();
 
-// Composable for list data and operations
-const { items, loading, totalCount, currentPage, pages, loadOffers, deleteOffers, settings } = useOffersList();
+// Use the list composable
+const {
+  items,
+  loading,
+  totalCount,
+  pages,
+  currentPage,
+  searchValue,
+  sortExpression,
+  selectedItemId,
+  activeFilterCount,
+  load,
+  reload,
+  remove,
+  bulkDelete,
+  settings,
+} = useOffersList();
 
-// Local UI state
-const searchKeyword = ref("");
-const activeFilterCount = ref(0);
-const selectedItemId = ref<string>();
-const selectedIds = ref<string[]>([]);
-const sortExpression = ref("");
+// Local state for filters
+const stagedFilters = ref<{
+  keyword?: string;
+  sort?: string;
+}>({
+  keyword: searchValue.value,
+  sort: sortExpression.value,
+});
 
-// Format date ago
-function formatDateAgo(date: string | Date): string {
-  return moment(date).fromNow();
-}
+// Selected items for multiselect
+const selectedItems = ref<string[]>([]);
 
-// Event Handlers
-async function onItemClick(item: { id: string }) {
-  await openBlade({
+const bladeTitle = computed(() => t("OFFERS.PAGES.LIST.TITLE"));
+
+// Show default column based on settings
+const showDefaultColumn = computed(() => settings.value?.allowMultipleOffers === true);
+
+// Sort options
+const sortOptions = computed(() => [
+  { label: t("OFFERS.PAGES.LIST.FILTERS.SORT_NAME"), value: "product.name:asc" },
+  { label: t("OFFERS.PAGES.LIST.FILTERS.SORT_DATE"), value: "createdDate:desc" },
+  { label: t("OFFERS.PAGES.LIST.FILTERS.SORT_SKU"), value: "sku:asc" },
+  { label: t("OFFERS.PAGES.LIST.FILTERS.SORT_ACTIVE"), value: "isActive:desc" },
+  { label: t("OFFERS.PAGES.LIST.FILTERS.SORT_DEFAULT"), value: "isDefault:desc" },
+]);
+
+// Empty and Not Found state configurations
+const empty = {
+  icon: "fas fa-box-open",
+  text: computed(() => t("OFFERS.PAGES.LIST.EMPTY.NO_ITEMS")),
+  action: computed(() => t("OFFERS.PAGES.LIST.EMPTY.ADD_OFFER")),
+  clickHandler: () => {
+    addOffer();
+  },
+};
+
+const notfound = {
+  icon: "fas fa-search",
+  text: computed(() => t("OFFERS.PAGES.LIST.NOT_FOUND.EMPTY")),
+  action: computed(() => t("OFFERS.PAGES.LIST.NOT_FOUND.RESET")),
+  clickHandler: async () => {
+    onSearchList("");
+    resetFilters();
+  },
+};
+
+// Table columns
+const tableColumns = computed(() => {
+  const columns = [
+    {
+      id: "image",
+      title: t("OFFERS.PAGES.LIST.TABLE.HEADER.IMAGE"),
+      width: "80px",
+      sortable: false,
+      alwaysVisible: true,
+    },
+    {
+      id: "productName",
+      title: t("OFFERS.PAGES.LIST.TABLE.HEADER.PRODUCT_NAME"),
+      width: "auto",
+      sortable: true,
+    },
+    {
+      id: "createdDate",
+      title: t("OFFERS.PAGES.LIST.TABLE.HEADER.CREATED"),
+      width: "180px",
+      sortable: true,
+      type: "date-ago",
+    },
+    {
+      id: "sku",
+      title: t("OFFERS.PAGES.LIST.TABLE.HEADER.SKU"),
+      width: "150px",
+      sortable: true,
+    },
+    {
+      id: "isActive",
+      title: t("OFFERS.PAGES.LIST.TABLE.HEADER.ENABLED"),
+      width: "100px",
+      sortable: true,
+    },
+  ];
+
+  // Add default column conditionally
+  if (showDefaultColumn.value) {
+    columns.push({
+      id: "isDefault",
+      title: t("OFFERS.PAGES.LIST.TABLE.HEADER.DEFAULT"),
+      width: "100px",
+      sortable: true,
+    });
+  }
+
+  return columns;
+});
+
+// Toolbar configuration
+const bladeToolbar = computed((): IBladeToolbar[] => [
+  {
+    id: "refresh",
+    title: t("OFFERS.PAGES.LIST.TOOLBAR.REFRESH"),
+    icon: "fas fa-sync",
+    async clickHandler() {
+      await reload();
+    },
+  },
+  {
+    id: "add",
+    title: t("OFFERS.PAGES.LIST.TOOLBAR.ADD"),
+    icon: "fas fa-plus",
+    clickHandler() {
+      addOffer();
+    },
+  },
+  {
+    id: "delete-selected",
+    title: t("OFFERS.PAGES.LIST.TOOLBAR.DELETE_SELECTED"),
+    icon: "fas fa-trash",
+    isVisible: selectedItems.value.length > 0,
+    clickHandler() {
+      deleteSelected();
+    },
+  },
+]);
+
+// Event handlers
+function onItemClick(item: IOffer) {
+  openBlade({
     blade: markRaw(OfferDetails),
     param: item.id,
     onOpen() {
@@ -216,156 +347,94 @@ async function onItemClick(item: { id: string }) {
     },
     onClose() {
       selectedItemId.value = undefined;
-      // loadOffers();
+      reload();
     },
   });
 }
 
-function onHeaderClick(column: { id: string }) {
-  const sortableColumns = ["productName", "createdDate", "sku", "isActive", "isDefault"];
-  if (!sortableColumns.includes(column.id)) return;
-
-  // Toggle sort direction
-  if (sortExpression.value === column.id) {
-    sortExpression.value = `${column.id}:desc`;
-  } else if (sortExpression.value === `${column.id}:desc`) {
-    sortExpression.value = "";
-  } else {
-    sortExpression.value = column.id;
-  }
-
-  // Reload with new sort
-  loadOffers({ sort: sortExpression.value });
+function onHeaderClick(item: { id: string }) {
+  const sortOrder = sortExpression.value?.startsWith(item.id + ":desc") ? "asc" : "desc";
+  sortExpression.value = `${item.id}:${sortOrder}`;
 }
 
-async function onPaginationClick(page: number) {
-  await loadOffers({ page, sort: sortExpression.value });
+function onPaginationClick(page: number) {
+  currentPage.value = page;
 }
 
-function onSelectionChanged(ids: string[]) {
-  selectedIds.value = ids;
+function onSearchList(keyword: string) {
+  searchValue.value = keyword;
+  stagedFilters.value.keyword = keyword;
 }
 
-async function onSearchChange(keyword: string) {
-  searchKeyword.value = keyword;
-  await loadOffers({ page: 1, keyword: searchKeyword.value, sort: sortExpression.value });
+function onSelectionChanged(selectedIds: string[]) {
+  selectedItems.value = selectedIds;
 }
 
 function applyFilters() {
-  loadOffers({ keyword: searchKeyword.value, sort: sortExpression.value });
+  searchValue.value = stagedFilters.value.keyword || "";
+  sortExpression.value = stagedFilters.value.sort || "createdDate:desc";
+  activeFilterCount.value = (stagedFilters.value.keyword ? 1 : 0) + (stagedFilters.value.sort ? 1 : 0);
 }
 
 function resetFilters() {
-  searchKeyword.value = "";
+  stagedFilters.value = {
+    keyword: "",
+    sort: "createdDate:desc",
+  };
+  applyFilters();
   activeFilterCount.value = 0;
-  loadOffers({ page: 1 });
 }
 
-function resetSearch() {
-  searchKeyword.value = "";
-  loadOffers({ page: 1 });
-}
-
-async function openDetailsForNew() {
-  await openBlade({
-    blade: OfferDetails,
+function addOffer() {
+  openBlade({
+    blade: markRaw(OfferDetails),
     onClose() {
-      loadOffers();
+      reload();
     },
   });
 }
 
-async function deleteSelectedOffers() {
+async function deleteOffer(id: string) {
+  const confirmed = await showConfirmation(t("OFFERS.PAGES.LIST.DELETE.CONFIRMATION", { count: 1 }));
+
+  if (!confirmed) return;
+
+  try {
+    await remove(id);
+    notification.success(t("OFFERS.PAGES.LIST.DELETE.SUCCESS"));
+  } catch (error) {
+    notification.error(t("OFFERS.PAGES.LIST.DELETE.ERROR"));
+    console.error("[OffersList] Error deleting offer:", error);
+  }
+}
+
+async function deleteSelected() {
   const confirmed = await showConfirmation(
-    t("OFFERS.PAGES.LIST.CONFIRM_DELETE_SELECTED", { count: selectedIds.value.length }),
+    t("OFFERS.PAGES.LIST.DELETE.CONFIRMATION", { count: selectedItems.value.length }),
   );
 
   if (!confirmed) return;
 
   try {
-    await deleteOffers(selectedIds.value);
-    selectedIds.value = [];
-    notification.success(t("OFFERS.PAGES.LIST.DELETE_SUCCESS"));
-    await loadOffers();
+    await bulkDelete(selectedItems.value);
+    selectedItems.value = [];
+    notification.success(t("OFFERS.PAGES.LIST.DELETE.SUCCESS"));
   } catch (error) {
-    notification.error(t("OFFERS.PAGES.LIST.DELETE_ERROR"));
-    console.error("Error deleting offers:", error);
+    notification.error(t("OFFERS.PAGES.LIST.DELETE.ERROR"));
+    console.error("[OffersList] Error deleting offers:", error);
   }
 }
 
-// Toolbar
-const bladeToolbar = ref<IBladeToolbar[]>([
-  {
-    id: "refresh",
-    title: computed(() => t("OFFERS.PAGES.LIST.TOOLBAR.REFRESH")),
-    icon: "fas fa-sync",
-    async clickHandler() {
-      await loadOffers({ sort: sortExpression.value });
-    },
-  },
-  {
-    id: "add",
-    title: computed(() => t("OFFERS.PAGES.LIST.TOOLBAR.ADD")),
-    icon: "fas fa-plus",
-    async clickHandler() {
-      await openDetailsForNew();
-    },
-  },
-  {
-    id: "delete",
-    title: computed(() => t("OFFERS.PAGES.LIST.TOOLBAR.DELETE_SELECTED")),
-    icon: "fas fa-trash",
-    disabled: computed(() => selectedIds.value.length === 0),
-    async clickHandler() {
-      await deleteSelectedOffers();
-    },
-  },
-]);
+function formatDateAgo(date: string): string {
+  return moment(date).fromNow();
+}
 
-// Columns configuration
-const columns = computed(() => [
-  {
-    id: "productImage",
-    title: t("OFFERS.PAGES.LIST.COLUMNS.PRODUCT_IMAGE"),
-    width: 60,
-  },
-  {
-    id: "productName",
-    title: t("OFFERS.PAGES.LIST.COLUMNS.PRODUCT_NAME"),
-    sortable: true,
-  },
-  {
-    id: "createdDate",
-    title: t("OFFERS.PAGES.LIST.COLUMNS.CREATED_DATE"),
-    sortable: true,
-  },
-  {
-    id: "sku",
-    title: t("OFFERS.PAGES.LIST.COLUMNS.SKU"),
-    sortable: true,
-  },
-  {
-    id: "isActive",
-    title: t("OFFERS.PAGES.LIST.COLUMNS.IS_ACTIVE"),
-    sortable: true,
-    width: 100,
-  },
-  {
-    id: "isDefault",
-    title: t("OFFERS.PAGES.LIST.COLUMNS.IS_DEFAULT"),
-    sortable: true,
-    width: 100,
-  },
-]);
-
-// Initialize
 onMounted(async () => {
-  await loadOffers();
+  await load();
 });
 
-// Expose methods for parent blade
 defineExpose({
-  title: computed(() => t("OFFERS.PAGES.LIST.TITLE")),
-  reload: () => loadOffers({ sort: sortExpression.value }),
+  reload,
+  title: bladeTitle,
 });
 </script>

@@ -1,3 +1,14 @@
+---
+id: vclabel-prop-multilanguage
+component: VcLabel
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, multilanguage]
+title: "VcLabel :multilanguage prop"
+description: "multilanguage property for VcLabel"
+---
+
 # Capability: multilanguage
 
 ## Type

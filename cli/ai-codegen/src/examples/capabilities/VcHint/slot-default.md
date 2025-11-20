@@ -1,3 +1,14 @@
+---
+id: vchint-slot-default
+component: VcHint
+type: SLOT
+complexity: MODERATE
+category: component
+tags: [slot, default]
+title: "VcHint #default slot"
+description: "default slot for VcHint"
+---
+
 # Capability: default
 
 ## Type

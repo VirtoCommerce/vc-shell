@@ -1,3 +1,14 @@
+---
+id: vcmultivalue-prop-tooltip
+component: VcMultivalue
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, tooltip]
+title: "VcMultivalue :tooltip prop"
+description: "tooltip property for VcMultivalue"
+---
+
 # Capability: tooltip
 
 ## Type

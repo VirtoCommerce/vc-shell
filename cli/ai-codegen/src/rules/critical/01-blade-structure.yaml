@@ -1,0 +1,85 @@
+id: "01"
+name: "Blade Props and Emits Structure"
+category: "critical"
+priority: 100
+enabled: true
+applies_to:
+  - "all"
+
+description: |
+  All blades MUST follow the standard props/emits interface structure.
+  This ensures compatibility with blade navigation system.
+
+forbidden:
+  - pattern: "defineProps<.*>\\(\\s*\\)"
+    reason: "Use interface Props with export for type safety"
+    severity: "warning"
+
+required:
+  - pattern: "export interface Props"
+    when: "All blades"
+    severity: "error"
+
+  - pattern: "export interface Emits"
+    when: "All blades"
+    severity: "error"
+
+correct_pattern:
+  inline: |
+    ```typescript
+    // ✅ CORRECT: Standard blade props/emits structure
+    export interface Props {
+      expanded?: boolean;
+      closable?: boolean;
+      param?: string;  // Route param (e.g., ID for details blade)
+      options?: Record<string, unknown>;  // Additional options
+    }
+
+    export interface Emits {
+      (event: "parent:call", args: IParentCallArgs): void;
+      (event: "close:blade"): void;
+      (event: "expand:blade"): void;
+      (event: "collapse:blade"): void;
+    }
+
+    const props = withDefaults(defineProps<Props>(), {
+      expanded: true,
+      closable: true,
+    });
+
+    const emit = defineEmits<Emits>();
+    ```
+
+wrong_pattern:
+  inline: |
+    ```typescript
+    // ❌ WRONG: Inline props without export
+    const props = defineProps<{
+      id?: string;
+      data?: any;
+    }>();
+
+    // ❌ WRONG: Missing standard blade events
+    const emit = defineEmits<{
+      (e: "close"): void;
+    }>();
+    ```
+
+instructions: |
+  1. Always export Props and Emits interfaces
+  2. Include standard blade props (expanded, closable, param, options)
+  3. Include standard blade emits (parent:call, close:blade, expand:blade, collapse:blade)
+  4. Use param prop for passing IDs to details blades
+  5. Use options prop for additional configuration
+
+validations:
+  - type: "regex"
+    pattern: "export interface Props"
+    message: "⚠️ Export Props interface for blade component"
+
+  - type: "regex"
+    pattern: "export interface Emits"
+    message: "⚠️ Export Emits interface for blade component"
+
+auto_fix:
+  enabled: false

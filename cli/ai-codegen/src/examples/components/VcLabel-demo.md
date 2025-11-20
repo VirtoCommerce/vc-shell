@@ -1,3 +1,13 @@
+---
+id: component-VcLabel-demo
+type: COMPONENT
+complexity: SIMPLE
+category: component
+tags: [component]
+title: "VcLabel Demo"
+description: "VcLabel Demo component example"
+---
+
 # VcLabel Demo
 
 Real-world label examples for form fields with required indicators, tooltips, and multilanguage support.

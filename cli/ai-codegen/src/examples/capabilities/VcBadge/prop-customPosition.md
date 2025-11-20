@@ -1,3 +1,14 @@
+---
+id: vcbadge-prop-customPosition
+component: VcBadge
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, customPosition]
+title: "VcBadge :customPosition prop"
+description: "customPosition property for VcBadge"
+---
+
 # Capability: customPosition
 
 ## Type

@@ -1,3 +1,16 @@
+---
+id: vcselect-slot-option
+component: VcSelect
+type: SLOT
+complexity: MODERATE
+category: ui
+tags: [slot, option, custom-rendering]
+critical: true
+related_rules: ["11"]
+title: "VcSelect #option slot"
+description: "Custom option rendering with correct slot scope"
+---
+
 # Capability: option
 
 ## Type

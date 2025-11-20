@@ -1,3 +1,14 @@
+---
+id: vcstatus-prop-dot
+component: VcStatus
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, dot]
+title: "VcStatus :dot prop"
+description: "dot property for VcStatus"
+---
+
 # Capability: dot
 
 ## Type

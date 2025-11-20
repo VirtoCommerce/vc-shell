@@ -1,3 +1,14 @@
+---
+id: vceditor-prop-placeholder
+component: VcEditor
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, placeholder]
+title: "VcEditor :placeholder prop"
+description: "placeholder property for VcEditor"
+---
+
 # Capability: placeholder
 
 ## Type

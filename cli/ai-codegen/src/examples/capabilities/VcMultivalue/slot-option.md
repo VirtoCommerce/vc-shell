@@ -1,3 +1,14 @@
+---
+id: vcmultivalue-slot-option
+component: VcMultivalue
+type: SLOT
+complexity: MODERATE
+category: component
+tags: [slot, option]
+title: "VcMultivalue #option slot"
+description: "option slot for VcMultivalue"
+---
+
 # Capability: option
 
 ## Type

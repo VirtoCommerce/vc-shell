@@ -1,3 +1,14 @@
+---
+id: vcselect-prop-required
+component: VcSelect
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, required]
+title: "VcSelect :required prop"
+description: "required property for VcSelect"
+---
+
 # Capability: required
 
 ## Type

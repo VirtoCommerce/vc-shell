@@ -1,3 +1,14 @@
+---
+id: vcinput-prop-loading
+component: VcInput
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, loading]
+title: "VcInput :loading prop"
+description: "loading property for VcInput"
+---
+
 # Capability: loading
 
 ## Type

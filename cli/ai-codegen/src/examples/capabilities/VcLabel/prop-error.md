@@ -1,3 +1,14 @@
+---
+id: vclabel-prop-error
+component: VcLabel
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, error]
+title: "VcLabel :error prop"
+description: "error property for VcLabel"
+---
+
 # Capability: error
 
 ## Type

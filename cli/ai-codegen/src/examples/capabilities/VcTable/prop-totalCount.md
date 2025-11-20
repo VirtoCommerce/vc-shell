@@ -1,3 +1,14 @@
+---
+id: vctable-prop-totalCount
+component: VcTable
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, totalCount]
+title: "VcTable :totalCount prop"
+description: "totalCount property for VcTable"
+---
+
 # Capability: totalCount
 
 ## Type

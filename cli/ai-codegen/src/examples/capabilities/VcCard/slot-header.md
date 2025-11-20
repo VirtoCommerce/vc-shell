@@ -1,3 +1,14 @@
+---
+id: vccard-slot-header
+component: VcCard
+type: SLOT
+complexity: MODERATE
+category: component
+tags: [slot, header]
+title: "VcCard #header slot"
+description: "header slot for VcCard"
+---
+
 # Capability: header
 
 ## Type

@@ -1,3 +1,14 @@
+---
+id: vcimage-prop-src
+component: VcImage
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, src]
+title: "VcImage :src prop"
+description: "src property for VcImage"
+---
+
 # Capability: src
 
 ## Type

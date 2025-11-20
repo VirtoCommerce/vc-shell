@@ -1,3 +1,14 @@
+---
+id: vcblade-prop-expanded
+component: VcBlade
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, expanded]
+title: "VcBlade :expanded prop"
+description: "expanded property for VcBlade"
+---
+
 # Capability: expanded
 
 ## Type

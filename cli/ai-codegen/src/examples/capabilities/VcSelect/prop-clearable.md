@@ -1,3 +1,14 @@
+---
+id: vcselect-prop-clearable
+component: VcSelect
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, clearable]
+title: "VcSelect :clearable prop"
+description: "clearable property for VcSelect"
+---
+
 # Capability: clearable
 
 ## Type

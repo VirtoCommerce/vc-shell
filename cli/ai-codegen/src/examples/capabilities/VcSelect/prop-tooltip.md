@@ -1,3 +1,14 @@
+---
+id: vcselect-prop-tooltip
+component: VcSelect
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, tooltip]
+title: "VcSelect :tooltip prop"
+description: "tooltip property for VcSelect"
+---
+
 # Capability: tooltip
 
 ## Type

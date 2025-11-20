@@ -1,3 +1,13 @@
+---
+id: component-VcIcon-demo
+type: COMPONENT
+complexity: SIMPLE
+category: component
+tags: [component]
+title: "VcIcon Demo"
+description: "VcIcon Demo component example"
+---
+
 # VcIcon Demo
 
 Real-world icon examples from vendor-portal with Material, Bootstrap, Lucide, and FontAwesome support.

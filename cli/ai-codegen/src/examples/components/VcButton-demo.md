@@ -1,3 +1,13 @@
+---
+id: component-VcButton-demo
+type: COMPONENT
+complexity: SIMPLE
+category: component
+tags: [component]
+title: "VcButton Demo"
+description: "VcButton Demo component example"
+---
+
 # VcButton Demo
 
 Real-world button examples from vendor-portal.

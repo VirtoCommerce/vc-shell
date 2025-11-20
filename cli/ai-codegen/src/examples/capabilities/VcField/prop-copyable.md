@@ -1,3 +1,14 @@
+---
+id: vcfield-prop-copyable
+component: VcField
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, copyable]
+title: "VcField :copyable prop"
+description: "copyable property for VcField"
+---
+
 # Capability: copyable
 
 ## Type

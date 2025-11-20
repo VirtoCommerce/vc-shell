@@ -1,3 +1,14 @@
+---
+id: vcselect-prop-modelValue
+component: VcSelect
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, modelValue]
+title: "VcSelect :modelValue prop"
+description: "modelValue property for VcSelect"
+---
+
 # Capability: modelValue
 
 ## Type

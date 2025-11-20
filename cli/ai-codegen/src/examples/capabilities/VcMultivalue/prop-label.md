@@ -1,3 +1,14 @@
+---
+id: vcmultivalue-prop-label
+component: VcMultivalue
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, label]
+title: "VcMultivalue :label prop"
+description: "label property for VcMultivalue"
+---
+
 # Capability: label
 
 ## Type

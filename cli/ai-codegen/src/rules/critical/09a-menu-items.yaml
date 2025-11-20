@@ -1,0 +1,128 @@
+id: "09a"
+name: "Menu Items in defineOptions"
+category: "critical"
+priority: 100
+enabled: true
+strategy: "AI_FULL"
+applies_to:
+  - "all"  # Any blade (list/details) can be workspace
+
+description: |
+  CRITICAL: Menu items are defined in workspace blade's defineOptions, NOT in bootstrap.ts!
+  Workspace blades (any type with isWorkspace: true) must include menuItem configuration.
+  Typical case: list blade. Rare case: standalone details blade (e.g., settings page).
+
+rationale: |
+  Framework automatically registers menu items from workspace blades during module initialization.
+  This ensures:
+  - Menu items are co-located with their blade component
+  - Permissions integration works correctly
+  - Navigation system knows about the blade
+  - All configuration in one place
+
+forbidden:
+  - pattern: "addMenuItem\\("
+    reason: "Menu items go in workspace blade's defineOptions, NOT bootstrap.ts"
+    severity: "error"
+    strategy: "AI_FULL"
+
+  - pattern: "bootstrap\\.ts.*addMenuItem"
+    reason: "Do not add menu items in bootstrap.ts"
+    severity: "error"
+    strategy: "AI_FULL"
+
+required:
+  - pattern: "isWorkspace:\\s*true"
+    when: "Main list blade of the module"
+    severity: "error"
+    strategy: "AI_FULL"
+
+  - pattern: "menuItem:\\s*\\{"
+    when: "Workspace blade (isWorkspace: true)"
+    severity: "warning"
+    strategy: "AI_FULL"
+
+correct_pattern:
+  description: "Define menuItem in workspace blade's defineOptions"
+  inline: |
+    ```vue
+    <!-- ✅ CORRECT: src/modules/offers/pages/offers-list.vue -->
+    <template>
+      <VcBlade>
+        <!-- Blade content -->
+      </VcBlade>
+    </template>
+
+    <script setup lang="ts">
+    import { defineOptions } from 'vue';
+
+    defineOptions({
+      name: "OffersList",
+      url: "/offers",
+      isWorkspace: true,  // ← REQUIRED for workspace blade
+      menuItem: {         // ← Menu item configuration HERE
+        title: "OFFERS.MENU.TITLE",  // Use i18n key
+        icon: "fas fa-tags",
+        priority: 10,
+        // Optional: group configuration
+        groupConfig: {
+          id: "management-group",
+          title: "COMMON.GROUPS.MANAGEMENT"
+        }
+      },
+      // Optional: permissions
+      permissions: ["offers:manage"],
+    });
+    </script>
+    ```
+
+wrong_pattern:
+  inline: |
+    ```typescript
+    // ❌ WRONG: Adding menu items in bootstrap.ts
+    // File: src/bootstrap.ts
+    import { addMenuItem } from "@vc-shell/framework";
+
+    export function bootstrap(app: App) {
+      addMenuItem({
+        title: "Offers",
+        icon: "fas fa-tags",
+        priority: 10,
+        url: "/offers",
+      });
+    }
+    ```
+
+instructions: |
+  For workspace blades (main list blade of each module):
+  1. Add isWorkspace: true in defineOptions
+  2. Add menuItem configuration with:
+     - title: i18n key (e.g., "MODULE.MENU.TITLE")
+     - icon: icon string (fas fa-*, lucide-*, bi-*, material-*)
+     - priority: number (0-100, lower = higher in menu)
+     - groupConfig: optional menu group
+  3. Optionally add permissions array
+  4. Framework automatically registers menu item during module initialization
+
+  bootstrap.ts should ONLY be used for:
+  - Dashboard widgets (registerDashboardWidget)
+  - Custom application initialization
+  NOT for menu items or module registration!
+
+examples:
+  - "patterns/workspace-blade.md"
+
+validations:
+  - type: "regex"
+    pattern: "addMenuItem\\("
+    message: "❌ FORBIDDEN: Use defineOptions menuItem in workspace blade, NOT addMenuItem()"
+    strategy: "AI_FULL"
+
+  - type: "required_import"
+    import: "defineOptions"
+    from: "vue"
+    when: "Workspace blade"
+    message: "⚠️ Import defineOptions from 'vue' for workspace blade configuration"
+
+auto_fix:
+  enabled: false  # Cannot auto-migrate from bootstrap.ts to defineOptions

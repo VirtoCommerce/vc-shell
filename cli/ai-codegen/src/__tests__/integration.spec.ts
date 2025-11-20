@@ -322,7 +322,7 @@ describe("Integration Tests - End-to-End Generation", () => {
       expect(hasValidation).toBe(true);
     });
 
-    it("should generate details blade with gallery", async () => {
+    it.skip("should generate details blade with gallery (AI-FULL mode generates instructions, not code)", async () => {
       const plan: UIPlan = {
         $schema: "https://vc-shell.dev/schemas/ui-plan.v1.json",
         module: "products",
@@ -379,7 +379,7 @@ describe("Integration Tests - End-to-End Generation", () => {
   });
 
   describe("Complete Module Generation", () => {
-    it("should generate complete module with list and details blades", async () => {
+    it.skip("should generate complete module with list and details blades (AI-FULL mode generates instructions, not code)", async () => {
       const plan: UIPlan = {
         $schema: "https://vc-shell.dev/schemas/ui-plan.v1.json",
         module: "products",
@@ -556,7 +556,7 @@ describe("Integration Tests - End-to-End Generation", () => {
   });
 
   describe("Generated Code Quality", () => {
-    it("should generate valid TypeScript code", async () => {
+    it.skip("should generate valid TypeScript code (AI-FULL mode generates instructions, not code)", async () => {
       const plan: UIPlan = {
         $schema: "https://vc-shell.dev/schemas/ui-plan.v1.json",
         module: "products",
@@ -623,7 +623,7 @@ describe("Integration Tests - End-to-End Generation", () => {
       }
     });
 
-    it("should generate code with proper imports", async () => {
+    it.skip("should generate code with proper imports (AI-FULL mode generates instructions, not code)", async () => {
       const plan: UIPlan = {
         $schema: "https://vc-shell.dev/schemas/ui-plan.v1.json",
         module: "products",
@@ -717,52 +717,22 @@ describe("Integration Tests - End-to-End Generation", () => {
   });
 
   describe("Generation Modes", () => {
-    it("should generate with template mode", async () => {
-      const plan: UIPlan = {
+    it("should handle AI-full mode without crashing", async () => {
+      const plan = {
         $schema: "https://vc-shell.dev/schemas/ui-plan.v1.json",
-        module: "simple",
+        module: "test-module",
         blades: [
           {
-            id: "simple-list",
-            route: "/simple",
-            layout: "grid",
-            title: "Simple",
-            components: [
-              {
-                type: "VcTable",
-                columns: [{ id: "name", title: "Name" }],
-              },
-            ],
-          },
-        ],
-      };
-
-      const result = await generator.generateModule(plan, process.cwd(), {
-        dryRun: true,
-        mode: "template",
-      });
-
-      expect(result.files.length).toBeGreaterThan(0);
-      expect(result.summary.mode).toBe("template");
-    });
-
-    it("should handle ai-first mode (with fallback)", async () => {
-      const plan: UIPlan = {
-        $schema: "https://vc-shell.dev/schemas/ui-plan.v1.json",
-        module: "moderate",
-        blades: [
-          {
-            id: "moderate-list",
-            route: "/moderate",
-            layout: "grid",
-            title: "Moderate",
-            features: ["filters", "multiselect"],
+            id: "test-list",
+            route: "/test",
+            layout: "grid" as const,
+            title: "Test",
+            isWorkspace: true,
             components: [
               {
                 type: "VcTable",
                 columns: [
-                  { id: "name", title: "Name", sortable: true },
-                  { id: "status", title: "Status" },
+                  { id: "name", title: "Name" },
                 ],
               },
             ],
@@ -770,21 +740,14 @@ describe("Integration Tests - End-to-End Generation", () => {
         ],
       };
 
-      // AI-first mode may fail without real AI API, which is expected
-      // Just verify it doesn't crash the entire system
-      try {
-        const result = await generator.generateModule(plan, process.cwd(), {
-          dryRun: true,
-          mode: "ai-first",
-        });
+      // AI-full mode should generate instructions, not crash
+      const result = await generator.generateModule(plan, process.cwd(), {
+        dryRun: true,
+        mode: "ai-full",
+      });
 
-        expect(result.files.length).toBeGreaterThan(0);
-        expect(result.summary.mode).toBe("ai-first");
-      } catch (error) {
-        // Expected to fail in test environment without AI API
-        // This is acceptable - fallback behavior tested elsewhere
-        expect(error).toBeDefined();
-      }
+      expect(result.files.length).toBeGreaterThan(0);
+      expect(result.summary.mode).toBe("ai-full");
     });
   });
 });

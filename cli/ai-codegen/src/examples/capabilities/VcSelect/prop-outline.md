@@ -1,3 +1,14 @@
+---
+id: vcselect-prop-outline
+component: VcSelect
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, outline]
+title: "VcSelect :outline prop"
+description: "outline property for VcSelect"
+---
+
 # Capability: outline
 
 ## Type

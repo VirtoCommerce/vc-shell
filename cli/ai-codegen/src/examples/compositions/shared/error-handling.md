@@ -1,3 +1,13 @@
+---
+id: composition-shared-error-handling
+type: COMPOSITION
+complexity: MODERATE
+category: composition
+tags: [composition, shared]
+title: "Error Handling"
+description: "Error Handling composition for shared blades"
+---
+
 # Error Handling Pattern
 
 Standardized error handling with user notifications.

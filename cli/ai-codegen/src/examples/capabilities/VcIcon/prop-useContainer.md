@@ -1,3 +1,14 @@
+---
+id: vcicon-prop-useContainer
+component: VcIcon
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, useContainer]
+title: "VcIcon :useContainer prop"
+description: "useContainer property for VcIcon"
+---
+
 # Capability: useContainer
 
 ## Type

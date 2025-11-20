@@ -1,3 +1,14 @@
+---
+id: vcselect-prop-hint
+component: VcSelect
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, hint]
+title: "VcSelect :hint prop"
+description: "hint property for VcSelect"
+---
+
 # Capability: hint
 
 ## Type

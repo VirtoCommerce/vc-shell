@@ -1,3 +1,14 @@
+---
+id: vcselect-slot-prepend
+component: VcSelect
+type: SLOT
+complexity: MODERATE
+category: component
+tags: [slot, prepend]
+title: "VcSelect #prepend slot"
+description: "prepend slot for VcSelect"
+---
+
 # Capability: prepend
 
 ## Type

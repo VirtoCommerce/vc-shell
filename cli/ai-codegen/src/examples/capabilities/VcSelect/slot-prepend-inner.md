@@ -1,3 +1,14 @@
+---
+id: vcselect-slot-prepend-inner
+component: VcSelect
+type: SLOT
+complexity: MODERATE
+category: component
+tags: [slot, prepend-inner]
+title: "VcSelect #prepend-inner slot"
+description: "prepend-inner slot for VcSelect"
+---
+
 # Capability: prepend-inner
 
 ## Type

@@ -1,3 +1,9 @@
+---
+id: null
+type: null
+complexity: SIMPLE
+---
+
 # Details Composable Pattern
 
 This pattern is used for managing data in details/form blades, including loading, saving, deleting, and tracking modifications.

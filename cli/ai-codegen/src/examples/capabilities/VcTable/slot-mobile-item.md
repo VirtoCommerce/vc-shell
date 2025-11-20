@@ -1,3 +1,14 @@
+---
+id: vctable-slot-mobile-item
+component: VcTable
+type: SLOT
+complexity: MODERATE
+category: component
+tags: [slot, mobile-item]
+title: "VcTable #mobile-item slot"
+description: "mobile-item slot for VcTable"
+---
+
 # Capability: mobile-item
 
 ## Type

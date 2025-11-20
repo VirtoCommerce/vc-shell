@@ -1,3 +1,14 @@
+---
+id: vctooltip-slot-tooltip
+component: VcTooltip
+type: SLOT
+complexity: MODERATE
+category: component
+tags: [slot, tooltip]
+title: "VcTooltip #tooltip slot"
+description: "tooltip slot for VcTooltip"
+---
+
 # Capability: tooltip
 
 ## Type

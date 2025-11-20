@@ -1,0 +1,32 @@
+id: "05"
+name: "Form Validation Pattern"
+category: "critical"
+priority: 90
+enabled: true
+applies_to:
+  - "details"
+  - "edit"
+
+description: |
+  Use Field wrapper ONLY for inputs WITH validation rules.
+
+correct_pattern:
+  inline: |
+    ```vue
+    <!-- ✅ Field wrapper for inputs WITH validation -->
+    <Field v-slot="{ errorMessage, handleChange, errors }" rules="required">
+      <VcInput v-model="value" @update:model-value="handleChange" />
+    </Field>
+
+    <!-- ✅ NO Field wrapper for inputs WITHOUT validation -->
+    <VcInput v-model="description" />
+    ```
+
+wrong_pattern:
+  inline: |
+    ```vue
+    <!-- ❌ Field wrapper without validation rules -->
+    <Field v-slot="{ errorMessage }">
+      <VcInput v-model="description" />
+    </Field>
+    ```

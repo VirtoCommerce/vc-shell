@@ -1,3 +1,14 @@
+---
+id: vccheckbox-slot-error
+component: VcCheckbox
+type: SLOT
+complexity: MODERATE
+category: component
+tags: [slot, error]
+title: "VcCheckbox #error slot"
+description: "error slot for VcCheckbox"
+---
+
 # Capability: error
 
 ## Type

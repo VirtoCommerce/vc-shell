@@ -1,3 +1,14 @@
+---
+id: vclink-slot-default
+component: VcLink
+type: SLOT
+complexity: MODERATE
+category: component
+tags: [slot, default]
+title: "VcLink #default slot"
+description: "default slot for VcLink"
+---
+
 # Capability: default
 
 ## Type

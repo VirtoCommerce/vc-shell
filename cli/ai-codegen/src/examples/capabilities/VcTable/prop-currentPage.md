@@ -1,3 +1,14 @@
+---
+id: vctable-prop-currentPage
+component: VcTable
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, currentPage]
+title: "VcTable :currentPage prop"
+description: "currentPage property for VcTable"
+---
+
 # Capability: currentPage
 
 ## Type

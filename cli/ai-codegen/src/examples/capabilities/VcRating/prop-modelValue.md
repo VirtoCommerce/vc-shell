@@ -1,3 +1,14 @@
+---
+id: vcrating-prop-modelValue
+component: VcRating
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, modelValue]
+title: "VcRating :modelValue prop"
+description: "modelValue property for VcRating"
+---
+
 # Capability: modelValue
 
 ## Type

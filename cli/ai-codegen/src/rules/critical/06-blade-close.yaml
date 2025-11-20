@@ -1,0 +1,39 @@
+id: "06"
+name: "Blade Close Pattern"
+category: "critical"
+priority: 100
+enabled: true
+applies_to:
+  - "all"
+
+description: |
+  Use emit('close:blade') to close blade, NOT closeBlade() with index.
+
+forbidden:
+  - pattern: "closeBlade\\(.*idx"
+    reason: "Use emit('close:blade') to close self"
+    severity: "error"
+
+  - pattern: "closeCurrentBlade"
+    reason: "This function does NOT exist! Use emit('close:blade')"
+    severity: "error"
+
+correct_pattern:
+  inline: |
+    ```typescript
+    // ✅ CORRECT: Close self
+    emit("close:blade");
+    ```
+
+wrong_pattern:
+  inline: |
+    ```typescript
+    // ❌ WRONG
+    closeBlade(currentBladeNavigationData.value.idx);
+    closeCurrentBlade(); // Doesn't exist!
+    ```
+
+validations:
+  - type: "regex"
+    pattern: "closeCurrentBlade"
+    message: "❌ FORBIDDEN: closeCurrentBlade() does NOT exist! Use emit('close:blade')"

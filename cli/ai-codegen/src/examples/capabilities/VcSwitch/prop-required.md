@@ -1,3 +1,14 @@
+---
+id: vcswitch-prop-required
+component: VcSwitch
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, required]
+title: "VcSwitch :required prop"
+description: "required property for VcSwitch"
+---
+
 # Capability: required
 
 ## Type

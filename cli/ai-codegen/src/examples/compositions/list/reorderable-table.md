@@ -1,3 +1,13 @@
+---
+id: composition-list-reorderable-table
+type: COMPOSITION
+complexity: MODERATE
+category: composition
+tags: [composition, list, list]
+title: "Reorderable Table"
+description: "Reorderable Table composition for list blades"
+---
+
 # Reorderable Table Pattern
 
 Adds drag-and-drop row reordering with save/cancel.

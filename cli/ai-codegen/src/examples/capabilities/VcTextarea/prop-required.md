@@ -1,3 +1,14 @@
+---
+id: vctextarea-prop-required
+component: VcTextarea
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, required]
+title: "VcTextarea :required prop"
+description: "required property for VcTextarea"
+---
+
 # Capability: required
 
 ## Type

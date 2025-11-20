@@ -1,3 +1,14 @@
+---
+id: vcselect-prop-emitValue
+component: VcSelect
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, emitValue]
+title: "VcSelect :emitValue prop"
+description: "emitValue property for VcSelect"
+---
+
 # Capability: emitValue
 
 ## Type

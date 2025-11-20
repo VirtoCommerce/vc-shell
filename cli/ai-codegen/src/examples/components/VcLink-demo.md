@@ -1,3 +1,13 @@
+---
+id: component-VcLink-demo
+type: COMPONENT
+complexity: SIMPLE
+category: component
+tags: [component]
+title: "VcLink Demo"
+description: "VcLink Demo component example"
+---
+
 # VcLink Demo
 
 Real-world link examples for navigation, external resources, and interactive text.

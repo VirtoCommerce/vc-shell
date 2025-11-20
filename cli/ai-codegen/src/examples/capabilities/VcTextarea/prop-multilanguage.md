@@ -1,3 +1,14 @@
+---
+id: vctextarea-prop-multilanguage
+component: VcTextarea
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, multilanguage]
+title: "VcTextarea :multilanguage prop"
+description: "multilanguage property for VcTextarea"
+---
+
 # Capability: multilanguage
 
 ## Type

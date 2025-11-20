@@ -1,3 +1,14 @@
+---
+id: vcblade-prop-closable
+component: VcBlade
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, closable]
+title: "VcBlade :closable prop"
+description: "closable property for VcBlade"
+---
+
 # Capability: closable
 
 ## Type

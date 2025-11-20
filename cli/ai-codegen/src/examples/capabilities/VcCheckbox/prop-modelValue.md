@@ -1,3 +1,14 @@
+---
+id: vccheckbox-prop-modelValue
+component: VcCheckbox
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, modelValue]
+title: "VcCheckbox :modelValue prop"
+description: "modelValue property for VcCheckbox"
+---
+
 # Capability: modelValue
 
 ## Type

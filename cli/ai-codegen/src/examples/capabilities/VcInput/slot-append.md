@@ -1,3 +1,14 @@
+---
+id: vcinput-slot-append
+component: VcInput
+type: SLOT
+complexity: MODERATE
+category: component
+tags: [slot, append]
+title: "VcInput #append slot"
+description: "append slot for VcInput"
+---
+
 # Capability: append
 
 ## Type

@@ -1,3 +1,13 @@
+---
+id: parent-child-communication
+type: PATTERN
+complexity: MODERATE
+category: pattern
+tags: [pattern]
+title: "Parent Child Communication"
+description: "Parent Child Communication pattern"
+---
+
 # Parent-Child Blade Communication Pattern
 
 This example shows the **correct** way to handle communication between parent and child blades in VC-Shell framework.

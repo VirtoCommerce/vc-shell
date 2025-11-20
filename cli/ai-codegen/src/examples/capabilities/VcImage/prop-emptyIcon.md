@@ -1,3 +1,14 @@
+---
+id: vcimage-prop-emptyIcon
+component: VcImage
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, emptyIcon]
+title: "VcImage :emptyIcon prop"
+description: "emptyIcon property for VcImage"
+---
+
 # Capability: emptyIcon
 
 ## Type

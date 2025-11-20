@@ -1,3 +1,14 @@
+---
+id: domain-events
+type: PATTERN
+complexity: MODERATE
+category: pattern
+tags: [pattern]
+critical: true
+title: "Domain Events"
+description: "Domain Events pattern"
+---
+
 # Domain Events Pattern (Push Notifications)
 
 This example shows the **correct** way to handle domain events (push notifications) in VC-Shell framework using `useNotifications` composable and `defineOptions`.

@@ -1,3 +1,14 @@
+---
+id: vcinput-prop-size
+component: VcInput
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, size]
+title: "VcInput :size prop"
+description: "size property for VcInput"
+---
+
 # Capability: size
 
 ## Type

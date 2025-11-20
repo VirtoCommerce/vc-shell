@@ -1,3 +1,14 @@
+---
+id: vcinput-prop-type
+component: VcInput
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, type]
+title: "VcInput :type prop"
+description: "type property for VcInput"
+---
+
 # Capability: type
 
 ## Type

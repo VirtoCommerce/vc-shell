@@ -1,3 +1,14 @@
+---
+id: vcform-slot-default
+component: VcForm
+type: SLOT
+complexity: MODERATE
+category: component
+tags: [slot, default]
+title: "VcForm #default slot"
+description: "default slot for VcForm"
+---
+
 # Capability: default
 
 ## Type

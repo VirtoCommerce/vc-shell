@@ -1,3 +1,14 @@
+---
+id: vcmultivalue-prop-currentLanguage
+component: VcMultivalue
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, currentLanguage]
+title: "VcMultivalue :currentLanguage prop"
+description: "currentLanguage property for VcMultivalue"
+---
+
 # Capability: currentLanguage
 
 ## Type

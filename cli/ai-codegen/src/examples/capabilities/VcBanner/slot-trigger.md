@@ -1,3 +1,14 @@
+---
+id: vcbanner-slot-trigger
+component: VcBanner
+type: SLOT
+complexity: MODERATE
+category: component
+tags: [slot, trigger]
+title: "VcBanner #trigger slot"
+description: "trigger slot for VcBanner"
+---
+
 # Capability: trigger
 
 ## Type

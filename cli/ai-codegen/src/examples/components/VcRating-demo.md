@@ -1,3 +1,13 @@
+---
+id: component-VcRating-demo
+type: COMPONENT
+complexity: SIMPLE
+category: component
+tags: [component]
+title: "VcRating Demo"
+description: "VcRating Demo component example"
+---
+
 # VcRating Demo
 
 Real-world rating display examples for product reviews, feedback, and quality indicators.

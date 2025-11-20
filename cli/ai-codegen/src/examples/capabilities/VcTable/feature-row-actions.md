@@ -1,3 +1,14 @@
+---
+id: vctable-feature-row-actions
+component: VcTable
+type: USAGE
+complexity: SIMPLE
+category: component
+tags: [usage]
+title: "VcTable - feature-row-actions"
+description: "Usage example for VcTable"
+---
+
 # Capability: Row Actions
 
 ## Type

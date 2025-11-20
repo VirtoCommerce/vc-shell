@@ -1,205 +1,249 @@
-import { ref, computed, Ref } from "vue";
-import { useApiClient, useAsync, useModificationTracker, useNotifications } from "@vc-shell/framework";
-import { OffersClient } from "../../../api_client";
-import type { IOfferDetails, IFulfillmentCenter, ILanguage } from "../types";
+import { Ref, ref, watch } from "vue";
+import { offersClient } from "../../../api_client/offers.client";
+import type { IOfferDetails, IProduct, ILanguage, IMarketplaceSettings } from "../types";
 
-export default function useOfferDetails() {
-  const { getApiClient } = useApiClient(OffersClient);
-
+export function useOfferDetails() {
   // State
-  const offer: Ref<IOfferDetails> = ref({
+  const item: Ref<IOfferDetails> = ref({
+    id: "",
+    sku: "",
     name: "",
     productId: "",
-    productType: "",
-    sku: "",
+    productType: "Physical",
+    isActive: true,
+    isDefault: false,
     trackInventory: false,
-    fulfillmentCenterQuantities: {},
+    createdDate: new Date().toISOString(),
     images: [],
-  } as IOfferDetails);
-
-  const settings = ref({
-    allowDefault: true,
+    inventoryInfo: [],
+    priceList: [],
   });
+  const loading = ref(false);
+  const isModified = ref(false);
+  const originalItem: Ref<IOfferDetails | null> = ref(null);
+  const settings = ref<IMarketplaceSettings | null>(null);
 
-  const languages = ref<ILanguage[]>([
-    { code: "en-US", name: "English (US)" },
-  ]);
+  // Methods
+  async function load(id: string) {
+    loading.value = true;
 
-  const fulfillmentCenters = ref<IFulfillmentCenter[]>([]);
-
-  // Modification tracking
-  const { currentValue, isModified, resetModificationState } = useModificationTracker(offer);
-
-  // Computed
-  const modified = computed(() => isModified.value);
-
-  // Load offer
-  const { action: loadOffer, loading } = useAsync(async (id: string) => {
-    const client = await getApiClient();
-    const result = await client.getOfferByIdGET(id);
-    offer.value = result;
-    resetModificationState();
-
-    // Load related data
-    await Promise.all([loadLanguages(), loadFulfillmentCenters(), loadSettings()]);
-
-    return result;
-  });
-
-  // Create offer
-  async function createOffer() {
-    const client = await getApiClient();
-    const result = await client.createNewOffer({
-      name: offer.value.name,
-      productId: offer.value.productId,
-      productType: offer.value.productType,
-      sku: offer.value.sku,
-      trackInventory: offer.value.trackInventory,
-      fulfillmentCenterQuantities: offer.value.fulfillmentCenterQuantities,
-    });
-
-    offer.value = result;
-    resetModificationState();
-    return result;
-  }
-
-  // Update offer
-  async function updateOffer() {
-    const client = await getApiClient();
-    const result = await client.updateOffer({
-      id: offer.value.id!,
-      name: offer.value.name,
-      productId: offer.value.productId,
-      productType: offer.value.productType,
-      sku: offer.value.sku,
-      trackInventory: offer.value.trackInventory,
-      fulfillmentCenterQuantities: offer.value.fulfillmentCenterQuantities,
-    });
-
-    offer.value = result;
-    resetModificationState();
-    return result;
-  }
-
-  // Delete offer
-  async function deleteOffer(id: string) {
-    const client = await getApiClient();
-    await client.deleteOffers([id]);
-  }
-
-  // Validate SKU
-  async function validateSku(sku: string, currentId?: string) {
-    const client = await getApiClient();
-    const result = await client.validateOffer({
-      sku,
-      id: currentId,
-    });
-
-    return {
-      isValid: !result.errors || result.errors.length === 0,
-      errors: result.errors,
-    };
-  }
-
-  // Search products for dropdown
-  async function searchOfferProducts(keyword: string) {
-    const client = await getApiClient();
-    const result = await client.searchOfferProducts({
-      keyword,
-      take: 20,
-    });
-
-    return result.results || [];
-  }
-
-  // Enable/Disable/Set Default
-  async function enableOffer(id: string) {
-    const client = await getApiClient();
-    await client.updateOffer({
-      id,
-      isActive: true,
-    });
-  }
-
-  async function disableOffer(id: string) {
-    const client = await getApiClient();
-    await client.updateOffer({
-      id,
-      isActive: false,
-    });
-  }
-
-  async function setAsDefault(id: string) {
-    const client = await getApiClient();
-    await client.changeOfferDefault({ offerId: id });
-  }
-
-  // Load supporting data
-  async function loadLanguages() {
     try {
-      // Mock implementation - replace with actual API call
-      languages.value = [
-        { code: "en-US", name: "English (US)" },
-        { code: "de-DE", name: "German (Germany)" },
-        { code: "fr-FR", name: "French (France)" },
-      ];
+      const result = await offersClient.getOfferByIdGET(id);
+      item.value = result;
+      originalItem.value = JSON.parse(JSON.stringify(result));
+      isModified.value = false;
     } catch (error) {
-      console.error("Error loading languages:", error);
+      console.error("[useOfferDetails] Error loading offer:", error);
+      throw error;
+    } finally {
+      loading.value = false;
     }
   }
 
-  async function loadFulfillmentCenters() {
+  async function save() {
+    loading.value = true;
+
     try {
-      // Mock implementation - replace with actual API call
-      fulfillmentCenters.value = [
-        { id: "center-1", name: "Warehouse North" },
-        { id: "center-2", name: "Warehouse South" },
-        { id: "center-3", name: "Warehouse East" },
-      ];
+      if (item.value.id) {
+        // Update existing
+        await offersClient.updateOffer({
+          id: item.value.id,
+          sku: item.value.sku,
+          name: item.value.name,
+          productId: item.value.productId,
+          productType: item.value.productType,
+          trackInventory: item.value.trackInventory,
+          inventoryInfo: item.value.inventoryInfo,
+          images: item.value.images,
+        });
+      } else {
+        // Create new
+        const created = await offersClient.createNewOffer({
+          sku: item.value.sku!,
+          name: item.value.name,
+          productId: item.value.productId!,
+          productType: item.value.productType!,
+          trackInventory: item.value.trackInventory,
+          inventoryInfo: item.value.inventoryInfo,
+        });
+        item.value = created;
+      }
+
+      isModified.value = false;
+      originalItem.value = JSON.parse(JSON.stringify(item.value));
     } catch (error) {
-      console.error("Error loading fulfillment centers:", error);
+      console.error("[useOfferDetails] Error saving offer:", error);
+      throw error;
+    } finally {
+      loading.value = false;
+    }
+  }
+
+  async function remove() {
+    if (!item.value.id) {
+      throw new Error("Cannot delete offer without ID");
+    }
+
+    loading.value = true;
+
+    try {
+      await offersClient.deleteOffers([item.value.id]);
+    } catch (error) {
+      console.error("[useOfferDetails] Error deleting offer:", error);
+      throw error;
+    } finally {
+      loading.value = false;
+    }
+  }
+
+  async function enable() {
+    if (!item.value.id) {
+      throw new Error("Cannot enable offer without ID");
+    }
+
+    loading.value = true;
+
+    try {
+      await offersClient.enableOffer(item.value.id);
+      item.value.isActive = true;
+    } catch (error) {
+      console.error("[useOfferDetails] Error enabling offer:", error);
+      throw error;
+    } finally {
+      loading.value = false;
+    }
+  }
+
+  async function disable() {
+    if (!item.value.id) {
+      throw new Error("Cannot disable offer without ID");
+    }
+
+    loading.value = true;
+
+    try {
+      await offersClient.disableOffer(item.value.id);
+      item.value.isActive = false;
+    } catch (error) {
+      console.error("[useOfferDetails] Error disabling offer:", error);
+      throw error;
+    } finally {
+      loading.value = false;
+    }
+  }
+
+  async function setDefault() {
+    if (!item.value.id) {
+      throw new Error("Cannot set default offer without ID");
+    }
+
+    loading.value = true;
+
+    try {
+      await offersClient.changeOfferDefault({ id: item.value.id });
+      item.value.isDefault = true;
+    } catch (error) {
+      console.error("[useOfferDetails] Error setting default offer:", error);
+      throw error;
+    } finally {
+      loading.value = false;
+    }
+  }
+
+  async function validateSku(sku: string, offerId?: string): Promise<boolean> {
+    try {
+      const result = await offersClient.validateOffer({ sku, id: offerId });
+      return result.isValid;
+    } catch (error) {
+      console.error("[useOfferDetails] Error validating SKU:", error);
+      return false;
+    }
+  }
+
+  async function searchProducts(keyword: string): Promise<IProduct[]> {
+    try {
+      const results = await offersClient.searchOfferProducts({ keyword });
+      return results;
+    } catch (error) {
+      console.error("[useOfferDetails] Error searching products:", error);
+      return [];
+    }
+  }
+
+  async function uploadImages(offerId: string, files: File[]) {
+    try {
+      const uploadedImages = await offersClient.uploadImages(offerId, files);
+      return uploadedImages;
+    } catch (error) {
+      console.error("[useOfferDetails] Error uploading images:", error);
+      throw error;
+    }
+  }
+
+  async function deleteImage(imageId: string) {
+    try {
+      await offersClient.deleteImage(imageId);
+    } catch (error) {
+      console.error("[useOfferDetails] Error deleting image:", error);
+      throw error;
+    }
+  }
+
+  async function loadLanguages(): Promise<ILanguage[]> {
+    try {
+      const languages = await offersClient.getLanguages();
+      return languages;
+    } catch (error) {
+      console.error("[useOfferDetails] Error loading languages:", error);
+      return [];
     }
   }
 
   async function loadSettings() {
     try {
-      // Mock implementation - replace with actual API call
-      settings.value = {
-        allowDefault: true,
-      };
+      settings.value = await offersClient.getSettings();
     } catch (error) {
-      console.error("Error loading settings:", error);
+      console.error("[useOfferDetails] Error loading settings:", error);
+      settings.value = { allowMultipleOffers: false };
     }
   }
 
-  // Domain events handling
-  const { setNotificationHandler } = useNotifications("OfferCreatedDomainEvent");
-  setNotificationHandler((notification) => {
-    // Handle offer created event
-    console.log("Offer created:", notification);
-  });
+  function resetModificationState() {
+    isModified.value = false;
+    originalItem.value = JSON.parse(JSON.stringify(item.value));
+  }
 
-  const { setNotificationHandler: setDeleteHandler } = useNotifications("OfferDeletedDomainEvent");
-  setDeleteHandler((notification) => {
-    // Handle offer deleted event
-    console.log("Offer deleted:", notification);
-  });
+  // Track modifications by comparing current item with original
+  watch(
+    item,
+    (newValue) => {
+      if (originalItem.value) {
+        isModified.value = JSON.stringify(newValue) !== JSON.stringify(originalItem.value);
+      }
+    },
+    { deep: true },
+  );
 
   return {
-    offer: currentValue,
+    // State
+    item,
     loading,
-    modified,
+    isModified,
     settings,
-    languages,
-    fulfillmentCenters,
-    loadOffer,
-    createOffer,
-    updateOffer,
-    deleteOffer,
+
+    // Methods
+    load,
+    save,
+    remove,
+    enable,
+    disable,
+    setDefault,
     validateSku,
-    searchOfferProducts,
-    enableOffer,
-    disableOffer,
-    setAsDefault,
+    searchProducts,
+    uploadImages,
+    deleteImage,
+    loadLanguages,
+    loadSettings,
+    resetModificationState,
   };
 }

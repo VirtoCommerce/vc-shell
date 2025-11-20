@@ -1,3 +1,14 @@
+---
+id: vcmultivalue-prop-placeholder
+component: VcMultivalue
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, placeholder]
+title: "VcMultivalue :placeholder prop"
+description: "placeholder property for VcMultivalue"
+---
+
 # Capability: placeholder
 
 ## Type

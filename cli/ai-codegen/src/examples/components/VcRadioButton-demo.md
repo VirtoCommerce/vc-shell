@@ -1,3 +1,13 @@
+---
+id: component-VcRadioButton-demo
+type: COMPONENT
+complexity: SIMPLE
+category: component
+tags: [component]
+title: "VcRadioButton Demo"
+description: "VcRadioButton Demo component example"
+---
+
 # VcRadioButton Demo
 
 Real-world radio button examples for filters, settings, and single-choice selections.

@@ -1,3 +1,14 @@
+---
+id: vcstatus-prop-variant
+component: VcStatus
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, variant]
+title: "VcStatus :variant prop"
+description: "variant property for VcStatus"
+---
+
 # Capability: variant
 
 ## Type

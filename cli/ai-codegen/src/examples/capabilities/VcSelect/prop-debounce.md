@@ -1,3 +1,14 @@
+---
+id: vcselect-prop-debounce
+component: VcSelect
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, debounce]
+title: "VcSelect :debounce prop"
+description: "debounce property for VcSelect"
+---
+
 # Capability: debounce
 
 ## Type

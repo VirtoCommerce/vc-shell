@@ -1,3 +1,14 @@
+---
+id: vcselect-slot-selected-item
+component: VcSelect
+type: SLOT
+complexity: MODERATE
+category: component
+tags: [slot, selected-item]
+title: "VcSelect #selected-item slot"
+description: "selected-item slot for VcSelect"
+---
+
 # Capability: selected-item
 
 ## Type

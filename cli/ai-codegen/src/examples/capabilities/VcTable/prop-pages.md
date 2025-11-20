@@ -1,3 +1,14 @@
+---
+id: vctable-prop-pages
+component: VcTable
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, pages]
+title: "VcTable :pages prop"
+description: "pages property for VcTable"
+---
+
 # Capability: pages
 
 ## Type

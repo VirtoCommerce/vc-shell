@@ -1,3 +1,13 @@
+---
+id: component-VcFileUpload-demo
+type: COMPONENT
+complexity: SIMPLE
+category: component
+tags: [component]
+title: "VcFileUpload Demo"
+description: "VcFileUpload Demo component example"
+---
+
 # VcFileUpload Demo
 
 Real-world file upload examples with drag-and-drop, validation, and progress tracking.

@@ -87,7 +87,9 @@ export const generateBladeSchema = z.object({
 });
 
 export const generateWithCompositionSchema = z.object({
-  plan: z.any(),
+  plan: z.any().optional().describe(
+    "UI-Plan JSON. If not provided, will be taken from workflow state (after validate_ui_plan)."
+  ),
   cwd: z.string(),
   dryRun: z.boolean().optional().default(false),
   strategy: z.literal("ai-full").optional().default("ai-full"),

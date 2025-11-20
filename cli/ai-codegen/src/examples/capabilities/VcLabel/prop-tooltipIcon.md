@@ -1,3 +1,14 @@
+---
+id: vclabel-prop-tooltipIcon
+component: VcLabel
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, tooltipIcon]
+title: "VcLabel :tooltipIcon prop"
+description: "tooltipIcon property for VcLabel"
+---
+
 # Capability: tooltipIcon
 
 ## Type

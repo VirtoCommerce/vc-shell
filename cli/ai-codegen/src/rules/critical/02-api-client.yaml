@@ -1,0 +1,35 @@
+id: "02"
+name: "API Client Pattern"
+category: "critical"
+priority: 100
+enabled: true
+applies_to:
+  - "all"
+
+description: |
+  Use useApiClient with proper client class and command objects.
+
+correct_pattern:
+  inline: |
+    ```typescript
+    // ✅ CORRECT
+    const { getApiClient } = useApiClient(ClientClass);
+    const client = await getApiClient();
+    const result = await client.methodName(new CommandObject(data));
+    ```
+
+wrong_pattern:
+  inline: |
+    ```typescript
+    // ❌ WRONG
+    const apiClient = useApiClient(); // Missing client class!
+    await apiClient.method({ ... }); // No command object!
+    ```
+
+validations:
+  - type: "regex"
+    pattern: "useApiClient\\(\\w+\\)"
+    message: "✓ useApiClient called with client class"
+
+auto_fix:
+  enabled: false

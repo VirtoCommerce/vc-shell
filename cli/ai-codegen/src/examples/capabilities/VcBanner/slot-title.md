@@ -1,3 +1,14 @@
+---
+id: vcbanner-slot-title
+component: VcBanner
+type: SLOT
+complexity: MODERATE
+category: component
+tags: [slot, title]
+title: "VcBanner #title slot"
+description: "title slot for VcBanner"
+---
+
 # Capability: title
 
 ## Type

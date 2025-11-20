@@ -1,3 +1,14 @@
+---
+id: vcimage-prop-clickable
+component: VcImage
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, clickable]
+title: "VcImage :clickable prop"
+description: "clickable property for VcImage"
+---
+
 # Capability: clickable
 
 ## Type

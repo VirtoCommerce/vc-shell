@@ -1,3 +1,14 @@
+---
+id: vcmultivalue-prop-options
+component: VcMultivalue
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, options]
+title: "VcMultivalue :options prop"
+description: "options property for VcMultivalue"
+---
+
 # Capability: options
 
 ## Type

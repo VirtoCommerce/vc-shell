@@ -1,3 +1,14 @@
+---
+id: vctextarea-prop-placeholder
+component: VcTextarea
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, placeholder]
+title: "VcTextarea :placeholder prop"
+description: "placeholder property for VcTextarea"
+---
+
 # Capability: placeholder
 
 ## Type

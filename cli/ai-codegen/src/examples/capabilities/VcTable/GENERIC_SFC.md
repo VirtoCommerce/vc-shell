@@ -1,3 +1,14 @@
+---
+id: vctable-GENERIC_SFC
+component: VcTable
+type: USAGE
+complexity: SIMPLE
+category: component
+tags: [usage]
+title: "VcTable - GENERIC_SFC"
+description: "Usage example for VcTable"
+---
+
 # VcTable Generic SFC Requirements
 
 ## ⚠️ CRITICAL: VcTable is a Generic Single File Component

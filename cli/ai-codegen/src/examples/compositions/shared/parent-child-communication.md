@@ -1,3 +1,13 @@
+---
+id: composition-shared-parent-child-communication
+type: COMPOSITION
+complexity: MODERATE
+category: composition
+tags: [composition, shared]
+title: "Parent Child Communication"
+description: "Parent Child Communication composition for shared blades"
+---
+
 # Parent-Child Blade Communication Pattern
 
 Establishes communication between list and details blades.

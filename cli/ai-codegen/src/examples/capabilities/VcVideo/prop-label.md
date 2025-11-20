@@ -1,3 +1,14 @@
+---
+id: vcvideo-prop-label
+component: VcVideo
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, label]
+title: "VcVideo :label prop"
+description: "label property for VcVideo"
+---
+
 # Capability: label
 
 ## Type

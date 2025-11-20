@@ -1,3 +1,14 @@
+---
+id: vcblade-slot-default
+component: VcBlade
+type: SLOT
+complexity: MODERATE
+category: component
+tags: [slot, default]
+title: "VcBlade #default slot"
+description: "default slot for VcBlade"
+---
+
 # Capability: default
 
 ## Type

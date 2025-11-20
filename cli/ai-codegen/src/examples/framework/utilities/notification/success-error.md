@@ -1,3 +1,13 @@
+---
+id: framework-notification
+type: API
+complexity: SIMPLE
+category: framework
+tags: [utility, framework]
+title: "notification"
+description: "notification utility API"
+---
+
 # notification - Success and Error Messages
 
 **Capability:** `success-notification`, `error-notification`

@@ -1,3 +1,13 @@
+---
+id: component-VcTable-demo
+type: COMPONENT
+complexity: SIMPLE
+category: component
+tags: [component]
+title: "VcTable Demo"
+description: "VcTable Demo component example"
+---
+
 # VcTable Demo
 
 Real-world table examples.

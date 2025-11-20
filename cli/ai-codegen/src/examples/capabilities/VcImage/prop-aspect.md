@@ -1,3 +1,14 @@
+---
+id: vcimage-prop-aspect
+component: VcImage
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, aspect]
+title: "VcImage :aspect prop"
+description: "aspect property for VcImage"
+---
+
 # Capability: aspect
 
 ## Type

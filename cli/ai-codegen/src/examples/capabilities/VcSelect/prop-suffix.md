@@ -1,3 +1,14 @@
+---
+id: vcselect-prop-suffix
+component: VcSelect
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, suffix]
+title: "VcSelect :suffix prop"
+description: "suffix property for VcSelect"
+---
+
 # Capability: suffix
 
 ## Type

@@ -1,3 +1,14 @@
+---
+id: vceditor-prop-maxlength
+component: VcEditor
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, maxlength]
+title: "VcEditor :maxlength prop"
+description: "maxlength property for VcEditor"
+---
+
 # Capability: maxlength
 
 ## Type

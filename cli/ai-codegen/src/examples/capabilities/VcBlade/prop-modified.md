@@ -1,3 +1,14 @@
+---
+id: vcblade-prop-modified
+component: VcBlade
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, modified]
+title: "VcBlade :modified prop"
+description: "modified property for VcBlade"
+---
+
 # Capability: modified
 
 ## Type

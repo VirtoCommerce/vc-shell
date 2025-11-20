@@ -1,3 +1,13 @@
+---
+id: component-VcVideo-demo
+type: COMPONENT
+complexity: SIMPLE
+category: component
+tags: [component]
+title: "VcVideo Demo"
+description: "VcVideo Demo component example"
+---
+
 # VcVideo Demo
 
 Real-world video embed examples for product demos, tutorials, and marketing content.

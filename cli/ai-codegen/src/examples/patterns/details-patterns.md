@@ -1,3 +1,13 @@
+---
+id: details-patterns
+type: PATTERN
+complexity: MODERATE
+category: pattern
+tags: [pattern]
+title: "Details Patterns"
+description: "Details Patterns pattern"
+---
+
 # Details Blade Template Selection Guide
 
 This guide helps you choose the right details blade template for your requirements.

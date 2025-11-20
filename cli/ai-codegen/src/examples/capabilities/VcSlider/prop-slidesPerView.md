@@ -1,3 +1,14 @@
+---
+id: vcslider-prop-slidesPerView
+component: VcSlider
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, slidesPerView]
+title: "VcSlider :slidesPerView prop"
+description: "slidesPerView property for VcSlider"
+---
+
 # Capability: slidesPerView
 
 ## Type

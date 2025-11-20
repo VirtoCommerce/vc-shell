@@ -1,3 +1,14 @@
+---
+id: vctextarea-slot-error
+component: VcTextarea
+type: SLOT
+complexity: MODERATE
+category: component
+tags: [slot, error]
+title: "VcTextarea #error slot"
+description: "error slot for VcTextarea"
+---
+
 # Capability: error
 
 ## Type

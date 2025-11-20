@@ -1,3 +1,14 @@
+---
+id: vcfield-prop-aspectRatio
+component: VcField
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, aspectRatio]
+title: "VcField :aspectRatio prop"
+description: "aspectRatio property for VcField"
+---
+
 # Capability: aspectRatio
 
 ## Type

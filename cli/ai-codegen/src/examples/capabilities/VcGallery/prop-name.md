@@ -1,3 +1,14 @@
+---
+id: vcgallery-prop-name
+component: VcGallery
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, name]
+title: "VcGallery :name prop"
+description: "name property for VcGallery"
+---
+
 # Capability: name
 
 ## Type

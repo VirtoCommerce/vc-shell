@@ -1,3 +1,13 @@
+---
+id: component-VcTooltip-demo
+type: COMPONENT
+complexity: SIMPLE
+category: component
+tags: [component]
+title: "VcTooltip Demo"
+description: "VcTooltip Demo component example"
+---
+
 # VcTooltip Demo
 
 Real-world tooltip examples for contextual help, information, and interactive elements.

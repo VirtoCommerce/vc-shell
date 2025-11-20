@@ -1,3 +1,14 @@
+---
+id: vcbreadcrumbs-prop-items
+component: VcBreadcrumbs
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, items]
+title: "VcBreadcrumbs :items prop"
+description: "items property for VcBreadcrumbs"
+---
+
 # Capability: items
 
 ## Type

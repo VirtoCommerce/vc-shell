@@ -1,3 +1,14 @@
+---
+id: vcselect-prop-mapOptions
+component: VcSelect
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, mapOptions]
+title: "VcSelect :mapOptions prop"
+description: "mapOptions property for VcSelect"
+---
+
 # Capability: mapOptions
 
 ## Type

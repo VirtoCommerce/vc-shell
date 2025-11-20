@@ -1,3 +1,14 @@
+---
+id: vcbutton-prop-text
+component: VcButton
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, text]
+title: "VcButton :text prop"
+description: "text property for VcButton"
+---
+
 # Capability: text
 
 ## Type

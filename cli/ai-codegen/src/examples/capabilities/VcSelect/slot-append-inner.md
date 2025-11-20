@@ -1,3 +1,14 @@
+---
+id: vcselect-slot-append-inner
+component: VcSelect
+type: SLOT
+complexity: MODERATE
+category: component
+tags: [slot, append-inner]
+title: "VcSelect #append-inner slot"
+description: "append-inner slot for VcSelect"
+---
+
 # Capability: append-inner
 
 ## Type

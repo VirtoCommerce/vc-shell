@@ -1,3 +1,14 @@
+---
+id: vcmultivalue-prop-optionLabel
+component: VcMultivalue
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, optionLabel]
+title: "VcMultivalue :optionLabel prop"
+description: "optionLabel property for VcMultivalue"
+---
+
 # Capability: optionLabel
 
 ## Type

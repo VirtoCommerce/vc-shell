@@ -1,0 +1,38 @@
+id: "component-events"
+name: "Component Event Type Constraints"
+category: "constraint"
+priority: 85
+enabled: true
+applies_to:
+  - "all"
+
+description: |
+  Correct event handler signatures for VC-Shell components.
+
+correct_pattern:
+  inline: |
+    ```typescript
+    // ✅ VcGallery @remove passes FULL image object
+    function onImageRemove(image: ICommonAsset) {
+      const imageId = image.id; // Use image.id inside
+    }
+
+    // ✅ VcSelect @update:model-value passes unknown type
+    function handleSelectChange(value: unknown) {
+      const id = value as string; // Cast to your type
+    }
+
+    // ✅ CustomEvent in window.addEventListener
+    function handleEvent(event: Event) {
+      const e = event as CustomEvent;
+      const data = e.detail;
+    }
+
+    // ✅ Dynamic field access with null coalescing
+    const value = obj[field as keyof T] ?? '';
+    ```
+
+forbidden:
+  - pattern: "onParentCall"
+    reason: "onParentCall does NOT exist in IBladeEvent"
+    severity: "error"

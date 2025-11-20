@@ -1,3 +1,14 @@
+---
+id: vcbadge-prop-active
+component: VcBadge
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, active]
+title: "VcBadge :active prop"
+description: "active property for VcBadge"
+---
+
 # Capability: active
 
 ## Type

@@ -1,3 +1,14 @@
+---
+id: vccontainer-prop-shadow
+component: VcContainer
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, shadow]
+title: "VcContainer :shadow prop"
+description: "shadow property for VcContainer"
+---
+
 # Capability: shadow
 
 ## Type

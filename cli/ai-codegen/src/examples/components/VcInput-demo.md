@@ -1,3 +1,13 @@
+---
+id: component-VcInput-demo
+type: COMPONENT
+complexity: SIMPLE
+category: component
+tags: [component]
+title: "VcInput Demo"
+description: "VcInput Demo component example"
+---
+
 # VcInput Demo
 
 Real-world input examples from vendor-portal. Always use with `Field` from vee-validate for forms!

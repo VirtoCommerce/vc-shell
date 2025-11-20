@@ -1,3 +1,14 @@
+---
+id: vccheckbox-prop-errorMessage
+component: VcCheckbox
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, errorMessage]
+title: "VcCheckbox :errorMessage prop"
+description: "errorMessage property for VcCheckbox"
+---
+
 # Capability: errorMessage
 
 ## Type

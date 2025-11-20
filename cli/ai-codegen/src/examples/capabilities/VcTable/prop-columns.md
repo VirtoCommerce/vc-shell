@@ -1,3 +1,14 @@
+---
+id: vctable-prop-columns
+component: VcTable
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, columns]
+title: "VcTable :columns prop"
+description: "columns property for VcTable"
+---
+
 # Capability: columns
 
 ## Type

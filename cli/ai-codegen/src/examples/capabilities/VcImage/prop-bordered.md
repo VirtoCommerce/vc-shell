@@ -1,3 +1,14 @@
+---
+id: vcimage-prop-bordered
+component: VcImage
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, bordered]
+title: "VcImage :bordered prop"
+description: "bordered property for VcImage"
+---
+
 # Capability: bordered
 
 ## Type

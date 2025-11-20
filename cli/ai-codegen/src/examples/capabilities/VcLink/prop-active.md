@@ -1,3 +1,14 @@
+---
+id: vclink-prop-active
+component: VcLink
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, active]
+title: "VcLink :active prop"
+description: "active property for VcLink"
+---
+
 # Capability: active
 
 ## Type

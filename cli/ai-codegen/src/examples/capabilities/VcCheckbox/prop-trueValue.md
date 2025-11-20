@@ -1,3 +1,14 @@
+---
+id: vccheckbox-prop-trueValue
+component: VcCheckbox
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, trueValue]
+title: "VcCheckbox :trueValue prop"
+description: "trueValue property for VcCheckbox"
+---
+
 # Capability: trueValue
 
 ## Type

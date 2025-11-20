@@ -1,3 +1,9 @@
+---
+id: null
+type: null
+complexity: SIMPLE
+---
+
 # Blade List Pattern (Grid Layout)
 
 This pattern is used for displaying a list/table of items with search, sorting, pagination, and CRUD operations.

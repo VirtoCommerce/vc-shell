@@ -1,3 +1,13 @@
+---
+id: component-VcInputDropdown-demo
+type: COMPONENT
+complexity: SIMPLE
+category: component
+tags: [component]
+title: "VcInputDropdown Demo"
+description: "VcInputDropdown Demo component example"
+---
+
 # VcInputDropdown Demo
 
 Real-world input dropdown examples for measurements with unit selectors.

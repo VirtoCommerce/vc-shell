@@ -1,3 +1,14 @@
+---
+id: vctextarea-prop-maxlength
+component: VcTextarea
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, maxlength]
+title: "VcTextarea :maxlength prop"
+description: "maxlength property for VcTextarea"
+---
+
 # Capability: maxlength
 
 ## Type

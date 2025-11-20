@@ -1,3 +1,14 @@
+---
+id: vcselect-prop-multiple
+component: VcSelect
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, multiple]
+title: "VcSelect :multiple prop"
+description: "multiple property for VcSelect"
+---
+
 # Capability: multiple
 
 ## Type

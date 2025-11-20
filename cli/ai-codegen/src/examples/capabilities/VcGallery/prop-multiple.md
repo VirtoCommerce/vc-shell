@@ -1,3 +1,14 @@
+---
+id: vcgallery-prop-multiple
+component: VcGallery
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, multiple]
+title: "VcGallery :multiple prop"
+description: "multiple property for VcGallery"
+---
+
 # Capability: multiple
 
 ## Type

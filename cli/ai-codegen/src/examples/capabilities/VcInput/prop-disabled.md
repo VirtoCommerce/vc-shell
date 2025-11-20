@@ -1,3 +1,14 @@
+---
+id: vcinput-prop-disabled
+component: VcInput
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, disabled]
+title: "VcInput :disabled prop"
+description: "disabled property for VcInput"
+---
+
 # Capability: disabled
 
 ## Type

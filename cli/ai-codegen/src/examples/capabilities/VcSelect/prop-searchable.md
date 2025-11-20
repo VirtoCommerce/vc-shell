@@ -1,3 +1,14 @@
+---
+id: vcselect-prop-searchable
+component: VcSelect
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, searchable]
+title: "VcSelect :searchable prop"
+description: "searchable property for VcSelect"
+---
+
 # Capability: searchable
 
 ## Type

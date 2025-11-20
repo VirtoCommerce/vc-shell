@@ -1,2 +1,4 @@
-export { default as OffersList } from "./offers-list.vue";
-export { default as OfferDetails } from "./offer-details.vue";
+import OffersList from "./offers-list.vue";
+import OfferDetails from "./offer-details.vue";
+
+export { OffersList, OfferDetails };

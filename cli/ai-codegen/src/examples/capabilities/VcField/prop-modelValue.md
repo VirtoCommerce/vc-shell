@@ -1,3 +1,14 @@
+---
+id: vcfield-prop-modelValue
+component: VcField
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, modelValue]
+title: "VcField :modelValue prop"
+description: "modelValue property for VcField"
+---
+
 # Capability: modelValue
 
 ## Type

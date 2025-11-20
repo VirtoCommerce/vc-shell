@@ -1,3 +1,13 @@
+---
+id: component-VcSelect-demo
+type: COMPONENT
+complexity: SIMPLE
+category: component
+tags: [component]
+title: "VcSelect Demo"
+description: "VcSelect Demo component example"
+---
+
 # VcSelect Demo
 
 Real-world select examples from vendor-portal. Always use with `Field` from vee-validate for forms!

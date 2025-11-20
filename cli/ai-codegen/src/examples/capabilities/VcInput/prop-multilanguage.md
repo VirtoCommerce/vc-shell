@@ -1,3 +1,14 @@
+---
+id: vcinput-prop-multilanguage
+component: VcInput
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, multilanguage]
+title: "VcInput :multilanguage prop"
+description: "multilanguage property for VcInput"
+---
+
 # Capability: multilanguage
 
 ## Type

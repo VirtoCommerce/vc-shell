@@ -1,3 +1,14 @@
+---
+id: vcinput-prop-autofocus
+component: VcInput
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, autofocus]
+title: "VcInput :autofocus prop"
+description: "autofocus property for VcInput"
+---
+
 # Capability: autofocus
 
 ## Type

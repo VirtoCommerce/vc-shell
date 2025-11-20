@@ -1,3 +1,14 @@
+---
+id: vcmultivalue-prop-multilanguage
+component: VcMultivalue
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, multilanguage]
+title: "VcMultivalue :multilanguage prop"
+description: "multilanguage property for VcMultivalue"
+---
+
 # Capability: multilanguage
 
 ## Type

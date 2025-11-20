@@ -1,3 +1,13 @@
+---
+id: component-VcBanner-demo
+type: COMPONENT
+complexity: SIMPLE
+category: component
+tags: [component]
+title: "VcBanner Demo"
+description: "VcBanner Demo component example"
+---
+
 # VcBanner Demo
 
 Real-world banner examples for alerts, notifications, and system messages.

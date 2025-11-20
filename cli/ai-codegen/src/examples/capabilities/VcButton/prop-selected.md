@@ -1,3 +1,14 @@
+---
+id: vcbutton-prop-selected
+component: VcButton
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, selected]
+title: "VcButton :selected prop"
+description: "selected property for VcButton"
+---
+
 # Capability: selected
 
 ## Type

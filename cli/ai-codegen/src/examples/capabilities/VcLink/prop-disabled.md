@@ -1,3 +1,14 @@
+---
+id: vclink-prop-disabled
+component: VcLink
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, disabled]
+title: "VcLink :disabled prop"
+description: "disabled property for VcLink"
+---
+
 # Capability: disabled
 
 ## Type

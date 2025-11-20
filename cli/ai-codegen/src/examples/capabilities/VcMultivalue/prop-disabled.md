@@ -1,3 +1,14 @@
+---
+id: vcmultivalue-prop-disabled
+component: VcMultivalue
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, disabled]
+title: "VcMultivalue :disabled prop"
+description: "disabled property for VcMultivalue"
+---
+
 # Capability: disabled
 
 ## Type

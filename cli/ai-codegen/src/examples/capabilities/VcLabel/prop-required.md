@@ -1,3 +1,14 @@
+---
+id: vclabel-prop-required
+component: VcLabel
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, required]
+title: "VcLabel :required prop"
+description: "required property for VcLabel"
+---
+
 # Capability: required
 
 ## Type

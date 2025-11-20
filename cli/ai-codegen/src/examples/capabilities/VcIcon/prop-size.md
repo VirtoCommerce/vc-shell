@@ -1,3 +1,14 @@
+---
+id: vcicon-prop-size
+component: VcIcon
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, size]
+title: "VcIcon :size prop"
+description: "size property for VcIcon"
+---
+
 # Capability: size
 
 ## Type

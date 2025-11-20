@@ -1,3 +1,14 @@
+---
+id: vctextarea-prop-label
+component: VcTextarea
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, label]
+title: "VcTextarea :label prop"
+description: "label property for VcTextarea"
+---
+
 # Capability: label
 
 ## Type

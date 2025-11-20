@@ -1,3 +1,14 @@
+---
+id: vcrating-prop-label
+component: VcRating
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, label]
+title: "VcRating :label prop"
+description: "label property for VcRating"
+---
+
 # Capability: label
 
 ## Type

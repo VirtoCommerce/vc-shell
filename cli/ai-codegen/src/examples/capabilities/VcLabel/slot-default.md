@@ -1,3 +1,14 @@
+---
+id: vclabel-slot-default
+component: VcLabel
+type: SLOT
+complexity: MODERATE
+category: component
+tags: [slot, default]
+title: "VcLabel #default slot"
+description: "default slot for VcLabel"
+---
+
 # Capability: default
 
 ## Type

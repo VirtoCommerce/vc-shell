@@ -1,3 +1,14 @@
+---
+id: vcgallery-prop-variant
+component: VcGallery
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, variant]
+title: "VcGallery :variant prop"
+description: "variant property for VcGallery"
+---
+
 # Capability: variant
 
 ## Type

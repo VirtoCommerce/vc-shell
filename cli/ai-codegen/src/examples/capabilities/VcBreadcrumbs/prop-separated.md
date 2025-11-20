@@ -1,3 +1,14 @@
+---
+id: vcbreadcrumbs-prop-separated
+component: VcBreadcrumbs
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, separated]
+title: "VcBreadcrumbs :separated prop"
+description: "separated property for VcBreadcrumbs"
+---
+
 # Capability: separated
 
 ## Type

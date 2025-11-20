@@ -1,3 +1,14 @@
+---
+id: vcmultivalue-slot-hint
+component: VcMultivalue
+type: SLOT
+complexity: MODERATE
+category: component
+tags: [slot, hint]
+title: "VcMultivalue #hint slot"
+description: "hint slot for VcMultivalue"
+---
+
 # Capability: hint
 
 ## Type

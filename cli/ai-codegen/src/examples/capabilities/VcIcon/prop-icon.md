@@ -1,3 +1,14 @@
+---
+id: vcicon-prop-icon
+component: VcIcon
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, icon]
+title: "VcIcon :icon prop"
+description: "icon property for VcIcon"
+---
+
 # Capability: icon
 
 ## Type

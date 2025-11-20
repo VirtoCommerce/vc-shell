@@ -1,0 +1,206 @@
+id: "14"
+name: "Blade Close Confirmation"
+category: "critical"
+priority: 100
+enabled: true
+applies_to:
+  - "details"
+  - "edit"
+
+description: |
+  Use onBeforeClose hook with showConfirmation for blade close confirmation.
+  NEVER use manual confirm() in close handler.
+
+rationale: |
+  onBeforeClose hook provides:
+  - Async confirmation (can make API calls)
+  - Beautiful UI (VcModal) instead of browser alert
+  - Integration with blade navigation
+  - i18n support
+  - Complex logic support
+
+  Manual confirm():
+  - Synchronous only (blocks UI)
+  - Ugly browser dialog
+  - Cannot make async calls
+  - Limited customization
+
+forbidden:
+  - pattern: "confirm\\("
+    reason: "Use onBeforeClose hook with showConfirmation instead"
+    severity: "error"
+
+  - pattern: "window\\.confirm"
+    reason: "Use showConfirmation from usePopup() instead"
+    severity: "error"
+
+  - pattern: "onClose.*confirm\\("
+    reason: "Put confirmation logic in onBeforeClose hook, not onClose handler"
+    severity: "error"
+
+required:
+  - pattern: "onBeforeClose\\("
+    when: "Details blade with modified tracking"
+    severity: "warning"
+
+correct_pattern:
+  description: "Use onBeforeClose hook with async showConfirmation"
+  inline: |
+    ```vue
+    <template>
+      <VcBlade
+        v-loading="loading"
+        :title="title"
+        :toolbar-items="bladeToolbar"
+        @close="$emit('close:blade')"
+      >
+        <VcForm v-model="entity">
+          <!-- Form fields -->
+        </VcForm>
+      </VcBlade>
+    </template>
+
+    <script setup lang="ts">
+    import { ref } from 'vue';
+    import { useI18n } from 'vue-i18n';
+    import { onBeforeClose, useBeforeUnload } from '@vc-shell/framework';
+    import { usePopup } from '@vc-shell/framework';
+
+    const { t } = useI18n({ useScope: 'global' });
+    const { showConfirmation } = usePopup();
+
+    const entity = ref({ name: '', description: '' });
+    const modified = ref(false);
+    const loading = ref(false);
+
+    // ✅ CORRECT: Prevent browser refresh/close
+    useBeforeUnload(modified);
+
+    // ✅ CORRECT: Prevent blade close with async confirmation
+    onBeforeClose(async () => {
+      // Only show confirmation if:
+      // 1. There are unsaved changes (modified = true)
+      // 2. Not currently saving (loading = false)
+      if (modified.value && !loading.value) {
+        // showConfirmation returns Promise<boolean>
+        // true = user confirmed, blade will close
+        // false = user cancelled, blade stays open
+        return await showConfirmation(t("COMMON.UNSAVED_CHANGES"));
+      }
+
+      // If no changes or currently saving:
+      // Return nothing or true to allow blade to close
+      // Framework handles closing automatically
+    });
+
+    // Track modifications
+    watch(entity, () => {
+      modified.value = true;
+    }, { deep: true });
+
+    // After save, reset modified flag
+    async function save() {
+      loading.value = true;
+      try {
+        await saveEntity(entity.value);
+        modified.value = false; // ← Reset flag to allow close
+        emit("close:blade"); // Close blade after save
+      } finally {
+        loading.value = false;
+      }
+    }
+    </script>
+    ```
+
+wrong_pattern:
+  inline: |
+    ```vue
+    <script setup lang="ts">
+    import { ref } from 'vue';
+    import { useI18n } from 'vue-i18n';
+
+    const { t } = useI18n();
+    const modified = ref(false);
+
+    // ❌ WRONG: Manual confirm() in onClose handler
+    function onClose() {
+      if (modified.value) {
+        // Synchronous confirm - blocks UI
+        const confirmed = confirm(t("COMMON.UNSAVED_CHANGES"));
+        if (!confirmed) {
+          return; // Stay on blade
+        }
+      }
+      emit("close:blade");
+    }
+    // Problems:
+    // - confirm() is synchronous, blocks UI
+    // - Ugly browser dialog instead of VcModal
+    // - Cannot make async API calls
+    // - Not integrated with blade navigation
+    // - Poor UX
+    </script>
+    ```
+
+instructions: |
+  For details/edit blades with unsaved changes:
+  1. Import onBeforeClose: import { onBeforeClose } from '@vc-shell/framework'
+  2. Import usePopup: import { usePopup } from '@vc-shell/framework'
+  3. Get showConfirmation: const { showConfirmation } = usePopup()
+  4. Register onBeforeClose hook:
+     ```typescript
+     onBeforeClose(async () => {
+       if (modified.value && !loading.value) {
+         return await showConfirmation(t('COMMON.UNSAVED_CHANGES'));
+       }
+     });
+     ```
+  5. Framework automatically closes blade if hook returns true
+  6. DO NOT manually emit('close:blade') in the hook - framework handles it
+
+  IMPORTANT:
+  - onBeforeClose runs BEFORE blade close
+  - Return true/undefined to allow close
+  - Return false to prevent close
+  - Can be async - use await for confirmations
+  - DO NOT emit close:blade in the hook - framework does it
+
+examples:
+  - "compositions/details/blade-close-confirmation.md"
+  - "framework/composables/onBeforeClose.md"
+  - "patterns/unsaved-changes.md"
+
+validations:
+  - type: "regex"
+    pattern: "\\bconfirm\\("
+    message: "❌ FORBIDDEN: Use onBeforeClose hook with showConfirmation instead of confirm()"
+
+  - type: "regex"
+    pattern: "window\\.confirm"
+    message: "❌ FORBIDDEN: Use showConfirmation from usePopup() instead of window.confirm"
+
+  - type: "required_import"
+    import: "onBeforeClose"
+    from: "@vc-shell/framework"
+    when: "Details blade with modified tracking"
+    message: "⚠️ Import onBeforeClose from @vc-shell/framework for blade close confirmation"
+
+  - type: "required_import"
+    import: "usePopup"
+    from: "@vc-shell/framework"
+    when: "Details blade with modified tracking"
+    message: "⚠️ Import usePopup from @vc-shell/framework to get showConfirmation"
+
+auto_fix:
+  enabled: true
+  transforms:
+    - find: "if\\s*\\(.*\\)\\s*\\{[^}]*confirm\\(.*\\)[^}]*\\}\\s*emit\\(['\"]close:blade['\"]\\)"
+      replace: |
+        onBeforeClose(async () => {
+          if (modified.value && !loading.value) {
+            return await showConfirmation(t('COMMON.UNSAVED_CHANGES'));
+          }
+        });
+      add_import:
+        name: "onBeforeClose"
+        from: "@vc-shell/framework"

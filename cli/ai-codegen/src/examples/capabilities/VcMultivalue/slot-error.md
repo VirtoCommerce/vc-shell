@@ -1,3 +1,14 @@
+---
+id: vcmultivalue-slot-error
+component: VcMultivalue
+type: SLOT
+complexity: MODERATE
+category: component
+tags: [slot, error]
+title: "VcMultivalue #error slot"
+description: "error slot for VcMultivalue"
+---
+
 # Capability: error
 
 ## Type

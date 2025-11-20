@@ -1,3 +1,13 @@
+---
+id: component-VcGallery-demo
+type: COMPONENT
+complexity: SIMPLE
+category: component
+tags: [component]
+title: "VcGallery Demo"
+description: "VcGallery Demo component example"
+---
+
 # VcGallery Demo
 
 Real-world gallery examples for product images, media management, and visual content organization.

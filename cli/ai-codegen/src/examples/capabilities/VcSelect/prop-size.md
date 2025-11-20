@@ -1,3 +1,14 @@
+---
+id: vcselect-prop-size
+component: VcSelect
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, size]
+title: "VcSelect :size prop"
+description: "size property for VcSelect"
+---
+
 # Capability: size
 
 ## Type

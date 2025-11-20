@@ -1,3 +1,14 @@
+---
+id: vceditor-prop-modelValue
+component: VcEditor
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, modelValue]
+title: "VcEditor :modelValue prop"
+description: "modelValue property for VcEditor"
+---
+
 # Capability: modelValue
 
 ## Type

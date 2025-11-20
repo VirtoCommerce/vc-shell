@@ -1,3 +1,14 @@
+---
+id: vcgallery-prop-images
+component: VcGallery
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, images]
+title: "VcGallery :images prop"
+description: "images property for VcGallery"
+---
+
 # Capability: images
 
 ## Type

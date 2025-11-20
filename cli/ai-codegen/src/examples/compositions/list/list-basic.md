@@ -1,3 +1,13 @@
+---
+id: composition-list-list-basic
+type: COMPOSITION
+complexity: MODERATE
+category: composition
+tags: [composition, list, list]
+title: "List Basic"
+description: "List Basic composition for list blades"
+---
+
 # List Basic Pattern
 
 Core structure for list blades with VcTable and basic CRUD operations.

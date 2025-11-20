@@ -1,3 +1,14 @@
+---
+id: vcinput-prop-step
+component: VcInput
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, step]
+title: "VcInput :step prop"
+description: "step property for VcInput"
+---
+
 # Capability: step
 
 ## Type

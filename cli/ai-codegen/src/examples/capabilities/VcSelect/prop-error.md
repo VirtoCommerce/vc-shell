@@ -1,3 +1,14 @@
+---
+id: vcselect-prop-error
+component: VcSelect
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, error]
+title: "VcSelect :error prop"
+description: "error property for VcSelect"
+---
+
 # Capability: error
 
 ## Type

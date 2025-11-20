@@ -1,3 +1,13 @@
+---
+id: page-README
+type: PAGE
+complexity: SIMPLE
+category: page
+tags: [page]
+title: "README"
+description: "README page example"
+---
+
 # Dashboard Page Examples
 
 This directory contains examples for creating a Dashboard page in a VC-Shell application.

@@ -1,8 +1,17 @@
 {
-  "sessionStart": 1763537779688,
-  "sessionDuration": 11471413,
+  "sessionStart": 1763566767339,
+  "sessionDuration": 415231,
   "totalCalls": 5,
   "toolStats": [
+    {
+      "name": "generate_with_composition",
+      "callCount": 2,
+      "successCount": 0,
+      "failureCount": 2,
+      "avgDuration": 0,
+      "totalDuration": 0,
+      "lastCalled": 1763566968785
+    },
     {
       "name": "start_module_workflow",
       "callCount": 1,
@@ -10,34 +19,16 @@
       "failureCount": 0,
       "avgDuration": 1,
       "totalDuration": 1,
-      "lastCalled": 1763537868311
+      "lastCalled": 1763566872152
     },
     {
       "name": "create_ui_plan_from_analysis_v2",
       "callCount": 1,
       "successCount": 1,
       "failureCount": 0,
-      "avgDuration": 68,
-      "totalDuration": 68,
-      "lastCalled": 1763537947575
-    },
-    {
-      "name": "validate_and_fix_plan",
-      "callCount": 1,
-      "successCount": 1,
-      "failureCount": 0,
-      "avgDuration": 20,
-      "totalDuration": 20,
-      "lastCalled": 1763538016403
-    },
-    {
-      "name": "generate_with_composition",
-      "callCount": 1,
-      "successCount": 1,
-      "failureCount": 0,
-      "avgDuration": 18,
-      "totalDuration": 18,
-      "lastCalled": 1763538040573
+      "avgDuration": 33,
+      "totalDuration": 33,
+      "lastCalled": 1763566939651
     },
     {
       "name": "get_workflow_status",
@@ -46,66 +37,68 @@
       "failureCount": 0,
       "avgDuration": 0,
       "totalDuration": 0,
-      "lastCalled": 1763538079670
+      "lastCalled": 1763566962056
     }
   ],
   "workflow": [
     {
       "toolName": "start_module_workflow",
-      "timestamp": 1763537868311,
+      "timestamp": 1763566872152,
       "success": true
     },
     {
       "toolName": "create_ui_plan_from_analysis_v2",
-      "timestamp": 1763537947575,
-      "success": true
-    },
-    {
-      "toolName": "validate_and_fix_plan",
-      "timestamp": 1763538016403,
+      "timestamp": 1763566939651,
       "success": true
     },
     {
       "toolName": "generate_with_composition",
-      "timestamp": 1763538040573,
-      "success": true
+      "timestamp": 1763566956014,
+      "success": false
     },
     {
       "toolName": "get_workflow_status",
-      "timestamp": 1763538079670,
+      "timestamp": 1763566962056,
       "success": true
+    },
+    {
+      "toolName": "generate_with_composition",
+      "timestamp": 1763566968785,
+      "success": false
     }
   ],
   "allMetrics": [
     {
       "toolName": "start_module_workflow",
-      "timestamp": 1763537868311,
+      "timestamp": 1763566872152,
       "duration": 1,
       "success": true
     },
     {
       "toolName": "create_ui_plan_from_analysis_v2",
-      "timestamp": 1763537947575,
-      "duration": 68,
-      "success": true
-    },
-    {
-      "toolName": "validate_and_fix_plan",
-      "timestamp": 1763538016403,
-      "duration": 20,
+      "timestamp": 1763566939651,
+      "duration": 33,
       "success": true
     },
     {
       "toolName": "generate_with_composition",
-      "timestamp": 1763538040573,
-      "duration": 18,
-      "success": true
+      "timestamp": 1763566956014,
+      "duration": 0,
+      "success": false,
+      "error": "Cannot read properties of undefined (reading '$schema')"
     },
     {
       "toolName": "get_workflow_status",
-      "timestamp": 1763538079670,
+      "timestamp": 1763566962056,
       "duration": 0,
       "success": true
+    },
+    {
+      "toolName": "generate_with_composition",
+      "timestamp": 1763566968785,
+      "duration": 0,
+      "success": false,
+      "error": "Cannot read properties of undefined (reading '$schema')"
     }
   ]
 }

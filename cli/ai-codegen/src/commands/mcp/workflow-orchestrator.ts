@@ -254,13 +254,24 @@ export class WorkflowOrchestrator {
 
     // Special handling for create_ui_plan_from_analysis_v2
     if (toolName === "create_ui_plan_from_analysis_v2") {
-      this.state.plan = result;
+      // Extract plan from result - it's nested in content[0].text as JSON string
+      let planData = result;
+      if (result.content && Array.isArray(result.content) && result.content[0]?.text) {
+        try {
+          planData = JSON.parse(result.content[0].text);
+        } catch {
+          // If parsing fails, use result as-is
+        }
+      }
+
+      // Store the actual plan object
+      this.state.plan = planData.plan || planData;
       // Analysis is implicitly completed when plan is created
       this.state.analysis = { completed: true, inline: true };
 
       // Plan is validated during creation, set state to "validated"
       // (The tool only returns success if validation passes)
-      if (result.validation?.valid === true) {
+      if (planData.validation?.valid === true || planData.valid === true) {
         this.state.step = "validated";
         this.state.canProceed = true;
         this.state.nextStep = this.getNextStepSuggestion();
@@ -281,6 +292,27 @@ export class WorkflowOrchestrator {
         toolName === "generate_complete_module"
       ) {
         this.state.generatedGuides = result;
+      }
+
+      // Store plan from validate_ui_plan or validate_and_fix_plan
+      if (toolName === "validate_ui_plan" || toolName === "validate_and_fix_plan") {
+        // Extract plan from result
+        let planData = result;
+        if (result.content && Array.isArray(result.content) && result.content[0]?.text) {
+          try {
+            planData = JSON.parse(result.content[0].text);
+          } catch {
+            // If parsing fails, use result as-is
+          }
+        }
+
+        // Store the plan if it's in the result
+        if (planData.plan) {
+          this.state.plan = planData.plan;
+        } else if (planData.fixedPlan) {
+          // validate_and_fix_plan returns fixedPlan
+          this.state.plan = planData.fixedPlan;
+        }
       }
 
       // Persist state to disk

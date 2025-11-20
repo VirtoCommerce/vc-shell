@@ -1,3 +1,13 @@
+---
+id: composition-details-form-basic
+type: COMPOSITION
+complexity: MODERATE
+category: composition
+tags: [composition, details, details]
+title: "Form Basic"
+description: "Form Basic composition for details blades"
+---
+
 # Form Basic Pattern
 
 Core structure for details blades with VcForm and basic save/cancel operations.

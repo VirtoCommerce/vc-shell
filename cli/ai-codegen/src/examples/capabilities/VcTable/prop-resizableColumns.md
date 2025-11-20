@@ -1,3 +1,14 @@
+---
+id: vctable-prop-resizableColumns
+component: VcTable
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, resizableColumns]
+title: "VcTable :resizableColumns prop"
+description: "resizableColumns property for VcTable"
+---
+
 # Capability: resizableColumns
 
 ## Type

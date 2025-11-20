@@ -1,3 +1,14 @@
+---
+id: vcwidget-prop-horizontal
+component: VcWidget
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, horizontal]
+title: "VcWidget :horizontal prop"
+description: "horizontal property for VcWidget"
+---
+
 # Capability: horizontal
 
 ## Type

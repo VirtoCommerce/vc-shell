@@ -1,3 +1,14 @@
+---
+id: vcgallery-prop-itemActions
+component: VcGallery
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, itemActions]
+title: "VcGallery :itemActions prop"
+description: "itemActions property for VcGallery"
+---
+
 # Capability: itemActions
 
 ## Type

@@ -1,3 +1,14 @@
+---
+id: vcselect-prop-multilanguage
+component: VcSelect
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, multilanguage]
+title: "VcSelect :multilanguage prop"
+description: "multilanguage property for VcSelect"
+---
+
 # Capability: multilanguage
 
 ## Type

@@ -1,3 +1,14 @@
+---
+id: vccheckbox-slot-default
+component: VcCheckbox
+type: SLOT
+complexity: MODERATE
+category: component
+tags: [slot, default]
+title: "VcCheckbox #default slot"
+description: "default slot for VcCheckbox"
+---
+
 # Capability: default
 
 ## Type

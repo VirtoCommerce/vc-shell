@@ -1,3 +1,14 @@
+---
+id: vcblade-slot-backButton
+component: VcBlade
+type: SLOT
+complexity: MODERATE
+category: component
+tags: [slot, backButton]
+title: "VcBlade #backButton slot"
+description: "backButton slot for VcBlade"
+---
+
 # Capability: backButton
 
 ## Type

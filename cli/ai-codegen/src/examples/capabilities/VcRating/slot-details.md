@@ -1,3 +1,14 @@
+---
+id: vcrating-slot-details
+component: VcRating
+type: SLOT
+complexity: MODERATE
+category: component
+tags: [slot, details]
+title: "VcRating #details slot"
+description: "details slot for VcRating"
+---
+
 # Capability: details
 
 ## Type

@@ -1,3 +1,14 @@
+---
+id: vcmultivalue-prop-required
+component: VcMultivalue
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, required]
+title: "VcMultivalue :required prop"
+description: "required property for VcMultivalue"
+---
+
 # Capability: required
 
 ## Type

@@ -1,3 +1,14 @@
+---
+id: vcstatus-slot-default
+component: VcStatus
+type: SLOT
+complexity: MODERATE
+category: component
+tags: [slot, default]
+title: "VcStatus #default slot"
+description: "default slot for VcStatus"
+---
+
 # Capability: default
 
 ## Type

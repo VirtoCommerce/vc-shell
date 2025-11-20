@@ -1,3 +1,14 @@
+---
+id: vcslider-slot-prevBtn
+component: VcSlider
+type: SLOT
+complexity: MODERATE
+category: component
+tags: [slot, prevBtn]
+title: "VcSlider #prevBtn slot"
+description: "prevBtn slot for VcSlider"
+---
+
 # Capability: prevBtn
 
 ## Type

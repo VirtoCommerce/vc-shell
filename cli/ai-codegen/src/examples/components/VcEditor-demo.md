@@ -1,3 +1,13 @@
+---
+id: component-VcEditor-demo
+type: COMPONENT
+complexity: SIMPLE
+category: component
+tags: [component]
+title: "VcEditor Demo"
+description: "VcEditor Demo component example"
+---
+
 # VcEditor Demo
 
 Real-world Markdown editor examples for rich content, product descriptions, and articles.

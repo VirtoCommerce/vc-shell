@@ -1,3 +1,14 @@
+---
+id: vcswitch-prop-trueValue
+component: VcSwitch
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, trueValue]
+title: "VcSwitch :trueValue prop"
+description: "trueValue property for VcSwitch"
+---
+
 # Capability: trueValue
 
 ## Type

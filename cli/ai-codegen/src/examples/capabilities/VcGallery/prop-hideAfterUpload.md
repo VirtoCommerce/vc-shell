@@ -1,3 +1,14 @@
+---
+id: vcgallery-prop-hideAfterUpload
+component: VcGallery
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, hideAfterUpload]
+title: "VcGallery :hideAfterUpload prop"
+description: "hideAfterUpload property for VcGallery"
+---
+
 # Capability: hideAfterUpload
 
 ## Type

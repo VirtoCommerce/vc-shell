@@ -1,3 +1,14 @@
+---
+id: vcrating-prop-placeholder
+component: VcRating
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, placeholder]
+title: "VcRating :placeholder prop"
+description: "placeholder property for VcRating"
+---
+
 # Capability: placeholder
 
 ## Type

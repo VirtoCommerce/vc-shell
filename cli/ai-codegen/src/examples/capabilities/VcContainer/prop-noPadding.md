@@ -1,3 +1,14 @@
+---
+id: vccontainer-prop-noPadding
+component: VcContainer
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, noPadding]
+title: "VcContainer :noPadding prop"
+description: "noPadding property for VcContainer"
+---
+
 # Capability: noPadding
 
 ## Type

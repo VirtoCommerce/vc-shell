@@ -1,3 +1,14 @@
+---
+id: vcinput-prop-error
+component: VcInput
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, error]
+title: "VcInput :error prop"
+description: "error property for VcInput"
+---
+
 # Capability: error
 
 ## Type

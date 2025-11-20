@@ -1,3 +1,13 @@
+---
+id: api-mock-api-sorting
+type: API
+complexity: SIMPLE
+category: api
+tags: [api]
+title: "Mock Api Sorting"
+description: "Mock Api Sorting API example"
+---
+
 # Mock API Sorting Pattern
 
 This example shows the **correct** way to handle sorting in **mock API** implementations with proper TypeScript null safety.

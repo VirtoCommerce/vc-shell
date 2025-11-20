@@ -1,3 +1,13 @@
+---
+id: component-VcField-demo
+type: COMPONENT
+complexity: SIMPLE
+category: component
+tags: [component]
+title: "VcField Demo"
+description: "VcField Demo component example"
+---
+
 # VcField Demo
 
 **IMPORTANT**: VcField is for **displaying** read-only data, NOT for form inputs!  

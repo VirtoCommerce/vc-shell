@@ -1,3 +1,14 @@
+---
+id: vcslider-prop-slides
+component: VcSlider
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, slides]
+title: "VcSlider :slides prop"
+description: "slides property for VcSlider"
+---
+
 # Capability: slides
 
 ## Type

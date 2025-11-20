@@ -1,3 +1,14 @@
+---
+id: vcwidget-prop-icon
+component: VcWidget
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, icon]
+title: "VcWidget :icon prop"
+description: "icon property for VcWidget"
+---
+
 # Capability: icon
 
 ## Type

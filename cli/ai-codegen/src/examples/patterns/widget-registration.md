@@ -1,3 +1,13 @@
+---
+id: widget-registration
+type: PATTERN
+complexity: MODERATE
+category: pattern
+tags: [pattern]
+title: "Widget Registration"
+description: "Widget Registration pattern"
+---
+
 # Widget Registration Pattern
 
 Based on real production code from `apps/vendor-portal/src/modules/offers/pages/offers-details.vue:668-682`.

@@ -1,3 +1,14 @@
+---
+id: vccheckbox-prop-name
+component: VcCheckbox
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, name]
+title: "VcCheckbox :name prop"
+description: "name property for VcCheckbox"
+---
+
 # Capability: name
 
 ## Type

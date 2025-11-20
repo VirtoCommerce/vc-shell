@@ -1,3 +1,14 @@
+---
+id: vcinput-prop-maxlength
+component: VcInput
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, maxlength]
+title: "VcInput :maxlength prop"
+description: "maxlength property for VcInput"
+---
+
 # Capability: maxlength
 
 ## Type

@@ -1,3 +1,14 @@
+---
+id: vcselect-slot-error
+component: VcSelect
+type: SLOT
+complexity: MODERATE
+category: component
+tags: [slot, error]
+title: "VcSelect #error slot"
+description: "error slot for VcSelect"
+---
+
 # Capability: error
 
 ## Type

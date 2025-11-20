@@ -1,3 +1,14 @@
+---
+id: vcbanner-slot-default
+component: VcBanner
+type: SLOT
+complexity: MODERATE
+category: component
+tags: [slot, default]
+title: "VcBanner #default slot"
+description: "default slot for VcBanner"
+---
+
 # Capability: default
 
 ## Type

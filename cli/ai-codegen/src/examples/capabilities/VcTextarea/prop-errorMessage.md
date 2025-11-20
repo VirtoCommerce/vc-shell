@@ -1,3 +1,14 @@
+---
+id: vctextarea-prop-errorMessage
+component: VcTextarea
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, errorMessage]
+title: "VcTextarea :errorMessage prop"
+description: "errorMessage property for VcTextarea"
+---
+
 # Capability: errorMessage
 
 ## Type

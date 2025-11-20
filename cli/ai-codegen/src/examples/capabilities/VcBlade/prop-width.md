@@ -1,3 +1,14 @@
+---
+id: vcblade-prop-width
+component: VcBlade
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, width]
+title: "VcBlade :width prop"
+description: "width property for VcBlade"
+---
+
 # Capability: width
 
 ## Type

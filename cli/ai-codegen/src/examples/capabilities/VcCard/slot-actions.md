@@ -1,3 +1,14 @@
+---
+id: vccard-slot-actions
+component: VcCard
+type: SLOT
+complexity: MODERATE
+category: component
+tags: [slot, actions]
+title: "VcCard #actions slot"
+description: "actions slot for VcCard"
+---
+
 # Capability: actions
 
 ## Type

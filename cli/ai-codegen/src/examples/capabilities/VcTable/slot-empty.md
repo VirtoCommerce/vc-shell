@@ -1,3 +1,14 @@
+---
+id: vctable-slot-empty
+component: VcTable
+type: SLOT
+complexity: MODERATE
+category: component
+tags: [slot, empty]
+title: "VcTable #empty slot"
+description: "empty slot for VcTable"
+---
+
 # Capability: empty
 
 ## Type

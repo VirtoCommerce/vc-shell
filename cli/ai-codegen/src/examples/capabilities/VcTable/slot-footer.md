@@ -1,3 +1,14 @@
+---
+id: vctable-slot-footer
+component: VcTable
+type: SLOT
+complexity: MODERATE
+category: component
+tags: [slot, footer]
+title: "VcTable #footer slot"
+description: "footer slot for VcTable"
+---
+
 # Capability: footer
 
 ## Type

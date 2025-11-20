@@ -1,3 +1,14 @@
+---
+id: vcmultivalue-prop-multivalue
+component: VcMultivalue
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, multivalue]
+title: "VcMultivalue :multivalue prop"
+description: "multivalue property for VcMultivalue"
+---
+
 # Capability: multivalue
 
 ## Type

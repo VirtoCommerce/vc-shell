@@ -123,14 +123,26 @@ export async function mcpServerCommand() {
   const examplesPath = path.join(rootPath, "src", "examples");
 
   // ✅ Initialize MCP Metrics Tracker
-  const debugMode = process.env.DEBUG_MCP === "true";
+  // Enable debug mode by default (always log to file)
+  const debugMode = process.env.DEBUG_MCP !== "false"; // Default: true
   const metricsTracker = new MCPMetricsTracker(debugMode);
-  const metricsFile = process.env.MCP_METRICS_FILE;
+  const metricsFile = process.env.MCP_METRICS_FILE || path.join(__dirname, "..", "..", ".mcp-metrics.json");
+  const debugLogFile = process.env.MCP_DEBUG_LOG || "/tmp/mcp-debug.log";
 
-  // Helper function for debug logging (MUST use stderr, not stdout)
+  // Helper function for debug logging (writes to both stderr and file)
   const debugLog = (...args: any[]) => {
     if (debugMode) {
-      console.error("[MCP DEBUG]", ...args);
+      const message = `[MCP DEBUG ${new Date().toISOString()}] ${args.join(" ")}`;
+      console.error(message);
+
+      // Also write to file if specified
+      if (debugLogFile) {
+        try {
+          fs.appendFileSync(debugLogFile, message + "\n");
+        } catch (err) {
+          console.error(`Failed to write to debug log: ${err}`);
+        }
+      }
     }
   };
 
@@ -138,6 +150,15 @@ export async function mcpServerCommand() {
     debugLog("Debug mode enabled");
     if (metricsFile) {
       debugLog(`Metrics will be saved to: ${metricsFile}`);
+    }
+    if (debugLogFile) {
+      debugLog(`Debug logs will be written to: ${debugLogFile}`);
+      // Clear previous log on startup
+      try {
+        fs.writeFileSync(debugLogFile, `=== MCP Debug Session Started at ${new Date().toISOString()} ===\n`);
+      } catch (err) {
+        console.error(`Failed to initialize debug log: ${err}`);
+      }
     }
   }
 
@@ -355,7 +376,12 @@ export async function mcpServerCommand() {
   server.setRequestHandler(CallToolRequestSchema, async (request) => {
     const { name, arguments: args } = request.params;
 
-    debugLog(`Tool call: ${name}`, args);
+    debugLog(`\n${"=".repeat(60)}`);
+    debugLog(`Tool call: ${name}`);
+    if (args && Object.keys(args).length > 0) {
+      debugLog(`Arguments:`, JSON.stringify(args, null, 2));
+    }
+    debugLog(`${"=".repeat(60)}`);
 
     // ✅ Check workflow before executing tool
     const workflowCheck = globalWorkflow.canExecuteTool(name);
@@ -399,6 +425,8 @@ export async function mcpServerCommand() {
     // Helper to track success and return result
     const trackSuccess = <T extends Record<string, any>>(result: T): T => {
       metricsTracker.endToolCall(name, startTime, true);
+      debugLog(`✓ Tool completed successfully: ${name}`);
+
       // ✅ Update workflow state after successful tool execution
       // 🔥 Don't update workflow state if result is an error
       if (!result.isError) {
@@ -430,6 +458,7 @@ export async function mcpServerCommand() {
                     valid: validationResult.valid,
                     message: validationResult.valid ? "UI-Plan is valid" : "UI-Plan has validation errors",
                     errors: validationResult.errors || undefined,
+                    plan: plan, // Include plan in result for workflow state
                   },
                   null,
                   2,
@@ -997,14 +1026,43 @@ Try:
             throw new Error(`Invalid arguments: ${parsed.error.message}`);
           }
 
-          const parsedData = parsed.data as { plan: any; cwd: string; dryRun?: boolean; strategy?: "ai-full"; bladeId?: string };
+          const parsedData = parsed.data as { plan?: any; cwd: string; dryRun?: boolean; strategy?: "ai-full"; bladeId?: string };
           const { plan: rawPlan, cwd, dryRun, bladeId } = parsedData;
 
           // Debug: Log what zod returned
           debugLog(`After zod parse, rawPlan type: ${typeof rawPlan}`);
 
           // Parse plan if it's a string (MCP sends JSON as string)
-          let plan = typeof rawPlan === 'string' ? JSON.parse(rawPlan) : rawPlan;
+          // If plan is not provided, get it from workflow state
+          let plan = rawPlan
+            ? (typeof rawPlan === 'string' ? JSON.parse(rawPlan) : rawPlan)
+            : globalWorkflow.getState().plan;
+
+          // Check if plan is available
+          if (!plan) {
+            return {
+              content: [
+                {
+                  type: "text",
+                  text: JSON.stringify(
+                    {
+                      success: false,
+                      error: "No UI-Plan available",
+                      reason: "Plan was not provided in arguments and not found in workflow state",
+                      suggestion:
+                        "You must either:\n" +
+                        "1. Provide the plan in the 'plan' parameter, OR\n" +
+                        "2. Complete the workflow steps first: analyze_prompt_v2 → create_ui_plan_from_analysis_v2 → validate_ui_plan\n\n" +
+                        "Use get_workflow_status to check current workflow state.",
+                    },
+                    null,
+                    2,
+                  ),
+                },
+              ],
+              isError: true,
+            };
+          }
 
           // Auto-fix common UI-Plan errors
           const fixResult = autoFixUIPlan(plan);

@@ -1,3 +1,14 @@
+---
+id: vccheckbox-slot-icon
+component: VcCheckbox
+type: SLOT
+complexity: MODERATE
+category: component
+tags: [slot, icon]
+title: "VcCheckbox #icon slot"
+description: "icon slot for VcCheckbox"
+---
+
 # Capability: icon
 
 ## Type

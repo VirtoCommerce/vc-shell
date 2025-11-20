@@ -1,0 +1,40 @@
+id: "11"
+name: "VcSelect Slot Scope"
+category: "critical"
+priority: 100
+enabled: true
+applies_to:
+  - "all"
+
+description: |
+  VcSelect #option slot uses { opt }, NOT { option }.
+
+forbidden:
+  - pattern: "#option=\"\\{\\s*option"
+    reason: "VcSelect slot scope is { opt }, not { option }"
+    severity: "error"
+
+correct_pattern:
+  inline: |
+    ```vue
+    <!-- ✅ CORRECT -->
+    <VcSelect>
+      <template #option="{ opt, selected }">
+        {{ opt.label }}
+      </template>
+    </VcSelect>
+    ```
+
+wrong_pattern:
+  inline: |
+    ```vue
+    <!-- ❌ WRONG -->
+    <VcSelect>
+      <template #option="{ option }">  <!-- Doesn't exist! -->
+        {{ option.label }}
+      </template>
+    </VcSelect>
+    ```
+
+examples:
+  - "capabilities/VcSelect/slot-option.md"

@@ -1,3 +1,13 @@
+---
+id: component-VcInputCurrency-demo
+type: COMPONENT
+complexity: SIMPLE
+category: component
+tags: [component]
+title: "VcInputCurrency Demo"
+description: "VcInputCurrency Demo component example"
+---
+
 # VcInputCurrency Demo
 
 Real-world currency input examples with multi-currency support and formatting.

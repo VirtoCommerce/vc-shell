@@ -1,64 +1,96 @@
-import type { ICommonAsset } from "@vc-shell/framework";
+/**
+ * Offers Module Types
+ * All TypeScript interfaces and types for the offers management module
+ */
 
-export interface IOfferListItem {
+// ===== Core Entities =====
+
+export interface IOffer {
   id: string;
-  productImage?: string;
-  productName: string;
-  createdDate: string | Date;
   sku: string;
+  name?: string;
+  productId?: string;
+  productType?: "Physical" | "Digital";
   isActive: boolean;
   isDefault: boolean;
+  trackInventory?: boolean;
+  createdDate: string;
+  modifiedDate?: string;
+  product?: IProduct;
 }
 
-export interface IOfferDetails {
-  id?: string;
-  productId: string;
-  name: string;
-  productType: "Physical" | "Digital";
-  sku: string;
-  trackInventory: boolean;
-  fulfillmentCenterQuantities: Record<string, number>;
-  images?: ICommonAsset[];
-  isActive?: boolean;
-  isDefault?: boolean;
-  createdDate?: string | Date;
-  modifiedDate?: string | Date;
+export interface IOfferDetails extends IOffer {
+  images?: IImage[];
+  inventoryInfo?: IInventoryInfo[];
+  priceList?: IOfferPriceList[];
+  [key: string]: any;
 }
+
+export interface IProduct {
+  id: string;
+  name: string;
+  sku: string;
+  imgSrc?: string;
+}
+
+export interface IImage {
+  id: string;
+  url: string;
+  name?: string;
+  sortOrder?: number;
+}
+
+export interface IInventoryInfo {
+  fulfillmentCenterId: string;
+  fulfillmentCenterName: string;
+  inStockQuantity: number;
+}
+
+export interface IOfferPriceList {
+  id: string;
+  pricelistId: string;
+  pricelistName?: string;
+  price: number;
+  currency?: string;
+}
+
+// ===== API Query/Command Types =====
 
 export interface SearchOffersQuery {
   skip?: number;
   take?: number;
-  keyword?: string;
   sort?: string;
-  productName?: string;
-  sku?: string;
-  isActive?: boolean;
-  isDefault?: boolean;
+  keyword?: string;
+  filter?: Record<string, any>;
 }
 
 export interface SearchOffersResult {
-  results: IOfferListItem[];
+  results: IOffer[];
   totalCount: number;
 }
 
 export interface CreateNewOfferCommand {
-  name: string;
-  productId: string;
-  productType: string;
   sku: string;
+  name?: string;
+  productId: string;
+  productType: "Physical" | "Digital";
   trackInventory?: boolean;
-  fulfillmentCenterQuantities?: Record<string, number>;
+  inventoryInfo?: IInventoryInfo[];
 }
 
 export interface UpdateOfferCommand {
   id: string;
+  sku?: string;
   name?: string;
   productId?: string;
-  productType?: string;
-  sku?: string;
+  productType?: "Physical" | "Digital";
   trackInventory?: boolean;
-  fulfillmentCenterQuantities?: Record<string, number>;
-  isActive?: boolean;
+  inventoryInfo?: IInventoryInfo[];
+  images?: IImage[];
+}
+
+export interface BulkOffersDeleteCommand {
+  ids: string[];
 }
 
 export interface ValidateOfferQuery {
@@ -66,47 +98,64 @@ export interface ValidateOfferQuery {
   id?: string;
 }
 
+export interface ValidationResult {
+  isValid: boolean;
+  errors: ValidationFailure[];
+}
+
 export interface ValidationFailure {
   propertyName: string;
   errorMessage: string;
-}
-
-export interface ValidateOfferResult {
-  isValid: boolean;
-  errors?: ValidationFailure[];
-}
-
-export interface BulkOffersDeleteCommand {
-  ids: string[];
+  errorCode?: string;
 }
 
 export interface ChangeOfferDefaultCommand {
-  offerId: string;
+  id: string;
 }
 
 export interface SearchProductsForNewOfferQuery {
   keyword: string;
-  take?: number;
   skip?: number;
+  take?: number;
 }
 
-export interface IProduct {
-  id: string;
-  name: string;
-  code: string;
-  imgSrc?: string;
-}
+// ===== Settings and Configuration =====
 
-export interface IFulfillmentCenter {
-  id: string;
-  name: string;
+export interface IMarketplaceSettings {
+  allowMultipleOffers: boolean;
 }
 
 export interface ILanguage {
   code: string;
-  name: string;
+  displayName: string;
+  isDefault?: boolean;
 }
 
-export interface IMarketplaceSettings {
-  allowDefault: boolean;
+// ===== Fulfillment Centers =====
+
+export interface IFulfillmentCenter {
+  id: string;
+  name: string;
+  description?: string;
+}
+
+// ===== Domain Events =====
+
+export interface OfferCreatedDomainEvent {
+  offerId: string;
+  offerName: string;
+  productId: string;
+  timestamp: string;
+}
+
+export interface OfferDeletedDomainEvent {
+  offerId: string;
+  timestamp: string;
+}
+
+// ===== Widget Props =====
+
+export interface ISpecialPricesWidgetProps {
+  offerId: string;
+  priceCount: number;
 }

@@ -1,0 +1,40 @@
+id: "10"
+name: "VcTable Generic Comment"
+category: "critical"
+priority: 100
+enabled: true
+applies_to:
+  - "list"
+
+description: |
+  VcTable REQUIRES <!-- @vue-generic {Type} --> comment on FIRST LINE.
+
+forbidden:
+  - pattern: "<VcTable.*>"
+    when: "Missing <!-- @vue-generic --> on first line"
+    reason: "VcTable requires @vue-generic comment for TypeScript"
+    severity: "error"
+
+correct_pattern:
+  inline: |
+    ```vue
+    <!-- @vue-generic {IOffer} -->
+    <template>
+      <VcTable :items="items">
+        <!-- columns -->
+      </VcTable>
+    </template>
+    ```
+
+wrong_pattern:
+  inline: |
+    ```vue
+    <template>
+      <VcTable :items="items">  <!-- ❌ Missing @vue-generic comment! -->
+        <!-- columns -->
+      </VcTable>
+    </template>
+    ```
+
+examples:
+  - "capabilities/VcTable/GENERIC_SFC.md"

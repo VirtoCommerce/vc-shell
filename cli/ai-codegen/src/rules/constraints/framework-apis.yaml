@@ -1,0 +1,28 @@
+id: "framework-apis"
+name: "Framework API Constraints"
+category: "constraint"
+priority: 90
+enabled: true
+applies_to:
+  - "all"
+
+description: |
+  Use correct framework composables and APIs.
+
+correct_pattern:
+  inline: |
+    ```typescript
+    // ✅ CORRECT Framework APIs:
+    // - Navigation: useBladeNavigation() - provides openBlade(), closeBlade()
+    // - Confirmations: usePopup() - provides showConfirmation(), showError()
+    // - Prevent browser unload: useBeforeUnload(modifiedRef)
+    // - Prevent blade close: onBeforeClose(async () => { ... })
+    // - Notifications: import { notification } from '@vc-shell/framework'
+    // - Close blade: emit('close:blade') OR closeBlade()
+    // - MUST use defineExpose() to expose title and reload() method
+    ```
+
+required:
+  - pattern: "defineExpose\\("
+    when: "All blades"
+    severity: "warning"

@@ -1,0 +1,33 @@
+id: "08"
+name: "Module Index File Pattern"
+category: "critical"
+priority: 100
+enabled: true
+applies_to:
+  - "all"
+
+description: |
+  Use createAppModule for module index, NOT createDynamicAppModule.
+
+correct_pattern:
+  inline: |
+    ```typescript
+    // ✅ CORRECT
+    import { createAppModule } from "@vc-shell/framework";
+    
+    export default createAppModule(pages, locales, notificationTemplates);
+    ```
+
+wrong_pattern:
+  inline: |
+    ```typescript
+    // ❌ WRONG
+    import { createDynamicAppModule } from "@vc-shell/framework";
+    
+    export default createDynamicAppModule({ ... });
+    ```
+
+forbidden:
+  - pattern: "createDynamicAppModule"
+    reason: "Use createAppModule instead"
+    severity: "error"

@@ -1,3 +1,14 @@
+---
+id: framework-useBeforeUnload
+type: API
+complexity: MODERATE
+category: framework
+tags: [composable, framework]
+critical: true
+title: "useBeforeUnload"
+description: "useBeforeUnload composable API"
+---
+
 # useBeforeUnload - Prevent Page Unload
 
 **Capability:** `prevent-unload`

@@ -50,11 +50,11 @@ describe("UnifiedCodeGenerator", () => {
       expect(bladeFile?.content).toContain("VcTable");
       expect(bladeFile?.content).toContain("VendorList");
 
-      // Check composable file generated
+      // Check composable file generated (AI-FULL mode generates instructions, not actual code)
       const composableFile = result.files.find(f => f.path.includes("useVendorList"));
       expect(composableFile).toBeDefined();
-      expect(composableFile?.content).toContain("export default function useVendorList");
-      expect(composableFile?.content).toContain("MOCK_VENDORS");
+      expect(composableFile?.content).toContain("AI-FULL: implement useVendorList");
+      expect(composableFile?.content).toContain("submit_generated_code");
     });
 
     it("should generate module with both list and details blades", async () => {

@@ -1,3 +1,14 @@
+---
+id: vccheckbox-prop-disabled
+component: VcCheckbox
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, disabled]
+title: "VcCheckbox :disabled prop"
+description: "disabled property for VcCheckbox"
+---
+
 # Capability: disabled
 
 ## Type

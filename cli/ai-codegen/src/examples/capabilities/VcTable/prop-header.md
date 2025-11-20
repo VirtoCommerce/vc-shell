@@ -1,3 +1,14 @@
+---
+id: vctable-prop-header
+component: VcTable
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, header]
+title: "VcTable :header prop"
+description: "header property for VcTable"
+---
+
 # Capability: header
 
 ## Type

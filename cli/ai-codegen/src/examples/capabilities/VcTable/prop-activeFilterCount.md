@@ -1,3 +1,14 @@
+---
+id: vctable-prop-activeFilterCount
+component: VcTable
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, activeFilterCount]
+title: "VcTable :activeFilterCount prop"
+description: "activeFilterCount property for VcTable"
+---
+
 # Capability: activeFilterCount
 
 ## Type

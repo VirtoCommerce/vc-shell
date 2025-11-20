@@ -1,3 +1,14 @@
+---
+id: vcslider-prop-overflow
+component: VcSlider
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, overflow]
+title: "VcSlider :overflow prop"
+description: "overflow property for VcSlider"
+---
+
 # Capability: overflow
 
 ## Type

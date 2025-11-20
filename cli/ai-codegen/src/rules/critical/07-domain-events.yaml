@@ -1,0 +1,34 @@
+id: "07"
+name: "Domain Events Pattern"
+category: "critical"
+priority: 100
+enabled: true
+applies_to:
+  - "all"
+
+description: |
+  Use useNotifications for domain events, NEVER window.addEventListener.
+
+forbidden:
+  - pattern: "window\\.addEventListener\\(['\"]\\w+Event"
+    reason: "Use useNotifications() + setNotificationHandler instead"
+    severity: "error"
+
+correct_pattern:
+  inline: |
+    ```typescript
+    // ✅ CORRECT
+    const { setNotificationHandler } = useNotifications('DomainEvent');
+    setNotificationHandler((notification) => {
+      // Handle event
+    });
+    ```
+
+wrong_pattern:
+  inline: |
+    ```typescript
+    // ❌ WRONG
+    window.addEventListener('DomainEvent', (e) => {
+      // ...
+    });
+    ```

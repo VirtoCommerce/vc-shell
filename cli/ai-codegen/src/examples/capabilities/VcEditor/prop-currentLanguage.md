@@ -1,3 +1,14 @@
+---
+id: vceditor-prop-currentLanguage
+component: VcEditor
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, currentLanguage]
+title: "VcEditor :currentLanguage prop"
+description: "currentLanguage property for VcEditor"
+---
+
 # Capability: currentLanguage
 
 ## Type

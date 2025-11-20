@@ -1,0 +1,148 @@
+id: "13"
+name: "Browser Unload Prevention"
+category: "critical"
+priority: 100
+enabled: true
+applies_to:
+  - "details"
+  - "edit"
+
+description: |
+  Use framework composables for browser unload prevention.
+  NEVER use window.onbeforeunload manually.
+
+rationale: |
+  useBeforeUnload() composable provides:
+  - Automatic cleanup on component unmount (prevents memory leaks)
+  - Integration with blade navigation system
+  - Consistent behavior across all blades
+  - No manual event handler management
+
+  Manual window.onbeforeunload:
+  - Requires manual cleanup (often forgotten)
+  - Can cause memory leaks
+  - May conflict with other blades
+  - Not integrated with framework
+
+forbidden:
+  - pattern: "window\\.onbeforeunload"
+    reason: "Use useBeforeUnload(modifiedRef) instead - prevents memory leaks"
+    severity: "error"
+
+  - pattern: "watch\\(.*modified.*window\\.onbeforeunload"
+    reason: "Manual window.onbeforeunload causes memory leaks and blade conflicts"
+    severity: "error"
+
+  - pattern: "addEventListener\\(['\"]beforeunload"
+    reason: "Use useBeforeUnload(modifiedRef) composable instead"
+    severity: "error"
+
+required:
+  - pattern: "useBeforeUnload\\("
+    when: "modified flag exists in details blade"
+    severity: "warning"
+
+correct_pattern:
+  description: "Use useBeforeUnload composable with modified ref"
+  inline: |
+    ```vue
+    <script setup lang="ts">
+    import { ref } from 'vue';
+    import { useBeforeUnload } from '@vc-shell/framework';
+
+    const modified = ref(false);
+
+    // ✅ CORRECT: Pass ref directly (NOT a function!)
+    useBeforeUnload(modified);
+
+    // When modified.value = true:
+    // - Framework shows browser confirmation on refresh/close
+    // - Automatically cleaned up on component unmount
+    // - Works with blade navigation system
+
+    // Track modifications
+    watch(entity, () => {
+      modified.value = true;
+    }, { deep: true });
+
+    // After save, reset flag
+    async function save() {
+      await saveEntity(entity.value);
+      modified.value = false;  // ← Reset to allow close
+    }
+    </script>
+    ```
+
+wrong_pattern:
+  inline: |
+    ```vue
+    <script setup lang="ts">
+    import { ref, watch } from 'vue';
+    import { useI18n } from 'vue-i18n';
+
+    const { t } = useI18n();
+    const modified = ref(false);
+
+    // ❌ WRONG: Manual window.onbeforeunload with watch
+    watch(modified, (isModified) => {
+      if (isModified) {
+        window.onbeforeunload = () => t("COMMON.UNSAVED_CHANGES");
+      } else {
+        window.onbeforeunload = null;
+      }
+    });
+    // Problems:
+    // - Not cleaned up on unmount → memory leak
+    // - Not integrated with blade system
+    // - Manual management required
+    // - Can conflict with other blades
+    </script>
+    ```
+
+instructions: |
+  For details/edit blades with unsaved changes tracking:
+  1. Create a modified ref: const modified = ref(false)
+  2. Import useBeforeUnload: import { useBeforeUnload } from '@vc-shell/framework'
+  3. Call useBeforeUnload(modified) - pass the ref directly, NOT a function
+  4. Track changes by setting modified.value = true when entity changes
+  5. Reset modified.value = false after successful save
+  6. Framework handles everything else automatically
+
+  IMPORTANT: Pass the ref directly to useBeforeUnload, NOT a getter function!
+  ✅ useBeforeUnload(modified)
+  ❌ useBeforeUnload(() => modified.value)
+
+examples:
+  - "compositions/details/modified-tracking.md"
+  - "framework/composables/useBeforeUnload.md"
+  - "patterns/browser-unload-prevention.md"
+
+validations:
+  - type: "regex"
+    pattern: "window\\.onbeforeunload\\s*="
+    message: "❌ FORBIDDEN: Use useBeforeUnload(modifiedRef) instead of window.onbeforeunload"
+
+  - type: "regex"
+    pattern: "addEventListener\\(['\"]beforeunload"
+    message: "❌ FORBIDDEN: Use useBeforeUnload(modifiedRef) instead of addEventListener('beforeunload')"
+
+  - type: "required_import"
+    import: "useBeforeUnload"
+    from: "@vc-shell/framework"
+    when: "modified ref exists"
+    message: "⚠️ Import useBeforeUnload from @vc-shell/framework when tracking modifications"
+
+auto_fix:
+  enabled: true
+  transforms:
+    - find: "window\\.onbeforeunload\\s*=\\s*.*"
+      replace: "useBeforeUnload(modified)"
+      add_import:
+        name: "useBeforeUnload"
+        from: "@vc-shell/framework"
+
+    - find: "watch\\(modified,\\s*\\(.*?\\)\\s*=>\\s*\\{[^}]*window\\.onbeforeunload[^}]*\\}\\)"
+      replace: "useBeforeUnload(modified)"
+      add_import:
+        name: "useBeforeUnload"
+        from: "@vc-shell/framework"

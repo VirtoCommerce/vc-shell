@@ -1,3 +1,13 @@
+---
+id: composition-list-filters-pattern
+type: COMPOSITION
+complexity: MODERATE
+category: composition
+tags: [composition, list, list]
+title: "Filters Pattern"
+description: "Filters Pattern composition for list blades"
+---
+
 # Filters Pattern
 
 Adds filter panel with staged/applied filter state management.

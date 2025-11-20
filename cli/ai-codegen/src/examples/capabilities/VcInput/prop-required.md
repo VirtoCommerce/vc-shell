@@ -1,3 +1,14 @@
+---
+id: vcinput-prop-required
+component: VcInput
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, required]
+title: "VcInput :required prop"
+description: "required property for VcInput"
+---
+
 # Capability: required
 
 ## Type

@@ -1,3 +1,14 @@
+---
+id: vcinput-slot-error
+component: VcInput
+type: SLOT
+complexity: MODERATE
+category: component
+tags: [slot, error]
+title: "VcInput #error slot"
+description: "error slot for VcInput"
+---
+
 # Capability: error
 
 ## Type

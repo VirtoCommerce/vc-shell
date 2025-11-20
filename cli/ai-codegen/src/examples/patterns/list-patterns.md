@@ -1,3 +1,13 @@
+---
+id: list-patterns
+type: PATTERN
+complexity: MODERATE
+category: pattern
+tags: [pattern]
+title: "List Patterns"
+description: "List Patterns pattern"
+---
+
 # List Blade Template Selection Guide
 
 This guide helps you choose the right list blade template for your requirements.

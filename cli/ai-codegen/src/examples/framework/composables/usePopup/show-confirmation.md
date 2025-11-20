@@ -1,3 +1,14 @@
+---
+id: framework-usePopup
+type: API
+complexity: MODERATE
+category: framework
+tags: [composable, framework]
+critical: true
+title: "usePopup"
+description: "usePopup composable API"
+---
+
 # usePopup - Show Confirmation
 
 **Capability:** `confirmation-dialog`

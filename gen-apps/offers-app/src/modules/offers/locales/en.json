@@ -1,109 +1,125 @@
 {
   "OFFERS": {
+    "MENU": {
+      "TITLE": "Offers"
+    },
     "PAGES": {
       "LIST": {
         "TITLE": "Offers",
+        "TABLE": {
+          "TOTALS": "{count} offers",
+          "HEADER": {
+            "IMAGE": "Image",
+            "PRODUCT_NAME": "Product Name",
+            "CREATED": "Created",
+            "SKU": "SKU",
+            "ENABLED": "Enabled",
+            "DEFAULT": "Default"
+          }
+        },
         "TOOLBAR": {
           "REFRESH": "Refresh",
           "ADD": "Add Offer",
           "DELETE_SELECTED": "Delete Selected"
         },
-        "COLUMNS": {
-          "PRODUCT_IMAGE": "Product",
-          "PRODUCT_NAME": "Product Name",
-          "CREATED_DATE": "Created",
-          "SKU": "SKU",
-          "IS_ACTIVE": "Enabled",
-          "IS_DEFAULT": "Default"
-        },
         "FILTERS": {
-          "SEARCH_PLACEHOLDER": "Search by product name or SKU"
+          "SEARCH": "Search",
+          "SEARCH_PLACEHOLDER": "Search by product name or SKU",
+          "SORT_BY": "Sort By",
+          "SORT_NAME": "Name",
+          "SORT_DATE": "Created Date",
+          "SORT_SKU": "SKU",
+          "SORT_ACTIVE": "Enabled",
+          "SORT_DEFAULT": "Default",
+          "RESET": "Reset",
+          "APPLY": "Apply"
         },
         "EMPTY": {
-          "TITLE": "No Offers Yet",
-          "MESSAGE": "Get started by creating your first offer",
-          "ACTION": "Add Offer"
+          "NO_ITEMS": "No offers yet",
+          "ADD_OFFER": "Add Your First Offer"
         },
-        "NOTFOUND": {
-          "TITLE": "No Results Found",
-          "MESSAGE": "Try adjusting your search or filters",
-          "ACTION": "Reset Search"
+        "NOT_FOUND": {
+          "EMPTY": "No offers found matching your search",
+          "RESET": "Reset Search"
         },
-        "CONFIRM_DELETE_SELECTED": "Are you sure you want to delete {count} offer(s)?",
-        "DELETE_SUCCESS": "Offer(s) deleted successfully",
-        "DELETE_ERROR": "Failed to delete offer(s)"
+        "DELETE": {
+          "CONFIRMATION": "Are you sure you want to delete {count} offer(s)?",
+          "SUCCESS": "Offer(s) deleted successfully",
+          "ERROR": "Failed to delete offer(s)"
+        }
       },
       "DETAILS": {
+        "TITLE": "Offer Details",
         "TITLE_NEW": "New Offer",
-        "TITLE_EDIT": "Edit Offer: {name}",
-        "SELECT_LANGUAGE": "Select Language",
-        "TOOLBAR": {
-          "SAVE": "Save",
-          "ENABLE": "Enable",
-          "DISABLE": "Disable",
-          "SET_DEFAULT": "Set as Default",
-          "DELETE": "Delete"
-        },
         "SECTIONS": {
+          "PRODUCT": "Product Selection",
+          "BASIC_INFO": "Basic Information",
           "INVENTORY": "Inventory",
           "GALLERY": "Gallery"
         },
-        "FIELDS": {
-          "PRODUCT": {
-            "LABEL": "Product",
-            "PLACEHOLDER": "Select a product"
-          },
-          "NAME": {
-            "LABEL": "Offer Name",
-            "PLACEHOLDER": "Enter offer name"
-          },
-          "PRODUCT_TYPE": {
-            "LABEL": "Product Type",
-            "TOOLTIP": "Product type: Physical or Digital"
-          },
-          "SKU": {
-            "LABEL": "SKU",
-            "HINT": "Format: XXX-XXXXXXXX (3 letters + dash + 8 numbers)",
-            "ERROR_EXISTS": "An offer with the SKU: {sku} already exists"
-          },
-          "TRACK_INVENTORY": {
-            "LABEL": "Quantity in Stock",
-            "TOOLTIP": "Always in stock"
-          },
-          "FULFILLMENT_CENTERS": {
-            "LABEL": "Fulfillment Center Inventory"
-          }
+        "FORM": {
+          "PRODUCT": "Product",
+          "PRODUCT_PLACEHOLDER": "Select a product",
+          "NAME": "Name",
+          "NAME_PLACEHOLDER": "Enter offer name",
+          "PRODUCT_TYPE": "Product Type",
+          "PRODUCT_TYPE_PLACEHOLDER": "Select product type",
+          "PRODUCT_TYPE_TOOLTIP": "Product type: Physical or Digital",
+          "PRODUCT_TYPE_PHYSICAL": "Physical",
+          "PRODUCT_TYPE_DIGITAL": "Digital",
+          "SKU": "SKU",
+          "SKU_PLACEHOLDER": "Enter SKU (e.g., ABC-12345678)",
+          "TRACK_INVENTORY": "Quantity in Stock",
+          "TRACK_INVENTORY_TOOLTIP": "Always in stock"
         },
-        "SAVE_SUCCESS": "Offer saved successfully",
-        "SAVE_ERROR": "Failed to save offer",
-        "CREATE_SUCCESS": "Offer created successfully",
-        "CREATE_ERROR": "Failed to create offer",
-        "ENABLE_SUCCESS": "Offer enabled successfully",
-        "ENABLE_ERROR": "Failed to enable offer",
-        "DISABLE_SUCCESS": "Offer disabled successfully",
-        "DISABLE_ERROR": "Failed to disable offer",
-        "SET_DEFAULT_SUCCESS": "Offer set as default successfully",
-        "SET_DEFAULT_ERROR": "Failed to set offer as default",
-        "DELETE_SUCCESS": "Offer deleted successfully",
-        "DELETE_ERROR": "Failed to delete offer",
-        "CONFIRM_DELETE": "Are you sure you want to delete this offer?",
-        "IMAGE_UPLOAD_SUCCESS": "Images uploaded successfully",
-        "IMAGE_UPLOAD_ERROR": "Failed to upload images",
-        "IMAGE_REMOVE_SUCCESS": "Image removed successfully",
-        "CONFIRM_REMOVE_IMAGE": "Are you sure you want to remove this image?"
+        "TOOLBAR": {
+          "SAVE": "Save",
+          "ENABLE": "Enable Offer",
+          "DISABLE": "Disable Offer",
+          "SET_DEFAULT": "Set as Default",
+          "DELETE": "Delete"
+        },
+        "VALIDATION": {
+          "SKU_EXISTS": "An offer with the SKU: {sku} already exists"
+        },
+        "ALERTS": {
+          "NOT_VALID": "Please fix validation errors before saving",
+          "SKU_NOT_VALID": "The SKU is not valid or already exists",
+          "UNSAVED_CHANGES": "You have unsaved changes. Are you sure you want to leave?"
+        },
+        "MESSAGES": {
+          "SAVED": "Offer saved successfully",
+          "ENABLED": "Offer enabled successfully",
+          "DISABLED": "Offer disabled successfully",
+          "SET_DEFAULT": "Offer set as default successfully",
+          "DELETED": "Offer deleted successfully",
+          "IMAGES_UPLOADED": "Images uploaded successfully",
+          "IMAGE_DELETED": "Image deleted successfully"
+        },
+        "ERRORS": {
+          "SAVE": "Failed to save offer",
+          "ENABLE": "Failed to enable offer",
+          "DISABLE": "Failed to disable offer",
+          "SET_DEFAULT": "Failed to set default offer",
+          "DELETE": "Failed to delete offer",
+          "SEARCH_PRODUCTS": "Failed to search products",
+          "UPLOAD_IMAGES": "Failed to upload images",
+          "DELETE_IMAGE": "Failed to delete image"
+        },
+        "WARNINGS": {
+          "SAVE_BEFORE_UPLOAD": "Please save the offer before uploading images"
+        },
+        "DELETE": {
+          "CONFIRMATION": "Are you sure you want to delete this offer? This action cannot be undone.",
+          "IMAGE_CONFIRMATION": "Are you sure you want to delete this image?"
+        }
+      }
+    },
+    "WIDGETS": {
+      "SPECIAL_PRICES": {
+        "TITLE": "Special Prices",
+        "DESCRIPTION": "Price tags configured"
       }
     }
-  },
-  "COMMON": {
-    "RESET": "Reset",
-    "APPLY": "Apply",
-    "CONFIRM_DELETE": "Are you sure you want to delete?",
-    "UNSAVED_CHANGES": "You have unsaved changes. Are you sure you want to leave?",
-    "VALIDATION_ERRORS": "Please fix validation errors",
-    "SAVE_SUCCESS": "Saved successfully",
-    "SAVE_ERROR": "Failed to save",
-    "DELETE_SUCCESS": "Deleted successfully",
-    "DELETE_ERROR": "Failed to delete",
-    "CREATE_SUCCESS": "Created successfully"
   }
 }

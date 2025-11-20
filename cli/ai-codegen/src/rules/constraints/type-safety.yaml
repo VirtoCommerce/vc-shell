@@ -1,0 +1,59 @@
+id: "type-safety"
+name: "Type Safety Constraints"
+category: "constraint"
+priority: 90
+enabled: true
+applies_to:
+  - "all"
+
+description: |
+  Critical type-safety constraints to prevent TypeScript errors.
+
+forbidden:
+  - pattern: "useNotifications\\(\\)"
+    reason: "useNotifications() is for WebSocket push notifications ONLY, not toast messages"
+    severity: "error"
+
+  - pattern: "useConfirmation\\("
+    reason: "useConfirmation() does NOT exist in framework"
+    severity: "error"
+
+  - pattern: "variant=\"outline\""
+    reason: "VcButton variant ONLY accepts: 'primary' | 'secondary'"
+    severity: "error"
+
+  - pattern: "variant=\"danger\""
+    reason: "VcButton variant ONLY accepts: 'primary' | 'secondary'"
+    severity: "error"
+
+  - pattern: "size=\"small\""
+    reason: "VcButton size ONLY accepts: 'xs' | 'sm' | 'base'"
+    severity: "error"
+
+  - pattern: "icon=\"true\""
+    reason: "VcButton icon prop accepts boolean, not string 'true'"
+    severity: "error"
+
+correct_pattern:
+  inline: |
+    ```typescript
+    // ✅ CORRECT: Toast notifications
+    import { notification } from '@vc-shell/framework';
+    notification.success(message);
+    notification.error(message);
+
+    // ✅ CORRECT: Confirmations
+    const { showConfirmation } = usePopup();
+
+    // ✅ CORRECT: VcButton props
+    <VcButton variant="primary" size="sm" :icon="true" />
+    ```
+
+validations:
+  - type: "regex"
+    pattern: "useNotifications\\(\\)\\s*(?!.*DomainEvent)"
+    message: "❌ useNotifications() is for push notifications ONLY. Use: import { notification } from '@vc-shell/framework'"
+
+  - type: "regex"
+    pattern: "useConfirmation"
+    message: "❌ useConfirmation() does NOT exist. Use: const { showConfirmation } = usePopup()"

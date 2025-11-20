@@ -1,3 +1,14 @@
+---
+id: vccontainer-prop-usePtr
+component: VcContainer
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, usePtr]
+title: "VcContainer :usePtr prop"
+description: "usePtr property for VcContainer"
+---
+
 # Capability: usePtr
 
 ## Type

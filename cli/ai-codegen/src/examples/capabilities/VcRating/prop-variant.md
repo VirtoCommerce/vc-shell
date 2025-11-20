@@ -1,3 +1,14 @@
+---
+id: vcrating-prop-variant
+component: VcRating
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, variant]
+title: "VcRating :variant prop"
+description: "variant property for VcRating"
+---
+
 # Capability: variant
 
 ## Type

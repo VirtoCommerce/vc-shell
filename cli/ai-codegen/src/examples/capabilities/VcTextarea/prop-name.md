@@ -1,3 +1,14 @@
+---
+id: vctextarea-prop-name
+component: VcTextarea
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, name]
+title: "VcTextarea :name prop"
+description: "name property for VcTextarea"
+---
+
 # Capability: name
 
 ## Type

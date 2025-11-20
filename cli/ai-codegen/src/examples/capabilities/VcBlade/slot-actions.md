@@ -1,3 +1,14 @@
+---
+id: vcblade-slot-actions
+component: VcBlade
+type: SLOT
+complexity: MODERATE
+category: component
+tags: [slot, actions]
+title: "VcBlade #actions slot"
+description: "actions slot for VcBlade"
+---
+
 # Capability: actions
 
 ## Type

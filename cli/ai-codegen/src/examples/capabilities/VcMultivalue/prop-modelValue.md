@@ -1,3 +1,14 @@
+---
+id: vcmultivalue-prop-modelValue
+component: VcMultivalue
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, modelValue]
+title: "VcMultivalue :modelValue prop"
+description: "modelValue property for VcMultivalue"
+---
+
 # Capability: modelValue
 
 ## Type

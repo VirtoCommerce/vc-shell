@@ -57,7 +57,8 @@ export class SmartCodeGenerator {
     }
 
     const complexity = this.calculateComplexity(context);
-    const aiGuide = this.guideBuilder.buildGuide({ ...context, complexity });
+    // Use async buildGuide to load rules from YAML files
+    const aiGuide = await this.guideBuilder.buildGuide({ ...context, complexity });
 
     return this.createDecision(
       GenerationStrategy.AI_FULL,
@@ -75,7 +76,8 @@ export class SmartCodeGenerator {
     context: BladeGenerationContext,
     decision: StrategyDecision,
   ): Promise<string> {
-    const guide = decision.aiGuide ?? this.guideBuilder.buildGuide(context);
+    // Use async buildGuide to load rules from YAML files
+    const guide = decision.aiGuide ?? (await this.guideBuilder.buildGuide(context));
 
     return [
       "# AI-FULL GENERATION ONLY",

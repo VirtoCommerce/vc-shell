@@ -1,3 +1,14 @@
+---
+id: vcfield-prop-tooltip
+component: VcField
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, tooltip]
+title: "VcField :tooltip prop"
+description: "tooltip property for VcField"
+---
+
 # Capability: tooltip
 
 ## Type

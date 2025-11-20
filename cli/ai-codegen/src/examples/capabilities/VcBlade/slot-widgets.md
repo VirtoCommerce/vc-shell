@@ -1,3 +1,14 @@
+---
+id: vcblade-slot-widgets
+component: VcBlade
+type: SLOT
+complexity: MODERATE
+category: component
+tags: [slot, widgets]
+title: "VcBlade #widgets slot"
+description: "widgets slot for VcBlade"
+---
+
 # Capability: widgets
 
 ## Type

@@ -1,3 +1,14 @@
+---
+id: vcselect-slot-hint
+component: VcSelect
+type: SLOT
+complexity: MODERATE
+category: component
+tags: [slot, hint]
+title: "VcSelect #hint slot"
+description: "hint slot for VcSelect"
+---
+
 # Capability: hint
 
 ## Type

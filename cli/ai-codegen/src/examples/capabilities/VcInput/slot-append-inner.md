@@ -1,3 +1,14 @@
+---
+id: vcinput-slot-append-inner
+component: VcInput
+type: SLOT
+complexity: MODERATE
+category: component
+tags: [slot, append-inner]
+title: "VcInput #append-inner slot"
+description: "append-inner slot for VcInput"
+---
+
 # Capability: append-inner
 
 ## Type

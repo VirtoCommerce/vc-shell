@@ -46,7 +46,7 @@ describe("ComposableGenerator", () => {
         columns: [
           { id: "name", title: "Name" },
           { id: "price", title: "Price", type: "money" },
-          { key: "createdDate", title: "Created", type: "date-ago" },
+          { id: "createdDate", title: "Created", type: "date-ago" },
         ],
       });
 

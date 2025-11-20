@@ -1,3 +1,14 @@
+---
+id: vcbadge-slot-default
+component: VcBadge
+type: SLOT
+complexity: MODERATE
+category: component
+tags: [slot, default]
+title: "VcBadge #default slot"
+description: "default slot for VcBadge"
+---
+
 # Capability: default
 
 ## Type

@@ -1,3 +1,14 @@
+---
+id: vcimage-prop-background
+component: VcImage
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, background]
+title: "VcImage :background prop"
+description: "background property for VcImage"
+---
+
 # Capability: background
 
 ## Type

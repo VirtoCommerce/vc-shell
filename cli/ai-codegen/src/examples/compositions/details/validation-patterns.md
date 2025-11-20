@@ -1,3 +1,13 @@
+---
+id: composition-details-validation-patterns
+type: COMPOSITION
+complexity: MODERATE
+category: composition
+tags: [composition, details, details]
+title: "Validation Patterns"
+description: "Validation Patterns composition for details blades"
+---
+
 # Validation Patterns
 
 Adds vee-validate form validation with error display.

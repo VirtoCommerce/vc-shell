@@ -1,3 +1,13 @@
+---
+id: component-VcBlade-demo
+type: COMPONENT
+complexity: SIMPLE
+category: component
+tags: [component]
+title: "VcBlade Demo"
+description: "VcBlade Demo component example"
+---
+
 # VcBlade Demo
 
 Real-world blade examples from vendor-portal.

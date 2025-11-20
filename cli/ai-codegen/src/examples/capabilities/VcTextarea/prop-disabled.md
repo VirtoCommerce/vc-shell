@@ -1,3 +1,14 @@
+---
+id: vctextarea-prop-disabled
+component: VcTextarea
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, disabled]
+title: "VcTextarea :disabled prop"
+description: "disabled property for VcTextarea"
+---
+
 # Capability: disabled
 
 ## Type

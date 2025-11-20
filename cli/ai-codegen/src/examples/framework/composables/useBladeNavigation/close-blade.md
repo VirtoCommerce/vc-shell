@@ -1,3 +1,14 @@
+---
+id: framework-useBladeNavigation
+type: API
+complexity: MODERATE
+category: framework
+tags: [composable, framework]
+critical: true
+title: "useBladeNavigation"
+description: "useBladeNavigation composable API"
+---
+
 # useBladeNavigation - Close Blade
 
 **Capability:** `close-blade`

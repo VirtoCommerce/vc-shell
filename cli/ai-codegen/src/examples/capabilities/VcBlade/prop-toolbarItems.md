@@ -1,3 +1,14 @@
+---
+id: vcblade-prop-toolbarItems
+component: VcBlade
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, toolbarItems]
+title: "VcBlade :toolbarItems prop"
+description: "toolbarItems property for VcBlade"
+---
+
 # Capability: toolbarItems
 
 ## Type

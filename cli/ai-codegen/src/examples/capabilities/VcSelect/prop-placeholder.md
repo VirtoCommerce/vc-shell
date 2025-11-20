@@ -1,3 +1,14 @@
+---
+id: vcselect-prop-placeholder
+component: VcSelect
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, placeholder]
+title: "VcSelect :placeholder prop"
+description: "placeholder property for VcSelect"
+---
+
 # Capability: placeholder
 
 ## Type

@@ -1,3 +1,14 @@
+---
+id: vctable-slot-filters
+component: VcTable
+type: SLOT
+complexity: MODERATE
+category: component
+tags: [slot, filters]
+title: "VcTable #filters slot"
+description: "filters slot for VcTable"
+---
+
 # Capability: filters
 
 ## Type

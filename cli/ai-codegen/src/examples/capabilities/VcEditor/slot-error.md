@@ -1,3 +1,14 @@
+---
+id: vceditor-slot-error
+component: VcEditor
+type: SLOT
+complexity: MODERATE
+category: component
+tags: [slot, error]
+title: "VcEditor #error slot"
+description: "error slot for VcEditor"
+---
+
 # Capability: error
 
 ## Type

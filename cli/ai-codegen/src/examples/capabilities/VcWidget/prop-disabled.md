@@ -1,3 +1,14 @@
+---
+id: vcwidget-prop-disabled
+component: VcWidget
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, disabled]
+title: "VcWidget :disabled prop"
+description: "disabled property for VcWidget"
+---
+
 # Capability: disabled
 
 ## Type

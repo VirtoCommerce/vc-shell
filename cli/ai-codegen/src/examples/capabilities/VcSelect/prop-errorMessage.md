@@ -1,3 +1,14 @@
+---
+id: vcselect-prop-errorMessage
+component: VcSelect
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, errorMessage]
+title: "VcSelect :errorMessage prop"
+description: "errorMessage property for VcSelect"
+---
+
 # Capability: errorMessage
 
 ## Type

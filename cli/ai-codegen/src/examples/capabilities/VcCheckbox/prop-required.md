@@ -1,3 +1,14 @@
+---
+id: vccheckbox-prop-required
+component: VcCheckbox
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, required]
+title: "VcCheckbox :required prop"
+description: "required property for VcCheckbox"
+---
+
 # Capability: required
 
 ## Type

@@ -1,3 +1,14 @@
+---
+id: vcbadge-prop-disabled
+component: VcBadge
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, disabled]
+title: "VcBadge :disabled prop"
+description: "disabled property for VcBadge"
+---
+
 # Capability: disabled
 
 ## Type

@@ -1,3 +1,13 @@
+---
+id: component-VcWidget-demo
+type: COMPONENT
+complexity: SIMPLE
+category: component
+tags: [component]
+title: "VcWidget Demo"
+description: "VcWidget Demo component example"
+---
+
 # VcWidget Demo
 
 Real-world widget examples. Base component for all custom widgets in details blades.

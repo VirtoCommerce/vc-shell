@@ -1,3 +1,14 @@
+---
+id: vcslider-prop-navigation
+component: VcSlider
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, navigation]
+title: "VcSlider :navigation prop"
+description: "navigation property for VcSlider"
+---
+
 # Capability: navigation
 
 ## Type

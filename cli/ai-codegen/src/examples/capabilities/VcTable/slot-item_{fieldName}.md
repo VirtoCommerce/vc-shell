@@ -1,3 +1,14 @@
+---
+id: vctable-slot-item_{fieldName}
+component: VcTable
+type: SLOT
+complexity: MODERATE
+category: component
+tags: [slot, item_{fieldName}]
+title: "VcTable #item_{fieldName} slot"
+description: "item_{fieldName} slot for VcTable"
+---
+
 # Capability: item_{fieldName}
 
 ## Type

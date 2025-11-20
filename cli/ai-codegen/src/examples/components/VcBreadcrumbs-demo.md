@@ -1,3 +1,13 @@
+---
+id: component-VcBreadcrumbs-demo
+type: COMPONENT
+complexity: SIMPLE
+category: component
+tags: [component]
+title: "VcBreadcrumbs Demo"
+description: "VcBreadcrumbs Demo component example"
+---
+
 # VcBreadcrumbs Demo
 
 Real-world breadcrumb navigation examples for hierarchical page structure.

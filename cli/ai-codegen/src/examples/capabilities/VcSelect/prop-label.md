@@ -1,3 +1,14 @@
+---
+id: vcselect-prop-label
+component: VcSelect
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, label]
+title: "VcSelect :label prop"
+description: "label property for VcSelect"
+---
+
 # Capability: label
 
 ## Type

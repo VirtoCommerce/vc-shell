@@ -1,3 +1,14 @@
+---
+id: vcselect-slot-no-options
+component: VcSelect
+type: SLOT
+complexity: MODERATE
+category: component
+tags: [slot, no-options]
+title: "VcSelect #no-options slot"
+description: "no-options slot for VcSelect"
+---
+
 # Capability: no-options
 
 ## Type

@@ -1,3 +1,14 @@
+---
+id: vcswitch-prop-disabled
+component: VcSwitch
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, disabled]
+title: "VcSwitch :disabled prop"
+description: "disabled property for VcSwitch"
+---
+
 # Capability: disabled
 
 ## Type

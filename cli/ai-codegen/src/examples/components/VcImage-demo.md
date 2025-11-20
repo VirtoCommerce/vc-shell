@@ -1,3 +1,13 @@
+---
+id: component-VcImage-demo
+type: COMPONENT
+complexity: SIMPLE
+category: component
+tags: [component]
+title: "VcImage Demo"
+description: "VcImage Demo component example"
+---
+
 # VcImage Demo
 
 Real-world image examples for product images, avatars, thumbnails, and placeholders.

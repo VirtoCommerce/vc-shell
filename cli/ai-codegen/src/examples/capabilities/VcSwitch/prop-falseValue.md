@@ -1,3 +1,14 @@
+---
+id: vcswitch-prop-falseValue
+component: VcSwitch
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, falseValue]
+title: "VcSwitch :falseValue prop"
+description: "falseValue property for VcSwitch"
+---
+
 # Capability: falseValue
 
 ## Type

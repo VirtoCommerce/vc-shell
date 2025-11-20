@@ -1,3 +1,14 @@
+---
+id: vceditor-prop-errorMessage
+component: VcEditor
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, errorMessage]
+title: "VcEditor :errorMessage prop"
+description: "errorMessage property for VcEditor"
+---
+
 # Capability: errorMessage
 
 ## Type

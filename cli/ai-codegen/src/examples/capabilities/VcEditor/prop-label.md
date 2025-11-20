@@ -1,3 +1,14 @@
+---
+id: vceditor-prop-label
+component: VcEditor
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, label]
+title: "VcEditor :label prop"
+description: "label property for VcEditor"
+---
+
 # Capability: label
 
 ## Type

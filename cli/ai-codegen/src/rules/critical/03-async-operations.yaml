@@ -1,0 +1,35 @@
+id: "03"
+name: "Async Operations Pattern"
+category: "critical"
+priority: 100
+enabled: true
+applies_to:
+  - "all"
+
+description: |
+  Use useAsync composable for async operations instead of manual state management.
+
+correct_pattern:
+  inline: |
+    ```typescript
+    // ✅ CORRECT
+    const { action: loadData, loading } = useAsync(async () => {
+      // async logic
+    });
+    ```
+
+wrong_pattern:
+  inline: |
+    ```typescript
+    // ❌ WRONG
+    const loading = ref(false);
+    loading.value = true; // Manual state management!
+    ```
+
+validations:
+  - type: "regex"
+    pattern: "useAsync\\("
+    message: "✓ Using useAsync for async operations"
+
+auto_fix:
+  enabled: false

@@ -1,3 +1,9 @@
+---
+id: null
+type: null
+complexity: SIMPLE
+---
+
 # Widgets Pattern
 
 Widgets are interactive UI components that can be registered in details blades. They appear in a dedicated widget area and provide additional functionality or display related data.

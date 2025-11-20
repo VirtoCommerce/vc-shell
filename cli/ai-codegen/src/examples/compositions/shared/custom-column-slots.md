@@ -1,3 +1,13 @@
+---
+id: composition-shared-custom-column-slots
+type: COMPOSITION
+complexity: MODERATE
+category: composition
+tags: [composition, shared]
+title: "Custom Column Slots"
+description: "Custom Column Slots composition for shared blades"
+---
+
 # Custom Column Slots Pattern
 
 Custom rendering for VcTable columns using slots.

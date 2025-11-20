@@ -1,3 +1,14 @@
+---
+id: vclabel-slot-tooltip
+component: VcLabel
+type: SLOT
+complexity: MODERATE
+category: component
+tags: [slot, tooltip]
+title: "VcLabel #tooltip slot"
+description: "tooltip slot for VcLabel"
+---
+
 # Capability: tooltip
 
 ## Type

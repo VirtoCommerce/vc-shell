@@ -1,3 +1,14 @@
+---
+id: vcselect-slot-control
+component: VcSelect
+type: SLOT
+complexity: MODERATE
+category: component
+tags: [slot, control]
+title: "VcSelect #control slot"
+description: "control slot for VcSelect"
+---
+
 # Capability: control
 
 ## Type

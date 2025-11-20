@@ -1,3 +1,14 @@
+---
+id: vcbutton-prop-disabled
+component: VcButton
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, disabled]
+title: "VcButton :disabled prop"
+description: "disabled property for VcButton"
+---
+
 # Capability: disabled
 
 ## Type

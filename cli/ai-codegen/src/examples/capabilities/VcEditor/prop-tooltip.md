@@ -1,3 +1,14 @@
+---
+id: vceditor-prop-tooltip
+component: VcEditor
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, tooltip]
+title: "VcEditor :tooltip prop"
+description: "tooltip property for VcEditor"
+---
+
 # Capability: tooltip
 
 ## Type

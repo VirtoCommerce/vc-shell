@@ -1,3 +1,13 @@
+---
+id: composition-details-gallery-patterns
+type: COMPOSITION
+complexity: MODERATE
+category: composition
+tags: [composition, details, details]
+title: "Gallery Patterns"
+description: "Gallery Patterns composition for details blades"
+---
+
 # Gallery Patterns
 
 Adds VcGallery integration for image/file management.

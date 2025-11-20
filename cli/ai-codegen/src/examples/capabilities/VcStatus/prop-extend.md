@@ -1,3 +1,14 @@
+---
+id: vcstatus-prop-extend
+component: VcStatus
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, extend]
+title: "VcStatus :extend prop"
+description: "extend property for VcStatus"
+---
+
 # Capability: extend
 
 ## Type

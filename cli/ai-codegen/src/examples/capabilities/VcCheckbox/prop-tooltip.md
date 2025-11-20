@@ -1,3 +1,14 @@
+---
+id: vccheckbox-prop-tooltip
+component: VcCheckbox
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, tooltip]
+title: "VcCheckbox :tooltip prop"
+description: "tooltip property for VcCheckbox"
+---
+
 # Capability: tooltip
 
 ## Type

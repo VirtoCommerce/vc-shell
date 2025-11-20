@@ -1,3 +1,13 @@
+---
+id: component-VcStatusIcon-demo
+type: COMPONENT
+complexity: SIMPLE
+category: component
+tags: [component]
+title: "VcStatusIcon Demo"
+description: "VcStatusIcon Demo component example"
+---
+
 # VcStatusIcon Demo
 
 Real-world status icon examples for quick visual indicators.

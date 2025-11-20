@@ -1,3 +1,14 @@
+---
+id: vcrating-prop-tooltip
+component: VcRating
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, tooltip]
+title: "VcRating :tooltip prop"
+description: "tooltip property for VcRating"
+---
+
 # Capability: tooltip
 
 ## Type

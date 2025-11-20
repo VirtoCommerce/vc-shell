@@ -1,3 +1,14 @@
+---
+id: vctextarea-prop-currentLanguage
+component: VcTextarea
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, currentLanguage]
+title: "VcTextarea :currentLanguage prop"
+description: "currentLanguage property for VcTextarea"
+---
+
 # Capability: currentLanguage
 
 ## Type

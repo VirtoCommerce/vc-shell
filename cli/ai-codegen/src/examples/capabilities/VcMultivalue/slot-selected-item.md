@@ -1,3 +1,14 @@
+---
+id: vcmultivalue-slot-selected-item
+component: VcMultivalue
+type: SLOT
+complexity: MODERATE
+category: component
+tags: [slot, selected-item]
+title: "VcMultivalue #selected-item slot"
+description: "selected-item slot for VcMultivalue"
+---
+
 # Capability: selected-item
 
 ## Type

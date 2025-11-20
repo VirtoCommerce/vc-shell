@@ -1,3 +1,14 @@
+---
+id: vcmultivalue-prop-hint
+component: VcMultivalue
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, hint]
+title: "VcMultivalue :hint prop"
+description: "hint property for VcMultivalue"
+---
+
 # Capability: hint
 
 ## Type

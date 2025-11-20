@@ -1,3 +1,14 @@
+---
+id: vcselect-prop-optionValue
+component: VcSelect
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, optionValue]
+title: "VcSelect :optionValue prop"
+description: "optionValue property for VcSelect"
+---
+
 # Capability: optionValue
 
 ## Type

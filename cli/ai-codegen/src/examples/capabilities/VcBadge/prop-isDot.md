@@ -1,3 +1,14 @@
+---
+id: vcbadge-prop-isDot
+component: VcBadge
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, isDot]
+title: "VcBadge :isDot prop"
+description: "isDot property for VcBadge"
+---
+
 # Capability: isDot
 
 ## Type

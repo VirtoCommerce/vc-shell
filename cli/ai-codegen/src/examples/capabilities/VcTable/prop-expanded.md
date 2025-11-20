@@ -1,3 +1,14 @@
+---
+id: vctable-prop-expanded
+component: VcTable
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, expanded]
+title: "VcTable :expanded prop"
+description: "expanded property for VcTable"
+---
+
 # Capability: expanded
 
 ## Type

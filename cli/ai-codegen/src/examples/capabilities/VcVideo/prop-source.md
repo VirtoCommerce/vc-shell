@@ -1,3 +1,14 @@
+---
+id: vcvideo-prop-source
+component: VcVideo
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, source]
+title: "VcVideo :source prop"
+description: "source property for VcVideo"
+---
+
 # Capability: source
 
 ## Type

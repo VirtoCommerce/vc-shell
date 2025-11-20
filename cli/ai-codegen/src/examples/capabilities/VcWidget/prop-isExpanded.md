@@ -1,3 +1,14 @@
+---
+id: vcwidget-prop-isExpanded
+component: VcWidget
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, isExpanded]
+title: "VcWidget :isExpanded prop"
+description: "isExpanded property for VcWidget"
+---
+
 # Capability: isExpanded
 
 ## Type

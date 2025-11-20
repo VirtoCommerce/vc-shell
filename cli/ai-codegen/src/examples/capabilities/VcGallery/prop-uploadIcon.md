@@ -1,3 +1,14 @@
+---
+id: vcgallery-prop-uploadIcon
+component: VcGallery
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, uploadIcon]
+title: "VcGallery :uploadIcon prop"
+description: "uploadIcon property for VcGallery"
+---
+
 # Capability: uploadIcon
 
 ## Type

@@ -1,3 +1,14 @@
+---
+id: vceditor-prop-disabled
+component: VcEditor
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, disabled]
+title: "VcEditor :disabled prop"
+description: "disabled property for VcEditor"
+---
+
 # Capability: disabled
 
 ## Type

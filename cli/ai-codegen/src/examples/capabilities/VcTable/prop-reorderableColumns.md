@@ -1,3 +1,14 @@
+---
+id: vctable-prop-reorderableColumns
+component: VcTable
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, reorderableColumns]
+title: "VcTable :reorderableColumns prop"
+description: "reorderableColumns property for VcTable"
+---
+
 # Capability: reorderableColumns
 
 ## Type

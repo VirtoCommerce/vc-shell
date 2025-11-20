@@ -1,3 +1,14 @@
+---
+id: vcimage-prop-size
+component: VcImage
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, size]
+title: "VcImage :size prop"
+description: "size property for VcImage"
+---
+
 # Capability: size
 
 ## Type

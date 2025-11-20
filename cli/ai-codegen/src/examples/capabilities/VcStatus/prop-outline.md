@@ -1,3 +1,14 @@
+---
+id: vcstatus-prop-outline
+component: VcStatus
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, outline]
+title: "VcStatus :outline prop"
+description: "outline property for VcStatus"
+---
+
 # Capability: outline
 
 ## Type

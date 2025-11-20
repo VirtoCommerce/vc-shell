@@ -1,3 +1,13 @@
+---
+id: composition-details-widgets-registration
+type: COMPOSITION
+complexity: MODERATE
+category: composition
+tags: [composition, details, details]
+title: "Widgets Registration"
+description: "Widgets Registration composition for details blades"
+---
+
 # Widgets Registration Pattern
 
 Adds widget lifecycle management for blades.

@@ -1,3 +1,14 @@
+---
+id: vcselect-prop-disabled
+component: VcSelect
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, disabled]
+title: "VcSelect :disabled prop"
+description: "disabled property for VcSelect"
+---
+
 # Capability: disabled
 
 ## Type

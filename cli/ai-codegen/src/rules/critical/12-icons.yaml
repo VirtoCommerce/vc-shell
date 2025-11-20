@@ -1,0 +1,21 @@
+id: "12"
+name: "Icon Formats"
+category: "critical"
+priority: 80
+enabled: true
+applies_to:
+  - "all"
+
+description: |
+  All icon formats are valid: material-, bi-, lucide-, fas fa-, svg:
+
+correct_pattern:
+  inline: |
+    ```typescript
+    // ✅ All valid icon formats:
+    icon: "material-save"
+    icon: "bi-house"
+    icon: "lucide-home"
+    icon: "fas fa-home"
+    icon: "svg:customIcon"
+    ```

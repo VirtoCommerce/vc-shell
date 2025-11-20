@@ -1,3 +1,14 @@
+---
+id: vcslider-slot-default
+component: VcSlider
+type: SLOT
+complexity: MODERATE
+category: component
+tags: [slot, default]
+title: "VcSlider #default slot"
+description: "default slot for VcSlider"
+---
+
 # Capability: default
 
 ## Type

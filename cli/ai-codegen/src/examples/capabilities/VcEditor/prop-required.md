@@ -1,3 +1,14 @@
+---
+id: vceditor-prop-required
+component: VcEditor
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, required]
+title: "VcEditor :required prop"
+description: "required property for VcEditor"
+---
+
 # Capability: required
 
 ## Type

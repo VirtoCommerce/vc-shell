@@ -1,3 +1,14 @@
+---
+id: vctable-prop-multiselect
+component: VcTable
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, multiselect]
+title: "VcTable :multiselect prop"
+description: "multiselect property for VcTable"
+---
+
 # Capability: multiselect
 
 ## Type

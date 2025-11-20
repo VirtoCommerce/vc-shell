@@ -1,3 +1,14 @@
+---
+id: vctable-slot-notfound
+component: VcTable
+type: SLOT
+complexity: MODERATE
+category: component
+tags: [slot, notfound]
+title: "VcTable #notfound slot"
+description: "notfound slot for VcTable"
+---
+
 # Capability: notfound
 
 ## Type

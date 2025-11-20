@@ -1,3 +1,14 @@
+---
+id: vcmultivalue-prop-error
+component: VcMultivalue
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, error]
+title: "VcMultivalue :error prop"
+description: "error property for VcMultivalue"
+---
+
 # Capability: error
 
 ## Type

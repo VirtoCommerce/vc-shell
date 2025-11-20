@@ -1,3 +1,14 @@
+---
+id: vcwidget-prop-title
+component: VcWidget
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, title]
+title: "VcWidget :title prop"
+description: "title property for VcWidget"
+---
+
 # Capability: title
 
 ## Type

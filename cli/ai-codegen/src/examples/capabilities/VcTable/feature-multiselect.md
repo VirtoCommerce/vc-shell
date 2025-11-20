@@ -1,3 +1,14 @@
+---
+id: vctable-feature-multiselect
+component: VcTable
+type: USAGE
+complexity: SIMPLE
+category: component
+tags: [usage]
+title: "VcTable - feature-multiselect"
+description: "Usage example for VcTable"
+---
+
 # Capability: Multiselect
 
 ## Type

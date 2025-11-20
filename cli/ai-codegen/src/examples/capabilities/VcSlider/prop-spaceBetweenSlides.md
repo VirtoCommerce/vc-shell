@@ -1,3 +1,14 @@
+---
+id: vcslider-prop-spaceBetweenSlides
+component: VcSlider
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, spaceBetweenSlides]
+title: "VcSlider :spaceBetweenSlides prop"
+description: "spaceBetweenSlides property for VcSlider"
+---
+
 # Capability: spaceBetweenSlides
 
 ## Type

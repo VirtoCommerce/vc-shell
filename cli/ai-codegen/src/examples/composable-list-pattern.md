@@ -1,3 +1,9 @@
+---
+id: null
+type: null
+complexity: SIMPLE
+---
+
 # List Composable Pattern
 
 This pattern is used for managing data in list/grid blades, including loading, pagination, search, sorting, and CRUD operations.

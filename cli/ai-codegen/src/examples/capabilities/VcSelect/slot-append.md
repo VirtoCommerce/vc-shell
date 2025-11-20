@@ -1,3 +1,14 @@
+---
+id: vcselect-slot-append
+component: VcSelect
+type: SLOT
+complexity: MODERATE
+category: component
+tags: [slot, append]
+title: "VcSelect #append slot"
+description: "append slot for VcSelect"
+---
+
 # Capability: append
 
 ## Type

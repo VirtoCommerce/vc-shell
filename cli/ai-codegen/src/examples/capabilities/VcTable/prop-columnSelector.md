@@ -1,3 +1,14 @@
+---
+id: vctable-prop-columnSelector
+component: VcTable
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, columnSelector]
+title: "VcTable :columnSelector prop"
+description: "columnSelector property for VcTable"
+---
+
 # Capability: columnSelector
 
 ## Type

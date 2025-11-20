@@ -1,3 +1,14 @@
+---
+id: vccheckbox-prop-label
+component: VcCheckbox
+type: PROP
+complexity: SIMPLE
+category: component
+tags: [prop, label]
+title: "VcCheckbox :label prop"
+description: "label property for VcCheckbox"
+---
+
 # Capability: label
 
 ## Type

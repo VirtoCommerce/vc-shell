@@ -1,3 +1,13 @@
+---
+id: component-VcHint-demo
+type: COMPONENT
+complexity: SIMPLE
+category: component
+tags: [component]
+title: "VcHint Demo"
+description: "VcHint Demo component example"
+---
+
 # VcHint Demo
 
 Real-world hint examples for helper text, validation hints, and contextual information.

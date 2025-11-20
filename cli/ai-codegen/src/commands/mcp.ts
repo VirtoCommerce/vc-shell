@@ -1,20 +1,20 @@
 #!/usr/bin/env node
 
-import { Server } from "@modelcontextprotocol/sdk/server/index.js";
-import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import { Server } from "@modelcontextprotocol/sdk/server/index";
+import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio";
 import {
   CallToolRequestSchema,
   ListToolsRequestSchema,
   ListResourcesRequestSchema,
   ReadResourceRequestSchema,
-} from "@modelcontextprotocol/sdk/types.js";
+} from "@modelcontextprotocol/sdk/types";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { zodToJsonSchema } from "zod-to-json-schema";
-import { Validator } from "../core/validator.js";
-import { SearchEngine } from "../core/search-engine.js";
-import { FrameworkAPISearchEngine } from "../core/framework-search-engine.js";
+import { Validator } from "../core/validator";
+import { SearchEngine } from "../core/search-engine";
+import { FrameworkAPISearchEngine } from "../core/framework-search-engine";
 
 // ✅ Import from refactored modules
 import {
@@ -23,13 +23,10 @@ import {
   getComponentExamplesSchema,
   scaffoldAppSchema,
   validateUIPlanSchema,
-  generateCompleteModuleSchema,
   validateAndFixPlanSchema,
   searchComponentsByIntentSchema,
   getComponentCapabilitiesSchema,
   generateWithCompositionSchema,
-  inferBladeLogicSchema,
-  getCompositionGuideSchema,
   submitGeneratedCodeSchema,
   analyzePromptV2Schema,
   createUIPlanFromAnalysisV2Schema,
@@ -46,31 +43,27 @@ import {
   getApplicableRulesSchema,
   getBestTemplateSchema,
   getRelevantPatternsSchema,
-} from "./mcp/tool-schemas.js";
+} from "./mcp/tool-schemas";
 
-import { type Component, type ComponentRegistry, type FrameworkRegistry } from "../schemas/zod-schemas.js";
+import { type Component, type ComponentRegistry, type FrameworkRegistry } from "../schemas/zod-schemas";
 
-import { RegistryLoader } from "./mcp/registry-loader.js";
-import { getResourceDefinitions, readResource } from "./mcp/resources.js";
-import { MCPMetricsTracker } from "./mcp/mcp-metrics.js";
-import { formatMultipleComponentDetails, formatSearchResults, formatMcpError } from "../utils/formatters.js";
-import { globalWorkflow } from "./mcp/workflow-orchestrator.js";
-import { generateMinimalAuditChecklist } from "../utils/audit-checklist.js";
-import { componentNotFoundError } from "../utils/errors.js";
-import { UnifiedCodeGenerator } from "../core/unified-generator.js";
-import type { UIPlan as ValidatorUIPlan, Blade } from "../core/validator.js";
-import type { BladeGenerationContext } from "../types/blade-context.js";
-import { LogicPlanner, type BladeLogic } from "../core/logic-planner.js";
-import { BladeComposer } from "../core/blade-composer.js";
-import { SmartCodeGenerator } from "../core/smart-generator.js";
-import { getGenerationRulesProvider } from "../core/generation-rules.js";
-import { autoFixUIPlan } from "../utils/ui-plan-fixer.js";
-import { CodeValidator, type ValidationError } from "../core/code-validator.js";
-import { LLMFeedbackFormatter } from "../core/llm-feedback.js";
-import { PlannerV2 } from "../core/planner-v2.js";
-import { CodeGenerator } from "../core/code-generator.js";
-import { buildAnalysisPromptV2, getPromptAnalysisSchemaV2 } from "../core/prompt-analyzer-v2.js";
-import type { Column, Field } from "../core/template-adapter.js";
+import { RegistryLoader } from "./mcp/registry-loader";
+import { getResourceDefinitions, readResource } from "./mcp/resources";
+import { MCPMetricsTracker } from "./mcp/mcp-metrics";
+import { formatMultipleComponentDetails, formatSearchResults, formatMcpError } from "../utils/formatters";
+import { globalWorkflow } from "./mcp/workflow-orchestrator";
+import { componentNotFoundError } from "../utils/errors";
+import type { UIPlan as ValidatorUIPlan, Blade } from "../core/validator";
+import type { BladeGenerationContext } from "../types/blade-context";
+import type { BladeLogic } from "../types/logic";
+import { SmartCodeGenerator } from "../core/smart-generator";
+import { autoFixUIPlan } from "../utils/ui-plan-fixer";
+import { CodeValidator, type ValidationError } from "../core/code-validator";
+import { LLMFeedbackFormatter } from "../core/llm-feedback";
+import { PlannerV2 } from "../core/planner-v2";
+import { CodeGenerator } from "../core/code-generator";
+import { buildAnalysisPromptV2, getPromptAnalysisSchemaV2 } from "../core/prompt-analyzer-v2";
+import type { Column, Field } from "../core/template-adapter";
 import { camelCase, kebabCase, upperFirst } from "lodash-es";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -193,25 +186,10 @@ export async function mcpServerCommand() {
           inputSchema: zodToJsonSchema(getComponentExamplesSchema),
         },
         {
-          name: "get_audit_checklist",
-          description:
-            "Get a comprehensive audit checklist for verifying generated code. Use this after code generation to ensure quality.",
-          inputSchema: {
-            type: "object",
-            properties: {},
-          },
-        },
-        {
           name: "scaffold_app",
           description:
-            "Create a new VC-Shell application from scratch using create-vc-app. IMPORTANT: Always use this tool (NOT bash/npx) when user asks to 'create new app', 'scaffold app', or 'initialize VC-Shell project'. This tool automatically uses --skip-module-gen flag to create base app structure only. After app creation, user can generate modules using generate_complete_module tool.",
+            "Create a new VC-Shell application from scratch using create-vc-app. IMPORTANT: Always use this tool (NOT bash/npx) when user asks to 'create new app', 'scaffold app', or 'initialize VC-Shell project'. This tool automatically uses --skip-module-gen flag to create base app structure only. After app creation, user can generate modules using generate_with_composition tool.",
           inputSchema: zodToJsonSchema(scaffoldAppSchema),
-        },
-        {
-          name: "generate_complete_module",
-          description:
-            "⚠️ REQUIRES VALIDATED UI-PLAN ⚠️ This tool generates AI INSTRUCTION GUIDES only (AI_FULL strategy), NOT actual code files. It creates detailed per-blade guides that AI must follow to manually write code. WORKFLOW REQUIREMENT: Can only be called after UI-Plan has been created and validated (steps: analyze → create plan → validate). Attempting to use without validated plan will result in workflow violation.",
-          inputSchema: zodToJsonSchema(generateCompleteModuleSchema),
         },
         {
           name: "validate_and_fix_plan",
@@ -244,18 +222,6 @@ export async function mcpServerCommand() {
             "- MCP server will validate and save the code\n\n" +
             "❌ FORBIDDEN: NEVER use Write/Edit tools to create module files manually. ALWAYS use submit_generated_code for validation and pattern compliance.",
           inputSchema: zodToJsonSchema(generateWithCompositionSchema),
-        },
-        {
-          name: "infer_blade_logic",
-          description:
-            "Automatically infer blade logic (handlers, toolbar, state) from blade structure and features. Use this to generate logic definitions for UI-Plan or to understand what logic a blade should have. Can merge with existing user-provided logic.",
-          inputSchema: zodToJsonSchema(inferBladeLogicSchema),
-        },
-        {
-          name: "get_composition_guide",
-          description:
-            "Get comprehensive composition guide for AI code generation. Returns patterns, rules, examples, and instructions for composing blade code from patterns. Use this to understand how to compose code for specific blade types and features.",
-          inputSchema: zodToJsonSchema(getCompositionGuideSchema),
         },
         {
           name: "submit_generated_code",
@@ -368,7 +334,7 @@ export async function mcpServerCommand() {
 
     try {
       // Prepare context for dynamic resources
-      const { getGenerationRulesProvider } = await import("../core/generation-rules.js");
+      const { getGenerationRulesProvider } = await import("../core/generation-rules");
       const resourceContext = {
         registry,
         buildAnalysisPromptV2,
@@ -651,19 +617,6 @@ Try:
           };
         }
 
-        case "get_audit_checklist": {
-          const checklist = generateMinimalAuditChecklist();
-
-          return {
-            content: [
-              {
-                type: "text",
-                text: checklist,
-              },
-            ],
-          };
-        }
-
         case "scaffold_app": {
           const parsed = scaffoldAppSchema.safeParse(args);
           if (!parsed.success) {
@@ -762,81 +715,6 @@ Try:
               isError: true,
             };
           }
-        }
-
-        case "generate_complete_module": {
-          const parsed = generateCompleteModuleSchema.safeParse(args);
-          if (!parsed.success) {
-            throw new Error(`Invalid arguments: ${parsed.error.message}`);
-          }
-
-          // Parse plan if it's a string (MCP protocol may send JSON objects as strings)
-          const plan = typeof parsed.data.plan === 'string' ? JSON.parse(parsed.data.plan) : parsed.data.plan;
-          const { cwd, dryRun, mode } = parsed.data;
-
-          // Validate plan first
-          const validator = new Validator();
-          const validation = validator.validateUIPlan(plan);
-
-          if (!validation.valid) {
-            return trackSuccess({
-              content: [
-                {
-                  type: "text",
-                  text: JSON.stringify(
-                    {
-                      success: false,
-                      error: "UI-Plan validation failed",
-                      errors: validation.errors,
-                      suggestion: "Fix validation errors and try again, or use validate_and_fix_plan tool",
-                    },
-                    null,
-                    2,
-                  ),
-                },
-              ],
-              isError: true,
-            });
-          }
-
-          // Generate module
-          const validatedPlan = plan as unknown as ValidatorUIPlan;
-          const generator = new UnifiedCodeGenerator();
-          const generateResult = await generator.generateModule(validatedPlan, cwd, {
-            writeToDisk: !dryRun,
-            dryRun,
-            mode,
-          });
-
-          return trackSuccess({
-            content: [
-              {
-                type: "text",
-                text: JSON.stringify(
-                  {
-                    success: true,
-                    message: `Module generated successfully`,
-                    summary: {
-                      module: validatedPlan.module,
-                      blades: generateResult.summary.blades,
-                      composables: generateResult.summary.composables,
-                      locales: generateResult.summary.locales,
-                      registered: generateResult.summary.registered,
-                      totalFiles: generateResult.files.length,
-                      mode: generateResult.summary.mode || mode,
-                    },
-                    files: generateResult.files.map((f) => ({
-                      path: f.path.replace(cwd, ""),
-                      lines: f.lines,
-                    })),
-                    dryRun: dryRun || false,
-                  },
-                  null,
-                  2,
-                ),
-              },
-            ],
-          });
         }
 
         case "validate_and_fix_plan": {
@@ -1134,7 +1012,6 @@ Try:
 
           const validatedPlan = plan as unknown as ValidatorUIPlan;
           const smartGen = new SmartCodeGenerator();
-          const logicPlanner = new LogicPlanner();
           const codeGenerator = new CodeGenerator();
 
           const guides: Array<{ bladeId: string; decision: any; instructions: string }> = [];
@@ -1162,14 +1039,34 @@ Try:
           }
 
           for (const blade of bladesToGenerate) {
+            // ⚠️ STRICT MODE: blade.logic is REQUIRED in UI-Plan
+            // No automatic inference - AI must provide complete logic
             if (!blade.logic) {
-              blade.logic = logicPlanner.inferLogic(blade as Blade);
-            }
-            if (!blade.composable) {
-              blade.composable = logicPlanner.inferComposable(blade as Blade);
+              return {
+                content: [
+                  {
+                    type: "text",
+                    text: JSON.stringify({
+                      success: false,
+                      error: `Blade '${blade.id}' is missing required 'logic' field`,
+                      blade: blade.id,
+                      reason: "UI-Plan must include complete blade logic (handlers, toolbar, state)",
+                      fix: "Add 'logic' field to blade in UI-Plan with handlers, toolbar, and state definitions",
+                      example: {
+                        logic: {
+                          handlers: { onMounted: "Load data", onSave: "Save changes" },
+                          toolbar: [{ id: "save", icon: "fas fa-save", action: "save()" }],
+                          state: { loading: { source: "composable", reactive: true } }
+                        }
+                      }
+                    }, null, 2)
+                  }
+                ],
+                isError: true
+              };
             }
 
-            const bladeLogic: BladeLogic = normalizeBladeLogic(blade.logic) ?? logicPlanner.inferLogic(blade as Blade);
+            const bladeLogic: BladeLogic = normalizeBladeLogic(blade.logic)!;
 
             const normalizedBlade: Blade = {
               ...(blade as Blade),
@@ -1287,146 +1184,6 @@ Try:
               },
             ],
           });
-        }
-
-        case "infer_blade_logic": {
-          const parsed = inferBladeLogicSchema.safeParse(args);
-          if (!parsed.success) {
-            throw new Error(`Invalid arguments: ${parsed.error.message}`);
-          }
-
-          const { blade, merge } = parsed.data;
-          const planner = new LogicPlanner();
-          const bladeWithLogic = blade as Blade & { logic?: Blade["logic"] };
-
-          // Infer logic
-          const inferred = planner.inferLogic(bladeWithLogic);
-          const composable = planner.inferComposable(bladeWithLogic);
-
-          // Merge with existing if requested
-          const existingLogic = normalizeBladeLogic(bladeWithLogic.logic);
-          const finalLogic = merge && existingLogic ? planner.mergeLogic(inferred, existingLogic) : inferred;
-
-          return {
-            content: [
-              {
-                type: "text",
-                text: JSON.stringify(
-                  {
-                    blade: {
-                      id: blade.id,
-                      layout: blade.layout,
-                    },
-                    inferred: {
-                      logic: finalLogic,
-                      composable,
-                    },
-                    description: planner.describeLogic(finalLogic),
-                    merged: merge && !!existingLogic,
-                  },
-                  null,
-                  2,
-                ),
-              },
-            ],
-          };
-        }
-
-        case "get_composition_guide": {
-          const parsed = getCompositionGuideSchema.safeParse(args);
-          if (!parsed.success) {
-            throw new Error(`Invalid arguments: ${parsed.error.message}`);
-          }
-
-          const { type, features, complexity } = parsed.data;
-          const composer = new BladeComposer();
-          const rulesProvider = getGenerationRulesProvider();
-          const complexityScore =
-            complexity === "simple" ? 1 : complexity === "moderate" ? 5 : complexity === "complex" ? 8 : 0;
-
-          // Get relevant patterns
-          const mockContext = {
-            type: type,
-            entity: "example", // ✅ ADDED: placeholder entity
-            module: "examples", // ✅ ADDED: placeholder module
-            features: features || [],
-            blade: {
-              id: `example-${type}`,
-              layout: type === "list" ? ("grid" as const) : ("details" as const),
-              features: features || [],
-              route: `/examples/${type}`,
-              title: `Example ${type}`,
-            },
-            naming: {
-              moduleName: "examples",
-              moduleNamePascal: "Examples",
-              moduleNameCamel: "examples",
-              moduleNameUpperSnake: "EXAMPLES",
-              entitySingular: "Example",
-              entityPlural: "Examples",
-              entitySingularCamel: "example",
-              entityPluralCamel: "examples",
-              entitySingularKebab: "example",
-              entityPluralKebab: "examples",
-              entitySingularPascal: "Example",
-              entityPluralPascal: "Examples",
-            },
-            componentName: `Example${type === "list" ? "List" : "Details"}`,
-            composableName: `useExample${type === "list" ? "List" : "Details"}`,
-            route: "/examples",
-            menuTitleKey: "EXAMPLES.MENU_TITLE",
-            complexity: complexityScore, // ✅ ADDED: complexity field
-          };
-
-          const patterns = composer.selectPatterns(mockContext);
-          const rules = rulesProvider.getRules();
-
-          // Build guide
-          let guide = `# Pattern Composition Guide for ${type.toUpperCase()} Blade\n\n`;
-          guide += `**Type:** ${type}\n`;
-          guide += `**Features:** ${features?.join(", ") || "Basic"}\n`;
-          guide += `**Complexity:** ${complexity || "auto"}\n\n`;
-
-          guide += `## Selected Patterns (${patterns.length})\n\n`;
-          guide += composer.describePatterns(patterns);
-
-          guide += `\n## Composition Strategy\n\n`;
-          guide += `To generate this blade, AI should:\n\n`;
-          guide += `1. **Study base pattern** - Understand the core structure\n`;
-          guide += `2. **Apply feature patterns** - Add filters, multiselect, etc.\n`;
-          guide += `3. **Compose cohesively** - Merge patterns without conflicts\n`;
-          guide += `4. **Follow rules strictly** - Use only VC-Shell components\n`;
-          guide += `5. **Validate thoroughly** - Ensure all parts work together\n\n`;
-
-          guide += `## Rules\n\n`;
-          guide += `**Structure:** ${type === "list" ? rules.bladeStructure.list : rules.bladeStructure.details}\n\n`;
-          guide += `**Naming:**\n`;
-          guide += `- ${rules.naming.components}\n`;
-          guide += `- ${rules.naming.files}\n\n`;
-
-          guide += `**i18n:**\n`;
-          guide += `- ${rules.i18n.usage}\n`;
-          guide += `- ${rules.i18n.case}\n\n`;
-
-          guide += `## Pattern Details\n\n`;
-          for (const pattern of patterns) {
-            guide += `### ${pattern.name}\n`;
-            guide += `${pattern.description}\n\n`;
-            guide += `**Components:** ${pattern.requiredComponents.join(", ")}\n`;
-            guide += `**Features:** ${pattern.features.join(", ") || "Basic"}\n\n`;
-            if (pattern.codeExample) {
-              guide += `**Example:**\n\`\`\`vue\n${pattern.codeExample.substring(0, 500)}...\n\`\`\`\n\n`;
-            }
-          }
-
-          return {
-            content: [
-              {
-                type: "text",
-                text: guide,
-              },
-            ],
-          };
         }
 
         case "submit_generated_code": {
@@ -1835,7 +1592,6 @@ Try:
                         "✅ UI-Plan V2 is ready and validated (workflow state: validated)",
                         "✅ Validation step completed during plan creation - no separate validation needed",
                         "Use generate_with_composition to generate code guides (AI_FULL strategy)",
-                        "Or use generate_complete_module for full module generation",
                         "Note: Some advanced V2 features (workflows, custom actions) may require manual implementation",
                       ],
                     },
@@ -2308,7 +2064,7 @@ Try:
                       },
                       {
                         step: 4,
-                        tool: "generate_with_composition or generate_complete_module",
+                        tool: "generate_with_composition",
                         status: getStepStatus("generate"),
                         required: true,
                         description: "Generate AI instructions for writing Vue SFC code"
@@ -2444,7 +2200,7 @@ Try:
           debugLog("Getting applicable rules for:", { bladeType, isWorkspace, features, strategy });
 
           // Use RulesLoader to get applicable rules
-          const { RulesLoader } = await import("../core/rules-loader.js");
+          const { RulesLoader } = await import("../core/rules-loader");
           const rulesLoader = new RulesLoader();
 
           const applicableRules = await rulesLoader.getApplicableRules({
@@ -2555,7 +2311,7 @@ Try:
           debugLog("Getting best template for:", { bladeType, features, complexity });
 
           // Use PatternsLoader to get best template
-          const { PatternsLoader } = await import("../core/patterns-loader.js");
+          const { PatternsLoader } = await import("../core/patterns-loader");
           const patternsLoader = new PatternsLoader();
 
           const template = await patternsLoader.getBestTemplate({
@@ -2644,7 +2400,7 @@ Try:
           debugLog("Getting relevant patterns for:", { bladeType, features, isWorkspace, specificPatterns });
 
           // Use PatternsLoader to get relevant patterns
-          const { PatternsLoader } = await import("../core/patterns-loader.js");
+          const { PatternsLoader } = await import("../core/patterns-loader");
           const patternsLoader = new PatternsLoader();
 
           let patterns = await patternsLoader.getRelevantPatterns({

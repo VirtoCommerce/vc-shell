@@ -19,7 +19,7 @@ import type {
   PatternExample,
   CompositionExample,
   FrameworkAPIExample,
-} from "./examples-types.js";
+} from "./examples-types";
 
 // Get __dirname equivalent in ES modules
 const __filename = fileURLToPath(import.meta.url);

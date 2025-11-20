@@ -15,7 +15,7 @@ The MCP server now enforces a strict workflow to ensure AI follows the correct s
 │     ↓                                                       │
 │  3. validate_ui_plan / validate_and_fix_plan               │
 │     ↓                                                       │
-│  4. generate_with_composition / generate_complete_module   │
+│  4. generate_with_composition                               │
 │     ↓                                                       │
 │  5. submit_generated_code (optional)                       │
 │                                                             │
@@ -98,7 +98,6 @@ All workflow-critical tools now have ⚠️ warnings:
 - `analyze_prompt_v2`: **⚠️ MANDATORY FIRST STEP ⚠️**
 - `create_ui_plan_from_analysis_v2`: **⚠️ REQUIRES ANALYSIS ⚠️**
 - `generate_with_composition`: **⚠️ REQUIRES VALIDATED UI-PLAN ⚠️**
-- `generate_complete_module`: **⚠️ REQUIRES VALIDATED UI-PLAN ⚠️**
 
 ## Example Workflow
 
@@ -141,7 +140,7 @@ create_ui_plan_from_analysis_v2({ analysis: {} })
 | `init` | Initial state | `analyze_prompt_v2`, search tools |
 | `analyzed` | Analysis completed | `create_ui_plan_from_analysis_v2`, search tools |
 | `planned` | UI-Plan created | `validate_ui_plan`, `validate_and_fix_plan`, search tools |
-| `validated` | UI-Plan validated | `generate_with_composition`, `generate_complete_module`, search tools |
+| `validated` | UI-Plan validated | `generate_with_composition`, search tools |
 | `generated` | Code generated | `submit_generated_code`, `check_types`, search tools |
 | `completed` | Module completed | All tools (can start new module) |
 

@@ -67,13 +67,6 @@ export const getBladeTemplateSchema = z.object({
   complexity: z.enum(["simple", "filters", "multiselect", "validation"]),
 });
 
-export const generateCompleteModuleSchema = z.object({
-  plan: z.any(),
-  cwd: z.string(),
-  dryRun: z.boolean().optional().default(false),
-  mode: z.literal("ai-full").optional().default("ai-full"),
-});
-
 export const validateAndFixPlanSchema = z.object({
   plan: z.any(),
 });

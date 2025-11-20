@@ -1,7 +1,7 @@
 import * as parser from "@babel/parser";
 import { parse as parseVueSFC } from "@vue/compiler-sfc";
 import * as ts from "typescript";
-import type { UIPlanBlade } from "../schemas/zod-schemas.js";
+import type { UIPlanBlade } from "../schemas/zod-schemas";
 
 export interface ValidationError {
   type: "syntax" | "typescript" | "component" | "import" | "convention";
@@ -20,7 +20,7 @@ export interface ValidationResult {
 
 /**
  * CodeValidator validates AI-generated code on multiple levels
- * 
+ *
  * Validation levels:
  * 1. Syntax - Parse with Babel AST, check Vue SFC structure
  * 2. TypeScript - Type checking
@@ -33,7 +33,7 @@ export class CodeValidator {
 
   constructor(componentRegistry?: string[]) {
     this.componentRegistry = new Set(componentRegistry || [
-      "VcBlade", "VcTable", "VcForm", "VcInput", "VcTextarea", 
+      "VcBlade", "VcTable", "VcForm", "VcInput", "VcTextarea",
       "VcSelect", "VcCheckbox", "VcSwitch", "VcButton", "VcCard",
       "VcContainer", "VcRow", "VcCol", "VcBadge", "VcBanner",
       "VcIcon", "VcImage", "VcLabel", "VcLink", "VcStatus",
@@ -380,7 +380,7 @@ export class CodeValidator {
         });
       } else {
         const optionsContent = defineOptionsMatch[1];
-        
+
         // Check name property (PascalCase)
         const nameMatch = optionsContent.match(/name:\s*["']([^"']+)["']/);
         if (nameMatch) {
@@ -445,7 +445,7 @@ export class CodeValidator {
 
       // 4. Check for Field usage with vee-validate
       if (templateContent.includes("<Field")) {
-        const veeValidateImport = scriptContent.includes("from \"vee-validate\"") || 
+        const veeValidateImport = scriptContent.includes("from \"vee-validate\"") ||
                                   scriptContent.includes("from 'vee-validate'");
         if (!veeValidateImport) {
           errors.push({

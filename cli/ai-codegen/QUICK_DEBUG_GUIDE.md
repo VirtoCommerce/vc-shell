@@ -77,7 +77,7 @@ Tool Usage Statistics:
 Tool Name                      Calls    Success  Avg (ms)
 ------------------------------------------------------------
 validate_ui_plan               2        100%     15
-generate_complete_module       1        100%     1234
+generate_with_composition      1        100%     1234
 =============================================================
 ```
 

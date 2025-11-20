@@ -78,7 +78,6 @@ validate_ui_plan: {
 | `validate_ui_plan` | `init`, `planned`, `validated` | `validated` |
 | `validate_and_fix_plan` | `init`, `planned`, `validated` | `validated` |
 | `generate_with_composition` | `validated` | `generated` |
-| `generate_complete_module` | `validated` | `generated` |
 | `submit_generated_code` | `generated`, `code_submitted` | `code_submitted` |
 | `check_types` | `generated`, `code_submitted`, `completed` | `completed` |
 

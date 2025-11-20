@@ -1,8 +1,8 @@
 import fs from "node:fs";
 import path from "node:path";
 import { kebabCase, camelCase, upperFirst, snakeCase } from "lodash-es";
-import type { UIPlan, Blade } from "./validator.js";
-import { FileWriter } from "./file-writer.js";
+import type { UIPlan, Blade } from "./validator";
+import { FileWriter } from "./file-writer";
 
 export interface NamingConfig {
   moduleName: string;
@@ -81,7 +81,7 @@ export class CodeGenerator {
       console.log(`✅ Generated ${summary.filesWritten.length} files`);
       console.log(`✅ Updated ${summary.filesUpdated.length} files`);
       console.log(`\nℹ️  Use AI via MCP to generate blades, composables, and locales`);
-      
+
       // Print registration instructions
       this.printRegistrationInstructions(plan.module, naming);
     }
@@ -208,7 +208,7 @@ export * from "./composables";
 
   private printRegistrationInstructions(moduleName: string, naming: NamingConfig) {
     const moduleImportName = `${naming.moduleNamePascal}Module`;
-    
+
     console.log(`\n📋 Module Registration`);
     console.log(`\n🤖 If using AI (Cursor + MCP):`);
     console.log(`   AI will automatically register the module in src/main.ts`);

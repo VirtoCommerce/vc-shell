@@ -1,7 +1,7 @@
-import type { NamingConfig } from "../core/code-generator.js";
-import type { Column, Field } from "../core/template-adapter.js";
-import type { Blade } from "../core/validator.js";
-import type { BladeLogic, ComposableDefinition } from "../core/logic-planner.js";
+import type { NamingConfig } from "../core/code-generator";
+import type { Column, Field } from "../core/template-adapter";
+import type { Blade } from "../core/validator";
+import type { BladeLogic, ComposableDefinition } from "./logic";
 
 /**
  * Universal blade generation context used across all generators.

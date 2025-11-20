@@ -10,7 +10,7 @@
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import fs from "node:fs";
-import { ComponentAnalyzer, type AnalyzerConfig } from "../core/component-analyzer.js";
+import { ComponentAnalyzer, type AnalyzerConfig } from "../core/component-analyzer";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -81,14 +81,14 @@ async function main() {
   for (const [name, component] of Object.entries(enhanced)) {
     const capCount = Object.keys(component.capabilities).length;
     totalCapabilities += capCount;
-    
+
     const category = component.category || "Unknown";
     categoryStats[category] = (categoryStats[category] || 0) + 1;
   }
 
   console.log(`✅ Total capabilities extracted: ${totalCapabilities}`);
   console.log(`✅ Average capabilities per component: ${(totalCapabilities / componentNames.length).toFixed(1)}`);
-  
+
   console.log("\n📊 Components by category:");
   for (const [category, count] of Object.entries(categoryStats)) {
     console.log(`   ${category}: ${count}`);

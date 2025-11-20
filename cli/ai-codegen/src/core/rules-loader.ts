@@ -16,7 +16,7 @@ import type {
   GenerationStrategy,
   BladeType,
   RulesLoaderOptions,
-} from "./rules-types.js";
+} from "./rules-types";
 
 // Get __dirname equivalent in ES modules
 const __filename = fileURLToPath(import.meta.url);

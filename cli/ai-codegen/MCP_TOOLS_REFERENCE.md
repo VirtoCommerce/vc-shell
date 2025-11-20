@@ -24,7 +24,7 @@
 1. `analyze_prompt_v2` ⚠️ **ОБЯЗАТЕЛЬНЫЙ ПЕРВЫЙ ШАГ**
 2. `create_ui_plan_from_analysis_v2` ⚠️ Требует анализ
 3. `validate_ui_plan` или `validate_and_fix_plan`
-4. `generate_with_composition` или `generate_complete_module` ⚠️ Требует валидированный план
+4. `generate_with_composition` ⚠️ Требует валидированный план
 5. `submit_generated_code` (опционально)
 6. `check_types` (опционально)
 
@@ -101,10 +101,10 @@ Step 3: VALIDATE
 │  └─ Возвращает: validation result + fixed plan (если нужно)
 │
 Step 4: GENERATE
-├─ generate_with_composition или generate_complete_module ⚠️ REQUIRES VALIDATED PLAN
+├─ generate_with_composition ⚠️ REQUIRES VALIDATED PLAN
 │  ├─ Генерация AI инструкций для написания кода
-│  ├─ generate_with_composition: для одного/нескольких blades
-│  ├─ generate_complete_module: для всего модуля
+│  ├─ Для одного blade: указать bladeId
+│  ├─ Для всех blades: не указывать bladeId
 │  └─ Возвращает: Detailed AI instructions per blade
 │
 │  ➡️  ИИ пишет Vue SFC код вручную по инструкциям
@@ -301,29 +301,19 @@ validate_and_fix_plan({
 
 ---
 
-### ⚠️ generate_with_composition / generate_complete_module
+### ⚠️ generate_with_composition
 
 **Категория:** Workflow Critical (Step 4)
 **Доступность:** Только после валидации (состояние `validated`)
 **Обязательность:** ⚠️ **REQUIRES VALIDATED PLAN**
 
-**generate_with_composition** - для одного/нескольких blades:
+**generate_with_composition** - для одного или всех blades:
 ```typescript
 generate_with_composition({
   plan: { /* validated UI-Plan */ },
   cwd: "/path/to/project",
   dryRun: false,
-  bladeId: "offers-list" // опционально - для одного blade
-})
-```
-
-**generate_complete_module** - для всего модуля:
-```typescript
-generate_complete_module({
-  plan: { /* validated UI-Plan */ },
-  cwd: "/path/to/project",
-  dryRun: false,
-  mode: "ai-full" // всегда AI_FULL
+  bladeId: "offers-list" // опционально - для одного blade, если не указан - генерирует все
 })
 ```
 

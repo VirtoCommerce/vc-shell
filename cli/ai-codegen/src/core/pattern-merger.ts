@@ -23,7 +23,7 @@
  * @since 0.7.0
  */
 
-import type { CompositionPattern } from "./generation-rules.js";
+import type { CompositionPattern } from "./generation-rules";
 import { parse as parseVue } from "@vue/compiler-sfc";
 
 export interface MergedCode {

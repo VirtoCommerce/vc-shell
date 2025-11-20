@@ -1,7 +1,7 @@
-import { AIGenerationGuideBuilder } from "./ai-generation-guide-builder.js";
-import { getGenerationRulesProvider } from "./generation-rules.js";
-import type { BladeGenerationContext } from "../types/blade-context.js";
-import type { UIPlan } from "./validator.js";
+import { AIGenerationGuideBuilder } from "./ai-generation-guide-builder";
+import { getGenerationRulesProvider } from "./generation-rules";
+import type { BladeGenerationContext } from "../types/blade-context";
+import type { UIPlan } from "./validator";
 
 export enum GenerationStrategy {
   /**

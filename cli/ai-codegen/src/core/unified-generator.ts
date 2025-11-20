@@ -1,22 +1,22 @@
 import fs from "node:fs";
 import path from "node:path";
-import type { UIPlan, Blade } from "./validator.js";
-import { TemplateAdapter, type AdaptConfig, type Column, type Field } from "./template-adapter.js";
+import type { UIPlan, Blade } from "./validator";
+import { TemplateAdapter, type AdaptConfig, type Column, type Field } from "./template-adapter";
 import {
   ComposableGenerator,
   type ListComposableConfig,
   type DetailsComposableConfig,
-} from "./composable-generator.js";
-import { LocaleGenerator } from "./locale-generator.js";
-import { ModuleRegistrar } from "./module-registrar.js";
-import { CodeGenerator, type NamingConfig } from "./code-generator.js";
-import { AICodeGenerator } from "./ai-code-generator.js";
-import { CodeValidator } from "./code-validator.js";
-import { getGenerationRulesProvider } from "./generation-rules.js";
-import { LogicPlanner, type BladeLogic, type ComposableDefinition } from "./logic-planner.js";
-import { BladeComposer } from "./blade-composer.js";
-import { SmartCodeGenerator } from "./smart-generator.js";
-import type { BladeGenerationContext } from "../types/blade-context.js";
+} from "./composable-generator";
+import { LocaleGenerator } from "./locale-generator";
+import { ModuleRegistrar } from "./module-registrar";
+import { CodeGenerator, type NamingConfig } from "./code-generator";
+import { AICodeGenerator } from "./ai-code-generator";
+import { CodeValidator } from "./code-validator";
+import { getGenerationRulesProvider } from "./generation-rules";
+import { LogicPlanner, type BladeLogic, type ComposableDefinition } from "./logic-planner";
+import { BladeComposer } from "./blade-composer";
+import { SmartCodeGenerator } from "./smart-generator";
+import type { BladeGenerationContext } from "../types/blade-context";
 import { fileURLToPath } from "node:url";
 import { camelCase, upperFirst, kebabCase } from "lodash-es";
 

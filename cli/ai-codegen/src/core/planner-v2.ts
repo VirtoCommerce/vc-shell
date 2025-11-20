@@ -9,14 +9,14 @@
  * - Data source configurations
  */
 
-import type { UIPlan } from "./validator.js";
+import type { UIPlan } from "./validator";
 import { kebabCase } from "lodash-es";
 import {
   validatePromptAnalysisV2,
   type PromptAnalysisV2,
   buildAnalysisPromptV2,
   getPromptAnalysisSchemaV2,
-} from "./prompt-analyzer-v2.js";
+} from "./prompt-analyzer-v2";
 
 export interface PlannerV2Options {
   prompt: string;

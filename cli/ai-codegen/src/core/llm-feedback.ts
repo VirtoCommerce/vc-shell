@@ -5,7 +5,7 @@
  * Formats validation errors in a way that helps AI understand and fix issues.
  */
 
-import type { ValidationError, ValidationResult } from "./code-validator.js";
+import type { ValidationError, ValidationResult } from "./code-validator";
 
 export interface RetryContext {
   attempt: number;

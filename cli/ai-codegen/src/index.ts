@@ -2,8 +2,8 @@
 
 import { Command } from "commander";
 import chalk from "chalk";
-import { mcpServerCommand } from "./commands/mcp.js";
-import { mcpInitCommand } from "./commands/mcp-init.js";
+import { mcpServerCommand } from "./commands/mcp";
+import { mcpInitCommand } from "./commands/mcp-init";
 
 const program = new Command();
 

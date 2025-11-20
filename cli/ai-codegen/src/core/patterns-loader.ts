@@ -9,7 +9,7 @@ import fs from "fs-extra";
 import path from "path";
 import { glob } from "glob";
 import { fileURLToPath } from "url";
-import type { BladeType } from "./rules-types.js";
+import type { BladeType } from "./rules-types";
 
 // Get __dirname equivalent in ES modules
 const __filename = fileURLToPath(import.meta.url);

@@ -1,5 +1,5 @@
 import Fuzzysort from "fuzzysort";
-import type { Component } from "../schemas/zod-schemas.js";
+import type { Component } from "../schemas/zod-schemas";
 
 export interface SearchOptions {
   query?: string;

@@ -1,5 +1,5 @@
 import Fuzzysort from "fuzzysort";
-import type { FrameworkAPI, FrameworkRegistry } from "../schemas/zod-schemas.js";
+import type { FrameworkAPI, FrameworkRegistry } from "../schemas/zod-schemas";
 
 export interface FrameworkAPISearchOptions {
   query?: string;

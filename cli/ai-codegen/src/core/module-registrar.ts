@@ -4,7 +4,7 @@ import * as parser from "@babel/parser";
 import _traverse from "@babel/traverse";
 import _generate from "@babel/generator";
 import * as t from "@babel/types";
-import type { NamingConfig } from "./code-generator.js";
+import type { NamingConfig } from "./code-generator";
 import type { NodePath } from "@babel/traverse";
 
 // Handle ESM default exports

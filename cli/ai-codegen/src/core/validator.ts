@@ -3,7 +3,7 @@ import addFormats from "ajv-formats";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { PlanNormalizer } from "./plan-normalizer.js";
+import { PlanNormalizer } from "./plan-normalizer";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -132,7 +132,7 @@ export class Validator {
     addFormats(this.ajv);
 
     // Load schemas
-    // In production (dist/index.js), schemas are in dist/schemas/
+    // In production (dist/index), schemas are in dist/schemas/
     // In development (src/core/validator.ts), schemas are in src/schemas/
     const schemasPath = __dirname.includes('/dist')
       ? path.join(__dirname, "schemas")

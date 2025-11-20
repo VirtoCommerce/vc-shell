@@ -1,6 +1,6 @@
 import { upperFirst, camelCase } from "lodash-es";
-import type { NamingConfig } from "./code-generator.js";
-import type { Column, Field } from "./template-adapter.js";
+import type { NamingConfig } from "./code-generator";
+import type { Column, Field } from "./template-adapter";
 
 export interface ListComposableConfig {
   naming: NamingConfig;

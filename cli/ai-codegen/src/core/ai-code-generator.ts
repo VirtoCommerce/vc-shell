@@ -1,7 +1,7 @@
-import type { CompositionPattern, GenerationRules } from "./generation-rules.js";
-import type { BladeGenerationContext } from "../types/blade-context.js";
-import type { Column, Field } from "./template-adapter.js";
-import type { BladeLogic } from "./logic-planner.js";
+import type { CompositionPattern, GenerationRules } from "./generation-rules";
+import type { BladeGenerationContext } from "../types/blade-context";
+import type { Column, Field } from "./template-adapter";
+import type { BladeLogic } from "../types/logic";
 
 export interface AIGenerationGuide {
   task: string;

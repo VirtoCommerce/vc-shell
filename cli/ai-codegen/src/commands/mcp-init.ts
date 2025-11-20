@@ -4,7 +4,7 @@ import chalk from "chalk";
 import prompts from "prompts";
 import { execa } from "execa";
 import ora from "ora";
-import { getPackageManager, getInstallCommand, getDevFlag } from "../utils/get-package-manager.js";
+import { getPackageManager, getInstallCommand, getDevFlag } from "../utils/get-package-manager";
 
 export interface McpInitOptions {
   client?: "cursor" | "vscode" | "claude" | "codex";

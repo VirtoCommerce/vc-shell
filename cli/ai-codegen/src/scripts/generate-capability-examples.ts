@@ -2,14 +2,14 @@
 
 /**
  * Script to generate capability example files from enhanced registry
- * 
+ *
  * Usage: npx tsx src/scripts/generate-capability-examples.ts
  */
 
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import fs from "node:fs";
-import type { EnhancedComponent, ComponentCapability } from "../core/component-analyzer.js";
+import type { EnhancedComponent, ComponentCapability } from "../core/component-analyzer";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

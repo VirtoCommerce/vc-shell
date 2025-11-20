@@ -5,7 +5,7 @@
  */
 
 // Rules System
-export { RulesLoader } from "./core/rules-loader.js";
+export { RulesLoader } from "./core/rules-loader";
 export type {
   Rule,
   RuleCategory,
@@ -14,10 +14,10 @@ export type {
   PatternExample,
   ValidationCheck,
   AutoFix,
-} from "./core/rules-types.js";
+} from "./core/rules-types";
 
 // Examples System
-export { ExamplesLoader } from "./core/examples-loader.js";
+export { ExamplesLoader } from "./core/examples-loader";
 export type {
   ExampleMetadata,
   ExampleType,
@@ -29,16 +29,16 @@ export type {
   CompositionExample,
   FrameworkAPIExample,
   ExampleSearchQuery,
-} from "./core/examples-types.js";
+} from "./core/examples-types";
 
 // AI Generation System
-export { AIGenerationGuideBuilder } from "./core/ai-generation-guide-builder.js";
+export { AIGenerationGuideBuilder } from "./core/ai-generation-guide-builder";
 
 // Smart Code Generator
-export { SmartCodeGenerator } from "./core/smart-generator.js";
+export { SmartCodeGenerator } from "./core/smart-generator";
 
 // UI Plan Validator
-export { UIPlan } from "./core/validator.js";
+export { UIPlan } from "./core/validator";
 
 // Types
-export type { UIPlan as UIPlansType } from "./schemas/zod-schemas.js";
+export type { UIPlan as UIPlansType } from "./schemas/zod-schemas";

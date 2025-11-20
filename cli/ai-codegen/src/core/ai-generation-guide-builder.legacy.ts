@@ -8,9 +8,9 @@
  * @since 0.7.0
  */
 
-import type { GenerationRules } from "./generation-rules.js";
-import type { FrameworkAPISearchEngine } from "./framework-search-engine.js";
-import type { BladeGenerationContext } from "../types/blade-context.js";
+import type { GenerationRules } from "./generation-rules";
+import type { FrameworkAPISearchEngine } from "./framework-search-engine";
+import type { BladeGenerationContext } from "../types/blade-context";
 
 export interface AIGenerationStep {
   step: number;
@@ -62,7 +62,7 @@ export interface AIGenerationGuide {
   };
 }
 
-// BladeGenerationContext is now imported from ../types/blade-context.js
+// BladeGenerationContext is now imported from ../types/blade-context
 
 export class AIGenerationGuideBuilder {
   constructor(

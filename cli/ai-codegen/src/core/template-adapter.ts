@@ -3,7 +3,7 @@ import _traverse from "@babel/traverse";
 import _generate from "@babel/generator";
 import * as t from "@babel/types";
 import { parse as parseVueSFC, compileTemplate } from "@vue/compiler-sfc";
-import type { NamingConfig } from "./code-generator.js";
+import type { NamingConfig } from "./code-generator";
 import type { NodePath } from "@babel/traverse";
 
 // Handle ESM default exports

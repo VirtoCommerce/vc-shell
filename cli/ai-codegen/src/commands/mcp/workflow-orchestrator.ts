@@ -12,7 +12,7 @@ export type WorkflowStep =
   | "analyzed" // After analyze_prompt_v2
   | "planned" // After create_ui_plan_from_analysis_v2
   | "validated" // After validate_ui_plan or validate_and_fix_plan
-  | "generated" // After generate_with_composition or generate_complete_module
+  | "generated" // After generate_with_composition
   | "code_submitted" // After submit_generated_code
   | "completed"; // After check_types or module fully complete
 
@@ -43,15 +43,8 @@ const TOOL_CATEGORIES = {
     "create_ui_plan_from_analysis_v2", // Step 2: Requires analysis
     "validate_ui_plan", // Step 3a: Validate plan
     "validate_and_fix_plan", // Step 3b: Validate + fix plan
-    "generate_with_composition", // Step 4a: Generate with AI_FULL
-    "generate_complete_module", // Step 4b: Generate module guides
+    "generate_with_composition", // Step 4: Generate with AI_FULL
     "submit_generated_code", // Step 5: Submit AI-written code
-  ],
-
-  // UI-Plan helpers (can use after analysis, before/during planning)
-  plan_helpers: [
-    "infer_blade_logic", // Infer logic from blade structure
-    "get_composition_guide", // Get composition patterns
   ],
 
   // Discovery/Research (always available)
@@ -74,7 +67,7 @@ const TOOL_CATEGORIES = {
   workflow_management: ["get_workflow_status", "start_module_workflow"],
 
   // Post-generation quality checks (after code generation)
-  quality_checks: ["get_audit_checklist", "check_types"],
+  quality_checks: ["check_types"],
 };
 
 export class WorkflowOrchestrator {
@@ -128,19 +121,7 @@ export class WorkflowOrchestrator {
       return { allowed: true };
     }
 
-    // 2. Plan helpers - allowed from analyzed onwards
-    if (TOOL_CATEGORIES.plan_helpers.includes(toolName)) {
-      if (["init"].includes(this.state.step)) {
-        return {
-          allowed: false,
-          reason: `${toolName} requires prompt analysis first. Run analyze_prompt_v2.`,
-          nextStep: "Use analyze_prompt_v2 to analyze the user prompt",
-        };
-      }
-      return { allowed: true };
-    }
-
-    // 3. Quality checks - allowed after code submission
+    // 2. Quality checks - allowed after code submission
     if (TOOL_CATEGORIES.quality_checks.includes(toolName)) {
       if (["init", "analyzed", "planned", "validated", "generated"].includes(this.state.step)) {
         return {
@@ -189,11 +170,6 @@ export class WorkflowOrchestrator {
       // Step 4: Generation (REQUIRES VALIDATED PLAN)
       // Allow retry from generated state if generation needs to be redone
       generate_with_composition: {
-        allowedFrom: ["validated", "generated"],
-        nextState: "generated",
-      },
-
-      generate_complete_module: {
         allowedFrom: ["validated", "generated"],
         nextState: "generated",
       },
@@ -247,7 +223,6 @@ export class WorkflowOrchestrator {
       validate_ui_plan: "validated",
       validate_and_fix_plan: "validated",
       generate_with_composition: "generated",
-      generate_complete_module: "generated",
       submit_generated_code: "code_submitted", // Submit code after generation
       check_types: "completed", // Type check completes the workflow
     };
@@ -287,10 +262,7 @@ export class WorkflowOrchestrator {
       this.state.nextStep = this.getNextStepSuggestion();
 
       // Store results
-      if (
-        toolName === "generate_with_composition" ||
-        toolName === "generate_complete_module"
-      ) {
+      if (toolName === "generate_with_composition") {
         this.state.generatedGuides = result;
       }
 
@@ -379,17 +351,12 @@ export class WorkflowOrchestrator {
         analyzed: "Cannot generate without UI-Plan. Run create_ui_plan_from_analysis_v2 first (includes validation).",
         // Removed "planned" state - create_ui_plan_from_analysis_v2 now goes directly to "validated"
       },
-      generate_complete_module: {
-        init: "Cannot generate without validated UI-Plan. Sequence: analyze → create plan (with auto-validation) → generate.",
-        analyzed: "Cannot generate without UI-Plan. Run create_ui_plan_from_analysis_v2 first (includes validation).",
-        // Removed "planned" state - create_ui_plan_from_analysis_v2 now goes directly to "validated"
-      },
       submit_generated_code: {
         init: "Cannot submit code without generation. Complete workflow first.",
         analyzed: "Cannot submit code without generation. Create UI-Plan first (includes validation).",
         // Removed "planned" state - no longer exists in workflow
         validated:
-          "Cannot submit code without generation. Run generate_with_composition or generate_complete_module first.",
+          "Cannot submit code without generation. Run generate_with_composition first to get code generation guides.",
         completed: "Code already submitted and workflow completed. Use reset to start new module.",
       },
       check_types: {
@@ -417,7 +384,7 @@ export class WorkflowOrchestrator {
       planned:
         "⚠️ DEPRECATED STATE - This should not occur. Plan creation now goes directly to 'validated' state.",
       validated:
-        "Use generate_with_composition or generate_complete_module to generate AI instructions for code writing",
+        "Use generate_with_composition to generate AI instructions for code writing",
       generated:
         "Read the generation guide, write Vue SFC code following the instructions, then use submit_generated_code to save and validate the code",
       code_submitted:
@@ -458,11 +425,6 @@ export class WorkflowOrchestrator {
     // Scaffolding always available
     if (category === "scaffolding") {
       return true;
-    }
-
-    // Plan helpers available after analysis
-    if (category === "plan_helpers") {
-      return !["init"].includes(this.state.step);
     }
 
     // Quality checks available after code submission

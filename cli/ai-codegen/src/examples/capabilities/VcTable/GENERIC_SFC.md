@@ -17,11 +17,11 @@ VcTable is a **generic SFC** that requires explicit type annotation using a spec
 
 ## Required Syntax
 
-**YOU MUST add this comment on the first line of your template:**
+**YOU MUST add this comment on the first line before the VcTable component:**
 
 ```vue
-<!-- @vue-generic {ItemType} -->
 <template>
+  <!-- @vue-generic {ItemType} -->
   <VcTable
     :items="items"
     :columns="columns"
@@ -36,8 +36,8 @@ Where `{ItemType}` is replaced with your actual item interface/type name.
 ### Example 1: Simple List with Type
 
 ```vue
-<!-- @vue-generic {IOffer} -->
 <template>
+  <!-- @vue-generic {IOffer} -->
   <VcBlade
     :title="$t('OFFERS.PAGES.LIST.TITLE')"
     :toolbar-items="bladeToolbar"
@@ -82,8 +82,8 @@ const columns = computed(() => [
 ### Example 2: With Custom Interface
 
 ```vue
-<!-- @vue-generic {IProduct} -->
 <template>
+  <!-- @vue-generic {IProduct} -->
   <VcTable
     :items="products"
     :columns="columns"
@@ -126,8 +126,8 @@ const columns = computed(() => [
 If you don't have a separate interface, you can use an inline type:
 
 ```vue
-<!-- @vue-generic {{ id: string; name: string; email: string }} -->
 <template>
+  <!-- @vue-generic {{ id: string; name: string; email: string }} -->
   <VcTable
     :items="users"
     :columns="columns"
@@ -174,32 +174,32 @@ VcTable uses Vue 3's generic component feature to provide type-safe props:
 
 ```vue
 <template>
+  <!-- @vue-generic {IOffer} -->  <!-- TOO EARLY! -->
   <VcBlade>
-    <!-- @vue-generic {IOffer} -->  <!-- TOO LATE! -->
     <VcTable :items="offers" />
   </VcBlade>
 </template>
 ```
 
-**Result**: Comment must be on the FIRST line
+**Result**: Comment must be right before the VcTable component.
 
 ### ❌ WRONG: Wrong Syntax
 
 ```vue
-<!-- vue-generic {IOffer} -->  <!-- Missing @ symbol -->
 <template>
+  <!-- vue-generic {IOffer} -->  <!-- Missing @ symbol -->
   <VcTable :items="offers" />
 </template>
 ```
 
 **Result**: Won't work, must use `@vue-generic`
 
-### ✅ CORRECT: First Line, Correct Syntax
+### ✅ CORRECT: First Line Before VcTable, Correct Syntax
 
 ```vue
-<!-- @vue-generic {IOffer} -->
 <template>
   <VcBlade>
+    <!-- @vue-generic {IOffer} -->
     <VcTable :items="offers" :columns="columns" />
   </VcBlade>
 </template>
@@ -207,14 +207,14 @@ VcTable uses Vue 3's generic component feature to provide type-safe props:
 
 ## Template Variations
 
-The generic comment must ALWAYS be the first line, but your template can vary:
+The generic comment must ALWAYS be the first line before the VcTable component, but your template can vary:
 
 ### With VcBlade Wrapper
 
 ```vue
-<!-- @vue-generic {IEntity} -->
 <template>
   <VcBlade>
+      <!-- @vue-generic {IEntity} -->
     <VcTable :items="entities" />
   </VcBlade>
 </template>
@@ -223,8 +223,8 @@ The generic comment must ALWAYS be the first line, but your template can vary:
 ### Standalone Table
 
 ```vue
-<!-- @vue-generic {IItem} -->
 <template>
+  <!-- @vue-generic {IItem} -->
   <VcTable :items="items" :columns="columns" />
 </template>
 ```
@@ -232,9 +232,9 @@ The generic comment must ALWAYS be the first line, but your template can vary:
 ### With Conditional Rendering
 
 ```vue
-<!-- @vue-generic {IOrder} -->
 <template>
   <div>
+    <!-- @vue-generic {IOrder} -->
     <VcTable
       v-if="orders.length"
       :items="orders"
@@ -297,7 +297,7 @@ After adding the generic comment, you should see:
 ## Summary
 
 **Remember:**
-1. ✅ ALWAYS add `<!-- @vue-generic {Type} -->` as the FIRST line
+1. ✅ ALWAYS add `<!-- @vue-generic {Type} -->` as the FIRST line before the VcTable component
 2. ✅ Replace `{Type}` with your actual item interface name
 3. ✅ Define the interface in `<script setup>` or import it
 4. ✅ Run `vue-tsc` to verify types are correct

@@ -4,8 +4,8 @@ import { router } from "./router";
 import * as locales from "./locales";
 import { RouterView } from "vue-router";
 import { bootstrap } from "./bootstrap";
-import Offers from "./modules/offers";
 
+import OffersModule from "./modules/offers";
 // Load required CSS
 import "@vc-shell/framework/dist/index.css";
 
@@ -28,7 +28,7 @@ async function startApp() {
         fallbackLocale: import.meta.env.APP_I18N_FALLBACK_LOCALE,
       },
     })
-    .use(Offers, { router })
+    .use(OffersModule, { router })
     .use(router);
 
   bootstrap(app);

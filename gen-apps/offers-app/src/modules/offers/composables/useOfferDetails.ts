@@ -1,249 +1,99 @@
-import { Ref, ref, watch } from "vue";
-import { offersClient } from "../../../api_client/offers.client";
-import type { IOfferDetails, IProduct, ILanguage, IMarketplaceSettings } from "../types";
+import { computed, ref, ComputedRef, Ref, reactive } from "vue";
+import { useAsync, useApiClient, useModificationTracker, useLoading } from "@vc-shell/framework";
 
-export function useOfferDetails() {
-  // State
-  const item: Ref<IOfferDetails> = ref({
-    id: "",
-    sku: "",
-    name: "",
-    productId: "",
-    productType: "Physical",
-    isActive: true,
-    isDefault: false,
-    trackInventory: false,
-    createdDate: new Date().toISOString(),
-    images: [],
-    inventoryInfo: [],
-    priceList: [],
+// TODO: Replace with your actual API client imports
+// Example: import { ProductsClient, IProduct } from "@your-app/api/products";
+
+// @ts-expect-error - Replace with your API types
+interface IOffer {
+  id?: string;
+  name?: string;
+  createdDate?: string;
+  [key: string]: any;
+}
+
+// @ts-expect-error - Replace with your API client
+class OfferClient {
+  // TODO: Replace these mock methods with your actual API client methods
+  async getOfferById(id: string): Promise<IOffer> {
+    throw new Error("Method not implemented. Replace with your actual API method.");
+  }
+
+  async updateOffer(data: IOffer): Promise<IOffer> {
+    throw new Error("Method not implemented. Replace with your actual API method.");
+  }
+
+  async createOffer(data: IOffer): Promise<IOffer> {
+    throw new Error("Method not implemented. Replace with your actual API method.");
+  }
+
+  async deleteOffer(id: string): Promise<void> {
+    throw new Error("Method not implemented. Replace with your actual API method.");
+  }
+}
+
+export interface IUseOfferDetails {
+  item: Ref<IOffer>;
+  loading: ComputedRef<boolean>;
+  loadOffer: (id: string) => Promise<void>;
+  saveOffer: (data?: IOffer) => Promise<IOffer | undefined>;
+  deleteOffer: (id: string) => Promise<void>;
+
+  // Modification tracking
+  isModified: Readonly<Ref<boolean>>;
+  resetModificationState: () => void;
+}
+
+export function useOfferDetails(): IUseOfferDetails {
+  const { getApiClient } = useApiClient(OfferClient);
+
+  const item = ref<IOffer>(reactive({} as IOffer));
+
+  // Use modification tracker - КАК В useOrderDetailsNew.ts
+  const { currentValue, isModified, resetModificationState } = useModificationTracker(item);
+
+  const { action: loadOffer, loading: loadingOffer } = useAsync<string>(async (id) => {
+    if (id) {
+      const apiClient = await getApiClient();
+      const data = await apiClient.getOfferById(id);
+
+      currentValue.value = reactive(data);
+      resetModificationState();
+    }
   });
-  const loading = ref(false);
-  const isModified = ref(false);
-  const originalItem: Ref<IOfferDetails | null> = ref(null);
-  const settings = ref<IMarketplaceSettings | null>(null);
 
-  // Methods
-  async function load(id: string) {
-    loading.value = true;
+  const { action: saveOffer, loading: savingOffer } = useAsync<IOffer | undefined, IOffer | undefined>(async (data) => {
+    if (!data) return;
 
-    try {
-      const result = await offersClient.getOfferByIdGET(id);
-      item.value = result;
-      originalItem.value = JSON.parse(JSON.stringify(result));
-      isModified.value = false;
-    } catch (error) {
-      console.error("[useOfferDetails] Error loading offer:", error);
-      throw error;
-    } finally {
-      loading.value = false;
-    }
-  }
+    const apiClient = await getApiClient();
+    let result: IOffer;
 
-  async function save() {
-    loading.value = true;
-
-    try {
-      if (item.value.id) {
-        // Update existing
-        await offersClient.updateOffer({
-          id: item.value.id,
-          sku: item.value.sku,
-          name: item.value.name,
-          productId: item.value.productId,
-          productType: item.value.productType,
-          trackInventory: item.value.trackInventory,
-          inventoryInfo: item.value.inventoryInfo,
-          images: item.value.images,
-        });
-      } else {
-        // Create new
-        const created = await offersClient.createNewOffer({
-          sku: item.value.sku!,
-          name: item.value.name,
-          productId: item.value.productId!,
-          productType: item.value.productType!,
-          trackInventory: item.value.trackInventory,
-          inventoryInfo: item.value.inventoryInfo,
-        });
-        item.value = created;
-      }
-
-      isModified.value = false;
-      originalItem.value = JSON.parse(JSON.stringify(item.value));
-    } catch (error) {
-      console.error("[useOfferDetails] Error saving offer:", error);
-      throw error;
-    } finally {
-      loading.value = false;
-    }
-  }
-
-  async function remove() {
-    if (!item.value.id) {
-      throw new Error("Cannot delete offer without ID");
+    if (data.id) {
+      result = await apiClient.updateOffer(data);
+    } else {
+      result = await apiClient.createOffer(data);
     }
 
-    loading.value = true;
-
-    try {
-      await offersClient.deleteOffers([item.value.id]);
-    } catch (error) {
-      console.error("[useOfferDetails] Error deleting offer:", error);
-      throw error;
-    } finally {
-      loading.value = false;
-    }
-  }
-
-  async function enable() {
-    if (!item.value.id) {
-      throw new Error("Cannot enable offer without ID");
+    if (result) {
+      currentValue.value = reactive(result);
+      resetModificationState();
     }
 
-    loading.value = true;
+    return result;
+  });
 
-    try {
-      await offersClient.enableOffer(item.value.id);
-      item.value.isActive = true;
-    } catch (error) {
-      console.error("[useOfferDetails] Error enabling offer:", error);
-      throw error;
-    } finally {
-      loading.value = false;
-    }
-  }
-
-  async function disable() {
-    if (!item.value.id) {
-      throw new Error("Cannot disable offer without ID");
-    }
-
-    loading.value = true;
-
-    try {
-      await offersClient.disableOffer(item.value.id);
-      item.value.isActive = false;
-    } catch (error) {
-      console.error("[useOfferDetails] Error disabling offer:", error);
-      throw error;
-    } finally {
-      loading.value = false;
-    }
-  }
-
-  async function setDefault() {
-    if (!item.value.id) {
-      throw new Error("Cannot set default offer without ID");
-    }
-
-    loading.value = true;
-
-    try {
-      await offersClient.changeOfferDefault({ id: item.value.id });
-      item.value.isDefault = true;
-    } catch (error) {
-      console.error("[useOfferDetails] Error setting default offer:", error);
-      throw error;
-    } finally {
-      loading.value = false;
-    }
-  }
-
-  async function validateSku(sku: string, offerId?: string): Promise<boolean> {
-    try {
-      const result = await offersClient.validateOffer({ sku, id: offerId });
-      return result.isValid;
-    } catch (error) {
-      console.error("[useOfferDetails] Error validating SKU:", error);
-      return false;
-    }
-  }
-
-  async function searchProducts(keyword: string): Promise<IProduct[]> {
-    try {
-      const results = await offersClient.searchOfferProducts({ keyword });
-      return results;
-    } catch (error) {
-      console.error("[useOfferDetails] Error searching products:", error);
-      return [];
-    }
-  }
-
-  async function uploadImages(offerId: string, files: File[]) {
-    try {
-      const uploadedImages = await offersClient.uploadImages(offerId, files);
-      return uploadedImages;
-    } catch (error) {
-      console.error("[useOfferDetails] Error uploading images:", error);
-      throw error;
-    }
-  }
-
-  async function deleteImage(imageId: string) {
-    try {
-      await offersClient.deleteImage(imageId);
-    } catch (error) {
-      console.error("[useOfferDetails] Error deleting image:", error);
-      throw error;
-    }
-  }
-
-  async function loadLanguages(): Promise<ILanguage[]> {
-    try {
-      const languages = await offersClient.getLanguages();
-      return languages;
-    } catch (error) {
-      console.error("[useOfferDetails] Error loading languages:", error);
-      return [];
-    }
-  }
-
-  async function loadSettings() {
-    try {
-      settings.value = await offersClient.getSettings();
-    } catch (error) {
-      console.error("[useOfferDetails] Error loading settings:", error);
-      settings.value = { allowMultipleOffers: false };
-    }
-  }
-
-  function resetModificationState() {
-    isModified.value = false;
-    originalItem.value = JSON.parse(JSON.stringify(item.value));
-  }
-
-  // Track modifications by comparing current item with original
-  watch(
-    item,
-    (newValue) => {
-      if (originalItem.value) {
-        isModified.value = JSON.stringify(newValue) !== JSON.stringify(originalItem.value);
-      }
-    },
-    { deep: true },
-  );
+  const { action: deleteOffer, loading: deletingOffer } = useAsync<string>(async (id) => {
+    const apiClient = await getApiClient();
+    await apiClient.deleteOffer(id);
+  });
 
   return {
-    // State
-    item,
-    loading,
+    item: currentValue, // ВАЖНО: возвращаем currentValue, а не item
+    loading: useLoading(loadingOffer, savingOffer, deletingOffer),
+    loadOffer,
+    saveOffer,
+    deleteOffer,
     isModified,
-    settings,
-
-    // Methods
-    load,
-    save,
-    remove,
-    enable,
-    disable,
-    setDefault,
-    validateSku,
-    searchProducts,
-    uploadImages,
-    deleteImage,
-    loadLanguages,
-    loadSettings,
     resetModificationState,
   };
 }

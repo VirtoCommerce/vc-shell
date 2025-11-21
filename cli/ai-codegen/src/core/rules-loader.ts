@@ -29,8 +29,8 @@ export class RulesLoader {
   private cacheEnabled: boolean;
 
   constructor(options: RulesLoaderOptions = {}) {
-    this.rulesDir = options.rulesDir || path.join(__dirname, "../rules");
-    this.examplesDir = options.examplesDir || path.join(__dirname, "../examples");
+    this.rulesDir = options.rulesDir || path.join(__dirname, "rules");
+    this.examplesDir = options.examplesDir || path.join(__dirname, "examples");
     this.cacheEnabled = options.cache !== false;
   }
 

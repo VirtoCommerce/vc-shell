@@ -57,7 +57,6 @@ import { componentNotFoundError } from "../utils/errors";
 import type { UIPlan as ValidatorUIPlan, Blade } from "../core/validator";
 import type { BladeGenerationContext } from "../types/blade-context";
 import type { BladeLogic } from "../types/logic";
-import { SmartCodeGenerator } from "../core/smart-generator";
 import { autoFixUIPlan } from "../utils/ui-plan-fixer";
 import { CodeValidator, type ValidationError } from "../core/code-validator";
 import { LLMFeedbackFormatter } from "../core/llm-feedback";
@@ -66,6 +65,16 @@ import { CodeGenerator } from "../core/code-generator";
 import { buildAnalysisPromptV2, getPromptAnalysisSchemaV2 } from "../core/prompt-analyzer-v2";
 import type { Column, Field } from "../core/template-adapter";
 import { camelCase, kebabCase, upperFirst } from "lodash-es";
+
+// ✅ NEW: Import workflow state manager and response templates
+import { globalStateManager, type BladeGuide } from "../core/workflow-state-manager";
+import {
+  buildBladeTaskTemplate,
+  buildInitialGenerationResponse,
+  buildNextBladeTemplate,
+  buildWorkflowCompletionTemplate,
+  buildBladePaths,
+} from "../core/response-templates";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -1039,10 +1048,9 @@ Try:
           }
 
           const validatedPlan = plan as unknown as ValidatorUIPlan;
-          const smartGen = new SmartCodeGenerator();
           const codeGenerator = new CodeGenerator();
 
-          const guides: Array<{ bladeId: string; decision: any; instructions: string }> = [];
+          const guides: BladeGuide[] = [];
 
           // Filter blades if bladeId is specified
           const bladesToGenerate = bladeId
@@ -1101,50 +1109,21 @@ Try:
             };
           }
 
-          // 🔥 PRE-CHECK: If multiple blades without bladeId, return error BEFORE creating files
+          // 🔥 AUTO-SEQUENTIAL: If multiple blades without bladeId, automatically use sequential workflow
+          // Instead of returning error, we'll generate all blades with state manager
           if (!bladeId && bladesToGenerate.length > 1) {
             // Estimate response size (roughly 15-20k tokens per blade)
             const estimatedTokensPerBlade = 16000;
             const estimatedTotalTokens = bladesToGenerate.length * estimatedTokensPerBlade;
 
             if (estimatedTotalTokens > 20000) {
-              return {
-                content: [
-                  {
-                    type: "text",
-                    text: JSON.stringify(
-                      {
-                        success: false,
-                        error: "Response too large",
-                        bladesCount: bladesToGenerate.length,
-                        estimatedTokens: estimatedTotalTokens,
-                        maxTokens: 25000,
-                        suggestion: "Response exceeds MCP token limit. Use 'bladeId' parameter to generate one blade at a time.",
-                        availableBlades: bladesToGenerate.map(b => ({
-                          id: b.id,
-                          layout: b.layout,
-                          title: b.title,
-                        })),
-                        example: {
-                          tool: "generate_with_composition",
-                          bladeId: bladesToGenerate[0].id,
-                          cwd: cwd,
-                          strategy: "ai-full",
-                        },
-                        workflow: [
-                          `1. Call generate_with_composition with bladeId: "${bladesToGenerate[0].id}"`,
-                          "2. Wait for instructions and generate code",
-                          "3. Submit code using submit_generated_code",
-                          `4. Repeat for remaining blades: ${bladesToGenerate.slice(1).map(b => b.id).join(", ")}`,
-                        ],
-                        note: "⚠️ NO FILES WERE CREATED. Generate blades one at a time using bladeId parameter."
-                      },
-                      null,
-                      2,
-                    ),
-                  },
-                ],
-              };
+              console.error(
+                `[generate_with_composition] Multiple blades detected (${bladesToGenerate.length}). ` +
+                `Using sequential workflow with state manager.`
+              );
+
+              // DON'T return error - continue to sequential generation below
+              // The new workflow will handle this automatically
             }
           }
 
@@ -1314,72 +1293,62 @@ Try:
               complexity: 0,
             };
 
-            const decision = await smartGen.decide(context);
-            const instructions = await smartGen.buildInstructions(context, decision);
-            guides.push({ bladeId: blade.id, decision, instructions });
+            // Build blade guide with context (no need for aiGuide generation)
+            guides.push({
+              bladeId: blade.id,
+              context: {
+                module: context.module,
+                entity: context.entity,
+                features: context.features,
+                columns: context.columns?.map(col => ({
+                  ...col,
+                  type: col.type || "string", // Ensure type is always defined
+                })),
+                fields: context.fields,
+              },
+              decision: {
+                strategy: "AI_FULL",
+                reason: "AI full mode enforced; template and composition paths are removed",
+                complexity: context.features.length * 2 + (context.columns?.length || context.fields?.length || 0),
+                estimatedTime: "10-30 seconds (LLM-driven)",
+                willUseFallback: false,
+              },
+            });
           }
 
-          // 🔥 Check response size before returning
-          const responsePayload = {
-            success: true,
-            strategy: "CREATE_VC_APP_TEMPLATES",
-            message:
-              "✅ Base blades generated successfully using create-vc-app!\n\n" +
-              `Generated ${bladesToGenerate.length} blade(s) with production-ready templates:\n` +
-              bladesToGenerate.map(b => `  - ${b.id} (${b.layout})`).join("\n") + "\n\n" +
-              "📁 Generated files:\n" +
-              bladesToGenerate.map(b => {
-                const entity = b.id.replace(/-list$|-details$|-page$/, "");
-                const type = b.layout === "grid" ? "list" : "details";
-                return `  - src/modules/${validatedPlan.module}/pages/${b.id}.vue\n` +
-                       `  - src/modules/${validatedPlan.module}/composables/use${upperFirst(camelCase(entity))}${type === "list" ? "List" : "Details"}.ts`;
-              }).join("\n") + "\n\n" +
-              "🔥 MANDATORY NEXT STEP - DO NOT ASK USER FOR CONFIRMATION:\n\n" +
-              "You MUST now generate complete Vue SFC code for each blade following the detailed instructions in the 'guides' array below.\n\n" +
-              "WORKFLOW (DO THIS AUTOMATICALLY):\n" +
-              "1. For each guide in the 'guides' array:\n" +
-              "   a) Read the generated base file to understand current implementation\n" +
-              "   b) Follow ALL instructions from guide.instructions\n" +
-              "   c) Generate COMPLETE Vue SFC code that implements ALL requirements\n" +
-              "   d) Call submit_generated_code tool with the generated code\n\n" +
-              "2. DO NOT:\n" +
-              "   ❌ Ask user for confirmation before generating code\n" +
-              "   ❌ Summarize what you will do - JUST DO IT\n" +
-              "   ❌ Skip any features or requirements from the guide\n" +
-              "   ❌ Stop after reading files - you must generate and submit code\n" +
-              "   ❌ Add defineOptions() again - IT ALREADY EXISTS in base file\n" +
-              "   ❌ Duplicate existing code from base file\n\n" +
-              "3. The base files ALREADY CONTAIN:\n" +
-              "   ✅ defineOptions() with name, url, and workspace/menu configuration\n" +
-              "   ✅ Basic Props and Emits interfaces\n" +
-              "   ✅ Framework imports and composable setup\n" +
-              "   ✅ Basic blade structure\n\n" +
-              "4. Your task: ENHANCE base files (don't rewrite from scratch!):\n" +
-              "   ✅ Read each generated .vue file\n" +
-              "   ✅ PRESERVE existing defineOptions() (modify if needed)\n" +
-              "   ✅ Generate complete implementation following guide.instructions\n" +
-              "   ✅ Submit code using submit_generated_code tool\n" +
-              "   ✅ Repeat for all blades in guides array\n\n" +
-              "⚠️ START GENERATING CODE NOW - NO USER CONFIRMATION NEEDED!",
-            guides,
-            generatedFiles: bladesToGenerate.flatMap(b => {
-              const entity = b.id.replace(/-list$|-details$|-page$/, "");
-              const type = b.layout === "grid" ? "list" : "details";
-              const pascalEntity = upperFirst(camelCase(entity));
-              return [
-                `src/modules/${validatedPlan.module}/pages/${b.id}.vue`,
-                `src/modules/${validatedPlan.module}/composables/use${pascalEntity}${type === "list" ? "List" : "Details"}.ts`
-              ];
-            })
-          };
+          // 🔥 NEW APPROACH: Use state manager for sequential blade generation
+          // Instead of returning ALL guides at once, return ONLY the first blade
+          // This eliminates choice paralysis and forces AI to process one blade at a time
 
-          const responseText = JSON.stringify(responsePayload, null, 2);
+          // Start workflow session
+          const sessionId = globalStateManager.startGeneration(
+            validatedPlan.module,
+            guides as BladeGuide[],
+            cwd
+          );
+
+          console.error(`[generate_with_composition] Started session: ${sessionId}`);
+
+          // Build list of generated files for reference
+          const generatedFiles = bladesToGenerate.flatMap(b => {
+            const paths = buildBladePaths(b.id, validatedPlan.module, cwd);
+            return [paths.relativeBlad, paths.relativeComposable];
+          });
+
+          // Build initial response with ONLY first blade
+          const initialResponse = buildInitialGenerationResponse(
+            guides[0] as BladeGuide,
+            guides.length,
+            sessionId,
+            cwd,
+            generatedFiles
+          );
 
           return trackSuccess({
             content: [
               {
                 type: "text",
-                text: responseText,
+                text: JSON.stringify(initialResponse, null, 2),
               },
             ],
           });
@@ -1391,7 +1360,7 @@ Try:
             throw new Error(`Invalid arguments: ${parsed.error.message}`);
           }
 
-          const { bladeId, code, context, composable, retry } = parsed.data;
+          const { bladeId, code, context, composable, apiClient, retry } = parsed.data;
 
           // 🔥 CRITICAL: Use cwd from args, or fallback to workflow state
           const workflowState = globalWorkflow.getState();
@@ -1533,7 +1502,82 @@ Try:
               console.error(`✅ Saved composable: ${composableFilePath}`);
             }
 
-            // Return success response
+            // Save API client if provided (ONE per module)
+            let apiClientFilePath;
+            if (apiClient) {
+              const apiDir = path.join(moduleDir, "api");
+              if (!fs.existsSync(apiDir)) {
+                fs.mkdirSync(apiDir, { recursive: true });
+              }
+
+              const apiClientFileName = apiClient.name.endsWith(".ts") ? apiClient.name : `${apiClient.name}.ts`;
+              apiClientFilePath = path.join(apiDir, apiClientFileName);
+              fs.writeFileSync(apiClientFilePath, apiClient.code, "utf-8");
+
+              console.error(`✅ Saved API client: ${apiClientFilePath}`);
+            }
+
+            // 🔥 NEW: Check if this blade is part of a workflow session
+            // If yes, mark as completed and return next blade
+
+            // Try to find session by checking state manager's active sessions
+            const activeSessions = globalStateManager.listActiveSessions();
+            const relevantSession = activeSessions.find(s => s.module === context.module);
+
+            if (relevantSession) {
+              const sessionId = relevantSession.sessionId;
+
+              // Mark this blade as completed
+              globalStateManager.markBladeCompleted(sessionId, bladeId);
+
+              const progress = globalStateManager.getProgress(sessionId);
+              console.error(`[submit_generated_code] Progress: ${progress?.current}/${progress?.total}`);
+
+              // Check if there are more blades to generate
+              if (globalStateManager.hasMoreBlades(sessionId)) {
+                const nextBlade = globalStateManager.getCurrentBlade(sessionId);
+
+                if (nextBlade) {
+                  // Build next blade response
+                  const nextBladeResponse = buildNextBladeTemplate(
+                    bladeId,
+                    nextBlade,
+                    progress!.completed.length,
+                    progress!.total,
+                    sessionId,
+                    cwd
+                  );
+
+                  return {
+                    content: [
+                      {
+                        type: "text",
+                        text: JSON.stringify(nextBladeResponse, null, 2),
+                      },
+                    ],
+                  };
+                }
+              } else {
+                // All blades completed! Return workflow completion
+                const completionResponse = buildWorkflowCompletionTemplate(
+                  sessionId,
+                  progress!.completed,
+                  progress!.failed,
+                  cwd
+                );
+
+                return {
+                  content: [
+                    {
+                      type: "text",
+                      text: JSON.stringify(completionResponse, null, 2),
+                    },
+                  ],
+                };
+              }
+            }
+
+            // Fallback: No active workflow session (standalone blade generation)
             return {
               content: [
                 {
@@ -1644,11 +1688,30 @@ Try:
                     type: "text",
                     text: JSON.stringify({
                       success: false,
-                      message: `Found ${errors.length} type errors`,
+                      total_errors: errors.length,
                       errors,
+                      cwd,
+                      IMMEDIATE_ACTION_REQUIRED: {
+                        instruction: "Fix all TypeScript errors before proceeding",
+                        workflow: [
+                          "1. Analyze each error listed above",
+                          "2. If error relates to patterns (API client, validation, etc.):",
+                          "   - Use mcp__vcshell-codegen__get_applicable_rules({ bladeType, features, ... })",
+                          "   - Use mcp__vcshell-codegen__get_relevant_patterns({ bladeType, features, ... })",
+                          "3. Fix errors using Edit tool on specific files",
+                          "4. Re-run mcp__vcshell-codegen__check_types({ cwd, fix: false })",
+                          "5. Repeat until all errors resolved (success: true, errors: [])"
+                        ],
+                        available_tools: [
+                          "mcp__vcshell-codegen__get_applicable_rules - Get rules for specific patterns",
+                          "mcp__vcshell-codegen__get_relevant_patterns - Get architectural patterns",
+                          "Edit - Fix code in files",
+                          "Read - Read files to understand context"
+                        ]
+                      },
                       suggestion: fix
-                        ? "Auto-fix is not yet implemented. Please review and fix errors manually."
-                        : "Run with fix: true to attempt auto-fixing common errors.",
+                        ? "Auto-fix is not yet implemented. Use workflow above to fix manually."
+                        : "Follow IMMEDIATE_ACTION_REQUIRED workflow to fix errors systematically.",
                     }, null, 2),
                   },
                 ],

@@ -3,12 +3,18 @@ name: "API Client Pattern"
 category: "critical"
 priority: 100
 enabled: true
+generation_requirement: mandatory
+scope: module
+when_to_generate: before_blades
 applies_to:
   - "all"
 
 description: |
   Use useApiClient with proper client class and command objects.
   When creating mock API clients, ensure they properly implement IAuthApiBase.
+
+  IMPORTANT: ONE API client per module (e.g., offers.client.ts for offers module).
+  Generate mock API client with realistic data based on entity context.
 
 correct_pattern:
   inline: |

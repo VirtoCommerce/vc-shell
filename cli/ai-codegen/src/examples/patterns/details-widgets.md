@@ -3,7 +3,7 @@ id: composition-details-widgets-registration
 type: COMPOSITION
 complexity: MODERATE
 category: composition
-tags: [composition, details, details]
+tags: [composition, details]
 title: "Widgets Registration"
 description: "Widgets Registration composition for details blades"
 ---

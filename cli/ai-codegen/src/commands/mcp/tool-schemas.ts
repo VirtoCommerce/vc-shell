@@ -115,6 +115,13 @@ export const submitGeneratedCodeSchema = z.object({
       code: z.string(),
     })
     .optional(),
+  apiClient: z
+    .object({
+      name: z.string().describe("API client file name (e.g., 'offers.client.ts')"),
+      code: z.string().describe("Complete API client TypeScript code"),
+    })
+    .optional()
+    .describe("Optional: Module API client code (one per module, not per entity)"),
   context: z.object({
     module: z.string(),
     layout: z.enum(["grid", "details", "page"]),

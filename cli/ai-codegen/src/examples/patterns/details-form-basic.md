@@ -3,7 +3,7 @@ id: composition-details-form-basic
 type: COMPOSITION
 complexity: MODERATE
 category: composition
-tags: [composition, details, details]
+tags: [composition, details]
 title: "Form Basic"
 description: "Form Basic composition for details blades"
 ---

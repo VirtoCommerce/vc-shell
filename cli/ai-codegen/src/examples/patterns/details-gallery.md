@@ -3,7 +3,7 @@ id: composition-details-gallery-patterns
 type: COMPOSITION
 complexity: MODERATE
 category: composition
-tags: [composition, details, details]
+tags: [composition, details]
 title: "Gallery Patterns"
 description: "Gallery Patterns composition for details blades"
 ---

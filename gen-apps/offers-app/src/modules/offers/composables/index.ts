@@ -1,2 +1,2 @@
-export { useOffersList } from "./useOffersList";
-export { useOfferDetails } from "./useOfferDetails";
+export * from "./useOffersList";
+export * from "./useOfferDetails";

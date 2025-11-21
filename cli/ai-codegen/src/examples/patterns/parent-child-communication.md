@@ -162,7 +162,6 @@ onBeforeUnmount(() => {
 |---------|----------|------------|
 | **onClose callback** | Simple reload after child closes | ⭐ Simple |
 | **defineExpose** | Direct method calls from child to parent | ⭐⭐ Medium |
-| **Event Bus** | Multiple listeners, cross-module communication | ⭐⭐⭐ Complex |
 
 ### Key Points
 

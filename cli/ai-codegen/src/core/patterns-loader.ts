@@ -56,7 +56,7 @@ export class PatternsLoader {
   private cacheEnabled: boolean;
 
   constructor(examplesDir?: string, cacheEnabled = true) {
-    this.examplesDir = examplesDir || path.join(__dirname, "../examples");
+    this.examplesDir = examplesDir || path.join(__dirname, "examples");
     this.cacheEnabled = cacheEnabled;
   }
 

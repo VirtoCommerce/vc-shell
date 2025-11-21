@@ -31,11 +31,9 @@ export type {
   ExampleSearchQuery,
 } from "./core/examples-types";
 
-// AI Generation System
-export { AIGenerationGuideBuilder } from "./core/ai-generation-guide-builder";
-
-// Smart Code Generator
-export { SmartCodeGenerator } from "./core/smart-generator";
+// AI Generation System (deprecated - now handled by Response Templating)
+// export { AIGenerationGuideBuilder } from "./core/ai-generation-guide-builder";
+// export { SmartCodeGenerator } from "./core/smart-generator";
 
 // UI Plan Validator
 export { UIPlan } from "./core/validator";

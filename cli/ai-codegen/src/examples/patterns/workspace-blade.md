@@ -38,7 +38,8 @@ Each module should have ONE workspace blade (usually the main list blade) with `
 </template>
 
 <script setup lang="ts">
-import { defineOptions } from 'vue';
+// NOTE: defineOptions is a Vue compiler macro, NOT an import!
+// It's automatically available in <script setup> - no import needed
 
 // ✅ CORRECT: Menu item defined in defineOptions
 defineOptions({

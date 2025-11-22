@@ -10,6 +10,7 @@
     @expand="$emit('expand:blade')"
     @collapse="$emit('collapse:blade')"
   >
+    <!-- @vue-generic {IEntity} -->
     <VcTable
       :total-label="$t('ENTITIES.PAGES.LIST.TABLE.TOTALS')"
       :items="items"
@@ -116,9 +117,9 @@ import {
   IParentCallArgs,
   useFunctions,
 } from "@vc-shell/framework";
-// TODO: Update import path for your entity's composable
+// Example: Import your entity's composable (e.g., useOffersList, useProductsList)
 import { default as useEntityList } from "../composables/useEntityList";
-// TODO: Create and import your entity's status badge component if needed
+// Example: Import status badge component if your entity has statuses
 import { StatusBadge } from "../components";
 import type { Entity } from "../types";
 

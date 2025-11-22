@@ -9,6 +9,7 @@
     @expand="$emit('expand:blade')"
     @collapse="$emit('collapse:blade')"
   >
+    <!-- @vue-generic {IEntity} -->
     <VcTable
       :loading="loading"
       :expanded="expanded"
@@ -68,12 +69,12 @@ import {
   useBlade,
 } from "@vc-shell/framework";
 import type { Entity } from "../types";
-// TODO: Update import path for your entity's composable
+// Example: Import your entity's composable (e.g., useOffersList, useProductsList)
 import { default as useEntityList } from "../composables/useEntityList";
-// TODO: Update import for your entity's details blade file name
+// Example: Import your entity's details blade component
 import EntityDetails from "./entity-details.vue";
 import { useI18n } from "vue-i18n";
-// TODO: Create and import your entity's status badge component if needed
+// Example: Import status badge component if your entity has statuses
 import { StatusBadge } from "../components";
 
 export interface Props {

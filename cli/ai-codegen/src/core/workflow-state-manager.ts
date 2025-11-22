@@ -38,6 +38,63 @@ export interface BladeGuide {
     estimatedTime?: string;
     willUseFallback?: boolean;
   };
+  /**
+   * NEW: Auto-discovered component information from workflow state
+   * Includes capabilities, props, events, slots, examples for components used in this blade
+   */
+  componentInfo?: Array<{
+    name: string;
+    capabilities: Array<{
+      id: string;
+      name: string;
+      description?: string;
+      type?: string;
+      examples?: Array<{
+        title: string;
+        description?: string;
+        code: string;
+      }>; // LAZY FETCHED: Code examples for this capability
+    }>;
+    props?: any[];
+    slots?: any[];
+    events?: any[];
+    description?: string;
+    examples?: Array<{
+      title: string;
+      description?: string;
+      code: string;
+    }>; // LAZY FETCHED: General component usage examples
+  }>;
+  /**
+   * NEW: Auto-discovered framework API information from workflow state
+   * Includes composables, plugins, utilities relevant to this blade's features
+   */
+  frameworkInfo?: Array<{
+    name: string;
+    type: string;
+    category: string;
+    description: string;
+    capabilities: any[];
+    methods?: any[];
+    import?: string;
+    examples?: Array<{
+      title: string;
+      description?: string;
+      code: string;
+    }>; // LAZY FETCHED: Framework API usage examples
+  }>;
+}
+
+/**
+ * Blade quality result
+ */
+export interface BladeQualityResult {
+  bladeId: string;
+  completed: boolean;
+  completenessScore: number; // 0-100%
+  attempts: number;
+  timestamp: number;
+  errors?: string[];
 }
 
 /**
@@ -55,7 +112,10 @@ export interface GenerationState {
     error: string;
     attempts: number;
   }>;
+  // 🔥 NEW: Quality tracking (stored as Record for JSON serialization)
+  bladeResults?: Record<string, BladeQualityResult>;
   createdAt: number;
+  plan?: any; // UI-Plan reference for validation
 }
 
 /**
@@ -99,6 +159,7 @@ export class WorkflowStateManager {
       currentIndex: 0,
       completedBlades: [],
       failedBlades: [],
+      bladeResults: {}, // 🔥 NEW: Initialize quality tracking
       createdAt: Date.now(),
     };
 
@@ -133,12 +194,71 @@ export class WorkflowStateManager {
   }
 
   /**
+   * Set the UI-Plan for validation
+   *
+   * @param sessionId - Session identifier
+   * @param plan - UI-Plan object
+   */
+  setPlan(sessionId: string, plan: any): void {
+    const state = this.getState(sessionId);
+    if (!state) {
+      console.error(`[WorkflowStateManager] Cannot set plan: session ${sessionId} not found`);
+      return;
+    }
+
+    state.plan = plan;
+    this.saveState(state);
+    console.log(`[WorkflowStateManager] UI-Plan stored for session ${sessionId}`);
+  }
+
+  /**
+   * Get a blade definition from the stored plan
+   *
+   * @param sessionId - Session identifier
+   * @param bladeId - Blade identifier to find
+   * @returns Blade definition from plan or null
+   */
+  getBladeFromPlan(sessionId: string, bladeId: string): any | null {
+    const state = this.getState(sessionId);
+    if (!state) {
+      console.error(`[WorkflowStateManager] Cannot get blade: session ${sessionId} not found`);
+      return null;
+    }
+
+    if (!state.plan || !state.plan.blades) {
+      console.warn(`[WorkflowStateManager] No plan stored for session ${sessionId}`);
+      return null;
+    }
+
+    const blade = state.plan.blades.find((b: any) => b.id === bladeId);
+    if (!blade) {
+      console.warn(`[WorkflowStateManager] Blade ${bladeId} not found in plan`);
+    }
+
+    return blade;
+  }
+
+  /**
+   * Validate that a blade exists in the plan
+   *
+   * @param sessionId - Session identifier
+   * @param bladeId - Blade identifier to validate
+   * @returns true if blade exists in plan, false otherwise
+   */
+  validateBladeExistsInPlan(sessionId: string, bladeId: string): boolean {
+    return this.getBladeFromPlan(sessionId, bladeId) !== null;
+  }
+
+  /**
    * Mark a blade as completed and advance to next
+   *
+   * 🔥 UPDATED: Now accepts completeness score for quality tracking
    *
    * @param sessionId - Session identifier
    * @param bladeId - Blade that was completed
+   * @param completenessScore - Quality score (0-100%), default 100
    */
-  markBladeCompleted(sessionId: string, bladeId: string): void {
+  markBladeCompleted(sessionId: string, bladeId: string, completenessScore: number = 100): void {
     const state = this.getState(sessionId);
     if (!state) {
       console.error(`[WorkflowStateManager] Cannot mark completed: session ${sessionId} not found`);
@@ -157,11 +277,25 @@ export class WorkflowStateManager {
     state.completedBlades.push(bladeId);
     state.currentIndex++;
 
+    // 🔥 NEW: Store quality result
+    if (!state.bladeResults) {
+      state.bladeResults = {};
+    }
+
+    state.bladeResults[bladeId] = {
+      bladeId,
+      completed: true,
+      completenessScore,
+      attempts: 1,
+      timestamp: Date.now(),
+    };
+
     // Persist changes
     this.saveState(state);
 
     console.log(
-      `[WorkflowStateManager] Blade completed: ${bladeId} (${state.currentIndex}/${state.allGuides.length})`
+      `[WorkflowStateManager] Blade completed: ${bladeId} with ${completenessScore}% quality ` +
+      `(${state.currentIndex}/${state.allGuides.length})`
     );
   }
 

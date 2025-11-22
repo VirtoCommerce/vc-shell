@@ -179,7 +179,9 @@ export const componentRegistrySchema = z.record(componentSchema);
 
 export const uiPlanBladeSchema = z.object({
   id: z.string(),
-  route: z.string(),
+  route: z.string().regex(/^\/[a-z0-9-]+$/, {
+    message: "Route must be single-level format: /name (e.g., /offers). Multi-level routes and parameters are not supported.",
+  }),
   layout: z.enum(["grid", "details", "page"]),
   title: z.string(),
   isWorkspace: z.boolean().optional(),

@@ -327,7 +327,6 @@ export class PatternsLoader {
         complexity = featurePart.includes("reorderable") ? "moderate" : "complex";
         if (featurePart.includes("gallery")) features.push("gallery");
         if (featurePart.includes("widget")) features.push("widgets");
-        if (featurePart.includes("tab")) features.push("tabs");
         if (featurePart.includes("reorderable")) features.push("reorderable");
       }
 

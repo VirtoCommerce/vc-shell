@@ -3,9 +3,11 @@ id: component-VcStatusIcon-demo
 type: COMPONENT
 complexity: SIMPLE
 category: component
-tags: [component]
+tags: ["component","status","icon","display"]
 title: "VcStatusIcon Demo"
-description: "VcStatusIcon Demo component example"
+description: "Status icon indicator"
+componentRole: display
+bladeContext: ["details","list"]
 ---
 
 # VcStatusIcon Demo

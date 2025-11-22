@@ -1388,6 +1388,50 @@ Try:
           const validator = new CodeValidator();
           const feedback = new LLMFeedbackFormatter();
 
+          // Validate against plan first (if plan exists in workflow state)
+          const workflowPlan = workflowState.plan;
+          if (workflowPlan) {
+            const bladePlan = workflowPlan.blades?.find((b: any) => b.id === bladeId);
+            if (!bladePlan) {
+              return {
+                content: [{
+                  type: "text",
+                  text: JSON.stringify({
+                    success: false,
+                    error: `Blade "${bladeId}" not found in UI-Plan`,
+                    reason: "The blade you're trying to submit doesn't exist in the validated UI-Plan",
+                    suggestion: "Check the UI-Plan and ensure the bladeId matches one of the blade definitions",
+                    availableBlades: workflowPlan.blades?.map((b: any) => b.id) || []
+                  }, null, 2)
+                }],
+                isError: true
+              };
+            }
+
+            // Validate code matches plan
+            const planValidation = validator.validateAgainstPlan(code, bladePlan);
+            if (!planValidation.valid) {
+              return {
+                content: [{
+                  type: "text",
+                  text: JSON.stringify({
+                    success: false,
+                    error: "Generated code does not match UI-Plan",
+                    validationErrors: planValidation.errors,
+                    warnings: planValidation.warnings,
+                    bladePlan: {
+                      id: bladePlan.id,
+                      route: bladePlan.route,
+                      layout: bladePlan.layout
+                    },
+                    suggestion: "Fix the code to match the plan requirements and resubmit"
+                  }, null, 2)
+                }],
+                isError: true
+              };
+            }
+          }
+
           // Validate the generated code
           const validation = validator.validateFull(code);
 

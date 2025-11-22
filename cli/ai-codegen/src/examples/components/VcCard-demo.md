@@ -3,9 +3,11 @@ id: component-VcCard-demo
 type: COMPONENT
 complexity: SIMPLE
 category: component
-tags: [component]
+tags: ["component","card","container","layout"]
 title: "VcCard Demo"
-description: "VcCard Demo component example"
+description: "Card container for grouping related content with optional header and actions"
+componentRole: layout
+bladeContext: ["details","list","general"]
 ---
 
 # VcCard Demo

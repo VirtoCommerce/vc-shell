@@ -10,6 +10,7 @@ import * as os from "os";
 export type WorkflowStep =
   | "init" // Initial state
   | "analyzed" // After analyze_prompt_v2
+  | "discovered" // After discover_components_and_apis (NEW: mandatory discovery step)
   | "planned" // After create_ui_plan_from_analysis_v2
   | "validated" // After validate_ui_plan or validate_and_fix_plan
   | "generated" // After generate_with_composition
@@ -20,6 +21,29 @@ export interface WorkflowState {
   step: WorkflowStep;
   cwd?: string; // Working directory for the current workflow
   analysis?: any;
+  discoveryResult?: {
+    // NEW: Results from discover_components_and_apis
+    components: Array<{
+      name: string;
+      bladeType: string;
+      entity: string;
+      score?: number;
+      capabilities: any[];
+      props?: any[];
+      slots?: any[];
+      events?: any[];
+      description?: string;
+    }>;
+    frameworkAPIs: Array<{
+      name: string;
+      type: string;
+      category: string;
+      description: string;
+      capabilities: any[];
+      methods?: any[];
+      import?: string;
+    }>;
+  };
   plan?: any;
   generatedGuides?: any;
   errors?: string[];
@@ -41,11 +65,12 @@ const TOOL_CATEGORIES = {
   // Main workflow tools (strict sequence)
   workflow_critical: [
     "analyze_prompt_v2", // Step 1: MANDATORY
-    "create_ui_plan_from_analysis_v2", // Step 2: Requires analysis
-    "validate_ui_plan", // Step 3a: Validate plan
-    "validate_and_fix_plan", // Step 3b: Validate + fix plan
-    "generate_with_composition", // Step 4: Generate with AI_FULL
-    "submit_generated_code", // Step 5: Submit AI-written code
+    "discover_components_and_apis", // Step 2: MANDATORY - Discover available components and framework APIs
+    "create_ui_plan_from_analysis_v2", // Step 3: Requires analysis + discovery
+    "validate_ui_plan", // Step 4a: Validate plan
+    "validate_and_fix_plan", // Step 4b: Validate + fix plan
+    "generate_with_composition", // Step 5: Generate with AI_FULL
+    "submit_generated_code", // Step 6: Submit AI-written code
   ],
 
   // Discovery/Research (always available)
@@ -150,21 +175,29 @@ export class WorkflowOrchestrator {
         nextState: "init", // Don't change state - only return instructions
       },
 
-      // Step 2: UI-Plan creation (REQUIRES ANALYSIS OR can work from init with inline analysis)
+      // Step 2: Discovery (MANDATORY - REQUIRES ANALYSIS)
+      // AI must discover available components and framework APIs before creating UI-Plan
+      // 🔥 SPECIAL: Allow from "init" if AI provides analysis JSON inline
+      discover_components_and_apis: {
+        allowedFrom: ["init", "analyzed"], // Allow from "init" - will auto-transition to "analyzed" if analysis provided
+        nextState: "discovered",
+      },
+
+      // Step 3: UI-Plan creation (REQUIRES DISCOVERY)
       // Note: This tool validates the plan internally, so it goes directly to "validated" state
       create_ui_plan_from_analysis_v2: {
-        allowedFrom: ["init", "analyzed"], // Can accept inline analysis from init
+        allowedFrom: ["discovered"], // MUST have discovery results
         nextState: "validated", // Changed from "planned" - plan is validated during creation
       },
 
-      // Step 3: Validation (can validate from init if plan provided, or from planned/validated)
+      // Step 3: Validation (only from planned state)
       validate_ui_plan: {
-        allowedFrom: ["init", "planned", "validated"], // Allow from init with provided plan
+        allowedFrom: ["planned"], // Removed "init" and "validated" - must come from planned
         nextState: "validated",
       },
 
       validate_and_fix_plan: {
-        allowedFrom: ["init", "planned", "validated"], // Allow from init with provided plan
+        allowedFrom: ["planned"], // Removed "init" and "validated" - must come from planned
         nextState: "validated",
       },
 
@@ -218,6 +251,17 @@ export class WorkflowOrchestrator {
     // ⚠️ IMPORTANT: analyze_prompt_v2 returns INSTRUCTIONS, not analysis result
     // It does NOT change workflow state - only provides guidance to AI
 
+    // 🔥 SPECIAL CASE: Internal tool to set analysis and transition to "analyzed" state
+    // This is called by discover_components_and_apis when AI provides analysis JSON
+    if (toolName === '__internal_set_analysis__' && result?.analysis) {
+      this.state.analysis = result.analysis;
+      this.state.step = 'analyzed';
+      this.state.canProceed = true;
+      this.state.nextStep = this.getNextStepSuggestion();
+      this.saveState();
+      return;
+    }
+
     // Store cwd from args if provided (for generate_with_composition, submit_generated_code, check_types)
     if (args?.cwd && typeof args.cwd === 'string') {
       this.state.cwd = args.cwd;
@@ -225,6 +269,7 @@ export class WorkflowOrchestrator {
 
     const stateTransitions: Record<string, WorkflowStep> = {
       // analyze_prompt_v2: Intentionally NOT here - returns instructions only, no state change
+      discover_components_and_apis: "discovered", // NEW: Discovery step
       create_ui_plan_from_analysis_v2: "validated", // Changed: goes directly to validated (plan is validated during creation)
       validate_ui_plan: "validated",
       validate_and_fix_plan: "validated",
@@ -245,17 +290,26 @@ export class WorkflowOrchestrator {
         }
       }
 
-      // Store the actual plan object
-      this.state.plan = planData.plan || planData;
+      // Store the actual plan object (even if invalid)
+      this.state.plan = planData.plan || planData.generatedPlan || planData;
       // Analysis is implicitly completed when plan is created
       this.state.analysis = { completed: true, inline: true };
 
-      // Plan is validated during creation, set state to "validated"
-      // (The tool only returns success if validation passes)
-      if (planData.validation?.valid === true || planData.valid === true) {
+      // If validation passes, advance to "validated"
+      if (planData.validation?.valid === true || planData.valid === true || planData.success === true) {
         this.state.step = "validated";
         this.state.canProceed = true;
         this.state.nextStep = this.getNextStepSuggestion();
+        this.saveState();
+        return;
+      }
+
+      // If validation fails, advance to "planned" so validate_and_fix_plan can be called
+      if (planData.validation?.valid === false || planData.success === false) {
+        this.state.step = "planned";
+        this.state.canProceed = true;
+        this.state.errors = planData.errors || [];
+        this.state.nextStep = "Use validate_and_fix_plan to fix validation errors in the generated plan";
         this.saveState();
         return;
       }
@@ -270,6 +324,26 @@ export class WorkflowOrchestrator {
       // Store results
       if (toolName === "generate_with_composition") {
         this.state.generatedGuides = result;
+      }
+
+      // NEW: Store discovery results
+      if (toolName === "discover_components_and_apis") {
+        // Extract discovery result from result
+        let discoveryData = result;
+        if (result.content && Array.isArray(result.content) && result.content[0]?.text) {
+          try {
+            discoveryData = JSON.parse(result.content[0].text);
+          } catch {
+            // If parsing fails, use result as-is
+          }
+        }
+
+        if (discoveryData.components && discoveryData.frameworkAPIs) {
+          this.state.discoveryResult = {
+            components: discoveryData.components,
+            frameworkAPIs: discoveryData.frameworkAPIs,
+          };
+        }
       }
 
       // Store plan from validate_ui_plan or validate_and_fix_plan
@@ -331,16 +405,26 @@ export class WorkflowOrchestrator {
   private getBlockedReason(toolName: string): string {
     const reasons: Record<string, Partial<Record<WorkflowStep, string>>> = {
       analyze_prompt_v2: {
-        analyzed: "Prompt already analyzed. Proceed to create_ui_plan_from_analysis_v2.",
+        analyzed: "Prompt already analyzed. Proceed to discover_components_and_apis.",
+        discovered: "Already past analysis step. Discovery completed.",
         planned: "Already past analysis step. UI-Plan created.",
         validated: "Already past analysis step. UI-Plan validated.",
         generated: "Already past analysis step. Code guides generated.",
         code_submitted: "Already past analysis step. Code submitted.",
         completed: "Module already completed. Use reset for new module.",
       },
+      discover_components_and_apis: {
+        // init: Removed - now allowed from "init" state with inline analysis
+        discovered: "Components and APIs already discovered. Proceed to create_ui_plan_from_analysis_v2.",
+        planned: "Already past discovery step. UI-Plan created.",
+        validated: "Already past discovery step. UI-Plan validated.",
+        generated: "Already past discovery step. Code guides generated.",
+        code_submitted: "Already past discovery step. Code submitted.",
+        completed: "Module already completed. Use reset for new module.",
+      },
       create_ui_plan_from_analysis_v2: {
-        // Removed init block - now allowed from init with inline analysis
-        // Removed planned block - state goes directly to "validated" after plan creation
+        init: "Cannot create UI-Plan without analysis and discovery. Run analyze_prompt_v2 → discover_components_and_apis first.",
+        analyzed: "Cannot create UI-Plan without discovery. Run discover_components_and_apis first to discover available components and framework APIs.",
         validated: "UI-Plan already created and validated. Proceed to generation.",
         generated: "Already past planning step.",
         code_submitted: "Already past planning step.",
@@ -384,9 +468,11 @@ export class WorkflowOrchestrator {
    */
   private getNextStepSuggestion(): string {
     const suggestions: Record<WorkflowStep, string> = {
-      init: "Option 1: Use analyze_prompt_v2 to get analysis instructions, then manually create analysis JSON and call create_ui_plan_from_analysis_v2. Option 2: Directly call create_ui_plan_from_analysis_v2 with inline analysis JSON.",
+      init: "Option 1: Use analyze_prompt_v2 to get analysis instructions, then manually create analysis JSON and call discover_components_and_apis. Option 2: Directly call create_ui_plan_from_analysis_v2 with inline analysis JSON (will skip discovery).",
       analyzed:
-        "Use create_ui_plan_from_analysis_v2 to create and validate UI-Plan from the analysis result",
+        "Use discover_components_and_apis to discover available components and framework APIs (MANDATORY before creating UI-Plan)",
+      discovered:
+        "Use create_ui_plan_from_analysis_v2 to create and validate UI-Plan with discovered components and APIs",
       planned:
         "⚠️ DEPRECATED STATE - This should not occur. Plan creation now goes directly to 'validated' state.",
       validated:
@@ -408,10 +494,11 @@ export class WorkflowOrchestrator {
   getProgress(): number {
     const progressMap: Record<WorkflowStep, number> = {
       init: 0,
-      analyzed: 20,
-      planned: 40,
+      analyzed: 15,
+      discovered: 30, // NEW: Discovery step
+      planned: 45,
       validated: 60,
-      generated: 80,
+      generated: 75,
       code_submitted: 90,
       completed: 100,
     };

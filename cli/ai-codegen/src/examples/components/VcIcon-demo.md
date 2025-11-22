@@ -3,9 +3,11 @@ id: component-VcIcon-demo
 type: COMPONENT
 complexity: SIMPLE
 category: component
-tags: [component]
+tags: ["component","icon","display"]
 title: "VcIcon Demo"
-description: "VcIcon Demo component example"
+description: "Icon component"
+componentRole: display
+bladeContext: ["details","list","general"]
 ---
 
 # VcIcon Demo

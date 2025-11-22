@@ -129,7 +129,7 @@ import {
   useBeforeUnload,
   useLoading,
 } from "@vc-shell/framework";
-// TODO: Update import path for your entity's composable
+// Example: Import your entity's composable (e.g., useOfferDetails, useProductDetails)
 import { default as useEntityDetails } from "../composables/useEntityDetails";
 import type { Entity, IImage } from "../types";
 import { Field, useForm } from "vee-validate";

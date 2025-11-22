@@ -15,7 +15,9 @@ description: "Automatic module registration in main.ts (AI_FULL strategy)"
 ## Overview
 
 For AI_FULL strategy, module registration is **AUTOMATED** by the system.
-DO NOT create bootstrap.ts or use registerModule() manually.
+DO NOT create bootstrap.ts for module registration.
+
+**NOTE:** bootstrap.ts is ONLY used for dashboard widgets and custom initialization, NOT for module registration.
 
 ## How It Works
 
@@ -102,13 +104,45 @@ export function bootstrap(app: App) {
 5. ✅ Submit via `submit_generated_code`
 6. ✅ **System automatically registers module** - do nothing!
 
-## When is bootstrap.ts Used?
+## When IS bootstrap.ts Used?
 
-`bootstrap.ts` is ONLY for:
-- ✅ Dashboard widgets (`registerDashboardWidget`)
-- ✅ Custom application initialization
+`bootstrap.ts` has specific use cases - it's NOT for module registration:
 
-NOT for module registration!
+### ✅ Use bootstrap.ts for:
+
+1. **Dashboard Widgets**:
+```typescript
+// src/modules/offers/bootstrap.ts
+import { App } from "vue";
+import { useDashboard } from "@vc-shell/framework";
+import OffersWidget from "./components/widgets/OffersWidget.vue";
+
+export function bootstrap(app: App) {
+  const { registerWidget } = useDashboard();
+
+  registerWidget({
+    id: "offers-widget",
+    name: "Offers Summary",
+    component: OffersWidget,
+    permissions: ["offers:read"],
+  });
+}
+```
+
+2. **Custom Application Initialization**:
+```typescript
+// Custom global services, event listeners, etc.
+export function bootstrap(app: App) {
+  // Initialize custom services
+  // Setup global event handlers
+  // Register custom plugins
+}
+```
+
+### ❌ Don't Use bootstrap.ts for:
+- Module registration (system does this automatically)
+- Blade registration (use defineOptions)
+- Menu items (use defineOptions.menuItem)
 
 ## See Also
 

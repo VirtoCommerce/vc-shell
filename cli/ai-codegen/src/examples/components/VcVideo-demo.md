@@ -3,9 +3,11 @@ id: component-VcVideo-demo
 type: COMPONENT
 complexity: SIMPLE
 category: component
-tags: [component]
+tags: ["component","video","media","display"]
 title: "VcVideo Demo"
-description: "VcVideo Demo component example"
+description: "Video player component"
+componentRole: display
+bladeContext: ["details","general"]
 ---
 
 # VcVideo Demo

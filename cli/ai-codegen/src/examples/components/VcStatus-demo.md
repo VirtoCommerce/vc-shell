@@ -3,9 +3,11 @@ id: component-VcStatus-demo
 type: COMPONENT
 complexity: SIMPLE
 category: component
-tags: [component]
+tags: ["component","status","badge","display"]
 title: "VcStatus Demo"
-description: "VcStatus Demo component example"
+description: "Status badge component"
+componentRole: display
+bladeContext: ["details","list"]
 ---
 
 # VcStatus Demo

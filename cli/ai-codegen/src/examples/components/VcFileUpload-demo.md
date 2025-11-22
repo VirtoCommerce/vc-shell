@@ -3,9 +3,11 @@ id: component-VcFileUpload-demo
 type: COMPONENT
 complexity: SIMPLE
 category: component
-tags: [component]
+tags: ["component","upload","file","form","input"]
 title: "VcFileUpload Demo"
-description: "VcFileUpload Demo component example"
+description: "File upload component"
+componentRole: form-input
+bladeContext: ["details"]
 ---
 
 # VcFileUpload Demo

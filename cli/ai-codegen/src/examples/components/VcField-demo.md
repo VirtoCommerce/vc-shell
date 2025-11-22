@@ -3,9 +3,11 @@ id: component-VcField-demo
 type: COMPONENT
 complexity: SIMPLE
 category: component
-tags: [component]
+tags: ["component","field","display","readonly"]
 title: "VcField Demo"
-description: "VcField Demo component example"
+description: "Read-only field for displaying label-value pairs (NOT for form inputs)"
+componentRole: display
+bladeContext: ["details"]
 ---
 
 # VcField Demo

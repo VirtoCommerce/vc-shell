@@ -3,9 +3,11 @@ id: component-VcImage-demo
 type: COMPONENT
 complexity: SIMPLE
 category: component
-tags: [component]
+tags: ["component","image","media","display"]
 title: "VcImage Demo"
-description: "VcImage Demo component example"
+description: "Image display component"
+componentRole: display
+bladeContext: ["details","list","general"]
 ---
 
 # VcImage Demo

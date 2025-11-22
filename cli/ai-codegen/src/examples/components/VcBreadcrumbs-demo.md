@@ -3,9 +3,11 @@ id: component-VcBreadcrumbs-demo
 type: COMPONENT
 complexity: SIMPLE
 category: component
-tags: [component]
+tags: ["component","breadcrumbs","navigation"]
 title: "VcBreadcrumbs Demo"
-description: "VcBreadcrumbs Demo component example"
+description: "Breadcrumb navigation component"
+componentRole: navigation
+bladeContext: ["general"]
 ---
 
 # VcBreadcrumbs Demo

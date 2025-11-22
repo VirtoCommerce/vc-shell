@@ -9,6 +9,7 @@
     @expand="$emit('expand:blade')"
     @collapse="$emit('collapse:blade')"
   >
+    <!-- @vue-generic {IEntity} -->
     <VcTable
       class="tw-grow tw-basis-0"
       :loading="loading"
@@ -62,9 +63,9 @@
 import { ref, computed, watch, onMounted, markRaw } from "vue";
 import { IBladeToolbar, IParentCallArgs, ITableColumns, useBladeNavigation, useFunctions, usePopup } from "@vc-shell/framework";
 import { useI18n } from "vue-i18n";
-// TODO: Update import path for your entity's composable
+// Example: Import your entity's composable (e.g., useOffersList, useProductsList)
 import { default as useEntityList } from "../composables/useEntityList";
-// TODO: Update import for your entity's details blade file name
+// Example: Import your entity's details blade component
 import EntityDetails from "./entity-details.vue";
 
 export interface Props {
@@ -333,7 +334,7 @@ async function saveOrder() {
       order: index + 1,
     }));
 
-    // TODO: Update with your actual API call
+    // Call API to update entities order
     await updateEntitiesOrder(orderUpdates);
 
     isReorderMode.value = false;

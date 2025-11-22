@@ -3,9 +3,11 @@ id: component-VcGallery-demo
 type: COMPONENT
 complexity: SIMPLE
 category: component
-tags: [component]
+tags: ["component","gallery","images","form","upload"]
 title: "VcGallery Demo"
-description: "VcGallery Demo component example"
+description: "Image gallery component with upload and drag-and-drop"
+componentRole: form-input
+bladeContext: ["details"]
 ---
 
 # VcGallery Demo

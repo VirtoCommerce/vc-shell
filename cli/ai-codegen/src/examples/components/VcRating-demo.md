@@ -3,9 +3,11 @@ id: component-VcRating-demo
 type: COMPONENT
 complexity: SIMPLE
 category: component
-tags: [component]
+tags: ["component","rating","stars","display","input"]
 title: "VcRating Demo"
-description: "VcRating Demo component example"
+description: "Star rating display or input component"
+componentRole: display-input
+bladeContext: ["details","list"]
 ---
 
 # VcRating Demo

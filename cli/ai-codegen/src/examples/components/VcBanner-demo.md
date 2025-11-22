@@ -3,9 +3,11 @@ id: component-VcBanner-demo
 type: COMPONENT
 complexity: SIMPLE
 category: component
-tags: [component]
+componentRole: display
+bladeContext: ["general"]
+tags: ["component","banner","alert","notification"]
 title: "VcBanner Demo"
-description: "VcBanner Demo component example"
+description: "Banner component for important messages"
 ---
 
 # VcBanner Demo
@@ -205,7 +207,7 @@ function retry() {
   <div class="tw-space-y-4">
     <Transition name="fade">
       <VcBanner
-        v-if="showSuccess"
+        v-if="showSuccessBanner"
         variant="success"
         :closable="true"
         @close="hideSuccess"
@@ -235,7 +237,7 @@ import { useI18n } from "vue-i18n";
 
 const { t } = useI18n();
 
-const showSuccess = ref(false);
+const showSuccessBanner = ref(false);
 const successMessage = ref("");
 const isModified = ref(false);
 
@@ -243,14 +245,14 @@ async function onSave() {
   try {
     // Save data
     await new Promise(resolve => setTimeout(resolve, 500));
-    
+
     successMessage.value = t("COMMON.SAVED_SUCCESSFULLY");
-    showSuccess.value = true;
+    showSuccessBanner.value = true;
     isModified.value = false;
 
     // Auto-hide after 3 seconds
     setTimeout(() => {
-      showSuccess.value = false;
+      showSuccessBanner.value = false;
     }, 3000);
   } catch (error) {
     console.error("Save failed:", error);
@@ -262,7 +264,7 @@ function onCancel() {
 }
 
 function hideSuccess() {
-  showSuccess.value = false;
+  showSuccessBanner.value = false;
 }
 </script>
 
@@ -412,7 +414,7 @@ function updatePayment() {
 4. **Success Confirmations**: Temporary success messages
 ```vue
 <Transition name="fade">
-  <VcBanner v-if="showSuccess" variant="success">
+  <VcBanner v-if="showSuccessBanner" variant="success">
     Changes saved successfully!
   </VcBanner>
 </Transition>

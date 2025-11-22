@@ -3,9 +3,11 @@ id: component-VcTable-demo
 type: COMPONENT
 complexity: SIMPLE
 category: component
-tags: [component]
+componentRole: table-container
+bladeContext: ["list"]
+tags: ["component","table","list","grid","data"]
 title: "VcTable Demo"
-description: "VcTable Demo component example"
+description: "Primary container for displaying tabular data in list blades with sorting, filtering, and pagination"
 ---
 
 # VcTable Demo

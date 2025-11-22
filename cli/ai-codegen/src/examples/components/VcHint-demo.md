@@ -3,9 +3,11 @@ id: component-VcHint-demo
 type: COMPONENT
 complexity: SIMPLE
 category: component
-tags: [component]
+tags: ["component","hint","help","display"]
 title: "VcHint Demo"
-description: "VcHint Demo component example"
+description: "Hint/help text component"
+componentRole: display
+bladeContext: ["details","general"]
 ---
 
 # VcHint Demo

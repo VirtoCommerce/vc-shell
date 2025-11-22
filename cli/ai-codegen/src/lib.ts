@@ -38,5 +38,23 @@ export type {
 // UI Plan Validator
 export { UIPlan } from "./core/validator";
 
+// Code Validator
+export { CodeValidator } from "./core/code-validator";
+export type { ValidationResult, ValidationError } from "./core/code-validator";
+
+// Quality Metrics
+export { QualityMetrics } from "./core/quality-metrics";
+
+// AST Utils
+export { ASTUtils } from "./core/ast-utils";
+
+// Component Registry Loader
+export {
+  loadComponentNames,
+  loadComponentRegistry,
+  isValidComponent,
+  getComponentCount
+} from "./core/component-registry-loader";
+
 // Types
 export type { UIPlan as UIPlansType } from "./schemas/zod-schemas";

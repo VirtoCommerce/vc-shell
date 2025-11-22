@@ -56,15 +56,18 @@ onBeforeClose(async () => {
   // 1. There are unsaved changes (modified = true)
   // 2. Not currently saving (loading = false)
   if (modified.value && !loading.value) {
-    // showConfirmation returns Promise<boolean>
-    // true = user confirmed, blade will close
-    // false = user cancelled, blade stays open
-    return await showConfirmation(t("COMMON.UNSAVED_CHANGES"));
+    const confirmed = await showConfirmation(t("COMMON.UNSAVED_CHANGES"));
+    // onBeforeClose return value:
+    // - Return true to PREVENT closing (user clicked "Cancel")
+    // - Return false to ALLOW closing (user clicked "OK")
+    // showConfirmation returns true when user confirms (wants to close)
+    // So we need to INVERT the value: return !confirmed
+    return !confirmed;
   }
 
   // If no changes or currently saving:
-  // Return nothing or true to allow blade to close
-  // Framework handles closing automatically
+  // Return false to allow blade to close
+  return false;
 });
 
 // Track modifications

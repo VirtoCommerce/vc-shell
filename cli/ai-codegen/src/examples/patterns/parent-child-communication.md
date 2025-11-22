@@ -3,156 +3,331 @@ id: parent-child-communication
 type: PATTERN
 complexity: MODERATE
 category: pattern
-tags: [pattern]
+tags: [pattern, blade-navigation, parent-child, communication]
 title: "Parent Child Communication"
-description: "Parent Child Communication pattern"
+description: "Parent-child blade communication pattern using parent:call event and defineExpose"
 ---
 
 # Parent-Child Blade Communication Pattern
 
-This example shows the **correct** way to handle communication between parent and child blades in VC-Shell framework.
+Establishes communication between list and details blades using VC-Shell blade navigation system.
 
-## ❌ WRONG: Using onParentCall (DOES NOT EXIST)
+## Overview
+
+VC-Shell provides a standardized parent-child communication mechanism:
+- **Parent exposes methods** using `defineExpose()`
+- **Child calls parent methods** using `emit('parent:call', { method, args, callback })`
+- **Blade lifecycle hooks** (`onOpen`, `onClose`, `onBeforeClose`)
+
+## Pattern 1: Simple Reload on Close (Most Common)
+
+### Parent Blade (List)
 
 ```typescript
-// ❌ THIS WILL CAUSE TYPESCRIPT ERROR:
-// Property 'onParentCall' does not exist on type 'IBladeEvent'
+import { useBladeNavigation } from "@vc-shell/framework";
+import EntityDetails from "./EntityDetails.vue";
 
 const { openBlade } = useBladeNavigation();
+const selectedItemId = ref<string | undefined>();
 
-openBlade({
-  blade: markRaw(ProductDetails),
-  param: product.id,
-  onParentCall(args) {  // ❌ ERROR: onParentCall doesn't exist!
-    if (args.method === "reload") {
-      reload();
-    }
-  }
-});
-```
-
-## ✅ CORRECT: Using emit and blade event handlers
-
-### Pattern 1: Reload on Close (Most Common)
-
-**Parent blade (list):**
-```typescript
-import { useBladeNavigation } from '@vc-shell/framework';
-import { markRaw } from 'vue';
-import ProductDetails from './product-details.vue';
-
-const { openBlade } = useBladeNavigation();
-
-async function onItemClick(item: Product) {
+// Open details blade
+function onItemClick(item: { id: string }) {
   openBlade({
-    blade: markRaw(ProductDetails),
+    blade: EntityDetails, // ✅ Direct component reference (NO markRaw needed)
+    // OR: blade: { name: 'EntityDetails' }, // ✅ By registered name
     param: item.id,
-    onClose() {
-      // Child closed - reload parent list
-      reload();
-    }
+    onOpen: () => {
+      // Called when blade opens and mounts
+      selectedItemId.value = item.id;
+    },
+    onClose: () => {
+      // Called when blade closes - reload parent data
+      selectedItemId.value = undefined;
+      load(); // Reload list
+    },
+  });
+}
+
+// Add new item (no param)
+function onAddItem() {
+  openBlade({
+    blade: EntityDetails,
+    onClose: () => {
+      // Reload list after child closes
+      load();
+    },
   });
 }
 ```
 
-**Child blade (details):**
-```typescript
-// Just close the blade after save
-async function onSave() {
-  await saveProduct();
-  notification.success(t('PRODUCT.SAVED'));
+### Child Blade (Details)
 
-  // Close blade - parent's onClose will trigger reload
-  emit('close:blade');
+```typescript
+export interface Emits {
+  (event: "close:blade"): void;
+  (event: "collapse:blade"): void;
+  (event: "expand:blade"): void;
+}
+
+const emit = defineEmits<Emits>();
+
+// Save and close
+async function onSave() {
+  await updateEntity(entity.value);
+
+  // Close blade - parent's onClose hook will trigger reload
+  emit("close:blade"); // ✅ CORRECT: Standard close event
+}
+
+function onCancel() {
+  emit("close:blade");
 }
 ```
 
-### Pattern 2: Custom Parent Methods via defineExpose
+## Pattern 2: Parent-Child Method Calls with parent:call
 
-**Parent blade:**
+### Parent Blade Exposing Methods
+
 ```typescript
-import { useBladeNavigation } from '@vc-shell/framework';
+// ParentBlade.vue (List Blade)
+import { useBladeNavigation } from "@vc-shell/framework";
+import EntityDetails from "./EntityDetails.vue";
 
 const { openBlade } = useBladeNavigation();
 
-// Expose methods that child can call
+function openChildBlade() {
+  openBlade({
+    blade: EntityDetails,
+    param: "123"
+  });
+}
+
+// ✅ Expose methods that child can call via parent:call event
 defineExpose({
-  reload,
-  updateItem,
-  deleteItem
+  reload() {
+    console.log("Parent: reloading list data");
+    loadEntities();
+    return { status: "reloaded" };
+  },
+  refreshItem(itemId: string) {
+    console.log("Parent: refreshing item", itemId);
+    loadEntity(itemId);
+    return { success: true };
+  },
+  deleteItem(itemId: string) {
+    items.value = items.value.filter(i => i.id !== itemId);
+    return { success: true };
+  },
+});
+```
+
+### Child Blade Calling Parent Methods
+
+```typescript
+// EntityDetails.vue (Child Blade)
+import type { IParentCallArgs } from "@vc-shell/framework";
+
+export interface Emits {
+  (event: "parent:call", args: IParentCallArgs): void;
+  (event: "close:blade"): void;
+  (event: "collapse:blade"): void;
+  (event: "expand:blade"): void;
+}
+
+const emit = defineEmits<Emits>();
+
+// Call parent's reload method after save
+async function onSave() {
+  await updateEntity(entity.value);
+
+  // ✅ CORRECT: Use parent:call event to call parent's exposed method
+  emit("parent:call", {
+    method: "reload", // Method name from parent's defineExpose
+    callback: (result: any) => {
+      console.log("Parent reload completed:", result);
+    },
+  });
+
+  // Optionally close after calling parent
+  // emit("close:blade");
+}
+
+// Call parent method with arguments
+function refreshParent() {
+  emit("parent:call", {
+    method: "refreshItem",
+    args: entity.value.id, // Pass arguments
+    callback: (result: any) => {
+      if (result?.success) {
+        console.log("Parent refresh successful");
+      }
+    },
+  });
+}
+
+// Delete and notify parent
+async function onDelete() {
+  if (await showConfirmation("Delete this item?")) {
+    await deleteEntity(entity.value.id);
+
+    // Tell parent to remove item from list
+    emit("parent:call", {
+      method: "deleteItem",
+      args: entity.value.id,
+    });
+
+    // Close blade
+    emit("close:blade");
+  }
+}
+```
+
+## Pattern 3: Prevent Blade Closure (Unsaved Changes)
+
+```typescript
+import { computed, ref } from "vue";
+import { useBladeNavigation, usePopup } from "@vc-shell/framework";
+
+const { onBeforeClose } = useBladeNavigation();
+const { showConfirmation } = usePopup();
+
+const isModified = ref(false);
+const loading = ref(false);
+
+// ✅ CORRECT: onBeforeClose hook
+onBeforeClose(async () => {
+  if (isModified.value && !loading.value) {
+    const confirmed = await showConfirmation(
+      "You have unsaved changes. Are you sure you want to close?"
+    );
+    // Return true to PREVENT closing (user clicked "Cancel")
+    // Return false to ALLOW closing (user clicked "OK")
+    return !confirmed;
+  }
+  return false; // Allow closing if no unsaved changes
+});
+```
+
+## Pattern 4: Advanced Options Passing
+
+```typescript
+// Open blade with custom options
+function editItemWithContext(item: { id: string; category: string }) {
+  openBlade({
+    blade: EntityDetails,
+    param: item.id,
+    options: {
+      // Additional context data
+      category: item.category,
+      mode: "edit",
+      readOnly: false,
+    },
+  });
+}
+```
+
+```typescript
+// Child blade - receive options
+interface Props {
+  expanded: boolean;
+  closable: boolean;
+  param?: string;
+  options?: {
+    category?: string;
+    mode?: "edit" | "view";
+    readOnly?: boolean;
+  };
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  expanded: true,
+  closable: true,
 });
 
-function updateItem(id: string, data: Partial<Product>) {
-  const index = items.value.findIndex(i => i.id === id);
-  if (index !== -1) {
-    items.value[index] = { ...items.value[index], ...data };
-  }
-}
-
-function deleteItem(id: string) {
-  items.value = items.value.filter(i => i.id !== id);
-}
-```
-
-**Child blade:**
-```typescript
-import { useBladeNavigation } from '@vc-shell/framework';
-
-const { blades } = useBladeNavigation();
-
-async function onSave() {
-  await saveProduct();
-
-  // Get parent blade component instance
-  const parentBlade = blades.value[blades.value.length - 2];
-  const parentComponent = parentBlade?.component?.exposed;
-
-  // Call parent's exposed method
-  if (parentComponent?.updateItem) {
-    parentComponent.updateItem(product.value.id, product.value);
-  }
-
-  emit('close:blade');
-}
-```
-
-### Pattern 3: Event Bus (For Complex Scenarios)
-
-**Use window.dispatchEvent for cross-blade communication:**
-
-**Child blade (emitter):**
-```typescript
-async function onSave() {
-  await saveProduct();
-
-  // Dispatch custom event
-  window.dispatchEvent(new CustomEvent('ProductUpdated', {
-    detail: { productId: product.value.id, product: product.value }
-  }));
-
-  emit('close:blade');
-}
-```
-
-**Parent blade (listener):**
-```typescript
-import { onMounted, onBeforeUnmount } from 'vue';
-
-// Event handler with correct type signature
-function onProductUpdated(event: Event) {
-  const customEvent = event as CustomEvent<{ productId: string; product: Product }>;
-  const { productId, product } = customEvent.detail;
-
-  updateItemInList(productId, product);
-}
-
+// Use options
 onMounted(() => {
-  // ✅ CORRECT: Use Event type, not CustomEvent
-  window.addEventListener('ProductUpdated', onProductUpdated);
+  if (props.options?.readOnly) {
+    // Disable editing
+  }
+  if (props.options?.category) {
+    // Pre-filter by category
+  }
 });
+```
 
-onBeforeUnmount(() => {
-  window.removeEventListener('ProductUpdated', onProductUpdated);
+## Pattern 5: Highlight Selected Row in List
+
+```vue
+<VcTable
+  :columns="columns"
+  :items="items"
+  :selected-item-id="selectedItemId"
+  @item-click="onItemClick"
+/>
+```
+
+```typescript
+const selectedItemId = ref<string | undefined>();
+
+function onItemClick(item: { id: string }) {
+  openBlade({
+    blade: EntityDetails,
+    param: item.id,
+    onOpen: () => {
+      selectedItemId.value = item.id; // Highlight row
+    },
+    onClose: () => {
+      selectedItemId.value = undefined; // Clear highlight
+    },
+  });
+}
+```
+
+## Important Notes
+
+### ✅ DO (Correct Patterns)
+
+- **Use direct component reference**: `openBlade({ blade: EntityDetails })`
+- **OR use registered name**: `openBlade({ blade: { name: 'EntityDetails' } })`
+- **Use parent:call event**: `emit('parent:call', { method: 'reload' })`
+- **Use close:blade event**: `emit('close:blade')`
+- **Use onBeforeClose hook**: `onBeforeClose(async () => { ... })`
+- **Use defineExpose()**: Expose parent methods for children to call
+- **Lifecycle hooks**: Use `onOpen`, `onClose` for tracking state
+
+### ❌ DON'T (Incorrect Patterns)
+
+- **NO markRaw()**: `openBlade({ blade: markRaw(EntityDetails) })` ❌ (not needed)
+- **NO emit("close")**: `emit('close', { isSaved: true })` ❌ (use `emit('close:blade')`)
+- **NO manual window.onbeforeunload**: Use `onBeforeClose()` hook instead
+- **NO direct parent access**: Use `parent:call` event, not `getCurrentInstance().parent`
+- **NO global event bus**: Use `parent:call` mechanism for blade communication
+
+## Event Flow
+
+1. **Parent opens child**: `openBlade({ blade: ChildBlade, onOpen, onClose })`
+2. **Child calls parent method**: `emit('parent:call', { method: 'reload', args?, callback? })`
+3. **Parent method executes**: Method from `defineExpose()` runs
+4. **Result returned to child**: Via `callback` function
+5. **Child closes**: `emit('close:blade')` or user clicks close button
+6. **Parent onClose hook**: Runs after child unmounts
+
+## Type Safety
+
+```typescript
+// Parent exposed methods type
+interface ParentExposed {
+  reload(): { status: string };
+  refreshItem(id: string): { success: boolean };
+  deleteItem(id: string): Promise<void>;
+}
+
+// Use in parent:call
+emit('parent:call', {
+  method: 'reload', // Type-checked against ParentExposed
+  callback: (result: ReturnType<ParentExposed['reload']>) => {
+    console.log(result.status); // Type-safe
+  }
 });
 ```
 
@@ -161,29 +336,8 @@ onBeforeUnmount(() => {
 | Pattern | Use Case | Complexity |
 |---------|----------|------------|
 | **onClose callback** | Simple reload after child closes | ⭐ Simple |
-| **defineExpose** | Direct method calls from child to parent | ⭐⭐ Medium |
+| **parent:call event** | Call specific parent methods | ⭐⭐ Medium |
+| **onBeforeClose hook** | Prevent closure with unsaved changes | ⭐⭐ Medium |
+| **Options passing** | Pass context data to child | ⭐ Simple |
 
-### Key Points
-
-1. ❌ **NEVER** use `onParentCall` in `openBlade()` config - it doesn't exist in `IBladeEvent`
-2. ✅ **ALWAYS** use `onClose`, `onOpen` callbacks for simple communication
-3. ✅ Use `defineExpose()` in parent + `blades.value[n].component.exposed` in child for direct calls
-4. ✅ Use `window.dispatchEvent` + `addEventListener` for event-based communication
-5. ⚠️ Event handlers MUST use `Event` type, then cast to `CustomEvent` inside function
-
-## IBladeEvent Interface Reference
-
-```typescript
-interface IBladeEvent<T = Component> {
-  blade: T;                    // ✅ Blade component to open
-  param?: string | object;     // ✅ Parameters to pass to blade
-  options?: object;            // ✅ Additional options
-  replaceCurrentBlade?: boolean; // ✅ Replace current blade instead of push
-  onOpen?: () => void;         // ✅ Callback when blade opens
-  onClose?: () => void;        // ✅ Callback when blade closes
-
-  // ❌ onParentCall DOES NOT EXIST
-  // ❌ onUpdate DOES NOT EXIST
-  // ❌ onReload DOES NOT EXIST
-}
-```
+**Reference:** [Official VC-Shell Documentation - Working with Blade Navigation](https://docs.virtocommerce.org/platform/developer-guide/custom-apps-development/vc-shell/Essentials/Usage-Guides/working-with-blade-navigation/)

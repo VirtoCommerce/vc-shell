@@ -3,9 +3,11 @@ id: component-VcSlider-demo
 type: COMPONENT
 complexity: SIMPLE
 category: component
-tags: [component]
+tags: ["component","slider","range","form","input"]
 title: "VcSlider Demo"
-description: "VcSlider Demo component example"
+description: "Slider input for numeric ranges"
+componentRole: form-input
+bladeContext: ["details"]
 ---
 
 # VcSlider Demo

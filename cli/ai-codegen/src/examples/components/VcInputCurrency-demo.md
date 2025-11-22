@@ -3,9 +3,11 @@ id: component-VcInputCurrency-demo
 type: COMPONENT
 complexity: SIMPLE
 category: component
-tags: [component]
+tags: ["component","input","currency","form","number"]
 title: "VcInputCurrency Demo"
-description: "VcInputCurrency Demo component example"
+description: "Currency input field with formatting"
+componentRole: form-input
+bladeContext: ["details"]
 ---
 
 # VcInputCurrency Demo

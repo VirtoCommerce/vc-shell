@@ -41,6 +41,13 @@ export interface BladeTaskTemplate {
 
   /** Immediate action instructions (structured format) */
   IMMEDIATE_ACTION_REQUIRED: {
+    "🚨_CRITICAL_REQUIREMENTS_🚨": {
+      "1_COMPLETENESS": string;
+      "2_VALIDATION": string;
+      "3_IMPLEMENTATION": string;
+      "4_LENGTH_EXPECTATION": string;
+      "5_NO_SPLITTING": string;
+    };
     step_1: "FETCH_RULES";
     step_1_details: {
       tool: "mcp__vcshell-codegen__get_applicable_rules";
@@ -102,6 +109,20 @@ export interface BladeTaskTemplate {
 
   /** Forbidden actions (negative reinforcement) */
   FORBIDDEN_ACTIONS: string[];
+
+  /** Enforcement rules (blocking validation) */
+  ENFORCEMENT: {
+    rule: string;
+    description: string;
+    mandatory_steps: string[];
+    completion_criteria: {
+      code_quality: string;
+      no_placeholders: string;
+      api_client: string;
+      validation: string;
+    };
+    BLOCKING_VALIDATION: string;
+  };
 
   /** Expected response format (positive reinforcement) */
   EXPECTED_RESPONSE: string;
@@ -197,6 +218,14 @@ export function buildBladeTaskTemplate(
     },
 
     IMMEDIATE_ACTION_REQUIRED: {
+      "🚨_CRITICAL_REQUIREMENTS_🚨": {
+        "1_COMPLETENESS": "Code must score ≥80% completeness. Zero TODOs, zero placeholders, zero empty handlers allowed.",
+        "2_VALIDATION": "submit_generated_code validates everything. Incomplete code = immediate rejection with detailed errors.",
+        "3_IMPLEMENTATION": "ALL features from context.features must have working implementation (not just comments or TODOs).",
+        "4_LENGTH_EXPECTATION": "Expected code length: 200-400 lines for typical blade. Don't aim for 'minimal' - aim for COMPLETE.",
+        "5_NO_SPLITTING": "Complete ALL 5 steps in ONE message. Do NOT split into multiple messages or ask for confirmation.",
+      },
+
       step_1: "FETCH_RULES",
       step_1_details: {
         tool: "mcp__vcshell-codegen__get_applicable_rules",
@@ -271,22 +300,68 @@ export function buildBladeTaskTemplate(
     },
 
     FORBIDDEN_ACTIONS: [
+      // Existing anti-confirmation rules
       '❌ NEVER ask "Should I proceed?" or "Would you like me to..."',
       '❌ NEVER say "Let me generate..." - JUST DO IT',
-      "❌ NEVER skip steps 1-2 (fetching rules/template) - they are MANDATORY",
-      "❌ NEVER skip features or use placeholder comments",
-      "❌ NEVER add duplicate defineOptions() - it EXISTS in base file",
-      "❌ NEVER stop after reading files - steps 1-3 are preparation, step 4 is generation",
+      '❌ NEVER skip steps 1-2 (fetching rules/template) - they are MANDATORY',
+      '❌ NEVER skip features or use placeholder comments',
+      '❌ NEVER add duplicate defineOptions() - it EXISTS in base file',
+      '❌ NEVER stop after reading files - steps 1-3 are preparation, step 4 is generation',
+
+      // 🔥 NEW: Anti-procrastination rules (prevent "let's continue later")
+      '❌ NEVER provide summary without submitting code first',
+      '❌ NEVER say "let\'s continue this later" or "we can do the rest next time"',
+      '❌ NEVER stop before calling submit_generated_code with COMPLETE code',
+      '❌ NEVER ask user to "review the code" before submitting - validation is automatic',
+      '❌ NEVER create TODO/FIXME comments - implement functionality immediately',
+      '❌ NEVER use placeholders like {{NAME}}, YOUR_*, <REPLACE_THIS> - use real values',
+      '❌ NEVER leave empty handlers like "const onSave = () => {}" - implement logic',
+      '❌ NEVER split work across multiple messages - complete ALL steps in ONE message',
     ],
 
+    ENFORCEMENT: {
+      rule: "AUTONOMOUS_COMPLETION_REQUIRED",
+      description: "You MUST complete the full workflow autonomously without user intervention or breaks",
+      mandatory_steps: [
+        "1. Fetch rules using mcp__vcshell-codegen__get_applicable_rules",
+        "2. Fetch template using mcp__vcshell-codegen__get_best_template",
+        "3. Read base file using Read tool",
+        "4. Generate COMPLETE code with ALL features implemented (no TODOs/placeholders)",
+        "5. Submit code using submit_generated_code (will be validated automatically)",
+      ],
+      completion_criteria: {
+        code_quality: "All features from UI-Plan must be implemented (completeness score ≥80%)",
+        no_placeholders: "Zero TODO/FIXME comments, zero placeholders, zero empty handlers",
+        api_client: "If entity requires API → API client must exist and be used in code",
+        validation: "Code must pass: syntax, TypeScript, components, conventions, completeness",
+      },
+      BLOCKING_VALIDATION:
+        "⚠️ submit_generated_code will REJECT incomplete code with detailed error. " +
+        "You cannot skip this - validation is automatic and strict. " +
+        "If you try to submit incomplete code, you will receive blocking error with required fixes.",
+    },
+
     EXPECTED_RESPONSE:
-      "✅ Your NEXT message must:\n" +
-      "1. Call mcp__vcshell-codegen__get_applicable_rules\n" +
-      "2. Call mcp__vcshell-codegen__get_best_template\n" +
-      "3. Call Read tool for base file\n" +
-      "4. Generate complete Vue SFC code\n" +
-      "5. Call submit_generated_code with complete code\n" +
-      "NO explanatory text between steps, NO confirmation questions.",
+      "✅ Your NEXT message MUST contain:\n\n" +
+      "1️⃣ THREE MCP tool calls in parallel:\n" +
+      "   - mcp__vcshell-codegen__get_applicable_rules\n" +
+      "   - mcp__vcshell-codegen__get_best_template\n" +
+      "   - Read (base file)\n\n" +
+      "2️⃣ COMPLETE Vue SFC code generation:\n" +
+      "   - Expected length: 200-400 lines for typical blade\n" +
+      "   - Must include ALL features from context.features\n" +
+      "   - Real implementations (not TODO comments)\n" +
+      "   - Working handlers (not empty () => {})\n\n" +
+      "3️⃣ submit_generated_code call with your generated code\n\n" +
+      "⚠️  VALIDATION WILL REJECT:\n" +
+      "   - TODO/FIXME comments\n" +
+      "   - Placeholders ({{NAME}}, YOUR_*, etc.)\n" +
+      "   - Empty handlers\n" +
+      "   - Completeness score < 80%\n\n" +
+      "📏 Example message length: ~3000-5000 tokens (this is normal and expected)\n" +
+      "❌ Do NOT split into multiple messages\n" +
+      "❌ Do NOT ask for confirmation before submitting\n" +
+      "❌ Do NOT create minimal placeholders - create COMPLETE working code",
   };
 }
 

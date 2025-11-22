@@ -3,9 +3,11 @@ id: component-VcSelect-demo
 type: COMPONENT
 complexity: SIMPLE
 category: component
-tags: [component]
+tags: ["component","select","dropdown","form","input"]
 title: "VcSelect Demo"
-description: "VcSelect Demo component example"
+description: "Dropdown select component for forms with search and async support"
+componentRole: form-input
+bladeContext: ["details"]
 ---
 
 # VcSelect Demo

@@ -3,9 +3,11 @@ id: component-VcBlade-demo
 type: COMPONENT
 complexity: SIMPLE
 category: component
-tags: [component]
+tags: ["component","blade","container","layout"]
 title: "VcBlade Demo"
-description: "VcBlade Demo component example"
+description: "Blade container component"
+componentRole: layout
+bladeContext: ["general"]
 ---
 
 # VcBlade Demo

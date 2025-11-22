@@ -3,9 +3,11 @@ id: component-VcEditor-demo
 type: COMPONENT
 complexity: SIMPLE
 category: component
-tags: [component]
+tags: ["component","editor","rich-text","form","input"]
 title: "VcEditor Demo"
-description: "VcEditor Demo component example"
+description: "Rich text editor component for forms"
+componentRole: form-input
+bladeContext: ["details"]
 ---
 
 # VcEditor Demo

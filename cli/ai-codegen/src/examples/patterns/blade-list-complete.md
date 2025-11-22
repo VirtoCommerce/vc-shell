@@ -198,7 +198,8 @@ const bladeToolbar = computed((): IBladeToolbar[] => [
 
 function onItemClick(item: { id: string }) {
   openBlade({
-    blade: { name: "ProductDetails" },
+    blade: { name: "ProductDetails" }, // ✅ Use registered name (recommended)
+    // OR: blade: ProductDetails, // ✅ Direct component reference also works
     param: item.id,
     options: {
       product: item,

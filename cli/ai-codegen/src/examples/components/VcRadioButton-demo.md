@@ -3,9 +3,11 @@ id: component-VcRadioButton-demo
 type: COMPONENT
 complexity: SIMPLE
 category: component
-tags: [component]
+tags: ["component","radio","form","input","choice"]
 title: "VcRadioButton Demo"
-description: "VcRadioButton Demo component example"
+description: "Radio button group for single choice selection"
+componentRole: form-input
+bladeContext: ["details"]
 ---
 
 # VcRadioButton Demo

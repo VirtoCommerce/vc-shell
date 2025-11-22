@@ -146,6 +146,17 @@ export const analyzePromptV2Schema = z.object({
   module: z.string().optional(),
 });
 
+/**
+ * NEW: Schema for discover_components_and_apis tool
+ * Mandatory step between analysis and UI-Plan creation
+ */
+export const discoverComponentsAndAPIsSchema = z.object({
+  analysis: z.any().describe(
+    "Prompt analysis V2 result from analyze_prompt_v2. " +
+    "Used to extract entities, features, and workflows to discover relevant components and framework APIs."
+  ),
+});
+
 export const createUIPlanFromAnalysisV2Schema = z.object({
   analysis: z.any(),
 });

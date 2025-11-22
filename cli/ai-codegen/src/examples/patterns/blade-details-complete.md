@@ -24,7 +24,13 @@ This pattern is used for creating or editing a single item with form fields, val
 - Confirmation on close with unsaved changes
 - Browser unload warning for unsaved changes
 
-**IMPORTANT:** Use Field from vee-validate, NOT VcField! VcField is only for read-only data display.
+**IMPORTANT Component Distinction:**
+- **Field (from vee-validate)**: Use for EDITABLE form inputs with validation
+  - Wrap VcInput, VcSelect, VcTextarea for user input
+  - Provides validation, error messages, field state
+- **VcField (from @vc-shell/framework)**: Use for READ-ONLY data display
+  - Shows label and static value (no editing)
+  - Used in details views, reports, summaries
 
 ## Using VcCard for Field Grouping
 

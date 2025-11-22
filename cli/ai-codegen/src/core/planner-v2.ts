@@ -22,6 +22,28 @@ export interface PlannerV2Options {
   prompt: string;
   /** Pre-analyzed prompt from AI (recommended) */
   analysis?: PromptAnalysisV2;
+  /** Discovered components from discover_components_and_apis tool */
+  discoveredComponents?: Array<{
+    name: string;
+    bladeType: string;
+    entity: string;
+    score?: number;
+    capabilities: any[];
+    props?: any[];
+    slots?: any[];
+    events?: any[];
+    description?: string;
+  }>;
+  /** Discovered framework APIs from discover_components_and_apis tool */
+  discoveredFrameworkAPIs?: Array<{
+    name: string;
+    type: string;
+    category: string;
+    description: string;
+    capabilities: any[];
+    methods?: any[];
+    import?: string;
+  }>;
 }
 
 /**
@@ -30,15 +52,18 @@ export interface PlannerV2Options {
  * Supports multiple entities, custom configurations, and workflows.
  */
 export class PlannerV2 {
+  private discoveredComponents?: PlannerV2Options["discoveredComponents"];
+  private discoveredFrameworkAPIs?: PlannerV2Options["discoveredFrameworkAPIs"];
+
   /**
    * Generate UI-Plan from prompt or V2 analysis
    */
   generatePlan(options: PlannerV2Options): UIPlan {
-    const { prompt, analysis } = options;
+    const { prompt, analysis, discoveredComponents, discoveredFrameworkAPIs } = options;
 
     if (analysis) {
-      // V2 AI-powered generation
-      return this.generatePlanFromAnalysisV2(analysis);
+      // V2 AI-powered generation with discovered components
+      return this.generatePlanFromAnalysisV2(analysis, discoveredComponents, discoveredFrameworkAPIs);
     }
 
     // Fallback: Basic extraction (same as V1)
@@ -53,13 +78,22 @@ export class PlannerV2 {
    * - Custom routes, permissions, actions
    * - Rich features
    * - Workflows
+   * - Discovered components (NEW)
    */
-  private generatePlanFromAnalysisV2(analysis: PromptAnalysisV2): UIPlan {
+  private generatePlanFromAnalysisV2(
+    analysis: PromptAnalysisV2,
+    discoveredComponents?: PlannerV2Options["discoveredComponents"],
+    discoveredFrameworkAPIs?: PlannerV2Options["discoveredFrameworkAPIs"],
+  ): UIPlan {
     // Validate analysis
     const validation = validatePromptAnalysisV2(analysis);
     if (!validation.valid) {
       throw new Error(`Invalid V2 prompt analysis: ${validation.errors.join(", ")}`);
     }
+
+    // Store discovered components for use in blade generation
+    this.discoveredComponents = discoveredComponents;
+    this.discoveredFrameworkAPIs = discoveredFrameworkAPIs;
 
     const blades = [];
     const dataSources: Record<string, any> = {};
@@ -95,12 +129,12 @@ export class PlannerV2 {
 
     // Add workflow if present
     if (analysis.workflow) {
-      (plan ).workflow = analysis.workflow;
+      plan.workflow = analysis.workflow;
     }
 
     // Add global features if present
     if (analysis.globalFeatures && analysis.globalFeatures.length > 0) {
-      (plan ).globalFeatures = analysis.globalFeatures;
+      plan.globalFeatures = analysis.globalFeatures;
     }
 
     return plan;
@@ -112,10 +146,19 @@ export class PlannerV2 {
   private generateBlade(
     entity: PromptAnalysisV2["entities"][0],
     bladeConfig: PromptAnalysisV2["entities"][0]["blades"][0],
-    analysis: PromptAnalysisV2
+    analysis: PromptAnalysisV2,
   ): any {
     const bladeId = this.generateBladeId(entity, bladeConfig);
-    const route = bladeConfig.route || this.generateDefaultRoute(entity, bladeConfig);
+
+    // Validate custom route if provided, fall back to default if invalid
+    let route = bladeConfig.route || this.generateDefaultRoute(entity, bladeConfig);
+    if (bladeConfig.route && !this.isValidSingleLevelRoute(bladeConfig.route)) {
+      console.warn(
+        `Custom route "${bladeConfig.route}" is invalid (must be single-level format like /name). ` +
+          `Falling back to default route.`,
+      );
+      route = this.generateDefaultRoute(entity, bladeConfig);
+    }
 
     const blade: any = {
       id: bladeId,
@@ -130,10 +173,6 @@ export class PlannerV2 {
       blade.components = [this.generateTableComponent(entity, bladeConfig)];
     } else if (bladeConfig.type === "details") {
       blade.components = [this.generateFormComponent(entity, bladeConfig)];
-    } else if (bladeConfig.type === "dashboard") {
-      blade.components = [this.generateDashboardComponent(entity, bladeConfig)];
-    } else if (bladeConfig.type === "wizard") {
-      blade.components = [this.generateWizardComponent(entity, bladeConfig)];
     }
 
     // Add features (normalize to valid feature set)
@@ -174,18 +213,24 @@ export class PlannerV2 {
    */
   private generateBladeId(
     entity: PromptAnalysisV2["entities"][0],
-    bladeConfig: PromptAnalysisV2["entities"][0]["blades"][0]
+    bladeConfig: PromptAnalysisV2["entities"][0]["blades"][0],
   ): string {
     if (bladeConfig.type === "list") {
       return `${entity.name}-list`;
     } else if (bladeConfig.type === "details") {
       return `${entity.singular}-details`;
-    } else if (bladeConfig.type === "dashboard") {
-      return `${entity.name}-dashboard`;
-    } else if (bladeConfig.type === "wizard") {
-      return `${entity.singular}-wizard`;
     }
     return `${entity.name}-custom`;
+  }
+
+  /**
+   * Validate that a route follows single-level format: /name
+   * Only allows lowercase letters, numbers, and hyphens
+   * No parameters, no nesting, no query strings
+   */
+  private isValidSingleLevelRoute(route: string): boolean {
+    const routePattern = /^\/[a-z0-9-]+$/;
+    return routePattern.test(route);
   }
 
   /**
@@ -193,11 +238,11 @@ export class PlannerV2 {
    */
   private generateDefaultRoute(
     entity: PromptAnalysisV2["entities"][0],
-    bladeConfig: PromptAnalysisV2["entities"][0]["blades"][0]
+    bladeConfig: PromptAnalysisV2["entities"][0]["blades"][0],
   ): string {
-    if (bladeConfig.type === "list" || bladeConfig.type === "dashboard") {
+    if (bladeConfig.type === "list") {
       return `/${entity.name}`;
-    } else if (bladeConfig.type === "details" || bladeConfig.type === "wizard") {
+    } else if (bladeConfig.type === "details") {
       return `/${entity.singular}`;
     }
     return `/${entity.name}`;
@@ -206,10 +251,10 @@ export class PlannerV2 {
   /**
    * Map blade type to layout
    */
-  private mapBladeTypeToLayout(type: string): "grid" | "details" | "page" {
+  private mapBladeTypeToLayout(type: string): "grid" | "details" {
     if (type === "list") return "grid";
-    if (type === "details" || type === "wizard") return "details";
-    return "page"; // dashboard, custom
+    if (type === "details") return "details";
+    return "grid";
   }
 
   /**
@@ -217,7 +262,7 @@ export class PlannerV2 {
    */
   private generateTitle(
     entity: PromptAnalysisV2["entities"][0],
-    bladeConfig: PromptAnalysisV2["entities"][0]["blades"][0]
+    bladeConfig: PromptAnalysisV2["entities"][0]["blades"][0],
   ): string {
     const entityTitle = this.capitalizeFirst(entity.name.replace(/-/g, " "));
 
@@ -225,31 +270,41 @@ export class PlannerV2 {
       return entityTitle;
     } else if (bladeConfig.type === "details") {
       return `${this.capitalizeFirst(entity.singular.replace(/-/g, " "))} Details`;
-    } else if (bladeConfig.type === "dashboard") {
-      return `${entityTitle} Dashboard`;
-    } else if (bladeConfig.type === "wizard") {
-      return `Create ${this.capitalizeFirst(entity.singular.replace(/-/g, " "))}`;
     }
     return entityTitle;
   }
 
   /**
-   * Generate VcTable component
+   * Generate VcTable component (with discovered component info if available)
    */
   private generateTableComponent(
     entity: PromptAnalysisV2["entities"][0],
-    bladeConfig: PromptAnalysisV2["entities"][0]["blades"][0]
+    bladeConfig: PromptAnalysisV2["entities"][0]["blades"][0],
   ): any {
-    const columns = (bladeConfig.columns || [
-      { id: "name", title: "Name", sortable: true },
-    ]).map(col => this.normalizeColumn(col));
+    const columns = (bladeConfig.columns || [{ id: "name", title: "Name", sortable: true }]).map((col) =>
+      this.normalizeColumn(col),
+    );
+
+    // Find discovered component for this entity's list blade
+    const discoveredComponent = this.discoveredComponents?.find(
+      (c) => c.entity === entity.name && c.bladeType === "list",
+    );
+
+    // Use discovered component type if available, otherwise default to VcTable
+    const componentType = discoveredComponent?.name || "VcTable";
+
+    console.log(
+      `[PlannerV2] Using component ${componentType} for ${entity.name} list (discovered: ${!!discoveredComponent})`,
+    );
 
     return {
-      type: "VcTable",
+      type: componentType,
       dataSource: entity.name,
       columns,
       actions: bladeConfig.actions?.map((a) => a.id) || ["add", "edit", "delete"],
       filters: [],
+      // Store discovered capabilities as metadata (for later reference)
+      _discoveredCapabilities: discoveredComponent?.capabilities,
     };
   }
 
@@ -257,7 +312,21 @@ export class PlannerV2 {
    * Normalize column types to match schema
    */
   private normalizeColumn(column: any): any {
-    const validTypes = ["text", "number", "money", "date", "date-ago", "status", "boolean", "image", "email", "link", "badge", "actions", "custom"];
+    const validTypes = [
+      "text",
+      "number",
+      "money",
+      "date",
+      "date-ago",
+      "status",
+      "boolean",
+      "image",
+      "email",
+      "link",
+      "badge",
+      "actions",
+      "custom",
+    ];
 
     let type = column.type;
 
@@ -277,20 +346,34 @@ export class PlannerV2 {
   }
 
   /**
-   * Generate VcForm component
+   * Generate VcForm component (with discovered component info if available)
    */
   private generateFormComponent(
     entity: PromptAnalysisV2["entities"][0],
-    bladeConfig: PromptAnalysisV2["entities"][0]["blades"][0]
+    bladeConfig: PromptAnalysisV2["entities"][0]["blades"][0],
   ): any {
-    const fields = (bladeConfig.fields || [
-      { key: "name", as: "VcInput", label: "Name", required: true },
-    ]).map(field => this.normalizeField(field));
+    const fields = (bladeConfig.fields || [{ key: "name", as: "VcInput", label: "Name", required: true }]).map(
+      (field) => this.normalizeField(field),
+    );
+
+    // Find discovered component for this entity's details blade
+    const discoveredComponent = this.discoveredComponents?.find(
+      (c) => c.entity === entity.name && c.bladeType === "details",
+    );
+
+    // Use discovered component type if available, otherwise default to VcForm
+    const componentType = discoveredComponent?.name || "VcForm";
+
+    console.log(
+      `[PlannerV2] Using component ${componentType} for ${entity.singular} details (discovered: ${!!discoveredComponent})`,
+    );
 
     return {
-      type: "VcForm",
+      type: componentType,
       model: entity.singular,
       fields,
+      // Store discovered capabilities as metadata (for later reference)
+      _discoveredCapabilities: discoveredComponent?.capabilities,
     };
   }
 
@@ -333,7 +416,7 @@ export class PlannerV2 {
 
     // Normalize options to {label, value} format
     if (options && Array.isArray(options)) {
-      options = options.map(opt => {
+      options = options.map((opt) => {
         if (typeof opt === "string") {
           return { label: opt, value: opt };
         }
@@ -346,39 +429,6 @@ export class PlannerV2 {
       as,
       ...(type && { type }),
       ...(options && { options }),
-    };
-  }
-
-  /**
-   * Generate dashboard component (placeholder)
-   */
-  private generateDashboardComponent(
-    entity: PromptAnalysisV2["entities"][0],
-    bladeConfig: PromptAnalysisV2["entities"][0]["blades"][0]
-  ): any {
-    return {
-      type: "VcContainer",
-      layout: "dashboard",
-      widgets: [], // TODO: Generate from globalFeatures
-    };
-  }
-
-  /**
-   * Generate wizard component (placeholder)
-   */
-  private generateWizardComponent(
-    entity: PromptAnalysisV2["entities"][0],
-    bladeConfig: PromptAnalysisV2["entities"][0]["blades"][0]
-  ): any {
-    const fields = bladeConfig.fields || [
-      { key: "name", as: "VcInput", label: "Name", required: true },
-    ];
-
-    return {
-      type: "VcForm",
-      model: entity.singular,
-      fields,
-      mode: "wizard",
     };
   }
 
@@ -410,11 +460,11 @@ export class PlannerV2 {
    */
   private generateDefaultPermissions(
     entity: PromptAnalysisV2["entities"][0],
-    bladeConfig: PromptAnalysisV2["entities"][0]["blades"][0]
+    bladeConfig: PromptAnalysisV2["entities"][0]["blades"][0],
   ): string[] {
     const permissions: string[] = [`${entity.name}:read`];
 
-    if (bladeConfig.type === "details" || bladeConfig.type === "wizard") {
+    if (bladeConfig.type === "details") {
       permissions.push(`${entity.singular}:update`);
     }
 
@@ -428,10 +478,7 @@ export class PlannerV2 {
     const moduleName = this.extractModuleName(prompt);
     const singularName = this.toSingular(moduleName);
 
-    const blades = [
-      this.generateGridBlade(moduleName),
-      this.generateDetailsBlade(moduleName, singularName),
-    ];
+    const blades = [this.generateGridBlade(moduleName), this.generateDetailsBlade(moduleName, singularName)];
 
     return {
       $schema: "https://vc-shell.dev/schemas/ui-plan.v1.json",
@@ -455,8 +502,21 @@ export class PlannerV2 {
     // Handle cases like "vendor management", "product catalog", etc.
     // Stop at action words or common separators
     const actionWords = new Set([
-      "with", "for", "and", "or", "by", "that", "which", "create",
-      "manage", "show", "display", "list", "view", "edit", "add",
+      "with",
+      "for",
+      "and",
+      "or",
+      "by",
+      "that",
+      "which",
+      "create",
+      "manage",
+      "show",
+      "display",
+      "list",
+      "view",
+      "edit",
+      "add",
     ]);
 
     const entityTokens = [];
@@ -517,9 +577,7 @@ export class PlannerV2 {
         {
           type: "VcForm",
           model: singularName,
-          fields: [
-            { key: "name", as: "VcInput", label: "Name", required: true },
-          ],
+          fields: [{ key: "name", as: "VcInput", label: "Name", required: true }],
         },
       ],
       actions: ["save", "delete"],
@@ -533,13 +591,13 @@ export class PlannerV2 {
    */
   private normalizeFeatures(features: string[]): string[] {
     const validFeatures = ["filters", "multiselect", "validation", "gallery", "widgets"];
-    return features.filter(f => validFeatures.includes(f));
+    return features.filter((f) => validFeatures.includes(f));
   }
 
   /**
    * Normalize actions - separate valid schema actions from custom actions
    */
-  private normalizeActions(actions: any[]): { validActions: string[], customActions: any[] } {
+  private normalizeActions(actions: any[]): { validActions: string[]; customActions: any[] } {
     const validActionIds = ["save", "delete", "refresh", "add", "edit", "remove", "next", "back", "submit"];
 
     const validActions: string[] = [];
@@ -593,8 +651,6 @@ Describe your UI in natural language. V2 supports complex multi-entity scenarios
 
 ## Complex Examples:
 - "Order management with approval workflow. Orders have line items."
-- "Product analytics dashboard with sales charts and inventory widgets"
-- "Multi-step product creation wizard with validation"
 - "Vendor management: pending vendors need approval, approved vendors can create orders"
 
 ## What V2 Can Detect:

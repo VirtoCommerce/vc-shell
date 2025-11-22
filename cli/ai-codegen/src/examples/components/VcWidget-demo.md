@@ -3,9 +3,11 @@ id: component-VcWidget-demo
 type: COMPONENT
 complexity: SIMPLE
 category: component
-tags: [component]
+tags: ["component","widget","container","details"]
 title: "VcWidget Demo"
-description: "VcWidget Demo component example"
+description: "Base component for custom widgets in details blades"
+componentRole: layout
+bladeContext: ["details"]
 ---
 
 # VcWidget Demo

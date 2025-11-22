@@ -513,6 +513,397 @@
       "dependencies": [],
       "relatedAPIs": ["useAsync"],
       "requiresContext": false
+    },
+    "useLanguages": {
+      "name": "useLanguages",
+      "import": "@vc-shell/framework",
+      "type": "composable",
+      "description": "Manage application locale and language settings with automatic persistence",
+      "category": "Utility",
+      "keywords": ["i18n", "localization", "language", "locale", "internationalization", "translation"],
+      "methods": [{
+        "name": "setLocale",
+        "description": "Change application locale and sync with Vue I18n",
+        "signature": "(locale: string) => void",
+        "params": [{
+          "name": "locale",
+          "type": "string",
+          "description": "Locale code (e.g., 'en', 'fr', 'en-US')",
+          "required": true
+        }],
+        "returns": "void",
+        "useCases": ["Change language", "Switch locale", "Language selector"]
+      }, {
+        "name": "getLocaleByTag",
+        "description": "Get native language name from locale tag",
+        "signature": "(localeTag: string) => string | undefined",
+        "params": [{
+          "name": "localeTag",
+          "type": "string",
+          "description": "Locale tag (e.g., 'en', 'fr-FR')",
+          "required": true
+        }],
+        "returns": "string | undefined",
+        "useCases": ["Display language name", "Language list", "Native names"]
+      }, {
+        "name": "resolveCamelCaseLocale",
+        "description": "Convert camelCase locale to standard format",
+        "signature": "(locale: string) => string",
+        "params": [{
+          "name": "locale",
+          "type": "string",
+          "description": "Locale in any format",
+          "required": true
+        }],
+        "returns": "string",
+        "useCases": ["Normalize locale format", "Handle legacy formats"]
+      }, {
+        "name": "getFlag",
+        "description": "Get flag icon URL for language",
+        "signature": "(language: string) => Promise<string>",
+        "params": [{
+          "name": "language",
+          "type": "string",
+          "description": "Language code",
+          "required": true
+        }],
+        "returns": "Promise<string>",
+        "useCases": ["Language flags", "Visual language selector"]
+      }, {
+        "name": "getCountryCode",
+        "description": "Get ISO country code for language",
+        "signature": "(language: string) => string",
+        "params": [{
+          "name": "language",
+          "type": "string",
+          "description": "Language code",
+          "required": true
+        }],
+        "returns": "string",
+        "useCases": ["Country mapping", "Flag display"]
+      }],
+      "state": [{
+        "name": "currentLocale",
+        "type": "ComputedRef<string>",
+        "description": "Current active locale",
+        "reactive": true
+      }],
+      "capabilities": {
+        "set-locale": {
+          "id": "set-locale",
+          "type": "method",
+          "name": "setLocale",
+          "description": "Change application language",
+          "useCases": ["Language switcher", "User preferences"],
+          "complexity": "simple"
+        },
+        "get-native-name": {
+          "id": "get-native-name",
+          "type": "method",
+          "name": "getLocaleByTag",
+          "description": "Get native language name",
+          "useCases": ["Display language list", "Native names"],
+          "complexity": "simple"
+        }
+      },
+      "examples": [{
+        "title": "Change language",
+        "code": "import { useLanguages } from '@vc-shell/framework';\n\nconst { setLocale, currentLocale } = useLanguages();\n\n// Change to French\nsetLocale('fr');\n\nconsole.log(currentLocale.value); // 'fr'"
+      }, {
+        "title": "Get native language name",
+        "code": "import { useLanguages } from '@vc-shell/framework';\n\nconst { getLocaleByTag } = useLanguages();\n\nconst englishName = getLocaleByTag('en');  // 'English'\nconst frenchName = getLocaleByTag('fr');   // 'Français'\nconst germanName = getLocaleByTag('de');   // 'Deutsch'"
+      }],
+      "dependencies": ["vue-i18n"],
+      "relatedAPIs": ["useI18n"],
+      "requiresContext": true
+    },
+    "useNotifications": {
+      "name": "useNotifications",
+      "import": "@vc-shell/framework",
+      "type": "composable",
+      "description": "Subscribe to real-time push notifications via SignalR for blade-specific handling",
+      "category": "Data",
+      "keywords": ["notifications", "signalr", "real-time", "push", "subscribe", "events"],
+      "methods": [{
+        "name": "setNotificationHandler",
+        "description": "Set handler for new notifications",
+        "signature": "(handler: (notification: PushNotification) => void) => void",
+        "params": [{
+          "name": "handler",
+          "type": "(notification: PushNotification) => void",
+          "description": "Callback function for notifications",
+          "required": true
+        }],
+        "returns": "void",
+        "useCases": ["Toast feedback", "Data refresh", "Real-time updates"]
+      }, {
+        "name": "loadFromHistory",
+        "description": "Load notification history",
+        "signature": "(take?: number) => Promise<void>",
+        "params": [{
+          "name": "take",
+          "type": "number",
+          "description": "Number of notifications to load",
+          "required": false
+        }],
+        "returns": "Promise<void>",
+        "useCases": ["Load past notifications", "Notification history"]
+      }, {
+        "name": "addNotification",
+        "description": "Add notification locally",
+        "signature": "(message: PushNotification) => void",
+        "params": [{
+          "name": "message",
+          "type": "PushNotification",
+          "description": "Notification object",
+          "required": true
+        }],
+        "returns": "void",
+        "useCases": ["Manual notification", "Testing"]
+      }, {
+        "name": "markAsRead",
+        "description": "Mark notification as read",
+        "signature": "(message: PushNotification) => void",
+        "params": [{
+          "name": "message",
+          "type": "PushNotification",
+          "description": "Notification to mark",
+          "required": true
+        }],
+        "returns": "void",
+        "useCases": ["Mark read", "Clear notification"]
+      }, {
+        "name": "markAllAsRead",
+        "description": "Mark all notifications as read",
+        "signature": "() => Promise<void>",
+        "params": [],
+        "returns": "Promise<void>",
+        "useCases": ["Clear all", "Bulk mark read"]
+      }],
+      "state": [{
+        "name": "notifications",
+        "type": "ComputedRef<PushNotification[]>",
+        "description": "All notifications ordered by creation date descending",
+        "reactive": true
+      }, {
+        "name": "moduleNotifications",
+        "type": "ComputedRef<PushNotification[]>",
+        "description": "Notifications matching specified notifyType(s)",
+        "reactive": true
+      }],
+      "capabilities": {
+        "subscribe-notifications": {
+          "id": "subscribe-notifications",
+          "type": "method",
+          "name": "setNotificationHandler",
+          "description": "Handle real-time notifications",
+          "useCases": ["Toast on update", "Refresh data", "Real-time feedback"],
+          "complexity": "medium"
+        },
+        "notification-history": {
+          "id": "notification-history",
+          "type": "method",
+          "name": "loadFromHistory",
+          "description": "Load past notifications",
+          "useCases": ["History view", "Recent updates"],
+          "complexity": "simple"
+        }
+      },
+      "examples": [{
+        "title": "Subscribe to notifications",
+        "code": "import { useNotifications, notification } from '@vc-shell/framework';\n\nconst { setNotificationHandler } = useNotifications('OfferCreated');\n\nsetNotificationHandler((notif) => {\n  notification.success(`New offer: ${notif.data.offerName}`);\n  refreshData();\n});"
+      }],
+      "dependencies": ["SignalR"],
+      "relatedAPIs": ["notification"],
+      "requiresContext": true
+    },
+    "useBreadcrumbs": {
+      "name": "useBreadcrumbs",
+      "import": "@vc-shell/framework",
+      "type": "composable",
+      "description": "Manage navigational breadcrumb trails with hierarchical navigation support",
+      "category": "Navigation",
+      "keywords": ["breadcrumbs", "navigation", "hierarchy", "trail", "path"],
+      "methods": [{
+        "name": "push",
+        "description": "Add breadcrumb to trail (prevents duplicates)",
+        "signature": "(breadcrumb: Breadcrumbs) => void",
+        "params": [{
+          "name": "breadcrumb",
+          "type": "Breadcrumbs",
+          "description": "Breadcrumb object with id, title, clickHandler",
+          "required": true
+        }],
+        "returns": "void",
+        "useCases": ["Add breadcrumb", "Build navigation trail"]
+      }, {
+        "name": "remove",
+        "description": "Remove breadcrumbs by IDs",
+        "signature": "(ids: string[]) => void",
+        "params": [{
+          "name": "ids",
+          "type": "string[]",
+          "description": "Array of breadcrumb IDs to remove",
+          "required": true
+        }],
+        "returns": "void",
+        "useCases": ["Clear breadcrumbs", "Navigate back"]
+      }],
+      "state": [{
+        "name": "breadcrumbs",
+        "type": "ComputedRef<Breadcrumbs[]>",
+        "description": "Reactive breadcrumb array",
+        "reactive": true
+      }],
+      "capabilities": {
+        "add-breadcrumb": {
+          "id": "add-breadcrumb",
+          "type": "method",
+          "name": "push",
+          "description": "Add breadcrumb to navigation trail",
+          "useCases": ["Hierarchical navigation", "Drill-down navigation"],
+          "complexity": "simple"
+        },
+        "remove-breadcrumbs": {
+          "id": "remove-breadcrumbs",
+          "type": "method",
+          "name": "remove",
+          "description": "Remove breadcrumbs from trail",
+          "useCases": ["Navigate back", "Reset breadcrumbs"],
+          "complexity": "simple"
+        }
+      },
+      "examples": [{
+        "title": "Setup breadcrumbs with data loading",
+        "code": "import { useBreadcrumbs } from '@vc-shell/framework';\nimport { useI18n } from 'vue-i18n';\nimport { computed } from 'vue';\n\nconst { t } = useI18n({ useScope: 'global' });\nconst { push } = useBreadcrumbs();\n\n// Add catalog breadcrumb with data loading handler\npush({\n  id: 'catalog',\n  title: computed(() => t('BREADCRUMBS.CATALOG')),\n  clickHandler: async () => {\n    await loadCategoryList({ catalogId: sellerId }, sellerId);\n    return true; // Remove subsequent breadcrumbs\n  }\n});"
+      }],
+      "dependencies": [],
+      "relatedAPIs": ["VcBreadcrumbs", "useBladeNavigation"],
+      "requiresContext": false
+    },
+    "useWidgets": {
+      "name": "useWidgets",
+      "import": "@vc-shell/framework",
+      "type": "composable",
+      "description": "Manage blade widgets for supplementary UI elements in details blades",
+      "category": "UI",
+      "keywords": ["widgets", "blade-widgets", "registration", "components"],
+      "methods": [{
+        "name": "registerWidget",
+        "description": "Register a widget for specific blade",
+        "signature": "(widget: IWidget, bladeId: string) => void",
+        "params": [{
+          "name": "widget",
+          "type": "IWidget",
+          "description": "Widget configuration object",
+          "required": true
+        }, {
+          "name": "bladeId",
+          "type": "string",
+          "description": "Blade ID to attach widget to",
+          "required": true
+        }],
+        "returns": "void",
+        "useCases": ["Add blade widget", "Dynamic UI elements"]
+      }, {
+        "name": "unregisterWidget",
+        "description": "Unregister a widget",
+        "signature": "(widgetId: string, bladeId: string) => void",
+        "params": [{
+          "name": "widgetId",
+          "type": "string",
+          "description": "Widget ID to remove",
+          "required": true
+        }, {
+          "name": "bladeId",
+          "type": "string",
+          "description": "Blade ID",
+          "required": true
+        }],
+        "returns": "void",
+        "useCases": ["Cleanup on unmount", "Remove widget"]
+      }, {
+        "name": "updateActiveWidget",
+        "description": "Update active widget",
+        "signature": "() => void",
+        "params": [],
+        "returns": "void",
+        "useCases": ["Refresh widget after save", "Update widget data"]
+      }, {
+        "name": "getWidgets",
+        "description": "Get widgets for blade",
+        "signature": "(bladeId: string) => IWidget[]",
+        "params": [{
+          "name": "bladeId",
+          "type": "string",
+          "description": "Blade ID",
+          "required": true
+        }],
+        "returns": "IWidget[]",
+        "useCases": ["List widgets", "Widget management"]
+      }, {
+        "name": "clearBladeWidgets",
+        "description": "Clear all widgets for blade",
+        "signature": "(bladeId: string) => void",
+        "params": [{
+          "name": "bladeId",
+          "type": "string",
+          "description": "Blade ID",
+          "required": true
+        }],
+        "returns": "void",
+        "useCases": ["Blade cleanup", "Reset widgets"]
+      }],
+      "state": [],
+      "capabilities": {
+        "register-widget": {
+          "id": "register-widget",
+          "type": "method",
+          "name": "registerWidget",
+          "description": "Register blade widget",
+          "useCases": ["Add widget", "Dynamic UI"],
+          "complexity": "medium"
+        },
+        "update-widget": {
+          "id": "update-widget",
+          "type": "method",
+          "name": "updateActiveWidget",
+          "description": "Refresh active widget",
+          "useCases": ["After save", "Data refresh"],
+          "complexity": "simple"
+        }
+      },
+      "examples": [{
+        "title": "Register widget with reactive props",
+        "code": "import { useWidgets, useBlade } from '@vc-shell/framework';\nimport { computed } from 'vue';\nimport SpecialPricesWidget from './widgets/SpecialPricesWidget.vue';\n\nconst { registerWidget, updateActiveWidget } = useWidgets();\nconst blade = useBlade();\nconst offer = ref({ priceLists: [] });\n\nregisterWidget(\n  {\n    id: 'SpecialPricesWidget',\n    component: SpecialPricesWidget,\n    props: { priceLists: computed(() => offer.value.priceLists) },\n    updateFunctionName: 'updateActiveWidgetCount',\n    isVisible: computed(() => !!props.param)\n  },\n  blade.value.id\n);\n\n// Update widget after save\nasync function save() {\n  await saveOffer();\n  updateActiveWidget();\n}"
+      }],
+      "dependencies": [],
+      "relatedAPIs": ["VcWidget", "useBlade"],
+      "requiresContext": false
+    },
+    "useDashboard": {
+      "name": "useDashboard",
+      "import": "@vc-shell/framework",
+      "type": "composable",
+      "description": "Manage dashboard widgets, layout, and permission-based visibility. NOTE: Use registerDashboardWidget helper for registration, not this composable.",
+      "category": "UI",
+      "keywords": ["dashboard", "widgets", "registration", "layout"],
+      "methods": [],
+      "state": [],
+      "capabilities": {},
+      "examples": [{
+        "title": "Register dashboard widget (use helper function)",
+        "code": "// src/modules/offers/index.ts\nimport { registerDashboardWidget } from '@vc-shell/framework';\nimport { markRaw } from 'vue';\nimport * as components from './components';\n\n// Register dashboard widget\nregisterDashboardWidget({\n  id: 'offers-widget',\n  name: 'Offers',\n  component: markRaw(components.OffersDashboardCard),\n  size: { width: 6, height: 6 }\n});\n\n// Export module\nexport default createAppModule(pages, locales);"
+      }],
+      "dependencies": [],
+      "relatedAPIs": ["DraggableDashboard", "DashboardWidgetCard", "registerDashboardWidget"],
+      "requiresContext": false,
+      "notes": [
+        "Use registerDashboardWidget helper function for registration",
+        "Register in module's index.ts file, NOT in Dashboard page",
+        "Always use markRaw() wrapper for component",
+        "Standard size is { width: 6, height: 6 }"
+      ]
     }
   },
   "plugins": {},

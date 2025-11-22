@@ -125,9 +125,9 @@ import {
   useBlade,
   type IWidget,
 } from "@vc-shell/framework";
-// TODO: Update import path for your entity's composable
+// Example: Import your entity's composable (e.g., useOfferDetails, useProductDetails)
 import { default as useEntityDetails } from "../composables/useEntityDetails";
-// TODO: Import your widget components
+// Example: Import widget components for this blade
 import EntityRelationsWidget from "../components/EntityRelationsWidget.vue";
 import EntityHistoryWidget from "../components/EntityHistoryWidget.vue";
 import EntityStatsWidget from "../components/EntityStatsWidget.vue";

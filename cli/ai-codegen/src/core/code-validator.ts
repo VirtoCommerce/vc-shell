@@ -2,9 +2,12 @@ import * as parser from "@babel/parser";
 import { parse as parseVueSFC } from "@vue/compiler-sfc";
 import * as ts from "typescript";
 import type { UIPlanBlade } from "../schemas/zod-schemas";
+import { QualityMetrics, type CompletenessResult } from "./quality-metrics";
+import { ASTUtils } from "./ast-utils";
+import { loadComponentNames } from "./component-registry-loader";
 
 export interface ValidationError {
-  type: "syntax" | "typescript" | "component" | "import" | "convention";
+  type: "syntax" | "typescript" | "component" | "import" | "convention" | "completeness";
   severity: "error" | "warning";
   message: string;
   line?: number;
@@ -16,6 +19,7 @@ export interface ValidationResult {
   valid: boolean;
   errors: ValidationError[];
   warnings: string[];
+  completeness?: CompletenessResult;
 }
 
 /**
@@ -30,19 +34,12 @@ export interface ValidationResult {
  */
 export class CodeValidator {
   private componentRegistry: Set<string>;
+  private qualityMetrics: QualityMetrics;
 
   constructor(componentRegistry?: string[]) {
-    this.componentRegistry = new Set(componentRegistry || [
-      "VcBlade", "VcTable", "VcForm", "VcInput", "VcTextarea",
-      "VcSelect", "VcCheckbox", "VcSwitch", "VcButton", "VcCard",
-      "VcContainer", "VcRow", "VcCol", "VcBadge", "VcBanner",
-      "VcIcon", "VcImage", "VcLabel", "VcLink", "VcStatus",
-      "VcStatusIcon", "VcTooltip", "VcHint", "VcRating",
-      "VcSlider", "VcVideo", "VcBreadcrumbs", "VcEditor",
-      "VcFileUpload", "VcGallery", "VcInputCurrency",
-      "VcInputDropdown", "VcMultivalue", "VcRadioButton",
-      "VcField", "VcPopup", "VcWidget"
-    ]);
+    // Load components from component-registry.json instead of hardcoded list
+    this.componentRegistry = new Set(componentRegistry || loadComponentNames());
+    this.qualityMetrics = new QualityMetrics();
   }
 
   /**
@@ -253,18 +250,10 @@ export class CodeValidator {
     const warnings: string[] = [];
 
     try {
-      const { descriptor } = parseVueSFC(code);
-      const template = descriptor.template?.content || "";
+      // Use AST-based component tag extraction
+      const usedComponents = ASTUtils.extractComponentTags(code);
 
-      // Find all component tags in template
-      const componentRegex = /<(Vc[A-Z][a-zA-Z]*)/g;
-      const matches = template.matchAll(componentRegex);
-      const usedComponents = new Set<string>();
-
-      for (const match of matches) {
-        const componentName = match[1];
-        usedComponents.add(componentName);
-
+      for (const componentName of usedComponents) {
         if (!this.componentRegistry.has(componentName)) {
           errors.push({
             type: "component",
@@ -307,34 +296,14 @@ export class CodeValidator {
         return { valid: true, errors, warnings };
       }
 
-      // Parse script to AST
-      const ast = parser.parse(scriptContent, {
-        sourceType: "module",
-        plugins: ["typescript", "jsx"],
-      });
-
-      // Check imports
-      const requiredImports = [
-        "@vc-shell/framework",
-        "vue",
-        "vue-i18n",
-      ];
-
-      const importedFrom = new Set<string>();
-
-      // Extract imports (simplified check)
-      const importRegex = /from\s+["']([^"']+)["']/g;
-      const matches = scriptContent.matchAll(importRegex);
-
-      for (const match of matches) {
-        importedFrom.add(match[1]);
-      }
+      // Use AST-based import extraction
+      const importSources = ASTUtils.extractImportSources(scriptContent);
 
       // Check if required imports are present
       let hasFrameworkImport = false;
       let hasVueImport = false;
 
-      for (const imported of importedFrom) {
+      for (const imported of importSources) {
         if (imported.includes("@vc-shell/framework")) hasFrameworkImport = true;
         if (imported === "vue") hasVueImport = true;
       }
@@ -370,9 +339,8 @@ export class CodeValidator {
       const scriptContent = descriptor.script?.content || descriptor.scriptSetup?.content || "";
       const templateContent = descriptor.template?.content || "";
 
-      // 1. Check defineOptions (must exist exactly once)
-      const defineOptionsMatches = scriptContent.match(/defineOptions\s*\(/g);
-      const defineOptionsCount = defineOptionsMatches ? defineOptionsMatches.length : 0;
+      // 1. Check defineOptions (must exist exactly once) - AST-based
+      const defineOptionsCount = ASTUtils.countDefineOptions(scriptContent);
 
       if (defineOptionsCount === 0) {
         errors.push({
@@ -389,14 +357,11 @@ export class CodeValidator {
       }
 
       // Continue validation only if exactly one defineOptions exists
-      const defineOptionsMatch = scriptContent.match(/defineOptions\s*\(\s*\{([^}]+)\}\s*\)/s);
-      if (defineOptionsMatch) {
-        const optionsContent = defineOptionsMatch[1];
-
+      const defineOptions = ASTUtils.extractDefineOptions(scriptContent);
+      if (defineOptions) {
         // Check name property (PascalCase)
-        const nameMatch = optionsContent.match(/name:\s*["']([^"']+)["']/);
-        if (nameMatch) {
-          const name = nameMatch[1];
+        if (defineOptions.name) {
+          const name = defineOptions.name;
           if (!/^[A-Z][a-zA-Z]+$/.test(name)) {
             errors.push({
               type: "convention",
@@ -413,9 +378,8 @@ export class CodeValidator {
         }
 
         // Check url property
-        const urlMatch = optionsContent.match(/url:\s*["']([^"']+)["']/);
-        if (urlMatch) {
-          const url = urlMatch[1];
+        if (defineOptions.url) {
+          const url = defineOptions.url;
           if (!url.startsWith("/")) {
             errors.push({
               type: "convention",
@@ -486,6 +450,146 @@ export class CodeValidator {
       warnings.push(`Convention validation failed: ${error.message}`);
       return { valid: true, errors, warnings };
     }
+  }
+
+  /**
+   * Validate that generated code matches the UI-Plan blade definition
+   * Checks: route, layout, features, permissions
+   */
+  validateAgainstPlan(code: string, bladePlan: UIPlanBlade): ValidationResult {
+    const errors: ValidationError[] = [];
+    const warnings: string[] = [];
+
+    try {
+      // Parse Vue SFC to extract defineOptions
+      const { descriptor } = parseVueSFC(code);
+      if (!descriptor.script && !descriptor.scriptSetup) {
+        errors.push({
+          type: "convention",
+          severity: "error",
+          message: "No script section found in Vue SFC",
+        });
+        return { valid: false, errors, warnings };
+      }
+
+      const scriptContent = descriptor.scriptSetup?.content || descriptor.script?.content || "";
+
+      // Extract defineOptions call using AST
+      const defineOptions = ASTUtils.extractDefineOptions(scriptContent);
+      if (!defineOptions) {
+        errors.push({
+          type: "convention",
+          severity: "error",
+          message: "defineOptions() not found in code. Cannot validate against plan.",
+        });
+        return { valid: false, errors, warnings };
+      }
+
+      // Validate route
+      if (defineOptions.url) {
+        const codeRoute = defineOptions.url;
+        if (codeRoute !== bladePlan.route) {
+          errors.push({
+            type: "convention",
+            severity: "error",
+            message: `Route mismatch: code has "${codeRoute}" but plan requires "${bladePlan.route}"`,
+          });
+        }
+      } else {
+        warnings.push(`Route not found in defineOptions. Expected: ${bladePlan.route}`);
+      }
+
+      // Validate layout (if it exists in code)
+      if (defineOptions.layout) {
+        const codeLayout = defineOptions.layout;
+        if (codeLayout !== bladePlan.layout) {
+          errors.push({
+            type: "convention",
+            severity: "error",
+            message: `Layout mismatch: code has "${codeLayout}" but plan requires "${bladePlan.layout}"`,
+          });
+        }
+      }
+
+      // Validate blade ID (if it exists in defineOptions)
+      if (defineOptions.blade) {
+        const codeBladeId = defineOptions.blade;
+        if (codeBladeId !== bladePlan.id) {
+          errors.push({
+            type: "convention",
+            severity: "error",
+            message: `Blade ID mismatch: code has "${codeBladeId}" but plan requires "${bladePlan.id}"`,
+          });
+        }
+      }
+
+      return { valid: errors.length === 0, errors, warnings };
+    } catch (error) {
+      errors.push({
+        type: "syntax",
+        severity: "error",
+        message: `Failed to validate against plan: ${error instanceof Error ? error.message : String(error)}`,
+      });
+      return { valid: false, errors, warnings };
+    }
+  }
+
+  /**
+   * Validate code completeness against UI-Plan
+   *
+   * This is a STRICT validation that checks if all required features,
+   * data structures, and business logic are fully implemented.
+   *
+   * Minimum acceptable score: 80%
+   * - Features: all required features must be implemented
+   * - Data structures: all columns/fields must be present
+   * - Business logic: API client, handlers, validation required
+   * - Anti-patterns: no TODOs, placeholders, or empty handlers
+   *
+   * @param code - Vue SFC code to validate
+   * @param bladePlan - UI-Plan blade definition
+   * @returns Validation result with completeness score
+   */
+  validateCompleteness(code: string, bladePlan: UIPlanBlade): ValidationResult {
+    const allErrors: ValidationError[] = [];
+    const allWarnings: string[] = [];
+
+    // Evaluate completeness using QualityMetrics
+    const completeness = this.qualityMetrics.evaluateCompleteness(code, bladePlan);
+
+    // Convert completeness errors to ValidationError format
+    for (const error of completeness.errors) {
+      allErrors.push({
+        type: "completeness",
+        severity: "error",
+        message: error,
+      });
+    }
+
+    // Add warnings
+    allWarnings.push(...completeness.warnings);
+
+    // STRICT: Require minimum 80% completeness score
+    const MIN_SCORE = 80;
+    if (completeness.score < MIN_SCORE) {
+      allErrors.push({
+        type: "completeness",
+        severity: "error",
+        message:
+          `Code completeness score is ${completeness.score}%, but minimum required is ${MIN_SCORE}%. ` +
+          `Missing implementations: ${completeness.features.missing.join(', ') || 'none'}. ` +
+          `Anti-patterns found: ${completeness.antiPatterns.hasTodos ? 'TODOs' : ''} ` +
+          `${completeness.antiPatterns.hasPlaceholders ? 'Placeholders' : ''} ` +
+          `${completeness.antiPatterns.hasEmptyHandlers ? 'Empty handlers' : ''}`.trim(),
+      });
+    }
+
+    return {
+      valid: allErrors.length === 0,
+      errors: allErrors,
+      warnings: allWarnings,
+      completeness,
+    };
   }
 
   /**

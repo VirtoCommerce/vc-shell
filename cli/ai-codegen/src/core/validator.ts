@@ -282,19 +282,53 @@ export class Validator {
         });
       }
 
-      // Routes must start with /
-      if (blade.route && !blade.route.startsWith("/")) {
-        errors.push({
-          path: `/blades/${blade.id}/route`,
-          message: `Route must start with "/" (got "${blade.route}")`,
-          severity: "error",
-        });
-      } else if (!blade.route) {
+      // Routes must be single-level format: /name
+      if (!blade.route) {
         errors.push({
           path: `/blades/${blade.id}/route`,
           message: `Route is required`,
           severity: "error",
         });
+      } else {
+        // Check route starts with /
+        if (!blade.route.startsWith("/")) {
+          errors.push({
+            path: `/blades/${blade.id}/route`,
+            message: `Route must start with "/" (got "${blade.route}")`,
+            severity: "error",
+          });
+        }
+
+        // Check route is single-level (no multiple slashes, no parameters, no query strings)
+        const routePattern = /^\/[a-z0-9-]+$/;
+        if (!routePattern.test(blade.route)) {
+          // Detect specific issues for better error messages
+          if (blade.route.includes("/:") || blade.route.includes(":")) {
+            errors.push({
+              path: `/blades/${blade.id}/route`,
+              message: `Route "${blade.route}" contains parameters. Only single-level routes without parameters are supported (e.g., /offers not /offer/:id)`,
+              severity: "error",
+            });
+          } else if ((blade.route.match(/\//g) || []).length > 1) {
+            errors.push({
+              path: `/blades/${blade.id}/route`,
+              message: `Route "${blade.route}" has multiple levels. Only single-level routes are supported (e.g., /offers not /pages/offers)`,
+              severity: "error",
+            });
+          } else if (blade.route.includes("?") || blade.route.includes("*")) {
+            errors.push({
+              path: `/blades/${blade.id}/route`,
+              message: `Route "${blade.route}" contains query parameters or wildcards. Only simple single-level routes are supported (e.g., /offers)`,
+              severity: "error",
+            });
+          } else {
+            errors.push({
+              path: `/blades/${blade.id}/route`,
+              message: `Route "${blade.route}" is invalid. Must be single-level format: /name using lowercase letters, numbers, and hyphens only (e.g., /offers, /draft-pages)`,
+              severity: "error",
+            });
+          }
+        }
       }
 
       // Check for duplicate routes

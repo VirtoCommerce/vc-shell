@@ -3,9 +3,11 @@ id: component-VcInput-demo
 type: COMPONENT
 complexity: SIMPLE
 category: component
-tags: [component]
+tags: ["component","input","form","text"]
 title: "VcInput Demo"
-description: "VcInput Demo component example"
+description: "Text input field component for forms"
+componentRole: form-input
+bladeContext: ["details"]
 ---
 
 # VcInput Demo

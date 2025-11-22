@@ -3,7 +3,7 @@
 # Used by MCP tools to provide transparent access to examples
 
 version: "1.0"
-last_updated: "2025-11-20"
+last_updated: "2025-11-21"
 
 # ============================================================================
 # PATTERNS - Architectural patterns and best practices
@@ -23,6 +23,13 @@ patterns:
     applies_to: [all]
     description: Correct module registration using createAppModule
     features: [module, registration]
+
+  - id: route-rules
+    file: patterns/route-rules.md
+    category: architectural
+    applies_to: [all]
+    description: Custom route definitions and route rules for blades
+    features: [routes, routing, custom-routes]
 
   # List blade patterns
   - id: list-basic
@@ -273,10 +280,12 @@ templates:
 # METADATA
 # ============================================================================
 statistics:
-  total_patterns: 26  # 21 original + 5 complete examples
+  total_patterns: 26  # 20 original + 5 complete examples + 1 route-rules
   total_templates: 9
   total_examples: 5   # Complete working examples (blade + composable)
-  total_files: 318    # 304 .md + 12 .vue + 2 other (.json, .yaml)
+  total_components: 30  # Component demo files (including VcForm-demo.md)
+  total_framework_examples: 24  # Framework composable examples (5 new composables added)
+  total_files: 346    # 332 .md + 12 .vue + 2 other (.json, .yaml)
 
 categories:
   patterns:
@@ -300,9 +309,10 @@ categories:
 # examples/
 # ├── index.yaml                           # This file - central catalog
 # ├── ui-plan-example-complete.json        # Complete valid UI-Plan example (used by MCP resource vcshell://ui-plan-example-complete)
-# ├── patterns/                            # 26 markdown pattern files
+# ├── patterns/                            # 27 markdown pattern files
 # │   ├── workspace-blade.md               # Workspace blade with menuItem
 # │   ├── module-registration.md           # Module registration with createAppModule
+# │   ├── route-rules.md                   # Route rules and custom route definitions
 # │   ├── blade-list-complete.md           # Complete working list blade example
 # │   ├── blade-details-complete.md        # Complete working details blade example
 # │   ├── composable-list-complete.md      # Complete working list composable
@@ -317,6 +327,7 @@ categories:
 # ├── components/                          # 30 component demo files
 # │   ├── VcTable-demo.md
 # │   ├── VcInput-demo.md
+# │   ├── VcForm-demo.md                   # NEW: Form container with vee-validate
 # │   └── ...
 # ├── capabilities/                        # 243 component capability examples
 # │   ├── VcTable/
@@ -324,8 +335,18 @@ categories:
 # │   │   ├── slot-filters.md
 # │   │   └── ...
 # │   └── ...
-# └── framework/                           # 5 framework API examples
+# └── framework/                           # 24 framework API examples
 #     └── composables/
-#         ├── useBladeNavigation/
-#         ├── usePopup/
-#         └── ...
+#         ├── useBladeNavigation/          # Blade navigation (3 examples)
+#         ├── usePopup/                    # Popup dialogs (1 example)
+#         ├── useBeforeUnload/             # Prevent unload (1 example)
+#         ├── useLanguages/                # NEW: Localization (3 examples)
+#         ├── useNotifications/            # NEW: Real-time notifications (2 examples)
+#         ├── useBreadcrumbs/              # NEW: Breadcrumb navigation (1 example)
+#         ├── usePermissions/              # Permissions (2 examples)
+#         ├── useUser/                     # User info (1 example)
+#         ├── useAsync/                    # Async wrapper (1 example)
+#         ├── useApiClient/                # API client (2 examples)
+#         ├── useModificationTracker/      # Track changes (1 example)
+#         ├── useWidgets/                  # NEW: Blade widgets (2 examples)
+#         └── useDashboard/                # NEW: Dashboard widgets (2 examples)

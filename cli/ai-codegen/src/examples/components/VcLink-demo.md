@@ -3,9 +3,11 @@ id: component-VcLink-demo
 type: COMPONENT
 complexity: SIMPLE
 category: component
-tags: [component]
+tags: ["component","link","navigation"]
 title: "VcLink Demo"
-description: "VcLink Demo component example"
+description: "Link component for navigation"
+componentRole: navigation
+bladeContext: ["details","list","general"]
 ---
 
 # VcLink Demo

@@ -4025,6 +4025,58 @@
       }
     }
   },
+  "VcForm": {
+    "import": "@vc-shell/framework",
+    "component": "VcForm",
+    "description": "Form container component for details blades, works with vee-validate for validation. This is the primary container for forms.",
+    "category": "Form",
+    "demos": [
+      "VcForm-demo.md"
+    ],
+    "keywords": [
+      "form",
+      "validation",
+      "vee-validate",
+      "container"
+    ],
+    "dependencies": ["vee-validate"],
+    "props": {},
+    "events": {
+      "submit": "(values: any) => void - Emitted when form is submitted and validation passes"
+    },
+    "examples": [
+      {
+        "title": "Basic Form with Validation",
+        "code": "<VcForm @submit=\"onSubmit\">\n  <VcCard :header=\"$t('OFFERS.PAGES.DETAILS.GENERAL_INFO')\">\n    <div class=\"tw-p-4 tw-space-y-4\">\n      <div>\n        <VcLabel :required=\"true\">\n          {{ $t(\"OFFERS.FIELDS.NAME\") }}\n        </VcLabel>\n        <Field v-slot=\"{ field, errorMessage }\" name=\"name\" :rules=\"requiredRule\">\n          <VcInput v-bind=\"field\" :error-message=\"errorMessage\" />\n        </Field>\n      </div>\n    </div>\n  </VcCard>\n\n  <div class=\"tw-flex tw-justify-end tw-gap-2 tw-mt-4\">\n    <VcButton outlined @click=\"onCancel\">\n      {{ $t(\"COMMON.CANCEL\") }}\n    </VcButton>\n    <VcButton type=\"submit\" variant=\"primary\" :disabled=\"!isValid\">\n      {{ $t(\"COMMON.SAVE\") }}\n    </VcButton>\n  </div>\n</VcForm>"
+      }
+    ],
+    "capabilities": {
+      "event-submit": {
+        "id": "event-submit",
+        "type": "event",
+        "name": "submit",
+        "description": "Form submission event triggered when validation passes",
+        "useCases": [
+          "Save form data",
+          "Submit to API",
+          "Create/update entity"
+        ],
+        "complexity": "simple"
+      },
+      "validation": {
+        "id": "validation",
+        "type": "feature",
+        "name": "Form Validation",
+        "description": "Integration with vee-validate for comprehensive form validation",
+        "useCases": [
+          "Required fields",
+          "Async validation",
+          "Custom validation rules"
+        ],
+        "complexity": "medium"
+      }
+    }
+  },
   "VcFileUpload": {
     "import": "@vc-shell/framework",
     "component": "VcFileUpload",

@@ -3,9 +3,11 @@ id: component-VcLabel-demo
 type: COMPONENT
 complexity: SIMPLE
 category: component
-tags: [component]
+tags: ["component","label","form"]
 title: "VcLabel Demo"
-description: "VcLabel Demo component example"
+description: "Label component for form fields"
+componentRole: form-label
+bladeContext: ["details"]
 ---
 
 # VcLabel Demo

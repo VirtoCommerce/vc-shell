@@ -3,9 +3,11 @@ id: component-VcButton-demo
 type: COMPONENT
 complexity: SIMPLE
 category: component
-tags: [component]
+tags: ["component","button","action","interactive"]
 title: "VcButton Demo"
-description: "VcButton Demo component example"
+description: "Button component for actions"
+componentRole: action
+bladeContext: ["details","list","general"]
 ---
 
 # VcButton Demo

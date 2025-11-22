@@ -45,8 +45,8 @@
         },
         "route": {
           "type": "string",
-          "pattern": "^/[a-z0-9/:?*-]*$",
-          "description": "Blade route supporting Vue Router params (e.g., /offers/:id?)"
+          "pattern": "^/[a-z0-9-]+$",
+          "description": "Single-level blade route in format /name (e.g., /offers, /products). Multi-level routes and parameters are not supported."
         },
         "layout": {
           "type": "string",

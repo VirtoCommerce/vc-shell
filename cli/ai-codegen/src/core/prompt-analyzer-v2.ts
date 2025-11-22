@@ -27,7 +27,7 @@ export interface PromptAnalysisV2 {
     /** Blades for this entity */
     blades: Array<{
       /** Blade type */
-      type: "list" | "details" | "dashboard" | "wizard" | "custom";
+      type: "list" | "details" | "custom";
 
       /** Custom route (optional, will be auto-generated if not provided) */
       route?: string;
@@ -71,6 +71,19 @@ export interface PromptAnalysisV2 {
 
       /** Is this a workspace blade? */
       isWorkspace?: boolean;
+
+      /** Menu item configuration (REQUIRED if isWorkspace: true) */
+      menuItem?: {
+        /** i18n key for menu title (e.g., "PAGES.MENU.DRAFT") */
+        title: string;
+        /** Icon string (e.g., "fas fa-file-alt", "lucide-file") */
+        icon: string;
+        /** Priority in menu (lower = higher, e.g., 10, 11, 12) */
+        priority: number;
+      };
+
+      /** Default filter for pre-filtering data (for workspace blades with specific views) */
+      defaultFilter?: Record<string, any>;
     }>;
 
     /** Data source configuration */
@@ -151,7 +164,7 @@ Perform deep analysis and extract:
 
 ### 2. For Each Entity
 - Entity name (plural + singular, kebab-case)
-- Required blades (list, details, dashboard, wizard, custom)
+- Required blades (list, details, custom)
 - Custom routes (if specified, e.g., "/vendors/approved")
 - Features per blade
 - Columns for list views
@@ -159,11 +172,6 @@ Perform deep analysis and extract:
 - Custom actions beyond CRUD
 - Permissions required
 - Data source configuration
-
-### 3. Workflow Detection
-- Is this a multi-step process? (wizard, approval flow, etc.)
-- What are the steps?
-- Is it linear, branching, or parallel?
 
 ### 4. Features Detection
 
@@ -182,8 +190,7 @@ Perform deep analysis and extract:
 **Details Blade Features:**
 - validation - Form validation with rules
 - gallery - Image/file gallery
-- widgets - Dashboard widgets
-- tabs - Tabbed sections
+- widgets - Widgets
 - accordion - Collapsible sections
 - autosave - Auto-save drafts
 - version-history - Track changes
@@ -211,144 +218,73 @@ Perform deep analysis and extract:
 - APIs to integrate
 - Webhooks needed
 
+## VC-Shell Framework Architecture (CRITICAL)
+
+You MUST follow these framework capabilities and constraints:
+
+### Blade Types
+- **workspace blade**: Main blade that appears in left sidebar menu
+  - MUST have: \`isWorkspace: true\`, \`menuItem: {title, icon, priority}\`
+  - Route pattern: \`/single-level\` only (e.g., \`/offers\`, \`/draft-pages\`)
+  - Example: \`{ "type": "list", "route": "/offers", "isWorkspace": true, "menuItem": {...} }\`
+- **child blade**: Opens on top of workspace blade (details, forms)
+  - MUST have: \`isWorkspace: false\` or omitted
+  - Route pattern: \`/single-level\` (e.g., \`/offer\`, \`/page\`)
+  - Example: \`{ "type": "details", "route": "/offer" }\`
+
+### Multiple Workspace Blades in One Module (IMPORTANT)
+- ✅ **ALLOWED**: Create multiple workspace blades per module
+- Each workspace blade = separate menu item in sidebar
+- Use case: Different views/filters of same data (Draft pages, Active pages, Archived pages)
+- Each blade MUST have unique route and menuItem configuration
+- Example: 5 workspace blades for status-based navigation (Draft, Pending, Active, Archived, All)
+
+### Route Constraints (CRITICAL - WILL FAIL VALIDATION IF VIOLATED)
+- ✅ **ALLOWED PATTERNS**: \`/offers\`, \`/draft-pages\`, \`/pending-orders\`, \`/page\`
+- ❌ **FORBIDDEN PATTERNS**:
+  - Multi-level: \`/pages/draft\`, \`/offers/pending\`, \`/admin/users\`
+  - With parameters: \`/offer/:id\`, \`/product/:id?\`, \`/user/:userId/edit\`
+  - Query strings: \`/offers?status=active\`, \`/pages?filter=draft\`
+  - Invalid characters: \`/Offers\` (uppercase), \`/my_offers\` (underscores), \`/offers.list\` (dots)
+- **PATTERN**: \`^/[a-z0-9-]+$\` (single slash + lowercase + hyphens only)
+- **NAMING**: Use plural for lists (\`/offers\`), singular for details (\`/offer\`)
+- **STATUS-BASED ROUTES**: Use hyphen-separated names: \`/draft-pages\`, \`/pending-orders\`, \`/active-products\`
+
+### Menu Items Configuration
+- ✅ **CORRECT**: Define \`menuItem\` in workspace blade object
+  - Structure: \`{ "title": "I18N_KEY", "icon": "fas fa-*", "priority": number }\`
+  - Priority: Lower number = higher in menu (10, 11, 12, ...)
+- ❌ **WRONG**: Create \`customMenuItems\` field (DOES NOT EXIST in VC-Shell)
+
+### Interpreting User Intent for Multiple Views
+
+**IF user describes multiple separate pages/views in navigation:**
+- Examples: "Left menu with: Draft, Pending, Active", "Navigation items: 1. Orders, 2. Archived Orders", "Sidebar showing different statuses"
+- **MEANS**: Create multiple workspace blades, each with \`isWorkspace: true\` and unique \`menuItem\`
+- Each blade = separate menu item in sidebar
+
+### Default Filters for Status-Based Workspace Blades
+When creating multiple workspace blades for different statuses:
+- Add \`defaultFilter\` property to pre-filter data
+- Example: \`{ "route": "/draft-pages", "defaultFilter": { "status": "draft" } }\`
+
 ## Important Rules
 
 1. **Multiple Entities**: If prompt mentions multiple entities (e.g., "Orders and Line Items"), create separate entity objects
-2. **Custom Routes**: If route pattern is mentioned (e.g., "/vendors/pending"), include it
-3. **Permissions**: Infer reasonable permissions (e.g., "vendors:read", "vendors:update")
-4. **Actions**: Detect custom actions (e.g., "approve", "reject", "publish", "archive")
-5. **Relationships**: Map relationships clearly (Order hasMany LineItems, Product belongsTo Category)
-6. **Workflow**: If process has steps (wizard, approval), capture workflow structure
-7. **Complexity**: Assess complexity (simple: 1 entity + basic CRUD, moderate: 2-3 entities + features, complex: 4+ entities + workflow)
+2. **Multiple Workspace Blades**: If prompt mentions multiple navigation items/menu items, create separate workspace blades with unique routes
+3. **Route Validation**: ALL routes MUST match \`^/[a-z0-9-]+$\` pattern (single-level, lowercase, hyphens only)
+4. **Permissions**: Infer reasonable permissions (e.g., "vendors:read", "vendors:update")
+5. **Actions**: Detect custom actions (e.g., "approve", "reject", "publish", "archive")
+6. **Relationships**: Map relationships clearly (Order hasMany LineItems, Product belongsTo Category)
+8. **Complexity**: Assess complexity (simple: 1 entity + basic CRUD, moderate: 2-3 entities + features, complex: 4+ entities + workflow)
 
-## Examples
+Now analyze the user prompt deeply and return ONLY the JSON object following the extended schema defined above.
 
-### Example 1: Multi-Entity with Workflow
-
-**Prompt:** "Order management with approval workflow. Orders have line items. Pending orders need approval from manager."
-
-**Analysis:**
-\`\`\`json
-{
-  "moduleName": "orders",
-  "entities": [
-    {
-      "name": "orders",
-      "singular": "order",
-      "blades": [
-        {
-          "type": "list",
-          "route": "/orders",
-          "features": ["filters", "multiselect"],
-          "columns": [
-            { "id": "orderNumber", "title": "Order #", "type": "text", "sortable": true },
-            { "id": "status", "title": "Status", "type": "status", "sortable": true },
-            { "id": "total", "title": "Total", "type": "number", "sortable": true }
-          ],
-          "actions": [
-            { "id": "approve", "label": "Approve", "icon": "fas fa-check", "type": "primary", "condition": "status === 'pending'" },
-            { "id": "reject", "label": "Reject", "icon": "fas fa-times", "type": "danger", "condition": "status === 'pending'" }
-          ],
-          "permissions": ["orders:read", "orders:approve"],
-          "isWorkspace": true
-        },
-        {
-          "type": "details",
-          "route": "/order",
-          "features": ["validation", "audit-log"],
-          "fields": [
-            { "key": "customerName", "label": "Customer", "as": "VcInput", "required": true },
-            { "key": "status", "label": "Status", "as": "VcSelect", "required": true, "options": ["pending", "approved", "rejected"] },
-            { "key": "notes", "label": "Notes", "as": "VcTextarea" }
-          ],
-          "permissions": ["orders:read", "orders:update"]
-        }
-      ],
-      "dataSource": {
-        "type": "api",
-        "endpoint": "/api/orders"
-      },
-      "relationships": [
-        { "type": "hasMany", "entity": "line-item", "displayIn": "details" }
-      ]
-    },
-    {
-      "name": "line-items",
-      "singular": "line-item",
-      "blades": [
-        {
-          "type": "list",
-          "features": ["inline-editing"],
-          "columns": [
-            { "id": "productName", "title": "Product", "type": "text" },
-            { "id": "quantity", "title": "Qty", "type": "number" },
-            { "id": "price", "title": "Price", "type": "number" },
-            { "id": "total", "title": "Total", "type": "number" }
-          ]
-        }
-      ],
-      "relationships": [
-        { "type": "belongsTo", "entity": "order" }
-      ]
-    }
-  ],
-  "workflow": {
-    "type": "linear",
-    "steps": [
-      { "id": "create", "title": "Create Order", "bladeId": "order-details", "nextStep": "review" },
-      { "id": "review", "title": "Review", "bladeId": "order-details", "nextStep": "approve" },
-      { "id": "approve", "title": "Approval", "bladeId": "order-details" }
-    ]
-  },
-  "businessRules": [
-    { "type": "validation", "description": "Total must equal sum of line items", "appliesTo": "order" },
-    { "type": "workflow", "description": "Orders require manager approval", "appliesTo": "orders" },
-    { "type": "permission", "description": "Only managers can approve orders" }
-  ],
-  "confidence": 0.9,
-  "complexity": "complex",
-  "requiresCustomCode": true,
-  "notes": ["Approval workflow requires custom handlers", "Line items should be editable inline"]
-}
-\`\`\`
-
-### Example 2: Dashboard with Widgets
-
-**Prompt:** "Product analytics dashboard with sales charts, inventory widgets, and top sellers"
-
-**Analysis:**
-\`\`\`json
-{
-  "moduleName": "product-analytics",
-  "entities": [
-    {
-      "name": "products",
-      "singular": "product",
-      "blades": [
-        {
-          "type": "dashboard",
-          "route": "/analytics",
-          "features": ["widgets", "real-time"],
-          "isWorkspace": true
-        }
-      ],
-      "dataSource": {
-        "type": "api",
-        "endpoint": "/api/analytics/products"
-      }
-    }
-  ],
-  "globalFeatures": [
-    { "name": "real-time", "config": { "updateInterval": 5000 } },
-    { "name": "export", "config": { "formats": ["csv", "pdf"] } }
-  ],
-  "confidence": 0.85,
-  "complexity": "moderate",
-  "notes": ["Dashboard requires custom widget components", "Charts need data visualization library"]
-}
-\`\`\`
-
-Now analyze the user prompt and return ONLY the JSON object following this extended schema.`;
+**CRITICAL REMINDERS:**
+- Multiple menu/navigation items → Multiple workspace blades with \`isWorkspace: true\`
+- Routes MUST be single-level: \`/draft-pages\` NOT \`/pages/draft\` or \`/pages?status=draft\`
+- Each workspace blade MUST have \`menuItem: {title, icon, priority}\`
+- Use \`defaultFilter\` to pre-filter data in status-based workspace blades`;
 }
 
 /**
@@ -463,7 +399,7 @@ export function getPromptAnalysisSchemaV2() {
                 properties: {
                   type: {
                     type: "string",
-                    enum: ["list", "details", "dashboard", "wizard", "custom"],
+                    enum: ["list", "details", "custom"],
                   },
                   route: { type: "string" },
                   features: { type: "array", items: { type: "string" } },
@@ -472,6 +408,20 @@ export function getPromptAnalysisSchemaV2() {
                   actions: { type: "array" },
                   permissions: { type: "array", items: { type: "string" } },
                   isWorkspace: { type: "boolean" },
+                  menuItem: {
+                    type: "object",
+                    properties: {
+                      title: { type: "string", description: "i18n key for menu title" },
+                      icon: { type: "string", description: "Icon string (e.g., 'fas fa-file-alt')" },
+                      priority: { type: "number", description: "Priority in menu (lower = higher)" },
+                    },
+                    required: ["title", "icon", "priority"],
+                  },
+                  defaultFilter: {
+                    type: "object",
+                    description: "Default filter for pre-filtering data",
+                    additionalProperties: true,
+                  },
                 },
               },
             },

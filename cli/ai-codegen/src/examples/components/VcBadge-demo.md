@@ -3,9 +3,11 @@ id: component-VcBadge-demo
 type: COMPONENT
 complexity: SIMPLE
 category: component
-tags: [component]
+tags: ["component","badge","label","display"]
 title: "VcBadge Demo"
-description: "VcBadge Demo component example"
+description: "Badge component for labels and counts"
+componentRole: display
+bladeContext: ["details","list","general"]
 ---
 
 # VcBadge Demo

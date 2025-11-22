@@ -125,7 +125,7 @@
 <script lang="ts" setup>
 import { computed, ref, onMounted, unref } from "vue";
 import { IParentCallArgs, IBladeToolbar, useBladeNavigation, usePopup, useBeforeUnload } from "@vc-shell/framework";
-// TODO: Update import path for your entity's composable
+// Example: Import your entity's composable (e.g., useOfferDetails, useProductDetails)
 import { default as useEntityDetails } from "../composables/useEntityDetails";
 import { Field, useForm } from "vee-validate";
 import { useI18n } from "vue-i18n";

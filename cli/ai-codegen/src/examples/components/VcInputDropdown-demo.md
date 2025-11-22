@@ -3,9 +3,11 @@ id: component-VcInputDropdown-demo
 type: COMPONENT
 complexity: SIMPLE
 category: component
-tags: [component]
+tags: ["component","input","dropdown","form"]
 title: "VcInputDropdown Demo"
-description: "VcInputDropdown Demo component example"
+description: "Input field with dropdown suggestions"
+componentRole: form-input
+bladeContext: ["details"]
 ---
 
 # VcInputDropdown Demo

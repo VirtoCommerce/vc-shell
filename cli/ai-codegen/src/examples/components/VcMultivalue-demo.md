@@ -3,9 +3,11 @@ id: component-VcMultivalue-demo
 type: COMPONENT
 complexity: SIMPLE
 category: component
-tags: [component]
+tags: ["component","multivalue","tags","form","input"]
 title: "VcMultivalue Demo"
-description: "VcMultivalue Demo component example"
+description: "Tag input for multiple values"
+componentRole: form-input
+bladeContext: ["details"]
 ---
 
 # VcMultivalue Demo

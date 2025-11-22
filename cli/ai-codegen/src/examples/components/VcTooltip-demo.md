@@ -3,9 +3,11 @@ id: component-VcTooltip-demo
 type: COMPONENT
 complexity: SIMPLE
 category: component
-tags: [component]
+tags: ["component","tooltip","help","display"]
 title: "VcTooltip Demo"
-description: "VcTooltip Demo component example"
+description: "Tooltip component for additional information"
+componentRole: display
+bladeContext: ["details","list","general"]
 ---
 
 # VcTooltip Demo

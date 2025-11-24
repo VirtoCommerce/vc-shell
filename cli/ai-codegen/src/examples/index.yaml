@@ -284,8 +284,8 @@ statistics:
   total_templates: 9
   total_examples: 5   # Complete working examples (blade + composable)
   total_components: 30  # Component demo files (including VcForm-demo.md)
-  total_framework_examples: 24  # Framework composable examples (5 new composables added)
-  total_files: 346    # 332 .md + 12 .vue + 2 other (.json, .yaml)
+  total_framework_examples: 31  # Framework composable examples (8 composables total)
+  total_files: 353    # 341 .md + 12 .vue + 2 other (.json, .yaml)
 
 categories:
   patterns:
@@ -335,18 +335,21 @@ categories:
 # │   │   ├── slot-filters.md
 # │   │   └── ...
 # │   └── ...
-# └── framework/                           # 24 framework API examples
+# └── framework/                           # 33 framework API examples
 #     └── composables/
 #         ├── useBladeNavigation/          # Blade navigation (3 examples)
 #         ├── usePopup/                    # Popup dialogs (1 example)
 #         ├── useBeforeUnload/             # Prevent unload (1 example)
-#         ├── useLanguages/                # NEW: Localization (3 examples)
-#         ├── useNotifications/            # NEW: Real-time notifications (2 examples)
-#         ├── useBreadcrumbs/              # NEW: Breadcrumb navigation (1 example)
+#         ├── useLanguages/                # Localization (3 examples)
+#         ├── useNotifications/            # Real-time notifications (2 examples)
+#         ├── useBreadcrumbs/              # Breadcrumb navigation (1 example)
 #         ├── usePermissions/              # Permissions (2 examples)
 #         ├── useUser/                     # User info (1 example)
 #         ├── useAsync/                    # Async wrapper (1 example)
 #         ├── useApiClient/                # API client (2 examples)
 #         ├── useModificationTracker/      # Track changes (1 example)
-#         ├── useWidgets/                  # NEW: Blade widgets (2 examples)
-#         └── useDashboard/                # NEW: Dashboard widgets (2 examples)
+#         ├── useWidgets/                  # Blade widgets (2 examples)
+#         ├── useDashboard/                # Dashboard widgets (2 examples)
+#         ├── useFunctions/                # NEW: Utility functions (3 examples)
+#         ├── useTableSort/                # NEW: Table sorting (3 examples)
+#         └── useBlade/                    # NEW: Blade context (1 example)

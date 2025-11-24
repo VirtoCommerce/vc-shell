@@ -881,6 +881,28 @@
       "relatedAPIs": ["VcWidget", "useBlade"],
       "requiresContext": false
     },
+    "useBlade": {
+      "name": "useBlade",
+      "import": "@vc-shell/framework",
+      "type": "composable",
+      "description": "Access current blade instance and context (id, navigation index, metadata)",
+      "category": "Navigation",
+      "keywords": ["blade", "context", "instance", "current", "navigation", "widgets"],
+      "state": [
+        {
+          "name": "blade",
+          "type": "Ref<IBladeInstance>",
+          "description": "Current blade instance with id, navigation, closable, expanded properties",
+          "reactive": true
+        }
+      ],
+      "methods": [],
+      "capabilities": {},
+      "examples": [],
+      "dependencies": [],
+      "relatedAPIs": ["useBladeNavigation", "useWidgets"],
+      "requiresContext": true
+    },
     "useDashboard": {
       "name": "useDashboard",
       "import": "@vc-shell/framework",
@@ -904,6 +926,153 @@
         "Always use markRaw() wrapper for component",
         "Standard size is { width: 6, height: 6 }"
       ]
+    },
+    "useFunctions": {
+      "name": "useFunctions",
+      "import": "@vc-shell/framework",
+      "type": "composable",
+      "description": "Utility functions for common operations (debounce, throttle, delay, once, sleep)",
+      "category": "Utility",
+      "keywords": ["debounce", "throttle", "delay", "once", "sleep", "utility", "performance"],
+      "methods": [
+        {
+          "name": "debounce",
+          "description": "Delays function execution until after delay ms have elapsed since last call",
+          "signature": "(func: Function, delay: number) => Function",
+          "params": [
+            {
+              "name": "func",
+              "type": "Function",
+              "description": "Function to debounce",
+              "required": true
+            },
+            {
+              "name": "delay",
+              "type": "number",
+              "description": "Delay in milliseconds",
+              "required": true
+            }
+          ],
+          "returns": "Function",
+          "useCases": ["Search input", "Auto-save", "Window resize", "API calls"]
+        },
+        {
+          "name": "throttle",
+          "description": "Limits function execution to once per delay ms",
+          "signature": "(func: Function, delay: number) => Function",
+          "params": [
+            {
+              "name": "func",
+              "type": "Function",
+              "description": "Function to throttle",
+              "required": true
+            },
+            {
+              "name": "delay",
+              "type": "number",
+              "description": "Minimum delay between executions in milliseconds",
+              "required": true
+            }
+          ],
+          "returns": "Function",
+          "useCases": ["Scroll events", "Mouse move", "API rate limiting", "Button clicks"]
+        },
+        {
+          "name": "delay",
+          "description": "Execute function after delay",
+          "signature": "(func: Function, delay?: number) => void",
+          "params": [
+            {
+              "name": "func",
+              "type": "Function",
+              "description": "Function to execute",
+              "required": true
+            },
+            {
+              "name": "delay",
+              "type": "number",
+              "description": "Delay in milliseconds",
+              "required": false,
+              "default": 0
+            }
+          ],
+          "returns": "void",
+          "useCases": ["Delayed execution", "Timeout operations"]
+        },
+        {
+          "name": "once",
+          "description": "Execute function only once, cache result",
+          "signature": "(func: Function) => Function",
+          "params": [
+            {
+              "name": "func",
+              "type": "Function",
+              "description": "Function to execute once",
+              "required": true
+            }
+          ],
+          "returns": "Function",
+          "useCases": ["One-time initialization", "Expensive operations caching"]
+        }
+      ],
+      "state": [],
+      "capabilities": {},
+      "examples": [],
+      "dependencies": [],
+      "relatedAPIs": [],
+      "requiresContext": false
+    },
+    "useTableSort": {
+      "name": "useTableSort",
+      "import": "@vc-shell/framework",
+      "type": "composable",
+      "description": "Manage table sorting state with reactive sort expression and direction toggle (ASC ↔ DESC)",
+      "category": "Data",
+      "keywords": ["sort", "table", "ascending", "descending", "order", "column"],
+      "state": [
+        {
+          "name": "sortExpression",
+          "type": "Ref<string | undefined>",
+          "description": "Current sort expression in format 'property:ASC' or 'property:DESC'",
+          "reactive": true
+        },
+        {
+          "name": "currentSort",
+          "type": "WritableComputedRef<TableSortState>",
+          "description": "Current sort state with property and direction",
+          "reactive": true
+        }
+      ],
+      "methods": [
+        {
+          "name": "handleSortChange",
+          "description": "Handle sort column change from table header click. Toggles direction on same column.",
+          "signature": "(sortParam: string | ITableColumns) => void",
+          "params": [
+            {
+              "name": "sortParam",
+              "type": "string | ITableColumns",
+              "description": "Column ID or column object",
+              "required": true
+            }
+          ],
+          "returns": "void",
+          "useCases": ["Table header click", "Sort by column", "Toggle ASC/DESC"]
+        },
+        {
+          "name": "resetSort",
+          "description": "Reset to initial sort state",
+          "signature": "() => void",
+          "params": [],
+          "returns": "void",
+          "useCases": ["Clear sorting", "Reset to default"]
+        }
+      ],
+      "capabilities": {},
+      "examples": [],
+      "dependencies": [],
+      "relatedAPIs": ["useBladeNavigation"],
+      "requiresContext": false
     }
   },
   "plugins": {},

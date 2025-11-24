@@ -2,15 +2,13 @@
 
 import { Command } from "commander";
 import chalk from "chalk";
-import { mcpServerCommand } from "./commands/mcp";
+// ✅ NEW MCP Server (professional 5-layer architecture)
+import { mcpServerCommand } from "./mcp/server";
 import { mcpInitCommand } from "./commands/mcp-init";
 
 const program = new Command();
 
-program
-  .name("vcgen")
-  .description("MCP server for AI-powered VC Shell code generation")
-  .version("0.7.6");
+program.name("vcgen").description("MCP server for AI-powered VC Shell code generation").version("0.7.6");
 
 program
   .command("mcp")
@@ -34,7 +32,7 @@ program
       const validClients = ["cursor", "vscode", "claude", "codex"];
       if (!validClients.includes(options.client)) {
         console.error(
-          chalk.red(`Error: Invalid client '${options.client}'. Valid options: ${validClients.join(", ")}`)
+          chalk.red(`Error: Invalid client '${options.client}'. Valid options: ${validClients.join(", ")}`),
         );
         process.exit(1);
       }
@@ -49,4 +47,3 @@ program
   });
 
 program.parse();
-

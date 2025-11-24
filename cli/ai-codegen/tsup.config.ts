@@ -15,6 +15,8 @@ export default defineConfig({
     "@vue/compiler-sfc",
     "fs-extra",
     "js-yaml",
+    "yaml",
+    "execa", // Don't inline execa - used for CLI subprocess execution
   ],
   noExternal: [],
 });

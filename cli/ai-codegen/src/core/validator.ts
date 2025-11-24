@@ -3,10 +3,34 @@ import addFormats from "ajv-formats";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { PlanNormalizer } from "./plan-normalizer";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+/**
+ * Simple plan normalizer (inline implementation)
+ */
+function normalizePlan(plan: Record<string, unknown>): { plan: Record<string, unknown>; changes: string[] } {
+  const changes: string[] = [];
+  const normalized = JSON.parse(JSON.stringify(plan)); // Deep clone
+
+  // Normalize blade.components[].id to blade.components[].key
+  if (normalized.blades && Array.isArray(normalized.blades)) {
+    for (const blade of normalized.blades) {
+      if (blade.components && Array.isArray(blade.components)) {
+        for (const component of blade.components) {
+          if (component.id && !component.key) {
+            component.key = component.id;
+            delete component.id;
+            changes.push(`Renamed component.id to component.key in blade ${blade.id}`);
+          }
+        }
+      }
+    }
+  }
+
+  return { plan: normalized, changes };
+}
 
 export interface ValidationError {
   path: string;
@@ -124,10 +148,8 @@ export class Validator {
   private ajv: Ajv;
   private uiPlanSchema: AnySchema;
   private componentRegistry: Record<string, unknown>;
-  private normalizer: PlanNormalizer;
 
   constructor() {
-    this.normalizer = new PlanNormalizer();
     this.ajv = new Ajv({ allErrors: true, strict: false });
     addFormats(this.ajv);
 
@@ -155,7 +177,7 @@ export class Validator {
 
     // Normalize plan first (id → key, etc.)
     const normalizedPlan = typeof plan === 'object' && plan !== null
-      ? this.normalizer.normalize(plan as Record<string, unknown>).plan
+      ? normalizePlan(plan as Record<string, unknown>).plan
       : plan;
 
     // JSON Schema validation
@@ -356,7 +378,7 @@ export class Validator {
    * Normalize UI-Plan (fix common issues like id → key)
    */
   normalizePlan(plan: Record<string, unknown>): { plan: Record<string, unknown>; changes: string[] } {
-    return this.normalizer.normalize(plan);
+    return normalizePlan(plan);
   }
 }
 

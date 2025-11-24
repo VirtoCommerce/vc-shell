@@ -4,6 +4,10 @@
  * This file provides programmatic access to the AI code generation system.
  */
 
+// ============================================
+// LEGACY EXPORTS (DEPRECATED - use new architecture)
+// ============================================
+
 // Rules System
 export { RulesLoader } from "./core/rules-loader";
 export type {
@@ -31,10 +35,6 @@ export type {
   ExampleSearchQuery,
 } from "./core/examples-types";
 
-// AI Generation System (deprecated - now handled by Response Templating)
-// export { AIGenerationGuideBuilder } from "./core/ai-generation-guide-builder";
-// export { SmartCodeGenerator } from "./core/smart-generator";
-
 // UI Plan Validator
 export { UIPlan } from "./core/validator";
 
@@ -58,3 +58,60 @@ export {
 
 // Types
 export type { UIPlan as UIPlansType } from "./schemas/zod-schemas";
+
+// ============================================
+// NEW ARCHITECTURE EXPORTS (5-Layer System)
+// ============================================
+
+// Layer 1: Knowledge Base
+export { KnowledgeBase } from "./knowledge";
+export type {
+  ComponentMetadata,
+  FrameworkAPIMetadata,
+  PatternMetadata,
+  TemplateMetadata,
+  FeatureMetadata,
+} from "./knowledge/types";
+
+// Layer 2: Intelligence Layer
+export {
+  ComponentResolver,
+  FeatureResolver,
+  CapabilityResolver,
+  TemplateResolver,
+} from "./intelligence";
+export type {
+  IntentMatch,
+  IntentQuery,
+  MatchResult,
+  MatchableItem,
+  ValidationResult as IntelligenceValidationResult,
+  ValidationError as IntelligenceValidationError,
+} from "./intelligence/types";
+
+// Layer 3: Generators Layer
+export {
+  SmartPromptAnalyzer,
+  IntentExtractor,
+  EntityExtractor,
+  SmartUIPlanner,
+  BladePlanner,
+  WorkflowPlanner,
+  VueSFCSynthesizer,
+  ComposableSynthesizer,
+  APIClientSynthesizer,
+  LocaleSynthesizer,
+} from "./generators";
+
+// Layer 4: Workflows Layer
+export { WorkflowOrchestrator } from "./workflows";
+export type {
+  WorkflowState,
+  WorkflowStep,
+  StepResult,
+  WorkflowContext,
+  StepExecutor,
+} from "./workflows/types";
+
+// Layer 5: MCP Server (programmatic access)
+export { registerToolHandlers, allHandlers } from "./mcp/handlers";

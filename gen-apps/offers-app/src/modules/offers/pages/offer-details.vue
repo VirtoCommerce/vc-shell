@@ -51,24 +51,15 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, watch, onBeforeUnmount } from "vue";
+import { computed, onMounted, watch } from "vue";
 import { useI18n } from "vue-i18n";
-import {
-  IBladeToolbar,
-  IParentCallArgs,
-  useBladeNavigation,
-  useBeforeUnload,
-  usePopup,
-  useWidgets,
-  useBlade,
-} from "@vc-shell/framework";
+import { IBladeToolbar, IParentCallArgs, useBladeNavigation, useBeforeUnload, usePopup } from "@vc-shell/framework";
 import { useOfferDetails } from "../composables";
 import { Field, useForm } from "vee-validate";
 import moment from "moment";
 
 // TODO: Replace with your actual types
 // Example: import { IProduct } from "@your-app/api/products";
-import { SpecialPricesWidget } from "../components/widgets";
 
 export interface Props {
   expanded?: boolean;
@@ -88,8 +79,6 @@ const props = withDefaults(defineProps<Props>(), {
   expanded: true,
   closable: true,
 });
-const blade = useBlade();
-const { registerWidget, unregisterWidget } = useWidgets();
 
 const emit = defineEmits<Emits>();
 
@@ -184,25 +173,6 @@ onBeforeClose(async () => {
 });
 
 useBeforeUnload(computed(() => isModified.value));
-
-function registerWidgets() {
-  registerWidget(
-    {
-      id: "SpecialPricesWidget",
-      component: SpecialPricesWidget,
-      props: { item },
-      updateFunctionName: "updateActiveWidgetCount",
-      // isVisible: computed(() => !!props.param), // Uncomment to show widget only when blade has param
-    },
-    blade?.value.id ?? "",
-  );
-}
-
-registerWidgets();
-
-onBeforeUnmount(() => {
-  unregisterWidget("SpecialPricesWidget", blade?.value.id);
-});
 
 defineExpose({
   title: bladeTitle,

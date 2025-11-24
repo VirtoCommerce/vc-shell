@@ -69,11 +69,6 @@
         "CLOSE_CONFIRMATION": "You have unsaved changes. Are you sure you want to close?",
         "NOT_VALID": "Please fill all required fields correctly."
       }
-    },
-    "WIDGETS": {
-      "SPECIAL_PRICES": {
-        "TITLE": "SpecialPrices"
-      }
     }
   }
 }

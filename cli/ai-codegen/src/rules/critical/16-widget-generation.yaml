@@ -1,0 +1,128 @@
+id: "16"
+name: "Widget Registration Pattern"
+category: "critical"
+priority: 90
+enabled: true
+applies_to:
+  - "details"
+
+description: |
+  Widgets in VC-Shell use useWidgets() composable for lifecycle management.
+
+  PREFERRED: Use generate_widget MCP tool - it handles everything automatically.
+  FALLBACK: If manual creation needed, follow the pattern below exactly.
+
+  The generate_widget tool automatically:
+  - Creates widget Vue component in components/widgets/{widget-name}/
+  - Creates index.ts export
+  - Auto-adds import to parent blade
+  - Auto-adds useWidgets() and useBlade() setup
+  - Auto-creates registerWidget() function with proper props
+  - Auto-adds onBeforeUnmount cleanup with unregisterWidget()
+  - Auto-adds locale translations (WIDGETS.{WIDGET_NAME}.TITLE)
+
+forbidden:
+  - pattern: "markRaw\\(.*Widget\\)"
+    reason: "Do NOT wrap widget components in markRaw() - pass component directly"
+    severity: "error"
+
+required:
+  - pattern: "useWidgets\\(\\)"
+    when: "Widget registration is needed"
+    severity: "error"
+
+  - pattern: "useBlade\\(\\)"
+    when: "Widget registration is needed"
+    severity: "error"
+
+  - pattern: "onBeforeUnmount"
+    when: "Widgets are registered"
+    severity: "error"
+
+  - pattern: "unregisterWidget"
+    when: "registerWidget is used"
+    severity: "error"
+
+correct_pattern:
+  inline: |
+    ```typescript
+    // ✅ CORRECT: Widget registration pattern
+    import { computed, onBeforeUnmount } from "vue";
+    import { useWidgets, useBlade } from "@vc-shell/framework";
+    import { SpecialPricesWidget } from "../components/widgets";
+
+    // Setup
+    const { registerWidget, unregisterWidget } = useWidgets();
+    const blade = useBlade();
+
+    // Register widgets (call immediately after setup, NOT in onMounted)
+    function registerWidgets() {
+      registerWidget(
+        {
+          id: "SpecialPricesWidget",
+          component: SpecialPricesWidget,  // Direct reference, NO markRaw!
+          props: {
+            // Use computed() for reactive props
+            priceLists: computed(() => offer.value.priceLists),
+            offerId: computed(() => offer.value?.id),
+          },
+          updateFunctionName: "updateActiveWidgetCount",  // Optional callback
+          isVisible: computed(() => !!props.param),  // Show only for existing items
+        },
+        blade?.value.id ?? "",  // Parent blade ID
+      );
+    }
+
+    // Call immediately
+    registerWidgets();
+
+    // IMPORTANT: Always cleanup on unmount
+    onBeforeUnmount(() => {
+      unregisterWidget("SpecialPricesWidget", blade?.value.id);
+    });
+    ```
+
+wrong_pattern:
+  inline: |
+    ```typescript
+    // ❌ WRONG: Using markRaw on component
+    registerWidget({
+      component: markRaw(MyWidget),  // Don't do this!
+    });
+
+    // ❌ WRONG: Non-reactive props
+    registerWidget({
+      props: {
+        data: entity.value,  // Static snapshot, won't update!
+      },
+    });
+
+    // ❌ WRONG: Registering in onMounted (too late)
+    onMounted(() => {
+      registerWidgets();  // Widget won't appear immediately
+    });
+
+    // ❌ WRONG: Forgetting cleanup
+    // No onBeforeUnmount with unregisterWidget = memory leak!
+    ```
+
+automation:
+  tool: generate_widget
+  description: |
+    PREFERRED: Use generate_widget MCP tool for automatic setup.
+
+    generate_widget({
+      cwd: "/path/to/app",
+      module: "offers",
+      blade: "offer-details",
+      widgetName: "SpecialPrices",
+      entityName: "Offer"
+    })
+
+notes:
+  - generate_widget uses create-vc-app CLI under the hood
+  - Widget registration happens AFTER blade setup, BEFORE onMounted
+  - Widget cleanup MUST happen in onBeforeUnmount
+  - Props MUST be reactive (use computed() values)
+  - isVisible controls when widget appears (use computed)
+  - Pass component directly to registerWidget, do NOT use markRaw()

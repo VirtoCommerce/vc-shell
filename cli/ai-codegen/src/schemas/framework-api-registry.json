@@ -1073,6 +1073,83 @@
       "dependencies": [],
       "relatedAPIs": ["useBladeNavigation"],
       "requiresContext": false
+    },
+    "useAssets": {
+      "name": "useAssets",
+      "import": "@vc-shell/framework",
+      "type": "composable",
+      "description": "Asset management composable for uploading, removing, and editing files/images. Used with VcGallery component.",
+      "category": "Assets",
+      "keywords": ["assets", "upload", "images", "files", "gallery", "media"],
+      "methods": [
+        {
+          "name": "upload",
+          "description": "Upload files to the asset storage",
+          "signature": "(files: FileList, uploadPath: string, startingSortOrder?: number) => Promise<ICommonAsset[]>",
+          "params": [
+            { "name": "files", "type": "FileList", "description": "Files to upload", "required": true },
+            { "name": "uploadPath", "type": "string", "description": "Path where files will be uploaded (e.g., offers/{id})", "required": true },
+            { "name": "startingSortOrder", "type": "number", "description": "Starting sort order for uploaded files", "required": false }
+          ],
+          "returns": "Promise<ICommonAsset[]>",
+          "useCases": ["Upload images to gallery", "Upload product images", "Upload documents"]
+        },
+        {
+          "name": "remove",
+          "description": "Remove files from an asset array",
+          "signature": "(filesToDelete: ICommonAsset[], initialAssetArr: ICommonAsset[]) => ICommonAsset[]",
+          "params": [
+            { "name": "filesToDelete", "type": "ICommonAsset[]", "description": "Files to remove", "required": true },
+            { "name": "initialAssetArr", "type": "ICommonAsset[]", "description": "Original asset array", "required": true }
+          ],
+          "returns": "ICommonAsset[]",
+          "useCases": ["Remove images from gallery", "Delete uploaded files"]
+        },
+        {
+          "name": "edit",
+          "description": "Update files in an asset array (for sorting or metadata updates)",
+          "signature": "(updatedFiles: ICommonAsset[], initialAssetArr: ICommonAsset[]) => ICommonAsset[]",
+          "params": [
+            { "name": "updatedFiles", "type": "ICommonAsset[]", "description": "Updated files with new data", "required": true },
+            { "name": "initialAssetArr", "type": "ICommonAsset[]", "description": "Original asset array", "required": true }
+          ],
+          "returns": "ICommonAsset[]",
+          "useCases": ["Update image metadata", "Change sort order", "Drag-drop reordering"]
+        }
+      ],
+      "state": [
+        { "name": "loading", "type": "ComputedRef<boolean>", "description": "Loading state during upload operations", "reactive": true }
+      ],
+      "capabilities": {
+        "gallery-upload": {
+          "id": "gallery-upload",
+          "type": "method",
+          "name": "upload",
+          "description": "Upload files to gallery",
+          "useCases": ["Image gallery", "Product images"],
+          "complexity": "simple"
+        },
+        "gallery-management": {
+          "id": "gallery-management",
+          "type": "feature",
+          "name": "Gallery Management",
+          "description": "Full CRUD operations for gallery assets",
+          "useCases": ["Image gallery", "Media management"],
+          "complexity": "moderate"
+        }
+      },
+      "examples": [{
+        "title": "VcGallery integration",
+        "code": "const { upload, remove, edit, loading } = useAssets();\n\nconst assetsHandler = {\n  loading,\n  async upload(files: FileList, startingSortOrder?: number) {\n    const uploaded = await upload(files, `offers/${item.value?.id}`, startingSortOrder);\n    item.value.images = [...(item.value.images ?? []), ...uploaded];\n  },\n  edit(files: ICommonAsset[]) {\n    item.value.images = edit(files, item.value.images ?? []);\n  },\n  remove(file: ICommonAsset) {\n    item.value.images = remove([file], item.value.images ?? []);\n  }\n};"
+      }],
+      "dependencies": [],
+      "relatedAPIs": ["VcGallery", "useBladeNavigation"],
+      "requiresContext": false,
+      "notes": [
+        "Used together with VcGallery component",
+        "Returns updated arrays - always assign back to item",
+        "Upload path should be unique per entity (e.g., offers/{id})"
+      ]
     }
   },
   "plugins": {},
@@ -1255,138 +1332,6 @@
         "Pass pages, locales, and notificationTemplates as separate arguments",
         "Export composables and pages for external use",
         "Register dashboard widgets BEFORE calling createAppModule"
-      ]
-    },
-    "useAssets": {
-      "name": "useAssets",
-      "import": "@vc-shell/framework",
-      "type": "composable",
-      "description": "Asset management composable for uploading, removing, and editing files/images. Used with VcGallery component.",
-      "category": "Assets",
-      "keywords": [
-        "assets",
-        "upload",
-        "images",
-        "files",
-        "gallery",
-        "media"
-      ],
-      "methods": [
-        {
-          "name": "upload",
-          "description": "Upload files to the asset storage",
-          "signature": "(files: FileList, uploadPath: string, startingSortOrder?: number) => Promise<ICommonAsset[]>",
-          "params": [
-            {
-              "name": "files",
-              "type": "FileList",
-              "description": "Files to upload",
-              "required": true
-            },
-            {
-              "name": "uploadPath",
-              "type": "string",
-              "description": "Path where files will be uploaded",
-              "required": true
-            },
-            {
-              "name": "startingSortOrder",
-              "type": "number",
-              "description": "Starting sort order for uploaded files",
-              "required": false
-            }
-          ],
-          "returns": "Promise<ICommonAsset[]>",
-          "useCases": [
-            "Upload images to gallery",
-            "Upload product images",
-            "Upload documents"
-          ]
-        },
-        {
-          "name": "remove",
-          "description": "Remove files from an asset array",
-          "signature": "(filesToDelete: ICommonAsset[], initialAssetArr: ICommonAsset[]) => ICommonAsset[]",
-          "params": [
-            {
-              "name": "filesToDelete",
-              "type": "ICommonAsset[]",
-              "description": "Files to remove",
-              "required": true
-            },
-            {
-              "name": "initialAssetArr",
-              "type": "ICommonAsset[]",
-              "description": "Original asset array",
-              "required": true
-            }
-          ],
-          "returns": "ICommonAsset[]",
-          "useCases": [
-            "Remove images from gallery",
-            "Delete uploaded files"
-          ]
-        },
-        {
-          "name": "edit",
-          "description": "Update files in an asset array",
-          "signature": "(updatedFiles: ICommonAsset[], initialAssetArr: ICommonAsset[]) => ICommonAsset[]",
-          "params": [
-            {
-              "name": "updatedFiles",
-              "type": "ICommonAsset[]",
-              "description": "Updated files with new data",
-              "required": true
-            },
-            {
-              "name": "initialAssetArr",
-              "type": "ICommonAsset[]",
-              "description": "Original asset array",
-              "required": true
-            }
-          ],
-          "returns": "ICommonAsset[]",
-          "useCases": [
-            "Update image metadata",
-            "Change sort order"
-          ]
-        }
-      ],
-      "state": [
-        {
-          "name": "loading",
-          "type": "ComputedRef<boolean>",
-          "description": "Loading state during upload/operations",
-          "reactive": true
-        }
-      ],
-      "capabilities": [
-        {
-          "id": "upload-files",
-          "name": "File Upload",
-          "complexity": "simple",
-          "description": "Upload files to asset storage"
-        },
-        {
-          "id": "manage-gallery",
-          "name": "Gallery Management",
-          "complexity": "moderate",
-          "description": "Full CRUD operations for gallery assets"
-        }
-      ],
-      "examples": [
-        {
-          "title": "Basic usage with VcGallery",
-          "code": "const { upload, remove, edit, loading } = useAssets();\n\nconst assetsHandler = {\n  async images(files: FileList) {\n    const uploaded = await upload(files, `offers/${item.value?.id}`);\n    if (item.value) {\n      item.value.images = [...(item.value.images || []), ...uploaded];\n    }\n  },\n  async edit(updatedFiles: ICommonAsset[]) {\n    if (item.value) {\n      item.value.images = edit(updatedFiles, item.value.images || []);\n    }\n  },\n  async remove(files: ICommonAsset[]) {\n    if (item.value) {\n      item.value.images = remove(files, item.value.images || []);\n    }\n  }\n};"
-        }
-      ],
-      "dependencies": [],
-      "relatedAPIs": ["VcGallery"],
-      "requiresContext": false,
-      "notes": [
-        "Used together with VcGallery component",
-        "Returns updated arrays - remember to assign back to item",
-        "Upload path should be unique per entity (e.g., offers/{id})"
       ]
     }
   },

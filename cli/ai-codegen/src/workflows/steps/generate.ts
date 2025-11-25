@@ -69,12 +69,28 @@ export class GenerateStepExecutor implements StepExecutor {
       // Get current artifact to generate
       const currentItem = pagination.queue[0];
       if (!currentItem) {
-        // Queue is empty - this means all items in queue have been processed
-        // But this does NOT mean generation is complete!
-        // The AI still needs to generate code and submit it.
-        //
+        // Queue is empty - check WHY it's empty
+
+        // Check if API client is required but not generated
+        if (pagination.requiredArtifacts?.apiClient?.status === "required") {
+          console.log(`[GenerateStep] ❌ API client required but not generated - blocking blade generation`);
+          return {
+            success: false,
+            data: {
+              apiClientRequired: true,
+              module: plan.module,
+              requestedArtifact: input.artifactType,
+              requestedBladeId: input.bladeId,
+            },
+            errors: [
+              `API client must be generated FIRST before generating blades.`,
+              `Use generate_api_client tool to generate the API client for module "${plan.module}".`,
+              `After submitting the API client, you can generate blades with generate_with_composition.`,
+            ],
+          };
+        }
+
         // For single-artifact requests: blade not found in plan
-        // For full queue: this shouldn't happen unless all blades were already submitted
         if (isSingleArtifactRequest) {
           return {
             success: false,
@@ -194,16 +210,16 @@ export class GenerateStepExecutor implements StepExecutor {
     // If specific artifact requested, check if API client needs to be generated first
     if (input.bladeId && input.artifactType && input.artifactType !== AT.ALL) {
       // ENFORCE: API client MUST be generated before any blade or composable
+      // Return empty queue - execute() will handle this as apiClientRequired error
       if (requiresApiClient && !apiClientDone && input.artifactType !== AT.API_CLIENT) {
-        console.log(`[GenerateStep] ⚠️ API client not yet generated - forcing API client first!`);
-        console.log(`[GenerateStep] Requested: ${input.artifactType} for ${input.bladeId}, but API client is required`);
+        console.log(`[GenerateStep] ⚠️ API client not yet generated - returning empty queue`);
         return {
-          queue: [{ bladeId: plan.module || plan.blades[0]?.id || "module", artifactType: AT.API_CLIENT }],
+          queue: [], // Empty queue signals API client is required
           contextLevel: input.contextLevel || CL.ESSENTIAL,
           completedArtifacts: new Map(),
           requiredArtifacts: {
             blades: plan.blades.map((b: any) => ({ id: b.id, status: "pending" })),
-            apiClient: { status: "pending", required: true },
+            apiClient: { status: "required", required: true },
             widgets: [],
           },
         };
@@ -492,6 +508,26 @@ export class GenerateStepExecutor implements StepExecutor {
           lines.push("7. Implement validation rules");
           lines.push("8. Use useModificationTracker for unsaved changes");
         }
+        lines.push("");
+        lines.push("## LOCALE GENERATION (CRITICAL!):");
+        lines.push("You MUST generate locale translations for ALL $t() keys used in the blade.");
+        lines.push("When calling submit_generated_code, include the 'locale' parameter with:");
+        lines.push("```json");
+        lines.push(`{`);
+        lines.push(`  "${moduleName.toUpperCase()}": {`);
+        lines.push(`    "PAGES": {`);
+        lines.push(`      "${blade.type.toUpperCase()}": {`);
+        lines.push(`        "TITLE": "...",`);
+        lines.push(`        "SUBTITLE": "...",`);
+        lines.push(`        "SECTIONS": { /* all section titles */ },`);
+        lines.push(`        "FIELDS": { /* all field labels and placeholders */ },`);
+        lines.push(`        "ACTIONS": { /* all button/action labels */ }`);
+        lines.push(`      }`);
+        lines.push(`    }`);
+        lines.push(`  }`);
+        lines.push(`}`);
+        lines.push("```");
+        lines.push("Include EVERY key used with $t() in the blade - missing keys cause runtime errors!");
         break;
 
       case AT.COMPOSABLE:
@@ -572,6 +608,9 @@ export class GenerateStepExecutor implements StepExecutor {
     lines.push(`- bladeId: "${blade.id}"`);
     lines.push(`- code: <your generated code>`);
     lines.push("- context: { module, layout }");
+    if (artifactType === AT.BLADE) {
+      lines.push("- locale: { code: '<JSON with all $t() keys>' } - REQUIRED for blades!");
+    }
 
     return lines.join("\n");
   }

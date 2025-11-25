@@ -2,16 +2,17 @@
  * Workflow MCP Tool Handlers
  *
  * Handlers for workflow orchestration tools using NEW architecture.
- * 8 tools total:
+ * 10 tools total:
  * 1. analyze_prompt_v2
  * 2. discover_components_and_apis
  * 3. create_ui_plan_from_analysis_v2
  * 4. validate_ui_plan
  * 5. generate_with_composition
- * 6. submit_generated_code
- * 7. get_workflow_status
- * 8. reset_workflow
- * 9. start_module_workflow (full workflow)
+ * 6. generate_api_client
+ * 7. submit_generated_code
+ * 8. get_workflow_status
+ * 9. reset_workflow
+ * 10. start_module_workflow (full workflow)
  */
 
 import type { MCPServerContext } from "../context";
@@ -310,6 +311,38 @@ export const generateWithCompositionHandler: ToolHandler = async (params, contex
     });
 
     if (!result.success) {
+      // Check if this is an apiClientRequired error
+      if (result.data?.apiClientRequired) {
+        return {
+          success: false,
+          apiClientRequired: true,
+          module: result.data.module,
+          errors: result.errors,
+          message: [
+            "## ⚠️ API CLIENT REQUIRED FIRST!",
+            "",
+            `You tried to generate ${result.data.requestedArtifact} for "${result.data.requestedBladeId}",`,
+            "but the API client must be generated FIRST.",
+            "",
+            "## Next Step:",
+            `Call generate_api_client({ cwd: "${cwd}" })`,
+            "",
+            "## Why?",
+            "Composables import types from the API client.",
+            "Without it, blade composables will have import errors.",
+            "",
+            "## Workflow Order:",
+            "1. generate_api_client → submit API client",
+            "2. generate_with_composition → submit blades",
+          ].join("\n"),
+          nextSteps: [{
+            tool: "generate_api_client",
+            params: { cwd },
+            description: `Generate API client for module ${result.data.module}`,
+          }],
+        };
+      }
+
       return {
         success: false,
         errors: result.errors || ["Guide generation failed"],
@@ -359,13 +392,31 @@ export const generateWithCompositionHandler: ToolHandler = async (params, contex
     const guide = paginationResponse?.guide;
     const pagination = paginationResponse?.pagination;
 
+    // Check if request was redirected to apiClient
+    const wasRedirectedToApiClient =
+      effectiveArtifactType !== "apiClient" &&
+      guide?.artifactType === "apiClient";
+
     const messageLines = [
       dryRun ? "🔍 DRY RUN MODE" : "📦 GENERATION GUIDE READY",
       "",
+    ];
+
+    // Add CRITICAL warning if redirected to apiClient
+    if (wasRedirectedToApiClient) {
+      messageLines.push("## ⚠️ CRITICAL: API CLIENT REQUIRED FIRST!");
+      messageLines.push(`You requested to generate ${effectiveArtifactType} for ${effectiveBladeId},`);
+      messageLines.push("but API CLIENT must be generated FIRST because composables depend on it.");
+      messageLines.push("");
+      messageLines.push("**DO NOT generate a blade. Generate the API client below instead.**");
+      messageLines.push("");
+    }
+
+    messageLines.push(
       `## Current Artifact: ${guide?.artifactType?.toUpperCase()} - ${guide?.bladeId}`,
       `- Module: ${guide?.module}`,
       `- Entity: ${guide?.entity}`,
-      `- Type: ${guide?.bladeType} blade`,
+      `- Type: ${guide?.artifactType === "apiClient" ? "API Client" : `${guide?.bladeType} blade`}`,
       `- Features: ${guide?.features?.join(", ") || "none"}`,
       `- Target: ${guide?.targetPath}`,
       "",
@@ -373,26 +424,71 @@ export const generateWithCompositionHandler: ToolHandler = async (params, contex
       `- Remaining: ${pagination?.remaining || 0}`,
       "",
       "## Context Level: " + (guide?.context?.level || "essential").toUpperCase(),
-      guide?.context?.template ? "✅ Template included" : "❌ Template not included (use get_best_template)",
-      guide?.context?.topPatterns?.length ? `✅ ${guide.context.topPatterns.length} patterns included` : "❌ Patterns not included (use get_relevant_patterns)",
+    );
+
+    // Only show template/pattern hints for blades, not API client
+    if (guide?.artifactType !== "apiClient") {
+      messageLines.push(
+        guide?.context?.template ? "✅ Template included" : "❌ Template not included (use get_best_template)",
+        guide?.context?.topPatterns?.length ? `✅ ${guide.context.topPatterns.length} patterns included` : "❌ Patterns not included (use get_relevant_patterns)",
+      );
+    }
+
+    messageLines.push(
       "",
       "## Instructions:",
       guide?.instructions || "Generate code following the guide above",
-    ];
+    );
 
     // Build nextSteps for easy AI navigation
     const nextSteps = paginationResponse?.nextSteps || [];
 
-    // Build REQUIRED next action message
-    const requiredAction = [
-      "",
-      "## ⚠️ REQUIRED NEXT STEP:",
-      `You MUST generate Vue SFC code for blade "${guide?.bladeId}" based on the guide above,`,
-      "then call submit_generated_code with the generated code.",
-      "",
-      "DO NOT skip this step - base files from create-vc-app are just scaffolding.",
-      "The generated code must implement ALL features from the UI-Plan.",
-    ].join("\n");
+    // Build REQUIRED next action message based on artifact type
+    let requiredAction: string;
+    if (guide?.artifactType === "apiClient") {
+      requiredAction = [
+        "",
+        "## ⚠️ REQUIRED NEXT STEP:",
+        `You MUST generate TypeScript API CLIENT code for module "${guide?.module}" based on the guide above,`,
+        "then call submit_generated_code with:",
+        `  - bladeId: "${guide?.bladeId}"`,
+        `  - code: "" (empty string)`,
+        `  - apiClient: { name: "${guide?.module}.api.ts", code: <your generated API client code> }`,
+        `  - context: { module: "${guide?.module}", layout: "details" }`,
+        "",
+        "DO NOT skip this step - blades and composables DEPEND on this API client!",
+        "After API client is submitted, you can generate blades.",
+      ].join("\n");
+    } else {
+      requiredAction = [
+        "",
+        "## ⚠️ REQUIRED NEXT STEP:",
+        `You MUST generate ${guide?.artifactType === "composable" ? "TypeScript composable" : "Vue SFC"} code for "${guide?.bladeId}" based on the guide above,`,
+        "then call submit_generated_code with the generated code.",
+        "",
+        "DO NOT skip this step - base files from create-vc-app are just scaffolding.",
+        "The generated code must implement ALL features from the UI-Plan.",
+      ].join("\n");
+    }
+
+    // Build appropriate reminder based on artifact type
+    const reminder = guide?.artifactType === "apiClient"
+      ? "CRITICAL: You MUST generate the API CLIENT code first! Composables and blades depend on it. Generate TypeScript API client code and submit with apiClient parameter."
+      : "IMPORTANT: After reading this guide, you MUST generate code and call submit_generated_code. Do NOT consider generation complete until submit_generated_code returns success for ALL blades.";
+
+    // Build nextSteps specifically for the current artifact type
+    const effectiveNextSteps = guide?.artifactType === "apiClient"
+      ? [{
+          tool: "submit_generated_code",
+          params: {
+            bladeId: guide?.bladeId,
+            code: "",
+            apiClient: { name: `${guide?.module}.api.ts`, code: "<YOUR GENERATED API CLIENT CODE>" },
+            context: { module: guide?.module, layout: "details" },
+          },
+          description: `Submit API client for module ${guide?.module}`,
+        }]
+      : nextSteps;
 
     return {
       success: true,
@@ -402,16 +498,18 @@ export const generateWithCompositionHandler: ToolHandler = async (params, contex
       pagination: paginationResponse?.pagination,
       // Smart defaults info
       smartDefaults,
-      // Clear next steps
-      nextSteps,
+      // Clear next steps - use effective next steps based on artifact type
+      nextSteps: effectiveNextSteps,
+      // Flag to indicate if API client was forced
+      apiClientRequired: wasRedirectedToApiClient,
       // Generation guide is ready - AI needs to generate code and submit
       // allComplete is NEVER true from generate_with_composition
       // It only becomes true after ALL blades are submitted via submit_generated_code
       allComplete: false,
       // Human-readable message with REQUIRED action
       message: messageLines.join("\n") + requiredAction,
-      // Explicit reminder
-      _reminder: "IMPORTANT: After reading this guide, you MUST generate code and call submit_generated_code. Do NOT consider generation complete until submit_generated_code returns success for ALL blades.",
+      // Explicit reminder based on artifact type
+      _reminder: reminder,
     };
   } catch (error: any) {
     return {
@@ -764,6 +862,125 @@ export const startModuleWorkflowHandler: ToolHandler = async (params, context) =
 };
 
 /**
+ * 10. generate_api_client
+ * Generate API client guide - MUST be called before generating blades
+ */
+export const generateApiClientHandler: ToolHandler = async (params, context) => {
+  const { cwd } = params;
+  const { orchestrator } = context;
+
+  try {
+    // Validate cwd
+    const cwdValidation = validateCwdForGeneration(cwd);
+    if (!cwdValidation.valid) {
+      return {
+        success: false,
+        needsApp: true,
+        errors: cwdValidation.errors,
+        warnings: cwdValidation.warnings,
+        appInfo: cwdValidation.appInfo,
+        suggestedAction: cwdValidation.suggestedAction,
+        message: cwdValidation.suggestedAction
+          ? `No valid VC-Shell app found. ${cwdValidation.suggestedAction.description}`
+          : "No valid VC-Shell app found at the specified path.",
+      };
+    }
+
+    // Get state - need plan and analysis
+    const state = orchestrator.getState();
+    if (!state.plan) {
+      return {
+        success: false,
+        errors: ["No UI-Plan in workflow state. Run validate_ui_plan first."],
+      };
+    }
+
+    // Check if API client already generated
+    if (state.completedArtifacts?.apiClient) {
+      return {
+        success: true,
+        alreadyComplete: true,
+        message: "API client has already been generated and submitted. Proceed to generate blades.",
+        nextSteps: [{
+          tool: "generate_with_composition",
+          params: { cwd: cwdValidation.cwd, bladeId: state.plan.blades[0]?.id, artifactType: "blade" },
+          description: `Generate first blade: ${state.plan.blades[0]?.id}`,
+        }],
+      };
+    }
+
+    // Save cwd to state
+    orchestrator.updateState({ cwd: cwdValidation.cwd });
+
+    // Execute generation step with apiClient artifact type
+    const result = await orchestrator.executeStep("generating" as any, {
+      plan: state.plan,
+      cwd: cwdValidation.cwd,
+      artifactType: "apiClient",
+      contextLevel: "essential",
+    });
+
+    if (!result.success) {
+      return {
+        success: false,
+        errors: result.errors || ["API client guide generation failed"],
+      };
+    }
+
+    const guide = result.data?.guide;
+    const moduleName = state.plan.module;
+
+    // Build clear message
+    const messageLines = [
+      "# 📦 API CLIENT GENERATION GUIDE",
+      "",
+      "**This is the FIRST step before generating any blades.**",
+      "",
+      `## Module: ${moduleName}`,
+      `## Target: src/api_client/${moduleName}.api.ts`,
+      "",
+      "## Instructions:",
+      guide?.instructions || "Generate TypeScript API client following the structure below",
+      "",
+      "## After generating code, submit with:",
+      "```",
+      "submit_generated_code({",
+      `  bladeId: "${moduleName}",`,
+      `  code: "",`,
+      `  apiClient: { name: "${moduleName}.api.ts", code: <YOUR_CODE> },`,
+      `  context: { module: "${moduleName}", layout: "details" }`,
+      "});",
+      "```",
+    ];
+
+    return {
+      success: true,
+      guide,
+      module: moduleName,
+      targetPath: guide?.targetPath || `${cwdValidation.cwd}/src/api_client/${moduleName}.api.ts`,
+      entities: guide?.context?.entities || state.analysis?.entities,
+      message: messageLines.join("\n"),
+      nextSteps: [{
+        tool: "submit_generated_code",
+        params: {
+          bladeId: moduleName,
+          code: "",
+          apiClient: { name: `${moduleName}.api.ts`, code: "<YOUR GENERATED API CLIENT CODE>" },
+          context: { module: moduleName, layout: "details" },
+        },
+        description: `Submit API client for module ${moduleName}`,
+      }],
+      _reminder: "Generate the API client code based on the guide and submit it. Blades cannot be generated until API client is submitted.",
+    };
+  } catch (error: any) {
+    return {
+      success: false,
+      errors: [error.message || "Unknown error during API client generation"],
+    };
+  }
+};
+
+/**
  * Export all workflow handlers
  */
 export const workflowHandlers = {
@@ -772,6 +989,7 @@ export const workflowHandlers = {
   create_ui_plan_from_analysis_v2: createUIPlanFromAnalysisV2Handler,
   validate_ui_plan: validateUIPlanHandler,
   generate_with_composition: generateWithCompositionHandler,
+  generate_api_client: generateApiClientHandler,
   submit_generated_code: submitGeneratedCodeHandler,
   get_workflow_status: getWorkflowStatusHandler,
   reset_workflow: resetWorkflowHandler,

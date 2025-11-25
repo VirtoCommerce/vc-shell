@@ -133,6 +133,12 @@ export const submitGeneratedCodeSchema = z.object({
     })
     .optional()
     .describe("Optional: Module API client code (one per module, not per entity)"),
+  locale: z
+    .object({
+      code: z.string().describe("JSON content for locale file (en.json). Must be valid JSON with all $t() keys used in blade."),
+    })
+    .optional()
+    .describe("Locale translations for this blade. IMPORTANT: Include ALL $t() keys used in the generated code."),
   context: z.object({
     module: z.string(),
     layout: z.enum(["grid", "details", "page"]),
@@ -193,6 +199,10 @@ export const startModuleWorkflowSchema = z.object({
   prompt: z.string().describe("User's module request (e.g., 'Create vendor management module with list and details')"),
   cwd: z.string().describe("Project directory where module should be generated"),
   module: z.string().optional().describe("Module name override (if not provided, will be inferred from prompt)"),
+});
+
+export const generateApiClientSchema = z.object({
+  cwd: z.string().describe("Project directory where module is being generated"),
 });
 
 // ============================================================================

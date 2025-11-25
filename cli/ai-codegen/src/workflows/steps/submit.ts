@@ -7,6 +7,33 @@
 import type { WorkflowState, WorkflowContext, StepExecutor, StepResult } from "../types";
 
 /**
+ * Deep merge two objects recursively
+ * New values override existing, nested objects are merged
+ */
+function deepMerge(target: Record<string, any>, source: Record<string, any>): Record<string, any> {
+  const result = { ...target };
+
+  for (const key of Object.keys(source)) {
+    if (
+      source[key] &&
+      typeof source[key] === "object" &&
+      !Array.isArray(source[key]) &&
+      target[key] &&
+      typeof target[key] === "object" &&
+      !Array.isArray(target[key])
+    ) {
+      // Recursively merge nested objects
+      result[key] = deepMerge(target[key], source[key]);
+    } else {
+      // Override with new value
+      result[key] = source[key];
+    }
+  }
+
+  return result;
+}
+
+/**
  * SubmitStepExecutor
  *
  * Step 6: Submit and validate generated code.
@@ -21,10 +48,11 @@ export class SubmitStepExecutor implements StepExecutor {
       cwd?: string;
       composable?: { name: string; code: string };
       apiClient?: { name: string; code: string };
+      locale?: { code: string }; // Locale JSON content to merge into en.json
       artifactType?: "blade" | "composable" | "apiClient"; // Track what type of artifact this is
     },
   ): Promise<StepResult> {
-    const { bladeId, code, cwd, composable, apiClient, artifactType } = input;
+    const { bladeId, code, cwd, composable, apiClient, locale, artifactType } = input;
 
     try {
       // Determine if this is an API client submission (no blade code, only apiClient)
@@ -144,6 +172,46 @@ export class SubmitStepExecutor implements StepExecutor {
 
           fs.writeFileSync(clientPath, apiClient.code, "utf-8");
           console.log(`[SubmitStep] ✓ Saved API client: ${clientPath}`);
+        }
+
+        // Save/merge locale if provided
+        // Locales are merged into existing en.json to preserve previously generated keys
+        if (locale?.code) {
+          const localePath = path.join(
+            cwd,
+            "src",
+            "modules",
+            plan.module,
+            "locales",
+            "en.json",
+          );
+
+          const localeDir = path.dirname(localePath);
+          if (!fs.existsSync(localeDir)) {
+            fs.mkdirSync(localeDir, { recursive: true });
+          }
+
+          try {
+            // Parse new locale content
+            const newLocale = JSON.parse(locale.code);
+
+            // Load existing locale if it exists
+            let existingLocale = {};
+            if (fs.existsSync(localePath)) {
+              const existingContent = fs.readFileSync(localePath, "utf-8");
+              existingLocale = JSON.parse(existingContent);
+            }
+
+            // Deep merge locales (new values override existing)
+            const mergedLocale = deepMerge(existingLocale, newLocale);
+
+            // Write merged locale with pretty formatting
+            fs.writeFileSync(localePath, JSON.stringify(mergedLocale, null, 2), "utf-8");
+            console.log(`[SubmitStep] ✓ Merged locale: ${localePath}`);
+          } catch (parseError: any) {
+            console.warn(`[SubmitStep] ⚠ Failed to parse/merge locale: ${parseError.message}`);
+            // Don't fail the submission for locale errors - just warn
+          }
         }
       }
 

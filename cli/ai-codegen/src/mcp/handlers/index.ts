@@ -2,7 +2,7 @@
  * MCP Tool Handlers Registration
  *
  * Centralizes all tool handlers from NEW architecture.
- * Total: 26 tools
+ * Total: 28 tools
  */
 
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
@@ -18,10 +18,10 @@ import { knowledgeHandlers } from "./knowledge";
 import { utilityHandlers } from "./utilities";
 
 /**
- * Combined tool handlers map (26 tools)
+ * Combined tool handlers map (27 tools)
  */
 export const allHandlers: ToolHandlers = {
-  // Workflow handlers (9 tools)
+  // Workflow handlers (10 tools)
   ...workflowHandlers,
 
   // Component handlers (5 tools)
@@ -41,7 +41,7 @@ export const allHandlers: ToolHandlers = {
  * Register all tool handlers with MCP server
  */
 export function registerToolHandlers(server: Server, context: MCPServerContext): void {
-  console.error("[MCP Handlers] Registering 26 tool handlers...");
+  console.error("[MCP Handlers] Registering 28 tool handlers...");
 
   // Register CallToolRequest handler
   server.setRequestHandler(CallToolRequestSchema, async (request) => {
@@ -87,7 +87,7 @@ export function registerToolHandlers(server: Server, context: MCPServerContext):
     }
   });
 
-  console.error("[MCP Handlers] ✓ All 26 tool handlers registered");
+  console.error("[MCP Handlers] ✓ All 28 tool handlers registered");
 }
 
 /**

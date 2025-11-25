@@ -17,6 +17,7 @@ import {
   createUIPlanFromAnalysisV2Schema,
   validateUIPlanSchema,
   generateWithCompositionSchema,
+  generateApiClientSchema,
   submitGeneratedCodeSchema,
   getWorkflowStatusSchema,
   resetWorkflowSchema,
@@ -52,7 +53,7 @@ import {
  * Tool schema definitions
  */
 const toolSchemas = [
-  // Workflow tools (9)
+  // Workflow tools (10)
   {
     name: "analyze_prompt_v2",
     description: "⚠️ MANDATORY FIRST STEP ⚠️ Analyze user prompt to extract entities, relationships, workflows, custom routes/actions/permissions, and features. Returns comprehensive analysis with schema. ALL module generation workflows MUST start with this tool.",
@@ -76,6 +77,13 @@ const toolSchemas = [
   {
     name: "generate_with_composition",
     description: `⚠️ REQUIRES VALIDATED UI-PLAN ⚠️ Generate AI instructions for Vue SFC code generation. WORKFLOW: analyze → create plan → validate → generate → **submit code**.
+
+**🚨 CRITICAL: ARTIFACT GENERATION ORDER 🚨**
+The system ENFORCES this generation order:
+1. **API CLIENT FIRST** - composables import types from it
+2. Blades and composables - after API client is submitted
+
+If you request a blade but API client hasn't been submitted yet, the system will REDIRECT you to generate API client first. **Follow the guide's artifactType!**
 
 **WHAT THIS TOOL DOES:**
 1. Returns structured generation guide with requirements, patterns, and constraints
@@ -122,6 +130,40 @@ See AI_GENERATION_RULES.md for complete restrictions.`,
     inputSchema: zodToJsonSchema(generateWithCompositionSchema),
   },
   {
+    name: "generate_api_client",
+    description: `⚠️ MUST BE CALLED BEFORE generate_with_composition ⚠️ Generate TypeScript API client for the module.
+
+**WHY THIS TOOL EXISTS:**
+API client MUST be generated FIRST because:
+1. Composables import types from the API client
+2. Blades use composables that depend on API client
+3. Without API client, composables will have import errors
+
+**WORKFLOW ORDER:**
+1. analyze_prompt_v2
+2. discover_components_and_apis
+3. create_ui_plan_from_analysis_v2
+4. validate_ui_plan
+5. **generate_api_client** ← YOU ARE HERE
+6. submit_generated_code (for API client)
+7. generate_with_composition (for blades)
+8. submit_generated_code (for each blade)
+
+**WHAT THIS TOOL RETURNS:**
+- Generation guide with entity definitions
+- TypeScript code structure template
+- API client target path (src/api_client/{module}.api.ts)
+- Submit instructions
+
+**AFTER GENERATING CODE:**
+Call submit_generated_code with:
+- bladeId: "{module}"
+- code: "" (empty)
+- apiClient: { name: "{module}.api.ts", code: <YOUR_CODE> }
+- context: { module: "{module}", layout: "details" }`,
+    inputSchema: zodToJsonSchema(generateApiClientSchema),
+  },
+  {
     name: "submit_generated_code",
     description: `Submit AI-generated code for validation and saving. Use this tool when you have generated Vue SFC code following a generation guide.
 
@@ -138,6 +180,25 @@ Generate detailed report with:
 - Attempted solutions for each retry
 - Recommendations for user
 - Workflow state summary
+
+**🌐 LOCALE GENERATION (CRITICAL FOR BLADES!):**
+When submitting blade code, you MUST include the 'locale' parameter with JSON containing ALL $t() keys used in the blade:
+\`\`\`json
+{
+  "MODULE_NAME": {
+    "PAGES": {
+      "LIST|DETAILS": {
+        "TITLE": "...",
+        "SUBTITLE": "...",
+        "SECTIONS": { "SECTION_NAME": "..." },
+        "FIELDS": { "FIELD_NAME": { "LABEL": "...", "PLACEHOLDER": "..." } },
+        "ACTIONS": { "SAVE": "Save", "DELETE": "Delete", ... }
+      }
+    }
+  }
+}
+\`\`\`
+Missing locale keys cause runtime errors! The system will merge your locale into existing en.json.
 
 🚨 CRITICAL: After 3 failed retries, you MUST stop and generate error report. DO NOT attempt manual fixes with Write/Edit tools.
 
@@ -239,7 +300,39 @@ See AI_GENERATION_RULES.md for complete error handling protocol.`,
   },
   {
     name: "generate_widget",
-    description: "Generate a widget component using create-vc-app CLI. Widgets are self-contained Vue components that can be embedded in blade details pages.",
+    description: `Generate a widget component using create-vc-app CLI. PREFERRED method for widget creation.
+
+**WHAT THIS TOOL DOES AUTOMATICALLY:**
+- Creates widget Vue component in components/widgets/{widget-name}/
+- Creates index.ts export
+- Auto-adds import to parent blade: import { YourWidget } from "../components/widgets"
+- Auto-adds useWidgets() and useBlade() setup
+- Auto-creates registerWidget() function with proper props
+- Auto-adds onBeforeUnmount cleanup with unregisterWidget()
+- Auto-adds locale translations (WIDGETS.{WIDGET_NAME}.TITLE)
+
+**WHY USE THIS TOOL:**
+- Handles all boilerplate automatically
+- Ensures proper widget lifecycle (register/unregister)
+- No missing imports or forgotten cleanup
+- Faster than manual creation
+
+**MANUAL ALTERNATIVE:**
+If you need to create widgets manually (e.g., tool fails, special requirements), use useWidgets() pattern:
+- Import useWidgets, useBlade from @vc-shell/framework
+- Call registerWidget() immediately after setup (NOT in onMounted)
+- Use computed() for reactive props
+- Always cleanup with unregisterWidget() in onBeforeUnmount
+- See rule "16-widget-generation" for complete pattern
+
+**EXAMPLE:**
+generate_widget({
+  cwd: "/path/to/app",
+  module: "offers",
+  blade: "offer-details",
+  widgetName: "SpecialPrices",
+  entityName: "Offer"
+})`,
     inputSchema: zodToJsonSchema(generateWidgetSchema),
   },
   {
@@ -258,7 +351,7 @@ See AI_GENERATION_RULES.md for complete error handling protocol.`,
  * Register tool schemas with MCP server
  */
 export function registerToolSchemas(server: Server): void {
-  console.error("[MCP Schemas] Registering 26 tool schemas...");
+  console.error("[MCP Schemas] Registering 28 tool schemas...");
 
   server.setRequestHandler(ListToolsRequestSchema, async () => {
     return {
@@ -266,7 +359,7 @@ export function registerToolSchemas(server: Server): void {
     };
   });
 
-  console.error("[MCP Schemas] ✓ All 26 tool schemas registered");
+  console.error("[MCP Schemas] ✓ All 28 tool schemas registered");
 }
 
 /**

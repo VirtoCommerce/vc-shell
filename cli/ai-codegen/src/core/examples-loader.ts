@@ -7,7 +7,7 @@
 
 import fs from "fs-extra";
 import path from "path";
-import yaml from "js-yaml";
+import yaml from "yaml";
 import { fileURLToPath } from "url";
 import type {
   ExamplesIndex,
@@ -56,7 +56,7 @@ export class ExamplesLoader {
     }
 
     const content = await fs.readFile(indexPath, "utf-8");
-    const index = yaml.load(content) as ExamplesIndex;
+    const index = yaml.parse(content) as ExamplesIndex;
 
     if (this.cacheEnabled) {
       this.indexCache = index;
@@ -263,7 +263,7 @@ export class ExamplesLoader {
     }
 
     try {
-      return yaml.load(match[1]) as ExampleFrontmatter;
+      return yaml.parse(match[1]) as ExampleFrontmatter;
     } catch (error) {
       console.warn("Failed to parse frontmatter:", error);
       return undefined;

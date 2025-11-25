@@ -44,8 +44,8 @@ export const scaffoldAppHandler: ToolHandler = async (params, context) => {
     await execa(
       "npx",
       [
-        "tsx",
-        path.resolve(rootPath, "create-vc-app", "src", "index.ts"),
+        // TODO: remove @alpha when create-vc-app is released
+        "@vc-shell/create-vc-app@alpha",
         projectName,
         "--skip-module-gen",
         "--overwrite",
@@ -102,7 +102,8 @@ export const generateWidgetHandler: ToolHandler = async (params, context) => {
     const { kebabCase } = await import("lodash-es");
 
     const args = [
-      "@vc-shell/create-vc-app",
+      // TODO: remove @alpha when create-vc-app is released
+      "@vc-shell/create-vc-app@alpha",
       "blade",
       "--widget",
       "--widget-module",

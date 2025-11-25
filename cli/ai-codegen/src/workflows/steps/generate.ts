@@ -732,7 +732,8 @@ export class GenerateStepExecutor implements StepExecutor {
     const currentDir = path.dirname(fileURLToPath(import.meta.url));
 
     const args = [
-      "@vc-shell/create-vc-app",
+      // TODO: remove @alpha when create-vc-app is released
+      "@vc-shell/create-vc-app@alpha",
       "blade",
       "--module",
       module,

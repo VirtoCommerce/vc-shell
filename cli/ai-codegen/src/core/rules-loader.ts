@@ -8,7 +8,7 @@
 import fs from "fs-extra";
 import path from "path";
 import { glob } from "glob";
-import yaml from "js-yaml";
+import yaml from "yaml";
 import { fileURLToPath } from "url";
 import type {
   Rule,
@@ -78,7 +78,7 @@ export class RulesLoader {
   private async loadRule(filePath: string): Promise<Rule | null> {
     try {
       const content = await fs.readFile(filePath, "utf-8");
-      const rule = yaml.load(content) as Rule;
+      const rule = yaml.parse(content) as Rule;
 
       // Resolve paths to examples
       if (rule.examples) {

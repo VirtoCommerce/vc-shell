@@ -3432,7 +3432,7 @@
     ],
     "dependencies": [],
     "props": {
-      "icon": "string | Component - Icon identifier (e.g., 'material-home', 'bi-house', 'lucide-home', 'fas fa-home', 'svg:path.svg')",
+      "icon": "string | Component - Icon identifier. Use: 'material-*' (PREFERRED), 'bi-*', 'lucide-*', 'svg:path.svg'. Font Awesome (fas/far/fab) is FORBIDDEN.",
       "size": "'xs' | 's' | 'm' | 'l' | 'xl' | 'xxl' | 'xxxl' - Predefined size (default: 'm')",
       "variant": "'warning' | 'danger' | 'success' - Color variant",
       "useContainer": "boolean - Wrap icon in container (default: true)",

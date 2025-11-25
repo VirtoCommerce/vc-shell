@@ -116,9 +116,11 @@ export class ASTValidator {
           if (node.specifiers) {
             for (const specifier of node.specifiers) {
               if (specifier.type === "ImportSpecifier") {
-                const name = specifier.imported.name;
-                imports.push({ name, source });
-                importMap.set(name, source);
+                const importedName = specifier.imported.name;
+                const localName = specifier.local?.name || importedName;
+                // Track the local binding name so hook resolution works with aliases and `default as foo`
+                imports.push({ name: localName, source });
+                importMap.set(localName, source);
               } else if (specifier.type === "ImportDefaultSpecifier") {
                 const name = specifier.local.name;
                 imports.push({ name, source });

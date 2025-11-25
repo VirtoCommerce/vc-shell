@@ -117,20 +117,26 @@ export class FeatureRegistry extends BaseRegistry<FeatureMetadata> {
   ): string[] {
     const components = new Set<string>();
 
-    // Map feature to known components
+    // Map feature to known components (based on real VC-Shell patterns)
+    // Note: VcForm doesn't exist - use vee-validate Field for validation
     const featureComponentMap: Record<string, string[]> = {
+      // List features
       table: ["VcTable"],
-      filters: ["VcTable", "VcInput", "VcSelect"],
+      filters: ["VcTable", "VcRadioButton", "VcCheckbox", "VcInput", "VcSelect"],
       multiselect: ["VcTable"],
-      form: ["VcForm", "VcInput"],
-      validation: ["VcForm", "VcInput"],
+      search: ["VcTable"],
+      pagination: ["VcTable"],
+      reorderable: ["VcTable"],
+      slots: ["VcStatus", "VcStatusIcon", "VcImage", "VcBadge"],
+      // Details features - NO VcForm! Use vee-validate Field
+      form: ["VcInput", "VcSelect", "VcTextarea", "VcSwitch", "VcCheckbox", "VcCard"],
+      validation: ["VcInput", "VcSelect"], // wrapped in vee-validate Field
       gallery: ["VcGallery"],
       widgets: ["VcWidget"],
-      upload: ["VcFileUpload", "VcGallery"],
+      upload: ["VcGallery", "VcFileUpload"],
+      // Common
       select: ["VcSelect"],
       input: ["VcInput"],
-      editor: ["VcEditor"],
-      tabs: ["VcContainer"],
     };
 
     // Check feature name
@@ -149,20 +155,30 @@ export class FeatureRegistry extends BaseRegistry<FeatureMetadata> {
   private inferRequiredAPIs(featureId: string, patterns: ReturnType<PatternRegistry["getAll"]>): string[] {
     const apis = new Set<string>();
 
-    // Map feature to known APIs
+    // Map feature to known framework APIs (based on real vendor-portal patterns)
+    // Note: useApiClient is used ONLY in composables, not directly in blades!
     const featureAPIMap: Record<string, string[]> = {
-      filter: ["useApiClient"],
-      search: ["useApiClient"],
-      pagination: ["useApiClient"],
-      validation: ["useModificationTracker"],
-      save: ["useApiClient", "useBladeNavigation"],
-      delete: ["useApiClient", "useBladeNavigation"],
+      // List blade APIs
+      table: ["useBladeNavigation", "useTableSort"],
+      filter: [],  // Built into VcTable, no special API
+      search: [],  // Built into VcTable
+      pagination: [],  // Built into VcTable
+      multiselect: [],  // Built into VcTable
+      reorderable: [],  // Built into VcTable
+      // Details blade APIs
+      form: ["useBladeNavigation", "usePopup"],
+      validation: [],  // vee-validate useForm, not framework API
+      modifications: ["useBeforeUnload"],
+      beforeunload: ["useBeforeUnload"],
+      save: ["useBladeNavigation", "usePopup"],
+      gallery: ["useAssets"],
+      upload: ["useAssets"],
+      // Blade widgets (NOT dashboard widgets!)
+      widgets: ["useWidgets"],
+      // Common blade APIs
       navigation: ["useBladeNavigation"],
       notification: ["useNotifications"],
-      permission: ["usePermissions"],
-      widget: ["useWidgets"],
-      language: ["useLanguages"],
-      breadcrumb: ["useBreadcrumbs"],
+      loading: ["useLoading"],
     };
 
     // Check feature name

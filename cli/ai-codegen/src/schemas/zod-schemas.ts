@@ -465,7 +465,6 @@ export const submitGeneratedCodeSchema = z.object({
     module: z.string().describe("Module name (e.g., 'products', 'vendors')"),
     layout: z.enum(["grid", "details", "page"]).describe("Blade layout type"),
     features: z.array(z.string()).optional().describe("Features used in the blade (filters, multiselect, validation, gallery, widgets)"),
-    strategy: z.literal("AI_FULL").describe("Generation strategy used (AI_FULL only)"),
     guideId: z.string().optional().describe("Optional: ID of the generation guide that was followed"),
   }).describe("Context about the generated code"),
   composable: z.object({

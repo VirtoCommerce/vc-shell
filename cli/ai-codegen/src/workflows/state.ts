@@ -94,6 +94,8 @@ export class WorkflowStateManager {
       "planning" as any,
       "validating" as any,
       "generating" as any,
+      "ai-codegen" as any,
+      "code-validation" as any,
       "submitting" as any,
       "completed" as any,
     ];
@@ -102,6 +104,7 @@ export class WorkflowStateManager {
     const targetIndex = stepOrder.indexOf(step);
 
     // Can execute if target is next step or current step (re-execute)
+    // Also allow ai-codegen -> code-validation and code-validation -> submitting
     return targetIndex <= currentIndex + 1;
   }
 

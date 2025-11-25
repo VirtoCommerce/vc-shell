@@ -76,7 +76,7 @@ async function deleteSelectedItems() {
 const deleteToolbarItem = computed<IBladeToolbar>(() => ({
   id: "delete-selected",
   title: `Delete (${selectedItemIds.value.length})`,
-  icon: "fas fa-trash",
+  icon: "material-delete",
   clickHandler: deleteSelectedItems,
   disabled: selectedItemIds.value.length === 0,
 }));

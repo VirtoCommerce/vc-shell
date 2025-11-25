@@ -74,17 +74,34 @@ export class IntentExtractor {
     delete: ["delete", "remove", "destroy"],
   };
 
+  /**
+   * Feature keywords based on real VC-Shell patterns from index.yaml.
+   * Maps feature ID to detection keywords.
+   */
   private featureKeywords = new Map<string, string[]>([
-    ["filters", ["filter", "search", "find", "query"]],
-    ["sort", ["sort", "order", "arrange"]],
-    ["multiselect", ["multi", "batch", "bulk", "multiple"]],
-    ["validation", ["validate", "verify", "check", "required"]],
-    ["pagination", ["page", "pagination", "paging"]],
-    ["export", ["export", "download", "save"]],
-    ["import", ["import", "upload", "load"]],
-    ["gallery", ["gallery", "images", "photos", "carousel"]],
-    ["widgets", ["widget", "dashboard", "metrics", "stats"]],
-    ["tabs", ["tabs", "sections", "categories"]],
+    // List blade features
+    ["table", ["table", "list", "grid", "rows", "columns"]],
+    ["search", ["search", "find", "lookup"]],
+    ["pagination", ["page", "pagination", "paging", "paginated"]],
+    ["toolbar", ["toolbar", "actions", "buttons"]],
+    ["filters", ["filter", "filters", "filtering", "staged", "applied"]],
+    ["multiselect", ["multiselect", "multi-select", "bulk", "batch", "selection"]],
+    ["bulk-actions", ["bulk action", "batch operation", "mass update", "delete selected"]],
+    ["reorderable", ["reorder", "drag", "drop", "drag-drop", "rearrange"]],
+    ["slots", ["custom column", "slot", "custom-rendering"]],
+
+    // Details blade features
+    ["form", ["form", "edit", "input", "fields", "editable"]],
+    ["validation", ["validate", "validation", "required", "rules", "vee-validate"]],
+    ["save", ["save", "submit", "update", "create"]],
+    ["gallery", ["gallery", "images", "photos", "media"]],
+    ["upload", ["upload", "file", "attachment"]],
+    ["widgets", ["widget", "widgets", "dynamic component"]],
+    ["modifications", ["track changes", "modified", "dirty", "unsaved"]],
+    ["beforeunload", ["beforeunload", "leave confirmation", "discard changes"]],
+
+    // CRUD features
+    ["crud", ["crud", "full management"]],
   ]);
 
   private relationshipKeywords = {

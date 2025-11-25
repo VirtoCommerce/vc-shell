@@ -84,7 +84,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
   {
     id: "refresh",
     title: "Refresh",
-    icon: "fas fa-sync",
+    icon: "material-refresh",
     clickHandler: () => load(),
   },
 ]);

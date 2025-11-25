@@ -101,12 +101,8 @@ export const generateWidgetHandler: ToolHandler = async (params, context) => {
     const { execa } = await import("execa");
     const { kebabCase } = await import("lodash-es");
 
-    // Use local create-vc-app from monorepo
-    const createVcAppPath = path.resolve(rootPath, "..", "create-vc-app", "src", "index.ts");
-
     const args = [
-      "tsx",
-      createVcAppPath,
+      "@vc-shell/create-vc-app",
       "blade",
       "--widget",
       "--widget-module",

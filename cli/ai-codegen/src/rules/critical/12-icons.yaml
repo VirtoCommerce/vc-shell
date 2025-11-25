@@ -1,21 +1,134 @@
 id: "12"
-name: "Icon Formats"
+name: "Icon Formats - NO Font Awesome"
 category: "critical"
-priority: 80
+priority: 95
 enabled: true
 applies_to:
   - "all"
 
 description: |
-  All icon formats are valid: material-, bi-, lucide-, fas fa-, svg:
+  Icons MUST use one of the modern icon packs: material, bootstrap (bi), or lucide.
+  Font Awesome (fas, far, fab, fa-*) is LEGACY and FORBIDDEN.
+
+forbidden_patterns:
+  - pattern: 'fas fa-'
+    message: "Font Awesome (fas) is legacy and forbidden. Use material-, bi-, or lucide- prefix instead."
+  - pattern: 'far fa-'
+    message: "Font Awesome (far) is legacy and forbidden. Use material-, bi-, or lucide- prefix instead."
+  - pattern: 'fab fa-'
+    message: "Font Awesome (fab) is legacy and forbidden. Use material-, bi-, or lucide- prefix instead."
+  - pattern: 'fa-[a-z]'
+    message: "Font Awesome (fa-*) is legacy and forbidden. Use material-, bi-, or lucide- prefix instead."
 
 correct_pattern:
   inline: |
     ```typescript
-    // ✅ All valid icon formats:
-    icon: "material-save"
-    icon: "bi-house"
-    icon: "lucide-home"
-    icon: "fas fa-home"
-    icon: "svg:customIcon"
+    // ✅ ALLOWED icon prefixes (use these):
+    icon: "material-save"      // Material Symbols - PREFERRED
+    icon: "material-home"
+    icon: "material-settings"
+    icon: "material-person"
+    icon: "material-search"
+    icon: "material-add"
+    icon: "material-edit"
+    icon: "material-delete"
+    icon: "material-check"
+    icon: "material-close"
+    icon: "material-warning"
+    icon: "material-error"
+    icon: "material-info"
+
+    icon: "bi-house"           // Bootstrap Icons
+    icon: "bi-gear"
+    icon: "bi-person"
+    icon: "bi-search"
+
+    icon: "lucide-home"        // Lucide Icons
+    icon: "lucide-settings"
+    icon: "lucide-user"
+    icon: "lucide-search"
+
+    icon: "svg:customIcon"     // Custom SVG icons
+
+    // ❌ FORBIDDEN - Font Awesome is LEGACY:
+    // icon: "fas fa-home"      // DON'T USE
+    // icon: "fas fa-save"      // DON'T USE
+    // icon: "far fa-user"      // DON'T USE
+    // icon: "fab fa-github"    // DON'T USE
     ```
+
+icon_mapping:
+  description: "Common Font Awesome to Material/Bootstrap/Lucide equivalents"
+  mappings:
+    - fontawesome: "fas fa-home"
+      material: "material-home"
+      bootstrap: "bi-house"
+      lucide: "lucide-home"
+    - fontawesome: "fas fa-save"
+      material: "material-save"
+      bootstrap: "bi-save"
+      lucide: "lucide-save"
+    - fontawesome: "fas fa-edit"
+      material: "material-edit"
+      bootstrap: "bi-pencil"
+      lucide: "lucide-edit"
+    - fontawesome: "fas fa-trash"
+      material: "material-delete"
+      bootstrap: "bi-trash"
+      lucide: "lucide-trash"
+    - fontawesome: "fas fa-plus"
+      material: "material-add"
+      bootstrap: "bi-plus"
+      lucide: "lucide-plus"
+    - fontawesome: "fas fa-times"
+      material: "material-close"
+      bootstrap: "bi-x"
+      lucide: "lucide-x"
+    - fontawesome: "fas fa-check"
+      material: "material-check"
+      bootstrap: "bi-check"
+      lucide: "lucide-check"
+    - fontawesome: "fas fa-search"
+      material: "material-search"
+      bootstrap: "bi-search"
+      lucide: "lucide-search"
+    - fontawesome: "fas fa-user"
+      material: "material-person"
+      bootstrap: "bi-person"
+      lucide: "lucide-user"
+    - fontawesome: "fas fa-cog"
+      material: "material-settings"
+      bootstrap: "bi-gear"
+      lucide: "lucide-settings"
+    - fontawesome: "fas fa-list"
+      material: "material-list"
+      bootstrap: "bi-list"
+      lucide: "lucide-list"
+    - fontawesome: "fas fa-filter"
+      material: "material-filter_list"
+      bootstrap: "bi-funnel"
+      lucide: "lucide-filter"
+    - fontawesome: "fas fa-refresh"
+      material: "material-refresh"
+      bootstrap: "bi-arrow-clockwise"
+      lucide: "lucide-refresh-cw"
+    - fontawesome: "fas fa-download"
+      material: "material-download"
+      bootstrap: "bi-download"
+      lucide: "lucide-download"
+    - fontawesome: "fas fa-upload"
+      material: "material-upload"
+      bootstrap: "bi-upload"
+      lucide: "lucide-upload"
+    - fontawesome: "fas fa-warning"
+      material: "material-warning"
+      bootstrap: "bi-exclamation-triangle"
+      lucide: "lucide-alert-triangle"
+    - fontawesome: "fas fa-info-circle"
+      material: "material-info"
+      bootstrap: "bi-info-circle"
+      lucide: "lucide-info"
+    - fontawesome: "fas fa-exclamation-circle"
+      material: "material-error"
+      bootstrap: "bi-exclamation-circle"
+      lucide: "lucide-alert-circle"

@@ -7,14 +7,14 @@ category: state
 critical: true
 related_rules: ["09"]
 title: "Module Registration Pattern"
-description: "Automatic module registration in main.ts (AI_FULL strategy)"
+description: "Automatic module registration in main.ts"
 ---
 
-# Module Registration Pattern (AI_FULL Strategy)
+# Module Registration Pattern
 
 ## Overview
 
-For AI_FULL strategy, module registration is **AUTOMATED** by the system.
+Module registration is **AUTOMATED** by the system.
 DO NOT create bootstrap.ts for module registration.
 
 **NOTE:** bootstrap.ts is ONLY used for dashboard widgets and custom initialization, NOT for module registration.

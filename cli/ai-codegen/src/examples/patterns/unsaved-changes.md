@@ -199,7 +199,7 @@ const bladeToolbar = computed(() => [
   {
     id: "save",
     title: t("COMMON.SAVE"),
-    icon: "fas fa-save",
+    icon: "material-save",
     disabled: !modified.value || loading.value,
     async clickHandler() {
       await save();

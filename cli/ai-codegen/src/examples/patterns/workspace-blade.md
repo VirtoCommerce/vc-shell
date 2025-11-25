@@ -48,7 +48,7 @@ defineOptions({
   isWorkspace: true,  // ← REQUIRED for workspace blade
   menuItem: {         // ← Menu item configuration HERE
     title: "OFFERS.MENU.TITLE",  // Use i18n key
-    icon: "fas fa-tags",
+    icon: "material-sell",       // Use material-* (PREFERRED). Font Awesome is FORBIDDEN.
     priority: 10,
     // Optional: group configuration
     groupConfig: {
@@ -76,7 +76,7 @@ defineOptions({
 ```typescript
 menuItem: {
   title: string;        // i18n key (e.g., "MODULE.MENU.TITLE")
-  icon: string;         // Icon (fas fa-*, lucide-*, bi-*, material-*)
+  icon: string;         // Icon: material-* (PREFERRED), bi-*, lucide-*. Font Awesome FORBIDDEN.
   priority: number;     // Order in menu (0-100, lower = higher)
   groupConfig?: {       // Optional: group menu items
     id: string;
@@ -104,7 +104,7 @@ export function bootstrap(app: App) {
   // ❌ DO NOT DO THIS!
   addMenuItem({
     title: "Offers",
-    icon: "fas fa-tags",
+    icon: "material-sell",  // Note: Font Awesome is FORBIDDEN
     priority: 10,
     url: "/offers",
   });
@@ -129,7 +129,7 @@ defineOptions({
   isWorkspace: true,
   menuItem: {
     title: "PRODUCTS.MENU.TITLE",
-    icon: "fas fa-box",
+    icon: "material-inventory_2",  // Use material-* prefix
     priority: 20,
     // Group under "Catalog"
     groupConfig: {

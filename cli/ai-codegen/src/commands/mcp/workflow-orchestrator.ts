@@ -69,7 +69,7 @@ const TOOL_CATEGORIES = {
     "create_ui_plan_from_analysis_v2", // Step 3: Requires analysis + discovery
     "validate_ui_plan", // Step 4a: Validate plan
     "validate_and_fix_plan", // Step 4b: Validate + fix plan
-    "generate_with_composition", // Step 5: Generate with AI_FULL
+    "generate_with_composition", // Step 5: Generate code
     "submit_generated_code", // Step 6: Submit AI-written code
   ],
 

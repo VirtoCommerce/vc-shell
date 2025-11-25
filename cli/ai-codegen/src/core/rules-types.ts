@@ -8,7 +8,6 @@
 export type RuleCategory = "critical" | "constraint" | "best-practice" | "custom";
 export type RuleSeverity = "error" | "warning" | "info";
 export type BladeType = "list" | "details" | "edit" | "all";
-export type GenerationStrategy = "AI_FULL" | "COMPOSITION" | "TEMPLATE" | "ALL";
 
 /**
  * Forbidden pattern definition
@@ -22,8 +21,6 @@ export interface ForbiddenPattern {
   reason: string;
   /** Severity level */
   severity: RuleSeverity;
-  /** Only applies to specific strategy */
-  strategy?: GenerationStrategy;
   /** Exception description (when this pattern IS allowed) */
   exception?: string;
 }
@@ -38,8 +35,6 @@ export interface RequiredPattern {
   when?: string;
   /** Severity if missing */
   severity: RuleSeverity;
-  /** Strategy where this is required */
-  strategy?: GenerationStrategy;
 }
 
 /**
@@ -74,8 +69,6 @@ export interface ValidationCheck {
   when?: string;
   /** Error/warning message */
   message: string;
-  /** Strategy where this applies */
-  strategy?: GenerationStrategy;
 }
 
 /**
@@ -117,8 +110,6 @@ export interface Rule {
   priority: number;
   /** Whether this rule is enabled */
   enabled: boolean;
-  /** Strategy where this applies */
-  strategy?: GenerationStrategy;
   /** Blade types where this applies */
   applies_to?: BladeType[];
   /** Rule description */

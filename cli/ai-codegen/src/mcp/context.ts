@@ -24,10 +24,6 @@ import type {
   EntityExtractor,
   BladePlanner,
   WorkflowPlanner,
-  VueSFCSynthesizer,
-  ComposableSynthesizer,
-  APIClientSynthesizer,
-  LocaleSynthesizer,
 } from "../generators";
 import type { WorkflowOrchestrator } from "../workflows";
 
@@ -64,12 +60,6 @@ export interface MCPServerContext {
   planner: SmartUIPlanner;
   bladePlanner: BladePlanner;
   workflowPlanner: WorkflowPlanner;
-
-  // Generators Layer - Synthesizers
-  vueSynthesizer: VueSFCSynthesizer;
-  composableSynthesizer: ComposableSynthesizer;
-  apiClientSynthesizer: APIClientSynthesizer;
-  localeSynthesizer: LocaleSynthesizer;
 
   // Workflows Layer
   orchestrator: WorkflowOrchestrator;

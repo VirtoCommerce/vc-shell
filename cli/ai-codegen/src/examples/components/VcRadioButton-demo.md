@@ -356,7 +356,7 @@ function selectShipping(id: string) {
 
           <div v-if="method.id === 'paypal'">
             <VcButton variant="primary" class="tw-w-full">
-              <VcIcon icon="fab fa-paypal" class="tw-mr-2" />
+              <VcIcon icon="material-payments" class="tw-mr-2" />
               {{ $t("PAYMENT.LOGIN_PAYPAL") }}
             </VcButton>
           </div>
@@ -393,7 +393,7 @@ const paymentMethods = [
     id: "paypal",
     name: "PayPal",
     description: "Pay securely with your PayPal account",
-    icon: "fab fa-paypal",
+    icon: "material-payments",
   },
   {
     id: "bank",

@@ -93,7 +93,8 @@ export class WorkflowOrchestrator {
         }
 
         // Transition to failed state if critical error
-        if (this.isCriticalError(result)) {
+        // BUT NOT if the step indicates a retry is needed (data.needsRetry)
+        if (this.isCriticalError(result) && !result.data?.needsRetry) {
           this.stateManager.transitionTo("failed" as any);
         }
       }
@@ -188,6 +189,13 @@ export class WorkflowOrchestrator {
   }
 
   /**
+   * Update state with partial data
+   */
+  updateState(data: Partial<WorkflowState>): void {
+    this.stateManager.updateState(data);
+  }
+
+  /**
    * Get workflow status
    */
   getStatus() {
@@ -246,20 +254,35 @@ export class WorkflowOrchestrator {
         message: "Step 'validating' requires 'planning' to be completed first. Missing UI-Plan"
       },
       "generating": {
-        requiredStep: "validating",
+        // NOTE: generating can be called multiple times (once per blade)
+        // It can be called from validating (first blade) or from ai-codegen/submitting (next blade)
+        requiredStep: null, // No strict step requirement - we check for plan instead
         requiredData: "plan",
-        message: "Step 'generating' requires 'validating' to be completed first with valid plan"
+        message: "Step 'generating' requires a validated UI-Plan"
       },
       "ai-codegen": {
         requiredStep: "generating",
         requiredData: "generationGuides",
         message: "Step 'ai-codegen' requires 'generating' to be completed first with generation guides"
+      },
+      "code-validation": {
+        // NOTE: code-validation can be called multiple times (once per blade)
+        // It can be called from ai-codegen (first time) or from submitting (next blade)
+        requiredStep: null, // No strict step requirement - allows multi-blade workflow
+        requiredData: "generatedCode", // This is passed in input, not state
+        message: "Step 'code-validation' requires generated code"
+      },
+      "submitting": {
+        // Submitting receives validated code as input, not from state
+        requiredStep: null,
+        requiredData: null,
+        message: "Step 'submitting' receives validated code as input"
       }
     };
 
     // Check prerequisites for current step
     const prereq = prerequisites[step as keyof typeof prerequisites];
-    if (prereq) {
+    if (prereq && prereq.requiredData) {
       // Check if required data exists in state OR input parameters
       const hasRequiredDataInState = Boolean((state as any)[prereq.requiredData]);
       const hasRequiredDataInInput = Boolean((input as any)?.[prereq.requiredData]);

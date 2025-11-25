@@ -440,14 +440,6 @@ Before generating code, ensure:
 - Always markRaw() blade components
 - Follow naming conventions strictly
 
-## Strategy Selection
-
-The system automatically chooses:
-- **TEMPLATE** (complexity ≤5): Fast AST transformation
-- **COMPOSITION** (5-10): Pattern composition (THIS GUIDE)
-- **AI_FULL** (>10): Full AI generation with all patterns
-
-When using COMPOSITION strategy, follow this guide precisely.
 `;
 }
 
@@ -463,8 +455,8 @@ function getLogicPatterns(): string {
             "openBlade({blade: markRaw(EntityDetails), param: item.id, onOpen: () => { selectedItemId.value = item.id }, onClose: () => { selectedItemId.value = undefined; load() }})",
         },
         toolbar: [
-          { id: "refresh", icon: "fas fa-sync", action: "load()" },
-          { id: "add", icon: "fas fa-plus", action: "openBlade({blade: markRaw(EntityDetails)})" },
+          { id: "refresh", icon: "material-refresh", action: "load()" },
+          { id: "add", icon: "material-add", action: "openBlade({blade: markRaw(EntityDetails)})" },
         ],
         state: {
           items: { source: "composable", reactive: true },
@@ -489,7 +481,7 @@ function getLogicPatterns(): string {
         toolbar: [
           {
             id: "delete-selected",
-            icon: "fas fa-trash",
+            icon: "material-delete",
             action: "deleteSelectedItems()",
             condition: "selectedItems.value.length > 0",
           },
@@ -505,8 +497,8 @@ function getLogicPatterns(): string {
           onSave: "validateAndSave()",
         },
         toolbar: [
-          { id: "save", icon: "fas fa-save", action: "save()", condition: "modified && !loading" },
-          { id: "cancel", icon: "fas fa-times", action: "close()" },
+          { id: "save", icon: "material-save", action: "save()", condition: "modified && !loading" },
+          { id: "cancel", icon: "material-close", action: "close()" },
         ],
         state: {
           item: { source: "composable", reactive: true },

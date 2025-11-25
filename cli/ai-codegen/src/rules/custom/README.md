@@ -63,7 +63,6 @@ auto_fix:
 - **category**: "critical" | "constraint" | "best-practice" | "custom"
 - **priority**: Number (higher = more important, built-in critical rules use 100)
 - **enabled**: Boolean (true/false)
-- **strategy**: Optional, "AI_FULL" | "COMPOSITION" | "TEMPLATE" | "ALL"
 - **applies_to**: Array of blade types: ["all"] or ["list", "details", "edit"]
 - **description**: Rule description (multiline string)
 - **rationale**: Optional, why this rule exists
@@ -79,7 +78,6 @@ forbidden:
     file: "file name or path pattern"
     reason: "Why forbidden"
     severity: "error" | "warning" | "info"
-    strategy: "AI_FULL"  # Optional
     exception: "When this IS allowed"  # Optional
 ```
 
@@ -91,7 +89,6 @@ required:
   - pattern: "regex pattern that must exist"
     when: "Condition when required"
     severity: "error" | "warning" | "info"
-    strategy: "AI_FULL"  # Optional
 ```
 
 #### correct_pattern / wrong_pattern
@@ -118,7 +115,6 @@ validations:
     function: "function name"  # For type: forbidden_function
     when: "Condition"  # Optional
     message: "Validation message"
-    strategy: "AI_FULL"  # Optional
 ```
 
 ### Auto-fix

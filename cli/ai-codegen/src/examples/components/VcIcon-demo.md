@@ -95,42 +95,42 @@ function onUpload() {
     <div class="tw-flex tw-items-center tw-gap-4">
       <span class="tw-w-20 tw-text-sm">Extra Small:</span>
       <VcIcon icon="material-star" size="xs" />
-      <VcIcon icon="fas fa-heart" size="xs" />
+      <VcIcon icon="material-favorite" size="xs" />
       <VcIcon icon="bi-bell" size="xs" />
     </div>
 
     <div class="tw-flex tw-items-center tw-gap-4">
       <span class="tw-w-20 tw-text-sm">Small:</span>
       <VcIcon icon="material-star" size="s" />
-      <VcIcon icon="fas fa-heart" size="s" />
+      <VcIcon icon="material-favorite" size="s" />
       <VcIcon icon="bi-bell" size="s" />
     </div>
 
     <div class="tw-flex tw-items-center tw-gap-4">
       <span class="tw-w-20 tw-text-sm">Medium:</span>
       <VcIcon icon="material-star" size="m" />
-      <VcIcon icon="fas fa-heart" size="m" />
+      <VcIcon icon="material-favorite" size="m" />
       <VcIcon icon="bi-bell" size="m" />
     </div>
 
     <div class="tw-flex tw-items-center tw-gap-4">
       <span class="tw-w-20 tw-text-sm">Large:</span>
       <VcIcon icon="material-star" size="l" />
-      <VcIcon icon="fas fa-heart" size="l" />
+      <VcIcon icon="material-favorite" size="l" />
       <VcIcon icon="bi-bell" size="l" />
     </div>
 
     <div class="tw-flex tw-items-center tw-gap-4">
       <span class="tw-w-20 tw-text-sm">Extra Large:</span>
       <VcIcon icon="material-star" size="xl" />
-      <VcIcon icon="fas fa-heart" size="xl" />
+      <VcIcon icon="material-favorite" size="xl" />
       <VcIcon icon="bi-bell" size="xl" />
     </div>
 
     <div class="tw-flex tw-items-center tw-gap-4">
       <span class="tw-w-20 tw-text-sm">XXL:</span>
       <VcIcon icon="material-star" size="xxl" />
-      <VcIcon icon="fas fa-heart" size="xxl" />
+      <VcIcon icon="material-favorite" size="xxl" />
       <VcIcon icon="bi-bell" size="xxl" />
     </div>
   </div>
@@ -315,28 +315,13 @@ function onDelete(item: any) {
       </div>
     </div>
 
-    <!-- Font Awesome -->
+    <!-- Font Awesome - DEPRECATED, DO NOT USE -->
+    <!--
     <div>
-      <h3 class="tw-font-bold tw-mb-3">Font Awesome</h3>
-      <div class="tw-flex tw-flex-wrap tw-gap-4">
-        <div class="tw-flex tw-items-center tw-gap-2">
-          <VcIcon icon="fas fa-house" size="l" />
-          <span class="tw-text-sm">fas fa-house</span>
-        </div>
-        <div class="tw-flex tw-items-center tw-gap-2">
-          <VcIcon icon="fas fa-cart-shopping" size="l" />
-          <span class="tw-text-sm">fas fa-cart-shopping</span>
-        </div>
-        <div class="tw-flex tw-items-center tw-gap-2">
-          <VcIcon icon="fas fa-heart" size="l" />
-          <span class="tw-text-sm">fas fa-heart</span>
-        </div>
-        <div class="tw-flex tw-items-center tw-gap-2">
-          <VcIcon icon="fas fa-gear" size="l" />
-          <span class="tw-text-sm">fas fa-gear</span>
-        </div>
-      </div>
+      <h3 class="tw-font-bold tw-mb-3 tw-text-red-500">⚠️ Font Awesome (FORBIDDEN - Legacy)</h3>
+      <p class="tw-text-sm tw-text-red-500">Font Awesome icons are deprecated. Use Material Symbols instead.</p>
     </div>
+    -->
 
     <!-- Lucide Icons -->
     <div>
@@ -469,10 +454,10 @@ function toggleStar() {
 ## Key Points
 
 ### Icon Library Prefixes
-- **Material Icons**: `material-*` (e.g., `material-home`)
+- **Material Icons**: `material-*` (e.g., `material-home`) - **PREFERRED**
 - **Bootstrap Icons**: `bi-*` (e.g., `bi-house`)
-- **Font Awesome**: `fas fa-*`, `far fa-*`, `fab fa-*` (e.g., `fas fa-heart`)
 - **Lucide Icons**: `lucide-*` (e.g., `lucide-home`)
+- ~~**Font Awesome**~~: `fas fa-*`, `far fa-*`, `fab fa-*` - **⚠️ FORBIDDEN (Legacy)**
 
 ### Sizes
 - `xs` - Extra Small (12px)

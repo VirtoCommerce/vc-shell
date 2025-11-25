@@ -10,7 +10,7 @@ description: "Validation Patterns composition for details blades using vee-valid
 
 # Validation Patterns
 
-Adds vee-validate form validation with Field component and string-based rules (NO Yup!).
+Adds vee-validate form validation with Field component and string-based rules.
 
 ## Description
 Provides:
@@ -36,7 +36,7 @@ import { usePopup } from "@vc-shell/framework";
 const { t } = useI18n({ useScope: "global" });
 const { showError } = usePopup();
 
-// Form setup with vee-validate (NO Yup schema needed!)
+// Form setup with vee-validate
 const { setFieldError, meta, errorBag } = useForm({
   validateOnMount: false,
 });
@@ -225,7 +225,6 @@ rules="required|min:3|max:50"
 
 ## Important Notes
 
-⚠️ **DO NOT use Yup** - Use string-based rules in Field component
 ⚠️ **Only wrap validated inputs** - Inputs without validation don't need Field wrapper
 ✅ **Use handleChange** - Call it in @update:model-value for proper tracking
 ✅ **Use meta.value.valid** - Check form validity before save

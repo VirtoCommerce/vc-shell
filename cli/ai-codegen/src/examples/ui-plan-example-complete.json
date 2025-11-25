@@ -74,17 +74,17 @@
         "toolbar": [
           {
             "id": "refresh",
-            "icon": "fas fa-sync-alt",
+            "icon": "material-refresh",
             "action": "reload()"
           },
           {
             "id": "add",
-            "icon": "fas fa-plus",
+            "icon": "material-add",
             "action": "openBlade({ blade: markRaw(OffersDetails) })"
           },
           {
             "id": "delete",
-            "icon": "fas fa-trash",
+            "icon": "material-delete",
             "action": "deleteSelected()"
           }
         ]
@@ -165,12 +165,12 @@
         "toolbar": [
           {
             "id": "save",
-            "icon": "fas fa-save",
+            "icon": "material-save",
             "action": "save()"
           },
           {
             "id": "delete",
-            "icon": "fas fa-trash",
+            "icon": "material-delete",
             "action": "deleteOffer()"
           }
         ]

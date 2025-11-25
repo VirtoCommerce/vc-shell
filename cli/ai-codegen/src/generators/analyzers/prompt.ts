@@ -90,14 +90,44 @@ Analyze the user prompt and return a JSON object with the following structure:
       "displayName": "Entity Display Name",
       "description": "What this entity represents",
       "properties": [
-        { "name": "propertyName", "type": "string|number|boolean|date", "required": true }
+        { "name": "propertyName", "type": "string|number|boolean|date|array", "required": true }
       ],
       "blades": [
         {
-          "type": "list|details",
-          "route": "/route-path",
-          "isWorkspace": true|false,
-          "features": ["feature-id-from-above"]
+          "type": "list",
+          "route": "/entities",
+          "isWorkspace": true,
+          "features": ["feature-id-from-above"],
+          "columns": [
+            {
+              "id": "propertyName",
+              "title": "Display Title",
+              "type": "text|number|date|date-ago|image|status-icon|link",
+              "sortable": true
+            }
+          ]
+        },
+        {
+          "type": "details",
+          "route": "/entity",
+          "isWorkspace": false,
+          "features": ["feature-id-from-above"],
+          "fields": [
+            {
+              "id": "propertyName",
+              "label": "Field Label",
+              "component": "VcInput|VcTextarea|VcSelect|VcCheckbox|VcSwitch|VcGallery|VcEditor",
+              "required": true,
+              "rules": "required|min:3"
+            }
+          ],
+          "sections": [
+            {
+              "id": "section-id",
+              "title": "Section Title",
+              "fields": ["field1", "field2"]
+            }
+          ]
         }
       ]
     }
@@ -105,17 +135,67 @@ Analyze the user prompt and return a JSON object with the following structure:
 }
 \`\`\`
 
+### IMPORTANT: Routes in VC-Shell
+- Routes are for workspace blades ONLY (menu items)
+- Details blades do NOT have routes with :id params
+- Navigation to details is via openBlade() with params object
+- Example: list blade has route "/offers", details blade has route "/offer" (no :id!)
+
+### Column Types (for list blades):
+- **text**: Regular text display
+- **number**: Numeric value
+- **date**: Full date/time
+- **date-ago**: Relative time ("2 hours ago")
+- **image**: Image thumbnail (use for imgSrc, thumbnail, image properties)
+- **status-icon**: Boolean as icon (checkmark/cross)
+- **link**: Clickable link
+
+### Field Components (for details blades):
+Use REAL component names from VC-Shell:
+- **VcInput**: Text input (also for dates with type="date")
+- **VcTextarea**: Multi-line text
+- **VcSelect**: Dropdown select with search
+- **VcCheckbox**: Checkbox for boolean
+- **VcSwitch**: Toggle switch for boolean
+- **VcRadioButton**: Radio button group
+- **VcMultivalue**: Tags/multiple values input
+- **VcInputCurrency**: Currency input with formatting
+- **VcEditor**: Rich text/markdown editor
+- **VcGallery**: Image gallery with upload
+- **VcFileUpload**: File upload
+
+### Grouping Fields:
+- **VcCard**: Use to group related fields into sections with title
+- Fields inside VcCard need padding: add tw-p-4 class
+
 ## Guidelines
 
 1. **Module Name**: Infer from context, use kebab-case
 2. **Entities**: Identify main entities (e.g., "Offer", "Vendor", "Product")
-3. **Properties**: Extract properties mentioned or implied
-4. **Blades**: For each entity:
+3. **Properties**: Extract ALL properties mentioned or implied
+4. **Blades** (VC-Shell "pages"):
+   - A blade is a page. Multiple blades can be visible at once (master/detail).
    - **list blade**: Shows all items (table/grid)
    - **details blade**: Shows/edits single item (form)
-5. **Features**: ONLY use feature IDs from the "Available Features" lists above
-6. **isWorkspace**: true if this blade should appear in main menu
-7. **Routes**: Use RESTful conventions (/vendors, /vendor)
+5. **Navigation & Workspace**:
+   - **isWorkspace: true** = blade is registered in sidebar menu
+   - Any blade type (list OR details) can be a workspace blade
+   - Typically: list blade is workspace, details opens from list
+   - But: if module has only details blade, or user specifies - details can be workspace too
+   - Routes are simple paths: /offers, /settings - NO :id parameters ever!
+6. **Features**: ONLY use feature IDs from the "Available Features" lists above
+7. **Routes**: Simple kebab-case paths. NEVER use URL parameters like :id
+8. **Defaults**: Create both list and details blades by default
+9. **Columns (CRITICAL for list blades)**:
+   - If user specifies which columns to show - use ONLY those columns
+   - If not specified - pick 5-7 most important columns (not all properties!)
+   - Always include: image (if exists), name/title, status, date
+   - Use appropriate column types (image for images, status-icon for booleans)
+10. **Fields (for details blades)**:
+    - Include ALL editable properties
+    - Group into logical sections if many fields
+    - Use appropriate field types based on property type
+11. **Do not invent** feature IDs not in the lists
 
 ## Important
 
@@ -169,6 +249,56 @@ Return ONLY the JSON object, no additional text.
                     route: { type: "string" },
                     isWorkspace: { type: "boolean" },
                     features: { type: "array", items: { type: "string" } },
+                    // Columns for list blades - user-specified or smart selection
+                    columns: {
+                      type: "array",
+                      items: {
+                        type: "object",
+                        properties: {
+                          id: { type: "string" },
+                          title: { type: "string" },
+                          type: { type: "string", enum: ["text", "number", "date", "date-ago", "image", "status-icon", "link"] },
+                          sortable: { type: "boolean" },
+                          width: { type: "number" },
+                        },
+                        required: ["id", "title"],
+                      },
+                    },
+                    // Fields for details blades with real component names
+                    fields: {
+                      type: "array",
+                      items: {
+                        type: "object",
+                        properties: {
+                          id: { type: "string" },
+                          label: { type: "string" },
+                          component: {
+                            type: "string",
+                            enum: [
+                              "VcInput", "VcTextarea", "VcSelect", "VcCheckbox",
+                              "VcSwitch", "VcRadioButton", "VcMultivalue",
+                              "VcInputCurrency", "VcEditor", "VcGallery", "VcFileUpload"
+                            ],
+                          },
+                          required: { type: "boolean" },
+                          rules: { type: "string" },
+                        },
+                        required: ["id", "label", "component"],
+                      },
+                    },
+                    // Sections for grouping fields in VcCard
+                    sections: {
+                      type: "array",
+                      items: {
+                        type: "object",
+                        properties: {
+                          id: { type: "string" },
+                          title: { type: "string" },
+                          fields: { type: "array", items: { type: "string" } },
+                        },
+                        required: ["id", "title", "fields"],
+                      },
+                    },
                   },
                   required: ["type", "route"],
                 },

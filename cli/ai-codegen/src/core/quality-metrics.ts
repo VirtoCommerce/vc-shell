@@ -111,13 +111,14 @@ const FEATURE_PATTERNS: Record<string, { indicators: string[]; description: stri
   },
   validation: {
     indicators: [
-      'yup.object',
-      'z.object',
       'useForm',
-      'validationSchema',
-      'handleSubmit',
+      '<Field',
+      'rules="required',
+      'rules="',
+      'meta.value.valid',
+      'setFieldError',
     ],
-    description: 'Form validation with yup or zod schema',
+    description: 'Form validation with vee-validate Field component and rules',
   },
   gallery: {
     indicators: ['<VcGallery', 'images:', 'gallery'],
@@ -514,11 +515,12 @@ export class QualityMetrics {
   }
 
   private hasValidation(code: string): boolean {
-    // Check for validation schema (yup or zod)
+    // Check for vee-validate Field component and rules
     return (
-      code.includes('yup.object') ||
-      code.includes('z.object') ||
-      code.includes('validationSchema')
+      code.includes('<Field') ||
+      code.includes('useForm') ||
+      code.includes('rules="') ||
+      code.includes('meta.value.valid')
     );
   }
 

@@ -92,6 +92,17 @@ export const generateWithCompositionSchema = z.object({
     "Generate one blade at a time, then repeat for remaining blades. " +
     "Example: 'offers-list' or 'offer-details'"
   ),
+  // NEW: Pagination params for artifact-by-artifact generation
+  artifactType: z.enum(["blade", "composable", "apiClient", "all"]).optional().describe(
+    "Type of artifact to generate. Use 'blade' or 'composable' for step-by-step generation. " +
+    "Default: 'all' for small modules (1-2 blades), 'blade' for larger modules."
+  ),
+  contextLevel: z.enum(["metadata", "essential", "full"]).optional().describe(
+    "How much context to include in the generation guide. " +
+    "METADATA: ~2KB - only IDs and descriptions (for overview). " +
+    "ESSENTIAL: ~10KB - template + top 2 patterns (default for generation). " +
+    "FULL: ~25KB+ - everything (may exceed limits)."
+  ),
 });
 
 export const inferBladeLogicSchema = z.object({
@@ -125,7 +136,6 @@ export const submitGeneratedCodeSchema = z.object({
   context: z.object({
     module: z.string(),
     layout: z.enum(["grid", "details", "page"]),
-    strategy: z.literal("AI_FULL"),
     features: z.array(z.string()).optional(),
     guideId: z.string().optional(),
   }),
@@ -197,7 +207,6 @@ export const getApplicableRulesSchema = z.object({
   bladeType: z.enum(["list", "details"]).describe("Type of blade being generated"),
   isWorkspace: z.boolean().optional().describe("Whether this is a workspace blade (appears in sidebar menu)"),
   features: z.array(z.string()).optional().describe("Features to include (filters, multiselect, validation, etc.)"),
-  strategy: z.enum(["AI_FULL", "COMPOSITION", "TEMPLATE", "ALL"]).optional().default("AI_FULL").describe("Generation strategy"),
 });
 
 /**

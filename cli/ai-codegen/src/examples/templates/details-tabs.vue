@@ -405,22 +405,22 @@ const tabs = computed<Tab[]>(() => [
   {
     id: "general",
     label: t("ENTITIES.PAGES.DETAILS.TABS.GENERAL"),
-    icon: "fas fa-info-circle",
+    icon: "material-info",
   },
   {
     id: "pricing",
     label: t("ENTITIES.PAGES.DETAILS.TABS.PRICING.TITLE"),
-    icon: "fas fa-dollar-sign",
+    icon: "material-attach_money",
   },
   {
     id: "inventory",
     label: t("ENTITIES.PAGES.DETAILS.TABS.INVENTORY.TITLE"),
-    icon: "fas fa-boxes",
+    icon: "material-inventory_2",
   },
   {
     id: "seo",
     label: t("ENTITIES.PAGES.DETAILS.TABS.SEO.TITLE"),
-    icon: "fas fa-search",
+    icon: "material-search",
   },
 ]);
 

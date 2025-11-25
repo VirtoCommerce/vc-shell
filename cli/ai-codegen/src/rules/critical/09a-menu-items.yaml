@@ -3,7 +3,6 @@ name: "Menu Items in defineOptions"
 category: "critical"
 priority: 100
 enabled: true
-strategy: "AI_FULL"
 applies_to:
   - "all"  # Any blade (list/details) can be workspace
 
@@ -24,23 +23,19 @@ forbidden:
   - pattern: "addMenuItem\\("
     reason: "Menu items go in workspace blade's defineOptions, NOT bootstrap.ts"
     severity: "error"
-    strategy: "AI_FULL"
 
   - pattern: "bootstrap\\.ts.*addMenuItem"
     reason: "Do not add menu items in bootstrap.ts"
     severity: "error"
-    strategy: "AI_FULL"
 
 required:
   - pattern: "isWorkspace:\\s*true"
     when: "Main list blade of the module"
     severity: "error"
-    strategy: "AI_FULL"
 
   - pattern: "menuItem:\\s*\\{"
     when: "Workspace blade (isWorkspace: true)"
     severity: "warning"
-    strategy: "AI_FULL"
 
 correct_pattern:
   description: "Define menuItem in workspace blade's defineOptions"
@@ -62,7 +57,7 @@ correct_pattern:
       isWorkspace: true,  // ← REQUIRED for workspace blade
       menuItem: {         // ← Menu item configuration HERE
         title: "OFFERS.MENU.TITLE",  // Use i18n key
-        icon: "fas fa-tags",
+        icon: "material-sell",      // Use material-* prefix (PREFERRED)
         priority: 10,
         // Optional: group configuration
         groupConfig: {
@@ -86,7 +81,7 @@ wrong_pattern:
     export function bootstrap(app: App) {
       addMenuItem({
         title: "Offers",
-        icon: "fas fa-tags",
+        icon: "material-sell",  // Note: Font Awesome (fas/far/fab) is FORBIDDEN
         priority: 10,
         url: "/offers",
       });
@@ -98,7 +93,7 @@ instructions: |
   1. Add isWorkspace: true in defineOptions
   2. Add menuItem configuration with:
      - title: i18n key (e.g., "MODULE.MENU.TITLE")
-     - icon: icon string (fas fa-*, lucide-*, bi-*, material-*)
+     - icon: icon string (material-* PREFERRED, bi-*, lucide-*). Font Awesome is FORBIDDEN.
      - priority: number (0-100, lower = higher in menu)
      - groupConfig: optional menu group
   3. Optionally add permissions array
@@ -116,7 +111,6 @@ validations:
   - type: "regex"
     pattern: "addMenuItem\\("
     message: "❌ FORBIDDEN: Use defineOptions menuItem in workspace blade, NOT addMenuItem()"
-    strategy: "AI_FULL"
 
   - type: "required_import"
     import: "defineOptions"

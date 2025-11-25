@@ -13,7 +13,6 @@ import { fileURLToPath } from "url";
 import type {
   Rule,
   RuleCategory,
-  GenerationStrategy,
   BladeType,
   RulesLoaderOptions,
 } from "./rules-types";
@@ -132,27 +131,6 @@ export class RulesLoader {
   }
 
   /**
-   * Load rules for specific strategy
-   */
-  async loadForStrategy(strategy: GenerationStrategy): Promise<Rule[]> {
-    const cacheKey = `strategy:${strategy}`;
-    if (this.cacheEnabled && this.cache.has(cacheKey)) {
-      return this.cache.get(cacheKey)!;
-    }
-
-    const allRules = await this.loadAllRules();
-    const filtered = allRules.filter(
-      (r) => !r.strategy || r.strategy === "ALL" || r.strategy === strategy,
-    );
-
-    if (this.cacheEnabled) {
-      this.cache.set(cacheKey, filtered);
-    }
-
-    return filtered;
-  }
-
-  /**
    * Load rules for specific blade type
    */
   async loadForBladeType(bladeType: BladeType): Promise<Rule[]> {
@@ -178,7 +156,6 @@ export class RulesLoader {
    */
   async loadFiltered(options: {
     category?: RuleCategory;
-    strategy?: GenerationStrategy;
     bladeType?: BladeType;
     isWorkspace?: boolean;
     features?: string[];
@@ -187,12 +164,6 @@ export class RulesLoader {
 
     if (options.category) {
       rules = rules.filter((r) => r.category === options.category);
-    }
-
-    if (options.strategy) {
-      rules = rules.filter(
-        (r) => !r.strategy || r.strategy === "ALL" || r.strategy === options.strategy,
-      );
     }
 
     if (options.bladeType) {
@@ -231,11 +202,9 @@ export class RulesLoader {
     bladeType: BladeType;
     isWorkspace?: boolean;
     features?: string[];
-    strategy?: GenerationStrategy;
   }): Promise<Array<Rule & { applies: boolean; reason: string }>> {
     const rules = await this.loadFiltered({
       bladeType: options.bladeType,
-      strategy: options.strategy || "AI_FULL",
       isWorkspace: options.isWorkspace,
       features: options.features,
     });

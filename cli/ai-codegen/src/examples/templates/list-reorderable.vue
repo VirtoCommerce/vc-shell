@@ -37,7 +37,7 @@
         <div class="tw-flex tw-items-center tw-gap-2">
           <VcIcon
             v-if="isReorderMode"
-            icon="fas fa-grip-vertical"
+            icon="material-drag_indicator"
             class="tw-text-gray-400 tw-cursor-move"
           />
           <span class="tw-text-sm tw-text-gray-600">
@@ -157,7 +157,7 @@ const bladeToolbar = computed<IBladeToolbar[]>(() => {
     {
       id: "reorder",
       title: computed(() => t("ENTITIES.PAGES.LIST.TOOLBAR.REORDER")),
-      icon: "fas fa-sort",
+      icon: "material-swap_vert",
       async clickHandler() {
         enableReorderMode();
       },

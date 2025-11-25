@@ -19,8 +19,3 @@ export { SmartUIPlanner } from "./planners/planner";
 export { BladePlanner } from "./planners/blade";
 export { WorkflowPlanner } from "./planners/workflow";
 
-// Synthesizers
-export { VueSFCSynthesizer } from "./synthesizers/vue";
-export { ComposableSynthesizer } from "./synthesizers/composable";
-export { APIClientSynthesizer } from "./synthesizers/api-client";
-export { LocaleSynthesizer } from "./synthesizers/locale";

@@ -223,30 +223,38 @@ import { Field, useForm } from 'vee-validate';
   // 6. ICON PREFIXES
   // ======================
   iconPrefixes: {
-    validPrefixes: ['material-', 'bi-', 'lucide-', 'fas fa-', 'svg:'],
-    description: 'VcIcon supports multiple icon libraries with proper prefixes',
+    validPrefixes: ['material-', 'bi-', 'lucide-', 'svg:'],
+    forbiddenPrefixes: ['fas fa-', 'far fa-', 'fab fa-', 'fa-'],
+    description: 'VcIcon supports multiple icon libraries. Font Awesome is FORBIDDEN (legacy).',
     examples: {
       correct: `
-// ✅ Material Symbols (default, most common)
+// ✅ Material Symbols (PREFERRED - use this!)
 icon: "material-save"
 icon: "material-refresh"
+icon: "material-add"
+icon: "material-delete"
+icon: "material-edit"
+icon: "material-home"
+icon: "material-settings"
+icon: "material-person"
+icon: "material-store"
 
 // ✅ Bootstrap Icons
 icon: "bi-house"
+icon: "bi-gear"
 
 // ✅ Lucide Icons
 icon: "lucide-home"
-
-// ✅ Font Awesome
-icon: "fas fa-home"
-icon: "far fa-star"
+icon: "lucide-settings"
 
 // ✅ SVG Icons
 icon: "svg:/assets/icons/custom.svg"
 `,
       incorrect: `
-// ❌ Don't restrict to one prefix
-// All prefixes above are valid!
+// ❌ Font Awesome is FORBIDDEN (legacy)
+// icon: "fas fa-home"    // DON'T USE!
+// icon: "far fa-star"    // DON'T USE!
+// icon: "fab fa-github"  // DON'T USE!
 `,
     },
   },

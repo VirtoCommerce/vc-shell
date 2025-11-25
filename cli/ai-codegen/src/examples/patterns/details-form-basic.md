@@ -97,21 +97,21 @@ const bladeToolbar = ref<IBladeToolbar[]>([
   {
     id: "save",
     title: "Save",
-    icon: "fas fa-save",
+    icon: "material-save",
     clickHandler: onSave,
     disabled: computed(() => !modified.value || loading.value),
   },
   {
     id: "save-and-close",
     title: "Save & Close",
-    icon: "fas fa-check",
+    icon: "material-check",
     clickHandler: onSaveAndClose,
     disabled: computed(() => !modified.value || loading.value),
   },
   {
     id: "cancel",
     title: "Cancel",
-    icon: "fas fa-times",
+    icon: "material-close",
     clickHandler: onCancel,
   },
 ]);

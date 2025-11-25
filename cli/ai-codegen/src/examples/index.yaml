@@ -80,7 +80,7 @@ patterns:
     category: blade
     applies_to: [details]
     description: Form validation patterns
-    features: [validation, error-handling, yup]
+    features: [validation, error-handling, vee-validate]
 
   - id: details-gallery
     file: patterns/details-gallery.md
@@ -249,8 +249,8 @@ templates:
     blade_type: details
     complexity: moderate
     lines: ~280
-    features: [form, validation, yup, error-handling, toolbar]
-    description: Details blade with comprehensive Yup validation
+    features: [form, validation, vee-validate, error-handling, toolbar]
+    description: Details blade with comprehensive vee-validate validation
 
   - id: details-gallery
     file: templates/details-gallery.vue

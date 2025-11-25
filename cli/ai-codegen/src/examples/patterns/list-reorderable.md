@@ -103,7 +103,7 @@ const reorderToolbarItems = computed<IBladeToolbar[]>(() => {
       {
         id: "reorder",
         title: "Reorder",
-        icon: "fas fa-arrows-alt-v",
+        icon: "material-swap_vert",
         clickHandler: toggleReorderMode,
       },
     ];
@@ -112,13 +112,13 @@ const reorderToolbarItems = computed<IBladeToolbar[]>(() => {
       {
         id: "cancel-reorder",
         title: "Cancel",
-        icon: "fas fa-times",
+        icon: "material-close",
         clickHandler: cancelReorder,
       },
       {
         id: "save-order",
         title: "Save Order",
-        icon: "fas fa-save",
+        icon: "material-save",
         clickHandler: saveOrder,
         isAccent: true,
       },

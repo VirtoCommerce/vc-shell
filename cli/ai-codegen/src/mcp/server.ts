@@ -31,10 +31,6 @@ import {
   EntityExtractor,
   BladePlanner,
   WorkflowPlanner,
-  VueSFCSynthesizer,
-  ComposableSynthesizer,
-  APIClientSynthesizer,
-  LocaleSynthesizer,
 } from "../generators";
 import {
   WorkflowOrchestrator,
@@ -47,6 +43,7 @@ import {
   CodeValidationStepExecutor,
   SubmitStepExecutor,
 } from "../workflows";
+import { RulesLoader } from "../core/rules-loader";
 
 import type { MCPServerContext } from "./context";
 
@@ -57,6 +54,14 @@ const __dirname = path.dirname(__filename);
  * Initialize MCP Server
  */
 export async function startMCPServer() {
+  // Guard against silent crashes that surface as "Transport closed"
+  process.on("uncaughtException", (error) => {
+    console.error("[MCP Server] Uncaught exception:", error);
+  });
+  process.on("unhandledRejection", (reason) => {
+    console.error("[MCP Server] Unhandled rejection:", reason);
+  });
+
   const server = new Server(
     {
       name: "vcshell-codegen",
@@ -105,26 +110,26 @@ export async function startMCPServer() {
   const planner = new SmartUIPlanner(kb, componentResolver, featureResolver);
   const bladePlanner = new BladePlanner(componentResolver, featureResolver, templateResolver);
   const workflowPlanner = new WorkflowPlanner();
-  const vueSynthesizer = new VueSFCSynthesizer();
-  const composableSynthesizer = new ComposableSynthesizer();
-  const apiClientSynthesizer = new APIClientSynthesizer();
-  const localeSynthesizer = new LocaleSynthesizer();
-  console.error("[MCP Server] ✓ Generators Layer ready (10 components)");
+  console.error("[MCP Server] ✓ Generators Layer ready (6 components)");
 
   // Layer 4: Workflows Layer
   console.error("[MCP Server] Initializing Workflows Layer...");
+
+  // Initialize RulesLoader for YAML rules
+  const rulesDir = path.join(__dirname, "..", "rules");
+  const examplesDir = path.join(__dirname, "..", "examples");
+  const rulesLoader = new RulesLoader({ rulesDir, examplesDir, cache: true });
+
   const workflowContext = {
     kb,
+    rulesLoader,
     componentResolver,
     featureResolver,
+    templateResolver,
     uiPlanValidator,
     codeValidator,
     analyzer,
     planner,
-    vueSynthesizer,
-    composableSynthesizer,
-    apiClientSynthesizer,
-    localeSynthesizer,
   };
 
   const orchestrator = new WorkflowOrchestrator(workflowContext);
@@ -165,11 +170,6 @@ export async function startMCPServer() {
     planner,
     bladePlanner,
     workflowPlanner,
-    // Generators Layer - Synthesizers
-    vueSynthesizer,
-    composableSynthesizer,
-    apiClientSynthesizer,
-    localeSynthesizer,
     // Workflows Layer
     orchestrator,
     // Paths
@@ -203,10 +203,9 @@ export async function startMCPServer() {
   console.error("[MCP Server] Architecture Summary:");
   console.error("  Layer 1: Knowledge Base (11 files, 5 registries)");
   console.error("  Layer 2: Intelligence (13 files: 3 matchers, 4 resolvers, 3 validators)");
-  console.error("  Layer 3: Generators (10 files: 3 analyzers, 3 planners, 4 synthesizers)");
+  console.error("  Layer 3: Generators (6 files: 3 analyzers, 3 planners)");
   console.error("  Layer 4: Workflows (10 files: orchestrator + 8 step executors)");
   console.error("  Layer 5: MCP Server (7 files: server + 26 tool handlers)");
-  console.error("  TOTAL: ~51 files, 100% professional, 0% hardcoding");
 
   // Start server
   const transport = new StdioServerTransport();

@@ -74,14 +74,14 @@ export class CodeValidator {
 
     // 1. Check Vue SFC structure
     if (this.options.checkVueSFC) {
-      const sfcErrors = this.validateVueSFC(code);
+      const sfcErrors = this.validateVueSFCInternal(code);
       errors.push(...sfcErrors.errors);
       warnings.push(...sfcErrors.warnings);
     }
 
     // 2. Check TypeScript
     if (this.options.checkTypeScript) {
-      const tsErrors = this.validateTypeScript(code);
+      const tsErrors = this.validateTypeScriptInternal(code);
       errors.push(...tsErrors.errors);
       warnings.push(...tsErrors.warnings);
     }
@@ -111,113 +111,6 @@ export class CodeValidator {
     };
   }
 
-  /**
-   * Validate Vue SFC structure
-   */
-  private validateVueSFC(code: string): {
-    errors: SchemaValidationError[];
-    warnings: string[];
-  } {
-    const errors: SchemaValidationError[] = [];
-    const warnings: string[] = [];
-
-    // Check for <template>
-    if (!code.includes("<template>")) {
-      errors.push({
-        path: "template",
-        message: "Missing <template> block",
-      });
-    }
-
-    // Check for <script>
-    if (!code.includes("<script")) {
-      errors.push({
-        path: "script",
-        message: "Missing <script> block",
-      });
-    }
-
-    // Check for setup attribute
-    if (!code.includes("<script setup")) {
-      warnings.push("Consider using <script setup> for Composition API");
-    }
-
-    // Check for TypeScript
-    if (!code.includes('lang="ts"')) {
-      warnings.push("Consider using TypeScript (lang=\"ts\")");
-    }
-
-    // Check for balanced tags
-    // Note: We need to count ALL <template> tags (including nested slot templates)
-    // and verify they balance. This is a simple check - it won't catch all issues.
-    const allTemplateOpenTags = (code.match(/<template[>\s]/g) || []).length;
-    const allTemplateCloseTags = (code.match(/<\/template>/g) || []).length;
-    if (allTemplateOpenTags !== allTemplateCloseTags) {
-      errors.push({
-        path: "template",
-        message: "Unbalanced <template> tags",
-      });
-    }
-
-    const scriptCount = (code.match(/<script/g) || []).length;
-    const scriptCloseCount = (code.match(/<\/script>/g) || []).length;
-    if (scriptCount !== scriptCloseCount) {
-      errors.push({
-        path: "script",
-        message: "Unbalanced <script> tags",
-      });
-    }
-
-    return { errors, warnings };
-  }
-
-  /**
-   * Validate TypeScript (basic syntax checks)
-   */
-  private validateTypeScript(code: string): {
-    errors: SchemaValidationError[];
-    warnings: string[];
-  } {
-    const errors: SchemaValidationError[] = [];
-    const warnings: string[] = [];
-
-    // Extract script content
-    const scriptMatch = code.match(/<script[^>]*>([\s\S]*?)<\/script>/);
-    if (!scriptMatch) return { errors, warnings };
-
-    const scriptContent = scriptMatch[1];
-
-    // Check for basic syntax errors
-    const unbalancedBraces =
-      (scriptContent.match(/{/g) || []).length !== (scriptContent.match(/}/g) || []).length;
-    if (unbalancedBraces) {
-      errors.push({
-        path: "script",
-        message: "Unbalanced braces in script",
-      });
-    }
-
-    const unbalancedParens =
-      (scriptContent.match(/\(/g) || []).length !== (scriptContent.match(/\)/g) || []).length;
-    if (unbalancedParens) {
-      errors.push({
-        path: "script",
-        message: "Unbalanced parentheses in script",
-      });
-    }
-
-    // Check for 'any' type usage
-    if (scriptContent.includes(": any")) {
-      warnings.push("Avoid using 'any' type - use specific types instead");
-    }
-
-    // Check for proper typing
-    if (scriptContent.includes("defineProps(") && !scriptContent.includes("withDefaults")) {
-      warnings.push("Consider using withDefaults for props with default values");
-    }
-
-    return { errors, warnings };
-  }
 
   /**
    * Validate imports
@@ -334,5 +227,179 @@ export class CodeValidator {
       code.includes("</template>") &&
       code.includes("</script>")
     );
+  }
+
+  /**
+   * Public method to validate Vue SFC code
+   * Returns validation result with errors and warnings
+   */
+  validateVueSFC(code: string): CodeValidationResult {
+    const sfcResult = this.validateVueSFCInternal(code);
+    const tsResult = this.validateTypeScriptInternal(code);
+
+    const errors = [...sfcResult.errors, ...tsResult.errors];
+    const warnings = [...sfcResult.warnings, ...tsResult.warnings];
+
+    return {
+      valid: errors.length === 0,
+      errors: errors.length > 0 ? errors : undefined,
+      warnings: warnings.length > 0 ? warnings : undefined,
+      codeQuality: this.calculateCodeQuality(code),
+    };
+  }
+
+  /**
+   * Public method to validate TypeScript code (non-SFC)
+   * For composables, API clients, and other .ts files
+   */
+  validateTypeScriptCode(code: string): CodeValidationResult {
+    const errors: SchemaValidationError[] = [];
+    const warnings: string[] = [];
+
+    // Check for basic syntax errors
+    const unbalancedBraces =
+      (code.match(/{/g) || []).length !== (code.match(/}/g) || []).length;
+    if (unbalancedBraces) {
+      errors.push({
+        path: "file",
+        message: "Unbalanced braces in TypeScript file",
+      });
+    }
+
+    const unbalancedParens =
+      (code.match(/\(/g) || []).length !== (code.match(/\)/g) || []).length;
+    if (unbalancedParens) {
+      errors.push({
+        path: "file",
+        message: "Unbalanced parentheses in TypeScript file",
+      });
+    }
+
+    // Check for 'any' type usage
+    if (code.includes(": any")) {
+      warnings.push("Avoid using 'any' type - use specific types instead");
+    }
+
+    // Check for export
+    if (!code.includes("export")) {
+      warnings.push("No exports found in TypeScript file");
+    }
+
+    // Check for proper async/await
+    if (code.includes("async ") && !code.includes("await ")) {
+      warnings.push("Async function without await - consider if async is needed");
+    }
+
+    return {
+      valid: errors.length === 0,
+      errors: errors.length > 0 ? errors : undefined,
+      warnings: warnings.length > 0 ? warnings : undefined,
+    };
+  }
+
+  /**
+   * Internal Vue SFC validation (renamed from private validateVueSFC)
+   */
+  private validateVueSFCInternal(code: string): {
+    errors: SchemaValidationError[];
+    warnings: string[];
+  } {
+    const errors: SchemaValidationError[] = [];
+    const warnings: string[] = [];
+
+    // Check for <template>
+    if (!code.includes("<template>")) {
+      errors.push({
+        path: "template",
+        message: "Missing <template> block",
+      });
+    }
+
+    // Check for <script>
+    if (!code.includes("<script")) {
+      errors.push({
+        path: "script",
+        message: "Missing <script> block",
+      });
+    }
+
+    // Check for setup attribute
+    if (!code.includes("<script setup")) {
+      warnings.push("Consider using <script setup> for Composition API");
+    }
+
+    // Check for TypeScript
+    if (!code.includes('lang="ts"')) {
+      warnings.push("Consider using TypeScript (lang=\"ts\")");
+    }
+
+    // Check for balanced tags
+    const allTemplateOpenTags = (code.match(/<template[>\s]/g) || []).length;
+    const allTemplateCloseTags = (code.match(/<\/template>/g) || []).length;
+    if (allTemplateOpenTags !== allTemplateCloseTags) {
+      errors.push({
+        path: "template",
+        message: "Unbalanced <template> tags",
+      });
+    }
+
+    const scriptCount = (code.match(/<script/g) || []).length;
+    const scriptCloseCount = (code.match(/<\/script>/g) || []).length;
+    if (scriptCount !== scriptCloseCount) {
+      errors.push({
+        path: "script",
+        message: "Unbalanced <script> tags",
+      });
+    }
+
+    return { errors, warnings };
+  }
+
+  /**
+   * Internal TypeScript validation (renamed from private validateTypeScript)
+   */
+  private validateTypeScriptInternal(code: string): {
+    errors: SchemaValidationError[];
+    warnings: string[];
+  } {
+    const errors: SchemaValidationError[] = [];
+    const warnings: string[] = [];
+
+    // Extract script content
+    const scriptMatch = code.match(/<script[^>]*>([\s\S]*?)<\/script>/);
+    if (!scriptMatch) return { errors, warnings };
+
+    const scriptContent = scriptMatch[1];
+
+    // Check for basic syntax errors
+    const unbalancedBraces =
+      (scriptContent.match(/{/g) || []).length !== (scriptContent.match(/}/g) || []).length;
+    if (unbalancedBraces) {
+      errors.push({
+        path: "script",
+        message: "Unbalanced braces in script",
+      });
+    }
+
+    const unbalancedParens =
+      (scriptContent.match(/\(/g) || []).length !== (scriptContent.match(/\)/g) || []).length;
+    if (unbalancedParens) {
+      errors.push({
+        path: "script",
+        message: "Unbalanced parentheses in script",
+      });
+    }
+
+    // Check for 'any' type usage
+    if (scriptContent.includes(": any")) {
+      warnings.push("Avoid using 'any' type - use specific types instead");
+    }
+
+    // Check for proper typing
+    if (scriptContent.includes("defineProps(") && !scriptContent.includes("withDefaults")) {
+      warnings.push("Consider using withDefaults for props with default values");
+    }
+
+    return { errors, warnings };
   }
 }

@@ -83,3 +83,4 @@ docs/CHANGELOG_GUIDE.md
 scripts/generate-initial-changelogs.ts
 LERNA_INTEGRATION.md
 docs/WORKSPACE_ARCHITECTURE.md
+cli/ai-codegen/IMPROVEMENT_PLAN.md

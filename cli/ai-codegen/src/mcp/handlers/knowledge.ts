@@ -20,7 +20,6 @@ export const getApplicableRulesHandler: ToolHandler = async (params, context) =>
     bladeType,
     isWorkspace = false,
     features = [],
-    strategy = "AI_FULL",
   } = params;
   const { kb } = context;
 
@@ -81,7 +80,6 @@ export const getApplicableRulesHandler: ToolHandler = async (params, context) =>
       bladeType,
       isWorkspace,
       features,
-      strategy,
       message: `Found ${rules.length} applicable rules`,
     };
   } catch (error: any) {

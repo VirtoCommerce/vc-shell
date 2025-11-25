@@ -41,6 +41,34 @@ export interface BladeAnalysis {
   isWorkspace?: boolean;
   features?: string[];
   customizations?: Record<string, unknown>;
+  // List blade column specifications
+  columns?: ColumnAnalysis[];
+  // Details blade field specifications
+  fields?: FieldAnalysis[];
+  // Details blade section groupings
+  sections?: SectionAnalysis[];
+}
+
+export interface ColumnAnalysis {
+  id: string;
+  title: string;
+  type?: "text" | "number" | "date" | "date-ago" | "image" | "status-icon" | "link" | "badge";
+  sortable?: boolean;
+  width?: number;
+}
+
+export interface FieldAnalysis {
+  id: string;
+  label: string;
+  component: string; // VcInput, VcSelect, VcSwitch, etc.
+  required?: boolean;
+  rules?: string;
+}
+
+export interface SectionAnalysis {
+  id: string;
+  title: string;
+  fields: string[];
 }
 
 export interface RelationshipAnalysis {

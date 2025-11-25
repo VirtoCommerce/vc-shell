@@ -3,12 +3,11 @@ name: "Module Registration"
 category: "critical"
 priority: 100
 enabled: true
-strategy: "AI_FULL"  # Only for AI_FULL strategy
 applies_to:
   - "all"
 
 description: |
-  FOR AI_FULL STRATEGY: Module registration is AUTOMATED by the system.
+  Module registration is AUTOMATED by the system.
   DO NOT create bootstrap.ts for module registration.
   DO NOT use registerModule() or addMenuItem() in bootstrap.ts.
 
@@ -25,18 +24,15 @@ forbidden:
   - pattern: "registerModule\\("
     reason: "System automatically registers modules in main.ts"
     severity: "error"
-    strategy: "AI_FULL"
 
   - file: "bootstrap.ts"
     reason: "bootstrap.ts is ONLY for dashboard widgets, NOT module registration"
     severity: "error"
-    strategy: "AI_FULL"
     exception: "Dashboard widgets registration (registerDashboardWidget)"
 
   - pattern: "import.*registerModule"
     reason: "Module registration is automated"
     severity: "error"
-    strategy: "AI_FULL"
 
 correct_pattern:
   description: "System automatically updates main.ts"
@@ -66,7 +62,7 @@ wrong_pattern:
     ```
 
 instructions: |
-  For AI_FULL strategy, follow these steps:
+  Follow these steps:
   1. Create blade components (*.vue files in src/modules/{module}/pages/)
   2. Create composables (*.ts files in src/modules/{module}/composables/)
   3. Create module index (src/modules/{module}/index.ts with createAppModule)
@@ -80,13 +76,11 @@ examples:
 validations:
   - type: "forbidden_file"
     file: "src/modules/*/bootstrap.ts"
-    message: "❌ FORBIDDEN: Do not create bootstrap.ts for module registration (AI_FULL strategy)"
-    strategy: "AI_FULL"
+    message: "❌ FORBIDDEN: Do not create bootstrap.ts for module registration"
 
   - type: "forbidden_function"
     function: "registerModule"
     message: "❌ FORBIDDEN: registerModule() - System handles module registration automatically"
-    strategy: "AI_FULL"
 
 auto_fix:
   enabled: false  # Cannot auto-fix file creation

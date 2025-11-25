@@ -97,10 +97,6 @@ export {
   SmartUIPlanner,
   BladePlanner,
   WorkflowPlanner,
-  VueSFCSynthesizer,
-  ComposableSynthesizer,
-  APIClientSynthesizer,
-  LocaleSynthesizer,
 } from "./generators";
 
 // Layer 4: Workflows Layer

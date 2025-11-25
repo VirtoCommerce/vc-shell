@@ -75,7 +75,7 @@ const toolSchemas = [
   },
   {
     name: "generate_with_composition",
-    description: `⚠️ REQUIRES VALIDATED UI-PLAN ⚠️ Generate AI instructions for Vue SFC code generation (AI_FULL strategy). WORKFLOW: analyze → create plan → validate → generate → **submit code**.
+    description: `⚠️ REQUIRES VALIDATED UI-PLAN ⚠️ Generate AI instructions for Vue SFC code generation. WORKFLOW: analyze → create plan → validate → generate → **submit code**.
 
 **WHAT THIS TOOL DOES:**
 1. Returns structured generation guide with requirements, patterns, and constraints
@@ -113,12 +113,35 @@ All parameters are optional - specify to override smart defaults:
 - Call submit_generated_code with: { bladeId, code, context }
 - MCP server will validate and save the code
 
-❌ FORBIDDEN: NEVER use Write/Edit tools to create module files manually. ALWAYS use submit_generated_code for validation and pattern compliance.`,
+🚨 CRITICAL RESTRICTIONS 🚨
+❌ FORBIDDEN: NEVER use Write/Edit tools to create module files manually. ALWAYS use submit_generated_code for validation and pattern compliance.
+❌ NEVER bypass submit_generated_code validation
+❌ NEVER attempt manual fixes after validation errors
+❌ Generate ALL features from user's prompt before reporting completion
+See AI_GENERATION_RULES.md for complete restrictions.`,
     inputSchema: zodToJsonSchema(generateWithCompositionSchema),
   },
   {
     name: "submit_generated_code",
-    description: "Submit AI-generated code for validation and saving. Use this tool when you have generated Vue SFC code following a generation guide. The system will validate the code and allow up to 3 retry attempts.",
+    description: `Submit AI-generated code for validation and saving. Use this tool when you have generated Vue SFC code following a generation guide.
+
+**VALIDATION PROTOCOL:**
+- The system will validate the code and allow up to 3 retry attempts
+- If validation fails (retry < 3): Read errors, re-generate code addressing issues, submit again with incremented retry.attempt
+- If validation fails 3 times: STOP, generate error report, ask user for guidance
+
+**ERROR REPORT REQUIRED AFTER 3 FAILURES:**
+Generate detailed report with:
+- Module/blade information
+- All validation errors
+- Root cause analysis
+- Attempted solutions for each retry
+- Recommendations for user
+- Workflow state summary
+
+🚨 CRITICAL: After 3 failed retries, you MUST stop and generate error report. DO NOT attempt manual fixes with Write/Edit tools.
+
+See AI_GENERATION_RULES.md for complete error handling protocol.`,
     inputSchema: zodToJsonSchema(submitGeneratedCodeSchema),
   },
   {

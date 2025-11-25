@@ -34,7 +34,8 @@
     "url": "https://github.com/VirtoCommerce/vc-shell/issues"
   },
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   },
   "scripts": {
     "build": "tsup && bash scripts/copy-assets.sh",

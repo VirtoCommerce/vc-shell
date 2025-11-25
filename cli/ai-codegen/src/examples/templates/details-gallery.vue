@@ -60,10 +60,10 @@
               :is-collapsed="restoreCollapsed('entity_gallery')"
               @state:collapsed="handleCollapsed('entity_gallery', $event)"
             >
-              <VcLoading :active="imageUploading"></VcLoading>
               <div class="tw-p-2">
                 <VcGallery
                   :images="entity.images"
+                  :loading="imageUploading"
                   multiple
                   sortable
                   @upload="assetsHandler.upload"
@@ -82,11 +82,11 @@
               :is-collapsed="restoreCollapsed('entity_documents')"
               @state:collapsed="handleCollapsed('entity_documents', $event)"
             >
-              <VcLoading :active="documentsUploading"></VcLoading>
               <div class="tw-p-2">
                 <VcGallery
                   :images="entity.documents"
                   multiple
+                  :loading="documentsUploading"
                   sortable
                   :allowed-types="['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document']"
                   @upload="documentsHandler.upload"

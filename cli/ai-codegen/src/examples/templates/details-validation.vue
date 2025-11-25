@@ -168,11 +168,11 @@
               :is-collapsed="restoreCollapsed('entity_gallery')"
               @state:collapsed="handleCollapsed('entity_gallery', $event)"
             >
-              <VcLoading :active="imageUploading"></VcLoading>
               <div class="tw-p-2">
                 <VcGallery
                   :images="entity.images"
                   multiple
+                  :loading="imageUploading"
                   @upload="assetsHandler.upload"
                   @sort="assetsHandler.edit"
                   @remove="assetsHandler.remove"

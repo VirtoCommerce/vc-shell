@@ -177,12 +177,12 @@ const offer = ref({
     :is-collapsed="restoreCollapsed('offer_gallery')"
     @state:collapsed="handleCollapsed('offer_gallery', $event)"
   >
-    <VcLoading :active="imageUploading" />
     <!-- Note: Use tw-p-2 for galleries, not tw-p-4 -->
     <div class="tw-p-2">
       <VcGallery
         :images="offer.images"
         :disabled="readonly"
+        :loading="imageUploading"
         multiple
         @upload="assetsHandler.upload"
         @sort="assetsHandler.edit"
@@ -195,7 +195,7 @@ const offer = ref({
 
 <script setup lang="ts">
 import { ref } from "vue";
-import { VcCard, VcGallery, VcLoading } from "@vc-shell/framework";
+import { VcCard, VcGallery } from "@vc-shell/framework";
 import { useI18n } from "vue-i18n";
 
 const { t } = useI18n();

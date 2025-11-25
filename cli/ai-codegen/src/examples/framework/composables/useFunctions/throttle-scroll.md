@@ -69,7 +69,7 @@ const onScroll = throttle((event: Event) => {
       </div>
 
       <div v-if="loading" class="tw-text-center tw-p-4">
-        <VcLoading />
+        {{ $t("PRODUCTS.LOADING") }}
       </div>
 
       <div v-if="hasMore" ref="loadMoreTrigger" class="tw-h-4" />

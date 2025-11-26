@@ -1,3 +1,7 @@
+## [1.1.99-alpha.9](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.99-alpha.8...v1.1.99-alpha.9) (2025-11-26)
+
+**Note:** Version bump only for package @vc-shell/api-client-generator
+
 ## [1.1.99-alpha.8](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.99-alpha.7...v1.1.99-alpha.8) (2025-11-25)
 
 **Note:** Version bump only for package @vc-shell/api-client-generator

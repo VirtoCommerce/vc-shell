@@ -46,6 +46,7 @@ console.log(loading.value); // false after completion
     </div>
 
     <div v-else class="tw-p-4">
+      <!-- @vue-generic {IOffer} -->
       <VcTable :items="offers" :columns="columns" />
     </div>
   </VcBlade>

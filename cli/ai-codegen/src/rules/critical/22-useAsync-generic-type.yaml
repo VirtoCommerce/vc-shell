@@ -1,0 +1,94 @@
+id: "22"
+name: "useAsync Generic Type"
+category: "critical"
+priority: 100
+enabled: true
+applies_to:
+  - "composable"
+
+description: |
+  ALWAYS specify useAsync parameter type via generic, NOT in callback parameter.
+  The callback parameter is ALWAYS optional (T | undefined).
+
+  WHY THIS MATTERS:
+  - When you write `async (params: SearchParams)` TypeScript thinks params is always defined
+  - But useAsync CAN call the callback without parameters
+  - This causes runtime errors like "Cannot read property 'keyword' of undefined"
+  - Using generic `<SearchParams>` correctly types params as `SearchParams | undefined`
+
+rationale: |
+  useAsync hook has signature: useAsync<TParams, TResult>(callback: (params?: TParams) => Promise<TResult>)
+  The params parameter in the callback is ALWAYS optional.
+  TypeScript needs to know this to properly type-check.
+
+correct_pattern:
+  inline: |
+    ```typescript
+    // ✅ CORRECT: Type in generic, params is correctly typed as T | undefined
+    const { action: loadItems } = useAsync<ISearchParams>(async (params) => {
+      if (!params) return;  // Required guard because params can be undefined!
+      const result = await client.search(params);
+      // ...
+    });
+
+    // ✅ CORRECT: With two type params (input and output)
+    const { action: saveEntity } = useAsync<IEntity, IEntity>(async (data) => {
+      if (!data) return;  // Guard required!
+      return await client.save(data);
+    });
+
+    // ✅ CORRECT: Multiple params via object
+    const { action: loadItem } = useAsync<{ id: string }>(async (params) => {
+      if (!params?.id) return;  // Guard with optional chaining
+      const result = await client.getById(params.id);
+      // ...
+    });
+    ```
+
+wrong_pattern:
+  inline: |
+    ```typescript
+    // ❌ WRONG: Type in callback parameter - TypeScript thinks params is ALWAYS defined!
+    const { action: loadItems } = useAsync(async (params: ISearchParams) => {
+      // No TypeScript error here, but params CAN be undefined at runtime!
+      const result = await client.search(params);  // Runtime error if params is undefined!
+    });
+
+    // ❌ WRONG: No guard for undefined params
+    const { action: loadItem } = useAsync<{ id: string }>(async (params) => {
+      const result = await client.getById(params.id);  // params can be undefined!
+    });
+    ```
+
+forbidden:
+  - pattern: "useAsync\\(async\\s*\\([^)]+:\\s*\\w+"
+    reason: "useAsync callback param type must be in generic <T>, not inline type annotation"
+    severity: "error"
+
+required:
+  - pattern: "useAsync<"
+    when: "Using useAsync hook"
+    severity: "error"
+
+  - pattern: "if\\s*\\(!params"
+    when: "useAsync callback has typed params"
+    severity: "warning"
+
+validations:
+  - type: "regex"
+    pattern: "useAsync<[^>]+>\\(async\\s*\\(\\w+\\)"
+    message: "✓ Correctly using generic type for useAsync params"
+
+  - type: "regex_negative"
+    pattern: "useAsync\\(async\\s*\\([^)]+:\\s*[A-Z]"
+    message: "⚠️ Move type annotation to generic: useAsync<Type>(async (params) => ...), NOT useAsync(async (params: Type) => ...)"
+
+instructions: |
+  When using useAsync:
+  1. ALWAYS use generic type: useAsync<ParamType>(...)
+  2. NEVER use inline type: useAsync(async (params: ParamType) => ...)
+  3. ALWAYS add guard: if (!params) return; or if (!params?.id) return;
+  4. For multiple params, use object: useAsync<{ id: string; name: string }>(...)
+
+auto_fix:
+  enabled: false

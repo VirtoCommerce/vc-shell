@@ -20,6 +20,7 @@ Real-world table examples.
 
 ```vue
 <template>
+  <!-- @vue-generic {IOrder} -->
   <VcTable
     :total-label="$t('ORDERS.PAGES.LIST.TABLE.TOTALS')"
     :items="items"
@@ -155,6 +156,7 @@ async function loadOrders(params: any) {
 
 ```vue
 <template>
+  <!-- @vue-generic {IOrder} -->
   <VcTable
     :items="items"
     :columns="columns"
@@ -285,6 +287,7 @@ async function resetFilters() {
 
 ```vue
 <template>
+  <!-- @vue-generic {IOffer} -->
   <VcTable
     :loading="loading"
     :columns="columns"
@@ -349,6 +352,7 @@ async function removeOffers() {
 
 ```vue
 <template>
+  <!-- @vue-generic {IOrderLineItem} -->
   <VcTable
     :items="item.items"
     :columns="itemsColumns"
@@ -427,6 +431,7 @@ function calculateTotals() {
 ```vue
 <template>
   <!-- Disable header to hide search -->
+  <!-- @vue-generic {IItem} -->
   <VcTable
     :items="items"
     :columns="columns"
@@ -524,6 +529,7 @@ const columns = ref([
 
 ### Basic List with Search
 ```vue
+<!-- @vue-generic {IItem} -->
 <VcTable
   :items="items"
   :columns="columns"
@@ -534,6 +540,7 @@ const columns = ref([
 
 ### With Filters
 ```vue
+<!-- @vue-generic {IItem} -->
 <VcTable
   :items="items"
   :columns="columns"
@@ -547,6 +554,7 @@ const columns = ref([
 
 ### Sortable Columns
 ```vue
+<!-- @vue-generic {IItem} -->
 <VcTable
   :columns="columns"
   :sort="sortExpression"
@@ -558,6 +566,7 @@ const columns = ref([
 
 ### With Empty/NotFound States
 ```vue
+<!-- @vue-generic {IItem} -->
 <VcTable
   :empty="{
     icon: 'material-list',
@@ -574,6 +583,7 @@ const columns = ref([
 
 ### Custom Cell Template
 ```vue
+<!-- @vue-generic {IItem} -->
 <VcTable :items="items" :columns="columns">
   <template #item_status="{ item }">
     <VcBadge :content="item.status" :variant="getVariant(item.status)" />

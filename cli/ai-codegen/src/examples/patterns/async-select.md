@@ -52,6 +52,7 @@ onMounted(() => {
 ```
 
 ```vue
+<!-- @vue-generic {IEntity} -->
 <VcSelect
   v-model="entity.categoryId"
   :label="$t('CATEGORY')"
@@ -93,6 +94,7 @@ watch(searchQuery, (newQuery) => {
 ```
 
 ```vue
+<!-- @vue-generic {IEntity} -->
 <VcSelect
   v-model="entity.relatedItemId"
   :label="$t('RELATED_ITEM')"
@@ -158,12 +160,14 @@ watch(stateId, async (newStateId) => {
 ```
 
 ```vue
+<!-- @vue-generic {ICountry} -->
 <VcSelect
   v-model="countryId"
   :label="$t('COUNTRY')"
   :options="countryOptions"
 />
 
+<!-- @vue-generic {IState} -->
 <VcSelect
   v-model="stateId"
   :label="$t('STATE')"
@@ -171,6 +175,7 @@ watch(stateId, async (newStateId) => {
   :disabled="!countryId"
 />
 
+<!-- @vue-generic {ICity} -->
 <VcSelect
   v-model="cityId"
   :label="$t('CITY')"
@@ -212,6 +217,7 @@ onMounted(() => {
 ```
 
 ```vue
+<!-- @vue-generic {IEntity} -->
 <VcSelect
   v-model="entity.optionId"
   :label="$t('OPTION')"

@@ -139,6 +139,7 @@ Dashboard widget components use `DashboardWidgetCard` wrapper with specific stru
 
     <!-- Content slot for widget body -->
     <template #content>
+      <!-- @vue-generic {IItem} -->
       <VcTable
         :items="items?.slice(0, 5)"
         :columns="columns"
@@ -256,6 +257,7 @@ Example with conditional rendering and empty state:
 
     <template #content>
       <!-- Show table if there are items -->
+      <!-- @vue-generic {IItem} -->
       <VcTable
         v-if="items?.length"
         :items="items?.slice(0, 5)"

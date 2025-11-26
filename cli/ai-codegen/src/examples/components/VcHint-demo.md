@@ -152,11 +152,10 @@ function checkPasswordStrength(event: Event) {
 <template>
   <div class="tw-space-y-4">
     <div>
-      <VcLabel :required="true">
-        {{ $t("PRODUCTS.IMAGES") }}
-      </VcLabel>
       <VcFileUpload
         v-model="files"
+        :label="$t('PRODUCTS.IMAGES')"
+        required
         :multiple="true"
         :accept="acceptedTypes"
         @change="onFilesChange"
@@ -186,7 +185,7 @@ function checkPasswordStrength(event: Event) {
 
 <script setup lang="ts">
 import { ref } from "vue";
-import { VcLabel, VcFileUpload, VcHint, VcIcon } from "@vc-shell/framework";
+import { VcFileUpload, VcHint, VcIcon } from "@vc-shell/framework";
 import { useI18n } from "vue-i18n";
 
 const { t } = useI18n();

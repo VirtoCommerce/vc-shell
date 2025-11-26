@@ -67,6 +67,7 @@ const { t } = useI18n();
 
 ```vue
 <template>
+  <!-- @vue-generic {IItem} -->
   <VcTable
     :items="items"
     :columns="columns"

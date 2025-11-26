@@ -19,13 +19,11 @@ Real-world input dropdown examples for measurements with unit selectors.
 ```vue
 <template>
   <div class="tw-space-y-4">
-    <VcLabel :required="true">
-      {{ $t("PRODUCTS.WEIGHT") }}
-    </VcLabel>
-
     <VcInputDropdown
       v-model="product.weight"
       v-model:unit="product.weightUnit"
+      :label="$t('PRODUCTS.WEIGHT')"
+      required
       :options="weightUnits"
       :placeholder="$t('PRODUCTS.WEIGHT_PLACEHOLDER')"
     />
@@ -42,7 +40,7 @@ Real-world input dropdown examples for measurements with unit selectors.
 
 <script setup lang="ts">
 import { reactive } from "vue";
-import { VcLabel, VcInputDropdown, VcHint } from "@vc-shell/framework";
+import { VcInputDropdown, VcHint } from "@vc-shell/framework";
 import { useI18n } from "vue-i18n";
 
 const { t } = useI18n();
@@ -68,13 +66,12 @@ const weightUnits = ["kg", "g", "lb", "oz"];
         <div class="tw-grid tw-grid-cols-4 tw-gap-4">
           <!-- Length -->
           <div class="tw-col-span-3">
-            <VcLabel :required="true">
-              {{ $t("PRODUCTS.LENGTH") }}
-            </VcLabel>
             <Field v-slot="{ field, errorMessage }" name="length" :rules="dimensionRules">
               <VcInputDropdown
                 v-bind="field"
                 v-model:unit="dimensions.lengthUnit"
+                :label="$t('PRODUCTS.LENGTH')"
+                required
                 :error-message="errorMessage"
                 :options="dimensionUnits"
                 :placeholder="$t('PRODUCTS.LENGTH_PLACEHOLDER')"
@@ -84,13 +81,12 @@ const weightUnits = ["kg", "g", "lb", "oz"];
 
           <!-- Width -->
           <div class="tw-col-span-3">
-            <VcLabel :required="true">
-              {{ $t("PRODUCTS.WIDTH") }}
-            </VcLabel>
             <Field v-slot="{ field, errorMessage }" name="width" :rules="dimensionRules">
               <VcInputDropdown
                 v-bind="field"
                 v-model:unit="dimensions.widthUnit"
+                :label="$t('PRODUCTS.WIDTH')"
+                required
                 :error-message="errorMessage"
                 :options="dimensionUnits"
                 :placeholder="$t('PRODUCTS.WIDTH_PLACEHOLDER')"
@@ -100,13 +96,12 @@ const weightUnits = ["kg", "g", "lb", "oz"];
 
           <!-- Height -->
           <div class="tw-col-span-3">
-            <VcLabel :required="true">
-              {{ $t("PRODUCTS.HEIGHT") }}
-            </VcLabel>
             <Field v-slot="{ field, errorMessage }" name="height" :rules="dimensionRules">
               <VcInputDropdown
                 v-bind="field"
                 v-model:unit="dimensions.heightUnit"
+                :label="$t('PRODUCTS.HEIGHT')"
+                required
                 :error-message="errorMessage"
                 :options="dimensionUnits"
                 :placeholder="$t('PRODUCTS.HEIGHT_PLACEHOLDER')"
@@ -144,24 +139,21 @@ const weightUnits = ["kg", "g", "lb", "oz"];
 
         <div class="tw-grid tw-grid-cols-2 tw-gap-4">
           <div>
-            <VcLabel :required="true">
-              {{ $t("PRODUCTS.WEIGHT") }}
-            </VcLabel>
             <VcInputDropdown
               v-model="dimensions.weight"
               v-model:unit="dimensions.weightUnit"
+              :label="$t('PRODUCTS.WEIGHT')"
+              required
               :options="weightUnits"
               :placeholder="$t('PRODUCTS.WEIGHT_PLACEHOLDER')"
             />
           </div>
 
           <div>
-            <VcLabel :required="false">
-              {{ $t("PRODUCTS.PACKAGE_WEIGHT") }}
-            </VcLabel>
             <VcInputDropdown
               v-model="dimensions.packageWeight"
               v-model:unit="dimensions.weightUnit"
+              :label="$t('PRODUCTS.PACKAGE_WEIGHT')"
               :options="weightUnits"
               :placeholder="$t('PRODUCTS.PACKAGE_WEIGHT_PLACEHOLDER')"
             />
@@ -185,7 +177,6 @@ const weightUnits = ["kg", "g", "lb", "oz"];
 <script setup lang="ts">
 import { reactive } from "vue";
 import {
-  VcLabel,
   VcInputDropdown,
   VcForm,
   VcButton,
@@ -253,12 +244,11 @@ function onCancel() {
     <VcCard :header="$t('SHIPPING.SPEED_LIMITS')">
       <div class="tw-space-y-4">
         <div>
-          <VcLabel :required="true">
-            {{ $t("SHIPPING.MAX_SPEED") }}
-          </VcLabel>
           <VcInputDropdown
             v-model="maxSpeed"
             v-model:unit="speedUnit"
+            :label="$t('SHIPPING.MAX_SPEED')"
+            required
             :options="speedUnits"
             :placeholder="$t('SHIPPING.ENTER_SPEED')"
           />
@@ -287,7 +277,7 @@ function onCancel() {
 
 <script setup lang="ts">
 import { ref } from "vue";
-import { VcCard, VcLabel, VcInputDropdown } from "@vc-shell/framework";
+import { VcCard, VcInputDropdown } from "@vc-shell/framework";
 import { useI18n } from "vue-i18n";
 
 const { t } = useI18n();
@@ -324,30 +314,24 @@ function convertSpeed(value: number, from: string, to: string): string {
 <template>
   <div class="tw-space-y-4">
     <div>
-      <VcLabel :required="true">
-        {{ $t("PRODUCTS.STORAGE_TEMPERATURE") }}
-      </VcLabel>
-
       <div class="tw-grid tw-grid-cols-2 tw-gap-4">
         <div>
-          <VcLabel class="tw-text-sm">
-            {{ $t("PRODUCTS.MIN_TEMP") }}
-          </VcLabel>
           <VcInputDropdown
             v-model="storage.minTemp"
             v-model:unit="storage.tempUnit"
+            :label="$t('PRODUCTS.MIN_TEMP')"
+            required
             :options="tempUnits"
             :placeholder="$t('PRODUCTS.MIN_TEMP_PLACEHOLDER')"
           />
         </div>
 
         <div>
-          <VcLabel class="tw-text-sm">
-            {{ $t("PRODUCTS.MAX_TEMP") }}
-          </VcLabel>
           <VcInputDropdown
             v-model="storage.maxTemp"
             v-model:unit="storage.tempUnit"
+            :label="$t('PRODUCTS.MAX_TEMP')"
+            required
             :options="tempUnits"
             :placeholder="$t('PRODUCTS.MAX_TEMP_PLACEHOLDER')"
           />
@@ -372,7 +356,7 @@ function convertSpeed(value: number, from: string, to: string): string {
 
 <script setup lang="ts">
 import { reactive } from "vue";
-import { VcLabel, VcInputDropdown, VcHint } from "@vc-shell/framework";
+import { VcInputDropdown, VcHint } from "@vc-shell/framework";
 import { useI18n } from "vue-i18n";
 
 const { t } = useI18n();
@@ -424,6 +408,7 @@ function convertTemp(value: number, from: string, to: string): string {
       </VcButton>
     </div>
 
+    <!-- @vue-generic {IItem} -->
     <VcTable
       :items="products"
       :columns="columns"
@@ -460,6 +445,7 @@ function convertTemp(value: number, from: string, to: string): string {
             size="s"
             class="tw-w-20"
           />
+          <!-- @vue-generic {string} -->
           <VcSelect
             v-model="item.dimensionUnit"
             :options="dimensionUnits"

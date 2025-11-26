@@ -19,11 +19,10 @@ Real-world radio button examples for filters, settings, and single-choice select
 ```vue
 <template>
   <div class="tw-space-y-4">
-    <VcLabel :required="true">
-      {{ $t("SETTINGS.THEME") }}
-    </VcLabel>
-
-    <div class="tw-space-y-2">
+    <fieldset class="tw-space-y-2" aria-required="true">
+      <legend class="tw-text-sm tw-font-medium">
+        {{ $t("SETTINGS.THEME") }}
+      </legend>
       <VcRadioButton
         v-model="theme"
         value="light"
@@ -39,7 +38,7 @@ Real-world radio button examples for filters, settings, and single-choice select
         value="auto"
         :label="$t('SETTINGS.THEME_AUTO')"
       />
-    </div>
+    </fieldset>
 
     <div class="tw-text-sm tw-text-[var(--neutrals-500)]">
       {{ $t("SETTINGS.SELECTED") }}: <strong>{{ theme }}</strong>
@@ -49,7 +48,7 @@ Real-world radio button examples for filters, settings, and single-choice select
 
 <script setup lang="ts">
 import { ref } from "vue";
-import { VcLabel, VcRadioButton } from "@vc-shell/framework";
+import { VcRadioButton } from "@vc-shell/framework";
 import { useI18n } from "vue-i18n";
 
 const { t } = useI18n();
@@ -67,8 +66,10 @@ const theme = ref("light");
       <div class="tw-space-y-6">
         <!-- Status filter -->
         <div>
-          <VcLabel>{{ $t("FILTERS.STATUS") }}</VcLabel>
-          <div class="tw-space-y-2">
+          <fieldset class="tw-space-y-2">
+            <legend class="tw-text-sm tw-font-medium">
+              {{ $t("FILTERS.STATUS") }}
+            </legend>
             <VcRadioButton
               v-model="filters.status"
               value="all"
@@ -84,13 +85,15 @@ const theme = ref("light");
               value="inactive"
               :label="$t('FILTERS.STATUS_INACTIVE')"
             />
-          </div>
+          </fieldset>
         </div>
 
         <!-- Price range filter -->
         <div>
-          <VcLabel>{{ $t("FILTERS.PRICE_RANGE") }}</VcLabel>
-          <div class="tw-space-y-2">
+          <fieldset class="tw-space-y-2">
+            <legend class="tw-text-sm tw-font-medium">
+              {{ $t("FILTERS.PRICE_RANGE") }}
+            </legend>
             <VcRadioButton
               v-model="filters.priceRange"
               value="any"
@@ -111,13 +114,15 @@ const theme = ref("light");
               value="100+"
               :label="$t('FILTERS.PRICE_100_PLUS')"
             />
-          </div>
+          </fieldset>
         </div>
 
         <!-- Sort by filter -->
         <div>
-          <VcLabel>{{ $t("FILTERS.SORT_BY") }}</VcLabel>
-          <div class="tw-space-y-2">
+          <fieldset class="tw-space-y-2">
+            <legend class="tw-text-sm tw-font-medium">
+              {{ $t("FILTERS.SORT_BY") }}
+            </legend>
             <VcRadioButton
               v-model="filters.sortBy"
               value="name"
@@ -133,7 +138,7 @@ const theme = ref("light");
               value="date"
               :label="$t('FILTERS.SORT_DATE')"
             />
-          </div>
+          </fieldset>
         </div>
       </div>
 
@@ -147,6 +152,7 @@ const theme = ref("light");
       </template>
     </VcCard>
 
+    <!-- @vue-generic {IItem} -->
     <VcTable
       :items="filteredItems"
       :columns="columns"
@@ -156,7 +162,7 @@ const theme = ref("light");
 
 <script setup lang="ts">
 import { ref, computed, reactive } from "vue";
-import { VcCard, VcLabel, VcRadioButton, VcButton, VcTable } from "@vc-shell/framework";
+import { VcCard, VcRadioButton, VcButton, VcTable } from "@vc-shell/framework";
 import { useI18n } from "vue-i18n";
 
 const { t } = useI18n();
@@ -225,11 +231,10 @@ function applyFilters() {
 ```vue
 <template>
   <div class="tw-space-y-4">
-    <VcLabel :required="true">
-      {{ $t("CHECKOUT.SHIPPING_METHOD") }}
-    </VcLabel>
-
-    <div class="tw-space-y-3">
+    <fieldset class="tw-space-y-3" aria-required="true">
+      <legend class="tw-text-sm tw-font-medium">
+        {{ $t("CHECKOUT.SHIPPING_METHOD") }}
+      </legend>
       <div
         v-for="method in shippingMethods"
         :key="method.id"
@@ -260,13 +265,13 @@ function applyFilters() {
           </div>
         </div>
       </div>
-    </div>
+    </fieldset>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref } from "vue";
-import { VcLabel, VcRadioButton, VcIcon } from "@vc-shell/framework";
+import { VcRadioButton, VcIcon } from "@vc-shell/framework";
 import { useI18n } from "vue-i18n";
 
 const { t } = useI18n();
@@ -308,11 +313,10 @@ function selectShipping(id: string) {
 ```vue
 <template>
   <div class="tw-space-y-4">
-    <VcLabel :required="true">
-      {{ $t("CHECKOUT.PAYMENT_METHOD") }}
-    </VcLabel>
-
-    <div class="tw-space-y-3">
+    <fieldset class="tw-space-y-3" aria-required="true">
+      <legend class="tw-text-sm tw-font-medium">
+        {{ $t("CHECKOUT.PAYMENT_METHOD") }}
+      </legend>
       <div
         v-for="method in paymentMethods"
         :key="method.id"
@@ -369,13 +373,13 @@ function selectShipping(id: string) {
           </div>
         </div>
       </div>
-    </div>
+    </fieldset>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref } from "vue";
-import { VcLabel, VcRadioButton, VcIcon, VcInput, VcButton } from "@vc-shell/framework";
+import { VcRadioButton, VcIcon, VcInput, VcButton } from "@vc-shell/framework";
 import { useI18n } from "vue-i18n";
 
 const { t } = useI18n();
@@ -413,8 +417,10 @@ const paymentMethods = [
     <div class="tw-space-y-6">
       <!-- Notification preferences -->
       <div>
-        <VcLabel>{{ $t("SETTINGS.EMAIL_NOTIFICATIONS") }}</VcLabel>
-        <div class="tw-space-y-2">
+        <fieldset class="tw-space-y-2">
+          <legend class="tw-text-sm tw-font-medium">
+            {{ $t("SETTINGS.EMAIL_NOTIFICATIONS") }}
+          </legend>
           <VcRadioButton
             v-model="settings.emailNotifications"
             value="all"
@@ -430,13 +436,15 @@ const paymentMethods = [
             value="none"
             :label="$t('SETTINGS.EMAIL_NONE')"
           />
-        </div>
+        </fieldset>
       </div>
 
       <!-- Date format -->
       <div>
-        <VcLabel>{{ $t("SETTINGS.DATE_FORMAT") }}</VcLabel>
-        <div class="tw-space-y-2">
+        <fieldset class="tw-space-y-2">
+          <legend class="tw-text-sm tw-font-medium">
+            {{ $t("SETTINGS.DATE_FORMAT") }}
+          </legend>
           <VcRadioButton
             v-model="settings.dateFormat"
             value="MM/DD/YYYY"
@@ -476,13 +484,15 @@ const paymentMethods = [
               </div>
             </template>
           </VcRadioButton>
-        </div>
+        </fieldset>
       </div>
 
       <!-- Language -->
       <div>
-        <VcLabel>{{ $t("SETTINGS.LANGUAGE") }}</VcLabel>
-        <div class="tw-space-y-2">
+        <fieldset class="tw-space-y-2">
+          <legend class="tw-text-sm tw-font-medium">
+            {{ $t("SETTINGS.LANGUAGE") }}
+          </legend>
           <VcRadioButton
             v-for="lang in languages"
             :key="lang.code"
@@ -496,7 +506,7 @@ const paymentMethods = [
               </div>
             </template>
           </VcRadioButton>
-        </div>
+        </fieldset>
       </div>
     </div>
 
@@ -513,7 +523,7 @@ const paymentMethods = [
 
 <script setup lang="ts">
 import { reactive } from "vue";
-import { VcCard, VcLabel, VcRadioButton, VcButton } from "@vc-shell/framework";
+import { VcCard, VcRadioButton, VcButton } from "@vc-shell/framework";
 import { useI18n } from "vue-i18n";
 
 const { t } = useI18n();
@@ -603,7 +613,7 @@ function cancel() {
 
 ### Best Practices
 
-- Group related radio buttons under a single `VcLabel`
+- Group related radio buttons with a shared legend/heading
 - Use clear, mutually exclusive options
 - Provide at least 2 options (use switch/checkbox for binary choice)
 - Set a default selection (`ref` initial value)

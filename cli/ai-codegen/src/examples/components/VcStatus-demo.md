@@ -18,6 +18,7 @@ Real-world status badge examples for orders, products, services, and workflows.
 
 ```vue
 <template>
+  <!-- @vue-generic {IItem} -->
   <VcTable
     :items="orders"
     :columns="columns"
@@ -254,6 +255,7 @@ const services = ref([
 
 ```vue
 <template>
+  <!-- @vue-generic {IItem} -->
   <VcTable
     :items="users"
     :columns="columns"

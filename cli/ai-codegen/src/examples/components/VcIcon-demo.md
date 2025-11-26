@@ -145,6 +145,7 @@ import { VcIcon } from "@vc-shell/framework";
 
 ```vue
 <template>
+  <!-- @vue-generic {IItem} -->
   <VcTable
     :items="items"
     :columns="columns"

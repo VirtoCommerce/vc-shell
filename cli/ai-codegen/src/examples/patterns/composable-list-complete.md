@@ -1,156 +1,128 @@
 ---
-id: null
-type: null
-complexity: SIMPLE
+id: composable-list-complete
+type: PATTERN
+complexity: MODERATE
+category: composable
+tags: ["composable", "list", "useAsync", "pagination", "search"]
+title: "List Composable Pattern"
+description: "Complete pattern for list composable with useAsync, pagination, filters"
+bladeContext: ["list"]
 ---
 
 # List Composable Pattern
 
-This pattern is used for managing data in list/grid blades, including loading, pagination, search, sorting, and CRUD operations.
+This document describes the authoritative pattern for list composables in VC-Shell.
+
+## Authoritative Reference
+
+**The single source of truth is:** `reference/composable-list.ts`
+
+See [reference/composable-list.ts](../reference/composable-list.ts) for the complete, production-ready implementation.
 
 ## Purpose
+
 Encapsulate all data fetching and state management logic for a list blade. The composable provides reactive state and methods that the blade component can use.
 
 ## Key Features
+- useAsync hook for all async operations (with proper generic types!)
 - Reactive state for items, loading, pagination
-- API integration for fetching data
+- API integration via useApiClient
 - Search and sort functionality
 - Pagination support
-- CRUD operations
-- Auto-reload on parameter changes
+- Filter staged/applied architecture
+- Auto-computed derived values
+
+## ⚠️ CRITICAL: useAsync Generic Type Pattern
+
+**ALWAYS use generic type, NEVER inline type annotation:**
+
+```typescript
+// ❌ WRONG - TypeScript thinks params is ALWAYS defined:
+const { action: loadItems } = useAsync(async (params: ISearchQuery) => {
+  // CRASH! params can be undefined at runtime!
+});
+
+// ✅ CORRECT - generic type + guard:
+const { action: loadItems } = useAsync<ISearchQuery>(async (params) => {
+  // params is typed as ISearchQuery | undefined - correct!
+  const query = { ...defaultQuery, ...(params ?? {}) };
+  // ...
+});
+```
 
 ## Complete Example
 
 ### useProductList.ts
 
 ```typescript
-import { Ref, ref, computed, watch } from "vue";
+import { computed, ref, ComputedRef, Ref } from "vue";
+import { useAsync, useApiClient } from "@vc-shell/framework";
+import { ProductClient } from "../api_client/products.api";
+import { IProduct, IProductSearchQuery, ProductSearchResult } from "../api_client/products.api";
 
-// Import your API client
-// import { ProductClient } from "@/api_client/products";
-// import { IProduct } from "@/api/products";
-
-interface IProduct {
-  id: string;
-  name: string;
-  sku: string;
-  price: number;
-  createdDate: string;
-  [key: string]: unknown;
+export interface IUseProductList {
+  items: ComputedRef<IProduct[]>;
+  totalCount: ComputedRef<number>;
+  pages: ComputedRef<number>;
+  currentPage: ComputedRef<number>;  // ← ComputedRef, NOT Ref!
+  searchQuery: Ref<IProductSearchQuery>;
+  loadProducts: (query?: IProductSearchQuery) => Promise<void>;
+  loading: ComputedRef<boolean>;
 }
 
-export interface UseProductListParams {
-  page?: number;
-  pageSize?: number;
-  sort?: string;
-  keyword?: string;
-}
+export function useProductList(options?: { pageSize?: number; sort?: string }): IUseProductList {
+  const { getApiClient } = useApiClient(ProductClient);
 
-export function useProductList() {
-  // State
-  const items: Ref<IProduct[]> = ref([]);
-  const loading = ref(false);
-  const totalCount = ref(0);
-  const currentPage = ref(1);
-  const pageSize = ref(20);
-  const searchValue = ref("");
-  const sortExpression = ref<string | undefined>("createdDate:desc");
-  const selectedItemId = ref<string | undefined>();
-  const activeFilterCount = ref(0);
+  const pageSize = options?.pageSize ?? 20;
+  const searchQuery = ref<IProductSearchQuery>({
+    take: pageSize,
+    sort: options?.sort,
+  });
+  const searchResult = ref<ProductSearchResult>();
 
-  // Computed
-  const pages = computed(() => Math.ceil(totalCount.value / pageSize.value));
+  // ✅ CORRECT: useAsync with generic type
+  // params is typed as IProductSearchQuery | undefined
+  const { action: loadProducts, loading: loadingProducts } = useAsync<IProductSearchQuery>(async (params) => {
+    // Use nullish coalescing for optional params (NOT || which fails on 0 or "")
+    searchQuery.value = { ...searchQuery.value, ...(params ?? {}) };
 
-  // Methods
-  async function loadProductList(params?: UseProductListParams) {
-    loading.value = true;
-
-    try {
-      // Call your API
-      const client = new ProductClient();
-      const response = await client.search({
-        skip: ((params?.page || currentPage.value) - 1) * pageSize.value,
-        take: pageSize.value,
-        sort: params?.sort || sortExpression.value,
-        keyword: params?.keyword || searchValue.value,
-      });
-      
-      items.value = response.results || [];
-      totalCount.value = response.totalCount || 0;
-    } catch (error) {
-      console.error("[useProductList] Error loading products:", error);
-      items.value = [];
-      totalCount.value = 0;
-    } finally {
-      loading.value = false;
-    }
-  }
-
-  async function removeProduct(id: string) {
-    loading.value = true;
-
-    try {
-      const client = new ProductClient();
-      await client.delete([id]);
-
-      // Refresh list after delete
-      await loadProductList();
-    } catch (error) {
-      console.error("[useProductList] Error removing product:", error);
-      throw error;
-    } finally {
-      loading.value = false;
-    }
-  }
-
-  async function reload() {
-    await loadProductList();
-  }
-
-  // Auto-reload when search, sort, or page changes
-  watch([searchValue, sortExpression, currentPage], () => {
-    loadProductList();
+    const apiClient = await getApiClient();
+    searchResult.value = await apiClient.searchProducts(searchQuery.value);
   });
 
+  // Computed properties - derived from searchResult
+  const items = computed(() => searchResult.value?.results ?? []);
+  const totalCount = computed(() => searchResult.value?.totalCount ?? 0);
+  const pages = computed(() => Math.ceil(totalCount.value / pageSize));
+  // currentPage MUST be ComputedRef<number> - NOT Ref<number>!
+  const currentPage = computed(() => Math.floor((searchQuery.value.skip ?? 0) / pageSize) + 1);
+  const loading = computed(() => loadingProducts.value);
+
   return {
-    // State
     items,
-    loading,
     totalCount,
     pages,
     currentPage,
-    pageSize,
-    searchValue,
-    sortExpression,
-    selectedItemId,
-    activeFilterCount,
-    
-    // Methods
-    loadProductList,
-    removeProduct,
-    reload,
+    searchQuery,
+    loadProducts,
+    loading,
   };
 }
 ```
 
 ## Return Values
 
-### State (Refs)
-- `items: Ref<T[]>` - Array of items to display
-- `loading: Ref<boolean>` - Loading state indicator
-- `totalCount: Ref<number>` - Total number of items (for pagination)
-- `pages: ComputedRef<number>` - Total number of pages
-- `currentPage: Ref<number>` - Current page number (1-indexed)
-- `pageSize: Ref<number>` - Items per page
-- `searchValue: Ref<string>` - Search keyword
-- `sortExpression: Ref<string | undefined>` - Sort expression (e.g., "name:asc")
-- `selectedItemId: Ref<string | undefined>` - ID of selected item
-- `activeFilterCount: Ref<number>` - Number of active filters
+### State (ComputedRef for derived, Ref for mutable)
+- `items: ComputedRef<T[]>` - Array of items (derived from searchResult)
+- `loading: ComputedRef<boolean>` - Loading state (derived from useAsync)
+- `totalCount: ComputedRef<number>` - Total count (derived from searchResult)
+- `pages: ComputedRef<number>` - Total pages (computed from totalCount/pageSize)
+- `currentPage: ComputedRef<number>` - Current page (computed from skip/pageSize)
+- `searchQuery: Ref<ISearchQuery>` - Mutable search query state
 
 ### Methods
-- `loadEntityList(params?)` - Load items with optional parameters
-- `removeEntity(id)` - Delete an item by ID
-- `reload()` - Reload the current list
+- `loadItems(query?)` - Load items with optional query params
+- Query params are OPTIONAL - useAsync can call without params!
 
 ## Usage in Blade
 
@@ -164,30 +136,28 @@ const {
   totalCount,
   pages,
   currentPage,
-  searchValue,
-  sortExpression,
-  selectedItemId,
-  loadProductList,
-  reload,
-  removeProduct,
+  searchQuery,
+  loadProducts,
 } = useProductList();
 
 onMounted(async () => {
-  await loadProductList();
+  await loadProducts();  // No params - loads with defaults
 });
+
+// Pagination handler
+async function onPaginationChange(page: number) {
+  await loadProducts({ skip: (page - 1) * 20 });
+}
 </script>
 ```
 
 ## Patterns to Follow
 
-1. **Naming convention**: `use{EntityName}List`
-2. **Return object**: Always return state and methods, not just values
-3. **Loading state**: Always set loading to true before async operations
-4. **Error handling**: Always catch and log errors
-5. **Auto-reload**: Use `watch` to reload when search/sort/page changes
-6. **TypeScript**: Define interfaces for entity and params
-7. **API integration**: Separate API client logic from composable
-8. **Computed properties**: Use computed for derived values (e.g., pages)
-9. **Reactive refs**: All state should be refs or computed
-10. **Export interface**: Export params interface for type safety
+1. **useAsync Generic Type**: ALWAYS `useAsync<Type>(async (p) => {})`, NEVER `useAsync(async (p: Type) => {})`
+2. **Guard for undefined**: Use `params ?? {}` or explicit guard for required params
+3. **ComputedRef for derived**: items, loading, totalCount, pages, currentPage - all derived
+4. **Ref for mutable state**: searchQuery - can be modified
+5. **useApiClient**: Use `useApiClient(Client)` for API access
+6. **Naming**: `use{EntityName}List` composable, `load{EntityName}s` action
+7. **Export interface**: `IUse{EntityName}List` for return type
 

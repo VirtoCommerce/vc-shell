@@ -67,6 +67,7 @@
               name="status"
               rules="required"
             >
+              <!-- @vue-generic {{ label: string; value: string }} -->
               <VcSelect
                 v-bind="field"
                 v-model="entity.status"

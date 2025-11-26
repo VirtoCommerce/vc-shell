@@ -16,6 +16,7 @@ correct_pattern:
     <!-- ✅ CORRECT: Search and sort are built-in, filters slot for custom filters -->
     <template>
       <VcBlade>
+        <!-- @vue-generic {IOffer} -->
         <VcTable
           :items="items"
           :columns="columns"
@@ -87,6 +88,7 @@ wrong_pattern:
     <!-- ❌ WRONG: Using #filters slot for search/sort -->
     <template>
       <VcBlade>
+        <!-- @vue-generic {IOffer} -->
         <VcTable>
           <template #filters>
             <!-- ❌ WRONG: Search in filters slot -->

@@ -86,6 +86,7 @@ Complete example with VcTable, actions, and navigation:
     </template>
 
     <template #content>
+      <!-- @vue-generic {IItem} -->
       <VcTable
         :items="items?.slice(0, 5)"
         :columns="columns"
@@ -200,6 +201,7 @@ Widget with conditional rendering and empty state:
     </template>
 
     <template #content>
+      <!-- @vue-generic {IItem} -->
       <VcTable
         v-if="items?.length"
         :items="items?.slice(0, 5)"

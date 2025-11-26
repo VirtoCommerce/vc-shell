@@ -18,7 +18,7 @@
     "templates": [
       {
         "id": "list-simple",
-        "file": "templates/list-simple.vue",
+        "file": "snippets/list/list-simple.vue",
         "complexity": "basic",
         "lines": 150,
         "features": [
@@ -31,7 +31,7 @@
       },
       {
         "id": "list-filters",
-        "file": "templates/list-filters.vue",
+        "file": "snippets/list/list-filters.vue",
         "complexity": "medium",
         "lines": 290,
         "features": [
@@ -47,7 +47,7 @@
       },
       {
         "id": "list-multiselect",
-        "file": "templates/list-multiselect.vue",
+        "file": "snippets/list/list-multiselect.vue",
         "complexity": "advanced",
         "lines": 330,
         "features": [
@@ -60,7 +60,7 @@
       },
       {
         "id": "details-simple",
-        "file": "templates/details-simple.vue",
+        "file": "snippets/details/details-simple.vue",
         "complexity": "basic",
         "lines": 180,
         "features": [
@@ -73,7 +73,7 @@
       },
       {
         "id": "details-validation",
-        "file": "templates/details-validation.vue",
+        "file": "snippets/details/details-validation.vue",
         "complexity": "advanced",
         "lines": 290,
         "features": [
@@ -4046,7 +4046,7 @@
     "examples": [
       {
         "title": "Basic Form with Validation",
-        "code": "<VcForm @submit=\"onSubmit\">\n  <VcCard :header=\"$t('OFFERS.PAGES.DETAILS.GENERAL_INFO')\">\n    <div class=\"tw-p-4 tw-space-y-4\">\n      <div>\n        <VcLabel :required=\"true\">\n          {{ $t(\"OFFERS.FIELDS.NAME\") }}\n        </VcLabel>\n        <Field v-slot=\"{ field, errorMessage }\" name=\"name\" :rules=\"requiredRule\">\n          <VcInput v-bind=\"field\" :error-message=\"errorMessage\" />\n        </Field>\n      </div>\n    </div>\n  </VcCard>\n\n  <div class=\"tw-flex tw-justify-end tw-gap-2 tw-mt-4\">\n    <VcButton outlined @click=\"onCancel\">\n      {{ $t(\"COMMON.CANCEL\") }}\n    </VcButton>\n    <VcButton type=\"submit\" variant=\"primary\" :disabled=\"!isValid\">\n      {{ $t(\"COMMON.SAVE\") }}\n    </VcButton>\n  </div>\n</VcForm>"
+        "code": "<VcForm @submit=\"onSubmit\">\n  <VcCard :header=\"$t('OFFERS.PAGES.DETAILS.GENERAL_INFO')\">\n    <div class=\"tw-p-4 tw-space-y-4\">\n      <div>\n        <Field v-slot=\"{ field, errorMessage }\" name=\"name\" :rules=\"requiredRule\">\n          <VcInput\n            v-bind=\"field\"\n            :label=\"$t('OFFERS.FIELDS.NAME')\"\n            required\n            :error-message=\"errorMessage\"\n          />\n        </Field>\n      </div>\n    </div>\n  </VcCard>\n\n  <div class=\"tw-flex tw-justify-end tw-gap-2 tw-mt-4\">\n    <VcButton outlined @click=\"onCancel\">\n      {{ $t(\"COMMON.CANCEL\") }}\n    </VcButton>\n    <VcButton type=\"submit\" variant=\"primary\" :disabled=\"!isValid\">\n      {{ $t(\"COMMON.SAVE\") }}\n    </VcButton>\n  </div>\n</VcForm>"
       }
     ],
     "capabilities": {

@@ -237,6 +237,7 @@ export default createAppModule(
     :loading="loading"
     @close="$emit('close:blade')"
   >
+    <!-- @vue-generic {IOffer} -->
     <VcTable
       :items="offers"
       :columns="columns"

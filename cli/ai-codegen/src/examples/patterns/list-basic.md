@@ -35,6 +35,7 @@ Use this as the foundation for all list blades. Combine with other patterns like
     @expand="$emit('expand', $event)"
     @close="$emit('close', $event)"
   >
+    <!-- @vue-generic {IItem} -->
     <VcTable
       :columns="columns"
       :items="items"

@@ -1,0 +1,86 @@
+id: "25"
+name: "Vue SFC Single Tags"
+category: "critical"
+priority: 100
+enabled: true
+applies_to:
+  - "list"
+  - "details"
+
+description: |
+  Vue Single File Components (SFC) must have exactly ONE of each top-level tag:
+  - ONE <template> ... </template>
+  - ONE <script setup lang="ts"> ... </script>
+  - ZERO or ONE <style> ... </style>
+
+  NEVER generate duplicate closing tags like:
+  </script>
+  </script>
+  </script>
+
+  This causes Vue compilation errors!
+
+forbidden:
+  - pattern: "</template>\\s*</template>"
+    reason: "Duplicate </template> closing tags are invalid"
+    severity: "error"
+
+  - pattern: "</script>\\s*</script>"
+    reason: "Duplicate </script> closing tags are invalid"
+    severity: "error"
+
+  - pattern: "</style>\\s*</style>"
+    reason: "Duplicate </style> closing tags are invalid"
+    severity: "error"
+
+  - pattern: "<template[^>]*>[\\s\\S]*<template[^>]*>"
+    reason: "Multiple <template> blocks are invalid in Vue SFC"
+    severity: "error"
+
+  - pattern: "<script[^>]*>[\\s\\S]*<script[^>]*>"
+    reason: "Multiple <script> blocks are invalid (use one <script setup>)"
+    severity: "error"
+
+correct_pattern:
+  inline: |
+    ```vue
+    <template>
+      <!-- Template content -->
+      <VcBlade>
+        <!-- ... -->
+      </VcBlade>
+    </template>
+
+    <script setup lang="ts">
+    // Script content
+    import { ref } from 'vue';
+
+    const data = ref([]);
+    </script>
+    ```
+
+wrong_pattern:
+  inline: |
+    ```vue
+    <template>
+      <VcBlade>
+        <!-- ... -->
+      </VcBlade>
+    </template>
+
+    <script setup lang="ts">
+    import { ref } from 'vue';
+
+    const data = ref([]);
+    </script>
+    </script>
+    </script>
+    </script>
+    <!-- ❌ WRONG: Multiple closing tags! -->
+    ```
+
+validation:
+  - check: "Count of </template> must equal 1"
+  - check: "Count of </script> must equal 1"
+  - check: "Count of <template> must equal 1"
+  - check: "Count of <script must equal 1"

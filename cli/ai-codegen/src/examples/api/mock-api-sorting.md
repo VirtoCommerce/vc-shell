@@ -237,6 +237,7 @@ export function useOffersList() {
 ```vue
 <template>
   <VcBlade :loading="loading">
+    <!-- @vue-generic {IOffer} -->
     <VcTable
       :items="offers"
       :columns="columns"

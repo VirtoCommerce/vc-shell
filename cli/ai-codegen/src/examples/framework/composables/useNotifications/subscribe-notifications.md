@@ -77,6 +77,7 @@ function refreshInventoryData() {
 
 <template>
   <VcBlade title="Inventory">
+    <!-- @vue-generic {IInventoryItem} -->
     <VcTable :items="inventoryItems" />
     <!-- Toasts appear only when this blade is active -->
   </VcBlade>
@@ -228,6 +229,7 @@ setNotificationHandler((notif) => {
       </div>
     </div>
 
+    <!-- @vue-generic {IOffer} -->
     <VcTable :items="offers" />
   </VcBlade>
 </template>

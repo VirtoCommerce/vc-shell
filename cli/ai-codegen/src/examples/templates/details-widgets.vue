@@ -40,6 +40,7 @@
               name="type"
               rules="required"
             >
+              <!-- @vue-generic {{ label: string; value: string }} -->
               <VcSelect
                 v-model="entity.type"
                 :label="$t('ENTITIES.PAGES.DETAILS.FIELDS.TYPE.TITLE')"

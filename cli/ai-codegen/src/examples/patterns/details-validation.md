@@ -107,6 +107,7 @@ async function validateAndSave() {
   :model-value="entity.type"
   name="type"
 >
+  <!-- @vue-generic {IEntity} -->
   <VcSelect
     v-model="entity.type"
     :label="$t('MODULE.PAGES.DETAILS.FIELDS.TYPE.TITLE')"

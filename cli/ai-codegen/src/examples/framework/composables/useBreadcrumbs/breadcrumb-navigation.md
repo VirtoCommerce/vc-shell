@@ -169,6 +169,7 @@ function goToSettings() {
   <div>
     <VcBreadcrumbs :items="breadcrumbs" class="tw-mb-4" />
 
+    <!-- @vue-generic {IItem} -->
     <VcTable
       :items="tableItems"
       :columns="columns"

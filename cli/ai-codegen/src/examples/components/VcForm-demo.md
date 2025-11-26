@@ -23,12 +23,11 @@ description: "Form container component for details blades, works with vee-valida
       <div class="tw-p-4 tw-space-y-4">
         <!-- Product Name -->
         <div>
-          <VcLabel :required="true">
-            {{ $t("OFFERS.FIELDS.NAME") }}
-          </VcLabel>
           <Field v-slot="{ field, errorMessage }" name="name" :rules="requiredRule">
             <VcInput
               v-bind="field"
+              :label="$t('OFFERS.FIELDS.NAME')"
+              required
               :error-message="errorMessage"
               :placeholder="$t('OFFERS.FIELDS.NAME_PLACEHOLDER')"
             />
@@ -37,12 +36,11 @@ description: "Form container component for details blades, works with vee-valida
 
         <!-- SKU -->
         <div>
-          <VcLabel :required="true">
-            {{ $t("OFFERS.FIELDS.SKU") }}
-          </VcLabel>
           <Field v-slot="{ field, errorMessage }" name="sku" :rules="skuRule">
             <VcInput
               v-bind="field"
+              :label="$t('OFFERS.FIELDS.SKU')"
+              required
               :error-message="errorMessage"
               :placeholder="$t('OFFERS.FIELDS.SKU_PLACEHOLDER')"
             />
@@ -51,12 +49,12 @@ description: "Form container component for details blades, works with vee-valida
 
         <!-- Product Type -->
         <div>
-          <VcLabel :required="true">
-            {{ $t("OFFERS.FIELDS.PRODUCT_TYPE") }}
-          </VcLabel>
           <Field v-slot="{ field, errorMessage }" name="productType" :rules="requiredRule">
+            <!-- @vue-generic {{ label: string; value: string }} -->
             <VcSelect
               v-bind="field"
+              :label="$t('OFFERS.FIELDS.PRODUCT_TYPE')"
+              required
               :error-message="errorMessage"
               :options="productTypeOptions"
             />
@@ -65,11 +63,11 @@ description: "Form container component for details blades, works with vee-valida
 
         <!-- Enable/Disable -->
         <div>
-          <VcLabel>
-            {{ $t("OFFERS.FIELDS.ENABLED") }}
-          </VcLabel>
           <Field v-slot="{ field }" name="isActive">
-            <VcSwitch v-bind="field" />
+            <VcSwitch
+              v-bind="field"
+              :label="$t('OFFERS.FIELDS.ENABLED')"
+            />
           </Field>
         </div>
       </div>
@@ -89,7 +87,7 @@ description: "Form container component for details blades, works with vee-valida
 
 <script setup lang="ts">
 import { ref, computed } from "vue";
-import { VcForm, VcCard, VcLabel, VcInput, VcSelect, VcSwitch, VcButton } from "@vc-shell/framework";
+import { VcForm, VcCard, VcInput, VcSelect, VcSwitch, VcButton } from "@vc-shell/framework";
 import { Field, useForm } from "vee-validate";
 import { useI18n } from "vue-i18n";
 
@@ -133,20 +131,24 @@ function onCancel() {
     <VcCard :header="$t('OFFERS.PAGES.DETAILS.GENERAL_INFO')">
       <div class="tw-p-4 tw-space-y-4">
         <div>
-          <VcLabel :required="true">
-            {{ $t("OFFERS.FIELDS.NAME") }}
-          </VcLabel>
           <Field v-slot="{ field, errorMessage }" name="name" :rules="requiredRule">
-            <VcInput v-bind="field" :error-message="errorMessage" />
+            <VcInput
+              v-bind="field"
+              :label="$t('OFFERS.FIELDS.NAME')"
+              required
+              :error-message="errorMessage"
+            />
           </Field>
         </div>
 
         <div>
-          <VcLabel :required="true">
-            {{ $t("OFFERS.FIELDS.SKU") }}
-          </VcLabel>
           <Field v-slot="{ field, errorMessage }" name="sku" :rules="requiredRule">
-            <VcInput v-bind="field" :error-message="errorMessage" />
+            <VcInput
+              v-bind="field"
+              :label="$t('OFFERS.FIELDS.SKU')"
+              required
+              :error-message="errorMessage"
+            />
           </Field>
         </div>
       </div>
@@ -156,20 +158,22 @@ function onCancel() {
     <VcCard :header="$t('OFFERS.PAGES.DETAILS.PRICING')" class="tw-mt-4">
       <div class="tw-p-4 tw-space-y-4">
         <div>
-          <VcLabel :required="true">
-            {{ $t("OFFERS.FIELDS.PRICE") }}
-          </VcLabel>
           <Field v-slot="{ field, errorMessage }" name="price" :rules="requiredRule">
-            <VcInputCurrency v-bind="field" :error-message="errorMessage" />
+            <VcInputCurrency
+              v-bind="field"
+              :label="$t('OFFERS.FIELDS.PRICE')"
+              required
+              :error-message="errorMessage"
+            />
           </Field>
         </div>
 
         <div>
-          <VcLabel>
-            {{ $t("OFFERS.FIELDS.COMPARE_AT_PRICE") }}
-          </VcLabel>
           <Field v-slot="{ field }" name="compareAtPrice">
-            <VcInputCurrency v-bind="field" />
+            <VcInputCurrency
+              v-bind="field"
+              :label="$t('OFFERS.FIELDS.COMPARE_AT_PRICE')"
+            />
           </Field>
         </div>
       </div>
@@ -179,20 +183,23 @@ function onCancel() {
     <VcCard :header="$t('OFFERS.PAGES.DETAILS.INVENTORY')" class="tw-mt-4">
       <div class="tw-p-4 tw-space-y-4">
         <div>
-          <VcLabel>
-            {{ $t("OFFERS.FIELDS.TRACK_INVENTORY") }}
-          </VcLabel>
           <Field v-slot="{ field }" name="trackInventory">
-            <VcSwitch v-bind="field" />
+            <VcSwitch
+              v-bind="field"
+              :label="$t('OFFERS.FIELDS.TRACK_INVENTORY')"
+            />
           </Field>
         </div>
 
         <div v-if="formData.trackInventory">
-          <VcLabel :required="true">
-            {{ $t("OFFERS.FIELDS.QUANTITY") }}
-          </VcLabel>
           <Field v-slot="{ field, errorMessage }" name="quantity" :rules="quantityRule">
-            <VcInput v-bind="field" :error-message="errorMessage" type="number" />
+            <VcInput
+              v-bind="field"
+              :label="$t('OFFERS.FIELDS.QUANTITY')"
+              required
+              :error-message="errorMessage"
+              type="number"
+            />
           </Field>
         </div>
       </div>
@@ -215,7 +222,6 @@ import { reactive } from "vue";
 import {
   VcForm,
   VcCard,
-  VcLabel,
   VcInput,
   VcInputCurrency,
   VcSwitch,
@@ -260,9 +266,6 @@ function onCancel() {
     <VcCard :header="$t('OFFERS.PAGES.DETAILS.FORM.TITLE')">
       <div class="tw-p-4 tw-space-y-4">
         <div>
-          <VcLabel :required="true">
-            {{ $t("OFFERS.FIELDS.SKU") }}
-          </VcLabel>
           <Field
             v-slot="{ field, errorMessage }"
             name="sku"
@@ -272,6 +275,8 @@ function onCancel() {
           >
             <VcInput
               v-bind="field"
+              :label="$t('OFFERS.FIELDS.SKU')"
+              required
               :error-message="errorMessage"
               :placeholder="$t('OFFERS.FIELDS.SKU_PLACEHOLDER')"
             />
@@ -293,7 +298,7 @@ function onCancel() {
 </template>
 
 <script setup lang="ts">
-import { VcForm, VcCard, VcLabel, VcInput, VcHint, VcButton, useApiClient } from "@vc-shell/framework";
+import { VcForm, VcCard, VcInput, VcHint, VcButton, useApiClient } from "@vc-shell/framework";
 import { Field, useForm } from "vee-validate";
 import { useI18n } from "vue-i18n";
 
@@ -370,7 +375,7 @@ const { isValid, values, errors } = useForm();
 ### Best Practices
 
 - Always wrap form inputs with vee-validate `Field` for validation
-- Use `VcLabel` with `:required="true"` for required fields
+- Pass `:label` and `required` directly to form controls
 - Display error messages with `:error-message` prop on inputs
 - Use `VcCard` to group related form fields
 - Place form actions (Save, Cancel) at the bottom
@@ -386,17 +391,15 @@ const { isValid, values, errors } = useForm();
 
 1. **Required Field**:
 ```vue
-<VcLabel :required="true">Name</VcLabel>
 <Field v-slot="{ field, errorMessage }" name="name" :rules="requiredRule">
-  <VcInput v-bind="field" :error-message="errorMessage" />
+  <VcInput v-bind="field" label="Name" required :error-message="errorMessage" />
 </Field>
 ```
 
 2. **Optional Field**:
 ```vue
-<VcLabel>Description</VcLabel>
 <Field v-slot="{ field }" name="description">
-  <VcInput v-bind="field" />
+  <VcInput v-bind="field" label="Description" />
 </Field>
 ```
 
@@ -408,19 +411,19 @@ const { isValid, values, errors } = useForm();
   :rules="validateSkuUnique"
   :validate-on-blur="true"
 >
-  <VcInput v-bind="field" :error-message="errorMessage" />
+  <VcInput v-bind="field" label="SKU" required :error-message="errorMessage" />
 </Field>
 ```
 
 4. **Conditional Field**:
 ```vue
 <Field v-slot="{ field }" name="trackInventory">
-  <VcSwitch v-bind="field" />
+  <VcSwitch v-bind="field" label="Track inventory" />
 </Field>
 
 <div v-if="formData.trackInventory">
   <Field v-slot="{ field, errorMessage }" name="quantity" :rules="requiredRule">
-    <VcInput v-bind="field" :error-message="errorMessage" type="number" />
+    <VcInput v-bind="field" label="Quantity" required :error-message="errorMessage" type="number" />
   </Field>
 </div>
 ```

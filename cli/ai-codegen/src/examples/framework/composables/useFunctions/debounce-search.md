@@ -50,6 +50,7 @@ Based on real production code from vendor-portal offers-list.vue:
     :toolbar-items="bladeToolbar"
     width="70%"
   >
+    <!-- @vue-generic {IItem} -->
     <VcTable
       :items="items"
       :columns="columns"
@@ -96,6 +97,7 @@ const onSearchList = debounce(async (keyword: string) => {
 The VcTable component emits `search:change` event when user types in search input:
 
 ```vue
+<!-- @vue-generic {IItem} -->
 <VcTable
   :search-value="searchValue"
   @search:change="onSearchList"

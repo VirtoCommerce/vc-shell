@@ -65,8 +65,9 @@ correct_pattern:
           title: "COMMON.GROUPS.MANAGEMENT"
         }
       },
-      // Optional: permissions
-      permissions: ["offers:manage"],
+      // ⚠️ ONLY add permissions if EXPLICITLY requested by user!
+      // DO NOT add permissions by default!
+      // permissions: ["offers:manage"],  // ONLY IF USER ASKS FOR PERMISSIONS
     });
     </script>
     ```
@@ -96,7 +97,7 @@ instructions: |
      - icon: icon string (material-* PREFERRED, bi-*, lucide-*). Font Awesome is FORBIDDEN.
      - priority: number (0-100, lower = higher in menu)
      - groupConfig: optional menu group
-  3. Optionally add permissions array
+  3. ⚠️ DO NOT add permissions unless user EXPLICITLY requested them!
   4. Framework automatically registers menu item during module initialization
 
   bootstrap.ts should ONLY be used for:

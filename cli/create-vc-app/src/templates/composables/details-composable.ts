@@ -84,7 +84,9 @@ export function use{{EntityName}}Details(): IUse{{EntityName}}Details {
     }
   );
 
+  // IMPORTANT: useAsync<string> means id is typed as string | undefined - always guard!
   const { action: delete{{EntityName}}, loading: deleting{{EntityName}} } = useAsync<string>(async (id) => {
+    if (!id) return;  // Guard required - id can be undefined
     const apiClient = await getApiClient();
     await apiClient.delete{{EntityName}}(id);
   });

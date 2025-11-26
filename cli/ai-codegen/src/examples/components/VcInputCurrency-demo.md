@@ -20,11 +20,10 @@ Real-world currency input examples with multi-currency support and formatting.
 <template>
   <div class="tw-space-y-4">
     <div>
-      <VcLabel :required="true">
-        {{ $t("PRODUCTS.PRICE") }}
-      </VcLabel>
       <VcInputCurrency
         v-model="price"
+        :label="$t('PRODUCTS.PRICE')"
+        required
         :currency="currency"
         :placeholder="$t('PRODUCTS.PRICE_PLACEHOLDER')"
       />
@@ -38,7 +37,7 @@ Real-world currency input examples with multi-currency support and formatting.
 
 <script setup lang="ts">
 import { ref } from "vue";
-import { VcLabel, VcInputCurrency } from "@vc-shell/framework";
+import { VcInputCurrency } from "@vc-shell/framework";
 import { useI18n } from "vue-i18n";
 
 const { t } = useI18n();
@@ -62,22 +61,21 @@ function formatCurrency(amount: number, curr: string): string {
   <div class="tw-space-y-4">
     <div class="tw-grid tw-grid-cols-2 tw-gap-4">
       <div>
-        <VcLabel :required="true">
-          {{ $t("PRODUCTS.PRICE") }}
-        </VcLabel>
         <VcInputCurrency
           v-model="product.price"
+          :label="$t('PRODUCTS.PRICE')"
+          required
           :currency="product.currency"
           :placeholder="$t('PRODUCTS.PRICE_PLACEHOLDER')"
         />
       </div>
 
       <div>
-        <VcLabel :required="true">
-          {{ $t("PRODUCTS.CURRENCY") }}
-        </VcLabel>
+        <!-- @vue-generic {string} -->
         <VcSelect
           v-model="product.currency"
+          :label="$t('PRODUCTS.CURRENCY')"
+          required
           :options="currencies"
           :placeholder="$t('PRODUCTS.SELECT_CURRENCY')"
         />
@@ -104,7 +102,7 @@ function formatCurrency(amount: number, curr: string): string {
 
 <script setup lang="ts">
 import { ref, computed, reactive } from "vue";
-import { VcLabel, VcInputCurrency, VcSelect, VcCard } from "@vc-shell/framework";
+import { VcInputCurrency, VcSelect, VcCard } from "@vc-shell/framework";
 import { useI18n } from "vue-i18n";
 
 const { t } = useI18n();
@@ -154,12 +152,11 @@ function convertCurrency(amount: number, from: string, to: string): string {
         
         <div class="tw-grid tw-grid-cols-3 tw-gap-4">
           <div>
-            <VcLabel :required="true">
-              {{ $t("PRODUCTS.AMOUNT") }}
-            </VcLabel>
             <Field v-slot="{ field, errorMessage }" name="regularPrice" :rules="priceRules">
               <VcInputCurrency
                 v-bind="field"
+                :label="$t('PRODUCTS.AMOUNT')"
+                required
                 :error-message="errorMessage"
                 :currency="pricing.currency"
                 :placeholder="$t('PRODUCTS.ENTER_PRICE')"
@@ -168,20 +165,20 @@ function convertCurrency(amount: number, from: string, to: string): string {
           </div>
 
           <div>
-            <VcLabel :required="true">
-              {{ $t("PRODUCTS.CURRENCY") }}
-            </VcLabel>
+            <!-- @vue-generic {string} -->
             <VcSelect
               v-model="pricing.currency"
               :options="currencies"
+              required
+              :label="$t('PRODUCTS.CURRENCY')"
             />
           </div>
 
           <div>
-            <VcLabel :required="false">
-              {{ $t("PRODUCTS.TAX_INCLUDED") }}
-            </VcLabel>
-            <VcSwitch v-model="pricing.taxIncluded" />
+            <VcSwitch
+              v-model="pricing.taxIncluded"
+              :label="$t('PRODUCTS.TAX_INCLUDED')"
+            />
           </div>
         </div>
       </div>
@@ -195,11 +192,10 @@ function convertCurrency(amount: number, from: string, to: string): string {
 
         <div v-if="pricing.hasSalePrice" class="tw-space-y-4">
           <div>
-            <VcLabel :required="true">
-              {{ $t("PRODUCTS.SALE_AMOUNT") }}
-            </VcLabel>
             <VcInputCurrency
               v-model="pricing.salePrice"
+              :label="$t('PRODUCTS.SALE_AMOUNT')"
+              required
               :currency="pricing.currency"
               :placeholder="$t('PRODUCTS.ENTER_SALE_PRICE')"
             />
@@ -210,16 +206,16 @@ function convertCurrency(amount: number, from: string, to: string): string {
 
           <div class="tw-grid tw-grid-cols-2 tw-gap-4">
             <div>
-              <VcLabel>{{ $t("PRODUCTS.SALE_START") }}</VcLabel>
               <VcInput
                 v-model="pricing.saleStartDate"
+                :label="$t('PRODUCTS.SALE_START')"
                 type="date"
               />
             </div>
             <div>
-              <VcLabel>{{ $t("PRODUCTS.SALE_END") }}</VcLabel>
               <VcInput
                 v-model="pricing.saleEndDate"
+                :label="$t('PRODUCTS.SALE_END')"
                 type="date"
               />
             </div>
@@ -244,11 +240,9 @@ function convertCurrency(amount: number, from: string, to: string): string {
         
         <div class="tw-grid tw-grid-cols-2 tw-gap-4">
           <div>
-            <VcLabel :required="false">
-              {{ $t("PRODUCTS.COST") }}
-            </VcLabel>
             <VcInputCurrency
               v-model="pricing.costPrice"
+              :label="$t('PRODUCTS.COST')"
               :currency="pricing.currency"
               :placeholder="$t('PRODUCTS.ENTER_COST')"
             />
@@ -283,7 +277,6 @@ function convertCurrency(amount: number, from: string, to: string): string {
 <script setup lang="ts">
 import { reactive } from "vue";
 import {
-  VcLabel,
   VcInputCurrency,
   VcSelect,
   VcSwitch,
@@ -360,6 +353,7 @@ function onCancel() {
       </VcButton>
     </div>
 
+    <!-- @vue-generic {IProduct} -->
     <VcTable
       :items="products"
       :columns="columns"
@@ -374,6 +368,7 @@ function onCancel() {
       </template>
 
       <template #item_currency="{ item }">
+        <!-- @vue-generic {string} -->
         <VcSelect
           v-model="item.currency"
           :options="currencies"
@@ -520,4 +515,3 @@ new Intl.NumberFormat("en-US", {
 - Show converted values in other currencies
 - Store amounts as numbers (not formatted strings)
 - Use validation rules for minimum/maximum values
-

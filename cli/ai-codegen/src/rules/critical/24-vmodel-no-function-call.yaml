@@ -1,0 +1,136 @@
+id: "24"
+name: "v-model No Function Calls"
+category: "critical"
+priority: 100
+enabled: true
+applies_to:
+  - "list"
+  - "details"
+
+description: |
+  v-model CANNOT use function calls as values. Vue's v-model requires a direct reference
+  to a reactive variable (ref, reactive property, or computed with getter/setter).
+
+  Function calls like `v-model="getItem(id)"` will cause Vite build errors:
+  "v-model value must be a valid JavaScript member expression"
+
+  WRONG:
+  - v-model="getQuantity(id)"
+  - v-model="item.getValue()"
+  - v-model.number="calculatePrice(item)"
+
+  CORRECT:
+  - v-model="quantity" (ref)
+  - v-model="item.quantity" (reactive property)
+  - v-model="quantityMap[id]" (reactive object property)
+
+forbidden:
+  - pattern: 'v-model="[a-zA-Z_][a-zA-Z0-9_]*\('
+    reason: "v-model cannot use function calls - must be a direct variable reference"
+    severity: "error"
+
+  - pattern: "v-model.number=\"[a-zA-Z_][a-zA-Z0-9_]*\\("
+    reason: "v-model.number cannot use function calls - must be a direct variable reference"
+    severity: "error"
+
+  - pattern: "v-model.trim=\"[a-zA-Z_][a-zA-Z0-9_]*\\("
+    reason: "v-model.trim cannot use function calls - must be a direct variable reference"
+    severity: "error"
+
+correct_pattern:
+  inline: |
+    ```vue
+    <template>
+      <!-- ✅ CORRECT: Use reactive map/object for dynamic keys -->
+      <div v-for="center in fulfillmentCenters" :key="center.id">
+        <VcInput
+          v-model.number="quantityMap[center.id]"
+          type="number"
+          :label="center.name"
+        />
+      </div>
+    </template>
+
+    <script setup lang="ts">
+    import { ref, reactive, watch } from "vue";
+
+    interface FulfillmentCenter {
+      id: string;
+      name: string;
+      quantity: number;
+    }
+
+    const fulfillmentCenters = ref<FulfillmentCenter[]>([]);
+
+    // Use reactive object for v-model binding with dynamic keys
+    const quantityMap = reactive<Record<string, number>>({});
+
+    // Initialize map when data loads
+    watch(fulfillmentCenters, (centers) => {
+      centers.forEach(center => {
+        if (!(center.id in quantityMap)) {
+          quantityMap[center.id] = center.quantity;
+        }
+      });
+    }, { immediate: true });
+
+    // To get values back, read from quantityMap
+    function getUpdatedCenters(): FulfillmentCenter[] {
+      return fulfillmentCenters.value.map(center => ({
+        ...center,
+        quantity: quantityMap[center.id] ?? center.quantity
+      }));
+    }
+    </script>
+    ```
+
+wrong_pattern:
+  inline: |
+    ```vue
+    <template>
+      <!-- ❌ WRONG: Function call in v-model causes build error -->
+      <div v-for="center in fulfillmentCenters" :key="center.id">
+        <VcInput
+          v-model.number="getQuantity(center.id)"
+          type="number"
+          :label="center.name"
+        />
+      </div>
+    </template>
+
+    <script setup lang="ts">
+    // This will NOT work - v-model needs direct reference
+    function getQuantity(centerId: string): number {
+      return fulfillmentCenters.value.find(c => c.id === centerId)?.quantity ?? 0;
+    }
+    </script>
+    ```
+
+alternatives:
+  - name: "Use :value + @input for function-based values"
+    description: "When you need computed/function-based values, use manual two-way binding"
+    code: |
+      ```vue
+      <VcInput
+        :value="getQuantity(center.id)"
+        type="number"
+        :label="center.name"
+        @input="setQuantity(center.id, $event)"
+      />
+      ```
+
+  - name: "Use computed with getter/setter"
+    description: "For single values that need transformation"
+    code: |
+      ```vue
+      <script setup lang="ts">
+      const quantity = computed({
+        get: () => item.value.quantity,
+        set: (val) => { item.value.quantity = val; }
+      });
+      </script>
+
+      <template>
+        <VcInput v-model.number="quantity" />
+      </template>
+      ```

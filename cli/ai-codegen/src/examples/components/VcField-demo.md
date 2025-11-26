@@ -119,6 +119,7 @@ function withCurrency(value?: number) {
       :model-value="offer.productType"
       name="productType"
     >
+      <!-- @vue-generic {{ label: string; value: string }} -->
       <VcSelect
         v-model="offer.productType"
         :label="$t('OFFERS.PAGES.DETAILS.FIELDS.PRODUCT_TYPE.TITLE')"
@@ -164,6 +165,7 @@ function withCurrency(value?: number) {
       name="product"
       rules="required"
     >
+      <!-- @vue-generic {{ id: string; name: string }} -->
       <VcSelect
         v-model="offer.productId"
         :label="$t('OFFERS.PAGES.DETAILS.FIELDS.PRODUCT.TITLE')"

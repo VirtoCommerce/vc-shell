@@ -103,6 +103,42 @@ export function getResourceDefinitions(rootPath: string): ResourceDefinition[] {
         "Common blade logic patterns (handlers, toolbar, state) for list and details blades with various features",
       mimeType: "application/json",
     },
+    // Reference resources (Single Source of Truth)
+    {
+      uri: "vcshell://reference/blade-list",
+      name: "Reference: List Blade",
+      description:
+        "Authoritative list blade implementation with VcTable, search, pagination, sorting, and toolbar",
+      mimeType: "text/plain",
+    },
+    {
+      uri: "vcshell://reference/blade-details",
+      name: "Reference: Details Blade",
+      description:
+        "Authoritative details blade implementation with VcForm, VcCard, validation, and modification tracking",
+      mimeType: "text/plain",
+    },
+    {
+      uri: "vcshell://reference/composable-list",
+      name: "Reference: List Composable",
+      description:
+        "Authoritative list composable with useAsync generic pattern, useApiClient, pagination",
+      mimeType: "text/plain",
+    },
+    {
+      uri: "vcshell://reference/composable-details",
+      name: "Reference: Details Composable",
+      description:
+        "Authoritative details composable with useAsync, useModificationTracker, useLoading",
+      mimeType: "text/plain",
+    },
+    {
+      uri: "vcshell://reference/api-client",
+      name: "Reference: API Client",
+      description:
+        "Authoritative API client with AuthApiBase inheritance and proper method signatures",
+      mimeType: "text/plain",
+    },
   ];
 }
 
@@ -246,6 +282,47 @@ export async function readResource(
 
     case "vcshell://logic-patterns":
       return getLogicPatterns();
+
+    // Reference resources (Single Source of Truth)
+    case "vcshell://reference/blade-list": {
+      const refPath = path.join(examplesPath, "reference/blade-list.vue");
+      if (!fs.existsSync(refPath)) {
+        throw new Error("Reference blade-list.vue not found");
+      }
+      return fs.readFileSync(refPath, "utf-8");
+    }
+
+    case "vcshell://reference/blade-details": {
+      const refPath = path.join(examplesPath, "reference/blade-details.vue");
+      if (!fs.existsSync(refPath)) {
+        throw new Error("Reference blade-details.vue not found");
+      }
+      return fs.readFileSync(refPath, "utf-8");
+    }
+
+    case "vcshell://reference/composable-list": {
+      const refPath = path.join(examplesPath, "reference/composable-list.ts");
+      if (!fs.existsSync(refPath)) {
+        throw new Error("Reference composable-list.ts not found");
+      }
+      return fs.readFileSync(refPath, "utf-8");
+    }
+
+    case "vcshell://reference/composable-details": {
+      const refPath = path.join(examplesPath, "reference/composable-details.ts");
+      if (!fs.existsSync(refPath)) {
+        throw new Error("Reference composable-details.ts not found");
+      }
+      return fs.readFileSync(refPath, "utf-8");
+    }
+
+    case "vcshell://reference/api-client": {
+      const refPath = path.join(examplesPath, "reference/api-client.ts");
+      if (!fs.existsSync(refPath)) {
+        throw new Error("Reference api-client.ts not found");
+      }
+      return fs.readFileSync(refPath, "utf-8");
+    }
 
     default:
       throw new Error(`Unknown resource URI: ${uri}`);

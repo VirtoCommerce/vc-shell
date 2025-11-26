@@ -147,94 +147,6 @@ const navItems = ref([
 </script>
 ```
 
-## Links in Tables
-
-> ⚠️ **DEPRECATED PATTERN**: Using VcLink directly in table cells is NOT recommended.
-> Instead, use the column `type: "link"` and handle clicks via the `@item-click` event on VcTable.
-> The examples below are preserved for reference only - do not use this pattern in new code.
-
-```vue
-<template>
-  <VcTable
-    :items="items"
-    :columns="columns"
-  >
-    <!-- Name as link -->
-    <template #item_name="{ item }">
-      <VcLink :href="`/products/${item.id}`">
-        {{ item.name }}
-      </VcLink>
-    </template>
-
-    <!-- External URL -->
-    <template #item_website="{ item }">
-      <VcLink
-        v-if="item.website"
-        :href="item.website"
-        target="_blank"
-      >
-        {{ getDomain(item.website) }}
-        <VcIcon icon="material-open_in_new" size="xs" class="tw-ml-1" />
-      </VcLink>
-      <span v-else class="tw-text-[var(--neutrals-400)]">—</span>
-    </template>
-
-    <!-- Vendor link -->
-    <template #item_vendor="{ item }">
-      <VcLink :href="`/vendors/${item.vendorId}`">
-        {{ item.vendor }}
-      </VcLink>
-    </template>
-  </VcTable>
-</template>
-
-<script setup lang="ts">
-import { ref, computed } from "vue";
-import { VcTable, VcLink, VcIcon } from "@vc-shell/framework";
-import { useI18n } from "vue-i18n";
-
-const { t } = useI18n();
-
-const items = ref([
-  {
-    id: "1",
-    name: "Wireless Headphones",
-    vendor: "TechCorp",
-    vendorId: "v1",
-    website: "https://techcorp.example.com",
-  },
-  {
-    id: "2",
-    name: "Leather Backpack",
-    vendor: "FashionBrand",
-    vendorId: "v2",
-    website: null,
-  },
-  {
-    id: "3",
-    name: "Smart Watch",
-    vendor: "GadgetMakers",
-    vendorId: "v3",
-    website: "https://gadgetmakers.example.com",
-  },
-]);
-
-const columns = computed(() => [
-  { id: "name", title: t("PRODUCTS.NAME") },
-  { id: "vendor", title: t("PRODUCTS.VENDOR") },
-  { id: "website", title: t("PRODUCTS.WEBSITE") },
-]);
-
-function getDomain(url: string): string {
-  try {
-    return new URL(url).hostname.replace("www.", "");
-  } catch {
-    return url;
-  }
-}
-</script>
-```
-
 ## Links with States
 
 ```vue
@@ -422,6 +334,7 @@ function handleAction(action: string) {
 ```vue
 <template>
   <div class="tw-space-y-4">
+    <!-- @vue-generic {IItem} -->
     <VcTable
       :items="items"
       :columns="columns"
@@ -490,22 +403,15 @@ const columns = computed(() => [
 </VcLink>
 ```
 
-3. **Table Links**: Clickable items
-```vue
-<template #item_name="{ item }">
-  <VcLink :href="`/items/${item.id}`">{{ item.name }}</VcLink>
-</template>
-```
-
-4. **Action Links**: Trigger functions
+3. **Action Links**: Trigger functions
 ```vue
 <VcLink href="#" @click.prevent="handleAction">Action</VcLink>
 ```
 
-5. **Breadcrumbs**: Navigation path
+4. **Breadcrumbs**: Navigation path
 ```vue
-<VcLink href="/">Home</VcLink> / 
-<VcLink href="/products">Products</VcLink> / 
+<VcLink href="/">Home</VcLink> /
+<VcLink href="/products">Products</VcLink> /
 <span>Current Item</span>
 ```
 

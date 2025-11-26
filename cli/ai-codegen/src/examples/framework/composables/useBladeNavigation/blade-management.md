@@ -26,6 +26,7 @@ The `useBladeNavigation` composable provides the primary API for programmatic co
 ```vue
 <template>
   <VcBlade title="Product List">
+    <!-- @vue-generic {IProduct} -->
     <VcTable
       :items="products"
       :columns="columns"
@@ -393,6 +394,7 @@ onBeforeClose(async () => {
           @input="updateQueryAndFetch"
         />
 
+        <!-- @vue-generic {{ value: string | null; label: string }} -->
         <VcSelect
           v-model="filters.category"
           :options="categoryOptions"
@@ -400,6 +402,7 @@ onBeforeClose(async () => {
           @update:model-value="updateQueryAndFetch"
         />
 
+        <!-- @vue-generic {{ value: string; label: string }} -->
         <VcSelect
           v-model="filters.sortBy"
           :options="sortOptions"

@@ -71,6 +71,7 @@ function onAddItem() {
 ### Highlight Selected Row in List
 
 ```vue
+<!-- @vue-generic {IEntity} -->
 <VcTable
   :columns="columns"
   :items="items"

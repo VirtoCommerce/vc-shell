@@ -85,6 +85,7 @@ function cancelReorder() {
 ```
 
 ```vue
+<!-- @vue-generic {IItem} -->
 <VcTable
   :columns="columns"
   :items="items"

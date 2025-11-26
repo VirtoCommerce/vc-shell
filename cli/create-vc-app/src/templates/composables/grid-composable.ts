@@ -92,8 +92,10 @@ export function use{{EntityName}}List(options?: Use{{EntityName}}ListOptions): I
   });
   const searchResult = ref<{{EntityName}}SearchResult>();
 
+  // IMPORTANT: useAsync generic type ensures _query is typed as I{{EntityName}}SearchQuery | undefined
+  // Always use guard or provide default value for optional params
   const { action: load{{EntityName}}s, loading: loading{{EntityName}}s } = useAsync<I{{EntityName}}SearchQuery>(async (_query) => {
-    searchQuery.value = { ...searchQuery.value, ...(_query || {}) };
+    searchQuery.value = { ...searchQuery.value, ...(_query ?? {}) };
 
     const apiClient = await getApiClient();
     searchResult.value = await apiClient.search{{EntityName}}s(searchQuery.value);

@@ -89,6 +89,7 @@ const bladeToolbar = computed<IBladeToolbar[]>(() => {
     <!-- Only show create button if user has permission -->
     <VcButton v-if="canCreate" @click="onCreate">Create New</VcButton>
 
+    <!-- @vue-generic {IOffer} -->
     <VcTable
       :items="offers"
       :columns="columns"

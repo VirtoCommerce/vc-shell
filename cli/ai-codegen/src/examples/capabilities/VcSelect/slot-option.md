@@ -55,6 +55,7 @@ SIMPLE
 ### Example 1: Custom Option with Icon
 ```vue
 <template>
+  <!-- @vue-generic {{ value: string; label: string; icon: string }} -->
   <VcSelect
     v-model="selectedStatus"
     :options="statusOptions"
@@ -92,6 +93,7 @@ const statusOptions = [
 ### Example 2: Option with Badge and Description
 ```vue
 <template>
+  <!-- @vue-generic {{ id: number; name: string; description: string; isNew: boolean }} -->
   <VcSelect
     v-model="selectedCategory"
     :options="categories"
@@ -127,6 +129,7 @@ const categories = [
 ### Example 3: Multi-select with Toggle
 ```vue
 <template>
+  <!-- @vue-generic {{ id: number; name: string; email: string; avatar: string }} -->
   <VcSelect
     v-model="selectedUsers"
     :options="users"

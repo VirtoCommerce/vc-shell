@@ -52,6 +52,7 @@ This pattern is typically implemented in a composable (e.g., `useEntityList`).
 
 ```vue
 <template>
+  <!-- @vue-generic {IItem} -->
   <VcTable
     :total-label="$t('ENTITIES.PAGES.LIST.TABLE.TOTALS')"
     :items="items"

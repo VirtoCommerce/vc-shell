@@ -19,12 +19,9 @@ Real-world multivalue input examples for tags, keywords, and multi-select lists.
 ```vue
 <template>
   <div class="tw-space-y-4">
-    <VcLabel :required="false">
-      {{ $t("PRODUCTS.TAGS") }}
-    </VcLabel>
-
     <VcMultivalue
       v-model="tags"
+      :label="$t('PRODUCTS.TAGS')"
       :placeholder="$t('PRODUCTS.TAGS_PLACEHOLDER')"
     />
 
@@ -55,7 +52,7 @@ Real-world multivalue input examples for tags, keywords, and multi-select lists.
 
 <script setup lang="ts">
 import { ref } from "vue";
-import { VcLabel, VcMultivalue, VcHint, VcBadge, VcIcon } from "@vc-shell/framework";
+import { VcMultivalue, VcHint, VcBadge, VcIcon } from "@vc-shell/framework";
 import { useI18n } from "vue-i18n";
 
 const { t } = useI18n();
@@ -76,12 +73,11 @@ function removeTag(index: number) {
     <div class="tw-space-y-4">
       <!-- To -->
       <div>
-        <VcLabel :required="true">
-          {{ $t("EMAIL.TO") }}
-        </VcLabel>
         <Field v-slot="{ field, errorMessage }" name="to" :rules="emailListRules">
           <VcMultivalue
             v-bind="field"
+            :label="$t('EMAIL.TO')"
+            required
             :error-message="errorMessage"
             :placeholder="$t('EMAIL.TO_PLACEHOLDER')"
             @blur="validateEmails(field.value)"
@@ -91,44 +87,38 @@ function removeTag(index: number) {
 
       <!-- CC -->
       <div>
-        <VcLabel :required="false">
-          {{ $t("EMAIL.CC") }}
-        </VcLabel>
         <VcMultivalue
           v-model="email.cc"
+          :label="$t('EMAIL.CC')"
           :placeholder="$t('EMAIL.CC_PLACEHOLDER')"
         />
       </div>
 
       <!-- BCC -->
       <div>
-        <VcLabel :required="false">
-          {{ $t("EMAIL.BCC") }}
-        </VcLabel>
         <VcMultivalue
           v-model="email.bcc"
+          :label="$t('EMAIL.BCC')"
           :placeholder="$t('EMAIL.BCC_PLACEHOLDER')"
         />
       </div>
 
       <!-- Subject -->
       <div>
-        <VcLabel :required="true">
-          {{ $t("EMAIL.SUBJECT") }}
-        </VcLabel>
         <VcInput
           v-model="email.subject"
+          :label="$t('EMAIL.SUBJECT')"
+          required
           :placeholder="$t('EMAIL.SUBJECT_PLACEHOLDER')"
         />
       </div>
 
       <!-- Body -->
       <div>
-        <VcLabel :required="true">
-          {{ $t("EMAIL.MESSAGE") }}
-        </VcLabel>
         <VcEditor
           v-model="email.body"
+          :label="$t('EMAIL.MESSAGE')"
+          required
           :placeholder="$t('EMAIL.MESSAGE_PLACEHOLDER')"
         />
       </div>
@@ -150,7 +140,6 @@ function removeTag(index: number) {
 <script setup lang="ts">
 import { reactive } from "vue";
 import {
-  VcLabel,
   VcMultivalue,
   VcInput,
   VcEditor,
@@ -210,11 +199,10 @@ function saveDraft() {
       <div class="tw-space-y-4">
         <!-- Size options -->
         <div>
-          <VcLabel :required="true">
-            {{ $t("PRODUCTS.SIZES") }}
-          </VcLabel>
           <VcMultivalue
             v-model="variations.sizes"
+            :label="$t('PRODUCTS.SIZES')"
+            required
             :placeholder="$t('PRODUCTS.SIZES_PLACEHOLDER')"
           />
           <VcHint>
@@ -224,22 +212,19 @@ function saveDraft() {
 
         <!-- Color options -->
         <div>
-          <VcLabel :required="true">
-            {{ $t("PRODUCTS.COLORS") }}
-          </VcLabel>
           <VcMultivalue
             v-model="variations.colors"
+            :label="$t('PRODUCTS.COLORS')"
+            required
             :placeholder="$t('PRODUCTS.COLORS_PLACEHOLDER')"
           />
         </div>
 
         <!-- Material options -->
         <div>
-          <VcLabel :required="false">
-            {{ $t("PRODUCTS.MATERIALS") }}
-          </VcLabel>
           <VcMultivalue
             v-model="variations.materials"
+            :label="$t('PRODUCTS.MATERIALS')"
             :placeholder="$t('PRODUCTS.MATERIALS_PLACEHOLDER')"
           />
         </div>
@@ -285,7 +270,7 @@ function saveDraft() {
 
 <script setup lang="ts">
 import { reactive, computed } from "vue";
-import { VcCard, VcLabel, VcMultivalue, VcHint, VcBadge } from "@vc-shell/framework";
+import { VcCard, VcMultivalue, VcHint, VcBadge } from "@vc-shell/framework";
 import { useI18n } from "vue-i18n";
 
 const { t } = useI18n();
@@ -338,11 +323,9 @@ const sampleCombinations = computed(() => {
       <div class="tw-space-y-4">
         <!-- Meta Keywords -->
         <div>
-          <VcLabel :required="false">
-            {{ $t("SEO.META_KEYWORDS") }}
-          </VcLabel>
           <VcMultivalue
             v-model="seo.keywords"
+            :label="$t('SEO.META_KEYWORDS')"
             :placeholder="$t('SEO.KEYWORDS_PLACEHOLDER')"
           />
           <VcHint>
@@ -357,11 +340,9 @@ const sampleCombinations = computed(() => {
 
         <!-- Focus Keywords -->
         <div>
-          <VcLabel :required="false">
-            {{ $t("SEO.FOCUS_KEYWORDS") }}
-          </VcLabel>
           <VcMultivalue
             v-model="seo.focusKeywords"
+            :label="$t('SEO.FOCUS_KEYWORDS')"
             :placeholder="$t('SEO.FOCUS_KEYWORDS_PLACEHOLDER')"
           />
           <VcHint>
@@ -371,11 +352,9 @@ const sampleCombinations = computed(() => {
 
         <!-- Alt Tags -->
         <div>
-          <VcLabel :required="false">
-            {{ $t("SEO.IMAGE_ALT_TAGS") }}
-          </VcLabel>
           <VcMultivalue
             v-model="seo.altTags"
+            :label="$t('SEO.IMAGE_ALT_TAGS')"
             :placeholder="$t('SEO.ALT_TAGS_PLACEHOLDER')"
           />
         </div>
@@ -405,7 +384,7 @@ const sampleCombinations = computed(() => {
 
 <script setup lang="ts">
 import { reactive } from "vue";
-import { VcCard, VcLabel, VcMultivalue, VcHint, VcBadge } from "@vc-shell/framework";
+import { VcCard, VcMultivalue, VcHint, VcBadge } from "@vc-shell/framework";
 import { useI18n } from "vue-i18n";
 
 const { t } = useI18n();
@@ -438,11 +417,9 @@ function getKeywordVariant(keyword: string): string {
     <div class="tw-space-y-4">
       <!-- Allowed IPs -->
       <div>
-        <VcLabel :required="false">
-          {{ $t("SECURITY.ALLOWED_IPS") }}
-        </VcLabel>
         <VcMultivalue
           v-model="security.allowedIPs"
+          :label="$t('SECURITY.ALLOWED_IPS')"
           :placeholder="$t('SECURITY.IP_PLACEHOLDER')"
           @blur="validateIPs"
         />
@@ -461,11 +438,9 @@ function getKeywordVariant(keyword: string): string {
 
       <!-- Allowed Domains -->
       <div>
-        <VcLabel :required="false">
-          {{ $t("SECURITY.ALLOWED_DOMAINS") }}
-        </VcLabel>
         <VcMultivalue
           v-model="security.allowedDomains"
+          :label="$t('SECURITY.ALLOWED_DOMAINS')"
           :placeholder="$t('SECURITY.DOMAIN_PLACEHOLDER')"
         />
         <VcHint>
@@ -475,11 +450,9 @@ function getKeywordVariant(keyword: string): string {
 
       <!-- Blocked IPs -->
       <div>
-        <VcLabel :required="false">
-          {{ $t("SECURITY.BLOCKED_IPS") }}
-        </VcLabel>
         <VcMultivalue
           v-model="security.blockedIPs"
+          :label="$t('SECURITY.BLOCKED_IPS')"
           :placeholder="$t('SECURITY.BLOCKED_IP_PLACEHOLDER')"
         />
       </div>
@@ -530,7 +503,6 @@ function getKeywordVariant(keyword: string): string {
 import { reactive, ref } from "vue";
 import {
   VcCard,
-  VcLabel,
   VcMultivalue,
   VcHint,
   VcBanner,

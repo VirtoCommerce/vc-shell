@@ -157,79 +157,84 @@ const { t } = useI18n();
     <div class="tw-space-y-4">
       <!-- Field with tooltip -->
       <div>
-        <VcLabel :required="true">
-          <div class="tw-flex tw-items-center tw-gap-2">
-            <span>{{ $t("PRODUCTS.SKU") }}</span>
-            <VcTooltip placement="right">
-              <template #trigger>
-                <VcIcon
-                  icon="material-help"
-                  size="s"
-                  class="tw-text-[var(--neutrals-400)] tw-cursor-help"
-                />
-              </template>
-              <template #content>
-                <div class="tw-space-y-1">
-                  <div class="tw-font-medium">{{ $t("PRODUCTS.SKU_TOOLTIP.TITLE") }}</div>
-                  <div class="tw-text-xs">{{ $t("PRODUCTS.SKU_TOOLTIP.DESCRIPTION") }}</div>
-                  <div class="tw-text-xs tw-italic">{{ $t("PRODUCTS.SKU_TOOLTIP.EXAMPLE") }}: PROD-001</div>
-                </div>
-              </template>
-            </VcTooltip>
-          </div>
-        </VcLabel>
-        <VcInput v-model="sku" placeholder="PROD-001" />
+        <div class="tw-flex tw-items-start tw-gap-2">
+          <VcInput
+            v-model="sku"
+            :label="$t('PRODUCTS.SKU')"
+            required
+            placeholder="PROD-001"
+          />
+          <VcTooltip placement="right">
+            <template #trigger>
+              <VcIcon
+                icon="material-help"
+                size="s"
+                class="tw-text-[var(--neutrals-400)] tw-cursor-help tw-mt-1"
+              />
+            </template>
+            <template #content>
+              <div class="tw-space-y-1">
+                <div class="tw-font-medium">{{ $t("PRODUCTS.SKU_TOOLTIP.TITLE") }}</div>
+                <div class="tw-text-xs">{{ $t("PRODUCTS.SKU_TOOLTIP.DESCRIPTION") }}</div>
+                <div class="tw-text-xs tw-italic">{{ $t("PRODUCTS.SKU_TOOLTIP.EXAMPLE") }}: PROD-001</div>
+              </div>
+            </template>
+          </VcTooltip>
+        </div>
       </div>
 
       <!-- Disabled field with tooltip explaining why -->
       <div>
-        <VcLabel>
-          <div class="tw-flex tw-items-center tw-gap-2">
-            <span>{{ $t("PRODUCTS.INTERNAL_ID") }}</span>
-            <VcTooltip>
-              <template #trigger>
-                <VcIcon
-                  icon="material-lock"
-                  size="s"
-                  class="tw-text-[var(--warning-500)] tw-cursor-help"
-                />
-              </template>
-              <template #content>
-                {{ $t("PRODUCTS.INTERNAL_ID_LOCKED") }}
-              </template>
-            </VcTooltip>
-          </div>
-        </VcLabel>
-        <VcInput v-model="internalId" :disabled="true" />
+        <div class="tw-flex tw-items-start tw-gap-2">
+          <VcInput
+            v-model="internalId"
+            :label="$t('PRODUCTS.INTERNAL_ID')"
+            :disabled="true"
+          />
+          <VcTooltip>
+            <template #trigger>
+              <VcIcon
+                icon="material-lock"
+                size="s"
+                class="tw-text-[var(--warning-500)] tw-cursor-help tw-mt-1"
+              />
+            </template>
+            <template #content>
+              {{ $t("PRODUCTS.INTERNAL_ID_LOCKED") }}
+            </template>
+          </VcTooltip>
+        </div>
       </div>
 
       <!-- Advanced field with detailed tooltip -->
       <div>
-        <VcLabel>
-          <div class="tw-flex tw-items-center tw-gap-2">
-            <span>{{ $t("PRODUCTS.STOCK_THRESHOLD") }}</span>
-            <VcTooltip placement="right">
-              <template #trigger>
-                <VcIcon
-                  icon="material-info"
-                  size="s"
-                  class="tw-text-[var(--info-500)] tw-cursor-help"
-                />
-              </template>
-              <template #content>
-                <div class="tw-max-w-xs tw-space-y-2">
-                  <div class="tw-font-medium">{{ $t("PRODUCTS.STOCK_THRESHOLD_TOOLTIP.TITLE") }}</div>
-                  <ul class="tw-list-disc tw-pl-4 tw-text-xs tw-space-y-1">
-                    <li>{{ $t("PRODUCTS.STOCK_THRESHOLD_TOOLTIP.POINT1") }}</li>
-                    <li>{{ $t("PRODUCTS.STOCK_THRESHOLD_TOOLTIP.POINT2") }}</li>
-                    <li>{{ $t("PRODUCTS.STOCK_THRESHOLD_TOOLTIP.POINT3") }}</li>
-                  </ul>
-                </div>
-              </template>
-            </VcTooltip>
-          </div>
-        </VcLabel>
-        <VcInput v-model="stockThreshold" type="number" placeholder="10" />
+        <div class="tw-flex tw-items-start tw-gap-2">
+          <VcInput
+            v-model="stockThreshold"
+            :label="$t('PRODUCTS.STOCK_THRESHOLD')"
+            type="number"
+            placeholder="10"
+          />
+          <VcTooltip placement="right">
+            <template #trigger>
+              <VcIcon
+                icon="material-info"
+                size="s"
+                class="tw-text-[var(--info-500)] tw-cursor-help tw-mt-1"
+              />
+            </template>
+            <template #content>
+              <div class="tw-max-w-xs tw-space-y-2">
+                <div class="tw-font-medium">{{ $t("PRODUCTS.STOCK_THRESHOLD_TOOLTIP.TITLE") }}</div>
+                <ul class="tw-list-disc tw-pl-4 tw-text-xs tw-space-y-1">
+                  <li>{{ $t("PRODUCTS.STOCK_THRESHOLD_TOOLTIP.POINT1") }}</li>
+                  <li>{{ $t("PRODUCTS.STOCK_THRESHOLD_TOOLTIP.POINT2") }}</li>
+                  <li>{{ $t("PRODUCTS.STOCK_THRESHOLD_TOOLTIP.POINT3") }}</li>
+                </ul>
+              </div>
+            </template>
+          </VcTooltip>
+        </div>
       </div>
     </div>
 
@@ -244,7 +249,6 @@ const { t } = useI18n();
 <script setup lang="ts">
 import { ref } from "vue";
 import {
-  VcLabel,
   VcInput,
   VcTooltip,
   VcIcon,
@@ -269,6 +273,7 @@ function onSubmit() {
 
 ```vue
 <template>
+  <!-- @vue-generic {IItem} -->
   <VcTable
     :items="items"
     :columns="columns"

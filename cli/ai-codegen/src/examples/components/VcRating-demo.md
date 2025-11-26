@@ -57,12 +57,11 @@ const reviewCount = ref(127);
 
       <!-- Rating input -->
       <div>
-        <VcLabel :required="true">
-          {{ $t("REVIEWS.YOUR_RATING") }}
-        </VcLabel>
         <div class="tw-flex tw-items-center tw-gap-3">
           <VcRating
             v-model="userRating"
+            :label="$t('REVIEWS.YOUR_RATING')"
+            required
             :readonly="false"
             size="l"
           />
@@ -74,12 +73,11 @@ const reviewCount = ref(127);
 
       <!-- Review title -->
       <div>
-        <VcLabel :required="true">
-          {{ $t("REVIEWS.TITLE") }}
-        </VcLabel>
         <Field v-slot="{ field, errorMessage }" name="title" :rules="requiredRule">
           <VcInput
             v-bind="field"
+            :label="$t('REVIEWS.TITLE')"
+            required
             :error-message="errorMessage"
             :placeholder="$t('REVIEWS.TITLE_PLACEHOLDER')"
           />
@@ -88,12 +86,11 @@ const reviewCount = ref(127);
 
       <!-- Review text -->
       <div>
-        <VcLabel :required="true">
-          {{ $t("REVIEWS.YOUR_REVIEW") }}
-        </VcLabel>
         <Field v-slot="{ field, errorMessage }" name="review" :rules="requiredRule">
           <VcTextarea
             v-bind="field"
+            :label="$t('REVIEWS.YOUR_REVIEW')"
+            required
             :error-message="errorMessage"
             :rows="5"
             :placeholder="$t('REVIEWS.REVIEW_PLACEHOLDER')"
@@ -117,7 +114,6 @@ const reviewCount = ref(127);
 <script setup lang="ts">
 import { ref } from "vue";
 import {
-  VcLabel,
   VcRating,
   VcInput,
   VcTextarea,
@@ -342,6 +338,7 @@ function writeReview() {
 
 ```vue
 <template>
+  <!-- @vue-generic {IItem} -->
   <VcTable
     :items="reviews"
     :columns="columns"

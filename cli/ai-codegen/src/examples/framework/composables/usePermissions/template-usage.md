@@ -30,6 +30,7 @@ VC-Shell provides a global `$hasAccess` helper that can be used directly in temp
 
     <!-- Multiple permissions (OR logic) -->
     <div v-if="$hasAccess(['offers:read', 'offers:manage'])">
+      <!-- @vue-generic {IOffer} -->
       <VcTable :items="offers" />
     </div>
 
@@ -86,6 +87,7 @@ VC-Shell provides a global `$hasAccess` helper that can be used directly in temp
 
 ```vue
 <template>
+  <!-- @vue-generic {IOffer} -->
   <VcTable
     :items="offers"
     :columns="columns"
@@ -277,6 +279,7 @@ VC-Shell provides a global `$hasAccess` helper that can be used directly in temp
 <template>
   <VcBlade :title="bladeTitle">
     <div v-if="$hasAccess('offers:read')">
+      <!-- @vue-generic {IOffer} -->
       <VcTable :items="offers" />
     </div>
     <div v-else>

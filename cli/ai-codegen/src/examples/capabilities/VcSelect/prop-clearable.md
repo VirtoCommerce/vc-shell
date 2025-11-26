@@ -34,6 +34,7 @@ SIMPLE
 ## Complete Working Example
 ```vue
 <template>
+  <!-- @vue-generic {IOffer} -->
   <VcSelect
     :clearable="clearableValue"
   />

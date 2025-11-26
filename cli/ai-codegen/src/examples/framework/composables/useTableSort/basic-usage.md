@@ -32,6 +32,7 @@ watch(sortExpression, async (value) => {
 ```vue
 <template>
   <VcBlade>
+    <!-- @vue-generic {IOffer} -->
     <VcTable
       :items="items"
       :columns="columns"

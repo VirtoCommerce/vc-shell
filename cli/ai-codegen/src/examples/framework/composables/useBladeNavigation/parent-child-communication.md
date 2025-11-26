@@ -26,6 +26,7 @@ Parent-child blade communication enables child blades to call methods exposed by
 <!-- ParentBlade.vue -->
 <template>
   <VcBlade :title="`Orders - Total: ${orders.length}`">
+    <!-- @vue-generic {IOrder} -->
     <VcTable
       :items="orders"
       :columns="columns"
@@ -124,6 +125,7 @@ defineExpose({
         <p>Customer: {{ order.customer }}</p>
         <p>Total: ${{ order.total }}</p>
 
+        <!-- @vue-generic {{ value: string; label: string }} -->
         <VcSelect
           v-model="order.status"
           :options="statusOptions"

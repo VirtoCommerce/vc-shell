@@ -574,6 +574,7 @@ export class GenerateStepExecutor implements StepExecutor {
         lines.push("5. Use emit(\"close:blade\") for closing");
         lines.push("6. Use EXACT method names from the composable (read it first!)");
         lines.push("7. VcSelect #option slot scope is { opt, index, selected, toggleOption } - NEVER { option }");
+        lines.push("8. DO NOT add permissions to defineOptions unless user EXPLICITLY requested them!");
         lines.push("");
         lines.push("## Import Paths (api_client):");
         lines.push(`- Pages: ../../../api_client/${moduleName}.client (and .api for types)`);
@@ -588,15 +589,14 @@ export class GenerateStepExecutor implements StepExecutor {
         lines.push("");
         if (blade.type === "list") {
           lines.push("## List-specific:");
-          lines.push("8. Use VcTable with proper column slots");
-          lines.push("9. Implement pagination, sorting, filters as needed");
-          lines.push("10. Table column widths must be strings with units (e.g., \"100px\"), never bare numbers");
-          lines.push("11. Do NOT use VcLink inside table cells; use a styled <span> with @click.stop instead for navigation");
+          lines.push("9. Use VcTable with proper column slots");
+          lines.push("10. Implement pagination, sorting, filters as needed");
+          lines.push("11. Table column widths must be strings with units (e.g., \"100px\"), never bare numbers");
         } else {
           lines.push("## Details-specific:");
-          lines.push("8. Use VcForm with VeeValidate Field components");
-          lines.push("9. Implement validation rules");
-          lines.push("10. Composable already has useModificationTracker - use isModified from it");
+          lines.push("9. Use VcForm with VeeValidate Field components");
+          lines.push("10. Implement validation rules");
+          lines.push("11. Composable already has useModificationTracker - use isModified from it");
           lines.push("");
           lines.push("## WIDGETS (CRITICAL - DO NOT RENDER MANUALLY!):");
           lines.push("NEVER render widgets manually with <VcWidget> or v-for in template!");
@@ -701,17 +701,17 @@ export class GenerateStepExecutor implements StepExecutor {
         lines.push("const { isModified, currentValue, resetModificationState } = useModificationTracker(item);");
         lines.push("```");
         lines.push("");
-        lines.push("### 3. useAsync callbacks - ALWAYS guard undefined params:");
+        lines.push("### 3. useAsync - MUST use generic type, NOT inline type annotation:");
         lines.push("```typescript");
-        lines.push("// ❌ WRONG - param can be undefined at runtime:");
-        lines.push("const { action: loadItem } = useAsync(async (id: string) => {");
-        lines.push("  const data = await client.getById(id);  // Crashes if id undefined!");
+        lines.push("// ❌ WRONG - inline type annotation - TypeScript thinks param is ALWAYS defined:");
+        lines.push("const { action: loadItem } = useAsync(async (params: { id: string }) => {");
+        lines.push("  const data = await client.getById(params.id);  // Crashes! params can be undefined!");
         lines.push("});");
         lines.push("");
-        lines.push("// ✅ CORRECT - make param optional with guard clause:");
-        lines.push("const { action: loadItem } = useAsync(async (id?: string) => {");
-        lines.push("  if (!id) return;  // REQUIRED guard!");
-        lines.push("  const data = await client.getById(id);");
+        lines.push("// ✅ CORRECT - generic type + guard clause:");
+        lines.push("const { action: loadItem } = useAsync<{ id: string }>(async (params) => {");
+        lines.push("  if (!params?.id) return;  // REQUIRED guard! params is typed as { id: string } | undefined");
+        lines.push("  const data = await client.getById(params.id);");
         lines.push("});");
         lines.push("```");
         lines.push("");
@@ -1188,12 +1188,16 @@ src/api_client/
 - I${EntityName}SearchResult - { results, totalCount }
 - ICreate${EntityName}Command, IUpdate${EntityName}Command
 
-## Client Methods (${moduleName}.client.ts)
-- search${EntityName}s(query?) → SearchResult
-- get${EntityName}ById(id) → I${EntityName}
-- create${EntityName}(cmd) → I${EntityName}
-- update${EntityName}(cmd) → I${EntityName}
-- delete${EntityName}(id), delete${EntityName}s(ids[])
+## Client Methods Signatures (${moduleName}.client.ts)
+\`\`\`typescript
+// ⚠️ EXACT method signatures - composables depend on these!
+async search${EntityName}s(query?: I${EntityName}SearchQuery): Promise<I${EntityName}SearchResult> { ... }
+async get${EntityName}ById(id: string): Promise<I${EntityName}> { ... }
+async create${EntityName}(command: ICreate${EntityName}Command): Promise<I${EntityName}> { ... }
+async update${EntityName}(command: IUpdate${EntityName}Command): Promise<I${EntityName}> { ... }
+async delete${EntityName}(id: string): Promise<void> { ... }
+async delete${EntityName}s(ids: string[]): Promise<void> { ... }
+\`\`\`
 
 ## CRITICAL: AuthApiBase inheritance
 - Import { AuthApiBase } from "@vc-shell/framework"

@@ -456,6 +456,7 @@ function onSubmit() {
         <VcLabel :required="true">
           {{ $t("PRODUCTS.VARIANT_TYPE") }}
         </VcLabel>
+        <!-- @vue-generic {string} -->
         <VcSelect
           v-model="variantType"
           :options="variantTypes"

@@ -23,6 +23,7 @@
               name="parent"
               rules="required"
             >
+              <!-- @vue-generic {{ id: string; name: string }} -->
               <VcSelect
                 v-model="entity.parentId"
                 :label="$t('ENTITIES.PAGES.DETAILS.FIELDS.PARENT.TITLE')"
@@ -82,6 +83,7 @@
               :model-value="entity.type"
               name="type"
             >
+              <!-- @vue-generic {{ label: string; value: string }} -->
               <VcSelect
                 v-model="entity.type"
                 :label="$t('ENTITIES.PAGES.DETAILS.FIELDS.TYPE.TITLE')"

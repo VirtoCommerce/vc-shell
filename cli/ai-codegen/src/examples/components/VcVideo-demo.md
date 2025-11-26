@@ -19,13 +19,9 @@ Real-world video embed examples for product demos, tutorials, and marketing cont
 ```vue
 <template>
   <div class="tw-space-y-4">
-    <VcLabel>
-      {{ $t("PRODUCTS.DEMO_VIDEO") }}
-    </VcLabel>
-
     <VcVideo
       :src="youtubeUrl"
-      :title="$t('PRODUCTS.PRODUCT_DEMO')"
+      :title="$t('PRODUCTS.DEMO_VIDEO')"
     />
 
     <VcHint>
@@ -36,7 +32,7 @@ Real-world video embed examples for product demos, tutorials, and marketing cont
 
 <script setup lang="ts">
 import { ref } from "vue";
-import { VcLabel, VcVideo, VcHint } from "@vc-shell/framework";
+import { VcVideo, VcHint } from "@vc-shell/framework";
 import { useI18n } from "vue-i18n";
 
 const { t } = useI18n();
@@ -250,11 +246,9 @@ function selectVideo(video: Video) {
   <VcForm @submit="onSubmit">
     <div class="tw-space-y-4">
       <div>
-        <VcLabel :required="false">
-          {{ $t("PRODUCTS.VIDEO_URL") }}
-        </VcLabel>
         <VcInput
           v-model="videoUrl"
+          :label="$t('PRODUCTS.VIDEO_URL')"
           :placeholder="$t('PRODUCTS.VIDEO_URL_PLACEHOLDER')"
           @blur="validateVideoUrl"
         />
@@ -295,7 +289,6 @@ function selectVideo(video: Video) {
 <script setup lang="ts">
 import { ref } from "vue";
 import {
-  VcLabel,
   VcInput,
   VcVideo,
   VcHint,

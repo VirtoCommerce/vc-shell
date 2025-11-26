@@ -34,6 +34,7 @@ SIMPLE
 ## Complete Working Example
 ```vue
 <template>
+  <!-- @vue-generic {string} -->
   <VcSelect>
     <template #prepend-inner>
       <!-- Custom slot content -->

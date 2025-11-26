@@ -32,13 +32,6 @@ patterns:
     features: [routes, routing, custom-routes]
 
   # List blade patterns
-  - id: list-basic
-    file: patterns/list-basic.md
-    category: blade
-    applies_to: [list]
-    description: Basic list blade structure with table and pagination
-    features: [table, pagination, search]
-
   - id: list-filters
     file: patterns/list-filters.md
     category: blade
@@ -68,13 +61,6 @@ patterns:
     features: [table, toolbar, search, pagination]
 
   # Details blade patterns
-  - id: details-form-basic
-    file: patterns/details-form-basic.md
-    category: blade
-    applies_to: [details]
-    description: Basic details blade with form
-    features: [form, validation, save]
-
   - id: details-validation
     file: patterns/details-validation.md
     category: blade
@@ -199,7 +185,49 @@ patterns:
     features: [widgets, dynamic-components, useWidgets]
 
 # ============================================================================
-# TEMPLATES - Production-ready Vue SFC templates
+# REFERENCE - Single Source of Truth (Authoritative Code)
+# ============================================================================
+# These are the definitive, production-ready implementations
+# All patterns and templates should reference these files
+reference:
+  - id: blade-list
+    file: reference/blade-list.vue
+    type: blade
+    applies_to: [list]
+    description: Authoritative list blade implementation
+    features: [VcTable, search, pagination, sorting, toolbar, navigation]
+
+  - id: blade-details
+    file: reference/blade-details.vue
+    type: blade
+    applies_to: [details]
+    description: Authoritative details blade implementation
+    features: [VcForm, VcCard, validation, save, delete, modifications]
+
+  - id: composable-list
+    file: reference/composable-list.ts
+    type: composable
+    applies_to: [list]
+    description: Authoritative list composable with useAsync
+    features: [useAsync, useApiClient, pagination, search]
+
+  - id: composable-details
+    file: reference/composable-details.ts
+    type: composable
+    applies_to: [details]
+    description: Authoritative details composable with modification tracking
+    features: [useAsync, useModificationTracker, useLoading, crud]
+
+  - id: api-client
+    file: reference/api-client.ts
+    type: api
+    applies_to: [all]
+    description: Authoritative API client with AuthApiBase
+    features: [AuthApiBase, TypeScript, CRUD methods]
+
+# ============================================================================
+# TEMPLATES - Production-ready Vue SFC templates for blade generation
+# Used by get_best_template MCP tool
 # ============================================================================
 templates:
   # List templates
@@ -207,85 +235,84 @@ templates:
     file: templates/list-simple.vue
     blade_type: list
     complexity: simple
-    lines: ~150
-    features: [table, search, pagination, toolbar]
-    description: Simple list blade with basic table functionality
+    features: [table, search, pagination, toolbar, api]
+    description: Basic list blade template
 
   - id: list-filters
     file: templates/list-filters.vue
     blade_type: list
     complexity: moderate
-    lines: ~250
-    features: [table, search, filters, pagination, toolbar]
-    description: List blade with advanced filtering sidebar
+    features: [table, search, filters, pagination, toolbar, api]
+    description: List with advanced filtering sidebar
 
   - id: list-multiselect
     file: templates/list-multiselect.vue
     blade_type: list
     complexity: moderate
-    lines: ~280
-    features: [table, multiselect, bulk-actions, toolbar]
-    description: List blade with row selection and bulk operations
+    features: [table, multiselect, bulk-actions, toolbar, api]
+    description: List with row selection and bulk operations
 
   - id: list-reorderable
     file: templates/list-reorderable.vue
     blade_type: list
     complexity: moderate
-    lines: ~300
-    features: [table, reorderable, drag-drop, save-order]
-    description: List blade with drag-and-drop row reordering
+    features: [table, reorderable, drag-drop, save-order, api]
+    description: List with drag-and-drop row reordering
 
   # Details templates
   - id: details-simple
     file: templates/details-simple.vue
     blade_type: details
     complexity: simple
-    lines: ~200
-    features: [form, validation, save, toolbar]
-    description: Simple details blade with form validation
+    features: [form, validation, save, toolbar, api]
+    description: Basic details blade template
 
   - id: details-validation
     file: templates/details-validation.vue
     blade_type: details
     complexity: moderate
-    lines: ~280
-    features: [form, validation, vee-validate, error-handling, toolbar]
-    description: Details blade with comprehensive vee-validate validation
+    features: [form, validation, vee-validate, error-handling, toolbar, api]
+    description: Details with comprehensive vee-validate validation
 
   - id: details-gallery
     file: templates/details-gallery.vue
     blade_type: details
     complexity: complex
-    lines: ~350
-    features: [form, gallery, upload, images, validation]
-    description: Details blade with image gallery and uploads
+    features: [form, gallery, upload, images, validation, api]
+    description: Details with image gallery and uploads
 
   - id: details-widgets
     file: templates/details-widgets.vue
     blade_type: details
     complexity: complex
-    lines: ~320
-    features: [form, widgets, dynamic-components, slots]
-    description: Details blade with dynamic widget system
+    features: [form, widgets, dynamic-components, slots, api]
+    description: Details with dynamic widget system
 
-  - id: details-tabs
-    file: templates/details-tabs.vue
-    blade_type: details
-    complexity: complex
-    lines: ~400
-    features: [form, tabs, multi-section, validation]
-    description: Details blade with tabbed sections
+# ============================================================================
+# SNIPPETS - Feature-specific code snippets (organized by blade type)
+# ============================================================================
+snippets:
+  # Composable snippets (moved from templates/ to maintain backward compatibility)
+  composables:
+    - id: composable-list-template
+      file: templates/composable-list.ts.template
+      description: List composable template with useAsync
+
+    - id: composable-details-template
+      file: templates/composable-details.ts.template
+      description: Details composable template with useModificationTracker
 
 # ============================================================================
 # METADATA
 # ============================================================================
 statistics:
-  total_patterns: 26  # 20 original + 5 complete examples + 1 route-rules
-  total_templates: 9
-  total_examples: 5   # Complete working examples (blade + composable)
-  total_components: 30  # Component demo files (including VcForm-demo.md)
-  total_framework_examples: 31  # Framework composable examples (8 composables total)
-  total_files: 353    # 341 .md + 12 .vue + 2 other (.json, .yaml)
+  total_patterns: 24  # 18 patterns + 5 complete examples + 1 route-rules
+  total_templates: 8  # 4 list + 4 details Vue SFC templates
+  total_snippets: 2  # 2 composable templates
+  total_reference: 5  # Authoritative single-source-of-truth files
+  total_components: 30  # Component demo files
+  total_composables: 35  # Framework composable examples (was framework/)
+  total_files: 350
 
 categories:
   patterns:
@@ -294,62 +321,64 @@ categories:
     - communication: Inter-component communication
     - component-usage: How to use specific components
     - best-practice: Best practices and recommendations
-    - example: Complete working code examples (full blade + composable implementations)
+    - example: Complete working code examples
 
-  templates:
-    - simple: Basic functionality (~150-200 lines)
-    - moderate: Extended features (~250-300 lines)
-    - complex: Advanced features (~300-400+ lines)
+  snippets:
+    - simple: Basic functionality
+    - moderate: Extended features
+    - complex: Advanced features
 
 # ============================================================================
-# DIRECTORY STRUCTURE
+# DIRECTORY STRUCTURE (Updated 2025-11-26)
 # ============================================================================
-# This section documents the examples/ directory structure and purpose
 #
 # examples/
 # ├── index.yaml                           # This file - central catalog
-# ├── ui-plan-example-complete.json        # Complete valid UI-Plan example (used by MCP resource vcshell://ui-plan-example-complete)
-# ├── patterns/                            # 27 markdown pattern files
-# │   ├── workspace-blade.md               # Workspace blade with menuItem
-# │   ├── module-registration.md           # Module registration with createAppModule
-# │   ├── route-rules.md                   # Route rules and custom route definitions
-# │   ├── blade-list-complete.md           # Complete working list blade example
-# │   ├── blade-details-complete.md        # Complete working details blade example
-# │   ├── composable-list-complete.md      # Complete working list composable
-# │   ├── composable-details-complete.md   # Complete working details composable
-# │   ├── widgets-complete.md              # Complete widgets guide
-# │   └── ...                              # Other patterns
-# ├── templates/                           # 9 production-ready Vue SFC templates
-# │   ├── list-simple.vue
-# │   ├── list-filters.vue
-# │   ├── details-simple.vue
+# ├── ui-plan-example-complete.json        # Complete valid UI-Plan example
+# │
+# ├── reference/                           # ⭐ SINGLE SOURCE OF TRUTH (5 files)
+# │   ├── README.md                        # Architecture guide
+# │   ├── blade-list.vue                   # Authoritative list blade
+# │   ├── blade-details.vue                # Authoritative details blade
+# │   ├── composable-list.ts               # Authoritative list composable
+# │   ├── composable-details.ts            # Authoritative details composable
+# │   └── api-client.ts                    # Authoritative API client
+# │
+# ├── snippets/                            # Feature-specific code snippets
+# │   ├── list/                            # List blade variations
+# │   │   ├── list-simple.vue
+# │   │   ├── list-filters.vue
+# │   │   ├── list-multiselect.vue
+# │   │   └── list-reorderable.vue
+# │   ├── details/                         # Details blade variations
+# │   │   ├── details-simple.vue
+# │   │   ├── details-validation.vue
+# │   │   ├── details-gallery.vue
+# │   │   └── details-widgets.vue
+# │   ├── composable-list.ts.template
+# │   └── composable-details.ts.template
+# │
+# ├── patterns/                            # 24 markdown pattern docs
+# │   ├── workspace-blade.md
+# │   ├── module-registration.md
+# │   ├── blade-list-complete.md           # → references reference/blade-list.vue
+# │   ├── blade-details-complete.md        # → references reference/blade-details.vue
 # │   └── ...
+# │
 # ├── components/                          # 30 component demo files
 # │   ├── VcTable-demo.md
 # │   ├── VcInput-demo.md
-# │   ├── VcForm-demo.md                   # NEW: Form container with vee-validate
 # │   └── ...
+# │
 # ├── capabilities/                        # 243 component capability examples
 # │   ├── VcTable/
-# │   │   ├── prop-columns.md
-# │   │   ├── slot-filters.md
-# │   │   └── ...
+# │   ├── VcInput/
 # │   └── ...
-# └── framework/                           # 33 framework API examples
+# │
+# └── composables/                         # 35 framework hook examples (was framework/)
 #     └── composables/
-#         ├── useBladeNavigation/          # Blade navigation (3 examples)
-#         ├── usePopup/                    # Popup dialogs (1 example)
-#         ├── useBeforeUnload/             # Prevent unload (1 example)
-#         ├── useLanguages/                # Localization (3 examples)
-#         ├── useNotifications/            # Real-time notifications (2 examples)
-#         ├── useBreadcrumbs/              # Breadcrumb navigation (1 example)
-#         ├── usePermissions/              # Permissions (2 examples)
-#         ├── useUser/                     # User info (1 example)
-#         ├── useAsync/                    # Async wrapper (1 example)
-#         ├── useApiClient/                # API client (2 examples)
-#         ├── useModificationTracker/      # Track changes (1 example)
-#         ├── useWidgets/                  # Blade widgets (2 examples)
-#         ├── useDashboard/                # Dashboard widgets (2 examples)
-#         ├── useFunctions/                # NEW: Utility functions (3 examples)
-#         ├── useTableSort/                # NEW: Table sorting (3 examples)
-#         └── useBlade/                    # NEW: Blade context (1 example)
+#         ├── useBladeNavigation/
+#         ├── useAsync/
+#         ├── useApiClient/
+#         ├── useModificationTracker/
+#         └── ...

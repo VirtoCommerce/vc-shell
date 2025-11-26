@@ -41,6 +41,7 @@ SIMPLE
 
 ```vue
 <template>
+  <!-- @vue-generic {IItem} -->
   <VcTable
     :items="items"
     :columns="columns"

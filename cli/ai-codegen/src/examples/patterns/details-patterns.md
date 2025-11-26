@@ -177,6 +177,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
 
 ```vue
 <Field v-slot="{ field, errorMessage, errors }" name="status" rules="required">
+  <!-- @vue-generic {IEntity} -->
   <VcSelect
     v-bind="field"
     v-model="entity.status"
@@ -218,6 +219,7 @@ const validateCode = (value: string, property: string) => {
 **Async select with custom templates:**
 
 ```vue
+<!-- @vue-generic {IEntity} -->
 <VcSelect
   v-model="entity.parentId"
   searchable

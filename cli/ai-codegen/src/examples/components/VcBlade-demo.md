@@ -29,6 +29,7 @@ Real-world blade examples from vendor-portal.
     @expand="$emit('expand:blade')"
     @collapse="$emit('collapse:blade')"
   >
+    <!-- @vue-generic {IItem} -->
     <VcTable
       :total-label="$t('ORDERS.PAGES.LIST.TABLE.TOTALS')"
       :items="items"

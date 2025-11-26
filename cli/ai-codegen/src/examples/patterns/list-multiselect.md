@@ -60,6 +60,7 @@ async function deleteSelectedItems() {
 ```
 
 ```vue
+<!-- @vue-generic {IItem} -->
 <VcTable
   :columns="columns"
   :items="items"

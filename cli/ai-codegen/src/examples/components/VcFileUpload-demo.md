@@ -19,12 +19,10 @@ Real-world file upload examples with drag-and-drop, validation, and progress tra
 ```vue
 <template>
   <div class="tw-space-y-4">
-    <VcLabel :required="true">
-      {{ $t("PRODUCTS.IMAGES") }}
-    </VcLabel>
-
     <VcFileUpload
       v-model="files"
+      :label="$t('PRODUCTS.IMAGES')"
+      required
       :multiple="true"
       :accept="'image/*'"
       @change="onFilesChange"
@@ -64,7 +62,7 @@ Real-world file upload examples with drag-and-drop, validation, and progress tra
 
 <script setup lang="ts">
 import { ref } from "vue";
-import { VcLabel, VcFileUpload, VcHint, VcIcon, VcButton } from "@vc-shell/framework";
+import { VcFileUpload, VcHint, VcIcon, VcButton } from "@vc-shell/framework";
 import { useI18n } from "vue-i18n";
 
 const { t } = useI18n();
@@ -92,12 +90,10 @@ function formatFileSize(bytes: number): string {
 ```vue
 <template>
   <div class="tw-space-y-4">
-    <VcLabel :required="true">
-      {{ $t("DOCUMENTS.UPLOAD") }}
-    </VcLabel>
-
     <VcFileUpload
       v-model="documents"
+      :label="$t('DOCUMENTS.UPLOAD')"
+      required
       :multiple="true"
       :accept="acceptedTypes"
       @change="validateFiles"
@@ -160,7 +156,6 @@ function formatFileSize(bytes: number): string {
 <script setup lang="ts">
 import { ref } from "vue";
 import {
-  VcLabel,
   VcFileUpload,
   VcHint,
   VcBanner,
@@ -235,12 +230,9 @@ function formatFileSize(bytes: number): string {
 ```vue
 <template>
   <div class="tw-space-y-4">
-    <VcLabel :required="false">
-      {{ $t("PRODUCTS.IMAGES") }}
-    </VcLabel>
-
     <VcFileUpload
       v-model="newFiles"
+      :label="$t('PRODUCTS.IMAGES')"
       :multiple="true"
       :accept="'image/*'"
       :disabled="isUploading"
@@ -327,7 +319,6 @@ function formatFileSize(bytes: number): string {
 <script setup lang="ts">
 import { ref } from "vue";
 import {
-  VcLabel,
   VcFileUpload,
   VcIcon,
   VcStatusIcon,
@@ -432,10 +423,6 @@ function formatFileSize(bytes: number): string {
 ```vue
 <template>
   <div class="tw-space-y-4">
-    <VcLabel :required="true">
-      {{ $t("PRODUCTS.PRODUCT_IMAGES") }}
-    </VcLabel>
-
     <div
       class="tw-border-2 tw-border-dashed tw-rounded-lg tw-p-8 tw-text-center tw-transition"
       :class="[
@@ -464,6 +451,8 @@ function formatFileSize(bytes: number): string {
 
       <VcFileUpload
         v-model="images"
+        :label="$t('PRODUCTS.PRODUCT_IMAGES')"
+        required
         :multiple="true"
         :accept="'image/*'"
         @change="onFilesAdded"
@@ -530,7 +519,6 @@ function formatFileSize(bytes: number): string {
 <script setup lang="ts">
 import { ref } from "vue";
 import {
-  VcLabel,
   VcFileUpload,
   VcIcon,
   VcButton,

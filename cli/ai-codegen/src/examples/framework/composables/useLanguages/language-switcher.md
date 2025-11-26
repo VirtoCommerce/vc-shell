@@ -24,6 +24,7 @@ Create custom language switcher components using the `useLanguages` composable.
 ```vue
 <template>
   <div class="language-switcher">
+    <!-- @vue-generic {{ value: string; label: string }} -->
     <VcSelect
       v-model="selectedLanguage"
       :options="languageOptions"

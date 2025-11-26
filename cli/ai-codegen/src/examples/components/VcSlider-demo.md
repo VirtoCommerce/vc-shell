@@ -19,12 +19,9 @@ Real-world slider/carousel examples for image galleries, product showcases, and 
 ```vue
 <template>
   <div class="tw-space-y-4">
-    <VcLabel>
-      {{ $t("PRODUCTS.IMAGES") }}
-    </VcLabel>
-
     <VcSlider
       :items="productImages"
+      :label="$t('PRODUCTS.IMAGES')"
       :autoplay="false"
     >
       <template #item="{ item }">
@@ -40,7 +37,7 @@ Real-world slider/carousel examples for image galleries, product showcases, and 
 
 <script setup lang="ts">
 import { ref } from "vue";
-import { VcLabel, VcSlider, VcImage } from "@vc-shell/framework";
+import { VcSlider, VcImage } from "@vc-shell/framework";
 import { useI18n } from "vue-i18n";
 
 const { t } = useI18n();

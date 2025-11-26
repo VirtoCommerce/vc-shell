@@ -7,6 +7,7 @@ echo "Copying assets to dist/..."
 # Create directories
 mkdir -p dist/schemas
 mkdir -p dist/examples
+mkdir -p dist/examples/reference
 mkdir -p dist/examples/components
 mkdir -p dist/examples/templates
 mkdir -p dist/examples/patterns
@@ -41,6 +42,15 @@ cp src/examples/templates/*.template dist/examples/templates/ 2>/dev/null && ech
 
 # Copy pattern documentation
 cp src/examples/patterns/*.md dist/examples/patterns/ 2>/dev/null && echo "✓ Copied pattern documentation"
+
+# Copy reference examples (single source of truth)
+if [ -d "src/examples/reference" ]; then
+  cp src/examples/reference/*.vue dist/examples/reference/ 2>/dev/null
+  cp src/examples/reference/*.ts dist/examples/reference/ 2>/dev/null
+  cp src/examples/reference/*.md dist/examples/reference/ 2>/dev/null
+  REFERENCE_COUNT=$(find src/examples/reference -type f \( -name "*.vue" -o -name "*.ts" -o -name "*.md" \) | wc -l | tr -d ' ')
+  echo "✓ Copied reference examples ($REFERENCE_COUNT files)"
+fi
 
 # Copy composition patterns
 cp src/examples/compositions/*.md dist/examples/compositions/ 2>/dev/null && echo "✓ Copied composition patterns"

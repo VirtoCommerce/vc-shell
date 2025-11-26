@@ -26,6 +26,7 @@ Enhance VcTable columns with custom UI elements.
 ## Code
 
 ```vue
+<!-- @vue-generic {IItem} -->
 <VcTable
   :columns="columns"
   :items="items"

@@ -152,6 +152,7 @@ function onSubmit() {
       </div>
     </VcBanner>
 
+    <!-- @vue-generic {IItem} -->
     <VcTable
       :items="items"
       :columns="columns"

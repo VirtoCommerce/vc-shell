@@ -34,6 +34,7 @@ MEDIUM
 ## Complete Working Example
 ```vue
 <template>
+  <!-- @vue-generic {IItem} -->
   <VcTable>
     <template #item_{fieldName}>
       <!-- Custom slot content -->

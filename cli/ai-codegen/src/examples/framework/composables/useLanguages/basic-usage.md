@@ -450,6 +450,7 @@ const currentLanguageName = computed(() =>
 
 ```vue
 <template>
+  <!-- @vue-generic {{ value: string; label: string }} -->
   <VcSelect
     v-model="selectedLocale"
     :options="languageOptions"

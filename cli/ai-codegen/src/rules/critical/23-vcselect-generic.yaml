@@ -1,0 +1,74 @@
+id: "23"
+name: "VcSelect Generic Comment"
+category: "critical"
+priority: 100
+enabled: true
+applies_to:
+  - "details"
+  - "list"
+
+description: |
+  VcSelect REQUIRES <!-- @vue-generic {Type} --> comment DIRECTLY ABOVE the <VcSelect> tag.
+  The {Type} should match the type of items passed to :options prop.
+
+  This is REQUIRED for TypeScript type inference in slot templates (e.g., #option="{ opt }").
+
+forbidden:
+  - pattern: "<VcSelect"
+    when: "Missing <!-- @vue-generic {Type} --> comment directly above"
+    reason: "VcSelect requires @vue-generic comment for TypeScript type inference in slots"
+    severity: "error"
+
+correct_pattern:
+  inline: |
+    ```vue
+    <template>
+      <VcCard>
+        <Field v-slot="{ field, errorMessage }" name="category" :rules="requiredRule">
+          <!-- @vue-generic {ICategory} -->
+          <VcSelect
+            v-bind="field"
+            :label="$t('PRODUCTS.CATEGORY')"
+            :options="categories"
+            option-value="id"
+            option-label="name"
+            :error-message="errorMessage"
+          />
+        </Field>
+      </VcCard>
+    </template>
+
+    <script setup lang="ts">
+    interface ICategory {
+      id: string;
+      name: string;
+    }
+
+    const categories = ref<ICategory[]>([]);
+    </script>
+    ```
+
+wrong_pattern:
+  inline: |
+    ```vue
+    <template>
+      <VcCard>
+        <Field v-slot="{ field, errorMessage }" name="category" :rules="requiredRule">
+          <!-- ❌ WRONG: Missing @vue-generic comment -->
+          <VcSelect
+            v-bind="field"
+            :label="$t('PRODUCTS.CATEGORY')"
+            :options="categories"
+            option-value="id"
+            option-label="name"
+            :error-message="errorMessage"
+          />
+        </Field>
+      </VcCard>
+    </template>
+    ```
+
+examples:
+  - "capabilities/VcSelect/prop-clearable.md"
+  - "patterns/async-select.md"
+  - "components/VcSelect-demo.md"

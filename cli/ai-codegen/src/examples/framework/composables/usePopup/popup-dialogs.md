@@ -26,6 +26,7 @@ The `usePopup` composable provides the primary API for managing popups and modal
 ```vue
 <template>
   <VcBlade title="Delete Items">
+    <!-- @vue-generic {IItem} -->
     <VcTable
       :items="items"
       :columns="columns"
@@ -166,6 +167,7 @@ function validateOffer(): boolean {
           required
         />
 
+        <!-- @vue-generic {{ value: string; label: string }} -->
         <VcSelect
           v-model="editableUser.role"
           :options="roleOptions"
@@ -266,6 +268,7 @@ function handleSubmit() {
 ```vue
 <template>
   <VcBlade title="Users Management">
+    <!-- @vue-generic {IUser} -->
     <VcTable
       :items="users"
       :columns="columns"

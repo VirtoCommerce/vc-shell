@@ -26,6 +26,7 @@
 
     <template #content>
       <!-- Show table if items exist -->
+      <!-- @vue-generic {Entity} -->
       <VcTable
         v-if="items?.length"
         :items="items?.slice(0, 5)"

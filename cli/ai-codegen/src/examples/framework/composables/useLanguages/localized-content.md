@@ -92,6 +92,7 @@ onMounted(() => {
 
 <template>
   <VcBlade title="Offers" v-loading="loading">
+    <!-- @vue-generic {IOffer} -->
     <VcTable :items="offers" :columns="columns" />
   </VcBlade>
 </template>

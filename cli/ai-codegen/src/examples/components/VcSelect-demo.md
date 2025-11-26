@@ -27,6 +27,7 @@ Real-world select examples from vendor-portal. Always use with `Field` from vee-
     :model-value="offer.productType"
     name="productType"
   >
+    <!-- @vue-generic {IOffer} -->
     <VcSelect
       v-model="offer.productType"
       :label="$t('OFFERS.PAGES.DETAILS.FIELDS.PRODUCT_TYPE.TITLE')"
@@ -65,6 +66,7 @@ const productTypeOptions = ref([
     name="product"
     rules="required"
   >
+    <!-- @vue-generic {IOffer} -->
     <VcSelect
       v-model="offer.productId"
       :label="$t('OFFERS.PAGES.DETAILS.FIELDS.PRODUCT.TITLE')"
@@ -130,6 +132,7 @@ async function fetchProducts(keyword?: string) {
     :model-value="offer.productType"
     name="productType"
   >
+    <!-- @vue-generic {IOffer} -->
     <VcSelect
       v-model="offer.productType"
       :label="$t('OFFERS.PAGES.DETAILS.FIELDS.PRODUCT_TYPE.TITLE')"
@@ -151,6 +154,7 @@ async function fetchProducts(keyword?: string) {
 
 ```vue
 <template>
+  <!-- @vue-generic {IOffer} -->
   <VcSelect
     v-model="offer.productType"
     :label="$t('OFFERS.PAGES.DETAILS.FIELDS.PRODUCT_TYPE.TITLE')"
@@ -167,6 +171,7 @@ async function fetchProducts(keyword?: string) {
 
 ```vue
 <template>
+  <!-- @vue-generic {IOffer} -->
   <VcSelect
     v-model="selectedType"
     :options="productTypeOptions"
@@ -220,6 +225,7 @@ const productTypeOptions = computed(() =>
 
 ### Static Options
 ```vue
+<!-- @vue-generic {IOffer} -->
 <VcSelect
   v-model="value"
   :options="[
@@ -233,6 +239,7 @@ const productTypeOptions = computed(() =>
 
 ### Dynamic/Async Options
 ```vue
+<!-- @vue-generic {IOffer} -->
 <VcSelect
   v-model="productId"
   searchable
@@ -245,6 +252,7 @@ const productTypeOptions = computed(() =>
 
 ### With Additional Action on Change
 ```vue
+<!-- @vue-generic {IOffer} -->
 <VcSelect
   v-model="offer.productId"
   :options="products"
@@ -259,6 +267,7 @@ const productTypeOptions = computed(() =>
 
 ### Non-Clearable Select
 ```vue
+<!-- @vue-generic {IOffer} -->
 <VcSelect
   v-model="value"
   :options="options"

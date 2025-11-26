@@ -5,24 +5,35 @@ priority: 100
 enabled: true
 applies_to:
   - "list"
+  - "details"
 
 description: |
-  VcTable REQUIRES <!-- @vue-generic {Type} --> comment on FIRST LINE.
+  VcTable REQUIRES <!-- @vue-generic {Type} --> comment DIRECTLY ABOVE the <VcTable> tag.
+  The {Type} should match the type of items passed to :items prop.
+
+  This is REQUIRED for TypeScript type inference in slot templates (e.g., #item_name="{ item }").
 
 forbidden:
-  - pattern: "<VcTable.*>"
-    when: "Missing <!-- @vue-generic --> on first line"
-    reason: "VcTable requires @vue-generic comment for TypeScript"
+  - pattern: "<VcTable"
+    when: "Missing <!-- @vue-generic {Type} --> comment directly above"
+    reason: "VcTable requires @vue-generic comment for TypeScript type inference in slots"
     severity: "error"
 
 correct_pattern:
   inline: |
     ```vue
-    <!-- @vue-generic {IOffer} -->
     <template>
-      <VcTable :items="items">
-        <!-- columns -->
-      </VcTable>
+      <VcBlade>
+        <!-- @vue-generic {IOffer} -->
+        <VcTable
+          :items="offers"
+          :columns="columns"
+        >
+          <template #item_name="{ item }">
+            {{ item.name }}  <!-- TypeScript knows item is IOffer -->
+          </template>
+        </VcTable>
+      </VcBlade>
     </template>
     ```
 
@@ -30,9 +41,17 @@ wrong_pattern:
   inline: |
     ```vue
     <template>
-      <VcTable :items="items">  <!-- ❌ Missing @vue-generic comment! -->
-        <!-- columns -->
-      </VcTable>
+      <VcBlade>
+        <!-- ❌ WRONG: Missing @vue-generic comment -->
+        <VcTable
+          :items="offers"
+          :columns="columns"
+        >
+          <template #item_name="{ item }">
+            {{ item.name }}  <!-- item is 'unknown' type! -->
+          </template>
+        </VcTable>
+      </VcBlade>
     </template>
     ```
 

@@ -19,12 +19,10 @@ Real-world Markdown editor examples for rich content, product descriptions, and 
 ```vue
 <template>
   <div class="tw-space-y-4">
-    <VcLabel :required="true">
-      {{ $t("PRODUCTS.DESCRIPTION") }}
-    </VcLabel>
-
     <VcEditor
       v-model="description"
+      :label="$t('PRODUCTS.DESCRIPTION')"
+      required
       :placeholder="$t('PRODUCTS.DESCRIPTION_PLACEHOLDER')"
     />
 
@@ -42,7 +40,7 @@ Real-world Markdown editor examples for rich content, product descriptions, and 
 
 <script setup lang="ts">
 import { ref, computed } from "vue";
-import { VcLabel, VcEditor, VcHint } from "@vc-shell/framework";
+import { VcEditor, VcHint } from "@vc-shell/framework";
 import { marked } from "marked";
 import { useI18n } from "vue-i18n";
 
@@ -62,12 +60,10 @@ const renderedMarkdown = computed(() => {
 ```vue
 <template>
   <div class="tw-space-y-4">
-    <VcLabel :required="true">
-      {{ $t("ARTICLES.CONTENT") }}
-    </VcLabel>
-
     <VcEditor
       v-model="content"
+      :label="$t('ARTICLES.CONTENT')"
+      required
       :placeholder="$t('ARTICLES.CONTENT_PLACEHOLDER')"
       @upload="handleImageUpload"
     />
@@ -117,7 +113,7 @@ const renderedMarkdown = computed(() => {
 
 <script setup lang="ts">
 import { ref } from "vue";
-import { VcLabel, VcEditor, VcHint, VcImage, VcButton, VcIcon } from "@vc-shell/framework";
+import { VcEditor, VcHint, VcImage, VcButton, VcIcon } from "@vc-shell/framework";
 import { useI18n } from "vue-i18n";
 
 const { t } = useI18n();
@@ -156,12 +152,11 @@ function copyImageUrl(url: string) {
     <div class="tw-space-y-6">
       <!-- Short description -->
       <div>
-        <VcLabel :required="true">
-          {{ $t("PRODUCTS.SHORT_DESCRIPTION") }}
-        </VcLabel>
         <Field v-slot="{ field, errorMessage }" name="shortDescription" :rules="shortDescriptionRules">
           <VcTextarea
             v-bind="field"
+            :label="$t('PRODUCTS.SHORT_DESCRIPTION')"
+            required
             :error-message="errorMessage"
             :rows="3"
             :maxlength="200"
@@ -186,29 +181,28 @@ function copyImageUrl(url: string) {
 
       <!-- Long description with editor -->
       <div>
-        <VcLabel :required="false">
-          <div class="tw-flex tw-items-center tw-justify-between">
-            <span>{{ $t("PRODUCTS.LONG_DESCRIPTION") }}</span>
-            <div class="tw-flex tw-gap-2">
-              <VcButton
+        <div class="tw-flex tw-items-center tw-justify-between tw-mb-2">
+          <span class="tw-font-medium">{{ $t("PRODUCTS.LONG_DESCRIPTION") }}</span>
+          <div class="tw-flex tw-gap-2">
+            <VcButton
+              size="s"
+              outlined
+              @click="showPreview = !showPreview"
+            >
+              <VcIcon
+                :icon="showPreview ? 'material-edit' : 'material-visibility'"
                 size="s"
-                outlined
-                @click="showPreview = !showPreview"
-              >
-                <VcIcon
-                  :icon="showPreview ? 'material-edit' : 'material-visibility'"
-                  size="s"
-                  class="tw-mr-1"
-                />
-                {{ showPreview ? $t("COMMON.EDIT") : $t("COMMON.PREVIEW") }}
-              </VcButton>
-            </div>
+                class="tw-mr-1"
+              />
+              {{ showPreview ? $t("COMMON.EDIT") : $t("COMMON.PREVIEW") }}
+            </VcButton>
           </div>
-        </VcLabel>
+        </div>
 
         <VcEditor
           v-if="!showPreview"
           v-model="longDescription"
+          :label="$t('PRODUCTS.LONG_DESCRIPTION')"
           :placeholder="$t('PRODUCTS.LONG_DESCRIPTION_PLACEHOLDER')"
         />
 
@@ -235,7 +229,6 @@ function copyImageUrl(url: string) {
 <script setup lang="ts">
 import { ref, computed } from "vue";
 import {
-  VcLabel,
   VcTextarea,
   VcEditor,
   VcHint,
@@ -284,22 +277,20 @@ function onCancel() {
       <div class="tw-space-y-4">
         <!-- Title -->
         <div>
-          <VcLabel :required="true">
-            {{ $t("BLOG.TITLE") }}
-          </VcLabel>
           <VcInput
             v-model="post.title"
+            :label="$t('BLOG.TITLE')"
+            required
             :placeholder="$t('BLOG.TITLE_PLACEHOLDER')"
           />
         </div>
 
         <!-- Excerpt -->
         <div>
-          <VcLabel :required="true">
-            {{ $t("BLOG.EXCERPT") }}
-          </VcLabel>
           <VcTextarea
             v-model="post.excerpt"
+            :label="$t('BLOG.EXCERPT')"
+            required
             :rows="3"
             :placeholder="$t('BLOG.EXCERPT_PLACEHOLDER')"
           />
@@ -310,10 +301,6 @@ function onCancel() {
 
         <!-- Content editor -->
         <div>
-          <VcLabel :required="true">
-            {{ $t("BLOG.CONTENT") }}
-          </VcLabel>
-
           <!-- Editor toolbar -->
           <div class="tw-flex tw-gap-2 tw-mb-2 tw-p-2 tw-border tw-rounded-lg tw-bg-[var(--neutrals-50)]">
             <VcButton
@@ -361,17 +348,17 @@ function onCancel() {
           <VcEditor
             ref="editorRef"
             v-model="post.content"
+            :label="$t('BLOG.CONTENT')"
+            required
             :placeholder="$t('BLOG.CONTENT_PLACEHOLDER')"
           />
         </div>
 
         <!-- Tags -->
         <div>
-          <VcLabel :required="false">
-            {{ $t("BLOG.TAGS") }}
-          </VcLabel>
           <VcMultivalue
             v-model="post.tags"
+            :label="$t('BLOG.TAGS')"
             :placeholder="$t('BLOG.TAGS_PLACEHOLDER')"
           />
         </div>
@@ -404,7 +391,6 @@ function onCancel() {
 import { ref, computed, reactive } from "vue";
 import {
   VcCard,
-  VcLabel,
   VcInput,
   VcTextarea,
   VcEditor,
@@ -462,25 +448,25 @@ function publish() {
 ```vue
 <template>
   <div class="tw-space-y-4">
-    <VcLabel :required="true">
-      <div class="tw-flex tw-items-center tw-justify-between">
-        <span>{{ $t("ARTICLES.SUMMARY") }}</span>
-        <div class="tw-flex tw-items-center tw-gap-2">
-          <VcStatusIcon :variant="getSummaryStatus()" />
-          <span
-            :class="[
-              'tw-text-xs',
-              getCharacterCountColor()
-            ]"
-          >
-            {{ characterCount }}/{{ maxCharacters }} {{ $t("COMMON.CHARACTERS") }}
-          </span>
-        </div>
+    <div class="tw-flex tw-items-center tw-justify-between">
+      <span class="tw-font-medium">{{ $t("ARTICLES.SUMMARY") }}</span>
+      <div class="tw-flex tw-items-center tw-gap-2">
+        <VcStatusIcon :variant="getSummaryStatus()" />
+        <span
+          :class="[
+            'tw-text-xs',
+            getCharacterCountColor()
+          ]"
+        >
+          {{ characterCount }}/{{ maxCharacters }} {{ $t("COMMON.CHARACTERS") }}
+        </span>
       </div>
-    </VcLabel>
+    </div>
 
     <VcEditor
       v-model="summary"
+      :label="$t('ARTICLES.SUMMARY')"
+      required
       :placeholder="$t('ARTICLES.SUMMARY_PLACEHOLDER')"
     />
 
@@ -496,7 +482,7 @@ function publish() {
 
 <script setup lang="ts">
 import { ref, computed } from "vue";
-import { VcLabel, VcEditor, VcHint, VcStatusIcon } from "@vc-shell/framework";
+import { VcEditor, VcHint, VcStatusIcon } from "@vc-shell/framework";
 import { useI18n } from "vue-i18n";
 
 const { t } = useI18n();

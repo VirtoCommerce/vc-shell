@@ -352,6 +352,52 @@ export class CodeValidator {
       });
     }
 
+    // Check for duplicate top-level tags (Vue SFC should have exactly ONE of each)
+    if (allTemplateOpenTags > 1) {
+      errors.push({
+        path: "template",
+        message: `Multiple <template> blocks found (${allTemplateOpenTags}). Vue SFC must have exactly ONE <template>.`,
+      });
+    }
+
+    if (allTemplateCloseTags > 1) {
+      errors.push({
+        path: "template",
+        message: `Multiple </template> closing tags found (${allTemplateCloseTags}). Vue SFC must have exactly ONE </template>.`,
+      });
+    }
+
+    if (scriptCount > 1) {
+      errors.push({
+        path: "script",
+        message: `Multiple <script> blocks found (${scriptCount}). Vue SFC must have exactly ONE <script setup>.`,
+      });
+    }
+
+    if (scriptCloseCount > 1) {
+      errors.push({
+        path: "script",
+        message: `Multiple </script> closing tags found (${scriptCloseCount}). Vue SFC must have exactly ONE </script>.`,
+      });
+    }
+
+    // Check for style tag duplicates (style is optional but should be max 1)
+    const styleOpenCount = (code.match(/<style/g) || []).length;
+    const styleCloseCount = (code.match(/<\/style>/g) || []).length;
+    if (styleOpenCount > 1) {
+      errors.push({
+        path: "style",
+        message: `Multiple <style> blocks found (${styleOpenCount}). Vue SFC should have at most ONE <style>.`,
+      });
+    }
+
+    if (styleCloseCount > 1) {
+      errors.push({
+        path: "style",
+        message: `Multiple </style> closing tags found (${styleCloseCount}). Vue SFC should have at most ONE </style>.`,
+      });
+    }
+
     return { errors, warnings };
   }
 

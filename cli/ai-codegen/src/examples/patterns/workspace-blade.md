@@ -29,6 +29,7 @@ Each module should have ONE workspace blade (usually the main list blade) with `
     width="70%"
     @close="$emit('close:blade')"
   >
+    <!-- @vue-generic {IOffer} -->
     <VcTable
       :columns="columns"
       :items="items"

@@ -177,6 +177,7 @@ const landscapeImage = "https://placehold.co/1920x1080/4CAF50/FFFFFF/png?text=La
 
 ```vue
 <template>
+  <!-- @vue-generic {IProduct} -->
   <VcTable
     :items="products"
     :columns="columns"

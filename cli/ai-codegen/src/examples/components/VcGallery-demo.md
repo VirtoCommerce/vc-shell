@@ -19,12 +19,9 @@ Real-world gallery examples for product images, media management, and visual con
 ```vue
 <template>
   <div class="tw-space-y-4">
-    <VcLabel>
-      {{ $t("PRODUCTS.IMAGE_GALLERY") }}
-    </VcLabel>
-
     <VcGallery
       v-model="images"
+      :label="$t('PRODUCTS.IMAGE_GALLERY')"
       :editable="false"
     />
   </div>
@@ -32,7 +29,7 @@ Real-world gallery examples for product images, media management, and visual con
 
 <script setup lang="ts">
 import { ref } from "vue";
-import { VcLabel, VcGallery } from "@vc-shell/framework";
+import { VcGallery } from "@vc-shell/framework";
 import { useI18n } from "vue-i18n";
 
 const { t } = useI18n();
@@ -52,12 +49,10 @@ const images = ref([
 <template>
   <VcForm @submit="onSubmit">
     <div class="tw-space-y-4">
-      <VcLabel :required="true">
-        {{ $t("PRODUCTS.IMAGES") }}
-      </VcLabel>
-
       <VcGallery
         v-model="productImages"
+        :label="$t('PRODUCTS.IMAGES')"
+        required
         :editable="true"
         :max-items="10"
         @upload="handleUpload"
@@ -84,7 +79,6 @@ const images = ref([
 <script setup lang="ts">
 import { ref } from "vue";
 import {
-  VcLabel,
   VcGallery,
   VcHint,
   VcForm,
@@ -269,11 +263,9 @@ function deleteImage(image: Image) {
 
         <!-- Alt text -->
         <div>
-          <VcLabel :required="false">
-            {{ $t("PRODUCTS.ALT_TEXT") }}
-          </VcLabel>
           <VcInput
             v-model="selectedImage.alt"
+            :label="$t('PRODUCTS.ALT_TEXT')"
             :placeholder="$t('PRODUCTS.ALT_TEXT_PLACEHOLDER')"
           />
           <VcHint>
@@ -283,11 +275,9 @@ function deleteImage(image: Image) {
 
         <!-- Caption -->
         <div>
-          <VcLabel :required="false">
-            {{ $t("PRODUCTS.CAPTION") }}
-          </VcLabel>
           <VcTextarea
             v-model="selectedImage.caption"
+            :label="$t('PRODUCTS.CAPTION')"
             :rows="3"
             :placeholder="$t('PRODUCTS.CAPTION_PLACEHOLDER')"
           />
@@ -331,7 +321,6 @@ import {
   VcCard,
   VcGallery,
   VcImage,
-  VcLabel,
   VcInput,
   VcTextarea,
   VcHint,

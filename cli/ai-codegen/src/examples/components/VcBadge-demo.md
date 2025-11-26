@@ -136,6 +136,7 @@ const pendingServices = ref(12);
 
 ```vue
 <template>
+  <!-- @vue-generic {IItem} -->
   <VcTable
     :items="orders"
     :columns="columns"

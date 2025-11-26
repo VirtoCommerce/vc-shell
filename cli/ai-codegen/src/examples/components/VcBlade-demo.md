@@ -70,7 +70,6 @@ defineOptions({
   name: "Orders",
   url: "/orders",
   isWorkspace: true,
-  permissions: ["seller:orders:view"],
   priority: 1,
   menuItem: {
     title: "ORDERS.MENU.TITLE",

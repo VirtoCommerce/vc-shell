@@ -517,17 +517,17 @@ export default function useOffersList() {
       correct: `
 import { useBeforeUnload } from '@vc-shell/framework';
 
-const { modified } = useModificationTracker(offer);
+const { isModified } = useModificationTracker(offer);
 
 // ✅ CORRECT: Pass ref directly
-useBeforeUnload(modified);
+useBeforeUnload(isModified);
 `,
       incorrect: `
 // ❌ WRONG: Don't pass callback
-useBeforeUnload(() => modified.value);
+useBeforeUnload(() => isModified.value);
 
 // ❌ WRONG: Don't pass value
-useBeforeUnload(modified.value);
+useBeforeUnload(isModified.value);
 `,
     },
   },

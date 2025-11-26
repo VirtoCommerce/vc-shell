@@ -9,21 +9,57 @@ applies_to:
 
 description: |
   Use useModificationTracker for tracking entity changes in details blades.
+  CRITICAL: The hook returns { isModified, currentValue, resetModificationState } - NOT { modified }!
 
 correct_pattern:
   inline: |
     ```typescript
-    // ✅ CORRECT
-    const { currentValue, isModified, resetModificationState } = useModificationTracker(entity);
-    
+    // ✅ CORRECT: Exact destructuring - useModificationTracker returns isModified, NOT modified
+    const { isModified, currentValue, resetModificationState } = useModificationTracker(entity);
+
     // After save:
     resetModificationState();
-    
+
     // Return currentValue, not original ref:
     return {
-      entity: currentValue,
-      modified: isModified,
+      item: currentValue,          // Use currentValue for the entity
+      isModified,                  // Use isModified directly (it's already a Ref<boolean>)
+      resetModificationState,
     };
+    ```
+
+wrong_pattern:
+  inline: |
+    ```typescript
+    // ❌ WRONG: "modified" does not exist on useModificationTracker return type!
+    const { modified: isModified, currentValue, resetModificationState } = useModificationTracker(entity);
+    // TypeScript error: Property 'modified' does not exist on type '{ isModified: Ref<boolean>; ... }'
+
+    // ❌ WRONG: Using ReturnType<typeof ref<T>> in interfaces
+    export interface IUseEntityDetails {
+      item: ReturnType<typeof ref<IEntity>>;  // Hard to read, verbose
+      loading: ReturnType<typeof ref<boolean>>;
+    }
+
+    // ✅ CORRECT: Use actual Vue types directly
+    export interface IUseEntityDetails {
+      item: Ref<IEntity>;
+      loading: ComputedRef<boolean>;
+      isModified: Readonly<Ref<boolean>>;
+    }
+
+    // ❌ WRONG: useAsync callback without undefined guard
+    const { action: loadEntity } = useAsync(async (id: string) => {
+      const client = await getApiClient();
+      return await client.getById(id);  // Crashes if id is undefined!
+    });
+
+    // ✅ CORRECT: Guard against undefined params
+    const { action: loadEntity } = useAsync(async (id?: string) => {
+      if (!id) return;  // Guard clause - params can be undefined!
+      const client = await getApiClient();
+      return await client.getById(id);
+    });
     ```
 
 validations:

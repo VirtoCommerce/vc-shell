@@ -194,13 +194,13 @@ async function loadOrders(params: any) {
                 v-model="stagedFilters.startDate"
                 type="date"
                 :label="$t('ORDERS.PAGES.LIST.TABLE.FILTER.DATE.START_DATE')"
-                @update:model-value="(value) => toggleFilter('startDate', String(value || ''), true)"
+                @update:model-value="(value: string) => toggleFilter('startDate', String(value || ''), true)"
               />
               <VcInput
                 v-model="stagedFilters.endDate"
                 type="date"
                 :label="$t('ORDERS.PAGES.LIST.TABLE.FILTER.DATE.END_DATE')"
-                @update:model-value="(value) => toggleFilter('endDate', String(value || ''), true)"
+                @update:model-value="(value: string) => toggleFilter('endDate', String(value || ''), true)"
               />
             </div>
           </div>

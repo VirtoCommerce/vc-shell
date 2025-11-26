@@ -11,6 +11,28 @@ description: "Track data modifications in forms and detail screens"
 
 The `useModificationTracker` composable detects changes in reactive data, enabling you to control UI elements like Save buttons based on whether data has been modified.
 
+> **⚠️ CRITICAL API REFERENCE:**
+>
+> The hook returns `{ isModified, currentValue, resetModificationState }` - **NOT `{ modified }`!**
+>
+> ```typescript
+> // ✅ CORRECT - use exact property names:
+> const { isModified, currentValue, resetModificationState } = useModificationTracker(item);
+>
+> // ❌ WRONG - "modified" does NOT exist on return type!
+> const { modified: isModified, currentValue } = useModificationTracker(item);
+> // TypeScript error: Property 'modified' does not exist
+> ```
+>
+> When exporting from a composable, you CAN rename `isModified` to `modified`:
+> ```typescript
+> return {
+>   offer: currentValue,
+>   modified: isModified,  // ✅ CORRECT: renaming for export
+>   resetModificationState,
+> };
+> ```
+
 ## Overview
 
 - Track object/array modifications with deep equality comparison

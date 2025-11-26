@@ -1,0 +1,25 @@
+id: "19"
+name: "API Client Import Paths"
+category: "critical"
+priority: 100
+enabled: true
+applies_to:
+  - "all"
+
+description: |
+  Use correct relative paths when importing generated API client files. Wrong depth causes broken imports in generated blades, composables, and widgets.
+
+forbidden:
+  - pattern: "\\.\\./\\.\\./\\.\\./\\.\\./\\.\\./api_client"
+    reason: "Too many ../ segments - max depth is 4 (widgets)."
+    severity: "error"
+
+correct_pattern:
+  inline: |
+    # Correct import paths for api_client
+    - Pages (src/modules/{module}/pages/): ../../../api_client/{module}.client
+    - Composables (src/modules/{module}/composables/): ../../../api_client/{module}.client and ../../../api_client/{module}.api
+    - Widgets (src/modules/{module}/components/widgets/...): ../../../../api_client/{module}.client
+
+examples:
+  - "templates/composable-list.ts.template"

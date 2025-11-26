@@ -43,11 +43,7 @@
       :key="`${(item && typeof item === 'object' && 'id' in item && item.id) || index}_${cell.id}`"
       class="vc-table-row__cell"
       :class="[cell.class, { 'vc-table-row__cell--fixed-width': !!cell.width }]"
-      :style="
-        cell.width
-          ? { maxWidth: cell.width, width: cell.width, flex: '0 1 auto', minWidth: '60px' }
-          : { flex: '1 1 0', minWidth: '60px' }
-      "
+      :style="colsWithPixels(cell.width)"
     >
       <div class="vc-table-row__cell-content">
         <slot
@@ -112,6 +108,7 @@ import VcTableCell from "../../../vc-table-cell/vc-table-cell.vue";
 import type { TableItem, TableColPartial } from "../../../../types";
 import type { IActionBuilderResult, ITableColumns } from "../../../../../../../../core/types";
 import { MaybeRef } from "vue";
+import { useTableModifications } from "../../../../composables/useTableModifications";
 defineProps<{
   item: T;
   index: number;
@@ -144,6 +141,8 @@ defineEmits<{
   (e: "onEditComplete", args: { event: { field: string; value: string | number }; index: number }): void;
   (e: "onCellBlur", args: { row: number | undefined; field: string }): void;
 }>();
+
+const { colsWithPixels } = useTableModifications();
 </script>
 
 <style lang="scss">

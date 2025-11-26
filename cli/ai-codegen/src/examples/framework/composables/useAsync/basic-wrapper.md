@@ -16,6 +16,7 @@ The `useAsync` composable wraps async operations with automatic loading state ma
 - Automatic loading state tracking
 - Prevents race conditions
 - Simplifies async code
+- Guard optional parameters: destructured args may be undefined, so check (e.g., `if (!params?.id) return;`).
 
 ## Basic Usage
 

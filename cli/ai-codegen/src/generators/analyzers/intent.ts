@@ -256,8 +256,17 @@ export class IntentExtractor {
   private extractConstraints(prompt: string): ExtractedIntent["constraints"] | undefined {
     const constraints: ExtractedIntent["constraints"] = {};
 
-    // Permissions
-    if (prompt.includes("permission") || prompt.includes("role") || prompt.includes("access")) {
+    // Permissions (explicit opt-in only)
+    const permissionSignals = [
+      /with\s+permissions?/, // "with permissions"
+      /add(ing)?\s+permissions?/, // "add permissions"
+      /permissions?\s+(required|needed|enabled)/, // "permissions required"
+      /role[-\s]?based\s+access/, // "role-based access"
+      /\brbac\b/, // RBAC acronym
+      /access\s+control/, // explicit access control mention
+    ];
+
+    if (permissionSignals.some((pattern) => pattern.test(prompt))) {
       constraints.permissions = ["read", "create", "update", "delete"];
     }
 

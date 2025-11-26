@@ -154,7 +154,7 @@
         {
           "title": "Prevent close with unsaved changes",
           "method": "onBeforeClose",
-          "code": "import { useBladeNavigation, usePopup } from '@vc-shell/framework';\n\nconst { onBeforeClose } = useBladeNavigation();\nconst { showConfirmation } = usePopup();\nconst { modified } = useModificationTracker(formData);\n\nonBeforeClose(async () => {\n  if (modified.value) {\n    return await showConfirmation(\n      computed(() => t('ALERTS.UNSAVED_CHANGES'))\n    );\n  }\n});"
+          "code": "import { useBladeNavigation, usePopup } from '@vc-shell/framework';\n\nconst { onBeforeClose } = useBladeNavigation();\nconst { showConfirmation } = usePopup();\nconst { isModified } = useModificationTracker(formData);\n\nonBeforeClose(async () => {\n  if (modified.value) {\n    return await showConfirmation(\n      computed(() => t('ALERTS.UNSAVED_CHANGES'))\n    );\n  }\n});"
         }
       ],
       "dependencies": ["vue-router"],
@@ -292,7 +292,7 @@
       "examples": [
         {
           "title": "Prevent close with unsaved changes",
-          "code": "import { useBeforeUnload } from '@vc-shell/framework';\nimport { useModificationTracker } from '@vc-shell/framework';\n\nconst { modified } = useModificationTracker(formData);\n\n// ✅ CORRECT: Pass modified ref directly\nuseBeforeUnload(modified);\n\n// ❌ WRONG: Don't call as function with callback\n// useBeforeUnload(() => modified.value); // WRONG!"
+          "code": "import { useBeforeUnload } from '@vc-shell/framework';\nimport { useModificationTracker } from '@vc-shell/framework';\n\nconst { isModified } = useModificationTracker(formData);\n\n// ✅ CORRECT: Pass modified ref directly\nuseBeforeUnload(modified);\n\n// ❌ WRONG: Don't call as function with callback\n// useBeforeUnload(() => modified.value); // WRONG!"
         }
       ],
       "dependencies": [],
@@ -388,7 +388,7 @@
         "useCases": ["After successful save", "Reset form"]
       }],
       "state": [{
-        "name": "modified",
+        "name": "isModified",
         "type": "Ref<boolean>",
         "description": "Whether data has been modified",
         "reactive": true
@@ -410,7 +410,7 @@
       },
       "examples": [{
         "title": "Track form modifications",
-        "code": "import { useModificationTracker } from '@vc-shell/framework';\n\nconst formData = ref({ name: '', email: '' });\nconst { modified, currentValue, resetModificationState } = useModificationTracker(formData);\n\nasync function save() {\n  await api.save(currentValue.value);\n  resetModificationState();\n}"
+        "code": "import { useModificationTracker } from '@vc-shell/framework';\n\nconst formData = ref({ name: '', email: '' });\nconst { isModified, currentValue, resetModificationState } = useModificationTracker(formData);\n\nasync function save() {\n  await api.save(currentValue.value);\n  resetModificationState();\n}"
       }],
       "dependencies": [],
       "relatedAPIs": ["useBeforeUnload"],

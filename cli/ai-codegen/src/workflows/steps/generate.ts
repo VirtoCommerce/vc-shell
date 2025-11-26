@@ -552,6 +552,20 @@ export class GenerateStepExecutor implements StepExecutor {
         lines.push(`Read it FIRST to understand what methods and types are available:`);
         lines.push(`Location: src/modules/${moduleName}/composables/use${this.capitalize(entityName)}${blade.type === "list" ? "List" : "Details"}.ts`);
         lines.push("");
+        lines.push("## 🔴 REF VALUE ACCESS IN SCRIPT (CRITICAL!)");
+        lines.push("Composable returns Ref<IEntity>. In <script> ALWAYS use .value:");
+        lines.push("```typescript");
+        lines.push("// ✅ CORRECT:");
+        lines.push("const title = computed(() => item.value?.name || 'New');");
+        lines.push("item.value.status = 'active';");
+        lines.push("if (item.value?.id) { /* ... */ }");
+        lines.push("");
+        lines.push("// ❌ WRONG - TypeScript error TS2339:");
+        lines.push("const title = computed(() => item?.name || 'New');");
+        lines.push("item.status = 'active';  // Property 'status' does not exist on type 'Ref<IEntity>'");
+        lines.push("```");
+        lines.push("Vue unwraps .value ONLY in <template>, NOT in <script>!");
+        lines.push("");
         lines.push("## Requirements:");
         lines.push("1. Use `<script setup lang=\"ts\">`");
         lines.push("2. Import the ALREADY GENERATED composable from ./composables/");
@@ -559,6 +573,12 @@ export class GenerateStepExecutor implements StepExecutor {
         lines.push("4. All strings via $t() - no hardcoded text");
         lines.push("5. Use emit(\"close:blade\") for closing");
         lines.push("6. Use EXACT method names from the composable (read it first!)");
+        lines.push("7. VcSelect #option slot scope is { opt, index, selected, toggleOption } - NEVER { option }");
+        lines.push("");
+        lines.push("## Import Paths (api_client):");
+        lines.push(`- Pages: ../../../api_client/${moduleName}.client (and .api for types)`);
+        lines.push(`- Composables: ../../../api_client/${moduleName}.client + ../../../api_client/${moduleName}.api`);
+        lines.push(`- Widgets: ../../../../api_client/${moduleName}.client`);
         lines.push("");
         lines.push("## ICONS (Material Symbols - NOT Material Icons!):");
         lines.push("Format: material-{icon_name} with UNDERSCORES, NO -outline suffix!");
@@ -568,13 +588,15 @@ export class GenerateStepExecutor implements StepExecutor {
         lines.push("");
         if (blade.type === "list") {
           lines.push("## List-specific:");
-          lines.push("7. Use VcTable with proper column slots");
-          lines.push("8. Implement pagination, sorting, filters as needed");
+          lines.push("8. Use VcTable with proper column slots");
+          lines.push("9. Implement pagination, sorting, filters as needed");
+          lines.push("10. Table column widths must be strings with units (e.g., \"100px\"), never bare numbers");
+          lines.push("11. Do NOT use VcLink inside table cells; use a styled <span> with @click.stop instead for navigation");
         } else {
           lines.push("## Details-specific:");
-          lines.push("7. Use VcForm with VeeValidate Field components");
-          lines.push("8. Implement validation rules");
-          lines.push("9. Composable already has useModificationTracker - use isModified from it");
+          lines.push("8. Use VcForm with VeeValidate Field components");
+          lines.push("9. Implement validation rules");
+          lines.push("10. Composable already has useModificationTracker - use isModified from it");
           lines.push("");
           lines.push("## WIDGETS (CRITICAL - DO NOT RENDER MANUALLY!):");
           lines.push("NEVER render widgets manually with <VcWidget> or v-for in template!");
@@ -639,7 +661,7 @@ export class GenerateStepExecutor implements StepExecutor {
         lines.push("The blade will import this composable, so define a clear interface.");
         lines.push("");
         lines.push("## CRITICAL: Read API Client FIRST!");
-        lines.push(`API client location: src/api_client/${moduleName}.api.ts`);
+        lines.push(`API client location: src/api_client/${moduleName}.client.ts (client) and src/api_client/${moduleName}.api.ts (types/commands)`);
         lines.push("You MUST read the API client to get:");
         lines.push("1. Exact method names (searchOffers, getOfferById, createOffer, etc.)");
         lines.push("2. Exact type names (IOffer, OfferDetails, SearchOffersQuery, etc.)");
@@ -650,46 +672,132 @@ export class GenerateStepExecutor implements StepExecutor {
         lines.push("- API has `createOffer()` but you call `createNewOffer()` - WRONG!");
         lines.push("- NEVER use @ts-nocheck or @ts-expect-error to hide mismatches!");
         lines.push("");
+        lines.push("## 🔴 TYPE SAFETY CHECKLIST (vue-tsc MUST pass with 0 errors!)");
+        lines.push("");
+        lines.push("### 1. Return Interface Types - Use ACTUAL Vue types, NOT ReturnType<>:");
+        lines.push("```typescript");
+        lines.push("// ❌ WRONG - verbose and confusing:");
+        lines.push("export interface IUseEntityDetails {");
+        lines.push("  item: ReturnType<typeof ref<IEntity>>;");
+        lines.push("  loading: ReturnType<typeof ref<boolean>>;");
+        lines.push("}");
+        lines.push("");
+        lines.push("// ✅ CORRECT - use Vue types directly:");
+        lines.push("import { Ref, ComputedRef } from 'vue';");
+        lines.push("export interface IUseEntityDetails {");
+        lines.push("  item: Ref<IEntity>;");
+        lines.push("  loading: ComputedRef<boolean>;");
+        lines.push("  isModified: Readonly<Ref<boolean>>;  // For tracked refs");
+        lines.push("}");
+        lines.push("```");
+        lines.push("");
+        lines.push("### 2. useModificationTracker - EXACT destructuring (isModified NOT modified!):");
+        lines.push("```typescript");
+        lines.push("// ❌ WRONG - 'modified' does not exist on return type!");
+        lines.push("const { modified: isModified, currentValue } = useModificationTracker(item);");
+        lines.push("// TypeScript error: Property 'modified' does not exist");
+        lines.push("");
+        lines.push("// ✅ CORRECT - use exact property name 'isModified':");
+        lines.push("const { isModified, currentValue, resetModificationState } = useModificationTracker(item);");
+        lines.push("```");
+        lines.push("");
+        lines.push("### 3. useAsync callbacks - ALWAYS guard undefined params:");
+        lines.push("```typescript");
+        lines.push("// ❌ WRONG - param can be undefined at runtime:");
+        lines.push("const { action: loadItem } = useAsync(async (id: string) => {");
+        lines.push("  const data = await client.getById(id);  // Crashes if id undefined!");
+        lines.push("});");
+        lines.push("");
+        lines.push("// ✅ CORRECT - make param optional with guard clause:");
+        lines.push("const { action: loadItem } = useAsync(async (id?: string) => {");
+        lines.push("  if (!id) return;  // REQUIRED guard!");
+        lines.push("  const data = await client.getById(id);");
+        lines.push("});");
+        lines.push("```");
+        lines.push("");
+        lines.push("### 4. Return currentValue NOT original ref:");
+        lines.push("```typescript");
+        lines.push("// ❌ WRONG - returns untracked ref:");
+        lines.push("return { item, isModified };");
+        lines.push("");
+        lines.push("// ✅ CORRECT - return tracked currentValue:");
+        lines.push("return { item: currentValue, isModified, resetModificationState };");
+        lines.push("```");
+        lines.push("");
         lines.push("## Requirements:");
         lines.push("1. Export composable function with TYPED INTERFACE (IUse" + EntityName + (blade.type === "list" ? "s" : "Details") + ")");
-        lines.push(`2. Import EXACT types from: ../../api_client/${moduleName}.api`);
-        lines.push(`3. Use: const { getApiClient } = useApiClient(${this.capitalize(moduleName)}Client)`);
-        lines.push("4. Call API methods with EXACT names from the client");
-        lines.push("5. Reactive state with ref/computed");
-        lines.push("6. Export all methods that blade will need (load, save, delete, etc.)");
+        lines.push(`2. Import EXACT types from: ../../../api_client/${moduleName}.api (correct relative path!)`);
+        lines.push(`3. Import the client class from: ../../../api_client/${moduleName}.client`);
+        lines.push(`4. Use: const { getApiClient } = useApiClient(${this.capitalize(moduleName)}Client)`);
+        lines.push("5. Wrap async operations with useAsync and guard optional params (e.g., if (!params?.id) return) to satisfy callback types");
+        lines.push("6. Reactive state with ref/computed");
+        lines.push("7. Export all methods that blade will need (load, save, delete, etc.)");
         if (blade.type === "list") {
           lines.push("");
           lines.push("## List Composable Pattern:");
           lines.push("```typescript");
+          lines.push(`import { Ref, ComputedRef } from 'vue';`);
           lines.push(`import { useApiClient, useAsync, useLoading } from "@vc-shell/framework";`);
-          lines.push(`import { ${this.capitalize(moduleName)}Client, Search${EntityName}sQuery, I${EntityName} } from "../../api_client/${moduleName}.api";`);
+          lines.push(`import { ${this.capitalize(moduleName)}Client } from "../../../api_client/${moduleName}.client";`);
+          lines.push(`import type { I${EntityName}, ISearch${EntityName}sQuery } from "../../../api_client/${moduleName}.api";`);
+          lines.push("");
+          lines.push(`export interface IUse${EntityName}s {`);
+          lines.push(`  items: Ref<I${EntityName}[]>;`);
+          lines.push(`  loading: ComputedRef<boolean>;`);
+          lines.push(`  totalCount: Ref<number>;`);
+          lines.push(`  loadItems: (query?: ISearch${EntityName}sQuery) => Promise<void>;`);
+          lines.push(`}`);
           lines.push("");
           lines.push(`const { getApiClient } = useApiClient(${this.capitalize(moduleName)}Client);`);
           lines.push("");
-          lines.push("const { action: loadItems, loading } = useAsync(async (query) => {");
+          lines.push("const { action: loadItems, loading } = useAsync(async (query?: ISearch${EntityName}sQuery) => {");
           lines.push("  const client = await getApiClient();");
-          lines.push(`  searchResult.value = await client.search${EntityName}s(new Search${EntityName}sQuery(query));`);
+          lines.push(`  const result = await client.search${EntityName}s(query || {});`);
+          lines.push("  items.value = result.results;");
+          lines.push("  totalCount.value = result.totalCount;");
           lines.push("});");
           lines.push("```");
-          lines.push("6. Return: items, loading, pagination, handlers");
+          lines.push("Return: items, loading, pagination, handlers");
         } else {
           lines.push("");
           lines.push("## Details Composable Pattern:");
           lines.push("```typescript");
+          lines.push(`import { Ref, ComputedRef, ref, reactive } from 'vue';`);
           lines.push(`import { useApiClient, useAsync, useLoading, useModificationTracker } from "@vc-shell/framework";`);
-          lines.push(`import { ${this.capitalize(moduleName)}Client, ${EntityName}, I${EntityName} } from "../../api_client/${moduleName}.api";`);
+          lines.push(`import { ${this.capitalize(moduleName)}Client } from "../../../api_client/${moduleName}.client";`);
+          lines.push(`import { ${EntityName}, type I${EntityName} } from "../../../api_client/${moduleName}.api";`);
+          lines.push("");
+          lines.push(`export interface IUse${EntityName}Details {`);
+          lines.push(`  item: Ref<I${EntityName}>;`);
+          lines.push(`  loading: ComputedRef<boolean>;`);
+          lines.push(`  isModified: Readonly<Ref<boolean>>;`);
+          lines.push(`  load${EntityName}: (id: string) => Promise<void>;`);
+          lines.push(`  save${EntityName}: (data?: I${EntityName}) => Promise<I${EntityName} | undefined>;`);
+          lines.push(`  resetModificationState: () => void;`);
+          lines.push(`}`);
           lines.push("");
           lines.push(`const { getApiClient } = useApiClient(${this.capitalize(moduleName)}Client);`);
-          lines.push(`const item = ref<I${EntityName}>(new ${EntityName}());`);
+          lines.push(`const item = ref<I${EntityName}>(reactive(new ${EntityName}()));`);
+          lines.push("");
+          lines.push("// EXACT destructuring - isModified NOT modified!");
           lines.push("const { isModified, currentValue, resetModificationState } = useModificationTracker(item);");
           lines.push("");
-          lines.push("const { action: loadItem } = useAsync(async ({ id }) => {");
+          lines.push("// Guard optional params in useAsync callbacks!");
+          lines.push("const { action: loadItem, loading: loadingItem } = useAsync(async (id?: string) => {");
+          lines.push("  if (!id) return;  // REQUIRED guard!");
           lines.push("  const client = await getApiClient();");
-          lines.push(`  currentValue.value = await client.get${EntityName}ById(id);`);
+          lines.push(`  currentValue.value = reactive(await client.get${EntityName}ById(id));`);
+          lines.push("  resetModificationState();");
           lines.push("});");
+          lines.push("");
+          lines.push("// Return currentValue NOT item!");
+          lines.push("return {");
+          lines.push("  item: currentValue,");
+          lines.push("  loading: useLoading(loadingItem, savingItem),");
+          lines.push("  isModified,");
+          lines.push("  resetModificationState,");
+          lines.push("};");
           lines.push("```");
-          lines.push("6. Use useModificationTracker");
-          lines.push("7. Return: item, loading, modified, handlers");
         }
         break;
 
@@ -703,6 +811,7 @@ export class GenerateStepExecutor implements StepExecutor {
         lines.push("3. Implement CRUD methods with proper types");
         lines.push("4. Handle pagination for list endpoints");
         lines.push("5. Proper error types");
+        lines.push("6. Client class MUST extend AuthApiBase from @vc-shell/framework (constructor(_baseUrl?, _http?: { fetch: typeof fetch }))");
         break;
     }
 
@@ -1086,10 +1195,19 @@ src/api_client/
 - update${EntityName}(cmd) → I${EntityName}
 - delete${EntityName}(id), delete${EntityName}s(ids[])
 
+## CRITICAL: AuthApiBase inheritance
+- Import { AuthApiBase } from "@vc-shell/framework"
+- export class ${ModuleName}Client extends AuthApiBase {
+    constructor(_baseUrl?: string, _http?: { fetch: typeof fetch }) {
+      super();
+    }
+  }
+- Required for useApiClient() compatibility
+
 ## ⚠️ MOCK ONLY - NO HTTP!
 - Use in-memory array, NOT fetch/axios
 - Add 300ms delay for realism
-- Constructor: constructor(_baseUrl?, _http?) {} for useApiClient compatibility
+- Keep constructor signature: constructor(_baseUrl?, _http?: { fetch: typeof fetch })
 
 ## Submit
 \`\`\`
@@ -1106,4 +1224,3 @@ context: { module: "${moduleName}", layout: "details" }
 For full template: use get_best_template({ bladeType: "details", features: ["api"] })`;
   }
 }
-

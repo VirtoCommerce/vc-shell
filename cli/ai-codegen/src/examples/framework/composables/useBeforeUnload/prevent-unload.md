@@ -42,10 +42,10 @@ import { useModificationTracker } from "@vc-shell/framework";
 
 // Track form modifications
 const item = ref({ name: '', price: 0 });
-const { modified } = useModificationTracker(item);
+const { isModified } = useModificationTracker(item);
 
 // Conditionally prevent unload when modified
-useBeforeUnload(computed(() => modified.value));
+useBeforeUnload(computed(() => isModified.value));
 
 // That's it! Framework handles:
 // - window.beforeunload event registration
@@ -84,10 +84,10 @@ import { computed } from "vue";
 import { useBeforeUnload, useModificationTracker } from "@vc-shell/framework";
 
 const formData = ref({ name: '', email: '' });
-const { modified } = useModificationTracker(formData);
+const { isModified } = useModificationTracker(formData);
 
 // Automatically tracks changes and prevents unload
-useBeforeUnload(computed(() => modified.value));
+useBeforeUnload(computed(() => isModified.value));
 ```
 
 ### Pattern 4: Real vendor-portal Pattern

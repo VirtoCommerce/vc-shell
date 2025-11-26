@@ -755,7 +755,7 @@
     "examples": [
       {
         "title": "Date Input",
-        "code": "<VcInput\n  v-model=\"stagedFilters.startDate\"\n  type=\"date\"\n  :label=\"$t('DATE_FILTER.START_DATE')\"\n  @update:model-value=\"(value) => toggleFilter('startDate', String(value || ''), true)\"\n/>"
+        "code": "<VcInput\n  v-model=\"stagedFilters.startDate\"\n  type=\"date\"\n  :label=\"$t('DATE_FILTER.START_DATE')\"\n  @update:model-value=\"(value: string) => toggleFilter('startDate', String(value || ''), true)\"\n/>"
       },
       {
         "title": "Text Input with Validation (vee-validate)",
@@ -1175,8 +1175,8 @@
       "tooltip": "string - Tooltip text"
     },
     "slots": {
-      "selected-item": "Custom template for selected item display",
-      "option": "Custom template for dropdown options"
+      "selected-item": "Custom template for selected item display (slot scope: { opt })",
+      "option": "Custom template for dropdown options (slot scope: { opt, index, selected, toggleOption })"
     },
     "events": {
       "update:modelValue": {

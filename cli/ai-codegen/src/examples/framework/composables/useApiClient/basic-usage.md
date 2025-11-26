@@ -16,7 +16,7 @@ The `useApiClient` composable provides a standardized way to access API clients 
 - Creates authenticated API client instances
 - Handles authentication token injection
 - Manages base URL configuration
-- Works with any class implementing `IAuthApiBase`
+- Works with any class extending `AuthApiBase`
 
 ## Basic Pattern
 
@@ -169,25 +169,17 @@ const result = await client.searchOffers({
 
 ## API Client Interface
 
-Your API client must implement `IAuthApiBase`:
+Your API client must extend `AuthApiBase` to work with `useApiClient`:
 
 ```typescript
-import { IAuthApiBase } from "@vc-shell/framework";
+import { AuthApiBase } from "@vc-shell/framework";
 
-export class OffersClient implements IAuthApiBase {
-  public authToken: string = ""; // ✅ Must be string, not string | undefined
-
+export class OffersClient extends AuthApiBase {
   constructor(
     private baseUrl?: string,
     private http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }
-  ) {}
-
-  setAuthToken(token: string): void {
-    this.authToken = token;
-  }
-
-  getBaseUrl(): string {
-    return this.baseUrl || "";
+  ) {
+    super();
   }
 
   // Your API methods...

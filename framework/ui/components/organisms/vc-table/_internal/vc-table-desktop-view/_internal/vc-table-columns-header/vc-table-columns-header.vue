@@ -34,11 +34,7 @@
           },
           item.align ? tableAlignment[item.align] : '',
         ]"
-        :style="
-          item.width
-            ? { maxWidth: item.width, width: item.width, flex: '0 1 auto', minWidth: '60px' }
-            : { flex: '1 1 0', minWidth: '60px' }
-        "
+        :style="colsWithPixels(item.width)"
         @mousedown="reorderableColumns && onColumnHeaderMouseDown($event)"
         @dragstart="reorderableColumns && onColumnHeaderDragStart($event, item)"
         @dragover="reorderableColumns && onColumnHeaderDragOver($event)"
@@ -121,6 +117,7 @@ import VcTableColumnSwitcher from "../../../vc-table-column-switcher/vc-table-co
 import type { TableItem, TableColPartial } from "../../../../types";
 import { useTableColumnReorder } from "../../../../composables/useTableColumnReorder";
 import { useTableColumnResize } from "../../../../composables/useTableColumnResize";
+import { useTableModifications } from "../../../../composables/useTableModifications";
 import { ITableColumns } from "../../../../../../../../core/types";
 
 const props = defineProps<{
@@ -178,6 +175,8 @@ const { resizer, handleMouseDown, columnResizing } = useTableColumnResize(
   () => emit("columnResize"),
   headerRef,
 );
+
+const { colsWithPixels } = useTableModifications();
 
 // Additional flag to prevent clicks during resize
 const isResizing = ref(false);

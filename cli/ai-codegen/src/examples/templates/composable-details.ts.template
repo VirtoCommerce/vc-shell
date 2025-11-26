@@ -9,28 +9,38 @@
  * 2. Replace {{entityName}} with camelCase entity name (e.g., offer, product)
  * 3. Replace {{MODULE_NAME}} with your module name (e.g., offers, products)
  * 4. Import actual types from your API client
+ *
+ * ⚠️ TYPE SAFETY RULES (vue-tsc MUST pass with 0 errors!):
+ * 1. Use actual Vue types in interfaces: Ref<T>, ComputedRef<T>, Readonly<Ref<T>>
+ *    - NEVER use ReturnType<typeof ref<T>>
+ * 2. useModificationTracker returns { isModified, currentValue, resetModificationState }
+ *    - NEVER destructure as { modified: isModified } - "modified" doesn't exist!
+ * 3. useAsync callbacks can receive undefined - ALWAYS guard with if (!param) return;
+ * 4. Return currentValue from tracker, NOT the original item ref
  */
 
 import { computed, ref, reactive, type ComputedRef, type Ref } from "vue";
 import { useAsync, useApiClient, useLoading, useModificationTracker } from "@vc-shell/framework";
+import { {{EntityName}}Client } from "../../../api_client/{{MODULE_NAME}}.client";
 import {
-  {{EntityName}}Client,
   {{EntityName}},
   type I{{EntityName}},
   Create{{EntityName}}Command,
   Update{{EntityName}}Command,
-} from "../../api_client/{{MODULE_NAME}}.api";
+} from "../../../api_client/{{MODULE_NAME}}.api";
 
 /**
  * Interface for the composable return type
- * Export this for type-safe usage in blades
+ *
+ * ✅ CORRECT: Use actual Vue types directly
+ * ❌ WRONG: ReturnType<typeof ref<T>> - verbose and confusing
  */
 export interface IUse{{EntityName}}Details {
-  // Data
+  // Data - use Ref<T> directly, NOT ReturnType<typeof ref<T>>
   item: Ref<I{{EntityName}}>;
   loading: ComputedRef<boolean>;
 
-  // Modification tracking
+  // Modification tracking - use Readonly<Ref<boolean>> for tracked refs
   isModified: Readonly<Ref<boolean>>;
   resetModificationState: () => void;
 
@@ -54,14 +64,18 @@ export function use{{EntityName}}Details(): IUse{{EntityName}}Details {
   // Initialize with empty reactive entity
   const item = ref<I{{EntityName}}>(reactive(new {{EntityName}}()));
 
-  // Use modification tracker for change detection
-  // IMPORTANT: Always use currentValue for the returned item!
-  const { currentValue, isModified, resetModificationState } = useModificationTracker(item);
+  // ✅ CORRECT: Use exact property names from useModificationTracker
+  // Returns: { isModified, currentValue, resetModificationState }
+  // ❌ WRONG: { modified: isModified } - "modified" does NOT exist!
+  const { isModified, currentValue, resetModificationState } = useModificationTracker(item);
 
-  // Load entity by ID
-  const { action: load{{EntityName}}, loading: loadingEntity } = useAsync<string>(async (id) => {
-    const client = await getApiClient();
-    const data = await client.get{{EntityName}}ById(id);
+// Load entity by ID
+// ✅ CORRECT: useAsync callback param is optional - ALWAYS guard it!
+const { action: load{{EntityName}}, loading: loadingEntity } = useAsync<string>(async (id?: string) => {
+  if (!id) return;  // REQUIRED: Guard against undefined param
+
+  const client = await getApiClient();
+  const data = await client.get{{EntityName}}ById(id);
 
     // Assign to currentValue to properly track modifications
     currentValue.value = reactive(data);
@@ -92,11 +106,13 @@ export function use{{EntityName}}Details(): IUse{{EntityName}}Details {
     }
   );
 
-  // Delete entity
-  const { action: delete{{EntityName}}, loading: deleting } = useAsync<string>(async (id) => {
-    const client = await getApiClient();
-    await client.delete{{EntityName}}(id);
-  });
+// Delete entity
+const { action: delete{{EntityName}}, loading: deleting } = useAsync<string>(async (id) => {
+  if (!id) return;
+
+  const client = await getApiClient();
+  await client.delete{{EntityName}}(id);
+});
 
   return {
     // IMPORTANT: Return currentValue, not item!

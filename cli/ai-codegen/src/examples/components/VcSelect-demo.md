@@ -14,6 +14,8 @@ bladeContext: ["details"]
 
 Real-world select examples from vendor-portal. Always use with `Field` from vee-validate for forms!
 
+> Slot scope reminder: `#option` exposes `{ opt, index, selected, toggleOption }` (use `opt`, **not** `option`).
+
 ## Basic Select with Validation
 
 ```vue

@@ -21,6 +21,28 @@ import { validateCwdForGeneration } from "../../utils/app-detector";
 import { validateJsonParam } from "./utils/validate-param";
 
 /**
+ * Helper: Group type errors by file path
+ * Parses error format: "src/path/file.vue(123,45): error TS2339..."
+ */
+function groupErrorsByFile(errors: string[]): Record<string, string[]> {
+  const byFile: Record<string, string[]> = {};
+  for (const error of errors) {
+    // Match: src/modules/offers/pages/offer-details.vue(123,45): error TS2339...
+    const match = error.match(/^([^(]+)\((\d+),(\d+)\):/);
+    if (match) {
+      const file = match[1].trim();
+      if (!byFile[file]) byFile[file] = [];
+      byFile[file].push(error);
+    } else {
+      // Unrecognized format - put in "unknown"
+      if (!byFile["unknown"]) byFile["unknown"] = [];
+      byFile["unknown"].push(error);
+    }
+  }
+  return byFile;
+}
+
+/**
  * 1. analyze_prompt_v2
  * Generate analysis prompt and schema for AI to analyze
  *
@@ -1000,6 +1022,14 @@ export const submitGeneratedCodeHandler: ToolHandler = async (params, context) =
     const allBladesComplete = remainingBlades.length === 0;
     const allArtifactsComplete = allBladesComplete && (!requiresApiClient || apiClientComplete);
 
+    // Debug logging for completion check
+    console.log(`[submit_generated_code] Completion check:`);
+    console.log(`  - allBladesComplete: ${allBladesComplete} (${completedBlades.length}/${totalBlades})`);
+    console.log(`  - requiresApiClient: ${requiresApiClient}`);
+    console.log(`  - apiClientComplete: ${apiClientComplete}`);
+    console.log(`  - allArtifactsComplete: ${allArtifactsComplete}`);
+    console.log(`  - effectiveCwd: ${effectiveCwd}`);
+
     // Run automatic type checking if all artifacts are complete
     if (allArtifactsComplete && effectiveCwd) {
       console.log("[submit_generated_code] All artifacts complete. Running automatic type checking...");
@@ -1009,26 +1039,96 @@ export const submitGeneratedCodeHandler: ToolHandler = async (params, context) =
       const typeCheckResult = await checkTypesHandler({ cwd: effectiveCwd }, context);
 
       if (!typeCheckResult.success) {
+        // Group errors by file for easier fixing
+        const errorsByFile = groupErrorsByFile(typeCheckResult.errors || []);
+        const affectedFiles = Object.keys(errorsByFile);
+        const firstFile = affectedFiles[0] || "";
+
         return {
           success: false,
+          allComplete: false,  // Explicitly NOT complete
           needsTypeFixing: true,
+          typeCheckPassed: false,
           typeErrors: typeCheckResult.errors || [],
           errorCount: typeCheckResult.errorCount || 0,
+          errorsByFile,
           validatedCode: result.data?.validatedCode,
           progress: {
             completed: completedBlades.length,
             total: totalBlades,
             remaining: remainingBlades,
           },
-          message: `Code submitted but ${typeCheckResult.errorCount || 0} type errors found. Please fix and resubmit.`,
-          instructions: "Fix the type errors above and resubmit the corrected code using submit_generated_code.",
+          message: `🔴 TYPE CHECK FAILED: ${typeCheckResult.errorCount || 0} errors found. Generation is NOT complete until all errors are fixed!`,
+          instructions: "You MUST fix all type errors before the module is ready. Read the errors, fix the code, and verify with check_types.",
+          // Explicit nextSteps for AI to follow
+          nextSteps: [
+            {
+              tool: "Read",
+              params: { file_path: `${effectiveCwd}/${firstFile}` },
+              description: `Read the file with type errors: ${firstFile}`,
+            },
+            {
+              tool: "Edit",
+              params: { file_path: `${effectiveCwd}/${firstFile}` },
+              description: "Fix the type errors (use .value for Ref access, fix imports, etc.)",
+            },
+            {
+              tool: "check_types",
+              params: { cwd: effectiveCwd },
+              description: "Verify all type errors are fixed",
+            },
+          ],
+          commonFixes: [
+            "Use .value when accessing Ref properties in <script>: item.value?.name instead of item?.name",
+            "Fix import paths: ../../../api_client/ for pages/composables, ../../../../api_client/ for widgets",
+            "Guard useAsync callbacks: if (!params?.id) return;",
+          ],
+          cwd: effectiveCwd,
         };
       }
 
       console.log("[submit_generated_code] ✓ Type checking passed");
+
+      // Return final success report with type check confirmation
+      const moduleName = updatedState.plan?.module || "module";
+      return {
+        success: true,
+        allComplete: true,
+        typeCheckPassed: true,
+        message: `✅ MODULE GENERATION COMPLETE! Type checking passed with 0 errors.`,
+        summary: {
+          module: moduleName,
+          blades: completedBlades,
+          apiClient: apiClientComplete ? "generated" : "not required",
+          typeErrors: 0,
+        },
+        finalReport: `
+🎉 Module "${moduleName}" generated successfully!
+
+Generated artifacts:
+${completedBlades.map((b: string) => `  ✅ ${b}`).join('\n')}
+${apiClientComplete ? '  ✅ API Client' : ''}
+
+Type checking: ✅ PASSED (0 errors)
+
+The module is ready to use. Run 'npm run dev' to test.
+        `.trim(),
+        typeCheckResult: {
+          ran: true,
+          passed: true,
+          errorCount: 0,
+          command: "vue-tsc --noEmit",
+        },
+        progress: {
+          completed: completedBlades.length,
+          total: totalBlades,
+          remaining: [],
+        },
+        cwd: effectiveCwd,
+      };
     }
 
-    // Determine next action
+    // Not all artifacts complete yet - determine next action
     let nextAction = "";
     if (!allBladesComplete) {
       nextAction = `Next: Generate code for blade '${remainingBlades[0]}'`;
@@ -1036,7 +1136,8 @@ export const submitGeneratedCodeHandler: ToolHandler = async (params, context) =
       const entityNames = updatedState.analysis?.entities?.map((e: any) => e.name).join(", ") || "entities";
       nextAction = `Next: Generate API client with CRUD methods for: ${entityNames}`;
     } else {
-      nextAction = "All artifacts complete. Type checking passed. Module generation finished!";
+      // All blades done but type check not run yet (shouldn't happen normally)
+      nextAction = "All blades generated. Awaiting final type check...";
     }
 
     return {
@@ -1061,9 +1162,9 @@ export const submitGeneratedCodeHandler: ToolHandler = async (params, context) =
               description: "Generate API client with CRUD methods",
             }]
           : [],
-      allComplete: allArtifactsComplete,
-      typeCheckPassed: allArtifactsComplete, // Only runs if all complete
-      cwd: effectiveCwd, // Include cwd in response for debugging
+      allComplete: false,  // Still in progress
+      typeCheckPassed: false,  // Not run yet
+      cwd: effectiveCwd,
     };
   } catch (error: any) {
     return {

@@ -13,13 +13,13 @@
 
 import { computed, ref, type ComputedRef, type Ref } from "vue";
 import { useAsync, useApiClient, useLoading } from "@vc-shell/framework";
+import { {{EntityName}}Client } from "../../../api_client/{{MODULE_NAME}}.client";
 import {
-  {{EntityName}}Client,
   type I{{EntityName}},
   type ISearch{{EntityName}}sQuery,
   Search{{EntityName}}sQuery,
   type Search{{EntityName}}sResult,
-} from "../../api_client/{{MODULE_NAME}}.api";
+} from "../../../api_client/{{MODULE_NAME}}.api";
 
 /**
  * Filter state for staged/applied filter pattern

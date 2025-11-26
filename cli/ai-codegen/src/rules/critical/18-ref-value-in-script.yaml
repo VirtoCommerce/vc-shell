@@ -1,0 +1,89 @@
+id: "18"
+name: "Ref Value Access in Script"
+category: "critical"
+priority: 100
+enabled: true
+applies_to:
+  - "blade"
+  - "details"
+  - "list"
+
+description: |
+  In <script setup>, ALWAYS use .value when accessing Ref properties.
+  Vue automatically unwraps Ref.value ONLY in <template>, NOT in <script>.
+
+  This is the #1 cause of TypeScript errors like:
+  "Property 'name' does not exist on type 'Ref<IEntity, IEntity>'" (TS2339)
+
+correct_pattern:
+  inline: |
+    ```typescript
+    // ✅ CORRECT: Use .value in <script setup>
+    const { item } = useEntityDetails();  // item is Ref<IEntity>
+
+    // Computed values
+    const title = computed(() => item.value?.name || 'New Entity');
+    const isNew = computed(() => !item.value?.id);
+
+    // Assignments
+    item.value.status = 'active';
+    item.value.name = 'Updated Name';
+
+    // Conditional checks
+    if (item.value?.id) {
+      await saveEntity(item.value);
+    }
+
+    // Spread or destructure
+    const data = { ...item.value, updatedAt: new Date() };
+
+    // ✅ In <template> - .value is auto-unwrapped by Vue
+    // <span>{{ item.name }}</span>  // Works without .value!
+    ```
+
+wrong_pattern:
+  inline: |
+    ```typescript
+    // ❌ WRONG: Missing .value in <script setup>
+    const { item } = useEntityDetails();  // item is Ref<IEntity>
+
+    // TypeScript error TS2339: Property 'name' does not exist on type 'Ref<IEntity>'
+    const title = computed(() => item?.name || 'New Entity');
+
+    // TypeScript error TS2339: Property 'status' does not exist
+    item.status = 'active';
+
+    // TypeScript error TS2339: Property 'id' does not exist
+    if (item?.id) {
+      await saveEntity(item);  // Wrong! Passes Ref, not value
+    }
+    ```
+
+common_mistakes:
+  - mistake: "Using item?.name instead of item.value?.name"
+    fix: "Always add .value before accessing properties in script"
+  - mistake: "Assigning item.property = x instead of item.value.property = x"
+    fix: "Use item.value.property for assignments"
+  - mistake: "Passing item to functions instead of item.value"
+    fix: "Pass item.value when the function expects the unwrapped type"
+
+validations:
+  - type: "regex"
+    pattern: "\\.value\\?\\."
+    message: "✓ Using .value for Ref access in script"
+  - type: "regex_negative"
+    pattern: "(?<!value)\\?\\.(name|id|status|isActive|sku|productId)"
+    message: "⚠️ Missing .value? Check if this is a Ref that needs .value access"
+
+why_this_matters: |
+  Vue's reactivity system wraps reactive data in Ref objects.
+  In templates, Vue automatically unwraps these refs for convenience.
+  But in <script>, you must explicitly use .value to access the underlying data.
+
+  Without .value:
+  - TypeScript shows errors (Property 'X' does not exist on type 'Ref<T>')
+  - Runtime: accessing undefined properties instead of actual data
+  - Logic errors: comparisons and conditions fail silently
+
+auto_fix:
+  enabled: false

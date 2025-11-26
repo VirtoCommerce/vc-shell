@@ -1,0 +1,108 @@
+id: "17"
+name: "Type-Safe Composables"
+category: "critical"
+priority: 100
+enabled: true
+applies_to:
+  - "details"
+  - "list"
+
+description: |
+  Composables MUST be type-safe and pass vue-tsc --noEmit with 0 errors.
+  This rule ensures correct Vue reactive types and framework API usage.
+
+correct_pattern:
+  inline: |
+    ```typescript
+    // ✅ CORRECT: Return interface with proper Vue types
+    import { Ref, ComputedRef, computed, ref } from 'vue';
+    import { useApiClient, useAsync, useModificationTracker, useLoading } from '@vc-shell/framework';
+
+    export interface IUseEntityDetails {
+      // Use actual Vue types - NOT ReturnType<typeof ref<T>>
+      item: Ref<IEntity>;
+      loading: ComputedRef<boolean>;
+      isModified: Readonly<Ref<boolean>>;
+
+      // Methods with proper signatures
+      loadEntity: (id: string) => Promise<void>;
+      saveEntity: (data?: IEntity) => Promise<IEntity | undefined>;
+      deleteEntity: (id: string) => Promise<void>;
+      resetModificationState: () => void;
+    }
+
+    export function useEntityDetails(): IUseEntityDetails {
+      const { getApiClient } = useApiClient(EntityClient);
+
+      // Initialize entity
+      const item = ref<IEntity>(new Entity());
+
+      // CORRECT: Destructure isModified exactly as returned by useModificationTracker
+      const { isModified, currentValue, resetModificationState } = useModificationTracker(item);
+
+      // CORRECT: useAsync callback with optional param and guard clause
+      const { action: loadEntity, loading: loadingEntity } = useAsync(async (id?: string) => {
+        if (!id) return;  // REQUIRED: Guard against undefined
+        const client = await getApiClient();
+        const data = await client.getById(id);
+        currentValue.value = data;
+        resetModificationState();
+      });
+
+      // CORRECT: Combine loading states with useLoading
+      const loading = useLoading(loadingEntity, saving, deleting);
+
+      return {
+        item: currentValue,  // Return currentValue, NOT original item
+        loading,
+        isModified: computed(() => isModified.value),
+        loadEntity,
+        saveEntity,
+        deleteEntity,
+        resetModificationState,
+      };
+    }
+    ```
+
+wrong_pattern:
+  inline: |
+    ```typescript
+    // ❌ WRONG: Using ReturnType<typeof ref<T>> - verbose and confusing
+    export interface IUseEntityDetails {
+      item: ReturnType<typeof ref<IEntity>>;
+      loading: ReturnType<typeof ref<boolean>>;
+    }
+
+    // ❌ WRONG: Destructuring 'modified' - it doesn't exist!
+    const { modified: isModified } = useModificationTracker(item);
+    // Error: Property 'modified' does not exist
+
+    // ❌ WRONG: useAsync without undefined guard
+    const { action: loadEntity } = useAsync(async (id: string) => {
+      // id can be undefined at runtime - this crashes!
+      const data = await client.getById(id);
+    });
+
+    // ❌ WRONG: Returning original item instead of currentValue
+    return {
+      item,  // Should be: item: currentValue
+      isModified,
+    };
+    ```
+
+validations:
+  - type: "regex"
+    pattern: "Ref<"
+    message: "Using proper Ref<T> type annotations"
+  - type: "regex"
+    pattern: "ComputedRef<"
+    message: "Using proper ComputedRef<T> type annotations"
+  - type: "negative_regex"
+    pattern: "ReturnType<typeof ref<"
+    message: "Avoid ReturnType<typeof ref<T>> - use Ref<T> directly"
+  - type: "negative_regex"
+    pattern: "modified:\\s*isModified"
+    message: "useModificationTracker returns isModified, NOT modified"
+
+auto_fix:
+  enabled: false

@@ -56,12 +56,21 @@ const toolSchemas = [
   // Workflow tools (10)
   {
     name: "analyze_prompt_v2",
-    description: "⚠️ MANDATORY FIRST STEP ⚠️ Analyze user prompt to extract entities, relationships, workflows, custom routes/actions/permissions, and features. Returns comprehensive analysis with schema. ALL module generation workflows MUST start with this tool.",
+    description: `⚠️ STEP 1 ⚠️ Analyze user prompt and get analysis template.
+
+**RETURNS:**
+- exampleAnalysis: Ready-to-use JSON template (COPY AND MODIFY THIS!)
+- analysisPrompt: Detailed instructions
+- analysisSchema: JSON schema
+
+**NEXT STEP:**
+Copy exampleAnalysis from response, modify for your needs, then call:
+discover_components_and_apis({ analysis: <your modified exampleAnalysis> })`,
     inputSchema: zodToJsonSchema(analyzePromptV2Schema),
   },
   {
     name: "discover_components_and_apis",
-    description: "⚠️ MANDATORY SECOND STEP ⚠️ Discover available components and framework APIs based on prompt analysis. This tool MUST be called AFTER analyze_prompt_v2 and BEFORE create_ui_plan_from_analysis_v2.",
+    description: `⚠️ MANDATORY SECOND STEP ⚠️ Discover available components and framework APIs based on prompt analysis. This tool MUST be called AFTER analyze_prompt_v2 and BEFORE create_ui_plan_from_analysis_v2.`,
     inputSchema: zodToJsonSchema(discoverComponentsAndAPIsSchema),
   },
   {
@@ -78,6 +87,16 @@ const toolSchemas = [
     name: "generate_with_composition",
     description: `⚠️ REQUIRES VALIDATED UI-PLAN ⚠️ Generate AI instructions for Vue SFC code generation. WORKFLOW: analyze → create plan → validate → generate → **submit code**.
 
+**🚨 CRITICAL RULES - READ BEFORE USING:**
+❌ NEVER use mkdir/Write/Edit to create module files - submit_generated_code creates ALL files automatically!
+❌ NEVER stop after generating ONE blade - you MUST generate ALL blades from the plan!
+❌ NEVER use Read/Grep/Glob to search for examples in the filesystem!
+❌ NEVER read other modules' code as examples (platform.ts, vendors.vue, etc.)!
+✅ Use ONLY the returned guide and MCP tools: view_components, view_framework_apis, get_best_template
+✅ Generate code as STRING → call submit_generated_code → it creates all files
+✅ After submitting one blade, call generate_with_composition again for the next blade
+✅ Continue until ALL blades are submitted (check progress in response)
+
 **🚨 CRITICAL: ARTIFACT GENERATION ORDER 🚨**
 The system ENFORCES this generation order:
 1. **API CLIENT FIRST** - defines methods and types
@@ -92,14 +111,15 @@ If you request a blade but composable hasn't been submitted yet, generate compos
 2. Guide contains step-by-step instructions for synthesizing Vue SFC code
 3. You MUST read the guide, generate complete Vue SFC code, then call submit_generated_code tool
 
-**🚀 LAZY LOADING MODE (New!):**
-- This tool now returns LIGHTWEIGHT guides with only metadata (IDs, names, descriptions)
-- NO full content for templates, patterns, examples
+**🚀 MINIMAL CONTEXT MODE (DEFAULT - optimized for Cursor):**
+- Default contextLevel is now MINIMAL (~5KB) for Cursor compatibility
+- Returns lightweight refs with short descriptions only
 - You MUST fetch full content using MCP tools BEFORE generating code:
   * view_components({components: ["VcTable", ...]}) - for component details
   * view_framework_apis({apis: ["useBladeNavigation", ...]}) - for hook details
   * get_best_template({bladeType, features}) - for full template content
   * get_relevant_patterns({bladeType, features}) - for full pattern content
+- Use contextLevel: "essential" for larger context if needed (~10KB)
 
 **🤖 SMART DEFAULTS (Auto-optimization based on module size):**
 - **Large modules (>2 blades):**
@@ -167,7 +187,17 @@ Call submit_generated_code with:
   },
   {
     name: "submit_generated_code",
-    description: `Submit AI-generated code for validation and saving. Use this tool when you have generated Vue SFC code following a generation guide.
+    description: `Submit AI-generated code for validation and saving. This tool CREATES all module files automatically.
+
+**⚠️ IMPORTANT: This tool creates ALL files - DO NOT use mkdir/Write/Edit to create module files manually!**
+
+**WHAT THIS TOOL DOES:**
+1. Validates your generated code
+2. Creates module directory structure (src/modules/{module}/)
+3. Writes blade .vue files to pages/
+4. Writes composable .ts files to composables/
+5. Writes API client to api_client/
+6. Merges locale translations into en.json
 
 **VALIDATION PROTOCOL:**
 - The system will validate the code and allow up to 3 retry attempts

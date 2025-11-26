@@ -48,8 +48,8 @@ const COLUMN_TYPE_COMPONENTS: Record<string, string> = {
   image: "VcImage",
   "status-icon": "VcStatusIcon",
   status: "VcStatus",
-  link: "VcLink",
   badge: "VcBadge",
+  // NOTE: "link" type is handled via @item-click event on VcTable, not via VcLink component
 };
 
 /**

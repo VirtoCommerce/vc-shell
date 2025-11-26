@@ -3795,7 +3795,6 @@
     "useCases": [
       "Navigation menus",
       "Breadcrumbs",
-      "Table actions",
       "Empty state actions",
       "Inline text links"
     ],

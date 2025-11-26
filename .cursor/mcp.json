@@ -1,11 +1,17 @@
 {
   "mcpServers": {
-    "vcshell": {
-      "command": "npx",
+    "vcshell-codegen": {
+      "command": "node",
       "args": [
-        "@vc-shell/ai-codegen@alpha",
+        "/Users/symbot/DEV/vc-shell/cli/ai-codegen/dist/index.js",
         "mcp"
-      ]
+      ],
+      "env": {
+        "DEBUG_MCP": "true",
+        "MCP_METRICS_FILE": "/Users/symbot/DEV/vc-shell/cli/ai-codegen/.mcp-metrics.json",
+        "MCP_DEBUG_LOG": "/tmp/mcp-debug.log"
+      },
+      "description": "VC-Shell AI Code Generation with Debug Logging"
     }
   }
 }

@@ -1,0 +1,116 @@
+/**
+ * Details Composable Template
+ *
+ * Production-ready composable for details/form blades.
+ * Features: load, save, delete, modification tracking.
+ *
+ * USAGE:
+ * 1. Replace {{EntityName}} with your entity name (e.g., Offer, Product)
+ * 2. Replace {{entityName}} with camelCase entity name (e.g., offer, product)
+ * 3. Replace {{MODULE_NAME}} with your module name (e.g., offers, products)
+ * 4. Import actual types from your API client
+ */
+
+import { computed, ref, reactive, type ComputedRef, type Ref } from "vue";
+import { useAsync, useApiClient, useLoading, useModificationTracker } from "@vc-shell/framework";
+import {
+  {{EntityName}}Client,
+  {{EntityName}},
+  type I{{EntityName}},
+  Create{{EntityName}}Command,
+  Update{{EntityName}}Command,
+} from "../../api_client/{{MODULE_NAME}}.api";
+
+/**
+ * Interface for the composable return type
+ * Export this for type-safe usage in blades
+ */
+export interface IUse{{EntityName}}Details {
+  // Data
+  item: Ref<I{{EntityName}}>;
+  loading: ComputedRef<boolean>;
+
+  // Modification tracking
+  isModified: Readonly<Ref<boolean>>;
+  resetModificationState: () => void;
+
+  // Methods
+  load{{EntityName}}: (id: string) => Promise<void>;
+  save{{EntityName}}: (data?: I{{EntityName}}) => Promise<I{{EntityName}} | undefined>;
+  delete{{EntityName}}: (id: string) => Promise<void>;
+}
+
+/**
+ * Details composable for {{EntityName}} entity
+ *
+ * Uses useModificationTracker for change detection.
+ * IMPORTANT: Return currentValue from tracker, not the original item ref!
+ *
+ * @returns Reactive state and methods for entity management
+ */
+export function use{{EntityName}}Details(): IUse{{EntityName}}Details {
+  const { getApiClient } = useApiClient({{EntityName}}Client);
+
+  // Initialize with empty reactive entity
+  const item = ref<I{{EntityName}}>(reactive(new {{EntityName}}()));
+
+  // Use modification tracker for change detection
+  // IMPORTANT: Always use currentValue for the returned item!
+  const { currentValue, isModified, resetModificationState } = useModificationTracker(item);
+
+  // Load entity by ID
+  const { action: load{{EntityName}}, loading: loadingEntity } = useAsync<string>(async (id) => {
+    const client = await getApiClient();
+    const data = await client.get{{EntityName}}ById(id);
+
+    // Assign to currentValue to properly track modifications
+    currentValue.value = reactive(data);
+    resetModificationState();
+  });
+
+  // Save entity (create or update based on id presence)
+  const { action: save{{EntityName}}, loading: saving } = useAsync<I{{EntityName}} | undefined, I{{EntityName}} | undefined>(
+    async (data) => {
+      if (!data) return;
+
+      const client = await getApiClient();
+      let result: I{{EntityName}};
+
+      if (data.id) {
+        // Update existing entity
+        result = await client.update{{EntityName}}(new Update{{EntityName}}Command(data));
+      } else {
+        // Create new entity
+        result = await client.create{{EntityName}}(new Create{{EntityName}}Command(data));
+      }
+
+      // Update currentValue with saved result
+      currentValue.value = reactive(result);
+      resetModificationState();
+
+      return result;
+    }
+  );
+
+  // Delete entity
+  const { action: delete{{EntityName}}, loading: deleting } = useAsync<string>(async (id) => {
+    const client = await getApiClient();
+    await client.delete{{EntityName}}(id);
+  });
+
+  return {
+    // IMPORTANT: Return currentValue, not item!
+    // This ensures modification tracking works correctly
+    item: currentValue,
+    loading: useLoading(loadingEntity, saving, deleting),
+
+    // Modification tracking
+    isModified: computed(() => isModified.value),
+    resetModificationState,
+
+    // Methods
+    load{{EntityName}},
+    save{{EntityName}},
+    delete{{EntityName}},
+  };
+}

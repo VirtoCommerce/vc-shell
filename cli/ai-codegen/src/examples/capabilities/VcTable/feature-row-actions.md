@@ -60,9 +60,9 @@ import { VcTable, VcBadge, ITableColumns, IActionBuilderResult } from '@vc-shell
 
 const columns = ref<ITableColumns[]>([
   { id: 'name', title: 'Product Name', sortable: true, alwaysVisible: true },
-  { id: 'sku', title: 'SKU', sortable: true, width: 120 },
-  { id: 'price', title: 'Price', sortable: true, width: 100, type: 'money' },
-  { id: 'status', title: 'Status', sortable: true, width: 120 }
+  { id: 'sku', title: 'SKU', sortable: true, width: "120px" },
+  { id: 'price', title: 'Price', sortable: true, width: "100px", type: 'money' },
+  { id: 'status', title: 'Status', sortable: true, width: "120px" }
 ]);
 
 const products = ref([

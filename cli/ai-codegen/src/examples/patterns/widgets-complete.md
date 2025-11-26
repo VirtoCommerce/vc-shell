@@ -107,7 +107,7 @@ import { useWidgets, useBlade } from "@vc-shell/framework";
 import { ShippingWidget } from "../components/widgets";
 
 const { registerWidget, unregisterWidget } = useWidgets();
-const { blade } = useBlade();
+const blade = useBlade();
 
 // Define registration function
 function registerWidgets() {
@@ -279,8 +279,8 @@ interface Props {
 
 const props = defineProps<Props>();
 
-const { blade } = useBlade();
 const { registerWidget, unregisterWidget } = useWidgets();
+const blade = useBlade();
 const { order, loadOrder } = useOrderDetails();
 
 // Widget registration function

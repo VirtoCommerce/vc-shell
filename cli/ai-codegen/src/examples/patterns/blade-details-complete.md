@@ -93,10 +93,11 @@ Widgets are interactive UI components that can be registered in details blades. 
 ### Basic Widget Registration
 
 ```typescript
-import { useWidgets } from "@vc-shell/framework";
+import { useWidgets, useBlade } from "@vc-shell/framework";
 import { ShippingWidget } from "../components/widgets";
 
 const { registerWidget, unregisterWidget } = useWidgets();
+const blade = useBlade();
 
 // Define registration function
 function registerWidgets() {
@@ -104,7 +105,7 @@ function registerWidgets() {
     {
       id: "ShippingWidget",
       component: ShippingWidget,
-      props: { 
+      props: {
         order: computed(() => order.value)
       },
       isVisible: computed(() => !!props.param),

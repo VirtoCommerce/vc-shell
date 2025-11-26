@@ -149,6 +149,10 @@ const navItems = ref([
 
 ## Links in Tables
 
+> ⚠️ **DEPRECATED PATTERN**: Using VcLink directly in table cells is NOT recommended.
+> Instead, use the column `type: "link"` and handle clicks via the `@item-click` event on VcTable.
+> The examples below are preserved for reference only - do not use this pattern in new code.
+
 ```vue
 <template>
   <VcTable

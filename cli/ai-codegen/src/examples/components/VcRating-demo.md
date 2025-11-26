@@ -434,10 +434,10 @@ const reviews = ref<Review[]>([
 ]);
 
 const columns = computed(() => [
-  { id: "rating", title: t("REVIEWS.RATING"), width: 150 },
-  { id: "reviewer", title: t("REVIEWS.REVIEWER"), width: 200 },
+  { id: "rating", title: t("REVIEWS.RATING"), width: "150px" },
+  { id: "reviewer", title: t("REVIEWS.REVIEWER"), width: "200px" },
   { id: "review", title: t("REVIEWS.REVIEW") },
-  { id: "date", title: t("REVIEWS.DATE"), width: 120 },
+  { id: "date", title: t("REVIEWS.DATE"), width: "120px" },
 ]);
 
 function formatDate(date: Date): string {

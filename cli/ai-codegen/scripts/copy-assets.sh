@@ -36,6 +36,9 @@ cp src/examples/components/*.vue dist/examples/components/ 2>/dev/null && echo "
 # Copy blade templates
 cp src/examples/templates/*.vue dist/examples/templates/ 2>/dev/null && echo "✓ Copied blade templates"
 
+# Copy composable templates
+cp src/examples/templates/*.template dist/examples/templates/ 2>/dev/null && echo "✓ Copied composable templates"
+
 # Copy pattern documentation
 cp src/examples/patterns/*.md dist/examples/patterns/ 2>/dev/null && echo "✓ Copied pattern documentation"
 

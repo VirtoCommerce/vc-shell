@@ -97,8 +97,9 @@ export const generateWithCompositionSchema = z.object({
     "Type of artifact to generate. Use 'blade' or 'composable' for step-by-step generation. " +
     "Default: 'all' for small modules (1-2 blades), 'blade' for larger modules."
   ),
-  contextLevel: z.enum(["metadata", "essential", "full"]).optional().describe(
+  contextLevel: z.enum(["minimal", "metadata", "essential", "full"]).optional().describe(
     "How much context to include in the generation guide. " +
+    "MINIMAL: ~5KB - short refs only, use MCP tools for details (DEFAULT for Cursor compatibility). " +
     "METADATA: ~2KB - only IDs and descriptions (for overview). " +
     "ESSENTIAL: ~10KB - template + top 2 patterns (default for generation). " +
     "FULL: ~25KB+ - everything (may exceed limits)."
@@ -154,7 +155,13 @@ export const submitGeneratedCodeSchema = z.object({
 });
 
 export const validateUIPlanSchema = z.object({
-  plan: z.any(),
+  plan: z.any().optional().describe(
+    "UI-Plan JSON object. Can be passed directly, but may be truncated by some clients."
+  ),
+  planFile: z.string().optional().describe(
+    "RECOMMENDED: Path to JSON file containing UI-Plan (e.g., '.vcshell-ui-plan.json'). " +
+    "This avoids JSON truncation issues in some MCP clients like Cursor."
+  ),
 });
 
 export const analyzePromptV2Schema = z.object({
@@ -165,16 +172,32 @@ export const analyzePromptV2Schema = z.object({
 /**
  * NEW: Schema for discover_components_and_apis tool
  * Mandatory step between analysis and UI-Plan creation
+ *
+ * Supports TWO modes:
+ * 1. File mode (RECOMMENDED): Save analysis to .vcshell-analysis.json and pass analysisFile path
+ * 2. Direct mode: Pass analysis JSON directly (may be truncated by some clients)
  */
 export const discoverComponentsAndAPIsSchema = z.object({
-  analysis: z.any().describe(
-    "Prompt analysis V2 result from analyze_prompt_v2. " +
-    "Used to extract entities, features, and workflows to discover relevant components and framework APIs."
+  analysis: z.any().optional().describe(
+    "Prompt analysis JSON object. Can be passed directly, but may be truncated by some clients. " +
+    "For reliable transfer, use analysisFile parameter instead."
+  ),
+  analysisFile: z.string().optional().describe(
+    "RECOMMENDED: Path to JSON file containing analysis (e.g., '.vcshell-analysis.json'). " +
+    "AI should save analysis to this file first, then pass the file path. " +
+    "This avoids JSON truncation issues in some MCP clients like Cursor."
   ),
 });
 
 export const createUIPlanFromAnalysisV2Schema = z.object({
-  analysis: z.any(),
+  analysis: z.any().optional().describe(
+    "Prompt analysis JSON object. Can be passed directly, but may be truncated by some clients. " +
+    "For reliable transfer, use analysisFile parameter instead."
+  ),
+  analysisFile: z.string().optional().describe(
+    "RECOMMENDED: Path to JSON file containing analysis (e.g., '.vcshell-analysis.json'). " +
+    "This avoids JSON truncation issues in some MCP clients like Cursor."
+  ),
 });
 
 export const getAuditChecklistSchema = z.object({});

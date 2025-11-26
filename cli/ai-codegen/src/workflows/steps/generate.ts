@@ -13,8 +13,6 @@
  * - FULL: Everything (~25KB+) - only if explicitly requested
  */
 
-import path from "node:path";
-import { fileURLToPath } from "node:url";
 import pluralize from "pluralize";
 import type {
   WorkflowState,
@@ -28,6 +26,7 @@ import type {
 } from "../types";
 import { ArtifactType as AT, ContextLevel as CL } from "../types";
 import type { UIPlan } from "../../generators/types";
+import { scaffoldModule, moduleExists } from "../../utils/module-structure";
 
 /**
  * Input parameters for generate step
@@ -143,10 +142,17 @@ export class GenerateStepExecutor implements StepExecutor {
         };
       }
 
-      // Generate base files only for blades (not composables)
-      if (currentItem.artifactType === AT.BLADE) {
-        const entityName = this.extractEntityName(blade.id, blade.type);
-        await this.generateBaseFiles(plan.module, entityName, blade, cwd);
+      // Scaffold module structure for NEW modules BEFORE generating first composable
+      // This creates: index.ts, pages/, composables/, locales/, components/widgets/
+      // And registers the module in main.ts (BEFORE router!)
+      if (currentItem.artifactType === AT.COMPOSABLE && !moduleExists(cwd, plan.module)) {
+        console.log(`[GenerateStep] New module detected. Scaffolding: ${plan.module}`);
+        // Use module name capitalized as display name
+        const displayName = plan.module.charAt(0).toUpperCase() + plan.module.slice(1);
+        const scaffoldResult = await scaffoldModule(cwd, plan.module, { displayName });
+        if (scaffoldResult.created) {
+          console.log(`[GenerateStep] ✓ Module scaffolded: ${plan.module} (registered: ${scaffoldResult.registered})`);
+        }
       }
 
       // Build generation guide with tiered context
@@ -215,7 +221,7 @@ export class GenerateStepExecutor implements StepExecutor {
         console.log(`[GenerateStep] ⚠️ API client not yet generated - returning empty queue`);
         return {
           queue: [], // Empty queue signals API client is required
-          contextLevel: input.contextLevel || CL.ESSENTIAL,
+          contextLevel: input.contextLevel || CL.MINIMAL,
           completedArtifacts: new Map(),
           requiredArtifacts: {
             blades: plan.blades.map((b: any) => ({ id: b.id, status: "pending" })),
@@ -228,7 +234,7 @@ export class GenerateStepExecutor implements StepExecutor {
       // API client done or not required - proceed with requested artifact
       return {
         queue: [{ bladeId: input.bladeId, artifactType: input.artifactType }],
-        contextLevel: input.contextLevel || CL.ESSENTIAL,
+        contextLevel: input.contextLevel || CL.MINIMAL,
         completedArtifacts: new Map(),
       };
     }
@@ -266,7 +272,7 @@ export class GenerateStepExecutor implements StepExecutor {
 
       return {
         queue,
-        contextLevel: input.contextLevel || CL.ESSENTIAL,
+        contextLevel: input.contextLevel || CL.MINIMAL,
         completedArtifacts: new Map(),
         requiredArtifacts, // Will be saved to state
       };
@@ -291,7 +297,7 @@ export class GenerateStepExecutor implements StepExecutor {
 
     return {
       queue,
-      contextLevel: state.pagination.contextLevel || CL.ESSENTIAL,
+      contextLevel: state.pagination.contextLevel || CL.MINIMAL,
       completedArtifacts: new Map(),
     };
   }
@@ -380,6 +386,11 @@ export class GenerateStepExecutor implements StepExecutor {
 
   /**
    * Build tiered context based on level
+   *
+   * MINIMAL (~5KB): Only refs with names and short descriptions. Use MCP tools for details.
+   * METADATA (~2KB): IDs, descriptions only (deprecated - use MINIMAL)
+   * ESSENTIAL (~10-14KB): + template + top 2 patterns
+   * FULL (~25KB+): Everything
    */
   private buildContext(
     level: ContextLevel,
@@ -390,7 +401,36 @@ export class GenerateStepExecutor implements StepExecutor {
     artifactType: ArtifactType,
     rules: any[] = [],
   ): GenerationGuide["context"] {
-    // Level 1: METADATA - always present
+    // MINIMAL level: lightweight refs only, no content
+    // AI should use view_components, view_framework_apis, get_best_template for details
+    if (level === CL.MINIMAL) {
+      return {
+        level,
+        componentRefs: components.slice(0, 5).map((c) => ({
+          name: c.item?.component || c.name,
+          description: (c.item?.description || c.description || "").slice(0, 80),
+          relevance: c.confidence || 0.5,
+        })),
+        hookRefs: hooks.slice(0, 4).map((h) => ({
+          name: h.name,
+          import: h.import || "@vc-shell/framework",
+          description: (h.description || "").slice(0, 60),
+        })),
+        templateRef: template
+          ? {
+              id: template.id,
+              complexity: template.complexity,
+              description: (template.description || "").slice(0, 100),
+            }
+          : null,
+        patternRefs: patterns.slice(0, 3).map((p) => ({
+          id: p.id,
+          description: (p.description || "").slice(0, 80),
+        })),
+      };
+    }
+
+    // Level 1: METADATA - IDs and descriptions only
     const context: GenerationGuide["context"] = {
       level,
       componentRefs: components.map((c) => ({
@@ -825,58 +865,6 @@ export class GenerateStepExecutor implements StepExecutor {
   }
 
   /**
-   * Generate base files using create-vc-app CLI
-   */
-  private async generateBaseFiles(
-    module: string,
-    entityName: string,
-    blade: any,
-    cwd: string,
-  ): Promise<void> {
-    const formFields = blade.type === "details" ? this.buildFormFields(blade) : undefined;
-
-    const { execa } = await import("execa");
-
-    const currentDir = path.dirname(fileURLToPath(import.meta.url));
-
-    const args = [
-      // TODO: remove @alpha when create-vc-app is released
-      "@vc-shell/create-vc-app@alpha",
-      "blade",
-      "--module",
-      module,
-      "--type",
-      blade.type === "list" ? "grid" : "details",
-      "--name",
-      entityName,
-      "--composable",
-      "--locales",
-    ];
-
-    if (blade.isWorkspace) {
-      args.push("--workspace");
-    }
-
-    if (formFields) {
-      args.push("--form-fields", formFields);
-      args.push("--skip-form-editor");
-    }
-
-    console.log(`[GenerateStep] Running: npx ${args.join(" ")}`);
-
-    try {
-      await execa("npx", args, {
-        cwd,
-        stdio: "pipe",
-      });
-    } catch (error: any) {
-      throw new Error(
-        `\n❌ Generation failed: ${error.message}\n\n${error.stderr || error.stdout || ""}`,
-      );
-    }
-  }
-
-  /**
    * Discover relevant components using semantic search
    */
   private async discoverComponents(blade: any, componentResolver: any): Promise<any[]> {
@@ -959,35 +947,6 @@ export class GenerateStepExecutor implements StepExecutor {
     }
 
     return entityWithSuffix;
-  }
-
-  /**
-   * Build form fields JSON for create-vc-app
-   */
-  private buildFormFields(blade: any): string | undefined {
-    if (!blade.component?.props?.columns) {
-      return undefined;
-    }
-
-    const fields = blade.component.props.columns.map((col: any) => ({
-      name: col.id,
-      type: this.mapTypeToFormFieldType(col.type),
-      label: col.title,
-      required: col.required || false,
-    }));
-
-    return JSON.stringify(fields);
-  }
-
-  private mapTypeToFormFieldType(type: string): string {
-    const typeMap: Record<string, string> = {
-      string: "text",
-      number: "number",
-      boolean: "checkbox",
-      date: "date",
-      array: "multivalue",
-    };
-    return typeMap[type] || "text";
   }
 
   private capitalize(str: string): string {
@@ -1090,169 +1049,61 @@ export class GenerateStepExecutor implements StepExecutor {
   }
 
   /**
-   * Build instructions for API client generation
+   * Build COMPACT instructions for MOCK API client generation (~3KB max)
    *
-   * Creates detailed instructions for generating typed API client.
+   * Creates minimal instructions - AI should use get_best_template tool
+   * for full code templates if needed.
    */
   private buildApiClientInstructions(moduleName: string, entities: any[]): string {
     const ModuleName = this.capitalize(moduleName);
     const EntityName = entities[0] ? this.capitalize(entities[0].name) : ModuleName;
-    const lines: string[] = [];
+    const props = entities[0]?.properties?.slice(0, 5).map((p: any) => p.name).join(", ") || "name, description, isActive";
 
-    lines.push(`# Generate API Client: ${moduleName}.api.ts`);
-    lines.push("");
-    lines.push("## CRITICAL: File Location");
-    lines.push(`Target: src/api_client/${moduleName}.api.ts`);
-    lines.push("NOT in src/modules/ - API clients are shared across modules!");
-    lines.push("");
-    lines.push("## Task: Generate TypeScript API Client");
-    lines.push(`- Module: ${moduleName}`);
-    lines.push(`- Entities: ${entities.map((e: any) => e.name).join(", ")}`);
-    lines.push("");
-    lines.push("## Requirements:");
-    lines.push("1. Export AuthApiBase class for authentication");
-    lines.push("2. Export Client class extending AuthApiBase with CRUD methods");
-    lines.push("3. Export entity interfaces (I{Entity}) and classes ({Entity})");
-    lines.push("4. Export search query/result classes");
-    lines.push("5. Include fromJS() and toJSON() methods on entity classes");
-    lines.push("6. Use proper HTTP methods: GET for read, POST for create/search, PUT for update, DELETE for delete");
-    lines.push("");
+    return `# MOCK API Client: ${moduleName}
 
-    for (const entity of entities) {
-      lines.push(`### ${entity.name}`);
-      lines.push(`Operations needed: ${entity.operations.join(", ")}`);
-      if (entity.properties.length > 0) {
-        lines.push(`Properties: ${entity.properties.map((p: any) => `${p.name}${p.required ? "" : "?"}:${p.type || "string"}`).join(", ")}`);
-      }
-      lines.push("");
-    }
+## File Structure
+\`\`\`
+src/api_client/
+├── ${moduleName}.api.ts     # Types (keep when replacing)
+├── ${moduleName}.mock.ts    # Static mock data
+└── ${moduleName}.client.ts  # Mock client class
+\`\`\`
 
-    lines.push("## REQUIRED Code Structure (follow this exactly):");
-    lines.push("```typescript");
-    lines.push(`// src/api_client/${moduleName}.api.ts`);
-    lines.push("/* eslint-disable */");
-    lines.push("// @ts-nocheck");
-    lines.push("");
-    lines.push("// Base class for auth - MUST be included");
-    lines.push("export class AuthApiBase {");
-    lines.push("  authToken = \"\";");
-    lines.push("  protected constructor() {}");
-    lines.push("  getBaseUrl(defaultUrl: string, baseUrl: string) { return \"\"; }");
-    lines.push("  setAuthToken(token: string) { this.authToken = token; }");
-    lines.push("  protected transformOptions(options: any): Promise<any> {");
-    lines.push("    if (this.authToken) options.headers[\"authorization\"] = `Bearer ${this.authToken}`;");
-    lines.push("    return Promise.resolve(options);");
-    lines.push("  }");
-    lines.push("}");
-    lines.push("");
-    lines.push(`// Main API Client class`);
-    lines.push(`export class ${ModuleName}Client extends AuthApiBase {`);
-    lines.push("  private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };");
-    lines.push("  private baseUrl: string;");
-    lines.push("  protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;");
-    lines.push("");
-    lines.push("  constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {");
-    lines.push("    super();");
-    lines.push("    this.http = http ? http : window as any;");
-    lines.push("    this.baseUrl = this.getBaseUrl(\"\", baseUrl);");
-    lines.push("  }");
-    lines.push("");
-    lines.push(`  // Search ${moduleName}`);
-    lines.push(`  search${EntityName}s(query: Search${EntityName}sQuery): Promise<Search${EntityName}sResult> {`);
-    lines.push(`    let url_ = this.baseUrl + "/api/${moduleName}/search";`);
-    lines.push("    // ... implement POST request");
-    lines.push("  }");
-    lines.push("");
-    lines.push(`  // Get single ${moduleName}`);
-    lines.push(`  get${EntityName}ById(id: string): Promise<${EntityName}> {`);
-    lines.push(`    let url_ = this.baseUrl + "/api/${moduleName}/" + id;`);
-    lines.push("    // ... implement GET request");
-    lines.push("  }");
-    lines.push("");
-    lines.push(`  // Create new ${moduleName}`);
-    lines.push(`  create${EntityName}(command: Create${EntityName}Command): Promise<${EntityName}> {`);
-    lines.push(`    let url_ = this.baseUrl + "/api/${moduleName}";`);
-    lines.push("    // ... implement POST request");
-    lines.push("  }");
-    lines.push("");
-    lines.push(`  // Update ${moduleName}`);
-    lines.push(`  update${EntityName}(command: Update${EntityName}Command): Promise<${EntityName}> {`);
-    lines.push(`    let url_ = this.baseUrl + "/api/${moduleName}";`);
-    lines.push("    // ... implement PUT request");
-    lines.push("  }");
-    lines.push("");
-    lines.push(`  // Delete ${moduleName}`);
-    lines.push(`  delete${EntityName}(id: string): Promise<void> {`);
-    lines.push(`    let url_ = this.baseUrl + "/api/${moduleName}/" + id;`);
-    lines.push("    // ... implement DELETE request");
-    lines.push("  }");
-    lines.push("}");
-    lines.push("");
-    lines.push("// Entity interfaces and classes");
-    lines.push(`export interface I${EntityName} {`);
-    for (const entity of entities) {
-      for (const prop of entity.properties.slice(0, 8)) {
-        lines.push(`  ${prop.name}${prop.required ? "" : "?"}: ${prop.type || "string"};`);
-      }
-    }
-    lines.push("}");
-    lines.push("");
-    lines.push(`export class ${EntityName} implements I${EntityName} {`);
-    lines.push("  // Properties with defaults");
-    for (const entity of entities) {
-      for (const prop of entity.properties.slice(0, 5)) {
-        lines.push(`  ${prop.name}${prop.required ? "" : "?"}: ${prop.type || "string"};`);
-      }
-    }
-    lines.push("");
-    lines.push(`  constructor(data?: I${EntityName}) { /* init from data */ }`);
-    lines.push("  init(_data?: any) { /* init from raw data */ }");
-    lines.push(`  static fromJS(data: any): ${EntityName} { /* parse JSON */ }`);
-    lines.push("  toJSON(data?: any) { /* serialize to JSON */ }");
-    lines.push("}");
-    lines.push("");
-    lines.push("// Search query/result classes");
-    lines.push(`export interface ISearch${EntityName}sQuery {`);
-    lines.push("  keyword?: string;");
-    lines.push("  skip?: number;");
-    lines.push("  take?: number;");
-    lines.push("  sort?: string;");
-    lines.push("}");
-    lines.push(`export class Search${EntityName}sQuery implements ISearch${EntityName}sQuery { /* ... */ }`);
-    lines.push("");
-    lines.push(`export interface ISearch${EntityName}sResult {`);
-    lines.push(`  results?: I${EntityName}[];`);
-    lines.push("  totalCount?: number;");
-    lines.push("}");
-    lines.push(`export class Search${EntityName}sResult implements ISearch${EntityName}sResult { /* ... */ }`);
-    lines.push("");
-    lines.push("// Command classes for create/update");
-    lines.push(`export class Create${EntityName}Command { /* ... */ }`);
-    lines.push(`export class Update${EntityName}Command { /* ... */ }`);
-    lines.push("");
-    lines.push("// API Exception class");
-    lines.push("export class ApiException extends Error { /* ... */ }");
-    lines.push("function throwException(message: string, status: number, response: string, headers: any, result?: any): any { /* ... */ }");
-    lines.push("```");
-    lines.push("");
-    lines.push("## IMPORTANT: Composables MUST use this client");
-    lines.push("After creating API client, composables should import and use it:");
-    lines.push("```typescript");
-    lines.push(`import { useApiClient } from "@vc-shell/framework";`);
-    lines.push(`import { ${ModuleName}Client, Search${EntityName}sQuery } from "../../api_client/${moduleName}.api";`);
-    lines.push("");
-    lines.push(`const { getApiClient } = useApiClient(${ModuleName}Client);`);
-    lines.push("const client = await getApiClient();");
-    lines.push(`const result = await client.search${EntityName}s(new Search${EntityName}sQuery({ keyword, skip, take }));`);
-    lines.push("```");
-    lines.push("");
-    lines.push("## Submit:");
-    lines.push("After generating COMPLETE code, use submit_generated_code tool with:");
-    lines.push(`- bladeId: "${moduleName}"`);
-    lines.push(`- apiClient: { name: "${moduleName}.api.ts", code: <your generated code> }`);
-    lines.push("- context: { module: \"" + moduleName + "\", layout: \"details\", strategy: \"AI_FULL\" }");
+## Entity: ${EntityName}
+- Operations: ${entities[0]?.operations?.join(", ") || "search, get, create, update, delete"}
+- Key properties: ${props}
 
-    return lines.join("\n");
+## Required Types (${moduleName}.api.ts)
+- I${EntityName} - main entity interface
+- I${EntityName}SearchQuery - search params
+- I${EntityName}SearchResult - { results, totalCount }
+- ICreate${EntityName}Command, IUpdate${EntityName}Command
+
+## Client Methods (${moduleName}.client.ts)
+- search${EntityName}s(query?) → SearchResult
+- get${EntityName}ById(id) → I${EntityName}
+- create${EntityName}(cmd) → I${EntityName}
+- update${EntityName}(cmd) → I${EntityName}
+- delete${EntityName}(id), delete${EntityName}s(ids[])
+
+## ⚠️ MOCK ONLY - NO HTTP!
+- Use in-memory array, NOT fetch/axios
+- Add 300ms delay for realism
+- Constructor: constructor(_baseUrl?, _http?) {} for useApiClient compatibility
+
+## Submit
+\`\`\`
+bladeId: "${moduleName}"
+code: ""
+apiClient: {
+  types: { name: "${moduleName}.api.ts", code: <code> },
+  mock: { name: "${moduleName}.mock.ts", code: <code> },
+  client: { name: "${moduleName}.client.ts", code: <code> }
+}
+context: { module: "${moduleName}", layout: "details" }
+\`\`\`
+
+For full template: use get_best_template({ bladeType: "details", features: ["api"] })`;
   }
 }
 

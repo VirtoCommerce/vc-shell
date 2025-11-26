@@ -1,0 +1,207 @@
+/**
+ * List Composable Template
+ *
+ * Production-ready composable for list/grid blades.
+ * Features: pagination, sorting, search, staged/applied filters, CRUD operations.
+ *
+ * USAGE:
+ * 1. Replace {{EntityName}} with your entity name (e.g., Offer, Product)
+ * 2. Replace {{entityName}} with camelCase entity name (e.g., offer, product)
+ * 3. Replace {{MODULE_NAME}} with your module name (e.g., offers, products)
+ * 4. Import actual types from your API client
+ */
+
+import { computed, ref, type ComputedRef, type Ref } from "vue";
+import { useAsync, useApiClient, useLoading } from "@vc-shell/framework";
+import {
+  {{EntityName}}Client,
+  type I{{EntityName}},
+  type ISearch{{EntityName}}sQuery,
+  Search{{EntityName}}sQuery,
+  type Search{{EntityName}}sResult,
+} from "../../api_client/{{MODULE_NAME}}.api";
+
+/**
+ * Filter state for staged/applied filter pattern
+ */
+interface FilterState {
+  status: string[];
+  // Add more filter fields as needed
+  [key: string]: string[] | string | undefined;
+}
+
+/**
+ * Interface for the composable return type
+ * Export this for type-safe usage in blades
+ */
+export interface IUse{{EntityName}}List {
+  // Data
+  items: ComputedRef<I{{EntityName}}[]>;
+  totalCount: ComputedRef<number>;
+  pages: ComputedRef<number>;
+  currentPage: ComputedRef<number>;
+  loading: ComputedRef<boolean>;
+  searchQuery: Ref<ISearch{{EntityName}}sQuery>;
+
+  // Filters (staged/applied pattern)
+  stagedFilters: Ref<FilterState>;
+  appliedFilters: Ref<FilterState>;
+  hasFilterChanges: ComputedRef<boolean>;
+  hasFiltersApplied: ComputedRef<boolean>;
+  activeFilterCount: ComputedRef<number>;
+
+  // Methods
+  load{{EntityName}}s: (query?: ISearch{{EntityName}}sQuery) => Promise<void>;
+  delete{{EntityName}}s: (ids: string[]) => Promise<void>;
+  toggleFilter: (filterType: keyof FilterState, value: string, checked: boolean) => void;
+  applyFilters: () => Promise<void>;
+  resetFilters: () => Promise<void>;
+  resetSearch: () => Promise<void>;
+}
+
+/**
+ * Options for the composable
+ */
+export interface Use{{EntityName}}ListOptions {
+  pageSize?: number;
+  sort?: string;
+}
+
+/**
+ * List composable for {{EntityName}} entities
+ *
+ * @param options - Configuration options
+ * @returns Reactive state and methods for list management
+ */
+export function use{{EntityName}}List(options?: Use{{EntityName}}ListOptions): IUse{{EntityName}}List {
+  const { getApiClient } = useApiClient({{EntityName}}Client);
+
+  const pageSize = options?.pageSize || 20;
+  const searchQuery = ref<ISearch{{EntityName}}sQuery>({
+    take: pageSize,
+    sort: options?.sort || "createdDate:DESC",
+  });
+  const searchResult = ref<Search{{EntityName}}sResult>();
+
+  // Staged/Applied filters for two-step filter application
+  const stagedFilters = ref<FilterState>({ status: [] });
+  const appliedFilters = ref<FilterState>({ status: [] });
+
+  // Load entities with useAsync for automatic loading state
+  const { action: load{{EntityName}}s, loading } = useAsync<ISearch{{EntityName}}sQuery>(async (_query) => {
+    searchQuery.value = { ...searchQuery.value, ...(_query || {}) };
+    const client = await getApiClient();
+    searchResult.value = await client.search{{EntityName}}s(new Search{{EntityName}}sQuery(searchQuery.value));
+  });
+
+  // Delete entities
+  const { action: delete{{EntityName}}s, loading: deleting } = useAsync<string[]>(async (ids) => {
+    const client = await getApiClient();
+    for (const id of ids) {
+      await client.delete{{EntityName}}(id);
+    }
+  });
+
+  // Computed properties
+  const items = computed(() => searchResult.value?.results || []);
+  const totalCount = computed(() => searchResult.value?.totalCount || 0);
+  const pages = computed(() => Math.ceil(totalCount.value / pageSize));
+  const currentPage = computed(() => Math.floor((searchQuery.value.skip || 0) / pageSize) + 1);
+
+  // Filter computed properties
+  const hasFilterChanges = computed((): boolean => {
+    const stagedStatus = [...stagedFilters.value.status].sort();
+    const appliedStatus = [...appliedFilters.value.status].sort();
+    return JSON.stringify(stagedStatus) !== JSON.stringify(appliedStatus);
+  });
+
+  const hasFiltersApplied = computed((): boolean => {
+    return appliedFilters.value.status.length > 0;
+  });
+
+  const activeFilterCount = computed((): number => {
+    let count = 0;
+    if (appliedFilters.value.status.length > 0) count++;
+    return count;
+  });
+
+  // Filter methods
+  const toggleFilter = (filterType: keyof FilterState, value: string, checked: boolean) => {
+    if (filterType === "status") {
+      const currentFilters = [...stagedFilters.value.status];
+      if (checked) {
+        // Radio behavior - single selection
+        stagedFilters.value = { ...stagedFilters.value, status: [value] };
+      } else {
+        stagedFilters.value = {
+          ...stagedFilters.value,
+          status: currentFilters.filter((item) => item !== value),
+        };
+      }
+    }
+  };
+
+  const applyFilters = async () => {
+    appliedFilters.value = { status: [...stagedFilters.value.status] };
+
+    const queryWithFilters = {
+      ...searchQuery.value,
+      status: appliedFilters.value.status.length > 0 ? appliedFilters.value.status[0] : undefined,
+      skip: 0,
+    };
+
+    await load{{EntityName}}s(queryWithFilters);
+  };
+
+  const resetFilters = async () => {
+    stagedFilters.value = { status: [] };
+    appliedFilters.value = { status: [] };
+
+    const queryWithoutFilters = {
+      ...searchQuery.value,
+      status: undefined,
+      skip: 0,
+    };
+
+    await load{{EntityName}}s(queryWithoutFilters);
+  };
+
+  const resetSearch = async () => {
+    stagedFilters.value = { status: [] };
+    appliedFilters.value = { status: [] };
+
+    const resetQuery = {
+      take: pageSize,
+      sort: options?.sort || "createdDate:DESC",
+      skip: 0,
+      keyword: "",
+    };
+
+    await load{{EntityName}}s(resetQuery);
+  };
+
+  return {
+    // Data
+    items,
+    totalCount,
+    pages,
+    currentPage,
+    loading: useLoading(loading, deleting),
+    searchQuery,
+
+    // Filters
+    stagedFilters,
+    appliedFilters,
+    hasFilterChanges,
+    hasFiltersApplied,
+    activeFilterCount,
+
+    // Methods
+    load{{EntityName}}s,
+    delete{{EntityName}}s,
+    toggleFilter,
+    applyFilters,
+    resetFilters,
+    resetSearch,
+  };
+}

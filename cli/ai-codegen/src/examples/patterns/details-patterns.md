@@ -343,9 +343,10 @@ const {
 For details-validation template with widgets:
 
 ```typescript
-import { useWidgets } from "@vc-shell/framework";
+import { useWidgets, useBlade } from "@vc-shell/framework";
 
 const { registerWidget, unregisterWidget } = useWidgets();
+const blade = useBlade();
 
 registerWidget(
   {

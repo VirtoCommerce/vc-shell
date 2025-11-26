@@ -193,7 +193,7 @@ const columns = ref<ITableColumns[]>([
   {
     id: "order",
     title: computed(() => t("ENTITIES.PAGES.LIST.TABLE.HEADER.ORDER")),
-    width: 80,
+    width: "80px",
     alwaysVisible: true,
   },
   {

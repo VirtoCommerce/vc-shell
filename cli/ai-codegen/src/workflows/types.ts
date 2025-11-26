@@ -18,10 +18,14 @@ export enum ArtifactType {
 
 /**
  * Context Level - how much detail to include
+ *
+ * MINIMAL is optimized for AI clients with limited context windows (e.g., Cursor).
+ * It provides only essential references and short instructions (~5KB).
  */
 export enum ContextLevel {
+  MINIMAL = "minimal",       // Short refs only, use MCP tools for details (~5KB) - DEFAULT
   METADATA = "metadata",     // IDs, descriptions only (~2KB)
-  ESSENTIAL = "essential",   // + template + top 2 patterns (~10KB)
+  ESSENTIAL = "essential",   // + template + top 2 patterns (~10-14KB)
   FULL = "full",             // Everything (~25KB+)
 }
 

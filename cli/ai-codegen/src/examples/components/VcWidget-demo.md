@@ -288,8 +288,8 @@ interface Props {
 
 const props = defineProps<Props>();
 
-const { blade } = useBlade();
 const { registerWidget, unregisterWidget } = useWidgets();
+const blade = useBlade();
 const { order, loadOrder } = useOrderDetails();
 
 // Widget registration function
@@ -500,7 +500,7 @@ import { MyWidget } from "../components/widgets";
 
 // 2. Get registration functions
 const { registerWidget, unregisterWidget } = useWidgets();
-const { blade } = useBlade();
+const blade = useBlade();
 
 // 3. Define registration
 function registerWidgets() {

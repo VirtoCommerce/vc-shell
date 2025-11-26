@@ -244,10 +244,16 @@ export class GenerateStepExecutor implements StepExecutor {
         console.log(`[GenerateStep] API client added FIRST to queue for module: ${plan.module}`);
       }
 
-      // Then add all blades and their composables
+      // Then add composables FIRST, then blades
+      // Order: API client → Composables → Blades
+      // This ensures:
+      // 1. Composables can use exact method names from API client
+      // 2. Blades can use the ready composable interface
+      for (const blade of plan.blades) {
+        queue.push({ bladeId: blade.id, artifactType: AT.COMPOSABLE });
+      }
       for (const blade of plan.blades) {
         queue.push({ bladeId: blade.id, artifactType: AT.BLADE });
-        queue.push({ bladeId: blade.id, artifactType: AT.COMPOSABLE });
       }
 
       // Store required artifacts info for tracking completion
@@ -494,19 +500,64 @@ export class GenerateStepExecutor implements StepExecutor {
         lines.push(`- Type: ${blade.type} blade`);
         lines.push(`- Features: ${(blade.features || []).join(", ") || "none"}`);
         lines.push("");
+        lines.push("## ⚠️ FILE EXISTS - YOU ARE REPLACING IT!");
+        lines.push(`A stub blade was created by create-vc-app at:`);
+        lines.push(`src/modules/${moduleName}/pages/${blade.id}.vue`);
+        lines.push("");
+        lines.push("The stub is basic scaffolding - REPLACE EVERYTHING with full implementation!");
+        lines.push("Your generated code will OVERWRITE the stub completely.");
+        lines.push("");
+        lines.push("## IMPORTANT: Composable is ALREADY generated!");
+        lines.push(`The composable for this blade was generated in the previous step.`);
+        lines.push(`Read it FIRST to understand what methods and types are available:`);
+        lines.push(`Location: src/modules/${moduleName}/composables/use${this.capitalize(entityName)}${blade.type === "list" ? "List" : "Details"}.ts`);
+        lines.push("");
         lines.push("## Requirements:");
         lines.push("1. Use `<script setup lang=\"ts\">`");
-        lines.push("2. Import composable from ./composables/");
+        lines.push("2. Import the ALREADY GENERATED composable from ./composables/");
         lines.push("3. Use VcBlade as root component");
         lines.push("4. All strings via $t() - no hardcoded text");
         lines.push("5. Use emit(\"close:blade\") for closing");
+        lines.push("6. Use EXACT method names from the composable (read it first!)");
+        lines.push("");
+        lines.push("## ICONS (Material Symbols - NOT Material Icons!):");
+        lines.push("Format: material-{icon_name} with UNDERSCORES, NO -outline suffix!");
+        lines.push("Examples: material-add_circle, material-delete, material-edit, material-save");
+        lines.push("WRONG: material-add-circle-outline, material-addCircle");
+        lines.push("Browse: https://fonts.google.com/icons?icon.set=Material+Symbols");
+        lines.push("");
         if (blade.type === "list") {
-          lines.push("6. Use VcTable with proper column slots");
-          lines.push("7. Implement pagination, sorting, filters as needed");
+          lines.push("## List-specific:");
+          lines.push("7. Use VcTable with proper column slots");
+          lines.push("8. Implement pagination, sorting, filters as needed");
         } else {
-          lines.push("6. Use VcForm with VeeValidate Field components");
-          lines.push("7. Implement validation rules");
-          lines.push("8. Use useModificationTracker for unsaved changes");
+          lines.push("## Details-specific:");
+          lines.push("7. Use VcForm with VeeValidate Field components");
+          lines.push("8. Implement validation rules");
+          lines.push("9. Composable already has useModificationTracker - use isModified from it");
+          lines.push("");
+          lines.push("## WIDGETS (CRITICAL - DO NOT RENDER MANUALLY!):");
+          lines.push("NEVER render widgets manually with <VcWidget> or v-for in template!");
+          lines.push("Widgets are managed by the framework via useWidgets() composable.");
+          lines.push("");
+          lines.push("If blade needs widgets:");
+          lines.push("1. Use generate_widget MCP tool to create widget component");
+          lines.push("2. Or manually use useWidgets() pattern:");
+          lines.push("```typescript");
+          lines.push("const { registerWidget, unregisterWidget } = useWidgets();");
+          lines.push("const blade = useBlade();");
+          lines.push("");
+          lines.push("// Register immediately after setup (NOT in onMounted!)");
+          lines.push("registerWidget({");
+          lines.push("  id: 'MyWidget',");
+          lines.push("  component: MyWidgetComponent,");
+          lines.push("  props: computed(() => ({ data: item.value })),");
+          lines.push("  isVisible: computed(() => !!props.param),");
+          lines.push("}, blade?.value.id ?? '');");
+          lines.push("");
+          lines.push("onBeforeUnmount(() => unregisterWidget('MyWidget', blade?.value.id));");
+          lines.push("```");
+          lines.push("The framework renders widgets automatically - NO template code needed!");
         }
         lines.push("");
         lines.push("## LOCALE GENERATION (CRITICAL!):");
@@ -537,17 +588,35 @@ export class GenerateStepExecutor implements StepExecutor {
         lines.push(`- Entity: ${entityName}`);
         lines.push(`- For: ${blade.type} blade`);
         lines.push("");
-        lines.push("## CRITICAL: Use API Client - NO MOCKS!");
-        lines.push(`Import API client from: ../../api_client/${moduleName}.api`);
-        lines.push("Use useApiClient() with the Client class to make real API calls.");
-        lines.push("DO NOT use mock data or TODO comments - implement real API integration.");
+        lines.push("## ⚠️ FILE EXISTS - YOU ARE REPLACING IT!");
+        lines.push(`A stub composable was created by create-vc-app at:`);
+        lines.push(`src/modules/${moduleName}/composables/use${this.capitalize(entityName)}${blade.type === "list" ? "List" : "Details"}.ts`);
+        lines.push("");
+        lines.push("The stub contains @ts-expect-error and mock methods - REPLACE EVERYTHING!");
+        lines.push("Your generated code will OVERWRITE the stub completely.");
+        lines.push("");
+        lines.push("## WORKFLOW: This composable will be used by the blade generated NEXT");
+        lines.push("The blade will import this composable, so define a clear interface.");
+        lines.push("");
+        lines.push("## CRITICAL: Read API Client FIRST!");
+        lines.push(`API client location: src/api_client/${moduleName}.api.ts`);
+        lines.push("You MUST read the API client to get:");
+        lines.push("1. Exact method names (searchOffers, getOfferById, createOffer, etc.)");
+        lines.push("2. Exact type names (IOffer, OfferDetails, SearchOffersQuery, etc.)");
+        lines.push("3. Exact class names for commands (CreateOfferCommand, UpdateOfferCommand, etc.)");
+        lines.push("");
+        lines.push("COMMON MISTAKES TO AVOID:");
+        lines.push("- API has `getOfferById()` but you call `getOfferByIdGET()` - WRONG!");
+        lines.push("- API has `createOffer()` but you call `createNewOffer()` - WRONG!");
+        lines.push("- NEVER use @ts-nocheck or @ts-expect-error to hide mismatches!");
         lines.push("");
         lines.push("## Requirements:");
-        lines.push("1. Export composable function");
-        lines.push(`2. Import: import { ${this.capitalize(moduleName)}Client, Search${EntityName}sQuery, I${EntityName} } from "../../api_client/${moduleName}.api"`);
+        lines.push("1. Export composable function with TYPED INTERFACE (IUse" + EntityName + (blade.type === "list" ? "s" : "Details") + ")");
+        lines.push(`2. Import EXACT types from: ../../api_client/${moduleName}.api`);
         lines.push(`3. Use: const { getApiClient } = useApiClient(${this.capitalize(moduleName)}Client)`);
-        lines.push("4. Proper TypeScript types - use types from API client");
+        lines.push("4. Call API methods with EXACT names from the client");
         lines.push("5. Reactive state with ref/computed");
+        lines.push("6. Export all methods that blade will need (load, save, delete, etc.)");
         if (blade.type === "list") {
           lines.push("");
           lines.push("## List Composable Pattern:");

@@ -3,7 +3,7 @@
     "vcshell": {
       "command": "npx",
       "args": [
-        "@vc-shell/ai-codegen@latest",
+        "@vc-shell/ai-codegen@alpha",
         "mcp"
       ]
     }

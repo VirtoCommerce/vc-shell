@@ -524,7 +524,7 @@ export const generateWithCompositionHandler: ToolHandler = async (params, contex
  * Submit AI-generated code for validation
  */
 export const submitGeneratedCodeHandler: ToolHandler = async (params, context) => {
-  const { bladeId, code, composable, apiClient, context: codeContext, cwd: cwdParam, retry } = params;
+  const { bladeId, code, composable, apiClient, locale, context: codeContext, cwd: cwdParam, retry } = params;
   const { orchestrator } = context;
 
   try {
@@ -628,6 +628,8 @@ export const submitGeneratedCodeHandler: ToolHandler = async (params, context) =
       apiClient: validatedCodeItem?.apiClient
         ? { name: validatedCodeItem.apiClient.path, code: validatedCodeItem.apiClient.content }
         : apiClient,
+      // Pass locale for merging into en.json
+      locale: locale,
       artifactType,
     });
 

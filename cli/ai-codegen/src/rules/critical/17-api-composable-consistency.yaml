@@ -1,0 +1,98 @@
+id: "17"
+name: "API Client and Composable Consistency"
+category: "critical"
+priority: 95
+enabled: true
+applies_to:
+  - "all"
+
+description: |
+  API client methods and composable calls MUST be consistent.
+  When generating a module, ALL artifacts (API client, composables, blades) must use
+  the SAME method names and types.
+
+  WORKFLOW ORDER (enforced by system):
+  1. API client FIRST - defines method names and types
+  2. Composables SECOND - use exact method names from API client
+  3. Blades THIRD - use exact return types from composables
+
+  COMMON MISTAKES TO AVOID:
+  - API client has `getOfferByIdGET()` but composable calls `getOfferById()`
+  - API client has `createNewOffer()` but composable calls `createOffer()`
+  - API client has `deleteOffers([id])` but composable calls `deleteOffer(id)`
+  - API client has `searchOffers()` but composable calls `searchOfferss()` (typo!)
+
+forbidden:
+  - pattern: "@ts-nocheck"
+    reason: "Do NOT use @ts-nocheck - fix type errors instead"
+    severity: "error"
+
+  - pattern: "@ts-expect-error"
+    reason: "Do NOT use @ts-expect-error for API client methods - ensure names match"
+    severity: "error"
+
+  - pattern: "// TODO|// MOCK|mockData"
+    reason: "Do NOT leave TODO/MOCK comments in production code"
+    severity: "warning"
+
+required:
+  - pattern: "useApiClient\\([A-Z]\\w+Client\\)"
+    when: "Composable needs API access"
+    severity: "error"
+
+correct_pattern:
+  inline: |
+    ```typescript
+    // ✅ CORRECT: Consistent naming between API client and composable
+
+    // In API client (offers.api.ts):
+    export class OffersClient extends AuthApiBase {
+      searchOffers(query: SearchOffersQuery): Promise<SearchOffersResult> { }
+      getOfferById(id: string): Promise<OfferDetails> { }
+      createOffer(command: CreateOfferCommand): Promise<OfferDetails> { }
+      updateOffer(command: UpdateOfferCommand): Promise<OfferDetails> { }
+      deleteOffer(id: string): Promise<void> { }
+    }
+
+    // In composable (useOfferDetails.ts):
+    const { getApiClient } = useApiClient(OffersClient);
+
+    const loadOffer = async (id: string) => {
+      const client = await getApiClient();
+      // Method name EXACTLY matches API client
+      return await client.getOfferById(id);
+    };
+
+    const saveOffer = async (data: IOfferDetails) => {
+      const client = await getApiClient();
+      // Method name EXACTLY matches API client
+      return await client.updateOffer(new UpdateOfferCommand(data));
+    };
+    ```
+
+wrong_pattern:
+  inline: |
+    ```typescript
+    // ❌ WRONG: Inconsistent naming
+
+    // API client has:
+    getOfferByIdGET(id: string): Promise<OfferDetails> { }
+
+    // But composable calls:
+    await client.getOfferById(id);  // ERROR: method doesn't exist!
+
+    // ❌ WRONG: Using @ts-nocheck to hide errors
+    // @ts-nocheck
+    export class OffersClient { }  // Hides ALL type errors!
+
+    // ❌ WRONG: Using @ts-expect-error for mismatched methods
+    // @ts-expect-error - method name mismatch
+    await client.getOfferById(id);
+    ```
+
+notes:
+  - API client is generated FIRST and defines the contract
+  - Composables MUST use exact method names from API client
+  - If you change API client method names, update composables too
+  - Never use @ts-nocheck or @ts-expect-error to hide type mismatches
+  - Run vue-tsc after each artifact to catch errors early

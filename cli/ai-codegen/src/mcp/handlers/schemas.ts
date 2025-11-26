@@ -80,10 +80,12 @@ const toolSchemas = [
 
 **🚨 CRITICAL: ARTIFACT GENERATION ORDER 🚨**
 The system ENFORCES this generation order:
-1. **API CLIENT FIRST** - composables import types from it
-2. Blades and composables - after API client is submitted
+1. **API CLIENT FIRST** - defines methods and types
+2. **COMPOSABLES SECOND** - use exact method names from API client
+3. **BLADES LAST** - use the ready composable interface
 
-If you request a blade but API client hasn't been submitted yet, the system will REDIRECT you to generate API client first. **Follow the guide's artifactType!**
+This order ensures type consistency! Each step reads the previous artifact.
+If you request a blade but composable hasn't been submitted yet, generate composable first.
 
 **WHAT THIS TOOL DOES:**
 1. Returns structured generation guide with requirements, patterns, and constraints
@@ -101,9 +103,9 @@ If you request a blade but API client hasn't been submitted yet, the system will
 
 **🤖 SMART DEFAULTS (Auto-optimization based on module size):**
 - **Large modules (>2 blades):**
-  - Auto-selects first blade
-  - artifactType='blade' (step-by-step: blade → composable → apiClient)
-  - pageSize=1 (one blade at a time)
+  - Auto-selects first artifact
+  - artifactType='composable' (step-by-step: apiClient → composable → blade)
+  - pageSize=1 (one artifact at a time)
 - **Small modules (1-2 blades):**
   - artifactType='all' (faster workflow)
   - pageSize=10

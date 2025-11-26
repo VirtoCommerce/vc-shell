@@ -1,0 +1,86 @@
+id: "18"
+name: "Material Symbols Icon Format"
+category: "critical"
+priority: 85
+enabled: true
+applies_to:
+  - "all"
+
+description: |
+  VC-Shell uses Material Symbols (NOT Material Icons - they are different icon packs!).
+
+  ICON FORMAT: material-{icon_name}
+  - Icon names use underscores: material-add_circle, material-check_box
+  - NO "-outline" suffix needed! Outline is the default style
+  - Browse icons at: https://fonts.google.com/icons?icon.set=Material+Symbols
+
+  COMMON MISTAKES:
+  - material-add-circle-outline → WRONG (hyphen, -outline suffix)
+  - material-addCircle → WRONG (camelCase)
+  - material-add_circle → CORRECT
+
+forbidden:
+  - pattern: "material-[a-z]+-outline"
+    reason: "Do NOT use -outline suffix! Material Symbols are outline by default"
+    severity: "error"
+
+  - pattern: "material-[a-z]+[A-Z]"
+    reason: "Do NOT use camelCase for icon names - use underscores"
+    severity: "error"
+
+  - pattern: 'icon="material-[a-z]+-[a-z]+-[a-z]+"'
+    reason: "Icon names use underscores, not hyphens between words"
+    severity: "warning"
+
+correct_pattern:
+  inline: |
+    ```vue
+    <!-- ✅ CORRECT: Material Symbols icon format -->
+    <VcIcon icon="material-add_circle" />
+    <VcIcon icon="material-check_box" />
+    <VcIcon icon="material-delete" />
+    <VcIcon icon="material-edit" />
+    <VcIcon icon="material-search" />
+    <VcIcon icon="material-arrow_back" />
+    <VcIcon icon="material-arrow_forward" />
+    <VcIcon icon="material-more_vert" />
+    <VcIcon icon="material-close" />
+    <VcIcon icon="material-save" />
+    <VcIcon icon="material-refresh" />
+    <VcIcon icon="material-filter_list" />
+    <VcIcon icon="material-sort" />
+    <VcIcon icon="material-visibility" />
+    <VcIcon icon="material-visibility_off" />
+    <VcIcon icon="material-content_copy" />
+    <VcIcon icon="material-file_download" />
+    <VcIcon icon="material-file_upload" />
+
+    <!-- In toolbar items -->
+    {
+      id: "add",
+      title: t("ADD"),
+      icon: "material-add_circle",  // Correct!
+      clickHandler: () => { }
+    }
+    ```
+
+wrong_pattern:
+  inline: |
+    ```vue
+    <!-- ❌ WRONG: Using -outline suffix -->
+    <VcIcon icon="material-add-circle-outline" />
+    <!-- ❌ WRONG: Using hyphens between words -->
+    <VcIcon icon="material-add-circle" />
+    <!-- ❌ WRONG: Using camelCase -->
+    <VcIcon icon="material-addCircle" />
+    <!-- ❌ WRONG: Confusing with Material Icons pack -->
+    <VcIcon icon="material-add_circle_outline" />
+    ```
+
+notes:
+  - Material Symbols ≠ Material Icons (different icon packs!)
+  - Browse at: https://fonts.google.com/icons?icon.set=Material+Symbols
+  - Icon names in the browser use underscores (e.g., "add_circle")
+  - Prefix with "material-" for VC-Shell
+  - NO "-outline" suffix - outline is the default rendering
+  - Common icons: add_circle, delete, edit, save, close, search, refresh, visibility

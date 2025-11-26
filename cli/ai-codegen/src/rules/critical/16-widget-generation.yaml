@@ -26,6 +26,14 @@ forbidden:
     reason: "Do NOT wrap widget components in markRaw() - pass component directly"
     severity: "error"
 
+  - pattern: "<VcWidget[^>]*icon=|<div[^>]*class=\".*widget"
+    reason: "Do NOT render widgets manually in template! Use useWidgets() composable with registerWidget()"
+    severity: "error"
+
+  - pattern: "v-for=\"widget in.*\""
+    reason: "Do NOT iterate over widgets manually! Framework handles widget rendering via useWidgets()"
+    severity: "error"
+
 required:
   - pattern: "useWidgets\\(\\)"
     when: "Widget registration is needed"
@@ -84,6 +92,30 @@ correct_pattern:
 
 wrong_pattern:
   inline: |
+    ```vue
+    <!-- ❌ WRONG: Rendering widgets manually in template -->
+    <template>
+      <div class="tw-w-72 tw-border-l">
+        <VcWidget
+          icon="material-local-offer"
+          :title="$t('OFFERS.WIDGETS.SPECIAL_PRICES.TITLE')"
+          @click="openSpecialPrices"
+        />
+      </div>
+    </template>
+    <!-- This is WRONG! Widgets should be registered via useWidgets() -->
+
+    <!-- ❌ WRONG: Iterating over widgets manually -->
+    <template>
+      <component
+        :is="widget.component"
+        v-for="widget in registeredWidgets"
+        :key="widget.id"
+      />
+    </template>
+    <!-- Framework handles this automatically! -->
+    ```
+
     ```typescript
     // ❌ WRONG: Using markRaw on component
     registerWidget({

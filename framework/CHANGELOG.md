@@ -1,3 +1,7 @@
+## [1.1.99-alpha.13](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.99-alpha.12...v1.1.99-alpha.13) (2025-11-27)
+
+**Note:** Version bump only for package @vc-shell/framework
+
 ## [1.1.99-alpha.12](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.99-alpha.11...v1.1.99-alpha.12) (2025-11-27)
 
 **Note:** Version bump only for package @vc-shell/framework

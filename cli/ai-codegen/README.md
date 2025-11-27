@@ -11,9 +11,7 @@ CLI + MCP server for VC Shell code generation with a full workflow (analyze → 
 
 - Quick run without install: `npx @vc-shell/ai-codegen@alpha mcp` (current published tag: `alpha`)
 - Local (dev): `yarn add -D @vc-shell/ai-codegen@alpha`
-- Global:
-  - Yarn 1: `yarn global add @vc-shell/ai-codegen@alpha` (installs the `vcgen` command)
-  - Yarn 4: `yarn dlx @vc-shell/ai-codegen@alpha` (installs the `vcgen` command)
+- Global: `npm install -g @vc-shell/ai-codegen@alpha` (installs the `vcgen` command)
 
 ## Quick start: MCP server
 

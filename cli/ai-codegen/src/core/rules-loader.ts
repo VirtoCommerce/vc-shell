@@ -9,7 +9,7 @@ import fs from "fs-extra";
 import path from "path";
 import { glob } from "glob";
 import yaml from "yaml";
-import { fileURLToPath } from "url";
+import { getDirname, getRulesPath, getExamplesPath } from "../utils/paths";
 import type {
   Rule,
   RuleCategory,
@@ -17,9 +17,7 @@ import type {
   RulesLoaderOptions,
 } from "./rules-types";
 
-// Get __dirname equivalent in ES modules
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const __dirname = getDirname(import.meta.url);
 
 export class RulesLoader {
   private rulesDir: string;
@@ -28,8 +26,8 @@ export class RulesLoader {
   private cacheEnabled: boolean;
 
   constructor(options: RulesLoaderOptions = {}) {
-    this.rulesDir = options.rulesDir || path.join(__dirname, "rules");
-    this.examplesDir = options.examplesDir || path.join(__dirname, "examples");
+    this.rulesDir = options.rulesDir || getRulesPath(__dirname);
+    this.examplesDir = options.examplesDir || getExamplesPath(__dirname);
     this.cacheEnabled = options.cache !== false;
   }
 

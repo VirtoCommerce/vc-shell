@@ -9,7 +9,7 @@
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
+import { getDirname, isCompiledBuild, getExamplesPath, getRulesPath } from "../utils/paths";
 
 // Import new architecture layers - COMPLETE
 import { KnowledgeBase } from "../knowledge";
@@ -47,8 +47,7 @@ import { RulesLoader } from "../core/rules-loader";
 
 import type { MCPServerContext } from "./context";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const __dirname = getDirname(import.meta.url);
 
 /**
  * Initialize MCP Server
@@ -77,11 +76,8 @@ export async function startMCPServer() {
 
   console.error("[MCP Server] Initializing professional architecture...");
 
-  // Setup paths - when running from dist, use dist/examples, otherwise src/examples
-  const rootPath = path.join(__dirname, "..", "..");
-  const examplesPath = __dirname.includes("/dist")
-    ? path.join(__dirname, "examples") // dist/examples (current dir is dist)
-    : path.join(rootPath, "src", "examples"); // src/examples
+  // Setup paths (cross-platform compatible)
+  const examplesPath = getExamplesPath(__dirname);
 
   // Layer 1: Knowledge Base
   console.error("[MCP Server] Loading Knowledge Base...");
@@ -115,9 +111,9 @@ export async function startMCPServer() {
   // Layer 4: Workflows Layer
   console.error("[MCP Server] Initializing Workflows Layer...");
 
-  // Initialize RulesLoader for YAML rules
-  const rulesDir = path.join(__dirname, "..", "rules");
-  const examplesDir = path.join(__dirname, "..", "examples");
+  // Initialize RulesLoader for YAML rules (cross-platform compatible)
+  const rulesDir = getRulesPath(__dirname);
+  const examplesDir = getExamplesPath(__dirname);
   const rulesLoader = new RulesLoader({ rulesDir, examplesDir, cache: true });
 
   const workflowContext = {

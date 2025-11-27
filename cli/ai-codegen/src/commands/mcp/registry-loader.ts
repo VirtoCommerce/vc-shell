@@ -5,6 +5,7 @@
 
 import * as fs from "fs";
 import * as path from "path";
+import { isCompiledBuild } from "../../utils/paths";
 
 export interface RegistryLoaderOptions {
   rootPath: string;
@@ -14,13 +15,12 @@ export class RegistryLoader {
   private componentRegistry: any = null;
   private frameworkRegistry: any = null;
   private examplesPath: string;
+  private schemasDir: string;
 
   constructor(private options: RegistryLoaderOptions) {
-    // Detect if running from dist/ or src/
-    const isCompiledBuild = options.rootPath.includes("/dist");
-    const schemasDir = isCompiledBuild ? "schemas" : path.join("src", "schemas");
-    const examplesDir = isCompiledBuild ? "examples" : path.join("src", "examples");
-
+    const compiled = isCompiledBuild(options.rootPath);
+    this.schemasDir = compiled ? "schemas" : path.join("src", "schemas");
+    const examplesDir = compiled ? "examples" : path.join("src", "examples");
     this.examplesPath = path.join(options.rootPath, examplesDir);
   }
 
@@ -32,10 +32,7 @@ export class RegistryLoader {
       return this.componentRegistry;
     }
 
-    // Detect if running from dist/ or src/
-    const isCompiledBuild = this.options.rootPath.includes("/dist");
-    const schemasDir = isCompiledBuild ? "schemas" : path.join("src", "schemas");
-    const registryPath = path.join(this.options.rootPath, schemasDir, "component-registry.json");
+    const registryPath = path.join(this.options.rootPath, this.schemasDir, "component-registry.json");
 
     if (!fs.existsSync(registryPath)) {
       throw new Error(`Component registry not found at: ${registryPath}`);
@@ -53,10 +50,7 @@ export class RegistryLoader {
       return this.frameworkRegistry;
     }
 
-    // Detect if running from dist/ or src/
-    const isCompiledBuild = this.options.rootPath.includes("/dist");
-    const schemasDir = isCompiledBuild ? "schemas" : path.join("src", "schemas");
-    const registryPath = path.join(this.options.rootPath, schemasDir, "framework-api-registry.json");
+    const registryPath = path.join(this.options.rootPath, this.schemasDir, "framework-api-registry.json");
 
     if (!fs.existsSync(registryPath)) {
       throw new Error(`Framework API registry not found at: ${registryPath}`);

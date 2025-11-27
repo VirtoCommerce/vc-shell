@@ -2,10 +2,9 @@ import Ajv, { type AnySchema } from "ajv";
 import addFormats from "ajv-formats";
 import fs from "node:fs";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
+import { getDirname, getSchemasPath } from "../utils/paths";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const __dirname = getDirname(import.meta.url);
 
 /**
  * Simple plan normalizer (inline implementation)
@@ -153,12 +152,8 @@ export class Validator {
     this.ajv = new Ajv({ allErrors: true, strict: false });
     addFormats(this.ajv);
 
-    // Load schemas
-    // In production (dist/index), schemas are in dist/schemas/
-    // In development (src/core/validator.ts), schemas are in src/schemas/
-    const schemasPath = __dirname.includes('/dist')
-      ? path.join(__dirname, "schemas")
-      : path.join(__dirname, "..", "schemas");
+    // Load schemas (cross-platform compatible)
+    const schemasPath = getSchemasPath(__dirname);
 
     this.uiPlanSchema = JSON.parse(
       fs.readFileSync(path.join(schemasPath, "ui-plan.v1.schema.json"), "utf-8")

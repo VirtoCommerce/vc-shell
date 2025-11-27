@@ -5,6 +5,7 @@
 
 import * as fs from "fs";
 import * as path from "path";
+import { isCompiledBuild } from "../../utils/paths";
 
 export interface ResourceDefinition {
   uri: string;
@@ -158,11 +159,11 @@ export async function readResource(
   rootPath: string,
   context?: ResourceReaderContext,
 ): Promise<string> {
-  // Detect if running from dist/ or src/
-  const isCompiledBuild = rootPath.includes("/dist");
-  const schemasDir = isCompiledBuild ? "schemas" : path.join("src", "schemas");
-  const examplesDir = isCompiledBuild ? "examples" : path.join("src", "examples");
-  const docsDir = isCompiledBuild ? "docs" : "docs";
+  // Detect if running from dist/ or src/ (cross-platform)
+  const compiled = isCompiledBuild(rootPath);
+  const schemasDir = compiled ? "schemas" : path.join("src", "schemas");
+  const examplesDir = compiled ? "examples" : path.join("src", "examples");
+  const docsDir = "docs";
 
   const schemasPath = path.join(rootPath, schemasDir);
   const examplesPath = path.join(rootPath, examplesDir);

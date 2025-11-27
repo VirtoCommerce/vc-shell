@@ -1,6 +1,6 @@
 import { readFileSync } from "fs";
-import { join, dirname } from "path";
-import { fileURLToPath } from "url";
+import { join } from "path";
+import { getDirname, getSchemasPath } from "../utils/paths";
 
 /**
  * Component Registry Loader
@@ -33,29 +33,9 @@ export function loadComponentNames(): string[] {
   }
 
   try {
-    // Determine the correct path to component-registry.json
-    // In production (dist), schemas are copied to dist/schemas/
-    // In development (src), they're in src/schemas/
-    let registryPath: string;
-    let currentDir: string;
-
-    if (typeof __dirname !== 'undefined') {
-      // CommonJS environment
-      currentDir = __dirname;
-    } else {
-      // ESM environment
-      const currentFilePath = fileURLToPath(import.meta.url);
-      currentDir = dirname(currentFilePath);
-    }
-
-    // Check if we're in dist/ or src/
-    // If in dist, schemas are in dist/schemas/
-    // If in src, schemas are in src/schemas/ (one level up from src/core/)
-    const schemasPath = currentDir.includes("/dist")
-      ? join(currentDir, "schemas")
-      : join(currentDir, "..", "schemas");
-
-    registryPath = join(schemasPath, "component-registry.json");
+    const currentDir = getDirname(import.meta.url);
+    const schemasPath = getSchemasPath(currentDir);
+    const registryPath = join(schemasPath, "component-registry.json");
 
     const registryContent = readFileSync(registryPath, 'utf-8');
     const registry: ComponentRegistry = JSON.parse(registryContent);
@@ -90,20 +70,10 @@ export function loadComponentNames(): string[] {
  */
 export function loadComponentRegistry(): ComponentRegistry {
   try {
-    let currentDir: string;
-
-    if (typeof __dirname !== 'undefined') {
-      currentDir = __dirname;
-    } else {
-      const currentFilePath = fileURLToPath(import.meta.url);
-      currentDir = dirname(currentFilePath);
-    }
-
-    const schemasPath = currentDir.includes("/dist")
-      ? join(currentDir, "schemas")
-      : join(currentDir, "..", "schemas");
-
+    const currentDir = getDirname(import.meta.url);
+    const schemasPath = getSchemasPath(currentDir);
     const registryPath = join(schemasPath, "component-registry.json");
+
     const registryContent = readFileSync(registryPath, 'utf-8');
     return JSON.parse(registryContent);
   } catch (error) {
@@ -115,19 +85,26 @@ export function loadComponentRegistry(): ComponentRegistry {
 /**
  * Check if a component exists in the registry
  *
- * @param componentName - Component name to check (e.g., 'VcTable')
- * @returns true if component exists in registry
+ * @param componentName Component name to check
+ * @returns true if component exists
  */
 export function isValidComponent(componentName: string): boolean {
-  const components = loadComponentNames();
-  return components.includes(componentName);
+  const names = loadComponentNames();
+  return names.includes(componentName);
 }
 
 /**
- * Get component count
+ * Get the number of components in the registry
  *
- * @returns Number of registered components
+ * @returns Number of components
  */
 export function getComponentCount(): number {
   return loadComponentNames().length;
+}
+
+/**
+ * Clear the cache (useful for testing)
+ */
+export function clearCache(): void {
+  cachedComponentNames = null;
 }

@@ -5,13 +5,12 @@
  * Provides unified access to framework knowledge.
  */
 
-import path from "node:path";
-import { fileURLToPath } from "node:url";
 import { ComponentRegistry } from "./registries/components";
 import { FrameworkAPIRegistry } from "./registries/framework";
 import { PatternRegistry } from "./registries/patterns";
 import { TemplateRegistry } from "./registries/templates";
 import { FeatureRegistry } from "./registries/features";
+import { getDirname, getExamplesPath } from "../utils/paths";
 import type { RegistryOptions } from "./types";
 
 export class KnowledgeBase {
@@ -24,14 +23,8 @@ export class KnowledgeBase {
   private readonly examplesDir: string;
 
   constructor(examplesDir?: string, options: RegistryOptions = {}) {
-    // Default to package examples directory
-    if (!examplesDir) {
-      const __filename = fileURLToPath(import.meta.url);
-      const __dirname = path.dirname(__filename);
-      this.examplesDir = path.join(__dirname, "..", "examples");
-    } else {
-      this.examplesDir = examplesDir;
-    }
+    // Default to package examples directory (cross-platform compatible)
+    this.examplesDir = examplesDir || getExamplesPath(getDirname(import.meta.url));
 
     // Initialize all registries
     this.components = new ComponentRegistry(this.examplesDir, options);

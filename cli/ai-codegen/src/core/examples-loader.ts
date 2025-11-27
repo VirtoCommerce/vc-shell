@@ -8,7 +8,7 @@
 import fs from "fs-extra";
 import path from "path";
 import yaml from "yaml";
-import { fileURLToPath } from "url";
+import { getDirname, getExamplesPath } from "../utils/paths";
 import type {
   ExamplesIndex,
   Example,
@@ -21,9 +21,7 @@ import type {
   FrameworkAPIExample,
 } from "./examples-types";
 
-// Get __dirname equivalent in ES modules
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const __dirname = getDirname(import.meta.url);
 
 export class ExamplesLoader {
   private examplesDir: string;
@@ -31,7 +29,7 @@ export class ExamplesLoader {
   private cacheEnabled: boolean;
 
   constructor(options: { examplesDir?: string; cache?: boolean } = {}) {
-    this.examplesDir = options.examplesDir || path.join(__dirname, "../examples");
+    this.examplesDir = options.examplesDir || getExamplesPath(__dirname);
     this.cacheEnabled = options.cache !== false;
   }
 

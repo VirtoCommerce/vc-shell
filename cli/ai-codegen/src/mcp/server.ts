@@ -77,6 +77,7 @@ export async function startMCPServer() {
   console.error("[MCP Server] Initializing professional architecture...");
 
   // Setup paths (cross-platform compatible)
+  const rootPath = path.join(__dirname, "..", "..");
   const examplesPath = getExamplesPath(__dirname);
 
   // Layer 1: Knowledge Base

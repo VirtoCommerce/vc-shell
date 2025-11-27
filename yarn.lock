@@ -4637,6 +4637,7 @@ __metadata:
     dedent: "npm:^1.6.0"
     diff: "npm:^8.0.2"
     execa: "npm:^9.6.0"
+    fs-extra: "npm:^11.3.2"
     fuzzysort: "npm:^3.1.0"
     lodash-es: "npm:^4.17.21"
     ora: "npm:^8.2.0"
@@ -9900,7 +9901,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fs-extra@npm:^11.2.0":
+"fs-extra@npm:^11.2.0, fs-extra@npm:^11.3.2":
   version: 11.3.2
   resolution: "fs-extra@npm:11.3.2"
   dependencies:

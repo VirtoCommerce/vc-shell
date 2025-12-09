@@ -1,5 +1,8 @@
 import { reactive, ref, ComputedRef, Ref } from "vue";
 import { IBladeToolbar } from "../types";
+import { createLogger } from "../utilities";
+
+const logger = createLogger("toolbar-service");
 
 export interface IToolbarItem extends IBladeToolbar {
   id: string;
@@ -135,7 +138,7 @@ export function createToolbarService(): IToolbarService {
     try {
       registerToolbarItem(item.toolbarItem, item.bladeId);
     } catch (e) {
-      console.warn(`Failed to register preregistered toolbar item ${item.toolbarItem.id}:`, e);
+      logger.warn(`Failed to register preregistered toolbar item ${item.toolbarItem.id}:`, e);
     }
   });
 

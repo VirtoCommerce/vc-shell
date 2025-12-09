@@ -43,6 +43,9 @@
 <script lang="ts" setup>
 import { ref } from "vue";
 import { VcIcon, VcTooltip } from "../../../../../../../../";
+import { createLogger } from "../../../../../../../../../../core/utilities";
+
+const logger = createLogger("vc-blade-toolbar-button");
 
 export interface Props {
   isExpanded: boolean;
@@ -81,7 +84,7 @@ const emit = defineEmits<Emits>();
 const isWaiting = ref(false);
 
 async function onClick(): Promise<void> {
-  console.debug("vc-blade-toolbar-item#onClick()");
+  logger.debug("onClick()");
 
   if (!props.disabled && !isWaiting.value) {
     if (props.clickHandler && typeof props.clickHandler === "function") {

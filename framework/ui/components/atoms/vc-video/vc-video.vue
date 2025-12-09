@@ -16,12 +16,14 @@
     <div class="vc-video__container">
       <div v-if="source">
         <iframe
-          :src="`${source}`"
+          :src="source"
           width="100%"
           height="300px"
           frameborder="0"
+          sandbox="allow-scripts allow-same-origin allow-presentation allow-popups"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowfullscreen="false"
+          allowfullscreen
+          loading="lazy"
         >
         </iframe>
       </div>

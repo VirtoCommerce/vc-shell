@@ -20,16 +20,13 @@ export function useTableActions<T extends TableItem | string>(options: UseTableA
     const builder = unref(itemActionBuilder);
 
     if (unref(enableItemActions) && typeof builder === "function") {
-      const populatedItems: IActionBuilderResult<T>[][] = [];
-      for (let index = 0; index < items.length; index++) {
-        if (typeof items[index] === "object") {
-          const elementWithActions = await builder(items[index]);
-          if (elementWithActions) {
-            populatedItems.push(elementWithActions);
-          }
-        }
-      }
-      itemActions.value = populatedItems;
+      // Use Promise.all for parallel execution instead of sequential awaits
+      const actionPromises = items
+        .filter((item) => typeof item === "object")
+        .map((item) => builder(item));
+
+      const results = await Promise.all(actionPromises);
+      itemActions.value = results.filter((result): result is IActionBuilderResult<T>[] => !!result);
     } else {
       itemActions.value = [];
     }

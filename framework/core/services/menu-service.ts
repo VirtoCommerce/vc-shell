@@ -2,6 +2,9 @@ import { Component, ref, type Ref } from "vue";
 import * as _ from "lodash-es";
 import type { MenuItem } from "../types";
 import { createUnrefFn, useArrayFind } from "@vueuse/core";
+import { createLogger } from "../utilities";
+
+const logger = createLogger("menu-service");
 
 // Global state for pre-registering menu items
 const preregisteredMenuItems: Ref<MenuItem[]> = ref([]);
@@ -212,7 +215,7 @@ export function createMenuService(): MenuService {
     try {
       addMenuItem(item);
     } catch (e) {
-      console.warn(`Failed to register preregistered menu item ${item.id || item.title}:`, e);
+      logger.warn(`Failed to register preregistered menu item ${item.id || item.title}:`, e);
     }
   });
 

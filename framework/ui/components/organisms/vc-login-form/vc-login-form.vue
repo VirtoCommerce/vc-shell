@@ -24,6 +24,7 @@
 <script lang="ts" setup>
 import { computed } from "vue";
 import { useRouter } from "vue-router";
+import { createLogger } from "../../../../core/utilities";
 
 export interface Props {
   logo?: string;
@@ -57,7 +58,8 @@ const logoImageHandler = computed(() => {
 
 const version = router.currentRoute.value.meta?.appVersion;
 
-console.debug("Init vc-login-form");
+const logger = createLogger("vc-login-form");
+logger.debug("Init vc-login-form");
 </script>
 
 <style lang="scss">

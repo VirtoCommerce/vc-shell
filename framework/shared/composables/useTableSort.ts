@@ -1,6 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // framework/composables/useTableSort.ts
 import { ref, computed, Ref, WritableComputedRef } from "vue";
+import { createLogger } from "../../core/utilities";
+
+const logger = createLogger("use-table-sort");
 
 export type ITableSortDirection = "ASC" | "DESC";
 
@@ -48,8 +51,6 @@ export function useTableSort(options?: UseTableSortOptions): UseTableSortReturn 
   });
 
   const handleSortChange = (sortParam: SortParam) => {
-    console.log("[useTableSort] handleSortChange triggered. Received sortParam:", JSON.stringify(sortParam));
-
     let newSortProperty: string | undefined = undefined;
     let newSortDirection: ITableSortDirection | undefined = undefined;
 
@@ -79,9 +80,8 @@ export function useTableSort(options?: UseTableSortOptions): UseTableSortReturn 
         currentSortProperty.value = newSortProperty;
         currentSortDirection.value = newSortDirection || "ASC"; // Default to ASC if no direction provided
       }
-      console.log(`[useTableSort] New sort state: ${currentSortProperty.value}:${currentSortDirection.value}`);
     } else {
-      console.warn("[useTableSort] Could not determine valid sort property from sortParam:", sortParam);
+      logger.warn("Could not determine valid sort property from sortParam:", sortParam);
     }
   };
 

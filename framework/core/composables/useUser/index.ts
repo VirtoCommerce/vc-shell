@@ -15,6 +15,9 @@ import {
 import { RequestPasswordResult } from "./../../types";
 import { createSharedComposable } from "@vueuse/core";
 import { useExternalProvider } from "../../../shared/components/sign-in/useExternalProvider";
+import { createLogger } from "../../utilities";
+
+const logger = createLogger("use-user");
 
 // Interface for the full internal API provided by _createInternalUserLogic
 export interface IUserInternalAPI {
@@ -83,7 +86,7 @@ export function _createInternalUserLogic(): IUserInternalAPI {
     username: string,
     password: string,
   ): Promise<SignInResult | { succeeded: boolean; error?: any; status?: number }> {
-    console.debug(`[@vc-shell/framework#_createInternalUserLogic:signIn] - Entry point`);
+    logger.debug("signIn - Entry point");
     try {
       loading.value = true;
       const result = await securityClient.login(new LoginRequest({ userName: username, password }));
@@ -100,8 +103,7 @@ export function _createInternalUserLogic(): IUserInternalAPI {
           throw e;
         });
     } catch (e: any) {
-      //TODO: log error
-      console.log(e);
+      logger.error("signIn failed:", e);
       return { succeeded: false, error: e.message, status: e.status };
     } finally {
       loading.value = false;
@@ -109,7 +111,7 @@ export function _createInternalUserLogic(): IUserInternalAPI {
   }
 
   async function signOut(): Promise<void> {
-    console.debug(`[@vc-shell/framework#_createInternalUserLogic:signOut] - Entry point`);
+    logger.debug("signOut - Entry point");
 
     user.value = undefined;
 
@@ -121,14 +123,14 @@ export function _createInternalUserLogic(): IUserInternalAPI {
   }
 
   async function loadUser(): Promise<UserDetail> {
-    console.debug(`[@vc-shell/framework#_createInternalUserLogic:loadUser] - Entry point`);
+    logger.debug("loadUser - Entry point");
 
     try {
       loading.value = true;
       user.value = await securityClient.getCurrentUser();
-      console.log("[_createInternalUserLogic]: an user details has been loaded", user.value);
+      logger.debug("User details loaded:", user.value);
     } catch (e: any) {
-      console.error(e);
+      logger.error("loadUser failed:", e);
     } finally {
       loading.value = false;
     }
@@ -174,7 +176,7 @@ export function _createInternalUserLogic(): IUserInternalAPI {
     try {
       result = await securityClient.getLoginTypes();
     } catch (e) {
-      console.error(e);
+      logger.error("getLoginType failed:", e);
       throw e;
     }
 

@@ -21,7 +21,7 @@
         v-if="tooltip"
         #tooltip
       >
-        <span v-html="tooltip"></span>
+        <span>{{ tooltip }}</span>
       </template>
     </VcLabel>
 

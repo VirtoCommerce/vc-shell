@@ -102,7 +102,7 @@
           class="tw-grow tw-basis-0"
         ></span> -->
           <VcButton
-            :outline="true"
+            variant="secondary"
             class="tw-mr-3"
             @click="cancelChange"
           >

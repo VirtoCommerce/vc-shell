@@ -2,6 +2,9 @@ import { onErrorCaptured, getCurrentInstance, ref, Ref, nextTick } from "vue";
 import { useAppInsights } from "..";
 import { useUserManagement } from "../useUserManagement";
 import { DisplayableError, parseError } from "../../utilities/error";
+import { createLogger } from "../../utilities";
+
+const logger = createLogger("use-error-handler");
 
 interface IUseErrorHandler {
   error: Ref<DisplayableError | null>;
@@ -51,7 +54,7 @@ export function useErrorHandler(capture?: boolean): IUseErrorHandler {
       });
     }
 
-    console.error("Captured Error:", capturedError.originalError);
+    logger.error("Captured Error:", capturedError.originalError);
 
     if (instance) {
       instance.emit("error", capturedError);

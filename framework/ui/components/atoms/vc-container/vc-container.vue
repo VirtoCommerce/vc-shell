@@ -42,7 +42,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted, computed, shallowRef, watch, inject, Ref } from "vue";
+import { ref, onMounted, onBeforeUnmount, computed, shallowRef, watch, inject, Ref } from "vue";
 import { VcIcon } from "./../vc-icon";
 
 export interface Props {
@@ -69,6 +69,8 @@ const refreshing = shallowRef(false);
 const goingUp = shallowRef(false);
 const touching = shallowRef(false);
 const isMobile = inject("isMobile") as Ref<boolean>;
+
+let resizeObserver: ResizeObserver | null = null;
 
 const topOffset = computed(() => Math.max(0, Math.min(pullDist.value, touchDiff.value)));
 const canRefresh = computed(() => touchDiff.value >= pullDist.value && !refreshing.value);
@@ -116,12 +118,19 @@ function onScroll(e: Event) {
 }
 
 onMounted(() => {
-  const observer = new ResizeObserver(() => {
+  resizeObserver = new ResizeObserver(() => {
     scroll.value = (component.value && component.value.clientHeight < component.value.scrollHeight) as boolean;
   });
 
   if (component.value) {
-    observer.observe(component.value);
+    resizeObserver.observe(component.value);
+  }
+});
+
+onBeforeUnmount(() => {
+  if (resizeObserver) {
+    resizeObserver.disconnect();
+    resizeObserver = null;
   }
 });
 

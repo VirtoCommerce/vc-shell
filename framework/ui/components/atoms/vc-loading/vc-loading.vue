@@ -4,6 +4,9 @@
     :class="{
       'vc-loading-overlay--active': active,
     }"
+    role="status"
+    :aria-busy="active"
+    aria-live="polite"
   >
     <div class="vc-loading-overlay__content">
       <span class="vc-loading-overlay__main-marker"></span>
@@ -14,6 +17,7 @@
           class="vc-loading-overlay__marker"
         ></span>
       </div>
+      <span class="tw-sr-only">{{ active ? 'Loading...' : '' }}</span>
     </div>
   </div>
 </template>

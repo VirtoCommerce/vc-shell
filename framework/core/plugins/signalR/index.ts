@@ -4,6 +4,9 @@ import { PushNotification } from "../../api/platform";
 import { useNotifications } from "./../../composables/useNotifications";
 import { useUserManagement } from "../../composables/useUserManagement";
 import { useCypressSignalRMock } from "cypress-signalr-mock";
+import { createLogger } from "../../utilities";
+
+const logger = createLogger("signalR");
 
 const { addNotification } = useNotifications();
 const currentCreator = ref<string | undefined>();
@@ -17,7 +20,7 @@ function setupSystemEventsHandler(connection: any, creator?: string) {
 
   // Subscribe to events with the new creator
   if (creator) {
-    console.log("[SignalR] Setup handler for creator: ", creator);
+    logger.debug("Setup handler for creator: ", creator);
     connection.on("SendSystemEvents", (message: PushNotification) => {
       if (message.creator === creator) {
         addNotification(message);
@@ -48,11 +51,11 @@ export const signalR = {
       connection
         .start()
         .then(() => {
-          console.log("[SignalR] Connected.");
+          logger.info("Connected.");
           setupSystemEventsHandler(connection, currentCreator.value);
         })
         .catch((err) => {
-          console.log("[SignalR] Connection Error: ", err);
+          logger.error("Connection Error: ", err);
           setTimeout(() => start(), 5000);
         });
     };

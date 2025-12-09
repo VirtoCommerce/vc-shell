@@ -37,7 +37,7 @@
 <script lang="ts" setup>
 import { Content, NotificationType, NotificationPosition } from "../../../../shared/components/notifications";
 import { VcIcon } from "../..";
-import { Ref, onMounted, ref, toRefs, watch } from "vue";
+import { Ref, onMounted, onBeforeUnmount, ref, toRefs, watch } from "vue";
 
 export interface Props {
   content?: Content;
@@ -70,6 +70,7 @@ interface NotificationTimer {
   pause: () => void;
   resume: () => void;
   start: () => void;
+  clear: () => void;
 }
 
 const timer = ref<NotificationTimer | null>(null);
@@ -120,12 +121,21 @@ function Timer(callback: (...args: unknown[]) => unknown, delay: number): Notifi
     resume();
   }
 
+  function clear() {
+    window.clearTimeout(timerId);
+  }
+
   return {
     pause,
     resume,
     start,
+    clear,
   };
 }
+
+onBeforeUnmount(() => {
+  timer.value?.clear();
+});
 
 function onMouseEnter() {
   if (props.timeout) {

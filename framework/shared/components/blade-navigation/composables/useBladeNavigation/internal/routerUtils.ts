@@ -1,6 +1,9 @@
 import { computed, shallowRef, Ref, markRaw, watch } from "vue";
 import { RouteLocationNormalized, Router, LocationQuery, RouteRecordNameGeneric, RouteParamsGeneric } from "vue-router";
 import type { BladeVNode } from "../../../types";
+import { createLogger } from "../../../../../../core/utilities";
+
+const logger = createLogger("blade-router-utils");
 
 const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
 
@@ -143,7 +146,7 @@ export function _createRouterUtils(router: Router, route: RouteLocationNormalize
       if (mainRouteAlias?.name) {
         return { name: mainRouteAlias.name as RouteRecordNameGeneric, params: route.params as RouteParamsGeneric };
       }
-      console.error("goToRoot: Main route or its alias with a name not found!");
+      logger.error("goToRoot: Main route or its alias with a name not found!");
       return { path: "/" };
     },
   };

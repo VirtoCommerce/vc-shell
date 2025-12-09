@@ -288,8 +288,10 @@ const openErrorDetails = () => {
 }
 
 .vc-blade {
-  @apply tw-relative tw-flex tw-shrink-0 tw-flex-col tw-overflow-hidden tw-transition-[width] tw-duration-200;
+  @apply tw-relative tw-flex tw-shrink-0 tw-flex-col tw-overflow-hidden;
   @apply tw-bg-[color:var(--blade-background-color)] tw-border tw-border-solid tw-border-[--blade-border-color];
+  // Use shared transition timing for synchronized animations with AI panel
+  transition: width var(--app-panel-transition-duration, 0.3s) var(--app-panel-transition-timing, cubic-bezier(0.4, 0, 0.2, 1));
 
   &__back-button {
     @apply tw-mr-[14px];

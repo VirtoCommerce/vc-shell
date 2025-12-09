@@ -1,6 +1,9 @@
 import { PushNotification, PushNotificationClient } from "./../../api/platform";
 import { computed, ComputedRef, ref, onUnmounted } from "vue";
 import * as _ from "lodash-es";
+import { createLogger } from "../../utilities";
+
+const logger = createLogger("use-notifications");
 
 const notificationsClient = new PushNotificationClient();
 
@@ -64,7 +67,7 @@ export function useNotifications(notifyType?: string | string[]): INotifications
         notifications.value = <PushNotification[]>JSON.parse(response).notifyEvents ?? [];
       });
     } catch (e) {
-      console.error(e);
+      logger.error("loadFromHistory failed:", e);
       throw e;
     }
   }
@@ -121,7 +124,7 @@ export function useNotifications(notifyType?: string | string[]): INotifications
       });
       await notificationsClient.markAllAsRead();
     } catch (e) {
-      console.error(e);
+      logger.error("markAllAsRead failed:", e);
       throw e;
     }
   }

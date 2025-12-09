@@ -2,6 +2,9 @@ import { computed, inject, onMounted, onUnmounted, watch, toValue, Ref, Computed
 import { WidgetServiceKey, BladeInstance } from "../../injection-keys";
 import { IWidget } from "../../core/services";
 import { useBlade } from "../../core/composables";
+import { createLogger } from "../../core/utilities";
+
+const logger = createLogger("use-external-widgets");
 
 export interface UseExternalWidgetsOptions {
   bladeId: Ref<string> | string;
@@ -21,7 +24,7 @@ export function useExternalWidgets(options: UseExternalWidgetsOptions) {
 
   const registerExternalWidgets = () => {
     if (!widgetService || !blade?.value.id) {
-      console.warn("useExternalWidgets: Widget service or blade instance not available");
+      logger.warn("Widget service or blade instance not available");
       return;
     }
 
@@ -48,7 +51,7 @@ export function useExternalWidgets(options: UseExternalWidgetsOptions) {
         widgetService.registerWidget(newWidget, normalizedBladeId.value);
         registeredExternalWidgetIds.add(externalWidget.id);
       } catch (error) {
-        console.error(`Failed to register external widget '${externalWidget.id}':`, error);
+        logger.error(`Failed to register external widget '${externalWidget.id}':`, error);
       }
     });
   };
@@ -68,7 +71,7 @@ export function useExternalWidgets(options: UseExternalWidgetsOptions) {
             widget: { props: resolvedProps },
           });
         } catch (error) {
-          console.error(`Failed to update props for widget '${widget.id}':`, error);
+          logger.error(`Failed to update props for widget '${widget.id}':`, error);
         }
       }
     });
@@ -81,7 +84,7 @@ export function useExternalWidgets(options: UseExternalWidgetsOptions) {
       try {
         widgetService.unregisterWidget(widgetId, normalizedBladeId.value);
       } catch (error) {
-        console.error(`Failed to unregister external widget '${widgetId}':`, error);
+        logger.error(`Failed to unregister external widget '${widgetId}':`, error);
       }
     });
     registeredExternalWidgetIds.clear();

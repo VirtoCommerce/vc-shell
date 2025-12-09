@@ -73,6 +73,9 @@ const props = withDefaults(defineProps<Props>(), {
   iconSize: "xxl",
 });
 
+/** Maximum height in pixels before content is collapsed */
+const COLLAPSED_MAX_HEIGHT = 100;
+
 const contentRef = ref<HTMLDivElement>();
 const isExpanded = ref(false);
 const hasOverflow = ref(false);
@@ -83,7 +86,7 @@ const toggle = () => {
 
 const checkOverflow = () => {
   if (contentRef.value) {
-    hasOverflow.value = contentRef.value.scrollHeight > 100;
+    hasOverflow.value = contentRef.value.scrollHeight > COLLAPSED_MAX_HEIGHT;
   }
 };
 

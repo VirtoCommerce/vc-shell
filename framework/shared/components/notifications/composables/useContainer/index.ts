@@ -3,7 +3,9 @@ import { NotificationOptions, NotificationPosition } from "../../types";
 import { NotificationContainer } from "../../components";
 import { useInstance } from "../useInstance";
 import * as _ from "lodash-es";
-import { generateId } from "../../../../../core/utilities";
+import { generateId, createLogger } from "../../../../../core/utilities";
+
+const logger = createLogger("notification-container");
 
 export interface PendingNotification {
   notificationId: string | number;
@@ -304,7 +306,7 @@ export function useContainer(): IUseContainer {
 
         // If we found the notification and container to update
         if (notification && containerToUpdate) {
-          console.log(`Updating notification ${option.notificationId} in position ${containerPosition}`);
+          logger.debug(`Updating notification ${option.notificationId} in position ${containerPosition}`);
 
           // If the position changes, move the notification between containers
           if (option.position && option.position !== containerPosition) {
@@ -325,16 +327,16 @@ export function useContainer(): IUseContainer {
             // Check if a container already exists for the target position
             if (!getInstanceByPosition(targetPosition)) {
               // If no container exists for the target position, create a new one
-              console.log(`Creating new container for position ${targetPosition}`);
+              logger.debug(`Creating new container for position ${targetPosition}`);
               appendInstance(updatedNotification);
             } else {
               // If a container exists for the target position, add the updated notification
-              console.log(`Adding to existing container for position ${targetPosition}`);
+              logger.debug(`Adding to existing container for position ${targetPosition}`);
               notificationContainers[targetPosition].value.push(updatedNotification);
             }
           } else {
             // Standard update of notification properties
-            console.log(`Standard update of notification properties`);
+            logger.debug(`Standard update of notification properties`);
 
             // Apply all new properties from option to notification
             Object.keys(option).forEach((key) => {
@@ -353,7 +355,7 @@ export function useContainer(): IUseContainer {
 
           return true;
         } else {
-          console.warn(`Notification with ID ${option.notificationId} not found for update`);
+          logger.warn(`Notification with ID ${option.notificationId} not found for update`);
           return false;
         }
       }

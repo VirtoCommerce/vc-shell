@@ -1,5 +1,8 @@
 import { App, Ref, ref } from "vue";
 import { NotificationPosition } from "../../types";
+import { createLogger } from "../../../../../core/utilities";
+
+const logger = createLogger("notification-instance");
 
 interface IUseInstance {
   saveInstance(app: App<Element>, id: string, position: NotificationPosition): void;
@@ -51,7 +54,7 @@ export function useInstance(): IUseInstance {
         }
       }
     } catch (error) {
-      console.error(error);
+      logger.error("Failed to unmount notification component:", error);
     }
   }
 

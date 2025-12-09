@@ -9,7 +9,7 @@
     <template v-else>
       <VcIcon
         icon="material-cancel"
-        class="vc-status-icon__icon vc-status-icon__icon--info"
+        class="vc-status-icon__icon vc-status-icon__icon--inactive"
       ></VcIcon>
     </template>
   </div>
@@ -27,7 +27,7 @@ defineProps<Props>();
 <style lang="scss">
 :root {
   --status-success-main-color: var(--success-400);
-  --status-info-main-color: var(--info-300);
+  --status-inactive-main-color: var(--info-300);
 }
 
 .vc-status-icon {
@@ -35,8 +35,8 @@ defineProps<Props>();
     @apply tw-text-[color:var(--status-success-main-color)];
   }
 
-  &__icon--info {
-    @apply tw-text-[color:var(--status-info-main-color)];
+  &__icon--inactive {
+    @apply tw-text-[color:var(--status-inactive-main-color)];
   }
 }
 </style>

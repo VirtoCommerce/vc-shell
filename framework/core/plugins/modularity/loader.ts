@@ -3,6 +3,9 @@ import { Router } from "vue-router";
 import { DynamicModulesKey } from "../../../injection-keys";
 import * as semver from "semver";
 import { notification } from "../../../shared";
+import { createLogger } from "../../utilities";
+
+const logger = createLogger("module-loader");
 
 interface ModuleManifest {
   file: string;
@@ -108,12 +111,12 @@ async function loadVersionInfo(url: string): Promise<VersionInfo | null> {
   try {
     const response = await fetch(url);
     if (!response.ok) {
-      console.warn(`Failed to load version info: ${response.statusText}`);
+      logger.warn(`Failed to load version info: ${response.statusText}`);
       return null;
     }
     return (await response.json()) as VersionInfo;
   } catch (error) {
-    console.warn(`Error loading version info: ${error}`);
+    logger.warn(`Error loading version info: ${error}`);
     return null;
   }
 }
@@ -145,7 +148,7 @@ function checkVersionCompatibility(
     moduleVersion.compatibleWith.framework &&
     !semver.satisfies(frameworkVersion, moduleVersion.compatibleWith.framework, { includePrerelease: true })
   ) {
-    console.error(
+    logger.error(
       `Module ${moduleId} requires framework version ${moduleVersion.compatibleWith.framework}, but current framework version is ${frameworkVersion}.`,
     );
     notification.error(
@@ -163,12 +166,12 @@ function checkVersionCompatibility(
       const loadedDepVersion = loadedModulesWithVersions.get(depModuleId);
 
       if (!loadedDepVersion) {
-        console.warn(`Module ${moduleId} depends on ${depModuleId}, but it is not loaded yet.`);
+        logger.warn(`Module ${moduleId} depends on ${depModuleId}, but it is not loaded yet.`);
         continue;
       }
 
       if (!semver.satisfies(loadedDepVersion, versionRange, { includePrerelease: true })) {
-        console.error(
+        logger.error(
           `Module ${moduleId} requires ${depModuleId} version ${versionRange}, but loaded version is ${loadedDepVersion}.`,
         );
         notification.error(
@@ -233,7 +236,7 @@ export function useDynamicModules(
   const finalConfig = { ...DEFAULT_CONFIG, ...config };
 
   if (!config.frameworkVersion && finalConfig.frameworkVersion) {
-    console.warn(
+    logger.warn(
       `Framework version not specified in the configuration, using default ${finalConfig.frameworkVersion}. This may cause compatibility issues with modules.`,
     );
   }
@@ -272,7 +275,7 @@ export function useDynamicModules(
               manifest: (await response.json()) as Manifest,
             };
           } catch (error) {
-            console.error(error);
+            logger.error("Error loading module manifest:", error);
             return null;
           }
         });
@@ -303,12 +306,12 @@ export function useDynamicModules(
                   .filter((file) => file.file.endsWith(".css"))
                   .map((file) => loadCSS(moduleUrl + file.file)),
               ).catch((error) => {
-                console.error(`Failed to load styles for module ${moduleId}:`, error);
+                logger.error(`Failed to load styles for module ${moduleId}:`, error);
               }),
             ]);
 
             if (versionInfoFromFile) {
-              console.info(`Loaded version info for module ${moduleId}: v${versionInfoFromFile.version}`);
+              logger.info(`Loaded version info for module ${moduleId}: v${versionInfoFromFile.version}`);
             }
 
             // Import module
@@ -322,7 +325,7 @@ export function useDynamicModules(
               success: true,
             };
           } catch (error) {
-            console.error(`Failed to load module ${moduleId}:`, error);
+            logger.error(`Failed to load module ${moduleId}:`, error);
             return {
               moduleId,
               moduleUrl,
@@ -342,7 +345,7 @@ export function useDynamicModules(
           moduleLoadResults.filter((result) => result.success).map((result) => [result.moduleId, result]),
         );
 
-        console.log("🔍 LoadResultsMap keys:", Array.from(loadResultsMap.keys()));
+        logger.debug("LoadResultsMap keys:", Array.from(loadResultsMap.keys()));
 
         // Wait for all modules to register themselves in the global scope
         const expectedModuleIds = Array.from(loadResultsMap.keys());
@@ -369,9 +372,9 @@ export function useDynamicModules(
 
         // Check if modules are already registered
         if (areAllModulesRegistered()) {
-          console.log("✅ All modules are already registered, proceeding with installation");
+          logger.debug("All modules are already registered, proceeding with installation");
         } else {
-          console.log(`🔍 Waiting for ${expectedModuleIds.length} modules to register:`, expectedModuleIds);
+          logger.debug(`Waiting for ${expectedModuleIds.length} modules to register:`, expectedModuleIds);
 
           // Wait for module registration with timeout
           await new Promise<void>((resolve) => {
@@ -392,7 +395,7 @@ export function useDynamicModules(
 
             const checkAndResolve = () => {
               if (areAllModulesRegistered()) {
-                console.log("✅ All modules are registered, proceeding with installation");
+                logger.debug("All modules are registered, proceeding with installation");
                 cleanup();
                 resolve();
                 return true;
@@ -410,8 +413,8 @@ export function useDynamicModules(
             const poll = async () => {
               while (attempts < maxAttempts) {
                 const availableModules = getAvailableModules();
-                console.log(
-                  `🔍 Attempt ${attempts + 1}: Available modules:`,
+                logger.debug(
+                  `Attempt ${attempts + 1}: Available modules:`,
                   availableModules,
                   `(${availableModules.length}/${expectedModuleIds.length})`,
                 );
@@ -422,7 +425,7 @@ export function useDynamicModules(
                 await new Promise((r) => setTimeout(r, 100));
               }
 
-              console.warn("⚠️ Timeout waiting for all modules to register, proceeding with available modules");
+              logger.warn("Timeout waiting for all modules to register, proceeding with available modules");
               cleanup();
               resolve();
             };
@@ -441,18 +444,18 @@ export function useDynamicModules(
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const modulesToProcess: [string, any][] = Object.entries(window.VcShellDynamicModules || {});
 
-        console.log(
-          `🚀 Found ${modulesToProcess.length} modules to process:`,
+        logger.debug(
+          `Found ${modulesToProcess.length} modules to process:`,
           modulesToProcess.map(([name]) => name),
         );
 
         for (const [moduleName, moduleObject] of modulesToProcess) {
           if (loadedModules.has(moduleName)) {
-            console.log(`⏭️ Skipping already loaded module: ${moduleName}`);
+            logger.debug(`Skipping already loaded module: ${moduleName}`);
             continue;
           }
 
-          console.log(`📦 Processing module: ${moduleName}`);
+          logger.debug(`Processing module: ${moduleName}`);
 
           // Try to find the corresponding load result by matching module names
           const loadResult =
@@ -469,16 +472,16 @@ export function useDynamicModules(
 
           const mainModule = getModuleInstall(moduleObject);
 
-          console.log(`🔍 Module ${moduleName} exports:`, Object.keys(moduleObject));
-          console.log(`🔍 Module ${moduleName} has install function:`, !!mainModule);
+          logger.debug(`Module ${moduleName} exports:`, Object.keys(moduleObject));
+          logger.debug(`Module ${moduleName} has install function:`, !!mainModule);
 
           if (mainModule) {
             const moduleVersionInfo = (mainModule as ModuleWithNamedExport).version || versionFromFile;
 
             try {
               if (!finalConfig.skipVersionCheck) {
-                console.log(
-                  `🔎 Checking compatibility for ${moduleName} (version: ${moduleVersionInfo?.version || "N/A"})`,
+                logger.debug(
+                  `Checking compatibility for ${moduleName} (version: ${moduleVersionInfo?.version || "N/A"})`,
                 );
                 checkVersionCompatibility(
                   moduleName,
@@ -488,7 +491,7 @@ export function useDynamicModules(
                 );
               }
 
-              console.log(`🔧 Installing module: ${moduleName}`, {
+              logger.debug(`Installing module: ${moduleName}`, {
                 hasLoadResult: !!loadResult,
                 versionFromFile: versionFromFile?.version,
                 moduleVersion: moduleVersionInfo?.version,
@@ -503,31 +506,31 @@ export function useDynamicModules(
                 loadedModulesWithVersions.set(moduleName, moduleVersionInfo.version);
               }
 
-              console.log(
-                `✅ Module ${moduleName} installed successfully (version: ${
+              logger.info(
+                `Module ${moduleName} installed successfully (version: ${
                   moduleVersionInfo?.version || "no version info"
                 })`,
               );
             } catch (e) {
               if (e instanceof VersionCompatibilityError) {
-                console.error(`Compatibility error in module ${e.moduleId}:`, e.details);
+                logger.error(`Compatibility error in module ${e.moduleId}:`, e.details);
               } else {
-                console.error(`Failed to install module ${moduleName}:`, e);
+                logger.error(`Failed to install module ${moduleName}:`, e);
                 notification.error(`Failed to install module ${moduleName}`);
               }
             }
           } else {
-            console.error(`❌ Module ${moduleName} does not have an 'install' function`);
+            logger.error(`Module ${moduleName} does not have an 'install' function`);
             notification.error(
               `Module ${moduleName} is not a valid module because it does not have an 'install' function.`,
             );
           }
         }
 
-        console.log("🏁 Final loadedModules set:", Array.from(loadedModules));
+        logger.debug("Final loadedModules set:", Array.from(loadedModules));
       }
     } catch (error) {
-      console.error("Failed to load modules:", error);
+      logger.error("Failed to load modules:", error);
     }
 
     app.config.globalProperties.$dynamicModules = {

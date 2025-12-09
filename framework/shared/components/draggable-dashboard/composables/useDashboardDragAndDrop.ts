@@ -11,6 +11,15 @@ import { useGridPosition, type CellSize } from "./useGridPosition";
 // Value of 80px is defined in DraggableDashboard.vue
 const CELL_HEIGHT = 80;
 
+/** Minimum movement threshold in pixels to start dragging */
+const DRAG_THRESHOLD = 3;
+/** Gap between widgets in pixels */
+const WIDGET_GAP = 20;
+/** Delay in ms for animation style application */
+const ANIMATION_STYLE_DELAY = 20;
+/** Delay in ms for state reset after drag ends */
+const STATE_RESET_DELAY = 50;
+
 /**
  * Return type for the useDashboardDragAndDrop composable.
  */
@@ -169,7 +178,7 @@ export function useDashboardDragAndDrop(
 
       if (originalWidget) {
         const cellSize = calculateCellSize();
-        const widgetGap = 20; // Widget gap in pixels
+        const widgetGap = WIDGET_GAP;
 
         // Get the current position of the clone (where the user released the mouse)
         const cloneRect = dragClone.value.getBoundingClientRect();
@@ -215,7 +224,7 @@ export function useDashboardDragAndDrop(
         setTimeout(() => {
           originalWidget.style.transition = `transform var(--dashboard-transition-duration) var(--dashboard-transition-timing)`;
           originalWidget.style.transform = `translate(${finalX}px, ${finalY}px)`;
-        }, 20); // Small delay for correct style application
+        }, ANIMATION_STYLE_DELAY);
       } else {
         // If the original is not found, simply remove the clone and update the data
         removeDragClone();
@@ -250,7 +259,7 @@ export function useDashboardDragAndDrop(
       isDragging.value = false;
       draggedWidget.value = null;
       resetPosition();
-    }, 50);
+    }, STATE_RESET_DELAY);
   };
 
   // Mouse/touch event handler with passive listeners
@@ -284,8 +293,8 @@ export function useDashboardDragAndDrop(
 
       const currentCoords = getEventCoordinates(moveEvent);
 
-      // Start dragging only if the mouse has moved more than 3 pixels
-      if (hasMovedBeyondThreshold(currentCoords, 3)) {
+      // Start dragging only if the mouse has moved beyond threshold
+      if (hasMovedBeyondThreshold(currentCoords, DRAG_THRESHOLD)) {
         hasDragStarted = true;
         isDragging.value = true;
         draggedWidget.value = widget;

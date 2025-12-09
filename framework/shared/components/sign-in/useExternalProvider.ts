@@ -1,6 +1,9 @@
 import { useLocalStorage } from "@vueuse/core";
 import type { Ref } from "vue";
 import { ExternalSignInClient, ExternalSignInProviderInfo } from "../../../core/api/platform";
+import { createLogger } from "../../../core/utilities";
+
+const logger = createLogger("use-external-provider");
 
 export interface IUseExternalProvider {
   storage: Ref<{ providerType?: string | undefined }>;
@@ -53,7 +56,7 @@ export const useExternalProvider = (): IUseExternalProvider => {
       // Redirect to the constructed URL
       window.location.assign(url);
     } catch (e) {
-      console.error(e);
+      logger.error("External sign-in failed:", e);
       throw e;
     }
   }
@@ -75,7 +78,7 @@ export const useExternalProvider = (): IUseExternalProvider => {
       // Redirect to the sign-out URL
       window.location.assign(url);
     } catch (e) {
-      console.error(e);
+      logger.error("External sign-out failed:", e);
       throw e;
     }
   }
@@ -85,8 +88,7 @@ export const useExternalProvider = (): IUseExternalProvider => {
     try {
       result = await externalSecurityClient.getExternalLoginProviders();
     } catch (e) {
-      console.error(e);
-      // TODO check error in app!!!
+      logger.error("Failed to get external login providers:", e);
     }
 
     return result;

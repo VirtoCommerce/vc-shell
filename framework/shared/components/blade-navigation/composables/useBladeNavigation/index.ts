@@ -20,6 +20,9 @@ import { notification as notificationService } from "./../../../notifications";
 import "core-js/actual/array/find-last";
 import "core-js/actual/array/find-last-index";
 import { i18n } from "../../../../../core/plugins/i18n";
+import { createLogger } from "../../../../../core/utilities";
+
+const logger = createLogger("use-blade-navigation");
 
 // Internal modules
 import { _createBladeStateManagement } from "./internal/bladeState";
@@ -252,7 +255,7 @@ export function useBladeNavigation(): IUseBladeNavigation {
       // Find current blade in the blades list
       const currentBlade = findParentBlade(currentCallingInstance);
       if (!currentBlade) {
-        console.error("onParentCall: Could not identify current blade in the global list.");
+        logger.error("onParentCall: Could not identify current blade in the global list.");
         return;
       }
 
@@ -260,7 +263,7 @@ export function useBladeNavigation(): IUseBladeNavigation {
     }
 
     if (bladeIndex <= 0) {
-      console.error("onParentCall: Current blade is workspace (index 0) or invalid, no parent blade available.");
+      logger.error("onParentCall: Current blade is workspace (index 0) or invalid, no parent blade available.");
       return;
     }
 
@@ -268,14 +271,14 @@ export function useBladeNavigation(): IUseBladeNavigation {
     const parentBlade = singleton.blades.value.find((blade) => blade && blade.props.navigation?.idx === bladeIndex - 1);
 
     if (!parentBlade) {
-      console.error(`onParentCall: Parent blade with index ${bladeIndex - 1} not found.`);
+      logger.error(`onParentCall: Parent blade with index ${bladeIndex - 1} not found.`);
       return;
     }
 
     const parentExposedMethods = parentBlade.props.navigation?.instance;
 
     if (!parentExposedMethods) {
-      console.error("onParentCall: Parent blade has no exposed methods (navigation.instance is undefined).");
+      logger.error("onParentCall: Parent blade has no exposed methods (navigation.instance is undefined).");
       return;
     }
 
@@ -286,13 +289,13 @@ export function useBladeNavigation(): IUseBladeNavigation {
       const result = await targetMethod(args.args);
       if (typeof args.callback === "function") args.callback(result);
     } else {
-      console.error(
+      logger.error(
         `onParentCall: Method '${args.method}' is not available or not a function in parent blade '${parentBlade.type?.name}'.`,
       );
-      console.error("Available properties:", Object.keys(parentExposedMethods));
-      console.error(`Requested method '${args.method}' type:`, typeof targetMethod);
-      console.error(`Requested method '${args.method}' value:`, targetMethod);
-      console.error(
+      logger.error("Available properties:", Object.keys(parentExposedMethods));
+      logger.error(`Requested method '${args.method}' type:`, typeof targetMethod);
+      logger.error(`Requested method '${args.method}' value:`, targetMethod);
+      logger.error(
         `Please ensure that the method '${args.method}' is defined and exposed using defineExpose() in the parent blade component.`,
       );
     }
@@ -315,7 +318,7 @@ export function useBladeNavigation(): IUseBladeNavigation {
       if (typeof singleton._internal_openBlade === "function") {
         return singleton._internal_openBlade(args, isWorkspace, sourceBladeInstanceForOpening);
       } else {
-        console.error("Internal _internal_openBlade method not found on singleton.");
+        logger.error("Internal _internal_openBlade method not found on singleton.");
         return Promise.reject(new Error("Blade navigation internal error."));
       }
     },

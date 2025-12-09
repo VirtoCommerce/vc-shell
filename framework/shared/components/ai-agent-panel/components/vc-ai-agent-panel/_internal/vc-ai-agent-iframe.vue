@@ -1,0 +1,77 @@
+<template>
+  <div class="vc-ai-agent-iframe">
+    <iframe
+      v-if="url"
+      ref="iframeRef"
+      :src="url"
+      class="vc-ai-agent-iframe__frame"
+      sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox"
+      allow="clipboard-read; clipboard-write"
+      @load="onLoad"
+    />
+    <div v-else class="vc-ai-agent-iframe__placeholder">
+      <VcIcon icon="lucide-sparkles" size="xl" class="vc-ai-agent-iframe__placeholder-icon" />
+      <p class="vc-ai-agent-iframe__placeholder-text">AI Agent URL not configured</p>
+    </div>
+  </div>
+</template>
+
+<script lang="ts" setup>
+import { ref, onMounted, watch } from "vue";
+import { VcIcon } from "../../../../../../ui/components";
+
+const props = defineProps<{
+  url: string;
+}>();
+
+const emit = defineEmits<{
+  (e: "iframe-ready", iframe: HTMLIFrameElement): void;
+}>();
+
+const iframeRef = ref<HTMLIFrameElement | null>(null);
+
+// Emit iframe ref as soon as it's available in the DOM (before @load)
+// This is critical because chatbot sends CHAT_READY before @load fires
+watch(iframeRef, (iframe) => {
+  if (iframe) {
+    emit("iframe-ready", iframe);
+  }
+}, { immediate: true });
+
+const onLoad = () => {
+  // onLoad is now just for logging/debugging, ref is already emitted
+  console.debug("[VcAiAgentIframe] Iframe loaded");
+};
+
+onMounted(() => {
+  // Emit again on mount in case watch didn't catch it
+  if (iframeRef.value) {
+    emit("iframe-ready", iframeRef.value);
+  }
+});
+</script>
+
+<style lang="scss">
+.vc-ai-agent-iframe {
+  @apply tw-w-full tw-h-full tw-flex tw-flex-col;
+
+  &__frame {
+    @apply tw-w-full tw-h-full tw-border-0 tw-flex-1;
+    background-color: var(--ai-panel-iframe-bg, var(--additional-50));
+  }
+
+  &__placeholder {
+    @apply tw-w-full tw-h-full tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-4;
+    background-color: var(--ai-panel-placeholder-bg, var(--neutrals-50));
+  }
+
+  &__placeholder-icon {
+    color: var(--ai-panel-placeholder-icon-color, var(--neutrals-300));
+  }
+
+  &__placeholder-text {
+    @apply tw-text-sm tw-m-0;
+    color: var(--ai-panel-placeholder-text-color, var(--neutrals-500));
+  }
+}
+</style>

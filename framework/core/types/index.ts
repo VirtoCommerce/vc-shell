@@ -3,6 +3,9 @@ import { CoreBladeExposed } from "../../shared";
 import { ComponentPublicInstanceConstructor } from "../../shared/utilities";
 import { IBladeInstance } from "../../shared/components/blade-navigation/types";
 
+// Re-export AI Agent types
+export * from "./ai-agent";
+
 // Type instead of interface here is workaround for:
 // https://github.com/microsoft/TypeScript/issues/15300
 // (index signature is missing for interfaces in Typescript,

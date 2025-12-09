@@ -16,3 +16,4 @@ export * from "./generic-dropdown";
 export * from "./draggable-dashboard";
 export * from "./dashboard-widget-card";
 export * from "./multilanguage-selector";
+export * from "./ai-agent-panel";

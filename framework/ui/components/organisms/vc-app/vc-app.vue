@@ -30,6 +30,8 @@
         class="vc-app__workspace"
       >
         <VcBladeNavigation />
+        <!-- AI Agent Panel -->
+        <VcAiAgentPanel v-if="aiAgentEnabled" />
       </div>
 
       <!-- Popup container -->
@@ -48,6 +50,7 @@ import {
   NotificationDropdown,
   BladeRoutesRecord,
 } from "./../../../../shared/components";
+import { VcAiAgentPanel } from "../../../../shared/components/ai-agent-panel";
 import { useAppSwitcher } from "../../../../shared/components/app-switcher/composables/useAppSwitcher";
 import { provideAppBarWidget, useNotifications } from "../../../../core/composables";
 import { useRoute, useRouter } from "vue-router";
@@ -64,6 +67,9 @@ import { DynamicModulesKey, EMBEDDED_MODE } from "../../../../injection-keys";
 import { provideMenuService } from "../../../../core/composables/useMenuService";
 import { provideAppBarMobileButtonsService } from "../../../../core/composables/useAppBarMobileButtons";
 import { useUserManagement } from "../../../../core/composables/useUserManagement";
+import { createLogger } from "../../../../core/utilities";
+import { provideBladeSelectionService } from "../../../../core/composables/useBladeSelection";
+import { provideAiAgentService } from "../../../../core/composables/useAiAgent";
 
 export interface Props {
   isReady: boolean;
@@ -75,6 +81,12 @@ export interface Props {
   disableMenu?: boolean;
   disableAppSwitcher?: boolean;
   role?: string;
+  /** Enable AI Agent panel */
+  aiAgentEnabled?: boolean;
+  /** AI Agent iframe URL */
+  aiAgentUrl?: string;
+  /** AI Agent panel title */
+  aiAgentTitle?: string;
 }
 
 defineEmits<{
@@ -92,7 +104,8 @@ defineSlots<{
 const props = defineProps<Props>();
 const slots = useSlots();
 
-console.debug("vc-app: Init vc-app");
+const logger = createLogger("vc-app");
+logger.debug("Init vc-app");
 
 const internalRoutes = inject("bladeRoutes") as BladeRoutesRecord[];
 const dynamicModules = inject(DynamicModulesKey, undefined);
@@ -163,7 +176,7 @@ registerMobileButton({
 });
 
 const onMenuItemClick = function (item: MenuItem) {
-  console.debug(`vc-app#onMenuItemClick() called.`);
+  logger.debug("onMenuItemClick() called");
 
   if (item.routeId) {
     const bladeComponent = resolveBladeByName(item.routeId);
@@ -175,7 +188,7 @@ const onMenuItemClick = function (item: MenuItem) {
         true,
       );
     } else {
-      console.error(`Blade component with routeId '${item.routeId}' not found.`);
+      logger.error(`Blade component with routeId '${item.routeId}' not found.`);
     }
   } else if (!item.routeId && item.url) {
     const menuRoute = routes.find((r) => {
@@ -218,6 +231,18 @@ provideDashboardService();
 provideMenuService();
 provideGlobalSearch();
 provide(EMBEDDED_MODE, isEmbedded);
+
+// Provide AI Agent services
+const bladeSelectionService = provideBladeSelectionService();
+if (props.aiAgentEnabled) {
+  provideAiAgentService({
+    selectionService: bladeSelectionService,
+    config: {
+      url: props.aiAgentUrl ?? "",
+      title: props.aiAgentTitle ?? "Virto OZ",
+    },
+  });
+}
 // Provide slots to child components with all necessary props and handlers
 provideAppSlots(
   slots,
@@ -245,6 +270,9 @@ onUnmounted(() => {
 <style lang="scss">
 :root {
   --app-background: var(--secondary-200);
+  // Shared transition timing for synchronized animations
+  --app-panel-transition-duration: 0.3s;
+  --app-panel-transition-timing: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .vc-app {

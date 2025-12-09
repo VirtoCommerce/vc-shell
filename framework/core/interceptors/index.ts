@@ -2,6 +2,9 @@
 import { Router } from "vue-router";
 import { useUserManagement } from "../composables/useUserManagement";
 import { notification } from "../../shared";
+import { createLogger } from "../utilities";
+
+const logger = createLogger("interceptors");
 
 export function registerInterceptors(router: Router) {
   const { fetch: originalFetch } = window;
@@ -16,8 +19,8 @@ export function registerInterceptors(router: Router) {
      * @returns A promise that resolves to the response from the API call.
      */
     if (window.__DEMO_MODE__) {
-      console.warn("CANCELLED FETCH WHILE IN __DEMO_MODE__: ", ...args);
-      console.warn("Please logout and add APP_PLATFORM_URL into .env file of your application to enable API calls");
+      logger.warn("CANCELLED FETCH WHILE IN __DEMO_MODE__: ", ...args);
+      logger.warn("Please logout and add APP_PLATFORM_URL into .env file of your application to enable API calls");
       return new Promise((resolve: any) => {
         /**
          * This conditions are mocking login, currentuser API calls for demo purposes.

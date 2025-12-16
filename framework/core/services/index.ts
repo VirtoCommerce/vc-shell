@@ -7,5 +7,5 @@ export * from "./menu-service";
 export * from "./settings-menu-service";
 export * from "./toolbar-service";
 export * from "./widget-service";
-export * from "./blade-selection-service";
-export * from "./ai-agent-service";
+// blade-selection-service and ai-agent-service are now part of the ai-agent plugin
+// export * from "./core/plugins/ai-agent";

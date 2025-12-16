@@ -2,3 +2,23 @@
 /* eslint-disable */
 // ReSharper disable InconsistentNaming
 // @ts-nocheck
+
+// ISO 8601 date string pattern for JSON reviver
+const ISO_DATE_PATTERN = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})?$/;
+
+/**
+ * JSON parse reviver that converts ISO date strings to Date objects.
+ * This is needed because when using interface-based types (after NSwag migration),
+ * dates are not automatically converted from strings to Date objects.
+ */
+function dateReviver(key: string, value: unknown): unknown {
+  if (typeof value === "string" && ISO_DATE_PATTERN.test(value)) {
+    const date = new Date(value);
+    // Only return Date if it's valid
+    if (!isNaN(date.getTime())) {
+      return date;
+    }
+  }
+  return value;
+}
+

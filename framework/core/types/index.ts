@@ -3,8 +3,8 @@ import { CoreBladeExposed } from "../../shared";
 import { ComponentPublicInstanceConstructor } from "../../shared/utilities";
 import { IBladeInstance } from "../../shared/components/blade-navigation/types";
 
-// Re-export AI Agent types
-export * from "./ai-agent";
+// AI Agent types are now part of the ai-agent plugin
+// export * from "./plugins/ai-agent/types";
 
 // Type instead of interface here is workaround for:
 // https://github.com/microsoft/TypeScript/issues/15300

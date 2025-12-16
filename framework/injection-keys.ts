@@ -2,7 +2,7 @@ import { InjectionKey, ComputedRef, type Component } from "vue";
 import { BladeVNode, IBladeInstance } from "./shared/components/blade-navigation/types";
 import { NotificationTemplateConstructor } from "./core/types";
 import { IToolbarService } from "./core/services/toolbar-service";
-import { IBladeSelectionService, IAiAgentService } from "./core/types/ai-agent";
+import { IAiAgentService } from "./core/plugins/ai-agent/types";
 
 import {
   IWidgetService,
@@ -44,7 +44,6 @@ export const DynamicModulesKey: InjectionKey<typeof window.VcShellDynamicModules
 export const EmbeddedModeKey: InjectionKey<boolean> = Symbol("EmbeddedMode");
 
 // AI Agent keys
-export const BladeSelectionServiceKey: InjectionKey<IBladeSelectionService> = Symbol("BladeSelectionService");
 export const AiAgentServiceKey: InjectionKey<IAiAgentService> = Symbol("AiAgentService");
 
 // Legacy aliases (deprecated - use the new *Key exports instead)

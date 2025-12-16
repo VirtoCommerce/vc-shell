@@ -41,8 +41,14 @@ const props = withDefaults(defineProps<Props>(), {
 const slots = useSlots();
 const isExpanded = useLocalStorage("VC_BLADE_TOOLBAR_IS_EXPANDED", true);
 const { hasAccess } = usePermissions();
-const { registerToolbarItem, unregisterToolbarItem, getToolbarItems, clearBladeToolbarItems, updateToolbarItem } =
-  useToolbar();
+const {
+  registerToolbarItem,
+  unregisterToolbarItem,
+  getToolbarItems,
+  clearBladeToolbarItems,
+  updateToolbarItem,
+  registeredToolbarItems,
+} = useToolbar();
 
 // Get the ID of the current blade
 const blade = useBlade();
@@ -116,6 +122,10 @@ function clearToolbarItems(): void {
 
 // Filter visible items from service
 const visibleItems = computed(() => {
+  // Access registeredToolbarItems.length to create reactive dependency
+  // This ensures computed recalculates when new items are registered
+  void registeredToolbarItems.length;
+
   return getToolbarItems()
     .filter(
       (item) =>

@@ -5,6 +5,7 @@ import * as components from "./ui/components";
 import * as directives from "./core/directives";
 import { useBreakpoints } from "@vueuse/core";
 import { i18n, permissions, signalR } from "./core/plugins";
+import { aiAgentPlugin } from "./core/plugins/ai-agent";
 import { BladeVNode, SharedModule, notification } from "./shared";
 import * as sharedPages from "./shared/pages/plugin";
 import { registerInterceptors } from "./core/interceptors";
@@ -353,6 +354,10 @@ export default {
         return { name: mainRouteAlias?.name, params: param };
       }
     });
+
+    // AI Agent Plugin - automatically installed if APP_AI_AGENT_URL env variable is set
+    // The plugin checks for the env variable internally and skips if not configured
+    app.use(aiAgentPlugin);
   },
 } as VcShellFrameworkPlugin;
 
@@ -371,3 +376,6 @@ export * from "./core/utilities";
 export * from "./core/constants";
 
 export * from "./shared";
+
+// AI Agent Plugin
+export * from "./core/plugins/ai-agent";

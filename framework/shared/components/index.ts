@@ -16,4 +16,5 @@ export * from "./generic-dropdown";
 export * from "./draggable-dashboard";
 export * from "./dashboard-widget-card";
 export * from "./multilanguage-selector";
-export * from "./ai-agent-panel";
+// ai-agent-panel is now part of the ai-agent plugin
+// export * from "./core/plugins/ai-agent";

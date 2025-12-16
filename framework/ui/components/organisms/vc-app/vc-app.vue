@@ -30,8 +30,8 @@
         class="vc-app__workspace"
       >
         <VcBladeNavigation />
-        <!-- AI Agent Panel -->
-        <VcAiAgentPanel v-if="aiAgentEnabled" />
+        <!-- AI Agent Panel (shown when plugin is installed) -->
+        <VcAiAgentPanel v-if="aiAgentConfig?.url" />
       </div>
 
       <!-- Popup container -->
@@ -50,8 +50,9 @@ import {
   NotificationDropdown,
   BladeRoutesRecord,
 } from "./../../../../shared/components";
-import { VcAiAgentPanel } from "../../../../shared/components/ai-agent-panel";
 import { useAppSwitcher } from "../../../../shared/components/app-switcher/composables/useAppSwitcher";
+import { VcAiAgentPanel, provideAiAgentService } from "../../../../core/plugins/ai-agent";
+import type { IAiAgentConfig } from "../../../../core/plugins/ai-agent";
 import { provideAppBarWidget, useNotifications } from "../../../../core/composables";
 import { useRoute, useRouter } from "vue-router";
 import { watchOnce } from "@vueuse/core";
@@ -68,8 +69,6 @@ import { provideMenuService } from "../../../../core/composables/useMenuService"
 import { provideAppBarMobileButtonsService } from "../../../../core/composables/useAppBarMobileButtons";
 import { useUserManagement } from "../../../../core/composables/useUserManagement";
 import { createLogger } from "../../../../core/utilities";
-import { provideBladeSelectionService } from "../../../../core/composables/useBladeSelection";
-import { provideAiAgentService } from "../../../../core/composables/useAiAgent";
 
 export interface Props {
   isReady: boolean;
@@ -81,12 +80,6 @@ export interface Props {
   disableMenu?: boolean;
   disableAppSwitcher?: boolean;
   role?: string;
-  /** Enable AI Agent panel */
-  aiAgentEnabled?: boolean;
-  /** AI Agent iframe URL */
-  aiAgentUrl?: string;
-  /** AI Agent panel title */
-  aiAgentTitle?: string;
 }
 
 defineEmits<{
@@ -109,6 +102,8 @@ logger.debug("Init vc-app");
 
 const internalRoutes = inject("bladeRoutes") as BladeRoutesRecord[];
 const dynamicModules = inject(DynamicModulesKey, undefined);
+const aiAgentConfig = inject<IAiAgentConfig | undefined>("aiAgentConfig", undefined);
+const aiAgentAddGlobalToolbarButton = inject<boolean>("aiAgentAddGlobalToolbarButton", true);
 
 const isAppReady = ref(props.isReady);
 
@@ -232,15 +227,11 @@ provideMenuService();
 provideGlobalSearch();
 provide(EMBEDDED_MODE, isEmbedded);
 
-// Provide AI Agent services
-const bladeSelectionService = provideBladeSelectionService();
-if (props.aiAgentEnabled) {
+// Provide AI Agent service if config is available (via plugin)
+if (aiAgentConfig?.url) {
   provideAiAgentService({
-    selectionService: bladeSelectionService,
-    config: {
-      url: props.aiAgentUrl ?? "",
-      title: props.aiAgentTitle ?? "Virto OZ",
-    },
+    config: aiAgentConfig,
+    addGlobalToolbarButton: aiAgentAddGlobalToolbarButton,
   });
 }
 // Provide slots to child components with all necessary props and handlers

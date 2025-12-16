@@ -21,5 +21,5 @@ export * from "./useSettingsMenu";
 export * from "./useToolbar";
 export * from "./useDynamicProperties";
 export * from "./useBlade";
-export * from "./useBladeSelection";
-export * from "./useAiAgent";
+// useBladeSelection and useAiAgent are now part of the ai-agent plugin
+// export * from "./core/plugins/ai-agent";

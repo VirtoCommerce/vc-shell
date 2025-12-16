@@ -1,16 +1,17 @@
-import { inject, provide, computed } from "vue";
-import { createAiAgentService, IAiAgentServiceInternal } from "../../services/ai-agent-service";
-import { AiAgentServiceKey, LanguageServiceKey } from "../../../injection-keys";
-import {
+import { inject, provide } from "vue";
+import { createAiAgentService, type IAiAgentServiceInternal } from "../services/ai-agent-service";
+import { AiAgentServiceKey, LanguageServiceKey, ToolbarServiceKey } from "../../../../injection-keys";
+import type {
   IAiAgentService,
   IAiAgentConfig,
   IAiAgentMessage,
   IAiAgentBladeContext,
-  IBladeSelectionService,
-} from "../../types/ai-agent";
-import { createLogger, InjectionError } from "../../utilities";
-import { useUser } from "../useUser";
-import { useBladeNavigation } from "../../../shared/components/blade-navigation/composables";
+} from "../types";
+import { createLogger, InjectionError } from "../../../utilities";
+import { useUser } from "../../../composables/useUser";
+import { useBladeNavigation } from "../../../../shared/components/blade-navigation/composables";
+import { AI_AGENT_TOOLBAR_BUTTON_ID, AI_AGENT_TOOLBAR_BUTTON_ICON, AI_AGENT_TOOLBAR_BUTTON_TITLE } from "../constants";
+import type { IToolbarService } from "../../../services/toolbar-service";
 
 const logger = createLogger("use-ai-agent");
 
@@ -20,28 +21,26 @@ const logger = createLogger("use-ai-agent");
 export interface ProvideAiAgentServiceOptions {
   /** Initial configuration for the AI agent */
   config?: Partial<IAiAgentConfig>;
-  /** Custom function to get auth token (optional - defaults to empty string) */
-  authTokenGetter?: () => string;
-  /** Blade selection service instance (required) */
-  selectionService: IBladeSelectionService;
+  /**
+   * Whether to add the AI button to all blade toolbars automatically.
+   * Default: true
+   */
+  addGlobalToolbarButton?: boolean;
 }
 
 /**
  * Provides the AI agent service at the current component level.
- * Should be called once at the app level (in VcApp).
+ * Should be called once at the app level (in VcApp or plugin install).
  *
- * @param options - Configuration options including selectionService
+ * @param options - Configuration options
  */
-export function provideAiAgentService(options: ProvideAiAgentServiceOptions): IAiAgentServiceInternal {
-  const { selectionService } = options;
-
+export function provideAiAgentService(options?: ProvideAiAgentServiceOptions): IAiAgentServiceInternal {
   const languageService = inject(LanguageServiceKey);
-  const { user } = useUser();
+  const { user, getAccessToken } = useUser();
   const { blades, openBlade, resolveBladeByName } = useBladeNavigation();
 
   // Create the service
   const service = createAiAgentService({
-    selectionService,
     userGetter: () => {
       if (!user.value) return undefined;
       return {
@@ -64,8 +63,8 @@ export function provideAiAgentService(options: ProvideAiAgentServiceOptions): IA
         options: lastBlade.props?.options,
       };
     },
-    authTokenGetter: options?.authTokenGetter ?? (() => ""),
     localeGetter: () => languageService?.currentLocale.value ?? "en",
+    tokenGetter: getAccessToken,
     navigateToBlade: (bladeName: string, param?: string, bladeOptions?: Record<string, unknown>) => {
       const blade = resolveBladeByName(bladeName);
       if (blade) {
@@ -89,6 +88,29 @@ export function provideAiAgentService(options: ProvideAiAgentServiceOptions): IA
   provide(AiAgentServiceKey, service);
   logger.debug("AiAgentService provided");
 
+  // Register global toolbar button with wildcard "*" if enabled
+  const addGlobalToolbarButton = options?.addGlobalToolbarButton ?? true;
+  if (addGlobalToolbarButton) {
+    // Get toolbar service from injection (already created by VcShell plugin)
+    const toolbarService = inject<IToolbarService | null>(ToolbarServiceKey, null);
+    if (toolbarService) {
+      toolbarService.registerToolbarItem(
+        {
+          id: AI_AGENT_TOOLBAR_BUTTON_ID,
+          icon: AI_AGENT_TOOLBAR_BUTTON_ICON,
+          title: AI_AGENT_TOOLBAR_BUTTON_TITLE,
+          clickHandler: () => {
+            service.togglePanel();
+          },
+        },
+        "*", // Wildcard for all blades
+      );
+      logger.debug("Global AI toolbar button registered with wildcard '*'");
+    } else {
+      logger.warn("Toolbar service not available, AI button not registered");
+    }
+  }
+
   return service;
 }
 
@@ -106,6 +128,8 @@ export interface UseAiAgentReturn {
   isOpen: IAiAgentService["isOpen"];
   /** Whether panel is in expanded state */
   isExpanded: IAiAgentService["isExpanded"];
+  /** Total count of items in current context */
+  totalItemsCount: IAiAgentService["totalItemsCount"];
   /** Open the AI panel */
   openPanel: () => void;
   /** Close the AI panel */
@@ -136,8 +160,8 @@ export interface UseAiAgentReturn {
  *
  * // Listen for messages from AI agent
  * onMessage((message) => {
- *   if (message.type === 'AI_AGENT_ACTION_REQUEST') {
- *     // Handle action request
+ *   if (message.type === 'PREVIEW_CHANGES') {
+ *     // Handle preview changes
  *   }
  * });
  * ```
@@ -156,6 +180,7 @@ export function useAiAgent(): UseAiAgentReturn {
     context: service.context,
     isOpen: service.isOpen,
     isExpanded: service.isExpanded,
+    totalItemsCount: service.totalItemsCount,
 
     // Panel control
     openPanel: service.openPanel,

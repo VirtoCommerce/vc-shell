@@ -1,11 +1,11 @@
 <template>
-  <div class="tw-w-full tw-flex tw-flex-col tw-grow tw-basis-0">
+  <div class="vc-blade-navigation tw-flex tw-flex-col tw-grow tw-basis-0 tw-min-w-0 tw-overflow-hidden">
     <render></render>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { Ref, computed, inject, h, toRef, VNode, nextTick, TransitionGroup } from "vue";
+import { Ref, computed, inject, h, toRef, VNode, nextTick, vShow, withDirectives } from "vue";
 import { RouterView, useRoute } from "vue-router";
 import { BladeVNode, IParentCallArgs, useBladeNavigation } from "./../../../../../shared";
 import { ErrorInterceptor } from "./../../../error-interceptor";
@@ -72,103 +72,97 @@ const render = () => {
     return h(RouterView);
   }
 
-  return h("div", { class: "vc-blade-navigation__container" }, [
-    h(
-      TransitionGroup,
-      {
-        name: "blade-slide",
-        tag: "div",
-        class: "vc-blade-navigation__blades",
-      },
-      () =>
-        blades.value?.reduce(
-          (arr, bladeVNode, index) => {
-            if (bladeVNode.type.isBlade) {
-              const hiddenQuantity = blades.value.filter(
-                (x) => x.props.navigation.isVisible === false && x.props.navigation.idx < index,
-              ).length;
+  return h("div", { class: "tw-overflow-hidden tw-flex tw-grow tw-basis-0 tw-relative tw-min-w-0" }, [
+    blades.value?.reduce(
+      (arr, bladeVNode, index) => {
+        if (bladeVNode.type.isBlade) {
+          const hiddenQuantity = blades.value.filter(
+            (x) => x.props.navigation.isVisible === false && x.props.navigation.idx < index,
+          ).length;
 
-              const isVisible =
-                (bladeVNode.props.navigation.isVisible ||
-                  typeof bladeVNode.props.navigation.isVisible === "undefined") &&
-                index >= quantity.value - visibleBladesCount.value;
+          const filteredBreadcrumbs = breadcrumbs.value.slice(0, index);
+          arr.push(
+            h(
+              ErrorInterceptor,
+              {
+                key: index,
+                capture: true,
+              },
+              {
+                default: ({
+                  error: interceptorError,
+                  reset: resetInterceptor,
+                }: Parameters<InstanceType<typeof ErrorInterceptor>["$slots"]["default"]>["0"]) => {
+                  const bladeNavigation = bladeVNode.props.navigation;
+                  const activeError = computed(() => interceptorError || bladeNavigation.error?.value);
+                  const handleResetError = () => {
+                    if (interceptorError) {
+                      resetInterceptor();
+                    }
+                    if (bladeNavigation.error?.value) {
+                      clearBladeError(bladeNavigation.idx);
+                    }
+                  };
 
-              // Only render visible blades for TransitionGroup animation
-              if (isVisible) {
-                const filteredBreadcrumbs = breadcrumbs.value.slice(0, index);
-                arr.push(
-                  h(
-                    ErrorInterceptor,
-                    {
-                      key: `blade_${bladeVNode.type?.name}_${index}`,
-                      capture: true,
-                    },
-                    {
-                      default: ({
-                        error: interceptorError,
-                        reset: resetInterceptor,
-                      }: Parameters<InstanceType<typeof ErrorInterceptor>["$slots"]["default"]>["0"]) => {
-                        const bladeNavigation = bladeVNode.props.navigation;
-                        const activeError = computed(() => interceptorError || bladeNavigation.error?.value);
-                        const handleResetError = () => {
-                          if (interceptorError) {
-                            resetInterceptor();
-                          }
-                          if (bladeNavigation.error?.value) {
-                            clearBladeError(bladeNavigation.idx);
-                          }
-                        };
-
-                        return h(
-                          VcBladeView,
-                          {
-                            key: `${bladeVNode.type?.name}_${index}` || `blade_${index}`,
-                            blade: bladeVNode,
-                            expandable: quantity.value > 1,
-                            error: activeError.value,
-                            "onReset:error": handleResetError,
-                            breadcrumbs: filteredBreadcrumbs,
-                            backButton:
-                              quantity.value > 1
-                                ? h(VcMobileBackButton, {
-                                    breadcrumbs: filteredBreadcrumbs,
-                                    onBack: () => {
-                                      closeBlade(index);
-                                    },
-                                  })
-                                : undefined,
-                          },
-                          {
-                            default: ({ Component }: { Component: BladeVNode }) => {
-                              return h(Component, {
-                                closable: index >= 1,
-                                expanded: index - hiddenQuantity === quantity.value - 1,
-                                "onClose:blade": () => {
-                                  if (index === 0) return;
+                  return withDirectives(
+                    h(
+                      VcBladeView,
+                      {
+                        key: `${bladeVNode.type?.name}_${index}` || `blade_${index}`,
+                        blade: bladeVNode,
+                        expandable: quantity.value > 1,
+                        error: activeError.value,
+                        "onReset:error": handleResetError,
+                        breadcrumbs: filteredBreadcrumbs,
+                        backButton:
+                          quantity.value > 1
+                            ? h(VcMobileBackButton, {
+                                breadcrumbs: filteredBreadcrumbs,
+                                onBack: () => {
                                   closeBlade(index);
                                 },
-                                "onParent:call": async (args: IParentCallArgs) => {
-                                  await nextTick(async () => {
-                                    // Use the centralized onParentCall with the current blade index
-                                    await onParentCall(args, index);
-                                  });
-                                },
-                                onVnodeUnmounted: resetInterceptor,
+                              })
+                            : undefined,
+                      },
+                      {
+                        default: ({ Component }: { Component: BladeVNode }) => {
+                          return h(Component, {
+                            closable: index >= 1,
+                            expanded: index - hiddenQuantity === quantity.value - 1,
+                            "onClose:blade": () => {
+                              if (index === 0) return;
+                              closeBlade(index);
+                            },
+                            "onParent:call": async (args: IParentCallArgs) => {
+                              await nextTick(async () => {
+                                // Use the centralized onParentCall with the current blade index
+                                await onParentCall(args, index);
                               });
                             },
-                          },
-                        );
+                            onVnodeUnmounted: resetInterceptor,
+                          });
+                        },
                       },
-                    },
-                  ),
-                );
-              }
-            }
+                    ),
 
-            return arr;
-          },
-          [] as unknown as VNode[],
-        ),
+                    [
+                      [
+                        vShow,
+                        (bladeVNode.props.navigation.isVisible ||
+                          typeof bladeVNode.props.navigation.isVisible === "undefined") &&
+                          index >= quantity.value - visibleBladesCount.value,
+                      ],
+                    ],
+                  );
+                },
+              },
+            ),
+          );
+        }
+
+        return arr;
+      },
+      [] as unknown as VNode[],
     ),
   ]);
 };
@@ -185,7 +179,8 @@ const render = () => {
 .vc-blade-navigation__container {
   @apply tw-overflow-hidden tw-flex tw-grow tw-basis-0 tw-relative;
   // Use shared transition timing for synchronized animations with AI panel
-  transition: width var(--app-panel-transition-duration, 0.3s) var(--app-panel-transition-timing, cubic-bezier(0.4, 0, 0.2, 1));
+  transition: width var(--app-panel-transition-duration, 0.3s)
+    var(--app-panel-transition-timing, cubic-bezier(0.4, 0, 0.2, 1));
 }
 
 .vc-blade-navigation__blades {
@@ -196,7 +191,8 @@ const render = () => {
 .blade-slide-enter-active,
 .blade-slide-leave-active {
   transition:
-    transform var(--app-panel-transition-duration, 0.3s) var(--app-panel-transition-timing, cubic-bezier(0.4, 0, 0.2, 1)),
+    transform var(--app-panel-transition-duration, 0.3s)
+      var(--app-panel-transition-timing, cubic-bezier(0.4, 0, 0.2, 1)),
     opacity var(--app-panel-transition-duration, 0.3s) var(--app-panel-transition-timing, cubic-bezier(0.4, 0, 0.2, 1));
 }
 
@@ -226,6 +222,7 @@ const render = () => {
 
 // Move animation for existing blades when new one enters
 .blade-slide-move {
-  transition: transform var(--app-panel-transition-duration, 0.3s) var(--app-panel-transition-timing, cubic-bezier(0.4, 0, 0.2, 1));
+  transition: transform var(--app-panel-transition-duration, 0.3s)
+    var(--app-panel-transition-timing, cubic-bezier(0.4, 0, 0.2, 1));
 }
 </style>

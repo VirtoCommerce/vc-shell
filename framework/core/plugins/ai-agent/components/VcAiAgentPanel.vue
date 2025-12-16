@@ -11,7 +11,7 @@
       <VcAiAgentHeader
         :title="config.title"
         :is-expanded="isExpanded"
-        :selection-count="totalSelectedCount"
+        :items-count="totalItemsCount"
         @close="closePanel"
         @expand="expandPanel"
         @collapse="collapsePanel"
@@ -29,14 +29,13 @@
 
 <script lang="ts" setup>
 import { computed, onUnmounted, inject } from "vue";
-import { AiAgentServiceKey, BladeSelectionServiceKey } from "../../../../../injection-keys";
-import { IAiAgentServiceInternal } from "../../../../../core/services/ai-agent-service";
-import VcAiAgentHeader from "./_internal/vc-ai-agent-header.vue";
-import VcAiAgentIframe from "./_internal/vc-ai-agent-iframe.vue";
+import { AiAgentServiceKey } from "../../../../injection-keys";
+import type { IAiAgentServiceInternal } from "../services/ai-agent-service";
+import VcAiAgentHeader from "./_internal/VcAiAgentHeader.vue";
+import VcAiAgentIframe from "./_internal/VcAiAgentIframe.vue";
 
-// Inject services
+// Inject AI agent service
 const aiAgentService = inject(AiAgentServiceKey) as IAiAgentServiceInternal | undefined;
-const selectionService = inject(BladeSelectionServiceKey);
 
 if (!aiAgentService) {
   console.error("[VcAiAgentPanel] AiAgentService not provided");
@@ -46,7 +45,7 @@ if (!aiAgentService) {
 const config = computed(() => aiAgentService?.config.value ?? { url: "", title: "AI Assistant", width: 350, expandedWidth: 500 });
 const isOpen = computed(() => aiAgentService?.isOpen.value ?? false);
 const isExpanded = computed(() => aiAgentService?.isExpanded.value ?? false);
-const totalSelectedCount = computed(() => selectionService?.totalSelectedCount.value ?? 0);
+const totalItemsCount = computed(() => aiAgentService?.totalItemsCount.value ?? 0);
 
 // Panel style with dynamic width
 const panelStyle = computed(() => ({
@@ -63,8 +62,7 @@ const onIframeReady = (iframe: HTMLIFrameElement) => {
   aiAgentService?._setIframeRef(iframe);
 };
 
-// Listener is auto-registered when service is created
-// We only need to clean up iframe ref on unmount
+// Clean up iframe ref on unmount
 onUnmounted(() => {
   aiAgentService?._setIframeRef(null);
 });
@@ -115,7 +113,7 @@ onUnmounted(() => {
   }
 
   &__content {
-    @apply tw-flex-1 tw-overflow-hidden tw-flex tw-flex-col;
+    @apply tw-flex-1 tw-overflow-hidden tw-flex tw-flex-col tw-pt-3;
   }
 }
 </style>

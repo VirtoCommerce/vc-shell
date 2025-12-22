@@ -80,6 +80,13 @@ export interface IAiAgentConfig {
   expandedWidth?: number;
   /** Allowed origins for postMessage (default: ["*"]) */
   allowedOrigins?: string[];
+  /**
+   * Tenant identifier for the platform instance.
+   * This should be a static value identifying the platform installation (e.g., "virto", "acme-corp").
+   * Configured by the host application via VirtoShellFramework options.
+   *
+   */
+  tenantId?: string;
 }
 
 /**
@@ -225,6 +232,8 @@ export interface IInitContextPayload {
   userId: string;
   /** User locale */
   locale: string;
+  /** Tenant identifier (from JWT or host app) */
+  tenantId?: string;
   /** Current blade context */
   blade: IChatBladeContext;
   /** Context type - determines chatbot UI behavior */
@@ -241,6 +250,8 @@ export interface IInitContextPayload {
 export interface IUpdateContextPayload {
   /** Updated blade context (if changed) */
   blade?: IChatBladeContext;
+  /** Tenant identifier (from JWT or host app) */
+  tenantId?: string;
   /** Context type - determines chatbot UI behavior */
   contextType: AiAgentContextType;
   /** Data items - always array of full objects */

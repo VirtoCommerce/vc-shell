@@ -60,7 +60,12 @@ export interface IAiAgentServiceInternal extends IAiAgentService {
   /** Stop listening for postMessage events */
   _stopListening: () => void;
   /** Update context data for a blade (called by useAiAgentContext) */
-  _setContextData: (items: Record<string, unknown>[], type: AiAgentContextType, suggestions?: ISuggestion[], bladeId?: string) => void;
+  _setContextData: (
+    items: Record<string, unknown>[],
+    type: AiAgentContextType,
+    suggestions?: ISuggestion[],
+    bladeId?: string,
+  ) => void;
   /** Register preview changes handler */
   _onPreviewChanges: (handler: (payload: IPreviewChangesPayload) => void) => () => void;
 }
@@ -78,6 +83,29 @@ function toBladeContext(blade: IAiAgentBladeContext | null): IChatBladeContext {
     title: blade.title || blade.name,
     param: blade.param,
   };
+}
+
+/**
+ * Decode organization_id from JWT if present.
+ * Used as fallback when tenantId is not configured in app options.
+ *
+ * @deprecated Prefer configuring tenantId via VirtoShellFramework aiAgent options.
+ * organization_id from JWT identifies a specific organization within the platform,
+ * while tenantId should identify the platform installation itself.
+ */
+function decodeOrganizationIdFromJwt(token?: string | null): string | undefined {
+  if (!token) return undefined;
+  try {
+    const parts = token.split(".");
+    if (parts.length < 2) return undefined;
+    const base64 = parts[1].replace(/-/g, "+").replace(/_/g, "/");
+    const json = atob(base64);
+    const payload = JSON.parse(json);
+    return payload.organization_id;
+  } catch (error) {
+    logger.debug("decodeOrganizationIdFromJwt_failed", error);
+    return undefined;
+  }
 }
 
 /**
@@ -176,12 +204,19 @@ export function createAiAgentService(options: CreateAiAgentServiceOptions): IAiA
    * Build INIT_CONTEXT payload for chatbot
    * Uses cloneDeep to ensure data is fully serializable (postMessage cannot clone Vue proxies)
    * Fetches fresh access token (with automatic refresh if expired)
+   *
+   * tenantId priority:
+   * 1. config.tenantId (configured by app via VirtoShellFramework options)
+   * 2. organization_id from JWT (deprecated fallback)
    */
   const buildInitContextPayload = async (): Promise<IInitContextPayload> => {
-    const accessToken = tokenGetter ? (await tokenGetter()) ?? undefined : undefined;
+    const accessToken = tokenGetter ? ((await tokenGetter()) ?? undefined) : undefined;
+    // Use configured tenantId, fallback to JWT organization_id for backward compatibility
+    const tenantId = config.value.tenantId || decodeOrganizationIdFromJwt(accessToken);
     return {
       userId: userGetter()?.id || "",
       locale: localeGetter(),
+      tenantId,
       blade: toBladeContext(bladeGetter()),
       contextType: contextType.value,
       items: cloneDeep(contextItems.value),
@@ -194,10 +229,17 @@ export function createAiAgentService(options: CreateAiAgentServiceOptions): IAiA
    * Build UPDATE_CONTEXT payload for chatbot
    * Uses cloneDeep to ensure data is fully serializable (postMessage cannot clone Vue proxies)
    * Fetches fresh access token (with automatic refresh if expired)
+   *
+   * tenantId priority:
+   * 1. config.tenantId (configured by app via VirtoShellFramework options)
+   * 2. organization_id from JWT (deprecated fallback)
    */
   const buildUpdateContextPayload = async (): Promise<IUpdateContextPayload> => {
-    const accessToken = tokenGetter ? (await tokenGetter()) ?? undefined : undefined;
+    const accessToken = tokenGetter ? ((await tokenGetter()) ?? undefined) : undefined;
+    // Use configured tenantId, fallback to JWT organization_id for backward compatibility
+    const tenantId = config.value.tenantId || decodeOrganizationIdFromJwt(accessToken);
     return {
+      tenantId,
       blade: toBladeContext(bladeGetter()),
       contextType: contextType.value,
       items: cloneDeep(contextItems.value),
@@ -363,7 +405,12 @@ export function createAiAgentService(options: CreateAiAgentServiceOptions): IAiA
    * Set context data for a specific blade (called by useAiAgentContext)
    * If bladeId is not provided, uses the current active blade
    */
-  const _setContextData = (items: Record<string, unknown>[], type: AiAgentContextType, suggestions?: ISuggestion[], bladeId?: string): void => {
+  const _setContextData = (
+    items: Record<string, unknown>[],
+    type: AiAgentContextType,
+    suggestions?: ISuggestion[],
+    bladeId?: string,
+  ): void => {
     const targetBladeId = bladeId || bladeGetter()?.id;
     if (!targetBladeId) {
       logger.warn("Cannot set context data: no blade id available");
@@ -452,11 +499,21 @@ export function createAiAgentService(options: CreateAiAgentServiceOptions): IAiA
 
       case "PREVIEW_CHANGES": {
         const previewPayload = message.payload as IPreviewChangesPayload;
+        console.log("[AI-AGENT-SERVICE] PREVIEW_CHANGES received", {
+          handlersCount: previewChangesHandlers.size,
+          payloadDataKeys: previewPayload?.data ? Object.keys(previewPayload.data) : [],
+          changedFields: previewPayload?.changedFields,
+          payloadPreview: JSON.stringify(previewPayload).substring(0, 500),
+        });
+        if (previewChangesHandlers.size === 0) {
+          console.warn("[AI-AGENT-SERVICE] No preview changes handlers registered!");
+        }
         previewChangesHandlers.forEach((handler) => {
           try {
+            console.log("[AI-AGENT-SERVICE] Calling preview changes handler");
             handler(previewPayload);
           } catch (error) {
-            logger.error("Error in preview changes handler:", error);
+            console.error("[AI-AGENT-SERVICE] Error in preview changes handler:", error);
           }
         });
         break;

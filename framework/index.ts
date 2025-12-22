@@ -5,7 +5,7 @@ import * as components from "./ui/components";
 import * as directives from "./core/directives";
 import { useBreakpoints } from "@vueuse/core";
 import { i18n, permissions, signalR } from "./core/plugins";
-import { aiAgentPlugin } from "./core/plugins/ai-agent";
+import { aiAgentPlugin, type AiAgentPluginOptions } from "./core/plugins/ai-agent";
 import { BladeVNode, SharedModule, notification } from "./shared";
 import * as sharedPages from "./shared/pages/plugin";
 import { registerInterceptors } from "./core/interceptors";
@@ -82,6 +82,23 @@ export interface VcShellFrameworkPlugin {
         cloudRole?: string;
         cloudRoleInstance?: string;
       };
+      /**
+       * AI Agent plugin options.
+       * Configure tenantId here to identify the platform instance.
+       *
+       * @example
+       * ```typescript
+       * app.use(VirtoShellFramework, {
+       *   router,
+       *   aiAgent: {
+       *     config: {
+       *       tenantId: "virto"
+       *     }
+       *   }
+       * });
+       * ```
+       */
+      aiAgent?: AiAgentPluginOptions;
     },
   ): void;
 }
@@ -131,6 +148,11 @@ export default {
         cloudRole?: string;
         cloudRoleInstance?: string;
       };
+      /**
+       * AI Agent plugin options.
+       * Configure tenantId here to identify the platform instance.
+       */
+      aiAgent?: AiAgentPluginOptions;
     },
   ): void {
     // Register base theme
@@ -357,7 +379,8 @@ export default {
 
     // AI Agent Plugin - automatically installed if APP_AI_AGENT_URL env variable is set
     // The plugin checks for the env variable internally and skips if not configured
-    app.use(aiAgentPlugin);
+    // Pass aiAgent options from args if provided (allows apps to configure tenantId, etc.)
+    app.use(aiAgentPlugin, args.aiAgent);
   },
 } as VcShellFrameworkPlugin;
 

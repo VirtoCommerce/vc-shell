@@ -42,7 +42,9 @@ if (!aiAgentService) {
 }
 
 // Destructure service properties
-const config = computed(() => aiAgentService?.config.value ?? { url: "", title: "AI Assistant", width: 350, expandedWidth: 500 });
+const config = computed(
+  () => aiAgentService?.config.value ?? { url: "", title: "AI Assistant", width: 360, expandedWidth: 500 },
+);
 const isOpen = computed(() => aiAgentService?.isOpen.value ?? false);
 const isExpanded = computed(() => aiAgentService?.isExpanded.value ?? false);
 const totalItemsCount = computed(() => aiAgentService?.totalItemsCount.value ?? 0);
@@ -91,7 +93,8 @@ onUnmounted(() => {
 // Slide transition for panel
 .ai-panel-slide-enter-active,
 .ai-panel-slide-leave-active {
-  transition: transform var(--app-panel-transition-duration, 0.3s) var(--app-panel-transition-timing, cubic-bezier(0.4, 0, 0.2, 1));
+  transition: transform var(--app-panel-transition-duration, 0.3s)
+    var(--app-panel-transition-timing, cubic-bezier(0.4, 0, 0.2, 1));
 }
 
 .ai-panel-slide-enter-from,
@@ -102,11 +105,14 @@ onUnmounted(() => {
 .vc-ai-agent-panel {
   @apply tw-flex tw-flex-col tw-h-full tw-shrink-0;
   background-color: var(--ai-panel-bg);
-  border-left: 1px solid var(--ai-panel-border-color);
   box-shadow: var(--ai-panel-shadow);
   // Width transition for expand/collapse
-  transition: width var(--app-panel-transition-duration, 0.3s) var(--app-panel-transition-timing, cubic-bezier(0.4, 0, 0.2, 1));
+  transition: width var(--app-panel-transition-duration, 0.3s)
+    var(--app-panel-transition-timing, cubic-bezier(0.4, 0, 0.2, 1));
   overflow: hidden;
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--ai-panel-border-color);
 
   &--expanded {
     // Additional expanded styles if needed

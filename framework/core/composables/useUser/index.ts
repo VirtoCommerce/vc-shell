@@ -102,7 +102,8 @@ async function fetchToken(params: Record<string, string>): Promise<TokenData | n
     });
 
     if (!response.ok) {
-      logger.error("fetchToken - HTTP error:", response.status, response.statusText);
+      const errorBody = await response.text();
+      logger.error("fetchToken - HTTP error:", response.status, response.statusText, errorBody);
       return null;
     }
 
@@ -326,6 +327,7 @@ export function _createInternalUserLogic(): IUserInternalAPI {
       const tokenData = await fetchToken({
         grant_type: "refresh_token",
         refresh_token: authData.value.refresh_token,
+        scope: "offline_access",
       });
 
       if (tokenData) {
@@ -337,11 +339,9 @@ export function _createInternalUserLogic(): IUserInternalAPI {
           expiresAt: tokenData.expires_at ? new Date(tokenData.expires_at).toISOString() : "not set",
         });
       } else {
-        // Refresh failed - clear invalid auth data
-        logger.error("getAccessToken - Failed to refresh token");
-        clearAuthData();
-        authData.value = null;
-        return null;
+        // Refresh failed - log error but return existing token (it might still work)
+        // Don't clear auth data - let the API call fail naturally if token is truly invalid
+        logger.warn("getAccessToken - Failed to refresh token, returning existing token");
       }
     }
 

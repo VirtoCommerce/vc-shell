@@ -4,7 +4,7 @@ name: Virto-shell CI
 on:
   workflow_dispatch:
   push:
-    branches: [ main, virto-oz ]
+    branches: [ main, feat/virto-oz ]
     # Only on commits with package changes or release commits
     paths:
       - 'framework/**'

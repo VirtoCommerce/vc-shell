@@ -1,3 +1,9 @@
+## [1.2.3](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.1...v1.2.3) (2026-01-12)
+
+### Features
+
+- **menu:** implement badge functionality for menu items ([f20bf71](https://github.com/VirtoCommerce/vc-shell/commit/f20bf718a0ae62126ad08dacb95d14c22e24a705))
+
 ## [1.2.2](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.1...v1.2.2) (2025-11-13)
 
 **Note:** Version bump only for package @vc-shell/framework

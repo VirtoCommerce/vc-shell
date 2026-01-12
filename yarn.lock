@@ -4453,17 +4453,17 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vcmp-vendor-portal/api@npm:^1.1.58, @vcmp-vendor-portal/api@workspace:apps/vendor-portal/src/api_client":
+"@vcmp-vendor-portal/api@npm:^1.1.60, @vcmp-vendor-portal/api@workspace:apps/vendor-portal/src/api_client":
   version: 0.0.0-use.local
   resolution: "@vcmp-vendor-portal/api@workspace:apps/vendor-portal/src/api_client"
   languageName: unknown
   linkType: soft
 
-"@vcmp-vendor-portal/modules@npm:^1.1.58, @vcmp-vendor-portal/modules@workspace:apps/vendor-portal/src/modules":
+"@vcmp-vendor-portal/modules@npm:^1.1.60, @vcmp-vendor-portal/modules@workspace:apps/vendor-portal/src/modules":
   version: 0.0.0-use.local
   resolution: "@vcmp-vendor-portal/modules@workspace:apps/vendor-portal/src/modules"
   peerDependencies:
-    "@vcmp-vendor-portal/api": ^1.1.58
+    "@vcmp-vendor-portal/api": ^1.1.60
   languageName: unknown
   linkType: soft
 
@@ -5376,8 +5376,8 @@ __metadata:
     "@vc-shell/framework": "npm:^1.2.2"
     "@vc-shell/release-config": "npm:^1.2.2"
     "@vc-shell/ts-config": "npm:^1.2.2"
-    "@vcmp-vendor-portal/api": "npm:^1.1.58"
-    "@vcmp-vendor-portal/modules": "npm:^1.1.58"
+    "@vcmp-vendor-portal/api": "npm:^1.1.60"
+    "@vcmp-vendor-portal/modules": "npm:^1.1.60"
     "@virtocommerce/import-app": "npm:^1.1.2"
     "@vitejs/plugin-vue": "npm:^5.2.3"
     "@vue/eslint-config-prettier": "npm:^9.0.0"
@@ -5386,6 +5386,7 @@ __metadata:
     "@vueuse/core": "npm:^10.7.1"
     "@vueuse/integrations": "npm:^10.7.1"
     autoprefixer: "npm:^10.4.16"
+    baseline-browser-mapping: "npm:^2.9.11"
     conventional-changelog-cli: "npm:^4.1.0"
     cross-env: "npm:^7.0.3"
     cross-spawn: "npm:^7.0.3"
@@ -5783,6 +5784,15 @@ __metadata:
   bin:
     baseline-browser-mapping: dist/cli.js
   checksum: 10/50396a6cde06bd3ebfacfaa75da383aa6c4aa11ea1f0b346ea247ca2ee88b20aa632a8d1a12dd4e8b93507527c36d2f6019576cd7edd2214d0e6dd9d7b3bacd2
+  languageName: node
+  linkType: hard
+
+"baseline-browser-mapping@npm:^2.9.11":
+  version: 2.9.14
+  resolution: "baseline-browser-mapping@npm:2.9.14"
+  bin:
+    baseline-browser-mapping: dist/cli.js
+  checksum: 10/a329881e5f673c0834843640e9c954c478f643fb983449c99850392e48cf52dfb1dc3de8d81c6a6a2802c86310833accc5e3deb6bef5fb6e329989e28ca5489b
   languageName: node
   linkType: hard
 

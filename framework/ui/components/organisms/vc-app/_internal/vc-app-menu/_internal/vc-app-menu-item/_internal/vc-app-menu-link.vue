@@ -45,6 +45,15 @@
             <div class="vc-app-menu-link__title-truncate">
               {{ $t(title ?? "") }}
             </div>
+            <VcBadge
+              v-if="resolvedBadge.isVisible"
+              :content="resolvedBadge.isDot ? undefined : resolvedBadge.content"
+              :variant="resolvedBadge.variant"
+              :is-dot="resolvedBadge.isDot"
+              size="s"
+              inline
+              class="vc-app-menu-link__badge"
+            />
             <div
               v-if="(!!children?.length && expand) || false"
               class="vc-app-menu-link__title-icon"
@@ -119,15 +128,28 @@
                 {{ twoLettersTitle(nested.title) }}
               </div>
               <Transition name="opacity">
-                <p
+                <div
                   v-show="expand"
-                  class="vc-app-menu-link__child-item-title"
-                  :class="{
-                    'vc-app-menu-link__child-item-title--no-icon': !nested.icon,
-                  }"
+                  class="vc-app-menu-link__child-item-content"
                 >
-                  {{ $t(nested.title) }}
-                </p>
+                  <p
+                    class="vc-app-menu-link__child-item-title"
+                    :class="{
+                      'vc-app-menu-link__child-item-title--no-icon': !nested.icon,
+                    }"
+                  >
+                    {{ $t(nested.title) }}
+                  </p>
+                  <VcBadge
+                    v-if="getChildBadge(nested).isVisible"
+                    :content="getChildBadge(nested).isDot ? undefined : getChildBadge(nested).content"
+                    :variant="getChildBadge(nested).variant"
+                    :is-dot="getChildBadge(nested).isDot"
+                    size="s"
+                    inline
+                    class="vc-app-menu-link__badge"
+                  />
+                </div>
               </Transition>
             </div>
           </div>
@@ -139,9 +161,10 @@
 
 <script lang="ts" setup>
 import { ref, watch, computed, onMounted, Component, MaybeRef, unref } from "vue";
-import { MenuItem } from "./../../../../../../../../../core/types";
-import { VcIcon } from "./../../../../../../../";
+import { MenuItem, MenuItemBadgeConfig } from "./../../../../../../../../../core/types";
+import { VcIcon, VcBadge } from "./../../../../../../../";
 import { useRoute } from "vue-router";
+import { useBadge } from "./useBadge";
 
 export interface Props {
   children?: MenuItem[];
@@ -151,6 +174,9 @@ export interface Props {
   url?: string;
   expand?: boolean;
   id?: string | number;
+  badge?: MenuItemBadgeConfig;
+  routeId?: string;
+  groupId?: string;
 }
 
 export interface Emits {
@@ -162,6 +188,14 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const emit = defineEmits<Emits>();
+
+// Badge resolution for parent menu item
+const resolvedBadge = useBadge(props.badge, props.routeId, props.groupId);
+
+// Helper to get resolved badge for child items
+const getChildBadge = (child: MenuItem) => {
+  return useBadge(child.badge, child.routeId, child.groupId).value;
+};
 
 const isOpened = ref(false);
 const route = useRoute();
@@ -346,7 +380,7 @@ watch(isOpened, (newValue) => {
 
   &__child-item {
     @apply tw-cursor-pointer tw-min-w-0 tw-flex tw-h-[var(--app-menu-item-height)]
-      tw-items-center tw-transition-[padding] tw-duration-150 tw-w-full tw-py-2 tw-px-3
+      tw-items-center tw-transition-[padding] tw-duration-150 tw-w-full tw-py-2 tw-pl-3 tw-pr-2
     tw-text-[color:var(--app-menu-item-title-color)] tw-text-sm
     hover:tw-bg-[var(--app-menu-item-background-color-hover)]
     hover:tw-text-[color:var(--app-menu-item-title-color-active)] tw-gap-5;
@@ -388,6 +422,15 @@ watch(isOpened, (newValue) => {
 
   &__icon-collapsed {
     @apply tw-p-0 tw-m-0;
+  }
+
+  // Badge styles for menu items - positioned after text
+  &__badge {
+    @apply tw-shrink-0 tw-ml-auto;
+  }
+
+  &__child-item-content {
+    @apply tw-flex tw-items-center tw-w-full tw-min-w-0;
   }
 }
 

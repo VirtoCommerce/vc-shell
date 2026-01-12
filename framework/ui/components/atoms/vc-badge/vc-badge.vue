@@ -1,5 +1,34 @@
 <template>
+  <!-- Inline mode: render badge element directly without wrapper -->
   <div
+    v-if="inline && (typeof content !== 'undefined' || isDot)"
+    ref="badge"
+    class="vc-badge__badge vc-badge__badge--inline"
+    :class="[
+      `vc-badge__badge--${variant}`,
+      {
+        'vc-badge__badge--active': active,
+        'vc-badge__badge--clickable': clickable,
+        'vc-badge__badge--disabled': disabled,
+        'vc-badge__badge--content-long': String(content).length > 1,
+        'vc-badge__badge--content-very-long': String(content).length > 2,
+        'vc-badge__badge--dot': isDot,
+        'vc-badge__badge--inline-small': size === 's',
+        'vc-badge__badge--inline-medium': size === 'm',
+      },
+    ]"
+    @click="onClick"
+  >
+    <span
+      v-if="!isDot"
+      class="vc-badge__text"
+      >{{ content }}</span
+    >
+  </div>
+
+  <!-- Standard mode: wrapper with slot and positioned badge -->
+  <div
+    v-else
     ref="badgeContainer"
     class="vc-badge"
     :class="{
@@ -53,6 +82,8 @@ export interface Props {
   customPosition?: boolean;
   top?: string;
   right?: string;
+  /** When true, renders badge as inline element without absolute positioning (no slot content) */
+  inline?: boolean;
 }
 
 export interface Emits {
@@ -66,6 +97,7 @@ const props = withDefaults(defineProps<Props>(), {
   customPosition: false,
   top: undefined,
   right: undefined,
+  inline: false,
 });
 
 const emit = defineEmits<Emits>();
@@ -235,5 +267,32 @@ $sizes: small, medium;
 
 .vc-badge__badge--disabled {
   @apply tw-cursor-not-allowed tw-bg-[color:var(--badge-background-color-disabled)] tw-text-[color:var(--badge-text-color-disabled)] tw-border-[color:var(--badge-border-color-disabled)] hover:tw-bg-[color:var(--badge-background-color-disabled)] hover:tw-text-[color:var(--badge-text-color-disabled)] hover:tw-border-[color:var(--badge-border-color-disabled)];
+}
+
+// Inline mode - relative positioning, no wrapper
+.vc-badge__badge--inline {
+  @apply tw-relative tw-top-0 tw-right-0;
+}
+
+.vc-badge__badge--inline-small {
+  height: var(--badge-size-small);
+  min-width: var(--badge-size-small);
+
+  &.vc-badge__badge--dot {
+    height: var(--badge-dot-size-small);
+    min-width: var(--badge-dot-size-small);
+    width: var(--badge-dot-size-small);
+  }
+}
+
+.vc-badge__badge--inline-medium {
+  height: var(--badge-size-medium);
+  min-width: var(--badge-size-medium);
+
+  &.vc-badge__badge--dot {
+    height: var(--badge-dot-size-medium);
+    min-width: var(--badge-dot-size-medium);
+    width: var(--badge-dot-size-medium);
+  }
 }
 </style>

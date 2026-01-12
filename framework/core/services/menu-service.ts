@@ -1,10 +1,13 @@
 import { Component, ref, type Ref } from "vue";
 import * as _ from "lodash-es";
-import type { MenuItem } from "../types";
+import type { MenuItem, MenuItemBadgeConfig } from "../types";
 import { createUnrefFn, useArrayFind } from "@vueuse/core";
 
 // Global state for pre-registering menu items
 const preregisteredMenuItems: Ref<MenuItem[]> = ref([]);
+
+// Badge registry - key is routeId (blade name) or groupId
+const menuBadges: Ref<Map<string, MenuItemBadgeConfig>> = ref(new Map());
 
 /**
  * Registers a menu item before the service is initialized
@@ -13,10 +16,45 @@ export function addMenuItem(item: MenuItem): void {
   preregisteredMenuItems.value.push(item);
 }
 
+/**
+ * Sets a badge for a menu item by its routeId (blade name) or groupId.
+ * Can be called at any time, even after menu registration.
+ * @param id - routeId for menu items, groupId for groups
+ * @param badge - Badge configuration (number, ref, function, or full config)
+ */
+export function setMenuBadge(id: string, badge: MenuItemBadgeConfig): void {
+  menuBadges.value.set(id, badge);
+}
+
+/**
+ * Gets the badge for a menu item by routeId or groupId.
+ * @param id - routeId for menu items, groupId for groups
+ */
+export function getMenuBadge(id: string): MenuItemBadgeConfig | undefined {
+  return menuBadges.value.get(id);
+}
+
+/**
+ * Removes a badge from a menu item.
+ * @param id - routeId for menu items, groupId for groups
+ */
+export function removeMenuBadge(id: string): void {
+  menuBadges.value.delete(id);
+}
+
+/**
+ * Returns the reactive badge registry map.
+ * Used internally by menu components to reactively watch for badge changes.
+ */
+export function getMenuBadges(): Ref<Map<string, MenuItemBadgeConfig>> {
+  return menuBadges;
+}
+
 export interface MenuService {
   addMenuItem: (item: MenuItem) => void;
   menuItems: Ref<MenuItem[]>;
   removeMenuItem: (item: MenuItem) => void;
+  menuBadges: Ref<Map<string, MenuItemBadgeConfig>>;
 }
 
 // Default priority values
@@ -220,5 +258,6 @@ export function createMenuService(): MenuService {
     addMenuItem,
     menuItems,
     removeMenuItem,
+    menuBadges,
   };
 }

@@ -1,3 +1,7 @@
+## [1.2.3](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.1...v1.2.3) (2026-01-12)
+
+**Note:** Version bump only for package @vc-shell/create-vc-app
+
 ## [1.2.2](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.1...v1.2.2) (2025-11-13)
 
 **Note:** Version bump only for package @vc-shell/create-vc-app

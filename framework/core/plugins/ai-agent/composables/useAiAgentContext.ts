@@ -130,9 +130,14 @@ function getTargetForChanges<T>(dataRef: Ref<T> | Ref<T[]>): T | undefined {
  * });
  * ```
  */
-export function useAiAgentContext<T extends { id: string; objectType: string; name: string; [key: string]: unknown }>(
-  options: UseAiAgentContextOptions<T>,
-): UseAiAgentContextReturn {
+export function useAiAgentContext<
+  T extends {
+    id: string | undefined;
+    objectType: string | undefined;
+    name?: string | undefined;
+    [key: string]: unknown;
+  },
+>(options: UseAiAgentContextOptions<T>): UseAiAgentContextReturn {
   const { dataRef, suggestions } = options;
 
   // Try to get the service (may not be available if plugin not installed)

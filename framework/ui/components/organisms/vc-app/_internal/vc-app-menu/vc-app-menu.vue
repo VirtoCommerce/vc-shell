@@ -36,6 +36,9 @@
             :title="item.title as string"
             :children="item.children"
             :expand="$isDesktop.value ? isExpanded || isHoverExpanded : true"
+            :badge="item.badge"
+            :route-id="item.routeId"
+            :group-id="item.groupId"
             @click="handleMenuItemClick(item, $event)"
           />
         </div>

@@ -1,5 +1,13 @@
 import { provide, inject, getCurrentInstance } from "vue";
-import { MenuService, createMenuService, addMenuItem } from "../../services/menu-service";
+import {
+  MenuService,
+  createMenuService,
+  addMenuItem,
+  setMenuBadge,
+  getMenuBadge,
+  removeMenuBadge,
+  getMenuBadges,
+} from "../../services/menu-service";
 import { MenuServiceKey } from "../../../injection-keys";
 
 export function provideMenuService(): MenuService {
@@ -17,4 +25,4 @@ export function useMenuService(): MenuService {
   return service;
 }
 
-export { addMenuItem };
+export { addMenuItem, setMenuBadge, getMenuBadge, removeMenuBadge, getMenuBadges };

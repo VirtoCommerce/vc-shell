@@ -13,6 +13,9 @@
           :title="title ?? ''"
           :url="url"
           :expand="expand"
+          :badge="badge"
+          :route-id="routeId"
+          :group-id="groupId"
           @on-click="$emit('click')"
         />
       </router-link>
@@ -26,6 +29,9 @@
         :icon="icon ?? ''"
         :title="title ?? ''"
         :expand="expand"
+        :badge="badge"
+        :route-id="routeId"
+        :group-id="groupId"
         @on-click="$emit('click', $event)"
       />
     </template>
@@ -34,7 +40,7 @@
 
 <script lang="ts" setup>
 import VcAppMenuLink from "./_internal/vc-app-menu-link.vue";
-import { MenuItem } from "../../../../../../../../core/types";
+import { MenuItem, MenuItemBadgeConfig } from "../../../../../../../../core/types";
 import type { Component } from "vue";
 export interface Props {
   sticky?: boolean;
@@ -45,6 +51,9 @@ export interface Props {
   children?: MenuItem[];
   expand?: boolean;
   id?: string | number;
+  badge?: MenuItemBadgeConfig;
+  routeId?: string;
+  groupId?: string;
 }
 
 export interface Emits {

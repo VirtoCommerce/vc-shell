@@ -74,7 +74,7 @@ export interface IAiAgentConfig {
   url: string;
   /** Panel title (default: "Virto OZ") */
   title?: string;
-  /** Panel width in pixels when open (default: 350) */
+  /** Panel width in pixels when open (default: 362) */
   width?: number;
   /** Panel width in pixels when expanded (default: 500) */
   expandedWidth?: number;

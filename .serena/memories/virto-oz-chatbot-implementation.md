@@ -10,6 +10,8 @@ A React-based AI chatbot application designed to be embedded as an iframe in vc-
 - **Validation**: Zod 4.1
 - **Streaming**: Streamdown 1.6 (markdown streaming)
 - **Virtual List**: @tanstack/react-virtual 3.13
+- **i18n**: react-intl (IntlProvider with dynamic locale)
+- **Icons**: lucide-react
 
 ## File Structure
 ```
@@ -57,6 +59,19 @@ chatbot/src/
     │   └── ui.ts              # UI constants
     ├── utils/
     │   └── markdown.ts        # Markdown utilities
+    ├── i18n/
+    │   ├── index.ts           # IntlProvider component export
+    │   ├── messages.ts        # Message loader with flattenMessages
+    │   └── locales/
+    │       ├── en.json        # English translations (nested JSON)
+    │       └── de.json        # German translations (nested JSON)
+    ├── ui/
+    │   ├── Icon.tsx           # Icon component (lucide-react wrapper)
+    │   ├── IconButton.tsx     # Icon button component
+    │   ├── Button.tsx         # Button component
+    │   ├── Tag.tsx            # Tag component
+    │   ├── Menu.tsx           # Menu component
+    │   └── index.ts           # UI kit exports
     └── components/
         ├── ErrorBoundary.tsx  # Error boundary
         ├── ErrorToast.tsx     # Error toast
@@ -272,6 +287,48 @@ export function getTargetOrigin(parentOrigin: string | null): string {
 - Accessed via `getAuthToken()` secure getter
 - Cookie-based auth is primary - token is optional
 
+### UI Kit (shared/ui)
+
+Centralized UI component library with consistent styling:
+
+#### Icon
+Wrapper for lucide-react icons with size presets:
+```typescript
+import { Icon } from "../shared/ui";
+import { Pencil } from "lucide-react";
+
+<Icon icon={Pencil} size="md" className="text-neutrals-500" />
+// Sizes: xs (12px), sm (14px), md (16px), lg (20px), xl (24px)
+```
+
+#### IconButton
+Button component for icon-only actions:
+```typescript
+<IconButton
+  size="md"           // sm, md, lg
+  variant="filled"    // ghost, filled, primary, danger
+  onClick={handleClick}
+>
+  <Icon icon={Clock} size="md" />
+</IconButton>
+```
+
+#### Button
+Standard button component:
+```typescript
+<Button variant="primary" size="md" onClick={handleClick}>
+  Submit
+</Button>
+```
+
+#### Tag
+Tag/chip component for labels:
+```typescript
+<Tag variant="default" size="md" onClick={handleClick}>
+  +3
+</Tag>
+```
+
 ### UI Components
 
 #### ChatContainer
@@ -380,6 +437,94 @@ const rateLimiter = useRateLimiter();
 // rateLimiter.isRateLimited
 // rateLimiter.retryAfterMs
 ```
+
+### Internationalization (i18n)
+
+#### Structure
+Translation files use nested JSON format with camelCase keys:
+```json
+// locales/en.json
+{
+  "chat": {
+    "header": {
+      "newChat": "New chat",
+      "history": "Chat history",
+      "expandSessions": "Expand sessions",
+      "collapseSessions": "Collapse sessions"
+    },
+    "input": {
+      "placeholder": {
+        "default": "Search something",
+        "withContext": "Type something"
+      },
+      "sendMessage": "Send message",
+      "stopGenerating": "Stop generating"
+    },
+    "messages": {
+      "errorOccurred": "An error occurred",
+      "retry": "Retry{count, plural, =0 {} other { ({count})}}"
+    }
+  }
+}
+```
+
+#### Flattening for react-intl
+The `flattenMessages()` function converts nested JSON to dot-notation keys:
+```typescript
+// messages.ts
+function flattenMessages(nestedMessages, prefix = ""): Record<string, string> {
+  return Object.entries(nestedMessages).reduce((result, [key, value]) => {
+    const newKey = prefix ? `${prefix}.${key}` : key;
+    if (typeof value === "string") {
+      result[newKey] = value;
+    } else if (typeof value === "object" && value !== null) {
+      Object.assign(result, flattenMessages(value, newKey));
+    }
+    return result;
+  }, {});
+}
+
+// Result: { "chat.header.newChat": "New chat", ... }
+```
+
+#### Usage in Components
+```typescript
+import { useIntl } from "react-intl";
+
+function ChatHeader() {
+  const intl = useIntl();
+  
+  return (
+    <IconButton
+      aria-label={intl.formatMessage({ id: "chat.header.newChat" })}
+    >
+      <Icon icon={Pencil} />
+    </IconButton>
+  );
+}
+```
+
+#### IntlProvider Setup
+```typescript
+// App.tsx
+import { IntlProvider } from "./shared/i18n";
+
+export function App() {
+  const orchestrator = useChatOrchestrator();
+  
+  return (
+    <IntlProvider locale={orchestrator.locale}>
+      <ChatContainer ... />
+    </IntlProvider>
+  );
+}
+```
+
+#### Supported Locales
+- `en` - English (default)
+- `de` - German
+
+Locale is received from shell via INIT_CONTEXT PostMessage.
 
 ### Package Configuration
 ```json

@@ -43,7 +43,7 @@ if (!aiAgentService) {
 
 // Destructure service properties
 const config = computed(
-  () => aiAgentService?.config.value ?? { url: "", title: "AI Assistant", width: 360, expandedWidth: 500 },
+  () => aiAgentService?.config.value ?? { url: "", title: "AI Assistant", width: 362, expandedWidth: 500 },
 );
 const isOpen = computed(() => aiAgentService?.isOpen.value ?? false);
 const isExpanded = computed(() => aiAgentService?.isExpanded.value ?? false);
@@ -51,7 +51,7 @@ const totalItemsCount = computed(() => aiAgentService?.totalItemsCount.value ?? 
 
 // Panel style with dynamic width
 const panelStyle = computed(() => ({
-  width: isExpanded.value ? "50%" : `${config.value.width ?? 350}px`,
+  width: isExpanded.value ? "50%" : `${config.value.width ?? 362}px`,
 }));
 
 // Panel control methods

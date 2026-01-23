@@ -319,6 +319,7 @@ export function createAiAgentService(options: CreateAiAgentServiceOptions): IAiA
     // Reset initialized state since iframe will be destroyed (v-if in panel component)
     // Next time panel opens, iframe will send CHAT_READY and we'll send INIT_CONTEXT again
     isInitialized.value = false;
+    pendingInitContext.value = false;
     logger.debug("Panel closed, reset initialized state");
   };
 
@@ -399,6 +400,16 @@ export function createAiAgentService(options: CreateAiAgentServiceOptions): IAiA
   const _setIframeRef = (iframe: HTMLIFrameElement | null): void => {
     iframeRef.value = iframe;
     logger.debug("Iframe ref set:", iframe ? "available" : "null");
+
+    // Immediately check for pending context (in case watch doesn't fire)
+    if (iframe?.contentWindow && pendingInitContext.value) {
+      logger.debug("Iframe ref set with pending context - sending INIT_CONTEXT immediately");
+      pendingInitContext.value = false;
+      isInitialized.value = true;
+      buildInitContextPayload().then((payload) => {
+        sendRawMessage({ type: "INIT_CONTEXT", payload });
+      });
+    }
   };
 
   /**
@@ -478,6 +489,18 @@ export function createAiAgentService(options: CreateAiAgentServiceOptions): IAiA
         } else {
           pendingInitContext.value = true;
           logger.info("Chatbot ready, but iframe ref not available yet - pending INIT_CONTEXT");
+
+          // Fallback: retry after short delay in case iframeRef was set but watch didn't fire
+          setTimeout(() => {
+            if (pendingInitContext.value && iframeRef.value?.contentWindow) {
+              logger.debug("Fallback: sending pending INIT_CONTEXT after timeout");
+              pendingInitContext.value = false;
+              isInitialized.value = true;
+              buildInitContextPayload().then((payload) => {
+                sendRawMessage({ type: "INIT_CONTEXT", payload });
+              });
+            }
+          }, 100);
         }
         break;
 

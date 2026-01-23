@@ -6,7 +6,7 @@ import type { IAiAgentConfig, ISuggestion } from "./types";
 export const DEFAULT_AI_AGENT_CONFIG: IAiAgentConfig = {
   url: "",
   title: "Virto OZ",
-  width: 350,
+  width: 362,
   expandedWidth: 500,
   allowedOrigins: ["*"],
 };

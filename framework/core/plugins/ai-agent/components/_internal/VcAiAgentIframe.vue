@@ -1,10 +1,16 @@
 <template>
   <div class="vc-ai-agent-iframe">
+    <!-- Loading overlay -->
+    <Transition name="fade">
+      <VcAiAgentLoader v-if="isLoading && url" :text="$t('AI_AGENT.LOADING')" />
+    </Transition>
+
     <iframe
       v-if="url"
       ref="iframeRef"
       :src="url"
       class="vc-ai-agent-iframe__frame"
+      :class="{ 'vc-ai-agent-iframe__frame--loading': isLoading }"
       sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox"
       allow="clipboard-read; clipboard-write"
       @load="onLoad"
@@ -19,6 +25,7 @@
 <script lang="ts" setup>
 import { ref, onMounted, watch } from "vue";
 import { VcIcon } from "../../../../../ui/components";
+import VcAiAgentLoader from "./VcAiAgentLoader.vue";
 
 const props = defineProps<{
   url: string;
@@ -29,6 +36,7 @@ const emit = defineEmits<{
 }>();
 
 const iframeRef = ref<HTMLIFrameElement | null>(null);
+const isLoading = ref(true);
 
 // Emit iframe ref as soon as it's available in the DOM (before @load)
 // This is critical because chatbot sends CHAT_READY before @load fires
@@ -39,7 +47,8 @@ watch(iframeRef, (iframe) => {
 }, { immediate: true });
 
 const onLoad = () => {
-  // onLoad is now just for logging/debugging, ref is already emitted
+  // Hide loader after iframe loads
+  isLoading.value = false;
   console.debug("[VcAiAgentIframe] Iframe loaded");
 };
 
@@ -49,15 +58,36 @@ onMounted(() => {
     emit("iframe-ready", iframeRef.value);
   }
 });
+
+// Reset loading state when URL changes
+watch(() => props.url, () => {
+  isLoading.value = true;
+});
 </script>
 
 <style lang="scss">
+// Fade transition
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
 .vc-ai-agent-iframe {
-  @apply tw-w-full tw-h-full tw-flex tw-flex-col;
+  @apply tw-w-full tw-h-full tw-flex tw-flex-col tw-relative;
 
   &__frame {
     @apply tw-w-full tw-h-full tw-border-0 tw-flex-1;
     background-color: var(--ai-panel-iframe-bg, var(--additional-50));
+    transition: opacity 0.3s ease;
+
+    &--loading {
+      opacity: 0;
+    }
   }
 
   &__placeholder {

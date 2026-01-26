@@ -1,3 +1,9 @@
+## [1.2.3-beta.1](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.3-beta.0...v1.2.3-beta.1) (2026-01-26)
+
+### Features
+
+- enhance AI agent panel with internationalization and UI improvements ([cdf0b7a](https://github.com/VirtoCommerce/vc-shell/commit/cdf0b7af14c02a51ffc261f9bac5c3da7916bf65))
+
 ## [1.2.3-beta.0](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.2...v1.2.3-beta.0) (2025-12-26)
 
 ### Bug Fixes

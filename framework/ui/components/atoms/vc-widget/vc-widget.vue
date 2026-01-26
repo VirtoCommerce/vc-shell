@@ -41,6 +41,9 @@
 import { computed, getCurrentInstance, useAttrs } from "vue";
 import { VcIcon } from "./../vc-icon";
 import { useWidgets } from "../../../../core/composables";
+import { createLogger } from "../../../../core/utilities";
+
+const logger = createLogger("vc-widget");
 
 export interface Props {
   icon?: string;
@@ -72,7 +75,7 @@ function onClick() {
         widgetId: actualWidgetId.value,
       });
     } else if (!actualWidgetId.value) {
-      console.warn("VcWidget: widgetId is missing from attrs. Widget activation might not work as expected.");
+      logger.warn("widgetId is missing from attrs. Widget activation might not work as expected.");
     }
     emit("click");
   }

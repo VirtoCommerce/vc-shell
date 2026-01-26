@@ -6,6 +6,9 @@ import type { BladeInstanceConstructor, BladeVNode } from "../../../types";
 import type { _createBladeStateManagement } from "./bladeState";
 import type { _createRouterUtils } from "./routerUtils";
 import type { _createBladeActions } from "./bladeActions";
+import { createLogger } from "../../../../../../core/utilities";
+
+const logger = createLogger("blade-route-resolver");
 
 /**
  * Checks if a component is routable from URL
@@ -90,7 +93,7 @@ export function _createBladeRouteResolver(
 
       return undefined;
     } catch (error) {
-      console.error("Error in findBladeComponentByUrlSegment:", error instanceof Error ? error.message : String(error));
+      logger.error("Error in findBladeComponentByUrlSegment:", error instanceof Error ? error.message : String(error));
       return undefined;
     }
   }

@@ -4,7 +4,7 @@ name: Virto-shell CI
 on:
   workflow_dispatch:
   push:
-    branches: [ main ]
+    branches: [ main, feat/virto-oz ]
     # Only on commits with package changes or release commits
     paths:
       - 'framework/**'
@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     # Only runs on release commits, releases, or manual dispatch
     if: |
-      github.event_name == 'release' || 
+      github.event_name == 'release' ||
       github.event_name == 'workflow_dispatch' ||
       contains(github.event.head_commit.message, 'release:') ||
       contains(github.event.head_commit.message, 'chore: release')
@@ -94,57 +94,10 @@ jobs:
     - name: Determine npm tag
       if: success()
       run: |
-        echo "Determining npm tag for publishing..."
-        
-        # Get current version from framework package
-        CURRENT_VERSION=$(node -p "require('./framework/package.json').version")
-        echo "Current version: $CURRENT_VERSION"
-        
-        # Strategy 1: Get npm tag from git tag (most reliable)
-        GIT_TAG=$(git describe --tags --exact-match HEAD 2>/dev/null || echo "")
-        if [ ! -z "$GIT_TAG" ]; then
-          echo "Found git tag: $GIT_TAG"
-          # Extract npm tag from git tag (e.g., v1.1.98-rc.3 -> rc)
-          if [[ "$GIT_TAG" == *"-rc"* ]]; then
-            NPM_TAG="rc"
-          elif [[ "$GIT_TAG" == *"-alpha"* ]]; then
-            NPM_TAG="alpha"
-          elif [[ "$GIT_TAG" == *"-beta"* ]]; then
-            NPM_TAG="beta"
-          elif [[ "$GIT_TAG" == *"-next"* ]]; then
-            NPM_TAG="next"
-          else
-            NPM_TAG="latest"
-          fi
-          echo "Using npm tag from git tag: $NPM_TAG"
-        else
-          # Strategy 2: Analyze version pattern (fallback)
-          if [[ "$CURRENT_VERSION" == *"-rc"* ]]; then
-            NPM_TAG="rc"
-          elif [[ "$CURRENT_VERSION" == *"-alpha"* ]]; then
-            NPM_TAG="alpha"
-          elif [[ "$CURRENT_VERSION" == *"-beta"* ]]; then
-            NPM_TAG="beta"
-          elif [[ "$CURRENT_VERSION" == *"-next"* ]]; then
-            NPM_TAG="next"
-          else
-            NPM_TAG="latest"
-          fi
-          echo "Using version-based tag (no git tag found): $NPM_TAG"
-        fi
-        
-        # Strategy 3: Check commit message for explicit tag (override)
-        COMMIT_MESSAGE=$(git log -1 --pretty=%B)
-        if [[ "$COMMIT_MESSAGE" == *"npmTag:"* ]]; then
-          COMMIT_TAG=$(echo "$COMMIT_MESSAGE" | grep -o "npmTag:[a-zA-Z0-9-]*" | cut -d: -f2)
-          if [ ! -z "$COMMIT_TAG" ]; then
-            NPM_TAG="$COMMIT_TAG"
-            echo "Using tag from commit message (override): $NPM_TAG"
-          fi
-        fi
-        
+        VERSION=$(node -p "require('./framework/package.json').version")
+        NPM_TAG=$(node -e "const m='$VERSION'.match(/-(alpha|beta|rc|next)/); console.log(m?m[1]:'latest')")
+        echo "Version: $VERSION → npm tag: $NPM_TAG"
         echo "NPM_TAG=$NPM_TAG" >> $GITHUB_ENV
-        echo "Final npm tag: $NPM_TAG"
 
     - name: Publish with Lerna
       if: success()
@@ -164,7 +117,7 @@ jobs:
       run: |
         echo "Verifying npm dist tags..."
         echo "Published packages with tag: $NPM_TAG"
-        
+
         # Show current tags for verification
         PACKAGES=(
           "@vc-shell/framework"
@@ -174,7 +127,7 @@ jobs:
           "@vc-shell/config-generator"
           "@vc-shell/api-client-generator"
         )
-        
+
         for PACKAGE in "${PACKAGES[@]}"; do
           echo "Tags for $PACKAGE:"
           npm dist-tag ls "$PACKAGE" 2>/dev/null || echo "Package not found in npm"

@@ -23,6 +23,9 @@ import { computed, markRaw, onMounted, ref } from "vue";
 import type { IconSize, IconVariant } from "./types";
 import type { Component } from "vue";
 import { useIcon } from "./composables";
+import { createLogger } from "../../../../core/utilities";
+
+const logger = createLogger("vc-lucide-icon");
 
 interface Props {
   /**
@@ -125,10 +128,10 @@ onMounted(async () => {
     if (module && typeof module === "object" && iconName in module) {
       resolvedIconComponent.value = markRaw(module[iconName as keyof typeof module] as Component);
     } else {
-      console.warn(`Lucide icon not found: ${iconName}`);
+      logger.warn(`Lucide icon not found: ${iconName}`);
     }
   } catch (error) {
-    console.error(`Error loading Lucide icon: ${normalizedIconName.value}`, error);
+    logger.error(`Error loading Lucide icon: ${normalizedIconName.value}`, error);
   }
 });
 </script>

@@ -1,4 +1,7 @@
 import { ref, computed, Component, ComputedRef } from "vue";
+import { createLogger } from "../utilities";
+
+const logger = createLogger("app-bar-widget-service");
 
 export interface AppBarWidget {
   id: string;
@@ -75,7 +78,7 @@ export function createAppBarWidgetService(): IAppBarWidgetService {
     try {
       register(item);
     } catch (e) {
-      console.warn(`Failed to register pre-added AppBar widget ${item.id}:`, e);
+      logger.warn(`Failed to register pre-added AppBar widget ${item.id}:`, e);
     }
   });
 

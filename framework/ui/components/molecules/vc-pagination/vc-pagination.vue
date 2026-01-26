@@ -79,6 +79,11 @@ const emit = defineEmits<Emits>();
 
 const isMobile = inject("isMobile") as Ref<boolean>;
 
+/** Number of page buttons to show on mobile devices */
+const MAX_PAGES_MOBILE = 3;
+/** Number of page buttons to show on desktop devices */
+const MAX_PAGES_DESKTOP = 5;
+
 const { variant } = toRefs(props);
 const localCurrentPage = ref(props.currentPage);
 
@@ -102,7 +107,7 @@ const pagesToShow = computed(() => {
   const pages = [];
   const totalPages = props.pages;
   const current = localCurrentPage.value;
-  const maxPages = isMobile.value ? 3 : 5;
+  const maxPages = isMobile.value ? MAX_PAGES_MOBILE : MAX_PAGES_DESKTOP;
 
   if (totalPages <= maxPages) {
     for (let i = 1; i <= totalPages; i++) {

@@ -1,5 +1,8 @@
 import { useLocalStorage } from "@vueuse/core";
 import type { DashboardWidgetPosition } from "../types";
+import { createLogger } from "../../../../core/utilities";
+
+const logger = createLogger("use-layout-persistence");
 
 /**
  * Hook for managing the saving and loading of the dashboard layout
@@ -34,7 +37,7 @@ export function useLayoutPersistence(
       // Save to localStorage through the reactive variable
       savedLayout.value = layoutData;
     } catch (error) {
-      console.error("Failed to save dashboard layout to localStorage:", error);
+      logger.error("Failed to save dashboard layout to localStorage:", error);
     }
   };
 
@@ -61,7 +64,7 @@ export function useLayoutPersistence(
 
       return true;
     } catch (error) {
-      console.error("Failed to load dashboard layout from localStorage:", error);
+      logger.error("Failed to load dashboard layout from localStorage:", error);
       return false;
     }
   };

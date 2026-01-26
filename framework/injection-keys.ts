@@ -1,6 +1,8 @@
 import { InjectionKey, ComputedRef, type Component } from "vue";
 import { BladeVNode, IBladeInstance } from "./shared/components/blade-navigation/types";
 import { NotificationTemplateConstructor } from "./core/types";
+import { IToolbarService } from "./core/services/toolbar-service";
+import { IAiAgentService } from "./core/plugins/ai-agent/types";
 
 import {
   IWidgetService,
@@ -13,23 +15,47 @@ import {
   ILanguageService,
 } from "./core/services";
 
-export const navigationViewLocation: InjectionKey<BladeVNode> = Symbol("blade navigation view location");
-export const BladeInstance: InjectionKey<ComputedRef<IBladeInstance>> = Symbol("BladeInstance");
-export const NotificationTemplatesSymbol: InjectionKey<NotificationTemplateConstructor[]> =
+// Blade navigation keys
+export const NavigationViewLocationKey: InjectionKey<BladeVNode> = Symbol("NavigationViewLocation");
+export const BladeInstanceKey: InjectionKey<ComputedRef<IBladeInstance>> = Symbol("BladeInstance");
+export const BladeBackButtonKey: InjectionKey<Component | undefined> = Symbol("BladeBackButton");
+
+// Notification keys
+export const NotificationTemplatesKey: InjectionKey<NotificationTemplateConstructor[]> =
   Symbol("NotificationTemplates");
-export const WidgetServiceKey = Symbol("WidgetService") as InjectionKey<IWidgetService>;
-export const BLADE_BACK_BUTTON = Symbol("blade-back-button") as InjectionKey<Component | undefined>;
-export const DashboardServiceKey = Symbol("DashboardService") as InjectionKey<IDashboardService>;
-export const DynamicModulesKey = Symbol("DynamicModules") as InjectionKey<
-  typeof window.VcShellDynamicModules | undefined
->;
-export const GlobalSearchKey = Symbol("GlobalSearch") as InjectionKey<GlobalSearchState>;
-export const MenuServiceKey = Symbol("MenuService") as InjectionKey<MenuService>;
+
+// Service keys
+export const WidgetServiceKey: InjectionKey<IWidgetService> = Symbol("WidgetService");
+export const DashboardServiceKey: InjectionKey<IDashboardService> = Symbol("DashboardService");
+export const GlobalSearchKey: InjectionKey<GlobalSearchState> = Symbol("GlobalSearch");
+export const MenuServiceKey: InjectionKey<MenuService> = Symbol("MenuService");
 export const SettingsMenuServiceKey: InjectionKey<ISettingsMenuService> = Symbol("SettingsMenuService");
-export const AppBarWidgetServiceKey = Symbol("AppBarWidgetService") as InjectionKey<IAppBarWidgetService>;
-export const AppBarMobileButtonsServiceKey = Symbol(
-  "AppBarMobileButtonsService",
-) as InjectionKey<IAppBarMobileButtonsService>;
-export const LanguageServiceKey = Symbol("LanguageService") as InjectionKey<ILanguageService>;
-export const TOOLBAR_SERVICE = Symbol("toolbar-service");
-export const EMBEDDED_MODE = Symbol("embedded-mode") as InjectionKey<boolean>;
+export const AppBarWidgetServiceKey: InjectionKey<IAppBarWidgetService> = Symbol("AppBarWidgetService");
+export const AppBarMobileButtonsServiceKey: InjectionKey<IAppBarMobileButtonsService> =
+  Symbol("AppBarMobileButtonsService");
+export const LanguageServiceKey: InjectionKey<ILanguageService> = Symbol("LanguageService");
+export const ToolbarServiceKey: InjectionKey<IToolbarService> = Symbol("ToolbarService");
+
+// Module keys
+export const DynamicModulesKey: InjectionKey<typeof window.VcShellDynamicModules | undefined> =
+  Symbol("DynamicModules");
+
+// App mode keys
+export const EmbeddedModeKey: InjectionKey<boolean> = Symbol("EmbeddedMode");
+
+// AI Agent keys
+export const AiAgentServiceKey: InjectionKey<IAiAgentService> = Symbol("AiAgentService");
+
+// Legacy aliases (deprecated - use the new *Key exports instead)
+/** @deprecated Use NavigationViewLocationKey instead */
+export const navigationViewLocation = NavigationViewLocationKey;
+/** @deprecated Use BladeInstanceKey instead */
+export const BladeInstance = BladeInstanceKey;
+/** @deprecated Use NotificationTemplatesKey instead */
+export const NotificationTemplatesSymbol = NotificationTemplatesKey;
+/** @deprecated Use BladeBackButtonKey instead */
+export const BLADE_BACK_BUTTON = BladeBackButtonKey;
+/** @deprecated Use ToolbarServiceKey instead */
+export const TOOLBAR_SERVICE = ToolbarServiceKey;
+/** @deprecated Use EmbeddedModeKey instead */
+export const EMBEDDED_MODE = EmbeddedModeKey;

@@ -4,6 +4,9 @@ import { useLocalStorage } from "@vueuse/core";
 import { cloneDeep, pick, unionBy } from "lodash-es";
 import { TableColPartial } from "../types";
 import { ITableColumns } from "../../../../../core/types";
+import { createLogger } from "../../../../../core/utilities";
+
+const logger = createLogger("vc-table-state");
 
 export interface UseTableStateOptions {
   stateKey: Ref<string, string>;
@@ -47,7 +50,7 @@ export function useTableState(options: UseTableStateOptions) {
   });
 
   function saveState() {
-    console.debug("[@vc-shell/framework#vc-table.vue] - Save state");
+    logger.debug("Save state");
     const colsClone = cloneDeep(internalColumns.value);
     state.value = colsClone.map((col) => pick(col, "id", "visible", "width", "predefined", "title"));
   }

@@ -1,4 +1,7 @@
 import { ref, computed, Component, ComputedRef } from "vue";
+import { createLogger } from "../utilities";
+
+const logger = createLogger("settings-menu-service");
 
 export interface ISettingsMenuItem {
   id: string;
@@ -63,7 +66,7 @@ export function createSettingsMenuService(): ISettingsMenuService {
     try {
       register(item);
     } catch (e) {
-      console.warn(`Failed to register pre-added settings menu item ${item.id}:`, e);
+      logger.warn(`Failed to register pre-added settings menu item ${item.id}:`, e);
     }
   });
 

@@ -27,7 +27,7 @@
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
 import { useFloating, shift, Placement, offset as floatingOffset } from "@floating-ui/vue";
-import { getCurrentInstance, ref, computed } from "vue";
+import { getCurrentInstance, ref, computed, onBeforeUnmount } from "vue";
 
 export interface Props {
   placement?: "top" | "right" | "bottom" | "left" | "top-start" | "top-end" | "bottom-start" | "bottom-end" | "right-start" | "right-end" | "left-start" | "left-end";
@@ -83,6 +83,13 @@ const hideTooltip = () => {
   }
   tooltipVisible.value = false;
 };
+
+onBeforeUnmount(() => {
+  if (showTimeout) {
+    clearTimeout(showTimeout);
+    showTimeout = null;
+  }
+});
 </script>
 
 <style lang="scss">

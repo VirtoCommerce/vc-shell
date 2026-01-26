@@ -102,6 +102,11 @@ defineSlots<{
   trigger: (props: { click: () => void; isActive: boolean }) => VNode;
 }>();
 
+/** Default width for the "more" button in pixels */
+const MORE_BUTTON_WIDTH = 100;
+/** Default initial item width for calculation in pixels */
+const INITIAL_ITEM_WIDTH = 100;
+
 const el = ref<HTMLElement | null>(null);
 const showBreadcrumbs = ref(false);
 
@@ -109,9 +114,9 @@ const { visibleItems, hiddenItems, showMoreButton, recalculate } = useAdaptiveIt
   containerRef: el,
   items: toRef(props, "items"),
   getItemKey: (item) => item.id!,
-  moreButtonWidth: 100,
+  moreButtonWidth: MORE_BUTTON_WIDTH,
   calculationStrategy: "reverse",
-  initialItemWidth: 100,
+  initialItemWidth: INITIAL_ITEM_WIDTH,
 });
 
 function toggleBreadcrumbs() {

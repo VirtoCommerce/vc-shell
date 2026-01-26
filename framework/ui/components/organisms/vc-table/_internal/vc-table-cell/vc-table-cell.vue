@@ -290,6 +290,38 @@ import { Field } from "vee-validate";
 import type { TableItem } from "../../types";
 import { ITableColumns } from "../../../../../../core/types";
 
+// Cache for sanitized HTML to avoid repeated DOMPurify calls across table cells
+const sanitizedHtmlCache = new Map<string, string>();
+const MAX_CACHE_SIZE = 500;
+
+function getSanitizedHtml(html: string): string {
+  if (sanitizedHtmlCache.has(html)) {
+    return sanitizedHtmlCache.get(html)!;
+  }
+
+  const sanitized = DOMPurify.default.sanitize(html, {
+    ALLOWED_TAGS: [
+      "p", "br", "strong", "em", "u", "s", "h1", "h2", "h3", "h4", "h5", "h6",
+      "ul", "ol", "li", "blockquote", "pre", "code", "a", "img", "table",
+      "thead", "tbody", "tr", "th", "td", "hr", "div", "span",
+    ],
+    ALLOWED_ATTR: ["href", "src", "alt", "title", "class", "id", "colspan", "rowspan", "align", "valign"],
+    FORBID_TAGS: ["script", "object", "embed", "form", "input"],
+    FORBID_ATTR: ["onerror", "onload", "onclick", "onmouseover", "onfocus", "onblur", "style"],
+  });
+
+  // Limit cache size to prevent memory leaks
+  if (sanitizedHtmlCache.size >= MAX_CACHE_SIZE) {
+    const firstKey = sanitizedHtmlCache.keys().next().value;
+    if (firstKey !== undefined) {
+      sanitizedHtmlCache.delete(firstKey);
+    }
+  }
+
+  sanitizedHtmlCache.set(html, sanitized);
+  return sanitized;
+}
+
 export interface Props {
   cell: ITableColumns;
   item: string | TableItem;
@@ -313,8 +345,8 @@ const value = computed((): any => _.get(props.item, props.cell.field || props.ce
 const isEditable = computed(() => props.cell.editable && props.editing);
 
 const sanitizedHtml = computed(() => {
-  if (props.cell.type === "html") {
-    return DOMPurify.default.sanitize(value.value as string, { USE_PROFILES: { html: true } });
+  if (props.cell.type === "html" && value.value) {
+    return getSanitizedHtml(String(value.value));
   }
   return "";
 });

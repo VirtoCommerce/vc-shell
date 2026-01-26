@@ -269,7 +269,6 @@ import VueDatePicker, { VueDatePickerProps, ModelValue } from "@vuepic/vue-datep
 import "@vuepic/vue-datepicker/dist/main.css";
 import {
   convertColorNameToHex,
-  convertHexToColorName,
   isValidHexColor,
   normalizeHexColor,
 } from "../../../../shared/utilities";

@@ -1,6 +1,9 @@
 import { mergeProps } from "vue";
 import { Content, InternalNotificationOptions, NotificationOptions, NotificationPosition } from "../types";
 import { useContainer } from "../composables/useContainer";
+import { createLogger } from "../../../../core/utilities";
+
+const logger = createLogger("notification");
 
 const {
   defaultOptions,
@@ -103,7 +106,7 @@ notification.remove = (notificationId?: number | string) => {
 notification.update = (notificationId: string | number, options: NotificationOptions) => {
   // Check if notification exists
   if (!hasNotification(notificationId)) {
-    console.warn(`Cannot update: notification with ID ${notificationId} not found`);
+    logger.warn(`Cannot update: notification with ID ${notificationId} not found`);
     return notificationId;
   }
 
@@ -195,12 +198,12 @@ notification.clearPosition = (position: NotificationPosition) => {
 notification.debug = () => {
   // Default settings information
   Object.entries(defaultOptions).forEach(([key, value]) => {
-    console.log(`Default option ${key}: `, value);
+    logger.debug(`Default option ${key}: `, value);
   });
 
   // Available actions
   Object.entries(actions).forEach(([key]) => {
-    console.log(`Available action: ${key}`);
+    logger.debug(`Available action: ${key}`);
   });
 
   // Collect statistics on notifications in different positions
@@ -231,14 +234,14 @@ notification.debug = () => {
 
   // Display group information
   Object.entries(groupedNotifications).forEach(([position, items]) => {
-    console.log(`Position ${position}: ${items.length} notifications`);
-    items.forEach((item) => console.log(`  - ${item.id} (${item.type}): ${item.content}`));
+    logger.debug(`Position ${position}: ${items.length} notifications`);
+    items.forEach((item) => logger.debug(`  - ${item.id} (${item.type}): ${item.content}`));
   });
 
   // Collect statistics on pending notifications
-  console.log(`Pending notifications: ${pending.items.length}`);
+  logger.debug(`Pending notifications: ${pending.items.length}`);
   pending.items.forEach((item) => {
-    console.log(`  - ${item.notificationId} (position: ${item.position})`);
+    logger.debug(`  - ${item.notificationId} (position: ${item.position})`);
   });
 
   return {

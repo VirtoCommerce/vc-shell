@@ -1,6 +1,9 @@
 import { reactive, Component } from "vue";
 import { DashboardServiceKey } from "../../injection-keys";
 import { usePermissions } from "../composables/usePermissions";
+import { createLogger } from "../utilities";
+
+const logger = createLogger("dashboard-service");
 
 export interface DashboardWidgetSize {
   width: number;
@@ -102,7 +105,7 @@ export function createDashboardService(): IDashboardService {
     try {
       registerWidget(widget);
     } catch (e) {
-      console.warn(`Failed to register preregistered widget ${widget.id}:`, e);
+      logger.warn(`Failed to register preregistered widget ${widget.id}:`, e);
     }
   });
 

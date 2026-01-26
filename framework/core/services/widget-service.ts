@@ -1,6 +1,9 @@
 import { Component, reactive, ref, ComponentInternalInstance, ComputedRef, Ref, markRaw, Raw } from "vue";
 import { IBladeInstance } from "../../shared/components/blade-navigation/types";
 import { cloneDeep } from "lodash-es";
+import { createLogger } from "../utilities";
+
+const logger = createLogger("widget-service");
 
 export type WidgetEventHandler = (...args: unknown[]) => void;
 
@@ -151,7 +154,7 @@ export function createWidgetService(): IWidgetService {
         const customProps = widget.config.propsResolver(bladeData);
         resolvedProps = { ...widget.props, ...customProps };
       } catch (error) {
-        console.error(`Error in propsResolver for widget '${widget.id}':`, error);
+        logger.error(`Error in propsResolver for widget '${widget.id}':`, error);
         // Fallback to existing props if resolver fails
         resolvedProps = { ...widget.props };
       }
@@ -168,7 +171,7 @@ export function createWidgetService(): IWidgetService {
         if (bladeData[bladeKey] !== undefined) {
           resolvedProps[key] = bladeData[bladeKey];
         } else {
-          console.warn(`Required data '${key}' not found in blade data for widget '${widget.id}'`);
+          logger.warn(`Required data '${key}' not found in blade data for widget '${widget.id}'`);
         }
       });
 
@@ -272,7 +275,7 @@ export function createWidgetService(): IWidgetService {
       if (functionNameToCall && typeof activeExposed[functionNameToCall] === "function") {
         activeExposed[functionNameToCall]();
       } else {
-        console.warn(`Widget '${widgetId}' does not have an exposed function named '${functionNameToCall}'.`);
+        logger.warn(`Widget '${widgetId}' does not have an exposed function named '${functionNameToCall}'.`);
       }
     }
   };
@@ -293,7 +296,7 @@ export function createWidgetService(): IWidgetService {
     try {
       registerWidget(widget.widget, widget.bladeId);
     } catch (e) {
-      console.warn(`Failed to register preregistered widget ${widget.widget.id}:`, e);
+      logger.warn(`Failed to register preregistered widget ${widget.widget.id}:`, e);
     }
   });
 

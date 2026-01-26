@@ -353,5 +353,8 @@
   },
   "PERMISSION_MESSAGES": {
     "ACCESS_RESTRICTED": "Access restricted"
+  },
+  "AI_AGENT": {
+    "LOADING": "Loading Virto OZ..."
   }
 }

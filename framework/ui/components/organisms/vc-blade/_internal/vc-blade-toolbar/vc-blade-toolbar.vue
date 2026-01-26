@@ -25,10 +25,10 @@ import { useLocalStorage } from "@vueuse/core";
 import { usePermissions, useToolbar } from "../../../../../../core/composables";
 import { IBladeToolbar } from "../../../../../../core/types";
 import VcBladeToolbarButtons from "./_internal/vc-blade-toolbar-buttons/vc-blade-toolbar-buttons.vue";
-import { BladeInstance } from "../../../../../../injection-keys";
 import { FALLBACK_BLADE_ID } from "../../../../../../core/constants";
 import { IBladeInstance } from "../../../../../../shared/components/blade-navigation/types";
 import { IToolbarItem } from "../../../../../../core/services";
+import { useBlade } from "../../../../../../core/composables";
 
 export interface Props {
   items: IBladeToolbar[];
@@ -41,21 +41,17 @@ const props = withDefaults(defineProps<Props>(), {
 const slots = useSlots();
 const isExpanded = useLocalStorage("VC_BLADE_TOOLBAR_IS_EXPANDED", true);
 const { hasAccess } = usePermissions();
-const { registerToolbarItem, unregisterToolbarItem, getToolbarItems, clearBladeToolbarItems, updateToolbarItem } =
-  useToolbar();
+const {
+  registerToolbarItem,
+  unregisterToolbarItem,
+  getToolbarItems,
+  clearBladeToolbarItems,
+  updateToolbarItem,
+  registeredToolbarItems,
+} = useToolbar();
 
 // Get the ID of the current blade
-const blade = inject<ComputedRef<IBladeInstance>>(
-  BladeInstance,
-  computed(() => ({
-    id: FALLBACK_BLADE_ID,
-    expandable: false,
-    maximized: false,
-    error: undefined,
-    navigation: undefined,
-    breadcrumbs: undefined,
-  })),
-);
+const blade = useBlade();
 
 const bladeId = computed(() => (blade.value?.id ?? FALLBACK_BLADE_ID).toLowerCase());
 
@@ -126,6 +122,10 @@ function clearToolbarItems(): void {
 
 // Filter visible items from service
 const visibleItems = computed(() => {
+  // Access registeredToolbarItems.length to create reactive dependency
+  // This ensures computed recalculates when new items are registered
+  void registeredToolbarItems.length;
+
   return getToolbarItems()
     .filter(
       (item) =>

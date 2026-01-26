@@ -1,5 +1,8 @@
 import { App, inject, shallowRef, computed, ComputedRef, readonly as vueReadonly } from "vue";
 import { BladeInstanceConstructor } from "../../../shared/components/blade-navigation/types";
+import { createLogger } from "../../utilities";
+
+const logger = createLogger("blade-registry");
 
 /**
  * Interface for blade registration data
@@ -81,16 +84,14 @@ export function createBladeRegistry(app: App): IBladeRegistryInstance {
     const newMap = new Map(registeredBladesInternal.value);
 
     if (newMap.has(name)) {
-      console.warn(`BladeRegistry: Blade '${name}' is already registered. It will be overwritten.`);
+      logger.warn(`Blade '${name}' is already registered. It will be overwritten.`);
     }
 
     // Register component globally if not already registered or different
     const existingGlobalComponent = app.component(name);
     if (!existingGlobalComponent || existingGlobalComponent !== registrationData.component) {
       if (existingGlobalComponent && existingGlobalComponent !== registrationData.component) {
-        console.warn(
-          `BladeRegistry: Global component '${name}' already exists and is different. Overwriting with new blade component.`,
-        );
+        logger.warn(`Global component '${name}' already exists and is different. Overwriting with new blade component.`);
       }
       app.component(name, registrationData.component);
     }
@@ -137,7 +138,7 @@ export function createBladeRegistry(app: App): IBladeRegistryInstance {
         return globalComponent;
       }
     } catch (error) {
-      console.warn(`BladeRegistry: Error accessing global component '${name}':`, error);
+      logger.warn(`Error accessing global component '${name}':`, error);
     }
 
     return undefined;

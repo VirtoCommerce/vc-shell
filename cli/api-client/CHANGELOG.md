@@ -1,6 +1,12 @@
-## [1.2.3](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.1...v1.2.3) (2026-01-12)
+## [1.2.3-beta.1](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.3-beta.0...v1.2.3-beta.1) (2026-01-26)
 
 **Note:** Version bump only for package @vc-shell/api-client-generator
+
+## [1.2.3-beta.0](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.2...v1.2.3-beta.0) (2025-12-26)
+
+### Features
+
+- integrate AI agent plugin into VC-Shell framework ([706f015](https://github.com/VirtoCommerce/vc-shell/commit/706f015f436ecc4ca19831e7159213b0759df6bc))
 
 ## [1.2.2](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.1...v1.2.2) (2025-11-13)
 

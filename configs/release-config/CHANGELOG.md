@@ -1,8 +1,10 @@
-## [1.2.3](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.1...v1.2.3) (2026-01-12)
+## [1.2.3-beta.1](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.3-beta.0...v1.2.3-beta.1) (2026-01-26)
 
-### Features
+**Note:** Version bump only for package @vc-shell/release-config
 
-- **release:** add --force-publish flag to enable versioning of all packages ([a3e6274](https://github.com/VirtoCommerce/vc-shell/commit/a3e62740ca6761be23727daf01896643fe6c02a0))
+## [1.2.3-beta.0](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.2...v1.2.3-beta.0) (2025-12-26)
+
+**Note:** Version bump only for package @vc-shell/release-config
 
 ## [1.2.2](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.1...v1.2.2) (2025-11-13)
 

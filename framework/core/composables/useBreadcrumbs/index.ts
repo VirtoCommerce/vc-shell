@@ -1,6 +1,9 @@
 import { Breadcrumbs } from "./../../../ui/types/index";
 import { ComputedRef, computed, reactive, toValue } from "vue";
 import * as _ from "lodash-es";
+import { createLogger } from "../../utilities";
+
+const logger = createLogger("use-breadcrumbs");
 
 interface HistoryRecord {
   records: Breadcrumbs[];
@@ -45,7 +48,7 @@ export function useBreadcrumbs() {
               removeNext(id);
             }
           } catch (e) {
-            console.error(e);
+            logger.error("Breadcrumb click handler failed:", e);
           }
         }
       },

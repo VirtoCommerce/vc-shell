@@ -8,6 +8,9 @@ import type { notification as NotificationServiceType } from "../../../../notifi
 import type { BladeVNode, IBladeEvent, BladeInstanceConstructor } from "../../../types";
 import type { _createBladeStateManagement } from "./bladeState";
 import type { _createRouterUtils } from "./routerUtils";
+import { createLogger } from "../../../../../../core/utilities";
+
+const logger = createLogger("blade-actions");
 
 // --- Blade Actions Module ---
 export function _createBladeActions(
@@ -68,7 +71,7 @@ export function _createBladeActions(
         }
       }
     } catch (e) {
-      console.error(e);
+      logger.error("Error opening workspace:", e);
       const bladeNameForError =
         bladeComponent?.type?.name ||
         (typeof bladeInput === "object" && "name" in bladeInput ? bladeInput.name : "Unknown");
@@ -92,11 +95,11 @@ export function _createBladeActions(
       const instanceComponent = sourceBladeInstance || bladeState.activeWorkspace.value;
 
       if (!instanceComponent) {
-        console.error("No active workspace or source blade instance provided to open a blade into.");
+        logger.error("No active workspace or source blade instance provided to open a blade into.");
         throw new Error("No workspace or source blade context to open blade.");
       }
       if (!isVNode(instanceComponent)) {
-        console.error("Source blade instance or active workspace is not a valid VNode.", instanceComponent);
+        logger.error("Source blade instance or active workspace is not a valid VNode.", instanceComponent);
         throw new Error("Internal error: Invalid instanceComponent for opening blade.");
       }
 
@@ -140,7 +143,7 @@ export function _createBladeActions(
         }
       }
     } catch (e) {
-      console.error("Error in openBlade:", e);
+      logger.error("Error in openBlade:", e);
     }
   }
 

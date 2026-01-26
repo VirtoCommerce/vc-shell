@@ -3,6 +3,9 @@ import { computed, watchEffect, ref, type Ref } from "vue";
 import { useI18n } from "vue-i18n";
 import * as _ from "lodash-es";
 import { i18n } from "../../plugins/i18n";
+import { createLogger } from "../../utilities";
+
+const logger = createLogger("use-theme");
 
 export interface ThemeDefinition {
   key: string;
@@ -82,7 +85,7 @@ export const useTheme = (): IUseTheme => {
     if (themeKeys.value.includes(themeKey)) {
       state.value = themeKey;
     } else {
-      console.warn(`[useTheme] Attempted to set an unregistered theme: ${themeKey}`);
+      logger.warn(`Attempted to set an unregistered theme: ${themeKey}`);
     }
   }
 

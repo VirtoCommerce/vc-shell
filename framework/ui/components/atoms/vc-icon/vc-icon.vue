@@ -110,16 +110,6 @@ const sizeMap = {
   xxxl: 64,
 } as const;
 
-// Scaling factors for different icon types to make them visually equal
-const scalingFactors = {
-  fontawesome: 1, // base reference
-  material: 1.1,
-  bootstrap: 0.95,
-  lucide: 1.2,
-  custom: 1,
-  svg: 1,
-};
-
 // Function to detect icon type if not explicitly specified
 const detectIconType = computed((): IconType => {
   if (typeof props.icon !== "string") {

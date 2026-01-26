@@ -1,14 +1,17 @@
 <template>
-  <div
+  <button
+    type="button"
     class="vc-link"
     :class="{
       'vc-link--active': active,
       'vc-link--disabled': disabled,
     }"
+    :disabled="disabled"
+    :aria-disabled="disabled"
     @click="onClickFn"
   >
     <slot></slot>
-  </div>
+  </button>
 </template>
 
 <script lang="ts" setup>
@@ -42,6 +45,8 @@ function onClickFn(): void {
 
 .vc-link {
   @apply tw-text-[color:var(--link-text-color)] tw-no-underline tw-cursor-pointer tw-transition tw-duration-200 tw-inline-block hover:tw-text-[color:var(--link-text-color-hover)] hover:tw-underline;
+  /* Reset button styles for link appearance */
+  @apply tw-bg-transparent tw-border-none tw-p-0 tw-font-[inherit] tw-text-[inherit];
 
   &--active {
     @apply tw-text-[color:var(--link-text-color-active)] tw-no-underline hover:tw-text-[color:var(--link-text-color-active)] hover:tw-no-underline;

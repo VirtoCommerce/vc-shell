@@ -183,6 +183,9 @@ import { useI18n } from "vue-i18n";
 import { default as ExternalProviders } from "./../../../../../shared/components/sign-in/external-providers.vue";
 import { useExternalProvider } from "./../../../../../shared/components/sign-in/useExternalProvider";
 import { ExtensionSlot, useExtensionSlot } from '../../../../../core/plugins/extension-points';
+import { createLogger } from "../../../../../core/utilities";
+
+const logger = createLogger("login-page");
 
 type ForgotPasswordFunc = (args: { loginOrEmail: string }) => Promise<void>;
 
@@ -305,7 +308,7 @@ const togglePassRequest = () => {
   }
 };
 
-console.debug("Init login-page");
+logger.debug("Init login-page");
 </script>
 
 <style lang="scss">

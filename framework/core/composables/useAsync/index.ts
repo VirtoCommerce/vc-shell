@@ -1,6 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { readonly, ref } from "vue";
 import { HasLoading } from "../useLoading";
+import { createLogger } from "../../utilities";
+
+const logger = createLogger("use-async");
 
 export type AsyncAction<Payload = void, Result = void> = (payload?: Payload, ...rest: any[]) => Promise<Result>;
 
@@ -18,7 +21,7 @@ export function useAsync<Payload = void, Result = void>(
     try {
       return await innerAction(payload, ...rest);
     } catch (e) {
-      console.error(e);
+      logger.error("Async action failed:", e);
       throw e;
     } finally {
       loading.value = false;

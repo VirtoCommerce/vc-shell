@@ -3,6 +3,9 @@ import { AppDescriptor, AppsClient } from "../../../../../core/api/platform";
 import { usePermissions } from "../../../../../core/composables";
 import { notification } from "./../../../notifications";
 import { i18n } from "../../../../../core/plugins";
+import { createLogger } from "../../../../../core/utilities";
+
+const logger = createLogger("use-app-switcher");
 
 interface IUseAppSwitcher {
   readonly appsList: Ref<AppDescriptor[]>;
@@ -25,7 +28,7 @@ export function useAppSwitcher(): IUseAppSwitcher {
     try {
       appsList.value = await client.getApps();
     } catch (e) {
-      console.error(e);
+      logger.error("Failed to get apps:", e);
       throw e;
     }
   }

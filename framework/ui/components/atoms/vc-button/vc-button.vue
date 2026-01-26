@@ -29,23 +29,8 @@ export interface Props {
   variant?: "primary" | "secondary";
   disabled?: boolean;
   size?: "xs" | "sm" | "base";
-  /**
-   * @deprecated Use `size` instead
-   * Whether the button is small
-   * */
-  small?: boolean;
-  /**
-   * @deprecated Use `variant` instead
-   * Whether the button is outlined
-   * */
-  outline?: boolean;
   selected?: boolean;
   text?: boolean;
-  /**
-   * @deprecated Use `variant` instead
-   * Whether the button is raised
-   * */
-  raised?: boolean;
 }
 
 export interface Emits {
@@ -73,12 +58,9 @@ const buttonClass = computed(() => {
     {
       [`vc-button-${props.variant}`]: props.variant,
       [`vc-button_${props.size}`]: props.size,
-      // "vc-button_small": props.small,
-      // "vc-button_outline": props.outline,
       "vc-button_selected": props.selected,
       "vc-button_text": props.text,
       "vc-button_disabled": props.disabled,
-      // "vc-button_raised": props.raised,
     },
   ];
 });
@@ -156,17 +138,12 @@ $variants: primary, secondary;
         @apply tw-text-[color:var(--button-#{$variant}-text-color-disabled)] tw-bg-[color:var(--button-#{$variant}-background-color-disabled)] tw-border-[color:var(--button-#{$variant}-border-color-disabled)] tw-cursor-not-allowed;
       }
 
-      // TODO: remove this after the migration
-      // &.vc-button_small {
-      //   @apply tw-py-[var(--button-padding-vert-extra-small)] tw-min-h-[var(--button-height-extra-small)] tw-px-[var(--button-padding-hor-extra-small)] tw-text-xxs #{!important};
-      // }
-
       &.vc-button_text {
         @apply tw-border-none tw-bg-transparent
         tw-text-[color:var(--button-#{$variant}-background-color)]
         hover:tw-text-[color:var(--button-#{$variant}-background-color-hover)]
         focus:tw-text-[color:var(--button-#{$variant}-background-color-hover)]
-        disabled:tw-text-[color:rgb(from_var(--button-#{$variant}-background-color)_r_g_b/50%)];
+        disabled:tw-text-[color:var(--button-#{$variant}-text-color-disabled)] disabled:tw-opacity-50;
 
         @apply tw-p-0 tw-min-h-0 #{!important};
       }
@@ -175,7 +152,7 @@ $variants: primary, secondary;
         @apply tw-bg-[color:var(--button-#{$variant}-background-color-hover)];
 
         &.vc-button_text {
-          @apply tw-bg-[color:rgb(from_var(--button-#{$variant}-background-color-hover)_r_g_b/7%)] tw-p-1;
+          @apply tw-bg-[color:var(--button-#{$variant}-background-color-hover)] tw-bg-opacity-[0.07] tw-p-1;
         }
       }
 

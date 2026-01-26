@@ -18,17 +18,12 @@
 <script lang="ts" setup>
 export interface Props {
   variant?: "info" | "warning" | "danger" | "success" | "light-danger" | "info-dark" | "primary";
-  /**
-   * @deprecated
-   */
-  outline?: boolean;
   extend?: boolean;
   dot?: boolean;
 }
 
 withDefaults(defineProps<Props>(), {
   variant: "info",
-  outline: false,
   dot: false,
 });
 

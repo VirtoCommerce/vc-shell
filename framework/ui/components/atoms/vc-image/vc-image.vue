@@ -32,6 +32,9 @@
 <script lang="ts" setup>
 import { VcIcon } from "./../vc-icon";
 import { computed } from "vue";
+import { createLogger } from "../../../../core/utilities";
+
+const logger = createLogger("vc-image");
 
 export interface Props {
   aspect?: "1x1" | "16x9" | "4x3" | "3x2";
@@ -67,7 +70,7 @@ function ensureHttps(url: string): string {
       return urlObject.href;
     }
   } catch (e) {
-    console.warn("Invalid URL:", url);
+    logger.warn("Invalid URL:", url);
   }
   return url;
 }

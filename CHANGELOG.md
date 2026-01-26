@@ -1,14 +1,26 @@
-## [1.2.3](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.1...v1.2.3) (2026-01-12)
+## [1.2.3-beta.1](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.3-beta.0...v1.2.3-beta.1) (2026-01-26)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
-- **menu:** implement badge functionality for menu items ([f20bf71](https://github.com/VirtoCommerce/vc-shell/commit/f20bf718a0ae62126ad08dacb95d14c22e24a705))
+- enhance AI agent panel with internationalization and UI improvements ([cdf0b7a](https://github.com/VirtoCommerce/vc-shell/commit/cdf0b7af14c02a51ffc261f9bac5c3da7916bf65))
 
-### Release Config (@vc-shell/release-config)
+## [1.2.3-beta.0](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.2...v1.2.3-beta.0) (2025-12-26)
+
+### VC-Shell Framework (@vc-shell/framework)
+
+### Bug Fixes
+- adjust AI agent panel configuration and styling ([ebdd57a](https://github.com/VirtoCommerce/vc-shell/commit/ebdd57ac50342cacf79968253d8240c685062d89))
+- improve error handling and token refresh logic in useUser composable ([2900d9c](https://github.com/VirtoCommerce/vc-shell/commit/2900d9cc2b4465d9457c3e57338a915fe6a3a3e6))
+### Features
+- enhance AI agent context management and configuration ([a98c7ed](https://github.com/VirtoCommerce/vc-shell/commit/a98c7ed2a2b54977f02e620493873ca2abacd47a))
+- enhance framework with AI agent integration ([dcb1fef](https://github.com/VirtoCommerce/vc-shell/commit/dcb1fef55f25755d1903c26f18f6cca588eab286))
+- integrate AI agent plugin into VC-Shell framework ([706f015](https://github.com/VirtoCommerce/vc-shell/commit/706f015f436ecc4ca19831e7159213b0759df6bc))
+
+### API Client Generator (@vc-shell/api-client-generator)
 
 ### Features
-- **release:** add --force-publish flag to enable versioning of all packages ([a3e6274](https://github.com/VirtoCommerce/vc-shell/commit/a3e62740ca6761be23727daf01896643fe6c02a0))
+- integrate AI agent plugin into VC-Shell framework ([706f015](https://github.com/VirtoCommerce/vc-shell/commit/706f015f436ecc4ca19831e7159213b0759df6bc))
 
 ## [1.2.2](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.1...v1.2.2) (2025-11-13)
 

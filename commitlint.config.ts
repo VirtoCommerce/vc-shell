@@ -8,6 +8,7 @@ const Configuration: UserConfig = {
   rules: {
     "subject-case": [2, "never", ["upper-case", "pascal-case", "start-case"]],
     "footer-max-line-length": [RuleConfigSeverity.Error, "always", 200] as const,
+    "body-max-line-length": [RuleConfigSeverity.Error, "always", 400] as const,
     "type-enum": [
       2,
       "always",

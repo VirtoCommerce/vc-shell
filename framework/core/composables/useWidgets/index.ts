@@ -6,6 +6,9 @@ import {
   registerExternalWidget,
 } from "./../../services/widget-service";
 import { WidgetServiceKey } from "./../../../injection-keys";
+import { createLogger, InjectionError } from "../../utilities";
+
+const logger = createLogger("use-widgets");
 
 export function provideWidgetService(): IWidgetService {
   const service = createWidgetService();
@@ -16,8 +19,8 @@ export function provideWidgetService(): IWidgetService {
 export function useWidgets(): IWidgetService {
   const service = inject(WidgetServiceKey);
   if (!service) {
-    console.error("Widget service not found in current context. Injection chain:", getCurrentInstance());
-    throw new Error("WidgetService not provided");
+    logger.error("Widget service not found in current context. Injection chain:", getCurrentInstance());
+    throw new InjectionError("WidgetService");
   }
   return service;
 }

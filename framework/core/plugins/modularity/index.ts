@@ -2,11 +2,13 @@ import { App, Component, h, inject, resolveComponent, watch } from "vue";
 import { i18n } from "./../i18n";
 import { Router } from "vue-router";
 import { BladeInstanceConstructor, BladeVNode } from "./../../../shared/components/blade-navigation/types";
-import { kebabToPascal } from "./../../utilities";
+import { kebabToPascal, createLogger } from "./../../utilities";
 import { addMenuItem, useMenuService, useNotifications } from "../../composables";
 import * as _ from "lodash-es";
 import { notification } from "../../../shared";
 import { BladeRegistryKey, IBladeRegistrationData, IBladeRegistryInstance } from "../../composables/useBladeRegistry";
+
+const logger = createLogger("modularity");
 
 export function createModule(components: { [key: string]: BladeInstanceConstructor }, locales?: unknown) {
   return {
@@ -17,7 +19,7 @@ export function createModule(components: { [key: string]: BladeInstanceConstruct
         if (app.component(componentName)) {
           // Remove the existing component
           // Note: Vue does not provide a method to remove a component, so we can overwrite it
-          console.warn(
+          logger.warn(
             `Component ${componentName} is already registered. It will be overwritten with the new component.`,
           );
         }
@@ -52,11 +54,11 @@ export function createAppModule(
       if (bladeRegistry && bladeRegistry._registerBladeFn) {
         registerBladeWithRegistry = bladeRegistry._registerBladeFn;
       } else {
-        console.error(
+        logger.error(
           "createAppModule: BladeRegistry or its _registerBladeFn not found via inject. Blade registration will be skipped.",
         );
         registerBladeWithRegistry = (name: string, data: IBladeRegistrationData) => {
-          console.warn(`BladeRegistry (noop): Tried to register '${name}' but _registerBladeFn is missing.`);
+          logger.warn(`BladeRegistry (noop): Tried to register '${name}' but _registerBladeFn is missing.`);
         };
       }
 
@@ -83,7 +85,7 @@ export function createAppModule(
               isWorkspace: page.isWorkspace || false,
             });
           } else {
-            console.warn(
+            logger.warn(
               "createAppModule: Page without URL is missing a name. Cannot register with BladeRegistry.",
               page,
             );
@@ -179,7 +181,7 @@ export function createAppModule(
           // Check if the component is already registered
           if (app.component(name)) {
             // Overwrite existing component
-            console.warn(`Component ${name} is already registered. It will be overwritten with the new component.`);
+            logger.warn(`Component ${name} is already registered. It will be overwritten with the new component.`);
           }
           app.component(name, component);
         });

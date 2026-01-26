@@ -1,5 +1,5 @@
 import { useLocalStorage } from "@vueuse/core";
-import { ref } from "vue";
+import { ref, onScopeDispose } from "vue";
 
 const STORAGE_KEY_PREFIX = "VC_APP_MENU_EXPANDED";
 const HOVER_DELAY = 200;
@@ -41,6 +41,20 @@ export const useMenuExpanded = () => {
       isHoverExpanded.value = shouldExpand;
     }
   };
+
+  /**
+   * Cleanup timeout when the effect scope is disposed
+   * This prevents memory leaks when component using this composable is unmounted
+   */
+  const cleanup = () => {
+    if (expandTimeout) {
+      clearTimeout(expandTimeout);
+      expandTimeout = null;
+    }
+  };
+
+  // Register cleanup function to be called when effect scope is disposed
+  onScopeDispose(cleanup);
 
   return {
     isExpanded,

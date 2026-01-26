@@ -160,6 +160,9 @@ import moment from "moment";
 import { isImage, getFileThumbnail, readableSize } from "./../../../../utilities/assets";
 import * as _ from "lodash-es";
 import { IParentCallArgs, useBladeNavigation } from "../../../../components";
+import { createLogger } from "../../../../../core/utilities";
+
+const logger = createLogger("assets-manager");
 
 export interface Props {
   expanded?: boolean;
@@ -317,7 +320,7 @@ async function onDrop(event: DragEvent) {
       try {
         await upload(fileList);
       } catch (error) {
-        console.error(error);
+        logger.error("Failed to upload dropped files:", error);
         throw error;
       }
 
@@ -362,7 +365,7 @@ async function upload(files: FileList) {
     try {
       defaultAssets.value = await props.options.assetsUploadHandler(modifiedFileList.files);
     } catch (error) {
-      console.error(error);
+      logger.error("Failed to upload assets:", error);
       throw error;
     }
   }
@@ -376,7 +379,7 @@ async function inputUpload(event: Event) {
     try {
       await upload(fileList);
     } catch (error) {
-      console.error(error);
+      logger.error("Failed to upload files:", error);
       throw error;
     }
 

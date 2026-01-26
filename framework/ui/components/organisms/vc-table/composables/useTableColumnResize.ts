@@ -1,5 +1,8 @@
 import { ref, Ref } from "vue";
 import { TableColPartial } from "../types";
+import { createLogger } from "../../../../../core/utilities";
+
+const logger = createLogger("vc-table-column-resize");
 
 export function useTableColumnResize(
   internalColumns: Ref<TableColPartial[]>,
@@ -35,7 +38,7 @@ export function useTableColumnResize(
     e.stopImmediatePropagation();
 
     if (!item.id) {
-      console.warn("Column has no id, cannot resize:", item);
+      logger.warn("Column has no id, cannot resize:", item);
       return;
     }
 

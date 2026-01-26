@@ -1,4 +1,4 @@
-import { reactive, ref, ComputedRef, Ref } from "vue";
+import { reactive } from "vue";
 import { IBladeToolbar } from "../types";
 
 export interface IToolbarItem extends IBladeToolbar {
@@ -103,7 +103,22 @@ export function createToolbarService(): IToolbarService {
 
   const getToolbarItems = (bladeId: string): IToolbarItem[] => {
     const normalizedBladeId = bladeId ? bladeId.toLowerCase() : "";
-    return toolbarRegistry[normalizedBladeId] || [];
+    const bladeItems = toolbarRegistry[normalizedBladeId] || [];
+
+    // Include global toolbar items registered with "*" (wildcard)
+    const globalItems = toolbarRegistry["*"] || [];
+
+    // Merge items, avoiding duplicates by id
+    const result = [...bladeItems];
+    const existingIds = new Set(result.map((item) => item.id));
+
+    globalItems.forEach((item) => {
+      if (!existingIds.has(item.id)) {
+        result.push(item);
+      }
+    });
+
+    return result;
   };
 
   const clearBladeToolbarItems = (bladeId: string): void => {
@@ -135,7 +150,7 @@ export function createToolbarService(): IToolbarService {
     try {
       registerToolbarItem(item.toolbarItem, item.bladeId);
     } catch (e) {
-      console.warn(`Failed to register preregistered toolbar item ${item.toolbarItem.id}:`, e);
+      console.warn(`[toolbar-service] Failed to register preregistered toolbar item ${item.toolbarItem.id}:`, e);
     }
   });
 

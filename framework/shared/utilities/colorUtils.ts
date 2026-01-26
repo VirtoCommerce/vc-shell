@@ -1,3 +1,7 @@
+import { createLogger } from "../../core/utilities";
+
+const logger = createLogger("color-utils");
+
 /**
  * Convert CSS color name to hex code using Canvas API
  * @param colorName - CSS color name (e.g., "red", "blue", "lime")
@@ -27,20 +31,9 @@ export function convertColorNameToHex(colorName: string): string | null {
 
     return ctx.fillStyle; // Returns hex format
   } catch (error) {
-    console.warn("Error converting color name to hex:", error);
+    logger.warn("Error converting color name to hex:", error);
     return null;
   }
-}
-
-/**
- * Convert hex code to human-readable color name
- * @param hex - Hex color code (e.g., "#ff0000", "ff0000")
- * @returns Always returns null - don't auto-fill color names
- */
-export function convertHexToColorName(hex: string): string | null {
-  // Always return null - don't auto-fill
-  // User should enter custom color name manually
-  return null;
 }
 
 /**

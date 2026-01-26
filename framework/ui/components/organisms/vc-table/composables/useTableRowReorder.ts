@@ -1,5 +1,8 @@
 import { computed, ref, Ref } from "vue";
 import { TableItem } from "../types";
+import { createLogger } from "../../../../../core/utilities";
+
+const logger = createLogger("vc-table-row-reorder");
 
 export function useTableRowReorder<T extends TableItem | string>(
   items: Ref<T[]>,
@@ -27,7 +30,7 @@ export function useTableRowReorder<T extends TableItem | string>(
   function onRowMouseDown(event: MouseEvent) {
     if (event.currentTarget instanceof HTMLElement) {
       const row = event.currentTarget;
-      console.log("row", row);
+      logger.debug("Row mousedown event", row);
       const rowRect = row.getBoundingClientRect();
 
       dragOffset.value = {
@@ -54,7 +57,7 @@ export function useTableRowReorder<T extends TableItem | string>(
   }
 
   function onRowDragStart(event: DragEvent, item: T) {
-    console.log("onRowDragStart", event, item);
+    logger.debug("Row drag start", { item });
     rowDragged.value = true;
     const index = internalItems.value.indexOf(item);
     draggedRow.value = index;

@@ -1,4 +1,7 @@
 import { ref, computed, Ref, ComputedRef } from "vue";
+import { createLogger } from "../../core/utilities";
+
+const logger = createLogger("use-table-selection");
 
 export interface UseTableSelectionOptions<T> {
   /**
@@ -98,6 +101,7 @@ export function useTableSelection<T extends object>(
     if (items.length === 0) {
       allSelected.value = false;
     }
+    logger.debug("Selection changed", { count: items.length });
   };
 
   const handleSelectAll = (selected: boolean): void => {
@@ -105,11 +109,13 @@ export function useTableSelection<T extends object>(
     if (!selected) {
       selectedItems.value = [];
     }
+    logger.debug("Select all changed", { selected });
   };
 
   const resetSelection = (): void => {
     selectedItems.value = [];
     allSelected.value = false;
+    logger.debug("Selection reset");
   };
 
   const isSelected = (item: T): boolean => {

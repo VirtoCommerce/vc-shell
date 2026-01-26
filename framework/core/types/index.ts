@@ -186,7 +186,46 @@ export interface MenuItem extends Omit<MenuItemConfig, "title" | "id"> {
   children?: MenuItem[];
   permissions?: string | string[];
   id?: number | string;
+  /**
+   * Badge configuration for displaying counters or indicators on this menu item.
+   */
+  badge?: MenuItemBadgeConfig;
 }
+
+/**
+ * Badge configuration for menu items.
+ * Used to display counters or indicators on menu items.
+ */
+export interface MenuItemBadge {
+  /**
+   * Badge content - can be a static value, ref, computed, or function returning value.
+   */
+  content?:
+    | string
+    | number
+    | Ref<string | number | undefined>
+    | ComputedRef<string | number | undefined>
+    | (() => string | number | undefined);
+  /**
+   * Badge color variant. Defaults to "primary".
+   */
+  variant?: "primary" | "success" | "warning" | "danger" | "info" | "secondary";
+  /**
+   * Show as dot indicator only (ignores content value).
+   */
+  isDot?: boolean;
+}
+
+/**
+ * Badge configuration type - supports shorthand (number, ref, function) or full config object.
+ */
+export type MenuItemBadgeConfig =
+  | MenuItemBadge
+  | number
+  | string
+  | Ref<number | string | undefined>
+  | ComputedRef<number | string | undefined>
+  | (() => number | string | undefined);
 
 export interface MenuItemConfig {
   id?: string;
@@ -223,6 +262,10 @@ export interface MenuItemConfig {
     icon?: string | Component | undefined;
     priority?: number;
     permissions?: string | string[];
+    /**
+     * Badge configuration for the group.
+     */
+    badge?: MenuItemBadgeConfig;
   };
   /**
    * Position priority.
@@ -235,4 +278,8 @@ export interface MenuItemConfig {
    */
   inGroupPriority?: number;
   permissions?: string | string[];
+  /**
+   * Badge configuration for displaying counters or indicators on this menu item.
+   */
+  badge?: MenuItemBadgeConfig;
 }

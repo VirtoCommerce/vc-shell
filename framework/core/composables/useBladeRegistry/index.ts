@@ -3,9 +3,6 @@ import { BladeInstanceConstructor } from "../../../shared/components/blade-navig
 import { createLogger } from "../../utilities";
 
 const logger = createLogger("blade-registry");
-import { createLogger } from "../../utilities";
-
-const logger = createLogger("blade-registry");
 
 /**
  * Interface for blade registration data
@@ -109,7 +106,7 @@ export function createBladeRegistry(app: App): IBladeRegistryInstance {
       if (!allowOverwrite) {
         throw new Error(
           `BladeRegistry: Blade '${name}' is already registered. ` +
-          `Use allowOverwrite=true if intentional (e.g. dynamic module hot-reload).`,
+            `Use allowOverwrite=true if intentional (e.g. dynamic module hot-reload).`,
         );
       }
       logger.warn(`Blade '${name}' is already registered. Overwriting (allowOverwrite=true).`);
@@ -119,8 +116,12 @@ export function createBladeRegistry(app: App): IBladeRegistryInstance {
     const existingGlobalComponent = app.component(name);
     if (!existingGlobalComponent || existingGlobalComponent !== registrationData.component) {
       if (existingGlobalComponent && existingGlobalComponent !== registrationData.component) {
-        logger.warn(`Global component '${name}' already exists and is different. Overwriting with new blade component.`);
-        logger.warn(`Global component '${name}' already exists and is different. Overwriting with new blade component.`);
+        logger.warn(
+          `Global component '${name}' already exists and is different. Overwriting with new blade component.`,
+        );
+        logger.warn(
+          `Global component '${name}' already exists and is different. Overwriting with new blade component.`,
+        );
       }
       app.component(name, registrationData.component);
     }

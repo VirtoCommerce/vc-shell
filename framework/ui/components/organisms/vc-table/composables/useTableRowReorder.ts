@@ -66,7 +66,7 @@ export function useTableRowReorder<T extends TableItem | string>(
   let dropFired = false;
 
   function onRowMouseDown(event: MouseEvent) {
-<<<<<<< HEAD
+
     const row = resolveRowElement(event);
     if (!row) return;
     row.draggable = true;
@@ -78,40 +78,7 @@ export function useTableRowReorder<T extends TableItem | string>(
     // Snapshot current items into internal copy
     reorderedItems.value = [...items.value];
     const index = reorderedItems.value.indexOf(item);
-=======
-    if (event.currentTarget instanceof HTMLElement) {
-      const row = event.currentTarget;
-      logger.debug("Row mousedown event", row);
-      const rowRect = row.getBoundingClientRect();
 
-      dragOffset.value = {
-        x: event.clientX - rowRect.left,
-        y: event.clientY - rowRect.top,
-      };
-
-      const ghost = row.cloneNode(true) as HTMLElement;
-      ghost.style.width = `${row.offsetWidth}px`;
-      ghost.style.height = `${row.offsetHeight}px`;
-      ghost.style.position = "fixed";
-      ghost.style.pointerEvents = "none";
-      ghost.style.zIndex = "9999";
-      ghost.style.opacity = "0.8";
-      ghost.style.background = "var(--table-row-bg-odd)";
-      ghost.style.display = "none";
-      ghost.classList.add("vc-table-row__ghost-row");
-
-      document.body.appendChild(ghost);
-      ghostRef.value = ghost;
-
-      row.draggable = true;
-    }
-  }
-
-  function onRowDragStart(event: DragEvent, item: T) {
-    logger.debug("Row drag start", { item });
-    rowDragged.value = true;
-    const index = internalItems.value.indexOf(item);
->>>>>>> main
     draggedRow.value = index;
     originalIndex = index;
 

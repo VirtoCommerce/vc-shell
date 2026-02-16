@@ -907,3 +907,97 @@ export const InputTypes: Story = {
     `,
   }),
 };
+
+/**
+ * Gallery showing all visual states side by side: default, focused (simulated), error, disabled, and loading.
+ */
+export const AllStates: Story = {
+  render: () => ({
+    components: { VcInput },
+    setup() {
+      const defaultVal = ref("Default state");
+      const errorVal = ref("Error state");
+      const disabledVal = ref("Disabled state");
+      const loadingVal = ref("Loading state");
+      return { defaultVal, errorVal, disabledVal, loadingVal };
+    },
+    template: `
+      <div class="tw-max-w-2xl tw-space-y-4">
+        <h3 class="tw-text-lg tw-font-medium">All States</h3>
+        <div class="tw-grid tw-grid-cols-2 tw-gap-4">
+          <VcInput label="Default" v-model="defaultVal" placeholder="Type here..." />
+          <VcInput label="Error" v-model="errorVal" error error-message="This field has an error" />
+          <VcInput label="Disabled" v-model="disabledVal" disabled />
+          <VcInput label="Loading" v-model="loadingVal" loading />
+        </div>
+      </div>
+    `,
+  }),
+};
+
+/**
+ * Gallery showing default and small sizes side by side.
+ */
+export const AllSizes: Story = {
+  render: () => ({
+    components: { VcInput },
+    setup() {
+      const defaultVal = ref("");
+      const smallVal = ref("");
+      return { defaultVal, smallVal };
+    },
+    template: `
+      <div class="tw-max-w-2xl tw-space-y-4">
+        <h3 class="tw-text-lg tw-font-medium">Size Comparison</h3>
+        <div class="tw-grid tw-grid-cols-2 tw-gap-4">
+          <VcInput label="Default size (36px)" v-model="defaultVal" size="default" placeholder="Default height..." />
+          <VcInput label="Small size (32px)" v-model="smallVal" size="small" placeholder="Small height..." />
+        </div>
+      </div>
+    `,
+  }),
+};
+
+/**
+ * Demonstrates accessibility features: label association via aria-labelledby,
+ * aria-describedby linking to hint/error, and aria-invalid on error state.
+ * Inspect the DOM to verify proper ARIA attributes.
+ */
+export const Accessibility: Story = {
+  render: () => ({
+    components: { VcInput },
+    setup() {
+      const val1 = ref("");
+      const val2 = ref("invalid value");
+      return { val1, val2 };
+    },
+    template: `
+      <div class="tw-max-w-lg tw-space-y-6">
+        <h3 class="tw-text-lg tw-font-medium">Accessibility Features</h3>
+
+        <VcInput
+          label="With hint (inspect aria-describedby)"
+          v-model="val1"
+          hint="This hint is linked via aria-describedby"
+          placeholder="Tab here and inspect..."
+        />
+
+        <VcInput
+          label="With error (inspect aria-invalid)"
+          v-model="val2"
+          error
+          error-message="Error linked via aria-describedby"
+        />
+
+        <div class="tw-p-3 tw-bg-blue-50 tw-rounded tw-text-blue-700 tw-text-sm">
+          <strong>Inspect the DOM to verify:</strong>
+          <ul class="tw-list-disc tw-pl-5 tw-mt-1">
+            <li><code>aria-labelledby</code> on input matches the label's <code>id</code></li>
+            <li><code>aria-describedby</code> on input matches the hint/error <code>id</code></li>
+            <li><code>aria-invalid="true"</code> appears on the error input</li>
+          </ul>
+        </div>
+      </div>
+    `,
+  }),
+};

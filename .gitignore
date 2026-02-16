@@ -80,3 +80,4 @@ package-lock.json
 *storybook.log
 .playwright-mcp
 docs/plans
+.mcp.json

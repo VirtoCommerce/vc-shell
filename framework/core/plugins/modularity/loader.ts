@@ -2,7 +2,7 @@ import { App, Plugin } from "vue";
 import { Router } from "vue-router";
 import { DynamicModulesKey } from "../../../injection-keys";
 import * as semver from "semver";
-import { notification } from "../../../shared";
+import { notification } from "../../../shared/components/notifications/core";
 import { createLogger } from "../../utilities";
 
 const logger = createLogger("module-loader");

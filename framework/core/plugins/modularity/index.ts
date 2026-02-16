@@ -5,7 +5,7 @@ import { BladeInstanceConstructor } from "./../../../shared/components/blade-nav
 import { kebabToPascal, createLogger } from "./../../utilities";
 import { addMenuItem, useMenuService, useNotifications } from "../../composables";
 import * as _ from "lodash-es";
-import { notification } from "../../../shared";
+import { notification } from "../../../shared/components/notifications/core";
 import { BladeRegistryKey, IBladeRegistrationData, IBladeRegistryInstance } from "../../composables/useBladeRegistry";
 
 const logger = createLogger("modularity");

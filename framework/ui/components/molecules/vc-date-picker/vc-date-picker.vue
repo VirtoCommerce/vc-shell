@@ -181,7 +181,7 @@ const ariaDescribedBy = computed(() => {
 // State
 const isFocused = ref(false);
 const locale = window.navigator.language;
-const internalValue = ref<ModelValue>(props.modelValue);
+const internalValue = ref<ModelValue | undefined>(props.modelValue);
 
 const maxDate = computed(() => (props.type === "date" && "9999-12-31") || undefined);
 

@@ -1,13 +1,11 @@
-import { ref, computed, Component, ComputedRef } from "vue";
-import { createLogger } from "../utilities";
-
-const logger = createLogger("app-bar-widget-service");
+import { ComputedRef } from "vue";
+import { createSimpleMapRegistry, createPreregistrationBus } from "./_internal";
 
 export interface AppBarWidget {
   id: string;
   order?: number;
-  icon?: Component | string;
-  component?: Component;
+  icon?: import("vue").Component | string;
+  component?: import("vue").Component;
   props?: Record<string, unknown>;
   onClick?: () => void;
   slot?: string;
@@ -24,25 +22,17 @@ export interface IAppBarWidgetService {
   items: ComputedRef<AppBarWidget[]>;
 }
 
-// Global state for pre-registering AppBar menu items
-const preregisteredAppBarMenuItems: AppBarWidget[] = [];
-const appBarMenuItems = ref<Map<string, AppBarWidget>>(new Map());
+export const appBarWidgetBus = createPreregistrationBus<registerAppBarWidgetOptions, IAppBarWidgetService>({
+  name: "app-bar-menu-service",
+  getKey: (item) => item.id || crypto.randomUUID(),
+  registerIntoService: (service, item) => service.register(item),
+});
 
 /**
  * Registers an AppBar menu item before the service is initialized
  */
 export function addAppBarWidget(item: registerAppBarWidgetOptions): void {
-  const id = item.id || crypto.randomUUID();
-  preregisteredAppBarMenuItems.push({
-    id,
-    order: item.order ?? preregisteredAppBarMenuItems.length,
-    icon: item.icon,
-    component: item.component,
-    props: item.props,
-    onClick: item.onClick,
-    slot: item.slot,
-    badge: item.badge,
-  });
+  appBarWidgetBus.preregister(item);
 }
 
 /**
@@ -50,41 +40,27 @@ export function addAppBarWidget(item: registerAppBarWidgetOptions): void {
  * Manages the registration and organization of AppBar menu items
  */
 export function createAppBarWidgetService(): IAppBarWidgetService {
-  const register = (options: registerAppBarWidgetOptions): string => {
-    const id = options.id || crypto.randomUUID();
-    appBarMenuItems.value.set(id, {
-      id,
-      order: options.order ?? appBarMenuItems.value.size,
+  const mapRegistry = createSimpleMapRegistry<AppBarWidget, registerAppBarWidgetOptions>({
+    createItem: (options, currentSize) => ({
+      id: options.id || "",
+      order: options.order ?? currentSize,
       icon: options.icon,
       component: options.component,
       props: options.props,
       onClick: options.onClick,
       slot: options.slot,
       badge: options.badge,
-    });
-    return id;
-  };
-
-  const unregister = (id: string): void => {
-    appBarMenuItems.value.delete(id);
-  };
-
-  const items = computed<AppBarWidget[]>(() => {
-    return Array.from(appBarMenuItems.value.values()).sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+    }),
+    getId: (options) => options.id || "",
   });
 
-  // Register pre-added widgets
-  preregisteredAppBarMenuItems.forEach((item) => {
-    try {
-      register(item);
-    } catch (e) {
-      logger.warn(`Failed to register pre-added AppBar widget ${item.id}:`, e);
-    }
-  });
-
-  return {
-    register,
-    unregister,
-    items,
+  const service: IAppBarWidgetService = {
+    register: (options) => mapRegistry.register(options),
+    unregister: (id) => mapRegistry.unregister(id),
+    items: mapRegistry.sortedItems,
   };
+
+  appBarWidgetBus.replayInto(service);
+
+  return service;
 }

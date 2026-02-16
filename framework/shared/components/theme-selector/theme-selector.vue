@@ -13,8 +13,8 @@
     </template>
 
     <template #content>
-      <GenericDropdown
-        :opened="opened"
+      <VcDropdown
+        :model-value="opened"
         :items="themes"
         :is-item-active="(theme) => theme.key === currentThemeKey"
         @item-click="handleThemeSelect"
@@ -28,18 +28,17 @@
             <span class="vc-theme-selector__item-title">{{ theme.name }}</span>
           </div>
         </template>
-      </GenericDropdown>
+      </VcDropdown>
     </template>
   </SettingsMenuItem>
 </template>
 
 <script lang="ts" setup>
-import { GenericDropdown } from "../generic-dropdown";
 import { useTheme } from "../../../core/composables/useTheme";
 import { ref } from "vue";
 import { notification } from "..";
 import { SettingsMenuItem } from "../settings-menu-item";
-import { VcIcon } from "../../../ui/components";
+import { VcDropdown, VcIcon } from "../../../ui/components";
 
 const { currentThemeKey, currentLocalizedName, themes, setTheme } = useTheme();
 const opened = ref(false);

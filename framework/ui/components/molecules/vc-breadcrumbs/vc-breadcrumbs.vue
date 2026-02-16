@@ -10,10 +10,10 @@
         'vc-breadcrumbs__content--separated': separated,
       }"
     >
-      <GenericDropdown
+      <VcDropdown
         v-if="showMoreButton"
         :items="hiddenItems"
-        :opened="showBreadcrumbs"
+        :model-value="showBreadcrumbs"
         floating
         variant="secondary"
         placement="bottom-start"
@@ -21,7 +21,7 @@
           mainAxis: 10,
         }"
         @item-click="onItemClick"
-        @update:opened="showBreadcrumbs = $event"
+        @update:model-value="showBreadcrumbs = $event"
       >
         <template #trigger="{ isActive }">
           <slot
@@ -50,7 +50,7 @@
             @click="click"
           />
         </template>
-      </GenericDropdown>
+      </VcDropdown>
 
       <template
         v-for="(item, i) in visibleItems"
@@ -83,7 +83,7 @@
 import { ref, toRef, VNode, nextTick } from "vue";
 import { Breadcrumbs } from "../../../types";
 import VcBreadcrumbsItem from "./_internal/vc-breadcrumbs-item/vc-breadcrumbs-item.vue";
-import { GenericDropdown } from "./../../../../shared/components/generic-dropdown";
+import { VcDropdown } from "..";
 import { useAdaptiveItems } from "../../../composables/useAdaptiveItems";
 
 export interface Props {

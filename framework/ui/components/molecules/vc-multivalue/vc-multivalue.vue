@@ -5,15 +5,17 @@
       `vc-multivalue_${type}`,
       {
         'vc-multivalue_opened': isOpened,
-        'vc-multivalue_error vc-multivalue__error-padding': error,
+        'vc-multivalue_error': error,
         'vc-multivalue_disabled': disabled,
-        'vc-multivalue_focus': isFocused,
+        'vc-multivalue_focused': isFocused,
+        'vc-multivalue_has-hint-or-error': error || hint,
       },
     ]"
   >
-    <!-- Input label -->
+    <!-- Label -->
     <VcLabel
       v-if="label"
+      :id="labelId"
       class="vc-multivalue__label"
       :required="required"
       :multilanguage="multilanguage"
@@ -24,147 +26,92 @@
       <template
         v-if="tooltip"
         #tooltip
-        >{{ tooltip }}</template
       >
+        {{ tooltip }}
+      </template>
     </VcLabel>
 
-    <!-- Input field -->
-    <div
-      ref="dropdownToggleRef"
-      class="vc-multivalue__field-wrapper"
+    <!-- Field -->
+    <MultivalueTrigger
+      ref="triggerComponentRef"
+      :model-value="modelValue"
+      :is-dictionary-mode="isDictionaryMode"
+      :type="type"
+      :html-input-type="htmlInputType"
+      :placeholder="placeholder"
+      :disabled="disabled"
+      :error="error"
+      :loading="loading"
+      :clearable="clearable"
+      :option-value="optionValue"
+      :input-value="inputValue"
+      :format-value="formatValue"
+      :is-opened="isOpened"
+      :label-id="label ? labelId : undefined"
+      :listbox-id="listboxId"
+      :aria-described-by="ariaDescribedBy"
+      @remove="removeAtIndex"
+      @toggle-dropdown="toggleDropdown"
+      @input-submit="onInputSubmit"
+      @input-change="inputValue = $event"
+      @key-down="onKeyDown"
+      @focus="isFocused = true"
+      @blur="isFocused = false"
+      @clear-all="clearAll"
+      @open-color-picker="openColorPicker"
+      @set-color-picker-ref="setColorPickerRef"
+      @color-change="handleColorChange"
     >
-      <div class="vc-multivalue__content">
-        <div
-          v-for="(item, i) in modelValue"
-          :key="`${item?.id}_${generateId()}`"
-          class="vc-multivalue__field-value-wrapper"
-        >
-          <div
-            v-if="item"
-            class="vc-multivalue__field-value"
-          >
-            <!-- Color square for color type -->
-            <div
-              v-if="type === 'color'"
-              class="vc-multivalue__color-square"
-              :style="{ backgroundColor: item.colorCode || '#cccccc' }"
-              @click="openColorPicker(i)"
-            >
-              <input
-                :ref="(el) => setColorPickerRef(el as HTMLInputElement, i)"
-                type="color"
-                class="vc-multivalue__color-picker-hidden"
-                :value="item.colorCode || '#000000'"
-                @change="(e) => handleColorChange(e, i)"
-              />
-            </div>
-
-            <slot
-              name="selected-item"
-              :value="formatValue(item)"
-              :item="item"
-              :remove="() => onDelete(i)"
-            >
-              <span class="vc-multivalue__truncate">{{ formatValue(item) }}</span>
-            </slot>
-            <VcIcon
-              v-if="!disabled"
-              class="vc-multivalue__field-value-clear"
-              icon="material-close"
-              size="s"
-              tabindex="0"
-              role="button"
-              aria-label="Delete item"
-              @click="onDelete(i)"
-              @keydown.enter="onDelete(i)"
-              @keydown.space="onDelete(i)"
-            ></VcIcon>
-          </div>
-        </div>
-
-        <template v-if="multivalue">
-          <div class="vc-multivalue__field vc-multivalue__field_dictionary">
-            <VcButton
-              size="sm"
-              variant="secondary"
-              :disabled="disabled"
-              tabindex="0"
-              @click.stop="toggleDropdown"
-              >{{ $t("COMPONENTS.MOLECULES.VC_MULTIVALUE.ADD") }}</VcButton
-            >
-            <teleport
-              to=".vc-app"
-              defer
-            >
-              <div
-                v-if="isOpened"
-                ref="dropdownRef"
-                v-on-click-outside="[toggleDropdown, { ignore: [dropdownToggleRef] }]"
-                class="vc-multivalue__dropdown"
-                :class="{ 'vc-multivalue__dropdown_focused': isFocused }"
-                role="menu"
-                :style="dropdownStyle"
-              >
-                <input
-                  ref="searchRef"
-                  class="vc-multivalue__search"
-                  tabindex="0"
-                  @input="onSearch"
-                />
-
-                <VcContainer
-                  ref="root"
-                  :no-padding="true"
-                >
-                  <div
-                    v-for="(item, i) in slicedDictionary"
-                    :key="i"
-                    class="vc-multivalue__item"
-                    tabindex="0"
-                    :data-index="i"
-                    @click="onItemSelect(item)"
-                    @keydown.enter="onItemSelect(item)"
-                    @keydown.space="onItemSelect(item)"
-                  >
-                    <slot
-                      name="option"
-                      :item="item"
-                      >{{ item[optionLabel as keyof T] }}</slot
-                    >
-                  </div>
-                </VcContainer>
-              </div>
-            </teleport>
-          </div>
-        </template>
-        <template v-else>
-          <input
-            v-model="value"
-            class="vc-multivalue__field vc-multivalue__input"
-            :placeholder="placeholder"
-            :type="internalTypeComputed"
-            :disabled="disabled"
-            tabindex="0"
-            @keypress.enter.stop.prevent="onInput"
-            @blur="onBlur"
-            @keydown="onKeyDown"
-            @focus="isFocused = true"
-          />
-        </template>
-      </div>
-      <!-- Loading -->
-      <div
-        v-if="loading"
-        class="vc-multivalue__loading"
+      <template
+        v-if="$slots['selected-item']"
+        #selected-item="scope"
       >
-        <VcIcon
-          icon="lucide-loader"
-          class="vc-multivalue__loading-icon"
-          size="m"
-        ></VcIcon>
-      </div>
-    </div>
+        <slot
+          name="selected-item"
+          v-bind="scope"
+        />
+      </template>
+      <template
+        v-if="$slots['prepend']"
+        #prepend
+      >
+        <slot name="prepend" />
+      </template>
+      <template
+        v-if="$slots['append']"
+        #append
+      >
+        <slot name="append" />
+      </template>
+    </MultivalueTrigger>
 
+    <!-- Dropdown (dictionary mode) -->
+    <MultivalueDropdown
+      v-if="isDictionaryMode"
+      ref="dropdownComponentRef"
+      :is-opened="isOpened"
+      :dropdown-style="dropdownStyle"
+      :available-options="availableOptions"
+      :option-label="optionLabel"
+      :ariaLabel="label || name"
+      :listbox-id="listboxId"
+      :dropdown-toggle-ref="triggerComponentRef?.triggerRef ?? null"
+      @select="onItemSelect"
+      @search="onSearch"
+      @click-outside="closeDropdown"
+    >
+      <template
+        v-if="$slots['option']"
+        #option="scope"
+      >
+        <slot
+          name="option"
+          v-bind="scope"
+        />
+      </template>
+    </MultivalueDropdown>
+
+    <!-- Hint / Error -->
     <Transition
       name="slide-up"
       mode="out-in"
@@ -173,18 +120,22 @@
         <slot name="error">
           <VcHint
             v-if="errorMessage"
+            :id="errorId"
             class="vc-multivalue__error"
-            >{{ errorMessage }}</VcHint
           >
+            {{ errorMessage }}
+          </VcHint>
         </slot>
       </div>
       <div v-else>
         <slot name="hint">
           <VcHint
             v-if="hint"
+            :id="hintId"
             class="vc-multivalue__hint"
-            >{{ hint }}</VcHint
           >
+            {{ hint }}
+          </VcHint>
         </slot>
       </div>
     </Transition>
@@ -193,19 +144,23 @@
 
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup generic="T extends { id?: string; colorCode?: string }">
-import { unref, nextTick, ref, computed } from "vue";
-import { vOnClickOutside } from "@vueuse/components";
-import { useFloating, UseFloatingReturn, offset, flip, shift, autoUpdate, MiddlewareState } from "@floating-ui/vue";
-import { generateId } from "../../../../core/utilities";
-import { useKeyboardNavigation } from "../../../../core/composables/useKeyboardNavigation";
-import { convertColorNameToHex } from "../../../../shared/utilities";
+import { ref, computed, watchEffect, useId } from "vue";
+import { VcLabel, VcHint } from "./../../";
+import MultivalueTrigger from "./_internal/MultivalueTrigger.vue";
+import MultivalueDropdown from "./_internal/MultivalueDropdown.vue";
+import { useMultivalueMode, type MultivalueType } from "./composables/useMultivalueMode";
+import { useMultivalueValues } from "./composables/useMultivalueValues";
+import { useMultivalueInput } from "./composables/useMultivalueInput";
+import { useMultivalueColor } from "./composables/useMultivalueColor";
+import { useMultivalueDropdown } from "./composables/useMultivalueDropdown";
+import { useMultivalueOptions } from "./composables/useMultivalueOptions";
 
 export interface Props<T> {
   placeholder?: string;
   modelValue?: T[];
   required?: boolean;
   disabled?: boolean;
-  type?: "text" | "number" | "integer" | "color";
+  type?: MultivalueType;
   label?: string;
   tooltip?: string;
   name?: string;
@@ -219,6 +174,7 @@ export interface Props<T> {
   multilanguage?: boolean;
   currentLanguage?: string;
   loading?: boolean;
+  clearable?: boolean;
 }
 
 export interface Emits<T> {
@@ -227,17 +183,6 @@ export interface Emits<T> {
   (event: "search", value: string): void;
 }
 
-type FloatingInstanceType = UseFloatingReturn & {
-  middlewareData: {
-    sameWidthChangeBorders: {
-      borderTop?: string;
-      borderBottom?: string;
-      borderRadius?: string;
-      width?: string;
-    };
-  };
-};
-
 const props = withDefaults(defineProps<Props<T>>(), {
   modelValue: () => [],
   type: "text",
@@ -245,276 +190,157 @@ const props = withDefaults(defineProps<Props<T>>(), {
   options: () => [],
   optionValue: "id",
   optionLabel: "title",
+  clearable: false,
 });
 
 const emit = defineEmits<Emits<T>>();
+
 defineSlots<{
-  option: (args: { item: T }) => any;
-  "selected-item": (args: { value: string | number | T[keyof T]; item: T; remove: () => void }) => any;
+  option: (args: { item: T; index: number }) => any;
+  "selected-item": (args: { value: string | number | T[keyof T]; item: T; index: number; remove: () => void }) => any;
   hint: (props: any) => any;
   error: (props: any) => any;
+  prepend: (props: any) => any;
+  append: (props: any) => any;
 }>();
 
-const dropdownToggleRef = ref();
-const dropdownRef = ref();
-const root = ref();
-const searchRef = ref();
-const isOpened = ref(false);
-const value = ref();
-const internalType = ref(unref(props.type));
-const isFocused = ref(false);
-const colorPickerRefs = ref<Map<number, HTMLInputElement>>(new Map());
-
-const popper = useFloating(dropdownToggleRef, dropdownRef, {
-  placement: "bottom",
-  whileElementsMounted: autoUpdate,
-  middleware: [
-    flip({ fallbackPlacements: ["top", "bottom"] }),
-    shift({ mainAxis: false }),
-    sameWidthChangeBorders(),
-    offset({
-      mainAxis: -2,
-    }),
-  ],
-}) as FloatingInstanceType;
-
-const dropdownStyle = computed(() => {
-  return {
-    top: `${popper.y.value ?? 0}px`,
-    left: `${popper.x.value ?? 0}px`,
-    ...popper.middlewareData.value.sameWidthChangeBorders,
-  };
+// --- Accessibility IDs ---
+const uid = useId();
+const labelId = computed(() => `vc-multivalue-${uid}-label`);
+const errorId = computed(() => `vc-multivalue-${uid}-error`);
+const hintId = computed(() => `vc-multivalue-${uid}-hint`);
+const listboxId = computed(() => `vc-multivalue-${uid}-listbox`);
+const ariaDescribedBy = computed(() => {
+  const ids: string[] = [];
+  if (props.error && props.errorMessage) ids.push(errorId.value);
+  if (props.hint) ids.push(hintId.value);
+  return ids.length ? ids.join(" ") : undefined;
 });
 
-const slicedDictionary = computed(() => {
-  return props.options?.filter((x) => {
-    return !props.modelValue?.find((item) => {
-      return item[props.optionValue as keyof T] === x[props.optionValue as keyof T];
-    });
-  });
+// --- Sub-component refs ---
+const triggerComponentRef = ref<InstanceType<typeof MultivalueTrigger> | null>(null);
+const dropdownComponentRef = ref<InstanceType<typeof MultivalueDropdown> | null>(null);
+
+// --- Composables ---
+
+const { isDictionaryMode, htmlInputType } = useMultivalueMode({
+  multivalue: () => props.multivalue ?? false,
+  type: () => props.type,
 });
 
-const formatValue = computed(() => {
-  return (item: T) => {
-    if (props.type === "number") {
-      return Number(item[props.optionLabel as keyof T]).toFixed(3);
-    } else if (props.type === "integer") {
-      return Math.trunc(+item[props.optionLabel as keyof T]);
-    } else {
-      return item[props.optionLabel as keyof T];
-    }
-  };
-});
-
-const internalTypeComputed = computed({
-  get() {
-    if (internalType.value === "integer") {
-      return "number";
-    }
-    if (internalType.value === "color") {
-      return "text";
-    }
-    return internalType.value;
-  },
-  set(value) {
-    internalType.value = value;
+const { formatValue, removeAtIndex, clearAll, addItem } = useMultivalueValues<T>({
+  modelValue: () => props.modelValue,
+  optionLabel: () => props.optionLabel,
+  type: () => props.type,
+  emit: {
+    updateModelValue: (val: T[]) => emit("update:model-value", val),
   },
 });
 
-const keyboardNavigation = useKeyboardNavigation({
-  onEnter: (element: HTMLElement) => {
-    const index = parseInt(element.getAttribute("data-index") || "0", 10);
-    if (slicedDictionary.value && slicedDictionary.value[index]) {
-      onItemSelect(slicedDictionary.value[index]);
-    }
-  },
-  onEscape: () => {
-    closeDropdown();
+const { inputValue, onInputSubmit, onKeyDown } = useMultivalueInput<T>({
+  type: () => props.type,
+  optionLabel: () => props.optionLabel,
+  addItem,
+});
+
+const { setColorPickerRef, openColorPicker, handleColorChange } = useMultivalueColor<T>({
+  modelValue: () => props.modelValue,
+  emit: {
+    updateModelValue: (val: T[]) => emit("update:model-value", val),
   },
 });
 
-function onKeyDown(e: KeyboardEvent) {
-  const allowedKeys = ["Backspace", "Delete", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Enter"];
-  const keypressed = e.key;
+const { availableOptions } = useMultivalueOptions<T>({
+  options: () => props.options,
+  modelValue: () => props.modelValue,
+  optionValue: () => props.optionValue,
+});
 
-  if (props.type === "number" || props.type === "integer") {
-    if (keypressed === "-" || keypressed === "e" || keypressed === "+") {
-      e.preventDefault();
+const {
+  isOpened,
+  isFocused,
+  dropdownToggleRef,
+  dropdownRef,
+  searchRef,
+  dropdownStyle,
+  toggleDropdown,
+  closeDropdown,
+} = useMultivalueDropdown({
+  disabled: () => props.disabled ?? false,
+  onItemSelect: (index: number) => {
+    if (availableOptions.value[index]) {
+      onItemSelect(availableOptions.value[index]);
     }
-  }
+  },
+  emit: {
+    close: () => emit("close"),
+  },
+});
 
-  if (props.type === "integer") {
-    if (!/^\d$/.test(keypressed) && !allowedKeys.includes(keypressed)) {
-      e.preventDefault();
-      return;
-    }
-  }
+// --- Sync DOM refs from sub-components → composable ---
+watchEffect(() => {
+  dropdownToggleRef.value = triggerComponentRef.value?.triggerRef ?? null;
+  dropdownRef.value = dropdownComponentRef.value?.dropdownElRef ?? null;
+  searchRef.value = dropdownComponentRef.value?.searchInputRef ?? null;
+});
 
-  if (keypressed === "Tab") {
-    // Default behavior of the tab key
-  } else if (keypressed === "ArrowUp" || keypressed === "ArrowDown") {
-    if (isOpened.value) {
-      e.preventDefault();
-    }
-  }
-}
-
-function onBlur(e: FocusEvent) {
-  onInput(e);
-  isFocused.value = false;
-}
-
-function onInput(e: KeyboardEvent | FocusEvent) {
-  const newValue = (e.target as HTMLInputElement).value;
-  if (newValue === "" || newValue === undefined || newValue === null) {
-    return;
-  }
-
-  if (props.type === "color") {
-    // Try to convert color name to hex
-    const hexColor = convertColorNameToHex(newValue);
-    emit("update:model-value", [
-      ...props.modelValue,
-      {
-        [props.optionLabel]: newValue,
-        colorCode: hexColor || "#000000",
-      } as unknown as T,
-    ]);
-  } else {
-    emit("update:model-value", [...props.modelValue, { [props.optionLabel]: newValue } as T]);
-  }
-  value.value = undefined;
-}
+// --- Event handlers ---
 
 function onItemSelect(item: T) {
-  emit("update:model-value", [...props.modelValue, item]);
-  emit("close");
+  addItem(item);
   closeDropdown();
-}
-
-function onDelete(i: number) {
-  const result = unref(props.modelValue);
-  result.splice(i, 1);
-  emit("update:model-value", [...result]);
-}
-
-function sameWidthChangeBorders() {
-  return {
-    name: "sameWidthChangeBorders",
-    fn: ({ rects, placement, x, y }: MiddlewareState) => {
-      let borderTop;
-      let borderBottom;
-      let borderRadius;
-      if (placement === "top") {
-        borderTop = "1px solid var(--multivalue-select-border-color)";
-        borderBottom = "1px solid var(--multivalue-select-background-color)";
-        borderRadius = "var(--multivalue-select-border-radius) var(--multivalue-select-border-radius) 0 0";
-      } else {
-        borderBottom = "1px solid var(--multivalue-select-border-color)";
-        borderTop = "1px solid var(--multivalue-select-background-color)";
-        borderRadius = "0 0 var(--multivalue-select-border-radius) var(--multivalue-select-border-radius)";
-      }
-
-      const width = `${rects.reference.width}px`;
-
-      return {
-        x,
-        y,
-        data: {
-          borderTop,
-          borderBottom,
-          borderRadius,
-          width,
-        },
-      };
-    },
-  };
-}
-
-async function toggleDropdown() {
-  if (!props.disabled) {
-    if (isOpened.value) {
-      closeDropdown();
-    } else {
-      isOpened.value = true;
-      isFocused.value = true;
-
-      nextTick(() => {
-        if (dropdownRef.value) {
-          keyboardNavigation.initKeyboardNavigation(dropdownRef.value);
-          searchRef?.value?.focus();
-        }
-      });
-    }
-  }
-}
-
-function closeDropdown() {
-  isOpened.value = false;
-  isFocused.value = false;
-  keyboardNavigation.cleanupKeyboardNavigation();
-  emit("close");
 }
 
 function onSearch(event: Event) {
   emit("search", (event.target as HTMLInputElement).value);
-}
-
-function setColorPickerRef(el: HTMLInputElement | null, index: number) {
-  if (el) {
-    colorPickerRefs.value.set(index, el);
-  }
-}
-
-function openColorPicker(index: number) {
-  const picker = colorPickerRefs.value.get(index);
-  picker?.click();
-}
-
-function handleColorChange(event: Event, index: number) {
-  const target = event.target as HTMLInputElement;
-  if (target && target.value) {
-    const updatedValues = [...props.modelValue];
-    updatedValues[index] = {
-      ...updatedValues[index],
-      colorCode: target.value,
-    };
-    emit("update:model-value", updatedValues);
-  }
 }
 </script>
 
 <style lang="scss">
 :root {
   --multivalue-height: 36px;
-  --multivalue-border-radius: 4px;
-  --multivalue-border-color: var(--neutrals-300);
-  --multivalue-border-color-error: var(--danger-100);
-  --multivalue-background-color: var(--additional-50);
-  --multivalue-placeholder-color: var(--neutrals-400);
-  --multivalue-text-color: var(--neutrals-800);
+  --multivalue-border-radius: var(--select-border-radius, 6px);
+  --multivalue-border-color: var(--select-border-color, var(--neutrals-300));
+  --multivalue-background-color: var(--select-background-color, transparent);
+  --multivalue-placeholder-color: var(--select-placeholder-color, var(--neutrals-400));
+  --multivalue-text-color: var(--select-text-color, var(--neutrals-800));
   --multivalue-padding: 10px;
 
-  --multivalue-select-border-radius: 4px;
-  --multivalue-select-border-color: var(--neutrals-200);
-  --multivalue-select-border-color-error: var(--danger-500);
-  --multivalue-select-background-color: var(--additional-50);
+  // Dropdown — reuse select tokens
+  --multivalue-dropdown-bg: var(--select-dropdown-bg, var(--additional-50));
+  --multivalue-dropdown-border: var(--select-dropdown-border, var(--neutrals-200));
+  --multivalue-dropdown-shadow: var(
+    --select-dropdown-shadow,
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -2px rgba(0, 0, 0, 0.1)
+  );
 
-  --multivalue-select-placeholder-color: var(--neutrals-400);
-  --multivalue-select-chevron-color: var(--primary-500);
-  --multivalue-select-chevron-color-hover: var(--primary-600);
+  // Search — reuse select tokens
+  --multivalue-search-border-color: var(--select-search-border-color, var(--neutrals-200));
 
-  --multivalue-search-border-color: var(--secondary-200);
-  --multivalue-item-hover-background-color: var(--accent-100);
+  // Options — reuse select tokens
+  --multivalue-item-hover-background-color: var(--select-option-background-color-hover, var(--neutrals-100));
+
+  // Chips — reuse select multi tokens
+  --multivalue-chip-background-color: var(--select-multiple-options-background-color, var(--neutrals-100));
+  --multivalue-chip-border-color: var(--select-multiple-options-border-color, var(--neutrals-200));
+  --multivalue-clear-icon-color: var(--select-clear-color, var(--neutrals-400));
+  --multivalue-clear-icon-color-hover: var(--select-clear-color-hover, var(--neutrals-600));
+
+  // Error — reuse select tokens
+  --multivalue-border-color-error: var(--select-border-color-error, var(--danger-500));
+  --multivalue-error-ring-color: var(--select-error-ring-color, rgba(239, 68, 68, 0.2));
   --multivalue-hint-color: var(--danger-500);
-  --multivalue-field-value-background-color: var(--additional-50);
-  --multivalue-field-value-border-color: var(--secondary-200);
-  --multivalue-clear-icon-color: var(--primary-500);
+
+  // Focus — reuse select tokens
+  --multivalue-border-color-focus: var(--select-border-color-focus, var(--primary-500));
+  --multivalue-focus-ring-color: var(--select-focus-ring-color, rgba(59, 130, 246, 0.3));
 
   // Disabled
-  --multivalue-select-background-color-disabled: var(--neutrals-50);
   --multivalue-disabled-text-color: var(--neutrals-500);
-  --multivalue-disabled-background-color: var(--neutrals-200);
+
+  // Loading
+  --multivalue-loading-color: var(--select-loading-color, var(--info-500));
 }
 
 .vc-multivalue {
@@ -531,85 +357,72 @@ function handleColorChange(event: Event, index: number) {
     @apply tw-mb-2;
   }
 
-  &__error-padding {
-    @apply tw-pb-[20px];
-  }
-
   &__field-wrapper {
     @apply tw-border tw-border-solid
-    tw-border-[color:var(--multivalue-border-color)]
-    tw-rounded-[var(--multivalue-border-radius)]
-    tw-items-center
-    tw-flex tw-justify-between tw-bg-[color:var(--multivalue-background-color)] tw-text-[color:var(--multivalue-text-color)];
+      tw-border-[color:var(--multivalue-border-color)]
+      tw-rounded-[var(--multivalue-border-radius)]
+      tw-flex tw-items-stretch tw-min-h-[var(--multivalue-height)]
+      tw-bg-[color:var(--multivalue-background-color)] tw-text-[color:var(--multivalue-text-color)]
+      tw-shadow-sm tw-transition-[color,box-shadow] tw-duration-150 tw-ease-in-out
+      tw-outline-none;
+  }
+
+  &__control {
+    @apply tw-flex tw-flex-auto tw-items-center tw-min-w-0;
   }
 
   &__content {
-    @apply tw-items-center tw-flex tw-flex-wrap tw-flex-grow;
+    @apply tw-items-center tw-flex tw-flex-wrap tw-flex-grow tw-min-w-0;
   }
 
-  &__field-value-wrapper {
-    @apply tw-ml-2 tw-flex tw-items-center;
+  &__chip-wrapper {
+    @apply tw-ml-2 tw-flex tw-items-center tw-py-1;
   }
 
-  &__field-value {
-    @apply tw-bg-[color:var(--multivalue-background-color)] tw-border tw-border-solid tw-border-[color:var(--multivalue-border-color)]
-      tw-rounded-[2px] tw-flex tw-items-center tw-h-[28px] tw-box-border tw-px-2 tw-max-w-[150px];
+  &__chip {
+    @apply tw-bg-[color:var(--multivalue-chip-background-color)] tw-border tw-border-solid tw-border-[color:var(--multivalue-chip-border-color)]
+      tw-rounded-[4px] tw-flex tw-items-center tw-h-6 tw-box-border tw-px-2 tw-text-xs tw-gap-1 tw-max-w-[150px];
   }
 
-  &__truncate {
+  &__chip-label {
     @apply tw-truncate tw-text-sm;
   }
 
-  &__field-value-clear {
-    @apply tw-text-[color:var(--multivalue-clear-icon-color)] tw-ml-2 tw-cursor-pointer;
+  &__chip-remove {
+    @apply tw-text-[color:var(--multivalue-clear-icon-color)] tw-cursor-pointer
+      hover:tw-text-[color:var(--multivalue-clear-icon-color-hover)] tw-flex-shrink-0;
   }
 
-  &__dropdown {
-    @apply tw-flex tw-flex-col tw-box-border
-    tw-max-h-[300px] tw-z-10 tw-overflow-hidden
-    tw-absolute tw-bg-[color:var(--multivalue-select-background-color)]
-    tw-border tw-border-solid tw-border-[color:var(--multivalue-select-border-color)]
-    tw-border-t-[color:var(--multivalue-select-background-color)]
-    tw-rounded-b-[var(--multivalue-select-border-radius)]
-    tw-p-2;
+  &__prepend,
+  &__append {
+    @apply tw-flex tw-items-center tw-flex-nowrap tw-px-3;
   }
 
-  &__search {
-    @apply tw-w-full tw-box-border tw-border tw-border-solid
-    tw-border-[color:var(--multivalue-search-border-color)]
-    tw-rounded-[4px] tw-h-8 tw-leading-[32px]
-    tw-outline-none tw-mb-3 tw-px-2 tw-bg-[color:var(--multivalue-background-color)];
+  &__clear {
+    @apply tw-cursor-pointer tw-flex tw-items-center tw-px-3 tw-flex-shrink-0
+      tw-text-[color:var(--multivalue-clear-icon-color)]
+      hover:tw-text-[color:var(--multivalue-clear-icon-color-hover)];
   }
 
-  &__item {
-    @apply tw-flex tw-items-center tw-min-h-[36px] tw-px-2 tw-rounded-[3px] tw-cursor-pointer hover:tw-bg-[color:var(--multivalue-item-hover-background-color)];
+  &__add-button {
+    @apply tw-flex tw-items-center tw-gap-1 tw-px-2 tw-py-0
+      tw-border-none tw-bg-transparent
+      tw-text-xs tw-text-[color:var(--multivalue-clear-icon-color)]
+      tw-cursor-pointer tw-select-none tw-whitespace-nowrap
+      tw-rounded-[4px] tw-h-6 tw-my-auto tw-ml-1
+      tw-transition-colors tw-duration-150
+      hover:tw-text-[color:var(--multivalue-text-color)]
+      hover:tw-bg-[color:var(--multivalue-chip-background-color)]
+      disabled:tw-cursor-not-allowed disabled:tw-opacity-50;
   }
 
-  &_opened &__field-wrapper {
-    @apply tw-rounded-t-[var(--multivalue-select-border-radius)];
-  }
-
-  &_error &__field-wrapper {
-    @apply tw-border tw-border-solid tw-border-[color:var(--multivalue-border-color-error)];
-  }
-
-  &__error {
-    @apply tw-mt-1 [--hint-color:var(--multivalue-hint-color)];
-  }
-
-  &__field {
+  &__input {
     @apply tw-border-none tw-outline-none tw-min-h-[var(--multivalue-height)] tw-bg-[color:var(--multivalue-background-color)]
-      tw-flex-grow tw-flex-shrink tw-w-auto tw-box-border placeholder:tw-text-[color:var(--multivalue-placeholder-color)] tw-text-sm tw-rounded-[var(--multivalue-border-radius)];
+      tw-flex-grow tw-flex-shrink tw-w-auto tw-box-border tw-px-[var(--multivalue-padding)]
+      placeholder:tw-text-[color:var(--multivalue-placeholder-color)] tw-text-sm
+      tw-rounded-[var(--multivalue-border-radius)];
 
     &::-webkit-input-placeholder {
-      @apply tw-text-[color:var(--multivalue-placeholder-color)];
-    }
-
-    &::-moz-placeholder {
-      @apply tw-text-[color:var(--multivalue-placeholder-color)];
-    }
-
-    &::-ms-placeholder {
       @apply tw-text-[color:var(--multivalue-placeholder-color)];
     }
 
@@ -618,46 +431,102 @@ function handleColorChange(event: Event, index: number) {
       -webkit-appearance: none;
       margin: 0;
     }
-
-    &-value-wrapper {
-      @apply tw-min-h-[var(--multivalue-height)] tw-ml-2 tw-flex tw-items-center;
-    }
-
-    &-value {
-      @apply tw-bg-[color:var(--multivalue-field-value-background-color)] tw-border tw-border-solid tw-border-[color:var(--multivalue-field-value-border-color)]
-        tw-rounded-[2px] tw-flex tw-items-center tw-h-[28px] tw-box-border tw-px-2 tw-max-w-[150px];
-
-      &-clear {
-        @apply tw-text-[color:var(--multivalue-clear-icon-color)] tw-ml-2 tw-cursor-pointer;
-      }
-    }
-
-    &_dictionary {
-      @apply tw-h-auto tw-min-w-[auto] tw-grow tw-basis-0 tw-p-2;
-    }
-  }
-
-  &_disabled &__field-wrapper,
-  &_disabled &__field {
-    @apply tw-bg-[color:var(--multivalue-disabled-background-color)] tw-text-[color:var(--multivalue-disabled-text-color)];
-  }
-
-  &__input {
-    @apply tw-px-[var(--multivalue-padding)];
   }
 
   &__loading {
-    @apply tw-flex tw-items-center tw-flex-nowrap tw-px-3 tw-text-[color:var(--select-clear-color)];
+    @apply tw-flex tw-items-center tw-flex-nowrap tw-px-3 tw-text-[color:var(--multivalue-loading-color)] tw-flex-shrink-0;
   }
 
-  &__loading-icon {
-    @apply tw-animate-spin;
+  &__dropdown {
+    @apply tw-flex tw-flex-col tw-box-border
+      tw-max-h-[300px] tw-z-[101] tw-overflow-hidden
+      tw-absolute tw-bg-[color:var(--multivalue-dropdown-bg)]
+      tw-border tw-border-solid tw-border-[color:var(--multivalue-dropdown-border)]
+      tw-rounded-[var(--multivalue-border-radius)]
+      tw-p-1;
+    box-shadow: var(--multivalue-dropdown-shadow);
+  }
+
+  &__viewport {
+    @apply tw-overflow-y-auto tw-overflow-x-hidden tw-flex-1;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  &__scroll-button {
+    @apply tw-flex tw-items-center tw-justify-center tw-py-1
+      tw-cursor-default tw-shrink-0
+      tw-text-[color:var(--multivalue-placeholder-color)]
+      tw-transition-opacity tw-duration-150;
+  }
+
+  &__search {
+    @apply tw-w-full tw-box-border tw-border tw-border-solid
+      tw-border-[color:var(--multivalue-search-border-color)]
+      tw-bg-transparent tw-rounded-[var(--multivalue-border-radius)] tw-h-8 tw-leading-8
+      tw-outline-none tw-mb-2 tw-px-2 tw-text-sm
+      focus:tw-border-[color:var(--multivalue-border-color-focus)] focus:tw-ring-[2px] focus:tw-ring-[color:var(--multivalue-focus-ring-color)]
+      tw-transition-[color,box-shadow] tw-duration-150 tw-ease-in-out;
+  }
+
+  &__item {
+    @apply tw-flex tw-items-center tw-min-h-8 tw-py-1.5 tw-px-2 tw-rounded-[4px] tw-cursor-pointer tw-text-sm tw-select-none
+      hover:tw-bg-[color:var(--multivalue-item-hover-background-color)];
+  }
+
+  &__no-options {
+    @apply tw-w-full tw-box-border tw-flex tw-items-center tw-justify-center tw-p-4 tw-text-sm tw-text-[color:var(--multivalue-placeholder-color)];
+  }
+
+  // Focus state
+  &_focused &__field-wrapper {
+    @apply tw-border-[color:var(--multivalue-border-color-focus)]
+      tw-ring-[3px] tw-ring-[color:var(--multivalue-focus-ring-color)]
+      tw-outline-none;
+  }
+
+  // Opened state
+  &_opened &__field-wrapper {
+    @apply tw-border-[color:var(--multivalue-border-color-focus)]
+      tw-ring-[3px] tw-ring-[color:var(--multivalue-focus-ring-color)]
+      tw-outline-none;
+  }
+
+  // Error state
+  &_error &__field-wrapper {
+    @apply tw-border tw-border-solid tw-border-[color:var(--multivalue-border-color-error)]
+      tw-ring-[3px] tw-ring-[color:var(--multivalue-error-ring-color)];
+  }
+
+  &__error {
+    @apply tw-mt-1 [--hint-color:var(--multivalue-hint-color)];
   }
 
   &__hint {
     @apply tw-text-[color:var(--multivalue-placeholder-color)] tw-mt-1 tw-break-words tw-p-0;
   }
 
+  // Disabled state
+  &_disabled &__field-wrapper {
+    @apply tw-opacity-50;
+  }
+
+  &_disabled &__field-wrapper,
+  &_disabled &__input {
+    @apply tw-cursor-not-allowed tw-pointer-events-none;
+  }
+
+  // Hint/error spacing
+  &_has-hint-or-error {
+    @apply tw-pb-5;
+  }
+
+  // Color square
   &__color-square {
     @apply tw-w-5 tw-h-5 tw-rounded tw-border tw-border-solid tw-border-[color:var(--neutrals-300)]
       tw-cursor-pointer tw-mr-2 tw-flex-shrink-0 tw-relative;
@@ -667,8 +536,39 @@ function handleColorChange(event: Event, index: number) {
     @apply tw-opacity-0 tw-absolute tw-w-0 tw-h-0 tw-pointer-events-none;
   }
 
-  &__field-value {
-    @apply tw-flex tw-items-center;
+  // Slide-up transition
+  .slide-up-enter-active,
+  .slide-up-leave-active {
+    transition: all 0.25s ease-out;
   }
+
+  .slide-up-enter-from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+
+  .slide-up-leave-to {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+}
+
+// Dropdown enter/leave transition
+.multivalue-dropdown-enter-active {
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.multivalue-dropdown-leave-active {
+  transition: opacity 0.1s ease, transform 0.1s ease;
+}
+
+.multivalue-dropdown-enter-from {
+  opacity: 0;
+  transform: scale(0.95) translateY(-4px);
+}
+
+.multivalue-dropdown-leave-to {
+  opacity: 0;
+  transform: scale(0.95) translateY(-4px);
 }
 </style>

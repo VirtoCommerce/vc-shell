@@ -1,8 +1,9 @@
 <template>
-  <GenericDropdown
-    opened
+  <VcDropdown
+    :model-value="true"
     :items="notifications"
     :empty-text="t('COMPONENTS.NOTIFICATION_DROPDOWN.EMPTY')"
+    max-height="auto"
   >
     <template #item="{ item }">
       <NotificationItem
@@ -10,7 +11,7 @@
         :templates="notificationTemplates || []"
       />
     </template>
-  </GenericDropdown>
+  </VcDropdown>
 </template>
 
 <script lang="ts" setup>
@@ -18,8 +19,8 @@ import { inject, computed, onMounted } from "vue";
 import NotificationItem from "./_internal/notification/notification.vue";
 import { useI18n } from "vue-i18n";
 import { useNotifications } from "../../../core/composables";
-import { GenericDropdown } from "../generic-dropdown";
 import { NotificationTemplatesSymbol } from "./../../../injection-keys";
+import { VcDropdown } from "../../../ui/components";
 
 const notificationTemplates = inject(NotificationTemplatesSymbol);
 

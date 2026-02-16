@@ -96,11 +96,11 @@ import {
   CoreBladeExposed,
 } from "../../../index";
 import SchemaRender from "../components/SchemaRender";
-import { VcImage } from "../../../../ui/components";
+import { VcDropdown, VcImage } from "../../../../ui/components";
 import { useToolbarReducer } from "../composables/useToolbarReducer";
 import { useBeforeUnload } from "../../../../core/composables/useBeforeUnload";
 import { useLanguages, useNotifications, useBlade } from "../../../../core/composables";
-import { notification, GenericDropdown } from "../../../components";
+import { notification } from "../../../components";
 import { useWidgets } from "../../../../core/composables/useWidgets";
 import { BladeInstance } from "../../../../injection-keys";
 
@@ -287,9 +287,9 @@ const bladeMultilanguage = reactiveComputed(() => {
     return {
       component: () => {
         return h(
-          GenericDropdown,
+          VcDropdown,
           {
-            opened: isOpened.value,
+            modelValue: isOpened.value,
             items: localeOptions.value || [],
             floating: true,
             placement: "bottom-end",
@@ -305,7 +305,7 @@ const bladeMultilanguage = reactiveComputed(() => {
               isOpened.value = false;
               toValue(unreffedScope).multilanguage?.setLocale(item.value);
             },
-            "onUpdate:opened": (state: boolean) => {
+            "onUpdate:modelValue": (state: boolean) => {
               isOpened.value = state;
             },
           },

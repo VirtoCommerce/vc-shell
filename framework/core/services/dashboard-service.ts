@@ -1,9 +1,5 @@
 import { reactive, Component } from "vue";
-import { DashboardServiceKey } from "../../injection-keys";
-import { usePermissions } from "../composables/usePermissions";
-import { createLogger } from "../utilities";
-
-const logger = createLogger("dashboard-service");
+import { createPreregistrationBus } from "./_internal";
 
 export interface DashboardWidgetSize {
   width: number;
@@ -29,20 +25,24 @@ export interface IDashboardService {
   registerWidget: (widget: DashboardWidget) => void;
   getWidgets: () => DashboardWidget[];
   updateWidgetPosition: (widgetId: string, position: DashboardWidgetPosition) => void;
-  getLayout: () => Map<string, DashboardWidgetPosition>;
+  getLayout: () => ReadonlyMap<string, DashboardWidgetPosition>;
 }
 
-// Global state for pre-registering widgets
-const preregisteredWidgets: DashboardWidget[] = [];
+export interface CreateDashboardServiceOptions {
+  hasAccess?: (permissions: string[] | undefined) => boolean;
+}
+
+export const dashboardBus = createPreregistrationBus<DashboardWidget, IDashboardService>({
+  name: "dashboard-service",
+  getKey: (widget) => widget.id,
+  registerIntoService: (service, widget) => service.registerWidget(widget),
+});
 
 /**
- * Registers a widget before the service is initialized
+ * Registers a widget before the service is initialized.
  */
 export function registerDashboardWidget(widget: DashboardWidget): void {
-  const existingWidget = preregisteredWidgets.find((w) => w.id === widget.id);
-  if (!existingWidget) {
-    preregisteredWidgets.push(widget);
-  }
+  dashboardBus.preregister(widget);
 }
 
 const createState = () => ({
@@ -51,41 +51,38 @@ const createState = () => ({
 });
 
 /**
- * Creates a service for managing dashboard widgets
+ * Creates a service for managing dashboard widgets.
  */
-export function createDashboardService(): IDashboardService {
+export function createDashboardService(options: CreateDashboardServiceOptions = {}): IDashboardService {
   const state = createState();
-  const { hasAccess } = usePermissions();
+  const hasAccess = options.hasAccess ?? (() => true);
 
   const registerWidget = (widget: DashboardWidget): void => {
     if (state.widgets.has(widget.id)) {
       throw new Error(`Widget with id ${widget.id} already registered`);
     }
 
-    state.widgets.set(widget.id, widget);
+    state.widgets.set(widget.id, {
+      ...widget,
+      permissions: widget.permissions ? [...widget.permissions] : undefined,
+      position: widget.position ? { ...widget.position } : undefined,
+      props: widget.props ? { ...widget.props } : undefined,
+    });
 
-    // If the position is not specified, we don't set it here
-    // The DraggableDashboard component will handle finding a free position
     if (widget.position) {
-      state.layout.set(widget.id, widget.position);
+      state.layout.set(widget.id, { ...widget.position });
     }
-    // If no position is specified, the widget will be placed by the dashboard component
-    // to avoid collisions with existing widgets
   };
 
-  /**
-   * Returns a list of widgets with access rights
-   */
   const getWidgets = (): DashboardWidget[] => {
-    return Array.from(state.widgets.values()).filter((widget) => {
-      // If the widget has no permissions requirements, show it to everyone
-      if (!widget.permissions || widget.permissions.length === 0) {
-        return true;
-      }
-
-      // Check if the user has the necessary permissions
-      return hasAccess(widget.permissions);
-    });
+    return Array.from(state.widgets.values())
+      .filter((widget) => !widget.permissions || widget.permissions.length === 0 || hasAccess(widget.permissions))
+      .map((widget) => ({
+        ...widget,
+        permissions: widget.permissions ? [...widget.permissions] : undefined,
+        position: widget.position ? { ...widget.position } : undefined,
+        props: widget.props ? { ...widget.props } : undefined,
+      }));
   };
 
   const updateWidgetPosition = (widgetId: string, position: DashboardWidgetPosition): void => {
@@ -93,26 +90,21 @@ export function createDashboardService(): IDashboardService {
       throw new Error(`Widget with id ${widgetId} not found`);
     }
 
-    state.layout.set(widgetId, position);
+    state.layout.set(widgetId, { ...position });
   };
 
-  const getLayout = (): Map<string, DashboardWidgetPosition> => {
-    return state.layout;
+  const getLayout = (): ReadonlyMap<string, DashboardWidgetPosition> => {
+    return new Map(state.layout);
   };
 
-  // Register pre-registered widgets
-  preregisteredWidgets.forEach((widget) => {
-    try {
-      registerWidget(widget);
-    } catch (e) {
-      logger.warn(`Failed to register preregistered widget ${widget.id}:`, e);
-    }
-  });
-
-  return {
+  const service: IDashboardService = {
     registerWidget,
     getWidgets,
     updateWidgetPosition,
     getLayout,
   };
+
+  dashboardBus.replayInto(service);
+
+  return service;
 }

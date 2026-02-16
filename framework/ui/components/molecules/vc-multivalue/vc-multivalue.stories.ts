@@ -506,3 +506,56 @@ export const CustomHintDisplay: Story = {
     `,
   }),
 };
+
+/**
+ * With clearable button to remove all values at once
+ */
+export const Clearable: Story = {
+  args: {
+    clearable: true,
+    modelValue: [
+      { id: "1", title: "Option 1" },
+      { id: "2", title: "Option 2" },
+    ],
+  },
+  render: (args) => ({
+    components: { VcMultivalue },
+    setup() {
+      const selectedValues = ref(args.modelValue);
+      return { args, selectedValues };
+    },
+    template: `
+      <div style="max-width: 400px;">
+        <vc-multivalue v-bind="args" v-model="selectedValues" />
+        <div class="tw-mt-4 tw-text-sm" v-if="selectedValues.length">
+          <strong>Selected:</strong> {{ selectedValues.length }} items
+        </div>
+      </div>
+    `,
+  }),
+};
+
+/**
+ * With prepend and append slots
+ */
+export const WithPrependAppend: Story = {
+  render: (args) => ({
+    components: { VcMultivalue },
+    setup() {
+      const selectedValues = ref([]);
+      return { args, selectedValues };
+    },
+    template: `
+      <div style="max-width: 400px;">
+        <vc-multivalue v-bind="args" v-model="selectedValues">
+          <template #prepend>
+            <span class="tw-text-sm tw-text-gray-500">Tags:</span>
+          </template>
+          <template #append>
+            <span class="tw-text-xs tw-text-gray-400 tw-whitespace-nowrap">{{ selectedValues.length }}/5</span>
+          </template>
+        </vc-multivalue>
+      </div>
+    `,
+  }),
+};

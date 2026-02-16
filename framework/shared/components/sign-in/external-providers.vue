@@ -1,5 +1,5 @@
 <template>
-  <div class="tw-flex tw-justify-center tw-mt-4 tw-flex-wrap tw-gap-2">
+  <div class="tw-flex tw-justify-center tw-mt-4 tw-flex-col tw-gap-2">
     <ExternalProvider
       v-for="provider in providers"
       :key="provider.authenticationType"
@@ -12,7 +12,6 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps } from "vue";
 import { ExternalSignInProviderInfo } from "../../../core/api/platform";
 import { useExternalProvider } from "./useExternalProvider";
 import { default as ExternalProvider } from "./external-provider.vue";

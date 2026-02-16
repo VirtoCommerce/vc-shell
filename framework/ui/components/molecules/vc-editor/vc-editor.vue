@@ -8,6 +8,9 @@
       'vc-editor--fullscreen': isFullscreen,
       'vc-editor--side-by-side': currentMode === 'split',
     }"
+    :aria-label="label"
+    :aria-invalid="!!errorMessage || undefined"
+    :aria-disabled="disabled || undefined"
   >
     <VcLabel
       v-if="label && !isFullscreen"
@@ -537,7 +540,7 @@ async function handleImageSelection(event: Event) {
 :root {
   // Editor color variables
   --vc-editor-border: var(--neutrals-300);
-  --vc-editor-background: var(--neutrals-50);
+  --vc-editor-background: transparent;
   --vc-editor-surface: var(--additional-50);
   --vc-editor-text-primary: var(--neutrals-900);
   --vc-editor-text-secondary: var(--neutrals-500);
@@ -546,8 +549,10 @@ async function handleImageSelection(event: Event) {
   --vc-editor-background-disabled: var(--neutrals-200);
   --vc-editor-focus-border: var(--primary-500);
   --vc-editor-focus-shadow: var(--primary-500);
+  --vc-editor-focus-ring-color: rgba(59, 130, 246, 0.3);
   --vc-editor-error-border: var(--danger-500);
   --vc-editor-error-text: var(--danger-500);
+  --vc-editor-error-ring-color: rgba(239, 68, 68, 0.2);
   --vc-editor-table-header: var(--neutrals-100);
   --vc-editor-separator: var(--neutrals-200);
 }
@@ -564,7 +569,7 @@ async function handleImageSelection(event: Event) {
     display: flex;
     border: 1px solid var(--vc-editor-border);
     border-bottom: none;
-    border-radius: 4px 4px 0 0;
+    border-radius: 6px 6px 0 0;
     background-color: var(--vc-editor-background);
     padding: 0.5rem;
   }
@@ -602,12 +607,12 @@ async function handleImageSelection(event: Event) {
   }
 
   &__split-editor .ProseMirror {
-    border-radius: 0 0 0 4px;
+    border-radius: 0 0 0 6px;
     border-right: none;
   }
 
   &__split-preview .ProseMirror {
-    border-radius: 0 0 4px 0;
+    border-radius: 0 0 6px 0;
     border-left: none;
   }
 
@@ -619,7 +624,7 @@ async function handleImageSelection(event: Event) {
 
   .ProseMirror {
     border: 1px solid var(--vc-editor-border);
-    border-radius: 0 0 4px 4px;
+    border-radius: 0 0 6px 6px;
     padding: 0.5rem 0.75rem;
     min-height: 20rem;
     outline: none;
@@ -723,7 +728,7 @@ async function handleImageSelection(event: Event) {
     pre {
       background-color: var(--vc-editor-background);
       border: 1px solid var(--vc-editor-border);
-      border-radius: 4px;
+      border-radius: 6px;
       padding: 0.75rem;
       overflow-x: auto;
     }
@@ -739,7 +744,13 @@ async function handleImageSelection(event: Event) {
 
   &--focused .ProseMirror {
     border-color: var(--vc-editor-focus-border);
-    box-shadow: 0 0 0 3px rgba(49, 158, 212, 0.2); // primary-500 with 20% opacity
+    box-shadow: 0 0 0 3px var(--vc-editor-focus-ring-color);
+  }
+
+  &--disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
   }
 
   &--disabled .ProseMirror {
@@ -750,6 +761,7 @@ async function handleImageSelection(event: Event) {
 
   &--error .ProseMirror {
     border-color: var(--vc-editor-error-border);
+    box-shadow: 0 0 0 3px var(--vc-editor-error-ring-color);
   }
 
   &__error-hint {
@@ -764,7 +776,7 @@ async function handleImageSelection(event: Event) {
     padding: 0.25rem 0.5rem;
     border: 1px solid var(--vc-editor-border);
     border-top: none;
-    border-radius: 0 0 4px 4px;
+    border-radius: 0 0 6px 6px;
     background-color: var(--vc-editor-background);
 
     &--warning {

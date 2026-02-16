@@ -133,6 +133,28 @@ export interface RequestPasswordResult {
   errorCode?: string;
 }
 
+/** Option for select filters */
+export interface IFilterOption {
+  value: string;
+  label: string;
+}
+
+/**
+ * Column filter configuration.
+ * - `true` — text filter, backend field = column.id
+ * - `"fieldName"` — text filter, backend field = fieldName
+ * - `{ options: [...] }` — select filter (single), backend field = column.id
+ * - `{ options: [...], multiple: true }` — select filter (multi), backend field = column.id
+ * - `{ field: "x", options: [...] }` — select filter, backend field = x
+ * - `{ range: ["startDate", "endDate"] }` — date range filter
+ */
+export type IColumnFilterConfig =
+  | true
+  | string
+  | { options: IFilterOption[]; multiple?: boolean }
+  | { field: string; options: IFilterOption[]; multiple?: boolean }
+  | { range: [string, string] };
+
 export type ITableColumnsBase = {
   id: string;
   title: string | ComputedRef<string>;
@@ -159,6 +181,11 @@ export type ITableColumnsBase = {
   editable?: boolean;
   currencyField?: string;
   rules?: IValidationRules;
+  /**
+   * Column filter configuration.
+   * @see IColumnFilterConfig for usage examples
+   */
+  filter?: IColumnFilterConfig;
   // Mobile view specific fields
   mobilePosition?: "status" | "image" | "top-left" | "top-right" | "bottom-left" | "bottom-right";
   mobileVisible?: boolean; // Show in mobile view
@@ -226,6 +253,8 @@ export type MenuItemBadgeConfig =
   | Ref<number | string | undefined>
   | ComputedRef<number | string | undefined>
   | (() => number | string | undefined);
+
+export type { ShellFeature, ShellContext } from "./shell-feature";
 
 export interface MenuItemConfig {
   id?: string;

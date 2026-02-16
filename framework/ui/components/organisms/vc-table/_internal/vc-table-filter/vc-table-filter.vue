@@ -26,57 +26,50 @@
       {{ title }}
     </template>
   </VcTooltip>
-  <Sidebar
-    :is-expanded="$isMobile.value ? isPanelVisible : false"
-    position="left"
-    render="mobile"
-    @close="closePanel"
+  <component
+    :is="sidebarWrapperComponent"
+    v-bind="sidebarWrapperProps"
   >
-    <template #header>
-      <span />
-    </template>
-    <template #content>
-      <div class="vc-table-filter">
-        <!-- Filter panel -->
+    <div class="vc-table-filter">
+      <!-- Filter panel -->
+      <div
+        v-if="isPanelVisible"
+        ref="filterPanel"
+        :class="panelClass"
+        :style="filterStyle"
+        @click.self="closePanel"
+      >
         <div
-          v-if="isPanelVisible"
-          ref="filterPanel"
-          :class="panelClass"
-          :style="filterStyle"
-          @click.self="closePanel"
+          class="vc-table-filter__panel-inner"
+          :class="{
+            'vc-table-filter__panel-inner--desktop': $isDesktop.value,
+          }"
+          @click.stop
         >
-          <div
-            class="vc-table-filter__panel-inner"
-            :class="{
-              'vc-table-filter__panel-inner--desktop': $isDesktop.value,
-            }"
-            @click.stop
-          >
-            <div class="vc-table-filter__panel-header">
-              <div class="vc-table-filter__panel-header-title">
-                {{ title }}
-              </div>
-              <VcIcon
-                class="vc-table-filter__panel-close"
-                icon="material-close"
-                @click="closePanel"
-              />
+          <div class="vc-table-filter__panel-header">
+            <div class="vc-table-filter__panel-header-title">
+              {{ title }}
             </div>
-            <slot :close-panel="closePanel"></slot>
+            <VcIcon
+              class="vc-table-filter__panel-close"
+              icon="material-close"
+              @click="closePanel"
+            />
           </div>
+          <slot :close-panel="closePanel"></slot>
         </div>
       </div>
-    </template>
-  </Sidebar>
+    </div>
+  </component>
 </template>
 
 <script lang="ts" setup>
 import { ref, watch, computed, inject, Ref } from "vue";
-import { offset, autoUpdate, useFloating, UseFloatingReturn } from "@floating-ui/vue";
 import { VcButton } from "./../../../../atoms/vc-button";
-import { Sidebar } from "./../../../../../../shared/components";
 import { VcBadge } from "./../../../../atoms/vc-badge";
 import { VcTooltip } from "./../../../../atoms/vc-tooltip";
+import { VcSidebar } from "../../../../";
+import { useFloatingPosition } from "../../../../../composables";
 
 export interface Props {
   title?: string;
@@ -99,14 +92,31 @@ const isPanelVisible = ref(false);
 const filterToggle = ref<HTMLElement | null>();
 const filterPanel = ref<HTMLElement | null>();
 const isMobile = inject("isMobile") as Ref<boolean>;
+const sidebarWrapperComponent = computed(() => (isMobile.value ? VcSidebar : "div"));
 
-const popper: UseFloatingReturn | undefined = !isMobile.value
-  ? useFloating(filterToggle, filterPanel, {
-      whileElementsMounted: autoUpdate,
-      placement: "bottom-end",
-      middleware: [offset(10)],
-    })
-  : undefined;
+const sidebarWrapperProps = computed<Record<string, unknown>>(() => {
+  if (!isMobile.value) {
+    return {};
+  }
+
+  return {
+    modelValue: isPanelVisible.value,
+    position: "left",
+    closeButton: false,
+    "onUpdate:modelValue": (value: boolean) => {
+      if (!value) {
+        closePanel();
+      }
+    },
+  };
+});
+
+const popper = useFloatingPosition(filterToggle as Ref<HTMLElement | null>, filterPanel as Ref<HTMLElement | null>, {
+  placement: "bottom-end",
+  offset: 10,
+  enableFlip: false,
+  enableShift: false,
+});
 
 watch(
   () => props.parentExpanded,
@@ -115,10 +125,16 @@ watch(
   },
 );
 
-const filterStyle = computed(() => ({
-  top: `${popper?.y.value ?? 0}px`,
-  left: `${popper?.x.value ?? 0}px`,
-}));
+const filterStyle = computed(() => {
+  if (isMobile.value) {
+    return {};
+  }
+
+  return {
+    top: `${popper.y.value ?? 0}px`,
+    left: `${popper.x.value ?? 0}px`,
+  };
+});
 
 const panelClass = computed(() => {
   return isMobile.value ? "vc-table-filter__panel_mobile" : "vc-table-filter__panel";

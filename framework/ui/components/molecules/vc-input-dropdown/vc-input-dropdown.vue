@@ -108,7 +108,7 @@
 <script lang="ts" setup>
 import { unref } from "vue";
 import { VcSelect, VcInput } from "./../../";
-import { OptionProp } from "../vc-select/vc-select.vue";
+import { type OptionProp } from "../vc-select";
 
 export interface Props {
   /**

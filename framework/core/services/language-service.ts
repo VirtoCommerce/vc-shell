@@ -22,6 +22,15 @@ export interface ILanguageService {
 export function createLanguageService(): ILanguageService {
   const savedLocale = useLocalStorage("VC_LANGUAGE_SETTINGS", "");
 
+  function resolveSupportedLocale(locale: string): string {
+    if (!locale) {
+      return "en";
+    }
+
+    const normalizedLocale = locale.replace(/([a-z]+)([A-Z]+)/g, "$1-$2").toLowerCase();
+    return i18n.global.availableLocales.includes(normalizedLocale) ? normalizedLocale : "en";
+  }
+
   // Initialize locale from localStorage on service creation
   if (savedLocale.value && i18n.global.availableLocales.includes(savedLocale.value)) {
     i18n.global.locale.value = savedLocale.value;
@@ -36,16 +45,22 @@ export function createLanguageService(): ILanguageService {
   });
 
   function setLocale(locale: string) {
+    const resolvedLocale = resolveSupportedLocale(locale);
+
     // Update the global i18n locale
-    i18n.global.locale.value = locale;
+    i18n.global.locale.value = resolvedLocale;
+
+    const localeMessages = (i18n.global.getLocaleMessage(resolvedLocale) as { messages?: Record<string, string> })
+      ?.messages;
 
     veeValidate.configure({
-      generateMessage: localize(locale, {
-        messages: (i18n.global.getLocaleMessage(locale) as { messages: Record<string, string> }).messages,
+      generateMessage: localize(resolvedLocale, {
+        messages: localeMessages ?? {},
       }),
     });
-    setVeeI18nLocale(locale);
-    savedLocale.value = locale;
+
+    setVeeI18nLocale(resolvedLocale);
+    savedLocale.value = resolvedLocale;
   }
 
   function getLocaleByTag(localeTag: string) {
@@ -57,17 +72,12 @@ export function createLanguageService(): ILanguageService {
   }
 
   function resolveCamelCaseLocale(locale: string) {
-    const formattedLocale = locale.replace(/([a-z]+)([A-Z]+)/g, "$1-$2").toLowerCase();
-
-    if (i18n.global.getLocaleMessage(formattedLocale)) {
-      return formattedLocale;
-    }
-    return "en";
+    return resolveSupportedLocale(locale);
   }
 
   function getCountryCode(language: string): string {
     return (
-      languageToCountryMap[language.toLocaleLowerCase()] || languageToCountryMap[language.slice(0, 2)] || "xx" // placeholder for unknown country
+      languageToCountryMap[language.toLowerCase()] || languageToCountryMap[language.slice(0, 2)] || "xx" // placeholder for unknown country
     );
   }
 

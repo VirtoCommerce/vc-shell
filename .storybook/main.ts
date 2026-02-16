@@ -1,11 +1,47 @@
 import { createRequire } from "node:module";
+import { existsSync } from "node:fs";
 import { mergeConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
 import { StorybookConfig } from "@storybook/vue3-vite";
 import path, { dirname, join } from "path";
-import type { Plugin, PluginOption } from 'vite';
+import { fileURLToPath } from "node:url";
+import type { Plugin } from 'vite';
+import advancedDocgen from './advanced-docgen.mjs';
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 const require = createRequire(import.meta.url);
+
+// Plugin to strip invalid __docgenInfo assignments from barrel re-export files.
+// vue-component-meta injects `ComponentName.__docgenInfo = {...}` into barrel files
+// that use `export * from`, but ESM `export *` does NOT create local bindings,
+// so the assignments throw ReferenceError at runtime.
+const stripInvalidDocgen = (): Plugin => {
+  return {
+    name: 'strip-invalid-docgen',
+    enforce: 'post',
+    transform(code, id) {
+      if (id.includes('node_modules') || !code.includes('__docgenInfo')) {
+        return null;
+      }
+
+      let modified = false;
+      const result = code.replace(/^;(\w+)\.__docgenInfo\s*=\s*\{.*$/gm, (match, varName) => {
+        // Keep docgen if the variable is a local binding (imported or declared)
+        const isLocal =
+          new RegExp(`\\bimport\\b[^;]*\\b${varName}\\b`).test(code) ||
+          new RegExp(`(?:const|let|var|function|class)\\s+${varName}\\b`).test(code);
+        if (!isLocal) {
+          modified = true;
+          return ''; // Strip — variable is only a re-export, not a local binding
+        }
+        return match;
+      });
+
+      return modified ? { code: result, map: null } : null;
+    }
+  };
+};
 
 // Plugin to selectively disable some global variables from framework/index.ts
 // but keep extension-points available
@@ -50,7 +86,7 @@ export default {
   framework: {
     name: getAbsolutePath("@storybook/vue3-vite"),
     options: {
-      docgen: require('./advanced-docgen.js')
+      docgen: advancedDocgen
     },
   },
 
@@ -75,14 +111,14 @@ export default {
       }
 
       // Check if framework/dist/index.css exists (production build)
-      const fs = require('fs');
       const distCssPath = path.resolve(__dirname, "../framework/dist/index.css");
-      const hasDist = fs.existsSync(distCssPath);
+      const hasDist = existsSync(distCssPath);
 
       return mergeConfig(config, {
         plugins: [
           vue(),
           preventGlobalsPlugin(),
+          stripInvalidDocgen(),
         ],
         assetsInclude: ["/sb-preview/runtime.js"],
         resolve: {

@@ -28,6 +28,21 @@
 
   window.VcBladeNavigation = {}
 
+  // Mock for extension points (needed before modules load)
+  window.defineExtensionPoint = function(_name) {
+    return {
+      components: { value: [] },
+      hasComponents: { value: false },
+    };
+  };
+
+  window.useExtensionPoint = function(_name) {
+    return {
+      add: function() {},
+      remove: function() {},
+    };
+  };
+
 </script>
 
 

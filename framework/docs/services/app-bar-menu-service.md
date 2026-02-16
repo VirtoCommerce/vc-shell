@@ -79,7 +79,7 @@ appBarWidgetService.registerWidget({
 The App Bar Widget Service is accessed through the `useAppBarWidget` composable. Here's a real-world example from the `AppBarWidgetsMenu` component:
 
 ```typescript
-// From framework/ui/components/organisms/vc-app/_internal/vc-app-bar/_internal/AppBarWidgetsMenu.vue
+// From framework/ui/components/organisms/vc-app/_internal/app-bar/components/AppBarWidgetsMenu.vue
 <script lang="ts" setup>
 import AppBarWidgetItem from "./AppBarWidgetItem.vue";
 import { VcIcon } from "../../../../..";
@@ -113,7 +113,7 @@ This implementation demonstrates how the App Bar Widget Service:
 Widgets are rendered in the template with different behaviors based on their configuration:
 
 ```vue
-<!-- From framework/ui/components/organisms/vc-app/_internal/vc-app-bar/_internal/AppBarWidgetsMenu.vue -->
+<!-- From framework/ui/components/organisms/vc-app/_internal/app-bar/components/AppBarWidgetsMenu.vue -->
 <template>
   <div class="vc-app-toolbar-menu">
     <div
@@ -230,7 +230,7 @@ function togglePanel() {
 The App Bar Widget Service is often used alongside other composables for specialized behavior:
 
 ```typescript
-// From framework/ui/components/organisms/vc-app/_internal/vc-app-bar/composables/useAppBarWidgets.ts
+// From framework/ui/components/organisms/vc-app/_internal/app-bar/composables/useAppBarWidgets.ts
 export function useAppBarWidgets() {
   const { items } = useAppBarWidget();
   

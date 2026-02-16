@@ -1,173 +1,222 @@
-import { computed, ref, Ref } from "vue";
+import { ref, Ref, watch, onBeforeUnmount } from "vue";
 import { TableItem } from "../types";
 import { createLogger } from "../../../../../core/utilities";
 
 const logger = createLogger("vc-table-row-reorder");
 
+const ROW_SELECTOR = ".vc-table-row, .vc-table-composition__row";
+
+/**
+ * Resolve the row HTMLElement from a drag/mouse event.
+ * Works both when the event is a native DOM event (currentTarget is the row)
+ * and when it is re-emitted through Vue's emit system (currentTarget is null,
+ * so we fall back to event.target.closest()).
+ */
+function resolveRowElement(event: Event): HTMLElement | null {
+  if (event.currentTarget instanceof HTMLElement) {
+    return event.currentTarget;
+  }
+  if (event.target instanceof HTMLElement) {
+    return event.target.closest<HTMLElement>(ROW_SELECTOR);
+  }
+  return null;
+}
+
+/**
+ * Composable for table row reordering with drag & drop.
+ *
+ * Uses live-swap approach: rows visually swap positions during drag
+ * when the cursor crosses the 50% vertical threshold of a target row.
+ *
+ * The composable maintains an internal writable copy of items
+ * so it works both with writable refs and readonly prop refs.
+ * During drag, `reorderedItems` reflects the current visual order.
+ *
+ * Reorder is committed via `dragend` (which always fires) with `drop`
+ * as a preferred path when available. This avoids relying on `drop`
+ * which may not fire if the cursor is not over a row element at release.
+ */
 export function useTableRowReorder<T extends TableItem | string>(
   items: Ref<T[]>,
   onReorder: (args: { dragIndex: number; dropIndex: number; value: T[] }) => void,
 ) {
-  const internalItems = computed(() => items.value);
-  const draggedRow = ref<number>();
-  const rowDragged = ref(false);
-  const droppedRowIndex = ref<number>();
-  const draggedRowIndex = ref<number>();
-  const ghostRef = ref<HTMLElement | null>(null);
-  const dragOffset = ref({ x: 0, y: 0 });
+  // Internal writable copy — keeps in sync with source when not dragging
+  const reorderedItems = ref<T[]>([...items.value]) as Ref<T[]>;
+  let syncing = false;
 
-  function reorderArray(value: unknown[], from: number, to: number) {
-    if (value && from !== to) {
-      if (to >= value.length) {
-        to %= value.length;
-        from %= value.length;
+  watch(
+    items,
+    (newVal) => {
+      if (!syncing && !isDragging.value) {
+        reorderedItems.value = [...newVal];
+        // Parent updated items after reorder — stop showing stale reorderedItems
+        pendingReorder.value = false;
       }
+    },
+    { deep: true },
+  );
 
-      value.splice(to, 0, value.splice(from, 1)[0]);
-    }
-  }
+  const draggedRow = ref<number>();
+  const isDragging = ref(false);
+  // Keeps reorderedItems visible after drop until parent updates items
+  const pendingReorder = ref(false);
+  let originalIndex: number | null = null;
+  let dragThrottleTimer: number | null = null;
+  // Prevents double-commit when both drop and dragend fire
+  let dropFired = false;
 
   function onRowMouseDown(event: MouseEvent) {
-    if (event.currentTarget instanceof HTMLElement) {
-      const row = event.currentTarget;
-      logger.debug("Row mousedown event", row);
-      const rowRect = row.getBoundingClientRect();
 
-      dragOffset.value = {
-        x: event.clientX - rowRect.left,
-        y: event.clientY - rowRect.top,
-      };
-
-      const ghost = row.cloneNode(true) as HTMLElement;
-      ghost.style.width = `${row.offsetWidth}px`;
-      ghost.style.height = `${row.offsetHeight}px`;
-      ghost.style.position = "fixed";
-      ghost.style.pointerEvents = "none";
-      ghost.style.zIndex = "9999";
-      ghost.style.opacity = "0.8";
-      ghost.style.background = "var(--table-row-bg-odd)";
-      ghost.style.display = "none";
-      ghost.classList.add("vc-table-row__ghost-row");
-
-      document.body.appendChild(ghost);
-      ghostRef.value = ghost;
-
-      row.draggable = true;
-    }
+    const row = resolveRowElement(event);
+    if (!row) return;
+    row.draggable = true;
   }
 
   function onRowDragStart(event: DragEvent, item: T) {
-    logger.debug("Row drag start", { item });
-    rowDragged.value = true;
-    const index = internalItems.value.indexOf(item);
+    isDragging.value = true;
+    dropFired = false;
+    // Snapshot current items into internal copy
+    reorderedItems.value = [...items.value];
+    const index = reorderedItems.value.indexOf(item);
+
     draggedRow.value = index;
-    draggedRowIndex.value = index;
+    originalIndex = index;
 
     if (event.dataTransfer) {
       event.dataTransfer.setData("text", "row-reorder");
       event.dataTransfer.effectAllowed = "move";
 
-      const emptyImg = document.createElement("div");
-      emptyImg.style.display = "none";
-      document.body.appendChild(emptyImg);
-      event.dataTransfer.setDragImage(emptyImg, 0, 0);
-      setTimeout(() => {
-        document.body.removeChild(emptyImg);
-      }, 0);
+      // Hide default browser ghost — live-swap provides visual feedback
+      const transparentPixel = document.createElement("img");
+      transparentPixel.src =
+        "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
+      transparentPixel.style.position = "absolute";
+      transparentPixel.style.top = "-9999px";
+      document.body.appendChild(transparentPixel);
+      event.dataTransfer.setDragImage(transparentPixel, 0, 0);
+      setTimeout(() => transparentPixel.remove(), 0);
     }
   }
 
   function onRowDragOver(event: DragEvent, item: T) {
-    if (!rowDragged.value || draggedRow.value === undefined) return;
+    if (!isDragging.value || draggedRow.value === undefined) return;
 
-    const currentIndex = internalItems.value.indexOf(item);
+    // CRITICAL: Must always preventDefault in dragover for `drop` to fire.
+    // Without this, the browser considers the element an invalid drop target.
+    event.preventDefault();
 
+    const currentIndex = reorderedItems.value.indexOf(item);
     if (currentIndex === draggedRow.value) return;
 
-    const rowElement = event.currentTarget as HTMLElement;
-    const tableBody = rowElement.closest(".vc-table-body");
+    // Throttle swaps (50ms) to avoid too frequent updates
+    if (dragThrottleTimer) return;
+    dragThrottleTimer = window.setTimeout(() => {
+      dragThrottleTimer = null;
+    }, 50);
 
-    if (!tableBody) {
-      if (ghostRef.value) {
-        ghostRef.value.style.display = "none";
-      }
-      return;
-    }
+    const rowElement = resolveRowElement(event);
+    if (!rowElement) return;
 
-    const rowRect = rowElement.getBoundingClientRect();
-    const tableRect = tableBody.getBoundingClientRect();
+    // 50% vertical threshold — same logic as column reorder uses horizontally
+    const rect = rowElement.getBoundingClientRect();
+    const middleY = rect.top + rect.height / 2;
     const mouseY = event.clientY;
 
-    if (ghostRef.value) {
-      ghostRef.value.style.display = "flex";
-      ghostRef.value.style.left = `${tableRect.left}px`;
-      ghostRef.value.style.width = `${tableRect.width}px`;
-      ghostRef.value.style.top = `${Math.max(tableRect.top, Math.min(tableRect.bottom - ghostRef.value.offsetHeight, mouseY - dragOffset.value.y))}px`;
-    }
+    const dragIndex = draggedRow.value;
+    const movingUp = dragIndex > currentIndex;
+    const movingDown = dragIndex < currentIndex;
 
-    const allRows = rowElement.parentElement?.querySelectorAll(".vc-table-row");
-    allRows?.forEach((row) => {
-      row.classList.remove("vc-table-row__drag-row-bottom", "vc-table-row__drag-row-top");
-    });
+    const shouldSwap = (movingUp && mouseY < middleY) || (movingDown && mouseY > middleY);
 
-    const relativeY = mouseY - rowRect.top;
-    const isFirstRow = currentIndex === 0;
-    const isOverUpperThird = relativeY < rowElement.offsetHeight / 3;
-
-    if (isFirstRow && isOverUpperThird) {
-      droppedRowIndex.value = 0;
-      rowElement.classList.add("vc-table-row__drag-row-top");
-    } else {
-      if (relativeY < rowElement.offsetHeight / 2) {
-        droppedRowIndex.value = currentIndex;
-        rowElement.classList.add("vc-table-row__drag-row-top");
-      } else {
-        droppedRowIndex.value = currentIndex + 1;
-        rowElement.classList.add("vc-table-row__drag-row-bottom");
-      }
-    }
-
-    event.preventDefault();
-  }
-
-  function onRowDragLeave(event: DragEvent) {
-    event.preventDefault();
-    const rowElement = event.currentTarget as HTMLElement;
-    rowElement.classList.remove("vc-table-row__drag-row-top", "vc-table-row__drag-row-bottom");
-  }
-
-  function onRowDragEnd(event: DragEvent) {
-    rowDragged.value = false;
-    draggedRow.value = undefined;
-    draggedRowIndex.value = undefined;
-    droppedRowIndex.value = undefined;
-    (event.currentTarget as HTMLElement).draggable = false;
-
-    if (ghostRef.value) {
-      document.body.removeChild(ghostRef.value);
-      ghostRef.value = null;
+    if (shouldSwap && dragIndex !== currentIndex) {
+      // Live swap in the internal copy
+      const [movedItem] = reorderedItems.value.splice(dragIndex, 1);
+      reorderedItems.value.splice(currentIndex, 0, movedItem);
+      // Track new position of dragged item
+      draggedRow.value = currentIndex;
     }
   }
 
-  function onRowDrop(event: DragEvent) {
-    if (droppedRowIndex.value !== undefined && draggedRowIndex.value !== undefined) {
-      const processedItems = [...internalItems.value];
-      reorderArray(processedItems, draggedRowIndex.value, droppedRowIndex.value);
+  function onRowDragLeave(_event: DragEvent) {
+    // No border indicators to clean up — live-swap handles visuals
+  }
 
+  /**
+   * Commit the reorder if positions changed.
+   * Called from both onRowDrop and onRowDragEnd (whichever fires first).
+   */
+  function commitReorder() {
+    const didReorder =
+      draggedRow.value !== undefined && originalIndex !== null && draggedRow.value !== originalIndex;
+
+    if (didReorder) {
+      syncing = true;
       onReorder({
-        dragIndex: draggedRowIndex.value,
-        dropIndex: droppedRowIndex.value,
-        value: processedItems as T[],
+        dragIndex: originalIndex!,
+        dropIndex: draggedRow.value!,
+        value: [...reorderedItems.value],
       });
+      syncing = false;
+      pendingReorder.value = true;
+    }
+  }
+
+  /**
+   * dragend always fires on the source element — use as the reliable commit point.
+   * If drop already fired and committed, this is a no-op.
+   */
+  function onRowDragEnd(event: DragEvent) {
+    const rowElement = resolveRowElement(event);
+    if (rowElement) {
+      rowElement.draggable = false;
     }
 
-    onRowDragLeave(event);
-    onRowDragEnd(event);
-    event.preventDefault();
+    // Fallback commit: drop may not fire if cursor is not over a row at release
+    if (!dropFired) {
+      commitReorder();
+    }
+
+    dropFired = false;
+    cleanup();
   }
+
+  /**
+   * drop fires on the target row (if cursor is over a valid drop target).
+   * Preferred commit path — marks dropFired so dragend skips the commit.
+   */
+  function onRowDrop(event: DragEvent) {
+    event.preventDefault();
+    dropFired = true;
+
+    commitReorder();
+
+    const rowElement = resolveRowElement(event);
+    if (rowElement) {
+      rowElement.draggable = false;
+    }
+
+    cleanup();
+  }
+
+  function cleanup() {
+    isDragging.value = false;
+    draggedRow.value = undefined;
+    originalIndex = null;
+    if (dragThrottleTimer) {
+      clearTimeout(dragThrottleTimer);
+      dragThrottleTimer = null;
+    }
+  }
+
+  // Cleanup: if component unmounts mid-drag, clear timer and reset state
+  onBeforeUnmount(() => {
+    cleanup();
+  });
 
   return {
     draggedRow,
+    pendingReorder,
+    reorderedItems,
     onRowMouseDown,
     onRowDragStart,
     onRowDragOver,

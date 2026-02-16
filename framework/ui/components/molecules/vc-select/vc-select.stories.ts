@@ -815,7 +815,7 @@ export const CustomControl: Story = {
                 <span v-if="value">Option {{ value }} selected</span>
                 <span v-else class="tw-text-gray-500">Click to select an option</span>
               </div>
-              <VcIcon icon="material-keyboard_arrow_down" size="s" />
+              <VcIcon icon="lucide-chevron-down" size="s" />
             </button>
           </template>
         </VcSelect>
@@ -1058,7 +1058,7 @@ export const CustomSelectedItemSlot: Story = {
               ></span>
               {{ opt.title }}
               <VcIcon
-                icon="material-close"
+                icon="lucide-x"
                 size="xs"
                 class="tw-ml-1 tw-cursor-pointer hover:tw-opacity-80"
                 @click.stop="removeAtIndex(index)"
@@ -1498,7 +1498,7 @@ export const ComprehensiveSlotExample: Story = {
                     />
                     <span class="tw-text-sm">{{ args.options.find(o => o.id === id)?.title }}</span>
                     <VcIcon
-                      icon="material-close"
+                      icon="lucide-x"
                       size="xs"
                       class="tw-ml-1 tw-cursor-pointer hover:tw-opacity-80"
                       @click.stop="value.splice(index, 1)"
@@ -1511,7 +1511,7 @@ export const ComprehensiveSlotExample: Story = {
               <div class="tw-bg-gray-50 tw-px-3 tw-py-2 tw-border-t tw-border-gray-300 tw-flex tw-justify-between tw-items-center">
                 <span class="tw-text-xs tw-text-gray-500">Selected: {{ value.length }} of {{ args.options.length }}</span>
                 <VcIcon
-                  icon="material-keyboard_arrow_down"
+                  icon="lucide-chevron-down"
                   class="tw-text-gray-400"
                   size="s"
                 />
@@ -1576,6 +1576,155 @@ export const ComprehensiveSlotExample: Story = {
             </div>
           </template>
         </VcSelect>
+      </div>
+    `,
+  }),
+};
+
+/**
+ * Gallery showing all visual states side by side.
+ * Useful for quickly comparing default, focused, error, disabled, and loading states.
+ */
+export const AllStates: Story = {
+  render: () => ({
+    components: { VcSelect },
+    setup() {
+      const val1 = ref(null);
+      const val2 = ref(2);
+      const val3 = ref(null);
+      const val4 = ref(1);
+      const val5 = ref(null);
+      const opts = [
+        { id: 1, title: "Option 1" },
+        { id: 2, title: "Option 2" },
+        { id: 3, title: "Option 3" },
+      ];
+      return { val1, val2, val3, val4, val5, opts };
+    },
+    template: `
+      <div class="tw-grid tw-grid-cols-2 tw-gap-8 tw-max-w-3xl tw-pb-8">
+        <VcSelect v-model="val1" label="Default" placeholder="Select..." :options="opts" optionValue="id" optionLabel="title" />
+        <VcSelect v-model="val2" label="With Value" :options="opts" optionValue="id" optionLabel="title" />
+        <VcSelect v-model="val3" label="Error" placeholder="Select..." :options="opts" optionValue="id" optionLabel="title" :error="true" errorMessage="This field is required" />
+        <VcSelect v-model="val4" label="Disabled" :options="opts" optionValue="id" optionLabel="title" :disabled="true" />
+        <VcSelect v-model="val5" label="Loading" placeholder="Loading..." :options="opts" optionValue="id" optionLabel="title" :loading="true" />
+        <VcSelect v-model="val3" label="With Hint" placeholder="Select..." :options="opts" optionValue="id" optionLabel="title" hint="Pick one option from the list" />
+      </div>
+    `,
+  }),
+};
+
+/**
+ * Comparing default and small sizes side by side.
+ */
+export const AllSizes: Story = {
+  render: () => ({
+    components: { VcSelect },
+    setup() {
+      const val1 = ref(1);
+      const val2 = ref(1);
+      const opts = [
+        { id: 1, title: "Option 1" },
+        { id: 2, title: "Option 2" },
+        { id: 3, title: "Option 3" },
+      ];
+      return { val1, val2, opts };
+    },
+    template: `
+      <div class="tw-flex tw-gap-8 tw-items-start tw-max-w-3xl">
+        <div class="tw-flex-1">
+          <VcSelect v-model="val1" label="Default size" :options="opts" optionValue="id" optionLabel="title" size="default" />
+        </div>
+        <div class="tw-flex-1">
+          <VcSelect v-model="val2" label="Small size" :options="opts" optionValue="id" optionLabel="title" size="small" />
+        </div>
+      </div>
+    `,
+  }),
+};
+
+/**
+ * Demonstrates accessibility features: auto-generated IDs, aria-describedby, aria-invalid.
+ * Inspect the DOM to see the ARIA attributes linking label, input, hint, and error elements.
+ */
+export const Accessibility: Story = {
+  render: () => ({
+    components: { VcSelect },
+    setup() {
+      const val1 = ref(null);
+      const val2 = ref(null);
+      const opts = [
+        { id: 1, title: "Option 1" },
+        { id: 2, title: "Option 2" },
+        { id: 3, title: "Option 3" },
+      ];
+      return { val1, val2, opts };
+    },
+    template: `
+      <div class="tw-space-y-8 tw-max-w-lg">
+        <div>
+          <h3 class="tw-text-sm tw-font-semibold tw-mb-2 tw-text-gray-600">With hint (inspect: aria-describedby → hint id)</h3>
+          <VcSelect v-model="val1" label="Category" placeholder="Select category..." :options="opts" optionValue="id" optionLabel="title" hint="Choose the main product category" />
+        </div>
+        <div>
+          <h3 class="tw-text-sm tw-font-semibold tw-mb-2 tw-text-gray-600">With error (inspect: aria-invalid + aria-describedby → error id)</h3>
+          <VcSelect v-model="val2" label="Status" placeholder="Select status..." :options="opts" optionValue="id" optionLabel="title" :error="true" errorMessage="Status is required" />
+        </div>
+      </div>
+    `,
+  }),
+};
+
+/**
+ * When the dropdown has many options, scroll arrow buttons appear at the top and bottom
+ * of the list. Hovering over them continuously scrolls the content in that direction.
+ * Inspired by shadcn-vue's scrollable select pattern.
+ */
+export const Scrollable: Story = {
+  args: {
+    label: "Timezone",
+    placeholder: "Select a timezone",
+    clearable: true,
+    options: [
+      { id: "est", title: "Eastern Standard Time (EST)" },
+      { id: "cst", title: "Central Standard Time (CST)" },
+      { id: "mst", title: "Mountain Standard Time (MST)" },
+      { id: "pst", title: "Pacific Standard Time (PST)" },
+      { id: "akst", title: "Alaska Standard Time (AKST)" },
+      { id: "hst", title: "Hawaii Standard Time (HST)" },
+      { id: "gmt", title: "Greenwich Mean Time (GMT)" },
+      { id: "cet", title: "Central European Time (CET)" },
+      { id: "eet", title: "Eastern European Time (EET)" },
+      { id: "ist", title: "India Standard Time (IST)" },
+      { id: "cst_cn", title: "China Standard Time (CST)" },
+      { id: "jst", title: "Japan Standard Time (JST)" },
+      { id: "kst", title: "Korea Standard Time (KST)" },
+      { id: "aest", title: "Australian Eastern Standard Time (AEST)" },
+      { id: "nzst", title: "New Zealand Standard Time (NZST)" },
+      { id: "brt", title: "Brasilia Time (BRT)" },
+      { id: "art", title: "Argentina Time (ART)" },
+      { id: "cat", title: "Central Africa Time (CAT)" },
+      { id: "eat", title: "East Africa Time (EAT)" },
+      { id: "wet", title: "Western European Time (WET)" },
+    ],
+    optionValue: "id",
+    optionLabel: "title",
+  },
+  render: (args) => ({
+    components: { VcSelect },
+    setup() {
+      const value = ref(null);
+      return { args, value };
+    },
+    template: `
+      <div class="tw-p-4 tw-max-w-sm">
+        <VcSelect
+          v-bind="args"
+          v-model="value"
+        />
+        <div class="tw-mt-4 tw-text-sm">
+          <p>Selected: <code>{{ value ?? 'none' }}</code></p>
+        </div>
       </div>
     `,
   }),

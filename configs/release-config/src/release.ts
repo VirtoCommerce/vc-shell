@@ -89,6 +89,10 @@ export const release = async ({
 
   const lernaArgs = ["lerna", "version"];
 
+  // Disable changelog generation by lerna (we generate our own)
+  // This also avoids prettier v3 incompatibility with lerna v6
+  lernaArgs.push("--no-changelog");
+
   // Configure lerna command based on release type
   if (releaseType === "auto") {
     // For automatic release, use conventional commits to determine version

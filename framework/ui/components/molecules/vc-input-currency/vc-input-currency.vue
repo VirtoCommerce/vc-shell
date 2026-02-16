@@ -48,7 +48,7 @@
 import { useCurrencyInput, CurrencyDisplay } from "vue-currency-input";
 import { unref, watch } from "vue";
 import { VcInputDropdown } from "./../../molecules/vc-input-dropdown";
-import { OptionProp } from "../vc-select/vc-select.vue";
+import { type OptionProp } from "../vc-select";
 
 export interface Props {
   /**

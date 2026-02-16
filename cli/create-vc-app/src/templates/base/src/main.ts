@@ -19,8 +19,6 @@ async function startApp() {
     console.log(e);
   }
 
-  const { currentLocale, setLocale } = useLanguages();
-
   const app = createApp(RouterView)
     .use(VirtoShellFramework, {
       router,
@@ -32,6 +30,8 @@ async function startApp() {
     // {{ModuleNamePascalCase}} module initialization
     .use({{ModuleNamePascalCase}}, { router })
     .use(router);
+
+  const { currentLocale, setLocale } = app.runWithContext(() => useLanguages());
 
   bootstrap(app);
 

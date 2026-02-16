@@ -2,14 +2,15 @@
   <div class="vc-radio-button">
     <label class="vc-radio-button__label">
       <input
+        :id="radioId"
         type="radio"
         :name="name"
         :value="value"
         :checked="checked"
         :disabled="disabled"
-        :class="{
-          'vc-radio-button_error': error,
-        }"
+        :aria-invalid="(error || !!errorMessage) || undefined"
+        :aria-describedby="ariaDescribedBy"
+        :class="{ 'vc-radio-button_error': error }"
         tabindex="0"
         @change="onChange"
       />
@@ -20,7 +21,7 @@
       v-if="errorMessage"
       name="error"
     >
-      <VcHint class="vc-radio-button__error">
+      <VcHint :id="errorId" class="vc-radio-button__error">
         {{ errorMessage }}
       </VcHint>
     </slot>
@@ -29,8 +30,9 @@
 
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
-import * as _ from "lodash-es";
-import { computed } from "vue";
+import { isEqual } from "lodash-es";
+import { computed, useId } from "vue";
+import { VcHint } from "./../../atoms/vc-hint";
 
 export interface Props {
   /**
@@ -83,8 +85,17 @@ const props = withDefaults(defineProps<Props>(), {
 });
 const emit = defineEmits<Emits>();
 
+const uid = useId();
+const radioId = computed(() => `vc-radio-${uid}`);
+const errorId = computed(() => `vc-radio-${uid}-error`);
+
+const ariaDescribedBy = computed(() => {
+  if (props.errorMessage) return errorId.value;
+  return undefined;
+});
+
 const checked = computed(() => {
-  return props.modelValue != null && (props.binary ? !!props.modelValue : _.isEqual(props.modelValue, props.value));
+  return props.modelValue != null && (props.binary ? !!props.modelValue : isEqual(props.modelValue, props.value));
 });
 
 function onChange() {
@@ -101,15 +112,13 @@ function onChange() {
   --radio-active: var(--primary-500);
   --radio-active-inner: var(--additional-50);
   --radio-border: var(--neutrals-400);
-
-  --radio-background: var(--additional-50);
-  --radio-disabled: var(--secondary-100);
-  --radio-disabled-inner: var(--secondary-200);
+  --radio-background: transparent;
+  --radio-disabled: var(--neutrals-200);
+  --radio-disabled-inner: var(--neutrals-300);
   --radio-error: var(--danger-500);
+  --radio-error-ring-color: rgba(239, 68, 68, 0.2);
   --radio-size: 20px;
-
-  // Outline
-  --radio-border-outline: var(--primary-50);
+  --radio-focus-ring-color: rgba(59, 130, 246, 0.3);
 }
 
 .vc-radio-button {
@@ -167,7 +176,7 @@ function onChange() {
     &:disabled {
       --radio-bg: var(--radio-disabled);
       cursor: not-allowed;
-      opacity: 0.9;
+      opacity: 0.5;
       &:checked {
         --radio-bg: var(--radio-disabled-inner);
         --radio-border-color: var(--radio-border);
@@ -177,17 +186,17 @@ function onChange() {
       }
     }
 
-    &:hover {
-      &:not(:checked) {
-        &:not(:disabled) {
-          --radio-border-color: var(--radio-border-hover);
-          outline: 3px solid var(--radio-border-outline);
-        }
-      }
+    &:hover:not(:disabled) {
+      box-shadow: 0 0 0 3px var(--radio-focus-ring-color);
+    }
+
+    &:focus-visible {
+      box-shadow: 0 0 0 3px var(--radio-focus-ring-color);
     }
 
     &.vc-radio-button_error {
       --radio-border-color: var(--radio-error);
+      box-shadow: 0 0 0 3px var(--radio-error-ring-color);
     }
   }
 

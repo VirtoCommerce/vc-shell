@@ -5,8 +5,8 @@
     class="vc-app-switcher"
     @contextmenu.prevent
   >
-    <GenericDropdown
-      :opened="true"
+    <VcDropdown
+      :model-value="true"
       :items="appsList"
       :is-item-active="(item) => locationHandler(item.relativeUrl ?? '')"
       max-height="auto"
@@ -24,13 +24,13 @@
           </p>
         </div>
       </template>
-    </GenericDropdown>
+    </VcDropdown>
   </div>
 </template>
 
 <script lang="ts" setup>
 import { AppDescriptor } from "../../../../../core/api/platform";
-import { GenericDropdown } from "../../../generic-dropdown";
+import { VcDropdown } from "../../../../../ui/components";
 
 export interface Props {
   appsList: AppDescriptor[];

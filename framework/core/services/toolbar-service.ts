@@ -1,5 +1,5 @@
-import { reactive } from "vue";
 import { IBladeToolbar } from "../types";
+import { createBladeScopedRegistry, createPreregistrationBus } from "./_internal";
 
 export interface IToolbarItem extends IBladeToolbar {
   id: string;
@@ -30,37 +30,57 @@ export interface IToolbarService {
   }) => void;
 }
 
-// Global state for pre-registering toolbar buttons
-const preregisteredToolbarItems: IToolbarRegistration[] = [];
-const preregisteredIds = new Set<string>();
+export const toolbarBus = createPreregistrationBus<IToolbarRegistration, IToolbarService>({
+  name: "toolbar-service",
+  getKey: (reg) => `${reg.bladeId.toLowerCase()}::${reg.toolbarItem.id}`,
+  registerIntoService: (service, reg) => service.registerToolbarItem(reg.toolbarItem, reg.bladeId),
+});
 
 /**
- * Registers a toolbar button before the service is initialized
+ * Registers a toolbar button before the service is initialized.
  */
 export function registerToolbarItem(toolbarItem: IToolbarItem, bladeId: string): void {
   const normalizedBladeId = bladeId.toLowerCase();
-  preregisteredToolbarItems.push({ bladeId: normalizedBladeId, toolbarItem });
-  preregisteredIds.add(toolbarItem.id);
+  toolbarBus.preregister({
+    bladeId: normalizedBladeId,
+    toolbarItem,
+  });
 }
 
 export function createToolbarService(): IToolbarService {
-  const toolbarRegistry = reactive<Record<string, IToolbarItem[]>>({});
-  const registeredToolbarItems = reactive<IToolbarRegistration[]>([]);
-  const registeredIds = reactive(new Set<string>());
+  const bladeRegistry = createBladeScopedRegistry<IToolbarItem, IToolbarRegistration>({
+    createRegistration: (bladeId, item) => ({ bladeId, toolbarItem: item }),
+    getRegistrationBladeId: (r) => r.bladeId,
+    getRegistrationItemId: (r) => r.toolbarItem.id,
+  });
 
   const registerToolbarItem = (toolbarItem: IToolbarItem, bladeId: string): void => {
-    const normalizedBladeId = bladeId.toLowerCase();
+    bladeRegistry.register(toolbarItem, bladeId);
+  };
 
-    if (!toolbarRegistry[normalizedBladeId]) {
-      toolbarRegistry[normalizedBladeId] = [];
-    }
+  const unregisterToolbarItem = (toolbarItemId: string, bladeId: string): void => {
+    bladeRegistry.unregister(toolbarItemId, bladeId);
+  };
 
-    const existingIndex = toolbarRegistry[normalizedBladeId].findIndex((t) => t.id === toolbarItem.id);
-    if (existingIndex === -1) {
-      toolbarRegistry[normalizedBladeId].push(reactive(toolbarItem));
-      registeredToolbarItems.push({ bladeId: normalizedBladeId, toolbarItem: reactive(toolbarItem) });
-      registeredIds.add(toolbarItem.id);
-    }
+  const getToolbarItems = (bladeId: string): IToolbarItem[] => {
+    const normalizedBladeId = bladeId ? bladeId.toLowerCase() : "";
+    const bladeItems = bladeRegistry.get(normalizedBladeId);
+    const globalItems = bladeRegistry.get("*");
+
+    const result: IToolbarItem[] = [...bladeItems];
+    const existingIds = new Set(result.map((item) => item.id));
+
+    globalItems.forEach((item) => {
+      if (!existingIds.has(item.id)) {
+        result.push(item);
+      }
+    });
+
+    return [...result];
+  };
+
+  const clearBladeToolbarItems = (bladeId: string): void => {
+    bladeRegistry.clear(bladeId);
   };
 
   const updateToolbarItem = ({
@@ -72,95 +92,20 @@ export function createToolbarService(): IToolbarService {
     bladeId: string;
     toolbarItem: Partial<IToolbarItem>;
   }): void => {
-    const normalizedBladeId = bladeId.toLowerCase();
-
-    if (toolbarRegistry[normalizedBladeId]) {
-      const index = toolbarRegistry[normalizedBladeId].findIndex((t) => t.id === id);
-      if (index !== -1) {
-        toolbarRegistry[normalizedBladeId][index] = { ...toolbarRegistry[normalizedBladeId][index], ...toolbarItem };
-      }
-    }
+    bladeRegistry.update(id, bladeId, toolbarItem);
   };
 
-  const unregisterToolbarItem = (toolbarItemId: string, bladeId: string): void => {
-    const normalizedBladeId = bladeId.toLowerCase();
-
-    if (toolbarRegistry[normalizedBladeId]) {
-      const index = toolbarRegistry[normalizedBladeId].findIndex((t) => t.id === toolbarItemId);
-      if (index !== -1) {
-        toolbarRegistry[normalizedBladeId].splice(index, 1);
-        registeredIds.delete(toolbarItemId);
-      }
-    }
-
-    const regIndex = registeredToolbarItems.findIndex(
-      (t) => t.bladeId === normalizedBladeId && t.toolbarItem.id === toolbarItemId,
-    );
-    if (regIndex !== -1) {
-      registeredToolbarItems.splice(regIndex, 1);
-    }
-  };
-
-  const getToolbarItems = (bladeId: string): IToolbarItem[] => {
-    const normalizedBladeId = bladeId ? bladeId.toLowerCase() : "";
-    const bladeItems = toolbarRegistry[normalizedBladeId] || [];
-
-    // Include global toolbar items registered with "*" (wildcard)
-    const globalItems = toolbarRegistry["*"] || [];
-
-    // Merge items, avoiding duplicates by id
-    const result = [...bladeItems];
-    const existingIds = new Set(result.map((item) => item.id));
-
-    globalItems.forEach((item) => {
-      if (!existingIds.has(item.id)) {
-        result.push(item);
-      }
-    });
-
-    return result;
-  };
-
-  const clearBladeToolbarItems = (bladeId: string): void => {
-    const normalizedBladeId = bladeId.toLowerCase();
-
-    if (toolbarRegistry[normalizedBladeId]) {
-      toolbarRegistry[normalizedBladeId].forEach((toolbarItem) => {
-        registeredIds.delete(toolbarItem.id);
-      });
-      delete toolbarRegistry[normalizedBladeId];
-    }
-
-    const indices = registeredToolbarItems
-      .map((t, i) => (t.bladeId === normalizedBladeId ? i : -1))
-      .filter((i) => i !== -1)
-      .reverse();
-
-    indices.forEach((index) => {
-      registeredToolbarItems.splice(index, 1);
-    });
-  };
-
-  const isToolbarItemRegistered = (id: string): boolean => {
-    return registeredIds.has(id);
-  };
-
-  // Register pre-registered toolbar buttons
-  preregisteredToolbarItems.forEach((item) => {
-    try {
-      registerToolbarItem(item.toolbarItem, item.bladeId);
-    } catch (e) {
-      console.warn(`[toolbar-service] Failed to register preregistered toolbar item ${item.toolbarItem.id}:`, e);
-    }
-  });
-
-  return {
+  const service: IToolbarService = {
     registerToolbarItem,
     unregisterToolbarItem,
     getToolbarItems,
     clearBladeToolbarItems,
-    registeredToolbarItems,
-    isToolbarItemRegistered,
+    registeredToolbarItems: bladeRegistry.registrations,
+    isToolbarItemRegistered: (id) => bladeRegistry.isRegistered(id),
     updateToolbarItem,
   };
+
+  toolbarBus.replayInto(service);
+
+  return service;
 }

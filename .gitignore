@@ -78,3 +78,6 @@ package-lock.json
 !.yarn/versions
 
 *storybook.log
+.playwright-mcp
+docs/plans
+.mcp.json

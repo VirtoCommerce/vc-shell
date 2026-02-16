@@ -2,21 +2,31 @@ import { Component, ref, type Ref } from "vue";
 import * as _ from "lodash-es";
 import type { MenuItem, MenuItemBadgeConfig } from "../types";
 import { createUnrefFn, useArrayFind } from "@vueuse/core";
-import { createLogger } from "../utilities";
+import { createPreregistrationBus } from "./_internal";
 
-const logger = createLogger("menu-service");
+function menuItemKey(item: MenuItem): string {
+  if (item.id !== undefined) return `id:${String(item.id)}`;
+  if (item.routeId) return `route:${item.routeId}`;
+  if (item.url) return `url:${item.url}`;
+  if (item.groupConfig?.id && item.title) return `gc:${item.groupConfig.id}:${item.title}`;
+  if (item.group && item.title) return `g:${item.group}:${item.title}`;
+  return `hash:${JSON.stringify(_.omit(item, "title"))}`;
+}
 
-// Global state for pre-registering menu items
-const preregisteredMenuItems: Ref<MenuItem[]> = ref([]);
+// Global state for pre-registering badges before the service is available.
+const preregisteredMenuBadges: Ref<Map<string, MenuItemBadgeConfig>> = ref(new Map());
 
-// Badge registry - key is routeId (blade name) or groupId
-const menuBadges: Ref<Map<string, MenuItemBadgeConfig>> = ref(new Map());
+export const menuServiceBus = createPreregistrationBus<MenuItem, MenuService>({
+  name: "menu-service",
+  getKey: menuItemKey,
+  registerIntoService: (service, item) => service.addMenuItem(item),
+});
 
 /**
  * Registers a menu item before the service is initialized
  */
 export function addMenuItem(item: MenuItem): void {
-  preregisteredMenuItems.value.push(item);
+  menuServiceBus.preregister(item);
 }
 
 /**
@@ -26,7 +36,10 @@ export function addMenuItem(item: MenuItem): void {
  * @param badge - Badge configuration (number, ref, function, or full config)
  */
 export function setMenuBadge(id: string, badge: MenuItemBadgeConfig): void {
-  menuBadges.value.set(id, badge);
+  preregisteredMenuBadges.value.set(id, badge);
+  menuServiceBus.broadcast((service) => {
+    service.menuBadges.value.set(id, badge);
+  });
 }
 
 /**
@@ -34,7 +47,12 @@ export function setMenuBadge(id: string, badge: MenuItemBadgeConfig): void {
  * @param id - routeId for menu items, groupId for groups
  */
 export function getMenuBadge(id: string): MenuItemBadgeConfig | undefined {
-  return menuBadges.value.get(id);
+  const service = menuServiceBus.getFirstInstance();
+  if (service) {
+    return service.menuBadges.value.get(id);
+  }
+
+  return preregisteredMenuBadges.value.get(id);
 }
 
 /**
@@ -42,7 +60,10 @@ export function getMenuBadge(id: string): MenuItemBadgeConfig | undefined {
  * @param id - routeId for menu items, groupId for groups
  */
 export function removeMenuBadge(id: string): void {
-  menuBadges.value.delete(id);
+  preregisteredMenuBadges.value.delete(id);
+  menuServiceBus.broadcast((service) => {
+    service.menuBadges.value.delete(id);
+  });
 }
 
 /**
@@ -50,7 +71,8 @@ export function removeMenuBadge(id: string): void {
  * Used internally by menu components to reactively watch for badge changes.
  */
 export function getMenuBadges(): Ref<Map<string, MenuItemBadgeConfig>> {
-  return menuBadges;
+  const service = menuServiceBus.getFirstInstance();
+  return service?.menuBadges ?? preregisteredMenuBadges;
 }
 
 export interface MenuService {
@@ -64,15 +86,39 @@ export interface MenuService {
 const DEFAULT_PRIORITY = Infinity;
 const DEFAULT_GROUP_PRIORITY = Infinity;
 
-// State
-const menuItems: Ref<MenuItem[]> = ref([]);
-const rawMenu: Ref<MenuItem[]> = ref([]);
+function isSameMenuItem(left: MenuItem, right: MenuItem): boolean {
+  if (left.id !== undefined && right.id !== undefined) {
+    return String(left.id) === String(right.id);
+  }
+
+  if (left.routeId && right.routeId) {
+    return left.routeId === right.routeId;
+  }
+
+  if (left.url && right.url) {
+    return left.url === right.url;
+  }
+
+  if (left.groupConfig?.id && right.groupConfig?.id) {
+    return left.groupConfig.id === right.groupConfig.id && left.title === right.title;
+  }
+
+  if (left.group && right.group) {
+    return left.group === right.group && left.title === right.title;
+  }
+
+  return _.isEqual(_.omit(left, "title"), _.omit(right, "title"));
+}
 
 /**
  * Menu service implementation
  * Handles the registration and organization of menu items
  */
 export function createMenuService(): MenuService {
+  const menuItems: Ref<MenuItem[]> = ref([]);
+  const rawMenu: Ref<MenuItem[]> = ref([]);
+  const menuBadges: Ref<Map<string, MenuItemBadgeConfig>> = ref(new Map(preregisteredMenuBadges.value));
+
   /**
    * Add a new menu item to the raw menu and rebuild the menu structure
    * @param item - The menu item to add
@@ -87,9 +133,11 @@ export function createMenuService(): MenuService {
    * @param item - The menu item to remove
    */
   function removeMenuItem(item: MenuItem): void {
-    const index = menuItems.value.indexOf(item);
-    if (index !== -1) {
-      menuItems.value.splice(index, 1);
+    const initialLength = rawMenu.value.length;
+    rawMenu.value = rawMenu.value.filter((existingItem) => !isSameMenuItem(existingItem, item));
+
+    if (rawMenu.value.length !== initialLength) {
+      constructMenu();
     }
   }
 
@@ -249,18 +297,14 @@ export function createMenuService(): MenuService {
     menuItems.value = finalizeMenuItems(constructedMenu.value);
   }
 
-  preregisteredMenuItems.value.forEach((item) => {
-    try {
-      addMenuItem(item);
-    } catch (e) {
-      logger.warn(`Failed to register preregistered menu item ${item.id || item.title}:`, e);
-    }
-  });
-
-  return {
+  const service: MenuService = {
     addMenuItem,
     menuItems,
     removeMenuItem,
     menuBadges,
   };
+
+  menuServiceBus.replayInto(service);
+
+  return service;
 }

@@ -1,12 +1,10 @@
-import { ref, computed, Component, ComputedRef } from "vue";
-import { createLogger } from "../utilities";
-
-const logger = createLogger("settings-menu-service");
+import { ComputedRef } from "vue";
+import { createSimpleMapRegistry, createPreregistrationBus } from "./_internal";
 
 export interface ISettingsMenuItem {
   id: string;
   order?: number;
-  component: Component;
+  component: import("vue").Component;
   props?: Record<string, unknown>;
 }
 
@@ -20,21 +18,17 @@ export interface ISettingsMenuService {
   items: ComputedRef<ISettingsMenuItem[]>;
 }
 
-// Global state for pre-registering settings menu items
-const preregisteredSettingsMenuItems: ISettingsMenuItem[] = [];
-const settingsMenuItems = ref<Map<string, ISettingsMenuItem>>(new Map());
+export const settingsMenuBus = createPreregistrationBus<RegisterSettingsMenuItemOptions, ISettingsMenuService>({
+  name: "settings-menu-service",
+  getKey: (item) => item.id || crypto.randomUUID(),
+  registerIntoService: (service, item) => service.register(item),
+});
 
 /**
  * Registers a settings menu item before the service is initialized
  */
 export function addSettingsMenuItem(item: RegisterSettingsMenuItemOptions): void {
-  const id = item.id || crypto.randomUUID();
-  preregisteredSettingsMenuItems.push({
-    id,
-    order: item.order ?? preregisteredSettingsMenuItems.length,
-    component: item.component,
-    props: item.props,
-  });
+  settingsMenuBus.preregister(item);
 }
 
 /**
@@ -42,37 +36,23 @@ export function addSettingsMenuItem(item: RegisterSettingsMenuItemOptions): void
  * Manages the registration and organization of settings menu items
  */
 export function createSettingsMenuService(): ISettingsMenuService {
-  const register = (options: RegisterSettingsMenuItemOptions): string => {
-    const id = options.id || crypto.randomUUID();
-    settingsMenuItems.value.set(id, {
-      id,
-      order: options.order ?? settingsMenuItems.value.size,
+  const mapRegistry = createSimpleMapRegistry<ISettingsMenuItem, RegisterSettingsMenuItemOptions>({
+    createItem: (options, currentSize) => ({
+      id: options.id || "",
+      order: options.order ?? currentSize,
       component: options.component,
       props: options.props,
-    });
-    return id;
-  };
-
-  const unregister = (id: string): void => {
-    settingsMenuItems.value.delete(id);
-  };
-
-  const items = computed<ISettingsMenuItem[]>(() => {
-    return Array.from(settingsMenuItems.value.values()).sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+    }),
+    getId: (options) => options.id || "",
   });
 
-  // Register pre-added settings menu items
-  preregisteredSettingsMenuItems.forEach((item) => {
-    try {
-      register(item);
-    } catch (e) {
-      logger.warn(`Failed to register pre-added settings menu item ${item.id}:`, e);
-    }
-  });
-
-  return {
-    register,
-    unregister,
-    items,
+  const service: ISettingsMenuService = {
+    register: (options) => mapRegistry.register(options),
+    unregister: (id) => mapRegistry.unregister(id),
+    items: mapRegistry.sortedItems,
   };
+
+  settingsMenuBus.replayInto(service);
+
+  return service;
 }

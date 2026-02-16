@@ -20,8 +20,13 @@
         </div>
         <div class="vc-user-info__role">
           {{
-            (role && $t(`SHELL.USER.ROLE.${role}`)) ||
-            (user?.isAdministrator ? $t("SHELL.USER.ROLE.ADMINISTRATOR") : "")
+            role
+              ? $te(`SHELL.USER.ROLE.${role}`)
+                ? $t(`SHELL.USER.ROLE.${role}`)
+                : role
+              : user?.isAdministrator
+                ? $t("SHELL.USER.ROLE.ADMINISTRATOR")
+                : ""
           }}
         </div>
       </div>

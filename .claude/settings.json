@@ -3,5 +3,23 @@
     "allow": [
       "mcp__filesystem__read_text_file"
     ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "command": "case \"$CLAUDE_FILE_PATH\" in */dist/*|*/node_modules/*|yarn.lock|*.lock) echo 'BLOCK: Cannot edit generated/lock file'; exit 1;; esac"
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "command": "filepath=\"$CLAUDE_FILE_PATH\"; case \"$filepath\" in *.ts|*.vue|*.js|*.tsx|*.jsx) prettier --write \"$filepath\" 2>/dev/null; eslint --fix --cache \"$filepath\" 2>/dev/null;; *.css|*.json|*.md|*.html) prettier --write \"$filepath\" 2>/dev/null;; esac"
+      },
+      {
+        "matcher": "Edit|Write",
+        "command": "case \"$CLAUDE_FILE_PATH\" in */framework/*.ts|*/framework/*.vue) cd /Users/symbot/DEV/vc-shell-main-dev/vc-shell/framework && npx tsc --noEmit --pretty 2>&1 | head -40;; esac"
+      }
+    ]
   }
 }

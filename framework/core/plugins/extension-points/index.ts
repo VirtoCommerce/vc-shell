@@ -1,8 +1,11 @@
-export {
-  useExtensionSlot,
-  useExtensionData,
-  useExtensions,
-  type ExtensionComponent,
-} from './simple-extensions';
+// Host-side: declare extension points in pages that accept plugins
+export { defineExtensionPoint } from "./defineExtensionPoint";
 
-export { default as ExtensionSlot } from './ExtensionSlot.vue';
+// Plugin-side: register components into extension points
+export { useExtensionPoint } from "./useExtensionPoint";
+
+// Render component
+export { default as ExtensionPoint } from "./ExtensionPoint.vue";
+
+// Types
+export type { ExtensionComponent, ExtensionPointOptions } from "./types";

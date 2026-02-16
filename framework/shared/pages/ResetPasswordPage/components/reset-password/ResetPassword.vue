@@ -1,99 +1,92 @@
 <template>
-  <div class="vc-reset-password-page">
+  <VcAuthLayout
+    :logo="customization.logo"
+    :background="background"
+    :title="t('PASSWORDRESET.TITLE')"
+    :subtitle="t('PASSWORDRESET.SUBTITLE')"
+  >
     <VcLoading
       v-if="loading"
       active
-    ></VcLoading>
+    />
 
-    <VcLoginForm
-      :logo="customization.logo"
-      :background="background"
-      :title="t('PASSWORDRESET.TITLE')"
-      class="vc-reset-password-page__login-form"
-    >
-      <VcForm>
-        <Field
-          v-slot="{ field, errorMessage, handleChange, errors }"
+    <VcForm>
+      <Field
+        v-slot="{ field, errorMessage, handleChange, errors }"
+        :label="t('PASSWORDRESET.FIELDS.PASSWORD.LABEL')"
+        name="password"
+        :model-value="form.password"
+        rules="required"
+      >
+        <VcInput
+          v-bind="field"
+          ref="passwordField"
+          v-model="form.password"
+          class="tw-mb-4"
           :label="t('PASSWORDRESET.FIELDS.PASSWORD.LABEL')"
-          name="password"
-          :model-value="form.password"
-          rules="required"
-        >
-          <VcInput
-            v-bind="field"
-            ref="passwordField"
-            v-model="form.password"
-            class="vc-reset-password-page__input"
-            :label="t('PASSWORDRESET.FIELDS.PASSWORD.LABEL')"
-            :placeholder="t('PASSWORDRESET.FIELDS.PASSWORD.PLACEHOLDER')"
-            type="password"
-            :disabled="!form.tokenIsValid"
-            required
-            :error="!!errors.length"
-            :error-message="errorMessage"
-            @update:model-value="
-              (e) => {
-                handleChange(e);
-                validate();
-              }
-            "
-          />
-        </Field>
-        <Field
-          v-slot="{ field, errorMessage, handleChange, errors }"
-          :label="t('PASSWORDRESET.FIELDS.CONFIRM_PASSWORD.LABEL')"
-          name="confirm_password"
-          :model-value="form.confirmPassword"
-          rules="required"
-        >
-          <VcInput
-            v-bind="field"
-            ref="confirmPasswordField"
-            v-model="form.confirmPassword"
-            class="vc-reset-password-page__input-small"
-            :label="t('PASSWORDRESET.FIELDS.CONFIRM_PASSWORD.LABEL')"
-            :placeholder="t('PASSWORDRESET.FIELDS.CONFIRM_PASSWORD.PLACEHOLDER')"
-            :disabled="!form.tokenIsValid"
-            type="password"
-            required
-            :error="!!errors.length"
-            :error-message="errorMessage"
-            @update:model-value="
-              (e) => {
-                handleChange(e);
-                validate();
-              }
-            "
-            @keyup.enter="resetPassword"
-          >
-          </VcInput>
-        </Field>
-        <div class="vc-reset-password-page__button-container">
-          <span
-            v-if="$isDesktop.value"
-            class="vc-reset-password-page__spacer"
-          ></span>
-          <vc-button
-            :disabled="disableButton"
-            class="vc-reset-password-page__submit-button"
-            @click="resetPassword"
-          >
-            {{ t("PASSWORDRESET.SAVE_PASSWORD") }}
-          </vc-button>
-        </div>
+          :placeholder="t('PASSWORDRESET.FIELDS.PASSWORD.PLACEHOLDER')"
+          type="password"
+          :disabled="!form.tokenIsValid"
+          required
+          :error="!!errors.length"
+          :error-message="errorMessage"
+          @update:model-value="
+            (e) => {
+              handleChange(e);
+              validate();
+            }
+          "
+        />
+      </Field>
 
-        <VcHint
-          v-for="error in form.errors"
-          :key="error"
-          class="vc-reset-password-page__error-hint"
-          style="color: #f14e4e"
-        >
-          <!-- TODO: stylizing-->
-          {{ t(`PASSWORDRESET.ERRORS.${error}`) }}
-        </VcHint>
-      </VcForm>
-    </VcLoginForm>
-  </div>
+      <Field
+        v-slot="{ field, errorMessage, handleChange, errors }"
+        :label="t('PASSWORDRESET.FIELDS.CONFIRM_PASSWORD.LABEL')"
+        name="confirm_password"
+        :model-value="form.confirmPassword"
+        rules="required"
+      >
+        <VcInput
+          v-bind="field"
+          ref="confirmPasswordField"
+          v-model="form.confirmPassword"
+          class="tw-mb-6"
+          :label="t('PASSWORDRESET.FIELDS.CONFIRM_PASSWORD.LABEL')"
+          :placeholder="t('PASSWORDRESET.FIELDS.CONFIRM_PASSWORD.PLACEHOLDER')"
+          :disabled="!form.tokenIsValid"
+          type="password"
+          required
+          :error="!!errors.length"
+          :error-message="errorMessage"
+          @update:model-value="
+            (e) => {
+              handleChange(e);
+              validate();
+            }
+          "
+          @keyup.enter="resetPassword"
+        />
+      </Field>
+
+      <VcButton
+        variant="primary"
+        class="tw-w-full"
+        :disabled="disableButton"
+        :loading="loading"
+        @click="resetPassword"
+      >
+        {{ t("PASSWORDRESET.SAVE_PASSWORD") }}
+      </VcButton>
+
+      <VcHint
+        v-for="error in form.errors"
+        :key="error"
+        class="tw-mt-3 tw-text-[color:var(--danger-500)]"
+      >
+        {{ t(`PASSWORDRESET.ERRORS.${error}`) }}
+      </VcHint>
+    </VcForm>
+  </VcAuthLayout>
 </template>
 
 <script lang="ts" setup>
@@ -177,43 +170,7 @@ const resetPassword = async () => {
   }
 };
 
-const customization = computed(() => {
-  return {
-    logo: !customizationLoading.value ? uiSettings.value?.logo || props.logo : "",
-  };
-});
+const customization = computed(() => ({
+  logo: !customizationLoading.value ? uiSettings.value?.logo || props.logo : "",
+}));
 </script>
-
-<style lang="scss">
-:root {
-  --reset-password-error-color: var(--danger-500);
-}
-
-.vc-reset-password-page {
-  @apply tw-w-full tw-h-full tw-box-border tw-flex tw-flex-col tw-m-0;
-}
-
-.vc-reset-password-page__input {
-  @apply tw-mb-4 tw-mt-1;
-}
-
-.vc-reset-password-page__input-small {
-  @apply tw-mb-4;
-}
-
-.vc-reset-password-page__button-container {
-  @apply tw-flex tw-justify-center tw-items-center tw-pt-2;
-}
-
-.vc-reset-password-page__spacer {
-  @apply tw-grow tw-basis-0;
-}
-
-.vc-reset-password-page__submit-button {
-  @apply tw-w-28;
-}
-
-.vc-reset-password-page__error-hint {
-  @apply tw-mt-3 tw-text-[color:var(--reset-password-error-color)] #{!important};
-}
-</style>

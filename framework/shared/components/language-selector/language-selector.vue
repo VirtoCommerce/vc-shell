@@ -20,8 +20,8 @@
     </template>
 
     <template #content>
-      <GenericDropdown
-        :opened="opened"
+      <VcDropdown
+        :model-value="opened"
         :items="languageItems"
         :is-item-active="(lang) => lang.lang === currentLocale"
         @item-click="handleLanguageSelect"
@@ -39,7 +39,7 @@
             <span class="vc-language-selector__item-title">{{ lang.title }}</span>
           </div>
         </template>
-      </GenericDropdown>
+      </VcDropdown>
     </template>
   </SettingsMenuItem>
 </template>
@@ -47,10 +47,9 @@
 <script lang="ts" setup>
 import { useI18n } from "vue-i18n";
 import { useLanguages } from "../../../core/composables";
-import { GenericDropdown } from "../generic-dropdown";
 import { watch, ref } from "vue";
 import { SettingsMenuItem } from "../settings-menu-item";
-import { VcImage } from "../../../ui/components";
+import { VcDropdown, VcImage } from "../../../ui/components";
 
 interface ILanguage {
   lang: string;

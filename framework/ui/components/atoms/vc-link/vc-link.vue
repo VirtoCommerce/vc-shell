@@ -41,10 +41,12 @@ function onClickFn(): void {
   --link-text-color-hover: var(--primary-400);
   --link-text-color-active: var(--primary-700);
   --link-text-color-disabled: var(--neutrals-300);
+  --link-focus-ring-color: rgba(59, 130, 246, 0.3);
 }
 
 .vc-link {
-  @apply tw-text-[color:var(--link-text-color)] tw-no-underline tw-cursor-pointer tw-transition tw-duration-200 tw-inline-block hover:tw-text-[color:var(--link-text-color-hover)] hover:tw-underline;
+  @apply tw-text-[color:var(--link-text-color)] tw-no-underline tw-cursor-pointer tw-transition tw-duration-200 tw-inline-block hover:tw-text-[color:var(--link-text-color-hover)] hover:tw-underline
+    focus-visible:tw-outline-none focus-visible:tw-ring-[2px] focus-visible:tw-ring-[color:var(--link-focus-ring-color)] focus-visible:tw-rounded-sm;
   /* Reset button styles for link appearance */
   @apply tw-bg-transparent tw-border-none tw-p-0 tw-font-[inherit] tw-text-[inherit];
 
@@ -53,7 +55,7 @@ function onClickFn(): void {
   }
 
   &--disabled {
-    @apply tw-cursor-not-allowed tw-text-[color:var(--link-text-color-disabled)] tw-no-underline hover:tw-text-[color:var(--link-text-color-disabled)] hover:tw-no-underline;
+    @apply tw-cursor-not-allowed tw-text-[color:var(--link-text-color-disabled)] tw-no-underline tw-opacity-50 hover:tw-text-[color:var(--link-text-color-disabled)] hover:tw-no-underline;
   }
 }
 </style>

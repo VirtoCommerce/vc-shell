@@ -1,13 +1,13 @@
 <template>
   <div class="vc-table-column-switcher">
-    <GenericDropdown
-      :opened="isActive"
+    <VcDropdown
+      :model-value="isActive"
       :items="internalItems"
       placement="bottom-end"
       floating
       max-height="40%"
       @item-click="selectItem"
-      @update:opened="(state) => emit('onActive', state)"
+      @update:model-value="(state) => emit('onActive', state)"
     >
       <template #trigger>
         <VcButton
@@ -35,7 +35,7 @@
           </p>
         </div>
       </template>
-    </GenericDropdown>
+    </VcDropdown>
   </div>
 </template>
 
@@ -43,7 +43,7 @@
 import { ref, watch } from "vue";
 import { ITableColumns } from "./../../../../../../core/types";
 import { TableColPartial } from "../../types";
-import { GenericDropdown } from "../../../../../../shared/components/generic-dropdown";
+import { VcDropdown } from "../../../../";
 
 export interface Props {
   items: TableColPartial[];

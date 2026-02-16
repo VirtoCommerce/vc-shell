@@ -8,11 +8,17 @@ export * from "./language-selector";
 export * from "./user-dropdown-button";
 export * from "./notification-dropdown";
 export * from "./notification-template";
-export * from "./sidebar";
+/**
+ * @deprecated Use `VcSidebar` from `framework/ui/components` instead.
+ */
+export { Sidebar } from "./sidebar";
 export * from "./theme-selector";
 export * from "./sign-in";
 export * from "./settings-menu-item";
-export * from "./generic-dropdown";
+/**
+ * @deprecated Use `VcDropdown` from `framework/ui/components` instead.
+ */
+export { GenericDropdown } from "./generic-dropdown";
 export * from "./draggable-dashboard";
 export * from "./dashboard-widget-card";
 export * from "./multilanguage-selector";

@@ -13,14 +13,14 @@
     :style="{ width: typeof width === 'number' ? `${width}px` : width }"
   >
     <!-- Init blade header -->
-    <VcBladeHeader
+    <BladeHeader
       v-if="!($isMobile.value && blades.length === 1 && !$slots['actions'])"
       class="vc-blade__header"
       :closable="closable"
       :icon="icon"
       :title="title"
       :subtitle="subtitle"
-      :modified="typeof modified !== 'undefined' ? modified : undefined"
+      :modified="modified"
       @close="$emit('close')"
       @expand="$emit('expand')"
       @collapse="$emit('collapse')"
@@ -59,48 +59,19 @@
       >
         <slot name="actions"></slot>
       </template>
-    </VcBladeHeader>
+    </BladeHeader>
 
-    <!-- Show error message -->
-    <template v-if="blade.error">
-      <div class="vc-blade__error">
-        <VcIcon
-          size="s"
-          icon="material-warning"
-        />
-        <div class="vc-blade__error-text">{{ shortErrorMessage }}</div>
-        <VcButton
-          text
-          class="vc-blade__error-button"
-          @click="openErrorDetails"
-        >
-          {{ t("COMPONENTS.ORGANISMS.VC_BLADE.SEE_DETAILS") }}
-        </VcButton>
-      </div>
-    </template>
-
-    <!-- Unsaved changes -->
-    <template v-if="typeof modified !== 'undefined' ? modified : false">
-      <div class="vc-blade__unsaved-changes">
-        <VcIcon
-          size="s"
-          icon="material-info"
-        />
-        <div class="vc-blade__unsaved-changes-text">
-          {{ t("COMPONENTS.ORGANISMS.VC_BLADE.UNSAVED_CHANGES") }}
-        </div>
-      </div>
-    </template>
+    <BladeStatusBanners :modified="modified" />
 
     <!-- Set up blade toolbar -->
-    <VcBladeToolbar
+    <BladeToolbar
       class="vc-blade__toolbar"
       :items="toolbarItems"
     >
       <template #widgets-container>
-        <VcWidgetContainer :blade-id="blade?.id ?? ''" />
+        <WidgetContainer :blade-id="blade?.id ?? ''" />
       </template>
-    </VcBladeToolbar>
+    </BladeToolbar>
 
     <div
       ref="contentRef"
@@ -123,19 +94,17 @@
     </div>
   </div>
 </template>
-<!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
-import { computed, ref, toValue, inject, defineComponent, h } from "vue";
+import { ref, inject } from "vue";
 import { IBladeToolbar } from "../../../../core/types";
-import { usePopup, useBladeNavigation } from "../../../../shared";
-import { useI18n } from "vue-i18n";
-import { default as VcBladeHeader } from "./_internal/vc-blade-header/vc-blade-header.vue";
-import { default as VcBladeToolbar } from "./_internal/vc-blade-toolbar/vc-blade-toolbar.vue";
-import { VcButton, VcIcon, VcLink } from "../../";
-import vcPopupError from "../../../../shared/components/common/popup/vc-popup-error.vue";
+import { useBladeNavigation } from "../../../../shared";
+import BladeHeader from "./_internal/BladeHeader.vue";
+import BladeToolbar from "./_internal/BladeToolbar.vue";
+import BladeStatusBanners from "./_internal/BladeStatusBanners.vue";
+import { VcButton } from "../../";
 import { BladeInstance, BLADE_BACK_BUTTON } from "../../../../injection-keys";
-import { default as VcWidgetContainer } from "./_internal/vc-blade-widget-container/vc-widget-container.vue";
-import { FALLBACK_BLADE_ID } from "../../../../core/constants";
+import WidgetContainer from "./_internal/widgets/WidgetContainer.vue";
+import { DEFAULT_BLADE_INSTANCE } from "./constants";
 
 export interface Props {
   icon?: string;
@@ -152,7 +121,6 @@ export interface Emits {
   (event: "close"): void;
   (event: "expand"): void;
   (event: "collapse"): void;
-  (event: "reset:error"): void;
 }
 
 defineOptions({
@@ -162,14 +130,13 @@ defineOptions({
 withDefaults(defineProps<Props>(), {
   width: "30%",
   closable: true,
-  expandable: true,
   toolbarItems: () => [],
   modified: undefined,
 });
 
 const slots = defineSlots<{
-  actions: (props: any) => any;
-  default: (props: any) => any;
+  actions(): void;
+  default(): void;
   /**
    * @deprecated
    * Use `useWidgets` composable instead
@@ -197,72 +164,19 @@ const slots = defineSlots<{
    *   }
    * });
    */
-  widgets: (props: any) => any;
+  widgets(): void;
 }>();
 
 const emit = defineEmits<Emits>();
 
-const blade = inject(
-  BladeInstance,
-  computed(() => ({
-    id: FALLBACK_BLADE_ID,
-    error: null,
-    expandable: false,
-    maximized: false,
-    navigation: undefined,
-    breadcrumbs: undefined,
-    param: undefined,
-    options: undefined,
-  })),
-);
+const blade = inject(BladeInstance, DEFAULT_BLADE_INSTANCE);
 
 const backButton = inject(BLADE_BACK_BUTTON);
 
-const { t } = useI18n({ useScope: "global" });
 const { blades } = useBladeNavigation();
 
 const bladeRef = ref<HTMLElement | null>(null);
 const contentRef = ref<HTMLElement | null>(null);
-
-const error = computed(() => toValue(blade.value.error));
-
-const shortErrorMessage = computed(() => {
-  const err = error.value;
-  if (!err) return "";
-  return err instanceof Error ? err.message : err;
-});
-
-const errorDetails = computed(() => {
-  const err = error.value;
-  if (!err) return "";
-  if (err instanceof Error) {
-    return (err as any).details || err.stack || String(err);
-  }
-  return String(err);
-});
-
-const { open } = usePopup({
-  component: vcPopupError,
-  slots: {
-    default: errorDetails,
-    header: defineComponent({
-      render: () =>
-        h("div", [
-          t("COMPONENTS.ORGANISMS.VC_BLADE.ERROR_POPUP.TITLE"),
-          " ",
-          h(
-            VcLink,
-            { onClick: () => navigator.clipboard.writeText(errorDetails.value) },
-            `(${t("COMPONENTS.ORGANISMS.VC_BLADE.ERROR_POPUP.COPY_ERROR")})`,
-          ),
-        ]),
-    }),
-  },
-});
-
-const openErrorDetails = () => {
-  open();
-};
 </script>
 
 <style lang="scss">
@@ -270,21 +184,10 @@ const openErrorDetails = () => {
   --blade-background-color: var(--additional-50);
   --blade-color-error: var(--danger-500);
   --blade-color-unsaved-changes: var(--secondary-600);
-
   --blade-border-color: var(--neutrals-200);
-  --blade-icon-color: var(--secondary-400);
-  --blade-icon-hover-color: var(--secondary-500);
-
-  --blade-widgets-width: 50px;
-  --blade-widgets-width-expanded: 120px;
-
   --blade-shadow-color: var(--primary-700);
   --blade-shadow: 2px 2px 8px rgb(from var(--blade-shadow-color) r g b / 14%);
-
   --blade-text-color: var(--additional-50);
-
-  --blade-widgets-bg-color: var(--neutrals-100);
-  --blade-widgets-more-color: var(--neutrals-600);
 }
 
 .vc-blade {
@@ -320,26 +223,6 @@ const openErrorDetails = () => {
     }
   }
 
-  &__error {
-    @apply tw-text-[color:var(--blade-text-color)] tw-p-2 tw-flex tw-flex-row tw-items-center tw-bg-[color:var(--blade-color-error)];
-  }
-
-  &__error-text {
-    @apply tw-line-clamp-1 tw-w-full tw-mx-2;
-  }
-
-  &__error-button {
-    @apply tw-shrink-0 tw-opacity-80 hover:tw-opacity-100 hover:tw-text-[color:var(--blade-text-color)];
-    @apply tw-text-[color:var(--blade-text-color)] !important;
-  }
-
-  &__unsaved-changes {
-    @apply tw-text-[color:var(--blade-text-color)] tw-px-2 tw-py-1 tw-flex tw-flex-row tw-items-center tw-bg-[color:var(--blade-color-unsaved-changes)];
-  }
-
-  &__unsaved-changes-text {
-    @apply tw-line-clamp-1 tw-w-full tw-ml-2;
-  }
 
   &__toolbar {
     @apply tw-shrink-0;
@@ -373,14 +256,6 @@ const openErrorDetails = () => {
     }
   }
 
-  &__widget-more {
-    @apply tw-flex tw-flex-col tw-items-center tw-justify-center tw-bg-[color:var(--blade-widgets-bg-color)] tw-px-2 tw-text-xs tw-gap-1 tw-text-[color:var(--blade-widgets-more-color)];
-  }
-
-  &__widgets {
-    @apply tw-flex tw-flex-row;
-  }
-
   &__breadcrumbs {
     @apply tw-mr-[10px];
 
@@ -393,48 +268,9 @@ const openErrorDetails = () => {
     }
   }
 
-  &__widget-toggle {
-    @apply tw-flex;
-
-    &--desktop {
-      @apply tw-flex-col tw-justify-end tw-max-h-14 tw-h-full tw-mt-auto;
-    }
-
-    &--mobile {
-      @apply tw-w-12 tw-max-w-12 tw-bg-[color:var(--blade-background-color)] tw-items-center tw-justify-center tw-px-4 tw-ml-auto tw-mt-0;
-    }
-  }
-
-  &__toggle-icon {
-    @apply tw-flex-auto tw-items-center tw-self-center tw-justify-self-center tw-text-[color:var(--blade-icon-color)] tw-cursor-pointer hover:tw-text-[color:var(--blade-icon-hover-color)];
-    @apply tw-flex !important;
-  }
-
-  &__toggle-icon--desktop {
-  }
-
-  &__spacer {
-    @apply tw-flex-1;
-  }
-
-  &__toolbar-container-inner {
-    @apply tw-flex-1 tw-justify-end;
-
-    &:empty {
-      @apply tw-hidden;
-    }
-  }
-
-  &__breadcrumbs-button {
-    @apply tw-p-0 !important;
-  }
 }
 
 .vc-app_mobile .vc-blade {
   @apply tw-m-0 tw-rounded-none;
-}
-
-.vc-app_mobile .vc-blade__widgets {
-  @apply tw-flex tw-flex-row;
 }
 </style>

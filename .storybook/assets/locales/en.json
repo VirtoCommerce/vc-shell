@@ -1,6 +1,11 @@
 {
   "language_name": "English",
   "SHELL": {
+    "USER": {
+      "ROLE": {
+        "Administrator": "Administrator"
+      }
+    },
     "MENU": {
       "DASHBOARD": "Home"
     },

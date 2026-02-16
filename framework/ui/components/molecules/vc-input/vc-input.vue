@@ -1,5 +1,39 @@
 <template>
+  <!-- Backward compat delegation: date types -->
+  <VcDatePicker
+    v-if="type === 'date' || type === 'datetime-local'"
+    v-bind="$props"
+    @update:model-value="(v: any) => emit('update:modelValue', v)"
+    @blur="(v: any) => emit('blur', v)"
+    @focus="emit('focus')"
+  />
+  <!-- Backward compat delegation: color type -->
+  <VcColorInput
+    v-else-if="type === 'color'"
+    :model-value="(modelValue as string) ?? null"
+    :label="label"
+    :placeholder="placeholder"
+    :hint="hint"
+    :disabled="disabled"
+    :error="error"
+    :error-message="errorMessage"
+    :required="required"
+    :clearable="clearable"
+    :loading="loading"
+    :autofocus="autofocus"
+    :size="size"
+    :tooltip="tooltip"
+    :multilanguage="multilanguage"
+    :current-language="currentLanguage"
+    :name="name"
+    @update:model-value="(v: any) => emit('update:modelValue', v)"
+    @blur="(v: any) => emit('blur', v)"
+    @focus="emit('focus')"
+  />
+
+  <!-- Clean text input -->
   <div
+    v-else
     class="vc-input"
     :class="[
       `vc-input_${type}`,
@@ -14,6 +48,7 @@
     <!-- Input label -->
     <VcLabel
       v-if="label"
+      :id="labelId"
       class="vc-input__label"
       :required="required"
       :multilanguage="multilanguage"
@@ -73,59 +108,25 @@
               :emit-value="emitValue"
               :placeholder="placeholder"
             >
-              <template v-if="type === 'datetime-local' || type === 'date'">
-                <VueDatePicker
-                  v-model="handleValue"
-                  :placeholder="
-                    placeholder ||
-                    (type === 'datetime-local'
-                      ? $t('COMPONENTS.MOLECULES.VC_INPUT.DATE_TIME_PLACEHOLDER')
-                      : $t('COMPONENTS.MOLECULES.VC_INPUT.DATE_PLACEHOLDER'))
-                  "
-                  :disabled="disabled"
-                  :name="name"
-                  :maxlength="maxlength"
-                  :autofocus="autofocus"
-                  :max-date="maxDate"
-                  time-picker-inline
-                  :enable-time-picker="type === 'datetime-local'"
-                  :format="formatDateWithLocale"
-                  :locale="locale"
-                  :start-time="{ hours: 0, minutes: 0 }"
-                  :clearable="false"
-                  :config="{ closeOnAutoApply: false }"
-                  auto-apply
-                  :teleport-center="$isMobile.value"
-                  :is24="isBrowserLocale24h"
-                  v-bind="datePickerOptions"
-                  :teleport="$isDesktop.value ? 'body' : undefined"
-                  class="vc-input__input"
-                  tabindex="0"
-                  @keydown="onKeyDown"
-                  @focus="handleFocus"
-                  @closed="handleBlur"
-                  @tooltip-open="handleFocus"
-                  @tooltip-close="handleBlur"
-                />
-              </template>
-              <template v-else>
-                <input
-                  ref="inputRef"
-                  v-model="handleValue"
-                  :placeholder="placeholder"
-                  :type="internalTypeComputed"
-                  :disabled="disabled"
-                  :name="name"
-                  :maxlength="maxlength"
-                  :autofocus="autofocus"
-                  :max="maxDate"
-                  class="vc-input__input"
-                  tabindex="0"
-                  @keydown="onKeyDown"
-                  @blur="handleBlur"
-                  @focus="handleFocus"
-                />
-              </template>
+              <input
+                :id="inputId"
+                ref="inputRef"
+                v-model="handleValue"
+                :placeholder="placeholder"
+                :type="internalTypeComputed"
+                :disabled="disabled"
+                :name="name"
+                :maxlength="maxlength"
+                :autofocus="autofocus"
+                :aria-invalid="error || undefined"
+                :aria-describedby="ariaDescribedBy"
+                :aria-labelledby="label ? labelId : undefined"
+                class="vc-input__input"
+                tabindex="0"
+                @keydown="onKeyDown"
+                @blur="handleBlur"
+                @focus="handleFocus"
+              />
             </slot>
 
             <div
@@ -133,30 +134,6 @@
               class="vc-input__suffix"
             >
               {{ suffix }}
-            </div>
-
-            <!-- Color picker square for color type -->
-            <div
-              class="vc-input__color-container"
-              v-if="type === 'color'"
-            >
-              <div
-                class="vc-input__color-square"
-                :style="{ backgroundColor: colorValue || '#ffffff' }"
-                tabindex="0"
-                @click="openColorPicker"
-                @keydown.enter="openColorPicker"
-                @keydown.space="openColorPicker"
-              >
-                <!-- Hidden native color input -->
-                <input
-                  ref="colorPickerRef"
-                  type="color"
-                  :value="colorValue"
-                  class="vc-input__color-picker-hidden"
-                  @change="handleColorPickerChange"
-                />
-              </div>
             </div>
 
             <div
@@ -168,8 +145,8 @@
               @keydown.space="onReset"
             >
               <VcIcon
-                size="m"
-                icon="material-close"
+                size="xs"
+                icon="lucide-x"
               ></VcIcon>
             </div>
 
@@ -183,7 +160,7 @@
             >
               <VcIcon
                 size="s"
-                icon="material-visibility_off"
+                icon="lucide-eye-off"
               ></VcIcon>
             </div>
 
@@ -197,7 +174,7 @@
             >
               <VcIcon
                 size="s"
-                icon="material-visibility"
+                icon="lucide-eye"
               ></VcIcon>
             </div>
           </div>
@@ -217,7 +194,7 @@
             class="vc-input__loading"
           >
             <VcIcon
-              icon="lucide-loader"
+              icon="lucide-loader-2"
               class="vc-input__loading-icon"
               size="m"
             ></VcIcon>
@@ -244,6 +221,7 @@
         <slot name="error">
           <VcHint
             v-if="errorMessage"
+            :id="errorId"
             class="vc-input__hint-error"
             >{{ errorMessage }}</VcHint
           >
@@ -253,6 +231,7 @@
         <slot name="hint">
           <VcHint
             v-if="hint"
+            :id="hintId"
             class="vc-input__desc"
             >{{ hint }}</VcHint
           >
@@ -263,15 +242,11 @@
 </template>
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
-import { computed, ref, unref, watch, nextTick } from "vue";
+import { computed, ref, unref, useId, watch } from "vue";
 import { VcLabel, VcIcon, VcHint } from "./../../";
-import VueDatePicker, { VueDatePickerProps, ModelValue } from "@vuepic/vue-datepicker";
-import "@vuepic/vue-datepicker/dist/main.css";
-import {
-  convertColorNameToHex,
-  isValidHexColor,
-  normalizeHexColor,
-} from "../../../../shared/utilities";
+import { VcDatePicker } from "../vc-date-picker";
+import { VcColorInput } from "../vc-color-input";
+import type { VueDatePickerProps, ModelValue } from "@vuepic/vue-datepicker";
 
 /**
  * Base props for VcInput
@@ -490,24 +465,32 @@ defineSlots<{
   hint: (props: any) => any;
 }>();
 
+// Accessibility IDs
+const uid = useId();
+const inputId = computed(() => `vc-input-${uid}`);
+const labelId = computed(() => `vc-input-${uid}-label`);
+const hintId = computed(() => `vc-input-${uid}-hint`);
+const errorId = computed(() => `vc-input-${uid}-error`);
+
+const ariaDescribedBy = computed(() => {
+  const ids: string[] = [];
+  if (props.error && props.errorMessage) ids.push(errorId.value);
+  if (props.hint) ids.push(hintId.value);
+  return ids.length ? ids.join(" ") : undefined;
+});
+
 let emitTimer: NodeJS.Timeout;
 let emitValueFn;
 const temp = ref();
 const inputRef = ref();
-const locale = window.navigator.language;
 const internalType = ref(unref(props.type));
 const isFocused = ref(false);
-const colorPickerRef = ref();
-const colorValue = ref("");
+const mutatedModel = ref();
 
 const internalTypeComputed = computed({
   get() {
     if (internalType.value === "integer") {
       return "number";
-    }
-
-    if (internalType.value === "color") {
-      return "text";
     }
 
     return internalType.value;
@@ -516,8 +499,6 @@ const internalTypeComputed = computed({
     internalType.value = value;
   },
 });
-
-const maxDate = computed(() => (props.type === "date" && "9999-12-31") || undefined);
 
 const rawModel = computed(() => unref(props.modelValue));
 const handleValue = computed({
@@ -535,12 +516,9 @@ const handleValue = computed({
       temp.value = value;
     }
 
-    // Color type synchronization is handled by watcher
-
     onInput(temp.value);
   },
 });
-const mutatedModel = ref();
 
 watch(
   rawModel,
@@ -556,66 +534,9 @@ watch(
     if (temp.value !== mutatedModel.value) {
       temp.value = mutatedModel.value;
     }
-
-    // Color type initialization is handled by watcher
   },
   { immediate: true },
 );
-
-// Watch colorValue changes to sync with text input
-watch(
-  colorValue,
-  (newColorValue) => {
-    if (props.type === "color" && newColorValue) {
-      // Update the hidden color picker input
-      if (colorPickerRef.value) {
-        colorPickerRef.value.value = newColorValue;
-      }
-    }
-  },
-  { immediate: true },
-);
-
-// Watch text input changes to sync with color picker
-watch(
-  () => temp.value,
-  (newValue) => {
-    if (props.type === "color" && newValue) {
-      // Use nextTick to avoid infinite loops
-      nextTick(() => {
-        handleColorTextChange(newValue as string);
-      });
-    }
-  },
-  { immediate: true },
-);
-
-const isBrowserLocale24h = (() => {
-  const hr = new Intl.DateTimeFormat(locale, { hour: "numeric" }).format();
-  return Number.isInteger(Number(hr));
-})();
-
-const formatDateWithLocale = (date: Date | Date[]) => {
-  const options: Intl.DateTimeFormatOptions = {
-    year: "numeric",
-    month: "numeric",
-    day: "numeric",
-  };
-
-  if (props.type === "datetime-local") {
-    options.hour = "numeric";
-    options.minute = "numeric";
-    options.hour12 = !isBrowserLocale24h;
-  }
-
-  const formatSingleDate = (date: Date) => new Intl.DateTimeFormat(locale, options).format(date);
-
-  if (Array.isArray(date)) {
-    return date.map(formatSingleDate).join(",");
-  } else {
-    return formatSingleDate(date);
-  }
-};
 
 function onKeyDown(e: KeyboardEvent) {
   const allowedKeys = ["Backspace", "Delete", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"];
@@ -634,7 +555,6 @@ function onKeyDown(e: KeyboardEvent) {
   }
 }
 
-// Handle input event and emit changes
 function onInput(value: string | number | ModelValue | null) {
   emitValue(value);
 }
@@ -664,7 +584,6 @@ function emitValue(val: string | number | ModelValue | null) {
   }
 }
 
-// Handle input event to properly reset value and emit changes
 function onReset() {
   temp.value = null;
   emit("update:modelValue", null);
@@ -683,55 +602,21 @@ function handleFocus() {
   isFocused.value = true;
   emit("focus");
 }
-
-// Color handling functions
-function handleColorTextChange(value: string) {
-  if (!value || typeof value !== "string") {
-    return;
-  }
-
-  const trimmedValue = value.trim();
-
-  // If it's already a valid hex, use it directly
-  if (isValidHexColor(trimmedValue)) {
-    const normalizedHex = normalizeHexColor(trimmedValue);
-    colorValue.value = normalizedHex;
-    return;
-  }
-
-  // Try to convert color name to hex
-  const hexColor = convertColorNameToHex(trimmedValue);
-  if (hexColor) {
-    colorValue.value = hexColor;
-  }
-}
-
-function handleColorPickerChange(event: Event) {
-  const target = event.target as HTMLInputElement;
-  if (target && target.value) {
-    const hexColor = normalizeHexColor(target.value);
-    colorValue.value = hexColor;
-  }
-}
-
-function openColorPicker() {
-  colorPickerRef.value?.click();
-}
 </script>
 
 <style lang="scss">
 :root {
   --input-height: 36px;
-  --input-height-small: 30px;
-  --input-border-radius: 4px;
+  --input-height-small: 32px;
+  --input-border-radius: 6px;
   --input-border-color: var(--neutrals-300);
 
-  --input-padding: 10px;
+  --input-padding: 12px;
 
   --input-background-color: var(--additional-50);
   --input-placeholder-color: var(--neutrals-400);
-  --input-clear-color: var(--primary-500);
-  --input-clear-color-hover: var(--primary-600);
+  --input-clear-color: var(--neutrals-400);
+  --input-clear-color-hover: var(--neutrals-600);
   --input-text-color: var(--neutrals-800);
 
   // Disabled
@@ -743,7 +628,11 @@ function openColorPicker() {
   --input-border-color-error: var(--danger-500);
 
   // Focus
-  --input-border-color-focus: var(--primary-100);
+  --input-border-color-focus: var(--primary-500);
+
+  // Ring colors (new)
+  --input-focus-ring-color: rgba(59, 130, 246, 0.3);
+  --input-error-ring-color: rgba(239, 68, 68, 0.2);
 }
 
 .vc-input {
@@ -761,7 +650,11 @@ function openColorPicker() {
   }
 
   &__field-wrapper {
-    @apply tw-px-[var(--input-padding)] tw-relative tw-flex tw-flex-nowrap tw-w-full tw-min-w-0 tw-box-border tw-grow tw-border tw-border-solid tw-border-[color:var(--input-border-color)] tw-rounded-[var(--input-border-radius)] tw-bg-[color:var(--input-background-color)] tw-outline-none;
+    @apply tw-px-[var(--input-padding)] tw-relative tw-flex tw-flex-nowrap tw-w-full tw-min-w-0 tw-box-border tw-grow
+      tw-border tw-border-solid tw-border-[color:var(--input-border-color)]
+      tw-rounded-[var(--input-border-radius)] tw-bg-[color:var(--input-background-color)]
+      tw-shadow-sm tw-transition-[color,box-shadow] tw-duration-150 tw-ease-in-out
+      tw-outline-none;
 
     &--default {
       @apply tw-h-[var(--input-height)];
@@ -816,7 +709,7 @@ function openColorPicker() {
   }
 
   &__showhide {
-    @apply tw-text-[color:var(--input-placeholder-color)] hover:tw-text-[color:var(--input-clear-color-hover)] tw-flex tw-items-center;
+    @apply tw-text-[color:var(--input-clear-color)] hover:tw-text-[color:var(--input-clear-color-hover)] tw-flex tw-items-center;
   }
 
   &__loading {
@@ -825,25 +718,6 @@ function openColorPicker() {
 
   &__loading-icon {
     @apply tw-animate-spin tw-text-[color:var(--input-clear-color)];
-  }
-
-  &__color-container {
-    @apply tw-relative tw-flex tw-items-center;
-  }
-  &__color-square {
-    @apply tw-w-5 tw-h-5 tw-rounded tw-border tw-border-solid tw-border-gray-300 tw-cursor-pointer tw-flex tw-items-center tw-justify-center tw-ml-2;
-
-    &:hover {
-      @apply tw-border-gray-400;
-    }
-
-    &:focus {
-      @apply tw-outline-2 tw-outline tw-outline-blue-500 tw-outline-offset-1;
-    }
-  }
-
-  &__color-picker-hidden {
-    @apply tw-opacity-0 tw-absolute tw-pointer-events-none tw-w-0 tw-h-0;
   }
 
   &__input {
@@ -896,7 +770,8 @@ function openColorPicker() {
   }
 
   &_error &__field-wrapper {
-    @apply tw-border tw-border-solid tw-border-[color:var(--input-border-color-error)];
+    @apply tw-border tw-border-solid tw-border-[color:var(--input-border-color-error)]
+      tw-ring-[3px] tw-ring-[color:var(--input-error-ring-color)];
   }
 
   &_error &__field input {
@@ -904,16 +779,29 @@ function openColorPicker() {
   }
 
   &_disabled input {
-    @apply tw-text-[color:var(--input-disabled-text-color)];
+    @apply tw-text-[color:var(--input-disabled-text-color)] tw-pointer-events-none;
+  }
+
+  &_disabled &__field-wrapper {
+    @apply tw-opacity-50;
   }
 
   &_disabled &__field-wrapper,
-  &_disabled &__field {
-    @apply tw-bg-[color:var(--input-disabled-bg-color)] tw-text-[color:var(--input-disabled-text-color)];
+  &_disabled &__field,
+  &_disabled input {
+    @apply tw-cursor-not-allowed tw-pointer-events-none;
   }
 
   &_focused &__field-wrapper {
-    @apply tw-outline-2 tw-outline tw-outline-[color:var(--input-border-color-focus)] tw-outline-offset-[0px];
+    @apply tw-border-[color:var(--input-border-color-focus)]
+      tw-ring-[3px] tw-ring-[color:var(--input-focus-ring-color)]
+      tw-outline-none;
+  }
+
+  /* Respond to aria-invalid on child input (future-proof for form systems) */
+  &__field-wrapper:has(input[aria-invalid="true"]) {
+    @apply tw-border-[color:var(--input-border-color-error)]
+      tw-ring-[3px] tw-ring-[color:var(--input-error-ring-color)];
   }
 
   .slide-up-enter-active,
@@ -930,97 +818,5 @@ function openColorPicker() {
     opacity: 0;
     transform: translateY(-5px);
   }
-}
-
-.dp__main {
-  @apply tw-flex tw-items-center;
-
-  & > div {
-    @apply tw-w-full tw-h-full tw-flex tw-items-center;
-  }
-
-  .vc-app_mobile & {
-    & > div {
-      @apply tw-w-auto tw-h-auto tw-flex-auto tw-items-center;
-    }
-  }
-}
-
-.dp__pm_am_button {
-  background: var(--dp-primary-color) !important;
-  color: var(--dp-primary-text-color) !important;
-  border: none !important;
-  padding: var(--dp-common-padding) !important;
-  border-radius: var(--dp-border-radius) !important;
-  cursor: pointer !important;
-}
-
-.dp__input_icons {
-  padding: 6px 0 !important;
-}
-
-.dp__input {
-  @apply tw-font-jakarta !important;
-
-  --dp-input-padding: 6px 12px 6px 12px;
-
-  &::-ms-reveal,
-  &::-ms-clear {
-    @apply tw-hidden;
-  }
-}
-
-input.dp__input {
-  background-color: var(--input-background-color);
-  height: auto;
-}
-
-input.dp__input::placeholder {
-  color: var(--input-placeholder-color) !important;
-  opacity: 1;
-}
-
-input.dp__input:disabled {
-  background-color: var(--input-disabled-bg-color);
-}
-
-.dp__menu_inner {
-  @apply tw-font-jakarta tw-text-[14px] !important;
-}
-
-.dp--tp-wrap {
-  min-width: var(--dp-menu-min-width);
-  max-width: 100% !important;
-}
-
-.dp__theme_light {
-  --dp-background-color: var(--additional-50);
-  --dp-text-color: var(--neutrals-800);
-  --dp-hover-color: var(--neutrals-200);
-  --dp-hover-text-color: var(--neutrals-800);
-  --dp-hover-icon-color: var(--neutrals-400);
-  --dp-primary-color: var(--primary-500);
-  --dp-primary-disabled-color: var(--secondary-400);
-  --dp-primary-text-color: var(--neutrals-50);
-  --dp-secondary-color: var(--secondary-300);
-  --dp-border-color: var(--neutrals-300);
-  --dp-menu-border-color: var(--neutrals-300);
-  --dp-border-color-hover: var(--neutrals-400);
-  --dp-border-color-focus: var(--neutrals-400);
-  --dp-disabled-color: var(--input-disabled-bg-color);
-  --dp-disabled-color-text: var(--input-disabled-text-color);
-  --dp-scroll-bar-background: var(--neutrals-200);
-  --dp-scroll-bar-color: var(--neutrals-400);
-  --dp-success-color: var(--success-500);
-  --dp-success-color-disabled: var(--success-200);
-  --dp-icon-color: var(--neutrals-400);
-  --dp-danger-color: var(--danger-500);
-  --dp-marker-color: var(--danger-500);
-  --dp-tooltip-color: var(--additional-50);
-  --dp-disabled-color-text: var(--neutrals-400);
-  --dp-highlight-color: rgba(25, 118, 210, 0.1);
-  --dp-range-between-dates-background-color: var(--dp-hover-color);
-  --dp-range-between-dates-text-color: var(--dp-hover-text-color);
-  --dp-range-between-border-color: var(--dp-hover-color);
 }
 </style>

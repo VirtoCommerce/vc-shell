@@ -5,8 +5,8 @@ import { createRouter, createWebHashHistory } from "vue-router";
 import { vueRouter } from "storybook-vue3-router";
 import * as locales from "./assets/locales";
 import { watch } from "vue";
-import { withGlobalMocks } from "./decorators";
-import { mockUseExtensionSlot, mockUseExtensionData, mockUseExtensions } from "./storybook-globals";
+import { withGlobalMocks, withVcApp } from "./decorators";
+import { mockDefineExtensionPoint, mockUseExtensionPoint } from "./storybook-globals";
 
 // Import framework styles
 // - In production (CI/CD): uses compiled CSS from framework/dist/index.css (after yarn build)
@@ -15,9 +15,8 @@ import "@vc-shell/framework/dist/index.css";
 
 // Make extension points available globally for components that import them directly
 if (typeof window !== "undefined") {
-  (window as any).useExtensionSlot = mockUseExtensionSlot;
-  (window as any).useExtensionData = mockUseExtensionData;
-  (window as any).useExtensions = mockUseExtensions;
+  (window as any).defineExtensionPoint = mockDefineExtensionPoint;
+  (window as any).useExtensionPoint = mockUseExtensionPoint;
 }
 
 setup((app) => {
@@ -57,6 +56,7 @@ const preview: Preview = {
   decorators: [
     vueRouter(),
     withGlobalMocks,
+    withVcApp,
     (story, context) => {
       const theme = context.globals.theme || "light";
       return {

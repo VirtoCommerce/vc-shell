@@ -1,7 +1,7 @@
-import { App, Component, h, inject, resolveComponent, watch } from "vue";
+import { App, Component, inject, resolveComponent } from "vue";
 import { i18n } from "./../i18n";
 import { Router } from "vue-router";
-import { BladeInstanceConstructor, BladeVNode } from "./../../../shared/components/blade-navigation/types";
+import { BladeInstanceConstructor } from "./../../../shared/components/blade-navigation/types";
 import { kebabToPascal, createLogger } from "./../../utilities";
 import { addMenuItem, useMenuService, useNotifications } from "../../composables";
 import * as _ from "lodash-es";
@@ -37,19 +37,50 @@ export function createModule(components: { [key: string]: BladeInstanceConstruct
   };
 }
 
+/**
+ * Options for createAppModule.
+ */
+export interface AppModuleOptions {
+  /**
+   * List of blade names that must already be registered before this module installs.
+   * Used to enforce load-order dependencies between modules.
+   *
+   * @example
+   * ```ts
+   * export default createAppModule(pages, locales, undefined, undefined, {
+   *   dependsOn: ["SellerDetails", "Products"],
+   * });
+   * ```
+   */
+  dependsOn?: string[];
+}
+
 export function createAppModule(
   pages: { [key: string]: BladeInstanceConstructor },
   locales?: { [key: string]: object },
   notificationTemplates?: { [key: string]: Component & { notifyType?: string } },
   moduleComponents?: { [key: string]: Component },
+  moduleOptions?: AppModuleOptions,
 ) {
   return {
     install(app: App, options?: { router: Router }): void {
-      let routerInstance: Router;
-
       // Inject the BladeRegistry instance
       const bladeRegistry = app.runWithContext(() => inject<IBladeRegistryInstance>(BladeRegistryKey));
       let registerBladeWithRegistry: (name: string, data: IBladeRegistrationData) => void;
+
+      // Validate module dependencies (must be registered before this module)
+      if (moduleOptions?.dependsOn?.length && bladeRegistry) {
+        const missing = moduleOptions.dependsOn.filter(
+          (dep) => !bladeRegistry.getBlade(dep),
+        );
+        if (missing.length > 0) {
+          const moduleName = Object.values(pages)[0]?.name || "unknown";
+          logger.error(
+            `Module '${moduleName}' depends on blades [${missing.join(", ")}] ` +
+            `which are not yet registered. Ensure dependent modules are installed first.`,
+          );
+        }
+      }
 
       if (bladeRegistry && bladeRegistry._registerBladeFn) {
         registerBladeWithRegistry = bladeRegistry._registerBladeFn;
@@ -60,11 +91,6 @@ export function createAppModule(
         registerBladeWithRegistry = (name: string, data: IBladeRegistrationData) => {
           logger.warn(`BladeRegistry (noop): Tried to register '${name}' but _registerBladeFn is missing.`);
         };
-      }
-
-      if (options && options.router) {
-        const { router } = options;
-        routerInstance = router;
       }
 
       const uid = _.uniqueId("module_");
@@ -100,30 +126,11 @@ export function createAppModule(
             component: page,
             route: page.url,
             isWorkspace: page.isWorkspace || false,
+            routable: page.routable !== false,
           });
 
-          const mainRoute = routerInstance.getRoutes().find((r) => r.meta?.root);
-          if (!mainRoute) {
-            throw new Error("Main route not found. Make sure you have added `meta: {root: true}` to the main route.");
-          }
-          const mainRouteName = mainRoute.name;
-
-          const bladeVNodeForRouter = h(page, {
-            navigation: {},
-          }) as BladeVNode;
-
-          if (routerInstance.hasRoute(routeName)) {
-            routerInstance.removeRoute(routeName);
-          }
-
-          routerInstance.addRoute(mainRouteName as string, {
-            name: routeName,
-            path: page.url.substring(1),
-            components: { default: bladeVNodeForRouter },
-            meta: {
-              permissions: page.permissions,
-            },
-          });
+          // Note: No router.addRoute() — blades are NOT Vue Router pages.
+          // BladeStack manages blade rendering; Vue Router is URL sync only.
 
           if (page.menuItem) {
             addMenuItem({
@@ -181,6 +188,7 @@ export function createAppModule(
           // Check if the component is already registered
           if (app.component(name)) {
             // Overwrite existing component
+            logger.warn(`Component ${name} is already registered. It will be overwritten with the new component.`);
             logger.warn(`Component ${name} is already registered. It will be overwritten with the new component.`);
           }
           app.component(name, component);

@@ -1,27 +1,26 @@
 <template>
-  <Sidebar
-    :is-expanded="isOpened"
+  <VcSidebar
+    :model-value="isOpened"
     position="left"
-    render="always"
+    :teleport="!isDesktop"
     :title="$t('SHELL.ACCOUNT.SETTINGS')"
-    @close="$emit('update:isOpened', false)"
+    @update:model-value="$emit('update:isOpened', $event)"
   >
-    <template #content>
-      <div
-        v-if="isOpened"
-        class="vc-user-sidebar__menu"
-        @click.stop="$emit('update:isOpened', false)"
-      >
-        <SettingsMenu />
-      </div>
-    </template>
-  </Sidebar>
+    <div
+      v-if="isOpened"
+      class="vc-user-sidebar__menu"
+      @click.stop="$emit('update:isOpened', false)"
+    >
+      <SettingsMenu />
+    </div>
+  </VcSidebar>
 </template>
 
 <script lang="ts" setup>
-import { Sidebar } from "../../sidebar";
+import { inject, ref, type Ref } from "vue";
 import { IMenuItem } from "../../../../core/types";
 import { SettingsMenu } from "../../settings-menu";
+import { VcSidebar } from "../../../../ui/components";
 
 defineProps<{
   isOpened: boolean;
@@ -31,6 +30,8 @@ defineEmits<{
   (e: "update:isOpened", value: boolean): void;
   (e: "item:click", item: IMenuItem): void;
 }>();
+
+const isDesktop = inject<Ref<boolean>>("isDesktop", ref(false));
 </script>
 
 <style lang="scss">

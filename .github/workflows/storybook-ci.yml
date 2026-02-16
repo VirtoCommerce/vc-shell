@@ -189,9 +189,8 @@ jobs:
         run: |
           vc-build CloudEnvSetParameter -CloudUrl ${{ env.CLOUD_URL }} -CloudToken ${{ env.CLOUD_TOKEN }} -EnvironmentName ${{ env.ARGO_APP_NAME }} -HelmParameters custom.app1.image.tag=${{ env.STORYBOOK_TAG }}
 
-      - name: Check deployment start
-        run: |
-          vc-build CloudEnvStatus -CloudUrl ${{ env.CLOUD_URL }} -CloudToken ${{ env.CLOUD_TOKEN }} -EnvironmentName ${{ env.ARGO_APP_NAME }} -HealthStatus Progressing
+      - name: Wait for ArgoCD sync
+        run: sleep 15
 
       - name: Check deployment status
         run: |

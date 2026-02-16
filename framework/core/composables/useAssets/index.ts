@@ -115,6 +115,12 @@ export function useAssets(): IUseAssets {
   }
 
   function edit(updatedFiles: ICommonAsset[], initialAssetArr: ICommonAsset[]): ICommonAsset[] {
+    // When all items are passed (e.g. reorder), preserve the order of updatedFiles.
+    // When a subset is passed (e.g. single asset edit), update in place within initial order.
+    if (updatedFiles.length === initialAssetArr.length) {
+      return updatedFiles.map((file) => ({ ...file }));
+    }
+
     const updatedAssetArr = _.cloneDeep(initialAssetArr) || [];
 
     if (updatedAssetArr && updatedAssetArr.length) {

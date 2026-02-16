@@ -11,6 +11,7 @@ export interface IBladeRegistrationData {
   component: BladeInstanceConstructor;
   route?: string;
   isWorkspace?: boolean;
+  routable?: boolean;
   // ... other metadata
 }
 
@@ -29,13 +30,15 @@ export interface IBladeRegistry {
   getBlade: (name: string) => IBladeRegistrationData | undefined;
   /** Get blade component by name */
   getBladeComponent: (name: string) => BladeInstanceConstructor | undefined;
+  /** Reverse lookup: find blade name + data by URL route segment (O(1)) */
+  getBladeByRoute: (route: string) => { name: string; data: IBladeRegistrationData } | undefined;
 }
 
 /**
  * Extended interface for blade registry instance with internal registration function
  */
 export interface IBladeRegistryInstance extends IBladeRegistry {
-  _registerBladeFn: (name: string, registrationData: IBladeRegistrationData) => void;
+  _registerBladeFn: (name: string, registrationData: IBladeRegistrationData, allowOverwrite?: boolean) => void;
 }
 
 /**
@@ -61,13 +64,29 @@ function isValidBladeComponent(component: unknown): component is BladeInstanceCo
 export function createBladeRegistry(app: App): IBladeRegistryInstance {
   const registeredBladesInternal = shallowRef<Map<string, IBladeRegistrationData>>(new Map());
 
+  // Reverse index: normalized route → blade name (rebuilt on every registration)
+  const _routeIndex = new Map<string, string>();
+
+  function _normalizeRoute(route: string): string {
+    return route.startsWith("/") ? route : `/${route}`;
+  }
+
   /**
    * Registers a blade component in the registry
    *
    * @param name - Unique name for the blade
    * @param registrationData - Blade registration data including component and metadata
    */
-  function registerBlade(name: string, registrationData: IBladeRegistrationData): void {
+  /**
+   * Registers a blade component in the registry.
+   *
+   * @param name - Unique name for the blade
+   * @param registrationData - Blade registration data including component and metadata
+   * @param allowOverwrite - If true, allows overwriting an existing blade (default: false).
+   *   Use for dynamic module hot-reload scenarios only.
+   * @throws Error if blade name is already registered and allowOverwrite is false
+   */
+  function registerBlade(name: string, registrationData: IBladeRegistrationData, allowOverwrite = false): void {
     if (!name || typeof name !== "string") {
       throw new Error("BladeRegistry: Blade name must be a non-empty string");
     }
@@ -84,7 +103,13 @@ export function createBladeRegistry(app: App): IBladeRegistryInstance {
     const newMap = new Map(registeredBladesInternal.value);
 
     if (newMap.has(name)) {
-      logger.warn(`Blade '${name}' is already registered. It will be overwritten.`);
+      if (!allowOverwrite) {
+        throw new Error(
+          `BladeRegistry: Blade '${name}' is already registered. ` +
+          `Use allowOverwrite=true if intentional (e.g. dynamic module hot-reload).`,
+        );
+      }
+      logger.warn(`Blade '${name}' is already registered. Overwriting (allowOverwrite=true).`);
     }
 
     // Register component globally if not already registered or different
@@ -98,6 +123,11 @@ export function createBladeRegistry(app: App): IBladeRegistryInstance {
 
     newMap.set(name, registrationData);
     registeredBladesInternal.value = newMap;
+
+    // Maintain reverse route index
+    if (registrationData.route) {
+      _routeIndex.set(_normalizeRoute(registrationData.route), name);
+    }
   }
 
   /**
@@ -144,6 +174,23 @@ export function createBladeRegistry(app: App): IBladeRegistryInstance {
     return undefined;
   }
 
+  /**
+   * Reverse lookup: find a blade by its URL route segment.
+   * Uses O(1) index maintained during registration.
+   *
+   * @param route - URL segment (e.g. "orders" or "/orders")
+   * @returns Blade name and registration data, or undefined if not found
+   */
+  function getBladeByRoute(route: string): { name: string; data: IBladeRegistrationData } | undefined {
+    if (!route) return undefined;
+    const normalized = _normalizeRoute(route);
+    const name = _routeIndex.get(normalized);
+    if (!name) return undefined;
+    const data = registeredBladesInternal.value.get(name);
+    if (!data) return undefined;
+    return { name, data };
+  }
+
   // Cache the readonly map to avoid recreating it on every access
   const readonlyBladesMap = computed(() => vueReadonly(registeredBladesInternal.value));
 
@@ -151,6 +198,7 @@ export function createBladeRegistry(app: App): IBladeRegistryInstance {
     registeredBladesMap: readonlyBladesMap,
     getBlade,
     getBladeComponent,
+    getBladeByRoute,
   };
 
   return {

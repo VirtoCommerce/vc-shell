@@ -1,4 +1,4 @@
-import { provide, inject, getCurrentInstance } from "vue";
+import { provide, inject, getCurrentInstance, getCurrentScope, onScopeDispose } from "vue";
 import {
   MenuService,
   createMenuService,
@@ -7,6 +7,7 @@ import {
   getMenuBadge,
   removeMenuBadge,
   getMenuBadges,
+  menuServiceBus,
 } from "../../services/menu-service";
 import { MenuServiceKey } from "../../../injection-keys";
 import { createLogger, InjectionError } from "../../utilities";
@@ -14,8 +15,18 @@ import { createLogger, InjectionError } from "../../utilities";
 const logger = createLogger("use-menu-service");
 
 export function provideMenuService(): MenuService {
+  const existingService = inject(MenuServiceKey, null);
+  if (existingService) {
+    return existingService;
+  }
+
   const service = createMenuService();
   provide(MenuServiceKey, service);
+
+  if (getCurrentScope()) {
+    onScopeDispose(() => menuServiceBus.dispose(service));
+  }
+
   return service;
 }
 

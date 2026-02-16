@@ -1,6 +1,7 @@
-import { Component, reactive, ref, ComponentInternalInstance, ComputedRef, Ref, markRaw, Raw } from "vue";
+import { Component, ref, ComponentInternalInstance, ComputedRef, Ref } from "vue";
 import { IBladeInstance } from "../../shared/components/blade-navigation/types";
 import { cloneDeep } from "lodash-es";
+import { createBladeScopedRegistry, createPreregistrationBus } from "./_internal";
 import { createLogger } from "../utilities";
 
 const logger = createLogger("widget-service");
@@ -10,19 +11,16 @@ export type WidgetEventHandler = (...args: unknown[]) => void;
 export interface IWidgetEvents {
   [key: string]: Set<WidgetEventHandler>;
 }
+
 export interface IExposedWidget {
   id?: string;
   [key: string]: unknown;
 }
 
 export interface IWidgetConfig {
-  // Required data that the widget MUST receive
   requiredData?: string[];
-  // Optional data that the widget can use if available
   optionalData?: string[];
-  // Function to transform blade data into widget props
   propsResolver?: (bladeData: Record<string, unknown>) => Record<string, unknown>;
-  // Field mapping (if names in blade and widget differ)
   fieldMapping?: Record<string, string>;
 }
 
@@ -42,12 +40,11 @@ export interface IWidgetRegistration {
   widget: IWidget;
 }
 
-// Interface for global registration of external widgets
 export interface IExternalWidgetRegistration {
   id: string;
   component: Component;
   config: IWidgetConfig;
-  targetBlades?: string[]; // For which blades is the widget intended
+  targetBlades?: string[];
   isVisible?: boolean | ComputedRef<boolean> | Ref<boolean> | ((blade?: IBladeInstance) => boolean);
   title?: string;
   updateFunctionName?: string;
@@ -70,102 +67,102 @@ export interface IWidgetService {
   cloneWidget: <T extends IWidget | IExternalWidgetRegistration>(widget: T) => T;
 }
 
-// Global state for pre-registering widgets
-const preregisteredWidgets: IWidgetRegistration[] = [];
-const preregisteredIds = new Set<string>();
+// --- External widgets (module-level, independent of service instances) ---
 
-// Global state for external widgets
-const externalWidgets: IExternalWidgetRegistration[] = [];
+const externalWidgets = new Map<string, IExternalWidgetRegistration>();
 
-/**
- * Registers a widget before the service is initialized
- */
-export function registerWidget(widget: IWidget, bladeId: string): void {
-  const normalizedBladeId = bladeId.toLowerCase();
-  preregisteredWidgets.push({ bladeId: normalizedBladeId, widget });
-  preregisteredIds.add(widget.id);
+function normalizeTargetBlades(targetBlades?: string[]): string[] | undefined {
+  return targetBlades?.map((bladeId) => bladeId.toLowerCase());
 }
 
 /**
- * Registers an external widget for use across different blades
+ * Registers an external widget for use across different blades.
  */
 export function registerExternalWidget(widget: IExternalWidgetRegistration): void {
-  externalWidgets.push(widget);
+  externalWidgets.set(widget.id, {
+    ...widget,
+    targetBlades: normalizeTargetBlades(widget.targetBlades),
+  });
 }
 
 /**
- * Gets list of external widgets for a specific blade type
+ * Gets list of external widgets for a specific blade type.
  */
 export function getExternalWidgetsForBlade(bladeId: string): IExternalWidgetRegistration[] {
-  return externalWidgets.filter((widget) => !widget.targetBlades || widget.targetBlades.includes(bladeId));
+  const normalizedBladeId = bladeId.toLowerCase();
+
+  return Array.from(externalWidgets.values())
+    .filter((widget) => !widget.targetBlades || widget.targetBlades.includes(normalizedBladeId))
+    .map((widget) => ({ ...widget, targetBlades: widget.targetBlades ? [...widget.targetBlades] : undefined }));
 }
 
 /**
- * Gets all external widgets
+ * Gets all external widgets.
  */
 export function getAllExternalWidgets(): IExternalWidgetRegistration[] {
-  return externalWidgets;
+  return Array.from(externalWidgets.values()).map((widget) => ({
+    ...widget,
+    targetBlades: widget.targetBlades ? [...widget.targetBlades] : undefined,
+  }));
 }
 
 /**
- * Deep clones a widget to avoid modifying the original registered widget
- * For now, this is a structured clone, but we can make it more robust if needed
+ * Deep clones a widget definition to avoid accidental shared mutations.
  */
 export function cloneWidget<T extends IWidget | IExternalWidgetRegistration>(widget: T): T {
-  // Using structuredClone for a deep copy
   return cloneDeep(widget);
 }
 
+// --- Preregistration bus ---
+
+export const widgetBus = createPreregistrationBus<IWidgetRegistration, IWidgetService>({
+  name: "widget-service",
+  getKey: (reg) => `${reg.bladeId.toLowerCase()}::${reg.widget.id}`,
+  registerIntoService: (service, reg) => service.registerWidget(reg.widget, reg.bladeId),
+});
+
+/**
+ * Registers a widget before the service is initialized.
+ */
+export function registerWidget(widget: IWidget, bladeId: string): void {
+  const normalizedBladeId = bladeId.toLowerCase();
+  widgetBus.preregister({
+    bladeId: normalizedBladeId,
+    widget,
+  });
+}
+
+// --- Service factory ---
+
 export function createWidgetService(): IWidgetService {
-  const widgetRegistry = reactive<Record<string, IWidget[]>>({});
-  const registeredWidgets = reactive([]) as IWidgetRegistration[];
+  const bladeRegistry = createBladeScopedRegistry<IWidget, IWidgetRegistration>({
+    createRegistration: (bladeId, item) => ({ bladeId, widget: item }),
+    getRegistrationBladeId: (r) => r.bladeId,
+    getRegistrationItemId: (r) => r.widget.id,
+  });
+
   const activeWidget = ref<{ exposed: ComponentInternalInstance["exposed"]; widgetId: string } | undefined>();
-  const registeredIds = reactive(new Set<string>());
 
-  const registerWidget = (widget: IWidget, bladeId: string): void => {
-    const normalizedBladeId = bladeId.toLowerCase();
-
-    if (!widgetRegistry[normalizedBladeId]) {
-      widgetRegistry[normalizedBladeId] = [];
-    }
-
-    const existingIndex = widgetRegistry[normalizedBladeId].findIndex((w) => w.id === widget.id);
-    if (existingIndex === -1) {
-      const rawWidget: IWidget = reactive(widget);
-
-      widgetRegistry[normalizedBladeId].push(rawWidget);
-      registeredWidgets.push({ bladeId: normalizedBladeId, widget: rawWidget });
-      registeredIds.add(widget.id);
-    }
-  };
-
-  // Add method to resolve props
   const resolveWidgetProps = (widget: IWidget, bladeData: Record<string, unknown>): Record<string, unknown> => {
-    // If no configuration, return existing props or empty object
     if (!widget.config) {
       return widget.props || {};
     }
 
     let resolvedProps: Record<string, unknown> = {};
 
-    // If there is a custom resolver
     if (widget.config.propsResolver) {
       try {
         const customProps = widget.config.propsResolver(bladeData);
         resolvedProps = { ...widget.props, ...customProps };
       } catch (error) {
         logger.error(`Error in propsResolver for widget '${widget.id}':`, error);
-        // Fallback to existing props if resolver fails
         resolvedProps = { ...widget.props };
       }
     } else {
-      // Start with existing props as base
       resolvedProps = { ...widget.props };
 
-      // Standard logic for resolving props
       const { requiredData = [], optionalData = [], fieldMapping = {} } = widget.config;
 
-      // Add required data
       requiredData.forEach((key) => {
         const bladeKey = fieldMapping[key] || key;
         if (bladeData[bladeKey] !== undefined) {
@@ -175,7 +172,6 @@ export function createWidgetService(): IWidgetService {
         }
       });
 
-      // Add optional data
       optionalData.forEach((key) => {
         const bladeKey = fieldMapping[key] || key;
         if (bladeData[bladeKey] !== undefined) {
@@ -187,63 +183,6 @@ export function createWidgetService(): IWidgetService {
     return resolvedProps;
   };
 
-  const updateWidget = ({ id, bladeId, widget }: { id: string; bladeId: string; widget: Partial<IWidget> }): void => {
-    const normalizedBladeId = bladeId.toLowerCase();
-
-    if (widgetRegistry[normalizedBladeId]) {
-      const index = widgetRegistry[normalizedBladeId].findIndex((w) => w.id === id);
-      if (index !== -1) {
-        // Preserve reactivity by updating properties instead of replacing the entire object
-        const existingWidget = widgetRegistry[normalizedBladeId][index];
-
-        // Update properties using Object.assign to maintain reactivity
-        Object.assign(existingWidget, widget);
-      }
-    }
-  };
-
-  const unregisterWidget = (widgetId: string, bladeId: string): void => {
-    const normalizedBladeId = bladeId.toLowerCase();
-
-    if (widgetRegistry[normalizedBladeId]) {
-      const index = widgetRegistry[normalizedBladeId].findIndex((w) => w.id === widgetId);
-      if (index !== -1) {
-        widgetRegistry[normalizedBladeId].splice(index, 1);
-        registeredIds.delete(widgetId);
-      }
-    }
-
-    const regIndex = registeredWidgets.findIndex((w) => w.bladeId === normalizedBladeId && w.widget.id === widgetId);
-    if (regIndex !== -1) {
-      registeredWidgets.splice(regIndex, 1);
-    }
-  };
-
-  const getWidgets = (bladeId: string): IWidget[] => {
-    const normalizedBladeId = bladeId ? bladeId.toLowerCase() : "";
-    return widgetRegistry[normalizedBladeId] || [];
-  };
-
-  const clearBladeWidgets = (bladeId: string): void => {
-    const normalizedBladeId = bladeId.toLowerCase();
-
-    if (widgetRegistry[normalizedBladeId]) {
-      widgetRegistry[normalizedBladeId].forEach((widget) => {
-        registeredIds.delete(widget.id);
-      });
-      delete widgetRegistry[normalizedBladeId];
-    }
-
-    const indices = registeredWidgets
-      .map((w, i) => (w.bladeId === normalizedBladeId ? i : -1))
-      .filter((i) => i !== -1)
-      .reverse();
-
-    indices.forEach((index) => {
-      registeredWidgets.splice(index, 1);
-    });
-  };
-
   const setActiveWidget = ({
     exposed,
     widgetId,
@@ -251,69 +190,49 @@ export function createWidgetService(): IWidgetService {
     exposed: ComponentInternalInstance["exposed"];
     widgetId: string;
   }): void => {
-    activeWidget.value = undefined;
-
-    activeWidget.value = {
-      exposed,
-      widgetId,
-    };
+    activeWidget.value = { exposed, widgetId };
   };
 
   const updateActiveWidget = (): void => {
     const activeExposed = activeWidget.value?.exposed as IExposedWidget | undefined;
+    if (!activeExposed) return;
 
-    if (!activeExposed) {
+    const widgetId = activeWidget.value?.widgetId;
+    if (!widgetId) return;
+
+    const registration = bladeRegistry.registrations.find((r) => r.widget.id === widgetId);
+    const functionNameToCall = registration?.widget.updateFunctionName;
+
+    if (functionNameToCall && typeof activeExposed[functionNameToCall] === "function") {
+      activeExposed[functionNameToCall]();
       return;
     }
 
-    const widgetId = activeWidget.value?.widgetId;
-
-    if (widgetId) {
-      const registration = registeredWidgets.find((reg) => reg.widget.id === widgetId);
-      const functionNameToCall = registration?.widget?.updateFunctionName;
-
-      if (functionNameToCall && typeof activeExposed[functionNameToCall] === "function") {
-        activeExposed[functionNameToCall]();
-      } else {
-        logger.warn(`Widget '${widgetId}' does not have an exposed function named '${functionNameToCall}'.`);
-      }
-    }
-  };
-
-  const isWidgetRegistered = (id: string): boolean => {
-    return registeredIds.has(id);
-  };
-
-  const isActiveWidget = (id: string): boolean => {
-    return activeWidget.value?.widgetId === id;
+    logger.warn(`Widget '${widgetId}' does not have an exposed function named '${functionNameToCall}'.`);
   };
 
   const getExternalWidgetsForBladeLocal = (bladeId: string): IExternalWidgetRegistration[] => {
     return getExternalWidgetsForBlade(bladeId.toLowerCase());
   };
 
-  preregisteredWidgets.forEach((widget) => {
-    try {
-      registerWidget(widget.widget, widget.bladeId);
-    } catch (e) {
-      logger.warn(`Failed to register preregistered widget ${widget.widget.id}:`, e);
-    }
-  });
-
-  return {
-    registerWidget,
-    unregisterWidget,
-    getWidgets,
-    clearBladeWidgets,
-    registeredWidgets,
-    isActiveWidget,
+  const service: IWidgetService = {
+    registerWidget: (widget, bladeId) => bladeRegistry.register(widget, bladeId),
+    unregisterWidget: (widgetId, bladeId) => bladeRegistry.unregister(widgetId, bladeId),
+    getWidgets: (bladeId) => bladeRegistry.get(bladeId),
+    clearBladeWidgets: (bladeId) => bladeRegistry.clear(bladeId),
+    registeredWidgets: bladeRegistry.registrations,
+    isActiveWidget: (id) => activeWidget.value?.widgetId === id,
     setActiveWidget,
     updateActiveWidget,
-    isWidgetRegistered,
-    updateWidget,
+    isWidgetRegistered: (id) => bladeRegistry.isRegistered(id),
+    updateWidget: ({ id, bladeId, widget }) => bladeRegistry.update(id, bladeId, widget),
     resolveWidgetProps,
     getExternalWidgetsForBlade: getExternalWidgetsForBladeLocal,
     getAllExternalWidgets,
     cloneWidget,
   };
+
+  widgetBus.replayInto(service);
+
+  return service;
 }

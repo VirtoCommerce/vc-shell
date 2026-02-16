@@ -6,69 +6,117 @@
   />
   <div
     v-else
+    ref="appRootRef"
     class="vc-app"
     :class="{
       'vc-app_mobile': $isMobile.value,
     }"
   >
-    <!-- Init application top bar -->
-
     <div class="vc-app__main-content">
-      <!-- Init main menu -->
-      <VcAppBar
-        class="vc-app__app-bar"
-        :logo="logo"
-        :title="title"
-        :disable-menu="disableMenu"
-        @backlink:click="closeBlade(blades.length - 1)"
-        @logo:click="openRoot"
-      />
-
-      <!-- Blade navigation -->
-      <div
-        v-if="isAuthenticated"
-        class="vc-app__workspace"
+      <!-- Layout: desktop sidebar or mobile top bar -->
+      <slot
+        name="layout"
+        :is-mobile="$isMobile.value"
+        :sidebar="sidebar"
+        :apps-list="appsList"
+        :switch-app="switchApp"
+        :open-root="openRoot"
+        :handle-menu-item-click="handleMenuItemClick"
       >
-        <VcBladeNavigation />
-        <!-- AI Agent Panel (shown when plugin is installed) -->
-        <VcAiAgentPanel v-if="aiAgentConfig?.url" />
-      </div>
+        <component
+          :is="$isDesktop.value ? DesktopLayout : MobileLayout"
+          :logo="logo"
+          :avatar="avatar"
+          :user-name="name"
+          :user-role="role"
+          :title="title"
+          :disable-menu="disableMenu"
+          :disable-app-switcher="disableAppSwitcher"
+          :apps-list="appsList"
+          @logo:click="openRoot"
+          @item:click="handleMenuItemClick"
+          @switch-app="switchApp"
+        >
+          <template
+            v-if="$slots['app-switcher'] && !disableAppSwitcher"
+            #app-switcher="{ appsList: slotAppsList, switchApp: slotSwitchApp }"
+          >
+            <slot
+              name="app-switcher"
+              :apps-list="slotAppsList"
+              :switch-app="slotSwitchApp"
+            />
+          </template>
+          <template
+            v-if="$slots.menu"
+            #menu="menuScope"
+          >
+            <slot
+              name="menu"
+              v-bind="menuScope"
+            />
+          </template>
+          <template
+            v-if="$slots['sidebar-header']"
+            #sidebar-header="headerScope"
+          >
+            <slot
+              name="sidebar-header"
+              v-bind="headerScope"
+            />
+          </template>
+          <template
+            v-if="$slots['sidebar-footer']"
+            #sidebar-footer="footerScope"
+          >
+            <slot
+              name="sidebar-footer"
+              v-bind="footerScope"
+            />
+          </template>
+        </component>
+      </slot>
+
+      <!-- Blade navigation / workspace -->
+      <slot
+        name="workspace"
+        :is-authenticated="isAuthenticated"
+      >
+        <div
+          v-if="isAuthenticated"
+          class="vc-app__workspace"
+        >
+          <VcBladeNavigation />
+          <!-- AI Agent Panel (shown when plugin is installed) -->
+          <VcAiAgentPanel v-if="aiAgentConfig?.url" />
+        </div>
+      </slot>
 
       <!-- Popup container -->
       <VcPopupContainer />
     </div>
   </div>
 </template>
-<!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
-import { inject, provide, watch, ref, onUnmounted, computed, useSlots } from "vue";
-import VcAppBar from "./_internal/vc-app-bar/vc-app-bar.vue";
-import { provideAppSlots } from "./composables/useAppSlots";
-import {
-  VcPopupContainer,
-  useBladeNavigation,
-  NotificationDropdown,
-  BladeRoutesRecord,
-} from "./../../../../shared/components";
-import { useAppSwitcher } from "../../../../shared/components/app-switcher/composables/useAppSwitcher";
-import { VcAiAgentPanel, provideAiAgentService } from "../../../../core/plugins/ai-agent";
+import { inject, provide, ref } from "vue";
+import DesktopLayout from "./_internal/layouts/DesktopLayout.vue";
+import MobileLayout from "./_internal/layouts/MobileLayout.vue";
+import { VcPopupContainer, BladeRoutesRecord } from "./../../../../shared/components";
+import type { AppDescriptor } from "../../../../core/api/platform";
+import type { MenuItem } from "../../../../core/types";
+import type { SidebarStateReturn } from "./composables/useSidebarState";
+import { VcAiAgentPanel } from "../../../../core/plugins/ai-agent";
 import type { IAiAgentConfig } from "../../../../core/plugins/ai-agent";
-import { provideAppBarWidget, useNotifications } from "../../../../core/composables";
 import { useRoute, useRouter } from "vue-router";
-import { watchOnce } from "@vueuse/core";
-import { MenuItem } from "../../../../core/types";
-import { provideSettingsMenu } from "../../../../core/composables/useSettingsMenu";
-import { LanguageSelector } from "../../../../shared/components/language-selector";
-import { ThemeSelector } from "../../../../shared/components/theme-selector";
-import { ChangePasswordButton } from "../../../../shared/components/change-password-button";
-import { LogoutButton } from "../../../../shared/components/logout-button";
-import { provideGlobalSearch } from "../../../../core/composables/useGlobalSearch";
-import { provideDashboardService } from "../../../../core/composables/useDashboard";
-import { DynamicModulesKey, EMBEDDED_MODE } from "../../../../injection-keys";
-import { provideMenuService } from "../../../../core/composables/useMenuService";
-import { provideAppBarMobileButtonsService } from "../../../../core/composables/useAppBarMobileButtons";
-import { useUserManagement } from "../../../../core/composables/useUserManagement";
+import { AppRootElementKey, DynamicModulesKey } from "../../../../injection-keys";
 import { createLogger } from "../../../../core/utilities";
+import { provideSidebarState } from "./composables/useSidebarState";
+import { provideAppBarState } from "./_internal/app-bar/composables/useAppBarState";
+import { useShellBootstrap } from "./composables/useShellBootstrap";
+import { useShellNavigation } from "./composables/useShellNavigation";
+import { useShellLifecycle } from "./composables/useShellLifecycle";
+import { defaultFeatures, SHELL_FEATURES_KEY } from "../../../../core/shell-features";
+import type { ShellFeature } from "../../../../core/types/shell-feature";
 
 export interface Props {
   isReady: boolean;
@@ -80,181 +128,70 @@ export interface Props {
   disableMenu?: boolean;
   disableAppSwitcher?: boolean;
   role?: string;
+  /** Custom shell features. Defaults to notifications + settings. */
+  features?: ShellFeature[];
 }
-
-defineEmits<{
-  (e: "logo-click", goToRoot: () => void): void;
-}>();
 
 defineOptions({
   inheritAttrs: false,
 });
 
 defineSlots<{
-  "app-switcher": (props: any) => any;
+  "app-switcher"?: (props: { appsList: AppDescriptor[]; switchApp: (app: AppDescriptor) => void }) => unknown;
+  layout?: (props: {
+    isMobile: boolean;
+    sidebar: SidebarStateReturn;
+    appsList: AppDescriptor[];
+    switchApp: (app: AppDescriptor) => void;
+    openRoot: () => void;
+    handleMenuItemClick: (item: MenuItem) => void;
+  }) => unknown;
+  menu?: (props: { expanded: boolean; onItemClick: (item: MenuItem) => void }) => unknown;
+  "sidebar-header"?: (props: { logo?: string; expanded: boolean; isMobile: boolean }) => unknown;
+  "sidebar-footer"?: (props: { avatar?: string; name?: string; role?: string }) => unknown;
+  workspace?: (props: { isAuthenticated: boolean }) => unknown;
 }>();
 
 const props = defineProps<Props>();
-const slots = useSlots();
 
 const logger = createLogger("vc-app");
 logger.debug("Init vc-app");
 
+const route = useRoute();
+const router = useRouter();
+const isEmbedded = route.query.EmbeddedMode === "true";
+
+// Resolve features: prop > injection > defaults
+const features = props.features ?? inject(SHELL_FEATURES_KEY, defaultFeatures);
+
+// App root element ref (for scoped Teleport targets)
+const appRootRef = ref<HTMLElement>();
+provide(AppRootElementKey, appRootRef);
+
+// Sidebar state (provide to all children)
+const sidebar = provideSidebarState();
+provideAppBarState();
+
+// Lifecycle: isReady/isAuthenticated watchers
+const { isAppReady, isAuthenticated, appsList, switchApp } = useShellLifecycle(props);
+
+// Navigation: menu click handling + blade resolution
+const { handleMenuItemClick, openRoot } = useShellNavigation();
+
+// Injected config from parent
 const internalRoutes = inject("bladeRoutes") as BladeRoutesRecord[];
 const dynamicModules = inject(DynamicModulesKey, undefined);
 const aiAgentConfig = inject<IAiAgentConfig | undefined>("aiAgentConfig", undefined);
 const aiAgentAddGlobalToolbarButton = inject<boolean>("aiAgentAddGlobalToolbarButton", true);
 
-const isAppReady = ref(props.isReady);
-
-const route = useRoute();
-const router = useRouter();
-
-const isEmbedded = route.query.EmbeddedMode === "true";
-
-const { openBlade, closeBlade, resolveBladeByName, blades, goToRoot } = useBladeNavigation();
-const { appsList, switchApp, getApps } = useAppSwitcher();
-
-const { loadFromHistory, notifications } = useNotifications();
-
-const { isAuthenticated } = useUserManagement();
-
-const routes = router.getRoutes();
-
-const { register: registerMenuItem } = provideSettingsMenu();
-const { register: registerAppBarWidget } = provideAppBarWidget();
-
-const hasUnreadNotifications = computed(() => {
-  return notifications.value.some((item) => item.isNew);
-});
-
-const { register: registerMobileButton } = provideAppBarMobileButtonsService();
-
-registerMenuItem({
-  id: "language-selector",
-  component: LanguageSelector,
-  order: 20,
-});
-
-registerMenuItem({
-  id: "theme-selector",
-  component: ThemeSelector,
-  order: 10,
-});
-
-registerMenuItem({
-  id: "change-password",
-  component: ChangePasswordButton,
-  order: 30,
-});
-
-registerMenuItem({
-  id: "logout",
-  component: LogoutButton,
-  order: 100,
-});
-
-registerAppBarWidget({
-  id: "notification-dropdown",
-  component: NotificationDropdown,
-  icon: "lucide-bell",
-  order: 10,
-  badge: () => hasUnreadNotifications.value,
-});
-
-registerMobileButton({
-  id: "notification-dropdown",
-  component: NotificationDropdown,
-  icon: "lucide-bell",
-  order: 10,
-  isVisible: !isEmbedded,
-});
-
-const onMenuItemClick = function (item: MenuItem) {
-  logger.debug("onMenuItemClick() called");
-
-  if (item.routeId) {
-    const bladeComponent = resolveBladeByName(item.routeId);
-    if (bladeComponent) {
-      openBlade(
-        {
-          blade: bladeComponent,
-        },
-        true,
-      );
-    } else {
-      logger.error(`Blade component with routeId '${item.routeId}' not found.`);
-    }
-  } else if (!item.routeId && item.url) {
-    const menuRoute = routes.find((r) => {
-      return "/" + r.path.split("/").filter((part) => part !== "")[1] === item.url || r.path === item.url;
-    });
-    if (typeof menuRoute === "undefined") {
-      openRoot();
-    } else {
-      router.push({ name: menuRoute?.name, params: route.params });
-    }
-  }
-};
-
-const openRoot = async () => {
-  const isPrevented = await closeBlade(1);
-
-  if (!isPrevented) {
-    router.push(goToRoot());
-  }
-};
-
-watchOnce(
-  () => props.isReady,
-  async (newVal) => {
-    isAppReady.value = newVal;
-    if (isAuthenticated.value && newVal) {
-      await loadFromHistory();
-      await getApps();
-    }
-  },
-);
-
-watch(isAuthenticated, (newVal) => {
-  isAppReady.value = newVal;
-});
-
-provide("internalRoutes", internalRoutes);
-provide(DynamicModulesKey, dynamicModules);
-provideDashboardService();
-provideMenuService();
-provideGlobalSearch();
-provide(EMBEDDED_MODE, isEmbedded);
-
-// Provide AI Agent service if config is available (via plugin)
-if (aiAgentConfig?.url) {
-  provideAiAgentService({
-    config: aiAgentConfig,
-    addGlobalToolbarButton: aiAgentAddGlobalToolbarButton,
-  });
-}
-// Provide slots to child components with all necessary props and handlers
-provideAppSlots(
-  slots,
-  {
-    disableMenu: props.disableMenu,
-    disableAppSwitcher: props.disableAppSwitcher,
-    version: props.version,
-    avatar: props.avatar,
-    name: props.name,
-    role: props.role,
-    appsList: appsList,
-    isEmbedded,
-  },
-  {
-    onMenuItemClick,
-    switchApp,
-  },
-);
-
-onUnmounted(() => {
-  isAppReady.value = false;
+// Bootstrap: provide services + process features
+useShellBootstrap(features, {
+  isEmbedded,
+  internalRoutes,
+  dynamicModules,
+  aiAgentConfig,
+  aiAgentAddGlobalToolbarButton,
+  context: { router, route, isAuthenticated, isEmbedded },
 });
 </script>
 

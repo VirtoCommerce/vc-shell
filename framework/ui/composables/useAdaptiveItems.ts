@@ -42,21 +42,12 @@ export function useAdaptiveItems<T>(options: {
   };
 
   /**
-   * Calculate which elements will be visible,
-   * and which will be hidden
+   * Distribute items into visible/hidden arrays for a given available width.
    */
-  const calculateVisibleItems = () => {
-    if (!containerRef.value || !items.value.length) return;
-
-    // Available width with account "More" button
-    const availableWidth = containerWidth.value - (showMoreButton.value ? moreButtonWidth : 0);
-
+  const distributeItems = (itemsToCheck: T[], availableWidth: number) => {
     let currentWidth = 0;
     const visible: T[] = [];
     const hidden: T[] = [];
-
-    // Apply selected strategy
-    const itemsToCheck = calculationStrategy === "reverse" ? [...items.value].reverse() : items.value;
 
     for (const item of itemsToCheck) {
       const itemWidth = getItemWidth(item);
@@ -69,13 +60,37 @@ export function useAdaptiveItems<T>(options: {
       }
     }
 
+    return { visible, hidden };
+  };
+
+  /**
+   * Calculate which elements will be visible,
+   * and which will be hidden.
+   *
+   * Uses a two-pass approach to avoid circular dependency:
+   * 1st pass: calculate assuming no "more" button
+   * 2nd pass (if overflow): recalculate with "more" button width reserved
+   */
+  const calculateVisibleItems = () => {
+    if (!containerRef.value || !items.value.length) return;
+
+    const itemsToCheck = calculationStrategy === "reverse" ? [...items.value].reverse() : items.value;
+
+    // 1st pass: full container width (no "more" button)
+    let result = distributeItems(itemsToCheck, containerWidth.value);
+
+    // 2nd pass: if items overflowed, recalculate with "more" button space reserved
+    if (result.hidden.length > 0) {
+      result = distributeItems(itemsToCheck, containerWidth.value - moreButtonWidth);
+    }
+
     // If reverse strategy is used, reverse arrays
     if (calculationStrategy === "reverse") {
-      visibleItems.value = visible.reverse();
-      hiddenItems.value = hidden.reverse();
+      visibleItems.value = result.visible.reverse();
+      hiddenItems.value = result.hidden.reverse();
     } else {
-      visibleItems.value = visible;
-      hiddenItems.value = hidden;
+      visibleItems.value = result.visible;
+      hiddenItems.value = result.hidden;
     }
   };
 

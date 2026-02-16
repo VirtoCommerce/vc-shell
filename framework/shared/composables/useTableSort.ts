@@ -67,13 +67,21 @@ export function useTableSort(options?: UseTableSortOptions): UseTableSortReturn 
 
     if (newSortProperty) {
       if (currentSortProperty.value === newSortProperty) {
-        // Clicked on the same column, toggle direction
+        // Clicked on the same column, toggle direction (3-state: ASC → DESC → none)
         if (newSortDirection) {
-          // If table provided a new direction (e.g. 3-state sort)
+          // If table provided a new direction (e.g. explicit sort)
           currentSortDirection.value = newSortDirection;
         } else {
-          // Toggle existing
-          currentSortDirection.value = currentSortDirection.value === "ASC" ? "DESC" : "ASC";
+          // Toggle existing: ASC → DESC → clear
+          if (currentSortDirection.value === "ASC") {
+            currentSortDirection.value = "DESC";
+          } else if (currentSortDirection.value === "DESC") {
+            // Third click - clear sort
+            currentSortProperty.value = null;
+            currentSortDirection.value = null;
+          } else {
+            currentSortDirection.value = "ASC";
+          }
         }
       } else {
         // Clicked on a new column

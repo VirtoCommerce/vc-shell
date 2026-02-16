@@ -4,7 +4,6 @@ import { VcContainer } from "./";
 /**
  * `VcContainer` is a scrollable container component that provides:
  * - Custom scrolling behavior
- * - Pull-to-refresh functionality for mobile
  * - Optional shadows to indicate scrollable content
  * - Configurable padding
  */
@@ -29,14 +28,6 @@ const meta: Meta<typeof VcContainer> = {
         defaultValue: { summary: "false" },
       },
     },
-    usePtr: {
-      description: "Enables pull-to-refresh functionality for mobile devices",
-      control: "boolean",
-      table: {
-        type: { summary: "boolean" },
-        defaultValue: { summary: "false" },
-      },
-    },
     default: {
       description: "Default slot for content",
       table: {
@@ -47,7 +38,7 @@ const meta: Meta<typeof VcContainer> = {
   },
   parameters: {
     actions: {
-      handles: ["scroll:ptr", "scroll"],
+      handles: ["scroll"],
     },
     docs: {
       description: {
@@ -56,12 +47,10 @@ The VcContainer component is a versatile container for scrollable content with b
 
 - Wraps content in a scrollable container with customizable padding
 - Provides scroll shadows to indicate more content is available
-- Supports pull-to-refresh on mobile devices
-- Handles touch events and scroll behavior
+- Handles scroll behavior
 - Exposes methods for programmatic scrolling
 
 ## Events
-- \`scroll:ptr\`: Emitted when pull-to-refresh action is triggered
 - \`scroll\`: Emitted when container is scrolled
 
 ## Exposed Methods
@@ -100,7 +89,6 @@ export const Default: Story = {
   args: {
     shadow: false,
     noPadding: false,
-    usePtr: false,
   },
 };
 
@@ -128,7 +116,6 @@ export const WithShadow: Story = {
   args: {
     shadow: true,
     noPadding: false,
-    usePtr: false,
   },
   parameters: {
     docs: {
@@ -169,56 +156,12 @@ export const NoPadding: Story = {
   args: {
     shadow: true,
     noPadding: true,
-    usePtr: false,
   },
   parameters: {
     docs: {
       description: {
         story:
           "Using noPadding: true removes the default padding from the container, allowing content to extend to the edges.",
-      },
-    },
-  },
-};
-
-/**
- * Container with pull-to-refresh functionality for mobile devices.
- */
-export const PullToRefresh: Story = {
-  render: (args) => ({
-    components: { VcContainer },
-    setup() {
-      function onPtrEvent() {
-        alert("Pull-to-refresh triggered! This would typically refresh content.");
-      }
-      return { args, onPtrEvent };
-    },
-    template: `
-      <div style="width: 400px; height: 300px; border: 1px solid #ccc; border-radius: 8px;">
-        <vc-container v-bind="args"
-          @scroll:ptr="onPtrEvent"
-          @scroll="(e) => console.log('Container scrolled', e)">
-          <div style="text-align: center; color: #666; padding: 8px 0 16px;">
-            ↓ Pull down to refresh (on mobile devices) ↓
-          </div>
-          <p>This container has pull-to-refresh functionality enabled for mobile devices.</p>
-          <p>On mobile, you can pull down on the content to trigger a refresh event.</p>
-          <p>The component provides visual feedback during the pull action.</p>
-          <p>When testing on desktop, this functionality is only visible on mobile devices or when using mobile device emulation in developer tools.</p>
-        </vc-container>
-      </div>
-    `,
-  }),
-  args: {
-    shadow: true,
-    noPadding: false,
-    usePtr: true,
-  },
-  parameters: {
-    docs: {
-      description: {
-        story:
-          "Setting usePtr: true enables pull-to-refresh functionality for mobile devices. This example shows how to handle the scroll:ptr event.",
       },
     },
   },
@@ -264,7 +207,6 @@ export const ContentPanel: Story = {
   args: {
     shadow: true,
     noPadding: false,
-    usePtr: false,
   },
   parameters: {
     docs: {

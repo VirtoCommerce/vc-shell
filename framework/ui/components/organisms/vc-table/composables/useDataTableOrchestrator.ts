@@ -342,7 +342,6 @@ export function useDataTableOrchestrator<T extends Record<string, any>>(
       if (!tableContainerRef?.value) return null;
       return tableContainerRef.value.querySelectorAll(`[data-column-id="${id}"]`);
     },
-    getContainerElement: () => tableContainerRef?.value ?? null,
     onResizeEnd: options.onColumnResizeEnd,
   });
 

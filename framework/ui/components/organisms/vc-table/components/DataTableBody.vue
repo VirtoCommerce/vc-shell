@@ -93,12 +93,17 @@
   </div>
 </template>
 
-<script setup lang="ts" generic="T extends Record<string, any>">
+<script setup lang="ts">
 /**
  * DataTableBody - Reusable body rendering component for VcDataTable
  *
  * Extracts body rendering logic from VcDataTable.vue to provide
  * a single, unified component for rendering table body content.
+ *
+ * Note: This is an internal sub-component of VcDataTable. It does NOT declare
+ * its own generic — instead it uses Record<string, any> for item types.
+ * Type safety is enforced at the VcDataTable level (which has generic="T").
+ * This avoids vue-tsc generic unification issues between parent and child.
  *
  * Features:
  * - Empty and loading states
@@ -114,6 +119,15 @@ import type { VcColumnProps } from "../types";
 import type { GroupedData } from "../composables/useTableRowGrouping";
 import DataTableRow from "./DataTableRow.vue";
 import TableEmpty from "./TableEmpty.vue";
+
+/**
+ * Base item type — actual generic enforcement happens in VcDataTable.
+ * Uses `any` (not Record<string, any>) because TypeScript doesn't allow
+ * Record<string, any> → T assignment even when T extends Record<string, any>.
+ * This is safe: DataTableBody is an internal sub-component only used by VcDataTable.
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type Item = any;
 
 // Row props return type (mirrors getRowProps in VcDataTable)
 // This matches DataTableRow props exactly - exported for external use
@@ -146,7 +160,7 @@ export interface RowProps<T> {
 // Props
 const props = defineProps<{
   /** Items to render */
-  items: T[];
+  items: Item[];
   /** Loading state */
   loading?: boolean;
   /** Empty state title */
@@ -160,19 +174,19 @@ const props = defineProps<{
   /** Whether grouping is enabled */
   groupingEnabled?: boolean;
   /** Grouped data */
-  groupedData?: GroupedData<T>[];
+  groupedData?: GroupedData<Item>[];
   /** Whether row groups are expandable */
   expandableRowGroups?: boolean;
   /** Function to check if group is expanded */
   isGroupExpanded: (key: string) => boolean;
   /** Function to get the group key for an item */
-  getItemGroupKey?: (item: T) => string;
+  getItemGroupKey?: (item: Item) => string;
   /** Function to get global index of an item */
-  getGlobalIndex: (item: T) => number;
+  getGlobalIndex: (item: Item) => number;
   /** Function to get item key */
-  getItemKey: (item: T, index: number) => string | number;
+  getItemKey: (item: Item, index: number) => string | number;
   /** Function to build row props */
-  getRowProps: (item: T, index: number) => RowProps<T>;
+  getRowProps: (item: Item, index: number) => RowProps<Item>;
 }>();
 
 // Emits - matches DataTableRow emit signatures
@@ -182,35 +196,35 @@ const emit = defineEmits<{
   /** Group expansion toggled */
   "group-toggle": [key: string, event?: Event];
   /** Row clicked */
-  "row-click": [item: T, index: number, event: MouseEvent];
+  "row-click": [item: Item, index: number, event: MouseEvent];
   /** Row mouse enter (DataTableRow emits index) */
   "row-mouseenter": [index: number];
   /** Row mouse leave (DataTableRow emits nothing) */
   "row-mouseleave": [];
   /** Row selection changed */
-  "selection-change": [item: T];
+  "selection-change": [item: Item];
   /** Row expand toggled */
-  "expand-toggle": [item: T, index: number, event?: Event];
+  "expand-toggle": [item: Item, index: number, event?: Event];
   /** Row edit started */
-  "row-edit": [item: T, index: number];
+  "row-edit": [item: Item, index: number];
   /** Row save */
-  "row-save": [item: T, index: number];
+  "row-save": [item: Item, index: number];
   /** Row cancel */
-  "row-cancel": [item: T, index: number];
+  "row-cancel": [item: Item, index: number];
   /** Cell edit completed */
-  "edit-complete": [item: T, field: string, index: number, value: unknown];
+  "edit-complete": [item: Item, field: string, index: number, value: unknown];
   /** Cell edit cancelled */
-  "edit-cancel": [item: T, field: string, index: number];
+  "edit-cancel": [item: Item, field: string, index: number];
   /** Cell value changed */
   "cell-value-change": [field: string, index: number, value: unknown];
   /** Cell clicked */
-  "cell-click": [item: T, field: string, index: number, column: ColumnInstance];
+  "cell-click": [item: Item, field: string, index: number, column: ColumnInstance];
   /** Row mouse down (for reorder) */
   "row-mousedown": [event: MouseEvent];
   /** Row drag start */
-  "row-dragstart": [event: DragEvent, item: T];
+  "row-dragstart": [event: DragEvent, item: Item];
   /** Row drag over */
-  "row-dragover": [event: DragEvent, item: T];
+  "row-dragover": [event: DragEvent, item: Item];
   /** Row drag leave */
   "row-dragleave": [event: DragEvent];
   /** Row drag end */
@@ -224,7 +238,7 @@ const emit = defineEmits<{
 // ============================================================================
 
 /** Flatten grouped data to maintain group ordering when grouping is enabled */
-const iterationItems = computed<T[]>(() => {
+const iterationItems = computed<Item[]>(() => {
   if (props.groupingEnabled && props.groupedData?.length) {
     return props.groupedData.flatMap((g) => g.items);
   }
@@ -242,7 +256,7 @@ const groupCountMap = computed<Map<string, number> | null>(() => {
 });
 
 /** Get the group key for an item */
-const getGroupKey = (item: T): string => props.getItemGroupKey?.(item) ?? "";
+const getGroupKey = (item: Item): string => props.getItemGroupKey?.(item) ?? "";
 
 /** Check if item at index is the first in its group (adjacent comparison) */
 const isFirstInGroup = (index: number): boolean =>
@@ -254,7 +268,7 @@ const isLastInGroup = (index: number): boolean =>
   getGroupKey(iterationItems.value[index]) !== getGroupKey(iterationItems.value[index + 1]);
 
 /** Get the effective index for an item (global index for grouped, local index for non-grouped) */
-const getEffectiveIndex = (item: T, localIndex: number): number => {
+const getEffectiveIndex = (item: Item, localIndex: number): number => {
   if (props.groupingEnabled) {
     return props.getGlobalIndex(item);
   }
@@ -266,24 +280,24 @@ const getEffectiveIndex = (item: T, localIndex: number): number => {
 // ============================================================================
 
 const handleGroupToggle = (key: string, e?: Event) => emit("group-toggle", key, e);
-const handleRowClick = (item: T, index: number, e: MouseEvent) => emit("row-click", item, index, e);
+const handleRowClick = (item: Item, index: number, e: MouseEvent) => emit("row-click", item, index, e);
 const handleRowMouseEnter = (index: number) => emit("row-mouseenter", index);
 const handleRowMouseLeave = () => emit("row-mouseleave");
-const handleRowSelectionChange = (item: T) => emit("selection-change", item);
-const handleExpandToggle = (item: T, index: number, e?: Event) => emit("expand-toggle", item, index, e);
-const handleRowEdit = (item: T, index: number) => emit("row-edit", item, index);
-const handleRowSave = (item: T, index: number) => emit("row-save", item, index);
-const handleRowCancel = (item: T, index: number) => emit("row-cancel", item, index);
-const handleEditComplete = (item: T, field: string, index: number, value: unknown) =>
+const handleRowSelectionChange = (item: Item) => emit("selection-change", item);
+const handleExpandToggle = (item: Item, index: number, e?: Event) => emit("expand-toggle", item, index, e);
+const handleRowEdit = (item: Item, index: number) => emit("row-edit", item, index);
+const handleRowSave = (item: Item, index: number) => emit("row-save", item, index);
+const handleRowCancel = (item: Item, index: number) => emit("row-cancel", item, index);
+const handleEditComplete = (item: Item, field: string, index: number, value: unknown) =>
   emit("edit-complete", item, field, index, value);
-const handleEditCancel = (item: T, field: string, index: number) => emit("edit-cancel", item, field, index);
+const handleEditCancel = (item: Item, field: string, index: number) => emit("edit-cancel", item, field, index);
 const handleCellValueChange = (field: string, index: number, value: unknown) =>
   emit("cell-value-change", field, index, value);
-const handleCellClick = (item: T, field: string, index: number, column: ColumnInstance) =>
+const handleCellClick = (item: Item, field: string, index: number, column: ColumnInstance) =>
   emit("cell-click", item, field, index, column);
 const handleRowMouseDown = (e: MouseEvent) => emit("row-mousedown", e);
-const handleRowDragStart = (e: DragEvent, item: T) => emit("row-dragstart", e, item);
-const handleRowDragOver = (e: DragEvent, item: T) => emit("row-dragover", e, item);
+const handleRowDragStart = (e: DragEvent, item: Item) => emit("row-dragstart", e, item);
+const handleRowDragOver = (e: DragEvent, item: Item) => emit("row-dragover", e, item);
 const handleRowDragLeave = (e: DragEvent) => emit("row-dragleave", e);
 const handleRowDragEnd = (e: DragEvent) => emit("row-dragend", e);
 const handleRowDrop = (e: DragEvent) => emit("row-drop", e);

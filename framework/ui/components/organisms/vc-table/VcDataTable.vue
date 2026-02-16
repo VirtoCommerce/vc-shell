@@ -144,7 +144,7 @@
           :get-item-group-key="rowGrouping.getItemGroupKey"
           :get-global-index="getGlobalIndex"
           :get-item-key="getItemKey"
-          :get-row-props="getRowProps"
+          :get-row-props="(getRowProps as any)"
           @scroll="handleContentScroll"
           @group-toggle="(key, e) => rowGrouping.toggleGroupExpansion(key, e!)"
           @row-click="handleRowClick"

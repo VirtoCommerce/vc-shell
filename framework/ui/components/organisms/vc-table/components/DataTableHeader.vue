@@ -184,7 +184,7 @@ const emit = defineEmits<{
   /** Select all checkbox changed */
   "select-all": [value: boolean];
   /** Column sort requested */
-  sort: [col: VcColumnProps, event?: Event];
+  sort: [col: VcColumnProps, event?: MouseEvent];
   /** Column resize started */
   "resize-start": [columnId: string, event: MouseEvent];
   /** Column reorder drag started */
@@ -215,8 +215,9 @@ const handleSelectAllChange = (value?: boolean) => {
   emit("select-all", value ?? false);
 };
 
-const handleSort = (colProps: VcColumnProps, event: MouseEvent) => {
-  emit("sort", colProps, event);
+const handleSort = (colProps: VcColumnProps, event: Event) => {
+  // TableHead emits Event, but header sort clicks are always MouseEvent in practice
+  emit("sort", colProps, event as MouseEvent);
 };
 
 const handleResizeStart = (columnId: string | undefined, event: MouseEvent) => {

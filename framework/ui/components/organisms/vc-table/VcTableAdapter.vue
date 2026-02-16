@@ -326,7 +326,7 @@ const { t: $t } = useI18n({ useScope: "global" });
 // Internal state
 // ============================================================================
 
-const internalSelection = ref<T[]>(props.selectionItems ?? []);
+const internalSelection = ref(props.selectionItems ?? []) as Ref<T[]>;
 
 // ============================================================================
 // Legacy Filters Panel (dropdown, teleported to body)

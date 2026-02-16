@@ -8,6 +8,8 @@
     }"
     :disabled="disabled"
     :aria-disabled="disabled"
+    :disabled="disabled"
+    :aria-disabled="disabled"
     @click="onClickFn"
   >
     <slot></slot>

@@ -6,6 +6,11 @@ All notable changes to this monorepo will be documented in this file.
 
 ### Framework (@vc-shell/framework)
 
+### VC-Shell Framework (@vc-shell/framework)
+
+### Bug Fixes
+- adjust AI agent panel configuration and styling ([ebdd57a](https://github.com/VirtoCommerce/vc-shell/commit/ebdd57ac50342cacf79968253d8240c685062d89))
+- improve error handling and token refresh logic in useUser composable ([2900d9c](https://github.com/VirtoCommerce/vc-shell/commit/2900d9cc2b4465d9457c3e57338a915fe6a3a3e6))
 ### Features
 * **blade-navigation:** introduce new architecture and migration to useBladeContext API ([9181724](https://github.com/VirtoCommerce/vc-shell/commit/91817249a198a1b076b18f1d6a9f228886bed035))
 * **composables:** enhance toolbar and app bar services with improved injection and cleanup ([b992f6b](https://github.com/VirtoCommerce/vc-shell/commit/b992f6bed2dad0178f465dbd70c6b09995c1c54c))

@@ -189,6 +189,7 @@ export function createAppModule(
           if (app.component(name)) {
             // Overwrite existing component
             logger.warn(`Component ${name} is already registered. It will be overwritten with the new component.`);
+            logger.warn(`Component ${name} is already registered. It will be overwritten with the new component.`);
           }
           app.component(name, component);
         });

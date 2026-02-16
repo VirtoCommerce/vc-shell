@@ -201,6 +201,9 @@ useShellBootstrap(features, {
   // Shared transition timing for synchronized animations
   --app-panel-transition-duration: 0.3s;
   --app-panel-transition-timing: cubic-bezier(0.4, 0, 0.2, 1);
+  // Shared transition timing for synchronized animations
+  --app-panel-transition-duration: 0.3s;
+  --app-panel-transition-timing: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .vc-app {

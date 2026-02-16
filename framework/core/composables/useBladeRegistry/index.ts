@@ -3,6 +3,9 @@ import { BladeInstanceConstructor } from "../../../shared/components/blade-navig
 import { createLogger } from "../../utilities";
 
 const logger = createLogger("blade-registry");
+import { createLogger } from "../../utilities";
+
+const logger = createLogger("blade-registry");
 
 /**
  * Interface for blade registration data
@@ -117,6 +120,7 @@ export function createBladeRegistry(app: App): IBladeRegistryInstance {
     if (!existingGlobalComponent || existingGlobalComponent !== registrationData.component) {
       if (existingGlobalComponent && existingGlobalComponent !== registrationData.component) {
         logger.warn(`Global component '${name}' already exists and is different. Overwriting with new blade component.`);
+        logger.warn(`Global component '${name}' already exists and is different. Overwriting with new blade component.`);
       }
       app.component(name, registrationData.component);
     }
@@ -168,6 +172,7 @@ export function createBladeRegistry(app: App): IBladeRegistryInstance {
         return globalComponent;
       }
     } catch (error) {
+      logger.warn(`Error accessing global component '${name}':`, error);
       logger.warn(`Error accessing global component '${name}':`, error);
     }
 

@@ -169,6 +169,7 @@ export function createWidgetService(): IWidgetService {
           resolvedProps[key] = bladeData[bladeKey];
         } else {
           logger.warn(`Required data '${key}' not found in blade data for widget '${widget.id}'`);
+          logger.warn(`Required data '${key}' not found in blade data for widget '${widget.id}'`);
         }
       });
 

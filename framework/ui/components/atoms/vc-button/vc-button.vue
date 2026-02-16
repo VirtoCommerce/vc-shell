@@ -279,6 +279,7 @@ $variants: primary, secondary, danger, warning, success, info, outline, ghost, l
 
         &.vc-button_text {
           @apply tw-bg-[color:var(--button-#{$variant}-background-color-hover)] tw-bg-opacity-[0.07] tw-p-1;
+          @apply tw-bg-[color:var(--button-#{$variant}-background-color-hover)] tw-bg-opacity-[0.07] tw-p-1;
         }
       }
 

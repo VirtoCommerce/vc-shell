@@ -14,6 +14,7 @@
     <!-- Select label -->
     <VcLabel
       v-if="label"
+      :id="labelId"
       class="vc-select__label"
       :required="required"
       :multilanguage="multilanguage"
@@ -31,337 +32,146 @@
 
     <!-- Select field -->
     <div class="vc-select__field-container">
-      <div
-        ref="dropdownToggleRef"
-        class="vc-select__dropdown-toggle"
+      <SelectTrigger
+        ref="selectTriggerRef"
+        :is-opened="isOpened"
+        :has-value="hasValue"
+        :selected-scope="selectedScope"
+        :multiple="multiple"
+        :loading="loading"
+        :disabled="disabled"
+        :clearable="clearable"
+        :placeholder="placeholder"
+        :prefix="prefix"
+        :suffix="suffix"
+        :size="size"
+        :error="error"
+        :error-message="errorMessage"
+        :hint="hint"
+        :list-loading="listLoading"
+        :default-option-loading="defaultOptionLoading"
+        :listbox-id="listboxId"
+        :label-id="labelId"
+        :label="label"
+        :aria-described-by="ariaDescribedBy"
+        :error-id="errorId"
+        :hint-id="hintId"
+        :toggle-dropdown="toggleDropdown"
+        :get-option-label="getOptionLabel"
+        :get-emitting-option-value="getEmittingOptionValue"
+        @focus="isFocused = true"
+        @blur="isFocused = false"
+        @reset="onReset"
+        @remove-at-index="removeAtIndex"
       >
-        <slot
-          name="control"
-          :toggle-handler="toggleDropdown"
-          :is-opened="isOpened"
+        <template
+          v-if="$slots['control']"
+          #control="scope"
         >
-          <div class="vc-select__control">
-            <div
-              v-if="$slots['prepend']"
-              class="vc-select__prepend"
-            >
-              <slot name="prepend"></slot>
-            </div>
-            <div
-              class="vc-select__field-wrapper"
-              :class="{
-                'vc-select__field-wrapper--default': size === 'default',
-                'vc-select__field-wrapper--small': size === 'small',
-              }"
-            >
-              <div class="vc-select__field">
-                <div class="vc-select__field-inner">
-                  <div class="vc-select__field-content">
-                    <div
-                      v-if="$slots['prepend-inner']"
-                      class="vc-select__prepend-inner"
-                    >
-                      <slot name="prepend-inner"></slot>
-                    </div>
-                    <div class="vc-select__field-main">
-                      <div
-                        v-if="prefix"
-                        class="vc-select__prefix"
-                      >
-                        {{ prefix }}
-                      </div>
-                      <div
-                        data-test-id="dropdown-toggle"
-                        class="vc-select__input"
-                        tabindex="0"
-                        @click.stop="toggleDropdown"
-                        @keydown.enter.stop="toggleDropdown"
-                        @keydown.space.stop="toggleDropdown"
-                        @focus="isFocused = true"
-                        @blur="isFocused = false"
-                      >
-                        <div
-                          v-if="!hasValue"
-                          class="vc-select__placeholder"
-                        >
-                          <template v-if="placeholder">{{ placeholder }}</template>
-                          <template v-else>{{ t("COMPONENTS.MOLECULES.VC_SELECT.CLICK_TO_SELECT") }}</template>
-                        </div>
-                        <template v-else-if="selectedScope && selectedScope.length && hasValue">
-                          <div class="vc-select__selected">
-                            <div
-                              v-for="(item, i) in selectedScope"
-                              :key="i"
-                              class="vc-select__selected-item"
-                            >
-                              <template v-if="multiple">
-                                <slot
-                                  name="selected-item"
-                                  v-bind="item"
-                                >
-                                  <div class="vc-select__multiple-item">
-                                    <template v-if="loading">
-                                      <span class="vc-select__loading">{{
-                                        t("COMPONENTS.MOLECULES.VC_SELECT.LOADING")
-                                      }}</span>
-                                    </template>
-                                    <template v-else>
-                                      <span>{{ getOptionLabel(item.opt) }}</span>
-                                    </template>
-                                    <VcIcon
-                                      v-if="!disabled"
-                                      class="vc-select__icon-remove"
-                                      icon="material-close"
-                                      size="s"
-                                      @click.stop="removeAtIndex(item.index)"
-                                    ></VcIcon>
-                                  </div>
-                                </slot>
-                              </template>
-                              <template v-else-if="!multiple">
-                                <template v-if="loading">
-                                  <span class="vc-select__loading">{{
-                                    t("COMPONENTS.MOLECULES.VC_SELECT.LOADING")
-                                  }}</span>
-                                </template>
-                                <template v-else>
-                                  <slot
-                                    name="selected-item"
-                                    v-bind="item"
-                                  >
-                                    {{
-                                      loading
-                                        ? t("COMPONENTS.MOLECULES.VC_SELECT.LOADING")
-                                        : getEmittingOptionValue(item.opt)
-                                    }}
-                                  </slot>
-                                </template>
-                              </template>
-                            </div>
-                          </div>
-                        </template>
-                      </div>
-                      <div
-                        v-if="suffix"
-                        class="vc-select__suffix"
-                      >
-                        {{ suffix }}
-                      </div>
-                      <div
-                        v-if="clearable && hasValue && !disabled"
-                        class="vc-select__clear"
-                        tabindex="0"
-                        @click="onReset"
-                        @keydown.enter="onReset"
-                        @keydown.space="onReset"
-                      >
-                        <VcIcon
-                          size="s"
-                          icon="material-close"
-                        ></VcIcon>
-                      </div>
-                    </div>
-                    <div
-                      v-if="$slots['append-inner']"
-                      class="vc-select__append-inner"
-                    >
-                      <slot name="append-inner"></slot>
-                    </div>
-                    <!-- Loading-->
-                    <div
-                      v-if="loading || listLoading || defaultOptionLoading"
-                      class="vc-select__loading-icon"
-                    >
-                      <VcIcon
-                        icon="lucide-loader"
-                        class="tw-animate-spin"
-                        size="m"
-                      ></VcIcon>
-                    </div>
-                    <!-- Select chevron-->
-                    <div
-                      v-if="!disabled"
-                      class="vc-select__chevron-container"
-                      tabindex="0"
-                      @click.stop="toggleDropdown"
-                      @keydown.enter.stop="toggleDropdown"
-                      @keydown.space.stop="toggleDropdown"
-                    >
-                      <div class="vc-select__chevron">
-                        <VcIcon
-                          size="s"
-                          icon="material-keyboard_arrow_down"
-                        ></VcIcon>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="vc-select__hint-error">
-                <Transition
-                  name="slide-up"
-                  mode="out-in"
-                >
-                  <div v-if="error">
-                    <slot name="error">
-                      <VcHint
-                        v-if="errorMessage"
-                        class="vc-select__error-message"
-                      >
-                        {{ errorMessage }}
-                      </VcHint>
-                    </slot>
-                  </div>
-                  <div v-else>
-                    <slot name="hint">
-                      <VcHint
-                        v-if="hint"
-                        class="vc-select__hint"
-                      >
-                        {{ hint }}
-                      </VcHint>
-                    </slot>
-                  </div>
-                </Transition>
-              </div>
-            </div>
-
-            <div
-              v-if="$slots['append']"
-              class="vc-select__append"
-            >
-              <slot name="append"></slot>
-            </div>
-          </div>
-        </slot>
-      </div>
-
-      <teleport
-        to=".vc-app"
-        defer
-      >
-        <div
-          v-if="isOpened"
-          ref="dropdownRef"
-          v-on-click-outside="[
-            () => {
-              isOpened = false;
-              emit('close');
-            },
-            { ignore: [dropdownToggleRef] },
-          ]"
-          data-test-id="dropdown"
-          class="vc-select__dropdown"
-          role="menu"
-          :style="dropdownStyle"
-        >
-          <input
-            v-if="searchable"
-            ref="searchRef"
-            class="vc-select__search-input"
-            tabindex="0"
-            @input="onInput"
-            @keydown.space.stop
-            @keydown.enter.stop
+          <slot
+            name="control"
+            v-bind="scope"
           />
+        </template>
+        <template
+          v-if="$slots['prepend']"
+          #prepend
+        >
+          <slot name="prepend" />
+        </template>
+        <template
+          v-if="$slots['append']"
+          #append
+        >
+          <slot name="append" />
+        </template>
+        <template
+          v-if="$slots['prepend-inner']"
+          #prepend-inner
+        >
+          <slot name="prepend-inner" />
+        </template>
+        <template
+          v-if="$slots['append-inner']"
+          #append-inner
+        >
+          <slot name="append-inner" />
+        </template>
+        <template
+          v-if="$slots['selected-item']"
+          #selected-item="scope"
+        >
+          <slot
+            name="selected-item"
+            v-bind="scope"
+          />
+        </template>
+        <template
+          v-if="$slots['error']"
+          #error
+        >
+          <slot name="error" />
+        </template>
+        <template
+          v-if="$slots['hint']"
+          #hint
+        >
+          <slot name="hint" />
+        </template>
+      </SelectTrigger>
 
-          <VcContainer
-            ref="root"
-            :no-padding="true"
-          >
-            <!-- Render existing options -->
-            <div
-              v-for="(item, i) in optionScope"
-              :key="i"
-              class="vc-select__option"
-              data-test-id="option"
-              :class="{ 'vc-select__option--selected': item.selected }"
-              tabindex="0"
-              :data-index="i"
-              @click="item.toggleOption(item.opt)"
-              @keydown.enter="item.toggleOption(item.opt)"
-              @keydown.space="item.toggleOption(item.opt)"
-            >
-              <slot
-                name="option"
-                v-bind="item"
-                >{{ item.label }}</slot
-              >
-            </div>
-
-            <!-- Loading Indicator (Initial or More) -->
-            <div
-              v-if="listLoading"
-              class="vc-select__list-loading-indicator"
-            >
-              <VcIcon
-                icon="lucide-loader"
-                class="tw-animate-spin"
-                size="m"
-              />
-              <span>
-                {{
-                  optionsList.length > 0
-                    ? t("COMPONENTS.MOLECULES.VC_SELECT.LOADING_MORE")
-                    : t("COMPONENTS.MOLECULES.VC_SELECT.LOADING")
-                }}
-              </span>
-            </div>
-
-            <!-- Show "No options" message -->
-            <div
-              v-if="!listLoading && !(optionsList && optionsList.length)"
-              class="vc-select__no-options"
-            >
-              <slot name="no-options">
-                <span class="vc-select__no-options-text">{{ t("COMPONENTS.MOLECULES.VC_SELECT.NO_OPTIONS") }}</span>
-              </slot>
-            </div>
-
-            <!-- Intersection observer target for loading more -->
-            <span
-              v-if="hasNextPage && !listLoading"
-              ref="el"
-              class="vc-select__load-more-trigger"
-            ></span>
-          </VcContainer>
-        </div>
-      </teleport>
+      <SelectDropdown
+        ref="selectDropdownRef"
+        :is-opened="isOpened"
+        :listbox-id="listboxId"
+        :ariaLabel="label || name"
+        :dropdown-style="dropdownStyle"
+        :searchable="searchable"
+        :option-scope="optionScope"
+        :list-loading="listLoading"
+        :options-list-length="optionsList.length"
+        :has-next-page="hasNextPage"
+        :dropdown-toggle-ref="selectTriggerRef?.toggleRef ?? null"
+        @input="onInput"
+        @click-outside="onClickOutside"
+      >
+        <template
+          v-if="$slots['option']"
+          #option="scope"
+        >
+          <slot
+            name="option"
+            v-bind="scope"
+          />
+        </template>
+        <template
+          v-if="$slots['no-options']"
+          #no-options
+        >
+          <slot name="no-options" />
+        </template>
+      </SelectDropdown>
     </div>
   </div>
 </template>
 
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup generic="T, P extends { results?: T[]; totalCount?: number } | undefined = undefined">
-import { ref, computed, watch, nextTick, Ref, toRefs, onMounted, onUnmounted } from "vue";
-import { vOnClickOutside } from "@vueuse/components";
-import * as _ from "lodash-es";
+import { ref, computed, watch, watchEffect, nextTick, toRefs, useId } from "vue";
 import { useIntersectionObserver } from "@vueuse/core";
-import {
-  useFloating,
-  UseFloatingReturn,
-  offset as uiOffset,
-  flip,
-  shift,
-  autoUpdate,
-  MiddlewareState,
-  Placement,
-} from "@floating-ui/vue";
-import { VcLabel, VcContainer, VcHint, VcIcon } from "./../../";
+import { VcLabel } from "./../../";
 import { useI18n } from "vue-i18n";
 import { useKeyboardNavigation } from "../../../../core/composables/useKeyboardNavigation";
+import { useSelectValueMapping, type OptionProp } from "./composables/useSelectValueMapping";
+import { useSelectVisibility } from "./composables/useSelectVisibility";
+import { useSelectDropdown } from "./composables/useSelectDropdown";
+import { useSelectDefaultValue } from "./composables/useSelectDefaultValue";
+import { useSelectOptions } from "./composables/useSelectOptions";
+import { useSelectSearch } from "./composables/useSelectSearch";
+import { useSelectSelection } from "./composables/useSelectSelection";
+import SelectTrigger from "./_internal/SelectTrigger.vue";
+import SelectDropdown from "./_internal/SelectDropdown.vue";
 
-export type OptionProp<T> = ((option: T) => string) | string | undefined;
-type FloatingInstanceType = UseFloatingReturn & {
-  middlewareData: {
-    sameWidthChangeBorders: {
-      borderTop?: string;
-      borderBottom?: string;
-      borderRadius?: string;
-      width?: string;
-    };
-  };
-};
 type ArrayElementType<U> = U extends Array<infer V> ? V : never;
 type Option = P extends { results?: T[]; totalCount?: number } ? T & ArrayElementType<Required<P>["results"]> : T;
 
@@ -599,183 +409,146 @@ const emit = defineEmits<{
 
 const { t } = useI18n({ useScope: "global" });
 
-const { modelValue, options } = toRefs(props);
+// Accessibility IDs
+const uid = useId();
+const labelId = computed(() => `vc-select-${uid}-label`);
+const hintId = computed(() => `vc-select-${uid}-hint`);
+const errorId = computed(() => `vc-select-${uid}-error`);
+const listboxId = computed(() => `vc-select-${uid}-listbox`);
 
-const selectRootRef = ref<HTMLDivElement | null>(null);
-const isSelectVisible = ref(false);
-
-const isOpened = ref(false);
-
-const searchRef = ref();
-const dropdownToggleRef = ref();
-const dropdownRef = ref();
-const root = ref();
-const el = ref();
-const listLoading = ref(false);
-const defaultOptionLoading = ref(false);
-const isFocused = ref(false);
-
-const filterString = ref();
-
-const defaultValue = ref<Option[]>([]) as Ref<Option[]>;
-
-const optionsList = ref<Option[]>([]) as Ref<Option[]>;
-
-const optionsTemp = ref<Option[]>([]) as Ref<Option[]>;
-
-const totalItems = ref();
-
-let emitValueFn;
-let emitTimer: NodeJS.Timeout;
-let innerValueCache: Option[];
-
-let rootVisibilityObserver: IntersectionObserver | null = null;
-
-const getOptionValue = computed(() => getPropValueFn(props.optionValue, "id"));
-
-const getOptionLabel = computed(() => getPropValueFn(props.optionLabel, "title"));
-
-onMounted(() => {
-  if (selectRootRef.value) {
-    rootVisibilityObserver = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          isSelectVisible.value = true;
-        } else {
-          isSelectVisible.value = false;
-        }
-      },
-      { threshold: 0.1 },
-    );
-    rootVisibilityObserver.observe(selectRootRef.value);
-
-    // Fallback for iframe: check visibility after a delay
-    setTimeout(() => {
-      if (selectRootRef.value && !isSelectVisible.value) {
-        const rect = selectRootRef.value.getBoundingClientRect();
-        const isVisible =
-          rect.top < window.innerHeight && rect.bottom > 0 && rect.left < window.innerWidth && rect.right > 0;
-        if (isVisible) {
-          isSelectVisible.value = true;
-        }
-      }
-    }, 100);
-  }
+const ariaDescribedBy = computed(() => {
+  const ids: string[] = [];
+  if (props.error && props.errorMessage) ids.push(errorId.value);
+  if (props.hint) ids.push(hintId.value);
+  return ids.length ? ids.join(" ") : undefined;
 });
 
-onUnmounted(() => {
-  if (rootVisibilityObserver && selectRootRef.value) {
-    rootVisibilityObserver.unobserve(selectRootRef.value);
-  }
-  if (rootVisibilityObserver) {
-    rootVisibilityObserver.disconnect();
-  }
+const { modelValue } = toRefs(props);
+
+// --- Subcomponent refs ---
+const selectTriggerRef = ref<InstanceType<typeof SelectTrigger> | null>(null);
+const selectDropdownRef = ref<InstanceType<typeof SelectDropdown> | null>(null);
+
+// --- Composables ---
+
+const { selectRootRef, isSelectVisible, ensureVisibility } = useSelectVisibility();
+
+const { getOptionValue, getOptionLabel, getOption, getEmittingOptionValue, fieldValueIsFilled } =
+  useSelectValueMapping<Option>({
+    optionValue: () => props.optionValue,
+    optionLabel: () => props.optionLabel,
+  });
+
+const { isOpened, isFocused, dropdownToggleRef, dropdownRef, popper, dropdownStyle, toggleDropdown } =
+  useSelectDropdown({
+    placement: props.placement,
+    outline: () => props.outline,
+    isSelectVisible,
+    selectRootRef,
+    disabled: () => props.disabled ?? false,
+    ensureVisibility,
+  });
+
+// Sync subcomponent DOM refs → Floating UI refs
+watchEffect(() => {
+  dropdownToggleRef.value = selectTriggerRef.value?.toggleRef ?? null;
 });
+watchEffect(() => {
+  dropdownRef.value = selectDropdownRef.value?.dropdownElRef ?? null;
+});
+
+const filterString = ref<string | undefined>();
+
+const { defaultValue, defaultOptionLoading } = useSelectDefaultValue<Option>({
+  modelValue,
+  isSelectVisible,
+  emitValue: () => props.emitValue ?? true,
+  multiple: () => props.multiple,
+  mapOptions: () => props.mapOptions ?? true,
+  options: () => props.options as any,
+  getOptionValue,
+});
+
+const { optionsList, optionsTemp, totalItems, listLoading, hasNextPage, loadOptionsForOpenDropdown, onLoadMore, onDropdownClose } =
+  useSelectOptions<Option>({
+    options: () => props.options as any,
+    filterString,
+    isOpened,
+    isSelectVisible,
+  });
+
+const { searchRef, onInput, clearSearch } = useSelectSearch<Option>({
+  debounce: () => props.debounce ?? 500,
+  options: () => props.options as any,
+  optionsList,
+  optionsTemp,
+  totalItems,
+  listLoading,
+  filterString,
+  getOptionLabel,
+  emit: {
+    search: (val: string) => emit("search", val),
+  },
+});
+
+const { selectedScope, hasValue, optionScope, toggleOption, removeAtIndex, onReset } =
+  useSelectSelection<Option>({
+    modelValue: () => props.modelValue,
+    multiple: () => props.multiple,
+    emitValue: () => props.emitValue ?? true,
+    mapOptions: () => props.mapOptions ?? true,
+    optionsList,
+    defaultValue,
+    getOptionValue,
+    getOptionLabel,
+    getOption,
+    fieldValueIsFilled,
+    isOpened,
+    popperUpdate: () => popper.update(),
+    emit: {
+      updateModelValue: (val: any) => emit("update:modelValue", val),
+      close: () => emit("close"),
+    },
+  });
+
+// --- Intersection observer for infinite scroll ---
+// Use computed refs from dropdown subcomponent
+const loadMoreEl = computed(() => selectDropdownRef.value?.loadMoreRef ?? null);
+const viewportRoot = computed(() => selectDropdownRef.value?.viewportRef ?? null);
 
 useIntersectionObserver(
-  el,
+  loadMoreEl,
   ([{ isIntersecting }]) => {
     if (isIntersecting && hasNextPage.value) {
       onLoadMore();
     }
   },
-  { threshold: 1, root: root.value?.component },
+  { threshold: 1, root: viewportRoot },
 );
 
-const popper = useFloating(dropdownToggleRef, dropdownRef, {
-  placement: props.placement,
-  whileElementsMounted: autoUpdate,
-  middleware: [
-    flip({ fallbackPlacements: ["top", "bottom"] }),
-    shift({ mainAxis: false }),
-    sameWidthChangeBorders(),
-    uiOffset({
-      mainAxis: 3,
-    }),
-  ],
-}) as FloatingInstanceType;
-
-watch(
-  [() => props.modelValue, isSelectVisible],
-  async ([currentModelVal, selectIsVisible]) => {
-    let modelAsArrayValueIds: (string | number | Record<string, any> | null)[] = [];
-    if (Array.isArray(currentModelVal)) {
-      modelAsArrayValueIds = props.emitValue
-        ? currentModelVal
-        : currentModelVal.map((v) => getOptionValue.value(v as Option));
-    } else if (currentModelVal != null) {
-      modelAsArrayValueIds = [props.emitValue ? currentModelVal : getOptionValue.value(currentModelVal as Option)];
-    }
-
-    const currentDefaultValueIds = defaultValue.value.map((opt) => getOptionValue.value(opt));
-
-    const sortedCurrentDefaultIds = [...currentDefaultValueIds].sort((a, b) => String(a).localeCompare(String(b)));
-    const sortedModelValueIds = [...modelAsArrayValueIds].sort((a, b) => String(a).localeCompare(String(b)));
-
-    const isDefaultValueResolved =
-      _.isEqual(sortedCurrentDefaultIds, sortedModelValueIds) &&
-      (modelAsArrayValueIds.length > 0 || defaultValue.value.length === 0);
-
-    if (!selectIsVisible) {
-      if (modelAsArrayValueIds.length === 0 && defaultValue.value.length > 0) {
-        defaultValue.value = [];
-      }
-      return;
-    }
-
-    if (modelAsArrayValueIds.length === 0) {
-      if (defaultValue.value.length > 0) {
-        defaultValue.value = [];
-      }
-      return;
-    }
-
-    if (!isDefaultValueResolved) {
-      if (props.options && typeof props.options === "function") {
-        try {
-          defaultOptionLoading.value = true;
-          const idsToFetch = modelAsArrayValueIds.filter((id) => id != null) as string[];
-
-          if (
-            idsToFetch.length === 0 &&
-            !(
-              modelAsArrayValueIds.length === 1 &&
-              modelAsArrayValueIds[0] == null &&
-              props.mapOptions &&
-              !props.multiple
-            )
-          ) {
-            defaultValue.value = [];
-            defaultOptionLoading.value = false;
-            return;
-          }
-
-          const data = await props.options(undefined, undefined, idsToFetch);
-
-          if (typeof data === "object" && !Array.isArray(data) && "results" in data && data.results) {
-            const results = data.results as Option[];
-            defaultValue.value = results.filter((rOpt) =>
-              modelAsArrayValueIds.some((mId) => _.isEqual(getOptionValue.value(rOpt), mId)),
-            );
-          } else {
-            defaultValue.value = [];
-          }
-        } catch (e) {
-          console.error("Error loading default options:", e);
-          defaultValue.value = [];
-        } finally {
-          defaultOptionLoading.value = false;
-        }
-      } else if (props.options && Array.isArray(props.options)) {
-        defaultValue.value = (props.options as Option[]).filter((opt) =>
-          modelAsArrayValueIds.some((mId) => _.isEqual(getOptionValue.value(opt), mId)),
-        );
-      }
+// --- Keyboard navigation ---
+const keyboardNavigation = useKeyboardNavigation({
+  onEnter: (element: HTMLElement) => {
+    const index = parseInt(element.getAttribute("data-index") || "0", 10);
+    if (optionScope.value && optionScope.value[index]) {
+      optionScope.value[index].toggleOption(optionScope.value[index].opt);
     }
   },
-  { immediate: true, deep: true },
-);
+  onEscape: () => {
+    isOpened.value = false;
+    emit("close");
+  },
+});
 
+// --- Event handlers for subcomponents ---
+function onClickOutside() {
+  isOpened.value = false;
+  emit("close");
+}
+
+// --- Orchestration watchers ---
+
+// When dropdown opens/closes: load options, init keyboard nav, focus
 watch(
   [isOpened, isSelectVisible],
   async ([newIsOpened, newIsSelectVisible]) => {
@@ -796,12 +569,15 @@ watch(
 
       nextTick(() => {
         popper.update();
-        if (dropdownRef.value) {
-          keyboardNavigation.initKeyboardNavigation(dropdownRef.value);
-          if (props.searchable && searchRef.value) {
-            searchRef.value.focus();
+        const dropdownEl = selectDropdownRef.value?.dropdownElRef;
+        const searchInput = selectDropdownRef.value?.searchInputRef;
+
+        if (dropdownEl) {
+          keyboardNavigation.initKeyboardNavigation(dropdownEl);
+          if (props.searchable && searchInput) {
+            searchInput.focus();
           } else {
-            const firstFocusable = dropdownRef.value.querySelector(
+            const firstFocusable = dropdownEl.querySelector(
               '.vc-select__option[tabindex="0"], .vc-select__search-input[tabindex="0"]',
             ) as HTMLElement | null;
 
@@ -815,449 +591,58 @@ watch(
       });
     } else if (!newIsOpened) {
       keyboardNavigation.cleanupKeyboardNavigation();
+      clearSearch();
       await onDropdownClose();
     }
   },
   { immediate: false },
 );
-
-watch(
-  () => props.options,
-  async (newOptionsSource) => {
-    optionsList.value = [];
-    optionsTemp.value = [];
-    totalItems.value = 0;
-
-    if (isSelectVisible.value) {
-      if (Array.isArray(newOptionsSource)) {
-        optionsList.value = [...newOptionsSource] as Option[];
-        optionsTemp.value = optionsList.value;
-        totalItems.value = optionsList.value.length;
-      }
-
-      if (isOpened.value && typeof newOptionsSource === "function") {
-        await loadOptionsForOpenDropdown();
-      }
-    }
-  },
-  { deep: false },
-);
-
-watch(
-  () => popper.isPositioned.value,
-  (newVal) => {
-    if (newVal) {
-      popper.update();
-    }
-  },
-);
-
-async function loadOptionsForOpenDropdown() {
-  if (props.options && typeof props.options === "function" && !listLoading.value) {
-    try {
-      listLoading.value = true;
-      const data = await props.options(filterString.value, optionsList.value.length);
-      if (filterString.value || optionsList.value.length === 0) {
-        optionsList.value = (data?.results as Option[]) || [];
-      } else {
-        optionsList.value = _.unionBy<Option>(optionsList.value, (data?.results as Option[]) || [], "id");
-      }
-      totalItems.value = data?.totalCount || 0;
-      optionsTemp.value = optionsList.value;
-    } catch (e) {
-      console.error("Error in loadOptionsForOpenDropdown:", e);
-      optionsList.value = [];
-      totalItems.value = 0;
-    } finally {
-      listLoading.value = false;
-    }
-  }
-}
-
-async function onLoadMore() {
-  if (props.options && typeof props.options === "function") {
-    try {
-      listLoading.value = true;
-      const data = await props.options(filterString.value, optionsList.value.length);
-      optionsList.value = _.unionBy<Option>(optionsList.value, data?.results as Option[], "id");
-
-      totalItems.value = data?.totalCount;
-      optionsTemp.value = optionsList.value;
-    } finally {
-      listLoading.value = false;
-    }
-  }
-}
-
-const hasNextPage = computed(() => {
-  return optionsList.value.length < totalItems.value;
-});
-
-const innerValue = computed((): Option[] => {
-  const mapNull = props.mapOptions === true && props.multiple !== true;
-
-  const val =
-    props.modelValue !== undefined && (props.modelValue !== null || mapNull === true)
-      ? props.multiple === true && Array.isArray(props.modelValue)
-        ? props.modelValue
-        : [props.modelValue]
-      : [];
-
-  if (props.mapOptions === true && Array.isArray(optionsList.value) === true) {
-    const cache = props.mapOptions === true && innerValueCache !== undefined ? innerValueCache : [];
-
-    const values = val.map((v) => getOption(v, cache));
-
-    return props.modelValue === null && mapNull === true ? values.filter((v) => v !== null) : values;
-  }
-
-  return val;
-});
-
-watch(
-  innerValue,
-  (val) => {
-    innerValueCache = val;
-  },
-  { immediate: true },
-);
-
-const selectedScope = computed(
-  (): {
-    index: number;
-    opt: Option;
-    selected: boolean;
-    toggleOption: (opt: Option) => void;
-    removeAtIndex: (index: number) => void;
-  }[] => {
-    return innerValue.value.map((opt: Option, i: number) => ({
-      index: i,
-      opt,
-      selected: true,
-      toggleOption,
-      removeAtIndex,
-    }));
-  },
-);
-
-const hasValue = computed(() => fieldValueIsFilled(innerValue.value));
-
-const innerOptionsValue = computed(() => innerValue.value.map((opt) => getOptionValue.value(opt)));
-
-const optionScope = computed(() => {
-  return optionsList.value.map((opt, i) => {
-    return {
-      index: i,
-      opt,
-      selected: isOptionSelected(opt) === true,
-      label: getOptionLabel.value(opt),
-      toggleOption,
-    };
-  });
-});
-
-const dropdownStyle = computed(() => {
-  return {
-    top: `${popper.y.value ?? 0}px`,
-    left: `${popper.x.value ?? 0}px`,
-    ...popper.middlewareData.value.sameWidthChangeBorders,
-  };
-});
-
-function getPropValueFn(propValue: OptionProp<Option>, defaultVal: OptionProp<Option>) {
-  const val = propValue !== undefined ? propValue : defaultVal;
-
-  if (typeof val === "function") {
-    return val;
-  } else {
-    return (opt: Option) => {
-      // Support for primitive types (string, number, etc.)
-      if (opt === null || typeof opt !== "object") {
-        return opt;
-      }
-
-      if (val && val in opt) {
-        return opt[val as keyof Option];
-      } else {
-        return opt;
-      }
-    };
-  }
-}
-
-function getOption(value: Option, valueCache: Option[]) {
-  const fn = (opt: Option) => _.isEqual(getOptionValue.value(opt), value);
-  return defaultValue.value.find(fn) || optionsList.value.find(fn) || valueCache.find(fn) || value;
-}
-
-function fieldValueIsFilled(val: Option[]) {
-  return val !== undefined && val !== null && ("" + val).length > 0;
-}
-
-function getEmittingOptionValue(opt: Option) {
-  return getOptionLabel.value(opt);
-}
-
-function removeAtIndex(index: number) {
-  if (index > -1 && index < innerValue.value.length) {
-    if (props.multiple === true) {
-      const model = props.modelValue.slice();
-      model.splice(index, 1);
-      emit("update:modelValue", model);
-    } else {
-      emit("update:modelValue", null);
-    }
-  }
-}
-
-function isOptionSelected(opt: Option) {
-  const val = getOptionValue.value(opt);
-
-  return innerOptionsValue.value.find((v) => _.isEqual(v, val)) !== void 0;
-}
-
-const onDropdownClose = async () => {
-  filterString.value = undefined;
-
-  if (searchRef.value) {
-    searchRef.value.value = "";
-  }
-
-  if (isSelectVisible.value) {
-    if (props.options && typeof props.options === "function") {
-      try {
-        listLoading.value = true;
-        const data = await props.options(undefined, 0);
-        optionsList.value = (data?.results as Option[]) || [];
-        totalItems.value = data?.totalCount || 0;
-      } catch (e) {
-        console.error("Error resetting optionsList on dropdown close:", e);
-        optionsList.value = [];
-        totalItems.value = 0;
-      } finally {
-        listLoading.value = false;
-      }
-    } else if (props.options && Array.isArray(props.options)) {
-      optionsList.value = [...props.options] as Option[];
-      totalItems.value = optionsList.value.length;
-    }
-  } else if (props.options && typeof props.options === "function") {
-    optionsList.value = [];
-    totalItems.value = 0;
-  }
-
-  optionsTemp.value = optionsList.value;
-};
-
-function toggleDropdown() {
-  if (props.disabled) return;
-
-  // Ensure isSelectVisible is true when opening dropdown (fallback for iframe)
-  if (!isOpened.value && !isSelectVisible.value && selectRootRef.value) {
-    const rect = selectRootRef.value.getBoundingClientRect();
-    const isVisible =
-      rect.top < window.innerHeight && rect.bottom > 0 && rect.left < window.innerWidth && rect.right > 0;
-    if (isVisible) {
-      isSelectVisible.value = true;
-    }
-  }
-
-  isOpened.value = !isOpened.value;
-
-  if (isOpened.value) {
-    nextTick(() => {
-      if (dropdownRef.value) {
-        keyboardNavigation.initKeyboardNavigation(dropdownRef.value);
-
-        if (props.searchable && searchRef.value) {
-          searchRef.value.focus();
-        } else {
-          keyboardNavigation.focusFirstElement();
-        }
-      }
-    });
-  } else {
-    keyboardNavigation.cleanupKeyboardNavigation();
-  }
-}
-
-function sameWidthChangeBorders() {
-  return {
-    name: "sameWidthChangeBorders",
-    fn: ({ rects, placement, x, y }: MiddlewareState) => {
-      let borderTop;
-      let borderBottom;
-      let borderRadius;
-      let boxShadow;
-      if (placement === "top") {
-        borderTop = "1px solid var(--select-border-color)";
-        borderBottom = "1px solid var(--select-background-color)";
-        borderRadius = "var(--select-border-radius) var(--select-border-radius) 0 0";
-        boxShadow = "3px -9px 15px -3px rgba(0, 0, 0, 0.08), 0px 0px 6px -2px rgba(0, 0, 0, 0.1)";
-      } else {
-        borderBottom = "1px solid var(--select-border-color)";
-        borderTop = "1px solid var(--select-background-color)";
-        borderRadius = "0 0 var(--select-border-radius) var(--select-border-radius)";
-        boxShadow = "3px 9px 15px -3px rgba(0, 0, 0, 0.08), 0px 0px 6px -2px rgba(0, 0, 0, 0.1)";
-      }
-
-      const width = `${rects.reference.width}px`;
-
-      return {
-        x,
-        y,
-        data: props.outline
-          ? {
-              borderTop,
-              borderBottom,
-              borderRadius,
-              width,
-              boxShadow,
-            }
-          : {
-              border: "1px solid var(--select-border-color)",
-              width: "max-content",
-            },
-      };
-    },
-  };
-}
-
-function toggleOption(opt: Option) {
-  if (opt === void 0) {
-    return;
-  }
-
-  const optValue = getOptionValue.value(opt) as Option[];
-
-  if (props.multiple !== true) {
-    if (innerValue.value.length === 0 || _.isEqual(getOptionValue.value(innerValue.value[0]), optValue) !== true) {
-      emit("update:modelValue", props.emitValue === true ? optValue : opt);
-    }
-
-    isOpened.value = false;
-    emit("close");
-    return;
-  }
-
-  if (innerValue.value.length === 0) {
-    const val = props.emitValue === true ? optValue : opt;
-    emit("update:modelValue", props.multiple === true ? ([val] as Option[]) : (val as Option));
-    return;
-  }
-
-  const model = props.modelValue.slice();
-  const index = innerOptionsValue.value.findIndex((v) => _.isEqual(v, optValue));
-
-  if (index > -1) {
-    model.splice(index, 1);
-  } else {
-    const val = props.emitValue === true ? optValue : opt;
-    model.push(val);
-  }
-
-  emit("update:modelValue", model);
-
-  if (isOpened.value) {
-    popper.update();
-  }
-}
-
-async function onSearch(value: string) {
-  filterString.value = value;
-  if (props.options && typeof props.options === "function") {
-    try {
-      listLoading.value = true;
-
-      const data = await props.options(filterString.value);
-
-      optionsList.value = data?.results as Option[];
-      totalItems.value = data?.totalCount;
-    } finally {
-      listLoading.value = false;
-    }
-  } else {
-    optionsList.value = optionsTemp.value.filter((x: Option) => {
-      const label = getOptionLabel.value(x);
-      return String(label).toLowerCase().includes(filterString.value.toLowerCase());
-    });
-  }
-}
-
-function onInput(e: Event) {
-  if (!e || !e.target) {
-    return;
-  }
-
-  const newValue = (e.target as HTMLInputElement).value;
-  emitValueFunc(newValue);
-}
-
-function emitValueFunc(val: string) {
-  emitValueFn = () => {
-    emit("search", val);
-    onSearch(val);
-    emitValueFn = undefined;
-  };
-
-  if (props.debounce !== undefined) {
-    clearTimeout(emitTimer);
-    emitTimer = setTimeout(emitValueFn, +props.debounce);
-  } else {
-    emitValueFn();
-  }
-}
-
-function onReset() {
-  if (props.multiple) {
-    emit("update:modelValue", []);
-    return;
-  }
-  emit("update:modelValue", null);
-}
-
-const keyboardNavigation = useKeyboardNavigation({
-  onEnter: (element: HTMLElement) => {
-    const index = parseInt(element.getAttribute("data-index") || "0", 10);
-    if (optionScope.value && optionScope.value[index]) {
-      optionScope.value[index].toggleOption(optionScope.value[index].opt);
-    }
-  },
-  onEscape: () => {
-    isOpened.value = false;
-    emit("close");
-  },
-});
 </script>
 
 <style lang="scss">
 :root {
   --select-height: 36px;
-  --select-height-small: 28px;
-  --select-border-radius: 4px;
+  --select-height-small: 32px;
+  --select-border-radius: 6px;
   --select-border-color: var(--neutrals-300);
   --select-text-color: var(--neutrals-800);
-  --select-padding: 10px;
+  --select-padding: 12px;
 
+  // Trigger — transparent bg (shadcn pattern)
   --select-background-color: var(--additional-50);
 
   --select-placeholder-color: var(--neutrals-400);
-  --select-chevron-color: var(--primary-500);
-  --select-chevron-color-hover: var(--primary-600);
-  --select-clear-color: var(--primary-500);
-  --select-clear-color-hover: var(--primary-600);
+
+  // Chevron & Clear — muted instead of primary
+  --select-chevron-color: var(--neutrals-500);
+  --select-chevron-color-hover: var(--neutrals-700);
+  --select-clear-color: var(--neutrals-400);
+  --select-clear-color-hover: var(--neutrals-600);
 
   --select-loading-color: var(--info-500);
-  --select-option-background-color-hover: var(--accent-100);
-  --select-option-background-color-selected: var(--accent-200);
-  --select-multiple-options-background-color: var(--additional-50);
-  --select-multiple-options-border-color: var(--secondary-200);
+
+  // Options — neutral hover, soft selected
+  --select-option-background-color-hover: var(--neutrals-100);
+  --select-option-background-color-selected: var(--accent-100);
+  --select-option-check-color: var(--primary-500);
+
+  // Multi-select chips
+  --select-multiple-options-background-color: var(--neutrals-100);
+  --select-multiple-options-border-color: var(--neutrals-200);
+
+  // Dropdown
+  --select-dropdown-bg: var(--additional-50);
+  --select-dropdown-border: var(--neutrals-200);
+  --select-dropdown-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+
+  // Search
+  --select-search-border-color: var(--neutrals-200);
+  --select-search-background-color: var(--additional-50);
   --select-border-color-input: var(--secondary-200);
 
-  --select-search-background-color: var(--additional-50);
-
   // Focus
-  --select-border-color-focus: var(--primary-100);
+  --select-border-color-focus: var(--primary-500);
+  --select-focus-ring-color: rgba(59, 130, 246, 0.3);
 
   // Disabled
   --select-background-color-disabled: var(--neutrals-200);
@@ -1265,6 +650,7 @@ const keyboardNavigation = useKeyboardNavigation({
 
   // Error
   --select-border-color-error: var(--danger-500);
+  --select-error-ring-color: rgba(239, 68, 68, 0.2);
 }
 
 .vc-select {
@@ -1273,9 +659,10 @@ const keyboardNavigation = useKeyboardNavigation({
       display: none;
     }
 
-    .vc-select__field {
+    .vc-select__field-wrapper {
       border: none;
       background-color: transparent !important;
+      box-shadow: none;
     }
   }
 
@@ -1305,7 +692,10 @@ const keyboardNavigation = useKeyboardNavigation({
   }
 
   &__field-wrapper {
-    @apply tw-relative tw-flex tw-flex-auto tw-overflow-x-clip tw-truncate tw-rounded-[var(--select-border-radius)];
+    @apply tw-relative tw-flex tw-flex-auto tw-overflow-x-clip tw-truncate tw-rounded-[var(--select-border-radius)]
+      tw-border tw-border-solid tw-border-[color:var(--select-border-color)]
+      tw-bg-[color:var(--select-background-color)]
+      tw-shadow-sm tw-transition-[color,box-shadow] tw-duration-150 tw-ease-in-out;
 
     &--default {
       @apply tw-min-h-[var(--select-height)];
@@ -1317,7 +707,7 @@ const keyboardNavigation = useKeyboardNavigation({
   }
 
   &__field {
-    @apply tw-truncate tw-relative tw-box-border tw-border tw-border-solid tw-border-[color:var(--select-border-color)] tw-rounded-[var(--select-border-radius)] tw-bg-[color:var(--select-background-color)] tw-flex tw-flex-col tw-flex-nowrap tw-flex-auto tw-items-stretch tw-text-[color:var(--select-text-color)];
+    @apply tw-truncate tw-relative tw-box-border tw-flex tw-flex-col tw-flex-nowrap tw-flex-auto tw-items-stretch tw-text-[color:var(--select-text-color)];
   }
 
   &__field-inner {
@@ -1325,7 +715,7 @@ const keyboardNavigation = useKeyboardNavigation({
   }
 
   &__field-content {
-    @apply tw-flex tw-flex-nowrap tw-flex-auto tw-h-full tw-px-[10px];
+    @apply tw-flex tw-flex-nowrap tw-flex-auto tw-h-full tw-px-[var(--select-padding)];
   }
 
   &__prepend-inner,
@@ -1367,7 +757,9 @@ const keyboardNavigation = useKeyboardNavigation({
   }
 
   &__multiple-item {
-    @apply tw-bg-[color:var(--select-multiple-options-background-color)] tw-border tw-border-solid tw-border-[color:var(--select-multiple-options-border-color)] tw-rounded-[2px] tw-flex tw-items-center tw-h-7 tw-box-border tw-px-2;
+    @apply tw-bg-[color:var(--select-multiple-options-background-color)] tw-border tw-border-solid
+      tw-border-[color:var(--select-multiple-options-border-color)] tw-rounded-[4px]
+      tw-flex tw-items-center tw-h-6 tw-box-border tw-px-2 tw-text-xs tw-gap-1;
   }
 
   &__loading {
@@ -1375,7 +767,7 @@ const keyboardNavigation = useKeyboardNavigation({
   }
 
   &__icon-remove {
-    @apply tw-text-[color:var(--select-clear-color)] tw-ml-2 tw-cursor-pointer hover:tw-text-[color:var(--select-clear-color-hover)];
+    @apply tw-text-[color:var(--select-clear-color)] tw-cursor-pointer hover:tw-text-[color:var(--select-clear-color-hover)];
   }
 
   &__clear {
@@ -1391,7 +783,9 @@ const keyboardNavigation = useKeyboardNavigation({
   }
 
   &__chevron {
-    @apply tw-flex-nowrap tw-text-[color:var(--select-chevron-color)] hover:tw-text-[color:var(--select-chevron-color-hover)];
+    @apply tw-flex-nowrap tw-text-[color:var(--select-chevron-color)] tw-opacity-50
+      tw-transition-transform tw-duration-200
+      hover:tw-text-[color:var(--select-chevron-color-hover)] hover:tw-opacity-100;
   }
 
   &__hint-error {
@@ -1399,7 +793,7 @@ const keyboardNavigation = useKeyboardNavigation({
   }
 
   &__error-message {
-    @apply tw-mt-1 tw-text-[color:var(--select-border-color-error)];
+    @apply tw-mt-1 [--hint-color:var(--select-border-color-error)];
   }
 
   &__hint {
@@ -1407,11 +801,37 @@ const keyboardNavigation = useKeyboardNavigation({
   }
 
   &__dropdown {
-    @apply tw-flex tw-flex-col tw-box-border tw-max-h-72 tw-h-auto tw-z-[101] tw-overflow-hidden tw-absolute tw-bg-[color:var(--select-background-color)] tw-p-2;
+    @apply tw-flex tw-flex-col tw-box-border tw-max-h-72 tw-h-auto tw-z-[101]
+      tw-overflow-hidden tw-absolute
+      tw-bg-[color:var(--select-dropdown-bg)]
+      tw-border tw-border-solid tw-border-[color:var(--select-dropdown-border)]
+      tw-rounded-[var(--select-border-radius)]
+      tw-p-1;
+    box-shadow: var(--select-dropdown-shadow);
+  }
+
+  &__viewport {
+    @apply tw-overflow-y-auto tw-overflow-x-hidden tw-flex-1;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  &__scroll-button {
+    @apply tw-flex tw-items-center tw-justify-center tw-py-1
+      tw-cursor-default tw-shrink-0
+      tw-text-[color:var(--select-placeholder-color)]
+      tw-transition-opacity tw-duration-150;
   }
 
   &__search-input {
-    @apply tw-w-full tw-box-border tw-border tw-border-solid tw-border-[color:var(--select-border-color-input)] tw-bg-transparent tw-rounded-[var(--select-border-radius)] tw-h-8 tw-leading-8 tw-outline-none tw-mb-3 tw-px-2;
+    @apply tw-w-full tw-box-border tw-border tw-border-solid tw-border-[color:var(--select-search-border-color)] tw-bg-transparent tw-rounded-[var(--select-border-radius)] tw-h-8 tw-leading-8 tw-outline-none tw-mb-2 tw-px-2 tw-text-sm
+      focus:tw-border-[color:var(--select-border-color-focus)] focus:tw-ring-[2px] focus:tw-ring-[color:var(--select-focus-ring-color)]
+      tw-transition-[color,box-shadow] tw-duration-150 tw-ease-in-out;
   }
 
   &__no-options {
@@ -1423,11 +843,21 @@ const keyboardNavigation = useKeyboardNavigation({
   }
 
   &__option {
-    @apply tw-flex tw-items-center tw-min-h-9 tw-my-1 tw-box-border tw-px-2 tw-rounded-[var(--select-border-radius)] tw-cursor-pointer hover:tw-bg-[color:var(--select-option-background-color-hover)] tw-text-sm;
+    @apply tw-flex tw-items-center tw-min-h-8 tw-box-border
+      tw-py-1.5 tw-pr-8 tw-pl-2
+      tw-rounded-[4px]
+      tw-cursor-pointer tw-text-sm tw-relative tw-select-none
+      hover:tw-bg-[color:var(--select-option-background-color-hover)];
 
     &--selected {
-      @apply tw-bg-[color:var(--select-option-background-color-selected)] hover:tw-bg-[color:var(--select-option-background-color-selected)];
+      @apply tw-bg-[color:var(--select-option-background-color-selected)]
+        hover:tw-bg-[color:var(--select-option-background-color-selected)];
     }
+  }
+
+  &__check-icon {
+    @apply tw-absolute tw-right-2 tw-flex tw-items-center tw-justify-center
+      tw-text-[color:var(--select-option-check-color)];
   }
 
   &__list-loading-indicator {
@@ -1443,33 +873,72 @@ const keyboardNavigation = useKeyboardNavigation({
   }
 
   &.vc-select_opened &__chevron {
-    @apply tw-rotate-180;
-  }
-
-  &.vc-select_opened &__field {
-    @apply tw-rounded-[var(--select-border-radius)];
+    @apply tw-rotate-180 tw-opacity-100;
   }
 
   &.vc-select_opened &__field-wrapper {
-    @apply tw-outline tw-outline-2 tw-outline-[color:var(--select-border-color-focus)];
+    @apply tw-border-[color:var(--select-border-color-focus)]
+      tw-ring-[3px] tw-ring-[color:var(--select-focus-ring-color)]
+      tw-outline-none;
   }
 
   &.vc-select_error &__field-wrapper {
-    @apply tw-border tw-border-solid tw-border-[color:var(--select-border-color-error)];
+    @apply tw-border tw-border-solid tw-border-[color:var(--select-border-color-error)]
+      tw-ring-[3px] tw-ring-[color:var(--select-error-ring-color)];
+  }
+
+  &.vc-select_disabled &__field-wrapper {
+    @apply tw-opacity-50;
   }
 
   &.vc-select_disabled &__field-wrapper,
   &.vc-select_disabled &__field,
   &.vc-select_disabled &__input {
-    @apply tw-bg-[color:var(--select-background-color-disabled)] tw-text-[color:var(--select-disabled-text-color)] tw-cursor-auto;
+    @apply tw-cursor-not-allowed tw-pointer-events-none;
   }
 
-  &_focused .vc-select__field {
-    @apply tw-outline-2 tw-outline tw-outline-[color:var(--select-border-color-focus)] tw-outline-offset-[0px];
+  &_focused .vc-select__field-wrapper {
+    @apply tw-border-[color:var(--select-border-color-focus)]
+      tw-ring-[3px] tw-ring-[color:var(--select-focus-ring-color)]
+      tw-outline-none;
   }
 
   &.vc-select_has-hint-or-error {
     @apply tw-pb-5;
   }
+
+  .slide-up-enter-active,
+  .slide-up-leave-active {
+    transition: all 0.25s ease-out;
+  }
+
+  .slide-up-enter-from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+
+  .slide-up-leave-to {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+}
+
+// Dropdown enter/leave transition (fade + scale, shadcn style)
+.select-dropdown-enter-active {
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.select-dropdown-leave-active {
+  transition: opacity 0.1s ease, transform 0.1s ease;
+}
+
+.select-dropdown-enter-from {
+  opacity: 0;
+  transform: scale(0.95) translateY(-4px);
+}
+
+.select-dropdown-leave-to {
+  opacity: 0;
+  transform: scale(0.95) translateY(-4px);
 }
 </style>

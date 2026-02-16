@@ -1,106 +1,100 @@
 <template>
-  <div class="vc-invite-page">
+  <VcAuthLayout
+    :logo="customization.logo"
+    :background="background"
+    :title="t('INVITATION.TITLE')"
+    :subtitle="t('INVITATION.SUBTITLE')"
+  >
     <VcLoading
       v-if="loading"
       active
-    ></VcLoading>
+    />
 
-    <VcLoginForm
-      :logo="customization.logo"
-      :background="background"
-      :title="t('INVITATION.TITLE')"
-    >
-      <VcForm>
+    <VcForm>
+      <VcInput
+        class="tw-mb-4"
+        :label="t('INVITATION.FIELDS.EMAIL.LABEL')"
+        :model-value="userName"
+        name="username"
+        disabled
+      />
+
+      <Field
+        v-slot="{ field, errorMessage, handleChange, errors }"
+        :label="t('INVITATION.FIELDS.PASSWORD.LABEL')"
+        :model-value="form.password"
+        rules="required"
+        name="password"
+      >
         <VcInput
-          class="vc-invite-page__input"
-          :label="t('INVITATION.FIELDS.EMAIL.LABEL')"
-          :model-value="userName"
-          name="username"
-          disabled
-        ></VcInput>
-
-        <Field
-          v-slot="{ field, errorMessage, handleChange, errors }"
+          v-bind="field"
+          ref="passwordField"
+          v-model="form.password"
+          class="tw-mb-4"
           :label="t('INVITATION.FIELDS.PASSWORD.LABEL')"
-          :model-value="form.password"
-          rules="required"
-          name="password"
-        >
-          <VcInput
-            v-bind="field"
-            ref="passwordField"
-            v-model="form.password"
-            class="vc-invite-page__input"
-            :label="t('INVITATION.FIELDS.PASSWORD.LABEL')"
-            :placeholder="t('INVITATION.FIELDS.PASSWORD.PLACEHOLDER')"
-            type="password"
-            :disabled="!form.tokenIsValid"
-            :error="!!errors.length"
-            :error-message="errorMessage"
-            required
-            @update:model-value="
-              (e) => {
-                handleChange(e);
-                validate();
-              }
-            "
-          ></VcInput>
-        </Field>
+          :placeholder="t('INVITATION.FIELDS.PASSWORD.PLACEHOLDER')"
+          type="password"
+          :disabled="!form.tokenIsValid"
+          :error="!!errors.length"
+          :error-message="errorMessage"
+          required
+          @update:model-value="
+            (e) => {
+              handleChange(e);
+              validate();
+            }
+          "
+        />
+      </Field>
 
-        <Field
-          v-slot="{ field, errorMessage, handleChange, errors }"
+      <Field
+        v-slot="{ field, errorMessage, handleChange, errors }"
+        :label="t('INVITATION.FIELDS.CONFIRM_PASSWORD.LABEL')"
+        :model-value="form.confirmPassword"
+        rules="required"
+        name="confirm_password"
+      >
+        <VcInput
+          v-bind="field"
+          ref="confirmPasswordField"
+          v-model="form.confirmPassword"
+          class="tw-mb-6"
           :label="t('INVITATION.FIELDS.CONFIRM_PASSWORD.LABEL')"
-          :model-value="form.confirmPassword"
-          rules="required"
-          name="confirm_password"
-        >
-          <VcInput
-            v-bind="field"
-            ref="confirmPasswordField"
-            v-model="form.confirmPassword"
-            class="vc-invite-page__input--small"
-            :label="t('INVITATION.FIELDS.CONFIRM_PASSWORD.LABEL')"
-            :placeholder="t('INVITATION.FIELDS.CONFIRM_PASSWORD.PLACEHOLDER')"
-            :disabled="!form.tokenIsValid"
-            type="password"
-            :error="!!errors.length"
-            :error-message="errorMessage"
-            required
-            @update:model-value="
-              (e) => {
-                handleChange(e);
-                validate();
-              }
-            "
-            @keyup.enter="acceptInvitation"
-          ></VcInput>
-        </Field>
+          :placeholder="t('INVITATION.FIELDS.CONFIRM_PASSWORD.PLACEHOLDER')"
+          :disabled="!form.tokenIsValid"
+          type="password"
+          :error="!!errors.length"
+          :error-message="errorMessage"
+          required
+          @update:model-value="
+            (e) => {
+              handleChange(e);
+              validate();
+            }
+          "
+          @keyup.enter="acceptInvitation"
+        />
+      </Field>
 
-        <div class="vc-invite-page__button-container">
-          <span
-            v-if="$isDesktop.value"
-            class="vc-invite-page__spacer"
-          ></span>
-          <vc-button
-            :disabled="loading || !form.isValid || !form.tokenIsValid"
-            @click="acceptInvitation"
-          >
-            {{ t("INVITATION.ACCEPT_INVITATION") }}
-          </vc-button>
-        </div>
+      <VcButton
+        variant="primary"
+        class="tw-w-full"
+        :disabled="loading || !form.isValid || !form.tokenIsValid"
+        :loading="loading"
+        @click="acceptInvitation"
+      >
+        {{ t("INVITATION.ACCEPT_INVITATION") }}
+      </VcButton>
 
-        <VcHint
-          v-for="error in form.errors"
-          :key="error"
-          class="vc-invite-page__hint"
-          style="color: #f14e4e"
-        >
-          <!-- TODO: stylizing-->
-          {{ t(`INVITATION.ERRORS.${error}`) }}
-        </VcHint>
-      </VcForm>
-    </VcLoginForm>
-  </div>
+      <VcHint
+        v-for="error in form.errors"
+        :key="error"
+        class="tw-mt-3 tw-text-[color:var(--danger-500)]"
+      >
+        {{ t(`INVITATION.ERRORS.${error}`) }}
+      </VcHint>
+    </VcForm>
+  </VcAuthLayout>
 </template>
 
 <script lang="ts" setup>
@@ -133,6 +127,7 @@ const { t } = useI18n({ useScope: "global" });
 const isFormValid = useIsFormValid();
 const isDirty = useIsFormDirty();
 const { uiSettings, loading: customizationLoading } = useSettings();
+
 const form = reactive<{
   isValid: boolean;
   tokenIsValid: boolean;
@@ -175,43 +170,13 @@ const acceptInvitation = async () => {
     const result = await signIn(props.userName, form.password);
     if (result.succeeded) {
       router.push("/");
-    } else {
-      // form.errors = [result.errorCode as string];
     }
   } else {
     form.errors = result.errors as string[];
   }
 };
 
-const customization = computed(() => {
-  return {
-    logo: !customizationLoading.value ? uiSettings.value?.logo || props.logo : "",
-  };
-});
+const customization = computed(() => ({
+  logo: !customizationLoading.value ? uiSettings.value?.logo || props.logo : "",
+}));
 </script>
-
-<style lang="scss">
-.vc-invite-page {
-  @apply tw-w-full tw-h-full tw-box-border tw-flex tw-flex-col tw-items-center tw-m-0;
-}
-
-.vc-invite-page__input {
-  @apply tw-mb-4 tw-mt-1;
-}
-
-.vc-invite-page__input--small {
-  @apply tw-mb-4;
-}
-
-.vc-invite-page__button-container {
-  @apply tw-flex tw-justify-center tw-items-center tw-pt-2;
-}
-
-.vc-invite-page__spacer {
-  @apply tw-grow tw-basis-0;
-}
-
-.vc-invite-page__hint {
-  @apply tw-mt-3;
-}
-</style>

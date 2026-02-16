@@ -20,10 +20,6 @@
   },
   "COMPONENTS": {
     "ATOMS": {
-      "VC_CONTAINER": {
-        "PULL_TO_REFRESH": "Pull to refresh",
-        "REFRESHING": "Refreshing..."
-      },
       "VC_BANNER": {
         "SHOW_MORE": "Show more",
         "SHOW_LESS": "Show less"
@@ -48,7 +44,7 @@
         "JUMP": "Jump to page:"
       },
       "VC_MULTIVALUE": {
-        "ADD": "Add +"
+        "ADD": "Add"
       }
     },
     "ORGANISMS": {
@@ -88,7 +84,9 @@
           "TITLE": "Error details",
           "COPY_ERROR": "copy content"
         },
-        "MORE": "More"
+        "MORE": "More",
+        "TOOLBAR": "Toolbar actions",
+        "CLOSE_MENU": "Close menu"
       },
       "VC_BLADE_HEADER": {
         "UNSAVED_CHANGES": "Has unsaved changes",
@@ -98,18 +96,44 @@
         "CURRENT_PAGE_SELECTED": "All items in this page are selected.",
         "SELECT_ALL": "Select all items",
         "ALL_SELECTED": "All items are selected.",
+        "ALL_SELECTED_COUNT": "All {count} items selected",
+        "SELECT_ALL_COUNT": "Select all {count} items",
         "CANCEL": "Clear selection",
         "ALL_ACTIONS": "All actions",
         "MORE": "More",
         "ALL_FILTERS": "Filters",
         "SEARCH": "Search...",
         "EMPTY": "List is empty.",
+        "EMPTY_TITLE": "No data",
+        "EMPTY_DESCRIPTION": "No items to display",
         "NOT_FOUND": "Nothing found.",
         "TOTALS": "Totals:",
         "ACTIONS": "Actions",
         "NOT_SET": "Not set",
         "SELECTED": "Selected",
-        "SELECT_ALL_TRUNCATED": "Select all"
+        "SELECT_ALL_TRUNCATED": "Select all",
+        "PULL_TO_REFRESH": "Pull to refresh",
+        "RELEASE_TO_REFRESH": "Release to refresh",
+        "REFRESHING": "Refreshing...",
+        "ADD_ROW": "Add row",
+        "LOADING": "Loading...",
+        "PAGE_INFO": "Page {current} of {total}",
+        "COLUMN_FILTER": {
+          "APPLY": "Apply",
+          "CLEAR": "Clear",
+          "FROM": "From",
+          "TO": "To"
+        },
+        "GLOBAL_FILTERS": {
+          "BUTTON": "Filters",
+          "TITLE": "Filters"
+        },
+        "COLUMN_SWITCHER": {
+          "BUTTON": "Columns",
+          "TITLE": "Show/Hide Columns",
+          "SHOW_ALL": "Show All",
+          "RESET": "Reset"
+        }
       },
 
       "VC_POPUP": {
@@ -130,6 +154,8 @@
     },
     "CHANGE_PASSWORD": {
       "TITLE": "Change password",
+      "TITLE_FORCED": "Password expired",
+      "SUBTITLE_FORCED": "Please set a new password",
       "FORCED": {
         "LABEL": "Your password has expired. You must change the password to continue using the manager."
       },
@@ -178,7 +204,8 @@
     }
   },
   "INVITATION": {
-    "TITLE": "New user activation",
+    "TITLE": "You're invited!",
+    "SUBTITLE": "Set a password for your account",
     "FIELDS": {
       "EMAIL": {
         "LABEL": "Email"
@@ -207,6 +234,8 @@
     }
   },
   "LOGIN": {
+    "TITLE": "Welcome back",
+    "SUBTITLE": "Sign in to your account",
     "FIELDS": {
       "LOGIN": {
         "LABEL": "Username",
@@ -223,16 +252,31 @@
       }
     },
     "FORGOT_PASSWORD_BUTTON": "Forgot your password?",
-    "BUTTON": "Log in",
-    "OR": "OR",
+    "BUTTON": "Sign in",
+    "OR": "Or continue with",
     "FORGOT_BUTTON": "Submit",
     "BACK_BUTTON": "Back",
     "BUTTON_OK": "Ok",
     "RESET_EMAIL_TEXT": "We will send you an email with instructions on how to reset your password.",
     "RESET_EMAIL_SENT": "Email with instructions has been sent to you."
   },
+  "FORGOT_PASSWORD": {
+    "TITLE": "Reset your password",
+    "SUBTITLE": "Enter your email and we'll send you a reset link",
+    "FIELDS": {
+      "EMAIL": {
+        "LABEL": "Email",
+        "PLACEHOLDER": "Enter your email address"
+      }
+    },
+    "SEND_BUTTON": "Send reset link",
+    "BACK_TO_LOGIN": "Back to sign in",
+    "SUCCESS_TITLE": "Check your email",
+    "SUCCESS_TEXT": "We sent a reset link to {email}"
+  },
   "PASSWORDRESET": {
-    "TITLE": "Password reset",
+    "TITLE": "Set new password",
+    "SUBTITLE": "Enter your new password below",
     "FIELDS": {
       "PASSWORD": {
         "LABEL": "New password",

@@ -20,10 +20,6 @@
   },
   "COMPONENTS": {
     "ATOMS": {
-      "VC_CONTAINER": {
-        "PULL_TO_REFRESH": "Zum Aktualisieren ziehen",
-        "REFRESHING": "Wird aktualisiert..."
-      },
       "VC_BANNER": {
         "SHOW_MORE": "Mehr anzeigen",
         "SHOW_LESS": "Weniger anzeigen"
@@ -48,7 +44,7 @@
         "JUMP": "Zur Seite springen:"
       },
       "VC_MULTIVALUE": {
-        "ADD": "Hinzufügen +"
+        "ADD": "Hinzufügen"
       }
     },
     "ORGANISMS": {
@@ -88,7 +84,9 @@
           "TITLE": "Fehlerdetails",
           "COPY_ERROR": "Inhalt kopieren"
         },
-        "MORE": "Mehr"
+        "MORE": "Mehr",
+        "TOOLBAR": "Toolbar-Aktionen",
+        "CLOSE_MENU": "Menü schließen"
       },
       "VC_BLADE_HEADER": {
         "UNSAVED_CHANGES": "Hat ungespeicherte Änderungen",
@@ -98,18 +96,44 @@
         "CURRENT_PAGE_SELECTED": "Alle Elemente auf dieser Seite sind ausgewählt.",
         "SELECT_ALL": "Alle Elemente auswählen",
         "ALL_SELECTED": "Alle Elemente sind ausgewählt.",
+        "ALL_SELECTED_COUNT": "Alle {count} Elemente ausgewählt",
+        "SELECT_ALL_COUNT": "Alle {count} Elemente auswählen",
         "CANCEL": "Auswahl aufheben",
         "ALL_ACTIONS": "Alle Aktionen",
         "MORE": "Mehr",
         "ALL_FILTERS": "Filter",
         "SEARCH": "Suchen...",
         "EMPTY": "Liste ist leer.",
+        "EMPTY_TITLE": "Keine Daten",
+        "EMPTY_DESCRIPTION": "Keine Elemente zum Anzeigen",
         "NOT_FOUND": "Nichts gefunden.",
         "TOTALS": "Gesamt:",
         "ACTIONS": "Aktionen",
         "NOT_SET": "Nicht festgelegt",
         "SELECTED": "Ausgewählt",
-        "SELECT_ALL_TRUNCATED": "Alle auswählen"
+        "SELECT_ALL_TRUNCATED": "Alle auswählen",
+        "PULL_TO_REFRESH": "Zum Aktualisieren ziehen",
+        "RELEASE_TO_REFRESH": "Zum Aktualisieren loslassen",
+        "REFRESHING": "Wird aktualisiert...",
+        "ADD_ROW": "Zeile hinzufügen",
+        "LOADING": "Wird geladen...",
+        "PAGE_INFO": "Seite {current} von {total}",
+        "COLUMN_FILTER": {
+          "APPLY": "Anwenden",
+          "CLEAR": "Löschen",
+          "FROM": "Von",
+          "TO": "Bis"
+        },
+        "GLOBAL_FILTERS": {
+          "BUTTON": "Filter",
+          "TITLE": "Filter"
+        },
+        "COLUMN_SWITCHER": {
+          "BUTTON": "Spalten",
+          "TITLE": "Spalten ein-/ausblenden",
+          "SHOW_ALL": "Alle anzeigen",
+          "RESET": "Zurücksetzen"
+        }
       },
 
       "VC_POPUP": {
@@ -130,6 +154,8 @@
     },
     "CHANGE_PASSWORD": {
       "TITLE": "Passwort ändern",
+      "TITLE_FORCED": "Passwort abgelaufen",
+      "SUBTITLE_FORCED": "Bitte legen Sie ein neues Passwort fest",
       "FORCED": {
         "LABEL": "Ihr Passwort ist abgelaufen. Sie müssen das Passwort ändern, um den Manager weiter zu nutzen."
       },
@@ -178,7 +204,8 @@
     }
   },
   "INVITATION": {
-    "TITLE": "Aktivierung neuer Benutzer",
+    "TITLE": "Sie sind eingeladen!",
+    "SUBTITLE": "Legen Sie ein Passwort für Ihr Konto fest",
     "FIELDS": {
       "EMAIL": {
         "LABEL": "E-Mail"
@@ -207,6 +234,8 @@
     }
   },
   "LOGIN": {
+    "TITLE": "Willkommen zurück",
+    "SUBTITLE": "Melden Sie sich bei Ihrem Konto an",
     "FIELDS": {
       "LOGIN": {
         "LABEL": "Benutzername",
@@ -224,15 +253,30 @@
     },
     "FORGOT_PASSWORD_BUTTON": "Passwort vergessen?",
     "BUTTON": "Anmelden",
-    "OR": "ODER",
+    "OR": "Oder fortfahren mit",
     "FORGOT_BUTTON": "Absenden",
     "BACK_BUTTON": "Zurück",
     "BUTTON_OK": "Ok",
     "RESET_EMAIL_TEXT": "Wir senden Ihnen eine E-Mail mit Anweisungen zum Zurücksetzen Ihres Passworts.",
     "RESET_EMAIL_SENT": "Eine E-Mail mit Anweisungen wurde an Sie gesendet."
   },
-  "PASSWORDRESET": {
+  "FORGOT_PASSWORD": {
     "TITLE": "Passwort zurücksetzen",
+    "SUBTITLE": "Geben Sie Ihre E-Mail-Adresse ein und wir senden Ihnen einen Link zum Zurücksetzen",
+    "FIELDS": {
+      "EMAIL": {
+        "LABEL": "E-Mail",
+        "PLACEHOLDER": "Geben Sie Ihre E-Mail-Adresse ein"
+      }
+    },
+    "SEND_BUTTON": "Link zum Zurücksetzen senden",
+    "BACK_TO_LOGIN": "Zurück zur Anmeldung",
+    "SUCCESS_TITLE": "Überprüfen Sie Ihre E-Mail",
+    "SUCCESS_TEXT": "Wir haben einen Link zum Zurücksetzen an {email} gesendet"
+  },
+  "PASSWORDRESET": {
+    "TITLE": "Neues Passwort festlegen",
+    "SUBTITLE": "Geben Sie unten Ihr neues Passwort ein",
     "FIELDS": {
       "PASSWORD": {
         "LABEL": "Neues Passwort",

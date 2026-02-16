@@ -92,7 +92,7 @@ appBarMobileButtonsService.register({
 The App Bar Mobile Buttons Service is typically accessed through the `useAppBarMobileButtons` composable. Here's a real-world example from the `AppBarMobileActions` component:
 
 ```typescript
-// From framework/ui/components/organisms/vc-app/_internal/vc-app-bar/_internal/AppBarMobileActions.vue
+// From framework/ui/components/organisms/vc-app/_internal/app-bar/components/AppBarMobileActions.vue
 <script lang="ts" setup>
 import { VcButton } from "../../../../../../..";
 import { useAppBarMobileButtons } from "../../../../../../../core/composables/useAppBarMobileButtons";
@@ -159,7 +159,7 @@ This implementation demonstrates how the App Bar Mobile Buttons Service:
 The mobile buttons are rendered in the template with their proper event handlers and visibility conditions:
 
 ```vue
-<!-- From framework/ui/components/organisms/vc-app/_internal/vc-app-bar/_internal/AppBarMobileActions.vue -->
+<!-- From framework/ui/components/organisms/vc-app/_internal/app-bar/components/AppBarMobileActions.vue -->
 <template>
   <div
     v-if="$isMobile.value"

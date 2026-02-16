@@ -159,7 +159,7 @@ export function bootstrap(app: App) {
 And here's how it's used in a menu component:
 
 ```typescript
-// From framework/ui/components/organisms/vc-app/_internal/vc-app-menu/vc-app-menu.vue
+// From framework/ui/components/organisms/vc-app/_internal/menu/VcAppMenu.vue
 <script setup lang="ts">
 import { useMenuService } from "../../../../../../core/composables/useMenuService";
 

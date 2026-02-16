@@ -59,6 +59,14 @@
         </template>
       </VcTableFilter>
     </div>
+
+    <!-- Column Switcher slot -->
+    <div
+      v-if="$slots['column-switcher']"
+      class="vc-table-base-header__column-switcher"
+    >
+      <slot name="column-switcher"></slot>
+    </div>
   </div>
 </template>
 
@@ -108,6 +116,10 @@ defineEmits<Emits>();
   }
 
   &__filter-desktop {
+    @apply tw-ml-3;
+  }
+
+  &__column-switcher {
     @apply tw-ml-3;
   }
 

@@ -400,5 +400,8 @@ export * from "./core/constants";
 
 export * from "./shared";
 
+// Shell features
+export * from "./core/shell-features";
+
 // AI Agent Plugin
 export * from "./core/plugins/ai-agent";

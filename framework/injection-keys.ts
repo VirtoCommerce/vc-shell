@@ -1,4 +1,4 @@
-import { InjectionKey, ComputedRef, type Component } from "vue";
+import { InjectionKey, ComputedRef, type Component, type Ref } from "vue";
 import { BladeVNode, IBladeInstance } from "./shared/components/blade-navigation/types";
 import { NotificationTemplateConstructor } from "./core/types";
 import { IToolbarService } from "./core/services/toolbar-service";
@@ -39,6 +39,9 @@ export const ToolbarServiceKey: InjectionKey<IToolbarService> = Symbol("ToolbarS
 // Module keys
 export const DynamicModulesKey: InjectionKey<typeof window.VcShellDynamicModules | undefined> =
   Symbol("DynamicModules");
+
+// App root element key (for scoped Teleport targets)
+export const AppRootElementKey: InjectionKey<Ref<HTMLElement | undefined>> = Symbol("AppRootElement");
 
 // App mode keys
 export const EmbeddedModeKey: InjectionKey<boolean> = Symbol("EmbeddedMode");

@@ -5340,7 +5340,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vc-shell/api-client-generator@npm:1.2.3-beta.1, @vc-shell/api-client-generator@workspace:*, @vc-shell/api-client-generator@workspace:cli/api-client":
+"@vc-shell/api-client-generator@npm:^1.2.4-beta.0, @vc-shell/api-client-generator@workspace:*, @vc-shell/api-client-generator@workspace:cli/api-client":
   version: 0.0.0-use.local
   resolution: "@vc-shell/api-client-generator@workspace:cli/api-client"
   dependencies:
@@ -5358,7 +5358,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vc-shell/config-generator@npm:1.2.3-beta.1, @vc-shell/config-generator@workspace:*, @vc-shell/config-generator@workspace:configs/vite-config":
+"@vc-shell/config-generator@npm:^1.2.4-beta.0, @vc-shell/config-generator@workspace:*, @vc-shell/config-generator@workspace:configs/vite-config":
   version: 0.0.0-use.local
   resolution: "@vc-shell/config-generator@workspace:configs/vite-config"
   dependencies:
@@ -5396,7 +5396,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vc-shell/framework@npm:1.2.3-beta.1, @vc-shell/framework@workspace:framework":
+"@vc-shell/framework@npm:^1.2.4-beta.0, @vc-shell/framework@workspace:framework":
   version: 0.0.0-use.local
   resolution: "@vc-shell/framework@workspace:framework"
   dependencies:
@@ -5470,7 +5470,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vc-shell/release-config@npm:1.2.3-beta.1, @vc-shell/release-config@workspace:configs/release-config":
+"@vc-shell/release-config@npm:^1.2.4-beta.0, @vc-shell/release-config@workspace:configs/release-config":
   version: 0.0.0-use.local
   resolution: "@vc-shell/release-config@workspace:configs/release-config"
   dependencies:
@@ -5566,7 +5566,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vc-shell/ts-config@npm:1.2.3-beta.1, @vc-shell/ts-config@workspace:*, @vc-shell/ts-config@workspace:configs/ts-config":
+"@vc-shell/ts-config@npm:^1.2.4-beta.0, @vc-shell/ts-config@workspace:*, @vc-shell/ts-config@workspace:configs/ts-config":
   version: 0.0.0-use.local
   resolution: "@vc-shell/ts-config@workspace:configs/ts-config"
   languageName: unknown
@@ -6543,11 +6543,11 @@ __metadata:
     "@types/node": "npm:^20.10.5"
     "@typescript-eslint/eslint-plugin": "npm:^7.4.0"
     "@typescript-eslint/parser": "npm:^7.4.0"
-    "@vc-shell/api-client-generator": "npm:1.2.3-beta.1"
-    "@vc-shell/config-generator": "npm:1.2.3-beta.1"
-    "@vc-shell/framework": "npm:1.2.3-beta.1"
-    "@vc-shell/release-config": "npm:1.2.3-beta.1"
-    "@vc-shell/ts-config": "npm:1.2.3-beta.1"
+    "@vc-shell/api-client-generator": "npm:^1.2.4-beta.0"
+    "@vc-shell/config-generator": "npm:^1.2.4-beta.0"
+    "@vc-shell/framework": "npm:^1.2.4-beta.0"
+    "@vc-shell/release-config": "npm:^1.2.4-beta.0"
+    "@vc-shell/ts-config": "npm:^1.2.4-beta.0"
     "@vcmp-vendor-portal/api": "workspace:*"
     "@vcmp-vendor-portal/modules": "workspace:*"
     "@virtocommerce/import-app": "npm:^1.1.2"

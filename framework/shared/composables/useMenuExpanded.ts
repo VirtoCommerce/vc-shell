@@ -4,8 +4,6 @@ import { ref, onScopeDispose } from "vue";
 const STORAGE_KEY_PREFIX = "VC_APP_MENU_EXPANDED";
 const HOVER_DELAY = 200;
 
-const isHoverExpanded = ref(false);
-
 /**
  * Get unique storage key for current application based on URL path
  * This ensures each application has its own menu state
@@ -13,12 +11,13 @@ const isHoverExpanded = ref(false);
 function getStorageKey(): string {
   // Extract app name from pathname (e.g., "/vendor-portal/" -> "vendor-portal")
   const pathSegments = window.location.pathname.split("/").filter(Boolean);
-  const appName = pathSegments[pathSegments.length - 1] || "default";
+  const appName = pathSegments[0] || "default";
   return `${STORAGE_KEY_PREFIX}_${appName}`;
 }
 
 export const useMenuExpanded = () => {
   const isExpanded = useLocalStorage(getStorageKey(), true);
+  const isHoverExpanded = ref(false);
 
   let expandTimeout: ReturnType<typeof setTimeout> | null = null;
 

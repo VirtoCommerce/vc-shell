@@ -1,6 +1,6 @@
 <template>
   <VcButton
-    outline
+    variant="secondary"
     class="vc-external-provider"
     @click="$emit('signIn')"
   >

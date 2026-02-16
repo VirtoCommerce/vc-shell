@@ -7,7 +7,7 @@
         'vc-user-dropdown-button--active': false,
         'vc-user-dropdown-button--auto-width': disabled,
         'vc-user-dropdown-button--mobile': $isMobile.value,
-        'vc-user-dropdown-button--collapsed': !isExpanded && $isDesktop.value,
+        'vc-user-dropdown-button--collapsed': !isPinned && $isDesktop.value,
       }"
       @click="handleClick"
     >
@@ -21,7 +21,7 @@
           :avatar-url="avatarUrl"
           :name="name"
           :role="role"
-          :is-expanded="isExpanded || isHoverExpanded"
+          :is-expanded="isExpanded"
         />
         <!-- <UserActions
           :profile-menu="profileMenu"
@@ -45,7 +45,7 @@ import { ref } from "vue";
 import type { IMenuItem } from "../../../core/types";
 import { default as UserInfo } from "./_internal/user-info.vue";
 import { default as UserSidebar } from "./_internal/user-sidebar.vue";
-import { useMenuExpanded } from "../../../shared/composables";
+import { useSidebarState } from "../../../ui/components/organisms/vc-app/composables/useSidebarState";
 import { useI18n } from "vue-i18n";
 
 export interface Props {
@@ -59,7 +59,7 @@ defineProps<Props>();
 
 const { t } = useI18n({ useScope: "global" });
 const isSidebarOpened = ref(false);
-const { isExpanded, isHoverExpanded } = useMenuExpanded();
+const { isPinned, isExpanded } = useSidebarState();
 
 function handleMenuItemClick(item: IMenuItem) {
   item.clickHandler?.();

@@ -22,34 +22,18 @@ export const mockAssetsManager = {
   // Empty object for the mock
 };
 
-// Mock for extension points
-export const mockUseExtensionSlot = (_slotName: string) => {
+// Mock for extension points (new API)
+export const mockDefineExtensionPoint = (_name: string) => {
   return {
     components: computed(() => []),
-    addComponent: () => {},
-    removeComponent: () => {},
     hasComponents: computed(() => false),
   };
 };
 
-export const mockUseExtensionData = (_namespace: string) => {
+export const mockUseExtensionPoint = (_name: string) => {
   return {
-    data: computed(() => ({})),
-    updateData: () => {},
-    setData: () => {},
-    getValue: () => undefined,
-    setValue: () => {},
-  };
-};
-
-export const mockUseExtensions = () => {
-  return {
-    getAllSlots: () => [],
-    getSlotComponents: () => [],
-    getAllData: () => ({}),
-    getNamespaceData: () => ({}),
-    clearSlot: () => {},
-    clearData: () => {},
+    add: () => {},
+    remove: () => {},
   };
 };
 
@@ -57,8 +41,7 @@ export const mockUseExtensions = () => {
 export const mockGlobals = {
   notification: mockNotification,
   AssetsManager: mockAssetsManager,
-  useExtensionSlot: mockUseExtensionSlot,
-  useExtensionData: mockUseExtensionData,
-  useExtensions: mockUseExtensions,
+  defineExtensionPoint: mockDefineExtensionPoint,
+  useExtensionPoint: mockUseExtensionPoint,
   // Add new objects here
 };

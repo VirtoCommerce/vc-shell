@@ -3,7 +3,7 @@
  * This file is used to configure docgen in Storybook
  */
 
-module.exports = {
+export default {
   // We specify that we are using the vue-component-meta plugin
   plugin: 'vue-component-meta',
 

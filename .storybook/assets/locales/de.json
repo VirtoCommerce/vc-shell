@@ -1,4 +1,16 @@
 {
   "language_name": "Deutsch",
-  "SHELL": { "MENU": { "DASHBOARD": "Startseite" }, "DASHBOARD": { "TITLE": "Übersicht" } }
+  "SHELL": {
+    "USER": {
+      "ROLE": {
+        "Administrator": "der Administrator"
+      }
+    },
+    "MENU": {
+      "DASHBOARD": "Startseite"
+    },
+      "DASHBOARD": {
+        "TITLE": "Übersicht"
+      }
+    }
 }

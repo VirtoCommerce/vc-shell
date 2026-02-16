@@ -16,7 +16,7 @@ describe("ToolbarBaseButton", () => {
   it("treats computed disabled as reactive and blocks click", async () => {
     const onClick = vi.fn();
 
-    const wrapper = mount(ToolbarBaseButton as never, {
+    const wrapper = mount(ToolbarBaseButton as any, {
       props: {
         icon: "material-add",
         title: "Create",
@@ -40,7 +40,7 @@ describe("ToolbarBaseButton", () => {
         }),
     );
 
-    const wrapper = mount(ToolbarBaseButton as never, {
+    const wrapper = mount(ToolbarBaseButton as any, {
       props: {
         icon: "material-add",
         title: "Create",
@@ -62,7 +62,7 @@ describe("ToolbarBaseButton", () => {
   it("renders reactive title values from Ref", async () => {
     const title = ref("Initial");
 
-    const wrapper = mount(ToolbarBaseButton as never, {
+    const wrapper = mount(ToolbarBaseButton as any, {
       props: {
         icon: "material-add",
         title,

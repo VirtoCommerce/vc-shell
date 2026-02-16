@@ -1,5 +1,8 @@
 <template>
-  <div class="vc-file-upload__container">
+  <div
+    class="vc-file-upload__container"
+    :class="{ 'vc-file-upload__container--error': !!errorMessage }"
+  >
     <div
       v-loading="loading"
       class="vc-file-upload__drop-zone"
@@ -16,6 +19,11 @@
       @dragover.stop.prevent="dragOver"
       @dragenter.stop.prevent
       @dragleave.stop.prevent="dragLeave"
+      role="button"
+      tabindex="0"
+      :aria-label="customText?.dragHere || 'Upload files'"
+      @keydown.enter="toggleUploader"
+      @keydown.space.prevent="toggleUploader"
     >
       <VcIcon
         class="vc-file-upload__icon"
@@ -85,7 +93,7 @@ const props = withDefaults(defineProps<Props>(), {
   variant: "gallery",
   accept: ".jpg, .png, .jpeg, .webp, .heic, .svg",
   name: "Gallery",
-  icon: "material-cloud_upload",
+  icon: "lucide-cloud-upload",
 });
 const emit = defineEmits<Emits>();
 
@@ -148,15 +156,17 @@ function dragLeave() {
 
 <style lang="scss">
 :root {
-  --file-upload-border-color: var(--secondary-200);
-  --file-upload-border-color-hover: var(--secondary-400);
+  --file-upload-border-color: var(--neutrals-200);
+  --file-upload-border-color-hover: var(--neutrals-400);
   --file-upload-border-color-error: var(--danger-500);
   --file-upload-border-radius: 6px;
-  --file-upload-drag-bg: var(--primary-100);
-  --file-upload-icon-color: var(--primary-500);
+  --file-upload-drag-bg: var(--neutrals-100);
+  --file-upload-icon-color: var(--neutrals-400);
   --file-upload-text-color: var(--neutrals-400);
   --file-upload-error-color: var(--danger-500);
-  --file-upload-background-color: var(--primary-50);
+  --file-upload-error-ring-color: rgba(239, 68, 68, 0.2);
+  --file-upload-background-color: transparent;
+  --file-upload-focus-ring-color: rgba(59, 130, 246, 0.3);
 }
 
 .vc-file-upload {
@@ -164,28 +174,39 @@ function dragLeave() {
     @apply tw-flex tw-flex-col tw-flex-1;
   }
 
+  &__container--error &__drop-zone {
+    @apply tw-border-[color:var(--file-upload-border-color-error)]
+      tw-ring-[3px] tw-ring-[color:var(--file-upload-error-ring-color)];
+  }
+
   &__drop-zone {
-    @apply tw-relative tw-h-40 tw-box-border tw-border tw-border-dashed tw-p-4 tw-flex tw-flex-col tw-items-center tw-justify-center;
-    @apply tw-border-[color:var(--file-upload-border-color)];
-    @apply tw-rounded-lg;
-    @apply tw-transition-colors tw-duration-300;
+    @apply tw-relative tw-h-40 tw-box-border tw-border tw-border-dashed tw-p-4 tw-flex tw-flex-col tw-items-center tw-justify-center
+      tw-border-[color:var(--file-upload-border-color)]
+      tw-rounded-[var(--file-upload-border-radius)]
+      tw-transition-[color,border-color,box-shadow] tw-duration-200
+      tw-bg-[color:var(--file-upload-background-color)]
+      tw-outline-none;
 
     &--gallery {
       @apply tw-w-40 tw-h-40;
     }
 
     &--file-upload {
-      @apply tw-w-full tw-bg-[var(--file-upload-background-color)];
+      @apply tw-w-full;
     }
 
     &--dragging {
-      background-color: var(--file-upload-drag-bg) !important;
-      border-style: solid !important;
-      cursor: copy !important;
+      @apply tw-bg-[color:var(--file-upload-drag-bg)] tw-border-solid tw-cursor-copy;
     }
 
     &:hover {
-      @apply tw-border-[color:var(--file-upload-border-color-hover)] #{!important};
+      @apply tw-border-[color:var(--file-upload-border-color-hover)];
+    }
+
+    &:focus-within {
+      @apply tw-border-[color:var(--primary-500)]
+        tw-ring-[3px] tw-ring-[color:var(--file-upload-focus-ring-color)]
+        tw-outline-none;
     }
   }
 
@@ -203,8 +224,7 @@ function dragLeave() {
   }
 
   &__error {
-    color: var(--file-upload-error-color);
-    @apply tw-mt-1;
+    @apply tw-mt-1 [--hint-color:var(--file-upload-error-color)];
   }
 }
 </style>

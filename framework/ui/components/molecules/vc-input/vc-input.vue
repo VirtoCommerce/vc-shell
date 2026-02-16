@@ -3,8 +3,8 @@
   <VcDatePicker
     v-if="type === 'date' || type === 'datetime-local'"
     v-bind="$props"
-    @update:model-value="(v) => emit('update:modelValue', v)"
-    @blur="(v) => emit('blur', v)"
+    @update:model-value="(v: any) => emit('update:modelValue', v)"
+    @blur="(v: any) => emit('blur', v)"
     @focus="emit('focus')"
   />
   <!-- Backward compat delegation: color type -->
@@ -26,8 +26,8 @@
     :multilanguage="multilanguage"
     :current-language="currentLanguage"
     :name="name"
-    @update:model-value="(v) => emit('update:modelValue', v)"
-    @blur="(v) => emit('blur', v)"
+    @update:model-value="(v: any) => emit('update:modelValue', v)"
+    @blur="(v: any) => emit('blur', v)"
     @focus="emit('focus')"
   />
 

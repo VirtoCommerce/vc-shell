@@ -10,6 +10,7 @@
     <!-- Textarea label -->
     <VcLabel
       v-if="label"
+      :id="labelId"
       class="vc-textarea__label"
       :required="required"
       :multilanguage="multilanguage"
@@ -28,12 +29,16 @@
     <!-- Textarea field -->
     <div class="vc-textarea__field-wrapper">
       <textarea
+        :id="textareaId"
         ref="textareaRef"
         class="vc-textarea__field"
         :placeholder="placeholder"
         :value="modelValue"
         :disabled="disabled"
         :maxlength="maxlength"
+        :aria-invalid="(error || !!errorMessage) || undefined"
+        :aria-describedby="ariaDescribedBy"
+        :aria-labelledby="label ? labelId : undefined"
         tabindex="0"
         @input="onInput"
         @focus="isFocused = true"
@@ -45,7 +50,10 @@
       v-if="error || !!errorMessage"
       name="error"
     >
-      <VcHint class="vc-textarea__error">
+      <VcHint
+        :id="errorId"
+        class="vc-textarea__error"
+      >
         {{ errorMessage }}
       </VcHint>
     </slot>
@@ -53,7 +61,7 @@
 </template>
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
-import { ref } from "vue";
+import { computed, ref, useId } from "vue";
 import { VcHint, VcLabel } from "./../../";
 
 export interface Props {
@@ -79,7 +87,7 @@ defineSlots<{
   error: (props: any) => any;
 }>();
 
-withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<Props>(), {
   name: "Field",
   maxlength: "1024",
 });
@@ -88,6 +96,18 @@ const emit = defineEmits<Emits>();
 
 const textareaRef = ref<HTMLTextAreaElement>();
 const isFocused = ref(false);
+
+// Accessibility IDs
+const uid = useId();
+const textareaId = computed(() => `vc-textarea-${uid}`);
+const labelId = computed(() => `vc-textarea-${uid}-label`);
+const errorId = computed(() => `vc-textarea-${uid}-error`);
+
+const ariaDescribedBy = computed(() => {
+  const ids: string[] = [];
+  if ((props.error || props.errorMessage) && props.errorMessage) ids.push(errorId.value);
+  return ids.length ? ids.join(" ") : undefined;
+});
 
 function onInput(e: Event) {
   const newValue = (e.target as HTMLInputElement).value;
@@ -104,20 +124,20 @@ defineExpose({
   --textarea-height: 120px;
   --textarea-border-color: var(--neutrals-300);
   --textarea-text-color: var(--neutrals-800);
-
-  --textarea-border-radius: 4px;
-  --textarea-background-color: var(--additional-50);
+  --textarea-border-radius: 6px;
+  --textarea-background-color: transparent;
   --textarea-placeholder-color: var(--neutrals-400);
 
   // Error
   --textarea-text-color-error: var(--danger-500);
   --textarea-border-color-error: var(--danger-500);
+  --textarea-error-ring-color: rgba(239, 68, 68, 0.2);
 
   // Focus
-  --textarea-border-color-focus: var(--primary-100);
+  --textarea-border-color-focus: var(--primary-500);
+  --textarea-focus-ring-color: rgba(59, 130, 246, 0.3);
 
   // Disabled
-  --textarea-disabled-background-color: var(--neutrals-200);
   --textarea-disabled-text-color: var(--neutrals-500);
 }
 
@@ -130,7 +150,9 @@ defineExpose({
     @apply tw-border tw-border-solid
       tw-border-[color:var(--textarea-border-color)]
       tw-rounded-[var(--textarea-border-radius)] tw-box-border
-      tw-bg-[color:var(--textarea-background-color)] tw-flex tw-items-stretch;
+      tw-bg-[color:var(--textarea-background-color)] tw-flex tw-items-stretch
+      tw-shadow-sm tw-transition-[color,box-shadow] tw-duration-150 tw-ease-in-out
+      tw-outline-none;
 
     textarea {
       @apply tw-text-[color:var(--textarea-text-color)];
@@ -138,7 +160,8 @@ defineExpose({
   }
 
   &_error &__field-wrapper {
-    @apply tw-border tw-border-solid tw-border-[color:var(--textarea-border-color-error)];
+    @apply tw-border tw-border-solid tw-border-[color:var(--textarea-border-color-error)]
+      tw-ring-[3px] tw-ring-[color:var(--textarea-error-ring-color)];
   }
 
   &_error &__field-wrapper textarea {
@@ -168,13 +191,19 @@ defineExpose({
     }
   }
 
+  &_disabled &__field-wrapper {
+    @apply tw-opacity-50;
+  }
+
   &_disabled &__field-wrapper,
   &_disabled &__field {
-    @apply tw-bg-[var(--textarea-disabled-background-color)] tw-text-[var(--textarea-disabled-text-color)];
+    @apply tw-cursor-not-allowed tw-pointer-events-none;
   }
 
   &_focus &__field-wrapper {
-    @apply tw-outline-2 tw-outline tw-outline-[color:var(--textarea-border-color-focus)] tw-outline-offset-[0px];
+    @apply tw-border-[color:var(--textarea-border-color-focus)]
+      tw-ring-[3px] tw-ring-[color:var(--textarea-focus-ring-color)]
+      tw-outline-none;
   }
 }
 </style>

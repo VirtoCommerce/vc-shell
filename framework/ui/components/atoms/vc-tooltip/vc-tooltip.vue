@@ -12,11 +12,11 @@
       <slot></slot>
     </div>
 
-    <teleport  to=".vc-app" defer>
+    <teleport :to="teleportTarget" defer>
       <span
         v-if="tooltipVisible && $slots['tooltip']"
         ref="tooltipRef"
-        :style="floatingStyles"
+        :style="floatingStyle"
         class="vc-tooltip__content"
       >
         <slot name="tooltip"></slot>
@@ -26,8 +26,9 @@
 </template>
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
-import { useFloating, shift, Placement, offset as floatingOffset } from "@floating-ui/vue";
-import { getCurrentInstance, ref, computed, onBeforeUnmount } from "vue";
+import { shift, type Placement } from "@floating-ui/vue";
+import { computed, onBeforeUnmount, ref } from "vue";
+import { useFloatingPosition, useTeleportTarget } from "../../../composables";
 
 export interface Props {
   placement?: "top" | "right" | "bottom" | "left" | "top-start" | "top-end" | "bottom-start" | "bottom-end" | "right-start" | "right-end" | "left-start" | "left-end";
@@ -58,12 +59,11 @@ const tooltipRef = ref<HTMLElement | null>(null);
 const target = ref(null);
 let showTimeout: NodeJS.Timeout | null = null;
 
-const instance = getCurrentInstance();
-// const appContainer = computed(() => instance?.appContext.app._container?.id || "app");
-
-const { floatingStyles } = useFloating(tooltipCompRef, tooltipRef, {
-  placement: props.placement,
-  middleware: [floatingOffset(props.offset), shift()],
+const { teleportTarget } = useTeleportTarget();
+const { floatingStyle } = useFloatingPosition(tooltipCompRef, tooltipRef, {
+  placement: computed(() => props.placement as Placement),
+  offset: computed(() => props.offset),
+  middleware: computed(() => [shift()]),
 });
 
 const showTooltip = () => {

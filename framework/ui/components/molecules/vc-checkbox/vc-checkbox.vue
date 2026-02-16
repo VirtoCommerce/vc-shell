@@ -24,6 +24,7 @@
 
     <label class="vc-checkbox__container">
       <input
+        :id="checkboxId"
         ref="checkboxRef"
         v-model="model"
         :value="value"
@@ -32,6 +33,8 @@
         :disabled="disabled"
         :true-value="trueValue"
         :false-value="falseValue"
+        :aria-invalid="!!errorMessage || undefined"
+        :aria-describedby="ariaDescribedBy"
         tabindex="0"
       />
 
@@ -77,7 +80,7 @@
       v-if="errorMessage"
       name="error"
     >
-      <VcHint class="vc-checkbox__error">
+      <VcHint :id="errorId" class="vc-checkbox__error">
         {{ errorMessage }}
       </VcHint>
     </slot>
@@ -85,7 +88,7 @@
 </template>
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
-import { MaybeRef, computed, unref, ref, watch, onMounted } from "vue";
+import { MaybeRef, computed, unref, ref, watch, onMounted, useId } from "vue";
 import { VcHint } from "./../../atoms/vc-hint";
 import { VcLabel } from "../../atoms/vc-label";
 
@@ -125,6 +128,15 @@ defineSlots<{
 }>();
 
 const checkboxRef = ref<HTMLInputElement | null>(null);
+
+const uid = useId();
+const checkboxId = computed(() => `vc-checkbox-${uid}`);
+const errorId = computed(() => `vc-checkbox-${uid}-error`);
+
+const ariaDescribedBy = computed(() => {
+  if (props.errorMessage) return errorId.value;
+  return undefined;
+});
 
 const model = computed({
   get() {
@@ -186,15 +198,16 @@ onMounted(() => {
   /* Error state */
   --checkbox-error-border-color: var(--danger-500);
   --checkbox-error-text-color: var(--danger-500);
+  --checkbox-error-ring-color: rgba(239, 68, 68, 0.2);
 
   /* Disabled state */
   --checkbox-disabled-bg-color: var(--neutrals-200);
   --checkbox-disabled-border-color: var(--neutrals-200);
-  --checkbox-disabled-opacity: 0.7;
+  --checkbox-disabled-opacity: 0.5;
 
   /* Focus */
-  --checkbox-focus-shadow-color: var(--primary-50);
-  --checkbox-focus-shadow-size: 2px;
+  --checkbox-focus-shadow-color: rgba(59, 130, 246, 0.3);
+  --checkbox-focus-shadow-size: 3px;
 
   /* Other */
   --checkbox-border-radius: 2px;
@@ -225,8 +238,12 @@ onMounted(() => {
     width: 0;
     height: 0;
 
+    &:focus-visible + .vc-checkbox__custom-input {
+      box-shadow: 0 0 0 var(--checkbox-focus-shadow-size) var(--checkbox-focus-shadow-color);
+    }
+
     &:hover + .vc-checkbox__custom-input {
-      outline: var(--checkbox-focus-shadow-size) solid var(--checkbox-focus-shadow-color);
+      box-shadow: 0 0 0 var(--checkbox-focus-shadow-size) var(--checkbox-focus-shadow-color);
     }
 
     &:disabled + .vc-checkbox__custom-input {
@@ -309,6 +326,7 @@ onMounted(() => {
   &--error {
     .vc-checkbox__custom-input {
       border-color: var(--checkbox-error-border-color);
+      box-shadow: 0 0 0 3px var(--checkbox-error-ring-color);
     }
   }
 }

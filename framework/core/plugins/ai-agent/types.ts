@@ -80,13 +80,6 @@ export interface IAiAgentConfig {
   expandedWidth?: number;
   /** Allowed origins for postMessage (default: ["*"]) */
   allowedOrigins?: string[];
-  /**
-   * Tenant identifier for the platform instance.
-   * This should be a static value identifying the platform installation (e.g., "virto", "acme-corp").
-   * Configured by the host application via VirtoShellFramework options.
-   *
-   */
-  tenantId?: string;
 }
 
 /**

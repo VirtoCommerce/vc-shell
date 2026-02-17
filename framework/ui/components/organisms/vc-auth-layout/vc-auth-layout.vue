@@ -9,6 +9,8 @@
         :src="logo"
         :alt="logoAlt"
         class="vc-auth-layout__logo"
+        :class="{ 'vc-auth-layout__logo--loaded': logoLoaded }"
+        @load="logoLoaded = true"
       />
     </div>
 
@@ -53,7 +55,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from "vue";
+import { computed, ref, watch } from "vue";
 import { useRouter } from "vue-router";
 
 export interface Props {
@@ -85,9 +87,30 @@ defineSlots<{
 const router = useRouter();
 const version = router.currentRoute.value.meta?.appVersion;
 
+const logoLoaded = ref(false);
+const bgLoaded = ref(false);
+
+// Preload background image to avoid pop-in
+watch(
+  () => props.background,
+  (url) => {
+    bgLoaded.value = false;
+    if (!url) return;
+    const img = new Image();
+    img.onload = () => {
+      bgLoaded.value = true;
+    };
+    img.src = url;
+  },
+  { immediate: true },
+);
+
 const containerStyle = computed(() => {
   if (props.background) {
-    return { background: `url(${props.background}) center / cover no-repeat` };
+    return {
+      background: bgLoaded.value ? `url(${props.background}) center / cover no-repeat` : undefined,
+      backgroundColor: props.bgColor || undefined,
+    };
   }
   if (props.bgColor) {
     return { backgroundColor: props.bgColor };
@@ -114,20 +137,28 @@ const containerStyle = computed(() => {
     tw-flex tw-flex-col tw-items-center tw-justify-center
     tw-bg-[var(--auth-layout-bg)]
     tw-px-4 tw-py-8;
+  transition: background 0.3s ease;
 
   &__logo-wrapper {
     @apply tw-mb-8 tw-flex tw-items-center tw-justify-center;
+    min-height: 48px; // Reserve space for logo to prevent layout shift
   }
 
   &__logo {
     @apply tw-h-12 tw-max-w-[280px] tw-object-contain;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+
+    &--loaded {
+      opacity: 1;
+    }
   }
 
   &__card {
     @apply tw-w-full tw-bg-[var(--auth-layout-card-bg)]
       tw-border tw-border-solid tw-border-[var(--auth-layout-card-border)]
       tw-rounded-[var(--auth-layout-card-radius)]
-      tw-overflow-hidden;
+      tw-overflow-y-auto;
     max-width: var(--auth-layout-card-max-width);
     box-shadow: var(--auth-layout-card-shadow);
   }

@@ -89,10 +89,6 @@ export const release = async ({
 
   const lernaArgs = ["lerna", "version"];
 
-  // Disable changelog generation by lerna (we generate our own)
-  // This also avoids prettier v3 incompatibility with lerna v6
-  lernaArgs.push("--no-changelog");
-
   // Configure lerna command based on release type
   if (releaseType === "auto") {
     // For automatic release, use conventional commits to determine version
@@ -196,6 +192,14 @@ export const release = async ({
     console.log(chalk.yellow("\n⚠️  Force publish mode - all packages will be versioned\n"));
   }
 
+  // Capture package versions before lerna runs
+  const versionsBefore: Record<string, string> = {};
+  for (const pkgPath of packages) {
+    if (pkgPath === ".") continue;
+    const { pkg } = getPackageInfo(pkgPath);
+    versionsBefore[pkgPath] = pkg.version;
+  }
+
   // Run lerna version
   console.log(chalk.cyan(`\nRunning: npx ${lernaArgs.join(" ")}\n`));
   const result = sync("npx", lernaArgs, { stdio: "inherit" });
@@ -203,6 +207,22 @@ export const release = async ({
   if (result.status !== 0) {
     console.error(chalk.red("\n❌ Release process failed\n"));
     process.exit(result.status || 1);
+  }
+
+  // Check if lerna actually bumped any versions by comparing package.json files
+  let versionsChanged = false;
+  for (const pkgPath of packages) {
+    if (pkgPath === ".") continue;
+    const { pkg } = getPackageInfo(pkgPath);
+    if (pkg.version !== versionsBefore[pkgPath]) {
+      versionsChanged = true;
+      break;
+    }
+  }
+
+  if (!versionsChanged) {
+    console.log(chalk.yellow("\n⚠️  No packages were versioned. Nothing to release.\n"));
+    return;
   }
 
   // Update root package.json version to match framework (needed for customHooks)
@@ -236,16 +256,47 @@ export const release = async ({
     const gitStatus = sync("git", ["status", "--porcelain"], { stdio: "pipe" });
     if (gitStatus.stdout?.toString().trim()) {
       const lastTag = sync("git", ["describe", "--tags", "--abbrev=0"], { stdio: "pipe" });
-      const tag = lastTag.stdout?.toString().trim() || "HEAD";
 
-      sync("git", ["add", "-A"], { stdio: "inherit" });
-      sync("git", ["commit", "--amend", "--no-edit", "--no-verify"], { stdio: "inherit" });
-      sync("git", ["tag", "-f", tag], { stdio: "inherit" });
+      if (lastTag.status !== 0 || !lastTag.stdout?.toString().trim()) {
+        console.error(chalk.red("\n❌ Could not determine the git tag created by lerna\n"));
+        process.exit(1);
+      }
+
+      const tag = lastTag.stdout.toString().trim();
+
+      const addResult = sync("git", ["add", "-A"], { stdio: "inherit" });
+      if (addResult.status !== 0) {
+        console.error(chalk.red("\n❌ Failed to stage changes\n"));
+        process.exit(1);
+      }
+
+      const commitResult = sync("git", ["commit", "--amend", "--no-edit", "--no-verify"], { stdio: "inherit" });
+      if (commitResult.status !== 0) {
+        console.error(chalk.red("\n❌ Failed to amend commit\n"));
+        process.exit(1);
+      }
+
+      // Recreate as annotated tag (lerna creates annotated tags, git tag -f creates lightweight)
+      const tagResult = sync("git", ["tag", "-f", "-a", tag, "-m", tag], { stdio: "inherit" });
+      if (tagResult.status !== 0) {
+        console.error(chalk.red("\n❌ Failed to recreate tag\n"));
+        process.exit(1);
+      }
 
       // Push updated commit and tag to remote
       console.log(chalk.cyan("\nPushing changes to remote...\n"));
-      sync("git", ["push", "origin", "HEAD", "--force-with-lease"], { stdio: "inherit" });
-      sync("git", ["push", "origin", tag, "--force"], { stdio: "inherit" });
+
+      const pushResult = sync("git", ["push", "origin", "HEAD", "--force-with-lease"], { stdio: "inherit" });
+      if (pushResult.status !== 0) {
+        console.error(chalk.red("\n❌ Failed to push commit\n"));
+        process.exit(1);
+      }
+
+      const pushTagResult = sync("git", ["push", "origin", tag, "--force"], { stdio: "inherit" });
+      if (pushTagResult.status !== 0) {
+        console.error(chalk.red("\n❌ Failed to push tag\n"));
+        process.exit(1);
+      }
 
       console.log(chalk.green("\n✅ Updated changelogs, package.json, and pushed to remote\n"));
     }

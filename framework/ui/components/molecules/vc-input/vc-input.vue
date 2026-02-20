@@ -49,6 +49,7 @@
     <VcLabel
       v-if="label"
       :id="labelId"
+      :html-for="inputId"
       class="vc-input__label"
       :required="required"
       :multilanguage="multilanguage"
@@ -119,6 +120,7 @@
                 :maxlength="maxlength"
                 :autofocus="autofocus"
                 :aria-invalid="invalid || undefined"
+                :aria-required="ariaRequired"
                 :aria-describedby="ariaDescribedBy"
                 :aria-labelledby="label ? labelId : undefined"
                 class="vc-input__input"
@@ -136,47 +138,44 @@
               {{ suffix }}
             </div>
 
-            <div
+            <button
               v-if="clearable && mutatedModel && !resolvedDisabled && type !== 'password'"
+              type="button"
               class="vc-input__clear"
-              tabindex="0"
+              aria-label="Clear"
               @click="onReset"
-              @keydown.enter="onReset"
-              @keydown.space="onReset"
             >
               <VcIcon
                 size="xs"
                 icon="lucide-x"
               ></VcIcon>
-            </div>
+            </button>
 
-            <div
+            <button
               v-if="type === 'password' && internalType === 'password'"
+              type="button"
               class="vc-input__showhide"
-              tabindex="0"
+              aria-label="Show password"
               @click="internalType = 'text'"
-              @keydown.enter="internalType = 'text'"
-              @keydown.space="internalType = 'text'"
             >
               <VcIcon
                 size="s"
                 icon="lucide-eye-off"
               ></VcIcon>
-            </div>
+            </button>
 
-            <div
+            <button
               v-if="type === 'password' && internalType === 'text'"
+              type="button"
               class="vc-input__showhide"
-              tabindex="0"
+              aria-label="Hide password"
               @click="internalType = 'password'"
-              @keydown.enter="internalType = 'password'"
-              @keydown.space="internalType = 'password'"
             >
               <VcIcon
                 size="s"
                 icon="lucide-eye"
               ></VcIcon>
-            </div>
+            </button>
           </div>
 
           <div
@@ -408,7 +407,8 @@ defineSlots<{
   hint: (props: any) => any;
 }>();
 
-const { fieldId: inputId, labelId, errorId, hintId, invalid, resolvedDisabled, resolvedName, ariaDescribedBy } = useFormField(props);
+const { fieldId: inputId, labelId, errorId, hintId, invalid, resolvedDisabled, resolvedName, ariaRequired, ariaDescribedBy } =
+  useFormField(props);
 
 let emitTimer: NodeJS.Timeout;
 let emitValueFn;
@@ -636,11 +636,13 @@ function handleFocus() {
   }
 
   &__clear {
-    @apply tw-text-[color:var(--input-clear-color)] hover:tw-text-[color:var(--input-clear-color-hover)] tw-flex tw-items-center;
+    @apply tw-border-none tw-bg-transparent tw-outline-none tw-p-0 tw-cursor-pointer
+      tw-text-[color:var(--input-clear-color)] hover:tw-text-[color:var(--input-clear-color-hover)] tw-flex tw-items-center;
   }
 
   &__showhide {
-    @apply tw-text-[color:var(--input-clear-color)] hover:tw-text-[color:var(--input-clear-color-hover)] tw-flex tw-items-center;
+    @apply tw-border-none tw-bg-transparent tw-outline-none tw-p-0 tw-cursor-pointer
+      tw-text-[color:var(--input-clear-color)] hover:tw-text-[color:var(--input-clear-color-hover)] tw-flex tw-items-center;
   }
 
   &__loading {

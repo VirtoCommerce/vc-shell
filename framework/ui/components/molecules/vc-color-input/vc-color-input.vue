@@ -13,6 +13,7 @@
     <VcLabel
       v-if="label"
       :id="labelId"
+      :html-for="inputId"
       class="vc-color-input__label"
       :required="required"
       :multilanguage="multilanguage"
@@ -46,6 +47,7 @@
             :name="name"
             :autofocus="autofocus"
             :aria-invalid="invalid || undefined"
+            :aria-required="ariaRequired"
             :aria-describedby="ariaDescribedBy"
             :aria-labelledby="label ? labelId : undefined"
             class="vc-color-input__input"
@@ -108,9 +110,8 @@
       name="slide-up"
       mode="out-in"
     >
-      <div v-if="error">
+      <div v-if="invalid && errorMessage">
         <VcHint
-          v-if="errorMessage"
           :id="errorId"
           class="vc-color-input__hint-error"
           :error="true"
@@ -154,7 +155,8 @@ const props = withDefaults(defineProps<VcColorInputProps>(), {
 
 const emit = defineEmits<VcColorInputEmits>();
 
-const { fieldId: inputId, labelId, errorId, hintId, invalid, resolvedDisabled, ariaDescribedBy } = useFormField(props);
+const { fieldId: inputId, labelId, errorId, hintId, invalid, resolvedDisabled, ariaRequired, ariaDescribedBy } =
+  useFormField(props);
 
 // State
 const isFocused = ref(false);

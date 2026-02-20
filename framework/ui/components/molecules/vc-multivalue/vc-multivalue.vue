@@ -50,6 +50,7 @@
       :label-id="label ? labelId : undefined"
       :listbox-id="listboxId"
       :aria-described-by="ariaDescribedBy"
+      :aria-required="ariaRequired"
       @remove="removeAtIndex"
       @toggle-dropdown="toggleDropdown"
       @input-submit="onInputSubmit"
@@ -121,6 +122,7 @@
           <VcHint
             :id="errorId"
             class="vc-multivalue__error"
+            :error="true"
           >
             {{ errorMessage }}
           </VcHint>
@@ -198,7 +200,8 @@ defineSlots<{
   append: (props: any) => any;
 }>();
 
-const { fieldId, labelId, errorId, hintId, invalid, resolvedDisabled, ariaDescribedBy } = useFormField(props);
+const { fieldId, labelId, errorId, hintId, invalid, resolvedDisabled, ariaRequired, ariaDescribedBy } =
+  useFormField(props);
 const listboxId = computed(() => `${fieldId.value}-listbox`);
 
 // --- Sub-component refs ---

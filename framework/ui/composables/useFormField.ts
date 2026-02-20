@@ -22,6 +22,8 @@ export function useFormField(props: IFormFieldProps & { hint?: string }) {
 
   const resolvedName = computed(() => groupContext?.name.value || props.name);
 
+  const ariaRequired = computed(() => (props.required ? true : undefined));
+
   const ariaDescribedBy = computed(() => {
     const ids = new Set<string>();
 
@@ -48,6 +50,7 @@ export function useFormField(props: IFormFieldProps & { hint?: string }) {
     invalid,
     resolvedDisabled,
     resolvedName,
+    ariaRequired,
     ariaDescribedBy,
     groupContext,
   };

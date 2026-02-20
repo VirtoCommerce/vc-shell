@@ -11,6 +11,7 @@
     <VcLabel
       v-if="label"
       :id="labelId"
+      :html-for="textareaId"
       class="vc-textarea__label"
       :required="required"
       :multilanguage="multilanguage"
@@ -37,6 +38,7 @@
         :disabled="resolvedDisabled"
         :maxlength="maxlength"
         :aria-invalid="invalid || undefined"
+        :aria-required="ariaRequired"
         :aria-describedby="ariaDescribedBy"
         :aria-labelledby="label ? labelId : undefined"
         tabindex="0"
@@ -109,7 +111,8 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<Emits>();
 
-const { fieldId: textareaId, labelId, errorId, hintId, invalid, resolvedDisabled, ariaDescribedBy } = useFormField(props);
+const { fieldId: textareaId, labelId, errorId, hintId, invalid, resolvedDisabled, ariaRequired, ariaDescribedBy } =
+  useFormField(props);
 
 const textareaRef = ref<HTMLTextAreaElement>();
 const isFocused = ref(false);

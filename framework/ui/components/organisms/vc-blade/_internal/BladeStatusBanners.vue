@@ -36,7 +36,8 @@
 <script lang="ts" setup>
 import { inject } from "vue";
 import { useI18n } from "vue-i18n";
-import { VcButton, VcIcon } from "@ui/components";
+import { VcButton } from "@ui/components/atoms/vc-button";
+import { VcIcon } from "@ui/components/atoms/vc-icon";
 import { BladeInstance } from "@framework/injection-keys";
 import { DEFAULT_BLADE_INSTANCE } from "@ui/components/organisms/vc-blade/constants";
 import { useBladeError } from "@ui/components/organisms/vc-blade/_internal/composables/useBladeError";

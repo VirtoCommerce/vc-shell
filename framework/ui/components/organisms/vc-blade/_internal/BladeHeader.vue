@@ -104,7 +104,7 @@
 </template>
 
 <script lang="ts" setup>
-import { VcIcon } from "@ui/components";
+import { VcIcon } from "@ui/components/atoms/vc-icon";
 import { inject, ref } from "vue";
 import { shift } from "@floating-ui/vue";
 import { BladeInstance } from "@framework/injection-keys";

@@ -54,6 +54,7 @@
         :label-id="labelId"
         :label="label"
         :aria-described-by="ariaDescribedBy"
+        :aria-required="ariaRequired"
         :error-id="errorId"
         :hint-id="hintId"
         :toggle-dropdown="toggleDropdown"
@@ -202,11 +203,6 @@ defineSlots<{
    */
   append: (props: any) => any;
   /**
-   * What should the menu display after filtering options and none are left to be displayed
-   * @param scope
-   */
-  "no-option": (props: any) => any;
-  /**
    * Slot for errors
    */
   error: (props: any) => any;
@@ -332,7 +328,7 @@ const emit = defineEmits<{
 
 const { t } = useI18n({ useScope: "global" });
 
-const { fieldId, labelId, errorId, hintId, invalid, resolvedDisabled, resolvedName, ariaDescribedBy } =
+const { fieldId, labelId, errorId, hintId, invalid, resolvedDisabled, resolvedName, ariaRequired, ariaDescribedBy } =
   useFormField(props);
 const listboxId = computed(() => `${fieldId.value}-listbox`);
 
@@ -457,6 +453,10 @@ const keyboardNavigation = useKeyboardNavigation({
   onEscape: () => {
     isOpened.value = false;
     emit("close");
+    nextTick(() => {
+      const toggleEl = selectTriggerRef.value?.toggleRef?.querySelector('[role="combobox"]') as HTMLElement | null;
+      toggleEl?.focus();
+    });
   },
 });
 

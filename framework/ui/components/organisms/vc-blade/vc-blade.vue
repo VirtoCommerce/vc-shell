@@ -101,7 +101,7 @@ import { useBladeNavigation } from "@shared";
 import BladeHeader from "@ui/components/organisms/vc-blade/_internal/BladeHeader.vue";
 import BladeToolbar from "@ui/components/organisms/vc-blade/_internal/BladeToolbar.vue";
 import BladeStatusBanners from "@ui/components/organisms/vc-blade/_internal/BladeStatusBanners.vue";
-import { VcButton } from "@ui/components";
+import { VcButton } from "@ui/components/atoms/vc-button";
 import { BladeInstance, BLADE_BACK_BUTTON } from "@framework/injection-keys";
 import WidgetContainer from "@ui/components/organisms/vc-blade/_internal/widgets/WidgetContainer.vue";
 import { DEFAULT_BLADE_INSTANCE } from "@ui/components/organisms/vc-blade/constants";

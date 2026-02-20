@@ -58,7 +58,8 @@
 import { ref, computed, toValue, type Ref, type ComputedRef } from "vue";
 import { IWidget } from "@core/services";
 import { useWidgets } from "@core/composables";
-import { VcDropdown, VcIcon } from "@ui/components";
+import { VcDropdown } from "@ui/components/molecules/vc-dropdown";
+import { VcIcon } from "@ui/components/atoms/vc-icon";
 import WidgetDropdownItem from "./WidgetDropdownItem.vue";
 
 interface Props {

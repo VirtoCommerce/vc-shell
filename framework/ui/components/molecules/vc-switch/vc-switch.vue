@@ -9,6 +9,7 @@
     <!-- Switch label -->
     <VcLabel
       v-if="label"
+      :html-for="switchId"
       class="vc-switch__label"
       :required="required"
       :error="invalid"
@@ -32,6 +33,7 @@
           :disabled="resolvedDisabled"
           :aria-checked="!!invertValue(modelValue)"
           :aria-invalid="invalid || undefined"
+          :aria-required="ariaRequired"
           :aria-describedby="ariaDescribedBy"
           tabindex="0"
           @input="onInput"
@@ -68,7 +70,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from "vue";
+import { computed, onMounted } from "vue";
 import { VcLabel, VcHint } from "@ui/components";
 import { useFormField } from "@ui/composables/useFormField";
 import type { IFormFieldProps } from "@ui/types";
@@ -99,10 +101,23 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<Emits>();
 
-const { fieldId: switchId, errorId, hintId, invalid, resolvedDisabled, ariaDescribedBy } = useFormField(props);
+defineSlots<{
+  error: (props: Record<string, never>) => any;
+}>();
+
+const { fieldId: switchId, errorId, hintId, invalid, resolvedDisabled, ariaRequired, ariaDescribedBy } =
+  useFormField(props);
 
 // `tooltip` prop is kept for backward compat — treat as hint text
 const hintText = computed(() => props.hint || props.tooltip);
+
+if (import.meta.env.DEV) {
+  onMounted(() => {
+    if (props.tooltip) {
+      console.warn('[VcSwitch] The "tooltip" prop is deprecated. Use "hint" for hint text or "labelTooltip" for the label info icon.');
+    }
+  });
+}
 
 const invertValue = (value: boolean | undefined) => {
   if (typeof value !== "undefined") {

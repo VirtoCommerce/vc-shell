@@ -9,6 +9,7 @@
         :checked="checked"
         :disabled="resolvedDisabled"
         :aria-invalid="invalid || undefined"
+        :aria-required="ariaRequired"
         :aria-describedby="ariaDescribedBy"
         :class="{ 'vc-radio-button_error': invalid }"
         tabindex="0"
@@ -21,7 +22,7 @@
       name="slide-up"
       mode="out-in"
     >
-      <div v-if="errorMessage">
+      <div v-if="invalid && errorMessage">
         <slot name="error">
           <VcHint
             :id="errorId"
@@ -75,7 +76,12 @@ const props = withDefaults(defineProps<Props>(), {
 });
 const emit = defineEmits<Emits>();
 
-const { fieldId: radioId, errorId, invalid, resolvedDisabled, resolvedName, ariaDescribedBy } = useFormField(props);
+defineSlots<{
+  error: (props: Record<string, never>) => any;
+}>();
+
+const { fieldId: radioId, errorId, invalid, resolvedDisabled, resolvedName, ariaRequired, ariaDescribedBy } =
+  useFormField(props);
 
 const checked = computed(() => {
   return props.modelValue != null && (props.binary ? !!props.modelValue : isEqual(props.modelValue, props.value));

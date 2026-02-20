@@ -2,7 +2,7 @@ import { computed, defineComponent, h, type ComputedRef } from "vue";
 import type { IBladeInstance } from "@shared/components/blade-navigation/types";
 import { usePopup } from "@shared";
 import { useI18n } from "vue-i18n";
-import { VcLink } from "@ui/components";
+import { VcLink } from "@ui/components/atoms/vc-link";
 import vcPopupError from "@shared/components/common/popup/vc-popup-error.vue";
 
 /**

@@ -57,7 +57,7 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
 import { useAdaptiveItems } from "@ui/composables/useAdaptiveItems";
-import { VcIcon } from "@ui/components";
+import { VcIcon } from "@ui/components/atoms/vc-icon";
 import { VcSidebar } from "@ui/components/organisms/vc-sidebar";
 import { IWidget } from "@core/services";
 

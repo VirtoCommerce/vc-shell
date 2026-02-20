@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
-import VcField from "./vc-field.vue";
+import VcField from "@ui/components/molecules/vc-field/vc-field.vue";
 
 const TYPE = ["text", "date", "date-ago", "link", "email"];
 const ORIENTATION = ["vertical", "horizontal"];

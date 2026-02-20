@@ -11,6 +11,7 @@ import advancedDocgen from './advanced-docgen.mjs';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const require = createRequire(import.meta.url);
+const frameworkRoot = path.resolve(__dirname, "../framework");
 
 // Plugin to strip invalid __docgenInfo assignments from barrel re-export files.
 // vue-component-meta injects `ComponentName.__docgenInfo = {...}` into barrel files
@@ -74,6 +75,7 @@ const preventGlobalsPlugin = (): Plugin => {
 export default {
   stories: [
     "../framework/ui/components/**/*.stories.ts",
+    "../framework/shared/components/**/*.stories.ts",
   ],
 
   addons: [
@@ -123,12 +125,26 @@ export default {
         assetsInclude: ["/sb-preview/runtime.js"],
         resolve: {
           alias: {
+            "@framework": frameworkRoot,
+            "@core": path.resolve(frameworkRoot, "core"),
+            "@core/": `${path.resolve(frameworkRoot, "core")}/`,
+            "@ui": path.resolve(frameworkRoot, "ui"),
+            "@ui/": `${path.resolve(frameworkRoot, "ui")}/`,
+            // Explicit alias to help vue-component-meta resolve type imports in SFCs
+            "@ui/types": path.resolve(frameworkRoot, "ui/types/index.ts"),
+            "@ui/types/": `${path.resolve(frameworkRoot, "ui/types")}/`,
+            "@shared": path.resolve(frameworkRoot, "shared"),
+            "@shared/": `${path.resolve(frameworkRoot, "shared")}/`,
+            "@assets": path.resolve(frameworkRoot, "assets"),
+            "@assets/": `${path.resolve(frameworkRoot, "assets")}/`,
+            "@locales": path.resolve(frameworkRoot, "locales"),
+            "@locales/": `${path.resolve(frameworkRoot, "locales")}/`,
             // In dev mode (no dist), resolve to SCSS sources
             // In production mode (with dist), resolve to compiled CSS
             "@vc-shell/framework/dist/index.css": hasDist
               ? distCssPath
               : path.resolve(__dirname, "../framework/assets/styles/index.scss"),
-            "@vc-shell/framework": "@vc-shell/framework/index.ts",
+            "@vc-shell/framework": path.resolve(__dirname, "../framework/index.ts"),
             "@": path.resolve(__dirname, "../"),
             "framework": path.resolve(__dirname, "../framework"),
             "~/": path.resolve(__dirname, "../"),

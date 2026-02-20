@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
-import { VcButton, VcButtonGroup } from "./";
+import { VcButton, VcButtonGroup } from "@ui/components/atoms/vc-button";
 
 /**
  * `VcButtonGroup` groups buttons together with consistent spacing or attached borders.

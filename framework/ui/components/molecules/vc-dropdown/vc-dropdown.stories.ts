@@ -1,7 +1,7 @@
 import { ref } from "vue";
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
-import { VcDropdown } from "./";
-import { VcButton, VcIcon } from "../../atoms";
+import { VcDropdown } from "@ui/components/molecules/vc-dropdown";
+import { VcButton, VcIcon } from "@ui/components/atoms";
 
 type ActionItem = {
   id: string;
@@ -199,13 +199,13 @@ export const ActionMenu: Story = {
       };
     },
     template: `
-      <div class="tw-min-h-[300px] tw-rounded-xl tw-border tw-border-solid tw-border-[var(--neutrals-200)] tw-bg-gradient-to-br tw-from-[var(--additional-50)] tw-to-[var(--neutrals-100)] tw-p-6">
+      <div class="tw-min-h-[300px] tw-rounded-xl tw-border tw-border-solid tw-border-neutrals-200 tw-bg-gradient-to-br tw-from-additional-50 tw-to-neutrals-100 tw-p-6">
         <div class="tw-mb-5 tw-flex tw-items-center tw-justify-between">
           <div>
-            <p class="tw-text-sm tw-text-[var(--neutrals-500)]">Contextual action menu</p>
-            <p class="tw-text-base tw-font-semibold tw-text-[var(--neutrals-900)]">Project: Atlas Backoffice</p>
+            <p class="tw-text-sm tw-text-neutrals-500">Contextual action menu</p>
+            <p class="tw-text-base tw-font-semibold tw-text-neutrals-900">Project: Atlas Backoffice</p>
           </div>
-          <span class="tw-rounded-full tw-bg-[var(--primary-100)] tw-px-3 tw-py-1 tw-text-xs tw-font-medium tw-text-[var(--primary-700)]">
+          <span class="tw-rounded-full tw-bg-primary-100 tw-px-3 tw-py-1 tw-text-xs tw-font-medium tw-text-primary-700">
             Last action: {{ selectedAction }}
           </span>
         </div>
@@ -229,26 +229,21 @@ export const ActionMenu: Story = {
           <template #item="{ item, click }">
             <button
               type="button"
-              class="tw-flex tw-w-[360px] tw-items-start tw-justify-between tw-gap-3 tw-border-0 tw-bg-transparent tw-px-4 tw-py-3 tw-text-left hover:tw-bg-[var(--primary-50)]"
+              class="tw-flex tw-w-[320px] tw-items-center tw-justify-between tw-gap-3 tw-border-0 tw-bg-transparent tw-px-2 tw-py-1.5 tw-text-left"
               @click="click"
             >
-              <div class="tw-flex tw-items-start tw-gap-3">
-                <VcIcon :icon="item.icon" size="m" class="tw-mt-0.5 tw-text-[var(--neutrals-500)]" />
-                <div>
-                  <p
-                    class="tw-text-sm tw-font-medium"
-                    :class="item.danger ? 'tw-text-[var(--danger-600)]' : 'tw-text-[var(--neutrals-900)]'"
-                  >
-                    {{ item.title }}
-                  </p>
-                  <p class="tw-mt-0.5 tw-text-xs tw-text-[var(--neutrals-500)]">
-                    {{ item.description }}
-                  </p>
-                </div>
+              <div class="tw-flex tw-items-center tw-gap-2">
+                <VcIcon :icon="item.icon" size="s" class="tw-shrink-0 tw-text-neutrals-500" />
+                <span
+                  class="tw-text-sm"
+                  :class="item.danger ? 'tw-text-danger-600' : 'tw-text-neutrals-900'"
+                >
+                  {{ item.title }}
+                </span>
               </div>
-              <span class="tw-rounded tw-bg-[var(--neutrals-100)] tw-px-2 tw-py-0.5 tw-text-[11px] tw-font-medium tw-text-[var(--neutrals-600)]">
+              <kbd class="tw-rounded tw-border tw-border-solid tw-border-neutrals-200 tw-bg-neutrals-50 tw-px-1.5 tw-py-0.5 tw-font-mono tw-text-[11px] tw-text-neutrals-500">
                 {{ item.shortcut }}
-              </span>
+              </kbd>
             </button>
           </template>
         </VcDropdown>
@@ -286,9 +281,9 @@ export const WorkspaceSwitcher: Story = {
       };
     },
     template: `
-      <div class="tw-min-h-[300px] tw-rounded-xl tw-border tw-border-solid tw-border-[var(--neutrals-200)] tw-bg-[var(--additional-50)] tw-p-6">
-        <p class="tw-mb-1 tw-text-sm tw-text-[var(--neutrals-500)]">Workspace switcher</p>
-        <p class="tw-mb-5 tw-text-base tw-font-semibold tw-text-[var(--neutrals-900)]">Current: {{ getTitle(activeWorkspaceId) }}</p>
+      <div class="tw-min-h-[300px] tw-rounded-xl tw-border tw-border-solid tw-border-neutrals-200 tw-bg-additional-50 tw-p-6">
+        <p class="tw-mb-1 tw-text-sm tw-text-neutrals-500">Workspace switcher</p>
+        <p class="tw-mb-5 tw-text-base tw-font-semibold tw-text-neutrals-900">Current: {{ getTitle(activeWorkspaceId) }}</p>
 
         <VcDropdown
           v-bind="args"
@@ -310,18 +305,18 @@ export const WorkspaceSwitcher: Story = {
           <template #item="{ item, click }">
             <button
               type="button"
-              class="tw-flex tw-w-[320px] tw-items-center tw-justify-between tw-border-0 tw-bg-transparent tw-px-4 tw-py-3 tw-text-left hover:tw-bg-[var(--primary-50)]"
+              class="tw-flex tw-w-[280px] tw-items-center tw-justify-between tw-border-0 tw-bg-transparent tw-px-2 tw-py-1.5 tw-text-left"
               @click="click"
             >
               <div>
-                <p class="tw-text-sm tw-font-medium tw-text-[var(--neutrals-900)]">{{ item.title }}</p>
-                <p class="tw-text-xs tw-text-[var(--neutrals-500)]">{{ item.owner }}</p>
+                <p class="tw-text-sm tw-text-neutrals-900">{{ item.title }}</p>
+                <p class="tw-text-xs tw-text-neutrals-500">{{ item.owner }}</p>
               </div>
               <VcIcon
                 v-if="item.id === activeWorkspaceId"
                 icon="material-check"
-                size="m"
-                class="tw-text-[var(--primary-600)]"
+                size="s"
+                class="tw-text-primary-600"
               />
             </button>
           </template>
@@ -355,9 +350,9 @@ export const ScrollableList: Story = {
       };
     },
     template: `
-      <div class="tw-min-h-[340px] tw-rounded-xl tw-border tw-border-solid tw-border-[var(--neutrals-200)] tw-bg-[var(--additional-50)] tw-p-6">
-        <p class="tw-mb-1 tw-text-sm tw-text-[var(--neutrals-500)]">Long list + keyboard navigation</p>
-        <p class="tw-mb-5 tw-text-sm tw-text-[var(--neutrals-700)]">Use Arrow keys, Enter and Escape.</p>
+      <div class="tw-min-h-[340px] tw-rounded-xl tw-border tw-border-solid tw-border-neutrals-200 tw-bg-additional-50 tw-p-6">
+        <p class="tw-mb-1 tw-text-sm tw-text-neutrals-500">Long list + keyboard navigation</p>
+        <p class="tw-mb-5 tw-text-sm tw-text-neutrals-700">Use Arrow keys, Enter and Escape.</p>
 
         <VcDropdown
           v-bind="args"
@@ -379,16 +374,16 @@ export const ScrollableList: Story = {
           <template #item="{ item, click }">
             <button
               type="button"
-              class="tw-flex tw-w-[300px] tw-items-center tw-justify-between tw-border-0 tw-bg-transparent tw-px-4 tw-py-2.5 tw-text-left hover:tw-bg-[var(--primary-50)]"
+              class="tw-flex tw-w-[260px] tw-items-center tw-justify-between tw-border-0 tw-bg-transparent tw-px-2 tw-py-1.5 tw-text-left"
               @click="click"
             >
               <div>
-                <p class="tw-text-sm tw-text-[var(--neutrals-900)]">{{ item.title }}</p>
-                <p class="tw-text-xs tw-text-[var(--neutrals-500)]">{{ item.description }}</p>
+                <p class="tw-text-sm tw-text-neutrals-900">{{ item.title }}</p>
+                <p class="tw-text-xs tw-text-neutrals-500">{{ item.description }}</p>
               </div>
               <div
-                class="tw-h-2.5 tw-w-2.5 tw-rounded-full"
-                :class="item.id === activeId ? 'tw-bg-[var(--primary-500)]' : 'tw-bg-[var(--neutrals-300)]'"
+                class="tw-h-2 tw-w-2 tw-rounded-full"
+                :class="item.id === activeId ? 'tw-bg-primary-500' : 'tw-bg-neutrals-300'"
               />
             </button>
           </template>

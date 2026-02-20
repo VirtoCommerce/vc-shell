@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
-import { VcLabel } from "./";
+import { VcLabel } from "@ui/components/atoms/vc-label";
 
 /**
  * `VcLabel` - component for displaying form field labels

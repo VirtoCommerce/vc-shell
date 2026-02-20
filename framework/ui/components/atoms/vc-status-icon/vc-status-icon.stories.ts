@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
-import { VcStatusIcon } from "./";
+import { VcStatusIcon } from "@ui/components/atoms/vc-status-icon";
 
 /**
  * `VcStatusIcon` is a component that displays a visual status indicator using icons.

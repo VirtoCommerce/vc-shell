@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
-import VcBadge from "./vc-badge.vue";
+import VcBadge from "@ui/components/atoms/vc-badge/vc-badge.vue";
 import { ref } from "vue";
 
 /**

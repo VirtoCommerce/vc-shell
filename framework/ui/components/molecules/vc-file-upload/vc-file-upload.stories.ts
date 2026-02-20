@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
-import { VcFileUpload } from "./";
+import { VcFileUpload } from "@ui/components/molecules/vc-file-upload";
 import { ref } from "vue";
 
 const VARIANT = ["gallery", "file-upload"];

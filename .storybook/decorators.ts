@@ -1,5 +1,6 @@
 import { Decorator } from "@storybook/vue3-vite";
 import { ref, provide, getCurrentInstance, onUnmounted } from "vue";
+import { IsMobileKey, IsDesktopKey } from "../framework/injection-keys";
 import { mockGlobals } from "./storybook-globals";
 
 /**
@@ -89,8 +90,8 @@ export const withMobileView: Decorator = (story, context) => {
       }
 
       // Also provide via inject for components that use inject
-      provide("isMobile", ref(true));
-      provide("isDesktop", ref(false));
+      provide(IsMobileKey, ref(true));
+      provide(IsDesktopKey, ref(false));
 
       return { args: context.args };
     },

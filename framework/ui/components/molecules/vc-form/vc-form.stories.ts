@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
-import { VcForm } from "./";
-import { VcInput } from "../vc-input";
-import { VcButton } from "../../atoms/vc-button";
+import { VcForm } from "@ui/components/molecules/vc-form";
+import { VcInput } from "@ui/components/molecules/vc-input";
+import { VcButton } from "@ui/components/atoms/vc-button";
 import { ref } from "vue";
 
 /**

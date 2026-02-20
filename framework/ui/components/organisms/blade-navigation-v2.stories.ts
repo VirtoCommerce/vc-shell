@@ -10,12 +10,12 @@ import {
 import {
   BladeRegistryKey,
   type IBladeRegistryInstance,
-} from "../../../core/composables/useBladeRegistry";
+} from "@core/composables/useBladeRegistry";
 import {
   BladeStackKey,
   BladeMessagingKey,
   BladeDescriptorKey,
-} from "../../../shared/components/blade-navigation/types";
+} from "@shared/components/blade-navigation/types";
 
 // ── Shared demo state (module-level for control panel ↔ blade component sync) ─
 

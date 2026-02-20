@@ -1,6 +1,6 @@
 import { ref } from "vue";
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
-import { VcPagination } from "./";
+import { VcPagination } from "@ui/components/molecules/vc-pagination";
 
 /**
  * `VcPagination` is a navigation component that enables users to browse through multiple pages of content.

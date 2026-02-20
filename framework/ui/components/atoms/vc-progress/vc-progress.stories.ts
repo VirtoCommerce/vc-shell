@@ -1,6 +1,6 @@
 import { ref } from "vue";
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
-import { VcProgress } from "./";
+import { VcProgress } from "@ui/components/atoms/vc-progress";
 
 /**
  * `VcProgress` is a component that visualizes the completion progress of a task or process.

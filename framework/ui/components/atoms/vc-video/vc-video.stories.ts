@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
-import { VcVideo } from "./";
+import { VcVideo } from "@ui/components/atoms/vc-video";
 
 /**
  * `VcVideo` - component for embedding video content with optional label and tooltip

@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
-import { VcTextarea } from "./";
+import { VcTextarea } from "@ui/components/molecules/vc-textarea";
 import { ref } from "vue";
 
 /**

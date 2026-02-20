@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
 import { ref } from "vue";
 import { VcPopup } from ".";
-import VcButton from "../../atoms/vc-button/vc-button.vue";
-import VcIcon from "../../atoms/vc-icon/vc-icon.vue";
+import VcButton from "@ui/components/atoms/vc-button/vc-button.vue";
+import VcIcon from "@ui/components/atoms/vc-icon/vc-icon.vue";
 
 const meta = {
   title: "Organisms/VcPopup",

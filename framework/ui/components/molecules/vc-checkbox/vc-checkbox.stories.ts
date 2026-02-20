@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
-import { VcCheckbox } from "./";
+import { VcCheckbox } from "@ui/components/molecules/vc-checkbox";
 import { ref } from "vue";
 
 /**

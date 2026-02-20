@@ -1,10 +1,17 @@
-import { ref } from "vue";
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
-import { VcTooltip } from "./";
+import { VcTooltip } from "@ui/components/atoms/vc-tooltip";
 
 /**
- * `VcTooltip` is a component that displays additional information when users hover over an element.
+ * `VcTooltip` is a component that displays additional information when users hover over or focus an element.
  * It provides contextual help, hints, or explanations without cluttering the interface.
+ *
+ * Features:
+ * - Arrow pointing to trigger element
+ * - Smooth fade + scale animation
+ * - Three visual variants: default (light), dark, info
+ * - Configurable max-width, offset, delay, and placement
+ * - Keyboard accessible (focus/blur, Escape to dismiss)
+ * - ARIA `role="tooltip"` with `aria-describedby`
  */
 const meta = {
   title: "Atoms/VcTooltip",
@@ -38,7 +45,7 @@ const meta = {
       control: "object",
       table: {
         type: { summary: "{ mainAxis?: number; crossAxis?: number }" },
-        defaultValue: { summary: "{ mainAxis: 0, crossAxis: 0 }" },
+        defaultValue: { summary: "{ mainAxis: 8, crossAxis: 0 }" },
       },
     },
     delay: {
@@ -47,6 +54,39 @@ const meta = {
       table: {
         type: { summary: "number" },
         defaultValue: { summary: "0" },
+      },
+    },
+    arrow: {
+      description: "Whether to show an arrow pointing to the trigger",
+      control: "boolean",
+      table: {
+        type: { summary: "boolean" },
+        defaultValue: { summary: "true" },
+      },
+    },
+    variant: {
+      description: "Visual theme variant",
+      control: "select",
+      options: ["default", "dark", "info"],
+      table: {
+        type: { summary: '"default" | "dark" | "info"' },
+        defaultValue: { summary: "default" },
+      },
+    },
+    maxWidth: {
+      description: "Maximum width of the tooltip (px number or CSS string)",
+      control: "text",
+      table: {
+        type: { summary: "number | string" },
+        defaultValue: { summary: "240" },
+      },
+    },
+    disabled: {
+      description: "Whether to suppress the tooltip entirely",
+      control: "boolean",
+      table: {
+        type: { summary: "boolean" },
+        defaultValue: { summary: "false" },
       },
     },
     default: {
@@ -72,14 +112,16 @@ const meta = {
         component: `
 The VcTooltip component is a versatile UI element for displaying contextual information:
 
-- Supports multiple placement options (top, right, bottom, left with start/end variations)
+- Supports 12 placement options (top, right, bottom, left with start/end variations)
+- Arrow indicator pointing to the trigger element
+- Three visual variants: \`default\` (light), \`dark\`, and \`info\`
+- Smooth fade + scale entrance/exit animation
 - Configurable display delay to prevent accidental triggering
-- Customizable offset for precise positioning
+- Customizable offset and max-width for precise control
+- Keyboard accessible — shows on focus, dismisses with Escape
+- ARIA compliant with \`role="tooltip"\` and \`aria-describedby\`
 - Uses Vue's Teleport for optimal rendering in the DOM
-- Leverages Floating UI for accurate positioning
-
-**Note:** This component requires an element with id="app" to exist in the DOM for teleportation
-of tooltip content. The stories handle this automatically.
+- Leverages Floating UI for accurate positioning with flip and shift
         `,
       },
     },
@@ -89,23 +131,25 @@ of tooltip content. The stories handle this automatically.
 export default meta;
 type Story = StoryObj<typeof meta>;
 
+const triggerButtonClass = "tw-px-4 tw-py-2 tw-bg-primary-500 tw-text-white tw-rounded-md tw-text-sm tw-font-medium tw-cursor-pointer tw-border-none hover:tw-bg-primary-600 tw-transition-colors";
+
 /**
- * Basic example of a tooltip appearing below an element
+ * Basic tooltip with arrow — the default experience.
  */
 export const Default: Story = {
   render: (args) => ({
     components: { VcTooltip },
     setup() {
-      return { args };
+      return { args, triggerButtonClass };
     },
     template: `
-      <div class="tw-flex tw-justify-center tw-items-center tw-h-32">
+      <div class="tw-flex tw-justify-center tw-items-center tw-h-40">
         <vc-tooltip v-bind="args">
-          <button class="tw-px-4 tw-py-2 tw-bg-blue-500 tw-text-white tw-rounded">
+          <button :class="triggerButtonClass">
             Hover me
           </button>
           <template #tooltip>
-            <div class="tw-py-1 tw-px-2">This is a tooltip</div>
+            This is a tooltip with an arrow
           </template>
         </vc-tooltip>
       </div>
@@ -114,7 +158,67 @@ export const Default: Story = {
 };
 
 /**
- * Tooltip with a delayed appearance
+ * Three visual variants for different contexts.
+ */
+export const Variants: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story: "Use `variant` to switch between light (default), dark, and info themes.",
+      },
+    },
+  },
+  render: () => ({
+    components: { VcTooltip },
+    setup() {
+      return { triggerButtonClass };
+    },
+    template: `
+      <div class="tw-flex tw-justify-center tw-items-center tw-gap-8 tw-h-40">
+        <vc-tooltip placement="top" variant="default">
+          <button :class="triggerButtonClass">Default</button>
+          <template #tooltip>Light tooltip — clean and subtle</template>
+        </vc-tooltip>
+
+        <vc-tooltip placement="top" variant="dark">
+          <button :class="triggerButtonClass">Dark</button>
+          <template #tooltip>Dark tooltip — high contrast</template>
+        </vc-tooltip>
+
+        <vc-tooltip placement="top" variant="info">
+          <button :class="triggerButtonClass">Info</button>
+          <template #tooltip>Info tooltip — draws attention</template>
+        </vc-tooltip>
+      </div>
+    `,
+  }),
+};
+
+/**
+ * Tooltip without arrow — for a cleaner minimal look.
+ */
+export const NoArrow: Story = {
+  args: {
+    arrow: false,
+  },
+  render: (args) => ({
+    components: { VcTooltip },
+    setup() {
+      return { args, triggerButtonClass };
+    },
+    template: `
+      <div class="tw-flex tw-justify-center tw-items-center tw-h-40">
+        <vc-tooltip v-bind="args">
+          <button :class="triggerButtonClass">No arrow</button>
+          <template #tooltip>A clean tooltip without the arrow indicator</template>
+        </vc-tooltip>
+      </div>
+    `,
+  }),
+};
+
+/**
+ * Tooltip with a delayed appearance.
  */
 export const WithDelay: Story = {
   args: {
@@ -123,17 +227,15 @@ export const WithDelay: Story = {
   render: (args) => ({
     components: { VcTooltip },
     setup() {
-      return { args };
+      return { args, triggerButtonClass };
     },
     template: `
-      <div class="tw-flex tw-justify-center tw-items-center tw-h-32">
+      <div class="tw-flex tw-justify-center tw-items-center tw-h-40">
         <vc-tooltip v-bind="args">
-          <button class="tw-px-4 tw-py-2 tw-bg-blue-500 tw-text-white tw-rounded">
+          <button :class="triggerButtonClass">
             Hover me (500ms delay)
           </button>
-          <template #tooltip>
-            <div class="tw-py-1 tw-px-2">This tooltip appears after a delay</div>
-          </template>
+          <template #tooltip>This tooltip appears after a delay</template>
         </vc-tooltip>
       </div>
     `,
@@ -141,13 +243,13 @@ export const WithDelay: Story = {
 };
 
 /**
- * Example showing different placement options
+ * All 12 placement options.
  */
 export const Placements: Story = {
   parameters: {
     docs: {
       description: {
-        story: "Tooltips can be positioned in various ways relative to the target element.",
+        story: "Tooltips can be positioned in 12 ways relative to the trigger. Floating UI automatically flips when near viewport edges.",
       },
     },
   },
@@ -168,19 +270,17 @@ export const Placements: Story = {
         "left-start",
         "left-end",
       ];
-
-      return { placements };
+      const btnClass = "tw-px-3 tw-py-1.5 tw-bg-neutrals-100 tw-text-neutrals-700 tw-rounded-md tw-text-xs tw-font-medium tw-cursor-pointer tw-border tw-border-solid tw-border-neutrals-200 hover:tw-bg-neutrals-200 tw-transition-colors";
+      return { placements, btnClass };
     },
     template: `
-      <div class="tw-grid tw-grid-cols-3 tw-gap-4 tw-p-12">
+      <div class="tw-grid tw-grid-cols-3 tw-gap-6 tw-p-16">
         <div v-for="placement in placements" :key="placement" class="tw-flex tw-justify-center tw-items-center tw-h-24">
-          <vc-tooltip :placement="placement">
-            <button class="tw-px-3 tw-py-1 tw-bg-blue-500 tw-text-white tw-rounded tw-text-sm">
+          <vc-tooltip :placement="placement" variant="dark">
+            <button :class="btnClass">
               {{ placement }}
             </button>
-            <template #tooltip>
-              <div class="tw-py-1 tw-px-2">Placement: {{ placement }}</div>
-            </template>
+            <template #tooltip>Placement: {{ placement }}</template>
           </vc-tooltip>
         </div>
       </div>
@@ -189,26 +289,24 @@ export const Placements: Story = {
 };
 
 /**
- * Tooltip with custom offset
+ * Tooltip with custom offset.
  */
 export const WithOffset: Story = {
   args: {
-    offset: { mainAxis: 16, crossAxis: 0 },
+    offset: { mainAxis: 20, crossAxis: 0 },
   },
   render: (args) => ({
     components: { VcTooltip },
     setup() {
-      return { args };
+      return { args, triggerButtonClass };
     },
     template: `
-      <div class="tw-flex tw-justify-center tw-items-center tw-h-32">
+      <div class="tw-flex tw-justify-center tw-items-center tw-h-40">
         <vc-tooltip v-bind="args">
-          <button class="tw-px-4 tw-py-2 tw-bg-blue-500 tw-text-white tw-rounded">
-            Hover me (with offset)
+          <button :class="triggerButtonClass">
+            Large offset (20px)
           </button>
-          <template #tooltip>
-            <div class="tw-py-1 tw-px-2">This tooltip has a custom offset</div>
-          </template>
+          <template #tooltip>This tooltip has extra spacing from the trigger</template>
         </vc-tooltip>
       </div>
     `,
@@ -216,25 +314,28 @@ export const WithOffset: Story = {
 };
 
 /**
- * Rich content inside tooltip
+ * Rich HTML content inside the tooltip.
  */
 export const RichContent: Story = {
-  render: () => ({
+  args: {
+    maxWidth: 280,
+  },
+  render: (args) => ({
     components: { VcTooltip },
     setup() {
-      return {};
+      return { args, triggerButtonClass };
     },
     template: `
-      <div class="tw-flex tw-justify-center tw-items-center tw-h-32">
-        <vc-tooltip>
-          <button class="tw-px-4 tw-py-2 tw-bg-blue-500 tw-text-white tw-rounded">
+      <div class="tw-flex tw-justify-center tw-items-center tw-h-48">
+        <vc-tooltip v-bind="args" placement="top">
+          <button :class="triggerButtonClass">
             Help
           </button>
           <template #tooltip>
-            <div class="tw-p-2 tw-max-w-xs">
-              <h3 class="tw-font-bold tw-mb-1">Need help?</h3>
-              <p class="tw-mb-1">Here are some helpful tips:</p>
-              <ul class="tw-list-disc tw-pl-4">
+            <div>
+              <div class="tw-font-semibold tw-mb-1 tw-text-neutrals-900">Need help?</div>
+              <p class="tw-mb-1.5 tw-text-neutrals-500">Here are some helpful tips:</p>
+              <ul class="tw-list-disc tw-pl-4 tw-text-neutrals-600 tw-space-y-0.5">
                 <li>Make sure all fields are filled</li>
                 <li>Check for validation errors</li>
                 <li>Contact support if issues persist</li>
@@ -248,38 +349,59 @@ export const RichContent: Story = {
 };
 
 /**
- * Interactive example with different triggers and tooltips
+ * Disabled tooltip — hover triggers no popup.
  */
-export const InteractiveExample: Story = {
+export const Disabled: Story = {
+  args: {
+    disabled: true,
+  },
+  render: (args) => ({
+    components: { VcTooltip },
+    setup() {
+      return { args, triggerButtonClass };
+    },
+    template: `
+      <div class="tw-flex tw-justify-center tw-items-center tw-h-40">
+        <vc-tooltip v-bind="args">
+          <button :class="triggerButtonClass">
+            Tooltip disabled
+          </button>
+          <template #tooltip>You won't see this</template>
+        </vc-tooltip>
+      </div>
+    `,
+  }),
+};
+
+/**
+ * Interactive icon toolbar with tooltips — a realistic usage pattern.
+ */
+export const IconToolbar: Story = {
   render: () => ({
     components: { VcTooltip },
     setup() {
-      const items = [
-        { name: "User Profile", icon: "👤", tooltip: "View and edit your profile" },
-        { name: "Settings", icon: "⚙️", tooltip: "Configure application settings" },
-        { name: "Messages", icon: "✉️", tooltip: "View your messages" },
-        { name: "Notifications", icon: "🔔", tooltip: "Manage your notifications" },
+      const actions = [
+        { icon: "\u2795", label: "Add item" },
+        { icon: "\u270F\uFE0F", label: "Edit selected" },
+        { icon: "\uD83D\uDDD1\uFE0F", label: "Delete" },
+        { icon: "\u2699\uFE0F", label: "Settings" },
       ];
-
-      return { items };
+      return { actions };
     },
     template: `
-      <div class="tw-flex tw-justify-center tw-items-center tw-h-32">
-        <div class="tw-bg-gray-100 tw-p-4 tw-rounded tw-shadow">
-          <div class="tw-flex tw-space-x-4">
-            <vc-tooltip
-              v-for="item in items"
-              :key="item.name"
-              placement="top"
-            >
-              <button class="tw-w-10 tw-h-10 tw-flex tw-items-center tw-justify-center tw-bg-white tw-rounded-full tw-shadow-sm tw-text-xl">
-                {{ item.icon }}
-              </button>
-              <template #tooltip>
-                <div class="tw-py-1 tw-px-2">{{ item.tooltip }}</div>
-              </template>
-            </vc-tooltip>
-          </div>
+      <div class="tw-flex tw-justify-center tw-items-center tw-h-40">
+        <div class="tw-flex tw-items-center tw-gap-1 tw-bg-neutrals-50 tw-p-2 tw-rounded-lg tw-border tw-border-solid tw-border-neutrals-200">
+          <vc-tooltip
+            v-for="action in actions"
+            :key="action.label"
+            placement="top"
+            variant="dark"
+          >
+            <button class="tw-w-9 tw-h-9 tw-flex tw-items-center tw-justify-center tw-rounded-md tw-cursor-pointer tw-border-none tw-bg-transparent hover:tw-bg-neutrals-200 tw-transition-colors tw-text-base">
+              {{ action.icon }}
+            </button>
+            <template #tooltip>{{ action.label }}</template>
+          </vc-tooltip>
         </div>
       </div>
     `,

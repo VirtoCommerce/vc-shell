@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
-import { VcIcon } from "./index";
-import VcIconTest from "./vc-icon-test.vue";
-import VcIconExamples from "./vc-icon-examples.vue";
+import { VcIcon } from "@ui/components/atoms/vc-icon";
+import VcIconTest from "@ui/components/atoms/vc-icon/vc-icon-test.vue";
+import VcIconExamples from "@ui/components/atoms/vc-icon/vc-icon-examples.vue";
 
 /**
  * # VcIcon Component

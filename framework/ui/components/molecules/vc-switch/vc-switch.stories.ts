@@ -1,7 +1,7 @@
 import { ref } from "vue";
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
-import VcSwitch from "./vc-switch.vue";
-import VcHint from "../../atoms/vc-hint/vc-hint.vue";
+import VcSwitch from "@ui/components/molecules/vc-switch/vc-switch.vue";
+import VcHint from "@ui/components/atoms/vc-hint/vc-hint.vue";
 
 /**
  * `VcSwitch` is a UI component that provides a visual toggle between two states.

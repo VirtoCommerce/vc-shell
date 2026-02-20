@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
-import VcSkeleton from "./vc-skeleton.vue";
+import VcSkeleton from "@ui/components/atoms/vc-skeleton/vc-skeleton.vue";
 
 /**
  * `VcSkeleton` component is used to display loading placeholders for content.

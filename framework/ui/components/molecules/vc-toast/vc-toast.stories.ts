@@ -1,7 +1,7 @@
 import { ref, defineComponent } from "vue";
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
 import { VcToast } from ".";
-import { notification } from "../../../../shared/components/notifications";
+import { notification } from "@shared/components/notifications";
 
 /**
  * `VcToast` is a component for displaying toast notifications to users.
@@ -99,7 +99,7 @@ The component can be used directly as shown in the examples, but for application
 use the notification service:
 
 \`\`\`js
-import { notification } from "framework/shared/components/notifications";
+import { notification } from "@shared/components/notifications";
 
 // Show a notification
 notification("Default notification message");

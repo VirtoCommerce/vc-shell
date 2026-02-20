@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
-import { VcHint } from "./";
+import { VcHint } from "@ui/components/atoms/vc-hint";
 
 /**
  * `VcHint` is a simple component for displaying hint or helper text.

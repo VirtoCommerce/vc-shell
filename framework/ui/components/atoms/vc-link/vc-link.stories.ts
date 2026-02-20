@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
-import { VcLink } from "./";
+import { VcLink } from "@ui/components/atoms/vc-link";
 
 /**
  * `VcLink` - component for displaying clickable links with various states

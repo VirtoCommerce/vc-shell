@@ -1,20 +1,19 @@
 import type { Meta, StoryFn } from "@storybook/vue3-vite";
 import { computed, onUnmounted, provide, ref } from "vue";
-import { useRoute, useRouter } from "vue-router";
-import VcApp from "./vc-app.vue";
-import { useMenuService } from "../../../../core/composables";
-import type { AppDescriptor } from "../../../../core/api/platform";
-import type { MenuItem } from "../../../../core/types";
-import { defaultFeatures } from "../../../../core/shell-features";
-import { AppRootElementKey } from "../../../../injection-keys";
-import { VcPopupContainer } from "../../../../shared/components";
+import { useRoute } from "vue-router";
+import VcApp from "@ui/components/organisms/vc-app/vc-app.vue";
+import { useMenuService } from "@core/composables";
+import type { AppDescriptor } from "@core/api/platform";
+import type { MenuItem } from "@core/types";
+import { AppRootElementKey, BladeRoutesKey } from "@framework/injection-keys";
+import { VcPopupContainer } from "@shared/components";
 import {
   VcAppDesktopLayout,
   VcAppMobileLayout,
   provideAppBarState,
-  provideSidebarState,
   useShellBootstrap,
-} from "./composition";
+} from "@ui/components/organisms/vc-app/composition";
+import { provideSidebarState } from "@core/composables/useSidebarState";
 import { withMobileView } from "../../../../../.storybook/decorators";
 
 /**
@@ -87,7 +86,7 @@ const mockMenuItems: Partial<MenuItem>[] = [
 function useStorySetup() {
   const { addMenuItem } = useMenuService();
   mockMenuItems.forEach((item) => addMenuItem(item as MenuItem));
-  provide("bladeRoutes", []);
+  provide(BladeRoutesKey, []);
   return { logo: MOCK_LOGO };
 }
 
@@ -229,7 +228,6 @@ export const CustomShellFromParts: StoryFn = () => {
     },
     setup() {
       const route = useRoute();
-      const router = useRouter();
       const isEmbedded = route.query.EmbeddedMode === "true";
       const isAuthenticated = ref(true);
       const isAppReady = ref(true);
@@ -241,7 +239,7 @@ export const CustomShellFromParts: StoryFn = () => {
       const activeApp = ref(appsList.value[0]?.title ?? "Admin");
 
       // Required providers for custom shell assembly.
-      provide("bladeRoutes", []);
+      provide(BladeRoutesKey, []);
       const appRootRef = ref<HTMLElement>();
       provide(AppRootElementKey, appRootRef);
       const sidebar = provideSidebarState();
@@ -249,11 +247,10 @@ export const CustomShellFromParts: StoryFn = () => {
       const isSidebarPinned = computed(() => sidebar.isPinned.value);
       const isShellMenuOpened = computed(() => sidebar.isMenuOpen.value);
 
-      useShellBootstrap(defaultFeatures, {
+      useShellBootstrap({
         isEmbedded,
         internalRoutes: [],
         dynamicModules: undefined,
-        context: { router, route, isAuthenticated, isEmbedded },
       });
 
       const { addMenuItem } = useMenuService();
@@ -320,13 +317,13 @@ export const CustomShellFromParts: StoryFn = () => {
               @switch-app="switchApp"
             >
               <template #app-switcher="{ appsList: customAppsList, switchApp: onSwitchApp }">
-                <div class="tw-px-4 tw-py-3 tw-space-y-2 tw-text-xs tw-text-[var(--neutrals-700)]">
+                <div class="tw-px-4 tw-py-3 tw-space-y-2 tw-text-xs tw-text-neutrals-700">
                   <p class="tw-font-semibold tw-uppercase tw-tracking-wide">Custom app switcher slot</p>
                   <button
                     v-for="app in customAppsList"
                     :key="app.id"
                     type="button"
-                    class="tw-w-full tw-text-left tw-px-3 tw-py-2 tw-rounded tw-bg-[var(--neutrals-100)] hover:tw-bg-[var(--neutrals-200)]"
+                    class="tw-w-full tw-text-left tw-px-3 tw-py-2 tw-rounded tw-bg-neutrals-100 hover:tw-bg-neutrals-200"
                     @click="onSwitchApp(app)"
                   >
                     {{ app.title }}
@@ -347,13 +344,13 @@ export const CustomShellFromParts: StoryFn = () => {
               @switch-app="switchApp"
             >
               <template #app-switcher="{ appsList: customAppsList, switchApp: onSwitchApp }">
-                <div class="tw-px-4 tw-py-3 tw-space-y-2 tw-text-xs tw-text-[var(--neutrals-700)]">
+                <div class="tw-px-4 tw-py-3 tw-space-y-2 tw-text-xs tw-text-neutrals-700">
                   <p class="tw-font-semibold tw-uppercase tw-tracking-wide">Custom app switcher slot</p>
                   <button
                     v-for="app in customAppsList"
                     :key="app.id"
                     type="button"
-                    class="tw-w-full tw-text-left tw-px-3 tw-py-2 tw-rounded tw-bg-[var(--neutrals-100)] hover:tw-bg-[var(--neutrals-200)]"
+                    class="tw-w-full tw-text-left tw-px-3 tw-py-2 tw-rounded tw-bg-neutrals-100 hover:tw-bg-neutrals-200"
                     @click="onSwitchApp(app)"
                   >
                     {{ app.title }}
@@ -363,28 +360,28 @@ export const CustomShellFromParts: StoryFn = () => {
             </VcAppMobileLayout>
 
             <div v-if="isAuthenticated" class="vc-app__workspace">
-              <div class="tw-w-full tw-overflow-auto tw-p-6 tw-space-y-4 tw-text-[var(--neutrals-800)]">
+              <div class="tw-w-full tw-overflow-auto tw-p-6 tw-space-y-4 tw-text-neutrals-800">
                 <div class="tw-flex tw-flex-wrap tw-items-start tw-justify-between tw-gap-4">
                   <div class="tw-space-y-1">
-                    <p class="tw-text-xs tw-uppercase tw-tracking-wide tw-text-[var(--neutrals-600)]">
+                    <p class="tw-text-xs tw-uppercase tw-tracking-wide tw-text-neutrals-600">
                       Custom shell composition
                     </p>
                     <h2 class="tw-text-2xl tw-font-semibold">{{ activeSection }}</h2>
-                    <p class="tw-text-sm tw-text-[var(--neutrals-700)]">
+                    <p class="tw-text-sm tw-text-neutrals-700">
                       Current app: <span class="tw-font-medium">{{ activeApp }}</span>
                     </p>
                   </div>
                   <div class="tw-flex tw-flex-wrap tw-gap-2">
                     <button
                       type="button"
-                      class="tw-px-3 tw-py-2 tw-rounded tw-border tw-border-[var(--neutrals-300)] tw-bg-white hover:tw-bg-[var(--neutrals-100)]"
+                      class="tw-px-3 tw-py-2 tw-rounded tw-border tw-border-neutrals-300 tw-bg-white hover:tw-bg-neutrals-100"
                       @click="sidebar.togglePin"
                     >
                       {{ isSidebarPinned ? "Unpin sidebar" : "Pin sidebar" }}
                     </button>
                     <button
                       type="button"
-                      class="tw-px-3 tw-py-2 tw-rounded tw-bg-[var(--primary-500)] tw-text-white hover:tw-bg-[var(--primary-600)]"
+                      class="tw-px-3 tw-py-2 tw-rounded tw-bg-primary-500 tw-text-white hover:tw-bg-primary-600"
                       @click="toggleShellMenu"
                     >
                       {{ isShellMenuOpened ? "Close shell menu" : "Open shell menu" }}
@@ -393,21 +390,21 @@ export const CustomShellFromParts: StoryFn = () => {
                 </div>
 
                 <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-3 tw-gap-3">
-                  <div class="tw-rounded-lg tw-bg-white tw-border tw-border-[var(--neutrals-200)] tw-p-4">
-                    <p class="tw-text-xs tw-text-[var(--neutrals-500)]">Active menu group</p>
+                  <div class="tw-rounded-lg tw-bg-white tw-border tw-border-neutrals-200 tw-p-4">
+                    <p class="tw-text-xs tw-text-neutrals-500">Active menu group</p>
                     <p class="tw-text-lg tw-font-semibold">{{ activeSection }}</p>
                   </div>
-                  <div class="tw-rounded-lg tw-bg-white tw-border tw-border-[var(--neutrals-200)] tw-p-4">
-                    <p class="tw-text-xs tw-text-[var(--neutrals-500)]">Sidebar mode</p>
+                  <div class="tw-rounded-lg tw-bg-white tw-border tw-border-neutrals-200 tw-p-4">
+                    <p class="tw-text-xs tw-text-neutrals-500">Sidebar mode</p>
                     <p class="tw-text-lg tw-font-semibold">{{ isSidebarPinned ? "Pinned" : "Collapsible" }}</p>
                   </div>
-                  <div class="tw-rounded-lg tw-bg-white tw-border tw-border-[var(--neutrals-200)] tw-p-4">
-                    <p class="tw-text-xs tw-text-[var(--neutrals-500)]">Shell menu</p>
+                  <div class="tw-rounded-lg tw-bg-white tw-border tw-border-neutrals-200 tw-p-4">
+                    <p class="tw-text-xs tw-text-neutrals-500">Shell menu</p>
                     <p class="tw-text-lg tw-font-semibold">{{ isShellMenuOpened ? "Opened" : "Closed" }}</p>
                   </div>
                 </div>
 
-                <p class="tw-text-sm tw-text-[var(--neutrals-700)]">
+                <p class="tw-text-sm tw-text-neutrals-700">
                   This workspace is rendered from composition parts and wires required shell providers, emits and slots.
                 </p>
               </div>

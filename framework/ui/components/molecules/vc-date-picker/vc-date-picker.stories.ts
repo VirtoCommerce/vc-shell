@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
-import { VcDatePicker } from "./";
+import { VcDatePicker } from "@ui/components/molecules/vc-date-picker";
 import { ref } from "vue";
 
 const meta = {
@@ -21,7 +21,7 @@ A standalone date picker component extracted from VcInput. Wraps the VueDatePick
 
 - **Date & DateTime**: Supports both \`date\` and \`datetime-local\` types
 - **Accessible**: Auto-generated IDs for label association, \`aria-describedby\` for hints/errors, \`aria-invalid\` for error state
-- **Consistent styling**: Uses the same CSS variables and shadcn-inspired focus rings as VcInput
+- **Consistent styling**: Uses the same CSS variables and focus rings as VcInput
         `,
       },
     },

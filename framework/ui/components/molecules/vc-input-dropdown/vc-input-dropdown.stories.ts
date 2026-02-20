@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
-import { VcInputDropdown } from "./";
-import { VcIcon } from "../../atoms/vc-icon";
-import { VcButton } from "../../atoms/vc-button";
+import { VcInputDropdown } from "@ui/components/molecules/vc-input-dropdown";
+import { VcIcon } from "@ui/components/atoms/vc-icon";
+import { VcButton } from "@ui/components/atoms/vc-button";
 import { ref, computed, watch } from "vue";
 
 /**

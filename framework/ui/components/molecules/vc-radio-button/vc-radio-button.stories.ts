@@ -1,6 +1,6 @@
 import { ref } from "vue";
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
-import { VcRadioButton } from "./";
+import { VcRadioButton } from "@ui/components/molecules/vc-radio-button";
 
 /**
  * `VcRadioButton` is a selection control that allows users to select a single option from a set.

@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
-import { VcContainer } from "./";
+import { VcContainer } from "@ui/components/atoms/vc-container";
 
 /**
  * `VcContainer` is a scrollable container component that provides:

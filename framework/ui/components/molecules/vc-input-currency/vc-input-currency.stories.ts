@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
-import { VcInputCurrency } from "./";
+import { VcInputCurrency } from "@ui/components/molecules/vc-input-currency";
 import { ref } from "vue";
 
 /**

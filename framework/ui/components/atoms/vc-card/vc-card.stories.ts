@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
 import { VcCard } from ".";
-import { VcInput, VcCol, VcButton } from "./../../";
+import { VcInput, VcCol, VcButton } from "@ui/components";
 
 /**
  * `VcCard` is a container component that provides a bordered and styled section with

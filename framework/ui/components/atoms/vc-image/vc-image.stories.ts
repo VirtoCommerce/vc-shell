@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
-import { VcImage } from "./";
+import { VcImage } from "@ui/components/atoms/vc-image";
 
 /**
  * `VcImage` is a versatile component for displaying images with various aspect ratios,

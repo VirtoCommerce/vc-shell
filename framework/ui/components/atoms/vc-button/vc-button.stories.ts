@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
-import { VcButton } from "./";
+import { VcButton } from "@ui/components/atoms/vc-button";
 import { ref } from "vue";
 
 const FILLED_VARIANTS = ["primary", "danger", "warning", "success", "info"] as const;
@@ -13,8 +13,6 @@ const ALL_SIZES = ["sm", "default", "lg"] as const;
  * It supports 9 variants (5 filled + 4 structural), 4 sizes (sm, default, lg, icon),
  * loading state, accessible focus-visible rings, and keyboard navigation.
  *
- * **Design**: shadcn New York — clean borders, opacity-based hover, `focus-visible` ring,
- * `disabled:opacity-50`, rounded-md corners, compact h-9 default.
  */
 const meta = {
   title: "Atoms/VcButton",
@@ -67,7 +65,7 @@ const meta = {
       },
     },
     size: {
-      description: "Button size (shadcn New York convention). Legacy 'xs' maps to 'sm', 'base' maps to 'default'.",
+      description: "Button size. Legacy 'xs' maps to 'sm', 'base' maps to 'default'.",
       control: "select",
       options: ["sm", "default", "lg", "icon"],
       table: {

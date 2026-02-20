@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
-import { VcColorInput } from "./";
+import { VcColorInput } from "@ui/components/molecules/vc-color-input";
 import { ref } from "vue";
 
 const meta = {
@@ -21,7 +21,7 @@ A standalone color input component extracted from VcInput. Combines a text input
 - **Dual input**: Type hex values or use the native color picker via the swatch
 - **Color name support**: Accepts CSS color names (e.g., "red") and converts to hex
 - **Accessible**: Auto-generated IDs, \`aria-describedby\`, \`aria-invalid\`
-- **Consistent styling**: Uses the same CSS variables and shadcn-inspired focus rings as VcInput
+- **Consistent styling**: Uses the same CSS variables and focus rings as VcInput
         `,
       },
     },

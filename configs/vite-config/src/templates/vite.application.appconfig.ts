@@ -1,6 +1,6 @@
 import vue from "@vitejs/plugin-vue";
 import * as fs from "node:fs";
-import { loadEnv, defineConfig, ProxyOptions, type PluginOption, normalizePath } from "vite";
+import { loadEnv, defineConfig, ProxyOptions, type PluginOption, normalizePath, type Alias } from "vite";
 import mkcert from "vite-plugin-mkcert";
 import path from "node:path";
 import { checker } from "vite-plugin-checker";
@@ -95,30 +95,27 @@ if (process.env.APP_PLATFORM_URL) {
   });
 }
 
-let frameworkAliases: Record<string, string> | undefined;
+let frameworkAliases: Alias[] | undefined;
 
 if (mode === "development" && isMonorepo) {
-  frameworkAliases = {
-    "@vc-shell/framework/dist/index.css": normalizePath(path.resolve(frameworkPath, "assets/styles/index.scss")),
-    // Keep subpath imports from framework source resolvable in app dev mode.
-    "@framework": normalizedFrameworkPath,
-    "@core": frameworkCorePath,
-    "@core/": `${frameworkCorePath}/`,
-    "@ui": frameworkUiPath,
-    "@ui/": `${frameworkUiPath}/`,
-    "@shared": frameworkSharedPath,
-    "@shared/": `${frameworkSharedPath}/`,
-    "@assets": frameworkAssetsPath,
-    "@assets/": `${frameworkAssetsPath}/`,
-    "@locales": frameworkLocalesPath,
-    "@locales/": `${frameworkLocalesPath}/`,
-    "@vc-shell/framework/": `${normalizedFrameworkPath}/`,
-    "@vc-shell/framework": frameworkIndexPath,
-  };
-} else if (mode === "development") {
-  frameworkAliases = {
-    "@vc-shell/framework/dist/index.css": "@vc-shell/framework/dist/index.css",
-  };
+  // IMPORTANT: Order matters — first match wins in @rollup/plugin-alias.
+  // Use regex for @vc-shell/framework to prevent Vite's object-to-array
+  // normalization from stripping trailing slashes and creating duplicate entries.
+  frameworkAliases = [
+    // CSS import must be intercepted before the subpath regex
+    { find: "@vc-shell/framework/dist/index.css", replacement: normalizePath(path.resolve(frameworkPath, "assets/styles/index.scss")) },
+    // Bare import: resolve to source entry point (regex = exact match only)
+    { find: /^@vc-shell\/framework$/, replacement: frameworkIndexPath },
+    // Subpath imports: @vc-shell/framework/core/... → framework/core/...
+    { find: /^@vc-shell\/framework\/(.+)/, replacement: `${normalizedFrameworkPath}/$1` },
+    // Internal framework path aliases for source imports
+    { find: "@framework", replacement: normalizedFrameworkPath },
+    { find: "@core", replacement: frameworkCorePath },
+    { find: "@ui", replacement: frameworkUiPath },
+    { find: "@shared", replacement: frameworkSharedPath },
+    { find: "@assets", replacement: frameworkAssetsPath },
+    { find: "@locales", replacement: frameworkLocalesPath },
+  ];
 }
 
 export default defineConfig({

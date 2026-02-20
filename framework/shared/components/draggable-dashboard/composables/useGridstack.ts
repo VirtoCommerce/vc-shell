@@ -7,14 +7,14 @@
 
 import { ref, shallowRef, onUnmounted, watch, nextTick, type Ref, type ShallowRef } from "vue";
 import { GridStack, type GridStackOptions, type GridStackNode } from "gridstack";
-import type { IDashboardWidget, DashboardWidgetPosition } from "../types";
+import type { IDashboardWidget, DashboardWidgetPosition } from "@shared/components/draggable-dashboard/types";
 import {
   toGridstackWidget,
   fromGridstackNode,
   loadLayoutFromStorage,
   saveLayoutToStorage,
   mergeLayoutWithWidgets,
-} from "./useGridstackAdapter";
+} from "@shared/components/draggable-dashboard/composables/useGridstackAdapter";
 
 /**
  * Default Gridstack configuration

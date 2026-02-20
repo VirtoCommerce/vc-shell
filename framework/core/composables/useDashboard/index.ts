@@ -3,11 +3,11 @@ import {
   IDashboardService,
   registerDashboardWidget,
   dashboardBus,
-} from "../../services/dashboard-service";
+} from "@core/services/dashboard-service";
 import { provide, inject, getCurrentScope, onScopeDispose } from "vue";
-import { DashboardServiceKey } from "../../../injection-keys";
-import { usePermissions } from "../usePermissions";
-import { createLogger, InjectionError } from "../../utilities";
+import { DashboardServiceKey } from "@framework/injection-keys";
+import { usePermissions } from "@core/composables/usePermissions";
+import { createLogger, InjectionError } from "@core/utilities";
 
 const logger = createLogger("use-dashboard");
 

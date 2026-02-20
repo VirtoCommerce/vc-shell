@@ -1,9 +1,9 @@
 import { describe, it, expect } from "vitest";
 import { defineComponent, h, inject } from "vue";
 import { mount } from "@vue/test-utils";
-import { DashboardServiceKey } from "../../../injection-keys";
-import { provideDashboardService, useDashboard } from "./index";
-import { createDashboardService } from "../../services/dashboard-service";
+import { DashboardServiceKey } from "@framework/injection-keys";
+import { provideDashboardService, useDashboard } from "@core/composables/useDashboard";
+import { createDashboardService } from "@core/services/dashboard-service";
 
 describe("useDashboard", () => {
   it("throws InjectionError when no service is provided", () => {

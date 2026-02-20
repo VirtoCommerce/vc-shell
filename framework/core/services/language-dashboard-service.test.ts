@@ -2,12 +2,12 @@ import { describe, it, expect, vi } from "vitest";
 
 async function loadLanguageServiceModule() {
   vi.resetModules();
-  return import("./language-service");
+  return import("@core/services/language-service");
 }
 
 async function loadDashboardServiceModule() {
   vi.resetModules();
-  return import("./dashboard-service");
+  return import("@core/services/dashboard-service");
 }
 
 describe("language-service", () => {

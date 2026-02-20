@@ -1,5 +1,5 @@
 // Main component
-export { default as DraggableDashboard } from "./DraggableDashboard.vue";
+export { default as DraggableDashboard } from "@shared/components/draggable-dashboard/DraggableDashboard.vue";
 
 // Types
 export type {
@@ -8,11 +8,11 @@ export type {
   DashboardWidgetSize,
   DashboardDragEvent,
   DashboardGridConfig,
-} from "./types";
+} from "@shared/components/draggable-dashboard/types";
 
 // Gridstack composables (for advanced usage)
-export { useGridstack } from "./composables/useGridstack";
-export type { UseGridstackOptions, UseGridstackReturn } from "./composables/useGridstack";
+export { useGridstack } from "@shared/components/draggable-dashboard/composables/useGridstack";
+export type { UseGridstackOptions, UseGridstackReturn } from "@shared/components/draggable-dashboard/composables/useGridstack";
 
 // Import and re-export to avoid Storybook docgen issues with direct re-exports
 import {
@@ -23,7 +23,7 @@ import {
   mergeLayoutWithWidgets as _mergeLayoutWithWidgets,
   clearLayoutStorage as _clearLayoutStorage,
   LAYOUT_STORAGE_KEY as _LAYOUT_STORAGE_KEY,
-} from "./composables/useGridstackAdapter";
+} from "@shared/components/draggable-dashboard/composables/useGridstackAdapter";
 
 export const toGridstackWidget = _toGridstackWidget;
 export const fromGridstackNode = _fromGridstackNode;

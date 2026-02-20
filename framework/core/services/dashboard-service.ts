@@ -1,5 +1,5 @@
 import { reactive, Component } from "vue";
-import { createPreregistrationBus } from "./_internal";
+import { createPreregistrationBus } from "@core/services/_internal";
 
 export interface DashboardWidgetSize {
   width: number;

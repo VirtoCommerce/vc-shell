@@ -1,8 +1,8 @@
 import { computed, inject, onMounted, onUnmounted, watch, toValue, Ref, ComputedRef } from "vue";
-import { WidgetServiceKey, BladeInstance } from "../../injection-keys";
-import { IWidget } from "../../core/services";
-import { useBlade } from "../../core/composables";
-import { createLogger } from "../../core/utilities";
+import { WidgetServiceKey, BladeInstance } from "@framework/injection-keys";
+import { IWidget } from "@core/services";
+import { useBlade } from "@core/composables";
+import { createLogger } from "@core/utilities";
 
 const logger = createLogger("use-external-widgets");
 

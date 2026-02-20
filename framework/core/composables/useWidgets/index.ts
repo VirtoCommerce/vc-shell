@@ -5,9 +5,9 @@ import {
   registerWidget,
   registerExternalWidget,
   widgetBus,
-} from "./../../services/widget-service";
-import { WidgetServiceKey } from "./../../../injection-keys";
-import { createLogger, InjectionError } from "../../utilities";
+} from "@core/services/widget-service";
+import { WidgetServiceKey } from "@framework/injection-keys";
+import { createLogger, InjectionError } from "@core/utilities";
 
 const logger = createLogger("use-widgets");
 

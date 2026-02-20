@@ -13,13 +13,13 @@
 
 <script setup lang="ts">
 import { computed, inject, toValue } from "vue";
-import { useWidgets } from "../../../../../../core/composables/useWidgets";
-import WidgetContainerDesktop from "./WidgetContainerDesktop.vue";
-import WidgetContainerMobile from "./WidgetContainerMobile.vue";
-import { BladeInstance } from "../../../../../../injection-keys";
-import { IWidget } from "../../../../../../core/services";
-import { DEFAULT_BLADE_INSTANCE } from "../../constants";
-import { resolveVisibility } from "../../utils";
+import { useWidgets } from "@core/composables/useWidgets";
+import WidgetContainerDesktop from "@ui/components/organisms/vc-blade/_internal/widgets/WidgetContainerDesktop.vue";
+import WidgetContainerMobile from "@ui/components/organisms/vc-blade/_internal/widgets/WidgetContainerMobile.vue";
+import { BladeInstance } from "@framework/injection-keys";
+import { IWidget } from "@core/services";
+import { DEFAULT_BLADE_INSTANCE } from "@ui/components/organisms/vc-blade/constants";
+import { resolveVisibility } from "@ui/components/organisms/vc-blade/utils";
 
 interface Props {
   bladeId: string;

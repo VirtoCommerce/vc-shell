@@ -2,12 +2,12 @@ import { describe, it, expect, vi } from "vitest";
 
 async function loadToolbarServiceModule() {
   vi.resetModules();
-  return import("./toolbar-service");
+  return import("@core/services/toolbar-service");
 }
 
 async function loadWidgetServiceModule() {
   vi.resetModules();
-  return import("./widget-service");
+  return import("@core/services/widget-service");
 }
 
 describe("toolbar-service", () => {

@@ -1,9 +1,9 @@
 import { describe, it, expect } from "vitest";
 import { defineComponent, h, inject } from "vue";
 import { mount } from "@vue/test-utils";
-import { WidgetServiceKey } from "../../../injection-keys";
-import { provideWidgetService, useWidgets } from "./index";
-import { createWidgetService } from "../../services/widget-service";
+import { WidgetServiceKey } from "@framework/injection-keys";
+import { provideWidgetService, useWidgets } from "@core/composables/useWidgets";
+import { createWidgetService } from "@core/services/widget-service";
 
 describe("useWidgets", () => {
   it("throws InjectionError when no service is provided", () => {

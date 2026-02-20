@@ -1,8 +1,8 @@
 import { Component, ref, ComponentInternalInstance, ComputedRef, Ref } from "vue";
-import { IBladeInstance } from "../../shared/components/blade-navigation/types";
+import { IBladeInstance } from "@shared/components/blade-navigation/types";
 import { cloneDeep } from "lodash-es";
-import { createBladeScopedRegistry, createPreregistrationBus } from "./_internal";
-import { createLogger } from "../utilities";
+import { createBladeScopedRegistry, createPreregistrationBus } from "@core/services/_internal";
+import { createLogger } from "@core/utilities";
 
 const logger = createLogger("widget-service");
 
@@ -24,6 +24,21 @@ export interface IWidgetConfig {
   fieldMapping?: Record<string, string>;
 }
 
+export interface IWidgetTrigger {
+  /** Lucide icon name for dropdown rendering */
+  icon?: string;
+  /** Display title (fallback: IWidget.title) */
+  title?: string;
+  /** Reactive badge value */
+  badge?: Ref<number | string> | ComputedRef<number | string>;
+  /** Handler called when the widget is clicked in dropdown */
+  onClick?: () => void;
+  /** Handler called by updateActiveWidget to refresh data */
+  onRefresh?: () => void | Promise<void>;
+  /** Disabled state — static or reactive */
+  disabled?: Ref<boolean> | ComputedRef<boolean> | boolean;
+}
+
 export interface IWidget {
   id: string;
   title?: string;
@@ -33,6 +48,8 @@ export interface IWidget {
   events?: Record<string, unknown>;
   isVisible?: boolean | ComputedRef<boolean> | Ref<boolean> | ((blade?: IBladeInstance) => boolean);
   updateFunctionName?: string;
+  /** Optional trigger contract for lightweight overflow rendering */
+  trigger?: IWidgetTrigger;
 }
 
 export interface IWidgetRegistration {
@@ -57,7 +74,7 @@ export interface IWidgetService {
   clearBladeWidgets: (bladeId: string) => void;
   registeredWidgets: IWidgetRegistration[];
   isActiveWidget: (id: string) => boolean;
-  setActiveWidget: ({ exposed, widgetId }: { exposed: ComponentInternalInstance["exposed"]; widgetId: string }) => void;
+  setActiveWidget: (args: { widgetId: string; exposed?: ComponentInternalInstance["exposed"] }) => void;
   updateActiveWidget: () => void;
   isWidgetRegistered: (id: string) => boolean;
   updateWidget: ({ id, bladeId, widget }: { id: string; bladeId: string; widget: Partial<IWidget> }) => void;
@@ -141,7 +158,7 @@ export function createWidgetService(): IWidgetService {
     getRegistrationItemId: (r) => r.widget.id,
   });
 
-  const activeWidget = ref<{ exposed: ComponentInternalInstance["exposed"]; widgetId: string } | undefined>();
+  const activeWidget = ref<{ exposed?: ComponentInternalInstance["exposed"]; widgetId: string } | undefined>();
 
   const resolveWidgetProps = (widget: IWidget, bladeData: Record<string, unknown>): Record<string, unknown> => {
     if (!widget.config) {
@@ -188,28 +205,34 @@ export function createWidgetService(): IWidgetService {
     exposed,
     widgetId,
   }: {
-    exposed: ComponentInternalInstance["exposed"];
     widgetId: string;
+    exposed?: ComponentInternalInstance["exposed"];
   }): void => {
     activeWidget.value = { exposed, widgetId };
   };
 
   const updateActiveWidget = (): void => {
-    const activeExposed = activeWidget.value?.exposed as IExposedWidget | undefined;
-    if (!activeExposed) return;
-
     const widgetId = activeWidget.value?.widgetId;
     if (!widgetId) return;
 
     const registration = bladeRegistry.registrations.find((r) => r.widget.id === widgetId);
+
+    // Priority 1: trigger.onRefresh
+    if (registration?.widget.trigger?.onRefresh) {
+      registration.widget.trigger.onRefresh();
+      return;
+    }
+
+    // Priority 2: legacy exposed[updateFunctionName]
+    const activeExposed = activeWidget.value?.exposed as IExposedWidget | undefined;
     const functionNameToCall = registration?.widget.updateFunctionName;
 
-    if (functionNameToCall && typeof activeExposed[functionNameToCall] === "function") {
+    if (activeExposed && functionNameToCall && typeof activeExposed[functionNameToCall] === "function") {
       activeExposed[functionNameToCall]();
       return;
     }
 
-    logger.warn(`Widget '${widgetId}' does not have an exposed function named '${functionNameToCall}'.`);
+    logger.warn(`Widget '${widgetId}' has no trigger.onRefresh and no exposed function '${functionNameToCall}'.`);
   };
 
   const getExternalWidgetsForBladeLocal = (bladeId: string): IExternalWidgetRegistration[] => {

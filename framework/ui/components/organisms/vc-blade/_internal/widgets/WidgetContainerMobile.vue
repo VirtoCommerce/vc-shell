@@ -17,46 +17,49 @@
         v-on="widget.events || {}"
       />
 
-      <VcDropdown
+      <div
         v-if="showMoreButton"
-        :model-value="showToolbar"
-        :items="hiddenItems"
-        floating
-        placement="top-end"
-        variant="secondary"
-        class="vc-widget-container-mobile__more-dropdown"
-        @update:model-value="showToolbar = $event"
+        data-more-button
+        class="vc-widget-container-mobile__more"
+        @click="showOverflow = true"
       >
-        <template #trigger="{ isActive }">
-          <div
-            class="vc-widget-container-mobile__more"
-            :class="{ 'vc-widget-container-mobile__more--active': isActive }"
-            @click="toggleToolbar"
-          >
-            <VcIcon icon="lucide-chevron-up" />
-          </div>
-        </template>
-
-        <template #item="{ item }">
-          <component
-            :is="item.component"
-            class="tw-p-3 tw-w-full"
-            v-bind="item.props || {}"
-            horizontal
-            :widget-id="item.id"
-            v-on="item.events || {}"
-          />
-        </template>
-      </VcDropdown>
+        <VcIcon icon="lucide-chevron-up" />
+      </div>
     </div>
+
+    <VcSidebar
+      :model-value="showOverflow"
+      position="bottom"
+      size="sm"
+      draggable
+      drag-handle
+      :close-button="false"
+      :inset="false"
+      @update:model-value="showOverflow = $event"
+    >
+      <div class="vc-widget-container-mobile__overflow-list">
+        <component
+          :is="item.component"
+          v-for="item in hiddenItems"
+          :key="item.id"
+          class="tw-w-full"
+          v-bind="item.props || {}"
+          horizontal
+          :widget-id="item.id"
+          v-on="item.events || {}"
+          @click="showOverflow = false"
+        />
+      </div>
+    </VcSidebar>
   </div>
 </template>
 
 <script setup lang="ts">
 import { computed, ref } from "vue";
-import { useAdaptiveItems } from "../../../../../composables/useAdaptiveItems";
-import { VcDropdown, VcIcon } from "../../../..";
-import { IWidget } from "../../../../../../core/services";
+import { useAdaptiveItems } from "@ui/composables/useAdaptiveItems";
+import { VcIcon } from "@ui/components";
+import { VcSidebar } from "@ui/components/organisms/vc-sidebar";
+import { IWidget } from "@core/services";
 
 interface Props {
   widgets: IWidget[];
@@ -65,7 +68,7 @@ interface Props {
 
 const props = defineProps<Props>();
 const containerRef = ref<HTMLElement | null>(null);
-const showToolbar = ref(false);
+const showOverflow = ref(false);
 const isAnyVisible = computed(() => props.widgets.length > 0);
 
 const { visibleItems, showMoreButton, hiddenItems } = useAdaptiveItems<IWidget>({
@@ -75,10 +78,6 @@ const { visibleItems, showMoreButton, hiddenItems } = useAdaptiveItems<IWidget>(
   moreButtonWidth: 70,
   initialItemWidth: 80,
 });
-
-const toggleToolbar = () => {
-  showToolbar.value = !showToolbar.value;
-};
 </script>
 
 <style lang="scss">
@@ -108,8 +107,8 @@ const toggleToolbar = () => {
     }
   }
 
-  &__more-dropdown {
-    @apply tw-w-auto tw-ml-auto;
+  &__overflow-list {
+    @apply tw-flex tw-flex-col tw-gap-2 tw-p-4;
   }
 }
 </style>

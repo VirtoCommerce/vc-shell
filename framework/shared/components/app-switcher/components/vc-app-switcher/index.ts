@@ -1,1 +1,1 @@
-export { default as VcAppSwitcher } from "./vc-app-switcher.vue";
+export { default as VcAppSwitcher } from "@shared/components/app-switcher/components/vc-app-switcher/vc-app-switcher.vue";

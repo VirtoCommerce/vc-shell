@@ -36,17 +36,41 @@
     @update:is-opened="!$event && sidebar.closeMenu()"
   >
     <template #navmenu>
-      <slot
-        name="menu"
-        :expanded="true"
-        :on-item-click="handleMenuItemClick"
+      <div class="mobile-layout__hub">
+        <AppHubContent
+          :apps-list="appsList"
+          :show-applications="!disableAppSwitcher"
+          mobile
+          @switch-app="handleSwitchApp"
+        >
+          <template
+            v-if="$slots['app-switcher'] && !disableAppSwitcher"
+            #applications="{ appsList: slotAppsList, switchApp: slotSwitchApp }"
+          >
+            <slot
+              name="app-switcher"
+              :apps-list="slotAppsList"
+              :switch-app="slotSwitchApp"
+            />
+          </template>
+        </AppHubContent>
+      </div>
+
+      <div
+        v-if="!disableMenu"
+        class="mobile-layout__menu"
       >
-        <VcAppMenu
-          v-if="!disableMenu"
+        <slot
+          name="menu"
           :expanded="true"
-          @item:click="handleMenuItemClick"
-        />
-      </slot>
+          :on-item-click="handleMenuItemClick"
+        >
+          <VcAppMenu
+            :expanded="true"
+            @item:click="handleMenuItemClick"
+          />
+        </slot>
+      </div>
     </template>
     <template #user-dropdown>
       <slot
@@ -63,44 +87,22 @@
         />
       </slot>
     </template>
-    <template #widgets>
-      <AppBarWidgetsMenu />
-    </template>
-    <template #widgets-active-content>
-      <AppBarWidgetContent mobile />
-    </template>
-    <template #app-switcher>
-      <slot
-        v-if="!disableAppSwitcher"
-        name="app-switcher"
-        :apps-list="appsList"
-        :switch-app="handleSwitchApp"
-      >
-        <component
-          :is="appSwitcherComponents.VcAppSwitcher"
-          :apps-list="appsList"
-          @on-click="handleSwitchApp"
-        />
-      </slot>
-    </template>
   </MenuSidebar>
 </template>
 
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
 import { computed, inject, watch } from "vue";
-import type { AppDescriptor } from "../../../../../../core/api/platform";
-import type { MenuItem } from "../../../../../../core/types";
-import { EMBEDDED_MODE } from "../../../../../../injection-keys";
-import { useBladeNavigation, UserDropdownButton } from "../../../../../../shared/components";
-import { components as appSwitcherComponents } from "../../../../../../shared/components/app-switcher";
-import { useSidebarState } from "../../composables/useSidebarState";
-import SidebarHeader from "../sidebar/SidebarHeader.vue";
-import AppBarMobileActions from "../app-bar/components/AppBarMobileActions.vue";
-import MenuSidebar from "../app-bar/components/MenuSidebar.vue";
-import AppBarWidgetsMenu from "../app-bar/components/AppBarWidgetsMenu.vue";
-import AppBarWidgetContent from "../app-bar/components/AppBarWidgetContent.vue";
-import VcAppMenu from "../menu/VcAppMenu.vue";
+import type { AppDescriptor } from "@core/api/platform";
+import type { MenuItem } from "@core/types";
+import { EmbeddedModeKey } from "@framework/injection-keys";
+import { useBladeNavigation, UserDropdownButton } from "@shared/components";
+import { useSidebarState } from "@core/composables/useSidebarState";
+import SidebarHeader from "@ui/components/organisms/vc-app/_internal/sidebar/SidebarHeader.vue";
+import AppBarMobileActions from "@ui/components/organisms/vc-app/_internal/app-bar/components/AppBarMobileActions.vue";
+import MenuSidebar from "@ui/components/organisms/vc-app/_internal/app-bar/components/MenuSidebar.vue";
+import AppHubContent from "@ui/components/organisms/vc-app/_internal/app-bar/components/AppHubContent.vue";
+import VcAppMenu from "@ui/components/organisms/vc-app/_internal/menu/VcAppMenu.vue";
 
 export interface Props {
   logo?: string;
@@ -132,7 +134,7 @@ defineSlots<{
 }>();
 
 const sidebar = useSidebarState();
-const isEmbedded = inject(EMBEDDED_MODE, false);
+const isEmbedded = inject(EmbeddedModeKey, false);
 const { blades, currentBladeNavigationData } = useBladeNavigation();
 
 const showHeader = computed(() => blades.value.length <= 1);
@@ -155,6 +157,7 @@ const handleMenuItemClick = (item: MenuItem) => {
 };
 
 const handleSwitchApp = (app: AppDescriptor) => {
+  sidebar.closeMenu();
   emit("switch-app", app);
 };
 </script>
@@ -166,6 +169,15 @@ const handleSwitchApp = (app: AppDescriptor) => {
   &__header {
     @apply tw-h-[var(--app-bar-mobile-height)] tw-px-[var(--app-bar-padding-mobile,28px)];
     background-color: var(--app-bar-background);
+  }
+
+  &__hub {
+    @apply tw-py-2;
+  }
+
+  &__menu {
+    @apply tw-mt-2 tw-pt-2 tw-border-t tw-border-solid;
+    border-color: var(--app-bar-border);
   }
 }
 </style>

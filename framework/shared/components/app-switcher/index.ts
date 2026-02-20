@@ -1,5 +1,5 @@
-import { createModule } from "../../../core/plugins/modularity";
-import * as components from "./components";
+import { createModule } from "@core/plugins/modularity";
+import * as components from "@shared/components/app-switcher/components";
 
 // Declare globally
 declare module "@vue/runtime-core" {
@@ -11,4 +11,4 @@ declare module "@vue/runtime-core" {
 export const VcAppSwitcherComponent = createModule(components);
 
 export { components };
-export * from "./composables";
+export * from "@shared/components/app-switcher/composables";

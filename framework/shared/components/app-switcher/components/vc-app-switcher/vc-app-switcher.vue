@@ -10,6 +10,7 @@
       :items="appsList"
       :is-item-active="(item) => locationHandler(item.relativeUrl ?? '')"
       max-height="auto"
+      :padded="false"
       @item-click="switchApp"
     >
       <template #item="{ item }">
@@ -29,8 +30,8 @@
 </template>
 
 <script lang="ts" setup>
-import { AppDescriptor } from "../../../../../core/api/platform";
-import { VcDropdown } from "../../../../../ui/components";
+import { AppDescriptor } from "@core/api/platform";
+import { VcDropdown } from "@ui/components";
 
 export interface Props {
   appsList: AppDescriptor[];

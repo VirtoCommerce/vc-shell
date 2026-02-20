@@ -1,1 +1,1 @@
-export * from "./vc-app-switcher";
+export * from "@shared/components/app-switcher/components/vc-app-switcher";

@@ -29,6 +29,7 @@
     >
       <!-- Collapse/expand pin button (visible on hover) -->
       <SidebarCollapseButton
+        v-show="!sidebar.isMenuOpen.value"
         :collapsed="!sidebar.isPinned.value"
         @click="sidebar.togglePin"
       />
@@ -46,89 +47,74 @@
           :show-burger="sidebar.isExpanded.value"
           class="desktop-layout__header"
           @logo:click="$emit('logo:click')"
-          @toggle-menu="sidebar.openMenu"
+          @toggle-menu="handleToggleMenu"
         />
       </slot>
 
-      <!-- Normal view: menu + user dropdown -->
-      <template v-if="!sidebar.isMenuOpen.value">
-        <SidebarContent
-          :expanded="sidebar.isExpanded.value"
-          :avatar="avatar"
-          :user-name="userName"
-          :user-role="userRole"
-          :disable-menu="disableMenu"
-          :header-visible="showHeader"
-          @item:click="$emit('item:click', $event)"
+      <SidebarContent
+        :expanded="sidebar.isExpanded.value"
+        :avatar="avatar"
+        :user-name="userName"
+        :user-role="userRole"
+        :disable-menu="disableMenu"
+        :header-visible="showHeader"
+        @item:click="$emit('item:click', $event)"
+      >
+        <template
+          v-if="$slots.menu"
+          #menu="menuScope"
         >
-          <template
-            v-if="$slots.menu"
-            #menu="menuScope"
-          >
-            <slot
-              name="menu"
-              v-bind="menuScope"
-            />
-          </template>
-          <template
-            v-if="$slots['sidebar-footer']"
-            #sidebar-footer="footerScope"
-          >
-            <slot
-              name="sidebar-footer"
-              v-bind="footerScope"
-            />
-          </template>
-        </SidebarContent>
-      </template>
-
-      <!-- Menu overlay with widgets + app switcher -->
-      <template v-else>
-        <MenuSidebar
-          :is-opened="sidebar.isMenuOpen.value"
-          :expanded="sidebar.isPinned.value"
-          @update:is-opened="!$event && sidebar.closeMenu()"
+          <slot
+            name="menu"
+            v-bind="menuScope"
+          />
+        </template>
+        <template
+          v-if="$slots['sidebar-footer']"
+          #sidebar-footer="footerScope"
         >
-          <template #widgets>
-            <AppBarWidgetsMenu />
-          </template>
-          <template #widgets-active-content>
-            <AppBarWidgetContent />
-          </template>
-          <template #app-switcher>
-            <slot
-              v-if="!disableAppSwitcher"
-              name="app-switcher"
-              :apps-list="appsList"
-              :switch-app="handleSwitchApp"
-            >
-              <component
-                :is="appSwitcherComponents.VcAppSwitcher"
-                :apps-list="appsList"
-                @on-click="handleSwitchApp"
-              />
-            </slot>
-          </template>
-        </MenuSidebar>
-      </template>
+          <slot
+            name="sidebar-footer"
+            v-bind="footerScope"
+          />
+        </template>
+      </SidebarContent>
     </div>
   </div>
+
+  <AppHubPopover
+    :show="sidebar.isMenuOpen.value"
+    :anchor-ref="appHubAnchorRef"
+    :apps-list="appsList"
+    :show-applications="!disableAppSwitcher"
+    @update:show="handleAppHubVisibility"
+    @switch-app="handleSwitchApp"
+  >
+    <template
+      v-if="$slots['app-switcher'] && !disableAppSwitcher"
+      #applications="{ appsList: slotAppsList, switchApp: slotSwitchApp }"
+    >
+      <slot
+        name="app-switcher"
+        :apps-list="slotAppsList"
+        :switch-app="slotSwitchApp"
+      />
+    </template>
+  </AppHubPopover>
 </template>
 
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
-import { computed, inject } from "vue";
-import type { AppDescriptor } from "../../../../../../core/api/platform";
-import type { MenuItem } from "../../../../../../core/types";
-import { EMBEDDED_MODE } from "../../../../../../injection-keys";
-import { components as appSwitcherComponents } from "../../../../../../shared/components/app-switcher";
-import { useSidebarState } from "../../composables/useSidebarState";
-import SidebarHeader from "../sidebar/SidebarHeader.vue";
-import SidebarContent from "../sidebar/SidebarContent.vue";
-import SidebarCollapseButton from "../sidebar/SidebarCollapseButton.vue";
-import MenuSidebar from "../app-bar/components/MenuSidebar.vue";
-import AppBarWidgetsMenu from "../app-bar/components/AppBarWidgetsMenu.vue";
-import AppBarWidgetContent from "../app-bar/components/AppBarWidgetContent.vue";
+import { computed, inject, ref, watch } from "vue";
+import type { AppDescriptor } from "@core/api/platform";
+import type { MenuItem } from "@core/types";
+import { EmbeddedModeKey } from "@framework/injection-keys";
+import { useSidebarState } from "@core/composables/useSidebarState";
+import { useRoute } from "vue-router";
+import SidebarHeader from "@ui/components/organisms/vc-app/_internal/sidebar/SidebarHeader.vue";
+import SidebarContent from "@ui/components/organisms/vc-app/_internal/sidebar/SidebarContent.vue";
+import SidebarCollapseButton from "@ui/components/organisms/vc-app/_internal/sidebar/SidebarCollapseButton.vue";
+import AppHubPopover from "@ui/components/organisms/vc-app/_internal/app-bar/components/AppHubPopover.vue";
 
 export interface Props {
   logo?: string;
@@ -161,11 +147,49 @@ defineSlots<{
 }>();
 
 const sidebar = useSidebarState();
-const isEmbedded = inject(EMBEDDED_MODE, false);
+const isEmbedded = inject(EmbeddedModeKey, false);
+const route = useRoute();
+const appHubAnchorRef = ref<HTMLElement | null>(null);
 
 const showHeader = computed(() => !isEmbedded);
 
+watch(
+  () => route.fullPath,
+  () => {
+    if (sidebar.isMenuOpen.value) {
+      sidebar.closeMenu();
+    }
+  },
+);
+
+const handleToggleMenu = (event: MouseEvent) => {
+  if (event.currentTarget instanceof HTMLElement) {
+    appHubAnchorRef.value = event.currentTarget;
+  }
+
+  if (sidebar.isMenuOpen.value) {
+    sidebar.closeMenu();
+    return;
+  }
+
+  sidebar.openMenu();
+};
+
+const handleAppHubVisibility = (value: boolean) => {
+  if (!value) {
+    sidebar.closeMenu();
+    return;
+  }
+
+  if (!appHubAnchorRef.value && typeof document !== "undefined") {
+    appHubAnchorRef.value = document.querySelector<HTMLElement>(".sidebar-header__menu-button");
+  }
+
+  sidebar.openMenu();
+};
+
 const handleSwitchApp = (app: AppDescriptor) => {
+  sidebar.closeMenu();
   emit("switch-app", app);
 };
 </script>

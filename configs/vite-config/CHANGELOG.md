@@ -1,3 +1,7 @@
+## [1.2.4-beta.3](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.4-beta.2...v1.2.4-beta.3) (2026-02-20)
+
+**Note:** Version bump only for package @vc-shell/config-generator
+
 ## [1.2.4-beta.0](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.3-beta.1...v1.2.4-beta.0) (2026-02-16)
 
 **Note:** Version bump only
@@ -62,13 +66,13 @@
 
 ### Bug Fixes
 
-* **vite-config:** remove deprecated vue-router path resolution from appconfig ([5743e12](https://github.com/VirtoCommerce/vc-shell/commit/5743e129b667192a23b894421b54b851d48dffa2))
+- **vite-config:** remove deprecated vue-router path resolution from appconfig ([5743e12](https://github.com/VirtoCommerce/vc-shell/commit/5743e129b667192a23b894421b54b851d48dffa2))
 
 ## [1.1.91](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.90...v1.1.91) (2025-10-17)
 
 ### Bug Fixes
 
-* **vite-config:** update vue-router path resolution to use absolute path from node_modules ([5418c14](https://github.com/VirtoCommerce/vc-shell/commit/5418c142daa1e9940a0a9a670b3f66f085165e03))
+- **vite-config:** update vue-router path resolution to use absolute path from node_modules ([5418c14](https://github.com/VirtoCommerce/vc-shell/commit/5418c142daa1e9940a0a9a670b3f66f085165e03))
 
 ## [1.1.90](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.89...v1.1.90) (2025-10-08)
 
@@ -186,13 +190,13 @@
 
 ### Bug Fixes
 
-* remove intlify and vue-i18n from CSS chunk splitting logic ([a1c14c0](https://github.com/VirtoCommerce/vc-shell/commit/a1c14c0f8eae1126aef6ddcbd146533ac60360a3))
+- remove intlify and vue-i18n from CSS chunk splitting logic ([a1c14c0](https://github.com/VirtoCommerce/vc-shell/commit/a1c14c0f8eae1126aef6ddcbd146533ac60360a3))
 
 ## [1.1.63](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.62...v1.1.63) (2025-07-25)
 
 ### Bug Fixes
 
-* **vite-config:** dedupe and externalize vue-i18n ([98c7def](https://github.com/VirtoCommerce/vc-shell/commit/98c7def46db6f21866125946607bbb25c447ebad))
+- **vite-config:** dedupe and externalize vue-i18n ([98c7def](https://github.com/VirtoCommerce/vc-shell/commit/98c7def46db6f21866125946607bbb25c447ebad))
 
 ## [1.1.62](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.61...v1.1.62) (2025-07-24)
 
@@ -250,7 +254,7 @@
 
 ### Bug Fixes
 
-* **vite-config:** correct path for framework CSS in application configuration ([95d9a60](https://github.com/VirtoCommerce/vc-shell/commit/95d9a6083072fdc953b09f44092d8f0d594a1c6a))
+- **vite-config:** correct path for framework CSS in application configuration ([95d9a60](https://github.com/VirtoCommerce/vc-shell/commit/95d9a6083072fdc953b09f44092d8f0d594a1c6a))
 
 ## [1.1.48](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.47...v1.1.48) (2025-07-02)
 
@@ -264,13 +268,13 @@
 
 ### Features
 
-* **dynamic-module:** enhance UMD name generation and improve logging for dynamic module loading ([8d43f21](https://github.com/VirtoCommerce/vc-shell/commit/8d43f216e6ec3f9f61ab93953f297d80832f9ed7))
+- **dynamic-module:** enhance UMD name generation and improve logging for dynamic module loading ([8d43f21](https://github.com/VirtoCommerce/vc-shell/commit/8d43f216e6ec3f9f61ab93953f297d80832f9ed7))
 
 ## [1.1.45](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.44...v1.1.45) (2025-07-01)
 
 ### Features
 
-* **vite-config:** enhansed chunking config ([6e8dde4](https://github.com/VirtoCommerce/vc-shell/commit/6e8dde4c6fc2be14bcf39ffb8f6ac6e75ff609a7))
+- **vite-config:** enhansed chunking config ([6e8dde4](https://github.com/VirtoCommerce/vc-shell/commit/6e8dde4c6fc2be14bcf39ffb8f6ac6e75ff609a7))
 
 ## [1.1.44](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.43...v1.1.44) (2025-06-30)
 
@@ -688,7 +692,7 @@
 
 ### Features
 
-* application insights logger ([536db4d](https://github.com/VirtoCommerce/vc-shell/commit/536db4db35c91f4fb566717d2d6c536e48aacc95))
+- application insights logger ([536db4d](https://github.com/VirtoCommerce/vc-shell/commit/536db4db35c91f4fb566717d2d6c536e48aacc95))
 
 ## [1.0.243](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.242...v1.0.243) (2024-06-21)
 
@@ -806,7 +810,7 @@
 
 ### Features
 
-* **vite-config:** add hash to app build to prevent caching ([aafe494](https://github.com/VirtoCommerce/vc-shell/commit/aafe4945bca52a62520217ea8948abe6f442614b))
+- **vite-config:** add hash to app build to prevent caching ([aafe494](https://github.com/VirtoCommerce/vc-shell/commit/aafe4945bca52a62520217ea8948abe6f442614b))
 
 ## [1.0.214](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.212...v1.0.214) (2024-05-16)
 
@@ -856,7 +860,7 @@
 
 ### Features
 
-* **dynamic:** saveChanges response ([#207](https://github.com/VirtoCommerce/vc-shell/issues/207)) ([a05313b](https://github.com/VirtoCommerce/vc-shell/commit/a05313bd0fc5b25b927570c31e14aea69c4a5ddd))
+- **dynamic:** saveChanges response ([#207](https://github.com/VirtoCommerce/vc-shell/issues/207)) ([a05313b](https://github.com/VirtoCommerce/vc-shell/commit/a05313bd0fc5b25b927570c31e14aea69c4a5ddd))
 
 ## [1.0.200](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.199...v1.0.200) (2024-04-23)
 

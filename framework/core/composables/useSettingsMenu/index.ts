@@ -1,12 +1,7 @@
 import { inject, provide, getCurrentScope, onScopeDispose } from "vue";
-import {
-  createSettingsMenuService,
-  ISettingsMenuService,
-  addSettingsMenuItem,
-  settingsMenuBus,
-} from "../../services/settings-menu-service";
-import { SettingsMenuServiceKey } from "../../../injection-keys";
-import { createLogger, InjectionError } from "../../utilities";
+import { createSettingsMenuService, ISettingsMenuService, settingsMenuBus } from "@core/services/settings-menu-service";
+import { SettingsMenuServiceKey } from "@framework/injection-keys";
+import { createLogger, InjectionError } from "@core/utilities";
 
 const logger = createLogger("use-settings-menu");
 
@@ -34,5 +29,3 @@ export function useSettingsMenu(): ISettingsMenuService {
   }
   return settingsMenuService;
 }
-
-export { addSettingsMenuItem };

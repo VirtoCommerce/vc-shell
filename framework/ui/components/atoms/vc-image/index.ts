@@ -1,1 +1,1 @@
-export { default as VcImage } from "./vc-image.vue";
+export { default as VcImage } from "@ui/components/atoms/vc-image/vc-image.vue";

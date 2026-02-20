@@ -5,8 +5,8 @@
  * from VcDataTable.vue to reduce main component size.
  */
 import { ref, computed, watch, type Ref, type ComputedRef } from "vue";
-import type { ColumnInstance } from "../utils/ColumnCollector";
-import type { VcColumnProps } from "../types";
+import type { ColumnInstance } from "@ui/components/organisms/vc-table/utils/ColumnCollector";
+import type { VcColumnProps } from "@ui/components/organisms/vc-table/types";
 
 export interface UseTableColumnsOptions {
   visibleColumns: Ref<ColumnInstance[]> | ComputedRef<ColumnInstance[]>;

@@ -1,12 +1,12 @@
 import { computed, type Ref } from "vue";
-import type { ColumnInstance } from "../utils/ColumnCollector";
+import type { ColumnInstance } from "@ui/components/organisms/vc-table/utils/ColumnCollector";
 import type {
   MobileCardLayout,
   MobileColumnConfig,
   MobileCardPosition,
   MobileCardRole,
   MobileFieldPosition,
-} from "../types";
+} from "@ui/components/organisms/vc-table/types";
 
 /** Field positions in order for auto-placement */
 const FIELD_POSITIONS: MobileFieldPosition[] = ["top-left", "top-right", "bottom-left", "bottom-right"];

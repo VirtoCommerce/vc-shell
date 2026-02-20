@@ -1,9 +1,9 @@
 import { describe, it, expect } from "vitest";
 import { defineComponent, h, inject } from "vue";
 import { mount } from "@vue/test-utils";
-import { SettingsMenuServiceKey } from "../../../injection-keys";
-import { provideSettingsMenu, useSettingsMenu } from "./index";
-import { createSettingsMenuService } from "../../services/settings-menu-service";
+import { SettingsMenuServiceKey } from "@framework/injection-keys";
+import { provideSettingsMenu, useSettingsMenu } from "@core/composables/useSettingsMenu";
+import { createSettingsMenuService } from "@core/services/settings-menu-service";
 
 describe("useSettingsMenu", () => {
   it("throws InjectionError when no service is provided", () => {

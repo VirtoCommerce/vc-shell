@@ -1,5 +1,5 @@
 import { computed, type ComputedRef } from "vue";
-import type { MultivalueType } from "./useMultivalueMode";
+import type { MultivalueType } from "@ui/components/molecules/vc-multivalue/composables/useMultivalueMode";
 
 interface UseMultivalueValuesOptions<T> {
   modelValue: () => T[];

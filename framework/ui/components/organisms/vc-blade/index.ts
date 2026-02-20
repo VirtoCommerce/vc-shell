@@ -1,1 +1,1 @@
-export { default as VcBlade } from "./vc-blade.vue";
+export { default as VcBlade } from "@ui/components/organisms/vc-blade/vc-blade.vue";

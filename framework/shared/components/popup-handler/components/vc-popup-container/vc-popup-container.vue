@@ -27,7 +27,7 @@
 <script setup lang="ts">
 // eslint-disable-next-line import/no-named-as-default
 import DOMPurify from "dompurify";
-import { getPopupPlugin } from "./../../utils";
+import { getPopupPlugin } from "@shared/components/popup-handler/utils";
 
 const popupPlugin = getPopupPlugin();
 

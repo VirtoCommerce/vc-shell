@@ -24,8 +24,8 @@
 
 <script lang="ts" setup>
 import { ref, onMounted, watch } from "vue";
-import { VcIcon } from "../../../../../ui/components";
-import VcAiAgentLoader from "./VcAiAgentLoader.vue";
+import { VcIcon } from "@ui/components";
+import VcAiAgentLoader from "@core/plugins/ai-agent/components/_internal/VcAiAgentLoader.vue";
 
 const props = defineProps<{
   url: string;

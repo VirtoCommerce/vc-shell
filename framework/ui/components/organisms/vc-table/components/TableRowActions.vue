@@ -107,9 +107,9 @@
 <script setup lang="ts">
 import { ref, computed, watch, onMounted, onBeforeUnmount, inject, nextTick } from "vue";
 import { offset, flip, shift } from "@floating-ui/vue";
-import { VcIcon, VcButton } from "../../../atoms";
-import type { TableAction } from "../types";
-import { useFloatingPosition, useTeleportTarget } from "../../../../composables";
+import { VcIcon, VcButton } from "@ui/components/atoms";
+import type { TableAction } from "@ui/components/organisms/vc-table/types";
+import { useFloatingPosition, useTeleportTarget } from "@ui/composables";
 
 const props = withDefaults(
   defineProps<{
@@ -137,7 +137,7 @@ const props = withDefaults(
     /**
      * Display mode for actions:
      * - 'inline': Quick action buttons shown on hover, overflow in dropdown (Google Drive style)
-     * - 'dropdown': All actions in dropdown menu triggered by three dots (shadcn style)
+     * - 'dropdown': All actions in dropdown menu triggered by three dots
      * @default 'inline'
      */
     mode?: "inline" | "dropdown";
@@ -360,7 +360,7 @@ onBeforeUnmount(() => {
     }
 
     &:focus-visible {
-      @apply tw-outline-none tw-ring-2 tw-ring-[var(--primary-500)] tw-ring-offset-1;
+      @apply tw-outline-none tw-ring-2 tw-ring-primary-500 tw-ring-offset-1;
     }
 
     &--disabled {
@@ -391,7 +391,7 @@ onBeforeUnmount(() => {
   }
 
   &__dropdown {
-    @apply tw-bg-[color:var(--additional-50)] tw-rounded-lg tw-shadow-lg tw-border tw-border-[var(--neutrals-200)];
+    @apply tw-bg-additional-50 tw-rounded-lg tw-shadow-lg tw-border tw-border-neutrals-200;
     @apply tw-py-1 tw-min-w-[160px];
     z-index: 1000;
     max-height: 300px;

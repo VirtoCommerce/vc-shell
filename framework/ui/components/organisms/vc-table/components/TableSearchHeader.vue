@@ -71,9 +71,9 @@
 
 <script setup lang="ts">
 import { ref, useSlots } from "vue";
-import { VcIcon } from "../../../atoms";
-import { VcButton } from "../../../atoms";
-import { VcInput } from "../../../molecules";
+import { VcIcon } from "@ui/components/atoms";
+import { VcButton } from "@ui/components/atoms";
+import { VcInput } from "@ui/components/molecules";
 
 const props = withDefaults(
   defineProps<{
@@ -179,7 +179,7 @@ defineExpose({
   }
 
   &__actions {
-    @apply tw-flex tw-items-center tw-gap-2 tw-flex-shrink-0;
+    @apply tw-flex tw-items-center tw-gap-2 tw-flex-shrink-0 tw-flex-grow tw-min-w-0;
   }
 
   &__filters {

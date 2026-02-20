@@ -150,7 +150,7 @@
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
 import { ref } from "vue";
-import { VcIcon } from "./../../../";
+import { VcIcon } from "@ui/components";
 
 defineProps<{
   modelValue?: any[];

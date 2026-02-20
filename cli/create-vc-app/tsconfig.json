@@ -2,7 +2,12 @@
   "extends": "@vc-shell/ts-config/tsconfig.json",
   "compilerOptions": {
     "baseUrl": ".",
-    "rootDir": "./"
+    "rootDir": "./",
+    "paths": {
+      "@create-vc-app": ["./src/index.ts"],
+      "@create-vc-app/*": ["./src/*"],
+      "@create-vc-app/package.json": ["./package.json"]
+    }
   },
   "include": ["src/index.ts"],
   "exclude": ["node_modules", "dist", "./src/templates"]

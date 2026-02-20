@@ -1,1 +1,1 @@
-export * from "./invite";
+export * from "@shared/pages/InvitePage/components/invite";

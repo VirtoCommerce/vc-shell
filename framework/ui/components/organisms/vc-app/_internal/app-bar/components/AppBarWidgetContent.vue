@@ -14,7 +14,7 @@
 
 <script lang="ts" setup>
 import { computed } from "vue";
-import { useAppBarWidgets } from "../composables/useAppBarWidgets";
+import { useAppBarWidgets } from "@ui/components/organisms/vc-app/_internal/app-bar/composables/useAppBarWidgets";
 
 withDefaults(
   defineProps<{
@@ -35,6 +35,6 @@ const widgetProps = computed(() => ({
 
 <style lang="scss">
 .app-bar-widget-content {
-  @apply tw-overflow-auto tw-max-h-[250px];
+  // Scroll bounding is handled by the parent container (menu-sidebar__content-main).
 }
 </style>

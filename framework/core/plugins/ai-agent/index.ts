@@ -1,7 +1,7 @@
 import type { App } from "vue";
-import type { IAiAgentConfig } from "./types";
-import { DEFAULT_AI_AGENT_CONFIG, AI_AGENT_URL_ENV_KEY } from "./constants";
-import { createLogger } from "../../utilities";
+import type { IAiAgentConfig } from "@core/plugins/ai-agent/types";
+import { DEFAULT_AI_AGENT_CONFIG, AI_AGENT_URL_ENV_KEY } from "@core/plugins/ai-agent/constants";
+import { createLogger } from "@core/utilities";
 
 const logger = createLogger("ai-agent-plugin");
 
@@ -75,17 +75,17 @@ export const aiAgentPlugin = {
 };
 
 // Re-export all types
-export * from "./types";
-export * from "./constants";
+export * from "@core/plugins/ai-agent/types";
+export * from "@core/plugins/ai-agent/constants";
 
 // Re-export composables
-export { useAiAgent, provideAiAgentService, createAiAgentToolbarButton } from "./composables/useAiAgent";
-export type { UseAiAgentReturn, ProvideAiAgentServiceOptions } from "./composables/useAiAgent";
+export { useAiAgent, provideAiAgentService, createAiAgentToolbarButton } from "@core/plugins/ai-agent/composables/useAiAgent";
+export type { UseAiAgentReturn, ProvideAiAgentServiceOptions } from "@core/plugins/ai-agent/composables/useAiAgent";
 
-export { useAiAgentContext, clearPreviewState } from "./composables/useAiAgentContext";
+export { useAiAgentContext, clearPreviewState } from "@core/plugins/ai-agent/composables/useAiAgentContext";
 
 // Re-export components
-export { VcAiAgentPanel } from "./components";
+export { VcAiAgentPanel } from "@core/plugins/ai-agent/components";
 
 // Re-export service types
-export type { IAiAgentServiceInternal, CreateAiAgentServiceOptions } from "./services/ai-agent-service";
+export type { IAiAgentServiceInternal, CreateAiAgentServiceOptions } from "@core/plugins/ai-agent/services/ai-agent-service";

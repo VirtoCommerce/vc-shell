@@ -8,7 +8,7 @@ import type { PropType, ExtractPropTypes } from "vue";
 import type {
   SortMeta,
   DataTableRowActionItem,
-} from "../types";
+} from "@ui/components/organisms/vc-table/types";
 
 /**
  * DataTable variants for visual styling

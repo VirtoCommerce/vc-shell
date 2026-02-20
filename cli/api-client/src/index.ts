@@ -2,7 +2,7 @@ import { default as chalk } from "chalk";
 import { sync } from "cross-spawn";
 import { resolveConfig } from "vite";
 import { writeFileSync, existsSync, readFileSync, mkdirSync } from "node:fs";
-import { Paths } from "./paths/paths";
+import { Paths } from "@api-client-generator/paths/paths";
 import mri from "mri";
 import path from "node:path";
 
@@ -736,8 +736,8 @@ async function generateApiClient(): Promise<void> {
     const platformModulesList = platformModules
       .replace(/[[\]]/g, "") // Remove brackets
       .split(",") // Split by comma
-      .map(module => module.trim()) // Trim whitespace from each module
-      .filter(module => module.length > 0); // Remove empty entries
+      .map((module) => module.trim()) // Trim whitespace from each module
+      .filter((module) => module.length > 0); // Remove empty entries
 
     const generatedFiles: string[] = [];
 

@@ -25,25 +25,9 @@
           @keydown.enter.stop
         />
 
-        <!-- Scroll up button -->
-        <div
-          class="vc-select__scroll-button"
-          :class="{ 'tw-opacity-0 tw-pointer-events-none': !canScrollUp }"
-          aria-hidden="true"
-          @pointerenter="startScroll('up')"
-          @pointerleave="stopScroll"
-        >
-          <VcIcon
-            icon="lucide-chevron-up"
-            size="xs"
-          />
-        </div>
-
-        <!-- Scrollable viewport -->
-        <div
-          ref="viewportRef"
-          class="vc-select__viewport"
-          @scroll="updateScrollState"
+        <VcScrollableContainer
+          ref="scrollContainerRef"
+          class="vc-select__scroll-container"
         >
           <!-- Render existing options -->
           <div
@@ -110,32 +94,18 @@
             ref="loadMoreRef"
             class="vc-select__load-more-trigger"
           ></span>
-        </div>
-
-        <!-- Scroll down button -->
-        <div
-          class="vc-select__scroll-button"
-          :class="{ 'tw-opacity-0 tw-pointer-events-none': !canScrollDown }"
-          aria-hidden="true"
-          @pointerenter="startScroll('down')"
-          @pointerleave="stopScroll"
-        >
-          <VcIcon
-            icon="lucide-chevron-down"
-            size="xs"
-          />
-        </div>
+        </VcScrollableContainer>
       </div>
     </Transition>
   </teleport>
 </template>
 
 <script lang="ts" setup>
-import { ref, watch, nextTick } from "vue";
+import { ref, computed, watch, nextTick } from "vue";
 import { vOnClickOutside } from "@vueuse/components";
-import { VcIcon } from "./../../../";
+import { VcIcon, VcScrollableContainer } from "@ui/components";
 import { useI18n } from "vue-i18n";
-import { useTeleportTarget, useScrollArrows } from "../../../../composables";
+import { useTeleportTarget } from "@ui/composables";
 
 const props = defineProps<{
   isOpened: boolean;
@@ -177,11 +147,10 @@ const { teleportTarget } = useTeleportTarget();
 
 const dropdownElRef = ref<HTMLElement | null>(null);
 const searchInputRef = ref<HTMLInputElement | null>(null);
-const viewportRef = ref<HTMLElement | null>(null);
+const scrollContainerRef = ref<InstanceType<typeof VcScrollableContainer> | null>(null);
 const loadMoreRef = ref<HTMLElement | null>(null);
 
-const { canScrollUp, canScrollDown, startScroll, stopScroll, updateScrollState } =
-  useScrollArrows(viewportRef);
+const viewportRef = computed<HTMLElement | null>(() => scrollContainerRef.value?.viewportRef ?? null);
 
 function onDropdownWheel(event: WheelEvent) {
   const el = viewportRef.value;
@@ -200,16 +169,14 @@ function onDropdownWheel(event: WheelEvent) {
     event.preventDefault();
     el.scrollTop += event.deltaY;
   }
-  updateScrollState();
+  scrollContainerRef.value?.updateScrollState();
 }
 
 watch(
   () => props.isOpened,
   (opened) => {
     if (opened) {
-      nextTick(updateScrollState);
-    } else {
-      stopScroll();
+      nextTick(() => scrollContainerRef.value?.updateScrollState());
     }
   },
 );
@@ -218,7 +185,7 @@ watch(
   () => props.optionScope.length,
   () => {
     if (props.isOpened) {
-      nextTick(updateScrollState);
+      nextTick(() => scrollContainerRef.value?.updateScrollState());
     }
   },
 );

@@ -1,11 +1,11 @@
 import { useI18n } from "vue-i18n";
 import { Component, ExtractPropTypes, computed, h, onMounted, ref, unref } from "vue";
-import componentProps from "./props";
-import { StatusSchema } from "../../types";
-import { StatusField } from "../factories";
-import { VcIcon } from "../../../../../ui/components";
-import { unrefNested } from "../../helpers/unrefNested";
-import VcButton from "../../../../../ui/components/atoms/vc-button/vc-button.vue";
+import componentProps from "@shared/modules/dynamic/components/fields/props";
+import { StatusSchema } from "@shared/modules/dynamic/types";
+import { StatusField } from "@shared/modules/dynamic/components/factories";
+import { VcIcon } from "@ui/components";
+import { unrefNested } from "@shared/modules/dynamic/helpers/unrefNested";
+import VcButton from "@ui/components/atoms/vc-button/vc-button.vue";
 
 export default {
   name: "StatusField",

@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Router } from "vue-router";
-import { useUserManagement } from "../composables/useUserManagement";
-import { notification } from "../../shared";
-import { createLogger } from "../utilities";
+import { useUserManagement } from "@core/composables/useUserManagement";
+import { notification } from "@shared";
+import { createLogger } from "@core/utilities";
 
 const logger = createLogger("interceptors");
 

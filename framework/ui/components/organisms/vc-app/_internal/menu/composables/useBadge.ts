@@ -1,6 +1,6 @@
 import { computed, unref, isRef, toValue, type ComputedRef, type MaybeRefOrGetter, type Ref } from "vue";
-import type { MenuItemBadgeConfig, MenuItemBadge } from "../../../../../../../core/types";
-import { useMenuService } from "../../../../../../../core/composables/useMenuService";
+import type { MenuItemBadgeConfig, MenuItemBadge } from "@core/types";
+import { useMenuService } from "@core/composables/useMenuService";
 
 export interface ResolvedBadge {
   content: string | number | undefined;

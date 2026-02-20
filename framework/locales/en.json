@@ -74,6 +74,15 @@
         "INTERNAL": {
           "VC_APP_BAR": {
             "BACK": "Back"
+          },
+          "APP_HUB": {
+            "SEARCH_PLACEHOLDER": "Search applications and widgets",
+            "APPLICATIONS": "Applications",
+            "WIDGETS": "Widgets",
+            "NO_APPLICATIONS": "No applications found",
+            "NO_WIDGETS": "No widgets found",
+            "LIST_VIEW": "List view",
+            "TILE_VIEW": "Tile view"
           }
         }
       },
@@ -135,7 +144,6 @@
           "RESET": "Reset"
         }
       },
-
       "VC_POPUP": {
         "OK": "OK",
         "CONFIRM": "Confirm",
@@ -150,7 +158,7 @@
     },
     "THEME_SELECTOR": {
       "THEME_CHANGED": " theme",
-      "THEME_SELECTOR": "Theme selector"
+      "THEME_SELECTOR": "Theme"
     },
     "CHANGE_PASSWORD": {
       "TITLE": "Change password",
@@ -196,7 +204,7 @@
       "EMPTY": "No notifications yet"
     },
     "LANGUAGE_SELECTOR": {
-      "TITLE": "Language selector"
+      "TITLE": "Language"
     },
     "FILTERS": {
       "APPLY": "Apply filters",

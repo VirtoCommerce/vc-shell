@@ -1,5 +1,5 @@
 import { computed, unref } from "vue";
-import type { IconSize, IconType, IconVariant } from "../types";
+import type { IconSize, IconType, IconVariant } from "@ui/components/atoms/vc-icon/types";
 import type { MaybeRef } from "@vueuse/core";
 
 interface UseIconOptions {

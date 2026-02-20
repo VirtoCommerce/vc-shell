@@ -1,9 +1,9 @@
 import { getCurrentInstance, inject } from "vue";
-import { PopupPlugin } from "../types";
+import { PopupPluginKey } from "@shared/components/popup-handler/keys";
 
 export function getPopupPlugin() {
   const instance = getCurrentInstance();
   if (instance) {
-    return inject<PopupPlugin>("popupPlugin");
+    return inject(PopupPluginKey, undefined);
   }
 }

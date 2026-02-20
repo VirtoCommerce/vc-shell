@@ -4,16 +4,17 @@
     ref="nodeRef"
     class="vc-notification"
     :class="[`vc-notification--${position || 'top-center'}`, `vc-notification--${type || 'default'}`]"
+    :role="type === 'error' ? 'alert' : 'status'"
     @mouseenter="onMouseEnter"
     @mouseleave="onMouseLeave"
   >
-    <div class="vc-notification__type-indicator"></div>
     <div class="vc-notification__content-wrapper">
       <VcIcon
         :icon="types[type ?? 'default']?.icon"
         :style="{ color: types[type ?? 'default']?.color }"
         size="l"
         class="vc-notification__icon"
+        aria-hidden="true"
       ></VcIcon>
       <div
         v-if="typeof content === 'string'"
@@ -25,18 +26,25 @@
         <component :is="content"></component>
       </div>
     </div>
-    <VcIcon
-      icon="material-close"
-      class="vc-notification__dismiss-icon"
-      size="s"
+    <button
+      type="button"
+      class="vc-notification__dismiss-button"
+      aria-label="Dismiss notification"
       @click.stop="handleClose"
-    ></VcIcon>
+      @keydown.escape="handleClose"
+    >
+      <VcIcon
+        icon="lucide-x"
+        size="s"
+        aria-hidden="true"
+      ></VcIcon>
+    </button>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { Content, NotificationType, NotificationPosition } from "../../../../shared/components/notifications";
-import { VcIcon } from "../..";
+import { Content, NotificationType, NotificationPosition } from "@shared/components/notifications";
+import { VcIcon } from "@ui/components";
 import { Ref, onMounted, onBeforeUnmount, ref, toRefs, watch } from "vue";
 
 export interface Props {
@@ -58,10 +66,10 @@ const emit = defineEmits<{
 const props = defineProps<Props>();
 
 const types: Record<NotificationType, { icon: string; color: string }> = {
-  default: { icon: "material-info", color: "var(--notification-info)" },
-  success: { icon: "material-check_circle", color: "var(--notification-success)" },
-  error: { icon: "material-error", color: "var(--notification-error)" },
-  warning: { icon: "material-warning", color: "var(--notification-warning)" },
+  default: { icon: "lucide-info", color: "var(--notification-info)" },
+  success: { icon: "lucide-check-circle", color: "var(--notification-success)" },
+  error: { icon: "lucide-alert-circle", color: "var(--notification-error)" },
+  warning: { icon: "lucide-alert-triangle", color: "var(--notification-warning)" },
 };
 const { timeout } = toRefs(props);
 
@@ -154,10 +162,11 @@ function onMouseLeave() {
 :root {
   /* Main colors and styles */
   --notification-background: var(--additional-50);
-  --notification-border-radius: var(--multivalue-border-radius);
+  --notification-border-radius: 6px;
   --notification-border-color: var(--neutrals-200);
-  --notification-dismiss-color: var(--secondary-500);
-  --notification-content-color: var(--neutrals-600);
+  --notification-dismiss-color: var(--neutrals-400);
+  --notification-dismiss-hover-color: var(--neutrals-600);
+  --notification-content-color: var(--neutrals-800);
 
   /* Color indicators for types */
   --notification-warning: var(--warning-500);
@@ -166,25 +175,30 @@ function onMouseLeave() {
   --notification-info: var(--info-500);
 
   /* Effects */
-  --notification-shadow-color: var(--neutrals-300);
-  --notification-shadow: 2px 2px 11px rgb(from var(--notification-shadow-color) r g b / 40%);
-  --notification-hover-shadow: 2px 2px 15px rgb(from var(--notification-shadow-color) r g b / 60%);
+  --notification-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --notification-hover-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
 
   /* Variables for animation */
   --notification-animation-duration: 300ms;
-  --notification-animation-timing: cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Spring animation */
+  --notification-animation-timing: cubic-bezier(0.175, 0.885, 0.32, 1.275);
   --notification-slide-distance: 30px;
 
-  /* Sizes */
-  --notification-indicator-width: 4px;
+  /* Focus */
+  --notification-focus-ring-color: var(--primary-100);
+
+  /* Left accent border */
+  --notification-accent-width: 3px;
 }
 
 .vc-notification {
   @apply tw-flex tw-items-center tw-box-border tw-relative;
-  @apply tw-bg-[color:var(--notification-background)] tw-border tw-border-solid tw-border-[color:var(--notification-border-color)];
-  @apply tw-rounded-[var(--notification-border-radius)] tw-overflow-hidden tw-py-2 tw-px-4;
+  @apply tw-border tw-border-solid tw-overflow-hidden tw-py-3 tw-px-4;
   @apply tw-max-w-[600px] tw-justify-between;
-  @apply tw-shadow-[var(--notification-shadow)];
+  background-color: var(--notification-background);
+  border-color: var(--notification-border-color);
+  border-radius: var(--notification-border-radius);
+  box-shadow: var(--notification-shadow);
+  border-left: var(--notification-accent-width) solid var(--notification-info);
   pointer-events: all;
 
   /* Base animation properties */
@@ -201,33 +215,21 @@ function onMouseLeave() {
     box-shadow: var(--notification-hover-shadow);
   }
 
-  /* Notification type indicator */
-  &__type-indicator {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: var(--notification-indicator-width);
-    height: 100%;
-    background-color: var(--notification-info);
-    border-top-left-radius: var(--notification-border-radius);
-    border-bottom-left-radius: var(--notification-border-radius);
+  /* Type-specific left accent border */
+  &--success {
+    border-left-color: var(--notification-success);
   }
 
-  /* Styles for different types */
-  &--success .vc-notification__type-indicator {
-    background-color: var(--notification-success);
+  &--error {
+    border-left-color: var(--notification-error);
   }
 
-  &--error .vc-notification__type-indicator {
-    background-color: var(--notification-error);
+  &--warning {
+    border-left-color: var(--notification-warning);
   }
 
-  &--warning .vc-notification__type-indicator {
-    background-color: var(--notification-warning);
-  }
-
-  &--default .vc-notification__type-indicator {
-    background-color: var(--notification-info);
+  &--default {
+    border-left-color: var(--notification-info);
   }
 
   /* Animations for different positions */
@@ -256,26 +258,32 @@ function onMouseLeave() {
   }
 
   &__content-wrapper {
-    @apply tw-flex tw-items-center tw-flex-row;
-    padding-left: calc(var(--notification-indicator-width) + 8px);
+    @apply tw-flex tw-items-center tw-flex-row tw-gap-2;
   }
 
   &__icon {
-    @apply tw-mr-2;
+    @apply tw-shrink-0;
   }
 
   &__content {
-    @apply tw-text-[color:var(--notification-content-color)] tw-whitespace-pre-line tw-overflow-auto tw-text-sm tw-leading-5;
+    @apply tw-whitespace-pre-line tw-overflow-auto tw-text-sm tw-leading-5;
     @apply tw-max-h-[100px];
+    color: var(--notification-content-color);
   }
 
-  &__dismiss-icon {
-    @apply tw-cursor-pointer tw-text-[color:var(--notification-dismiss-color)] tw-ml-2;
-    @apply tw-transition-all tw-duration-200 tw-ease-in-out;
+  &__dismiss-button {
+    @apply tw-cursor-pointer tw-ml-2
+      tw-border-none tw-bg-transparent tw-outline-none tw-p-1 tw-rounded tw-flex tw-items-center tw-justify-center;
+    @apply tw-transition-colors tw-duration-150;
+    color: var(--notification-dismiss-color);
 
     &:hover {
-      @apply tw-text-[color:var(--secondary-600)];
-      transform: rotate(90deg);
+      color: var(--notification-dismiss-hover-color);
+    }
+
+    &:focus-visible {
+      @apply tw-ring-[3px] tw-outline-none;
+      ring-color: var(--notification-focus-ring-color);
     }
   }
 

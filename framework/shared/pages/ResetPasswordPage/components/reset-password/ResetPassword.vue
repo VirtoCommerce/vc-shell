@@ -81,7 +81,7 @@
       <VcHint
         v-for="error in form.errors"
         :key="error"
-        class="tw-mt-3 tw-text-[color:var(--danger-500)]"
+        class="tw-mt-3 tw-text-danger-500"
       >
         {{ t(`PASSWORDRESET.ERRORS.${error}`) }}
       </VcHint>
@@ -93,9 +93,9 @@
 import { reactive, onMounted, computed } from "vue";
 import { useRouter } from "vue-router";
 import { Field, useForm } from "vee-validate";
-import { useSettings } from "./../../../../../core/composables";
+import { useSettings } from "@core/composables";
 import { useI18n } from "vue-i18n";
-import { useUserManagement } from "./../../../../../core/composables/useUserManagement";
+import { useUserManagement } from "@core/composables/useUserManagement";
 
 const props = withDefaults(
   defineProps<{

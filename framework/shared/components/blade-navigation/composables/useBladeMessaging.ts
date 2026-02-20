@@ -1,6 +1,6 @@
 import { inject } from "vue";
-import type { IBladeMessaging, IBladeStack } from "../types";
-import { BladeMessagingKey } from "../types";
+import type { IBladeMessaging, IBladeStack } from "@shared/components/blade-navigation/types";
+import { BladeMessagingKey } from "@shared/components/blade-navigation/types";
 
 /**
  * Creates the inter-blade messaging system.

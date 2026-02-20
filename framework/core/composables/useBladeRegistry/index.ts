@@ -1,6 +1,6 @@
 import { App, inject, shallowRef, computed, ComputedRef, readonly as vueReadonly } from "vue";
-import { BladeInstanceConstructor } from "../../../shared/components/blade-navigation/types";
-import { createLogger } from "../../utilities";
+import { BladeInstanceConstructor } from "@shared/components/blade-navigation/types";
+import { createLogger } from "@core/utilities";
 
 const logger = createLogger("blade-registry");
 

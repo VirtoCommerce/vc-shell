@@ -1,9 +1,9 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { computed } from "vue";
-import { restoreFromUrl } from "./restoreFromUrl";
-import { createBladeStack } from "../composables/useBladeStack";
-import type { IBladeRegistry, IBladeRegistrationData } from "../../../../core/composables/useBladeRegistry";
-import type { IBladeStack, ParsedBladeUrl } from "../types";
+import { restoreFromUrl } from "@shared/components/blade-navigation/utils/restoreFromUrl";
+import { createBladeStack } from "@shared/components/blade-navigation/composables/useBladeStack";
+import type { IBladeRegistry, IBladeRegistrationData } from "@core/composables/useBladeRegistry";
+import type { IBladeStack, ParsedBladeUrl } from "@shared/components/blade-navigation/types";
 
 // ── Mock registry ──────────────────────────────────────────────────────────────
 

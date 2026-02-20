@@ -148,19 +148,20 @@ import {
   inject,
 } from "vue";
 import { useI18n } from "vue-i18n";
-import { DynamicGridSchema, ListContentSchema, SettingsSchema } from "../types";
-import useFilterBuilder from "../composables/useFilterBuilder";
-import { useTableTemplates } from "../composables";
-import { useFunctions } from "../../../../core/composables";
-import { IActionBuilderResult, ITableColumns } from "../../../../core/types";
-import { useToolbarReducer } from "../composables/useToolbarReducer";
-import { useBladeNavigation, usePopup } from "../../../components";
-import { ListBaseBladeScope, ListBladeContext, UseList } from "../factories/types";
-import { IParentCallArgs } from "../../../index";
+import { DynamicGridSchema, ListContentSchema, SettingsSchema } from "@shared/modules/dynamic/types";
+import { IsBladeEditableKey } from "@shared/modules/dynamic/keys";
+import useFilterBuilder from "@shared/modules/dynamic/composables/useFilterBuilder";
+import { useTableTemplates } from "@shared/modules/dynamic/composables";
+import { useFunctions } from "@core/composables";
+import { IActionBuilderResult, ITableColumns } from "@core/types";
+import { useToolbarReducer } from "@shared/modules/dynamic/composables/useToolbarReducer";
+import { useBladeNavigation, usePopup } from "@shared/components";
+import { ListBaseBladeScope, ListBladeContext, UseList } from "@shared/modules/dynamic/factories/types";
+import { IParentCallArgs } from "@shared";
 import { reactiveComputed, toReactive, useMounted } from "@vueuse/core";
-import { safeIn } from "../helpers/safeIn";
-import { useWidgets } from "../../../../core/composables/useWidgets";
-import { useBlade } from "../../../../core/composables";
+import { safeIn } from "@shared/modules/dynamic/helpers/safeIn";
+import { useWidgets } from "@core/composables/useWidgets";
+import { useBlade } from "@core/composables";
 
 export interface Props {
   expanded?: boolean;
@@ -740,7 +741,7 @@ const tableConfigComputed = computed(() => {
 });
 
 provide("bladeContext", toReactive(bladeContext));
-provide("isBladeEditable", isBladeEditable);
+provide(IsBladeEditableKey, isBladeEditable);
 
 defineExpose({
   reload,

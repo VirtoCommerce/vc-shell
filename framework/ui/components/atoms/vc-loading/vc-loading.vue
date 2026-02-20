@@ -33,14 +33,19 @@ defineProps<Props>();
 <style lang="scss">
 :root {
   --loading-marker-color: var(--primary-500);
+  --loading-overlay-bg: rgba(255, 255, 255, 0.6);
+  --loading-marker-size: 16px;
+  --loading-z-index: 9998;
 }
 
 .vc-loading-overlay {
-  @apply tw-absolute tw-items-center tw-justify-center tw-flex-col tw-z-[9998] tw-w-full tw-h-full tw-box-border tw-hidden;
+  @apply tw-absolute tw-items-center tw-justify-center tw-flex-col tw-w-full tw-h-full tw-box-border tw-hidden;
+  z-index: var(--loading-z-index);
 
   &--active {
     @apply tw-flex #{!important};
     @apply tw-backdrop-blur-[3px];
+    background-color: var(--loading-overlay-bg);
   }
 
   &__content {
@@ -48,7 +53,9 @@ defineProps<Props>();
   }
 
   &__main-marker {
-    @apply tw-absolute tw-w-4 tw-h-4 tw-top-3 tw-left-4 tw-bg-[color:var(--loading-marker-color)] tw-rounded-full tw-translate-x-0 tw-animate-loadingMarker;
+    @apply tw-absolute tw-top-3 tw-left-4 tw-bg-[color:var(--loading-marker-color)] tw-rounded-full tw-translate-x-0 tw-animate-loadingMarker;
+    width: var(--loading-marker-size);
+    height: var(--loading-marker-size);
   }
 
   &__markers {
@@ -56,7 +63,9 @@ defineProps<Props>();
   }
 
   &__marker {
-    @apply tw-block tw-float-left tw-w-4 tw-h-4 tw-bg-[color:var(--loading-marker-color)] tw-rounded-full tw-ml-4;
+    @apply tw-block tw-float-left tw-bg-[color:var(--loading-marker-color)] tw-rounded-full tw-ml-4;
+    width: var(--loading-marker-size);
+    height: var(--loading-marker-size);
   }
 }
 </style>

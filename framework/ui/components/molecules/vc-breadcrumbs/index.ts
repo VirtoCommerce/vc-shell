@@ -1,1 +1,1 @@
-export { default as VcBreadcrumbs } from "./vc-breadcrumbs.vue";
+export { default as VcBreadcrumbs } from "@ui/components/molecules/vc-breadcrumbs/vc-breadcrumbs.vue";

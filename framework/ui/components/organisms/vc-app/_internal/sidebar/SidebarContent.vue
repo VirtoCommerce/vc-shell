@@ -3,52 +3,22 @@
     class="sidebar-content"
     :class="{ 'sidebar-content--no-header': !headerVisible }"
   >
-    <template v-if="!disableMenu">
-      <!-- Scroll up arrow -->
-      <div
-        class="sidebar-content__scroll-button"
-        :class="{ 'sidebar-content__scroll-button--hidden': !canScrollUp }"
-        aria-hidden="true"
-        @pointerenter="startScroll('up')"
-        @pointerleave="stopScroll"
+    <VcScrollableContainer
+      v-if="!disableMenu"
+      ref="scrollContainer"
+      class="sidebar-content__menu"
+    >
+      <slot
+        name="menu"
+        :expanded="expanded"
+        :on-item-click="handleMenuItemClick"
       >
-        <VcIcon
-          icon="lucide-chevron-up"
-          size="xs"
-        />
-      </div>
-
-      <div
-        ref="menuRef"
-        class="sidebar-content__menu"
-        @scroll="updateScrollState"
-      >
-        <slot
-          name="menu"
+        <VcAppMenu
           :expanded="expanded"
-          :on-item-click="handleMenuItemClick"
-        >
-          <VcAppMenu
-            :expanded="expanded"
-            @item:click="handleMenuItemClick"
-          />
-        </slot>
-      </div>
-
-      <!-- Scroll down arrow -->
-      <div
-        class="sidebar-content__scroll-button"
-        :class="{ 'sidebar-content__scroll-button--hidden': !canScrollDown }"
-        aria-hidden="true"
-        @pointerenter="startScroll('down')"
-        @pointerleave="stopScroll"
-      >
-        <VcIcon
-          icon="lucide-chevron-down"
-          size="xs"
+          @item:click="handleMenuItemClick"
         />
-      </div>
-    </template>
+      </slot>
+    </VcScrollableContainer>
 
     <div class="sidebar-content__footer">
       <slot
@@ -70,12 +40,11 @@
 
 <script lang="ts" setup>
 import { inject, ref, onMounted, nextTick } from "vue";
-import VcAppMenu from "../menu/VcAppMenu.vue";
-import { VcIcon } from "../../../../";
-import { UserDropdownButton } from "../../../../../../shared/components";
-import { EMBEDDED_MODE } from "../../../../../../injection-keys";
-import { useScrollArrows } from "../../../../../composables";
-import type { MenuItem } from "../../../../../../core/types";
+import VcAppMenu from "@ui/components/organisms/vc-app/_internal/menu/VcAppMenu.vue";
+import { VcScrollableContainer } from "@ui/components";
+import { UserDropdownButton } from "@shared/components";
+import { EmbeddedModeKey } from "@framework/injection-keys";
+import type { MenuItem } from "@core/types";
 
 export interface Props {
   expanded?: boolean;
@@ -101,14 +70,12 @@ defineSlots<{
   "sidebar-footer"?: (props: { avatar?: string; name?: string; role?: string }) => unknown;
 }>();
 
-const isEmbedded = inject(EMBEDDED_MODE, false);
+const isEmbedded = inject(EmbeddedModeKey, false);
 
-const menuRef = ref<HTMLElement | null>(null);
-const { canScrollUp, canScrollDown, startScroll, stopScroll, updateScrollState } =
-  useScrollArrows(menuRef);
+const scrollContainer = ref<InstanceType<typeof VcScrollableContainer> | null>(null);
 
 onMounted(() => {
-  nextTick(updateScrollState);
+  nextTick(() => scrollContainer.value?.updateScrollState());
 });
 
 const handleMenuItemClick = (item: MenuItem) => {
@@ -122,16 +89,13 @@ const handleMenuItemClick = (item: MenuItem) => {
   height: calc(100% - var(--app-bar-height));
 
   &__menu {
-    @apply tw-flex-grow tw-overflow-auto tw-min-h-0;
-    padding: 0 var(--app-bar-padding);
-    scrollbar-width: none;
-    -ms-overflow-style: none;
+    @apply tw-flex-grow tw-min-h-0;
 
-    &::-webkit-scrollbar {
-      display: none;
+    .vc-scrollable-container__viewport {
+      padding: 0 var(--app-bar-padding);
     }
 
-    // Make nested containers transparent — __menu is the sole scroll viewport
+    // Make nested containers transparent — the viewport is the sole scroll viewport
     .vc-app-menu,
     .vc-container {
       @apply tw-h-auto tw-overflow-visible;
@@ -139,17 +103,6 @@ const handleMenuItemClick = (item: MenuItem) => {
 
     .vc-container__inner {
       @apply tw-overflow-visible;
-    }
-  }
-
-  &__scroll-button {
-    @apply tw-flex tw-items-center tw-justify-center tw-py-1
-      tw-cursor-default tw-shrink-0
-      tw-text-[color:var(--neutrals-400)]
-      tw-transition-opacity tw-duration-150;
-
-    &--hidden {
-      @apply tw-opacity-0 tw-pointer-events-none;
     }
   }
 

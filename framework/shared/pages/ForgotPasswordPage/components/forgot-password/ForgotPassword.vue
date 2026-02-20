@@ -53,7 +53,7 @@
 
       <VcHint
         v-if="error"
-        class="tw-mt-3 tw-text-[color:var(--danger-500)]"
+        class="tw-mt-3 tw-text-danger-500"
       >
         {{ error }}
       </VcHint>
@@ -62,7 +62,7 @@
     <!-- Success state -->
     <template v-else>
       <div class="tw-text-center tw-mb-6">
-        <p class="tw-text-sm tw-text-[var(--neutrals-600)]">
+        <p class="tw-text-sm tw-text-neutrals-600">
           {{ t("FORGOT_PASSWORD.SUCCESS_TEXT", { email: maskedEmail }) }}
         </p>
       </div>
@@ -82,8 +82,8 @@
 import { ref, reactive, computed } from "vue";
 import { useRouter } from "vue-router";
 import { useIsFormValid, Field, useForm } from "vee-validate";
-import { useSettings } from "./../../../../../core/composables";
-import { useUserManagement } from "./../../../../../core/composables/useUserManagement";
+import { useSettings } from "@core/composables";
+import { useUserManagement } from "@core/composables/useUserManagement";
 import { useI18n } from "vue-i18n";
 
 type ForgotPasswordFunc = (args: { loginOrEmail: string }) => Promise<void>;

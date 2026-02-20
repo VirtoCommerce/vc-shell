@@ -92,8 +92,8 @@
 <script lang="ts" setup>
 import { ref, watch, onBeforeUnmount, nextTick } from "vue";
 import { vOnClickOutside } from "@vueuse/components";
-import { VcIcon } from "./../../../";
-import { useTeleportTarget } from "../../../../composables";
+import { VcIcon } from "@ui/components";
+import { useTeleportTarget } from "@ui/composables";
 
 const props = defineProps<{
   isOpened: boolean;
@@ -141,7 +141,7 @@ function startScroll(direction: "up" | "down") {
   const el = viewportRef.value;
   if (!el) return;
 
-  const speed = 2; // px per frame (~120px/s at 60fps) — smooth shadcn-like
+  const speed = 2; // px per frame (~120px/s at 60fps) — smooth
   function tick() {
     if (!el) return;
     el.scrollTop += direction === "up" ? -speed : speed;

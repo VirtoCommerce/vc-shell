@@ -43,7 +43,7 @@
       <button
         v-if="expanded && showBurger"
         class="sidebar-header__menu-button"
-        @click="$emit('toggle-menu')"
+        @click="$emit('toggle-menu', $event)"
       >
         <div class="sidebar-header__menu-button-wrap">
           <VcIcon
@@ -61,10 +61,10 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from "vue";
-import { VcIcon } from "../../../../";
-import { MenuBurgerIcon } from "../../../../atoms/vc-icon/icons";
-import { useNotifications } from "../../../../../../core/composables";
+import { inject, ref } from "vue";
+import { VcIcon } from "@ui/components";
+import { MenuBurgerIcon } from "@ui/components/atoms/vc-icon/icons";
+import { ShellIndicatorsKey } from "@framework/injection-keys";
 
 export interface Props {
   logo?: string;
@@ -87,14 +87,10 @@ withDefaults(defineProps<Props>(), {
 
 defineEmits<{
   (e: "logo:click"): void;
-  (e: "toggle-menu"): void;
+  (e: "toggle-menu", event: MouseEvent): void;
 }>();
 
-const { notifications } = useNotifications();
-
-const hasUnread = computed(() => {
-  return notifications.value.some((item) => item.isNew);
-});
+const hasUnread = inject(ShellIndicatorsKey, ref(false));
 </script>
 
 <style lang="scss">

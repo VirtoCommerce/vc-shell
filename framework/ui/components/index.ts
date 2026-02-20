@@ -1,8 +1,8 @@
 /* Atoms */
-export * from "./atoms";
+export * from "@ui/components/atoms";
 
 /* Molecules */
-export * from "./molecules";
+export * from "@ui/components/molecules";
 
 /* Organisms */
-export * from "./organisms";
+export * from "@ui/components/organisms";

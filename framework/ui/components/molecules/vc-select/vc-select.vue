@@ -4,9 +4,9 @@
     class="vc-select"
     :class="{
       'vc-select_opened': isOpened,
-      'vc-select_error': error,
-      'vc-select_disabled': disabled,
-      'vc-select_has-hint-or-error': error || hint,
+      'vc-select_error': invalid,
+      'vc-select_disabled': resolvedDisabled,
+      'vc-select_has-hint-or-error': invalid || hint,
       'vc-select_no-outline': !outline,
       'vc-select_focused': isFocused,
     }"
@@ -19,7 +19,7 @@
       :required="required"
       :multilanguage="multilanguage"
       :current-language="currentLanguage"
-      :error="error"
+      :error="invalid"
     >
       <span>{{ label }}</span>
       <template
@@ -39,13 +39,13 @@
         :selected-scope="selectedScope"
         :multiple="multiple"
         :loading="loading"
-        :disabled="disabled"
+        :disabled="resolvedDisabled"
         :clearable="clearable"
         :placeholder="placeholder"
         :prefix="prefix"
         :suffix="suffix"
         :size="size"
-        :error="error"
+        :error="invalid"
         :error-message="errorMessage"
         :hint="hint"
         :list-loading="listLoading"
@@ -157,20 +157,25 @@
 
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup generic="T, P extends { results?: T[]; totalCount?: number } | undefined = undefined">
-import { ref, computed, watch, watchEffect, nextTick, toRefs, useId } from "vue";
+import { ref, computed, watch, watchEffect, nextTick, toRefs } from "vue";
+import { useFormField } from "@ui/composables/useFormField";
 import { useIntersectionObserver } from "@vueuse/core";
-import { VcLabel } from "./../../";
+import { VcLabel } from "@ui/components";
 import { useI18n } from "vue-i18n";
-import { useKeyboardNavigation } from "../../../../core/composables/useKeyboardNavigation";
-import { useSelectValueMapping, type OptionProp } from "./composables/useSelectValueMapping";
-import { useSelectVisibility } from "./composables/useSelectVisibility";
-import { useSelectDropdown } from "./composables/useSelectDropdown";
-import { useSelectDefaultValue } from "./composables/useSelectDefaultValue";
-import { useSelectOptions } from "./composables/useSelectOptions";
-import { useSelectSearch } from "./composables/useSelectSearch";
-import { useSelectSelection } from "./composables/useSelectSelection";
-import SelectTrigger from "./_internal/SelectTrigger.vue";
-import SelectDropdown from "./_internal/SelectDropdown.vue";
+import { useKeyboardNavigation } from "@core/composables/useKeyboardNavigation";
+import {
+  useSelectValueMapping,
+  type OptionProp,
+} from "@ui/components/molecules/vc-select/composables/useSelectValueMapping";
+import type { IFormFieldProps } from "@ui/types";
+import { useSelectVisibility } from "@ui/components/molecules/vc-select/composables/useSelectVisibility";
+import { useSelectDropdown } from "@ui/components/molecules/vc-select/composables/useSelectDropdown";
+import { useSelectDefaultValue } from "@ui/components/molecules/vc-select/composables/useSelectDefaultValue";
+import { useSelectOptions } from "@ui/components/molecules/vc-select/composables/useSelectOptions";
+import { useSelectSearch } from "@ui/components/molecules/vc-select/composables/useSelectSearch";
+import { useSelectSelection } from "@ui/components/molecules/vc-select/composables/useSelectSelection";
+import SelectTrigger from "@ui/components/molecules/vc-select/_internal/SelectTrigger.vue";
+import SelectDropdown from "@ui/components/molecules/vc-select/_internal/SelectDropdown.vue";
 
 type ArrayElementType<U> = U extends Array<infer V> ? V : never;
 type Option = P extends { results?: T[]; totalCount?: number } ? T & ArrayElementType<Required<P>["results"]> : T;
@@ -258,124 +263,42 @@ defineSlots<{
 }>();
 
 const props = withDefaults(
-  defineProps<{
-    /**
-     * Name of select
-     */
-    name?: string;
-    /**
-     * Model of the component; Must be Array if using 'multiple' prop; Use this property with a listener for 'update:modelValue' event OR use v-model directive
-     */
-
-    modelValue?: any;
-    /**
-     * Try to map labels of model from 'options' Array; If you are using emit-value you will probably need to use map-options to display the label text in the select field rather than the value.
-     * @default true
-     */
-    mapOptions?: boolean;
-    /**
-     * Does field have validation errors?
-     */
-    error?: boolean;
-    /**
-     * Validation error message (gets displayed only if 'error' is set to 'true')
-     */
-    errorMessage?: string;
-    /**
-     * Select label
-     */
-    label?: string;
-    /**
-     * Select description (hint) text below input component
-     */
-    hint?: string;
-    /**
-     * Prefix
-     */
-    prefix?: string;
-    /**
-     * Suffix
-     */
-    suffix?: string;
-    /**
-     * Signals the user a process is in progress by displaying a spinner
-     */
-    loading?: boolean;
-    /**
-     * Appends clearable icon when a value is set;
-     * When clicked, model becomes null
-     */
-    clearable?: boolean;
-    /**
-     * Put component in disabled mode
-     */
-    disabled?: boolean;
-    /**
-     * Allow multiple selection; Model must be Array
-     */
-    multiple?: boolean;
-    /**
-     * Available options that the user can select from.
-     * @default []
-     */
-    options?: ((keyword?: string, skip?: number, ids?: string[]) => Promise<P>) | T[];
-    /**
-     * Property of option which holds the 'value'
-     * @default id
-     * @param option The current option being processed
-     * @returns Value of the current option
-     */
-    optionValue?: OptionProp<Option>;
-    /**
-     * Property of option which holds the 'label'
-     * @default title
-     * @param option The current option being processed
-     * @returns Label of the current option
-     */
-    optionLabel?: OptionProp<Option>;
-    /**
-     * Update model with the value of the selected option instead of the whole option
-     */
-    emitValue?: boolean;
-    /**
-     * Debounce the search input update with an amount of milliseconds
-     * @default 500
-     */
-    debounce?: number | string;
-    /**
-     * Input placeholder text
-     */
-    placeholder?: string;
-    /**
-     * Input tooltip information
-     */
-    tooltip?: string;
-    /**
-     * Input required state
-     */
-    required?: boolean;
-    /**
-     * Input search activation
-     */
-    searchable?: boolean;
-    multilanguage?: boolean;
-    currentLanguage?: string;
-    size?: "default" | "small";
-    outline?: boolean;
-    placement?:
-      | "top"
-      | "right"
-      | "bottom"
-      | "left"
-      | "top-start"
-      | "top-end"
-      | "bottom-start"
-      | "bottom-end"
-      | "right-start"
-      | "right-end"
-      | "left-start"
-      | "left-end";
-  }>(),
+  defineProps<
+    IFormFieldProps & {
+      modelValue?: any;
+      mapOptions?: boolean;
+      hint?: string;
+      prefix?: string;
+      suffix?: string;
+      loading?: boolean;
+      clearable?: boolean;
+      multiple?: boolean;
+      options?: ((keyword?: string, skip?: number, ids?: string[]) => Promise<P>) | T[];
+      optionValue?: OptionProp<Option>;
+      optionLabel?: OptionProp<Option>;
+      emitValue?: boolean;
+      debounce?: number | string;
+      placeholder?: string;
+      searchable?: boolean;
+      multilanguage?: boolean;
+      currentLanguage?: string;
+      size?: "default" | "small";
+      outline?: boolean;
+      placement?:
+        | "top"
+        | "right"
+        | "bottom"
+        | "left"
+        | "top-start"
+        | "top-end"
+        | "bottom-start"
+        | "bottom-end"
+        | "right-start"
+        | "right-end"
+        | "left-start"
+        | "left-end";
+    }
+  >(),
   {
     optionValue: "id",
     optionLabel: "title",
@@ -409,19 +332,9 @@ const emit = defineEmits<{
 
 const { t } = useI18n({ useScope: "global" });
 
-// Accessibility IDs
-const uid = useId();
-const labelId = computed(() => `vc-select-${uid}-label`);
-const hintId = computed(() => `vc-select-${uid}-hint`);
-const errorId = computed(() => `vc-select-${uid}-error`);
-const listboxId = computed(() => `vc-select-${uid}-listbox`);
-
-const ariaDescribedBy = computed(() => {
-  const ids: string[] = [];
-  if (props.error && props.errorMessage) ids.push(errorId.value);
-  if (props.hint) ids.push(hintId.value);
-  return ids.length ? ids.join(" ") : undefined;
-});
+const { fieldId, labelId, errorId, hintId, invalid, resolvedDisabled, resolvedName, ariaDescribedBy } =
+  useFormField(props);
+const listboxId = computed(() => `${fieldId.value}-listbox`);
 
 const { modelValue } = toRefs(props);
 
@@ -469,13 +382,21 @@ const { defaultValue, defaultOptionLoading } = useSelectDefaultValue<Option>({
   getOptionValue,
 });
 
-const { optionsList, optionsTemp, totalItems, listLoading, hasNextPage, loadOptionsForOpenDropdown, onLoadMore, onDropdownClose } =
-  useSelectOptions<Option>({
-    options: () => props.options as any,
-    filterString,
-    isOpened,
-    isSelectVisible,
-  });
+const {
+  optionsList,
+  optionsTemp,
+  totalItems,
+  listLoading,
+  hasNextPage,
+  loadOptionsForOpenDropdown,
+  onLoadMore,
+  onDropdownClose,
+} = useSelectOptions<Option>({
+  options: () => props.options as any,
+  filterString,
+  isOpened,
+  isSelectVisible,
+});
 
 const { searchRef, onInput, clearSearch } = useSelectSearch<Option>({
   debounce: () => props.debounce ?? 500,
@@ -491,25 +412,24 @@ const { searchRef, onInput, clearSearch } = useSelectSearch<Option>({
   },
 });
 
-const { selectedScope, hasValue, optionScope, toggleOption, removeAtIndex, onReset } =
-  useSelectSelection<Option>({
-    modelValue: () => props.modelValue,
-    multiple: () => props.multiple,
-    emitValue: () => props.emitValue ?? true,
-    mapOptions: () => props.mapOptions ?? true,
-    optionsList,
-    defaultValue,
-    getOptionValue,
-    getOptionLabel,
-    getOption,
-    fieldValueIsFilled,
-    isOpened,
-    popperUpdate: () => popper.update(),
-    emit: {
-      updateModelValue: (val: any) => emit("update:modelValue", val),
-      close: () => emit("close"),
-    },
-  });
+const { selectedScope, hasValue, optionScope, toggleOption, removeAtIndex, onReset } = useSelectSelection<Option>({
+  modelValue: () => props.modelValue,
+  multiple: () => props.multiple,
+  emitValue: () => props.emitValue ?? true,
+  mapOptions: () => props.mapOptions ?? true,
+  optionsList,
+  defaultValue,
+  getOptionValue,
+  getOptionLabel,
+  getOption,
+  fieldValueIsFilled,
+  isOpened,
+  popperUpdate: () => popper.update(),
+  emit: {
+    updateModelValue: (val: any) => emit("update:modelValue", val),
+    close: () => emit("close"),
+  },
+});
 
 // --- Intersection observer for infinite scroll ---
 // Use computed refs from dropdown subcomponent
@@ -608,7 +528,7 @@ watch(
   --select-text-color: var(--neutrals-800);
   --select-padding: 12px;
 
-  // Trigger — transparent bg (shadcn pattern)
+  // Trigger — transparent bg
   --select-background-color: var(--additional-50);
 
   --select-placeholder-color: var(--neutrals-400);
@@ -642,7 +562,7 @@ watch(
 
   // Focus
   --select-border-color-focus: var(--primary-500);
-  --select-focus-ring-color: rgba(59, 130, 246, 0.3);
+  --select-focus-ring-color: var(--primary-100);
 
   // Disabled
   --select-background-color-disabled: var(--neutrals-200);
@@ -650,7 +570,7 @@ watch(
 
   // Error
   --select-border-color-error: var(--danger-500);
-  --select-error-ring-color: rgba(239, 68, 68, 0.2);
+  --select-error-ring-color: var(--danger-100);
 }
 
 .vc-select {
@@ -923,13 +843,17 @@ watch(
   }
 }
 
-// Dropdown enter/leave transition (fade + scale, shadcn style)
+// Dropdown enter/leave transition (fade + scale)
 .select-dropdown-enter-active {
-  transition: opacity 0.15s ease, transform 0.15s ease;
+  transition:
+    opacity 0.15s ease,
+    transform 0.15s ease;
 }
 
 .select-dropdown-leave-active {
-  transition: opacity 0.1s ease, transform 0.1s ease;
+  transition:
+    opacity 0.1s ease,
+    transform 0.1s ease;
 }
 
 .select-dropdown-enter-from {

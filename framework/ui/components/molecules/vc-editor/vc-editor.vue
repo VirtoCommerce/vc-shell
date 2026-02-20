@@ -45,23 +45,27 @@
       <div class="vc-editor__header-actions">
         <VcEditorButton
           icon="lucide-eye"
+          aria-label="Preview"
           :active="currentMode === 'preview'"
           :disabled="disabled"
           @action="togglePreview"
         />
         <VcEditorButton
           icon="lucide-columns-2"
+          aria-label="Side-by-side view"
           :active="currentMode === 'split'"
           @action="toggleSideBySideView"
         />
         <VcEditorButton
           icon="lucide-code"
+          aria-label="Source code"
           :active="currentMode === 'source'"
           :disabled="disabled"
           @action="toggleSourceView"
         />
         <VcEditorButton
           :icon="isFullscreen ? 'lucide-shrink' : 'lucide-expand'"
+          :aria-label="isFullscreen ? 'Exit fullscreen' : 'Fullscreen'"
           @action="isFullscreen = !isFullscreen"
         />
       </div>
@@ -135,12 +139,21 @@
       @change="handleImageSelection"
     />
 
-    <slot
-      v-if="errorMessage && !isFullscreen"
-      name="error"
+    <Transition
+      name="slide-up"
+      mode="out-in"
     >
-      <VcHint class="vc-editor__error-hint">{{ errorMessage }}</VcHint>
-    </slot>
+      <div v-if="errorMessage && !isFullscreen">
+        <slot name="error">
+          <VcHint
+            class="vc-editor__error-hint"
+            :error="true"
+          >
+            {{ errorMessage }}
+          </VcHint>
+        </slot>
+      </div>
+    </Transition>
   </div>
 </template>
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
@@ -158,18 +171,18 @@ import { Image } from "@tiptap/extension-image";
 import { Placeholder } from "@tiptap/extension-placeholder";
 import { TextStyle } from "@tiptap/extension-text-style";
 import { Markdown } from "tiptap-markdown";
-import { FontSize } from "./_internal/extensions/font-size";
+import { FontSize } from "@ui/components/molecules/vc-editor/_internal/extensions/font-size";
 import { format } from "prettier/standalone";
 import * as prettierPluginHtml from "prettier/parser-html";
 // eslint-disable-next-line import/no-named-as-default
 import DOMPurify from "dompurify";
-import { VcLabel, VcHint } from "../..";
-import VcEditorToolbar from "./_internal/vc-editor-toolbar.vue";
-import VcEditorButton from "./_internal/vc-editor-button.vue";
-import type { CustomToolbarItem } from "./_internal/toolbar-types";
+import { VcLabel, VcHint } from "@ui/components";
+import VcEditorToolbar from "@ui/components/molecules/vc-editor/_internal/vc-editor-toolbar.vue";
+import VcEditorButton from "@ui/components/molecules/vc-editor/_internal/vc-editor-button.vue";
+import type { CustomToolbarItem } from "@ui/components/molecules/vc-editor/_internal/toolbar-types";
 
 // Export types for external use
-export type { CustomToolbarItem, CustomToolbarButton, CustomToolbarDropdown } from "./_internal/toolbar-types";
+export type { CustomToolbarItem, CustomToolbarButton, CustomToolbarDropdown } from "@ui/components/molecules/vc-editor/_internal/toolbar-types";
 
 // Define toolbar button types
 export type ToolbarNames =
@@ -570,7 +583,7 @@ async function handleImageSelection(event: Event) {
     border: 1px solid var(--vc-editor-border);
     border-bottom: none;
     border-radius: 6px 6px 0 0;
-    background-color: var(--vc-editor-background);
+    background-color: var(--vc-toolbar-bg);
     padding: 0.5rem;
   }
 
@@ -765,8 +778,7 @@ async function handleImageSelection(event: Event) {
   }
 
   &__error-hint {
-    color: var(--vc-editor-error-text);
-    margin-top: 0.25rem;
+    @apply tw-mt-1 [--hint-error-color:var(--vc-editor-error-text)];
   }
 
   &__char-count {
@@ -805,6 +817,19 @@ async function handleImageSelection(event: Event) {
       height: 100%;
       min-height: 0;
     }
+  }
+
+  .slide-up-enter-active,
+  .slide-up-leave-active {
+    @apply tw-transition-all tw-duration-[250ms] tw-ease-out;
+  }
+
+  .slide-up-enter-from {
+    @apply tw-opacity-0 tw-translate-y-[5px];
+  }
+
+  .slide-up-leave-to {
+    @apply tw-opacity-0 tw--translate-y-[5px];
   }
 }
 </style>

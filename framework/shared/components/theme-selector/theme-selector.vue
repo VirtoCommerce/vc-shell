@@ -1,84 +1,51 @@
 <template>
-  <SettingsMenuItem @trigger:click="opened = !opened">
-    <template #trigger>
-      <div class="vc-theme-selector__trigger">
-        <VcIcon
-          icon="material-palette"
-          class="vc-theme-selector__icon"
-        />
-        <span class="vc-theme-selector__title">
-          {{ $t("COMPONENTS.THEME_SELECTOR.THEME_SELECTOR") }}
-        </span>
-      </div>
-    </template>
+  <SettingsMenuItem
+    ref="menuItemRef"
+    icon="material-palette"
+    :title="$t('COMPONENTS.THEME_SELECTOR.THEME_SELECTOR')"
+    :value="currentLocalizedName"
+    :show-chevron="true"
+    :is-active="isSubMenuOpen"
+    @trigger:click="isSubMenuOpen = !isSubMenuOpen"
+  />
 
-    <template #content>
-      <VcDropdown
-        :model-value="opened"
-        :items="themes"
-        :is-item-active="(theme) => theme.key === currentThemeKey"
-        @item-click="handleThemeSelect"
-      >
-        <template #item="{ item: theme, click }">
-          <div
-            class="vc-theme-selector__item"
-            :class="{ 'vc-theme-selector__item--active': theme.key === currentThemeKey }"
-            @click="click"
-          >
-            <span class="vc-theme-selector__item-title">{{ theme.name }}</span>
-          </div>
-        </template>
-      </VcDropdown>
-    </template>
-  </SettingsMenuItem>
+  <VcDropdownPanel
+    v-model:show="isSubMenuOpen"
+    :anchor-ref="menuItemRef?.triggerRef ?? null"
+    placement="right-start"
+    width="180px"
+    max-width="260px"
+  >
+    <div class="tw-p-1">
+      <VcDropdownItem
+        v-for="theme in themes"
+        :key="theme.key"
+        :title="theme.name"
+        :active="theme.key === currentThemeKey"
+        @click="handleThemeSelect(theme)"
+      />
+    </div>
+  </VcDropdownPanel>
 </template>
 
 <script lang="ts" setup>
-import { useTheme } from "../../../core/composables/useTheme";
+import { useTheme } from "@core/composables/useTheme";
 import { ref } from "vue";
 import { notification } from "..";
-import { SettingsMenuItem } from "../settings-menu-item";
-import { VcDropdown, VcIcon } from "../../../ui/components";
+import { SettingsMenuItem } from "@shared/components/settings-menu-item";
+import { VcDropdownPanel } from "@ui/components";
+import VcDropdownItem from "@ui/components/molecules/vc-dropdown/_internal/VcDropdownItem.vue";
 
 const { currentThemeKey, currentLocalizedName, themes, setTheme } = useTheme();
-const opened = ref(false);
+const isSubMenuOpen = ref(false);
+const menuItemRef = ref<InstanceType<typeof SettingsMenuItem> | null>(null);
 
 const handleThemeSelect = (theme: { key: string; name: string }) => {
   setTheme(theme.key);
-  opened.value = false;
+  isSubMenuOpen.value = false;
 
   if (currentLocalizedName.value) {
     notification(currentLocalizedName.value);
   }
 };
 </script>
-
-<style lang="scss">
-.vc-theme-selector {
-  &__trigger {
-    @apply tw-flex tw-items-center tw-w-full;
-  }
-
-  &__icon {
-    @apply tw-w-6 tw-mr-3;
-  }
-
-  &__title {
-    @apply tw-flex-grow;
-  }
-
-  &__item {
-    @apply tw-flex tw-items-center tw-w-full tw-px-6 tw-py-3
-      tw-cursor-pointer tw-transition-colors
-      hover:tw-bg-[color:var(--menu-item-bg-hover)];
-
-    &--active {
-      @apply tw-bg-[color:var(--menu-item-bg-active)];
-    }
-  }
-
-  &__item-title {
-    @apply tw-flex-grow;
-  }
-}
-</style>

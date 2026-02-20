@@ -1,5 +1,9 @@
 <template>
-  <div class="vc-editor-toolbar">
+  <div
+    class="vc-editor-toolbar"
+    role="toolbar"
+    aria-label="Text formatting"
+  >
     <!-- Render buttons based on toolbar prop -->
     <template
       v-for="(item, index) in toolbarItems"
@@ -15,6 +19,7 @@
       <VcEditorButton
         v-else-if="item === 'bold'"
         icon="lucide-bold"
+        aria-label="Bold"
         :active="editor.isActive('bold')"
         :disabled="!editor.can().toggleBold() || disabled"
         @action="editor.chain().focus().toggleBold().run()"
@@ -24,6 +29,7 @@
       <VcEditorButton
         v-else-if="item === 'italic'"
         icon="lucide-italic"
+        aria-label="Italic"
         :active="editor.isActive('italic')"
         :disabled="!editor.can().toggleItalic() || disabled"
         @action="editor.chain().focus().toggleItalic().run()"
@@ -33,6 +39,7 @@
       <VcEditorButton
         v-else-if="item === 'underline'"
         icon="lucide-underline"
+        aria-label="Underline"
         :active="editor.isActive('underline')"
         :disabled="!editor.can().toggleUnderline() || disabled"
         @action="editor.chain().focus().toggleUnderline().run()"
@@ -42,6 +49,7 @@
       <VcEditorButton
         v-else-if="item === 'strikethrough'"
         icon="lucide-strikethrough"
+        aria-label="Strikethrough"
         :active="editor.isActive('strike')"
         :disabled="!editor.can().toggleStrike() || disabled"
         @action="editor.chain().focus().toggleStrike().run()"
@@ -51,6 +59,7 @@
       <VcEditorButton
         v-else-if="item === 'heading1'"
         icon="lucide-heading-1"
+        aria-label="Heading 1"
         :active="editor.isActive('heading', { level: 1 })"
         :disabled="!editor.can().toggleHeading({ level: 1 }) || disabled"
         @action="editor.chain().focus().toggleHeading({ level: 1 }).run()"
@@ -60,6 +69,7 @@
       <VcEditorButton
         v-else-if="item === 'heading2'"
         icon="lucide-heading-2"
+        aria-label="Heading 2"
         :active="editor.isActive('heading', { level: 2 })"
         :disabled="!editor.can().toggleHeading({ level: 2 }) || disabled"
         @action="editor.chain().focus().toggleHeading({ level: 2 }).run()"
@@ -69,6 +79,7 @@
       <VcEditorButton
         v-else-if="item === 'heading3'"
         icon="lucide-heading-3"
+        aria-label="Heading 3"
         :active="editor.isActive('heading', { level: 3 })"
         :disabled="!editor.can().toggleHeading({ level: 3 }) || disabled"
         @action="editor.chain().focus().toggleHeading({ level: 3 }).run()"
@@ -78,6 +89,7 @@
       <VcEditorButton
         v-else-if="item === 'bulletList'"
         icon="lucide-list"
+        aria-label="Bullet list"
         :active="editor.isActive('bulletList')"
         :disabled="!editor.can().toggleBulletList() || disabled"
         @action="editor.chain().focus().toggleBulletList().run()"
@@ -87,6 +99,7 @@
       <VcEditorButton
         v-else-if="item === 'orderedList'"
         icon="lucide-list-ordered"
+        aria-label="Numbered list"
         :active="editor.isActive('orderedList')"
         :disabled="!editor.can().toggleOrderedList() || disabled"
         @action="editor.chain().focus().toggleOrderedList().run()"
@@ -96,6 +109,7 @@
       <VcEditorButton
         v-else-if="item === 'blockquote'"
         icon="lucide-quote"
+        aria-label="Blockquote"
         :active="editor.isActive('blockquote')"
         :disabled="!editor.can().toggleBlockquote() || disabled"
         @action="editor.chain().focus().toggleBlockquote().run()"
@@ -105,6 +119,7 @@
       <VcEditorButton
         v-else-if="item === 'link'"
         icon="lucide-link"
+        aria-label="Insert link"
         :active="editor.isActive('link')"
         :disabled="disabled"
         @action="setLink"
@@ -114,6 +129,7 @@
       <VcEditorButton
         v-else-if="item === 'image'"
         icon="lucide-image"
+        aria-label="Insert image"
         :disabled="disabled"
         @action="triggerImageUpload"
       />
@@ -122,6 +138,7 @@
       <VcEditorButton
         v-else-if="item === 'table'"
         icon="lucide-table"
+        aria-label="Insert table"
         :disabled="disabled"
         @action="editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()"
       />
@@ -151,36 +168,43 @@
       <div class="vc-editor-toolbar__separator" />
       <VcEditorButton
         icon="lucide-delete"
+        aria-label="Delete table"
         :disabled="disabled"
         @action="editor.chain().focus().deleteTable().run()"
       />
       <VcEditorButton
         icon="lucide-arrow-left-from-line"
+        aria-label="Add column before"
         :disabled="disabled"
         @action="editor.chain().focus().addColumnBefore().run()"
       />
       <VcEditorButton
         icon="lucide-arrow-right-from-line"
+        aria-label="Add column after"
         :disabled="disabled"
         @action="editor.chain().focus().addColumnAfter().run()"
       />
       <VcEditorButton
         icon="lucide-arrow-up-from-line"
+        aria-label="Add row before"
         :disabled="disabled"
         @action="editor.chain().focus().addRowBefore().run()"
       />
       <VcEditorButton
         icon="lucide-arrow-down-from-line"
+        aria-label="Add row after"
         :disabled="disabled"
         @action="editor.chain().focus().addRowAfter().run()"
       />
       <VcEditorButton
         icon="lucide-trash-2"
+        aria-label="Delete column"
         :disabled="disabled"
         @action="editor.chain().focus().deleteColumn().run()"
       />
       <VcEditorButton
         icon="lucide-trash"
+        aria-label="Delete row"
         :disabled="disabled"
         @action="editor.chain().focus().deleteRow().run()"
       />
@@ -191,10 +215,10 @@
 <script lang="ts" setup>
 import type { Editor } from "@tiptap/vue-3";
 import { computed } from "vue";
-import VcEditorButton from "./vc-editor-button.vue";
-import VcEditorCustomButton from "./vc-editor-custom-button.vue";
-import VcEditorFontSelector from "./vc-editor-font-selector.vue";
-import type { CustomToolbarItem } from "./toolbar-types";
+import VcEditorButton from "@ui/components/molecules/vc-editor/_internal/vc-editor-button.vue";
+import VcEditorCustomButton from "@ui/components/molecules/vc-editor/_internal/vc-editor-custom-button.vue";
+import VcEditorFontSelector from "@ui/components/molecules/vc-editor/_internal/vc-editor-font-selector.vue";
+import type { CustomToolbarItem } from "@ui/components/molecules/vc-editor/_internal/toolbar-types";
 
 export interface Props {
   editor: Editor;
@@ -271,7 +295,7 @@ function triggerImageUpload() {
 :root {
   // Toolbar color variables
   --vc-toolbar-bg: var(--neutrals-50);
-  --vc-toolbar-separator: var(--neutrals-300);
+  --vc-toolbar-separator: var(--neutrals-200);
 }
 
 .vc-editor-toolbar {
@@ -279,8 +303,6 @@ function triggerImageUpload() {
   flex-wrap: wrap;
   align-items: center;
   gap: 0.25rem;
-  background-color: var(--vc-toolbar-bg);
-  border-radius: 4px 4px 0 0;
 
   &__separator {
     width: 1px;

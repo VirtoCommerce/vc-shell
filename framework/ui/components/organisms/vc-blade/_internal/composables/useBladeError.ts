@@ -1,9 +1,9 @@
 import { computed, defineComponent, h, type ComputedRef } from "vue";
-import type { IBladeInstance } from "../../../../../../shared/components/blade-navigation/types";
-import { usePopup } from "../../../../../../shared";
+import type { IBladeInstance } from "@shared/components/blade-navigation/types";
+import { usePopup } from "@shared";
 import { useI18n } from "vue-i18n";
-import { VcLink } from "../../../..";
-import vcPopupError from "../../../../../../shared/components/common/popup/vc-popup-error.vue";
+import { VcLink } from "@ui/components";
+import vcPopupError from "@shared/components/common/popup/vc-popup-error.vue";
 
 /**
  * Encapsulates blade error state and the "error details" popup logic.

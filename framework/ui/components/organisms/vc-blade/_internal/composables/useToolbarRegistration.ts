@@ -1,9 +1,9 @@
 import { type ComputedRef, type Ref, computed, inject, onBeforeUnmount, ref, watch } from "vue";
-import { useBlade, usePermissions, useToolbar } from "../../../../../../core/composables";
-import type { IBladeToolbar } from "../../../../../../core/types";
-import { FALLBACK_BLADE_ID } from "../../../../../../core/constants";
-import type { IToolbarItem } from "../../../../../../core/services";
-import { resolveVisibility, resolveReactiveBoolean } from "../../utils";
+import { useBlade, usePermissions, useToolbar } from "@core/composables";
+import type { IBladeToolbar } from "@core/types";
+import { FALLBACK_BLADE_ID } from "@core/constants";
+import type { IToolbarItem } from "@core/services";
+import { resolveVisibility, resolveReactiveBoolean } from "@ui/components/organisms/vc-blade/utils";
 
 const PROP_ITEM_ID_PREFIX = "prop_toolbar_item_";
 

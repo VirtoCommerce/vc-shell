@@ -1,1 +1,1 @@
-export { default as VcSidebar } from "./vc-sidebar.vue";
+export { default as VcSidebar } from "@ui/components/organisms/vc-sidebar/vc-sidebar.vue";

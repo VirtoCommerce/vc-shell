@@ -1,3 +1,3 @@
-export * from "./assets";
-export * from "./assets-manager";
-export * from "./dynamic";
+export * from "@shared/modules/assets";
+export * from "@shared/modules/assets-manager";
+export * from "@shared/modules/dynamic";

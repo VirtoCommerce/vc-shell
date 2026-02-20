@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { shallowRef } from "vue";
-import type { ColumnInstance } from "../utils/ColumnCollector";
-import type { VcColumnProps } from "../types";
-import { useMobileCardLayout } from "./useMobileCardLayout";
+import type { ColumnInstance } from "@ui/components/organisms/vc-table/utils/ColumnCollector";
+import type { VcColumnProps } from "@ui/components/organisms/vc-table/types";
+import { useMobileCardLayout } from "@ui/components/organisms/vc-table/composables/useMobileCardLayout";
 
 function createColumn(props: Partial<VcColumnProps> & { id: string }): ColumnInstance {
   const { id, ...rest } = props;

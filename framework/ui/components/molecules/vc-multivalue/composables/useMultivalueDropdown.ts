@@ -1,7 +1,7 @@
 import { ref, computed, watch, nextTick, type Ref } from "vue";
 import { offset, flip, shift, type Middleware } from "@floating-ui/vue";
-import { useKeyboardNavigation } from "../../../../../core/composables/useKeyboardNavigation";
-import { useFloatingPosition } from "../../../../composables";
+import { useKeyboardNavigation } from "@core/composables/useKeyboardNavigation";
+import { useFloatingPosition } from "@ui/composables";
 
 type FloatingInstanceType = ReturnType<typeof useFloatingPosition> & {
   middlewareData: Ref<{

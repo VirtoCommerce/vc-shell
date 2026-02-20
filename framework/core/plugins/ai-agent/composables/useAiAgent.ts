@@ -1,17 +1,17 @@
 import { inject, provide } from "vue";
-import { createAiAgentService, type IAiAgentServiceInternal } from "../services/ai-agent-service";
-import { AiAgentServiceKey, LanguageServiceKey, ToolbarServiceKey } from "../../../../injection-keys";
+import { createAiAgentService, type IAiAgentServiceInternal } from "@core/plugins/ai-agent/services/ai-agent-service";
+import { AiAgentServiceKey, LanguageServiceKey, ToolbarServiceKey } from "@framework/injection-keys";
 import type {
   IAiAgentService,
   IAiAgentConfig,
   IAiAgentMessage,
   IAiAgentBladeContext,
-} from "../types";
-import { createLogger, InjectionError } from "../../../utilities";
-import { useUser } from "../../../composables/useUser";
-import { useBladeNavigation } from "../../../../shared/components/blade-navigation/composables";
-import { AI_AGENT_TOOLBAR_BUTTON_ID, AI_AGENT_TOOLBAR_BUTTON_ICON, AI_AGENT_TOOLBAR_BUTTON_TITLE } from "../constants";
-import type { IToolbarService } from "../../../services/toolbar-service";
+} from "@core/plugins/ai-agent/types";
+import { createLogger, InjectionError } from "@core/utilities";
+import { useUser } from "@core/composables/useUser";
+import { useBladeNavigation } from "@shared/components/blade-navigation/composables";
+import { AI_AGENT_TOOLBAR_BUTTON_ID, AI_AGENT_TOOLBAR_BUTTON_ICON, AI_AGENT_TOOLBAR_BUTTON_TITLE } from "@core/plugins/ai-agent/constants";
+import type { IToolbarService } from "@core/services/toolbar-service";
 
 const logger = createLogger("use-ai-agent");
 

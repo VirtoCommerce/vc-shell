@@ -1,8 +1,8 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { computed } from "vue";
-import { createBladeStack } from "./useBladeStack";
-import type { IBladeRegistry } from "../../../../core/composables/useBladeRegistry";
-import type { IBladeStack } from "../types";
+import { createBladeStack } from "@shared/components/blade-navigation/composables/useBladeStack";
+import type { IBladeRegistry } from "@core/composables/useBladeRegistry";
+import type { IBladeStack } from "@shared/components/blade-navigation/types";
 
 // ── Mock registry ──────────────────────────────────────────────────────────────
 

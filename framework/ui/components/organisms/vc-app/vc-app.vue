@@ -99,24 +99,22 @@
 </template>
 <script lang="ts" setup>
 import { inject, provide, ref } from "vue";
-import DesktopLayout from "./_internal/layouts/DesktopLayout.vue";
-import MobileLayout from "./_internal/layouts/MobileLayout.vue";
-import { VcPopupContainer, BladeRoutesRecord } from "./../../../../shared/components";
-import type { AppDescriptor } from "../../../../core/api/platform";
-import type { MenuItem } from "../../../../core/types";
-import type { SidebarStateReturn } from "./composables/useSidebarState";
-import { VcAiAgentPanel } from "../../../../core/plugins/ai-agent";
-import type { IAiAgentConfig } from "../../../../core/plugins/ai-agent";
-import { useRoute, useRouter } from "vue-router";
-import { AppRootElementKey, DynamicModulesKey } from "../../../../injection-keys";
-import { createLogger } from "../../../../core/utilities";
-import { provideSidebarState } from "./composables/useSidebarState";
-import { provideAppBarState } from "./_internal/app-bar/composables/useAppBarState";
-import { useShellBootstrap } from "./composables/useShellBootstrap";
-import { useShellNavigation } from "./composables/useShellNavigation";
-import { useShellLifecycle } from "./composables/useShellLifecycle";
-import { defaultFeatures, SHELL_FEATURES_KEY } from "../../../../core/shell-features";
-import type { ShellFeature } from "../../../../core/types/shell-feature";
+import DesktopLayout from "@ui/components/organisms/vc-app/_internal/layouts/DesktopLayout.vue";
+import MobileLayout from "@ui/components/organisms/vc-app/_internal/layouts/MobileLayout.vue";
+import { VcPopupContainer, BladeRoutesRecord } from "@shared/components";
+import type { AppDescriptor } from "@core/api/platform";
+import type { MenuItem } from "@core/types";
+import type { SidebarStateReturn } from "@core/composables/useSidebarState";
+import { VcAiAgentPanel } from "@core/plugins/ai-agent";
+import type { IAiAgentConfig } from "@core/plugins/ai-agent";
+import { useRoute } from "vue-router";
+import { AppRootElementKey, DynamicModulesKey, BladeRoutesKey } from "@framework/injection-keys";
+import { createLogger } from "@core/utilities";
+import { provideSidebarState } from "@core/composables/useSidebarState";
+import { provideAppBarState } from "@ui/components/organisms/vc-app/_internal/app-bar/composables/useAppBarState";
+import { useShellBootstrap } from "@ui/components/organisms/vc-app/composables/useShellBootstrap";
+import { useShellNavigation } from "@ui/components/organisms/vc-app/composables/useShellNavigation";
+import { useShellLifecycle } from "@ui/components/organisms/vc-app/composables/useShellLifecycle";
 
 export interface Props {
   isReady: boolean;
@@ -128,8 +126,6 @@ export interface Props {
   disableMenu?: boolean;
   disableAppSwitcher?: boolean;
   role?: string;
-  /** Custom shell features. Defaults to notifications + settings. */
-  features?: ShellFeature[];
 }
 
 defineOptions({
@@ -158,11 +154,7 @@ const logger = createLogger("vc-app");
 logger.debug("Init vc-app");
 
 const route = useRoute();
-const router = useRouter();
 const isEmbedded = route.query.EmbeddedMode === "true";
-
-// Resolve features: prop > injection > defaults
-const features = props.features ?? inject(SHELL_FEATURES_KEY, defaultFeatures);
 
 // App root element ref (for scoped Teleport targets)
 const appRootRef = ref<HTMLElement>();
@@ -179,19 +171,18 @@ const { isAppReady, isAuthenticated, appsList, switchApp } = useShellLifecycle(p
 const { handleMenuItemClick, openRoot } = useShellNavigation();
 
 // Injected config from parent
-const internalRoutes = inject("bladeRoutes") as BladeRoutesRecord[];
+const internalRoutes = inject(BladeRoutesKey)!;
 const dynamicModules = inject(DynamicModulesKey, undefined);
 const aiAgentConfig = inject<IAiAgentConfig | undefined>("aiAgentConfig", undefined);
 const aiAgentAddGlobalToolbarButton = inject<boolean>("aiAgentAddGlobalToolbarButton", true);
 
-// Bootstrap: provide services + process features
-useShellBootstrap(features, {
+// Bootstrap: provide services + register default shell UI
+useShellBootstrap({
   isEmbedded,
   internalRoutes,
   dynamicModules,
   aiAgentConfig,
   aiAgentAddGlobalToolbarButton,
-  context: { router, route, isAuthenticated, isEmbedded },
 });
 </script>
 

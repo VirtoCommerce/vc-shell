@@ -1,1 +1,1 @@
-export { default as VcField } from "./vc-field.vue";
+export { default as VcField } from "@ui/components/molecules/vc-field/vc-field.vue";

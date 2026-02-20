@@ -2,8 +2,8 @@
   <div
     class="vc-checkbox"
     :class="{
-      'vc-checkbox--disabled': disabled,
-      'vc-checkbox--error': !!errorMessage,
+      'vc-checkbox--disabled': resolvedDisabled,
+      'vc-checkbox--error': invalid,
       'vc-checkbox--indeterminate': indeterminate,
       [`vc-checkbox--size-${size}`]: true,
     }"
@@ -12,7 +12,7 @@
       v-if="label"
       class="vc-checkbox__label"
       :required="required"
-      :error="!!errorMessage"
+      :error="invalid"
     >
       <span>{{ label }}</span>
       <template
@@ -30,10 +30,11 @@
         :value="value"
         type="checkbox"
         class="vc-checkbox__input"
-        :disabled="disabled"
+        :name="resolvedName"
+        :disabled="resolvedDisabled"
         :true-value="trueValue"
         :false-value="falseValue"
-        :aria-invalid="!!errorMessage || undefined"
+        :aria-invalid="invalid || undefined"
         :aria-describedby="ariaDescribedBy"
         tabindex="0"
       />
@@ -72,44 +73,49 @@
       <span
         v-if="!label && required"
         class="vc-checkbox__required"
+        aria-hidden="true"
         >*</span
       >
     </label>
 
-    <slot
-      v-if="errorMessage"
-      name="error"
+    <Transition
+      name="slide-up"
+      mode="out-in"
     >
-      <VcHint :id="errorId" class="vc-checkbox__error">
-        {{ errorMessage }}
-      </VcHint>
-    </slot>
+      <div v-if="errorMessage">
+        <slot name="error">
+          <VcHint
+            :id="errorId"
+            class="vc-checkbox__error"
+            :error="true"
+          >
+            {{ errorMessage }}
+          </VcHint>
+        </slot>
+      </div>
+    </Transition>
   </div>
 </template>
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
-import { MaybeRef, computed, unref, ref, watch, onMounted, useId } from "vue";
-import { VcHint } from "./../../atoms/vc-hint";
-import { VcLabel } from "../../atoms/vc-label";
+import { MaybeRef, computed, unref, ref, watch, onMounted } from "vue";
+import { VcHint } from "@ui/components/atoms/vc-hint";
+import { VcLabel } from "@ui/components/atoms/vc-label";
+import { useFormField } from "@ui/composables/useFormField";
+import type { IFormFieldProps } from "@ui/types";
 
-export interface Props {
-  modelValue: MaybeRef<boolean>;
+export interface Props extends IFormFieldProps {
+  modelValue: MaybeRef<boolean | any[]>;
   value?: any;
-  disabled?: boolean;
-  required?: boolean;
-  name?: string;
-  errorMessage?: string;
   trueValue?: boolean;
   falseValue?: boolean;
-  label?: string;
-  tooltip?: string;
   size?: "s" | "m" | "l";
   outline?: boolean;
   indeterminate?: boolean;
 }
 
 export interface Emits {
-  (event: "update:modelValue", value: boolean): void;
+  (event: "update:modelValue", value: boolean | any[]): void;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -127,23 +133,16 @@ defineSlots<{
   icon: (props: Record<string, never>) => any;
 }>();
 
+const { fieldId: checkboxId, errorId, invalid, resolvedDisabled, resolvedName, ariaDescribedBy } = useFormField(props);
+
 const checkboxRef = ref<HTMLInputElement | null>(null);
-
-const uid = useId();
-const checkboxId = computed(() => `vc-checkbox-${uid}`);
-const errorId = computed(() => `vc-checkbox-${uid}-error`);
-
-const ariaDescribedBy = computed(() => {
-  if (props.errorMessage) return errorId.value;
-  return undefined;
-});
 
 const model = computed({
   get() {
     return unref(props.modelValue);
   },
   set(newValue) {
-    emit("update:modelValue", newValue);
+    emit("update:modelValue", newValue as boolean | any[]);
   },
 });
 
@@ -176,12 +175,13 @@ onMounted(() => {
 <style lang="scss">
 :root {
   /* Checkbox size */
-  --checkbox-size-s: 14px;
-  --checkbox-size-m: 18px;
+  --checkbox-size-s: 16px;
+  --checkbox-size-m: 20px;
   --checkbox-size-l: 24px;
 
   /* Main colors */
-  --checkbox-border-color: var(--neutrals-400);
+  --checkbox-border-color: var(--neutrals-300);
+  --checkbox-border-color-hover: var(--neutrals-400);
   --checkbox-bg-color: var(--additional-50);
   --checkbox-text-color: var(--neutrals-900);
 
@@ -191,91 +191,76 @@ onMounted(() => {
   --checkbox-icon-color: var(--additional-50);
 
   /* Indeterminate state */
-  --checkbox-indeterminate-bg-color: var(--neutrals-500);
-  --checkbox-indeterminate-border-color: var(--neutrals-500);
+  --checkbox-indeterminate-bg-color: var(--primary-500);
+  --checkbox-indeterminate-border-color: var(--primary-500);
   --checkbox-indeterminate-line-color: var(--additional-50);
 
   /* Error state */
   --checkbox-error-border-color: var(--danger-500);
   --checkbox-error-text-color: var(--danger-500);
-  --checkbox-error-ring-color: rgba(239, 68, 68, 0.2);
+  --checkbox-error-ring-color: var(--danger-100);
 
   /* Disabled state */
-  --checkbox-disabled-bg-color: var(--neutrals-200);
-  --checkbox-disabled-border-color: var(--neutrals-200);
   --checkbox-disabled-opacity: 0.5;
 
   /* Focus */
-  --checkbox-focus-shadow-color: rgba(59, 130, 246, 0.3);
-  --checkbox-focus-shadow-size: 3px;
+  --checkbox-focus-ring-color: var(--primary-100);
 
   /* Other */
-  --checkbox-border-radius: 2px;
+  --checkbox-border-radius: 4px;
   --checkbox-required-color: var(--danger-500);
-  --checkbox-transition-duration: 0.2s;
-  --checkbox-margin-spacing: 0.5rem;
+  --checkbox-transition-duration: 200ms;
+  --checkbox-label-spacing: 0.5rem;
   --checkbox-text-margin: 0.5rem;
 }
 
 .vc-checkbox {
-  display: flex;
-  flex-direction: column;
+  @apply tw-flex tw-flex-col;
 
   &__label {
-    margin-bottom: var(--checkbox-margin-spacing);
+    @apply tw-mb-[var(--checkbox-label-spacing)];
   }
 
   &__container {
-    display: inline-flex;
-    align-items: center;
-    cursor: pointer;
-    user-select: none;
+    @apply tw-inline-flex tw-items-center tw-cursor-pointer tw-select-none;
   }
 
   &__input {
-    position: absolute;
-    opacity: 0;
-    width: 0;
-    height: 0;
+    @apply tw-absolute tw-opacity-0 tw-w-0 tw-h-0;
 
     &:focus-visible + .vc-checkbox__custom-input {
-      box-shadow: 0 0 0 var(--checkbox-focus-shadow-size) var(--checkbox-focus-shadow-color);
+      @apply tw-ring-[3px] tw-outline-none;
+      ring-color: var(--checkbox-focus-ring-color);
     }
 
-    &:hover + .vc-checkbox__custom-input {
-      box-shadow: 0 0 0 var(--checkbox-focus-shadow-size) var(--checkbox-focus-shadow-color);
+    &:not(:disabled):not(:checked) + .vc-checkbox__custom-input:hover {
+      border-color: var(--checkbox-border-color-hover);
     }
 
     &:disabled + .vc-checkbox__custom-input {
-      background-color: var(--checkbox-disabled-bg-color);
-      border-color: var(--checkbox-disabled-border-color);
-      cursor: not-allowed;
+      @apply tw-cursor-not-allowed;
     }
   }
 
   &__custom-input {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 1px solid var(--checkbox-border-color);
-    border-radius: var(--checkbox-border-radius);
+    @apply tw-flex tw-items-center tw-justify-center tw-shrink-0
+      tw-border tw-border-solid
+      tw-rounded-[var(--checkbox-border-radius)]
+      tw-transition-all tw-duration-200 tw-ease-in-out;
+    border-color: var(--checkbox-border-color);
     background-color: var(--checkbox-bg-color);
-    transition: all var(--checkbox-transition-duration) ease-in-out;
     color: var(--checkbox-icon-color);
 
     .vc-checkbox--size-s & {
-      width: var(--checkbox-size-s);
-      height: var(--checkbox-size-s);
+      @apply tw-w-[var(--checkbox-size-s)] tw-h-[var(--checkbox-size-s)];
     }
 
     .vc-checkbox--size-m & {
-      width: var(--checkbox-size-m);
-      height: var(--checkbox-size-m);
+      @apply tw-w-[var(--checkbox-size-m)] tw-h-[var(--checkbox-size-m)];
     }
 
     .vc-checkbox--size-l & {
-      width: var(--checkbox-size-l);
-      height: var(--checkbox-size-l);
+      @apply tw-w-[var(--checkbox-size-l)] tw-h-[var(--checkbox-size-l)];
     }
 
     .vc-checkbox__input:checked + & {
@@ -287,47 +272,73 @@ onMounted(() => {
       background-color: var(--checkbox-indeterminate-bg-color);
       border-color: var(--checkbox-indeterminate-border-color);
     }
-
-    .vc-checkbox--disabled & {
-      opacity: var(--checkbox-disabled-opacity);
-      cursor: not-allowed;
-    }
   }
 
   &__check-icon {
-    width: 100%;
-    height: 100%;
+    @apply tw-w-full tw-h-full;
+    animation: checkbox-check-in var(--checkbox-transition-duration) ease-out;
   }
 
   &__indeterminate-line {
+    @apply tw-block tw-rounded-full;
     width: 65%;
     height: 2px;
     background-color: var(--checkbox-indeterminate-line-color);
-    display: block;
   }
 
   &__text {
-    margin-left: var(--checkbox-text-margin);
-    font-size: 14px;
-    line-height: 21px;
+    @apply tw-text-sm tw-leading-[21px];
     color: var(--checkbox-text-color);
+    margin-left: var(--checkbox-text-margin);
   }
 
   &__required {
+    @apply tw-ml-1;
     color: var(--checkbox-required-color);
-    margin-left: 0.25rem;
   }
 
   &__error {
-    --hint-color: var(--checkbox-error-text-color);
-    margin-top: 0.25rem;
+    @apply tw-mt-1 [--hint-error-color:var(--checkbox-error-text-color)];
   }
 
   &--error {
     .vc-checkbox__custom-input {
+      @apply tw-ring-[3px];
       border-color: var(--checkbox-error-border-color);
-      box-shadow: 0 0 0 3px var(--checkbox-error-ring-color);
+      ring-color: var(--checkbox-error-ring-color);
     }
+  }
+
+  &--disabled {
+    @apply tw-cursor-not-allowed tw-pointer-events-none;
+    opacity: var(--checkbox-disabled-opacity);
+  }
+
+  .slide-up-enter-active,
+  .slide-up-leave-active {
+    @apply tw-transition-all tw-duration-[250ms] tw-ease-out;
+  }
+
+  .slide-up-enter-from {
+    @apply tw-opacity-0 tw-translate-y-[5px];
+  }
+
+  .slide-up-leave-to {
+    @apply tw-opacity-0 tw--translate-y-[5px];
+  }
+}
+
+@keyframes checkbox-check-in {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
   }
 }
 </style>

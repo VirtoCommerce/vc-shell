@@ -14,21 +14,25 @@
       </template>
     </VcLabel>
 
-    <!-- Rating icon -->
-    <div class="vc-rating__content">
+    <!-- Rating display -->
+    <div
+      class="vc-rating__content"
+      role="img"
+      :aria-label="modelValue ? `Rating: ${modelValue} out of ${max}` : placeholder || 'No rating'"
+    >
       <template v-if="modelValue">
         <template v-if="variant === 'stars'">
           <div class="vc-rating__stars">
             <VcIcon
               v-for="index in modelValue"
               :key="index"
-              icon="material-star"
+              icon="lucide-star"
               class="vc-rating__icon"
             ></VcIcon>
             <VcIcon
               v-for="index in max - modelValue"
               :key="index"
-              icon="material-star"
+              icon="lucide-star"
               class="vc-rating__icon vc-rating__icon--empty"
             ></VcIcon>
           </div>
@@ -37,7 +41,7 @@
           <div class="vc-rating__text-container">
             <VcIcon
               v-if="variant === 'star-and-text'"
-              icon="material-star"
+              icon="lucide-star"
               class="vc-rating__icon"
             ></VcIcon>
             <span class="vc-rating__rating">{{ modelValue }}/{{ max }}</span>
@@ -54,7 +58,7 @@
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
 import { VNode } from "vue";
-import { VcLabel, VcIcon } from "./../../";
+import { VcLabel, VcIcon } from "@ui/components";
 
 export interface Props {
   label?: string;
@@ -75,6 +79,8 @@ defineSlots<{
 <style lang="scss">
 :root {
   --rating-placeholder-color: var(--neutrals-400);
+  --rating-star-size: 1em;
+  --rating-gap: 2px;
 
   --rating-special-color: var(--warning-500);
   --rating-special-color-hover: var(--warning-600);
@@ -90,6 +96,7 @@ defineSlots<{
 
   &__stars {
     @apply tw-flex tw-flex-row tw-items-center;
+    gap: var(--rating-gap);
   }
 
   &__text-container {
@@ -101,8 +108,8 @@ defineSlots<{
   }
 
   &__icon {
-    @apply tw-text-[color:var(--rating-special-color)] tw-mr-1;
-    font-size: inherit;
+    @apply tw-text-[color:var(--rating-special-color)];
+    font-size: var(--rating-star-size);
 
     &--empty {
       @apply tw-opacity-40;

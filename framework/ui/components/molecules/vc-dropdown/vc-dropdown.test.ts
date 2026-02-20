@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { mount } from "@vue/test-utils";
 import { nextTick } from "vue";
-import VcDropdown from "./vc-dropdown.vue";
+import VcDropdown from "@ui/components/molecules/vc-dropdown/vc-dropdown.vue";
 
 describe("VcDropdown", () => {
   it("emits close reason and model update on Escape", async () => {

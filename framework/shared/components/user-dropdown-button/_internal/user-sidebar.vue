@@ -18,9 +18,10 @@
 
 <script lang="ts" setup>
 import { inject, ref, type Ref } from "vue";
-import { IMenuItem } from "../../../../core/types";
-import { SettingsMenu } from "../../settings-menu";
-import { VcSidebar } from "../../../../ui/components";
+import { IsDesktopKey } from "@framework/injection-keys";
+import { IMenuItem } from "@core/types";
+import { SettingsMenu } from "@shared/components/settings-menu";
+import { VcSidebar } from "@ui/components";
 
 defineProps<{
   isOpened: boolean;
@@ -31,7 +32,7 @@ defineEmits<{
   (e: "item:click", item: IMenuItem): void;
 }>();
 
-const isDesktop = inject<Ref<boolean>>("isDesktop", ref(false));
+const isDesktop = inject(IsDesktopKey, ref(false));
 </script>
 
 <style lang="scss">

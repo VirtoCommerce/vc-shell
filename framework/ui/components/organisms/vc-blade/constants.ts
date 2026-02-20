@@ -1,6 +1,6 @@
 import { computed } from "vue";
-import { FALLBACK_BLADE_ID } from "../../../../core/constants";
-import type { IBladeInstance } from "../../../../shared/components/blade-navigation/types";
+import { FALLBACK_BLADE_ID } from "@core/constants";
+import type { IBladeInstance } from "@shared/components/blade-navigation/types";
 
 /**
  * Default fallback for `inject(BladeInstance)` when no blade context is provided.

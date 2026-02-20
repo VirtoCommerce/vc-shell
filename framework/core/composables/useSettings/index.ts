@@ -1,8 +1,8 @@
-import { useAsync } from "./../useAsync";
-import { useApiClient } from "./../useApiClient";
+import { useAsync } from "@core/composables/useAsync";
+import { useApiClient } from "@core/composables/useApiClient";
 import { computed, Ref, ref, ComputedRef, onMounted } from "vue";
-import { SettingClient } from "./../../api/platform";
-import { useLoading } from "../useLoading";
+import { SettingClient } from "@core/api/platform";
+import { useLoading } from "@core/composables/useLoading";
 
 interface IUISetting {
   contrast_logo?: string;

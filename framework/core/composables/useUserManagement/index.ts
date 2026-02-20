@@ -1,8 +1,8 @@
 import { computed, ComputedRef } from "vue";
 import { createSharedComposable } from "@vueuse/core";
-import { _createInternalUserLogic, IUserInternalAPI } from "../useUser"; // Import the internal logic
-import { SecurityResult, IdentityResult, LoginType, UserDetail, SignInResult } from "./../../api/platform";
-import { RequestPasswordResult } from "./../../types";
+import { _createInternalUserLogic, IUserInternalAPI } from "@core/composables/useUser"; // Import the internal logic
+import { SecurityResult, IdentityResult, LoginType, UserDetail, SignInResult } from "@core/api/platform";
+import { RequestPasswordResult } from "@core/types";
 
 // Interface for the API exposed by useUserManagement (for framework/admin use)
 export interface IUserManagementAPI {

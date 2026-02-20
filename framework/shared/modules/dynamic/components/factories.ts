@@ -20,7 +20,7 @@ import {
   ITable,
   IRating,
   IRadioButton,
-} from "./../types/models";
+} from "@shared/modules/dynamic/types/models";
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { markRaw } from "vue";
 import {
@@ -43,7 +43,7 @@ import {
   VcTable,
   VcRating,
   VcRadioButton,
-} from "../../../../ui/components";
+} from "@ui/components";
 
 export const ControlBaseProps = ({
   rules = undefined,

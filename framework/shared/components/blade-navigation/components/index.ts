@@ -1,2 +1,2 @@
-export * from "./vc-blade-navigation";
-export * from "./vc-blade-slot";
+export * from "@shared/components/blade-navigation/components/vc-blade-navigation";
+export * from "@shared/components/blade-navigation/components/vc-blade-slot";

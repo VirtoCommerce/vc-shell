@@ -17,11 +17,11 @@ import {
   watchPostEffect,
 } from "vue";
 import * as _ from "lodash-es";
-import { Checkbox, InputField, Switch, SelectField, RadioButton } from "../../components/factories";
-import { AsyncAction } from "../../../../../core/composables";
-import { VcButton, VcCol, VcContainer, VcLabel, VcRow } from "../../../../../ui/components";
+import { Checkbox, InputField, Switch, SelectField, RadioButton } from "@shared/modules/dynamic/components/factories";
+import { AsyncAction } from "@core/composables";
+import { VcButton, VcCol, VcContainer, VcLabel, VcRow } from "@ui/components";
 import { useI18n } from "vue-i18n";
-import { FilterBase, FilterCheckbox, FilterDateInput, FilterRadio, FilterSelect, FilterSwitch } from "../../types";
+import { FilterBase, FilterCheckbox, FilterDateInput, FilterRadio, FilterSelect, FilterSwitch } from "@shared/modules/dynamic/types";
 
 interface Control {
   title: string;
@@ -350,7 +350,7 @@ export default <Query>(args: {
               title
                 ? h(
                     "div",
-                    { class: "tw-mb-4 tw-text-[color:var(--secondary-500)] tw-font-bold tw-text-[17px]" },
+                    { class: "tw-mb-4 tw-text-secondary-500 tw-font-bold tw-text-[17px]" },
                     unref(computed(() => t(title))),
                   )
                 : undefined,
@@ -390,7 +390,7 @@ export default <Query>(args: {
           h(
             VcCol,
             {
-              class: "tw-px-5 tw-py-[10px] !tw-flex-auto tw-border-t tw-border-solid tw-border-[var(--neutrals-200)]",
+              class: "tw-px-5 tw-py-[10px] !tw-flex-auto tw-border-t tw-border-solid tw-border-neutrals-200",
             },
             () =>
               h("div", { class: "tw-flex tw-justify-start" }, [

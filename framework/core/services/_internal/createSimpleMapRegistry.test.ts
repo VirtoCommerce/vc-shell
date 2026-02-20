@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from "vitest";
-import { createSimpleMapRegistry, type SimpleMapRegistry } from "./createSimpleMapRegistry";
+import { createSimpleMapRegistry, type SimpleMapRegistry } from "@core/services/_internal/createSimpleMapRegistry";
 
 interface TestItem {
   id: string;

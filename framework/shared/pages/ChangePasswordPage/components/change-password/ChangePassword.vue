@@ -14,7 +14,7 @@
         :outline="false"
         variant="info-dark"
       >
-        <div class="tw-flex tw-flex-row tw-items-center tw-text-[color:var(--neutrals-800)]">
+        <div class="tw-flex tw-flex-row tw-items-center tw-text-neutrals-800">
           <VcIcon
             icon="material-lightbulb"
             size="l"
@@ -116,7 +116,7 @@
       <VcHint
         v-for="(err, i) in form.errors"
         :key="i"
-        class="tw-mt-3 tw-text-[color:var(--danger-500)]"
+        class="tw-mt-3 tw-text-danger-500"
       >
         {{
           (err as IIdentityError).code
@@ -131,9 +131,9 @@
 <script lang="ts" setup>
 import { nextTick, reactive, computed } from "vue";
 import { useIsFormValid, Field, useIsFormDirty, useForm } from "vee-validate";
-import { IIdentityError } from "./../../../../../core/api/platform";
-import { useUserManagement } from "./../../../../../core/composables/useUserManagement";
-import { useSettings } from "./../../../../../core/composables";
+import { IIdentityError } from "@core/api/platform";
+import { useUserManagement } from "@core/composables/useUserManagement";
+import { useSettings } from "@core/composables";
 import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
 

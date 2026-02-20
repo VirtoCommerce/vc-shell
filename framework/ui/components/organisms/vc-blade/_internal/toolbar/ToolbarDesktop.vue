@@ -28,6 +28,7 @@
       >
         <template #trigger="{ isActive }">
           <div
+            data-more-button
             class="vc-blade-toolbar-desktop__more"
             :class="{ 'vc-blade-toolbar-desktop__more--active': isActive }"
             @click="isMenuOpen = !isMenuOpen"
@@ -43,11 +44,9 @@
         </template>
 
         <template #item="{ item }">
-          <ToolbarBaseButton
-            class="tw-p-3 tw-w-full"
-            v-bind="item"
-            :show-title="true"
-            content-direction="row"
+          <VcDropdownItem
+            :title="toValue(item.title) ?? ''"
+            :icon="typeof item.icon === 'function' ? item.icon() : item.icon"
           />
         </template>
       </VcDropdown>
@@ -56,12 +55,13 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, toRef, watch, nextTick } from "vue";
-import { VcDropdown } from "../../../../";
-import { VcIcon } from "../../../../atoms/vc-icon";
-import { useAdaptiveItems } from "../../../../../composables/useAdaptiveItems";
-import type { IBladeToolbar } from "../../../../../../core/types";
-import ToolbarBaseButton from "./ToolbarBaseButton.vue";
+import { ref, toRef, toValue, watch, nextTick } from "vue";
+import { VcDropdown } from "@ui/components";
+import { VcIcon } from "@ui/components/atoms/vc-icon";
+import VcDropdownItem from "@ui/components/molecules/vc-dropdown/_internal/VcDropdownItem.vue";
+import { useAdaptiveItems } from "@ui/composables/useAdaptiveItems";
+import type { IBladeToolbar } from "@core/types";
+import ToolbarBaseButton from "@ui/components/organisms/vc-blade/_internal/toolbar/ToolbarBaseButton.vue";
 
 const props = defineProps<{
   items: IBladeToolbar[];
@@ -120,5 +120,6 @@ watch(
       @apply tw-text-[var(--blade-toolbar-desktop-more-hover-color)];
     }
   }
+
 }
 </style>

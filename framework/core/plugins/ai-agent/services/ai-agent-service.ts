@@ -1,6 +1,6 @@
 import { computed, ref, shallowRef, watch, type ShallowRef } from "vue";
 import { cloneDeep } from "lodash-es";
-import { createLogger } from "../../../utilities";
+import { createLogger } from "@core/utilities";
 import {
   IAiAgentService,
   IAiAgentConfig,
@@ -20,8 +20,8 @@ import {
   IPreviewChangesPayload,
   IDownloadFilePayload,
   ISuggestion,
-} from "../types";
-import { DEFAULT_AI_AGENT_CONFIG } from "../constants";
+} from "@core/plugins/ai-agent/types";
+import { DEFAULT_AI_AGENT_CONFIG } from "@core/plugins/ai-agent/constants";
 
 const logger = createLogger("ai-agent-service");
 
@@ -83,29 +83,6 @@ function toBladeContext(blade: IAiAgentBladeContext | null): IChatBladeContext {
     title: blade.title || blade.name,
     param: blade.param,
   };
-}
-
-/**
- * Decode organization_id from JWT if present.
- * Used as fallback when tenantId is not configured in app options.
- *
- * @deprecated Prefer configuring tenantId via VirtoShellFramework aiAgent options.
- * organization_id from JWT identifies a specific organization within the platform,
- * while tenantId should identify the platform installation itself.
- */
-function decodeOrganizationIdFromJwt(token?: string | null): string | undefined {
-  if (!token) return undefined;
-  try {
-    const parts = token.split(".");
-    if (parts.length < 2) return undefined;
-    const base64 = parts[1].replace(/-/g, "+").replace(/_/g, "/");
-    const json = atob(base64);
-    const payload = JSON.parse(json);
-    return payload.organization_id;
-  } catch (error) {
-    logger.debug("decodeOrganizationIdFromJwt_failed", error);
-    return undefined;
-  }
 }
 
 /**
@@ -211,12 +188,9 @@ export function createAiAgentService(options: CreateAiAgentServiceOptions): IAiA
    */
   const buildInitContextPayload = async (): Promise<IInitContextPayload> => {
     const accessToken = tokenGetter ? ((await tokenGetter()) ?? undefined) : undefined;
-    // Use configured tenantId, fallback to JWT organization_id for backward compatibility
-    const tenantId = config.value.tenantId || decodeOrganizationIdFromJwt(accessToken);
     return {
       userId: userGetter()?.id || "",
       locale: localeGetter(),
-      tenantId,
       blade: toBladeContext(bladeGetter()),
       contextType: contextType.value,
       items: cloneDeep(contextItems.value),
@@ -236,10 +210,7 @@ export function createAiAgentService(options: CreateAiAgentServiceOptions): IAiA
    */
   const buildUpdateContextPayload = async (): Promise<IUpdateContextPayload> => {
     const accessToken = tokenGetter ? ((await tokenGetter()) ?? undefined) : undefined;
-    // Use configured tenantId, fallback to JWT organization_id for backward compatibility
-    const tenantId = config.value.tenantId || decodeOrganizationIdFromJwt(accessToken);
     return {
-      tenantId,
       blade: toBladeContext(bladeGetter()),
       contextType: contextType.value,
       items: cloneDeep(contextItems.value),

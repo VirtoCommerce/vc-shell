@@ -65,11 +65,11 @@
 
 <script lang="ts" setup>
 import { MaybeRef, computed, ref, unref, watch, toValue } from "vue";
-import { ICommonAsset, IValidationRules } from "../../../../core/types";
-import { VcLabel, VcFileUpload, VcHint } from "./../../";
-import VcGalleryItem from "./_internal/vc-gallery-item/vc-gallery-item.vue";
-import VcGalleryPreview from "./_internal/vc-gallery-preview/vc-gallery-preview.vue";
-import { usePopup } from "./../../../../shared/components/popup-handler/composables/usePopup";
+import { ICommonAsset, IValidationRules } from "@core/types";
+import { VcLabel, VcFileUpload, VcHint } from "@ui/components";
+import VcGalleryItem from "@ui/components/organisms/vc-gallery/_internal/vc-gallery-item/vc-gallery-item.vue";
+import VcGalleryPreview from "@ui/components/organisms/vc-gallery/_internal/vc-gallery-preview/vc-gallery-preview.vue";
+import { usePopup } from "@shared/components/popup-handler/composables/usePopup";
 import { useI18n } from "vue-i18n";
 
 export interface Props {

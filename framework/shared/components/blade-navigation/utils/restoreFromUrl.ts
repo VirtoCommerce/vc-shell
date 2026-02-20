@@ -1,5 +1,5 @@
-import type { IBladeRegistry } from "../../../../core/composables/useBladeRegistry";
-import type { IBladeStack, ParsedBladeUrl } from "../types";
+import type { IBladeRegistry } from "@core/composables/useBladeRegistry";
+import type { IBladeStack, ParsedBladeUrl } from "@shared/components/blade-navigation/types";
 
 /**
  * Restore the blade stack from a parsed URL.

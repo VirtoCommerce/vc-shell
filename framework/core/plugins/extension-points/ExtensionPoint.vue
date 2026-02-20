@@ -37,8 +37,8 @@
 
 <script setup lang="ts">
 import { computed } from "vue";
-import { defineExtensionPoint } from "./defineExtensionPoint";
-import type { ExtensionComponent } from "./types";
+import { defineExtensionPoint } from "@core/plugins/extension-points/defineExtensionPoint";
+import type { ExtensionComponent } from "@core/plugins/extension-points/types";
 
 interface Props {
   /** Extension point name (e.g. "auth:after-form") */
@@ -90,6 +90,6 @@ const wrapperStyle = computed(() => {
 
 <style lang="scss">
 .vc-extension-point__separator {
-  @apply tw-border-t tw-border-solid tw-border-[color:var(--secondary-200)] tw-mb-4;
+  @apply tw-border-t tw-border-solid tw-border-secondary-200 tw-mb-4;
 }
 </style>

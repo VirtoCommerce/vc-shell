@@ -1,1 +1,1 @@
-export * from "./assets-manager";
+export * from "@shared/modules/assets-manager/components/assets-manager";

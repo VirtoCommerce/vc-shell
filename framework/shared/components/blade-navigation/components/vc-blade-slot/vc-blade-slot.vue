@@ -24,15 +24,15 @@
 
 <script lang="ts" setup>
 import { computed, onBeforeUnmount, provide, ref, watch, watchEffect } from "vue";
-import { useBladeRegistry } from "../../../../../core/composables/useBladeRegistry";
-import { BladeInstance as BladeInstanceKey, BLADE_BACK_BUTTON } from "../../../../../injection-keys";
-import { ErrorInterceptor } from "../../../error-interceptor";
-import { useBladeMessaging } from "../../composables/useBladeMessaging";
-import { useBladeStack } from "../../composables/useBladeStack";
-import type { BladeDescriptor, IBladeInstance, IParentCallArgs } from "../../types";
-import { BladeDescriptorKey } from "../../types";
-import type { CoreBladeExposed } from "../../types";
-import type { Breadcrumbs } from "../../../../../ui/types";
+import { useBladeRegistry } from "@core/composables/useBladeRegistry";
+import { BladeInstance as BladeInstanceKey, BLADE_BACK_BUTTON } from "@framework/injection-keys";
+import { ErrorInterceptor } from "@shared/components/error-interceptor";
+import { useBladeMessaging } from "@shared/components/blade-navigation/composables/useBladeMessaging";
+import { useBladeStack } from "@shared/components/blade-navigation/composables/useBladeStack";
+import type { BladeDescriptor, IBladeInstance, IParentCallArgs } from "@shared/components/blade-navigation/types";
+import { BladeDescriptorKey } from "@shared/components/blade-navigation/types";
+import type { CoreBladeExposed } from "@shared/components/blade-navigation/types";
+import type { Breadcrumbs } from "@ui/types";
 import type { Component } from "vue";
 
 const props = defineProps<{

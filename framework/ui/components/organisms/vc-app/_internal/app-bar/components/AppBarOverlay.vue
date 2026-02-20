@@ -19,7 +19,7 @@
 
 <script lang="ts" setup>
 import { inject, type MaybeRef } from "vue";
-import { AppRootElementKey } from "../../../../../../../injection-keys";
+import { AppRootElementKey } from "@framework/injection-keys";
 
 defineProps<{
   isSidebarMode: boolean;

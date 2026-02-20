@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
-import { VcBreadcrumbs } from "./";
+import { VcBreadcrumbs } from "@ui/components/molecules/vc-breadcrumbs";
 import { ref, watch, onMounted } from "vue";
 // Import for example only - not needed in projects where useBreadcrumbs is already injected
-import { useBreadcrumbs } from "../../../../core/composables/useBreadcrumbs";
+import { useBreadcrumbs } from "@core/composables/useBreadcrumbs";
 
 /**
  * `VcBreadcrumbs` is a component that displays a navigation path, helping users

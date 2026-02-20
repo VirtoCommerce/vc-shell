@@ -31,9 +31,9 @@
  */
 import { computed } from "vue";
 import * as _ from "lodash-es";
-import type { MobileColumnConfig } from "../../types";
-import DynamicCellRenderer from "../cells/DynamicCellRenderer.vue";
-import { SlotProxy } from "../_internal/SlotProxy";
+import type { MobileColumnConfig } from "@ui/components/organisms/vc-table/types";
+import DynamicCellRenderer from "@ui/components/organisms/vc-table/components/cells/DynamicCellRenderer.vue";
+import { SlotProxy } from "@ui/components/organisms/vc-table/components/_internal/SlotProxy";
 
 const props = defineProps<{
   /** Mobile column configuration */

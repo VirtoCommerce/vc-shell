@@ -1,1 +1,1 @@
-export { default as VcCol } from "./vc-col.vue";
+export { default as VcCol } from "@ui/components/atoms/vc-col/vc-col.vue";

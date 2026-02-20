@@ -133,14 +133,14 @@
  * - Inline editing support
  * - Group header/footer rendering (when grouping is enabled)
  */
-import type { ColumnInstance } from "../utils/ColumnCollector";
-import type { VcColumnProps } from "../types";
-import TableRow from "./TableRow.vue";
-import TableCell from "./TableCell.vue";
-import TableCheckbox from "./TableCheckbox.vue";
-import TableGroupRow from "./TableGroupRow.vue";
-import DataTableCellRenderer from "./DataTableCellRenderer.vue";
-import { VcRadioButton } from "../../../molecules/vc-radio-button";
+import type { ColumnInstance } from "@ui/components/organisms/vc-table/utils/ColumnCollector";
+import type { VcColumnProps } from "@ui/components/organisms/vc-table/types";
+import TableRow from "@ui/components/organisms/vc-table/components/TableRow.vue";
+import TableCell from "@ui/components/organisms/vc-table/components/TableCell.vue";
+import TableCheckbox from "@ui/components/organisms/vc-table/components/TableCheckbox.vue";
+import TableGroupRow from "@ui/components/organisms/vc-table/components/TableGroupRow.vue";
+import DataTableCellRenderer from "@ui/components/organisms/vc-table/components/DataTableCellRenderer.vue";
+import { VcRadioButton } from "@ui/components/molecules/vc-radio-button";
 
 // Props interface
 const props = defineProps<{

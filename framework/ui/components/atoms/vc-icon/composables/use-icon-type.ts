@@ -1,6 +1,6 @@
 import { computed } from "vue";
 import type { Component } from "vue";
-import type { IconType } from "../types";
+import type { IconType } from "@ui/components/atoms/vc-icon/types";
 
 interface UseIconTypeOptions {
   /**

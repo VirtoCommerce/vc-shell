@@ -122,6 +122,7 @@
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
 import { Ref, computed, inject } from "vue";
+import { IsMobileKey } from "@framework/injection-keys";
 import { TransitionRoot, TransitionChild, Dialog, DialogPanel, DialogTitle } from "@headlessui/vue";
 
 export interface Props {
@@ -151,7 +152,7 @@ defineSlots<{
   footer: (props: { close: () => void }) => any;
 }>();
 
-const isMobile = inject("isMobile") as Ref<boolean>;
+const isMobile = inject(IsMobileKey)!;
 
 const icon = computed(() => {
   switch (props.variant) {

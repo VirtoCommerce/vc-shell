@@ -1,9 +1,9 @@
 import { describe, it, expect } from "vitest";
 import { defineComponent, h, inject } from "vue";
 import { mount } from "@vue/test-utils";
-import { MenuServiceKey } from "../../../injection-keys";
-import { provideMenuService, useMenuService } from "./index";
-import { createMenuService } from "../../services/menu-service";
+import { MenuServiceKey } from "@framework/injection-keys";
+import { provideMenuService, useMenuService } from "@core/composables/useMenuService";
+import { createMenuService } from "@core/services/menu-service";
 
 describe("useMenuService", () => {
   it("throws InjectionError when no service is provided", () => {

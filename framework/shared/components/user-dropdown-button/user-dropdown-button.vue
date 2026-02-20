@@ -1,10 +1,11 @@
 <template>
   <div class="vc-user-dropdown-button-container">
     <button
+      ref="buttonRef"
       type="button"
       class="vc-user-dropdown-button"
       :class="{
-        'vc-user-dropdown-button--active': false,
+        'vc-user-dropdown-button--active': isMenuOpened,
         'vc-user-dropdown-button--auto-width': disabled,
         'vc-user-dropdown-button--mobile': $isMobile.value,
         'vc-user-dropdown-button--collapsed': !isPinned && $isDesktop.value,
@@ -14,7 +15,7 @@
       <div
         class="vc-user-dropdown-button__wrap"
         :class="{
-          'vc-user-dropdown-button__wrap--active': false,
+          'vc-user-dropdown-button__wrap--active': isMenuOpened,
         }"
       >
         <UserInfo
@@ -23,30 +24,40 @@
           :role="role"
           :is-expanded="isExpanded"
         />
-        <!-- <UserActions
-          :profile-menu="profileMenu"
-          @action:click="handleActionClick"
-        /> -->
         <div class="vc-user-dropdown-button__actions">
           <div class="vc-user-dropdown-button__trigger"></div>
         </div>
       </div>
     </button>
 
+    <!-- Desktop: floating dropdown panel -->
+    <VcDropdownPanel
+      v-if="$isDesktop.value"
+      v-model:show="isMenuOpened"
+      :anchor-ref="buttonRef"
+      placement="right"
+      width="260px"
+      max-width="300px"
+    >
+      <SettingsMenu />
+    </VcDropdownPanel>
+
+    <!-- Mobile: full sidebar fallback -->
     <UserSidebar
-      v-model:is-opened="isSidebarOpened"
-      @item:click="handleMenuItemClick"
+      v-else
+      v-model:is-opened="isMenuOpened"
     />
   </div>
 </template>
 
 <script lang="ts" setup>
-import { ref } from "vue";
-import type { IMenuItem } from "../../../core/types";
-import { default as UserInfo } from "./_internal/user-info.vue";
-import { default as UserSidebar } from "./_internal/user-sidebar.vue";
-import { useSidebarState } from "../../../ui/components/organisms/vc-app/composables/useSidebarState";
-import { useI18n } from "vue-i18n";
+import { ref, provide } from "vue";
+import { CloseSettingsMenuKey } from "@framework/injection-keys";
+import { default as UserInfo } from "@shared/components/user-dropdown-button/_internal/user-info.vue";
+import { default as UserSidebar } from "@shared/components/user-dropdown-button/_internal/user-sidebar.vue";
+import { SettingsMenu } from "@shared/components/settings-menu";
+import { VcDropdownPanel } from "@ui/components";
+import { useSidebarState } from "@core/composables/useSidebarState";
 
 export interface Props {
   avatarUrl?: string | undefined;
@@ -57,16 +68,18 @@ export interface Props {
 
 defineProps<Props>();
 
-const { t } = useI18n({ useScope: "global" });
-const isSidebarOpened = ref(false);
+const isMenuOpened = ref(false);
+const buttonRef = ref<HTMLElement | null>(null);
 const { isPinned, isExpanded } = useSidebarState();
 
-function handleMenuItemClick(item: IMenuItem) {
-  item.clickHandler?.();
+function closeMenu() {
+  isMenuOpened.value = false;
 }
 
+provide(CloseSettingsMenuKey, closeMenu);
+
 function handleClick() {
-  isSidebarOpened.value = !isSidebarOpened.value;
+  isMenuOpened.value = !isMenuOpened.value;
 }
 </script>
 

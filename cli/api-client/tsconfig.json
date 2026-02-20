@@ -1,17 +1,15 @@
 {
   "extends": "@vc-shell/ts-config/tsconfig.json",
   "compilerOptions": {
+    "baseUrl": ".",
     "outDir": "./dist",
     "rootDir": "./",
+    "paths": {
+      "@api-client-generator": ["./src/index.ts"],
+      "@api-client-generator/*": ["./src/*"]
+    }
   },
-  "files": [
-    "package.json",
-  ],
-  "include": [
-    "src"
-  ],
-  "exclude": [
-    "node_modules",
-    "dist"
-  ]
+  "files": ["package.json"],
+  "include": ["src"],
+  "exclude": ["node_modules", "dist"]
 }

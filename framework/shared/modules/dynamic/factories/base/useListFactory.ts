@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Ref, computed, ref } from "vue";
-import { CustomQuery, UseList } from "../types";
-import { useAsync, useLoading } from "../../../../../core/composables";
+import { CustomQuery, UseList } from "@shared/modules/dynamic/factories/types";
+import { useAsync, useLoading } from "@core/composables";
 
 interface ISearchResult<T> {
   totalCount?: number;

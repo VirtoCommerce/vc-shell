@@ -1,1 +1,1 @@
-export { default as VcToast } from "./vc-toast.vue";
+export { default as VcToast } from "@ui/components/molecules/vc-toast/vc-toast.vue";

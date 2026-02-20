@@ -20,10 +20,10 @@
 
 <script lang="ts" setup>
 import { computed, markRaw, onMounted, ref } from "vue";
-import type { IconSize, IconVariant } from "./types";
+import type { IconSize, IconVariant } from "@ui/components/atoms/vc-icon/types";
 import type { Component } from "vue";
-import { useIcon } from "./composables";
-import { createLogger } from "../../../../core/utilities";
+import { useIcon } from "@ui/components/atoms/vc-icon/composables";
+import { createLogger } from "@core/utilities";
 
 const logger = createLogger("vc-lucide-icon");
 

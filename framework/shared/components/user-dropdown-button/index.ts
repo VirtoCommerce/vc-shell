@@ -1,4 +1,4 @@
-import _UserDropdownButton from "./user-dropdown-button.vue";
+import _UserDropdownButton from "@shared/components/user-dropdown-button/user-dropdown-button.vue";
 
 export const UserDropdownButton = _UserDropdownButton as typeof _UserDropdownButton;
 

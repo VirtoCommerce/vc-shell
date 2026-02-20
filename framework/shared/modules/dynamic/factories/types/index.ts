@@ -1,18 +1,18 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ComputedRef, MaybeRef, Ref, UnwrapNestedRefs } from "vue";
-import { AsyncAction, IUseDynamicProperties } from "../../../../../core/composables";
-import { SettingsDetails, SettingsGrid, SettingsSchema } from "../../types";
+import { AsyncAction, IUseDynamicProperties } from "@core/composables";
+import { SettingsDetails, SettingsGrid, SettingsSchema } from "@shared/modules/dynamic/types";
 import {
   AssetsHandler,
   IActionBuilderResult,
   IBladeToolbar,
   ICommonAsset,
   ITableColumns,
-} from "../../../../../core/types";
-import { useBladeNavigation } from "../../../../components";
+} from "@core/types";
+import { useBladeNavigation } from "@shared/components";
 import { FormContext } from "vee-validate";
-import { Breadcrumbs } from "../../../../../ui/types";
-import { DynamicBladeForm, DynamicBladeList } from "../../pages";
+import { Breadcrumbs } from "@ui/types";
+import { DynamicBladeForm, DynamicBladeList } from "@shared/modules/dynamic/pages";
 
 export type ItemId = { id: string };
 

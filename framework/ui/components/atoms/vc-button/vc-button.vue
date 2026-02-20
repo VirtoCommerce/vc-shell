@@ -7,7 +7,7 @@
     :aria-busy="loading || undefined"
     @click="onClick"
   >
-    <!-- Loading: spinner replaces icon; shown inline next to text (shadcn pattern) -->
+    <!-- Loading: spinner replaces icon; shown inline next to text -->
     <VcIcon
       v-if="loading"
       icon="lucide-loader-2"
@@ -31,10 +31,9 @@
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
 import { computed, inject, type Component } from "vue";
-import { VcIcon } from "./../vc-icon";
-import { ButtonGroupKey, type ButtonVariant, type ButtonSize } from "./types";
+import { VcIcon } from "@ui/components/atoms/vc-icon";
+import { ButtonGroupKey, type ButtonVariant, type ButtonSize } from "@ui/components/atoms/vc-button/types";
 
-// Normalize legacy size aliases to canonical shadcn names
 const SIZE_ALIAS: Record<string, string> = {
   base: "default",
   xs: "sm",
@@ -201,7 +200,7 @@ function onClick(e: Event): void {
   --button-focus-ring-width: 2px;
   --button-focus-ring-offset: 2px;
 
-  // SIZING — exact shadcn New York values
+
   --button-border-radius: 6px;
 
   // sm: h-8 px-3 text-xs (no vertical padding, fixed height)
@@ -246,7 +245,7 @@ $variants: primary, secondary, danger, warning, success, info, outline, ghost, l
         @apply tw-opacity-90;
       }
 
-      // Keyboard focus only — shadcn focus-visible ring
+      // Keyboard focus only
       &:focus-visible {
         @apply tw-outline-none
           tw-ring-[length:var(--button-focus-ring-width)]
@@ -254,7 +253,7 @@ $variants: primary, secondary, danger, warning, success, info, outline, ghost, l
           tw-ring-[color:var(--button-focus-ring-color)];
       }
 
-      // Clean disabled — shadcn pattern
+      // Clean disabled
       &:disabled {
         @apply tw-opacity-50 tw-cursor-not-allowed tw-pointer-events-none;
       }

@@ -5,10 +5,10 @@
       `vc-multivalue_${type}`,
       {
         'vc-multivalue_opened': isOpened,
-        'vc-multivalue_error': error,
-        'vc-multivalue_disabled': disabled,
+        'vc-multivalue_error': invalid,
+        'vc-multivalue_disabled': resolvedDisabled,
         'vc-multivalue_focused': isFocused,
-        'vc-multivalue_has-hint-or-error': error || hint,
+        'vc-multivalue_has-hint-or-error': invalid || hint,
       },
     ]"
   >
@@ -20,7 +20,7 @@
       :required="required"
       :multilanguage="multilanguage"
       :current-language="currentLanguage"
-      :error="error"
+      :error="invalid"
     >
       <span>{{ label }}</span>
       <template
@@ -39,8 +39,8 @@
       :type="type"
       :html-input-type="htmlInputType"
       :placeholder="placeholder"
-      :disabled="disabled"
-      :error="error"
+      :disabled="resolvedDisabled"
+      :error="invalid"
       :loading="loading"
       :clearable="clearable"
       :option-value="optionValue"
@@ -116,10 +116,9 @@
       name="slide-up"
       mode="out-in"
     >
-      <div v-if="error">
+      <div v-if="invalid && errorMessage">
         <slot name="error">
           <VcHint
-            v-if="errorMessage"
             :id="errorId"
             class="vc-multivalue__error"
           >
@@ -144,33 +143,28 @@
 
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup generic="T extends { id?: string; colorCode?: string }">
-import { ref, computed, watchEffect, useId } from "vue";
-import { VcLabel, VcHint } from "./../../";
-import MultivalueTrigger from "./_internal/MultivalueTrigger.vue";
-import MultivalueDropdown from "./_internal/MultivalueDropdown.vue";
-import { useMultivalueMode, type MultivalueType } from "./composables/useMultivalueMode";
-import { useMultivalueValues } from "./composables/useMultivalueValues";
-import { useMultivalueInput } from "./composables/useMultivalueInput";
-import { useMultivalueColor } from "./composables/useMultivalueColor";
-import { useMultivalueDropdown } from "./composables/useMultivalueDropdown";
-import { useMultivalueOptions } from "./composables/useMultivalueOptions";
+import { ref, computed, watchEffect } from "vue";
+import { useFormField } from "@ui/composables/useFormField";
+import { VcLabel, VcHint } from "@ui/components";
+import MultivalueTrigger from "@ui/components/molecules/vc-multivalue/_internal/MultivalueTrigger.vue";
+import MultivalueDropdown from "@ui/components/molecules/vc-multivalue/_internal/MultivalueDropdown.vue";
+import { useMultivalueMode, type MultivalueType } from "@ui/components/molecules/vc-multivalue/composables/useMultivalueMode";
+import { useMultivalueValues } from "@ui/components/molecules/vc-multivalue/composables/useMultivalueValues";
+import { useMultivalueInput } from "@ui/components/molecules/vc-multivalue/composables/useMultivalueInput";
+import { useMultivalueColor } from "@ui/components/molecules/vc-multivalue/composables/useMultivalueColor";
+import { useMultivalueDropdown } from "@ui/components/molecules/vc-multivalue/composables/useMultivalueDropdown";
+import { useMultivalueOptions } from "@ui/components/molecules/vc-multivalue/composables/useMultivalueOptions";
+import type { IFormFieldProps } from "@ui/types";
 
-export interface Props<T> {
+export interface Props<T> extends IFormFieldProps {
   placeholder?: string;
   modelValue?: T[];
-  required?: boolean;
-  disabled?: boolean;
   type?: MultivalueType;
-  label?: string;
-  tooltip?: string;
-  name?: string;
   hint?: string;
   options?: T[];
   optionValue?: string;
   optionLabel?: string;
   multivalue?: boolean;
-  error?: boolean;
-  errorMessage?: string;
   multilanguage?: boolean;
   currentLanguage?: string;
   loading?: boolean;
@@ -204,18 +198,8 @@ defineSlots<{
   append: (props: any) => any;
 }>();
 
-// --- Accessibility IDs ---
-const uid = useId();
-const labelId = computed(() => `vc-multivalue-${uid}-label`);
-const errorId = computed(() => `vc-multivalue-${uid}-error`);
-const hintId = computed(() => `vc-multivalue-${uid}-hint`);
-const listboxId = computed(() => `vc-multivalue-${uid}-listbox`);
-const ariaDescribedBy = computed(() => {
-  const ids: string[] = [];
-  if (props.error && props.errorMessage) ids.push(errorId.value);
-  if (props.hint) ids.push(hintId.value);
-  return ids.length ? ids.join(" ") : undefined;
-});
+const { fieldId, labelId, errorId, hintId, invalid, resolvedDisabled, ariaDescribedBy } = useFormField(props);
+const listboxId = computed(() => `${fieldId.value}-listbox`);
 
 // --- Sub-component refs ---
 const triggerComponentRef = ref<InstanceType<typeof MultivalueTrigger> | null>(null);
@@ -329,12 +313,12 @@ function onSearch(event: Event) {
 
   // Error — reuse select tokens
   --multivalue-border-color-error: var(--select-border-color-error, var(--danger-500));
-  --multivalue-error-ring-color: var(--select-error-ring-color, rgba(239, 68, 68, 0.2));
+  --multivalue-error-ring-color: var(--select-error-ring-color, var(--danger-100));
   --multivalue-hint-color: var(--danger-500);
 
   // Focus — reuse select tokens
   --multivalue-border-color-focus: var(--select-border-color-focus, var(--primary-500));
-  --multivalue-focus-ring-color: var(--select-focus-ring-color, rgba(59, 130, 246, 0.3));
+  --multivalue-focus-ring-color: var(--select-focus-ring-color, var(--primary-100));
 
   // Disabled
   --multivalue-disabled-text-color: var(--neutrals-500);
@@ -528,7 +512,7 @@ function onSearch(event: Event) {
 
   // Color square
   &__color-square {
-    @apply tw-w-5 tw-h-5 tw-rounded tw-border tw-border-solid tw-border-[color:var(--neutrals-300)]
+    @apply tw-w-5 tw-h-5 tw-rounded tw-border tw-border-solid tw-border-neutrals-300
       tw-cursor-pointer tw-mr-2 tw-flex-shrink-0 tw-relative;
   }
 

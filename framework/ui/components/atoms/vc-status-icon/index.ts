@@ -1,1 +1,1 @@
-export { default as VcStatusIcon } from "./vc-status-icon.vue";
+export { default as VcStatusIcon } from "@ui/components/atoms/vc-status-icon/vc-status-icon.vue";

@@ -9,6 +9,7 @@
   >
     <!-- Trigger -->
     <div
+      ref="triggerRef"
       class="vc-menu-item__trigger"
       @click.stop="handleTriggerClick"
     >
@@ -18,7 +19,7 @@
             <VcIcon
               v-if="icon"
               :icon="icon"
-              size="l"
+              :custom-size="16"
               class="vc-menu-item__icon"
             />
             <VcImage
@@ -33,7 +34,19 @@
             <p class="vc-menu-item__title">{{ title }}</p>
           </slot>
 
-          <slot name="additional" />
+          <slot name="additional">
+            <span
+              v-if="value"
+              class="vc-menu-item__value"
+            >{{ value }}</span>
+          </slot>
+
+          <VcIcon
+            v-if="showChevron"
+            icon="fas fa-chevron-right"
+            size="xs"
+            class="vc-menu-item__chevron"
+          />
         </div>
       </slot>
     </div>
@@ -44,8 +57,8 @@
 </template>
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
-import { Component } from "vue";
-import { VcIcon, VcImage } from "../../../ui/components";
+import { Component, ref } from "vue";
+import { VcIcon, VcImage } from "@ui/components";
 
 interface Props {
   title?: string;
@@ -56,6 +69,8 @@ interface Props {
   disabled?: boolean;
   isVisible?: boolean;
   triggerAction?: "click" | "hover" | "none";
+  value?: string;
+  showChevron?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -76,10 +91,14 @@ const emit = defineEmits<{
   (e: "trigger:hover"): void;
 }>();
 
+const triggerRef = ref<HTMLElement | null>(null);
+
 const handleTriggerClick = () => {
   if (props.disabled || props.triggerAction === "none") return;
   emit("trigger:click");
 };
+
+defineExpose({ triggerRef });
 </script>
 
 <style lang="scss">
@@ -87,24 +106,26 @@ const handleTriggerClick = () => {
   --menu-item-text-color: var(--additional-950);
   --menu-item-border-color: var(--neutrals-200);
   --menu-item-bg: transparent;
-  --menu-item-bg-hover: var(--primary-50);
-  --menu-item-icon-color-hover: var(--primary-700);
-  --menu-item-bg-active: var(--primary-50);
+  --menu-item-bg-hover: var(--neutrals-100);
+  --menu-item-icon-color: var(--neutrals-600);
+  --menu-item-bg-active: var(--neutrals-100);
+  --menu-item-value-color: var(--neutrals-500);
+  --menu-item-chevron-color: var(--neutrals-400);
 }
 
 .vc-menu-item {
   @apply tw-flex tw-flex-col;
 
   &__trigger {
-    @apply tw-p-3 tw-text-sm tw-text-[color:var(--menu-item-text-color)]
-      tw-border-solid tw-border-b tw-border-b-[color:var(--menu-item-border-color)]
-      tw-bg-[color:var(--menu-item-bg)] tw-flex tw-flex-row tw-items-center;
+    @apply tw-mx-1 tw-px-2 tw-py-[7px] tw-rounded-md tw-text-sm tw-text-[color:var(--menu-item-text-color)]
+      tw-bg-[color:var(--menu-item-bg)] tw-flex tw-flex-row tw-items-center
+      tw-transition-colors tw-duration-150;
   }
 
   &--clickable {
     @apply tw-cursor-pointer;
 
-    &:hover {
+    .vc-menu-item__trigger:hover {
       @apply tw-bg-[color:var(--menu-item-bg-hover)];
     }
   }
@@ -114,27 +135,33 @@ const handleTriggerClick = () => {
   }
 
   &--active {
-    @apply tw-bg-[color:var(--menu-item-bg-active)];
-  }
-
-  &:last-of-type {
-    @apply tw-border-b-0;
+    .vc-menu-item__trigger {
+      @apply tw-bg-[color:var(--menu-item-bg-active)];
+    }
   }
 
   &__content {
-    @apply tw-flex tw-items-center tw-w-full;
+    @apply tw-flex tw-items-center tw-w-full tw-gap-2;
   }
 
   &__icon {
-    @apply tw-w-6 tw-mr-3 tw-text-[color:var(--menu-item-icon-color)] tw-text-[16px];
+    @apply tw-shrink-0 tw-text-[color:var(--menu-item-icon-color)];
   }
 
   &__image {
-    @apply tw-w-6 tw-h-6 tw-mr-3;
+    @apply tw-w-4 tw-h-4 tw-shrink-0 tw-object-contain;
   }
 
   &__title {
-    @apply tw-flex-grow;
+    @apply tw-flex-grow tw-truncate;
+  }
+
+  &__value {
+    @apply tw-text-[color:var(--menu-item-value-color)] tw-text-xs tw-shrink-0 tw-ml-auto;
+  }
+
+  &__chevron {
+    @apply tw-text-[color:var(--menu-item-chevron-color)] tw-text-[10px] tw-shrink-0 tw-ml-1;
   }
 }
 </style>

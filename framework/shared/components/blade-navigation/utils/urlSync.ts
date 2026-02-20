@@ -1,5 +1,5 @@
 import type { Router } from "vue-router";
-import type { BladeDescriptor, IBladeStack, ParsedBladeUrl } from "../types";
+import type { BladeDescriptor, IBladeStack, ParsedBladeUrl } from "@shared/components/blade-navigation/types";
 
 /**
  * Build a URL path from the current blade stack.

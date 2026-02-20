@@ -12,9 +12,9 @@ import {
   VcStatus,
   VcPagination,
   VcInputCurrency,
-} from "./../../../../ui/components";
-import { IActionBuilderResult, ITableColumns, IValidationRules, MenuItemConfig } from "../../../../core/types";
-import type { ComponentProps } from "./../../../utilities/vueUtils";
+} from "@ui/components";
+import { IActionBuilderResult, ITableColumns, IValidationRules, MenuItemConfig } from "@core/types";
+import type { ComponentProps } from "@shared/utilities/vueUtils";
 
 export type KeysOfUnion<T> = T extends T ? keyof T : never;
 

@@ -109,9 +109,9 @@
 
 <script lang="ts" setup>
 import { ref, isRef, toValue } from "vue";
-import { VcIcon } from "../../../../atoms";
-import type { IBladeToolbar } from "../../../../../../core/types";
-import { resolveReactiveBoolean } from "../../utils";
+import { VcIcon } from "@ui/components/atoms";
+import type { IBladeToolbar } from "@core/types";
+import { resolveReactiveBoolean } from "@ui/components/organisms/vc-blade/utils";
 
 const props = defineProps<{
   items: IBladeToolbar[];

@@ -1,7 +1,7 @@
 import { mergeProps } from "vue";
-import { Content, InternalNotificationOptions, NotificationOptions, NotificationPosition } from "../types";
-import { useContainer } from "../composables/useContainer";
-import { createLogger } from "../../../../core/utilities";
+import { Content, InternalNotificationOptions, NotificationOptions, NotificationPosition } from "@shared/components/notifications/types";
+import { useContainer } from "@shared/components/notifications/composables/useContainer";
+import { createLogger } from "@core/utilities";
 
 const logger = createLogger("notification");
 

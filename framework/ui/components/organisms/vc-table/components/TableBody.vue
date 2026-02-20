@@ -59,7 +59,7 @@ const hasContent = computed(() => {
 
 .vc-table-composition__empty,
 .vc-table-composition__loading {
-  @apply tw-flex tw-items-center tw-justify-center tw-py-8 tw-text-[color:var(--neutrals-400)];
+  @apply tw-flex tw-items-center tw-justify-center tw-py-8 tw-text-neutrals-400;
 }
 
 .vc-table-composition__loading-spinner {

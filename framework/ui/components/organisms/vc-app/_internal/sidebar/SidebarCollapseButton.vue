@@ -4,18 +4,16 @@
     @click="$emit('click')"
   >
     <div class="sidebar-collapse-button__wrap">
-      <Transition name="rotate">
-        <VcIcon
-          class="sidebar-collapse-button__icon"
-          :icon="collapsed ? 'lucide-chevron-right' : 'lucide-chevron-left'"
-        />
-      </Transition>
+      <VcIcon
+        class="sidebar-collapse-button__icon"
+        :icon="collapsed ? 'lucide-chevron-right' : 'lucide-chevron-left'"
+      />
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { VcIcon } from "../../../../";
+import { VcIcon } from "@ui/components";
 
 defineProps<{
   collapsed?: boolean;
@@ -45,14 +43,5 @@ defineEmits<{
   &__icon {
     color: var(--app-bar-button);
   }
-}
-
-.rotate-enter-active,
-.rotate-leave-active {
-  transition: transform var(--app-bar-hover-transition-duration) var(--app-bar-hover-transition-timing-function);
-}
-
-.rotate-180 {
-  transform: rotate(180deg);
 }
 </style>

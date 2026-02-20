@@ -1,7 +1,7 @@
 import { ComputedRef, PropType, ToRefs, UnwrapNestedRefs, VNode } from "vue";
-import { DetailsBladeContext } from "../../factories";
-import { IControlBaseProps } from "../../types/models";
-import { ControlSchema } from "../../types";
+import { DetailsBladeContext } from "@shared/modules/dynamic/factories";
+import { IControlBaseProps } from "@shared/modules/dynamic/types/models";
+import { ControlSchema } from "@shared/modules/dynamic/types";
 
 export default {
   baseProps: {

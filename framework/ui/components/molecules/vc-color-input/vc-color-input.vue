@@ -3,8 +3,8 @@
     class="vc-color-input"
     :class="[
       {
-        'vc-color-input_error': error,
-        'vc-color-input_disabled': disabled,
+        'vc-color-input_error': invalid,
+        'vc-color-input_disabled': resolvedDisabled,
         'vc-color-input_focused': isFocused,
       },
     ]"
@@ -17,7 +17,7 @@
       :required="required"
       :multilanguage="multilanguage"
       :current-language="currentLanguage"
-      :error="error"
+      :error="invalid"
     >
       <span>{{ label }}</span>
       <template
@@ -42,10 +42,10 @@
             v-model="textValue"
             :placeholder="placeholder"
             type="text"
-            :disabled="disabled"
+            :disabled="resolvedDisabled"
             :name="name"
             :autofocus="autofocus"
-            :aria-invalid="error || undefined"
+            :aria-invalid="invalid || undefined"
             :aria-describedby="ariaDescribedBy"
             :aria-labelledby="label ? labelId : undefined"
             class="vc-color-input__input"
@@ -57,13 +57,12 @@
 
           <!-- Color picker swatch -->
           <div class="vc-color-input__color-container">
-            <div
+            <button
+              type="button"
               class="vc-color-input__color-square"
               :style="{ backgroundColor: colorValue || '#ffffff' }"
-              tabindex="0"
+              :aria-label="`Pick color${colorValue ? ': ' + colorValue : ''}`"
               @click="openColorPicker"
-              @keydown.enter="openColorPicker"
-              @keydown.space="openColorPicker"
             >
               <!-- Hidden native color input -->
               <input
@@ -71,24 +70,25 @@
                 type="color"
                 :value="colorValue"
                 class="vc-color-input__color-picker-hidden"
+                tabindex="-1"
+                aria-hidden="true"
                 @change="handleColorPickerChange"
               />
-            </div>
+            </button>
           </div>
 
-          <div
+          <button
             v-if="clearable && textValue && !disabled"
+            type="button"
             class="vc-color-input__clear"
-            tabindex="0"
+            aria-label="Clear color"
             @click="onReset"
-            @keydown.enter="onReset"
-            @keydown.space="onReset"
           >
             <VcIcon
               size="xs"
               icon="lucide-x"
             ></VcIcon>
-          </div>
+          </button>
         </div>
 
         <div
@@ -113,6 +113,7 @@
           v-if="errorMessage"
           :id="errorId"
           class="vc-color-input__hint-error"
+          :error="true"
           >{{ errorMessage }}</VcHint
         >
       </div>
@@ -130,27 +131,14 @@
 
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
-import { computed, ref, useId, watch, nextTick } from "vue";
-import { VcLabel, VcIcon, VcHint } from "./../../";
-import { convertColorNameToHex, isValidHexColor, normalizeHexColor } from "../../../../shared/utilities";
+import { ref, watch, nextTick } from "vue";
+import { useFormField } from "@ui/composables/useFormField";
+import { VcLabel, VcIcon, VcHint } from "@ui/components";
+import { convertColorNameToHex, isValidHexColor, normalizeHexColor } from "@shared/utilities";
+import type { ITextFieldProps } from "@ui/types";
 
-export interface VcColorInputProps {
+export interface VcColorInputProps extends ITextFieldProps {
   modelValue?: string | null;
-  label?: string;
-  placeholder?: string;
-  hint?: string;
-  disabled?: boolean;
-  error?: boolean;
-  errorMessage?: string;
-  required?: boolean;
-  clearable?: boolean;
-  loading?: boolean;
-  autofocus?: boolean;
-  size?: "default" | "small";
-  tooltip?: string;
-  multilanguage?: boolean;
-  currentLanguage?: string;
-  name?: string;
 }
 
 export interface VcColorInputEmits {
@@ -166,19 +154,7 @@ const props = withDefaults(defineProps<VcColorInputProps>(), {
 
 const emit = defineEmits<VcColorInputEmits>();
 
-// Accessibility IDs
-const uid = useId();
-const inputId = computed(() => `vc-color-input-${uid}`);
-const labelId = computed(() => `vc-color-input-${uid}-label`);
-const hintId = computed(() => `vc-color-input-${uid}-hint`);
-const errorId = computed(() => `vc-color-input-${uid}-error`);
-
-const ariaDescribedBy = computed(() => {
-  const ids: string[] = [];
-  if (props.error && props.errorMessage) ids.push(errorId.value);
-  if (props.hint) ids.push(hintId.value);
-  return ids.length ? ids.join(" ") : undefined;
-});
+const { fieldId: inputId, labelId, errorId, hintId, invalid, resolvedDisabled, ariaDescribedBy } = useFormField(props);
 
 // State
 const isFocused = ref(false);
@@ -295,8 +271,13 @@ defineExpose({ focus });
   --input-text-color-error: var(--danger-500);
   --input-border-color-error: var(--danger-500);
   --input-border-color-focus: var(--primary-500);
-  --input-focus-ring-color: rgba(59, 130, 246, 0.3);
-  --input-error-ring-color: rgba(239, 68, 68, 0.2);
+  --input-focus-ring-color: var(--primary-100);
+  --input-error-ring-color: var(--danger-100);
+
+  --color-input-swatch-size: 20px;
+  --color-input-swatch-border-radius: 4px;
+  --color-input-swatch-border-color: var(--neutrals-300);
+  --color-input-swatch-border-color-hover: var(--neutrals-400);
 }
 
 .vc-color-input {
@@ -342,10 +323,15 @@ defineExpose({ focus });
   }
 
   &__color-square {
-    @apply tw-w-5 tw-h-5 tw-rounded tw-border tw-border-solid tw-border-gray-300 tw-cursor-pointer tw-flex tw-items-center tw-justify-center tw-ml-2;
+    @apply tw-cursor-pointer tw-flex tw-items-center tw-justify-center tw-ml-2
+      tw-border tw-border-solid tw-bg-transparent tw-p-0 tw-outline-none;
+    width: var(--color-input-swatch-size);
+    height: var(--color-input-swatch-size);
+    border-radius: var(--color-input-swatch-border-radius);
+    border-color: var(--color-input-swatch-border-color);
 
     &:hover {
-      @apply tw-border-gray-400;
+      border-color: var(--color-input-swatch-border-color-hover);
     }
 
     &:focus-visible {
@@ -359,7 +345,8 @@ defineExpose({ focus });
 
   &__clear {
     @apply tw-cursor-pointer tw-pl-3 tw-text-[color:var(--input-clear-color)]
-      hover:tw-text-[color:var(--input-clear-color-hover)] tw-flex tw-items-center;
+      hover:tw-text-[color:var(--input-clear-color-hover)] tw-flex tw-items-center
+      tw-border-none tw-bg-transparent tw-outline-none tw-p-0;
   }
 
   &__loading {
@@ -371,7 +358,7 @@ defineExpose({ focus });
   }
 
   &__hint-error {
-    @apply tw-mt-1 [--hint-color:var(--input-text-color-error)];
+    @apply tw-mt-1 [--hint-error-color:var(--input-text-color-error)];
   }
 
   &__desc {

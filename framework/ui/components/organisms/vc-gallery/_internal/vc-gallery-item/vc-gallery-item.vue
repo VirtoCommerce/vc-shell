@@ -76,8 +76,8 @@
 <script lang="ts" setup>
 import { ref } from "vue";
 import { vOnClickOutside } from "@vueuse/components";
-import { ICommonAsset } from "./../../../../../../core/types";
-import { VcImage, VcIcon } from "./../../../../";
+import { ICommonAsset } from "@core/types";
+import { VcImage, VcIcon } from "@ui/components";
 import { useI18n } from "vue-i18n";
 
 export interface Props {

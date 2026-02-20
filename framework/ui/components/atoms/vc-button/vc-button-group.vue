@@ -9,7 +9,7 @@
 
 <script lang="ts" setup>
 import { computed, provide, toRef } from "vue";
-import { ButtonGroupKey, type ButtonSize } from "./types";
+import { ButtonGroupKey, type ButtonSize } from "@ui/components/atoms/vc-button/types";
 
 export interface Props {
   orientation?: "horizontal" | "vertical";

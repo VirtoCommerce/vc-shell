@@ -1,1 +1,1 @@
-export { default as VcTooltip } from "./vc-tooltip.vue";
+export { default as VcTooltip } from "@ui/components/atoms/vc-tooltip/vc-tooltip.vue";

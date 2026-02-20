@@ -1,1 +1,1 @@
-export { default as LogoutButton } from "./logout-button.vue";
+export { default as LogoutButton } from "@shared/components/logout-button/logout-button.vue";

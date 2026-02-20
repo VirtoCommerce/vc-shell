@@ -1,10 +1,10 @@
 import * as veeValidate from "vee-validate";
-import { i18n } from "../plugins/i18n";
+import { i18n } from "@core/plugins/i18n";
 import { setLocale as setVeeI18nLocale, localize } from "@vee-validate/i18n";
 import { useLocalStorage } from "@vueuse/core";
 import { ComputedRef, computed } from "vue";
 import ISO6391 from "iso-639-1";
-import { languageToCountryMap } from "../constants";
+import { languageToCountryMap } from "@core/constants";
 
 export interface ILanguageService {
   setLocale: (locale: string) => void;

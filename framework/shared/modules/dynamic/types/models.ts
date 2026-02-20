@@ -20,7 +20,7 @@ import {
   VcTable,
   VcRating,
   VcRadioButton,
-} from "../../../../ui/components";
+} from "@ui/components";
 import type { ComponentProps, ComponentEmit, ComponentSlots } from "vue-component-type-helpers";
 
 type FromGenericEventsToProps<T extends Record<string, any>> =
@@ -67,6 +67,7 @@ export type ControlTypeWithSlots = Extract<
 >;
 export type ControlTypeCtr = Extract<ControlType, ISelectField | IInputField | IInputCurrency | IEditorField>;
 
+/** @deprecated Legacy dynamic module interface. New components should use IFormFieldProps / ITextFieldProps from @ui/types/form-field. */
 export interface IControlBaseProps {
   key?: string | number | symbol;
   rules?: Record<string, unknown>;

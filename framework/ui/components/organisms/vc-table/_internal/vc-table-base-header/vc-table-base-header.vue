@@ -71,8 +71,8 @@
 </template>
 
 <script lang="ts" setup>
-import VcTableFilter from "./../vc-table-filter/vc-table-filter.vue";
-import { VcInput } from "./../../../../molecules";
+import VcTableFilter from "@ui/components/organisms/vc-table/_internal/vc-table-filter/vc-table-filter.vue";
+import { VcInput } from "@ui/components/molecules";
 
 export interface Props {
   searchValue?: string;

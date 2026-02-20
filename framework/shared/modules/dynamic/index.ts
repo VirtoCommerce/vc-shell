@@ -1,14 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import * as pages from "./pages";
+import * as pages from "@shared/modules/dynamic/pages";
 import { App, Component, SetupContext, defineComponent, watch } from "vue";
-import { DynamicSchema, OverridesSchema } from "./types";
+import { DynamicSchema, OverridesSchema } from "@shared/modules/dynamic/types";
 import * as _ from "lodash-es";
-import { handleOverrides } from "./helpers/override";
+import { handleOverrides } from "@shared/modules/dynamic/helpers/override";
 import { reactiveComputed } from "@vueuse/core";
-import { kebabToPascal } from "../../../core/utilities";
-import { BladeInstanceConstructor, notification } from "../../index";
-import { createAppModule } from "../../../core/plugins";
-import { ComponentProps } from "./../../utilities/vueUtils";
+import { kebabToPascal } from "@core/utilities";
+import { BladeInstanceConstructor, notification } from "@shared";
+import { createAppModule } from "@core/plugins";
+import { ComponentProps } from "@shared/utilities/vueUtils";
 import { Router } from "vue-router";
 
 interface Registered {
@@ -307,7 +307,7 @@ export function createDynamicAppModule(args: {
   };
 }
 
-export * from "./factories";
-export * from "./types";
-export * from "./pages";
-export { useDynamicViewsUtils } from "./composables";
+export * from "@shared/modules/dynamic/factories";
+export * from "@shared/modules/dynamic/types";
+export * from "@shared/modules/dynamic/pages";
+export { useDynamicViewsUtils } from "@shared/modules/dynamic/composables";

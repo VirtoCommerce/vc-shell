@@ -1,11 +1,11 @@
 import { ExtractPropTypes, h, VNode, Component, toValue } from "vue";
-import { InputField } from "../factories";
-import componentProps from "./props";
-import ValidationField from "./ValidationField";
-import { InputSchema, ControlSchema } from "../../types";
-import { nodeBuilder } from "../../helpers/nodeBuilder";
-import { unrefNested } from "../../helpers/unrefNested";
-import { methodHandler } from "../../helpers/methodHandler";
+import { InputField } from "@shared/modules/dynamic/components/factories";
+import componentProps from "@shared/modules/dynamic/components/fields/props";
+import ValidationField from "@shared/modules/dynamic/components/fields/ValidationField";
+import { InputSchema, ControlSchema } from "@shared/modules/dynamic/types";
+import { nodeBuilder } from "@shared/modules/dynamic/helpers/nodeBuilder";
+import { unrefNested } from "@shared/modules/dynamic/helpers/unrefNested";
+import { methodHandler } from "@shared/modules/dynamic/helpers/methodHandler";
 
 const slotsMap = {
   append: "append",

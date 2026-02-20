@@ -1,1 +1,1 @@
-export { default as VcDatePicker } from "./vc-date-picker.vue";
+export { default as VcDatePicker } from "@ui/components/molecules/vc-date-picker/vc-date-picker.vue";

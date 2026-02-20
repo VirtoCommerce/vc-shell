@@ -1,1 +1,1 @@
-export * from "./login";
+export * from "@shared/pages/LoginPage/components/login";

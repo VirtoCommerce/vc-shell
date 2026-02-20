@@ -8,7 +8,7 @@
  * Inspired by PrimeVue's processedData computed pattern.
  */
 import { computed, type Ref, type ComputedRef } from "vue";
-import type { SortMeta } from "../types";
+import type { SortMeta } from "@ui/components/organisms/vc-table/types";
 
 export interface UseDataProcessingOptions<T> {
   /** Source data items */

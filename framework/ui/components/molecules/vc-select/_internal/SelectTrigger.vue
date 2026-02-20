@@ -220,7 +220,7 @@
 
 <script lang="ts" setup>
 import { ref } from "vue";
-import { VcHint, VcIcon } from "./../../../";
+import { VcHint, VcIcon } from "@ui/components";
 import { useI18n } from "vue-i18n";
 
 defineProps<{

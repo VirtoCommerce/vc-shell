@@ -24,7 +24,7 @@
 
 <script setup lang="ts">
 import { Field } from "vee-validate";
-import VcTooltip from "../../../../atoms/vc-tooltip/vc-tooltip.vue";
+import VcTooltip from "@ui/components/atoms/vc-tooltip/vc-tooltip.vue";
 
 defineProps<{
   /** Label for the editable field (used for validation) */
@@ -41,7 +41,7 @@ defineProps<{
 <style lang="scss">
 .vc-table-cell-editable {
   &__error-tooltip {
-    @apply tw-text-[color:var(--danger-500)];
+    @apply tw-text-danger-500;
   }
 }
 </style>

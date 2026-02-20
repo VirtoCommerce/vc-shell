@@ -44,7 +44,7 @@
 
 <script lang="ts" setup>
 import { computed, ref, type PropType } from "vue";
-import { VcDropdown, VcImage } from "../../../ui/components";
+import { VcDropdown, VcImage } from "@ui/components";
 import { useI18n } from "vue-i18n";
 
 type LanguageOption = {

@@ -51,7 +51,7 @@
 
 <script setup lang="ts">
 import { computed, ref } from "vue";
-import { VcIcon } from "../../../atoms";
+import { VcIcon } from "@ui/components/atoms";
 
 const props = defineProps<{
   /**

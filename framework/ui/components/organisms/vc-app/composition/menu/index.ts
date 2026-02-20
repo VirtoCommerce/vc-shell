@@ -1,6 +1,6 @@
-export { default as VcAppMenu } from "../../_internal/menu/VcAppMenu.vue";
-export { default as VcAppMenuGroup } from "../../_internal/menu/VcAppMenuGroup.vue";
-export { default as VcAppMenuItem } from "../../_internal/menu/VcAppMenuItem.vue";
+export { default as VcAppMenu } from "@ui/components/organisms/vc-app/_internal/menu/VcAppMenu.vue";
+export { default as VcAppMenuGroup } from "@ui/components/organisms/vc-app/_internal/menu/VcAppMenuGroup.vue";
+export { default as VcAppMenuItem } from "@ui/components/organisms/vc-app/_internal/menu/VcAppMenuItem.vue";
 
-export { useMenuActiveState, stripTenantPrefix } from "../../_internal/menu/composables/useMenuActiveState";
-export { useBadge } from "../../_internal/menu/composables/useBadge";
+export { useMenuActiveState, stripTenantPrefix } from "@ui/components/organisms/vc-app/_internal/menu/composables/useMenuActiveState";
+export { useBadge } from "@ui/components/organisms/vc-app/_internal/menu/composables/useBadge";

@@ -29,7 +29,18 @@
           :aria-label="ariaDialogLabel"
           :aria-labelledby="ariaDialogLabelledBy"
           tabindex="-1"
+          @touchstart="handleTouchStart"
+          @touchmove="handleTouchMove"
+          @touchend="handleTouchEnd"
         >
+          <!-- Drag handle for bottom sheet -->
+          <div
+            v-if="dragHandle && isBottom"
+            class="vc-sidebar__handle"
+          >
+            <div class="vc-sidebar__handle-bar" />
+          </div>
+
           <slot
             v-if="hasHeader"
             name="header"
@@ -91,8 +102,8 @@
 
 <script lang="ts" setup>
 import { computed, nextTick, onBeforeUnmount, ref, useSlots, watch } from "vue";
-import { VcIcon } from "../../atoms/vc-icon";
-import { useTeleportTarget } from "../../../composables";
+import { VcIcon } from "@ui/components/atoms/vc-icon";
+import { useTeleportTarget } from "@ui/composables";
 
 export type SidebarCloseReason = "overlay" | "escape" | "action";
 export type SidebarPosition = "left" | "right" | "bottom";
@@ -191,6 +202,12 @@ export interface Props {
   closeButton?: boolean;
   inset?: boolean;
   zIndex?: number;
+  /** Enable swipe-to-dismiss gesture (only for position="bottom") */
+  draggable?: boolean;
+  /** Show iOS-style drag handle bar at top of panel */
+  dragHandle?: boolean;
+  /** Fraction of panel height user must swipe to trigger close (0-1) */
+  closeThreshold?: number;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -214,6 +231,9 @@ const props = withDefaults(defineProps<Props>(), {
   closeButton: true,
   inset: true,
   zIndex: 10_000,
+  draggable: false,
+  dragHandle: false,
+  closeThreshold: 0.3,
 });
 
 const emit = defineEmits<{
@@ -298,6 +318,7 @@ const panelClasses = computed(() => [
     "vc-sidebar__panel--with-header": hasHeader.value,
     "vc-sidebar__panel--with-footer": hasFooter.value,
     "vc-sidebar__panel--inset": props.inset && !isFullSize.value,
+    "vc-sidebar__panel--draggable": props.draggable && isBottom.value,
   },
 ]);
 
@@ -323,6 +344,55 @@ function handleOverlayClick() {
   }
 
   closeByReason("overlay");
+}
+
+// --- Swipe-to-dismiss gesture (bottom position only) ---
+const touchStartY = ref(0);
+const isDragging = ref(false);
+
+function handleTouchStart(event: TouchEvent) {
+  if (!props.draggable || !isBottom.value) return;
+  touchStartY.value = event.touches[0].clientY;
+  isDragging.value = true;
+}
+
+function handleTouchMove(event: TouchEvent) {
+  if (!isDragging.value || !panelEl.value) return;
+
+  const delta = event.touches[0].clientY - touchStartY.value;
+
+  // Only allow dragging downward (positive delta)
+  if (delta > 0) {
+    panelEl.value.style.transform = `translateY(${delta}px)`;
+    panelEl.value.style.transition = "none";
+  }
+}
+
+function handleTouchEnd(event: TouchEvent) {
+  if (!isDragging.value || !panelEl.value) return;
+  isDragging.value = false;
+
+  const delta = event.changedTouches[0].clientY - touchStartY.value;
+  const panelHeight = panelEl.value.offsetHeight;
+  const threshold = panelHeight * props.closeThreshold;
+
+  if (delta > threshold) {
+    // Animate out then close
+    panelEl.value.style.transition = "transform 0.2s ease";
+    panelEl.value.style.transform = `translateY(${panelHeight}px)`;
+    setTimeout(() => {
+      closeByReason("action");
+    }, 200);
+  } else {
+    // Snap back
+    panelEl.value.style.transition = "transform 0.2s ease";
+    panelEl.value.style.transform = "";
+    setTimeout(() => {
+      if (panelEl.value) {
+        panelEl.value.style.transition = "";
+      }
+    }, 200);
+  }
 }
 
 function getFocusableElements() {
@@ -461,6 +531,13 @@ watch(
   () => props.modelValue,
   (opened) => {
     if (opened) {
+      // Reset any leftover drag transform when re-opening
+      nextTick(() => {
+        if (panelEl.value) {
+          panelEl.value.style.transform = "";
+          panelEl.value.style.transition = "";
+        }
+      });
       activateSideEffects();
       return;
     }
@@ -521,7 +598,7 @@ defineExpose({
       @apply tw-left-0 tw-right-0 tw-bottom-0 tw-top-auto;
       border-radius: var(--vc-sidebar-radius) var(--vc-sidebar-radius) 0 0;
       border-bottom-width: 0;
-      width: 100vw;
+      max-height: 96dvh;
     }
 
     &--size-full {
@@ -549,12 +626,16 @@ defineExpose({
       border-color: color-mix(in srgb, var(--neutrals-200) 86%, white 14%);
     }
 
+    &--draggable {
+      touch-action: none;
+    }
+
     &:focus {
       outline: none;
     }
 
     &:focus-visible {
-      @apply tw-ring-2 tw-ring-[color:var(--primary-500)] tw-ring-offset-2;
+      @apply tw-ring-2 tw-ring-primary-500 tw-ring-offset-2;
     }
   }
 
@@ -612,12 +693,25 @@ defineExpose({
     @apply tw-text-[color:var(--vc-sidebar-close-color)];
 
     &:hover {
-      @apply tw-bg-[color:var(--neutrals-200)];
+      @apply tw-bg-neutrals-200;
     }
 
     &:focus-visible {
-      @apply tw-outline-none tw-ring-2 tw-ring-[color:var(--primary-500)] tw-ring-offset-1;
+      @apply tw-outline-none tw-ring-2 tw-ring-primary-500 tw-ring-offset-1;
     }
+  }
+
+  &__handle {
+    @apply tw-flex tw-justify-center tw-py-3 tw-cursor-grab tw-shrink-0;
+
+    &:active {
+      @apply tw-cursor-grabbing;
+    }
+  }
+
+  &__handle-bar {
+    @apply tw-w-[100px] tw-h-1.5 tw-rounded-full;
+    background: var(--neutrals-300);
   }
 
   &__content {
@@ -648,12 +742,15 @@ defineExpose({
 .vc-sidebar-panel-right-enter-active,
 .vc-sidebar-panel-right-leave-active,
 .vc-sidebar-panel-left-enter-active,
-.vc-sidebar-panel-left-leave-active,
-.vc-sidebar-panel-bottom-enter-active,
-.vc-sidebar-panel-bottom-leave-active {
+.vc-sidebar-panel-left-leave-active {
   transition:
     transform 0.28s cubic-bezier(0.2, 0.8, 0.2, 1),
     opacity 0.22s ease;
+}
+
+.vc-sidebar-panel-bottom-enter-active,
+.vc-sidebar-panel-bottom-leave-active {
+  transition: transform 0.32s cubic-bezier(0.32, 0.72, 0, 1);
 }
 
 .vc-sidebar-panel-right-enter-from,
@@ -670,8 +767,7 @@ defineExpose({
 
 .vc-sidebar-panel-bottom-enter-from,
 .vc-sidebar-panel-bottom-leave-to {
-  transform: translateY(24px);
-  opacity: 0;
+  transform: translateY(100%);
 }
 
 @media (prefers-reduced-motion: reduce) {

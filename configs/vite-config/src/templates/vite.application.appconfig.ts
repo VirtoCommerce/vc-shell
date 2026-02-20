@@ -1,6 +1,6 @@
 import vue from "@vitejs/plugin-vue";
 import * as fs from "node:fs";
-import { loadEnv, defineConfig, ProxyOptions, type PluginOption } from "vite";
+import { loadEnv, defineConfig, ProxyOptions, type PluginOption, normalizePath } from "vite";
 import mkcert from "vite-plugin-mkcert";
 import path from "node:path";
 import { checker } from "vite-plugin-checker";
@@ -34,6 +34,13 @@ const workspaceRoot = isMonorepo ? path.resolve(process.cwd(), "../../") : proce
 const frameworkPath = isMonorepo
   ? path.resolve(workspaceRoot, "framework")
   : path.resolve(process.cwd(), "node_modules/@vc-shell/framework");
+const normalizedFrameworkPath = normalizePath(frameworkPath);
+const frameworkIndexPath = normalizePath(path.resolve(frameworkPath, "index.ts"));
+const frameworkCorePath = `${normalizedFrameworkPath}/core`;
+const frameworkUiPath = `${normalizedFrameworkPath}/ui`;
+const frameworkSharedPath = `${normalizedFrameworkPath}/shared`;
+const frameworkAssetsPath = `${normalizedFrameworkPath}/assets`;
+const frameworkLocalesPath = `${normalizedFrameworkPath}/locales`;
 
 const appBasePath = process.env.APP_BASE_PATH || "/";
 const appBasePathWithSlash = appBasePath.endsWith("/") ? appBasePath : `${appBasePath}/`;
@@ -88,21 +95,37 @@ if (process.env.APP_PLATFORM_URL) {
   });
 }
 
+let frameworkAliases: Record<string, string> | undefined;
+
+if (mode === "development" && isMonorepo) {
+  frameworkAliases = {
+    "@vc-shell/framework/dist/index.css": normalizePath(path.resolve(frameworkPath, "assets/styles/index.scss")),
+    // Keep subpath imports from framework source resolvable in app dev mode.
+    "@framework": normalizedFrameworkPath,
+    "@core": frameworkCorePath,
+    "@core/": `${frameworkCorePath}/`,
+    "@ui": frameworkUiPath,
+    "@ui/": `${frameworkUiPath}/`,
+    "@shared": frameworkSharedPath,
+    "@shared/": `${frameworkSharedPath}/`,
+    "@assets": frameworkAssetsPath,
+    "@assets/": `${frameworkAssetsPath}/`,
+    "@locales": frameworkLocalesPath,
+    "@locales/": `${frameworkLocalesPath}/`,
+    "@vc-shell/framework/": `${normalizedFrameworkPath}/`,
+    "@vc-shell/framework": frameworkIndexPath,
+  };
+} else if (mode === "development") {
+  frameworkAliases = {
+    "@vc-shell/framework/dist/index.css": "@vc-shell/framework/dist/index.css",
+  };
+}
+
 export default defineConfig({
   mode,
   resolve: {
     dedupe: ["@intlify", "vue", "@vue/runtime-core", "vue-i18n"],
-    alias:
-      mode === "development"
-        ? isMonorepo
-          ? {
-              "@vc-shell/framework/dist/index.css": path.resolve(frameworkPath, "assets/styles/index.scss"),
-              "@vc-shell/framework": path.resolve(frameworkPath, "index.ts"),
-            }
-          : {
-              "@vc-shell/framework/dist/index.css": "@vc-shell/framework/dist/index.css",
-            }
-        : undefined,
+    alias: frameworkAliases,
   },
   envPrefix: "APP_",
   base: appBasePath,

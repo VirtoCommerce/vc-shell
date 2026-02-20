@@ -65,11 +65,12 @@
 
 <script lang="ts" setup>
 import { ref, watch, computed, inject, Ref } from "vue";
-import { VcButton } from "./../../../../atoms/vc-button";
-import { VcBadge } from "./../../../../atoms/vc-badge";
-import { VcTooltip } from "./../../../../atoms/vc-tooltip";
-import { VcSidebar } from "../../../../";
-import { useFloatingPosition } from "../../../../../composables";
+import { IsMobileKey } from "@framework/injection-keys";
+import { VcButton } from "@ui/components/atoms/vc-button";
+import { VcBadge } from "@ui/components/atoms/vc-badge";
+import { VcTooltip } from "@ui/components/atoms/vc-tooltip";
+import { VcSidebar } from "@ui/components";
+import { useFloatingPosition } from "@ui/composables";
 
 export interface Props {
   title?: string;
@@ -91,7 +92,7 @@ const props = withDefaults(defineProps<Props>(), {
 const isPanelVisible = ref(false);
 const filterToggle = ref<HTMLElement | null>();
 const filterPanel = ref<HTMLElement | null>();
-const isMobile = inject("isMobile") as Ref<boolean>;
+const isMobile = inject(IsMobileKey)!;
 const sidebarWrapperComponent = computed(() => (isMobile.value ? VcSidebar : "div"));
 
 const sidebarWrapperProps = computed<Record<string, unknown>>(() => {

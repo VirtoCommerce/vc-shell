@@ -9,7 +9,13 @@
       { 'vc-widget--disabled': disabled },
       { 'vc-widget--horizontal': horizontal },
     ]"
+    role="button"
+    :tabindex="disabled ? -1 : 0"
+    :aria-disabled="disabled || undefined"
+    :aria-label="title || undefined"
     @click="onClick"
+    @keydown.enter.prevent="onClick"
+    @keydown.space.prevent="onClick"
   >
     <VcBadge
       :content="truncateCount"
@@ -23,6 +29,7 @@
           class="vc-widget__icon"
           :icon="icon"
           size="m"
+          aria-hidden="true"
         ></VcIcon>
       </div>
     </VcBadge>
@@ -39,9 +46,10 @@
 
 <script lang="ts" setup>
 import { computed, getCurrentInstance, useAttrs } from "vue";
-import { VcIcon } from "./../vc-icon";
-import { useWidgets } from "../../../../core/composables";
-import { createLogger } from "../../../../core/utilities";
+import { VcIcon } from "@ui/components/atoms/vc-icon";
+import { useWidgets } from "@core/composables";
+import { createLogger } from "@core/utilities";
+import { formatBadgeCount } from "@shared/utilities/formatBadgeCount";
 
 const logger = createLogger("vc-widget");
 
@@ -67,49 +75,48 @@ const widgetService = useWidgets();
 const actualWidgetId = computed(() => (attrs.widgetId || attrs["widget-id"]) as string | undefined);
 
 function onClick() {
-  if (!props.disabled) {
-    // Use the actualWidgetId from attrs
-    if (actualWidgetId.value && instance?.parent?.exposed) {
-      widgetService.setActiveWidget({
-        exposed: instance.parent.exposed,
-        widgetId: actualWidgetId.value,
-      });
-    } else if (!actualWidgetId.value) {
-      logger.warn("widgetId is missing from attrs. Widget activation might not work as expected.");
-    }
-    emit("click");
+  if (props.disabled) return;
+
+  if (actualWidgetId.value) {
+    // Pass exposed if available (legacy path), omit if not (trigger path)
+    widgetService.setActiveWidget({
+      widgetId: actualWidgetId.value,
+      exposed: instance?.parent?.exposed ?? null,
+    });
+  } else {
+    logger.warn("widgetId is missing from attrs. Widget activation might not work as expected.");
   }
+
+  emit("click");
 }
 
-const truncateCount = computed(() => {
-  if (
-    (typeof props.value === "string" && parseInt(props.value) > 99) ||
-    (typeof props.value === "number" && props.value > 99)
-  ) {
-    return "99+";
-  } else {
-    return props.value;
-  }
-});
+const truncateCount = computed(() => formatBadgeCount(props.value));
 </script>
 
 <style lang="scss">
 :root {
   --widget-bg-color: transparent;
-  --widget-bg-hover-color: transparent;
+  --widget-bg-hover-color: var(--neutrals-50);
   --widget-icon-color: var(--neutrals-700);
   --widget-icon-hover-color: var(--primary-600);
   --widget-icon-disabled-color: var(--neutrals-400);
   --widget-title-color: var(--neutrals-600);
   --widget-title-hover-color: var(--primary-600);
   --widget-title-disabled-color: var(--neutrals-400);
+  --widget-border-radius: 8px;
+  --widget-focus-ring-color: var(--primary-300);
 }
 
 .vc-widget {
-  @apply tw-relative tw-shrink-0 tw-px-2 tw-w-max;
+  @apply tw-relative tw-shrink-0 tw-px-2 tw-py-1.5 tw-w-max;
   @apply tw-flex tw-overflow-visible tw-box-border tw-flex-col tw-items-center tw-justify-center tw-cursor-pointer;
   @apply tw-bg-[color:var(--widget-bg-color)];
-  @apply tw-transition-colors tw-duration-200;
+  @apply tw-transition-all tw-duration-150;
+  @apply tw-rounded-[var(--widget-border-radius)];
+
+  &:focus-visible {
+    @apply tw-outline-none tw-ring-2 tw-ring-offset-1 tw-ring-[color:var(--widget-focus-ring-color)];
+  }
 
   &--horizontal {
     @apply tw-flex-row tw-gap-2;
@@ -123,7 +130,7 @@ const truncateCount = computed(() => {
     }
   }
 
-  &:hover {
+  &:hover:not(.vc-widget--disabled) {
     @apply tw-bg-[color:var(--widget-bg-hover-color)];
 
     .vc-widget__title {
@@ -140,7 +147,7 @@ const truncateCount = computed(() => {
   }
 
   &__icon {
-    @apply tw-text-[color:var(--widget-icon-color)];
+    @apply tw-text-[color:var(--widget-icon-color)] tw-transition-colors tw-duration-150;
   }
 
   &__content {
@@ -148,11 +155,12 @@ const truncateCount = computed(() => {
   }
 
   &__title {
-    @apply tw-font-medium tw-text-xs tw-text-[color:var(--widget-title-color)] tw-mt-1 tw-mx-0 tw-text-center tw-line-clamp-2;
+    @apply tw-font-medium tw-text-xs tw-text-[color:var(--widget-title-color)] tw-mt-1 tw-mx-0 tw-text-center tw-line-clamp-2
+      tw-transition-colors tw-duration-150;
   }
 
   &--disabled {
-    @apply tw-cursor-default tw-bg-[color:var(--widget-bg-color)];
+    @apply tw-cursor-default tw-opacity-50;
 
     .vc-widget__icon {
       @apply tw-text-[color:var(--widget-icon-disabled-color)];
@@ -160,18 +168,6 @@ const truncateCount = computed(() => {
 
     .vc-widget__title {
       @apply tw-text-[color:var(--widget-title-disabled-color)];
-    }
-
-    &:hover {
-      @apply tw-bg-[color:var(--widget-bg-color)];
-
-      .vc-widget__icon {
-        @apply tw-text-[color:var(--widget-icon-disabled-color)];
-      }
-
-      .vc-widget__title {
-        @apply tw-text-[color:var(--widget-title-disabled-color)];
-      }
     }
   }
 }

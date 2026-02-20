@@ -1,8 +1,8 @@
 import { Component, ref, type Ref } from "vue";
 import * as _ from "lodash-es";
-import type { MenuItem, MenuItemBadgeConfig } from "../types";
+import type { MenuItem, MenuItemBadgeConfig } from "@core/types";
 import { createUnrefFn, useArrayFind } from "@vueuse/core";
-import { createPreregistrationBus } from "./_internal";
+import { createPreregistrationBus } from "@core/services/_internal";
 
 function menuItemKey(item: MenuItem): string {
   if (item.id !== undefined) return `id:${String(item.id)}`;

@@ -1,4 +1,4 @@
-import { usePermissions } from "./../../composables";
+import { usePermissions } from "@core/composables";
 import { App } from "vue";
 
 export const permissions = {

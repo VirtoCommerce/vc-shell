@@ -1,5 +1,5 @@
 import { Ref, ref } from "vue";
-import { useUserManagement } from "./../useUserManagement";
+import { useUserManagement } from "@core/composables/useUserManagement";
 
 interface IUsePermissions {
   hasAccess(permissions: string | string[] | undefined): boolean;

@@ -1,6 +1,6 @@
 import { VNode } from "vue";
-import _Interceptor from "./interceptor";
-import { DisplayableError } from "../../../core/utilities/error";
+import _Interceptor from "@shared/components/error-interceptor/interceptor";
+import { DisplayableError } from "@core/utilities/error";
 
 export const ErrorInterceptor = _Interceptor as typeof _Interceptor & {
   new (): {

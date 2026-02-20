@@ -30,16 +30,17 @@
 
 <script lang="ts" setup>
 import { computed, h, inject, Ref, toRef } from "vue";
+import { IsMobileKey } from "@framework/injection-keys";
 import { RouterView, useRouter } from "vue-router";
 import { watchDebounced } from "@vueuse/core";
-import { VcBladeSlot } from "../vc-blade-slot";
-import VcMobileBackButton from "./_internal/vc-mobile-back-button.vue";
-import { useBladeStack } from "../../composables/useBladeStack";
-import { useBladeMessaging } from "../../composables/useBladeMessaging";
-import { createUrlSync } from "../../utils/urlSync";
-import { useBreadcrumbs } from "../../../../../core/composables/useBreadcrumbs";
-import { AiAgentServiceKey } from "../../../../../injection-keys";
-import type { BladeDescriptor, IParentCallArgs } from "../../types";
+import { VcBladeSlot } from "@shared/components/blade-navigation/components/vc-blade-slot";
+import VcMobileBackButton from "@shared/components/blade-navigation/components/vc-blade-navigation/_internal/vc-mobile-back-button.vue";
+import { useBladeStack } from "@shared/components/blade-navigation/composables/useBladeStack";
+import { useBladeMessaging } from "@shared/components/blade-navigation/composables/useBladeMessaging";
+import { createUrlSync } from "@shared/components/blade-navigation/utils/urlSync";
+import { useBreadcrumbs } from "@core/composables/useBreadcrumbs";
+import { AiAgentServiceKey } from "@framework/injection-keys";
+import type { BladeDescriptor, IParentCallArgs } from "@shared/components/blade-navigation/types";
 
 const bladeStack = useBladeStack();
 const messaging = useBladeMessaging();
@@ -62,7 +63,7 @@ const bladeCount = computed(() => {
 
 // ── Visibility logic ────────────────────────────────────────────────────────
 
-const isMobile = inject("isMobile") as Ref<boolean>;
+const isMobile = inject(IsMobileKey)!;
 
 const aiAgentService = inject(AiAgentServiceKey, undefined);
 const isAiPanelExpanded = computed(() => aiAgentService?.isExpanded.value ?? false);

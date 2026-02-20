@@ -1,7 +1,7 @@
 import { Component, ComputedRef, Ref } from "vue";
-import { CoreBladeExposed } from "../../shared";
-import { ComponentPublicInstanceConstructor } from "../../shared/utilities";
-import { IBladeInstance } from "../../shared/components/blade-navigation/types";
+import { CoreBladeExposed } from "@shared";
+import { ComponentPublicInstanceConstructor } from "@shared/utilities";
+import { IBladeInstance } from "@shared/components/blade-navigation/types";
 
 // AI Agent types are now part of the ai-agent plugin
 // export * from "./plugins/ai-agent/types";
@@ -253,8 +253,6 @@ export type MenuItemBadgeConfig =
   | Ref<number | string | undefined>
   | ComputedRef<number | string | undefined>
   | (() => number | string | undefined);
-
-export type { ShellFeature, ShellContext } from "./shell-feature";
 
 export interface MenuItemConfig {
   id?: string;

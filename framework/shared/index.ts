@@ -1,10 +1,10 @@
 import { Router } from "vue-router";
 import { App } from "vue";
-import { AssetsDetailsModule } from "./modules/assets";
-import { VcAppSwitcherComponent } from "./components/app-switcher";
-import { VcBladeNavigationComponent } from "./components/blade-navigation";
-import { AssetsManagerModule } from "./modules/assets-manager";
-import { VcPopupHandler } from "./components/popup-handler";
+import { AssetsDetailsModule } from "@shared/modules/assets";
+import { VcAppSwitcherComponent } from "@shared/components/app-switcher";
+import { VcBladeNavigationComponent } from "@shared/components/blade-navigation";
+import { AssetsManagerModule } from "@shared/modules/assets-manager";
+import { VcPopupHandler } from "@shared/components/popup-handler";
 
 export const SharedModule = {
   install(app: App, args: { router: Router }): void {
@@ -17,8 +17,8 @@ export const SharedModule = {
   },
 };
 
-export * from "./modules";
-export * from "./components";
-export * from "./pages";
-export * from "./composables";
-export * from "./utilities";
+export * from "@shared/modules";
+export * from "@shared/components";
+export * from "@shared/pages";
+export * from "@shared/composables";
+export * from "@shared/utilities";

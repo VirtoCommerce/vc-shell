@@ -1,9 +1,9 @@
 import { createApp, nextTick, reactive, ref, Ref } from "vue";
-import { NotificationOptions, NotificationPosition } from "../../types";
-import { NotificationContainer } from "../../components";
-import { useInstance } from "../useInstance";
+import { NotificationOptions, NotificationPosition } from "@shared/components/notifications/types";
+import { NotificationContainer } from "@shared/components/notifications/components";
+import { useInstance } from "@shared/components/notifications/composables/useInstance";
 import * as _ from "lodash-es";
-import { generateId, createLogger } from "../../../../../core/utilities";
+import { generateId, createLogger } from "@core/utilities";
 
 const logger = createLogger("notification-container");
 

@@ -3,7 +3,7 @@
 </template>
 
 <script setup lang="ts">
-import { VcLink } from "../../../../atoms";
+import { VcLink } from "@ui/components/atoms";
 
 defineProps<{
   /** The link text to display */

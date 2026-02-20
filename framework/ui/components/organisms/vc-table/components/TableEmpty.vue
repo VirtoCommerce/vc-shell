@@ -18,7 +18,7 @@
 </template>
 
 <script setup lang="ts">
-import { VcIcon } from "../../../atoms";
+import { VcIcon } from "@ui/components/atoms";
 
 defineProps<{
   /**
@@ -42,7 +42,7 @@ defineProps<{
 }
 
 .vc-table-composition__empty-icon {
-  @apply tw-text-[color:var(--neutrals-300)];
+  @apply tw-text-neutrals-300;
 }
 
 .vc-table-composition__empty-content {
@@ -50,11 +50,11 @@ defineProps<{
 }
 
 .vc-table-composition__empty-title {
-  @apply tw-text-base tw-font-medium tw-text-[color:var(--neutrals-700)];
+  @apply tw-text-base tw-font-medium tw-text-neutrals-700;
 }
 
 .vc-table-composition__empty-description {
-  @apply tw-text-sm tw-text-[color:var(--neutrals-500)] tw-max-w-md;
+  @apply tw-text-sm tw-text-neutrals-500 tw-max-w-md;
 }
 
 .vc-table-composition__empty-action {

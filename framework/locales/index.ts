@@ -1,3 +1,3 @@
-import * as en from "./en.json";
-import * as de from "./de.json";
+import * as en from "@locales/en.json";
+import * as de from "@locales/de.json";
 export { en, de };

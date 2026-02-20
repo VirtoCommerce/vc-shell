@@ -16,7 +16,11 @@
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "strict": true,
     "baseUrl": ".",
-    "rootDir": "./"
+    "rootDir": "./",
+    "paths": {
+      "@release-config": ["./src/index.ts"],
+      "@release-config/*": ["./src/*"]
+    }
   },
   "include": ["src/*.ts"],
   "exclude": ["node_modules", "dist"]

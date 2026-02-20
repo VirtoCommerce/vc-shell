@@ -10,7 +10,7 @@
 </template>
 
 <script lang="ts" setup>
-import VcVirtoOzLogo from "./VcVirtoOzLogo.vue";
+import VcVirtoOzLogo from "@core/plugins/ai-agent/components/_internal/VcVirtoOzLogo.vue";
 
 export interface Props {
   /** Loading text to display */

@@ -1,5 +1,5 @@
 import { Duration, default as moment, argAccuracy as argAcc } from "moment";
-import { humanize } from "./humanize";
+import { humanize } from "@core/plugins/moment/humanize";
 
 declare module "moment" {
   export type argAccuracy = "auto" | "precise";

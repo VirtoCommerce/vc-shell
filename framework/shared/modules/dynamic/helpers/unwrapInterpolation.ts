@@ -1,4 +1,4 @@
-import { getModel } from "./getters";
+import { getModel } from "@shared/modules/dynamic/helpers/getters";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function unwrapInterpolation<T extends Record<string, any>>(property: string, context: T) {

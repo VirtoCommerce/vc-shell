@@ -1,4 +1,4 @@
-import { createLogger } from "../../core/utilities";
+import { createLogger } from "@core/utilities";
 
 const logger = createLogger("color-utils");
 

@@ -104,12 +104,12 @@
 </template>
 
 <script lang="ts" setup>
-import { VcIcon } from "./../../../";
+import { VcIcon } from "@ui/components";
 import { inject, ref } from "vue";
 import { shift } from "@floating-ui/vue";
-import { BladeInstance } from "../../../../../injection-keys";
-import { DEFAULT_BLADE_INSTANCE } from "../constants";
-import { useFloatingPosition, useTeleportTarget } from "../../../../composables";
+import { BladeInstance } from "@framework/injection-keys";
+import { DEFAULT_BLADE_INSTANCE } from "@ui/components/organisms/vc-blade/constants";
+import { useFloatingPosition, useTeleportTarget } from "@ui/composables";
 
 export interface Props {
   closable?: boolean;

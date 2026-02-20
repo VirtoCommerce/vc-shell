@@ -46,7 +46,7 @@
 <script lang="ts" setup>
 import type { Editor } from "@tiptap/vue-3";
 import { ref, computed, onMounted, onUnmounted } from "vue";
-import { VcIcon } from "../../../atoms";
+import { VcIcon } from "@ui/components/atoms";
 
 interface Props {
   editor: Editor;

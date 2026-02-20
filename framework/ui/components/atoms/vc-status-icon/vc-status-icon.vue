@@ -1,22 +1,26 @@
 <template>
-  <div class="vc-status-icon">
-    <template v-if="status">
-      <VcIcon
-        icon="material-check_circle"
-        class="vc-status-icon__icon vc-status-icon__icon--success"
-      ></VcIcon>
-    </template>
-    <template v-else>
-      <VcIcon
-        icon="material-cancel"
-        class="vc-status-icon__icon vc-status-icon__icon--inactive"
-      ></VcIcon>
-    </template>
+  <div
+    class="vc-status-icon"
+    role="img"
+    :aria-label="status ? 'Active' : 'Inactive'"
+  >
+    <VcIcon
+      v-if="status"
+      icon="lucide-circle-check"
+      class="vc-status-icon__icon vc-status-icon__icon--success"
+      aria-hidden="true"
+    ></VcIcon>
+    <VcIcon
+      v-else
+      icon="lucide-circle-x"
+      class="vc-status-icon__icon vc-status-icon__icon--inactive"
+      aria-hidden="true"
+    ></VcIcon>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { VcIcon } from "./../../../components";
+import { VcIcon } from "@ui/components";
 export interface Props {
   status?: boolean;
 }
@@ -26,17 +30,19 @@ defineProps<Props>();
 
 <style lang="scss">
 :root {
-  --status-success-main-color: var(--success-400);
-  --status-inactive-main-color: var(--info-300);
+  --status-icon-success-color: var(--success-500);
+  --status-icon-inactive-color: var(--neutrals-300);
 }
 
 .vc-status-icon {
+  @apply tw-inline-flex tw-items-center tw-justify-center;
+
   &__icon--success {
-    @apply tw-text-[color:var(--status-success-main-color)];
+    @apply tw-text-[color:var(--status-icon-success-color)];
   }
 
   &__icon--inactive {
-    @apply tw-text-[color:var(--status-inactive-main-color)];
+    @apply tw-text-[color:var(--status-icon-inactive-color)];
   }
 }
 </style>

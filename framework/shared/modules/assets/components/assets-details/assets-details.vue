@@ -114,11 +114,11 @@
 </template>
 
 <script lang="ts" setup>
-import { ICommonAsset, IBladeToolbar } from "./../../../../../core/types";
+import { ICommonAsset, IBladeToolbar } from "@core/types";
 import { computed, ref } from "vue";
 import { useI18n } from "vue-i18n";
-import { VcBlade, VcContainer, VcForm, VcImage, VcInput, VcTextarea } from "./../../../../../ui/components";
-import { isImage, getFileThumbnail, readableSize } from "./../../../../utilities/assets";
+import { VcBlade, VcContainer, VcForm, VcImage, VcInput, VcTextarea } from "@ui/components";
+import { isImage, getFileThumbnail, readableSize } from "@shared/utilities/assets";
 import moment from "moment";
 import { useIsFormValid, Field, useForm, useIsFormDirty } from "vee-validate";
 

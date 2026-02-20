@@ -1,5 +1,5 @@
 import { computed, inject, type MaybeRefOrGetter, toValue } from "vue";
-import { AppRootElementKey } from "../../injection-keys";
+import { AppRootElementKey } from "@framework/injection-keys";
 
 export interface UseTeleportTargetOptions {
   to?: MaybeRefOrGetter<string | HTMLElement | null | undefined>;

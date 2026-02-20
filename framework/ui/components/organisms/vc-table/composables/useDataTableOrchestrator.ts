@@ -26,19 +26,19 @@
  */
 
 import { computed, ref, toRef, watch, type Ref, type ComputedRef } from "vue";
-import type { ColumnInstance } from "../utils/ColumnCollector";
-import type { VcColumnProps, EditChange } from "../types";
+import type { ColumnInstance } from "@ui/components/organisms/vc-table/utils/ColumnCollector";
+import type { VcColumnProps, EditChange } from "@ui/components/organisms/vc-table/types";
 
-import { useTableSelectionV2 } from "./useTableSelectionV2";
-import { useTableSort, type SortEvent } from "./useTableSort";
-import { useTableEditing } from "./useTableEditing";
-import { useTableExpansion } from "./useTableExpansion";
-import { useTableRowGrouping, type GroupedData } from "./useTableRowGrouping";
-import { useTableInlineEdit } from "./useTableInlineEdit";
-import { useTableColumns } from "./useTableColumns";
-import { useTableColumnsResize } from "./useTableColumnsResize";
-import { useTableColumnsReorder } from "./useTableColumnsReorder";
-import { useColumnFilter } from "./useColumnFilter";
+import { useTableSelectionV2 } from "@ui/components/organisms/vc-table/composables/useTableSelectionV2";
+import { useTableSort, type SortEvent } from "@ui/components/organisms/vc-table/composables/useTableSort";
+import { useTableEditing } from "@ui/components/organisms/vc-table/composables/useTableEditing";
+import { useTableExpansion } from "@ui/components/organisms/vc-table/composables/useTableExpansion";
+import { useTableRowGrouping, type GroupedData } from "@ui/components/organisms/vc-table/composables/useTableRowGrouping";
+import { useTableInlineEdit } from "@ui/components/organisms/vc-table/composables/useTableInlineEdit";
+import { useTableColumns } from "@ui/components/organisms/vc-table/composables/useTableColumns";
+import { useTableColumnsResize } from "@ui/components/organisms/vc-table/composables/useTableColumnsResize";
+import { useTableColumnsReorder } from "@ui/components/organisms/vc-table/composables/useTableColumnsReorder";
+import { useColumnFilter } from "@ui/components/organisms/vc-table/composables/useColumnFilter";
 
 // =============================================================================
 // Types

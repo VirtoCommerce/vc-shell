@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { DynamicGridSchema, DynamicDetailsSchema } from "./shared/modules/dynamic/types";
+import { DynamicGridSchema, DynamicDetailsSchema } from "@shared/modules/dynamic/types";
 import * as vue from "vue";
 import * as vueRouter from "vue-router";
 import * as veeValidate from "vee-validate";

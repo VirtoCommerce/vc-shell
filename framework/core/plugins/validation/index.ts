@@ -1,1 +1,1 @@
-export * from "./rules";
+export * from "@core/plugins/validation/rules";

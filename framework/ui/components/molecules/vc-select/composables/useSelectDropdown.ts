@@ -1,6 +1,6 @@
 import { ref, computed, type Ref, watch } from "vue";
 import { offset as uiOffset, flip, shift, type Middleware, type Placement } from "@floating-ui/vue";
-import { useFloatingPosition } from "../../../../composables";
+import { useFloatingPosition } from "@ui/composables";
 
 type FloatingInstanceType = ReturnType<typeof useFloatingPosition> & {
   middlewareData: Ref<{

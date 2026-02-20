@@ -69,8 +69,8 @@
 
 <script lang="ts" setup>
 import { computed, ref } from "vue";
-import { VcPopup, VcLink, VcIcon, VcImage } from "../../../../";
-import { ICommonAsset } from "./../../../../../../core/types";
+import { VcPopup, VcLink, VcIcon, VcImage } from "@ui/components";
+import { ICommonAsset } from "@core/types";
 import { useI18n } from "vue-i18n";
 
 export interface Props {

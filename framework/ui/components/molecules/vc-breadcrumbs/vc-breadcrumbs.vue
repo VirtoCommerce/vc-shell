@@ -1,10 +1,11 @@
 <template>
-  <div
+  <nav
     v-if="items && items.length"
-    ref="el"
+    aria-label="Breadcrumb"
     class="vc-breadcrumbs"
   >
-    <div
+    <ol
+      ref="contentRef"
       class="vc-breadcrumbs__content"
       :class="{
         'vc-breadcrumbs__content--separated': separated,
@@ -33,6 +34,7 @@
               text
               icon="lucide-ellipsis-vertical"
               icon-size="xl"
+              data-more-button
               class="vc-breadcrumbs__expand-button"
               :class="{
                 'vc-breadcrumbs__expand-button--active': isActive,
@@ -42,11 +44,9 @@
           </slot>
         </template>
         <template #item="{ item, click }">
-          <VcBreadcrumbsItem
-            v-bind="item"
-            :current="false"
-            :variant="variant"
-            class="tw-p-3 tw-w-full"
+          <VcDropdownItem
+            :title="typeof item.title === 'string' ? item.title : item.title?.value ?? ''"
+            :icon="item.icon"
             @click="click"
           />
         </template>
@@ -56,7 +56,7 @@
         v-for="(item, i) in visibleItems"
         :key="item?.id ?? `breadcrumb-item-${i}`"
       >
-        <div
+        <li
           v-if="item && item.title"
           class="vc-breadcrumbs__item-wrapper"
           :data-item-key="item.id"
@@ -64,6 +64,7 @@
           <span
             v-if="separated && i !== 0"
             class="vc-breadcrumbs__item-separator"
+            aria-hidden="true"
           >
             /
           </span>
@@ -71,53 +72,63 @@
             class="vc-breadcrumbs__item"
             v-bind="item"
             :current="i === visibleItems.length - 1"
+            :aria-current="i === visibleItems.length - 1 ? 'page' : undefined"
             :variant="variant"
           />
-        </div>
+        </li>
       </template>
-    </div>
-  </div>
+    </ol>
+  </nav>
 </template>
 
 <script lang="ts" setup>
-import { ref, toRef, VNode, nextTick } from "vue";
-import { Breadcrumbs } from "../../../types";
-import VcBreadcrumbsItem from "./_internal/vc-breadcrumbs-item/vc-breadcrumbs-item.vue";
+import { ref, computed, toRef, VNode, nextTick } from "vue";
+import type { Breadcrumbs } from "../../../types/index";
+import VcBreadcrumbsItem from "@ui/components/molecules/vc-breadcrumbs/_internal/vc-breadcrumbs-item/vc-breadcrumbs-item.vue";
 import { VcDropdown } from "..";
-import { useAdaptiveItems } from "../../../composables/useAdaptiveItems";
+import VcDropdownItem from "@ui/components/molecules/vc-dropdown/_internal/VcDropdownItem.vue";
+import { useAdaptiveItems } from "@ui/composables/useAdaptiveItems";
 
 export interface Props {
   items?: Breadcrumbs[];
   variant?: "default" | "light";
   separated?: boolean;
+  /** When true, all items are placed in the dropdown behind the trigger. */
+  collapsed?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
   items: () => [],
   variant: "default",
   separated: false,
+  collapsed: false,
 });
 
 defineSlots<{
   trigger: (props: { click: () => void; isActive: boolean }) => VNode;
 }>();
 
-/** Default width for the "more" button in pixels */
-const MORE_BUTTON_WIDTH = 100;
-/** Default initial item width for calculation in pixels */
-const INITIAL_ITEM_WIDTH = 100;
+/** Width of the "more" button — the icon-only VcButton is ~36px */
+const MORE_BUTTON_WIDTH = 36;
+/** Conservative estimate per breadcrumb item (icon + truncated text) */
+const INITIAL_ITEM_WIDTH = 60;
 
-const el = ref<HTMLElement | null>(null);
+const contentRef = ref<HTMLElement | null>(null);
 const showBreadcrumbs = ref(false);
 
-const { visibleItems, hiddenItems, showMoreButton, recalculate } = useAdaptiveItems({
-  containerRef: el,
+const adaptive = useAdaptiveItems({
+  containerRef: contentRef,
   items: toRef(props, "items"),
   getItemKey: (item) => item.id!,
   moreButtonWidth: MORE_BUTTON_WIDTH,
   calculationStrategy: "reverse",
   initialItemWidth: INITIAL_ITEM_WIDTH,
 });
+
+const visibleItems = computed(() => (props.collapsed ? [] : adaptive.visibleItems.value));
+const hiddenItems = computed(() => (props.collapsed ? props.items : adaptive.hiddenItems.value));
+const showMoreButton = computed(() => hiddenItems.value.length > 0);
+const recalculate = adaptive.recalculate;
 
 function toggleBreadcrumbs() {
   showBreadcrumbs.value = !showBreadcrumbs.value;
@@ -140,10 +151,10 @@ nextTick(recalculate);
 }
 
 .vc-breadcrumbs {
-  @apply tw-flex tw-items-center tw-flex-wrap tw-gap-2.5;
+  @apply tw-flex tw-flex-grow tw-items-center tw-min-w-0 tw-overflow-hidden;
 
   &__content {
-    @apply tw-flex tw-items-center tw-gap-2.5;
+    @apply tw-flex tw-flex-grow tw-items-center tw-gap-2.5 tw-min-w-0 tw-list-none tw-m-0 tw-p-0;
 
     &--separated {
       @apply tw-gap-0;
@@ -151,7 +162,7 @@ nextTick(recalculate);
   }
 
   &__item-wrapper {
-    @apply tw-flex tw-flex-row tw-items-center tw-justify-center;
+    @apply tw-flex tw-flex-row tw-items-center tw-justify-center tw-shrink-0;
   }
 
   &__item-separator {

@@ -1,5 +1,5 @@
-import * as components from "./components";
-import { PopupPlugin } from "./types";
+import * as components from "@shared/components/popup-handler/components";
+import { PopupPlugin } from "@shared/components/popup-handler/types";
 
 // Declare globally
 declare module "@vue/runtime-core" {
@@ -12,8 +12,8 @@ declare module "@vue/runtime-core" {
   }
 }
 
-export * from "./plugin";
-export * from "./components";
-export * from "./composables";
-export * from "./types";
-export * from "./utils";
+export * from "@shared/components/popup-handler/plugin";
+export * from "@shared/components/popup-handler/components";
+export * from "@shared/components/popup-handler/composables";
+export * from "@shared/components/popup-handler/types";
+export * from "@shared/components/popup-handler/utils";

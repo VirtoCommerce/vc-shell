@@ -52,6 +52,16 @@ export function useTableColumnsResize(options: UseTableColumnsResizeOptions) {
   let maxLastColumnGrowth = 0;
 
   /**
+   * Check whether a column is currently rendered in the DOM.
+   * Columns may exist in the columns array (columnWidths) but be hidden
+   * (e.g. via column switcher, showAllColumns=false, hiddenColumnIds).
+   */
+  const isColumnRendered = (columnId: string): boolean => {
+    if (!getColumnElement) return false;
+    return getColumnElement(columnId) !== null;
+  };
+
+  /**
    * Update DOM element width directly (bypasses reactivity for smooth drag)
    * Updates both header and all body cells for the column
    */
@@ -159,9 +169,17 @@ export function useTableColumnsResize(options: UseTableColumnsResizeOptions) {
 
     resizingColumnIndex = columnIndex;
 
-    // Neighbor: right column for two-column resize; last column has no neighbor
-    const hasRightNeighbor = columnIndex < columns.value.length - 1;
-    neighborColumnIndex = hasRightNeighbor ? columnIndex + 1 : -1;
+    // Find the next RENDERED column to the right as the resize neighbor.
+    // columns.value (columnWidths) may contain hidden column entries — these
+    // have no DOM element and must be skipped. If no rendered neighbor exists,
+    // this is the last visible column and uses the "last column" resize mode.
+    neighborColumnIndex = -1;
+    for (let i = columnIndex + 1; i < columns.value.length; i++) {
+      if (isColumnRendered(columns.value[i].id)) {
+        neighborColumnIndex = i;
+        break;
+      }
+    }
 
     // Pin ALL columns and record their actual rendered widths
     initialWidths = pinAllColumnWidths();
@@ -226,19 +244,20 @@ export function useTableColumnsResize(options: UseTableColumnsResizeOptions) {
   const handleResizeEnd = () => {
     if (!isResizing.value) return;
 
-    // Commit ALL column widths to reactive state.
-    // Resized + neighbor get their new values; all others keep their
-    // actual rendered width (measured at mousedown). This converts any
-    // flex-grow columns to fixed-width, so hasFlexColumns becomes false
-    // and the ::after filler gap appears after the last column.
+    // Commit widths to reactive state.
+    // Resized + neighbor get their new values; other RENDERED columns keep their
+    // actual rendered width (measured at mousedown). Hidden columns (no DOM element)
+    // keep their existing width — don't overwrite with initialWidths fallback values.
     columns.value.forEach((col, index) => {
       if (index === resizingColumnIndex) {
         col.width = pendingWidth;
       } else if (index === neighborColumnIndex) {
         col.width = pendingNeighborWidth;
-      } else {
+      } else if (isColumnRendered(col.id)) {
+        // Only commit measured width for rendered columns
         col.width = initialWidths[index];
       }
+      // Hidden columns: keep their existing col.width unchanged
     });
 
     // Clear hardcoded DOM styles so Vue regains control

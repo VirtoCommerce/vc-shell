@@ -1,9 +1,9 @@
 import { describe, it, expect } from "vitest";
 import { defineComponent, h, inject } from "vue";
 import { mount } from "@vue/test-utils";
-import { AppBarWidgetServiceKey } from "../../../injection-keys";
-import { provideAppBarWidget, useAppBarWidget } from "./index";
-import { createAppBarWidgetService } from "../../services/app-bar-menu-service";
+import { AppBarWidgetServiceKey } from "@framework/injection-keys";
+import { provideAppBarWidget, useAppBarWidget } from "@core/composables/useAppBarWidget";
+import { createAppBarWidgetService } from "@core/services/app-bar-menu-service";
 
 describe("useAppBarWidget", () => {
   it("throws InjectionError when no service is provided", () => {

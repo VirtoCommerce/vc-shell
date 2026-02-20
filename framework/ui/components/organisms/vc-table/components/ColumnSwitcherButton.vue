@@ -16,7 +16,7 @@
  *
  * Shows a columns icon. Uses VcButton with secondary variant.
  */
-import { VcButton } from "../../../atoms";
+import { VcButton } from "@ui/components/atoms";
 
 withDefaults(
   defineProps<{

@@ -14,8 +14,8 @@
 
 <script lang="ts" setup>
 import { computed } from "vue";
-import type { IconSize, IconVariant } from "./types";
-import { useIcon } from "./composables";
+import type { IconSize, IconVariant } from "@ui/components/atoms/vc-icon/types";
+import { useIcon } from "@ui/components/atoms/vc-icon/composables";
 
 defineOptions({
   inheritAttrs: false,

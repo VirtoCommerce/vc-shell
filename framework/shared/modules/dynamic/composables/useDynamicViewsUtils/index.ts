@@ -1,5 +1,5 @@
 import { ref, WatchStopHandle, watch, onMounted, onUnmounted, getCurrentInstance, Ref } from "vue";
-import { ListBaseBladeScope, DetailsBaseBladeScope, DetailsBladeExposed, ListBladeExposed } from "../..";
+import { ListBaseBladeScope, DetailsBaseBladeScope, DetailsBladeExposed, ListBladeExposed } from "@shared/modules/dynamic";
 
 export interface IUseDynamicViewsUtils {
   getBladeExposedData: <BladeScope extends ListBaseBladeScope | DetailsBaseBladeScope>(

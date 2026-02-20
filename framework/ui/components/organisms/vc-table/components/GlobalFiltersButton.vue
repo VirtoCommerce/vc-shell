@@ -21,7 +21,7 @@
  * Shows a filter icon with optional badge indicating active filter count.
  * Uses VcButton with secondary variant; `selected` prop activates highlight.
  */
-import { VcButton } from "../../../atoms";
+import { VcButton } from "@ui/components/atoms";
 
 withDefaults(
   defineProps<{
@@ -51,7 +51,7 @@ defineEmits<{
   &__badge {
     @apply tw-inline-flex tw-items-center tw-justify-center tw-ml-1;
     @apply tw-min-w-5 tw-h-5 tw-px-1.5 tw-rounded-full;
-    @apply tw-text-xs tw-font-semibold tw-text-[color:var(--additional-50)];
+    @apply tw-text-xs tw-font-semibold tw-text-additional-50;
     background-color: var(--primary-500, #3b82f6);
   }
 }

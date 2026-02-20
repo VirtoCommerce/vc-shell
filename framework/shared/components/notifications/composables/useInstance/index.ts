@@ -1,6 +1,6 @@
 import { App, Ref, ref } from "vue";
-import { NotificationPosition } from "../../types";
-import { createLogger } from "../../../../../core/utilities";
+import { NotificationPosition } from "@shared/components/notifications/types";
+import { createLogger } from "@core/utilities";
 
 const logger = createLogger("notification-instance");
 

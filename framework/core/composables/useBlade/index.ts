@@ -1,16 +1,16 @@
 import { inject, computed } from "vue";
-import { BladeInstance } from "../../../injection-keys";
+import { BladeInstance } from "@framework/injection-keys";
 import {
     BladeDescriptorKey,
     BladeStackKey,
     BladeMessagingKey,
-} from "../../../shared/components/blade-navigation/types";
+} from "@shared/components/blade-navigation/types";
 import type {
     BladeDescriptor,
     BladeOpenEvent,
     IBladeStack,
     IBladeMessaging,
-} from "../../../shared/components/blade-navigation/types";
+} from "@shared/components/blade-navigation/types";
 
 /**
  * Composable for accessing the current blade instance (legacy API).

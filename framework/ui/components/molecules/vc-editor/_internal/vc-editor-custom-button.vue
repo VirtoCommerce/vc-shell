@@ -35,9 +35,9 @@
 <script lang="ts" setup>
 import type { Editor } from "@tiptap/vue-3";
 import { computed } from "vue";
-import VcEditorButton from "./vc-editor-button.vue";
-import type { CustomToolbarItem } from "./toolbar-types";
-import { isButton, isDropdown } from "./toolbar-types";
+import VcEditorButton from "@ui/components/molecules/vc-editor/_internal/vc-editor-button.vue";
+import type { CustomToolbarItem } from "@ui/components/molecules/vc-editor/_internal/toolbar-types";
+import { isButton, isDropdown } from "@ui/components/molecules/vc-editor/_internal/toolbar-types";
 
 interface Props {
   editor: Editor;

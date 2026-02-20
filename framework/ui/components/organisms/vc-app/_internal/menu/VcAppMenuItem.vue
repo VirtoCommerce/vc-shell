@@ -66,9 +66,9 @@
 <script lang="ts" setup>
 import { computed } from "vue";
 import type { Component } from "vue";
-import { VcIcon, VcBadge } from "../../../../";
-import { useBadge } from "./composables/useBadge";
-import type { MenuItemBadgeConfig } from "../../../../../../core/types";
+import { VcIcon, VcBadge } from "@ui/components";
+import { useBadge } from "@ui/components/organisms/vc-app/_internal/menu/composables/useBadge";
+import type { MenuItemBadgeConfig } from "@core/types";
 
 export interface Props {
   icon?: string | Component;
@@ -184,7 +184,7 @@ const abbreviation = computed(() => {
     @apply tw-shrink-0 tw-w-[24px] tw-h-[24px] tw-rounded-full
       tw-flex tw-items-center tw-justify-center
       tw-text-xxs tw-leading-[10px] tw-font-extrabold
-      tw-text-[var(--neutrals-500)] tw-border-[2px] tw-border-[var(--neutrals-500)];
+      tw-text-neutrals-500 tw-border-[2px] tw-border-neutrals-500;
   }
 
   &__title {

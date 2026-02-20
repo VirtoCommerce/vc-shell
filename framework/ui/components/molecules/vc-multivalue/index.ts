@@ -1,1 +1,1 @@
-export { default as VcMultivalue } from "./vc-multivalue.vue";
+export { default as VcMultivalue } from "@ui/components/molecules/vc-multivalue/vc-multivalue.vue";

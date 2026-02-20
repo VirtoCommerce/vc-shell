@@ -1,4 +1,4 @@
-export { useDetailsFactory } from "./base/useDetailsFactory";
-export { useListFactory } from "./base/useListFactory";
+export { useDetailsFactory } from "@shared/modules/dynamic/factories/base/useDetailsFactory";
+export { useListFactory } from "@shared/modules/dynamic/factories/base/useListFactory";
 
-export * from "./types";
+export * from "@shared/modules/dynamic/factories/types";

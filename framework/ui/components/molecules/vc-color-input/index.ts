@@ -1,1 +1,1 @@
-export { default as VcColorInput } from "./vc-color-input.vue";
+export { default as VcColorInput } from "@ui/components/molecules/vc-color-input/vc-color-input.vue";

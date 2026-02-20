@@ -73,18 +73,31 @@
           </div>
         </template>
       </TableHead>
-      <!-- Column switcher icon button (absolute-positioned, doesn't affect column widths) -->
+      <!-- Column switcher peek-tab (absolute-positioned, slides in on hover) -->
       <template v-if="showColumnSwitcher" #actions>
-        <VcButton
-          ref="columnSwitcherBtnRef"
-          variant="ghost"
-          size="icon"
-          icon="fas fa-columns"
-          icon-size="s"
-          class="vc-data-table__header-col-switcher"
-          :class="{ 'vc-data-table__header-col-switcher--active': columnSwitcherActive }"
+        <div
+          class="vc-col-switcher-trigger"
+          :class="{ 'vc-col-switcher-trigger--active': columnSwitcherActive }"
+          role="button"
+          tabindex="0"
+          :aria-expanded="columnSwitcherActive"
+          :aria-label="$t('COMPONENTS.ORGANISMS.VC_TABLE.COLUMN_SWITCHER.TITLE')"
           @click.stop="emit('column-switcher-click')"
-        />
+          @keydown.enter.stop="emit('column-switcher-click')"
+          @keydown.space.prevent.stop="emit('column-switcher-click')"
+        >
+          <span class="vc-col-switcher-trigger__chevron">
+            <VcIcon icon="lucide-chevron-left" size="xs" :use-container="false" />
+          </span>
+          <VcTooltip placement="bottom">
+            <span ref="columnSwitcherBtnRef" class="vc-col-switcher-trigger__action">
+              <VcIcon icon="lucide-circle-plus" size="s" />
+            </span>
+            <template #tooltip>
+              {{ $t("COMPONENTS.ORGANISMS.VC_TABLE.COLUMN_SWITCHER.TITLE") }}
+            </template>
+          </VcTooltip>
+        </div>
       </template>
     </TableRow>
   </TableHeader>
@@ -106,15 +119,15 @@
  * - Custom header slots from VcColumn
  */
 import { computed, ref } from "vue";
-import type { ColumnInstance } from "../utils/ColumnCollector";
-import type { VcColumnProps, FilterType, FilterOption, FilterValue } from "../types";
-import TableHeader from "./TableHeader.vue";
-import TableRow from "./TableRow.vue";
-import TableHead from "./TableHead.vue";
-import TableCheckbox from "./TableCheckbox.vue";
-import ColumnFilter from "./ColumnFilter.vue";
-import { VcIcon, VcButton } from "../../../atoms";
-import { SlotProxy } from "./_internal/SlotProxy";
+import type { ColumnInstance } from "@ui/components/organisms/vc-table/utils/ColumnCollector";
+import type { VcColumnProps, FilterType, FilterOption, FilterValue } from "@ui/components/organisms/vc-table/types";
+import TableHeader from "@ui/components/organisms/vc-table/components/TableHeader.vue";
+import TableRow from "@ui/components/organisms/vc-table/components/TableRow.vue";
+import TableHead from "@ui/components/organisms/vc-table/components/TableHead.vue";
+import TableCheckbox from "@ui/components/organisms/vc-table/components/TableCheckbox.vue";
+import ColumnFilter from "@ui/components/organisms/vc-table/components/ColumnFilter.vue";
+import { VcIcon, VcTooltip } from "@ui/components/atoms";
+import { SlotProxy } from "@ui/components/organisms/vc-table/components/_internal/SlotProxy";
 
 // Props interface
 const props = defineProps<{
@@ -201,12 +214,12 @@ const emit = defineEmits<{
   "column-switcher-click": [];
 }>();
 
-// Column switcher button ref (exposed for anchor positioning)
-const columnSwitcherBtnRef = ref<InstanceType<typeof VcButton> | null>(null);
+// Column switcher action ref (exposed for anchor positioning)
+const columnSwitcherBtnRef = ref<HTMLElement | null>(null);
 
 defineExpose({
-  /** The column switcher button element (for dropdown anchor positioning) */
-  columnSwitcherEl: computed(() => (columnSwitcherBtnRef.value as any)?.$el as HTMLElement | null),
+  /** The column switcher action element (for dropdown anchor positioning) */
+  columnSwitcherEl: computed(() => columnSwitcherBtnRef.value),
 });
 
 // Event handlers
@@ -252,32 +265,108 @@ const handleFilterClear = (col: ColumnInstance) => {
 </script>
 
 <style lang="scss">
-.vc-data-table__header-col-switcher {
+.vc-col-switcher-trigger {
   position: absolute;
-  right: 4px;
+  right: 0;
   top: 50%;
-  transform: translateY(-50%);
+  z-index: 11;
+
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
-  border-radius: 4px;
-  border: none;
-  background: var(--table-header-bg, #f9fafb);
-  box-shadow: -8px 0 8px var(--table-header-bg, #f9fafb);
-  color: var(--table-header-text-color, var(--neutrals-500));
-  cursor: pointer;
-  opacity: 0.7;
-  transition: background-color 0.15s, color 0.15s, opacity 0.15s;
-  z-index: 11;
+  width: 36px;
+  height: 36px;
+  border-radius: 16px 0 0 16px;
 
+  background: var(--neutrals-200, #e5e5e5);
+  box-shadow: -4px 0 8px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+
+  // Idle: shifted right, ~14px visible — subtle peek
+  transform: translateY(-50%) translateX(60%);
+  transition:
+    transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+    background-color 0.2s ease;
+
+  // Hover: slide fully in
   &:hover,
   &--active {
-    background-color: var(--primary-50);
-    box-shadow: -8px 0 8px var(--primary-50);
-    color: var(--primary-600);
+    transform: translateY(-50%) translateX(0);
+    background: var(--primary-50, #eff6ff);
+
+    .vc-col-switcher-trigger__chevron {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .vc-col-switcher-trigger__action {
+      opacity: 1;
+      pointer-events: auto;
+    }
+  }
+
+  // Active state (panel open): stronger primary accent
+  &--active {
+    background: var(--primary-100, #dbeafe);
+
+    .vc-col-switcher-trigger__action {
+      color: var(--primary-700, #1d4ed8);
+    }
+  }
+
+  // Chevron icon (visible in idle)
+  // Left-aligned with padding so it sits in the visible ~14px peek area
+  &__chevron {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding-left: 3px;
+    color: var(--neutrals-500, #737373);
     opacity: 1;
+    transition: opacity 0.2s ease;
+    pointer-events: none; // chevron is decorative, clicks go to container
+  }
+
+  // Action icon "+" (visible on hover/active)
+  &__action {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--primary-100, #dbeafe);
+    color: var(--primary-600, #2563eb);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    pointer-events: none; // hidden until hover
+  }
+
+  // Keyboard focus: reveal fully like hover
+  &:focus-visible {
+    outline: 2px solid var(--primary-500);
+    outline-offset: 2px;
+    transform: translateY(-50%) translateX(0);
+
+    .vc-col-switcher-trigger__chevron {
+      opacity: 0;
+    }
+
+    .vc-col-switcher-trigger__action {
+      opacity: 1;
+      pointer-events: auto;
+    }
+  }
+
+  // Respect reduced motion preference
+  @media (prefers-reduced-motion: reduce) {
+    &,
+    &__chevron,
+    &__action {
+      transition-duration: 0.01ms !important;
+    }
   }
 }
 </style>

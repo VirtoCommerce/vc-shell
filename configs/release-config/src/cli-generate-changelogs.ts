@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { generateInitialChangelogs, PackageConfig } from "./generate-changelogs.js";
+import { generateInitialChangelogs, PackageConfig } from "@release-config/generate-changelogs";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import chalk from "chalk";
@@ -81,8 +81,10 @@ ${chalk.bold("EXAMPLE:")}
 
     await generateInitialChangelogs(options);
   } catch (error) {
-    if ((error as NodeJS.ErrnoException).code === "MODULE_NOT_FOUND" ||
-        (error as NodeJS.ErrnoException).code === "ERR_MODULE_NOT_FOUND") {
+    if (
+      (error as NodeJS.ErrnoException).code === "MODULE_NOT_FOUND" ||
+      (error as NodeJS.ErrnoException).code === "ERR_MODULE_NOT_FOUND"
+    ) {
       console.error(chalk.red(`\n❌ Error: Config file not found: ${resolvedPath}`));
       console.error(chalk.yellow("\nCreate a config file or specify a different path."));
       console.error(chalk.gray("\nRun 'vc-generate-changelogs --help' for more information."));

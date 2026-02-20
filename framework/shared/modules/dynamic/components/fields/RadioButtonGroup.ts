@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Component, ExtractPropTypes, h, toValue, unref } from "vue";
-import { unrefNested } from "../../helpers/unrefNested";
-import componentProps from "./props";
-import ValidationField from "./ValidationField";
-import { RadioButton } from "../factories";
-import { RadioButtonSchema } from "../../types";
-import { getModel } from "../../helpers/getters";
+import { unrefNested } from "@shared/modules/dynamic/helpers/unrefNested";
+import componentProps from "@shared/modules/dynamic/components/fields/props";
+import ValidationField from "@shared/modules/dynamic/components/fields/ValidationField";
+import { RadioButton } from "@shared/modules/dynamic/components/factories";
+import { RadioButtonSchema } from "@shared/modules/dynamic/types";
+import { getModel } from "@shared/modules/dynamic/helpers/getters";
 import * as _ from "lodash-es";
-import { VcLabel, VcHint } from "../../../../../ui/components";
+import { VcLabel, VcHint } from "@ui/components";
 
 export default {
   name: "RadioButtonGroup",

@@ -74,6 +74,15 @@
         "INTERNAL": {
           "VC_APP_BAR": {
             "BACK": "Zurück"
+          },
+          "APP_HUB": {
+            "SEARCH_PLACEHOLDER": "Anwendungen und Widgets suchen",
+            "APPLICATIONS": "Anwendungen",
+            "WIDGETS": "Widgets",
+            "NO_APPLICATIONS": "Keine Anwendungen gefunden",
+            "NO_WIDGETS": "Keine Widgets gefunden",
+            "LIST_VIEW": "Listenansicht",
+            "TILE_VIEW": "Kachelansicht"
           }
         }
       },
@@ -135,7 +144,6 @@
           "RESET": "Zurücksetzen"
         }
       },
-
       "VC_POPUP": {
         "OK": "OK",
         "CONFIRM": "Bestätigen",
@@ -150,7 +158,7 @@
     },
     "THEME_SELECTOR": {
       "THEME_CHANGED": " Thema",
-      "THEME_SELECTOR": "Themenauswahl"
+      "THEME_SELECTOR": "Themen"
     },
     "CHANGE_PASSWORD": {
       "TITLE": "Passwort ändern",
@@ -196,7 +204,7 @@
       "EMPTY": "Noch keine Benachrichtigungen"
     },
     "LANGUAGE_SELECTOR": {
-      "TITLE": "Sprachauswahl"
+      "TITLE": "Sprache"
     },
     "FILTERS": {
       "APPLY": "Filter anwenden",

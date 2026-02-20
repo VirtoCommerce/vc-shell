@@ -94,7 +94,7 @@
 
     <VcHint
       v-if="!signInResult.succeeded"
-      class="tw-mt-4 tw-text-[color:var(--danger-500)]"
+      class="tw-mt-4 tw-text-danger-500"
     >
       {{ signInResult.error }}
     </VcHint>
@@ -106,13 +106,13 @@
 import { ref, reactive, computed, onMounted, Ref } from "vue";
 import { useRouter } from "vue-router";
 import { useIsFormValid, Field, useForm } from "vee-validate";
-import { useSettings } from "./../../../../../core/composables";
-import { useUserManagement } from "./../../../../../core/composables/useUserManagement";
-import { ExternalSignInProviderInfo, SignInResult } from "./../../../../../core/api/platform";
-import { default as ExternalProviders } from "./../../../../../shared/components/sign-in/external-providers.vue";
-import { useExternalProvider } from "./../../../../../shared/components/sign-in/useExternalProvider";
-import { ExtensionPoint } from "../../../../../core/plugins/extension-points";
-import { createLogger } from "../../../../../core/utilities";
+import { useSettings } from "@core/composables";
+import { useUserManagement } from "@core/composables/useUserManagement";
+import { ExternalSignInProviderInfo, SignInResult } from "@core/api/platform";
+import { default as ExternalProviders } from "@shared/components/sign-in/external-providers.vue";
+import { useExternalProvider } from "@shared/components/sign-in/useExternalProvider";
+import { ExtensionPoint } from "@core/plugins/extension-points";
+import { createLogger } from "@core/utilities";
 
 const logger = createLogger("login-page");
 

@@ -3,8 +3,8 @@
     class="vc-date-picker"
     :class="[
       {
-        'vc-date-picker_error': error,
-        'vc-date-picker_disabled': disabled,
+        'vc-date-picker_error': invalid,
+        'vc-date-picker_disabled': resolvedDisabled,
         'vc-date-picker_focused': isFocused,
       },
     ]"
@@ -17,7 +17,7 @@
       :required="required"
       :multilanguage="multilanguage"
       :current-language="currentLanguage"
-      :error="error"
+      :error="invalid"
     >
       <span>{{ label }}</span>
       <template
@@ -44,7 +44,7 @@
                 ? $t('COMPONENTS.MOLECULES.VC_INPUT.DATE_TIME_PLACEHOLDER')
                 : $t('COMPONENTS.MOLECULES.VC_INPUT.DATE_PLACEHOLDER'))
             "
-            :disabled="disabled"
+            :disabled="resolvedDisabled"
             :name="name"
             :autofocus="autofocus"
             :max-date="maxDate"
@@ -71,19 +71,18 @@
             @tooltip-close="handleBlur"
           />
 
-          <div
+          <button
             v-if="clearable && internalValue && !disabled"
+            type="button"
             class="vc-date-picker__clear"
-            tabindex="0"
+            aria-label="Clear date"
             @click="onReset"
-            @keydown.enter="onReset"
-            @keydown.space="onReset"
           >
             <VcIcon
               size="xs"
               icon="lucide-x"
             ></VcIcon>
-          </div>
+          </button>
         </div>
 
         <div
@@ -108,6 +107,7 @@
           v-if="errorMessage"
           :id="errorId"
           class="vc-date-picker__hint-error"
+          :error="true"
           >{{ errorMessage }}</VcHint
         >
       </div>
@@ -125,29 +125,16 @@
 
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
-import { computed, ref, useId, watch } from "vue";
-import { VcLabel, VcIcon, VcHint } from "./../../";
+import { computed, ref, watch } from "vue";
+import { useFormField } from "@ui/composables/useFormField";
+import { VcLabel, VcIcon, VcHint } from "@ui/components";
 import VueDatePicker, { VueDatePickerProps, ModelValue } from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
+import type { ITextFieldProps } from "@ui/types";
 
-export interface VcDatePickerProps {
+export interface VcDatePickerProps extends ITextFieldProps {
   modelValue?: ModelValue;
   type?: "date" | "datetime-local";
-  label?: string;
-  placeholder?: string;
-  hint?: string;
-  disabled?: boolean;
-  error?: boolean;
-  errorMessage?: string;
-  required?: boolean;
-  clearable?: boolean;
-  loading?: boolean;
-  autofocus?: boolean;
-  size?: "default" | "small";
-  tooltip?: string;
-  multilanguage?: boolean;
-  currentLanguage?: string;
-  name?: string;
   datePickerOptions?: VueDatePickerProps;
 }
 
@@ -165,18 +152,7 @@ const props = withDefaults(defineProps<VcDatePickerProps>(), {
 
 const emit = defineEmits<VcDatePickerEmits>();
 
-// Accessibility IDs
-const uid = useId();
-const labelId = computed(() => `vc-date-picker-${uid}-label`);
-const hintId = computed(() => `vc-date-picker-${uid}-hint`);
-const errorId = computed(() => `vc-date-picker-${uid}-error`);
-
-const ariaDescribedBy = computed(() => {
-  const ids: string[] = [];
-  if (props.error && props.errorMessage) ids.push(errorId.value);
-  if (props.hint) ids.push(hintId.value);
-  return ids.length ? ids.join(" ") : undefined;
-});
+const { labelId, errorId, hintId, invalid, resolvedDisabled, ariaDescribedBy } = useFormField(props);
 
 // State
 const isFocused = ref(false);
@@ -263,8 +239,8 @@ function handleFocus() {
   --input-text-color-error: var(--danger-500);
   --input-border-color-error: var(--danger-500);
   --input-border-color-focus: var(--primary-500);
-  --input-focus-ring-color: rgba(59, 130, 246, 0.3);
-  --input-error-ring-color: rgba(239, 68, 68, 0.2);
+  --input-focus-ring-color: var(--primary-100);
+  --input-error-ring-color: var(--danger-100);
 }
 
 .vc-date-picker {
@@ -298,7 +274,8 @@ function handleFocus() {
 
   &__clear {
     @apply tw-cursor-pointer tw-pl-3 tw-text-[color:var(--input-clear-color)]
-      hover:tw-text-[color:var(--input-clear-color-hover)] tw-flex tw-items-center;
+      hover:tw-text-[color:var(--input-clear-color-hover)] tw-flex tw-items-center
+      tw-border-none tw-bg-transparent tw-outline-none tw-p-0;
   }
 
   &__loading {
@@ -310,7 +287,7 @@ function handleFocus() {
   }
 
   &__hint-error {
-    @apply tw-mt-1 [--hint-color:var(--input-text-color-error)];
+    @apply tw-mt-1 [--hint-error-color:var(--input-text-color-error)];
   }
 
   &__desc {

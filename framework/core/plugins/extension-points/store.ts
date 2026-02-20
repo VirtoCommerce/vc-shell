@@ -1,5 +1,5 @@
 import { reactive } from "vue";
-import type { ExtensionPointState, ExtensionPointOptions } from "./types";
+import type { ExtensionPointState, ExtensionPointOptions } from "@core/plugins/extension-points/types";
 
 const registry = reactive<Record<string, ExtensionPointState>>({});
 

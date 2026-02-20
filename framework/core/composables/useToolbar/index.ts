@@ -1,8 +1,9 @@
-import { ComputedRef, computed, getCurrentInstance, inject, onBeforeUnmount } from "vue";
-import { BladeInstance, TOOLBAR_SERVICE } from "../../injection-keys";
-import { IToolbarItem, IToolbarService, createToolbarService } from "../services/toolbar-service";
-import { FALLBACK_BLADE_ID } from "../constants";
-import { IBladeInstance } from "../../shared/components/blade-navigation/types";
+import { inject, provide, computed, getCurrentInstance, getCurrentScope, onBeforeUnmount, onScopeDispose } from "vue";
+import type { ComputedRef } from "vue";
+import { BladeInstance, ToolbarServiceKey } from "@framework/injection-keys";
+import { IToolbarItem, IToolbarService, createToolbarService, toolbarBus } from "@core/services/toolbar-service";
+import { FALLBACK_BLADE_ID } from "@core/constants";
+import type { IBladeInstance } from "@shared/components/blade-navigation/types";
 
 // Global toolbar service (if not provided through provide/inject)
 let globalToolbarService: IToolbarService | null = null;
@@ -15,6 +16,22 @@ export interface UseToolbarOptions {
   autoCleanup?: boolean;
 }
 
+export function provideToolbarService(): IToolbarService {
+  const existingService = inject(ToolbarServiceKey, null);
+  if (existingService) {
+    return existingService;
+  }
+
+  const service = createToolbarService();
+  provide(ToolbarServiceKey, service);
+
+  if (getCurrentScope()) {
+    onScopeDispose(() => toolbarBus.dispose(service));
+  }
+
+  return service;
+}
+
 /**
  * Composable for working with the toolbar
  * @returns Methods for managing toolbar buttons
@@ -23,7 +40,7 @@ export function useToolbar(options: UseToolbarOptions = {}) {
   const { autoCleanup = true } = options;
 
   // Try to get the service from dependency injection
-  const toolbarService = inject<IToolbarService | null>(TOOLBAR_SERVICE, null);
+  const toolbarService = inject<IToolbarService | null>(ToolbarServiceKey, null);
 
   // If the service is not injected, create a global one
   if (!toolbarService && !globalToolbarService) {

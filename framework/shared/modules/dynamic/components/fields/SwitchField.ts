@@ -1,8 +1,8 @@
 import { Component, ExtractPropTypes, h } from "vue";
-import { Switch } from "../factories";
-import componentProps from "./props";
-import { SwitchSchema } from "../../types";
-import { unrefNested } from "../../helpers/unrefNested";
+import { Switch } from "@shared/modules/dynamic/components/factories";
+import componentProps from "@shared/modules/dynamic/components/fields/props";
+import { SwitchSchema } from "@shared/modules/dynamic/types";
+import { unrefNested } from "@shared/modules/dynamic/helpers/unrefNested";
 
 export default {
   name: "SwitchEl",

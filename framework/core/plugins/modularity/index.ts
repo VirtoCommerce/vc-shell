@@ -1,12 +1,12 @@
 import { App, Component, inject, resolveComponent } from "vue";
-import { i18n } from "./../i18n";
+import { i18n } from "@core/plugins/i18n";
 import { Router } from "vue-router";
-import { BladeInstanceConstructor } from "./../../../shared/components/blade-navigation/types";
-import { kebabToPascal, createLogger } from "./../../utilities";
-import { addMenuItem, useMenuService, useNotifications } from "../../composables";
+import { BladeInstanceConstructor } from "@shared/components/blade-navigation/types";
+import { kebabToPascal, createLogger } from "@core/utilities";
+import { addMenuItem, useMenuService, useNotifications } from "@core/composables";
 import * as _ from "lodash-es";
-import { notification } from "../../../shared/components/notifications/core";
-import { BladeRegistryKey, IBladeRegistrationData, IBladeRegistryInstance } from "../../composables/useBladeRegistry";
+import { notification } from "@shared/components/notifications/core";
+import { BladeRegistryKey, IBladeRegistrationData, IBladeRegistryInstance } from "@core/composables/useBladeRegistry";
 
 const logger = createLogger("modularity");
 
@@ -189,7 +189,6 @@ export function createAppModule(
           if (app.component(name)) {
             // Overwrite existing component
             logger.warn(`Component ${name} is already registered. It will be overwritten with the new component.`);
-            logger.warn(`Component ${name} is already registered. It will be overwritten with the new component.`);
           }
           app.component(name, component);
         });
@@ -205,4 +204,4 @@ export function createAppModule(
   };
 }
 
-export * from "./loader";
+export * from "@core/plugins/modularity/loader";

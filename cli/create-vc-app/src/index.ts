@@ -6,7 +6,7 @@ import path from "node:path";
 import fs from "node:fs";
 import { fileURLToPath } from "node:url";
 import { cwd as processCwd, argv, exit } from "node:process";
-import mainPkg from "./../package.json";
+import mainPkg from "@create-vc-app/package.json";
 import * as _ from "lodash-es";
 
 type Config = prompts.Answers<"appName" | "packageName" | "variant" | "moduleName" | "appName" | "basePath" | "mocks">;

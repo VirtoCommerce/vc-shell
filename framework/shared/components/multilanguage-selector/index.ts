@@ -1,1 +1,1 @@
-export { default as VcLanguageSelector } from "./multilanguage-selector.vue";
+export { default as VcLanguageSelector } from "@shared/components/multilanguage-selector/multilanguage-selector.vue";

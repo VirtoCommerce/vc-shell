@@ -11,15 +11,15 @@ import {
   UnwrapNestedRefs,
   reactive,
 } from "vue";
-import { ControlSchema } from "../types";
+import { ControlSchema } from "@shared/modules/dynamic/types";
 import * as _ from "lodash-es";
-import { DetailsBladeContext } from "../factories/types";
-import { nodeBuilder } from "../helpers/nodeBuilder";
-import { methodHandler } from "../helpers/methodHandler";
+import { DetailsBladeContext } from "@shared/modules/dynamic/factories/types";
+import { nodeBuilder } from "@shared/modules/dynamic/helpers/nodeBuilder";
+import { methodHandler } from "@shared/modules/dynamic/helpers/methodHandler";
 import { toValue } from "@vueuse/core";
-import { safeIn } from "../helpers/safeIn";
-import { unrefNested } from "../helpers/unrefNested";
-import { usePermissions } from "../../../../core/composables";
+import { safeIn } from "@shared/modules/dynamic/helpers/safeIn";
+import { unrefNested } from "@shared/modules/dynamic/helpers/unrefNested";
+import { usePermissions } from "@core/composables";
 
 const schemeRenderProps = {
   context: {

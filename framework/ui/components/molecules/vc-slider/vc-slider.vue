@@ -1,5 +1,9 @@
 <template>
-  <div class="vc-slider tw-relative">
+  <div
+    class="vc-slider tw-relative"
+    role="region"
+    :aria-label="ariaLabel || 'Content carousel'"
+  >
     <swiper
       class="vc-slider__swiper"
       :class="{
@@ -24,15 +28,29 @@
     <div v-show="navigation">
       <div class="vc-slider__prev tw-left-0">
         <slot name="prevBtn">
-          <button class="vc-slider__btn">
-            <VcIcon icon="material-keyboard_arrow_left"></VcIcon>
+          <button
+            type="button"
+            class="vc-slider__btn"
+            aria-label="Previous slide"
+          >
+            <VcIcon
+              icon="lucide-chevron-left"
+              aria-hidden="true"
+            ></VcIcon>
           </button>
         </slot>
       </div>
       <div class="vc-slider__next tw-right-0">
         <slot name="nextBtn">
-          <button class="vc-slider__btn">
-            <VcIcon icon="material-keyboard_arrow_right"></VcIcon>
+          <button
+            type="button"
+            class="vc-slider__btn"
+            aria-label="Next slide"
+          >
+            <VcIcon
+              icon="lucide-chevron-right"
+              aria-hidden="true"
+            ></VcIcon>
           </button>
         </slot>
       </div>
@@ -41,7 +59,7 @@
 </template>
 
 <script lang="ts" setup>
-import { VcIcon } from "./../../";
+import { VcIcon } from "@ui/components";
 import { computed } from "vue";
 import { Swiper, SwiperSlide } from "swiper/vue";
 import { Navigation } from "swiper/modules";
@@ -54,6 +72,7 @@ export interface Props {
   overflow?: boolean;
   slidesPerView?: string | "auto";
   spaceBetweenSlides?: number;
+  ariaLabel?: string;
 }
 
 withDefaults(defineProps<Props>(), {
@@ -76,6 +95,8 @@ const buttonsList = computed(() => ({
   --slider-button-border: var(--neutrals-300);
   --slider-button-text: var(--primary-500);
   --slider-button-text-disabled: var(--neutrals-400);
+  --slider-button-border-radius: 6px;
+  --slider-focus-ring-color: rgba(59, 130, 246, 0.3);
 }
 
 .vc-slider {
@@ -104,9 +125,18 @@ const buttonsList = computed(() => ({
 
   &__btn {
     @apply tw-bg-[var(--slider-button-background)] tw-border tw-border-solid tw-border-[var(--slider-button-border)];
-    @apply tw-box-border tw-rounded tw-flex tw-items-center tw-justify-center;
+    @apply tw-box-border tw-flex tw-items-center tw-justify-center tw-cursor-pointer tw-outline-none;
     @apply tw-text-[var(--slider-button-text)] tw-w-8 tw-h-8;
     @apply tw-transition tw-duration-200;
+    border-radius: var(--slider-button-border-radius);
+
+    &:focus-visible {
+      @apply tw-ring-[3px] tw-ring-[color:var(--slider-focus-ring-color)] tw-outline-none;
+    }
+
+    &:disabled {
+      @apply tw-opacity-50 tw-cursor-not-allowed;
+    }
   }
 
   &__prev {

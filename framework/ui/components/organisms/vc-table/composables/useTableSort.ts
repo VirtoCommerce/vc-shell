@@ -7,7 +7,7 @@
  * Inspired by PrimeVue DataTable sorting patterns.
  */
 import { computed, ref, watch, type Ref, type ComputedRef } from "vue";
-import type { SortMeta } from "../types";
+import type { SortMeta } from "@ui/components/organisms/vc-table/types";
 
 export interface UseTableSortOptions {
   /** Current sort field (for single sort mode) */

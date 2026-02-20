@@ -68,12 +68,12 @@
 <script lang="ts" setup>
 import { computed } from "vue";
 import { useRoute } from "vue-router";
-import { useMenuService, usePermissions } from "../../../../../../core/composables";
-import type { MenuItem } from "../../../../../../core/types";
-import { VcContainer } from "../../../../";
-import VcAppMenuGroup from "./VcAppMenuGroup.vue";
-import VcAppMenuItem from "./VcAppMenuItem.vue";
-import { stripTenantPrefix } from "./composables/useMenuActiveState";
+import { useMenuService, usePermissions } from "@core/composables";
+import type { MenuItem } from "@core/types";
+import { VcContainer } from "@ui/components";
+import VcAppMenuGroup from "@ui/components/organisms/vc-app/_internal/menu/VcAppMenuGroup.vue";
+import VcAppMenuItem from "@ui/components/organisms/vc-app/_internal/menu/VcAppMenuItem.vue";
+import { stripTenantPrefix } from "@ui/components/organisms/vc-app/_internal/menu/composables/useMenuActiveState";
 
 export interface Props {
   expanded?: boolean;

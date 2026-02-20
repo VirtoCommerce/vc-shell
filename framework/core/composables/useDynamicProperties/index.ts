@@ -1,5 +1,5 @@
-import { useLoading } from "../useLoading";
-import { useAsync } from "../useAsync";
+import { useLoading } from "@core/composables/useLoading";
+import { useAsync } from "@core/composables/useAsync";
 import { ComputedRef } from "vue";
 
 // === TYPE DEFINITIONS ===

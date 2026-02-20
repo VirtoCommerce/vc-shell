@@ -1,1 +1,1 @@
-export { default as VcRadioButton } from "./vc-radio-button.vue";
+export { default as VcRadioButton } from "@ui/components/molecules/vc-radio-button/vc-radio-button.vue";

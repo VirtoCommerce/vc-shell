@@ -1,8 +1,8 @@
 import type { Meta, StoryFn } from "@storybook/vue3";
 import { ref, h, onMounted, onUnmounted } from "vue";
-import { VcDataTable, VcColumn, TableColumnSwitcher } from "./";
-import { VcInput, VcSelect } from "../../molecules";
-import { VcButton } from "../../atoms";
+import { VcDataTable, VcColumn, TableColumnSwitcher } from "@ui/components/organisms/vc-table";
+import { VcInput, VcSelect } from "@ui/components/molecules";
+import { VcButton } from "@ui/components/atoms";
 import { withMobileView } from "../../../../../.storybook/decorators";
 
 export default {
@@ -195,7 +195,7 @@ export const WithSelectableRows: StoryFn = () => ({
   },
   template: `
     <div style="height: 400px">
-      <p class="tw-mb-2 tw-text-sm tw-text-[color:var(--neutrals-600)]">Only items with stock > 0 can be selected</p>
+      <p class="tw-mb-2 tw-text-sm tw-text-neutrals-600">Only items with stock > 0 can be selected</p>
       <p class="tw-mb-2">Selected: {{ selection.map(p => p.name).join(', ') || 'None' }}</p>
       <VcDataTable
         :items="products"
@@ -249,13 +249,13 @@ export const WithCustomCells: StoryFn = () => ({
           <template #body="{ data }">
             <div class="tw-flex tw-items-center tw-gap-2">
               <span class="tw-font-semibold">{{ data.name }}</span>
-              <span v-if="!data.isActive" class="tw-text-xs tw-text-[color:var(--danger-500)]">(inactive)</span>
+              <span v-if="!data.isActive" class="tw-text-xs tw-text-danger-500">(inactive)</span>
             </div>
           </template>
         </VcColumn>
         <VcColumn id="price" field="price" title="Price">
           <template #body="{ data }">
-            <span :class="{ 'tw-text-[color:var(--success-600)]': data.price < 100, 'tw-text-[color:var(--danger-600)]': data.price >= 100 }">
+            <span :class="{ 'tw-text-success-600': data.price < 100, 'tw-text-danger-600': data.price >= 100 }">
               {{ data.price.toFixed(2) }}
             </span>
           </template>
@@ -264,8 +264,8 @@ export const WithCustomCells: StoryFn = () => ({
           <template #body="{ data }">
             <div class="tw-flex tw-items-center tw-gap-1">
               <span>{{ data.stock }}</span>
-              <span v-if="data.stock === 0" class="tw-px-1 tw-text-xs tw-bg-[color:var(--danger-100)] tw-text-[color:var(--danger-700)] tw-rounded">OUT</span>
-              <span v-else-if="data.stock < 20" class="tw-px-1 tw-text-xs tw-bg-[color:var(--warning-100)] tw-text-[color:var(--warning-700)] tw-rounded">LOW</span>
+              <span v-if="data.stock === 0" class="tw-px-1 tw-text-xs tw-bg-danger-100 tw-text-danger-700 tw-rounded">OUT</span>
+              <span v-else-if="data.stock < 20" class="tw-px-1 tw-text-xs tw-bg-warning-100 tw-text-warning-700 tw-rounded">LOW</span>
             </div>
           </template>
         </VcColumn>
@@ -385,7 +385,7 @@ export const Empty: StoryFn = () => ({
         <VcColumn id="stock" field="stock" title="Stock" type="number" />
 
         <template #empty>
-          <div class="tw-text-center tw-p-8 tw-text-[color:var(--neutrals-500)]">
+          <div class="tw-text-center tw-p-8 tw-text-neutrals-500">
             <p class="tw-text-lg tw-font-semibold">No products found</p>
             <p class="tw-text-sm">Try adding some products to see them here.</p>
           </div>
@@ -539,7 +539,7 @@ export const SelectionWithDisabledRowsViaVcColumn: StoryFn = () => ({
   },
   template: `
     <div style="height: 400px">
-      <p class="tw-mb-2 tw-text-sm tw-text-[color:var(--neutrals-600)]">Only active items with stock > 0 can be selected (USB-C Hub is disabled)</p>
+      <p class="tw-mb-2 tw-text-sm tw-text-neutrals-600">Only active items with stock > 0 can be selected (USB-C Hub is disabled)</p>
       <p class="tw-mb-2">Selected: {{ selection.map(p => p.name).join(', ') || 'None' }}</p>
       <VcDataTable
         :items="products"
@@ -599,11 +599,11 @@ export const SelectionWithEvents: StoryFn = () => ({
   },
   template: `
     <div style="height: 500px">
-      <div class="tw-mb-4 tw-p-2 tw-bg-[color:var(--neutrals-100)] tw-rounded tw-text-sm">
+      <div class="tw-mb-4 tw-p-2 tw-bg-neutrals-100 tw-rounded tw-text-sm">
         <p class="tw-font-semibold tw-mb-1">Event Log:</p>
         <ul class="tw-list-disc tw-list-inside">
           <li v-for="(event, i) in eventLog" :key="i">{{ event }}</li>
-          <li v-if="!eventLog.length" class="tw-text-[color:var(--neutrals-400)]">No events yet</li>
+          <li v-if="!eventLog.length" class="tw-text-neutrals-400">No events yet</li>
         </ul>
       </div>
       <VcDataTable
@@ -650,11 +650,11 @@ export const CellEditing: StoryFn = () => ({
   },
   template: `
     <div style="height: 500px">
-      <div class="tw-mb-4 tw-p-2 tw-bg-[color:var(--neutrals-100)] tw-rounded tw-text-sm">
+      <div class="tw-mb-4 tw-p-2 tw-bg-neutrals-100 tw-rounded tw-text-sm">
         <p class="tw-font-semibold tw-mb-1">Click on Name or Stock cell to edit:</p>
         <ul class="tw-list-disc tw-list-inside">
           <li v-for="(event, i) in eventLog" :key="i">{{ event }}</li>
-          <li v-if="!eventLog.length" class="tw-text-[color:var(--neutrals-400)]">No edits yet</li>
+          <li v-if="!eventLog.length" class="tw-text-neutrals-400">No edits yet</li>
         </ul>
       </div>
       <VcDataTable
@@ -716,11 +716,11 @@ export const RowEditing: StoryFn = () => ({
   },
   template: `
     <div style="height: 500px">
-      <div class="tw-mb-4 tw-p-2 tw-bg-[color:var(--neutrals-100)] tw-rounded tw-text-sm">
+      <div class="tw-mb-4 tw-p-2 tw-bg-neutrals-100 tw-rounded tw-text-sm">
         <p class="tw-font-semibold tw-mb-1">Click edit button (✎) to edit a row:</p>
         <ul class="tw-list-disc tw-list-inside">
           <li v-for="(event, i) in eventLog" :key="i">{{ event }}</li>
-          <li v-if="!eventLog.length" class="tw-text-[color:var(--neutrals-400)]">No edits yet</li>
+          <li v-if="!eventLog.length" class="tw-text-neutrals-400">No edits yet</li>
         </ul>
       </div>
       <VcDataTable
@@ -772,7 +772,7 @@ export const RowEditingWithSelection: StoryFn = () => ({
   template: `
     <div style="height: 450px">
       <p class="tw-mb-2">Selected: {{ selection.map(p => p.name).join(', ') || 'None' }}</p>
-      <p class="tw-mb-2 tw-text-sm tw-text-[color:var(--neutrals-600)]">Editing: {{ editingRows.map(p => p.name).join(', ') || 'None' }}</p>
+      <p class="tw-mb-2 tw-text-sm tw-text-neutrals-600">Editing: {{ editingRows.map(p => p.name).join(', ') || 'None' }}</p>
       <VcDataTable
         :items="products"
         v-model:selection="selection"
@@ -849,9 +849,9 @@ export const MultiSort: StoryFn = () => ({
   },
   template: `
     <div style="height: 450px">
-      <div class="tw-mb-4 tw-p-3 tw-bg-[color:var(--primary-50)] tw-rounded tw-text-sm">
+      <div class="tw-mb-4 tw-p-3 tw-bg-primary-50 tw-rounded tw-text-sm">
         <p class="tw-font-semibold tw-mb-1">Multi-Sort Mode</p>
-        <p class="tw-text-[color:var(--neutrals-600)] tw-mb-2">Hold <kbd class="tw-px-1 tw-bg-[color:var(--neutrals-200)] tw-rounded">Ctrl</kbd> (or <kbd class="tw-px-1 tw-bg-[color:var(--neutrals-200)] tw-rounded">Cmd</kbd> on Mac) and click column headers to add multiple sort columns.</p>
+        <p class="tw-text-neutrals-600 tw-mb-2">Hold <kbd class="tw-px-1 tw-bg-neutrals-200 tw-rounded">Ctrl</kbd> (or <kbd class="tw-px-1 tw-bg-neutrals-200 tw-rounded">Cmd</kbd> on Mac) and click column headers to add multiple sort columns.</p>
         <p><strong>Current sort:</strong> {{ formatSortMeta() }}</p>
       </div>
       <VcDataTable
@@ -912,9 +912,9 @@ export const RemovableSort: StoryFn = () => ({
   },
   template: `
     <div style="height: 450px">
-      <div class="tw-mb-4 tw-p-3 tw-bg-[color:var(--success-50)] tw-rounded tw-text-sm">
+      <div class="tw-mb-4 tw-p-3 tw-bg-success-50 tw-rounded tw-text-sm">
         <p class="tw-font-semibold tw-mb-1">Removable Sort</p>
-        <p class="tw-text-[color:var(--neutrals-600)] tw-mb-2">Click a column header to cycle: <strong>ASC</strong> -> <strong>DESC</strong> -> <strong>None</strong></p>
+        <p class="tw-text-neutrals-600 tw-mb-2">Click a column header to cycle: <strong>ASC</strong> -> <strong>DESC</strong> -> <strong>None</strong></p>
         <p><strong>Current sort:</strong> {{ getSortLabel() }}</p>
       </div>
       <VcDataTable
@@ -983,10 +983,10 @@ export const MultiSortRemovable: StoryFn = () => ({
   },
   template: `
     <div style="height: 450px">
-      <div class="tw-mb-4 tw-p-3 tw-bg-[color:var(--info-50)] tw-rounded tw-text-sm">
+      <div class="tw-mb-4 tw-p-3 tw-bg-info-50 tw-rounded tw-text-sm">
         <p class="tw-font-semibold tw-mb-1">Multi-Sort with Removable Sort</p>
-        <p class="tw-text-[color:var(--neutrals-600)] tw-mb-2">
-          <kbd class="tw-px-1 tw-bg-[color:var(--neutrals-200)] tw-rounded">Ctrl</kbd>+click to add sort columns.
+        <p class="tw-text-neutrals-600 tw-mb-2">
+          <kbd class="tw-px-1 tw-bg-neutrals-200 tw-rounded">Ctrl</kbd>+click to add sort columns.
           Clicking a sorted column cycles: ASC -> DESC -> removed.
         </p>
         <p><strong>Current sort:</strong> {{ formatSortMeta() }}</p>
@@ -1034,13 +1034,13 @@ export const RowReorder: StoryFn = () => ({
   },
   template: `
     <div style="height: 500px">
-      <div class="tw-mb-4 tw-p-3 tw-bg-[color:var(--primary-50)] tw-rounded tw-text-sm">
+      <div class="tw-mb-4 tw-p-3 tw-bg-primary-50 tw-rounded tw-text-sm">
         <p class="tw-font-semibold tw-mb-1">Row Reorder with Drag Handle</p>
-        <p class="tw-text-[color:var(--neutrals-600)] tw-mb-2">Drag rows using the handle icon to reorder them.</p>
+        <p class="tw-text-neutrals-600 tw-mb-2">Drag rows using the handle icon to reorder them.</p>
         <p><strong>Event Log:</strong></p>
         <ul class="tw-list-disc tw-list-inside tw-text-xs">
           <li v-for="(event, i) in eventLog" :key="i">{{ event }}</li>
-          <li v-if="!eventLog.length" class="tw-text-[color:var(--neutrals-400)]">No reorder events yet</li>
+          <li v-if="!eventLog.length" class="tw-text-neutrals-400">No reorder events yet</li>
         </ul>
       </div>
       <VcDataTable
@@ -1079,13 +1079,13 @@ export const RowReorderWithoutHandle: StoryFn = () => ({
   },
   template: `
     <div style="height: 500px">
-      <div class="tw-mb-4 tw-p-3 tw-bg-[color:var(--success-50)] tw-rounded tw-text-sm">
+      <div class="tw-mb-4 tw-p-3 tw-bg-success-50 tw-rounded tw-text-sm">
         <p class="tw-font-semibold tw-mb-1">Row Reorder (Entire Row Draggable)</p>
-        <p class="tw-text-[color:var(--neutrals-600)] tw-mb-2">Drag any part of the row to reorder. Uses reorderableRows prop instead of VcColumn.</p>
+        <p class="tw-text-neutrals-600 tw-mb-2">Drag any part of the row to reorder. Uses reorderableRows prop instead of VcColumn.</p>
         <p><strong>Event Log:</strong></p>
         <ul class="tw-list-disc tw-list-inside tw-text-xs">
           <li v-for="(event, i) in eventLog" :key="i">{{ event }}</li>
-          <li v-if="!eventLog.length" class="tw-text-[color:var(--neutrals-400)]">No reorder events yet</li>
+          <li v-if="!eventLog.length" class="tw-text-neutrals-400">No reorder events yet</li>
         </ul>
       </div>
       <VcDataTable
@@ -1121,9 +1121,9 @@ export const RowReorderWithSelection: StoryFn = () => ({
   },
   template: `
     <div style="height: 500px">
-      <div class="tw-mb-4 tw-p-3 tw-bg-[color:var(--info-50)] tw-rounded tw-text-sm">
+      <div class="tw-mb-4 tw-p-3 tw-bg-info-50 tw-rounded tw-text-sm">
         <p class="tw-font-semibold tw-mb-1">Row Reorder with Selection</p>
-        <p class="tw-text-[color:var(--neutrals-600)] tw-mb-2">Both row reordering and selection work together.</p>
+        <p class="tw-text-neutrals-600 tw-mb-2">Both row reordering and selection work together.</p>
         <p><strong>Selected:</strong> {{ selection.map(p => p.name).join(', ') || 'None' }}</p>
       </div>
       <VcDataTable
@@ -1256,14 +1256,14 @@ export const ExpandableRows: StoryFn = () => ({
   },
   template: `
     <div style="height: 600px">
-      <div class="tw-mb-4 tw-p-3 tw-bg-[color:var(--primary-50)] tw-rounded tw-text-sm">
+      <div class="tw-mb-4 tw-p-3 tw-bg-primary-50 tw-rounded tw-text-sm">
         <p class="tw-font-semibold tw-mb-1">Expandable Rows</p>
-        <p class="tw-text-[color:var(--neutrals-600)] tw-mb-2">Click the arrow icon to expand rows and see order details.</p>
+        <p class="tw-text-neutrals-600 tw-mb-2">Click the arrow icon to expand rows and see order details.</p>
         <p><strong>Expanded:</strong> {{ expandedRows.map(p => p.name).join(', ') || 'None' }}</p>
         <p class="tw-mt-2"><strong>Events:</strong></p>
         <ul class="tw-list-disc tw-list-inside tw-text-xs">
           <li v-for="(event, i) in eventLog" :key="i">{{ event }}</li>
-          <li v-if="!eventLog.length" class="tw-text-[color:var(--neutrals-400)]">No expand/collapse events yet</li>
+          <li v-if="!eventLog.length" class="tw-text-neutrals-400">No expand/collapse events yet</li>
         </ul>
       </div>
       <VcDataTable
@@ -1280,10 +1280,10 @@ export const ExpandableRows: StoryFn = () => ({
 
         <template #expansion="{ data }">
           <div class="tw-p-4">
-            <h4 class="tw-font-semibold tw-mb-3 tw-text-[color:var(--neutrals-700)]">Order History for {{ data.name }}</h4>
+            <h4 class="tw-font-semibold tw-mb-3 tw-text-neutrals-700">Order History for {{ data.name }}</h4>
             <div v-if="data.orders && data.orders.length > 0">
-              <table class="tw-w-full tw-text-sm tw-border tw-border-[color:var(--neutrals-200)]">
-                <thead class="tw-bg-[color:var(--neutrals-100)]">
+              <table class="tw-w-full tw-text-sm tw-border tw-border-neutrals-200">
+                <thead class="tw-bg-neutrals-100">
                   <tr>
                     <th class="tw-px-3 tw-py-2 tw-text-left tw-font-medium">Order ID</th>
                     <th class="tw-px-3 tw-py-2 tw-text-left tw-font-medium">Date</th>
@@ -1292,8 +1292,8 @@ export const ExpandableRows: StoryFn = () => ({
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="order in data.orders" :key="order.orderId" class="tw-border-t tw-border-[color:var(--neutrals-200)]">
-                    <td class="tw-px-3 tw-py-2 tw-font-mono tw-text-[color:var(--primary-600)]">{{ order.orderId }}</td>
+                  <tr v-for="order in data.orders" :key="order.orderId" class="tw-border-t tw-border-neutrals-200">
+                    <td class="tw-px-3 tw-py-2 tw-font-mono tw-text-primary-600">{{ order.orderId }}</td>
                     <td class="tw-px-3 tw-py-2">{{ order.date }}</td>
                     <td class="tw-px-3 tw-py-2">{{ order.customer }}</td>
                     <td class="tw-px-3 tw-py-2 tw-text-right">{{ order.quantity }}</td>
@@ -1301,7 +1301,7 @@ export const ExpandableRows: StoryFn = () => ({
                 </tbody>
               </table>
             </div>
-            <p v-else class="tw-text-[color:var(--neutrals-500)] tw-italic">No orders for this product.</p>
+            <p v-else class="tw-text-neutrals-500 tw-italic">No orders for this product.</p>
           </div>
         </template>
       </VcDataTable>
@@ -1328,9 +1328,9 @@ export const ExpandableRowsWithSelection: StoryFn = () => ({
   },
   template: `
     <div style="height: 600px">
-      <div class="tw-mb-4 tw-p-3 tw-bg-[color:var(--info-50)] tw-rounded tw-text-sm">
+      <div class="tw-mb-4 tw-p-3 tw-bg-info-50 tw-rounded tw-text-sm">
         <p class="tw-font-semibold tw-mb-1">Expandable Rows with Selection</p>
-        <p class="tw-text-[color:var(--neutrals-600)] tw-mb-2">Both row expansion and selection work together.</p>
+        <p class="tw-text-neutrals-600 tw-mb-2">Both row expansion and selection work together.</p>
         <p><strong>Selected:</strong> {{ selection.map(p => p.name).join(', ') || 'None' }}</p>
         <p><strong>Expanded:</strong> {{ expandedRows.map(p => p.name).join(', ') || 'None' }}</p>
       </div>
@@ -1346,7 +1346,7 @@ export const ExpandableRowsWithSelection: StoryFn = () => ({
         <VcColumn id="stock" field="stock" title="Stock" type="number" />
 
         <template #expansion="{ data }">
-          <div class="tw-p-4 tw-bg-[color:var(--neutrals-50)]">
+          <div class="tw-p-4 tw-bg-neutrals-50">
             <p class="tw-mb-2"><strong>Product Details:</strong></p>
             <ul class="tw-list-disc tw-list-inside tw-text-sm">
               <li>Created: {{ data.createdAt.toLocaleDateString() }}</li>
@@ -1378,9 +1378,9 @@ export const ExpandableRowsCustomIcons: StoryFn = () => ({
   },
   template: `
     <div style="height: 500px">
-      <div class="tw-mb-4 tw-p-3 tw-bg-[color:var(--success-50)] tw-rounded tw-text-sm">
+      <div class="tw-mb-4 tw-p-3 tw-bg-success-50 tw-rounded tw-text-sm">
         <p class="tw-font-semibold tw-mb-1">Custom Expansion Icons</p>
-        <p class="tw-text-[color:var(--neutrals-600)]">Using plus/minus icons instead of chevrons.</p>
+        <p class="tw-text-neutrals-600">Using plus/minus icons instead of chevrons.</p>
       </div>
       <VcDataTable
         :items="products"
@@ -1394,9 +1394,9 @@ export const ExpandableRowsCustomIcons: StoryFn = () => ({
         <VcColumn id="status" field="status" title="Status" />
 
         <template #expansion="{ data, index }">
-          <div class="tw-p-4 tw-bg-[color:var(--success-50)] tw-border-l-4 tw-border-[color:var(--success-400)]">
+          <div class="tw-p-4 tw-bg-success-50 tw-border-l-4 tw-border-success-400">
             <p class="tw-font-medium">Row #{{ index + 1 }}: {{ data.name }}</p>
-            <p class="tw-text-sm tw-text-[color:var(--neutrals-600)] tw-mt-1">
+            <p class="tw-text-sm tw-text-neutrals-600 tw-mt-1">
               This product has {{ data.orders?.length || 0 }} orders with a total stock of {{ data.stock }} units.
             </p>
           </div>
@@ -1427,9 +1427,9 @@ export const ColumnResize: StoryFn = () => ({
   },
   template: `
     <div style="height: 400px">
-      <div class="tw-mb-4 tw-p-3 tw-bg-[color:var(--primary-50)] tw-rounded tw-text-sm">
+      <div class="tw-mb-4 tw-p-3 tw-bg-primary-50 tw-rounded tw-text-sm">
         <p class="tw-font-semibold tw-mb-1">Column Resize</p>
-        <p class="tw-text-[color:var(--neutrals-600)]">
+        <p class="tw-text-neutrals-600">
           Drag the border between column headers to resize. The table uses two-column
           resize mode: resizing one column affects its right neighbor.
         </p>
@@ -1460,9 +1460,9 @@ export const ColumnResizeWithMinWidth: StoryFn = () => ({
   },
   template: `
     <div style="height: 400px">
-      <div class="tw-mb-4 tw-p-3 tw-bg-[color:var(--primary-50)] tw-rounded tw-text-sm">
+      <div class="tw-mb-4 tw-p-3 tw-bg-primary-50 tw-rounded tw-text-sm">
         <p class="tw-font-semibold tw-mb-1">Column Resize with Min Width</p>
-        <p class="tw-text-[color:var(--neutrals-600)]">
+        <p class="tw-text-neutrals-600">
           Columns have a minimum width of 60px. Try resizing columns - they will stop
           at the minimum width.
         </p>
@@ -1500,9 +1500,9 @@ export const ColumnReorder: StoryFn = () => ({
   },
   template: `
     <div style="height: 400px">
-      <div class="tw-mb-4 tw-p-3 tw-bg-[color:var(--info-50)] tw-rounded tw-text-sm">
+      <div class="tw-mb-4 tw-p-3 tw-bg-info-50 tw-rounded tw-text-sm">
         <p class="tw-font-semibold tw-mb-1">Column Reorder</p>
-        <p class="tw-text-[color:var(--neutrals-600)]">
+        <p class="tw-text-neutrals-600">
           Drag column headers to reorder them. Columns swap when you cross the 50%
           threshold of the target column.
         </p>
@@ -1535,9 +1535,9 @@ export const ColumnReorderWithSelection: StoryFn = () => ({
   },
   template: `
     <div style="height: 400px">
-      <div class="tw-mb-4 tw-p-3 tw-bg-[color:var(--info-50)] tw-rounded tw-text-sm">
+      <div class="tw-mb-4 tw-p-3 tw-bg-info-50 tw-rounded tw-text-sm">
         <p class="tw-font-semibold tw-mb-1">Column Reorder with Selection</p>
-        <p class="tw-text-[color:var(--neutrals-600)]">
+        <p class="tw-text-neutrals-600">
           The selection (checkbox) column always stays in the first position and
           cannot be reordered.
         </p>
@@ -1566,9 +1566,9 @@ export const ColumnResizeAndReorder: StoryFn = () => ({
   },
   template: `
     <div style="height: 400px">
-      <div class="tw-mb-4 tw-p-3 tw-bg-[color:var(--primary-50)] tw-rounded tw-text-sm">
+      <div class="tw-mb-4 tw-p-3 tw-bg-primary-50 tw-rounded tw-text-sm">
         <p class="tw-font-semibold tw-mb-1">Column Resize + Reorder</p>
-        <p class="tw-text-[color:var(--neutrals-600)]">
+        <p class="tw-text-neutrals-600">
           Both resize and reorder are enabled. Drag column headers to reorder, drag
           the border between columns to resize.
         </p>
@@ -1624,9 +1624,9 @@ export const StatePersistence: StoryFn = () => ({
   },
   template: `
     <div style="height: 450px">
-      <div class="tw-mb-4 tw-p-3 tw-bg-[color:var(--success-50)] tw-rounded tw-text-sm">
+      <div class="tw-mb-4 tw-p-3 tw-bg-success-50 tw-rounded tw-text-sm">
         <p class="tw-font-semibold tw-mb-1">State Persistence (localStorage)</p>
-        <p class="tw-text-[color:var(--neutrals-600)] tw-mb-2">
+        <p class="tw-text-neutrals-600 tw-mb-2">
           Resize or reorder columns, then refresh the page. Your changes will be preserved.
           The state is stored in localStorage with key "VC_DATATABLE_DEMO-PRODUCTS-TABLE".
         </p>
@@ -1671,9 +1671,9 @@ export const StatePersistenceSession: StoryFn = () => ({
   },
   template: `
     <div style="height: 450px">
-      <div class="tw-mb-4 tw-p-3 tw-bg-[color:var(--warning-50)] tw-rounded tw-text-sm">
+      <div class="tw-mb-4 tw-p-3 tw-bg-warning-50 tw-rounded tw-text-sm">
         <p class="tw-font-semibold tw-mb-1">State Persistence (sessionStorage)</p>
-        <p class="tw-text-[color:var(--neutrals-600)] tw-mb-2">
+        <p class="tw-text-neutrals-600 tw-mb-2">
           Similar to localStorage, but state is cleared when you close the browser tab.
           Useful for temporary state that shouldn't persist across sessions.
         </p>
@@ -1726,9 +1726,9 @@ export const FullFeaturedTable: StoryFn = () => ({
   },
   template: `
     <div style="height: 500px">
-      <div class="tw-mb-4 tw-p-3 tw-bg-gradient-to-r tw-from-[var(--primary-50)] tw-to-[var(--info-50)] tw-rounded tw-text-sm">
+      <div class="tw-mb-4 tw-p-3 tw-bg-gradient-to-r tw-from-primary-50 tw-to-info-50 tw-rounded tw-text-sm">
         <p class="tw-font-semibold tw-mb-1">🚀 Full Featured VcDataTable</p>
-        <p class="tw-text-[color:var(--neutrals-600)] tw-mb-2">
+        <p class="tw-text-neutrals-600 tw-mb-2">
           This example combines all features: multi-select, sorting, column resize,
           column reorder, and state persistence.
         </p>
@@ -1737,7 +1737,7 @@ export const FullFeaturedTable: StoryFn = () => ({
         </div>
       </div>
 
-      <div v-if="selection.length" class="tw-mb-2 tw-p-2 tw-bg-[color:var(--primary-100)] tw-rounded tw-text-sm">
+      <div v-if="selection.length" class="tw-mb-2 tw-p-2 tw-bg-primary-100 tw-rounded tw-text-sm">
         Selected: {{ selection.map(p => p.name).join(', ') }}
       </div>
 
@@ -1838,7 +1838,7 @@ export const WithRowActions: StoryFn = () => ({
   },
   template: `
     <div style="height: 500px">
-      <div class="tw-mb-4 tw-p-3 tw-bg-[color:var(--neutrals-100)] tw-rounded tw-text-sm">
+      <div class="tw-mb-4 tw-p-3 tw-bg-neutrals-100 tw-rounded tw-text-sm">
         <div class="tw-flex tw-items-center tw-gap-4 tw-mb-3">
           <label class="tw-font-semibold">Max Quick Actions:</label>
           <select v-model.number="maxQuickActions" class="tw-border tw-rounded tw-px-2 tw-py-1">
@@ -1848,12 +1848,12 @@ export const WithRowActions: StoryFn = () => ({
             <option :value="4">4 (1 in dropdown)</option>
             <option :value="5">5 (none in dropdown)</option>
           </select>
-          <span class="tw-text-[color:var(--neutrals-500)]">← Change to see different configurations</span>
+          <span class="tw-text-neutrals-500">← Change to see different configurations</span>
         </div>
         <p class="tw-font-semibold tw-mb-1">Hover over a row to see actions:</p>
         <ul class="tw-list-disc tw-list-inside">
           <li v-for="(event, i) in eventLog" :key="i">{{ event }}</li>
-          <li v-if="!eventLog.length" class="tw-text-[color:var(--neutrals-400)]">No actions yet</li>
+          <li v-if="!eventLog.length" class="tw-text-neutrals-400">No actions yet</li>
         </ul>
       </div>
       <VcDataTable
@@ -1872,7 +1872,7 @@ export const WithRowActions: StoryFn = () => ({
 });
 
 /**
- * Row Actions with Dropdown Menu (shadcn style)
+ * Row Actions with Dropdown Menu
  *
  * All actions shown in a dropdown menu triggered by three dots.
  * Uses mode="dropdown" on TableRowActions component.
@@ -1934,7 +1934,7 @@ export const WithRowActionsDropdown: StoryFn = () => ({
   },
   template: `
     <div style="height: 400px">
-      <p class="tw-mb-4 tw-text-sm tw-text-[color:var(--neutrals-500)]">
+      <p class="tw-mb-4 tw-text-sm tw-text-neutrals-500">
         Click the three dots (⋮) to open the actions menu.
         Archive is disabled for out-of-stock items.
       </p>
@@ -2070,9 +2070,9 @@ export const CellTypeImage: StoryFn = () => ({
   },
   template: `
     <div style="height: 400px">
-      <div class="tw-mb-4 tw-p-3 tw-bg-[color:var(--primary-50)] tw-rounded tw-text-sm">
+      <div class="tw-mb-4 tw-p-3 tw-bg-primary-50 tw-rounded tw-text-sm">
         <p class="tw-font-semibold">Image Cell Type</p>
-        <p class="tw-text-[color:var(--neutrals-600)]">Use <code>type="image"</code> to display images in cells. Empty/missing images show a placeholder.</p>
+        <p class="tw-text-neutrals-600">Use <code>type="image"</code> to display images in cells. Empty/missing images show a placeholder.</p>
       </div>
       <VcDataTable :items="items">
         <VcColumn id="image" field="image" title="Image" type="image" width="100px" />
@@ -2128,9 +2128,9 @@ export const CellTypeLink: StoryFn = () => ({
   },
   template: `
     <div style="height: 400px">
-      <div class="tw-mb-4 tw-p-3 tw-bg-[color:var(--primary-50)] tw-rounded tw-text-sm">
+      <div class="tw-mb-4 tw-p-3 tw-bg-primary-50 tw-rounded tw-text-sm">
         <p class="tw-font-semibold">Link Cell Type</p>
-        <p class="tw-text-[color:var(--neutrals-600)]">Use <code>type="link"</code> to display clickable URLs. Links open in a new tab.</p>
+        <p class="tw-text-neutrals-600">Use <code>type="link"</code> to display clickable URLs. Links open in a new tab.</p>
       </div>
       <VcDataTable :items="items">
         <VcColumn id="name" field="name" title="Resource Name" />
@@ -2184,9 +2184,9 @@ export const CellTypeHtml: StoryFn = () => ({
   },
   template: `
     <div style="height: 400px">
-      <div class="tw-mb-4 tw-p-3 tw-bg-[color:var(--warning-50)] tw-rounded tw-text-sm">
+      <div class="tw-mb-4 tw-p-3 tw-bg-warning-50 tw-rounded tw-text-sm">
         <p class="tw-font-semibold">HTML Cell Type</p>
-        <p class="tw-text-[color:var(--neutrals-600)]">Use <code>type="html"</code> to render raw HTML content. <strong>Warning:</strong> Only use with trusted data to avoid XSS vulnerabilities.</p>
+        <p class="tw-text-neutrals-600">Use <code>type="html"</code> to render raw HTML content. <strong>Warning:</strong> Only use with trusted data to avoid XSS vulnerabilities.</p>
       </div>
       <VcDataTable :items="items">
         <VcColumn id="title" field="title" title="Type" width="150px" />
@@ -2242,9 +2242,9 @@ export const CellTypeDateAgo: StoryFn = () => ({
   },
   template: `
     <div style="height: 400px">
-      <div class="tw-mb-4 tw-p-3 tw-bg-[color:var(--primary-50)] tw-rounded tw-text-sm">
+      <div class="tw-mb-4 tw-p-3 tw-bg-primary-50 tw-rounded tw-text-sm">
         <p class="tw-font-semibold">Date-Ago Cell Type</p>
-        <p class="tw-text-[color:var(--neutrals-600)]">Use <code>type="date-ago"</code> to display relative timestamps like "2 minutes ago", "3 hours ago", etc.</p>
+        <p class="tw-text-neutrals-600">Use <code>type="date-ago"</code> to display relative timestamps like "2 minutes ago", "3 hours ago", etc.</p>
       </div>
       <VcDataTable :items="items">
         <VcColumn id="action" field="action" title="Action" />
@@ -2313,9 +2313,9 @@ export const AllCellTypes: StoryFn = () => ({
   },
   template: `
     <div style="height: 450px">
-      <div class="tw-mb-4 tw-p-3 tw-bg-[color:var(--success-50)] tw-rounded tw-text-sm">
+      <div class="tw-mb-4 tw-p-3 tw-bg-success-50 tw-rounded tw-text-sm">
         <p class="tw-font-semibold">All Cell Types</p>
-        <p class="tw-text-[color:var(--neutrals-600)]">This table demonstrates all available cell types: text, number, money, date, datetime, date-ago, image, link, html, status, and status-icon.</p>
+        <p class="tw-text-neutrals-600">This table demonstrates all available cell types: text, number, money, date, datetime, date-ago, image, link, html, status, and status-icon.</p>
       </div>
       <VcDataTable :items="items">
         <VcColumn id="image" field="image" title="Image" type="image" width="80px" />
@@ -2357,9 +2357,9 @@ export const BuiltInColumnSwitcher: StoryFn = () => ({
   },
   template: `
     <div style="height: 500px">
-      <div class="tw-mb-4 tw-p-3 tw-bg-[color:var(--primary-50)] tw-rounded tw-text-sm">
+      <div class="tw-mb-4 tw-p-3 tw-bg-primary-50 tw-rounded tw-text-sm">
         <p class="tw-font-semibold">Built-in Column Switcher (Auto)</p>
-        <p class="tw-text-[color:var(--neutrals-600)]">
+        <p class="tw-text-neutrals-600">
           Only 3 columns are declared (<code>name</code>, <code>price</code>, <code>stock</code>).
           The switcher auto-discovers remaining fields from data:
           <code>id</code>, <code>currency</code>, <code>status</code>,
@@ -2397,9 +2397,9 @@ export const ColumnSwitcherDefined: StoryFn = () => ({
   },
   template: `
     <div style="height: 500px">
-      <div class="tw-mb-4 tw-p-3 tw-bg-[color:var(--primary-50)] tw-rounded tw-text-sm">
+      <div class="tw-mb-4 tw-p-3 tw-bg-primary-50 tw-rounded tw-text-sm">
         <p class="tw-font-semibold">Column Switcher (Defined Mode)</p>
-        <p class="tw-text-[color:var(--neutrals-600)]">
+        <p class="tw-text-neutrals-600">
           Only declared VcColumns appear in the switcher — no auto-discovered columns.
         </p>
       </div>
@@ -2441,10 +2441,10 @@ export const WithRowGrouping: StoryFn = () => ({
   },
   template: `
     <div style="height: 500px">
-      <div class="tw-mb-4 tw-p-3 tw-bg-[color:var(--primary-50)] tw-rounded tw-text-sm">
+      <div class="tw-mb-4 tw-p-3 tw-bg-primary-50 tw-rounded tw-text-sm">
         <p class="tw-font-semibold">Row Grouping</p>
-        <p class="tw-text-[color:var(--neutrals-600)]">Products are grouped by their status in a single table. Click group headers to expand/collapse.</p>
-        <p class="tw-text-[color:var(--neutrals-500)] tw-mt-1">Expanded groups: {{ expandedGroups.join(', ') }}</p>
+        <p class="tw-text-neutrals-600">Products are grouped by their status in a single table. Click group headers to expand/collapse.</p>
+        <p class="tw-text-neutrals-500 tw-mt-1">Expanded groups: {{ expandedGroups.join(', ') }}</p>
       </div>
 
       <VcDataTable
@@ -2464,9 +2464,9 @@ export const WithRowGrouping: StoryFn = () => ({
           <span
             class="tw-inline-block tw-w-3 tw-h-3 tw-rounded-full tw-mr-2"
             :class="{
-              'tw-bg-[color:var(--success-50)]0': data.status === 'In Stock',
-              'tw-bg-[color:var(--danger-500)]': data.status === 'Out of Stock',
-              'tw-bg-[color:var(--warning-500)]': data.status === 'Low Stock',
+              'tw-bg-success-500': data.status === 'In Stock',
+              'tw-bg-danger-500': data.status === 'Out of Stock',
+              'tw-bg-warning-500': data.status === 'Low Stock',
             }"
           ></span>
           <span class="tw-font-semibold">{{ data.status }}</span>
@@ -2499,9 +2499,9 @@ export const WithRowGroupingFooter: StoryFn = () => ({
   },
   template: `
     <div style="height: 500px">
-      <div class="tw-mb-4 tw-p-3 tw-bg-[color:var(--primary-50)] tw-rounded tw-text-sm">
+      <div class="tw-mb-4 tw-p-3 tw-bg-primary-50 tw-rounded tw-text-sm">
         <p class="tw-font-semibold">Row Grouping with Footer</p>
-        <p class="tw-text-[color:var(--neutrals-600)]">Each group has a footer showing the total price for that group.</p>
+        <p class="tw-text-neutrals-600">Each group has a footer showing the total price for that group.</p>
       </div>
 
       <VcDataTable
@@ -2519,9 +2519,9 @@ export const WithRowGroupingFooter: StoryFn = () => ({
           <span
             class="tw-inline-block tw-w-3 tw-h-3 tw-rounded-full tw-mr-2"
             :class="{
-              'tw-bg-[color:var(--success-50)]0': data.status === 'In Stock',
-              'tw-bg-[color:var(--danger-500)]': data.status === 'Out of Stock',
-              'tw-bg-[color:var(--warning-500)]': data.status === 'Low Stock',
+              'tw-bg-success-500': data.status === 'In Stock',
+              'tw-bg-danger-500': data.status === 'Out of Stock',
+              'tw-bg-warning-500': data.status === 'Low Stock',
             }"
           ></span>
           <span class="tw-font-semibold">{{ data.status }}</span>
@@ -2529,7 +2529,7 @@ export const WithRowGroupingFooter: StoryFn = () => ({
 
         <template #groupfooter="{ data }">
           <div class="tw-flex tw-justify-end tw-gap-4">
-            <span class="tw-text-[color:var(--neutrals-600)]">Total for {{ data.status }}:</span>
+            <span class="tw-text-neutrals-600">Total for {{ data.status }}:</span>
             <span class="tw-font-semibold">\${{ getGroupTotal(data.status) }}</span>
           </div>
         </template>
@@ -2551,9 +2551,9 @@ export const WithRowGroupingNonExpandable: StoryFn = () => ({
   },
   template: `
     <div style="height: 500px">
-      <div class="tw-mb-4 tw-p-3 tw-bg-[color:var(--primary-50)] tw-rounded tw-text-sm">
+      <div class="tw-mb-4 tw-p-3 tw-bg-primary-50 tw-rounded tw-text-sm">
         <p class="tw-font-semibold">Row Grouping (Non-Expandable)</p>
-        <p class="tw-text-[color:var(--neutrals-600)]">Groups are always expanded and cannot be collapsed.</p>
+        <p class="tw-text-neutrals-600">Groups are always expanded and cannot be collapsed.</p>
       </div>
 
       <VcDataTable
@@ -2570,9 +2570,9 @@ export const WithRowGroupingNonExpandable: StoryFn = () => ({
           <span
             class="tw-inline-block tw-w-3 tw-h-3 tw-rounded-full tw-mr-2"
             :class="{
-              'tw-bg-[color:var(--success-50)]0': data.status === 'In Stock',
-              'tw-bg-[color:var(--danger-500)]': data.status === 'Out of Stock',
-              'tw-bg-[color:var(--warning-500)]': data.status === 'Low Stock',
+              'tw-bg-success-500': data.status === 'In Stock',
+              'tw-bg-danger-500': data.status === 'Out of Stock',
+              'tw-bg-warning-500': data.status === 'Low Stock',
             }"
           ></span>
           <span class="tw-font-semibold">{{ data.status }}</span>
@@ -2637,7 +2637,7 @@ export const InfiniteScroll: StoryFn = () => ({
   },
   template: `
     <div>
-      <div class="tw-mb-2 tw-text-sm tw-text-[color:var(--neutrals-500)]">
+      <div class="tw-mb-2 tw-text-sm tw-text-neutrals-500">
         Loaded: {{ products.length }} items | Fetches: {{ loadCount }} | {{ hasMore ? 'Scroll down to load more...' : 'All items loaded' }}
       </div>
       <VcDataTable
@@ -4175,17 +4175,17 @@ export const DeclarativeFilters: StoryFn = () => ({
   },
   template: `
     <div style="height: 600px" class="tw-overflow-hidden">
-      <div class="tw-mb-4 tw-p-4 tw-bg-gradient-to-r tw-from-[var(--primary-50)] tw-to-[var(--primary-50)] tw-rounded-lg">
+      <div class="tw-mb-4 tw-p-4 tw-bg-gradient-to-r tw-from-primary-50 tw-to-primary-50 tw-rounded-lg">
         <p class="tw-font-semibold tw-text-lg tw-mb-2">Declarative Column Filters</p>
-        <p class="tw-text-[color:var(--neutrals-600)] tw-text-sm tw-mb-3">
-          Configure filters directly on columns using the <code class="tw-bg-[color:var(--additional-50)] tw-px-1 tw-rounded">filter</code> prop.
+        <p class="tw-text-neutrals-600 tw-text-sm tw-mb-3">
+          Configure filters directly on columns using the <code class="tw-bg-additional-50 tw-px-1 tw-rounded">filter</code> prop.
           Click the filter icon (funnel) in column headers.
         </p>
 
         <div class="tw-grid tw-grid-cols-2 tw-gap-4 tw-text-sm">
           <div>
             <p class="tw-font-medium tw-mb-1">Filter Types:</p>
-            <ul class="tw-list-disc tw-list-inside tw-text-[color:var(--neutrals-600)]">
+            <ul class="tw-list-disc tw-list-inside tw-text-neutrals-600">
               <li><strong>Name:</strong> Text filter (<code>filter: true</code>)</li>
               <li><strong>Status:</strong> Single select (<code>filter: { options }</code>)</li>
               <li><strong>Currency:</strong> Multi-select (<code>filter: { options, multiple: true }</code>)</li>
@@ -4194,14 +4194,14 @@ export const DeclarativeFilters: StoryFn = () => ({
           </div>
           <div class="tw-min-w-0">
             <p class="tw-font-medium tw-mb-1">Active Filters:</p>
-            <pre class="tw-bg-[color:var(--additional-50)] tw-p-2 tw-rounded tw-text-xs tw-overflow-auto tw-h-24">{{ JSON.stringify(activeFilters, null, 2) || '{}' }}</pre>
+            <pre class="tw-bg-additional-50 tw-p-2 tw-rounded tw-text-xs tw-overflow-auto tw-h-24">{{ JSON.stringify(activeFilters, null, 2) || '{}' }}</pre>
           </div>
         </div>
       </div>
 
-      <div class="tw-mb-3 tw-p-2 tw-bg-[color:var(--neutrals-100)] tw-rounded tw-text-xs tw-font-mono tw-h-12 tw-overflow-hidden">
-        <div v-for="(log, i) in filterLog" :key="i" class="tw-text-[color:var(--neutrals-600)] tw-truncate">{{ log }}</div>
-        <div v-if="!filterLog.length" class="tw-text-[color:var(--neutrals-400)]">No filters applied yet</div>
+      <div class="tw-mb-3 tw-p-2 tw-bg-neutrals-100 tw-rounded tw-text-xs tw-font-mono tw-h-12 tw-overflow-hidden">
+        <div v-for="(log, i) in filterLog" :key="i" class="tw-text-neutrals-600 tw-truncate">{{ log }}</div>
+        <div v-if="!filterLog.length" class="tw-text-neutrals-400">No filters applied yet</div>
       </div>
 
       <VcDataTable
@@ -4320,20 +4320,20 @@ export const CustomFilterTemplate: StoryFn = () => ({
   },
   template: `
     <div style="height: 500px">
-      <div class="tw-mb-4 tw-p-3 tw-bg-[color:var(--info-50)] tw-rounded tw-text-sm">
+      <div class="tw-mb-4 tw-p-3 tw-bg-info-50 tw-rounded tw-text-sm">
         <p class="tw-font-semibold">Custom Filter Templates</p>
-        <p class="tw-text-[color:var(--neutrals-600)]">
+        <p class="tw-text-neutrals-600">
           Use the <code>#filter</code> slot for complete control over the filter UI.
           This example shows a custom price range filter with min/max inputs.
         </p>
-        <p class="tw-text-[color:var(--neutrals-500)] tw-text-xs tw-mt-1">
+        <p class="tw-text-neutrals-500 tw-text-xs tw-mt-1">
           Note: Clear/Apply buttons are provided automatically by the filter overlay.
         </p>
       </div>
 
-      <div class="tw-mb-3 tw-p-2 tw-bg-[color:var(--neutrals-100)] tw-rounded tw-text-xs tw-font-mono tw-h-12 tw-overflow-hidden">
-        <div v-for="(log, i) in filterLog" :key="i" class="tw-text-[color:var(--neutrals-600)] tw-truncate">{{ log }}</div>
-        <div v-if="!filterLog.length" class="tw-text-[color:var(--neutrals-400)]">No filters applied yet</div>
+      <div class="tw-mb-3 tw-p-2 tw-bg-neutrals-100 tw-rounded tw-text-xs tw-font-mono tw-h-12 tw-overflow-hidden">
+        <div v-for="(log, i) in filterLog" :key="i" class="tw-text-neutrals-600 tw-truncate">{{ log }}</div>
+        <div v-if="!filterLog.length" class="tw-text-neutrals-400">No filters applied yet</div>
       </div>
 
       <VcDataTable
@@ -4355,7 +4355,7 @@ export const CustomFilterTemplate: StoryFn = () => ({
         >
           <template #filter="{ value, updateValue }">
             <div class="tw-space-y-2">
-              <p class="tw-text-xs tw-font-medium tw-text-[color:var(--neutrals-600)]">Price Range</p>
+              <p class="tw-text-xs tw-font-medium tw-text-neutrals-600">Price Range</p>
               <div class="tw-flex tw-items-center tw-gap-2">
                 <VcInput
                   type="number"
@@ -4364,7 +4364,7 @@ export const CustomFilterTemplate: StoryFn = () => ({
                   :model-value="value?.min"
                   @update:model-value="(v) => updateValue({ ...value, min: v })"
                 />
-                <span class="tw-text-[color:var(--neutrals-400)] tw-text-sm">—</span>
+                <span class="tw-text-neutrals-400 tw-text-sm">—</span>
                 <VcInput
                   type="number"
                   placeholder="Max"
@@ -4500,19 +4500,19 @@ export const GlobalFilters: StoryFn = () => ({
   },
   template: `
     <div style="height: 650px" class="tw-overflow-hidden">
-      <div class="tw-mb-4 tw-p-4 tw-bg-gradient-to-r tw-from-[var(--accent-50)] tw-to-[var(--info-50)] tw-rounded-lg">
+      <div class="tw-mb-4 tw-p-4 tw-bg-gradient-to-r tw-from-accent-50 tw-to-info-50 tw-rounded-lg">
         <p class="tw-font-semibold tw-text-lg tw-mb-2">Global Filters</p>
-        <p class="tw-text-[color:var(--neutrals-600)] tw-text-sm tw-mb-3">
-          The <code class="tw-bg-[color:var(--additional-50)] tw-px-1 tw-rounded">globalFilters</code> prop renders a
+        <p class="tw-text-neutrals-600 tw-text-sm tw-mb-3">
+          The <code class="tw-bg-additional-50 tw-px-1 tw-rounded">globalFilters</code> prop renders a
           "Filters" button above the table. Click it to open a panel with text, select, multi-select
-          and date-range filters. The <code class="tw-bg-[color:var(--additional-50)] tw-px-1 tw-rounded">@filter</code> event
+          and date-range filters. The <code class="tw-bg-additional-50 tw-px-1 tw-rounded">@filter</code> event
           emits a single flat payload merging both column and global filter values.
         </p>
 
         <div class="tw-grid tw-grid-cols-2 tw-gap-4 tw-text-sm">
           <div>
             <p class="tw-font-medium tw-mb-1">Configured Global Filters:</p>
-            <ul class="tw-list-disc tw-list-inside tw-text-[color:var(--neutrals-600)]">
+            <ul class="tw-list-disc tw-list-inside tw-text-neutrals-600">
               <li><strong>Search:</strong> Text filter</li>
               <li><strong>Status:</strong> Single select</li>
               <li><strong>Currency:</strong> Multi-select</li>
@@ -4521,14 +4521,14 @@ export const GlobalFilters: StoryFn = () => ({
           </div>
           <div class="tw-min-w-0">
             <p class="tw-font-medium tw-mb-1">Active Filters:</p>
-            <pre class="tw-bg-[color:var(--additional-50)] tw-p-2 tw-rounded tw-text-xs tw-overflow-auto tw-h-24">{{ JSON.stringify(activeFilters, null, 2) || '{}' }}</pre>
+            <pre class="tw-bg-additional-50 tw-p-2 tw-rounded tw-text-xs tw-overflow-auto tw-h-24">{{ JSON.stringify(activeFilters, null, 2) || '{}' }}</pre>
           </div>
         </div>
       </div>
 
-      <div class="tw-mb-3 tw-p-2 tw-bg-[color:var(--neutrals-100)] tw-rounded tw-text-xs tw-font-mono tw-h-16 tw-overflow-hidden">
-        <div v-for="(log, i) in filterLog" :key="i" class="tw-text-[color:var(--neutrals-600)] tw-truncate">{{ log }}</div>
-        <div v-if="!filterLog.length" class="tw-text-[color:var(--neutrals-400)]">No filters applied yet — click the "Filters" button above the table</div>
+      <div class="tw-mb-3 tw-p-2 tw-bg-neutrals-100 tw-rounded tw-text-xs tw-font-mono tw-h-16 tw-overflow-hidden">
+        <div v-for="(log, i) in filterLog" :key="i" class="tw-text-neutrals-600 tw-truncate">{{ log }}</div>
+        <div v-if="!filterLog.length" class="tw-text-neutrals-400">No filters applied yet — click the "Filters" button above the table</div>
       </div>
 
       <VcDataTable
@@ -4672,24 +4672,24 @@ export const GlobalAndColumnFiltersCombined: StoryFn = () => ({
   },
   template: `
     <div style="height: 650px" class="tw-overflow-hidden">
-      <div class="tw-mb-4 tw-p-4 tw-bg-gradient-to-r tw-from-[var(--warning-50)] tw-to-[var(--warning-100)] tw-rounded-lg">
+      <div class="tw-mb-4 tw-p-4 tw-bg-gradient-to-r tw-from-warning-50 tw-to-warning-100 tw-rounded-lg">
         <p class="tw-font-semibold tw-text-lg tw-mb-2">Global + Column Filters Combined</p>
-        <p class="tw-text-[color:var(--neutrals-600)] tw-text-sm tw-mb-3">
-          Both <code class="tw-bg-[color:var(--additional-50)] tw-px-1 tw-rounded">globalFilters</code> (button above table) and
-          column-level <code class="tw-bg-[color:var(--additional-50)] tw-px-1 tw-rounded">filter</code> props (icons in headers)
-          work together. The <code class="tw-bg-[color:var(--additional-50)] tw-px-1 tw-rounded">@filter</code> event merges
+        <p class="tw-text-neutrals-600 tw-text-sm tw-mb-3">
+          Both <code class="tw-bg-additional-50 tw-px-1 tw-rounded">globalFilters</code> (button above table) and
+          column-level <code class="tw-bg-additional-50 tw-px-1 tw-rounded">filter</code> props (icons in headers)
+          work together. The <code class="tw-bg-additional-50 tw-px-1 tw-rounded">@filter</code> event merges
           both payloads into a single flat object for the backend.
         </p>
 
         <div class="tw-grid tw-grid-cols-2 tw-gap-4 tw-text-sm">
           <div>
             <p class="tw-font-medium tw-mb-1">Global Filters (button panel):</p>
-            <ul class="tw-list-disc tw-list-inside tw-text-[color:var(--neutrals-600)]">
+            <ul class="tw-list-disc tw-list-inside tw-text-neutrals-600">
               <li>Quick Search (text)</li>
               <li>Created Date (date range)</li>
             </ul>
             <p class="tw-font-medium tw-mt-2 tw-mb-1">Column Filters (header icons):</p>
-            <ul class="tw-list-disc tw-list-inside tw-text-[color:var(--neutrals-600)]">
+            <ul class="tw-list-disc tw-list-inside tw-text-neutrals-600">
               <li>Name (text)</li>
               <li>Status (select)</li>
               <li>Currency (multi-select)</li>
@@ -4697,14 +4697,14 @@ export const GlobalAndColumnFiltersCombined: StoryFn = () => ({
           </div>
           <div class="tw-min-w-0">
             <p class="tw-font-medium tw-mb-1">Merged Payload:</p>
-            <pre class="tw-bg-[color:var(--additional-50)] tw-p-2 tw-rounded tw-text-xs tw-overflow-auto tw-h-28">{{ JSON.stringify(activeFilters, null, 2) || '{}' }}</pre>
+            <pre class="tw-bg-additional-50 tw-p-2 tw-rounded tw-text-xs tw-overflow-auto tw-h-28">{{ JSON.stringify(activeFilters, null, 2) || '{}' }}</pre>
           </div>
         </div>
       </div>
 
-      <div class="tw-mb-3 tw-p-2 tw-bg-[color:var(--neutrals-100)] tw-rounded tw-text-xs tw-font-mono tw-h-12 tw-overflow-hidden">
-        <div v-for="(log, i) in filterLog" :key="i" class="tw-text-[color:var(--neutrals-600)] tw-truncate">{{ log }}</div>
-        <div v-if="!filterLog.length" class="tw-text-[color:var(--neutrals-400)]">Try both: click column filter icons and the "Filters" button</div>
+      <div class="tw-mb-3 tw-p-2 tw-bg-neutrals-100 tw-rounded tw-text-xs tw-font-mono tw-h-12 tw-overflow-hidden">
+        <div v-for="(log, i) in filterLog" :key="i" class="tw-text-neutrals-600 tw-truncate">{{ log }}</div>
+        <div v-if="!filterLog.length" class="tw-text-neutrals-400">Try both: click column filter icons and the "Filters" button</div>
       </div>
 
       <VcDataTable
@@ -4801,19 +4801,19 @@ export const SearchBar: StoryFn = () => ({
   },
   template: `
     <div style="height: 550px" class="tw-overflow-hidden">
-      <div class="tw-mb-4 tw-p-4 tw-bg-gradient-to-r tw-from-[var(--primary-50)] tw-to-[var(--info-50)] tw-rounded-lg">
+      <div class="tw-mb-4 tw-p-4 tw-bg-gradient-to-r tw-from-primary-50 tw-to-info-50 tw-rounded-lg">
         <p class="tw-font-semibold tw-text-lg tw-mb-2">Inline Search Bar</p>
-        <p class="tw-text-[color:var(--neutrals-600)] tw-text-sm tw-mb-3">
-          Add <code class="tw-bg-[color:var(--additional-50)] tw-px-1 tw-rounded">searchable</code> to show a search bar above the table.
-          The <code class="tw-bg-[color:var(--additional-50)] tw-px-1 tw-rounded">@search</code> event is debounced (300ms by default).
-          Use <code class="tw-bg-[color:var(--additional-50)] tw-px-1 tw-rounded">v-model:search-value</code> for two-way binding.
+        <p class="tw-text-neutrals-600 tw-text-sm tw-mb-3">
+          Add <code class="tw-bg-additional-50 tw-px-1 tw-rounded">searchable</code> to show a search bar above the table.
+          The <code class="tw-bg-additional-50 tw-px-1 tw-rounded">@search</code> event is debounced (300ms by default).
+          Use <code class="tw-bg-additional-50 tw-px-1 tw-rounded">v-model:search-value</code> for two-way binding.
         </p>
         <p class="tw-text-sm"><strong>Current value:</strong> "{{ searchValue }}"</p>
       </div>
 
-      <div class="tw-mb-3 tw-p-2 tw-bg-[color:var(--neutrals-100)] tw-rounded tw-text-xs tw-font-mono tw-h-16 tw-overflow-hidden">
-        <div v-for="(log, i) in searchLog" :key="i" class="tw-text-[color:var(--neutrals-600)] tw-truncate">{{ log }}</div>
-        <div v-if="!searchLog.length" class="tw-text-[color:var(--neutrals-400)]">Type in the search bar to see debounced events here</div>
+      <div class="tw-mb-3 tw-p-2 tw-bg-neutrals-100 tw-rounded tw-text-xs tw-font-mono tw-h-16 tw-overflow-hidden">
+        <div v-for="(log, i) in searchLog" :key="i" class="tw-text-neutrals-600 tw-truncate">{{ log }}</div>
+        <div v-if="!searchLog.length" class="tw-text-neutrals-400">Type in the search bar to see debounced events here</div>
       </div>
 
       <VcDataTable
@@ -4919,28 +4919,28 @@ export const SearchWithGlobalFilters: StoryFn = () => ({
   },
   template: `
     <div style="height: 600px" class="tw-overflow-hidden">
-      <div class="tw-mb-4 tw-p-4 tw-bg-gradient-to-r tw-from-[var(--accent-50)] tw-to-[var(--primary-50)] tw-rounded-lg">
+      <div class="tw-mb-4 tw-p-4 tw-bg-gradient-to-r tw-from-accent-50 tw-to-primary-50 tw-rounded-lg">
         <p class="tw-font-semibold tw-text-lg tw-mb-2">Search + Global Filters</p>
-        <p class="tw-text-[color:var(--neutrals-600)] tw-text-sm tw-mb-3">
-          When both <code class="tw-bg-[color:var(--additional-50)] tw-px-1 tw-rounded">searchable</code> and
-          <code class="tw-bg-[color:var(--additional-50)] tw-px-1 tw-rounded">global-filters</code> are provided,
+        <p class="tw-text-neutrals-600 tw-text-sm tw-mb-3">
+          When both <code class="tw-bg-additional-50 tw-px-1 tw-rounded">searchable</code> and
+          <code class="tw-bg-additional-50 tw-px-1 tw-rounded">global-filters</code> are provided,
           the search bar and the "Filters" button appear together in a single header row.
         </p>
         <div class="tw-grid tw-grid-cols-2 tw-gap-4 tw-text-sm">
           <div>
             <p class="tw-font-medium tw-mb-1">Search:</p>
-            <pre class="tw-bg-[color:var(--additional-50)] tw-p-2 tw-rounded tw-text-xs">"{{ searchValue }}"</pre>
+            <pre class="tw-bg-additional-50 tw-p-2 tw-rounded tw-text-xs">"{{ searchValue }}"</pre>
           </div>
           <div class="tw-min-w-0">
             <p class="tw-font-medium tw-mb-1">Active Filters:</p>
-            <pre class="tw-bg-[color:var(--additional-50)] tw-p-2 tw-rounded tw-text-xs tw-overflow-auto tw-h-12">{{ JSON.stringify(activeFilters, null, 2) || '{}' }}</pre>
+            <pre class="tw-bg-additional-50 tw-p-2 tw-rounded tw-text-xs tw-overflow-auto tw-h-12">{{ JSON.stringify(activeFilters, null, 2) || '{}' }}</pre>
           </div>
         </div>
       </div>
 
-      <div class="tw-mb-3 tw-p-2 tw-bg-[color:var(--neutrals-100)] tw-rounded tw-text-xs tw-font-mono tw-h-16 tw-overflow-hidden">
-        <div v-for="(log, i) in eventLog" :key="i" class="tw-text-[color:var(--neutrals-600)] tw-truncate">{{ log }}</div>
-        <div v-if="!eventLog.length" class="tw-text-[color:var(--neutrals-400)]">Type in the search bar or use global filters to see events here</div>
+      <div class="tw-mb-3 tw-p-2 tw-bg-neutrals-100 tw-rounded tw-text-xs tw-font-mono tw-h-16 tw-overflow-hidden">
+        <div v-for="(log, i) in eventLog" :key="i" class="tw-text-neutrals-600 tw-truncate">{{ log }}</div>
+        <div v-if="!eventLog.length" class="tw-text-neutrals-400">Type in the search bar or use global filters to see events here</div>
       </div>
 
       <VcDataTable

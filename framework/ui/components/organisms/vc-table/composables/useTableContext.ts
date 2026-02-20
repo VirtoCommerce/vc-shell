@@ -1,4 +1,5 @@
 import { inject, type ComputedRef } from "vue";
+import { TableContextKey } from "@ui/components/organisms/vc-table/keys";
 
 export interface TableContext<T = any> {
   selectedRowIndex: ComputedRef<number | undefined>;
@@ -11,5 +12,5 @@ export interface TableContext<T = any> {
  * @returns Table context or null if not inside a Table component
  */
 export function useTableContext<T = any>(): TableContext<T> | null {
-  return inject<TableContext<T> | null>("tableContext", null);
+  return inject(TableContextKey, null) as TableContext<T> | null;
 }

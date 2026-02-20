@@ -40,7 +40,7 @@
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
 import { computed, type Component } from "vue";
-import { useAppBarWidgets } from "./../composables/useAppBarWidgets";
+import { useAppBarWidgets } from "@ui/components/organisms/vc-app/_internal/app-bar/composables/useAppBarWidgets";
 
 export interface Props {
   title?: string;

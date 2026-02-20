@@ -136,6 +136,7 @@
 
 <script setup lang="ts">
 import { ref, computed, watch, inject, type Ref } from "vue";
+import { IsMobileKey } from "@framework/injection-keys";
 
 export interface Props {
   /**
@@ -190,7 +191,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<Emits>();
 
-const isMobile = inject("isMobile", ref(false)) as Ref<boolean>;
+const isMobile = inject(IsMobileKey, ref(false));
 
 // Internal state
 const internalFirst = ref(props.first);
@@ -322,7 +323,7 @@ const onRowsChange = (event: Event) => {
   @apply tw-flex tw-items-center tw-gap-4 tw-flex-wrap;
 
   &__report {
-    @apply tw-text-sm tw-text-[color:var(--neutrals-600)];
+    @apply tw-text-sm tw-text-neutrals-600;
   }
 
   &__rows-per-page {
@@ -330,12 +331,12 @@ const onRowsChange = (event: Event) => {
   }
 
   &__rows-label {
-    @apply tw-text-sm tw-text-[color:var(--neutrals-600)];
+    @apply tw-text-sm tw-text-neutrals-600;
   }
 
   &__select {
-    @apply tw-px-2 tw-py-1 tw-border tw-border-[color:var(--neutrals-300)] tw-rounded tw-text-sm tw-bg-white;
-    @apply focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-[color:var(--primary-500)] focus:tw-border-[color:var(--primary-500)];
+    @apply tw-px-2 tw-py-1 tw-border tw-border-neutrals-300 tw-rounded tw-text-sm tw-bg-white;
+    @apply focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-primary-500 focus:tw-border-primary-500;
   }
 
   &__controls {

@@ -5,8 +5,7 @@
     @click.stop
   >
     <div v-for="(action, idx) in visibleActions" :key="idx" class="vc-table-composition__action">
-      <VcTooltip placement="top" :width="200">
-        <template #trigger>
+      <VcTooltip placement="top" :max-width="200" variant="dark">
           <div
             class="vc-table-composition__action-icon"
             :class="{
@@ -17,8 +16,7 @@
           >
             <VcIcon :icon="action.icon" size="s" />
           </div>
-        </template>
-        <template #content>
+        <template #tooltip>
           {{ action.title || action.name }}
         </template>
       </VcTooltip>
@@ -28,8 +26,9 @@
 
 <script setup lang="ts">
 import { computed, inject, watch, ref } from "vue";
-import { VcIcon, VcTooltip } from "../../../atoms";
-import type { TableAction } from "../types";
+import { VcIcon, VcTooltip } from "@ui/components/atoms";
+import { TableContextKey } from "@ui/components/organisms/vc-table/keys";
+import type { TableAction } from "@ui/components/organisms/vc-table/types";
 
 const props = defineProps<{
   /**
@@ -50,7 +49,7 @@ const emit = defineEmits<{
   action: [action: TableAction];
 }>();
 
-const tableContext = inject<any>("tableContext", null);
+const tableContext = inject(TableContextKey, null);
 
 const visibleActions = computed(() => {
   return props.actions?.filter((action) => !action.hidden) || [];

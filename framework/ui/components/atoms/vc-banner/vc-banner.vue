@@ -2,6 +2,8 @@
   <div
     class="vc-banner"
     :class="[`vc-banner_${variant}`]"
+    :role="variant === 'danger' || variant === 'warning' ? 'alert' : 'region'"
+    :aria-label="variant === 'danger' ? 'Error' : variant === 'warning' ? 'Warning' : 'Information'"
   >
     <div class="vc-banner__container">
       <VcIcon
@@ -10,6 +12,7 @@
         :size="iconSize"
         :variant="iconVariant"
         class="vc-banner__icon"
+        aria-hidden="true"
       />
       <div class="vc-banner__wrapper">
         <div class="vc-banner__title">
@@ -20,8 +23,8 @@
           class="vc-banner__content"
           :class="[
             {
-              'tw-max-h-[100px] tw-line-clamp-4': !isExpanded,
-              'tw-max-h-full': isExpanded,
+              'vc-banner__content--collapsed': !isExpanded,
+              'vc-banner__content--expanded': isExpanded,
             },
           ]"
         >
@@ -34,8 +37,10 @@
             :toggle="toggle"
           >
             <VcButton
-              class="tw-self-end"
+              class="tw-self-end tw-mt-1"
               text
+              size="sm"
+              :aria-expanded="isExpanded"
               @click="toggle"
             >
               {{ isExpanded ? $t("COMPONENTS.ATOMS.VC_BANNER.SHOW_LESS") : $t("COMPONENTS.ATOMS.VC_BANNER.SHOW_MORE") }}
@@ -98,19 +103,21 @@ onMounted(() => {
 <style lang="scss">
 :root {
   --banner-text-color: var(--neutrals-700);
+  --banner-border-radius: 6px;
+  --banner-padding: 12px;
 }
 $variants: info, warning, danger, success, light-danger, info-dark, primary;
 
 .vc-banner {
   @apply tw-whitespace-normal tw-justify-start tw-max-w-full tw-border-none;
-
-  border-radius: var(--status-border-radius-extended);
-  padding: var(--status-padding-extended);
+  border-radius: var(--banner-border-radius);
+  padding: var(--banner-padding);
 
   @each $variant in $variants {
     &.vc-banner_#{$variant} {
       background-color: var(--status-#{$variant}-bg-color);
       color: var(--status-#{$variant}-color);
+      border-left: 3px solid var(--status-#{$variant}-main-color);
 
       .vc-banner__content {
         color: var(--status-#{$variant}-color);
@@ -119,23 +126,33 @@ $variants: info, warning, danger, success, light-danger, info-dark, primary;
   }
 
   &__wrapper {
-    @apply tw-flex tw-flex-col tw-text-start;
+    @apply tw-flex tw-flex-col tw-text-start tw-min-w-0;
   }
 
   &__container {
-    @apply tw-flex tw-flex-row tw-items-center;
+    @apply tw-flex tw-flex-row tw-items-start;
   }
 
   &__title {
-    @apply tw-font-bold;
+    @apply tw-font-semibold tw-text-sm;
   }
 
   &__content {
-    @apply tw-overflow-hidden tw-truncate tw-text-[color:var(--banner-text-color)] tw-font-medium tw-text-xs;
+    @apply tw-overflow-hidden tw-text-[color:var(--banner-text-color)] tw-font-normal tw-text-sm tw-leading-relaxed;
+    transition: max-height 200ms ease-out;
+
+    &--collapsed {
+      max-height: 100px;
+      @apply tw-line-clamp-4;
+    }
+
+    &--expanded {
+      max-height: 2000px;
+    }
   }
 
   &__icon {
-    @apply tw-mr-3;
+    @apply tw-mr-3 tw-shrink-0;
   }
 }
 </style>

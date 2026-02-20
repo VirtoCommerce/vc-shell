@@ -14,11 +14,17 @@
         },
       ]"
       :style="imageHandler"
+      :role="clickable ? 'button' : (src ? 'img' : undefined)"
+      :tabindex="clickable ? 0 : undefined"
+      :aria-label="alt || (clickable ? 'Image' : undefined)"
       @click="onClick"
+      @keydown.enter.prevent="onClick"
+      @keydown.space.prevent="onClick"
     >
       <div
         v-if="!src"
         class="vc-image__placeholder"
+        aria-hidden="true"
       >
         <VcIcon
           :icon="emptyIcon"
@@ -30,9 +36,9 @@
 </template>
 
 <script lang="ts" setup>
-import { VcIcon } from "./../vc-icon";
+import { VcIcon } from "@ui/components/atoms/vc-icon";
 import { computed } from "vue";
-import { createLogger } from "../../../../core/utilities";
+import { createLogger } from "@core/utilities";
 
 const logger = createLogger("vc-image");
 
@@ -45,6 +51,8 @@ export interface Props {
   size?: "auto" | "xxs" | "xs" | "s" | "m" | "l" | "xl" | "xxl";
   background?: "cover" | "contain" | "auto";
   emptyIcon?: string;
+  /** Accessible alt text for the image */
+  alt?: string;
 }
 
 export interface Emits {
@@ -55,7 +63,7 @@ const props = withDefaults(defineProps<Props>(), {
   aspect: "1x1",
   size: "auto",
   background: "cover",
-  emptyIcon: "material-image",
+  emptyIcon: "lucide-image",
 });
 
 const emit = defineEmits<Emits>();
@@ -100,9 +108,10 @@ function onClick(): void {
   --image-size-xl: 128px;
   --image-size-xxl: 145px;
 
-  --image-border-radius: 3px;
+  --image-border-radius: 6px;
   --image-border-color: var(--neutrals-200);
-  --image-empty-icon-color: var(--secondary-500);
+  --image-empty-icon-color: var(--neutrals-400);
+  --image-focus-ring-color: var(--primary-300);
 }
 
 $aspects: (
@@ -134,23 +143,31 @@ $sizes: xxs, xs, s, m, l, xl, xxl;
   }
 
   &__container {
-    @apply tw-relative;
+    @apply tw-relative tw-transition-shadow tw-duration-150;
+
+    &:focus-visible {
+      @apply tw-outline-none tw-ring-2 tw-ring-offset-2 tw-ring-[color:var(--image-focus-ring-color)];
+    }
   }
 
   &__container--rounded {
-    @apply tw-rounded-full;
+    @apply tw-rounded-full tw-overflow-hidden;
   }
 
   &__container--bordered {
-    @apply tw-rounded-[var(--image-border-radius)] tw-border tw-border-solid tw-border-[color:var(--image-border-color)];
+    @apply tw-rounded-[var(--image-border-radius)] tw-border tw-border-solid tw-border-[color:var(--image-border-color)] tw-overflow-hidden;
   }
 
   &__container--clickable {
     @apply tw-cursor-pointer;
+
+    &:hover {
+      @apply tw-opacity-90;
+    }
   }
 
   &__placeholder {
-    @apply tw-absolute tw-w-full tw-h-full tw-flex tw-items-center tw-justify-center tw-text-[color:var(--image-empty-icon-color)];
+    @apply tw-absolute tw-w-full tw-h-full tw-flex tw-items-center tw-justify-center tw-text-[color:var(--image-empty-icon-color)] tw-bg-neutrals-100 tw-rounded-[inherit];
   }
 }
 </style>

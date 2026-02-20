@@ -36,13 +36,13 @@
 </template>
 
 <script lang="ts" setup>
-import { VcButton } from "../../../../../../components";
-import { useAppBarMobileButtons } from "../../../../../../../core/composables/useAppBarMobileButtons";
-import AppBarOverlay from "./AppBarOverlay.vue";
-import { useAppBarMobileActions } from "./../composables/useAppBarMobileActions";
+import { VcButton } from "@ui/components";
+import { useAppBarMobileButtons } from "@core/composables/useAppBarMobileButtons";
+import AppBarOverlay from "@ui/components/organisms/vc-app/_internal/app-bar/components/AppBarOverlay.vue";
+import { useAppBarMobileActions } from "@ui/components/organisms/vc-app/_internal/app-bar/composables/useAppBarMobileActions";
 import { type MaybeRef, watch } from "vue";
 import { vOnClickOutside } from "@vueuse/components";
-import type { AppBarButtonContent } from "../../../../../../../core/services";
+import type { AppBarButtonContent } from "@core/services";
 import { useRoute } from "vue-router";
 export interface Props {
   isSidebarMode: boolean;

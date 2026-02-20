@@ -4,6 +4,10 @@
     "baseUrl": ".",
     "outDir": "./dist",
     "rootDir": "./src",
+    "paths": {
+      "@vite-config": ["./src/index.ts"],
+      "@vite-config/*": ["./src/*"]
+    }
   },
   "tsc-alias": {
     "resolveFullPaths": true,

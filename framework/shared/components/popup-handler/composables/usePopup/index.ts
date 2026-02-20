@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { VcPopup } from "./../../../../../ui/components";
+import { VcPopup } from "@ui/components";
 import {
   markRaw,
   getCurrentInstance,
@@ -13,14 +13,15 @@ import {
   unref,
   DefineComponent,
 } from "vue";
-import { PopupPlugin, UsePopupInternal, UsePopupProps } from "./../../types";
-import { popupPluginInstance } from "./../../plugin";
+import { PopupPluginKey } from "@shared/components/popup-handler/keys";
+import { PopupPlugin, UsePopupInternal, UsePopupProps } from "@shared/components/popup-handler/types";
+import { popupPluginInstance } from "@shared/components/popup-handler/plugin";
 import { useI18n } from "vue-i18n";
-import { ComponentPublicInstanceConstructor } from "../../../../utilities/vueUtils";
+import { ComponentPublicInstanceConstructor } from "@shared/utilities/vueUtils";
 import * as _ from "lodash-es";
-import vcPopupWarning from "../../../common/popup/vc-popup-warning.vue";
-import vcPopupError from "../../../common/popup/vc-popup-error.vue";
-import vcPopupInfo from "../../../common/popup/vc-popup-info.vue";
+import vcPopupWarning from "@shared/components/common/popup/vc-popup-warning.vue";
+import vcPopupError from "@shared/components/common/popup/vc-popup-error.vue";
+import vcPopupInfo from "@shared/components/common/popup/vc-popup-info.vue";
 interface IUsePopup {
   open(): void;
   close(): void;
@@ -31,7 +32,7 @@ interface IUsePopup {
 
 function usePopupInternal() {
   const instance = getCurrentInstance();
-  const popupInstance: PopupPlugin = (instance && inject("popupPlugin")) || popupPluginInstance;
+  const popupInstance: PopupPlugin = (instance && inject(PopupPluginKey, undefined)) || popupPluginInstance;
 
   return popupInstance;
 }

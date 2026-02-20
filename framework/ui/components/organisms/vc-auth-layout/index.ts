@@ -1,1 +1,1 @@
-export { default as VcAuthLayout } from "./vc-auth-layout.vue";
+export { default as VcAuthLayout } from "@ui/components/organisms/vc-auth-layout/vc-auth-layout.vue";

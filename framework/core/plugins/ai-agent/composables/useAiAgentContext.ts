@@ -1,15 +1,15 @@
 import { inject, ref, computed, watch, onUnmounted, type Ref, type ComputedRef } from "vue";
 import { mergeWith, isPlainObject } from "lodash-es";
-import { AiAgentServiceKey, BladeInstanceKey } from "../../../../injection-keys";
-import type { IAiAgentServiceInternal } from "../services/ai-agent-service";
+import { AiAgentServiceKey, BladeInstanceKey } from "@framework/injection-keys";
+import type { IAiAgentServiceInternal } from "@core/plugins/ai-agent/services/ai-agent-service";
 import type {
   ISuggestion,
   UseAiAgentContextOptions,
   UseAiAgentContextReturn,
   IPreviewChangesPayload,
   AiAgentContextType,
-} from "../types";
-import { createLogger } from "../../../utilities";
+} from "@core/plugins/ai-agent/types";
+import { createLogger } from "@core/utilities";
 
 const logger = createLogger("use-ai-agent-context");
 

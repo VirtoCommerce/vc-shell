@@ -28,10 +28,10 @@
 
 <script lang="ts" setup>
 import { toRef } from "vue";
-import type { IBladeToolbar } from "../../../../../core/types";
-import ToolbarMobile from "./toolbar/ToolbarMobile.vue";
-import ToolbarDesktop from "./toolbar/ToolbarDesktop.vue";
-import { useToolbarRegistration } from "./composables/useToolbarRegistration";
+import type { IBladeToolbar } from "@core/types";
+import ToolbarMobile from "@ui/components/organisms/vc-blade/_internal/toolbar/ToolbarMobile.vue";
+import ToolbarDesktop from "@ui/components/organisms/vc-blade/_internal/toolbar/ToolbarDesktop.vue";
+import { useToolbarRegistration } from "@ui/components/organisms/vc-blade/_internal/composables/useToolbarRegistration";
 
 export interface Props {
   items: IBladeToolbar[];
@@ -49,7 +49,7 @@ const { visibleItems } = useToolbarRegistration(toRef(props, "items"));
 :root {
   --blade-toolbar-height: 54px;
   --blade-toolbar-height-expanded: 54px;
-  --blade-toolbar-background-color: var(--additional-50);
+  --blade-toolbar-background-color: var(--neutrals-50);
   --blade-toolbar-border-color: var(--neutrals-200);
   --blade-toolbar-icon-color: var(--neutrals-700);
   --blade-toolbar-icon-hover-color: var(--primary-600);

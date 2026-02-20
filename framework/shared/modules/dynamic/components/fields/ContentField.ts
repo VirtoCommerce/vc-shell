@@ -1,8 +1,8 @@
 import { ExtractPropTypes, h, Component } from "vue";
-import { ContentField } from "../factories";
-import componentProps from "./props";
-import { FieldSchema } from "../../types";
-import { unrefNested } from "../../helpers/unrefNested";
+import { ContentField } from "@shared/modules/dynamic/components/factories";
+import componentProps from "@shared/modules/dynamic/components/fields/props";
+import { FieldSchema } from "@shared/modules/dynamic/types";
+import { unrefNested } from "@shared/modules/dynamic/helpers/unrefNested";
 
 export default {
   name: "ContentField",

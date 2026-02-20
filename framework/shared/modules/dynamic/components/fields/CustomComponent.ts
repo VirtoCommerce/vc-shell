@@ -1,7 +1,7 @@
-import { CustomComponentSchema } from "./../../types";
+import { CustomComponentSchema } from "@shared/modules/dynamic/types";
 import { ExtractPropTypes, resolveComponent, h } from "vue";
-import componentProps from "./props";
-import { unrefNested } from "../../helpers/unrefNested";
+import componentProps from "@shared/modules/dynamic/components/fields/props";
+import { unrefNested } from "@shared/modules/dynamic/helpers/unrefNested";
 
 export default {
   name: "CustomComponentRenderer",

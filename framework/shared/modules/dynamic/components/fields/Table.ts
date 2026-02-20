@@ -1,13 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useTableTemplates } from "./../../composables";
+import { useTableTemplates } from "@shared/modules/dynamic/composables";
 import { Component, ExtractPropTypes, computed, h, inject, toValue, unref } from "vue";
-import { Table } from "../factories";
-import componentProps from "./props";
-import { TableSchema } from "../../types";
+import { Table } from "@shared/modules/dynamic/components/factories";
+import componentProps from "@shared/modules/dynamic/components/fields/props";
+import { TableSchema } from "@shared/modules/dynamic/types";
+import { IsBladeEditableKey } from "@shared/modules/dynamic/keys";
 import { useI18n } from "vue-i18n";
-import { unrefNested } from "../../helpers/unrefNested";
-import { setModel } from "../../helpers/setters";
-import { IActionBuilderResult, ITableColumns } from "../../../../../core/types";
+import { unrefNested } from "@shared/modules/dynamic/helpers/unrefNested";
+import { setModel } from "@shared/modules/dynamic/helpers/setters";
+import { IActionBuilderResult, ITableColumns } from "@core/types";
 
 type TableItemData<T> = {
   name: string;
@@ -22,7 +23,7 @@ export default {
   setup(props: ExtractPropTypes<typeof componentProps> & { element: TableSchema }) {
     const { tableTemplates } = useTableTemplates(props.element);
     const { t } = useI18n({ useScope: "global" });
-    const enableEdit = inject("isBladeEditable", false);
+    const enableEdit = inject(IsBladeEditableKey, false);
     const enableEditComputed = computed(() => unref(enableEdit));
     const items = (unrefNested(props.baseProps).modelValue ?? []) as any[];
 

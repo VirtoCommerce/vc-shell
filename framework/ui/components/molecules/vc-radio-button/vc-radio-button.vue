@@ -4,37 +4,47 @@
       <input
         :id="radioId"
         type="radio"
-        :name="name"
+        :name="resolvedName"
         :value="value"
         :checked="checked"
-        :disabled="disabled"
-        :aria-invalid="(error || !!errorMessage) || undefined"
+        :disabled="resolvedDisabled"
+        :aria-invalid="invalid || undefined"
         :aria-describedby="ariaDescribedBy"
-        :class="{ 'vc-radio-button_error': error }"
+        :class="{ 'vc-radio-button_error': invalid }"
         tabindex="0"
         @change="onChange"
       />
 
       {{ label }}
     </label>
-    <slot
-      v-if="errorMessage"
-      name="error"
+    <Transition
+      name="slide-up"
+      mode="out-in"
     >
-      <VcHint :id="errorId" class="vc-radio-button__error">
-        {{ errorMessage }}
-      </VcHint>
-    </slot>
+      <div v-if="errorMessage">
+        <slot name="error">
+          <VcHint
+            :id="errorId"
+            class="vc-radio-button__error"
+            :error="true"
+          >
+            {{ errorMessage }}
+          </VcHint>
+        </slot>
+      </div>
+    </Transition>
   </div>
 </template>
 
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
 import { isEqual } from "lodash-es";
-import { computed, useId } from "vue";
-import { VcHint } from "./../../atoms/vc-hint";
+import { computed } from "vue";
+import { VcHint } from "@ui/components/atoms/vc-hint";
+import { useFormField } from "@ui/composables/useFormField";
+import type { IFormFieldProps } from "@ui/types";
 
-export interface Props {
+export interface Props extends IFormFieldProps {
   /**
    * Value of the radio button.
    */
@@ -51,26 +61,6 @@ export interface Props {
    * Specifies that the radio button should be selected.
    */
   checked?: boolean;
-  /**
-   * Disables the radio button.
-   */
-  disabled?: boolean;
-  /**
-   * Name of the radio button.
-   */
-  name?: string;
-  /**
-   * Label of the radio button.
-   */
-  label?: string;
-  /**
-   * Specifies that the component should have error state style.
-   */
-  error?: boolean;
-  /**
-   * Error message to display.
-   */
-  errorMessage?: string;
 }
 
 export interface Emits {
@@ -85,21 +75,14 @@ const props = withDefaults(defineProps<Props>(), {
 });
 const emit = defineEmits<Emits>();
 
-const uid = useId();
-const radioId = computed(() => `vc-radio-${uid}`);
-const errorId = computed(() => `vc-radio-${uid}-error`);
-
-const ariaDescribedBy = computed(() => {
-  if (props.errorMessage) return errorId.value;
-  return undefined;
-});
+const { fieldId: radioId, errorId, invalid, resolvedDisabled, resolvedName, ariaDescribedBy } = useFormField(props);
 
 const checked = computed(() => {
   return props.modelValue != null && (props.binary ? !!props.modelValue : isEqual(props.modelValue, props.value));
 });
 
 function onChange() {
-  if (!props.disabled) {
+  if (!resolvedDisabled.value) {
     const model = props.binary ? !checked.value : props.value;
 
     emit("update:modelValue", model);
@@ -109,85 +92,83 @@ function onChange() {
 
 <style lang="scss">
 :root {
+  --radio-size: 16px;
+  --radio-dot-size: 8px;
+  --radio-border-color: var(--neutrals-300);
+  --radio-border-color-hover: var(--neutrals-400);
+  --radio-background: var(--additional-50);
   --radio-active: var(--primary-500);
   --radio-active-inner: var(--additional-50);
-  --radio-border: var(--neutrals-400);
-  --radio-background: transparent;
-  --radio-disabled: var(--neutrals-200);
-  --radio-disabled-inner: var(--neutrals-300);
+  --radio-disabled-bg: var(--neutrals-100);
+  --radio-disabled-opacity: 0.5;
   --radio-error: var(--danger-500);
-  --radio-error-ring-color: rgba(239, 68, 68, 0.2);
-  --radio-size: 20px;
-  --radio-focus-ring-color: rgba(59, 130, 246, 0.3);
+  --radio-error-ring-color: var(--danger-100);
+  --radio-focus-ring-color: var(--primary-100);
 }
 
 .vc-radio-button {
   &__label {
-    @apply tw-text-base tw-flex tw-items-center tw-gap-1.5;
+    @apply tw-text-sm tw-flex tw-items-center tw-gap-2 tw-cursor-pointer tw-select-none;
   }
 
   input[type="radio"] {
     flex-shrink: 0;
-    border-radius: 50%;
+    border-radius: 9999px;
     appearance: none;
     height: var(--radio-size);
+    width: var(--radio-size);
     outline: none;
     display: inline-block;
     vertical-align: top;
     position: relative;
     margin: 0;
     cursor: pointer;
-    border: 2px solid var(--radio-border-color, var(--radio-border));
-    background: var(--radio-bg, var(--radio-background));
-    width: var(--radio-size);
+    border: 1px solid var(--radio-border-color);
+    background: var(--radio-background);
     transition:
-      background 0.3s,
-      border-color 0.3s,
-      box-shadow 0.2s;
+      border-color 200ms ease,
+      box-shadow 200ms ease;
 
-    &:after {
-      width: 16px;
-      height: 16px;
-      border-radius: 50%;
-      background: var(--radio-active-inner);
+    &::after {
+      width: var(--radio-dot-size);
+      height: var(--radio-dot-size);
+      border-radius: 9999px;
+      background: var(--radio-active);
+      transform: scale(0);
       opacity: 0;
-      transform: scale(var(--radio-scale, 0.7));
-      opacity: var(--radio-after-opacity, 0);
       content: "";
       display: block;
-      left: 0;
-      top: 0;
       position: absolute;
+      left: 50%;
+      top: 50%;
+      margin-left: calc(var(--radio-dot-size) / -2);
+      margin-top: calc(var(--radio-dot-size) / -2);
       transition:
-        transform var(--radio-after-transform-duration, 0.3s) var(--radio-after-transform-ease, ease),
-        opacity var(--radio-after-opacity-duration, 0.2s);
+        transform 200ms cubic-bezier(0.2, 0.85, 0.32, 1.2),
+        opacity 200ms ease;
     }
 
     &:checked {
-      --radio-bg: var(--radio-active);
-      --radio-border-color: var(--radio-active);
-      --radio-after-opacity-duration: 0.3s;
-      --radio-after-transform-duration: 0.6s;
-      --radio-after-transform-ease: cubic-bezier(0.2, 0.85, 0.32, 1.2);
-      --radio-scale: 0.5;
-      --radio-after-opacity: 1;
+      border-color: var(--radio-active);
+
+      &::after {
+        transform: scale(1);
+        opacity: 1;
+      }
     }
 
     &:disabled {
-      --radio-bg: var(--radio-disabled);
+      background: var(--radio-disabled-bg);
       cursor: not-allowed;
-      opacity: 0.5;
-      &:checked {
-        --radio-bg: var(--radio-disabled-inner);
-        --radio-border-color: var(--radio-border);
-      }
+      opacity: var(--radio-disabled-opacity);
+
       & + label {
         cursor: not-allowed;
       }
     }
 
-    &:hover:not(:disabled) {
-      box-shadow: 0 0 0 3px var(--radio-focus-ring-color);
+    &:hover:not(:disabled):not(:checked) {
+      border-color: var(--radio-border-color-hover);
     }
 
     &:focus-visible {
@@ -195,13 +176,26 @@ function onChange() {
     }
 
     &.vc-radio-button_error {
-      --radio-border-color: var(--radio-error);
+      border-color: var(--radio-error);
       box-shadow: 0 0 0 3px var(--radio-error-ring-color);
     }
   }
 
   &__error {
-    @apply tw-mt-1 [--hint-color:var(--radio-error)];
+    @apply tw-mt-1 [--hint-error-color:var(--radio-error)];
+  }
+
+  .slide-up-enter-active,
+  .slide-up-leave-active {
+    @apply tw-transition-all tw-duration-[250ms] tw-ease-out;
+  }
+
+  .slide-up-enter-from {
+    @apply tw-opacity-0 tw-translate-y-[5px];
+  }
+
+  .slide-up-leave-to {
+    @apply tw-opacity-0 tw--translate-y-[5px];
   }
 }
 </style>

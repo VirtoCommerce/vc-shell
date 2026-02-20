@@ -61,10 +61,10 @@
 </template>
 
 <script lang="ts" setup>
-import AppBarWidgetItem from "./AppBarWidgetItem.vue";
-import { VcIcon } from "../../../../..";
-import { useAppBarWidget } from "../../../../../../../core/composables";
-import type { AppBarWidget } from "../../../../../../../core/services";
+import AppBarWidgetItem from "@ui/components/organisms/vc-app/_internal/app-bar/components/AppBarWidgetItem.vue";
+import { VcIcon } from "@ui/components";
+import { useAppBarWidget } from "@core/composables";
+import type { AppBarWidget } from "@core/services";
 
 const { items } = useAppBarWidget();
 

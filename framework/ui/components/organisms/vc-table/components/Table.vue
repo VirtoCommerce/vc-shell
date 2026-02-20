@@ -6,6 +6,7 @@
 
 <script setup lang="ts" generic="T extends Record<string, any> = Record<string, any>">
 import { provide, reactive, toRefs, computed, type ComputedRef } from "vue";
+import { TableContextKey } from "@ui/components/organisms/vc-table/keys";
 
 interface TableContext<T> {
   selectedRowIndex: ComputedRef<number | undefined>;
@@ -43,7 +44,7 @@ const context: TableContext<T> = {
   variant: computed(() => props.variant),
 };
 
-provide("tableContext", context);
+provide(TableContextKey, context);
 </script>
 
 <style lang="scss">
@@ -76,7 +77,7 @@ provide("tableContext", context);
   --table-actions-color-danger: var(--danger-500);
   --table-actions-color-success: var(--success-500);
 
-  --table-header-text-color: var(--secondary-950);
+  --table-header-text-color: var(--neutrals-600);
   --table-text-color: var(--neutrals-950);
   --table-sort-icon-color: var(--neutrals-400);
 

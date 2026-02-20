@@ -1,12 +1,12 @@
-import applicationConfiguration from "./templates/vite.application.appconfig";
-import libraryConfiguration from "./templates/vite.library.appconfig";
+import applicationConfiguration from "@vite-config/templates/vite.application.appconfig";
+import libraryConfiguration from "@vite-config/templates/vite.library.appconfig";
 import * as fs from "node:fs";
-import { mergeConfig, UserConfig } from "vite";
+import { mergeConfig, UserConfig, AliasOptions } from "vite";
 import { readFileSync } from "node:fs";
 import { resolve, join, dirname } from "node:path";
 import { cwd } from "node:process";
-import dynamicModuleConfiguration from "./templates/vite.dynamic-module.appconfig";
-import { DynamicModuleOptions } from "./types";
+import dynamicModuleConfiguration from "@vite-config/templates/vite.dynamic-module.appconfig";
+import { DynamicModuleOptions } from "@vite-config/types";
 
 const packageJson = fs.readFileSync(cwd() + "/package.json");
 const name = JSON.parse(packageJson.toString()).name;
@@ -23,7 +23,43 @@ function getApplicationConfiguration(options: UserConfig = {}) {
 }
 
 function getConfiguration(configuration: UserConfig = {}, options: UserConfig) {
-  return mergeConfig(configuration, options);
+  const merged = mergeConfig(configuration, options);
+
+  const baseAlias = configuration.resolve?.alias;
+  const optionAlias = options.resolve?.alias;
+
+  if (!baseAlias && !optionAlias) {
+    return merged;
+  }
+
+  if (!merged.resolve) {
+    merged.resolve = {};
+  }
+
+  merged.resolve.alias = mergeAliases(baseAlias, optionAlias);
+  return merged;
+}
+
+function mergeAliases(baseAlias?: AliasOptions, optionAlias?: AliasOptions): AliasOptions | undefined {
+  if (!baseAlias) return optionAlias;
+  if (!optionAlias) return baseAlias;
+
+  const isBaseArray = Array.isArray(baseAlias);
+  const isOptionArray = Array.isArray(optionAlias);
+
+  if (!isBaseArray && !isOptionArray) {
+    return { ...baseAlias, ...optionAlias };
+  }
+
+  return [...toAliasArray(baseAlias), ...toAliasArray(optionAlias)];
+}
+
+function toAliasArray(alias: AliasOptions) {
+  if (Array.isArray(alias)) {
+    return alias;
+  }
+
+  return Object.entries(alias).map(([find, replacement]) => ({ find, replacement }));
 }
 
 // Get package.json from current working directory
@@ -67,6 +103,6 @@ function getDynamicModuleConfiguration(options: DynamicModuleOptions) {
   return mergeConfig(baseConfig, options);
 }
 
-export type { DynamicModuleOptions, CompatibilityOptions } from "./types";
+export type { DynamicModuleOptions, CompatibilityOptions } from "@vite-config/types";
 
 export { getLibraryConfiguration, getApplicationConfiguration, getDynamicModuleConfiguration };

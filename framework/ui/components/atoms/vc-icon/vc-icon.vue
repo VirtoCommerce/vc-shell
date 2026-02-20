@@ -3,6 +3,9 @@
     v-if="useContainer"
     :class="['vc-icon-container', `vc-icon-container_${size}`]"
     :style="containerStyle"
+    :aria-hidden="ariaLabel ? undefined : 'true'"
+    :aria-label="ariaLabel || undefined"
+    :role="ariaLabel ? 'img' : undefined"
     v-bind="$attrs"
   >
     <component
@@ -32,6 +35,9 @@
         : '',
     ]"
     :style="iconStyle"
+    :aria-hidden="ariaLabel ? undefined : 'true'"
+    :aria-label="ariaLabel || undefined"
+    :role="ariaLabel ? 'img' : undefined"
     v-bind="{ ...componentProps, ...$attrs }"
   />
 </template>
@@ -39,11 +45,11 @@
 <script lang="ts" setup>
 import { computed, markRaw, resolveComponent } from "vue";
 import type { Component } from "vue";
-import VcMaterialIcon from "./vc-material-icon.vue";
-import VcBootstrapIcon from "./vc-bootstrap-icon.vue";
-import VcLucideIcon from "./vc-lucide-icon.vue";
-import VcFontawesomeIcon from "./vc-fontawesome-icon.vue";
-import VcSvgIcon from "./vc-svg-icon.vue";
+import VcMaterialIcon from "@ui/components/atoms/vc-icon/vc-material-icon.vue";
+import VcBootstrapIcon from "@ui/components/atoms/vc-icon/vc-bootstrap-icon.vue";
+import VcLucideIcon from "@ui/components/atoms/vc-icon/vc-lucide-icon.vue";
+import VcFontawesomeIcon from "@ui/components/atoms/vc-icon/vc-fontawesome-icon.vue";
+import VcSvgIcon from "@ui/components/atoms/vc-icon/vc-svg-icon.vue";
 
 export type IconType = "fontawesome" | "material" | "bootstrap" | "lucide" | "custom" | "svg";
 export type IconSize = "xs" | "s" | "m" | "l" | "xl" | "xxl" | "xxxl";
@@ -90,6 +96,12 @@ export interface Props {
    * Base path to SVG icons (only for SVG icons)
    */
   basePath?: string;
+
+  /**
+   * Accessible label for meaningful (non-decorative) icons.
+   * When provided, the icon gets role="img" and aria-label instead of aria-hidden="true".
+   */
+  ariaLabel?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {

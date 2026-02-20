@@ -1,2 +1,2 @@
-export * from "./use-icon";
-export * from "./use-icon-type";
+export * from "@ui/components/atoms/vc-icon/composables/use-icon";
+export * from "@ui/components/atoms/vc-icon/composables/use-icon-type";

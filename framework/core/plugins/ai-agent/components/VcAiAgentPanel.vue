@@ -29,10 +29,10 @@
 
 <script lang="ts" setup>
 import { computed, onUnmounted, inject } from "vue";
-import { AiAgentServiceKey } from "../../../../injection-keys";
-import type { IAiAgentServiceInternal } from "../services/ai-agent-service";
-import VcAiAgentHeader from "./_internal/VcAiAgentHeader.vue";
-import VcAiAgentIframe from "./_internal/VcAiAgentIframe.vue";
+import { AiAgentServiceKey } from "@framework/injection-keys";
+import type { IAiAgentServiceInternal } from "@core/plugins/ai-agent/services/ai-agent-service";
+import VcAiAgentHeader from "@core/plugins/ai-agent/components/_internal/VcAiAgentHeader.vue";
+import VcAiAgentIframe from "@core/plugins/ai-agent/components/_internal/VcAiAgentIframe.vue";
 
 // Inject AI agent service
 const aiAgentService = inject(AiAgentServiceKey) as IAiAgentServiceInternal | undefined;

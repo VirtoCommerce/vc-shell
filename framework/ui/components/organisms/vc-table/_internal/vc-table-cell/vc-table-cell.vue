@@ -283,12 +283,12 @@ import moment from "moment";
 import * as _ from "lodash-es";
 import htmlTruncate from "truncate-html";
 import * as DOMPurify from "dompurify";
-import VcInputCurrency from "../../../../molecules/vc-input-currency/vc-input-currency.vue";
-import VcInput from "../../../../molecules/vc-input/vc-input.vue";
-import VcTooltip from "../../../../atoms/vc-tooltip/vc-tooltip.vue";
+import VcInputCurrency from "@ui/components/molecules/vc-input-currency/vc-input-currency.vue";
+import VcInput from "@ui/components/molecules/vc-input/vc-input.vue";
+import VcTooltip from "@ui/components/atoms/vc-tooltip/vc-tooltip.vue";
 import { Field } from "vee-validate";
-import type { TableItem } from "../../types";
-import { ITableColumns } from "../../../../../../core/types";
+import type { TableItem } from "@ui/components/organisms/vc-table/types";
+import { ITableColumns } from "@core/types";
 
 // Cache for sanitized HTML to avoid repeated DOMPurify calls across table cells
 const sanitizedHtmlCache = new Map<string, string>();

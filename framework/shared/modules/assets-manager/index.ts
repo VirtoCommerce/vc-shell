@@ -1,5 +1,5 @@
-import { createAppModule } from "../../../core/plugins/modularity";
-import * as components from "./components";
+import { createAppModule } from "@core/plugins/modularity";
+import * as components from "@shared/modules/assets-manager/components";
 
 // Declare globally
 declare module "@vue/runtime-core" {
@@ -10,4 +10,4 @@ declare module "@vue/runtime-core" {
 
 export const AssetsManagerModule = createAppModule(components);
 
-export * from "./components";
+export * from "@shared/modules/assets-manager/components";

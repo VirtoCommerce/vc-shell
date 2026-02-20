@@ -1,9 +1,9 @@
 import { Component, ExtractPropTypes, computed, h, mergeProps, unref } from "vue";
-import { Button } from "../factories";
-import componentProps from "./props";
-import { ButtonSchema } from "../../types";
+import { Button } from "@shared/modules/dynamic/components/factories";
+import componentProps from "@shared/modules/dynamic/components/fields/props";
+import { ButtonSchema } from "@shared/modules/dynamic/types";
 import { useI18n } from "vue-i18n";
-import { unrefNested } from "../../helpers/unrefNested";
+import { unrefNested } from "@shared/modules/dynamic/helpers/unrefNested";
 
 export default {
   name: "ButtonEl",

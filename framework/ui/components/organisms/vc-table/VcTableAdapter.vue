@@ -196,13 +196,13 @@
 import { computed, ref, toValue, watch } from "vue";
 import type { Ref, MaybeRef } from "vue";
 import { useI18n } from "vue-i18n";
-import VcDataTable from "./VcDataTable.vue";
-import VcColumn from "./components/VcColumn.vue";
-import { GlobalFiltersButton } from "./components";
-import { VcDropdownPanel } from "../../molecules";
-import { VcIcon } from "../../atoms";
-import type { TableAction, TableEmptyAction, DataTablePagination, AddRowConfig } from "./types";
-import type { ITableColumns, IActionBuilderResult } from "../../../../core/types";
+import VcDataTable from "@ui/components/organisms/vc-table/VcDataTable.vue";
+import VcColumn from "@ui/components/organisms/vc-table/components/VcColumn.vue";
+import { GlobalFiltersButton } from "@ui/components/organisms/vc-table/components";
+import { VcDropdownPanel } from "@ui/components/molecules";
+import { VcIcon } from "@ui/components/atoms";
+import type { TableAction, TableEmptyAction, DataTablePagination, AddRowConfig } from "@ui/components/organisms/vc-table/types";
+import type { ITableColumns, IActionBuilderResult } from "@core/types";
 
 // ============================================================================
 // Props — mirrors old VcTable (TableProps) interface

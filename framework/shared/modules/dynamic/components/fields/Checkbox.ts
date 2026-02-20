@@ -1,11 +1,11 @@
 import { ExtractPropTypes, h, Component, unref, computed } from "vue";
-import { Checkbox } from "../factories";
-import componentProps from "./props";
-import ValidationField from "./ValidationField";
-import { CheckboxSchema } from "../../types";
-import { unwrapInterpolation } from "../../helpers/unwrapInterpolation";
+import { Checkbox } from "@shared/modules/dynamic/components/factories";
+import componentProps from "@shared/modules/dynamic/components/fields/props";
+import ValidationField from "@shared/modules/dynamic/components/fields/ValidationField";
+import { CheckboxSchema } from "@shared/modules/dynamic/types";
+import { unwrapInterpolation } from "@shared/modules/dynamic/helpers/unwrapInterpolation";
 import { toValue } from "@vueuse/core";
-import { unrefNested } from "../../helpers/unrefNested";
+import { unrefNested } from "@shared/modules/dynamic/helpers/unrefNested";
 import { useI18n } from "vue-i18n";
 
 export default {

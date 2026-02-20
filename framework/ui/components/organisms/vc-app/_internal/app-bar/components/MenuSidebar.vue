@@ -11,7 +11,7 @@
       }"
     >
       <div
-        v-if="!isEmbedded"
+        v-if="showHeader"
         class="menu-sidebar__header"
         :class="{
           'menu-sidebar__header--mobile': isMobile,
@@ -33,7 +33,10 @@
           />
         </div>
       </div>
-      <div class="menu-sidebar__content">
+      <div
+        class="menu-sidebar__content"
+        :class="{ 'menu-sidebar__content--without-header': !showHeader }"
+      >
         <div
           v-if="$slots['widgets-active-content']"
           class="menu-sidebar__content-main"
@@ -42,48 +45,21 @@
         </div>
 
         <template v-if="isMobile">
-          <!-- Scroll up arrow -->
-          <div
-            class="menu-sidebar__scroll-button"
-            :class="{ 'menu-sidebar__scroll-button--hidden': !canScrollUp }"
-            aria-hidden="true"
-            @pointerenter="startScroll('up')"
-            @pointerleave="stopScroll"
-          >
-            <VcIcon
-              icon="lucide-chevron-up"
-              size="xs"
-            />
-          </div>
-
-          <div
-            ref="navmenuRef"
-            class="menu-sidebar__navmenu"
-            @scroll="updateScrollState"
+          <VcScrollableContainer
+            ref="scrollContainer"
+            class="menu-sidebar__navmenu-container"
           >
             <slot name="navmenu" />
-          </div>
-
-          <!-- Scroll down arrow -->
-          <div
-            class="menu-sidebar__scroll-button"
-            :class="{ 'menu-sidebar__scroll-button--hidden': !canScrollDown }"
-            aria-hidden="true"
-            @pointerenter="startScroll('down')"
-            @pointerleave="stopScroll"
-          >
-            <VcIcon
-              icon="lucide-chevron-down"
-              size="xs"
-            />
-          </div>
+          </VcScrollableContainer>
 
           <div class="menu-sidebar__user">
             <slot name="user-dropdown" />
           </div>
         </template>
         <template v-else>
-          <slot name="app-switcher" />
+          <div class="menu-sidebar__app-switcher-wrapper">
+            <slot name="app-switcher" />
+          </div>
         </template>
       </div>
     </div>
@@ -91,10 +67,9 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, inject, ref, watch, nextTick, type MaybeRef, type Ref } from "vue";
-import { EMBEDDED_MODE } from "../../../../../../../injection-keys";
-import { VcButton, VcIcon, VcSidebar } from "../../../../../../components";
-import { useScrollArrows } from "../../../../../../composables";
+import { computed, inject, ref, watch, nextTick, useSlots, type MaybeRef, type Ref } from "vue";
+import { EmbeddedModeKey, IsDesktopKey } from "@framework/injection-keys";
+import { VcButton, VcScrollableContainer, VcSidebar } from "@ui/components";
 
 const props = defineProps<{
   isOpened: boolean;
@@ -113,20 +88,20 @@ defineSlots<{
   widgets: () => unknown;
 }>();
 
-const isEmbedded = inject(EMBEDDED_MODE, false);
+const isEmbedded = inject(EmbeddedModeKey, false);
 const isMobile = inject<Ref<boolean>>("isMobile", ref(false));
-const isDesktop = inject<Ref<boolean>>("isDesktop", ref(false));
+const isDesktop = inject(IsDesktopKey, ref(false));
+const slots = useSlots();
 
-const navmenuRef = ref<HTMLElement | null>(null);
-const { canScrollUp, canScrollDown, startScroll, stopScroll, updateScrollState } =
-  useScrollArrows(navmenuRef);
+const scrollContainer = ref<InstanceType<typeof VcScrollableContainer> | null>(null);
+const showHeader = computed(() => !isEmbedded && (isDesktop.value || Boolean(slots.widgets)));
 
 // Recalculate scroll state when sidebar opens
 watch(
   () => props.isOpened,
   (opened) => {
     if (opened) {
-      nextTick(updateScrollState);
+      nextTick(() => scrollContainer.value?.updateScrollState());
     }
   },
 );
@@ -166,8 +141,12 @@ const wrapperProps = computed<Record<string, unknown>>(() => {
   }
 
   &__content {
-    @apply tw-flex tw-flex-col tw-bg-[var(--app-bar-background)] tw-flex-1 tw-relative tw-overflow-hidden tw-min-h-0;
-    height: calc(100vh - var(--app-bar-height));
+    @apply tw-flex tw-flex-col tw-bg-[var(--app-bar-background)] tw-flex-1 tw-relative tw-overflow-x-hidden tw-min-h-0;
+    height: calc(100dvh - var(--app-bar-height));
+
+    &--without-header {
+      height: 100dvh;
+    }
 
     &:before {
       content: "";
@@ -185,29 +164,14 @@ const wrapperProps = computed<Record<string, unknown>>(() => {
     }
   }
 
-  &__dropdowns {
-    @apply tw-w-full tw-h-full tw-invisible;
+  &__navmenu-container {
+    @apply tw-flex-auto tw-min-h-0;
 
-    &:not(:empty) {
-      @apply tw-visible tw-border-b-[2px] tw-border-[color:var(--app-bar-border)] tw-z-[2];
-
-      &:before {
-        content: "";
-        @apply tw-absolute tw-left-0 tw-top-[-2px] tw-w-full tw-h-[2px] tw-bg-[color:var(--app-bar-content-visible-border)] tw-z-[1] #{!important};
-      }
-    }
-  }
-
-  &__navmenu {
-    @apply tw-px-[var(--app-bar-padding)]  tw-flex tw-flex-col tw-flex-auto tw-bg-transparent tw-overflow-auto tw-min-h-0;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-
-    &::-webkit-scrollbar {
-      display: none;
+    .vc-scrollable-container__viewport {
+      padding: 0 var(--app-bar-padding);
     }
 
-    // Make nested containers transparent — navmenu is the sole scroll viewport
+    // Make nested containers transparent — the viewport is the sole scroll viewport
     .vc-app-menu,
     .vc-container {
       @apply tw-h-auto tw-overflow-visible;
@@ -218,23 +182,13 @@ const wrapperProps = computed<Record<string, unknown>>(() => {
     }
   }
 
-  &__scroll-button {
-    @apply tw-flex tw-items-center tw-justify-center tw-py-1
-      tw-cursor-default tw-shrink-0
-      tw-text-[color:var(--neutrals-400)]
-      tw-transition-opacity tw-duration-150;
-
-    &--hidden {
-      @apply tw-opacity-0 tw-pointer-events-none;
-    }
-  }
-
   &__user {
     @apply tw-mt-auto;
   }
 
   &__content-main {
-    @apply tw-relative;
+    @apply tw-relative tw-flex-shrink-0 tw-overflow-y-auto;
+    max-height: 40vh;
 
     &:not(:empty) {
       @apply tw-visible tw-border-b-[2px] tw-border-[color:var(--app-bar-border)] tw-z-[2];
@@ -244,6 +198,10 @@ const wrapperProps = computed<Record<string, unknown>>(() => {
         @apply tw-absolute tw-left-0 tw-top-[-2px] tw-w-full tw-h-[2px] tw-bg-[color:var(--app-bar-content-visible-border)] tw-z-[1] #{!important};
       }
     }
+  }
+
+  &__app-switcher-wrapper {
+    @apply tw-flex-1 tw-overflow-y-auto tw-min-h-0;
   }
 
   &__spacer {

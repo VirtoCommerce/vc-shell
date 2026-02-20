@@ -1,7 +1,7 @@
 import { describe, expect, it, beforeEach } from "vitest";
 import { defineComponent, ref } from "vue";
 import { mount } from "@vue/test-utils";
-import { useDataTableState } from "./useDataTableState";
+import { useDataTableState } from "@ui/components/organisms/vc-table/composables/useDataTableState";
 
 describe("useDataTableState", () => {
   beforeEach(() => {

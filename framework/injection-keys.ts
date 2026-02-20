@@ -1,8 +1,9 @@
 import { InjectionKey, ComputedRef, type Component, type Ref } from "vue";
-import { BladeVNode, IBladeInstance } from "./shared/components/blade-navigation/types";
-import { NotificationTemplateConstructor } from "./core/types";
-import { IToolbarService } from "./core/services/toolbar-service";
-import { IAiAgentService } from "./core/plugins/ai-agent/types";
+import { BladeVNode, IBladeInstance } from "@shared/components/blade-navigation/types";
+import type { BladeRoutesRecord } from "@shared/components";
+import { NotificationTemplateConstructor } from "@core/types";
+import { IToolbarService } from "@core/services/toolbar-service";
+import { IAiAgentService } from "@core/plugins/ai-agent/types";
 
 import {
   IWidgetService,
@@ -13,7 +14,7 @@ import {
   IAppBarWidgetService,
   IAppBarMobileButtonsService,
   ILanguageService,
-} from "./core/services";
+} from "@core/services";
 
 // Blade navigation keys
 export const NavigationViewLocationKey: InjectionKey<BladeVNode> = Symbol("NavigationViewLocation");
@@ -46,8 +47,25 @@ export const AppRootElementKey: InjectionKey<Ref<HTMLElement | undefined>> = Sym
 // App mode keys
 export const EmbeddedModeKey: InjectionKey<boolean> = Symbol("EmbeddedMode");
 
+// Shell indicators (computed boolean for SidebarHeader unread dot)
+export const ShellIndicatorsKey: InjectionKey<ComputedRef<boolean>> = Symbol("ShellIndicators");
+
 // AI Agent keys
 export const AiAgentServiceKey: InjectionKey<IAiAgentService> = Symbol("AiAgentService");
+
+// Breakpoint keys
+export const IsMobileKey: InjectionKey<Ref<boolean>> = Symbol("IsMobile");
+export const IsDesktopKey: InjectionKey<Ref<boolean>> = Symbol("IsDesktop");
+export const IsPhoneKey: InjectionKey<Ref<boolean>> = Symbol("IsPhone");
+export const IsTabletKey: InjectionKey<Ref<boolean>> = Symbol("IsTablet");
+export const IsTouchKey: InjectionKey<boolean> = Symbol("IsTouch");
+
+// Routing keys
+export const BladeRoutesKey: InjectionKey<BladeRoutesRecord[]> = Symbol("BladeRoutes");
+export const InternalRoutesKey: InjectionKey<BladeRoutesRecord[]> = Symbol("InternalRoutes");
+
+// Settings menu close callback
+export const CloseSettingsMenuKey: InjectionKey<() => void> = Symbol("CloseSettingsMenu");
 
 // Legacy aliases (deprecated - use the new *Key exports instead)
 /** @deprecated Use NavigationViewLocationKey instead */

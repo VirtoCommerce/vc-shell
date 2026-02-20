@@ -1,26 +1,26 @@
-import SelectField from "./fields/SelectField";
-import Card from "./fields/Card";
-import InputField from "./fields/InputField";
-import Fieldset from "./fields/Fieldset";
-import InputCurrency from "./fields/InputCurrency";
-import Checkbox from "./fields/Checkbox";
-import DynamicProperty from "./fields/DynamicProperty";
-import EditorField from "./fields/EditorField";
-import GalleryField from "./fields/GalleryField";
-import Button from "./fields/Button";
-import StatusField from "./fields/StatusField";
-import ContentField from "./fields/ContentField";
-import VideoField from "./fields/VideoField";
-import ImageField from "./fields/ImageField";
-import TextareaField from "./fields/TextareaField";
-import MultivalueField from "./fields/MultivalueField";
-import SwitchField from "./fields/SwitchField";
-import Table from "./fields/Table";
+import SelectField from "@shared/modules/dynamic/components/fields/SelectField";
+import Card from "@shared/modules/dynamic/components/fields/Card";
+import InputField from "@shared/modules/dynamic/components/fields/InputField";
+import Fieldset from "@shared/modules/dynamic/components/fields/Fieldset";
+import InputCurrency from "@shared/modules/dynamic/components/fields/InputCurrency";
+import Checkbox from "@shared/modules/dynamic/components/fields/Checkbox";
+import DynamicProperty from "@shared/modules/dynamic/components/fields/DynamicProperty";
+import EditorField from "@shared/modules/dynamic/components/fields/EditorField";
+import GalleryField from "@shared/modules/dynamic/components/fields/GalleryField";
+import Button from "@shared/modules/dynamic/components/fields/Button";
+import StatusField from "@shared/modules/dynamic/components/fields/StatusField";
+import ContentField from "@shared/modules/dynamic/components/fields/ContentField";
+import VideoField from "@shared/modules/dynamic/components/fields/VideoField";
+import ImageField from "@shared/modules/dynamic/components/fields/ImageField";
+import TextareaField from "@shared/modules/dynamic/components/fields/TextareaField";
+import MultivalueField from "@shared/modules/dynamic/components/fields/MultivalueField";
+import SwitchField from "@shared/modules/dynamic/components/fields/SwitchField";
+import Table from "@shared/modules/dynamic/components/fields/Table";
 
-import { ControlSchema } from "../types";
-import CustomComponent from "./fields/CustomComponent";
-import RatingField from "./fields/RatingField";
-import RadioButtonGroup from "./fields/RadioButtonGroup";
+import { ControlSchema } from "@shared/modules/dynamic/types";
+import CustomComponent from "@shared/modules/dynamic/components/fields/CustomComponent";
+import RatingField from "@shared/modules/dynamic/components/fields/RatingField";
+import RadioButtonGroup from "@shared/modules/dynamic/components/fields/RadioButtonGroup";
 
 type AvailableComponents = Exclude<ControlSchema["component"], "vc-widgets">;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

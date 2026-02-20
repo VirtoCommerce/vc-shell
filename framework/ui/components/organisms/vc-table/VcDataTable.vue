@@ -291,6 +291,7 @@
     <!-- Pagination / Total counter (outside scroll area, works for both desktop and mobile) -->
     <div
       v-if="props.pagination"
+      ref="paginationRef"
       class="vc-data-table__pagination"
     >
       <span class="vc-data-table__page-info">{{ paginationRangeText }}</span>
@@ -305,6 +306,8 @@
           :pages="props.pagination.pages"
           :current-page="props.pagination.currentPage"
           :variant="props.pagination.variant"
+          :max-pages="paginationMaxPages"
+          :show-first-last="paginationShowFirstLast"
           @item-click="handlePaginationClick"
         />
       </slot>
@@ -323,6 +326,7 @@
  * Inspired by PrimeVue DataTable architecture.
  */
 import { ref, computed, provide, watch, onBeforeUnmount, toRef, useSlots, inject, type Ref, type VNode } from "vue";
+import { useElementSize } from "@vueuse/core";
 import { useI18n } from "vue-i18n";
 import {
   Table,
@@ -338,8 +342,8 @@ import {
   TableAddRowButton,
   TableSearchHeader,
   TableSelectAllBar,
-} from "./components";
-import { VcPagination } from "../../molecules";
+} from "@ui/components/organisms/vc-table/components";
+import { VcPagination } from "@ui/components/molecules";
 import {
   useTableRowReorder,
   useTableColumnsResize,
@@ -354,9 +358,11 @@ import {
   useTableRowGrouping,
   useTableInlineEdit,
   useDataTableState,
-} from "./composables";
-import { ColumnCollector, type ColumnInstance } from "./utils/ColumnCollector";
-import type { VcColumnProps, VcDataTableExtendedProps, FilterValue, EditChange, TableAction } from "./types";
+} from "@ui/components/organisms/vc-table/composables";
+import { ColumnCollector, type ColumnInstance } from "@ui/components/organisms/vc-table/utils/ColumnCollector";
+import { ColumnCollectorKey, HasFlexColumnsKey } from "@ui/components/organisms/vc-table/keys";
+import { IsMobileKey } from "@framework/injection-keys";
+import type { VcColumnProps, VcDataTableExtendedProps, FilterValue, EditChange, TableAction } from "@ui/components/organisms/vc-table/types";
 
 const props = withDefaults(defineProps<VcDataTableExtendedProps<T>>(), {
   items: () => [],
@@ -517,7 +523,7 @@ const paginationRangeText = computed(() => {
 // Mobile Responsive Detection
 // ============================================================================
 
-const isMobile = inject("isMobile", ref(false)) as Ref<boolean>;
+const isMobile = inject(IsMobileKey, ref(false));
 const isMobileView = computed(() => isMobile.value);
 
 // ============================================================================
@@ -598,7 +604,7 @@ const extractColumnsFromSlots = (): ColumnInstance[] => {
 
 // Also keep inject/provide for backward compatibility
 const columnCollector = new ColumnCollector();
-provide("$columns", columnCollector);
+provide(ColumnCollectorKey, columnCollector);
 
 const columnsVersion = ref(0);
 columnCollector.onUpdate(() => {
@@ -682,7 +688,7 @@ const selection = useTableSelectionV2({
   items: toRef(props, "items"),
   selection: toRef(props, "selection"),
   selectionMode: computed(() => effectiveSelectionMode.value),
-  isRowSelectable: props.isRowSelectable,
+  isRowSelectable: (item: T) => (props.isRowSelectable ? props.isRowSelectable(item) : true),
   dataKey: props.dataKey,
   getItemKey,
   totalCount: toRef(props, "totalCount") as Ref<number | undefined>,
@@ -1162,7 +1168,7 @@ const cols = useTableColumns({
 });
 
 // Provide hasFlexColumns for TableRow filler control
-provide("hasFlexColumns", cols.hasFlexColumns);
+provide(HasFlexColumnsKey, cols.hasFlexColumns);
 
 // ============================================================================
 // Column Switcher
@@ -1506,6 +1512,35 @@ const handleMobileRowAction = (
 
 const tableRootRef = ref<HTMLElement | null>(null);
 const tableContainerRef = ref<HTMLElement | null>(null);
+const paginationRef = ref<HTMLElement | null>(null);
+
+// ============================================================================
+// Adaptive Pagination
+// ============================================================================
+
+const { width: paginationWidth } = useElementSize(paginationRef);
+
+/** Pagination item width (29px) + gap (8px) = 37px per button */
+const PAGINATION_ITEM_SLOT = 37;
+/** Approximate width of the page-info text + padding */
+const PAGINATION_BASE_WIDTH = 140;
+
+const paginationMaxPages = computed(() => {
+  if (!props.pagination || paginationWidth.value === 0) return 5;
+  const available = paginationWidth.value - PAGINATION_BASE_WIDTH;
+  // prev + next buttons always shown = 2 slots
+  const slotsForPages = Math.floor((available - 2 * PAGINATION_ITEM_SLOT) / PAGINATION_ITEM_SLOT);
+  if (slotsForPages >= 7) return 5; // enough room for 5 pages + first/last
+  if (slotsForPages >= 3) return slotsForPages;
+  return 0;
+});
+
+const paginationShowFirstLast = computed(() => {
+  if (!props.pagination || paginationWidth.value === 0) return true;
+  const available = paginationWidth.value - PAGINATION_BASE_WIDTH;
+  // Need room for: first + prev + at least 1 page + next + last = 5 slots minimum
+  return available >= 5 * PAGINATION_ITEM_SLOT;
+});
 
 // Note: Click-outside handling is done via focusout on the editor wrapper in DataTableCellRenderer.
 // No need for a separate mousedown listener - focusout covers all cases.
@@ -1575,7 +1610,7 @@ onBeforeUnmount(() => {
   }
 
   &__loading {
-    @apply tw-flex tw-items-center tw-justify-center tw-p-8 tw-text-[color:var(--neutrals-500)];
+    @apply tw-flex tw-items-center tw-justify-center tw-p-8 tw-text-neutrals-500;
   }
 
   &__row--dragging {
@@ -1583,7 +1618,7 @@ onBeforeUnmount(() => {
   }
 
   &__expansion-row {
-    @apply tw-bg-[color:var(--neutrals-50)] tw-w-full tw-border-b tw-border-[color:var(--table-border-color)];
+    @apply tw-bg-neutrals-50 tw-w-full tw-border-b tw-border-[color:var(--table-border-color)];
   }
 
   &__expansion-content {
@@ -1614,7 +1649,7 @@ onBeforeUnmount(() => {
   }
 
   &__group-footer {
-    @apply tw-bg-[color:var(--neutrals-50)] tw-px-4 tw-py-2 tw-border-b;
+    @apply tw-bg-neutrals-50 tw-px-4 tw-py-2 tw-border-b;
     border-color: var(--table-border-color);
     font-size: 0.875rem;
     color: var(--neutrals-600);

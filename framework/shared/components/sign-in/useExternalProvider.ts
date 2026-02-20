@@ -1,7 +1,7 @@
 import { useLocalStorage } from "@vueuse/core";
 import type { Ref } from "vue";
-import { ExternalSignInClient, ExternalSignInProviderInfo } from "../../../core/api/platform";
-import { createLogger } from "../../../core/utilities";
+import { ExternalSignInClient, ExternalSignInProviderInfo } from "@core/api/platform";
+import { createLogger } from "@core/utilities";
 
 const logger = createLogger("use-external-provider");
 

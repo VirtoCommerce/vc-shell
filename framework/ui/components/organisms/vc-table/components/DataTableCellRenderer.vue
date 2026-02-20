@@ -130,11 +130,11 @@
  */
 import { computed } from "vue";
 import * as _ from "lodash-es";
-import type { ColumnInstance } from "../utils/ColumnCollector";
-import TableCheckbox from "./TableCheckbox.vue";
-import { VcRadioButton } from "../../../molecules/vc-radio-button";
-import DynamicCellRenderer from "./cells/DynamicCellRenderer.vue";
-import { SlotProxy } from "./_internal/SlotProxy";
+import type { ColumnInstance } from "@ui/components/organisms/vc-table/utils/ColumnCollector";
+import TableCheckbox from "@ui/components/organisms/vc-table/components/TableCheckbox.vue";
+import { VcRadioButton } from "@ui/components/molecules/vc-radio-button";
+import DynamicCellRenderer from "@ui/components/organisms/vc-table/components/cells/DynamicCellRenderer.vue";
+import { SlotProxy } from "@ui/components/organisms/vc-table/components/_internal/SlotProxy";
 
 const props = defineProps<{
   /** Column instance from ColumnCollector */
@@ -342,23 +342,23 @@ const handleCellBlur = (_payload: { row: number | undefined; field: string }) =>
 
   &__default-editor {
     @apply tw-w-full tw-h-8 tw-px-2 tw-py-1 tw-text-sm tw-border tw-rounded;
-    @apply tw-border-[color:var(--primary-300)] tw-outline-none;
-    @apply focus:tw-border-[color:var(--primary-500)] focus:tw-ring-1 focus:tw-ring-[color:var(--primary-200)];
+    @apply tw-border-primary-300 tw-outline-none;
+    @apply focus:tw-border-primary-500 focus:tw-ring-1 focus:tw-ring-primary-200;
   }
 
   &__expander-btn {
     @apply tw-flex tw-items-center tw-justify-center tw-w-6 tw-h-6 tw-rounded tw-cursor-pointer tw-transition-colors;
     @apply tw-bg-transparent tw-border-0;
-    @apply hover:tw-bg-[color:var(--neutrals-100)];
+    @apply hover:tw-bg-neutrals-100;
   }
 
   &__expander-icon {
-    @apply tw-text-[color:var(--neutrals-500)] tw-text-xs;
+    @apply tw-text-neutrals-500 tw-text-xs;
   }
 
   &__drag-handle {
-    @apply tw-cursor-grab tw-text-[color:var(--neutrals-400)];
-    @apply hover:tw-text-[color:var(--neutrals-600)];
+    @apply tw-cursor-grab tw-text-neutrals-400;
+    @apply hover:tw-text-neutrals-600;
   }
 
   &__row-editor {
@@ -369,26 +369,26 @@ const handleCellBlur = (_payload: { row: number | undefined; field: string }) =>
     @apply tw-w-7 tw-h-7 tw-flex tw-items-center tw-justify-center tw-rounded tw-border tw-cursor-pointer tw-transition-colors;
 
     &--edit {
-      @apply tw-border-[color:var(--neutrals-300)] tw-bg-[color:var(--additional-50)] tw-text-[color:var(--neutrals-600)];
+      @apply tw-border-neutrals-300 tw-bg-additional-50 tw-text-neutrals-600;
 
       &:hover {
-        @apply tw-bg-[color:var(--neutrals-100)] tw-border-[color:var(--neutrals-400)];
+        @apply tw-bg-neutrals-100 tw-border-neutrals-400;
       }
     }
 
     &--save {
-      @apply tw-border-[color:var(--success-300)] tw-bg-[color:var(--success-50)] tw-text-[color:var(--success-600)];
+      @apply tw-border-success-300 tw-bg-success-50 tw-text-success-600;
 
       &:hover {
-        @apply tw-bg-[color:var(--success-100)] tw-border-[color:var(--success-400)];
+        @apply tw-bg-success-100 tw-border-success-400;
       }
     }
 
     &--cancel {
-      @apply tw-border-[color:var(--danger-300)] tw-bg-[color:var(--danger-50)] tw-text-[color:var(--danger-600)];
+      @apply tw-border-danger-300 tw-bg-danger-50 tw-text-danger-600;
 
       &:hover {
-        @apply tw-bg-[color:var(--danger-100)] tw-border-[color:var(--danger-400)];
+        @apply tw-bg-danger-100 tw-border-danger-400;
       }
     }
   }

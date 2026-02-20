@@ -1,11 +1,11 @@
-import { ComponentSlots } from "../../../../utilities/vueUtils";
+import { ComponentSlots } from "@shared/utilities/vueUtils";
 import { h, resolveComponent, ExtractPropTypes, Component, VNode } from "vue";
-import { MultivalueField } from "../factories";
-import componentProps from "./props";
-import ValidationField from "./ValidationField";
-import { MultivalueSchema } from "../../types";
-import { VcMultivalue } from "../../../../../ui/components";
-import { unrefNested } from "../../helpers/unrefNested";
+import { MultivalueField } from "@shared/modules/dynamic/components/factories";
+import componentProps from "@shared/modules/dynamic/components/fields/props";
+import ValidationField from "@shared/modules/dynamic/components/fields/ValidationField";
+import { MultivalueSchema } from "@shared/modules/dynamic/types";
+import { VcMultivalue } from "@ui/components";
+import { unrefNested } from "@shared/modules/dynamic/helpers/unrefNested";
 
 type TScope = Parameters<ComponentSlots<typeof VcMultivalue>["option"]>["0"] &
   Parameters<ComponentSlots<typeof VcMultivalue>["selected-item"]>["0"];

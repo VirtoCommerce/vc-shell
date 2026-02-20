@@ -1,8 +1,8 @@
 import { ExtractPropTypes, h, Component, toValue } from "vue";
-import { ImageField } from "../factories";
-import componentProps from "./props";
-import { ImageSchema } from "../../types";
-import { unrefNested } from "../../helpers/unrefNested";
+import { ImageField } from "@shared/modules/dynamic/components/factories";
+import componentProps from "@shared/modules/dynamic/components/fields/props";
+import { ImageSchema } from "@shared/modules/dynamic/types";
+import { unrefNested } from "@shared/modules/dynamic/helpers/unrefNested";
 
 export default {
   name: "ImageField",

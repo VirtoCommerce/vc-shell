@@ -1,5 +1,5 @@
-import { IBladeToolbar } from "../types";
-import { createBladeScopedRegistry, createPreregistrationBus } from "./_internal";
+import { IBladeToolbar } from "@core/types";
+import { createBladeScopedRegistry, createPreregistrationBus } from "@core/services/_internal";
 
 export interface IToolbarItem extends IBladeToolbar {
   id: string;

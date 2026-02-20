@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { createPreregistrationBus, type PreregistrationBus } from "./createPreregistrationBus";
+import { createPreregistrationBus, type PreregistrationBus } from "@core/services/_internal/createPreregistrationBus";
 
 interface TestItem {
   id: string;
@@ -9,6 +9,7 @@ interface TestItem {
 interface TestService {
   items: TestItem[];
   register(item: TestItem): void;
+  unregister?(id: string): void;
 }
 
 function createTestService(): TestService {
@@ -171,5 +172,56 @@ describe("createPreregistrationBus", () => {
 
     bus.dispose(s1);
     expect(bus.instanceCount).toBe(1);
+  });
+
+  describe("unregister", () => {
+    it("removes item from store by id", () => {
+      bus.preregister({ id: "a", value: 1 });
+      bus.preregister({ id: "b", value: 2 });
+
+      bus.unregister("a");
+
+      expect(bus.getPreregistered()).toHaveLength(1);
+      expect(bus.getPreregistered()[0].id).toBe("b");
+    });
+
+    it("is a no-op for non-existent id", () => {
+      bus.preregister({ id: "a", value: 1 });
+
+      bus.unregister("does-not-exist");
+
+      expect(bus.getPreregistered()).toHaveLength(1);
+    });
+
+    it("works without unregisterFromService callback (store-only)", () => {
+      bus.preregister({ id: "a", value: 1 });
+      const service = createTestService();
+      bus.replayInto(service);
+
+      // Bus without unregisterFromService — only removes from store
+      bus.unregister("a");
+
+      expect(bus.getPreregistered()).toHaveLength(0);
+    });
+
+    it("broadcasts removal to live service instances when unregisterFromService is provided", () => {
+      const busWithUnregister = createPreregistrationBus<TestItem, TestService>({
+        name: "test-with-unregister",
+        getKey: (item) => item.id,
+        registerIntoService: (service, item) => service.register(item),
+        unregisterFromService: (service, id) => service.unregister?.(id),
+      });
+
+      const unregisterSpy = vi.fn();
+      const service = createTestService();
+      service.unregister = unregisterSpy;
+      busWithUnregister.replayInto(service);
+      busWithUnregister.preregister({ id: "a", value: 1 });
+
+      busWithUnregister.unregister("a");
+
+      expect(unregisterSpy).toHaveBeenCalledWith("a");
+      expect(busWithUnregister.getPreregistered()).toHaveLength(0);
+    });
   });
 });

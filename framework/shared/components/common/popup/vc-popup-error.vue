@@ -28,7 +28,7 @@
 </template>
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
-import VcPopup from "./../../../../ui/components/organisms/vc-popup/vc-popup.vue";
+import VcPopup from "@ui/components/organisms/vc-popup/vc-popup.vue";
 
 export interface Props {
   title?: string;

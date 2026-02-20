@@ -17,6 +17,7 @@
       <div v-if="source">
         <iframe
           :src="source"
+          :title="label || 'Video'"
           width="100%"
           height="300px"
           frameborder="0"
@@ -30,10 +31,13 @@
       <div
         v-else
         class="vc-video__placeholder"
+        role="img"
+        aria-label="No video source"
       >
         <VcIcon
-          icon="material-theaters"
+          icon="lucide-film"
           size="xl"
+          aria-hidden="true"
         ></VcIcon>
       </div>
     </div>
@@ -41,7 +45,7 @@
 </template>
 
 <script lang="ts" setup>
-import { VcIcon, VcLabel } from "./../../";
+import { VcIcon, VcLabel } from "@ui/components";
 
 export interface Props {
   label?: string;
@@ -59,7 +63,10 @@ defineEmits<Emits>();
 
 <style lang="scss">
 :root {
-  --video-icon-color: var(--primary-400);
+  --video-icon-color: var(--neutrals-400);
+  --video-placeholder-bg: var(--neutrals-100);
+  --video-border-radius: 6px;
+  --video-border-color: var(--neutrals-200);
 }
 
 .vc-video {
@@ -70,11 +77,11 @@ defineEmits<Emits>();
   }
 
   &__container {
-    @apply tw-w-full tw-relative;
+    @apply tw-w-full tw-relative tw-rounded-[var(--video-border-radius)] tw-overflow-hidden tw-border tw-border-solid tw-border-[color:var(--video-border-color)];
   }
 
   &__placeholder {
-    @apply tw-absolute tw-w-full tw-h-full tw-flex tw-items-center tw-justify-center tw-text-[color:var(--video-icon-color)];
+    @apply tw-w-full tw-h-[200px] tw-flex tw-items-center tw-justify-center tw-text-[color:var(--video-icon-color)] tw-bg-[color:var(--video-placeholder-bg)];
   }
 }
 </style>

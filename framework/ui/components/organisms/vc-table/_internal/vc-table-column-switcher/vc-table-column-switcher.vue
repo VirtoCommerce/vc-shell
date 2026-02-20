@@ -41,9 +41,9 @@
 
 <script lang="ts" setup>
 import { ref, watch } from "vue";
-import { ITableColumns } from "./../../../../../../core/types";
-import { TableColPartial } from "../../types";
-import { VcDropdown } from "../../../../";
+import { ITableColumns } from "@core/types";
+import { TableColPartial } from "@ui/components/organisms/vc-table/types";
+import { VcDropdown } from "@ui/components";
 
 export interface Props {
   items: TableColPartial[];

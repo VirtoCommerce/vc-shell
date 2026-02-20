@@ -1,4 +1,4 @@
-import SidebarComponent from "./sidebar.vue";
+import SidebarComponent from "@shared/components/sidebar/sidebar.vue";
 
 /**
  * @deprecated Use `VcSidebar` from `framework/ui/components` instead.

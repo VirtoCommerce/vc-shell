@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { buildUrlFromStack, parseBladeUrl, buildQueryString } from "./urlSync";
-import type { BladeDescriptor } from "../types";
+import { buildUrlFromStack, parseBladeUrl, buildQueryString } from "@shared/components/blade-navigation/utils/urlSync";
+import type { BladeDescriptor } from "@shared/components/blade-navigation/types";
 
 // ── Helper ──────────────────────────────────────────────────────────────────────
 

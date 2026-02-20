@@ -26,23 +26,30 @@
       defer
       :disabled="!shouldTeleport"
     >
-      <div
-        v-if="isOpen"
-        :id="panelId"
-        ref="floatingEl"
-        v-on-click-outside="outsideClickBinding"
-        class="vc-dropdown__dropdown"
-        :style="{
-          maxHeight: normalizedMaxHeight,
-          ...panelStyle,
-        }"
-        :class="panelClasses"
-        :role="role"
-        :aria-activedescendant="activeDescendantId"
-        tabindex="-1"
-        @keydown="onPanelKeydown"
+      <Transition
+        name="vc-dropdown-transition"
+        appear
       >
-        <div class="vc-dropdown__content">
+        <div
+          v-if="isOpen"
+          :id="panelId"
+          ref="floatingEl"
+          v-on-click-outside="outsideClickBinding"
+          class="vc-dropdown__dropdown"
+          :style="{
+            maxHeight: normalizedMaxHeight,
+            ...panelStyle,
+          }"
+          :class="panelClasses"
+          :role="role"
+          :aria-activedescendant="activeDescendantId"
+          tabindex="-1"
+          @keydown="onPanelKeydown"
+        >
+        <div
+          class="vc-dropdown__content"
+          :class="{ 'vc-dropdown__content--padded': padded }"
+        >
           <slot
             name="items-container"
             :items="items"
@@ -58,6 +65,7 @@
                 :key="itemKey(item, index)"
                 class="vc-dropdown__item"
                 :class="{
+                  'vc-dropdown__item--padded': padded,
                   'vc-dropdown__item--mobile': isMobile,
                   'vc-dropdown__item--active': isItemActive?.(item),
                   'vc-dropdown__item--focused': focusedIndex === index,
@@ -85,15 +93,16 @@
             </div>
           </slot>
         </div>
-      </div>
+        </div>
+      </Transition>
     </Teleport>
   </div>
 </template>
 
 <script lang="ts" setup generic="T">
-import { computed, getCurrentInstance, inject, nextTick, onBeforeUnmount, ref, watch, type Ref } from "vue";
+import { computed, getCurrentInstance, inject, nextTick, onBeforeUnmount, ref, Transition, watch, type Ref } from "vue";
 import { vOnClickOutside } from "@vueuse/components";
-import { useFloatingPosition, type FloatingOffset, useTeleportTarget } from "../../../composables";
+import { useFloatingPosition, type FloatingOffset, useTeleportTarget } from "@ui/composables";
 import type { Placement } from "@floating-ui/vue";
 
 export type DropdownRole = "menu" | "listbox";
@@ -119,6 +128,9 @@ export interface Props<T> {
   closeOnSelect?: boolean;
   autoFocusPanel?: boolean;
   zIndex?: number;
+  /** When true (default), applies compact menu padding and rounded item backgrounds.
+   *  Set to false for rich content like notifications where items should span full width. */
+  padded?: boolean;
 }
 
 const props = withDefaults(defineProps<Props<T>>(), {
@@ -139,6 +151,7 @@ const props = withDefaults(defineProps<Props<T>>(), {
   closeOnSelect: false,
   autoFocusPanel: true,
   zIndex: 10000,
+  padded: true,
 });
 
 const emit = defineEmits<{
@@ -399,14 +412,50 @@ onBeforeUnmount(() => {
 </script>
 
 <style lang="scss">
+/* ── Transition ────────────────────────────────── */
+.vc-dropdown-transition-enter-active {
+  transition:
+    opacity 0.18s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.vc-dropdown-transition-leave-active {
+  transition:
+    opacity 0.12s ease-in,
+    transform 0.12s ease-in;
+}
+
+.vc-dropdown-transition-enter-from {
+  opacity: 0;
+  transform: translateY(-4px) scale(0.98);
+}
+
+.vc-dropdown-transition-leave-to {
+  opacity: 0;
+  transform: translateY(-2px) scale(0.99);
+}
+
+/* ── Placement-aware origins ──────────────────── */
+.vc-dropdown__dropdown--top,
+.vc-dropdown__dropdown--top-start,
+.vc-dropdown__dropdown--top-end {
+  &.vc-dropdown-transition-enter-from {
+    transform: translateY(4px) scale(0.98);
+  }
+
+  &.vc-dropdown-transition-leave-to {
+    transform: translateY(2px) scale(0.99);
+  }
+}
+
+/* ── Component ─────────────────────────────────── */
 .vc-dropdown {
-  --vc-dropdown-bg-color: var(--neutrals-50);
-  --vc-dropdown-text-color: var(--neutrals-950);
-  --vc-dropdown-hover-bg-color: var(--primary-50);
-  --vc-dropdown-divider-color: var(--neutrals-200);
-  --vc-dropdown-divider-item-color: var(--neutrals-100);
-  --vc-dropdown-bg-color-light: var(--additional-50);
-  --vc-dropdown-divider-item-color-light: var(--neutrals-200);
+  --vc-dropdown-bg: var(--additional-50);
+  --vc-dropdown-text: var(--neutrals-950);
+  --vc-dropdown-border: var(--neutrals-200);
+  --vc-dropdown-accent: var(--neutrals-100);
+  --vc-dropdown-accent-foreground: var(--neutrals-900);
+  --vc-dropdown-divider: var(--neutrals-200);
 
   @apply tw-relative tw-flex tw-w-full tw-h-full;
 
@@ -414,12 +463,14 @@ onBeforeUnmount(() => {
     @apply tw-flex tw-items-center tw-justify-center;
 
     &:focus-visible {
-      @apply tw-outline-none tw-ring-2 tw-ring-[color:var(--primary-500)] tw-ring-offset-1;
+      @apply tw-outline-none tw-ring-2 tw-ring-primary-500 tw-ring-offset-1;
     }
   }
 
+  // ── Panel (= DropdownMenuContent) ──────
   &__dropdown {
-    @apply tw-rounded-[6px] tw-w-full tw-overflow-auto tw-flex tw-flex-col tw-relative;
+    @apply tw-w-full tw-overflow-auto tw-flex tw-flex-col tw-relative;
+    background-color: var(--vc-dropdown-bg);
 
     &:focus {
       outline: none;
@@ -430,61 +481,60 @@ onBeforeUnmount(() => {
       display: flex !important;
     }
 
+    // Floating panels
     &--floating {
-      box-shadow:
-        0px 2px 10px 0px rgb(0 0 0 / 0.1),
-        0px 14px 25px -5px rgb(0 0 0 / 0.1);
-    }
-
-    &--secondary {
-      @apply tw-bg-[color:var(--vc-dropdown-bg-color-light)];
-
-      .vc-dropdown__item {
-        @apply tw-border-b-[color:var(--vc-dropdown-divider-item-color-light)];
-      }
-    }
-
-    &--default {
-      @apply tw-bg-[color:var(--vc-dropdown-bg-color)];
-
-      .vc-dropdown__item {
-        @apply tw-border-b-[color:var(--vc-dropdown-divider-item-color)];
-      }
+      border: 1px solid var(--vc-dropdown-border);
+      border-radius: 6px; // rounded-md
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
     }
   }
 
+  // ── Content wrapper ───────────────────────────
   &__content {
     @apply tw-w-full tw-h-full;
+
+    // Compact menu mode
+    &--padded {
+      padding: 4px; // p-1
+    }
   }
 
   &__items-container {
     @apply tw-overflow-y-auto;
   }
 
+  // ── Item (= DropdownMenuItem) ──────────
   &__item {
-    @apply tw-truncate tw-flex tw-items-center tw-text-sm tw-text-[color:var(--vc-dropdown-text-color)] tw-w-full tw-cursor-pointer tw-border-solid tw-border-b;
-    transition: background-color 0.2s;
-
-    &:last-of-type {
-      @apply tw-border-b-0;
-    }
+    @apply tw-relative tw-flex tw-items-center tw-select-none tw-text-sm tw-w-full tw-cursor-default;
+    color: var(--vc-dropdown-text);
+    transition: background-color 0.1s ease;
 
     &:hover {
-      background-color: var(--vc-dropdown-hover-bg-color);
+      background-color: var(--vc-dropdown-accent);
+      color: var(--vc-dropdown-accent-foreground);
     }
 
     &--active,
     &--focused {
-      @apply tw-bg-[color:var(--vc-dropdown-hover-bg-color)];
+      background-color: var(--vc-dropdown-accent);
+      color: var(--vc-dropdown-accent-foreground);
+    }
+
+    // Compact menu mode: rounded hover backgrounds + consistent padding
+    &--padded {
+      border-radius: 4px; // rounded-sm
+      padding: 4px;
     }
 
     &--mobile:not(:last-of-type) {
-      @apply tw-border-solid tw-border-b tw-border-b-[color:var(--vc-dropdown-divider-color)];
+      @apply tw-border-solid tw-border-b tw-border-b-[color:var(--vc-dropdown-divider)];
+      border-radius: 0;
     }
   }
 
   &__empty {
     @apply tw-flex tw-justify-center tw-items-center tw-p-4 tw-text-sm;
+    color: var(--neutrals-400);
   }
 }
 </style>

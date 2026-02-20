@@ -58,7 +58,7 @@
 </template>
 
 <script lang="ts" setup generic="T">
-import { VcDropdown } from "../../../ui/components";
+import { VcDropdown } from "@ui/components";
 
 export interface Props<T> {
   opened?: boolean;

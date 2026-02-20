@@ -29,12 +29,9 @@
 
 <script setup lang="ts">
 import { computed } from "vue";
-import moment from "moment";
-import { IPushNotification } from "../../../core/api/platform";
+import { IPushNotification } from "@core/api/platform";
 
 export interface Props {
-  color?: string;
-  icon?: string;
   title: string;
   notification: IPushNotification;
 }
@@ -47,8 +44,37 @@ const emit = defineEmits<Emits>();
 
 const locale = window.navigator.language;
 
+const MINUTE = 60;
+const HOUR = 3600;
+const DAY = 86400;
+
 const pushTime = computed(() => {
-  return moment(props.notification.created).locale(locale).format("L LT");
+  const created = props.notification.created;
+  if (!created) return "";
+
+  const date = created instanceof Date ? created : new Date(created);
+  if (Number.isNaN(date.getTime())) return "";
+  const now = Date.now();
+  const diffSec = Math.round((now - date.getTime()) / 1000);
+  const absDiffSec = Math.abs(diffSec);
+  const rtf = new Intl.RelativeTimeFormat(locale, { numeric: "auto" });
+
+  // Recent notifications: relative time
+  if (absDiffSec < MINUTE) {
+    return rtf.format(-diffSec, "second");
+  }
+  if (absDiffSec < HOUR) {
+    return rtf.format(-Math.round(diffSec / MINUTE), "minute");
+  }
+  if (absDiffSec < DAY) {
+    return rtf.format(-Math.round(diffSec / HOUR), "hour");
+  }
+
+  // Older notifications: absolute date-time
+  return new Intl.DateTimeFormat(locale, {
+    dateStyle: "short",
+    timeStyle: "short",
+  }).format(date);
 });
 </script>
 

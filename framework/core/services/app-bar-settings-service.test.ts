@@ -2,12 +2,12 @@ import { describe, it, expect, vi } from "vitest";
 
 async function loadAppBarMenuServiceModule() {
   vi.resetModules();
-  return import("./app-bar-menu-service");
+  return import("@core/services/app-bar-menu-service");
 }
 
 async function loadSettingsMenuServiceModule() {
   vi.resetModules();
-  return import("./settings-menu-service");
+  return import("@core/services/settings-menu-service");
 }
 
 describe("app-bar-menu-service", () => {
@@ -51,6 +51,21 @@ describe("app-bar-menu-service", () => {
     const id = service.register({ icon: "icon-1" });
     expect(id).toBeTruthy();
     expect(service.items.value).toHaveLength(1);
+  });
+
+  it("stores widget title and search terms", async () => {
+    const { createAppBarWidgetService } = await loadAppBarMenuServiceModule();
+    const service = createAppBarWidgetService();
+
+    service.register({
+      id: "notifications",
+      icon: "lucide-bell",
+      title: "Notifications",
+      searchTerms: ["alerts", "inbox"],
+    });
+
+    expect(service.items.value[0].title).toBe("Notifications");
+    expect(service.items.value[0].searchTerms).toEqual(["alerts", "inbox"]);
   });
 
   it("preregistration deduplicates items with same id", async () => {

@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { ComputedRef, Ref, VNode } from "vue";
-import { IActionBuilderResult, ITableColumns } from "../../../../core/types";
-import type { ColumnInstance } from "./utils/ColumnCollector";
+import { IActionBuilderResult, ITableColumns } from "@core/types";
+import type { ColumnInstance } from "@ui/components/organisms/vc-table/utils/ColumnCollector";
 
 // Re-export types used by compositional components
 export type { IActionBuilderResult, ITableColumns };
 
 // Re-export row grouping types from composable
-export type { GroupedData, RowGroupingOptions, UseTableRowGroupingReturn } from "./composables/useTableRowGrouping";
+export type { GroupedData, RowGroupingOptions, UseTableRowGroupingReturn } from "@ui/components/organisms/vc-table/composables/useTableRowGrouping";
 
 // Re-export ColumnInstance for external use
 export type { ColumnInstance };
@@ -431,7 +431,7 @@ export interface VcDataTableProps<T = any> {
   /**
    * Display mode for row actions:
    * - `"inline"`: Quick action buttons on hover + overflow dropdown (Google Drive style)
-   * - `"dropdown"`: All actions in dropdown menu triggered by three dots (shadcn style)
+   * - `"dropdown"`: All actions in dropdown menu triggered by three dots
    * @default "inline"
    */
   rowActionsMode?: "inline" | "dropdown";

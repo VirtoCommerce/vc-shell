@@ -1,13 +1,13 @@
 import { Component, ExtractPropTypes, h, unref } from "vue";
-import { InputCurrency } from "../factories";
-import componentProps from "./props";
-import ValidationField from "./ValidationField";
-import { getModel } from "../../helpers/getters";
-import { setModel } from "../../helpers/setters";
-import { InputCurrencySchema } from "../../types";
-import { unrefNested } from "../../helpers/unrefNested";
+import { InputCurrency } from "@shared/modules/dynamic/components/factories";
+import componentProps from "@shared/modules/dynamic/components/fields/props";
+import ValidationField from "@shared/modules/dynamic/components/fields/ValidationField";
+import { getModel } from "@shared/modules/dynamic/helpers/getters";
+import { setModel } from "@shared/modules/dynamic/helpers/setters";
+import { InputCurrencySchema } from "@shared/modules/dynamic/types";
+import { unrefNested } from "@shared/modules/dynamic/helpers/unrefNested";
 import { toValue } from "@vueuse/core";
-import { safeIn } from "../../helpers/safeIn";
+import { safeIn } from "@shared/modules/dynamic/helpers/safeIn";
 
 export default {
   name: "InputCurrency",

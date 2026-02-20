@@ -1,6 +1,6 @@
 import { ref, Ref, watch, onBeforeUnmount } from "vue";
-import { TableItem } from "../types";
-import { createLogger } from "../../../../../core/utilities";
+import { TableItem } from "@ui/components/organisms/vc-table/types";
+import { createLogger } from "@core/utilities";
 
 const logger = createLogger("vc-table-row-reorder");
 

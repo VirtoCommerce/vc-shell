@@ -1,4 +1,4 @@
-import type { IAiAgentConfig, ISuggestion } from "./types";
+import type { IAiAgentConfig, ISuggestion } from "@core/plugins/ai-agent/types";
 
 /**
  * Default configuration for AI agent panel

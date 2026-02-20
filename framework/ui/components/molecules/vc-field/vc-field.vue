@@ -32,6 +32,7 @@
           icon-size="m"
           class="vc-field__copy-button"
           text
+          aria-label="Copy to clipboard"
           @click="copy(modelValue)"
         ></VcButton>
       </VcFieldType>
@@ -41,8 +42,8 @@
 
 <script lang="ts" setup>
 import { ref } from "vue";
-import { VcLabel, VcCol } from "./../../";
-import VcFieldType from "./_internal/vc-field-type/vc-field-type.vue";
+import { VcLabel, VcCol } from "@ui/components";
+import VcFieldType from "@ui/components/molecules/vc-field/_internal/vc-field-type/vc-field-type.vue";
 
 export interface Props {
   /**
@@ -82,23 +83,28 @@ withDefaults(defineProps<Props>(), {
   aspectRatio: () => [1, 1],
 });
 
-const copyIcon = ref("material-content_copy");
+const copyIcon = ref("lucide-copy");
 
 function copy(value: string) {
   navigator.clipboard?.writeText(value);
-  copyIcon.value = "material-check";
+  copyIcon.value = "lucide-check";
   setTimeout(() => {
-    copyIcon.value = "material-content_copy";
+    copyIcon.value = "lucide-copy";
   }, 1000);
 }
 </script>
 
 <style lang="scss">
+:root {
+  --field-gap: 0.5rem;
+}
+
 .vc-field {
   @apply tw-flex;
 
   &--vertical {
-    @apply tw-flex-col tw-gap-2;
+    @apply tw-flex-col;
+    gap: var(--field-gap);
   }
 
   &--horizontal {

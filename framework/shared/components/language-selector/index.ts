@@ -1,4 +1,4 @@
-import _LanguageSelector from "./language-selector.vue";
+import _LanguageSelector from "@shared/components/language-selector/language-selector.vue";
 
 export const LanguageSelector = _LanguageSelector as typeof _LanguageSelector;
 

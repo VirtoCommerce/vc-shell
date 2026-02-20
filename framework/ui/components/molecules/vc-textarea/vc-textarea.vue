@@ -2,8 +2,8 @@
   <div
     class="vc-textarea"
     :class="{
-      'vc-textarea_error': error || !!errorMessage,
-      'vc-textarea_disabled': disabled,
+      'vc-textarea_error': invalid,
+      'vc-textarea_disabled': resolvedDisabled,
       'vc-textarea_focus': isFocused,
     }"
   >
@@ -15,7 +15,7 @@
       :required="required"
       :multilanguage="multilanguage"
       :current-language="currentLanguage"
-      :error="error || !!errorMessage"
+      :error="invalid"
     >
       <span>{{ label }}</span>
       <template
@@ -34,9 +34,9 @@
         class="vc-textarea__field"
         :placeholder="placeholder"
         :value="modelValue"
-        :disabled="disabled"
+        :disabled="resolvedDisabled"
         :maxlength="maxlength"
-        :aria-invalid="(error || !!errorMessage) || undefined"
+        :aria-invalid="invalid || undefined"
         :aria-describedby="ariaDescribedBy"
         :aria-labelledby="label ? labelId : undefined"
         tabindex="0"
@@ -46,35 +46,49 @@
       ></textarea>
     </div>
 
-    <slot
-      v-if="error || !!errorMessage"
-      name="error"
+    <Transition
+      name="slide-up"
+      mode="out-in"
     >
-      <VcHint
-        :id="errorId"
-        class="vc-textarea__error"
-      >
-        {{ errorMessage }}
-      </VcHint>
-    </slot>
+      <div v-if="invalid && errorMessage">
+        <slot name="error">
+          <VcHint
+            v-if="errorMessage"
+            :id="errorId"
+            class="vc-textarea__hint-error"
+            :error="true"
+          >
+            {{ errorMessage }}
+          </VcHint>
+        </slot>
+      </div>
+      <div v-else>
+        <slot name="hint">
+          <VcHint
+            v-if="hint"
+            :id="hintId"
+            class="vc-textarea__desc"
+          >
+            {{ hint }}
+          </VcHint>
+        </slot>
+      </div>
+    </Transition>
   </div>
 </template>
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
-import { computed, ref, useId } from "vue";
-import { VcHint, VcLabel } from "./../../";
+import { ref } from "vue";
+import { VcHint, VcLabel } from "@ui/components";
+import { useFormField } from "@ui/composables/useFormField";
+import type { IFormFieldProps } from "@ui/types";
 
-export interface Props {
+export interface Props extends IFormFieldProps {
   placeholder?: string;
   modelValue?: string;
-  required?: boolean;
-  disabled?: boolean;
-  label?: string;
-  tooltip?: string;
-  name?: string;
+  /** Helper text displayed below the textarea */
+  hint?: string;
   maxlength?: string;
-  error?: boolean;
-  errorMessage?: string;
   multilanguage?: boolean;
   currentLanguage?: string;
 }
@@ -85,6 +99,7 @@ export interface Emits {
 
 defineSlots<{
   error: (props: any) => any;
+  hint: (props: any) => any;
 }>();
 
 const props = withDefaults(defineProps<Props>(), {
@@ -94,20 +109,10 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<Emits>();
 
+const { fieldId: textareaId, labelId, errorId, hintId, invalid, resolvedDisabled, ariaDescribedBy } = useFormField(props);
+
 const textareaRef = ref<HTMLTextAreaElement>();
 const isFocused = ref(false);
-
-// Accessibility IDs
-const uid = useId();
-const textareaId = computed(() => `vc-textarea-${uid}`);
-const labelId = computed(() => `vc-textarea-${uid}-label`);
-const errorId = computed(() => `vc-textarea-${uid}-error`);
-
-const ariaDescribedBy = computed(() => {
-  const ids: string[] = [];
-  if ((props.error || props.errorMessage) && props.errorMessage) ids.push(errorId.value);
-  return ids.length ? ids.join(" ") : undefined;
-});
 
 function onInput(e: Event) {
   const newValue = (e.target as HTMLInputElement).value;
@@ -131,11 +136,11 @@ defineExpose({
   // Error
   --textarea-text-color-error: var(--danger-500);
   --textarea-border-color-error: var(--danger-500);
-  --textarea-error-ring-color: rgba(239, 68, 68, 0.2);
+  --textarea-error-ring-color: var(--danger-100);
 
   // Focus
   --textarea-border-color-focus: var(--primary-500);
-  --textarea-focus-ring-color: rgba(59, 130, 246, 0.3);
+  --textarea-focus-ring-color: var(--primary-100);
 
   // Disabled
   --textarea-disabled-text-color: var(--neutrals-500);
@@ -168,8 +173,12 @@ defineExpose({
     @apply tw-text-[color:var(--textarea-text-color-error)];
   }
 
-  &__error {
-    @apply tw-text-[color:var(--textarea-border-color-error)] tw-mt-1;
+  &__hint-error {
+    @apply tw-mt-1 [--hint-error-color:var(--textarea-text-color-error)];
+  }
+
+  &__desc {
+    @apply tw-text-[color:var(--textarea-placeholder-color)] tw-text-sm tw-mt-1;
   }
 
   &__field {
@@ -204,6 +213,19 @@ defineExpose({
     @apply tw-border-[color:var(--textarea-border-color-focus)]
       tw-ring-[3px] tw-ring-[color:var(--textarea-focus-ring-color)]
       tw-outline-none;
+  }
+
+  .slide-up-enter-active,
+  .slide-up-leave-active {
+    @apply tw-transition-all tw-duration-[250ms] tw-ease-out;
+  }
+
+  .slide-up-enter-from {
+    @apply tw-opacity-0 tw-translate-y-[5px];
+  }
+
+  .slide-up-leave-to {
+    @apply tw-opacity-0 tw--translate-y-[5px];
   }
 }
 </style>

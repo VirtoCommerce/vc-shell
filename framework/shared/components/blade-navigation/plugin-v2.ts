@@ -1,13 +1,13 @@
 import { Router } from "vue-router";
 import { App } from "vue";
-import * as components from "./components";
-import { BladeNavigationPlugin, BladeStackKey, BladeMessagingKey } from "./types";
-import { createBladeStack } from "./composables/useBladeStack";
-import { createBladeMessaging } from "./composables/useBladeMessaging";
-import { parseBladeUrl, buildUrlFromStack } from "./utils/urlSync";
-import { restoreFromUrl } from "./utils/restoreFromUrl";
-import { useBladeRegistry } from "../../../core/composables/useBladeRegistry";
-import type { IBladeRegistry } from "../../../core/composables/useBladeRegistry";
+import * as components from "@shared/components/blade-navigation/components";
+import { BladeNavigationPlugin, BladeStackKey, BladeMessagingKey } from "@shared/components/blade-navigation/types";
+import { createBladeStack } from "@shared/components/blade-navigation/composables/useBladeStack";
+import { createBladeMessaging } from "@shared/components/blade-navigation/composables/useBladeMessaging";
+import { parseBladeUrl, buildUrlFromStack } from "@shared/components/blade-navigation/utils/urlSync";
+import { restoreFromUrl } from "@shared/components/blade-navigation/utils/restoreFromUrl";
+import { useBladeRegistry } from "@core/composables/useBladeRegistry";
+import type { IBladeRegistry } from "@core/composables/useBladeRegistry";
 
 // Declare globally
 declare module "@vue/runtime-core" {
@@ -23,7 +23,7 @@ export let bladeNavigationInstance: BladeNavigationPlugin;
 // These are set once during plugin install and persist for the app's lifetime.
 // Limitation: only one Vue app per JS context is supported.
 // Call _resetBladeNavigationSingletons() in test teardown to prevent cross-test leaks.
-import type { IBladeStack, IBladeMessaging } from "./types";
+import type { IBladeStack, IBladeMessaging } from "@shared/components/blade-navigation/types";
 export let bladeStackInstance: IBladeStack | undefined;
 export let bladeMessagingInstance: IBladeMessaging | undefined;
 export let bladeRegistryInstance: IBladeRegistry | undefined;

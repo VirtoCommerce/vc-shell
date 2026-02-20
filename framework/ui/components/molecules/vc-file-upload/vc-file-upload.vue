@@ -22,6 +22,7 @@
       role="button"
       tabindex="0"
       :aria-label="customText?.dragHere || 'Upload files'"
+      :aria-describedby="ariaDescribedBy"
       @keydown.enter="toggleUploader"
       @keydown.space.prevent="toggleUploader"
     >
@@ -53,23 +54,31 @@
         @change="upload"
       />
     </div>
-    <slot
-      v-if="errorMessage"
-      name="error"
+    <Transition
+      name="slide-up"
+      mode="out-in"
     >
-      <VcHint class="vc-file-upload__error">
-        {{ errorMessage }}
-      </VcHint>
-    </slot>
+      <div v-if="errorMessage">
+        <slot name="error">
+          <VcHint
+            :id="errorId"
+            class="vc-file-upload__error"
+            :error="true"
+          >
+            {{ errorMessage }}
+          </VcHint>
+        </slot>
+      </div>
+    </Transition>
   </div>
 </template>
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
-import { getCurrentInstance, ref, unref } from "vue";
+import { getCurrentInstance, ref, unref, computed, useId } from "vue";
 import { useField } from "vee-validate";
-import { VcIcon, VcLink, VcHint } from "./../../";
+import { VcIcon, VcLink, VcHint } from "@ui/components";
 import { useI18n } from "vue-i18n";
-import { IValidationRules } from "./../../../../core/types";
+import { IValidationRules } from "@core/types";
 
 export interface Props {
   variant?: "gallery" | "file-upload";
@@ -113,6 +122,13 @@ const { errorMessage, handleChange, validate } = useField(
 );
 
 const uploader = ref<HTMLInputElement | null>(null);
+
+const uid = useId();
+const errorId = computed(() => `vc-file-upload-${uid}-error`);
+const ariaDescribedBy = computed(() => {
+  if (errorMessage.value) return errorId.value;
+  return undefined;
+});
 
 const upload = async (event: Event) => {
   await handleChange(event.target);
@@ -158,6 +174,7 @@ function dragLeave() {
 :root {
   --file-upload-border-color: var(--neutrals-200);
   --file-upload-border-color-hover: var(--neutrals-400);
+  --file-upload-border-color-dragover: var(--primary-500);
   --file-upload-border-color-error: var(--danger-500);
   --file-upload-border-radius: 6px;
   --file-upload-drag-bg: var(--neutrals-100);
@@ -196,7 +213,8 @@ function dragLeave() {
     }
 
     &--dragging {
-      @apply tw-bg-[color:var(--file-upload-drag-bg)] tw-border-solid tw-cursor-copy;
+      @apply tw-bg-[color:var(--file-upload-drag-bg)] tw-border-solid tw-cursor-copy
+        tw-border-[color:var(--file-upload-border-color-dragover)];
     }
 
     &:hover {
@@ -204,7 +222,7 @@ function dragLeave() {
     }
 
     &:focus-within {
-      @apply tw-border-[color:var(--primary-500)]
+      @apply tw-border-primary-500
         tw-ring-[3px] tw-ring-[color:var(--file-upload-focus-ring-color)]
         tw-outline-none;
     }
@@ -224,7 +242,20 @@ function dragLeave() {
   }
 
   &__error {
-    @apply tw-mt-1 [--hint-color:var(--file-upload-error-color)];
+    @apply tw-mt-1 [--hint-error-color:var(--file-upload-error-color)];
+  }
+
+  .slide-up-enter-active,
+  .slide-up-leave-active {
+    @apply tw-transition-all tw-duration-[250ms] tw-ease-out;
+  }
+
+  .slide-up-enter-from {
+    @apply tw-opacity-0 tw-translate-y-[5px];
+  }
+
+  .slide-up-leave-to {
+    @apply tw-opacity-0 tw--translate-y-[5px];
   }
 }
 </style>

@@ -11,11 +11,11 @@ import {
   LoginType,
   LoginRequest,
   SignInResult,
-} from "./../../api/platform";
-import { RequestPasswordResult } from "./../../types";
+} from "@core/api/platform";
+import { RequestPasswordResult } from "@core/types";
 import { createSharedComposable } from "@vueuse/core";
-import { useExternalProvider } from "../../../shared/components/sign-in/useExternalProvider";
-import { createLogger } from "../../utilities";
+import { useExternalProvider } from "@shared/components/sign-in/useExternalProvider";
+import { createLogger } from "@core/utilities";
 
 export interface TokenData {
   token: string | null;

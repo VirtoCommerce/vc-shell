@@ -36,7 +36,7 @@
           v-if="blade.breadcrumbs?.length && $isDesktop.value"
           class="vc-blade__breadcrumbs"
         >
-          <VcBreadcrumbs :items="blade.breadcrumbs">
+          <VcBreadcrumbs :items="blade.breadcrumbs" collapsed>
             <template #trigger="{ click, isActive }">
               <VcButton
                 text
@@ -96,15 +96,15 @@
 </template>
 <script lang="ts" setup>
 import { ref, inject } from "vue";
-import { IBladeToolbar } from "../../../../core/types";
-import { useBladeNavigation } from "../../../../shared";
-import BladeHeader from "./_internal/BladeHeader.vue";
-import BladeToolbar from "./_internal/BladeToolbar.vue";
-import BladeStatusBanners from "./_internal/BladeStatusBanners.vue";
-import { VcButton } from "../../";
-import { BladeInstance, BLADE_BACK_BUTTON } from "../../../../injection-keys";
-import WidgetContainer from "./_internal/widgets/WidgetContainer.vue";
-import { DEFAULT_BLADE_INSTANCE } from "./constants";
+import { IBladeToolbar } from "@core/types";
+import { useBladeNavigation } from "@shared";
+import BladeHeader from "@ui/components/organisms/vc-blade/_internal/BladeHeader.vue";
+import BladeToolbar from "@ui/components/organisms/vc-blade/_internal/BladeToolbar.vue";
+import BladeStatusBanners from "@ui/components/organisms/vc-blade/_internal/BladeStatusBanners.vue";
+import { VcButton } from "@ui/components";
+import { BladeInstance, BLADE_BACK_BUTTON } from "@framework/injection-keys";
+import WidgetContainer from "@ui/components/organisms/vc-blade/_internal/widgets/WidgetContainer.vue";
+import { DEFAULT_BLADE_INSTANCE } from "@ui/components/organisms/vc-blade/constants";
 
 export interface Props {
   icon?: string;

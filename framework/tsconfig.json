@@ -3,7 +3,23 @@
   "compilerOptions": {
     "baseUrl": ".",
     "outDir": "dist",
-    "types": ["vite/client", "./typings/declarations.d.ts"]
+    "types": ["vite/client", "./typings/declarations.d.ts"],
+    "paths": {
+      "@framework": ["./"],
+      "@framework/*": ["./*"],
+      "@core": ["./core"],
+      "@core/*": ["./core/*"],
+      "@ui": ["./ui"],
+      "@ui/*": ["./ui/*"],
+      "@shared": ["./shared"],
+      "@shared/*": ["./shared/*"],
+      "@assets": ["./assets"],
+      "@assets/*": ["./assets/*"],
+      "@locales": ["./locales"],
+      "@locales/*": ["./locales/*"],
+      "@vc-shell/framework": ["./index.ts"],
+      "@vc-shell/framework/*": ["./*"]
+    }
   },
   "include": [
     "*.ts",
@@ -23,7 +39,10 @@
     "locales/*.ts",
     "locales/*.json"
   ],
-  "exclude": ["**/*.spec.ts", "vitest.config.ts",
-  // TODO: fix this
-  "**/*.stories.ts"]
+  "exclude": [
+    "**/*.spec.ts",
+    "vitest.config.ts",
+    // TODO: fix this
+    "**/*.stories.ts"
+  ]
 }

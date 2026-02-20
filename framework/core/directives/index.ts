@@ -1,2 +1,2 @@
-export * from "./autofocus";
-export * from "./loading";
+export * from "@core/directives/autofocus";
+export * from "@core/directives/loading";

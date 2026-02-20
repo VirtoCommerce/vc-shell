@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { computed, ref } from "vue";
-import { resolveVisibility, resolveReactiveBoolean } from "./utils";
+import { resolveVisibility, resolveReactiveBoolean } from "@ui/components/organisms/vc-blade/utils";
 
 describe("resolveVisibility", () => {
   it("returns true when value is undefined", () => {

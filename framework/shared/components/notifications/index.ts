@@ -1,6 +1,6 @@
 import "./styles/index.scss";
 
-export * from "./components";
-export * from "./composables";
-export * from "./types";
-export * from "./core";
+export * from "@shared/components/notifications/components";
+export * from "@shared/components/notifications/composables";
+export * from "@shared/components/notifications/types";
+export * from "@shared/components/notifications/core";

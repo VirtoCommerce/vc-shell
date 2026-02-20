@@ -26,7 +26,7 @@
 
 <script lang="ts" setup>
 import { ref, watch, computed } from "vue";
-import VcAccordionItem from "./_internal/vc-accordion-item/vc-accordion-item.vue";
+import VcAccordionItem from "@ui/components/molecules/vc-accordion/_internal/vc-accordion-item/vc-accordion-item.vue";
 import type { Component } from "vue";
 
 export interface AccordionItem {

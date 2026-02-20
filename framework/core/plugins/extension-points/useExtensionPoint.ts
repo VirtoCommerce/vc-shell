@@ -1,5 +1,5 @@
-import { getPoint } from "./store";
-import type { ExtensionComponent } from "./types";
+import { getPoint } from "@core/plugins/extension-points/store";
+import type { ExtensionComponent } from "@core/plugins/extension-points/types";
 
 /**
  * Access an extension point (plugin-side).

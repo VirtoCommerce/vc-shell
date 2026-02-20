@@ -1,10 +1,10 @@
 import { App, watch, ref, InjectionKey } from "vue";
 import { HubConnection, HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
-import { PushNotification } from "../../api/platform";
-import { useNotifications } from "./../../composables/useNotifications";
-import { useUserManagement } from "../../composables/useUserManagement";
+import { PushNotification } from "@core/api/platform";
+import { useNotifications } from "@core/composables/useNotifications";
+import { useUserManagement } from "@core/composables/useUserManagement";
 import { useCypressSignalRMock } from "cypress-signalr-mock";
-import { createLogger } from "../../utilities";
+import { createLogger } from "@core/utilities";
 
 const logger = createLogger("signalR");
 

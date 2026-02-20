@@ -13,15 +13,19 @@
       :icon="icon"
       size="s"
     />
-    <div class="vc-breadcrumbs-item__title">
-      {{ title }}
+    <div
+      class="vc-breadcrumbs-item__title"
+      :title="resolvedTitle"
+    >
+      {{ resolvedTitle }}
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { Breadcrumbs } from "../../../../../types";
-import { VcIcon } from "./../../../../";
+import { computed, toValue } from "vue";
+import type { Breadcrumbs } from "../../../../../types/index";
+import { VcIcon } from "@ui/components";
 
 export interface Props extends Breadcrumbs {
   current: boolean;
@@ -33,8 +37,9 @@ export interface Emits {
 }
 
 const props = defineProps<Props>();
-
 const emit = defineEmits<Emits>();
+
+const resolvedTitle = computed(() => toValue(props.title) ?? "");
 
 function onClick(): void {
   if (!props.current) {

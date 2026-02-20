@@ -1,1 +1,1 @@
-export * from "./forgot-password";
+export * from "@shared/pages/ForgotPasswordPage/components/forgot-password";

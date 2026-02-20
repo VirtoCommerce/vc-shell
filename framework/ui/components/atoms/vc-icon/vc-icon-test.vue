@@ -411,6 +411,6 @@
 </template>
 
 <script setup lang="ts">
-import { VcIcon } from "./index";
-import type { IconSize } from "./vc-icon.vue";
+import { VcIcon } from "@ui/components/atoms/vc-icon";
+import type { IconSize } from "@ui/components/atoms/vc-icon/vc-icon.vue";
 </script>

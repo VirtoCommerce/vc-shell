@@ -1,15 +1,27 @@
-import { computed, provide } from "vue";
-import { provideAppBarWidget, useNotifications } from "../../../../../core/composables";
-import { provideAppBarMobileButtonsService } from "../../../../../core/composables/useAppBarMobileButtons";
-import { provideSettingsMenu } from "../../../../../core/composables/useSettingsMenu";
-import { provideMenuService } from "../../../../../core/composables/useMenuService";
-import { provideGlobalSearch } from "../../../../../core/composables/useGlobalSearch";
-import { provideDashboardService } from "../../../../../core/composables/useDashboard";
-import { provideAiAgentService } from "../../../../../core/plugins/ai-agent";
-import type { IAiAgentConfig } from "../../../../../core/plugins/ai-agent";
-import { EMBEDDED_MODE, DynamicModulesKey } from "../../../../../injection-keys";
-import type { ShellFeature, ShellContext } from "../../../../../core/types/shell-feature";
-import type { BladeRoutesRecord } from "../../../../../shared/components";
+import { provide, inject, computed } from "vue";
+import { provideAppBarMobileButtonsService } from "@core/composables/useAppBarMobileButtons";
+import { provideGlobalSearch } from "@core/composables/useGlobalSearch";
+import { provideDashboardService } from "@core/composables/useDashboard";
+import {
+  AppBarWidgetServiceKey,
+  SettingsMenuServiceKey,
+  EmbeddedModeKey,
+  DynamicModulesKey,
+  ShellIndicatorsKey,
+  InternalRoutesKey,
+} from "@framework/injection-keys";
+import { hasUnreadNotifications } from "@core/composables/useNotifications";
+import { NotificationDropdown } from "@shared/components";
+import { LanguageSelector } from "@shared/components/language-selector";
+import { ThemeSelector } from "@shared/components/theme-selector";
+import { ChangePasswordButton } from "@shared/components/change-password-button";
+import { LogoutButton } from "@shared/components/logout-button";
+import { provideAiAgentService } from "@core/plugins/ai-agent";
+import type { IAiAgentConfig } from "@core/plugins/ai-agent";
+import type { BladeRoutesRecord } from "@shared/components";
+import type { registerAppBarWidgetOptions } from "@core/services/app-bar-menu-service";
+import type { AppBarButtonContent } from "@core/services/app-bar-mobile-buttons-service";
+import type { RegisterSettingsMenuItemOptions } from "@core/services/settings-menu-service";
 
 export interface ShellBootstrapOptions {
   isEmbedded: boolean;
@@ -17,62 +29,28 @@ export interface ShellBootstrapOptions {
   dynamicModules?: typeof window.VcShellDynamicModules;
   aiAgentConfig?: IAiAgentConfig;
   aiAgentAddGlobalToolbarButton?: boolean;
-  context: ShellContext;
 }
 
-/**
- * Bootstraps the shell: provides all core services and processes shell features.
- * This replaces the ~100 lines of service provisioning and registration
- * that were previously inline in vc-app.vue setup.
- */
-export function useShellBootstrap(features: ShellFeature[], options: ShellBootstrapOptions) {
-  // 1. Provide core services
-  const { register: registerSettingsMenuItem } = provideSettingsMenu();
-  const { register: registerWidget } = provideAppBarWidget();
-  const { register: registerMobileButton } = provideAppBarMobileButtonsService();
-  const { notifications } = useNotifications();
-  provideMenuService();
+export function useShellBootstrap(options: ShellBootstrapOptions) {
+  // 1a. App-level services (created by framework plugin install)
+  const appBarWidgetService = inject(AppBarWidgetServiceKey)!;
+  const settingsMenuService = inject(SettingsMenuServiceKey)!;
+
+  // 1b. Component-scoped services (created here for VcApp descendants)
+  const mobileButtons = provideAppBarMobileButtonsService();
   provideGlobalSearch();
   provideDashboardService();
 
-  const hasUnreadNotifications = computed(() => notifications.value.some((item) => item.isNew));
-
   // 2. Provide injection keys
-  provide(EMBEDDED_MODE, options.isEmbedded);
+  provide(EmbeddedModeKey, options.isEmbedded);
   if (options.internalRoutes) {
-    provide("internalRoutes", options.internalRoutes);
+    provide(InternalRoutesKey, options.internalRoutes);
   }
   if (options.dynamicModules !== undefined) {
     provide(DynamicModulesKey, options.dynamicModules);
   }
 
-  // 3. Process features — register their widgets/items/buttons into services
-  for (const feature of features) {
-    feature.appBarWidgets?.forEach((widget) => {
-      // Keep legacy notification behavior: badge reflects unread notifications.
-      if (widget.id === "notification-dropdown" && widget.badge === undefined) {
-        registerWidget({
-          ...widget,
-          badge: () => hasUnreadNotifications.value,
-        });
-        return;
-      }
-
-      registerWidget(widget);
-    });
-
-    feature.settingsMenuItems?.forEach((item) => registerSettingsMenuItem(item));
-
-    feature.mobileButtons?.forEach((button) => {
-      registerMobileButton({
-        ...button,
-        // Embedded mode hides all mobile buttons by default
-        isVisible: options.isEmbedded ? false : (button.isVisible ?? true),
-      });
-    });
-  }
-
-  // 4. Conditional AI agent setup
+  // 3. AI agent (conditional)
   if (options.aiAgentConfig?.url) {
     provideAiAgentService({
       config: options.aiAgentConfig,
@@ -80,8 +58,49 @@ export function useShellBootstrap(features: ShellFeature[], options: ShellBootst
     });
   }
 
-  // 5. Run feature onSetup hooks
-  for (const feature of features) {
-    feature.onSetup?.(options.context);
+  // 4. Register default shell UI
+  useShellDefaults({
+    isEmbedded: options.isEmbedded,
+    registerWidget: appBarWidgetService.register,
+    registerMobileButton: mobileButtons.register,
+    registerSettingsMenuItem: settingsMenuService.register,
+  });
+}
+
+// ── Internal: default UI element registration ─────────────────────
+interface ShellDefaultsContext {
+  isEmbedded: boolean;
+  registerWidget: (options: registerAppBarWidgetOptions) => string;
+  registerMobileButton: (button: AppBarButtonContent) => void;
+  registerSettingsMenuItem: (options: RegisterSettingsMenuItemOptions) => string;
+}
+
+function useShellDefaults(ctx: ShellDefaultsContext) {
+  // Notification widget
+  ctx.registerWidget({
+    id: "notification-dropdown",
+    component: NotificationDropdown,
+    icon: "lucide-bell",
+    order: 10,
+    badge: () => hasUnreadNotifications.value,
+  });
+
+  if (!ctx.isEmbedded) {
+    ctx.registerMobileButton({
+      id: "notification-dropdown",
+      component: NotificationDropdown,
+      icon: "lucide-bell",
+      order: 10,
+      isVisible: true,
+    });
   }
+
+  // Settings menu items
+  ctx.registerSettingsMenuItem({ id: "theme-selector", component: ThemeSelector, group: "preferences", order: 10 });
+  ctx.registerSettingsMenuItem({ id: "language-selector", component: LanguageSelector, group: "preferences", order: 20 });
+  ctx.registerSettingsMenuItem({ id: "change-password", component: ChangePasswordButton, group: "account", order: 30 });
+  ctx.registerSettingsMenuItem({ id: "logout", component: LogoutButton, group: "account", order: 100 });
+
+  // Shell indicator state for SidebarHeader
+  provide(ShellIndicatorsKey, computed(() => hasUnreadNotifications.value));
 }

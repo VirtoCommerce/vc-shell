@@ -1,5 +1,5 @@
 import { VNode } from "vue";
-import _Slider from "./vc-slider.vue";
+import _Slider from "@ui/components/molecules/vc-slider/vc-slider.vue";
 
 export const VcSlider = _Slider as typeof _Slider & {
   new (): {

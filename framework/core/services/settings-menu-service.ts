@@ -1,9 +1,10 @@
 import { ComputedRef } from "vue";
-import { createSimpleMapRegistry, createPreregistrationBus } from "./_internal";
+import { createSimpleMapRegistry, createPreregistrationBus } from "@core/services/_internal";
 
 export interface ISettingsMenuItem {
   id: string;
   order?: number;
+  group?: string;
   component: import("vue").Component;
   props?: Record<string, unknown>;
 }
@@ -22,6 +23,7 @@ export const settingsMenuBus = createPreregistrationBus<RegisterSettingsMenuItem
   name: "settings-menu-service",
   getKey: (item) => item.id || crypto.randomUUID(),
   registerIntoService: (service, item) => service.register(item),
+  unregisterFromService: (service, id) => service.unregister(id),
 });
 
 /**
@@ -40,6 +42,7 @@ export function createSettingsMenuService(): ISettingsMenuService {
     createItem: (options, currentSize) => ({
       id: options.id || "",
       order: options.order ?? currentSize,
+      group: options.group,
       component: options.component,
       props: options.props,
     }),

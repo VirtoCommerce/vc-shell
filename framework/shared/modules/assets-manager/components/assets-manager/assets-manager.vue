@@ -153,14 +153,14 @@
 </template>
 
 <script setup lang="ts">
-import { ICommonAsset, IActionBuilderResult, IBladeToolbar, ITableColumns } from "../../../../../core/types";
+import { ICommonAsset, IActionBuilderResult, IBladeToolbar, ITableColumns } from "@core/types";
 import { ref, computed, onMounted, unref, watch, Ref } from "vue";
 import { useI18n } from "vue-i18n";
 import moment from "moment";
-import { isImage, getFileThumbnail, readableSize } from "./../../../../utilities/assets";
+import { isImage, getFileThumbnail, readableSize } from "@shared/utilities/assets";
 import * as _ from "lodash-es";
-import { IParentCallArgs, useBladeNavigation } from "../../../../components";
-import { createLogger } from "../../../../../core/utilities";
+import { IParentCallArgs, useBladeNavigation } from "@shared/components";
+import { createLogger } from "@core/utilities";
 
 const logger = createLogger("assets-manager");
 

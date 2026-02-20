@@ -1,8 +1,8 @@
 import { Component, ExtractPropTypes, h, toValue } from "vue";
-import { VideoField } from "../factories";
-import componentProps from "./props";
-import { VideoSchema } from "../../types";
-import { unrefNested } from "../../helpers/unrefNested";
+import { VideoField } from "@shared/modules/dynamic/components/factories";
+import componentProps from "@shared/modules/dynamic/components/fields/props";
+import { VideoSchema } from "@shared/modules/dynamic/types";
+import { unrefNested } from "@shared/modules/dynamic/helpers/unrefNested";
 
 export default {
   name: "VideoField",

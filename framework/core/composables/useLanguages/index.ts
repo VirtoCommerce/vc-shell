@@ -1,7 +1,7 @@
 import { hasInjectionContext, inject, provide } from "vue";
-import { LanguageServiceKey } from "../../../injection-keys";
-import { ILanguageService, createLanguageService } from "../../services/language-service";
-import { createLogger, InjectionError } from "../../utilities";
+import { LanguageServiceKey } from "@framework/injection-keys";
+import { ILanguageService, createLanguageService } from "@core/services/language-service";
+import { createLogger, InjectionError } from "@core/utilities";
 
 const logger = createLogger("use-languages");
 let fallbackLanguageService: ILanguageService | null = null;

@@ -3,13 +3,13 @@
 /**
  * @deprecated Use `VcDataTable` from `framework/ui/components` instead.
  */
-export { default as VcTable } from "./VcTableAdapter.vue";
+export { default as VcTable } from "@ui/components/organisms/vc-table/VcTableAdapter.vue";
 
 // Declarative API - VcDataTable with VcColumn support (PrimeVue-like)
-export { default as VcDataTable } from "./VcDataTable.vue";
+export { default as VcDataTable } from "@ui/components/organisms/vc-table/VcDataTable.vue";
 
 // Declarative Column Component (renderless)
-export { default as VcColumn } from "./components/VcColumn.vue";
+export { default as VcColumn } from "@ui/components/organisms/vc-table/components/VcColumn.vue";
 
 // Compositional API components
 export {
@@ -27,10 +27,10 @@ export {
   TableSelectAllBar,
   TableSearchHeader,
   TableGroupRow,
-} from "./components";
+} from "@ui/components/organisms/vc-table/components";
 
 // Utilities
-export { ColumnCollector } from "./utils/ColumnCollector";
+export { ColumnCollector } from "@ui/components/organisms/vc-table/utils/ColumnCollector";
 
 // Cell formatters
 export {
@@ -45,7 +45,7 @@ export {
   CellStatus,
   CellStatusIcon,
   CellEditableWrapper,
-} from "./components/cells";
+} from "@ui/components/organisms/vc-table/components/cells";
 
 // Composables (public API)
 export {
@@ -59,10 +59,10 @@ export {
   useVirtualScroll,
   useColumnFilter,
   useFilterState,
-} from "./composables";
+} from "@ui/components/organisms/vc-table/composables";
 
 // Virtual scroll types
-export type { VirtualScrollOptions, VirtualScrollItem, VirtualScrollReturn } from "./composables";
+export type { VirtualScrollOptions, VirtualScrollItem, VirtualScrollReturn } from "@ui/components/organisms/vc-table/composables";
 
 // Re-export types
-export * from "./types";
+export * from "@ui/components/organisms/vc-table/types";

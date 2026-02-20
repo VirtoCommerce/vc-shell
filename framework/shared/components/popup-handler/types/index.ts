@@ -1,5 +1,5 @@
 import { Component, DefineComponent, Slot as VueSlot } from "vue";
-import { ComponentPublicInstanceConstructor, ComponentEmit } from "../../../utilities/vueUtils";
+import { ComponentPublicInstanceConstructor, ComponentEmit } from "@shared/utilities/vueUtils";
 
 export type RawProps<T extends ComponentPublicInstanceConstructor> = Omit<InstanceType<T>["$props"], `on${string}`>;
 export type RawEmits<T extends ComponentPublicInstanceConstructor> = ComponentEmit<T>;

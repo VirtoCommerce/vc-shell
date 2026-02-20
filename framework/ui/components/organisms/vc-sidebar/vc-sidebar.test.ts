@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { mount } from "@vue/test-utils";
 import { nextTick } from "vue";
-import VcSidebar from "./vc-sidebar.vue";
+import VcSidebar from "@ui/components/organisms/vc-sidebar/vc-sidebar.vue";
 
 describe("VcSidebar", () => {
   it("closes by Escape and emits close reason", async () => {

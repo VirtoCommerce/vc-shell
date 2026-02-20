@@ -164,10 +164,10 @@
  */
 import { ref, computed, watch, onMounted, onBeforeUnmount } from "vue";
 import { vOnClickOutside } from "@vueuse/components";
-import type { MobileCardLayout, MobileSwipeAction } from "../../types";
-import { useTableSwipe } from "../../composables/useTableSwipe";
-import MobileCellRenderer from "./MobileCellRenderer.vue";
-import MobileActionSheet from "./MobileActionSheet.vue";
+import type { MobileCardLayout, MobileSwipeAction } from "@ui/components/organisms/vc-table/types";
+import { useTableSwipe } from "@ui/components/organisms/vc-table/composables/useTableSwipe";
+import MobileCellRenderer from "@ui/components/organisms/vc-table/components/mobile/MobileCellRenderer.vue";
+import MobileActionSheet from "@ui/components/organisms/vc-table/components/mobile/MobileActionSheet.vue";
 
 const props = withDefaults(
   defineProps<{

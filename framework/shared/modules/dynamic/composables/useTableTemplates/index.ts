@@ -1,5 +1,5 @@
 import { ConcreteComponent, MaybeRef, ShallowRef, reactive, resolveComponent, shallowRef, toValue } from "vue";
-import { ListContentSchema } from "../..";
+import { ListContentSchema } from "@shared/modules/dynamic";
 
 export interface IUseTableTemplates {
   tableTemplates: {

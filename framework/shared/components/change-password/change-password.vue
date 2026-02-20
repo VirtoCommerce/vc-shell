@@ -135,9 +135,9 @@
 <script lang="ts" setup>
 import { nextTick, reactive, computed } from "vue";
 import { useIsFormValid, Field, useIsFormDirty, useForm } from "vee-validate";
-import { VcInput, VcHint, VcButton, VcPopup, VcForm } from "./../../../ui/components";
-import { IIdentityError } from "./../../../core/api/platform";
-import { useUserManagement } from "./../../../core/composables/useUserManagement";
+import { VcInput, VcHint, VcButton, VcPopup, VcForm } from "@ui/components";
+import { IIdentityError } from "@core/api/platform";
+import { useUserManagement } from "@core/composables/useUserManagement";
 import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
 

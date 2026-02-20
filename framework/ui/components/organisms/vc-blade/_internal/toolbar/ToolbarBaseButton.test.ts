@@ -10,7 +10,7 @@ vi.mock("../../../../", () => ({
   },
 }));
 
-import ToolbarBaseButton from "./ToolbarBaseButton.vue";
+import ToolbarBaseButton from "@ui/components/organisms/vc-blade/_internal/toolbar/ToolbarBaseButton.vue";
 
 describe("ToolbarBaseButton", () => {
   it("treats computed disabled as reactive and blocks click", async () => {

@@ -1,11 +1,14 @@
-import { PushNotification, PushNotificationClient } from "./../../api/platform";
+import { PushNotification, PushNotificationClient } from "@core/api/platform";
 import { computed, ComputedRef, ref, onUnmounted } from "vue";
-import * as _ from "lodash-es";
-import { createLogger } from "../../utilities";
+import { orderBy } from "lodash-es";
+import { createLogger } from "@core/utilities";
 
 const logger = createLogger("use-notifications");
 
 const notificationsClient = new PushNotificationClient();
+
+/** Notification types excluded from the dropdown history list. */
+const EXCLUDED_NOTIFICATION_TYPES = ["IndexProgressPushNotification"];
 
 interface INotifications {
   readonly notifications: ComputedRef<PushNotification[]>;
@@ -17,8 +20,20 @@ interface INotifications {
   setNotificationHandler(handler: (notification: PushNotification) => void): void;
 }
 
+/**
+ * All notifications loaded from history and received via push.
+ * This is the source of truth for the notification dropdown.
+ */
 const notifications = ref<PushNotification[]>([]);
+
+/**
+ * Real-time push notifications. Used by module-level subscribers
+ * (via `notifyType` parameter) to react to specific notification types.
+ */
 const pushNotifications = ref<PushNotification[]>([]);
+
+/** Whether any notification in the history list is unread. */
+export const hasUnreadNotifications = computed(() => notifications.value.some((item) => item.isNew));
 
 // Global subscribers storage and their handlers
 const subscribers = new Map<
@@ -31,6 +46,13 @@ const subscribers = new Map<
 
 let subscriberCounter = 0;
 
+/**
+ * Composable for managing push notifications.
+ *
+ * Uses module-level singleton refs so all callers share the same state.
+ * When `notifyType` is provided, registers a subscriber that receives
+ * real-time notifications of that type and cleans up on unmount.
+ */
 export function useNotifications(notifyType?: string | string[]): INotifications {
   if (notifyType) {
     const types = Array.isArray(notifyType) ? notifyType : [notifyType];
@@ -51,8 +73,11 @@ export function useNotifications(notifyType?: string | string[]): INotifications
     });
   }
 
+  /**
+   * Loads notification history from the server.
+   * Uses raw fetch as a workaround — the generated API client returns incorrect types.
+   */
   async function loadFromHistory(take = 10) {
-    // TODO temporary workaround to get push notifications without base type
     try {
       const result = await fetch("/api/platform/pushnotifications", {
         method: "POST",
@@ -72,8 +97,9 @@ export function useNotifications(notifyType?: string | string[]): INotifications
     }
   }
 
+  /** Adds or updates a notification in both the history and push lists. */
   function addNotification(message: PushNotification) {
-    if (message.notifyType !== "IndexProgressPushNotification") {
+    if (!message.notifyType || !EXCLUDED_NOTIFICATION_TYPES.includes(message.notifyType)) {
       const existsNotification = notifications.value.find((x: PushNotification) => x.id == message.id);
       const existPushNotification = pushNotifications.value.find((x: PushNotification) => x.id == message.id);
 
@@ -101,10 +127,16 @@ export function useNotifications(notifyType?: string | string[]): INotifications
     }
   }
 
+  /** Marks a single notification as read in both the history and push lists. */
   function markAsRead(message: PushNotification) {
-    const exists = pushNotifications.value.find((x) => x.id === message.id);
-    if (exists) {
-      Object.assign(exists, { ...message, isNew: false });
+    const inHistory = notifications.value.find((x) => x.id === message.id);
+    if (inHistory) {
+      inHistory.isNew = false;
+    }
+
+    const inPush = pushNotifications.value.find((x) => x.id === message.id);
+    if (inPush) {
+      inPush.isNew = false;
     }
   }
 
@@ -157,7 +189,7 @@ export function useNotifications(notifyType?: string | string[]): INotifications
   });
 
   return {
-    notifications: computed(() => _.orderBy(notifications.value, ["created"], ["desc"])),
+    notifications: computed(() => orderBy(notifications.value, ["created"], ["desc"])),
     moduleNotifications,
     loadFromHistory,
     addNotification,

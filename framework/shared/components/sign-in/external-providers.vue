@@ -12,9 +12,9 @@
 </template>
 
 <script setup lang="ts">
-import { ExternalSignInProviderInfo } from "../../../core/api/platform";
-import { useExternalProvider } from "./useExternalProvider";
-import { default as ExternalProvider } from "./external-provider.vue";
+import { ExternalSignInProviderInfo } from "@core/api/platform";
+import { useExternalProvider } from "@shared/components/sign-in/useExternalProvider";
+import { default as ExternalProvider } from "@shared/components/sign-in/external-provider.vue";
 
 export interface Props {
   providers: ExternalSignInProviderInfo[];

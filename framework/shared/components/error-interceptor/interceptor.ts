@@ -1,4 +1,4 @@
-import { useErrorHandler } from "./../../../core/composables";
+import { useErrorHandler } from "@core/composables";
 import { defineComponent, VNode } from "vue";
 
 export interface Props {

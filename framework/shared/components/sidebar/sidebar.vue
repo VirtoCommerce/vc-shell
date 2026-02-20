@@ -29,7 +29,8 @@
 
 <script lang="ts" setup>
 import { computed, inject, ref, type Ref } from "vue";
-import { VcSidebar } from "../../../ui/components";
+import { IsMobileKey, IsDesktopKey } from "@framework/injection-keys";
+import { VcSidebar } from "@ui/components";
 
 export interface Props {
   position?: "left" | "right";
@@ -54,8 +55,8 @@ defineSlots<{
   content?: () => unknown;
 }>();
 
-const isMobile = inject<Ref<boolean>>("isMobile", ref(false));
-const isDesktop = inject<Ref<boolean>>("isDesktop", ref(false));
+const isMobile = inject(IsMobileKey, ref(false));
+const isDesktop = inject(IsDesktopKey, ref(false));
 
 const renderMatchesViewport = computed(() => {
   if (props.render === "always") {

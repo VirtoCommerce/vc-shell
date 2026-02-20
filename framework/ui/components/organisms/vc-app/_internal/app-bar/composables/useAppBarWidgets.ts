@@ -1,6 +1,6 @@
-import { useAppBarWidget } from "../../../../../../../core/composables";
-import { useToggleableContent } from "./useToggleableContent";
-import { useAppBarState } from "./useAppBarState";
+import { useAppBarWidget } from "@core/composables";
+import { useToggleableContent } from "@ui/components/organisms/vc-app/_internal/app-bar/composables/useToggleableContent";
+import { useAppBarState } from "@ui/components/organisms/vc-app/_internal/app-bar/composables/useAppBarState";
 
 export function useAppBarWidgets() {
   const { items } = useAppBarWidget();

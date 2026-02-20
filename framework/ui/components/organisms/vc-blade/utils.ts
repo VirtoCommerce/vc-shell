@@ -1,5 +1,5 @@
 import { isRef, toValue } from "vue";
-import type { IBladeInstance } from "../../../../shared/components/blade-navigation/types";
+import type { IBladeInstance } from "@shared/components/blade-navigation/types";
 
 /**
  * Resolves a visibility value that can be:

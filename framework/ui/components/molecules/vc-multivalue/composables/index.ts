@@ -1,6 +1,6 @@
-export { useMultivalueMode, type MultivalueType } from "./useMultivalueMode";
-export { useMultivalueValues } from "./useMultivalueValues";
-export { useMultivalueInput } from "./useMultivalueInput";
-export { useMultivalueColor } from "./useMultivalueColor";
-export { useMultivalueDropdown } from "./useMultivalueDropdown";
-export { useMultivalueOptions } from "./useMultivalueOptions";
+export { useMultivalueMode, type MultivalueType } from "@ui/components/molecules/vc-multivalue/composables/useMultivalueMode";
+export { useMultivalueValues } from "@ui/components/molecules/vc-multivalue/composables/useMultivalueValues";
+export { useMultivalueInput } from "@ui/components/molecules/vc-multivalue/composables/useMultivalueInput";
+export { useMultivalueColor } from "@ui/components/molecules/vc-multivalue/composables/useMultivalueColor";
+export { useMultivalueDropdown } from "@ui/components/molecules/vc-multivalue/composables/useMultivalueDropdown";
+export { useMultivalueOptions } from "@ui/components/molecules/vc-multivalue/composables/useMultivalueOptions";

@@ -23,7 +23,12 @@ defineSlots<{
 </script>
 
 <style lang="scss">
+:root {
+  --col-gap: 0;
+}
+
 .vc-col {
   @apply tw-flex tw-flex-col tw-min-w-0 tw-basis-0;
+  gap: var(--col-gap);
 }
 </style>

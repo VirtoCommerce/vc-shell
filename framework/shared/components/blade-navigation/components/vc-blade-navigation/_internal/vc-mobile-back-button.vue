@@ -11,7 +11,7 @@
         <VcButton
           ref="buttonRef"
           icon="material-arrow_back"
-          icon-class="tw-text-[color:var(--neutrals-500)]"
+          icon-class="tw-text-neutrals-500"
           icon-size="l"
           text
           @click="onClick"
@@ -25,9 +25,9 @@
 <script lang="ts" setup>
 import { ref } from "vue";
 import { onLongPress } from "@vueuse/core";
-import { VcButton } from "../../../../../../ui/components";
-import VcBreadcrumbs from "../../../../../../ui/components/molecules/vc-breadcrumbs/vc-breadcrumbs.vue";
-import type { Breadcrumbs } from "../../../../../../ui/types";
+import { VcButton } from "@ui/components";
+import VcBreadcrumbs from "@ui/components/molecules/vc-breadcrumbs/vc-breadcrumbs.vue";
+import type { Breadcrumbs } from "@ui/types";
 import { OnLongPress, vOnClickOutside } from "@vueuse/components";
 
 const props = defineProps<{

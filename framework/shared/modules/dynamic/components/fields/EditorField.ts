@@ -1,9 +1,9 @@
 import { h, ExtractPropTypes, Component } from "vue";
-import { EditorField } from "../factories";
-import componentProps from "./props";
-import ValidationField from "./ValidationField";
-import { unrefNested } from "../../helpers/unrefNested";
-import { EditorSchema } from "../..";
+import { EditorField } from "@shared/modules/dynamic/components/factories";
+import componentProps from "@shared/modules/dynamic/components/fields/props";
+import ValidationField from "@shared/modules/dynamic/components/fields/ValidationField";
+import { unrefNested } from "@shared/modules/dynamic/helpers/unrefNested";
+import { EditorSchema } from "@shared/modules/dynamic";
 
 export default {
   name: "EditorField",

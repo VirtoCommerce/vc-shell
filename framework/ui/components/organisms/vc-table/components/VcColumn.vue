@@ -19,8 +19,8 @@
  */
 import { defineComponent, inject, onMounted, onUnmounted, getCurrentInstance } from "vue";
 import type { PropType } from "vue";
-import type { ColumnCollector } from "../utils/ColumnCollector";
-import type { VcColumnProps, ColumnFilterConfig } from "../types";
+import { ColumnCollectorKey } from "@ui/components/organisms/vc-table/keys";
+import type { VcColumnProps, ColumnFilterConfig } from "@ui/components/organisms/vc-table/types";
 
 // Cell type options matching existing cell formatters
 export type CellType =
@@ -228,7 +228,7 @@ export default defineComponent({
 
   setup(props, { slots }) {
     // Inject the column collector from parent VcDataTable
-    const $columns = inject<ColumnCollector | null>("$columns", null);
+    const $columns = inject(ColumnCollectorKey, null);
     const instance = getCurrentInstance();
 
     onMounted(() => {

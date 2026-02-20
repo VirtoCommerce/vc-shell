@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
-import { VcSelect } from "./";
+import { VcSelect } from "@ui/components/molecules/vc-select";
 import { ref, h, computed } from "vue";
-import { VcIcon } from "../../atoms/vc-icon";
-import { VcButton } from "../../atoms/vc-button";
+import { VcIcon } from "@ui/components/atoms/vc-icon";
+import { VcButton } from "@ui/components/atoms/vc-button";
 
 /**
  * `VcSelect` is a versatile dropdown component for selecting single or multiple options.
@@ -1678,7 +1678,6 @@ export const Accessibility: Story = {
 /**
  * When the dropdown has many options, scroll arrow buttons appear at the top and bottom
  * of the list. Hovering over them continuously scrolls the content in that direction.
- * Inspired by shadcn-vue's scrollable select pattern.
  */
 export const Scrollable: Story = {
   args: {

@@ -1,8 +1,8 @@
 import { Component, ExtractPropTypes, h } from "vue";
-import { Rating } from "../factories";
-import componentProps from "./props";
-import { RatingSchema } from "../../types";
-import { unrefNested } from "../../helpers/unrefNested";
+import { Rating } from "@shared/modules/dynamic/components/factories";
+import componentProps from "@shared/modules/dynamic/components/fields/props";
+import { RatingSchema } from "@shared/modules/dynamic/types";
+import { unrefNested } from "@shared/modules/dynamic/helpers/unrefNested";
 
 export default {
   name: "RatingEl",

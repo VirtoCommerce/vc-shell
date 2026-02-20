@@ -1,1 +1,1 @@
-export { default as SettingsMenu } from "./settings-menu.vue";
+export { default as SettingsMenu } from "@shared/components/settings-menu/settings-menu.vue";

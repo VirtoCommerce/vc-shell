@@ -1,7 +1,7 @@
 import { ref, computed, inject } from "vue";
-import type { IBladeRegistry } from "../../../../core/composables/useBladeRegistry";
-import type { BladeDescriptor, BladeOpenEvent, IBladeStack } from "../types";
-import { BladeStackKey } from "../types";
+import type { IBladeRegistry } from "@core/composables/useBladeRegistry";
+import type { BladeDescriptor, BladeOpenEvent, IBladeStack } from "@shared/components/blade-navigation/types";
+import { BladeStackKey } from "@shared/components/blade-navigation/types";
 
 let _idCounter = 0;
 

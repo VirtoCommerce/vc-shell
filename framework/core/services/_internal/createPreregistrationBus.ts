@@ -1,13 +1,15 @@
-import { createLogger } from "../../utilities";
+import { createLogger } from "@core/utilities";
 
 export interface PreregistrationBusOptions<TItem, TService> {
   name: string;
   getKey: (item: TItem) => string;
   registerIntoService: (service: TService, item: TItem) => void;
+  unregisterFromService?: (service: TService, id: string) => void;
 }
 
 export interface PreregistrationBus<TItem, TService> {
   preregister(item: TItem): void;
+  unregister(id: string): void;
   removePreregistered(predicate: (item: TItem) => boolean): void;
   getPreregistered(): TItem[];
   replayInto(service: TService): void;
@@ -34,6 +36,20 @@ export function createPreregistrationBus<TItem, TService>(
           options.registerIntoService(service, item);
         } catch (e) {
           logger.warn(`Failed to live-register item (key=${key}):`, e);
+        }
+      });
+    }
+  }
+
+  function unregister(id: string): void {
+    store.delete(id);
+
+    if (options.unregisterFromService && instances.size > 0) {
+      instances.forEach((service) => {
+        try {
+          options.unregisterFromService!(service, id);
+        } catch (e) {
+          logger.warn(`Failed to live-unregister item (id=${id}):`, e);
         }
       });
     }
@@ -76,6 +92,7 @@ export function createPreregistrationBus<TItem, TService>(
 
   return {
     preregister,
+    unregister,
     removePreregistered,
     getPreregistered,
     replayInto,

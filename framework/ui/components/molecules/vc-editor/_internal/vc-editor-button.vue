@@ -4,18 +4,21 @@
     class="vc-editor-button"
     :class="{ 'vc-editor-button--active': active }"
     :disabled="disabled"
+    :aria-pressed="active != null ? active : undefined"
+    :aria-label="ariaLabel"
     @click="$emit('action')"
   >
     <VcIcon
       :icon="icon"
       size="s"
       :use-container="false"
+      aria-hidden="true"
     />
   </button>
 </template>
 
 <script lang="ts" setup>
-import { VcIcon } from "../../../atoms";
+import { VcIcon } from "@ui/components/atoms";
 
 defineProps({
   icon: {
@@ -24,11 +27,15 @@ defineProps({
   },
   active: {
     type: Boolean,
-    default: false,
+    default: undefined,
   },
   disabled: {
     type: Boolean,
     default: false,
+  },
+  ariaLabel: {
+    type: String,
+    default: undefined,
   },
 });
 
@@ -47,6 +54,7 @@ defineEmits(["action"]);
   --vc-button-bg-active: var(--primary-100);
   --vc-button-bg-disabled: transparent;
   --vc-button-border-radius: 6px;
+  --vc-editor-focus-ring-color: rgba(59, 130, 246, 0.3);
 }
 
 .vc-editor-button {
@@ -94,10 +102,8 @@ defineEmits(["action"]);
     transform: none;
   }
 
-  // Focus styles for accessibility
   &:focus-visible {
-    outline: 2px solid var(--primary-500);
-    outline-offset: 2px;
+    @apply tw-ring-[3px] tw-ring-[color:var(--vc-editor-focus-ring-color)] tw-outline-none;
   }
 }
 </style>

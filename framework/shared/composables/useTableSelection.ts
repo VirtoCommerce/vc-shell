@@ -1,5 +1,5 @@
 import { ref, computed, Ref, ComputedRef } from "vue";
-import { createLogger } from "../../core/utilities";
+import { createLogger } from "@core/utilities";
 
 const logger = createLogger("use-table-selection");
 

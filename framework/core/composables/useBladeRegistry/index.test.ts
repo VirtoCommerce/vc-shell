@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { createApp, defineComponent, h } from "vue";
-import { createBladeRegistry } from "./index";
-import type { IBladeRegistrationData } from "./index";
+import { createBladeRegistry } from "@core/composables/useBladeRegistry";
+import type { IBladeRegistrationData } from "@core/composables/useBladeRegistry";
 
 // ── Helpers ────────────────────────────────────────────────────────────────────
 

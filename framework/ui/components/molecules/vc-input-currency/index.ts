@@ -1,1 +1,1 @@
-export { default as VcInputCurrency } from "./vc-input-currency.vue";
+export { default as VcInputCurrency } from "@ui/components/molecules/vc-input-currency/vc-input-currency.vue";

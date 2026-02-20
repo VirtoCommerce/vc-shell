@@ -1,5 +1,6 @@
 <template>
-  <div
+  <component
+    :is="ariaLabel ? 'section' : 'div'"
     :class="[
       'vc-container',
       {
@@ -7,6 +8,7 @@
         'vc-container_nopadding': noPadding,
       },
     ]"
+    :aria-label="ariaLabel"
   >
     <div
       ref="component"
@@ -15,15 +17,18 @@
     >
       <slot></slot>
     </div>
-  </div>
+  </component>
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted, onBeforeUnmount } from "vue";
+import { ref } from "vue";
+import { useResizeObserver } from "@vueuse/core";
 
 export interface Props {
   shadow?: boolean;
   noPadding?: boolean;
+  /** When provided, renders as <section> with this label instead of <div> */
+  ariaLabel?: string;
 }
 
 export interface Emits {
@@ -37,8 +42,6 @@ const emit = defineEmits<Emits>();
 const component = ref<HTMLElement>();
 const scroll = ref(false);
 
-let resizeObserver: ResizeObserver | null = null;
-
 const scrollTop = () => {
   if (component.value) {
     component.value.scroll(0, 0);
@@ -49,21 +52,8 @@ function onScroll(e: Event) {
   emit("scroll", e);
 }
 
-onMounted(() => {
-  resizeObserver = new ResizeObserver(() => {
-    scroll.value = (component.value && component.value.clientHeight < component.value.scrollHeight) as boolean;
-  });
-
-  if (component.value) {
-    resizeObserver.observe(component.value);
-  }
-});
-
-onBeforeUnmount(() => {
-  if (resizeObserver) {
-    resizeObserver.disconnect();
-    resizeObserver = null;
-  }
+useResizeObserver(component, () => {
+  scroll.value = !!(component.value && component.value.clientHeight < component.value.scrollHeight);
 });
 
 defineExpose({
@@ -75,6 +65,9 @@ defineExpose({
 <style lang="scss">
 :root {
   --container-padding: 16px;
+  --container-gap: 0;
+  --container-bg: transparent;
+  --container-border-radius: 0;
   --container-shadow-color: var(--additional-950);
   --container-shadow-opacity: 0.1;
   --container-shadow: 0 3px 2px rgba(var(--container-shadow-color), var(--container-shadow-opacity)) inset;
@@ -82,6 +75,9 @@ defineExpose({
 
 .vc-container {
   @apply tw-w-full tw-h-full tw-overflow-hidden tw-box-border tw-flex tw-flex-col tw-relative;
+  background-color: var(--container-bg);
+  border-radius: var(--container-border-radius);
+  gap: var(--container-gap);
 
   &_shadow {
     @apply tw-shadow-[--container-shadow];

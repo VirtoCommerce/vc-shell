@@ -109,11 +109,11 @@
  * Uses VcDropdownPanel for positioning and backdrop.
  */
 import { ref, computed, watch } from "vue";
-import { VcDropdownPanel } from "../../../molecules";
-import { VcInput, VcSelect } from "../../../molecules";
-import { VcButton } from "../../../atoms";
-import type { GlobalFilterConfig } from "../types";
-import { useColumnFilter } from "../composables/useColumnFilter";
+import { VcDropdownPanel } from "@ui/components/molecules";
+import { VcInput, VcSelect } from "@ui/components/molecules";
+import { VcButton } from "@ui/components/atoms";
+import type { GlobalFilterConfig } from "@ui/components/organisms/vc-table/types";
+import { useColumnFilter } from "@ui/components/organisms/vc-table/composables/useColumnFilter";
 
 interface Props {
   /** List of filter configurations (id, label, type, options) */
@@ -309,7 +309,7 @@ const clearAll = () => {
   }
 
   &__label {
-    @apply tw-block tw-text-sm tw-font-medium tw-text-[color:var(--neutrals-700)];
+    @apply tw-block tw-text-sm tw-font-medium tw-text-neutrals-700;
   }
 
   &__range {
@@ -321,7 +321,7 @@ const clearAll = () => {
   }
 
   &__range-label {
-    @apply tw-block tw-text-xs tw-text-[color:var(--neutrals-500)];
+    @apply tw-block tw-text-xs tw-text-neutrals-500;
   }
 
 }

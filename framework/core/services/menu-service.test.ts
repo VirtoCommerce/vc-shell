@@ -2,7 +2,7 @@ import { describe, it, expect, vi } from "vitest";
 
 async function loadMenuServiceModule() {
   vi.resetModules();
-  return import("./menu-service");
+  return import("@core/services/menu-service");
 }
 
 describe("menu-service", () => {

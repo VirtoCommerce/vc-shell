@@ -1,1 +1,1 @@
-export { default as VcBanner } from "./vc-banner.vue";
+export { default as VcBanner } from "@ui/components/atoms/vc-banner/vc-banner.vue";

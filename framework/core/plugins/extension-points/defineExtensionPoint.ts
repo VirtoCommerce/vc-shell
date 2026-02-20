@@ -1,6 +1,6 @@
 import { computed } from "vue";
-import { declarePoint, getPoint } from "./store";
-import type { ExtensionPointOptions, ExtensionComponent } from "./types";
+import { declarePoint, getPoint } from "@core/plugins/extension-points/store";
+import type { ExtensionPointOptions, ExtensionComponent } from "@core/plugins/extension-points/types";
 
 /**
  * Declare an extension point (host-side).

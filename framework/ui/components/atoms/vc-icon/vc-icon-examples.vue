@@ -515,7 +515,7 @@
 </template>
 
 <script setup lang="ts">
-import { VcIcon } from "./index";
+import { VcIcon } from "@ui/components/atoms/vc-icon";
 </script>
 
 <style lang="scss" scoped>

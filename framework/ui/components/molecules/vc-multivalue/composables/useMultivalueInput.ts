@@ -1,6 +1,6 @@
 import { ref } from "vue";
-import { convertColorNameToHex } from "../../../../../shared/utilities";
-import type { MultivalueType } from "./useMultivalueMode";
+import { convertColorNameToHex } from "@shared/utilities";
+import type { MultivalueType } from "@ui/components/molecules/vc-multivalue/composables/useMultivalueMode";
 
 interface UseMultivalueInputOptions<T> {
   type: () => MultivalueType;

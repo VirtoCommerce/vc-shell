@@ -47,8 +47,8 @@
 <script lang="ts" setup>
 import { useCurrencyInput, CurrencyDisplay } from "vue-currency-input";
 import { unref, watch } from "vue";
-import { VcInputDropdown } from "./../../molecules/vc-input-dropdown";
-import { type OptionProp } from "../vc-select";
+import { VcInputDropdown } from "@ui/components/molecules/vc-input-dropdown";
+import { type OptionProp } from "@ui/components/molecules/vc-select";
 
 export interface Props {
   /**
@@ -262,7 +262,7 @@ function handlePaste(e: ClipboardEvent) {
 
 .vc-input-currency {
   &__control {
-    @apply tw-border tw-border-solid tw-px-2 tw-py-1 tw-text-sm tw-outline-none tw-bg-transparent;
+    @apply tw-border-none tw-px-0 tw-py-0 tw-text-sm tw-outline-none tw-bg-transparent tw-w-full tw-h-full;
   }
 }
 </style>

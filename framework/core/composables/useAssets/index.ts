@@ -1,7 +1,7 @@
 import { computed, ref, ComputedRef } from "vue";
 import * as _ from "lodash-es";
-import { ICommonAsset } from "../../types";
-import { createLogger } from "../../utilities";
+import { ICommonAsset } from "@core/types";
+import { createLogger } from "@core/utilities";
 
 const logger = createLogger("use-assets");
 

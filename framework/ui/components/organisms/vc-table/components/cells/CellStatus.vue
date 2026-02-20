@@ -3,7 +3,7 @@
 </template>
 
 <script setup lang="ts">
-import { VcStatus } from "../../../../atoms";
+import { VcStatus } from "@ui/components/atoms";
 
 defineProps<{
   /** The status text to display in a status badge */

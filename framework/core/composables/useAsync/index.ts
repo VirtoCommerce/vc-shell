@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { readonly, ref } from "vue";
-import { HasLoading } from "../useLoading";
-import { createLogger } from "../../utilities";
+import { HasLoading } from "@core/composables/useLoading";
+import { createLogger } from "@core/utilities";
 
 const logger = createLogger("use-async");
 

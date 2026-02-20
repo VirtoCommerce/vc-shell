@@ -1,5 +1,5 @@
 import { ref, computed } from "vue";
-import type { FilterValue } from "../types";
+import type { FilterValue } from "@ui/components/organisms/vc-table/types";
 
 export interface UseFilterStateOptions {
   /** Called whenever a filter is applied/cleared with a flat payload for the backend */

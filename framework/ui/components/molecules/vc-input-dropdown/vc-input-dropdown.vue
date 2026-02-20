@@ -49,8 +49,12 @@
             >
               <template v-if="options && options.length">
                 <button
+                  type="button"
                   class="vc-input-dropdown__toggle-button"
                   tabindex="0"
+                  aria-label="Select option"
+                  :aria-expanded="isOpened"
+                  aria-haspopup="listbox"
                   @click.stop.prevent="toggleHandler"
                   @keydown.enter.stop.prevent="toggleHandler"
                   @keydown.space.stop.prevent="toggleHandler"
@@ -61,9 +65,10 @@
             </slot>
             <VcButton
               v-if="options && options.length"
-              :icon="isOpened ? 'material-keyboard_arrow_up' : 'material-keyboard_arrow_down'"
+              :icon="isOpened ? 'lucide-chevron-up' : 'lucide-chevron-down'"
               icon-size="s"
               text
+              aria-label="Toggle dropdown"
               icon-class="vc-input-dropdown__toggle-button-icon"
               @click.stop.prevent="toggleHandler"
             ></VcButton>
@@ -107,8 +112,8 @@
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
 import { unref } from "vue";
-import { VcSelect, VcInput } from "./../../";
-import { type OptionProp } from "../vc-select";
+import { VcSelect, VcInput } from "@ui/components";
+import { type OptionProp } from "@ui/components/molecules/vc-select";
 
 export interface Props {
   /**

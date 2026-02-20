@@ -1,23 +1,23 @@
 // === PUBLIC API ===
-export { useTableContext } from "./useTableContext";
+export { useTableContext } from "@ui/components/organisms/vc-table/composables/useTableContext";
 // useTableSelection — exported from shared/composables (not from this directory)
-export { useTableColumnsResize } from "./useTableColumnsResize";
-export { useTableColumnsReorder } from "./useTableColumnsReorder";
-export { useTableRowReorder } from "./useTableRowReorder";
-export { useTableInlineEdit } from "./useTableInlineEdit";
-export { useVirtualScroll } from "./useVirtualScroll";
-export type { VirtualScrollOptions, VirtualScrollItem, VirtualScrollReturn } from "./useVirtualScroll";
-export { useTableRowGrouping } from "./useTableRowGrouping";
-export type { RowGroupingOptions, GroupedData, UseTableRowGroupingReturn } from "./useTableRowGrouping";
-export { useFilterState } from "./useTableFilter";
-export type { UseFilterStateOptions, UseFilterStateReturn } from "./useTableFilter";
-export { useColumnFilter } from "./useColumnFilter";
-export type { UseColumnFilterReturn } from "./useColumnFilter";
+export { useTableColumnsResize } from "@ui/components/organisms/vc-table/composables/useTableColumnsResize";
+export { useTableColumnsReorder } from "@ui/components/organisms/vc-table/composables/useTableColumnsReorder";
+export { useTableRowReorder } from "@ui/components/organisms/vc-table/composables/useTableRowReorder";
+export { useTableInlineEdit } from "@ui/components/organisms/vc-table/composables/useTableInlineEdit";
+export { useVirtualScroll } from "@ui/components/organisms/vc-table/composables/useVirtualScroll";
+export type { VirtualScrollOptions, VirtualScrollItem, VirtualScrollReturn } from "@ui/components/organisms/vc-table/composables/useVirtualScroll";
+export { useTableRowGrouping } from "@ui/components/organisms/vc-table/composables/useTableRowGrouping";
+export type { RowGroupingOptions, GroupedData, UseTableRowGroupingReturn } from "@ui/components/organisms/vc-table/composables/useTableRowGrouping";
+export { useFilterState } from "@ui/components/organisms/vc-table/composables/useTableFilter";
+export type { UseFilterStateOptions, UseFilterStateReturn } from "@ui/components/organisms/vc-table/composables/useTableFilter";
+export { useColumnFilter } from "@ui/components/organisms/vc-table/composables/useColumnFilter";
+export type { UseColumnFilterReturn } from "@ui/components/organisms/vc-table/composables/useColumnFilter";
 
 // === NEW COMPOSABLES (PrimeVue-style) ===
-export { useTableSort } from "./useTableSort";
-export type { UseTableSortOptions, UseTableSortReturn, SortEvent } from "./useTableSort";
-export { useTableEditing } from "./useTableEditing";
+export { useTableSort } from "@ui/components/organisms/vc-table/composables/useTableSort";
+export type { UseTableSortOptions, UseTableSortReturn, SortEvent } from "@ui/components/organisms/vc-table/composables/useTableSort";
+export { useTableEditing } from "@ui/components/organisms/vc-table/composables/useTableEditing";
 export type {
   UseTableEditingOptions,
   UseTableEditingReturn,
@@ -25,25 +25,25 @@ export type {
   CellEditCompleteEvent,
   RowEditEvent,
   RowEditSaveEvent,
-} from "./useTableEditing";
-export { useTableExpansion } from "./useTableExpansion";
-export type { UseTableExpansionOptions, UseTableExpansionReturn, RowExpandEvent } from "./useTableExpansion";
-export { useTableSelectionV2 } from "./useTableSelectionV2";
+} from "@ui/components/organisms/vc-table/composables/useTableEditing";
+export { useTableExpansion } from "@ui/components/organisms/vc-table/composables/useTableExpansion";
+export type { UseTableExpansionOptions, UseTableExpansionReturn, RowExpandEvent } from "@ui/components/organisms/vc-table/composables/useTableExpansion";
+export { useTableSelectionV2 } from "@ui/components/organisms/vc-table/composables/useTableSelectionV2";
 export type {
   UseTableSelectionV2Options,
   UseTableSelectionV2Return,
   RowSelectEvent,
   RowSelectAllEvent,
-} from "./useTableSelectionV2";
-export { useDataProcessing } from "./useDataProcessing";
-export type { UseDataProcessingOptions, UseDataProcessingReturn } from "./useDataProcessing";
-export { useTableColumns } from "./useTableColumns";
-export type { UseTableColumnsOptions, UseTableColumnsReturn } from "./useTableColumns";
-export { useMobileCardLayout } from "./useMobileCardLayout";
-export type { UseMobileCardLayoutOptions, UseMobileCardLayoutReturn } from "./useMobileCardLayout";
-export { useDataTableState } from "./useDataTableState";
-export type { UseDataTableStateOptions, UseDataTableStateReturn, DataTablePersistedState } from "./useDataTableState";
+} from "@ui/components/organisms/vc-table/composables/useTableSelectionV2";
+export { useDataProcessing } from "@ui/components/organisms/vc-table/composables/useDataProcessing";
+export type { UseDataProcessingOptions, UseDataProcessingReturn } from "@ui/components/organisms/vc-table/composables/useDataProcessing";
+export { useTableColumns } from "@ui/components/organisms/vc-table/composables/useTableColumns";
+export type { UseTableColumnsOptions, UseTableColumnsReturn } from "@ui/components/organisms/vc-table/composables/useTableColumns";
+export { useMobileCardLayout } from "@ui/components/organisms/vc-table/composables/useMobileCardLayout";
+export type { UseMobileCardLayoutOptions, UseMobileCardLayoutReturn } from "@ui/components/organisms/vc-table/composables/useMobileCardLayout";
+export { useDataTableState } from "@ui/components/organisms/vc-table/composables/useDataTableState";
+export type { UseDataTableStateOptions, UseDataTableStateReturn, DataTablePersistedState } from "@ui/components/organisms/vc-table/composables/useDataTableState";
 
 // === SWIPE (used by mobile components) ===
-export { useTableSwipe, provideTableSwipe } from "./useTableSwipe";
+export { useTableSwipe, provideTableSwipe } from "@ui/components/organisms/vc-table/composables/useTableSwipe";
 

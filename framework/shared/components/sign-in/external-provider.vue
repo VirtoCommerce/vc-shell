@@ -15,7 +15,7 @@
 </template>
 
 <script lang="ts" setup>
-import { VcButton, VcImage } from "./../../../ui/components";
+import { VcButton, VcImage } from "@ui/components";
 import { computed } from "vue";
 
 export interface Props {

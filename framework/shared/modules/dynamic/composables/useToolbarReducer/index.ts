@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { IBladeToolbar } from "../../../../../core/types";
+import { IBladeToolbar } from "@core/types";
 import * as _ from "lodash-es";
-import { SettingsSchema, ToolbarSchema } from "../../types";
-import { BaseBladeScope, DetailsBladeContext, ListBladeContext } from "../../factories/types";
+import { SettingsSchema, ToolbarSchema } from "@shared/modules/dynamic/types";
+import { BaseBladeScope, DetailsBladeContext, ListBladeContext } from "@shared/modules/dynamic/factories/types";
 import { useI18n } from "vue-i18n";
 import { toValue } from "@vueuse/core";
 import { UnwrapNestedRefs, computed, ref, ComputedRef, unref } from "vue";

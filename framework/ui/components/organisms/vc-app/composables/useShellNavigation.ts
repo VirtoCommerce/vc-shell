@@ -1,7 +1,7 @@
 import { useRoute, useRouter } from "vue-router";
-import { useBladeNavigation } from "../../../../../shared/components";
-import { createLogger } from "../../../../../core/utilities";
-import type { MenuItem } from "../../../../../core/types";
+import { useBladeNavigation } from "@shared/components";
+import { createLogger } from "@core/utilities";
+import type { MenuItem } from "@core/types";
 
 const logger = createLogger("useShellNavigation");
 

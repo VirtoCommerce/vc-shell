@@ -1,7 +1,7 @@
-import { inject, provide } from "vue";
-import { GlobalSearchKey } from "../../../injection-keys";
-import { GlobalSearchState, createGlobalSearchService } from "../../services/global-search-service";
-import { createLogger, InjectionError } from "../../utilities";
+import { inject, provide, getCurrentScope, onScopeDispose } from "vue";
+import { GlobalSearchKey } from "@framework/injection-keys";
+import { GlobalSearchState, createGlobalSearchService } from "@core/services/global-search-service";
+import { createLogger, InjectionError } from "@core/utilities";
 
 const logger = createLogger("use-global-search");
 
@@ -13,6 +13,14 @@ export function provideGlobalSearch(): GlobalSearchState {
 
   const state = createGlobalSearchService();
   provide(GlobalSearchKey, state);
+
+  if (getCurrentScope()) {
+    onScopeDispose(() => {
+      state.isSearchVisible.value = {};
+      state.searchQuery.value = {};
+    });
+  }
+
   return state;
 }
 

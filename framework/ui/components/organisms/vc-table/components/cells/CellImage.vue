@@ -11,7 +11,7 @@
 </template>
 
 <script setup lang="ts">
-import { VcImage } from "../../../../atoms";
+import { VcImage } from "@ui/components/atoms";
 
 defineProps<{
   /** The image URL to display */

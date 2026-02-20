@@ -40,6 +40,7 @@
 
 <script setup lang="ts">
 import { computed, inject, ref, TransitionGroup, type Ref } from "vue";
+import { TableContextKey, HasFlexColumnsKey } from "@ui/components/organisms/vc-table/keys";
 
 const props = withDefaults(
   defineProps<{
@@ -95,11 +96,8 @@ const emit = defineEmits<{
   drop: [event: DragEvent];
 }>();
 
-const tableContext = inject<{
-  selectedRowIndex: { value: number | undefined };
-  setSelectedRowIndex: (index: number | undefined) => void;
-} | null>("tableContext", null);
-const hasFlexColumns = inject<Ref<boolean>>("hasFlexColumns", ref(false));
+const tableContext = inject(TableContextKey, null);
+const hasFlexColumns = inject(HasFlexColumnsKey, ref(false));
 const isDragging = ref(false);
 
 const isClickable = computed(() => {

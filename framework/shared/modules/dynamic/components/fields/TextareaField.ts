@@ -1,9 +1,9 @@
-import { TextareaField } from "./../factories";
-import { TextareaSchema } from "./../../types/index";
+import { TextareaField } from "@shared/modules/dynamic/components/factories";
+import { TextareaSchema } from "@shared/modules/dynamic/types";
 import { ExtractPropTypes, h, Component } from "vue";
-import componentProps from "./props";
-import ValidationField from "./ValidationField";
-import { unrefNested } from "../../helpers/unrefNested";
+import componentProps from "@shared/modules/dynamic/components/fields/props";
+import ValidationField from "@shared/modules/dynamic/components/fields/ValidationField";
+import { unrefNested } from "@shared/modules/dynamic/helpers/unrefNested";
 
 export default {
   name: "TextareaField",

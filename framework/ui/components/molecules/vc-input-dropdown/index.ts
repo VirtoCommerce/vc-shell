@@ -1,4 +1,4 @@
-import VcInputDropdown from "./vc-input-dropdown.vue";
+import VcInputDropdown from "@ui/components/molecules/vc-input-dropdown/vc-input-dropdown.vue";
 
 export { VcInputDropdown };
 export default VcInputDropdown;

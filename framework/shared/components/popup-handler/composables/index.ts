@@ -1,1 +1,1 @@
-export { usePopup } from "./usePopup";
+export { usePopup } from "@shared/components/popup-handler/composables/usePopup";

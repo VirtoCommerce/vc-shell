@@ -134,9 +134,9 @@
 
 <script setup lang="ts">
 import { ref, computed, watch, nextTick, onMounted, onBeforeUnmount } from "vue";
-import { VcInput, VcSelect } from "../../../molecules";
-import { VcButton } from "../../../atoms";
-import type { FilterType, FilterOption, FilterValue } from "../types";
+import { VcInput, VcSelect } from "@ui/components/molecules";
+import { VcButton } from "@ui/components/atoms";
+import type { FilterType, FilterOption, FilterValue } from "@ui/components/organisms/vc-table/types";
 
 interface Props {
   /** Backend field name for this filter */
@@ -398,7 +398,7 @@ onBeforeUnmount(() => {
   }
 
   &__overlay {
-    @apply tw-fixed tw-z-[100] tw-bg-[color:var(--additional-50)] tw-rounded-lg tw-shadow-lg tw-border tw-border-[color:var(--neutrals-200)];
+    @apply tw-fixed tw-z-[100] tw-bg-additional-50 tw-rounded-lg tw-shadow-lg tw-border tw-border-neutrals-200;
     min-width: 200px;
     max-width: 300px;
   }
@@ -420,11 +420,11 @@ onBeforeUnmount(() => {
   }
 
   &__range-label {
-    @apply tw-block tw-text-xs tw-text-[color:var(--neutrals-500)];
+    @apply tw-block tw-text-xs tw-text-neutrals-500;
   }
 
   &__actions {
-    @apply tw-flex tw-justify-end tw-gap-2 tw-px-3 tw-py-2 tw-border-t tw-border-[color:var(--neutrals-200)] tw-bg-[color:var(--neutrals-50)] tw-rounded-b-lg;
+    @apply tw-flex tw-justify-end tw-gap-2 tw-px-3 tw-py-2 tw-border-t tw-border-neutrals-200 tw-bg-neutrals-50 tw-rounded-b-lg;
   }
 
 }

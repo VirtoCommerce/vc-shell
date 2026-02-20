@@ -1,8 +1,10 @@
-import { inject } from "vue";
+import { inject, type InjectionKey } from "vue";
 import { AppInsightsPluginOptions, useAppInsights as useInsights } from "vue3-application-insights";
 import { generateW3CId } from "@microsoft/applicationinsights-core-js";
-import { useUserManagement } from "./../useUserManagement";
+import { useUserManagement } from "@core/composables/useUserManagement";
 import { ApplicationInsights, Snippet } from "@microsoft/applicationinsights-web";
+
+export const AppInsightsOptionsKey: InjectionKey<AppInsightsPluginOptions> = Symbol("AppInsightsOptions");
 
 export interface IUseAppInsights {
   setupPageTracking: {
@@ -15,7 +17,7 @@ export interface IUseAppInsights {
 export function useAppInsights(): IUseAppInsights {
   const appInsights = useInsights();
   const { user } = useUserManagement();
-  const appInsightsOptions = inject<AppInsightsPluginOptions>("appInsightsOptions");
+  const appInsightsOptions = inject(AppInsightsOptionsKey, undefined);
 
   function setupPageTracking() {
     const appName = appInsightsOptions?.appName ? `[${appInsightsOptions.appName}] ` : "";

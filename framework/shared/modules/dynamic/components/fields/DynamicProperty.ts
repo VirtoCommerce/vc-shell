@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ExtractPropTypes, computed, h, ref, toValue, watch, UnwrapNestedRefs, Component } from "vue";
-import { DynamicProperties } from "../factories";
-import componentProps from "./props";
-import { unrefNested } from "../../helpers/unrefNested";
+import { DynamicProperties } from "@shared/modules/dynamic/components/factories";
+import componentProps from "@shared/modules/dynamic/components/fields/props";
+import { unrefNested } from "@shared/modules/dynamic/helpers/unrefNested";
 import { reactify, reactiveComputed } from "@vueuse/core";
 import * as _ from "lodash-es";
-import { DynamicPropertiesSchema } from "../../types";
-import { setModel } from "../../helpers/setters";
-import { IDynamicProperties } from "../../types/models";
+import { DynamicPropertiesSchema } from "@shared/modules/dynamic/types";
+import { setModel } from "@shared/modules/dynamic/helpers/setters";
+import { IDynamicProperties } from "@shared/modules/dynamic/types/models";
 
 interface IProperty {
   [x: string]: unknown;

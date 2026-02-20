@@ -25,8 +25,8 @@ import {
   bladeStackInstance,
   bladeMessagingInstance,
   bladeRegistryInstance,
-} from "../plugin-v2";
-import type { IBladeRegistry } from "../../../../core/composables/useBladeRegistry";
+} from "@shared/components/blade-navigation/plugin-v2";
+import type { IBladeRegistry } from "@core/composables/useBladeRegistry";
 import {
   BladeVNode,
   IBladeEvent,
@@ -34,9 +34,9 @@ import {
   BladeInstanceConstructor,
   BladeDescriptor,
   BladeDescriptorKey,
-} from "../types";
-import { buildUrlFromStack, createUrlSync, getTenantPrefix } from "../utils/urlSync";
-import { createLogger } from "../../../../core/utilities";
+} from "@shared/components/blade-navigation/types";
+import { buildUrlFromStack, createUrlSync, getTenantPrefix } from "@shared/components/blade-navigation/utils/urlSync";
+import { createLogger } from "@core/utilities";
 
 const logger = createLogger("use-blade-navigation-adapter");
 

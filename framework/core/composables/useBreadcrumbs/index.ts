@@ -1,14 +1,8 @@
-import { Breadcrumbs } from "./../../../ui/types/index";
-import { ComputedRef, computed, reactive, toValue } from "vue";
-import * as _ from "lodash-es";
-import { createLogger } from "../../utilities";
+import { Breadcrumbs } from "@ui/types";
+import { ComputedRef, computed, shallowRef } from "vue";
+import { createLogger } from "@core/utilities";
 
 const logger = createLogger("use-breadcrumbs");
-
-interface HistoryRecord {
-  records: Breadcrumbs[];
-  current?: Breadcrumbs;
-}
 
 export interface IUseBreadcrumbs {
   breadcrumbs: ComputedRef<Breadcrumbs[]>;
@@ -16,68 +10,56 @@ export interface IUseBreadcrumbs {
   remove: (ids: string[]) => void;
 }
 
-export function useBreadcrumbs() {
-  const history = reactive({
-    current: undefined,
-    records: [],
-  }) as HistoryRecord;
+export function useBreadcrumbs(): IUseBreadcrumbs {
+  const items = shallowRef<Breadcrumbs[]>([]);
 
-  function isBreadcrumbsEqual(x: Breadcrumbs | undefined, y: Breadcrumbs | undefined) {
-    return x && y && (toValue(x.id) === toValue(y.id) || toValue(x.title) === toValue(y.title));
-  }
-
-  function removeNext(id: string) {
-    const index = history.records.findIndex((record) => record.id === id);
+  /**
+   * Trim the trail: keep everything up to and including the item with `id`.
+   * Called when a breadcrumb's clickHandler returns true (or void).
+   */
+  function trimAfter(id: string): void {
+    const index = items.value.findIndex((item) => item.id === id);
     if (index !== -1) {
-      history.current = history.records[index];
-
-      history.records.splice(index);
+      items.value = items.value.slice(0, index + 1);
     }
   }
 
-  function push(breadcrumb: Breadcrumbs) {
-    const bread = {
+  function push(breadcrumb: Breadcrumbs): void {
+    // Wrap the clickHandler to auto-trim the trail on successful click
+    const wrapped: Breadcrumbs = {
       ...breadcrumb,
-      clickHandler: async (id: string) => {
-        if (breadcrumb.clickHandler) {
-          try {
-            const res = await breadcrumb.clickHandler?.(id);
-
-            if (typeof res === "undefined" || res) {
-              // remove next items in history.records
-              removeNext(id);
+      clickHandler: breadcrumb.clickHandler
+        ? async (id: string) => {
+            try {
+              const result = await breadcrumb.clickHandler!(id);
+              // Trim trail unless handler explicitly returned false
+              if (result !== false) {
+                trimAfter(id);
+              }
+            } catch (e) {
+              logger.error("Breadcrumb click handler failed:", e);
             }
-          } catch (e) {
-            logger.error("Breadcrumb click handler failed:", e);
           }
-        }
-      },
+        : undefined,
     };
 
-    if (
-      history.current &&
-      !isBreadcrumbsEqual(history.current, bread) &&
-      !isBreadcrumbsEqual(history.current, _.last(history.records))
-    ) {
-      history.records.push(history.current);
-    }
-
-    if (bread) {
-      history.current = bread;
+    // Dedup by id: if a breadcrumb with this id already exists, update in place
+    const existingIndex = items.value.findIndex((item) => item.id === wrapped.id);
+    if (existingIndex !== -1) {
+      const updated = [...items.value];
+      updated[existingIndex] = wrapped;
+      items.value = updated;
+    } else {
+      items.value = [...items.value, wrapped];
     }
   }
 
-  function remove(ids: string[]) {
-    // remove items with ids from history.records
-    history.records = history.records.filter((record) => !ids.includes(record.id));
-
-    if (history.current && ids.includes(history.current.id)) {
-      history.current = undefined;
-    }
+  function remove(ids: string[]): void {
+    items.value = items.value.filter((item) => !ids.includes(item.id));
   }
 
   return {
-    breadcrumbs: computed(() => (history.current ? history.records.concat([history.current]) : [])),
+    breadcrumbs: computed(() => items.value),
     push,
     remove,
   };

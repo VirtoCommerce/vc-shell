@@ -1,4 +1,4 @@
-import GenericDropdownComponent from "./generic-dropdown.vue";
+import GenericDropdownComponent from "@shared/components/generic-dropdown/generic-dropdown.vue";
 
 /**
  * @deprecated Use `VcDropdown` from `framework/ui/components` instead.

@@ -53,8 +53,8 @@
  * Displays a list of columns with checkboxes to show/hide them.
  * Uses VcDropdownPanel for positioning and backdrop.
  */
-import { VcDropdownPanel } from "../../../molecules";
-import { VcButton } from "../../../atoms";
+import { VcDropdownPanel } from "@ui/components/molecules";
+import { VcButton } from "@ui/components/atoms";
 
 interface Column {
   id: string;
@@ -133,7 +133,7 @@ const handleReset = () => {
     @apply tw-transition-colors tw-duration-150;
 
     &:hover {
-      @apply tw-bg-[color:var(--neutrals-50)];
+      @apply tw-bg-neutrals-50;
     }
   }
 
@@ -143,7 +143,7 @@ const handleReset = () => {
   }
 
   &__label {
-    @apply tw-flex-1 tw-text-sm tw-text-[color:var(--neutrals-900)];
+    @apply tw-flex-1 tw-text-sm tw-text-neutrals-900;
   }
 
 }

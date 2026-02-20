@@ -1,6 +1,6 @@
 import { join, resolve, relative, dirname } from "node:path";
-import { ApiClientPaths } from "./api-client";
-import { NswagPaths } from "./nswag";
+import { ApiClientPaths } from "@api-client-generator/paths/api-client";
+import { NswagPaths } from "@api-client-generator/paths/nswag";
 import { fileURLToPath } from "node:url";
 import { cwd } from "node:process";
 

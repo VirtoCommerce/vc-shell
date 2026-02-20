@@ -8,9 +8,9 @@ import {
   removeMenuBadge,
   getMenuBadges,
   menuServiceBus,
-} from "../../services/menu-service";
-import { MenuServiceKey } from "../../../injection-keys";
-import { createLogger, InjectionError } from "../../utilities";
+} from "@core/services/menu-service";
+import { MenuServiceKey } from "@framework/injection-keys";
+import { createLogger, InjectionError } from "@core/utilities";
 
 const logger = createLogger("use-menu-service");
 

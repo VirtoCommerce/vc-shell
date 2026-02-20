@@ -114,11 +114,11 @@
  * - Slots for actions, expansion, group header/footer
  */
 import { computed, TransitionGroup } from "vue";
-import type { ColumnInstance } from "../utils/ColumnCollector";
-import type { VcColumnProps } from "../types";
-import type { GroupedData } from "../composables/useTableRowGrouping";
-import DataTableRow from "./DataTableRow.vue";
-import TableEmpty from "./TableEmpty.vue";
+import type { ColumnInstance } from "@ui/components/organisms/vc-table/utils/ColumnCollector";
+import type { VcColumnProps } from "@ui/components/organisms/vc-table/types";
+import type { GroupedData } from "@ui/components/organisms/vc-table/composables/useTableRowGrouping";
+import DataTableRow from "@ui/components/organisms/vc-table/components/DataTableRow.vue";
+import TableEmpty from "@ui/components/organisms/vc-table/components/TableEmpty.vue";
 
 /**
  * Base item type — actual generic enforcement happens in VcDataTable.
@@ -309,7 +309,7 @@ const handleRowDrop = (e: DragEvent) => emit("row-drop", e);
 }
 
 .vc-data-table__loading {
-  @apply tw-p-4 tw-text-center tw-text-[color:var(--neutrals-500)];
+  @apply tw-p-4 tw-text-center tw-text-neutrals-500;
 }
 
 .vc-data-table__rows-container {
@@ -321,11 +321,11 @@ const handleRowDrop = (e: DragEvent) => emit("row-drop", e);
 }
 
 .vc-data-table__group-count {
-  @apply tw-ml-1 tw-text-[color:var(--neutrals-500)];
+  @apply tw-ml-1 tw-text-neutrals-500;
 }
 
 .vc-data-table__group-footer {
-  @apply tw-px-4 tw-py-2 tw-bg-[color:var(--neutrals-50)];
+  @apply tw-px-4 tw-py-2 tw-bg-neutrals-50;
 }
 
 /* Row swap animation */

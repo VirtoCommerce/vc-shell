@@ -39,8 +39,8 @@
       `vc-input_${type}`,
       {
         'vc-input_clearable': clearable,
-        'vc-input_error': error,
-        'vc-input_disabled': disabled,
+        'vc-input_error': invalid,
+        'vc-input_disabled': resolvedDisabled,
         'vc-input_focused': isFocused,
       },
     ]"
@@ -53,7 +53,7 @@
       :required="required"
       :multilanguage="multilanguage"
       :current-language="currentLanguage"
-      :error="error"
+      :error="invalid"
     >
       <span>{{ label }}</span>
       <template
@@ -102,7 +102,7 @@
 
             <slot
               name="control"
-              :editable="disabled"
+              :editable="resolvedDisabled"
               :focused="autofocus"
               :model-value="handleValue"
               :emit-value="emitValue"
@@ -114,11 +114,11 @@
                 v-model="handleValue"
                 :placeholder="placeholder"
                 :type="internalTypeComputed"
-                :disabled="disabled"
-                :name="name"
+                :disabled="resolvedDisabled"
+                :name="resolvedName"
                 :maxlength="maxlength"
                 :autofocus="autofocus"
-                :aria-invalid="error || undefined"
+                :aria-invalid="invalid || undefined"
                 :aria-describedby="ariaDescribedBy"
                 :aria-labelledby="label ? labelId : undefined"
                 class="vc-input__input"
@@ -137,7 +137,7 @@
             </div>
 
             <div
-              v-if="clearable && mutatedModel && !disabled && type !== 'password'"
+              v-if="clearable && mutatedModel && !resolvedDisabled && type !== 'password'"
               class="vc-input__clear"
               tabindex="0"
               @click="onReset"
@@ -217,10 +217,9 @@
       name="slide-up"
       mode="out-in"
     >
-      <div v-if="error">
+      <div v-if="invalid && errorMessage">
         <slot name="error">
           <VcHint
-            v-if="errorMessage"
             :id="errorId"
             class="vc-input__hint-error"
             >{{ errorMessage }}</VcHint
@@ -242,33 +241,18 @@
 </template>
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
-import { computed, ref, unref, useId, watch } from "vue";
-import { VcLabel, VcIcon, VcHint } from "./../../";
-import { VcDatePicker } from "../vc-date-picker";
-import { VcColorInput } from "../vc-color-input";
+import { computed, ref, unref, watch } from "vue";
+import { VcLabel, VcIcon, VcHint } from "@ui/components";
+import { VcDatePicker } from "@ui/components/molecules/vc-date-picker";
+import { VcColorInput } from "@ui/components/molecules/vc-color-input";
+import { useFormField } from "@ui/composables/useFormField";
 import type { VueDatePickerProps, ModelValue } from "@vuepic/vue-datepicker";
+import type { ITextFieldProps } from "@ui/types";
 
 /**
  * Base props for VcInput
  */
-interface VcInputBaseProps {
-  /**
-   * Input label text
-   */
-  label?: string;
-  /**
-   * Input placeholder text
-   */
-  placeholder?: string;
-  /**
-   * Input description (hint) text below input component
-   */
-  hint?: string;
-  /**
-   * Appends clearable icon when a value is set;
-   * When clicked, model becomes null
-   */
-  clearable?: boolean;
+interface VcInputBaseProps extends ITextFieldProps {
   /**
    * Prefix
    */
@@ -278,59 +262,18 @@ interface VcInputBaseProps {
    */
   suffix?: string;
   /**
-   * Used to specify the name of the control; If not specified, it takes the value 'Field'
-   */
-  name?: string;
-  /**
-   * Signals the user a process is in progress by displaying a spinner
-   */
-  loading?: boolean;
-  /**
    * Debounce amount (in milliseconds) when updating model
    */
   debounce?: string | number;
-  /**
-   * Put component in disabled mode
-   */
-  disabled?: boolean;
-  /**
-   * Focus field on initial component render
-   */
-  autofocus?: boolean;
-  /**
-   * Does field have validation errors?
-   */
-  error?: boolean;
-  /**
-   * Validation error message (gets displayed only if 'error' is set to 'true')
-   */
-  errorMessage?: string;
   /**
    * Specify a max length of model
    * Default value: 1024
    */
   maxlength?: string | number;
   /**
-   * Input tooltip information
-   */
-  tooltip?: string;
-  /**
-   * Input required state
-   */
-  required?: boolean;
-  /**
-   * Input multilanguage state
-   */
-  multilanguage?: boolean;
-  /**
-   * Input current language
-   */
-  currentLanguage?: string;
-  /**
    * The step attribute is a number that specifies the granularity that the value must adhere to.
    */
   step?: string;
-  size?: "default" | "small";
 }
 
 /**
@@ -465,19 +408,7 @@ defineSlots<{
   hint: (props: any) => any;
 }>();
 
-// Accessibility IDs
-const uid = useId();
-const inputId = computed(() => `vc-input-${uid}`);
-const labelId = computed(() => `vc-input-${uid}-label`);
-const hintId = computed(() => `vc-input-${uid}-hint`);
-const errorId = computed(() => `vc-input-${uid}-error`);
-
-const ariaDescribedBy = computed(() => {
-  const ids: string[] = [];
-  if (props.error && props.errorMessage) ids.push(errorId.value);
-  if (props.hint) ids.push(hintId.value);
-  return ids.length ? ids.join(" ") : undefined;
-});
+const { fieldId: inputId, labelId, errorId, hintId, invalid, resolvedDisabled, resolvedName, ariaDescribedBy } = useFormField(props);
 
 let emitTimer: NodeJS.Timeout;
 let emitValueFn;
@@ -630,9 +561,9 @@ function handleFocus() {
   // Focus
   --input-border-color-focus: var(--primary-500);
 
-  // Ring colors (new)
-  --input-focus-ring-color: rgba(59, 130, 246, 0.3);
-  --input-error-ring-color: rgba(239, 68, 68, 0.2);
+  // Ring colors
+  --input-focus-ring-color: var(--primary-100);
+  --input-error-ring-color: var(--danger-100);
 }
 
 .vc-input {

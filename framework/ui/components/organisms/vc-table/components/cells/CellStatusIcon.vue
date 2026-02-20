@@ -5,7 +5,7 @@
 </template>
 
 <script setup lang="ts">
-import { VcStatusIcon } from "../../../../atoms";
+import { VcStatusIcon } from "@ui/components/atoms";
 
 defineProps<{
   /** Boolean value indicating status (true = success, false = error) */

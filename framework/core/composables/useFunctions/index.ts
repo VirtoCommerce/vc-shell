@@ -1,7 +1,7 @@
-import debounce from "./debounce";
-import delay from "./delay";
-import once from "./once";
-import throttle from "./throttle";
+import debounce from "@core/composables/useFunctions/debounce";
+import delay from "@core/composables/useFunctions/delay";
+import once from "@core/composables/useFunctions/once";
+import throttle from "@core/composables/useFunctions/throttle";
 
 interface IUseFunctions {
   debounce: typeof debounce;

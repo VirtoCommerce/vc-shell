@@ -84,11 +84,11 @@ import { computed, watchEffect } from "vue";
 import type { Component } from "vue";
 import { useLocalStorage } from "@vueuse/core";
 import { useRoute } from "vue-router";
-import { usePermissions } from "../../../../../../core/composables";
-import type { MenuItem, MenuItemBadgeConfig } from "../../../../../../core/types";
-import { VcIcon } from "../../../../";
-import VcAppMenuItem from "./VcAppMenuItem.vue";
-import { stripTenantPrefix } from "./composables/useMenuActiveState";
+import { usePermissions } from "@core/composables";
+import type { MenuItem, MenuItemBadgeConfig } from "@core/types";
+import { VcIcon } from "@ui/components";
+import VcAppMenuItem from "@ui/components/organisms/vc-app/_internal/menu/VcAppMenuItem.vue";
+import { stripTenantPrefix } from "@ui/components/organisms/vc-app/_internal/menu/composables/useMenuActiveState";
 
 export interface Props {
   groupId: string;

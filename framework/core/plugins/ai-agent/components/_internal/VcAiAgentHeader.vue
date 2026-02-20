@@ -41,8 +41,8 @@
 </template>
 
 <script lang="ts" setup>
-import { VcIcon } from "../../../../../ui/components";
-import VcVirtoOzLogo from "./VcVirtoOzLogo.vue";
+import { VcIcon } from "@ui/components";
+import VcVirtoOzLogo from "@core/plugins/ai-agent/components/_internal/VcVirtoOzLogo.vue";
 
 defineProps<{
   title?: string;

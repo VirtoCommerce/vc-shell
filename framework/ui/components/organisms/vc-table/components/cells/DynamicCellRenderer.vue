@@ -27,19 +27,19 @@
  * ```
  */
 import { computed, type Component } from "vue";
-import { useCellRegistry } from "../../composables/useCellRegistry";
+import { useCellRegistry } from "@ui/components/organisms/vc-table/composables/useCellRegistry";
 
 // Import cell components for fallback and default registration
-import CellDefault from "./CellDefault.vue";
-import CellMoney from "./CellMoney.vue";
-import CellNumber from "./CellNumber.vue";
-import CellDate from "./CellDate.vue";
-import CellDateAgo from "./CellDateAgo.vue";
-import CellImage from "./CellImage.vue";
-import CellStatus from "./CellStatus.vue";
-import CellStatusIcon from "./CellStatusIcon.vue";
-import CellLink from "./CellLink.vue";
-import CellHtml from "./CellHtml.vue";
+import CellDefault from "@ui/components/organisms/vc-table/components/cells/CellDefault.vue";
+import CellMoney from "@ui/components/organisms/vc-table/components/cells/CellMoney.vue";
+import CellNumber from "@ui/components/organisms/vc-table/components/cells/CellNumber.vue";
+import CellDate from "@ui/components/organisms/vc-table/components/cells/CellDate.vue";
+import CellDateAgo from "@ui/components/organisms/vc-table/components/cells/CellDateAgo.vue";
+import CellImage from "@ui/components/organisms/vc-table/components/cells/CellImage.vue";
+import CellStatus from "@ui/components/organisms/vc-table/components/cells/CellStatus.vue";
+import CellStatusIcon from "@ui/components/organisms/vc-table/components/cells/CellStatusIcon.vue";
+import CellLink from "@ui/components/organisms/vc-table/components/cells/CellLink.vue";
+import CellHtml from "@ui/components/organisms/vc-table/components/cells/CellHtml.vue";
 
 // Get composable methods
 const { register, has, get } = useCellRegistry();

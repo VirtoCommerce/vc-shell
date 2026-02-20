@@ -7,25 +7,33 @@
       'vc-accordion-item--has-overflow': hasOverflow,
     }"
   >
-    <div
+    <button
+      :id="triggerId"
+      type="button"
       class="vc-accordion-item__header"
+      :aria-expanded="isExpandedInternal ? 'true' : 'false'"
+      :aria-controls="panelId"
+      :disabled="disabled || !hasOverflow"
       @click="toggle"
     >
-      <div class="vc-accordion-item__title">
+      <span class="vc-accordion-item__title">
         <slot name="title">
           {{ title }}
         </slot>
-      </div>
+      </span>
       <VcIcon
         v-if="hasOverflow"
         class="vc-accordion-item__icon"
         :class="{ 'vc-accordion-item__icon--rotated': isExpandedInternal }"
         icon="lucide-chevron-down"
       />
-    </div>
+    </button>
 
     <div
+      :id="panelId"
       ref="contentWrapperRef"
+      role="region"
+      :aria-labelledby="triggerId"
       class="vc-accordion-item__content-wrapper"
       :class="{
         'vc-accordion-item__content-wrapper--faded': hasOverflow && !isExpandedInternal,
@@ -44,8 +52,9 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, watch, onMounted, onBeforeUnmount } from "vue";
-import { VcIcon } from "../../../../atoms/vc-icon";
+import { ref, computed, watch, useId } from "vue";
+import { useResizeObserver } from "@vueuse/core";
+import { VcIcon } from "@ui/components/atoms/vc-icon";
 
 export interface Props {
   title?: string;
@@ -77,11 +86,15 @@ defineSlots<{
   title: (props?: any) => any;
 }>();
 
+// Accessibility IDs
+const uid = useId();
+const triggerId = `vc-accordion-trigger-${uid}`;
+const panelId = `vc-accordion-panel-${uid}`;
+
 const contentRef = ref<HTMLElement>();
 const contentWrapperRef = ref<HTMLElement>();
 const contentHeight = ref(0);
 const isExpandedInternal = ref(props.isExpanded);
-const resizeObserver = ref<ResizeObserver>();
 
 const hasOverflow = computed(() => {
   return contentHeight.value > props.collapsedHeight;
@@ -111,8 +124,6 @@ const contentWrapperStyle = computed(() => {
 });
 
 function toggle() {
-  if (props.disabled || !hasOverflow.value) return;
-
   isExpandedInternal.value = !isExpandedInternal.value;
   emit("toggle", isExpandedInternal.value);
   emit("update:isExpanded", isExpandedInternal.value);
@@ -131,22 +142,8 @@ watch(
   },
 );
 
-onMounted(() => {
+useResizeObserver(contentRef, () => {
   updateContentHeight();
-
-  // Setup ResizeObserver to track content height changes
-  if (contentRef.value) {
-    resizeObserver.value = new ResizeObserver(() => {
-      updateContentHeight();
-    });
-    resizeObserver.value.observe(contentRef.value);
-  }
-});
-
-onBeforeUnmount(() => {
-  if (resizeObserver.value) {
-    resizeObserver.value.disconnect();
-  }
 });
 </script>
 
@@ -154,13 +151,14 @@ onBeforeUnmount(() => {
 :root {
   --accordion-item-border-color: var(--neutrals-200);
   --accordion-item-header-background: var(--additional-50);
-  --accordion-item-header-background-hover: var(--primary-50);
+  --accordion-item-header-background-hover: var(--neutrals-50);
   --accordion-item-header-color: var(--secondary-950);
   --accordion-item-content-background: var(--additional-50);
   --accordion-item-content-color: var(--secondary-950);
   --accordion-item-transition-duration: 300ms;
   --accordion-item-border-radius: 6px;
   --accordion-item-fade-height: 60px;
+  --accordion-item-focus-ring-color: var(--primary-100);
 }
 
 .vc-accordion-item {
@@ -170,21 +168,28 @@ onBeforeUnmount(() => {
   overflow: hidden;
 
   &__header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+    @apply tw-flex tw-items-center tw-justify-between tw-w-full;
+    @apply tw-border-none tw-outline-none tw-select-none tw-text-left;
     padding: 12px 16px;
     background: var(--accordion-item-header-background);
     color: var(--accordion-item-header-color);
     transition: background-color var(--accordion-item-transition-duration) ease;
-    user-select: none;
+    border-radius: inherit;
 
-    .vc-accordion-item--has-overflow & {
-      cursor: pointer;
+    &:not(:disabled) {
+      @apply tw-cursor-pointer;
 
       &:hover {
         background: var(--accordion-item-header-background-hover);
       }
+    }
+
+    &:disabled {
+      @apply tw-cursor-not-allowed;
+    }
+
+    &:focus-visible {
+      @apply tw-ring-[3px] tw-ring-[color:var(--accordion-item-focus-ring-color)] tw-outline-none;
     }
   }
 
@@ -236,16 +241,7 @@ onBeforeUnmount(() => {
   }
 
   &--disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-
-    .vc-accordion-item__header {
-      cursor: not-allowed;
-
-      &:hover {
-        background: var(--accordion-item-header-background);
-      }
-    }
+    @apply tw-opacity-50;
   }
 }
 </style>

@@ -9,11 +9,11 @@ import {
   onMounted,
   onUpdated,
 } from "vue";
-import { CardCollection } from "../factories";
-import componentProps from "./props";
-import { CardSchema } from "../../types";
-import { nodeBuilder } from "../../helpers/nodeBuilder";
-import { unrefNested } from "../../helpers/unrefNested";
+import { CardCollection } from "@shared/modules/dynamic/components/factories";
+import componentProps from "@shared/modules/dynamic/components/fields/props";
+import { CardSchema } from "@shared/modules/dynamic/types";
+import { nodeBuilder } from "@shared/modules/dynamic/helpers/nodeBuilder";
+import { unrefNested } from "@shared/modules/dynamic/helpers/unrefNested";
 
 export default {
   name: "CardEl",

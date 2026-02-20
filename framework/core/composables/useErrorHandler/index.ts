@@ -1,8 +1,8 @@
 import { onErrorCaptured, getCurrentInstance, ref, Ref, nextTick } from "vue";
 import { useAppInsights } from "..";
-import { useUserManagement } from "../useUserManagement";
-import { DisplayableError, parseError } from "../../utilities/error";
-import { createLogger } from "../../utilities";
+import { useUserManagement } from "@core/composables/useUserManagement";
+import { DisplayableError, parseError } from "@core/utilities/error";
+import { createLogger } from "@core/utilities";
 
 const logger = createLogger("use-error-handler");
 

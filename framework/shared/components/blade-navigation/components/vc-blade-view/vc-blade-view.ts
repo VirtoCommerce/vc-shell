@@ -13,12 +13,12 @@ import {
   SetupContext,
   onErrorCaptured,
 } from "vue";
-import { BladeInstance, navigationViewLocation, BLADE_BACK_BUTTON } from "./../../../../../injection-keys";
-import { BladeVNode, CoreBladeExposed, IBladeInstance } from "../../types";
+import { BladeInstance, navigationViewLocation, BLADE_BACK_BUTTON } from "@framework/injection-keys";
+import { BladeVNode, CoreBladeExposed, IBladeInstance } from "@shared/components/blade-navigation/types";
 import { toRef, watchTriggerable } from "@vueuse/core";
-import { DisplayableError } from "../../../../../core/utilities/error";
-import { Breadcrumbs } from "../../../../../ui/types";
-import { FALLBACK_BLADE_ID } from "../../../../../core/constants";
+import { DisplayableError } from "@core/utilities/error";
+import { Breadcrumbs } from "@ui/types";
+import { FALLBACK_BLADE_ID } from "@core/constants";
 
 /**
  * Normalizes slot content

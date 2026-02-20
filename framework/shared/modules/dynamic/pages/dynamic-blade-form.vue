@@ -84,7 +84,8 @@ import {
   onBeforeUnmount,
   markRaw,
 } from "vue";
-import { DynamicDetailsSchema, FormContentSchema, SettingsSchema } from "../types";
+import { DynamicDetailsSchema, FormContentSchema, SettingsSchema } from "@shared/modules/dynamic/types";
+import { IsBladeEditableKey } from "@shared/modules/dynamic/keys";
 import { reactiveComputed, toReactive, useMounted } from "@vueuse/core";
 import {
   DetailsBladeContext,
@@ -94,15 +95,15 @@ import {
   usePopup,
   useBladeNavigation,
   CoreBladeExposed,
-} from "../../../index";
-import SchemaRender from "../components/SchemaRender";
-import { VcDropdown, VcImage } from "../../../../ui/components";
-import { useToolbarReducer } from "../composables/useToolbarReducer";
-import { useBeforeUnload } from "../../../../core/composables/useBeforeUnload";
-import { useLanguages, useNotifications, useBlade } from "../../../../core/composables";
-import { notification } from "../../../components";
-import { useWidgets } from "../../../../core/composables/useWidgets";
-import { BladeInstance } from "../../../../injection-keys";
+} from "@shared";
+import SchemaRender from "@shared/modules/dynamic/components/SchemaRender";
+import { VcDropdown, VcImage } from "@ui/components";
+import { useToolbarReducer } from "@shared/modules/dynamic/composables/useToolbarReducer";
+import { useBeforeUnload } from "@core/composables/useBeforeUnload";
+import { useLanguages, useNotifications, useBlade } from "@core/composables";
+import { notification } from "@shared/components";
+import { useWidgets } from "@core/composables/useWidgets";
+import { BladeInstance } from "@framework/injection-keys";
 
 interface Props {
   expanded?: boolean;
@@ -506,7 +507,7 @@ onBeforeClose(async () => {
 });
 
 provide("bladeContext", toReactive(bladeContext));
-provide("isBladeEditable", isBladeEditable);
+provide(IsBladeEditableKey, isBladeEditable);
 
 const bladeWidgets = computed(() => {
   return widgets.value?.children?.map((x) => {

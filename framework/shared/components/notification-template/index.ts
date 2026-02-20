@@ -1,4 +1,4 @@
-import _NotificationTemplate from "./notification-template.vue";
+import _NotificationTemplate from "@shared/components/notification-template/notification-template.vue";
 
 export const NotificationTemplate = _NotificationTemplate as typeof _NotificationTemplate;
 

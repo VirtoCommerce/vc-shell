@@ -1,11 +1,11 @@
-import { ComponentSlots } from "../../../../utilities/vueUtils";
+import { ComponentSlots } from "@shared/utilities/vueUtils";
 import { h, resolveComponent, ExtractPropTypes, Component, VNode } from "vue";
-import { SelectField } from "../factories";
-import componentProps from "./props";
-import ValidationField from "./ValidationField";
-import { SelectSchema } from "../../types";
-import { VcSelect } from "../../../../../ui/components";
-import { unrefNested } from "../../helpers/unrefNested";
+import { SelectField } from "@shared/modules/dynamic/components/factories";
+import componentProps from "@shared/modules/dynamic/components/fields/props";
+import ValidationField from "@shared/modules/dynamic/components/fields/ValidationField";
+import { SelectSchema } from "@shared/modules/dynamic/types";
+import { VcSelect } from "@ui/components";
+import { unrefNested } from "@shared/modules/dynamic/helpers/unrefNested";
 
 type TScope =
   | Parameters<ComponentSlots<typeof VcSelect>["option"]>["0"]

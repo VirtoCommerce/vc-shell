@@ -73,11 +73,11 @@
  * - Action handling
  */
 import { computed, unref } from "vue";
-import type { MobileCardLayout, MobileSwipeAction, TableEmptyAction, ColumnInstance, TableAction, PullToRefreshTextConfig } from "../../types";
-import { useMobileCardLayout } from "../../composables/useMobileCardLayout";
-import { provideTableSwipe } from "../../composables/useTableSwipe";
-import DataTableMobileCard from "./DataTableMobileCard.vue";
-import PullToRefresh from "./PullToRefresh.vue";
+import type { MobileCardLayout, MobileSwipeAction, TableEmptyAction, ColumnInstance, TableAction, PullToRefreshTextConfig } from "@ui/components/organisms/vc-table/types";
+import { useMobileCardLayout } from "@ui/components/organisms/vc-table/composables/useMobileCardLayout";
+import { provideTableSwipe } from "@ui/components/organisms/vc-table/composables/useTableSwipe";
+import DataTableMobileCard from "@ui/components/organisms/vc-table/components/mobile/DataTableMobileCard.vue";
+import PullToRefresh from "@ui/components/organisms/vc-table/components/mobile/PullToRefresh.vue";
 
 const props = withDefaults(
   defineProps<{

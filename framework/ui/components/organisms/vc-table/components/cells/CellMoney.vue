@@ -42,9 +42,10 @@
 <script setup lang="ts">
 import { computed, inject, Ref, ref } from "vue";
 import { useI18n } from "vue-i18n";
-import VcInputCurrency from "../../../../molecules/vc-input-currency/vc-input-currency.vue";
-import { VcIcon } from "../../../../atoms";
-import CellEditableWrapper from "./CellEditableWrapper.vue";
+import VcInputCurrency from "@ui/components/molecules/vc-input-currency/vc-input-currency.vue";
+import { VcIcon } from "@ui/components/atoms";
+import { IsMobileKey, IsDesktopKey } from "@framework/injection-keys";
+import CellEditableWrapper from "@ui/components/organisms/vc-table/components/cells/CellEditableWrapper.vue";
 
 const props = defineProps<{
   /** The monetary value to display or edit */
@@ -75,8 +76,8 @@ const emit = defineEmits<{
 const { t } = useI18n({ useScope: "global" });
 const locale = window.navigator.language;
 
-const isMobileRef = inject<Ref<boolean>>("isMobile", ref(false));
-const isDesktopRef = inject<Ref<boolean>>("isDesktop", ref(true));
+const isMobileRef = inject(IsMobileKey, ref(false));
+const isDesktopRef = inject(IsDesktopKey, ref(true));
 const isMobile = computed(() => isMobileRef.value);
 const isDesktop = computed(() => isDesktopRef.value);
 
@@ -113,7 +114,7 @@ const onBlur = (errors: string[]) => {
   }
 
   &__error-icon {
-    @apply tw-text-[color:var(--danger-500)];
+    @apply tw-text-danger-500;
   }
 }
 </style>

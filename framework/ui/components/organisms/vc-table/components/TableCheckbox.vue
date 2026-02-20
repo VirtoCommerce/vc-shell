@@ -64,14 +64,14 @@ const handleChange = (event: Event) => {
 
   &-input {
     @apply tw-w-4 tw-h-4 tw-cursor-pointer;
-    @apply tw-rounded tw-border-2 tw-border-[color:var(--neutrals-300)];
-    @apply tw-text-[color:var(--primary-500)];
-    @apply focus:tw-ring-2 focus:tw-ring-[color:var(--primary-500)] focus:tw-ring-offset-1;
-    @apply checked:tw-bg-[color:var(--primary-500)] checked:tw-border-[color:var(--primary-500)];
+    @apply tw-rounded tw-border-2 tw-border-neutrals-300;
+    @apply tw-text-primary-500;
+    @apply focus:tw-ring-2 focus:tw-ring-primary-500 focus:tw-ring-offset-1;
+    @apply checked:tw-bg-primary-500 checked:tw-border-primary-500;
     @apply disabled:tw-cursor-not-allowed;
 
     &:indeterminate {
-      @apply tw-bg-[color:var(--primary-500)] tw-border-[color:var(--primary-500)];
+      @apply tw-bg-primary-500 tw-border-primary-500;
     }
   }
 }

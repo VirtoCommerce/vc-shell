@@ -8,6 +8,8 @@
         'vc-status_dot': dot,
       },
     ]"
+    role="status"
+    :aria-label="dot ? variant : undefined"
   >
     <div class="vc-status__content">
       <slot></slot>
@@ -40,30 +42,30 @@ defineSlots<{
   --status-dot-size: 10px;
   --status-text-color: var(--neutrals-700);
 
-  --status-border-radius: 20px;
-  --status-border-radius-extended: 4px;
+  --status-border-radius: 9999px;
+  --status-border-radius-extended: 6px;
   --status-border-width: 1px;
 
-  --status-border-color: var(--neutrals-500);
+  --status-border-color: var(--neutrals-200);
   --status-bg-color: var(--additional-50);
 
-  --status-info-color: var(--additional-950);
+  --status-info-color: var(--info-700);
   --status-info-main-color: var(--info-500);
   --status-info-bg-color: var(--info-50);
 
-  --status-warning-color: var(--additional-950);
+  --status-warning-color: var(--warning-700);
   --status-warning-main-color: var(--warning-500);
   --status-warning-bg-color: var(--warning-50);
 
-  --status-danger-color: var(--additional-950);
+  --status-danger-color: var(--danger-700);
   --status-danger-main-color: var(--danger-500);
   --status-danger-bg-color: var(--danger-50);
 
-  --status-success-color: var(--additional-950);
+  --status-success-color: var(--success-700);
   --status-success-main-color: var(--success-500);
   --status-success-bg-color: var(--success-50);
 
-  --status-light-danger-color: var(--additional-950);
+  --status-light-danger-color: var(--danger-700);
   --status-light-danger-main-color: var(--danger-300);
   --status-light-danger-bg-color: var(--danger-50);
 
@@ -71,7 +73,7 @@ defineSlots<{
   --status-info-dark-main-color: var(--info-600);
   --status-info-dark-bg-color: var(--info-600);
 
-  --status-primary-color: var(--additional-950);
+  --status-primary-color: var(--primary-700);
   --status-primary-main-color: var(--primary-500);
   --status-primary-bg-color: var(--primary-50);
 }
@@ -94,7 +96,7 @@ $variants: info, warning, danger, success, light-danger, info-dark, primary;
       @apply tw-border-[color:var(--status-border-color)] #{!important};
 
       &::before {
-        @apply tw-content-[''] tw-bg-[color:var(--status-#{$variant}-main-color)] tw-w-4 tw-h-4 tw-rounded-full tw-mr-2 tw-shrink-0;
+        @apply tw-content-[''] tw-bg-[color:var(--status-#{$variant}-main-color)] tw-w-2 tw-h-2 tw-rounded-full tw-mr-2 tw-shrink-0;
       }
 
       &.vc-status_dot {

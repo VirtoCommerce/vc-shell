@@ -1,18 +1,18 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { unref, computed, toValue, h, UnwrapNestedRefs, MaybeRef, reactive, VNode, ToRefs } from "vue";
-import FIELD_MAP from "../components/FIELD_MAP";
-import { ControlSchema } from "../types";
-import { IControlBaseProps } from "../types/models";
-import { getModel } from "./getters";
-import { setModel } from "./setters";
-import { unwrapInterpolation } from "./unwrapInterpolation";
-import { DetailsBladeContext } from "../factories";
-import { safeIn } from "./safeIn";
-import { i18n } from "./../../../../core/plugins/i18n";
-import { methodHandler } from "./methodHandler";
+import FIELD_MAP from "@shared/modules/dynamic/components/FIELD_MAP";
+import { ControlSchema } from "@shared/modules/dynamic/types";
+import { IControlBaseProps } from "@shared/modules/dynamic/types/models";
+import { getModel } from "@shared/modules/dynamic/helpers/getters";
+import { setModel } from "@shared/modules/dynamic/helpers/setters";
+import { unwrapInterpolation } from "@shared/modules/dynamic/helpers/unwrapInterpolation";
+import { DetailsBladeContext } from "@shared/modules/dynamic/factories";
+import { safeIn } from "@shared/modules/dynamic/helpers/safeIn";
+import { i18n } from "@core/plugins/i18n";
+import { methodHandler } from "@shared/modules/dynamic/helpers/methodHandler";
 import { toRefs } from "@vueuse/core";
-import { unrefNested } from "./unrefNested";
-import { usePermissions } from "../../../../core/composables";
+import { unrefNested } from "@shared/modules/dynamic/helpers/unrefNested";
+import { usePermissions } from "@core/composables";
 
 const { hasAccess } = usePermissions();
 

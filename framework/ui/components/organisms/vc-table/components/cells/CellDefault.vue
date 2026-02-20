@@ -35,9 +35,10 @@
 
 <script setup lang="ts">
 import { computed, inject, Ref, ref } from "vue";
-import VcInput from "../../../../molecules/vc-input/vc-input.vue";
-import { VcIcon } from "../../../../atoms";
-import CellEditableWrapper from "./CellEditableWrapper.vue";
+import VcInput from "@ui/components/molecules/vc-input/vc-input.vue";
+import { VcIcon } from "@ui/components/atoms";
+import { IsMobileKey, IsDesktopKey } from "@framework/injection-keys";
+import CellEditableWrapper from "@ui/components/organisms/vc-table/components/cells/CellEditableWrapper.vue";
 
 const props = defineProps<{
   /** The cell value to display or edit */
@@ -63,8 +64,8 @@ const emit = defineEmits<{
   (e: "blur", payload: { row: number | undefined; field: string }): void;
 }>();
 
-const isMobileRef = inject<Ref<boolean>>("isMobile", ref(false));
-const isDesktopRef = inject<Ref<boolean>>("isDesktop", ref(true));
+const isMobileRef = inject(IsMobileKey, ref(false));
+const isDesktopRef = inject(IsDesktopKey, ref(true));
 const isMobile = computed(() => isMobileRef.value);
 const isDesktop = computed(() => isDesktopRef.value);
 
@@ -83,7 +84,7 @@ const onBlur = (errors: string[]) => {
   }
 
   &__error-icon {
-    @apply tw-text-[color:var(--danger-500)];
+    @apply tw-text-danger-500;
   }
 }
 </style>

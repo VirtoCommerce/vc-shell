@@ -33,9 +33,9 @@
 
 <script lang="ts" setup>
 import { computed, isRef, ref, toValue } from "vue";
-import { VcIcon } from "../../../../";
-import { resolveReactiveBoolean } from "../../utils";
-import type { Props } from "./toolbar-button-props";
+import { VcIcon } from "@ui/components";
+import { resolveReactiveBoolean } from "@ui/components/organisms/vc-blade/utils";
+import type { Props } from "@ui/components/organisms/vc-blade/_internal/toolbar/toolbar-button-props";
 
 const props = withDefaults(defineProps<Props>(), {
   disabled: false,
@@ -89,7 +89,7 @@ async function handleClick(): Promise<void> {
 }
 
 .vc-blade-toolbar-base-button {
-  @apply tw-px-3 tw-bg-transparent tw-border-0 tw-cursor-pointer tw-shrink;
+  @apply tw-px-3 tw-bg-transparent tw-border-0 tw-cursor-pointer tw-shrink-0;
 
   &__content {
     @apply tw-inline-flex tw-items-center tw-gap-1;

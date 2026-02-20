@@ -17,7 +17,13 @@
         'vc-badge__badge--inline-medium': size === 'm',
       },
     ]"
+    :role="clickable ? 'button' : undefined"
+    :tabindex="clickable && !disabled ? 0 : undefined"
+    :aria-disabled="clickable && disabled ? true : undefined"
+    :aria-label="ariaLabel || (isDot ? 'Notification' : undefined)"
     @click="onClick"
+    @keydown.enter.prevent="onClick"
+    @keydown.space.prevent="onClick"
   >
     <span
       v-if="!isDot"
@@ -56,7 +62,13 @@
           },
         ]"
         :style="customPositionStyle"
+        :role="clickable ? 'button' : undefined"
+        :tabindex="clickable && !disabled ? 0 : undefined"
+        :aria-disabled="clickable && disabled ? true : undefined"
+        :aria-label="ariaLabel || (isDot ? 'Notification' : undefined)"
         @click="onClick"
+        @keydown.enter.prevent="onClick"
+        @keydown.space.prevent="onClick"
       >
         <span
           v-if="!isDot"
@@ -84,6 +96,8 @@ export interface Props {
   right?: string;
   /** When true, renders badge as inline element without absolute positioning (no slot content) */
   inline?: boolean;
+  /** Accessible label for the badge (useful for screen readers) */
+  ariaLabel?: string;
 }
 
 export interface Emits {
@@ -147,13 +161,38 @@ const customPositionStyle = computed(() => {
   --badge-text-color-disabled: var(--neutrals-500);
   --badge-border-color-disabled: var(--primary-200);
 
-  // Variants
+  // Variants — positioned (notification badges: solid)
   --badge-background-color-primary: var(--primary-500);
   --badge-background-color-secondary: var(--secondary-500);
   --badge-background-color-success: var(--success-500);
   --badge-background-color-warning: var(--warning-500);
   --badge-background-color-danger: var(--danger-500);
   --badge-background-color-info: var(--info-500);
+
+  // Variants — inline (tag/pill: soft)
+  --badge-inline-bg-primary: var(--primary-50);
+  --badge-inline-text-primary: var(--primary-700);
+  --badge-inline-border-primary: var(--primary-200);
+
+  --badge-inline-bg-secondary: var(--secondary-50);
+  --badge-inline-text-secondary: var(--secondary-700);
+  --badge-inline-border-secondary: var(--secondary-200);
+
+  --badge-inline-bg-success: var(--success-50);
+  --badge-inline-text-success: var(--success-700);
+  --badge-inline-border-success: var(--success-200);
+
+  --badge-inline-bg-warning: var(--warning-50);
+  --badge-inline-text-warning: var(--warning-700);
+  --badge-inline-border-warning: var(--warning-200);
+
+  --badge-inline-bg-danger: var(--danger-50);
+  --badge-inline-text-danger: var(--danger-700);
+  --badge-inline-border-danger: var(--danger-200);
+
+  --badge-inline-bg-info: var(--info-50);
+  --badge-inline-text-info: var(--info-700);
+  --badge-inline-border-info: var(--info-200);
 
   // Sizes
   --badge-size-small: 17px;
@@ -169,6 +208,9 @@ const customPositionStyle = computed(() => {
   --badge-border-radius: 9999px;
   --badge-dot-size-small: 8px;
   --badge-dot-size-medium: 10px;
+
+  // Focus
+  --badge-focus-ring-color: var(--primary-300);
 }
 
 $sizes: small, medium;
@@ -197,13 +239,17 @@ $sizes: small, medium;
 }
 
 .vc-badge__badge {
-  @apply tw-absolute tw-rounded-full tw-font-semibold tw-bg-[color:var(--badge-background-color)] tw-text-[color:var(--badge-text-color)] tw-border tw-border-solid tw-border-[color:var(--badge-border-color)] tw-transition tw-duration-200 tw-shrink-0;
+  @apply tw-absolute tw-rounded-full tw-font-semibold tw-bg-[color:var(--badge-background-color)] tw-text-[color:var(--badge-text-color)] tw-border tw-border-solid tw-border-[color:var(--badge-border-color)] tw-transition-all tw-duration-150 tw-shrink-0;
   box-sizing: border-box;
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 0 4px;
   line-height: 1;
+
+  &:focus-visible {
+    @apply tw-outline-none tw-ring-2 tw-ring-offset-1 tw-ring-[color:var(--badge-focus-ring-color)];
+  }
 }
 
 .vc-badge__text {
@@ -266,7 +312,7 @@ $sizes: small, medium;
 }
 
 .vc-badge__badge--disabled {
-  @apply tw-cursor-not-allowed tw-bg-[color:var(--badge-background-color-disabled)] tw-text-[color:var(--badge-text-color-disabled)] tw-border-[color:var(--badge-border-color-disabled)] hover:tw-bg-[color:var(--badge-background-color-disabled)] hover:tw-text-[color:var(--badge-text-color-disabled)] hover:tw-border-[color:var(--badge-border-color-disabled)];
+  @apply tw-cursor-not-allowed tw-opacity-50 tw-bg-[color:var(--badge-background-color-disabled)] tw-text-[color:var(--badge-text-color-disabled)] tw-border-[color:var(--badge-border-color-disabled)] hover:tw-bg-[color:var(--badge-background-color-disabled)] hover:tw-text-[color:var(--badge-text-color-disabled)] hover:tw-border-[color:var(--badge-border-color-disabled)];
 }
 
 // Inline mode - relative positioning, no wrapper
@@ -293,6 +339,15 @@ $sizes: small, medium;
     height: var(--badge-dot-size-medium);
     min-width: var(--badge-dot-size-medium);
     width: var(--badge-dot-size-medium);
+  }
+}
+
+// Inline variant overrides — soft bg-{color}-50 / text-{color}-700 pattern
+$badge-variants: primary, secondary, success, warning, danger, info;
+
+@each $v in $badge-variants {
+  .vc-badge__badge--inline.vc-badge__badge--#{$v} {
+    @apply tw-bg-[color:var(--badge-inline-bg-#{$v})] tw-text-[color:var(--badge-inline-text-#{$v})] tw-border-[color:var(--badge-inline-border-#{$v})];
   }
 }
 </style>

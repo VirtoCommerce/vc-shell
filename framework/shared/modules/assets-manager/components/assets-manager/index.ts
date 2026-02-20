@@ -1,3 +1,3 @@
-import _AssetsManager from "./assets-manager.vue";
+import _AssetsManager from "@shared/modules/assets-manager/components/assets-manager/assets-manager.vue";
 
 export const AssetsManager = _AssetsManager as typeof _AssetsManager;

@@ -5,10 +5,10 @@
  */
 
 // Deep cloning utility for reactive objects
-export { deepClone } from "./deepClone";
+export { deepClone } from "@ui/components/organisms/vc-table/utils/deepClone";
 
 // Column collection utility for declarative column API
-export { ColumnCollector, type ColumnInstance } from "./ColumnCollector";
+export { ColumnCollector, type ColumnInstance } from "@ui/components/organisms/vc-table/utils/ColumnCollector";
 
 // Re-export registries from composables
 export {
@@ -16,4 +16,4 @@ export {
   type CellType,
   type CellTypeConfig,
   type CellRegistration,
-} from "../composables/useCellRegistry";
+} from "@ui/components/organisms/vc-table/composables/useCellRegistry";

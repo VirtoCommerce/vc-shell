@@ -1,4 +1,4 @@
-import { ControlSchema } from "../types/index";
+import { ControlSchema } from "@shared/modules/dynamic/types";
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ComputedRef, toValue } from "vue";
 

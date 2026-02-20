@@ -14,7 +14,7 @@ import type {
   SelectFilterConfig,
   SelectFilterWithFieldConfig,
   DateRangeFilterConfig,
-} from "../types";
+} from "@ui/components/organisms/vc-table/types";
 
 /**
  * Type guard: check if config is a select filter with options

@@ -1,4 +1,5 @@
-import { ref, watch, onBeforeUnmount, type Ref } from "vue";
+import { ref, onBeforeUnmount, type Ref } from "vue";
+import { useResizeObserver } from "@vueuse/core";
 
 export interface UseScrollArrowsOptions {
   /** Pixels per animation frame (~60fps). Default: 2 */
@@ -14,7 +15,6 @@ export function useScrollArrows(
   const canScrollUp = ref(false);
   const canScrollDown = ref(false);
   let scrollAnimationId: number | null = null;
-  let resizeObserver: ResizeObserver | null = null;
 
   function updateScrollState() {
     const el = viewportRef.value;
@@ -48,34 +48,10 @@ export function useScrollArrows(
     }
   }
 
-  // Observe size changes so arrows update when the viewport is resized
-  watch(
-    viewportRef,
-    (el, _oldEl, onCleanup) => {
-      resizeObserver?.disconnect();
-      resizeObserver = null;
-
-      if (!el) {
-        canScrollUp.value = false;
-        canScrollDown.value = false;
-        return;
-      }
-
-      resizeObserver = new ResizeObserver(updateScrollState);
-      resizeObserver.observe(el);
-
-      onCleanup(() => {
-        resizeObserver?.disconnect();
-        resizeObserver = null;
-      });
-    },
-    { immediate: true },
-  );
+  useResizeObserver(viewportRef, updateScrollState);
 
   onBeforeUnmount(() => {
     stopScroll();
-    resizeObserver?.disconnect();
-    resizeObserver = null;
   });
 
   return {

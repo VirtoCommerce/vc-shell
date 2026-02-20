@@ -68,3 +68,7 @@ When working with VC-Shell services, we recommend the following best practices:
 3. **Permission Planning**: Design your permission structure consistently across services
 4. **Priority Values**: Use consistent priority scales across your application
 5. **Component Optimization**: Use `markRaw` for components to prevent unnecessary reactivity 
+
+## Related Architecture Docs
+
+- [Shell Features V2 RFC (Draft)](../architecture/shell-features-v2-rfc.md)

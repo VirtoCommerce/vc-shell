@@ -181,7 +181,7 @@ function onInput(e: Event) {
     }
 
     &:focus-visible + .vc-switch__slider {
-      box-shadow: 0 0 0 3px var(--switch-focus-ring-color);
+      @apply tw-ring-[3px] tw-ring-[color:var(--switch-focus-ring-color)] tw-outline-none;
     }
 
     &:disabled + .vc-switch__slider {
@@ -209,7 +209,7 @@ function onInput(e: Event) {
 
   &--error {
     .vc-switch__slider {
-      box-shadow: 0 0 0 3px var(--switch-error-ring-color);
+      @apply tw-ring-[3px] tw-ring-[color:var(--switch-error-ring-color)];
     }
   }
 

@@ -229,8 +229,7 @@ onMounted(() => {
     @apply tw-absolute tw-opacity-0 tw-w-0 tw-h-0;
 
     &:focus-visible + .vc-checkbox__custom-input {
-      @apply tw-ring-[3px] tw-outline-none;
-      ring-color: var(--checkbox-focus-ring-color);
+      @apply tw-ring-[3px] tw-ring-[color:var(--checkbox-focus-ring-color)] tw-outline-none;
     }
 
     &:not(:disabled):not(:checked) + .vc-checkbox__custom-input:hover {
@@ -303,9 +302,8 @@ onMounted(() => {
 
   &--error {
     .vc-checkbox__custom-input {
-      @apply tw-ring-[3px];
+      @apply tw-ring-[3px] tw-ring-[color:var(--checkbox-error-ring-color)];
       border-color: var(--checkbox-error-border-color);
-      ring-color: var(--checkbox-error-ring-color);
     }
   }
 

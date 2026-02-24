@@ -750,7 +750,7 @@ watch(
 
   &__search-input {
     @apply tw-w-full tw-box-border tw-border tw-border-solid tw-border-[color:var(--select-search-border-color)] tw-bg-transparent tw-rounded-[var(--select-border-radius)] tw-h-8 tw-leading-8 tw-outline-none tw-mb-2 tw-px-2 tw-text-sm
-      focus:tw-border-[color:var(--select-border-color-focus)] focus:tw-ring-[2px] focus:tw-ring-[color:var(--select-focus-ring-color)]
+      focus:tw-border-[color:var(--select-border-color-focus)] focus:tw-ring-[3px] focus:tw-ring-[color:var(--select-focus-ring-color)]
       tw-transition-[color,box-shadow] tw-duration-150 tw-ease-in-out;
   }
 

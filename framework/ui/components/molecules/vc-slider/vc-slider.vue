@@ -96,7 +96,7 @@ const buttonsList = computed(() => ({
   --slider-button-text: var(--primary-500);
   --slider-button-text-disabled: var(--neutrals-400);
   --slider-button-border-radius: 6px;
-  --slider-focus-ring-color: rgba(59, 130, 246, 0.3);
+  --slider-focus-ring-color: var(--primary-100);
 }
 
 .vc-slider {

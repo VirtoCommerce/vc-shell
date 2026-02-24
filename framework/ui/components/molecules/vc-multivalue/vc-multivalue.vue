@@ -454,7 +454,7 @@ function onSearch(event: Event) {
       tw-border-[color:var(--multivalue-search-border-color)]
       tw-bg-transparent tw-rounded-[var(--multivalue-border-radius)] tw-h-8 tw-leading-8
       tw-outline-none tw-mb-2 tw-px-2 tw-text-sm
-      focus:tw-border-[color:var(--multivalue-border-color-focus)] focus:tw-ring-[2px] focus:tw-ring-[color:var(--multivalue-focus-ring-color)]
+      focus:tw-border-[color:var(--multivalue-border-color-focus)] focus:tw-ring-[3px] focus:tw-ring-[color:var(--multivalue-focus-ring-color)]
       tw-transition-[color,box-shadow] tw-duration-150 tw-ease-in-out;
   }
 

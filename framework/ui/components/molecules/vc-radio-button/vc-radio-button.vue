@@ -172,12 +172,12 @@ function onChange() {
     }
 
     &:focus-visible {
-      box-shadow: 0 0 0 3px var(--radio-focus-ring-color);
+      @apply tw-ring-[3px] tw-ring-[color:var(--radio-focus-ring-color)] tw-outline-none;
     }
 
     &.vc-radio-button_error {
       border-color: var(--radio-error);
-      box-shadow: 0 0 0 3px var(--radio-error-ring-color);
+      @apply tw-ring-[3px] tw-ring-[color:var(--radio-error-ring-color)];
     }
   }
 

@@ -181,9 +181,9 @@ function dragLeave() {
   --file-upload-icon-color: var(--neutrals-400);
   --file-upload-text-color: var(--neutrals-400);
   --file-upload-error-color: var(--danger-500);
-  --file-upload-error-ring-color: rgba(239, 68, 68, 0.2);
+  --file-upload-error-ring-color: var(--danger-100);
   --file-upload-background-color: transparent;
-  --file-upload-focus-ring-color: rgba(59, 130, 246, 0.3);
+  --file-upload-focus-ring-color: var(--primary-100);
 }
 
 .vc-file-upload {
@@ -222,7 +222,7 @@ function dragLeave() {
     }
 
     &:focus-within {
-      @apply tw-border-primary-500
+      @apply tw-border-[color:var(--file-upload-border-color-dragover)]
         tw-ring-[3px] tw-ring-[color:var(--file-upload-focus-ring-color)]
         tw-outline-none;
     }

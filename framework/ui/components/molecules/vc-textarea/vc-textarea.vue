@@ -4,7 +4,7 @@
     :class="{
       'vc-textarea_error': invalid,
       'vc-textarea_disabled': resolvedDisabled,
-      'vc-textarea_focus': isFocused,
+      'vc-textarea_focused': isFocused,
     }"
   >
     <!-- Textarea label -->
@@ -209,10 +209,16 @@ defineExpose({
     @apply tw-cursor-not-allowed tw-pointer-events-none;
   }
 
-  &_focus &__field-wrapper {
+  &_focused &__field-wrapper {
     @apply tw-border-[color:var(--textarea-border-color-focus)]
       tw-ring-[3px] tw-ring-[color:var(--textarea-focus-ring-color)]
       tw-outline-none;
+  }
+
+  /* Respond to aria-invalid on child textarea (future-proof for form systems) */
+  &__field-wrapper:has(textarea[aria-invalid="true"]) {
+    @apply tw-border-[color:var(--textarea-border-color-error)]
+      tw-ring-[3px] tw-ring-[color:var(--textarea-error-ring-color)];
   }
 
   .slide-up-enter-active,
